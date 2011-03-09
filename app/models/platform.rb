@@ -4,7 +4,7 @@ class Platform < ActiveRecord::Base
   before_validation :generate_unixname
   validate :validate_unixname
 
-  has_many :projects
+  has_many :projects, :dependent => :destroy
   has_one :parent, :class_name => 'Platform', :foreign_key => 'parent_platform_id'
 
   protected
