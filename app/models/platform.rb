@@ -1,11 +1,12 @@
 class Platform < ActiveRecord::Base
-  validate :name, :presence => true, :uniqueness => true
-  validate :unixname, :presence => true, :uniqueness => true
-  before_validation :generate_unixname
-  validate :validate_unixname
-
   has_many :projects, :dependent => :destroy
   has_one :parent, :class_name => 'Platform', :foreign_key => 'parent_platform_id'
+
+  validate :name, :presence => true, :uniqueness => true
+  validate :unixname, :presence => true, :uniqueness => true
+  validate :validate_unixname
+
+  before_validation :generate_unixname
 
   protected
 
