@@ -2,7 +2,9 @@ Rosa::Application.routes.draw do
   devise_for :users
 
   resources :platforms do
-    resources :projects
+    resources :projects do
+      resource :repo, :controller => "git/repositories", :only => [:show]
+    end
   end
 
   resources :users
