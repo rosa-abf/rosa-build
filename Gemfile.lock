@@ -51,6 +51,9 @@ GEM
     factory_girl_rails (1.0.1)
       factory_girl (~> 1.3)
       railties (>= 3.0.0)
+    grit (2.4.1)
+      diff-lcs (~> 1.1)
+      mime-types (~> 1.15)
     haml (3.0.25)
     haml-rails (0.3.4)
       actionpack (~> 3.0)
@@ -129,6 +132,7 @@ DEPENDENCIES
   compass (>= 0.10.6)
   devise
   factory_girl_rails
+  grit
   haml (>= 3.0.0)
   haml-rails
   hoptoad_notifier (~> 2.3)
