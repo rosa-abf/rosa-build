@@ -3,5 +3,6 @@ db/*.sqlite3
 log/*.log
 tmp/
 config/database.yml
+.idea
 config/application.yml
 public/stylesheets/compiled/style.css
