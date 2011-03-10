@@ -50,8 +50,21 @@ body {}
 
 #container {}
 
-header {}
+header {
+  display:block;
+  background: #ccf;
+  height:3em;
+  #logout {
+    float:right;
+  }
+}
 
-#main {}
+#main {
+  #login_form {
+    margin: 0 auto;
+    width:250px;
+    padding:2em;
+  }
+}
 
 footer {}
