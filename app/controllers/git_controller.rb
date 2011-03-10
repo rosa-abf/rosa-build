@@ -1,2 +1,0 @@
-class GitController < ApplicationController
-end

@@ -1,10 +1,13 @@
 class Project < ActiveRecord::Base
+  belongs_to :platform
+
   validate :name, :uniqueness => true, :presence => true
   validate :unixname, :uniqueness => true, :presence => true
-  before_validation :generate_unixname
   validate :validate_unixname
 
-  belongs_to :platform
+  before_validation :generate_unixname
+
+  include Project::HasRepository
 
   protected
 
