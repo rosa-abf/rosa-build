@@ -41,3 +41,4 @@ gem "will_paginate", "~> 3.0.pre2"
 gem 'factory_girl_rails'
 gem "hoptoad_notifier", "~> 2.3"
 gem "russian"
+gem "grit"
