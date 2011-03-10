@@ -3,9 +3,8 @@ class Git::Repository
 
   attr_accessor :path, :name
 
-  def initialize(path, name)
+  def initialize(path)
     @path = path
-    @name = name
   end
 
   def master
@@ -17,12 +16,7 @@ class Git::Repository
   end
 
   def repo
-    @repo ||= Grit::Repo.new(repo_path)
+    @repo ||= Grit::Repo.new(path)
   end
-
-  protected
-    def repo_path
-      @repo_path ||= File.join(path, name)
-    end
 
 end

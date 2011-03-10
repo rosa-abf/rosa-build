@@ -4,7 +4,7 @@ module Project::HasRepository
   end
 
   def git_repository
-    @repository ||= Git::Repository(git_repo_path, name)
+    @repository ||= Git::Repository(git_repo_path)
   end
 
   protected
