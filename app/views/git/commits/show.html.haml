@@ -1,0 +1,14 @@
+%h3 Commit: #{@commit.id}
+
+= render :partial => "commit_pane", :locals => { :commit => @commit}
+
+#{link_to "raw diff", commit_path(@project.title, @repository.name, @commit.id, :diff)} | #{link_to "patch", commit_path(@project.title, @repository.name, @commit.id, :patch)}
+
+.row.commit_message
+  %code!= format_commit_message(@commit.message)
+
+.row.commit_stats
+  != render_commit_stats(@commit.stats)
+
+- @commit.diffs.each do |diff|
+  != render_inline_diff(@commit, diff)

@@ -1,0 +1,4 @@
+- if @path.present?
+  %h3 Commits for: #{@path}
+
+= render :partial => "commit", :collection => @commits
