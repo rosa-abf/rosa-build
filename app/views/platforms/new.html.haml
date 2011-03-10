@@ -1,0 +1,11 @@
+%h1= t('layout.platforms.new_header')
+= form_for @platform do |f|
+  %p
+    = f.label :name
+    = f.text_field :name
+  %p
+    = f.label :parent_platform_id
+    = f.select :parent_platform_id, @platforms.map { |p| [p.name, p.id] }, :include_blank => true
+  %p
+    = f.submit t('layout.create')
+    = link_to t('layout.cancel'), platforms_path

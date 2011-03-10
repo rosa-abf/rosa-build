@@ -1,0 +1,8 @@
+%h1= t('layout.projects.new')
+= form_for [@platform, @project] do |f|
+  %p
+    = f.label :name
+    = f.text_field :name
+  %p
+    = f.submit t('layout.create')
+    = link_to t('layout.cancel'), platform_path(@platform)

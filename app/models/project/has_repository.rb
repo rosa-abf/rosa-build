@@ -9,6 +9,6 @@ module Project::HasRepository
 
   protected
     def git_repo_path
-      @git_repo_path ||= "xxx"
+      @git_repo_path ||= File.join(APP_CONFIG['root_path'], platform.unixname, project.unixname, project.unixname + '.git')
     end
 end

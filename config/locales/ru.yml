@@ -4,10 +4,26 @@ ru:
     logged_in_as: Вы вошли как
     logout: Выйти
     user_list: Список пользователей
+    cancel: Отмена
+    create: Создать
+    save: Сохранить
     platforms:
       list: Платформы
       new: Создать новую платформу
+      new_header: Новая платформа
+      show: Платформа
+      projects: Проекты
+      products: Продукты
+    projects:
+      new: Новый проект
+
+  flash:
+    project:
+      saved: Проект успешно сохранен
+      save_error: Не удалось сохранить проект
 
   attributes:
     password: Пароль
     remember_me: Запомнить
+    name: Название
+    parent_platform_id: Родительская платформа
