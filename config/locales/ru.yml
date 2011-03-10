@@ -6,7 +6,9 @@ ru:
     user_list: Список пользователей
     cancel: Отмена
     create: Создать
+    delete: удалить
     save: Сохранить
+    are_you_sure: "Вы уверены?"
     platforms:
       list: Платформы
       new: Создать новую платформу
@@ -14,13 +16,20 @@ ru:
       show: Платформа
       projects: Проекты
       products: Продукты
+      back_to_the_list: ⇐К списку платформ
     projects:
       new: Новый проект
+    users:
+      new: Новый пользователь
+      back_to_the_list: ⇐К списку пользователей
 
   flash:
     project:
       saved: Проект успешно сохранен
       save_error: Не удалось сохранить проект
+    user:
+      saved: Пользователь успешно сохранен
+      save_error: Не удалось сохранить данные о пользователе
 
   attributes:
     password: Пароль

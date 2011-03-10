@@ -1,0 +1,12 @@
+%h1= t('layout.user_list')
+%ul
+  - @users.each do |user|
+    %li
+      = link_to user.name, edit_user_path(user)
+      (
+      %span>= user.email
+      )
+      = link_to t('layout.delete'), user_path(user), :method => :delete, :confirm => t('layout.are_you_sure')
+%p
+  = link_to t('layout.users.new'), new_user_path
+= link_to t('layout.platforms.back_to_the_list'), platforms_path
