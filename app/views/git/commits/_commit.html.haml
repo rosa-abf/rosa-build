@@ -1,0 +1,4 @@
+.commit_row
+  = render :partial => "commit_pane", :locals => { :commit => commit }
+  
+  .row= link_to commit.message, commit_path(@platform.name, @project.name, commit.id)
