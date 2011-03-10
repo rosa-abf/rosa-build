@@ -1,0 +1,7 @@
+%h1= t('layout.platforms.list')
+- @platforms.each do |platform|
+  = div_for platform do
+    = platform.name
+= link_to t('layout.platforms.new'), new_platform_path
+.div
+  = link_to t('layout.user_list'), users_path

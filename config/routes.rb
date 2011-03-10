@@ -1,6 +1,12 @@
 Rosa::Application.routes.draw do
   devise_for :users
 
+  resources :platforms do
+    resources :projects
+  end
+
+  resources :users
+
   # Tree
   match 'platforms/:platform_name/projects/:project_name/git/tree/:treeish(/*path)', :controller => "git/trees", :action => :show, :treeish => /[0-9a-zA-Z_.\-]*/, :defaults => { :treeish => :master }, :as => :tree
 

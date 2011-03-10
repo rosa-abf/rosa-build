@@ -1,0 +1,13 @@
+ru:
+  layout:
+    global_header: Сборочная платформа ROSA
+    logged_in_as: Вы вошли как
+    logout: Выйти
+    user_list: Список пользователей
+    platforms:
+      list: Платформы
+      new: Создать новую платформу
+
+  attributes:
+    password: Пароль
+    remember_me: Запомнить
