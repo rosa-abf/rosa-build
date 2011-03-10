@@ -1,0 +1,11 @@
+%h1
+  = t('layout.platforms.show')
+  = @platform.name
+
+%h2= t('layout.platforms.projects')
+- @projects.each do |project|
+  = div_for project do
+    = link_to project.name, [@platform, project]
+= link_to t('layout.projects.new'), new_platform_project_path(@platform)
+
+%h2= t('layout.platforms.products')
