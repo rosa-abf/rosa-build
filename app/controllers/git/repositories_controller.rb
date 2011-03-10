@@ -5,9 +5,9 @@ class Git::RepositoriesController < Git::BaseController
     @tree = @commit.tree
   end
 
-  def commits
-    branch_name = (params[:branch] ? params[:branch] : "master")
-    @commits = @repository.commits(branch_name)
-  end
+#  def commits
+#    branch_name = (params[:branch] ? params[:branch] : "master")
+#    @commits = @repository.commits(branch_name)
+#  end
 
 end
