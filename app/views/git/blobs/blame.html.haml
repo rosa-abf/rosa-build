@@ -1,4 +1,4 @@
-= render :partial => "commits/commit", :locals => { :commit => @commit }
+= render :partial => "git/commits/commit", :locals => { :commit => @commit }
 
 = link_to "Raw", raw_commit_path(@platform.name, @project.name, @commit.id, @path)
 = link_to "Normal", blob_commit_path(@platform.name, @project.name, @commit.id, @path)
