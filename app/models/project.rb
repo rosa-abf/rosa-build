@@ -10,7 +10,7 @@ class Project < ActiveRecord::Base
 
   # Redefining a method from Project::HasRepository module to reflect current situation
   def git_repo_path
-    @git_repo_path ||= File.join(APP_CONFIG['root_path'], platform.unixname, project.unixname, project.unixname + '.git')
+    @git_repo_path ||= File.join(APP_CONFIG['root_path'], platform.unixname, unixname, unixname + '.git')
   end
 
   protected
