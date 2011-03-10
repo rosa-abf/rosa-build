@@ -7,6 +7,8 @@ class Project < ActiveRecord::Base
 
   before_validation :generate_unixname
 
+  include Project::HasRepository
+
   protected
 
     def generate_unixname
