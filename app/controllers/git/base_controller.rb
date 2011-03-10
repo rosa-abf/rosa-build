@@ -1,7 +1,7 @@
 class Git::BaseController < ApplicationController
   before_filter :authenticate_user!
 
-  before_filter :find_platfrom
+  before_filter :find_platform
   before_filter :find_project
   before_filter :find_repository
 
@@ -11,7 +11,7 @@ class Git::BaseController < ApplicationController
     end
 
     def find_project
-      @project = Project.find_by_name!(params[:project_name])
+      @project = @platform.projects.find_by_name!(params[:project_name])
     end
 
     def find_repository
