@@ -5,17 +5,17 @@ class ProjectsController < ApplicationController
   before_filter :find_project, :only => [:show]
 
   def new
-    @project = @platform.projects.new
+    @project = @repository.projects.new
   end
 
   def show
   end
 
   def create
-    @project = @platform.projects.new params[:project]
+    @project = @repository.projects.new params[:project]
     if @project.save
       flash[:notice] = t('flash.project.saved') 
-      redirect_to @platform
+      redirect_to [@platform, @repository]
     else
       flash[:error] = t('flash.project.save_error')
       render :action => :new
@@ -29,7 +29,7 @@ class ProjectsController < ApplicationController
     end
 
     def find_repository
-      @repository = @platform.find parmas[:repository_id]
+      @repository = @platform.repositories.find(params[:repository_id])
     end
 
     def find_project

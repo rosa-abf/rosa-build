@@ -3,7 +3,7 @@ class Repository < ActiveRecord::Base
   has_many :projects, :dependent => :destroy
 
   validate :name, :presence => true, :uniqueness => true
-  validate :unixname, :uniqueness => true, :presence => true, :format => { :with => /^[a-zA-Z0-9\-.]+$/ }, :allow_nil => false, :allow_blank => false
+  validate :unixname, :uniqueness => true, :presence => true, :format => { :with => /^[a-zA-Z0-9\-.]+$/ }
 
   before_create :create_directory
 

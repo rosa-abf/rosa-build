@@ -1,5 +1,5 @@
 %h1= t('layout.projects.new')
-= form_for [@platform, @project] do |f|
+= form_for [@platform, @repository, @project] do |f|
   %p
     = f.label :name
     = f.text_field :name
@@ -8,4 +8,4 @@
     = f.text_field :unixname
   %p
     = f.submit t('layout.create')
-    = link_to t('layout.cancel'), platform_path(@platform)
+    = link_to t('layout.cancel'), platform_repository_path(@platform, @repository)

@@ -1,0 +1,12 @@
+%h1= t('layout.repositories.new_header')
+= form_for [@platform, @repository] do |f|
+  %p
+    = f.label :name
+    = f.text_field :name
+  %p
+    = f.label :unixname
+    = f.text_field :unixname
+  %p
+    = f.submit t('layout.create')
+    = link_to t('layout.cancel'), platform_repositories_path(@platform)
+
