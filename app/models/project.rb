@@ -1,5 +1,5 @@
 class Project < ActiveRecord::Base
-  belongs_to :platform
+  belongs_to :repository
 
   validate :name, :uniqueness => true, :presence => true, :allow_nil => false, :allow_blank => false
   validate :unixname, :uniqueness => true, :presence => true, :format => { :with => /^[a-zA-Z0-9\-.]+$/ }, :allow_nil => false, :allow_blank => false
@@ -10,7 +10,7 @@ class Project < ActiveRecord::Base
 
   # Redefining a method from Project::HasRepository module to reflect current situation
   def git_repo_path
-    @git_repo_path ||= File.join(APP_CONFIG['root_path'], platform.unixname, unixname, unixname + '.git')
+    @git_repo_path ||= File.join(path, unixname + ".git")
   end
 
   def path
@@ -20,7 +20,7 @@ class Project < ActiveRecord::Base
   protected
 
     def build_path(dir)
-      File.join(APP_CONFIG['root_path'], platform.unixname, dir)
+      File.join(repository.path, dir)
     end
 
     #TODO: Spec me

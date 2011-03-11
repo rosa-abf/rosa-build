@@ -6,8 +6,8 @@ class PlatformsController < ApplicationController
   end
 
   def show
-    @platform = Platform.find params[:id], :include => :projects
-    @projects = @platform.projects
+    @platform = Platform.find params[:id], :include => :repositories
+    @repositories = @platform.repositories
   end
 
   def new
