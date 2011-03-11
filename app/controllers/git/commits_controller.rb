@@ -4,11 +4,11 @@ class Git::CommitsController < Git::BaseController
     @branch_name = (params[:branch] ? params[:branch] : "master")
     @path = params[:path]
 
-    @commits = @path.present? ? @repository.repo.log(@branch_name, @path) : @repository.commits(@branch_name)
+    @commits = @path.present? ? @git_repository.repo.log(@branch_name, @path) : @git_repository.commits(@branch_name)
   end
 
   def show
-    @commit = @repository.commits(params[:id]).first
+    @commit = @git_repository.commits(params[:id]).first
 
     respond_to do |format|
       format.html

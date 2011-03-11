@@ -38,7 +38,7 @@ class RepositoriesController < ApplicationController
     @repository = @platform.repositories.new(params[:repository])
     if @repository.save
       flash[:notice] = ''
-      redirect_to @platform, @repository
+      redirect_to [@platform, @repository]
     else
       flash[:error] = ''
       render :action => :new

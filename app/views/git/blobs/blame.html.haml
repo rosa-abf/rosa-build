@@ -1,8 +1,8 @@
 = render :partial => "git/commits/commit", :locals => { :commit => @commit }
 
-= link_to "Raw", raw_commit_path(@platform.name, @project.name, @commit.id, @path)
-= link_to "Normal", blob_commit_path(@platform.name, @project.name, @commit.id, @path)
-= link_to "History", commits_path(@platform.name, @project.name, @treeish, @path)
+= link_to "Raw", raw_commit_path(@platform, @repository, @project, @commit.id, @path)
+= link_to "Normal", blob_commit_path(@platform, @repository, @project, @commit.id, @path)
+= link_to "History", commits_path(@platform, @repository, @project, @treeish, @path)
 
 .row
   %table{ :class => "blame" }
@@ -16,7 +16,7 @@
     - @blame.each_with_index do |elem, index|
       %tr
         %td.message
-          .row= link_to elem[0].id, commit_path(@platform.name, @project.name, elem[0].id)
+          .row= link_to elem[0].id, commit_path(@platform, @repository, @project, elem[0].id)
           .row= elem[0].committer
           .row= commit_date(elem[0].committed_date)
           .row!= format_commit_message(elem[0].message)

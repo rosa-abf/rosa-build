@@ -5,10 +5,10 @@ class Git::BlobsController < Git::BaseController
 
   def show
     if @commit_hash
-      @tree = @repository.tree(@commit_hash)
+      @tree = @git_repository.tree(@commit_hash)
     else
-      @tree = @repository.tree(@treeish)
-      @commit_hash = @repository.repo.log(@treeish, @path).first.id
+      @tree = @git_repository.tree(@treeish)
+      @commit_hash = @git_repository.repo.log(@treeish, @path).first.id
     end
 
     @blob = @tree / @path
@@ -16,24 +16,24 @@ class Git::BlobsController < Git::BaseController
 
   def blame
     if @commit_hash
-      @tree = @repository.tree(@commit_hash)
-      @commit = @repository.commits(@commit_hash).first
+      @tree = @git_repository.tree(@commit_hash)
+      @commit = @git_repository.commits(@commit_hash).first
     else
-      @tree = @repository.tree(@treeish)
-      @commit = @repository.repo.log(@treeish, @path).first
+      @tree = @git_repository.tree(@treeish)
+      @commit = @git_repository.repo.log(@treeish, @path).first
     end
 
     @blob = @tree / @path
 
-    @blame = Grit::Blob.blame(@repository.repo, @commit.id, @path)
+    @blame = Grit::Blob.blame(@git_repository.repo, @commit.id, @path)
   end
 
   def raw
     if @commit_hash
-      @tree = @repository.tree(@commit_hash)
+      @tree = @git_repository.tree(@commit_hash)
     else
-      @tree = @repository.tree(@treeish)
-      @commit_hash = @repository.repo.log(@treeish, @path).first.id
+      @tree = @git_repository.tree(@treeish)
+      @commit_hash = @git_repository.repo.log(@treeish, @path).first.id
     end
 
     @blob = @tree / @path

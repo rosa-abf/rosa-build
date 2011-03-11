@@ -4,7 +4,7 @@ class Git::TreesController < Git::BaseController
     @treeish = params[:treeish] ? params[:treeish] : "master"
     @path = params[:path]
 
-    @tree = @repository.tree(@treeish)
+    @tree = @git_repository.tree(@treeish)
 
     @tree = @tree / @path if @path
 

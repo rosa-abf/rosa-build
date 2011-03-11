@@ -6,7 +6,7 @@ module DiffHelper
   def render_inline_diff_header(commit, diff)
     res = "<a name='#{h(diff.a_path)}'></a>"
     if diff.b_path.present?
-      res += link_to("view file @ #{commit.id}", blob_commit_path(@platform.name, @project.name, commit.id, diff.b_path))
+      res += link_to("view file @ #{commit.id}", blob_commit_path(@platform, @repository, @project, commit.id, diff.b_path))
       res += "<br />"
     end
 

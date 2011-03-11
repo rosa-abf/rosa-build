@@ -1,9 +1,9 @@
 %h2= @blob.name
 
 .row
-  = link_to "Raw", raw_commit_path(@platform.name, @project.name, @commit_hash, @path)
-  = link_to "Blame", blame_commit_path(@platform.name, @project.name, @commit_hash, @path)
-  = link_to "History", commits_path(@platform.name, @project.name, @treeish, @path)
+  = link_to "Raw", raw_commit_path(@platform, @repository, @project, @commit_hash, @path)
+  = link_to "Blame", blame_commit_path(@platform, @repository, @project, @commit_hash, @path)
+  = link_to "History", commits_path(@platform, @repository, @project, @treeish, @path)
 
 %pre
   %code

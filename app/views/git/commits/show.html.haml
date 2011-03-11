@@ -2,7 +2,7 @@
 
 = render :partial => "commit_pane", :locals => { :commit => @commit}
 
-#{link_to "raw diff", commit_path(@platform.name, @project.name, @commit.id, :diff)} | #{link_to "patch", commit_path(@platform.name, @project.name, @commit.id, :patch)}
+#{link_to "raw diff", commit_path(@platform, @repository, @project, @commit.id, :diff)} | #{link_to "patch", commit_path(@platform, @repository, @project, @commit.id, :patch)}
 
 .row.commit_message
   %code!= format_commit_message(@commit.message)

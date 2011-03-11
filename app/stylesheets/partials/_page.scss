@@ -68,3 +68,118 @@ header {
 }
 
 footer {}
+
+.row {
+	margin: 10px;
+}
+
+.commit_row {
+	margin-bottom: 20px;
+}
+
+.commit_row .author {
+	font-weight: bold;
+}
+
+table tr .line_numbers {
+ text-align: right;
+ vertical-align: top;
+ background: #eee;
+ color: #777;
+ font-size: 92%;
+ padding: 0 3px 0 2px;
+ width: 35px;
+ border-right: 1px solid #ccc;
+ border-bottom: 1px solid #cdcdcd;
+}
+
+table tr td.code {
+ width: 95%;
+ padding-left: 10px;
+ /*white-space: pre;*/
+ white-space: pre-wrap;       /* CSS-3                  */
+ white-space: -moz-pre-wrap;  /* Mozilla, since 1999    */
+ white-space: -pre-wrap;      /* Opera 4-6              */
+ white-space: -o-pre-wrap;    /* Opera 7                */
+ word-wrap: break-word;       /* Internet Explorer 5.5+ */
+ background: #fff;
+ font: 95%/110% "Bitstream Vera Sans Mono", Monaco, monospace;
+ border-right: 1px solid #ccc;
+}
+
+table tr td.code pre {
+  margin: 0;
+  padding: 0;
+  font-size: inherit;
+  line-height: inherit;
+}
+
+table tr td.unwrapped {
+ white-space: pre;
+}
+
+table tr td.softwrapped {
+  white-space: pre-wrap;       /* CSS-3                  */
+  white-space: -moz-pre-wrap;  /* Mozilla, since 1999    */
+  white-space: -pre-wrap;      /* Opera 4-6              */
+  white-space: -o-pre-wrap;    /* Opera 7                */
+  word-wrap: break-word;       /* Internet Explorer 5.5+ */
+}
+
+table.sidebyside tr td.code {
+  padding: 2px;
+}
+
+table.diff {
+  border: 1px solid #ccc;
+  width: 100%;
+  border-collapse: collapse;
+  font: 95%/105% "Bitstream Vera Sans Mono", Monaco, monospace;
+}
+table.diff tr td {
+  padding: 0;
+}
+table.diff .line_num_cut {
+  background: #ccc;
+  border-top: 1px dashed #ccc;
+  border-bottom: 1px dashed #ccc;
+}
+
+table.diff thead .line_numbers, table.diff thead { background: #ddd; }
+table.diff td.code { padding-left: 2px; }
+table.diff .cut-line {
+  background: #eee;
+  border-top: 1px dashed #aaa;
+  border-bottom: 1px dashed #aaa;
+}
+table.diff td.hidden del { display:none; }
+table.diff td.del { background: #ffdddd; }
+table.diff td.del span.idiff { background: #F2ACAD; }
+table.diff td.ins { background: #ddffdd; }
+table.diff td.ins span.idiff { background: #BAFBAD; }
+/*table.sidebyside tbody.mod td ins span.idiff,
+  table.sidebyside tbody.mod td del span.idiff { background: #fd4; }*/
+table.diff td.del del { text-decoration: none; }
+table.diff td.ins ins { text-decoration: none; }
+table.diff col.lines {
+  width: 3em;
+}
+
+ul.diff_stats {
+	list-style: none;
+}
+
+table.blame {
+	border: 1px solid #ccc;
+	width: 100%;
+	border-collapse: collapse;
+	font: 95%/105% "Bitstream Vera Sans Mono", Monaco, monospace;
+}
+
+table.blame tr td {
+	padding: 0;
+	vertical-align: top;
+}
+
+table.blame thead .line_numbers, table.blame thead { background: #ddd; }
+table.balme td.code { padding-left: 2px; }

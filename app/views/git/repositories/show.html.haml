@@ -1,15 +1,15 @@
-.row= link_to "Commits", commits_path(@platform.name, @project.name, @treeish)
+.row= link_to "Commits", commits_path(@platform, @repository, @project, :treeish => @treeish)
 .row.tags
   %h3 Tags:
   %ul
-    - @repository.tags.each do |tag|
-      %li= link_to tag.name, tree_path(@platform.name, @project.name, :treeish => tag.name)
+    - @git_repository.tags.each do |tag|
+      %li= link_to tag.name, tree_path(@platform, @repository, @project, :treeish => tag.name)
 
 .row.heads
   %h3 Heads:
   %ul
-    - @repository.heads.each do |head|
-      %li= link_to head.name, tree_path(@platform.name, @project.name, :treeish => head.name)
+    - @git_repository.heads.each do |head|
+      %li= link_to head.name, tree_path(@platform, @repository, @project, :treeish => head.name)
 
 %table
   %thead
@@ -22,13 +22,13 @@
     - if @path.present?
       %tr
         %td
-          = link_to "..", tree_path(@platform.name, @project.name, @treeish, File.join([@path, ".."].compact))
+          = link_to "..", tree_path(@platform, @repository, @project, @treeish, File.join([@path, ".."].compact))
     - @tree.contents.each do |entry|
       %tr
         %td
           - if entry.is_a?(Grit::Blob)
-            = link_to entry.name, blob_path(@platform.name, @project.name, @treeish, File.join([@path, entry.name].compact))
+            = link_to entry.name, blob_path(@platform, @repository, @project, @treeish, File.join([@path, entry.name].compact))
           - else
-            = link_to "#{entry.name}/", tree_path(@platform.name, @project.name, @treeish, File.join([@path, entry.name].compact))
+            = link_to "#{entry.name}/", tree_path(@platform, @repository, @project, @treeish, File.join([@path, entry.name].compact))
         %td== &nbsp;
         %td== &nbsp;
