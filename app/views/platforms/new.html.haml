@@ -4,6 +4,9 @@
     = f.label :name
     = f.text_field :name
   %p
+    = f.label :unixname
+    = f.text_field :unixname
+  %p
     = f.label :parent_platform_id
     = f.select :parent_platform_id, @platforms.map { |p| [p.name, p.id] }, :include_blank => true
   %p

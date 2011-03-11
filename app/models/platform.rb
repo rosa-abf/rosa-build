@@ -5,16 +5,25 @@ class Platform < ActiveRecord::Base
   validate :name, :presence => true, :uniqueness => true
   validate :unixname, :uniqueness => true, :presence => true, :format => { :with => /^[a-zA-Z0-9\-.]+$/ }, :allow_nil => false, :allow_blank => false
 
-  before_validation :generate_unixname
+  before_create :create_directory
 
   def path
-    File.join(APP_CONFIG['root_path'], unixname)
+    build_path(unixname)
   end
 
   protected
 
-    def generate_unixname
-      self.unixname = name.gsub(/[^a-zA-Z0-9\-.]/, '-')
-      #TODO: Fix non-unique unixname
+    def build_path(dir)
+      File.join(APP_CONFIG['root_path'], dir)
+    end
+
+    def create_directory
+      exists = File.exists?(path) && File.directory?(path)
+      raise "Directory #{path} already exists" if exists
+      if new_record?
+        FileUtils.mkdir_p(path)
+      elsif unixname_changed?
+        FileUtils.mv(build_path(unixname_was), buildpath(unixname))
+      end 
     end
 end
