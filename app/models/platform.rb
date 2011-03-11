@@ -7,6 +7,10 @@ class Platform < ActiveRecord::Base
 
   before_validation :generate_unixname
 
+  def path
+    File.join(APP_CONFIG['root_path'], unixname)
+  end
+
   protected
 
     def generate_unixname

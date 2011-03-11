@@ -2,6 +2,10 @@
   = t('layout.platforms.show')
   = @platform.name
 = link_to t('layout.platforms.back_to_the_list'), platforms_path
+.location
+  = t('layout.platforms.location')
+  = @platform.path
+
 
 %h2= t('layout.platforms.projects')
 - @projects.each do |project|

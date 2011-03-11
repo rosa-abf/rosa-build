@@ -16,9 +16,13 @@ ru:
       show: Платформа
       projects: Проекты
       products: Продукты
+      location: Расположение
       back_to_the_list: ⇐К списку платформ
     projects:
       new: Новый проект
+      location: Расположение
+      git_repo_location: Путь к git-репозиторию
+      back_to_the_list: ⇐К списку проектов платформы
     users:
       new: Новый пользователь
       back_to_the_list: ⇐К списку пользователей
