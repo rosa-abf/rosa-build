@@ -4,5 +4,8 @@
     = f.label :name
     = f.text_field :name
   %p
+    = f.label :unixname
+    = f.text_field :unixname
+  %p
     = f.submit t('layout.create')
     = link_to t('layout.cancel'), platform_path(@platform)
