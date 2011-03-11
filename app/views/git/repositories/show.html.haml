@@ -29,6 +29,6 @@
           - if entry.is_a?(Grit::Blob)
             = link_to entry.name, blob_path(@platform.name, @project.name, @treeish, File.join([@path, entry.name].compact))
           - else
-            = link_to "#{entry.name}/", tree_path(@platform.name, @project.name, @repository.name, @treeish, File.join([@path, entry.name].compact))
+            = link_to "#{entry.name}/", tree_path(@platform.name, @project.name, @treeish, File.join([@path, entry.name].compact))
         %td== &nbsp;
         %td== &nbsp;
