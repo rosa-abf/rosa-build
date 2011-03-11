@@ -13,6 +13,10 @@ class Project < ActiveRecord::Base
     @git_repo_path ||= File.join(APP_CONFIG['root_path'], platform.unixname, unixname, unixname + '.git')
   end
 
+  def path
+    File.join(APP_CONFIG['root_path'], platform.unixname, unixname)
+  end
+
   protected
 
     def generate_unixname

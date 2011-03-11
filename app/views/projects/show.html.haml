@@ -1,3 +1,12 @@
 %h1= @project.name
+.location
+  %p
+    = t('layout.projects.location')
+    = @project.path
+  %p
+    = t('layout.projects.git_repo_location')
+    = @project.git_repo_path
 
+= link_to t('layout.projects.back_to_the_list'), platform_path(@platform)
+%br/
 = link_to "git-repo", platform_project_repo_path(@platform, @project)

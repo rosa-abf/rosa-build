@@ -1,0 +1,11 @@
+%h1= t('layout.users.new')
+= form_for @user do |f|
+  %p
+    = f.label :name
+    = f.text_field :name
+  %p
+    = f.label :email
+    = f.text_field :email
+  %p
+    = f.submit
+    = link_to t('layout.users.back_to_the_list'), users_path
