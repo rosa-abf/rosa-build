@@ -1,6 +1,7 @@
 class ProjectsController < ApplicationController
   before_filter :authenticate_user!
   before_filter :find_platform
+  before_filter :find_repository
   before_filter :find_project, :only => [:show]
 
   def new
@@ -27,7 +28,11 @@ class ProjectsController < ApplicationController
       @platform = Platform.find params[:platform_id]
     end
 
+    def find_repository
+      @repository = @platform.find parmas[:repository_id]
+    end
+
     def find_project
-      @project = @platform.projects.find params[:id]
+      @project = @repository.projects.find params[:id]
     end
 end
