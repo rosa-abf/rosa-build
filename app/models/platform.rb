@@ -11,6 +11,16 @@ class Platform < ActiveRecord::Base
     build_path(unixname)
   end
 
+  def clone(new_name, new_unixname)
+    p = Platform.new
+    p.name = new_name
+    p.unixname = new_unixname
+    p.parent = self
+    p.repositories = repositories.map(&:clone)
+    p.save!
+    return p
+  end
+
   protected
 
     def build_path(dir)

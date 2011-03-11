@@ -11,6 +11,14 @@ class Repository < ActiveRecord::Base
     build_path(unixname)
   end
 
+  def clone
+    r = Repository.new
+    r.name = name
+    r.unixname = unixname
+    r.projects = projects.map(&:clone)
+    return r
+  end
+
   protected
 
     def build_path(dir)

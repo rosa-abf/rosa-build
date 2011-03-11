@@ -17,6 +17,13 @@ class Project < ActiveRecord::Base
     build_path(unixname)
   end
 
+  def clone
+    p = Project.new
+    p.name = name
+    p.unixname = unixname
+    return p
+  end
+
   protected
 
     def build_path(dir)
