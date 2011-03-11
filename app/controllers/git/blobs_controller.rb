@@ -43,12 +43,8 @@ class Git::BlobsController < Git::BaseController
   end
 
   protected
-    def find_repository
-#      @repository = @project.repositories.find_by_name!(params[:repository_name])
-    end
-
     def set_path
-      @path = params[:path].join("/")
+      @path = params[:path]
     end
 
     def set_treeish

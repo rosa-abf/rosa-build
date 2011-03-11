@@ -14,7 +14,7 @@ Rosa::Application.routes.draw do
 
   # Commits
   match 'platforms/:platform_name//projects/:project_name/git/commits/:treeish(/*path)', :controller => "git/commits", :action => :index, :treeish => /[0-9a-zA-Z_.\-]*/, :defaults => { :treeish => :master }, :as => :commits
-  match 'platforms/:platform_name//projects/:project_name/git/commit/:id(.:format)', :controller => "git/comnits", :action => :show, :defaults => { :format => :html }, :as => :commit
+  match 'platforms/:platform_name//projects/:project_name/git/commit/:id(.:format)', :controller => "git/commits", :action => :show, :defaults => { :format => :html }, :as => :commit
 
   # Blobs
   match 'platforms/:platform_name/projects/:project_name/git/blob/:treeish/*path', :controller => "git/blobs", :action => :show, :treeish => /[0-9a-zA-Z_.\-]*/, :defaults => { :treeish => :master }, :as => :blob
