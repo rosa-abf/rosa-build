@@ -7,6 +7,9 @@
     = t('layout.projects.git_repo_location')
     = @project.git_repo_path
 
-= link_to t('layout.projects.back_to_the_list'), platform_repository_path(@repository, @platform)
+= link_to t('layout.projects.back_to_the_list'), platform_repository_path(@platform, @repository)
 %br/
 = link_to "git-repo", platform_repository_project_repo_path(@platform, @repository, @project)
+
+%h2 Release
+%h2 Updates

@@ -23,6 +23,7 @@ class Repository < ActiveRecord::Base
       raise "Directory #{path} already exists" if exists
       if new_record?
         FileUtils.mkdir_p(path)
+        %w(release updates).each { |subrep| FileUtils.mkdir_p(path + subrep) }
       elsif unixname_changed?
         FileUtils.mv(build_path(unixname_was), buildpath(unixname))
       end 
