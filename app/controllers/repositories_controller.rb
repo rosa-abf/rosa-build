@@ -1,4 +1,4 @@
-class RepositoriesController < ApplicationController::Base
+class RepositoriesController < ApplicationController
   before_filter :authenticate_user!
   before_filter :find_platform
 
