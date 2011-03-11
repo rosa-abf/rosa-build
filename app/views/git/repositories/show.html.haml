@@ -3,13 +3,13 @@
   %h3 Tags:
   %ul
     - @repository.tags.each do |tag|
-      %li= link_to tag.name, tree_path(@platform.name, @project.name, tag.name)
+      %li= link_to tag.name, tree_path(@platform.name, @project.name, :treeish => tag.name)
 
 .row.heads
   %h3 Heads:
   %ul
     - @repository.heads.each do |head|
-      %li= link_to head.name, tree_path(@platform.name, @project.name, head.name)
+      %li= link_to head.name, tree_path(@platform.name, @project.name, :treeish => head.name)
 
 %table
   %thead

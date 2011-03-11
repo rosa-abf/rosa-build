@@ -6,8 +6,7 @@ class Git::TreesController < Git::BaseController
 
     @tree = @repository.tree(@treeish)
 
-    # ???
-#    @tree = @tree / @path if @path
+    @tree = @tree / @path if @path
 
     render :template => "git/repositories/show"
   end
