@@ -45,6 +45,7 @@ ru:
 
   attributes:
     password: Пароль
+    password_confirmation: Подтверждение
     remember_me: Запомнить
     name: Название
     parent_platform_id: Родительская платформа
