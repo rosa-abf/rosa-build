@@ -15,32 +15,17 @@ class RepositoriesController < ApplicationController
     @repository = @platform.repositories.new
   end
 
-  def edit
-    @repository = @platform.repositories.find params[:id]
-  end
-
   def destroy
     Repository.destroy params[:id]
-  end
-
-  def update
-    @repository = @platform.repositories.find params[:id]
-    if @repository.update_attributes params[:repository]
-      flash[:notice] = ''
-      redirect_to @repository
-    else
-      flash[:error] = ''
-      render :action => :edit
-    end
   end
 
   def create
     @repository = @platform.repositories.new(params[:repository])
     if @repository.save
-      flash[:notice] = ''
+      flash[:notice] = 'flash.repository.saved'
       redirect_to [@platform, @repository]
     else
-      flash[:error] = ''
+      flash[:error] = 'flash.repository.save_error'
       render :action => :new
     end
   end

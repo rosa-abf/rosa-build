@@ -10,7 +10,15 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110311154929) do
+ActiveRecord::Schema.define(:version => 20110312133121) do
+
+  create_table "containers", :force => true do |t|
+    t.string   "name",       :null => false
+    t.integer  "project_id", :null => false
+    t.integer  "owner_id",   :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "platforms", :force => true do |t|
     t.string   "name"

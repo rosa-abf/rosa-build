@@ -18,22 +18,22 @@ ru:
       products: Продукты
       location: Расположение
       repositories: Репозитории
-      back_to_the_list: ⇐К списку платформ
+      back_to_the_list: ⇐ К списку платформ
     repositories:
       new: Новый репозиторий
       show: Репозиторий
       location: Расположение
       projects: Проекты
       new_header: Новый репозиторий
-      back_to_the_list: ⇐К списку репозиториев
+      back_to_the_list: ⇐ К списку репозиториев
     projects:
       new: Новый проект
       location: Расположение
       git_repo_location: Путь к git-репозиторию
-      back_to_the_list: ⇐К списку проектов репозитория
+      back_to_the_list: ⇐ К списку проектов репозитория
     users:
       new: Новый пользователь
-      back_to_the_list: ⇐К списку пользователей
+      back_to_the_list: ⇐ К списку пользователей
 
   flash:
     project:
@@ -42,6 +42,9 @@ ru:
     user:
       saved: Пользователь успешно сохранен
       save_error: Не удалось сохранить данные о пользователе
+    repository:
+      saved: Репозиторий успешно добавлен
+      save_error: Не удалось добавить репозиторий
 
   attributes:
     password: Пароль
