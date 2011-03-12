@@ -17,6 +17,7 @@ TEST_USERS.each do |tuser|
 end
 
 
+=begin
 TEST_PLATFORMS = %w(cooker Mandriva2010-10 Mandriva2011.4)
 TEST_PROJECTS = %w(gcc glibc mysql-dev ruby ruby1.9 mc mesa avrdude vim gvim openssh-server openssh nethack binutils build-essentials rpm rpmtools ffmpeg mkvtoolnix libogg mpg123 openbox openoffice.org)
 
@@ -29,4 +30,10 @@ TEST_PLATFORMS.each do |platform|
     puts "#{project} added to #{platform}" if pr.new_record?
     pr.save!
   end
+end
+=end
+
+ARCHES = %w(i586 i686 x86_64 mips powerpc)
+ARCHES.each do |arch|
+  Arch.find_or_create_by_name arch
 end
