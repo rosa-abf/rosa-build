@@ -19,4 +19,9 @@ class Git::Repository
     @repo ||= Grit::Repo.new(path)
   end
 
+  def self.create(path)
+    repo = Grit::Repo.init_bare(path)
+    repo.enable_daemon_serve
+  end
+
 end

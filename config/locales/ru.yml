@@ -34,6 +34,9 @@ ru:
     users:
       new: Новый пользователь
       back_to_the_list: ⇐ К списку пользователей
+    git:
+      repositories:
+        empty: Пустой репозиторий
 
   flash:
     project:
