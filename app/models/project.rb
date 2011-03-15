@@ -6,7 +6,7 @@ class Project < ActiveRecord::Base
 
   include Project::HasRepository
 
-  before_create :create_directory
+  before_create :create_directory, :create_git_repo
 
   # Redefining a method from Project::HasRepository module to reflect current situation
   def git_repo_path
@@ -39,5 +39,9 @@ class Project < ActiveRecord::Base
       elsif unixname_changed?
         FileUtils.mv(build_path(unixname_was), buildpath(unixname))
       end 
+    end
+
+    def create_git_repo
+      Git::Repository.create(git_repo_path)
     end
 end
