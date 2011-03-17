@@ -2,6 +2,13 @@
   = t('layout.platforms.show')
   = @platform.name
 = link_to t('layout.platforms.back_to_the_list'), platforms_path
+
+.freeze
+  - if @platform.released?
+    = link_to I18n.t("layout.platforms.unfreeze"), unfreeze_platform_path(@platform), :confirm => I18n.t("layout.platforms.confirm_unfreeze")
+  - else
+    = link_to I18n.t("layout.platforms.freeze"), freeze_platform_path(@platform), :confirm => I18n.t("layout.platforms.confirm_freeze")
+
 .location
   = t('layout.platforms.location')
   = @platform.path

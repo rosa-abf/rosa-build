@@ -1,5 +1,5 @@
 require 'spec_helper'
 
-describe Rpm do
-  pending "add some examples to (or delete) #{__FILE__}"
-end
+#describe Rpm do
+#  pending "add some examples to (or delete) #{__FILE__}"
+#end

@@ -21,6 +21,10 @@ class Platform < ActiveRecord::Base
     return p
   end
 
+  def name
+    released? ? "#{self[:name]} #{I18n.t("layout.platforms.released_suffix")}" : self[:name]
+  end
+
   protected
 
     def build_path(dir)

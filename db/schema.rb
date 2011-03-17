@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110312133948) do
+ActiveRecord::Schema.define(:version => 20110317130503) do
 
   create_table "arches", :force => true do |t|
     t.string   "name",       :null => false
@@ -34,6 +34,7 @@ ActiveRecord::Schema.define(:version => 20110312133948) do
     t.integer  "parent_platform_id"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.boolean  "released",           :default => false
   end
 
   create_table "projects", :force => true do |t|

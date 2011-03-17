@@ -2,6 +2,11 @@ Rosa::Application.routes.draw do
   devise_for :users
 
   resources :platforms do
+    member do
+      get 'freeze'
+      get 'unfreeze'
+    end
+
     resources :repositories do
       resources :projects do
         resource :repo, :controller => "git/repositories", :only => [:show]

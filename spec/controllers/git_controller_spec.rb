@@ -1,5 +1,5 @@
 require 'spec_helper'
 
-describe GitController do
-
-end
+#describe GitController do
+#
+#end
