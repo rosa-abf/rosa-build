@@ -48,6 +48,9 @@ ru:
     repository:
       saved: Репозиторий успешно добавлен
       save_error: Не удалось добавить репозиторий
+    platform:
+      saved: Платформа успешно добавлена
+      saved_error: Не удалось создать платформу
 
   attributes:
     password: Пароль

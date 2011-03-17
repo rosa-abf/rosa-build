@@ -18,13 +18,15 @@ class PlatformsController < ApplicationController
   def create
     @platform = Platform.new params[:platform]
     if @platform.save
-      flash[:notice] = 'Платформа успешно добавлена'
+      flash[:notice] = I18n.t("flash.platform.saved")
       redirect_to @platform
     else
-      flash[:error] = 'Не удалось создать платформу'
+      flash[:error] = I18n.t("flash.platform.saved_error")
       render :action => :new
     end
   end
+
+
 
   def destroy
     Platform.destroy params[:id]
