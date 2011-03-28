@@ -94,4 +94,5 @@ end
 #  $: << File.join(vendored_notifier, 'lib')
 #end
 #
-#require 'hoptoad_notifier/capistrano'
+
+require 'hoptoad_notifier/capistrano'
