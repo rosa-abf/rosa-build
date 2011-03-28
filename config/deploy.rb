@@ -41,10 +41,14 @@ task :symlink_config_files do
   run "mkdir -p #{deploy_to}/#{shared_dir}/config"
 
   run "yes n | cp -i #{release_path}/config/database.yml.sample #{deploy_to}/#{shared_dir}/config/database.yml"
-  run "yes n | cp -i #{release_path}/config/config.yml.sample #{deploy_to}/#{shared_dir}/config/config.yml"
+#  run "yes n | cp -i #{release_path}/config/config.yml.sample #{deploy_to}/#{shared_dir}/config/config.yml"
+  run "yes n | cp -i #{release_path}/config/application.yml.sample #{deploy_to}/#{shared_dir}/config/application.yml"
+
 
   run "ln -nfs #{deploy_to}/#{shared_dir}/config/database.yml #{release_path}/config/database.yml"
-  run "ln -nfs #{deploy_to}/#{shared_dir}/config/config.yml #{release_path}/config/config.yml"
+#  run "ln -nfs #{deploy_to}/#{shared_dir}/config/config.yml #{release_path}/config/config.yml"
+  run "ln -nfs #{deploy_to}/#{shared_dir}/config/application.yml #{release_path}/config/application.yml"
+
 end
 
 namespace :deploy do
