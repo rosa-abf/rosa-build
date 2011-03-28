@@ -19,5 +19,5 @@ production:
   encoding: unicode
   database: rosa_production
   pool: 5
-  username: rosa
-  password:
+  username: postgres
+  password: postgres
