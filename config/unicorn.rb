@@ -24,8 +24,8 @@ end
 # By default, the Unicorn logger will write to stderr.
 # Additionally, ome applications/frameworks log to stderr or stdout,
 # so prevent them from going to /dev/null when daemonized here:
-stderr_path "/war/www/rosa_build/shared/log/unicorn.stderr.log"
-stdout_path "/war/www/rosa_build/shared/log/unicorn.stdout.log"
+stderr_path "/var/www/rosa_build/shared/log/unicorn.stderr.log"
+stdout_path "/var/www/rosa_build/shared/log/unicorn.stdout.log"
 
 # combine REE with "preload_app true" for memory savings
 # http://rubyenterpriseedition.com/faq.html#adapt_apps_for_cow
