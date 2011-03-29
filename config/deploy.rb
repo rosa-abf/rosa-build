@@ -30,13 +30,6 @@ set :branch, "master"
 set :git_shallow_clone, 1
 set :keep_releases, 3
 
-after "deploy:update_code", :symlink_config_files
-
-#before "deploy:update_code", "delayed_job:stop"
-#after "deploy:symlink", "delayed_job:start"
-
-#before "deploy:restart", :symlink_and_rebuild_sphinx
-
 task :symlink_config_files do
   run "mkdir -p #{deploy_to}/#{shared_dir}/config"
 
@@ -55,9 +48,6 @@ namespace :deploy do
   desc "Restarting mod_rails with restart.txt"
   task :restart, :roles => :app, :except => { :no_release => true } do
     run "cd #{deploy_to}/current ; ([ -f tmp/pids/unicorn.pid ] && kill -USR2 `cat tmp/pids/unicorn.pid`); true"
-#     run "kill -QUIT `cat /tmp/rosa_build.sock`"
-#    run "touch #{current_path}/tmp/restart.txt"
-    # run "kill -USR2 `cat /var/www/musicus/shared/pids/unicorn.pid` || true"
   end
 
   %w(start).each { |name| task name, :roles => :app do deploy.restart end }
@@ -77,47 +67,19 @@ namespace :deploy do
     run_locally "bash -c '" +
       "#{envs} compass compile && " +
       "#{envs} jammit'"
+
     # Uploading prechached assets
     top.upload assets_path, "#{current_release}/public", :via => :scp, :recursive => true
-#    run_locally "scp -P 222 #{assets_path}/* rosa_build@abs.rosalab.ru:#{current_release}/public/"
   end
 
   after "deploy:update_code", :roles => :web do
     build_assets
+    symlink_config_files
+  end
+
+  after "deploy:migrate", :roles => :web do
+    restart
   end
 end
-
-#namespace :delayed_job do
-#  desc "Start delayed_job process"
-#  task :start, :roles => :app do
-#    run "cd #{current_path}; RAILS_ENV=production script/delayed_job start"
-#  end
-#
-#  desc "Stop delayed_job process"
-#  task :stop, :roles => :app do
-#    run "[ -d #{current_path} ] && cd #{current_path} && RAILS_ENV=production script/delayed_job stop || true"
-#  end
-#
-#  desc "Restart delayed_job process"
-#  task :restart, :roles => :app do
-#    run "cd #{current_path}; RAILS_ENV=production script/delayed_job restart"
-#  end
-#end
-
-#task :symlink_and_rebuild_sphinx, :roles => [:app] do
-#  thinking_sphinx.stop
-#  symlink_sphinx_indexes
-#  thinking_sphinx.rebuild
-#end
-
-#task :symlink_sphinx_indexes, :roles => [:app] do
-#  run "ln -nfs #{shared_path}/db/sphinx #{release_path}/db/sphinx"
-#end
-
-# TODO: How to setup it in rails3
-#Dir[File.join(File.dirname(__FILE__), '..', 'vendor', 'gems', 'hoptoad_notifier-*')].each do |vendored_notifier|
-#  $: << File.join(vendored_notifier, 'lib')
-#end
-#
 
 require 'hoptoad_notifier/capistrano'
