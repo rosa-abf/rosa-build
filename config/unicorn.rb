@@ -12,7 +12,7 @@ listen '/tmp/rosa_build.sock', :backlog => 2048
 timeout 120
 #
 #feel free to point this anywhere accessible on the filesystem
-pid "/var/www/rosa_build/shared/pids/unicorn.pid"
+pid "/var/www/rosa_build/current/pids/unicorn.pid"
 
 #
 # REE
@@ -43,7 +43,7 @@ before_fork do |server, worker|
   #
   # Using this method we get 0 downtime deploys.
 
-  old_pid = Rails.root + '/tmp/pids/unicorn.pid.oldbin'
+  old_pid = Rails.root + 'tmp/pids/unicorn.pid.oldbin'
   if File.exists?(old_pid) && server.pid != old_pid
     begin
       Process.kill("QUIT", File.read(old_pid).to_i)
