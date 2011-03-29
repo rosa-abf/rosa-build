@@ -12,7 +12,7 @@ TEST_USERS.each do |tuser|
   next if User.find_by_email(email)
   name = tuser[1]
   pass = Digest::MD5.hexdigest(name)[0..6]
-  User.create! :name => name, :email => email, :password => pass, :password_confirmation => pass
+  user = User.create! :name => name, :email => email, :password => pass, :password_confirmation => pass
   puts "Created user #{name} (#{email}) and password #{pass}"
 end
 
