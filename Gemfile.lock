@@ -39,6 +39,7 @@ GEM
       net-ssh-gateway (>= 1.0.0)
     capistrano-ext (1.2.1)
       capistrano (>= 1.0.0)
+    closure-compiler (1.1.1)
     compass (0.10.6)
       haml (>= 3.0.4)
     devise (1.1.7)
@@ -67,6 +68,9 @@ GEM
     html5-boilerplate (0.3.2)
       compass (>= 0.10.0)
     i18n (0.5.0)
+    jammit (0.6.0)
+      closure-compiler (>= 0.1.0)
+      yui-compressor (>= 0.9.1)
     mail (2.2.15)
       activesupport (>= 2.3.6)
       i18n (>= 0.4.0)
@@ -122,6 +126,7 @@ GEM
     warden (1.0.3)
       rack (>= 1.0.0)
     will_paginate (3.0.pre2)
+    yui-compressor (0.9.5)
 
 PLATFORMS
   ruby
@@ -137,6 +142,7 @@ DEPENDENCIES
   haml-rails
   hoptoad_notifier (~> 2.3)
   html5-boilerplate
+  jammit
   pg
   rails (= 3.0.5)
   rspec-rails (>= 2.0.1)

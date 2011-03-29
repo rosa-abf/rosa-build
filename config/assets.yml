@@ -1,0 +1,9 @@
+javascripts:
+  application:
+    - public/javascripts/rails.js
+    - public/javascripts/application.js
+
+stylesheets:
+  application:
+    - public/stylesheets/style.css
+    - public/stylesheets/handheld.css

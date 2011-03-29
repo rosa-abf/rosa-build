@@ -66,6 +66,25 @@ namespace :deploy do
   task :rude_restart, :roles => :web do
     run "cd #{deploy_to}/current ; pkill unicorn; sleep 0.5; pkill -9 unicorn; sleep 0.5 ; unicorn_rails -c config/unicorn.rb -E production -D "
   end
+
+  desc 'Bundle and minify the JS and CSS files'
+  task :build_assets, :roles => :app do
+    root_path    = File.expand_path(File.dirname(__FILE__) + '/..')
+    assets_path  = "#{root_path}/public/assets"
+    envs         = "RAILS_ENV=production"
+
+    # Precaching assets
+    run_locally "bash -c '" +
+      "#{envs} compass compile && " +
+      "#{envs} jammit'"
+    # Uploading prechached assets
+    top.upload assets_path, "#{current_release}/public", :via => :scp, :recursive => true
+#    run_locally "scp -P 222 #{assets_path}/* rosa_build@abs.rosalab.ru:#{current_release}/public/"
+  end
+
+  after "deploy:update_code", :roles => :web do
+    build_assets
+  end
 end
 
 #namespace :delayed_job do

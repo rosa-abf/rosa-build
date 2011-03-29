@@ -44,3 +44,5 @@ gem 'factory_girl_rails'
 gem "hoptoad_notifier", "~> 2.3"
 gem "russian"
 gem "grit"
+
+gem 'jammit'

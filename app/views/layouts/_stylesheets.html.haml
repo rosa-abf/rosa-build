@@ -1,6 +1,6 @@
 -# CSS: implied media="all"
 -# stylesheet_link_tag 'style', :media => 'all'
-= stylesheet_link_tag 'compiled/style.css', :media => 'all'
+= include_stylesheets :application
 
 -# Append your own using content_for :stylesheets
 = yield :stylesheets
