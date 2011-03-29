@@ -5,5 +5,5 @@ javascripts:
 
 stylesheets:
   application:
-    - public/stylesheets/style.css
     - public/stylesheets/handheld.css
+    - public/stylesheets/style.css
