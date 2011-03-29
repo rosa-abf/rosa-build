@@ -8,7 +8,7 @@ environment = Compass::AppIntegration::Rails.env
 
 # Set this to the root of your project when deployed:
 http_path = "/"
-css_dir = "public/stylesheets"
+css_dir = "public/stylesheets/compiled"
 sass_dir = "app/stylesheets"
 javascripts_dir = "public/javascripts"
 
