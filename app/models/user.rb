@@ -11,7 +11,9 @@ class User < ActiveRecord::Base
   protected
 
     def generate_password
-      self.password = self.password_confirmation = Digest::MD5.hexdigest(Date.today.to_s)[0..6]
+      if self.password.blank?
+        self.password = self.password_confirmation = Digest::MD5.hexdigest(Date.today.to_s)[0..6] 
+      end
     end
 
     def send_notification_email
