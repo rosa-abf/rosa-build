@@ -55,11 +55,17 @@ namespace :deploy do
   desc "Restarting mod_rails with restart.txt"
   task :restart, :roles => :app, :except => { :no_release => true } do
     run "cd #{deploy_to}/current ; ([ -f tmp/pids/unicorn.pid ] && kill -USR2 `cat tmp/pids/unicorn.pid`); true"
+#     run "kill -QUIT `cat /tmp/rosa_build.sock`"
 #    run "touch #{current_path}/tmp/restart.txt"
     # run "kill -USR2 `cat /var/www/musicus/shared/pids/unicorn.pid` || true"
   end
 
   %w(start).each { |name| task name, :roles => :app do deploy.restart end }
+
+  desc "Rude restart application"
+  task :rude_restart, :roles => :web do
+    run "cd #{deploy_to}/current ; pkill unicorn; sleep 0.5; pkill -9 unicorn; sleep 0.5 ; unicorn_rails -c config/unicorn.rb -E production -D "
+  end
 end
 
 #namespace :delayed_job do
