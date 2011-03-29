@@ -12,7 +12,7 @@ listen '/tmp/rosa_build.sock', :backlog => 2048
 timeout 120
 #
 #feel free to point this anywhere accessible on the filesystem
-pid "/var/www/rosa_build/current/pids/unicorn.pid"
+pid "/var/www/rosa_build/current/tmp/pids/unicorn.pid"
 
 #
 # REE
