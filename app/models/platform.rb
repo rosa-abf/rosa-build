@@ -1,5 +1,5 @@
 class Platform < ActiveRecord::Base
-  has_one :parent, :class_name => 'Platform', :foreign_key => 'parent_platform_id'
+  belongs_to :parent, :class_name => 'Platform', :foreign_key => 'parent_platform_id'
   has_many :repositories, :dependent => :destroy
 
   validate :name, :presence => true, :uniqueness => true
