@@ -2,8 +2,8 @@ class Platform < ActiveRecord::Base
   belongs_to :parent, :class_name => 'Platform', :foreign_key => 'parent_platform_id'
   has_many :repositories, :dependent => :destroy
 
-  validate :name, :presence => true, :uniqueness => true
-  validate :unixname, :uniqueness => true, :presence => true, :format => { :with => /^[a-zA-Z0-9\-.]+$/ }, :allow_nil => false, :allow_blank => false
+  validates :name, :presence => true, :uniqueness => true
+  validates :unixname, :uniqueness => true, :presence => true, :format => { :with => /^[a-zA-Z0-9\-.]+$/ }, :allow_nil => false, :allow_blank => false
 
   before_create :create_directory
 
