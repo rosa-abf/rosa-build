@@ -9,10 +9,15 @@ ru:
     delete: удалить
     save: Сохранить
     are_you_sure: "Вы уверены?"
+    login: Войти
+    or: или
+    sessions:
+      sign_in_header: Вход в систему
     platforms:
-      list: Платформы
-      new: Создать новую платформу
+      list: Список
+      new: Создать
       new_header: Новая платформа
+      list_header: Платформы
       show: Платформа
       projects: Проекты
       products: Продукты
@@ -67,3 +72,69 @@ ru:
     remember_me: Запомнить
     name: Название
     parent_platform_id: Родительская платформа
+
+
+  activerecord:
+    models:
+      repository: Репозиторий
+      arch: Arch
+      container: Container
+      platform: Платформа
+      project: Проект
+      rpm: RPM
+      user: Пользователь
+
+    attributes:
+      repository:
+        name: Название
+        platform_id: Платформа
+        platform: Платформа
+        unixname: Unixname
+        created_at: Создана
+        updated_at: Обновлена
+
+      arch:
+        name: Название
+        created_at: Создана
+        updated_at: Обновлена
+
+      container:
+        name: Название
+        project_id: Проект
+        project: Проект
+        owner_id: Владелец
+        owner: Владелец
+        created_at: Создан
+        updated_at: Обновлен
+
+      platform:
+        name: Название
+        unixname: Unixname
+        parent_platform_id: Родительская платформа
+        parent_platform: Родительская платформа
+        released: Released
+        created_at: Создана
+        updated_at: Обновлена
+
+      project:
+        name: Название
+        unixname: Unixname
+        repository_id: Репозиторий
+        repository: Репозиторий
+        created_at: Создан
+        updated_at: Обновлен
+
+      rpm:
+        name: Название
+        arch_id: Arch
+        arch: Arch
+        project_id: Проект
+        project: Проект
+        created_at: Создан
+        updated_at: Обновлен
+
+      user:
+        name: Имя
+        email: Email
+        created_at: Создан
+        updated_at: Обновлен
