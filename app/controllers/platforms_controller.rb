@@ -24,6 +24,7 @@ class PlatformsController < ApplicationController
       redirect_to @platform
     else
       flash[:error] = I18n.t("flash.platform.saved_error")
+      @platforms = Platform.all
       render :action => :new
     end
   end
