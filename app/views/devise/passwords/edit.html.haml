@@ -1,13 +1,26 @@
-%h2= t('devise.passwords.edit')
-= form_for(resource, :as => resource_name, :url => password_path(resource_name), :html => { :method => :put }) do |f|
-  = devise_error_messages!
-  = f.hidden_field :reset_password_token
-  %p
-    = f.label :password
-    %br/
-    = f.password_field :password
-  %p
-    = f.label :password_confirmation
-    %br/
-    = f.password_field :password_confirmation
-  %p= f.submit t('devise.password.edit_button')
+.block
+  %h2= t('devise.passwords.edit')
+  .content
+    - if resource.errors.present?
+      .flash
+        .message.error
+          - messages = resource.errors.full_messages.map { |msg| content_tag(:p, msg) }.join.html_safe
+          = messages
+
+    = form_for(resource, :as => resource_name, :url => password_path(resource_name), :html => { :method => :put, :class => "form" }) do |f|
+      = f.hidden_field :reset_password_token
+      .group.wat-cf
+        .left
+          = f.label :password, :class => "label"
+        .right
+          = f.text_field :password, :class => "text_field"
+      .group.wat-cf
+        .left
+          = f.label :password_confirmation, :class => "label"
+        .right
+          = f.text_field :password_confirmation, :class => "text_field"
+
+      .group.navform.wat-cf
+        %button.button{ :tyle => "submit" }
+          #{image_tag("web-app-theme/icons/application_edit.png", :alt => t("devise.passwords.edit_button"))} #{t("devise.passwords.edit_button")}
+

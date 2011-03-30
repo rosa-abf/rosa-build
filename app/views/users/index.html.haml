@@ -1,12 +1,31 @@
-%h1= t('layout.user_list')
-%ul
-  - @users.each do |user|
-    %li
-      = link_to user.name, edit_user_path(user)
-      (
-      %span>= user.email
-      )
-      = link_to t('layout.delete'), user_path(user), :method => :delete, :confirm => t('layout.are_you_sure')
-%p
-  = link_to t('layout.users.new'), new_user_path
-= link_to t('layout.platforms.back_to_the_list'), platforms_path
+.block
+  .secondary-navigation
+    %ul.wat-cf
+      %li.first.active= link_to t("layout.users.list"), users_path
+      %li= link_to t("layout.users.new"), new_user_path
+  .content
+    %h2.title
+      = t("layout.users.list_header")
+    .inner
+      %table.table
+        %tr
+          %th.first ID
+          %th= t("activerecord.attributes.user.name")
+          %th= t("activerecord.attributes.user.email")
+          %th= t("activerecord.attributes.user.created_at")
+          %th.last &nbsp;
+        - @users.each do |user|
+          %tr{:class => cycle("odd", "even")}
+            %td
+              = user.id
+            %td
+              = link_to user.name, user_path(user)
+            %td
+              = user.email
+            %td
+              = user.created_at
+            %td.last
+              #{link_to t("layout.show"), user_path(user)} | #{link_to t("layout.edit"), edit_user_path(user)} | #{link_to t("layout.delete"), user_path(user), :method => :delete, :confirm => t("layout.users.confirm_delete")}
+      .actions-bar.wat-cf
+        .actions
+- content_for :sidebar, render(:partial => 'sidebar')

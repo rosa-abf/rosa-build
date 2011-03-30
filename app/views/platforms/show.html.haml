@@ -1,24 +1,42 @@
-%h1
-  = t('layout.platforms.show')
-  = @platform.name
-= link_to t('layout.platforms.back_to_the_list'), platforms_path
+.block
+  .secondary-navigation
+    %ul.wat-cf
+      %li.first= link_to t("layout.platforms.list"), platforms_path
+      %li= link_to t("layout.platforms.new"), new_platform_path
+      %li.active= link_to t("layout.platforms.show"), platform_path
+  .content
+    .inner
+      %p
+        %b
+          = t("activerecord.attributes.platform.name")
+          \:
+        = @platform.name
+      %p
+        %b
+          = t("activerecord.attributes.platform.unixname")
+          \:
+        = @platform.unixname
+      %p
+        %b
+          = t("activerecord.attributes.platform.parent")
+          \:
+        - if @platform.parent
+          = link_to @platform.parent.name, platform_path(@platform.parent)
+      %p
+        %b
+          = t('layout.platforms.location')
+          \:
+        = @platform.path
 
-.freeze
-  - if @platform.released?
-    = link_to I18n.t("layout.platforms.unfreeze"), unfreeze_platform_path(@platform), :confirm => I18n.t("layout.platforms.confirm_unfreeze")
-  - else
-    = link_to I18n.t("layout.platforms.freeze"), freeze_platform_path(@platform), :confirm => I18n.t("layout.platforms.confirm_freeze")
+      .wat-cf
+        -#= link_to image_tag("web-app-theme/icons/application_edit.png", :alt => t("layout.edit")) + " " + t("layout.edit"), edit_platform_path(@platform), :class => "button"
+        = link_to image_tag("web-app-theme/icons/cross.png", :alt => t("layout.delete")) + " " + t("layout.delete"), platform_path(@platform), :method => "delete", :class => "button", :confirm => t("layout.platforms.confirm_delete")
+        - if @platform.released?
+          = link_to t("layout.platforms.unfreeze"), unfreeze_platform_path(@platform), :confirm => I18n.t("layout.platforms.confirm_unfreeze"), :class => "button"
+        - else
+          = link_to t("layout.platforms.freeze"), freeze_platform_path(@platform), :confirm => I18n.t("layout.platforms.confirm_freeze"), :class => "button"
 
-.location
-  = t('layout.platforms.location')
-  = @platform.path
+-# Show repositories
+-# Show projects
 
-
-%h2= t('layout.platforms.repositories')
-- @repositories.each do |repository|
-  = div_for repository do
-    = link_to repository.name, [@platform, repository]
-= link_to t('layout.repositories.new'), new_platform_repository_path(@platform)
-
-%h2= t('layout.platforms.products')
-TBD
+-#- content_for :sidebar, render(:partial => 'sidebar')

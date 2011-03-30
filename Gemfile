@@ -29,14 +29,19 @@ gem 'pg'
 # group :development, :test do
 #   gem 'webrat'
 # end
-gem "rspec-rails", ">= 2.0.1", :group => [:development, :test]
-gem 'factory_girl_rails', :group => [:development, :test]
+
+group :development, :test do
+  gem "rspec-rails", ">= 2.0.1"
+  gem 'factory_girl_rails'
+  gem 'web-app-theme', '>= 0.6.2'
+  gem 'hpricot'
+  gem 'ruby_parser'
+end
 
 gem "devise"
 gem "haml", ">= 3.0.0"
 gem "haml-rails"
 gem "compass", ">= 0.10.6"
-gem "html5-boilerplate"
 gem "capistrano"
 gem "capistrano-ext"
 gem "will_paginate", "~> 3.0.pre2"

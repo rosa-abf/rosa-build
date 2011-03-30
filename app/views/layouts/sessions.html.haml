@@ -1,0 +1,10 @@
+!!!
+%html
+  %head
+    %title= t("layout.global_header")
+    = include_stylesheets :sessions
+    = csrf_meta_tag
+  %body
+    #container
+      #box
+        = yield

@@ -1,11 +1,12 @@
-%h1= @user.name
-= form_for @user do |f|
-  %p
-    = f.label :name
-    = f.text_field :name
-  %p
-    = f.label :email
-    = f.text_field :email
-  %p
-    = f.submit
-    = link_to t('layout.users.back_to_the_list'), users_path
+.block
+  .secondary-navigation
+    %ul.wat-cf
+      %li.first= link_to t("layout.users.list"), users_path
+      %li= link_to t("layout.users.new"), new_user_path
+      %li.active= link_to t("layout.users.edit"), edit_user_path
+  .content
+    %h2.title= t("layout.users.edit_header")
+    .inner
+      = form_for @user, :url => user_path(@user), :html => { :class => :form } do |f|
+        = render :partial => "form", :locals => {:f => f}
+- content_for :sidebar, render(:partial => 'sidebar')

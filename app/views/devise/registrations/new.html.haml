@@ -1,17 +1,33 @@
-%h2 Sign up
-= form_for(resource, :as => resource_name, :url => registration_path(resource_name)) do |f|
-  = devise_error_messages!
-  %p
-    = f.label :email
-    %br/
-    = f.text_field :email
-  %p
-    = f.label :password
-    %br/
-    = f.password_field :password
-  %p
-    = f.label :password_confirmation
-    %br/
-    = f.password_field :password_confirmation
-  %p= f.submit "Sign up"
-= render :partial => "devise/shared/links"
+#block-signup.block
+  %h2= t("devise.registrations.sign_up_header")
+    .content
+      = form_for(resource, :as => resource_name, :url => registration_path(resource_name), :html => { :class => "form" }) do |f|
+        - if resource.errors.present?
+          .flash
+            .message.error
+              - messages = resource.errors.full_messages.map { |msg| content_tag(:p, msg) }.join.html_safe
+              = messages
+
+        .group.wat-cf
+          .left
+            = f.label :email, :class => "label"
+          .right
+            = f.text_field :email, :class => "text_field"
+
+        .group.wat-cf
+          .left
+            = f.label :password, :class => "label"
+          .right
+            = f.password_field :password, :class => "text_field"
+
+        .group.wat-cf
+          .left
+            = f.label :password_confirmation, :class => "label"
+          .right
+            = f.password_field :password_confirmation, :class => "text_field"
+
+        .group.navform.wat-cf
+          %button.button{ :type => "submit" }
+            #{image_tag("web-app-theme/icons/tick.png", :alt => t("devise.registrations.signed_up"))} #{t("devise.registrations.signed_up")}
+          %span.text_button_padding
+            = render :partial => "devise/shared/links"

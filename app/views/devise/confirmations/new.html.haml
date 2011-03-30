@@ -1,9 +1,22 @@
-%h2 Resend confirmation instructions
-= form_for(resource, :as => resource_name, :url => confirmation_path(resource_name), :html => { :method => :post }) do |f|
-  = devise_error_messages!
-  %p
-    = f.label :email
-    %br/
-    = f.text_field :email
-  %p= f.submit "Resend confirmation instructions"
-= render :partial => "devise/shared/links"
+.block
+  %h2= t("devise.confirmations.resend_header")
+  .content
+    - if resource.errors.present?
+      .flash
+        .message.error
+          - messages = resource.errors.full_messages.map { |msg| content_tag(:p, msg) }.join.html_safe
+          = messages
+
+    = form_for(resource, :as => resource_name, :url => confirmation_path(resource_name), :html => { :method => :post, :class => "form" }) do |f|
+      = f.hidden_field :reset_password_token
+      .group.wat-cf
+        .left
+          = f.label :email, :class => "label"
+        .right
+          = f.text_field :email, :class => "text_field"
+
+      .group.navform.wat-cf
+        %button.button{ :tyle => "submit" }
+          #{image_tag("web-app-theme/icons/tick.png", :alt => t("devise.confirmations.send"))} #{t("devise.confirmations.send")}
+        %span.text_button_padding
+          = render :partial => "devise/shared/links"

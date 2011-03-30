@@ -1,8 +1,19 @@
-%h2= t('devise.passwords.link')
-= form_for(resource, :as => resource_name, :url => password_path(resource_name), :html => { :method => :post }) do |f|
-  = devise_error_messages!
-  %p
-    = f.label :email
-    %br/
-    = f.text_field :email
-  %p= f.submit t('devise.passwords.button')
+.block
+  %h2= t('devise.passwords.link')
+  .content
+    - if resource.errors.present?
+      .flash
+        .message.error
+          - messages = resource.errors.full_messages.map { |msg| content_tag(:p, msg) }.join.html_safe
+          = messages
+
+    = form_for(resource, :as => resource_name, :url => password_path(resource_name), :html => { :method => :post, :class => "form" }) do |f|
+      .group.wat-cf
+        .left
+          = f.label :email, :class => "label"
+        .right
+          = f.text_field :email, :class => "text_field"
+
+      .group.navform.wat-cf
+        %button.button{ :tyle => "submit" }
+          #{image_tag("web-app-theme/icons/tick.png", :alt => t("devise.passwords.button"))} #{t("devise.passwords.button")}

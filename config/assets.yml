@@ -5,5 +5,11 @@ javascripts:
 
 stylesheets:
   application:
-    - public/stylesheets/compiled/style.css
-    - public/stylesheets/compiled/handheld.css
+    - public/stylesheets/web-app-theme/base.css
+    - public/stylesheets/web-app-theme/themes/default/style.css
+    - public/stylesheets/web-app-theme/override.css
+
+  sessions:
+    - public/stylesheets/web-app-theme/base.css
+    - public/stylesheets/web-app-theme/themes/default/style.css
+    - public/stylesheets/web-app-theme/override.css

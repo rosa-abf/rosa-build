@@ -19,6 +19,7 @@ ru:
       list: Список
       new: Создать
       new_header: Новая платформа
+      edit_header: Редактировать
       list_header: Платформы
       show: Платформа
       projects: Проекты
@@ -45,8 +46,15 @@ ru:
       git_repo_location: Путь к git-репозиторию
       back_to_the_list: ⇐ К списку проектов репозитория
     users:
-      new: Новый пользователь
+      list: Список
+      new: Создать
+      edit: Редактировать
+      new_header: Новый пользователь
+      edit_header: Редактировать
+      list_header: Пользователи
+      show: Пользователь
       back_to_the_list: ⇐ К списку пользователей
+      confirm_delete: Вы уверены, что хотите удалить этого пользователя?
     git:
       repositories:
         empty: Пустой репозиторий

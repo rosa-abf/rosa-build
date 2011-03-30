@@ -1,6 +1,11 @@
 class UsersController < ApplicationController
+  before_filter :find_user, :only => [:show, :edit, :update, :destroy]
+
   def index
     @users = User.all
+  end
+
+  def show
   end
 
   def new
@@ -8,11 +13,10 @@ class UsersController < ApplicationController
   end
 
   def edit
-    @user = User.find params[:id]
   end
 
   def destroy
-    User.destroy params[:id]
+    @user.destroy
     redirect_to users_path
   end
 
@@ -28,7 +32,6 @@ class UsersController < ApplicationController
   end
 
   def update
-    @user = User.find params[:id]
     if @user.update_attributes(params[:user])
       flash[:notice] = t('flash.user.saved')
       redirect_to users_path
@@ -37,4 +40,9 @@ class UsersController < ApplicationController
       render :action => :edit
     end
   end
+
+  protected
+    def find_user
+      @user = User.find(params[:id])
+    end
 end
