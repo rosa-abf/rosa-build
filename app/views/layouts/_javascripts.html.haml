@@ -1,4 +1,4 @@
-= javascript_include_tag "//ajax.googleapis.com/ajax/libs/jquery/#{ local_jquery("1.5.1") }"
+= javascript_include_tag(Rails.env.production? ? 'https://ajax.googleapis.com/ajax/libs/jquery/1.5.1/jquery.min.js' : 'jquery.min.js')
 
 -# fall back to local jQuery if necessary
 :javascript
