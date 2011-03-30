@@ -4,9 +4,11 @@ ru:
     logged_in_as: Вы вошли как
     logout: Выйти
     user_list: Список пользователей
+    edit: Редактировать
+    show: Просмотр
     cancel: Отмена
     create: Создать
-    delete: удалить
+    delete: Удалить
     save: Сохранить
     are_you_sure: "Вы уверены?"
     login: Войти
@@ -29,6 +31,7 @@ ru:
       confirm_freeze: Вы уверены, что хотите заморозить эту платформу?
       confirm_unfreeze: Вы уверены, что хотите разморозить эту платформу?
       released_suffix: (выпущена)
+      confirm_delete: Вы уверены, что хотите удалить эту платформу?
     repositories:
       new: Новый репозиторий
       show: Репозиторий
@@ -111,7 +114,7 @@ ru:
         name: Название
         unixname: Unixname
         parent_platform_id: Родительская платформа
-        parent_platform: Родительская платформа
+        parent: Родительская платформа
         released: Released
         created_at: Создана
         updated_at: Обновлена
