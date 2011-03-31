@@ -1,13 +1,9 @@
 class RepositoriesController < ApplicationController
   before_filter :authenticate_user!
   before_filter :find_platform
-
-  def index
-    @repositories = @platform.repositories
-  end
+  before_filter :find_repository, :only => [:show, :destroy]
 
   def show
-    @repository = @platform.repositories.find params[:id], :include => :projects
     @projects = @repository.projects
   end
 
@@ -16,7 +12,9 @@ class RepositoriesController < ApplicationController
   end
 
   def destroy
-    Repository.destroy params[:id]
+    @repository.destroy
+
+    redirect_to platform_path(@platform)
   end
 
   def create
@@ -34,5 +32,9 @@ class RepositoriesController < ApplicationController
 
     def find_platform
       @platform = Platform.find params[:platform_id]
+    end
+
+    def find_repository
+      @repository = @platform.repositories.find(params[:id])
     end
 end
