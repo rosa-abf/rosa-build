@@ -1,3 +1,4 @@
+
 class PlatformsController < ApplicationController
   before_filter :authenticate_user!
 
@@ -53,6 +54,8 @@ class PlatformsController < ApplicationController
 
   def destroy
     Platform.destroy params[:id]
+
+    flash[:notice] = t("flash.platform.destroyed")
     redirect_to root_path
   end
 

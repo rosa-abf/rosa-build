@@ -14,6 +14,7 @@ class RepositoriesController < ApplicationController
   def destroy
     @repository.destroy
 
+    flash[:notice] = t("flash.repository.destroyed")
     redirect_to platform_path(@platform)
   end
 
