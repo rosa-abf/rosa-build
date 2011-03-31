@@ -65,7 +65,7 @@ namespace :deploy do
 
     # Precaching assets
     run_locally "bash -c '" +
-      "#{envs} compass compile && " +
+#      "#{envs} compass compile && " +
       "#{envs} jammit'"
 
     # Uploading prechached assets
