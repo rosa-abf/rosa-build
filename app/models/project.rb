@@ -6,6 +6,8 @@ class Project < ActiveRecord::Base
 
   include Project::HasRepository
 
+  scope :recent, order("name ASC")
+
   before_create :create_directory, :create_git_repo
 
   # Redefining a method from Project::HasRepository module to reflect current situation

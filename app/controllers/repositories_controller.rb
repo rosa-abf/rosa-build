@@ -4,7 +4,7 @@ class RepositoriesController < ApplicationController
   before_filter :find_repository, :only => [:show, :destroy]
 
   def show
-    @projects = @repository.projects
+    @projects = @repository.projects.recent
   end
 
   def new

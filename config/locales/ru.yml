@@ -33,10 +33,12 @@ ru:
       confirm_unfreeze: Вы уверены, что хотите разморозить эту платформу?
       released_suffix: (выпущена)
       confirm_delete: Вы уверены, что хотите удалить эту платформу?
+      current_platform_header: Текущая платформа
     repositories:
       list: Список
       list_header: Репозитории
       new: Новый репозиторий
+      new_header: Новый репозиторий
       show: Репозиторий
       location: Расположение
       projects: Проекты
@@ -44,6 +46,9 @@ ru:
       back_to_the_list: ⇐ К списку репозиториев
       confirm_delete: Вы уверены, что хотите удалить этот репозиторий?
     projects:
+      list: Список
+      list_header: Проекты
+      confirm_delete: Вы уверены, что хотите удалить этот проект?
       new: Новый проект
       location: Расположение
       git_repo_location: Путь к git-репозиторию

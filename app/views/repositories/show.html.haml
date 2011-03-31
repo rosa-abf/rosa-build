@@ -1,14 +1,53 @@
-%h1
-  = t('layout.repositories.show')
-  = @repository.name
-= link_to t('layout.repositories.back_to_the_list'), platform_path(@platform)
-.location
-  = t('layout.repositories.location')
-  = @repository.path
+.block
+  .secondary-navigation
+    %ul.wat-cf
+      %li.first= link_to t("layout.repositories.list"), platform_path(@platform) + "#repositories"
+      %li= link_to t("layout.repositories.new"), new_platform_repository_path(@platform)
+      %li.active= link_to t("layout.repositories.show"), platform_repository_path(@platform, @repository)
+  .content
+    .inner
+      %p
+        %b
+          = t("activerecord.attributes.repository.name")
+          \:
+        = @repository.name
+      %p
+        %b
+          = t("activerecord.attributes.repository.unixname")
+          \:
+        = @repository.unixname
+      %p
+        %b
+          = t("activerecord.attributes.repository.platform")
+          \:
+        = link_to @repository.platform.name, platform_repository_path(@platform, @repository)
+      .wat-cf
+        = link_to image_tag("web-app-theme/icons/cross.png", :alt => t("layout.delete")) + " " + t("layout.delete"), platform_repository_path(@platform, @repository), :method => "delete", :class => "button", :confirm => t("layout.repositories.confirm_delete")
 
+%a{ :name => "projects" }
+.block
+  .secondary-navigation
+    %ul.wat-cf
+      %li.first.active= link_to t("layout.projects.list"), platform_repository_path(@platform, @repository) + "#projects"
+      %li= link_to t("layout.projects.new"), new_platform_repository_project_path(@platform, @repository)
+  .content
+    %h2.title
+      = t("layout.projects.list_header")
+    .inner
+      %table.table
+        %tr
+          %th.first= t("activerecord.attributes.project.name")
+          %th= t("activerecord.attributes.platform.created_at")
+          %th.last &nbsp;
+        - @projects.each do |project|
+          %tr{:class => cycle("odd", "even")}
+            %td
+              = link_to project.name, platform_repository_project_path(@platform, @repository, project)
+            %td
+              = project.created_at
+            %td.last
+              #{link_to t("layout.show"), platform_repository_project_path(@platform, @repository, project)} | #{link_to t("layout.delete"), platform_repository_project_path(@platform, @repository, project), :method => :delete, :confirm => t("layout.projects.confirm_delete")}
+      .actions-bar.wat-cf
+        .actions
 
-%h2= t('layout.repositories.projects')
-- @projects.each do |project|
-  = div_for project do
-    = link_to project.name, [@platform, @repository, project]
-= link_to t('layout.projects.new'), new_platform_repository_project_path(@platform, @repository)
+- content_for :sidebar, render(:partial => 'sidebar')
