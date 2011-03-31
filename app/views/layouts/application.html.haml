@@ -17,9 +17,9 @@
         #main-navigation
           %ul.wat-cf
             %li{:class => controller.controller_path == 'users' ? 'active' : '' }
-              %a{:href => users_path} Users
+              %a{:href => users_path}= t("layout.menu.users")
             %li{:class => controller.controller_path == 'platforms' ? 'active' : '' }
-              %a{:href => platforms_path} Platforms
+              %a{:href => platforms_path}= t("layout.menu.platforms")
       #wrapper.wat-cf
         = render :partial => "layouts/flashes"
         #main

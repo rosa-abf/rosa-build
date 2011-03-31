@@ -13,6 +13,9 @@ ru:
     are_you_sure: "Вы уверены?"
     login: Войти
     or: или
+    menu:
+      users: Пользователи
+      platforms: Платформы
     sessions:
       sign_in_header: Вход в систему
     platforms:
