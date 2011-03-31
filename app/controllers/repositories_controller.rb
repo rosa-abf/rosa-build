@@ -20,10 +20,10 @@ class RepositoriesController < ApplicationController
   def create
     @repository = @platform.repositories.new(params[:repository])
     if @repository.save
-      flash[:notice] = 'flash.repository.saved'
+      flash[:notice] = t('flash.repository.saved')
       redirect_to [@platform, @repository]
     else
-      flash[:error] = 'flash.repository.save_error'
+      flash[:error] = t('flash.repository.save_error')
       render :action => :new
     end
   end
