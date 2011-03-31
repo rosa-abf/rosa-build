@@ -1,8 +1,8 @@
 class Project < ActiveRecord::Base
   belongs_to :repository
 
-  validate :name, :uniqueness => true, :presence => true, :allow_nil => false, :allow_blank => false
-  validate :unixname, :uniqueness => true, :presence => true, :format => { :with => /^[a-zA-Z0-9\-.]+$/ }, :allow_nil => false, :allow_blank => false
+  validates :name, :uniqueness => true, :presence => true, :allow_nil => false, :allow_blank => false
+  validates :unixname, :uniqueness => true, :presence => true, :format => { :with => /^[a-zA-Z0-9\-.]+$/ }, :allow_nil => false, :allow_blank => false
 
   include Project::HasRepository
 
