@@ -1,11 +1,12 @@
-== Здравствуйте, #{@user.name}
+%p== Здравствуйте, #{@user.name}.
 
 
-== Вы зарегистрированы на проекте «#{APP_CONFIG['project_name']}» и теперь можете войти в систему. 
+%p Вы зарегистрированы на проекте «ROSA Build System» и теперь можете войти в систему. 
 
 
-==Ваш email : #{@user.email}
-==Ваш пароль: #{@user.password}
+%p
+  ==Ваш email : #{@user.email}
+  %br/
+  ==Ваш пароль: #{@user.password}
 
-
-== Команда поддержки #{APP_CONFIG['project_name']}
+%p== Команда поддержки «ROSA Build System»
