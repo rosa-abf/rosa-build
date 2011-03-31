@@ -36,7 +36,31 @@
         - else
           = link_to t("layout.platforms.freeze"), freeze_platform_path(@platform), :confirm => I18n.t("layout.platforms.confirm_freeze"), :class => "button"
 
--# Show repositories
--# Show projects
+%a{ :name => "repositories" }
+.block
+  .secondary-navigation
+    %ul.wat-cf
+      %li.first.active= link_to t("layout.repositories.list"), platform_path(@platform) + "#repositories"
+      %li= link_to t("layout.repositories.new"), new_platform_repository_path(@platform)
+  .content
+    %h2.title
+      = t("layout.repositories.list_header")
+    .inner
+      %table.table
+        %tr
+          %th.first= t("activerecord.attributes.repository.name")
+          %th= t("activerecord.attributes.repository.created_at")
+          %th.last &nbsp;
+        - @platform.repositories.recent.each do |repository|
+          %tr{:class => cycle("odd", "even")}
+            %td
+              = link_to repository.name, platform_repository_path(@platform, repository)
+            %td
+              = repository.created_at
+            %td.last
+              #{link_to t("layout.show"), platform_repository_path(@platform, repository)} | #{link_to t("layout.delete"), platform_repository_path(@platform, repository), :method => :delete, :confirm => t("layout.repositories.confirm_delete")}
+      .actions-bar.wat-cf
+        .actions
 
--#- content_for :sidebar, render(:partial => 'sidebar')
+-#- content_for :sidebar do
+  

@@ -34,12 +34,15 @@ ru:
       released_suffix: (выпущена)
       confirm_delete: Вы уверены, что хотите удалить эту платформу?
     repositories:
+      list: Список
+      list_header: Репозитории
       new: Новый репозиторий
       show: Репозиторий
       location: Расположение
       projects: Проекты
       new_header: Новый репозиторий
       back_to_the_list: ⇐ К списку репозиториев
+      confirm_delete: Вы уверены, что хотите удалить этот репозиторий?
     projects:
       new: Новый проект
       location: Расположение

@@ -5,6 +5,8 @@ class Repository < ActiveRecord::Base
   validate :name, :presence => true, :uniqueness => true
   validate :unixname, :uniqueness => true, :presence => true, :format => { :with => /^[a-zA-Z0-9\-.]+$/ }
 
+  scope :recent, order("name ASC")
+
   before_create :create_directory
 
   def path
