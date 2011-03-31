@@ -10,14 +10,11 @@
       %table.table
         %tr
           %th.first= t("activerecord.attributes.platform.name")
-          %th= t("activerecord.attributes.platform.created_at")
           %th.last &nbsp;
         - @platforms.each do |platform|
           %tr{:class => cycle("odd", "even")}
             %td
               = link_to platform.name, platform_path(platform)
-            %td
-              = platform.created_at
             %td.last
               #{link_to t("layout.show"), platform_path(platform)} | #{link_to t("layout.delete"), platform_path(platform), :method => :delete, :confirm => t("layout.platforms.confirm_delete")}
       .actions-bar.wat-cf
