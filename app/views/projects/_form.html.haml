@@ -1,0 +1,13 @@
+.group
+  = f.label :name, t("activerecord.attributes.project.name"), :class => :label
+  = f.text_field :name, :class => 'text_field'
+.group
+  = f.label :unixname, t("activerecord.attributes.project.unixname"), :class => :label
+  = f.text_field :unixname, :class => 'text_field'
+
+.group.navform.wat-cf
+  %button.button{:type => "submit"}
+    = image_tag("web-app-theme/icons/tick.png", :alt => t("layout.save"))
+    = t("layout.save")
+  %span.text_button_padding= t("layout.or")
+  = link_to t("layout.cancel"), platform_repository_path(@platform, @repository), :class => "text_button_padding link_button"

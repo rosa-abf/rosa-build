@@ -2,7 +2,7 @@ class ProjectsController < ApplicationController
   before_filter :authenticate_user!
   before_filter :find_platform
   before_filter :find_repository
-  before_filter :find_project, :only => [:show]
+  before_filter :find_project, :only => [:show, :destroy]
 
   def new
     @project = @repository.projects.new
@@ -20,6 +20,12 @@ class ProjectsController < ApplicationController
       flash[:error] = t('flash.project.save_error')
       render :action => :new
     end
+  end
+
+  def destroy
+    @project.destroy
+
+    redirect_to platform_repository_path(@platform, @repository)
   end
 
   protected

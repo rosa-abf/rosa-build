@@ -48,11 +48,15 @@ ru:
       new_header: Новый репозиторий
       back_to_the_list: ⇐ К списку репозиториев
       confirm_delete: Вы уверены, что хотите удалить этот репозиторий?
+      current_repository_header: Текущий репозиторий
     projects:
       list: Список
       list_header: Проекты
+      show: Проект
       confirm_delete: Вы уверены, что хотите удалить этот проект?
       new: Новый проект
+      new_header: Новый проект
+      new_header: Новый проект
       location: Расположение
       git_repo_location: Путь к git-репозиторию
       back_to_the_list: ⇐ К списку проектов репозитория
@@ -74,12 +78,15 @@ ru:
     project:
       saved: Проект успешно сохранен
       save_error: Не удалось сохранить проект
+      destroyed: Проект успешно удален
     user:
       saved: Пользователь успешно сохранен
       save_error: Не удалось сохранить данные о пользователе
+      destroyed: Учетная запись успешно удалена
     repository:
       saved: Репозиторий успешно добавлен
       save_error: Не удалось добавить репозиторий
+      destroyed: Репозиторий успешно удален
     platform:
       saved: Платформа успешно добавлена
       saved_error: Не удалось создать платформу
