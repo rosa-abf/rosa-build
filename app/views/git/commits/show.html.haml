@@ -17,21 +17,16 @@
     .inner
       = render :partial => "git/commits/commits", :object => [@commit]
 
+.block
+  .content
+    .inner
+      .patch_and_diff
+        #{link_to "raw diff", commit_path(@platform, @repository, @project, @commit.id, :diff)} | #{link_to "patch", commit_path(@platform, @repository, @project, @commit.id, :patch)}
 
+      .clear
+        
+      = render_commit_stats(@commit.stats)
 
+= render :partial => "git/commits/commit_diff", :collection => @commit.diffs
 
-
--#%h3 Commit: #{@commit.id}
--#
--#= render :partial => "commit_pane", :locals => { :commit => @commit}
--#
--##{link_to "raw diff", commit_path(@platform, @repository, @project, @commit.id, :diff)} | #{link_to "patch", commit_path(@platform, @repository, @project, @commit.id, :patch)}
--#
--#.row.commit_message
--#  %code!= format_commit_message(@commit.message)
--#
--#.row.commit_stats
--#  != render_commit_stats(@commit.stats)
--#
--#- @commit.diffs.each do |diff|
--#  != render_inline_diff(@commit, diff)
+- content_for :sidebar, render(:partial => 'git/shared/sidebar')

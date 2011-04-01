@@ -107,6 +107,7 @@ table.blob td.blob pre {
     border-bottom: 1px solid #DDDDDD;
     font-family: Monaco,"Courier New","DejaVu Sans Mono","Bitstream Vera Sans Mono",monospace;
     padding: 5px;
+    margin-top: 20px;
 }
 
 .blob_header .size {
@@ -117,4 +118,73 @@ table.blob td.blob pre {
 .blob_header .buttons {
     float: right;
     margin-right: 15px;
+}
+
+table.commit_stats {
+    width: 100%;
+    margin-top: 12px;
+    line-height: 1.4em;
+}
+
+table.commit_stats tr {
+    padding: 5px;
+}
+
+.diff_data {
+    overflow-x: auto;
+}
+
+table.diff {
+    line-height: 1.4em;
+    font-family: 'Bitstream Vera Sans Mono','Courier',monospace;
+    border: 1px solid #EAEAEA;
+    width: 100%;
+}
+
+table.diff tr td.line_numbers {
+    background-color: #ECECEC;
+    border-right: 1px solid #DDDDDD;
+    color: #AAAAAA;
+    padding-left: 10px;
+    padding-right: 10px;
+    text-align: right;
+}
+
+table.diff tr td.header {
+    line-height: 1.4em;
+    font-family: 'Bitstream Vera Sans Mono','Courier',monospace;
+    width: 100%;
+    background-color: #ECECEC;
+    color: #AAAAAA;
+    padding-left: 10px;
+}
+
+table.diff tr td.code {
+    width: 100%;
+    padding-left: 10px;
+}
+
+table.diff tr td.code.del {
+    background-color: #FFDDDD;
+}
+
+table.diff tr td.code.del .idiff {
+    background-color: #F2ACAD;
+}
+
+table.diff tr td.code.ins {
+    background-color: #DDFFDD;
+}
+
+table.diff tr td.code.ins .idiff {
+    background-color: #BAFBAD;
+}
+
+table.diff .diff-content {
+}
+
+.patch_and_diff {
+    margin-top: 10px;
+    float: right;
+    margin-right: 10px;
 }
