@@ -1,0 +1,120 @@
+ul.commits {
+
+}
+
+li.commit {
+
+}
+
+li.commit table tr td {
+    vertical-align: top;
+    padding-top: 5px;
+}
+
+li.commit .committers {
+    width: 175px;
+    border-right: 1px solid #E2E2E2;
+}
+
+li.commit .committers .author {
+
+}
+
+li.commit .committers .committer {
+    margin-top: 5px;
+    color: #999999;
+    font-size: 11px;
+    font-weight: normal;
+    letter-spacing: normal;
+    text-transform: none;
+}
+
+li.commit .message {
+    padding-left: 5px;
+    border-right: 1px solid #E2E2E2;
+    width: 575px;
+}
+
+li.commit .trees {
+    padding-left: 5px;
+    width: 180px;
+}
+
+li.commit .message a {
+    text-decoration: none;
+}
+
+li.commit .message p {
+    margin: 0;
+}
+
+li.commit .message a:hover {
+    text-decoration: underline;
+}
+
+li.commit .trees div {
+    margin-bottom: 3px;
+}
+
+table.git_tree .icon {
+    padding-left: 10px !important;
+    padding-right: 0px !important;
+    width: 16px;
+}
+
+table.git_tree tree_element a {
+    text-decoration: none;
+}
+
+table.git_tree ree_element a:hover {
+    text-decoration: underline;
+}
+
+table.git_tree .icon img {
+    top: 1px;
+    position: relative;
+}
+
+table.blob {
+    line-height: 1.4em;
+    font-family: 'Bitstream Vera Sans Mono','Courier',monospace;
+    border-left: 1px solid #EAEAEA;
+    border-right: 1px solid #EAEAEA;
+}
+
+table.blob td {
+    padding: 0 !important;
+}
+
+table.blob td.lines {
+    width: auto;
+}
+
+table.blob td.lines pre {
+    text-align: right;
+    background-color: #ECECEC;
+    border-right: 1px solid #DDDDDD;
+    color: #AAAAAA;
+    padding: 10px;
+}
+
+table.blob td.blob pre {
+    padding: 10px;
+}
+
+.blob_header {
+    background-color: #EAEAEA;
+    border-bottom: 1px solid #DDDDDD;
+    font-family: Monaco,"Courier New","DejaVu Sans Mono","Bitstream Vera Sans Mono",monospace;
+    padding: 5px;
+}
+
+.blob_header .size {
+    margin-left: 15px;
+    float: left;
+}
+
+.blob_header .buttons {
+    float: right;
+    margin-right: 15px;
+}

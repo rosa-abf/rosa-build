@@ -15,11 +15,15 @@ module CommitHelper
   end
 
   def format_commit_message(message)
-    h(message).gsub("\n", "<br />")
+    h(message).gsub("\n", "<br />").html_safe
   end
 
   def commit_date(date)
     I18n.localize(date, { :format => "%d %B %Y" })
+  end
+
+  def short_hash_id(id)
+    id[0..19]
   end
 
 end

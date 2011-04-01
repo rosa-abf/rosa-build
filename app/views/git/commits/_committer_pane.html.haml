@@ -1,5 +1,0 @@
-- if commit.committer != commit.author
-  .row.author Author: #{commit.author}, #{commit_date(commit.authored_date)}
-  .row.committer Committer: #{commit.committer}, #{commit_date(commit.committed_date)}
-- else
-  .row.author #{commit.author}, #{commit_date(commit.committed_date)}

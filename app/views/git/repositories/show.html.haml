@@ -1,34 +1,54 @@
-.row= link_to "Commits", commits_path(@platform, @repository, @project, :treeish => @treeish)
-.row.tags
-  %h3 Tags:
-  %ul
-    - @git_repository.tags.each do |tag|
-      %li= link_to tag.name, tree_path(@platform, @repository, @project, :treeish => tag.name)
+.block
+  .secondary-navigation
+    %ul.wat-cf
+      %li.first.active= link_to t("layout.git.repositories.source"), platform_repository_project_repo_path(@platform, @repository, @project)
+      %li= link_to t("layout.git.repositories.commits"), commits_path(@platform, @repository, @project, :treeish => @treeish)
 
-.row.heads
-  %h3 Heads:
-  %ul
-    - @git_repository.heads.each do |head|
-      %li= link_to head.name, tree_path(@platform, @repository, @project, :treeish => head.name)
+  .content
+    .inner
+      %p
+        %b
+          = t("activerecord.models.project")
+          \:
+        = @project.name
 
-%table
-  %thead
-    %tr
-      %th name
-      %th age
-      %th message
+.block
+  .content
+    .inner
+      = render :partial => "git/commits/commits", :object => [@commit]
 
-  %tbody
-    - if @path.present?
-      %tr
-        %td
-          = link_to "..", tree_path(@platform, @repository, @project, @treeish, File.join([@path, ".."].compact))
-    - @tree.contents.each do |entry|
-      %tr
-        %td
-          - if entry.is_a?(Grit::Blob)
-            = link_to entry.name, blob_path(@platform, @repository, @project, @treeish, File.join([@path, entry.name].compact))
-          - else
-            = link_to "#{entry.name}/", tree_path(@platform, @repository, @project, @treeish, File.join([@path, entry.name].compact))
-        %td== &nbsp;
-        %td== &nbsp;
+.block
+  .content
+    .inner
+      %h3= render_path
+
+      %table.table.git_tree
+        %tr
+          %th.icon
+          %th name
+          %th age
+          %th.last message
+
+        - if @path.present?
+          %tr.odd
+            %td
+            %td.icon
+              = link_to "..", tree_path(@platform, @repository, @project, @treeish, File.join([@path, ".."].compact))
+            %td== &nbsp;
+            %td.last== &nbsp;
+        - (@tree.trees + @tree.blobs).each do |entry|
+          %tr{ :class => cycle("even", "odd")}
+            %td.icon
+              - if entry.is_a?(Grit::Blob)
+                = image_tag("git/icons/text_document_16.png")
+              - else
+                = image_tag("git/icons/folder_16.png")
+            %td.tree_element
+              - if entry.is_a?(Grit::Blob)
+                = link_to entry.name, blob_path(@platform, @repository, @project, @treeish, File.join([@path, entry.name].compact))
+              - else
+                = link_to "#{entry.name}/", tree_path(@platform, @repository, @project, @treeish, File.join([@path, entry.name].compact))
+            %td== &nbsp;
+            %td.last== &nbsp;
+
+- content_for :sidebar, render(:partial => 'git/shared/sidebar')

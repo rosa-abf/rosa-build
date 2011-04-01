@@ -1,7 +1,0 @@
-= render :partial => "git/commits/committer_pane", :locals => { :commit => commit }
-
-.row.tree Tree: #{link_to commit.tree.id, tree_path(@platform, @repository, @project, :treeish => commit.tree.id)}
-
-.row.parents
-  - commit.parents.each do |parent|
-    Parent: #{link_to parent, commit_path(@platform, @repository, @project, parent)}

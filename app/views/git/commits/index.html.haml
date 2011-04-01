@@ -1,4 +1,20 @@
-- if @path.present?
-  %h3 Commits for: #{@path}
+.block
+  .secondary-navigation
+    %ul.wat-cf
+      %li.first= link_to t("layout.git.repositories.source"), platform_repository_project_repo_path(@platform, @repository, @project)
+      %li.active= link_to t("layout.git.repositories.commits"), commits_path(@platform, @repository, @project, :treeish => @treeish)
 
-= render :partial => "commit", :collection => @commits
+  .content
+    .inner
+      %p
+        %b
+          = t("activerecord.models.project")
+          \:
+        = @project.name
+
+.block
+  .content
+    .inner
+      = render :partial => "git/commits/commits", :object => @commits
+
+- content_for :sidebar, render(:partial => 'git/shared/sidebar')

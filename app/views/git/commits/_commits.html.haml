@@ -1,0 +1,26 @@
+%ul.list.commits
+  - commits.each do |commit|
+    %li.commit
+      %table
+        %tr
+          %td.committers
+            .author #{commit.author}, #{commit_date(commit.authored_date)}
+            - if commit.committer != commit.author
+              .committer
+                (committed by: #{commit.committer}, #{commit_date(commit.committed_date)})
+          %td.message
+            %p= link_to commit.message, commit_path(@platform, @repository, @project, commit.id)
+          %td.trees
+            .commit
+              Commit:
+              %span{ :style => "float: right;"}
+                #{link_to short_hash_id(commit.id), commit_path(@platform, @repository, @project, commit.id)}
+            .tree
+              Tree:
+              %span{ :style => "float: right;"}
+                #{link_to short_hash_id(commit.tree.id), tree_path(@platform, @repository, @project, :treeish => commit.tree.id)}
+            - commit.parents.each do |parent|
+              .parent
+                Parent:
+                %span{ :style => "float: right;"}
+                  #{link_to short_hash_id(parent.id), commit_path(@platform, @repository, @project, parent)}

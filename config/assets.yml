@@ -8,6 +8,7 @@ stylesheets:
     - public/stylesheets/web-app-theme/base.css
     - public/stylesheets/web-app-theme/themes/default/style.css
     - public/stylesheets/web-app-theme/override.css
+    - public/stylesheets/git/style.css
 
   sessions:
     - public/stylesheets/web-app-theme/base.css

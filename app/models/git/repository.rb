@@ -8,9 +8,9 @@ class Git::Repository
   end
 
   def master
-    commits.first
+    commits(master, 1).first
   end
-
+  
   def to_s
     name
   end

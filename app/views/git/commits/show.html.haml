@@ -1,14 +1,37 @@
-%h3 Commit: #{@commit.id}
+.block
+  .secondary-navigation
+    %ul.wat-cf
+      %li.first= link_to t("layout.git.repositories.source"), platform_repository_project_repo_path(@platform, @repository, @project)
+      %li.active= link_to t("layout.git.repositories.commits"), commits_path(@platform, @repository, @project, :treeish => @treeish)
 
-= render :partial => "commit_pane", :locals => { :commit => @commit}
+  .content
+    .inner
+      %p
+        %b
+          = t("activerecord.models.project")
+          \:
+        = @project.name
 
-#{link_to "raw diff", commit_path(@platform, @repository, @project, @commit.id, :diff)} | #{link_to "patch", commit_path(@platform, @repository, @project, @commit.id, :patch)}
+.block
+  .content
+    .inner
+      = render :partial => "git/commits/commits", :object => [@commit]
 
-.row.commit_message
-  %code!= format_commit_message(@commit.message)
 
-.row.commit_stats
-  != render_commit_stats(@commit.stats)
 
-- @commit.diffs.each do |diff|
-  != render_inline_diff(@commit, diff)
+
+
+-#%h3 Commit: #{@commit.id}
+-#
+-#= render :partial => "commit_pane", :locals => { :commit => @commit}
+-#
+-##{link_to "raw diff", commit_path(@platform, @repository, @project, @commit.id, :diff)} | #{link_to "patch", commit_path(@platform, @repository, @project, @commit.id, :patch)}
+-#
+-#.row.commit_message
+-#  %code!= format_commit_message(@commit.message)
+-#
+-#.row.commit_stats
+-#  != render_commit_stats(@commit.stats)
+-#
+-#- @commit.diffs.each do |diff|
+-#  != render_inline_diff(@commit, diff)

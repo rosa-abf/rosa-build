@@ -60,6 +60,7 @@ ru:
       location: Расположение
       git_repo_location: Путь к git-репозиторию
       back_to_the_list: ⇐ К списку проектов репозитория
+      current_project_header: Текущий проект
     users:
       list: Список
       new: Создать
@@ -73,6 +74,10 @@ ru:
     git:
       repositories:
         empty: Пустой репозиторий
+        source: Source
+        commits: Commits
+        tags: Tags
+        branches: Branches
 
   flash:
     project:

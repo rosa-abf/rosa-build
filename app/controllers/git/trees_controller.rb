@@ -5,6 +5,7 @@ class Git::TreesController < Git::BaseController
     @path = params[:path]
 
     @tree = @git_repository.tree(@treeish)
+    @commit = @git_repository.commits(@treeish, 1).first
 
     @tree = @tree / @path if @path
 

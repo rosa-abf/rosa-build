@@ -11,6 +11,8 @@ class Git::BlobsController < Git::BaseController
       @commit_hash = @git_repository.repo.log(@treeish, @path).first.id
     end
 
+    @commit = @git_repository.commits(@treeish, 1).first    
+
     @blob = @tree / @path
   end
 
