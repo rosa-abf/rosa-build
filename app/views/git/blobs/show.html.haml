@@ -29,10 +29,10 @@
         .clear
       %table.table.blob
         %tr
-          %td.lines{ :style => "vertical-align: top" }
+          %td.lines
             :plain
               <pre>#{render_line_numbers(@blob.data.split("\n").length)}</pre>
-          %td.blob{ :style => "vertical-align: top" }
+          %td.blob
             :plain
               <pre>#{render_blob(@blob)}</pre>
 

@@ -88,6 +88,7 @@ table.blob td {
 
 table.blob td.lines {
     width: auto;
+    vertical-align: top;
 }
 
 table.blob td.lines pre {
@@ -96,6 +97,10 @@ table.blob td.lines pre {
     border-right: 1px solid #DDDDDD;
     color: #AAAAAA;
     padding: 10px;
+}
+
+table.blob td.blob {
+    vertical-align: top;
 }
 
 table.blob td.blob pre {
