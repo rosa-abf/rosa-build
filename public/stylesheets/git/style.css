@@ -132,12 +132,15 @@ table.commit_stats tr {
 
 .diff_data {
     overflow-x: auto;
+    border-left: 1px solid #EAEAEA;
+    border-right: 1px solid #EAEAEA;
 }
 
 table.diff {
     line-height: 1.4em;
     font-family: 'Bitstream Vera Sans Mono','Courier',monospace;
-    border: 1px solid #EAEAEA;
+    border-top: 1px solid #EAEAEA;
+    border-bottom: 1px solid #EAEAEA;
     width: 100%;
 }
 
