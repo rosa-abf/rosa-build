@@ -12,10 +12,11 @@
           \:
         = @project.name
 
-.block
-  .content
-    .inner
-      = render :partial => "git/commits/commits", :object => [@commit]
+- if @commit
+  .block
+    .content
+      .inner
+        = render :partial => "git/commits/commits", :object => [@commit]
 
 .block
   .content

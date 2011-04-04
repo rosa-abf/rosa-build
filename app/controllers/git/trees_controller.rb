@@ -7,7 +7,8 @@ class Git::TreesController < Git::BaseController
     @tree = @git_repository.tree(@treeish)
 
     @commit = @git_repository.commits(@treeish, 1).first
-#    @commit = @git_repository.commit(@treeish) unless @commit
+#   Raises Grit::Git::GitTimeout
+#    @commit = @git_repository.log(@treeish).first
 
     @tree = @tree / @path if @path
 

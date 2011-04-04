@@ -6,12 +6,13 @@ class Git::BlobsController < Git::BaseController
   def show
     if @commit_hash
       @tree = @git_repository.tree(@commit_hash)
+      @commit = @git_repository.commits(@treeish, 1).first
     else
       @tree = @git_repository.tree(@treeish)
-      @commit_hash = @git_repository.repo.log(@treeish, @path).first.id
-    end
 
-    @commit = @git_repository.commits(@treeish, 1).first    
+      @commit = @git_repository.log(@treeish, @path).first
+      @commit_hash = @commit.id if @commit
+    end
 
     @blob = @tree / @path
   end

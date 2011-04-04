@@ -4,7 +4,13 @@ class Git::CommitsController < Git::BaseController
     @branch_name = (params[:branch] ? params[:branch] : "master")
     @path = params[:path]
 
-    @commits = @path.present? ? @git_repository.repo.log(@branch_name, @path) : @git_repository.commits(@branch_name)
+    if @path.present?
+      @commits = @git_repository.repo.log(@branch_name, @path)
+      @render_paginate = false
+    else
+      @commits, @page, @last_page = @git_repository.paginate_commits(@branch_name, :page => params[:page])
+      @render_paginate = true
+    end
   end
 
   def show
