@@ -246,3 +246,35 @@ table.blame td.message .message {
     margin-left: 10px;
     width: 430px;
 }
+
+#git_submenu {
+    margin: 0;
+	padding: 0;
+	z-index: 30;
+}
+
+#git_submenu li a:hover {
+    background: #FFF;
+}
+
+#git_submenu div {
+    background: none repeat scroll 0 0 #F8F8F8;
+    border: 1px solid #CCCCCC;
+    display: none;
+    max-height: 275px;
+    overflow: auto;
+    position: absolute;
+    z-index: 4;
+}
+
+#git_submenu div span {
+    padding: 10px 15px;
+    display: block;
+    background: #ECECEC;
+}
+
+
+#git_submenu div a:hover {
+    background: #ECECEC;
+    color: #000;
+}

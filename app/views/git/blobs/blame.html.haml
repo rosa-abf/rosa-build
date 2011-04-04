@@ -1,16 +1,7 @@
 .block
-  .secondary-navigation
-    %ul.wat-cf
-      %li.first.active= link_to t("layout.git.repositories.source"), platform_repository_project_repo_path(@platform, @repository, @project)
-      %li= link_to t("layout.git.repositories.commits"), commits_path(@platform, @repository, @project, :treeish => @treeish)
+  = render :partial => "git/shared/navigation"
 
-  .content
-    .inner
-      %p
-        %b
-          = t("activerecord.models.project")
-          \:
-        = @project.name
+  = render :partial => "git/shared/info"
 
 .block
   .content

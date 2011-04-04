@@ -1,0 +1,19 @@
+.content
+  .inner
+    %p
+      %b
+        = t("activerecord.models.project")
+        \:
+      = @project.name
+
+    - if @current_tag.present?
+      %p
+        %b Tag:
+
+        = link_to @current_tag.name, tree_path(@platform, @repository, @project, :treeish => @current_tag.name)
+
+    - if @current_branch.present?
+      %p
+        %b Branch:
+
+        = link_to @current_branch.name, tree_path(@platform, @repository, @project, :treeish => @current_branch.name)

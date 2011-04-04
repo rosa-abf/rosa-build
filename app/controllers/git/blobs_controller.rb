@@ -1,6 +1,5 @@
 class Git::BlobsController < Git::BaseController
   before_filter :set_path
-  before_filter :set_treeish
   before_filter :set_commit_hash
 
   def show
@@ -48,10 +47,6 @@ class Git::BlobsController < Git::BaseController
   protected
     def set_path
       @path = params[:path]
-    end
-
-    def set_treeish
-      @treeish = params[:treeish] ? params[:treeish] : "master"
     end
 
     def set_commit_hash

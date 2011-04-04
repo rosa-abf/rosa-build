@@ -1,7 +1,6 @@
 class Git::TreesController < Git::BaseController
 
   def show
-    @treeish = params[:treeish] ? params[:treeish] : "master"
     @path = params[:path]
 
     @tree = @git_repository.tree(@treeish)

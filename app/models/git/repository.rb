@@ -1,5 +1,5 @@
 class Git::Repository
-  delegate :commits, :commit, :tree, :tags, :heads, :commit_count, :log, :to => :repo
+  delegate :commits, :commit, :tree, :tags, :heads, :commit_count, :log, :branches, :to => :repo
 
   attr_accessor :path, :name
 
