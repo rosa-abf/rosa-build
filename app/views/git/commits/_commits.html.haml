@@ -23,4 +23,4 @@
               .parent
                 Parent:
                 %span{ :style => "float: right;"}
-                  #{link_to short_hash_id(parent.id), commit_path(@platform, @repository, @project, parent)}
+                  #{link_to short_hash_id(parent.id), tree_path(@platform, @repository, @project, :treeish => parent.id)}

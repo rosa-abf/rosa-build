@@ -196,3 +196,53 @@ table.diff .diff-content {
     float: right;
     margin-right: 10px;
 }
+
+.blame_data {
+    overflow-x: auto;
+    border-right: 1px solid #EAEAEA;
+}
+
+table.blame {
+    line-height: 1.4em;
+    font-family: 'Bitstream Vera Sans Mono','Courier',monospace;
+    border-left: 1px solid #EAEAEA;
+    /*border-right: 1px solid #EAEAEA;*/
+    width: 100%;
+}
+
+table.blame td {
+    padding: 0 !important;
+}
+
+table.blame td.lines {
+    width: auto;
+    text-align: right;
+    background-color: #ECECEC;
+    border-right: 1px solid #DDDDDD;
+    color: #AAAAAA;
+    padding: 10px;
+}
+
+table.blame td.code {
+    width: auto;
+}
+
+table.blame td.code pre {
+    margin-left: 10px;
+}
+
+table.blame td.message {
+    width: auto;
+    padding: 10px;
+}
+
+table.blame td.message .commit {
+    margin: 10px;
+    width: 430px;
+}
+
+table.blame td.message .message {
+    margin-bottom: 10px;
+    margin-left: 10px;
+    width: 430px;
+}

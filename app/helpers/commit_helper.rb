@@ -27,4 +27,13 @@ module CommitHelper
     id[0..19]
   end
 
+  def shortest_hash_id(id)
+    id[0..8]
+  end
+
+  def short_commit_message(message)
+    # Why 42? Because it is the Answer!
+    truncate(message, :length => 42, :omission => "...")
+  end
+
 end
