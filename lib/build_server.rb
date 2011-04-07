@@ -15,7 +15,7 @@ class BuildServer
   SRPM_NOT_FOUND = 12800
 
   def self.client
-    @@client ||= XMLRPC::Client.new(:host => AppConfig['build_server_ip'], :port => AppConfig['build_server_port'], :path => AppConfig['build_server_path'])
+    @@client ||= XMLRPC::Client.new3(:host => APP_CONFIG['build_server_ip'], :port => APP_CONFIG['build_server_port'], :path => APP_CONFIG['build_server_path'])
   end
 
 
