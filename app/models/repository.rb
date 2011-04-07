@@ -55,7 +55,6 @@ class Repository < ActiveRecord::Base
       else
         raise "Failed to delete repository #{name} inside platform #{platform.name}."
       end
-      
     end
 
 end
