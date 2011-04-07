@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110405161609) do
+ActiveRecord::Schema.define(:version => 20110407144147) do
 
   create_table "arches", :force => true do |t|
     t.string   "name",       :null => false
@@ -30,6 +30,7 @@ ActiveRecord::Schema.define(:version => 20110405161609) do
     t.datetime "notified_at"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.boolean  "is_circle",      :default => false
   end
 
   add_index "build_lists", ["arch_id"], :name => "index_build_lists_on_arch_id"

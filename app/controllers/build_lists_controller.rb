@@ -6,6 +6,8 @@ class BuildListsController < ApplicationController
   before_filter :find_arches, :only => [:index, :filter]
   before_filter :find_branches, :only => [:index, :filter]
 
+  before_filter :find_build_list_by_bs, :only => [:status_build, :pre_build]
+
   def index
     @build_lists = @project.build_lists.recent.paginate :page => params[:page]
     @filter = BuildList::Filter.new(@project)
@@ -19,9 +21,38 @@ class BuildListsController < ApplicationController
   end
 
   def status_build
-    @build_list = BuildList.find_by_bs_id!(params[:id])
+#
+#    @build_list.status = params[:status]
+#    @build_list.container_path = params[:container_path]
+#    @build_list.notified_at = Time.now
+#
+#    @build_list.save
 
+    render :nothing => true, :status => 200
+  end
+
+  def pre_build
+    @build_list.status = BuildList::BUILD_STARTED
+    @build_list.container_path = params[:container_path]
+    @build_list.notified_at = Time.now
+
+    @build_list.save
+
+    render :nothing => true, :status => 200
+  end
+
+  def post_build
     @build_list.status = params[:status]
+    @build_list.container_path = params[:container_path]
+    @build_list.notified_at = Time.now
+
+    @build_list.save
+
+    render :nothing => true, :status => 200
+  end
+
+  def circle_build
+    @build_list.is_circle = true
     @build_list.container_path = params[:container_path]
     @build_list.notified_at = Time.now
 
@@ -50,6 +81,10 @@ class BuildListsController < ApplicationController
     def find_branches
       @git_repository = @project.git_repository
       @branches = @git_repository.branches
+    end
+
+    def find_build_list_by_bs
+      @build_list = BuildList.find_by_bs_id!(params[:id])
     end
 
 end

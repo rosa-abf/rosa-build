@@ -5,6 +5,7 @@
     %th= t("activerecord.attributes.build_list.branch_name")
     %th= t("activerecord.attributes.build_list.project")
     %th= t("activerecord.attributes.build_list.arch")
+    %th= t("activerecord.attributes.build_list.is_circle")
     %th.last= t("activerecord.attributes.build_list.notified_at")
 
   - build_lists.each do |build_list|
@@ -14,6 +15,7 @@
       %td= link_to build_list.branch_name, "#"
       %td= link_to build_list.project.name, platform_repository_project_path(@platform, @repository, @project)
       %td= build_list.arch.name
+      %td= build_list.is_circle?
       %td.last= build_list.notified_at
 
 = will_paginate build_lists

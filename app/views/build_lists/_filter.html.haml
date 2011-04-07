@@ -18,6 +18,11 @@
         = f.label :branch_name, "Branch", :class => :label
         = f.select :branch_name, @branches.collect{|branch| [branch.name, branch.name]}, :include_blank => true, :selected => @filter.branch_name
 
+      .group
+        = f.label :is_circle, t("activerecord.attributes.build_list.is_circle"), :class => :label
+        = f.select :is_circle, [[t("layout.yes_"), 1], [t("layout.no_"), 0]], :include_blank => true, :selected => @filter.is_circle.present? ? (@filter.is_circle ? "1" : "0") : nil
+        
+
   .columns.wat-cf
     .column.left
 

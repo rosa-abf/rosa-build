@@ -23,7 +23,8 @@ Rosa::Application.routes.draw do
   resources :users
 
   match 'build_lists/status_build', :to => "build_lists#status_build"
-
+  match 'build_lists/post_build', :to => "build_lists#post_build"
+  match 'build_lists/circle_build', :to => "build_lists#circle_build"
 
   # Tree
   match 'platforms/:platform_id/repositories/:repository_id/projects/:project_id/git/tree/:treeish(/*path)', :controller => "git/trees", :action => :show, :treeish => /[0-9a-zA-Z_.\-]*/, :defaults => { :treeish => :master }, :as => :tree
