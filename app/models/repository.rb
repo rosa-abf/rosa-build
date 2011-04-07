@@ -7,7 +7,8 @@ class Repository < ActiveRecord::Base
 
   scope :recent, order("name ASC")
 
-  before_create :create_directory
+  before_create :xml_rpc_create
+  before_destroy :xml_rpc_destroy
 
   def path
     build_path(unixname)
@@ -27,7 +28,6 @@ class Repository < ActiveRecord::Base
       File.join(platform.path, dir)
     end
 
-    #TODO: Spec me
     def create_directory
       exists = File.exists?(path) && File.directory?(path)
       raise "Directory #{path} already exists" if exists
@@ -37,6 +37,25 @@ class Repository < ActiveRecord::Base
       elsif unixname_changed?
         FileUtils.mv(build_path(unixname_was), buildpath(unixname))
       end 
+    end
+    
+    def xml_rpc_create
+      result = BuildServer.create_repo name, platform.name
+      if result == BuildServer::SUCCESS
+        return true
+      else
+        raise "Failed to create repository #{name} inside platform #{platform.name}."
+      end      
+    end
+
+    def xml_rpc_destroy
+      result = BuildServer.delete_repo name, platform.name
+      if result == BuildServer::SUCCESS
+        return true
+      else
+        raise "Failed to delete repository #{name} inside platform #{platform.name}."
+      end
+      
     end
 
 end
