@@ -1,5 +1,6 @@
 class Project < ActiveRecord::Base
   belongs_to :repository
+  has_many :build_lists, :dependent => :destroy
 
   validates :name, :uniqueness => true, :presence => true, :allow_nil => false, :allow_blank => false
   validates :unixname, :uniqueness => true, :presence => true, :format => { :with => /^[a-zA-Z0-9\-.]+$/ }, :allow_nil => false, :allow_blank => false

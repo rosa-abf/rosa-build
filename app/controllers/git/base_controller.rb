@@ -37,7 +37,7 @@ class Git::BaseController < ApplicationController
     end
 
     def set_treeish
-      @treeish = params[:treeish] ? params[:treeish] : "master"
+      @treeish = params[:treeish].present? ? params[:treeish] : "master"
     end
 
     def set_current_tag

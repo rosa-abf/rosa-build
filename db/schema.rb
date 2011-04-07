@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110317130503) do
+ActiveRecord::Schema.define(:version => 20110405161609) do
 
   create_table "arches", :force => true do |t|
     t.string   "name",       :null => false
@@ -19,6 +19,22 @@ ActiveRecord::Schema.define(:version => 20110317130503) do
   end
 
   add_index "arches", ["name"], :name => "index_arches_on_name", :unique => true
+
+  create_table "build_lists", :force => true do |t|
+    t.integer  "bs_id"
+    t.string   "container_path"
+    t.integer  "status"
+    t.string   "branch_name"
+    t.integer  "project_id"
+    t.integer  "arch_id"
+    t.datetime "notified_at"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "build_lists", ["arch_id"], :name => "index_build_lists_on_arch_id"
+  add_index "build_lists", ["bs_id"], :name => "index_build_lists_on_bs_id", :unique => true
+  add_index "build_lists", ["project_id"], :name => "index_build_lists_on_project_id"
 
   create_table "containers", :force => true do |t|
     t.string   "name",       :null => false

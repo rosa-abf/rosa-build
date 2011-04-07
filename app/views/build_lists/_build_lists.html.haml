@@ -1,0 +1,19 @@
+%table.table
+  %tr
+    %th.first= t("activerecord.attributes.build_list.bs_id")
+    %th= t("activerecord.attributes.build_list.status")
+    %th= t("activerecord.attributes.build_list.branch_name")
+    %th= t("activerecord.attributes.build_list.project")
+    %th= t("activerecord.attributes.build_list.arch")
+    %th.last= t("activerecord.attributes.build_list.notified_at")
+
+  - build_lists.each do |build_list|
+    %tr{:class => cycle("odd", "even")}
+      %td= build_list.bs_id
+      %td= build_list.human_status
+      %td= link_to build_list.branch_name, "#"
+      %td= link_to build_list.project.name, platform_repository_project_path(@platform, @repository, @project)
+      %td= build_list.arch.name
+      %td.last= build_list.notified_at
+
+= will_paginate build_lists

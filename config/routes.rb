@@ -10,11 +10,20 @@ Rosa::Application.routes.draw do
     resources :repositories do
       resources :projects do
         resource :repo, :controller => "git/repositories", :only => [:show]
+        resources :build_lists, :only => [:index] do
+          collection do
+            get :recent
+            post :filter
+          end
+        end
       end
     end
   end
 
   resources :users
+
+  match 'build_lists/status_build', :to => "build_lists#status_build"
+
 
   # Tree
   match 'platforms/:platform_id/repositories/:repository_id/projects/:project_id/git/tree/:treeish(/*path)', :controller => "git/trees", :action => :show, :treeish => /[0-9a-zA-Z_.\-]*/, :defaults => { :treeish => :master }, :as => :tree

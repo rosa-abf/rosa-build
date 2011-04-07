@@ -1,3 +1,7 @@
 class Arch < ActiveRecord::Base
-  validate :name, :presence => true, :uniqueness => true
+  has_many :build_lists, :dependent => :destroy
+
+  validates :name, :presence => true, :uniqueness => true
+
+  scope :recent, order("name ASC")
 end

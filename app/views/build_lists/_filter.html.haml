@@ -1,0 +1,45 @@
+%h2.title= t("layout.build_lists.filter_header")
+
+= form_for :filter, :url => filter_platform_repository_project_build_lists_path(@platform, @repository, @project) , :html => { :method => :post, :class => :form } do |f|
+  .columns.wat-cf
+    .column.left
+
+      .group
+        = f.label :status, t("activerecord.attributes.build_list.status"), :class => :label
+        = f.select :status, BuildList::STATUSES.collect{|status| [BuildList.human_status(status), status]}, :include_blank => true, :selected => @filter.status
+
+      .group
+        = f.label :arch_id, t("activerecord.attributes.build_list.arch"), :class => :label
+        = f.select :arch_id, @arches.collect{|arch| [arch.name, arch.id]}, :include_blank => true, :selected => @filter.arch_id
+
+    .column.right
+
+      .group
+        = f.label :branch_name, "Branch", :class => :label
+        = f.select :branch_name, @branches.collect{|branch| [branch.name, branch.name]}, :include_blank => true, :selected => @filter.branch_name
+
+  .columns.wat-cf
+    .column.left
+
+      .group
+        = f.label :status, t("layout.build_lists.created_at_start"), :class => :label
+        = date_select("filter", :created_at_start, :include_blank => true, :selected => @filter.created_at_start)
+
+      .group
+        = f.label :status, t("layout.build_lists.notified_at_start"), :class => :label
+        = date_select("filter", :notified_at_start, :include_blank => true, :selected => @filter.notified_at_start)
+
+    .column.right
+
+      .group
+        = f.label :status, t("layout.build_lists.created_at_end"), :class => :label
+        = date_select("filter", :created_at_end, :include_blank => true, :selected => @filter.created_at_end)
+
+      .group
+        = f.label :status, t("layout.build_lists.notified_at_end"), :class => :label
+        = date_select("filter", :notified_at_end, :include_blank => true, :selected => @filter.notified_at_end)
+
+  .grou.navform.wat-cf
+    %button.button{ :type => "submit" }
+      = image_tag("web-app-theme/icons/tick.png", :alt => "Save")
+      = t("layout.search")

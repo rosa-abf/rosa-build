@@ -9,6 +9,7 @@ class ProjectsController < ApplicationController
   end
 
   def show
+    @current_build_lists = @project.build_lists.current.recent.paginate :page => params[:page]
   end
 
   def create

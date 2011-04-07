@@ -31,13 +31,15 @@ class Git::BlobsController < Git::BaseController
 
     def find_tree
       if @commit_hash
+        puts "1"
         @tree = @git_repository.tree(@commit_hash)
         @commit = @git_repository.commits(@treeish, 1).first
       else
+        puts "2"
         @tree = @git_repository.tree(@treeish)
+        puts @tree.name.inspect
 
         @commit = @git_repository.log(@treeish, @path).first
-        @commit_hash = @commit.id if @commit
       end
     end
 end

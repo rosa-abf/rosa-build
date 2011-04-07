@@ -9,6 +9,7 @@ class BuildServer
   PROJECT_NOT_FOUND = 3
   BRANCH_NOT_FOUND = 4
 
+  BUILD_PENDING = 1
   BUILD_ERROR = 2500
   MOCK_NOT_FOUND = 256
   DEPENDENCIES_FAIL = 7680
@@ -28,21 +29,17 @@ class BuildServer
     self.client.call('delete_platform', name)
   end
 
-
   def self.clone_platform new_name, old_name, new_root_folder
     self.client.call('clone_platform', new_name, old_name, new_root_folder)
   end
-
 
   def self.create_repo name, platform_name
     self.client.call('create_repo', name, platform_name)
   end
 
-
   def self.clone_repo new_name, old_name, new_platform_name
     self.client.call('clone_repo', new_name, old_name, new_platform_name)
   end
-
 
   def self.publish_container container_id
     self.client.call('publish_container', container_id)
