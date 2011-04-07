@@ -35,9 +35,13 @@ class BuildServer
 
 
   def self.create_repo name, platform_name
-    self.client.call('create_repo', name, platform_name)
+    self.client.call('create_repository', name, platform_name)
   end
 
+
+  def self.delete_repo name, platform_name
+    self.client.call('delete_repository', name, platform_name)
+  end
 
   def self.clone_repo new_name, old_name, new_platform_name
     self.client.call('clone_repo', new_name, old_name, new_platform_name)
