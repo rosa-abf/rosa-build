@@ -16,7 +16,7 @@ class BuildServer
   SRPM_NOT_FOUND = 12800
 
   def self.client
-    @@client ||= XMLRPC::Client.new(:host => AppConfig['build_server_ip'], :port => AppConfig['build_server_port'], :path => AppConfig['build_server_path'])
+    @@client ||= XMLRPC::Client.new3(:host => APP_CONFIG['build_server_ip'], :port => APP_CONFIG['build_server_port'], :path => APP_CONFIG['build_server_path'])
   end
 
 
@@ -29,17 +29,25 @@ class BuildServer
     self.client.call('delete_platform', name)
   end
 
+
   def self.clone_platform new_name, old_name, new_root_folder
     self.client.call('clone_platform', new_name, old_name, new_root_folder)
   end
 
+
   def self.create_repo name, platform_name
-    self.client.call('create_repo', name, platform_name)
+    self.client.call('create_repository', name, platform_name)
+  end
+
+
+  def self.delete_repo name, platform_name
+    self.client.call('delete_repository', name, platform_name)
   end
 
   def self.clone_repo new_name, old_name, new_platform_name
     self.client.call('clone_repo', new_name, old_name, new_platform_name)
   end
+
 
   def self.publish_container container_id
     self.client.call('publish_container', container_id)

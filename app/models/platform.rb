@@ -5,7 +5,8 @@ class Platform < ActiveRecord::Base
   validates :name, :presence => true, :uniqueness => true
   validates :unixname, :uniqueness => true, :presence => true, :format => { :with => /^[a-zA-Z0-9\-.]+$/ }, :allow_nil => false, :allow_blank => false
 
-  before_create :create_directory
+  before_create :xml_rpc_create
+  before_destroy :xml_rpc_destroy
 
   def path
     build_path(unixname)
@@ -31,13 +32,35 @@ class Platform < ActiveRecord::Base
       File.join(APP_CONFIG['root_path'], dir)
     end
 
+    def git_path(dir)
+      File.join(build_path(dir), 'git')
+    end
+
     def create_directory
       exists = File.exists?(path) && File.directory?(path)
       raise "Directory #{path} already exists" if exists
       if new_record?
         FileUtils.mkdir_p(path)
       elsif unixname_changed?
-        FileUtils.mv(build_path(unixname_was), buildpath(unixname))
+        FileUtils.mv(build_path(unixname_was), build_path(unixname))
       end 
+    end
+
+    def xml_rpc_create
+      result = BuildServer.add_platform name, build_path(unixname), [], git_path(unixname)
+      if result == BuildServer::SUCCESS
+        return true
+      else
+        raise "Failed to create platform #{name}. Path: #{build_path(unixname)}"
+      end
+    end
+
+    def xml_rpc_destroy
+      result = BuildServer.delete_platform name
+      if result == BuildServer::SUCCESS
+        return true
+      else
+        raise "Failed to delete platform #{name}."
+      end
     end
 end

@@ -9,7 +9,9 @@ class Project < ActiveRecord::Base
 
   scope :recent, order("name ASC")
 
-  before_create :create_directory, :create_git_repo
+  #before_create :create_directory, :create_git_repo
+  before_create :xml_rpc_create, :create_git_repo
+  before_destroy :xml_rpc_destroy
 
   # Redefining a method from Project::HasRepository module to reflect current situation
   def git_repo_path
@@ -27,13 +29,21 @@ class Project < ActiveRecord::Base
     return p
   end
 
+  def add_to_repository(platf, repo)
+    result = BuildServer.add_to_repo(repository.name, platf.name)
+    if result == BuildServer::SUCCESS
+      return true
+    else
+      raise "Failed to add project #{name} to repo #{repo.name)} of platform #{platf.name}."
+    end      
+  end
+
   protected
 
     def build_path(dir)
       File.join(repository.path, dir)
     end
 
-    #TODO: Spec me
     def create_directory
       exists = File.exists?(path) && File.directory?(path)
       raise "Directory #{path} already exists" if exists
@@ -46,5 +56,23 @@ class Project < ActiveRecord::Base
 
     def create_git_repo
       Git::Repository.create(git_repo_path)
+    end
+
+    def xml_rpc_create
+      result = BuildServer.create_project name, platform.name, repository.name
+      if result == BuildServer::SUCCESS
+        return true
+      else
+        raise "Failed to create project #{name} (repo #{repository.name)}) inside platform #{platform.name}."
+      end      
+    end
+
+    def xml_rpc_destroy
+      result = BuildServer.delete_project name, platform.name, repository.name
+      if result == BuildServer::SUCCESS
+        return true
+      else
+        raise "Failed to delete repository #{name} (repo #{repository.name)}) inside platform #{platform.name}."
+      end
     end
 end
