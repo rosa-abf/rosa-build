@@ -7,6 +7,8 @@ Rosa::Application.routes.draw do
       get 'unfreeze'
     end
 
+    resources :products
+
     resources :repositories do
       resources :projects do
         resource :repo, :controller => "git/repositories", :only => [:show]
@@ -25,6 +27,9 @@ Rosa::Application.routes.draw do
   match 'build_lists/status_build', :to => "build_lists#status_build"
   match 'build_lists/post_build', :to => "build_lists#post_build"
   match 'build_lists/circle_build', :to => "build_lists#circle_build"
+
+  match 'product_begin', :to => 'products#product_begin'
+  match 'product_end', :to => 'products#product_end'
 
   # Tree
   match 'platforms/:platform_id/repositories/:repository_id/projects/:project_id/git/tree/:treeish(/*path)', :controller => "git/trees", :action => :show, :treeish => /[0-9a-zA-Z_.\-]*/, :defaults => { :treeish => :master }, :as => :tree

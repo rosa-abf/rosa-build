@@ -1,12 +1,14 @@
 class Platform < ActiveRecord::Base
   belongs_to :parent, :class_name => 'Platform', :foreign_key => 'parent_platform_id'
   has_many :repositories, :dependent => :destroy
+  has_many :products, :dependent => :destroy
 
   validates :name, :presence => true, :uniqueness => true
   validates :unixname, :uniqueness => true, :presence => true, :format => { :with => /^[a-zA-Z0-9\-.]+$/ }, :allow_nil => false, :allow_blank => false
 
   before_create :xml_rpc_create
   before_destroy :xml_rpc_destroy
+
 
   def path
     build_path(unixname)
