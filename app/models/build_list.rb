@@ -1,6 +1,7 @@
 class BuildList < ActiveRecord::Base
   belongs_to :project
   belongs_to :arch
+  has_many :items, :class_name => "BuildList::Item", :dependent => :destroy
 
   validates :project_id, :presence => true
   validates :branch_name, :presence => true
@@ -8,12 +9,8 @@ class BuildList < ActiveRecord::Base
   BUILD_PENDING = 2
   BUILD_STARTED = 3
 
-  STATUSES = [BuildServer::SUCCESS, BUILD_PENDING, BUILD_STARTED, BuildServer::BUILD_ERROR] #, BuildServer::DEPENDENCIES_FAIL, BuildServer::SRPM_NOT_FOUND, BuildServer::MOCK_NOT_FOUND]
-#  BUILD_ERROR_STATUSES = [ BuildServer::BUILD_ERROR, BuildServer::MOCK_NOT_FOUND, BuildServer::DEPENDENCIES_FAIL, BuildServer::SRPM_NOT_FOUND]
+  STATUSES = [BuildServer::SUCCESS, BUILD_PENDING, BUILD_STARTED, BuildServer::BUILD_ERROR]
   HUMAN_STATUSES = { BuildServer::BUILD_ERROR => :build_error,
-#                     BuildServer::MOCK_NOT_FOUND => :mock_not_found,
-#                     BuildServer::DEPENDENCIES_FAIL => :dependencies_fail,
-#                     BuildServer::SRPM_NOT_FOUND => :srpm_not_found,
                      BUILD_PENDING => :build_pending,
                      BUILD_STARTED => :build_started,
                      BuildServer::SUCCESS => :success
@@ -44,12 +41,24 @@ class BuildList < ActiveRecord::Base
     end
   }
 
+  serialize :additional_repos
+
   def self.human_status(status)
     I18n.t("layout.build_lists.statuses.#{HUMAN_STATUSES[status]}")
   end
 
   def human_status
     self.class.human_status(status)
+  end
+
+  def set_items(items_hash)
+    self.items = []
+
+    items_hash.each do |level, items|
+      items.each do |item|
+        self.items << self.items.build(:name => item, :level => level.to_i)
+      end
+    end
   end
 
 end

@@ -90,6 +90,13 @@ ru:
       created_at_end: "Время постановки на сборку по:"
       notified_at_start: "Время последнего обновления от BS с:"
       notified_at_end: "Время последнего обновления от BS по:"
+      items:
+        statuses:
+          build_error: ошибка сборки
+          mock_not_found: mock не найден
+          dependencies_fail: dependencies fail
+          srpm_not_found: srpm не найден
+          success: собран
       statuses:
         build_error: ошибка сборки
         mock_not_found: mock не найден
@@ -140,6 +147,8 @@ ru:
       project: Проект
       rpm: RPM
       user: Пользователь
+      build_list: Сборочный лист
+      build_list item: Элемент сборочного листа
 
     attributes:
       repository:
@@ -198,6 +207,7 @@ ru:
 
       build_list:
         bs_id: Id
+        name: Название
         container_path: Путь до контейнера
         status: Статус
         branch_name: Branch
@@ -207,5 +217,12 @@ ru:
         arch: Архитектура
         is_circle: Циклическая сборка
         notified_at: Информация получена
+        additional_repos: Дополнительные репозитории
         updated_at: Обновлен
         created_at: Создан
+
+      build_list/item:
+        name: Название
+        level: Уровень
+        status: Статус
+        build_list: Сборочный лист
