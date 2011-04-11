@@ -1,5 +1,5 @@
 class BuildListsController < ApplicationController
-  before_filter :authenticate_user!
+  before_filter :authenticate_user!, :except => [:status_build, :pre_build, :post_build]
   before_filter :find_platform, :only => [:index, :filter]
   before_filter :find_repository, :only => [:index, :filter]
   before_filter :find_project, :only => [:index, :filter]
