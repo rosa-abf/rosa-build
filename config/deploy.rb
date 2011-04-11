@@ -34,23 +34,26 @@ task :symlink_config_files do
   run "mkdir -p #{deploy_to}/#{shared_dir}/config"
 
   run "yes n | cp -i #{release_path}/config/database.yml.sample #{deploy_to}/#{shared_dir}/config/database.yml"
-#  run "yes n | cp -i #{release_path}/config/config.yml.sample #{deploy_to}/#{shared_dir}/config/config.yml"
   run "yes n | cp -i #{release_path}/config/application.yml.sample #{deploy_to}/#{shared_dir}/config/application.yml"
 
 
   run "ln -nfs #{deploy_to}/#{shared_dir}/config/database.yml #{release_path}/config/database.yml"
-#  run "ln -nfs #{deploy_to}/#{shared_dir}/config/config.yml #{release_path}/config/config.yml"
   run "ln -nfs #{deploy_to}/#{shared_dir}/config/application.yml #{release_path}/config/application.yml"
-
 end
 
 namespace :deploy do
   desc "Restarting mod_rails with restart.txt"
   task :restart, :roles => :app, :except => { :no_release => true } do
     run "cd #{deploy_to}/current ; ([ -f tmp/pids/unicorn.pid ] && kill -USR2 `cat tmp/pids/unicorn.pid`); true"
+    restart_dj
   end
 
   %w(start).each { |name| task name, :roles => :app do deploy.restart end }
+
+  desc "Restart delayed job"
+  task :restart_dj, :roles => :web do
+    run "cd #{deploy_to}/current ; RAILS_ENV=production ./script/delayed_job stop; RAILS_ENV=production ./script/delayed_job start; true"
+  end
 
   desc "Rude restart application"
   task :rude_restart, :roles => :web do
@@ -64,9 +67,7 @@ namespace :deploy do
     envs         = "RAILS_ENV=production"
 
     # Precaching assets
-    run_locally "bash -c '" +
-#      "#{envs} compass compile && " +
-      "#{envs} jammit'"
+    run_locally "bash -c '#{envs} jammit'"
 
     # Uploading prechached assets
     top.upload assets_path, "#{current_release}/public", :via => :scp, :recursive => true

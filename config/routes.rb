@@ -12,12 +12,18 @@ Rosa::Application.routes.draw do
     resources :repositories do
       resources :projects do
         resource :repo, :controller => "git/repositories", :only => [:show]
-        resources :build_lists, :only => [:index] do
+        resources :build_lists, :only => [:index, :show] do
           collection do
             get :recent
             post :filter
           end
         end
+
+        member do
+          get :build
+          post :process_build
+        end
+
       end
     end
   end

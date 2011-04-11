@@ -1,26 +1,41 @@
 class BuildList < ActiveRecord::Base
   belongs_to :project
   belongs_to :arch
+  has_many :items, :class_name => "BuildList::Item", :dependent => :destroy
 
   validates :project_id, :presence => true
   validates :branch_name, :presence => true
 
-  BUILD_PENDING = 2
-  BUILD_STARTED = 3
+  WAITING_FOR_RESPONSE = 4000
+  BUILD_PENDING = 2000
+  BUILD_STARTED = 3000
 
-  STATUSES = [BuildServer::SUCCESS, BUILD_PENDING, BUILD_STARTED, BuildServer::BUILD_ERROR] #, BuildServer::DEPENDENCIES_FAIL, BuildServer::SRPM_NOT_FOUND, BuildServer::MOCK_NOT_FOUND]
-#  BUILD_ERROR_STATUSES = [ BuildServer::BUILD_ERROR, BuildServer::MOCK_NOT_FOUND, BuildServer::DEPENDENCIES_FAIL, BuildServer::SRPM_NOT_FOUND]
+  STATUSES = [WAITING_FOR_RESPONSE,
+              BuildServer::SUCCESS,
+              BUILD_PENDING,
+              BUILD_STARTED,
+              BuildServer::BUILD_ERROR,
+              BuildServer::PLATFORM_NOT_FOUND,
+              BuildServer::PLATFORM_PENDING,
+              BuildServer::PROJECT_NOT_FOUND,
+              BuildServer::BRANCH_NOT_FOUND]
+
   HUMAN_STATUSES = { BuildServer::BUILD_ERROR => :build_error,
-#                     BuildServer::MOCK_NOT_FOUND => :mock_not_found,
-#                     BuildServer::DEPENDENCIES_FAIL => :dependencies_fail,
-#                     BuildServer::SRPM_NOT_FOUND => :srpm_not_found,
                      BUILD_PENDING => :build_pending,
                      BUILD_STARTED => :build_started,
-                     BuildServer::SUCCESS => :success
+                     BuildServer::SUCCESS => :success,
+                     WAITING_FOR_RESPONSE => :waiting_for_response,
+                     BuildServer::PLATFORM_NOT_FOUND => :platform_not_found,
+                     BuildServer::PLATFORM_PENDING => :platform_pending,
+                     BuildServer::PROJECT_NOT_FOUND => :project_not_found,
+                     BuildServer::BRANCH_NOT_FOUND => :branch_not_found
                     }
 
   scope :recent, order("created_at DESC")
-  scope :current, lambda { where(["status in (?) OR (status in (?) AND notified_at >= ?)", [BUILD_PENDING, BUILD_STARTED], [BuildServer::SUCCESS, BuildServer::ERROR], Time.now - 2.days]) }
+  scope :current, lambda {
+    outdatable_statuses = [BuildServer::SUCCESS, BuildServer::ERROR, BuildServer::PLATFORM_NOT_FOUND, BuildServer::PLATFORM_PENDING, BuildServer::PROJECT_NOT_FOUND, BuildServer::BRANCH_NOT_FOUND]
+    where(["status in (?) OR (status in (?) AND notified_at >= ?)", [WAITING_FOR_RESPONSE, BUILD_PENDING, BUILD_STARTED], outdatable_statuses, Time.now - 2.days])
+  }
   scope :for_status, lambda {|status| where(:status => status) }
   scope :scoped_to_arch, lambda {|arch| where(:arch_id => arch) }
   scope :scoped_to_branch, lambda {|branch| where(:branch_name => branch) }
@@ -44,6 +59,11 @@ class BuildList < ActiveRecord::Base
     end
   }
 
+  serialize :additional_repos
+  
+  before_create :set_default_status
+  after_create :place_build
+
   def self.human_status(status)
     I18n.t("layout.build_lists.statuses.#{HUMAN_STATUSES[status]}")
   end
@@ -51,5 +71,27 @@ class BuildList < ActiveRecord::Base
   def human_status
     self.class.human_status(status)
   end
+
+  def set_items(items_hash)
+    self.items = []
+
+    items_hash.each do |level, items|
+      items.each do |item|
+        self.items << self.items.build(:name => item, :level => level.to_i)
+      end
+    end
+  end
+
+  private
+    def set_default_status
+      self.status = WAITING_FOR_RESPONSE unless self.status.present?
+    end
+
+    def place_build
+      self.status = BuildServer.add_build_list project.name, branch_name, project.platform.name, arch.name
+      self.status = BUILD_PENDING if self.status == 0
+      save
+    end
+    handle_asynchronously :place_build
 
 end

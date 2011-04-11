@@ -1,12 +1,13 @@
 class BuildListsController < ApplicationController
-  before_filter :authenticate_user!, :except => [:status_build, :pre_build, :post_build]
-  before_filter :find_platform, :only => [:index, :filter]
-  before_filter :find_repository, :only => [:index, :filter]
-  before_filter :find_project, :only => [:index, :filter]
+  before_filter :authenticate_user!, :except => [:status_build, :pre_build, :post_build, :circle_build, :new_bbdt]
+  before_filter :authenticate_build_service!, :only => [:status_build, :pre_build, :post_build, :circle_build, :new_bbdt]
+  before_filter :find_platform, :only => [:index, :filter, :show]
+  before_filter :find_repository, :only => [:index, :filter, :show]
+  before_filter :find_project, :only => [:index, :filter, :show]
   before_filter :find_arches, :only => [:index, :filter]
   before_filter :find_branches, :only => [:index, :filter]
 
-  before_filter :find_build_list_by_bs, :only => [:status_build, :pre_build]
+  before_filter :find_build_list_by_bs, :only => [:status_build, :pre_build, :new_bbdt]
 
   def index
     @build_lists = @project.build_lists.recent.paginate :page => params[:page]
@@ -20,13 +21,20 @@ class BuildListsController < ApplicationController
     render :action => "index"
   end
 
+  def show
+    @build_list = @project.build_lists.find(params[:id])
+    @item_groups = @build_list.items.group_by_level
+  end
+
   def status_build
-#
-#    @build_list.status = params[:status]
-#    @build_list.container_path = params[:container_path]
-#    @build_list.notified_at = Time.now
-#
-#    @build_list.save
+    @item = @build_list.items.find_by_name!(params[:package_name])
+    @item.status = params[:status]
+    @item.save
+    
+    @build_list.container_path = params[:container_path]
+    @build_list.notified_at = Time.now
+
+    @build_list.save
 
     render :nothing => true, :status => 200
   end
@@ -56,6 +64,15 @@ class BuildListsController < ApplicationController
     @build_list.container_path = params[:container_path]
     @build_list.notified_at = Time.now
 
+    @build_list.save
+
+    render :nothing => true, :status => 200
+  end
+
+  def new_bbdt
+    @build_list.name = params[:name]
+    @build_list.additional_repos = params[:additional_repos]
+    @build_list.set_items(params[:items])
     @build_list.save
 
     render :nothing => true, :status => 200

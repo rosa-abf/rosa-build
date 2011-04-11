@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110411125015) do
+ActiveRecord::Schema.define(:version => 20110411160955) do
 
   create_table "arches", :force => true do |t|
     t.string   "name",       :null => false
@@ -19,6 +19,17 @@ ActiveRecord::Schema.define(:version => 20110411125015) do
   end
 
   add_index "arches", ["name"], :name => "index_arches_on_name", :unique => true
+
+  create_table "build_list_items", :force => true do |t|
+    t.string   "name"
+    t.integer  "level"
+    t.integer  "status"
+    t.integer  "build_list_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "build_list_items", ["build_list_id"], :name => "index_build_list_items_on_build_list_id"
 
   create_table "build_lists", :force => true do |t|
     t.integer  "bs_id"
@@ -30,7 +41,9 @@ ActiveRecord::Schema.define(:version => 20110411125015) do
     t.datetime "notified_at"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.boolean  "is_circle",      :default => false
+    t.boolean  "is_circle",        :default => false
+    t.text     "additional_repos"
+    t.string   "name"
   end
 
   add_index "build_lists", ["arch_id"], :name => "index_build_lists_on_arch_id"
@@ -44,6 +57,21 @@ ActiveRecord::Schema.define(:version => 20110411125015) do
     t.datetime "created_at"
     t.datetime "updated_at"
   end
+
+  create_table "delayed_jobs", :force => true do |t|
+    t.integer  "priority",   :default => 0
+    t.integer  "attempts",   :default => 0
+    t.text     "handler"
+    t.text     "last_error"
+    t.datetime "run_at"
+    t.datetime "locked_at"
+    t.datetime "failed_at"
+    t.string   "locked_by"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "delayed_jobs", ["priority", "run_at"], :name => "delayed_jobs_priority"
 
   create_table "platforms", :force => true do |t|
     t.string   "name"
