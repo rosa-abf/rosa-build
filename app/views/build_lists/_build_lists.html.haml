@@ -10,7 +10,7 @@
 
   - build_lists.each do |build_list|
     %tr{:class => cycle("odd", "even")}
-      %td= build_list.bs_id
+      %td= link_to build_list.bs_id, platform_repository_project_build_list_path(@platform, @repository, @project, build_list)
       %td= build_list.human_status
       %td= link_to build_list.branch_name, "#"
       %td= link_to build_list.project.name, platform_repository_project_path(@platform, @repository, @project)
