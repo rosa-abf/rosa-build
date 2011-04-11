@@ -1,0 +1,23 @@
+.group
+  = f.label :name, t("activerecord.attributes.product.name"), :class => :label
+  = f.text_field :name, :class => 'text_field'
+.group
+  = f.label :build, t("activerecord.attributes.product.build"), :class => :label
+  = f.text_area :build, :class => 'text_field', :cols => 80
+.group
+  = f.label :counter, t("activerecord.attributes.product.counter"), :class => :label
+  = f.text_area :counter, :class => 'text_field', :cols => 80
+.group
+  = f.label :ks, t("activerecord.attributes.product.ks"), :class => :label
+  = f.text_area :ks, :class => 'text_field', :cols => 80
+.group
+  = f.label :menu, t("activerecord.attributes.product.menu"), :class => :label
+  = f.text_area :menu, :class => 'text_field', :cols => 80
+
+.group.navform.wat-cf
+  %button.button{:type => "submit"}
+    = image_tag("web-app-theme/icons/tick.png", :alt => t("layout.save"))
+    = t("layout.save")
+  %span.text_button_padding= t("layout.or")
+  = link_to t("layout.cancel"), platform_path(@platform), :class => "text_button_padding link_button"
+

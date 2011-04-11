@@ -52,6 +52,12 @@ ru:
       back_to_the_list: ⇐ К списку репозиториев
       confirm_delete: Вы уверены, что хотите удалить этот репозиторий?
       current_repository_header: Текущий репозиторий
+    products:
+      list: Список
+      new: Новый продукт
+      list_header: Продукты
+      new_header: Новый продукт
+      confirm_delete: Вы уверены, что хотите удалить этот продукт?
     projects:
       list: Список
       list_header: Проекты
@@ -140,6 +146,7 @@ ru:
       project: Проект
       rpm: RPM
       user: Пользователь
+      product: Продукт
 
     attributes:
       repository:
@@ -147,8 +154,20 @@ ru:
         platform_id: Платформа
         platform: Платформа
         unixname: Unixname
-        created_at: Создана
-        updated_at: Обновлена
+        created_at: Создан
+        updated_at: Обновлен
+
+      product:
+        name: Название
+        platform_id: Платформа
+        build_status: Статус последней сборки
+        build_path: Путь к iso
+        created_at: Создан
+        updated_at: Обновлен 
+        ks: Содержимое .ks.template
+        counter: Содержимое .counter
+        build: Содержимое build
+        menu: Содержимое .menu.xml
 
       arch:
         name: Название
