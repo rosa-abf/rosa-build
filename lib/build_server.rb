@@ -71,4 +71,8 @@ class BuildServer
   def self.add_build_list project_name, branch_name, platform_name, arch_name
     self.client.call('add_build_list', project_name, branch_name, platform_name, arch_name)
   end
+
+  def self.freeze platform_name, new_repo_name = nil
+    self.client.call('freeze_platform', platform_name, new_repo_name)
+  end
 end
