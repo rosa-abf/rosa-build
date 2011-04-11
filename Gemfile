@@ -50,5 +50,6 @@ gem "hoptoad_notifier", "~> 2.3"
 gem "russian"
 gem "grit"
 gem 'unicorn'
+gem 'delayed_job'
 
 gem 'jammit'

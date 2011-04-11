@@ -16,6 +16,8 @@ ru:
     or: или
     yes_: Да
     no_: Нет
+    true_: Да
+    false_: Нет
     menu:
       users: Пользователи
       platforms: Платформы
@@ -56,15 +58,17 @@ ru:
       list: Список
       list_header: Проекты
       show: Проект
+      build: Собрать
+      new_build: Новая сборка
       confirm_delete: Вы уверены, что хотите удалить этот проект?
       new: Новый проект
       new_header: Новый проект
       new_header: Новый проект
       location: Расположение
       git_repo_location: Путь к git-репозиторию
-      back_to_the_list: ⇐ К списку проектов репозитория
       current_project_header: Текущий проект
       current_build_lists: Текущие сборки
+      build_button: Начать сборку
     users:
       list: Список
       new: Создать
@@ -90,6 +94,10 @@ ru:
       created_at_end: "Время постановки на сборку по:"
       notified_at_start: "Время последнего обновления от BS с:"
       notified_at_end: "Время последнего обновления от BS по:"
+      bs_id_not_set: Id еще не присвоен
+      items_header: Элементы сборки
+      no_items_data: Данных нет
+      show: Просмотр
       items:
         statuses:
           build_error: ошибка сборки
@@ -102,9 +110,14 @@ ru:
         mock_not_found: mock не найден
         dependencies_fail: dependencies fail
         srpm_not_found: srpm не найден
+        waiting_for_response: ожидает ответа
         build_pending: ожидает сборку
         success: собран
         build_started: собирается
+        platform_not_found: платформа не найдена
+        platform_pending: платформа в процессе создания
+        project_not_found: проект не найден
+        branch_not_found: бранч не найден
 
   flash:
     project:
@@ -127,7 +140,13 @@ ru:
       unfreezed: Платформа успешно разморожена
       unfreeze_error: Не удалось разморозить платформу, попробуйте еще раз
       destroyed: Платформа успешно удалена
-
+    build_list:
+      saved: Билд лист для бранча '%{branch_name}' и архитектуры '%{arch}' создан успешно
+      save_error: Не удалось сохранить билд лист для бранча '%{branch_name}' и архитектуры '%{arch}'
+      no_branch_selected: Выберите какой-нибудь бранч
+      no_branch_found: Выбранный бранч '%{branch_name}' не найден
+      no_arch_selected: Выберите хотя бы одну ахритектуру
+      no_arch_found: Выбранные ахритектуры не найдены
 
   attributes:
     password: Пароль

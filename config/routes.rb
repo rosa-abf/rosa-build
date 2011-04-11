@@ -18,6 +18,12 @@ Rosa::Application.routes.draw do
             post :filter
           end
         end
+
+        member do
+          get :build
+          post :process_build
+        end
+
       end
     end
   end

@@ -42,6 +42,10 @@ GEM
     closure-compiler (1.1.1)
     compass (0.10.6)
       haml (>= 3.0.4)
+    daemons (1.1.0)
+    delayed_job (2.1.4)
+      activesupport (~> 3.0)
+      daemons
     devise (1.1.7)
       bcrypt-ruby (~> 2.1.2)
       warden (~> 1.0.2)
@@ -142,6 +146,7 @@ DEPENDENCIES
   capistrano
   capistrano-ext
   compass (>= 0.10.6)
+  delayed_job
   devise
   factory_girl_rails
   grit
