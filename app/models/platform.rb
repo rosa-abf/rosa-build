@@ -8,6 +8,7 @@ class Platform < ActiveRecord::Base
 
   before_create :xml_rpc_create
   before_destroy :xml_rpc_destroy
+  before_update :check_freezing
 
 
   def path
@@ -63,6 +64,12 @@ class Platform < ActiveRecord::Base
         return true
       else
         raise "Failed to delete platform #{name}."
+      end
+    end
+
+    def check_freezing
+      if released_changed?
+        BuildServer.freeze_platform self.name
       end
     end
 end

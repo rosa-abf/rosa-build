@@ -60,5 +60,27 @@
       .actions-bar.wat-cf
         .actions
 
+%a{ :name => "producs" }
+.block
+  .secondary-navigation
+    %ul.wat-cf
+      %li.first.active= link_to t("layout.products.list"), platform_path(@platform) + "#products"
+      %li= link_to t("layout.products.new"), new_platform_product_path(@platform)
+  .content
+    %h2.title
+      = t("layout.products.list_header")
+    .inner
+      %table.table
+        %tr
+          %th.first= t("activerecord.attributes.product.name")
+          %th.last &nbsp;
+        - @platform.products.recent.each do |product|
+          %tr{:class => cycle("odd", "even")}
+            %td
+              = link_to product.name, platform_product_path(@platform, product)
+            %td.last
+              #{link_to t("layout.show"), platform_product_path(@platform, product)} | #{link_to t("layout.delete"), platform_product_path(@platform, product), :method => :delete, :confirm => t("layout.products.confirm_delete")}
+      .actions-bar.wat-cf
+        .actions
 -#- content_for :sidebar do
   

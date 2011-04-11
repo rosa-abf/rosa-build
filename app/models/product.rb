@@ -8,4 +8,6 @@ class Product < ActiveRecord::Base
   validates :build_status, :inclusion => { :in => [ NEVER_BUILT, BUILD_COMPLETED, BUILD_FAILED ] }
 
   belongs_to :platform
+
+  scope :recent, order("name ASC")
 end

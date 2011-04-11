@@ -1,0 +1,12 @@
+.block
+  .secondary-navigation
+    %ul.wat-cf
+      %li.first= link_to @platform.name, platform_path(@platform) + "#products"
+      %li.active= link_to t("layout.products.new"), new_platform_product_path(@platform)
+  .content
+    %h2.title= t("layout.products.new_header")
+    .inner
+      = form_for [@platform, @product], :html => { :class => :form } do |f|
+        = render :partial => "form", :locals => {:f => f}
+
+-#- content_for :sidebar, render(:partial => 'sidebar')
