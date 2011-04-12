@@ -7,3 +7,4 @@ config/database.yml
 config/application.yml
 public/stylesheets/compiled/*
 public/assets/*
+config/initializers/local.rb
