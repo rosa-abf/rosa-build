@@ -57,7 +57,7 @@ class BuildServer
   end
 
   def self.create_project name, platform_name, repo_name
-    self.client.call('create_project', name, platform_name, repo_name)
+    self.client.call('create_project', name, platform_name, repo_name + '/release')
   end
 
   def self.delete_project name, platform_name
