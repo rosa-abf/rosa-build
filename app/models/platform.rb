@@ -50,7 +50,7 @@ class Platform < ActiveRecord::Base
     end
 
     def xml_rpc_create
-      result = BuildServer.add_platform name, APP_CONFIG['root_path']
+      result = BuildServer.add_platform unixname, APP_CONFIG['root_path']
       if result == BuildServer::SUCCESS
         return true
       else
@@ -59,17 +59,17 @@ class Platform < ActiveRecord::Base
     end
 
     def xml_rpc_destroy
-      result = BuildServer.delete_platform name
+      result = BuildServer.delete_platform unixname
       if result == BuildServer::SUCCESS
         return true
       else
-        raise "Failed to delete platform #{name}."
+        raise "Failed to delete platform #{unixname}."
       end
     end
 
     def check_freezing
       if released_changed?
-        BuildServer.freeze_platform self.name
+        BuildServer.freeze_platform self.unixname
       end
     end
 end

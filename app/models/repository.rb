@@ -40,7 +40,7 @@ class Repository < ActiveRecord::Base
     end
     
     def xml_rpc_create
-      result = BuildServer.create_repo name, platform.name
+      result = BuildServer.create_repo unixname, platform.unixname
       if result == BuildServer::SUCCESS
         return true
       else
@@ -49,7 +49,7 @@ class Repository < ActiveRecord::Base
     end
 
     def xml_rpc_destroy
-      result = BuildServer.delete_repo name, platform.name
+      result = BuildServer.delete_repo unixname, platform.unixname
       if result == BuildServer::SUCCESS
         return true
       else
