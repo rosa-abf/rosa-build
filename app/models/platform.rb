@@ -50,7 +50,7 @@ class Platform < ActiveRecord::Base
     end
 
     def xml_rpc_create
-      result = BuildServer.add_platform name, build_path(unixname), [] 
+      result = BuildServer.add_platform name, build_path(unixname)
       if result == BuildServer::SUCCESS
         return true
       else
