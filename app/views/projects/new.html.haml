@@ -3,8 +3,8 @@
     %ul.wat-cf
       %li.first= link_to t("layout.projects.list"), platform_repository_path(@platform, @repository) + "#projects"
       %li.active= link_to t("layout.projects.new"), new_platform_repository_project_path(@platform, @repository)
-      %li= link_to "git-repo", platform_repository_project_repo_path(@platform, @repository, @project)
-      %li= link_to t("layout.projects.build"), build_platform_repository_project_path(@platform, @repository, @project)
+      -#%li= link_to "git-repo", platform_repository_project_repo_path(@platform, @repository, @project)
+      -#%li= link_to t("layout.projects.build"), build_platform_repository_project_path(@platform, @repository, @project)
 
   .content
     %h2.title= t("layout.projects.new_header")
