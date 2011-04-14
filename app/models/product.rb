@@ -9,5 +9,17 @@ class Product < ActiveRecord::Base
 
   belongs_to :platform
 
+  has_attached_file :tar
+  validates_attachment_content_type :tar, :content_type => ["application/gnutar", "application/x-compressed", "application/x-gzip"], :message => I18n.t('layout.products.invalid_content_type')
+
+  after_validation :merge_tar_errors
+
   scope :recent, order("name ASC")
+
+  protected
+
+    def merge_tar_errors
+      errors[:tar] += errors[:tar_content_type]
+      errors[:tar_content_type] = []
+    end
 end

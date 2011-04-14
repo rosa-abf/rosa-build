@@ -77,7 +77,7 @@
         - @platform.products.recent.each do |product|
           %tr{:class => cycle("odd", "even")}
             %td
-              = link_to product.name, platform_product_path(@platform, product)
+              = link_to product.name, edit_platform_product_path(@platform, product)
             %td.last
               #{link_to t("layout.show"), platform_product_path(@platform, product)} | #{link_to t("layout.delete"), platform_product_path(@platform, product), :method => :delete, :confirm => t("layout.products.confirm_delete")}
       .actions-bar.wat-cf

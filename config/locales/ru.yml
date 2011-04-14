@@ -59,7 +59,9 @@ ru:
       new: Новый продукт
       list_header: Продукты
       new_header: Новый продукт
+      edit_header: Редактирование продукта
       confirm_delete: Вы уверены, что хотите удалить этот продукт?
+      invalid_content_type: имеет неверный тип
     projects:
       list: Список
       list_header: Проекты
@@ -138,6 +140,9 @@ ru:
       saved: Репозиторий успешно добавлен
       save_error: Не удалось добавить репозиторий
       destroyed: Репозиторий успешно удален
+    product:
+      saved: Продукт успешно сохранен
+      save_error: Не удалось сохранить изменения
     platform:
       saved: Платформа успешно добавлена
       saved_error: Не удалось создать платформу
@@ -196,6 +201,7 @@ ru:
         counter: Содержимое .counter
         build: Содержимое build
         menu: Содержимое .menu.xml
+        tar: Tar.gz файл
 
       arch:
         name: Название

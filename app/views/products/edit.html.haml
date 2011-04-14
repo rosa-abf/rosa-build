@@ -2,9 +2,9 @@
   .secondary-navigation
     %ul.wat-cf
       %li.first= link_to @platform.name, platform_path(@platform) + "#products"
-      %li.active= link_to t("layout.products.new"), new_platform_product_path(@platform)
+      %li.active= link_to @product.name, edit_platform_product_path(@platform, @product)
   .content
-    %h2.title= t("layout.products.new_header")
+    %h2.title= t("layout.products.edit_header")
     .inner
       = form_for [@platform, @product], :html => { :class => :form, :multipart => true } do |f|
         = render :partial => "form", :locals => {:f => f}

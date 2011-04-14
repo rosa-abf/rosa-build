@@ -1,1 +1,1 @@
-/* Override here any style defined by web-app-theme */
+/* Override here any style defined by web-app-theme */.form input.file_field:hover {  -webkit-box-shadow: rgba(0,0,0,0.0) 0 0 0px;  -moz-box-shadow: rgba(0,0,0,0.0) 0 0 0px;  box-shadow: 0 0 0px rgba(0, 0, 0, 0.0);  border: 0px solid #a2a294;}

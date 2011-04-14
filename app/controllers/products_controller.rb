@@ -27,15 +27,23 @@ class ProductsController < ApplicationController
     @product.build = DEFAULT_BUILD
   end
 
+  def edit
+    @product = @platform.products.find params[:id]
+  end
+
   def create
     @product = @platform.products.new params[:product]
     if @product.save
-      flash[:notice] = ''
+      flash[:notice] = t('flash.product.saved') 
       redirect_to @platform
     else
-      flash[:error] = ''
+      flash[:error] = t('flash.product.save_error')
       render :action => :new
     end
+  end
+
+  def show
+    @product = Product.find params[:id]
   end
 
   protected

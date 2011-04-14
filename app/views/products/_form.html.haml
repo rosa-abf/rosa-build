@@ -13,6 +13,9 @@
 .group
   = f.label :menu, t("activerecord.attributes.product.menu"), :class => :label
   = f.text_area :menu, :class => 'text_field', :cols => 80
+.group
+  = f.label :tar, t("activerecord.attributes.product.tar"), :class => :label
+  = f.file_field :tar, :class => 'file_field'
 
 .group.navform.wat-cf
   %button.button{:type => "submit"}

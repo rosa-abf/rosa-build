@@ -51,5 +51,6 @@ gem "russian"
 gem "grit"
 gem 'unicorn'
 gem 'delayed_job'
+gem 'paperclip', "~> 2.3"
 
 gem 'jammit'
