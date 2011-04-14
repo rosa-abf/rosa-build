@@ -8,3 +8,4 @@ config/application.yml
 public/stylesheets/compiled/*
 public/assets/*
 config/initializers/local.rb
+public/system/*
