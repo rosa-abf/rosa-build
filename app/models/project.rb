@@ -59,7 +59,7 @@ class Project < ActiveRecord::Base
     end
 
     def xml_rpc_create
-      result = BuildServer.create_project name, platform.name, repository.name
+      result = BuildServer.create_project unixname, platform.unixname, repository.unixname
       if result == BuildServer::SUCCESS
         return true
       else
@@ -68,7 +68,7 @@ class Project < ActiveRecord::Base
     end
 
     def xml_rpc_destroy
-      result = BuildServer.delete_project name, platform.name, repository.name
+      result = BuildServer.delete_project unixname, platform.unixname, repository.unixname
       if result == BuildServer::SUCCESS
         return true
       else
