@@ -63,7 +63,7 @@ class Project < ActiveRecord::Base
       if result == BuildServer::SUCCESS
         return true
       else
-        raise "Failed to create project #{name} (repo #{repository.name}) inside platform #{platform.name}."
+        raise "Failed to create project #{name} (repo #{repository.name}) inside platform #{repository.platform.name}."
       end      
     end
 
