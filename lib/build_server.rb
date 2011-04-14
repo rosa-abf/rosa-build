@@ -18,6 +18,7 @@ class BuildServer
     Rails.logger.info "Client called"
     @@client ||= XMLRPC::Client.new3('host' => APP_CONFIG['build_server_ip'], 'port' => APP_CONFIG['build_server_port'], 'path' => APP_CONFIG['build_server_path'])
     Rails.logger.info "Client finished"
+    return @@client
   end
 
 
