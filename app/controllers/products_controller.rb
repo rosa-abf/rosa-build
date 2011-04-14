@@ -1,6 +1,7 @@
 class ProductsController < ApplicationController
   before_filter :authenticate_user!, :except => [:product_begin, :product_end]
   before_filter :find_product_by_name, :only => [:product_begin, :product_end]
+  before_filter :find_product, :only => [:show, :edit, :update]
   before_filter :find_platform, :except => [:product_begin, :product_end]
 
   def product_begin
@@ -36,7 +37,6 @@ class ProductsController < ApplicationController
   end
 
   def edit
-    @product = @platform.products.find params[:id]
   end
 
   def create
@@ -50,14 +50,27 @@ class ProductsController < ApplicationController
     end
   end
 
+  def update
+    if @product.update_attributes(params[:product])
+      flash[:notice] = t('flash.product.saved')
+      redirect_to @platform
+    else
+      flash[:error] = t('flash.product.save_error')
+      render :action => "edit"
+    end
+  end
+
   def show
-    @product = Product.find params[:id]
   end
 
   protected
 
     def find_product_by_name
       @product = Product.find_by_name params[:product_name]
+    end
+
+    def find_product
+      @product = Product.find params[:id]
     end
 
     def find_platform
