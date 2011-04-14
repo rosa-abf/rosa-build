@@ -16,10 +16,26 @@ class Product < ActiveRecord::Base
 
   scope :recent, order("name ASC")
 
+  before_save :destroy_tar?
+
+  def delete_tar
+    @delete_tar ||= "0"
+  end
+
+  def delete_tar=(value)
+    @delete_tar = value
+  end
+
   protected
+
+    def destroy_tar?
+      self.tar.clear if @delete_tar == "1"
+    end
 
     def merge_tar_errors
       errors[:tar] += errors[:tar_content_type]
       errors[:tar_content_type] = []
     end
+
+
 end
