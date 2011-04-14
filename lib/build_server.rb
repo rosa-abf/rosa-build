@@ -22,9 +22,9 @@ class BuildServer
   end
 
 
-  def self.add_platform name, root_folder, repos = [], git_path = nil
+  def self.add_platform name, root_folder, repos = []
     Rails.logger.info "add_platform start"
-    self.client.call('add_platform', name, git_path, root_folder, repos)
+    self.client.call('add_platform', name, root_folder, repos)
     Rails.logger.info "add_platform ok"
   end
 
