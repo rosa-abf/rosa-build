@@ -15,18 +15,12 @@ class BuildServer
   SRPM_NOT_FOUND = 12800
 
   def self.client
-    Rails.logger.info "Client called"
     @@client ||= XMLRPC::Client.new3('host' => APP_CONFIG['build_server_ip'], 'port' => APP_CONFIG['build_server_port'], 'path' => APP_CONFIG['build_server_path'])
-    Rails.logger.info "Client finished"
-    return @@client
   end
 
 
   def self.add_platform name, root_folder, repos = {:src => [], :rpm => []}
-    Rails.logger.info "add_platform start"
-    Rails.logger.info "#{name.inspect}, #{root_folder.inspect}, #{repos.inspect}"
     self.client.call('add_platform', name, root_folder, repos)
-    Rails.logger.info "add_platform ok"
   end
 
 
