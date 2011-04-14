@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110412074038) do
+ActiveRecord::Schema.define(:version => 20110414145300) do
 
   create_table "arches", :force => true do |t|
     t.string   "name",       :null => false
@@ -83,9 +83,9 @@ ActiveRecord::Schema.define(:version => 20110412074038) do
   end
 
   create_table "products", :force => true do |t|
-    t.string   "name",                            :null => false
-    t.integer  "platform_id",                     :null => false
-    t.integer  "build_status",     :default => 2, :null => false
+    t.string   "name",                                :null => false
+    t.integer  "platform_id",                         :null => false
+    t.integer  "build_status",     :default => 2,     :null => false
     t.string   "build_path"
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -97,6 +97,8 @@ ActiveRecord::Schema.define(:version => 20110412074038) do
     t.string   "tar_content_type"
     t.integer  "tar_file_size"
     t.datetime "tar_updated_at"
+    t.boolean  "is_template",      :default => false
+    t.boolean  "system_wide",      :default => false
   end
 
   create_table "projects", :force => true do |t|

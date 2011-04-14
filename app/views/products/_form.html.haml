@@ -22,6 +22,13 @@
     = link_to @product.tar_file_name, @product.tar.url
     = f.check_box :delete_tar
     = f.label :delete_tar, t('layout.delete')
+.group
+  = f.label :is_template, :class => :label
+  = f.check_box :is_template, :class => 'check_box'
+
+.group
+  = f.label :system_wide, :class => :label
+  = f.check_box :system_wide, :class => 'check_box'
 
 .group.navform.wat-cf
   %button.button{:type => "submit"}

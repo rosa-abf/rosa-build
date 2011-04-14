@@ -3,6 +3,8 @@ class Product < ActiveRecord::Base
   BUILD_COMPLETED = 0
   BUILD_FAILED = 1
 
+  ATTRS_TO_CLONE = [ 'build_path', 'build', 'build', 'counter', 'ks', 'menu', 'tar' ]
+
   validates :name, :presence => true, :uniqueness => true
   validates :platform_id, :presence => true
   validates :build_status, :inclusion => { :in => [ NEVER_BUILT, BUILD_COMPLETED, BUILD_FAILED ] }
@@ -24,6 +26,23 @@ class Product < ActiveRecord::Base
 
   def delete_tar=(value)
     @delete_tar = value
+  end
+
+  def can_clone?
+    is_template?
+  end
+
+  def can_build?
+    !is_template?
+  end
+
+  def clone_from!(template)
+    attrs = ATTRS_TO_CLONE.inject({}) {|result, attr|
+      result[attr] = template.send(attr)
+      result
+    }
+
+    self.attributes = attrs
   end
 
   protected

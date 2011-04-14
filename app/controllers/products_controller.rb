@@ -27,6 +27,14 @@ class ProductsController < ApplicationController
     @product.build = DEFAULT_BUILD
   end
 
+  def clone
+    @template = @platform.products.find(params[:id])
+    @product = @platform.products.new
+    @product.clone_from!(@template)
+
+    render :template => "products/new"
+  end
+
   def edit
     @product = @platform.products.find params[:id]
   end

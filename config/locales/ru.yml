@@ -58,6 +58,7 @@ ru:
       list: Список
       new: Новый продукт
       list_header: Продукты
+      clone: Клонировать
       new_header: Новый продукт
       edit_header: Редактирование продукта
       confirm_delete: Вы уверены, что хотите удалить этот продукт?
@@ -202,6 +203,8 @@ ru:
         build: Содержимое build
         menu: Содержимое .menu.xml
         tar: Tar.gz файл
+        is_template: Темплейт
+        system_wide: Общесистемный
 
       arch:
         name: Название

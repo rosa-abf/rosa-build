@@ -79,7 +79,7 @@
             %td
               = link_to product.name, edit_platform_product_path(@platform, product)
             %td.last
-              #{link_to t("layout.show"), platform_product_path(@platform, product)} | #{link_to t("layout.delete"), platform_product_path(@platform, product), :method => :delete, :confirm => t("layout.products.confirm_delete")}
+              #{link_to t("layout.show"), platform_product_path(@platform, product)} | #{link_to t("layout.delete"), platform_product_path(@platform, product), :method => :delete, :confirm => t("layout.products.confirm_delete")} #{(product.can_clone? ? "| #{link_to t("layout.products.clone"), clone_platform_product_path(@platform, product)}" : "").html_safe }
       .actions-bar.wat-cf
         .actions
 -#- content_for :sidebar do

@@ -7,7 +7,11 @@ Rosa::Application.routes.draw do
       get 'unfreeze'
     end
 
-    resources :products
+    resources :products do
+      member do
+        get :clone
+      end
+    end
 
     resources :repositories do
       resources :projects do
