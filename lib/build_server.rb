@@ -24,6 +24,7 @@ class BuildServer
 
   def self.add_platform name, root_folder, repos = []
     Rails.logger.info "add_platform start"
+    Rails.logger.info "#{name.inspect}, #{root_folder.inspect}, #{repos.inspect}"
     self.client.call('add_platform', name, root_folder, repos)
     Rails.logger.info "add_platform ok"
   end
