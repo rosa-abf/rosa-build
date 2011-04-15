@@ -2,7 +2,9 @@
 %html
   %head
     %title= t("layout.global_header")
-    = include_stylesheets :sessions
+    -#= include_stylesheets :sessions
+    = stylesheet_link_tag "web-app-theme/base.css", "web-app-theme/themes/default/style.css", "web-app-theme/override.css"
+
     = csrf_meta_tag
   %body
     #container

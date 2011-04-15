@@ -4,7 +4,9 @@
 :javascript
   !window.jQuery && document.write(unescape('%3Cscript src="/javascripts/jquery.min.js"%3E%3C/script%3E'))
   
-= include_javascripts :application
+-#= include_javascripts :application
+
+= javascript_include_tag "jrails", "application", "drop_down_menu"
 
 -#  Append your own using content_for :javascripts
 = yield :javascripts

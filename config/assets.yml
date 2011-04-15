@@ -1,6 +1,5 @@
 javascripts:
   application:
-    - public/javascripts/rails.js
     - public/javascripts/application.js
     - public/javascripts/drop_down_menu.js
 
