@@ -18,14 +18,17 @@
           \:
         = t("layout.#{@product.is_template?}_")
 
-      %p
-        %b
-          = t("activerecord.attributes.product.system_wide")
-          \:
-        = t("layout.#{@product.system_wide?}_")
+      - content_for :commented do
+        %p
+          %b
+            = t("activerecord.attributes.product.system_wide")
+            \:
+          = t("layout.#{@product.system_wide?}_")
         
       .wat-cf
         = link_to image_tag("web-app-theme/icons/application_edit.png", :alt => t("layout.edit")) + " " + t("layout.edit"), edit_platform_product_path(@platform, @product), :class => "button"
         = link_to image_tag("web-app-theme/icons/cross.png", :alt => t("layout.delete")) + " " + t("layout.delete"), platform_product_path(@platform, @product), :method => "delete", :class => "button", :confirm => t("layout.products.confirm_delete")
         - if @product.can_clone?
           = link_to t("layout.products.clone"), clone_platform_product_path(@platform, @product), :class => "button"
+        - if @product.can_build?
+          = link_to t("layout.products.build"), build_platform_product_path(@platform, @product), :class => "button"

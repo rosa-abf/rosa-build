@@ -59,6 +59,7 @@ ru:
       new: Новый продукт
       list_header: Продукты
       clone: Клонировать
+      build: Собрать
       new_header: Новый продукт
       edit_header: Редактирование продукта
       confirm_delete: Вы уверены, что хотите удалить этот продукт?
@@ -144,6 +145,7 @@ ru:
     product:
       saved: Продукт успешно сохранен
       save_error: Не удалось сохранить изменения
+      build_started: Запущена сборка продукта
     platform:
       saved: Платформа успешно добавлена
       saved_error: Не удалось создать платформу
@@ -203,7 +205,7 @@ ru:
         build: Содержимое build
         menu: Содержимое .menu.xml
         tar: Tar.gz файл
-        is_template: Темплейт
+        is_template: Шаблон
         system_wide: Общесистемный
 
       arch:

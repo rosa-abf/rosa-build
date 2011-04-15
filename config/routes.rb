@@ -10,6 +10,7 @@ Rosa::Application.routes.draw do
     resources :products do
       member do
         get :clone
+        get :build
       end
     end
 
