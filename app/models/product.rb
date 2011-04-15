@@ -29,14 +29,15 @@ class Product < ActiveRecord::Base
   end
 
   def can_clone?
-    is_template?
+    is_template
   end
 
   def can_build?
-    !is_template?
+    !is_template
   end
 
   def clone_from!(template)
+    raise "Only templates can be cloned" unless template.can_clone?
     attrs = ATTRS_TO_CLONE.inject({}) {|result, attr|
       result[attr] = template.send(attr)
       result

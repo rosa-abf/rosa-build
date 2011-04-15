@@ -36,6 +36,11 @@ class ProductsController < ApplicationController
     render :template => "products/new"
   end
 
+  def build
+    flash[:notice] = t('flash.product.build_started')
+    redirect_to :action => :show
+  end
+
   def edit
   end
 
