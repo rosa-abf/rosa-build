@@ -35,6 +35,8 @@ Rosa::Application.routes.draw do
 
   resources :users
 
+  match 'crontabs', :to => 'crontabs#show'
+
   match 'build_lists/status_build', :to => "build_lists#status_build"
   match 'build_lists/post_build', :to => "build_lists#post_build"
   match 'build_lists/circle_build', :to => "build_lists#circle_build"
