@@ -60,21 +60,21 @@ namespace :deploy do
     run "cd #{deploy_to}/current ; pkill unicorn; sleep 0.5; pkill -9 unicorn; sleep 0.5 ; unicorn_rails -c config/unicorn.rb -E production -D "
   end
 
-  desc 'Bundle and minify the JS and CSS files'
-  task :build_assets, :roles => :app do
-    root_path    = File.expand_path(File.dirname(__FILE__) + '/..')
-    assets_path  = "#{root_path}/public/assets"
-    envs         = "RAILS_ENV=production"
-
-    # Precaching assets
-    run_locally "bash -c '#{envs} jammit'"
-
-    # Uploading prechached assets
-    top.upload assets_path, "#{current_release}/public", :via => :scp, :recursive => true
-  end
+#  desc 'Bundle and minify the JS and CSS files'
+#  task :build_assets, :roles => :app do
+#    root_path    = File.expand_path(File.dirname(__FILE__) + '/..')
+#    assets_path  = "#{root_path}/public/assets"
+#    envs         = "RAILS_ENV=production"
+#
+#    # Precaching assets
+#    run_locally "bash -c '#{envs} jammit'"
+#
+#    # Uploading prechached assets
+#    top.upload assets_path, "#{current_release}/public", :via => :scp, :recursive => true
+#  end
 
   after "deploy:update_code", :roles => :web do
-    build_assets
+#    build_assets
     symlink_config_files
   end
 

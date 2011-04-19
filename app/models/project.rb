@@ -10,12 +10,12 @@ class Project < ActiveRecord::Base
   scope :recent, order("name ASC")
 
   #before_create :create_directory, :create_git_repo
-  before_create :xml_rpc_create, :create_git_repo
+  before_create :xml_rpc_create
   before_destroy :xml_rpc_destroy
 
   # Redefining a method from Project::HasRepository module to reflect current situation
   def git_repo_path
-    @git_repo_path ||= File.join(path, unixname + ".git")
+    @git_repo_path ||= File.join(repository.platform.path, "projects", unixname + ".git")
   end
 
   def path
@@ -52,10 +52,6 @@ class Project < ActiveRecord::Base
       elsif unixname_changed?
         FileUtils.mv(build_path(unixname_was), buildpath(unixname))
       end 
-    end
-
-    def create_git_repo
-      Git::Repository.create(git_repo_path)
     end
 
     def xml_rpc_create

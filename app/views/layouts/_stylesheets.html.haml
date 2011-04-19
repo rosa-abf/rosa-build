@@ -1,3 +1,5 @@
-= include_stylesheets :application
+-#= include_stylesheets :application
+
+= stylesheet_link_tag "web-app-theme/base.css", "web-app-theme/themes/default/style.css", "web-app-theme/override.css", "git/style.css"
 
 = yield :stylesheets
