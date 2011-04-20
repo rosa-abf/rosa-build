@@ -2,8 +2,8 @@ class Project < ActiveRecord::Base
   belongs_to :repository
   has_many :build_lists, :dependent => :destroy
 
-  validates :name, :uniqueness => true, :presence => true, :allow_nil => false, :allow_blank => false, :scope => [:repository_id]
-  validates :unixname, :uniqueness => true, :presence => true, :format => { :with => /^[a-zA-Z0-9\-.]+$/ }, :allow_nil => false, :allow_blank => false, :scope => [:repository_id]
+  validates :name, :uniqueness => {:scope => :repository_id}, :presence => true, :allow_nil => false, :allow_blank => false
+  validates :unixname, :uniqueness => {:scope => :repository_id}, :presence => true, :format => { :with => /^[a-zA-Z0-9\-.]+$/ }, :allow_nil => false, :allow_blank => false
 
   include Project::HasRepository
 

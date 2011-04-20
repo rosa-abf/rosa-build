@@ -2,8 +2,8 @@ class Repository < ActiveRecord::Base
   belongs_to :platform
   has_many :projects, :dependent => :destroy
 
-  validates :name, :presence => true, :uniqueness => true, :scope => [:platform_id]
-  validates :unixname, :uniqueness => true, :presence => true, :format => { :with => /^[a-zA-Z0-9\-.]+$/ }, :scope => [:platform_id]
+  validates :name, :presence => {:scope => :platform_id}, :uniqueness => true
+  validates :unixname, :uniqueness => {:scope => :platform_id}, :presence => true, :format => { :with => /^[a-zA-Z0-9\-.]+$/ }
 
   scope :recent, order("name ASC")
 
