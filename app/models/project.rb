@@ -64,7 +64,7 @@ class Project < ActiveRecord::Base
     end
 
     def xml_rpc_destroy
-      result = BuildServer.delete_project unixname, repository.platform.unixname, repository.unixname
+      result = BuildServer.delete_project unixname, repository.platform.unixname
       if result == BuildServer::SUCCESS
         return true
       else
