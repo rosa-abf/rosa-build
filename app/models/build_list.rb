@@ -85,10 +85,10 @@ class BuildList < ActiveRecord::Base
   private
     def set_default_status
       self.status = WAITING_FOR_RESPONSE unless self.status.present?
+      return true
     end
 
     def place_build
-      raise 'fail'
       RAILS_DEFAULT_LOGGER.fatal "place build"
       self.status = BuildServer.add_build_list project.name, branch_name, project.platform.name, arch.name
       RAILS_DEFAULT_LOGGER.fatal "status = #{self.status}"
