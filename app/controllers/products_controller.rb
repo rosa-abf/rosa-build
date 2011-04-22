@@ -1,8 +1,8 @@
 class ProductsController < ApplicationController
   before_filter :authenticate_user!, :except => [:product_begin, :product_end]
   before_filter :find_product_by_name, :only => [:product_begin, :product_end]
-  before_filter :find_product, :only => [:show, :edit, :update]
-  before_filter :find_platform, :except => [:product_begin, :product_end]
+  before_filter :find_product, :only => [:show, :edit, :update, :build]
+  before_filter :find_platform, :except => [:product_begin, :product_end, :build]
 
   def product_begin
     @product.build_status = Product::STATUS::BUILDING
@@ -38,6 +38,7 @@ class ProductsController < ApplicationController
 
   def build
     flash[:notice] = t('flash.product.build_started')
+    ProductBuilder.create_product @product.name, @platform.name, [], [], '', '/var/rosa', []
     redirect_to :action => :show
   end
 
