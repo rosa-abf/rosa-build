@@ -115,6 +115,7 @@ ru:
           dependencies_fail: dependencies fail
           srpm_not_found: srpm не найден
           success: собран
+          unknown: ожидает сборки
       statuses:
         build_error: ошибка сборки
         mock_not_found: mock не найден

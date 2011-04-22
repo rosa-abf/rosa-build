@@ -73,7 +73,9 @@ class BuildListsController < ApplicationController
     @build_list.name = params[:name]
     @build_list.additional_repos = ActiveSupport::JSON.decode(params[:additional_repos])
     @build_list.set_items(ActiveSupport::JSON.decode(params[:items]))
-    params[:is_circular]
+    @build_list.notified_at = Time.now
+    @build_list.is_circle = (params[:is_circular] != "0")
+    @build_list.bs_id = params[:id]
     params[:arch]
     @build_list.save
 

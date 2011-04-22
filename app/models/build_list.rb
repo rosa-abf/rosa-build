@@ -89,9 +89,7 @@ class BuildList < ActiveRecord::Base
     end
 
     def place_build
-      RAILS_DEFAULT_LOGGER.fatal "place build"
       self.status = BuildServer.add_build_list project.name, branch_name, project.repository.platform.name, arch.name
-      RAILS_DEFAULT_LOGGER.fatal "status = #{self.status}"
       self.status = BUILD_PENDING if self.status == 0
       save
     end

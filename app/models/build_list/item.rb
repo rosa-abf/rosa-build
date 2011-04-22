@@ -5,6 +5,7 @@ class BuildList::Item < ActiveRecord::Base
 
   STATUSES = [BuildServer::SUCCESS, BuildServer::DEPENDENCIES_FAIL, BuildServer::SRPM_NOT_FOUND, BuildServer::MOCK_NOT_FOUND]
   HUMAN_STATUSES = {
+                     nil => :unknown,
                      BuildServer::MOCK_NOT_FOUND => :mock_not_found,
                      BuildServer::DEPENDENCIES_FAIL => :dependencies_fail,
                      BuildServer::SRPM_NOT_FOUND => :srpm_not_found,
