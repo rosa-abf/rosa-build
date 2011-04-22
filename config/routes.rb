@@ -41,6 +41,7 @@ Rosa::Application.routes.draw do
   match 'build_lists/post_build', :to => "build_lists#post_build"
   match 'build_lists/pre_build', :to => "build_lists#pre_build"
   match 'build_lists/circle_build', :to => "build_lists#circle_build"
+  match 'build_lists/new_bbdt', :to => "build_lists#new_bbdt"
 
   match 'product_begin', :to => 'products#product_begin'
   match 'product_end', :to => 'products#product_end'
