@@ -28,7 +28,7 @@ class ProductsController < ApplicationController
 
   def build
     flash[:notice] = t('flash.product.build_started')
-    ProductBuilder.create_product @product.id, '/var/rosa', @product.ks, @product.menu, @product.build, @product.counter
+    ProductBuilder.create_product @product.id, '/var/rosa', @product.ks, @product.menu, @product.build, @product.counter, []
     redirect_to :action => :show
   end
 

@@ -9,7 +9,7 @@ class ProductBuilder
     @@client ||= XMLRPC::Client.new3(:host => APP_CONFIG['product_builder_ip'], :port => APP_CONFIG['product_builder_port'], :path => APP_CONFIG['product_builder_path'])
   end
 
-  def self.create_product product_id, path, kstemplate, menuxml, build, counter
-    self.client.call('create_product', product_id, path, kstemplate, menuxml, build, counter)
+  def self.create_product product_id, path, kstemplate, menuxml, build, counter, packages
+    self.client.call('create_product', product_id, path, kstemplate, menuxml, build, counter, packages)
   end
 end
