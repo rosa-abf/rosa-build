@@ -71,8 +71,8 @@ class BuildListsController < ApplicationController
 
   def new_bbdt
     @build_list.name = params[:name]
-    @build_list.additional_repos = params[:additional_repos]
-    @build_list.set_items(params[:items])
+    @build_list.additional_repos = ActiveSupport::JSON.decode(params[:additional_repos])
+    @build_list.set_items(ActiveSupport::JSON.decode(params[:items]))
     @build_list.save
 
     render :nothing => true, :status => 200
