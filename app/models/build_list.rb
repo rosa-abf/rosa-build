@@ -95,6 +95,6 @@ class BuildList < ActiveRecord::Base
       self.status = BUILD_PENDING if self.status == 0
       save
     end
-    handle_asynchronously :place_build
+    #handle_asynchronously :place_build
 
 end
