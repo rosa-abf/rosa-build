@@ -10,6 +10,8 @@ class ProductBuilder
   end
 
   def self.create_product name, platform_name, params, packages, post_install, path, repos
+    RAILS_DEFAULT_LOGGER.fatal @@client.port
+    RAILS_DEFAULT_LOGGER.fatal @@client.inspect
     self.client.call('create_product', name, platform_name, params, packages, post_install, path, repos)
   end
 end
