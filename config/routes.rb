@@ -43,8 +43,7 @@ Rosa::Application.routes.draw do
   match 'build_lists/circle_build', :to => "build_lists#circle_build"
   match 'build_lists/new_bbdt', :to => "build_lists#new_bbdt"
 
-  match 'product_begin', :to => 'products#product_begin'
-  match 'product_end', :to => 'products#product_end'
+  match 'product_status', :to => 'products#product_status'
 
   # Tree
   match 'platforms/:platform_id/repositories/:repository_id/projects/:project_id/git/tree/:treeish(/*path)', :controller => "git/trees", :action => :show, :treeish => /[0-9a-zA-Z_.\-]*/, :defaults => { :treeish => :master }, :as => :tree
