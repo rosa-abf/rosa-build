@@ -9,9 +9,9 @@ class Project < ActiveRecord::Base
 
   scope :recent, order("name ASC")
 
+  #before_create :create_directory, :create_git_repo
   before_create :xml_rpc_create
-  before_create :create_directory, :create_git_repo
-  #before_destroy :xml_rpc_destroy
+  before_destroy :xml_rpc_destroy
 
   # Redefining a method from Project::HasRepository module to reflect current situation
   def git_repo_path
