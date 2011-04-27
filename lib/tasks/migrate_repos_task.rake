@@ -9,7 +9,7 @@ namespace :repositories do
 
     repo_dirs.each do |repo_dir|
       puts repo_dir
-      project_name = File.basename(repos_dir, ".git")
+      project_name = File.basename(repo_dir, ".git")
       puts project_name
 
 
