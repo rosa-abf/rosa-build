@@ -2,7 +2,11 @@ namespace :repositories do
 
   desc "Migrate repositories from fs"
   task :migrate => :environment do
+    puts "Hello, doing haha"
+
     repos_dirs = Dir["/root/mandriva_main_git/*.git"]
+
+    puts repos_dirs.inspect
 
     cooker = Platform.find_by_name!("cooker")
     main = cooker.repositories.find_by_name!("main")
