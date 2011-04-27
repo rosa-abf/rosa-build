@@ -12,7 +12,7 @@ namespace :repositories do
 
       puts "Creating project: #{project_name}"
 
-      if main.projects.find_by_name(:name => project_name)
+      if main.projects.find_by_name(project_name)
         puts "\t Already created. Skipping"
         next
       end
