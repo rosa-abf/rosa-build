@@ -8,7 +8,7 @@ class Repository < ActiveRecord::Base
   scope :recent, order("name ASC")
 
   before_create :xml_rpc_create
-  before_destroy :xml_rpc_destroy
+  #before_destroy :xml_rpc_destroy
 
   def path
     build_path(unixname)

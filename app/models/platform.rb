@@ -7,7 +7,7 @@ class Platform < ActiveRecord::Base
   validates :unixname, :uniqueness => true, :presence => true, :format => { :with => /^[a-zA-Z0-9\-.]+$/ }, :allow_nil => false, :allow_blank => false
 
   before_create :xml_rpc_create
-  before_destroy :xml_rpc_destroy
+  #before_destroy :xml_rpc_destroy
   before_update :check_freezing
 
 
