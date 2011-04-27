@@ -21,7 +21,9 @@ namespace :repositories do
 
       puts "Executing: 'rm -rf #{project.git_repo_path}'"
       `rm -rf #{project.git_repo_path}`
-#      `cp -a #{repo_dir} #{project.git_repo_path}`
+
+      puts "Executing: 'cp -a #{repo_dir} #{project.git_repo_path}'"
+      `cp -a #{repo_dir} #{project.git_repo_path}`
     end
 
   end
