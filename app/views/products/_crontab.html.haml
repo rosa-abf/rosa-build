@@ -15,7 +15,7 @@
         month	= getSelected('month');
         weekday = getSelected('weekday');
 
-        $("#cron").attr("value", minute + "\t" + hour + "\t" + day + "\t" + month + "\t" + weekday);
+        $("#cron").attr("value", minute + " " + hour + " " + day + " " + month + " " + weekday);
 
         return false;
       });
@@ -70,117 +70,80 @@
 
 #genereator_btn
   %a{ :href => "#" } Show crontab generator
-  
+
 #crontab_generator{ :style => "display: none;" }
   .columns.wat-cf
     .column.left
       %h3.title Minutes
       .group
         = label_tag :minute_chooser_every, "Every minute", :class => :label
-        = radio_button_tag :minute_chooser, 0, true, :id => :minute_chooser_every, :class => "chooser cron"
+        = radio_button_tag :minute_chooser, 0, @product.cron_tab_minutes.blank?, :id => :minute_chooser_every, :class => "chooser cron"
 
         = label_tag :minute_chooser_choose, "Choose", :class => :label
-        = radio_button_tag :minute_chooser, 1, false, :id => :minute_chooser_choose, :class => "chooser cron"
+        = radio_button_tag :minute_chooser, 1, @product.cron_tab_minutes.present?, :id => :minute_chooser_choose, :class => "chooser cron"
 
       .group
-        %select{ :name => :minute, :id => :minute, :multiple => true, :disabled => true, :class => "cron" }
+        %select{ :name => :minute, :id => :minute, :multiple => true, :disabled => @product.cron_tab_minutes.blank?, :class => "cron" }
           - (0..59).each do |min|
-            %option{ :value => min }= min
+            %option{ :value => min, :selected => @product.cron_tab_minutes.include?(min) }= min
 
     .column.right
       %h3.title Hour
       .group
         = label_tag :hour_chooser_every, "Every hour", :class => :label
-        = radio_button_tag :hour_chooser, 0, true, :id => :minute_chooser_every, :class => "chooser cron"
+        = radio_button_tag :hour_chooser, 0, @product.cron_tab_hours.blank?, :id => :minute_chooser_every, :class => "chooser cron"
 
         = label_tag :hour_chooser_choose, "Choose", :class => :label
-        = radio_button_tag :hour_chooser, 1, false, :id => :minute_chooser_choose, :class => "chooser cron"
+        = radio_button_tag :hour_chooser, 1, @product.cron_tab_hours.present?, :id => :minute_chooser_choose, :class => "chooser cron"
 
       .group
-        %select{ :name => :hour, :id => :hour, :multiple => true, :disabled => true, :class => "cron" }
-          %option{ :value => "0" } 12 Midnight
-          %option{ :value => "1" } 1 AM
-          %option{ :value => "2" } 2 AM
-          %option{ :value => "3" } 3 AM
-          %option{ :value => "4" } 4 AM
-          %option{ :value => "5" } 5 AM
-          %option{ :value => "6" } 6 AM
-          %option{ :value => "7" } 7 AM
-          %option{ :value => "8" } 8 AM
-          %option{ :value => "9" } 9 AM
-          %option{ :value => "10" } 10 AM
-          %option{ :value => "11" } 11 AM
-          %option{ :value => "12" } 12 Noon
-          %option{ :value => "13" } 1 PM
-          %option{ :value => "14" } 2 PM
-          %option{ :value => "15" } 3 PM
-          %option{ :value => "16" } 4 PM
-          %option{ :value => "17" } 5 PM
-          %option{ :value => "18" } 6 PM
-          %option{ :value => "19" } 7 PM
-          %option{ :value => "20" } 8 PM
-          %option{ :value => "21" } 9 PM
-          %option{ :value => "22" } 10 PM
-          %option{ :value => "23" } 11 PM
+        %select{ :name => :hour, :id => :hour, :multiple => true, :disabled => @product.cron_tab_hours.blank?, :class => "cron" }
+          - (0..23).each do |hour|
+            %option{ :value => hour, :selected => @product.cron_tab_hours.include?(hour) }= hour
 
   .columns.wat-cf
     .column.left
       %h3.title Day
       .group
         = label_tag :day_chooser_every, "Every day", :class => :label
-        = radio_button_tag :day_chooser, 0, true, :id => :day_chooser_every, :class => "chooser cron"
+        = radio_button_tag :day_chooser, 0, @product.cron_tab_days.blank?, :id => :day_chooser_every, :class => "chooser cron"
 
         = label_tag :day_chooser_choose, "Choose", :class => :label
-        = radio_button_tag :day_chooser, 1, false, :id => :day_chooser_choose, :class => "chooser cron"
+        = radio_button_tag :day_chooser, 1, @product.cron_tab_days.present?, :id => :day_chooser_choose, :class => "chooser cron"
 
       .group
-        %select{ :name => "day", :id => "day", :multiple => true, :disabled => true, :class => "cron" }
+        %select{ :name => "day", :id => "day", :multiple => true, :disabled => @product.cron_tab_days.blank?, :class => "cron" }
           - (1..31).each do |day|
-            %option{ :value => day }= day
+            %option{ :value => day, :selected => @product.cron_tab_days.include?(day) }= day
 
     .column.right
       %h3.title Month
       .group
         = label_tag :month_chooser_every, "Every month", :class => :label
-        = radio_button_tag :month_chooser, 0, true, :id => :month_chooser_every, :class => "chooser cron"
+        = radio_button_tag :month_chooser, 0, @product.cron_tab_months.blank?, :id => :month_chooser_every, :class => "chooser cron"
 
         = label_tag :month_chooser_choose, "Choose", :class => :label
-        = radio_button_tag :month_chooser, 1, false, :id => :month_chooser_choose, :class => "chooser cron"
+        = radio_button_tag :month_chooser, 1, @product.cron_tab_months.present?, :id => :month_chooser_choose, :class => "chooser cron"
 
       .group
-        %select{ :name => "month", :id => "month", :multiple => true, :disabled => true, :class => "cron" }
-          %option{ :value => "1" } January
-          %option{ :value => "2" } February
-          %option{ :value => "3" } March
-          %option{ :value => "4" } April
-          %option{ :value => "5" } May
-          %option{ :value => "6" } June
-          %option{ :value => "7" } July
-          %option{ :value => "8" } August
-          %option{ :value => "9" } September
-          %option{ :value => "10" } October
-          %option{ :value => "11" } November
-          %option{ :value => "12" } December
+        %select{ :name => "month", :id => "month", :multiple => true, :disabled => @product.cron_tab_months.blank?, :class => "cron" }
+          - Date::MONTHNAMES[1..-1].each_with_index do |month, index|
+            %option{ :value => index, :selected => @product.cron_tab_months.include?(index) }= month
 
   .columns.wat-cf
     .column.left
       %h3.title Weekday
       .group
         = label_tag :weekday_chooser_every, "Every weekday", :class => :label
-        = radio_button_tag :weekday_chooser, 0, true, :id => :weekday_chooser_every, :class => "chooser cron"
+        = radio_button_tag :weekday_chooser, 0, @product.cron_tab_weekdays.blank?, :id => :weekday_chooser_every, :class => "chooser cron"
 
         = label_tag :weekday_chooser_choose, "Choose", :class => :label
-        = radio_button_tag :weekday_chooser, 1, false, :id => :weekday_chooser_choose, :class => "chooser cron"
+        = radio_button_tag :weekday_chooser, 1, @product.cron_tab_weekdays.present?, :id => :weekday_chooser_choose, :class => "chooser cron"
 
       .group
-        %select{ :name => "weekday",  :id => "weekday", :multiple => true, :disabled => "disabled", :class => "cron" }
-          %option{ :value => "0" } Sunday
-          %option{ :value => "1" } Monday
-          %option{ :value => "2" } Tuesday
-          %option{ :value => "3" } Wednesday
-          %option{ :value => "4" } Thursday
-          %option{ :value => "5" } Friday
-          %option{ :value => "6" } Saturday
+        %select{ :name => "weekday", :id => "weekday", :multiple => @product.cron_tab_weekdays.blank?, :disabled => "disabled", :class => "cron" }
+          - Date::DAYNAMES.each_with_index do |day, index|
+            %option{ :value => index, :selected => @product.cron_tab_weekdays.include?(index) }= day
 
 .group
   = form.label :cron_tab, :class => :label

@@ -51,7 +51,17 @@ class Product < ActiveRecord::Base
   end
 
   def cron_tab
-    @cron_tab ||= self[:cron_tab].present? ? self[:cron_tab] : "*\t*\t*\t*\t*"
+    @cron_tab ||= self[:cron_tab].present? ? self[:cron_tab] : "* * * * *"
+  end
+
+  ["minutes", "hours", "days", "months", "weekdays"].each_with_index do |meth, index|
+    class_eval <<-EOF
+      def cron_tab_#{meth}
+        value = cron_tab.split(/\s+/)[#{index}]
+        value == "*" ? [] : value.split(/\s*,*\s*/).collect{|x| x.to_i }
+      end
+
+      EOF
   end
 
   protected
