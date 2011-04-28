@@ -51,7 +51,7 @@ class Product < ActiveRecord::Base
   end
 
   def cron_tab
-    self[:cron_tab].present? ? self[:cron_tab] : "*\t*\t*\t*\t*"
+    @cron_tab ||= self[:cron_tab].present? ? self[:cron_tab] : "*\t*\t*\t*\t*"
   end
 
   protected
