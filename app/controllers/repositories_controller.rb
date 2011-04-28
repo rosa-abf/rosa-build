@@ -4,7 +4,11 @@ class RepositoriesController < ApplicationController
   before_filter :find_repository, :only => [:show, :destroy]
 
   def show
-    @projects = @repository.projects.recent.paginate :page => params[:page], :per_page => 30
+    if params[:query]
+      @projects = @repository.projects.recent.by_name(params[:query]).paginate :page => params[:page], :per_page => 30
+    else
+      @projects = @repository.projects.recent.paginate :page => params[:page], :per_page => 30
+    end
   end
 
   def new

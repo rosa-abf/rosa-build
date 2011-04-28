@@ -11,6 +11,7 @@ ru:
     delete: Удалить
     save: Сохранить
     search: Искать
+    search_by_name: Фильтр по имени
     are_you_sure: "Вы уверены?"
     login: Войти
     or: или

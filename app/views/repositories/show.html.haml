@@ -34,6 +34,12 @@
     %h2.title
       = t("layout.projects.list_header")
     .inner
+      = form_tag platform_repository_path(@platform, @repository), :method => :get do
+        .group
+          = label_tag :query, t("layout.search_by_name"), :class => :label
+          = text_field_tag :query
+          %button.search{:type => "submit"}
+            = t("layout.search")
       %table.table
         %tr
           %th.first= t("activerecord.attributes.project.name")
