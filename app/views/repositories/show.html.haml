@@ -46,7 +46,6 @@
               #{link_to t("layout.show"), platform_repository_project_path(@platform, @repository, project)} | #{link_to t("layout.delete"), platform_repository_project_path(@platform, @repository, project), :method => :delete, :confirm => t("layout.projects.confirm_delete")}
       .actions-bar.wat-cf
         .actions
-
-      = will_paginate @projects
+          = will_paginate @projects
 
 - content_for :sidebar, render(:partial => 'sidebar')
