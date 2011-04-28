@@ -65,6 +65,21 @@ ru:
       edit_header: Редактирование продукта
       confirm_delete: Вы уверены, что хотите удалить этот продукт?
       invalid_content_type: имеет неверный тип
+      cron_tab_generator:
+        show: Показать cron tab генератор
+        hide: Спрятать cron tab генератор
+        choose: Выберите
+        every_minute: Каждую минуту
+        every_hour: Каждый час
+        every_day: Каждый день
+        every_month: Каждый месяц
+        every_weekday: Каждый день недели
+        minutes: Минуты
+        hours: Часы
+        days: Дни
+        months: Месяцы
+        weekdays: Дни недели
+
     projects:
       list: Список
       list_header: Проекты
@@ -210,6 +225,8 @@ ru:
         tar: Tar.gz файл
         is_template: Шаблон
         system_wide: Общесистемный
+        cron_tab: Cront tab
+        use_cron: Использовать крон
 
       arch:
         name: Название
