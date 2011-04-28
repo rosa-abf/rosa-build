@@ -127,8 +127,8 @@
 
       .group
         %select{ :name => "month", :id => "month", :multiple => true, :disabled => @product.cron_tab_months.blank?, :class => "cron" }
-          - Date::MONTHNAMES[1..-1].each_with_index do |month, index|
-            %option{ :value => index, :selected => @product.cron_tab_months.include?(index) }= month
+          - (1..12).each do |month|
+            %option{ :value => month, :selected => @product.cron_tab_months.include?(month) }= I18n.localize(Time.local(2000, month), :format => "%B")
 
   .columns.wat-cf
     .column.left
@@ -143,7 +143,7 @@
       .group
         %select{ :name => "weekday", :id => "weekday", :multiple => true, :disabled => @product.cron_tab_weekdays.blank?, :class => "cron" }
           - Date::DAYNAMES.each_with_index do |day, index|
-            %option{ :value => index, :selected => @product.cron_tab_weekdays.include?(index) }= day
+            %option{ :value => index, :selected => @product.cron_tab_weekdays.include?(index) }= t("layout.weekdays.#{day}")
 
 .group
   = form.label :cron_tab, :class => :label

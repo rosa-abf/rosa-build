@@ -20,6 +20,15 @@ ru:
     true_: Да
     false_: Нет
 
+    weekdays:
+      Monday: Понедельник
+      Tuesday: Вторник
+      Wednesday: Среда
+      Thursday: Четверг
+      Friday: Пятница
+      Saturday: Субота
+      Sunday: Воскресенье
+
     menu:
       users: Пользователи
       platforms: Платформы
