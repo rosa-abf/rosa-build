@@ -1,6 +1,6 @@
 class ProductsController < ApplicationController
   before_filter :authenticate_user!, :except => [:product_status]
-  before_filter :find_product, :only => [:show, :edit, :update, :build, :product_status]
+  before_filter :find_product, :only => [:show, :edit, :update, :build, :product_status, :destroy]
   before_filter :find_platform, :except => [:product_status, :build]
 
   def product_status
@@ -57,6 +57,12 @@ class ProductsController < ApplicationController
   end
 
   def show
+  end
+
+  def destroy
+    @product.destroy
+    flash[:notice] = t("flash.product.destroyed")
+    redirect_to @platform
   end
 
   protected
