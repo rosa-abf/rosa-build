@@ -1,7 +1,7 @@
 class ProductsController < ApplicationController
   before_filter :authenticate_user!, :except => [:product_status]
   before_filter :find_product, :only => [:show, :edit, :update, :build, :product_status, :destroy]
-  before_filter :find_platform, :except => [:product_status, :build, :destroy]
+  before_filter :find_platform, :except => [:product_status, :build]
 
   def product_status
     @product.build_status = params[:status] == "0" ? Product::BUILD_COMPLETED : Product::BUILD_FAILED
