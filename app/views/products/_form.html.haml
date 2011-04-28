@@ -22,6 +22,10 @@
     = link_to @product.tar_file_name, @product.tar.url
     = f.check_box :delete_tar
     = f.label :delete_tar, t('layout.delete')
+
+.group
+  = render :partial => "products/crontab", :locals => { :form => f }
+    
 .group
   = f.label :is_template, :class => :label
   = f.check_box :is_template, :class => 'check_box'

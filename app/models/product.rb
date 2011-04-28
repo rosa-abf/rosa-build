@@ -46,6 +46,14 @@ class Product < ActiveRecord::Base
     self.attributes = attrs
   end
 
+  def cron_command
+    self.name
+  end
+
+  def cron_tab
+    self[:cron_tab].present? ? self[:cron_tab] : "*\t*\t*\t*\t*"
+  end
+
   protected
 
     def destroy_tar?
