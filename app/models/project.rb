@@ -68,7 +68,7 @@ class Project < ActiveRecord::Base
       if result == BuildServer::SUCCESS
         return true
       else
-        raise "Failed to delete repository #{name} (repo #{repository.name}) inside platform #{platform.name}."
+        raise "Failed to delete repository #{name} (repo #{repository.name}) inside platform #{repository.platform.name}."
       end
     end
 end
