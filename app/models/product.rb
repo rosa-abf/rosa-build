@@ -3,7 +3,7 @@ class Product < ActiveRecord::Base
   BUILD_COMPLETED = 0
   BUILD_FAILED = 1
 
-  ATTRS_TO_CLONE = [ 'build_path', 'build', 'build', 'counter', 'ks', 'menu', 'tar' ]
+  ATTRS_TO_CLONE = [ 'build_path', 'build', 'build', 'counter', 'ks', 'menu', 'tar', 'use_cron', 'cron_tab' ]
 
   validates :name, :presence => true, :uniqueness => {:scope => :platform_id}
   validates :platform_id, :presence => true
