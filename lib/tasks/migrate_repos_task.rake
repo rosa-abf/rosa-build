@@ -18,11 +18,7 @@ namespace :repositories do
         next
       end
 
-      begin
-        project = main.projects.create(:name => project_name, :unixname => project_name)
-      rescue
-        next
-      end
+      project = main.projects.create(:name => project_name, :unixname => project_name)
 
       puts "Executing: 'rm -rf #{project.git_repo_path}'"
       `rm -rf #{project.git_repo_path}`
