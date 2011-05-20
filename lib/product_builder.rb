@@ -10,6 +10,6 @@ class ProductBuilder
   end
 
   def self.create_product product_id, path, kstemplate, menuxml, build, counter, packages
-    self.client.call('create_product', product_id, path, kstemplate, menuxml, build, counter, packages)
+    self.client.call('create_product', product_id.to_s, path, kstemplate, menuxml, build, counter, packages)
   end
 end
