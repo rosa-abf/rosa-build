@@ -19,11 +19,23 @@ ru:
     no_: Нет
     true_: Да
     false_: Нет
+
+    weekdays:
+      Monday: Понедельник
+      Tuesday: Вторник
+      Wednesday: Среда
+      Thursday: Четверг
+      Friday: Пятница
+      Saturday: Субота
+      Sunday: Воскресенье
+
     menu:
       users: Пользователи
       platforms: Платформы
+
     sessions:
       sign_in_header: Вход в систему
+
     platforms:
       list: Список
       new: Создать
@@ -43,6 +55,7 @@ ru:
       released_suffix: (выпущена)
       confirm_delete: Вы уверены, что хотите удалить эту платформу?
       current_platform_header: Текущая платформа
+
     repositories:
       list: Список
       list_header: Репозитории
@@ -55,6 +68,7 @@ ru:
       back_to_the_list: ⇐ К списку репозиториев
       confirm_delete: Вы уверены, что хотите удалить этот репозиторий?
       current_repository_header: Текущий репозиторий
+
     products:
       list: Список
       new: Новый продукт
@@ -65,6 +79,22 @@ ru:
       edit_header: Редактирование продукта
       confirm_delete: Вы уверены, что хотите удалить этот продукт?
       invalid_content_type: имеет неверный тип
+
+      cron_tab_generator:
+        show: Показать cron tab генератор
+        hide: Спрятать cron tab генератор
+        choose: Выберите
+        every_minute: Каждую минуту
+        every_hour: Каждый час
+        every_day: Каждый день
+        every_month: Каждый месяц
+        every_weekday: Каждый день недели
+        minutes: Минуты
+        hours: Часы
+        days: Дни
+        months: Месяцы
+        weekdays: Дни недели
+
     projects:
       list: Список
       list_header: Проекты
@@ -80,6 +110,7 @@ ru:
       current_project_header: Текущий проект
       current_build_lists: Текущие сборки
       build_button: Начать сборку
+
     users:
       list: Список
       new: Создать
@@ -90,6 +121,7 @@ ru:
       show: Пользователь
       back_to_the_list: ⇐ К списку пользователей
       confirm_delete: Вы уверены, что хотите удалить этого пользователя?
+
     git:
       repositories:
         empty: Пустой репозиторий
@@ -97,6 +129,7 @@ ru:
         commits: Commits
         tags: Tags
         branches: Branches
+
     build_lists:
       filter_header: Фильтр
       current: Текущие
@@ -109,6 +142,7 @@ ru:
       items_header: Элементы сборки
       no_items_data: Данных нет
       show: Просмотр
+      
       items:
         statuses:
           build_error: ошибка сборки
@@ -117,6 +151,7 @@ ru:
           srpm_not_found: srpm не найден
           success: собран
           unknown: ожидает сборки
+
       statuses:
         build_error: ошибка сборки
         mock_not_found: mock не найден
@@ -136,19 +171,23 @@ ru:
       saved: Проект успешно сохранен
       save_error: Не удалось сохранить проект
       destroyed: Проект успешно удален
+
     user:
       saved: Пользователь успешно сохранен
       save_error: Не удалось сохранить данные о пользователе
       destroyed: Учетная запись успешно удалена
+
     repository:
       saved: Репозиторий успешно добавлен
       save_error: Не удалось добавить репозиторий
       destroyed: Репозиторий успешно удален
+
     product:
       saved: Продукт успешно сохранен
       save_error: Не удалось сохранить изменения
       build_started: Запущена сборка продукта
       destroyed: Продукт удален
+
     platform:
       saved: Платформа успешно добавлена
       saved_error: Не удалось создать платформу
@@ -157,6 +196,7 @@ ru:
       unfreezed: Платформа успешно разморожена
       unfreeze_error: Не удалось разморозить платформу, попробуйте еще раз
       destroyed: Платформа успешно удалена
+
     build_list:
       saved: Билд лист для бранча '%{branch_name}' и архитектуры '%{arch}' создан успешно
       save_error: Не удалось сохранить билд лист для бранча '%{branch_name}' и архитектуры '%{arch}'
@@ -172,7 +212,6 @@ ru:
     name: Название
     parent_platform_id: Родительская платформа
     build_list: Сборочный лист
-
 
   activerecord:
     models:
@@ -210,6 +249,8 @@ ru:
         tar: Tar.gz файл
         is_template: Шаблон
         system_wide: Общесистемный
+        cron_tab: Cront tab
+        use_cron: Использовать крон
 
       arch:
         name: Название

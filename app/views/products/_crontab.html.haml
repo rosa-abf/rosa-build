@@ -1,0 +1,151 @@
+- content_for :javascripts do
+  :javascript
+    $(function(){
+      $(".chooser").click(function() {
+        var for_element = this.name.replace(/_chooser/,"");
+        $("#" + for_element).attr("disabled", (this.value !== "1"));
+      });
+
+      $(".cron").change(function() {
+        var minute, hour, day, month, weekday;
+
+        minute = getSelected('minute');
+        hour = getSelected('hour');
+        day = getSelected('day');
+        month	= getSelected('month');
+        weekday = getSelected('weekday');
+
+        $("#cron").attr("value", minute + " " + hour + " " + day + " " + month + " " + weekday);
+
+        return false;
+      });
+
+      $("#product_use_cron").change(function(){
+        if ($("#product_use_cron:checked").length > 0) {
+          $("#cron").attr("disabled", false);
+        } else {
+          $("#cron").attr("disabled", true);
+        }
+      });
+
+      $("#genereator_btn a").click(function(){
+        $("#crontab_generator").slideToggle(function(){
+
+          if ($("#crontab_generator").css("display") == "none") {
+            $("#genereator_btn a").text("#{t("layout.products.cron_tab_generator.show")}");
+          } else {
+            $("#genereator_btn a").text("#{t("layout.products.cron_tab_generator.hide")}");
+          }
+
+        });
+
+        return false;
+      });
+    });
+
+    function getSelected(name) {
+      var chosen;
+
+      if ($("#" + name + "_chooser_every").attr("checked")) {
+        chosen = '*';
+      } else {
+        var all_selected = [];
+
+        $("#" + name + " option:selected").each(function(i, ele) { all_selected.push($(ele).attr("value")); });
+
+        if (all_selected.length) {
+          chosen = all_selected.join(",");
+        } else {
+          chosen = '*';
+        }
+      }
+
+      return chosen;
+    }
+
+
+.group
+  = form.check_box :use_cron
+  = form.label :use_cron
+
+#genereator_btn
+  %a{ :href => "#" }= t("layout.products.cron_tab_generator.show")
+
+#crontab_generator{ :style => "display: none;" }
+  .columns.wat-cf
+    .column.left
+      %h3.title= t("layout.products.cron_tab_generator.minutes")
+      .group
+        = label_tag :minute_chooser_every, t("layout.products.cron_tab_generator.every_minute"), :class => :label
+        = radio_button_tag :minute_chooser, 0, @product.cron_tab_minutes.blank?, :id => :minute_chooser_every, :class => "chooser cron"
+
+        = label_tag :minute_chooser_choose, t("layout.products.cron_tab_generator.choose"), :class => :label
+        = radio_button_tag :minute_chooser, 1, @product.cron_tab_minutes.present?, :id => :minute_chooser_choose, :class => "chooser cron"
+
+      .group
+        %select{ :name => :minute, :id => :minute, :multiple => true, :disabled => @product.cron_tab_minutes.blank?, :class => "cron" }
+          - (0..59).each do |min|
+            %option{ :value => min, :selected => @product.cron_tab_minutes.include?(min) }= min
+
+    .column.right
+      %h3.title= t("layout.products.cron_tab_generator.hours")
+      .group
+        = label_tag :hour_chooser_every, t("layout.products.cron_tab_generator.every_hour"), :class => :label
+        = radio_button_tag :hour_chooser, 0, @product.cron_tab_hours.blank?, :id => :minute_chooser_every, :class => "chooser cron"
+
+        = label_tag :hour_chooser_choose, t("layout.products.cron_tab_generator.choose"), :class => :label
+        = radio_button_tag :hour_chooser, 1, @product.cron_tab_hours.present?, :id => :minute_chooser_choose, :class => "chooser cron"
+
+      .group
+        %select{ :name => :hour, :id => :hour, :multiple => true, :disabled => @product.cron_tab_hours.blank?, :class => "cron" }
+          - (0..23).each do |hour|
+            %option{ :value => hour, :selected => @product.cron_tab_hours.include?(hour) }= hour
+
+  .columns.wat-cf
+    .column.left
+      %h3.title= t("layout.products.cron_tab_generator.days")
+      .group
+        = label_tag :day_chooser_every, t("layout.products.cron_tab_generator.every_day"), :class => :label
+        = radio_button_tag :day_chooser, 0, @product.cron_tab_days.blank?, :id => :day_chooser_every, :class => "chooser cron"
+
+        = label_tag :day_chooser_choose, t("layout.products.cron_tab_generator.choose"), :class => :label
+        = radio_button_tag :day_chooser, 1, @product.cron_tab_days.present?, :id => :day_chooser_choose, :class => "chooser cron"
+
+      .group
+        %select{ :name => "day", :id => "day", :multiple => true, :disabled => @product.cron_tab_days.blank?, :class => "cron" }
+          - (1..31).each do |day|
+            %option{ :value => day, :selected => @product.cron_tab_days.include?(day) }= day
+
+    .column.right
+      %h3.title= t("layout.products.cron_tab_generator.months")
+      .group
+        = label_tag :month_chooser_every, t("layout.products.cron_tab_generator.every_month"), :class => :label
+        = radio_button_tag :month_chooser, 0, @product.cron_tab_months.blank?, :id => :month_chooser_every, :class => "chooser cron"
+
+        = label_tag :month_chooser_choose, t("layout.products.cron_tab_generator.choose"), :class => :label
+        = radio_button_tag :month_chooser, 1, @product.cron_tab_months.present?, :id => :month_chooser_choose, :class => "chooser cron"
+
+      .group
+        %select{ :name => "month", :id => "month", :multiple => true, :disabled => @product.cron_tab_months.blank?, :class => "cron" }
+          - (1..12).each do |month|
+            %option{ :value => month, :selected => @product.cron_tab_months.include?(month) }= I18n.localize(Time.local(2000, month), :format => "%B")
+
+  .columns.wat-cf
+    .column.left
+      %h3.title= t("layout.products.cron_tab_generator.weekdays")
+      .group
+        = label_tag :weekday_chooser_every, t("layout.products.cron_tab_generator.every_weekday"), :class => :label
+        = radio_button_tag :weekday_chooser, 0, @product.cron_tab_weekdays.blank?, :id => :weekday_chooser_every, :class => "chooser cron"
+
+        = label_tag :weekday_chooser_choose, t("layout.products.cron_tab_generator.choose"), :class => :label
+        = radio_button_tag :weekday_chooser, 1, @product.cron_tab_weekdays.present?, :id => :weekday_chooser_choose, :class => "chooser cron"
+
+      .group
+        %select{ :name => "weekday", :id => "weekday", :multiple => true, :disabled => @product.cron_tab_weekdays.blank?, :class => "cron" }
+          - Date::DAYNAMES.each_with_index do |day, index|
+            %option{ :value => index, :selected => @product.cron_tab_weekdays.include?(index) }= t("layout.weekdays.#{day}")
+
+.group
+  = form.label :cron_tab, :class => :label
+  = form.text_field :cron_tab, :id => "cron", :class => "text_field", :style => "width: 40%", :disabled => !@product.use_cron, :value => @product.cron_tab
+  = @product.cron_command

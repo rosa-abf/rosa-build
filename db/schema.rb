@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110414145300) do
+ActiveRecord::Schema.define(:version => 20110428140753) do
 
   create_table "arches", :force => true do |t|
     t.string   "name",       :null => false
@@ -99,6 +99,8 @@ ActiveRecord::Schema.define(:version => 20110414145300) do
     t.datetime "tar_updated_at"
     t.boolean  "is_template",      :default => false
     t.boolean  "system_wide",      :default => false
+    t.text     "cron_tab"
+    t.boolean  "use_cron",         :default => false
   end
 
   create_table "projects", :force => true do |t|
