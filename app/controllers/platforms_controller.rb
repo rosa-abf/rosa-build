@@ -2,7 +2,7 @@
 class PlatformsController < ApplicationController
   before_filter :authenticate_user!
 
-  before_filter :find_platform, :only => [:freeze, :unfreeze]
+  before_filter :find_platform, :only => [:freeze, :unfreeze, :clone]
 
   def index
     @platforms = Platform.all
@@ -50,6 +50,17 @@ class PlatformsController < ApplicationController
     end
 
     redirect_to @platform
+  end
+
+  def clone
+    cloned = @platform.clone(@platform.name + "_clone", @platform.unixname + "_clone")
+    if cloned
+      flash[:notice] = 'Клонирование успешно'
+      redirect_to cloned
+    else
+      flash[:notice] = 'Ошибка клонирования'
+      redirect_to @platform
+    end
   end
 
   def destroy

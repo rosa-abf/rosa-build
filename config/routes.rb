@@ -5,6 +5,7 @@ Rosa::Application.routes.draw do
     member do
       get 'freeze'
       get 'unfreeze'
+      get 'clone'
     end
 
     resources :products do

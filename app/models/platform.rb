@@ -1,3 +1,4 @@
+require 'lib/build_server.rb'
 class Platform < ActiveRecord::Base
   belongs_to :parent, :class_name => 'Platform', :foreign_key => 'parent_platform_id'
   has_many :repositories, :dependent => :destroy
@@ -21,8 +22,8 @@ class Platform < ActiveRecord::Base
     p.unixname = new_unixname
     p.parent = self
     p.repositories = repositories.map(&:clone)
-    p.save!
-    return p
+    result = p.save
+    return (result && xml_rpc_clone(new_unixname) && p)
   end
 
   def name
@@ -64,6 +65,15 @@ class Platform < ActiveRecord::Base
         return true
       else
         raise "Failed to delete platform #{unixname}."
+      end
+    end
+
+    def xml_rpc_clone(new_unixname)
+      result = BuildServer.clone_platform new_unixname, self.unixname, APP_CONFIG['root_path']
+      if result == BuildServer::SUCCESS
+        return true
+      else
+        raise "Failed to clone platform #{name}. Path: #{build_path(unixname)} to platform #{new_unixname}"
       end
     end
 
