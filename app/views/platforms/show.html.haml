@@ -36,7 +36,7 @@
           = link_to t("layout.platforms.unfreeze"), unfreeze_platform_path(@platform), :confirm => I18n.t("layout.platforms.confirm_unfreeze"), :class => "button"
         - else
           = link_to t("layout.platforms.freeze"), freeze_platform_path(@platform), :confirm => I18n.t("layout.platforms.confirm_freeze"), :class => "button"
-        = link_to "Клонировать", clone_platform_path(@platform), :confirm => I18n.t("layout.platforms.confirm_freeze"), :class => "button"
+        = link_to "Клонировать", clone_platform_path(@platform), :confirm => I18n.t("layout.platforms.confirm_clone"), :class => "button"
 
 %a{ :name => "repositories" }
 .block
