@@ -68,8 +68,8 @@ class BuildServer
     self.client.call('add_to_repo', name, repo_name)
   end
 
-  def self.add_build_list project_name, branch_name, platform_name, arch_name
-    self.client.call('add_build_list', project_name, branch_name, platform_name, arch_name)
+  def self.add_build_list project_name, branch_name, platform_name, arch_name, web_id
+    self.client.call('add_build_list', project_name, branch_name, platform_name, arch_name, web_id)
   end
 
   def self.freeze platform_name, new_repo_name = nil

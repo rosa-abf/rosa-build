@@ -7,7 +7,7 @@ class BuildListsController < ApplicationController
   before_filter :find_arches, :only => [:index, :filter]
   before_filter :find_branches, :only => [:index, :filter]
 
-  before_filter :find_build_list_by_bs, :only => [:status_build, :pre_build, :new_bbdt]
+  before_filter :find_build_list_by_bs, :only => [:status_build, :pre_build, :post_build]
 
   def index
     @build_lists = @project.build_lists.recent.paginate :page => params[:page]
@@ -41,7 +41,6 @@ class BuildListsController < ApplicationController
 
   def pre_build
     @build_list.status = BuildList::BUILD_STARTED
-    @build_list.container_path = params[:container_path]
     @build_list.notified_at = Time.now
 
     @build_list.save
@@ -70,6 +69,7 @@ class BuildListsController < ApplicationController
   end
 
   def new_bbdt
+    @build_list = BuildList.find_by_id!(params[:web_id])
     @build_list.name = params[:name]
     @build_list.additional_repos = ActiveSupport::JSON.decode(params[:additional_repos])
     @build_list.set_items(ActiveSupport::JSON.decode(params[:items]))

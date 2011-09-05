@@ -89,7 +89,7 @@ class BuildList < ActiveRecord::Base
     end
 
     def place_build
-      self.status = BuildServer.add_build_list project.name, branch_name, project.repository.platform.name, arch.name
+      self.status = BuildServer.add_build_list project.name, branch_name, project.repository.platform.name, arch.name, id
       self.status = BUILD_PENDING if self.status == 0
       save
     end
