@@ -1,3 +1,5 @@
+# coding: UTF-8
+
 class UserMailer < ActionMailer::Base
   default :from => APP_CONFIG['no-reply-email']
 

@@ -81,6 +81,11 @@ class BuildList < ActiveRecord::Base
       end
     end
   end
+  
+  def publish
+    BuildServer.publish_container bs_id
+    self.delete
+  end
 
   private
     def set_default_status

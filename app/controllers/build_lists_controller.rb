@@ -1,9 +1,9 @@
 class BuildListsController < ApplicationController
   before_filter :authenticate_user!, :except => [:status_build, :pre_build, :post_build, :circle_build, :new_bbdt]
   before_filter :authenticate_build_service!, :only => [:status_build, :pre_build, :post_build, :circle_build, :new_bbdt]
-  before_filter :find_platform, :only => [:index, :filter, :show]
-  before_filter :find_repository, :only => [:index, :filter, :show]
-  before_filter :find_project, :only => [:index, :filter, :show]
+  before_filter :find_platform, :only => [:index, :filter, :show, :publish]
+  before_filter :find_repository, :only => [:index, :filter, :show, :publish]
+  before_filter :find_project, :only => [:index, :filter, :show, :publish]
   before_filter :find_arches, :only => [:index, :filter]
   before_filter :find_branches, :only => [:index, :filter]
 
@@ -24,6 +24,13 @@ class BuildListsController < ApplicationController
   def show
     @build_list = @project.build_lists.find(params[:id])
     @item_groups = @build_list.items.group_by_level
+  end
+  
+  def publish
+    @build_list = @project.build_lists.find(params[:id])
+    @build_list.publish
+    
+    redirect_to platform_repository_project_build_lists_path(@platform, @repository, @project)
   end
 
   def status_build

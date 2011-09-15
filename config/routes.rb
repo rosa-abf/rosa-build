@@ -23,6 +23,9 @@ Rosa::Application.routes.draw do
             get :recent
             post :filter
           end
+          member do
+            post :publish
+          end  
         end
 
         member do

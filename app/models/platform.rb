@@ -1,4 +1,4 @@
-require 'lib/build_server.rb'
+#require 'lib/build_server.rb'
 class Platform < ActiveRecord::Base
   belongs_to :parent, :class_name => 'Platform', :foreign_key => 'parent_platform_id'
   has_many :repositories, :dependent => :destroy

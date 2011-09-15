@@ -1,3 +1,4 @@
+# coding: UTF-8
 
 class PlatformsController < ApplicationController
   before_filter :authenticate_user!
