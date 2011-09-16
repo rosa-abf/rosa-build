@@ -83,8 +83,14 @@ class BuildList < ActiveRecord::Base
   end
   
   def publish
+    return false unless can_published?
+    
     BuildServer.publish_container bs_id
     self.delete
+  end
+  
+  def can_published?
+    self.status == BuildServer::SUCCESS
   end
 
   private

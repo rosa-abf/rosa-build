@@ -58,8 +58,9 @@
           = t("activerecord.attributes.build_list.additional_repos")
           \:
         = @build_list.additional_repos
-      .wat-cf
-        = link_to image_tag("web-app-theme/icons/cross.png", :alt => t("layout.publish")) + " " + t("layout.publish"), publish_platform_repository_project_build_list_path(@platform, @repository, @project, @build_list), :method => "post", :class => "button", :confirm => t("layout.build_lists.confirm_publish")
+      - if  @build_list.can_published?  
+        .wat-cf
+          = link_to image_tag("web-app-theme/icons/cross.png", :alt => t("layout.publish")) + " " + t("layout.publish"), publish_platform_repository_project_build_list_path(@platform, @repository, @project, @build_list), :method => "post", :class => "button", :confirm => t("layout.build_lists.confirm_publish")
 
 .block
   .content
