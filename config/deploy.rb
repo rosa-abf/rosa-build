@@ -8,6 +8,7 @@ set :rvm_type, :user
 require 'bundler/capistrano'
 
 # main details
+ssh_options[:forward_agent] = true
 set :application, "rosa_build"
 set :user, "rosa_build"
 
@@ -26,7 +27,7 @@ ssh_options[:auth_methods] = %w(publickey password)
 set :use_sudo, false
 
 set :repository,  "git@github.com:evilmartians/rosa-build.git"
-set :branch, "master"
+set :branch, "test_master"
 set :git_shallow_clone, 1
 set :keep_releases, 3
 
@@ -83,4 +84,5 @@ namespace :deploy do
   end
 end
 
-require 'hoptoad_notifier/capistrano'
+require './config/boot'
+require 'airbrake/capistrano'

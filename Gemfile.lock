@@ -28,6 +28,9 @@ GEM
       activemodel (= 3.0.5)
       activesupport (= 3.0.5)
     activesupport (3.0.5)
+    airbrake (3.0.4)
+      activesupport
+      builder
     arel (2.0.9)
     bcrypt-ruby (2.1.4)
     builder (2.1.2)
@@ -66,9 +69,6 @@ GEM
       haml (~> 3.0)
       railties (~> 3.0)
     highline (1.6.1)
-    hoptoad_notifier (2.4.6)
-      activesupport
-      builder
     hpricot (0.8.4)
     i18n (0.5.0)
     jammit (0.6.0)
@@ -146,6 +146,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  airbrake
   capistrano
   capistrano-ext
   compass (>= 0.10.6)
@@ -155,7 +156,6 @@ DEPENDENCIES
   grit
   haml (>= 3.0.0)
   haml-rails
-  hoptoad_notifier (~> 2.3)
   hpricot
   jammit
   paperclip (~> 2.3)

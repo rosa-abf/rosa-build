@@ -46,7 +46,7 @@ gem "capistrano"
 gem "capistrano-ext"
 gem "will_paginate", "~> 3.0.pre2"
 gem 'factory_girl_rails'
-gem "hoptoad_notifier", "~> 2.3"
+gem "airbrake"
 gem "russian"
 gem "grit"
 gem 'unicorn'
