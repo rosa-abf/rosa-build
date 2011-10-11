@@ -9,9 +9,9 @@
     - form_for(resource, :as => resource_name, :url => session_path(resource_name), :html => { :class => "form login" }) do |f|
       .group.wat-cf
         .left
-          = f.label :email, :class => "label right"
+          = f.label :login, :class => "label right"
         .right
-          = f.text_field :email, :class => "text_field"
+          = f.text_field :login, :class => "text_field"
       .group.wat-cf
         .left
           = f.label :password, :class => "label right"
@@ -22,4 +22,4 @@
           %button.button{ :type => "submit" }
             %img{ :src => "/images/web-app-theme/icons/key.png", :alt => "Save" }= t("layout.login")
           %span.text_button_padding
-          = link_to t('devise.passwords.link'), new_password_path(resource_name), :class => "text_button_padding link_button"
+          = render :partial => "devise/shared/links"

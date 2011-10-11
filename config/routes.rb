@@ -1,5 +1,8 @@
 Rosa::Application.routes.draw do
-  devise_for :users
+  devise_for :users, :controllers => {:omniauth_callbacks => 'users/omniauth_callbacks'} do
+    get '/users/auth/:provider' => 'users/omniauth_callbacks#passthru'
+  end
+  resources :users
 
   resources :platforms do
     member do
@@ -36,8 +39,6 @@ Rosa::Application.routes.draw do
       end
     end
   end
-
-  resources :users
   
   match 'build_lists/status_build', :to => "build_lists#status_build"
   match 'build_lists/post_build', :to => "build_lists#post_build"

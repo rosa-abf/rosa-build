@@ -2,6 +2,7 @@
 %html
   %head
     %title= t("layout.global_header")
+    = render :partial => "layouts/javascripts"
     -#= include_stylesheets :sessions
     = stylesheet_link_tag "web-app-theme/base.css", "web-app-theme/themes/default/style.css", "web-app-theme/override.css"
 

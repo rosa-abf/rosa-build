@@ -12,8 +12,8 @@
           %a{:href => "/"}= t("layout.global_header")
         #user-navigation
           %ul.wat-cf
-            %li
-              = link_to t('layout.logout'), destroy_user_session_path, :class => "logout"
+            %li= link_to current_user.nickname, edit_user_registration_path
+            %li= link_to t('layout.logout'), destroy_user_session_path, :method => :delete, :class => "logout"
         #main-navigation
           %ul.wat-cf
             %li{:class => controller.controller_path == 'users' ? 'active' : '' }

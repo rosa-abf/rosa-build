@@ -1,9 +1,15 @@
 .group
   = f.label :name, t("activerecord.attributes.user.name"), :class => :label
   = f.text_field :name, :class => 'text_field'
+/ .group
+/   = f.label :nickname, t("activerecord.attributes.user.nickname"), :class => :label
+/   = f.text_field :nickname, :class => 'text_field'
 .group
   = f.label :email, t("activerecord.attributes.user.email"), :class => :label
   = f.text_field :email, :class => 'text_field'
+.group
+  = f.label :ssh_key, t("activerecord.attributes.user.ssh_key"), :class => :label
+  = f.text_area :ssh_key, :class => 'text_area'
 
 .group.navform.wat-cf
   %button.button{:type => "submit"}

@@ -1,56 +1,66 @@
 source 'http://rubygems.org'
 
-gem 'rails', '3.0.5'
+gem 'rails', '3.0.10' #, :git => 'git://github.com/rails/rails.git'
 
-# Bundle edge Rails instead:
-# gem 'rails', :git => 'git://github.com/rails/rails.git'
+gem 'pg', '~> 0.11.0'
+gem 'silent-postgres', '~> 0.1.1'
 
-gem 'pg'
+gem 'devise', '~> 1.4.8'
+gem 'omniauth', '~> 0.3.0'
+gem 'oa-openid', '~> 0.3.0', :require => 'omniauth/openid'
+gem 'cancan', '~> 1.6.7'
 
-# Use unicorn as the web server
-# gem 'unicorn'
+gem "haml-rails", '~> 0.3.4'
+gem "compass", '~> 0.11.5'
+gem 'jammit'
+gem "yui-compressor", "0.9.5" # Higher versions depends on Platform gem which conflicts with Platform model
 
-# Deploy with Capistrano
-# gem 'capistrano'
+gem 'paperclip', "~> 2.3"
+gem "will_paginate", "~> 3.0.2"
+gem "russian"
 
-# To use debugger (ruby-debug for Ruby 1.8.7+, ruby-debug19 for Ruby 1.9.2+)
-# gem 'ruby-debug'
-# gem 'ruby-debug19', :require => 'ruby-debug'
+gem "grit"
+gem 'delayed_job'
+gem 'unicorn'
 
-# Bundle the extra gems:
-# gem 'bj'
-# gem 'nokogiri'
-# gem 'sqlite3-ruby', :require => 'sqlite3'
-# gem 'aws-s3', :require => 'aws/s3'
-
-# Bundle gems for the local environment. Make sure to
-# put test-only gems in this group so their generators
-# and rake tasks are available in development mode:
-# group :development, :test do
-#   gem 'webrat'
-# end
-
-group :development, :test do
-  gem "rspec-rails", ">= 2.0.1"
-  gem 'factory_girl_rails'
-  gem 'web-app-theme', '>= 0.6.2'
-  gem 'hpricot'
-  gem 'ruby_parser'
+group :production do
+  gem "airbrake"
+  # gem 'newrelic_rpm', '~> 3.1.1'
 end
 
-gem "devise"
-gem "haml", ">= 3.0.0"
-gem "haml-rails"
-gem "compass", ">= 0.10.6"
-gem "capistrano"
-gem "capistrano-ext"
-gem "will_paginate", "~> 3.0.pre2"
-gem 'factory_girl_rails'
-gem "airbrake"
-gem "russian"
-gem "grit"
-gem 'unicorn'
-gem 'delayed_job'
-gem 'paperclip', "~> 2.3"
+group :development do
+  # gem 'letter_opener'
+  gem 'rails3-generators'
+  gem 'web-app-theme'
+  gem 'hpricot'
+  gem 'ruby_parser'
 
-gem 'jammit'
+  # debug
+  gem 'ruby-debug'
+  # gem 'looksee'
+  # gem 'awesome_print'
+  # gem 'wirble'
+  # gem 'hirb'
+  # gem 'rails-footnotes', '>= 3.7.5.rc4' # this shit is very buggy don't forget to switch it off back
+
+  # deploy
+  gem 'capistrano', :require => false
+  gem 'capistrano-ext', :require => false
+  # gem 'capistrano-exts', :require => false #, :git => 'git://github.com/chipiga/capistrano-exts.git'
+  # gem 'capistrano-recipes', :require => false
+  gem 'capistrano_colors', :require => false
+end
+
+group :test do
+  gem 'rspec-rails',        '~> 2.6.1'
+  gem 'factory_girl_rails', '~> 1.2.0'
+  # gem 'spork',              '>= 0.9.0.rc9'
+  # gem 'guard-spork',        '~> 0.3.1'
+  # gem 'guard-rspec',        '~> 0.5.0'
+  # gem 'guard-bundler',      '~> 0.1.3'
+  # 
+  # gem 'rb-fsevent', '>= 0.4.3', :require => false
+  # gem 'growl',      '~> 1.0.3', :require => false
+  # gem 'rb-inotify', '>= 0.8.6', :require => false
+  # gem 'libnotify',  '~> 0.5.7', :require => false
+end

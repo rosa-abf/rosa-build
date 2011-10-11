@@ -1,19 +1,32 @@
 #block-signup.block
   %h2= t("devise.registrations.sign_up_header")
-    .content
-      = form_for(resource, :as => resource_name, :url => registration_path(resource_name), :html => { :class => "form" }) do |f|
-        - if resource.errors.present?
-          .flash
-            .message.error
-              - messages = resource.errors.full_messages.map { |msg| content_tag(:p, msg) }.join.html_safe
-              = messages
+  .content
+    = form_for(resource, :as => resource_name, :url => registration_path(resource_name), :html => { :class => "form" }) do |f|
+      - if resource.errors.present?
+        .flash
+          .message.error
+            - messages = resource.errors.full_messages.map { |msg| content_tag(:p, msg) }.join.html_safe
+            = messages
 
-        .group.wat-cf
-          .left
-            = f.label :email, :class => "label"
-          .right
-            = f.text_field :email, :class => "text_field"
+      .group.wat-cf
+        .left
+          = f.label :nickname, :class => "label"
+        .right
+          = f.text_field :nickname, :class => "text_field"
 
+      .group.wat-cf
+        .left
+          = f.label :email, :class => "label"
+        .right
+          = f.text_field :email, :class => "text_field"
+
+      .group.wat-cf
+        .left
+          = f.label :name, :class => "label"
+        .right
+          = f.text_field :name, :class => "text_field"
+
+      - if resource.authentications.blank?
         .group.wat-cf
           .left
             = f.label :password, :class => "label"
@@ -26,8 +39,8 @@
           .right
             = f.password_field :password_confirmation, :class => "text_field"
 
-        .group.navform.wat-cf
-          %button.button{ :type => "submit" }
-            #{image_tag("web-app-theme/icons/tick.png", :alt => t("devise.registrations.signed_up"))} #{t("devise.registrations.signed_up")}
-          %span.text_button_padding
-            = render :partial => "devise/shared/links"
+      .group.navform.wat-cf
+        %button.button{ :type => "submit" }
+          #{image_tag("web-app-theme/icons/tick.png", :alt => t("devise.registrations.sign_up_header"))} #{t("devise.registrations.sign_up_header")}
+        %span.text_button_padding
+        = render :partial => "devise/shared/links"
