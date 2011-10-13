@@ -1,5 +1,13 @@
 require 'digest/md5'
 class User < ActiveRecord::Base
+  has_many :targets, :as => :object, :class_name => 'Relation'
+
+  has_many :groups,       :through => :targets, :source => :target, :source_type => 'Group',   :autosave => true
+  has_many :projects,     :through => :targets, :source => :target, :source_type => 'Project', :autosave => true
+  has_many :platforms,    :through => :targets, :source => :target, :source_type => 'Project', :autosave => true
+  has_many :repositories, :through => :targets, :source => :target, :source_type => 'Project', :autosave => true
+
+
   devise :database_authenticatable,
          :recoverable, :rememberable, :validatable
 

@@ -36,6 +36,7 @@ group :development, :test do
   gem 'web-app-theme', '>= 0.6.2'
   gem 'hpricot'
   gem 'ruby_parser'
+  gem 'mysql2', '<= 0.2.9'
 end
 
 gem "devise"

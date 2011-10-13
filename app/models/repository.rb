@@ -1,6 +1,10 @@
 class Repository < ActiveRecord::Base
   belongs_to :platform
-  has_many :projects, :dependent => :destroy
+  has_many :projects, :through => :project_to_repository #, :dependent => :destroy
+
+  has_many :objects, :as => :target, :class_name => 'Relation'
+  has_many :members, :through => :objects, :source => :object, :source_type => 'User'
+  has_many :groups,  :through => :objects, :source => :object, :source_type => 'Group'
 
   validates :name, :uniqueness => {:scope => :platform_id}, :presence => true
   validates :unixname, :uniqueness => {:scope => :platform_id}, :presence => true, :format => { :with => /^[a-zA-Z0-9\-.]+$/ }

@@ -4,6 +4,10 @@ class Platform < ActiveRecord::Base
   has_many :repositories, :dependent => :destroy
   has_many :products, :dependent => :destroy
 
+  has_many :objects, :as => :target, :class_name => 'Relation'
+  has_many :members, :through => :objects, :source => :object, :source_type => 'User'
+  has_many :groups,  :through => :objects, :source => :object, :source_type => 'Group'
+
   validates :name, :presence => true, :uniqueness => true
   validates :unixname, :uniqueness => true, :presence => true, :format => { :with => /^[a-zA-Z0-9\-.]+$/ }, :allow_nil => false, :allow_blank => false
 
