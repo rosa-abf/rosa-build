@@ -1,11 +1,12 @@
 class Project < ActiveRecord::Base
   has_many :build_lists, :dependent => :destroy
 
-  has_many :repositories, :through => :project_to_repository
+  has_many :project_to_repositories
+  has_many :repositories, :through => :project_to_repositories
 
   has_many :members, :as => :target, :class_name => 'Relation'
-  has_many :collaborators, :through => :members, :source => :object, :source_type = 'User'
-  has_many :groups,        :through => :members, :source => :object, :source_type = 'Group'
+  has_many :collaborators, :through => :members, :source => :object, :source_type => 'User'
+  has_many :groups,        :through => :members, :source => :object, :source_type => 'Group'
 
   validates :name, :uniqueness => {:scope => :repository_id}, :presence => true, :allow_nil => false, :allow_blank => false
   validates :unixname, :uniqueness => {:scope => :repository_id}, :presence => true, :format => { :with => /^[a-zA-Z0-9\-.]+$/ }, :allow_nil => false, :allow_blank => false

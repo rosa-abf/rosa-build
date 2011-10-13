@@ -1,6 +1,8 @@
 class Repository < ActiveRecord::Base
   belongs_to :platform
-  has_many :projects, :through => :project_to_repository #, :dependent => :destroy
+
+  has_many :projects, :through => :project_to_repositories #, :dependent => :destroy
+  has_many :project_to_repositories
 
   has_many :objects, :as => :target, :class_name => 'Relation'
   has_many :members, :through => :objects, :source => :object, :source_type => 'User'
@@ -11,8 +13,8 @@ class Repository < ActiveRecord::Base
 
   scope :recent, order("name ASC")
 
-  before_create :xml_rpc_create
-  before_destroy :xml_rpc_destroy
+#  before_create :xml_rpc_create
+#  before_destroy :xml_rpc_destroy
 
   def path
     build_path(unixname)
