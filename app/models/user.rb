@@ -4,14 +4,13 @@ class User < ActiveRecord::Base
   devise :database_authenticatable, :registerable, :omniauthable, # :token_authenticatable, :encryptable, :timeoutable
          :recoverable, :rememberable, :validatable #, :trackable, :confirmable, :lockable
 
-  validates :nickname, :presence => true, :uniqueness => {:case_sensitive => false},
-                       :format => {:with => /[\w]+/i} #, :exclusion => {:in => %w(superuser moderator')}
+  validates :nickname, :presence => true, :uniqueness => {:case_sensitive => false}, :format => /^[a-zA-Z0-9_]+$/i
 
   attr_accessible :email, :password, :password_confirmation, :remember_me, :login, :nickname, :name, :ssh_key
+  attr_readonly :nickname
 
   attr_accessor :login
 
-  before_validation(:on => :update) { raise "Can't change nickname" if nickname_changed? } # disable edit username
   # after_create() { UserMailer.new_user_notification(self).deliver }
 
   class << self
@@ -25,7 +24,7 @@ class User < ActiveRecord::Base
       super.tap do |user|
         if data = session["devise.omniauth_data"]
           if info = data['user_info'] and info.present?
-            user.email ||= info['email'].presence
+            user.email = info['email'].presence if user.email.blank?
             user.nickname ||= info['nickname'].presence || info['username'].presence
             user.name ||= info['name'].presence || [info['first_name'], info['last_name']].join(' ').strip
           end
