@@ -1,6 +1,8 @@
 Rosa::Application.routes.draw do
   devise_for :users
 
+  resources :downloads, :only => :index
+
   resources :platforms do
     member do
       get 'freeze'
@@ -25,7 +27,7 @@ Rosa::Application.routes.draw do
           end
           member do
             post :publish
-          end  
+          end
         end
 
         member do
@@ -38,7 +40,7 @@ Rosa::Application.routes.draw do
   end
 
   resources :users
-  
+
   match 'build_lists/status_build', :to => "build_lists#status_build"
   match 'build_lists/post_build', :to => "build_lists#post_build"
   match 'build_lists/pre_build', :to => "build_lists#pre_build"

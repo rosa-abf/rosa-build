@@ -20,13 +20,15 @@
               %a{:href => users_path}= t("layout.menu.users")
             %li{:class => controller.controller_path == 'platforms' ? 'active' : '' }
               %a{:href => platforms_path}= t("layout.menu.platforms")
+            %li{:class => controller.controller_path == 'downloads' ? 'active' : '' }
+              %a{:href => downloads_path}= t("layout.menu.downloads")
       #wrapper.wat-cf
         = render :partial => "layouts/flashes"
         #main
           = yield
           #footer
             .block
-               
+
         #sidebar
           = yield :sidebar
 

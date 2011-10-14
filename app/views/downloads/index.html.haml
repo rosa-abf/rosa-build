@@ -1,0 +1,28 @@
+.block
+  .content
+    %h2.title
+      = t("layout.downloads.title")
+    .inner
+      %table.table
+        %tr
+          %th.first= t("activerecord.attributes.download.name")
+          %th= t("activerecord.attributes.download.version")
+          %th= t("activerecord.attributes.download.distro")
+          %th= t("activerecord.attributes.download.platform")
+          %th.last= t("activerecord.attributes.download.counter")
+        - @downloads.each do |download|
+          %tr{:class => cycle("odd", "even")}
+            %td
+              = download.name
+            %td
+              = download.version
+            %td
+              = download.distro
+            %td
+              = download.platform
+            %td.last
+              = download.counter
+      .actions-bar.wat-cf
+        .actions
+          = will_paginate @downloads
+

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110428140753) do
+ActiveRecord::Schema.define(:version => 20111012065448) do
 
   create_table "arches", :force => true do |t|
     t.string   "name",       :null => false
@@ -72,6 +72,16 @@ ActiveRecord::Schema.define(:version => 20110428140753) do
   end
 
   add_index "delayed_jobs", ["priority", "run_at"], :name => "delayed_jobs_priority"
+
+  create_table "downloads", :force => true do |t|
+    t.string   "name",                      :null => false
+    t.string   "version"
+    t.string   "distro"
+    t.string   "platform"
+    t.integer  "counter",    :default => 0
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "platforms", :force => true do |t|
     t.string   "name"
