@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20111011200645) do
+ActiveRecord::Schema.define(:version => 20111012133633) do
 
   create_table "arches", :force => true do |t|
     t.string   "name",       :null => false
@@ -83,6 +83,22 @@ ActiveRecord::Schema.define(:version => 20111011200645) do
   end
 
   add_index "delayed_jobs", ["priority", "run_at"], :name => "delayed_jobs_priority"
+
+  create_table "event_logs", :force => true do |t|
+    t.integer  "user_id"
+    t.string   "user_name"
+    t.integer  "object_id"
+    t.string   "object_type"
+    t.string   "object_name"
+    t.string   "ip"
+    t.string   "kind"
+    t.string   "protocol"
+    t.string   "controller"
+    t.string   "action"
+    t.text     "message"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "platforms", :force => true do |t|
     t.string   "name"

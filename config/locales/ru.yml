@@ -33,6 +33,7 @@ ru:
     menu:
       users: Пользователи
       platforms: Платформы
+      event_logs: Лог событий
 
     sessions:
       sign_in_header: Вход в систему
@@ -57,6 +58,10 @@ ru:
       released_suffix: (выпущена)
       confirm_delete: Вы уверены, что хотите удалить эту платформу?
       current_platform_header: Текущая платформа
+
+    event_logs:
+      list: Список
+      list_header: Лог событий
 
     repositories:
       list: Список
@@ -222,6 +227,7 @@ ru:
       arch: Arch
       container: Container
       platform: Платформа
+      event_log: Лог событий
       project: Проект
       rpm: RPM
       user: Пользователь
@@ -277,6 +283,14 @@ ru:
         released: Released
         created_at: Создана
         updated_at: Обновлена
+
+      event_log:
+        kind: Тип события
+        created_at: Дата и время события
+        user: Пользователь
+        ip: IP пользователя
+        protocol: Протокол доступа
+        description: Описание события
 
       project:
         name: Название

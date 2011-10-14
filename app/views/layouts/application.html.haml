@@ -20,6 +20,8 @@
               %a{:href => users_path}= t("layout.menu.users")
             %li{:class => controller.controller_path == 'platforms' ? 'active' : '' }
               %a{:href => platforms_path}= t("layout.menu.platforms")
+            %li{:class => controller.controller_path == 'event_logs' ? 'active' : '' }
+              %a{:href => event_logs_path}= t("layout.menu.event_logs")
       #wrapper.wat-cf
         = render :partial => "layouts/flashes"
         #main

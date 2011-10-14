@@ -1,0 +1,8 @@
+= surround '[', ']' do
+  = I18n.t "event_log.controllers.#{el.controller.underscore}", :default => lambda{el.controller}
+= I18n.t "event_log.actions.#{el.controller.underscore}.#{el.action}", :default => :"event_log.actions.#{el.action}"
+- if el.object_id.present? and el.object_type.present?
+  = I18n.t "activerecord.models.#{el.object_type.underscore}"
+  = el.object_name
+  = "(id##{el.object_id})" # link_to "id##{el.object_id}", el.object
+= el.message
