@@ -1,0 +1,11 @@
+.block
+  .secondary-navigation
+    %ul.wat-cf
+      %li.first= link_to t("layout.groups.list"), groups_path
+      %li.active= link_to t("layout.groups.new"), new_group_path
+  .content
+    %h2.title= t("layout.groups.new_header")
+    .inner
+      = form_for :group, :url => groups_path, :html => { :class => :form } do |f|
+        = render :partial => "form", :locals => {:f => f}
+-# content_for :sidebar, render(:partial => 'sidebar')

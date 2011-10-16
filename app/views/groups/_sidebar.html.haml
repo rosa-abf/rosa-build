@@ -1,0 +1,5 @@
+.block.notice
+  %h3= t("layout.groups.members")
+  .content
+    - @group.members.uniq.each do |member|
+      %p= link_to member.name + " (#{@group.roles_of(member).map{|r| r.name}.join(', ')})", user_path(member)

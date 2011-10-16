@@ -1,0 +1,7 @@
+.block
+  .secondary-navigation
+    %ul.wat-cf
+      %li.first.active= link_to t("layout.groups.list"), users_path
+      %li= link_to t("layout.groups.new"), new_group_path
+  =render :partial => 'list', :object => @groups, :locals => {:paginate => will_paginate(@groups)}
+-# content_for :sidebar, render(:partial => 'sidebar')

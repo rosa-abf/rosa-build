@@ -1,0 +1,28 @@
+.block
+  .secondary-navigation
+    %ul.wat-cf
+      %li.first.active= link_to t("layout.projects.list"), '#'#platform_repository_path(@platform, @repository) + "#projects"
+      %li= link_to t("layout.projects.new"), '#'#new_platform_repository_project_path(@platform, @repository)
+  .content
+    %h2.title
+      = t("layout.projects.list_header")
+    .inner
+      = form_tag '#', :method => :get do#platform_repository_path(@platform, @repository), :method => :get do
+        .group
+          = label_tag :query, t("layout.search_by_name"), :class => :label
+          = text_field_tag :query
+          %button.search{:type => "submit"}
+            = t("layout.search")
+      %table.table
+        %tr
+          %th.first= t("activerecord.attributes.project.name")
+          %th.last &nbsp;
+        - @projects.each do |project|
+          %tr{:class => cycle("odd", "even")}
+            %td
+              = link_to project.name, project_path(project)
+            %td.last
+              #{link_to t("layout.show"), project_path(project)} | #{link_to t("layout.delete"), project_path(project), :method => :delete, :confirm => t("layout.projects.confirm_delete")}
+      .actions-bar.wat-cf
+        .actions
+          = will_paginate @projects, :param_name => :project_page
