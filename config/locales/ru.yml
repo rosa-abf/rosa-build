@@ -20,6 +20,7 @@ ru:
     true_: Да
     false_: Нет
     publish: Опубликовать
+    add: Добавить
 
     weekdays:
       Monday: Понедельник
@@ -33,6 +34,7 @@ ru:
     menu:
       users: Пользователи
       platforms: Платформы
+      groups: Группы
 
     sessions:
       sign_in_header: Вход в систему
@@ -113,6 +115,18 @@ ru:
       current_build_lists: Текущие сборки
       build_button: Начать сборку
 
+    groups:
+      list: Список
+      new: Создать
+      edit: Редактировать
+      members: Участники
+      new_header: Новая группа
+      edit_header: Редактировать
+      list_header: Группы
+      show: Группа
+      back_to_the_list: ⇐ К списку групп
+      confirm_delete: Вы уверены, что хотите удалить эту группу?
+
     users:
       list: Список
       new: Создать
@@ -120,6 +134,7 @@ ru:
       new_header: Новый пользователь
       edit_header: Редактировать
       list_header: Пользователи
+      groups: Группы
       show: Пользователь
       back_to_the_list: ⇐ К списку пользователей
       confirm_delete: Вы уверены, что хотите удалить этого пользователя?
@@ -180,6 +195,11 @@ ru:
       save_error: Не удалось сохранить данные о пользователе
       destroyed: Учетная запись успешно удалена
 
+    group:
+      saved: Группа успешно сохранена
+      save_error: Не удалось сохранить группу
+      destroyed: Группа успешно удалена
+
     repository:
       saved: Репозиторий успешно добавлен
       save_error: Не удалось добавить репозиторий
@@ -222,6 +242,7 @@ ru:
       arch: Arch
       container: Container
       platform: Платформа
+      group: Группа
       project: Проект
       rpm: RPM
       user: Пользователь
@@ -295,9 +316,17 @@ ru:
         created_at: Создан
         updated_at: Обновлен
 
+      group:
+        name: Название
+        uname: Unixname
+        owner: Владелец
+        created_at: Создана
+        updated_at: Обновлена
+
       user:
         name: Имя
         email: Email
+        roles: Роли
         created_at: Создан
         updated_at: Обновлен
 
