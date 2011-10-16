@@ -1,7 +1,7 @@
 class ProjectsController < ApplicationController
   before_filter :authenticate_user!
-  before_filter :find_platform
-  before_filter :find_repository
+#  before_filter :find_platform
+#  before_filter :find_repository
   before_filter :find_project, :only => [:show, :destroy, :build, :process_build]
 
   def new
@@ -72,7 +72,7 @@ class ProjectsController < ApplicationController
     end
 
     def find_project
-      @project = @repository.projects.find params[:id]
+      @project = Project.find params[:id]
     end
 
     def check_arches

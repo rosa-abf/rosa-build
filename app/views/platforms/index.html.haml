@@ -1,21 +1,22 @@
-.block
-  .secondary-navigation
-    %ul.wat-cf
-      %li.first.active= link_to t("layout.platforms.list"), platforms_path
-      %li= link_to t("layout.platforms.new"), new_platform_path
-  .content
-    %h2.title
-      = t("layout.platforms.list_header")
-    .inner
-      %table.table
-        %tr
-          %th.first= t("activerecord.attributes.platform.name")
-          %th.last &nbsp;
-        - @platforms.each do |platform|
-          %tr{:class => cycle("odd", "even")}
-            %td
-              = link_to platform.name, platform_path(platform)
-            %td.last
-              #{link_to t("layout.show"), platform_path(platform)} | #{link_to t("layout.delete"), platform_path(platform), :method => :delete, :confirm => t("layout.platforms.confirm_delete")}
-      .actions-bar.wat-cf
-        .actions
+=render :partial => 'list', :object => @platforms
+/.block
+/  .secondary-navigation
+/    %ul.wat-cf
+/      %li.first.active= link_to t("layout.platforms.list"), platforms_path
+/      %li= link_to t("layout.platforms.new"), new_platform_path
+/  .content
+/    %h2.title
+/      = t("layout.platforms.list_header")
+/    .inner
+/      %table.table
+/        %tr
+/          %th.first= t("activerecord.attributes.platform.name")
+/          %th.last &nbsp;
+/        - @platforms.each do |platform|
+/          %tr{:class => cycle("odd", "even")}
+/            %td
+/              = link_to platform.name, platform_path(platform)
+/            %td.last
+/              #{link_to t("layout.show"), platform_path(platform)} | #{link_to t("layout.delete"), platform_path(platform), :method => :delete, :confirm => t("layout.platforms.confirm_delete")}
+/      .actions-bar.wat-cf
+/        .actions

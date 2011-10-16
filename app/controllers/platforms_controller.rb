@@ -6,7 +6,7 @@ class PlatformsController < ApplicationController
   before_filter :find_platform, :only => [:freeze, :unfreeze, :clone]
 
   def index
-    @platforms = Platform.all
+    @platforms = Platform.paginate(:page => params[:platform_page])
   end
 
   def show
@@ -20,15 +20,16 @@ class PlatformsController < ApplicationController
   end
 
   def create
-    @platform = Platform.new params[:platform]
-    if @platform.save
-      flash[:notice] = I18n.t("flash.platform.saved")
-      redirect_to @platform
-    else
-      flash[:error] = I18n.t("flash.platform.saved_error")
-      @platforms = Platform.all
-      render :action => :new
-    end
+    pp params
+#    @platform = Platform.new params[:platform]
+#    if @platform.save
+#      flash[:notice] = I18n.t("flash.platform.saved")
+#      redirect_to @platform
+#    else
+#      flash[:error] = I18n.t("flash.platform.saved_error")
+#      @platforms = Platform.all
+#      render :action => :new
+#    end
   end
 
   def freeze

@@ -17,8 +17,8 @@ class Project < ActiveRecord::Base
   scope :by_name, lambda { |name| {:conditions => ['name like ?', '%' + name + '%']} }
 
   #before_create :create_directory, :create_git_repo
-  before_create :xml_rpc_create
-  before_destroy :xml_rpc_destroy
+#  before_create :xml_rpc_create
+#  before_destroy :xml_rpc_destroy
 
   # Redefining a method from Project::HasRepository module to reflect current situation
   def git_repo_path

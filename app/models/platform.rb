@@ -11,9 +11,9 @@ class Platform < ActiveRecord::Base
   validates :name, :presence => true, :uniqueness => true
   validates :unixname, :uniqueness => true, :presence => true, :format => { :with => /^[a-zA-Z0-9\-.]+$/ }, :allow_nil => false, :allow_blank => false
 
-  before_create :xml_rpc_create
-  before_destroy :xml_rpc_destroy
-  before_update :check_freezing
+#  before_create :xml_rpc_create
+#  before_destroy :xml_rpc_destroy
+#  before_update :check_freezing
 
 
   def path
@@ -55,30 +55,33 @@ class Platform < ActiveRecord::Base
     end
 
     def xml_rpc_create
-      result = BuildServer.add_platform unixname, APP_CONFIG['root_path']
-      if result == BuildServer::SUCCESS
-        return true
-      else
-        raise "Failed to create platform #{name}. Path: #{build_path(unixname)}"
-      end
+      return true
+#      result = BuildServer.add_platform unixname, APP_CONFIG['root_path']
+#      if result == BuildServer::SUCCESS
+#        return true
+#      else
+#        raise "Failed to create platform #{name}. Path: #{build_path(unixname)}"
+#      end
     end
 
     def xml_rpc_destroy
-      result = BuildServer.delete_platform unixname
-      if result == BuildServer::SUCCESS
-        return true
-      else
-        raise "Failed to delete platform #{unixname}."
-      end
+      return true
+#      result = BuildServer.delete_platform unixname
+#      if result == BuildServer::SUCCESS
+#        return true
+#      else
+#        raise "Failed to delete platform #{unixname}."
+#      end
     end
 
     def xml_rpc_clone(new_unixname)
-      result = BuildServer.clone_platform new_unixname, self.unixname, APP_CONFIG['root_path']
-      if result == BuildServer::SUCCESS
-        return true
-      else
-        raise "Failed to clone platform #{name}. Path: #{build_path(unixname)} to platform #{new_unixname}"
-      end
+      return true
+#      result = BuildServer.clone_platform new_unixname, self.unixname, APP_CONFIG['root_path']
+#      if result == BuildServer::SUCCESS
+#        return true
+#      else
+#        raise "Failed to clone platform #{name}. Path: #{build_path(unixname)} to platform #{new_unixname}"
+#      end
     end
 
     def check_freezing
