@@ -1,0 +1,5 @@
+.block.notice
+  %h3= t("layout.users.groups")
+  .content
+    - @groups.each do |group|
+      %p= link_to group.name + " (#{group.roles_of(@user).map{|r| r.name}.join(', ')})", group_path(group)

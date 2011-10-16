@@ -37,8 +37,34 @@ Rosa::Application.routes.draw do
     end
   end
 
-  resources :users
-  
+  resources :projects
+
+  resources :repositories
+
+  resources :users do
+    resources :platforms, :only => [:new, :create]
+
+    resources :projects, :only => [:new, :create]
+
+    resources :repositories, :only => [:new, :create]
+#    resources :groups do
+#      collection do
+#        get :add
+#      end
+#      member do
+#        get :add
+#      end
+#    end
+  end
+
+  resources :groups do
+    resources :platforms, :only => [:new, :create]
+
+    resources :projects, :only => [:new, :create]
+
+    resources :repositories, :only => [:new, :create]
+  end
+
   match 'build_lists/status_build', :to => "build_lists#status_build"
   match 'build_lists/post_build', :to => "build_lists#post_build"
   match 'build_lists/pre_build', :to => "build_lists#pre_build"
