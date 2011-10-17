@@ -6,6 +6,7 @@ class UsersController < ApplicationController
   end
 
   def show
+    puts params.inspect
     @groups       = @user.groups.uniq
     @platforms    = @user.platforms.paginate(:page => params[:platform_page], :per_page => 10)
     @repositories = @user.repositories.paginate(:page => params[:repository_page], :per_page => 10)
