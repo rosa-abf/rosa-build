@@ -1,6 +1,42 @@
 Rosa::Application.routes.draw do
   devise_for :users
 
+#  resources :platforms do
+#    member do
+#      get 'freeze'
+#      get 'unfreeze'
+#      get 'clone'
+#    end
+#
+#    resources :products do
+#      member do
+#        get :clone
+#        get :build
+#      end
+#    end
+#
+#    resources :repositories do
+#      resources :projects do
+#        resource :repo, :controller => "git/repositories", :only => [:show]
+#        resources :build_lists, :only => [:index, :show] do
+#          collection do
+#            get :recent
+#            post :filter
+#          end
+#          member do
+#            post :publish
+#          end  
+#        end
+#
+#        member do
+#          get :build
+#          post :process_build
+#        end
+#
+#      end
+#    end
+#  end
+
   resources :platforms do
     member do
       get 'freeze'
@@ -16,48 +52,24 @@ Rosa::Application.routes.draw do
     end
 
     resources :repositories do
-      resources :projects do
-        resource :repo, :controller => "git/repositories", :only => [:show]
-        resources :build_lists, :only => [:index, :show] do
-          collection do
-            get :recent
-            post :filter
-          end
-          member do
-            post :publish
-          end  
-        end
+    end
+  end
 
-        member do
-          get :build
-          post :process_build
-        end
-
+  resources :projects do
+    resources :build_lists, :only => [:index, :show] do
+      collection do
+        get :recent
+        post :filter
+      end
+      member do
+        post :publish
       end
     end
   end
 
-  resources :projects
-
   resources :repositories
 
-  resources :users do
-    resources :platforms, :only => [:new, :create]
-
-    resources :projects, :only => [:new, :create]
-
-    resources :repositories, :only => [:new, :create]
-#    resources :groups do
-#      collection do
-#        get :add
-#      end
-#      member do
-#        get :add
-#      end
-#    end
-  end
-
-  resources :groups do
+  resources :users, :groups do
     resources :platforms, :only => [:new, :create]
 
     resources :projects, :only => [:new, :create]

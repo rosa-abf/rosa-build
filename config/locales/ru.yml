@@ -59,6 +59,10 @@ ru:
       released_suffix: (выпущена)
       confirm_delete: Вы уверены, что хотите удалить эту платформу?
       current_platform_header: Текущая платформа
+      owner: Владелец
+      visibility: Видимость
+      platform_type: Тип платформы
+      distrib_type: Тип дистрибутива
 
     repositories:
       list: Список
@@ -302,6 +306,8 @@ ru:
       project:
         name: Название
         unixname: Unixname
+        owner: Владелец
+        visibility: Видимость
         repository_id: Репозиторий
         repository: Репозиторий
         created_at: Создан
