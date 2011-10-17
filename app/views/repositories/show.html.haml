@@ -3,7 +3,7 @@
     %ul.wat-cf
       %li.first= link_to t("layout.repositories.list"), platform_path(@platform) + "#repositories"
       %li= link_to t("layout.repositories.new"), new_platform_repository_path(@platform)
-      %li.active= link_to t("layout.repositories.show"), platform_repository_path(@platform, @repository)
+      / %li.active= link_to t("layout.repositories.show"), platform_repository_path(@platform, @repository)
   .content
     .inner
       %p
@@ -21,25 +21,25 @@
           = t("activerecord.attributes.repository.platform")
           \:
         = link_to @repository.platform.name, platform_path(@platform)
-      .wat-cf
-        = link_to image_tag("web-app-theme/icons/cross.png", :alt => t("layout.delete")) + " " + t("layout.delete"), platform_repository_path(@platform, @repository), :method => "delete", :class => "button", :confirm => t("layout.repositories.confirm_delete")
+      / .wat-cf
+      /   = link_to image_tag("web-app-theme/icons/cross.png", :alt => t("layout.delete")) + " " + t("layout.delete"), platform_repository_path(@platform, @repository), :method => "delete", :class => "button", :confirm => t("layout.repositories.confirm_delete")
 
 %a{ :name => "projects" }
 .block
   .secondary-navigation
     %ul.wat-cf
-      %li.first.active= link_to t("layout.projects.list"), platform_repository_path(@platform, @repository) + "#projects"
+      / %li.first.active= link_to t("layout.projects.list"), platform_repository_path(@platform, @repository) + "#projects"
       %li= link_to t("layout.projects.new"), new_project_path(@platform, @repository)
   .content
     %h2.title
       = t("layout.projects.list_header")
     .inner
-      = form_tag platform_repository_path(@platform, @repository), :method => :get do
-        .group
-          = label_tag :query, t("layout.search_by_name"), :class => :label
-          = text_field_tag :query
-          %button.search{:type => "submit"}
-            = t("layout.search")
+      / = form_tag platform_repository_path(@platform, @repository), :method => :get do
+      /   .group
+      /     = label_tag :query, t("layout.search_by_name"), :class => :label
+      /     = text_field_tag :query
+      /     %button.search{:type => "submit"}
+      /       = t("layout.search")
       %table.table
         %tr
           %th.first= t("activerecord.attributes.project.name")

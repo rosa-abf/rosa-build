@@ -46,11 +46,12 @@ class ProjectsController < ApplicationController
 
   def create
     @project = Project.new params[:project]
-    @project.owner = get_acter
+    # @project.owner = get_acter
 
     if @project.save
       flash[:notice] = t('flash.project.saved') 
-      redirect_to @project.owner
+      # redirect_to @project.owner
+      redirect_to @project
     else
       flash[:error] = t('flash.project.save_error')
       render :action => :new

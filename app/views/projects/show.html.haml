@@ -23,7 +23,7 @@
         %b
           = t("activerecord.attributes.project.owner")
           \:
-        = link_to @project.owner.name, url_for(@project.owner)
+        = link_to @project.owner.try(:name), url_for(@project.owner)
       %p
         %b
           = t("activerecord.attributes.project.visibility")
