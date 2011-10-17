@@ -1,11 +1,11 @@
 .block
   .secondary-navigation
     %ul.wat-cf
-      %li.first= link_to t("layout.repositories.list"), platform_path(@platform) + "#platforms"
-      %li.active= link_to t("layout.repositories.new"), new_platform_repository_path(@platform)
+      %li.first= link_to t("layout.repositories.list"), @repositories_path + "#platforms"
+      %li.active= link_to t("layout.repositories.new"), @new_repository_path
   .content
     %h2.title= t("layout.repositories.new_header")
     .inner
-      = form_for [@platform, @repository], :html => { :class => :form } do |f|
+      = form_for :repository, :url => @repositories_path, :html => { :class => :form } do |f|
         = render :partial => "form", :locals => {:f => f}
-- content_for :sidebar, render(:partial => 'sidebar')
+-# content_for :sidebar, render(:partial => 'sidebar')

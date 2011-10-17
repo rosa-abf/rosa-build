@@ -29,7 +29,7 @@
   .secondary-navigation
     %ul.wat-cf
       %li.first.active= link_to t("layout.projects.list"), platform_repository_path(@platform, @repository) + "#projects"
-      %li= link_to t("layout.projects.new"), new_platform_repository_project_path(@platform, @repository)
+      %li= link_to t("layout.projects.new"), new_project_path(@platform, @repository)
   .content
     %h2.title
       = t("layout.projects.list_header")

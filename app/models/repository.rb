@@ -1,5 +1,6 @@
 class Repository < ActiveRecord::Base
   belongs_to :platform
+  belongs_to :owner, :polymorphic => true
 
   has_many :projects, :through => :project_to_repositories #, :dependent => :destroy
   has_many :project_to_repositories
@@ -8,10 +9,13 @@ class Repository < ActiveRecord::Base
   has_many :members, :through => :objects, :source => :object, :source_type => 'User'
   has_many :groups,  :through => :objects, :source => :object, :source_type => 'Group'
 
-  validates :name, :uniqueness => {:scope => :platform_id}, :presence => true
-  validates :unixname, :uniqueness => {:scope => :platform_id}, :presence => true, :format => { :with => /^[a-zA-Z0-9\-.]+$/ }
+  validates :name, :uniqueness => {:scope => [:owner_id, :owner_type]}, :presence => true
+  validates :unixname, :uniqueness => {:scope => [:owner_id, :owner_type]}, :presence => true, :format => { :with => /^[a-zA-Z0-9\-.]+$/ }
+  validates :platform_id, :presence => true
 
   scope :recent, order("name ASC")
+
+  after_create :make_owner_rel
 
 #  before_create :xml_rpc_create
 #  before_destroy :xml_rpc_destroy
@@ -29,6 +33,12 @@ class Repository < ActiveRecord::Base
   end
 
   protected
+
+    def make_owner_rel
+      members << owner if owner.instance_of? User
+      groups  << owner if owner.instance_of? Group
+      save
+    end
 
     def build_path(dir)
       File.join(platform.path, dir)

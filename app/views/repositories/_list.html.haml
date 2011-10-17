@@ -1,28 +1,10 @@
-.block
-  .secondary-navigation
-    %ul.wat-cf
-      %li.first.active= link_to t("layout.repositories.list"), '#'#platform_path(@platform) + "#repositories"
-      %li= link_to t("layout.repositories.new"), '#' #new_platform_repository_path(@platform)
-  .content
-    %h2.title
-      = t("layout.repositories.list_header")
-    .inner
-      = form_tag '#', :method => :get do#platform_repository_path(@platform, @repository), :method => :get do
-        .group
-          = label_tag :query, t("layout.search_by_name"), :class => :label
-          = text_field_tag :query
-          %button.search{:type => "submit"}
-            = t("layout.search")
-      %table.table
-        %tr
-          %th.first= t("activerecord.attributes.repository.name")
-          %th.last &nbsp;
-        - @repositories.each do |repository|
-          %tr{:class => cycle("odd", "even")}
-            %td
-              = link_to repository.name, repository_path(repository)
-            %td.last
-              #{link_to t("layout.show"), repository_path(repository)} | #{link_to t("layout.delete"), repository_path(repository), :method => :delete, :confirm => t("layout.repositories.confirm_delete")}
-      .actions-bar.wat-cf
-        .actions
-          = will_paginate @repositories, :param_name => :repository_page
+%table.table
+  %tr
+    %th.first= t("activerecord.attributes.repository.name")
+    %th.last &nbsp;
+  - @repositories.each do |repository|
+    %tr{:class => cycle("odd", "even")}
+      %td
+        = link_to repository.name, repository_path(repository)
+      %td.last
+        #{link_to t("layout.show"), repository_path(repository)} | #{link_to t("layout.delete"), repository_path(repository), :method => :delete, :confirm => t("layout.repositories.confirm_delete")}
