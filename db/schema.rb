@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20111013150125) do
+ActiveRecord::Schema.define(:version => 20111016225240) do
 
   create_table "arches", :force => true do |t|
     t.string   "name",       :null => false
@@ -78,6 +78,7 @@ ActiveRecord::Schema.define(:version => 20111013150125) do
     t.integer  "owner_id"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "uname"
   end
 
   create_table "permissions", :force => true do |t|
@@ -94,6 +95,11 @@ ActiveRecord::Schema.define(:version => 20111013150125) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.boolean  "released",           :default => false
+    t.integer  "owner_id"
+    t.string   "owner_type"
+    t.string   "visibility",         :default => "open"
+    t.string   "platform_type",      :default => "main"
+    t.string   "distrib_type"
   end
 
   create_table "products", :force => true do |t|
@@ -129,7 +135,9 @@ ActiveRecord::Schema.define(:version => 20111013150125) do
     t.string   "unixname"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "repository_id", :null => false
+    t.integer  "owner_id"
+    t.string   "owner_type"
+    t.string   "visibility", :default => "open"
   end
 
   create_table "relations", :force => true do |t|
@@ -143,11 +151,14 @@ ActiveRecord::Schema.define(:version => 20111013150125) do
   end
 
   create_table "repositories", :force => true do |t|
-    t.string   "name",        :null => false
-    t.integer  "platform_id", :null => false
+    t.string   "name",                            :null => false
+    t.integer  "platform_id",                     :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "unixname",    :null => false
+    t.string   "unixname",                        :null => false
+    t.integer  "owner_id"
+    t.string   "owner_type"
+    t.string   "visibility",  :default => "open"
   end
 
   create_table "rights", :force => true do |t|
