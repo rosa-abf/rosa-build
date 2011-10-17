@@ -3,9 +3,10 @@ class ProjectsController < ApplicationController
 #  before_filter :find_platform
 #  before_filter :find_repository
   before_filter :find_project, :only => [:show, :destroy, :build, :process_build]
+  before_filter :get_paths, :only => [:new, :create]
 
   def new
-    @project = @repository.projects.new
+    @project = Project.new
   end
 
   def show
@@ -44,10 +45,12 @@ class ProjectsController < ApplicationController
   end
 
   def create
-    @project = @repository.projects.new params[:project]
+    @project = Project.new params[:project]
+    @project.owner = get_acter
+
     if @project.save
       flash[:notice] = t('flash.project.saved') 
-      redirect_to [@platform, @repository]
+      redirect_to @project.owner
     else
       flash[:error] = t('flash.project.save_error')
       render :action => :new
@@ -62,6 +65,21 @@ class ProjectsController < ApplicationController
   end
 
   protected
+
+    def get_paths
+      if params[:user_id]
+        @user = User.find params[:user_id]
+        @projects_path = user_projects_path @user
+        @new_project_path = new_user_project_path @user
+      elsif params[:group_id]
+        @group = Group.find params[:group_id]
+        @projects_path = group_projects_path @group
+        @new_projects_path = new_group_project_path @group
+      else
+        @projects_path = projects_path
+        @new_projects_path = new_project_path
+      end
+    end
 
     def find_platform
       @platform = Platform.find params[:platform_id]

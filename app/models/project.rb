@@ -1,4 +1,5 @@
 class Project < ActiveRecord::Base
+  belongs_to :owner, :polymorphic => true
   has_many :build_lists, :dependent => :destroy
 
   has_many :project_to_repositories
@@ -8,14 +9,15 @@ class Project < ActiveRecord::Base
   has_many :collaborators, :through => :members, :source => :object, :source_type => 'User'
   has_many :groups,        :through => :members, :source => :object, :source_type => 'Group'
 
-  validates :name, :uniqueness => {:scope => :repository_id}, :presence => true, :allow_nil => false, :allow_blank => false
-  validates :unixname, :uniqueness => {:scope => :repository_id}, :presence => true, :format => { :with => /^[a-zA-Z0-9\-.]+$/ }, :allow_nil => false, :allow_blank => false
+  validates :name,     :uniqueness => {:scope => [:owner_id, :owner_type]}, :presence => true, :allow_nil => false, :allow_blank => false
+  validates :unixname, :uniqueness => {:scope => [:owner_id, :owner_type]}, :presence => true, :format => { :with => /^[a-zA-Z0-9\-.]+$/ }, :allow_nil => false, :allow_blank => false
 
   include Project::HasRepository
 
   scope :recent, order("name ASC")
   scope :by_name, lambda { |name| {:conditions => ['name like ?', '%' + name + '%']} }
 
+  after_create :make_owner_rel
   #before_create :create_directory, :create_git_repo
 #  before_create :xml_rpc_create
 #  before_destroy :xml_rpc_destroy
@@ -46,6 +48,12 @@ class Project < ActiveRecord::Base
   end
 
   protected
+
+    def make_owner_rel
+      collaborators << owner if owner.instance_of? User
+      groups        << owner if owner.instance_of? Group
+      save
+    end
 
     def build_path(dir)
       File.join(repository.path, dir)
