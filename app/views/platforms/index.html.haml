@@ -1,4 +1,17 @@
-=render :partial => 'list', :object => @platforms
+.block
+  .secondary-navigation
+    %ul.wat-cf
+      %li.first.active= link_to t("layout.platforms.list"), platforms_path
+      %li= link_to t("layout.platforms.new"), new_platform_path
+  .content
+    %h2.title
+      = t("layout.platforms.list_header")
+    .inner
+      = render :partial => 'shared/search_form'
+      = render :partial => 'platforms/list', :object => @platforms
+      .actions-bar.wat-cf
+        .actions
+          = will_paginate @platforms, :param_name => :platform_page
 /.block
 /  .secondary-navigation
 /    %ul.wat-cf

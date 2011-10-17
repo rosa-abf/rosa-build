@@ -1,28 +1,10 @@
-.block
-  .secondary-navigation
-    %ul.wat-cf
-      %li.first.active= link_to t("layout.platforms.list"), platforms_path
-      %li= link_to t("layout.platforms.new"), new_platform_path
-  .content
-    %h2.title
-      = t("layout.platforms.list_header")
-    .inner
-      = form_tag '#', :method => :get do#platform_repository_path(@platform, @repository), :method => :get do
-        .group
-          = label_tag :query, t("layout.search_by_name"), :class => :label
-          = text_field_tag :query
-          %button.search{:type => "submit"}
-            = t("layout.search")
-      %table.table
-        %tr
-          %th.first= t("activerecord.attributes.platform.name")
-          %th.last &nbsp;
-        - @platforms.each do |platform|
-          %tr{:class => cycle("odd", "even")}
-            %td
-              = link_to platform.name, platform_path(platform)
-            %td.last
-              #{link_to t("layout.show"), platform_path(platform)} | #{link_to t("layout.delete"), platform_path(platform), :method => :delete, :confirm => t("layout.platforms.confirm_delete")}
-      .actions-bar.wat-cf
-        .actions
-          = will_paginate @platforms, :param_name => :platform_page
+%table.table
+  %tr
+    %th.first= t("activerecord.attributes.platform.name")
+    %th.last &nbsp;
+  - @platforms.each do |platform|
+    %tr{:class => cycle("odd", "even")}
+      %td
+        = link_to platform.name, platform_path(platform)
+      %td.last
+        #{link_to t("layout.show"), platform_path(platform)} | #{link_to t("layout.delete"), platform_path(platform), :method => :delete, :confirm => t("layout.platforms.confirm_delete")}

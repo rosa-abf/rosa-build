@@ -1,6 +1,7 @@
 #require 'lib/build_server.rb'
 class Platform < ActiveRecord::Base
   belongs_to :parent, :class_name => 'Platform', :foreign_key => 'parent_platform_id'
+  belongs_to :owner, :polymorphic => true
   has_many :repositories, :dependent => :destroy
   has_many :products, :dependent => :destroy
 
@@ -11,6 +12,7 @@ class Platform < ActiveRecord::Base
   validates :name, :presence => true, :uniqueness => true
   validates :unixname, :uniqueness => true, :presence => true, :format => { :with => /^[a-zA-Z0-9\-.]+$/ }, :allow_nil => false, :allow_blank => false
 
+  after_create :make_owner_rel
 #  before_create :xml_rpc_create
 #  before_destroy :xml_rpc_destroy
 #  before_update :check_freezing
@@ -34,6 +36,20 @@ class Platform < ActiveRecord::Base
     released? ? "#{self[:name]} #{I18n.t("layout.platforms.released_suffix")}" : self[:name]
   end
 
+  def roles_of(user)
+    objects.where(:object_id => user.id, :object_type => user.class).map {|rel| rel.role}.reject {|r| r.nil?}
+  end
+
+  def add_role(user, role)
+    roles = objects.where(:object_id => user.id, :object_type => user.class).map {|rel| rel.role}.reject {|r| r.nil?}
+    unless roles.include? role
+      rel = Relation.create(:object_type => user.class.to_s, :object_id => user.id,
+                            :target_type => self.class.to_s, :target_id => id)
+      rel.role = role
+      rel.save
+    end
+  end
+
   protected
 
     def build_path(dir)
@@ -52,6 +68,12 @@ class Platform < ActiveRecord::Base
       elsif unixname_changed?
         FileUtils.mv(build_path(unixname_was), build_path(unixname))
       end 
+    end
+
+    def make_owner_rel
+      members << owner if owner.instance_of? User
+      groups  << owner if owner.instance_of? Group
+      save
     end
 
     def xml_rpc_create
