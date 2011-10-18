@@ -2,6 +2,7 @@
 class Platform < ActiveRecord::Base
   belongs_to :parent, :class_name => 'Platform', :foreign_key => 'parent_platform_id'
   belongs_to :owner, :polymorphic => true
+
   has_many :repositories, :dependent => :destroy
   has_many :products, :dependent => :destroy
 
@@ -10,9 +11,12 @@ class Platform < ActiveRecord::Base
   has_many :groups,  :through => :objects, :source => :object, :source_type => 'Group'
 
   validates :name, :presence => true, :uniqueness => true
-  validates :unixname, :uniqueness => true, :presence => true, :format => { :with => /^[a-zA-Z0-9\-.]+$/ }, :allow_nil => false, :allow_blank => false
+  validates :unixname, :uniqueness => true, :presence => true, :format => { :with => /^[a-zA-Z0-9_]+$/ }, :allow_nil => false, :allow_blank => false
 
-  after_create :make_owner_rel
+  #after_create :make_owner_rel
+  before_save :create_directory
+  before_save :make_owner_rel
+  after_destroy :remove_directory
 #  before_create :xml_rpc_create
 #  before_destroy :xml_rpc_destroy
 #  before_update :check_freezing
@@ -53,7 +57,7 @@ class Platform < ActiveRecord::Base
   protected
 
     def build_path(dir)
-      File.join(APP_CONFIG['root_path'], dir)
+      File.join(APP_CONFIG['root_path'], 'platforms', dir)
     end
 
     def git_path(dir)
@@ -70,10 +74,17 @@ class Platform < ActiveRecord::Base
       end 
     end
 
+    def remove_directory
+      exists = File.exists?(path) && File.directory?(path)
+      raise "Directory #{path} didn't exists" unless exists
+      FileUtils.rm_rf(path)
+    end
+
     def make_owner_rel
-      members << owner if owner.instance_of? User
-      groups  << owner if owner.instance_of? Group
-      save
+      unless members.include? owner
+        members << owner if owner.instance_of? User
+        groups  << owner if owner.instance_of? Group
+      end
     end
 
     def xml_rpc_create
