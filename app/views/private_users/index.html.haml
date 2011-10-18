@@ -1,0 +1,43 @@
+.block
+  .secondary-navigation
+    %ul.wat-cf
+      %li.first=# link_to t("layout.repositories.list"), platform_path(@platform) + "#repositories"
+      %li=# link_to t("layout.repositories.new"), new_platform_repository_path(@platform)
+      %li.active=# link_to t("layout.repositories.show"), platform_repository_path(@platform, @repository)
+  .content
+    .inner
+      %p
+        %b
+          = t("activerecord.attributes.platform.name")
+          \:
+        = @platform.name
+      %p
+        %b
+          = t("activerecord.attributes.repository.platform")
+          \:
+        = link_to @platform.name, platform_path(@platform)
+      .wat-cf
+        =# link_to image_tag("web-app-theme/icons/cross.png", :alt => t("layout.delete")) + " " + t("layout.delete"), platform_repository_path(@platform, @repository), :method => "delete", :class => "button", :confirm => t("layout.repositories.confirm_delete")
+
+.block
+  .secondary-navigation
+    %ul.wat-cf
+      %li.first.active= link_to t("layout.private_users.list"), platform_private_users_path(@platform)
+      %li= link_to t("layout.private_users.new"), platform_private_users_path(@platform), :method => :post
+  .content
+    %h2.title
+      = t("layout.private_users.list_header")
+    .inner
+      %table.table
+        %tr
+          %th.first= t("activerecord.attributes.private_user.login")
+          %th.last &nbsp;
+        - @private_users.each do |private_user|
+          %tr{:class => cycle("odd", "even")}
+            %td
+              = link_to private_user.login, platform_private_user_path(@platform, private_user)
+            %td.last
+              #{link_to t("layout.delete"), platform_private_user_path(@platform, private_user), :method => :delete, :confirm => t("layout.private_users.confirm_delete")}
+      .actions-bar.wat-cf
+        .actions
+          = will_paginate @private_users

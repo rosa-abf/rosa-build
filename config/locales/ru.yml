@@ -37,6 +37,12 @@ ru:
     sessions:
       sign_in_header: Вход в систему
 
+    private_users:
+      list: Список
+      new: Новая пара
+      list_header: Пары логин/пароль
+      confirm_delete: Вы уверены, что хотите удалить эту пару логин/пароль?
+
     platforms:
       list: Список
       new: Создать
@@ -57,6 +63,7 @@ ru:
       released_suffix: (выпущена)
       confirm_delete: Вы уверены, что хотите удалить эту платформу?
       current_platform_header: Текущая платформа
+      private_users: Пользователи приватного репозитория
 
     repositories:
       list: Список
@@ -230,6 +237,10 @@ ru:
       build_list_item: Элемент сборочного листа
 
     attributes:
+      private_user:
+        login: Логин
+        password: Пароль
+
       repository:
         name: Название
         platform_id: Платформа

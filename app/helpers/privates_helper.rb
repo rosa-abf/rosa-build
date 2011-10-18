@@ -1,0 +1,2 @@
+module PrivatesHelper
+end
