@@ -1,16 +1,18 @@
 class Project < ActiveRecord::Base
   belongs_to :owner, :polymorphic => true
+
   has_many :build_lists, :dependent => :destroy
 
   has_many :project_to_repositories
   has_many :repositories, :through => :project_to_repositories
 
-  has_many :members, :as => :target, :class_name => 'Relation'
-  has_many :collaborators, :through => :members, :source => :object, :source_type => 'User'
-  has_many :groups,        :through => :members, :source => :object, :source_type => 'Group'
+  has_many :relations, :as => :target
+  has_many :collaborators, :through => :relations, :source => :object, :source_type => 'User'
+  has_many :groups,        :through => :relations, :source => :object, :source_type => 'Group'
 
   validates :name,     :uniqueness => {:scope => [:owner_id, :owner_type]}, :presence => true, :allow_nil => false, :allow_blank => false
-  validates :unixname, :uniqueness => {:scope => [:owner_id, :owner_type]}, :presence => true, :format => { :with => /^[a-zA-Z0-9\-.]+$/ }, :allow_nil => false, :allow_blank => false
+  validates :unixname, :uniqueness => {:scope => [:owner_id, :owner_type]}, :presence => true, :format => { :with => /^[a-zA-Z0-9_]+$/ }, :allow_nil => false, :allow_blank => false
+#  validates :unixname, :uniqueness => {:scope => [:owner_id, :owner_type]}, :presence => true, :format => { :with => /^[a-zA-Z0-9\-.]+$/ }, :allow_nil => false, :allow_blank => false
 
   include Project::HasRepository
 
@@ -21,6 +23,10 @@ class Project < ActiveRecord::Base
   #before_create :create_directory, :create_git_repo
 #  before_create :xml_rpc_create
 #  before_destroy :xml_rpc_destroy
+
+  def members
+    collaborators + groups
+  end
 
   # Redefining a method from Project::HasRepository module to reflect current situation
   def git_repo_path

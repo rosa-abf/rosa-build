@@ -15,7 +15,9 @@ class Repository < ActiveRecord::Base
 
   scope :recent, order("name ASC")
 
-  after_create :make_owner_rel
+  before_save :create_directory
+  before_save :make_owner_rel
+  after_destroy :remove_directory
 
 #  before_create :xml_rpc_create
 #  before_destroy :xml_rpc_destroy
@@ -35,9 +37,10 @@ class Repository < ActiveRecord::Base
   protected
 
     def make_owner_rel
-      members << owner if owner.instance_of? User
-      groups  << owner if owner.instance_of? Group
-      save
+      unless members.include? owner
+        members << owner if owner.instance_of? User
+        groups  << owner if owner.instance_of? Group
+      end
     end
 
     def build_path(dir)
@@ -54,7 +57,13 @@ class Repository < ActiveRecord::Base
         FileUtils.mv(build_path(unixname_was), buildpath(unixname))
       end 
     end
-    
+
+    def remove_directory
+      exists = File.exists?(path) && File.directory?(path)
+      raise "Directory #{path} didn't exists" unless exists
+      FileUtils.rm_rf(path)
+    end
+
     def xml_rpc_create
       result = BuildServer.create_repo unixname, platform.unixname
       if result == BuildServer::SUCCESS
