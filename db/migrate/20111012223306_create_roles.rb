@@ -3,8 +3,6 @@ class CreateRoles < ActiveRecord::Migration
     create_table :roles do |t|
       t.integer :id
       t.string :name
-      t.string :to
-      t.string :on
 
       t.timestamps
     end
