@@ -104,6 +104,7 @@ ru:
         weekdays: Дни недели
 
     projects:
+      add: Добавить
       list: Список
       list_header: Проекты
       show: Проект
@@ -208,6 +209,10 @@ ru:
       saved: Репозиторий успешно добавлен
       save_error: Не удалось добавить репозиторий
       destroyed: Репозиторий успешно удален
+      project_added: Проект добавлен к репозиторию
+      project_not_added: Не удалось добавить проект
+      project_removed: Проект удален из репозитория
+      project_not_removed: Не удалось удалить проект из репозитория
 
     product:
       saved: Продукт успешно сохранен

@@ -2,10 +2,10 @@
   .secondary-navigation
     %ul.wat-cf
       %li.first.active= link_to t("layout.repositories.list"), repositories_path
-      %li= link_to t("layout.platforms.new"), new_repository_path
+      %li= link_to t("layout.repositories.new"), new_repository_path
   .content
     %h2.title
-      = t("layout.platforms.list_header")
+      = t("layout.repositories.list_header")
     .inner
       = render :partial => 'shared/search_form'
       = render :partial => 'list', :object => @repositories

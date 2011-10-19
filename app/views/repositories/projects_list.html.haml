@@ -43,17 +43,18 @@
 .block
   .secondary-navigation
     %ul.wat-cf
-      %li.first.active= link_to t("layout.projects.list"), repository_path(@repository) + "#projects"
-      %li= link_to t("layout.projects.add"), url_for(:controller => :repositories, :action => :add_project)
+      %li.first= link_to t("layout.projects.list"), repository_path(@repository) + "#projects"
+      %li.active= link_to t("layout.projects.add"), url_for(:controller => :repositories, :action => :add_project)
   .content
     %h2.title
       = t("layout.projects.list_header")
     .inner
       = render :partial => 'shared/search_form'
-      = render :partial => 'proj_list1', :object => @projects
+      = render :partial => 'proj_list', :object => @projects
       .actions-bar.wat-cf
         .actions
           = will_paginate @projects, :param_name => :project_page
 
 
 -# content_for :sidebar, render(:partial => 'sidebar')
+

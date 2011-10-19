@@ -67,7 +67,12 @@ Rosa::Application.routes.draw do
     end
   end
 
-  resources :repositories
+  resources :repositories do
+    member do
+      get :add_project
+      get :remove_project
+    end
+  end
 
   resources :users, :groups do
     resources :platforms, :only => [:new, :create]
