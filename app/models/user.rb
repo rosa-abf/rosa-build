@@ -1,5 +1,7 @@
 require 'digest/md5'
 class User < ActiveRecord::Base
+  has_many :roles, :through => :targets
+    
   has_many :targets, :as => :object, :class_name => 'Relation'
 
   has_many :own_projects, :as => :owner, :class_name => 'Project'

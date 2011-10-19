@@ -1,5 +1,5 @@
 class Group < ActiveRecord::Base
-
+  has_many :roles, :through => :targets
   validates :name, :uname, :owner_id, :presence => true
   validates :name, :uname, :uniqueness => true
   validates :uname, :format => { :with => /^[a-zA-Z0-9_]+$/ }, :allow_nil => false, :allow_blank => false
