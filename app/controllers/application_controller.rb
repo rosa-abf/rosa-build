@@ -1,7 +1,45 @@
+# coding: UTF-8
 class ApplicationController < ActionController::Base
   protect_from_forgery
   layout :layout_by_resource
-
+  private
+    def checkright(role_id)
+      @role=Role.find(role_id)
+      if @role.name.downcase!="admin"
+        @c = self.controller_name
+        @a = self.action_name
+        case @c
+          when "projects"
+            case @a
+              when "new", "show", "create"
+                @right=1,2
+              when "build", "process_build"
+                @right=3
+            end
+          when "repositories"
+            case @a
+              when "show"
+                @right=4
+              when "add_project", "remove_project"
+                @right=5
+              when "new", "create"
+                @right=6  
+            end
+          when "platforms"
+            case @a
+              when "edit", "update", "freeze", "unfreeze"
+                @right=7
+            end
+          else return true
+        end
+        Permission.where(:role_id => @role.id, :right_id => @right).first
+        @ok=false if @permission.nil?
+        if not @ok
+          flash[:notice] = t('layout.not_access')
+          redirect_to(:back)
+        end
+      end
+    end
   protected
     def layout_by_resource
       if devise_controller?
@@ -9,12 +47,6 @@ class ApplicationController < ActionController::Base
       else
         "application"
       end
-    end
-
-    def get_acter
-      return User.find params[:user_id] if params[:user_id]
-      return Group.find params[:group_id] if params[:group_id]
-      return current_user
     end
 
     def authenticate_build_service!
