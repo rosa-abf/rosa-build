@@ -19,8 +19,9 @@ class Project < ActiveRecord::Base
   scope :recent, order("name ASC")
   scope :by_name, lambda { |name| {:conditions => ['name like ?', '%' + name + '%']} }
 
-  after_create :make_owner_rel
-  #before_create :create_directory, :create_git_repo
+  before_save :create_directory#, :create_git_repo
+  before_save :make_owner_rel
+  after_destroy :remove_directory
 #  before_create :xml_rpc_create
 #  before_destroy :xml_rpc_destroy
 
@@ -56,13 +57,14 @@ class Project < ActiveRecord::Base
   protected
 
     def make_owner_rel
-      collaborators << owner if owner.instance_of? User
-      groups        << owner if owner.instance_of? Group
-      save
+      unless groups.include? owner or collaborators.include? owner
+        collaborators << owner if owner.instance_of? User
+        groups        << owner if owner.instance_of? Group
+      end
     end
 
     def build_path(dir)
-      File.join(repository.path, dir)
+      File.join(APP_CONFIG['root_path'], 'projects', dir)
     end
 
     def create_directory
@@ -73,6 +75,12 @@ class Project < ActiveRecord::Base
       elsif unixname_changed?
         FileUtils.mv(build_path(unixname_was), buildpath(unixname))
       end 
+    end
+
+    def remove_directory
+      exists = File.exists?(path) && File.directory?(path)
+      raise "Directory #{path} didn't exists" unless exists
+      FileUtils.rm_rf(path)
     end
 
     def xml_rpc_create

@@ -81,7 +81,7 @@ class Platform < ActiveRecord::Base
     end
 
     def make_owner_rel
-      unless members.include? owner
+      unless members.include? owner or groups.include? owner
         members << owner if owner.instance_of? User
         groups  << owner if owner.instance_of? Group
       end

@@ -3,7 +3,7 @@ class Repository < ActiveRecord::Base
   belongs_to :owner, :polymorphic => true
 
   has_many :projects, :through => :project_to_repositories #, :dependent => :destroy
-  has_many :project_to_repositories
+  has_many :project_to_repositories, :validate => true
 
   has_many :objects, :as => :target, :class_name => 'Relation'
   has_many :members, :through => :objects, :source => :object, :source_type => 'User'
