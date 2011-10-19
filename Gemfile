@@ -51,6 +51,10 @@ group :development do
   gem 'capistrano_colors', :require => false
 end
 
+group :development, :test do
+  gem 'mysql2', '<= 0.2.9'
+end
+
 group :test do
   gem 'rspec-rails',        '~> 2.6.1'
   gem 'factory_girl_rails', '~> 1.2.0'

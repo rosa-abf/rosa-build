@@ -4,6 +4,42 @@ Rosa::Application.routes.draw do
   end
   resources :users
 
+#  resources :platforms do
+#    member do
+#      get 'freeze'
+#      get 'unfreeze'
+#      get 'clone'
+#    end
+#
+#    resources :products do
+#      member do
+#        get :clone
+#        get :build
+#      end
+#    end
+#
+#    resources :repositories do
+#      resources :projects do
+#        resource :repo, :controller => "git/repositories", :only => [:show]
+#        resources :build_lists, :only => [:index, :show] do
+#          collection do
+#            get :recent
+#            post :filter
+#          end
+#          member do
+#            post :publish
+#          end  
+#        end
+#
+#        member do
+#          get :build
+#          post :process_build
+#        end
+#
+#      end
+#    end
+#  end
+
   resources :platforms do
     member do
       get 'freeze'
@@ -19,27 +55,36 @@ Rosa::Application.routes.draw do
     end
 
     resources :repositories do
-      resources :projects do
-        resource :repo, :controller => "git/repositories", :only => [:show]
-        resources :build_lists, :only => [:index, :show] do
-          collection do
-            get :recent
-            post :filter
-          end
-          member do
-            post :publish
-          end  
-        end
+    end
+  end
 
-        member do
-          get :build
-          post :process_build
-        end
-
+  resources :projects do
+    resources :build_lists, :only => [:index, :show] do
+      collection do
+        get :recent
+        post :filter
+      end
+      member do
+        post :publish
       end
     end
   end
-  
+
+  resources :repositories do
+    member do
+      get :add_project
+      get :remove_project
+    end
+  end
+
+  resources :users, :groups do
+    resources :platforms, :only => [:new, :create]
+
+    resources :projects, :only => [:new, :create]
+
+    resources :repositories, :only => [:new, :create]
+  end
+
   match 'build_lists/status_build', :to => "build_lists#status_build"
   match 'build_lists/post_build', :to => "build_lists#post_build"
   match 'build_lists/pre_build', :to => "build_lists#pre_build"

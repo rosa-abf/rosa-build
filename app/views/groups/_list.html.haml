@@ -1,0 +1,24 @@
+.content
+  %h2.title
+    = t("layout.groups.list_header")
+  .inner
+    %table.table
+      %tr
+        %th.first ID
+        %th= t("activerecord.attributes.group.name")
+        %th= t("activerecord.attributes.group.owner")
+        %th.last &nbsp;
+      - @groups.each do |group|
+        %tr{:class => cycle("odd", "even")}
+          %td
+            = group.id
+          %td
+            = link_to group.name, group_path(group)
+          %td
+            = link_to group.owner.name, user_path(group.owner)
+          %td.last
+            #{link_to t("layout.show"), group_path(group)} | #{link_to t("layout.edit"), edit_group_path(group)} | #{link_to t("layout.delete"), group_path(group), :method => :delete, :confirm => t("layout.groups.confirm_delete")}
+    .actions-bar.wat-cf
+      .actions
+        - if !!paginate
+          = paginate

@@ -1,0 +1,30 @@
+.block
+  .secondary-navigation
+    %ul.wat-cf
+      %li.first.active= link_to t("layout.roles.list"), roles_path
+      %li= link_to t("layout.roles.new"), new_role_path
+  .content
+    %h2.title
+      = t("layout.roles.list_header")
+    .inner
+    -unless @roles.empty?
+      %table.table
+        %tr
+          %th.first ID
+          %th= t("activerecord.attributes.role.name")
+          %th.last &nbsp;
+        - @roles.each do |role|
+          %tr{:class => cycle("odd", "even")}
+            %td
+              = role.id
+            %td
+              = link_to role.name, role_path(role)
+            %td.last
+              #{link_to t("layout.show"), role_path(role)} | #{link_to t("layout.edit"), edit_role_path(role)} | #{link_to t("layout.delete"), role_path(role), :method => :delete, :confirm => t("layout.roles.confirm_delete")}
+      .actions-bar.wat-cf
+        .actions
+    -else
+      .inner
+        %label.label Роли отсутствуют, 
+        = link_to "создать новую роль", new_role_path
+- content_for :sidebar, render(:partial => 'sidebar')

@@ -14,10 +14,16 @@
           %ul.wat-cf
             %li= link_to current_user.nickname, edit_user_registration_path
             %li= link_to t('layout.logout'), destroy_user_session_path, :method => :delete, :class => "logout"
+/            %li
+/              = t("layout.logged_in_as") + ' ' + current_user.name
+/              &nbsp; | &nbsp;
+/              = link_to t('layout.logout'), destroy_user_session_path, :class => "logout"
         #main-navigation
           %ul.wat-cf
             %li{:class => controller.controller_path == 'users' ? 'active' : '' }
               %a{:href => users_path}= t("layout.menu.users")
+            %li{:class => controller.controller_path == 'groups' ? 'active' : '' }
+              %a{:href => groups_path}= t("layout.menu.groups")
             %li{:class => controller.controller_path == 'platforms' ? 'active' : '' }
               %a{:href => platforms_path}= t("layout.menu.platforms")
       #wrapper.wat-cf

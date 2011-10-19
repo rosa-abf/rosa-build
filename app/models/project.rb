@@ -1,18 +1,33 @@
 class Project < ActiveRecord::Base
-  belongs_to :repository
+  belongs_to :owner, :polymorphic => true
+
   has_many :build_lists, :dependent => :destroy
 
-  validates :name, :uniqueness => {:scope => :repository_id}, :presence => true, :allow_nil => false, :allow_blank => false
-  validates :unixname, :uniqueness => {:scope => :repository_id}, :presence => true, :format => { :with => /^[a-zA-Z0-9\-.]+$/ }, :allow_nil => false, :allow_blank => false
+  has_many :project_to_repositories
+  has_many :repositories, :through => :project_to_repositories
+
+  has_many :relations, :as => :target
+  has_many :collaborators, :through => :relations, :source => :object, :source_type => 'User'
+  has_many :groups,        :through => :relations, :source => :object, :source_type => 'Group'
+
+  validates :name,     :uniqueness => {:scope => [:owner_id, :owner_type]}, :presence => true, :allow_nil => false, :allow_blank => false
+  validates :unixname, :uniqueness => {:scope => [:owner_id, :owner_type]}, :presence => true, :format => { :with => /^[a-zA-Z0-9_]+$/ }, :allow_nil => false, :allow_blank => false
+#  validates :unixname, :uniqueness => {:scope => [:owner_id, :owner_type]}, :presence => true, :format => { :with => /^[a-zA-Z0-9\-.]+$/ }, :allow_nil => false, :allow_blank => false
 
   include Project::HasRepository
 
   scope :recent, order("name ASC")
   scope :by_name, lambda { |name| {:conditions => ['name like ?', '%' + name + '%']} }
 
-  #before_create :create_directory, :create_git_repo
-  before_create :xml_rpc_create
-  before_destroy :xml_rpc_destroy
+  before_save :create_directory#, :create_git_repo
+  before_save :make_owner_rel
+  after_destroy :remove_directory
+#  before_create :xml_rpc_create
+#  before_destroy :xml_rpc_destroy
+
+  def members
+    collaborators + groups
+  end
 
   # Redefining a method from Project::HasRepository module to reflect current situation
   def git_repo_path
@@ -41,8 +56,15 @@ class Project < ActiveRecord::Base
 
   protected
 
+    def make_owner_rel
+      unless groups.include? owner or collaborators.include? owner
+        collaborators << owner if owner.instance_of? User
+        groups        << owner if owner.instance_of? Group
+      end
+    end
+
     def build_path(dir)
-      File.join(repository.path, dir)
+      File.join(APP_CONFIG['root_path'], 'projects', dir)
     end
 
     def create_directory
@@ -53,6 +75,12 @@ class Project < ActiveRecord::Base
       elsif unixname_changed?
         FileUtils.mv(build_path(unixname_was), buildpath(unixname))
       end 
+    end
+
+    def remove_directory
+      exists = File.exists?(path) && File.directory?(path)
+      raise "Directory #{path} didn't exists" unless exists
+      FileUtils.rm_rf(path)
     end
 
     def xml_rpc_create

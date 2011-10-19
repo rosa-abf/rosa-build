@@ -1,14 +1,14 @@
 .block
   .secondary-navigation
     %ul.wat-cf
-      %li.first= link_to t("layout.projects.list"), platform_repository_path(@platform, @repository) + "#projects"
-      %li.active= link_to t("layout.projects.new"), new_platform_repository_project_path(@platform, @repository)
+      %li.first= link_to t("layout.projects.list"), @projects_path#url_for(get_acter) + "#projects"
+      %li.active= link_to t("layout.projects.new"), @new_project_path#new_platform_repository_project_path(@platform, @repository)
       -#%li= link_to "git-repo", platform_repository_project_repo_path(@platform, @repository, @project)
       -#%li= link_to t("layout.projects.build"), build_platform_repository_project_path(@platform, @repository, @project)
 
   .content
     %h2.title= t("layout.projects.new_header")
     .inner
-      = form_for [@platform, @repository, @project], :html => { :class => :form } do |f|
+      = form_for :project, :url => @projects_path, :html => { :class => :form } do |f|
         = render :partial => "form", :locals => {:f => f}
-- content_for :sidebar, render(:partial => 'sidebar')
+-# content_for :sidebar, render(:partial => 'sidebar')

@@ -1,14 +1,26 @@
 class Repository < ActiveRecord::Base
   belongs_to :platform
-  has_many :projects, :dependent => :destroy
+  belongs_to :owner, :polymorphic => true
 
-  validates :name, :uniqueness => {:scope => :platform_id}, :presence => true
-  validates :unixname, :uniqueness => {:scope => :platform_id}, :presence => true, :format => { :with => /^[a-zA-Z0-9\-.]+$/ }
+  has_many :projects, :through => :project_to_repositories #, :dependent => :destroy
+  has_many :project_to_repositories, :validate => true
+
+  has_many :objects, :as => :target, :class_name => 'Relation'
+  has_many :members, :through => :objects, :source => :object, :source_type => 'User'
+  has_many :groups,  :through => :objects, :source => :object, :source_type => 'Group'
+
+  validates :name, :uniqueness => {:scope => [:owner_id, :owner_type]}, :presence => true
+  validates :unixname, :uniqueness => {:scope => [:owner_id, :owner_type]}, :presence => true, :format => { :with => /^[a-zA-Z0-9\-.]+$/ }
+  validates :platform_id, :presence => true
 
   scope :recent, order("name ASC")
 
-  before_create :xml_rpc_create
-  before_destroy :xml_rpc_destroy
+  before_save :create_directory
+  before_save :make_owner_rel
+  after_destroy :remove_directory
+
+#  before_create :xml_rpc_create
+#  before_destroy :xml_rpc_destroy
 
   def path
     build_path(unixname)
@@ -24,6 +36,13 @@ class Repository < ActiveRecord::Base
 
   protected
 
+    def make_owner_rel
+      unless members.include? owner
+        members << owner if owner.instance_of? User
+        groups  << owner if owner.instance_of? Group
+      end
+    end
+
     def build_path(dir)
       File.join(platform.path, dir)
     end
@@ -38,7 +57,13 @@ class Repository < ActiveRecord::Base
         FileUtils.mv(build_path(unixname_was), buildpath(unixname))
       end 
     end
-    
+
+    def remove_directory
+      exists = File.exists?(path) && File.directory?(path)
+      raise "Directory #{path} didn't exists" unless exists
+      FileUtils.rm_rf(path)
+    end
+
     def xml_rpc_create
       result = BuildServer.create_repo unixname, platform.unixname
       if result == BuildServer::SUCCESS

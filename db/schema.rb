@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20111011200645) do
+ActiveRecord::Schema.define(:version => 20111018102655) do
 
   create_table "arches", :force => true do |t|
     t.string   "name",       :null => false
@@ -84,6 +84,21 @@ ActiveRecord::Schema.define(:version => 20111011200645) do
 
   add_index "delayed_jobs", ["priority", "run_at"], :name => "delayed_jobs_priority"
 
+  create_table "groups", :force => true do |t|
+    t.string   "name"
+    t.integer  "owner_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string   "uname"
+  end
+
+  create_table "permissions", :force => true do |t|
+    t.integer  "right_id"
+    t.integer  "role_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "platforms", :force => true do |t|
     t.string   "name"
     t.string   "unixname"
@@ -91,6 +106,11 @@ ActiveRecord::Schema.define(:version => 20111011200645) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.boolean  "released",           :default => false
+    t.integer  "owner_id"
+    t.string   "owner_type"
+    t.string   "visibility",         :default => "open"
+    t.string   "platform_type",      :default => "main"
+    t.string   "distrib_type"
   end
 
   create_table "products", :force => true do |t|
@@ -114,20 +134,56 @@ ActiveRecord::Schema.define(:version => 20111011200645) do
     t.boolean  "use_cron",         :default => false
   end
 
+  create_table "project_to_repositories", :force => true do |t|
+    t.integer  "project_id"
+    t.integer  "repository_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "projects", :force => true do |t|
     t.string   "name"
     t.string   "unixname"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "repository_id", :null => false
+    t.integer  "owner_id"
+    t.string   "owner_type"
+    t.string   "visibility", :default => "open"
+  end
+
+  create_table "relations", :force => true do |t|
+    t.integer  "object_id"
+    t.string   "object_type"
+    t.integer  "target_id"
+    t.string   "target_type"
+    t.integer  "role_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "repositories", :force => true do |t|
-    t.string   "name",        :null => false
-    t.integer  "platform_id", :null => false
+    t.string   "name",                            :null => false
+    t.integer  "platform_id",                     :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "unixname",    :null => false
+    t.string   "unixname",                        :null => false
+    t.integer  "owner_id"
+    t.string   "owner_type"
+    t.string   "visibility",  :default => "open"
+  end
+
+  create_table "rights", :force => true do |t|
+    t.string   "name"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "roles", :force => true do |t|
+    t.string   "name"
+    t.string   "to"
+    t.string   "on"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "rpms", :force => true do |t|
@@ -153,6 +209,7 @@ ActiveRecord::Schema.define(:version => 20111011200645) do
     t.datetime "updated_at"
     t.string   "nickname"
     t.text     "ssh_key"
+    t.string   "uname"
   end
 
   add_index "users", ["email"], :name => "index_users_on_email", :unique => true

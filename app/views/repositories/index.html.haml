@@ -1,0 +1,14 @@
+.block
+  .secondary-navigation
+    %ul.wat-cf
+      %li.first.active= link_to t("layout.repositories.list"), repositories_path
+      %li= link_to t("layout.repositories.new"), new_repository_path
+  .content
+    %h2.title
+      = t("layout.repositories.list_header")
+    .inner
+      = render :partial => 'shared/search_form'
+      = render :partial => 'list', :object => @repositories
+      .actions-bar.wat-cf
+        .actions
+          = will_paginate @repositories, :param_name => :repository_page

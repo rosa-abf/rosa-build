@@ -20,6 +20,7 @@ ru:
     true_: Да
     false_: Нет
     publish: Опубликовать
+    add: Добавить
 
     weekdays:
       Monday: Понедельник
@@ -33,6 +34,7 @@ ru:
     menu:
       users: Пользователи
       platforms: Платформы
+      groups: Группы
 
     sessions:
       sign_in_header: Вход в систему
@@ -57,6 +59,10 @@ ru:
       released_suffix: (выпущена)
       confirm_delete: Вы уверены, что хотите удалить эту платформу?
       current_platform_header: Текущая платформа
+      owner: Владелец
+      visibility: Видимость
+      platform_type: Тип платформы
+      distrib_type: Тип дистрибутива
 
     repositories:
       list: Список
@@ -98,6 +104,7 @@ ru:
         weekdays: Дни недели
 
     projects:
+      add: Добавить
       list: Список
       list_header: Проекты
       show: Проект
@@ -113,6 +120,18 @@ ru:
       current_build_lists: Текущие сборки
       build_button: Начать сборку
 
+    groups:
+      list: Список
+      new: Создать
+      edit: Редактировать
+      members: Участники
+      new_header: Новая группа
+      edit_header: Редактировать
+      list_header: Группы
+      show: Группа
+      back_to_the_list: ⇐ К списку групп
+      confirm_delete: Вы уверены, что хотите удалить эту группу?
+
     users:
       list: Список
       new: Создать
@@ -120,6 +139,7 @@ ru:
       new_header: Новый пользователь
       edit_header: Редактировать
       list_header: Пользователи
+      groups: Группы
       show: Пользователь
       back_to_the_list: ⇐ К списку пользователей
       confirm_delete: Вы уверены, что хотите удалить этого пользователя?
@@ -180,10 +200,19 @@ ru:
       save_error: Не удалось сохранить данные о пользователе
       destroyed: Учетная запись успешно удалена
 
+    group:
+      saved: Группа успешно сохранена
+      save_error: Не удалось сохранить группу
+      destroyed: Группа успешно удалена
+
     repository:
       saved: Репозиторий успешно добавлен
       save_error: Не удалось добавить репозиторий
       destroyed: Репозиторий успешно удален
+      project_added: Проект добавлен к репозиторию
+      project_not_added: Не удалось добавить проект
+      project_removed: Проект удален из репозитория
+      project_not_removed: Не удалось удалить проект из репозитория
 
     product:
       saved: Продукт успешно сохранен
@@ -222,6 +251,7 @@ ru:
       arch: Arch
       container: Container
       platform: Платформа
+      group: Группа
       project: Проект
       rpm: RPM
       user: Пользователь
@@ -281,6 +311,8 @@ ru:
       project:
         name: Название
         unixname: Unixname
+        owner: Владелец
+        visibility: Видимость
         repository_id: Репозиторий
         repository: Репозиторий
         created_at: Создан
@@ -295,6 +327,13 @@ ru:
         created_at: Создан
         updated_at: Обновлен
 
+      group:
+        name: Название
+        uname: Unixname
+        owner: Владелец
+        created_at: Создана
+        updated_at: Обновлена
+
       user:
         name: Имя
         login: Никнейм или Email
@@ -302,6 +341,7 @@ ru:
         nickname: Никнейм
         ssh_key: SSH ключ
         current_password: Текущий пароль
+        roles: Роли
         created_at: Создан
         updated_at: Обновлен
 
