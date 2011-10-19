@@ -24,6 +24,9 @@
               %a{:href => groups_path}= t("layout.menu.groups")
             %li{:class => controller.controller_path == 'platforms' ? 'active' : '' }
               %a{:href => platforms_path}= t("layout.menu.platforms")
+            %li{:class => controller.controller_path == 'categories' ? 'active' : '' }
+              %a{:href => categories_path}= t("layout.menu.categories")
+
       #wrapper.wat-cf
         = render :partial => "layouts/flashes"
         #main

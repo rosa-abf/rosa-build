@@ -1,0 +1,13 @@
+.block
+  .secondary-navigation
+    %ul.wat-cf
+      %li.first= link_to t("layout.categories.list"), categories_path
+      %li.active= link_to t("layout.categories.platforms"), platforms_categories_path
+  .content
+    %h2.title= t("layout.platforms.list_header")
+    .inner
+      %table.table
+        - @platforms.each do |platform|
+          %tr{:class => cycle("odd", "even")}
+            %td= link_to platform.name, platform_categories_path(platform)
+            %td.last= @platforms_count[platform.id].to_i

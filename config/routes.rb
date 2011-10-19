@@ -1,6 +1,10 @@
 Rosa::Application.routes.draw do
   devise_for :users
 
+  resources :categories do
+    get :platforms, :on => :collection
+  end
+
 #  resources :platforms do
 #    member do
 #      get 'freeze'
@@ -53,6 +57,8 @@ Rosa::Application.routes.draw do
 
     resources :repositories do
     end
+
+    resources :categories, :only => [:index, :show]
   end
 
   resources :projects do

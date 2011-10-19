@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20111016225240) do
+ActiveRecord::Schema.define(:version => 20111017172701) do
 
   create_table "arches", :force => true do |t|
     t.string   "name",       :null => false
@@ -49,6 +49,14 @@ ActiveRecord::Schema.define(:version => 20111016225240) do
   add_index "build_lists", ["arch_id"], :name => "index_build_lists_on_arch_id"
   add_index "build_lists", ["bs_id"], :name => "index_build_lists_on_bs_id", :unique => true
   add_index "build_lists", ["project_id"], :name => "index_build_lists_on_project_id"
+
+  create_table "categories", :force => true do |t|
+    t.string   "name"
+    t.string   "ancestry"
+    t.integer  "projects_count", :default => 0, :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "containers", :force => true do |t|
     t.string   "name",       :null => false
@@ -137,8 +145,12 @@ ActiveRecord::Schema.define(:version => 20111016225240) do
     t.datetime "updated_at"
     t.integer  "owner_id"
     t.string   "owner_type"
-    t.string   "visibility", :default => "open"
+    t.string   "visibility",  :default => "open"
+    t.integer  "category_id"
+    t.text     "description"
   end
+
+  add_index "projects", ["category_id"], :name => "index_projects_on_category_id"
 
   create_table "relations", :force => true do |t|
     t.integer  "object_id"

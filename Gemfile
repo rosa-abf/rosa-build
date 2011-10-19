@@ -55,3 +55,5 @@ gem 'delayed_job'
 gem 'paperclip', "~> 2.3"
 
 gem 'jammit'
+
+gem 'ancestry', '~> 1.2.4'

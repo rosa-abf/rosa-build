@@ -1,4 +1,5 @@
 class Project < ActiveRecord::Base
+  belongs_to :category, :counter_cache => true
   belongs_to :owner, :polymorphic => true
 
   has_many :build_lists, :dependent => :destroy

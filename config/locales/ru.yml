@@ -35,9 +35,20 @@ ru:
       users: Пользователи
       platforms: Платформы
       groups: Группы
+      categories: Категории
 
     sessions:
       sign_in_header: Вход в систему
+
+    categories:
+      list: Список
+      new: Создать
+      edit: Редактировать
+      platforms: По платформам
+      list_header: Категории
+      new_header: Новая категория
+      edit_header: Редактировать категорию
+      confirm_delete: Вы уверены, что хотите удалить эту категорию?
 
     platforms:
       list: Список
@@ -189,6 +200,11 @@ ru:
         branch_not_found: бранч не найден
 
   flash:
+    category:
+      saved: Категория успешно сохранена
+      save_error: Не удалось сохранить категорию
+      destroyed: Категория успешно удалена
+
     project:
       saved: Проект успешно сохранен
       save_error: Не удалось сохранить проект
@@ -242,6 +258,7 @@ ru:
 
   activerecord:
     models:
+      category: Категория
       repository: Репозиторий
       arch: Arch
       container: Container
@@ -255,6 +272,10 @@ ru:
       build_list_item: Элемент сборочного листа
 
     attributes:
+      category:
+        parent_id: Родитель
+        name: Название
+
       repository:
         name: Название
         platform_id: Платформа
@@ -304,8 +325,10 @@ ru:
         updated_at: Обновлена
 
       project:
+        category_id: Категория
         name: Название
         unixname: Unixname
+        description: Описание
         owner: Владелец
         visibility: Видимость
         repository_id: Репозиторий

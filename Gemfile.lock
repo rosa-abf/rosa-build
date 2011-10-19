@@ -31,6 +31,8 @@ GEM
     airbrake (3.0.4)
       activesupport
       builder
+    ancestry (1.2.4)
+      activerecord (>= 2.2.2)
     arel (2.0.9)
     bcrypt-ruby (2.1.4)
     builder (2.1.2)
@@ -148,6 +150,7 @@ PLATFORMS
 
 DEPENDENCIES
   airbrake
+  ancestry (~> 1.2.4)
   capistrano
   capistrano-ext
   compass (>= 0.10.6)
