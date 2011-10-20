@@ -47,6 +47,7 @@ GEM
     capistrano-ext (1.2.1)
       capistrano (>= 1.0.0)
     capistrano_colors (0.5.5)
+    chronic (0.6.4)
     chunky_png (1.2.5)
     cocaine (0.2.0)
     columnize (0.3.4)
@@ -58,7 +59,7 @@ GEM
     delayed_job (2.1.4)
       activesupport (~> 3.0)
       daemons
-    devise (1.4.8)
+    devise (1.4.9)
       bcrypt-ruby (~> 3.0)
       orm_adapter (~> 0.0.3)
       warden (~> 1.0.3)
@@ -237,6 +238,9 @@ GEM
     warden (1.0.6)
       rack (>= 1.0)
     web-app-theme (0.7.0)
+    whenever (0.7.0)
+      activesupport (>= 2.3.4)
+      chronic (~> 0.6.3)
     will_paginate (3.0.2)
     yui-compressor (0.9.5)
 
@@ -271,5 +275,6 @@ DEPENDENCIES
   silent-postgres (~> 0.1.1)
   unicorn
   web-app-theme
+  whenever
   will_paginate (~> 3.0.2)
   yui-compressor (= 0.9.5)

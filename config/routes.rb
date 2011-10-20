@@ -4,6 +4,7 @@ Rosa::Application.routes.draw do
   end
   resources :users
 
+  resources :downloads, :only => :index
 #  resources :platforms do
 #    member do
 #      get 'freeze'

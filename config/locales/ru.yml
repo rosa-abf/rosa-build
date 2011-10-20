@@ -22,6 +22,9 @@ ru:
     publish: Опубликовать
     add: Добавить
 
+    downloads:
+      title: Статистика закачек пакетов
+
     weekdays:
       Monday: Понедельник
       Tuesday: Вторник
@@ -35,6 +38,7 @@ ru:
       users: Пользователи
       platforms: Платформы
       groups: Группы
+      downloads: Статистика
 
     sessions:
       sign_in_header: Вход в систему
@@ -165,7 +169,7 @@ ru:
       no_items_data: Данных нет
       show: Просмотр
       confirm_publish: Вы уверены, что хотите опубликовать контейнер?
-      
+
       items:
         statuses:
           build_error: ошибка сборки
@@ -258,6 +262,7 @@ ru:
       product: Продукт
       build_list: Сборочный лист
       build_list_item: Элемент сборочного листа
+      download: Статистика
 
     attributes:
       repository:
@@ -274,7 +279,7 @@ ru:
         build_status: Статус последней сборки
         build_path: Путь к iso
         created_at: Создан
-        updated_at: Обновлен 
+        updated_at: Обновлен
         ks: Содержимое .ks.template
         counter: Содержимое .counter
         build: Содержимое build
@@ -366,3 +371,9 @@ ru:
         level: Уровень
         status: Статус
         build_list: Сборочный лист
+      download:
+        name: Название
+        version: Версия
+        distro: Дистрибутив
+        platform: Архитектура
+        counter: Закачки

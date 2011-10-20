@@ -84,6 +84,16 @@ ActiveRecord::Schema.define(:version => 20111018102655) do
 
   add_index "delayed_jobs", ["priority", "run_at"], :name => "delayed_jobs_priority"
 
+  create_table "downloads", :force => true do |t|
+    t.string   "name",                      :null => false
+    t.string   "version"
+    t.string   "distro"
+    t.string   "platform"
+    t.integer  "counter",    :default => 0
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "groups", :force => true do |t|
     t.string   "name"
     t.integer  "owner_id"
@@ -207,9 +217,9 @@ ActiveRecord::Schema.define(:version => 20111018102655) do
     t.datetime "remember_created_at"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "uname"
     t.string   "nickname"
     t.text     "ssh_key"
-    t.string   "uname"
   end
 
   add_index "users", ["email"], :name => "index_users_on_email", :unique => true

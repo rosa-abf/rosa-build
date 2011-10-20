@@ -54,6 +54,9 @@ end
 group :development, :test do
   gem 'mysql2', '<= 0.2.9'
 end
+gem "capistrano"
+gem "capistrano-ext"
+gem 'whenever', :require => false
 
 group :test do
   gem 'rspec-rails',        '~> 2.6.1'

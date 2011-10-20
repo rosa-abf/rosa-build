@@ -12,3 +12,4 @@ public/assets/*
 config/initializers/local.rb
 public/system/*
 .rvmrc
+*.swp
