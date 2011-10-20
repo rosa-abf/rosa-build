@@ -5,7 +5,7 @@ class ApplicationController < ActionController::Base
   private
     def get_role(object_id, object_type, target_id, target_type)
       rel=Relation.where(:object_id=>object_id, :object_type=>object_type, :target_id=>target_id, :target_type=>target_type).first
-      rel ? return rel.roles : return nil
+      return (rel) ? rel.roles : nil
     end
     
     def checkaccess

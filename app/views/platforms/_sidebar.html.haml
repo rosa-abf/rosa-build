@@ -2,4 +2,4 @@
   %h3= t("layout.groups.members")
   .content
     - @platform.members.uniq.each do |member|
-      %p= link_to member.name + " (#{@platform.roles_of(member).map{|r| r.name}.join(', ')})", user_path(member)
+      %p= link_to member.name + "", user_path(member)
