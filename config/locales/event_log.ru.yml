@@ -1,0 +1,21 @@
+ru:
+  event_log:
+    controllers:
+      products_controller: 'Управление продуктами'
+      platforms_controller: 'Управление платформами'
+      repositories_controller: 'Управление репозиториями'
+      projects_controller: 'Управление проектами'
+      build_lists_controller: 'Управление сборочными листами'
+      'devise/registrations_controller': 'Регистрация пользователей'
+      'devise/sessions_controller': 'Аутентификация пользователей'
+      'devise/passwords_controller': 'Восстановление пароля'
+      'users/omniauth_callbacks_controller': 'Внешняя аутентификация пользователей'
+    actions:
+      'devise/sessions_controller':
+        create: 'вход'
+        destroy: 'выход'
+      'users/omniauth_callbacks_controller':
+        open_id: 'вход через OpenID'
+      create: 'создано'
+      update: 'обновлено'
+      destroy: 'удалено'

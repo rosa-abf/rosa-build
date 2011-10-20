@@ -40,6 +40,10 @@ class ApplicationController < ActionController::Base
         end
       end
     end
+
+  before_filter lambda { EventLog.current_controller = self }, :only => [:create, :destroy, :open_id] # :update
+  after_filter lambda { EventLog.current_controller = nil }
+
   protected
     def layout_by_resource
       if devise_controller?

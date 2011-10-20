@@ -26,3 +26,10 @@ Rosa::Application.configure do
   config.action_mailer.default_url_options = { :host => 'localhost:3000' }
 end
 
+# Uncomment this to stub XML RPC calls
+# require 'xmlrpc/client'
+# module XMLRPC
+#   class Client
+#     def call(*args); 0; end
+#   end
+# end

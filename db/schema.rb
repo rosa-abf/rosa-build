@@ -94,6 +94,22 @@ ActiveRecord::Schema.define(:version => 20111018102655) do
     t.datetime "updated_at"
   end
 
+  create_table "event_logs", :force => true do |t|
+    t.integer  "user_id"
+    t.string   "user_name"
+    t.integer  "object_id"
+    t.string   "object_type"
+    t.string   "object_name"
+    t.string   "ip"
+    t.string   "kind"
+    t.string   "protocol"
+    t.string   "controller"
+    t.string   "action"
+    t.text     "message"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "groups", :force => true do |t|
     t.string   "name"
     t.integer  "owner_id"

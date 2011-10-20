@@ -39,6 +39,7 @@ ru:
       platforms: Платформы
       groups: Группы
       downloads: Статистика
+      event_logs: Лог событий
 
     sessions:
       sign_in_header: Вход в систему
@@ -74,6 +75,10 @@ ru:
       platform_type: Тип платформы
       distrib_type: Тип дистрибутива
       private_users: Пользователи приватного репозитория
+
+    event_logs:
+      list: Список
+      list_header: Лог событий
 
     repositories:
       list: Список
@@ -263,6 +268,7 @@ ru:
       container: Container
       platform: Платформа
       group: Группа
+      event_log: Лог событий
       project: Проект
       rpm: RPM
       user: Пользователь
@@ -323,6 +329,14 @@ ru:
         released: Released
         created_at: Создана
         updated_at: Обновлена
+
+      event_log:
+        kind: Тип события
+        created_at: Дата и время события
+        user: Пользователь
+        ip: IP пользователя
+        protocol: Протокол доступа
+        description: Описание события
 
       project:
         name: Название
