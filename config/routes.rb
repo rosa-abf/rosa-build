@@ -40,8 +40,12 @@ Rosa::Application.routes.draw do
 #      end
 #    end
 #  end
+  #resources :privates
+  match '/private/:platform_name/*file_path' => 'privates#show'
 
   resources :platforms do
+    resources :private_users
+
     member do
       get 'freeze'
       get 'unfreeze'

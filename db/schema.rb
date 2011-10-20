@@ -123,6 +123,14 @@ ActiveRecord::Schema.define(:version => 20111018102655) do
     t.string   "distrib_type"
   end
 
+  create_table "private_users", :force => true do |t|
+    t.integer  "platform_id"
+    t.string   "login"
+    t.string   "password"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "products", :force => true do |t|
     t.string   "name",                                :null => false
     t.integer  "platform_id",                         :null => false

@@ -43,6 +43,12 @@ ru:
     sessions:
       sign_in_header: Вход в систему
 
+    private_users:
+      list: Список
+      new: Новая пара
+      list_header: Пары логин/пароль
+      confirm_delete: Вы уверены, что хотите удалить эту пару логин/пароль?
+
     platforms:
       list: Список
       new: Создать
@@ -67,6 +73,7 @@ ru:
       visibility: Видимость
       platform_type: Тип платформы
       distrib_type: Тип дистрибутива
+      private_users: Пользователи приватного репозитория
 
     repositories:
       list: Список
@@ -265,6 +272,10 @@ ru:
       download: Статистика
 
     attributes:
+      private_user:
+        login: Логин
+        password: Пароль
+
       repository:
         name: Название
         platform_id: Платформа
