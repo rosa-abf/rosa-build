@@ -19,12 +19,13 @@ class User < ActiveRecord::Base
 
   attr_accessible :email, :password, :password_confirmation, :remember_me, :name, :uname
 
-  validates :uname, :presence => true, :uniqueness => true, :format => { :with => /^[a-zA-Z0-9_]+$/ }, :allow_nil => false, :allow_blank => false
+  validates :uname, :presence => true, :uniqueness => {:case_sensitive => false}, :format => { :with => /^[a-zA-Z0-9_]+$/ }, :allow_nil => false, :allow_blank => false
 
-  validates :nickname, :presence => true, :uniqueness => {:case_sensitive => false}, :format => /^[a-zA-Z0-9_]+$/i
+#  validates :nickname, :presence => true, :uniqueness => {:case_sensitive => false}, :format => /^[a-zA-Z0-9_]+$/i
 
-  attr_accessible :email, :password, :password_confirmation, :remember_me, :login, :nickname, :name, :ssh_key
-  attr_readonly :nickname
+  attr_accessible :email, :password, :password_confirmation, :remember_me, :login, :name, :ssh_key, :uname#, :nickname
+#  attr_readonly :nickname
+  attr_readonly :uname
   before_save :create_dir
   after_destroy :remove_dir
 
@@ -42,7 +43,8 @@ class User < ActiveRecord::Base
     def find_for_database_authentication(warden_conditions)
       conditions = warden_conditions.dup
       login = conditions.delete(:login)
-      where(conditions).where(["lower(nickname) = :value OR lower(email) = :value", { :value => login.downcase }]).first
+      #where(conditions).where(["lower(nickname) = :value OR lower(email) = :value", { :value => login.downcase }]).first
+      where(conditions).where(["lower(uname) = :value OR lower(email) = :value", { :value => login.downcase }]).first
     end
 
     def new_with_session(params, session)
@@ -50,7 +52,8 @@ class User < ActiveRecord::Base
         if data = session["devise.omniauth_data"]
           if info = data['user_info'] and info.present?
             user.email = info['email'].presence if user.email.blank?
-            user.nickname ||= info['nickname'].presence || info['username'].presence
+#            user.nickname ||= info['nickname'].presence || info['username'].presence
+            user.uname ||= info['uname'].presence || info['username'].presence
             user.name ||= info['name'].presence || [info['first_name'], info['last_name']].join(' ').strip
           end
           user.password = Devise.friendly_token[0,20] # stub password
@@ -73,6 +76,8 @@ class User < ActiveRecord::Base
   end
 
     def build_path(dir)
+      puts APP_CONFIG['root_path']
+      puts dir
       File.join(APP_CONFIG['root_path'], 'users', dir)
     end
 
