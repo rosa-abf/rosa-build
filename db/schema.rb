@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20111018102655) do
+ActiveRecord::Schema.define(:version => 20111019173246) do
 
   create_table "arches", :force => true do |t|
     t.string   "name",       :null => false
@@ -208,6 +208,13 @@ ActiveRecord::Schema.define(:version => 20111018102655) do
 
   create_table "rights", :force => true do |t|
     t.string   "name"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "role_lines", :force => true do |t|
+    t.integer  "role_id"
+    t.integer  "relation_id"
     t.datetime "created_at"
     t.datetime "updated_at"
   end

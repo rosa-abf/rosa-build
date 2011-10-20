@@ -5,7 +5,6 @@ class CreateRelations < ActiveRecord::Migration
       t.string :object_type
       t.integer :target_id
       t.string :target_type
-      t.integer :role_id
 
       t.timestamps
     end

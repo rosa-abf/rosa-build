@@ -3,6 +3,8 @@ class User < ActiveRecord::Base
 
   devise :database_authenticatable, :registerable, :omniauthable, # :token_authenticatable, :encryptable, :timeoutable
          :recoverable, :rememberable, :validatable #, :trackable, :confirmable, :lockable
+  has_many :roles, :through => :targets
+    
   has_many :targets, :as => :object, :class_name => 'Relation'
 
   has_many :own_projects, :as => :owner, :class_name => 'Project'
