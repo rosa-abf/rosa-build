@@ -190,7 +190,6 @@ ActiveRecord::Schema.define(:version => 20111019173246) do
     t.string   "object_type"
     t.integer  "target_id"
     t.string   "target_type"
-    t.integer  "role_id"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -206,12 +205,6 @@ ActiveRecord::Schema.define(:version => 20111019173246) do
     t.string   "visibility",  :default => "open"
   end
 
-  create_table "rights", :force => true do |t|
-    t.string   "name"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
   create_table "role_lines", :force => true do |t|
     t.integer  "role_id"
     t.integer  "relation_id"
@@ -221,8 +214,6 @@ ActiveRecord::Schema.define(:version => 20111019173246) do
 
   create_table "roles", :force => true do |t|
     t.string   "name"
-    t.string   "to"
-    t.string   "on"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -248,9 +239,9 @@ ActiveRecord::Schema.define(:version => 20111019173246) do
     t.datetime "remember_created_at"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "uname"
     t.string   "nickname"
     t.text     "ssh_key"
+    t.string   "uname"
   end
 
   add_index "users", ["email"], :name => "index_users_on_email", :unique => true
