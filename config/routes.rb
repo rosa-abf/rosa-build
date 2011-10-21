@@ -7,42 +7,11 @@ Rosa::Application.routes.draw do
   resources :event_logs, :only => :index
 
   resources :downloads, :only => :index
-#  resources :platforms do
-#    member do
-#      get 'freeze'
-#      get 'unfreeze'
-#      get 'clone'
-#    end
-#
-#    resources :products do
-#      member do
-#        get :clone
-#        get :build
-#      end
-#    end
-#
-#    resources :repositories do
-#      resources :projects do
-#        resource :repo, :controller => "git/repositories", :only => [:show]
-#        resources :build_lists, :only => [:index, :show] do
-#          collection do
-#            get :recent
-#            post :filter
-#          end
-#          member do
-#            post :publish
-#          end  
-#        end
-#
-#        member do
-#          get :build
-#          post :process_build
-#        end
-#
-#      end
-#    end
-#  end
-  #resources :privates
+
+  resources :categories do
+    get :platforms, :on => :collection
+  end
+
   match '/private/:platform_name/*file_path' => 'privates#show'
 
   resources :platforms do
@@ -63,6 +32,8 @@ Rosa::Application.routes.draw do
 
     resources :repositories do
     end
+
+    resources :categories, :only => [:index, :show]
   end
 
   resources :projects do

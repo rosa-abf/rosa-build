@@ -1,9 +1,15 @@
 .group
+  = f.label :category_id, t("activerecord.attributes.project.category_id"), :class => :label
+  = f.grouped_collection_select :category_id, Category.roots, :children, :name, :id, :name, :include_blank => true
+.group
   = f.label :name, t("activerecord.attributes.project.name"), :class => :label
   = f.text_field :name, :class => 'text_field'
 .group
   = f.label :unixname, t("activerecord.attributes.project.unixname"), :class => :label
   = f.text_field :unixname, :class => 'text_field'
+.group
+  = f.label :description, t("activerecord.attributes.project.description"), :class => :label
+  = f.text_area :description, :class => 'text_field', :cols => 80
 
 .group.navform.wat-cf
   %button.button{:type => "submit"}
