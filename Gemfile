@@ -23,6 +23,7 @@ gem "russian"
 gem "grit"
 gem 'whenever', :require => false
 gem 'delayed_job'
+gem 'whenever', :require => false
 gem 'unicorn'
 
 group :production do
