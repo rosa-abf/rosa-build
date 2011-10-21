@@ -4,6 +4,8 @@ Rosa::Application.routes.draw do
   end
   resources :users
   
+  resources :roles
+
   resources :event_logs, :only => :index
 
   resources :downloads, :only => :index
