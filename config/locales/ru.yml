@@ -391,7 +391,7 @@ ru:
         name: Имя
         login: Никнейм или Email
         email: Email
-        nickname: Никнейм
+        uname: Никнейм
         ssh_key: SSH ключ
         current_password: Текущий пароль
         roles: Роли
