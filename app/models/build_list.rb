@@ -1,11 +1,23 @@
 class BuildList < ActiveRecord::Base
   belongs_to :project
   belongs_to :arch
+  belongs_to :pl, :class_name => 'Platform'
+  belongs_to :bpl, :class_name => 'Platform'
   has_many :items, :class_name => "BuildList::Item", :dependent => :destroy
 
   validates :project_id, :presence => true
-  validates :branch_name, :presence => true
+  validates :project_version, :presence => true
+  #validates_inclusion_of :update_type, :in => UPDATE_TYPES#, :message => "extension %s is not included in the list"
 
+  UPDATE_TYPES = %w[security bugfix enhancement recommended newpackage]
+  
+  validates :update_type, :inclusion => UPDATE_TYPES
+  
+  validate lambda {  
+    errors.add(:pl, I18n.t('flash.build_list.wrong_platform')) if bpl.platform_type == 'main' && pl_id != bpl_id
+  }
+
+  BUILD_CANCELED = 5000
   WAITING_FOR_RESPONSE = 4000
   BUILD_PENDING = 2000
   BUILD_STARTED = 3000
@@ -38,7 +50,7 @@ class BuildList < ActiveRecord::Base
   }
   scope :for_status, lambda {|status| where(:status => status) }
   scope :scoped_to_arch, lambda {|arch| where(:arch_id => arch) }
-  scope :scoped_to_branch, lambda {|branch| where(:branch_name => branch) }
+  scope :scoped_to_branch, lambda {|branch| where(:project_version => branch) }
   scope :scoped_to_is_circle, lambda {|is_circle| where(:is_circle => is_circle) }
   scope :for_creation_date_period, lambda{|start_date, end_date|
     if start_date && end_date
@@ -93,6 +105,18 @@ class BuildList < ActiveRecord::Base
     self.status == BuildServer::SUCCESS
   end
 
+  def delete_build_list
+    has_canceled = BuildServer.delete_build_list bs_id
+    update_attribute(:status, BUILD_CANCELED) if has_canceled
+    
+    return has_canceled == 0
+  end
+
+  #TODO: Share this checking on product owner.
+  def can_canceled?
+    self.status == BUILD_PENDING
+  end
+
   private
     def set_default_status
       self.status = WAITING_FOR_RESPONSE unless self.status.present?
@@ -100,7 +124,8 @@ class BuildList < ActiveRecord::Base
     end
 
     def place_build
-      self.status = BuildServer.add_build_list project.name, branch_name, project.repository.platform.name, arch.name, id
+      #XML-RPC params: project_name, project_version, plname, arch, bplname, update_type, build_requires, id_web
+      self.status = BuildServer.add_build_list project.name, project_version, pl.unixname, arch.name, bpl.unixname, update_type, build_requires, id
       self.status = BUILD_PENDING if self.status == 0
       save
     end

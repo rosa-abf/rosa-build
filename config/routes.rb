@@ -14,6 +14,9 @@ Rosa::Application.routes.draw do
 
   match '/private/:platform_name/*file_path' => 'privates#show'
 
+  match 'build_lists/' => 'build_lists#all', :as => :all_build_lists
+  match 'build_lists/:id/cancel/' => 'build_lists#cancel', :as => :build_list_cancel
+
   resources :platforms do
     resources :private_users
 
@@ -45,6 +48,11 @@ Rosa::Application.routes.draw do
       member do
         post :publish
       end
+    end
+    
+    member do
+      get :build
+      get :process_build
     end
   end
 

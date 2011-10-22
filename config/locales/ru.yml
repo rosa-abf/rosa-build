@@ -192,7 +192,11 @@ ru:
       no_items_data: Данных нет
       show: Просмотр
       confirm_publish: Вы уверены, что хотите опубликовать контейнер?
-
+      cancel_button_header: Действие
+      cancel_button: Отмена
+      cancel_successed: 'Сборка отменена.'
+      cancel_failed: 'При отмене сборки произошла ошибка!'
+      
       items:
         statuses:
           build_error: ошибка сборки
@@ -262,12 +266,13 @@ ru:
       destroyed: Платформа успешно удалена
 
     build_list:
-      saved: Билд лист для бранча '%{branch_name}' и архитектуры '%{arch}' создан успешно
-      save_error: Не удалось сохранить билд лист для бранча '%{branch_name}' и архитектуры '%{arch}'
+      saved: Билд лист для бранча '%{branch_name}', платформу '#{pl}' и архитектуры '%{arch}' создан успешно
+      save_error: Не удалось сохранить билд лист для бранча '%{branch_name}', платформу '#{pl}' и архитектуры '%{arch}'
       no_branch_selected: Выберите какой-нибудь бранч
       no_branch_found: Выбранный бранч '%{branch_name}' не найден
       no_arch_selected: Выберите хотя бы одну ахритектуру
       no_arch_found: Выбранные ахритектуры не найдены
+      wrong_platform: Для основного репозитория (main) может быть выбран только его же основная платформа!
 
   attributes:
     password: Пароль
@@ -413,6 +418,12 @@ ru:
         additional_repos: Дополнительные репозитории
         updated_at: Обновлен
         created_at: Создан
+        bpl: Репозиторий для сохранения пакетов
+        bpl_id: Репозиторий для сохранения пакетов
+        pl: Платформа
+        pl_id: Платформа
+        update_type: Критичность обновления
+        build_requires: Пересборка с зависимостями
 
       build_list/item:
         name: Название

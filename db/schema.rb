@@ -46,7 +46,7 @@ ActiveRecord::Schema.define(:version => 20111021164945) do
     t.integer  "bs_id"
     t.string   "container_path"
     t.integer  "status"
-    t.string   "branch_name"
+    t.string   "project_version"
     t.integer  "project_id"
     t.integer  "arch_id"
     t.datetime "notified_at"
@@ -55,6 +55,10 @@ ActiveRecord::Schema.define(:version => 20111021164945) do
     t.boolean  "is_circle",        :default => false
     t.text     "additional_repos"
     t.string   "name"
+    t.boolean  "build_requires"
+    t.string   "update_type"
+    t.integer  "bpl_id"
+    t.integer  "pl_id"
   end
 
   add_index "build_lists", ["arch_id"], :name => "index_build_lists_on_arch_id"

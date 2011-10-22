@@ -1,6 +1,6 @@
 %h2.title= t("layout.build_lists.filter_header")
 
-= form_for :filter, :url => filter_platform_repository_project_build_lists_path(@platform, @repository, @project) , :html => { :method => :post, :class => :form } do |f|
+= form_for :filter, :url => @action_url, :html => { :method => :post, :class => :form } do |f|
   .columns.wat-cf
     .column.left
 
@@ -13,10 +13,10 @@
         = f.select :arch_id, @arches.collect{|arch| [arch.name, arch.id]}, :include_blank => true, :selected => @filter.arch_id
 
     .column.right
-
-      .group
-        = f.label :branch_name, "Branch", :class => :label
-        = f.select :branch_name, @branches.collect{|branch| [branch.name, branch.name]}, :include_blank => true, :selected => @filter.branch_name
+      - if @branches
+        .group
+          = f.label :project_version, "Branch", :class => :label
+          = f.select :project_version, @branches.collect{|branch| [branch.name, branch.name]}, :include_blank => true, :selected => @filter.project_version
 
       .group
         = f.label :is_circle, t("activerecord.attributes.build_list.is_circle"), :class => :label

@@ -32,7 +32,7 @@ class Project < ActiveRecord::Base
 
   # Redefining a method from Project::HasRepository module to reflect current situation
   def git_repo_path
-    @git_repo_path ||= File.join(repository.platform.path, "projects", unixname + ".git")
+    @git_repo_path ||= File.join("#{APP_CONFIG['git_projects_path']}/#{owner.uname}/#{self.unixname}.git")
   end
 
   def path
@@ -64,8 +64,10 @@ class Project < ActiveRecord::Base
       end
     end
 
+    #TODO: Remove it from code if git_repo_path and build_path (or path) have the same purpose
     def build_path(dir)
-      File.join(APP_CONFIG['root_path'], 'projects', dir)
+      #File.join(APP_CONFIG['root_path'], 'projects', dir)
+      File.join("#{APP_CONFIG['git_projects_path']}/#{owner.uname}/#{dir}.git")
     end
 
     def create_directory

@@ -16,6 +16,8 @@ class ProjectsController < ApplicationController
   def build
     @branches = @project.git_repository.branches
     @arches = Arch.recent
+    @pls = Platform.main
+    @bpls = @project.repositories.collect { |rep| ["#{rep.platform.name}/#{rep.unixname}", rep.platform.id] }
   end
 
   def process_build
@@ -25,22 +27,29 @@ class ProjectsController < ApplicationController
     @branches = @project.git_repository.branches
     @branch = @branches.select{|branch| branch.name == params[:build][:branch] }.first
 
+    @pls_ids = params[:build][:pls].select{|_,v| v == "1"}.collect{|x| x[0].to_i }
+    @pls = Platform.where(:id => @pls_ids)
+    
+    @bpl = Platform.find params[:bpl]
+
     if !check_arches || !check_branches
       @arches = Arch.recent
       render :action => "build"
     else
       flash[:notice], flash[:error] = "", ""
       @arches.each do |arch|
-        build_list = @project.build_lists.new(:arch => arch, :branch_name => @branch.name)
+        @pls.each do |pl|
+          build_list = @project.build_lists.new(:arch => arch, :project_version => @branch.name, :pl => pl, :bpl => @bpl)
         
-        if build_list.save
-          flash[:notice] += t("flash.build_list.saved", :branch_name => @branch.name, :arch => arch.name)
-        else
-          flash[:error] += t("flash.build_list.save_error", :branch_name => @branch.name, :arch => arch.name)
+          if build_list.save
+            flash[:notice] += t("flash.build_list.saved", :branch_name => @branch.name, :arch => arch.name, :pl => pl, :bpl => @bpl)
+          else
+            flash[:error] += t("flash.build_list.save_error", :branch_name => @branch.name, :arch => arch.name, :pl => pl, :bpl => @bpl)
+          end
         end
       end
 
-      redirect_to platform_repository_project_path(@platform, @repository, @project)
+      redirect_to project_path(@project)
     end
   end
 
@@ -62,7 +71,8 @@ class ProjectsController < ApplicationController
     @project.destroy
 
     flash[:notice] = t("flash.project.destroyed")
-    redirect_to platform_repository_path(@platform, @repository)
+    #redirect_to platform_repository_path(@platform, @repository)
+    redirect_to root_path
   end
 
   protected
@@ -80,14 +90,6 @@ class ProjectsController < ApplicationController
         @projects_path = projects_path
         @new_projects_path = new_project_path
       end
-    end
-
-    def find_platform
-      @platform = Platform.find params[:platform_id]
-    end
-
-    def find_repository
-      @repository = @platform.repositories.find(params[:repository_id])
     end
 
     def find_project

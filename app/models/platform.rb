@@ -21,6 +21,7 @@ class Platform < ActiveRecord::Base
 #  before_destroy :xml_rpc_destroy
 #  before_update :check_freezing
 
+  scope :main, where(:platform_type => 'main')
 
   def path
     build_path(unixname)
