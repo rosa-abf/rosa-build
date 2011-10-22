@@ -8,7 +8,7 @@ class EventLog < ActiveRecord::Base
   scope :default_order, order('id DESC') # order('created_at DESC')
 
   before_create do
-    self.user_name = user.try(:nickname) || 'guest'
+    self.user_name = user.try(:uname) || 'guest'
     self.object_name ||= object.name if object.respond_to?(:name)
   end
   # after_create { self.class.current_controller = nil }

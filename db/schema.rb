@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20111019173246) do
+ActiveRecord::Schema.define(:version => 20111021164945) do
 
   create_table "arches", :force => true do |t|
     t.string   "name",       :null => false
@@ -60,6 +60,14 @@ ActiveRecord::Schema.define(:version => 20111019173246) do
   add_index "build_lists", ["arch_id"], :name => "index_build_lists_on_arch_id"
   add_index "build_lists", ["bs_id"], :name => "index_build_lists_on_bs_id", :unique => true
   add_index "build_lists", ["project_id"], :name => "index_build_lists_on_project_id"
+
+  create_table "categories", :force => true do |t|
+    t.string   "name"
+    t.string   "ancestry"
+    t.integer  "projects_count", :default => 0, :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "containers", :force => true do |t|
     t.string   "name",       :null => false
@@ -182,15 +190,18 @@ ActiveRecord::Schema.define(:version => 20111019173246) do
     t.datetime "updated_at"
     t.integer  "owner_id"
     t.string   "owner_type"
-    t.string   "visibility", :default => "open"
+    t.string   "visibility",  :default => "open"
+    t.integer  "category_id"
+    t.text     "description"
   end
+
+  add_index "projects", ["category_id"], :name => "index_projects_on_category_id"
 
   create_table "relations", :force => true do |t|
     t.integer  "object_id"
     t.string   "object_type"
     t.integer  "target_id"
     t.string   "target_type"
-    t.integer  "role_id"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -206,12 +217,6 @@ ActiveRecord::Schema.define(:version => 20111019173246) do
     t.string   "visibility",  :default => "open"
   end
 
-  create_table "rights", :force => true do |t|
-    t.string   "name"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
   create_table "role_lines", :force => true do |t|
     t.integer  "role_id"
     t.integer  "relation_id"
@@ -221,8 +226,6 @@ ActiveRecord::Schema.define(:version => 20111019173246) do
 
   create_table "roles", :force => true do |t|
     t.string   "name"
-    t.string   "to"
-    t.string   "on"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -248,13 +251,12 @@ ActiveRecord::Schema.define(:version => 20111019173246) do
     t.datetime "remember_created_at"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "uname"
-    t.string   "nickname"
     t.text     "ssh_key"
+    t.string   "uname"
   end
 
   add_index "users", ["email"], :name => "index_users_on_email", :unique => true
-  add_index "users", ["nickname"], :name => "index_users_on_nickname", :unique => true
   add_index "users", ["reset_password_token"], :name => "index_users_on_reset_password_token", :unique => true
+  add_index "users", ["uname"], :name => "index_users_on_uname", :unique => true
 
 end

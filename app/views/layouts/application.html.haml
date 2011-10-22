@@ -26,6 +26,8 @@
               %a{:href => downloads_path}= t("layout.menu.downloads")
             %li{:class => controller.controller_path == 'event_logs' ? 'active' : '' }
               %a{:href => event_logs_path}= t("layout.menu.event_logs")
+            %li{:class => controller.controller_path == 'categories' ? 'active' : '' }
+              %a{:href => categories_path}= t("layout.menu.categories")
       #wrapper.wat-cf
         = render :partial => "layouts/flashes"
         #main

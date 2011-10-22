@@ -1,10 +1,11 @@
 class User < ActiveRecord::Base
-  has_many :authentications, :dependent => :destroy
-
   devise :database_authenticatable, :registerable, :omniauthable, # :token_authenticatable, :encryptable, :timeoutable
          :recoverable, :rememberable, :validatable #, :trackable, :confirmable, :lockable
+
+  has_many :authentications, :dependent => :destroy
+
   has_many :roles, :through => :targets
-    
+
   has_many :targets, :as => :object, :class_name => 'Relation'
 
   has_many :own_projects, :as => :owner, :class_name => 'Project'
@@ -15,37 +16,20 @@ class User < ActiveRecord::Base
   has_many :platforms,    :through => :targets, :source => :target, :source_type => 'Platform',   :autosave => true
   has_many :repositories, :through => :targets, :source => :target, :source_type => 'Repository', :autosave => true
 
-
-  devise :database_authenticatable,
-         :recoverable, :rememberable, :validatable
-
-  attr_accessible :email, :password, :password_confirmation, :remember_me, :name, :uname
-
   validates :uname, :presence => true, :uniqueness => {:case_sensitive => false}, :format => { :with => /^[a-zA-Z0-9_]+$/ }, :allow_nil => false, :allow_blank => false
 
-#  validates :nickname, :presence => true, :uniqueness => {:case_sensitive => false}, :format => /^[a-zA-Z0-9_]+$/i
-
-  attr_accessible :email, :password, :password_confirmation, :remember_me, :login, :name, :ssh_key, :uname#, :nickname
-#  attr_readonly :nickname
+  attr_accessible :email, :password, :password_confirmation, :remember_me, :login, :name, :ssh_key, :uname
   attr_readonly :uname
-  before_save :create_dir
-  after_destroy :remove_dir
-
-  def path
-    build_path(uname)
-  end
-
-  protected
-
   attr_accessor :login
 
+  before_save :create_dir
+  after_destroy :remove_dir
   # after_create() { UserMailer.new_user_notification(self).deliver }
 
   class << self
     def find_for_database_authentication(warden_conditions)
       conditions = warden_conditions.dup
       login = conditions.delete(:login)
-      #where(conditions).where(["lower(nickname) = :value OR lower(email) = :value", { :value => login.downcase }]).first
       where(conditions).where(["lower(uname) = :value OR lower(email) = :value", { :value => login.downcase }]).first
     end
 
@@ -54,8 +38,7 @@ class User < ActiveRecord::Base
         if data = session["devise.omniauth_data"]
           if info = data['user_info'] and info.present?
             user.email = info['email'].presence if user.email.blank?
-#            user.nickname ||= info['nickname'].presence || info['username'].presence
-            user.uname ||= info['uname'].presence || info['username'].presence
+            user.uname ||= info['nickname'].presence || info['username'].presence
             user.name ||= info['name'].presence || [info['first_name'], info['last_name']].join(' ').strip
           end
           user.password = Devise.friendly_token[0,20] # stub password
@@ -77,6 +60,11 @@ class User < ActiveRecord::Base
     result
   end
 
+  def path
+    build_path(uname)
+  end
+
+  protected
     def build_path(dir)
       puts APP_CONFIG['root_path']
       puts dir

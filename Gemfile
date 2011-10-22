@@ -6,21 +6,24 @@ gem 'pg', '~> 0.11.0'
 gem 'silent-postgres', '~> 0.1.1'
 
 gem 'devise', '~> 1.4.8'
-gem 'omniauth', '~> 0.3.0'
-gem 'oa-openid', '~> 0.3.0', :require => 'omniauth/openid'
-gem 'cancan', '~> 1.6.7'
+gem 'omniauth', '~> 0.3.2'
+gem 'oa-openid', '~> 0.3.2', :require => 'omniauth/openid'
+# gem 'cancan', '~> 1.6.7'
 
 gem "haml-rails", '~> 0.3.4'
 gem "compass", '~> 0.11.5'
 gem 'jammit'
 gem "yui-compressor", "0.9.5" # Higher versions depends on Platform gem which conflicts with Platform model
 
+gem 'ancestry', '~> 1.2.4'
 gem 'paperclip', "~> 2.3"
 gem "will_paginate", "~> 3.0.2"
 gem "russian"
 
 gem "grit"
+gem 'whenever', :require => false
 gem 'delayed_job'
+gem 'whenever', :require => false
 gem 'unicorn'
 
 group :production do
@@ -54,13 +57,10 @@ end
 group :development, :test do
   gem 'mysql2', '<= 0.2.9'
 end
-gem "capistrano"
-gem "capistrano-ext"
-gem 'whenever', :require => false
 
 group :test do
-  gem 'rspec-rails',        '~> 2.6.1'
-  gem 'factory_girl_rails', '~> 1.2.0'
+  gem 'rspec-rails',        '~> 2.7.0'
+  gem 'factory_girl_rails', '~> 1.3.0'
   # gem 'spork',              '>= 0.9.0.rc9'
   # gem 'guard-spork',        '~> 0.3.1'
   # gem 'guard-rspec',        '~> 0.5.0'

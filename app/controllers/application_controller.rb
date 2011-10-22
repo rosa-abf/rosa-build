@@ -2,10 +2,10 @@
 class ApplicationController < ActionController::Base
   protect_from_forgery
   layout :layout_by_resource
+
   private
     def get_role(object_id, object_type, target_id, target_type)
-      rel=Relation.where(:object_id=>object_id, :object_type=>object_type, :target_id=>target_id, :target_type=>target_type).first
-      return (rel) ? rel.roles : nil
+      Relation.where(:object_id=>object_id, :object_type=>object_type, :target_id=>target_id, :target_type=>target_type).first.try(:roles)
     end
     
     def checkaccess

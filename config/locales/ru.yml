@@ -40,6 +40,7 @@ ru:
       groups: Группы
       downloads: Статистика
       event_logs: Лог событий
+      categories: Категории
 
     sessions:
       sign_in_header: Вход в систему
@@ -49,6 +50,16 @@ ru:
       new: Новая пара
       list_header: Пары логин/пароль
       confirm_delete: Вы уверены, что хотите удалить эту пару логин/пароль?
+
+    categories:
+      list: Список
+      new: Создать
+      edit: Редактировать
+      platforms: По платформам
+      list_header: Категории
+      new_header: Новая категория
+      edit_header: Редактировать категорию
+      confirm_delete: Вы уверены, что хотите удалить эту категорию?
 
     platforms:
       list: Список
@@ -206,6 +217,11 @@ ru:
         branch_not_found: бранч не найден
 
   flash:
+    category:
+      saved: Категория успешно сохранена
+      save_error: Не удалось сохранить категорию
+      destroyed: Категория успешно удалена
+
     project:
       saved: Проект успешно сохранен
       save_error: Не удалось сохранить проект
@@ -263,6 +279,7 @@ ru:
 
   activerecord:
     models:
+      category: Категория
       repository: Репозиторий
       arch: Arch
       container: Container
@@ -281,6 +298,10 @@ ru:
       private_user:
         login: Логин
         password: Пароль
+
+      category:
+        parent_id: Родитель
+        name: Название
 
       repository:
         name: Название
@@ -339,8 +360,10 @@ ru:
         description: Описание события
 
       project:
+        category_id: Категория
         name: Название
         unixname: Unixname
+        description: Описание
         owner: Владелец
         visibility: Видимость
         repository_id: Репозиторий
@@ -368,7 +391,7 @@ ru:
         name: Имя
         login: Никнейм или Email
         email: Email
-        nickname: Никнейм
+        uname: Никнейм
         ssh_key: SSH ключ
         current_password: Текущий пароль
         roles: Роли

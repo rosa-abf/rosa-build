@@ -1,0 +1,15 @@
+.block
+  .secondary-navigation
+    %ul.wat-cf
+      %li.first= link_to t("layout.categories.list"), categories_path
+      %li= link_to t("layout.categories.platforms"), platforms_categories_path
+      - if @platform
+        %li.active= link_to @platform.name, platform_categories_path(@platform)
+  .content
+    %h2.title
+      = @category.name
+      (#{@category.parent.name})
+    .inner
+      %table.table= render @projects
+      .actions-bar.wat-cf
+        .actions= will_paginate @projects

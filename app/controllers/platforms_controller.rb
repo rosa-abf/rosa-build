@@ -7,7 +7,20 @@ class PlatformsController < ApplicationController
   before_filter :get_paths, :only => [:new, :create]
 
   def index
-    @platforms = Platform.paginate(:page => params[:platform_page])
+    respond_to do |format|
+      format.html { @platforms = Platform.paginate(:page => params[:platform_page]) }
+      format.json do
+        @platforms = Platform.where(:distrib_type => 'mandriva', :visibility => 'open', :platform_type => 'main')
+        render :json => {
+          :platforms => @platforms.map do |p|
+                          {:name => p.name,
+                           :architectures => ['i586', 'x86_64'],
+                           :repositories => p.repositories.map(&:name),
+                           :url => "http://abs.rosalab.ru/downloads/platforms/#{p.name}/repository"}
+                        end
+        }
+      end
+    end
   end
 
   def show

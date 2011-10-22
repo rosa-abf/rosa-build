@@ -34,7 +34,7 @@
         %b
           = t('layout.platforms.owner')
           \:
-        = link_to @platform.owner.name, url_for(@platform.owner)
+        = link_to @platform.owner.try(:name), url_for(@platform.owner)
 
       %p
         %b
