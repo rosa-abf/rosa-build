@@ -2,8 +2,8 @@
   - if controller.action_name != 'all'
     .secondary-navigation
       %ul.wat-cf
-        %li.first= link_to t("layout.build_lists.current"), platform_repository_project_path(@platform, @repository, @project) + "#build_lists"
-        %li.active= link_to t("layout.build_lists.all"), platform_repository_project_build_lists_path(@platform, @repository, @project)
+        %li.first= link_to t("layout.build_lists.current"), project_path(@project) + "#build_lists"
+        %li.active= link_to t("layout.build_lists.all"), project_build_lists_path(@project)
 
   .content
 

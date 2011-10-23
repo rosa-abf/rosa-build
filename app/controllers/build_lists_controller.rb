@@ -1,8 +1,8 @@
 class BuildListsController < ApplicationController
 	before_filter :authenticate_user!, :except => [:status_build, :pre_build, :post_build, :circle_build, :new_bbdt]
 	before_filter :authenticate_build_service!, :only => [:status_build, :pre_build, :post_build, :circle_build, :new_bbdt]
-	before_filter :find_platform, :only => [:index, :filter, :show, :publish]
-	before_filter :find_repository, :only => [:index, :filter, :show, :publish]
+	#before_filter :find_platform, :only => [:index, :filter, :show, :publish]
+	#before_filter :find_repository, :only => [:index, :filter, :show, :publish]
 	before_filter :find_project, :only => [:index, :filter, :show, :publish]
 	before_filter :find_arches, :only => [:index, :filter, :all]
 	before_filter :find_branches, :only => [:index, :filter]
@@ -34,13 +34,13 @@ class BuildListsController < ApplicationController
 	def index
 		@build_lists = @project.build_lists.recent.paginate :page => params[:page]
 		@filter = BuildList::Filter.new(@project)
-		@action_url = filter_platform_repository_project_build_lists_path(@platform, @repository, @project)
+		@action_url = project_build_lists_path(@project)
 	end
 
 	def filter
 		@filter = BuildList::Filter.new(@project, params[:filter])
 		@build_lists = @filter.find.paginate :page => params[:page]
-		@action_url = filter_platform_repository_project_build_lists_path(@platform, @repository, @project)
+		@action_url = project_build_lists_path(@project)
 
 		render :action => "index"
 	end
@@ -54,7 +54,7 @@ class BuildListsController < ApplicationController
 		@build_list = @project.build_lists.find(params[:id])
 		@build_list.publish
 		
-		redirect_to platform_repository_project_build_lists_path(@platform, @repository, @project)
+		redirect_to project_build_lists_path(@project)
 	end
 
 	def status_build
@@ -123,7 +123,7 @@ class BuildListsController < ApplicationController
 		end
 
 		def find_project
-			@project = @repository.projects.find params[:project_id]
+			@project = Project.find params[:project_id]
 		end
 
 		def find_arches
