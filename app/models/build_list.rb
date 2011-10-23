@@ -30,7 +30,7 @@ class BuildList < ActiveRecord::Base
               BuildServer::PLATFORM_NOT_FOUND,
               BuildServer::PLATFORM_PENDING,
               BuildServer::PROJECT_NOT_FOUND,
-              BuildServer::BRANCH_NOT_FOUND]
+              BuildServer::PROJECT_VERSION_NOT_FOUND]
 
   HUMAN_STATUSES = { BuildServer::BUILD_ERROR => :build_error,
                      BUILD_PENDING => :build_pending,
@@ -40,17 +40,17 @@ class BuildList < ActiveRecord::Base
                      BuildServer::PLATFORM_NOT_FOUND => :platform_not_found,
                      BuildServer::PLATFORM_PENDING => :platform_pending,
                      BuildServer::PROJECT_NOT_FOUND => :project_not_found,
-                     BuildServer::BRANCH_NOT_FOUND => :branch_not_found
+                     BuildServer::PROJECT_VERSION_NOT_FOUND => :project_version_not_found
                     }
 
   scope :recent, order("created_at DESC")
   scope :current, lambda {
-    outdatable_statuses = [BuildServer::SUCCESS, BuildServer::ERROR, BuildServer::PLATFORM_NOT_FOUND, BuildServer::PLATFORM_PENDING, BuildServer::PROJECT_NOT_FOUND, BuildServer::BRANCH_NOT_FOUND]
+    outdatable_statuses = [BuildServer::SUCCESS, BuildServer::ERROR, BuildServer::PLATFORM_NOT_FOUND, BuildServer::PLATFORM_PENDING, BuildServer::PROJECT_NOT_FOUND, BuildServer::PROJECT_VERSION_NOT_FOUND]
     where(["status in (?) OR (status in (?) AND notified_at >= ?)", [WAITING_FOR_RESPONSE, BUILD_PENDING, BUILD_STARTED], outdatable_statuses, Time.now - 2.days])
   }
   scope :for_status, lambda {|status| where(:status => status) }
   scope :scoped_to_arch, lambda {|arch| where(:arch_id => arch) }
-  scope :scoped_to_branch, lambda {|branch| where(:project_version => branch) }
+  scope :scoped_to_project_version, lambda {|project_version| where(:project_version => project_version) }
   scope :scoped_to_is_circle, lambda {|is_circle| where(:is_circle => is_circle) }
   scope :for_creation_date_period, lambda{|start_date, end_date|
     if start_date && end_date

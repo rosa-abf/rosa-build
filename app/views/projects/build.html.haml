@@ -15,8 +15,8 @@
         .columns.wat-cf
           .column.left
             .group
-              = f.label :branch, "Branch", :class => :label
-              = f.select :branch, @branches.collect{|branch| [branch.name, branch.name]}
+              = f.label :project_version, t("activerecord.attributes.build_list.project_version"), :class => :label
+              = f.select :project_versions, @project_versions
               
             .group
               = f.label :pl, t("activerecord.attributes.build_list.pl"), :class => :label

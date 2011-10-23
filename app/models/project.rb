@@ -26,6 +26,10 @@ class Project < ActiveRecord::Base
 #  before_create :xml_rpc_create
 #  before_destroy :xml_rpc_destroy
 
+  def project_versions
+    self.git_repository.tags
+  end
+
   def members
     collaborators + groups
   end

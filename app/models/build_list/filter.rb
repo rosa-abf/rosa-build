@@ -15,7 +15,7 @@ class BuildList::Filter
 
     build_lists = build_lists.for_status(@options[:status]) if @options[:status]
     build_lists = build_lists.scoped_to_arch(@options[:arch_id]) if @options[:arch_id]
-    build_lists = build_lists.scoped_to_branch(@options[:project_version]) if @options[:project_version]
+    build_lists = build_lists.scoped_to_project_version(@options[:project_version]) if @options[:project_version]
     build_lists = build_lists.scoped_to_is_circle(@options[:is_circle]) if @options[:is_circle].present?
 
     if @options[:created_at_start] || @options[:created_at_end]

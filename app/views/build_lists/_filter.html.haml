@@ -13,10 +13,10 @@
         = f.select :arch_id, @arches.collect{|arch| [arch.name, arch.id]}, :include_blank => true, :selected => @filter.arch_id
 
     .column.right
-      - if @branches
+      - if @project_versions
         .group
-          = f.label :project_version, "Branch", :class => :label
-          = f.select :project_version, @branches.collect{|branch| [branch.name, branch.name]}, :include_blank => true, :selected => @filter.project_version
+          = f.label :project_version, t("activerecord.attributes.build_list.project_version"), :class => :label
+          = f.select :project_version, @project_versions.collect{|project_version| [project_version.name, project_version.name]}, :include_blank => true, :selected => @filter.project_version
 
       .group
         = f.label :is_circle, t("activerecord.attributes.build_list.is_circle"), :class => :label

@@ -3,7 +3,7 @@ class BuildListsController < ApplicationController
 	before_filter :authenticate_build_service!, :only => [:status_build, :pre_build, :post_build, :circle_build, :new_bbdt]
 	before_filter :find_project, :only => [:index, :filter, :show, :publish]
 	before_filter :find_arches, :only => [:index, :filter, :all]
-	before_filter :find_branches, :only => [:index, :filter]
+	before_filter :find_project_versions, :only => [:index, :filter]
 
 	before_filter :find_build_list_by_bs, :only => [:status_build, :pre_build, :post_build]
 
@@ -121,9 +121,9 @@ class BuildListsController < ApplicationController
 			@arches = Arch.recent
 		end
 
-		def find_branches
+		def find_project_versions
 			@git_repository = @project.git_repository
-			@branches = @git_repository.branches
+			@project_versions = @project.project_versions
 		end
 
 		def find_build_list_by_bs

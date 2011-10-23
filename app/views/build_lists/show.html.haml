@@ -1,9 +1,9 @@
 .block
   .secondary-navigation
     %ul.wat-cf
-      %li.first= link_to t("layout.build_lists.current"), platform_repository_project_path(@platform, @repository, @project) + "#build_lists"
-      %li= link_to t("layout.build_lists.all"), platform_repository_project_build_lists_path(@platform, @repository, @project)
-      %li.active= link_to t("layout.build_lists.show"), platform_repository_project_build_list_path(@platform, @repository, @project, @build_list)
+      %li.first= link_to t("layout.build_lists.current"), project_path(@project) + "#build_lists"
+      %li= link_to t("layout.build_lists.all"), project_build_lists_path(@project)
+      %li.active= link_to t("layout.build_lists.show"), project_build_list_path(@project, @build_list)
 
   .content
     .inner
@@ -60,7 +60,7 @@
         = @build_list.additional_repos
       - if  @build_list.can_published?  
         .wat-cf
-          = link_to image_tag("web-app-theme/icons/cross.png", :alt => t("layout.publish")) + " " + t("layout.publish"), publish_platform_repository_project_build_list_path(@platform, @repository, @project, @build_list), :method => "post", :class => "button", :confirm => t("layout.build_lists.confirm_publish")
+          = link_to image_tag("web-app-theme/icons/cross.png", :alt => t("layout.publish")) + " " + t("layout.publish"), publish_project_build_list_path(@project, @build_list), :method => "post", :class => "button", :confirm => t("layout.build_lists.confirm_publish")
 
 .block
   .content
