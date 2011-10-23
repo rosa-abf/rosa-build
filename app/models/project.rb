@@ -1,4 +1,8 @@
 class Project < ActiveRecord::Base
+  VISIBILITIES = ['open', 'hidden']
+
+  relationable :as => :target
+
   belongs_to :category, :counter_cache => true
   belongs_to :owner, :polymorphic => true
 
@@ -20,11 +24,15 @@ class Project < ActiveRecord::Base
   scope :recent, order("name ASC")
   scope :by_name, lambda { |name| {:conditions => ['name like ?', '%' + name + '%']} }
 
+  scope :by_visibilities, lambda {|v| {:conditions => ['visibility in (?)', v.join(',')]}}
+
   before_save :create_directory#, :create_git_repo
   before_save :make_owner_rel
   after_destroy :remove_directory
 #  before_create :xml_rpc_create
 #  before_destroy :xml_rpc_destroy
+
+  attr_accessible :visibility
 
   def members
     collaborators + groups

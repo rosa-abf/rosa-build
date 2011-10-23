@@ -35,12 +35,18 @@ ru:
       Sunday: Воскресенье
 
     menu:
-      users: Пользователи
-      platforms: Платформы
-      groups: Группы
+      categories: Категории
+      containers: Контейнеры
       downloads: Статистика
       event_logs: Лог событий
-      categories: Категории
+      groups: Группы
+      platforms: Платформы
+      products: Продукты
+      projects: Проекты
+      repositories: Репозитории
+      rights: Права
+      roles: Роли
+      users: Пользователи
 
     sessions:
       sign_in_header: Вход в систему
@@ -86,6 +92,9 @@ ru:
       platform_type: Тип платформы
       distrib_type: Тип дистрибутива
       private_users: Пользователи приватного репозитория
+
+    roles:
+      confirm_delete: Вы уверены, что хотите удалить эту роль?
 
     event_logs:
       list: Список
@@ -379,6 +388,9 @@ ru:
         project: Проект
         created_at: Создан
         updated_at: Обновлен
+
+      roles:
+        name: Название
 
       group:
         name: Название

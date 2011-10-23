@@ -1,11 +1,48 @@
 .group
   = f.label :name, t("activerecord.attributes.role.name"), :class => :label
   = f.text_field :name, :class => 'text_field'
+  - acters = [['All', '']].concat Role.relation_acters.map{|a| [a.name, a.name]}
+  - targets = [['System', '']].concat Role.relation_targets.map{|t| [t.name, t.name]}
+  = f.label :to, t("activerecord.attributes.role.applicable_to"), :class => :label
+  = f.select :to, options_for_select(acters, @role.to)
+  = f.label :on, t("activerecord.attributes.role.applicable_on"), :class => :label
+  = f.select :on, options_for_select(targets, @role.on)
+
+- unless @visibilities.empty?
+  .group
+    %fieldset
+      %legend= t("activerecord.attributes.role.can_see")
+      - @visibilities.each_pair do |model, vis_group|
+        %div{:style => 'float: left; width: 200px; margin-left: 10px; margin-top: 10px'}
+          = label_tag "can_see_#{model}", model, :class => :label
+          = select_tag "role[can_see][#{model}][]",
+            options_for_select(vis_group, (@role.can_see and @role.can_see[model]) ? @role.can_see[model] : []),
+            {:multiple => true, :size =>5, :id => "can_see_#{model}", :style => 'width:95%' }
 .group
-  %label.label Разрешения
-  - rights = Permission.get_rights_list
-  - rights_selected = Permission.where(:role_id => @role.id).map { |perm| perm.right_id }
-  = select_tag("right[id]", options_for_select(rights, rights_selected), :size => 10, :multiple => true)
+  %fieldset
+    %legend= t("layout.menu.permissions")
+    - rights = Right.by_controller
+    - added_rights = @role.rights.map(&:id)
+    - rights.each do |key, value|
+      %div{:style => 'float: left; width: 385px; margin-left: 10px; margin-top: 10px'}
+        %fieldset{:style => 'width: 95%; height: 100%; padding: 10px;'}
+          %legend= t("layout.menu.#{key}")
+          :javascript
+            function select_#{key}() {
+              check_by_ids(#{'[\'' + value.map{|r| 'right_' + r.id.to_s}.join('\',\'') + '\']'});
+            }
+            function deselect_#{key}() {
+              uncheck_by_ids(#{'[\'' + value.map{|r| 'right_' + r.id.to_s}.join('\',\'') + '\']'});
+            }
+          = link_to_function 'Select All', "select_#{key}()"
+          = link_to_function 'Deselect All', "deselect_#{key}()"
+          %br
+          %br
+          - value.each do |right|
+            - id = 'right_' + right.id.to_s
+            = check_box_tag 'rights[id][]', right.id, added_rights.include?(right.id), :id => id
+            = label_tag id, right.name
+            %br
 
 .group.navform.wat-cf
   %button.button{:type => "submit"}

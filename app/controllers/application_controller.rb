@@ -4,10 +4,18 @@ class ApplicationController < ActionController::Base
   layout :layout_by_resource
 
   private
+    def rights_to(type)
+      Right.where(:rtype => type.to_s).map{|r| r.name}
+    end
+
+    def rights_of_user(id)
+      User.find(id).global_role ? User.find(id).global_role.rights{|r| r.name} : "has no role"
+    end
+
     def get_role(object_id, object_type, target_id, target_type)
       Relation.where(:object_id=>object_id, :object_type=>object_type, :target_id=>target_id, :target_type=>target_type).first.try(:roles)
     end
-    
+
     def checkaccess
       @roles=current_user.roles+current.user.groups.roles
       @ok=false
@@ -17,7 +25,7 @@ class ApplicationController < ActionController::Base
         redirect_to(:back)
       end
     end
-    
+
     def checkright(role_id)
       @role=Role.find(role_id)
       if @role.name.downcase!="admin"

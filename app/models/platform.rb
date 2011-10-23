@@ -1,5 +1,8 @@
 #require 'lib/build_server.rb'
 class Platform < ActiveRecord::Base
+  VISIBILITIES = ['open', 'hidden']
+  relationable :as => :target
+
   belongs_to :parent, :class_name => 'Platform', :foreign_key => 'parent_platform_id'
   belongs_to :owner, :polymorphic => true
 
@@ -21,6 +24,9 @@ class Platform < ActiveRecord::Base
 #  before_destroy :xml_rpc_destroy
 #  before_update :check_freezing
 
+  scope :by_visibilities, lambda {|v| {:conditions => ['visibility in (?)', v.join(',')]}}
+
+  attr_accessible :visibility
 
   def path
     build_path(unixname)

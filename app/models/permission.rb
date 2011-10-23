@@ -1,5 +1,7 @@
 class Permission < ActiveRecord::Base
   belongs_to :role
+  belongs_to :right
+
   def name
     Permission.right(self.right_id)
   end
