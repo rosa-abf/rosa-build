@@ -52,7 +52,7 @@ Rosa::Application.routes.draw do
     
     member do
       get :build
-      get :process_build
+      post :process_build
     end
   end
 

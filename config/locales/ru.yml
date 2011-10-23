@@ -267,8 +267,8 @@ ru:
       destroyed: Платформа успешно удалена
 
     build_list:
-      saved: Билд лист для версии '%{project_version}', платформу '#{pl}' и архитектуры '%{arch}' создан успешно
-      save_error: Не удалось сохранить билд лист для версии '%{project_version}', платформу '#{pl}' и архитектуры '%{arch}'
+      saved: Билд лист для версии '%{project_version}', платформу '%{pl}' и архитектуры '%{arch}' создан успешно
+      save_error: Не удалось сохранить билд лист для версии '%{project_version}', платформу '%{pl}' и архитектуры '%{arch}'
       no_project_version_selected: Выберите какую-нибудь версию
       no_project_version_found: Выбранная версия '%{project_version}' не найдена
       no_arch_selected: Выберите хотя бы одну ахритектуру

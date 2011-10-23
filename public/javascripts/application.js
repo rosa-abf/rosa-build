@@ -1,4 +1,6 @@
 $(document).ready(function() {
+	$('.pl_ids_container input[type="hidden"]').remove();
+	
 	$('select#build_bpl').change(function() {
 	  var is_bpl_main = false;
 	  var granted_pl_id = '';

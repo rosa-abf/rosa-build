@@ -12,7 +12,6 @@ class ProjectsController < ApplicationController
   end
 
   def build
-    @project_versions = @project.project_versions
     @arches = Arch.recent
     @pls = Platform.main
     @bpls = @project.repositories.collect { |rep| ["#{rep.platform.name}/#{rep.unixname}", rep.platform.id] }
@@ -23,30 +22,33 @@ class ProjectsController < ApplicationController
     @arch_ids = params[:build][:arches].select{|_,v| v == "1"}.collect{|x| x[0].to_i }
     @arches = Arch.where(:id => @arch_ids)
 
-    #@project_versions = @project.git_repository.project_versions
-    #@project_version = @project_versions.select{|project_version| project_version.name == params[:build][:project_version] }.first
     @project_version = params[:build][:project_version]
 
-    @pls_ids = params[:build][:pls].select{|_,v| v == "1"}.collect{|x| x[0].to_i }
-    @pls = Platform.where(:id => @pls_ids)
+    pls_ids = params[:build][:pl].blank? ? [] : params[:build][:pl].select{|_,v| v == "1"}.collect{|x| x[0].to_i }
+    pls = Platform.where(:id => pls_ids)
     
-    @bpl = Platform.find params[:build][:bpl]
-    
-    @project_version = params[:build][:project_version]
+    bpl = Platform.find params[:build][:bpl]
+    update_type = params[:build][:update_type]
+    build_requires = params[:build][:build_requires]
+
+    @project_versions = @project.project_versions.collect { |tag| [tag.name.gsub(/^\w+\./, ""), tag.name] }.select { |pv| pv[1] =~ /^v\./  }
 
     if !check_arches || !check_project_versions
       @arches = Arch.recent
+      @pls = Platform.main
+      @bpls = @project.repositories.collect { |rep| ["#{rep.platform.name}/#{rep.unixname}", rep.platform.id] }
+       
       render :action => "build"
     else
       flash[:notice], flash[:error] = "", ""
       @arches.each do |arch|
-        @pls.each do |pl|
-          build_list = @project.build_lists.new(:arch => arch, :project_version => @project_version, :pl => pl, :bpl => @bpl)
+        pls.each do |pl|
+          build_list = @project.build_lists.new(:arch => arch, :project_version => @project_version, :pl => pl, :bpl => bpl, :update_type =>  update_type, :build_requires => build_requires)
         
           if build_list.save
-            flash[:notice] += t("flash.build_list.saved", :project_version => @project_version, :arch => arch.name, :pl => pl, :bpl => @bpl)
+            flash[:notice] += t("flash.build_list.saved", :project_version => @project_version, :arch => arch.name, :pl => pl.name, :bpl => bpl)
           else
-            flash[:error] += t("flash.build_list.save_error", :project_version => @project_version, :arch => arch.name, :pl => pl, :bpl => @bpl)
+            flash[:error] += t("flash.build_list.save_error", :project_version => @project_version, :arch => arch.name, :pl => pl.name, :bpl => bpl)
           end
         end
       end
@@ -114,8 +116,8 @@ class ProjectsController < ApplicationController
       if @project_version.blank?
         flash[:error] = t("flash.build_list.no_project_version_selected")
         false
-      elsif !@project_versions.include?(@project_version)
-        flash[:error] = t("flash.build_list.no_project_version_found")
+      elsif !@project_versions.flatten.include?(@project_version)
+        flash[:error] = t("flash.build_list.no_project_version_found", :project_version => @project_version)
         false
       else
         true

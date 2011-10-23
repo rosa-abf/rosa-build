@@ -16,9 +16,9 @@
           .column.left
             .group
               = f.label :project_version, t("activerecord.attributes.build_list.project_version"), :class => :label
-              = f.select :project_versions, @project_versions
+              = f.select :project_version, @project_versions
               
-            .group
+            .group.pl_ids_container
               = f.label :pl, t("activerecord.attributes.build_list.pl"), :class => :label
               - @pls.each do |pl|
                 = f.check_box "pl[#{pl.id}]", :pl_id => pl.id, :class => 'build_pl_ids'
