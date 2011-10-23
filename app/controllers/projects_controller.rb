@@ -1,7 +1,5 @@
 class ProjectsController < ApplicationController
   before_filter :authenticate_user!
-#  before_filter :find_platform
-#  before_filter :find_repository
   before_filter :find_project, :only => [:show, :destroy, :build, :process_build]
   before_filter :get_paths, :only => [:new, :create]
 

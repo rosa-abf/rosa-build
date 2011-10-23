@@ -1,8 +1,6 @@
 class BuildListsController < ApplicationController
 	before_filter :authenticate_user!, :except => [:status_build, :pre_build, :post_build, :circle_build, :new_bbdt]
 	before_filter :authenticate_build_service!, :only => [:status_build, :pre_build, :post_build, :circle_build, :new_bbdt]
-	#before_filter :find_platform, :only => [:index, :filter, :show, :publish]
-	#before_filter :find_repository, :only => [:index, :filter, :show, :publish]
 	before_filter :find_project, :only => [:index, :filter, :show, :publish]
 	before_filter :find_arches, :only => [:index, :filter, :all]
 	before_filter :find_branches, :only => [:index, :filter]
@@ -114,14 +112,7 @@ class BuildListsController < ApplicationController
 	end
 
 	protected
-		def find_platform
-			@platform = Platform.find params[:platform_id]
-		end
-
-		def find_repository
-			@repository = @platform.repositories.find(params[:repository_id])
-		end
-
+	
 		def find_project
 			@project = Project.find params[:project_id]
 		end
