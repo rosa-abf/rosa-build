@@ -16,7 +16,7 @@
       .blob_header
         .size #{(@blob.size / 1024.0).round(3)} Kb
         .buttons
-          #{link_to "Raw", raw_commit_path(@platform, @repository, @project, @commit_hash, @path)} #{link_to "Normal", blob_path(@platform, @repository, @project, @treeish, @path)} #{link_to "History", commits_path(@platform, @repository, @project, @treeish, @path)}
+          #{link_to "Raw", raw_commit_path(@project, @commit_hash, @path)} #{link_to "Normal", blob_path(@project, @treeish, @path)} #{link_to "History", commits_path(@project, @treeish, @path)}
         .clear
       .blame_data
         %table.table.blame
@@ -24,7 +24,7 @@
           - @blame.each do |elem|
             %tr
               %td.message{ :rowspan => elem[1].length }
-                .commit #{link_to shortest_hash_id(elem[0].id), commit_path(@platform, @repository, @project, elem[0].id)} by #{elem[0].author} #{elem[0].author != elem[0].committer ? "(#{elem[0].committer})" : "" }
+                .commit #{link_to shortest_hash_id(elem[0].id), commit_path(@project, elem[0].id)} by #{elem[0].author} #{elem[0].author != elem[0].committer ? "(#{elem[0].committer})" : "" }
                 .message
                   %span.date= commit_date(elem[0].committed_date)
                   %span.message= short_commit_message(elem[0].message)

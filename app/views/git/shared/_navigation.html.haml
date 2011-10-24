@@ -1,7 +1,7 @@
 .secondary-navigation
   %ul.wat-cf
-    %li.first.active= link_to t("layout.git.repositories.source"), platform_repository_project_repo_path(@platform, @repository, @project)
-    %li= link_to t("layout.git.repositories.commits"), commits_path(@platform, @repository, @project, :treeish => @treeish)
+    %li.first.active= link_to t("layout.git.repositories.source"), project_repo_path(@project)
+    %li= link_to t("layout.git.repositories.commits"), commits_path(@project, :treeish => @treeish)
 
   %ul#git_submenu.sub-wat-cf.wat-cf
     %li
@@ -11,7 +11,7 @@
           - if branch.name == @treesh
             %span.current= branch.name
           - else
-            = link_to branch.name, tree_path(@platform, @repository, @project, :treeish => branch.name)
+            = link_to branch.name, tree_path(@project, :treeish => branch.name)
 
     %li
       %a{ :href => "#", :onmouseover => "menu.open('tags')", :onmouseout => "menu.close_time()" } Tags
@@ -20,5 +20,5 @@
           - if tag.name == @treeish
             %span.current= tag.name
           - else
-            = link_to tag.name, tree_path(@platform, @repository, @project, :treeish => tag.name)
+            = link_to tag.name, tree_path(@project, :treeish => tag.name)
   .clear

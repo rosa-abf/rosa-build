@@ -18,9 +18,9 @@
         .size #{(@blob.size / 1024.0).round(3)} Kb
         .buttons
           - if @commit_hash
-            #{link_to "Raw", raw_commit_path(@platform, @repository, @project, @commit_hash, @path)} #{link_to "Blame", blame_commit_path(@platform, @repository, @project, @commit_hash, @path)} #{link_to "History", commits_path(@platform, @repository, @project, @treeish, @path)}
+            #{link_to "Raw", raw_commit_path(@project, @commit_hash, @path)} #{link_to "Blame", blame_commit_path(@project, @commit_hash, @path)} #{link_to "History", commits_path(@project, @treeish, @path)}
           - else
-            #{link_to "Raw", raw_path(@platform, @repository, @project, @treeish, @path)} #{link_to "Blame", blame_path(@platform, @repository, @project, @treeish, @path)} #{link_to "History", commits_path(@platform, @repository, @project, @treeish, @path)}
+            #{link_to "Raw", raw_path(@project, @treeish, @path)} #{link_to "Blame", blame_path(@project, @treeish, @path)} #{link_to "History", commits_path(@project, @treeish, @path)}
         .clear
       %table.table.blob
         %tr
