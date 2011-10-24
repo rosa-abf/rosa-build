@@ -6,7 +6,8 @@ Rosa::Application.routes.draw do
   
   resources :event_logs, :only => :index
 
-  resources :downloads, :only => :index
+  #resources :downloads, :only => :index
+  match 'statistics/' => 'downloads#index', :as => :downloads
 
   resources :categories do
     get :platforms, :on => :collection
