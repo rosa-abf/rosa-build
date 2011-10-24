@@ -1,9 +1,13 @@
 class User < ActiveRecord::Base
+  relationable :as => :object
+  inherit_rights_from :groups
+
   devise :database_authenticatable, :registerable, :omniauthable, # :token_authenticatable, :encryptable, :timeoutable
          :recoverable, :rememberable, :validatable #, :trackable, :confirmable, :lockable
 
   has_many :authentications, :dependent => :destroy
 
+  belongs_to :global_role, :class_name => 'Role'
   has_many :roles, :through => :targets
 
   has_many :targets, :as => :object, :class_name => 'Relation'

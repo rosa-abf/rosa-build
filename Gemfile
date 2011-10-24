@@ -46,8 +46,8 @@ group :development do
   gem 'ruby-debug'
   # gem 'looksee'
   # gem 'awesome_print'
-  # gem 'wirble'
-  # gem 'hirb'
+#  gem 'wirble'
+  gem 'hirb'
   # gem 'rails-footnotes', '>= 3.7.5.rc4' # this shit is very buggy don't forget to switch it off back
 
   # deploy

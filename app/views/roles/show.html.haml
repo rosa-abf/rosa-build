@@ -18,21 +18,43 @@
         = @role.name
       %p
         %b
-          = t("activerecord.models.permission")
+          = t("activerecord.attributes.role.applicable_to")
           \:
-        -unless @permissions.empty?
+        = (@role.to and @role.to.size > 0) ? @role.to : 'All'
+      %p
+        %b
+          = t("activerecord.attributes.role.applicable_on")
+          \:
+        = (@role.on and @role.on.size > 0) ? @role.on : 'System'
+      - unless @role.can_see.empty?
+        %p
+          %b
+            = t("activerecord.attributes.role.can_see")
+            \:
           %table.table
-            %tr
-              %th.first ID
-              %th= t("activerecord.attributes.right.name")
-            - @permissions.each do |permission|
-              %tr{:class => cycle("odd", "even")}
-                %td
-                  = permission.right_id
-                %td
-                  = permission.name
-          .wat-cf
-            = link_to image_tag("web-app-theme/icons/application_edit.png", :alt => t("layout.edit")) + " " + t("layout.edit"), edit_role_path(@role), :class => "button"
-            = link_to image_tag("web-app-theme/icons/cross.png", :alt => t("layout.delete")) + " " + t("layout.delete"), role_path(@role), :method => "delete", :class => "button", :confirm => t("layout.users.confirm_delete")
+            - @role.can_see.each_pair do |model, list|
+              %tr{:class => cycle('odd', 'even')}
+                %td{:style => 'width:25%'}
+                  %b
+                    =model
+                %td{:stule => 'width:75%'}
+                  = list.join(', ')
+      -rights = @role.rights.by_controller
+      -unless rights.empty?
+        %p
+          %b
+            = t("activerecord.models.rights")
+            \:
+          - rights.each do |key, value|
+            %div{:style => 'float: left; width: 385px; margin-left: 10px; margin-top: 10px'}
+              %fieldset{:style => 'width: 95%; height: 100%; padding: 10px;'}
+                %legend= t("layout.menu.#{key}")
+                - value.each do |right|
+                  %span= right.name
+                  %br
+          %div{:style => 'clear: both'}
+      .wat-cf
+        = link_to image_tag("web-app-theme/icons/application_edit.png", :alt => t("layout.edit")) + " " + t("layout.edit"), edit_role_path(@role), :class => "button"
+        = link_to image_tag("web-app-theme/icons/cross.png", :alt => t("layout.delete")) + " " + t("layout.delete"), role_path(@role), :method => "delete", :class => "button", :confirm => t("layout.users.confirm_delete")
 
 - content_for :sidebar, render(:partial => 'sidebar')

@@ -9,6 +9,8 @@ Rosa::Application.routes.draw do
   
   resources :users
   
+  resources :roles
+
   resources :event_logs, :only => :index
 
   resources :downloads, :only => :index

@@ -1,8 +1,13 @@
 class Group < ActiveRecord::Base
+  relationable :as => :object
+  relationable :as => :target
+
   has_many :roles, :through => :targets
   validates :name, :uname, :owner_id, :presence => true
   validates :name, :uname, :uniqueness => true
   validates :uname, :format => { :with => /^[a-zA-Z0-9_]+$/ }, :allow_nil => false, :allow_blank => false
+
+  belongs_to :global_role, :class_name => 'Role'
 
   belongs_to :owner, :class_name => 'User'
   has_many :own_projects, :as => :owner, :class_name => 'Project'

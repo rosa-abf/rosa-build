@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20111021164945) do
+ActiveRecord::Schema.define(:version => 20111023195205) do
 
   create_table "arches", :force => true do |t|
     t.string   "name",       :null => false
@@ -124,6 +124,7 @@ ActiveRecord::Schema.define(:version => 20111021164945) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "uname"
+    t.integer  "global_role_id"
   end
 
   create_table "permissions", :force => true do |t|
@@ -202,6 +203,7 @@ ActiveRecord::Schema.define(:version => 20111021164945) do
     t.string   "object_type"
     t.integer  "target_id"
     t.string   "target_type"
+    t.integer  "role_id"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -217,6 +219,14 @@ ActiveRecord::Schema.define(:version => 20111021164945) do
     t.string   "visibility",  :default => "open"
   end
 
+  create_table "rights", :force => true do |t|
+    t.string   "name",       :null => false
+    t.string   "controller", :null => false
+    t.string   "action",     :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "role_lines", :force => true do |t|
     t.integer  "role_id"
     t.integer  "relation_id"
@@ -226,8 +236,11 @@ ActiveRecord::Schema.define(:version => 20111021164945) do
 
   create_table "roles", :force => true do |t|
     t.string   "name"
+    t.string   "to"
+    t.string   "on"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.text     "can_see"
   end
 
   create_table "rpms", :force => true do |t|
@@ -251,8 +264,10 @@ ActiveRecord::Schema.define(:version => 20111021164945) do
     t.datetime "remember_created_at"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.text     "ssh_key"
     t.string   "uname"
+    t.text     "ssh_key"
+    t.integer  "role_id"
+    t.integer  "global_role_id"
   end
 
   add_index "users", ["email"], :name => "index_users_on_email", :unique => true
