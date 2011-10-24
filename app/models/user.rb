@@ -2,8 +2,7 @@ class User < ActiveRecord::Base
   relationable :as => :object
   inherit_rights_from :groups
 
-  devise :database_authenticatable, #:registerable,
-         :omniauthable, # :token_authenticatable, :encryptable, :timeoutable
+  devise :database_authenticatable, #:registerable, :omniauthable, # :token_authenticatable, :encryptable, :timeoutable
          :recoverable, :rememberable, :validatable #, :trackable, :confirmable, :lockable
 
   has_many :authentications, :dependent => :destroy
