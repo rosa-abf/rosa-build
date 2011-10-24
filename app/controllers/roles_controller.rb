@@ -1,4 +1,5 @@
 class RolesController < ApplicationController
+  before_filter :authenticate_user!
   before_filter :find_role, :only => [:show, :edit, :update, :destroy]
   before_filter :find_visibilities, :only => [:new, :edit]
 

@@ -1,7 +1,9 @@
 class PrivatesController < ApplicationController
 	require 'digest/sha2'
 
+  before_filter :authenticate_user!
 	before_filter :find_platform
+
 	before_filter :authenticate
 
 	def show
