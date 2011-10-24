@@ -7,11 +7,15 @@ class BuildList::Filter
   end
 
   def find
-    build_lists = @project.build_lists.recent
+    if @project.nil?
+      build_lists = BuildList.scoped
+    else
+      build_lists = @project.build_lists.recent
+    end
 
     build_lists = build_lists.for_status(@options[:status]) if @options[:status]
     build_lists = build_lists.scoped_to_arch(@options[:arch_id]) if @options[:arch_id]
-    build_lists = build_lists.scoped_to_branch(@options[:branch_name]) if @options[:branch_name]
+    build_lists = build_lists.scoped_to_project_version(@options[:project_version]) if @options[:project_version]
     build_lists = build_lists.scoped_to_is_circle(@options[:is_circle]) if @options[:is_circle].present?
 
     if @options[:created_at_start] || @options[:created_at_end]
@@ -44,7 +48,7 @@ class BuildList::Filter
           :notified_at_end => nil,
           :arch_id => nil,
           :is_circle => nil,
-          :branch_name => nil
+          :project_version => nil
                                                                      }))
 
       @options[:status] = @options[:status].present? ? @options[:status].to_i : nil
@@ -52,7 +56,7 @@ class BuildList::Filter
       @options[:created_at_end] = build_date_from_params(:created_at_end, @options)
       @options[:notified_at_start] = build_date_from_params(:notified_at_start, @options)
       @options[:notified_at_end] = build_date_from_params(:notified_at_end, @options)
-      @options[:branch_name] = @options[:branch_name].present? ? @options[:branch_name] : nil
+      @options[:project_version] = @options[:project_version].present? ? @options[:project_version] : nil
       @options[:arch_id] = @options[:arch_id].present? ? @options[:arch_id].to_i : nil
       @options[:is_circle] = @options[:is_circle].present? ? @options[:is_circle] == "1" : nil
     end

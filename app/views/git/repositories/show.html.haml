@@ -25,7 +25,7 @@
           %tr.odd
             %td
             %td.icon
-              = link_to "..", tree_path(@platform, @repository, @project, @treeish, File.join([@path, ".."].compact))
+              = link_to "..", tree_path(@project, @treeish, File.join([@path, ".."].compact))
             %td== &nbsp;
             %td.last== &nbsp;
         - (@tree.trees + @tree.blobs).each do |entry|
@@ -37,9 +37,9 @@
                 = image_tag("git/icons/folder_16.png")
             %td.tree_element
               - if entry.is_a?(Grit::Blob)
-                = link_to entry.name, blob_path(@platform, @repository, @project, @treeish, File.join([@path, entry.name].compact))
+                = link_to entry.name, blob_path(@project, @treeish, File.join([@path, entry.name].compact))
               - else
-                = link_to "#{entry.name}/", tree_path(@platform, @repository, @project, @treeish, File.join([@path, entry.name].compact))
+                = link_to "#{entry.name}/", tree_path(@project, @treeish, File.join([@path, entry.name].compact))
             %td== &nbsp;
             %td.last== &nbsp;
 

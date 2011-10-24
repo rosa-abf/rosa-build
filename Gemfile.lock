@@ -182,6 +182,7 @@ GEM
       activesupport (= 3.0.10)
       bundler (~> 1.0)
       railties (= 3.0.10)
+    rails-xmlrpc (0.3.2)
     rails3-generators (0.17.4)
       railties (>= 3.0.0)
     railties (3.0.10)
@@ -270,6 +271,7 @@ DEPENDENCIES
   paperclip (~> 2.3)
   pg (~> 0.11.0)
   rails (= 3.0.10)
+  rails-xmlrpc
   rails3-generators
   rspec-rails (~> 2.7.0)
   ruby-debug

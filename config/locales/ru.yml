@@ -187,6 +187,7 @@ ru:
         commits: Commits
         tags: Tags
         branches: Branches
+        project_versions: Версии
 
     build_lists:
       filter_header: Фильтр
@@ -201,7 +202,11 @@ ru:
       no_items_data: Данных нет
       show: Просмотр
       confirm_publish: Вы уверены, что хотите опубликовать контейнер?
-
+      cancel_button_header: Действие
+      cancel_button: Отмена
+      cancel_successed: 'Сборка отменена.'
+      cancel_failed: 'При отмене сборки произошла ошибка!'
+      
       items:
         statuses:
           build_error: ошибка сборки
@@ -223,7 +228,7 @@ ru:
         platform_not_found: платформа не найдена
         platform_pending: платформа в процессе создания
         project_not_found: проект не найден
-        branch_not_found: бранч не найден
+        project_version_not_found: версия не найден
 
   flash:
     category:
@@ -271,12 +276,13 @@ ru:
       destroyed: Платформа успешно удалена
 
     build_list:
-      saved: Билд лист для бранча '%{branch_name}' и архитектуры '%{arch}' создан успешно
-      save_error: Не удалось сохранить билд лист для бранча '%{branch_name}' и архитектуры '%{arch}'
-      no_branch_selected: Выберите какой-нибудь бранч
-      no_branch_found: Выбранный бранч '%{branch_name}' не найден
+      saved: Билд лист для версии '%{project_version}', платформу '%{pl}' и архитектуры '%{arch}' создан успешно
+      save_error: Не удалось сохранить билд лист для версии '%{project_version}', платформу '%{pl}' и архитектуры '%{arch}'
+      no_project_version_selected: Выберите какую-нибудь версию
+      no_project_version_found: Выбранная версия '%{project_version}' не найдена
       no_arch_selected: Выберите хотя бы одну ахритектуру
       no_arch_found: Выбранные ахритектуры не найдены
+      wrong_platform: Для основного репозитория (main) может быть выбран только его же основная платформа!
 
   attributes:
     password: Пароль
@@ -415,7 +421,6 @@ ru:
         name: Название
         container_path: Путь до контейнера
         status: Статус
-        branch_name: Branch
         project_id: Проект
         project: Проект
         arch_id: Архитектура
@@ -425,6 +430,13 @@ ru:
         additional_repos: Дополнительные репозитории
         updated_at: Обновлен
         created_at: Создан
+        bpl: Репозиторий для сохранения пакетов
+        bpl_id: Репозиторий для сохранения пакетов
+        pl: Платформа
+        pl_id: Платформа
+        update_type: Критичность обновления
+        build_requires: Пересборка с зависимостями
+        project_version: Версия
 
       build_list/item:
         name: Название

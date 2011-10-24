@@ -9,18 +9,18 @@
               .committer
                 (committed by: #{commit.committer}, #{commit_date(commit.committed_date)})
           %td.message
-            %p= link_to commit.message, commit_path(@platform, @repository, @project, commit.id)
+            %p= link_to commit.message, commit_path(@project, commit.id)
           %td.trees
             .commit
               Commit:
               %span{ :style => "float: right;"}
-                #{link_to short_hash_id(commit.id), commit_path(@platform, @repository, @project, commit.id)}
+                #{link_to short_hash_id(commit.id), commit_path(@project, commit.id)}
             .tree
               Tree:
               %span{ :style => "float: right;"}
-                #{link_to short_hash_id(commit.tree.id), tree_path(@platform, @repository, @project, :treeish => commit.tree.id)}
+                #{link_to short_hash_id(commit.tree.id), tree_path(@project, :treeish => commit.tree.id)}
             - commit.parents.each do |parent|
               .parent
                 Parent:
                 %span{ :style => "float: right;"}
-                  #{link_to short_hash_id(parent.id), tree_path(@platform, @repository, @project, :treeish => parent.id)}
+                  #{link_to short_hash_id(parent.id), tree_path(@project, :treeish => parent.id)}

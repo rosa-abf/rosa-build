@@ -27,6 +27,7 @@ class Platform < ActiveRecord::Base
   scope :by_visibilities, lambda {|v| {:conditions => ['visibility in (?)', v.join(',')]}}
 
   attr_accessible :visibility
+  scope :main, where(:platform_type => 'main')
 
   def path
     build_path(unixname)

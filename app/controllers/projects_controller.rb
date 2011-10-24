@@ -1,7 +1,5 @@
 class ProjectsController < ApplicationController
   before_filter :authenticate_user!
-#  before_filter :find_platform
-#  before_filter :find_repository
   before_filter :find_project, :only => [:show, :destroy, :build, :process_build]
   before_filter :get_paths, :only => [:new, :create]
 
@@ -14,33 +12,48 @@ class ProjectsController < ApplicationController
   end
 
   def build
-    @branches = @project.git_repository.branches
     @arches = Arch.recent
+    @pls = Platform.main
+    @bpls = @project.repositories.collect { |rep| ["#{rep.platform.name}/#{rep.unixname}", rep.platform.id] }
+    @project_versions = @project.project_versions.collect { |tag| [tag.name.gsub(/^\w+\./, ""), tag.name] }.select { |pv| pv[1] =~ /^v\./  }
   end
 
   def process_build
     @arch_ids = params[:build][:arches].select{|_,v| v == "1"}.collect{|x| x[0].to_i }
     @arches = Arch.where(:id => @arch_ids)
 
-    @branches = @project.git_repository.branches
-    @branch = @branches.select{|branch| branch.name == params[:build][:branch] }.first
+    @project_version = params[:build][:project_version]
 
-    if !check_arches || !check_branches
+    pls_ids = params[:build][:pl].blank? ? [] : params[:build][:pl].select{|_,v| v == "1"}.collect{|x| x[0].to_i }
+    pls = Platform.where(:id => pls_ids)
+    
+    bpl = Platform.find params[:build][:bpl]
+    update_type = params[:build][:update_type]
+    build_requires = params[:build][:build_requires]
+
+    @project_versions = @project.project_versions.collect { |tag| [tag.name.gsub(/^\w+\./, ""), tag.name] }.select { |pv| pv[1] =~ /^v\./  }
+
+    if !check_arches || !check_project_versions
       @arches = Arch.recent
+      @pls = Platform.main
+      @bpls = @project.repositories.collect { |rep| ["#{rep.platform.name}/#{rep.unixname}", rep.platform.id] }
+       
       render :action => "build"
     else
       flash[:notice], flash[:error] = "", ""
       @arches.each do |arch|
-        build_list = @project.build_lists.new(:arch => arch, :branch_name => @branch.name)
+        pls.each do |pl|
+          build_list = @project.build_lists.new(:arch => arch, :project_version => @project_version, :pl => pl, :bpl => bpl, :update_type =>  update_type, :build_requires => build_requires)
         
-        if build_list.save
-          flash[:notice] += t("flash.build_list.saved", :branch_name => @branch.name, :arch => arch.name)
-        else
-          flash[:error] += t("flash.build_list.save_error", :branch_name => @branch.name, :arch => arch.name)
+          if build_list.save
+            flash[:notice] += t("flash.build_list.saved", :project_version => @project_version, :arch => arch.name, :pl => pl.name, :bpl => bpl)
+          else
+            flash[:error] += t("flash.build_list.save_error", :project_version => @project_version, :arch => arch.name, :pl => pl.name, :bpl => bpl)
+          end
         end
       end
 
-      redirect_to platform_repository_project_path(@platform, @repository, @project)
+      redirect_to project_path(@project)
     end
   end
 
@@ -62,7 +75,8 @@ class ProjectsController < ApplicationController
     @project.destroy
 
     flash[:notice] = t("flash.project.destroyed")
-    redirect_to platform_repository_path(@platform, @repository)
+    #redirect_to platform_repository_path(@platform, @repository)
+    redirect_to root_path
   end
 
   protected
@@ -82,14 +96,6 @@ class ProjectsController < ApplicationController
       end
     end
 
-    def find_platform
-      @platform = Platform.find params[:platform_id]
-    end
-
-    def find_repository
-      @repository = @platform.repositories.find(params[:repository_id])
-    end
-
     def find_project
       @project = Project.find params[:id]
     end
@@ -106,12 +112,12 @@ class ProjectsController < ApplicationController
       end
     end
 
-    def check_branches
-      if @branch.blank?
-        flash[:error] = t("flash.build_list.no_branch_selected")
+    def check_project_versions
+      if @project_version.blank?
+        flash[:error] = t("flash.build_list.no_project_version_selected")
         false
-      elsif !@branches.include?(@branch)
-        flash[:error] = t("flash.build_list.no_branch_found")
+      elsif !@project_versions.flatten.include?(@project_version)
+        flash[:error] = t("flash.build_list.no_project_version_found", :project_version => @project_version)
         false
       else
         true
