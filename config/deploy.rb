@@ -26,8 +26,8 @@ role :db,  domain, :primary => true
 ssh_options[:auth_methods] = %w(publickey password)
 set :use_sudo, false
 
-set :repository,  "git@github.com:evilmartians/rosa-build.git"
-set :branch, "test_master"
+set :repository,  "git@github.com:warpc/rosa-build.git"
+set :branch, "master"
 set :git_shallow_clone, 1
 set :keep_releases, 3
 
