@@ -13,3 +13,4 @@ config/initializers/local.rb
 public/system/*
 .rvmrc
 *.swp
+*.tmproj

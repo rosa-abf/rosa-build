@@ -13,7 +13,7 @@
   .content
     .inner
       .patch_and_diff
-        #{link_to "raw diff", commit_path(@platform, @repository, @project, @commit.id, :diff)} | #{link_to "patch", commit_path(@platform, @repository, @project, @commit.id, :patch)}
+        #{link_to "raw diff", commit_path(@project, @commit.id, :diff)} | #{link_to "patch", commit_path(@project, @commit.id, :patch)}
 
       .clear
         

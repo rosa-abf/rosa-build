@@ -1,22 +1,38 @@
 .block
   .secondary-navigation
     %ul.wat-cf
-      %li.first= link_to t("layout.projects.list"), platform_repository_path(@platform, @repository) + "#projects"
-      %li= link_to t("layout.projects.new"), new_platform_repository_project_path(@platform, @repository)
-      %li= link_to t("layout.projects.show"), platform_repository_project_path(@platform, @repository, @project)
-      %li= link_to "git-repo", platform_repository_project_repo_path(@platform, @repository, @project)
-      %li.active= link_to t("layout.projects.build"), build_platform_repository_project_path(@platform, @repository, @project)
+      %li.first=# link_to t("layout.projects.list"), platform_repository_path(@platform, @repository) + "#projects"
+      %li= link_to t("layout.projects.new"), new_project_path
+      %li= link_to t("layout.projects.show"), project_path(@project)
+      %li=# link_to "git-repo", project_repo_path(@platform, @repository, @project)
+      %li.active= link_to t("layout.projects.build"), build_project_path(@project)
 
   .content
     %h2.title= t("layout.projects.new_build")
 
     .inner
-      = form_for :build, :url => process_build_platform_repository_project_path(@platform, @repository, @project), :html => { :class => :form, :method => :post } do |f|
+      = form_for :build, :url => process_build_project_path(@project), :html => { :class => :form, :method => :post } do |f|
         .columns.wat-cf
           .column.left
             .group
-              = f.label :branch, "Branch", :class => :label
-              = f.select :branch, @branches.collect{|branch| [branch.name, branch.name]}
+              = f.label :project_version, t("activerecord.attributes.build_list.project_version"), :class => :label
+              = f.select :project_version, @project_versions
+              
+            .group.pl_ids_container
+              = f.label :pl, t("activerecord.attributes.build_list.pl"), :class => :label
+              - @pls.each do |pl|
+                = f.check_box "pl[#{pl.id}]", :pl_id => pl.id, :class => 'build_pl_ids'
+                = pl.name
+                %br
+                
+            .group
+              = f.label :update_type, t("activerecord.attributes.build_list.update_type"), :class => :label
+              = f.select :update_type, BuildList::UPDATE_TYPES.collect { |ut| [ut, ut] }
+              
+            .group
+              = f.check_box :build_requires
+              = t("activerecord.attributes.build_list.build_requires")
+
 
           .column.right
             .group
@@ -25,13 +41,16 @@
                 = f.check_box "arches[#{arch.id}]"
                 = arch.name
                 %br
+                
+            .group
+              = f.label :bpl, t("activerecord.attributes.build_list.bpl"), :class => :label
+              = f.select :bpl, @bpls
 
         .group.navform.wat-cf
           %button.button{:type => "submit"}
             = image_tag("web-app-theme/icons/tick.png", :alt => t("layout.projects.build_button"))
             = t("layout.projects.build_button")
           %span.text_button_padding= t("layout.or")
-          = link_to t("layout.cancel"), platform_repository_path(@platform, @repository), :class => "text_button_padding link_button"
+          = link_to t("layout.cancel"), root_path, :class => "text_button_padding link_button"          
 
-
-- content_for :sidebar, render(:partial => 'sidebar')
+-# content_for :sidebar, render(:partial => 'sidebar')

@@ -4,25 +4,25 @@ module GitHelper
     # TODO: Looks ugly, rewrite with clear mind.
     if @path.present?
       if @treeish == "master"
-        res = "#{link_to @project.name, tree_path(@platform, @repository, @project)} / "
+        res = "#{link_to @project.name, tree_path(@project)} / "
       else
-        res = "#{link_to @project.name, tree_path(@platform, @repository, @project, @treeish)} / "
+        res = "#{link_to @project.name, tree_path(@project, @treeish)} / "
       end
 
       parts = @path.split("/")
 
       current_path = parts.first
-      res += parts.length == 1 ? parts.first : link_to(parts.first, tree_path(@platform, @repository, @project, @treeish, current_path)) + " / "
+      res += parts.length == 1 ? parts.first : link_to(parts.first, tree_path(@project, @treeish, current_path)) + " / "
 
       parts[1..-2].each do |part|
         current_path = File.join([current_path, part].compact)
-        res += link_to(part, tree_path(@platform, @repository, @project, @treeish, current_path))
+        res += link_to(part, tree_path(@project, @treeish, current_path))
         res += " / "
       end
 
       res += parts.last if parts.length > 1
     else
-      res = "#{link_to @project.name, tree_path(@platform, @repository, @project)} /"
+      res = "#{link_to @project.name, tree_path(@project)} /"
     end
 
     res.html_safe
