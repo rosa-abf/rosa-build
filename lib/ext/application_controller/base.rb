@@ -14,11 +14,12 @@ class ApplicationController::Base
       end
     end
 
-  class << self
-
     def rights_to target
-      Rights.where :rtype => target.class.to_s
+      ActiveRecord::Base.rights_to target
     end
 
-  end
+    def roles_to target
+      ActiveRecord::Base.roles_to target
+    end
+
 end
