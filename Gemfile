@@ -26,6 +26,10 @@ gem 'delayed_job'
 gem 'whenever', :require => false
 gem 'unicorn'
 
+# XML-RPC support
+# gem 'actionwebservice' #, :git => 'git://github.com/ywen/actionwebservice.git'
+gem "rails-xmlrpc"
+
 group :production do
   gem "airbrake"
   # gem 'newrelic_rpm', '~> 3.1.1'

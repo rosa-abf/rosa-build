@@ -1,7 +1,12 @@
 Rosa::Application.routes.draw do
+  # XML RPC
+  match 'api/xmlrpc' => 'rpc#xe_index'
+  
+  
   devise_for :users, :controllers => {:omniauth_callbacks => 'users/omniauth_callbacks'} do
     get '/users/auth/:provider' => 'users/omniauth_callbacks#passthru'
   end
+  
   resources :users
   
   resources :event_logs, :only => :index
