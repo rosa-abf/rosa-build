@@ -1,10 +1,10 @@
 #!/bin/sh
 
-current_path="/srv/rosa/rosa_build/current"
+current_path="/srv/rosa_build/current"
 
 
 getpid() {
-    pid=`ps ax |grep "unicorn_rails master -c /srv/rosa/rosa_build" \
+    pid=`ps ax |grep "unicorn_rails master -c /srv/rosa_build" \
            |grep -v grep \
            |awk '{print $1}'`;
 }

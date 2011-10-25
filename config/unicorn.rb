@@ -1,4 +1,4 @@
-#rails_env = ENV['RAILS_ENV'] || 'production'
+rails_env = ENV['RAILS_ENV'] || 'production'
 worker_processes 4
 
 preload_app true
@@ -12,7 +12,7 @@ listen '/tmp/rosa_build.sock', :backlog => 2048
 timeout 120
 #
 #feel free to point this anywhere accessible on the filesystem
-pid "/srv/rosa/rosa_build/current/tmp/pids/unicorn.pid"
+pid File.expand_path(File.join(File.dirname(__FILE__), "..")) + '/tmp/pids/unicorn.pid'
 
 #
 # REE
@@ -24,8 +24,8 @@ end
 # By default, the Unicorn logger will write to stderr.
 # Additionally, ome applications/frameworks log to stderr or stdout,
 # so prevent them from going to /dev/null when daemonized here:
-stderr_path "/srv/rosa/rosa_build/shared/log/unicorn.stderr.log"
-stdout_path "/srv/rosa/rosa_build/shared/log/unicorn.stdout.log"
+stderr_path File.expand_path(File.join(File.dirname(__FILE__), "..")) + "/log/unicorn.stderr.log"
+stdout_path File.expand_path(File.join(File.dirname(__FILE__), "..")) + "/log/unicorn.stdout.log"
 
 # combine REE with "preload_app true" for memory savings
 # http://rubyenterpriseedition.com/faq.html#adapt_apps_for_cow
