@@ -1,23 +1,7 @@
-development:
-  adapter: postgresql
-  encoding: unicode
-  database: rosa_development
-  pool: 5
-  username: rosa
-  password: 
-
-test:
-  adapter: postgresql
-  encoding: unicode
-  database: rosa_test
-  pool: 5
-  username: rosa
-  password: 
-
 production:
   adapter: postgresql
   encoding: unicode
-  database: rosa_production
+  database: rosa_build
   pool: 5
-  username: postgres
-  password: postgres
+  username: rosa
+  password: rosa
