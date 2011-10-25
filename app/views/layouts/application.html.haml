@@ -12,7 +12,7 @@
           %a{:href => "/"}= t("layout.global_header")
         #user-navigation
           %ul.wat-cf
-            %li= link_to current_user.uname, edit_user_registration_path
+            %li= link_to current_user.uname, edit_user_path(current_user)
             %li= link_to t('layout.logout'), destroy_user_session_path, :method => :delete, :class => "logout"
         #main-navigation
           %ul.wat-cf
