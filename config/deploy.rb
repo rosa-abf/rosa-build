@@ -45,7 +45,8 @@ end
 namespace :deploy do
   desc "Restarting mod_rails with restart.txt"
   task :restart, :roles => :app, :except => { :no_release => true } do
-    run "cd #{deploy_to}/current ; ([ -f tmp/pids/unicorn.pid ] && kill -USR2 `cat tmp/pids/unicorn.pid`); true"
+    ## DISABLED: run "cd #{deploy_to}/current ; ([ -f tmp/pids/unicorn.pid ] && kill -USR2 `cat tmp/pids/unicorn.pid`); true"
+    run ["#{current_path}/script/unicorn reload"].join("; ")
     restart_dj
   end
 

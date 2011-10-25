@@ -1,0 +1,61 @@
+#!/bin/sh
+
+current_path="/var/www/rosa_build"
+
+
+getpid() {
+    pid=`ps ax |grep "unicorn_rails master -c /var/www/rosa_build" \
+           |grep -v grep \
+           |awk '{print $1}'`;
+}
+
+
+start() {
+    export RUBY_HEAP_MIN_SLOTS=1400000
+    export RUBY_HEAP_SLOTS_INCREMENT=500000
+    export RUBY_HEAP_SLOTS_GROWTH_FACTOR=1
+    export RUBY_GC_MALLOC_LIMIT=30000000
+    export RUBY_HEAP_FREE_MIN=12500
+
+    cd $current_path && \
+    bundle exec unicorn_rails -c $current_path/config/unicorn.rb -E production -D
+}
+
+
+stop() {
+    while : ; do
+        getpid;
+        if [ x"$pid" != x"" ] ; then
+            kill $pid;
+            sleep 1;
+        else
+            break;
+        fi
+    done
+}
+
+
+reload() {
+    getpid;
+    if [ x"$pid" != x"" ] ; then
+        kill -USR2 $pid;
+    else
+        start;
+    fi
+}
+
+
+case "$1" in
+  start)
+        start
+        ;;
+  stop)
+        stop;
+        ;;
+  reload)
+        reload
+        ;;
+  *)
+        echo $"Usage: $0 {start|stop|reload}"
+        exit 2
+esac
