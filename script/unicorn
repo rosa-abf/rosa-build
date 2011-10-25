@@ -1,6 +1,6 @@
 #!/bin/sh
 
-current_path="/var/www/rosa_build"
+current_path="/var/www/rosa_build/current"
 
 
 getpid() {
