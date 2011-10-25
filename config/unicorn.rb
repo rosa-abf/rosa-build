@@ -4,9 +4,9 @@ worker_processes 4
 preload_app true
 
 #working_directory "/path/to/app/current" # available in 0.94.0+
-listen '/tmp/rosa_build.sock', :backlog => 2048
+#listen '/tmp/rosa_build.sock', :backlog => 2048
 #listen "/tmp/.sock", :backlog => 64
-#listen 8080, :tcp_nopush => true
+listen 8080, :tcp_nopush => true
 #
 #nuke workers after 30 seconds instead of 60 seconds (the default)
 timeout 120
