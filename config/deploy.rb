@@ -1,35 +1,34 @@
-# RVM bootstrap
-$:.unshift(File.expand_path("~/.rvm/lib"))
+$:.unshift(File.expand_path('./lib', ENV['rvm_path']))
 require 'rvm/capistrano'
-set :rvm_ruby_string, 'ree@rails-3.0.5'
+require 'bundler/capistrano'
+require 'airbrake/capistrano'
+
 set :rvm_type, :user
 
 # bundler bootstrap
-require 'bundler/capistrano'
 
 # main details
 ssh_options[:forward_agent] = true
-set :application, "rosa_build"
-set :user, "rosa_build"
 
-default_run_options[:pty] = true
+set :application, "rosa_build"
+
+set :repository,  "git@github.com:warpc/rosa-build.git"
+set :branch, "master"
+# set :git_shallow_clone, 1
 set :scm, "git"
 
-set :deploy_to, "/var/www/#{application}"
-
-set :domain, "abs.rosalab.ru"
-set :port, 222
+set :user, "rosa"
+set :domain, "195.19.76.12" # "abs.rosalab.ru"
+set :port, 1822 # 222
+set :use_sudo, false
+set :deploy_to, "/srv/#{application}"
 
 role :app, domain
 role :web, domain
 role :db,  domain, :primary => true
-ssh_options[:auth_methods] = %w(publickey password)
-set :use_sudo, false
 
-set :repository,  "git@github.com:warpc/rosa-build.git"
-set :branch, "master"
-set :git_shallow_clone, 1
 set :keep_releases, 3
+
 
 task :symlink_config_files do
   run "mkdir -p #{deploy_to}/#{shared_dir}/config"
@@ -38,12 +37,11 @@ task :symlink_config_files do
   run "yes y | cp -i #{release_path}/config/application.yml.sample #{deploy_to}/#{shared_dir}/config/application.yml"
 
 
-  run "ln -nfs #{deploy_to}/#{shared_dir}/config/database.yml #{release_path}/config/database.yml"
-  run "ln -nfs #{deploy_to}/#{shared_dir}/config/application.yml #{release_path}/config/application.yml"
+  run "ln -nfs #{shared_path}/config/database.yml #{release_path}/config/database.yml"
+  run "ln -nfs #{shared_path}/config/application.yml #{release_path}/config/application.yml"
 end
 
 namespace :deploy do
-  desc "Restarting mod_rails with restart.txt"
   task :restart, :roles => :app, :except => { :no_release => true } do
     ## DISABLED: run "cd #{deploy_to}/current ; ([ -f tmp/pids/unicorn.pid ] && kill -USR2 `cat tmp/pids/unicorn.pid`); true"
     run ["#{current_path}/script/unicorn reload"].join("; ")
@@ -55,11 +53,6 @@ namespace :deploy do
   desc "Restart delayed job"
   task :restart_dj, :roles => :web do
     run "cd #{deploy_to}/current ; RAILS_ENV=production ./script/delayed_job stop; RAILS_ENV=production ./script/delayed_job start; true"
-  end
-
-  desc "Rude restart application"
-  task :rude_restart, :roles => :web do
-    run "cd #{deploy_to}/current ; pkill unicorn; sleep 0.5; pkill -9 unicorn; sleep 0.5 ; unicorn_rails -c config/unicorn.rb -E production -D "
   end
 
 #  desc 'Bundle and minify the JS and CSS files'
@@ -79,11 +72,4 @@ namespace :deploy do
 #    build_assets
     symlink_config_files
   end
-
-  after "deploy:migrate", :roles => :web do
-    restart
-  end
 end
-
-# require './config/boot'
-require 'airbrake/capistrano'

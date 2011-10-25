@@ -12,7 +12,7 @@ listen '/tmp/rosa_build.sock', :backlog => 2048
 timeout 120
 #
 #feel free to point this anywhere accessible on the filesystem
-pid "/var/www/rosa_build/current/tmp/pids/unicorn.pid"
+pid "/srv/rosa/rosa_build/current/tmp/pids/unicorn.pid"
 
 #
 # REE
@@ -24,34 +24,12 @@ end
 # By default, the Unicorn logger will write to stderr.
 # Additionally, ome applications/frameworks log to stderr or stdout,
 # so prevent them from going to /dev/null when daemonized here:
-stderr_path "/var/www/rosa_build/shared/log/unicorn.stderr.log"
-stdout_path "/var/www/rosa_build/shared/log/unicorn.stdout.log"
+stderr_path "/srv/rosa/rosa_build/shared/log/unicorn.stderr.log"
+stdout_path "/srv/rosa/rosa_build/shared/log/unicorn.stdout.log"
 
 # combine REE with "preload_app true" for memory savings
 # http://rubyenterpriseedition.com/faq.html#adapt_apps_for_cow
 preload_app true
-
-before_fork do |server, worker|
-  ##
-  # When sent a USR2, Unicorn will suffix its pidfile with .oldbin and
-  # immediately start loading up a new version of itself (loaded with a new
-  # version of our app). When this new Unicorn is completely loaded
-  # it will begin spawning workers. The first worker spawned will check to
-  # see if an .oldbin pidfile exists. If so, this means we've just booted up
-  # a new Unicorn and need to tell the old one that it can now die. To do so
-  # we send it a QUIT.
-  #
-  # Using this method we get 0 downtime deploys.
-
-  old_pid = '/var/www/rosa_build/current/tmp/pids/unicorn.pid.oldbin'
-  if File.exists?(old_pid) && server.pid != old_pid
-    begin
-      Process.kill("QUIT", File.read(old_pid).to_i)
-    rescue Errno::ENOENT, Errno::ESRCH
-#      someone else did our job for us
-    end
-  end
-end
 
 before_fork do |server, worker|
   ##
