@@ -1,4 +1,4 @@
-class ApplicationController::Base
+class ActionController::Base
 
     def can_perform? target = :system
       c = self.controller_name
