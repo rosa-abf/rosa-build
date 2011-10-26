@@ -21,6 +21,7 @@ ru:
     false_: Нет
     publish: Опубликовать
     add: Добавить
+    upload: Загрузить
 
     downloads:
       title: Статистика закачек пакетов
@@ -95,6 +96,15 @@ ru:
 
     roles:
       confirm_delete: Вы уверены, что хотите удалить эту роль?
+      list_header: Роли
+      list: Список
+      new: Создать
+      get_dump: Скачать в YML
+      from_file: Загрузить из файлa
+      wrong_file_type: Неверный тип файла
+      wrong_file_format: Неверный формат файла
+      successful_load: Все роли успешно загружены
+      seeding_fail: Ошибка при записи в базу
 
     event_logs:
       list: Список
