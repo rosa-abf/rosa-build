@@ -1,0 +1,179 @@
+--- 
+:Roles: 
+- name: !binary |
+    0JDQtNC80LjQvdC40YHRgtGA0LDRgtC+0YAg0YHQuNGB0YLQtdC80Ys=
+
+  rights: 
+    event_logs: 
+    - index
+    groups: 
+    - index
+    - create
+    - show
+    - edit
+    - destroy
+    - new
+    repositories: 
+    - index
+    - create
+    - show
+    - add_project
+    - remove_project
+    - destroy
+    - new
+    downloads: 
+    - index
+    platforms: 
+    - index
+    - create
+    - show
+    - destroy
+    - new
+    - unfreeze
+    projects: 
+    - process_build
+    - create
+    - show
+    - build
+    - destroy
+    - new
+    private_users: 
+    - index
+    - create
+    - destroy
+    products: 
+    - product_status
+    - create
+    - show
+    - edit
+    - build
+    - destroy
+    - update
+    - new
+    build_lists: 
+    - show
+    - pre_build
+    - index
+    - filter
+    - post_build
+    - status_build
+    - circle_build
+    - new_bbdt
+    - publish
+    categories: 
+    - index
+    - platforms
+    - create
+    - show
+    - edit
+    - destroy
+    - update
+    - new
+    users: 
+    - index
+    - create
+    - show
+    - edit
+    - destroy
+    - update
+    - new
+    privates: 
+    - show
+    roles: 
+    - index
+    - create
+    - show
+    - edit
+    - destroy
+    - update
+    - new
+  id: 1
+  to: User
+  can_see: !map:ActiveSupport::HashWithIndifferentAccess 
+    Repository: 
+    - open
+    - hidden
+    Project: 
+    - open
+    - hidden
+    Platform: 
+    - open
+    - hidden
+  "on": ""
+- name: !binary |
+    0JDQtNC80LjQvdC40YHRgtGA0LDRgtC+0YAg0L/Qu9Cw0YLRhNC+0YDQvNGL
+
+  rights: 
+    groups: 
+    - index
+    - destroy
+  id: 2
+  to: ""
+  can_see: !map:ActiveSupport::HashWithIndifferentAccess 
+    Project: 
+    - open
+  "on": ""
+- name: !binary |
+    0JDQtNC80LjQvdC40YHRgtGA0LDRgtC+0YAg0YDQtdC/0L7Qt9C40YLQvtGA
+    0LjRjw==
+
+  rights: {}
+
+  id: 3
+  to: 
+  can_see: 
+  "on": 
+- name: !binary |
+    0JDQtNC80LjQvdC40YHRgtGA0LDRgtC+0YAg0L/RgNC+0LXQutGC0LA=
+
+  rights: {}
+
+  id: 4
+  to: 
+  can_see: 
+  "on": 
+- name: !binary |
+    0JDQtNC80LjQvdC40YHRgtGA0LDRgtC+0YAg0LPRgNGD0L/Qv9GL
+
+  rights: {}
+
+  id: 5
+  to: 
+  can_see: 
+  "on": 
+- name: !binary |
+    0JDQtNC80LjQvdC40YHRgtGA0LDRgtC+0YAg0L/RgNC+0LTRg9C60YLQsA==
+
+  rights: {}
+
+  id: 6
+  to: 
+  can_see: 
+  "on": 
+- name: !binary |
+    0JzQsNC50L3RgtC10LnQvdC10YAg0L/RgNC+0LXQutGC0LA=
+
+  rights: {}
+
+  id: 7
+  to: 
+  can_see: 
+  "on": 
+- name: !binary |
+    0J/QvtC70YzQt9C+0LLQsNGC0LXQu9GMINC/0LvQsNGC0YTQvtGA0LzRiw==
+
+  rights: {}
+
+  id: 8
+  to: 
+  can_see: 
+  "on": 
+- name: !binary |
+    0KPRh9Cw0YHRgtC90LjQuiDQs9GA0YPQv9C/0Ys=
+
+  rights: {}
+
+  id: 9
+  to: 
+  can_see: 
+  "on": 

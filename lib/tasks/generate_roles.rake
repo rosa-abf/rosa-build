@@ -1,3 +1,26 @@
+namespace :roles do
+  desc "Load roles from file 'config/roles.yml'"
+  task :load => :environment do
+    unless File.exists? File.expand_path('config/roles.yml')
+      puts "File 'config/roles.yml' doesn't exists"
+      return
+    end
+
+    t = YAML.load_file File.expand_path('config/roles.yml')
+    unless t.is_a? Hash and t[:Roles]
+      puts "File 'config/roles.yml' has wrong format"
+    else
+      begin
+        Role.all_from_dump! t
+        puts "All roles has been loaded"
+      rescue
+        puts "Fail with seeding db"
+      end
+    end
+
+  end
+end
+
 namespace :rights do
 
   desc "Generate rights from site"
