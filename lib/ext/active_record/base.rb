@@ -29,7 +29,7 @@ class ActiveRecord::Base
     end
     possible.flatten
     if object.is_a? Symbol and object == :system
-      return possible.map{|obj| obj.global_role}.uniq!
+      return possible.map{|obj| obj.global_role}.uniq
     else
       r = possible.inject([]) do |arr, mod|
         rels = Relation.by_object(mod).by_target(object)
