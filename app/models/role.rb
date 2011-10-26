@@ -55,7 +55,12 @@ class Role < ActiveRecord::Base
 
     def from_dump fields
       rights = fields.delete('rights')
-      a = find(fields['id']) || new
+      a = begin
+        find(fields['id'])
+      rescue
+        new
+      end
+      new
       a.rights = []
       a.attributes = fields
       rights.each do |con, acts|
