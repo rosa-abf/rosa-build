@@ -52,9 +52,9 @@ class ActiveRecord::Base
   end
 
   def rights_to object
-    r = roles_to object
+    r = roles_to(object).compact.uniq
     return [] if r.nil?
-    r.map {|role| role.rights}.flatten.uniq
+    r.map {|role| role.rights}.flatten.compact.uniq
   end
 
   class << self
