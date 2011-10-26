@@ -22,7 +22,7 @@ class Role < ActiveRecord::Base
 
     def save_dump filename = 'config/roles.yml'
       fn = File.expand_path filename
-      File.open (fn, 'w'){|f| f.puts dump_roles}
+      File.open(fn, 'w'){|f| f.puts dump_roles}
       return filename
     end
 
