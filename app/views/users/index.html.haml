@@ -24,5 +24,4 @@
             %td.last
               #{link_to t("layout.show"), user_path(user)} | #{link_to t("layout.edit"), edit_user_path(user)} | #{link_to t("layout.delete"), user_path(user), :method => :delete, :confirm => t("layout.users.confirm_delete")}
       .actions-bar.wat-cf
-        .actions
--# content_for :sidebar, render(:partial => 'sidebar')
+        .actions= will_paginate @users, :param_name => :user_page

@@ -1,14 +1,13 @@
+# coding: UTF-8
 class UsersController < ApplicationController
   before_filter :authenticate_user!
-
   before_filter :find_user, :only => [:show, :edit, :update, :destroy]
 
   def index
-    @users = User.all
+    @users = User.paginate(:page => params[:user_page])
   end
 
   def show
-    puts params.inspect
     @groups       = @user.groups.uniq
     @platforms    = @user.platforms.paginate(:page => params[:platform_page], :per_page => 10)
     @repositories = @user.repositories.paginate(:page => params[:repository_page], :per_page => 10)
@@ -20,13 +19,6 @@ class UsersController < ApplicationController
   end
 
   def edit
-  end
-
-  def destroy
-    @user.destroy
-
-    flash[:notice] = t("flash.user.destroyed")
-    redirect_to users_path
   end
 
   def create
@@ -50,7 +42,14 @@ class UsersController < ApplicationController
     end
   end
 
+  def destroy
+    @user.destroy
+    flash[:notice] = t("flash.user.destroyed")
+    redirect_to users_path
+  end
+
   protected
+
     def find_user
       @user = User.find(params[:id])
     end

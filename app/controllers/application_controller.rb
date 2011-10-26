@@ -8,6 +8,11 @@ class ApplicationController < ActionController::Base
   after_filter lambda { EventLog.current_controller = nil }
 
   protected
+    def get_owner
+      params['user_id'] && User.find_by_id(params['user_id']) ||
+      params['group_id'] && Group.find_by_id(params['group_id']) || current_user
+    end
+
     def layout_by_resource
       if devise_controller?
         "sessions"

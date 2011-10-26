@@ -1,10 +1,11 @@
 %table.table
   %tr
     %th.first= t("activerecord.attributes.project.name")
+    %th= t("activerecord.attributes.project.unixname")
     %th.last &nbsp;
   - @projects.each do |project|
     %tr{:class => cycle("odd", "even")}
-      %td
-        = link_to project.name, project_path(project)
+      %td= link_to project.name, project
+      %td= project.unixname
       %td.last
-        #{link_to t("layout.show"), project_path(project)} | #{link_to t("layout.delete"), project_path(project), :method => :delete, :confirm => t("layout.projects.confirm_delete")}
+        #{link_to t("layout.edit"), edit_project_path(project)} | #{link_to t("layout.delete"), project_path(project), :method => :delete, :confirm => t("layout.projects.confirm_delete")}

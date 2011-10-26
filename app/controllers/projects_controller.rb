@@ -1,14 +1,51 @@
 class ProjectsController < ApplicationController
   before_filter :authenticate_user!
-  before_filter :find_project, :only => [:show, :destroy, :build, :process_build]
-  before_filter :get_paths, :only => [:new, :create]
+  before_filter :find_project, :only => [:show, :edit, :update, :destroy, :build, :process_build]
+  before_filter :get_paths, :only => [:new, :create, :edit, :update]
+
+  def index
+    @projects = Project.paginate(:page => params[:project_page])
+  end
+
+  def show
+    @current_build_lists = @project.build_lists.current.recent.paginate :page => params[:page]
+  end
 
   def new
     @project = Project.new
   end
 
-  def show
-    @current_build_lists = @project.build_lists.current.recent.paginate :page => params[:page]
+  def edit
+  end
+
+  def create
+    @project = Project.new params[:project]
+    @project.owner = get_owner
+
+    if @project.save
+      flash[:notice] = t('flash.project.saved') 
+      redirect_to @project.owner
+    else
+      flash[:error] = t('flash.project.save_error')
+      flash[:warning] = @project.errors[:base]
+      render :action => :new
+    end
+  end
+
+  def update
+    if @project.update_attributes(params[:project])
+      flash[:notice] = t('flash.project.saved')
+      redirect_to @project.owner
+    else
+      flash[:error] = t('flash.project.save_error')
+      render :action => :edit
+    end
+  end
+
+  def destroy
+    @project.destroy
+    flash[:notice] = t("flash.project.destroyed")
+    redirect_to redirect_to @project.owner
   end
 
   def build
@@ -57,38 +94,16 @@ class ProjectsController < ApplicationController
     end
   end
 
-  def create
-    @project = Project.new params[:project]
-    # @project.owner = get_acter
-
-    if @project.save
-      flash[:notice] = t('flash.project.saved') 
-      # redirect_to @project.owner
-      redirect_to @project
-    else
-      flash[:error] = t('flash.project.save_error')
-      render :action => :new
-    end
-  end
-
-  def destroy
-    @project.destroy
-
-    flash[:notice] = t("flash.project.destroyed")
-    #redirect_to platform_repository_path(@platform, @repository)
-    redirect_to root_path
-  end
-
   protected
 
     def get_paths
       if params[:user_id]
         @user = User.find params[:user_id]
-        @projects_path = user_projects_path @user
+        @projects_path = user_path(@user) # user_projects_path @user
         @new_project_path = new_user_project_path @user
       elsif params[:group_id]
         @group = Group.find params[:group_id]
-        @projects_path = group_projects_path @group
+        @projects_path = user_path(@user) # group_projects_path @group
         @new_projects_path = new_group_project_path @group
       else
         @projects_path = projects_path

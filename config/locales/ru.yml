@@ -151,8 +151,10 @@ ru:
 
     projects:
       add: Добавить
+      edit: Редактировать
       list: Список
       list_header: Проекты
+      edit_header: Редактировать проект
       show: Проект
       build: Собрать
       new_build: Новая сборка
@@ -249,6 +251,7 @@ ru:
     project:
       saved: Проект успешно сохранен
       save_error: Не удалось сохранить проект
+      save_warning_ssh_key: Владельцу проекта необходимо указать в профиле свой SSH ключ
       destroyed: Проект успешно удален
 
     user:
