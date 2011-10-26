@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20111023195205) do
+ActiveRecord::Schema.define(:version => 20111026135125) do
 
   create_table "arches", :force => true do |t|
     t.string   "name",       :null => false
@@ -240,11 +240,11 @@ ActiveRecord::Schema.define(:version => 20111023195205) do
 
   create_table "roles", :force => true do |t|
     t.string   "name"
-    t.string   "to"
-    t.string   "on"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.text     "can_see"
+    t.string   "on"
+    t.string   "to"
   end
 
   create_table "rpms", :force => true do |t|
