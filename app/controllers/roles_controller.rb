@@ -88,8 +88,10 @@ class RolesController < ApplicationController
     end
 
     def find_visibilities
+      puts ActiveRecord::Base.descendants.inspect
+      puts ActiveRecord::Base.descendants.size
       @visibilities = ActiveRecord::Base.descendants.inject({}) do |h, m|
-        if m.public_instance_methods.include? 'visibility'
+        if ((m.public_instance_methods + m.column_names).include? 'visibility')
           begin
             h[m.name] = m::VISIBILITIES
           rescue
