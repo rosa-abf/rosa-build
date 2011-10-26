@@ -16,18 +16,27 @@
             %li= link_to t('layout.logout'), destroy_user_session_path, :method => :delete, :class => "logout"
         #main-navigation
           %ul.wat-cf
-            %li{:class => controller.controller_path == 'users' ? 'active' : '' }
-              %a{:href => users_path}= t("layout.menu.users")
-            %li{:class => controller.controller_path == 'groups' ? 'active' : '' }
-              %a{:href => groups_path}= t("layout.menu.groups")
-            %li{:class => controller.controller_path == 'platforms' ? 'active' : '' }
-              %a{:href => platforms_path}= t("layout.menu.platforms")
-            %li{:class => controller.controller_path == 'downloads' ? 'active' : '' }
-              %a{:href => downloads_path}= t("layout.menu.downloads")
-            %li{:class => controller.controller_path == 'event_logs' ? 'active' : '' }
-              %a{:href => event_logs_path}= t("layout.menu.event_logs")
-            %li{:class => controller.controller_path == 'categories' ? 'active' : '' }
-              %a{:href => categories_path}= t("layout.menu.categories")
+            -if current_user.can_perform?('users', 'index')
+              %li{:class => controller.controller_path == 'users' ? 'active' : '' }
+                %a{:href => users_path}= t("layout.menu.users")
+            -if current_user.can_perform?('groups', 'index')
+              %li{:class => controller.controller_path == 'groups' ? 'active' : '' }
+                %a{:href => groups_path}= t("layout.menu.groups")
+            -if current_user.can_perform?('platforms', 'index')
+              %li{:class => controller.controller_path == 'platforms' ? 'active' : '' }
+                %a{:href => platforms_path}= t("layout.menu.platforms")
+            -if current_user.can_perform?('downloads', 'index')
+              %li{:class => controller.controller_path == 'downloads' ? 'active' : '' }
+                %a{:href => downloads_path}= t("layout.menu.downloads")
+            -if current_user.can_perform?('event_logs', 'index')
+              %li{:class => controller.controller_path == 'event_logs' ? 'active' : '' }
+                %a{:href => event_logs_path}= t("layout.menu.event_logs")
+            -if current_user.can_perform?('categories', 'index')
+              %li{:class => controller.controller_path == 'categories' ? 'active' : '' }
+                %a{:href => categories_path}= t("layout.menu.categories")
+            -if current_user.can_perform?('roles', 'index')
+              %li{:class => controller.controller_path == 'roles' ? 'active' : '' }
+                %a{:href => roles_path}= t("layout.menu.roles")
       #wrapper.wat-cf
         = render :partial => "layouts/flashes"
         #main
