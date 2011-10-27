@@ -29,7 +29,7 @@ class Platform < ActiveRecord::Base
   scope :main, where(:platform_type => 'main')
   scope :personal, where(:platform_type => 'personal')
 
-  attr_accessible :visibility
+  #attr_accessible :visibility
 
   def path
     build_path(unixname)
