@@ -1,9 +1,9 @@
-.block.notice
-  %h3= t("layout.platforms.current_platform_header")
-  .content
-    %p= link_to @platform.name, platform_path(@platform)
-
-.block.notice
-  %h3= t("layout.repositories.current_repository_header")
-  .content
-    %p= link_to @repository.name + repository_name_postfix(@platform), platform_repository_path(@platform, @repository)
+/ .block.notice
+/   %h3= t("layout.platforms.current_platform_header")
+/   .content
+/     %p= link_to @platform.name, platform_path(@platform)
+/ 
+/ .block.notice
+/   %h3= t("layout.repositories.current_repository_header")
+/   .content
+/     %p= link_to @repository.name + repository_name_postfix(@platform), platform_repository_path(@platform, @repository)

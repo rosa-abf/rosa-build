@@ -1,22 +1,24 @@
 # coding: UTF-8
-
 class PlatformsController < ApplicationController
-  before_filter :authenticate_user!
+  before_filter :authenticate_user!, :except => :easy_urpmi
 
-  before_filter :find_platform, :only => [:freeze, :unfreeze, :clone]
+  before_filter :find_platform, :only => [:freeze, :unfreeze, :clone, :edit]
   before_filter :get_paths, :only => [:new, :create]
 
   def index
+    @platforms = Platform.paginate(:page => params[:platform_page])
+  end
+
+  def easy_urpmi
+    @platforms = Platform.where(:distrib_type => 'mandriva', :visibility => 'open', :platform_type => 'main')
     respond_to do |format|
-      format.html { @platforms = Platform.paginate(:page => params[:platform_page]) }
       format.json do
-        @platforms = Platform.where(:distrib_type => 'mandriva', :visibility => 'open', :platform_type => 'main')
         render :json => {
           :platforms => @platforms.map do |p|
-                          {:name => p.name,
+                          {:name => p.unixname,
                            :architectures => ['i586', 'x86_64'],
-                           :repositories => p.repositories.map(&:name),
-                           :url => "http://abs.rosalab.ru/downloads/platforms/#{p.name}/repository"}
+                           :repositories => p.repositories.map(&:unixname),
+                           :url => "http://#{request.host_with_port}/downloads/platforms/#{p.unixname}/repository"}
                         end
         }
       end
@@ -33,11 +35,15 @@ class PlatformsController < ApplicationController
     @platforms = Platform.all
     @platform = Platform.new
   end
+  
+  def edit
+    @platforms = Platform.all
+  end
 
   def create
     @platform = Platform.new params[:platform]
 
-    @platform.owner = get_acter
+    @platform.owner = get_owner
 
     if @platform.save
       flash[:notice] = I18n.t("flash.platform.saved")

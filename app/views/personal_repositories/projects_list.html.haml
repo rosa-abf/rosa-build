@@ -1,9 +1,8 @@
 .block
   .secondary-navigation
     %ul.wat-cf
-      %li.first= link_to t("layout.repositories.list"), @repositories_path + "#repositories"
-      %li= link_to t("layout.repositories.new"), @new_repository_path
-      %li.active= link_to t("layout.repositories.show"), repository_path(@repository)
+      %li.first.active= link_to t("layout.personal_repositories.show"), personal_repository_path(@repository)
+      %li= link_to t("layout.personal_repositories.settings"), settings_personal_repository_path(@repository)
   .content
     .inner
       %p
@@ -25,7 +24,7 @@
         %b
           = t("activerecord.attributes.repository.owner")
           \:
-        = link_to @repository.owner.try(:name), url_for(@repository.owner)
+        = link_to @repository.owner.name, url_for(@repository.owner)
       %p
         %b
           = t("activerecord.attributes.repository.visibility")
@@ -43,8 +42,8 @@
 .block
   .secondary-navigation
     %ul.wat-cf
-      %li.first= link_to t("layout.projects.list"), repository_path(@repository) + "#projects"
-      %li.active= link_to t("layout.projects.add"), url_for(:controller => :repositories, :action => :add_project)
+      %li.first= link_to t("layout.projects.list"), personal_repository_path(@repository) + "#projects"
+      %li.active= link_to t("layout.projects.add"), add_project_personal_repository_path(@repository)
   .content
     %h2.title
       = t("layout.projects.list_header")

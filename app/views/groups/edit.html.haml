@@ -9,4 +9,5 @@
     .inner
       = form_for @group, :url => group_path(@group), :html => { :class => :form } do |f|
         = render :partial => "form", :locals => {:f => f}
-- content_for :sidebar, render(:partial => 'sidebar')
+
+- content_for :sidebar, render('sidebar')

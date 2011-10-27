@@ -8,31 +8,45 @@ class Project < ActiveRecord::Base
 
   has_many :build_lists, :dependent => :destroy
 
-  has_many :project_to_repositories
+  has_many :project_to_repositories, :dependent => :destroy
   has_many :repositories, :through => :project_to_repositories
 
-  has_many :relations, :as => :target
+  has_many :relations, :as => :target, :dependent => :destroy
   has_many :collaborators, :through => :relations, :source => :object, :source_type => 'User'
   has_many :groups,        :through => :relations, :source => :object, :source_type => 'Group'
 
   validates :name,     :uniqueness => {:scope => [:owner_id, :owner_type]}, :presence => true, :allow_nil => false, :allow_blank => false
   validates :unixname, :uniqueness => {:scope => [:owner_id, :owner_type]}, :presence => true, :format => { :with => /^[a-zA-Z0-9_]+$/ }, :allow_nil => false, :allow_blank => false
-#  validates :unixname, :uniqueness => {:scope => [:owner_id, :owner_type]}, :presence => true, :format => { :with => /^[a-zA-Z0-9\-.]+$/ }, :allow_nil => false, :allow_blank => false
+  validates :owner, :presence => true
+  validate {errors.add(:base, I18n.t('flash.project.save_warning_ssh_key')) if owner.ssh_key.blank?}
 
-  include Project::HasRepository
+  # attr_accessible :visibility
+  attr_readonly :unixname
 
   scope :recent, order("name ASC")
   scope :by_name, lambda { |name| {:conditions => ['name like ?', '%' + name + '%']} }
-
   scope :by_visibilities, lambda {|v| {:conditions => ['visibility in (?)', v.join(',')]}}
+  
+  scope :addable_to_repository, lambda { |repository_id| where("projects.id NOT IN (SELECT project_to_repositories.project_id FROM project_to_repositories WHERE (project_to_repositories.repository_id != #{ repository_id }))") }
 
-  before_save :create_directory#, :create_git_repo
+  before_create :create_git_repo, :make_owner_rel
+  before_update :update_git_repo
+  before_destroy :destroy_git_repo
+  # before_create :xml_rpc_create
+  # before_destroy :xml_rpc_destroy
+
   before_save :make_owner_rel
-  after_destroy :remove_directory
+  after_create :attach_to_personal_repository
+  
 #  before_create :xml_rpc_create
 #  before_destroy :xml_rpc_destroy
 
   attr_accessible :visibility
+  
+  def attach_to_personal_repository
+    repositories << self.owner.personal_repository if !repositories.exists?(:id => self.owner.personal_repository)
+  end
+  
   def project_versions
     self.git_repository.tags
   end
@@ -41,13 +55,24 @@ class Project < ActiveRecord::Base
     collaborators + groups
   end
 
+  include Project::HasRepository
   # Redefining a method from Project::HasRepository module to reflect current situation
   def git_repo_path
-    @git_repo_path ||= File.join("#{APP_CONFIG['git_projects_path']}/#{owner.uname}/#{self.unixname}.git")
+    @git_repo_path ||= File.join(APP_CONFIG['root_path'], 'git_projects', "#{git_repo_name}.git")
   end
+  def git_repo_clone_path
+    "git@gitolite:#{git_repo_name}.git"
+  end
+  def git_repo_name
+    [owner.uname, unixname].join('/')
+  end
+  def git_repo_name_was
+    [owner.uname, unixname_was].join('/')
+  end
+  def git_repo_name_changed?; git_repo_name != git_repo_name_was; end
 
-  def path
-    build_path(unixname)
+  def public?
+    visibility == 'open'
   end
 
   def clone
@@ -75,26 +100,30 @@ class Project < ActiveRecord::Base
       end
     end
 
-    #TODO: Remove it from code if git_repo_path and build_path (or path) have the same purpose
-    def build_path(dir)
-      #File.join(APP_CONFIG['root_path'], 'projects', dir)
-      File.join("#{APP_CONFIG['git_projects_path']}/#{owner.uname}/#{dir}.git")
+    def create_git_repo
+      with_ga do |ga|
+        repo = ga.add_repo git_repo_name
+        repo.add_key owner.ssh_key, 'RW'
+        repo.has_anonymous_access!('R') if public?
+        ga.save_and_release
+      end
     end
 
-    def create_directory
-      exists = File.exists?(path) && File.directory?(path)
-      raise "Directory #{path} already exists" if exists
-      if new_record?
-        FileUtils.mkdir_p(path)
-      elsif unixname_changed?
-        FileUtils.mv(build_path(unixname_was), buildpath(unixname))
-      end 
+    def update_git_repo
+      with_ga do |ga|
+        if repo = ga.find_repo(git_repo_name_was)
+          repo.rename(git_repo_name) if git_repo_name_changed?
+          public? ? repo.has_anonymous_access!('R') : repo.has_not_anonymous_access!
+          ga.save_and_release
+        end
+      end if git_repo_name_changed? or visibility_changed?
     end
 
-    def remove_directory
-      exists = File.exists?(path) && File.directory?(path)
-      raise "Directory #{path} didn't exists" unless exists
-      FileUtils.rm_rf(path)
+    def destroy_git_repo
+      with_ga do |ga|
+        ga.rm_repo git_repo_name
+        ga.save_and_release
+      end
     end
 
     def xml_rpc_create

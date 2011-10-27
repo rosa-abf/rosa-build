@@ -7,7 +7,13 @@ class ApplicationController < ActionController::Base
   before_filter lambda { EventLog.current_controller = self }, :only => [:create, :destroy, :open_id] # :update
   after_filter lambda { EventLog.current_controller = nil }
 
+  helper_method :get_owner
   protected
+    def get_owner
+      params['user_id'] && User.find_by_id(params['user_id']) ||
+      params['group_id'] && Group.find_by_id(params['group_id']) || current_user
+    end
+
     def layout_by_resource
       if devise_controller?
         "sessions"

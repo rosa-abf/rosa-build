@@ -2,7 +2,6 @@ Rosa::Application.routes.draw do
   # XML RPC
   match 'api/xmlrpc' => 'rpc#xe_index'
   
-  
   devise_for :users, :controllers => {:omniauth_callbacks => 'users/omniauth_callbacks'} do
     get '/users/auth/:provider' => 'users/omniauth_callbacks#passthru'
   end
@@ -31,6 +30,15 @@ Rosa::Application.routes.draw do
   match 'build_lists/' => 'build_lists#all', :as => :all_build_lists
   match 'build_lists/:id/cancel/' => 'build_lists#cancel', :as => :build_list_cancel
 
+  resources :personal_repositories, :only => [:show] do
+    member do
+      get :settings
+      get :change_visibility
+      get :add_project
+      get :remove_project
+    end
+  end
+
   resources :platforms do
     resources :private_users
 
@@ -38,6 +46,10 @@ Rosa::Application.routes.draw do
       get 'freeze'
       get 'unfreeze'
       get 'clone'
+    end
+
+    collection do
+      get 'easy_urpmi'
     end
 
     resources :products do
