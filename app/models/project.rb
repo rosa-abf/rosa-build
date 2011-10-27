@@ -80,6 +80,15 @@ class Project < ActiveRecord::Base
     build_path(git_repo_name)
   end
 
+  def xml_rpc_create
+    result = BuildServer.create_project unixname, repository.platform.unixname, repository.unixname
+    if result == BuildServer::SUCCESS
+      return true
+    else
+      raise "Failed to create project #{name} (repo #{repository.name}) inside platform #{repository.platform.name}."
+    end      
+  end
+
   protected
 
     def build_path(dir)
@@ -121,15 +130,6 @@ class Project < ActiveRecord::Base
         ga.rm_repo git_repo_name
         ga.save_and_release
       end
-    end
-
-    def xml_rpc_create
-      result = BuildServer.create_project unixname, repository.platform.unixname, repository.unixname
-      if result == BuildServer::SUCCESS
-        return true
-      else
-        raise "Failed to create project #{name} (repo #{repository.name}) inside platform #{repository.platform.name}."
-      end      
     end
 
     def xml_rpc_destroy

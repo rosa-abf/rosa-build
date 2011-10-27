@@ -4,6 +4,10 @@ class ProjectToRepository < ActiveRecord::Base
 
   before_save :create_link
   after_destroy :remove_link
+  
+  after_create lambda {
+    project.xml_rpc_create
+  }
 
   def path
     build_path(project.unixname)
