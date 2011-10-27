@@ -114,12 +114,14 @@ class Repository < ActiveRecord::Base
     end
     
     def add_downloads_symlink
-      raise "Personal platform path #{ symlink_downloads_path } already exists!" if File.exists?(symlink_downloads_path) && File.directory?(symlink_downloads_path)
+      #raise "Personal platform path #{ symlink_downloads_path } already exists!" if File.exists?(symlink_downloads_path) && File.directory?(symlink_downloads_path)
+      return true if File.exists?(symlink_downloads_path) && File.directory?(symlink_downloads_path)
       FileUtils.symlink platform.path, symlink_downloads_path
     end
     
     def remove_downloads_symlink
-      raise "Personal platform path #{ symlink_downloads_path } does not exists!" if !(File.exists?(symlink_downloads_path) && File.directory?(symlink_downloads_path))
+      #raise "Personal platform path #{ symlink_downloads_path } does not exists!" if !(File.exists?(symlink_downloads_path) && File.directory?(symlink_downloads_path))
+      return true if !(File.exists?(symlink_downloads_path) && File.directory?(symlink_downloads_path))
       FileUtils.rm_rf symlink_downloads_path 
     end
 
