@@ -7,11 +7,11 @@ class Role < ActiveRecord::Base
 
   validate :name, :presence => true
 
-  scope :exclude_acter, lambda {|obj| {:conditions => (obj != :all and obj != '') ? ['`to` <> ?', obj.to_s] : "NOT ISNULL(`to`) OR `to` <> ''"}}
-  scope :exclude_target, lambda {|targ| {:conditions => (targ != :system and targ != '') ? ['`on` <> ?', targ.to_s] : "NOT ISNULL(`on`) OR `to` <> ''"}}
+  scope :exclude_acter, lambda {|obj| {:conditions => (obj != :all and obj != '') ? ['"to" <> ?', obj.to_s] : '"to" NOT NULL OR "to" <> \'\''}}
+  scope :exclude_target, lambda {|targ| {:conditions => (targ != :system and targ != '') ? ['"on" <> ?', targ.to_s] : '"on" NOT NULL OR "to" <> \'\''}}
 
-  scope :by_acter, lambda {|obj| {:conditions => (obj != :all and obj != '') ? ['`to` = ?', obj.to_s] : "ISNULL(`to`) OR `to` = ''"}}
-  scope :by_target, lambda {|targ| {:conditions => (targ != :system and targ != '') ? ['`on` = ?', targ.to_s] : "ISNULL(`on`) OR `on` = ''"}}
+  scope :by_acter, lambda {|obj| {:conditions => (obj != :all and obj != '') ? ['"to" = ?', obj.to_s] : '"to" ISNULL OR "to" = \'\''}}
+  scope :by_target, lambda {|targ| {:conditions => (targ != :system and targ != '') ? ['"on" = ?', targ.to_s] : '"on" ISNULL OR "on" = \'\''}}
 
   scope :default, where(:use_default => true)
 
@@ -90,7 +90,7 @@ class Role < ActiveRecord::Base
       end
       a.rights = []
       a.attributes = fields
-      Permission.delete_all
+      Permission.delete_all(:conditions => ['role_id = ?', a.id])
       rights.each do |con, acts|
         acts.each do |act|
           unless r = Right.where(:controller => con, :action => act)
