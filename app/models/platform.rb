@@ -98,7 +98,7 @@ class Platform < ActiveRecord::Base
 
     def xml_rpc_create
 #      return true
-      result = BuildServer.add_platform unixname, APP_CONFIG['root_path'], distrib_type
+      result = BuildServer.add_platform unixname, APP_CONFIG['root_path'] + '/platforms' , distrib_type
       if result == BuildServer::SUCCESS
         return true
       else
