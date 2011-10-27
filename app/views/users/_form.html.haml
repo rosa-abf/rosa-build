@@ -3,10 +3,7 @@
   = f.text_field :name, :class => 'text_field'
 .group
   = f.label :uname, t("activerecord.attributes.user.uname"), :class => :label
-  = f.text_field :uname, :class => 'text_field'
-/ .group
-/   = f.label :nickname, t("activerecord.attributes.user.nickname"), :class => :label
-/   = f.text_field :nickname, :class => 'text_field'
+  = f.text_field :uname, :class => 'text_field', :disabled => f.object.try(:persisted?)
 .group
   = f.label :email, t("activerecord.attributes.user.email"), :class => :label
   = f.text_field :email, :class => 'text_field'

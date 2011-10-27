@@ -21,13 +21,23 @@ class User < ActiveRecord::Base
   has_many :repositories, :through => :targets, :source => :target, :source_type => 'Repository', :autosave => true
 
   validates :uname, :presence => true, :uniqueness => {:case_sensitive => false}, :format => { :with => /^[a-zA-Z0-9_]+$/ }, :allow_nil => false, :allow_blank => false
+  validates :ssh_key, :uniqueness => true
+  validate { errors.add(:uname, :taken) if Group.where('uname LIKE ?', uname).present? }
 
   attr_accessible :email, :password, :password_confirmation, :remember_me, :login, :name, :ssh_key, :uname
   attr_readonly :uname
   attr_accessor :login
 
-  before_save :create_dir
-  after_destroy :remove_dir
+  before_update {
+    if ssh_key_was.blank? and ssh_key.present?
+      create_ssh_key ssh_key
+    elsif ssh_key_was.present? and ssh_key.blank?
+      destroy_ssh_key ssh_key_was
+    elsif ssh_key_changed?
+      update_ssh_key ssh_key_was, ssh_key
+    end
+  }
+  before_destroy { destroy_ssh_key(ssh_key) }
   # after_create() { UserMailer.new_user_notification(self).deliver }
 
   class << self
@@ -64,30 +74,36 @@ class User < ActiveRecord::Base
     result
   end
 
-  def path
-    build_path(uname)
-  end
-
   protected
-    def build_path(dir)
-      puts APP_CONFIG['root_path']
-      puts dir
-      File.join(APP_CONFIG['root_path'], 'users', dir)
+
+    def create_ssh_key(key)
+      with_ga do |ga|
+        ga.store_key! key
+        own_projects.each do |project|
+          repo = ga.find_repo(project.git_repo_name)
+          repo.add_key(key, 'RW') if repo
+        end
+        ga.save_and_release
+      end
     end
 
-    def create_dir
-      exists = File.exists?(path) && File.directory?(path)
-      raise "Directory #{path} already exists" if exists
-      if new_record?
-        FileUtils.mkdir_p(path)
-      elsif uname_changed?
-        FileUtils.mv(build_path(uname_was), build_path(uname))
-      end 
+    def update_ssh_key(old_key, new_key)
+      with_ga do |ga|
+        ga.replace_key! old_key, new_key
+        begin
+          ga.repos.replace_key old_key, new_key #, options = {}
+        rescue Gitolito::GitoliteAdmin::Repo::KeyDoesntExistsError
+          nil
+        end
+        ga.save_and_release
+      end
     end
 
-    def remove_dir
-      exists = File.exists?(path) && File.directory?(path)
-      raise "Directory #{path} didn't exists" unless exists
-      FileUtils.rm_rf(path)
+    def destroy_ssh_key(key)
+      with_ga do |ga|
+        ga.repos.rm_key key
+        ga.rm_key! key
+        ga.save_and_release
+      end
     end
 end

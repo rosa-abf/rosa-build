@@ -6,7 +6,10 @@
   = f.text_field :name, :class => 'text_field'
 .group
   = f.label :unixname, t("activerecord.attributes.project.unixname"), :class => :label
-  = f.text_field :unixname, :class => 'text_field'
+  = f.text_field :unixname, :class => 'text_field', :disabled => f.object.try(:persisted?)
+.group
+  = f.label :visibility, t("activerecord.attributes.project.visibility"), :class => :label
+  = f.select :visibility, Project::VISIBILITIES
 .group
   = f.label :description, t("activerecord.attributes.project.description"), :class => :label
   = f.text_area :description, :class => 'text_field', :cols => 80

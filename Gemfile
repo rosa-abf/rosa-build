@@ -21,6 +21,7 @@ gem "will_paginate", "~> 3.0.2"
 gem "russian"
 
 gem "grit"
+gem 'gitolito', :git => 'git@github.com:warpc/gitolito.git'
 gem 'whenever', :require => false
 gem 'delayed_job'
 gem 'whenever', :require => false

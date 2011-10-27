@@ -29,12 +29,14 @@
           = t("activerecord.attributes.project.visibility")
           \:
         = @project.visibility
-        /      %p
-        /        %b
-        /          = t("activerecord.attributes.project.repository")
-        /          \:
-        /        = @project.repository.name
+      %p
+        %b
+          = t("activerecord.attributes.project.repository")
+          \:
+        = git_repo_url @project.git_repo_name
+
       .wat-cf
+        = link_to image_tag("web-app-theme/icons/application_edit.png", :alt => t("layout.edit")) + " " + t("layout.edit"), edit_project_path(@project), :class => "button"
         = link_to image_tag("web-app-theme/icons/cross.png", :alt => t("layout.delete")) + " " + t("layout.delete"), project_path(@project), :method => "delete", :class => "button", :confirm => t("layout.projects.confirm_delete")
 
 %a{ :name => "build_lists"}
@@ -45,7 +47,6 @@
       %li= link_to t("layout.build_lists.all"), project_build_lists_path(@project)
 
   .content
-
     = render :partial => "build_lists/build_lists", :object => @current_build_lists
 
--# content_for :sidebar, render(:partial => 'sidebar')
+- content_for :sidebar, render('sidebar')

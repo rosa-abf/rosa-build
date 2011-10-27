@@ -30,7 +30,7 @@ class RepositoriesController < ApplicationController
 
   def create
     @repository = Repository.new(params[:repository])
-    @repository.owner = get_acter
+    @repository.owner = get_owner
     if @repository.save
       flash[:notice] = t('flash.repository.saved')
       redirect_to @repositories_path
@@ -58,7 +58,8 @@ class RepositoriesController < ApplicationController
         redirect_to url_for(:action => :add_project)
       end
     else
-      @projects = (Project.all - @repository.projects).paginate(:page => params[:project_page])
+      # @projects = (Project.all - @repository.projects).paginate(:page => params[:project_page])
+      @projects = Project.where('id <> ?', @repository.projects.map(&:id)).paginate(:page => params[:project_page])
       render 'projects_list'
     end
   end

@@ -39,7 +39,7 @@ class PlatformsController < ApplicationController
   def create
     @platform = Platform.new params[:platform]
 
-    @platform.owner = get_acter
+    @platform.owner = get_owner
 
     if @platform.save
       flash[:notice] = I18n.t("flash.platform.saved")

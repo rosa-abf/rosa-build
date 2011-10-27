@@ -3,7 +3,7 @@
   = f.text_field :name, :class => 'text_field'
 .group
   = f.label :uname, t("activerecord.attributes.group.uname"), :class => :label
-  = f.text_field :uname, :class => 'text_field'
+  = f.text_field :uname, :class => 'text_field', :disabled => f.object.try(:persisted?)
 
 .group.navform.wat-cf
   %button.button{:type => "submit"}

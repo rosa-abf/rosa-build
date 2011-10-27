@@ -1,12 +1,10 @@
 # coding: UTF-8
-
 class GroupsController < ApplicationController
   before_filter :authenticate_user!
-
   before_filter :find_group, :only => [:show, :edit, :update, :destroy]
 
   def index
-    @groups = Group.paginate(:page => params[:page], :per_page => 15)
+    @groups = Group.paginate(:page => params[:group_page])
   end
 
   def show
@@ -15,18 +13,11 @@ class GroupsController < ApplicationController
     @projects     = @group.projects.paginate(:page => params[:project_page], :per_page => 10)
   end
 
-  def edit
-  end
-
-  def destroy
-    @user.destroy
-
-    flash[:notice] = t("flash.group.destroyed")
-    redirect_to groups_path
-  end
-
   def new
     @group = Group.new
+  end
+
+  def edit
   end
 
   def create
@@ -42,9 +33,25 @@ class GroupsController < ApplicationController
     end
   end
 
-  private
+  def update
+    if @group.update_attributes(params[:group])
+      flash[:notice] = t('flash.group.saved')
+      redirect_to groups_path
+    else
+      flash[:error] = t('flash.group.save_error')
+      render :action => :edit
+    end
+  end
+
+  def destroy
+    @group.destroy
+    flash[:notice] = t("flash.group.destroyed")
+    redirect_to groups_path
+  end
+
+  protected
+
   def find_group
     @group = Group.find(params[:id])
   end
-
 end
