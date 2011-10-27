@@ -20,9 +20,15 @@ class User < ActiveRecord::Base
   has_many :platforms,    :through => :targets, :source => :target, :source_type => 'Platform',   :autosave => true
   has_many :repositories, :through => :targets, :source => :target, :source_type => 'Repository', :autosave => true
 
+  include PersonalRepository
+
   validates :uname, :presence => true, :uniqueness => {:case_sensitive => false}, :format => { :with => /^[a-zA-Z0-9_]+$/ }, :allow_nil => false, :allow_blank => false
   validates :ssh_key, :uniqueness => true
   validate { errors.add(:uname, :taken) if Group.where('uname LIKE ?', uname).present? }
+  #TODO: Replace this simple cross-table uniq validation by more progressive analog
+  validate lambda {
+    errors.add(:uname, I18n.t('flash.user.group_uname_exists')) if Group.exists? :uname => uname
+  }
 
   attr_accessible :email, :password, :password_confirmation, :remember_me, :login, :name, :ssh_key, :uname
   attr_readonly :uname

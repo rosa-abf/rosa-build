@@ -7,7 +7,7 @@ class PrivatesController < ApplicationController
 	before_filter :authenticate
 
 	def show
-		file_name = "#{APP_CONFIG['private_repo_path']}/#{params[:platform_name]}/#{params[:file_path]}"
+		file_name = "#{APP_CONFIG['root_path']}/platforms/#{params[:platform_name]}/repository/#{params[:file_path]}"
 
 		if File.directory?(file_name) || !File.exists?(file_name)
 			 render :file => "#{Rails.root}/public/404.html", :layout => false, :status => 404

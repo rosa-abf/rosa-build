@@ -25,6 +25,11 @@ class Group < ActiveRecord::Base
 
   delegate :ssh_key, :to => :owner
 
+  include PersonalRepository
+
+  before_save :create_dir
+  after_destroy :remove_dir
+
   def roles_of(user)
     objects.where(:object_id => user.id, :object_type => user.class).map {|rel| rel.role}.reject {|r| r.nil?}
   end

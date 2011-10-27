@@ -2,7 +2,7 @@
 class PlatformsController < ApplicationController
   before_filter :authenticate_user!, :except => :easy_urpmi
 
-  before_filter :find_platform, :only => [:freeze, :unfreeze, :clone]
+  before_filter :find_platform, :only => [:freeze, :unfreeze, :clone, :edit]
   before_filter :get_paths, :only => [:new, :create]
 
   def index
@@ -34,6 +34,10 @@ class PlatformsController < ApplicationController
   def new
     @platforms = Platform.all
     @platform = Platform.new
+  end
+  
+  def edit
+    @platforms = Platform.all
   end
 
   def create

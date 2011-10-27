@@ -1,5 +1,7 @@
 class Repository < ActiveRecord::Base
 
+  DOWNLOADS_PATH = RAILS_ROOT + '/public/downloads'
+
   VISIBILITIES = ['open', 'hidden']
   relationable :as => :target
 
@@ -20,17 +22,25 @@ class Repository < ActiveRecord::Base
   scope :recent, order("name ASC")
   scope :by_visibilities, lambda {|v| {:conditions => ['visibility in (?)', v.join(',')]}}
 
-  before_save :create_directory
+  #before_save :create_directory
   before_save :make_owner_rel
-  after_destroy :remove_directory
+  #after_destroy :remove_directory
 
 #  before_create :xml_rpc_create
 #  before_destroy :xml_rpc_destroy
 
-  attr_accessible :visibility
+  after_create lambda { 
+    add_downloads_symlink unless self.hidden?
+  }
 
+  attr_accessible :visibility
+  
   def path
     build_path(unixname)
+  end
+
+  def hidden?
+    self.visibility == 'hidden'
   end
 
   def clone
@@ -39,6 +49,16 @@ class Repository < ActiveRecord::Base
     r.unixname = unixname
     r.projects = projects.map(&:clone)
     return r
+  end
+  
+  def change_visibility
+    if !self.hidden?
+      self.update_attribute(:visibility, 'hidden')
+      remove_downloads_symlink
+    else
+      self.update_attribute(:visibility, 'open')
+      add_downloads_symlink
+    end
   end
 
   protected
@@ -87,6 +107,20 @@ class Repository < ActiveRecord::Base
       else
         raise "Failed to delete repository #{name} inside platform #{platform.name}."
       end
+    end
+    
+    def symlink_downloads_path
+      "#{ DOWNLOADS_PATH }/#{ self.platform.unixname }"
+    end
+    
+    def add_downloads_symlink
+      raise "Personal platform path #{ symlink_downloads_path } already exists!" if File.exists?(symlink_downloads_path) && File.directory?(symlink_downloads_path)
+      FileUtils.symlink platform.path, symlink_downloads_path
+    end
+    
+    def remove_downloads_symlink
+      raise "Personal platform path #{ symlink_downloads_path } does not exists!" if !(File.exists?(symlink_downloads_path) && File.directory?(symlink_downloads_path))
+      FileUtils.rm_rf symlink_downloads_path 
     end
 
 end
