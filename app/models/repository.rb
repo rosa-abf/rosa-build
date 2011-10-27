@@ -15,8 +15,8 @@ class Repository < ActiveRecord::Base
   has_many :members, :through => :objects, :source => :object, :source_type => 'User'
   has_many :groups,  :through => :objects, :source => :object, :source_type => 'Group'
 
-  validates :name, :uniqueness => {:scope => [:owner_id, :owner_type]}, :presence => true
-  validates :unixname, :uniqueness => {:scope => [:owner_id, :owner_type]}, :presence => true, :format => { :with => /^[a-zA-Z0-9\-.]+$/ }
+  validates :name, :uniqueness => {:scope => :platform_id}, :presence => true
+  validates :unixname, :uniqueness => {:scope => :platform_id}, :presence => true, :format => { :with => /^[a-zA-Z0-9\-.]+$/ }
   validates :platform_id, :presence => true
 
   scope :recent, order("name ASC")
@@ -33,7 +33,7 @@ class Repository < ActiveRecord::Base
     add_downloads_symlink unless self.hidden?
   }
 
-  attr_accessible :visibility
+  attr_accessible :visibility, :name, :unixname, :platform_id
   
   def path
     build_path(unixname)
