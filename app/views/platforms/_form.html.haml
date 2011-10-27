@@ -7,6 +7,10 @@
   = f.text_field :unixname, :class => 'text_field'
 
 .group
+  = f.label :distrib_type, :class => :label
+  = f.select :distrib_type, options_for_select(APP_CONFIG['distr_types'])
+
+.group
   = f.label :parent, :class => :label
   = f.select :parent_platform_id, @platforms.map { |p| [p.name, p.id] }, :include_blank => true
 
