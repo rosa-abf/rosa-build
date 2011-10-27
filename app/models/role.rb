@@ -7,11 +7,23 @@ class Role < ActiveRecord::Base
 
   validate :name, :presence => true
 
-  scope :exclude_acter, lambda {|obj| {:conditions => (obj != :all and obj != '') ? ['"to" <> ?', obj.to_s] : '"to" NOT NULL OR "to" <> \'\''}}
-  scope :exclude_target, lambda {|targ| {:conditions => (targ != :system and targ != '') ? ['"on" <> ?', targ.to_s] : '"on" NOT NULL OR "to" <> \'\''}}
+  scope :exclude_acter, lambda {|obj|
+    t = self.arel_table
+    where(t[:to].not_eq((obj != :all) ? obj.to_s : ''))
+  }
+  scope :exclude_target, lambda {|targ|
+    t = self.arel_table
+    where(t[:on].not_eq((targ != :system) ? targ.to_s : ''))
+  }
 
-  scope :by_acter, lambda {|obj| {:conditions => (obj != :all and obj != '') ? ['"to" = ?', obj.to_s] : '"to" ISNULL OR "to" = \'\''}}
-  scope :by_target, lambda {|targ| {:conditions => (targ != :system and targ != '') ? ['"on" = ?', targ.to_s] : '"on" ISNULL OR "on" = \'\''}}
+  scope :by_acter, lambda {|obj|
+    t = self.arel_table
+    where(t[:to].eq((obj != :all) ? obj.to_s : ''))
+  }
+  scope :by_target, lambda {|targ|
+    t = self.arel_table
+    where(t[:on].eq((targ != :system) ? targ.to_s : ''))
+  }
 
   scope :default, where(:use_default => true)
 
@@ -33,7 +45,6 @@ class Role < ActiveRecord::Base
     def check_default
       if on_changed? and !on || on == ''
         roles = Role.by_acter(to).by_target('').default
-        puts roles.inspect
         if roles and roles.size > 0
           roles.each {|r| r.update_attributes(:use_default => false)}
         end
