@@ -43,7 +43,7 @@ class User < ActiveRecord::Base
       update_ssh_key ssh_key_was, ssh_key
     end
   }
-  before_destroy { destroy_ssh_key(ssh_key) }
+  before_destroy { destroy_ssh_key(ssh_key) if ssh_key.present? }
   # after_create() { UserMailer.new_user_notification(self).deliver }
 
   class << self

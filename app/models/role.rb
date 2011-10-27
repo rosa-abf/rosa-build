@@ -90,7 +90,7 @@ class Role < ActiveRecord::Base
       end
       a.rights = []
       a.attributes = fields
-      Permission.delete_all(:conditions => ['role_id = ?', a.id])
+      Permission.delete_all(['role_id = ?', a.id])
       rights.each do |con, acts|
         acts.each do |act|
           unless r = Right.where(:controller => con, :action => act)
