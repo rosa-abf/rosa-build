@@ -6,8 +6,7 @@
   = f.text_field :unixname, :class => 'text_field'
 
 .group
-  = f.label :parent, :class => :label
-  = f.select :platform_id, @platforms.map { |p| [p.name, p.id] }, :include_blank => true
+  = f.hidden_field :platform_id, :value => @platform_id
 
 .group.navform.wat-cf
   %button.button{:type => "submit"}

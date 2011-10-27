@@ -19,6 +19,7 @@ class RepositoriesController < ApplicationController
 
   def new
     @repository = Repository.new
+    @platform_id = params[:platform_id]
   end
 
   def destroy
