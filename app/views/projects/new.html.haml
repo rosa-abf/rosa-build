@@ -9,7 +9,7 @@
   .content
     %h2.title= t("layout.projects.new_header")
     .inner
-      = form_for @project, :html => { :class => :form } do |f|
+      = form_for [get_owner, @project], :html => { :class => :form } do |f|
         = render :partial => "form", :locals => {:f => f}
 
 - content_for :sidebar, render('sidebar')

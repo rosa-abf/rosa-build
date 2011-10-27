@@ -7,6 +7,7 @@ class ApplicationController < ActionController::Base
   before_filter lambda { EventLog.current_controller = self }, :only => [:create, :destroy, :open_id] # :update
   after_filter lambda { EventLog.current_controller = nil }
 
+  helper_method :get_owner
   protected
     def get_owner
       params['user_id'] && User.find_by_id(params['user_id']) ||

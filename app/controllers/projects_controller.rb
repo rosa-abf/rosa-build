@@ -45,7 +45,7 @@ class ProjectsController < ApplicationController
   def destroy
     @project.destroy
     flash[:notice] = t("flash.project.destroyed")
-    redirect_to redirect_to @project.owner
+    redirect_to @project.owner
   end
 
   def build
@@ -103,7 +103,7 @@ class ProjectsController < ApplicationController
         @new_project_path = new_user_project_path @user
       elsif params[:group_id]
         @group = Group.find params[:group_id]
-        @projects_path = user_path(@user) # group_projects_path @group
+        @projects_path = group_path(@group) # group_projects_path @group
         @new_projects_path = new_group_project_path @group
       else
         @projects_path = projects_path

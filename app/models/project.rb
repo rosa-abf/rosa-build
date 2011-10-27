@@ -44,7 +44,7 @@ class Project < ActiveRecord::Base
   include Project::HasRepository
   # Redefining a method from Project::HasRepository module to reflect current situation
   def git_repo_path
-    @git_repo_path ||= File.join(APP_CONFIG['git_projects_path'], "#{git_repo_name}.git")
+    @git_repo_path ||= File.join(APP_CONFIG['root_path'], 'git_projects', "#{git_repo_name}.git")
   end
   def git_repo_clone_path
     "git@gitolite:#{git_repo_name}.git"
