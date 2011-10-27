@@ -19,8 +19,8 @@ class BuildServer
   end
 
 
-  def self.add_platform name, root_folder, distrib_type, repos = {:src => [], :rpm => []}
-    self.client.call('add_platform', name, root_folder, repos, distrib_type)
+  def self.add_platform name, platforms_root_folder, distrib_type, repos = {:src => [], :rpm => []}
+    self.client.call('add_platform', name, platforms_root_folder, repos, distrib_type)
   end
 
 
