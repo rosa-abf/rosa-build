@@ -171,9 +171,9 @@
   rights: {}
 
   id: 6
-  to: 
+  to: ''
   can_see: 
-  "on": 
+  "on": ''
 - name: !binary |
     0JzQsNC50L3RgtC10LnQvdC10YAg0L/RgNC+0LXQutGC0LA=
 
