@@ -20,7 +20,7 @@ class Platform < ActiveRecord::Base
   after_create :make_owner_rel
 #  before_save :create_directory
   before_save :make_owner_rel
-  after_destroy :remove_directory
+#  after_destroy :remove_directory
   before_create :xml_rpc_create
   before_destroy :xml_rpc_destroy
 #  before_update :check_freezing
