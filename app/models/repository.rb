@@ -33,7 +33,7 @@ class Repository < ActiveRecord::Base
     add_downloads_symlink unless self.hidden?
   }
 
-  attr_accessible :visibility
+  attr_accessible :visibility, :name, :unixname, :platform_id
   
   def path
     build_path(unixname)
