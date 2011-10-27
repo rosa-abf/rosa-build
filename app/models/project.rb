@@ -31,8 +31,8 @@ class Project < ActiveRecord::Base
   before_create :create_git_repo, :make_owner_rel
   before_update :update_git_repo
   before_destroy :destroy_git_repo
-  # before_create :xml_rpc_create
-  # before_destroy :xml_rpc_destroy
+  before_create :xml_rpc_create
+  before_destroy :xml_rpc_destroy
   after_create :attach_to_personal_repository
 
   def project_versions
