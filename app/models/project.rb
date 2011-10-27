@@ -34,11 +34,7 @@ class Project < ActiveRecord::Base
   # before_create :xml_rpc_create
   # before_destroy :xml_rpc_destroy
   after_create :attach_to_personal_repository
-  
-  def attach_to_personal_repository
-    repositories << self.owner.personal_repository if !repositories.exists?(:id => self.owner.personal_repository)
-  end
-  
+
   def project_versions
     self.git_repository.tags
   end
@@ -50,7 +46,7 @@ class Project < ActiveRecord::Base
   include Project::HasRepository
   # Redefining a method from Project::HasRepository module to reflect current situation
   def git_repo_path
-    @git_repo_path ||= File.join(APP_CONFIG['root_path'], 'git_projects', "#{git_repo_name}.git")
+    @git_repo_path ||= path
   end
   def git_repo_name
     [owner.uname, unixname].join('/')
@@ -80,7 +76,19 @@ class Project < ActiveRecord::Base
     end      
   end
 
+  def path
+    build_path(git_repo_name)
+  end
+
   protected
+
+    def build_path(dir)
+      File.join(APP_CONFIG['root_path'], 'git_projects', "#{dir}.git")
+    end
+
+    def attach_to_personal_repository
+      repositories << self.owner.personal_repository if !repositories.exists?(:id => self.owner.personal_repository)
+    end
 
     def make_owner_rel
       unless groups.include? owner or collaborators.include? owner
