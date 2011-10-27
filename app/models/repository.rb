@@ -96,7 +96,7 @@ class Repository < ActiveRecord::Base
       if result == BuildServer::SUCCESS
         return true
       else
-        raise "Failed to create repository #{name} inside platform #{platform.name}."
+        raise "Failed to create repository #{name} inside platform #{platform.name} with code #{result}."
       end      
     end
 
