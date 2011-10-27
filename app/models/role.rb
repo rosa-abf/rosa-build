@@ -7,6 +7,16 @@ class Role < ActiveRecord::Base
 
   validate :name, :presence => true
 
+  scope :exclude_acter, lambda {|obj| {:conditions => (obj != :all and obj != '') ? ['`to` <> ?', obj.to_s] : "NOT ISNULL(`to`) OR `to` <> ''"}}
+  scope :exclude_target, lambda {|targ| {:conditions => (targ != :system and targ != '') ? ['`on` <> ?', targ.to_s] : "NOT ISNULL(`on`) OR `to` <> ''"}}
+
+  scope :by_acter, lambda {|obj| {:conditions => (obj != :all and obj != '') ? ['`to` = ?', obj.to_s] : "ISNULL(`to`) OR `to` = ''"}}
+  scope :by_target, lambda {|targ| {:conditions => (targ != :system and targ != '') ? ['`on` = ?', targ.to_s] : "ISNULL(`on`) OR `on` = ''"}}
+
+  scope :default, where(:use_default => true)
+
+  before_save :check_default, :check_owner_default
+
   def to_dump
     tmp = attributes.reject {|k,v| ['created_at', 'updated_at'].include? k}
     tmp['rights'] = rights.inject({}) do |h, right|
@@ -17,6 +27,24 @@ class Role < ActiveRecord::Base
     end
     return tmp
   end
+
+  protected
+
+    def check_default
+      if on_changed? and !on || on == ''
+        roles = Role.by_acter(to).by_target('').default
+        puts roles.inspect
+        if roles and roles.size > 0
+          roles.each {|r| r.update_attributes(:use_default => false)}
+        end
+      end
+      true
+    end
+
+    def check_owner_default
+      self[:use_default_for_owner] = false if use_default_for_owner and (to.nil? || to == '')
+      true
+    end
 
   class << self
 

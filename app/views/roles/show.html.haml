@@ -18,14 +18,24 @@
         = @role.name
       %p
         %b
-          = t("activerecord.attributes.role.applicable_to")
+          = t("activerecord.attributes.role.to")
           \:
         = (@role.to and @role.to.size > 0) ? @role.to : 'All'
       %p
         %b
-          = t("activerecord.attributes.role.applicable_on")
+          = t("activerecord.attributes.role.on")
           \:
         = (@role.on and @role.on.size > 0) ? @role.on : 'System'
+      %p
+        %b
+          = t("activerecord.attributes.role.use_default")
+          \:
+        = (@role.use_default) ? t("layout.yes_") : t("layout.no_")
+      %p
+        %b
+          = t("activerecord.attributes.role.use_default_for_owner")
+          \:
+        = (@role.use_default_for_owner) ? t("layout.yes_") : t("layout.no_")
       - unless @role.can_see.empty?
         %p
           %b

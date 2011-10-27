@@ -20,6 +20,10 @@
           %tr
             %th.first ID
             %th= t("activerecord.attributes.role.name")
+            %th= t("activerecord.attributes.role.to")
+            %th= t("activerecord.attributes.role.on")
+            %th= t("activerecord.attributes.role.use_default")
+            %th= t("activerecord.attributes.role.use_default_for_owner")
             %th.last &nbsp;
           - @roles.each do |role|
             %tr{:class => cycle("odd", "even")}
@@ -27,6 +31,14 @@
                 = role.id
               %td
                 = link_to role.name, role_path(role)
+              %td
+                = (role.to and role.to != '') ? role.to : 'All'
+              %td
+                = (role.on and role.on != '') ? role.on : 'System'
+              %td
+                = (role.use_default) ? t("layout.yes_") : t("layout.no_")
+              %td
+                = (role.use_default_for_owner) ? t("layout.yes_") : t("layout.no_")
               %td.last
                 #{link_to t("layout.show"), role_path(role)} | #{link_to t("layout.edit"), edit_role_path(role)} | #{link_to t("layout.delete"), role_path(role), :method => :delete, :confirm => t("layout.roles.confirm_delete")}
         .actions-bar.wat-cf

@@ -427,8 +427,12 @@ ru:
         created_at: Создан
         updated_at: Обновлен
 
-      roles:
+      role:
         name: Название
+        on: Ведомый
+        to: Ведущий
+        use_default: По умолчанию
+        use_default_for_owner: По умолчанию для владельца
 
       group:
         name: Название

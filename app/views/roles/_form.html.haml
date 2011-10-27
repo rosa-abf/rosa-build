@@ -3,11 +3,15 @@
   = f.text_field :name, :class => 'text_field'
   - acters = [['All', '']].concat Role.relation_acters.map{|a| [a.name, a.name]}
   - targets = [['System', '']].concat Role.relation_targets.map{|t| [t.name, t.name]}
-  = f.label :to, t("activerecord.attributes.role.applicable_to"), :class => :label
+  = f.label :to, t("activerecord.attributes.role.to"), :class => :label
   = f.select :to, options_for_select(acters, @role.to)
-  = f.label :on, t("activerecord.attributes.role.applicable_on"), :class => :label
+  = f.label :on, t("activerecord.attributes.role.on"), :class => :label
   = f.select :on, options_for_select(targets, @role.on)
 
+  = f.label :use_default, t("activerecord.attributes.role.use_default"), :class => :label
+  = f.check_box :use_default
+  = f.label :use_default_for_owner, t("activerecord.attributes.role.use_default_for_owner"), :class => :label
+  = f.check_box :use_default_for_owner
 - unless @visibilities.empty?
   .group
     %fieldset
