@@ -26,8 +26,8 @@ class Repository < ActiveRecord::Base
   before_save :make_owner_rel
   #after_destroy :remove_directory
 
-#  before_create :xml_rpc_create
-#  before_destroy :xml_rpc_destroy
+  before_create :xml_rpc_create
+  before_destroy :xml_rpc_destroy
 
   after_create lambda { 
     add_downloads_symlink unless self.hidden?

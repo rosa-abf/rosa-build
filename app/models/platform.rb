@@ -16,12 +16,12 @@ class Platform < ActiveRecord::Base
   validates :name, :presence => true, :uniqueness => true
   validates :unixname, :uniqueness => true, :presence => true, :format => { :with => /^[a-zA-Z0-9_]+$/ }, :allow_nil => false, :allow_blank => false
 
-  #after_create :make_owner_rel
+  after_create :make_owner_rel
 #  before_save :create_directory
   before_save :make_owner_rel
   after_destroy :remove_directory
-#  before_create :xml_rpc_create
-#  before_destroy :xml_rpc_destroy
+  before_create :xml_rpc_create
+  before_destroy :xml_rpc_destroy
 #  before_update :check_freezing
 
   scope :by_visibilities, lambda {|v| {:conditions => ['visibility in (?)', v.join(',')]}}
@@ -96,33 +96,33 @@ class Platform < ActiveRecord::Base
     end
 
     def xml_rpc_create
-      return true
-#      result = BuildServer.add_platform unixname, APP_CONFIG['root_path']
-#      if result == BuildServer::SUCCESS
-#        return true
-#      else
-#        raise "Failed to create platform #{name}. Path: #{build_path(unixname)}"
-#      end
+#      return true
+      result = BuildServer.add_platform unixname, APP_CONFIG['root_path'], distrib_type
+      if result == BuildServer::SUCCESS
+        return true
+      else
+        raise "Failed to create platform #{name}. Path: #{build_path(unixname)}"
+      end
     end
 
     def xml_rpc_destroy
-      return true
-#      result = BuildServer.delete_platform unixname
-#      if result == BuildServer::SUCCESS
-#        return true
-#      else
-#        raise "Failed to delete platform #{unixname}."
-#      end
+#      return true
+      result = BuildServer.delete_platform unixname
+      if result == BuildServer::SUCCESS
+        return true
+      else
+        raise "Failed to delete platform #{unixname}."
+      end
     end
 
     def xml_rpc_clone(new_unixname)
-      return true
-#      result = BuildServer.clone_platform new_unixname, self.unixname, APP_CONFIG['root_path']
-#      if result == BuildServer::SUCCESS
-#        return true
-#      else
-#        raise "Failed to clone platform #{name}. Path: #{build_path(unixname)} to platform #{new_unixname}"
-#      end
+#      return true
+      result = BuildServer.clone_platform new_unixname, self.unixname, APP_CONFIG['root_path']
+      if result == BuildServer::SUCCESS
+        return true
+      else
+        raise "Failed to clone platform #{name}. Path: #{build_path(unixname)} to platform #{new_unixname}"
+      end
     end
 
     def check_freezing
