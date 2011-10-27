@@ -118,7 +118,7 @@ class Platform < ActiveRecord::Base
 
     def xml_rpc_clone(new_unixname)
 #      return true
-      result = BuildServer.clone_platform new_unixname, self.unixname, APP_CONFIG['root_path']
+      result = BuildServer.clone_platform new_unixname, self.unixname, APP_CONFIG['root_path'] + '/platforms'
       if result == BuildServer::SUCCESS
         return true
       else
