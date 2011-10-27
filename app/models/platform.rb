@@ -102,7 +102,7 @@ class Platform < ActiveRecord::Base
       if result == BuildServer::SUCCESS
         return true
       else
-        raise "Failed to create platform #{name}. Path: #{build_path(unixname)}"
+        raise "Failed to create platform #{name} with code #{result}. Path: #{build_path(unixname)}"
       end
     end
 
@@ -112,7 +112,7 @@ class Platform < ActiveRecord::Base
       if result == BuildServer::SUCCESS
         return true
       else
-        raise "Failed to delete platform #{unixname}."
+        raise "Failed to delete platform #{unixname} with code #{result}."
       end
     end
 
@@ -122,7 +122,7 @@ class Platform < ActiveRecord::Base
       if result == BuildServer::SUCCESS
         return true
       else
-        raise "Failed to clone platform #{name}. Path: #{build_path(unixname)} to platform #{new_unixname}"
+        raise "Failed to clone platform #{name} with code #{result}. Path: #{build_path(unixname)} to platform #{new_unixname}"
       end
     end
 
