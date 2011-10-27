@@ -20,13 +20,12 @@ class Project < ActiveRecord::Base
   validates :owner, :presence => true
   validate {errors.add(:base, I18n.t('flash.project.save_warning_ssh_key')) if owner.ssh_key.blank?}
 
-  # attr_accessible :visibility
+  attr_accessible :category_id, :name, :unixname, :description, :visibility
   attr_readonly :unixname
 
   scope :recent, order("name ASC")
   scope :by_name, lambda { |name| {:conditions => ['name like ?', '%' + name + '%']} }
   scope :by_visibilities, lambda {|v| {:conditions => ['visibility in (?)', v.join(',')]}}
-  
   scope :addable_to_repository, lambda { |repository_id| where("projects.id NOT IN (SELECT project_to_repositories.project_id FROM project_to_repositories WHERE (project_to_repositories.repository_id != #{ repository_id }))") }
 
   before_create :create_git_repo, :make_owner_rel
@@ -34,14 +33,7 @@ class Project < ActiveRecord::Base
   before_destroy :destroy_git_repo
   # before_create :xml_rpc_create
   # before_destroy :xml_rpc_destroy
-
-  before_save :make_owner_rel
   after_create :attach_to_personal_repository
-  
-#  before_create :xml_rpc_create
-#  before_destroy :xml_rpc_destroy
-
-  attr_accessible :visibility
   
   def attach_to_personal_repository
     repositories << self.owner.personal_repository if !repositories.exists?(:id => self.owner.personal_repository)
@@ -59,9 +51,6 @@ class Project < ActiveRecord::Base
   # Redefining a method from Project::HasRepository module to reflect current situation
   def git_repo_path
     @git_repo_path ||= File.join(APP_CONFIG['root_path'], 'git_projects', "#{git_repo_name}.git")
-  end
-  def git_repo_clone_path
-    "git@gitolite:#{git_repo_name}.git"
   end
   def git_repo_name
     [owner.uname, unixname].join('/')
