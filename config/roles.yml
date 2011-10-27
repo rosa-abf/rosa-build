@@ -3,6 +3,8 @@
 - name: !binary |
     0JDQtNC80LjQvdC40YHRgtGA0LDRgtC+0YAg0YHQuNGB0YLQtdC80Ys=
 
+  use_default: true
+  use_default_for_owner: false
   rights: 
     event_logs: 
     - index
@@ -37,6 +39,14 @@
     - build
     - destroy
     - new
+    rpc: 
+    - build_packet
+    - platforms
+    - project_versions
+    - xe_index
+    - xe_method_prefix
+    - user_projects
+    - build_status
     private_users: 
     - index
     - create
@@ -60,6 +70,8 @@
     - circle_build
     - new_bbdt
     - publish
+    - all
+    - cancel
     categories: 
     - index
     - platforms
@@ -87,8 +99,10 @@
     - destroy
     - update
     - new
+    - load_from_dump
+    - get_dump
   id: 1
-  to: User
+  to: ""
   can_see: !map:ActiveSupport::HashWithIndifferentAccess 
     Repository: 
     - open
@@ -103,6 +117,8 @@
 - name: !binary |
     0JDQtNC80LjQvdC40YHRgtGA0LDRgtC+0YAg0L/Qu9Cw0YLRhNC+0YDQvNGL
 
+  use_default: false
+  use_default_for_owner: false
   rights: 
     groups: 
     - index
@@ -112,38 +128,46 @@
   can_see: !map:ActiveSupport::HashWithIndifferentAccess 
     Project: 
     - open
-  "on": ""
+  "on": Platform
 - name: !binary |
     0JDQtNC80LjQvdC40YHRgtGA0LDRgtC+0YAg0YDQtdC/0L7Qt9C40YLQvtGA
     0LjRjw==
 
+  use_default: false
+  use_default_for_owner: false
   rights: {}
 
   id: 3
-  to: 
+  to: ""
   can_see: 
-  "on": 
+  "on": Repository
 - name: !binary |
     0JDQtNC80LjQvdC40YHRgtGA0LDRgtC+0YAg0L/RgNC+0LXQutGC0LA=
 
+  use_default: false
+  use_default_for_owner: false
   rights: {}
 
   id: 4
-  to: 
+  to: ""
   can_see: 
-  "on": 
+  "on": Project
 - name: !binary |
     0JDQtNC80LjQvdC40YHRgtGA0LDRgtC+0YAg0LPRgNGD0L/Qv9GL
 
+  use_default: false
+  use_default_for_owner: true
   rights: {}
 
   id: 5
-  to: 
+  to: User
   can_see: 
-  "on": 
+  "on": Group
 - name: !binary |
     0JDQtNC80LjQvdC40YHRgtGA0LDRgtC+0YAg0L/RgNC+0LTRg9C60YLQsA==
 
+  use_default: false
+  use_default_for_owner: false
   rights: {}
 
   id: 6
@@ -153,27 +177,65 @@
 - name: !binary |
     0JzQsNC50L3RgtC10LnQvdC10YAg0L/RgNC+0LXQutGC0LA=
 
+  use_default: false
+  use_default_for_owner: false
   rights: {}
 
   id: 7
-  to: 
+  to: ""
   can_see: 
-  "on": 
+  "on": Project
 - name: !binary |
     0J/QvtC70YzQt9C+0LLQsNGC0LXQu9GMINC/0LvQsNGC0YTQvtGA0LzRiw==
 
+  use_default: false
+  use_default_for_owner: false
   rights: {}
 
   id: 8
-  to: 
+  to: ""
   can_see: 
-  "on": 
+  "on": Platform
 - name: !binary |
     0KPRh9Cw0YHRgtC90LjQuiDQs9GA0YPQv9C/0Ys=
 
+  use_default: false
+  use_default_for_owner: false
   rights: {}
 
   id: 9
-  to: 
+  to: User
   can_see: 
-  "on": 
+  "on": Group
+- name: !binary |
+    0J/QvtC70YzQt9C+0LLQsNGC0LXQu9GMINGB0LjRgdGC0LXQvNGL
+
+  use_default: true
+  use_default_for_owner: false
+  rights: 
+    event_logs: 
+    - index
+    groups: 
+    - index
+    repositories: 
+    - index
+    platforms: 
+    - index
+    projects: 
+    - show
+    private_users: 
+    - index
+    build_lists: 
+    - index
+    products: 
+    - show
+    categories: 
+    - index
+    users: 
+    - index
+    roles: 
+    - index
+  id: 10
+  to: User
+  can_see: 
+  "on": ""

@@ -85,10 +85,9 @@ class Role < ActiveRecord::Base
       rights = fields.delete('rights')
       a = begin
         find(fields['id'])
-      rescue
+      rescue ActiveRecord::RecordNotFound
         new
       end
-      new
       a.rights = []
       a.attributes = fields
       rights.each do |con, acts|
