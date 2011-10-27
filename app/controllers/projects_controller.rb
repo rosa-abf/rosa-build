@@ -24,7 +24,7 @@ class ProjectsController < ApplicationController
 
     if @project.save
       flash[:notice] = t('flash.project.saved') 
-      redirect_to @project.owner
+      redirect_to @project
     else
       flash[:error] = t('flash.project.save_error')
       flash[:warning] = @project.errors[:base]
@@ -35,7 +35,7 @@ class ProjectsController < ApplicationController
   def update
     if @project.update_attributes(params[:project])
       flash[:notice] = t('flash.project.saved')
-      redirect_to @project.owner
+      redirect_to @project
     else
       flash[:error] = t('flash.project.save_error')
       render :action => :edit
