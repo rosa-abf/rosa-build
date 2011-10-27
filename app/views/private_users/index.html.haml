@@ -23,7 +23,7 @@
   .secondary-navigation
     %ul.wat-cf
       %li.first.active= link_to t("layout.private_users.list"), platform_private_users_path(@platform)
-      %li= link_to t("layout.private_users.new"), platform_private_users_path(@platform), :method => :post
+      %li= link_to t("layout.private_users.new"), platform_private_users_path(@platform), :method => :post if PrivateUser.can_generate_more?(current_user.id)
   .content
     %h2.title
       = t("layout.private_users.list_header")

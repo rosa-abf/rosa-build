@@ -48,6 +48,7 @@ ru:
       rights: Права
       roles: Роли
       users: Пользователи
+      personal_repository: Мой репозиторий
 
     sessions:
       sign_in_header: Вход в систему
@@ -122,6 +123,13 @@ ru:
       back_to_the_list: ⇐ К списку репозиториев
       confirm_delete: Вы уверены, что хотите удалить этот репозиторий?
       current_repository_header: Текущий репозиторий
+      
+    personal_repositories:
+      settings_header: Настройки
+      change_visibility_from_hidden: Сменить статус на "Открытый"
+      change_visibility_from_open: Сменить статус на "Приватный"
+      settings: Настройки
+      show: Мой репозиторий
 
     products:
       list: Список
@@ -255,11 +263,13 @@ ru:
       saved: Пользователь успешно сохранен
       save_error: Не удалось сохранить данные о пользователе
       destroyed: Учетная запись успешно удалена
+      group_uname_exists: Группа с таким именем уже зарегестрирована
 
     group:
       saved: Группа успешно сохранена
       save_error: Не удалось сохранить группу
       destroyed: Группа успешно удалена
+      user_uname_exists: Пользователь с таким именем уже зарегестрирован
 
     repository:
       saved: Репозиторий успешно добавлен
@@ -335,6 +345,11 @@ ru:
         unixname: Unixname
         created_at: Создан
         updated_at: Обновлен
+        owner: Владелец
+        visibility: Статус
+        visibility_types:
+          open: Открытый
+          hidden: Закрытый
 
       product:
         name: Название

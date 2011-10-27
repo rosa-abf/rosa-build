@@ -25,14 +25,23 @@ class Project < ActiveRecord::Base
   scope :by_name, lambda { |name| {:conditions => ['name like ?', '%' + name + '%']} }
 
   scope :by_visibilities, lambda {|v| {:conditions => ['visibility in (?)', v.join(',')]}}
+  
+  scope :addable_to_repository, lambda { |repository_id| where("projects.id NOT IN (SELECT project_to_repositories.project_id FROM project_to_repositories WHERE (project_to_repositories.repository_id != #{ repository_id }))") }
 
   before_save :create_directory#, :create_git_repo
   before_save :make_owner_rel
   after_destroy :remove_directory
+  after_create :attach_to_personal_repository
+  
 #  before_create :xml_rpc_create
 #  before_destroy :xml_rpc_destroy
 
   attr_accessible :visibility
+  
+  def attach_to_personal_repository
+    repositories << self.owner.personal_repository if !repositories.exists?(:id => self.owner.personal_repository)
+  end
+  
   def project_versions
     self.git_repository.tags
   end

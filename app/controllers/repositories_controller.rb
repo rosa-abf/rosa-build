@@ -58,7 +58,7 @@ class RepositoriesController < ApplicationController
         redirect_to url_for(:action => :add_project)
       end
     else
-      @projects = (Project.all - @repository.projects).paginate(:page => params[:project_page])
+      @projects = Project.addable_to_repository(@repository.id).paginate(:page => params[:project_page])
       render 'projects_list'
     end
   end

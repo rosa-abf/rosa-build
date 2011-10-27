@@ -17,7 +17,7 @@ class Platform < ActiveRecord::Base
   validates :unixname, :uniqueness => true, :presence => true, :format => { :with => /^[a-zA-Z0-9_]+$/ }, :allow_nil => false, :allow_blank => false
 
   #after_create :make_owner_rel
-  before_save :create_directory
+#  before_save :create_directory
   before_save :make_owner_rel
   after_destroy :remove_directory
 #  before_create :xml_rpc_create
@@ -25,9 +25,10 @@ class Platform < ActiveRecord::Base
 #  before_update :check_freezing
 
   scope :by_visibilities, lambda {|v| {:conditions => ['visibility in (?)', v.join(',')]}}
+  scope :main, where(:platform_type => 'main')
+  scope :personal, where(:platform_type => 'personal')
 
   attr_accessible :visibility
-  scope :main, where(:platform_type => 'main')
 
   def path
     build_path(unixname)

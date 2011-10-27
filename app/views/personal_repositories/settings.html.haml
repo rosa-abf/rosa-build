@@ -1,0 +1,20 @@
+.block
+  .secondary-navigation
+    %ul.wat-cf
+      %li.first= link_to t("layout.personal_repositories.show"), personal_repository_path(@repository)
+      %li.active= link_to t("layout.personal_repositories.settings"), settings_personal_repository_path(@repository)
+  .content
+    %h2.title= t("layout.personal_repositories.settings_header")
+    .inner
+      .group
+        %span= t("activerecord.attributes.repository.visibility") + ":"
+        %span
+          %i= t("activerecord.attributes.repository.visibility_types.#{ @repository.visibility }") 
+      .group
+        = link_to t("layout.personal_repositories.change_visibility_from_#{ @repository.visibility }"), change_visibility_personal_repository_path(@repository)
+
+      %br
+      .group
+        %span= @urmpi_command
+
+-# content_for :sidebar, render(:partial => 'sidebar')

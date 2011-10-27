@@ -7,7 +7,7 @@ class PrivateUsersController < ApplicationController
   end
 
   def create
-  	pair = PrivateUser.generate_pair(params[:platform_id])
+  	pair = PrivateUser.generate_pair(params[:platform_id], current_user.id)
     redirect_to platform_private_users_path(params[:platform_id]), 
     			:notice => "Логин: #{ pair[:login] } Пароль: #{ pair[:pass] }"
   end

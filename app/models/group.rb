@@ -6,6 +6,10 @@ class Group < ActiveRecord::Base
   validates :name, :uname, :owner_id, :presence => true
   validates :name, :uname, :uniqueness => true
   validates :uname, :format => { :with => /^[a-zA-Z0-9_]+$/ }, :allow_nil => false, :allow_blank => false
+  #TODO: Replace this simple cross-table uniq validation by more progressive analog
+  validate lambda {
+    errors.add(:uname, I18n.t('flash.group.user_uname_exists')) if User.exists? :uname => uname
+  }
 
   belongs_to :global_role, :class_name => 'Role'
 
@@ -19,6 +23,8 @@ class Group < ActiveRecord::Base
   has_many :projects,     :through => :targets, :source => :target, :source_type => 'Project',    :autosave => true
   has_many :platforms,    :through => :targets, :source => :target, :source_type => 'Platform',   :autosave => true
   has_many :repositories, :through => :targets, :source => :target, :source_type => 'Repository', :autosave => true
+
+  include PersonalRepository
 
   before_save :create_dir
   after_destroy :remove_dir

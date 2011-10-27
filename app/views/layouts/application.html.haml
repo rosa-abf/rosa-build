@@ -37,6 +37,9 @@
             -if current_user.can_perform?('roles', 'index')
               %li{:class => controller.controller_path == 'roles' ? 'active' : '' }
                 %a{:href => roles_path}= t("layout.menu.roles")
+            -if current_user.can_perform?('personal_repositories', 'index')
+              %li{:class => controller.controller_path == 'personal_repositories' ? 'active' : '' }
+                %a{:href => personal_repository_path( current_user.personal_repository.id )}= t("layout.menu.personal_repository")
       #wrapper.wat-cf
         = render :partial => "layouts/flashes"
         #main
