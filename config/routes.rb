@@ -40,6 +40,10 @@ Rosa::Application.routes.draw do
       get 'clone'
     end
 
+    collection do
+      get 'easy_urpmi'
+    end
+
     resources :products do
       member do
         get :clone
