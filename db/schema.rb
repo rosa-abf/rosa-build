@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20111027230610) do
+ActiveRecord::Schema.define(:version => 20111028070604) do
 
   create_table "arches", :force => true do |t|
     t.string   "name",       :null => false
@@ -208,20 +208,18 @@ ActiveRecord::Schema.define(:version => 20111027230610) do
     t.string   "object_type"
     t.integer  "target_id"
     t.string   "target_type"
-    t.integer  "role_id"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
   create_table "repositories", :force => true do |t|
-    t.string   "name",                            :null => false
-    t.integer  "platform_id",                     :null => false
+    t.string   "name",        :null => false
+    t.integer  "platform_id", :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "unixname",                        :null => false
+    t.string   "unixname",    :null => false
     t.integer  "owner_id"
     t.string   "owner_type"
-    t.string   "visibility",  :default => "open"
   end
 
   create_table "rights", :force => true do |t|
@@ -271,9 +269,8 @@ ActiveRecord::Schema.define(:version => 20111027230610) do
     t.datetime "remember_created_at"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "uname"
     t.text     "ssh_key"
-    t.integer  "role_id"
+    t.string   "uname"
     t.integer  "global_role_id"
   end
 

@@ -9,9 +9,9 @@
       .group
         %span= t("activerecord.attributes.repository.visibility") + ":"
         %span
-          %i= t("activerecord.attributes.repository.visibility_types.#{ @repository.visibility }") 
+          %i= t("activerecord.attributes.repository.visibility_types.#{ @repository.platform.visibility }") 
       .group
-        = link_to t("layout.personal_repositories.change_visibility_from_#{ @repository.visibility }"), change_visibility_personal_repository_path(@repository)
+        = link_to t("layout.personal_repositories.change_visibility_from_#{ @repository.platform.visibility }"), change_visibility_personal_repository_path(@repository)
 
       %br
       .group

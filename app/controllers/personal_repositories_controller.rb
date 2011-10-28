@@ -12,13 +12,13 @@ class PersonalRepositoriesController < ApplicationController
   
   #TODO: Add git repo move into private repos path.
   def change_visibility
-    @repository.change_visibility
+    @repository.platform.change_visibility
     
     redirect_to settings_personal_repository_path(@repository)
   end
   
   def settings
-    if @repository.hidden?
+    if @repository.platform.hidden?
       @urmpi_command = "urpmi -add  http://login@password:#{ request.host }/privates/#{ @repository.platform.name }/main/"
     else
       @urmpi_command = "urpmi -add  http://#{ request.host }/downloads/#{ @repository.platform.name }/main/"

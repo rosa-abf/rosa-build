@@ -1,6 +1,8 @@
 #require 'lib/build_server.rb'
 class Platform < ActiveRecord::Base
+  DOWNLOADS_PATH = RAILS_ROOT + '/public/downloads'
   VISIBILITIES = ['open', 'hidden']
+  
   relationable :as => :target
 
   belongs_to :parent, :class_name => 'Platform', :foreign_key => 'parent_platform_id'
@@ -31,8 +33,16 @@ class Platform < ActiveRecord::Base
 
   #attr_accessible :visibility
 
+  after_create lambda { 
+    add_downloads_symlink unless self.hidden?
+  }
+
   def path
     build_path(unixname)
+  end
+
+  def hidden?
+    self.visibility == 'hidden'
   end
 
   def clone(new_name, new_unixname)
@@ -60,6 +70,16 @@ class Platform < ActiveRecord::Base
                             :target_type => self.class.to_s, :target_id => id)
       rel.role = role
       rel.save
+    end
+  end
+  
+  def change_visibility
+    if !self.hidden?
+      self.update_attribute(:visibility, 'hidden')
+      remove_downloads_symlink
+    else
+      self.update_attribute(:visibility, 'open')
+      add_downloads_symlink
     end
   end
 
@@ -131,4 +151,21 @@ class Platform < ActiveRecord::Base
         BuildServer.freeze_platform self.unixname
       end
     end
+    
+    def symlink_downloads_path
+      "#{ DOWNLOADS_PATH }/#{ self.unixname }"
+    end
+    
+    def add_downloads_symlink
+      #raise "Personal platform path #{ symlink_downloads_path } already exists!" if File.exists?(symlink_downloads_path) && File.directory?(symlink_downloads_path)
+      return true if File.exists?(symlink_downloads_path) && File.directory?(symlink_downloads_path)
+      FileUtils.symlink path, symlink_downloads_path
+    end
+    
+    def remove_downloads_symlink
+      #raise "Personal platform path #{ symlink_downloads_path } does not exists!" if !(File.exists?(symlink_downloads_path) && File.directory?(symlink_downloads_path))
+      return true if !(File.exists?(symlink_downloads_path) && File.directory?(symlink_downloads_path))
+      FileUtils.rm_rf symlink_downloads_path 
+    end
+
 end
