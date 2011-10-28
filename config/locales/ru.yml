@@ -22,6 +22,7 @@ ru:
     publish: Опубликовать
     add: Добавить
     upload: Загрузить
+    not_access: Нет доступа!
 
     downloads:
       title: Статистика закачек пакетов

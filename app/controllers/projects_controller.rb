@@ -2,7 +2,7 @@ class ProjectsController < ApplicationController
   before_filter :authenticate_user!, :except => :auto_build
   before_filter :find_project, :only => [:show, :edit, :update, :destroy, :build, :process_build]
   before_filter :get_paths, :only => [:new, :create, :edit, :update]
-  before_filter :check_global_access
+  before_filter :check_global_access, :except => :auto_build
 
   def index
     @projects = Project.paginate(:page => params[:project_page])
@@ -50,7 +50,10 @@ class ProjectsController < ApplicationController
   end
 
   def auto_build
-    logger.info "Git hook recieved from #{params[:git_user]} to #{params[:git_repo]}"
+    EventLog.current_controller = self
+    p = params.delete_if{|k,v| k == 'controller' or k == 'action'}
+    ActiveSupport::Notifications.instrument("event_log.observer", :message => p.inspect) # TODO find :object ?
+    # logger.info "Git hook recieved from #{params[:git_user]} to #{params[:git_repo]}"
     render :nothing => true
   end
 
@@ -58,7 +61,7 @@ class ProjectsController < ApplicationController
     @arches = Arch.recent
     @pls = Platform.main
     @bpls = @project.repositories.collect { |rep| ["#{rep.platform.name}/#{rep.unixname}", rep.platform.id] }
-    @project_versions = @project.project_versions.collect { |tag| [tag.name.gsub(/^\w+\./, ""), tag.name] }.select { |pv| pv[1] =~ /^v\./  }
+    @project_versions = @project.project_versions.collect { |tag| [tag.name, tag.name.gsub(/^\w+\./, "")] }.select { |pv| pv[0] =~ /^v\./  }
   end
 
   def process_build
@@ -74,7 +77,7 @@ class ProjectsController < ApplicationController
     update_type = params[:build][:update_type]
     build_requires = params[:build][:build_requires]
 
-    @project_versions = @project.project_versions.collect { |tag| [tag.name.gsub(/^\w+\./, ""), tag.name] }.select { |pv| pv[1] =~ /^v\./  }
+    @project_versions = @project.project_versions.collect { |tag| [tag.name, tag.name.gsub(/^\w+\./, "")] }.select { |pv| pv[0] =~ /^v\./  }
 
     if !check_arches || !check_project_versions
       @arches = Arch.recent

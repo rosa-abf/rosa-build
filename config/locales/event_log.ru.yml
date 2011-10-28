@@ -16,6 +16,8 @@ ru:
         destroy: 'выход'
       'users/omniauth_callbacks_controller':
         open_id: 'вход через OpenID'
+      projects_controller:
+        auto_build: 'обновлен git репозиторий'
       create: 'создано'
       update: 'обновлено'
       destroy: 'удалено'

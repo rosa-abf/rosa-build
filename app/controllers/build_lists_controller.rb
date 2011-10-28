@@ -4,10 +4,8 @@ class BuildListsController < ApplicationController
 	before_filter :find_project, :only => [:index, :filter, :show, :publish]
 	before_filter :find_arches, :only => [:index, :filter, :all]
 	before_filter :find_project_versions, :only => [:index, :filter]
-
 	before_filter :find_build_list_by_bs, :only => [:status_build, :pre_build, :post_build]
-
-  before_filter :check_global_access
+  before_filter :check_global_access, :except => [:status_build, :post_build, :pre_build, :circle_build, :new_bbdt]
 
 	def all
     if params[:filter]

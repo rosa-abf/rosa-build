@@ -1,11 +1,9 @@
 # coding: UTF-8
 class PlatformsController < ApplicationController
   before_filter :authenticate_user!, :except => :easy_urpmi
-
   before_filter :find_platform, :only => [:freeze, :unfreeze, :clone, :edit]
   before_filter :get_paths, :only => [:new, :create]
-
-  before_filter :check_global_access
+  before_filter :check_global_access, :except => :easy_urpmi
 
   def index
     @platforms = Platform.paginate(:page => params[:platform_page])
