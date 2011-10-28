@@ -354,10 +354,6 @@ ru:
         created_at: Создан
         updated_at: Обновлен
         owner: Владелец
-        visibility: Статус
-        visibility_types:
-          open: Открытый
-          hidden: Закрытый
 
       product:
         name: Название

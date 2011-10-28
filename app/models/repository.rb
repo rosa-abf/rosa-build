@@ -1,6 +1,4 @@
 class Repository < ActiveRecord::Base
-
-  VISIBILITIES = ['open', 'hidden']
   relationable :as => :target
 
   belongs_to :platform
@@ -18,7 +16,6 @@ class Repository < ActiveRecord::Base
   validates :platform_id, :presence => true
 
   scope :recent, order("name ASC")
-  scope :by_visibilities, lambda {|v| {:conditions => ['visibility in (?)', v.join(',')]}}
 
   #before_save :create_directory
   before_save :make_owner_rel
@@ -27,7 +24,7 @@ class Repository < ActiveRecord::Base
   before_create :xml_rpc_create
   before_destroy :xml_rpc_destroy
 
-  attr_accessible :visibility, :name, :unixname, :platform_id
+  attr_accessible :name, :unixname, :platform_id
   
 #  def path
 #    build_path(unixname)
