@@ -7,10 +7,14 @@ class ActionController::Base
       current_user.can_perform? c, a, target
     end
 
-    def check_global_rights
+    def check_global_access
       unless can_perform?
         flash[:notice] = t('layout.not_access')
-        redirect_to(:back)
+        if request.env['HTTP_REFERER']
+          redirect_to(:back)
+        else
+          redirect_to(:root)
+        end
       end
     end
 
