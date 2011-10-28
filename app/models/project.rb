@@ -20,7 +20,7 @@ class Project < ActiveRecord::Base
   validates :owner, :presence => true
   validate {errors.add(:base, I18n.t('flash.project.save_warning_ssh_key')) if owner.ssh_key.blank?}
 
-  attr_accessible :category_id, :name, :unixname, :description, :visibility
+  #attr_accessible :category_id, :name, :unixname, :description, :visibility
   attr_readonly :unixname
 
   scope :recent, order("name ASC")
@@ -28,11 +28,12 @@ class Project < ActiveRecord::Base
   scope :by_visibilities, lambda {|v| {:conditions => ['visibility in (?)', v.join(',')]}}
   scope :addable_to_repository, lambda { |repository_id| where("projects.id NOT IN (SELECT project_to_repositories.project_id FROM project_to_repositories WHERE (project_to_repositories.repository_id != #{ repository_id }))") }
 
-  before_create :create_git_repo, :make_owner_rel
-  before_update :update_git_repo
-  before_destroy :destroy_git_repo
+  before_create :make_owner_rel
   before_create :xml_rpc_create
   before_destroy :xml_rpc_destroy
+  before_create :create_git_repo 
+  before_update :update_git_repo
+  before_destroy :destroy_git_repo
   after_create :attach_to_personal_repository
 
   def project_versions
@@ -72,7 +73,7 @@ class Project < ActiveRecord::Base
     if result == BuildServer::SUCCESS
       return true
     else
-      raise "Failed to add project #{name} to repo #{repo.name} of platform #{platf.name}."
+      raise "Failed to add project #{name} to repo #{repo.name} of platform #{platf.name} with code #{result}."
     end      
   end
 
@@ -85,7 +86,7 @@ class Project < ActiveRecord::Base
     if result == BuildServer::SUCCESS
       return true
     else
-      raise "Failed to create project #{name} (repo #{repository.name}) inside platform #{repository.platform.name}."
+      raise "Failed to create project #{name} (repo #{repository.name}) inside platform #{repository.platform.name} with code #{result}."
     end      
   end
 
@@ -132,12 +133,21 @@ class Project < ActiveRecord::Base
       end
     end
 
-    def xml_rpc_destroy
-      result = BuildServer.delete_project unixname, repository.platform.unixname
+    def xml_rpc_create
+      result = BuildServer.create_project unixname, "#{owner.uname}_personal", 'main', path
       if result == BuildServer::SUCCESS
         return true
       else
-        raise "Failed to delete repository #{name} (repo #{repository.name}) inside platform #{repository.platform.name}."
+        raise "Failed to create project #{name} (repo main) inside platform #{owner.uname}_personal with code #{result}."
+      end      
+    end
+
+    def xml_rpc_destroy
+      result = BuildServer.delete_project unixname, "#{owner.uname}_personal"
+      if result == BuildServer::SUCCESS
+        return true
+      else
+        raise "Failed to delete repository #{name} (repo main) inside platform #{owner.uname}_personal with code #{result}."
       end
     end
 end

@@ -13,13 +13,13 @@ module PersonalRepository
       pl.unixname = "#{self.uname}_personal"
       pl.platform_type = 'personal'
       pl.distrib_type = 'mandriva2011'
+      pl.visibility = 'open'
       pl.save
     
       rep = pl.repositories.build
       rep.owner = pl.owner
       rep.name = 'main'
       rep.unixname = 'main'
-      rep.visibility = 'open'
       rep.save
     end
     

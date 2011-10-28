@@ -1,7 +1,5 @@
 class Repository < ActiveRecord::Base
 
-  DOWNLOADS_PATH = RAILS_ROOT + '/public/downloads'
-
   VISIBILITIES = ['open', 'hidden']
   relationable :as => :target
 
@@ -29,19 +27,11 @@ class Repository < ActiveRecord::Base
   before_create :xml_rpc_create
   before_destroy :xml_rpc_destroy
 
-  after_create lambda { 
-    add_downloads_symlink unless self.hidden?
-  }
-
   attr_accessible :visibility, :name, :unixname, :platform_id
   
-  def path
-    build_path(unixname)
-  end
-
-  def hidden?
-    self.visibility == 'hidden'
-  end
+#  def path
+#    build_path(unixname)
+#  end
 
   def clone
     r = Repository.new
@@ -49,16 +39,6 @@ class Repository < ActiveRecord::Base
     r.unixname = unixname
     r.projects = projects.map(&:clone)
     return r
-  end
-  
-  def change_visibility
-    if !self.hidden?
-      self.update_attribute(:visibility, 'hidden')
-      remove_downloads_symlink
-    else
-      self.update_attribute(:visibility, 'open')
-      add_downloads_symlink
-    end
   end
 
   protected
@@ -70,26 +50,26 @@ class Repository < ActiveRecord::Base
       end
     end
 
-    def build_path(dir)
-      File.join(platform.path, dir)
-    end
-
-    def create_directory
-      exists = File.exists?(path) && File.directory?(path)
-      raise "Directory #{path} already exists" if exists
-      if new_record?
-        FileUtils.mkdir_p(path)
-        %w(release updates).each { |subrep| FileUtils.mkdir_p(path + subrep) }
-      elsif unixname_changed?
-        FileUtils.mv(build_path(unixname_was), buildpath(unixname))
-      end 
-    end
-
-    def remove_directory
-      exists = File.exists?(path) && File.directory?(path)
-      raise "Directory #{path} didn't exists" unless exists
-      FileUtils.rm_rf(path)
-    end
+#   def build_path(dir)
+#     File.join(platform.path, dir)
+#   end
+#
+#   def create_directory
+#     exists = File.exists?(path) && File.directory?(path)
+#     raise "Directory #{path} already exists" if exists
+#     if new_record?
+#       FileUtils.mkdir_p(path)
+#       %w(release updates).each { |subrep| FileUtils.mkdir_p(path + subrep) }
+#     elsif unixname_changed?
+#       FileUtils.mv(build_path(unixname_was), buildpath(unixname))
+#     end 
+#   end
+#
+#   def remove_directory
+#     exists = File.exists?(path) && File.directory?(path)
+#     raise "Directory #{path} didn't exists" unless exists
+#     FileUtils.rm_rf(path)
+#   end
 
     def xml_rpc_create
       result = BuildServer.create_repo unixname, platform.unixname
@@ -107,22 +87,6 @@ class Repository < ActiveRecord::Base
       else
         raise "Failed to delete repository #{name} inside platform #{platform.name}."
       end
-    end
-    
-    def symlink_downloads_path
-      "#{ DOWNLOADS_PATH }/#{ self.platform.unixname }"
-    end
-    
-    def add_downloads_symlink
-      #raise "Personal platform path #{ symlink_downloads_path } already exists!" if File.exists?(symlink_downloads_path) && File.directory?(symlink_downloads_path)
-      return true if File.exists?(symlink_downloads_path) && File.directory?(symlink_downloads_path)
-      FileUtils.symlink platform.path, symlink_downloads_path
-    end
-    
-    def remove_downloads_symlink
-      #raise "Personal platform path #{ symlink_downloads_path } does not exists!" if !(File.exists?(symlink_downloads_path) && File.directory?(symlink_downloads_path))
-      return true if !(File.exists?(symlink_downloads_path) && File.directory?(symlink_downloads_path))
-      FileUtils.rm_rf symlink_downloads_path 
     end
 
 end
