@@ -5,7 +5,7 @@ class ProjectsController < ApplicationController
   before_filter :check_global_access, :except => :auto_build
 
   def index
-    @projects = Project.paginate(:page => params[:project_page])
+    @projects = Project.visible_to(current_user).paginate(:page => params[:project_page])
   end
 
   def show

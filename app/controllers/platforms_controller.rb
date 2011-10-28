@@ -6,7 +6,7 @@ class PlatformsController < ApplicationController
   before_filter :check_global_access, :except => :easy_urpmi
 
   def index
-    @platforms = Platform.paginate(:page => params[:platform_page])
+    @platforms = Platform.visible_to(current_user).paginate(:page => params[:platform_page])
   end
 
   def easy_urpmi
@@ -32,12 +32,12 @@ class PlatformsController < ApplicationController
   end
 
   def new
-    @platforms = Platform.all
+    @platforms = Platform.visible_to current_user
     @platform = Platform.new
   end
   
   def edit
-    @platforms = Platform.all
+    @platforms = Platform.visible_to current_user
   end
 
   def create
@@ -50,7 +50,7 @@ class PlatformsController < ApplicationController
       redirect_to @platform
     else
       flash[:error] = I18n.t("flash.platform.saved_error")
-      @platforms = Platform.all
+      @platforms = Platform.visible_to current_user
       render :action => :new
     end
   end
