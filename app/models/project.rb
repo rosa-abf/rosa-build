@@ -73,7 +73,7 @@ class Project < ActiveRecord::Base
     if result == BuildServer::SUCCESS
       return true
     else
-      raise "Failed to add project #{name} to repo #{repo.name} of platform #{platf.name}."
+      raise "Failed to add project #{name} to repo #{repo.name} of platform #{platf.name} with code #{result}."
     end      
   end
 
@@ -86,7 +86,7 @@ class Project < ActiveRecord::Base
     if result == BuildServer::SUCCESS
       return true
     else
-      raise "Failed to create project #{name} (repo #{repository.name}) inside platform #{repository.platform.name}."
+      raise "Failed to create project #{name} (repo #{repository.name}) inside platform #{repository.platform.name} with code #{result}."
     end      
   end
 
@@ -138,7 +138,7 @@ class Project < ActiveRecord::Base
       if result == BuildServer::SUCCESS
         return true
       else
-        raise "Failed to create project #{name} (repo main) inside platform #{owner.uname}_personal."
+        raise "Failed to create project #{name} (repo main) inside platform #{owner.uname}_personal with code #{result}."
       end      
     end
 
@@ -147,7 +147,7 @@ class Project < ActiveRecord::Base
       if result == BuildServer::SUCCESS
         return true
       else
-        raise "Failed to delete repository #{name} (repo main) inside platform #{owner.uname}_personal."
+        raise "Failed to delete repository #{name} (repo main) inside platform #{owner.uname}_personal with code #{result}."
       end
     end
 end
