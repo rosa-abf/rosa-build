@@ -29,10 +29,10 @@ class Project < ActiveRecord::Base
   scope :addable_to_repository, lambda { |repository_id| where("projects.id NOT IN (SELECT project_to_repositories.project_id FROM project_to_repositories WHERE (project_to_repositories.repository_id != #{ repository_id }))") }
 
   before_create :make_owner_rel
-  before_create :create_git_repo 
-  before_update :update_git_repo
-  before_destroy :destroy_git_repo
   after_create :attach_to_personal_repository
+  after_create :create_git_repo 
+  before_update :update_git_repo
+  after_destroy :destroy_git_repo
 
   def project_versions
     self.git_repository.tags
@@ -84,7 +84,7 @@ class Project < ActiveRecord::Base
     if result == BuildServer::SUCCESS
       return true
     else
-      raise "Failed to create project #{name} (repo main) inside platform #{owner.uname}_personal with code #{result}."
+      raise "Failed to create project #{unixname} (repo #{repository.unixname}) inside platform #{repository.platform.unixname} in path #{path} with code #{result}."
     end      
   end
 
