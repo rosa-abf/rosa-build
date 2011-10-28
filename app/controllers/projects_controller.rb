@@ -1,5 +1,5 @@
 class ProjectsController < ApplicationController
-  before_filter :authenticate_user!
+  before_filter :authenticate_user!, :except => :auto_build
   before_filter :find_project, :only => [:show, :edit, :update, :destroy, :build, :process_build]
   before_filter :get_paths, :only => [:new, :create, :edit, :update]
 
@@ -46,6 +46,11 @@ class ProjectsController < ApplicationController
     @project.destroy
     flash[:notice] = t("flash.project.destroyed")
     redirect_to @project.owner
+  end
+
+  def auto_build
+    logger.info "Git hook recieved from #{params[:git_user]} to #{params[:git_repo]}"
+    render :nothing => true
   end
 
   def build

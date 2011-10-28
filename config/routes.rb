@@ -81,6 +81,9 @@ Rosa::Application.routes.draw do
       get :build
       post :process_build
     end
+    collection do
+      get :auto_build
+    end
   end
 
   resources :repositories do

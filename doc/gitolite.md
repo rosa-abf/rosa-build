@@ -20,4 +20,19 @@
 
 --------------- As user who will manage gitolite
 
+* cd /share # /var/rosa
 * git clone git@gitolite:gitolite-admin
+* ln -s /home/git/repositories git_projects
+* sudo chmod -R +r /home/git/repositories
+
+--------------- Settings for .gitolite.rc
+
+* $REPO_UMASK = 0022;
+
+--------------- Setup hooks
+
+* cd /home/git/.gitolite/hooks/common
+* mv update.secondary.sample update.secondary
+* mkdir update.secondary.d
+* touch update.secondary.d/update.auto-build
+* chmod +x update.secondary update.secondary.d/update.auto-build

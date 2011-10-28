@@ -29,8 +29,6 @@ class Project < ActiveRecord::Base
   scope :addable_to_repository, lambda { |repository_id| where("projects.id NOT IN (SELECT project_to_repositories.project_id FROM project_to_repositories WHERE (project_to_repositories.repository_id != #{ repository_id }))") }
 
   before_create :make_owner_rel
-  before_create :xml_rpc_create
-  before_destroy :xml_rpc_destroy
   before_create :create_git_repo 
   before_update :update_git_repo
   before_destroy :destroy_git_repo
@@ -81,15 +79,6 @@ class Project < ActiveRecord::Base
     build_path(git_repo_name)
   end
 
-  def xml_rpc_create
-    result = BuildServer.create_project unixname, repository.platform.unixname, repository.unixname
-    if result == BuildServer::SUCCESS
-      return true
-    else
-      raise "Failed to create project #{name} (repo #{repository.name}) inside platform #{repository.platform.name} with code #{result}."
-    end      
-  end
-
   protected
 
     def build_path(dir)
@@ -130,24 +119,6 @@ class Project < ActiveRecord::Base
       with_ga do |ga|
         ga.rm_repo git_repo_name
         ga.save_and_release
-      end
-    end
-
-    def xml_rpc_create
-      result = BuildServer.create_project unixname, "#{owner.uname}_personal", 'main', path
-      if result == BuildServer::SUCCESS
-        return true
-      else
-        raise "Failed to create project #{name} (repo main) inside platform #{owner.uname}_personal with code #{result}."
-      end      
-    end
-
-    def xml_rpc_destroy
-      result = BuildServer.delete_project unixname, "#{owner.uname}_personal"
-      if result == BuildServer::SUCCESS
-        return true
-      else
-        raise "Failed to delete repository #{name} (repo main) inside platform #{owner.uname}_personal with code #{result}."
       end
     end
 end
