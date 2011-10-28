@@ -25,6 +25,9 @@
             -if current_user.can_perform?('platforms', 'index')
               %li{:class => controller.controller_path == 'platforms' ? 'active' : '' }
                 %a{:href => platforms_path}= t("layout.menu.platforms")
+            -if current_user.can_perform?('projects', 'index')
+              %li{:class => controller.controller_path == 'projects' ? 'active' : '' }
+                %a{:href => projects_path}= t("layout.menu.projects")
             -if current_user.can_perform?('downloads', 'index')
               %li{:class => controller.controller_path == 'downloads' ? 'active' : '' }
                 %a{:href => downloads_path}= t("layout.menu.downloads")

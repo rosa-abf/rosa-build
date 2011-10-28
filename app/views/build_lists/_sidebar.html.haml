@@ -2,7 +2,7 @@
   %h3= t("layout.repositories.current_repository_header")
   .content
     - @project.repositories.each do |repository|
-      %p= link_to "#{repository.name} (#{repository.platform.name})", platform_repository_path(@platform)
+      %p= link_to "#{repository.name} (#{repository.platform.name})", platform_repository_path(@platform, repository)
 
 .block.notice
   %h3= t("layout.projects.current_project_header")
