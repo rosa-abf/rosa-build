@@ -3,6 +3,8 @@ class CategoriesController < ApplicationController
   before_filter :find_category, :only => [:show, :edit, :update, :destroy]
   before_filter :find_platform, :only => [:show, :index]
 
+  before_filter :check_global_access
+
   def platforms
     @platforms = Platform.all
     @platforms_count = Platform.joins(:repositories => :projects).group('platforms.id').count

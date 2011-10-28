@@ -5,6 +5,8 @@ class PlatformsController < ApplicationController
   before_filter :find_platform, :only => [:freeze, :unfreeze, :clone, :edit]
   before_filter :get_paths, :only => [:new, :create]
 
+  before_filter :check_global_access
+
   def index
     @platforms = Platform.paginate(:page => params[:platform_page])
   end

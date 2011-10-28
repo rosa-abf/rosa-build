@@ -2,6 +2,7 @@ class RpcController < ApplicationController
   exposes_xmlrpc_methods
 
   before_filter :authenticate_user!
+  before_filter :check_global_access
   
   ## Usage example:
   #

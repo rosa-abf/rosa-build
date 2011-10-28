@@ -7,6 +7,8 @@ class BuildListsController < ApplicationController
 
 	before_filter :find_build_list_by_bs, :only => [:status_build, :pre_build, :post_build]
 
+  before_filter :check_global_access
+
 	def all
     if params[:filter]
       @filter = BuildList::Filter.new(nil, params[:filter])

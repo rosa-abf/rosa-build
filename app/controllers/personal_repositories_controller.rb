@@ -2,6 +2,7 @@ class PersonalRepositoriesController < ApplicationController
   before_filter :authenticate_user!
   before_filter :find_repository#, :only => [:show, :destroy, :add_project, :remove_project, :make_private, :settings]
   before_filter :check_repository
+  before_filter :check_global_access
 
   def show
     if params[:query]

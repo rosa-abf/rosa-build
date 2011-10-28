@@ -2,6 +2,7 @@ class ProjectsController < ApplicationController
   before_filter :authenticate_user!, :except => :auto_build
   before_filter :find_project, :only => [:show, :edit, :update, :destroy, :build, :process_build]
   before_filter :get_paths, :only => [:new, :create, :edit, :update]
+  before_filter :check_global_access
 
   def index
     @projects = Project.paginate(:page => params[:project_page])

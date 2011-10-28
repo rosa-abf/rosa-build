@@ -2,6 +2,7 @@
 class GroupsController < ApplicationController
   before_filter :authenticate_user!
   before_filter :find_group, :only => [:show, :edit, :update, :destroy]
+  before_filter :check_global_access
 
   def index
     @groups = Group.paginate(:page => params[:group_page])

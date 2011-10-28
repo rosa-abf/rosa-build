@@ -4,6 +4,7 @@ class RepositoriesController < ApplicationController
   before_filter :find_repository, :only => [:show, :destroy, :add_project, :remove_project]
   before_filter :get_paths, :only => [:show, :new, :create, :add_project, :remove_project]
   before_filter :find_platforms, :only => [:new, :create]
+  before_filter :check_global_access
 
   def index
     @repositories = Repository.paginate(:page => params[:repository_page])

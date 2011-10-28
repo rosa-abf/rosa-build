@@ -1,5 +1,6 @@
 class PrivateUsersController < ApplicationController
   before_filter :authenticate_user!
+  before_filter :check_global_access
 
   def index
   	@private_users = PrivateUser.where(:platform_id => params[:platform_id]).paginate :page => params[:page]
