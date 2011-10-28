@@ -35,7 +35,7 @@ namespace :roles do
       puts 'Fail to apply default roles'
       return
     end
-    pust 'Default roles successfully applied.'
+    puts 'Default roles successfully applied.'
   end
 end
 
