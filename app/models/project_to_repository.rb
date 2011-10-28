@@ -5,9 +5,9 @@ class ProjectToRepository < ActiveRecord::Base
   delegate :path, :to => :project
 
   #before_save :create_link
-  before_save :add_compability_link
+  #before_save :add_compability_link
   #after_destroy :remove_link
-  after_destroy :remove_compability_link
+  #after_destroy :remove_compability_link
   
   after_create lambda {
     project.xml_rpc_create

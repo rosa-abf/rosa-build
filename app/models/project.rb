@@ -134,7 +134,7 @@ class Project < ActiveRecord::Base
     end
 
     def xml_rpc_create
-      result = BuildServer.create_project unixname,  "#{owner.uname}_personal", 'main'
+      result = BuildServer.create_project unixname, "#{owner.uname}_personal", 'main', path
       if result == BuildServer::SUCCESS
         return true
       else
