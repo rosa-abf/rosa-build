@@ -18,7 +18,7 @@
 * git clone git://github.com/sitaramc/gitolite
 * cd gitolite
 * src/gl-system-install
-* gl-setup /tmp/ga_admin.pub
+* gl-setup ~/ga_admin.pub # /tmp/ga_admin.pub
 
 --------------- Settings for .gitolite.rc during install
 

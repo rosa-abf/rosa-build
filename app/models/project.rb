@@ -29,10 +29,10 @@ class Project < ActiveRecord::Base
   scope :addable_to_repository, lambda { |repository_id| where("projects.id NOT IN (SELECT project_to_repositories.project_id FROM project_to_repositories WHERE (project_to_repositories.repository_id != #{ repository_id }))") }
 
   before_create :make_owner_rel
-  before_create :create_git_repo 
-  before_update :update_git_repo
-  before_destroy :destroy_git_repo
   after_create :attach_to_personal_repository
+  after_create :create_git_repo 
+  before_update :update_git_repo
+  after_destroy :destroy_git_repo
 
   def project_versions
     self.git_repository.tags
