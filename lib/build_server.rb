@@ -56,8 +56,8 @@ class BuildServer
     self.client.call('delete_container', container_id)
   end
 
-  def self.create_project name, platform_name, repo_name
-    self.client.call('create_project', name, repo_name, platform_name)
+  def self.create_project name, platform_name, repo_name, git_project_path
+    self.client.call('create_project', name, repo_name, platform_name, git_project_path)
   end
 
   def self.delete_project name, platform_name
