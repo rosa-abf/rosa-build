@@ -20,7 +20,7 @@ class Project < ActiveRecord::Base
   validates :owner, :presence => true
   validate {errors.add(:base, I18n.t('flash.project.save_warning_ssh_key')) if owner.ssh_key.blank?}
 
-  attr_accessible :category_id, :name, :unixname, :description, :visibility
+  #attr_accessible :category_id, :name, :unixname, :description, :visibility
   attr_readonly :unixname
 
   scope :recent, order("name ASC")
