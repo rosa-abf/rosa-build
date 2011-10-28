@@ -79,6 +79,24 @@ class Project < ActiveRecord::Base
     build_path(git_repo_name)
   end
 
+  def xml_rpc_create
+    result = BuildServer.create_project unixname, "#{owner.uname}_personal", 'main', path
+    if result == BuildServer::SUCCESS
+      return true
+    else
+      raise "Failed to create project #{name} (repo main) inside platform #{owner.uname}_personal with code #{result}."
+    end      
+  end
+
+  def xml_rpc_destroy
+    result = BuildServer.delete_project unixname, "#{owner.uname}_personal"
+    if result == BuildServer::SUCCESS
+      return true
+    else
+      raise "Failed to delete repository #{name} (repo main) inside platform #{owner.uname}_personal with code #{result}."
+    end
+  end
+
   protected
 
     def build_path(dir)
