@@ -45,6 +45,10 @@ class Platform < ActiveRecord::Base
     self.visibility == 'hidden'
   end
 
+  def personal?
+    platform_type == 'personal'
+  end
+
   def clone(new_name, new_unixname)
     p = Platform.new
     p.name = new_name

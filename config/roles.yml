@@ -23,6 +23,11 @@
     - remove_project
     - destroy
     - new
+    personal_repositories:
+    - index
+    - show
+    - add_project
+    - remove_project
     downloads: 
     - index
     platforms: 
@@ -217,6 +222,8 @@
     - index
     groups: 
     - index
+    personal_repositories: 
+    - show
     repositories: 
     - index
     platforms: 

@@ -1,6 +1,7 @@
 class PersonalRepositoriesController < ApplicationController
   before_filter :authenticate_user!
   before_filter :find_repository#, :only => [:show, :destroy, :add_project, :remove_project, :make_private, :settings]
+  before_filter :check_repository
 
   def show
     if params[:query]
@@ -63,5 +64,9 @@ class PersonalRepositoriesController < ApplicationController
 
   def find_repository
     @repository = Repository.find(params[:id])
+  end
+  
+  def check_repository
+    redirect_to root_path if !@repository.platform.personal?
   end
 end
