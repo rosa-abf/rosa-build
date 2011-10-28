@@ -11,6 +11,10 @@ class ProjectToRepository < ActiveRecord::Base
   
   after_create lambda {
     project.xml_rpc_create
+  }    
+  
+  after_destroy lambda {
+    project.xml_rpc_destroy
   }
 
   #def path
