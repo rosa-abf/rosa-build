@@ -18,6 +18,10 @@ ru:
         open_id: 'вход через OpenID'
       projects_controller:
         auto_build: 'обновлен git репозиторий'
+        process_build: 'отправлен на сборку'
+      build_lists_controller:
+        cancel: 'сборка отменена'
+        publish: 'сборка опубликована'
       create: 'создано'
       update: 'обновлено'
       destroy: 'удалено'

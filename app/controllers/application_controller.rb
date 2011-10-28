@@ -4,7 +4,8 @@ class ApplicationController < ActionController::Base
   layout :layout_by_resource
 
 
-  before_filter lambda { EventLog.current_controller = self }, :only => [:create, :destroy, :open_id] # :update
+  before_filter lambda { EventLog.current_controller = self },
+                :only => [:create, :destroy, :open_id, :auto_build, :process_build, :cancel, :publish] # :update
   after_filter lambda { EventLog.current_controller = nil }
 
   helper_method :get_owner

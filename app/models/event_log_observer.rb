@@ -5,9 +5,14 @@ class EventLogObserver < ActiveRecord::Observer
     ActiveSupport::Notifications.instrument("event_log.observer", :object => record)
   end
 
-  # def after_update(record)
-  #   ActiveSupport::Notifications.instrument("event_log.observer", :object => record)
-  # end
+  def before_update(record)
+    case record.class
+    when BuildList
+      if record.status_changed? and record.status == BUILD_CANCELED
+        ActiveSupport::Notifications.instrument("event_log.observer", :object => record)
+      end
+    end
+  end
 
   def after_destroy(record)
     ActiveSupport::Notifications.instrument("event_log.observer", :object => record)

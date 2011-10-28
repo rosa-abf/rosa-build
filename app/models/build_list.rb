@@ -98,7 +98,7 @@ class BuildList < ActiveRecord::Base
     return false unless can_published?
     
     BuildServer.publish_container bs_id
-    self.delete
+    self.destroy # self.delete
   end
   
   def can_published?

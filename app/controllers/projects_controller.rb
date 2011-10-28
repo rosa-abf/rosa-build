@@ -50,7 +50,6 @@ class ProjectsController < ApplicationController
   end
 
   def auto_build
-    EventLog.current_controller = self
     p = params.delete_if{|k,v| k == 'controller' or k == 'action'}
     ActiveSupport::Notifications.instrument("event_log.observer", :message => p.inspect) # TODO find :object ?
     # logger.info "Git hook recieved from #{params[:git_user]} to #{params[:git_repo]}"
