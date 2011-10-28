@@ -27,8 +27,11 @@ class Group < ActiveRecord::Base
 
   include PersonalRepository
 
-  before_save :create_dir
-  after_destroy :remove_dir
+#  before_save :create_dir
+#  after_destroy :remove_dir
+
+  before_create :add_default_role
+  before_save :add_owner_rel
 
   def roles_of(user)
     objects.where(:object_id => user.id, :object_type => user.class).map {|rel| rel.role}.reject {|r| r.nil?}
@@ -43,4 +46,15 @@ class Group < ActiveRecord::Base
       rel.save
     end
   end
+
+  protected
+
+    def add_owner_rel
+      if new_record? and owner
+        add_owner owner
+      elsif owner_id_changed?
+        remove_owner owner_type_was.classify.find(owner_id_was)
+        add_owner owner
+      end
+    end
 end

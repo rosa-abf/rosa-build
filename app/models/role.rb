@@ -26,6 +26,7 @@ class Role < ActiveRecord::Base
   }
 
   scope :default, where(:use_default => true)
+  scope :owner_default, where(:use_default_for_owner => true)
 
   before_save :check_default, :check_owner_default
 

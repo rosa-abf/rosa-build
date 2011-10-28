@@ -34,6 +34,8 @@ class User < ActiveRecord::Base
   attr_readonly :uname
   attr_accessor :login
 
+  before_create :add_default_role
+
   before_update {
     if ssh_key_was.blank? and ssh_key.present?
       create_ssh_key ssh_key

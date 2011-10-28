@@ -36,7 +36,7 @@
           = t("activerecord.attributes.role.use_default_for_owner")
           \:
         = (@role.use_default_for_owner) ? t("layout.yes_") : t("layout.no_")
-      - unless @role.can_see.empty?
+      - unless @role.can_see.nil? or @role.can_see.empty?
         %p
           %b
             = t("activerecord.attributes.role.can_see")
