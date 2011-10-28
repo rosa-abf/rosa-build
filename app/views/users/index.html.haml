@@ -12,6 +12,7 @@
           %th.first ID
           %th= t("activerecord.attributes.user.name")
           %th= t("activerecord.attributes.user.email")
+          %th= t("activerecord.attributes.user.global_role")
           %th.last &nbsp;
         - @users.each do |user|
           %tr{:class => cycle("odd", "even")}
@@ -21,7 +22,16 @@
               = link_to user.name, user_path(user)
             %td
               = user.email
+            %td
+              = user.global_role.name
             %td.last
-              #{link_to t("layout.show"), user_path(user)} | #{link_to t("layout.edit"), edit_user_path(user)} | #{link_to t("layout.delete"), user_path(user), :method => :delete, :confirm => t("layout.users.confirm_delete")}
+              - if current_user.can_perform? 'users', 'show'
+                = link_to t("layout.show"), user_path(user)
+                \|
+              - if current_user.can_perform? 'users', 'edit'
+                #{link_to t("layout.edit"), edit_user_path(user)}
+                \|
+              - if current_user.can_perform? 'users', 'destroy'
+                #{link_to t("layout.delete"), user_path(user), :method => :delete, :confirm => t("layout.users.confirm_delete")}
       .actions-bar.wat-cf
         .actions= will_paginate @users, :param_name => :user_page

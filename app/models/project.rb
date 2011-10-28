@@ -24,7 +24,8 @@ class Project < ActiveRecord::Base
   attr_readonly :unixname
 
   scope :recent, order("name ASC")
-  scope :by_name, lambda { |name| {:conditions => ['name like ?', '%' + name + '%']} }
+#  scope :by_name, lambda { |name| {:conditions => ['name like ?', '%' + name + '%']} }
+  scope :by_name, lambda { |name| where('name like ?', '%' + name + '%') }
   scope :by_visibilities, lambda {|v| {:conditions => ['visibility in (?)', v.join(',')]}}
   scope :addable_to_repository, lambda { |repository_id| where("projects.id NOT IN (SELECT project_to_repositories.project_id FROM project_to_repositories WHERE (project_to_repositories.repository_id != #{ repository_id }))") }
 

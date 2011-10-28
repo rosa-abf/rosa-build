@@ -448,6 +448,7 @@ ru:
         roles: Роли
         created_at: Создан
         updated_at: Обновлен
+        global_role: Роль в системе
 
       build_list:
         bs_id: Id
