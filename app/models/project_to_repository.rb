@@ -46,13 +46,15 @@ class ProjectToRepository < ActiveRecord::Base
       exists = File.exists?(sym_path) && File.directory?(sym_path)
       return false if exists
       if new_record?
-        FileUtils.ln_s(path, sym_path)
+        #FileUtils.ln_s(path, sym_path)
+        system("sudo ln -s #{ path } #{ sym_path }")
       end
     end
 
     def remove_compability_link
       exists = File.exists?(sym_path) && File.directory?(sym_path)
       return false unless exists
-      FileUtils.rm_rf(sym_path)
+      #FileUtils.rm_rf(sym_path)
+      system("sudo rm -rf #{ sym_path }")
     end
 end
