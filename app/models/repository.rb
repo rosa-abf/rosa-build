@@ -29,9 +29,9 @@ class Repository < ActiveRecord::Base
 
   attr_accessible :visibility, :name, :unixname, :platform_id
   
-  def path
-    build_path(unixname)
-  end
+#  def path
+#    build_path(unixname)
+#  end
 
   def clone
     r = Repository.new
@@ -50,26 +50,26 @@ class Repository < ActiveRecord::Base
       end
     end
 
-    def build_path(dir)
-      File.join(platform.path, dir)
-    end
-
-    def create_directory
-      exists = File.exists?(path) && File.directory?(path)
-      raise "Directory #{path} already exists" if exists
-      if new_record?
-        FileUtils.mkdir_p(path)
-        %w(release updates).each { |subrep| FileUtils.mkdir_p(path + subrep) }
-      elsif unixname_changed?
-        FileUtils.mv(build_path(unixname_was), buildpath(unixname))
-      end 
-    end
-
-    def remove_directory
-      exists = File.exists?(path) && File.directory?(path)
-      raise "Directory #{path} didn't exists" unless exists
-      FileUtils.rm_rf(path)
-    end
+#   def build_path(dir)
+#     File.join(platform.path, dir)
+#   end
+#
+#   def create_directory
+#     exists = File.exists?(path) && File.directory?(path)
+#     raise "Directory #{path} already exists" if exists
+#     if new_record?
+#       FileUtils.mkdir_p(path)
+#       %w(release updates).each { |subrep| FileUtils.mkdir_p(path + subrep) }
+#     elsif unixname_changed?
+#       FileUtils.mv(build_path(unixname_was), buildpath(unixname))
+#     end 
+#   end
+#
+#   def remove_directory
+#     exists = File.exists?(path) && File.directory?(path)
+#     raise "Directory #{path} didn't exists" unless exists
+#     FileUtils.rm_rf(path)
+#   end
 
     def xml_rpc_create
       result = BuildServer.create_repo unixname, platform.unixname
