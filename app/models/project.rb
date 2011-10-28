@@ -132,12 +132,21 @@ class Project < ActiveRecord::Base
       end
     end
 
-    def xml_rpc_destroy
-      result = BuildServer.delete_project unixname, repository.platform.unixname
+    def xml_rpc_create
+      result = BuildServer.create_project unixname,  "#{owner.uname}_personal", 'main'
       if result == BuildServer::SUCCESS
         return true
       else
-        raise "Failed to delete repository #{name} (repo #{repository.name}) inside platform #{repository.platform.name}."
+        raise "Failed to create project #{name} (repo main) inside platform #{owner.uname}_personal."
+      end      
+    end
+
+    def xml_rpc_destroy
+      result = BuildServer.delete_project unixname, "#{owner.uname}_personal"
+      if result == BuildServer::SUCCESS
+        return true
+      else
+        raise "Failed to delete repository #{name} (repo main) inside platform #{owner.uname}_personal."
       end
     end
 end
