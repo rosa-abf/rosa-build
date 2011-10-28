@@ -79,8 +79,8 @@ class Project < ActiveRecord::Base
     build_path(git_repo_name)
   end
 
-  def xml_rpc_create
-    result = BuildServer.create_project unixname, "#{owner.uname}_personal", 'main', path
+  def xml_rpc_create(repository)
+    result = BuildServer.create_project unixname, repository.platform.unixname, repository.unixname, path
     if result == BuildServer::SUCCESS
       return true
     else
@@ -88,8 +88,8 @@ class Project < ActiveRecord::Base
     end      
   end
 
-  def xml_rpc_destroy
-    result = BuildServer.delete_project unixname, "#{owner.uname}_personal"
+  def xml_rpc_destroy(repository)
+    result = BuildServer.delete_project unixname, repository.platform.unixname
     if result == BuildServer::SUCCESS
       return true
     else
