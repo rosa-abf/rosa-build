@@ -80,6 +80,9 @@ Rosa::Application.routes.draw do
     member do
       get :build
       post :process_build
+
+      get :add_collaborators
+      post :add_collaborators
     end
     collection do
       get :auto_build

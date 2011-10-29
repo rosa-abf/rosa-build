@@ -1,6 +1,6 @@
 class ProjectsController < ApplicationController
   before_filter :authenticate_user!, :except => :auto_build
-  before_filter :find_project, :only => [:show, :edit, :update, :destroy, :build, :process_build]
+  before_filter :find_project, :only => [:show, :edit, :update, :destroy, :build, :process_build, :add_collaborators]
   before_filter :get_paths, :only => [:new, :create, :edit, :update]
   before_filter :check_global_access, :except => :auto_build
 
@@ -99,6 +99,15 @@ class ProjectsController < ApplicationController
       end
 
       redirect_to project_path(@project)
+    end
+  end
+
+  def add_collaborators
+    if request.post?
+      # some stuff
+      redirect_to project_path(@project)
+    else
+      # display template
     end
   end
 

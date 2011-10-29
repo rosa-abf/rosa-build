@@ -54,4 +54,5 @@ class Group < ActiveRecord::Base
         add_owner owner
       end
     end
+
 end
