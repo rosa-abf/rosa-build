@@ -30,7 +30,7 @@ class User < ActiveRecord::Base
     errors.add(:uname, I18n.t('flash.user.group_uname_exists')) if Group.exists? :uname => uname
   }
 
-  attr_accessible :email, :password, :password_confirmation, :remember_me, :login, :name, :ssh_key, :uname, :global_role_id
+  attr_accessible :email, :password, :password_confirmation, :remember_me, :login, :name, :ssh_key, :uname
   attr_readonly :uname
   attr_accessor :login
 

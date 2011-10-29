@@ -28,6 +28,7 @@ class UsersController < ApplicationController
 
   def create
     @user = User.new params[:user]
+    @user.global_role_id = params[:user]['global_role_id']
     if @user.save
       flash[:notice] = t('flash.user.saved')
       redirect_to users_path
@@ -38,7 +39,7 @@ class UsersController < ApplicationController
   end
 
   def update
-    puts params[:user].inspect
+    @user.global_role_id = params[:user]['global_role_id']
     if @user.update_attributes(params[:user])
       flash[:notice] = t('flash.user.saved')
       redirect_to users_path
