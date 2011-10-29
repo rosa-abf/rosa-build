@@ -6,7 +6,19 @@
         %li.active= link_to t("layout.build_lists.all"), project_build_lists_path(@project)
 
   .content
-
+    - if controller.action_name == 'all'
+      .inner
+        %h2= t('layout.build_lists.build_server_status.header')
+        .field
+          %span= t('layout.build_lists.build_server_status.client_count') + ":"
+          %span= @build_server_status[:client_count]
+        .field
+          %span= t('layout.build_lists.build_server_status.count_new_task') + ":"
+          %span= @build_server_status[:count_new_task]
+        .field
+          %span= t('layout.build_lists.build_server_status.count_build_task') + ":"
+          %span= @build_server_status[:count_build_task]
+            
     .inner
       = render :partial => "build_lists/filter", :action_url => @action_url
 

@@ -24,6 +24,26 @@
         = @build_list.container_path
       %p
         %b
+          = t("activerecord.attributes.build_list.bpl")
+          \:
+        = @build_list.bpl.name
+      %p
+        %b
+          = t("activerecord.attributes.build_list.pl")
+          \:
+        = @build_list.pl.name
+      %p
+        %b
+          = t("activerecord.attributes.build_list.update_type")
+          \:
+        = @build_list.update_type
+      %p
+        %b
+          = t("activerecord.attributes.build_list.build_requires")
+          \:
+        = @build_list.build_requires
+      %p
+        %b
           = t("activerecord.attributes.build_list.status")
           \:
         = @build_list.human_status

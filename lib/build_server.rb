@@ -75,6 +75,10 @@ class BuildServer
   def self.delete_build_list idlist
     self.client.call('delete_build_list', idlist)
   end
+  
+  def get_status
+    self.client.call('get_status')
+  end
 
   def self.freeze platform_name, new_repo_name = nil
     self.client.call('freeze_platform', platform_name, new_repo_name)
