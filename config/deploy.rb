@@ -41,6 +41,12 @@ task :symlink_config_files do
   run "ln -nfs #{shared_path}/config/application.yml #{release_path}/config/application.yml"
 end
 
+task :generate_roles do
+  run "cd #{deploy_to}/current ; RAILS_ENV=production bundle exec rake rights:generate"
+  run "cd #{deploy_to}/current ; RAILS_ENV=production bundle exec rake roles:load"
+  run "cd #{deploy_to}/current ; RAILS_ENV=production bundle exec rake roles:apply"
+end
+
 namespace :deploy do
   task :restart, :roles => :app, :except => { :no_release => true } do
     ## DISABLED: run "cd #{deploy_to}/current ; ([ -f tmp/pids/unicorn.pid ] && kill -USR2 `cat tmp/pids/unicorn.pid`); true"
@@ -71,5 +77,7 @@ namespace :deploy do
   after "deploy:update_code", :roles => :web do
 #    build_assets
     symlink_config_files
+    generate_roles
   end
+  
 end
