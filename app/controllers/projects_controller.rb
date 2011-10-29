@@ -53,6 +53,20 @@ class ProjectsController < ApplicationController
     p = params.delete_if{|k,v| k == 'controller' or k == 'action'}
     ActiveSupport::Notifications.instrument("event_log.observer", :message => p.inspect) # TODO find :object ?
     # logger.info "Git hook recieved from #{params[:git_user]} to #{params[:git_repo]}"
+    
+    unixname = params[:git_repo].split('/')[1]
+    project = Project.find_by_unixname(unixname)
+    auto_build_list = AutoBuildList.find_by_project_id(project.id)
+    
+    BuildList.create!(
+      :project_id => project.id, 
+      :pl_id => auto_build_list.pl_id, 
+      :bpl_id => auto_build_list.bpl_id, 
+      :arch_id => auto_build_list.arch_id,
+      :project_version => project.project_versions.last.try(:name),
+      :build_requires => true,
+      :update_type => 'bugfix') if auto_build_list 
+    
     render :nothing => true
   end
 
@@ -60,7 +74,7 @@ class ProjectsController < ApplicationController
     @arches = Arch.recent
     @bpls = Platform.main
     @pls = @project.repositories.collect { |rep| ["#{rep.platform.name}/#{rep.unixname}", rep.platform.id] }
-    @project_versions = @project.project_versions.collect { |tag| [tag.name, tag.name.gsub(/^\w+\./, "")] }.select { |pv| pv[0] =~ /^v\./  }
+    @project_versions = @project.project_versions.collect { |tag| [tag.name, tag.name.gsub(/^\w+\./, "")] }
   end
 
   def process_build

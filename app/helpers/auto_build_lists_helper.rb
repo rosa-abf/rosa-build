@@ -1,0 +1,2 @@
+module AutoBuildListsHelper
+end

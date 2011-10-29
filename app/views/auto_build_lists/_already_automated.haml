@@ -1,0 +1,11 @@
+%h1= t("layout.auto_build_lists.already_automated")
+
+%table.table
+  %tr
+    %th= t("activerecord.attributes.auto_build_list.project")
+
+  - @projects_already_automated.each do |project|
+    %tr{:class => cycle("odd", "even")}
+      %td= link_to project.name, project_path(project)
+
+= will_paginate @projects_not_automated, :param_name => 'already_automated_page'

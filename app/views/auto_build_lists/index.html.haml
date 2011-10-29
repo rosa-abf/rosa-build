@@ -1,0 +1,18 @@
+.block
+  .content
+    .inner
+      %h2= t('layout.auto_build_lists.header')
+            
+    .inner
+      = render :partial => "auto_build_lists/not_automated"
+
+    %br
+    %br
+    %br
+
+    .inner
+      = render :partial => "auto_build_lists/already_automated"
+      
+    %br
+    %br
+    %br

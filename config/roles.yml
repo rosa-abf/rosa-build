@@ -224,6 +224,8 @@
     - index
     personal_repositories: 
     - show
+    auto_build_lists: 
+    - index
     repositories: 
     - index
     platforms: 

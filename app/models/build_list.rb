@@ -117,7 +117,7 @@ class BuildList < ActiveRecord::Base
 
   #TODO: Share this checking on product owner.
   def can_canceled?
-    self.status == BUILD_PENDING
+    self.status == BUILD_PENDING && bs_id
   end
 
   def event_log_message

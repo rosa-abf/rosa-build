@@ -29,6 +29,9 @@ Rosa::Application.routes.draw do
 
   match 'build_lists/' => 'build_lists#all', :as => :all_build_lists
   match 'build_lists/:id/cancel/' => 'build_lists#cancel', :as => :build_list_cancel
+  
+  resources :auto_build_lists, :only => [:index, :create] do
+  end
 
   resources :personal_repositories, :only => [:show] do
     member do

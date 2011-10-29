@@ -30,6 +30,15 @@ ru:
 
     downloads:
       title: Статистика закачек пакетов
+      
+    auto_build_lists:
+      header: Проекты с автоматической сборкой
+      message: Все проекты собираются под пользовательский репозиторий и архитектуру i586
+      project: Проект
+      action: Действие
+      automate_btn: Автоматизировать
+      not_automated: Не автоматизированы
+      already_automated: Автоматизированы
 
     weekdays:
       Monday: Понедельник
@@ -55,6 +64,7 @@ ru:
       roles: Роли
       users: Пользователи
       personal_repository: Мой репозиторий
+      auto_build_lists: Авто. сборки
 
     sessions:
       sign_in_header: Вход в систему
@@ -261,6 +271,10 @@ ru:
         project_version_not_found: версия не найден
 
   flash:
+    auto_build_list:
+      success: Сборка проекта автоматизорована!
+      failed: Не удалось автоматизировать сборку!
+    
     category:
       saved: Категория успешно сохранена
       save_error: Не удалось сохранить категорию
@@ -347,6 +361,16 @@ ru:
       download: Статистика
 
     attributes:
+      auto_build_list:
+        project_id: Проект
+        project: Проект
+        bpl_id: Репозиторий для сохранения
+        bpl: Репозиторий для сохранения
+        pl_id: Платформа
+        pl: Платформа
+        arch_id: Архитектура
+        arch: Архитектура
+      
       private_user:
         login: Логин
         password: Пароль

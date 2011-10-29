@@ -14,6 +14,7 @@ class Project < ActiveRecord::Base
   has_many :relations, :as => :target, :dependent => :destroy
   has_many :collaborators, :through => :relations, :source => :object, :source_type => 'User'
   has_many :groups,        :through => :relations, :source => :object, :source_type => 'Group'
+  has_many :auto_build_lists, :dependent => :destroy
 
   validates :name,     :uniqueness => {:scope => [:owner_id, :owner_type]}, :presence => true, :allow_nil => false, :allow_blank => false
   validates :unixname, :uniqueness => {:scope => [:owner_id, :owner_type]}, :presence => true, :format => { :with => /^[a-zA-Z0-9_]+$/ }, :allow_nil => false, :allow_blank => false
@@ -28,6 +29,7 @@ class Project < ActiveRecord::Base
   scope :by_name, lambda { |name| where('name like ?', '%' + name + '%') }
   scope :by_visibilities, lambda {|v| {:conditions => ['visibility in (?)', v.join(',')]}}
   scope :addable_to_repository, lambda { |repository_id| where("projects.id NOT IN (SELECT project_to_repositories.project_id FROM project_to_repositories WHERE (project_to_repositories.repository_id != #{ repository_id }))") }
+  scope :automateable, where("projects.id NOT IN (SELECT auto_build_lists.project_id FROM auto_build_lists)")
 
   before_save :add_owner_rel
   after_create :attach_to_personal_repository
@@ -36,6 +38,11 @@ class Project < ActiveRecord::Base
   after_destroy :destroy_git_repo
 
   def project_versions
+    #tags.collect { |tag| [tag.name, tag.name.gsub(/^\w+\./, "")] }.select { |pv| pv[0] =~ /^v\./  }
+    tags.select { |tag| tag.name =~ /^v\./  }
+  end
+
+  def tags
     self.git_repository.tags
   end
 

@@ -1,5 +1,5 @@
 class EventLogObserver < ActiveRecord::Observer
-  observe :user, :platform, :repository, :project, :product, :build_list
+  observe :user, :platform, :repository, :project, :product, :build_list, :auto_build_list
 
   def after_create(record)
     ActiveSupport::Notifications.instrument("event_log.observer", :object => record)

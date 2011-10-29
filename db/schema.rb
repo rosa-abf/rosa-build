@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20111028070604) do
+ActiveRecord::Schema.define(:version => 20111029150934) do
 
   create_table "arches", :force => true do |t|
     t.string   "name",       :null => false
@@ -31,6 +31,15 @@ ActiveRecord::Schema.define(:version => 20111028070604) do
   add_index "authentications", ["provider", "uid"], :name => "index_authentications_on_provider_and_uid", :unique => true
   add_index "authentications", ["user_id"], :name => "index_authentications_on_user_id"
 
+  create_table "auto_build_lists", :force => true do |t|
+    t.integer  "project_id"
+    t.integer  "arch_id"
+    t.integer  "pl_id"
+    t.integer  "bpl_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "build_list_items", :force => true do |t|
     t.string   "name"
     t.integer  "level"
@@ -38,6 +47,7 @@ ActiveRecord::Schema.define(:version => 20111028070604) do
     t.integer  "build_list_id"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "version"
   end
 
   add_index "build_list_items", ["build_list_id"], :name => "index_build_list_items_on_build_list_id"
@@ -261,10 +271,11 @@ ActiveRecord::Schema.define(:version => 20111028070604) do
 
   create_table "users", :force => true do |t|
     t.string   "name"
-    t.string   "email",                                 :default => "", :null => false
-    t.string   "encrypted_password",     :limit => 128, :default => "", :null => false
+    t.string   "email",                               :default => "", :null => false
+    t.string   "encrypted_password",   :limit => 128, :default => "", :null => false
+    t.string   "password_salt",                       :default => "", :null => false
     t.string   "reset_password_token"
-    t.datetime "reset_password_sent_at"
+    t.string   "remember_token"
     t.datetime "remember_created_at"
     t.datetime "created_at"
     t.datetime "updated_at"
