@@ -120,7 +120,7 @@ class ActiveRecord::Base
   class << self
 
     def visible_to object
-      return all unless (public_instance_methods + column_names).include? 'visibility'
+      return scoped unless (public_instance_methods + column_names).include? 'visibility'
       rs = (object.roles_to :system).compact
       vis = rs.inject({}) do |h, r|
         unless r.can_see.nil?
@@ -131,7 +131,7 @@ class ActiveRecord::Base
       vis = vis[self.name]
       return [] if !vis or vis.empty?
       if vis == self::VISIBILITIES
-        return all
+        return scoped # all
       else
         return by_visibilities(vis)
       end
