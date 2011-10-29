@@ -8,6 +8,9 @@
   = f.label :email, t("activerecord.attributes.user.email"), :class => :label
   = f.text_field :email, :class => 'text_field'
 .group
+  = f.label :global_role_id, t("activerecord.attributes.user.global_role"), :class => :label
+  = f.select :global_role_id, options_for_select(@global_roles, @user.global_role_id)
+.group
   = f.label :ssh_key, t("activerecord.attributes.user.ssh_key"), :class => :label
   = f.text_area :ssh_key, :class => 'text_area'
 

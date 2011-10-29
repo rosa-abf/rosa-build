@@ -23,6 +23,11 @@
         = @user.email
       %p
         %b
+          = t("activerecord.attributes.user.global_role")
+          \:
+        = @user.global_role.name
+      %p
+        %b
           = t("activerecord.attributes.user.created_at")
           \:
         = @user.created_at
