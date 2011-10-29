@@ -9,10 +9,8 @@ class BuildServer
   PROJECT_NOT_FOUND = 3
   PROJECT_VERSION_NOT_FOUND = 4
 
-  BUILD_ERROR = 2500
-  MOCK_NOT_FOUND = 256
-  DEPENDENCIES_FAIL = 7680
-  SRPM_NOT_FOUND = 12800
+  BUILD_ERROR = 666
+  DEPENDENCIES_FAIL = 555
 
   def self.client
     @@client ||= XMLRPC::Client.new3('host' => APP_CONFIG['build_server_ip'], 'port' => APP_CONFIG['build_server_port'], 'path' => APP_CONFIG['build_server_path'])

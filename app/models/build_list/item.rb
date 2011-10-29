@@ -3,13 +3,12 @@ class BuildList::Item < ActiveRecord::Base
 
   attr_protected :build_list_id
 
-  STATUSES = [BuildServer::SUCCESS, BuildServer::DEPENDENCIES_FAIL, BuildServer::SRPM_NOT_FOUND, BuildServer::MOCK_NOT_FOUND]
+  STATUSES = [BuildServer::SUCCESS, BuildServer::DEPENDENCIES_FAIL, BuildServer::BUILD_ERROR]
   HUMAN_STATUSES = {
                      nil => :unknown,
-                     BuildServer::MOCK_NOT_FOUND => :mock_not_found,
                      BuildServer::DEPENDENCIES_FAIL => :dependencies_fail,
-                     BuildServer::SRPM_NOT_FOUND => :srpm_not_found,
-                     BuildServer::SUCCESS => :success
+                     BuildServer::SUCCESS => :success,
+                     BuildServer::BUILD_ERROR => :build_error
                     }
 
   scope :recent, order("level ASC, name ASC")

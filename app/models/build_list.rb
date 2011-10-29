@@ -21,6 +21,7 @@ class BuildList < ActiveRecord::Base
   WAITING_FOR_RESPONSE = 4000
   BUILD_PENDING = 2000
   BUILD_STARTED = 3000
+  TEST_FAILD = 2
 
   STATUSES = [WAITING_FOR_RESPONSE,
               BuildServer::SUCCESS,
@@ -30,7 +31,8 @@ class BuildList < ActiveRecord::Base
               BuildServer::PLATFORM_NOT_FOUND,
               BuildServer::PLATFORM_PENDING,
               BuildServer::PROJECT_NOT_FOUND,
-              BuildServer::PROJECT_VERSION_NOT_FOUND]
+              BuildServer::PROJECT_VERSION_NOT_FOUND,
+              TEST_FAILD]
 
   HUMAN_STATUSES = { BuildServer::BUILD_ERROR => :build_error,
                      BUILD_PENDING => :build_pending,
@@ -40,7 +42,8 @@ class BuildList < ActiveRecord::Base
                      BuildServer::PLATFORM_NOT_FOUND => :platform_not_found,
                      BuildServer::PLATFORM_PENDING => :platform_pending,
                      BuildServer::PROJECT_NOT_FOUND => :project_not_found,
-                     BuildServer::PROJECT_VERSION_NOT_FOUND => :project_version_not_found
+                     BuildServer::PROJECT_VERSION_NOT_FOUND => :project_version_not_found,
+                     TEST_FAILD => :testing_faild
                     }
 
   scope :recent, order("created_at DESC")
