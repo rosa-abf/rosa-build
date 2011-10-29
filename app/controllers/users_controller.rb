@@ -17,9 +17,13 @@ class UsersController < ApplicationController
 
   def new
     @user = User.new
+    @global_roles = Role.by_acter(User).by_target(:system) + Role.by_acter(:all).by_target(:system)
+    @global_roles.map! {|role| [role.name, role.id]}
   end
 
   def edit
+    @global_roles = Role.by_acter(User).by_target(:system) + Role.by_acter(:all).by_target(:system)
+    @global_roles.map! {|role| [role.name, role.id]}
   end
 
   def create
@@ -34,6 +38,7 @@ class UsersController < ApplicationController
   end
 
   def update
+    puts params[:user].inspect
     if @user.update_attributes(params[:user])
       flash[:notice] = t('flash.user.saved')
       redirect_to users_path

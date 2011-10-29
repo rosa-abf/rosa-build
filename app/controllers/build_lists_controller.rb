@@ -16,7 +16,10 @@ class BuildListsController < ApplicationController
       @build_lists = BuildList.paginate :page => params[:page]
     end
 		@action_url = all_build_lists_path
-    
+		
+    @build_server_status = BuildServer.get_status
+	  #@build_server_status = {:client_count => '1', :count_new_task => '2', :count_build_task => 3}
+	  
     render :action => 'index'
 	end
 	
