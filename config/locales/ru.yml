@@ -229,6 +229,12 @@ ru:
       cancel_successed: 'Сборка отменена.'
       cancel_failed: 'При отмене сборки произошла ошибка!'
       
+      build_server_status:
+        header: Статус сборочного сервера
+        client_count: Число клиентов
+        count_new_task: Число заданий в очереди
+        count_build_task: Число выполняемых заданий
+      
       items:
         statuses:
           build_error: ошибка сборки
