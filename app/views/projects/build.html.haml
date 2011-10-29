@@ -19,10 +19,10 @@
               = f.select :project_version, @project_versions
               
             .group.pl_ids_container
-              = f.label :pl, t("activerecord.attributes.build_list.pl"), :class => :label
-              - @pls.each do |pl|
-                = f.check_box "pl[#{pl.id}]", :pl_id => pl.id, :class => 'build_pl_ids'
-                = pl.name
+              = f.label :bpl, t("activerecord.attributes.build_list.bpl"), :class => :label
+              - @bpls.each do |bpl|
+                = f.check_box "bpl[#{bpl.id}]", :bpl_id => bpl.id, :class => 'build_bpl_ids'
+                = bpl.name
                 %br
                 
             .group
@@ -43,8 +43,8 @@
                 %br
                 
             .group
-              = f.label :bpl, t("activerecord.attributes.build_list.bpl"), :class => :label
-              = f.select :bpl, @bpls
+              = f.label :pl, t("activerecord.attributes.build_list.pl"), :class => :label
+              = f.select :pl, @pls
 
         .group.navform.wat-cf
           %button.button{:type => "submit"}

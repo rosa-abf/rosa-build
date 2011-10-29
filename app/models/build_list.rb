@@ -14,7 +14,7 @@ class BuildList < ActiveRecord::Base
   validates :update_type, :inclusion => UPDATE_TYPES
   
   validate lambda {  
-    errors.add(:pl, I18n.t('flash.build_list.wrong_platform')) if bpl.platform_type == 'main' && pl_id != bpl_id
+    errors.add(:bpl, I18n.t('flash.build_list.wrong_platform')) if pl.platform_type == 'main' && pl_id != bpl_id
   }
 
   BUILD_CANCELED = 5000

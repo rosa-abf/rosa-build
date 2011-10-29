@@ -58,8 +58,8 @@ class ProjectsController < ApplicationController
 
   def build
     @arches = Arch.recent
-    @pls = Platform.main
-    @bpls = @project.repositories.collect { |rep| ["#{rep.platform.name}/#{rep.unixname}", rep.platform.id] }
+    @bpls = Platform.main
+    @pls = @project.repositories.collect { |rep| ["#{rep.platform.name}/#{rep.unixname}", rep.platform.id] }
     @project_versions = @project.project_versions.collect { |tag| [tag.name, tag.name.gsub(/^\w+\./, "")] }.select { |pv| pv[0] =~ /^v\./  }
   end
 
@@ -69,10 +69,10 @@ class ProjectsController < ApplicationController
 
     @project_version = params[:build][:project_version]
 
-    pls_ids = params[:build][:pl].blank? ? [] : params[:build][:pl].select{|_,v| v == "1"}.collect{|x| x[0].to_i }
-    pls = Platform.where(:id => pls_ids)
+    bpls_ids = params[:build][:bpl].blank? ? [] : params[:build][:bpl].select{|_,v| v == "1"}.collect{|x| x[0].to_i }
+    bpls = Platform.where(:id => bpls_ids)
     
-    bpl = Platform.find params[:build][:bpl]
+    pl = Platform.find params[:build][:pl]
     update_type = params[:build][:update_type]
     build_requires = params[:build][:build_requires]
 
@@ -80,20 +80,20 @@ class ProjectsController < ApplicationController
 
     if !check_arches || !check_project_versions
       @arches = Arch.recent
-      @pls = Platform.main
-      @bpls = @project.repositories.collect { |rep| ["#{rep.platform.name}/#{rep.unixname}", rep.platform.id] }
+      @bpls = Platform.main
+      @pls = @project.repositories.collect { |rep| ["#{rep.platform.name}/#{rep.unixname}", rep.platform.id] }
        
       render :action => "build"
     else
       flash[:notice], flash[:error] = "", ""
       @arches.each do |arch|
-        pls.each do |pl|
+        bpls.each do |bpl|
           build_list = @project.build_lists.new(:arch => arch, :project_version => @project_version, :pl => pl, :bpl => bpl, :update_type =>  update_type, :build_requires => build_requires)
         
           if build_list.save
-            flash[:notice] += t("flash.build_list.saved", :project_version => @project_version, :arch => arch.name, :pl => pl.name, :bpl => bpl)
+            flash[:notice] += t("flash.build_list.saved", :project_version => @project_version, :arch => arch.name, :bpl => bpl.name, :pl => pl)
           else
-            flash[:error] += t("flash.build_list.save_error", :project_version => @project_version, :arch => arch.name, :pl => pl.name, :bpl => bpl)
+            flash[:error] += t("flash.build_list.save_error", :project_version => @project_version, :arch => arch.name, :bpl => bpl.name, :pl => pl)
           end
         end
       end
