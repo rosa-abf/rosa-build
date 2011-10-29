@@ -117,6 +117,10 @@ class BuildList < ActiveRecord::Base
     self.status == BUILD_PENDING
   end
 
+  def event_log_message
+    {:project => project.name, :version => project_version, :arch => arch.name}.inspect
+  end
+
   private
     def set_default_status
       self.status = WAITING_FOR_RESPONSE unless self.status.present?
