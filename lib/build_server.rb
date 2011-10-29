@@ -76,7 +76,7 @@ class BuildServer
     self.client.call('delete_build_list', idlist)
   end
   
-  def get_status
+  def self.get_status
     self.client.call('get_status')
   end
 
