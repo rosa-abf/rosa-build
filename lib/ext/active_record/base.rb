@@ -129,7 +129,7 @@ class ActiveRecord::Base
         h
       end
       vis = vis[self.name]
-      return [] if !vis or vis.empty?
+      return where('1=2') if !vis or vis.empty?
       if vis == self::VISIBILITIES
         return scoped # all
       else
