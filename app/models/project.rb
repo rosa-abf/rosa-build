@@ -29,7 +29,7 @@ class Project < ActiveRecord::Base
   scope :by_visibilities, lambda {|v| {:conditions => ['visibility in (?)', v.join(',')]}}
   scope :addable_to_repository, lambda { |repository_id| where("projects.id NOT IN (SELECT project_to_repositories.project_id FROM project_to_repositories WHERE (project_to_repositories.repository_id != #{ repository_id }))") }
 
-  before_create :make_owner_rel
+  before_save :add_owner_rel
   after_create :attach_to_personal_repository
   after_create :create_git_repo 
   before_update :update_git_repo
@@ -108,13 +108,6 @@ class Project < ActiveRecord::Base
       repositories << self.owner.personal_repository if !repositories.exists?(:id => self.owner.personal_repository)
     end
 
-    def make_owner_rel
-      unless groups.include? owner or collaborators.include? owner
-        collaborators << owner if owner.instance_of? User
-        groups        << owner if owner.instance_of? Group
-      end
-    end
-
     def create_git_repo
       with_ga do |ga|
         repo = ga.add_repo git_repo_name
@@ -138,6 +131,15 @@ class Project < ActiveRecord::Base
       with_ga do |ga|
         ga.rm_repo git_repo_name
         ga.save_and_release
+      end
+    end
+
+    def add_owner_rel
+      if new_record? and owner
+        add_owner owner
+      elsif owner_id_changed?
+        remove_owner owner_type_was.classify.find(owner_id_was)
+        add_owner owner
       end
     end
 end

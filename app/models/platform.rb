@@ -19,9 +19,9 @@ class Platform < ActiveRecord::Base
   validates :unixname, :uniqueness => true, :presence => true, :format => { :with => /^[a-zA-Z0-9_]+$/ }, :allow_nil => false, :allow_blank => false
   validates :distrib_type, :presence => true, :allow_nil => :false, :allow_blank => false, :inclusion => {:in => APP_CONFIG['distr_types']}
 
-  after_create :make_owner_rel
+#  after_create :make_owner_rel
 #  before_save :create_directory
-  before_save :make_owner_rel
+  before_save :add_owner_rel
 #  after_destroy :remove_directory
   before_create :xml_rpc_create
   before_destroy :xml_rpc_destroy
@@ -113,12 +113,15 @@ class Platform < ActiveRecord::Base
       FileUtils.rm_rf(path)
     end
 
-    def make_owner_rel
-      unless members.include? owner or groups.include? owner
-        members << owner if owner.instance_of? User
-        groups  << owner if owner.instance_of? Group
+    def add_owner_rel
+      if new_record? and owner
+        add_owner owner
+      elsif owner_id_changed?
+        remove_owner owner_type_was.classify.find(owner_id_was)
+        add_owner owner
       end
     end
+
 
     def xml_rpc_create
 #      return true
@@ -170,6 +173,15 @@ class Platform < ActiveRecord::Base
       #raise "Personal platform path #{ symlink_downloads_path } does not exists!" if !(File.exists?(symlink_downloads_path) && File.directory?(symlink_downloads_path))
       return true if !(File.exists?(symlink_downloads_path) && File.directory?(symlink_downloads_path))
       FileUtils.rm_rf symlink_downloads_path 
+    end
+
+    def add_owner_rel
+      if new_record? and owner
+        add_owner owner
+      elsif owner_id_changed?
+        remove_owner owner_type_was.classify.find(owner_id_was)
+        add_owner owner
+      end
     end
 
 end

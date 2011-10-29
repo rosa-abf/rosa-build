@@ -18,7 +18,7 @@ class Repository < ActiveRecord::Base
   scope :recent, order("name ASC")
 
   #before_save :create_directory
-  before_save :make_owner_rel
+  before_save :add_owner_rel
   #after_destroy :remove_directory
 
   before_create :xml_rpc_create
@@ -39,13 +39,6 @@ class Repository < ActiveRecord::Base
   end
 
   protected
-
-    def make_owner_rel
-      unless members.include? owner
-        members << owner if owner.instance_of? User
-        groups  << owner if owner.instance_of? Group
-      end
-    end
 
 #   def build_path(dir)
 #     File.join(platform.path, dir)
@@ -83,6 +76,15 @@ class Repository < ActiveRecord::Base
         return true
       else
         raise "Failed to delete repository #{name} inside platform #{platform.name}."
+      end
+    end
+
+    def add_owner_rel
+      if new_record? and owner
+        add_owner owner
+      elsif owner_id_changed?
+        remove_owner owner_type_was.classify.find(owner_id_was)
+        add_owner owner
       end
     end
 
