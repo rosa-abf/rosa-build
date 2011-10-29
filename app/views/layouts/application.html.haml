@@ -34,6 +34,9 @@
             -if current_user.can_perform?('event_logs', 'index')
               %li{:class => controller.controller_path == 'event_logs' ? 'active' : '' }
                 %a{:href => event_logs_path}= t("layout.menu.event_logs")
+            -if current_user.can_perform?('build_lists', 'index')
+              %li{:class => controller.controller_path == 'build_lists' ? 'active' : '' }
+                %a{:href => all_build_lists_path}= t("layout.menu.build_lists")
             -if current_user.can_perform?('categories', 'index')
               %li{:class => controller.controller_path == 'categories' ? 'active' : '' }
                 %a{:href => categories_path}= t("layout.menu.categories")

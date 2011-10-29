@@ -41,6 +41,7 @@ ru:
       containers: Контейнеры
       downloads: Статистика
       event_logs: Лог событий
+      build_lists: Мониторинг задач
       groups: Группы
       platforms: Платформы
       products: Продукты

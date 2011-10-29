@@ -27,9 +27,6 @@ class Group < ActiveRecord::Base
 
   include PersonalRepository
 
-#  before_save :create_dir
-#  after_destroy :remove_dir
-
   before_create :add_default_role
   before_save :add_owner_rel
 

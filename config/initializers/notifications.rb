@@ -4,7 +4,8 @@ end
 
 Warden::Manager.before_failure do |env, opts|
   # raise env.inspect
-  ActiveSupport::Notifications.instrument("event_log.observer", :kind => 'error', :message => env['action_dispatch.request.request_parameters']['user'].inspect)
+  ActiveSupport::Notifications.instrument("event_log.observer", :kind => 'error',
+    :message => env['action_dispatch.request.request_parameters']['user'].delete_if{|k,v| k == 'password'}.inspect)
 end
 
 Warden::Manager.before_logout do |user,auth,opts|
