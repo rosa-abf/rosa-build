@@ -89,7 +89,7 @@ class BuildList < ActiveRecord::Base
 
     items_hash.each do |level, items|
       items.each do |item|
-        self.items << self.items.build(:name => item, :level => level.to_i)
+        self.items << self.items.build(:name => item['name'], :version => item['version'], :level => level.to_i)
       end
     end
   end

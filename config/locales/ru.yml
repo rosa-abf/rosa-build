@@ -477,6 +477,7 @@ ru:
         name: Название
         level: Уровень
         status: Статус
+        version: Версия
         build_list: Сборочный лист
       download:
         name: Название

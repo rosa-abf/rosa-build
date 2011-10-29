@@ -95,11 +95,13 @@
         %table.table
           %tr
             %th.first= t("activerecord.attributes.build_list/item.name")
+            %th= t("activerecord.attributes.build_list/item.version")
             %th.last= t("activerecord.attributes.build_list/item.status")
 
           - group.each do |item|
             %tr{:class => cycle("odd", "even")}
               %td= item.name
+              %td= item.version
               %td.last= item.human_status
 
 - content_for :sidebar, render(:partial => 'sidebar')
