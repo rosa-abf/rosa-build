@@ -21,7 +21,7 @@ class AutoBuildListsController < ApplicationController
     #@auto_build_list = AutoBuildList.new(params[:auto_build_list])
     
     @auto_build_list = AutoBuildList.new(
-      :bpl_id => current_user.personal_platform.id,
+      :bpl_id => 3, # 'mandriva2011'
       :pl_id => current_user.personal_platform.id,
       :arch_id => Arch.find_by_name('i586').id,
       :project_id => params[:project_id]
