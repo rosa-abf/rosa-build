@@ -41,7 +41,7 @@ class User < ActiveRecord::Base
       create_ssh_key ssh_key
     elsif ssh_key_was.present? and ssh_key.blank?
       destroy_ssh_key ssh_key_was
-    elsif ssh_key_changed?
+    elsif ssh_key_changed? and ssh_key.present? and ssh_key_was.present?
       update_ssh_key ssh_key_was, ssh_key
     end
   }
