@@ -13,7 +13,7 @@ class CategoriesController < ApplicationController
   def index
     if @platform
       @categories = Category.joins(:projects => :repositories).where('repositories.platform_id = ?', @platform.id).
-                             having('count(projects.id) > 0').group('categories.id').default_order
+                             having('count(projects.id) > 0').group('categories.id, categories.name, categories.ancestry, categories.projects_count, categories.created_at, categories.updated_at').default_order
       @categories_count = @categories.count
       render 'index2'
     else
