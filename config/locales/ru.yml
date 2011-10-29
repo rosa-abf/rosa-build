@@ -1,4 +1,8 @@
 ru:
+  will_paginate:
+    previous_label: ‹ Предыдущая
+    next_label: Следующая › 
+    page_gap: ...
   layout:
     global_header: Сборочная платформа ROSA
     logged_in_as: Вы вошли как
@@ -401,6 +405,7 @@ ru:
         released: Released
         created_at: Создана
         updated_at: Обновлена
+        distrib_type: Тип дистрибутива
 
       event_log:
         kind: Тип события
