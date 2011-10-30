@@ -79,13 +79,22 @@ Rosa::Application.routes.draw do
         post :publish
       end
     end
-    
+
+    resources :collaborators do
+      collection do
+        get :add
+        post :add
+
+        get :edit
+        post :update
+      end
+    end
+#    resources :groups, :controller => 'project_groups' do
+#    end
+
     member do
       get :build
       post :process_build
-
-      get :add_collaborators
-      post :add_collaborators
     end
     collection do
       get :auto_build
@@ -106,6 +115,8 @@ Rosa::Application.routes.draw do
 
     resources :repositories, :only => [:new, :create]
   end
+
+  match '/catalogs', :to => 'categories#platforms'
 
   match 'build_lists/status_build', :to => "build_lists#status_build"
   match 'build_lists/post_build', :to => "build_lists#post_build"
