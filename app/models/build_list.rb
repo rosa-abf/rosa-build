@@ -112,7 +112,7 @@ class BuildList < ActiveRecord::Base
 
   def delete_build_list
     has_canceled = BuildServer.delete_build_list bs_id
-    update_attribute(:status, BUILD_CANCELED) if has_canceled
+    update_attribute(:status, BUILD_CANCELED) if has_canceled == 0
     
     return has_canceled == 0
   end
