@@ -36,7 +36,7 @@ class Project < ActiveRecord::Base
   after_create :create_git_repo 
   before_update :update_git_repo
   after_destroy :destroy_git_repo
-  after_rollback lambda { destroy_git_repo rescue true }
+  after_rollback lambda { destroy_git_repo rescue true if new_record? }
 
   def project_versions
     #tags.collect { |tag| [tag.name, tag.name.gsub(/^\w+\./, "")] }.select { |pv| pv[0] =~ /^v\./  }

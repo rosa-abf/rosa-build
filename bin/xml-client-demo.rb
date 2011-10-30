@@ -2,13 +2,13 @@
 
 require 'rubygems'
 require 'xmlrpc/client'
-require 'ap'    # awesome_print
+require 'awesome_print'
 
 # Please correctly fill following vars
 @host = 'localhost'
 @port = 3000
-@user = 'user@email'
-@password = ''
+@user = 'pchipiga@ya.ru'
+@password = '123456'
 
 puts 'PLATFORMS'
 client = XMLRPC::Client.new(@host, '/api/xmlrpc', @port, nil, nil, @user, @password, false, 900)

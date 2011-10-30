@@ -29,7 +29,7 @@ gem 'unicorn'
 
 # XML-RPC support
 # gem 'actionwebservice' #, :git => 'git://github.com/ywen/actionwebservice.git'
-gem "rails-xmlrpc"
+gem "rails-xmlrpc", :git => 'git://github.com/chipiga/rails-xmlrpc.git'
 
 group :production do
   gem "airbrake"
