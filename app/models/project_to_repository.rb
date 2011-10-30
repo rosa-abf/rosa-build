@@ -8,14 +8,10 @@ class ProjectToRepository < ActiveRecord::Base
   #before_save :add_compability_link
   #after_destroy :remove_link
   #after_destroy :remove_compability_link
-  
-  after_create lambda {
-    project.xml_rpc_create(repository)
-  }    
-  
-  after_destroy lambda {
-    project.xml_rpc_destroy(repository)
-  }
+
+  after_create lambda { project.xml_rpc_create(repository) }
+  after_destroy lambda { project.xml_rpc_destroy(repository) }
+  after_rollback lambda { project.xml_rpc_destroy(repository) rescue true }
 
   #def path
   #  build_path(project.unixname)
