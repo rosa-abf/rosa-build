@@ -360,6 +360,7 @@ ru:
       build_list: Сборочный лист
       build_list_item: Элемент сборочного листа
       download: Статистика
+      auto_build_list: Автоматическая пересборка пакетов
 
     attributes:
       auto_build_list:
