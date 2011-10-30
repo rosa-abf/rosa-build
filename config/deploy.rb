@@ -43,7 +43,7 @@ end
 
 task :generate_roles do
   run "cd #{deploy_to}/current ; RAILS_ENV=production bundle exec rake rights:generate"
-  run "cd #{deploy_to}/current ; RAILS_ENV=production bundle exec rake roles:load"
+  #run "cd #{deploy_to}/current ; RAILS_ENV=production bundle exec rake roles:load"
   run "cd #{deploy_to}/current ; RAILS_ENV=production bundle exec rake roles:apply"
 end
 
