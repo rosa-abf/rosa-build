@@ -18,9 +18,9 @@ class EventLog < ActiveRecord::Base
       create(attributes) do |el|
         el.user = current_controller.current_user
         el.ip = current_controller.request.remote_ip
-        el.protocol = 'web' # TODO pass protocol through controller or calculate by name
         el.controller = current_controller.class.to_s
         el.action = current_controller.action_name
+        el.protocol = (el.controller == 'RpcController' ? 'api' : 'web')
       end
     end
 

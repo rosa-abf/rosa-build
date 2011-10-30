@@ -18,8 +18,8 @@ set :branch, "master"
 set :scm, "git"
 
 set :user, "rosa"
-set :domain, "195.19.76.12" # "abs.rosalab.ru"
-set :port, 1822 # 222
+set :domain, "195.19.76.12" # "npp-build.rosalab.ru"
+set :port, 1822
 set :use_sudo, false
 set :deploy_to, "/srv/#{application}"
 
@@ -43,14 +43,13 @@ end
 
 task :generate_roles do
   run "cd #{deploy_to}/current ; RAILS_ENV=production bundle exec rake rights:generate"
-  run "cd #{deploy_to}/current ; RAILS_ENV=production bundle exec rake roles:load"
+  #run "cd #{deploy_to}/current ; RAILS_ENV=production bundle exec rake roles:load"
   run "cd #{deploy_to}/current ; RAILS_ENV=production bundle exec rake roles:apply"
 end
 
 namespace :deploy do
   task :restart, :roles => :app, :except => { :no_release => true } do
-    ## DISABLED: run "cd #{deploy_to}/current ; ([ -f tmp/pids/unicorn.pid ] && kill -USR2 `cat tmp/pids/unicorn.pid`); true"
-    run ["#{current_path}/script/unicorn reload"].join("; ")
+    run "touch #{current_release}/tmp/restart.txt"
     restart_dj
   end
 
@@ -61,21 +60,7 @@ namespace :deploy do
     run "cd #{deploy_to}/current ; RAILS_ENV=production ./script/delayed_job stop; RAILS_ENV=production ./script/delayed_job start; true"
   end
 
-#  desc 'Bundle and minify the JS and CSS files'
-#  task :build_assets, :roles => :app do
-#    root_path    = File.expand_path(File.dirname(__FILE__) + '/..')
-#    assets_path  = "#{root_path}/public/assets"
-#    envs         = "RAILS_ENV=production"
-#
-#    # Precaching assets
-#    run_locally "bash -c '#{envs} jammit'"
-#
-#    # Uploading prechached assets
-#    top.upload assets_path, "#{current_release}/public", :via => :scp, :recursive => true
-#  end
-
   after "deploy:update_code", :roles => :web do
-#    build_assets
     symlink_config_files
     generate_roles
   end

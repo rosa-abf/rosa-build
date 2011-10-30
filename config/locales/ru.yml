@@ -146,6 +146,7 @@ ru:
       change_visibility_from_open: Сменить статус на "Приватный"
       settings: Настройки
       show: Мой репозиторий
+      private_users: Пользователи приватного репозитория
 
     products:
       list: Список
@@ -263,6 +264,7 @@ ru:
         waiting_for_response: ожидает ответа
         build_pending: ожидает сборку
         testing_faild: тестирование не пройдено
+        build_canceled: сборка отменена
         success: собран
         build_started: собирается
         platform_not_found: платформа не найдена
@@ -359,6 +361,7 @@ ru:
       build_list: Сборочный лист
       build_list_item: Элемент сборочного листа
       download: Статистика
+      auto_build_list: Автоматическая пересборка пакетов
 
     attributes:
       auto_build_list:
@@ -429,6 +432,9 @@ ru:
         updated_at: Обновлена
         distrib_type: Тип дистрибутива
         visibility: Статус
+        visibility_types:
+          open: Открытый
+          hidden: Закрытый
 
       event_log:
         kind: Тип события

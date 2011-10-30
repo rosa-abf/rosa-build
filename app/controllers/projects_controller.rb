@@ -63,7 +63,7 @@ class ProjectsController < ApplicationController
       :pl_id => auto_build_list.pl_id, 
       :bpl_id => auto_build_list.bpl_id, 
       :arch_id => auto_build_list.arch_id,
-      :project_version => project.project_versions.last.try(:name),
+      :project_version => project.collected_project_versions.last.try(:first),
       :build_requires => true,
       :update_type => 'bugfix') if auto_build_list 
     
@@ -74,7 +74,7 @@ class ProjectsController < ApplicationController
     @arches = Arch.recent
     @bpls = Platform.main
     @pls = @project.repositories.collect { |rep| ["#{rep.platform.name}/#{rep.unixname}", rep.platform.id] }
-    @project_versions = @project.project_versions.collect { |tag| [tag.name, tag.name.gsub(/^\w+\./, "")] }
+    @project_versions = @project.collected_project_versions
   end
 
   def process_build
@@ -90,7 +90,7 @@ class ProjectsController < ApplicationController
     update_type = params[:build][:update_type]
     build_requires = params[:build][:build_requires]
 
-    @project_versions = @project.project_versions.collect { |tag| [tag.name, tag.name.gsub(/^\w+\./, "")] }.select { |pv| pv[0] =~ /^v\./  }
+    @project_versions = @project.collected_project_versions
 
     if !check_arches || !check_project_versions
       @arches = Arch.recent

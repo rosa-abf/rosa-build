@@ -17,7 +17,7 @@ class Project < ActiveRecord::Base
   has_many :auto_build_lists, :dependent => :destroy
 
   validates :name,     :uniqueness => {:scope => [:owner_id, :owner_type]}, :presence => true, :allow_nil => false, :allow_blank => false
-  validates :unixname, :uniqueness => {:scope => [:owner_id, :owner_type]}, :presence => true, :format => { :with => /^[a-zA-Z0-9_]+$/ }, :allow_nil => false, :allow_blank => false
+  validates :unixname, :uniqueness => {:scope => [:owner_id, :owner_type]}, :presence => true, :format => { :with => /^[a-zA-Z0-9_\-\+\.]+$/ }, :allow_nil => false, :allow_blank => false
   validates :owner, :presence => true
   validate {errors.add(:base, I18n.t('flash.project.save_warning_ssh_key')) if owner.ssh_key.blank?}
 
@@ -36,10 +36,14 @@ class Project < ActiveRecord::Base
   after_create :create_git_repo 
   before_update :update_git_repo
   after_destroy :destroy_git_repo
+  after_rollback lambda { destroy_git_repo rescue true if new_record? }
 
   def project_versions
-    #tags.collect { |tag| [tag.name, tag.name.gsub(/^\w+\./, "")] }.select { |pv| pv[0] =~ /^v\./  }
     tags.select { |tag| tag.name =~ /^v\./  }
+  end
+  
+  def collected_project_versions
+    project_versions.collect { |tag| new_tag = tag.name.gsub(/^\w+\./, ""); [new_tag, new_tag] }
   end
 
   def tags
