@@ -13,7 +13,7 @@ class RpcController < ApplicationController
 
   def platforms
     ActiveSupport::Notifications.instrument("event_log.observer", :message => 'список платформ')
-    return Platform.select('id, unixname').where("platform_type = ?", 'main').map(&:attributes)
+    Platform.select('unixname').where("platform_type = ?", 'main').map(&:unixname)
   end
 
   def user_projects
@@ -24,8 +24,7 @@ class RpcController < ApplicationController
   def project_versions id
     p = Project.find_by_id(id)
     ActiveSupport::Notifications.instrument("event_log.observer", :object => p, :message => "список версий")
-    return nil if p.blank?
-    p.project_versions.collect {|tag| [tag.name.gsub(/^\w+\./, ""), tag.name]}.select {|pv| pv[1] =~ /^v\./}
+    p.project_versions.collect {|tag| tag.name.gsub(/^\w+\./, "")} rescue 'not found'
   end
 
   def build_status id
