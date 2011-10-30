@@ -26,6 +26,7 @@
     personal_repositories:
     - index
     - show
+    - settings
     - add_project
     - remove_project
     downloads: 

@@ -428,6 +428,7 @@ ru:
         created_at: Создана
         updated_at: Обновлена
         distrib_type: Тип дистрибутива
+        visibility: Статус
 
       event_log:
         kind: Тип события
