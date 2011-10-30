@@ -14,13 +14,13 @@ module PersonalRepository
       pl.platform_type = 'personal'
       pl.distrib_type = 'mandriva2011'
       pl.visibility = 'open'
-      pl.save
+      pl.save!
     
       rep = pl.repositories.build
       rep.owner = pl.owner
       rep.name = 'main'
       rep.unixname = 'main'
-      rep.save
+      rep.save!
     end
     
     def personal_platform
