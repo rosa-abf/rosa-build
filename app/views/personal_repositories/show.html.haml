@@ -19,7 +19,7 @@
     %ul.wat-cf
       %li.first.active= link_to t("layout.projects.list"), personal_repository_path(@repository) + "#projects"
       %li= link_to t("layout.projects.add"), add_project_personal_repository_path(@repository)
-      %li= link_to t("layout.products.new"), new_platform_product_path(@repository.platform)
+      %li= link_to t("layout.projects.new"), new_project_path(@repository.platform)
   .content
     %h2.title
       = t("layout.projects.list_header")

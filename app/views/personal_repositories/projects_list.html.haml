@@ -27,9 +27,9 @@
         = link_to @repository.owner.name, url_for(@repository.owner)
       %p
         %b
-          = t("activerecord.attributes.repository.visibility")
+          = t("activerecord.attributes.platform.visibility")
           \:
-        = @repository.visibility
+        = @repository.platform.visibility
       %p
         %b
           = t("activerecord.attributes.repository.platform")

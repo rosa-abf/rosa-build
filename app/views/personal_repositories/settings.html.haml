@@ -7,9 +7,9 @@
     %h2.title= t("layout.personal_repositories.settings_header")
     .inner
       .group
-        %span= t("activerecord.attributes.repository.visibility") + ":"
+        %span= t("activerecord.attributes.platform.visibility") + ":"
         %span
-          %i= t("activerecord.attributes.repository.visibility_types.#{ @repository.platform.visibility }") 
+          %i= t("activerecord.attributes.platform.visibility_types.#{ @repository.platform.visibility }") 
       .group
         = link_to t("layout.personal_repositories.change_visibility_from_#{ @repository.platform.visibility }"), change_visibility_personal_repository_path(@repository)
 

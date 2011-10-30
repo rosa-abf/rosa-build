@@ -26,6 +26,7 @@
     personal_repositories:
     - index
     - show
+    - settings
     - add_project
     - remove_project
     downloads: 
@@ -224,6 +225,10 @@
     - index
     personal_repositories: 
     - show
+    - add_project
+    - settings
+    - change_visibility
+    - remove_project
     auto_build_lists: 
     - index
     repositories: 
