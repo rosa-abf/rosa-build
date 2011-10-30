@@ -1,6 +1,77 @@
 --- 
 :Roles: 
 - name: !binary |
+    0JDQtNC80LjQvdC40YHRgtGA0LDRgtC+0YAg0L/Qu9Cw0YLRhNC+0YDQvNGL
+
+  use_default: false
+  use_default_for_owner: false
+  rights: 
+    groups: 
+    - index
+    - destroy
+  id: 2
+  to: ""
+  can_see: !map:ActiveSupport::HashWithIndifferentAccess 
+    Project: 
+    - open
+  "on": Platform
+- name: !binary |
+    0JDQtNC80LjQvdC40YHRgtGA0LDRgtC+0YAg0YDQtdC/0L7Qt9C40YLQvtGA
+    0LjRjw==
+
+  use_default: false
+  use_default_for_owner: false
+  rights: {}
+
+  id: 3
+  to: ""
+  can_see: 
+  "on": Repository
+- name: !binary |
+    0JDQtNC80LjQvdC40YHRgtGA0LDRgtC+0YAg0LPRgNGD0L/Qv9GL
+
+  use_default: false
+  use_default_for_owner: true
+  rights: {}
+
+  id: 5
+  to: User
+  can_see: 
+  "on": Group
+- name: !binary |
+    0JzQsNC50L3RgtC10LnQvdC10YAg0L/RgNC+0LXQutGC0LA=
+
+  use_default: false
+  use_default_for_owner: false
+  rights: {}
+
+  id: 7
+  to: ""
+  can_see: 
+  "on": Project
+- name: !binary |
+    0J/QvtC70YzQt9C+0LLQsNGC0LXQu9GMINC/0LvQsNGC0YTQvtGA0LzRiw==
+
+  use_default: false
+  use_default_for_owner: false
+  rights: {}
+
+  id: 8
+  to: ""
+  can_see: 
+  "on": Platform
+- name: !binary |
+    0KPRh9Cw0YHRgtC90LjQuiDQs9GA0YPQv9C/0Ys=
+
+  use_default: false
+  use_default_for_owner: false
+  rights: {}
+
+  id: 9
+  to: User
+  can_see: 
+  "on": Group
+- name: !binary |
     0JDQtNC80LjQvdC40YHRgtGA0LDRgtC+0YAg0YHQuNGB0YLQtdC80Ys=
 
   use_default: true
@@ -8,7 +79,11 @@
   rights: 
     event_logs: 
     - index
+    auto_build_lists: 
+    - index
+    - create
     groups: 
+    - update
     - index
     - create
     - show
@@ -39,6 +114,11 @@
     - new
     - unfreeze
     projects: 
+    - index
+    - auto_build
+    - edit
+    - update
+    - add_collaborators
     - process_build
     - create
     - show
@@ -107,12 +187,15 @@
     - new
     - load_from_dump
     - get_dump
+    personal_repositories: 
+    - change_visibility
+    - settings
+    - show
+    - add_project
+    - remove_project
   id: 1
   to: ""
   can_see: !map:ActiveSupport::HashWithIndifferentAccess 
-    Repository: 
-    - open
-    - hidden
     Project: 
     - open
     - hidden
@@ -121,106 +204,22 @@
     - hidden
   "on": ""
 - name: !binary |
-    0JDQtNC80LjQvdC40YHRgtGA0LDRgtC+0YAg0L/Qu9Cw0YLRhNC+0YDQvNGL
-
-  use_default: false
-  use_default_for_owner: false
-  rights: 
-    groups: 
-    - index
-    - destroy
-  id: 2
-  to: ""
-  can_see: !map:ActiveSupport::HashWithIndifferentAccess 
-    Project: 
-    - open
-  "on": Platform
-- name: !binary |
-    0JDQtNC80LjQvdC40YHRgtGA0LDRgtC+0YAg0YDQtdC/0L7Qt9C40YLQvtGA
-    0LjRjw==
-
-  use_default: false
-  use_default_for_owner: false
-  rights: {}
-
-  id: 3
-  to: ""
-  can_see: 
-  "on": Repository
-- name: !binary |
     0JDQtNC80LjQvdC40YHRgtGA0LDRgtC+0YAg0L/RgNC+0LXQutGC0LA=
-
-  use_default: false
-  use_default_for_owner: false
-  rights: {}
-
-  id: 4
-  to: ""
-  can_see: 
-  "on": Project
-- name: !binary |
-    0JDQtNC80LjQvdC40YHRgtGA0LDRgtC+0YAg0LPRgNGD0L/Qv9GL
 
   use_default: false
   use_default_for_owner: true
   rights: {}
 
-  id: 5
+  id: 4
   to: User
-  can_see: 
-  "on": Group
-- name: !binary |
-    0JDQtNC80LjQvdC40YHRgtGA0LDRgtC+0YAg0L/RgNC+0LTRg9C60YLQsA==
-
-  use_default: false
-  use_default_for_owner: false
-  rights: {}
-
-  id: 6
-  to: ''
-  can_see: 
-  "on": ''
-- name: !binary |
-    0JzQsNC50L3RgtC10LnQvdC10YAg0L/RgNC+0LXQutGC0LA=
-
-  use_default: false
-  use_default_for_owner: false
-  rights: {}
-
-  id: 7
-  to: ""
   can_see: 
   "on": Project
-- name: !binary |
-    0J/QvtC70YzQt9C+0LLQsNGC0LXQu9GMINC/0LvQsNGC0YTQvtGA0LzRiw==
-
-  use_default: false
-  use_default_for_owner: false
-  rights: {}
-
-  id: 8
-  to: ""
-  can_see: 
-  "on": Platform
-- name: !binary |
-    0KPRh9Cw0YHRgtC90LjQuiDQs9GA0YPQv9C/0Ys=
-
-  use_default: false
-  use_default_for_owner: false
-  rights: {}
-
-  id: 9
-  to: User
-  can_see: 
-  "on": Group
 - name: !binary |
     0J/QvtC70YzQt9C+0LLQsNGC0LXQu9GMINGB0LjRgdGC0LXQvNGL
 
   use_default: true
   use_default_for_owner: false
   rights: 
-    event_logs: 
-    - index
     groups: 
     - index
     personal_repositories: 
@@ -243,13 +242,20 @@
     - index
     products: 
     - show
-    categories: 
-    - index
-    users: 
-    - index
-    roles: 
-    - index
+    personal_repositories: 
+    - show
   id: 10
   to: User
   can_see: 
   "on": ""
+- name: !binary |
+    0JDQtNC80LjQvdC40YHRgtGA0LDRgtC+0YAg0L/RgNC+0LTRg9C60YLQsA==
+
+  use_default: false
+  use_default_for_owner: false
+  rights: {}
+
+  id: 6
+  to: ""
+  can_see: 
+  "on": Project
