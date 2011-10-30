@@ -10,6 +10,7 @@ ru:
       'devise/sessions_controller': 'Аутентификация пользователей'
       'devise/passwords_controller': 'Восстановление пароля'
       'users/omniauth_callbacks_controller': 'Внешняя аутентификация пользователей'
+      rpc_controller: XML RPC
     actions:
       'devise/sessions_controller':
         create: 'вход'
@@ -22,6 +23,8 @@ ru:
       build_lists_controller:
         cancel: 'сборка отменена'
         publish: 'сборка опубликована'
+      rpc_controller:
+        xe_index: запрос
       create: 'создано'
       update: 'обновлено'
       destroy: 'удалено'

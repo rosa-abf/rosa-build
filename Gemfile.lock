@@ -1,4 +1,10 @@
 GIT
+  remote: git://github.com/chipiga/rails-xmlrpc.git
+  revision: 3cf79e062c65447809209724a0cb8d1ea5af2e57
+  specs:
+    rails-xmlrpc (0.3.1)
+
+GIT
   remote: git@github.com:warpc/gitolito.git
   revision: 8608b9bdfd33e961d9f9d71dd594e62780c074f6
   specs:
@@ -189,7 +195,6 @@ GEM
       activesupport (= 3.0.10)
       bundler (~> 1.0)
       railties (= 3.0.10)
-    rails-xmlrpc (0.3.2)
     rails3-generators (0.17.4)
       railties (>= 3.0.0)
     railties (3.0.10)
@@ -280,7 +285,7 @@ DEPENDENCIES
   paperclip (~> 2.3)
   pg (~> 0.11.0)
   rails (= 3.0.10)
-  rails-xmlrpc
+  rails-xmlrpc!
   rails3-generators
   rspec-rails (~> 2.7.0)
   ruby-debug
