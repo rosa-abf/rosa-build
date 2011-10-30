@@ -32,6 +32,7 @@ class BuildList < ActiveRecord::Base
               BuildServer::PLATFORM_PENDING,
               BuildServer::PROJECT_NOT_FOUND,
               BuildServer::PROJECT_VERSION_NOT_FOUND,
+              BUILD_CANCELED,
               TEST_FAILD]
 
   HUMAN_STATUSES = { BuildServer::BUILD_ERROR => :build_error,
@@ -43,7 +44,8 @@ class BuildList < ActiveRecord::Base
                      BuildServer::PLATFORM_PENDING => :platform_pending,
                      BuildServer::PROJECT_NOT_FOUND => :project_not_found,
                      BuildServer::PROJECT_VERSION_NOT_FOUND => :project_version_not_found,
-                     TEST_FAILD => :testing_faild
+                     TEST_FAILD => :testing_faild,
+                     BUILD_CANCELED => :build_canceled
                     }
 
   scope :recent, order("created_at DESC")

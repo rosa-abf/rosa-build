@@ -263,6 +263,7 @@ ru:
         waiting_for_response: ожидает ответа
         build_pending: ожидает сборку
         testing_faild: тестирование не пройдено
+        build_canceled: сборка отменена
         success: собран
         build_started: собирается
         platform_not_found: платформа не найдена
