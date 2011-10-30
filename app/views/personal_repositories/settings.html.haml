@@ -3,6 +3,7 @@
     %ul.wat-cf
       %li.first= link_to t("layout.personal_repositories.show"), personal_repository_path(@repository)
       %li.active= link_to t("layout.personal_repositories.settings"), settings_personal_repository_path(@repository)
+      %li= link_to t("layout.personal_repositories.private_users"), platform_private_users_path(@repository.platform) if @repository.platform.hidden?
   .content
     %h2.title= t("layout.personal_repositories.settings_header")
     .inner

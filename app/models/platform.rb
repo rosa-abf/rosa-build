@@ -19,9 +19,9 @@ class Platform < ActiveRecord::Base
   validates :unixname, :uniqueness => true, :presence => true, :format => { :with => /^[a-zA-Z0-9_]+$/ }, :allow_nil => false, :allow_blank => false
   validates :distrib_type, :presence => true, :allow_nil => :false, :allow_blank => false, :inclusion => {:in => APP_CONFIG['distr_types']}
 
-#  after_create :make_owner_rel
+  after_create :make_owner_rel
 #  before_save :create_directory
-  before_save :add_owner_rel
+  before_save :check_owner_rel
 #  after_destroy :remove_directory
   before_create :xml_rpc_create
   before_destroy :xml_rpc_destroy
@@ -175,12 +175,14 @@ class Platform < ActiveRecord::Base
       FileUtils.rm_rf symlink_downloads_path 
     end
 
-    def add_owner_rel
-      if new_record? and owner
-        add_owner owner
-      elsif owner_id_changed?
-        remove_owner owner_type_was.classify.find(owner_id_was)
-        add_owner owner
+    def make_owner_rel
+      add_owner owner
+    end
+
+    def check_owner_rel
+      if !new_record? and owner_id_changed?
+        remove_owner owner_type_was.classify.find(owner_id_was) if owner_type_was
+        add_owner owner if owner
       end
     end
 

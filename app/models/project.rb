@@ -39,8 +39,11 @@ class Project < ActiveRecord::Base
   after_rollback lambda { destroy_git_repo rescue true if new_record? }
 
   def project_versions
-    #tags.collect { |tag| [tag.name, tag.name.gsub(/^\w+\./, "")] }.select { |pv| pv[0] =~ /^v\./  }
     tags.select { |tag| tag.name =~ /^v\./  }
+  end
+  
+  def collected_project_versions
+    project_versions.collect { |tag| new_tag = tag.name.gsub(/^\w+\./, ""); [new_tag, new_tag] }
   end
 
   def tags

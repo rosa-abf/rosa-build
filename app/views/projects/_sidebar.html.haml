@@ -1,3 +1,34 @@
+.block.notice
+  %h3= t("layout.projects.members")
+  .content
+    %p
+      %b
+        = "#{t("layout.projects.collaborators")}:"
+      %ul
+      - @project.collaborators.each do |user|
+        %li
+          - if current_user.can_perform? 'users', 'show'
+            = link_to user.name, user_path(user)
+          - else
+            = user.name
+          - if (@project.owner == user)
+            = '(' + t("layout.owner") + ')'
+      %br
+      - if current_user.can_perform? 'collaborators', 'edit'
+        = link_to t("layout.projects.edit_collaborators"), edit_project_collaborators_path(@project)
+
+    %p
+      %b
+        = "#{t("layout.projects.groups")}:"
+      %ul
+      - @project.groups.each do |group|
+        %li
+          = link_to group.name, group_path(group)
+          - if (@project.owner == group)
+            = '(' + t("layout.owner") + ')'
+      %br
+      = link_to t("layout.projects.add_groups"), '#' #add_collaborators_project_path(@project)
+
 / .block.notice
 /   %h3= t("layout.platforms.current_platform_header")
 /   .content
