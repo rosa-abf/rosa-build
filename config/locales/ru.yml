@@ -3,6 +3,7 @@ ru:
     previous_label: ‹ Предыдущая
     next_label: Следующая › 
     page_gap: ...
+
   layout:
     global_header: Сборочная платформа ROSA
     logged_in_as: Вы вошли как
@@ -27,6 +28,7 @@ ru:
     add: Добавить
     upload: Загрузить
     not_access: Нет доступа!
+    owner: Владелец
 
     downloads:
       title: Статистика закачек пакетов
@@ -193,6 +195,20 @@ ru:
       current_build_lists: Текущие сборки
       build_button: Начать сборку
       add_collaborators: Добавить коллабораторов
+      members: Участники
+      collaborators: Коллабораторы
+      groups: Группы
+      edit_collaborators: Изменить список участников
+
+    collaborators:
+      back_to_proj: Вернуться к проекту
+      edit: Редактировать список
+      add: Добавить/Удалить
+      list: Список
+      edit_roles: Редактировать роли
+      roles_header: Роли для
+      add_role: Добавить/Удалить роль
+
 
     groups:
       list: Список
@@ -273,6 +289,10 @@ ru:
         project_version_not_found: версия не найден
 
   flash:
+    collaborators:
+      successfuly_changed: Список коллабораторов успешно изменен
+      error_in_changing: Ошибка изменения списка коллабораторов
+
     auto_build_list:
       success: Сборка проекта автоматизорована!
       failed: Не удалось автоматизировать сборку!

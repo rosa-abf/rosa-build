@@ -71,7 +71,7 @@ class ActiveRecord::Base
     else
       r = possible.inject([]) do |arr, mod|
         rels = Relation.by_object(mod).by_target(object)
-        arr.concat rel.map{|rel| rel.roles} if rels.size > 0
+        arr.concat rels.map{|rel| rel.roles} if rels.size > 0
         arr << mod.global_role
         arr
       end
