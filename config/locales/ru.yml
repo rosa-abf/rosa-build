@@ -429,6 +429,9 @@ ru:
         updated_at: Обновлена
         distrib_type: Тип дистрибутива
         visibility: Статус
+        visibility_types:
+          open: Открытый
+          hidden: Закрытый
 
       event_log:
         kind: Тип события
