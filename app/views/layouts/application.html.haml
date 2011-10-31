@@ -45,7 +45,7 @@
                 %a{:href => roles_path}= t("layout.menu.roles")
             -if current_user.can_perform?('personal_repositories', 'show')
               %li{:class => controller.controller_path == 'personal_repositories' ? 'active' : '' }
-                %a{:href => personal_repository_path( current_user.personal_repository.id )}= t("layout.menu.personal_repository")
+                -#%a{:href => personal_repository_path( current_user.personal_repository.id )}= t("layout.menu.personal_repository")
             -#if current_user.can_perform?('auto_build_lists', 'index')
             %li{:class => controller.controller_path == 'auto_build_lists' ? 'active' : '' }
               %a{:href => auto_build_lists_path}= t("layout.menu.auto_build_lists")
