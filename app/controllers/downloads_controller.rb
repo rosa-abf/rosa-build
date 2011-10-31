@@ -8,7 +8,8 @@ class DownloadsController < ApplicationController
   
   def refresh
     Download.rotate_nginx_log
-    Download.send_later :parse_and_remove_nginx_log
+    #Download.send_later :parse_and_remove_nginx_log
+    Download.parse_and_remove_nginx_log
     
     redirect_to downloads_path, :notice => t('flash.downloads.statistics_refreshed')
   end
