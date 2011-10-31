@@ -38,6 +38,7 @@
 * mkdir update.secondary.d
 * touch update.secondary.d/update.auto-build
 * chmod +x update.secondary update.secondary.d/update.auto-build
+* gl-setup
 
 --------------- Code for update.auto-build
 

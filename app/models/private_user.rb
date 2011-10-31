@@ -7,6 +7,10 @@ class PrivateUser < ActiveRecord::Base
 
   validate :login, :uniqueness => true
 
+  def event_log_message
+    {:platform => platform.unixname, :user => user.uname}.inspect
+  end
+
   class << self
     def can_generate_more?(user_id)
       !PrivateUser.exists?(:user_id => user_id)

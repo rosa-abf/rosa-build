@@ -20,22 +20,19 @@ class Platform < ActiveRecord::Base
   validates :distrib_type, :presence => true, :allow_nil => :false, :allow_blank => false, :inclusion => {:in => APP_CONFIG['distr_types']}
 
   after_create :make_owner_rel
-#  before_save :create_directory
   before_save :check_owner_rel
+#  before_save :create_directory
 #  after_destroy :remove_directory
   before_create :xml_rpc_create
   before_destroy :xml_rpc_destroy
 #  before_update :check_freezing
+  after_create lambda { add_downloads_symlink unless self.hidden? }
 
   scope :by_visibilities, lambda {|v| {:conditions => ['visibility in (?)', v.join(',')]}}
   scope :main, where(:platform_type => 'main')
   scope :personal, where(:platform_type => 'personal')
 
   #attr_accessible :visibility
-
-  after_create lambda { 
-    add_downloads_symlink unless self.hidden?
-  }
 
   def path
     build_path(unixname)
@@ -85,6 +82,9 @@ class Platform < ActiveRecord::Base
       self.update_attribute(:visibility, 'open')
       add_downloads_symlink
     end
+    # Because observer is not invoked...
+    ActiveSupport::Notifications.instrument "event_log.observer", :object => self,
+      :message => I18n.t("activerecord.attributes.platform.visibility_types.#{visibility}")
   end
 
   protected
@@ -112,16 +112,6 @@ class Platform < ActiveRecord::Base
       raise "Directory #{path} didn't exists" unless exists
       FileUtils.rm_rf(path)
     end
-
-    def add_owner_rel
-      if new_record? and owner
-        add_owner owner
-      elsif owner_id_changed?
-        remove_owner owner_type_was.classify.find(owner_id_was)
-        add_owner owner
-      end
-    end
-
 
     def xml_rpc_create
 #      return true

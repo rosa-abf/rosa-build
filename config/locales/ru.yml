@@ -377,6 +377,7 @@ ru:
       project: Проект
       rpm: RPM
       user: Пользователь
+      private_user: Приватный пользователь
       product: Продукт
       build_list: Сборочный лист
       build_list_item: Элемент сборочного листа

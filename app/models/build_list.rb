@@ -123,7 +123,7 @@ class BuildList < ActiveRecord::Base
   end
 
   def event_log_message
-    {:project => project.name, :version => project_version, :arch => arch.name}.inspect
+    {:project => project.unixname, :version => project_version, :arch => arch.name}.inspect
   end
 
   private

@@ -17,10 +17,10 @@ class Repository < ActiveRecord::Base
 
   scope :recent, order("name ASC")
 
+  after_create :make_owner_rel
+  before_save :check_owner_rel
   #before_save :create_directory
-  before_save :add_owner_rel
   #after_destroy :remove_directory
-
   before_create :xml_rpc_create
   before_destroy :xml_rpc_destroy
 
@@ -79,12 +79,14 @@ class Repository < ActiveRecord::Base
       end
     end
 
-    def add_owner_rel
-      if new_record? and owner
-        add_owner owner
-      elsif owner_id_changed?
-        remove_owner owner_type_was.classify.find(owner_id_was)
-        add_owner owner
+    def make_owner_rel
+      add_owner owner
+    end
+
+    def check_owner_rel
+      if !new_record? and owner_id_changed?
+        remove_owner owner_type_was.classify.find(owner_id_was) if owner_type_was
+        add_owner owner if owner
       end
     end
 
