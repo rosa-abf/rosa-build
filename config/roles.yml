@@ -32,7 +32,6 @@
     - create
     - show
     - edit
-    - add
     - update
     - destroy
     - new
@@ -92,14 +91,6 @@
     - publish
     - all
     - cancel
-    members: 
-    - index
-    - create
-    - show
-    - edit
-    - update
-    - destroy
-    - new
     categories: 
     - index
     - platforms
@@ -177,8 +168,22 @@
 
   use_default: false
   use_default_for_owner: true
-  rights: {}
-
+  rights: 
+    collaborators: 
+    - edit
+    - update
+    projects: 
+    - build
+    - index
+    - process_build
+    - auto_build
+    - show
+    - destroy
+    - add_collaborators
+    - edit
+    - update
+    - create
+    - new
   id: 4
   to: User
   can_see: 
@@ -244,6 +249,9 @@
   use_default: true
   use_default_for_owner: false
   rights: 
+    auto_build_lists: 
+    - index
+    - create
     groups: 
     - index
     repositories: 
@@ -252,9 +260,9 @@
     - index
     projects: 
     - show
+    - create
+    - new
     private_users: 
-    - index
-    build_lists: 
     - index
     products: 
     - show

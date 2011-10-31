@@ -3,7 +3,7 @@ class CategoriesController < ApplicationController
   before_filter :find_category, :only => [:show, :edit, :update, :destroy]
   before_filter :find_platform, :only => [:show, :index]
 
-  before_filter :check_global_access
+  before_filter :check_global_access, :only => [:platforms, :new, :create]
 
   def platforms
     @platforms = Platform.all

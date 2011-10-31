@@ -4,6 +4,9 @@ class ActionController::Base
       c = self.controller_name
       a = self.action_name
 
+      puts "Controller: '#{c}'"
+      puts "Action: '#{a}'"
+      puts "Target: #{target.pretty_inspect}"
       unless current_user.can_perform? c, a, target
         flash[:notice] = t('layout.not_access')
         if request.env['HTTP_REFERER']

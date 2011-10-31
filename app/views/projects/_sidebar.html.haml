@@ -14,7 +14,7 @@
           - if (@project.owner == user)
             = '(' + t("layout.owner") + ')'
       %br
-      - if current_user.can_perform? 'collaborators', 'edit'
+      - if current_user.can_perform? 'collaborators', 'edit', @project
         = link_to t("layout.projects.edit_collaborators"), edit_project_collaborators_path(@project)
 
     %p

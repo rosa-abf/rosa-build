@@ -7,7 +7,6 @@
 
   .content
     %h2.title= t("layout.projects.edit_header")
-    = link_to '(' + t("layout.projects.add_collaborators") + ')', edit_project_collaborators_path(@project)
     .inner
       = form_for @project, :html => { :class => :form } do |f|
         = render :partial => "form", :locals => {:f => f}

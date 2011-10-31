@@ -1,9 +1,9 @@
 # coding: UTF-8
 class PlatformsController < ApplicationController
   before_filter :authenticate_user!, :except => :easy_urpmi
-  before_filter :find_platform#, :only => [:freeze, :unfreeze, :clone, :edit]
+  before_filter :find_platform, :only => [:freeze, :unfreeze, :clone, :edit, :destroy]
   before_filter :get_paths, :only => [:new, :create]
-  before_filter :check_global_access, :except => :easy_urpmi
+  before_filter :check_global_access, :only => [:index, :new, :create]#:except => :easy_urpmi
 
   def index
     @platforms = Platform.visible_to(current_user).paginate(:page => params[:platform_page])
@@ -26,8 +26,8 @@ class PlatformsController < ApplicationController
   end
 
   def show
-    can_perform? @platform if @platform
     @platform = Platform.find params[:id], :include => :repositories
+    can_perform? @platform if @platform
     @repositories = @platform.repositories
     @members = @platform.members.uniq
   end
@@ -95,7 +95,7 @@ class PlatformsController < ApplicationController
 
   def destroy
     can_perform? @platform if @platform
-    Platform.destroy params[:id]
+    @platform.destroy if @platform
 
     flash[:notice] = t("flash.platform.destroyed")
     redirect_to root_path
