@@ -41,6 +41,10 @@ task :symlink_config_files do
   run "ln -nfs #{shared_path}/config/application.yml #{release_path}/config/application.yml"
 end
 
+task :symlink_downloads_dir do
+  run "ln -nfs #{shared_path}/downloads/ #{release_path}/public/downloads"
+end
+
 task :generate_roles do
   run "cd #{deploy_to}/current ; RAILS_ENV=production bundle exec rake rights:generate"
   #run "cd #{deploy_to}/current ; RAILS_ENV=production bundle exec rake roles:load"
