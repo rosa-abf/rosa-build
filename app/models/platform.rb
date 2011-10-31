@@ -87,6 +87,18 @@ class Platform < ActiveRecord::Base
     ActiveSupport::Notifications.instrument "event_log.observer", :object => self,
       :message => I18n.t("activerecord.attributes.platform.visibility_types.#{visibility}")
   end
+    
+  def add_downloads_symlink
+    #raise "Personal platform path #{ symlink_downloads_path } already exists!" if File.exists?(symlink_downloads_path) && File.directory?(symlink_downloads_path)
+    return true if File.exists?(symlink_downloads_path) && File.directory?(symlink_downloads_path)
+    FileUtils.symlink path, symlink_downloads_path
+  end
+  
+  def remove_downloads_symlink
+    #raise "Personal platform path #{ symlink_downloads_path } does not exists!" if !(File.exists?(symlink_downloads_path) && File.directory?(symlink_downloads_path))
+    return true if !(File.exists?(symlink_downloads_path) && File.directory?(symlink_downloads_path))
+    FileUtils.rm_rf symlink_downloads_path 
+  end
 
   protected
 
@@ -152,18 +164,6 @@ class Platform < ActiveRecord::Base
     
     def symlink_downloads_path
       "#{ DOWNLOADS_PATH }/#{ self.unixname }"
-    end
-    
-    def add_downloads_symlink
-      #raise "Personal platform path #{ symlink_downloads_path } already exists!" if File.exists?(symlink_downloads_path) && File.directory?(symlink_downloads_path)
-      return true if File.exists?(symlink_downloads_path) && File.directory?(symlink_downloads_path)
-      FileUtils.symlink path, symlink_downloads_path
-    end
-    
-    def remove_downloads_symlink
-      #raise "Personal platform path #{ symlink_downloads_path } does not exists!" if !(File.exists?(symlink_downloads_path) && File.directory?(symlink_downloads_path))
-      return true if !(File.exists?(symlink_downloads_path) && File.directory?(symlink_downloads_path))
-      FileUtils.rm_rf symlink_downloads_path 
     end
 
     def make_owner_rel
