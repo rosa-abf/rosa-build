@@ -28,11 +28,6 @@
         = link_to @repository.owner.try(:name), url_for(@repository.owner)
       %p
         %b
-          = t("activerecord.attributes.repository.visibility")
-          \:
-        = @repository.visibility
-      %p
-        %b
           = t("activerecord.attributes.repository.platform")
           \:
         = link_to @repository.platform.name, platform_path(@platform)
