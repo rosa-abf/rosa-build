@@ -106,16 +106,16 @@ class ActiveRecord::Base
     def add_owner owner
       return false unless ActiveRecord::Base.relation_acter? owner.class
       return false unless ActiveRecord::Base.relation_target? self.class
-      roles = Role.by_target(self.class).owner_default +
-              Role.by_acter(:all).owner_default
+      roles = Role.by_acter(owner.class).by_target(self.class).owner_default +
+              Role.by_acter(:all).by_target(self.class).owner_default
       add_roles_to owner, roles
     end
 
     def remove_owner owner
       return false unless ActiveRecord::Base.relation_acter? owner.class
       return false unless ActiveRecord::Base.relation_target? self.class
-      roles = Role.by_target(self.class).owner_default +
-              Role.by_acter(:all).owner_default
+      roles = Role.by_acter(owner.class).by_target(self.class).owner_default +
+              Role.by_acter(:all).by_target(self.class).owner_default
       remove_roles_form_acter owner, roles
     end
 

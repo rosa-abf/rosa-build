@@ -1,87 +1,16 @@
 --- 
 :Roles: 
 - name: !binary |
-    0JDQtNC80LjQvdC40YHRgtGA0LDRgtC+0YAg0L/Qu9Cw0YLRhNC+0YDQvNGL
-
-  use_default: false
-  use_default_for_owner: true
-  rights: 
-    groups: 
-    - index
-    - destroy
-  id: 2
-  to: ""
-  can_see: !map:ActiveSupport::HashWithIndifferentAccess 
-    Project: 
-    - open
-  "on": Platform
-- name: !binary |
-    0JDQtNC80LjQvdC40YHRgtGA0LDRgtC+0YAg0YDQtdC/0L7Qt9C40YLQvtGA
-    0LjRjw==
-
-  use_default: false
-  use_default_for_owner: false
-  rights: {}
-
-  id: 3
-  to: ""
-  can_see: 
-  "on": Repository
-- name: !binary |
-    0JDQtNC80LjQvdC40YHRgtGA0LDRgtC+0YAg0LPRgNGD0L/Qv9GL
-
-  use_default: false
-  use_default_for_owner: true
-  rights: {}
-
-  id: 5
-  to: User
-  can_see: 
-  "on": Group
-- name: !binary |
-    0JzQsNC50L3RgtC10LnQvdC10YAg0L/RgNC+0LXQutGC0LA=
-
-  use_default: false
-  use_default_for_owner: false
-  rights: {}
-
-  id: 7
-  to: ""
-  can_see: 
-  "on": Project
-- name: !binary |
-    0J/QvtC70YzQt9C+0LLQsNGC0LXQu9GMINC/0LvQsNGC0YTQvtGA0LzRiw==
-
-  use_default: false
-  use_default_for_owner: false
-  rights: {}
-
-  id: 8
-  to: ""
-  can_see: 
-  "on": Platform
-- name: !binary |
-    0KPRh9Cw0YHRgtC90LjQuiDQs9GA0YPQv9C/0Ys=
-
-  use_default: false
-  use_default_for_owner: true
-  rights: {}
-
-  id: 9
-  to: User
-  can_see: 
-  "on": Group
-- name: !binary |
     0JDQtNC80LjQvdC40YHRgtGA0LDRgtC+0YAg0YHQuNGB0YLQtdC80Ys=
 
   use_default: true
   use_default_for_owner: false
   rights: 
-    event_logs: 
-    - index
     auto_build_lists: 
     - index
     - create
+    event_logs: 
+    - index
     groups: 
     - update
     - index
@@ -98,12 +27,15 @@
     - remove_project
     - destroy
     - new
-    personal_repositories:
+    collaborators: 
     - index
+    - create
     - show
-    - settings
-    - add_project
-    - remove_project
+    - edit
+    - add
+    - update
+    - destroy
+    - new
     downloads: 
     - index
     platforms: 
@@ -113,6 +45,8 @@
     - destroy
     - new
     - unfreeze
+    - easy_urpmi
+    - edit
     projects: 
     - index
     - auto_build
@@ -158,6 +92,14 @@
     - publish
     - all
     - cancel
+    members: 
+    - index
+    - create
+    - show
+    - edit
+    - update
+    - destroy
+    - new
     categories: 
     - index
     - platforms
@@ -204,6 +146,33 @@
     - hidden
   "on": ""
 - name: !binary |
+    0JDQtNC80LjQvdC40YHRgtGA0LDRgtC+0YAg0L/Qu9Cw0YLRhNC+0YDQvNGL
+
+  use_default: false
+  use_default_for_owner: true
+  rights: 
+    groups: 
+    - index
+    - destroy
+  id: 2
+  to: ""
+  can_see: !map:ActiveSupport::HashWithIndifferentAccess 
+    Project: 
+    - open
+  "on": Platform
+- name: !binary |
+    0JDQtNC80LjQvdC40YHRgtGA0LDRgtC+0YAg0YDQtdC/0L7Qt9C40YLQvtGA
+    0LjRjw==
+
+  use_default: false
+  use_default_for_owner: true
+  rights: {}
+
+  id: 3
+  to: ""
+  can_see: 
+  "on": Repository
+- name: !binary |
     0JDQtNC80LjQvdC40YHRgtGA0LDRgtC+0YAg0L/RgNC+0LXQutGC0LA=
 
   use_default: false
@@ -215,20 +184,67 @@
   can_see: 
   "on": Project
 - name: !binary |
+    0JDQtNC80LjQvdC40YHRgtGA0LDRgtC+0YAg0LPRgNGD0L/Qv9GL
+
+  use_default: false
+  use_default_for_owner: true
+  rights: {}
+
+  id: 5
+  to: User
+  can_see: 
+  "on": Group
+- name: !binary |
+    0JDQtNC80LjQvdC40YHRgtGA0LDRgtC+0YAg0L/RgNC+0LTRg9C60YLQsA==
+
+  use_default: false
+  use_default_for_owner: false
+  rights: {}
+
+  id: 6
+  to: ""
+  can_see: 
+  "on": Project
+- name: !binary |
+    0JzQsNC50L3RgtC10LnQvdC10YAg0L/RgNC+0LXQutGC0LA=
+
+  use_default: true
+  use_default_for_owner: false
+  rights: {}
+
+  id: 7
+  to: ""
+  can_see: 
+  "on": Project
+- name: !binary |
+    0J/QvtC70YzQt9C+0LLQsNGC0LXQu9GMINC/0LvQsNGC0YTQvtGA0LzRiw==
+
+  use_default: false
+  use_default_for_owner: false
+  rights: {}
+
+  id: 8
+  to: ""
+  can_see: 
+  "on": Platform
+- name: !binary |
+    0KPRh9Cw0YHRgtC90LjQuiDQs9GA0YPQv9C/0Ys=
+
+  use_default: true
+  use_default_for_owner: false
+  rights: {}
+
+  id: 9
+  to: User
+  can_see: 
+  "on": Group
+- name: !binary |
     0J/QvtC70YzQt9C+0LLQsNGC0LXQu9GMINGB0LjRgdGC0LXQvNGL
 
   use_default: true
   use_default_for_owner: false
   rights: 
     groups: 
-    - index
-    personal_repositories: 
-    - show
-    - add_project
-    - settings
-    - change_visibility
-    - remove_project
-    auto_build_lists: 
     - index
     repositories: 
     - index
@@ -248,14 +264,3 @@
   to: User
   can_see: 
   "on": ""
-- name: !binary |
-    0JDQtNC80LjQvdC40YHRgtGA0LDRgtC+0YAg0L/RgNC+0LTRg9C60YLQsA==
-
-  use_default: false
-  use_default_for_owner: false
-  rights: {}
-
-  id: 6
-  to: ""
-  can_see: 
-  "on": Project
