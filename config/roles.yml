@@ -4,7 +4,7 @@
     0JDQtNC80LjQvdC40YHRgtGA0LDRgtC+0YAg0L/Qu9Cw0YLRhNC+0YDQvNGL
 
   use_default: false
-  use_default_for_owner: false
+  use_default_for_owner: true
   rights: 
     groups: 
     - index
@@ -64,7 +64,7 @@
     0KPRh9Cw0YHRgtC90LjQuiDQs9GA0YPQv9C/0Ys=
 
   use_default: false
-  use_default_for_owner: false
+  use_default_for_owner: true
   rights: {}
 
   id: 9
