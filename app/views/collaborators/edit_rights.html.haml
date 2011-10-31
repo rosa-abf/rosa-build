@@ -1,0 +1,26 @@
+.block
+  .secondary-navigation
+    %ul.wat-cf
+      %li.first= link_to t("layout.collaborators.list"), edit_project_collaborators_path(@project)
+      %li.active= link_to t("layout.collaborators.edit_roles"), edit_project_collaborator_path(@project, @user)
+  .content
+    .inner
+      = form_tag project_collaborator_path(@project, @user) do
+        %h2.title= t("layout.collaborators.roles_header") + ': ' + @user.name
+        %table.table
+          %tr
+            %th.first= t("activerecord.attributes.role.name")
+            %th.last= t("layout.collaborators.add_role")
+          - @user_roles.each do |role|
+            %tr{:class => cycle("odd", "even")}
+              %td
+                = role.name
+              %td.last
+                = check_box_tag "role[#{role.id}]", '1', (@user.roles_to(@project).include? role) ? :checked : nil
+                = label_tag "role[#{role.id}]", t("layout.collaborators.add_role")
+        .group.navform.wat-cf
+          %button.button{:type => "submit"}
+            = image_tag("web-app-theme/icons/tick.png", :alt => t("layout.save"))
+            = t("layout.save")
+          %span.text_button_padding= t("layout.or")
+          = link_to t("layout.cancel"), edit_project_collaborators_path(@project), :class => "text_button_padding link_button"
