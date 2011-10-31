@@ -1,6 +1,6 @@
 #require 'lib/build_server.rb'
 class Platform < ActiveRecord::Base
-  DOWNLOADS_PATH = Rails.root + '/public/downloads'
+  DOWNLOADS_PATH = RAILS_ROOT + '/public/downloads'
   VISIBILITIES = ['open', 'hidden']
   
   relationable :as => :target
