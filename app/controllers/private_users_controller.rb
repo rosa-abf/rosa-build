@@ -14,7 +14,8 @@ class PrivateUsersController < ApplicationController
   end
 
   def destroy
-  	PrivateUser.find(params[:id]).destroy
+  	user = PrivateUser.find(params[:id])
+    can_perform? user if user
   	redirect_to platform_private_users_path(params[:platform_id])
   end
 end

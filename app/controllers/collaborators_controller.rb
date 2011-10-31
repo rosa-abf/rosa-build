@@ -10,6 +10,7 @@ class CollaboratorsController < ApplicationController
   before_filter :find_groups
 
   def index
+    can_perform? @project if @project
     redirect_to edit_project_collaborators_path(@project)
   end
 
@@ -20,6 +21,7 @@ class CollaboratorsController < ApplicationController
   end
 
   def edit
+    can_perform? @project if @project
     if params[:id]
       @user = User.find params[:id]
       render :edit_rights and return
@@ -30,6 +32,7 @@ class CollaboratorsController < ApplicationController
   end
 
   def update
+    can_perform? @project if @project
     unless params[:id]
       if params[:user]
         users_for_removing = @project.collaborators.select do |u|

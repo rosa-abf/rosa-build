@@ -1,5 +1,6 @@
 class AutoBuildListsController < ApplicationController
   before_filter :authenticate_user!, :except => :auto_build
+  before_filter :check_global_access
   
   def index
     @projects_not_automated = Project.scoped

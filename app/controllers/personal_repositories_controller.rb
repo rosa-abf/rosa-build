@@ -5,6 +5,7 @@ class PersonalRepositoriesController < ApplicationController
   before_filter :check_global_access
 
   def show
+    can_perform? @repository if @repository
     if params[:query]
       @projects = @repository.projects.recent.by_name(params[:query]).paginate :page => params[:project_page], :per_page => 30
     else
@@ -14,12 +15,14 @@ class PersonalRepositoriesController < ApplicationController
   
   #TODO: Add git repo move into private repos path.
   def change_visibility
+    can_perform? @repository if @repository
     @repository.platform.change_visibility
     
     redirect_to settings_personal_repository_path(@repository)
   end
   
   def settings
+    can_perform? @repository if @repository
     if @repository.platform.hidden?
       @urmpi_command = "urpmi -add  http://login@password:#{ request.host }/privates/#{ @repository.platform.name }/main/"
     else
@@ -28,6 +31,7 @@ class PersonalRepositoriesController < ApplicationController
   end
 
   def add_project
+    can_perform? @repository if @repository
     if params[:project_id]
       @project = Project.find(params[:project_id])
       params[:project_id] = nil
@@ -46,6 +50,7 @@ class PersonalRepositoriesController < ApplicationController
   end
 
   def remove_project
+    can_perform? @repository if @repository
     if params[:project_id]
       @project = Project.find(params[:project_id])
       params[:project_id] = nil

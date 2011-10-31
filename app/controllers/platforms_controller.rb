@@ -1,7 +1,7 @@
 # coding: UTF-8
 class PlatformsController < ApplicationController
   before_filter :authenticate_user!, :except => :easy_urpmi
-  before_filter :find_platform, :only => [:freeze, :unfreeze, :clone, :edit]
+  before_filter :find_platform#, :only => [:freeze, :unfreeze, :clone, :edit]
   before_filter :get_paths, :only => [:new, :create]
   before_filter :check_global_access, :except => :easy_urpmi
 
@@ -26,6 +26,7 @@ class PlatformsController < ApplicationController
   end
 
   def show
+    can_perform? @platform if @platform
     @platform = Platform.find params[:id], :include => :repositories
     @repositories = @platform.repositories
     @members = @platform.members.uniq
@@ -37,6 +38,7 @@ class PlatformsController < ApplicationController
   end
   
   def edit
+    can_perform? @platform if @platform
     @platforms = Platform.visible_to current_user
   end
 
@@ -56,6 +58,7 @@ class PlatformsController < ApplicationController
   end
 
   def freeze
+    can_perform? @platform if @platform
     @platform.released = true
     if @platform.save
       flash[:notice] = I18n.t("flash.platform.freezed")
@@ -67,6 +70,7 @@ class PlatformsController < ApplicationController
   end
 
   def unfreeze
+    can_perform? @platform if @platform
     @platform.released = false
     if @platform.save
       flash[:notice] = I18n.t("flash.platform.unfreezed")
@@ -78,6 +82,7 @@ class PlatformsController < ApplicationController
   end
 
   def clone
+    can_perform? @platform if @platform
     cloned = @platform.clone(@platform.name + "_clone", @platform.unixname + "_clone")
     if cloned
       flash[:notice] = 'Клонирование успешно'
@@ -89,6 +94,7 @@ class PlatformsController < ApplicationController
   end
 
   def destroy
+    can_perform? @platform if @platform
     Platform.destroy params[:id]
 
     flash[:notice] = t("flash.platform.destroyed")

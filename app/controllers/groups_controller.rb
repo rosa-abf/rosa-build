@@ -9,6 +9,7 @@ class GroupsController < ApplicationController
   end
 
   def show
+    can_perform? @group if @group
     @platforms    = @group.platforms.paginate(:page => params[:platform_page], :per_page => 10)
     @repositories = @group.repositories.paginate(:page => params[:repository_page], :per_page => 10)
     @projects     = @group.projects.paginate(:page => params[:project_page], :per_page => 10)
@@ -19,6 +20,7 @@ class GroupsController < ApplicationController
   end
 
   def edit
+    can_perform? @group if @group
   end
 
   def create
@@ -35,6 +37,7 @@ class GroupsController < ApplicationController
   end
 
   def update
+    can_perform? @group if @group
     if @group.update_attributes(params[:group])
       flash[:notice] = t('flash.group.saved')
       redirect_to groups_path
@@ -45,6 +48,7 @@ class GroupsController < ApplicationController
   end
 
   def destroy
+    can_perform? @group if @group
     @group.destroy
     flash[:notice] = t("flash.group.destroyed")
     redirect_to groups_path

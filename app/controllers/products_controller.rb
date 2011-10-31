@@ -20,6 +20,7 @@ class ProductsController < ApplicationController
   end
 
   def clone
+    can_perform? @platform if @platform
     @template = @platform.products.find(params[:id])
     @product = @platform.products.new
     @product.clone_from!(@template)
@@ -28,15 +29,19 @@ class ProductsController < ApplicationController
   end
 
   def build
+    can_perform? @product if @product
     flash[:notice] = t('flash.product.build_started')
     ProductBuilder.create_product @product.id, '/var/rosa', @product.ks, @product.menu, @product.build, @product.counter, []
     redirect_to :action => :show
   end
 
   def edit
+    can_perform? @product if @product
+    can_perform? @platform if @platform
   end
 
   def create
+    can_perform? @platform if @platform
     @product = @platform.products.new params[:product]
     if @product.save
       flash[:notice] = t('flash.product.saved') 
@@ -48,6 +53,8 @@ class ProductsController < ApplicationController
   end
 
   def update
+    can_perform? @platform if @platform
+    can_perform? @product if @product
     if @product.update_attributes(params[:product])
       flash[:notice] = t('flash.product.saved')
       redirect_to @platform
@@ -58,9 +65,13 @@ class ProductsController < ApplicationController
   end
 
   def show
+    can_perform? @platform if @platform
+    can_perform? @product if @product
   end
 
   def destroy
+    can_perform? @platform if @platform
+    can_perform? @product if @product
     @product.destroy
     flash[:notice] = t("flash.product.destroyed")
     redirect_to @platform

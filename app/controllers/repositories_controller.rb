@@ -11,6 +11,7 @@ class RepositoriesController < ApplicationController
   end
 
   def show
+    can_perform? @repository if @repository
     if params[:query]
       @projects = @repository.projects.recent.by_name(params[:query]).paginate :page => params[:project_page], :per_page => 30
     else
@@ -24,6 +25,7 @@ class RepositoriesController < ApplicationController
   end
 
   def destroy
+    can_perform? @repository if @repository
     @repository.destroy
     platform_id = @repository.platform_id
 
@@ -44,6 +46,7 @@ class RepositoriesController < ApplicationController
   end
 
   def add_project
+    can_perform? @repository if @repository
     if params[:project_id]
       @project = Project.find(params[:project_id])
       params[:project_id] = nil
@@ -67,6 +70,7 @@ class RepositoriesController < ApplicationController
   end
 
   def remove_project
+    can_perform? @repository if @repository
     if params[:project_id]
       @project = Project.find(params[:project_id])
       params[:project_id] = nil
