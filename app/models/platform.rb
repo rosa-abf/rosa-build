@@ -34,6 +34,7 @@ class Platform < ActiveRecord::Base
 
   #attr_accessible :visibility
 
+
   def path
     build_path(unixname)
   end

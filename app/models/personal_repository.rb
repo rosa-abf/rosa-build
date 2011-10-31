@@ -12,7 +12,7 @@ module PersonalRepository
       pl.name = "#{self.uname}_personal"
       pl.unixname = "#{self.uname}_personal"
       pl.platform_type = 'personal'
-      pl.distrib_type = 'mandriva2011'
+      pl.distrib_type = APP_CONFIG['distr_types'].first
       pl.visibility = 'open'
       pl.save!
     

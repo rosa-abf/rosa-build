@@ -54,7 +54,7 @@ class Role < ActiveRecord::Base
     end
 
     def check_owner_default
-      self[:use_default_for_owner] = false if use_default_for_owner and (to.nil? || to == '')
+      self[:use_default_for_owner] = false if use_default_for_owner and (on.nil? || on == '')
       true
     end
 
