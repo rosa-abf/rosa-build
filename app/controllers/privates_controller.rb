@@ -1,11 +1,8 @@
 class PrivatesController < ApplicationController
 	require 'digest/sha2'
 
-  before_filter :authenticate_user!
 	before_filter :find_platform
-
 	before_filter :authenticate
-  before_filter :check_global_access
 
 	def show
 		file_name = "#{APP_CONFIG['root_path']}/platforms/#{params[:platform_name]}/repository/#{params[:file_path]}"

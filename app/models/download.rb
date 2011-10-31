@@ -27,7 +27,7 @@ class Download < ActiveRecord::Base
 
     def parse_and_remove_nginx_log
       parse_nginx_log
-      system("rm -f #{PREV_LOG_FILE}")
+      system("sudo rm -f #{PREV_LOG_FILE}")
     end
 
     def increase(opts={})

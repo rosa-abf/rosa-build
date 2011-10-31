@@ -3,6 +3,9 @@ require 'rvm/capistrano'
 require 'bundler/capistrano'
 require 'airbrake/capistrano'
 
+set :whenever_command, "bundle exec whenever"
+require "whenever/capistrano"
+
 set :rvm_type, :user
 
 # bundler bootstrap

@@ -10,7 +10,7 @@ class PlatformsController < ApplicationController
   end
 
   def easy_urpmi
-    @platforms = Platform.where(:distrib_type => APP_CONFIG['distr_type'].first, :visibility => 'open', :platform_type => 'main')
+    @platforms = Platform.where(:distrib_type => APP_CONFIG['distr_types'].first, :visibility => 'open', :platform_type => 'main')
     respond_to do |format|
       format.json do
         render :json => {
