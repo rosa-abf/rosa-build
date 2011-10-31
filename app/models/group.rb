@@ -28,7 +28,9 @@ class Group < ActiveRecord::Base
   include PersonalRepository
 
   before_create :add_default_role
-  before_save :add_owner_rel
+  #before_save :add_owner_rel
+  after_create :make_owner_rel
+  before_save :check_owner_rel
 
   def roles_of(user)
     objects.where(:object_id => user.id, :object_type => user.class).map {|rel| rel.role}.reject {|r| r.nil?}
@@ -52,6 +54,17 @@ class Group < ActiveRecord::Base
       elsif owner_id_changed?
         remove_owner owner_type_was.classify.find(owner_id_was)
         add_owner owner
+      end
+    end
+
+    def make_owner_rel
+      add_owner owner
+    end
+
+    def check_owner_rel
+      if !new_record? and owner_id_changed?
+        remove_owner owner_type_was.classify.find(owner_id_was) if owner_type_was
+        add_owner owner if owner
       end
     end
 
