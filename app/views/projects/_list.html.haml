@@ -1,12 +1,12 @@
 %table.table
   %tr
     %th= t("activerecord.attributes.project.name")
-    %th= t("activerecord.attributes.project.unixname")
+    %th= t("activerecord.attributes.project.owner")
     %th.last &nbsp;
   - @projects.each do |project|
     %tr{:class => cycle("odd", "even")}
-      %td= link_to project.name, project
-      %td= project.unixname
+      %td= link_to "#{project.name} (#{project.unixname})", project
+      %td= link_to "#{project.owner.name} (#{project.owner.uname})", project.owner
       %td
         = link_to t("layout.edit"), edit_project_path(project)
         |
