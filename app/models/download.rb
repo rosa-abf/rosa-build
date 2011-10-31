@@ -7,7 +7,7 @@ class Download < ActiveRecord::Base
     def rotate_nginx_log
       system("mv #{ APP_CONFIG['nginx_log'] } #{ PREV_LOG_FILE }")
       #system("sudo kill -USR1 `cat #{ APP_CONFIG['nginx_pid'] }`")
-      system("touch #{ RAILS_ROOT }/tmp/restart.txt")
+      system("sudo /opt/nginx/sbin/nginx -s reload")
     end
 
     def parse_nginx_log
