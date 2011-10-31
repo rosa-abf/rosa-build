@@ -7,9 +7,9 @@ class ActionController::Base
       unless current_user.can_perform? c, a, target
         flash[:notice] = t('layout.not_access')
         if request.env['HTTP_REFERER']
-          redirect_to(:back)
+          redirect_to(:back) and return
         else
-          redirect_to(:root)
+          redirect_to(:root) and return
         end
       end
     end

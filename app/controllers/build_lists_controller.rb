@@ -5,7 +5,7 @@ class BuildListsController < ApplicationController
 	before_filter :find_arches, :only => [:index, :filter, :all]
 	before_filter :find_project_versions, :only => [:index, :filter]
 	before_filter :find_build_list_by_bs, :only => [:status_build, :pre_build, :post_build]
-  before_filter :check_global_access, :except => [:status_build, :post_build, :pre_build, :circle_build, :new_bbdt]
+  before_filter :check_global_access, :except => [:status_build, :post_build, :pre_build, :circle_build, :new_bbdt, :show]
 
 	def all
     if params[:filter]
@@ -47,6 +47,7 @@ class BuildListsController < ApplicationController
 	end
 
 	def show
+    can_perform? @project
 		@build_list = @project.build_lists.find(params[:id])
 		@item_groups = @build_list.items.group_by_level
 	end
