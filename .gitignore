@@ -11,7 +11,7 @@ public/stylesheets/compiled/*
 public/assets/*
 config/initializers/local.rb
 public/system/*
-public/downloads/
+public/downloads/*
 .rvmrc
 *.swp
 *.tmproj
