@@ -13,7 +13,7 @@ module PersonalRepository
       pl.unixname = "#{self.uname}_personal"
       pl.platform_type = 'personal'
       pl.distrib_type = APP_CONFIG['distr_types'].first
-      pl.visibility = 'open'
+      pl.visibility = 'hidden'
       pl.save!
     
       rep = pl.repositories.build
