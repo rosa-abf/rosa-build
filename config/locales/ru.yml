@@ -32,6 +32,8 @@ ru:
 
     downloads:
       title: Статистика закачек пакетов
+      message: Обновляется автоматически каждые 24 часа
+      refresh_btn: Обновить
       
     auto_build_lists:
       header: Проекты с автоматической сборкой
@@ -289,6 +291,9 @@ ru:
         project_version_not_found: версия не найден
 
   flash:
+    downloads:
+      statistics_refreshed: Статистика обновлена
+    
     collaborators:
       successfuly_changed: Список коллабораторов успешно изменен
       error_in_changing: Ошибка изменения списка коллабораторов

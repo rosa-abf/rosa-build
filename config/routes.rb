@@ -20,6 +20,7 @@ Rosa::Application.routes.draw do
 
   #resources :downloads, :only => :index
   match 'statistics/' => 'downloads#index', :as => :downloads
+  match 'statistics/refresh' => 'downloads#refresh', :as => :downloads_refresh
 
   resources :categories do
     get :platforms, :on => :collection
