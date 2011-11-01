@@ -50,6 +50,7 @@ Rosa::Application.routes.draw do
       get 'freeze'
       get 'unfreeze'
       get 'clone'
+      post 'clone'
     end
 
     collection do

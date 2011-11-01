@@ -15,6 +15,7 @@ ru:
     delete: Удалить
     save: Сохранить
     search: Искать
+    clone: Клонировать
     search_by_name: Фильтр по имени
     are_you_sure: "Вы уверены?"
     login: Войти
@@ -97,6 +98,7 @@ ru:
       list_header_main: Основные
       list_header_personal: Персональные
       list_header_all: Все
+      clone_header: Клонирование платформы
       show: Платформа
       projects: Проекты
       products: Продукты
@@ -117,6 +119,7 @@ ru:
       distrib_type: Тип дистрибутива
       private_users: Пользователи приватного репозитория
       confirm_clone: Клонировать?
+      clone: Клонировать
 
     roles:
       confirm_delete: Вы уверены, что хотите удалить эту роль?
