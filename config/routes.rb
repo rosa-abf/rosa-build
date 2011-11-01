@@ -117,7 +117,7 @@ Rosa::Application.routes.draw do
     resources :repositories, :only => [:new, :create]
   end
 
-  match '/catalogs', :to => 'categories#platforms', :catalogs
+  match '/catalogs', :to => 'categories#platforms', :as => :catalogs
 
   match 'build_lists/status_build', :to => "build_lists#status_build"
   match 'build_lists/post_build', :to => "build_lists#post_build"
