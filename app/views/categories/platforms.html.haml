@@ -20,7 +20,7 @@
         - @personal_platforms.each do |platform|
           %tr{:class => cycle("odd", "even")}
             %td= link_to platform.name, platform_categories_path(platform)
-            %td.last= @personal_latforms_count[platform.id].to_i
+            %td.last= @personal_platforms_count[platform.id].to_i
     %br
     .inner
       %h3.title= t("layout.platforms.list_header_all")

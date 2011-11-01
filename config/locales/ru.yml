@@ -94,6 +94,9 @@ ru:
       new_header: Новая платформа
       edit_header: Редактировать
       list_header: Платформы
+      list_header_main: Основные
+      list_header_personal: Персональные
+      list_header_all: Все
       show: Платформа
       projects: Проекты
       products: Продукты
