@@ -42,7 +42,9 @@ class Project < ActiveRecord::Base
   after_rollback lambda { destroy_git_repo rescue true if new_record? }
 
   def project_versions
-    tags.select { |tag| tag.name =~ /^v\./  }
+    res = tags.select { |tag| tag.name =~ /^v\./  }
+    return res if res and res.size > 0
+    tags
   end
   
   def collected_project_versions
