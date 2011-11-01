@@ -53,7 +53,7 @@ ru:
       Sunday: Воскресенье
 
     menu:
-      categories: Категории
+      categories: Каталог
       containers: Контейнеры
       downloads: Статистика
       event_logs: Лог событий
@@ -83,7 +83,7 @@ ru:
       new: Создать
       edit: Редактировать
       platforms: По платформам
-      list_header: Категории
+      list_header: Каталог
       new_header: Новая категория
       edit_header: Редактировать категорию
       confirm_delete: Вы уверены, что хотите удалить эту категорию?
