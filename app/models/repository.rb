@@ -37,7 +37,8 @@ class Repository < ActiveRecord::Base
     r.name = name
     r.unixname = unixname
     r.projects = projects
-    return r.save
+    r.save
+    return r
   end
 
   protected

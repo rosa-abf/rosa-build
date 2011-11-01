@@ -77,6 +77,7 @@ class Platform < ActiveRecord::Base
       pr_cloned.id = nil
       pr_cloned.platform = p
       pr_cloned.save
+      pr_cloned
     end
     return (result && xml_rpc_clone(new_unixname) && p)
   end
