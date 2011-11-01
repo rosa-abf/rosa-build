@@ -114,6 +114,7 @@ ru:
       platform_type: Тип платформы
       distrib_type: Тип дистрибутива
       private_users: Пользователи приватного репозитория
+      confirm_clone: Клонировать?
 
     roles:
       confirm_delete: Вы уверены, что хотите удалить эту роль?
