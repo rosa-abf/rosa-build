@@ -87,7 +87,7 @@ class User < ActiveRecord::Base
     def create_ssh_key(key)
       with_ga do |ga|
         ga.store_key! key
-        own_projects.each do |project|
+        projects.each do |project|
           repo = ga.find_repo(project.git_repo_name)
           repo.add_key(key, 'RW') if repo
         end
@@ -97,12 +97,8 @@ class User < ActiveRecord::Base
 
     def update_ssh_key(old_key, new_key)
       with_ga do |ga|
+        ga.repos.replace_key old_key, new_key #, options = {}
         ga.replace_key! old_key, new_key
-        begin
-          ga.repos.replace_key old_key, new_key #, options = {}
-        rescue Gitolito::GitoliteAdmin::Repo::KeyDoesntExistsError
-          nil
-        end
         ga.save_and_release
       end
     end

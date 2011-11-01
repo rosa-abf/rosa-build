@@ -295,7 +295,7 @@ ru:
       statistics_refreshed: Статистика обновлена
     
     collaborators:
-      successfuly_changed: Список коллабораторов успешно изменен
+      successfully_changed: Список коллабораторов успешно изменен
       error_in_changing: Ошибка изменения списка коллабораторов
 
     auto_build_list:

@@ -36,7 +36,7 @@ class Project < ActiveRecord::Base
   before_save :check_owner_rel
 
   after_create :attach_to_personal_repository
-  after_create :create_git_repo 
+  after_create :create_git_repo
   before_update :update_git_repo
   after_destroy :destroy_git_repo
   after_rollback lambda { destroy_git_repo rescue true if new_record? }

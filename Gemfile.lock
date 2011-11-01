@@ -6,7 +6,7 @@ GIT
 
 GIT
   remote: git@github.com:warpc/gitolito.git
-  revision: 8608b9bdfd33e961d9f9d71dd594e62780c074f6
+  revision: 120992e79d079800f6efb07f100ab80437b20b43
   specs:
     gitolito (0.0.1)
       grit

@@ -83,9 +83,6 @@ Rosa::Application.routes.draw do
 
     resources :collaborators, :only => [:index, :edit, :update] do
       collection do
-        get :add
-        post :add
-
         get :edit
         post :update
       end

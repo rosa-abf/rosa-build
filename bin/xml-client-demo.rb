@@ -5,8 +5,8 @@ require 'xmlrpc/client'
 require 'pp'
 
 # Please correctly fill following vars
-@host = 'localhost'
-@port = 3000
+@host = 'npp-build.rosalab.ru'
+@port = 80
 @user = 'pchipiga@ya.ru'
 @password = '123456'
 
