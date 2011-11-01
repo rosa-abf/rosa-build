@@ -11,6 +11,12 @@
           = t("activerecord.attributes.repository.owner")
           \:
         = link_to @repository.owner.name, url_for(@repository.owner)
+      
+      %br
+      .group
+        - @urpmi_commands.each do |urpmi_command|
+          %span= urpmi_command
+          %br
       .wat-cf
         =# link_to image_tag("web-app-theme/icons/cross.png", :alt => t("layout.delete")) + " " + t("layout.delete"), @repository_path, :method => "delete", :class => "button", :confirm => t("layout.repositories.confirm_delete")
 

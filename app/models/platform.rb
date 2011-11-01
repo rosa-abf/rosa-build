@@ -35,6 +35,22 @@ class Platform < ActiveRecord::Base
   #attr_accessible :visibility
 
 
+  def urpmi_list(host, pair = nil)
+    pair = {:login => 'login', :pass => 'password'} if pair.blank?
+    urpmi_commands = []
+    if self.hidden?
+      Platform.main.each do |pl|
+        urpmi_commands << "urpmi.addmedia  http://#{ pair[:login] }@#{ pair[:pass] }:#{ host }/private/#{ self.name }/#{ pl.name }/main/"
+      end
+    else
+      Platform.main.each do |pl|
+        urpmi_commands << "urpmi.addmedia  http://#{ host }/downloads/#{ self.name }/repository/#{ pl.name }/main/"
+      end
+    end
+    
+    return urpmi_commands
+  end
+
   def path
     build_path(unixname)
   end

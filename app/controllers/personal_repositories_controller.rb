@@ -11,9 +11,10 @@ class PersonalRepositoriesController < ApplicationController
     else
       @projects = @repository.projects.recent.paginate :page => params[:project_page], :per_page => 30
     end
+    
+    @urpmi_commands = @repository.platform.urpmi_list(request.host)
   end
   
-  #TODO: Add git repo move into private repos path.
   def change_visibility
     can_perform? @repository if @repository
     @repository.platform.change_visibility
@@ -23,11 +24,6 @@ class PersonalRepositoriesController < ApplicationController
   
   def settings
     can_perform? @repository if @repository
-    if @repository.platform.hidden?
-      @urmpi_command = "urpmi -add  http://login@password:#{ request.host }/privates/#{ @repository.platform.name }/main/"
-    else
-      @urmpi_command = "urpmi -add  http://#{ request.host }/downloads/#{ @repository.platform.name }/main/"
-    end
   end
 
   def add_project

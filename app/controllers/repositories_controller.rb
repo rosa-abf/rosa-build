@@ -64,7 +64,11 @@ class RepositoriesController < ApplicationController
         redirect_to url_for(:action => :add_project)
       end
     else
-      @projects = Project.addable_to_repository(@repository.id).paginate(:page => params[:project_page])
+      @projects = Project.scoped
+      @projects = @projects.addable_to_repository(@repository.id)
+      @projects = @projects.by_visibilities(['open']) if @repository.platform.platform_type == 'main'
+      @projects.paginate(:page => params[:project_page])
+      #@projects = Project.addable_to_repository(@repository.id).paginate(:page => params[:project_page])
       render 'projects_list'
     end
   end
