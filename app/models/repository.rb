@@ -36,8 +36,8 @@ class Repository < ActiveRecord::Base
     r = Repository.new
     r.name = name
     r.unixname = unixname
-    r.projects = projects.map(&:clone)
-    return r
+    r.projects = projects
+    return r.save
   end
 
   protected

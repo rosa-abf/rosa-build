@@ -64,12 +64,20 @@ class Platform < ActiveRecord::Base
   end
 
   def clone(new_name, new_unixname)
+    # TODO * make it Delayed Job *
     p = Platform.new
     p.name = new_name
     p.unixname = new_unixname
     p.parent = self
     p.repositories = repositories.map(&:clone)
     result = p.save
+    p.products = products.map do |pr|
+      pr_cloned = Product.new
+      pr_cloned.attributes = pr.attributes
+      pr_cloned.id = nil
+      pr_cloned.platform = p
+      pr_cloned.save
+    end
     return (result && xml_rpc_clone(new_unixname) && p)
   end
 
