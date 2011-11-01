@@ -5,7 +5,7 @@ class AutoBuildListsController < ApplicationController
   def index
     @projects_not_automated = Project.scoped
     @projects_not_automated = @projects_not_automated.where(:name => params[:name]) unless params[:name].blank?
-    @projects_not_automated = @projects_not_automated.automateable.paginate :page => params[:not_automated_page], :per_page => 15
+    @projects_not_automated = @projects_not_automated.automateable.where(:owner_id => current_user.id, :owner_type => 'User').paginate :page => params[:not_automated_page], :per_page => 15
     
     @projects_already_automated = Project.joins(:auto_build_lists).paginate :page => params[:already_automated_page], :per_page => 15
   end
