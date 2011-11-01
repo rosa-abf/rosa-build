@@ -49,7 +49,8 @@ namespace :rights do
 
     clist = ApplicationController.descendants
     hash = clist.inject({}) do |h, cont|
-      tmp = (cont.public_instance_methods - ApplicationController.public_instance_methods).reject{|n| n.first == '_'}
+      #tmp = (cont.public_instance_methods - ApplicationController.public_instance_methods).reject{|n| n.first == '_'}
+      tmp = cont.action_methods.reject{|m| m.first == '_'}
       h[cont.controller_name] = tmp if tmp.size > 0
       h
     end
