@@ -5,7 +5,6 @@ ru:
     page_gap: ...
 
   layout:
-    global_header: Сборочная платформа ROSA
     logged_in_as: Вы вошли как
     logout: Выйти
     user_list: Список пользователей
