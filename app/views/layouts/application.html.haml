@@ -39,7 +39,7 @@
                 %a{:href => all_build_lists_path}= t("layout.menu.build_lists")
             -if current_user.can_perform?('categories', 'index')
               %li{:class => controller.controller_path == 'categories' ? 'active' : '' }
-                %a{:href => categories_path}= t("layout.menu.categories")
+                %a{:href => catalogs_path}= t("layout.menu.categories")
             -if current_user.can_perform?('roles', 'index')
               %li{:class => controller.controller_path == 'roles' ? 'active' : '' }
                 %a{:href => roles_path}= t("layout.menu.roles")

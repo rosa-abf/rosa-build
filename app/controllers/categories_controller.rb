@@ -6,8 +6,12 @@ class CategoriesController < ApplicationController
   before_filter :check_global_access, :only => [:platforms, :new, :create]
 
   def platforms
-    @platforms = Platform.all
-    @platforms_count = Platform.joins(:repositories => :projects).group('platforms.id').count
+    @all_platforms = Platform.all
+    @all_platforms_count = Platform.joins(:repositories => :projects).group('platforms.id').count
+    @personal_platforms = Platform.personal
+    @personal_platforms_count = Platform.personal.joins(:repositories => :projects).group('platforms.id').count
+    @main_platforms = Platform.main
+    @main_platforms_count = Platform.main.joins(:repositories => :projects).group('platforms.id').count
   end
 
   def index

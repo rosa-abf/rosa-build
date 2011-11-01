@@ -5,9 +5,27 @@
       %li.active= link_to t("layout.categories.platforms"), platforms_categories_path
   .content
     %h2.title= t("layout.platforms.list_header")
+    %br
     .inner
+      %h3.title= t("layout.platforms.list_header_main")
       %table.table
-        - @platforms.each do |platform|
+        - @main_platforms.each do |platform|
           %tr{:class => cycle("odd", "even")}
             %td= link_to platform.name, platform_categories_path(platform)
-            %td.last= @platforms_count[platform.id].to_i
+            %td.last= @main_platforms_count[platform.id].to_i
+    %br
+    .inner
+      %h3.title= t("layout.platforms.list_header_personal")
+      %table.table
+        - @personal_platforms.each do |platform|
+          %tr{:class => cycle("odd", "even")}
+            %td= link_to platform.name, platform_categories_path(platform)
+            %td.last= @personal_latforms_count[platform.id].to_i
+    %br
+    .inner
+      %h3.title= t("layout.platforms.list_header_all")
+      %table.table
+        - @all_platforms.each do |platform|
+          %tr{:class => cycle("odd", "even")}
+            %td= link_to platform.name, platform_categories_path(platform)
+            %td.last= @all_platforms_count[platform.id].to_i
