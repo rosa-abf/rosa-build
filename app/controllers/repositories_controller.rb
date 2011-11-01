@@ -7,7 +7,11 @@ class RepositoriesController < ApplicationController
   before_filter :check_global_access, :only => [:index, :new, :create]
 
   def index
-    @repositories = Repository.paginate(:page => params[:repository_page])
+    if params[:platform_id]
+      @repositories = Platform.find(params[:platform_id]).repositories.paginate(:page => params[:repository_page])
+    else
+      @repositories = Repository.paginate(:page => params[:repository_page])
+    end
   end
 
   def show
