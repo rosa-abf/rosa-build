@@ -9,16 +9,20 @@
     .inner
       = render :partial => "git/commits/commits", :object => [@commit]
 
-.block
-  .content
-    .inner
-      .patch_and_diff
-        #{link_to "raw diff", commit_path(@project, @commit.id, :diff)} | #{link_to "patch", commit_path(@project, @commit.id, :patch)}
+- if @diff.present?
+  .block
+    .content
+      .inner
+        .patch_and_diff
+          #{link_to "raw diff", commit_path(@project, @commit.id, :diff)} | #{link_to "patch", commit_path(@project, @commit.id, :patch)}
+        .clear
+        = render_commit_stats(@commit.stats)
 
-      .clear
-        
-      = render_commit_stats(@commit.stats)
-
-= render :partial => "git/commits/commit_diff", :collection => @commit.diffs
+  = render :partial => "git/commits/commit_diff", :collection => @diffs
+- else
+  .block
+    .content
+      .inner
+        %p= t 'layout.git.repositories.commit_diff_too_big'
 
 - content_for :sidebar, render(:partial => 'git/shared/sidebar')

@@ -11,4 +11,4 @@
           %tr{:class => cycle("odd", "even")}
             %td= link_to category.name, [@platform, category]
             %td= category.parent.name
-            %td.last= @categories_count[category.id].to_i
+            %td.last= category.projects_count

@@ -16,7 +16,12 @@
       .blob_header
         .size #{(@blob.size / 1024.0).round(3)} Kb
         .buttons
-          #{link_to "Raw", raw_commit_path(@project, @commit_hash, @path)} #{link_to "Normal", blob_path(@project, @treeish, @path)} #{link_to "History", commits_path(@project, @treeish, @path)}
+          - if @commit_hash
+            #{link_to "Raw", raw_commit_path(@project, @commit_hash, @path)} #{link_to "Normal", blob_commit_path(@project, @commit_hash, @path)} #{link_to "History", commits_path(@project, @treeish, @path)}
+          - else
+            #{link_to "Raw", raw_path(@project, @treeish, @path)} #{link_to "Normal", blob_path(@project, @treeish, @path)} #{link_to "History", commits_path(@project, @treeish, @path)}
+
+            / #{link_to "Raw", raw_commit_path(@project, @commit_hash, @path)} #{link_to "Normal", blob_path(@project, @treeish, @path)} #{link_to "History", commits_path(@project, @treeish, @path)}
         .clear
       .blame_data
         %table.table.blame
