@@ -32,11 +32,12 @@ class Repository < ActiveRecord::Base
 #    build_path(unixname)
 #  end
 
-  def clone
+  def clone(cowner)
     r = Repository.new
     r.name = name
     r.unixname = unixname
     r.projects = projects
+    r.owner = cowner
     r.save
     return r
   end

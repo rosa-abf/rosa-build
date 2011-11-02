@@ -63,13 +63,14 @@ class Platform < ActiveRecord::Base
     platform_type == 'personal'
   end
 
-  def clone(new_name, new_unixname)
+  def clone(new_name, new_unixname, cowner)
     # TODO * make it Delayed Job *
     p = Platform.new
     p.name = new_name
     p.unixname = new_unixname
     p.parent = self
-    p.repositories = repositories.map(&:clone)
+    p.owner = cowner
+    p.repositories = repositories.map{|r| r.clone(cowner)}
     result = p.save
     p.products = products.map do |pr|
       pr_cloned = Product.new

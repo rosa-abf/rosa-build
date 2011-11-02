@@ -84,7 +84,7 @@ class PlatformsController < ApplicationController
   def clone
     can_perform? @platform if @platform
     if request.post?
-      cloned = @platform.clone(params[:platform]['name'], params[:platform]['unixname'])
+      cloned = @platform.clone(params[:platform]['name'], params[:platform]['unixname'], current_user)
       if cloned
         flash[:notice] = 'Клонирование успешно'
         redirect_to cloned
