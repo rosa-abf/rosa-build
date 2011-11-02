@@ -55,8 +55,9 @@ class ProjectsController < ApplicationController
   end
 
   def auto_build    
-    unixname = params[:git_repo].split('/').last
-    project = Project.find_by_unixname(unixname)
+    uname, unixname = params[:git_repo].split('/')
+    owner = User.find_by_uname(uname) || Group.find_by_uname(uname)
+    project = Project.where(:owner_id => owner.id, :owner_type => owner.class).find_by_unixname!(unixname)
     auto_build_list = AutoBuildList.find_by_project_id(project.id)
 
     # p = params.delete_if{|k,v| k == 'controller' or k == 'action'}
