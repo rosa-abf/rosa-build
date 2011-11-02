@@ -55,23 +55,23 @@ class ProjectsController < ApplicationController
   end
 
   def auto_build    
-    unixname = params[:git_repo].split('/')[1]
+    unixname = params[:git_repo].split('/').last
     project = Project.find_by_unixname(unixname)
     auto_build_list = AutoBuildList.find_by_project_id(project.id)
 
-    p = params.delete_if{|k,v| k == 'controller' or k == 'action'}
-    ActiveSupport::Notifications.instrument("event_log.observer", :object => project, :message => p.inspect)
-    # logger.info "Git hook recieved from #{params[:git_user]} to #{params[:git_repo]}"
+    # p = params.delete_if{|k,v| k == 'controller' or k == 'action'}
+    # ActiveSupport::Notifications.instrument("event_log.observer", :object => project, :message => p.inspect)
+    logger.info "Git hook recieved from #{params[:git_user]} to #{params[:git_repo]}"
 
     BuildList.create!(
-      :project_id => project.id, 
-      :pl_id => auto_build_list.pl_id, 
-      :bpl_id => auto_build_list.bpl_id, 
-      :arch_id => auto_build_list.arch_id,
+      :project => project,
+      :pl => auto_build_list.pl,
+      :bpl => auto_build_list.bpl,
+      :arch => auto_build_list.arch,
       :project_version => project.collected_project_versions.last.try(:first),
       :build_requires => true,
-      :update_type => 'bugfix') if auto_build_list 
-    
+      :update_type => 'bugfix') if auto_build_list
+
     render :nothing => true
   end
 

@@ -3,7 +3,7 @@
 %table.table
   %tr
     %th= t("activerecord.attributes.auto_build_list.project")
-    %th= t("layout.auto_build_lists.action")
+    %th.last= t("layout.auto_build_lists.action")
 
   - @projects_not_automated.each do |project|
     %tr{:class => cycle("odd", "even")}
