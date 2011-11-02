@@ -64,8 +64,7 @@ Rosa::Application.routes.draw do
       end
     end
 
-    resources :repositories do
-    end
+    resources :repositories
 
     resources :categories, :only => [:index, :show]
   end

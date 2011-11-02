@@ -53,25 +53,15 @@ class RepositoriesController < ApplicationController
     can_perform? @repository if @repository
     if params[:project_id]
       @project = Project.find(params[:project_id])
-      params[:project_id] = nil
-      unless @repository.projects.include? @project
+      # params[:project_id] = nil
+      unless @repository.projects.find_by_unixname(@project.unixname)
         @repository.projects << @project
-#        if @repository.save
-          flash[:notice] = t('flash.repository.project_added')
-          redirect_to platform_repository_path(@repository.platform, @repository)
-#        else
-#          flash[:error] = t('flash.repository.project_not_added')
-#          redirect_to url_for(:action => :add_project)
-#        end
+        flash[:notice] = t('flash.repository.project_added')
       else
         flash[:error] = t('flash.repository.project_not_added')
-        redirect_to url_for(:action => :add_project)
       end
+      redirect_to repository_path(@repository)
     else
-      #@projects = Project.scoped
-      #@projects = @projects.addable_to_repository(@repository.id)
-      #@projects = @projects.by_visibilities(['open']) if @repository.platform.platform_type == 'main'
-      #@projects.paginate(:page => params[:project_page])
       if @repository.platform.platform_type == 'main'
         @projects = Project.addable_to_repository(@repository.id).by_visibilities(['open']).paginate(:page => params[:project_page])
       else
@@ -83,25 +73,9 @@ class RepositoriesController < ApplicationController
 
   def remove_project
     can_perform? @repository if @repository
-    if params[:project_id]
-      @project = Project.find(params[:project_id])
-      params[:project_id] = nil
-      if @repository.projects.include? @project
-        ProjectToRepository.where(:project_id => @project.id, :repository_id => @repository.id).destroy
-#        @repository.projects.delete @project
-#        if @repository.save
-          flash[:notice] = t('flash.repository.project_removed')
-          redirect_to platform_repository_path(@repository.platform, @repository)
-#        else
-#          flash[:error] = t('flash.repository.project_not_removed')
-#          redirect_to url_for(:action => :remove_project)
-#        end
-      else
-        redirect_to url_for(:action => :remove_project)
-      end
-    else
-      redirect_to platform_repository_path(@repository.platform, @repository)
-    end
+    @project = Project.find(params[:project_id])
+    ProjectToRepository.where(:project_id => @project.id, :repository_id => @repository.id).destroy_all
+    redirect_to repository_path(@repository), :notice => t('flash.repository.project_removed')
   end
 
   protected

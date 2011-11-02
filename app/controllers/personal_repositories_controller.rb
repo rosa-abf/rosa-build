@@ -30,15 +30,14 @@ class PersonalRepositoriesController < ApplicationController
     can_perform? @repository if @repository
     if params[:project_id]
       @project = Project.find(params[:project_id])
-      params[:project_id] = nil
-      unless @repository.projects.include? @project
+      # params[:project_id] = nil
+      unless @repository.projects.find_by_unixname(@project.unixname)
         @repository.projects << @project
-          flash[:notice] = t('flash.repository.project_added')
-          redirect_to platform_repository_path(@repository.platform, @repository)
+        flash[:notice] = t('flash.repository.project_added')
       else
         flash[:error] = t('flash.repository.project_not_added')
-        redirect_to url_for(:action => :add_project)
       end
+      redirect_to personal_repository_path(@repository)
     else
       @projects = Project.addable_to_repository(@repository.id).paginate(:page => params[:project_page])
       render 'projects_list'
@@ -47,19 +46,9 @@ class PersonalRepositoriesController < ApplicationController
 
   def remove_project
     can_perform? @repository if @repository
-    if params[:project_id]
-      @project = Project.find(params[:project_id])
-      params[:project_id] = nil
-      if @repository.projects.include? @project
-        @repository.projects.delete @project
-          flash[:notice] = t('flash.repository.project_removed')
-          redirect_to platform_repository_path(@repository.platform, @repository)
-      else
-        redirect_to url_for(:action => :remove_project)
-      end
-    else
-      redirect_to platform_repository_path(@repository.platform, @repository)
-    end
+    @project = Project.find(params[:project_id])
+    ProjectToRepository.where(:project_id => @project.id, :repository_id => @repository.id).destroy_all
+    redirect_to personal_repository_path(@repository), :notice => t('flash.repository.project_removed')
   end
 
   protected
