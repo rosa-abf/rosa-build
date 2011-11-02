@@ -19,9 +19,6 @@
             -if current_user.can_perform?('users', 'index')
               %li{:class => controller.controller_path == 'users' ? 'active' : '' }
                 %a{:href => users_path}= t("layout.menu.users")
-            -if current_user.can_perform?('groups', 'index')
-              %li{:class => controller.controller_path == 'groups' ? 'active' : '' }
-                %a{:href => groups_path}= t("layout.menu.groups")
             -if current_user.can_perform?('platforms', 'index')
               %li{:class => controller.controller_path == 'platforms' ? 'active' : '' }
                 %a{:href => platforms_path}= t("layout.menu.platforms")
