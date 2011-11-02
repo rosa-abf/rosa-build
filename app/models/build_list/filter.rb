@@ -8,7 +8,7 @@ class BuildList::Filter
 
   def find
     if @project.nil?
-      build_lists = BuildList.scoped
+      build_lists = BuildList.recent
     else
       build_lists = @project.build_lists.recent
     end

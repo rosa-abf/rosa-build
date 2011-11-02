@@ -12,8 +12,8 @@ class PrivateUser < ActiveRecord::Base
   end
 
   class << self
-    def can_generate_more?(user_id)
-      !PrivateUser.exists?(:user_id => user_id)
+    def can_generate_more?(user_id, platform_id)
+      !PrivateUser.exists?(:user_id => user_id, :platform_id => platform_id)
     end
     
   	def generate_pair(platform_id, user_id)

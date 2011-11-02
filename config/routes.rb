@@ -44,7 +44,7 @@ Rosa::Application.routes.draw do
   end
 
   resources :platforms do
-    resources :private_users
+    resources :private_users, :except => [:show, :destroy, :update]
 
     member do
       get 'freeze'
