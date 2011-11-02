@@ -29,6 +29,7 @@ ru:
     upload: Загрузить
     not_access: Нет доступа!
     owner: Владелец
+    confirm: Уверенны?
 
     downloads:
       title: Статистика закачек пакетов
@@ -41,6 +42,7 @@ ru:
       project: Проект
       action: Действие
       automate_btn: Автоматизировать
+      cancel_btn: Отменить
       not_automated: Не автоматизированы
       already_automated: Автоматизированы
 
@@ -311,6 +313,8 @@ ru:
     auto_build_list:
       success: Сборка проекта автоматизорована!
       failed: Не удалось автоматизировать сборку!
+      cancel: Автоматическая сборка проекта отменена!
+      cancel_failed: Не удалось отменить автоматическую сборку проекта!
     
     category:
       saved: Категория успешно сохранена

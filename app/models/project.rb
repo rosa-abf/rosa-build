@@ -7,6 +7,7 @@ class Project < ActiveRecord::Base
   belongs_to :owner, :polymorphic => true
 
   has_many :build_lists, :dependent => :destroy
+  has_many :auto_build_lists, :dependent => :destroy
 
   has_many :project_to_repositories, :dependent => :destroy
   has_many :repositories, :through => :project_to_repositories
