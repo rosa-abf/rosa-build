@@ -243,6 +243,7 @@ ru:
       show: Пользователь
       back_to_the_list: ⇐ К списку пользователей
       confirm_delete: Вы уверены, что хотите удалить этого пользователя?
+      own_projects: Мои проекты
 
     git:
       repositories:

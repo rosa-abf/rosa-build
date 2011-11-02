@@ -1,0 +1,10 @@
+.block.notice
+  %h3= t("layout.users.own_projects")
+  .content
+    %p
+      %ul
+        - @own_projects.each do |project|
+          %li
+            = project.name
+            - if (project.owner == current_user)
+              = '(' + t("layout.owner") + ')'

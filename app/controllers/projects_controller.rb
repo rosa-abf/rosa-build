@@ -6,6 +6,7 @@ class ProjectsController < ApplicationController
 
   def index
     @projects = Project.visible_to(current_user).paginate(:page => params[:project_page])
+    @own_projects = current_user.projects
   end
 
   def show
