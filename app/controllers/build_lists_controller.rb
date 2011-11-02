@@ -13,7 +13,7 @@ class BuildListsController < ApplicationController
       @build_lists = @filter.find.paginate :page => params[:page]
     else
       @filter = BuildList::Filter.new(nil)
-      @build_lists = BuildList.paginate :page => params[:page]
+      @build_lists = BuildList.recent.paginate :page => params[:page]
     end
 		@action_url = all_build_lists_path
 		
