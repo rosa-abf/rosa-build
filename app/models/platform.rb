@@ -40,11 +40,11 @@ class Platform < ActiveRecord::Base
     urpmi_commands = []
     if self.hidden?
       Platform.main.each do |pl|
-        urpmi_commands << "urpmi.addmedia  http://#{ pair[:login] }@#{ pair[:pass] }:#{ host }/private/#{ self.name }/#{ pl.name }/main/"
+        urpmi_commands << "urpmi.addmedia  http://#{ pair[:login] }@#{ pair[:pass] }:#{ host }/private/#{ self.name }/repository/#{ pl.name }/$ARCH/main/release"
       end
     else
       Platform.main.each do |pl|
-        urpmi_commands << "urpmi.addmedia  http://#{ host }/downloads/#{ self.name }/repository/#{ pl.name }/main/"
+        urpmi_commands << "urpmi.addmedia  http://#{ host }/downloads/#{ self.name }/repository/#{ pl.name }/$ARCH/main/release"
       end
     end
     
