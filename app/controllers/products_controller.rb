@@ -31,7 +31,7 @@ class ProductsController < ApplicationController
   def build
     can_perform? @product if @product
     flash[:notice] = t('flash.product.build_started')
-    ProductBuilder.create_product @product.id, unixname, @product.ks, @product.menu, @product.build, @product.counter, []
+    ProductBuilder.create_product @product.id, @product.platform.unixname, @product.ks, @product.menu, @product.build, @product.counter, []
     redirect_to :action => :show
   end
 
