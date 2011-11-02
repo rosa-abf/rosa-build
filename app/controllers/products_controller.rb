@@ -29,9 +29,13 @@ class ProductsController < ApplicationController
   end
 
   def build
-    can_perform? @product if @product
-    flash[:notice] = t('flash.product.build_started')
-    ProductBuilder.create_product @product.id, @product.platform.unixname, @product.ks, @product.menu, @product.build, @product.counter, [], "http://#{request.host_with_port}#{@product.tar.url}" 
+    can_perform? @product if @product 
+    result = ProductBuilder.create_product @product.id, @product.platform.unixname, @product.ks, @product.menu, @product.build, @product.counter, [], "http://#{request.host_with_port}#{@product.tar.url}" 
+    if result == 0
+      flash[:notice] = t('flash.product.build_started')
+    else
+      flash[:notice] = "Код возврата #{result}"
+    end        
     redirect_to :action => :show
   end
 
