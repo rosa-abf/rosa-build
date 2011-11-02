@@ -25,6 +25,9 @@
               %br
       .wat-cf
         =# link_to image_tag("web-app-theme/icons/cross.png", :alt => t("layout.delete")) + " " + t("layout.delete"), platform_repository_path(@platform, @repository), :method => "delete", :class => "button", :confirm => t("layout.repositories.confirm_delete")
+    %br
+    .inner
+      =t('layout.private_users.warning_message')
 
 .block
   .secondary-navigation
@@ -42,9 +45,9 @@
         - @private_users.each do |private_user|
           %tr{:class => cycle("odd", "even")}
             %td
-              = link_to private_user.login, platform_private_user_path(@platform, private_user)
+              = private_user.login
             %td.last
-              #{link_to t("layout.delete"), platform_private_user_path(@platform, private_user), :method => :delete, :confirm => t("layout.private_users.confirm_delete")}
+              #{link_to t("layout.private_users.regenerate_btn"), platform_private_users_path(@platform), :method => :post, :confirm => t("layout.private_users.confirm_regenerate")}
       .actions-bar.wat-cf
         .actions
           = will_paginate @private_users
