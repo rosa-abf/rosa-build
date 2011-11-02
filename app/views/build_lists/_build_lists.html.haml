@@ -20,6 +20,6 @@
       %td= t("layout.#{build_list.is_circle?}_")
       - if controller.action_name = 'all'
         %td= link_to t("layout.build_lists.cancel_button"), build_list_cancel_path(build_list) if build_list.can_canceled?
-      %td.last= build_list.notified_at
+      %td.last= build_list.updated_at
 
 = will_paginate build_lists
