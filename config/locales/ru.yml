@@ -442,7 +442,7 @@ ru:
         counter: Содержимое .counter
         build: Содержимое build
         menu: Содержимое .menu.xml
-        tar: Tar.gz файл
+        tar: Tar.bz2 файл
         is_template: Шаблон
         system_wide: Общесистемный
         cron_tab: Cront tab
