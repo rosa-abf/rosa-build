@@ -87,7 +87,8 @@ class RepositoriesController < ApplicationController
       @project = Project.find(params[:project_id])
       params[:project_id] = nil
       if @repository.projects.include? @project
-        @repository.projects.delete @project
+        ProjectToRepository.where(:project_id => @project.id, :repository_id => @repository.id).destroy
+#        @repository.projects.delete @project
 #        if @repository.save
           flash[:notice] = t('flash.repository.project_removed')
           redirect_to platform_repository_path(@repository.platform, @repository)
