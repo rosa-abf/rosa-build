@@ -5,7 +5,7 @@
       %ul
         - @own_projects.each do |project|
           %li
-            = link_to project_path(project), project.uname
+            = link_to project_path(project), project.unixname
 .block.notice
   %h3= t("layout.users.part_projects")
   .content
