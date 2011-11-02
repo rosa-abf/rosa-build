@@ -5,7 +5,7 @@
       %ul
         - @own_projects.each do |project|
           %li
-            = link_to project_path(project), project.unixname
+            = link_to project.unixname, project_path(project)
 .block.notice
   %h3= t("layout.users.part_projects")
   .content
@@ -13,4 +13,4 @@
       %ul
         - @part_projects.each do |project|
           %li
-            = link_to(project.owner.uname, user_path(project.owner)) + "/" + link_to(project.unixname + ' (' + project.name + ')', project_path(project))
+            = link_to project.owner.uname + '/' + project.unixname + ' (' + project.name + ')', project_path(project)
