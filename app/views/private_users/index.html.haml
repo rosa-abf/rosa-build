@@ -1,9 +1,9 @@
 .block
   .secondary-navigation
     %ul.wat-cf
-      %li.first=# link_to t("layout.repositories.list"), platform_path(@platform) + "#repositories"
-      %li=# link_to t("layout.repositories.new"), new_platform_repository_path(@platform)
-      %li.active=# link_to t("layout.repositories.show"), platform_repository_path(@platform, @repository)
+      %li.first= link_to t("layout.personal_repositories.show"), personal_repository_path(current_user.personal_repository)
+      %li= link_to t("layout.personal_repositories.settings"), settings_personal_repository_path(current_user.personal_repository)
+      %li.active= link_to t("layout.personal_repositories.private_users"), platform_private_users_path(current_user.personal_platform) if current_user.personal_platform.hidden?
   .content
     .inner
       %p
