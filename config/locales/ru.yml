@@ -246,6 +246,7 @@ ru:
       back_to_the_list: ⇐ К списку пользователей
       confirm_delete: Вы уверены, что хотите удалить этого пользователя?
       own_projects: Мои проекты
+      part_projects: Участвую в проектах
 
     git:
       repositories:

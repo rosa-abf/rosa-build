@@ -5,6 +5,12 @@
       %ul
         - @own_projects.each do |project|
           %li
-            = project.name
-            - if (project.owner == current_user)
-              = '(' + t("layout.owner") + ')'
+            = link_to project_path(project), project.uname
+.block.notice
+  %h3= t("layout.users.part_projects")
+  .content
+    %p
+      %ul
+        - @part_projects.each do |project|
+          %li
+            = link_to(project.owner.uname, user_path(project.owner)) + "/" + link_to(project.unixname + ' (' + project.name + ')', project_path(project))
