@@ -4,8 +4,6 @@ class PrivateUsersController < ApplicationController
   before_filter :find_platform_and_private_users
 
   def index
-  	@private_users = PrivateUser.where(:platform_id => params[:platform_id]).paginate :page => params[:page]
-    @platform = Platform.find(params[:platform_id])
   end
 
   def create
@@ -13,9 +11,10 @@ class PrivateUsersController < ApplicationController
   	old_pair.destroy if old_pair
   	
   	@pair = PrivateUser.generate_pair(params[:platform_id], current_user.id)
-  	@urpmi_list = @platform.urpmi_list(request.host, @pair).join(' / ')
+  	@urpmi_list = @platform.urpmi_list(request.host, @pair)
     #redirect_to platform_private_users_path(params[:platform_id]), :notice => "Логин: #{ @pair[:login] } Пароль: #{ @pair[:pass] }"
     flash[:notice] = "Логин: #{ @pair[:login] } Пароль: #{ @pair[:pass] }"
+    
     render :action => 'index'
   end
 

@@ -29,6 +29,8 @@ class Platform < ActiveRecord::Base
   after_create lambda { add_downloads_symlink unless self.hidden? }
 
   scope :by_visibilities, lambda {|v| {:conditions => ['visibility in (?)', v.join(',')]}}
+  scope :open, where(:visibility => 'open')
+  scope :hidden, where(:visibility => 'hidden')
   scope :main, where(:platform_type => 'main')
   scope :personal, where(:platform_type => 'personal')
 
@@ -36,16 +38,20 @@ class Platform < ActiveRecord::Base
 
 
   def urpmi_list(host, pair = nil)
-    pair = {:login => 'login', :pass => 'password'} if pair.blank?
+    blank_pair = {:login => 'login', :pass => 'password'} 
+    pair = blank_pair if pair.blank?
     urpmi_commands = []
-    if self.hidden?
-      Platform.main.each do |pl|
-        urpmi_commands << "urpmi.addmedia  http://#{ pair[:login] }@#{ pair[:pass] }:#{ host }/private/#{ self.name }/repository/#{ pl.name }/$ARCH/main/release"
-      end
-    else
-      Platform.main.each do |pl|
-        urpmi_commands << "urpmi.addmedia  http://#{ host }/downloads/#{ self.name }/repository/#{ pl.name }/$ARCH/main/release"
-      end
+    
+    pls = Platform.main.open
+    pls << self
+    pls.each do |pl|
+      local_pair = pl.id != self.id ? blank_pair : pair
+      tail = (pl.id != self.id && pl.distrib_type == APP_CONFIG['distr_types'].first) ? "/$ARCH/main/release" : ""
+      head = pl.hidden? ? "http://#{ local_pair[:login] }@#{ local_pair[:pass] }:#{ host }/private/" : "http://#{ host }/downloads/"
+      urpmi_commands << [
+        "urpmi.addmedia #{ head }#{ pl.owner.try(:uname) }/repository/#{ pl.name }#{ tail }",
+        pl.name
+      ]
     end
     
     return urpmi_commands
