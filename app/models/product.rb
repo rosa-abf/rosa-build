@@ -6,8 +6,8 @@ class Product < ActiveRecord::Base
   ATTRS_TO_CLONE = [ 'build_path', 'build', 'build', 'counter', 'ks', 'menu', 'tar', 'use_cron', 'cron_tab' ]
 
   validates :name, :presence => true, :uniqueness => {:scope => :platform_id}
-  validates :platform_id, :presence => true
   validates :build_status, :inclusion => { :in => [ NEVER_BUILT, BUILD_COMPLETED, BUILD_FAILED ] }
+  # validates :platform_id, :presence => true # if you uncomment this platform clone will not work
 
   belongs_to :platform
 
