@@ -74,8 +74,8 @@ class Platform < ActiveRecord::Base
       c.attributes = attrs
       c.updated_at = nil; c.created_at = nil # :id = nil
       c.parent = self
-      new_attrs = {:owner_id => attrs[:owner_id], :owner_type => attrs[:owner_type], :platform_id => nil}
-      c.repositories = repositories.map{|r| r.full_clone(new_attrs)}
+      new_attrs = {:platform_id => nil}
+      c.repositories = repositories.map{|r| r.full_clone(new_attrs.merge(:owner_id => attrs[:owner_id], :owner_type => attrs[:owner_type]))}
       c.products = products.map{|p| p.full_clone(new_attrs)}
     end
   end
