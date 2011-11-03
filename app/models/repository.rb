@@ -13,7 +13,7 @@ class Repository < ActiveRecord::Base
 
   validates :name, :uniqueness => {:scope => :platform_id}, :presence => true
   validates :unixname, :uniqueness => {:scope => :platform_id}, :presence => true, :format => { :with => /^[a-zA-Z0-9\-.]+$/ }
-  validates :platform_id, :presence => true
+  # validates :platform_id, :presence => true
 
   scope :recent, order("name ASC")
 
@@ -32,14 +32,12 @@ class Repository < ActiveRecord::Base
 #    build_path(unixname)
 #  end
 
-  def clone(cowner)
-    r = Repository.new
-    r.name = name
-    r.unixname = unixname
-    r.projects = projects
-    r.owner = cowner
-    r.save
-    return r
+  def full_clone(attrs) # owner
+    clone.tap do |c| # dup
+      c.attributes = attrs
+      c.updated_at = nil; c.created_at = nil # :id = nil
+      c.projects = projects
+    end
   end
 
   protected

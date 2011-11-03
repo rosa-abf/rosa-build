@@ -84,27 +84,19 @@ class PlatformsController < ApplicationController
   def clone
     can_perform? @platform if @platform
     if request.post?
-      cloned = @platform.clone(params[:platform]['name'], params[:platform]['unixname'], current_user)
-      if cloned
+      @cloned = @platform.make_clone(:name => params[:platform]['name'], :unixname => params[:platform]['unixname'],
+                                    :owner_id => current_user.id, :owner_type => current_user.class.to_s)
+      if @cloned.persisted?
         flash[:notice] = 'Клонирование успешно'
-        redirect_to cloned
+        redirect_to @cloned
       else
-        flash[:notice] = 'Ошибка клонирования'
-        redirect_to @platform
+        flash[:error] = @cloned.errors.full_messages.join('. ')
       end
     else
       @cloned = Platform.new
       @cloned.name = @platform.name + "_clone"
       @cloned.unixname = @platform.unixname + "_clone"
     end
-#    cloned = @platform.clone(@platform.name + "_clone", @platform.unixname + "_clone")
-#    if cloned
-#      flash[:notice] = 'Клонирование успешно'
-#      redirect_to cloned
-#    else
-#      flash[:notice] = 'Ошибка клонирования'
-#      redirect_to @platform
-#    end
   end
 
   def destroy

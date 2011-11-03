@@ -69,24 +69,22 @@ class Platform < ActiveRecord::Base
     platform_type == 'personal'
   end
 
-  def clone(new_name, new_unixname, cowner)
-    # TODO * make it Delayed Job *
-    p = Platform.new
-    p.name = new_name
-    p.unixname = new_unixname
-    p.parent = self
-    p.owner = cowner
-    p.repositories = repositories.map{|r| r.clone(cowner)}
-    result = p.save
-    p.products = products.map do |pr|
-      pr_cloned = Product.new
-      pr_cloned.attributes = pr.attributes
-      pr_cloned.id = nil
-      pr_cloned.platform = p
-      pr_cloned.save
-      pr_cloned
+  def full_clone(attrs) # :name, :unixname, :owner
+    clone.tap do |c|
+      c.attributes = attrs
+      c.updated_at = nil; c.created_at = nil # :id = nil
+      c.parent = self
+      new_attrs = {:owner_id => attrs[:owner_id], :owner_type => attrs[:owner_type], :platform_id => nil}
+      c.repositories = repositories.map{|r| r.full_clone(new_attrs)}
+      c.products = products.map{|p| p.full_clone(new_attrs)}
     end
-    return (result && xml_rpc_clone(new_unixname) && p)
+  end
+
+  # TODO * make it Delayed Job *  
+  def make_clone(attrs)
+    p = full_clone(attrs)
+    p.save and xml_rpc_clone(attrs[:unixname])
+    p
   end
 
   def name

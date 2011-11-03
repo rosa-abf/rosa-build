@@ -64,6 +64,13 @@ class Product < ActiveRecord::Base
       EOF
   end
 
+  def full_clone(attrs) # owner
+    clone.tap do |c| # dup
+      c.attributes = attrs
+      c.updated_at = nil; c.created_at = nil # :id = nil
+    end
+  end
+
   protected
 
     def destroy_tar?
