@@ -5,7 +5,7 @@ class ProjectsController < ApplicationController
   before_filter :check_global_access, :only => [:index, :new, :create]#:except => :auto_build
 
   def index
-    @projects = Project.visible_to(current_user).paginate(:page => params[:project_page])
+    @projects = Project.visible_to(current_user).where(:name => params[:query]).paginate(:page => params[:project_page])
     @own_projects = current_user.own_projects
     @part_projects = current_user.projects - @own_projects
   end
