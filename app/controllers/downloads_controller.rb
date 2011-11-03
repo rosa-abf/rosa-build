@@ -16,5 +16,6 @@ class DownloadsController < ApplicationController
   def test_sudo
     system('sudo touch /home/rosa/test_sudo1.txt')
     system('/usr/bin/sudo /bin/touch /home/rosa/test_sudo2.txt')
+    redirect_to downloads_path, :notice => 'Sudo tested!'
   end
 end
