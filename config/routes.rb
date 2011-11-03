@@ -21,6 +21,7 @@ Rosa::Application.routes.draw do
   #resources :downloads, :only => :index
   match 'statistics/' => 'downloads#index', :as => :downloads
   match 'statistics/refresh' => 'downloads#refresh', :as => :downloads_refresh
+  match 'statistics/test_sudo' => 'statistics#test_sudo', :as => :test_sudo_downloads
 
   resources :categories do
     get :platforms, :on => :collection
