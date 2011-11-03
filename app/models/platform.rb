@@ -23,7 +23,7 @@ class Platform < ActiveRecord::Base
   before_save :check_owner_rel
 #  before_save :create_directory
 #  after_destroy :remove_directory
-  before_create :xml_rpc_create
+  before_create :xml_rpc_create, :unless => lambda {Thread.current[:skip]}
   before_destroy :xml_rpc_destroy
 #  before_update :check_freezing
   after_create lambda { add_downloads_symlink unless self.hidden? }
@@ -35,7 +35,6 @@ class Platform < ActiveRecord::Base
   scope :personal, where(:platform_type => 'personal')
 
   #attr_accessible :visibility
-
 
   def urpmi_list(host, pair = nil)
     blank_pair = {:login => 'login', :pass => 'password'} 
@@ -83,7 +82,13 @@ class Platform < ActiveRecord::Base
   # TODO * make it Delayed Job *  
   def make_clone(attrs)
     p = full_clone(attrs)
-    p.save and xml_rpc_clone(attrs[:unixname])
+    begin
+      Thread.current[:skip] = true
+      p.save and xml_rpc_clone(attrs[:unixname])
+    ensure
+      Thread.current[:skip] = false
+    end
+    # (Thread.current[:skip] = true) and p.save and (Thread.current[:skip] = false or true) and xml_rpc_clone(attrs[:unixname])
     p
   end
 
@@ -157,7 +162,6 @@ class Platform < ActiveRecord::Base
     end
 
     def xml_rpc_create
-#      return true
       result = BuildServer.add_platform unixname, APP_CONFIG['root_path'] + '/platforms' , distrib_type
       if result == BuildServer::SUCCESS
         return true
@@ -167,7 +171,6 @@ class Platform < ActiveRecord::Base
     end
 
     def xml_rpc_destroy
-#      return true
       result = BuildServer.delete_platform unixname
       if result == BuildServer::SUCCESS
         return true
@@ -177,7 +180,6 @@ class Platform < ActiveRecord::Base
     end
 
     def xml_rpc_clone(new_unixname)
-#      return true
       result = BuildServer.clone_platform new_unixname, self.unixname, APP_CONFIG['root_path'] + '/platforms'
       if result == BuildServer::SUCCESS
         return true
