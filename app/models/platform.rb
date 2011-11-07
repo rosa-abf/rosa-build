@@ -28,14 +28,14 @@ class Platform < ActiveRecord::Base
 #  before_update :check_freezing
   after_create lambda { 
     unless self.hidden? 
-      add_downloads_symlink 
+      #add_downloads_symlink 
       mount_directory_for_rsync
     end
   }
   
   after_destroy lambda { 
     unless self.hidden? 
-      remove_downloads_symlink
+      #remove_downloads_symlink
       umount_directory_for_rsync
     end
   }
@@ -125,11 +125,11 @@ class Platform < ActiveRecord::Base
   def change_visibility
     if !self.hidden?
       self.update_attribute(:visibility, 'hidden')
-      remove_downloads_symlink
+      #remove_downloads_symlink
       umount_directory_for_rsync
     else
       self.update_attribute(:visibility, 'open')
-      add_downloads_symlink
+      #add_downloads_symlink
       mount_directory_for_rsync
     end
     # Because observer is not invoked...
@@ -137,26 +137,28 @@ class Platform < ActiveRecord::Base
       :message => I18n.t("activerecord.attributes.platform.visibility_types.#{visibility}")
   end
     
-  def add_downloads_symlink
-    #raise "Personal platform path #{ symlink_downloads_path } already exists!" if File.exists?(symlink_downloads_path) && File.directory?(symlink_downloads_path)
-    return true if File.exists?(symlink_downloads_path) && File.directory?(symlink_downloads_path)
-    FileUtils.symlink path, symlink_downloads_path
-  end
+  #def add_downloads_symlink
+  #  #raise "Personal platform path #{ symlink_downloads_path } already exists!" if File.exists?(symlink_downloads_path) && File.directory?(symlink_downloads_path)
+  #  return true if File.exists?(symlink_downloads_path) && File.directory?(symlink_downloads_path)
+  #  FileUtils.symlink path, symlink_downloads_path
+  #end
   
   def mount_directory_for_rsync
     #system("touch #{ Rails.root.join('tmp') }/mount_rsync")
-    system("echo '#{ self.unixname }' > #{ Rails.root.join('tmp') }/mount_rsync")
+    FileUtils.mkdir "#{ Rails.root.join('tmp', 'mount') }" unless File.exist? "#{ Rails.root.join('tmp', 'mount') }"
+    system("touch #{ Rails.root.join('tmp', 'mount', self.unixname) }")
   end
   
-  def remove_downloads_symlink
-    #raise "Personal platform path #{ symlink_downloads_path } does not exists!" if !(File.exists?(symlink_downloads_path) && File.directory?(symlink_downloads_path))
-    return true if !(File.exists?(symlink_downloads_path) && File.directory?(symlink_downloads_path))
-    FileUtils.rm_rf symlink_downloads_path 
-  end
+  #def remove_downloads_symlink
+  #  #raise "Personal platform path #{ symlink_downloads_path } does not exists!" if !(File.exists?(symlink_downloads_path) && File.directory?(symlink_downloads_path))
+  #  return true if !(File.exists?(symlink_downloads_path) && File.directory?(symlink_downloads_path))
+  #  FileUtils.rm_rf symlink_downloads_path 
+  #end
   
   def umount_directory_for_rsync
     #system("touch #{ Rails.root.join('tmp') }/unmount_rsync")
-    system("echo '#{ self.unixname }' > #{ Rails.root.join('tmp') }/umount_rsync") 
+    FileUtils.mkdir "#{ Rails.root.join('tmp', 'umount') }" unless File.exist? "#{ Rails.root.join('tmp', 'umount') }"
+    system("touch #{ Rails.root.join('tmp', 'umount', self.unixname) }") 
   end
 
   protected
