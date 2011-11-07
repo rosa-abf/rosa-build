@@ -26,7 +26,12 @@ class Platform < ActiveRecord::Base
   before_create :xml_rpc_create, :unless => lambda {Thread.current[:skip]}
   before_destroy :xml_rpc_destroy
 #  before_update :check_freezing
-  after_create lambda { add_downloads_symlink unless self.hidden? }
+  after_create lambda { 
+    unless self.hidden? 
+      add_downloads_symlink 
+      mount_directory_for_rsync
+    end
+  }
 
   scope :by_visibilities, lambda {|v| {:conditions => ['visibility in (?)', v.join(',')]}}
   scope :open, where(:visibility => 'open')
@@ -114,9 +119,11 @@ class Platform < ActiveRecord::Base
     if !self.hidden?
       self.update_attribute(:visibility, 'hidden')
       remove_downloads_symlink
+      umount_directory_for_rsync
     else
       self.update_attribute(:visibility, 'open')
       add_downloads_symlink
+      mount_directory_for_rsync
     end
     # Because observer is not invoked...
     ActiveSupport::Notifications.instrument "event_log.observer", :object => self,
@@ -129,10 +136,20 @@ class Platform < ActiveRecord::Base
     FileUtils.symlink path, symlink_downloads_path
   end
   
+  def mount_directory_for_rsync
+    #system("touch #{ Rails.root.join('tmp') }/mount_rsync")
+    system("echo '#{ self.path }' > #{ Rails.root.join('tmp') }/mount_rsync")
+  end
+  
   def remove_downloads_symlink
     #raise "Personal platform path #{ symlink_downloads_path } does not exists!" if !(File.exists?(symlink_downloads_path) && File.directory?(symlink_downloads_path))
     return true if !(File.exists?(symlink_downloads_path) && File.directory?(symlink_downloads_path))
     FileUtils.rm_rf symlink_downloads_path 
+  end
+  
+  def umount_directory_for_rsync
+    #system("touch #{ Rails.root.join('tmp') }/unmount_rsync")
+    system("echo '#{ self.path }' > #{ Rails.root.join('tmp') }/umount_rsync") 
   end
 
   protected
