@@ -32,6 +32,13 @@ class Platform < ActiveRecord::Base
       mount_directory_for_rsync
     end
   }
+  
+  after_destroy lambda { 
+    unless self.hidden? 
+      remove_downloads_symlink
+      umount_directory_for_rsync
+    end
+  }
 
   scope :by_visibilities, lambda {|v| {:conditions => ['visibility in (?)', v.join(',')]}}
   scope :open, where(:visibility => 'open')
@@ -138,7 +145,7 @@ class Platform < ActiveRecord::Base
   
   def mount_directory_for_rsync
     #system("touch #{ Rails.root.join('tmp') }/mount_rsync")
-    system("echo '#{ self.path }' > #{ Rails.root.join('tmp') }/mount_rsync")
+    system("echo '#{ self.unixname }' > #{ Rails.root.join('tmp') }/mount_rsync")
   end
   
   def remove_downloads_symlink
@@ -149,7 +156,7 @@ class Platform < ActiveRecord::Base
   
   def umount_directory_for_rsync
     #system("touch #{ Rails.root.join('tmp') }/unmount_rsync")
-    system("echo '#{ self.path }' > #{ Rails.root.join('tmp') }/umount_rsync") 
+    system("echo '#{ self.unixname }' > #{ Rails.root.join('tmp') }/umount_rsync") 
   end
 
   protected
