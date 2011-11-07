@@ -145,6 +145,7 @@ class Platform < ActiveRecord::Base
   
   def mount_directory_for_rsync
     #system("touch #{ Rails.root.join('tmp') }/mount_rsync")
+    FileUtils.rm_f "#{ Rails.root.join('tmp', 'umount', self.unixname) }" if File.exist? "#{ Rails.root.join('tmp', 'umount', self.unixname) }"
     FileUtils.mkdir "#{ Rails.root.join('tmp', 'mount') }" unless File.exist? "#{ Rails.root.join('tmp', 'mount') }"
     system("touch #{ Rails.root.join('tmp', 'mount', self.unixname) }")
   end
@@ -157,6 +158,7 @@ class Platform < ActiveRecord::Base
   
   def umount_directory_for_rsync
     #system("touch #{ Rails.root.join('tmp') }/unmount_rsync")
+    FileUtils.rm_f "#{ Rails.root.join('tmp', 'mount', self.unixname) }" if File.exist? "#{ Rails.root.join('tmp', 'mount', self.unixname) }"
     FileUtils.mkdir "#{ Rails.root.join('tmp', 'umount') }" unless File.exist? "#{ Rails.root.join('tmp', 'umount') }"
     system("touch #{ Rails.root.join('tmp', 'umount', self.unixname) }") 
   end
