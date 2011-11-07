@@ -8,7 +8,7 @@ class EventLogObserver < ActiveRecord::Observer
   def before_update(record)
     case record.class
     when BuildList
-      if record.status_changed? and record.status == BUILD_CANCELED
+      if record.status_changed? and record.status == BuildList::BUILD_CANCELED
         ActiveSupport::Notifications.instrument("event_log.observer", :object => record)
       end
     # when Platform
