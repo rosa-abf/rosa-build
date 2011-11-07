@@ -6,16 +6,16 @@ class EventLogObserver < ActiveRecord::Observer
   end
 
   def before_update(record)
-    case record.class
-    when BuildList
+    case record.class.to_s
+    when 'BuildList'
       if record.status_changed? and record.status == BuildList::BUILD_CANCELED
         ActiveSupport::Notifications.instrument("event_log.observer", :object => record)
       end
-    # when Platform
-    #   if record.visibility_changed?
-    #     ActiveSupport::Notifications.instrument "event_log.observer", :object => record,
-    #       :message => I18n.t("activerecord.attributes.platform.visibility_types.#{record.visibility}")
-    #   end
+    when 'Platform'
+      if record.visibility_changed?
+        ActiveSupport::Notifications.instrument "event_log.observer", :object => record,
+          :message => I18n.t("activerecord.attributes.platform.visibility_types.#{record.visibility}")
+      end
     end
   end
 

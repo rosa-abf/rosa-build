@@ -18,7 +18,6 @@ class BuildListsController < ApplicationController
 		@action_url = all_build_lists_path
 		
     @build_server_status = BuildServer.get_status
-	  #@build_server_status = {:client_count => '1', :count_new_task => '2', :count_build_task => 3}
 	  
     render :action => 'index'
 	end
@@ -108,7 +107,7 @@ class BuildListsController < ApplicationController
 		@build_list.name = params[:name]
 		@build_list.additional_repos = ActiveSupport::JSON.decode(params[:additional_repos])
 		@build_list.set_items(ActiveSupport::JSON.decode(params[:items]))
-		@build_list.notified_at = Time.now
+		@build_list.notified_at = Time.current
 		@build_list.is_circle = (params[:is_circular] != "0")
 		@build_list.bs_id = params[:id]
 		params[:arch]

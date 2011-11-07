@@ -132,9 +132,6 @@ class Platform < ActiveRecord::Base
       #add_downloads_symlink
       mount_directory_for_rsync
     end
-    # Because observer is not invoked...
-    ActiveSupport::Notifications.instrument "event_log.observer", :object => self,
-      :message => I18n.t("activerecord.attributes.platform.visibility_types.#{visibility}")
   end
     
   #def add_downloads_symlink
