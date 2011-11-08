@@ -1,4 +1,4 @@
-=== Bootstrap
+=== Basic bootstrap
 * rake db:drop db:setup
 * rake rights:generate roles:load roles:apply
 ==
