@@ -8,6 +8,10 @@ require "whenever/capistrano"
 
 set :rvm_type, :user
 
+set :default_stage, "staging"
+set :stages, %w(production staging)
+require 'capistrano/ext/multistage'
+
 # bundler bootstrap
 
 # main details
@@ -21,17 +25,10 @@ set :branch, "master"
 set :scm, "git"
 
 set :user, "rosa"
-set :domain, "195.19.76.12" # "npp-build.rosalab.ru"
-set :port, 1822
 set :use_sudo, false
 set :deploy_to, "/srv/#{application}"
 
-role :app, domain
-role :web, domain
-role :db,  domain, :primary => true
-
 set :keep_releases, 3
-
 
 task :symlink_config_files do
   run "mkdir -p #{deploy_to}/#{shared_dir}/config"
@@ -72,5 +69,4 @@ namespace :deploy do
     symlink_downloads_dir
     generate_roles
   end
-  
 end
