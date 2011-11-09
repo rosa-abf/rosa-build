@@ -60,7 +60,7 @@ class Project < ActiveRecord::Base
     collaborators + groups
   end
 
-  include Project::HasRepository
+  # include Project::HasRepository
   # Redefining a method from Project::HasRepository module to reflect current situation
   def git_repo_path
     @git_repo_path ||= path
