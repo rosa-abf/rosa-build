@@ -32,7 +32,7 @@ gem 'unicorn'
 gem "rails-xmlrpc", :git => 'git://github.com/chipiga/rails-xmlrpc.git'
 
 group :production do
-  gem "airbrake"
+  gem "airbrake", :git => "git://github.com/airbrake/airbrake.git"
   # gem 'newrelic_rpm', '~> 3.1.1'
 end
 
