@@ -1,5 +1,5 @@
 #block-signup.block
-  %h2 #{t("devise.registrations.edit")} #{resource_name.to_s.humanize}
+  %h2= title (t("devise.registrations.edit") + ' ' + resource_name.to_s.humanize)
   .content
     = form_for(resource, :as => resource_name, :url => registration_path(resource_name), :html => { :method => :put, :class => "form" }) do |f|
       - if resource.errors.present?

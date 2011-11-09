@@ -122,6 +122,8 @@ GEM
       i18n (>= 0.4.0)
       mime-types (~> 1.16)
       treetop (~> 1.4.8)
+    meta-tags (1.2.4)
+      actionpack
     mime-types (1.17.2)
     multi_json (1.0.3)
     multi_xml (0.4.1)
@@ -284,6 +286,7 @@ DEPENDENCIES
   hirb
   hpricot
   jammit
+  meta-tags (~> 1.2.4)
   mysql2 (<= 0.2.9)
   oa-openid (~> 0.3.2)
   omniauth (~> 0.3.2)
