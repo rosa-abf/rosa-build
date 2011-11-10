@@ -20,7 +20,6 @@ ssh_options[:forward_agent] = true
 set :application, "rosa_build"
 
 set :repository,  "git@github.com:warpc/rosa-build.git"
-set :branch, "master"
 # set :git_shallow_clone, 1
 set :scm, "git"
 
