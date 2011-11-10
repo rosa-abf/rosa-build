@@ -60,7 +60,7 @@ class Platform < ActiveRecord::Base
       tail = (pl.id != self.id && pl.distrib_type == APP_CONFIG['distr_types'].first) ? "/$ARCH/main/release" : ""
       head = pl.hidden? ? "http://#{ local_pair[:login] }@#{ local_pair[:pass] }:#{ host }/private/" : "http://#{ host }/downloads/"
       urpmi_commands << [
-        "urpmi.addmedia #{ head }#{ pl.owner.try(:uname) }/repository/#{ pl.name }#{ tail }",
+        "urpmi.addmedia #{ head }#{ self.unixname) }/repository/#{ pl.name }#{ tail }",
         pl.name
       ]
     end
