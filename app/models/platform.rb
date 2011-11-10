@@ -54,11 +54,12 @@ class Platform < ActiveRecord::Base
     urpmi_commands = []
     
     pls = Platform.main.open
-    pls << self
+    #pls << self
     pls.each do |pl|
       local_pair = pl.id != self.id ? blank_pair : pair
-      tail = (pl.id != self.id && pl.distrib_type == APP_CONFIG['distr_types'].first) ? "/$ARCH/main/release" : ""
-      head = pl.hidden? ? "http://#{ local_pair[:login] }@#{ local_pair[:pass] }:#{ host }/private/" : "http://#{ host }/downloads/"
+      #tail = (pl.id != self.id && pl.distrib_type == APP_CONFIG['distr_types'].first) ? "/$ARCH/main/release" : ""
+      tail = (pl.distrib_type == APP_CONFIG['distr_types'].first) ? "/$ARCH/main/release" : ""
+      head = self.hidden? ? "http://#{ local_pair[:login] }@#{ local_pair[:pass] }:#{ host }/private/" : "http://#{ host }/downloads/"
       urpmi_commands << [
         "urpmi.addmedia #{ head }#{ self.unixname }/repository/#{ pl.unixname }#{ tail }",
         pl.name
