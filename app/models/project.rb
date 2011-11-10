@@ -61,6 +61,11 @@ class Project < ActiveRecord::Base
   end
 
   # include Project::HasRepository
+  
+  def git_repository
+    @git_repository ||= Git::Repository.new(git_repo_path)
+  end
+  
   # Redefining a method from Project::HasRepository module to reflect current situation
   def git_repo_path
     @git_repo_path ||= path
