@@ -9,7 +9,7 @@
     .inner
       = render :partial => "git/commits/commits", :object => [@commit]
 
-- if @diff.present?
+- begin
   .block
     .content
       .inner
@@ -18,8 +18,8 @@
         .clear
         = render_commit_stats(@commit.stats)
 
-  = render :partial => "git/commits/commit_diff", :collection => @diffs
-- else
+  = render :partial => "git/commits/commit_diff", :collection => @commit.diffs
+- rescue Grit::Git::GitTimeout
   .block
     .content
       .inner

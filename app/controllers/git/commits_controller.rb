@@ -15,11 +15,10 @@ class Git::CommitsController < Git::BaseController
 
   def show
     @commit = @git_repository.commit(params[:id]) # @git_repository.commits(params[:id]).first
-    @diffs = @commit.diffs rescue []
 
     respond_to do |format|
       format.html
-      format.diff  { render :text => @diffs.map{|d| d.diff}.join("\n"), :content_type => "text/plain" }
+      format.diff  { render :text => (@commit.diffs.map{|d| d.diff}.join("\n") rescue ''), :content_type => "text/plain" }
       format.patch { render :text => (@commit.to_patch rescue ''), :content_type => "text/plain" }
     end
   end
