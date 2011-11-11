@@ -449,7 +449,7 @@ ru:
         updated_at: Обновлен
         ks: Содержимое .ks.template
         counter: Содержимое .counter
-        build: Содержимое build
+        build_script: Содержимое build
         menu: Содержимое .menu.xml
         tar: Tar.bz2 файл
         is_template: Шаблон

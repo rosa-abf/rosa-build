@@ -9,7 +9,7 @@ class ProductsController < ApplicationController
     @product.ks = DEFAULT_KS
     @product.menu = DEFAULT_MENU
     @product.counter = DEFAULT_COUNTER
-    @product.build = DEFAULT_BUILD
+    @product.build_script = DEFAULT_BUILD
   end
 
   # def clone

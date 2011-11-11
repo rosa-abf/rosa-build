@@ -19,14 +19,14 @@ class ProductBuildList < ActiveRecord::Base
   end
 
   def event_log_message
-    {:product => Product.find(product_id).name}.inspect # TODO WTF product.name == nil ???
+    {:product => product.name}.inspect
   end
 
   protected
 
   def xml_rpc_create
     tar_url = "#{base_url}#{product.tar.url}"
-    result = ProductBuilder.create_product id, product.platform.unixname, product.ks, product.menu, product.build, product.counter, [], tar_url
+    result = ProductBuilder.create_product id, product.platform.unixname, product.ks, product.menu, product.build_script, product.counter, [], tar_url
     if result == ProductBuilder::SUCCESS
       return true
     else

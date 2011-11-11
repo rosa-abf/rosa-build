@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20111107211538) do
+ActiveRecord::Schema.define(:version => 20111111184657) do
 
   create_table "arches", :force => true do |t|
     t.string   "name",       :null => false
@@ -188,7 +188,7 @@ ActiveRecord::Schema.define(:version => 20111107211538) do
     t.string   "build_path"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.text     "build"
+    t.text     "build_script"
     t.text     "counter"
     t.text     "ks"
     t.text     "menu"
