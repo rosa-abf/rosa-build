@@ -258,6 +258,12 @@ ru:
         branches: Branches
         project_versions: Версии
 
+    product_build_lists:
+      statuses:
+        '0': 'собран'
+        '1': 'ошибка сборки'
+        '2': 'собирается'
+
     build_lists:
       filter_header: Фильтр
       current: Текущие
@@ -400,6 +406,7 @@ ru:
       user: Пользователь
       private_user: Приватный пользователь
       product: Продукт
+      product_build_list: Сборочный лист продукта
       build_list: Сборочный лист
       build_list_item: Элемент сборочного листа
       download: Статистика
@@ -532,6 +539,12 @@ ru:
         created_at: Создан
         updated_at: Обновлен
         global_role: Роль в системе
+
+      product_build_list:
+        id: Id
+        product: Продукт
+        status: Статус
+        notified_at: Информация получена
 
       build_list:
         bs_id: Id

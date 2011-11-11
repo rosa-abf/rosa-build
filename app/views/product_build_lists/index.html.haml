@@ -1,0 +1,21 @@
+%h1 Listing product_build_lists
+
+%table
+  %tr
+    %th Product
+    %th Status
+    %th
+    %th
+    %th
+
+  - @product_build_lists.each do |product_build_list|
+    %tr
+      %td= product_build_list.product
+      %td= product_build_list.status
+      %td= link_to 'Show', product_build_list
+      %td= link_to 'Edit', edit_product_build_list_path(product_build_list)
+      %td= link_to 'Destroy', product_build_list, :confirm => 'Are you sure?', :method => :delete
+
+%br
+
+= link_to 'New Product build list', new_product_build_list_path

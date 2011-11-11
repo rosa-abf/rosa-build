@@ -1,5 +1,5 @@
 class EventLogObserver < ActiveRecord::Observer
-  observe :user, :private_user, :platform, :repository, :project, :product, :build_list, :auto_build_list
+  observe :user, :private_user, :platform, :repository, :project, :product, :build_list, :auto_build_list, :product_build_list
 
   def after_create(record)
     ActiveSupport::Notifications.instrument("event_log.observer", :object => record)
@@ -8,7 +8,7 @@ class EventLogObserver < ActiveRecord::Observer
   def before_update(record)
     case record.class.to_s
     when 'BuildList'
-      if record.status_changed? and record.status == BuildList::BUILD_CANCELED
+      if record.status_changed? and  [BuildList::BUILD_CANCELED, BuildList::BUILD_PUBLISHED].include?(record.status)
         ActiveSupport::Notifications.instrument("event_log.observer", :object => record)
       end
     when 'Platform'

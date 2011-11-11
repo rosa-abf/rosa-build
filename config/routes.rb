@@ -32,8 +32,7 @@ Rosa::Application.routes.draw do
   match 'build_lists/' => 'build_lists#all', :as => :all_build_lists
   match 'build_lists/:id/cancel/' => 'build_lists#cancel', :as => :build_list_cancel
   
-  resources :auto_build_lists, :only => [:index, :create, :destroy] do
-  end
+  resources :auto_build_lists, :only => [:index, :create, :destroy]
 
   resources :personal_repositories, :only => [:show] do
     member do
@@ -59,10 +58,11 @@ Rosa::Application.routes.draw do
     end
 
     resources :products do
-      member do
-        get :clone
-        get :build
-      end
+      # member do
+      #   get :clone
+      #   get :build
+      # end
+      resources :product_build_lists, :only => [:create]
     end
 
     resources :repositories
@@ -126,7 +126,7 @@ Rosa::Application.routes.draw do
   match 'build_lists/circle_build', :to => "build_lists#circle_build"
   match 'build_lists/new_bbdt', :to => "build_lists#new_bbdt"
 
-  match 'product_status', :to => 'products#product_status'
+  match 'product_status', :to => 'product_build_lists#status_build'
 
   # Tree
   match '/projects/:project_id/git/tree/:treeish(/*path)', :controller => "git/trees", :action => :show, :treeish => /[0-9a-zA-Z_.\-]*/, :defaults => { :treeish => :master }, :as => :tree

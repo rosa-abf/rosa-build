@@ -31,4 +31,16 @@
         - if @product.can_clone?
           = link_to t("layout.products.clone"), clone_platform_product_path(@platform, @product), :class => "button"
         - if @product.can_build?
-          = link_to t("layout.products.build"), build_platform_product_path(@platform, @product), :class => "button"
+          = link_to t("layout.products.build"), platform_product_product_build_lists_path(@platform, @product), :class => "button", :method => 'post', :confirm => t("layout.confirm")
+
+.block
+  .content
+    .inner
+      %table.table
+        %tr
+          %th.first= t("activerecord.attributes.product_build_list.id")
+          %th= t("activerecord.attributes.product_build_list.product")
+          %th= t("activerecord.attributes.product_build_list.status")
+          %th.last= t("activerecord.attributes.product_build_list.notified_at")
+        = render @product.product_build_lists.default_order
+      / = will_paginate build_lists

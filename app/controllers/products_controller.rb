@@ -1,15 +1,8 @@
 class ProductsController < ApplicationController
-  before_filter :authenticate_user!, :except => [:product_status]
-  before_filter :find_product, :only => [:show, :edit, :update, :build, :product_status, :destroy]
-  before_filter :find_platform, :except => [:product_status, :build]
-  before_filter :check_global_access, :only => [:new, :create]#:except => [:product_status]
-
-  def product_status
-    @product.build_status = params[:status] == "0" ? Product::BUILD_COMPLETED : Product::BUILD_FAILED
-    @product.save!
-
-    render :nothing => true, :status => 200
-  end
+  before_filter :authenticate_user!
+  before_filter :find_product, :only => [:show, :edit, :update, :destroy]
+  before_filter :find_platform
+  before_filter :check_global_access, :only => [:new, :create]
 
   def new
     @product = @platform.products.new
@@ -19,25 +12,14 @@ class ProductsController < ApplicationController
     @product.build = DEFAULT_BUILD
   end
 
-  def clone
-    can_perform? @platform if @platform
-    @template = @platform.products.find(params[:id])
-    @product = @platform.products.new
-    @product.clone_from!(@template)
-
-    render :template => "products/new"
-  end
-
-  def build
-    can_perform? @product if @product 
-    result = ProductBuilder.create_product @product.id, @product.platform.unixname, @product.ks, @product.menu, @product.build, @product.counter, [], "http://#{request.host_with_port}#{@product.tar.url}" 
-    if result == 0
-      flash[:notice] = t('flash.product.build_started')
-    else
-      flash[:notice] = "Код возврата #{result}"
-    end        
-    redirect_to :action => :show
-  end
+  # def clone
+  #   can_perform? @platform if @platform
+  #   @template = @platform.products.find(params[:id])
+  #   @product = @platform.products.new
+  #   @product.clone_from!(@template)
+  # 
+  #   render :template => "products/new"
+  # end
 
   def edit
     can_perform? @product if @product
@@ -82,10 +64,6 @@ class ProductsController < ApplicationController
   end
 
   protected
-
-    def find_product_by_name
-      @product = Product.find_by_name params[:product_name]
-    end
 
     def find_product
       @product = Product.find params[:id]

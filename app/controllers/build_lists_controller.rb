@@ -66,7 +66,7 @@ class BuildListsController < ApplicationController
 		@item.save
 		
 		@build_list.container_path = params[:container_path]
-		@build_list.notified_at = Time.now
+		@build_list.notified_at = Time.current
 
 		@build_list.save
 
@@ -75,7 +75,7 @@ class BuildListsController < ApplicationController
 
 	def pre_build
 		@build_list.status = BuildList::BUILD_STARTED
-		@build_list.notified_at = Time.now
+		@build_list.notified_at = Time.current
 
 		@build_list.save
 
@@ -85,7 +85,7 @@ class BuildListsController < ApplicationController
 	def post_build
 		@build_list.status = params[:status]
 		@build_list.container_path = params[:container_path]
-		@build_list.notified_at = Time.now
+		@build_list.notified_at = Time.current
 
 		@build_list.save
 
@@ -95,7 +95,7 @@ class BuildListsController < ApplicationController
 	def circle_build
 		@build_list.is_circle = true
 		@build_list.container_path = params[:container_path]
-		@build_list.notified_at = Time.now
+		@build_list.notified_at = Time.current
 
 		@build_list.save
 
