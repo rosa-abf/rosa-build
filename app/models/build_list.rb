@@ -16,12 +16,17 @@ class BuildList < ActiveRecord::Base
   validate lambda {  
     errors.add(:bpl, I18n.t('flash.build_list.wrong_platform')) if pl.platform_type == 'main' && pl_id != bpl_id
   }
+  
+  validate lambda {
+    errors.add(:bpl, I18n.t('flash.build_list.can_not_published')) if status == BUILD_PUBLISHED && status_was != BuildServer::SUCCESS    
+  }
 
   BUILD_CANCELED = 5000
   WAITING_FOR_RESPONSE = 4000
   BUILD_PENDING = 2000
   BUILD_STARTED = 3000
   TEST_FAILD = 2
+  BUILD_PUBLISHED = 6000
 
   STATUSES = [WAITING_FOR_RESPONSE,
               BuildServer::SUCCESS,
@@ -103,7 +108,8 @@ class BuildList < ActiveRecord::Base
     return false unless can_published?
     
     BuildServer.publish_container bs_id
-    self.destroy # self.delete
+    self.update_attribute(:status, BUILD_PUBLISHED)
+    #self.destroy # self.delete
   end
   
   def can_published?
