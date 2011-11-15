@@ -15,10 +15,9 @@ class Project < ActiveRecord::Base
   has_many :relations, :as => :target, :dependent => :destroy
   has_many :collaborators, :through => :relations, :source => :object, :source_type => 'User'
   has_many :groups,        :through => :relations, :source => :object, :source_type => 'Group'
-  has_many :auto_build_lists, :dependent => :destroy
 
   validates :name,     :uniqueness => {:scope => [:owner_id, :owner_type]}, :presence => true, :allow_nil => false, :allow_blank => false
-  validates :unixname, :uniqueness => {:scope => [:owner_id, :owner_type]}, :presence => true, :format => { :with => /^[a-zA-Z0-9_\-\+\.]+$/ }, :allow_nil => false, :allow_blank => false
+  validates :unixname, :uniqueness => {:scope => [:owner_id, :owner_type]}, :presence => true, :format => { :with => /^[a-z0-9_\-\+\.]+$/ }, :allow_nil => false, :allow_blank => false
   validates :owner, :presence => true
   validate {errors.add(:base, I18n.t('flash.project.save_warning_ssh_key')) if owner.ssh_key.blank?}
 

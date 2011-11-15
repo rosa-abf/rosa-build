@@ -16,9 +16,8 @@ class Group < ActiveRecord::Base
   has_many :platforms,    :through => :targets, :source => :target, :source_type => 'Platform',   :autosave => true
   has_many :repositories, :through => :targets, :source => :target, :source_type => 'Repository', :autosave => true
 
-  validates :name, :uname, :owner_id, :presence => true
-  validates :name, :uname, :uniqueness => true
-  validates :uname, :format => { :with => /^[a-zA-Z0-9_]+$/ }, :allow_nil => false, :allow_blank => false
+  validates :name, :owner, :presence => true
+  validates :uname, :presence => true, :uniqueness => {:case_sensitive => false}, :format => { :with => /^[a-z0-9_]+$/ }, :allow_nil => false, :allow_blank => false
   validate { errors.add(:uname, :taken) if User.where('uname LIKE ?', uname).present? }
 
   attr_readonly :uname

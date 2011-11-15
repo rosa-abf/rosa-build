@@ -24,7 +24,7 @@ class User < ActiveRecord::Base
 
   include PersonalRepository
 
-  validates :uname, :presence => true, :uniqueness => {:case_sensitive => false}, :format => { :with => /^[a-zA-Z0-9_]+$/ }, :allow_nil => false, :allow_blank => false
+  validates :uname, :presence => true, :uniqueness => {:case_sensitive => false}, :format => { :with => /^[a-z0-9_]+$/ }, :allow_nil => false, :allow_blank => false
   validates :ssh_key, :uniqueness => true, :allow_blank => true
   validate { errors.add(:uname, :taken) if Group.where('uname LIKE ?', uname).present? }
   #TODO: Replace this simple cross-table uniq validation by more progressive analog

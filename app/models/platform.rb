@@ -16,7 +16,7 @@ class Platform < ActiveRecord::Base
   has_many :groups,  :through => :objects, :source => :object, :source_type => 'Group'
 
   validates :name, :presence => true, :uniqueness => true
-  validates :unixname, :uniqueness => true, :presence => true, :format => { :with => /^[a-zA-Z0-9_]+$/ }, :allow_nil => false, :allow_blank => false
+  validates :unixname, :uniqueness => true, :presence => true, :format => { :with => /^[a-z0-9_]+$/ }, :allow_nil => false, :allow_blank => false
   validates :distrib_type, :presence => true, :allow_nil => :false, :allow_blank => false, :inclusion => {:in => APP_CONFIG['distr_types']}
 
   after_create :make_owner_rel

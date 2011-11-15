@@ -21,6 +21,8 @@ gem "will_paginate", "~> 3.0.2"
 gem 'meta-tags', '~> 1.2.4', :require => 'meta_tags'
 gem "russian"
 
+# gem 'ghoul_grack', '~> 0.0.1'
+gem 'grack', :git => 'git://github.com/rdblue/grack.git', :require => 'git_http'
 gem "grit"
 gem 'gitolito', :git => 'git@github.com:warpc/gitolito.git'
 gem 'whenever', :require => false
