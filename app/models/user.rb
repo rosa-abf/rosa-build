@@ -50,6 +50,14 @@ class User < ActiveRecord::Base
   before_destroy { destroy_ssh_key(ssh_key) if ssh_key.present? }
   # after_create() { UserMailer.new_user_notification(self).deliver }
 
+  def admin?
+    self.id == 1
+  end
+  
+  def guest?
+    self.id.blank?
+  end
+
   class << self
     def find_for_database_authentication(warden_conditions)
       conditions = warden_conditions.dup

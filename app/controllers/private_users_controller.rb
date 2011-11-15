@@ -1,6 +1,6 @@
 class PrivateUsersController < ApplicationController
   before_filter :authenticate_user!
-  before_filter :check_global_access, :except => [:destroy]
+  #before_filter :check_global_access, :except => [:destroy]
   before_filter :find_platform_and_private_users
 
   def index
@@ -20,7 +20,7 @@ class PrivateUsersController < ApplicationController
 
   #def destroy
   #	user = PrivateUser.find(params[:id])
-  #  can_perform? user if user
+  #  #can_perform? user if user
   #	user.destroy
   #	redirect_to platform_private_users_path(params[:platform_id])
   #end

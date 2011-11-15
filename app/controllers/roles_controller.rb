@@ -3,7 +3,7 @@ class RolesController < ApplicationController
   before_filter :find_role, :only => [:show, :edit, :update, :destroy]
   before_filter :find_visibilities, :only => [:new, :edit]
 
-  before_filter :check_global_access
+ # before_filter :check_global_access
 
   def index
     @roles = Role.all

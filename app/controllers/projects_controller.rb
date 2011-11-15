@@ -2,13 +2,17 @@ class ProjectsController < ApplicationController
   before_filter :authenticate_user!, :except => :auto_build
   before_filter :find_project, :only => [:show, :edit, :update, :destroy, :build, :process_build]
   before_filter :get_paths, :only => [:new, :create, :edit, :update]
-  before_filter :check_global_access, :only => [:index, :new, :create]#:except => :auto_build
+  #before_filter :check_global_access, :only => [:index, :new, :create]#:except => :auto_build
+  #check_authorization
+  #authorize_resource
 
   def index
     if params[:query]
-      @projects = Project.visible_to(current_user).where(:name => params[:query]).paginate(:page => params[:project_page])
+      #@projects = Project.visible_to(current_user).where(:name => params[:query]).paginate(:page => params[:project_page])
+      @projects = Project.accessible_by(current_ability).where(:name => params[:query]).paginate(:page => params[:project_page])
     else
-      @projects = Project.visible_to(current_user).paginate(:page => params[:project_page])
+      #@projects = Project.visible_to(current_user).paginate(:page => params[:project_page])
+      @projects = Project.accessible_by(current_ability).paginate(:page => params[:project_page])
     end
     
     @own_projects = current_user.own_projects
@@ -16,7 +20,7 @@ class ProjectsController < ApplicationController
   end
 
   def show
-    can_perform? @project if @project
+    #can_perform? @project if @project
     @current_build_lists = @project.build_lists.current.recent.paginate :page => params[:page]
   end
 
@@ -25,7 +29,7 @@ class ProjectsController < ApplicationController
   end
 
   def edit
-    can_perform? @project if @project
+    #can_perform? @project if @project
   end
 
   def create
@@ -43,7 +47,7 @@ class ProjectsController < ApplicationController
   end
 
   def update
-    can_perform? @project if @project
+    #can_perform? @project if @project
     if @project.update_attributes(params[:project])
       flash[:notice] = t('flash.project.saved')
       redirect_to @project
@@ -54,7 +58,7 @@ class ProjectsController < ApplicationController
   end
 
   def destroy
-    can_perform? @project if @project
+    #can_perform? @project if @project
     @project.destroy
     flash[:notice] = t("flash.project.destroyed")
     redirect_to @project.owner
@@ -91,7 +95,7 @@ class ProjectsController < ApplicationController
   end
 
   def process_build
-    can_perform? @project if @project
+    #can_perform? @project if @project
     @arch_ids = params[:build][:arches].select{|_,v| v == "1"}.collect{|x| x[0].to_i }
     @arches = Arch.where(:id => @arch_ids)
 

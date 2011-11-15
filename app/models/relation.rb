@@ -4,6 +4,8 @@ class Relation < ActiveRecord::Base
 
   has_many :role_lines
   has_many :roles, :autosave => true, :through => :role_lines
+  
+  bitmask :roles, :as => [:read, :update] 
 
   after_create {
     with_ga do |ga|

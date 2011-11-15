@@ -3,10 +3,11 @@ class PlatformsController < ApplicationController
   before_filter :authenticate_user!, :except => :easy_urpmi
   before_filter :find_platform, :only => [:freeze, :unfreeze, :clone, :edit, :destroy]
   before_filter :get_paths, :only => [:new, :create, :clone]
-  before_filter :check_global_access, :only => [:index, :new, :create]#:except => :easy_urpmi
+  #before_filter :check_global_access, :only => [:index, :new, :create]#:except => :easy_urpmi
 
   def index
-    @platforms = Platform.visible_to(current_user).paginate(:page => params[:platform_page])
+    #@platforms = Platform.visible_to(current_user).paginate(:page => params[:platform_page])
+    @platforms = Platform.accessible_by(current_ability).paginate(:page => params[:platform_page])
   end
 
   def easy_urpmi
@@ -27,19 +28,19 @@ class PlatformsController < ApplicationController
 
   def show
     @platform = Platform.find params[:id], :include => :repositories
-    can_perform? @platform if @platform
+    #can_perform? @platform if @platform
     @repositories = @platform.repositories
     @members = @platform.members.uniq
   end
 
   def new
-    @platforms = Platform.visible_to current_user
+    #@platforms = Platform.visible_to current_user
     @platform = Platform.new
   end
   
   def edit
-    can_perform? @platform if @platform
-    @platforms = Platform.visible_to current_user
+    #can_perform? @platform if @platform
+    #@platforms = Platform.visible_to current_user
   end
 
   def create
@@ -52,13 +53,13 @@ class PlatformsController < ApplicationController
       redirect_to @platform
     else
       flash[:error] = I18n.t("flash.platform.saved_error")
-      @platforms = Platform.visible_to current_user
+      #@platforms = Platform.visible_to current_user
       render :action => :new
     end
   end
 
   def freeze
-    can_perform? @platform if @platform
+    #can_perform? @platform if @platform
     @platform.released = true
     if @platform.save
       flash[:notice] = I18n.t("flash.platform.freezed")
@@ -70,7 +71,7 @@ class PlatformsController < ApplicationController
   end
 
   def unfreeze
-    can_perform? @platform if @platform
+    #can_perform? @platform if @platform
     @platform.released = false
     if @platform.save
       flash[:notice] = I18n.t("flash.platform.unfreezed")
@@ -82,7 +83,7 @@ class PlatformsController < ApplicationController
   end
 
   def clone
-    can_perform? @platform if @platform
+    #can_perform? @platform if @platform
     if request.post?
       @cloned = @platform.make_clone(:name => params[:platform]['name'], :unixname => params[:platform]['unixname'],
                                     :owner_id => current_user.id, :owner_type => current_user.class.to_s)
@@ -100,7 +101,7 @@ class PlatformsController < ApplicationController
   end
 
   def destroy
-    can_perform? @platform if @platform
+    #can_perform? @platform if @platform
     @platform.destroy if @platform
 
     flash[:notice] = t("flash.platform.destroyed")
