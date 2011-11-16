@@ -10,4 +10,6 @@
       %td
         = platform.distrib_type
       %td.last
-        #{link_to t("layout.show"), platform_path(platform)} | #{link_to t("layout.delete"), platform_path(platform), :method => :delete, :confirm => t("layout.platforms.confirm_delete")}
+        = link_to t("layout.show"), platform_path(platform)
+        | 
+        = link_to t("layout.delete"), platform_path(platform), :method => :delete, :confirm => t("layout.platforms.confirm_delete")  if can? :destroy, platform

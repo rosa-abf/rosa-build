@@ -4,7 +4,7 @@ class ProjectsController < ApplicationController
   before_filter :get_paths, :only => [:new, :create, :edit, :update]
   #before_filter :check_global_access, :only => [:index, :new, :create]#:except => :auto_build
   #check_authorization
-  #authorize_resource
+  authorize_resource
 
   def index
     if params[:query]

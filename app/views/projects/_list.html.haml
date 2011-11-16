@@ -8,6 +8,6 @@
       %td= link_to "#{project.name} (#{project.unixname})", project
       %td= link_to "#{project.owner.name} (#{project.owner.uname})", project.owner
       %td
-        = link_to t("layout.edit"), edit_project_path(project)
+        = link_to t("layout.edit"), edit_project_path(project) if can? :update, project
         |
-        = link_to t("layout.delete"), project_path(project), :method => :delete, :confirm => t("layout.projects.confirm_delete")
+        = link_to t("layout.delete"), project_path(project), :method => :delete, :confirm => t("layout.projects.confirm_delete") if can? :destroy, project

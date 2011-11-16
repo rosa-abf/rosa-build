@@ -4,6 +4,8 @@ class PlatformsController < ApplicationController
   before_filter :find_platform, :only => [:freeze, :unfreeze, :clone, :edit, :destroy]
   before_filter :get_paths, :only => [:new, :create, :clone]
   #before_filter :check_global_access, :only => [:index, :new, :create]#:except => :easy_urpmi
+  
+  authorize_resource
 
   def index
     #@platforms = Platform.visible_to(current_user).paginate(:page => params[:platform_page])
@@ -106,6 +108,9 @@ class PlatformsController < ApplicationController
 
     flash[:notice] = t("flash.platform.destroyed")
     redirect_to root_path
+  end
+  
+  def forbidden
   end
 
   protected

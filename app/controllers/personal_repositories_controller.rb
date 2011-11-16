@@ -3,6 +3,8 @@ class PersonalRepositoriesController < ApplicationController
   before_filter :find_repository#, :only => [:show, :destroy, :add_project, :remove_project, :make_private, :settings]
   before_filter :check_repository
   #before_filter :check_global_access
+  
+  authorize_resource
 
   def show
     #can_perform? @repository if @repository

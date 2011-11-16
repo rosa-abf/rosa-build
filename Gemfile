@@ -9,7 +9,7 @@ gem 'devise', '~> 1.4.8'
 gem 'omniauth', '~> 0.3.2'
 gem 'oa-openid', '~> 0.3.2', :require => 'omniauth/openid'
 gem 'cancan', '~> 1.6.7'
-gem 'bitmask_attributes'
+#gem 'bitmask_attributes'
 
 gem "haml-rails", '~> 0.3.4'
 gem "compass", '~> 0.11.5'
