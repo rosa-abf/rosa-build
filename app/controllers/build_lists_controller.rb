@@ -128,7 +128,7 @@ class BuildListsController < ApplicationController
 
 		def find_project_versions
 			@git_repository = @project.git_repository
-			@project_versions = @project.project_versions
+			@project_versions = @project.collected_project_versions
 		end
 
 		def find_build_list_by_bs

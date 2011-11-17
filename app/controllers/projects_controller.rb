@@ -64,20 +64,11 @@ class ProjectsController < ApplicationController
     uname, unixname = params[:git_repo].split('/')
     owner = User.find_by_uname(uname) || Group.find_by_uname(uname)
     project = Project.where(:owner_id => owner.id, :owner_type => owner.class).find_by_unixname!(unixname)
-    auto_build_list = AutoBuildList.find_by_project_id(project.id)
+    project.auto_build
 
     # p = params.delete_if{|k,v| k == 'controller' or k == 'action'}
     # ActiveSupport::Notifications.instrument("event_log.observer", :object => project, :message => p.inspect)
     logger.info "Git hook recieved from #{params[:git_user]} to #{params[:git_repo]}"
-
-    BuildList.create!(
-      :project => project,
-      :pl => auto_build_list.pl,
-      :bpl => auto_build_list.bpl,
-      :arch => auto_build_list.arch,
-      :project_version => project.collected_project_versions.last.try(:first),
-      :build_requires => true,
-      :update_type => 'bugfix') if auto_build_list
 
     render :nothing => true
   end
