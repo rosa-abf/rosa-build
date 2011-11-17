@@ -42,18 +42,30 @@ class Project < ActiveRecord::Base
   after_destroy :destroy_git_repo
   after_rollback lambda { destroy_git_repo rescue true if new_record? }
 
+  def auto_build
+    auto_build_lists.each do |auto_build_list|
+      build_lists.create(
+        :pl => auto_build_list.pl,
+        :bpl => auto_build_list.bpl,
+        :arch => auto_build_list.arch,
+        :project_version => collected_project_versions.last,
+        :build_requires => true,
+        :update_type => 'bugfix')
+    end
+  end
+
   def project_versions
-    res = tags.select { |tag| tag.name =~ /^v\./  }
+    res = tags.select{|tag| tag.name =~ /^v\./}
     return res if res and res.size > 0
     tags
   end
-  
+
   def collected_project_versions
-    project_versions.collect { |tag| new_tag = tag.name.gsub(/^\w+\./, ""); [new_tag, new_tag] }
+    project_versions.collect{|tag| tag.name.gsub(/^\w+\./, "")}
   end
 
   def tags
-    self.git_repository.tags
+    self.git_repository.tags.sort_by(&:name)
   end
 
   def members
