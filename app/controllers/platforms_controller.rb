@@ -8,8 +8,8 @@ class PlatformsController < ApplicationController
   authorize_resource
 
   def index
-    #@platforms = Platform.visible_to(current_user).paginate(:page => params[:platform_page])
-    @platforms = Platform.accessible_by(current_ability).paginate(:page => params[:platform_page])
+    #@platforms = Platform.accessible_by(current_ability).paginate(:page => params[:platform_page])
+    @platforms = Platform.paginate(:page => params[:platform_page])
   end
 
   def easy_urpmi

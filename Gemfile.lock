@@ -56,8 +56,6 @@ GEM
       activerecord (>= 2.2.2)
     arel (2.0.10)
     bcrypt-ruby (3.0.1)
-    bitmask_attributes (0.2.3)
-      activerecord (~> 3.0)
     builder (2.1.2)
     cancan (1.6.7)
     capistrano (2.9.0)
@@ -276,7 +274,6 @@ PLATFORMS
 DEPENDENCIES
   airbrake!
   ancestry (~> 1.2.4)
-  bitmask_attributes
   cancan (~> 1.6.7)
   capistrano
   capistrano-ext

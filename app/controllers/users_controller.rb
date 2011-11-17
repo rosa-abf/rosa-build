@@ -4,6 +4,8 @@ class UsersController < ApplicationController
   before_filter :find_user, :only => [:show, :edit, :update, :destroy]
   #before_filter :check_global_access
 
+  authorize_resource
+
   def index
     @users = User.paginate(:page => params[:user_page])
   end

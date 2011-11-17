@@ -83,9 +83,9 @@
             %td
               = link_to repository.name, platform_repository_path(@platform, repository)
             %td.last
-              = link_to t("layout.show"), platform_repository_path(@platform, repository)} 
+              = link_to t("layout.show"), platform_repository_path(@platform, repository)
               | 
-              = link_to t("layout.delete"), platform_repository_path(@platform, repository), :method => :delete, :confirm => t("layout.repositories.confirm_delete") if can? :destroy, project
+              = link_to t("layout.delete"), platform_repository_path(@platform, repository), :method => :delete, :confirm => t("layout.repositories.confirm_delete") if can? :destroy, @platform
       .actions-bar.wat-cf
         .actions
 
@@ -108,9 +108,9 @@
             %td
               = link_to product.name, [@platform, product]
             %td.last
-              = link_to t("layout.edit"), edit_platform_product_path(@platform, product)} 
+              = link_to t("layout.edit"), edit_platform_product_path(@platform, product)
               | 
-              = link_to t("layout.delete"), platform_product_path(@platform, product), :method => :delete, :confirm => t("layout.products.confirm_delete") if can? :destroy, project
+              = link_to t("layout.delete"), platform_product_path(@platform, product), :method => :delete, :confirm => t("layout.products.confirm_delete") if can? :destroy, @platform
               = (product.can_clone? ? "| #{link_to t("layout.products.clone"), clone_platform_product_path(@platform, product)}" : "").html_safe
       .actions-bar.wat-cf
         .actions

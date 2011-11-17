@@ -11,6 +11,7 @@ class Platform < ActiveRecord::Base
   has_many :repositories, :dependent => :destroy
   has_many :products, :dependent => :destroy
 
+  has_many :relations, :as => :target, :dependent => :destroy
   has_many :objects, :as => :target, :class_name => 'Relation', :dependent => :destroy
   has_many :members, :through => :objects, :source => :object, :source_type => 'User'
   has_many :groups,  :through => :objects, :source => :object, :source_type => 'Group'
