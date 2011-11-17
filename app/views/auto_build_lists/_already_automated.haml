@@ -10,4 +10,4 @@
       %td= link_to project.name, project_path(project)
       %td= link_to t("layout.auto_build_lists.cancel_btn"), auto_build_list_path(project.auto_build_lists_id), :method => :delete, :confirm => t("layout.confirm")
 
-= will_paginate @projects_not_automated, :param_name => 'already_automated_page'
+= will_paginate @projects_already_automated, :param_name => 'already_automated_page'

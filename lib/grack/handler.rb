@@ -6,7 +6,10 @@ module Grack
     end
 
     def call(env)
-      if git?(env)
+      super
+      if git?
+        # TODO event_log? called twice!
+        project.auto_build if write? # hook
         ::GitHttp::App.new(@config).call(env)
       else
         @app.call(env)

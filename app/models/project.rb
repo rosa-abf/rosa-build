@@ -19,13 +19,12 @@ class Project < ActiveRecord::Base
   validates :name,     :uniqueness => {:scope => [:owner_id, :owner_type]}, :presence => true, :allow_nil => false, :allow_blank => false
   validates :unixname, :uniqueness => {:scope => [:owner_id, :owner_type]}, :presence => true, :format => { :with => /^[a-z0-9_\-\+\.]+$/ }, :allow_nil => false, :allow_blank => false
   validates :owner, :presence => true
-  validate {errors.add(:base, I18n.t('flash.project.save_warning_ssh_key')) if owner.ssh_key.blank?}
+  # validate {errors.add(:base, I18n.t('flash.project.save_warning_ssh_key')) if owner.ssh_key.blank?}
 
   #attr_accessible :category_id, :name, :unixname, :description, :visibility
   attr_readonly :unixname
 
   scope :recent, order("name ASC")
-#  scope :by_name, lambda { |name| {:conditions => ['name like ?', '%' + name + '%']} }
   scope :by_name, lambda { |name| where('name like ?', '%' + name + '%') }
   scope :by_visibilities, lambda {|v| {:conditions => ['visibility in (?)', v.join(',')]}}
   scope :addable_to_repository, lambda { |repository_id| where("projects.id NOT IN (SELECT project_to_repositories.project_id FROM project_to_repositories WHERE (project_to_repositories.repository_id = #{ repository_id }))") }
@@ -37,9 +36,20 @@ class Project < ActiveRecord::Base
 
   after_create :attach_to_personal_repository
   after_create :create_git_repo
-  before_update :update_git_repo
   after_destroy :destroy_git_repo
   after_rollback lambda { destroy_git_repo rescue true if new_record? }
+
+  def auto_build
+    auto_build_lists.each do |auto_build_list|
+      build_lists.create(
+        :pl => auto_build_list.pl,
+        :bpl => auto_build_list.bpl,
+        :arch => auto_build_list.arch,
+        :project_version => collected_project_versions.last.try(:first),
+        :build_requires => true,
+        :update_type => 'bugfix')
+    end
+  end
 
   def project_versions
     res = tags.select { |tag| tag.name =~ /^v\./  }
@@ -56,7 +66,7 @@ class Project < ActiveRecord::Base
   end
 
   def members
-    collaborators + groups
+    collaborators + groups.map(&:members).flatten
   end
 
   # include Project::HasRepository
@@ -70,12 +80,8 @@ class Project < ActiveRecord::Base
     @git_repo_path ||= path
   end
   def git_repo_name
-    [owner.uname, unixname].join('/')
+    File.join owner.uname, unixname
   end
-  def git_repo_name_was
-    [owner.uname, unixname_was].join('/')
-  end
-  def git_repo_name_changed?; git_repo_name != git_repo_name_was; end
 
   def public?
     visibility == 'open'
@@ -130,29 +136,11 @@ class Project < ActiveRecord::Base
     end
 
     def create_git_repo
-      with_ga do |ga|
-        repo = ga.add_repo git_repo_name
-        repo.add_key owner.ssh_key, 'RW'
-        repo.has_anonymous_access!('R') if public?
-        ga.save_and_release
-      end
-    end
-
-    def update_git_repo
-      with_ga do |ga|
-        if repo = ga.find_repo(git_repo_name_was)
-          repo.rename(git_repo_name) if git_repo_name_changed?
-          public? ? repo.has_anonymous_access!('R') : repo.has_not_anonymous_access!
-          ga.save_and_release
-        end
-      end if git_repo_name_changed? or visibility_changed?
+      Grit::Repo.init_bare git_repo_path
     end
 
     def destroy_git_repo
-      with_ga do |ga|
-        ga.rm_repo git_repo_name
-        ga.save_and_release
-      end
+      FileUtils.rm_rf git_repo_path
     end
 
     def add_owner_rel

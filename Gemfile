@@ -24,7 +24,6 @@ gem "russian"
 # gem 'ghoul_grack', '~> 0.0.1'
 gem 'grack', :git => 'git://github.com/rdblue/grack.git', :require => 'git_http'
 gem "grit"
-gem 'gitolito', :git => 'git@github.com:warpc/gitolito.git'
 gem 'whenever', :require => false
 gem 'delayed_job'
 gem 'whenever', :require => false

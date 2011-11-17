@@ -1,11 +1,36 @@
 module Grack
   class Base # abstract
-    def git?(env)
-      env['HTTP_USER_AGENT'] =~ /git\//
+    def call(env)
+      @env = env
+      @project = nil
+    end
+
+    def git?
+      @env['HTTP_USER_AGENT'] =~ /^git\//
+    end
+
+    def read?
+      @env['REQUEST_URI'] =~ /git-upload-pack$/
+    end
+
+    def write?
+      @env['REQUEST_URI'] =~ /git-receive-pack$/
+    end
+
+    def action
+      write? ? 'update' : 'read'
+    end
+
+    def project
+      @project ||= begin
+        uname, unixname = @env['PATH_INFO'].split('/')[1,2]
+        unixname.gsub! /\.git$/, ''
+        owner = User.find_by_uname(uname) || Group.find_by_uname(uname)
+        Project.where(:owner_id => owner.id, :owner_type => owner.class).find_by_unixname(unixname)
+      end
     end
   end
 end
 
 # ({"HTTP_ACCEPT"=>"*/*", "HTTP_HOST"=>"localhost:3000", "SERVER_NAME"=>"localhost", "rack.url_scheme"=>"http", "PASSENGER_CONNECT_PASSWORD"=>"xbRC6murG5bIDTsaed8ksaZhjf8yFsadlX4QL0qWNbS", "HTTP_USER_AGENT"=>"git/1.7.7.2", "PASSENGER_SPAWN_METHOD"=>"smart-lv2", "PASSENGER_FRIENDLY_ERROR_PAGES"=>"true", "CONTENT_LENGTH"=>"0", "rack.errors"=>#<IO:0x108494a90>, "SERVER_PROTOCOL"=>"HTTP/1.1", "action_dispatch.secret_token"=>"df2fb72d477491cf15ef0f93449bcb59c3412c255c2386e07772935565c1b6ad23539ed804b8f12e3221e47abb78f5b679693c391acb33477be0e633e7a2e2a4", "rack.run_once"=>false, "rack.version"=>[1, 0], "REMOTE_ADDR"=>"127.0.0.1", "SERVER_SOFTWARE"=>"nginx/1.0.6", "PASSENGER_MIN_INSTANCES"=>"1", "PATH_INFO"=>"/codefoundry.git/info/refs", "SERVER_ADDR"=>"127.0.0.1", "SCRIPT_NAME"=>"", "action_dispatch.parameter_filter"=>[:password], "action_dispatch.show_exceptions"=>true, "rack.multithread"=>false, "PASSENGER_USER"=>"", "PASSENGER_ENVIRONMENT"=>"development", "PASSENGER_SHOW_VERSION_IN_HEADER"=>"true", "rack.multiprocess"=>true, "REMOTE_PORT"=>"49387", "REQUEST_URI"=>"/codefoundry.git/info/refs", "SERVER_PORT"=>"3000", "SCGI"=>"1", "PASSENGER_APP_TYPE"=>"rack", "PASSENGER_USE_GLOBAL_QUEUE"=>"true", "REQUEST_METHOD"=>"GET", "PASSENGER_GROUP"=>"", "PASSENGER_DEBUGGER"=>"false", "DOCUMENT_ROOT"=>"/Users/pasha/Sites/rosa-build/public", "_"=>"_", "PASSENGER_FRAMEWORK_SPAWNER_IDLE_TIME"=>"-1", "UNION_STATION_SUPPORT"=>"false", "rack.input"=>#<PhusionPassenger::Utils::RewindableInput:0x10bb55a20 @rewindable_io=nil, @io=#<PhusionPassenger::Utils::UnseekableSocket:0x10bb56c90 @socket=#<UNIXSocket:0x10bb56b28>>, @unlinked=false>, "HTTP_PRAGMA"=>"no-cache", "QUERY_STRING"=>"", "PASSENGER_APP_SPAWNER_IDLE_TIME"=>"-1"}) (process 41940, thread #<Thread:0x1084a1268>)
 # {"rack.session"=>{}, "HTTP_ACCEPT"=>"*/*", "HTTP_HOST"=>"localhost:3000", "SERVER_NAME"=>"localhost", "action_dispatch.remote_ip"=>#<ActionDispatch::RemoteIp::RemoteIpGetter:0x10b621338 @check_ip_spoofing=true, @env={...}, @trusted_proxies=/(^127\.0\.0\.1$|^(10|172\.(1[6-9]|2[0-9]|30|31)|192\.168)\.)/i>, "rack.url_scheme"=>"http", "PASSENGER_CONNECT_PASSWORD"=>"dljpLA91qGH4v2gwaccoAxFysOmSkEFbRtPyPOe9953", "HTTP_USER_AGENT"=>"git/1.7.7.2", "PASSENGER_SPAWN_METHOD"=>"smart-lv2", "PASSENGER_FRIENDLY_ERROR_PAGES"=>"true", "CONTENT_LENGTH"=>"0", "action_dispatch.request.unsigned_session_cookie"=>{}, "rack.errors"=>#<IO:0x10724baa0>, "SERVER_PROTOCOL"=>"HTTP/1.1", "action_dispatch.secret_token"=>"df2fb72d477491cf15ef0f93449bcb59c3412c255c2386e07772935565c1b6ad23539ed804b8f12e3221e47abb78f5b679693c391acb33477be0e633e7a2e2a4", "rack.run_once"=>false, "rack.version"=>[1, 0], "REMOTE_ADDR"=>"127.0.0.1", "SERVER_SOFTWARE"=>"nginx/1.0.6", "PASSENGER_MIN_INSTANCES"=>"1", "PATH_INFO"=>"/pasha/mc.git/info/refs", "SERVER_ADDR"=>"127.0.0.1", "SCRIPT_NAME"=>"", "action_dispatch.parameter_filter"=>[:password], "action_dispatch.show_exceptions"=>true, "rack.multithread"=>false, "PASSENGER_USER"=>"", "PASSENGER_ENVIRONMENT"=>"development", "PASSENGER_SHOW_VERSION_IN_HEADER"=>"true", "action_dispatch.cookies"=>{}, "rack.multiprocess"=>true, "REMOTE_PORT"=>"49643", "REQUEST_URI"=>"/pasha/mc.git/info/refs", "SERVER_PORT"=>"3000", "SCGI"=>"1", "PASSENGER_APP_TYPE"=>"rack", "PASSENGER_USE_GLOBAL_QUEUE"=>"true", "rack.session.options"=>{:httponly=>true, :expire_after=>nil, :domain=>nil, :path=>"/", :secure=>false, :id=>nil}, "REQUEST_METHOD"=>"GET", "PASSENGER_GROUP"=>"", "PASSENGER_DEBUGGER"=>"false", "DOCUMENT_ROOT"=>"/Users/pasha/Sites/rosa-build/public", "warden"=>Warden::Proxy:2242130160 @config={:failure_app=>Devise::FailureApp, :default_scope=>:user, :intercept_401=>false, :scope_defaults=>{}, :default_strategies=>{:user=>[:rememberable, :database_authenticatable]}}, "_"=>"_", "PASSENGER_FRAMEWORK_SPAWNER_IDLE_TIME"=>"-1", "UNION_STATION_SUPPORT"=>"false", "rack.input"=>#<PhusionPassenger::Utils::RewindableInput:0x10b6225f8 @rewindable_io=nil, @io=#<PhusionPassenger::Utils::UnseekableSocket:0x10a8f5a10 @socket=#<UNIXSocket:0x10b623700>>, @unlinked=false>, "HTTP_PRAGMA"=>"no-cache", "QUERY_STRING"=>"", "PASSENGER_APP_SPAWNER_IDLE_TIME"=>"-1"}
-#<Grack::Handler:0x10fe1c1d8 @app=#<ActionDispatch::ShowExceptions:0x10fe1c278 @app=#<ActionDispatch::RemoteIp:0x10fe1c390 @check_ip_spoofing=true, @app=#<Rack::Sendfile:0x10fe1c430 @variation="", @app=#<ActionDispatch::Callbacks:0x10fe1c728 @app=#<ActiveRecord::ConnectionAdapters::ConnectionManagement:0x10fe1c958 @app=#<ActiveRecord::QueryCache:0x10fe1cc00 @app=#<ActionDispatch::Cookies:0x10fe1cd68 @app=#<ActionDispatch::Session::CookieStore:0x10fe1ce58 @app=#<ActionDispatch::Flash:0x10fe1cef8 @app=#<ActionDispatch::ParamsParser:0x10fe1d8f8 @app=#<Rack::MethodOverride:0x10fe1d998 @app=#<ActionDispatch::Head:0x10fe1da38 @app=#<ActionDispatch::BestStandardsSupport:0x10fe1db00 @app=#<Warden::Manager:0x10fe1dd30 @app=#<Sass::Plugin::Rack:0x10fe1de20 @app=#<OmniAuth::Strategies::OpenID>, @check_after=1321397135.42431, @dwell=1.0>, @config={:failure_app=>Devise::FailureApp, :intercept_401=>false, :default_scope=>:user, :scope_defaults=>{}, :default_strategies=>{:user=>[:rememberable, :database_authenticatable]}}>, @header="IE=Edge">>>, @parsers={#<Mime::Type:0x10e0ebc58 @string="application/xml", @synonyms=["text/xml", "application/x-xml"], @symbol=:xml>=>:xml_simple, #<Mime::Type:0x10e0eace0 @string="application/json", @synonyms=["text/x-json", "application/jsonrequest"], @symbol=:json>=>:json}>>, @default_options={:expire_after=>nil, :httponly=>true, :path=>"/", :domain=>nil, :secure=>false}, @key="_rosa_session", @cookie_only=true>>>>, @prepare_each_request=true>>, @trusted_proxies=/(^127\.0\.0\.1$|^(10|172\.(1[6-9]|2[0-9]|30|31)|192\.168)\.)/i>, @consider_all_requests_local=true>, @config={:receive_pack=>true, :git_path=>"/opt/local/bin/git", :upload_pack=>true, :project_root=>"/var/rosa/git_projects"}>

@@ -6,3 +6,5 @@ config = {:project_root => File.join(APP_CONFIG['root_path'], 'git_projects'), :
 # Rosa::Application.config.middleware.insert_before ::ActionDispatch::Static, ::Grack::Handler, config
 Rosa::Application.config.middleware.insert_after ::Rails::Rack::Logger, ::Grack::Handler, config
 Rosa::Application.config.middleware.insert_before ::Grack::Handler, ::Grack::Auth
+
+# Grit::Git.git_timeout = 60
