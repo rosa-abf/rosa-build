@@ -21,7 +21,7 @@ class BuildList < ActiveRecord::Base
   WAITING_FOR_RESPONSE = 4000
   BUILD_PENDING = 2000
   BUILD_STARTED = 3000
-  TEST_FAILD = 2
+  TEST_FAILD = 21
 
   STATUSES = [WAITING_FOR_RESPONSE,
               BuildServer::SUCCESS,
