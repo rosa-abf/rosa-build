@@ -3,7 +3,7 @@ class AutoBuildListsController < ApplicationController
   #before_filter :check_global_access
   
   def index
-    projects = Project.where(:owner_id => current_user.id, :owner_type => 'User')
+    projects = Project.where(:owner_id => current_user.id, :owner_type => 'User').order('name ASC')
     @projects_not_automated = projects.automateable.paginate(:page => params[:not_automated_page])
     @projects_not_automated = @projects_not_automated.where(:name => params[:name]) unless params[:name].blank?
 

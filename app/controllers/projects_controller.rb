@@ -64,7 +64,8 @@ class ProjectsController < ApplicationController
     redirect_to @project.owner
   end
 
-  def auto_build    
+  # TODO remove this?
+  def auto_build
     uname, unixname = params[:git_repo].split('/')
     owner = User.find_by_uname(uname) || Group.find_by_uname(uname)
     project = Project.where(:owner_id => owner.id, :owner_type => owner.class).find_by_unixname!(unixname)

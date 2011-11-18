@@ -26,13 +26,9 @@ class User < ActiveRecord::Base
 
   include PersonalRepository
 
-  validates :uname, :presence => true, :uniqueness => {:case_sensitive => false}, :format => { :with => /^[a-zA-Z0-9_]+$/ }, :allow_nil => false, :allow_blank => false
-  validates :ssh_key, :uniqueness => true, :allow_blank => true
+  validates :uname, :presence => true, :uniqueness => {:case_sensitive => false}, :format => { :with => /^[a-z0-9_]+$/ }, :allow_nil => false, :allow_blank => false
   validate { errors.add(:uname, :taken) if Group.where('uname LIKE ?', uname).present? }
-  #TODO: Replace this simple cross-table uniq validation by more progressive analog
-  validate lambda {
-    errors.add(:uname, I18n.t('flash.user.group_uname_exists')) if Group.exists? :uname => uname
-  }
+  validates :ssh_key, :uniqueness => true, :allow_blank => true
   validates :role, :inclusion => {:in => ROLES}
 
   attr_accessible :email, :password, :password_confirmation, :remember_me, :login, :name, :ssh_key, :uname
@@ -40,17 +36,6 @@ class User < ActiveRecord::Base
   attr_accessor :login
 
   before_create :add_default_role
-
-  before_update {
-    if ssh_key_was.blank? and ssh_key.present?
-      create_ssh_key ssh_key
-    elsif ssh_key_was.present? and ssh_key.blank?
-      destroy_ssh_key ssh_key_was
-    elsif ssh_key_changed? and ssh_key.present? and ssh_key_was.present?
-      update_ssh_key ssh_key_was, ssh_key
-    end
-  }
-  before_destroy { destroy_ssh_key(ssh_key) if ssh_key.present? }
   # after_create() { UserMailer.new_user_notification(self).deliver }
 
   def admin?
@@ -94,33 +79,4 @@ class User < ActiveRecord::Base
     clean_up_passwords
     result
   end
-
-  protected
-
-    def create_ssh_key(key)
-      with_ga do |ga|
-        ga.store_key! key
-        projects.each do |project|
-          repo = ga.find_repo(project.git_repo_name)
-          repo.add_key(key, 'RW') if repo
-        end
-        ga.save_and_release
-      end
-    end
-
-    def update_ssh_key(old_key, new_key)
-      with_ga do |ga|
-        ga.repos.replace_key old_key, new_key #, options = {}
-        ga.replace_key! old_key, new_key
-        ga.save_and_release
-      end
-    end
-
-    def destroy_ssh_key(key)
-      with_ga do |ga|
-        ga.repos.rm_key key
-        ga.rm_key! key
-        ga.save_and_release
-      end
-    end
 end
