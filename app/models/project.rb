@@ -50,7 +50,7 @@ class Project < ActiveRecord::Base
         :arch => auto_build_list.arch,
         :project_version => collected_project_versions.last,
         :build_requires => true,
-        :update_type => 'bugfix')
+        :update_type => 'bugfix') unless build_lists.for_creation_date_period(Time.current - 15.seconds, Time.current).present?
     end
   end
 
@@ -65,7 +65,7 @@ class Project < ActiveRecord::Base
   end
 
   def tags
-    self.git_repository.tags.sort_by(&:name)
+    self.git_repository.tags.sort_by{|t| t.name.gsub(/[a-zA-Z.]+/, '').to_i}
   end
 
   def members
