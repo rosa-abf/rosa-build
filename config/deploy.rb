@@ -26,6 +26,8 @@ set :scm, "git"
 set :user, "rosa"
 set :use_sudo, false
 set :deploy_to, "/srv/#{application}"
+# set :deploy_via, :copy
+# set :copy_cache, true
 
 set :keep_releases, 3
 
