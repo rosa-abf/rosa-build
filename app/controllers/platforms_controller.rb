@@ -18,7 +18,7 @@ class PlatformsController < ApplicationController
                           {:name => p.unixname,
                            :architectures => ['i586', 'x86_64'],
                            :repositories => p.repositories.map(&:unixname),
-                           :url => "http://#{request.host_with_port}/downloads/#{p.unixname}/repository"}
+                           :url => "http://#{request.host_with_port}/downloads/#{p.unixname}/repository/"}
                         end
         }
       end
