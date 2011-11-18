@@ -65,7 +65,7 @@ class ProjectsController < ApplicationController
     uname, unixname = params[:git_repo].split('/')
     owner = User.find_by_uname(uname) || Group.find_by_uname(uname)
     project = Project.where(:owner_id => owner.id, :owner_type => owner.class).find_by_unixname!(unixname)
-    project.auto_build
+    project.delay.auto_build # TODO don't queue duplicates
 
     # p = params.delete_if{|k,v| k == 'controller' or k == 'action'}
     # ActiveSupport::Notifications.instrument("event_log.observer", :object => project, :message => p.inspect)

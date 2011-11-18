@@ -45,24 +45,24 @@ class Project < ActiveRecord::Base
         :pl => auto_build_list.pl,
         :bpl => auto_build_list.bpl,
         :arch => auto_build_list.arch,
-        :project_version => collected_project_versions.last.try(:first),
+        :project_version => collected_project_versions.last,
         :build_requires => true,
-        :update_type => 'bugfix')
+        :update_type => 'bugfix') unless build_lists.for_creation_date_period(Time.current - 15.seconds, Time.current).present?
     end
   end
 
   def project_versions
-    res = tags.select { |tag| tag.name =~ /^v\./  }
+    res = tags.select{|tag| tag.name =~ /^v\./}
     return res if res and res.size > 0
     tags
   end
-  
+
   def collected_project_versions
-    project_versions.collect { |tag| new_tag = tag.name.gsub(/^\w+\./, ""); [new_tag, new_tag] }
+    project_versions.collect{|tag| tag.name.gsub(/^\w+\./, "")}
   end
 
   def tags
-    self.git_repository.tags
+    self.git_repository.tags.sort_by{|t| t.name.gsub(/[a-zA-Z.]+/, '').to_i}
   end
 
   def members

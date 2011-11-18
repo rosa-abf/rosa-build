@@ -51,21 +51,23 @@ class Platform < ActiveRecord::Base
   def urpmi_list(host, pair = nil)
     blank_pair = {:login => 'login', :pass => 'password'} 
     pair = blank_pair if pair.blank?
-    urpmi_commands = []
-    
-    pls = Platform.main.open
-    #pls << self
-    pls.each do |pl|
+    urpmi_commands = ActiveSupport::OrderedHash.new
+
+    Platform.main.open.each do |pl|
+      urpmi_commands[pl.name] = []
       local_pair = pl.id != self.id ? blank_pair : pair
-      #tail = (pl.id != self.id && pl.distrib_type == APP_CONFIG['distr_types'].first) ? "/$ARCH/main/release" : ""
-      tail = (pl.distrib_type == APP_CONFIG['distr_types'].first) ? "/$ARCH/main/release" : ""
-      head = self.hidden? ? "http://#{ local_pair[:login] }@#{ local_pair[:pass] }:#{ host }/private/" : "http://#{ host }/downloads/"
-      urpmi_commands << [
-        "urpmi.addmedia #{ head }#{ self.unixname }/repository/#{ pl.unixname }#{ tail }",
-        pl.name
-      ]
+      head = hidden? ? "http://#{local_pair[:login]}@#{local_pair[:pass]}:#{host}/private/" : "http://#{host}/downloads/"
+      if pl.distrib_type == APP_CONFIG['distr_types'].first
+        Arch.all.each do |arch|
+          tail = "/#{arch.name}/main/release"
+          urpmi_commands[pl.name] << "urpmi.addmedia #{unixname} #{head}#{unixname}/repository/#{pl.unixname}#{tail}"
+        end
+      else
+        tail = ''
+        urpmi_commands[pl.name] << "urpmi.addmedia #{unixname} #{head}#{unixname}/repository/#{pl.unixname}#{tail}"
+      end
     end
-    
+
     return urpmi_commands
   end
 
