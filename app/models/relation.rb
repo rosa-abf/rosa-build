@@ -5,7 +5,7 @@ class Relation < ActiveRecord::Base
   #has_many :role_lines
   #has_many :roles, :autosave => true, :through => :role_lines
   
-  ROLES = %w[read write]
+  ROLES = %w[read write admin]
   
   validates :role, :inclusion => {:in => ROLES}
   
