@@ -8,6 +8,11 @@ class ApplicationController < ActionController::Base
   after_filter lambda { EventLog.current_controller = nil }
 
   helper_method :get_owner
+  
+  rescue_from CanCan::AccessDenied do |exception|
+    redirect_to forbidden_url, :alert => exception.message
+  end
+  
   protected
     def get_owner
       params['user_id'] && User.find_by_id(params['user_id']) ||

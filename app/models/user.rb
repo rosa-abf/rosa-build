@@ -1,6 +1,8 @@
 class User < ActiveRecord::Base
   relationable :as => :object
   inherit_rights_from :groups
+  
+  ROLES = %w[admin]
 
   devise :database_authenticatable, :registerable, :omniauthable, # :token_authenticatable, :encryptable, :timeoutable
          :recoverable, :rememberable, :validatable #, :trackable, :confirmable, :lockable
@@ -31,6 +33,7 @@ class User < ActiveRecord::Base
   validate lambda {
     errors.add(:uname, I18n.t('flash.user.group_uname_exists')) if Group.exists? :uname => uname
   }
+  validates :role, :inclusion => {:in => ROLES}
 
   attr_accessible :email, :password, :password_confirmation, :remember_me, :login, :name, :ssh_key, :uname
   attr_readonly :uname
@@ -49,6 +52,14 @@ class User < ActiveRecord::Base
   }
   before_destroy { destroy_ssh_key(ssh_key) if ssh_key.present? }
   # after_create() { UserMailer.new_user_notification(self).deliver }
+
+  def admin?
+    role == 'admin'
+  end
+  
+  def guest?
+    self.id.blank?
+  end
 
   class << self
     def find_for_database_authentication(warden_conditions)

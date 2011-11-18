@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20111111184657) do
+ActiveRecord::Schema.define(:version => 20111116140040) do
 
   create_table "arches", :force => true do |t|
     t.string   "name",       :null => false
@@ -228,9 +228,9 @@ ActiveRecord::Schema.define(:version => 20111111184657) do
     t.string   "object_type"
     t.integer  "target_id"
     t.string   "target_type"
-    t.integer  "role_id"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "role"
   end
 
   create_table "repositories", :force => true do |t|
@@ -282,17 +282,18 @@ ActiveRecord::Schema.define(:version => 20111111184657) do
 
   create_table "users", :force => true do |t|
     t.string   "name"
-    t.string   "email",                                 :default => "", :null => false
-    t.string   "encrypted_password",     :limit => 128, :default => "", :null => false
+    t.string   "email",                               :default => "", :null => false
+    t.string   "encrypted_password",   :limit => 128, :default => "", :null => false
+    t.string   "password_salt",                       :default => "", :null => false
     t.string   "reset_password_token"
-    t.datetime "reset_password_sent_at"
+    t.string   "remember_token"
     t.datetime "remember_created_at"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "uname"
     t.text     "ssh_key"
-    t.integer  "role_id"
+    t.string   "uname"
     t.integer  "global_role_id"
+    t.string   "role"
   end
 
   add_index "users", ["email"], :name => "index_users_on_email", :unique => true

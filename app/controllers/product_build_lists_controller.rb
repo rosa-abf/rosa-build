@@ -3,13 +3,13 @@ class ProductBuildListsController < ApplicationController
   before_filter :find_product_build_list, :only => [:status_build]
   before_filter :find_product, :except => [:status_build]
   before_filter :find_platform, :except => [:status_build]
-  before_filter :check_global_access, :except => [:status_build]
+  #before_filter :check_global_access, :except => [:status_build]
 
   # def index
   # end
 
   def create
-    can_perform? @product # if @product
+    #can_perform? @product # if @product
     @product.product_build_lists.create! :base_url => "http://#{request.host_with_port}", :notified_at => Time.current
     flash[:notice] = t('flash.product.build_started')
     redirect_to [@platform, @product]

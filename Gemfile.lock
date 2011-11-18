@@ -57,6 +57,7 @@ GEM
     arel (2.0.10)
     bcrypt-ruby (3.0.1)
     builder (2.1.2)
+    cancan (1.6.7)
     capistrano (2.9.0)
       highline
       net-scp (>= 1.0.0)
@@ -273,6 +274,7 @@ PLATFORMS
 DEPENDENCIES
   airbrake!
   ancestry (~> 1.2.4)
+  cancan (~> 1.6.7)
   capistrano
   capistrano-ext
   capistrano_colors

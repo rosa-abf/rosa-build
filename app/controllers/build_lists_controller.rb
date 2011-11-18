@@ -5,7 +5,7 @@ class BuildListsController < ApplicationController
 	before_filter :find_arches, :only => [:index, :filter, :all]
 	before_filter :find_project_versions, :only => [:index, :filter]
 	before_filter :find_build_list_by_bs, :only => [:status_build, :pre_build, :post_build]
-  before_filter :check_global_access, :except => [:status_build, :post_build, :pre_build, :circle_build, :new_bbdt, :show, :publish, :cancel]
+  #before_filter :check_global_access, :except => [:status_build, :post_build, :pre_build, :circle_build, :new_bbdt, :show, :publish, :cancel]
 
 	def all
     if params[:filter]
@@ -24,7 +24,7 @@ class BuildListsController < ApplicationController
 	
 	def cancel
 	 build_list = BuildList.find(params[:id])
-   can_perform? build_list.project if build_list
+   #can_perform? build_list.project if build_list
    if build_list.delete_build_list
      redirect_to :back, :notice => t('layout.build_lists.cancel_successed')
    else
@@ -47,13 +47,13 @@ class BuildListsController < ApplicationController
 	end
 
 	def show
-    can_perform? @project
+    #can_perform? @project
 		@build_list = @project.build_lists.find(params[:id])
 		@item_groups = @build_list.items.group_by_level
 	end
 	
 	def publish
-    can_perform? @project if @project
+    #can_perform? @project if @project
 		@build_list = @project.build_lists.find(params[:id])
 		@build_list.publish
 		

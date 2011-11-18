@@ -148,4 +148,5 @@ Rosa::Application.routes.draw do
   match '/projects/:project_id/git/commit/raw/:commit_hash/*path', :controller => "git/blobs", :action => :raw, :as => :raw_commit
 
   root :to => "platforms#index"
+  match '/forbidden', :to => 'platforms#forbidden', :as => 'forbidden'
 end

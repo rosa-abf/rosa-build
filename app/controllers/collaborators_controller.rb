@@ -10,7 +10,8 @@ class CollaboratorsController < ApplicationController
   before_filter :find_groups
 
   def index
-    can_perform? @project if @project
+    authorize! :manage_collaborators, @project
+    
     redirect_to edit_project_collaborators_path(@project)
   end
 
@@ -21,7 +22,8 @@ class CollaboratorsController < ApplicationController
   end
 
   def edit
-    can_perform? @project if @project
+    authorize! :manage_collaborators, @project
+
     if params[:id]
       @user = User.find params[:id]
       render :edit_rights and return
@@ -32,25 +34,38 @@ class CollaboratorsController < ApplicationController
   end
 
   def update
-    can_perform? @project if @project
-    unless params[:id]
-      if params[:user]
-        users_for_removing = @project.collaborators.select do |u|
-          !params[:user].keys.map{|k| k.to_i}.include? u.id and @project.owner != u
-        end
-        users_for_creating = params[:user].keys.map{|p| p.to_i} - @project.collaborators.map(&:id)
+      authorize! :manage_collaborators, @project
 
-        puts users_for_removing.inspect
-        puts users_for_creating.inspect
+      all_user_ids = []
+      Relation::ROLES.each { |r| 
+        all_user_ids = all_user_ids | params[r.to_sym].keys if params[r.to_sym]
+      }
 
-        users_for_removing.each do |u|
-          Relation.by_object(u).by_target(@project).each {|r| r.destroy}
-        end
-#        @project.collaborators.delete_if{|c| users_for_removing.include? c}
-        users_for_creating.each do |user|
-          @project.add_roles_to User.find(user), @def_user_roles
-        end
+      # Remove relations
+      users_for_removing = @project.collaborators.select do |u|
+        !all_user_ids.map{|k| k.to_i}.include? u.id and @project.owner != u
       end
+      users_for_removing.each do |u|
+        Relation.by_object(u).by_target(@project).each {|r| r.destroy}
+      end
+      
+      # Create relations
+      Relation::ROLES.each { |r|
+        #users_for_creating = users_for_creating params[:user].keys.map{|p| p.to_i} - @project.collaborators.map(&:id)
+        params[r.to_sym].keys.each { |u|
+          if relation = @project.relations.find_by_object_id_and_object_type(u, 'User')
+            relation.update_attribute(:role, r)
+          else
+            relation = @project.relations.build(:object_id => u, :object_type => 'User', :role => r)
+            puts relation.inspect
+            puts r
+            relation.save!
+          end
+        } if params[r.to_sym]
+      }
+
+      puts users_for_removing.inspect
+
   #    if params[:group]
   #      groups_for_removing = @project.groups.select do |g|
   #        !params[:group].keys.map{|k| k.to_i}.include? g.id and @project.owner != g
@@ -65,37 +80,12 @@ class CollaboratorsController < ApplicationController
   #        @project.add_roles_to Group.find(group), @def_group_roles
   #      end
   #    end
-      if @project.save
-        flash[:notice] = t("flash.collaborators.successfully_changed")
-      else
-        flash[:error] = t("flash.collaborators.error_in_changing")
-      end
-      redirect_to project_path(@project)
+    if @project.save
+      flash[:notice] = t("flash.collaborators.successfully_changed")
     else
-      @user = User.find params[:id]
-      if params[:role]
-        roles_for_removing = @user.roles_to(@project).select do |r|
-          !params[:role].keys.map{|k| k.to_i}.include? r.id
-        end
-        roles_for_creating = params[:role].keys.map{|r| r.to_i} - @user.roles_to(@project).map(&:id)
-
-        puts roles_for_removing.inspect
-        puts roles_for_creating.inspect
-
-        roles_for_removing.each do |r|
-          Relation.by_object(@user).by_target(@project).each do |rel|
-            RoleLine.where(:role_id => r.id).where(:relation_id => rel.id).each {|rl| rl.destroy}
-          end
-        end
-        @project.add_roles_to @user, Role.find(roles_for_creating)
-      end
-#      if @user.save!
-        flash[:notice] = t("flash.collaborators.successfully_changed")
-#      else
-#        flash[:error] = t("flash.collaborators.error_in_changing")
-#      end
-      redirect_to edit_project_collaborators_path(@project)
+      flash[:error] = t("flash.collaborators.error_in_changing") + @project.errors.inspect
     end
+    redirect_to project_path(@project)
   end
 
   def destroy

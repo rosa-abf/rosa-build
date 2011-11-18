@@ -1,6 +1,8 @@
 class DownloadsController < ApplicationController
   before_filter :authenticate_user!
-  before_filter :check_global_access, :except => [:test_sudo]
+  #before_filter :check_global_access, :except => [:test_sudo]
+  
+  authorize_resource
 
   def index
     @downloads = Download.paginate :page => params[:page], :per_page => 30
