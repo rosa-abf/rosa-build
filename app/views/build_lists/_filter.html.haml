@@ -16,7 +16,7 @@
       - if @project_versions
         .group
           = f.label :project_version, t("activerecord.attributes.build_list.project_version"), :class => :label
-          = f.select :project_version, @project_versions.collect{|project_version| [project_version.name, project_version.name]}, :include_blank => true, :selected => @filter.project_version
+          = f.select :project_version, @project_versions, :include_blank => true, :selected => @filter.project_version
 
       .group
         = f.label :is_circle, t("activerecord.attributes.build_list.is_circle"), :class => :label
