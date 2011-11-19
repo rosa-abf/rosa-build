@@ -1,6 +1,5 @@
 class CollaboratorsController < ApplicationController
   before_filter :authenticate_user!
-#  before_filter :check_global_access
 
   before_filter :find_project
 
@@ -34,52 +33,36 @@ class CollaboratorsController < ApplicationController
   end
 
   def update
-      authorize! :manage_collaborators, @project
+    authorize! :manage_collaborators, @project
 
-      all_user_ids = []
-      Relation::ROLES.each { |r| 
-        all_user_ids = all_user_ids | params[r.to_sym].keys if params[r.to_sym]
-      }
+    all_user_ids = []
+    Relation::ROLES.each { |r| 
+      all_user_ids = all_user_ids | params[r.to_sym].keys if params[r.to_sym]
+    }
 
-      # Remove relations
-      users_for_removing = @project.collaborators.select do |u|
-        !all_user_ids.map{|k| k.to_i}.include? u.id and @project.owner != u
-      end
-      users_for_removing.each do |u|
-        Relation.by_object(u).by_target(@project).each {|r| r.destroy}
-      end
-      
-      # Create relations
-      Relation::ROLES.each { |r|
-        #users_for_creating = users_for_creating params[:user].keys.map{|p| p.to_i} - @project.collaborators.map(&:id)
-        params[r.to_sym].keys.each { |u|
-          if relation = @project.relations.find_by_object_id_and_object_type(u, 'User')
-            relation.update_attribute(:role, r)
-          else
-            relation = @project.relations.build(:object_id => u, :object_type => 'User', :role => r)
-            puts relation.inspect
-            puts r
-            relation.save!
-          end
-        } if params[r.to_sym]
-      }
+    # Remove relations
+    users_for_removing = @project.collaborators.select do |u|
+      !all_user_ids.map{|k| k.to_i}.include? u.id and @project.owner != u
+    end
+    users_for_removing.each do |u|
+      Relation.by_object(u).by_target(@project).each {|r| r.destroy}
+    end
+    
+    # Create relations
+    Relation::ROLES.each { |r|
+      #users_for_creating = users_for_creating params[:user].keys.map{|p| p.to_i} - @project.collaborators.map(&:id)
+      params[r.to_sym].keys.each { |u|
+        if relation = @project.relations.find_by_object_id_and_object_type(u, 'User')
+          relation.update_attribute(:role, r)
+        else
+          relation = @project.relations.build(:object_id => u, :object_type => 'User', :role => r)
+          puts relation.inspect
+          puts r
+          relation.save!
+        end
+      } if params[r.to_sym]
+    }
 
-      puts users_for_removing.inspect
-
-  #    if params[:group]
-  #      groups_for_removing = @project.groups.select do |g|
-  #        !params[:group].keys.map{|k| k.to_i}.include? g.id and @project.owner != g
-  #      end
-  #      groups_for_creating = params[:group].keys.map{|p| p.to_i} - @project.groups.map(&:id)
-  #
-  #      puts groups_for_removing.inspect
-  #      puts groups_for_creating.inspect
-  #
-  #      @project.groups.delete_if{|g| groups_for_removing.include? g}
-  #      groups_for_creating.each do |group|
-  #        @project.add_roles_to Group.find(group), @def_group_roles
-  #      end
-  #    end
     if @project.save
       flash[:notice] = t("flash.collaborators.successfully_changed")
     else

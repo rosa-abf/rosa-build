@@ -34,12 +34,10 @@ class PlatformsController < ApplicationController
   end
 
   def new
-    #@platforms = Platform.visible_to current_user
     @platform = Platform.new
   end
   
   def edit
-    #@platforms = Platform.visible_to current_user
   end
 
   def create
@@ -52,7 +50,6 @@ class PlatformsController < ApplicationController
       redirect_to @platform
     else
       flash[:error] = I18n.t("flash.platform.saved_error")
-      #@platforms = Platform.visible_to current_user
       render :action => :new
     end
   end

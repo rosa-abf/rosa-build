@@ -19,7 +19,6 @@ class Repository < ActiveRecord::Base
   after_create :make_owner_rel
   before_save :check_owner_rel
   #before_save :create_directory
-  #before_save :add_owner_rel
   #after_destroy :remove_directory
 
   before_create :xml_rpc_create, :unless => lambda {Thread.current[:skip]}

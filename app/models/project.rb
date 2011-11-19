@@ -28,7 +28,6 @@ class Project < ActiveRecord::Base
   scope :addable_to_repository, lambda { |repository_id| where("projects.id NOT IN (SELECT project_to_repositories.project_id FROM project_to_repositories WHERE (project_to_repositories.repository_id = #{ repository_id }))") }
   scope :automateable, where("projects.id NOT IN (SELECT auto_build_lists.project_id FROM auto_build_lists)")
 
- # before_save :add_owner_rel
   after_create :make_owner_rel
   before_save :check_owner_rel
 
@@ -139,15 +138,6 @@ class Project < ActiveRecord::Base
 
     def destroy_git_repo
       FileUtils.rm_rf git_repo_path
-    end
-
-    def add_owner_rel
-      if new_record? and owner
-        add_owner owner
-      elsif owner_id_changed?
-        remove_owner owner_type_was.classify.find(owner_id_was)
-        add_owner owner
-      end
     end
 
     def make_owner_rel

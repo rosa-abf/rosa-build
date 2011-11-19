@@ -2,7 +2,6 @@ class RpcController < ApplicationController
   exposes_xmlrpc_methods
 
   before_filter :authenticate_user!
-  #before_filter :check_global_access
   before_filter lambda { EventLog.current_controller = self }, :only => :xe_index # should be after auth callback
 
   ## Usage example:

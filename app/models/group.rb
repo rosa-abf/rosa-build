@@ -24,8 +24,6 @@ class Group < ActiveRecord::Base
 
   include PersonalRepository
 
-  before_create :add_default_role
-  #before_save :add_owner_rel
   after_create :make_owner_rel
   before_save :check_owner_rel
 
@@ -45,24 +43,16 @@ class Group < ActiveRecord::Base
 
   protected
 
-    def add_owner_rel
-      if new_record? and owner
-        add_owner owner
-      elsif owner_id_changed?
-        remove_owner owner_type_was.classify.find(owner_id_was)
-        add_owner owner
-      end
-    end
+  def make_owner_rel
+    r = relations.build :object_id => owner.id, :object_type => 'User', :role => 'admin'
+    r.save
+  end
 
-    def make_owner_rel
-      add_owner owner
+  def check_owner_rel
+    if !new_record? and owner_id_changed?
+      relations.by_object(owner).delete_all if owner_type_was
+      make_owner_rel if owner
     end
-
-    def check_owner_rel
-      if !new_record? and owner_id_changed?
-        remove_owner owner_type_was.classify.find(owner_id_was) if owner_type_was
-        add_owner owner if owner
-      end
-    end
+  end
 
 end
