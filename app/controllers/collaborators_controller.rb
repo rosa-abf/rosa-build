@@ -83,7 +83,7 @@ class CollaboratorsController < ApplicationController
     if @project.save
       flash[:notice] = t("flash.collaborators.successfully_changed")
     else
-      flash[:error] = t("flash.collaborators.error_in_changing") + @project.errors.inspect
+      flash[:error] = t("flash.collaborators.error_in_changing")
     end
     redirect_to project_path(@project)
   end

@@ -6,7 +6,7 @@ class BuildListsController < ApplicationController
 	before_filter :find_project_versions, :only => [:index, :filter]
 	before_filter :find_build_list_by_bs, :only => [:status_build, :pre_build, :post_build]
 
-	authorize_resorce
+	authorize_resource
 	skip_authorize_resource :only => :index
 
 	def all

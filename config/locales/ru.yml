@@ -310,6 +310,8 @@ ru:
         project_version_not_found: версия не найден
 
   flash:
+    exception_message: У Вас нет доступа к этой странице!
+
     downloads:
       statistics_refreshed: Статистика обновлена
     
