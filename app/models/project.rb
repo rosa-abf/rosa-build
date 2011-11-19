@@ -1,8 +1,6 @@
 class Project < ActiveRecord::Base
   VISIBILITIES = ['open', 'hidden']
 
-  relationable :as => :target
-
   belongs_to :category, :counter_cache => true
   belongs_to :owner, :polymorphic => true
 
@@ -153,13 +151,14 @@ class Project < ActiveRecord::Base
     end
 
     def make_owner_rel
-      add_owner owner
+      r = relations.build :object_id => owner.id, :object_type => 'User', :role => 'admin'
+      r.save
     end
 
     def check_owner_rel
       if !new_record? and owner_id_changed?
-        remove_owner owner_type_was.classify.find(owner_id_was) if owner_type_was
-        add_owner owner if owner
+        relations.by_object(owner).delete_all if owner_type_was
+        make_owner_rel if owner
       end
     end
 

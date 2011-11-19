@@ -37,4 +37,13 @@ $(document).ready(function() {
 	});
 
 	$('select#build_pl').trigger('change'); 
+
+	$('input.user_role_chbx').click(function() {
+		var current = $(this);
+		current.parent().find('input.user_role_chbx').each(function(i,el) {
+			if ($(el).attr('id') != current.attr('id')) {
+				$(el).removeAttr('checked');	
+			}
+		});
+	});
 });

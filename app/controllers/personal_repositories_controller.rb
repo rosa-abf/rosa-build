@@ -2,12 +2,12 @@ class PersonalRepositoriesController < ApplicationController
   before_filter :authenticate_user!
   before_filter :find_repository#, :only => [:show, :destroy, :add_project, :remove_project, :make_private, :settings]
   before_filter :check_repository
-  #before_filter :check_global_access
   
-  authorize_resource
+  #authorize_resource
 
   def show
-    #can_perform? @repository if @repository
+    authorize! :read, @repository
+
     if params[:query]
       @projects = @repository.projects.recent.by_name(params[:query]).paginate :page => params[:project_page], :per_page => 30
     else
@@ -18,18 +18,20 @@ class PersonalRepositoriesController < ApplicationController
   end
   
   def change_visibility
-    #can_perform? @repository if @repository
+    authorize! :change_visibility, @repository
+
     @repository.platform.change_visibility
     
     redirect_to settings_personal_repository_path(@repository)
   end
   
   def settings
-    #can_perform? @repository if @repository
+    authorize! :settings, @repository
   end
 
   def add_project
-    #can_perform? @repository if @repository
+    authorize! :add_project, @repository
+
     if params[:project_id]
       @project = Project.find(params[:project_id])
       # params[:project_id] = nil
@@ -47,7 +49,8 @@ class PersonalRepositoriesController < ApplicationController
   end
 
   def remove_project
-    #can_perform? @repository if @repository
+    authorize! :remove_project, @repository
+    
     @project = Project.find(params[:project_id])
     ProjectToRepository.where(:project_id => @project.id, :repository_id => @repository.id).destroy_all
     redirect_to personal_repository_path(@repository), :notice => t('flash.repository.project_removed')

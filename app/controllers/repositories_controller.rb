@@ -4,7 +4,8 @@ class RepositoriesController < ApplicationController
   before_filter :find_repository, :only => [:show, :destroy, :add_project, :remove_project]
   before_filter :get_paths, :only => [:show, :new, :create, :add_project, :remove_project]
   before_filter :find_platforms, :only => [:new, :create]
-  #before_filter :check_global_access, :only => [:index, :new, :create]
+
+  authorize_resource
 
   def index
     if params[:platform_id]
@@ -15,7 +16,6 @@ class RepositoriesController < ApplicationController
   end
 
   def show
-    #can_perform? @repository if @repository
     if params[:query]
       @projects = @repository.projects.recent.by_name(params[:query]).paginate :page => params[:project_page], :per_page => 30
     else
@@ -29,7 +29,6 @@ class RepositoriesController < ApplicationController
   end
 
   def destroy
-    #can_perform? @repository if @repository
     @repository.destroy
     platform_id = @repository.platform_id
 
@@ -50,7 +49,6 @@ class RepositoriesController < ApplicationController
   end
 
   def add_project
-    #can_perform? @repository if @repository
     if params[:project_id]
       @project = Project.find(params[:project_id])
       # params[:project_id] = nil
@@ -72,7 +70,6 @@ class RepositoriesController < ApplicationController
   end
 
   def remove_project
-    #can_perform? @repository if @repository
     @project = Project.find(params[:project_id])
     ProjectToRepository.where(:project_id => @project.id, :repository_id => @repository.id).destroy_all
     redirect_to repository_path(@repository), :notice => t('flash.repository.project_removed')

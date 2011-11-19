@@ -19,14 +19,10 @@
               %td
                 = user.id
               %td
-                = link_to user.name, edit_project_collaborator_path(@project, user)
+                = link_to user.name, user_path(user)
               %td
-                -# Relation::ROLES.each do |role|
-                  = radio_button_tag "user[#{ user.id }]", role, (@project.relations.exists? :object_id => user.id, :object_type => 'User', :role => role) ? :checked : nil
-                  = label_tag "user[#{ user.id }]", t("layout.collaborators.roles.#{ role }")
-
                 - Relation::ROLES.each do |role|
-                  = check_box_tag "#{ role }[#{user.id}]", '1', (@project.relations.exists? :object_id => user.id, :object_type => 'User', :role => role) ? :checked : nil
+                  = check_box_tag "#{ role }[#{user.id}]", '1', ((@project.relations.exists? :object_id => user.id, :object_type => 'User', :role => role) ? :checked : nil), {:class => "user_role_chbx"}
                   = label_tag "#{ role }[#{user.id}]", t("layout.collaborators.roles.#{ role }")
               %td
                 = user.uname

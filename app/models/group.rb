@@ -1,12 +1,10 @@
 class Group < ActiveRecord::Base
-  relationable :as => :object
-  relationable :as => :target
-
   belongs_to :global_role, :class_name => 'Role'
   belongs_to :owner, :class_name => 'User'
 
   has_many :own_projects, :as => :owner, :class_name => 'Project'
 
+  has_many :relations, :as => :object, :dependent => :destroy
   has_many :objects, :as => :target, :class_name => 'Relation'
   has_many :targets, :as => :object, :class_name => 'Relation'
   has_many :roles, :through => :targets

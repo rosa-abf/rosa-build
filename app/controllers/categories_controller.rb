@@ -3,7 +3,7 @@ class CategoriesController < ApplicationController
   before_filter :find_category, :only => [:show, :edit, :update, :destroy]
   before_filter :find_platform, :only => [:show, :index]
 
-  #before_filter :check_global_access, :only => [:platforms, :new, :create]
+  authorize_resource
 
   def platforms
     @all_platforms = Platform.all
@@ -16,7 +16,6 @@ class CategoriesController < ApplicationController
 
   def index
     if @platform
-      #can_perform? @platform
       @categories = Category.select('categories.id, categories.name, categories.ancestry, count(projects.id) projects_count').
                              joins(:projects => :repositories).where('repositories.platform_id = ?', @platform.id).
                              having('projects_count > 0').group('categories.id, categories.name, categories.ancestry, projects_count').default_order
@@ -27,9 +26,6 @@ class CategoriesController < ApplicationController
   end
 
   def show
-    #can_perform? @platform if @platform
-    #can_perform? @category if @category
-
     @projects = @category.projects
     @projects = @projects.joins(:repositories).where("repositories.platform_id = ?", @platform.id) if @platform
     @projects = @projects.paginate :page => params[:page]
@@ -40,11 +36,9 @@ class CategoriesController < ApplicationController
   end
 
   def edit
-    #can_perform? @category if @category
   end
 
   def destroy
-    #can_perform? @category if @category
     @category.destroy
     flash[:notice] = t("flash.category.destroyed")
     redirect_to categories_path
@@ -62,7 +56,6 @@ class CategoriesController < ApplicationController
   end
 
   def update
-    #can_perform? @category if @category
     if @category.update_attributes(params[:category])
       flash[:notice] = t('flash.category.saved')
       redirect_to categories_path

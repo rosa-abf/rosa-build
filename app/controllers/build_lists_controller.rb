@@ -5,7 +5,9 @@ class BuildListsController < ApplicationController
 	before_filter :find_arches, :only => [:index, :filter, :all]
 	before_filter :find_project_versions, :only => [:index, :filter]
 	before_filter :find_build_list_by_bs, :only => [:status_build, :pre_build, :post_build]
-  #before_filter :check_global_access, :except => [:status_build, :post_build, :pre_build, :circle_build, :new_bbdt, :show, :publish, :cancel]
+
+	authorize_resorce
+	skip_authorize_resource :only => :index
 
 	def all
     if params[:filter]
@@ -23,16 +25,17 @@ class BuildListsController < ApplicationController
 	end
 	
 	def cancel
-	 build_list = BuildList.find(params[:id])
-   #can_perform? build_list.project if build_list
-   if build_list.delete_build_list
-     redirect_to :back, :notice => t('layout.build_lists.cancel_successed')
-   else
-     redirect_to :back, :notice => t('layout.build_lists.cancel_failed')
-   end
+		build_list = BuildList.find(params[:id])
+		if build_list.delete_build_list
+			redirect_to :back, :notice => t('layout.build_lists.cancel_successed')
+		else
+			redirect_to :back, :notice => t('layout.build_lists.cancel_failed')
+		end
 	end
 
 	def index
+		authorize! :build, @project
+
 		@build_lists = @project.build_lists.recent.paginate :page => params[:page]
 		@filter = BuildList::Filter.new(@project)
 		@action_url = project_build_lists_path(@project)
@@ -47,13 +50,11 @@ class BuildListsController < ApplicationController
 	end
 
 	def show
-    #can_perform? @project
 		@build_list = @project.build_lists.find(params[:id])
 		@item_groups = @build_list.items.group_by_level
 	end
 	
 	def publish
-    #can_perform? @project if @project
 		@build_list = @project.build_lists.find(params[:id])
 		@build_list.publish
 		

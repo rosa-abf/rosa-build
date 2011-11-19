@@ -1,6 +1,10 @@
 class AutoBuildListsController < ApplicationController
   before_filter :authenticate_user!, :except => :auto_build
-  #before_filter :check_global_access
+  before_filter :find_project, :only => :create
+  before_filter :find_auto_build_list, :only => :destroy
+
+  authorize_resource
+  skip_authorize_resource :only => :create
   
   def index
     projects = Project.where(:owner_id => current_user.id, :owner_type => 'User').order('name ASC')
@@ -20,6 +24,7 @@ class AutoBuildListsController < ApplicationController
   #end
   
   def create
+    authorize :build, @project
     #@auto_build_list = AutoBuildList.new(params[:auto_build_list])
     
     @auto_build_list = AutoBuildList.new(
@@ -38,11 +43,22 @@ class AutoBuildListsController < ApplicationController
   end
 
   def destroy
-    if AutoBuildList.find(params[:id]).destroy
+    if @auto_build_list.destroy
       flash[:notice] = t('flash.auto_build_list.cancel')
     else
       flash[:notice] = t('flash.auto_build_list.cancel_failed')
     end
     redirect_to auto_build_lists_path
   end
+
+protected
+
+  def find_project
+    @project = Project.find(params[:project_id])
+  end
+
+  def find_auto_build_list
+    @auto_build_list = AutoBuildList.find(params[:id])
+  end
+
 end

@@ -1,7 +1,4 @@
 class User < ActiveRecord::Base
-  relationable :as => :object
-  inherit_rights_from :groups
-  
   ROLES = %w[admin]
 
   devise :database_authenticatable, :registerable, :omniauthable, # :token_authenticatable, :encryptable, :timeoutable
@@ -12,6 +9,7 @@ class User < ActiveRecord::Base
   belongs_to :global_role, :class_name => 'Role'
   has_many :roles, :through => :targets
 
+  has_many :relations, :as => :object, :dependent => :destroy
   has_many :targets, :as => :object, :class_name => 'Relation'
 
   has_many :own_projects, :as => :owner, :class_name => 'Project', :dependent => :destroy

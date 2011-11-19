@@ -2,7 +2,8 @@ class ProductsController < ApplicationController
   before_filter :authenticate_user!
   before_filter :find_product, :only => [:show, :edit, :update, :destroy]
   before_filter :find_platform
-  #before_filter :check_global_access, :only => [:new, :create]
+
+  authorize_resource
 
   def new
     @product = @platform.products.new
@@ -13,7 +14,6 @@ class ProductsController < ApplicationController
   end
 
   # def clone
-  #   #can_perform? @platform if @platform
   #   @template = @platform.products.find(params[:id])
   #   @product = @platform.products.new
   #   @product.clone_from!(@template)
@@ -22,12 +22,9 @@ class ProductsController < ApplicationController
   # end
 
   def edit
-    #can_perform? @product if @product
-    #can_perform? @platform if @platform
   end
 
   def create
-    #can_perform? @platform if @platform
     @product = @platform.products.new params[:product]
     if @product.save
       flash[:notice] = t('flash.product.saved') 
@@ -39,8 +36,6 @@ class ProductsController < ApplicationController
   end
 
   def update
-    #can_perform? @platform if @platform
-    #can_perform? @product if @product
     if @product.update_attributes(params[:product])
       flash[:notice] = t('flash.product.saved')
       redirect_to @platform
@@ -51,13 +46,9 @@ class ProductsController < ApplicationController
   end
 
   def show
-    #can_perform? @platform if @platform
-    #can_perform? @product if @product
   end
 
   def destroy
-    #can_perform? @platform if @platform
-    #can_perform? @product if @product
     @product.destroy
     flash[:notice] = t("flash.product.destroyed")
     redirect_to @platform

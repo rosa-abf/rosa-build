@@ -25,13 +25,13 @@
             %td
               = user.global_role.name
             %td.last
-              - if current_user.can_perform? 'users', 'show'
+              - if can? :read, user
                 = link_to t("layout.show"), user_path(user)
                 \|
-              - if current_user.can_perform? 'users', 'edit'
+              - if can? :edit, user
                 #{link_to t("layout.edit"), edit_user_path(user)}
                 \|
-              - if current_user.can_perform? 'users', 'destroy'
+              - if can? :destroy, user
                 #{link_to t("layout.delete"), user_path(user), :method => :delete, :confirm => t("layout.users.confirm_delete")}
       .actions-bar.wat-cf
         .actions= will_paginate @users, :param_name => :user_page
