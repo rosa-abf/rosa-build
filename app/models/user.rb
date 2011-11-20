@@ -33,7 +33,6 @@ class User < ActiveRecord::Base
   attr_readonly :uname
   attr_accessor :login
 
-  before_create :add_default_role
   # after_create() { UserMailer.new_user_notification(self).deliver }
 
   def admin?

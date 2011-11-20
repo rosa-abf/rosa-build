@@ -19,28 +19,27 @@ namespace :roles do
     end
   end
 
-  task :apply => :environment do
-    models = ActiveRecord::Base.relation_acters
-    models = models.inject([]) do |arr, m|
-      arr << m.all.select {|rec| rec.global_role_id.nil? || rec.global_role_id == 0}
-      arr
-    end
-    models.flatten!
-    begin
-      models.each do |m|
-        m.method(:add_default_role).call
-        m.save
-      end
-    rescue
-      puts 'Fail to apply default roles'
-      return
-    end
-    puts 'Default roles successfully applied.'
-  end
+  # task :apply => :environment do
+  #   models = ActiveRecord::Base.relation_acters
+  #   models = models.inject([]) do |arr, m|
+  #     arr << m.all.select {|rec| rec.global_role_id.nil? || rec.global_role_id == 0}
+  #     arr
+  #   end
+  #   models.flatten!
+  #   begin
+  #     models.each do |m|
+  #       m.method(:add_default_role).call
+  #       m.save
+  #     end
+  #   rescue
+  #     puts 'Fail to apply default roles'
+  #     return
+  #   end
+  #   puts 'Default roles successfully applied.'
+  # end
 end
 
 namespace :rights do
-
   desc "Generate rights from site"
   task :generate => :environment do
     Dir.glob('app/controllers/*.rb') do |file|

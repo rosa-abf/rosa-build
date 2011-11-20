@@ -5,6 +5,8 @@ module Grack
       @project = nil
     end
 
+    protected
+
     def git?
       @env['HTTP_USER_AGENT'] =~ /^git\//
     end
@@ -18,7 +20,7 @@ module Grack
     end
 
     def action
-      write? ? 'update' : 'read'
+      write? ? :update : :read
     end
 
     def project
@@ -28,6 +30,16 @@ module Grack
         owner = User.find_by_uname(uname) || Group.find_by_uname(uname)
         Project.where(:owner_id => owner.id, :owner_type => owner.class).find_by_unixname(unixname)
       end
+    end
+
+    PLAIN_TYPE = {"Content-Type" => "text/plain"}
+
+    def render_not_found
+      [404, PLAIN_TYPE, ["Not Found"]]
+    end
+
+    def render_no_access
+      [403, PLAIN_TYPE, ["Forbidden"]]
     end
   end
 end

@@ -141,25 +141,28 @@ class Platform < ActiveRecord::Base
   #  return true if File.exists?(symlink_downloads_path) && File.directory?(symlink_downloads_path)
   #  FileUtils.symlink path, symlink_downloads_path
   #end
-  
+
   def mount_directory_for_rsync
     #system("touch #{ Rails.root.join('tmp') }/mount_rsync")
-    FileUtils.rm_f "#{ Rails.root.join('tmp', 'umount', self.unixname) }" if File.exist? "#{ Rails.root.join('tmp', 'umount', self.unixname) }"
-    FileUtils.mkdir "#{ Rails.root.join('tmp', 'mount') }" unless File.exist? "#{ Rails.root.join('tmp', 'mount') }"
-    system("touch #{ Rails.root.join('tmp', 'mount', self.unixname) }")
+    FileUtils.rm_rf "#{ Rails.root.join('tmp', 'umount', self.unixname) }" if File.exist? "#{ Rails.root.join('tmp', 'umount', unixname) }"
+    FileUtils.mkdir_p "#{ Rails.root.join('tmp', 'mount', unixname) }"
+    Arch.all.each do |arch|
+      url = "http://#{EventLog.current_controller.request.host_with_port}/downloads/#{unixname}/repository/" # TODO REDO ?
+      str = "country=Russian Federation,city=Moscow,latitude=52.18,longitude=48.88,bw=1GB,version=2011,arch=#{arch.name},type=distrib,url=#{url}\n"
+      File.open(Rails.root.join('tmp', 'mount', unixname, "#{unixname}.#{arch.name}.list"), 'w') {|f| f.write(str) }
+    end
   end
-  
+
   #def remove_downloads_symlink
   #  #raise "Personal platform path #{ symlink_downloads_path } does not exists!" if !(File.exists?(symlink_downloads_path) && File.directory?(symlink_downloads_path))
   #  return true if !(File.exists?(symlink_downloads_path) && File.directory?(symlink_downloads_path))
   #  FileUtils.rm_rf symlink_downloads_path 
   #end
-  
+
   def umount_directory_for_rsync
     #system("touch #{ Rails.root.join('tmp') }/unmount_rsync")
-    FileUtils.rm_f "#{ Rails.root.join('tmp', 'mount', self.unixname) }" if File.exist? "#{ Rails.root.join('tmp', 'mount', self.unixname) }"
-    FileUtils.mkdir "#{ Rails.root.join('tmp', 'umount') }" unless File.exist? "#{ Rails.root.join('tmp', 'umount') }"
-    system("touch #{ Rails.root.join('tmp', 'umount', self.unixname) }") 
+    FileUtils.rm_rf "#{ Rails.root.join('tmp', 'mount', unixname) }" if File.exist? "#{ Rails.root.join('tmp', 'mount', unixname) }"
+    FileUtils.mkdir_p "#{ Rails.root.join('tmp', 'umount', unixname) }"
   end
 
   protected
