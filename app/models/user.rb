@@ -1,5 +1,5 @@
 class User < ActiveRecord::Base
-  ROLES = %w[admin]
+  ROLES = ['admin', '']
 
   devise :database_authenticatable, :registerable, :omniauthable, # :token_authenticatable, :encryptable, :timeoutable
          :recoverable, :rememberable, :validatable #, :trackable, :confirmable, :lockable
@@ -77,4 +77,11 @@ class User < ActiveRecord::Base
     clean_up_passwords
     result
   end
+
+  private
+
+  def add_default_role
+    role = ''
+  end
+
 end
