@@ -35,6 +35,7 @@ class UsersController < ApplicationController
   end
 
   def update
+    @user.role = params[:user][:role] if current_user.admin?
     if @user.update_attributes(params[:user])
       flash[:notice] = t('flash.user.saved')
       redirect_to users_path
