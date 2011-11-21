@@ -2,4 +2,4 @@
   %h3= t("layout.groups.members")
   .content
     - @group.members.each do |member|
-      %p= link_to member.name, member # @group.roles_to(member).map(&:name).join(', ')
+      %p= link_to member.name, member

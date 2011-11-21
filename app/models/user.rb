@@ -6,7 +6,6 @@ class User < ActiveRecord::Base
 
   has_many :authentications, :dependent => :destroy
 
-  belongs_to :global_role, :class_name => 'Role'
   has_many :roles, :through => :targets
 
   has_many :relations, :as => :object, :dependent => :destroy
@@ -75,12 +74,6 @@ class User < ActiveRecord::Base
     result = update_attributes(params)
     clean_up_passwords
     result
-  end
-
-  private
-
-  def add_default_role
-    role = ''
   end
 
 end

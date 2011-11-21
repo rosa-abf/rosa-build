@@ -109,20 +109,6 @@ class Platform < ActiveRecord::Base
   def name
     released? ? "#{self[:name]} #{I18n.t("layout.platforms.released_suffix")}" : self[:name]
   end
-
-  def roles_of(user)
-    objects.where(:object_id => user.id, :object_type => user.class).map {|rel| rel.role}.reject {|r| r.nil?}
-  end
-
-  def add_role(user, role)
-    roles = objects.where(:object_id => user.id, :object_type => user.class).map {|rel| rel.role}.reject {|r| r.nil?}
-    unless roles.include? role
-      rel = Relation.create(:object_type => user.class.to_s, :object_id => user.id,
-                            :target_type => self.class.to_s, :target_id => id)
-      rel.role = role
-      rel.save
-    end
-  end
   
   def change_visibility
     if !self.hidden?

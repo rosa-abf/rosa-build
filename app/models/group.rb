@@ -1,5 +1,4 @@
 class Group < ActiveRecord::Base
-  belongs_to :global_role, :class_name => 'Role'
   belongs_to :owner, :class_name => 'User'
 
   has_many :own_projects, :as => :owner, :class_name => 'Project'
@@ -26,20 +25,6 @@ class Group < ActiveRecord::Base
 
   after_create :make_owner_rel
   before_save :check_owner_rel
-
-  def roles_of(user)
-    objects.where(:object_id => user.id, :object_type => user.class).map {|rel| rel.role}.reject {|r| r.nil?}
-  end
-
-  def add_role(user, role)
-    roles = objects.where(:object_id => user.id, :object_type => user.class).map {|rel| rel.role}.reject {|r| r.nil?}
-    unless roles.include? role
-      rel = Relation.create(:object_type => user.class.to_s, :object_id => user.id,
-                            :target_type => self.class.to_s, :target_id => id)
-      rel.role = role
-      rel.save
-    end
-  end
 
   protected
 

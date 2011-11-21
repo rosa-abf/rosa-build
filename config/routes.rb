@@ -7,14 +7,6 @@ Rosa::Application.routes.draw do
   end
   
   resources :users
-  
-  resources :roles do
-    collection do
-      get 'get_dump'
-      post 'get_dump'
-      post 'load_from_dump'
-    end
-  end
 
   resources :event_logs, :only => :index
 

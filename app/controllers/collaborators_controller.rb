@@ -3,8 +3,6 @@ class CollaboratorsController < ApplicationController
 
   before_filter :find_project
 
-  before_filter :find_roles
-  before_filter :find_default_roles, :only => [:create, :update, :edit]
   before_filter :find_users
   before_filter :find_groups
 
@@ -78,16 +76,6 @@ class CollaboratorsController < ApplicationController
 
     def find_project
       @project = Project.find params[:project_id]
-    end
-
-    def find_roles
-      @user_roles = Role.by_acter(User).by_target(Project) + Role.by_acter(:all).by_target(Project)
-      @group_roles = Role.by_acter(Group).by_target(Project) + Role.by_acter(:all).by_target(Project)
-    end
-
-    def find_default_roles
-      @def_user_roles = Role.by_acter(User).by_target(Project).default + Role.by_acter(:all).by_target(Project).default
-      @def_group_roles = Role.by_acter(Group).by_target(Project).default + Role.by_acter(:all).by_target(Project).default
     end
 
     def find_users

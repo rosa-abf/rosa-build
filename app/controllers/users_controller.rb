@@ -18,18 +18,13 @@ class UsersController < ApplicationController
 
   def new
     @user = User.new
-    @global_roles = Role.by_acter(User).by_target(:system) + Role.by_acter(:all).by_target(:system)
-    @global_roles.map! {|role| [role.name, role.id]}
   end
 
   def edit
-    @global_roles = Role.by_acter(User).by_target(:system) + Role.by_acter(:all).by_target(:system)
-    @global_roles.map! {|role| [role.name, role.id]}
   end
 
   def create
     @user = User.new params[:user]
-    @user.global_role_id = params[:user]['global_role_id']
     if @user.save
       flash[:notice] = t('flash.user.saved')
       redirect_to users_path
@@ -40,7 +35,6 @@ class UsersController < ApplicationController
   end
 
   def update
-    @user.global_role_id = params[:user]['global_role_id']
     if @user.update_attributes(params[:user])
       flash[:notice] = t('flash.user.saved')
       redirect_to users_path

@@ -37,9 +37,6 @@
             -if can? :index, Category
               %li{:class => controller.controller_path == 'categories' ? 'active' : '' }
                 %a{:href => catalogs_path}= t("layout.menu.categories")
-            -if can? :index, Role
-              %li{:class => controller.controller_path == 'roles' ? 'active' : '' }
-                %a{:href => roles_path}= t("layout.menu.roles")
             -if can? :read, current_user.personal_repository
               %li{:class => controller.controller_path == 'personal_repositories' ? 'active' : '' }
                 %a{:href => personal_repository_path( current_user.personal_repository.id )}= t("layout.menu.personal_repository")
