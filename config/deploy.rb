@@ -68,6 +68,6 @@ namespace :deploy do
   after "deploy:update_code", :roles => :web do
     symlink_config_files
     symlink_downloads_dir
-    generate_roles
+    # generate_roles
   end
 end
