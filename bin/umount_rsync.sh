@@ -1,3 +1,5 @@
+#!/bin/bash
+
 for f in `ls /srv/rosa_build/current/tmp/umount`
 do
   umount "/srv/rosa_build/shared/downloads/$f"

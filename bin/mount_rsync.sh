@@ -1,3 +1,5 @@
+#!/bin/bash
+
 for f in `ls /srv/rosa_build/current/tmp/mount`
 do
   mkdir -p "/srv/rosa_build/shared/downloads/$f"
