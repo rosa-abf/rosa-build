@@ -27,7 +27,7 @@ class User < ActiveRecord::Base
   validates :uname, :presence => true, :uniqueness => {:case_sensitive => false}, :format => { :with => /^[a-z0-9_]+$/ }, :allow_nil => false, :allow_blank => false
   validate { errors.add(:uname, :taken) if Group.where('uname LIKE ?', uname).present? }
   validates :ssh_key, :uniqueness => true, :allow_blank => true
-  validates :role, :inclusion => {:in => ROLES}
+  validates :role, :inclusion => {:in => ROLES}, :allow_blank => true
 
   attr_accessible :email, :password, :password_confirmation, :remember_me, :login, :name, :ssh_key, :uname
   attr_readonly :uname
