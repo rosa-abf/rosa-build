@@ -27,8 +27,10 @@
           \:
         = @user.created_at
       .wat-cf
-        = link_to image_tag("web-app-theme/icons/application_edit.png", :alt => t("layout.edit")) + " " + t("layout.edit"), edit_user_path(@user), :class => "button"
-        = link_to image_tag("web-app-theme/icons/cross.png", :alt => t("layout.delete")) + " " + t("layout.delete"), user_path(@user), :method => "delete", :class => "button", :confirm => t("layout.users.confirm_delete")
+        - if can? :edit, @user
+          = link_to image_tag("web-app-theme/icons/application_edit.png", :alt => t("layout.edit")) + " " + t("layout.edit"), edit_user_path(@user), :class => "button"
+        - if can? :destroy, @user
+          = link_to image_tag("web-app-theme/icons/cross.png", :alt => t("layout.delete")) + " " + t("layout.delete"), user_path(@user), :method => "delete", :class => "button", :confirm => t("layout.users.confirm_delete")
 
 .block
   .secondary-navigation

@@ -27,8 +27,7 @@ class Ability
         can :index, AutoBuildList
         # If rules goes one by one CanCan joins them by 'OR' sql operator
         can :read, Project, :visibility => 'open'
-        # User can read and edit his profile:
-        can :manage, User, :id => user.id
+        can :read, User
         can :manage_collaborators, Project do |project|
           project.relations.exists? :object_id => user.id, :object_type => 'User', :role => 'admin'
         end

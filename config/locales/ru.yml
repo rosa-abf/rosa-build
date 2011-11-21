@@ -536,7 +536,7 @@ ru:
         uname: Никнейм
         ssh_key: SSH ключ
         current_password: Текущий пароль
-        roles: Роли
+        role: Роль
         created_at: Создан
         updated_at: Обновлен
         global_role: Роль в системе
