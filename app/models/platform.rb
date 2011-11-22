@@ -133,7 +133,8 @@ class Platform < ActiveRecord::Base
     FileUtils.rm_rf "#{ Rails.root.join('tmp', 'umount', self.unixname) }" if File.exist? "#{ Rails.root.join('tmp', 'umount', unixname) }"
     FileUtils.mkdir_p "#{ Rails.root.join('tmp', 'mount', unixname) }"
     Arch.all.each do |arch|
-      url = "http://#{EventLog.current_controller.request.host_with_port}/downloads/#{unixname}/repository/" # TODO REDO ?
+      host = EventLog.current_controller.request.host_with_port rescue ::Rosa::Application.config.action_mailer.default_url_options[:host]
+      url = "http://#{host}/downloads/#{unixname}/repository/"
       str = "country=Russian Federation,city=Moscow,latitude=52.18,longitude=48.88,bw=1GB,version=2011,arch=#{arch.name},type=distrib,url=#{url}\n"
       File.open(Rails.root.join('tmp', 'mount', unixname, "#{unixname}.#{arch.name}.list"), 'w') {|f| f.write(str) }
     end
