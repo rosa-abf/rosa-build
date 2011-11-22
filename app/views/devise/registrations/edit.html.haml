@@ -30,6 +30,15 @@
         .right
           = f.text_area :ssh_key, :class => "text_area"
 
+      .group.wat-cf
+        .left
+          = f.label :role, t("activerecord.attributes.user.role"), :class => :label
+        .right
+          - if current_user.admin?
+            = f.select :role, User::ROLES.push(""), :selected => resource.role
+          - else
+            = resource.role
+
       / .group.wat-cf
       /   .left
       /     = f.label :current_password, :class => "label"

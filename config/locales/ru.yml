@@ -539,7 +539,7 @@ ru:
         role: Роль
         created_at: Создан
         updated_at: Обновлен
-        global_role: Роль в системе
+        role: Роль в системе
 
       product_build_list:
         id: Id

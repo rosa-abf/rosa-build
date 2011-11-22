@@ -2,7 +2,7 @@
   .secondary-navigation
     %ul.wat-cf
       %li.first.active= link_to t("layout.platforms.list"), platforms_path
-      %li= link_to t("layout.platforms.new"), new_platform_path
+      %li= link_to t("layout.platforms.new"), new_platform_path if can? :create, Platform
   .content
     %h2.title
       = t("layout.platforms.list_header")

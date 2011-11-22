@@ -2,7 +2,7 @@
   .secondary-navigation
     %ul.wat-cf
       %li.first= link_to t("layout.platforms.list"), platforms_path
-      %li= link_to t("layout.platforms.new"), new_platform_path
+      %li= link_to t("layout.platforms.new"), new_platform_path if can? :create, Platform
       %li.active= link_to t("layout.platforms.show"), platform_path
       %li= link_to t("layout.platforms.private_users"), platform_private_users_path(@platform)
   .content
@@ -69,7 +69,7 @@
   .secondary-navigation
     %ul.wat-cf
       %li.first.active= link_to t("layout.repositories.list"), platform_path(@platform) + "#repositories"
-      %li= link_to t("layout.repositories.new"), new_platform_repository_path(@platform)
+      %li= link_to t("layout.repositories.new"), new_platform_repository_path(@platform) if can? :create, Repository
   .content
     %h2.title
       = t("layout.repositories.list_header")
@@ -94,7 +94,7 @@
   .secondary-navigation
     %ul.wat-cf
       %li.first.active= link_to t("layout.products.list"), platform_path(@platform) + "#products"
-      %li= link_to t("layout.products.new"), new_platform_product_path(@platform)
+      %li= link_to t("layout.products.new"), new_platform_product_path(@platform) if can? :create, Product
   .content
     %h2.title
       = t("layout.products.list_header")
@@ -108,9 +108,9 @@
             %td
               = link_to product.name, [@platform, product]
             %td.last
-              = link_to t("layout.edit"), edit_platform_product_path(@platform, product)
+              = link_to t("layout.edit"), edit_platform_product_path(@platform, product) if can? :update, product
               | 
-              = link_to t("layout.delete"), platform_product_path(@platform, product), :method => :delete, :confirm => t("layout.products.confirm_delete") if can? :destroy, @platform
+              = link_to t("layout.delete"), platform_product_path(@platform, product), :method => :delete, :confirm => t("layout.products.confirm_delete") if can? :destroy, product
               = (product.can_clone? ? "| #{link_to t("layout.products.clone"), clone_platform_product_path(@platform, product)}" : "").html_safe
       .actions-bar.wat-cf
         .actions

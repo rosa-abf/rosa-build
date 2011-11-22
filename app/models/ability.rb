@@ -92,6 +92,9 @@ class Ability
         can :read, Repository, repositories_in_relations_with(:role => 'read', :object_type => 'Group', :object_id => user.group_ids) do |repository|
           repository.relations.exists?(:role => 'read', :object_type => 'Group', :object_id => user.group_ids)
         end
+
+        # Things that can not do simple user
+        cannot :create, [Platform, User, Repository]
       end
     end
     
