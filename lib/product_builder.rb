@@ -1,4 +1,5 @@
 require 'xmlrpc/client'
+
 class ProductBuilder
 
   SUCCESS = 0

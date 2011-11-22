@@ -14,7 +14,7 @@ class Ability
       can :forbidden, Platform
 
       #cannot :read, Platform, :visibility => 'hidden'
-      can :read, [Project, Platform], :visibility => 'open'
+      can :read, [Repository, Platform], :visibility => 'open'
       can :auto_build, Project # TODO: This needs to be checked!
       can [:status_build, :pre_build, :post_build, :circle_build, :new_bbdt], BuildList
 

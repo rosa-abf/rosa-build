@@ -6,6 +6,14 @@ Factory.sequence :string do |n|
   "Lorem ipsum #{n}"
 end
 
+Factory.sequence :uname do |n|
+  "test#{n}"
+end
+
+Factory.sequence :unixname do |n|
+  "test_unixname#{n}"
+end
+
 Factory.sequence :email do |n|
   "email#{n}@example.com"
 end

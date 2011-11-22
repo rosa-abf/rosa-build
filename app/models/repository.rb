@@ -11,7 +11,7 @@ class Repository < ActiveRecord::Base
   has_many :groups,  :through => :objects, :source => :object, :source_type => 'Group'
 
   validates :name, :uniqueness => {:scope => :platform_id}, :presence => true
-  validates :unixname, :uniqueness => {:scope => :platform_id}, :presence => true, :format => { :with => /^[a-z0-9\-.]+$/ }
+  validates :unixname, :uniqueness => {:scope => :platform_id}, :presence => true, :format => { :with => /^[a-z0-9_]+$/ }
   # validates :platform_id, :presence => true # if you uncomment this platform clone will not work
 
   scope :recent, order("name ASC")

@@ -34,3 +34,18 @@ Rosa::Application.configure do
   # Print deprecation notices to the stderr
   config.active_support.deprecation = :stderr
 end
+
+# Uncomment this to stub XML RPC calls
+require 'xmlrpc/client'
+module XMLRPC
+  class Client
+    def call(*args)
+      # raise args.inspect
+      case
+      when args.first == 'get_status'
+        {:client_count => '1', :count_new_task => '2', :count_build_task => 3}
+      else; 0
+      end
+    end
+  end
+end

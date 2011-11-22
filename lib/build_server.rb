@@ -1,4 +1,5 @@
 require 'xmlrpc/client'
+
 class BuildServer
 
   SUCCESS = 0
