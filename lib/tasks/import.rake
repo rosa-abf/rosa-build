@@ -1,3 +1,5 @@
+require 'open-uri'
+
 namespace :import do
   desc "Load projects"
   task :projects => :environment do
