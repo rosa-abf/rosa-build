@@ -46,12 +46,6 @@ task :symlink_downloads_dir do
   run "ln -nfs #{shared_path}/downloads/ #{release_path}/public/downloads"
 end
 
-task :generate_roles do
-  run "cd #{deploy_to}/current ; RAILS_ENV=production bundle exec rake rights:generate"
-  #run "cd #{deploy_to}/current ; RAILS_ENV=production bundle exec rake roles:load"
-  run "cd #{deploy_to}/current ; RAILS_ENV=production bundle exec rake roles:apply"
-end
-
 namespace :deploy do
   task :restart, :roles => :app, :except => { :no_release => true } do
     run "touch #{current_release}/tmp/restart.txt"
@@ -68,6 +62,5 @@ namespace :deploy do
   after "deploy:update_code", :roles => :web do
     symlink_config_files
     symlink_downloads_dir
-    # generate_roles
   end
 end
