@@ -13,7 +13,6 @@ class Ability
       # Shared rights between guests and registered users
       can :forbidden, Platform
 
-      #cannot :read, Platform, :visibility => 'hidden'
       can :read, [Repository, Platform], :visibility => 'open'
       can :auto_build, Project # TODO: This needs to be checked!
       can [:status_build, :pre_build, :post_build, :circle_build, :new_bbdt], BuildList
@@ -93,6 +92,8 @@ class Ability
           repository.relations.exists?(:role => 'read', :object_type => 'Group', :object_id => user.group_ids)
         end
 
+        can(:fork, Project) {|p| can? :read, p}
+
         # Things that can not do simple user
         cannot :create, [Platform, User, Repository]
       end
@@ -101,6 +102,7 @@ class Ability
     # Shared cannot rights for all users (guests, registered, admin)
     cannot :destroy, Platform, :platform_type => 'personal'
     cannot :destroy, Repository, :platform => {:platform_type => 'personal'}
+    cannot :fork, Project, :owner_id => user.id, :owner_type => user.class.to_s
   end
 
   # Sub query for platforms, projects relations

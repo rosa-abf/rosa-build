@@ -89,6 +89,7 @@ Rosa::Application.routes.draw do
     member do
       get :build
       post :process_build
+      post :fork
     end
     collection do
       get :auto_build

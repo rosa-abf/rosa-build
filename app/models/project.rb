@@ -14,8 +14,8 @@ class Project < ActiveRecord::Base
   has_many :collaborators, :through => :relations, :source => :object, :source_type => 'User'
   has_many :groups,        :through => :relations, :source => :object, :source_type => 'Group'
 
-  validates :name,     :uniqueness => {:scope => [:owner_id, :owner_type]}, :presence => true, :allow_nil => false, :allow_blank => false
-  validates :unixname, :uniqueness => {:scope => [:owner_id, :owner_type]}, :presence => true, :format => { :with => /^[a-z0-9_\-\+\.]+$/ }, :allow_nil => false, :allow_blank => false
+  validates :name,     :uniqueness => {:scope => [:owner_id, :owner_type]}, :presence => true
+  validates :unixname, :uniqueness => {:scope => [:owner_id, :owner_type]}, :presence => true, :format => { :with => /^[a-z0-9_\-\+\.]+$/ }
   validates :owner, :presence => true
   # validate {errors.add(:base, I18n.t('flash.project.save_warning_ssh_key')) if owner.ssh_key.blank?}
 
@@ -29,12 +29,12 @@ class Project < ActiveRecord::Base
   scope :automateable, where("projects.id NOT IN (SELECT auto_build_lists.project_id FROM auto_build_lists)")
 
   after_create :make_owner_rel
-  before_save :check_owner_rel
-
   after_create :attach_to_personal_repository
   after_create :create_git_repo
   after_destroy :destroy_git_repo
-  after_rollback lambda { destroy_git_repo rescue true if new_record? }
+  # after_rollback lambda { destroy_git_repo rescue true if new_record? }
+
+  has_ancestry
 
   def auto_build
     auto_build_lists.each do |auto_build_list|
@@ -66,16 +66,10 @@ class Project < ActiveRecord::Base
     collaborators + groups.map(&:members).flatten
   end
 
-  # include Project::HasRepository
-  
   def git_repository
-    @git_repository ||= Git::Repository.new(git_repo_path)
+    @git_repository ||= Git::Repository.new(path)
   end
-  
-  # Redefining a method from Project::HasRepository module to reflect current situation
-  def git_repo_path
-    @git_repo_path ||= path
-  end
+
   def git_repo_name
     File.join owner.uname, unixname
   end
@@ -84,11 +78,13 @@ class Project < ActiveRecord::Base
     visibility == 'open'
   end
 
-  def clone
-    p = Project.new
-    p.name = name
-    p.unixname = unixname
-    return p
+  def fork(new_owner)
+    clone.tap do |c|
+      c.parent_id = id
+      c.owner = new_owner
+      c.updated_at = nil; c.created_at = nil # :id = nil
+      c.save
+    end
   end
 
   def add_to_repository(platf, repo)
@@ -133,23 +129,14 @@ class Project < ActiveRecord::Base
     end
 
     def create_git_repo
-      Grit::Repo.init_bare git_repo_path
+      is_root? ? Grit::Repo.init_bare(path) : parent.git_repository.repo.delay.fork_bare(path)
     end
 
     def destroy_git_repo
-      FileUtils.rm_rf git_repo_path
+      FileUtils.rm_rf path
     end
 
     def make_owner_rel
-      r = relations.build :object_id => owner.id, :object_type => 'User', :role => 'admin'
-      r.save
+      relations.create :object_id => owner_id, :object_type => owner_type, :role => 'admin'
     end
-
-    def check_owner_rel
-      if !new_record? and owner_id_changed?
-        relations.by_object(owner).delete_all if owner_type_was
-        make_owner_rel if owner
-      end
-    end
-
 end

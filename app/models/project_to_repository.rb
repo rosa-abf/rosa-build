@@ -11,7 +11,7 @@ class ProjectToRepository < ActiveRecord::Base
 
   after_create lambda { project.xml_rpc_create(repository) }, :unless => lambda {Thread.current[:skip]}
   after_destroy lambda { project.xml_rpc_destroy(repository) }
-  after_rollback lambda { project.xml_rpc_destroy(repository) rescue true if new_record? }
+  # after_rollback lambda { project.xml_rpc_destroy(repository) rescue true if new_record? }
 
   #def path
   #  build_path(project.unixname)

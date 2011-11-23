@@ -20,11 +20,11 @@ namespace :repositories do
 
       project = main.projects.create(:name => project_name, :unixname => project_name)
 
-      puts "Executing: 'rm -rf #{project.git_repo_path}'"
-      `rm -rf #{project.git_repo_path}`
+      puts "Executing: 'rm -rf #{project.path}'"
+      `rm -rf #{project.path}`
 
-      puts "Executing: 'cp -a #{repo_dir} #{project.git_repo_path}'"
-      `cp -a #{repo_dir} #{project.git_repo_path}`
+      puts "Executing: 'cp -a #{repo_dir} #{project.path}'"
+      `cp -a #{repo_dir} #{project.path}`
 
       puts ""
     end

@@ -1,9 +1,9 @@
 class ProjectsController < ApplicationController
   before_filter :authenticate_user!, :except => :auto_build
-  before_filter :find_project, :only => [:show, :edit, :update, :destroy, :build, :process_build]
+  before_filter :find_project, :only => [:show, :edit, :update, :destroy, :fork, :build, :process_build]
   before_filter :get_paths, :only => [:new, :create, :edit, :update]
 
-  authorize_resource
+  load_and_authorize_resource
 
   def index
     if params[:query]
@@ -57,6 +57,10 @@ class ProjectsController < ApplicationController
     @project.destroy
     flash[:notice] = t("flash.project.destroyed")
     redirect_to @project.owner
+  end
+
+  def fork
+    redirect_to @project.fork(current_user), :notice => t("flash.project.forked")
   end
 
   # TODO remove this?
