@@ -39,26 +39,26 @@ class Ability
 
         # If rule has multiple conditions CanCan joins them by 'AND' sql operator
         can [:read, :update, :process_build, :build, :destroy], Project, :owner_type => 'User', :owner_id => user.id
-        #can :read, Project, :relations => {:role => 'read'}
-        can :read, Project, projects_in_relations_with(:role => 'read', :object_type => 'User', :object_id => user.id) do |project|
+        #can :read, Project, :relations => {:role => 'reader'}
+        can :read, Project, projects_in_relations_with(:role => 'reader', :object_type => 'User', :object_id => user.id) do |project|
           #The can? and cannot? call cannot be used with a raw sql 'can' definition.
-          project.relations.exists?(:role => 'read', :object_type => 'User', :object_id => user.id)
+          project.relations.exists?(:role => 'reader', :object_type => 'User', :object_id => user.id)
         end
-        #can [:update, :process_build, :build], Project, :relations => {:role => 'write'}
-        can [:read, :update, :process_build, :build], Project, projects_in_relations_with(:role => ['write', 'admin'], :object_type => 'User', :object_id => user.id)  do |project|
-          project.relations.exists?(:role => ['write', 'admin'], :object_type => 'User', :object_id => user.id)
+        #can [:update, :process_build, :build], Project, :relations => {:role => 'writer'}
+        can [:read, :update, :process_build, :build], Project, projects_in_relations_with(:role => ['writer', 'admin'], :object_type => 'User', :object_id => user.id)  do |project|
+          project.relations.exists?(:role => ['writer', 'admin'], :object_type => 'User', :object_id => user.id)
         end
         
         can :manage, Platform, :owner_type => 'User', :owner_id => user.id
         #can :read, Platform, :members => {:id => user.id}
-        can :read, Platform, platforms_in_relations_with(:role => 'read', :object_type => 'User', :object_id => user.id) do |platform|
-          platform.relations.exists?(:role => 'read', :object_type => 'User', :object_id => user.id)
+        can :read, Platform, platforms_in_relations_with(:role => 'reader', :object_type => 'User', :object_id => user.id) do |platform|
+          platform.relations.exists?(:role => 'reader', :object_type => 'User', :object_id => user.id)
         end
 
         can [:manage, :add_project, :remove_project, :change_visibility, :settings], Repository, :owner_type => 'User', :owner_id => user.id
         #can :read, Platform, :members => {:id => user.id}
-        can :read, Repository, repositories_in_relations_with(:role => 'read', :object_type => 'User', :object_id => user.id) do |repository|
-          repository.relations.exists?(:role => 'read', :object_type => 'User', :object_id => user.id)
+        can :read, Repository, repositories_in_relations_with(:role => 'reader', :object_type => 'User', :object_id => user.id) do |repository|
+          repository.relations.exists?(:role => 'reader', :object_type => 'User', :object_id => user.id)
         end
         
         #can :read, Repository
@@ -71,25 +71,25 @@ class Ability
         end
 
         can [:read, :update, :process_build, :build, :destroy], Project, :owner_type => 'Group', :owner_id => user.group_ids
-        #can :read, Project, :relations => {:role => 'read', :object_type => 'Group', :object_id => user.group_ids}
-        can :read, Project, projects_in_relations_with(:role => 'read', :object_type => 'Group', :object_id => user.group_ids) do |project|
-          project.relations.exists?(:role => 'read', :object_type => 'Group', :object_id => user.group_ids)
+        #can :read, Project, :relations => {:role => 'reader', :object_type => 'Group', :object_id => user.group_ids}
+        can :read, Project, projects_in_relations_with(:role => 'reader', :object_type => 'Group', :object_id => user.group_ids) do |project|
+          project.relations.exists?(:role => 'reader', :object_type => 'Group', :object_id => user.group_ids)
         end
-        #can [:update, :process_build, :build], Project, :relations => {:role => 'write', :object_type => 'Group', :object_id => user.group_ids}
-        can [:read, :update, :process_build, :build], Project, projects_in_relations_with(:role => ['write', 'admin'], :object_type => 'Group', :object_id => user.group_ids) do |project|
-          project.relations.exists?(:role => ['write', 'admin'], :object_type => 'Group', :object_id => user.group_ids)
+        #can [:update, :process_build, :build], Project, :relations => {:role => 'writer', :object_type => 'Group', :object_id => user.group_ids}
+        can [:read, :update, :process_build, :build], Project, projects_in_relations_with(:role => ['writer', 'admin'], :object_type => 'Group', :object_id => user.group_ids) do |project|
+          project.relations.exists?(:role => ['writer', 'admin'], :object_type => 'Group', :object_id => user.group_ids)
         end
         
         can :manage, Platform, :owner_type => 'Group', :owner_id => user.group_ids
         #can :read, Platform, :groups => {:id => user.group_ids}
-        can :read, Platform, platforms_in_relations_with(:role => 'read', :object_type => 'Group', :object_id => user.group_ids) do |platform|
-          platform.relations.exists?(:role => 'read', :object_type => 'Group', :object_id => user.group_ids)
+        can :read, Platform, platforms_in_relations_with(:role => 'reader', :object_type => 'Group', :object_id => user.group_ids) do |platform|
+          platform.relations.exists?(:role => 'reader', :object_type => 'Group', :object_id => user.group_ids)
         end
 
         can [:manage, :add_project, :remove_project], Repository, :owner_type => 'Group', :owner_id => user.group_ids
         #can :read, Platform, :groups => {:id => user.group_ids}
-        can :read, Repository, repositories_in_relations_with(:role => 'read', :object_type => 'Group', :object_id => user.group_ids) do |repository|
-          repository.relations.exists?(:role => 'read', :object_type => 'Group', :object_id => user.group_ids)
+        can :read, Repository, repositories_in_relations_with(:role => 'reader', :object_type => 'Group', :object_id => user.group_ids) do |repository|
+          repository.relations.exists?(:role => 'reader', :object_type => 'Group', :object_id => user.group_ids)
         end
 
         can(:fork, Project) {|p| can? :read, p}

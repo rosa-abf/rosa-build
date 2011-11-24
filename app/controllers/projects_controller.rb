@@ -33,7 +33,7 @@ class ProjectsController < ApplicationController
     @project = Project.new params[:project]
     @project.owner = get_owner
 
-    if @project.save
+    if @project.save!
       flash[:notice] = t('flash.project.saved') 
       redirect_to @project
     else
@@ -48,6 +48,7 @@ class ProjectsController < ApplicationController
       flash[:notice] = t('flash.project.saved')
       redirect_to @project
     else
+      @project.save!
       flash[:error] = t('flash.project.save_error')
       render :action => :edit
     end

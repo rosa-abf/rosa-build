@@ -20,11 +20,6 @@ class CollaboratorsController < ApplicationController
 
   def edit
     authorize! :manage_collaborators, @project
-
-    if params[:id]
-      @user = User.find params[:id]
-      render :edit_rights and return
-    end
   end
 
   def create
