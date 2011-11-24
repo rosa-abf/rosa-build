@@ -28,13 +28,14 @@ class Project < ActiveRecord::Base
   scope :addable_to_repository, lambda { |repository_id| where("projects.id NOT IN (SELECT project_to_repositories.project_id FROM project_to_repositories WHERE (project_to_repositories.repository_id = #{ repository_id }))") }
   scope :automateable, where("projects.id NOT IN (SELECT auto_build_lists.project_id FROM auto_build_lists)")
 
-  after_create :make_owner_rel
   after_create :attach_to_personal_repository
   after_create :create_git_repo
   after_destroy :destroy_git_repo
   # after_rollback lambda { destroy_git_repo rescue true if new_record? }
 
   has_ancestry
+
+  include Modules::Models::Owner
 
   def auto_build
     auto_build_lists.each do |auto_build_list|
@@ -87,15 +88,6 @@ class Project < ActiveRecord::Base
     end
   end
 
-  def add_to_repository(platf, repo)
-    result = BuildServer.add_to_repo(repository.name, platf.name)
-    if result == BuildServer::SUCCESS
-      return true
-    else
-      raise "Failed to add project #{name} to repo #{repo.name} of platform #{platf.name} with code #{result}."
-    end      
-  end
-
   def path
     build_path(git_repo_name)
   end
@@ -134,9 +126,5 @@ class Project < ActiveRecord::Base
 
     def destroy_git_repo
       FileUtils.rm_rf path
-    end
-
-    def make_owner_rel
-      relations.create :object_id => owner_id, :object_type => owner_type, :role => 'admin'
     end
 end

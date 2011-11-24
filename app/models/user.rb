@@ -21,9 +21,9 @@ class User < ActiveRecord::Base
   has_many :platforms,    :through => :targets, :source => :target, :source_type => 'Platform',   :autosave => true
   has_many :repositories, :through => :targets, :source => :target, :source_type => 'Repository', :autosave => true
 
-  include PersonalRepository
+  include Modules::Models::PersonalRepository
 
-  validates :uname, :presence => true, :uniqueness => {:case_sensitive => false}, :format => { :with => /^[a-z0-9_]+$/ }, :allow_nil => false, :allow_blank => false
+  validates :uname, :presence => true, :uniqueness => {:case_sensitive => false}, :format => { :with => /^[a-z0-9_]+$/ }
   validate { errors.add(:uname, :taken) if Group.where('uname LIKE ?', uname).present? }
   validates :ssh_key, :uniqueness => true, :allow_blank => true
   validates :role, :inclusion => {:in => ROLES}, :allow_blank => true
@@ -32,14 +32,12 @@ class User < ActiveRecord::Base
   attr_readonly :uname
   attr_accessor :login
 
-  # after_create() { UserMailer.new_user_notification(self).deliver }
-
   def admin?
     role == 'admin'
   end
   
   def guest?
-    self.id.blank?
+    self.id.blank? # persisted?
   end
 
   class << self

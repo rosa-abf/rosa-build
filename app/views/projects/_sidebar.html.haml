@@ -15,7 +15,7 @@
             = '(' + t("layout.owner") + ')'
       %br
       -# if can? :update, @project
-      = link_to t("layout.projects.edit_collaborators"), edit_project_collaborators_path(@project)
+      = link_to t("layout.projects.edit_collaborators"), edit_project_collaborators_path(@project) if can? :manage_collaborators, @project
 
     / %p
     /   %b

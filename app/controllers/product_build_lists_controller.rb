@@ -4,7 +4,9 @@ class ProductBuildListsController < ApplicationController
   before_filter :find_product, :except => [:status_build]
   before_filter :find_platform, :except => [:status_build]
 
-  authorize_resource
+  load_and_authorize_resource :platform
+  load_and_authorize_resource :product, :through => :platform
+  load_and_authorize_resource :product_build_list, :through => :product
 
   # def index
   # end

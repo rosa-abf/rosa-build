@@ -7,11 +7,9 @@ class ProjectsController < ApplicationController
 
   def index
     if params[:query]
-      #@projects = Project.accessible_by(current_ability).where(:name => params[:query]).paginate(:page => params[:project_page])
-      @projects = Project.where(:name => params[:query]).paginate(:page => params[:project_page])
+      @projects = Project.accessible_by(current_ability).where(:name => params[:query]).paginate(:page => params[:project_page])
     else
-      #@projects = Project.accessible_by(current_ability).paginate(:page => params[:project_page])
-      @projects = Project.paginate(:page => params[:project_page])
+      @projects = Project.accessible_by(current_ability).paginate(:page => params[:project_page])
     end
     
     @own_projects = current_user.own_projects

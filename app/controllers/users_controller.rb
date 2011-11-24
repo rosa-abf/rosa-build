@@ -3,7 +3,7 @@ class UsersController < ApplicationController
   before_filter :authenticate_user!
   before_filter :find_user, :only => [:show, :edit, :update, :destroy]
 
-  authorize_resource
+  load_and_authorize_resource
 
   def index
     @users = User.paginate(:page => params[:user_page])

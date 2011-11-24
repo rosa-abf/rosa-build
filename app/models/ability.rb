@@ -20,10 +20,12 @@ class Ability
       # Guest rights
       if user.guest?
         can :create, User
-          
       # Registered user rights
       else
-        can :index, AutoBuildList
+        can [:read, :platforms], Category
+
+        can :create, AutoBuildList
+        can [:index, :destroy], AutoBuildList, :project_id => user.own_project_ids
         # If rules goes one by one CanCan joins them by 'OR' sql operator
         can :read, Project, :visibility => 'open'
         can :read, User

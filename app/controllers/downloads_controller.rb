@@ -1,7 +1,6 @@
 class DownloadsController < ApplicationController
   before_filter :authenticate_user!
-  
-  authorize_resource
+  load_and_authorize_resource
 
   def index
     @downloads = Download.paginate :page => params[:page], :per_page => 30

@@ -2,7 +2,7 @@ class PrivateUsersController < ApplicationController
   before_filter :authenticate_user!
   before_filter :find_platform_and_private_users
 
-  authorize_resource
+  load_and_authorize_resource :platform
 
   def index
   end
@@ -13,10 +13,7 @@ class PrivateUsersController < ApplicationController
   	
   	@pair = PrivateUser.generate_pair(params[:platform_id], current_user.id)
   	@urpmi_list = @platform.urpmi_list(request.host, @pair)
-    #redirect_to platform_private_users_path(params[:platform_id]), :notice => "Логин: #{ @pair[:login] } Пароль: #{ @pair[:pass] }"
-    flash[:notice] = "Логин: #{ @pair[:login] } Пароль: #{ @pair[:pass] }"
-    
-    render :action => 'index'
+    redirect_to platform_private_users_path(params[:platform_id]), :notice => "Логин: #{@pair[:login]} Пароль: #{@pair[:pass]}"
   end
 
   #def destroy

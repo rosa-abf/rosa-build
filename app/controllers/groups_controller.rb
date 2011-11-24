@@ -3,7 +3,7 @@ class GroupsController < ApplicationController
   before_filter :authenticate_user!
   before_filter :find_group, :only => [:show, :edit, :update, :destroy]
 
-  authorize_resource
+  load_and_authorize_resource
 
   def index
     @groups = Group.paginate(:page => params[:group_page])

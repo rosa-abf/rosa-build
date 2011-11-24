@@ -6,8 +6,7 @@ class BuildListsController < ApplicationController
 	before_filter :find_project_versions, :only => [:index, :filter]
 	before_filter :find_build_list_by_bs, :only => [:status_build, :pre_build, :post_build]
 
-	authorize_resource
-	skip_authorize_resource :only => :index
+  load_and_authorize_resource
 
 	def all
     if params[:filter]
@@ -34,8 +33,6 @@ class BuildListsController < ApplicationController
 	end
 
 	def index
-		authorize! :build, @project
-
 		@build_lists = @project.build_lists.recent.paginate :page => params[:page]
 		@filter = BuildList::Filter.new(@project)
 		@action_url = project_build_lists_path(@project)

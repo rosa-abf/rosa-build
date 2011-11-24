@@ -4,11 +4,10 @@ class PlatformsController < ApplicationController
   before_filter :find_platform, :only => [:freeze, :unfreeze, :clone, :edit, :destroy]
   before_filter :get_paths, :only => [:new, :create, :clone]
   
-  authorize_resource
+  load_and_authorize_resource
 
   def index
-    #@platforms = Platform.accessible_by(current_ability).paginate(:page => params[:platform_page])
-    @platforms = Platform.paginate(:page => params[:platform_page])
+    @platforms = Platform.accessible_by(current_ability).paginate(:page => params[:platform_page])
   end
 
   def easy_urpmi

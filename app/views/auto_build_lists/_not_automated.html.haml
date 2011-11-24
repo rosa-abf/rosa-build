@@ -8,6 +8,6 @@
   - @projects_not_automated.each do |project|
     %tr{:class => cycle("odd", "even")}
       %td= link_to project.name, project_path(project)
-      %td= link_to t("layout.auto_build_lists.automate_btn"), auto_build_lists_path(:project_id => project.id), :method => :post
+      %td= link_to t("layout.auto_build_lists.automate_btn"), auto_build_lists_path(:project_id => project.id), :method => :post, :confirm => t("layout.confirm")
 
 = will_paginate @projects_not_automated, :param_name => 'not_automated_page'

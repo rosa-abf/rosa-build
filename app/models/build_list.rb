@@ -8,15 +8,11 @@ class BuildList < ActiveRecord::Base
   validates :project_id, :presence => true
   validates :project_version, :presence => true
   #validates_inclusion_of :update_type, :in => UPDATE_TYPES#, :message => "extension %s is not included in the list"
-
   UPDATE_TYPES = %w[security bugfix enhancement recommended newpackage]
-  
   validates :update_type, :inclusion => UPDATE_TYPES
-  
   validate lambda {  
     errors.add(:bpl, I18n.t('flash.build_list.wrong_platform')) if pl.platform_type == 'main' && pl_id != bpl_id
   }
-  
   validate lambda {
     errors.add(:bpl, I18n.t('flash.build_list.can_not_published')) if status == BUILD_PUBLISHED && status_was != BuildServer::SUCCESS    
   }

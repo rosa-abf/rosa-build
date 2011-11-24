@@ -3,7 +3,8 @@ class ProductsController < ApplicationController
   before_filter :find_product, :only => [:show, :edit, :update, :destroy]
   before_filter :find_platform
 
-  authorize_resource
+  load_and_authorize_resource :platform
+  load_and_authorize_resource :product, :through => :platform
 
   def new
     @product = @platform.products.new

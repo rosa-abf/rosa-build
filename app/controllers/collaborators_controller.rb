@@ -2,13 +2,12 @@ class CollaboratorsController < ApplicationController
   before_filter :authenticate_user!
 
   before_filter :find_project
-
   before_filter :find_users
   before_filter :find_groups
 
-  def index
-    authorize! :manage_collaborators, @project
-    
+  load_and_authorize_resource :project
+
+  def index    
     redirect_to edit_project_collaborators_path(@project)
   end
 
@@ -19,15 +18,16 @@ class CollaboratorsController < ApplicationController
   end
 
   def edit
-    authorize! :manage_collaborators, @project
+    if params[:id]
+      @user = User.find params[:id]
+      render :edit_rights and return
+    end
   end
 
   def create
   end
 
   def update
-    authorize! :manage_collaborators, @project
-
     all_user_ids = []
     Relation::ROLES.each { |r| 
       all_user_ids = all_user_ids | params[r.to_sym].keys if params[r.to_sym]

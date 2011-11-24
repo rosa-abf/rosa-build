@@ -1,5 +1,7 @@
 APP_CONFIG = YAML.load_file("#{Rails.root}/config/application.yml")[Rails.env]
 
+require 'modules'
+
 # Setup Smart HTTP GRack
 require 'grack'
 config = {:project_root => File.join(APP_CONFIG['root_path'], 'git_projects'), :git_path => 'git', :upload_pack => true, :receive_pack => true}

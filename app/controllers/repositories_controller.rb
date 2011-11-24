@@ -1,11 +1,12 @@
 class RepositoriesController < ApplicationController
   before_filter :authenticate_user!
-  #before_filter :find_platform, :except => [:index, :new, :create]
-  before_filter :find_repository, :only => [:show, :destroy, :add_project, :remove_project]
+  before_filter :find_repository, :except => [:index, :new, :create]
+  before_filter :find_platform, :only => [:show, :destroy, :add_project, :remove_project]
   before_filter :get_paths, :only => [:show, :new, :create, :add_project, :remove_project]
   before_filter :find_platforms, :only => [:new, :create]
 
-  authorize_resource
+  load_and_authorize_resource :platform
+  load_and_authorize_resource :repository, :through => :platform, :shallow => true
 
   def index
     if params[:platform_id]
@@ -38,6 +39,7 @@ class RepositoriesController < ApplicationController
 
   def create
     @repository = Repository.new(params[:repository])
+    @repository.platform_id = params[:platform_id]
     @repository.owner = get_owner
     if @repository.save
       flash[:notice] = t('flash.repository.saved')

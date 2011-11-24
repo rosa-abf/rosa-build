@@ -1,6 +1,5 @@
 #require 'lib/build_server.rb'
 class Platform < ActiveRecord::Base
-  DOWNLOADS_PATH = RAILS_ROOT + '/public/downloads'
   VISIBILITIES = ['open', 'hidden']
 
   belongs_to :parent, :class_name => 'Platform', :foreign_key => 'parent_platform_id'
@@ -15,29 +14,14 @@ class Platform < ActiveRecord::Base
   has_many :groups,  :through => :objects, :source => :object, :source_type => 'Group'
 
   validates :name, :presence => true, :uniqueness => true
-  validates :unixname, :uniqueness => true, :presence => true, :format => { :with => /^[a-z0-9_]+$/ }, :allow_nil => false, :allow_blank => false
-  validates :distrib_type, :presence => true, :allow_nil => :false, :allow_blank => false, :inclusion => {:in => APP_CONFIG['distr_types']}
+  validates :unixname, :uniqueness => true, :presence => true, :format => { :with => /^[a-z0-9_]+$/ }
+  validates :distrib_type, :presence => true, :inclusion => {:in => APP_CONFIG['distr_types']}
 
-  after_create :make_owner_rel
-  before_save :check_owner_rel
-#  before_save :create_directory
-#  after_destroy :remove_directory
   before_create :xml_rpc_create, :unless => lambda {Thread.current[:skip]}
   before_destroy :xml_rpc_destroy
 #  before_update :check_freezing
-  after_create lambda { 
-    unless self.hidden? 
-      #add_downloads_symlink 
-      mount_directory_for_rsync
-    end
-  }
-  
-  after_destroy lambda { 
-    unless self.hidden? 
-      #remove_downloads_symlink
-      umount_directory_for_rsync
-    end
-  }
+  after_create lambda { mount_directory_for_rsync unless hidden? }
+  after_destroy lambda { umount_directory_for_rsync unless hidden? }
 
   scope :by_visibilities, lambda {|v| {:conditions => ['visibility in (?)', v.join(',')]}}
   scope :open, where(:visibility => 'open')
@@ -46,6 +30,8 @@ class Platform < ActiveRecord::Base
   scope :personal, where(:platform_type => 'personal')
 
   #attr_accessible :visibility
+
+  include Modules::Models::Owner
 
   def urpmi_list(host, pair = nil)
     blank_pair = {:login => 'login', :pass => 'password'} 
@@ -75,7 +61,7 @@ class Platform < ActiveRecord::Base
   end
 
   def hidden?
-    self.visibility == 'hidden'
+    visibility == 'hidden'
   end
 
   def personal?
@@ -102,7 +88,6 @@ class Platform < ActiveRecord::Base
     ensure
       Thread.current[:skip] = false
     end
-    # (Thread.current[:skip] = true) and p.save and (Thread.current[:skip] = false or true) and xml_rpc_clone(attrs[:unixname])
     p
   end
 
@@ -113,23 +98,14 @@ class Platform < ActiveRecord::Base
   def change_visibility
     if !self.hidden?
       self.update_attribute(:visibility, 'hidden')
-      #remove_downloads_symlink
       umount_directory_for_rsync
     else
       self.update_attribute(:visibility, 'open')
-      #add_downloads_symlink
       mount_directory_for_rsync
     end
   end
-    
-  #def add_downloads_symlink
-  #  #raise "Personal platform path #{ symlink_downloads_path } already exists!" if File.exists?(symlink_downloads_path) && File.directory?(symlink_downloads_path)
-  #  return true if File.exists?(symlink_downloads_path) && File.directory?(symlink_downloads_path)
-  #  FileUtils.symlink path, symlink_downloads_path
-  #end
 
   def mount_directory_for_rsync
-    #system("touch #{ Rails.root.join('tmp') }/mount_rsync")
     FileUtils.rm_rf "#{ Rails.root.join('tmp', 'umount', self.unixname) }" if File.exist? "#{ Rails.root.join('tmp', 'umount', unixname) }"
     FileUtils.mkdir_p "#{ Rails.root.join('tmp', 'mount', unixname) }"
     Arch.all.each do |arch|
@@ -140,14 +116,7 @@ class Platform < ActiveRecord::Base
     end
   end
 
-  #def remove_downloads_symlink
-  #  #raise "Personal platform path #{ symlink_downloads_path } does not exists!" if !(File.exists?(symlink_downloads_path) && File.directory?(symlink_downloads_path))
-  #  return true if !(File.exists?(symlink_downloads_path) && File.directory?(symlink_downloads_path))
-  #  FileUtils.rm_rf symlink_downloads_path 
-  #end
-
   def umount_directory_for_rsync
-    #system("touch #{ Rails.root.join('tmp') }/unmount_rsync")
     FileUtils.rm_rf "#{ Rails.root.join('tmp', 'mount', unixname) }" if File.exist? "#{ Rails.root.join('tmp', 'mount', unixname) }"
     FileUtils.mkdir_p "#{ Rails.root.join('tmp', 'umount', unixname) }"
   end
@@ -156,26 +125,6 @@ class Platform < ActiveRecord::Base
 
     def build_path(dir)
       File.join(APP_CONFIG['root_path'], 'platforms', dir)
-    end
-
-    def git_path(dir)
-      File.join(build_path(dir), 'git')
-    end
-
-    def create_directory
-      exists = File.exists?(path) && File.directory?(path)
-      raise "Directory #{path} already exists" if exists
-      if new_record?
-        FileUtils.mkdir_p(path)
-      elsif unixname_changed?
-        FileUtils.mv(build_path(unixname_was), build_path(unixname))
-      end 
-    end
-
-    def remove_directory
-      exists = File.exists?(path) && File.directory?(path)
-      raise "Directory #{path} didn't exists" unless exists
-      FileUtils.rm_rf(path)
     end
 
     def xml_rpc_create
@@ -210,21 +159,4 @@ class Platform < ActiveRecord::Base
         BuildServer.freeze_platform self.unixname
       end
     end
-    
-    def symlink_downloads_path
-      "#{ DOWNLOADS_PATH }/#{ self.unixname }"
-    end
-
-    def make_owner_rel
-      r = relations.build :object_id => owner.id, :object_type => 'User', :role => 'admin'
-      r.save
-    end
-
-    def check_owner_rel
-      if !new_record? and owner_id_changed?
-        relations.by_object(owner).delete_all if owner_type_was
-        make_owner_rel if owner
-      end
-    end
-
 end

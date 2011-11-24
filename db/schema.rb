@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20111122232244) do
+ActiveRecord::Schema.define(:version => 20111123160010) do
 
   create_table "arches", :force => true do |t|
     t.string   "name",       :null => false
@@ -138,14 +138,6 @@ ActiveRecord::Schema.define(:version => 20111122232244) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "uname"
-    t.integer  "global_role_id"
-  end
-
-  create_table "permissions", :force => true do |t|
-    t.integer  "right_id"
-    t.integer  "role_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
   end
 
   create_table "platforms", :force => true do |t|
@@ -229,7 +221,6 @@ ActiveRecord::Schema.define(:version => 20111122232244) do
     t.string   "object_type"
     t.integer  "target_id"
     t.string   "target_type"
-    t.integer  "role_id"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "role"
@@ -245,32 +236,6 @@ ActiveRecord::Schema.define(:version => 20111122232244) do
     t.string   "owner_type"
   end
 
-  create_table "rights", :force => true do |t|
-    t.string   "name",       :null => false
-    t.string   "controller", :null => false
-    t.string   "action",     :null => false
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  create_table "role_lines", :force => true do |t|
-    t.integer  "role_id"
-    t.integer  "relation_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  create_table "roles", :force => true do |t|
-    t.string   "name"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.text     "can_see"
-    t.string   "on",                    :default => ""
-    t.string   "to",                    :default => ""
-    t.boolean  "use_default",           :default => false
-    t.boolean  "use_default_for_owner", :default => false
-  end
-
   create_table "rpms", :force => true do |t|
     t.string   "name",       :null => false
     t.integer  "arch_id",    :null => false
@@ -284,17 +249,16 @@ ActiveRecord::Schema.define(:version => 20111122232244) do
 
   create_table "users", :force => true do |t|
     t.string   "name"
-    t.string   "email",                                 :default => "", :null => false
-    t.string   "encrypted_password",     :limit => 128, :default => "", :null => false
+    t.string   "email",                               :default => "", :null => false
+    t.string   "encrypted_password",   :limit => 128, :default => "", :null => false
+    t.string   "password_salt",                       :default => "", :null => false
     t.string   "reset_password_token"
-    t.datetime "reset_password_sent_at"
+    t.string   "remember_token"
     t.datetime "remember_created_at"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "uname"
     t.text     "ssh_key"
-    t.integer  "role_id"
-    t.integer  "global_role_id"
+    t.string   "uname"
     t.string   "role"
   end
 

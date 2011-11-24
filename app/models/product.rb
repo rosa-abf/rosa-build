@@ -1,25 +1,18 @@
 class Product < ActiveRecord::Base
-  # NEVER_BUILT = 2
-  # BUILD_COMPLETED = 0
-  # BUILD_FAILED = 1
-
   ATTRS_TO_CLONE = [ 'build_path', 'build_script', 'counter', 'ks', 'menu', 'tar', 'use_cron', 'cron_tab' ]
-
-  validates :name, :presence => true, :uniqueness => {:scope => :platform_id}
-  # validates :build_status, :inclusion => { :in => [ NEVER_BUILT, BUILD_COMPLETED, BUILD_FAILED ] }
-  # validates :platform_id, :presence => true # if you uncomment this platform clone will not work
 
   belongs_to :platform
   has_many :product_build_lists, :dependent => :destroy
 
-  has_attached_file :tar
-  validates_attachment_content_type :tar, :content_type => ["application/gnutar", "application/x-compressed", "application/x-gzip", "application/x-bzip2", "application/x-tar"], :message => I18n.t('layout.products.invalid_content_type')
-
   after_validation :merge_tar_errors
+  before_save :destroy_tar?
+
+  has_attached_file :tar
+
+  validates_attachment_content_type :tar, :content_type => ["application/gnutar", "application/x-compressed", "application/x-gzip", "application/x-bzip2", "application/x-tar"], :message => I18n.t('layout.products.invalid_content_type')
+  validates :name, :presence => true, :uniqueness => {:scope => :platform_id}
 
   scope :recent, order("name ASC")
-
-  before_save :destroy_tar?
 
   def delete_tar
     @delete_tar ||= "0"
@@ -82,6 +75,5 @@ class Product < ActiveRecord::Base
       errors[:tar] += errors[:tar_content_type]
       errors[:tar_content_type] = []
     end
-
 
 end

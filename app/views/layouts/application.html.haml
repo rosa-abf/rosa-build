@@ -34,7 +34,7 @@
             -if can? :index, BuildList
               %li{:class => controller.controller_path == 'build_lists' ? 'active' : '' }
                 %a{:href => all_build_lists_path}= t("layout.menu.build_lists")
-            -if can? :index, Category
+            -if can? :platforms, Category
               %li{:class => controller.controller_path == 'categories' ? 'active' : '' }
                 %a{:href => catalogs_path}= t("layout.menu.categories")
             -if can? :read, current_user.personal_repository

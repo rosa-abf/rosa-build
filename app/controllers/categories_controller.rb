@@ -3,7 +3,7 @@ class CategoriesController < ApplicationController
   before_filter :find_category, :only => [:show, :edit, :update, :destroy]
   before_filter :find_platform, :only => [:show, :index]
 
-  authorize_resource
+  load_and_authorize_resource
 
   def platforms
     @all_platforms = Platform.all
@@ -18,7 +18,7 @@ class CategoriesController < ApplicationController
     if @platform
       @categories = Category.select('categories.id, categories.name, categories.ancestry, count(projects.id) projects_count').
                              joins(:projects => :repositories).where('repositories.platform_id = ?', @platform.id).
-                             having('projects_count > 0').group('categories.id, categories.name, categories.ancestry, projects_count').default_order
+                             having('count(projects.id) > 0').group('categories.id, categories.name, categories.ancestry, projects_count').default_order
       render 'index2'
     else
       @categories = Category.default_order.paginate(:page => params[:page])
