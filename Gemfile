@@ -69,6 +69,7 @@ end
 group :test do
   gem 'rspec-rails',        '~> 2.7.0'
   gem 'factory_girl_rails', '~> 1.3.0'
+  gem 'rr'
   # gem 'spork',              '>= 0.9.0.rc9'
   # gem 'guard-spork',        '~> 0.3.1'
   # gem 'guard-rspec',        '~> 0.5.0'

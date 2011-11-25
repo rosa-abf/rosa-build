@@ -217,6 +217,7 @@ GEM
       json (~> 1.4)
     rest-client (1.6.7)
       mime-types (>= 1.16)
+    rr (1.0.4)
     rspec (2.7.0)
       rspec-core (~> 2.7.0)
       rspec-expectations (~> 2.7.0)
@@ -296,6 +297,7 @@ DEPENDENCIES
   rails (= 3.0.10)
   rails-xmlrpc!
   rails3-generators
+  rr
   rspec-rails (~> 2.7.0)
   ruby-debug
   ruby_parser
