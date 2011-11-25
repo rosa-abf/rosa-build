@@ -77,12 +77,12 @@ describe CollaboratorsController do
 
     it 'should not be able to perform index action' do
       get :index, :project_id => @project.id
-      response.should redirect_to(forbidden_path)
+      response.should redirect_to(edit_project_collaborators_path(@project))
     end
 
     it 'should not be able to perform update action' do
       get :update, {:project_id => @project.id}.merge(@update_params)
-      response.should redirect_to(forbidden_path)
+      response.should redirect_to(project_path(@project))
     end
   end
 
@@ -97,12 +97,12 @@ describe CollaboratorsController do
 
     it 'should not be able to perform index action' do
       get :index, :project_id => @project.id
-      response.should redirect_to(forbidden_path)
+      response.should redirect_to(edit_project_collaborators_path(@project))
     end
 
     it 'should not be able to perform update action' do
       get :update, {:project_id => @project.id}.merge(@update_params)
-      response.should redirect_to(forbidden_path)
+      response.should redirect_to(project_path(@project))
     end
   end
 end
