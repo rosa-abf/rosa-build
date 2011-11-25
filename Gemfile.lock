@@ -111,7 +111,6 @@ GEM
     jammit (0.6.3)
       yui-compressor (>= 0.9.3)
     json (1.6.1)
-    kgio (2.6.0)
     linecache (0.46)
       rbx-require-relative (> 0.0.4)
     log4r (1.1.9)
@@ -210,7 +209,6 @@ GEM
       rake (>= 0.8.7)
       rdoc (~> 3.4)
       thor (~> 0.14.4)
-    raindrops (0.8.0)
     rake (0.9.2.2)
     rbx-require-relative (0.0.5)
     rdoc (3.11)
@@ -252,10 +250,6 @@ GEM
       polyglot
       polyglot (>= 0.3.1)
     tzinfo (0.3.31)
-    unicorn (4.1.1)
-      kgio (~> 2.4)
-      rack
-      raindrops (~> 0.6)
     uuid (2.3.4)
       macaddr (~> 1.0)
     warden (1.0.6)
@@ -301,7 +295,6 @@ DEPENDENCIES
   ruby_parser
   russian
   silent-postgres (~> 0.1.1)
-  unicorn
   web-app-theme
   whenever
   will_paginate (~> 3.0.2)

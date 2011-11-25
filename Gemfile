@@ -28,7 +28,6 @@ gem "grit"
 gem 'whenever', :require => false
 gem 'delayed_job'
 gem 'whenever', :require => false
-gem 'unicorn'
 
 # XML-RPC support
 # gem 'actionwebservice' #, :git => 'git://github.com/ywen/actionwebservice.git'
@@ -64,11 +63,11 @@ end
 
 group :development, :test do
   gem 'mysql2', '<= 0.2.9'
+  gem 'rspec-rails',        '~> 2.7.0'
+  gem 'factory_girl_rails', '~> 1.3.0'
 end
 
 group :test do
-  gem 'rspec-rails',        '~> 2.7.0'
-  gem 'factory_girl_rails', '~> 1.3.0'
   # gem 'spork',              '>= 0.9.0.rc9'
   # gem 'guard-spork',        '~> 0.3.1'
   # gem 'guard-rspec',        '~> 0.5.0'
