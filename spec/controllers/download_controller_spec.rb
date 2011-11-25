@@ -1,5 +1,5 @@
-require 'spec_helper'
-
-describe DownloadController do
-
-end
+# require 'spec_helper'
+# 
+# describe DownloadController do
+# 
+# end
