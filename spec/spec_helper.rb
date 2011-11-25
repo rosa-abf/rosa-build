@@ -33,3 +33,8 @@ def set_session_for(user=nil)
   @request.env["devise.mapping"] = :user
   sign_in current_user
 end
+
+# Add testing root_path
+%x(rm -Rf #{Rails.root}/tmp/test_root)
+%x(mkdir -p #{Rails.root}/tmp/test_root)
+APP_CONFIG['root_path'] = "#{Rails.root}/tmp/test_root"
