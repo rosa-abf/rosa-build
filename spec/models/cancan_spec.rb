@@ -118,7 +118,7 @@ describe CanCan do
 
       context 'with read rights' do
         before(:each) do
-          @project.relations.create!(:object_id => @user.id, :object_type => 'User', :role => 'read')
+          @project.relations.create!(:object_id => @user.id, :object_type => 'User', :role => 'reader')
         end
 
         it 'should be able to read project' do
@@ -132,7 +132,7 @@ describe CanCan do
       
       context 'with write rights' do
         before(:each) do
-          @project.relations.create!(:object_id => @user.id, :object_type => 'User', :role => 'write')
+          @project.relations.create!(:object_id => @user.id, :object_type => 'User', :role => 'writer')
         end
 
         [:read, :update, :process_build, :build].each do |action|
@@ -189,7 +189,7 @@ describe CanCan do
 
       context 'with read rights' do
         before(:each) do
-          @platform.relations.create!(:object_id => @user.id, :object_type => 'User', :role => 'read')
+          @platform.relations.create!(:object_id => @user.id, :object_type => 'User', :role => 'reader')
         end
 
         it "should be able to read platform" do
@@ -217,7 +217,7 @@ describe CanCan do
 
       context 'with read rights' do
         before(:each) do
-          @repository.relations.create!(:object_id => @user.id, :object_type => 'User', :role => 'read')
+          @repository.relations.create!(:object_id => @user.id, :object_type => 'User', :role => 'reader')
         end
 
         it "should be able to read repository" do
@@ -229,7 +229,7 @@ describe CanCan do
     context 'build list relations' do
       before(:each) do
         @project = Factory(:project)
-        @project.relations.create!(:object_id => @user.id, :object_type => 'User', :role => 'read')
+        @project.relations.create!(:object_id => @user.id, :object_type => 'User', :role => 'reader')
         @build_list = Factory(:build_list, :project => @project)
       end
 

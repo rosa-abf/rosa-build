@@ -15,7 +15,7 @@ class Project < ActiveRecord::Base
   has_many :groups,        :through => :relations, :source => :object, :source_type => 'Group'
 
   validates :name,     :uniqueness => {:scope => [:owner_id, :owner_type]}, :presence => true
-  validates :unixname, :uniqueness => {:scope => [:owner_id, :owner_type]}, :presence => true, :format => { :with => /^[a-z0-9_\-\+\.]+$/ }
+  validates :unixname, :uniqueness => {:scope => [:owner_id, :owner_type]}, :presence => true, :format => { :with => /^[a-zA-Z0-9_\-\+\.]+$/ }
   validates :owner, :presence => true
   # validate {errors.add(:base, I18n.t('flash.project.save_warning_ssh_key')) if owner.ssh_key.blank?}
 

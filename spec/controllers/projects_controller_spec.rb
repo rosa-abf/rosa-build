@@ -20,13 +20,13 @@ describe ProjectsController do
 
 	context 'for guest' do
     it 'should not be able to perform index action' do
-      get :index, :id => @project.id
-      response.should redirect_to(forbidden_path)
+      get :index
+      response.should redirect_to(new_user_session_path)
     end
 
     it 'should not be able to perform update action' do
-      get :update, {:id => @project.id}.merge(@update_params)
-      response.should redirect_to(forbidden_path)
+      put :update, {:id => @project.id}.merge(@update_params)
+      response.should redirect_to(new_user_session_path)
     end
   end
 
@@ -37,7 +37,7 @@ describe ProjectsController do
 		end
 
     it 'should be able to perform index action' do
-      get :index, :id => @project.id
+      get :index
       response.should render_template(:index)
     end
 

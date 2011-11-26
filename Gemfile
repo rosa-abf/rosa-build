@@ -1,13 +1,13 @@
 source 'http://rubygems.org'
 
-gem 'rails', '3.0.10' #, :git => 'git://github.com/rails/rails.git'
+gem 'rails', '3.0.11' #, :git => 'git://github.com/rails/rails.git'
 
 gem 'pg', '~> 0.11.0'
 gem 'silent-postgres', '~> 0.1.1'
 
-gem 'devise', '~> 1.4.8'
-gem 'omniauth', '~> 0.3.2'
-gem 'oa-openid', '~> 0.3.2', :require => 'omniauth/openid'
+gem 'devise', '~> 1.5.1'
+gem 'omniauth', '~> 1.0.1'
+gem 'omniauth-openid', '~> 1.0.1'
 gem 'cancan', '~> 1.6.7'
 #gem 'bitmask_attributes'
 
@@ -27,14 +27,13 @@ gem 'grack', :git => 'git://github.com/rdblue/grack.git', :require => 'git_http'
 gem "grit"
 gem 'whenever', :require => false
 gem 'delayed_job'
-gem 'whenever', :require => false
 
 # XML-RPC support
 # gem 'actionwebservice' #, :git => 'git://github.com/ywen/actionwebservice.git'
-gem "rails-xmlrpc", :git => 'git://github.com/chipiga/rails-xmlrpc.git'
+gem "rails-xmlrpc", '~> 0.3.6' # :git => 'git://github.com/chipiga/rails-xmlrpc.git'
 
 group :production do
-  gem "airbrake", :git => "git://github.com/airbrake/airbrake.git"
+  gem "airbrake", '~> 3.0.5'
   # gem 'newrelic_rpm', '~> 3.1.1'
 end
 
@@ -64,7 +63,7 @@ end
 group :development, :test do
   gem 'mysql2', '<= 0.2.9'
   gem 'rspec-rails',        '~> 2.7.0'
-  gem 'factory_girl_rails', '~> 1.3.0'
+  gem 'factory_girl_rails', '~> 1.4.0'
   gem 'rr'
 end
 

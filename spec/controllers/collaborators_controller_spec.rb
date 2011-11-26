@@ -10,12 +10,12 @@ describe CollaboratorsController do
 	context 'for guest' do
     it 'should not be able to perform index action' do
       get :index, :project_id => @project.id
-      response.should redirect_to(forbidden_path)
+      response.should redirect_to(new_user_session_path)
     end
 
     it 'should not be able to perform update action' do
-      get :update, {:project_id => @project.id}.merge(@update_params)
-      response.should redirect_to(forbidden_path)
+      post :update, {:project_id => @project.id}.merge(@update_params)
+      response.should redirect_to(new_user_session_path)
     end
   end
 
@@ -31,12 +31,12 @@ describe CollaboratorsController do
     end
 
     it 'should be able to perform update action' do
-      get :update, {:project_id => @project.id}.merge(@update_params)
+      post :update, {:project_id => @project.id}.merge(@update_params)
       response.should redirect_to(project_path(@project))
     end
 
     it 'should set flash notice on update success' do
-      get :update, {:project_id => @project.id}.merge(@update_params)
+      post :update, {:project_id => @project.id}.merge(@update_params)
       flash[:notice].should_not be_blank
     end
   end
@@ -56,12 +56,12 @@ describe CollaboratorsController do
     end
 
     it 'should be able to perform update action' do
-      get :update, {:project_id => @project.id}.merge(@update_params)
+      post :update, {:project_id => @project.id}.merge(@update_params)
       response.should redirect_to(project_path(@project))
     end
 
     it 'should set flash notice on update success' do
-      get :update, {:project_id => @project.id}.merge(@update_params)
+      post :update, {:project_id => @project.id}.merge(@update_params)
       flash[:notice].should_not be_blank
     end
   end
@@ -81,7 +81,7 @@ describe CollaboratorsController do
     end
 
     it 'should not be able to perform update action' do
-      get :update, {:project_id => @project.id}.merge(@update_params)
+      post :update, {:project_id => @project.id}.merge(@update_params)
       response.should redirect_to(project_path(@project))
     end
   end
@@ -101,7 +101,7 @@ describe CollaboratorsController do
     end
 
     it 'should not be able to perform update action' do
-      get :update, {:project_id => @project.id}.merge(@update_params)
+      post :update, {:project_id => @project.id}.merge(@update_params)
       response.should redirect_to(project_path(@project))
     end
   end

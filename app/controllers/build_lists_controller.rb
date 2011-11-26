@@ -133,4 +133,9 @@ class BuildListsController < ApplicationController
 			@build_list = BuildList.find_by_bs_id!(params[:id])
 		end
 
+    def authenticate_build_service!
+      if request.remote_ip != APP_CONFIG['build_server_ip']
+        render :nothing => true, :status => 403
+      end
+    end
 end
