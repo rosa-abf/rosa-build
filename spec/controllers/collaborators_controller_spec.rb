@@ -19,11 +19,36 @@ describe CollaboratorsController do
     end
   end
 
-  context 'for admin' do
+  context 'for global admin' do
   	before(:each) do
   		@admin = Factory(:admin)
   		set_session_for(@admin)
 		end
+
+    it 'should be able to perform index action' do
+      get :index, :project_id => @project.id
+      response.should redirect_to(edit_project_collaborators_path(@project))
+    end
+
+    it 'should be able to perform update action' do
+      post :update, {:project_id => @project.id}.merge(@update_params)
+      response.should redirect_to(project_path(@project))
+    end
+
+    it 'should set flash notice on update success' do
+      post :update, {:project_id => @project.id}.merge(@update_params)
+      flash[:notice].should_not be_blank
+    end
+  end
+
+  context 'for admin user' do
+    before(:each) do
+      @user = Factory(:user)
+      @user.relations
+      set_session_for(@user)
+      r = @project.relations.build(:object_type => 'User', :object_id => @user.id, :role => 'reader')
+      r.save!
+    end
 
     it 'should be able to perform index action' do
       get :index, :project_id => @project.id

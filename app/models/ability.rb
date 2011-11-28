@@ -58,7 +58,7 @@ class Ability
         end
 
         can [:manage, :add_project, :remove_project, :change_visibility, :settings], Repository, :owner_type => 'User', :owner_id => user.id
-        #can :read, Platform, :members => {:id => user.id}
+        #can :read, Repository, :members => {:id => user.id}
         can :read, Repository, repositories_in_relations_with(:role => 'reader', :object_type => 'User', :object_id => user.id) do |repository|
           repository.relations.exists?(:role => 'reader', :object_type => 'User', :object_id => user.id)
         end
