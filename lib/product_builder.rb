@@ -8,9 +8,9 @@ class ProductBuilder
     @@client ||= XMLRPC::Client.new3(:host => APP_CONFIG['product_builder_ip'][distrib_type], :port => APP_CONFIG['product_builder_port'], :path => APP_CONFIG['product_builder_path'])
   end
 
-  def self.create_product product, base_url
-    self.client(product.platform.distrib_type).
-    call('create_product', product.id.to_s, product.platform.unixname, product.ks, product.menu,
-                           product.build_script, product.counter, [], "#{base_url}#{product.tar.url}")
+  def self.create_product pbl # product_build_list
+    self.client(pbl.product.platform.distrib_type).
+    call('create_product', pbl.id.to_s, pbl.product.platform.unixname, pbl.product.ks, pbl.product.menu,
+                           pbl.product.build_script, pbl.product.counter, [], "#{pbl.base_url}#{pbl.product.tar.url}")
   end
 end

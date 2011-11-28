@@ -25,7 +25,7 @@ class ProductBuildList < ActiveRecord::Base
   protected
 
   def xml_rpc_create
-    result = ProductBuilder.create_product product, base_url
+    result = ProductBuilder.create_product self
     if result == ProductBuilder::SUCCESS
       return true
     else
