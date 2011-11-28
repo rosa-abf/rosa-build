@@ -12,12 +12,12 @@ class RpcController < ApplicationController
 
   def platforms
     ActiveSupport::Notifications.instrument("event_log.observer", :message => 'список платформ')
-    Platform.select('unixname').where("platform_type = ?", 'main').map(&:unixname)
+    Platform.select('name').where("platform_type = ?", 'main').map(&:name)
   end
 
   def user_projects
     ActiveSupport::Notifications.instrument("event_log.observer", :message => 'список пользовательских проектов')
-    current_user.projects.map{|p| { :id => p.id, :unixname => p.unixname } }
+    current_user.projects.map{|p| { :id => p.id, :name => p.name } }
   end
 
   def project_versions id

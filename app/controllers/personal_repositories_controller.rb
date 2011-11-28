@@ -28,7 +28,7 @@ class PersonalRepositoriesController < ApplicationController
     if params[:project_id]
       @project = Project.find(params[:project_id])
       # params[:project_id] = nil
-      unless @repository.projects.find_by_unixname(@project.unixname)
+      unless @repository.projects.find_by_name(@project.name)
         @repository.projects << @project
         flash[:notice] = t('flash.repository.project_added')
       else

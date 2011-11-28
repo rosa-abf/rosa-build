@@ -16,10 +16,10 @@ class PlatformsController < ApplicationController
       format.json do
         render :json => {
           :platforms => @platforms.map do |p|
-                          {:name => p.unixname,
+                          {:name => p.name,
                            :architectures => ['i586', 'x86_64'],
-                           :repositories => p.repositories.map(&:unixname),
-                           :url => "http://#{request.host_with_port}/downloads/#{p.unixname}/repository/"}
+                           :repositories => p.repositories.map(&:name),
+                           :url => "http://#{request.host_with_port}/downloads/#{p.name}/repository/"}
                         end
         }
       end
@@ -77,7 +77,7 @@ class PlatformsController < ApplicationController
 
   def clone
     if request.post?
-      @cloned = @platform.make_clone(:name => params[:platform]['name'], :unixname => params[:platform]['unixname'],
+      @cloned = @platform.make_clone(:name => params[:platform]['name'], :description => params[:platform]['description'],
                                     :owner_id => current_user.id, :owner_type => current_user.class.to_s)
       if @cloned.persisted?
         flash[:notice] = 'Клонирование успешно'
@@ -88,7 +88,7 @@ class PlatformsController < ApplicationController
     else
       @cloned = Platform.new
       @cloned.name = @platform.name + "_clone"
-      @cloned.unixname = @platform.unixname + "_clone"
+      @cloned.description = @platform.description + "_clone"
     end
   end
 

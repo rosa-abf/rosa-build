@@ -8,7 +8,7 @@ class PrivateUser < ActiveRecord::Base
   validate :login, :uniqueness => true
 
   def event_log_message
-    {:platform => platform.unixname, :user => user.uname}.inspect
+    {:platform => platform.name, :user => user.uname}.inspect
   end
 
   class << self

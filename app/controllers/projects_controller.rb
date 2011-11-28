@@ -64,9 +64,9 @@ class ProjectsController < ApplicationController
 
   # TODO remove this?
   def auto_build
-    uname, unixname = params[:git_repo].split('/')
+    uname, name = params[:git_repo].split('/')
     owner = User.find_by_uname(uname) || Group.find_by_uname(uname)
-    project = Project.where(:owner_id => owner.id, :owner_type => owner.class).find_by_unixname!(unixname)
+    project = Project.where(:owner_id => owner.id, :owner_type => owner.class).find_by_name!(name)
     project.delay.auto_build # TODO don't queue duplicates
 
     # p = params.delete_if{|k,v| k == 'controller' or k == 'action'}
@@ -79,7 +79,7 @@ class ProjectsController < ApplicationController
   def build
     @arches = Arch.recent
     @bpls = Platform.main
-    @pls = @project.repositories.collect { |rep| ["#{rep.platform.name}/#{rep.unixname}", rep.platform.id] }
+    @pls = @project.repositories.collect { |rep| ["#{rep.platform.name}/#{rep.name}", rep.platform.id] }
     @project_versions = @project.collected_project_versions
   end
 
@@ -101,7 +101,7 @@ class ProjectsController < ApplicationController
     if !check_arches || !check_project_versions
       @arches = Arch.recent
       @bpls = Platform.main
-      @pls = @project.repositories.collect { |rep| ["#{rep.platform.name}/#{rep.unixname}", rep.platform.id] }
+      @pls = @project.repositories.collect { |rep| ["#{rep.platform.name}/#{rep.name}", rep.platform.id] }
        
       render :action => "build"
     else

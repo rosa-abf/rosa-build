@@ -10,8 +10,8 @@ class Repository < ActiveRecord::Base
   has_many :members, :through => :objects, :source => :object, :source_type => 'User'
   has_many :groups,  :through => :objects, :source => :object, :source_type => 'Group'
 
-  validates :name, :uniqueness => {:scope => :platform_id}, :presence => true
-  validates :unixname, :uniqueness => {:scope => :platform_id}, :presence => true, :format => { :with => /^[a-z0-9_]+$/ }
+  validates :description, :uniqueness => {:scope => :platform_id}, :presence => true
+  validates :name, :uniqueness => {:scope => :platform_id}, :presence => true, :format => { :with => /^[a-z0-9_]+$/ }
   # validates :platform_id, :presence => true # if you uncomment this platform clone will not work
 
   scope :recent, order("name ASC")
@@ -19,7 +19,7 @@ class Repository < ActiveRecord::Base
   before_create :xml_rpc_create, :unless => lambda {Thread.current[:skip]}
   before_destroy :xml_rpc_destroy
 
-  attr_accessible :name, :unixname #, :platform_id
+  attr_accessible :description, :name #, :platform_id
 
   def full_clone(attrs) # owner
     clone.tap do |c| # dup
@@ -34,7 +34,7 @@ class Repository < ActiveRecord::Base
   protected
 
     def xml_rpc_create
-      result = BuildServer.create_repo unixname, platform.unixname
+      result = BuildServer.create_repo name, platform.name
       if result == BuildServer::SUCCESS
         return true
       else
@@ -43,7 +43,7 @@ class Repository < ActiveRecord::Base
     end
 
     def xml_rpc_destroy
-      result = BuildServer.delete_repo unixname, platform.unixname
+      result = BuildServer.delete_repo name, platform.name
       if result == BuildServer::SUCCESS
         return true
       else

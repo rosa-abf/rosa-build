@@ -1,5 +1,3 @@
-#require 'lib/build_server.rb'
-class Platform < ActiveRecord::Base
   VISIBILITIES = ['open', 'hidden']
 
   belongs_to :parent, :class_name => 'Platform', :foreign_key => 'parent_platform_id'
@@ -13,8 +11,8 @@ class Platform < ActiveRecord::Base
   has_many :members, :through => :objects, :source => :object, :source_type => 'User'
   has_many :groups,  :through => :objects, :source => :object, :source_type => 'Group'
 
-  validates :name, :presence => true, :uniqueness => true
-  validates :unixname, :uniqueness => true, :presence => true, :format => { :with => /^[a-zA-Z0-9_]+$/ }
+  validates :description, :presence => true, :uniqueness => true
+  validates :name, :uniqueness => true, :presence => true, :format => { :with => /^[a-zA-Z0-9_]+$/ }
   validates :distrib_type, :presence => true, :inclusion => {:in => APP_CONFIG['distr_types']}
 
   before_create :xml_rpc_create, :unless => lambda {Thread.current[:skip]}
@@ -45,11 +43,11 @@ class Platform < ActiveRecord::Base
       if pl.distrib_type == APP_CONFIG['distr_types'].first
         Arch.all.each do |arch|
           tail = "/#{arch.name}/main/release"
-          urpmi_commands[pl.name] << "urpmi.addmedia #{unixname} #{head}#{unixname}/repository/#{pl.unixname}#{tail}"
+          urpmi_commands[pl.name] << "urpmi.addmedia #{name} #{head}#{name}/repository/#{pl.name}#{tail}"
         end
       else
         tail = ''
-        urpmi_commands[pl.name] << "urpmi.addmedia #{unixname} #{head}#{unixname}/repository/#{pl.unixname}#{tail}"
+        urpmi_commands[pl.name] << "urpmi.addmedia #{name} #{head}#{name}/repository/#{pl.name}#{tail}"
       end
     end
 
@@ -57,7 +55,7 @@ class Platform < ActiveRecord::Base
   end
 
   def path
-    build_path(unixname)
+    build_path(name)
   end
 
   def hidden?
@@ -68,7 +66,7 @@ class Platform < ActiveRecord::Base
     platform_type == 'personal'
   end
 
-  def full_clone(attrs) # :name, :unixname, :owner
+  def full_clone(attrs) # :description, :name, :owner
     clone.tap do |c|
       c.attributes = attrs
       c.updated_at = nil; c.created_at = nil # :id = nil
@@ -84,7 +82,7 @@ class Platform < ActiveRecord::Base
     p = full_clone(attrs)
     begin
       Thread.current[:skip] = true
-      p.save and xml_rpc_clone(attrs[:unixname])
+      p.save and xml_rpc_clone(attrs[:name])
     ensure
       Thread.current[:skip] = false
     end
@@ -106,19 +104,19 @@ class Platform < ActiveRecord::Base
   end
 
   def mount_directory_for_rsync
-    FileUtils.rm_rf "#{ Rails.root.join('tmp', 'umount', self.unixname) }" if File.exist? "#{ Rails.root.join('tmp', 'umount', unixname) }"
-    FileUtils.mkdir_p "#{ Rails.root.join('tmp', 'mount', unixname) }"
+    FileUtils.rm_rf "#{ Rails.root.join('tmp', 'umount', self.name) }" if File.exist? "#{ Rails.root.join('tmp', 'umount', name) }"
+    FileUtils.mkdir_p "#{ Rails.root.join('tmp', 'mount', name) }"
     Arch.all.each do |arch|
       host = EventLog.current_controller.request.host_with_port rescue ::Rosa::Application.config.action_mailer.default_url_options[:host]
-      url = "http://#{host}/downloads/#{unixname}/repository/"
+      url = "http://#{host}/downloads/#{name}/repository/"
       str = "country=Russian Federation,city=Moscow,latitude=52.18,longitude=48.88,bw=1GB,version=2011,arch=#{arch.name},type=distrib,url=#{url}\n"
-      File.open(Rails.root.join('tmp', 'mount', unixname, "#{unixname}.#{arch.name}.list"), 'w') {|f| f.write(str) }
+      File.open(Rails.root.join('tmp', 'mount', name, "#{name}.#{arch.name}.list"), 'w') {|f| f.write(str) }
     end
   end
 
   def umount_directory_for_rsync
-    FileUtils.rm_rf "#{ Rails.root.join('tmp', 'mount', unixname) }" if File.exist? "#{ Rails.root.join('tmp', 'mount', unixname) }"
-    FileUtils.mkdir_p "#{ Rails.root.join('tmp', 'umount', unixname) }"
+    FileUtils.rm_rf "#{ Rails.root.join('tmp', 'mount', name) }" if File.exist? "#{ Rails.root.join('tmp', 'mount', name) }"
+    FileUtils.mkdir_p "#{ Rails.root.join('tmp', 'umount', name) }"
   end
 
   protected
@@ -128,35 +126,35 @@ class Platform < ActiveRecord::Base
     end
 
     def xml_rpc_create
-      result = BuildServer.add_platform unixname, APP_CONFIG['root_path'] + '/platforms' , distrib_type
+      result = BuildServer.add_platform name, APP_CONFIG['root_path'] + '/platforms' , distrib_type
       if result == BuildServer::SUCCESS
         return true
       else
-        raise "Failed to create platform #{name} with code #{result}. Path: #{build_path(unixname)}"
+        raise "Failed to create platform #{name} with code #{result}. Path: #{build_path(name)}"
       end
     end
 
     def xml_rpc_destroy
-      result = BuildServer.delete_platform unixname
+      result = BuildServer.delete_platform name
       if result == BuildServer::SUCCESS
         return true
       else
-        raise "Failed to delete platform #{unixname} with code #{result}."
+        raise "Failed to delete platform #{name} with code #{result}."
       end
     end
 
-    def xml_rpc_clone(new_unixname)
-      result = BuildServer.clone_platform new_unixname, self.unixname, APP_CONFIG['root_path'] + '/platforms'
+    def xml_rpc_clone(new_name)
+      result = BuildServer.clone_platform new_name, self.name, APP_CONFIG['root_path'] + '/platforms'
       if result == BuildServer::SUCCESS
         return true
       else
-        raise "Failed to clone platform #{name} with code #{result}. Path: #{build_path(unixname)} to platform #{new_unixname}"
+        raise "Failed to clone platform #{name} with code #{result}. Path: #{build_path(name)} to platform #{new_name}"
       end
     end
 
     def check_freezing
       if released_changed?
-        BuildServer.freeze_platform self.unixname
+        BuildServer.freeze_platform self.name
       end
     end
 end

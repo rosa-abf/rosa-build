@@ -14,16 +14,16 @@
         = @platform.name
       %p
         %b
-          = t("activerecord.attributes.platform.unixname")
+          = t("activerecord.attributes.platform.description")
           \:
-        = @platform.unixname
+        = @platform.description
       - if @platform.parent
         %p
           %b
             = t("activerecord.attributes.platform.parent")
             \:
           - if @platform.parent
-            = link_to @platform.parent.name, platform_path(@platform.parent)
+            = link_to @platform.parent.description, platform_path(@platform.parent)
       %p
         %b
           = t('layout.platforms.location')
@@ -76,12 +76,12 @@
     .inner
       %table.table
         %tr
-          %th.first= t("activerecord.attributes.repository.name")
+          %th.first= t("activerecord.attributes.repository.description")
           %th.last &nbsp;
         - @platform.repositories.recent.each do |repository|
           %tr{:class => cycle("odd", "even")}
             %td
-              = link_to repository.name, platform_repository_path(@platform, repository)
+              = link_to repository.description, platform_repository_path(@platform, repository)
             %td.last
               = link_to t("layout.show"), platform_repository_path(@platform, repository)
               | 

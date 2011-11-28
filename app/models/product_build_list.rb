@@ -30,7 +30,7 @@ class ProductBuildList < ActiveRecord::Base
       return true
     else
       # return false
-      raise "Failed to create product_build_list #{id} inside platform #{product.platform.unixname} with code #{result}."
+      raise "Failed to create product_build_list #{id} inside platform #{product.platform.name} tar url #{tar_url} with code #{result}."
     end
   end
 end

@@ -14,13 +14,13 @@ class Project < ActiveRecord::Base
   has_many :collaborators, :through => :relations, :source => :object, :source_type => 'User'
   has_many :groups,        :through => :relations, :source => :object, :source_type => 'Group'
 
-  validates :name,     :uniqueness => {:scope => [:owner_id, :owner_type]}, :presence => true
-  validates :unixname, :uniqueness => {:scope => [:owner_id, :owner_type]}, :presence => true, :format => { :with => /^[a-zA-Z0-9_\-\+\.]+$/ }
+  validates :description,     :uniqueness => {:scope => [:owner_id, :owner_type]}, :presence => true
+  validates :name, :uniqueness => {:scope => [:owner_id, :owner_type]}, :presence => true, :format => { :with => /^[a-zA-Z0-9_\-\+\.]+$/ }
   validates :owner, :presence => true
   # validate {errors.add(:base, I18n.t('flash.project.save_warning_ssh_key')) if owner.ssh_key.blank?}
 
-  #attr_accessible :category_id, :name, :unixname, :description, :visibility
-  attr_readonly :unixname
+  #attr_accessible :category_id, :name, :description, :visibility
+  attr_readonly :name
 
   scope :recent, order("name ASC")
   scope :by_name, lambda { |name| where('name like ?', '%' + name + '%') }
@@ -72,7 +72,7 @@ class Project < ActiveRecord::Base
   end
 
   def git_repo_name
-    File.join owner.uname, unixname
+    File.join owner.uname, name
   end
 
   def public?
@@ -93,16 +93,16 @@ class Project < ActiveRecord::Base
   end
 
   def xml_rpc_create(repository)
-    result = BuildServer.create_project unixname, repository.platform.unixname, repository.unixname, path
+    result = BuildServer.create_project name, repository.platform.name, repository.name, path
     if result == BuildServer::SUCCESS
       return true
     else
-      raise "Failed to create project #{unixname} (repo #{repository.unixname}) inside platform #{repository.platform.unixname} in path #{path} with code #{result}."
+      raise "Failed to create project #{name} (repo #{repository.name}) inside platform #{repository.platform.name} in path #{path} with code #{result}."
     end      
   end
 
   def xml_rpc_destroy(repository)
-    result = BuildServer.delete_project unixname, repository.platform.unixname
+    result = BuildServer.delete_project name, repository.platform.name
     if result == BuildServer::SUCCESS
       return true
     else

@@ -5,7 +5,7 @@
     %th.last &nbsp;
   - @projects.each do |project|
     %tr{:class => cycle("odd", "even")}
-      %td= link_to "#{project.name} (#{project.unixname})", project
+      %td= link_to "#{project.name} (#{project.name})", project
       %td= link_to "#{project.owner.name} (#{project.owner.uname})", project.owner
       %td
         = link_to t("layout.edit"), edit_project_path(project) if can? :update, project

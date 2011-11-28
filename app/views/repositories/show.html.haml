@@ -13,19 +13,19 @@
         = @repository.name
       %p
         %b
-          = t("activerecord.attributes.repository.unixname")
+          = t("activerecord.attributes.repository.description")
           \:
-        = @repository.unixname
+        = @repository.description
       %p
         %b
           = t("activerecord.attributes.repository.platform")
           \:
-        = link_to @repository.platform.name, url_for(@repository.platform)
+        = link_to @repository.platform.description, url_for(@repository.platform)
       %p
         %b
           = t("activerecord.attributes.repository.owner")
           \:
-        = link_to @repository.owner.try(:name), url_for(@repository.owner)
+        = link_to @repository.owner.try(:description), url_for(@repository.owner)
       .wat-cf
         = link_to image_tag("web-app-theme/icons/cross.png", :alt => t("layout.delete")) + " " + t("layout.delete"), @repository_path, :method => "delete", :class => "button", :confirm => t("layout.repositories.confirm_delete") if can? :destroy, @repository
 

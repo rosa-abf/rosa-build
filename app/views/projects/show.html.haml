@@ -16,11 +16,6 @@
         = @project.name
       %p
         %b
-          = t("activerecord.attributes.project.unixname")
-          \:
-        = @project.unixname
-      %p
-        %b
           = t("activerecord.attributes.project.owner")
           \:
         = link_to @project.owner.try(:name), url_for(@project.owner)

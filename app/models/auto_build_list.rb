@@ -5,6 +5,6 @@ class AutoBuildList < ActiveRecord::Base
   belongs_to :bpl, :class_name => 'Platform'
 
   def event_log_message
-    {:project => project.unixname}.inspect
+    {:project => project.name}.inspect
   end
 end
