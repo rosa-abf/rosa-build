@@ -27,7 +27,7 @@ class ProductBuildListsController < ApplicationController
   end
 
   def authenticate_product_builder!
-    if request.remote_ip != APP_CONFIG['product_builder_ip']
+    unless APP_CONFIG['product_builder_ip'].values.include?(request.remote_ip)
       render :nothing => true, :status => 403
     end
   end

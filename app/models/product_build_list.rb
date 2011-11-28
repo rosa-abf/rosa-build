@@ -25,13 +25,12 @@ class ProductBuildList < ActiveRecord::Base
   protected
 
   def xml_rpc_create
-    tar_url = "#{base_url}#{product.tar.url}"
-    result = ProductBuilder.create_product id, product.platform.unixname, product.ks, product.menu, product.build_script, product.counter, [], tar_url
+    result = ProductBuilder.create_product product, base_url
     if result == ProductBuilder::SUCCESS
       return true
     else
       # return false
-      raise "Failed to create product_build_list #{id} inside platform #{product.platform.unixname} tar url #{tar_url} with code #{result}."
+      raise "Failed to create product_build_list #{id} inside platform #{product.platform.unixname} with code #{result}."
     end
   end
 end
