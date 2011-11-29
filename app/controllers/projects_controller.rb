@@ -31,7 +31,7 @@ class ProjectsController < ApplicationController
     @project = Project.new params[:project]
     @project.owner = get_owner
 
-    if @project.save!
+    if @project.save
       flash[:notice] = t('flash.project.saved') 
       redirect_to @project
     else
@@ -59,7 +59,13 @@ class ProjectsController < ApplicationController
   end
 
   def fork
-    redirect_to @project.fork(current_user), :notice => t("flash.project.forked")
+    if forked = @project.fork(current_user) and forked.valid?
+      redirect_to forked, :notice => t("flash.project.forked")
+    else
+      flash[:warning] = t("flash.project.fork_error")
+      flash[:error] = forked.errors.full_messages
+      redirect_to @project
+    end
   end
 
   # TODO remove this?
