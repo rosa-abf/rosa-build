@@ -64,3 +64,5 @@ namespace :deploy do
     symlink_downloads_dir
   end
 end
+
+after "deploy:update_code", "deploy:migrate"
