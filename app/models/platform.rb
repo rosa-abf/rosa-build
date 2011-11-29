@@ -1,3 +1,5 @@
+#require 'lib/build_server.rb'
+class Platform < ActiveRecord::Base
   VISIBILITIES = ['open', 'hidden']
 
   belongs_to :parent, :class_name => 'Platform', :foreign_key => 'parent_platform_id'

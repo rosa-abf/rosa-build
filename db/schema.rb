@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20111123160010) do
+ActiveRecord::Schema.define(:version => 20111128140341) do
 
   create_table "arches", :force => true do |t|
     t.string   "name",       :null => false
@@ -141,8 +141,8 @@ ActiveRecord::Schema.define(:version => 20111123160010) do
   end
 
   create_table "platforms", :force => true do |t|
+    t.string   "description"
     t.string   "name"
-    t.string   "unixname"
     t.integer  "parent_platform_id"
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -203,7 +203,6 @@ ActiveRecord::Schema.define(:version => 20111123160010) do
 
   create_table "projects", :force => true do |t|
     t.string   "name"
-    t.string   "unixname"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "owner_id"
@@ -227,11 +226,11 @@ ActiveRecord::Schema.define(:version => 20111123160010) do
   end
 
   create_table "repositories", :force => true do |t|
-    t.string   "name",        :null => false
+    t.string   "description", :null => false
     t.integer  "platform_id", :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "unixname",    :null => false
+    t.string   "name",        :null => false
     t.integer  "owner_id"
     t.string   "owner_type"
   end
