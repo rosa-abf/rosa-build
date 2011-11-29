@@ -10,7 +10,7 @@ class ProductBuilder
 
   def self.create_product pbl # product_build_list
     self.client(pbl.product.platform.distrib_type).
-    call('create_product', pbl.id.to_s, pbl.product.platform.unixname, pbl.product.ks, pbl.product.menu,
+    call('create_product', pbl.id.to_s, pbl.product.platform.name, pbl.product.ks, pbl.product.menu,
                            pbl.product.build_script, pbl.product.counter, [], "#{pbl.base_url}#{pbl.product.tar.url}")
   end
 end
