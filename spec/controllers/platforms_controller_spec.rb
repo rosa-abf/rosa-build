@@ -1,4 +1,5 @@
 require 'spec_helper'
+require "shared_examples/platforms_controller"
 
 describe PlatformsController do
   before(:each) do
@@ -7,7 +8,7 @@ describe PlatformsController do
     @user = Factory(:user)
     @create_params = {:platform => {
       :name => 'pl1',
-      :unixname => 'pl1',
+      :description => 'pl1',
       :platform_type => 'main',
       :distrib_type => APP_CONFIG['distr_types'].first
     }}
@@ -40,10 +41,7 @@ describe PlatformsController do
       set_session_for(@admin)
     end
 
-    it 'should be able to perform index action' do
-      get :index
-      response.should render_template(:index)
-    end
+    it_should_behave_like 'able_to_perform_index_action'
 
     it 'should be able to perform new action' do
       get :new
@@ -55,20 +53,13 @@ describe PlatformsController do
       response.should redirect_to(platform_path(Platform.last))
     end
 
-    it 'should set flash notice on create success' do
-      post :create, @create_params
-      flash[:notice].should_not be_blank
+    it 'should change objects count on create success' do
+      lambda { post :create, @create_params }.should change{ Platform.count }.by(1)
     end
 
-    it 'should be able to perform destroy action' do
-      delete :destroy, :id => @platform.id
-      response.should redirect_to(root_path)
-    end
-
-    it 'should not be able to destroy personal platform' do
-      delete :destroy, :id => @personal_platform.id
-      response.should redirect_to(forbidden_path)
-    end
+    it_should_behave_like 'be_able_to_perform_destroy_action'
+    it_should_behave_like 'change_objects_count_on_destroy_success'
+    it_should_behave_like 'not_be_able_to_destroy_personal_platform'
   end
 
   context 'for owner user' do
@@ -80,10 +71,11 @@ describe PlatformsController do
       r.save!
     end
 
-    it 'should be able to perform index action' do
-      get :index
-      response.should render_template(:index)
-    end
+    it_should_behave_like 'able_to_perform_index_action'
+    it_should_behave_like 'not_be_able_to_perform_create_action'
+    it_should_behave_like 'be_able_to_perform_destroy_action'
+    it_should_behave_like 'change_objects_count_on_destroy_success'
+    it_should_behave_like 'not_be_able_to_destroy_personal_platform'
 
     it 'should be able to perform new action' do
       get :new
@@ -95,20 +87,6 @@ describe PlatformsController do
       response.should redirect_to(forbidden_path)
     end
 
-    it 'should set flash notice on create success' do
-      post :create, @create_params
-      response.should redirect_to(forbidden_path)
-    end
-
-    it 'should be able to perform destroy action' do
-      delete :destroy, :id => @platform.id
-      response.should redirect_to(root_path)
-    end
-
-    it 'should not be able to destroy personal platform' do
-      delete :destroy, :id => @personal_platform.id
-      response.should redirect_to(forbidden_path)
-    end
   end
 
   context 'for reader user' do
@@ -119,20 +97,8 @@ describe PlatformsController do
       r.save!
     end
 
-    it 'should be able to perform index action' do
-      get :index
-      response.should render_template(:index)
-    end
-
-    it 'should not be able to perform create action' do
-      post :create, @create_params
-      response.should redirect_to(forbidden_path)
-    end
-
-    it 'should set flash notice on create success' do
-      post :create, @create_params
-      response.should redirect_to(forbidden_path)
-    end
+    it_should_behave_like 'able_to_perform_index_action'
+    it_should_behave_like 'not_be_able_to_perform_create_action'
 
     it 'should not be able to perform destroy action' do
       delete :destroy, :id => @platform.id

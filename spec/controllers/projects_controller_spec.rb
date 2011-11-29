@@ -1,4 +1,5 @@
 require 'spec_helper'
+require 'shared_examples/projects_controller'
 
 describe ProjectsController do
 	before(:each) do
@@ -36,35 +37,20 @@ describe ProjectsController do
   		set_session_for(@admin)
 		end
 
-    it 'should be able to perform index action' do
-      get :index
-      response.should render_template(:index)
-    end
-
-    it 'should be able to perform update action' do
-      put :update, {:id => @project.id}.merge(@update_params)
-      response.should redirect_to(project_path(@project))
-    end
-
-    it 'should set flash notice on update success' do
-      put :update, {:id => @project.id}.merge(@update_params)
-      flash[:notice].should_not be_blank
-    end
+    it_should_behave_like 'be_able_to_perform_index_action'
+    it_should_behave_like 'be_able_to_perform_update_action'
+    it_should_behave_like 'update_collaborator_relation'
 
     it 'should be able to perform create action' do
       post :create, @create_params
       response.should redirect_to(project_path( Project.last.id ))
     end
 
-    it 'should set flash notice on create success' do
-      post :create, @create_params
-      flash[:notice].should_not be_blank
+    it 'should change objects count on create' do
+      lambda { post :create, @create_params }.should change{ Project.count }.by(1)
     end
 
-    it 'should be able to fork project' do
-      post :fork, :id => @project.id
-      response.should redirect_to(project_path(Project.last))
-    end
+    it_should_behave_like 'be_able_to_fork_project'
   end
 
   context 'for owner user' do
@@ -76,29 +62,18 @@ describe ProjectsController do
   		r.save!
 		end
 
-    it 'should be able to perform update action' do
-      put :update, {:id => @project.id}.merge(@update_params)
-      response.should redirect_to(project_path(@project))
-    end
-
-    it 'should set flash notice on update success' do
-      put :update, {:id => @project.id}.merge(@update_params)
-      flash[:notice].should_not be_blank
-    end
-
-    it 'should be able to perform build action' do
-      get :build, :id => @project.id
-      response.should render_template(:build)
-    end
-
-    it 'should be able to perform process_build action' do
-      post :process_build, {:id => @project.id}.merge(@process_build_params)
-      response.should redirect_to(project_path(@project))
-    end
+    it_should_behave_like 'be_able_to_perform_update_action'
+    it_should_behave_like 'update_collaborator_relation'
+    it_should_behave_like 'be_able_to_perform_build_action'
+    it_should_behave_like 'be_able_to_perform_process_build_action'
 
     it 'should be able to perform destroy action' do
       delete :destroy, {:id => @project.id}
       response.should redirect_to(@project.owner)
+    end
+
+    it 'should change objects count on destroy' do
+      lambda { post :create, @create_params }.should change{ Project.count }.by(-1)
     end
 
     it 'should not be able to fork project' do
@@ -115,20 +90,14 @@ describe ProjectsController do
   		r.save!
 		end
 
-    it 'should not be able to perform index action' do
-      get :index
-      response.should render_template(:index)
-    end
+    it_should_behave_like 'be_able_to_perform_index_action'
 
-    it 'should not be able to perform show action' do
+    it 'should be able to perform show action' do
       get :show, :id => @project.id
       response.should render_template(:show)
     end
 
-    it 'should be able to fork project' do
-      post :fork, :id => @project.id
-      response.should redirect_to(project_path(Project.last))
-    end
+    it_should_behave_like 'be_able_to_fork_project'
   end
 
   context 'for writer user' do
@@ -139,29 +108,10 @@ describe ProjectsController do
   		r.save!
 		end
 
-    it 'should not be able to perform update action' do
-      put :update, {:id => @project.id}.merge(@update_params)
-      response.should redirect_to(project_path(@project))
-    end
-
-    it 'should set flash notice on update success' do
-      put :update, {:id => @project.id}.merge(@update_params)
-      flash[:notice].should_not be_blank
-    end
-
-    it 'shoud be able to perform build action' do
-      get :build, :id => @project.id
-      response.should render_template(:build)
-    end
-
-    it 'shoud be able to perform process_build action' do
-      post :process_build, {:id => @project.id}.merge(@process_build_params)
-      response.should redirect_to(project_path(@project))
-    end
-
-    it 'should be able to fork project' do
-      post :fork, :id => @project.id
-      response.should redirect_to(project_path(Project.last))
-    end
+    it_should_behave_like 'be_able_to_perform_update_action'
+    it_should_behave_like 'update_collaborator_relation'
+    it_should_behave_like 'be_able_to_perform_build_action'
+    it_should_behave_like 'be_able_to_perform_process_build_action'
+    it_should_behave_like 'be_able_to_fork_project'
   end
 end

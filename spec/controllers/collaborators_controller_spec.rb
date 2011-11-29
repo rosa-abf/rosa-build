@@ -1,4 +1,5 @@
 require 'spec_helper'
+require 'shared_examples/collaborators_controller'
 
 describe CollaboratorsController do
 	before(:each) do
@@ -25,20 +26,9 @@ describe CollaboratorsController do
   		set_session_for(@admin)
 		end
 
-    it 'should be able to perform index action' do
-      get :index, :project_id => @project.id
-      response.should redirect_to(edit_project_collaborators_path(@project))
-    end
-
-    it 'should be able to perform update action' do
-      post :update, {:project_id => @project.id}.merge(@update_params)
-      response.should redirect_to(project_path(@project))
-    end
-
-    it 'should set flash notice on update success' do
-      post :update, {:project_id => @project.id}.merge(@update_params)
-      flash[:notice].should_not be_blank
-    end
+    it_should_behave_like 'be_able_to_perform_index_action'
+    it_should_behave_like 'be_able_to_perform_update_action'
+    it_should_behave_like 'update_collaborator_relation'
   end
 
   context 'for admin user' do
@@ -50,20 +40,9 @@ describe CollaboratorsController do
       r.save!
     end
 
-    it 'should be able to perform index action' do
-      get :index, :project_id => @project.id
-      response.should redirect_to(edit_project_collaborators_path(@project))
-    end
-
-    it 'should be able to perform update action' do
-      post :update, {:project_id => @project.id}.merge(@update_params)
-      response.should redirect_to(project_path(@project))
-    end
-
-    it 'should set flash notice on update success' do
-      post :update, {:project_id => @project.id}.merge(@update_params)
-      flash[:notice].should_not be_blank
-    end
+    it_should_behave_like 'be_able_to_perform_index_action'
+    it_should_behave_like 'be_able_to_perform_update_action'
+    it_should_behave_like 'update_collaborator_relation'
   end
 
   context 'for owner user' do
@@ -75,20 +54,9 @@ describe CollaboratorsController do
   		r.save!
 		end
 
-    it 'should be able to perform index action' do
-      get :index, :project_id => @project.id
-      response.should redirect_to(edit_project_collaborators_path(@project))
-    end
-
-    it 'should be able to perform update action' do
-      post :update, {:project_id => @project.id}.merge(@update_params)
-      response.should redirect_to(project_path(@project))
-    end
-
-    it 'should set flash notice on update success' do
-      post :update, {:project_id => @project.id}.merge(@update_params)
-      flash[:notice].should_not be_blank
-    end
+    it_should_behave_like 'be_able_to_perform_index_action'
+    it_should_behave_like 'be_able_to_perform_update_action'
+    it_should_behave_like 'update_collaborator_relation'
   end
 
   context 'for reader user' do
@@ -100,15 +68,9 @@ describe CollaboratorsController do
   		r.save!
 		end
 
-    it 'should not be able to perform index action' do
-      get :index, :project_id => @project.id
-      response.should redirect_to(edit_project_collaborators_path(@project))
-    end
-
-    it 'should not be able to perform update action' do
-      post :update, {:project_id => @project.id}.merge(@update_params)
-      response.should redirect_to(project_path(@project))
-    end
+    it_should_behave_like 'not_be_able_to_perform_index_action'
+    it_should_behave_like 'not_be_able_to_perform_update_action'
+    it_should_behave_like 'not_update_collaborator_relation'
   end
 
   context 'for writer user' do
@@ -120,14 +82,8 @@ describe CollaboratorsController do
   		r.save!
 		end
 
-    it 'should not be able to perform index action' do
-      get :index, :project_id => @project.id
-      response.should redirect_to(edit_project_collaborators_path(@project))
-    end
-
-    it 'should not be able to perform update action' do
-      post :update, {:project_id => @project.id}.merge(@update_params)
-      response.should redirect_to(project_path(@project))
-    end
+    it_should_behave_like 'not_be_able_to_perform_index_action'
+    it_should_behave_like 'not_be_able_to_perform_update_action'
+    it_should_behave_like 'not_update_collaborator_relation'
   end
 end

@@ -12,7 +12,7 @@ module Modules
           pl = platforms.build
           pl.owner = self
           pl.name = "#{self.uname}_personal"
-          pl.name = "#{self.uname}_personal"
+          pl.description = "#{self.uname}_personal"
           pl.platform_type = 'personal'
           pl.distrib_type = APP_CONFIG['distr_types'].first
           pl.visibility = 'hidden'
@@ -21,7 +21,7 @@ module Modules
           rep = pl.repositories.build
           rep.owner = pl.owner
           rep.name = 'main'
-          rep.name = 'main'
+          rep.description = 'main'
           rep.save!
         end
 
