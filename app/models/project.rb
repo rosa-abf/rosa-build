@@ -80,7 +80,7 @@ class Project < ActiveRecord::Base
 
   def fork(new_owner)
     clone.tap do |c|
-      c.parent_id = id
+      c.parent = self
       c.owner = new_owner
       c.updated_at = nil; c.created_at = nil # :id = nil
       c.save
