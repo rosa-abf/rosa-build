@@ -436,9 +436,9 @@ ru:
 
       repository:
         name: Название
+        description: Описание
         platform_id: Платформа
         platform: Платформа
-        unixname: Unixname
         created_at: Создан
         updated_at: Обновлен
         owner: Владелец
@@ -476,7 +476,7 @@ ru:
 
       platform:
         name: Название
-        unixname: Unixname
+        description: Описание
         parent_platform_id: Родительская платформа
         parent: Родительская платформа
         released: Released
@@ -499,7 +499,6 @@ ru:
       project:
         category_id: Категория
         name: Название
-        unixname: Unixname
         description: Описание
         owner: Владелец
         visibility: Видимость
