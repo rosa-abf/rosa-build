@@ -72,7 +72,13 @@ class ProjectsController < ApplicationController
   end
 
   def fork
-    redirect_to @project.fork(current_user), :notice => t("flash.project.forked")
+    if forked = @project.fork(current_user) and forked.valid?
+      redirect_to forked, :notice => t("flash.project.forked")
+    else
+      flash[:warning] = t("flash.project.fork_error")
+      flash[:error] = forked.errors.full_messages
+      redirect_to @project
+    end
   end
 
   # TODO remove this?
