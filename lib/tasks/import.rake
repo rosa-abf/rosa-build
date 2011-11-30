@@ -3,9 +3,9 @@ require 'open-uri'
 namespace :import do
   desc "Load projects"
   task :projects => :environment do
-    open('http://dl.dropbox.com/u/984976/sorted4.txt').readlines.each do |name| # http://dl.dropbox.com/u/984976/PackageList.txt
-      name.chomp!; name.downcase!
-      name = name.match(/^([a-z\d_\-\+\.]+?)-(\d[a-z\d\-\.]+)\.src\.rpm$/)[1] # parse
+    open('http://dl.dropbox.com/u/984976/package_list.txt').readlines.each do |name|
+      name.chomp!; # name.downcase!
+      # name = name.match(/^([a-z\d_\-\+\.]+?)-(\d[a-z\d\-\.]+)\.src\.rpm$/)[1] # parse
       print "Import #{name}..."
       owner = User.find(1) # I am
       # owner = Group.find(1) # Core Team
