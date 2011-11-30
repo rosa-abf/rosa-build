@@ -6,6 +6,22 @@ class PlatformsController < ApplicationController
   
   load_and_authorize_resource
 
+  def build_all
+    @platform.repositories.each do |repository|
+      repository.projects.each do |project|
+        bl = project.build_lists.new
+        bl.pl_id = @platform.id
+        bl.bpl_id = @platform.id
+        bl.update_type = 'recommended'
+        bl.arch_id = Arch.find_by_name('i586')
+        bl.project_version = "latest_#{ @platform.name }"
+        bl.save!
+      end
+    end
+
+    redirect_to(platform_path(@platform), :notice => t("flash.platform.build_all_success"))
+  end
+
   def index
     @platforms = Platform.accessible_by(current_ability).paginate(:page => params[:platform_page])
   end

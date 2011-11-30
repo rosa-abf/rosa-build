@@ -43,6 +43,7 @@ Rosa::Application.routes.draw do
       get 'unfreeze'
       get 'clone'
       post 'clone'
+      get 'build_all'
     end
 
     collection do
