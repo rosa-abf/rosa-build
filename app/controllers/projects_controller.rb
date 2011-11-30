@@ -99,7 +99,7 @@ class ProjectsController < ApplicationController
     @arches = Arch.recent
     @bpls = Platform.main
     @pls = @project.repositories.collect { |rep| ["#{rep.platform.name}/#{rep.name}", rep.platform.id] }
-    @project_versions = @project.collected_project_versions
+    @project_versions = @project.versions
   end
 
   def process_build
@@ -115,7 +115,7 @@ class ProjectsController < ApplicationController
     update_type = params[:build][:update_type]
     build_requires = params[:build][:build_requires]
 
-    @project_versions = @project.collected_project_versions
+    @project_versions = @project.versions
 
     if !check_arches || !check_project_versions
       @arches = Arch.recent

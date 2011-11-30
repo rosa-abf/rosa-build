@@ -48,18 +48,26 @@ class Project < ActiveRecord::Base
     end
   end
 
+  # TODO deprecate and remove project_versions and collected_project_versions ?
   def project_versions
     res = tags.select{|tag| tag.name =~ /^v\./}
     return res if res and res.size > 0
     tags
-  end
-
+  end  
   def collected_project_versions
     project_versions.collect{|tag| tag.name.gsub(/^\w+\./, "")}
   end
 
   def tags
-    self.git_repository.tags.sort_by{|t| t.name.gsub(/[a-zA-Z.]+/, '').to_i}
+    self.git_repository.tags #.sort_by{|t| t.name.gsub(/[a-zA-Z.]+/, '').to_i}
+  end
+
+  def branches
+    self.git_repository.branches
+  end
+
+  def versions
+    tags.map(&:name) + branches.map{|b| "latest_#{b.name}"}
   end
 
   def members
