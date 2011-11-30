@@ -9,14 +9,7 @@ class PlatformsController < ApplicationController
   def build_all
     @platform.repositories.each do |repository|
       repository.projects.each do |project|
-        project.build_lists.create! do |bl|
-          bl.pl = @platform
-          bl.bpl = @platform
-          bl.update_type = 'recommended'
-          bl.arch = Arch.find_by_name('i586')
-          bl.project_version = "latest_#{@platform.name}"
-          bl.build_requires = false # already set as db default
-        end
+        project.delay.build_for(@platform)
       end
     end
 

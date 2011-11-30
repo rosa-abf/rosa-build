@@ -48,6 +48,17 @@ class Project < ActiveRecord::Base
     end
   end
 
+  def build_for(platform)
+    build_lists.create do |bl|
+      bl.pl = platform
+      bl.bpl = platform
+      bl.update_type = 'recommended'
+      bl.arch = Arch.find_by_name('i586')
+      bl.project_version = "latest_#{platform.name}"
+      bl.build_requires = false # already set as db default
+    end
+  end
+
   # TODO deprecate and remove project_versions and collected_project_versions ?
   def project_versions
     res = tags.select{|tag| tag.name =~ /^v\./}
