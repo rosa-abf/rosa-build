@@ -15,7 +15,7 @@ class PlatformsController < ApplicationController
           bl.update_type = 'recommended'
           bl.arch = Arch.find_by_name('i586')
           bl.project_version = "latest_#{@platform.name}"
-          bl.build_requires = false
+          bl.build_requires = false # already set as db default
         end
       end
     end

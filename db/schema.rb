@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20111128140341) do
+ActiveRecord::Schema.define(:version => 20111130181101) do
 
   create_table "arches", :force => true do |t|
     t.string   "name",       :null => false
@@ -65,7 +65,7 @@ ActiveRecord::Schema.define(:version => 20111128140341) do
     t.boolean  "is_circle",        :default => false
     t.text     "additional_repos"
     t.string   "name"
-    t.boolean  "build_requires"
+    t.boolean  "build_requires",   :default => false
     t.string   "update_type"
     t.integer  "bpl_id"
     t.integer  "pl_id"
