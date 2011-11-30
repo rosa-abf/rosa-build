@@ -14,7 +14,8 @@ class Ability
       can :forbidden, Platform
 
       can :read, [Repository, Platform], :visibility => 'open'
-      can :auto_build, Project # TODO: This needs to be checked!
+      # TODO remove because auth callbacks skipped
+      can :auto_build, Project
       can [:status_build, :pre_build, :post_build, :circle_build, :new_bbdt], BuildList
 
       # Guest rights
