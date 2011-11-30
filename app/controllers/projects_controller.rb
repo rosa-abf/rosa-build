@@ -1,4 +1,8 @@
 class ProjectsController < ApplicationController
+  is_related_controller!
+
+  belongs_to :user, :group, :polymorphic => true, :optional => true
+
   before_filter :authenticate_user!, :except => :auto_build
   before_filter :find_project, :only => [:show, :edit, :update, :destroy, :fork, :build, :process_build]
   before_filter :get_paths, :only => [:new, :create, :edit, :update]
@@ -6,12 +10,20 @@ class ProjectsController < ApplicationController
   load_and_authorize_resource
 
   def index
-    if params[:query]
-      @projects = Project.accessible_by(current_ability).where(:name => params[:query]).paginate(:page => params[:project_page])
-    else
-      @projects = Project.accessible_by(current_ability).paginate(:page => params[:project_page])
-    end
-    
+#    puts parent.inspect
+#    puts parent.is_a? User
+    @projects = if parent? and !parent.nil?
+                  parent.projects
+                else
+                  Project
+                end.accessible_by(current_ability)
+
+    @projects = if params[:query]
+                  @projects.where(["name LIKE ?", "%#{params[:query]}%"])
+                else
+                  @projects
+                end.paginate(:page => params[:project_page])
+
     @own_projects = current_user.own_projects
     @part_projects = current_user.projects - @own_projects
   end
@@ -30,8 +42,9 @@ class ProjectsController < ApplicationController
   def create
     @project = Project.new params[:project]
     @project.owner = get_owner
+#    puts @project.owner.inspect
 
-    if @project.save!
+    if @project.save
       flash[:notice] = t('flash.project.saved') 
       redirect_to @project
     else
@@ -46,7 +59,7 @@ class ProjectsController < ApplicationController
       flash[:notice] = t('flash.project.saved')
       redirect_to @project
     else
-      @project.save!
+      @project.save
       flash[:error] = t('flash.project.save_error')
       render :action => :edit
     end
