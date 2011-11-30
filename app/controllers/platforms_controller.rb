@@ -9,13 +9,14 @@ class PlatformsController < ApplicationController
   def build_all
     @platform.repositories.each do |repository|
       repository.projects.each do |project|
-        bl = project.build_lists.new
-        bl.pl_id = @platform.id
-        bl.bpl_id = @platform.id
-        bl.update_type = 'recommended'
-        bl.arch_id = Arch.find_by_name('i586')
-        bl.project_version = "latest_#{ @platform.name }"
-        bl.save!
+        project.build_lists.create! do |bl|
+          bl.pl = @platform
+          bl.bpl = @platform
+          bl.update_type = 'recommended'
+          bl.arch = Arch.find_by_name('i586')
+          bl.project_version = "latest_#{@platform.name}"
+          bl.build_requires = false
+        end
       end
     end
 
