@@ -20,6 +20,14 @@ class Group < ActiveRecord::Base
 
   delegate :ssh_key, :to => :owner
 
+  after_create :add_owner_to_members
+
   include Modules::Models::PersonalRepository
   include Modules::Models::Owner
+
+  protected
+    def add_owner_to_members
+      Relation.create_with_role(self.owner, self, 'admin')
+#      members << self.owner if !members.exists?(:id => self.owner.id)
+    end
 end

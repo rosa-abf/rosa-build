@@ -6,7 +6,9 @@ Rosa::Application.routes.draw do
     get '/users/auth/:provider' => 'users/omniauth_callbacks#passthru'
   end
   
-  resources :users
+  resources :users do
+    resources :groups, :only => [:new, :create, :index]
+  end
 
   resources :event_logs, :only => :index
 
