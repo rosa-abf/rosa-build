@@ -1,12 +1,14 @@
 class BuildListsController < ApplicationController
-	before_filter :authenticate_user!, :except => [:status_build, :pre_build, :post_build, :circle_build, :new_bbdt]
-	before_filter :authenticate_build_service!, :only => [:status_build, :pre_build, :post_build, :circle_build, :new_bbdt]
-	before_filter :find_project, :only => [:index, :filter, :show, :publish]
-	before_filter :find_arches, :only => [:index, :filter, :all]
-	before_filter :find_project_versions, :only => [:index, :filter]
-	before_filter :find_build_list_by_bs, :only => [:status_build, :pre_build, :post_build]
+  CALLBACK_ACTIONS = [:status_build, :pre_build, :post_build, :circle_build, :new_bbdt]
 
-  load_and_authorize_resource
+  before_filter :authenticate_user!, :except => CALLBACK_ACTIONS
+  before_filter :authenticate_build_service!, :only => CALLBACK_ACTIONS
+  before_filter :find_project, :only => [:index, :filter, :show, :publish]
+  before_filter :find_arches, :only => [:index, :filter, :all]
+  before_filter :find_project_versions, :only => [:index, :filter]
+  before_filter :find_build_list_by_bs, :only => [:status_build, :pre_build, :post_build]
+
+  load_and_authorize_resource :except => CALLBACK_ACTIONS
 
 	def all
     if params[:filter]
