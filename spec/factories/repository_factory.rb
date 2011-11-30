@@ -13,5 +13,7 @@ Factory.define(:personal_repository, :class => Repository) do |p|
 
   p.after_create { |rep| 
   	rep.platform.platform_type = 'personal'
+    rep.platform.visibility = 'hidden'
+    rep.platform.save!
   }
 end

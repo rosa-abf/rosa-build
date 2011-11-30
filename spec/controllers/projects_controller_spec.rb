@@ -5,8 +5,8 @@ describe ProjectsController do
 	before(:each) do
     @project = Factory(:project)
     @another_user = Factory(:user)
-    @create_params = {:project => {:name => 'pro', :unixname => 'pro2'}}
-    @update_params = {:project => {:name => 'pro2', :unixname => 'pro2'}}
+    @create_params = {:project => {:name => 'pro'}}
+    @update_params = {:project => {:name => 'pro2'}}
 
     platform = Factory(:platform)
     any_instance_of(Project, :collected_project_versions => ['v1.0', 'v2.0'])

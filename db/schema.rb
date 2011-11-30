@@ -220,7 +220,6 @@ ActiveRecord::Schema.define(:version => 20111128140341) do
     t.string   "object_type"
     t.integer  "target_id"
     t.string   "target_type"
-    t.integer  "role_id"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "role"
@@ -257,9 +256,8 @@ ActiveRecord::Schema.define(:version => 20111128140341) do
     t.datetime "remember_created_at"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "uname"
     t.text     "ssh_key"
-    t.integer  "role_id"
+    t.string   "uname"
     t.string   "role"
   end
 

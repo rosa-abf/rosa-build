@@ -9,7 +9,7 @@
   = f.text_field :email, :class => 'text_field'
 .group
   = f.label :role, t("activerecord.attributes.user.role"), :class => :label
-  = f.select :role, User::ROLES, :include_blank => true
+  = f.select :role, User::ROLES, :include_blank => 'user'
 .group
   = f.label :ssh_key, t("activerecord.attributes.user.ssh_key"), :class => :label
   = f.text_area :ssh_key, :class => 'text_area'
