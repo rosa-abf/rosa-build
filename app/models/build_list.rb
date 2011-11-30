@@ -112,7 +112,7 @@ class BuildList < ActiveRecord::Base
     self.status == BuildServer::SUCCESS
   end
 
-  def delete_build_list
+  def cancel_build_list
     has_canceled = BuildServer.delete_build_list bs_id
     update_attribute(:status, BUILD_CANCELED) if has_canceled == 0
     
@@ -120,7 +120,7 @@ class BuildList < ActiveRecord::Base
   end
 
   #TODO: Share this checking on product owner.
-  def can_canceled?
+  def can_cancel?
     self.status == BUILD_PENDING && bs_id
   end
 

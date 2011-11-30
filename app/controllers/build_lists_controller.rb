@@ -20,14 +20,14 @@ class BuildListsController < ApplicationController
     end
 		@action_url = all_build_lists_path
 		
-    @build_server_status = BuildServer.get_status
+    @build_server_status = BuildServer.get_status rescue {}
 	  
     render :action => 'index'
 	end
 	
 	def cancel
 		build_list = BuildList.find(params[:id])
-		if build_list.delete_build_list
+		if build_list.cancel_build_list
 			redirect_to :back, :notice => t('layout.build_lists.cancel_successed')
 		else
 			redirect_to :back, :notice => t('layout.build_lists.cancel_failed')
