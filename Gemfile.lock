@@ -145,6 +145,8 @@ GEM
     rails-xmlrpc (0.3.6)
     rails3-generators (0.17.4)
       railties (>= 3.0.0)
+    rails3-jquery-autocomplete (1.0.4)
+      rails (~> 3.0)
     railties (3.0.11)
       actionpack (= 3.0.11)
       activesupport (= 3.0.11)
@@ -225,6 +227,7 @@ DEPENDENCIES
   rails (= 3.0.11)
   rails-xmlrpc (~> 0.3.6)
   rails3-generators
+  rails3-jquery-autocomplete
   rr
   rspec-rails (~> 2.7.0)
   ruby-debug

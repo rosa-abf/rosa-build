@@ -6,6 +6,7 @@ class Product < ActiveRecord::Base
 
   after_validation :merge_tar_errors
   before_save :destroy_tar?
+  after_create :add_admin_relations
 
   has_attached_file :tar
 
@@ -74,6 +75,13 @@ class Product < ActiveRecord::Base
     def merge_tar_errors
       errors[:tar] += errors[:tar_content_type]
       errors[:tar_content_type] = []
+    end
+
+    def add_admin_relations
+      repository.relations.where(:role => 'admin').each do |rel|
+        r = relations.build(:role => 'admin', :object_id => rel.object_id, :object_type => rel.object_type)
+        r.save
+      end
     end
 
 end

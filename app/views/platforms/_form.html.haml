@@ -17,6 +17,10 @@
 .group
   = f.label :released, :class => :label
   = f.check_box :released, :class => 'check_box'
+
+.group
+  = label_tag "ID Хозяина", :class => :label
+  = autocomplete_field_tag 'admin_id', '', user_name_autocomplete_path, :class => 'text_field'
   
 .group.navform.wat-cf
   %button.button{:type => "submit"}

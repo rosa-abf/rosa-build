@@ -32,6 +32,8 @@ gem 'delayed_job'
 # gem 'actionwebservice' #, :git => 'git://github.com/ywen/actionwebservice.git'
 gem "rails-xmlrpc", '~> 0.3.6' # :git => 'git://github.com/chipiga/rails-xmlrpc.git'
 
+gem 'rails3-jquery-autocomplete'
+
 group :production do
   gem "airbrake", '~> 3.0.5'
   # gem 'newrelic_rpm', '~> 3.1.1'

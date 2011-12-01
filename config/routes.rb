@@ -48,6 +48,7 @@ Rosa::Application.routes.draw do
 
     collection do
       get 'easy_urpmi'
+      get :autocomplete_user_uname
     end
 
     resources :products do

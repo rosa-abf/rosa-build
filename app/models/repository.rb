@@ -18,6 +18,7 @@ class Repository < ActiveRecord::Base
 
   before_create :xml_rpc_create, :unless => lambda {Thread.current[:skip]}
   before_destroy :xml_rpc_destroy
+  after_create :add_admin_relation
 
   attr_accessible :description, :name #, :platform_id
 
@@ -48,6 +49,13 @@ class Repository < ActiveRecord::Base
         return true
       else
         raise "Failed to delete repository #{name} inside platform #{platform.name}."
+      end
+    end
+
+    def add_admin_relations
+      platform.relations.where(:role => 'admin').each do |rel|
+        r = relations.build(:role => 'admin', :object_id => rel.object_id, :object_type => rel.object_type)
+        r.save
       end
     end
 end

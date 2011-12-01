@@ -5,6 +5,7 @@ class PlatformsController < ApplicationController
   before_filter :get_paths, :only => [:new, :create, :clone]
   
   load_and_authorize_resource
+  autocomplete :user, :uname
 
   def build_all
     @platform.repositories.each do |repository|
