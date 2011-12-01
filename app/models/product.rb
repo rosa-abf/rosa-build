@@ -79,7 +79,8 @@ class Product < ActiveRecord::Base
 
     def add_admin_relations
       repository.relations.where(:role => 'admin').each do |rel|
-        r = relations.build(:role => 'admin', :object_id => rel.object_id, :object_type => rel.object_type)
+        r = relations.build(:role => 'admin', :object_type => rel.object_type)
+        r.object_id = rel.object_id
         r.save
       end
     end

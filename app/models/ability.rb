@@ -51,14 +51,24 @@ class Ability
         can [:read, :update, :process_build, :build], Project, projects_in_relations_with(:role => ['writer', 'admin'], :object_type => 'User', :object_id => user.id)  do |project|
           project.relations.exists?(:role => ['writer', 'admin'], :object_type => 'User', :object_id => user.id)
         end
-        
+
+        can [:read, :update, :process_build, :build], Product, products_in_relations_with(:role => ['writer', 'admin'], :object_type => 'User', :object_id => user.id)  do |product|
+          product.relations.exists?(:role => ['admin'], :object_type => 'User', :object_id => user.id)
+        end
+
         can :manage, Platform, :owner_type => 'User', :owner_id => user.id
+        can :manage, Platform, platforms_in_relations_with(:role => 'admin', :object_type => 'User', :object_id => user.id) do |platform|
+          platform.relations.exists?(:role => 'admin', :object_type => 'User', :object_id => user.id)
+        end
         #can :read, Platform, :members => {:id => user.id}
         can :read, Platform, platforms_in_relations_with(:role => 'reader', :object_type => 'User', :object_id => user.id) do |platform|
           platform.relations.exists?(:role => 'reader', :object_type => 'User', :object_id => user.id)
         end
 
         can [:manage, :add_project, :remove_project, :change_visibility, :settings], Repository, :owner_type => 'User', :owner_id => user.id
+        can :manage, Repository, repositories_in_relations_with(:role => 'admin', :object_type => 'User', :object_id => user.id) do |repository|
+          repository.relations.exists?(:role => 'admin', :object_type => 'User', :object_id => user.id)
+        end
         #can :read, Repository, :members => {:id => user.id}
         can :read, Repository, repositories_in_relations_with(:role => 'reader', :object_type => 'User', :object_id => user.id) do |repository|
           repository.relations.exists?(:role => 'reader', :object_type => 'User', :object_id => user.id)
@@ -110,7 +120,7 @@ class Ability
 
   # Sub query for platforms, projects relations
   # TODO: Replace table names list by method_missing way
-  %w[platforms projects repositories].each do |table_name|
+  %w[platforms projects products repositories].each do |table_name|
     define_method table_name + "_in_relations_with" do |opts|
       query = "#{ table_name }.id IN (SELECT target_id FROM relations WHERE relations.target_type = '#{ table_name.singularize.camelize }'"
       opts.each do |key, value|

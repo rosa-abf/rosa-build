@@ -121,6 +121,11 @@ class Platform < ActiveRecord::Base
     FileUtils.mkdir_p "#{ Rails.root.join('tmp', 'umount', name) }"
   end
 
+  def make_admin_relation(user_id)
+    r = self.relations.build :object_id => user_id, :object_type => 'User', :role => 'admin'
+    r.save
+  end
+
   protected
 
     def build_path(dir)
