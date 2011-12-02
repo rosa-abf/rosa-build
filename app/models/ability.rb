@@ -78,9 +78,9 @@ class Ability
           repository.relations.exists?(:role => 'reader', :object_type => 'User', :object_id => user.id)
         end
         # Small CanCan hack by Repository.new(:platform_id => ...)
-        #can [:new, :create], Repository do |repository|
-        #  repository.platform.relations.exists?(:role => 'admin', :object_type => 'User', :object_id => user.id)
-        #end
+        can [:new, :create], Repository do |repository|
+          repository.platform.relations.exists?(:role => 'admin', :object_type => 'User', :object_id => user.id)
+        end
         
         #can :read, Repository
         # TODO: Add personal repos rules
@@ -116,7 +116,7 @@ class Ability
         can(:fork, Project) {|p| can? :read, p}
 
         # Things that can not do simple user
-        cannot :create, [Platform, User, Repository]
+        cannot :create, [Platform, User]
       end
     end
     

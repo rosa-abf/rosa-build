@@ -32,6 +32,14 @@ class Repository < ActiveRecord::Base
 
   include Modules::Models::Owner
 
+  class << self
+    def build_stub(platform)
+      rep = Repository.new
+      rep.platform = platform
+      rep
+    end
+  end
+
   protected
 
     def xml_rpc_create

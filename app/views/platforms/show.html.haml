@@ -70,7 +70,7 @@
   .secondary-navigation
     %ul.wat-cf
       %li.first.active= link_to t("layout.repositories.list"), platform_path(@platform) + "#repositories"
-      %li= link_to t("layout.repositories.new"), new_platform_repository_path(@platform) if can? :create, Repository.new(:platform_id => @platform.id)
+      %li= link_to t("layout.repositories.new"), new_platform_repository_path(@platform) if can? :create, Repository.build_stub(@platform)
   .content
     %h2.title
       = t("layout.repositories.list_header")
