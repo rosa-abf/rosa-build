@@ -3,6 +3,7 @@ class Product < ActiveRecord::Base
 
   belongs_to :platform
   has_many :product_build_lists, :dependent => :destroy
+  has_many :relations, :as => :target, :dependent => :destroy
 
   after_validation :merge_tar_errors
   before_save :destroy_tar?
@@ -78,7 +79,7 @@ class Product < ActiveRecord::Base
     end
 
     def add_admin_relations
-      repository.relations.where(:role => 'admin').each do |rel|
+      platform.relations.where(:role => 'admin').each do |rel|
         r = relations.build(:role => 'admin', :object_type => rel.object_type)
         r.object_id = rel.object_id
         r.save

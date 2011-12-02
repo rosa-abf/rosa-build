@@ -52,8 +52,12 @@ class Ability
           project.relations.exists?(:role => ['writer', 'admin'], :object_type => 'User', :object_id => user.id)
         end
 
-        can [:read, :update, :process_build, :build], Product, products_in_relations_with(:role => ['writer', 'admin'], :object_type => 'User', :object_id => user.id)  do |product|
-          product.relations.exists?(:role => ['admin'], :object_type => 'User', :object_id => user.id)
+        can [:read, :update, :destroy], Product, products_in_relations_with(:role => ['writer', 'admin'], :object_type => 'User', :object_id => user.id)  do |product|
+          product.relations.exists?(:role => 'admin', :object_type => 'User', :object_id => user.id)
+        end
+        # Small CanCan hack by Product.new(:platform_id => ...)
+        can [:new, :create], Product do |product|
+          product.platform.relations.exists?(:role => 'admin', :object_type => 'User', :object_id => user.id)
         end
 
         can :manage, Platform, :owner_type => 'User', :owner_id => user.id
@@ -73,6 +77,10 @@ class Ability
         can :read, Repository, repositories_in_relations_with(:role => 'reader', :object_type => 'User', :object_id => user.id) do |repository|
           repository.relations.exists?(:role => 'reader', :object_type => 'User', :object_id => user.id)
         end
+        # Small CanCan hack by Repository.new(:platform_id => ...)
+        #can [:new, :create], Repository do |repository|
+        #  repository.platform.relations.exists?(:role => 'admin', :object_type => 'User', :object_id => user.id)
+        #end
         
         #can :read, Repository
         # TODO: Add personal repos rules

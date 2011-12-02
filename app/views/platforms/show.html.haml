@@ -70,7 +70,7 @@
   .secondary-navigation
     %ul.wat-cf
       %li.first.active= link_to t("layout.repositories.list"), platform_path(@platform) + "#repositories"
-      %li= link_to t("layout.repositories.new"), new_platform_repository_path(@platform) if can? :create, Repository
+      %li= link_to t("layout.repositories.new"), new_platform_repository_path(@platform) if can? :create, Repository.new(:platform_id => @platform.id)
   .content
     %h2.title
       = t("layout.repositories.list_header")
@@ -95,7 +95,7 @@
   .secondary-navigation
     %ul.wat-cf
       %li.first.active= link_to t("layout.products.list"), platform_path(@platform) + "#products"
-      %li= link_to t("layout.products.new"), new_platform_product_path(@platform) if can? :create, Product
+      %li= link_to t("layout.products.new"), new_platform_product_path(@platform) if can? :create, Product.new(:platform_id => @platform.id)
   .content
     %h2.title
       = t("layout.products.list_header")
