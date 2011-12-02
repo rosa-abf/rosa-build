@@ -16,6 +16,22 @@ class Product < ActiveRecord::Base
 
   scope :recent, order("name ASC")
 
+  attr_accessor :tmp_upload_dir
+  after_save lambda { FileUtils.rm_rf(tmp_upload_dir) if tmp_upload_dir and File.directory?(tmp_upload_dir) }
+
+  def tar_with_fast=(file)
+    if file.present? and file.respond_to?('[]')
+      self.tmp_upload_dir = "#{file['filepath']}_1"
+      tmp_file_path = File.join tmp_upload_dir, file['original_name']
+      FileUtils.mkdir_p tmp_upload_dir
+      FileUtils.mv file['filepath'], tmp_file_path
+      self.tar_without_fast = File.open tmp_file_path, 'rb'
+    else
+      self.tar_without_fast = file
+    end
+  end
+  alias_method_chain :tar=, :fast
+
   def delete_tar
     @delete_tar ||= "0"
   end
