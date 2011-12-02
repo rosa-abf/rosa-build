@@ -57,7 +57,7 @@ end
 #       # raise args.inspect
 #       case
 #       when args.first == 'get_status'
-#         {:client_count => '1', :count_new_task => '2', :count_build_task => 3}
+#         {'client_count' => 1, 'count_new_task' => 2, 'count_build_task' => 3}
 #       else; 0
 #       end
 #     end

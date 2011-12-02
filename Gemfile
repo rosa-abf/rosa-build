@@ -5,7 +5,7 @@ gem 'rails', '3.0.11' #, :git => 'git://github.com/rails/rails.git'
 gem 'pg', '~> 0.11.0'
 gem 'silent-postgres', '~> 0.1.1'
 
-gem 'devise', '~> 1.5.1'
+gem 'devise', '~> 1.5.2'
 gem 'omniauth', '~> 1.0.1'
 gem 'omniauth-openid', '~> 1.0.1'
 gem 'cancan', '~> 1.6.7'
@@ -15,6 +15,7 @@ gem "haml-rails", '~> 0.3.4'
 gem "compass", '~> 0.11.5'
 gem 'jammit'
 gem "yui-compressor", "0.9.5" # Higher versions depends on Platform gem which conflicts with Platform model
+gem 'rails3-jquery-autocomplete'
 
 gem 'ancestry', '~> 1.2.4'
 gem 'paperclip', "~> 2.3"
@@ -32,7 +33,8 @@ gem 'delayed_job'
 # gem 'actionwebservice' #, :git => 'git://github.com/ywen/actionwebservice.git'
 gem "rails-xmlrpc", '~> 0.3.6' # :git => 'git://github.com/chipiga/rails-xmlrpc.git'
 
-gem 'rails3-jquery-autocomplete'
+gem 'passenger', '~> 3.0.11'
+gem 'unicorn', '~> 4.1.1'
 
 group :production do
   gem "airbrake", '~> 3.0.5'

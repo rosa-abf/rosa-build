@@ -19,9 +19,13 @@ class BuildListsController < ApplicationController
       @build_lists = BuildList.recent.paginate :page => params[:page]
     end
 		@action_url = all_build_lists_path
-		
-    @build_server_status = BuildServer.get_status rescue {}
-	  
+
+    @build_server_status = begin
+      BuildServer.get_status
+    rescue Exception # Timeout::Error
+      {}
+    end
+
     render :action => 'index'
 	end
 	
