@@ -46,6 +46,12 @@ task :symlink_downloads_dir do
   run "ln -nfs #{shared_path}/downloads/ #{release_path}/public/downloads"
 end
 
+task :symlink_tmp_dir do
+  run "ln -nfs #{shared_path}/tmp/ #{release_path}/tmp"
+  run "mkdir -p #{release_path}/tmp/mount"
+  run "mkdir -p #{release_path}/tmp/umount"
+end
+
 namespace :deploy do
   task :restart, :roles => :app, :except => { :no_release => true } do
     run "touch #{current_release}/tmp/restart.txt"
@@ -62,6 +68,7 @@ namespace :deploy do
   after "deploy:update_code", :roles => :web do
     symlink_config_files
     symlink_downloads_dir
+    symlink_tmp_dir
   end
 end
 
