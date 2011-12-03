@@ -10,3 +10,5 @@ Rosa::Application.config.middleware.insert_after ::Rails::Rack::Logger, ::Grack:
 Rosa::Application.config.middleware.insert_before ::Grack::Handler, ::Grack::Auth
 
 # Grit::Git.git_timeout = 60
+
+Dir[Rails.root.join("lib/ext/**/*.rb")].each {|f| require f}
