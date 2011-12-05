@@ -13,8 +13,18 @@
             = user.name
           - if (@project.owner == user)
             = '(' + t("layout.owner") + ')'
-      %br
+      /%br
       -# if can? :update, @project
+    %p
+      %b
+        = "#{t("layout.projects.groups")}:"
+      %ul
+      - @project.groups.each do |group|
+        %li
+          = link_to group.name, group_path(group)
+          - if (@project.owner == group)
+            = '(' + t("layout.owner") + ')'
+      %br
       = link_to t("layout.projects.edit_collaborators"), edit_project_collaborators_path(@project) if can? :manage_collaborators, @project
 
     / %p

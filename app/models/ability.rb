@@ -29,12 +29,19 @@ class Ability
         can [:index, :destroy], AutoBuildList, :project_id => user.own_project_ids
         # If rules goes one by one CanCan joins them by 'OR' sql operator
         can :read, Project, :visibility => 'open'
+        can :read, Group
         can :read, User
         can :manage_collaborators, Project do |project|
           project.relations.exists? :object_id => user.id, :object_type => 'User', :role => 'admin'
         end
+
+        can :manage_members, Group do |group|
+          group.objects.exists? :object_id => user.id, :object_type => 'User', :role => 'admin'
+        end
+
         # Put here model names which objects can user create
         can :create, Project
+        can :create, Group
         can :publish, BuildList do |build_list|
           build_list.can_published? && build_list.project.relations.exists?(:object_type => 'User', :object_id => user.id)
         end
@@ -50,6 +57,10 @@ class Ability
         #can [:update, :process_build, :build], Project, :relations => {:role => 'writer'}
         can [:read, :update, :process_build, :build], Project, projects_in_relations_with(:role => ['writer', 'admin'], :object_type => 'User', :object_id => user.id)  do |project|
           project.relations.exists?(:role => ['writer', 'admin'], :object_type => 'User', :object_id => user.id)
+        end
+
+        can [:read, :update], Group, groups_in_relations_with(:role => ['writer', 'admin'], :object_type => 'User', :object_id => user.id) do |group|
+          group.objects.exists?(:role => ['writer', 'admin'], :object_type => 'User', :object_id => user.id)
         end
         
         can :manage, Platform, :owner_type => 'User', :owner_id => user.id
@@ -110,7 +121,7 @@ class Ability
 
   # Sub query for platforms, projects relations
   # TODO: Replace table names list by method_missing way
-  %w[platforms projects repositories].each do |table_name|
+  %w[platforms projects repositories groups].each do |table_name|
     define_method table_name + "_in_relations_with" do |opts|
       query = "#{ table_name }.id IN (SELECT target_id FROM relations WHERE relations.target_type = '#{ table_name.singularize.camelize }'"
       opts.each do |key, value|

@@ -1,0 +1,35 @@
+.block
+  .secondary-navigation
+    %ul.wat-cf
+      %li.first= link_to t("layout.members.back_to_group"), parent_path
+      %li.active= link_to t("layout.members.edit"), edit_group_members_path(@group)
+  .content
+    .inner
+      = form_tag group_members_path(parent) do
+        %h2.title= t("layout.users.list_header")
+        %table.table
+          %tr
+            %th.first ID
+            %th= t("activerecord.attributes.user.name")
+            %th= t("activerecord.attributes.user.roles")
+            %th= t("activerecord.attributes.user.uname")
+          - #TODO: Replace this Chelyabinsk add/remove collaborators method by more human method
+          - @users.each do |user|
+            %tr{:class => cycle("odd", "even")}
+              %td
+                = user.id
+              %td
+                = link_to user.name, user_path(user)
+              %td
+                - Relation::ROLES.each do |role|
+                  = check_box_tag "#{ role }[#{user.id}]", '1', ((parent.relations.exists? :object_id => user.id, :object_type => 'User', :role => role) ? :checked : nil), {:class => "user_role_chbx"}
+                  = label_tag "#{ role }[#{user.id}]", t("layout.members.roles.#{ role }")
+              %td
+                = user.uname
+        .group.navform.wat-cf
+          %button.button{:type => "submit"}
+            = image_tag("web-app-theme/icons/tick.png", :alt => t("layout.save"))
+            = t("layout.save")
+          %span.text_button_padding= t("layout.or")
+          = link_to t("layout.cancel"), group_path(parent), :class => "text_button_padding link_button"
+

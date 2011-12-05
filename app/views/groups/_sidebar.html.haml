@@ -1,5 +1,15 @@
 .block.notice
   %h3= t("layout.groups.members")
   .content
-    - @group.members.each do |member|
-      %p= link_to member.name, member
+    %p
+      %ul
+      - @group.members.each do |user|
+        %li
+          - if can? :read, user
+            = link_to user.name, user_path(user)
+          - else
+            = user.name
+          - if (@group.owner == user)
+            = '(' + t("layout.owner") + ')'
+      %br
+      = link_to t("layout.groups.edit_members"), edit_group_members_path(@group) if can? :manage_members, @group

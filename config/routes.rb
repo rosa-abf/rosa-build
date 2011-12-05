@@ -105,6 +105,18 @@ Rosa::Application.routes.draw do
     end
   end
 
+  resources :groups do
+    resources :members, :only => [:index, :edit, :update] do
+      collection do
+        get :edit
+        post :update
+      end
+      member do
+        post :update
+      end
+    end
+  end
+
   resources :users, :groups do
     resources :platforms, :only => [:new, :create]
 
