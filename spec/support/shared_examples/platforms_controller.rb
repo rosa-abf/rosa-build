@@ -1,11 +1,11 @@
-shared_examples_for 'able_to_perform_index_action' do
+shared_examples_for 'able_to_perform_index#platforms' do
   it 'should be able to perform index action' do
     get :index
     response.should render_template(:index)
   end
 end
 
-shared_examples_for 'not_be_able_to_perform_create_action' do
+shared_examples_for 'not_be_able_to_perform_create#platforms' do
   it 'should be able to perform create action' do
     post :create, @create_params
     response.should redirect_to(forbidden_path)
@@ -25,7 +25,7 @@ shared_examples_for 'change_objects_count_on_destroy_success' do
   end
 end
 
-shared_examples_for 'be_able_to_perform_destroy_action' do
+shared_examples_for 'be_able_to_perform_destroy#platforms' do
   it 'should be able to perform destroy action' do
     delete :destroy, :id => @platform.id
     response.should redirect_to(root_path)

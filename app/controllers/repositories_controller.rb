@@ -4,6 +4,7 @@ class RepositoriesController < ApplicationController
   before_filter :find_platform, :only => [:show, :destroy, :add_project, :remove_project]
   before_filter :get_paths, :only => [:show, :new, :create, :add_project, :remove_project]
   before_filter :find_platforms, :only => [:new, :create]
+  before_filter :build_repository_stub, :only => [:new, :create]
 
   load_and_authorize_resource :platform
   load_and_authorize_resource :repository, :through => :platform, :shallow => true
@@ -108,5 +109,9 @@ class RepositoriesController < ApplicationController
 
     def find_repository
       @repository = Repository.find(params[:id])
+    end
+
+    def build_repository_stub
+      @repository = Repository.build_stub(Platform.find(params[:platform_id]))
     end
 end

@@ -1,11 +1,11 @@
-shared_examples_for 'be_able_to_perform_index_action' do
+shared_examples_for 'be_able_to_perform_index#collaborators' do
   it 'should be able to perform index action' do
     get :index, :project_id => @project.id
     response.should redirect_to(edit_project_collaborators_path(@project))
   end
 end
 
-shared_examples_for 'be_able_to_perform_update_action' do
+shared_examples_for 'be_able_to_perform_update#collaborators' do
   it 'should be able to perform update action' do
     post :update, {:project_id => @project.id}.merge(@update_params)
     response.should redirect_to(project_path(@project))
@@ -18,14 +18,14 @@ shared_examples_for 'update_collaborator_relation' do
   end
 end
 
-shared_examples_for 'not_be_able_to_perform_index_action' do
+shared_examples_for 'not_be_able_to_perform_index#collaborators' do
   it 'should be able to perform index action' do
     get :index, :project_id => @project.id
     response.should redirect_to(edit_project_collaborators_path(@project))
   end
 end
 
-shared_examples_for 'not_be_able_to_perform_update_action' do
+shared_examples_for 'not_be_able_to_perform_update#collaborators' do
   it 'should be able to perform update action' do
     post :update, {:project_id => @project.id}.merge(@update_params)
     response.should redirect_to(project_path(@project))

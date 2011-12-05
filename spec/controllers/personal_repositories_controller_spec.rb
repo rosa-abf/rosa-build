@@ -1,5 +1,5 @@
 require 'spec_helper'
-require 'shared_examples/personal_repositories_controller'
+#require 'shared_examples/personal_repositories_controller'
 
 describe PersonalRepositoriesController do
 	before(:each) do
@@ -25,13 +25,13 @@ describe PersonalRepositoriesController do
   		set_session_for(@admin)
 		end
 
-    it_should_behave_like 'be_able_to_perform_show_action'
-    it_should_behave_like 'be_able_to_perform_add_project_action'
-    it_should_behave_like 'be_able_to_perform_add_project_action_with_project_id_param'
+    it_should_behave_like 'be_able_to_perform_show#personal_repositories'
+    it_should_behave_like 'be_able_to_perform_add_project#personal_repositories'
+    it_should_behave_like 'be_able_to_perform_add_project#personal_repositories_with_project_id_param'
     it_should_behave_like 'add_project_to_repository'
-    it_should_behave_like 'be_able_to_perform_remove_project'
+    it_should_behave_like 'be_able_to_perform_remove_project#personal_repositories'
     it_should_behave_like 'remove_project_from_repository'
-    it_should_behave_like 'be_able_to_perform_settings_action'
+    it_should_behave_like 'be_able_to_perform_settings#personal_repositories'
     it_should_behave_like 'be_able_to_perform_change_visibility'
     it_should_behave_like 'be_able_to_change_visibility'
   end
@@ -58,14 +58,14 @@ describe PersonalRepositoriesController do
   		p.save!
 		end
 
-    it_should_behave_like 'be_able_to_perform_settings_action'
+    it_should_behave_like 'be_able_to_perform_settings#personal_repositories'
     it_should_behave_like 'be_able_to_perform_change_visibility'
     it_should_behave_like 'be_able_to_change_visibility'
-    it_should_behave_like 'be_able_to_perform_show_action'
-    it_should_behave_like 'be_able_to_perform_add_project_action'
-    it_should_behave_like 'be_able_to_perform_add_project_action_with_project_id_param'
+    it_should_behave_like 'be_able_to_perform_show#personal_repositories'
+    it_should_behave_like 'be_able_to_perform_add_project#personal_repositories'
+    it_should_behave_like 'be_able_to_perform_add_project#personal_repositories_with_project_id_param'
     it_should_behave_like 'add_project_to_repository'
-    it_should_behave_like 'be_able_to_perform_remove_project'
+    it_should_behave_like 'be_able_to_perform_remove_project#personal_repositories'
     it_should_behave_like 'remove_project_from_repository'
   end
 
@@ -77,7 +77,7 @@ describe PersonalRepositoriesController do
   		r.save!
 		end
 
-    it_should_behave_like 'be_able_to_perform_show_action'
+    it_should_behave_like 'be_able_to_perform_show#personal_repositories'
 
     it 'should not be able to perform add_project action' do
       get :add_project, :id => @repository.id

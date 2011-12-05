@@ -1,5 +1,5 @@
 require 'spec_helper'
-require "shared_examples/platforms_controller"
+#require "shared_examples/platforms_controller"
 
 describe PlatformsController do
   before(:each) do
@@ -41,7 +41,7 @@ describe PlatformsController do
       set_session_for(@admin)
     end
 
-    it_should_behave_like 'able_to_perform_index_action'
+    it_should_behave_like 'able_to_perform_index#platforms'
 
     it 'should be able to perform new action' do
       get :new
@@ -57,7 +57,7 @@ describe PlatformsController do
       lambda { post :create, @create_params }.should change{ Platform.count }.by(1)
     end
 
-    it_should_behave_like 'be_able_to_perform_destroy_action'
+    it_should_behave_like 'be_able_to_perform_destroy#platforms'
     it_should_behave_like 'change_objects_count_on_destroy_success'
     it_should_behave_like 'not_be_able_to_destroy_personal_platform'
   end
@@ -71,9 +71,9 @@ describe PlatformsController do
       r.save!
     end
 
-    it_should_behave_like 'able_to_perform_index_action'
-    it_should_behave_like 'not_be_able_to_perform_create_action'
-    it_should_behave_like 'be_able_to_perform_destroy_action'
+    it_should_behave_like 'able_to_perform_index#platforms'
+    it_should_behave_like 'not_be_able_to_perform_create#platforms'
+    it_should_behave_like 'be_able_to_perform_destroy#platforms'
     it_should_behave_like 'change_objects_count_on_destroy_success'
     it_should_behave_like 'not_be_able_to_destroy_personal_platform'
 
@@ -97,8 +97,8 @@ describe PlatformsController do
       r.save!
     end
 
-    it_should_behave_like 'able_to_perform_index_action'
-    it_should_behave_like 'not_be_able_to_perform_create_action'
+    it_should_behave_like 'able_to_perform_index#platforms'
+    it_should_behave_like 'not_be_able_to_perform_create#platforms'
 
     it 'should not be able to perform destroy action' do
       delete :destroy, :id => @platform.id

@@ -1,5 +1,5 @@
 require 'spec_helper'
-require 'shared_examples/projects_controller'
+#require 'shared_examples/projects_controller'
 
 describe ProjectsController do
 	before(:each) do
@@ -37,8 +37,8 @@ describe ProjectsController do
   		set_session_for(@admin)
 		end
 
-    it_should_behave_like 'be_able_to_perform_index_action'
-    it_should_behave_like 'be_able_to_perform_update_action'
+    it_should_behave_like 'be_able_to_perform_index#projects'
+    it_should_behave_like 'be_able_to_perform_update#projects'
     it_should_behave_like 'update_collaborator_relation'
 
     it 'should be able to perform create action' do
@@ -62,10 +62,10 @@ describe ProjectsController do
   		r.save!
 		end
 
-    it_should_behave_like 'be_able_to_perform_update_action'
+    it_should_behave_like 'be_able_to_perform_update#projects'
     it_should_behave_like 'update_collaborator_relation'
-    it_should_behave_like 'be_able_to_perform_build_action'
-    it_should_behave_like 'be_able_to_perform_process_build_action'
+    it_should_behave_like 'be_able_to_perform_build#projects'
+    it_should_behave_like 'be_able_to_perform_process_build#projects'
 
     it 'should be able to perform destroy action' do
       delete :destroy, {:id => @project.id}
@@ -73,7 +73,7 @@ describe ProjectsController do
     end
 
     it 'should change objects count on destroy' do
-      lambda { post :create, @create_params }.should change{ Project.count }.by(-1)
+      lambda { delete :destroy, :id => @project.id }.should change{ Project.count }.by(-1)
     end
 
     it 'should not be able to fork project' do
@@ -90,7 +90,7 @@ describe ProjectsController do
   		r.save!
 		end
 
-    it_should_behave_like 'be_able_to_perform_index_action'
+    it_should_behave_like 'be_able_to_perform_index#projects'
 
     it 'should be able to perform show action' do
       get :show, :id => @project.id
@@ -108,10 +108,10 @@ describe ProjectsController do
   		r.save!
 		end
 
-    it_should_behave_like 'be_able_to_perform_update_action'
+    it_should_behave_like 'be_able_to_perform_update#projects'
     it_should_behave_like 'update_collaborator_relation'
-    it_should_behave_like 'be_able_to_perform_build_action'
-    it_should_behave_like 'be_able_to_perform_process_build_action'
+    it_should_behave_like 'be_able_to_perform_build#projects'
+    it_should_behave_like 'be_able_to_perform_process_build#projects'
     it_should_behave_like 'be_able_to_fork_project'
   end
 end

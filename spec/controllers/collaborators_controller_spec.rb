@@ -1,5 +1,5 @@
 require 'spec_helper'
-require 'shared_examples/collaborators_controller'
+#require 'shared_examples/collaborators_controller'
 
 describe CollaboratorsController do
 	before(:each) do
@@ -26,8 +26,8 @@ describe CollaboratorsController do
   		set_session_for(@admin)
 		end
 
-    it_should_behave_like 'be_able_to_perform_index_action'
-    it_should_behave_like 'be_able_to_perform_update_action'
+    it_should_behave_like 'be_able_to_perform_index#collaborators'
+    it_should_behave_like 'be_able_to_perform_update#collaborators'
     it_should_behave_like 'update_collaborator_relation'
   end
 
@@ -40,8 +40,8 @@ describe CollaboratorsController do
       r.save!
     end
 
-    it_should_behave_like 'be_able_to_perform_index_action'
-    it_should_behave_like 'be_able_to_perform_update_action'
+    it_should_behave_like 'be_able_to_perform_index#collaborators'
+    it_should_behave_like 'be_able_to_perform_update#collaborators'
     it_should_behave_like 'update_collaborator_relation'
   end
 
@@ -54,8 +54,8 @@ describe CollaboratorsController do
   		r.save!
 		end
 
-    it_should_behave_like 'be_able_to_perform_index_action'
-    it_should_behave_like 'be_able_to_perform_update_action'
+    it_should_behave_like 'be_able_to_perform_index#collaborators'
+    it_should_behave_like 'be_able_to_perform_update#collaborators'
     it_should_behave_like 'update_collaborator_relation'
   end
 
@@ -68,8 +68,8 @@ describe CollaboratorsController do
   		r.save!
 		end
 
-    it_should_behave_like 'not_be_able_to_perform_index_action'
-    it_should_behave_like 'not_be_able_to_perform_update_action'
+    it_should_behave_like 'not_be_able_to_perform_index#collaborators'
+    it_should_behave_like 'not_be_able_to_perform_update#collaborators'
     it_should_behave_like 'not_update_collaborator_relation'
   end
 
@@ -82,8 +82,8 @@ describe CollaboratorsController do
   		r.save!
 		end
 
-    it_should_behave_like 'not_be_able_to_perform_index_action'
-    it_should_behave_like 'not_be_able_to_perform_update_action'
+    it_should_behave_like 'not_be_able_to_perform_index#collaborators'
+    it_should_behave_like 'not_be_able_to_perform_update#collaborators'
     it_should_behave_like 'not_update_collaborator_relation'
   end
 end

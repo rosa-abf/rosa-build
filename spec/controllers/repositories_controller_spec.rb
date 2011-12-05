@@ -1,5 +1,5 @@
 require 'spec_helper'
-require 'shared_examples/repositories_controller'
+#require 'shared_examples/repositories_controller'
 
 describe RepositoriesController do
 	before(:each) do
@@ -33,11 +33,11 @@ describe RepositoriesController do
   		set_session_for(@admin)
 		end
 
-    it_should_behave_like 'be_able_to_perform_index_action'
-    it_should_behave_like 'be_able_to_perform_show_action'
+    it_should_behave_like 'be_able_to_perform_index#repositories'
+    it_should_behave_like 'be_able_to_perform_show#repositories'
 
     it 'should be able to perform new action' do
-      get :new
+      get :new, :platform_id => @platform.id
       response.should render_template(:new)
     end
 
@@ -50,12 +50,12 @@ describe RepositoriesController do
       lambda { post :create, @create_params }.should change{ Repository.count }.by(1)
     end
 
-    it_should_behave_like 'be_able_to_perform_destroy_action'
+    it_should_behave_like 'be_able_to_perform_destroy#repositories'
     it_should_behave_like 'change_repositories_count_after_destroy'
-    it_should_behave_like 'be_able_to_perform_add_project_action'
-    it_should_behave_like 'be_able_to_perform_add_project_action_with_project_id_param'
+    it_should_behave_like 'be_able_to_perform_add_project#repositories'
+    it_should_behave_like 'be_able_to_perform_add_project#repositories_with_project_id_param'
     it_should_behave_like 'add_project_to_repository'
-    it_should_behave_like 'be_able_to_perform_remove_project'
+    it_should_behave_like 'be_able_to_perform_remove_project#repositories'
     it_should_behave_like 'remove_project_from_repository'
     it_should_behave_like 'not_be_able_to_destroy_personal_repository'
   end
@@ -67,7 +67,7 @@ describe RepositoriesController do
 		end
 
     it 'should not be able to perform new action' do
-      get :new
+      get :new, :platform_id => @platform.id
       response.should redirect_to(forbidden_path)
     end
 
@@ -92,14 +92,14 @@ describe RepositoriesController do
   		r.save!
 		end
 
-    it_should_behave_like 'be_able_to_perform_index_action'
-    it_should_behave_like 'be_able_to_perform_show_action'
-    it_should_behave_like 'be_able_to_perform_add_project_action'
-    it_should_behave_like 'be_able_to_perform_add_project_action_with_project_id_param'
+    it_should_behave_like 'be_able_to_perform_index#repositories'
+    it_should_behave_like 'be_able_to_perform_show#repositories'
+    it_should_behave_like 'be_able_to_perform_add_project#repositories'
+    it_should_behave_like 'be_able_to_perform_add_project#repositories_with_project_id_param'
     it_should_behave_like 'add_project_to_repository'
-    it_should_behave_like 'be_able_to_perform_remove_project'
+    it_should_behave_like 'be_able_to_perform_remove_project#repositories'
     it_should_behave_like 'remove_project_from_repository'
-    it_should_behave_like 'be_able_to_perform_destroy_action'
+    it_should_behave_like 'be_able_to_perform_destroy#repositories'
     it_should_behave_like 'change_repositories_count_after_destroy'
   end
 
@@ -111,8 +111,8 @@ describe RepositoriesController do
   		r.save!
 		end
 
-    it_should_behave_like 'be_able_to_perform_index_action'
-    it_should_behave_like 'be_able_to_perform_show_action'
+    it_should_behave_like 'be_able_to_perform_index#repositories'
+    it_should_behave_like 'be_able_to_perform_show#repositories'
 
     it 'should not be able to perform add_project action' do
       get :add_project, :id => @repository.id
@@ -130,4 +130,3 @@ describe RepositoriesController do
     end
   end
 end
-

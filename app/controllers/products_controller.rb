@@ -2,6 +2,7 @@ class ProductsController < ApplicationController
   before_filter :authenticate_user!
   before_filter :find_product, :only => [:show, :edit, :update, :destroy]
   before_filter :find_platform
+  before_filter :build_product_stub, :only => [:new, :create]
 
   load_and_authorize_resource :platform
   load_and_authorize_resource :product, :through => :platform
@@ -63,5 +64,9 @@ class ProductsController < ApplicationController
 
     def find_platform
       @platform = Platform.find params[:platform_id]
+    end
+
+    def build_product_stub
+      @product = Product.new(:platform_id => params[:platform_id])
     end
 end
