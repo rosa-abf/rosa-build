@@ -24,12 +24,18 @@ set :repository,  "git@github.com:warpc/rosa-build.git"
 set :scm, "git"
 
 set :user, "rosa"
+# set :sudo, "rvmsudo"
 set :use_sudo, false
 set :deploy_to, "/srv/#{application}"
 # set :deploy_via, :copy
 # set :copy_cache, true
 
 set :keep_releases, 3
+
+set :rails_env, :production
+set :unicorn_binary, "bundle exec unicorn"
+set :unicorn_config, "#{current_path}/config/unicorn.rb"
+set :unicorn_pid, "#{current_path}/tmp/pids/unicorn.pid"
 
 task :symlink_config_files do
   run "mkdir -p #{deploy_to}/#{shared_dir}/config"
@@ -53,12 +59,26 @@ task :symlink_tmp_dir do
 end
 
 namespace :deploy do
+  task :start, :roles => :app, :except => { :no_release => true } do 
+    run "cd #{current_path} && #{try_sudo} #{unicorn_binary} -c #{unicorn_config} -E #{rails_env} -D"
+  end
+  task :stop, :roles => :app, :except => { :no_release => true } do 
+    run "#{try_sudo} kill `cat #{unicorn_pid}`"
+  end
+  task :graceful_stop, :roles => :app, :except => { :no_release => true } do
+    run "#{try_sudo} kill -s QUIT `cat #{unicorn_pid}`"
+  end
+  task :reload, :roles => :app, :except => { :no_release => true } do
+    run "#{try_sudo} kill -s USR2 `cat #{unicorn_pid}`"
+  end
   task :restart, :roles => :app, :except => { :no_release => true } do
-    run "touch #{current_release}/tmp/restart.txt"
+    stop
+    start
+    # run "touch #{current_release}/tmp/restart.txt"
     restart_dj
   end
 
-  %w(start).each { |name| task name, :roles => :app do deploy.restart end }
+  # %w(start).each { |name| task name, :roles => :app do deploy.restart end }
 
   desc "Restart delayed job"
   task :restart_dj, :roles => :web do
