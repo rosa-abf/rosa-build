@@ -5,17 +5,16 @@ preload_app true
 
 working_directory File.expand_path(File.join(File.dirname(__FILE__), ".."))  # available in 0.94.0+
 
-#listen '/tmp/rosa_build.sock', :backlog => 2048
-#listen "/tmp/.sock", :backlog => 64
+# listen '/tmp/rosa_build.sock', :backlog => 2048
+# listen "/tmp/.sock", :backlog => 64
 listen 8080, :tcp_nopush => true
-#
-#nuke workers after 30 seconds instead of 60 seconds (the default)
+
+# nuke workers after 30 seconds instead of 60 seconds (the default)
 timeout 1200
-#
-#feel free to point this anywhere accessible on the filesystem
+
+# feel free to point this anywhere accessible on the filesystem
 pid File.expand_path(File.join(File.dirname(__FILE__), "..")) + '/tmp/pids/unicorn.pid'
 
-#
 # REE
 # http://www.rubyenterpriseedition.com/faq.html#adapt_apps_for_cow
 if GC.respond_to?(:copy_on_write_friendly=)

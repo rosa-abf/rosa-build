@@ -9,7 +9,7 @@ namespace :import do
       print "Import #{name}..."
       owner = User.find(1) # I am
       # owner = Group.find(1) # Core Team
-      p = Project.find_or_create_by_name_and_name(name, name) {|p| p.owner = owner}
+      p = Project.find_or_create_by_name(name) {|p| p.owner = owner}
       puts p.persisted? ? "Ok!" : "Fail!"
     end
     puts 'DONE'

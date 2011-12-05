@@ -12,7 +12,7 @@ gem 'cancan', '~> 1.6.7'
 #gem 'bitmask_attributes'
 
 gem "haml-rails", '~> 0.3.4'
-gem "compass", '~> 0.11.5'
+# gem "compass", '~> 0.11.5' # update when it will be needed
 gem 'jammit'
 gem "yui-compressor", "0.9.5" # Higher versions depends on Platform gem which conflicts with Platform model
 gem 'rails3-jquery-autocomplete'
@@ -33,7 +33,7 @@ gem 'delayed_job'
 # gem 'actionwebservice' #, :git => 'git://github.com/ywen/actionwebservice.git'
 gem "rails-xmlrpc", '~> 0.3.6' # :git => 'git://github.com/chipiga/rails-xmlrpc.git'
 
-gem 'passenger', '~> 3.0.11'
+# gem 'passenger', '~> 3.0.11'
 gem 'unicorn', '~> 4.1.1'
 
 group :production do
