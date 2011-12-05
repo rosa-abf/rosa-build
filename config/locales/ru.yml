@@ -223,6 +223,10 @@ ru:
       roles_header: Роли для
       add_role: Добавить/Удалить роль
 
+    members:
+      back_to_group: Вернуться к группе
+      edit: Редактировать список
+      roles: Роли
 
     groups:
       list: Список
@@ -235,6 +239,7 @@ ru:
       show: Группа
       back_to_the_list: ⇐ К списку групп
       confirm_delete: Вы уверены, что хотите удалить эту группу?
+      edit_members: Изменить список участников
 
     users:
       list: Список
@@ -320,6 +325,10 @@ ru:
     collaborators:
       successfully_changed: Список коллабораторов успешно изменен
       error_in_changing: Ошибка изменения списка коллабораторов
+
+    members:
+      successfully_changed: Список участников успешно изменен
+      error_in_changing: Ошибка изменения списка участников
 
     auto_build_list:
       success: Сборка проекта автоматизорована!

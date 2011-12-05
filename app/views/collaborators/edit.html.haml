@@ -22,28 +22,29 @@
                 = link_to user.name, user_path(user)
               %td
                 - Relation::ROLES.each do |role|
-                  = check_box_tag "#{ role }[#{user.id}]", '1', ((@project.relations.exists? :object_id => user.id, :object_type => 'User', :role => role) ? :checked : nil), {:class => "user_role_chbx"}
-                  = label_tag "#{ role }[#{user.id}]", t("layout.collaborators.roles.#{ role }")
+                  = check_box_tag "user[#{ role }][#{user.id}]", '1', ((@project.relations.exists? :object_id => user.id, :object_type => 'User', :role => role) ? :checked : nil), {:class => "user_role_chbx"}
+                  = label_tag "user[#{ role }][#{user.id}]", t("layout.collaborators.roles.#{ role }")
               %td
                 = user.uname
-        /%h2.title= t("layout.groups.list_header")
-        /%table.table
-        /  %tr
-        /    %th.first ID
-        /    %th= t("activerecord.attributes.group.name")
-        /    %th= t("activerecord.attributes.group.uname")
-        /    %th.last= t("layout.collaborators.add")
-        /  - @groups.each do |group|
-        /    %tr{:class => cycle("odd", "even")}
-        /      %td
-        /        = group.id
-        /      %td
-        /        = link_to group.name, group_path(group)
-        /      %td
-        /        = group.uname
-        /      %td.last
-        /        = check_box_tag "group[#{group.id}]", '1', (@project.groups.include? group) ? :checked : nil
-        /        = label_tag "group[#{group.id}]", t("layout.collaborators.add")
+        %h2.title= t("layout.groups.list_header")
+        %table.table
+          %tr
+            %th.first ID
+            %th= t("activerecord.attributes.group.name")
+            %th= t("activerecord.attributes.group.uname")
+            %th.last= t("layout.collaborators.add")
+          - @groups.each do |group|
+            %tr{:class => cycle("odd", "even")}
+              %td
+                = group.id
+              %td
+                = link_to group.name, group_path(group)
+              %td
+                - Relation::ROLES.each do |role|
+                  = check_box_tag "group[#{role}][#{group.id}]", '1', ((@project.relations.exists? :object_id => group.id, :object_type => 'Group', :role => role) ? :checked : nil), {:class => "user_role_chbx"}
+                  = label_tag "group[#{role}][#{group.id}]", t("layout.collaborators.roles.#{role}")
+              %td
+                = group.uname
         .group.navform.wat-cf
           %button.button{:type => "submit"}
             = image_tag("web-app-theme/icons/tick.png", :alt => t("layout.save"))

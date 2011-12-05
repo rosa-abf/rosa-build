@@ -25,6 +25,9 @@
             -if can? :index, Project
               %li{:class => controller.controller_path == 'projects' ? 'active' : '' }
                 %a{:href => projects_path}= t("layout.menu.projects")
+            -if can? :index, Group
+              %li{:class => controller.controller_path == 'groups' ? 'active' : '' }
+                %a{:href => groups_path}= t("layout.menu.groups")
             -if can? :index, Download
               %li{:class => controller.controller_path == 'downloads' ? 'active' : '' }
                 %a{:href => downloads_path}= t("layout.menu.downloads")

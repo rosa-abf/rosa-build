@@ -5,6 +5,21 @@ class Relation < ActiveRecord::Base
   ROLES = %w[reader writer admin]
   validates :role, :inclusion => {:in => ROLES}
 
+  before_validation :add_default_role
+
   scope :by_object, lambda {|obj| {:conditions => ['object_id = ? AND object_type = ?', obj.id, obj.class.to_s]}}
   scope :by_target, lambda {|tar| {:conditions => ['target_id = ? AND target_type = ?', tar.id, tar.class.to_s]}}
+
+  def self.create_with_role(object, target, role)
+    r = new
+    r.object = object
+    r.target = target
+    r.role = role
+    r.save
+  end
+
+  protected
+    def add_default_role
+      self.role = ROLES.first if role.nil? || role.empty?
+    end
 end

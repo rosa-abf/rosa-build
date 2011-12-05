@@ -15,8 +15,13 @@ class ApplicationController < ActionController::Base
   
   protected
     def get_owner
-      params['user_id'] && User.find_by_id(params['user_id']) ||
-      params['group_id'] && Group.find_by_id(params['group_id']) || current_user
+#      params['user_id'] && User.find_by_id(params['user_id']) ||
+#      params['group_id'] && Group.find_by_id(params['group_id']) || current_user
+      if parent and (parent.is_a? User or parent.is_a? Group)
+        parent
+      else
+       current_user
+      end
     end
 
     def layout_by_resource

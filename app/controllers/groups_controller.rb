@@ -1,12 +1,27 @@
 # coding: UTF-8
 class GroupsController < ApplicationController
+  is_related_controller!
+
+  belongs_to :user, :optional => true
+
   before_filter :authenticate_user!
   before_filter :find_group, :only => [:show, :edit, :update, :destroy]
 
   load_and_authorize_resource
 
   def index
-    @groups = Group.paginate(:page => params[:group_page])
+    puts parent.inspect
+    @groups = if parent? and !parent.nil?
+                parent.groups
+              else
+                Group
+              end.accessible_by(current_ability)
+
+    @groups = if params[:query]
+                @groups.where(["name LIKE ?", "%#{params[:query]}%"])
+              else
+                @groups
+              end.paginate(:page => params[:group_page])
   end
 
   def show
@@ -24,13 +39,18 @@ class GroupsController < ApplicationController
 
   def create
     @group = Group.new params[:group]
-    @group.owner = current_user
-    @group.members << current_user
-    if @group.save
+    @group.owner = if parent? and parent.is_a? User
+                     parent
+                   else
+                     current_user
+                   end
+
+    if @group.save!
       flash[:notice] = t('flash.group.saved')
       redirect_to edit_group_path(@group)
     else
       flash[:error] = t('flash.group.save_error')
+      flash[:warning] = @project.errors[:base]
       render :action => :new
     end
   end
