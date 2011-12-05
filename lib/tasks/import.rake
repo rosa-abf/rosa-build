@@ -4,7 +4,7 @@ namespace :import do
   desc "Load projects"
   task :projects => :environment do
     open('http://dl.dropbox.com/u/984976/package_list.txt').readlines.each do |name|
-      name.chomp!; # name.downcase!
+      name.chomp!; name.strip! #; name.downcase!
       # name = name.match(/^([a-z\d_\-\+\.]+?)-(\d[a-z\d\-\.]+)\.src\.rpm$/)[1] # parse
       print "Import #{name}..."
       owner = User.find(1) # I am
