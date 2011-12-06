@@ -24,17 +24,4 @@ Rosa::Application.configure do
   config.action_dispatch.best_standards_support = :builtin
 end
 
-# Uncomment this to stub XML RPC calls
-require 'xmlrpc/client'
-module XMLRPC
-  class Client
-    def call(*args)
-      # raise args.inspect
-      case
-      when args.first == 'get_status'
-        {'client_count' => 1, 'count_new_task' => 2, 'count_build_task' => 3}
-      else; 0
-      end
-    end
-  end
-end
+require 'stub_xml_rpc'

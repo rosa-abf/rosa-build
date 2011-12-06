@@ -4,12 +4,6 @@ class Download < ActiveRecord::Base
   default_scope order(:name)
 
   class << self
-    #def rotate_nginx_log
-    #  system("sudo mv #{ APP_CONFIG['nginx_log'] } #{ PREV_LOG_FILE }")
-    #  #system("sudo kill -USR1 `cat #{ APP_CONFIG['nginx_pid'] }`")
-    #  system("sudo /opt/nginx/sbin/nginx -s reload")
-    #end
-
     def parse_nginx_log
       File.open(PREV_LOG_FILE) do |log|
         while (line = log.gets)

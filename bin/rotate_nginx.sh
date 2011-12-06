@@ -1,6 +1,6 @@
 #!/bin/bash
 
-mv /opt/nginx/logs/access.log /opt/nginx/logs/access.log.0
-/opt/nginx/sbin/nginx -s reload
-chown rosa /opt/nginx/logs/access.log.0
-touch /home/rosa/i_was_launched.txt
+mv /srv/rosa_build/shared/log/nginx.access.log /srv/rosa_build/shared/log/nginx.access.log.0
+/etc/init.d/nginx reload
+chown rosa /srv/rosa_build/shared/log/nginx.access.log.0
+# touch /home/rosa/i_was_launched.txt

@@ -35,18 +35,4 @@ Rosa::Application.configure do
   config.active_support.deprecation = :stderr
 end
 
-# Uncomment this to stub XML RPC calls
-require 'xmlrpc/client'
-module XMLRPC
-  class Client
-    def call(*args)
-      # raise args.inspect
-      case
-      when args.first == 'get_status'
-        raise Timeout::Error
-      else; 0
-      end
-    end
-  end
-end
-
+require 'stub_xml_rpc'

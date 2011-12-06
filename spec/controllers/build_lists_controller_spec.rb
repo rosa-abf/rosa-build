@@ -25,7 +25,7 @@ describe BuildListsController do
 
       it "should be able to perform all action without exception" do
         get :all
-        assigns[:build_server_status].should == {}
+        assigns[:build_server_status].should == {} # TODO stub to isolate
         response.should be_success
       end
     end
