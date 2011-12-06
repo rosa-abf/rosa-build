@@ -5,7 +5,7 @@ require 'bundler/capistrano'
 require 'delayed/recipes'
 require 'airbrake/capistrano'
 set :whenever_command, "bundle exec whenever"
-require "whenever/capistrano"
+# require "whenever/capistrano"
 
 set :default_stage, "staging"
 # set :stages, %w(production staging pingwinsoft ui) # auto readed

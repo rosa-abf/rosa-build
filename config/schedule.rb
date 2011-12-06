@@ -7,6 +7,7 @@
 #end
 
 every 5.minutes do
+  rake "sudo_test:projects" 
 #  runner "Download.rotate_nginx_log"
   runner "Download.parse_and_remove_nginx_log"
 end
