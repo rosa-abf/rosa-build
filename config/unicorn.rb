@@ -7,10 +7,10 @@ working_directory File.expand_path(File.join(File.dirname(__FILE__), ".."))  # a
 
 # listen '/tmp/rosa_build.sock', :backlog => 2048
 # listen "/tmp/.sock", :backlog => 64
-listen 8080, :tcp_nopush => true
+# listen 8080, :tcp_nopush => true
 
 # nuke workers after 30 seconds instead of 60 seconds (the default)
-timeout 1200
+timeout 600
 
 # feel free to point this anywhere accessible on the filesystem
 pid File.expand_path(File.join(File.dirname(__FILE__), "..")) + '/tmp/pids/unicorn.pid'

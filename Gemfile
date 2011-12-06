@@ -59,6 +59,7 @@ group :development do
   # deploy
   gem 'capistrano', :require => false
   gem 'capistrano-ext', :require => false
+  gem 'cape', :require => false
   # gem 'capistrano-exts', :require => false #, :git => 'git://github.com/chipiga/capistrano-exts.git'
   # gem 'capistrano-recipes', :require => false
   gem 'capistrano_colors', :require => false

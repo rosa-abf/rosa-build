@@ -43,6 +43,7 @@ GEM
     bcrypt-ruby (3.0.1)
     builder (2.1.2)
     cancan (1.6.7)
+    cape (1.0.1)
     capistrano (2.9.0)
       highline
       net-scp (>= 1.0.0)
@@ -204,6 +205,7 @@ DEPENDENCIES
   airbrake (~> 3.0.5)
   ancestry (~> 1.2.4)
   cancan (~> 1.6.7)
+  cape
   capistrano
   capistrano-ext
   capistrano_colors

@@ -2,11 +2,10 @@ Capistrano::Configuration.instance(:must_exist).load do
   namespace :deploy do
     namespace :nginx do
       set :nginx_init_path, "/etc/init.d/nginx"
+      set(:nginx_config_path) { "/etc/nginx/conf.d/#{fetch :application}.conf" }
 
       desc "Generate Nginx configuration"
       task :generate_configuration, :roles => :web, :except => { :no_release => true } do
-        cur_path = File.join(deploy_to, current_dir)
-        nginx_config_path = "/etc/nginx/conf.d/#{application}.conf"
         config = %Q{
 upstream #{application}_backend {
   server  127.0.0.1:#{unicorn_port};
@@ -15,7 +14,7 @@ upstream #{application}_backend {
 server {
   listen  80;
   server_name	#{domain};
-    root    #{cur_path}/public;
+    root    #{fetch :current_path}/public;
 
     location /downloads {
       autoindex on;
@@ -32,19 +31,19 @@ server {
       proxy_redirect      off;
     }
 
-    access_log    #{shared_path}/log/nginx.access.log;
-    error_log     #{shared_path}/log/nginx.error.log;
+    access_log    #{fetch :shared_path}/log/nginx.access.log;
+    error_log     #{fetch :shared_path}/log/nginx.error.log;
 
     error_page 500 502 503 504 /500.html;
     location = /500.html {
-      root    #{cur_path}/public;
+      root    #{fetch :current_path}/public;
     }
 }
 }
         # puts config
-        puts "Write nginx config to #{nginx_config_path}"
+        puts "Write nginx config to #{fetch :nginx_config_path}"
         put config, '/tmp/nginx.conf'
-        sudo "mv /tmp/nginx.conf #{nginx_config_path}"
+        sudo "mv /tmp/nginx.conf #{fetch :nginx_config_path}"
       end
 
       desc "Start nginx web server"
