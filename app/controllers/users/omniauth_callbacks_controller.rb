@@ -17,7 +17,7 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
         authentication.user = current_user
         authentication.save
       else # Register new user from session
-        session["devise.omniauth_data"] = env["omniauth.auth"]
+        session["devise.omniauth_data"] = env["omniauth.auth"].except('extra')
         flash[:notice] = I18n.t "devise.omniauth_callbacks.register"
         redirect_to new_user_registration_url
       end
