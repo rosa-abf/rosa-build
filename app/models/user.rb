@@ -50,7 +50,7 @@ class User < ActiveRecord::Base
     def new_with_session(params, session)
       super.tap do |user|
         if data = session["devise.omniauth_data"]
-          if info = data['user_info'] and info.present?
+          if info = data['info'] and info.present?
             user.email = info['email'].presence if user.email.blank?
             user.uname ||= info['nickname'].presence || info['username'].presence
             user.name ||= info['name'].presence || [info['first_name'], info['last_name']].join(' ').strip
