@@ -13,4 +13,4 @@
       %ul
         - @part_projects.each do |project|
           %li
-            = link_to project.owner.uname + '/' + project.name + ' (' + project.name + ')', project_path(project)
+            = link_to project.owner.uname + '/' + project.name, project_path(project)
