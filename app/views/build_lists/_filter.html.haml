@@ -1,6 +1,6 @@
 %h2.title= t("layout.build_lists.filter_header")
 
-= form_for :filter, :url => @action_url, :html => { :method => :post, :class => :form } do |f|
+= form_for :filter, :url => @action_url, :html => { :method => :get, :class => :form } do |f|
   .columns.wat-cf
     .column.left
 
