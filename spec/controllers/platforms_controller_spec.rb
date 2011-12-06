@@ -67,8 +67,7 @@ describe PlatformsController do
       @user = Factory(:user)
       set_session_for(@user)
       @platform.update_attribute(:owner, @user)
-      r = @platform.relations.build(:object_type => 'User', :object_id => @user.id, :role => 'admin')
-      r.save!
+      @platform.relations.create!(:object_type => 'User', :object_id => @user.id, :role => 'admin')
     end
 
     it_should_behave_like 'able_to_perform_index#platforms'
@@ -93,8 +92,7 @@ describe PlatformsController do
     before(:each) do
       @user = Factory(:user)
       set_session_for(@user)
-      r = @platform.relations.build(:object_type => 'User', :object_id => @user.id, :role => 'reader')
-      r.save!
+      @platform.relations.create!(:object_type => 'User', :object_id => @user.id, :role => 'reader')
     end
 
     it_should_behave_like 'able_to_perform_index#platforms'

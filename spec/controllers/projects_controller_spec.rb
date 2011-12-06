@@ -58,8 +58,7 @@ describe ProjectsController do
   		@user = Factory(:user)
   		set_session_for(@user)
   		@project.update_attribute(:owner, @user)
-  		r = @project.relations.build(:object_type => 'User', :object_id => @user.id, :role => 'admin')
-  		r.save!
+  		@project.relations.create!(:object_type => 'User', :object_id => @user.id, :role => 'admin')
 		end
 
     it_should_behave_like 'be_able_to_perform_update#projects'
@@ -86,8 +85,7 @@ describe ProjectsController do
   	before(:each) do
   		@user = Factory(:user)
   		set_session_for(@user)
-  		r = @project.relations.build(:object_type => 'User', :object_id => @user.id, :role => 'reader')
-  		r.save!
+  		@project.relations.create!(:object_type => 'User', :object_id => @user.id, :role => 'reader')
 		end
 
     it_should_behave_like 'be_able_to_perform_index#projects'
@@ -104,8 +102,7 @@ describe ProjectsController do
   	before(:each) do
   		@user = Factory(:user)
   		set_session_for(@user)
-  		r = @project.relations.build(:object_type => 'User', :object_id => @user.id, :role => 'writer')
-  		r.save!
+  		@project.relations.create!(:object_type => 'User', :object_id => @user.id, :role => 'writer')
 		end
 
     it_should_behave_like 'be_able_to_perform_update#projects'

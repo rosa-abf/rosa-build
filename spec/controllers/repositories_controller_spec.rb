@@ -88,8 +88,7 @@ describe RepositoriesController do
   		@user = Factory(:user)
   		set_session_for(@user)
   		@repository.update_attribute(:owner, @user)
-  		r = @repository.relations.build(:object_type => 'User', :object_id => @user.id, :role => 'admin')
-  		r.save!
+  		@repository.relations.create!(:object_type => 'User', :object_id => @user.id, :role => 'admin')
 		end
 
     it_should_behave_like 'be_able_to_perform_index#repositories'
@@ -107,8 +106,7 @@ describe RepositoriesController do
   	before(:each) do
   		@user = Factory(:user)
   		set_session_for(@user)
-  		r = @repository.relations.build(:object_type => 'User', :object_id => @user.id, :role => 'reader')
-  		r.save!
+  		@repository.relations.create!(:object_type => 'User', :object_id => @user.id, :role => 'reader')
 		end
 
     it_should_behave_like 'be_able_to_perform_index#repositories'

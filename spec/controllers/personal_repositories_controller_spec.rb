@@ -50,12 +50,10 @@ describe PersonalRepositoriesController do
   		set_session_for(@user)
 
   		@repository.update_attribute(:owner, @user)
-  		r = @repository.relations.build(:object_type => 'User', :object_id => @user.id, :role => 'admin')
-  		r.save!
+  		@repository.relations.create!(:object_type => 'User', :object_id => @user.id, :role => 'admin')
 
   		@repository.platform.update_attribute(:owner, @user)
-  		p = @repository.platform.relations.build(:object_type => 'User', :object_id => @user.id, :role => 'admin')
-  		p.save!
+  		@repository.platform.relations.create!(:object_type => 'User', :object_id => @user.id, :role => 'admin')
 		end
 
     it_should_behave_like 'be_able_to_perform_settings#personal_repositories'
@@ -73,8 +71,7 @@ describe PersonalRepositoriesController do
   	before(:each) do
   		@user = Factory(:user)
   		set_session_for(@user)
-  		r = @repository.relations.build(:object_type => 'User', :object_id => @user.id, :role => 'reader')
-  		r.save!
+  		@repository.relations.create!(:object_type => 'User', :object_id => @user.id, :role => 'reader')
 		end
 
     it_should_behave_like 'be_able_to_perform_show#personal_repositories'
