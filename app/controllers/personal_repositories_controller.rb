@@ -11,7 +11,7 @@ class PersonalRepositoriesController < ApplicationController
     else
       @projects = @repository.projects.recent.paginate :page => params[:project_page], :per_page => 30
     end
-    
+    @user = @repository.owner
     @urpmi_commands = @repository.platform.urpmi_list(request.host)
   end
   

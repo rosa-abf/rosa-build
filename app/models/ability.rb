@@ -34,7 +34,6 @@ class Ability
         can :manage_collaborators, Project do |project|
           project.relations.exists? :object_id => user.id, :object_type => 'User', :role => 'admin'
         end
-
         can :manage_members, Group do |group|
           group.objects.exists? :object_id => user.id, :object_type => 'User', :role => 'admin'
         end
@@ -100,6 +99,10 @@ class Ability
         can [:read, :create], PrivateUser, :platform => {:owner_type => 'Group', :owner_id => user.group_ids}
         can :publish, BuildList do |build_list|
           build_list.can_published? && build_list.project.relations.exists?(:object_type => 'Group', :object_id => user.group_ids)
+        end
+
+        can :manage_collaborators, Project, projects_in_relations_with(:role => 'admin', :object_type => 'Group', :object_id => user.group_ids) do |project|
+          project.relations.exists? :object_id => user.group_ids, :object_type => 'Group', :role => 'admin'
         end
 
         can [:read, :update, :process_build, :build, :destroy], Project, :owner_type => 'Group', :owner_id => user.group_ids
