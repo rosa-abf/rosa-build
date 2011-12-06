@@ -44,7 +44,7 @@ server {
         # puts config
         puts "Write nginx config to #{nginx_config_path}"
         put config, '/tmp/nginx.conf'
-        sudo "mv /tmp/nginx.conf #{nginx_config_path}", :pty => true
+        sudo "mv /tmp/nginx.conf #{nginx_config_path}"
       end
 
       desc "Start nginx web server"

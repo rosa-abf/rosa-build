@@ -13,6 +13,7 @@ require 'capistrano/ext/multistage'
 
 # main details
 ssh_options[:forward_agent] = true
+default_run_options[:pty] = true
 
 set :application, "rosa_build"
 set :deploy_to, "/srv/#{application}"
