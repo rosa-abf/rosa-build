@@ -9,18 +9,18 @@ Capistrano::Configuration.instance(:must_exist).load do
       run "cd #{fetch :current_path} && #{try_sudo} #{unicorn_binary} -c #{unicorn_config} -p #{unicorn_port} -E #{rails_env} -D"
     end
     task :stop, :roles => :app, :except => { :no_release => true } do 
-      run "#{try_sudo} kill `cat #{unicorn_pid}`"
+      run "#{try_sudo} kill `cat #{unicorn_pid}`" rescue warn 'deploy:stop FAILED'
     end
     task :graceful_stop, :roles => :app, :except => { :no_release => true } do
-      run "#{try_sudo} kill -s QUIT `cat #{unicorn_pid}`"
+      run "#{try_sudo} kill -s QUIT `cat #{unicorn_pid}`" rescue warn 'deploy:graceful_stop FAILED'
     end
     task :reload, :roles => :app, :except => { :no_release => true } do
-      run "#{try_sudo} kill -s USR2 `cat #{unicorn_pid}`"
+      run "#{try_sudo} kill -s USR2 `cat #{unicorn_pid}`" rescue warn 'deploy:reload FAILED'
     end
     task :restart, :roles => :app, :except => { :no_release => true } do
-      reload
-      # stop
-      # start
+      # reload
+      stop
+      start
     end
   end
 end

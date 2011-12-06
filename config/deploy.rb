@@ -42,16 +42,17 @@ namespace :deploy do
   end
 
   task :symlink_all, :roles => :web do
-    # run "mkdir -p #{fetch :shared_path}/config"
-    # Never do this!!!
-    # run "yes y | cp -i #{fetch :release_path}/config/database.yml.sample #{fetch :shared_path}/config/database.yml"
-    # run "yes y | cp -i #{fetch :release_path}/config/application.yml.sample #{fetch :shared_path}/config/application.yml"
-
+    run "mkdir -p #{fetch :shared_path}/config"
+    run "cp -n #{fetch :release_path}/config/database.yml.sample #{fetch :shared_path}/config/database.yml"
+    run "cp -n #{fetch :release_path}/config/application.yml.sample #{fetch :shared_path}/config/application.yml"
     run "ln -nfs #{fetch :shared_path}/config/database.yml #{fetch :release_path}/config/database.yml"
     run "ln -nfs #{fetch :shared_path}/config/application.yml #{fetch :release_path}/config/application.yml"
 
+    run "mkdir -p #{fetch :shared_path}/downloads"
     run "ln -nfs #{fetch :shared_path}/downloads/ #{fetch :release_path}/public/downloads"
 
+    run "mkdir -p #{fetch :shared_path}/tmp"
+    run "ln -nfs #{fetch :shared_path}/pids/ #{fetch :shared_path}/tmp/pids"
     run "ln -nfs #{fetch :shared_path}/tmp/ #{fetch :release_path}/tmp"
     run "mkdir -p #{fetch :release_path}/tmp/mount"
     run "mkdir -p #{fetch :release_path}/tmp/umount"
