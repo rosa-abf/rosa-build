@@ -45,12 +45,12 @@ class GroupsController < ApplicationController
                      current_user
                    end
 
-    if @group.save!
+    if @group.save
       flash[:notice] = t('flash.group.saved')
       redirect_to edit_group_path(@group)
     else
       flash[:error] = t('flash.group.save_error')
-      flash[:warning] = @project.errors[:base]
+      flash[:warning] = @group.errors[:base]
       render :action => :new
     end
   end
