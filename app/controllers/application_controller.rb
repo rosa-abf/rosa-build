@@ -17,10 +17,15 @@ class ApplicationController < ActionController::Base
     def get_owner
 #      params['user_id'] && User.find_by_id(params['user_id']) ||
 #      params['group_id'] && Group.find_by_id(params['group_id']) || current_user
-      if parent and (parent.is_a? User or parent.is_a? Group)
-        parent
+      if self.class.method_defined? :parent
+        if parent and (parent.is_a? User or parent.is_a? Group)
+          return parent
+        else
+         return current_user
+        end
       else
-       current_user
+        params['user_id'] && User.find_by_id(params['user_id']) ||
+        params['group_id'] && Group.find_by_id(params['group_id']) || current_user
       end
     end
 
