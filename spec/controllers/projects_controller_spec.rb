@@ -9,7 +9,6 @@ describe ProjectsController do
     @update_params = {:project => {:name => 'pro2'}}
 
     platform = Factory(:platform)
-    any_instance_of(Project, :collected_project_versions => ['v1.0', 'v2.0'])
     @process_build_params = {:build => {
       :arches => {Factory(:arch).id => '1'}, 
       :project_version => 'v1.0',
@@ -17,6 +16,8 @@ describe ProjectsController do
       :pl => platform.id,
       :update_type => 'security'
     }}
+
+    any_instance_of(Project, :versions => ['v1.0', 'v2.0'])
 	end
 
 	context 'for guest' do

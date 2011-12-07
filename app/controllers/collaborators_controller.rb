@@ -30,10 +30,10 @@ class CollaboratorsController < ApplicationController
   def update
     all_user_ids = []
     all_groups_ids = []
-
+    puts params.inspect
     Relation::ROLES.each { |r| 
-      all_user_ids = all_user_ids | params['user'][r.to_sym].keys if params['user'][r.to_sym]
-      all_groups_ids = all_groups_ids | params['group'][r.to_sym].keys if params['group'][r.to_sym]
+      all_user_ids = all_user_ids | params['user'][r.to_sym].keys if params['user'] && params['user'][r.to_sym]
+      all_groups_ids = all_groups_ids | params['group'][r.to_sym].keys if params['group'] && params['group'][r.to_sym]
     }
 
     # Remove relations
@@ -58,21 +58,17 @@ class CollaboratorsController < ApplicationController
           relation.update_attribute(:role, r)
         else
           relation = @project.relations.build(:object_id => u, :object_type => 'User', :role => r)
-          puts relation.inspect
-          puts r
           relation.save!
         end
-      } if params['user'][r.to_sym]
+      } if params['user'] && params['user'][r.to_sym]
       params['group'][r.to_sym].keys.each { |u|
         if relation = @project.relations.find_by_object_id_and_object_type(u, 'Group')
           relation.update_attribute(:role, r)
         else
           relation = @project.relations.build(:object_id => u, :object_type => 'Group', :role => r)
-          puts relation.inspect
-          puts r
           relation.save!
         end
-      } if params['group'][r.to_sym]
+      } if params['group'] && params['group'][r.to_sym]
     }
 
     if @project.save

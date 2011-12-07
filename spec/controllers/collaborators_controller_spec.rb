@@ -5,7 +5,7 @@ describe CollaboratorsController do
 	before(:each) do
     @project = Factory(:project)
     @another_user = Factory(:user)
-    @update_params = {:read => {@another_user.id => '1'}}
+    @update_params = {:user => {:read => {@another_user.id => '1'}}}
 	end
 
 	context 'for guest' do
