@@ -47,7 +47,7 @@ class GroupsController < ApplicationController
 
     if @group.save
       flash[:notice] = t('flash.group.saved')
-      redirect_to edit_group_path(@group)
+      redirect_to group_path(@group)
     else
       flash[:error] = t('flash.group.save_error')
       flash[:warning] = @group.errors[:base]
@@ -58,7 +58,7 @@ class GroupsController < ApplicationController
   def update
     if @group.update_attributes(params[:group])
       flash[:notice] = t('flash.group.saved')
-      redirect_to groups_path
+      redirect_to group_path(@group)
     else
       flash[:error] = t('flash.group.save_error')
       render :action => :edit
