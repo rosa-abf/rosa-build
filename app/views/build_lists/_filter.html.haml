@@ -3,48 +3,48 @@
 = form_for :filter, :url => @action_url, :html => { :method => :get, :class => :form } do |f|
   .columns.wat-cf
     .column.left
-
       .group
         = f.label :status, t("activerecord.attributes.build_list.status"), :class => :label
         = f.select :status, BuildList::STATUSES.collect{|status| [BuildList.human_status(status), status]}, :include_blank => true, :selected => @filter.status
-
       .group
         = f.label :arch_id, t("activerecord.attributes.build_list.arch"), :class => :label
         = f.select :arch_id, @arches.collect{|arch| [arch.name, arch.id]}, :include_blank => true, :selected => @filter.arch_id
-
     .column.right
       - if @project_versions
         .group
           = f.label :project_version, t("activerecord.attributes.build_list.project_version"), :class => :label
           = f.select :project_version, @project_versions, :include_blank => true, :selected => @filter.project_version
-
       .group
         = f.label :is_circle, t("activerecord.attributes.build_list.is_circle"), :class => :label
         = f.select :is_circle, [[t("layout.yes_"), 1], [t("layout.no_"), 0]], :include_blank => true, :selected => @filter.is_circle.present? ? (@filter.is_circle ? "1" : "0") : nil
-        
 
   .columns.wat-cf
     .column.left
-
       .group
         = f.label :status, t("layout.build_lists.created_at_start"), :class => :label
-        = date_select("filter", :created_at_start, :include_blank => true, :selected => @filter.created_at_start)
-
+        = f.date_select(:created_at_start, :include_blank => true, :selected => @filter.created_at_start)
       .group
         = f.label :status, t("layout.build_lists.notified_at_start"), :class => :label
-        = date_select("filter", :notified_at_start, :include_blank => true, :selected => @filter.notified_at_start)
-
+        = f.date_select(:notified_at_start, :include_blank => true, :selected => @filter.notified_at_start)
     .column.right
-
       .group
         = f.label :status, t("layout.build_lists.created_at_end"), :class => :label
-        = date_select("filter", :created_at_end, :include_blank => true, :selected => @filter.created_at_end)
-
+        = f.date_select(:created_at_end, :include_blank => true, :selected => @filter.created_at_end)
       .group
         = f.label :status, t("layout.build_lists.notified_at_end"), :class => :label
-        = date_select("filter", :notified_at_end, :include_blank => true, :selected => @filter.notified_at_end)
+        = f.date_select(:notified_at_end, :include_blank => true, :selected => @filter.notified_at_end)
 
-  .grou.navform.wat-cf
+  .columns.wat-cf
+    .column.left
+      .group
+        = f.label :status, t("layout.build_lists.bs_id"), :class => :label
+        = f.text_field :bs_id, :class => :text_field
+    .column.right
+      .group
+        = f.label :status, t("layout.build_lists.project_name"), :class => :label
+        = f.text_field :project_name, :class => :text_field
+
+  .group.navform.wat-cf
     %button.button{ :type => "submit" }
       = image_tag("web-app-theme/icons/tick.png", :alt => "Save")
       = t("layout.search")

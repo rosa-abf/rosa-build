@@ -76,6 +76,7 @@ class BuildList < ActiveRecord::Base
       where(["notified_at <= ?", end_date])
     end
   }
+  scope :scoped_to_project_name, lambda {|project_name| joins(:project).where('projects.name LIKE ?', "%#{project_name}%")}
 
   serialize :additional_repos
   
