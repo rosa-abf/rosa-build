@@ -41,11 +41,11 @@ Rosa::Application.routes.draw do
     resources :private_users, :except => [:show, :destroy, :update]
 
     member do
-      get 'freeze'
-      get 'unfreeze'
+      post 'freeze'
+      post 'unfreeze'
       get 'clone'
       post 'clone'
-      get 'build_all'
+      post 'build_all'
     end
 
     collection do

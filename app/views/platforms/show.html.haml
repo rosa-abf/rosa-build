@@ -59,11 +59,11 @@
         -#= link_to image_tag("web-app-theme/icons/application_edit.png", :alt => t("layout.edit")) + " " + t("layout.edit"), edit_platform_path(@platform), :class => "button"
         = link_to image_tag("web-app-theme/icons/cross.png", :alt => t("layout.delete")) + " " + t("layout.delete"), platform_path(@platform), :method => "delete", :class => "button", :confirm => t("layout.platforms.confirm_delete") if can? :delete, @platform
         - if @platform.released?
-          = link_to t("layout.platforms.unfreeze"), unfreeze_platform_path(@platform), :confirm => I18n.t("layout.platforms.confirm_unfreeze"), :class => "button" if can? :unfreeze, @platform
+          = link_to t("layout.platforms.unfreeze"), unfreeze_platform_path(@platform), :confirm => I18n.t("layout.platforms.confirm_unfreeze"), :method => :post, :class => "button" if can? :unfreeze, @platform
         - else
-          = link_to t("layout.platforms.freeze"), freeze_platform_path(@platform), :confirm => I18n.t("layout.platforms.confirm_freeze"), :class => "button" if can? :freeze, @platform
+          = link_to t("layout.platforms.freeze"), freeze_platform_path(@platform), :confirm => I18n.t("layout.platforms.confirm_freeze"), :method => :post, :class => "button" if can? :freeze, @platform
         = link_to "Клонировать", clone_platform_path(@platform), :class => "button" if can? :clone, @platform
-        = link_to t("layout.platforms.build_all"), build_all_platform_path(@platform), :class => "button" if can? :build_all, @platform
+        = link_to t("layout.platforms.build_all"), build_all_platform_path(@platform), :confirm => I18n.t("layout.confirm"), :method => :post, :class => "button" if can? :build_all, @platform
 
 %a{ :name => "repositories" }
 .block
