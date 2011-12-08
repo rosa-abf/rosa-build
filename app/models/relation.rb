@@ -5,6 +5,7 @@ class Relation < ActiveRecord::Base
   ROLES = %w[reader writer admin]
   validates :role, :inclusion => {:in => ROLES}
 
+#  validate { errors.add(:object, :taken) if Relation.where(:object_type => self.object_type, :object_id => self.object_id).present? }
   before_validation :add_default_role
 
   scope :by_object, lambda {|obj| {:conditions => ['object_id = ? AND object_type = ?', obj.id, obj.class.to_s]}}

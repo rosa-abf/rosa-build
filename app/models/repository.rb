@@ -62,9 +62,11 @@ class Repository < ActiveRecord::Base
 
     def add_admin_relations
       platform.relations.where(:role => 'admin').each do |rel|
-        r = relations.build(:role => 'admin', :object_type => rel.object_type)
-        r.object_id = rel.object_id
-        r.save
+        if !relations.exists?(:role => 'admin', :object_type => rel.object_type, :object_id => rel.object_id) && rel.object != owner
+          r = relations.build(:role => 'admin', :object_type => rel.object_type)
+          r.object_id = rel.object_id
+          r.save
+        end
       end
     end
 end
