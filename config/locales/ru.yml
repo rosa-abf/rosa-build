@@ -537,16 +537,16 @@ ru:
 
       group:
         name: Название
-        uname: Unixname
+        uname: Псевдоним
         owner: Владелец
         created_at: Создана
         updated_at: Обновлена
 
       user:
         name: Имя
-        login: Никнейм или Email
+        login: Псевдоним или Email
         email: Email
-        uname: Никнейм
+        uname: Псевдоним
         ssh_key: SSH ключ
         current_password: Текущий пароль
         role: Роль
