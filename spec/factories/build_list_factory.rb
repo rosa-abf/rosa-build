@@ -7,3 +7,7 @@ Factory.define(:build_list) do |p|
   p.build_requires true
   p.update_type 'security'
 end
+
+Factory.define(:build_list_core, :parent => :build_list) do |p|
+  p.bs_id { Factory.next(:integer) }
+end
