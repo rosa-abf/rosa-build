@@ -26,7 +26,7 @@ class GroupsController < ApplicationController
 
   def show
     @platforms    = @group.platforms.paginate(:page => params[:platform_page], :per_page => 10)
-    @repositories = @group.repositories.paginate(:page => params[:repository_page], :per_page => 10)
+#    @repositories = @group.repositories.paginate(:page => params[:repository_page], :per_page => 10)
     @projects     = @group.projects.paginate(:page => params[:project_page], :per_page => 10)
   end
 

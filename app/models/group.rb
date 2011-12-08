@@ -23,7 +23,7 @@ class Group < ActiveRecord::Base
   after_create :add_owner_to_members
 
   include Modules::Models::PersonalRepository
-  include Modules::Models::Owner
+#  include Modules::Models::Owner
 
   protected
     def add_owner_to_members
