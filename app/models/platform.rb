@@ -108,22 +108,22 @@ class Platform < ActiveRecord::Base
   def mount_directory_for_rsync
     #FileUtils.rm_rf "#{ Rails.root.join('tmp', 'umount', self.name) }" if File.exist? "#{ Rails.root.join('tmp', 'umount', name) }"
     #FileUtils.mkdir_p "#{ Rails.root.join('tmp', 'mount', name) }"
-    system("sudo mkdir -p \"/srv/rosa_build/shared/downloads/#{ name }\"")
-    system("sudo mount --bind \"/home/share/platforms/#{ name }\" \"/srv/rosa_build/shared/downloads/#{ name }\"")
-    system("sudo cp -f /srv/rosa_build/current/tmp/mount/#{ name }/* /home/share/platforms/#{ name }/repository/")
-    system("sudo rm -Rf \"/srv/rosa_build/current/tmp/mount/#{ name }\"")
+    system("sudo mkdir -p \"#{ Rails.root.join("public", "downloads") }/#{ name }\"")
+    system("sudo mount --bind \"/home/share/platforms/#{ name }\" \"#{ Rails.root.join("public", "downloads") }/#{ name }\"")
+    #system("sudo cp -f /srv/rosa_build/current/tmp/mount/#{ name }/* /home/share/platforms/#{ name }/repository/")
+    #system("sudo rm -Rf \"/srv/rosa_build/current/tmp/mount/#{ name }\"")
     Arch.all.each do |arch|
       host = EventLog.current_controller.request.host_with_port rescue ::Rosa::Application.config.action_mailer.default_url_options[:host]
       url = "http://#{host}/downloads/#{name}/repository/"
       str = "country=Russian Federation,city=Moscow,latitude=52.18,longitude=48.88,bw=1GB,version=2011,arch=#{arch.name},type=distrib,url=#{url}\n"
-      File.open(Rails.root.join('tmp', 'mount', name, "#{name}.#{arch.name}.list"), 'w') {|f| f.write(str) }
+      File.open(Rails.root.join("public", 'downloads', name, "#{name}.#{arch.name}.list"), 'w') {|f| f.write(str) }
     end
   end
 
   def umount_directory_for_rsync
-    system("umount \"/srv/rosa_build/shared/downloads/#{ name }\"")
-    system("rm -Rf \"/srv/rosa_build/shared/downloads/#{ name }\"")
-    system("rm -Rf \"/srv/rosa_build/current/tmp/umount/#{ name }\"")
+    system("umount \"#{ Rails.root.join("public", "downloads") }/#{ name }\"")
+    system("rm -Rf \"#{ Rails.root.join("public", "downloads") }/#{ name }\"")
+    #system("rm -Rf \"/srv/rosa_build/current/tmp/umount/#{ name }\"")
     #FileUtils.rm_rf "#{ Rails.root.join('tmp', 'mount', name) }" if File.exist? "#{ Rails.root.join('tmp', 'mount', name) }"
     #FileUtils.mkdir_p "#{ Rails.root.join('tmp', 'umount', name) }"
   end
