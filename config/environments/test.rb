@@ -35,4 +35,4 @@ Rosa::Application.configure do
   config.active_support.deprecation = :stderr
 end
 
-require 'stub_xml_rpc'
+require 'stub_xml_rpc' # TODO stub XML calls through stubbers

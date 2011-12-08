@@ -279,6 +279,8 @@ ru:
       created_at_end: "Время постановки на сборку по:"
       notified_at_start: "Время последнего обновления от BS с:"
       notified_at_end: "Время последнего обновления от BS по:"
+      bs_id_search: 'Поиск по Id'
+      project_name: 'Название проекта'
       bs_id_not_set: Id еще не присвоен
       items_header: Элементы сборки
       no_items_data: Данных нет
