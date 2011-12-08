@@ -4,6 +4,11 @@ class Download < ActiveRecord::Base
   default_scope order(:name)
 
   class << self
+    def rotate_nginx_log
+      system("sudo mv #{ APP_CONFIG['nginx_log'] } #{ APP_CONFIG['nginx_log'] }.0")
+      system("sudo /etc/init.d/nginx reload")
+    end
+
     def parse_nginx_log
       File.open(PREV_LOG_FILE) do |log|
         while (line = log.gets)
@@ -21,7 +26,7 @@ class Download < ActiveRecord::Base
 
     def parse_and_remove_nginx_log
       parse_nginx_log
-      #system("rm -f #{PREV_LOG_FILE}")
+      system("sudo rm -f #{PREV_LOG_FILE}")
     end
 
     def increase(opts={})

@@ -106,8 +106,12 @@ class Platform < ActiveRecord::Base
   end
 
   def mount_directory_for_rsync
-    FileUtils.rm_rf "#{ Rails.root.join('tmp', 'umount', self.name) }" if File.exist? "#{ Rails.root.join('tmp', 'umount', name) }"
-    FileUtils.mkdir_p "#{ Rails.root.join('tmp', 'mount', name) }"
+    #FileUtils.rm_rf "#{ Rails.root.join('tmp', 'umount', self.name) }" if File.exist? "#{ Rails.root.join('tmp', 'umount', name) }"
+    #FileUtils.mkdir_p "#{ Rails.root.join('tmp', 'mount', name) }"
+    system("sudo mkdir -p \"/srv/rosa_build/shared/downloads/#{ name }\"")
+    system("sudo mount --bind \"/home/share/platforms/#{ name }\" \"/srv/rosa_build/shared/downloads/#{ name }\"")
+    system("sudo cp -f /srv/rosa_build/current/tmp/mount/#{ name }/* /home/share/platforms/#{ name }/repository/")
+    system("sudo rm -Rf \"/srv/rosa_build/current/tmp/mount/#{ name }\"")
     Arch.all.each do |arch|
       host = EventLog.current_controller.request.host_with_port rescue ::Rosa::Application.config.action_mailer.default_url_options[:host]
       url = "http://#{host}/downloads/#{name}/repository/"
@@ -117,8 +121,11 @@ class Platform < ActiveRecord::Base
   end
 
   def umount_directory_for_rsync
-    FileUtils.rm_rf "#{ Rails.root.join('tmp', 'mount', name) }" if File.exist? "#{ Rails.root.join('tmp', 'mount', name) }"
-    FileUtils.mkdir_p "#{ Rails.root.join('tmp', 'umount', name) }"
+    system("umount \"/srv/rosa_build/shared/downloads/#{ name }\"")
+    system("rm -Rf \"/srv/rosa_build/shared/downloads/#{ name }\"")
+    system("rm -Rf \"/srv/rosa_build/current/tmp/umount/#{ name }\"")
+    #FileUtils.rm_rf "#{ Rails.root.join('tmp', 'mount', name) }" if File.exist? "#{ Rails.root.join('tmp', 'mount', name) }"
+    #FileUtils.mkdir_p "#{ Rails.root.join('tmp', 'umount', name) }"
   end
 
   def make_admin_relation(user_id)
