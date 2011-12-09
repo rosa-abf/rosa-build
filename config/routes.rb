@@ -8,6 +8,9 @@ Rosa::Application.routes.draw do
   
   resources :users do
     resources :groups, :only => [:new, :create, :index]
+    collection do
+      get :autocomplete_user_uname
+    end
   end
 
   resources :event_logs, :only => :index
@@ -25,7 +28,7 @@ Rosa::Application.routes.draw do
 
   match 'build_lists/' => 'build_lists#all', :as => :all_build_lists
   match 'build_lists/:id/cancel/' => 'build_lists#cancel', :as => :build_list_cancel
-  
+
   resources :auto_build_lists, :only => [:index, :create, :destroy]
 
   resources :personal_repositories, :only => [:show] do
@@ -108,9 +111,10 @@ Rosa::Application.routes.draw do
   end
 
   resources :groups do
-    resources :members, :only => [:index, :edit, :update] do
+    resources :members, :only => [:index, :edit, :update, :add] do
       collection do
-        get :edit
+        get  :edit
+        post :add
         post :update
       end
       member do
