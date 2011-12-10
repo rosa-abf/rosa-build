@@ -335,6 +335,7 @@ ru:
       error_in_changing: Ошибка изменения списка участников
       successfully_added: Участник успешно добавлен
       error_in_adding: Ошибка при добавлении участника
+      already_added: Пользователь уже добавлен
 
     auto_build_list:
       success: Сборка проекта автоматизорована!

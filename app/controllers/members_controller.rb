@@ -70,11 +70,15 @@ class MembersController < ApplicationController
   def add
     if params['user_id'] and !params['user_id'].empty?
       @user = User.find_by_uname(params['user_id'])
-      relation = parent.objects.build(:object_id => @user.id, :object_type => 'User', :role => 'reader')
-      if relation.save
-        flash[:notice] = t("flash.members.successfully_added")
+      unless parent.objects.exists? :object_id => @user.id, :object_type => 'User'
+        relation = parent.objects.build(:object_id => @user.id, :object_type => 'User', :role => 'reader')
+        if relation.save
+          flash[:notice] = t("flash.members.successfully_added")
+        else
+          flash[:error] = t("flash.members.error_in_adding")
+        end
       else
-        flash[:error] = t("flash.members.error_in_adding")
+        flash[:error] = t("flash.members.already_added")
       end
     end
     redirect_to edit_group_members_path(parent)
