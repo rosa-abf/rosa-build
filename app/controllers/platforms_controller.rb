@@ -52,7 +52,8 @@ class PlatformsController < ApplicationController
 
   def create
     @platform = Platform.new params[:platform]
-    @platform.owner = get_owner
+    @platform.owner = (params[:admin_id]) ? User.find_by_uname(params[:admin_id]) : nil
+    @platform.owner ||= get_owner
 
     if @platform.save!
       @platform.make_admin_relation(params[:admin_id])
