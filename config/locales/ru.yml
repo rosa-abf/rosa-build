@@ -94,7 +94,7 @@ ru:
       confirm_delete: Вы уверены, что хотите удалить эту категорию?
 
     platforms:
-      admin_id: Владелец
+      admin_uname: Владелец
       build_all: Собрать все
       list: Список
       new: Создать
