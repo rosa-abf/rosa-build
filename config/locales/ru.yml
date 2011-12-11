@@ -222,6 +222,8 @@ ru:
       edit_roles: Редактировать роли
       roles_header: Роли для
       add_role: Добавить/Удалить роль
+      input_username: Введите псевдоним пользователя
+      input_groupname: Введите псевдоним группы
 
     members:
       back_to_group: Вернуться к группе
@@ -327,6 +329,10 @@ ru:
     collaborators:
       successfully_changed: Список коллабораторов успешно изменен
       error_in_changing: Ошибка изменения списка коллабораторов
+      member_already_added: Участник %s уже добавлен
+      group_already_added: Группа уже добавлена
+      successfully_added: Участник %s успешно добавлен
+      error_in_adding: Ошибка при добавлении участника %s
 
     members:
       successfully_changed: Список участников успешно изменен

@@ -8,6 +8,7 @@ class GroupsController < ApplicationController
   before_filter :find_group, :only => [:show, :edit, :update, :destroy]
 
   load_and_authorize_resource
+  autocomplete :group, :uname
 
   def index
     puts parent.inspect

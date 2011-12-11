@@ -4,6 +4,7 @@ class UsersController < ApplicationController
   before_filter :find_user, :only => [:show, :edit, :update, :destroy]
 
   load_and_authorize_resource
+  autocomplete :user, :uname
 
   def index
     @users = User.paginate(:page => params[:user_page])
