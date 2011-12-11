@@ -52,11 +52,11 @@ class PlatformsController < ApplicationController
 
   def create
     @platform = Platform.new params[:platform]
-    @platform.owner = (params[:admin_id]) ? User.find_by_uname(params[:admin_id]) : nil
+    @platform.owner = (params[:admin_uname]) ? User.find_by_uname(params[:admin_uname]) : nil
     @platform.owner ||= get_owner
 
     if @platform.save!
-      @platform.make_admin_relation(params[:admin_id])
+#      @platform.make_admin_relation(@platform.owner.id)
       flash[:notice] = I18n.t("flash.platform.saved")
       redirect_to @platform
     else

@@ -70,7 +70,7 @@ describe PlatformsController do
     context 'when owner uname present' do
 
       it 'should create platform with mentioned owner' do
-        post :create, @create_params.merge({:admin_id => @user.uname})
+        post :create, @create_params.merge({:admin_uname => @user.uname})
         Platform.last.owner.id.should eql(@user.id)
       end
 
