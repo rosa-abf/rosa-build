@@ -310,7 +310,7 @@ ru:
         dependencies_fail: зависимости не найдены
         waiting_for_response: ожидает ответа
         build_pending: ожидает сборку
-        dependency_test_faild: тестирование зависимостей не пройдено
+        dependency_test_failed: тестирование зависимостей не пройдено
         binary_test_failed: тестирование бинарной совместимости не пройдено
         build_canceled: сборка отменена
         success: собран

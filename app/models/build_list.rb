@@ -48,7 +48,7 @@ class BuildList < ActiveRecord::Base
                      BuildServer::PLATFORM_PENDING => :platform_pending,
                      BuildServer::PROJECT_NOT_FOUND => :project_not_found,
                      BuildServer::PROJECT_VERSION_NOT_FOUND => :project_version_not_found,
-                     BuildServer::DEPENDENCY_TEST_FAILED => :dependency_test_faild,
+                     BuildServer::DEPENDENCY_TEST_FAILED => :dependency_test_failed,
                      BuildServer::BINARY_TEST_FAILED => :binary_test_failed,
                     }
 
