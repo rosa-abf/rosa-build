@@ -22,8 +22,8 @@
 
 .group
   = label_tag "", t("layout.platforms.admin_id"), :class => :label
-  = autocomplete_field_tag 'admin_id', @admin_id, autocomplete_user_uname_platforms_path, :id_element => '#admin_id_field'
-  = hidden_field_tag 'admin_id', '', :id => 'admin_id_field'
+  = autocomplete_field_tag 'admin_id', @admin_uname, autocomplete_user_uname_platforms_path, :id_element => '#admin_id_field'
+  = hidden_field_tag 'admin_id', @admin_id, :id => 'admin_id_field'
   
 .group.navform.wat-cf
   %button.button{:type => "submit"}
