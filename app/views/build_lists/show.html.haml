@@ -58,7 +58,7 @@
         %b
           = t("activerecord.attributes.build_list.project")
           \:
-        = @build_list.project.name
+        = link_to @build_list.project.name, project_path(@build_list.project)
       %p
         %b
           = t("activerecord.attributes.build_list.arch")
