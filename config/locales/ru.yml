@@ -299,6 +299,7 @@ ru:
       
       items:
         statuses:
+          build_started: собирается
           build_error: ошибка сборки
           dependencies_error: зависимости не найдены
           success: собран
