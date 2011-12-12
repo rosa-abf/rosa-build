@@ -38,7 +38,7 @@ class BuildList < ActiveRecord::Base
                 BuildServer::DEPENDENCY_TEST_FAILED  ]
 
   HUMAN_STATUSES = { WAITING_FOR_RESPONSE => :waiting_for_response,
-                     BUILD_CANCELED => :build_canceled
+                     BUILD_CANCELED => :build_canceled,
                      BUILD_PENDING => :build_pending,
                      BUILD_PUBLISHED => :build_published,
                      BuildServer::BUILD_ERROR => :build_error,
@@ -49,7 +49,7 @@ class BuildList < ActiveRecord::Base
                      BuildServer::PROJECT_NOT_FOUND => :project_not_found,
                      BuildServer::PROJECT_VERSION_NOT_FOUND => :project_version_not_found,
                      BuildServer::DEPENDENCY_TEST_FAILED => :dependency_test_failed,
-                     BuildServer::BINARY_TEST_FAILED => :binary_test_failed,
+                     BuildServer::BINARY_TEST_FAILED => :binary_test_failed
                     }
 
   scope :recent, order("updated_at DESC")
