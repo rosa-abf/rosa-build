@@ -21,8 +21,8 @@
   = f.check_box :released, :class => 'check_box'
 
 .group
-  = label_tag "", t("layout.platforms.admin_id"), :class => :label
-  = autocomplete_field_tag 'admin_id', params[:admin_id], autocomplete_user_uname_platforms_path
+  = label_tag "admin_uname", t("layout.platforms.admin_uname"), :class => :label
+  = autocomplete_field_tag 'admin_uname', params[:admin_uname], autocomplete_user_uname_platforms_path
   =# text_field_tag 'admin_id', '', :id => 'admin_id_field'
   
 .group.navform.wat-cf
