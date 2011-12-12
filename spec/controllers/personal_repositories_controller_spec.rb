@@ -3,6 +3,8 @@ require 'spec_helper'
 
 describe PersonalRepositoriesController do
 	before(:each) do
+    stub_rsync_methods
+
     @repository = Factory(:personal_repository)
     @platform = Factory(:platform)
     @project = Factory(:project)
@@ -25,15 +27,14 @@ describe PersonalRepositoriesController do
   		set_session_for(@admin)
 		end
 
-    it_should_behave_like 'be_able_to_perform_show#personal_repositories'
-    it_should_behave_like 'be_able_to_perform_add_project#personal_repositories'
-    it_should_behave_like 'be_able_to_perform_add_project#personal_repositories_with_project_id_param'
+    it_should_behave_like 'show personal repository'
+    it_should_behave_like 'add project to personal repository'
+    it_should_behave_like 'add project personal repository with project_id param'
     it_should_behave_like 'add_project_to_repository'
-    it_should_behave_like 'be_able_to_perform_remove_project#personal_repositories'
-    it_should_behave_like 'remove_project_from_repository'
-    it_should_behave_like 'be_able_to_perform_settings#personal_repositories'
-    it_should_behave_like 'be_able_to_perform_change_visibility'
-    it_should_behave_like 'be_able_to_change_visibility'
+    it_should_behave_like 'remove project from repository'
+    it_should_behave_like 'remove project from personal repository'
+    it_should_behave_like 'change visibility'
+    it_should_behave_like 'settings personal repository'
   end
 
   context 'for anyone except admin' do
@@ -56,15 +57,14 @@ describe PersonalRepositoriesController do
   		@repository.platform.relations.create!(:object_type => 'User', :object_id => @user.id, :role => 'admin')
 		end
 
-    it_should_behave_like 'be_able_to_perform_settings#personal_repositories'
-    it_should_behave_like 'be_able_to_perform_change_visibility'
-    it_should_behave_like 'be_able_to_change_visibility'
-    it_should_behave_like 'be_able_to_perform_show#personal_repositories'
-    it_should_behave_like 'be_able_to_perform_add_project#personal_repositories'
-    it_should_behave_like 'be_able_to_perform_add_project#personal_repositories_with_project_id_param'
+    it_should_behave_like 'show personal repository'
+    it_should_behave_like 'change visibility'
+    it_should_behave_like 'add project to personal repository'
+    it_should_behave_like 'add project personal repository with project_id param'
     it_should_behave_like 'add_project_to_repository'
-    it_should_behave_like 'be_able_to_perform_remove_project#personal_repositories'
-    it_should_behave_like 'remove_project_from_repository'
+    it_should_behave_like 'remove project from personal repository'
+    it_should_behave_like 'remove project from repository'
+    it_should_behave_like 'settings personal repository'
   end
 
   context 'for reader user' do
@@ -74,7 +74,7 @@ describe PersonalRepositoriesController do
   		@repository.relations.create!(:object_type => 'User', :object_id => @user.id, :role => 'reader')
 		end
 
-    it_should_behave_like 'be_able_to_perform_show#personal_repositories'
+    it_should_behave_like 'show personal repository'
 
     it 'should not be able to perform add_project action' do
       get :add_project, :id => @repository.id

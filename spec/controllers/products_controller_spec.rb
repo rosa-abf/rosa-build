@@ -2,6 +2,8 @@ require 'spec_helper'
 
 describe ProductsController do
 	before(:each) do
+    stub_rsync_methods
+
     @another_user = Factory(:user)
     @platform = Factory(:platform)
     @product = Factory(:product, :platform => @platform)

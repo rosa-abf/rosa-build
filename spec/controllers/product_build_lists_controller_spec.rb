@@ -1,6 +1,10 @@
 require 'spec_helper'
 
 describe ProductBuildListsController do
+  before(:each) do
+    stub_rsync_methods
+  end
+
   context 'crud' do
     def valid_attributes
       {:product_id => product.id, :platform_id => product.platform_id}

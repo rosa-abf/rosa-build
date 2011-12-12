@@ -4,6 +4,7 @@ describe Repository do
 
   context 'when create with same owner that platform' do
     before (:each) do
+      stub_rsync_methods
       @platform = Factory(:platform)
       @params = {:name => 'tst_platform', :description => 'test platform'}
     end

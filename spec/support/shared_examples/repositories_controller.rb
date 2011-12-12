@@ -40,7 +40,7 @@ shared_examples_for 'be_able_to_perform_remove_project#repositories' do
   end
 end
 
-shared_examples_for 'remove_project_from_repository' do
+shared_examples_for 'remove project from repository' do
   it 'should be able to remove project from repository' do
     get :remove_project, :id => @repository.id, :project_id => @project.id
     !@repository.projects.exists? :id => @project.id

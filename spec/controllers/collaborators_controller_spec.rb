@@ -26,9 +26,9 @@ describe CollaboratorsController do
   		set_session_for(@admin)
 		end
 
-    it_should_behave_like 'be_able_to_perform_index#collaborators'
-    it_should_behave_like 'be_able_to_perform_update#collaborators'
-    it_should_behave_like 'update_collaborator_relation'
+    it_should_behave_like 'show collaborators list'
+    it_should_behave_like 'update collaborators'
+    it_should_behave_like 'update collaborator relation'
   end
 
   context 'for admin user' do
@@ -39,9 +39,9 @@ describe CollaboratorsController do
       @project.relations.create!(:object_type => 'User', :object_id => @user.id, :role => 'reader')
     end
 
-    it_should_behave_like 'be_able_to_perform_index#collaborators'
-    it_should_behave_like 'be_able_to_perform_update#collaborators'
-    it_should_behave_like 'update_collaborator_relation'
+    it_should_behave_like 'show collaborators list'
+    it_should_behave_like 'update collaborators'
+    it_should_behave_like 'update collaborator relation'
   end
 
   context 'for owner user' do
@@ -52,9 +52,9 @@ describe CollaboratorsController do
   		@project.relations.create!(:object_type => 'User', :object_id => @user.id, :role => 'admin')
 		end
 
-    it_should_behave_like 'be_able_to_perform_index#collaborators'
-    it_should_behave_like 'be_able_to_perform_update#collaborators'
-    it_should_behave_like 'update_collaborator_relation'
+    it_should_behave_like 'show collaborators list'
+    it_should_behave_like 'update collaborators'
+    it_should_behave_like 'update collaborator relation'
   end
 
   context 'for reader user' do
@@ -65,9 +65,9 @@ describe CollaboratorsController do
   		@project.relations.create!(:object_type => 'User', :object_id => @user.id, :role => 'reader')
 		end
 
-    it_should_behave_like 'not_be_able_to_perform_index#collaborators'
-    it_should_behave_like 'not_be_able_to_perform_update#collaborators'
-    it_should_behave_like 'not_update_collaborator_relation'
+    it_should_behave_like 'not show collaborators list'
+    it_should_behave_like 'not update collaborators'
+    it_should_behave_like 'not update collaborator relation'
   end
 
   context 'for writer user' do
@@ -78,8 +78,8 @@ describe CollaboratorsController do
   		@project.relations.create!(:object_type => 'User', :object_id => @user.id, :role => 'writer')
 		end
 
-    it_should_behave_like 'not_be_able_to_perform_index#collaborators'
-    it_should_behave_like 'not_be_able_to_perform_update#collaborators'
-    it_should_behave_like 'not_update_collaborator_relation'
+    it_should_behave_like 'not show collaborators list'
+    it_should_behave_like 'not update collaborators'
+    it_should_behave_like 'not update collaborator relation'
   end
 end

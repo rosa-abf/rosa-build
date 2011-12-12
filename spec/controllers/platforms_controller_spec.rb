@@ -3,6 +3,8 @@ require 'spec_helper'
 
 describe PlatformsController do
   before(:each) do
+    stub_rsync_methods
+
     @platform = Factory(:platform)
     @personal_platform = Factory(:platform, :platform_type => 'personal')
     @user = Factory(:user)
