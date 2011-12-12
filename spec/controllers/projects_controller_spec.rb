@@ -3,6 +3,8 @@ require 'spec_helper'
 
 describe ProjectsController do
 	before(:each) do
+    stub_rsync_methods
+
     @project = Factory(:project)
     @another_user = Factory(:user)
     @create_params = {:project => {:name => 'pro'}}
@@ -40,7 +42,7 @@ describe ProjectsController do
 
     it_should_behave_like 'be_able_to_perform_index#projects'
     it_should_behave_like 'be_able_to_perform_update#projects'
-    it_should_behave_like 'update_collaborator_relation'
+    it_should_behave_like 'update collaborator relation'
 
     it 'should be able to perform create action' do
       post :create, @create_params
@@ -63,7 +65,7 @@ describe ProjectsController do
 		end
 
     it_should_behave_like 'be_able_to_perform_update#projects'
-    it_should_behave_like 'update_collaborator_relation'
+    it_should_behave_like 'update collaborator relation'
     it_should_behave_like 'be_able_to_perform_build#projects'
     it_should_behave_like 'be_able_to_perform_process_build#projects'
 
@@ -107,7 +109,7 @@ describe ProjectsController do
 		end
 
     it_should_behave_like 'be_able_to_perform_update#projects'
-    it_should_behave_like 'update_collaborator_relation'
+    it_should_behave_like 'update collaborator relation'
     it_should_behave_like 'be_able_to_perform_build#projects'
     it_should_behave_like 'be_able_to_perform_process_build#projects'
     it_should_behave_like 'be_able_to_fork_project'

@@ -108,8 +108,8 @@ class Platform < ActiveRecord::Base
   def mount_directory_for_rsync
     #FileUtils.rm_rf "#{ Rails.root.join('tmp', 'umount', self.name) }" if File.exist? "#{ Rails.root.join('tmp', 'umount', name) }"
     #FileUtils.mkdir_p "#{ Rails.root.join('tmp', 'mount', name) }"
-    system("sudo mkdir -p \"#{ Rails.root.join("public", "downloads") }/#{ name }\"")
-    system("sudo mount --bind \"/home/share/platforms/#{ name }\" \"#{ Rails.root.join("public", "downloads") }/#{ name }\"")
+    system("sudo mkdir -p #{ Rails.root.join("public", "downloads") }/#{ name }")
+    system("sudo mount --bind /home/share/platforms/#{ name } #{ Rails.root.join("public", "downloads") }/#{ name }")
     #system("sudo cp -f /srv/rosa_build/current/tmp/mount/#{ name }/* /home/share/platforms/#{ name }/repository/")
     #system("sudo rm -Rf \"/srv/rosa_build/current/tmp/mount/#{ name }\"")
     Arch.all.each do |arch|
@@ -121,8 +121,8 @@ class Platform < ActiveRecord::Base
   end
 
   def umount_directory_for_rsync
-    system("umount \"#{ Rails.root.join("public", "downloads") }/#{ name }\"")
-    system("rm -Rf \"#{ Rails.root.join("public", "downloads") }/#{ name }\"")
+    system("sudo umount #{ Rails.root.join("public", "downloads") }/#{ name }")
+    system("sudo rm -Rf #{ Rails.root.join("public", "downloads") }/#{ name }")
     #system("rm -Rf \"/srv/rosa_build/current/tmp/umount/#{ name }\"")
     #FileUtils.rm_rf "#{ Rails.root.join('tmp', 'mount', name) }" if File.exist? "#{ Rails.root.join('tmp', 'mount', name) }"
     #FileUtils.mkdir_p "#{ Rails.root.join('tmp', 'umount', name) }"

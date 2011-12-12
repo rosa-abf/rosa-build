@@ -2,6 +2,7 @@ require 'spec_helper'
 
 describe Platform do
   before(:each) do
+    stub_rsync_methods
     Platform.delete_all
     FileUtils.rm_rf(APP_CONFIG['root_path'])
   end

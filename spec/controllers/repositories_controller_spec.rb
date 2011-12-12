@@ -3,6 +3,8 @@ require 'spec_helper'
 
 describe RepositoriesController do
 	before(:each) do
+    stub_rsync_methods
+
     @repository = Factory(:repository)
     @personal_repository = Factory(:personal_repository)
     @platform = Factory(:platform)
@@ -56,8 +58,8 @@ describe RepositoriesController do
     it_should_behave_like 'be_able_to_perform_add_project#repositories_with_project_id_param'
     it_should_behave_like 'add_project_to_repository'
     it_should_behave_like 'be_able_to_perform_remove_project#repositories'
-    it_should_behave_like 'remove_project_from_repository'
-    it_should_behave_like 'not_be_able_to_destroy_personal_repository'
+    it_should_behave_like 'remove project from repository'
+    it_should_behave_like 'destroy personal repository'
   end
 
   context 'for anyone except admin' do
@@ -80,7 +82,7 @@ describe RepositoriesController do
       lambda { post :create, @create_params }.should change{ Repository.count }.by(0)
     end
 
-    it_should_behave_like 'not_be_able_to_destroy_personal_repository'
+    it_should_behave_like 'not destroy personal repository'
   end
 
   context 'for owner user' do
@@ -97,7 +99,7 @@ describe RepositoriesController do
     it_should_behave_like 'be_able_to_perform_add_project#repositories_with_project_id_param'
     it_should_behave_like 'add_project_to_repository'
     it_should_behave_like 'be_able_to_perform_remove_project#repositories'
-    it_should_behave_like 'remove_project_from_repository'
+    it_should_behave_like 'remove project from repository'
     it_should_behave_like 'be_able_to_perform_destroy#repositories'
     it_should_behave_like 'change_repositories_count_after_destroy'
   end

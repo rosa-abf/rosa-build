@@ -22,6 +22,10 @@ describe CanCan do
 	let(:open_platform) { Factory(:platform, :visibility => 'open') }
 	let(:hidden_platform) { Factory(:platform, :visibility => 'hidden') }
 
+  before(:each) do
+    stub_rsync_methods
+  end
+
 	context 'Site admin' do
 		before(:each) do
 			admin_create
