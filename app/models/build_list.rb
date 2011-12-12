@@ -17,36 +17,39 @@ class BuildList < ActiveRecord::Base
     errors.add(:bpl, I18n.t('flash.build_list.can_not_published')) if status == BUILD_PUBLISHED && status_was != BuildServer::SUCCESS    
   }
 
+  # The kernel does not send these statuses directly
   BUILD_CANCELED = 5000
   WAITING_FOR_RESPONSE = 4000
   BUILD_PENDING = 2000
-  BUILD_STARTED = 3000
   BUILD_PUBLISHED = 6000
-  TEST_FAILD = 21
 
-  STATUSES = [WAITING_FOR_RESPONSE,
-              BuildServer::SUCCESS,
-              BUILD_PENDING,
-              BUILD_STARTED,
-              BuildServer::BUILD_ERROR,
-              BuildServer::PLATFORM_NOT_FOUND,
-              BuildServer::PLATFORM_PENDING,
-              BuildServer::PROJECT_NOT_FOUND,
-              BuildServer::PROJECT_VERSION_NOT_FOUND,
-              BUILD_CANCELED,
-              TEST_FAILD]
+  STATUSES = [  WAITING_FOR_RESPONSE,
+                BUILD_CANCELED,
+                BUILD_PENDING,
+                BUILD_PUBLISHED,
+                BuildServer::SUCCESS,
+                BuildServer::BUILD_STARTED,
+                BuildServer::BUILD_ERROR,
+                BuildServer::PLATFORM_NOT_FOUND,
+                BuildServer::PLATFORM_PENDING,
+                BuildServer::PROJECT_NOT_FOUND,
+                BuildServer::PROJECT_VERSION_NOT_FOUND,
+                BuildServer::BINARY_TEST_FAILED,
+                BuildServer::DEPENDENCY_TEST_FAILED  ]
 
-  HUMAN_STATUSES = { BuildServer::BUILD_ERROR => :build_error,
+  HUMAN_STATUSES = { WAITING_FOR_RESPONSE => :waiting_for_response,
+                     BUILD_CANCELED => :build_canceled
                      BUILD_PENDING => :build_pending,
-                     BUILD_STARTED => :build_started,
+                     BUILD_PUBLISHED => :build_published,
+                     BuildServer::BUILD_ERROR => :build_error,
+                     BuildServer::BUILD_STARTED => :build_started,
                      BuildServer::SUCCESS => :success,
-                     WAITING_FOR_RESPONSE => :waiting_for_response,
                      BuildServer::PLATFORM_NOT_FOUND => :platform_not_found,
                      BuildServer::PLATFORM_PENDING => :platform_pending,
                      BuildServer::PROJECT_NOT_FOUND => :project_not_found,
                      BuildServer::PROJECT_VERSION_NOT_FOUND => :project_version_not_found,
-                     TEST_FAILD => :testing_faild,
-                     BUILD_CANCELED => :build_canceled
+                     BuildServer::DEPENDENCY_TEST_FAILED => :dependency_test_faild,
+                     BuildServer::BINARY_TEST_FAILED => :binary_test_failed,
                     }
 
   scope :recent, order("updated_at DESC")

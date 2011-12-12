@@ -9,9 +9,14 @@ class BuildServer
   PLATFORM_PENDING = 2
   PROJECT_NOT_FOUND = 3
   PROJECT_VERSION_NOT_FOUND = 4
+  PROJECT_SOURCE_ERROR = 6
+  
+  DEPENDENCY_TEST_FAILED = 21
+  BINARY_TEST_FAILED = 22
 
+  DEPENDENCIES_ERROR = 555
   BUILD_ERROR = 666
-  DEPENDENCIES_FAIL = 555
+  BUILD_STARTED = 3000
 
   def self.client
     @@client ||= XMLRPC::Client.new3('host' => APP_CONFIG['build_server_ip'], 'port' => APP_CONFIG['build_server_port'], 'path' => APP_CONFIG['build_server_path'])

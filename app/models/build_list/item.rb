@@ -3,11 +3,12 @@ class BuildList::Item < ActiveRecord::Base
 
   attr_protected :build_list_id
 
-  STATUSES = [BuildServer::SUCCESS, BuildServer::DEPENDENCIES_FAIL, BuildServer::BUILD_ERROR]
+  STATUSES = [BuildServer::SUCCESS, BuildServer::DEPENDENCIES_ERROR, BuildServer::BUILD_ERROR, BuildServer::BUILD_STARTED]
   HUMAN_STATUSES = {
                      nil => :unknown,
-                     BuildServer::DEPENDENCIES_FAIL => :dependencies_fail,
+                     BuildServer::DEPENDENCIES_ERROR => :dependencies_error,
                      BuildServer::SUCCESS => :success,
+                     BuildServer::BUILD_STARTED => :build_started,
                      BuildServer::BUILD_ERROR => :build_error
                     }
 
