@@ -55,7 +55,7 @@ class BuildList < ActiveRecord::Base
   scope :recent, order("updated_at DESC")
   scope :current, lambda {
     outdatable_statuses = [BuildServer::SUCCESS, BuildServer::ERROR, BuildServer::PLATFORM_NOT_FOUND, BuildServer::PLATFORM_PENDING, BuildServer::PROJECT_NOT_FOUND, BuildServer::PROJECT_VERSION_NOT_FOUND]
-    where(["status in (?) OR (status in (?) AND notified_at >= ?)", [WAITING_FOR_RESPONSE, BUILD_PENDING, BUILD_STARTED], outdatable_statuses, Time.now - 2.days])
+    where(["status in (?) OR (status in (?) AND notified_at >= ?)", [WAITING_FOR_RESPONSE, BUILD_PENDING, BuildServer::BUILD_STARTED], outdatable_statuses, Time.now - 2.days])
   }
   scope :for_status, lambda {|status| where(:status => status) }
   scope :scoped_to_arch, lambda {|arch| where(:arch_id => arch) }
