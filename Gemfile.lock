@@ -215,6 +215,7 @@ DEPENDENCIES
   grack!
   grit
   haml-rails (~> 0.3.4)
+  highline (~> 1.6.8)
   hirb
   hpricot
   jammit
