@@ -38,7 +38,16 @@ describe BuildListsController do
     let(:build_list1) { Factory(:build_list_core) }
     let(:build_list2) { Factory(:build_list_core) }
     let(:build_list3) { Factory(:build_list_core) }
-    before(:each) { set_session_for Factory(:admin) }
+    let(:build_list4) do
+      b = Factory(:build_list_core)
+      b.created_at = b.created_at - 1.day
+      b.project = build_list3.project
+      b.pl = build_list3.pl
+      b.arch = build_list3.arch
+      b.save
+      b
+    end
+    before(:each) { set_session_for Factory(:admin); stub_rsync_methods; }
 
     it 'should filter by bs_id' do
       get :all, :filter => {:bs_id => build_list1.bs_id, :project_name => 'fdsfdf', :any_other_field => 'do not matter'}
@@ -56,11 +65,15 @@ describe BuildListsController do
     end
 
     it 'should filter by project_name and start_date' do
-      get :all, :filter => {:project_name => build_list2.project.name, 
-                            "created_at_start(1i)"=>"2011",
-                            "created_at_start(2i)"=>"12",
-                            "created_at_start(3i)"=>"13"}
-      response.should be_success
+      get :all, :filter => {:project_name => build_list3.project.name, 
+                            "created_at_start(1i)"=>build_list3.created_at.year.to_s,
+                            "created_at_start(2i)"=>build_list3.created_at.month.to_s,
+                            "created_at_start(3i)"=>build_list3.created_at.day.to_s}
+      assigns[:build_lists].should_not include(build_list1)
+      assigns[:build_lists].should_not include(build_list2)
+      assigns[:build_lists].should include(build_list3)
+      assigns[:build_lists].should_not include(build_list4)
+#      response.should be_success
     end
   end
 
