@@ -44,7 +44,7 @@ class Ability
         can :publish, BuildList do |build_list|
           build_list.can_published? && build_list.project.relations.exists?(:object_type => 'User', :object_id => user.id)
         end
-        can :shoe, BuildList do |build_list|
+        can :show, BuildList do |build_list|
           build_list.project.public? || build_list.project.relations.exists?(:object_type => 'User', :object_id => user.id)
         end
         can [:read, :create], PrivateUser, :platform => {:owner_type => 'User', :owner_id => user.id}
@@ -103,7 +103,7 @@ class Ability
         can :publish, BuildList do |build_list|
           build_list.can_published? && build_list.project.relations.exists?(:object_type => 'Group', :object_id => user.group_ids)
         end
-        can :publish, BuildList do |build_list|
+        can :show, BuildList do |build_list|
           build_list.project.public? || build_list.project.relations.exists?(:object_type => 'Group', :object_id => user.group_ids)
         end
 
