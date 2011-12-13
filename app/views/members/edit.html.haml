@@ -22,7 +22,7 @@
                 = link_to user.name, user_path(user)
               %td
                 - Relation::ROLES.each do |role|
-                  = check_box_tag "#{ role }[#{user.id}]", '1', ((parent.relations.exists? :object_id => user.id, :object_type => 'User', :role => role) ? :checked : nil), {:class => "user_role_chbx"}
+                  = check_box_tag "#{ role }[#{user.id}]", '1', ((parent.objects.exists? :object_id => user.id, :object_type => 'User', :role => role) ? :checked : nil), {:class => "user_role_chbx"}
                   = label_tag "#{ role }[#{user.id}]", t("layout.members.roles.#{ role }")
               %td
                 = user.uname
@@ -32,4 +32,16 @@
             = t("layout.save")
           %span.text_button_padding= t("layout.or")
           = link_to t("layout.cancel"), group_path(parent), :class => "text_button_padding link_button"
+
+      = form_tag add_group_members_path(parent) do
+        = javascript_include_tag 'autocomplete-rails.js'
+        .group
+          %h2.title= t("layout.members.add_member")
+          = label_tag "", t("layout.members.input_username")
+          = autocomplete_field_tag 'user_id', params[:user_id], autocomplete_user_uname_users_path
+        %br
+        .group.navform.wat-cf
+          %button.button{:type => "submit"}
+            = image_tag("web-app-theme/icons/tick.png", :alt => t("layout.add"))
+            = t("layout.add")
 
