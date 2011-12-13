@@ -54,6 +54,14 @@ describe BuildListsController do
       assigns[:build_lists].should include(build_list2)
       assigns[:build_lists].should_not include(build_list3)
     end
+
+    it 'should filter by project_name and start_date' do
+      get :all, :filter => {:project_name => build_list2.project.name, 
+                            "created_at_start(1i)"=>"2011",
+                            "created_at_start(2i)"=>"12",
+                            "created_at_start(3i)"=>"13"}
+      response.should be_success
+    end
   end
 
   context 'callbacks' do
