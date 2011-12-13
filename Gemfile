@@ -64,6 +64,7 @@ group :development do
   # gem 'capistrano-exts', :require => false #, :git => 'git://github.com/chipiga/capistrano-exts.git'
   # gem 'capistrano-recipes', :require => false
   gem 'capistrano_colors', :require => false
+  gem 'bluepill', :require => false
 end
 
 group :development, :test do

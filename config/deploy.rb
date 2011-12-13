@@ -29,6 +29,7 @@ set :scm, "git"
 
 require 'lib/recipes/nginx'
 require 'lib/recipes/unicorn'
+require 'lib/recipes/bluepill'
 namespace :deploy do
   # task :restart, :roles => :app, :except => { :no_release => true } do
   #   run "touch #{current_release}/tmp/restart.txt"
@@ -50,16 +51,11 @@ namespace :deploy do
 
     run "mkdir -p #{fetch :shared_path}/downloads"
     run "ln -nfs #{fetch :shared_path}/downloads/ #{fetch :release_path}/public/downloads"
-
-    run "mkdir -p #{fetch :shared_path}/tmp"
-    run "ln -nfs #{fetch :shared_path}/pids/ #{fetch :shared_path}/tmp/pids"
-    run "ln -nfs #{fetch :shared_path}/tmp/ #{fetch :release_path}/tmp"
-    run "mkdir -p #{fetch :release_path}/tmp/mount"
-    run "mkdir -p #{fetch :release_path}/tmp/umount"
   end
 end
 
 after "deploy:update_code", "deploy:symlink_all", "deploy:migrate"
+after "deploy:update", "bluepill:quit", "bluepill:start"
 after "deploy:restart", "delayed_job:restart", "deploy:cleanup"
 
 require 'cape'

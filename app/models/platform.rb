@@ -60,6 +60,10 @@ class Platform < ActiveRecord::Base
     build_path(name)
   end
 
+  def mount_path
+    Rails.root.join("public", "downloads", name)
+  end
+
   def hidden?
     visibility == 'hidden'
   end
@@ -106,31 +110,20 @@ class Platform < ActiveRecord::Base
   end
 
   def mount_directory_for_rsync
-    #FileUtils.rm_rf "#{ Rails.root.join('tmp', 'umount', self.name) }" if File.exist? "#{ Rails.root.join('tmp', 'umount', name) }"
-    #FileUtils.mkdir_p "#{ Rails.root.join('tmp', 'mount', name) }"
-    system("sudo mkdir -p #{ Rails.root.join("public", "downloads") }/#{ name }")
-    system("sudo mount --bind /home/share/platforms/#{ name } #{ Rails.root.join("public", "downloads") }/#{ name }")
-    #system("sudo cp -f /srv/rosa_build/current/tmp/mount/#{ name }/* /home/share/platforms/#{ name }/repository/")
-    #system("sudo rm -Rf \"/srv/rosa_build/current/tmp/mount/#{ name }\"")
+    # umount_directory_for_rsync # TODO ignore errors
+    system("sudo mkdir -p #{mount_path}")
+    system("sudo mount --bind #{path} #{mount_path}")
     Arch.all.each do |arch|
       host = EventLog.current_controller.request.host_with_port rescue ::Rosa::Application.config.action_mailer.default_url_options[:host]
       url = "http://#{host}/downloads/#{name}/repository/"
       str = "country=Russian Federation,city=Moscow,latitude=52.18,longitude=48.88,bw=1GB,version=2011,arch=#{arch.name},type=distrib,url=#{url}\n"
-      File.open(Rails.root.join("public", 'downloads', name, "#{name}.#{arch.name}.list"), 'w') {|f| f.write(str) }
+      File.open(File.join(mount_path, "#{name}.#{arch.name}.list"), 'w') {|f| f.write(str) }
     end
   end
 
   def umount_directory_for_rsync
-    system("sudo umount #{ Rails.root.join("public", "downloads") }/#{ name }")
-    system("sudo rm -Rf #{ Rails.root.join("public", "downloads") }/#{ name }")
-    #system("rm -Rf \"/srv/rosa_build/current/tmp/umount/#{ name }\"")
-    #FileUtils.rm_rf "#{ Rails.root.join('tmp', 'mount', name) }" if File.exist? "#{ Rails.root.join('tmp', 'mount', name) }"
-    #FileUtils.mkdir_p "#{ Rails.root.join('tmp', 'umount', name) }"
-  end
-
-  def make_admin_relation(user_id)
-    r = self.relations.build :object_id => user_id, :object_type => 'User', :role => 'admin'
-    r.save
+    system("sudo umount #{mount_path}")
+    system("sudo rm -Rf #{mount_path}")
   end
 
   protected

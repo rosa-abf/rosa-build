@@ -1,12 +1,11 @@
 Capistrano::Configuration.instance(:must_exist).load do
   namespace :deploy do
     set :unicorn_binary, "bundle exec unicorn"
-    set(:unicorn_config) { "#{fetch :current_path}/config/unicorn.rb" }
     set(:unicorn_pid) { "#{fetch :shared_path}/tmp/pids/unicorn.pid" }
-    set :unicorn_port, 8080
+    # set :unicorn_port, 8080
 
     task :start, :roles => :app, :except => { :no_release => true } do 
-      run "cd #{fetch :current_path} && #{try_sudo} #{unicorn_binary} -c #{unicorn_config} -p #{unicorn_port} -E #{rails_env} -D"
+      run "cd #{fetch :current_path} && #{try_sudo} #{unicorn_binary} -l /tmp/#{fetch :application}_unicorn.sock -E #{rails_env} -c config/unicorn.rb -D" # -p #{unicorn_port}
     end
     task :stop, :roles => :app, :except => { :no_release => true } do 
       run "#{try_sudo} kill `cat #{unicorn_pid}`" rescue warn 'deploy:stop FAILED'
