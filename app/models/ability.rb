@@ -44,6 +44,9 @@ class Ability
         can :publish, BuildList do |build_list|
           build_list.can_published? && build_list.project.relations.exists?(:object_type => 'User', :object_id => user.id)
         end
+        can :shoe, BuildList do |build_list|
+          build_list.project.public? || build_list.project.relations.exists?(:object_type => 'User', :object_id => user.id)
+        end
         can [:read, :create], PrivateUser, :platform => {:owner_type => 'User', :owner_id => user.id}
 
         # If rule has multiple conditions CanCan joins them by 'AND' sql operator
@@ -99,6 +102,9 @@ class Ability
         can [:read, :create], PrivateUser, :platform => {:owner_type => 'Group', :owner_id => user.group_ids}
         can :publish, BuildList do |build_list|
           build_list.can_published? && build_list.project.relations.exists?(:object_type => 'Group', :object_id => user.group_ids)
+        end
+        can :publish, BuildList do |build_list|
+          build_list.project.public? || build_list.project.relations.exists?(:object_type => 'Group', :object_id => user.group_ids)
         end
 
         can :manage_collaborators, Project, projects_in_relations_with(:role => 'admin', :object_type => 'Group', :object_id => user.group_ids) do |project|
