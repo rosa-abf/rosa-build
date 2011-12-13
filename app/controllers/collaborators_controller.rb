@@ -30,7 +30,6 @@ class CollaboratorsController < ApplicationController
   def update
     all_user_ids = []
     all_groups_ids = []
-    puts params.inspect
     Relation::ROLES.each { |r| 
       all_user_ids = all_user_ids | params['user'][r.to_sym].keys if params['user'] && params['user'][r.to_sym]
       all_groups_ids = all_groups_ids | params['group'][r.to_sym].keys if params['group'] && params['group'][r.to_sym]

@@ -1,5 +1,38 @@
 require 'spec_helper'
-#require 'shared_examples/collaborators_controller'
+
+shared_examples_for 'project admin user' do
+  it 'should be able to view collaborators list' do
+    get :index, :project_id => @project.id
+    response.should redirect_to(edit_project_collaborators_path(@project))
+  end
+
+  it 'should be able to perform update action' do
+    post :update, {:project_id => @project.id}.merge(@update_params)
+    response.should redirect_to(project_path(@project))
+  end
+
+  it 'should be able to set reader role for any user' do
+    post :update, {:project_id => @project.id}.merge(@update_params)
+    @another_user.relations.exists? :target_id => @project.id, :target_type => 'Project', :role => 'reader'
+  end
+end
+
+shared_examples_for 'user with no rights for this project' do
+  it 'should not be able to view collaborators list' do
+    get :index, :project_id => @project.id
+    response.should redirect_to(edit_project_collaborators_path(@project))
+  end
+
+  it 'should not be able to perform update action' do
+    post :update, {:project_id => @project.id}.merge(@update_params)
+    response.should redirect_to(project_path(@project))
+  end
+
+  it 'should not be able to set reader role for any user' do
+    post :update, {:project_id => @project.id}.merge(@update_params)
+    !@another_user.relations.exists? :target_id => @project.id, :target_type => 'Project', :role => 'read'
+  end
+end
 
 describe CollaboratorsController do
 	before(:each) do
@@ -26,9 +59,7 @@ describe CollaboratorsController do
   		set_session_for(@admin)
 		end
 
-    it_should_behave_like 'show collaborators list'
-    it_should_behave_like 'update collaborators'
-    it_should_behave_like 'update collaborator relation'
+    it_should_behave_like 'project admin user'
   end
 
   context 'for admin user' do
@@ -39,9 +70,7 @@ describe CollaboratorsController do
       @project.relations.create!(:object_type => 'User', :object_id => @user.id, :role => 'reader')
     end
 
-    it_should_behave_like 'show collaborators list'
-    it_should_behave_like 'update collaborators'
-    it_should_behave_like 'update collaborator relation'
+    it_should_behave_like 'project admin user'
   end
 
   context 'for owner user' do
@@ -52,9 +81,7 @@ describe CollaboratorsController do
   		@project.relations.create!(:object_type => 'User', :object_id => @user.id, :role => 'admin')
 		end
 
-    it_should_behave_like 'show collaborators list'
-    it_should_behave_like 'update collaborators'
-    it_should_behave_like 'update collaborator relation'
+    it_should_behave_like 'project admin user'
   end
 
   context 'for reader user' do
@@ -65,9 +92,7 @@ describe CollaboratorsController do
   		@project.relations.create!(:object_type => 'User', :object_id => @user.id, :role => 'reader')
 		end
 
-    it_should_behave_like 'not show collaborators list'
-    it_should_behave_like 'not update collaborators'
-    it_should_behave_like 'not update collaborator relation'
+    it_should_behave_like 'user with no rights for this project'
   end
 
   context 'for writer user' do
@@ -78,8 +103,6 @@ describe CollaboratorsController do
   		@project.relations.create!(:object_type => 'User', :object_id => @user.id, :role => 'writer')
 		end
 
-    it_should_behave_like 'not show collaborators list'
-    it_should_behave_like 'not update collaborators'
-    it_should_behave_like 'not update collaborator relation'
+    it_should_behave_like 'user with no rights for this project'
   end
 end
