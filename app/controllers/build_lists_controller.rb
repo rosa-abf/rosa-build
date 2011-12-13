@@ -13,11 +13,13 @@ class BuildListsController < ApplicationController
 	def all
     if params[:filter]
       @filter = BuildList::Filter.new(nil, params[:filter])
-      @build_lists = @filter.find.paginate :page => params[:page]
     else
       @filter = BuildList::Filter.new(nil)
-      @build_lists = BuildList.recent.paginate :page => params[:page]
     end
+    @build_lists = @filter.find
+    @build_lists = @build_lists.scoped_open_to_user_with_groups(current_user) unless current_user.admin?
+    @build_lists = @build_lists.paginate :page => params[:page]
+
 		@action_url = all_build_lists_path
 
     @build_server_status = begin
