@@ -78,7 +78,7 @@ class BuildListsController < ApplicationController
 	end
 
 	def pre_build
-		@build_list.status = BuildList::BUILD_STARTED
+		@build_list.status = BuildServer::BUILD_STARTED
 		@build_list.notified_at = Time.current
 
 		@build_list.save
