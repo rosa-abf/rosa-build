@@ -35,10 +35,16 @@ describe BuildListsController do
   end
 
   context 'filter' do
+    
+    before(:each) do 
+      stub_rsync_methods
+      set_session_for Factory(:admin)
+    end  
+    
     let(:build_list1) { Factory(:build_list_core) }
     let(:build_list2) { Factory(:build_list_core) }
     let(:build_list3) { Factory(:build_list_core) }
-    before(:each) { set_session_for Factory(:admin) }
+    
 
     it 'should filter by bs_id' do
       get :all, :filter => {:bs_id => build_list1.bs_id, :project_name => 'fdsfdf', :any_other_field => 'do not matter'}

@@ -42,11 +42,6 @@ describe PlatformsController do
       @admin = Factory(:admin)
       @user = Factory(:user)
       set_session_for(@admin)
-      any_instance_of(Platform) do |plat|
-        stub(plat).mount_directory_for_rsync {|args| true}
-        stub(plat).umount_directory_for_rsync {|args| true}
-      end
-#      any_instance_of(Platform).umount_directory_for_rsync{true}
     end
 
     it_should_behave_like 'able_to_perform_index#platforms'
