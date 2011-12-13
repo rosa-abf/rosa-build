@@ -16,9 +16,7 @@ class BuildListsController < ApplicationController
     else
       @filter = BuildList::Filter.new(nil)
     end
-    @build_lists = @filter.find
-    @build_lists = @build_lists.scoped_open_to_user_with_groups(current_user) unless current_user.admin?
-    @build_lists = @build_lists.paginate :page => params[:page]
+    @build_lists = @filter.find.paginate :page => params[:page]
 
 		@action_url = all_build_lists_path
 
