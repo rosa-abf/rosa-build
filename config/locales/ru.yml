@@ -98,6 +98,7 @@ ru:
       build_all: Собрать все
       list: Список
       new: Создать
+      edit: Редактировать
       new_header: Новая платформа
       edit_header: Редактировать
       list_header: Платформы

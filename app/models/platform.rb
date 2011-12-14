@@ -24,6 +24,7 @@ class Platform < ActiveRecord::Base
 #  before_update :check_freezing
   after_create lambda { mount_directory_for_rsync unless hidden? }
   after_destroy lambda { umount_directory_for_rsync unless hidden? }
+  after_update :update_owner_relation
 
   scope :by_visibilities, lambda {|v| {:conditions => ['visibility in (?)', v.join(',')]}}
   scope :open, where(:visibility => 'open')
@@ -130,9 +131,16 @@ class Platform < ActiveRecord::Base
     #FileUtils.mkdir_p "#{ Rails.root.join('tmp', 'umount', name) }"
   end
 
-  def make_admin_relation(user_id)
-    r = self.relations.build :object_id => user_id, :object_type => 'User', :role => 'admin'
-    r.save
+  #def make_admin_relation(user_id)
+  #  r = self.relations.build :object_id => user_id, :object_type => 'User', :role => 'admin'
+  #  r.save
+  #end
+
+  def update_owner_relation
+    if owner_id_was != owner_id
+      r = relations.where(:object_id => owner_id_was, :object_type => owner_type_was)[0]
+      r.update_attributes(:object_id => owner_id, :object_type => owner_type)
+    end
   end
 
   protected

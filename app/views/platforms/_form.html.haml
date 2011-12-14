@@ -1,20 +1,22 @@
 = javascript_include_tag "autocomplete-rails.js"
 
-.group
-  = f.label :name, :class => :label
-  = f.text_field :name, :class => 'text_field'
+- unless ['edit', 'update'].include? controller.action_name
+  .group
+    = f.label :name, :class => :label
+    = f.text_field :name, :class => 'text_field'
 
 .group
   = f.label :description, :class => :label
   = f.text_field :description, :class => 'text_field'
 
-.group
-  = f.label :distrib_type, :class => :label
-  = f.select :distrib_type, options_for_select(APP_CONFIG['distr_types'])
+- unless ['edit', 'update'].include? controller.action_name
+  .group
+    = f.label :distrib_type, :class => :label
+    = f.select :distrib_type, options_for_select(APP_CONFIG['distr_types'])
 
-.group
-  = f.label :parent, :class => :label
-  = f.collection_select :parent_platform_id, Platform.all, :id, :description, :include_blank => true
+  .group
+    = f.label :parent, :class => :label
+    = f.collection_select :parent_platform_id, Platform.all, :id, :description, :include_blank => true
 
 .group
   = f.label :released, :class => :label
