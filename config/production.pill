@@ -1,6 +1,6 @@
 #! /usr/bin/env ruby
 
-app_name = ENV['APP_NAME'] rescue 'rosa_build'
+app_name = ENV['APP_NAME'] || 'rosa_build'
 Bluepill.application(app_name) do |app|
   app.uid = app.gid = 'rosa'
   app.working_dir = "/srv/#{app_name}/current"
