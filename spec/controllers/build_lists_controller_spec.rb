@@ -1,6 +1,21 @@
 require 'spec_helper'
 
 describe BuildListsController do
+
+  shared_examples_for 'show build list' do
+    it 'should be able to perform show action' do
+      get :show, @show_params
+      response.should be_success
+    end
+  end
+
+  shared_examples_for 'not show build list' do
+    it 'should not be able to perform show action' do
+      get :show, @show_params
+      response.should redirect_to(forbidden_url)
+    end
+  end
+
   context 'crud' do
     context 'for guest' do
       it 'should not be able to perform all action' do
@@ -10,12 +25,57 @@ describe BuildListsController do
     end
 
     context 'for user' do
-      before(:each) { set_session_for Factory(:user) }
+      before(:each) do
+        @build_list = Factory(:build_list_core)
+        @project = @build_list.project
+        @owner_user = @project.owner
+        @member_user = Factory(:user)
+        rel = @project.relations.build(:role => 'reader')
+        rel.object = @member_user
+        rel.save
+        @user = Factory(:user)
+        set_session_for(@user)
+        @show_params = {:project_id => @project.id, :id => @build_list.id}
+      end
   
       it 'should not be able to perform all action' do
         get :all
         response.should redirect_to(forbidden_url)
       end
+
+      context 'for open project' do
+        it_should_behave_like 'show build list'
+
+        context 'if user is project owner' do
+          before(:each) {set_session_for(@owner_user)}
+          it_should_behave_like 'show build list'
+        end
+
+        context 'if user is project owner' do
+          before(:each) {set_session_for(@member_user)}
+          it_should_behave_like 'show build list'
+        end
+      end
+
+      context 'for hidden project' do
+        before(:each) do
+          @project.visibility = 'hidden'
+          @project.save
+        end
+
+        it_should_behave_like 'not show build list'
+
+        context 'if user is project owner' do
+          before(:each) {set_session_for(@owner_user)}
+          it_should_behave_like 'show build list'
+        end
+
+        context 'if user is project owner' do
+          before(:each) {set_session_for(@member_user)}
+          it_should_behave_like 'show build list'
+        end
+      end
+
     end
 
     context 'for admin' do
