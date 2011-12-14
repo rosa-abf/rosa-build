@@ -40,6 +40,7 @@ gem 'unicorn', '~> 4.1.1'
 group :production do
   gem "airbrake", '~> 3.0.5'
   # gem 'newrelic_rpm', '~> 3.1.1'
+  gem 'bluepill', :require => false
 end
 
 group :development do
@@ -64,7 +65,6 @@ group :development do
   # gem 'capistrano-exts', :require => false #, :git => 'git://github.com/chipiga/capistrano-exts.git'
   # gem 'capistrano-recipes', :require => false
   gem 'capistrano_colors', :require => false
-  gem 'bluepill', :require => false
 end
 
 group :development, :test do
