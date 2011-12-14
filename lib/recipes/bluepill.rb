@@ -1,6 +1,6 @@
 Capistrano::Configuration.instance(:must_exist).load do
   namespace :bluepill do
-    set :bluepill_binary, "bundle exec APP_NAME=#{fetch :application} bluepill --no-privileged"
+    set :bluepill_binary, "APP_NAME=#{fetch :application} bundle exec bluepill --no-privileged"
 
     desc "Stop processes that bluepill is monitoring and quit bluepill"
     task :quit, :roles => [:app], :on_error => :continue do
