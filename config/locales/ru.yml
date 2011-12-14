@@ -94,10 +94,11 @@ ru:
       confirm_delete: Вы уверены, что хотите удалить эту категорию?
 
     platforms:
-      admin_uname: Владелец
+      admin_id: Владелец
       build_all: Собрать все
       list: Список
       new: Создать
+      edit: Редактировать
       new_header: Новая платформа
       edit_header: Редактировать
       list_header: Платформы

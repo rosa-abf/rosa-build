@@ -64,6 +64,7 @@
           = link_to t("layout.platforms.freeze"), freeze_platform_path(@platform), :confirm => I18n.t("layout.platforms.confirm_freeze"), :method => :post, :class => "button" if can? :freeze, @platform
         = link_to "Клонировать", clone_platform_path(@platform), :class => "button" if can? :clone, @platform
         = link_to t("layout.platforms.build_all"), build_all_platform_path(@platform), :confirm => I18n.t("layout.confirm"), :method => :post, :class => "button" if can? :build_all, @platform
+        = link_to t("layout.platforms.edit"), edit_platform_path(@platform), :class => "button" if can? :edit, @platform
 
 %a{ :name => "repositories" }
 .block

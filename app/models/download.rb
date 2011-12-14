@@ -12,7 +12,7 @@ class Download < ActiveRecord::Base
     def parse_nginx_log
       File.open(PREV_LOG_FILE) do |log|
         while (line = log.gets)
-          if package = line.match( /GET \/.+\/([\w\d]+)-([\d.]+)-((\d+mdv[\d.]+)|([\d\w]+-mdv[\d.]+))\.([\w\d]+)\.rpm/ )
+          if package = line.match( /GET \/.+\/([\w\d-]+)-([\d.]+)-((\d+mdv[\d.]+)|([\d\w]+-mdv[\d.]+))\.([\w\d]+)\.rpm/ )
             increase(
               :name => package[1],
               :version => package[2],

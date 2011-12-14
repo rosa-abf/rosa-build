@@ -14,7 +14,9 @@ class Platform < ActiveRecord::Base
   has_many :groups,  :through => :objects, :source => :object, :source_type => 'Group'
 
   validates :description, :presence => true, :uniqueness => true
-  validates :name, :uniqueness => true, :presence => true, :format => { :with => /^[a-zA-Z0-9_]+$/ }
+  if !Rails.env.development?
+    validates :name, :uniqueness => true, :presence => true, :format => { :with => /^[a-zA-Z0-9_]+$/ }
+  end
   validates :distrib_type, :presence => true, :inclusion => {:in => APP_CONFIG['distr_types']}
 
   before_create :xml_rpc_create, :unless => lambda {Thread.current[:skip]}
@@ -22,6 +24,7 @@ class Platform < ActiveRecord::Base
 #  before_update :check_freezing
   after_create lambda { mount_directory_for_rsync unless hidden? }
   after_destroy lambda { umount_directory_for_rsync unless hidden? }
+  after_update :update_owner_relation
 
   scope :by_visibilities, lambda {|v| {:conditions => ['visibility in (?)', v.join(',')]}}
   scope :open, where(:visibility => 'open')
@@ -128,9 +131,16 @@ class Platform < ActiveRecord::Base
     #FileUtils.mkdir_p "#{ Rails.root.join('tmp', 'umount', name) }"
   end
 
-  def make_admin_relation(user_id)
-    r = self.relations.build :object_id => user_id, :object_type => 'User', :role => 'admin'
-    r.save
+  #def make_admin_relation(user_id)
+  #  r = self.relations.build :object_id => user_id, :object_type => 'User', :role => 'admin'
+  #  r.save
+  #end
+
+  def update_owner_relation
+    if owner_id_was != owner_id
+      r = relations.where(:object_id => owner_id_was, :object_type => owner_type_was)[0]
+      r.update_attributes(:object_id => owner_id, :object_type => owner_type)
+    end
   end
 
   protected
