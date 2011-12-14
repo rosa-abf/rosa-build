@@ -45,18 +45,39 @@ class PlatformsController < ApplicationController
 
   def new
     @platform = Platform.new
+    @admin_uname = current_user.uname
+    @admin_id = current_user.id
   end
   
   def edit
+    @admin_id = @platform.owner.id
+    @admin_uname = @platform.owner.uname
   end
 
   def create
     @platform = Platform.new params[:platform]
-    @platform.owner = (params[:admin_uname]) ? User.find_by_uname(params[:admin_uname]) : nil
-    @platform.owner ||= get_owner
+    @admin_id = params[:admin_id]
+    @admin_uname = params[:admin_uname]
+    @platform.owner = @admin_id.blank? ? get_owner : User.find(@admin_id)
 
-    if @platform.save!
-#      @platform.make_admin_relation(@platform.owner.id)
+    if @platform.save
+      flash[:notice] = I18n.t("flash.platform.saved")
+      redirect_to @platform
+    else
+      flash[:error] = I18n.t("flash.platform.saved_error")
+      render :action => :new
+    end
+  end
+
+  def update
+    @admin_id = params[:admin_id]
+    @admin_uname = params[:admin_uname]
+
+    if @platform.update_attributes(
+      :owner => @admin_id.blank? ? get_owner : User.find(@admin_id),
+      :description => params[:platform][:description],
+      :released => params[:platform][:released]
+    )
       flash[:notice] = I18n.t("flash.platform.saved")
       redirect_to @platform
     else

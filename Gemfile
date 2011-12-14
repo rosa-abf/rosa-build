@@ -28,6 +28,7 @@ gem 'grack', :git => 'git://github.com/rdblue/grack.git', :require => 'git_http'
 gem "grit"
 gem 'whenever', :require => false
 gem 'delayed_job'
+gem 'highline', '~> 1.6.8'
 
 # XML-RPC support
 # gem 'actionwebservice' #, :git => 'git://github.com/ywen/actionwebservice.git'
@@ -39,6 +40,7 @@ gem 'unicorn', '~> 4.1.1'
 group :production do
   gem "airbrake", '~> 3.0.5'
   # gem 'newrelic_rpm', '~> 3.1.1'
+  gem 'bluepill', :require => false
 end
 
 group :development do
@@ -72,14 +74,14 @@ group :development, :test do
   gem 'rr'
 end
 
-group :test do
-  # gem 'spork',              '>= 0.9.0.rc9'
-  # gem 'guard-spork',        '~> 0.3.1'
-  # gem 'guard-rspec',        '~> 0.5.0'
-  # gem 'guard-bundler',      '~> 0.1.3'
-  # 
-  # gem 'rb-fsevent', '>= 0.4.3', :require => false
-  # gem 'growl',      '~> 1.0.3', :require => false
-  # gem 'rb-inotify', '>= 0.8.6', :require => false
-  # gem 'libnotify',  '~> 0.5.7', :require => false
-end
+# group :test do
+#   gem 'spork',              '>= 0.9.0.rc9'
+#   gem 'guard-spork',        '~> 0.3.1'
+#   gem 'guard-rspec',        '~> 0.5.0'
+#   gem 'guard-bundler',      '~> 0.1.3'
+# 
+#   gem 'rb-fsevent', '>= 0.4.3', :require => false
+#   gem 'growl',      '~> 1.0.3', :require => false
+#   gem 'rb-inotify', '>= 0.8.6', :require => false
+#   gem 'libnotify',  '~> 0.5.7', :require => false
+# end

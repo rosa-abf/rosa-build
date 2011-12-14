@@ -42,11 +42,6 @@ describe PlatformsController do
       @admin = Factory(:admin)
       @user = Factory(:user)
       set_session_for(@admin)
-      any_instance_of(Platform) do |plat|
-        stub(plat).mount_directory_for_rsync {|args| true}
-        stub(plat).umount_directory_for_rsync {|args| true}
-      end
-#      any_instance_of(Platform).umount_directory_for_rsync{true}
     end
 
     it_should_behave_like 'able_to_perform_index#platforms'
@@ -69,13 +64,15 @@ describe PlatformsController do
     it_should_behave_like 'change_objects_count_on_destroy_success'
     it_should_behave_like 'not_be_able_to_destroy_personal_platform'
 
-    context 'when owner uname present' do
 
-      it 'should create platform with mentioned owner' do
-        post :create, @create_params.merge({:admin_uname => @user.uname})
-        Platform.last.owner.id.should eql(@user.id)
-      end
-
+    it 'should create platform with mentioned owner if owner id present' do
+      post :create, @create_params.merge({:admin_id => @user.id})
+      Platform.last.owner.id.should eql(@user.id)
+    end
+      
+    it 'should create platform with current user as owner if owner id not present' do
+      post :create, @create_params
+      Platform.last.owner.id.should eql(@admin.id)
     end
 
   end

@@ -1,29 +1,31 @@
 = javascript_include_tag "autocomplete-rails.js"
 
-.group
-  = f.label :name, :class => :label
-  = f.text_field :name, :class => 'text_field'
+- unless ['edit', 'update'].include? controller.action_name
+  .group
+    = f.label :name, :class => :label
+    = f.text_field :name, :class => 'text_field'
 
 .group
   = f.label :description, :class => :label
   = f.text_field :description, :class => 'text_field'
 
-.group
-  = f.label :distrib_type, :class => :label
-  = f.select :distrib_type, options_for_select(APP_CONFIG['distr_types'])
+- unless ['edit', 'update'].include? controller.action_name
+  .group
+    = f.label :distrib_type, :class => :label
+    = f.select :distrib_type, options_for_select(APP_CONFIG['distr_types'])
 
-.group
-  = f.label :parent, :class => :label
-  = f.collection_select :parent_platform_id, Platform.all, :id, :description, :include_blank => true
+  .group
+    = f.label :parent, :class => :label
+    = f.collection_select :parent_platform_id, Platform.all, :id, :description, :include_blank => true
 
 .group
   = f.label :released, :class => :label
   = f.check_box :released, :class => 'check_box'
 
 .group
-  = label_tag "admin_uname", t("layout.platforms.admin_uname"), :class => :label
-  = autocomplete_field_tag 'admin_uname', params[:admin_uname], autocomplete_user_uname_platforms_path
-  =# text_field_tag 'admin_id', '', :id => 'admin_id_field'
+  = label_tag "", t("layout.platforms.admin_id"), :class => :label
+  = autocomplete_field_tag 'admin_id', @admin_uname, autocomplete_user_uname_platforms_path, :id_element => '#admin_id_field'
+  = hidden_field_tag 'admin_id', @admin_id, :id => 'admin_id_field'
   
 .group.navform.wat-cf
   %button.button{:type => "submit"}
