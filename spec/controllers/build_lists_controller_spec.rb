@@ -13,8 +13,6 @@ describe BuildListsController do
       before(:each) do
         @build_list = Factory(:build_list_core)
         @project = @build_list.project
-        @project.visibility = 'hidden'
-        @project.save
         @owner_user = @project.owner
         @member_user = Factory(:user)
         rel = @project.relations.build(:role => 'reader')
@@ -30,32 +28,39 @@ describe BuildListsController do
         response.should redirect_to(forbidden_url)
       end
 
-      it 'should not be able to perform show action' do
-        get :show, @show_params
-        response.should redirect_to(forbidden_url)
-      end
+      context 'for open project' do
+        it_should_behave_like 'show build list'
 
-      context 'that is project owner' do
-        before (:each) do
-          set_session_for(@owner_user)
+        context 'if user is project owner' do
+          before(:each) {set_session_for(@owner_user)}
+          it_should_behave_like 'show build list'
         end
 
-        it 'should be able to perform show action' do
-          get :show, @show_params
-          response.should be_success
+        context 'if user is project owner' do
+          before(:each) {set_session_for(@member_user)}
+          it_should_behave_like 'show build list'
         end
       end
 
-      context 'that is project member' do
-        before (:each) do
-          set_session_for(@member_user)
+      context 'for hidden project' do
+        before(:each) do
+          @project.visibility = 'hidden'
+          @project.save
         end
 
-        it 'should be able to perform show action' do
-          get :show, @show_params
-          response.should be_success
+        it_should_behave_like 'not show build list'
+
+        context 'if user is project owner' do
+          before(:each) {set_session_for(@owner_user)}
+          it_should_behave_like 'show build list'
+        end
+
+        context 'if user is project owner' do
+          before(:each) {set_session_for(@member_user)}
+          it_should_behave_like 'show build list'
         end
       end
+
     end
 
     context 'for admin' do
