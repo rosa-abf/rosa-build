@@ -129,6 +129,13 @@ class Platform < ActiveRecord::Base
     system("sudo rm -Rf #{mount_path}")
   end
 
+  def update_owner_relation
+    if owner_id_was != owner_id
+      r = relations.where(:object_id => owner_id_was, :object_type => owner_type_was)[0]
+      r.update_attributes(:object_id => owner_id, :object_type => owner_type)
+    end
+  end
+
   protected
 
     def build_path(dir)
