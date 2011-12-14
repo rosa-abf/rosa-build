@@ -55,8 +55,7 @@ namespace :deploy do
 end
 
 after "deploy:update_code", "deploy:symlink_all", "deploy:migrate"
-after "deploy:update", "bluepill:quit", "bluepill:start"
-after "deploy:restart", "delayed_job:restart", "deploy:cleanup"
+after "deploy:restart", "delayed_job:restart", "bluepill:restart", "deploy:cleanup"
 
 require 'cape'
 namespace :rake_tasks do

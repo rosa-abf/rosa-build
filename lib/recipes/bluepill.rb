@@ -13,6 +13,11 @@ Capistrano::Configuration.instance(:must_exist).load do
       run "cd #{fetch :current_path} && #{try_sudo} #{bluepill_binary} load config/production.pill"
     end
 
+    task :restart, :roles => [:app] do
+      quit
+      start
+    end
+
     desc "Prints bluepills monitored processes statuses"
     task :status, :roles => [:app] do
       run "cd #{fetch :current_path} && #{try_sudo} #{bluepill_binary} status"
