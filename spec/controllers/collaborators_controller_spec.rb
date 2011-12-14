@@ -36,12 +36,29 @@ describe CollaboratorsController do
       @user = Factory(:user)
       @user.relations
       set_session_for(@user)
+      @group = Factory(:group)
       @project.relations.create!(:object_type => 'User', :object_id => @user.id, :role => 'reader')
     end
 
     it_should_behave_like 'show collaborators list'
     it_should_behave_like 'update collaborators'
     it_should_behave_like 'update collaborator relation'
+
+    it 'should add new collaborator with reader role' do
+      @params = {:member_id => @another_user.id.to_s, :project_id => @project.id.to_s}
+      post :add, @params
+      @project.relations.exists?(:object_type => 'User', :object_id => @another_user.id, :role => 'reader').should be_true
+    end
+
+    it 'should add new group with reader role' do
+      @params = {:group_id => @group.id.to_s, :project_id => @project.id.to_s}
+      post :add, @params
+      @project.relations.exists?(:object_type => 'Group', :object_id => @group.id, :role => 'reader').should be_true
+    end
+
+    it_should_behave_like 'be_able_to_perform_index#collaborators'
+    it_should_behave_like 'be_able_to_perform_update#collaborators'
+    it_should_behave_like 'update_collaborator_relation'
   end
 
   context 'for owner user' do
