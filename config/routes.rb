@@ -8,9 +8,7 @@ Rosa::Application.routes.draw do
   
   resources :users do
     resources :groups, :only => [:new, :create, :index]
-    collection do
-      get :autocomplete_user_uname
-    end
+    get :autocomplete_user_uname, :on => :collection
   end
 
   resources :event_logs, :only => :index
@@ -81,10 +79,11 @@ Rosa::Application.routes.draw do
       end
     end
 
-    resources :collaborators, :only => [:index, :edit, :update] do
+    resources :collaborators, :only => [:index, :edit, :update, :add] do
       collection do
         get :edit
         post :update
+        post :add
       end
       member do
         post :update
@@ -111,6 +110,7 @@ Rosa::Application.routes.draw do
   end
 
   resources :groups do
+    get :autocomplete_group_uname, :on => :collection
     resources :members, :only => [:index, :edit, :update, :add] do
       collection do
         get  :edit

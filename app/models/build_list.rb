@@ -52,7 +52,7 @@ class BuildList < ActiveRecord::Base
                      BuildServer::BINARY_TEST_FAILED => :binary_test_failed
                     }
 
-  scope :recent, order("updated_at DESC")
+  scope :recent, order("#{table_name}.updated_at DESC")
   scope :current, lambda {
     outdatable_statuses = [BuildServer::SUCCESS, BuildServer::ERROR, BuildServer::PLATFORM_NOT_FOUND, BuildServer::PLATFORM_PENDING, BuildServer::PROJECT_NOT_FOUND, BuildServer::PROJECT_VERSION_NOT_FOUND]
     where(["status in (?) OR (status in (?) AND notified_at >= ?)", [WAITING_FOR_RESPONSE, BUILD_PENDING, BuildServer::BUILD_STARTED], outdatable_statuses, Time.now - 2.days])
@@ -63,11 +63,11 @@ class BuildList < ActiveRecord::Base
   scope :scoped_to_is_circle, lambda {|is_circle| where(:is_circle => is_circle) }
   scope :for_creation_date_period, lambda{|start_date, end_date|
     if start_date && end_date
-      where(["created_at BETWEEN ? AND ?", start_date, end_date])
+      where(["#{table_name}.created_at BETWEEN ? AND ?", start_date, end_date])
     elsif start_date && !end_date
-      where(["created_at >= ?", start_date])
+      where(["#{table_name}.created_at >= ?", start_date])
     elsif !start_date && end_date
-      where(["created_at <= ?", end_date])
+      where(["#{table_name}.created_at <= ?", end_date])
     end
   }
   scope :for_notified_date_period, lambda{|start_date, end_date|
