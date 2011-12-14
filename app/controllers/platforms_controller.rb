@@ -61,7 +61,6 @@ class PlatformsController < ApplicationController
     @platform.owner = @admin_id.blank? ? get_owner : User.find(@admin_id)
 
     if @platform.save
-      #@platform.make_admin_relation(params[:admin_id])
       flash[:notice] = I18n.t("flash.platform.saved")
       redirect_to @platform
     else
@@ -73,15 +72,12 @@ class PlatformsController < ApplicationController
   def update
     @admin_id = params[:admin_id]
     @admin_uname = params[:admin_uname]
-    #@platform.owner = @admin_id.blank? ? get_owner : User.find(@admin_id)
-    #if @platform.save!
 
     if @platform.update_attributes(
       :owner => @admin_id.blank? ? get_owner : User.find(@admin_id),
       :description => params[:platform][:description],
       :released => params[:platform][:released]
     )
-      #@platform.make_admin_relation(@admin_id)
       flash[:notice] = I18n.t("flash.platform.saved")
       redirect_to @platform
     else
