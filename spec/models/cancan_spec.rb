@@ -213,7 +213,7 @@ describe CanCan do
         end
 
         [:manage, :add_project, :remove_project, :change_visibility, :settings].each do |action|
-          it 'should be able to #{ action } repository' do
+          it "should be able to #{ action } repository" do
             @ability.should be_able_to(action, @repository)
           end
         end
