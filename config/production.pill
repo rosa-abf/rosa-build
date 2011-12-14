@@ -11,7 +11,7 @@ Bluepill.application(app_name) do |app|
 
     process.start_command = "bundle exec script/delayed_job -e production start"
     process.stop_command  = "bundle exec script/delayed_job -e production stop"
-    process.pid_file = File.join('tmp', 'pids', 'delayed_job.pid')
+    process.pid_file = File.join(app.working_dir, 'tmp', 'pids', 'delayed_job.pid')
   end
 
   app.process("unicorn") do |process|
@@ -22,7 +22,7 @@ Bluepill.application(app_name) do |app|
     process.start_command = "bundle exec unicorn -l /tmp/#{app_name}_unicorn.sock  -c config/unicorn.rb -D"
     process.stop_command = "kill -QUIT {{PID}}"
     process.restart_command = "kill -USR2 {{PID}}"
-    process.pid_file = File.join('tmp', 'pids', 'unicorn.pid')
+    process.pid_file = File.join(app.working_dir, 'tmp', 'pids', 'unicorn.pid')
 
     process.monitor_children do |child_process|
       child_process.stop_command = "kill -QUIT {{PID}}"

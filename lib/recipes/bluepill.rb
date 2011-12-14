@@ -3,7 +3,7 @@ Capistrano::Configuration.instance(:must_exist).load do
     set :bluepill_binary, "bundle exec bluepill --no-privileged"
 
     desc "Stop processes that bluepill is monitoring and quit bluepill"
-    task :quit, :roles => [:app] do
+    task :quit, :roles => [:app], :on_error => :continue do
       run "cd #{fetch :current_path} && #{try_sudo} #{bluepill_binary} stop APP_NAME=#{fetch :application}"
       run "cd #{fetch :current_path} && #{try_sudo} #{bluepill_binary} quit APP_NAME=#{fetch :application}"
     end

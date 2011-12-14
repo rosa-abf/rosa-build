@@ -8,7 +8,7 @@ Capistrano::Configuration.instance(:must_exist).load do
       task :generate_configuration, :roles => :web, :except => { :no_release => true } do
         config = %Q{
 upstream #{application}_backend {
-  # server  127.0.0.1:#{unicorn_port};
+  # server  127.0.0.1:#{unicorn_port rescue 8080};
   server unix:/tmp/#{fetch :application}_unicorn.sock;
 }
 
