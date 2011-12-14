@@ -10,12 +10,15 @@
         .group
           %h2.title= t("layout.collaborators.add")
           = label_tag "member_uname", t("layout.collaborators.input_username")
-          = autocomplete_field_tag 'member_uname', params[:member_uname], autocomplete_user_uname_users_path
+          = autocomplete_field_tag 'member_id', params[:member_id], autocomplete_user_uname_users_path, :id_element => '#member_id_field'
           &nbsp;
           = t('layout.or')
           &nbsp;
           = label_tag "group_uname", t("layout.collaborators.input_groupname")
-          = autocomplete_field_tag 'group_uname', params[:group_uname], autocomplete_group_uname_groups_path
+          = autocomplete_field_tag 'group_id', params[:group_id], autocomplete_group_uname_groups_path, :id_element => '#group_id_field'
+
+          = hidden_field_tag 'member_id', nil, :id => 'member_id_field'
+          = hidden_field_tag 'group_id', nil, :id => 'group_id_field'
         %br
         .group.navform.wat-cf
           %button.button{:type => "submit"}
