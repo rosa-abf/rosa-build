@@ -26,6 +26,7 @@ describe BuildListsController do
 
     context 'for user' do
       before(:each) do
+        stub_rsync_methods
         @build_list = Factory(:build_list_core)
         @project = @build_list.project
         @owner_user = @project.owner
