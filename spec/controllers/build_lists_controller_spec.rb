@@ -10,11 +10,51 @@ describe BuildListsController do
     end
 
     context 'for user' do
-      before(:each) { set_session_for Factory(:user) }
+      before(:each) do
+        @build_list = Factory(:build_list_core)
+        @project = @build_list.project
+        @project.visibility = 'hidden'
+        @project.save
+        @owner_user = @project.owner
+        @member_user = Factory(:user)
+        rel = @project.relations.build(:role => 'reader')
+        rel.object = @member_user
+        rel.save
+        @user = Factory(:user)
+        set_session_for(@user)
+        @show_params = {:project_id => @project.id, :id => @build_list.id}
+      end
   
       it 'should not be able to perform all action' do
         get :all
         response.should redirect_to(forbidden_url)
+      end
+
+      it 'should not be able to perform show action' do
+        get :show, @show_params
+        response.should redirect_to(forbidden_url)
+      end
+
+      context 'that is project owner' do
+        before (:each) do
+          set_session_for(@owner_user)
+        end
+
+        it 'should be able to perform show action' do
+          get :show, @show_params
+          response.should be_success
+        end
+      end
+
+      context 'that is project member' do
+        before (:each) do
+          set_session_for(@member_user)
+        end
+
+        it 'should be able to perform show action' do
+          get :show, @show_params
+          response.should be_success
+        end
       end
     end
 
