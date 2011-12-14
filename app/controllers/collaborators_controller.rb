@@ -84,8 +84,8 @@ class CollaboratorsController < ApplicationController
   def add
     # TODO: Here is used Chelyabinsk method to display Flash messages.
 
-    member = User.find_by_uname(params['member_uname']) if params['member_uname'] && !params['member_uname'].empty?
-    group = Group.find_by_uname(params['group_uname']) if params['group_uname'] && !params['group_uname'].empty?
+    member = User.find(params['member_id']) if params['member_id'] && !params['member_id'].empty?
+    group = Group.find(params['group_id']) if params['group_id'] && !params['group_id'].empty?
 
     flash[:notice], flash[:error], flash[:warning] = [], [], []
 
