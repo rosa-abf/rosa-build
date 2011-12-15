@@ -259,6 +259,7 @@ ru:
       confirm_delete: Вы уверены, что хотите удалить этого пользователя?
       own_projects: Мои проекты
       part_projects: Участвую в проектах
+      filter_header: Фильтр
 
     git:
       repositories:
