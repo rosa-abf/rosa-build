@@ -1,5 +1,36 @@
 require 'spec_helper'
-#require "shared_examples/platforms_controller"
+
+shared_examples_for 'platform owner' do
+  it_should_behave_like 'platform index viewer'
+
+  it 'should not be able to destroy personal platform' do
+    delete :destroy, :id => @personal_platform.id
+    response.should redirect_to(forbidden_path)
+  end
+
+  it 'should change objects count on destroy success' do
+    lambda { delete :destroy, :id => @platform.id }.should change{ Platform.count }.by(-1)
+  end
+
+  it 'should be able to perform destroy action' do
+    delete :destroy, :id => @platform.id
+    response.should redirect_to(root_path)
+  end
+end
+
+shared_examples_for 'platform index viewer' do
+  it 'should be able to perform index action' do
+    get :index
+    response.should render_template(:index)
+  end
+end
+
+shared_examples_for 'user without create rights' do
+  it 'should not be able to create platform' do
+    post :create, @create_params
+    response.should redirect_to(forbidden_path)
+  end
+end
 
 describe PlatformsController do
   before(:each) do
@@ -44,8 +75,6 @@ describe PlatformsController do
       set_session_for(@admin)
     end
 
-    it_should_behave_like 'able_to_perform_index#platforms'
-
     it 'should be able to perform new action' do
       get :new
       response.should render_template(:new)
@@ -60,13 +89,11 @@ describe PlatformsController do
       lambda { post :create, @create_params }.should change{ Platform.count }.by(1)
     end
 
-    it_should_behave_like 'be_able_to_perform_destroy#platforms'
-    it_should_behave_like 'change_objects_count_on_destroy_success'
-    it_should_behave_like 'not_be_able_to_destroy_personal_platform'
+    it_should_behave_like 'platform owner'
 
 
     it 'should create platform with mentioned owner if owner id present' do
-      post :create, @create_params.merge({:admin_id => @user.id})
+      post :create, @create_params.merge({:admin_id => @user.id, :admin_uname => @user.uname})
       Platform.last.owner.id.should eql(@user.id)
     end
       
@@ -85,11 +112,8 @@ describe PlatformsController do
       @platform.relations.create!(:object_type => 'User', :object_id => @user.id, :role => 'admin')
     end
 
-    it_should_behave_like 'able_to_perform_index#platforms'
-    it_should_behave_like 'not_be_able_to_perform_create#platforms'
-    it_should_behave_like 'be_able_to_perform_destroy#platforms'
-    it_should_behave_like 'change_objects_count_on_destroy_success'
-    it_should_behave_like 'not_be_able_to_destroy_personal_platform'
+    it_should_behave_like 'user without create rights'
+    it_should_behave_like 'platform owner'
 
     it 'should be able to perform new action' do
       get :new
@@ -110,8 +134,8 @@ describe PlatformsController do
       @platform.relations.create!(:object_type => 'User', :object_id => @user.id, :role => 'reader')
     end
 
-    it_should_behave_like 'able_to_perform_index#platforms'
-    it_should_behave_like 'not_be_able_to_perform_create#platforms'
+    it_should_behave_like 'platform index viewer'
+    it_should_behave_like 'user without create rights'
 
     it 'should not be able to perform destroy action' do
       delete :destroy, :id => @platform.id
