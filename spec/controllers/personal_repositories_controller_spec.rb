@@ -67,6 +67,8 @@ describe PersonalRepositoriesController do
   	before(:each) do
   		@admin = Factory(:admin)
   		set_session_for(@admin)
+
+      @project.update_attribute(:owner, @admin)
 		end
 
     it_should_behave_like 'personal repository owner'
@@ -86,6 +88,8 @@ describe PersonalRepositoriesController do
   	before(:each) do
   		@user = Factory(:user)
   		set_session_for(@user)
+
+      @project.update_attribute(:owner, @user)
 
   		@repository.update_attribute(:owner, @user)
   		@repository.relations.create!(:object_type => 'User', :object_id => @user.id, :role => 'admin')
