@@ -48,7 +48,7 @@ class Ability
 #        can :read, BuildList, :project => {:visibility => 'open'} do |build_list|
 #          build_list.project.public?
 #        end
-        can :read, BuildList, ["build_lists.project_id IN (SELECT id FROM projects WHERE visibility = ?", 'open'] do |build_list|
+        can :read, BuildList, ["build_lists.project_id IN (SELECT id FROM projects WHERE visibility = ?)", 'open'] do |build_list|
           build_list.project.public?
         end
         can :read, BuildList, build_lists_in_relations_with(:object_type => 'User', :object_id => user.id) do |build_list|
