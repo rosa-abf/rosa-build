@@ -16,7 +16,9 @@ class BuildListsController < ApplicationController
     else
       @filter = BuildList::Filter.new(nil)
     end
-    @build_lists = @filter.find.paginate :page => params[:page]
+    @build_lists = @filter.find.accessible_by(current_ability).paginate :page => params[:page]
+#    puts BuildList.accessible_by(current_ability).paginate(:page => params[:page]).to_sql
+#    @build_lists = BuildList.accessible_by(current_ability).paginate :page => params[:page]
 
 		@action_url = all_build_lists_path
 

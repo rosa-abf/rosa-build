@@ -39,9 +39,86 @@ describe BuildListsController do
         @show_params = {:project_id => @project.id, :id => @build_list.id}
       end
   
-      it 'should not be able to perform all action' do
+      it 'should be able to perform all action' do
         get :all
-        response.should redirect_to(forbidden_url)
+        response.should be_success
+      end
+
+      context 'with ACL' do
+        before(:each) do 
+          stub_rsync_methods
+          set_session_for @user
+        end  
+        
+        let(:build_list1) { Factory(:build_list_core) }
+        let(:build_list2) do
+          b = Factory(:build_list_core)
+          p = b.project
+          p.visibility = 'hidden'
+          p.save
+          b.save
+          b
+        end
+        let(:build_list3) do
+          b = Factory(:build_list_core)
+          p = b.project
+          r = p.relations.build :role => 'admin'
+          r.object = @user
+          r.save
+          p.owner = @user
+          p.visibility = 'hidden'
+          p.save
+          b.save
+          b
+        end
+        let(:build_list4) do
+          b = Factory(:build_list_core)
+          p = b.project
+          r = p.relations.build :role => 'reader'
+          p.visibility = 'hidden'
+          p.save
+          r.object = @user
+          r.save
+          b.save
+          b
+        end
+
+        it 'should show only accessible build_lists' do
+#          puts @user.inspect
+          get :all
+#          puts build_list1.project.relations.inspect
+#          puts build_list2.project.relations.inspect
+#          puts build_list3.project.relations.inspect
+#          puts build_list3.project.relations.exists? :object_type => 'User', :object_id => @user.id
+#          puts build_list4.project.relations.inspect
+#          puts build_list4.project.relations.exists? :object_type => 'User', :object_id => @user.id
+#          require 'pp'
+#          pp assigns
+          puts assigns(:build_lists).count
+#          a = Ability.new(@user)
+#          puts a.can? :read, build_list1
+#          puts a.can? :read, build_list2
+#          puts a.can? :read, build_list3
+#          puts a.can? :read, build_list4
+#          puts a.query(:read, BuildList).conditions
+#          puts BuildList.all.inspect
+          puts BuildList.all.size
+#          puts BuildList::Filter.new(nil).find.inspect
+          puts BuildList::Filter.new(nil).find.paginate(:page => nil).size
+
+#          puts BuildList.all.inspect
+#          puts BuildList.all.size
+
+#          puts BuildList.find(build_list1.id).inspect
+#          puts BuildList.find(build_list2.id).inspect
+#          puts BuildList.find(build_list3.id).inspect
+#          puts BuildList.find(build_list4.id).inspect
+          assigns(:build_lists).should include(build_list1)
+          assigns(:build_lists).should_not include(build_list2)
+          assigns(:build_lists).should include(build_list3)
+          assigns(:build_lists).should include(build_list4)
+        end
+
       end
 
       context 'for open project' do
@@ -114,7 +191,6 @@ describe BuildListsController do
       b.save
       b
     end
-    before(:each) { set_session_for Factory(:admin); stub_rsync_methods; }
 
     it 'should filter by bs_id' do
       get :all, :filter => {:bs_id => build_list1.bs_id, :project_name => 'fdsfdf', :any_other_field => 'do not matter'}
