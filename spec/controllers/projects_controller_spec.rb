@@ -1,5 +1,4 @@
 require 'spec_helper'
-#require 'shared_examples/projects_controller'
 
 describe ProjectsController do
 	before(:each) do
@@ -40,9 +39,8 @@ describe ProjectsController do
   		set_session_for(@admin)
 		end
 
-    it_should_behave_like 'be_able_to_perform_index#projects'
-    it_should_behave_like 'be_able_to_perform_update#projects'
-    it_should_behave_like 'update collaborator relation'
+    it_should_behave_like 'projects user with writer rights'
+    it_should_behave_like 'projects user with reader rights'
 
     it 'should be able to perform create action' do
       post :create, @create_params
@@ -52,8 +50,6 @@ describe ProjectsController do
     it 'should change objects count on create' do
       lambda { post :create, @create_params }.should change{ Project.count }.by(1)
     end
-
-    it_should_behave_like 'be_able_to_fork_project'
   end
 
   context 'for owner user' do
@@ -64,10 +60,8 @@ describe ProjectsController do
   		@project.relations.create!(:object_type => 'User', :object_id => @user.id, :role => 'admin')
 		end
 
-    it_should_behave_like 'be_able_to_perform_update#projects'
-    it_should_behave_like 'update collaborator relation'
-    it_should_behave_like 'be_able_to_perform_build#projects'
-    it_should_behave_like 'be_able_to_perform_process_build#projects'
+    it_should_behave_like 'projects user with writer rights'
+    it_should_behave_like 'user with rights to view projects'
 
     it 'should be able to perform destroy action' do
       delete :destroy, {:id => @project.id}
@@ -91,14 +85,13 @@ describe ProjectsController do
   		@project.relations.create!(:object_type => 'User', :object_id => @user.id, :role => 'reader')
 		end
 
-    it_should_behave_like 'be_able_to_perform_index#projects'
+    it_should_behave_like 'projects user with reader rights'
 
     it 'should be able to perform show action' do
       get :show, :id => @project.id
       response.should render_template(:show)
     end
 
-    it_should_behave_like 'be_able_to_fork_project'
   end
 
   context 'for writer user' do
@@ -108,10 +101,7 @@ describe ProjectsController do
   		@project.relations.create!(:object_type => 'User', :object_id => @user.id, :role => 'writer')
 		end
 
-    it_should_behave_like 'be_able_to_perform_update#projects'
-    it_should_behave_like 'update collaborator relation'
-    it_should_behave_like 'be_able_to_perform_build#projects'
-    it_should_behave_like 'be_able_to_perform_process_build#projects'
-    it_should_behave_like 'be_able_to_fork_project'
+    it_should_behave_like 'projects user with writer rights'
+    it_should_behave_like 'projects user with reader rights'
   end
 end

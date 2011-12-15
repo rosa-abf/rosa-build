@@ -13,7 +13,7 @@ shared_examples_for 'project admin user' do
 
   it 'should be able to set reader role for any user' do
     post :update, {:project_id => @project.id}.merge(@update_params)
-    @another_user.relations.exists? :target_id => @project.id, :target_type => 'Project', :role => 'reader'
+    @another_user.relations.exists? :target_id => @project.id, :target_type => 'Project', :role => 'read'
   end
 end
 
