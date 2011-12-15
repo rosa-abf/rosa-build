@@ -81,6 +81,41 @@ class CollaboratorsController < ApplicationController
   def destroy
   end
 
+  def add
+    # TODO: Here is used Chelyabinsk method to display Flash messages.
+
+    member = User.find(params['member_id']) if params['member_id'] && !params['member_id'].empty?
+    group = Group.find(params['group_id']) if params['group_id'] && !params['group_id'].empty?
+
+    flash[:notice], flash[:error], flash[:warning] = [], [], []
+
+    [member, group].compact.each do |mem|
+      if mem and @project.relations.exists?(:object_id => mem.id, :object_type => mem.class.to_s)
+        flash[:warning] << [t('flash.collaborators.member_already_added'), mem.uname]
+      end
+      unless @project.relations.exists?(:object_id => mem.id, :object_type => mem.class.to_s)
+        rel = @project.relations.build(:role => 'reader')
+        rel.object = mem
+        if rel.save
+          flash[:notice] << [t('flash.collaborators.successfully_added'), mem.uname]
+        else
+          flash[:notice] << [t('flash.collaborators.error_in_adding'), mem.uname]
+        end
+      end
+    end
+
+    [:notice, :warning, :error].each do |k|
+      if flash[k].size > 0
+        flash[k] = flash[k].map{|i| (i.is_a? Array) ? sprintf(i.first, i.last) : i}.join('; ')
+      else
+        flash[k] = nil
+      end
+    end
+    flash.delete_if{|k, v| v.nil?}
+
+    redirect_to(edit_project_collaborators_path(@project))
+  end
+
   protected
 
     def find_project
@@ -88,10 +123,10 @@ class CollaboratorsController < ApplicationController
     end
 
     def find_users
-      @users = User.all
+      @users = @project.collaborators#User.all
     end
 
     def find_groups
-      @groups = Group.all
+      @groups = @project.groups#Group.all
     end
 end

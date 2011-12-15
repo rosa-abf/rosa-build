@@ -5,6 +5,26 @@
       %li.active= link_to t("layout.collaborators.edit"), edit_project_collaborators_path(@project)
   .content
     .inner
+      = form_tag add_project_collaborators_path(@project) do
+        = javascript_include_tag 'autocomplete-rails.js'
+        .group
+          %h2.title= t("layout.collaborators.add")
+          = label_tag "member_uname", t("layout.collaborators.input_username")
+          = autocomplete_field_tag 'member_id', params[:member_id], autocomplete_user_uname_users_path, :id_element => '#member_id_field'
+          &nbsp;
+          = t('layout.or')
+          &nbsp;
+          = label_tag "group_uname", t("layout.collaborators.input_groupname")
+          = autocomplete_field_tag 'group_id', params[:group_id], autocomplete_group_uname_groups_path, :id_element => '#group_id_field'
+
+          = hidden_field_tag 'member_id', nil, :id => 'member_id_field'
+          = hidden_field_tag 'group_id', nil, :id => 'group_id_field'
+        %br
+        .group.navform.wat-cf
+          %button.button{:type => "submit"}
+            = image_tag("web-app-theme/icons/tick.png", :alt => t("layout.add"))
+            = t("layout.add")
+
       = form_tag project_collaborators_path(@project) do
         %h2.title= t("layout.users.list_header")
         %table.table
@@ -31,8 +51,8 @@
           %tr
             %th.first ID
             %th= t("activerecord.attributes.group.name")
+            %th= t("activerecord.attributes.group.roles")
             %th= t("activerecord.attributes.group.uname")
-            %th.last= t("layout.collaborators.add")
           - @groups.each do |group|
             %tr{:class => cycle("odd", "even")}
               %td

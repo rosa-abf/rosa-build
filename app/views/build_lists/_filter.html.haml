@@ -21,28 +21,28 @@
   .columns.wat-cf
     .column.left
       .group
-        = f.label :status, t("layout.build_lists.created_at_start"), :class => :label
+        = f.label :created_at_start, t("layout.build_lists.created_at_start"), :class => :label
         = f.date_select(:created_at_start, :include_blank => true, :selected => @filter.created_at_start)
       .group
-        = f.label :status, t("layout.build_lists.notified_at_start"), :class => :label
+        = f.label :notified_at_start, t("layout.build_lists.notified_at_start"), :class => :label
         = f.date_select(:notified_at_start, :include_blank => true, :selected => @filter.notified_at_start)
     .column.right
       .group
-        = f.label :status, t("layout.build_lists.created_at_end"), :class => :label
+        = f.label :created_at_end, t("layout.build_lists.created_at_end"), :class => :label
         = f.date_select(:created_at_end, :include_blank => true, :selected => @filter.created_at_end)
       .group
-        = f.label :status, t("layout.build_lists.notified_at_end"), :class => :label
+        = f.label :notified_at_end, t("layout.build_lists.notified_at_end"), :class => :label
         = f.date_select(:notified_at_end, :include_blank => true, :selected => @filter.notified_at_end)
 
   .columns.wat-cf
     .column.left
       .group
-        = f.label :status, t("layout.build_lists.bs_id_search"), :class => :label
-        = f.text_field :bs_id, :class => :text_field
+        = f.label :project_name, t("layout.build_lists.project_name_search"), :class => :label
+        = f.text_field :project_name, :class => :text_field
     .column.right
       .group
-        = f.label :status, t("layout.build_lists.project_name"), :class => :label
-        = f.text_field :project_name, :class => :text_field
+        = f.label :bs_id, t("layout.build_lists.bs_id_search"), :class => :label
+        = f.text_field :bs_id, :class => :text_field
 
   .group.navform.wat-cf
     %button.button{ :type => "submit" }
