@@ -14,9 +14,7 @@ class Platform < ActiveRecord::Base
   has_many :groups,  :through => :objects, :source => :object, :source_type => 'Group'
 
   validates :description, :presence => true, :uniqueness => true
-  if !Rails.env.development?
-    validates :name, :uniqueness => true, :presence => true, :format => { :with => /^[a-zA-Z0-9_]+$/ }
-  end
+  validates :name, :uniqueness => true, :presence => true, :format => { :with => /^[a-zA-Z0-9_]+$/ }
   validates :distrib_type, :presence => true, :inclusion => {:in => APP_CONFIG['distr_types']}
 
   before_create :xml_rpc_create, :unless => lambda {Thread.current[:skip]}
