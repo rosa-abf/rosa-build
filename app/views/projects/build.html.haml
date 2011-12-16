@@ -8,7 +8,7 @@
       %li.active= link_to t("layout.projects.build"), build_project_path(@project)
 
   .content
-    %h2.title= t("layout.projects.new_build")
+    %h2.title= t("layout.projects.new_build", :project_name => @project.name)
 
     .inner
       = form_for :build, :url => process_build_project_path(@project), :html => { :class => :form, :method => :post } do |f|
