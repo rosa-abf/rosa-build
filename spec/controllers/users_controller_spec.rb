@@ -53,6 +53,9 @@ describe UsersController do
       set_session_for(@simple_user)
     end
 
-    it_should_behave_like 'user with users list viewer rights'
+    it 'should not be able to perform index action' do
+      get :index
+      response.should redirect_to(forbidden_path)
+    end
   end
 end
