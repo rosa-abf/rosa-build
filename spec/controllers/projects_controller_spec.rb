@@ -104,4 +104,19 @@ describe ProjectsController do
     it_should_behave_like 'projects user with writer rights'
     it_should_behave_like 'projects user with reader rights'
   end
+
+  context 'search projects' do
+
+    before(:each) do
+      @admin = Factory(:admin)
+      @project1 = Factory(:project, :name => 'perl-debug')
+      @project2 = Factory(:project, :name => 'perl')
+      set_session_for(@admin)
+    end
+
+    it 'should return projects in right order' do
+      get :index, :query => 'per'
+      assigns(:projects).should eq([@project2, @project1])
+    end
+  end
 end
