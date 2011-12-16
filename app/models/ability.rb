@@ -31,6 +31,7 @@ class Ability
         can :read, Project, :visibility => 'open'
         can :read, Group
         can :read, User
+        cannot :index, User
         can :manage_collaborators, Project do |project|
           project.relations.exists? :object_id => user.id, :object_type => 'User', :role => 'admin'
         end
