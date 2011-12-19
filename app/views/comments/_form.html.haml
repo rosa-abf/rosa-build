@@ -1,0 +1,10 @@
+.group
+  = f.label :body, :class => :label
+  = f.text_area :body, :class => 'text_field', :cols => 80
+
+.group.navform.wat-cf
+  %button.button{:type => "submit"}
+    = image_tag("web-app-theme/icons/tick.png", :alt => t("layout.save"))
+    = t("layout.save")
+  %span.text_button_padding= t("layout.or")
+  = link_to t("layout.cancel"), project_issue_comment_path(@issue.project, @issue), :class => "text_button_padding link_button"

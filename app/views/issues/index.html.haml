@@ -1,0 +1,14 @@
+.block
+  .secondary-navigation
+    %ul.wat-cf
+      %li.first.active= link_to t("layout.issues.list"), project_issues_path(@project)
+      %li= link_to t("layout.issues.new"), new_project_issue_path(@project) if can? :create, Issue
+  .content
+    %h2.title
+      = t("layout.issues.list_header")
+    .inner
+      = render :partial => 'shared/search_form'
+      = render :partial => 'issues/list', :object => @issues
+      .actions-bar.wat-cf
+        .actions
+          = will_paginate @issues, :param_name => :issue_page

@@ -6,6 +6,7 @@
       %li.active= link_to t("layout.projects.show"), project_path(@project)
       %li= link_to t("layout.git.repositories.source"), project_repo_path(@project)
       %li= link_to t("layout.projects.build"), build_project_path(@project)
+      %li= link_to t("layout.projects.issues"), project_issues_path(@project)
 
   .content
     .inner

@@ -22,6 +22,7 @@ gem 'paperclip', "~> 2.3"
 gem "will_paginate", "~> 3.0.2"
 gem 'meta-tags', '~> 1.2.4', :require => 'meta_tags'
 gem "russian"
+gem "friendly_id", "~> 4.0.0.beta14"
 
 # gem 'ghoul_grack', '~> 0.0.1'
 gem 'grack', :git => 'git://github.com/rdblue/grack.git', :require => 'git_http'

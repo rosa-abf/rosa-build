@@ -68,6 +68,9 @@ Rosa::Application.routes.draw do
   end
 
   resources :projects do
+    resources :issues do
+      resources :comments, :only => [:edit, :create, :update, :destroy]
+    end
     resource :repo, :controller => "git/repositories", :only => [:show]
     resources :build_lists, :only => [:index, :show] do
       collection do

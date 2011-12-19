@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20111130181101) do
+ActiveRecord::Schema.define(:version => 20111219073859) do
 
   create_table "arches", :force => true do |t|
     t.string   "name",       :null => false
@@ -83,6 +83,15 @@ ActiveRecord::Schema.define(:version => 20111130181101) do
     t.datetime "updated_at"
   end
 
+  create_table "comments", :force => true do |t|
+    t.integer  "commentable_id"
+    t.string   "commentable_type"
+    t.integer  "user_id"
+    t.text     "body"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "containers", :force => true do |t|
     t.string   "name",       :null => false
     t.integer  "project_id", :null => false
@@ -139,6 +148,19 @@ ActiveRecord::Schema.define(:version => 20111130181101) do
     t.datetime "updated_at"
     t.string   "uname"
   end
+
+  create_table "issues", :force => true do |t|
+    t.integer  "serial_id"
+    t.integer  "project_id"
+    t.integer  "user_id"
+    t.string   "title"
+    t.text     "body"
+    t.string   "status"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "issues", ["project_id", "serial_id"], :name => "index_issues_on_project_id_and_serial_id", :unique => true
 
   create_table "platforms", :force => true do |t|
     t.string   "description"
@@ -211,6 +233,7 @@ ActiveRecord::Schema.define(:version => 20111130181101) do
     t.integer  "category_id"
     t.text     "description"
     t.string   "ancestry"
+    t.boolean  "has_issues",  :default => true
   end
 
   add_index "projects", ["category_id"], :name => "index_projects_on_category_id"
