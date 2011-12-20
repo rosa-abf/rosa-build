@@ -45,18 +45,12 @@ class Ability
         can :publish, BuildList do |build_list|
           build_list.can_published? && build_list.project.relations.exists?(:object_type => 'User', :object_id => user.id)
         end
-#        can :read, BuildList, :project => {:visibility => 'open'} do |build_list|
-#          build_list.project.public?
-#        end
         can :read, BuildList, ["build_lists.project_id IN (SELECT id FROM projects WHERE visibility = ?)", 'open'] do |build_list|
           build_list.project.public?
         end
         can :read, BuildList, build_lists_in_relations_with(:object_type => 'User', :object_id => user.id) do |build_list|
           build_list.project.relations.exists?(:object_type => 'User', :object_id => user.id)
         end
-#        can :show, BuildList do |build_list|
-#          build_list.project.public? || build_list.project.relations.exists?(:object_type => 'User', :object_id => user.id)
-#        end
 
         can [:read, :create], PrivateUser, :platform => {:owner_type => 'User', :owner_id => user.id}
 
@@ -114,13 +108,9 @@ class Ability
         can :publish, BuildList do |build_list|
           build_list.can_published? && build_list.project.relations.exists?(:object_type => 'Group', :object_id => user.group_ids)
         end
-#        can :read, BuildList, :project => {:visibility => 'open'} #do |build_list| build_list.project.public?  end
         can :read, BuildList, build_lists_in_relations_with(:object_type => 'Group', :object_id => user.group_ids) do |build_list|
           build_list.project.relations.exists?(:object_type => 'Group', :object_id => user.group_ids)
         end
-#        can :show, BuildList do |build_list|
-#          build_list.project.public? || build_list.project.relations.exists?(:object_type => 'Group', :object_id => user.group_ids)
-#        end
 
         can :manage_collaborators, Project, projects_in_relations_with(:role => 'admin', :object_type => 'Group', :object_id => user.group_ids) do |project|
           project.relations.exists? :object_id => user.group_ids, :object_type => 'Group', :role => 'admin'

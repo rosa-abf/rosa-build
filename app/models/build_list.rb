@@ -80,21 +80,6 @@ class BuildList < ActiveRecord::Base
     end
   }
   scope :scoped_to_project_name, lambda {|project_name| joins(:project).where('projects.name LIKE ?', "%#{project_name}%")}
-#  scope :scoped_open_to_user_with_groups, lambda {|user|
-#    joins(:project).where("projects.visibility = 'open' OR projects.id IN (
-#      SELECT target_id
-#      FROM relations
-#      WHERE object_id = :uid AND object_type = 'User' AND target_type = 'Project'
-#      UNION
-#      SELECT rel1.target_id AS target_id
-#      FROM relations AS rel
-#      INNER JOIN(
-#        SELECT *
-#        FROM relations
-#        WHERE object_type = 'Group' AND target_type = 'Project'
-#      )AS rel1 ON rel1.object_id = rel.target_id
-#      WHERE rel.object_id = :uid AND rel.object_type = 'User' AND rel.target_type = 'Group')", :uid => user.id)
-#  }
 
   serialize :additional_repos
   
