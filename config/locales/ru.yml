@@ -199,7 +199,7 @@ ru:
       edit_header: Редактировать проект
       show: Проект
       build: Собрать
-      new_build: Новая сборка
+      new_build: Новая сборка %{project_name}
       confirm_delete: Вы уверены, что хотите удалить этот проект?
       new: Новый проект
       new_header: Новый проект
@@ -259,6 +259,7 @@ ru:
       confirm_delete: Вы уверены, что хотите удалить этого пользователя?
       own_projects: Мои проекты
       part_projects: Участвую в проектах
+      filter_header: Фильтр
 
     git:
       repositories:

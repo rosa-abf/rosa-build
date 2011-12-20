@@ -26,9 +26,17 @@ describe GroupsController do
       set_session_for(@admin)
     end
 
-    it_should_behave_like 'be_able_to_perform_index#groups'
-    it_should_behave_like 'be_able_to_perform_update#groups'
     it_should_behave_like 'update_member_relation'
+
+    it 'should be able to perform index action' do
+      get :index
+      response.should render_template(:index)
+    end
+
+    it 'should be able to perform update action' do
+      put :update, {:id => @group.id}.merge(@update_params)
+      response.should redirect_to(group_path(@group))
+    end
 
     it 'should be able to perform create action' do
       post :create, @create_params

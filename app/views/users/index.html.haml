@@ -7,10 +7,13 @@
     %h2.title
       = t("layout.users.list_header")
     .inner
+      = render :partial => "users/filter", :action_url => @action_url
+    .inner
       %table.table
         %tr
           %th.first ID
           %th= t("activerecord.attributes.user.name")
+          %th= t("activerecord.attributes.user.uname")
           %th= t("activerecord.attributes.user.email")
           %th= t("activerecord.attributes.user.role")
           %th.last &nbsp;
@@ -18,6 +21,7 @@
           %tr{:class => cycle("odd", "even")}
             %td= user.id
             %td= link_to user.name, user_path(user)
+            %td= link_to user.uname, user_path(user)
             %td= user.email
             %td= user.role
             %td.last

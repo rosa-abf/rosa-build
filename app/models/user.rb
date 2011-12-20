@@ -6,8 +6,6 @@ class User < ActiveRecord::Base
 
   has_many :authentications, :dependent => :destroy
 
-  has_many :roles, :through => :targets
-
   has_many :relations, :as => :object, :dependent => :destroy
   has_many :targets, :as => :object, :class_name => 'Relation'
 

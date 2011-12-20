@@ -7,7 +7,13 @@ class UsersController < ApplicationController
   autocomplete :user, :uname
 
   def index
-    @users = User.paginate(:page => params[:user_page])
+    @user = User.scoped
+    if !params[:filter].blank? && !params[:filter][:email].blank?
+      @users = @users.where(:email => params[:filter][:email])
+      @email = params[:filter][:email]
+    end
+    @users = @users.paginate(:page => params[:user_page])
+    @action_url = users_path
   end
 
   def show

@@ -26,8 +26,7 @@ class PersonalRepositoriesController < ApplicationController
 
   def add_project
     if params[:project_id]
-      @project = Project.find(params[:project_id])
-      # params[:project_id] = nil
+      @project = current_user.own_projects.find(params[:project_id])
       unless @repository.projects.find_by_name(@project.name)
         @repository.projects << @project
         flash[:notice] = t('flash.repository.project_added')
@@ -36,13 +35,13 @@ class PersonalRepositoriesController < ApplicationController
       end
       redirect_to personal_repository_path(@repository)
     else
-      @projects = Project.addable_to_repository(@repository.id).paginate(:page => params[:project_page])
+      @projects = current_user.own_projects.addable_to_repository(@repository.id).paginate(:page => params[:project_page])
       render 'projects_list'
     end
   end
 
   def remove_project
-    @project = Project.find(params[:project_id])
+    @project = current_user.own_projects.find(params[:project_id])
     ProjectToRepository.where(:project_id => @project.id, :repository_id => @repository.id).destroy_all
     redirect_to personal_repository_path(@repository), :notice => t('flash.repository.project_removed')
   end
