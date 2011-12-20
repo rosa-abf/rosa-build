@@ -67,8 +67,9 @@ Rosa::Application.routes.draw do
     resources :categories, :only => [:index, :show]
   end
 
+  match "projects/:project_id/issues/:serial_id" => 'issues#show', :as => :show_issue, :via => :get
   resources :projects do
-    resources :issues do
+    resources :issues, :except => [:show] do
       resources :comments, :only => [:edit, :create, :update, :destroy]
     end
     resource :repo, :controller => "git/repositories", :only => [:show]

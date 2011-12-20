@@ -1,9 +1,6 @@
 class Issue < ActiveRecord::Base
   STATUSES = ['open', 'close']
 
-  extend FriendlyId
-  friendly_id :serial_id
-
   belongs_to :project
   belongs_to :user
 
@@ -11,14 +8,14 @@ class Issue < ActiveRecord::Base
 
   validates :title, :body, :project_id, :user_id, :presence => true
 
-  attr_readonly :serial_id
+  #attr_readonly :serial_id
 
   after_create :set_serial_id
 
   protected
 
   def set_serial_id
-    serial_id = project.issues.count + 1
-    save
+    self.serial_id = self.project.issues.count
+    self.save!
   end
 end

@@ -569,6 +569,7 @@ ru:
         repository: Репозиторий
         created_at: Создан
         updated_at: Обновлен
+        has_issues: Включить трэкер
 
       rpm:
         name: Название

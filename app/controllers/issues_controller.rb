@@ -1,10 +1,14 @@
 class IssuesController < ApplicationController
   before_filter :authenticate_user!
   before_filter :find_project
-  before_filter :find_issue, :only => [:show, :edit, :update, :destroy]
+  before_filter :find_issue, :only => [:edit, :update, :destroy]
 
   load_and_authorize_resource
   autocomplete :user, :uname
+
+  def show
+    @issue = @project.issues.where(:serial_id => params[:serial_id])[0]
+  end
 
   def index
     @issues = @project.issues.paginate :per_page => 10, :page => params[:page]
