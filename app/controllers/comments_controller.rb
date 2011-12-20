@@ -1,28 +1,34 @@
 class CommentsController < ApplicationController
   before_filter :authenticate_user!
+  before_filter :set_commentable, :only => [:index, :edit, :create]
 
   def index
-    @commentable = find_commentable
     @comments = @commentable.comments
   end
 
   def create
-    @commentable = find_commentable
     @comment = @commentable.comments.build(params[:comment])
+    @comment.user = current_user
     if @comment.save
       flash[:notice] = I18n.t("flash.comment.saved")
-      redirect_to :id => nil
+      redirect_to :back
     else
       flash[:error] = I18n.t("flash.comment.saved_error")
       render :action => 'new'
     end
   end
 
+  def edit
+    @comment = Comment.find(params[:id])
+    @issue = @commentable
+    @project = @issue.project
+  end
+
   def update
     @comment = Comment.find(params[:id])
     if @comment.update_attributes(params[:comment])
       flash[:notice] = I18n.t("flash.comment.saved")
-      redirect_to :id => nil
+      redirect_to :back
     else
       flash[:error] = I18n.t("flash.comment.saved_error")
       render :action => 'new'
@@ -34,7 +40,7 @@ class CommentsController < ApplicationController
     @comment.destroy
 
     flash[:notice] = t("flash.comment.destroyed")
-    redirect_to root_path
+    redirect_to :back
   end
 
   private
@@ -46,5 +52,9 @@ class CommentsController < ApplicationController
       end
     end
     nil
+  end
+
+  def set_commentable
+    @commentable = find_commentable
   end
 end

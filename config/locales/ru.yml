@@ -83,6 +83,7 @@ ru:
       confirm_regenerate: Вы уверены, что хотите перегенерировать эту пару логин/пароль?
       regenerate_btn: Перегенерировать
       warning_message: Примечание - При получении новых данных старые становятся недействительными
+
     categories:
       list: Список
       new: Создать
@@ -92,6 +93,19 @@ ru:
       new_header: Новая категория
       edit_header: Редактировать категорию
       confirm_delete: Вы уверены, что хотите удалить эту категорию?
+
+    issues:
+      list: Список
+      edit: Редактировать
+      comments_header: Комментарии
+      new: Новая задача
+      list_header: Список
+      confirm_delete: Вы уверены, что хотите удалить эту задачу?
+      new_header: Новая задача
+
+    comments:
+      confirm_delete: Вы уверены, что хотите удалить комментарий?
+      new_header: Новый комментарий
 
     platforms:
       admin_id: Владелец
@@ -214,6 +228,7 @@ ru:
       collaborators: Коллабораторы
       groups: Группы
       edit_collaborators: Изменить список участников
+      issues: Задачи
 
     collaborators:
       back_to_proj: Вернуться к проекту
@@ -332,7 +347,7 @@ ru:
 
     downloads:
       statistics_refreshed: Статистика обновлена
-    
+
     collaborators:
       successfully_changed: Список коллабораторов успешно изменен
       error_in_changing: Ошибка изменения списка коллабораторов
@@ -353,11 +368,18 @@ ru:
       failed: Не удалось автоматизировать сборку!
       cancel: Автоматическая сборка проекта отменена!
       cancel_failed: Не удалось отменить автоматическую сборку проекта!
-    
+
     category:
       saved: Категория успешно сохранена
       save_error: Не удалось сохранить категорию
       destroyed: Категория успешно удалена
+
+    comment:
+      saved: Комментарий успешно сохранен
+      destroyed: Комментарий удален
+
+    issue:
+      saved: Задача успешно сохранена
 
     project:
       saved: Проект успешно сохранен
@@ -455,7 +477,18 @@ ru:
         pl: Платформа
         arch_id: Архитектура
         arch: Архитектура
-      
+
+      comment:
+        body: Содержание
+        user: Автор
+
+      issue:
+        title: Заголовок
+        body: Содержание
+        user: Назначено
+        project: Проект
+        status: Статус
+
       private_user:
         login: Логин
         password: Пароль
