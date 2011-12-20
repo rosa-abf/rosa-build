@@ -127,7 +127,9 @@ class ProjectsController < ApplicationController
       flash[:notice], flash[:error] = "", ""
       @arches.each do |arch|
         bpls.each do |bpl|
-          build_list = @project.build_lists.new(:arch => arch, :project_version => @project_version, :pl => pl, :bpl => bpl, :update_type =>  update_type, :build_requires => build_requires)
+          build_list = @project.build_lists.new(:arch => arch, :project_version => @project_version,
+                                                :pl => pl, :bpl => bpl, :update_type =>  update_type,
+                                                :build_requires => build_requires, :user => current_user)
         
           if build_list.save
             flash[:notice] += t("flash.build_list.saved", :project_version => @project_version, :arch => arch.name, :bpl => bpl.name, :pl => pl)

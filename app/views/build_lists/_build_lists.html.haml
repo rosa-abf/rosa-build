@@ -5,6 +5,7 @@
     %th= t("activerecord.attributes.build_list.project_version")
     %th= t("activerecord.attributes.build_list.project")
     %th= t("activerecord.attributes.build_list.arch")
+    %th= t("activerecord.attributes.build_list.user")
     %th= t("activerecord.attributes.build_list.is_circle")
     - if controller.action_name = 'all'
       %th= t("layout.build_lists.cancel_button_header")
@@ -17,6 +18,7 @@
       %td= link_to build_list.project_version, "#"
       %td= link_to build_list.project.name, project_path(build_list.project)
       %td= build_list.arch.name
+      %td= build_list.user.fullname
       %td= t("layout.#{build_list.is_circle?}_")
       - if controller.action_name = 'all'
         %td= link_to t("layout.build_lists.cancel_button"), build_list_cancel_path(build_list) if build_list.can_cancel?

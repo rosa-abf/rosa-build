@@ -3,6 +3,7 @@ class BuildList < ActiveRecord::Base
   belongs_to :arch
   belongs_to :pl, :class_name => 'Platform'
   belongs_to :bpl, :class_name => 'Platform'
+  belongs_to :user
   has_many :items, :class_name => "BuildList::Item", :dependent => :destroy
 
   validates :project_id, :presence => true
