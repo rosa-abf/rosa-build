@@ -38,6 +38,9 @@ class User < ActiveRecord::Base
     self.id.blank? # persisted?
   end
 
+  def fullname
+    return "#{uname} (#{name})"
+  end
   class << self
     def find_for_database_authentication(warden_conditions)
       conditions = warden_conditions.dup

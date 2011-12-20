@@ -66,6 +66,11 @@
         = @build_list.arch.name
       %p
         %b
+          = t("activerecord.attributes.build_list.user")
+          \:
+        = @build_list.user.fullname
+      %p
+        %b
           = t("activerecord.attributes.build_list.notified_at")
           \:
         = @build_list.notified_at
