@@ -3,11 +3,13 @@ class BuildListsController < ApplicationController
 
   before_filter :authenticate_user!, :except => CALLBACK_ACTIONS
   before_filter :authenticate_build_service!, :only => CALLBACK_ACTIONS
-  before_filter :find_project, :only => [:index, :filter, :show, :publish]
+  before_filter :find_project, :only => [:index, :filter, :show, :publish, :new, :create]
   before_filter :find_arches, :only => [:index, :filter, :all]
   before_filter :find_project_versions, :only => [:index, :filter]
   before_filter :find_build_list_by_bs, :only => [:status_build, :pre_build, :post_build]
 
+  # load_and_authorize_resource :project, :except => CALLBACK_ACTIONS
+  # load_and_authorize_resource :build_list, :through => :project, :shallow => true, :except => CALLBACK_ACTIONS
   load_and_authorize_resource :except => CALLBACK_ACTIONS
 
 	def all
@@ -29,15 +31,6 @@ class BuildListsController < ApplicationController
     render :action => 'index'
 	end
 	
-	def cancel
-		build_list = BuildList.find(params[:id])
-		if build_list.cancel_build_list
-			redirect_to :back, :notice => t('layout.build_lists.cancel_successed')
-		else
-			redirect_to :back, :notice => t('layout.build_lists.cancel_failed')
-		end
-	end
-
 	def index
 		@build_lists = @project.build_lists.recent.paginate :page => params[:page]
 		@filter = BuildList::Filter.new(@project)
@@ -57,11 +50,49 @@ class BuildListsController < ApplicationController
 		@item_groups = @build_list.items.group_by_level
 	end
 	
+	def new
+	  @build_list = BuildList.new
+  end
+
+  def create
+    notices, errors = [], []
+    Arch.where(:id => params[:archs]).each do |arch|
+      Platform.main.where(:id => params[:bpls]).each do |bpl|
+        @build_list = @project.build_lists.build(params[:build_list])
+        @build_list.bpl = bpl; @build_list.arch = arch
+        flash_options = {:project_version => @build_list.project_version, :arch => arch.name, :bpl => bpl.name, :pl => @build_list.pl}
+        if @build_list.save
+          notices << t("flash.build_list.saved", flash_options)
+        else
+          errors << t("flash.build_list.save_error", flash_options)
+        end
+      end
+    end
+    errors << t("flash.build_list.no_arch_or_platform_selected") if errors.blank? and notices.blank?
+    if errors.present?
+      @build_list ||= BuildList.new
+      flash[:error] = errors.join('<br>').html_safe
+      render :action => :new
+    else
+      flash[:notice] = notices.join('<br>').html_safe
+      redirect_to @project
+    end
+  end
+  
 	def publish
 		@build_list = @project.build_lists.find(params[:id])
 		@build_list.publish
 		
 		redirect_to project_build_lists_path(@project)
+	end
+
+	def cancel
+		build_list = BuildList.find(params[:id])
+		if build_list.cancel_build_list
+			redirect_to :back, :notice => t('layout.build_lists.cancel_successed')
+		else
+			redirect_to :back, :notice => t('layout.build_lists.cancel_failed')
+		end
 	end
 
 	def status_build

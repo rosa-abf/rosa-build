@@ -51,14 +51,14 @@ class Ability
         can [:read, :create], PrivateUser, :platform => {:owner_type => 'User', :owner_id => user.id}
 
         # If rule has multiple conditions CanCan joins them by 'AND' sql operator
-        can [:read, :update, :process_build, :build, :destroy], Project, :owner_type => 'User', :owner_id => user.id
+        can [:read, :update, :destroy], Project, :owner_type => 'User', :owner_id => user.id
         #can :read, Project, :relations => {:role => 'reader'}
         can :read, Project, projects_in_relations_with(:role => 'reader', :object_type => 'User', :object_id => user.id) do |project|
           #The can? and cannot? call cannot be used with a raw sql 'can' definition.
           project.relations.exists?(:role => 'reader', :object_type => 'User', :object_id => user.id)
         end
-        #can [:update, :process_build, :build], Project, :relations => {:role => 'writer'}
-        can [:read, :update, :process_build, :build], Project, projects_in_relations_with(:role => ['writer', 'admin'], :object_type => 'User', :object_id => user.id)  do |project|
+        #can [:update], Project, :relations => {:role => 'writer'}
+        can [:read, :update], Project, projects_in_relations_with(:role => ['writer', 'admin'], :object_type => 'User', :object_id => user.id)  do |project|
           project.relations.exists?(:role => ['writer', 'admin'], :object_type => 'User', :object_id => user.id)
         end
 
@@ -112,13 +112,13 @@ class Ability
           project.relations.exists? :object_id => user.group_ids, :object_type => 'Group', :role => 'admin'
         end
 
-        can [:read, :update, :process_build, :build, :destroy], Project, :owner_type => 'Group', :owner_id => user.group_ids
+        can [:read, :update, :destroy], Project, :owner_type => 'Group', :owner_id => user.group_ids
         #can :read, Project, :relations => {:role => 'reader', :object_type => 'Group', :object_id => user.group_ids}
         can :read, Project, projects_in_relations_with(:role => 'reader', :object_type => 'Group', :object_id => user.group_ids) do |project|
           project.relations.exists?(:role => 'reader', :object_type => 'Group', :object_id => user.group_ids)
         end
-        #can [:update, :process_build, :build], Project, :relations => {:role => 'writer', :object_type => 'Group', :object_id => user.group_ids}
-        can [:read, :update, :process_build, :build], Project, projects_in_relations_with(:role => ['writer', 'admin'], :object_type => 'Group', :object_id => user.group_ids) do |project|
+        #can [:update], Project, :relations => {:role => 'writer', :object_type => 'Group', :object_id => user.group_ids}
+        can [:read, :update], Project, projects_in_relations_with(:role => ['writer', 'admin'], :object_type => 'Group', :object_id => user.group_ids) do |project|
           project.relations.exists?(:role => ['writer', 'admin'], :object_type => 'Group', :object_id => user.group_ids)
         end
         
@@ -135,6 +135,7 @@ class Ability
         end
 
         can(:fork, Project) {|p| can? :read, p}
+        can(:create, BuildList) {|bl| can? :update, bl.project}
 
         # Things that can not do simple user
         cannot :create, [Platform, User]

@@ -36,6 +36,11 @@
         = @build_list.pl.name
       %p
         %b
+          = t("activerecord.attributes.build_list.include_repos")
+          \:
+        = (@build_list.include_repos||[]).map{|r| Repository.find(r).name}.join(', ')
+      %p
+        %b
           = t("activerecord.attributes.build_list.update_type")
           \:
         = @build_list.update_type

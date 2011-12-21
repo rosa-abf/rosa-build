@@ -128,6 +128,10 @@ class Project < ActiveRecord::Base
     end
   end
 
+  def platforms
+    @platforms ||= repositories.map(&:platform).uniq
+  end
+
   protected
 
     def build_path(dir)
