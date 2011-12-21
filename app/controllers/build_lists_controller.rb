@@ -46,7 +46,7 @@ class BuildListsController < ApplicationController
     Arch.where(:id => params[:archs]).each do |arch|
       Platform.main.where(:id => params[:bpls]).each do |bpl|
         @build_list = @project.build_lists.build(params[:build_list])
-        @build_list.bpl = bpl; @build_list.arch = arch
+        @build_list.bpl = bpl; @build_list.arch = arch; @build_list.user = current_user
         flash_options = {:project_version => @build_list.project_version, :arch => arch.name, :bpl => bpl.name, :pl => @build_list.pl}
         if @build_list.save
           notices << t("flash.build_list.saved", flash_options)
