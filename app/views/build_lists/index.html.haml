@@ -25,4 +25,4 @@
     .inner
       = render :partial => "build_lists/build_lists", :object => @build_lists
 
-- content_for :sidebar, render(:partial => 'sidebar') if @project
+- content_for :sidebar, render('sidebar', :project => @project) if @project

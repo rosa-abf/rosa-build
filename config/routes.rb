@@ -24,23 +24,16 @@ Rosa::Application.routes.draw do
 
   match '/private/:platform_name/*file_path' => 'privates#show'
 
-#  match 'build_lists/' => 'build_lists#index', :as => :all_build_lists
-#  match 'build_lists/:id/cancel/' => 'build_lists#cancel', :as => :build_list_cancel
-#  match 'build_lists/status_build', :to => "build_lists#status_build"
-#  match 'build_lists/post_build', :to => "build_lists#post_build"
-#  match 'build_lists/pre_build', :to => "build_lists#pre_build"
-#  match 'build_lists/circle_build', :to => "build_lists#circle_build"
-#  match 'build_lists/new_bbdt', :to => "build_lists#new_bbdt"
+  match 'build_lists/status_build', :to => "build_lists#status_build"
+  match 'build_lists/post_build', :to => "build_lists#post_build"
+  match 'build_lists/pre_build', :to => "build_lists#pre_build"
+  match 'build_lists/circle_build', :to => "build_lists#circle_build"
+  match 'build_lists/new_bbdt', :to => "build_lists#new_bbdt"
 
-
-  resources :build_lists, :only => [:index, :cancel, :status_build, :post_build, :pre_build, :circle_build, :new_bbdt] do
+  resources :build_lists, :only => [:index, :show] do
     member do
-      get :cancel
-      get :status_build
-      get :post_build
-      get :pre_build
-      get :circle_build
-      get :new_bbdt
+      put :cancel
+      put :publish
     end
   end
 
@@ -86,15 +79,7 @@ Rosa::Application.routes.draw do
 
   resources :projects do
     resource :repo, :controller => "git/repositories", :only => [:show]
-    resources :build_lists, :only => [:index, :show, :new, :create] do
-      collection do
-        get :recent
-        post :filter
-      end
-      member do
-        post :publish
-      end
-    end
+    resources :build_lists, :only => [:index, :new, :create]
 
     resources :collaborators, :only => [:index, :edit, :update, :add] do
       collection do

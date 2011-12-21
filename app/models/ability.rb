@@ -43,7 +43,7 @@ class Ability
         can :create, Project
         can :create, Group
         can :publish, BuildList do |build_list|
-          build_list.can_published? && build_list.project.relations.exists?(:object_type => 'User', :object_id => user.id)
+          build_list.can_publish? && build_list.project.relations.exists?(:object_type => 'User', :object_id => user.id)
         end
         can [:index, :read], BuildList, ["build_lists.project_id IN (SELECT id FROM projects WHERE visibility = ?)", 'open'] do |build_list|
           build_list.project.public?
@@ -106,7 +106,7 @@ class Ability
         # Same rights for groups:
         can [:read, :create], PrivateUser, :platform => {:owner_type => 'Group', :owner_id => user.group_ids}
         can :publish, BuildList do |build_list|
-          build_list.can_published? && build_list.project.relations.exists?(:object_type => 'Group', :object_id => user.group_ids)
+          build_list.can_publish? && build_list.project.relations.exists?(:object_type => 'Group', :object_id => user.group_ids)
         end
         can [:index, :read], BuildList, build_lists_in_relations_with(:object_type => 'Group', :object_id => user.group_ids) do |build_list|
           build_list.project.relations.exists?(:object_type => 'Group', :object_id => user.group_ids)
