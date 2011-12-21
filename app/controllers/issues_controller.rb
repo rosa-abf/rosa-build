@@ -1,13 +1,15 @@
 class IssuesController < ApplicationController
   before_filter :authenticate_user!
-  before_filter :find_project
-  before_filter :find_issue, :only => [:edit, :update, :destroy]
+  before_filter :find_project, :except => [:destroy]
+  before_filter :find_issue_by_serial_id, :only => [:show, :edit]
 
-  load_and_authorize_resource
+  load_and_authorize_resource :except => [:show, :edit, :index]
+  authorize_resource :only => [:show, :edit]
+  #authorize_resource :through => :project, :only => [:index], :shallow => true
+  authorize_resource :project, :only => [:index]
   autocomplete :user, :uname
 
   def show
-    @issue = @project.issues.where(:serial_id => params[:serial_id])[0]
   end
 
   def index
@@ -30,13 +32,18 @@ class IssuesController < ApplicationController
     end
   end
 
+  def edit
+    @user_id = @issue.user_id
+    @user_uname = @issue.user.uname
+  end
+
   def update
     @user_id = params[:user_id]
     @user_uname = params[:user_uname]
 
     if @issue.update_attributes( params[:issue].merge({:user_id => @user_id}) )
       flash[:notice] = I18n.t("flash.issue.saved")
-      redirect_to @issue
+      redirect_to show_issue_path(@project, @issue.serial_id)
     else
       flash[:error] = I18n.t("flash.issue.saved_error")
       render :action => :new
@@ -56,7 +63,7 @@ class IssuesController < ApplicationController
     @project = Project.find(params[:project_id])
   end
 
-  def find_issue
-    @issue = Issue.find(params[:id])
+  def find_issue_by_serial_id
+    @issue = @project.issues.where(:serial_id => params[:serial_id])[0]
   end
 end

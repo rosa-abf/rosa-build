@@ -3,7 +3,7 @@ class Ability
 
   def initialize(user)
     user ||= User.new # guest user (not logged in)
-    
+
     if user.admin?
       can :manage, :all
     else
@@ -73,7 +73,7 @@ class Ability
         can [:read, :update], Group, groups_in_relations_with(:role => ['writer', 'admin'], :object_type => 'User', :object_id => user.id) do |group|
           group.objects.exists?(:role => ['writer', 'admin'], :object_type => 'User', :object_id => user.id)
         end
-        
+
         can :manage, Platform, :owner_type => 'User', :owner_id => user.id
         can :manage, Platform, platforms_in_relations_with(:role => 'admin', :object_type => 'User', :object_id => user.id) do |platform|
           platform.relations.exists?(:role => 'admin', :object_type => 'User', :object_id => user.id)
@@ -95,10 +95,39 @@ class Ability
         can [:new, :create], Repository do |repository|
           repository.platform.relations.exists?(:role => 'admin', :object_type => 'User', :object_id => user.id)
         end
-        
+
+        can [:show, :index], Issue do |issue|
+          issue.status == 'open'
+        end
+        #can [:show, :index], Issue, with_project_id_in_relations_with(:object_type => 'User', :object_id => user.id) do |issue|
+        can [:show, :index], Issue do |issue|
+          issue.project.relations.exists?(:object_type => 'User', :object_id => user.id)
+        end
+        can [:create, :new], Issue do |issue|
+          issue.project.relations.exists?(:role => ['writer', 'admin'], :object_type => 'User', :object_id => user.id)
+        end
+        can [:edit, :update], Issue do |issue|
+          issue.user_id == user.id || (user.id == issue.project.owner_id && issue.project.owner_type == 'User') ||
+          issue.project.relations.exists?(:role => 'admin', :object_type => 'User', :object_id => user.id)
+        end
+        can [:create, :new], Comment do |comment|
+          comment.commentable.project.relations.exists?(:object_type => 'User', :object_id => user.id)
+        end
+        can [:edit, :update], Comment do |comment|
+          comment.user_id == user.id || (user.id == comment.commentable.project.owner_id && comment.commentable.project.owner_type == 'User') ||
+          comment.commentable.project.relations.exists?(:role => 'admin', :object_type => 'User', :object_id => user.id)
+        end
+        #
+        cannot [:index, :edit, :update, :create, :new, :show], Issue do |issue|
+          !issue.project.has_issues
+        end
+        cannot [:edit, :update, :create, :new, :destroy], Comment do |comment|
+          !comment.commentable.project.has_issues
+        end
+
         #can :read, Repository
         # TODO: Add personal repos rules
-        
+
         # Same rights for groups:
         can [:read, :create], PrivateUser, :platform => {:owner_type => 'Group', :owner_id => user.group_ids}
         can :publish, BuildList do |build_list|
@@ -121,7 +150,7 @@ class Ability
         can [:read, :update, :process_build, :build], Project, projects_in_relations_with(:role => ['writer', 'admin'], :object_type => 'Group', :object_id => user.group_ids) do |project|
           project.relations.exists?(:role => ['writer', 'admin'], :object_type => 'Group', :object_id => user.group_ids)
         end
-        
+
         can :manage, Platform, :owner_type => 'Group', :owner_id => user.group_ids
         #can :read, Platform, :groups => {:id => user.group_ids}
         can :read, Platform, platforms_in_relations_with(:role => 'reader', :object_type => 'Group', :object_id => user.group_ids) do |platform|
@@ -140,11 +169,12 @@ class Ability
         cannot :create, [Platform, User]
       end
     end
-    
+
     # Shared cannot rights for all users (guests, registered, admin)
     cannot :destroy, Platform, :platform_type => 'personal'
     cannot :destroy, Repository, :platform => {:platform_type => 'personal'}
     cannot :fork, Project, :owner_id => user.id, :owner_type => user.class.to_s
+    cannot :destroy, Issue
   end
 
   # Sub query for platforms, projects relations
@@ -159,6 +189,16 @@ class Ability
 
       return opts.values.unshift query
     end
+  end
+
+  def with_project_id_in_relations_with(opts = {})
+    query = "issues.project_id IN (SELECT target_id FROM relations WHERE relations.target_type = 'issues'"
+    opts.each do |key, value|
+      query = query + " AND relations.#{ key } #{ value.class == Array ? 'IN (?)' : '= ?' } "
+    end
+    query = query + ")"
+
+    return opts.values.unshift query
   end
 
   ## Sub query for project relations

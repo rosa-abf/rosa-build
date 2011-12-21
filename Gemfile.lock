@@ -77,7 +77,6 @@ GEM
     factory_girl_rails (1.4.0)
       factory_girl (~> 2.3.0)
       railties (>= 3.0.0)
-    friendly_id (4.0.0.beta8)
     grit (2.4.1)
       diff-lcs (~> 1.1)
       mime-types (~> 1.15)
@@ -220,7 +219,6 @@ DEPENDENCIES
   delayed_job
   devise (~> 1.5.2)
   factory_girl_rails (~> 1.4.0)
-  friendly_id (~> 4.0.0.beta14)
   grack!
   grit
   haml-rails (~> 0.3.4)

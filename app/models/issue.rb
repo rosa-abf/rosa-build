@@ -1,5 +1,5 @@
 class Issue < ActiveRecord::Base
-  STATUSES = ['open', 'close']
+  STATUSES = ['open', 'closed']
 
   belongs_to :project
   belongs_to :user
