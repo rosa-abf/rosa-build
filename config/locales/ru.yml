@@ -280,7 +280,6 @@ ru:
     build_lists:
       filter_header: Фильтр
       current: Текущие
-      all: Все
       created_at_start: "Время постановки на сборку с:"
       created_at_end: "Время постановки на сборку по:"
       notified_at_start: "Время последнего обновления от BS с:"
@@ -291,11 +290,12 @@ ru:
       items_header: Элементы сборки
       no_items_data: Данных нет
       show: Просмотр
-      confirm_publish: Вы уверены, что хотите опубликовать контейнер?
       cancel_button_header: Действие
       cancel_button: Отмена
-      cancel_successed: 'Сборка отменена.'
-      cancel_failed: 'При отмене сборки произошла ошибка!'
+      cancel_success: 'Сборка отменена.'
+      cancel_fail: 'При отмене сборки произошла ошибка!'
+      publish_success: 'Сборка опубликована.'
+      publish_fail: 'При публикации сборки произошла ошибка!'
       
       build_server_status:
         header: Статус сборочного сервера

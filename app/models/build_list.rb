@@ -105,18 +105,18 @@ class BuildList < ActiveRecord::Base
   end
   
   def publish
-    return false unless can_published?
+    return false unless can_publish?
     
     BuildServer.publish_container bs_id
     self.update_attribute(:status, BUILD_PUBLISHED)
     #self.destroy # self.delete
   end
   
-  def can_published?
+  def can_publish?
     self.status == BuildServer::SUCCESS
   end
 
-  def cancel_build_list
+  def cancel
     has_canceled = BuildServer.delete_build_list bs_id
     update_attribute(:status, BUILD_CANCELED) if has_canceled == 0
     
