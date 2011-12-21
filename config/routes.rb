@@ -86,7 +86,7 @@ Rosa::Application.routes.draw do
 
   resources :projects do
     resource :repo, :controller => "git/repositories", :only => [:show]
-    resources :build_lists, :only => [:index, :show] do
+    resources :build_lists, :only => [:index, :show, :new, :create] do
       collection do
         get :recent
         post :filter
@@ -110,8 +110,6 @@ Rosa::Application.routes.draw do
 #    end
 
     member do
-      get :build
-      post :process_build
       post :fork
     end
     collection do

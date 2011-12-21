@@ -6,9 +6,7 @@ class BuildList < ActiveRecord::Base
   belongs_to :user
   has_many :items, :class_name => "BuildList::Item", :dependent => :destroy
 
-  validates :project_id, :presence => true
-  validates :project_version, :presence => true
-  #validates_inclusion_of :update_type, :in => UPDATE_TYPES#, :message => "extension %s is not included in the list"
+  validates :project_id, :project_version, :arch, :include_repos, :presence => true
   UPDATE_TYPES = %w[security bugfix enhancement recommended newpackage]
   validates :update_type, :inclusion => UPDATE_TYPES
   validate lambda {  
@@ -83,6 +81,7 @@ class BuildList < ActiveRecord::Base
   scope :scoped_to_project_name, lambda {|project_name| joins(:project).where('projects.name LIKE ?', "%#{project_name}%")}
 
   serialize :additional_repos
+  serialize :include_repos
   
   before_create :set_default_status
   after_create :place_build
@@ -140,8 +139,8 @@ class BuildList < ActiveRecord::Base
     end
 
     def place_build
-      #XML-RPC params: project_name, project_version, plname, arch, bplname, update_type, build_requires, id_web
-      self.status = BuildServer.add_build_list project.name, project_version, pl.name, arch.name, (pl_id == bpl_id ? '' : bpl.name), update_type, build_requires, id
+      #XML-RPC params: project_name, project_version, plname, arch, bplname, update_type, build_requires, id_web, include_repos
+      self.status = BuildServer.add_build_list project.name, project_version, pl.name, arch.name, (pl_id == bpl_id ? '' : bpl.name), update_type, build_requires, id, include_repos
       self.status = BUILD_PENDING if self.status == 0
       save
     end
