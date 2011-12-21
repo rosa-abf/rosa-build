@@ -73,7 +73,7 @@
         %b
           = t("activerecord.attributes.build_list.user")
           \:
-        = @build_list.user.fullname
+        = @build_list.user.try(:fullname)
       %p
         %b
           = t("activerecord.attributes.build_list.notified_at")

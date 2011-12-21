@@ -23,8 +23,8 @@ ru:
         open_id: 'вход через OpenID'
       projects_controller:
         auto_build: 'отправлен на автоматическую сборку'
-        process_build: 'отправлен на сборку'
       build_lists_controller:
+        create: 'отправлен на сборку'
         cancel: 'сборка отменена'
         publish: 'сборка опубликована'
       auto_build_lists_controller:

@@ -1,12 +1,12 @@
 .block
-  - if controller.action_name != 'all'
+  - if @project
     .secondary-navigation
       %ul.wat-cf
         %li.first= link_to t("layout.build_lists.current"), project_path(@project) + "#build_lists"
         %li.active= link_to t("layout.build_lists.all"), project_build_lists_path(@project)
 
   .content
-    - if controller.action_name == 'all'
+    - unless @project
       .inner
         %h2= t('layout.build_lists.build_server_status.header')
         .field
@@ -25,4 +25,4 @@
     .inner
       = render :partial => "build_lists/build_lists", :object => @build_lists
 
-- content_for :sidebar, render(:partial => 'sidebar') if controller.action_name != 'all'
+- content_for :sidebar, render(:partial => 'sidebar') if @project
