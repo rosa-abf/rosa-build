@@ -45,9 +45,13 @@ class Ability
         can :publish, BuildList do |build_list|
           build_list.can_published? && build_list.project.relations.exists?(:object_type => 'User', :object_id => user.id)
         end
-        can :read, BuildList do |build_list|
-          build_list.project.public? || build_list.project.relations.exists?(:object_type => 'User', :object_id => user.id)
+        can [:index, :read], BuildList, ["build_lists.project_id IN (SELECT id FROM projects WHERE visibility = ?)", 'open'] do |build_list|
+          build_list.project.public?
         end
+        can [:index, :read], BuildList, build_lists_in_relations_with(:object_type => 'User', :object_id => user.id) do |build_list|
+          build_list.project.relations.exists?(:object_type => 'User', :object_id => user.id)
+        end
+
         can [:read, :create], PrivateUser, :platform => {:owner_type => 'User', :owner_id => user.id}
 
         # If rule has multiple conditions CanCan joins them by 'AND' sql operator
@@ -104,8 +108,8 @@ class Ability
         can :publish, BuildList do |build_list|
           build_list.can_published? && build_list.project.relations.exists?(:object_type => 'Group', :object_id => user.group_ids)
         end
-        can :read, BuildList do |build_list|
-          build_list.project.public? || build_list.project.relations.exists?(:object_type => 'Group', :object_id => user.group_ids)
+        can [:index, :read], BuildList, build_lists_in_relations_with(:object_type => 'Group', :object_id => user.group_ids) do |build_list|
+          build_list.project.relations.exists?(:object_type => 'Group', :object_id => user.group_ids)
         end
 
         can :manage_collaborators, Project, projects_in_relations_with(:role => 'admin', :object_type => 'Group', :object_id => user.group_ids) do |project|
@@ -160,6 +164,16 @@ class Ability
 
       return opts.values.unshift query
     end
+  end
+
+  def build_lists_in_relations_with(opts)
+    query = "build_lists.project_id IN (SELECT target_id FROM relations WHERE relations.target_type = 'Project'"
+    opts.each do |key, value|
+      query = query + " AND relations.#{ key } #{ value.class == Array ? 'IN (?)' : '= ?' } "
+    end
+    query = query + ")"
+
+    return opts.values.unshift query
   end
 
   ## Sub query for project relations

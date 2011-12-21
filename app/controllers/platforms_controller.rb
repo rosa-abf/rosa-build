@@ -10,7 +10,7 @@ class PlatformsController < ApplicationController
   def build_all
     @platform.repositories.each do |repository|
       repository.projects.each do |project|
-        project.delay.build_for(@platform)
+        project.delay.build_for(@platform, current_user)
       end
     end
 

@@ -3,46 +3,33 @@ class BuildListsController < ApplicationController
 
   before_filter :authenticate_user!, :except => CALLBACK_ACTIONS
   before_filter :authenticate_build_service!, :only => CALLBACK_ACTIONS
-  before_filter :find_project, :only => [:index, :filter, :show, :publish, :new, :create]
-  before_filter :find_arches, :only => [:index, :filter, :all]
-  before_filter :find_project_versions, :only => [:index, :filter]
+  before_filter :find_project, :only => [:filter, :show, :publish, :new, :create]
+  before_filter :find_arches, :only => [:index]
   before_filter :find_build_list_by_bs, :only => [:status_build, :pre_build, :post_build]
 
-  # load_and_authorize_resource :project, :except => CALLBACK_ACTIONS
-  # load_and_authorize_resource :build_list, :through => :project, :shallow => true, :except => CALLBACK_ACTIONS
-  load_and_authorize_resource :except => CALLBACK_ACTIONS
+  load_and_authorize_resource :project, :only => :index
+  load_and_authorize_resource :through => :project, :only => :index, :shallow => true
+  load_and_authorize_resource :except => CALLBACK_ACTIONS.concat([:index])
 
-	def all
-    if params[:filter]
-      @filter = BuildList::Filter.new(nil, params[:filter])
-      @build_lists = @filter.find.paginate :page => params[:page]
+	def index
+    filter_params = params[:filter] || {}
+    if params[:project_id]
+      find_project
+      find_project_versions
+      @action_url = project_build_lists_path(@project)
     else
-      @filter = BuildList::Filter.new(nil)
-      @build_lists = BuildList.recent.paginate :page => params[:page]
+      @project = nil
+      @action_url = build_lists_path
     end
-		@action_url = all_build_lists_path
+
+    @filter = BuildList::Filter.new(@project, filter_params)
+		@build_lists = @filter.find.accessible_by(current_ability).recent.paginate :page => params[:page]
 
     @build_server_status = begin
       BuildServer.get_status
     rescue Exception # Timeout::Error
       {}
     end
-
-    render :action => 'index'
-	end
-	
-	def index
-		@build_lists = @project.build_lists.recent.paginate :page => params[:page]
-		@filter = BuildList::Filter.new(@project)
-		@action_url = project_build_lists_path(@project)
-	end
-
-	def filter
-		@filter = BuildList::Filter.new(@project, params[:filter])
-		@build_lists = @filter.find.paginate :page => params[:page]
-		@action_url = project_build_lists_path(@project)
-
-		render :action => "index"
 	end
 
 	def show

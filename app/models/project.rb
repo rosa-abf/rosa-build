@@ -48,7 +48,7 @@ class Project < ActiveRecord::Base
     end
   end
 
-  def build_for(platform)
+  def build_for(platform, user)
     build_lists.create do |bl|
       bl.pl = platform
       bl.bpl = platform
@@ -56,6 +56,7 @@ class Project < ActiveRecord::Base
       bl.arch = Arch.find_by_name('i586')
       bl.project_version = "latest_#{platform.name}"
       bl.build_requires = false # already set as db default
+      bl.user = user
     end
   end
 

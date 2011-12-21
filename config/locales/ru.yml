@@ -599,6 +599,7 @@ ru:
         update_type: Критичность обновления
         build_requires: Пересборка с зависимостями
         project_version: Версия
+        user: Пользователь
 
       build_list/item:
         name: Название
