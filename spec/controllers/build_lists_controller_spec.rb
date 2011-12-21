@@ -7,6 +7,11 @@ describe BuildListsController do
       get :show, @show_params
       response.should be_success
     end
+
+    it 'should be able to perform index action in project scope' do
+      get :index, :project_id => @project.id
+      response.should be_success
+    end
   end
 
   shared_examples_for 'not show build list' do
@@ -14,12 +19,17 @@ describe BuildListsController do
       get :show, @show_params
       response.should redirect_to(forbidden_url)
     end
+
+    it 'should not be able to perform index action in project scope' do
+      get :index, :project_id => @project.id
+      response.should redirect_to(forbidden_url)
+    end
   end
 
   context 'crud' do
     context 'for guest' do
-      it 'should not be able to perform all action' do
-        get :all
+      it 'should not be able to perform index action' do
+        get :index
         response.should redirect_to(new_user_session_path)
       end
     end
@@ -50,13 +60,13 @@ describe BuildListsController do
           @build_list4 = b
         end
 
-        it 'should be able to perform all action' do
-          get :all
+        it 'should be able to perform index action' do
+          get :index
           response.should be_success
         end
 
         it 'should show only accessible build_lists' do
-          get :all
+          get :index
           assigns(:build_lists).should include(@build_list1)
           assigns(:build_lists).should_not include(@build_list2)
           assigns(:build_lists).should include(@build_list3)
@@ -132,13 +142,13 @@ describe BuildListsController do
           @build_list4 = b
         end
 
-        it 'should be able to perform all action' do
-          get :all
+        it 'should be able to perform index action' do
+          get :index
           response.should be_success
         end
 
         it 'should show only accessible build_lists' do
-          get :all
+          get :index
           assigns(:build_lists).should include(@build_list1)
           assigns(:build_lists).should_not include(@build_list2)
           assigns(:build_lists).should include(@build_list3)
@@ -184,13 +194,13 @@ describe BuildListsController do
     context 'for admin' do
       before(:each) { set_session_for Factory(:admin) }
 
-      it "should be able to perform all action without exception" do
+      it "should be able to perform index action without exception" do
         any_instance_of(XMLRPC::Client) do |xml_rpc|
           stub(xml_rpc).call do |args|
             raise Timeout::Error
           end
         end
-        get :all
+        get :index
         assigns[:build_server_status].should == {}
         response.should be_success
       end    
@@ -212,7 +222,7 @@ describe BuildListsController do
     end
 
     it 'should filter by bs_id' do
-      get :all, :filter => {:bs_id => @build_list1.bs_id, :project_name => 'fdsfdf', :any_other_field => 'do not matter'}
+      get :index, :filter => {:bs_id => @build_list1.bs_id, :project_name => 'fdsfdf', :any_other_field => 'do not matter'}
       assigns[:build_lists].should include(@build_list1)
       assigns[:build_lists].should_not include(@build_list2)
       assigns[:build_lists].should_not include(@build_list3)
@@ -220,14 +230,14 @@ describe BuildListsController do
 
     it 'should filter by project_name' do
       # Project.where(:id => build_list2.project.id).update_all(:name => 'project_name')
-      get :all, :filter => {:project_name => @build_list2.project.name}
+      get :index, :filter => {:project_name => @build_list2.project.name}
       assigns[:build_lists].should_not include(@build_list1)
       assigns[:build_lists].should include(@build_list2)
       assigns[:build_lists].should_not include(@build_list3)
     end
 
     it 'should filter by project_name and start_date' do
-      get :all, :filter => {:project_name => @build_list3.project.name, 
+      get :index, :filter => {:project_name => @build_list3.project.name, 
                             "created_at_start(1i)" => @build_list3.created_at.year.to_s,
                             "created_at_start(2i)" => @build_list3.created_at.month.to_s,
                             "created_at_start(3i)" => @build_list3.created_at.day.to_s}
