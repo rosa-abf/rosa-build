@@ -1,27 +1,23 @@
 $(document).ready(function() {
 	$('select#build_list_pl_id').change(function() {
 	  var platform_id = $(this).val();
+	  var base_platforms = $('.base_platforms input[type=checkbox]');
 
     $('#include_repos').html($('.preloaded_include_repos .include_repos_' + platform_id).html());
 
-    // var is_pl_main = false;
-    // var granted_bpl_id = '';
-    // var pl_id = $('select#build_pl').val();
-    // 
-    // $('input.build_bpl_ids').each(function(i,el) {
-    //   var bpl_id = $(el).attr('bpl_id');
-    //   if (pl_id == bpl_id) {
-    //     is_pl_main = true;
-    //     //granted_bpl_id = $(el).attr('bpl_id');
-    //   }
-    // });
-    // 
-    // if (is_pl_main) {
-    //   $('input.build_bpl_ids').attr('disabled', 'disabled');
-    //   $('input.build_bpl_ids[bpl_id="'+pl_id+'"]').removeAttr('disabled');      
-    // } else {
-    //   $('input.build_bpl_ids').removeAttr('disabled');
-    // }
+    base_platforms.each(function(){
+      if ($.inArray(platform_id, base_platforms.map(function(){ return $(this).val() }).get()) >= 0) {
+        if ($(this).val() == platform_id) {
+          $(this).attr('checked', 'checked');
+          $(this).removeAttr('disabled');
+        } else {
+          $(this).removeAttr('checked');
+          $(this).attr('disabled', 'disabled');
+        }
+      } else {
+        $(this).removeAttr('disabled');
+      }
+    });
 	});
 	$('select#build_list_pl_id').trigger('change');
 

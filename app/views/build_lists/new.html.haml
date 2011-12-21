@@ -18,7 +18,7 @@
               = f.label :project_version, t("activerecord.attributes.build_list.project_version"), :class => :label
               = f.select :project_version, @project.versions
               
-            .group.pl_ids_container
+            .group.base_platforms
               = f.label :bpl, t("activerecord.attributes.build_list.bpl"), :class => :label
               - Platform.main.each do |bpl|
                 = check_box_tag "bpls[]", bpl.id, (params[:bpls]||[]).include?(bpl.id.to_s), :class => 'build_bpl_ids', :id => "bpls_#{bpl.id}"
