@@ -24,6 +24,7 @@ Rosa::Application.routes.draw do
 
   match '/private/:platform_name/*file_path' => 'privates#show'
 
+  match 'build_lists/publish_build', :to => "build_lists#publish_build"
   match 'build_lists/status_build', :to => "build_lists#status_build"
   match 'build_lists/post_build', :to => "build_lists#post_build"
   match 'build_lists/pre_build', :to => "build_lists#pre_build"

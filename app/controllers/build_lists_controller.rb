@@ -1,18 +1,18 @@
 class BuildListsController < ApplicationController
-  CALLBACK_ACTIONS = [:status_build, :pre_build, :post_build, :circle_build, :new_bbdt]
+  CALLBACK_ACTIONS = [:publish_build, :status_build, :pre_build, :post_build, :circle_build, :new_bbdt]
   NESTED_ACTIONS = [:index, :new, :create]
 
   before_filter :authenticate_user!, :except => CALLBACK_ACTIONS
   before_filter :authenticate_build_service!, :only => CALLBACK_ACTIONS
   before_filter :find_project, :only => NESTED_ACTIONS
   before_filter :find_build_list, :only => [:show, :publish, :cancel]
-  before_filter :find_build_list_by_bs, :only => [:status_build, :pre_build, :post_build]
+  before_filter :find_build_list_by_bs, :only => [:publish_build, :status_build, :pre_build, :post_build]
 
   load_and_authorize_resource :project, :only => NESTED_ACTIONS
   load_and_authorize_resource :through => :project, :only => NESTED_ACTIONS, :shallow => true
   load_and_authorize_resource :except => CALLBACK_ACTIONS.concat(NESTED_ACTIONS)
 
-	def index
+  def index
     filter_params = params[:filter] || {}
     if @project
       @action_url = project_build_lists_path(@project)
@@ -21,17 +21,17 @@ class BuildListsController < ApplicationController
     end
 
     @filter = BuildList::Filter.new(@project, filter_params)
-		@build_lists = @filter.find.accessible_by(current_ability).recent.paginate :page => params[:page]
+    @build_lists = @filter.find.accessible_by(current_ability).recent.paginate :page => params[:page]
 
     @build_server_status = begin
       BuildServer.get_status
     rescue Exception # Timeout::Error
       {}
     end
-	end
+  end
 
-	def new
-	  @build_list = BuildList.new
+  def new
+    @build_list = BuildList.new
   end
 
   def create
@@ -59,91 +59,99 @@ class BuildListsController < ApplicationController
     end
   end
 
-	def show
-		@item_groups = @build_list.items.group_by_level
-	end
+  def show
+    @item_groups = @build_list.items.group_by_level
+  end
 
-	def publish
-		if @build_list.publish
-			redirect_to :back, :notice => t('layout.build_lists.publish_success')
-		else
-			redirect_to :back, :notice => t('layout.build_lists.publish_fail')
-		end
-	end
+  def publish
+    if @build_list.publish
+      redirect_to :back, :notice => t('layout.build_lists.publish_success')
+    else
+      redirect_to :back, :notice => t('layout.build_lists.publish_fail')
+    end
+  end
 
-	def cancel
-		if @build_list.cancel
-			redirect_to :back, :notice => t('layout.build_lists.cancel_success')
-		else
-			redirect_to :back, :notice => t('layout.build_lists.cancel_fail')
-		end
-	end
+  def cancel
+    if @build_list.cancel
+      redirect_to :back, :notice => t('layout.build_lists.cancel_success')
+    else
+      redirect_to :back, :notice => t('layout.build_lists.cancel_fail')
+    end
+  end
 
-	def status_build
-		@item = @build_list.items.find_by_name!(params[:package_name])
-		@item.status = params[:status]
-		@item.save
+  def publish_build
+    @build_list.status = (params[:status].to_i == 0 ? BuildList::BUILD_PUBLISHED : BuildList::FAILED_PUBLISH)
+    @build_list.notified_at = Time.current
+    @build_list.save
 
-		@build_list.container_path = params[:container_path]
-		@build_list.notified_at = Time.current
-		@build_list.save
+    render :nothing => true, :status => 200
+  end
 
-		render :nothing => true, :status => 200
-	end
+  def status_build
+    @item = @build_list.items.find_by_name!(params[:package_name])
+    @item.status = params[:status]
+    @item.save
 
-	def pre_build
-		@build_list.status = BuildServer::BUILD_STARTED
-		@build_list.notified_at = Time.current
-		@build_list.save
+    @build_list.container_path = params[:container_path]
+    @build_list.notified_at = Time.current
+    @build_list.save
 
-		render :nothing => true, :status => 200
-	end
+    render :nothing => true, :status => 200
+  end
 
-	def post_build
-		@build_list.status = params[:status]
-		@build_list.container_path = params[:container_path]
-		@build_list.notified_at = Time.current
-		@build_list.save
+  def pre_build
+    @build_list.status = BuildServer::BUILD_STARTED
+    @build_list.notified_at = Time.current
+    @build_list.save
 
-		render :nothing => true, :status => 200
-	end
+    render :nothing => true, :status => 200
+  end
 
-	def circle_build
-		@build_list.is_circle = true
-		@build_list.container_path = params[:container_path]
-		@build_list.notified_at = Time.current
-		@build_list.save
+  def post_build
+    @build_list.status = params[:status]
+    @build_list.container_path = params[:container_path]
+    @build_list.notified_at = Time.current
+    @build_list.save
 
-		render :nothing => true, :status => 200
-	end
+    render :nothing => true, :status => 200
+  end
 
-	def new_bbdt
-		@build_list = BuildList.find_by_id!(params[:web_id])
-		@build_list.name = params[:name]
-		@build_list.additional_repos = ActiveSupport::JSON.decode(params[:additional_repos])
-		@build_list.set_items(ActiveSupport::JSON.decode(params[:items]))
-		@build_list.notified_at = Time.current
-		@build_list.is_circle = (params[:is_circular] != "0")
-		@build_list.bs_id = params[:id]
-		params[:arch]
-		@build_list.save
+  def circle_build
+    @build_list.is_circle = true
+    @build_list.container_path = params[:container_path]
+    @build_list.notified_at = Time.current
+    @build_list.save
 
-		render :nothing => true, :status => 200
-	end
+    render :nothing => true, :status => 200
+  end
 
-	protected
+  def new_bbdt
+    @build_list = BuildList.find_by_id!(params[:web_id])
+    @build_list.name = params[:name]
+    @build_list.additional_repos = ActiveSupport::JSON.decode(params[:additional_repos])
+    @build_list.set_items(ActiveSupport::JSON.decode(params[:items]))
+    @build_list.notified_at = Time.current
+    @build_list.is_circle = (params[:is_circular] != "0")
+    @build_list.bs_id = params[:id]
+    params[:arch]
+    @build_list.save
 
-	def find_project
-		@project = Project.find_by_id params[:project_id]
-	end
+    render :nothing => true, :status => 200
+  end
+
+  protected
+
+  def find_project
+    @project = Project.find_by_id params[:project_id]
+  end
 
   def find_build_list
     @build_list = BuildList.find(params[:id])
   end
 
-	def find_build_list_by_bs
-		@build_list = BuildList.find_by_bs_id!(params[:id])
-	end
+  def find_build_list_by_bs
+    @build_list = BuildList.find_by_bs_id!(params[:id])
+  end
 
   def authenticate_build_service!
     if request.remote_ip != APP_CONFIG['build_server_ip']
