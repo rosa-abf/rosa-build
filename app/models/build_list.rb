@@ -21,11 +21,15 @@ class BuildList < ActiveRecord::Base
   WAITING_FOR_RESPONSE = 4000
   BUILD_PENDING = 2000
   BUILD_PUBLISHED = 6000
+  BUILD_PUBLISH = 7000
+  FAILED_PUBLISH = 8000
 
   STATUSES = [  WAITING_FOR_RESPONSE,
                 BUILD_CANCELED,
                 BUILD_PENDING,
                 BUILD_PUBLISHED,
+                BUILD_PUBLISH,
+                FAILED_PUBLISH,
                 BuildServer::SUCCESS,
                 BuildServer::BUILD_STARTED,
                 BuildServer::BUILD_ERROR,
@@ -40,6 +44,8 @@ class BuildList < ActiveRecord::Base
                      BUILD_CANCELED => :build_canceled,
                      BUILD_PENDING => :build_pending,
                      BUILD_PUBLISHED => :build_published,
+                     BUILD_PUBLISH => :build_publish,
+                     FAILED_PUBLISH => :failed_publish,
                      BuildServer::BUILD_ERROR => :build_error,
                      BuildServer::BUILD_STARTED => :build_started,
                      BuildServer::SUCCESS => :success,
@@ -106,13 +112,13 @@ class BuildList < ActiveRecord::Base
 
   def publish
     has_published = BuildServer.publish_container bs_id
-    update_attribute(:status, BUILD_PUBLISHED) if has_published == 0
+    update_attribute(:status, BUILD_PUBLISH) if has_published == 0
 
     return has_published == 0
   end
   
   def can_publish?
-    self.status == BuildServer::SUCCESS
+    status == BuildServer::SUCCESS or status == FAILED_PUBLISH
   end
 
   def cancel
@@ -124,7 +130,7 @@ class BuildList < ActiveRecord::Base
 
   #TODO: Share this checking on product owner.
   def can_cancel?
-    self.status == BUILD_PENDING && bs_id
+    status == BUILD_PENDING && bs_id
   end
 
   def event_log_message
