@@ -1,16 +1,12 @@
 class IssuesController < ApplicationController
   before_filter :authenticate_user!
   before_filter :find_project, :except => [:destroy]
-  before_filter :find_issue_by_serial_id, :only => [:show, :edit]
+  before_filter :find_and_authorize_by_serial_id, :only => [:show, :edit]
+  before_filter :set_issue_stub, :only => [:new, :create]
 
   load_and_authorize_resource :except => [:show, :edit, :index]
-  authorize_resource :only => [:show, :edit]
-  #authorize_resource :through => :project, :only => [:index], :shallow => true
   authorize_resource :project, :only => [:index]
   autocomplete :user, :uname
-
-  def show
-  end
 
   def index
     @issues = @project.issues.paginate :per_page => 10, :page => params[:page]
@@ -63,7 +59,12 @@ class IssuesController < ApplicationController
     @project = Project.find(params[:project_id])
   end
 
-  def find_issue_by_serial_id
+  def find_and_authorize_by_serial_id
     @issue = @project.issues.where(:serial_id => params[:serial_id])[0]
+    authorize! params[:action].to_sym, @issue
+  end
+
+  def set_issue_stub
+    @issue = Issue.new(:project => @project)
   end
 end

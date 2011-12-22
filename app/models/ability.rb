@@ -96,11 +96,13 @@ class Ability
           repository.platform.relations.exists?(:role => 'admin', :object_type => 'User', :object_id => user.id)
         end
 
-        can [:show, :index], Issue do |issue|
+        can [:read, :index], Issue do |issue|
+          puts "SHIT\n"*10
           issue.status == 'open'
         end
-        #can [:show, :index], Issue, with_project_id_in_relations_with(:object_type => 'User', :object_id => user.id) do |issue|
-        can [:show, :index], Issue do |issue|
+        #can [:read], Issue, :status => 'open'
+        #can [:show], Issue, with_project_id_in_relations_with(:object_type => 'User', :object_id => user.id)
+        can [:read, :index], Issue do |issue|
           issue.project.relations.exists?(:object_type => 'User', :object_id => user.id)
         end
         can [:create, :new], Issue do |issue|
@@ -118,7 +120,9 @@ class Ability
           comment.commentable.project.relations.exists?(:role => 'admin', :object_type => 'User', :object_id => user.id)
         end
         #
-        cannot [:index, :edit, :update, :create, :new, :show], Issue do |issue|
+        cannot [:index, :edit, :update, :create, :new, :read], Issue do |issue|
+          puts "FUCK\n"*10
+          puts !issue.project.has_issues
           !issue.project.has_issues
         end
         cannot [:edit, :update, :create, :new, :destroy], Comment do |comment|

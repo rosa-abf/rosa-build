@@ -31,7 +31,8 @@ class CommentsController < ApplicationController
   def update
     if @comment.update_attributes(params[:comment])
       flash[:notice] = I18n.t("flash.comment.saved")
-      redirect_to :back
+      #redirect_to :back
+      redirect_to show_issue_path(@comment.commentable.project, @comment.commentable.serial_id)
     else
       flash[:error] = I18n.t("flash.comment.saved_error")
       render :action => 'new'
