@@ -12,9 +12,6 @@ class BuildList < ActiveRecord::Base
   validate lambda {  
     errors.add(:bpl, I18n.t('flash.build_list.wrong_platform')) if pl.platform_type == 'main' && pl_id != bpl_id
   }
-  validate lambda {
-    errors.add(:bpl, I18n.t('flash.build_list.can_not_published')) if status == BUILD_PUBLISHED && status_was != BuildServer::SUCCESS    
-  }
 
   # The kernel does not send these statuses directly
   BUILD_CANCELED = 5000
@@ -111,20 +108,20 @@ class BuildList < ActiveRecord::Base
   end
 
   def publish
+    return false unless can_publish?
     has_published = BuildServer.publish_container bs_id
     update_attribute(:status, BUILD_PUBLISH) if has_published == 0
-
     return has_published == 0
   end
-  
+
   def can_publish?
     status == BuildServer::SUCCESS or status == FAILED_PUBLISH
   end
 
   def cancel
+    return false unless can_cancel?
     has_canceled = BuildServer.delete_build_list bs_id
     update_attribute(:status, BUILD_CANCELED) if has_canceled == 0
-
     return has_canceled == 0
   end
 
