@@ -123,7 +123,7 @@ describe BuildListsController do
           it_should_behave_like 'create build list'
         end
 
-        context 'if user is project member' do
+        context 'if user is project read member' do
           before(:each) {set_session_for(@member_user)}
           it_should_behave_like 'show build list'
           it_should_behave_like 'not create build list'
@@ -145,7 +145,7 @@ describe BuildListsController do
           it_should_behave_like 'create build list'
         end
 
-        context 'if user is project member' do
+        context 'if user is project read member' do
           before(:each) {set_session_for(@member_user)}
           it_should_behave_like 'show build list'
           it_should_behave_like 'not create build list'
@@ -209,7 +209,7 @@ describe BuildListsController do
           it_should_behave_like 'create build list'
         end
 
-        context 'if user is group member' do
+        context 'if user is group read member' do
           before(:each) {set_session_for(@member_user)}
           it_should_behave_like 'show build list'
           it_should_behave_like 'not create build list'
@@ -231,7 +231,7 @@ describe BuildListsController do
           it_should_behave_like 'create build list'
         end
 
-        context 'if user is group member' do
+        context 'if user is group read member' do
           before(:each) {set_session_for(@member_user)}
           it_should_behave_like 'show build list'
           it_should_behave_like 'not create build list'
