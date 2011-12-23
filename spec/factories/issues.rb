@@ -1,6 +1,6 @@
-# Read about factories at http://github.com/thoughtbot/factory_girl
-
-FactoryGirl.define do
-  factory :issue do
-    end
+Factory.define(:issue) do |p|
+  p.title { Factory.next(:string) }
+  p.body { Factory.next(:string) }
+  p.association :user, :factory => :user
+  p.status "open"
 end

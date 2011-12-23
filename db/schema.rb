@@ -243,6 +243,7 @@ ActiveRecord::Schema.define(:version => 20111219073859) do
     t.string   "object_type"
     t.integer  "target_id"
     t.string   "target_type"
+    t.integer  "role_id"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "role"
@@ -271,16 +272,16 @@ ActiveRecord::Schema.define(:version => 20111219073859) do
 
   create_table "users", :force => true do |t|
     t.string   "name"
-    t.string   "email",                               :default => "", :null => false
-    t.string   "encrypted_password",   :limit => 128, :default => "", :null => false
-    t.string   "password_salt",                       :default => "", :null => false
+    t.string   "email",                                 :default => "", :null => false
+    t.string   "encrypted_password",     :limit => 128, :default => "", :null => false
     t.string   "reset_password_token"
-    t.string   "remember_token"
+    t.datetime "reset_password_sent_at"
     t.datetime "remember_created_at"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.text     "ssh_key"
     t.string   "uname"
+    t.text     "ssh_key"
+    t.integer  "role_id"
     t.string   "role"
   end
 

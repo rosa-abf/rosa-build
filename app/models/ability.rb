@@ -97,7 +97,6 @@ class Ability
         end
 
         can [:read, :index], Issue do |issue|
-          puts "SHIT\n"*10
           issue.status == 'open'
         end
         #can [:read], Issue, :status => 'open'
@@ -120,9 +119,7 @@ class Ability
           comment.commentable.project.relations.exists?(:role => 'admin', :object_type => 'User', :object_id => user.id)
         end
         #
-        cannot [:index, :edit, :update, :create, :new, :read], Issue do |issue|
-          puts "FUCK\n"*10
-          puts !issue.project.has_issues
+        cannot [:index, :edit, :update, :create, :new, :read, :show], Issue do |issue|
           !issue.project.has_issues
         end
         cannot [:edit, :update, :create, :new, :destroy], Comment do |comment|
