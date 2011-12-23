@@ -30,6 +30,10 @@ gem 'whenever', :require => false
 gem 'delayed_job'
 gem 'highline', '~> 1.6.8'
 
+# Wiki
+gem "gollum", "1.3.1"
+gem "redcarpet", "1.17.2"
+
 # XML-RPC support
 # gem 'actionwebservice' #, :git => 'git://github.com/ywen/actionwebservice.git'
 gem "rails-xmlrpc", '~> 0.3.6' # :git => 'git://github.com/chipiga/rails-xmlrpc.git'

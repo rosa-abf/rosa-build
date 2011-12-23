@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20111220155059) do
+ActiveRecord::Schema.define(:version => 20111221194422) do
 
   create_table "arches", :force => true do |t|
     t.string   "name",       :null => false
@@ -69,6 +69,7 @@ ActiveRecord::Schema.define(:version => 20111220155059) do
     t.string   "update_type"
     t.integer  "bpl_id"
     t.integer  "pl_id"
+    t.text     "include_repos"
     t.integer  "user_id"
   end
 
@@ -212,6 +213,7 @@ ActiveRecord::Schema.define(:version => 20111220155059) do
     t.integer  "category_id"
     t.text     "description"
     t.string   "ancestry"
+    t.boolean  "has_wiki"
   end
 
   add_index "projects", ["category_id"], :name => "index_projects_on_category_id"

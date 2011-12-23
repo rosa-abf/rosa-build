@@ -29,7 +29,10 @@ class Project < ActiveRecord::Base
 
   after_create :attach_to_personal_repository
   after_create :create_git_repo
+  after_save :create_wiki
+
   after_destroy :destroy_git_repo
+  after_destroy :destroy_wiki
   # after_rollback lambda { destroy_git_repo rescue true if new_record? }
 
   has_ancestry
@@ -111,6 +114,10 @@ class Project < ActiveRecord::Base
     build_path(git_repo_name)
   end
 
+  def wiki_path
+    build_wiki_path(git_repo_name)
+  end
+
   def xml_rpc_create(repository)
     result = BuildServer.create_project name, repository.platform.name, repository.name, path
     if result == BuildServer::SUCCESS
@@ -135,6 +142,10 @@ class Project < ActiveRecord::Base
       File.join(APP_CONFIG['root_path'], 'git_projects', "#{dir}.git")
     end
 
+    def build_wiki_path(dir)
+      File.join(APP_CONFIG['root_path'], 'projects_wiki', "#{dir}.wiki.git")
+    end
+
     def attach_to_personal_repository
       repositories << self.owner.personal_repository if !repositories.exists?(:id => self.owner.personal_repository)
     end
@@ -145,5 +156,13 @@ class Project < ActiveRecord::Base
 
     def destroy_git_repo
       FileUtils.rm_rf path
+    end
+
+    def create_wiki
+      Grit::Repo.init_bare(wiki_path) if has_wiki && !FileTest.exist?(wiki_path)
+    end
+
+    def destroy_wiki
+      FileUtils.rm_rf wiki_path
     end
 end
