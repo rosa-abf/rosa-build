@@ -9,7 +9,15 @@ class IssuesController < ApplicationController
   autocomplete :user, :uname
 
   def index
-    @issues = @project.issues.paginate :per_page => 10, :page => params[:page]
+    @issues = Issue.scoped
+    @issues = @project.issues
+    case params[:status]
+    when 'open'
+      @issues = @issues.where(:status => 'open')
+    when 'closed'
+      @issues = @issues.where(:status => 'closed')
+    end
+    @issues = @issues.paginate :per_page => 10, :page => params[:page]
   end
 
   def create

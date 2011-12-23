@@ -3,7 +3,7 @@
     %th.first= t("activerecord.attributes.issue.title")
     %th.first= t("activerecord.attributes.issue.status")
     %th.last &nbsp;
-  - @project.issues.each do |issue|
+  - @issues.each do |issue|
     %tr{:class => cycle("odd", "even")}
       %td
         = link_to issue.title, show_issue_path(@project, issue.serial_id)
