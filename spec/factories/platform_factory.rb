@@ -5,3 +5,7 @@ Factory.define(:platform) do |p|
   p.distrib_type APP_CONFIG['distr_types'].first
   p.association :owner, :factory => :user
 end
+
+Factory.define(:platform_with_repos, :parent => :platform) do |p|
+  p.repositories {|r| [r.association(:repository)]}
+end

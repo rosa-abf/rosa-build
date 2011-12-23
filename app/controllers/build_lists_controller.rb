@@ -36,7 +36,7 @@ class BuildListsController < ApplicationController
 
   def create
     notices, errors = [], []
-    Arch.where(:id => params[:archs]).each do |arch|
+    Arch.where(:id => params[:arches]).each do |arch|
       Platform.main.where(:id => params[:bpls]).each do |bpl|
         @build_list = @project.build_lists.build(params[:build_list])
         @build_list.bpl = bpl; @build_list.arch = arch; @build_list.user = current_user
