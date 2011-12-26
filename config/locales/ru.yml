@@ -299,7 +299,6 @@ ru:
     build_lists:
       filter_header: Фильтр
       current: Текущие
-      all: Все
       created_at_start: "Время постановки на сборку с:"
       created_at_end: "Время постановки на сборку по:"
       notified_at_start: "Время последнего обновления от BS с:"
@@ -310,11 +309,12 @@ ru:
       items_header: Элементы сборки
       no_items_data: Данных нет
       show: Просмотр
-      confirm_publish: Вы уверены, что хотите опубликовать контейнер?
       cancel_button_header: Действие
       cancel_button: Отмена
-      cancel_successed: 'Сборка отменена.'
-      cancel_failed: 'При отмене сборки произошла ошибка!'
+      cancel_success: 'Сборка отменена.'
+      cancel_fail: 'При отмене сборки произошла ошибка!'
+      publish_success: 'Сборка поставлена в очередь на публикацию.'
+      publish_fail: 'При публикации сборки произошла ошибка!'
       
       build_server_status:
         header: Статус сборочного сервера
@@ -333,6 +333,8 @@ ru:
       statuses:
         build_error: ошибка сборки
         build_published: опубликован
+        build_publish: публикуется
+        failed_publish: ошибка публикации
         dependencies_fail: зависимости не найдены
         waiting_for_response: ожидает ответа
         build_pending: ожидает сборку
@@ -438,8 +440,7 @@ ru:
       save_error: Не удалось сохранить билд лист для версии '%{project_version}', платформы '%{bpl}' и архитектуры '%{arch}'
       no_project_version_selected: Выберите какую-нибудь версию
       no_project_version_found: Выбранная версия '%{project_version}' не найдена
-      no_arch_selected: Выберите хотя бы одну ахритектуру
-      no_arch_found: Выбранные ахритектуры не найдены
+      no_arch_or_platform_selected: Выберите хотя бы одну ахритектуру и платформу
       wrong_platform: Для основного репозитория (main) может быть выбран только его же основная платформа!
       can_not_published: Опубликовать сборку можно только со статусом "Собран"
 
@@ -628,6 +629,7 @@ ru:
         is_circle: Циклическая сборка
         notified_at: Информация получена
         additional_repos: Дополнительные репозитории
+        include_repos: Подключаемые репозитории
         updated_at: Обновлен
         created_at: Создан
         pl: Репозиторий для сохранения пакетов
@@ -637,6 +639,7 @@ ru:
         update_type: Критичность обновления
         build_requires: Пересборка с зависимостями
         project_version: Версия
+        user: Пользователь
 
       build_list/item:
         name: Название

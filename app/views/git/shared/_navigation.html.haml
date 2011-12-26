@@ -4,7 +4,7 @@
     %li= link_to t("layout.projects.new"), new_project_path
     %li= link_to t("layout.projects.show"), project_path(@project)
     %li.active= link_to t("layout.git.repositories.source"), project_repo_path(@project)
-    %li= link_to t("layout.projects.build"), build_project_path(@project)
+    %li= link_to t("layout.projects.build"), new_project_build_list_path(@project)
 
   %ul#git_submenu.sub-wat-cf.wat-cf
     %li= link_to t("layout.git.repositories.commits"), commits_path(@project, :treeish => @treeish)

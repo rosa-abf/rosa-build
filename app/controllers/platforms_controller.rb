@@ -10,7 +10,7 @@ class PlatformsController < ApplicationController
   def build_all
     @platform.repositories.each do |repository|
       repository.projects.each do |project|
-        project.delay.build_for(@platform)
+        project.delay.build_for(@platform, current_user)
       end
     end
 
@@ -30,7 +30,7 @@ class PlatformsController < ApplicationController
                           {:name => p.name,
                            :architectures => ['i586', 'x86_64'],
                            :repositories => p.repositories.map(&:name),
-                           :url => "http://#{request.host_with_port}/downloads/#{p.name}/repository/"}
+                           :url => p.public_downloads_url(request.host_with_port)}
                         end
         }
       end

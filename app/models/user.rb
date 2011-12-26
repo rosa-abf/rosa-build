@@ -5,6 +5,7 @@ class User < ActiveRecord::Base
          :recoverable, :rememberable, :validatable #, :trackable, :confirmable, :lockable
 
   has_many :authentications, :dependent => :destroy
+  has_many :build_lists, :dependent => :destroy
 
   has_many :relations, :as => :object, :dependent => :destroy
   has_many :targets, :as => :object, :class_name => 'Relation'
@@ -38,6 +39,9 @@ class User < ActiveRecord::Base
     self.id.blank? # persisted?
   end
 
+  def fullname
+    return "#{uname} (#{name})"
+  end
   class << self
     def find_for_database_authentication(warden_conditions)
       conditions = warden_conditions.dup

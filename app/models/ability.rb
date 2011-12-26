@@ -43,22 +43,26 @@ class Ability
         can :create, Project
         can :create, Group
         can :publish, BuildList do |build_list|
-          build_list.can_published? && build_list.project.relations.exists?(:object_type => 'User', :object_id => user.id)
+          build_list.can_publish? && build_list.project.relations.exists?(:object_type => 'User', :object_id => user.id)
         end
-        can :read, BuildList do |build_list|
-          build_list.project.public? || build_list.project.relations.exists?(:object_type => 'User', :object_id => user.id)
+        can [:index, :read], BuildList, ["build_lists.project_id IN (SELECT id FROM projects WHERE visibility = ?)", 'open'] do |build_list|
+          build_list.project.public?
         end
+        can [:index, :read], BuildList, build_lists_in_relations_with(:object_type => 'User', :object_id => user.id) do |build_list|
+          build_list.project.relations.exists?(:object_type => 'User', :object_id => user.id)
+        end
+
         can [:read, :create], PrivateUser, :platform => {:owner_type => 'User', :owner_id => user.id}
 
         # If rule has multiple conditions CanCan joins them by 'AND' sql operator
-        can [:read, :update, :process_build, :build, :destroy], Project, :owner_type => 'User', :owner_id => user.id
+        can [:read, :update, :destroy], Project, :owner_type => 'User', :owner_id => user.id
         #can :read, Project, :relations => {:role => 'reader'}
         can :read, Project, projects_in_relations_with(:role => 'reader', :object_type => 'User', :object_id => user.id) do |project|
           #The can? and cannot? call cannot be used with a raw sql 'can' definition.
           project.relations.exists?(:role => 'reader', :object_type => 'User', :object_id => user.id)
         end
-        #can [:update, :process_build, :build], Project, :relations => {:role => 'writer'}
-        can [:read, :update, :process_build, :build], Project, projects_in_relations_with(:role => ['writer', 'admin'], :object_type => 'User', :object_id => user.id)  do |project|
+        #can [:update], Project, :relations => {:role => 'writer'}
+        can [:read, :update], Project, projects_in_relations_with(:role => ['writer', 'admin'], :object_type => 'User', :object_id => user.id)  do |project|
           project.relations.exists?(:role => ['writer', 'admin'], :object_type => 'User', :object_id => user.id)
         end
 
@@ -132,23 +136,23 @@ class Ability
         # Same rights for groups:
         can [:read, :create], PrivateUser, :platform => {:owner_type => 'Group', :owner_id => user.group_ids}
         can :publish, BuildList do |build_list|
-          build_list.can_published? && build_list.project.relations.exists?(:object_type => 'Group', :object_id => user.group_ids)
+          build_list.can_publish? && build_list.project.relations.exists?(:object_type => 'Group', :object_id => user.group_ids)
         end
-        can :read, BuildList do |build_list|
-          build_list.project.public? || build_list.project.relations.exists?(:object_type => 'Group', :object_id => user.group_ids)
+        can [:index, :read], BuildList, build_lists_in_relations_with(:object_type => 'Group', :object_id => user.group_ids) do |build_list|
+          build_list.project.relations.exists?(:object_type => 'Group', :object_id => user.group_ids)
         end
 
         can :manage_collaborators, Project, projects_in_relations_with(:role => 'admin', :object_type => 'Group', :object_id => user.group_ids) do |project|
           project.relations.exists? :object_id => user.group_ids, :object_type => 'Group', :role => 'admin'
         end
 
-        can [:read, :update, :process_build, :build, :destroy], Project, :owner_type => 'Group', :owner_id => user.group_ids
+        can [:read, :update, :destroy], Project, :owner_type => 'Group', :owner_id => user.group_ids
         #can :read, Project, :relations => {:role => 'reader', :object_type => 'Group', :object_id => user.group_ids}
         can :read, Project, projects_in_relations_with(:role => 'reader', :object_type => 'Group', :object_id => user.group_ids) do |project|
           project.relations.exists?(:role => 'reader', :object_type => 'Group', :object_id => user.group_ids)
         end
-        #can [:update, :process_build, :build], Project, :relations => {:role => 'writer', :object_type => 'Group', :object_id => user.group_ids}
-        can [:read, :update, :process_build, :build], Project, projects_in_relations_with(:role => ['writer', 'admin'], :object_type => 'Group', :object_id => user.group_ids) do |project|
+        #can [:update], Project, :relations => {:role => 'writer', :object_type => 'Group', :object_id => user.group_ids}
+        can [:read, :update], Project, projects_in_relations_with(:role => ['writer', 'admin'], :object_type => 'Group', :object_id => user.group_ids) do |project|
           project.relations.exists?(:role => ['writer', 'admin'], :object_type => 'Group', :object_id => user.group_ids)
         end
 
@@ -165,6 +169,7 @@ class Ability
         end
 
         can(:fork, Project) {|p| can? :read, p}
+        can(:create, BuildList) {|bl| can? :update, bl.project}
 
         # Things that can not do simple user
         cannot :create, [Platform, User]
@@ -194,6 +199,16 @@ class Ability
 
   def with_project_id_in_relations_with(opts = {})
     query = "issues.project_id IN (SELECT target_id FROM relations WHERE relations.target_type = 'issues'"
+    opts.each do |key, value|
+      query = query + " AND relations.#{ key } #{ value.class == Array ? 'IN (?)' : '= ?' } "
+    end
+    query = query + ")"
+
+    return opts.values.unshift query
+  end
+
+  def build_lists_in_relations_with(opts)
+    query = "build_lists.project_id IN (SELECT target_id FROM relations WHERE relations.target_type = 'Project'"
     opts.each do |key, value|
       query = query + " AND relations.#{ key } #{ value.class == Array ? 'IN (?)' : '= ?' } "
     end

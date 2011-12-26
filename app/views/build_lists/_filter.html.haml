@@ -8,12 +8,12 @@
         = f.select :status, BuildList::STATUSES.collect{|status| [BuildList.human_status(status), status]}, :include_blank => true, :selected => @filter.status
       .group
         = f.label :arch_id, t("activerecord.attributes.build_list.arch"), :class => :label
-        = f.select :arch_id, @arches.collect{|arch| [arch.name, arch.id]}, :include_blank => true, :selected => @filter.arch_id
+        = f.select :arch_id, Arch.recent.collect{|arch| [arch.name, arch.id]}, :include_blank => true, :selected => @filter.arch_id
     .column.right
-      - if @project_versions
+      - if @project
         .group
           = f.label :project_version, t("activerecord.attributes.build_list.project_version"), :class => :label
-          = f.select :project_version, @project_versions, :include_blank => true, :selected => @filter.project_version
+          = f.select :project_version, @project.versions, :include_blank => true, :selected => @filter.project_version
       .group
         = f.label :is_circle, t("activerecord.attributes.build_list.is_circle"), :class => :label
         = f.select :is_circle, [[t("layout.yes_"), 1], [t("layout.no_"), 0]], :include_blank => true, :selected => @filter.is_circle.present? ? (@filter.is_circle ? "1" : "0") : nil

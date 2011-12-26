@@ -24,8 +24,19 @@ Rosa::Application.routes.draw do
 
   match '/private/:platform_name/*file_path' => 'privates#show'
 
-  match 'build_lists/' => 'build_lists#all', :as => :all_build_lists
-  match 'build_lists/:id/cancel/' => 'build_lists#cancel', :as => :build_list_cancel
+  match 'build_lists/publish_build', :to => "build_lists#publish_build"
+  match 'build_lists/status_build', :to => "build_lists#status_build"
+  match 'build_lists/post_build', :to => "build_lists#post_build"
+  match 'build_lists/pre_build', :to => "build_lists#pre_build"
+  match 'build_lists/circle_build', :to => "build_lists#circle_build"
+  match 'build_lists/new_bbdt', :to => "build_lists#new_bbdt"
+
+  resources :build_lists, :only => [:index, :show] do
+    member do
+      put :cancel
+      put :publish
+    end
+  end
 
   resources :auto_build_lists, :only => [:index, :create, :destroy]
 
@@ -74,15 +85,7 @@ Rosa::Application.routes.draw do
       resources :comments, :only => [:edit, :create, :update, :destroy]
     end
     resource :repo, :controller => "git/repositories", :only => [:show]
-    resources :build_lists, :only => [:index, :show] do
-      collection do
-        get :recent
-        post :filter
-      end
-      member do
-        post :publish
-      end
-    end
+    resources :build_lists, :only => [:index, :new, :create]
 
     resources :collaborators, :only => [:index, :edit, :update, :add] do
       collection do
@@ -98,8 +101,6 @@ Rosa::Application.routes.draw do
 #    end
 
     member do
-      get :build
-      post :process_build
       post :fork
     end
     collection do
@@ -137,12 +138,6 @@ Rosa::Application.routes.draw do
   end
 
   match '/catalogs', :to => 'categories#platforms', :as => :catalogs
-
-  match 'build_lists/status_build', :to => "build_lists#status_build"
-  match 'build_lists/post_build', :to => "build_lists#post_build"
-  match 'build_lists/pre_build', :to => "build_lists#pre_build"
-  match 'build_lists/circle_build', :to => "build_lists#circle_build"
-  match 'build_lists/new_bbdt', :to => "build_lists#new_bbdt"
 
   match 'product_status', :to => 'product_build_lists#status_build'
 

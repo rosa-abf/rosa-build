@@ -3,18 +3,14 @@ class BuildList < ActiveRecord::Base
   belongs_to :arch
   belongs_to :pl, :class_name => 'Platform'
   belongs_to :bpl, :class_name => 'Platform'
+  belongs_to :user
   has_many :items, :class_name => "BuildList::Item", :dependent => :destroy
 
-  validates :project_id, :presence => true
-  validates :project_version, :presence => true
-  #validates_inclusion_of :update_type, :in => UPDATE_TYPES#, :message => "extension %s is not included in the list"
+  validates :project_id, :project_version, :arch, :include_repos, :presence => true
   UPDATE_TYPES = %w[security bugfix enhancement recommended newpackage]
   validates :update_type, :inclusion => UPDATE_TYPES
   validate lambda {  
     errors.add(:bpl, I18n.t('flash.build_list.wrong_platform')) if pl.platform_type == 'main' && pl_id != bpl_id
-  }
-  validate lambda {
-    errors.add(:bpl, I18n.t('flash.build_list.can_not_published')) if status == BUILD_PUBLISHED && status_was != BuildServer::SUCCESS    
   }
 
   # The kernel does not send these statuses directly
@@ -22,11 +18,15 @@ class BuildList < ActiveRecord::Base
   WAITING_FOR_RESPONSE = 4000
   BUILD_PENDING = 2000
   BUILD_PUBLISHED = 6000
+  BUILD_PUBLISH = 7000
+  FAILED_PUBLISH = 8000
 
   STATUSES = [  WAITING_FOR_RESPONSE,
                 BUILD_CANCELED,
                 BUILD_PENDING,
                 BUILD_PUBLISHED,
+                BUILD_PUBLISH,
+                FAILED_PUBLISH,
                 BuildServer::SUCCESS,
                 BuildServer::BUILD_STARTED,
                 BuildServer::BUILD_ERROR,
@@ -41,6 +41,8 @@ class BuildList < ActiveRecord::Base
                      BUILD_CANCELED => :build_canceled,
                      BUILD_PENDING => :build_pending,
                      BUILD_PUBLISHED => :build_published,
+                     BUILD_PUBLISH => :build_publish,
+                     FAILED_PUBLISH => :failed_publish,
                      BuildServer::BUILD_ERROR => :build_error,
                      BuildServer::BUILD_STARTED => :build_started,
                      BuildServer::SUCCESS => :success,
@@ -82,6 +84,7 @@ class BuildList < ActiveRecord::Base
   scope :scoped_to_project_name, lambda {|project_name| joins(:project).where('projects.name LIKE ?', "%#{project_name}%")}
 
   serialize :additional_repos
+  serialize :include_repos
   
   before_create :set_default_status
   after_create :place_build
@@ -103,29 +106,28 @@ class BuildList < ActiveRecord::Base
       end
     end
   end
-  
+
   def publish
-    return false unless can_published?
-    
-    BuildServer.publish_container bs_id
-    self.update_attribute(:status, BUILD_PUBLISHED)
-    #self.destroy # self.delete
-  end
-  
-  def can_published?
-    self.status == BuildServer::SUCCESS
+    return false unless can_publish?
+    has_published = BuildServer.publish_container bs_id
+    update_attribute(:status, BUILD_PUBLISH) if has_published == 0
+    return has_published == 0
   end
 
-  def cancel_build_list
+  def can_publish?
+    status == BuildServer::SUCCESS or status == FAILED_PUBLISH
+  end
+
+  def cancel
+    return false unless can_cancel?
     has_canceled = BuildServer.delete_build_list bs_id
     update_attribute(:status, BUILD_CANCELED) if has_canceled == 0
-    
     return has_canceled == 0
   end
 
   #TODO: Share this checking on product owner.
   def can_cancel?
-    self.status == BUILD_PENDING && bs_id
+    status == BUILD_PENDING && bs_id
   end
 
   def event_log_message
@@ -139,8 +141,8 @@ class BuildList < ActiveRecord::Base
     end
 
     def place_build
-      #XML-RPC params: project_name, project_version, plname, arch, bplname, update_type, build_requires, id_web
-      self.status = BuildServer.add_build_list project.name, project_version, pl.name, arch.name, (pl_id == bpl_id ? '' : bpl.name), update_type, build_requires, id
+      #XML-RPC params: project_name, project_version, plname, arch, bplname, update_type, build_requires, id_web, include_repos
+      self.status = BuildServer.add_build_list project.name, project_version, pl.name, arch.name, (pl_id == bpl_id ? '' : bpl.name), update_type, build_requires, id, include_repos
       self.status = BUILD_PENDING if self.status == 0
       save
     end

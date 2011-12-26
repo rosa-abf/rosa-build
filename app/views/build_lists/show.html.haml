@@ -1,9 +1,9 @@
 .block
   .secondary-navigation
     %ul.wat-cf
-      %li.first= link_to t("layout.build_lists.current"), project_path(@project) + "#build_lists"
-      %li= link_to t("layout.build_lists.all"), project_build_lists_path(@project)
-      %li.active= link_to t("layout.build_lists.show"), project_build_list_path(@project, @build_list)
+      %li.first= link_to t("layout.build_lists.current"), project_path(@build_list.project) + "#build_lists"
+      %li= link_to t("layout.build_lists.all"), project_build_lists_path(@build_list.project)
+      %li.active= link_to t("layout.build_lists.show"), @build_list
 
   .content
     .inner
@@ -36,6 +36,11 @@
         = @build_list.pl.name
       %p
         %b
+          = t("activerecord.attributes.build_list.include_repos")
+          \:
+        = (@build_list.include_repos||[]).map{|r| Repository.find(r).name}.join(', ')
+      %p
+        %b
           = t("activerecord.attributes.build_list.update_type")
           \:
         = @build_list.update_type
@@ -66,6 +71,11 @@
         = @build_list.arch.name
       %p
         %b
+          = t("activerecord.attributes.build_list.user")
+          \:
+        = @build_list.user.try(:fullname)
+      %p
+        %b
           = t("activerecord.attributes.build_list.notified_at")
           \:
         = @build_list.notified_at
@@ -75,9 +85,9 @@
           \:
         = t("layout.#{@build_list.is_circle?}_")
 
-      - if  @build_list.can_published?  
+      - if @build_list.can_publish?  
         .wat-cf
-          = link_to image_tag("web-app-theme/icons/tick.png", :alt => t("layout.publish")) + " " + t("layout.publish"), publish_project_build_list_path(@project, @build_list), :method => "post", :class => "button", :confirm => t("layout.build_lists.confirm_publish")
+          = link_to image_tag("web-app-theme/icons/tick.png", :alt => t("layout.publish")) + " " + t("layout.publish"), publish_build_list_path(@build_list), :method => "put", :class => "button", :confirm => t("layout.confirm")
 
 .block
   .content
@@ -101,4 +111,4 @@
               %td= item.version
               %td.last= item.human_status
 
-- content_for :sidebar, render(:partial => 'sidebar')
+- content_for :sidebar, render('sidebar', :project => @build_list.project)

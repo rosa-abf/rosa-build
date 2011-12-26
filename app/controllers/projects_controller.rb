@@ -4,14 +4,12 @@ class ProjectsController < ApplicationController
   belongs_to :user, :group, :polymorphic => true, :optional => true
 
   before_filter :authenticate_user!, :except => :auto_build
-  before_filter :find_project, :only => [:show, :edit, :update, :destroy, :fork, :build, :process_build]
+  before_filter :find_project, :only => [:show, :edit, :update, :destroy, :fork]
   before_filter :get_paths, :only => [:new, :create, :edit, :update]
 
   load_and_authorize_resource
 
   def index
-#    puts parent.inspect
-#    puts parent.is_a? User
     @projects = if parent? and !parent.nil?
                   parent.projects
                 else
@@ -95,52 +93,6 @@ class ProjectsController < ApplicationController
     render :nothing => true
   end
 
-  def build
-    @arches = Arch.recent
-    @bpls = Platform.main
-    @pls = @project.repositories.collect { |rep| ["#{rep.platform.name}/#{rep.name}", rep.platform.id] }
-    @project_versions = @project.versions
-  end
-
-  def process_build
-    @arch_ids = params[:build][:arches].select{|_,v| v == "1"}.collect{|x| x[0].to_i }
-    @arches = Arch.where(:id => @arch_ids)
-
-    @project_version = params[:build][:project_version]
-
-    bpls_ids = params[:build][:bpl].blank? ? [] : params[:build][:bpl].select{|_,v| v == "1"}.collect{|x| x[0].to_i }
-    bpls = Platform.where(:id => bpls_ids)
-    
-    pl = Platform.find params[:build][:pl]
-    update_type = params[:build][:update_type]
-    build_requires = params[:build][:build_requires]
-
-    @project_versions = @project.versions
-
-    if !check_arches || !check_project_versions
-      @arches = Arch.recent
-      @bpls = Platform.main
-      @pls = @project.repositories.collect { |rep| ["#{rep.platform.name}/#{rep.name}", rep.platform.id] }
-       
-      render :action => "build"
-    else
-      flash[:notice], flash[:error] = "", ""
-      @arches.each do |arch|
-        bpls.each do |bpl|
-          build_list = @project.build_lists.new(:arch => arch, :project_version => @project_version, :pl => pl, :bpl => bpl, :update_type =>  update_type, :build_requires => build_requires)
-        
-          if build_list.save
-            flash[:notice] += t("flash.build_list.saved", :project_version => @project_version, :arch => arch.name, :bpl => bpl.name, :pl => pl)
-          else
-            flash[:error] += t("flash.build_list.save_error", :project_version => @project_version, :arch => arch.name, :bpl => bpl.name, :pl => pl)
-          end
-        end
-      end
-
-      redirect_to project_path(@project)
-    end
-  end
-
   protected
 
     def get_paths
@@ -160,29 +112,5 @@ class ProjectsController < ApplicationController
 
     def find_project
       @project = Project.find params[:id]
-    end
-
-    def check_arches
-      if @arch_ids.blank?
-        flash[:error] = t("flash.build_list.no_arch_selected")
-        false
-      elsif @arch_ids.length != @arches.length
-        flash[:error] = t("flash.build_list.no_arch_found")
-        false
-      else
-        true
-      end
-    end
-
-    def check_project_versions
-      if @project_version.blank?
-        flash[:error] = t("flash.build_list.no_project_version_selected")
-        false
-      elsif !@project_versions.flatten.include?(@project_version)
-        flash[:error] = t("flash.build_list.no_project_version_found", :project_version => @project_version)
-        false
-      else
-        true
-      end
     end
 end
