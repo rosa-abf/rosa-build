@@ -86,6 +86,24 @@ Rosa::Application.routes.draw do
 
   resources :projects do
     resource :repo, :controller => "git/repositories", :only => [:show]
+    resources :wiki do
+      collection do
+# Uncomment if gollum can revert page without name
+#        match 'revert/:sha1/:sha2' => 'wiki#revert', :as => :revert, :via => :get, :constrains => {:sha1 => /[0-9a-f]{40}/, :sha2 => /[0-9a-f]{40}/}
+
+        post :preview
+        get :search
+        get :pages
+      end
+      member do
+        match 'revert/:sha1/:sha2' => 'wiki#revert', :as => :revert_page, :via => :get
+        match ':rev' => 'wiki#show', :as => :versioned, :via => :get
+
+        get :history
+        post :compare
+        match 'compare/*versions' => 'wiki#compare', :as => :compare_versions, :via => :get
+      end
+    end
     resources :build_lists, :only => [:index, :show] do
       collection do
         get :recent
