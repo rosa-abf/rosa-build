@@ -106,6 +106,9 @@ ru:
         open: Открытые
         closed: Закрытые
         any: Все
+      subscribe: Подписка на уведомления
+      subscribe_btn: Подписаться
+      unsubscribe_btn: Отписаться
 
     comments:
       confirm_delete: Вы уверены, что хотите удалить комментарий?
@@ -653,3 +656,9 @@ ru:
         distro: Дистрибутив
         platform: Архитектура
         counter: Закачки
+  notifications:
+    subjects:
+      new_comment_notification: Новый комментарий к Вашей задаче
+      new_issue_notification: Новая задача добавлена к проекту
+      new_user_notification: Регистрация на проекте «%{ project_name }»
+      issue_assign_notification: Вам назначили задачу

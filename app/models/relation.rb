@@ -10,6 +10,7 @@ class Relation < ActiveRecord::Base
 
   scope :by_object, lambda {|obj| {:conditions => ['object_id = ? AND object_type = ?', obj.id, obj.class.to_s]}}
   scope :by_target, lambda {|tar| {:conditions => ['target_id = ? AND target_type = ?', tar.id, tar.class.to_s]}}
+  scope :by_role, lambda {|role| {:conditions => ['role = ?', role]}}
 
   def self.create_with_role(object, target, role)
     r = new

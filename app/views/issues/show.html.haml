@@ -20,6 +20,14 @@
           = t('activerecord.attributes.issue.status')
           \:
         = @issue.status
+      %p
+        %b
+          = t('layout.issues.subscribe')
+          \:
+        - if @issue.subscribes.exists? :user_id => current_user.id
+          = link_to t('layout.issues.unsubscribe_btn'), unsubscribe_issue(@issue), :method => :post
+        - else
+          = link_to t('layout.issues.subscribe_btn'), subscribe_issue(@issue), :method => :delete
 
 %a{ :name => "comments" }
 .block
