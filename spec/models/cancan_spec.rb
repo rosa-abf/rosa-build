@@ -144,15 +144,16 @@ describe CanCan do
           @project.relations.create!(:object_id => @user.id, :object_type => 'User', :role => 'writer')
         end
 
-        [:read, :update, :process_build, :build].each do |action|
+        [:read, :create, :new].each do |action|
           it "should be able to #{ action } project" do
             @ability.should be_able_to(action, @project)
           end
         end
 
-        [:read, :create, :new].each do |action|
-          it "should be able to #{ action } project" do
-            @ability.should be_able_to(action, @project)
+        [:new, :create].each do |action|
+          it "should be able to #{action} build_list" do
+            @build_list = Factory(:build_list, :project => @project)
+            @ability.should be_able_to(action, @build_list)
           end
         end
       end
@@ -162,9 +163,16 @@ describe CanCan do
           @project.relations.create!(:object_id => @user.id, :object_type => 'User', :role => 'admin')
         end
 
-        [:read, :update, :process_build, :build].each do |action|
+        [:read, :update].each do |action|
           it "should be able to #{ action } project" do
             @ability.should be_able_to(action, @project)
+          end
+        end
+
+        [:new, :create].each do |action|
+          it "should be able to #{action} build_list" do
+            @build_list = Factory(:build_list, :project => @project)
+            @ability.should be_able_to(action, @build_list)
           end
         end
 
@@ -185,9 +193,16 @@ describe CanCan do
           @issue.project.reload
         end
 
-        [:read, :update, :process_build, :build, :destroy].each do |action|
+        [:read, :update, :destroy].each do |action|
           it "should be able to #{ action } project" do
             @ability.should be_able_to(action, @project)
+          end
+        end
+
+        [:new, :create].each do |action|
+          it "should be able to #{action} build_list" do
+            @build_list = Factory(:build_list, :project => @project)
+            @ability.should be_able_to(action, @build_list)
           end
         end
 

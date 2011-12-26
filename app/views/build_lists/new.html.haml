@@ -38,8 +38,8 @@
             .group
               = f.label :arches, t("activerecord.attributes.build_list.arch"), :class => :label
               - Arch.recent.each do |arch|
-                = check_box_tag "archs[]", arch.id, (params[:archs]||[]).include?(arch.id.to_s), :id => "archs_#{arch.id}"
-                = label_tag "archs_#{arch.id}", arch.name
+                = check_box_tag "arches[]", arch.id, (params[:arches]||[]).include?(arch.id.to_s), :id => "arches_#{arch.id}"
+                = label_tag "arches_#{arch.id}", arch.name
                 %br
 
             .group

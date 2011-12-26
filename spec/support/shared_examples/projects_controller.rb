@@ -12,16 +12,6 @@ shared_examples_for 'projects user with writer rights' do
     put :update, {:id => @project.id}.merge(@update_params)
     response.should redirect_to(project_path(@project))
   end
-
-  it 'should be able to perform build action' do
-    get :build, :id => @project.id
-    response.should render_template(:build)
-  end
-
-  it 'should be able to perform process_build action' do
-    post :process_build, {:id => @project.id}.merge(@process_build_params)
-    response.should redirect_to(project_path(@project))
-  end
 end
 
 shared_examples_for 'user with rights to view projects' do

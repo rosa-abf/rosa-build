@@ -1,8 +1,20 @@
 === Basic bootstrap
+
 * rake db:drop db:setup
+
 ==
 
 === Setup autostart
-Add to /etc/rc.d/rc.local following /srv/rosa_build/current/bin/autostart.sh
-==
 
+Add to /etc/rc.d/rc.local
+
+  /srv/rosa_build/current/bin/autostart.sh
+
+Add to /etc/rc.d/rc.sysinit
+
+  # force run rc.local
+  if [ -f /etc/rc.local ]; then
+  . /etc/rc.local
+  fi
+
+==

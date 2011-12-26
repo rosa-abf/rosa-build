@@ -8,17 +8,6 @@ describe ProjectsController do
     @another_user = Factory(:user)
     @create_params = {:project => {:name => 'pro'}}
     @update_params = {:project => {:name => 'pro2'}}
-
-    platform = Factory(:platform)
-    @process_build_params = {:build => {
-      :arches => {Factory(:arch).id => '1'}, 
-      :project_version => 'v1.0',
-      :bpl => {platform.id => '1'},
-      :pl => platform.id,
-      :update_type => 'security'
-    }}
-
-    any_instance_of(Project, :versions => ['v1.0', 'v2.0'])
 	end
 
 	context 'for guest' do
