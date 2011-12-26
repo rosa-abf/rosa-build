@@ -10,6 +10,9 @@
 .group
   = f.label :description, t("activerecord.attributes.project.description"), :class => :label
   = f.text_area :description, :class => 'text_field', :cols => 80
+.group
+  = f.label :has_issues, t("activerecord.attributes.project.has_issues"), :class => :label
+  = f.check_box :has_issues
 
 .group.navform.wat-cf
   %button.button{:type => "submit"}

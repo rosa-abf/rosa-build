@@ -1,0 +1,53 @@
+.block
+  .secondary-navigation
+    %ul.wat-cf
+      %li.first= link_to t("layout.issues.list"), project_issues_path(@project)
+      %li= link_to t("layout.issues.edit"), edit_project_issue_path(@project, @issue.serial_id) if can? :edit, @issue
+  .content
+    .inner
+      %p
+        %b
+          = t("activerecord.attributes.issue.title")
+          \:
+        = @issue.title
+      %p
+        %b
+          = t("activerecord.attributes.issue.body")
+          \:
+        = @issue.body
+      %p
+        %b
+          = t('activerecord.attributes.issue.status')
+          \:
+        = @issue.status
+
+%a{ :name => "comments" }
+.block
+  .secondary-navigation
+    %ul.wat-cf
+  .content
+    %h2.title
+      = t("layout.issues.comments_header")
+    .inner
+      %table.table
+        %tr
+          %th.first= t("activerecord.attributes.user.uname")
+          %th.first= t("activerecord.attributes.comment.body")
+          %th.last &nbsp;
+        - @issue.comments.each do |comment|
+          %tr{:class => cycle("odd", "even")}
+            %td
+              = comment.user.uname
+            %td
+              = comment.body
+            %td.last
+              = link_to t("layout.edit"), edit_project_issue_comment_path(@project, @issue, comment) if can? :update, comment
+              = link_to image_tag("web-app-theme/icons/cross.png", :alt => t("layout.delete")) + " " + t("layout.delete"), project_issue_comment_path(@project, @issue, comment), :method => "delete", :class => "button", :confirm => t("layout.comments.confirm_delete") if can? :delete, comment
+
+.block
+  .content
+    %h2.title
+      = t("layout.comments.new_header")
+    .inner
+      = form_for :comment, :url => project_issue_comments_path(@project, @issue), :method => :post, :html => { :class => :form } do |f|
+        = render :partial => "comments/form", :locals => {:f => f}

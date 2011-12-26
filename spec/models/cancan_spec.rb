@@ -118,6 +118,7 @@ describe CanCan do
     context 'as project collaborator' do
       before(:each) do
         @project = Factory(:project)
+        @issue = Factory(:issue, :project_id => @project.id)
       end
 
       context 'with read rights' do
@@ -128,18 +129,22 @@ describe CanCan do
         it 'should be able to read project' do
           @ability.should be_able_to(:read, @project)
         end
-        
-        it 'should be able to read project' do
+
+        it 'should be able to read open platform' do
           @ability.should be_able_to(:read, open_platform)
         end
+
+        it 'should be able to read issue' do
+          @ability.should be_able_to(:read, @issue)
+        end
       end
-      
-      context 'with write rights' do
+
+      context 'with writer rights' do
         before(:each) do
           @project.relations.create!(:object_id => @user.id, :object_type => 'User', :role => 'writer')
         end
 
-        [:read, :update].each do |action|
+        [:read, :create, :new].each do |action|
           it "should be able to #{ action } project" do
             @ability.should be_able_to(action, @project)
           end
@@ -174,11 +179,18 @@ describe CanCan do
         it "should be able to manage collaborators of project" do
           @ability.should be_able_to(:manage_collaborators, @project)
         end
+
+        [:read, :create, :new, :update, :edit].each do |action|
+          it "should be able to #{ action } issue" do
+            @ability.should be_able_to(action, @issue)
+          end
+        end
       end
 
       context 'with owner rights' do
         before(:each) do
           @project.update_attribute(:owner, @user)
+          @issue.project.reload
         end
 
         [:read, :update, :destroy].each do |action|
@@ -191,6 +203,12 @@ describe CanCan do
           it "should be able to #{action} build_list" do
             @build_list = Factory(:build_list, :project => @project)
             @ability.should be_able_to(action, @build_list)
+          end
+        end
+
+        [:read, :update, :edit].each do |action|
+          it "should be able to #{ action } issue" do
+            @ability.should be_able_to(action, @issue)
           end
         end
       end
