@@ -1,0 +1,22 @@
+.block
+  .secondary-navigation
+    %ul.wat-cf
+      %li.first.active= link_to t("layout.issues.list"), project_issues_path(@project)
+      %li= link_to t("layout.issues.new"), new_project_issue_path(@project) if can? :new, Issue.new(:project_id => @project.id)
+  .secondary-navigation
+    %ul.wat-cf
+      %li{:class => "first " + (params[:status].blank? ? "active" : "")}
+        = link_to t("layout.issues.statuses.any"), project_issues_path(@project)
+      %li{:class => "first " + (params[:status] == 'open' ? "active" : "")}
+        = link_to t("layout.issues.statuses.open"), project_issues_path(@project, :status => 'open')
+      %li{:class => "first " + (params[:status] == 'closed' ? "active" : "")}
+        = link_to t("layout.issues.statuses.closed"), project_issues_path(@project, :status => 'closed')
+  .content
+    %h2.title
+      = t("layout.issues.list_header")
+    .inner
+      = render :partial => 'shared/search_form'
+      = render :partial => 'issues/list'
+      .actions-bar.wat-cf
+        .actions
+          = will_paginate @issues, :param_name => :issue_page

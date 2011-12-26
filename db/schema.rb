@@ -85,6 +85,15 @@ ActiveRecord::Schema.define(:version => 20111221194422) do
     t.datetime "updated_at"
   end
 
+  create_table "comments", :force => true do |t|
+    t.integer  "commentable_id"
+    t.string   "commentable_type"
+    t.integer  "user_id"
+    t.text     "body"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "containers", :force => true do |t|
     t.string   "name",       :null => false
     t.integer  "project_id", :null => false
@@ -141,6 +150,19 @@ ActiveRecord::Schema.define(:version => 20111221194422) do
     t.datetime "updated_at"
     t.string   "uname"
   end
+
+  create_table "issues", :force => true do |t|
+    t.integer  "serial_id"
+    t.integer  "project_id"
+    t.integer  "user_id"
+    t.string   "title"
+    t.text     "body"
+    t.string   "status"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "issues", ["project_id", "serial_id"], :name => "index_issues_on_project_id_and_serial_id", :unique => true
 
   create_table "platforms", :force => true do |t|
     t.string   "description"
@@ -213,6 +235,7 @@ ActiveRecord::Schema.define(:version => 20111221194422) do
     t.integer  "category_id"
     t.text     "description"
     t.string   "ancestry"
+    t.boolean  "has_issues",  :default => true
   end
 
   add_index "projects", ["category_id"], :name => "index_projects_on_category_id"
@@ -222,6 +245,7 @@ ActiveRecord::Schema.define(:version => 20111221194422) do
     t.string   "object_type"
     t.integer  "target_id"
     t.string   "target_type"
+    t.integer  "role_id"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "role"
@@ -250,16 +274,16 @@ ActiveRecord::Schema.define(:version => 20111221194422) do
 
   create_table "users", :force => true do |t|
     t.string   "name"
-    t.string   "email",                               :default => "", :null => false
-    t.string   "encrypted_password",   :limit => 128, :default => "", :null => false
-    t.string   "password_salt",                       :default => "", :null => false
+    t.string   "email",                                 :default => "", :null => false
+    t.string   "encrypted_password",     :limit => 128, :default => "", :null => false
     t.string   "reset_password_token"
-    t.string   "remember_token"
+    t.datetime "reset_password_sent_at"
     t.datetime "remember_created_at"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.text     "ssh_key"
     t.string   "uname"
+    t.text     "ssh_key"
+    t.integer  "role_id"
     t.string   "role"
   end
 
