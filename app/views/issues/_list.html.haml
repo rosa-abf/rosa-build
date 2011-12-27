@@ -9,7 +9,7 @@
       %td
         = link_to issue.title, show_issue_path(@project, issue.serial_id)
       %td
-        = link_to issue.user.uname, user_path(issue.user)
+        = link_to issue.user.uname, user_path(issue.user) if issue.user
       %td
         = issue.status
       %td.last

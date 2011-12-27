@@ -7,7 +7,7 @@ class Issue < ActiveRecord::Base
   has_many :comments, :as => :commentable
   has_many :subscribes, :as => :subscribeable
 
-  validates :title, :body, :project_id, :user_id, :presence => true
+  validates :title, :body, :project_id, :presence => true
 
   #attr_readonly :serial_id
 
@@ -16,6 +16,10 @@ class Issue < ActiveRecord::Base
   after_create :deliver_new_issue_notification
   after_create :deliver_issue_assign_notification
   after_update :deliver_issue_assign_notification
+
+  def assign_uname
+    user.uname if user
+  end
 
   protected
 
@@ -52,7 +56,7 @@ class Issue < ActiveRecord::Base
 
   def collect_recipient_ids
     recipients = self.project.relations.by_role('admin').where(:object_type => 'User').map { |rel| rel.read_attribute(:object_id) }
-    recipients = recipients | [self.user_id]
+    recipients = recipients | [self.user_id] if self.user_id
     recipients = recipients | [self.project.owner_id] if self.project.owner_type == 'User'
     recipients
   end

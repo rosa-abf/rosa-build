@@ -27,7 +27,7 @@ class IssuesController < ApplicationController
     @issue = Issue.new(params[:issue])
     @issue.user_id = @user_id
     @issue.project_id = @project.id
-    if @issue.save!
+    if @issue.save
       flash[:notice] = I18n.t("flash.issue.saved")
       redirect_to project_issues_path(@project)
     else
