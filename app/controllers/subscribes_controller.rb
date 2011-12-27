@@ -1,4 +1,8 @@
 class SubscribesController < ApplicationController
+  before_filter :authenticate_user!
+  before_filter :set_instances
+  before_filter :set_subscribeable
+
   def create
     @subscribe = @subscribeable.subscribes.build(:user_id => current_user.id)
     if @subscribe.save
@@ -11,8 +15,7 @@ class SubscribesController < ApplicationController
   end
 
   def destroy
-    @subscribe = Subscribe.find(params[:id])
-    @subscribe.destroy
+    @subscribeable.subscribes.where(:user_id => current_user.id)[0].destroy
 
     flash[:notice] = t("flash.subscribe.destroyed")
     redirect_to :back
@@ -20,12 +23,15 @@ class SubscribesController < ApplicationController
 
   private
 
-  def find_subscribeable
+  def set_instances
     params.each do |name, value|
       if name =~ /(.+)_id$/
-        return $1.classify.constantize.find(value)
+        instance_variable_set "@"+$1, $1.classify.constantize.find(value)
       end
     end
-    nil
+  end
+
+  def set_subscribeable
+    @subscribeable = @issue if @issue
   end
 end

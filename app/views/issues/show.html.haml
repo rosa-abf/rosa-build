@@ -25,9 +25,9 @@
           = t('layout.issues.subscribe')
           \:
         - if @issue.subscribes.exists? :user_id => current_user.id
-          = link_to t('layout.issues.unsubscribe_btn'), unsubscribe_issue(@issue), :method => :post
+          = link_to t('layout.issues.unsubscribe_btn'), unsubscribe_issue_path(@issue), :method => :delete
         - else
-          = link_to t('layout.issues.subscribe_btn'), subscribe_issue(@issue), :method => :delete
+          = link_to t('layout.issues.subscribe_btn'), subscribe_issue_path(@issue), :method => :post§
 
 %a{ :name => "comments" }
 .block

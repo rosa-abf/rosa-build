@@ -352,6 +352,10 @@ ru:
         project_version_not_found: версия не найден
 
   flash:
+    subscribe:
+      saved: Вы подписаны на оповещения для этой задачи
+      destroyed: Подписка на оповещения для этой задачи убрана
+
     exception_message: У Вас нет доступа к этой странице!
 
     downloads:
