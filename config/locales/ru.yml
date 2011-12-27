@@ -101,6 +101,7 @@ ru:
       new: Новая задача
       list_header: Список
       confirm_delete: Вы уверены, что хотите удалить эту задачу?
+      edit_header: Редактирование задачи
       new_header: Новая задача
       statuses:
         open: Открытые
@@ -497,7 +498,8 @@ ru:
       issue:
         title: Заголовок
         body: Содержание
-        user: Назначено
+        user: Назначена
+        user_id: Назначена
         project: Проект
         status: Статус
 

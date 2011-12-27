@@ -8,12 +8,13 @@
   = f.label :body, :class => :label
   = f.text_area :body, :class => 'text_field', :cols => 80
 
-.group
-  = f.label :status, :class => :label
-  = f.select :status, Issue::STATUSES, :class => 'text_field'
+- unless @issue.new_record?
+  .group
+    = f.label :status, :class => :label
+    = f.select :status, Issue::STATUSES, :class => 'text_field'
 
 .group
-  = label_tag "", t("layout.issues.user_id"), :class => :label
+  = label_tag "", t("activerecord.attributes.issue.user_id"), :class => :label
   = autocomplete_field_tag 'user_id', @user_uname, autocomplete_user_uname_platforms_path, :id_element => '#user_id_field'
   = hidden_field_tag 'user_id', @user_id, :id => 'user_id_field'
   
