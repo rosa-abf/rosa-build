@@ -30,25 +30,20 @@
           = link_to t('layout.issues.subscribe_btn'), subscribe_issue_path(@issue), :method => :post§
 
 %a{ :name => "comments" }
-.block
-  .secondary-navigation
-    %ul.wat-cf
+.block#block-lists
   .content
     %h2.title
       = t("layout.issues.comments_header")
     .inner
-      %table.table
-        %tr
-          %th.first= t("activerecord.attributes.user.uname")
-          %th.first= t("activerecord.attributes.comment.body")
-          %th.last &nbsp;
+      %ul.list
         - @issue.comments.each do |comment|
-          %tr{:class => cycle("odd", "even")}
-            %td
-              = comment.user.uname
-            %td
+          %li
+            .left
+              = link_to comment.user.uname, user_path(comment.user.uname)
+            .item
               = comment.body
-            %td.last
+              %br
+              %br
               = link_to t("layout.edit"), edit_project_issue_comment_path(@project, @issue, comment) if can? :update, comment
               = link_to image_tag("web-app-theme/icons/cross.png", :alt => t("layout.delete")) + " " + t("layout.delete"), project_issue_comment_path(@project, @issue, comment), :method => "delete", :class => "button", :confirm => t("layout.comments.confirm_delete") if can? :delete, comment
 
