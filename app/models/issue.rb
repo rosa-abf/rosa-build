@@ -21,6 +21,10 @@ class Issue < ActiveRecord::Base
     user.uname if user
   end
 
+  def to_param
+    serial_id.to_s
+  end
+
   protected
 
   def set_serial_id

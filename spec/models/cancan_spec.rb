@@ -50,19 +50,19 @@ describe CanCan do
 			guest_create
 		end
 
-		it 'should be able to read open platform' do
-			@ability.should be_able_to(:read, open_platform)
-		end
+    it 'should not be able to read open platform' do
+    	@ability.should_not be_able_to(:read, open_platform)
+    end
 
-		it 'should not be able to read hidden platform' do
-			@ability.should_not be_able_to(:read, hidden_platform)
-		end
+    it 'should not be able to read hidden platform' do
+    	@ability.should_not be_able_to(:read, hidden_platform)
+    end
 
-		it 'should be able to auto build projects' do
-			@ability.should be_able_to(:auto_build, Project)
-		end
+    it 'should be able to auto build projects' do
+    	@ability.should be_able_to(:auto_build, Project)
+    end
 
-		[:status_build, :pre_build, :post_build, :circle_build, :new_bbdt].each do |action|
+		[:publish_build, :status_build, :pre_build, :post_build, :circle_build, :new_bbdt].each do |action|
 			it "should be able to #{ action } build list" do
 				@ability.should be_able_to(action, BuildList)
 			end
@@ -78,11 +78,13 @@ describe CanCan do
       user_create
     end
 
-    [Platform, User, Repository].each do |model_name|
-      it "should not be able to create #{ model_name.to_s }" do
+    [Platform, Repository].each do |model_name|
+      it "should not be able to read #{model_name}" do
         @ability.should be_able_to(:read, model_name)
       end
     end
+    
+    it { @ability.should be_able_to(:show, User) }
 
     it "shoud be able to read another user object" do
       admin_create
@@ -144,15 +146,16 @@ describe CanCan do
           @project.relations.create!(:object_id => @user.id, :object_type => 'User', :role => 'writer')
         end
 
-        [:read, :update, :process_build, :build].each do |action|
+        [:read, :create, :new].each do |action|
           it "should be able to #{ action } project" do
             @ability.should be_able_to(action, @project)
           end
         end
 
-        [:read, :create, :new].each do |action|
-          it "should be able to #{ action } project" do
-            @ability.should be_able_to(action, @project)
+        [:new, :create].each do |action|
+          it "should be able to #{action} build_list" do
+            @build_list = Factory(:build_list, :project => @project)
+            @ability.should be_able_to(action, @build_list)
           end
         end
       end
@@ -162,9 +165,16 @@ describe CanCan do
           @project.relations.create!(:object_id => @user.id, :object_type => 'User', :role => 'admin')
         end
 
-        [:read, :update, :process_build, :build].each do |action|
+        [:read, :update].each do |action|
           it "should be able to #{ action } project" do
             @ability.should be_able_to(action, @project)
+          end
+        end
+
+        [:new, :create].each do |action|
+          it "should be able to #{action} build_list" do
+            @build_list = Factory(:build_list, :project => @project)
+            @ability.should be_able_to(action, @build_list)
           end
         end
 
@@ -185,9 +195,16 @@ describe CanCan do
           @issue.project.reload
         end
 
-        [:read, :update, :process_build, :build, :destroy].each do |action|
+        [:read, :update, :destroy].each do |action|
           it "should be able to #{ action } project" do
             @ability.should be_able_to(action, @project)
+          end
+        end
+
+        [:new, :create].each do |action|
+          it "should be able to #{action} build_list" do
+            @build_list = Factory(:build_list, :project => @project)
+            @ability.should be_able_to(action, @build_list)
           end
         end
 
@@ -210,8 +227,10 @@ describe CanCan do
           @platform.update_attribute(:owner, @user)
         end
 
-        it 'should be able to manage platform' do
-          @ability.should be_able_to(:manage, @platform)
+        [:read, :update, :destroy, :freeze, :unfreeze].each do |action|
+          it "should be able to #{action} platform" do
+            @ability.should be_able_to(action, @platform)
+          end
         end
       end
 
@@ -236,10 +255,15 @@ describe CanCan do
           @repository.update_attribute(:owner, @user)
         end
 
-        [:manage, :add_project, :remove_project, :change_visibility, :settings].each do |action|
-          it "should be able to #{ action } repository" do
+        [:read, :update, :destroy, :add_project, :remove_project, :change_visibility, :settings].each do |action|
+          it "should be able to #{action} repository" do
             @ability.should be_able_to(action, @repository)
           end
+        end
+
+        it do
+          @repository.platform.update_attribute(:owner, @user)
+          @ability.should be_able_to(:create, @repository)
         end
       end
 
@@ -257,7 +281,7 @@ describe CanCan do
     context 'build list relations' do
       before(:each) do
         @project = Factory(:project)
-        @project.relations.create!(:object_id => @user.id, :object_type => 'User', :role => 'reader')
+        @project.relations.create!(:object_id => @user.id, :object_type => 'User', :role => 'writer')
         @build_list = Factory(:build_list, :project => @project)
       end
 

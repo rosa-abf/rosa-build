@@ -25,8 +25,49 @@ describe BuildListsController do
       response.should redirect_to(forbidden_url)
     end
   end
+  
+  shared_examples_for 'create build list' do
+    it 'should be able to perform new action' do
+      get :new, :project_id => @project.id
+      response.should render_template(:new)
+    end
+
+    it 'should be able to perform create action' do
+      post :create, {:project_id => @project.id}.merge(@create_params)
+      response.should redirect_to(@project)
+    end
+  end
+
+  shared_examples_for 'not create build list' do
+    it 'should not be able to perform new action' do
+      get :new, :project_id => @project.id
+      response.should redirect_to(forbidden_url)
+    end
+
+    it 'should not be able to perform create action' do
+      post :create, {:project_id => @project.id}.merge(@create_params)
+      response.should redirect_to(forbidden_url)
+    end
+  end
 
   context 'crud' do
+    before(:each) do
+      stub_rsync_methods
+
+      platform = Factory(:platform_with_repos)
+      @create_params = {
+        :build_list => { 
+          :project_version => 'v1.0',
+          :pl_id => platform.id,
+          :update_type => 'security',
+          :include_repos => [platform.repositories.first.id]
+        },
+        :arches => [Factory(:arch).id],
+        :bpls => [platform.id]
+      }
+      any_instance_of(Project, :versions => ['v1.0', 'v2.0'])
+    end
+
     context 'for guest' do
       it 'should not be able to perform index action' do
         get :index
@@ -36,7 +77,6 @@ describe BuildListsController do
 
     context 'for user' do
       before(:each) do
-        stub_rsync_methods
         @build_list = Factory(:build_list_core)
         @project = @build_list.project
         @owner_user = @project.owner
@@ -47,7 +87,6 @@ describe BuildListsController do
         @user = Factory(:user)
         set_session_for(@user)
         @show_params = {:project_id => @project.id, :id => @build_list.id}
-
       end
   
       context 'for all build lists' do
@@ -55,9 +94,8 @@ describe BuildListsController do
           @build_list1 = Factory(:build_list_core)
           @build_list2 = Factory(:build_list_core, :project => Factory(:project, :visibility => 'hidden'))
           @build_list3 = Factory(:build_list_core, :project => Factory(:project, :owner => @user, :visibility => 'hidden'))
-            b = Factory(:build_list_core, :project => Factory(:project, :visibility => 'hidden'))
-            b.project.relations.create :role => 'reader', :object_id => @user.id, :object_type => 'User'
-          @build_list4 = b
+          @build_list4 = Factory(:build_list_core, :project => Factory(:project, :visibility => 'hidden'))
+          @build_list4.project.relations.create :role => 'reader', :object_id => @user.id, :object_type => 'User'
         end
 
         it 'should be able to perform index action' do
@@ -76,15 +114,18 @@ describe BuildListsController do
 
       context 'for open project' do
         it_should_behave_like 'show build list'
+        it_should_behave_like 'not create build list'
 
         context 'if user is project owner' do
           before(:each) {set_session_for(@owner_user)}
           it_should_behave_like 'show build list'
+          it_should_behave_like 'create build list'
         end
 
-        context 'if user is project member' do
+        context 'if user is project read member' do
           before(:each) {set_session_for(@member_user)}
           it_should_behave_like 'show build list'
+          it_should_behave_like 'not create build list'
         end
       end
 
@@ -95,23 +136,24 @@ describe BuildListsController do
         end
 
         it_should_behave_like 'not show build list'
+        it_should_behave_like 'not create build list'
 
         context 'if user is project owner' do
           before(:each) {set_session_for(@owner_user)}
           it_should_behave_like 'show build list'
+          it_should_behave_like 'create build list'
         end
 
-        context 'if user is project member' do
+        context 'if user is project read member' do
           before(:each) {set_session_for(@member_user)}
           it_should_behave_like 'show build list'
+          it_should_behave_like 'not create build list'
         end
       end
-
     end
 
     context 'for group' do
       before(:each) do
-        stub_rsync_methods
         @owner_group = Factory(:group)
         @owner_user = Factory(:user)
         @owner_group.objects.create :role => 'reader', :object_id => @owner_user.id, :object_type => 'User'
@@ -137,9 +179,8 @@ describe BuildListsController do
           @build_list1 = Factory(:build_list_core)
           @build_list2 = Factory(:build_list_core, :project => Factory(:project, :visibility => 'hidden'))
           @build_list3 = Factory(:build_list_core, :project => Factory(:project, :owner => @group, :visibility => 'hidden'))
-            b = Factory(:build_list_core, :project => Factory(:project, :visibility => 'hidden'))
-            b.project.relations.create :role => 'reader', :object_id => @group.id, :object_type => 'Group'
-          @build_list4 = b
+          @build_list4 = Factory(:build_list_core, :project => Factory(:project, :visibility => 'hidden'))
+          @build_list4.project.relations.create :role => 'reader', :object_id => @group.id, :object_type => 'Group'
         end
 
         it 'should be able to perform index action' do
@@ -158,15 +199,18 @@ describe BuildListsController do
 
       context 'for open project' do
         it_should_behave_like 'show build list'
+        it_should_behave_like 'not create build list'
 
         context 'if user is group owner' do
           before(:each) {set_session_for(@owner_user)}
           it_should_behave_like 'show build list'
+          it_should_behave_like 'create build list'
         end
 
-        context 'if user is group member' do
+        context 'if user is group read member' do
           before(:each) {set_session_for(@member_user)}
           it_should_behave_like 'show build list'
+          it_should_behave_like 'not create build list'
         end
       end
 
@@ -177,15 +221,18 @@ describe BuildListsController do
         end
 
         it_should_behave_like 'not show build list'
+        it_should_behave_like 'not create build list'
 
         context 'if user is group owner' do
           before(:each) {set_session_for(@owner_user)}
           it_should_behave_like 'show build list'
+          it_should_behave_like 'create build list'
         end
 
-        context 'if user is group member' do
+        context 'if user is group read member' do
           before(:each) {set_session_for(@member_user)}
           it_should_behave_like 'show build list'
+          it_should_behave_like 'not create build list'
         end
       end
 

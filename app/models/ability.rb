@@ -1,178 +1,95 @@
+# If rules goes one by one CanCan joins them by 'OR' sql operator
+# If rule has multiple conditions CanCan joins them by 'AND' sql operator
+# WARNING:      
+# - put cannot rules _after_ can rules and not before!
+# - beware inner joins. Use sub queries against them! 
+
 class Ability
   include CanCan::Ability
 
   def initialize(user)
     user ||= User.new # guest user (not logged in)
+    @user = user
 
     if user.admin?
       can :manage, :all
     else
-      #WARNING:
-      # - put cannot rules _after_ can rules and not before!
-      # - beware inner joins. Use sub queries against them! 
       # Shared rights between guests and registered users
       can :forbidden, Platform
 
-      can :read, [Repository, Platform], :visibility => 'open'
       # TODO remove because auth callbacks skipped
       can :auto_build, Project
-      can [:status_build, :pre_build, :post_build, :circle_build, :new_bbdt], BuildList
+      can [:publish_build, :status_build, :pre_build, :post_build, :circle_build, :new_bbdt], BuildList
 
-      # Guest rights
-      if user.guest?
+      if user.guest? # Guest rights
         can :create, User
-      # Registered user rights
-      else
-        can [:read, :platforms], Category
+      else # Registered user rights
+        can [:show, :autocomplete_user_uname], User
+
+        can [:read, :create], Group
+        can [:update, :manage_members], Group do |group|
+          group.objects.exists?(:object_type => 'User', :object_id => user.id, :role => 'admin') # or group.owner_id = user.id
+        end
+        can :destroy, Group, :owner_id => user.id
+
+        can :create, Project
+        can :read, Project, :visibility => 'open'
+        can :read, Project, :owner_type => 'User', :owner_id => user.id
+        can :read, Project, :owner_type => 'Group', :owner_id => user.group_ids
+        can(:read, Project, read_relations_for('projects')) {|project| local_reader? project}
+        can(:write, Project) {|project| local_writer? project} # for grack
+        can([:update, :manage_collaborators], Project) {|project| local_admin? project}
+        can(:fork, Project) {|project| can? :read, project}
+        can(:destroy, Project) {|project| owner? project}
 
         can :create, AutoBuildList
         can [:index, :destroy], AutoBuildList, :project_id => user.own_project_ids
-        # If rules goes one by one CanCan joins them by 'OR' sql operator
-        can :read, Project, :visibility => 'open'
-        can :read, Group
-        can :read, User
-        cannot :index, User
-        can :manage_collaborators, Project do |project|
-          project.relations.exists? :object_id => user.id, :object_type => 'User', :role => 'admin'
-        end
-        can :manage_members, Group do |group|
-          group.objects.exists? :object_id => user.id, :object_type => 'User', :role => 'admin'
-        end
 
-        # Put here model names which objects can user create
-        can :create, Project
-        can :create, Group
-        can :publish, BuildList do |build_list|
-          build_list.can_publish? && build_list.project.relations.exists?(:object_type => 'User', :object_id => user.id)
-        end
-        can [:index, :read], BuildList, ["build_lists.project_id IN (SELECT id FROM projects WHERE visibility = ?)", 'open'] do |build_list|
-          build_list.project.public?
-        end
-        can [:index, :read], BuildList, build_lists_in_relations_with(:object_type => 'User', :object_id => user.id) do |build_list|
-          build_list.project.relations.exists?(:object_type => 'User', :object_id => user.id)
-        end
+        can :read, BuildList, :project => {:visibility => 'open'}
+        can :read, BuildList, :project => {:owner_type => 'User', :owner_id => user.id}
+        can :read, BuildList, :project => {:owner_type => 'Group', :owner_id => user.group_ids}
+        can(:read, BuildList, read_relations_for('build_lists', 'projects')) {|build_list| can? :read, build_list.project}
+        can(:create, BuildList) {|build_list| can? :write, build_list.project}
+        can(:publish, BuildList) {|build_list| build_list.can_publish? && can?(:write, build_list.project)}
+
+        can :read, Platform, :visibility => 'open'
+        can :read, Platform, :owner_type => 'User', :owner_id => user.id
+        can :read, Platform, :owner_type => 'Group', :owner_id => user.group_ids
+        can(:read, Platform, read_relations_for('platforms')) {|platform| local_reader? platform}
+        can(:update, Platform) {|platform| local_admin? platform}
+        can([:freeze, :unfreeze, :destroy], Platform) {|platform| owner? platform}
+        can :autocomplete_user_uname, Platform
+
+        # TODO delegate to platform?
+        can :read, Repository, :visibility => 'open'
+        can :read, Repository, :owner_type => 'User', :owner_id => user.id
+        can :read, Repository, :owner_type => 'Group', :owner_id => user.group_ids
+        can(:read, Repository, read_relations_for('repositories')) {|repository| local_reader? repository}
+        can(:create, Repository) {|repository| local_admin? repository.platform}
+        can([:update, :add_project, :remove_project], Repository) {|repository| local_admin? repository}
+        can([:change_visibility, :settings, :destroy], Repository) {|repository| owner? repository}
+
+        can :read, Product, :platform => {:owner_type => 'User', :owner_id => user.id}
+        can :read, Product, :platform => {:owner_type => 'Group', :owner_id => user.group_ids}
+        can(:manage, Product, read_relations_for('products', 'platforms')) {|product| local_admin? product.platform}
+
+        can [:read, :platforms], Category
 
         can [:read, :create], PrivateUser, :platform => {:owner_type => 'User', :owner_id => user.id}
-
-        # If rule has multiple conditions CanCan joins them by 'AND' sql operator
-        can [:read, :update, :destroy], Project, :owner_type => 'User', :owner_id => user.id
-        #can :read, Project, :relations => {:role => 'reader'}
-        can :read, Project, projects_in_relations_with(:role => 'reader', :object_type => 'User', :object_id => user.id) do |project|
-          #The can? and cannot? call cannot be used with a raw sql 'can' definition.
-          project.relations.exists?(:role => 'reader', :object_type => 'User', :object_id => user.id)
-        end
-        #can [:update], Project, :relations => {:role => 'writer'}
-        can [:read, :update], Project, projects_in_relations_with(:role => ['writer', 'admin'], :object_type => 'User', :object_id => user.id)  do |project|
-          project.relations.exists?(:role => ['writer', 'admin'], :object_type => 'User', :object_id => user.id)
-        end
-
-        can [:read, :update, :destroy], Product, products_in_relations_with(:role => ['writer', 'admin'], :object_type => 'User', :object_id => user.id)  do |product|
-          product.relations.exists?(:role => 'admin', :object_type => 'User', :object_id => user.id)
-        end
-        # Small CanCan hack by Product.new(:platform_id => ...)
-        can [:new, :create], Product do |product|
-          product.platform.relations.exists?(:role => 'admin', :object_type => 'User', :object_id => user.id)
-        end
-
-        can [:read, :update], Group, groups_in_relations_with(:role => ['writer', 'admin'], :object_type => 'User', :object_id => user.id) do |group|
-          group.objects.exists?(:role => ['writer', 'admin'], :object_type => 'User', :object_id => user.id)
-        end
-
-        can :manage, Platform, :owner_type => 'User', :owner_id => user.id
-        can :manage, Platform, platforms_in_relations_with(:role => 'admin', :object_type => 'User', :object_id => user.id) do |platform|
-          platform.relations.exists?(:role => 'admin', :object_type => 'User', :object_id => user.id)
-        end
-        #can :read, Platform, :members => {:id => user.id}
-        can :read, Platform, platforms_in_relations_with(:role => 'reader', :object_type => 'User', :object_id => user.id) do |platform|
-          platform.relations.exists?(:role => 'reader', :object_type => 'User', :object_id => user.id)
-        end
-
-        can [:manage, :add_project, :remove_project, :change_visibility, :settings], Repository, :owner_type => 'User', :owner_id => user.id
-        can :manage, Repository, repositories_in_relations_with(:role => 'admin', :object_type => 'User', :object_id => user.id) do |repository|
-          repository.relations.exists?(:role => 'admin', :object_type => 'User', :object_id => user.id)
-        end
-        #can :read, Repository, :members => {:id => user.id}
-        can :read, Repository, repositories_in_relations_with(:role => 'reader', :object_type => 'User', :object_id => user.id) do |repository|
-          repository.relations.exists?(:role => 'reader', :object_type => 'User', :object_id => user.id)
-        end
-        # Small CanCan hack by Repository.new(:platform_id => ...)
-        can [:new, :create], Repository do |repository|
-          repository.platform.relations.exists?(:role => 'admin', :object_type => 'User', :object_id => user.id)
-        end
-
-        can [:read, :index], Issue do |issue|
-          issue.status == 'open'
-        end
-        #can [:read], Issue, :status => 'open'
-        #can [:show], Issue, with_project_id_in_relations_with(:object_type => 'User', :object_id => user.id)
-        can [:read, :index], Issue do |issue|
-          issue.project.relations.exists?(:object_type => 'User', :object_id => user.id)
-        end
-        can [:create, :new], Issue do |issue|
-          issue.project.relations.exists?(:role => ['writer', 'admin'], :object_type => 'User', :object_id => user.id)
-        end
-        can [:edit, :update], Issue do |issue|
-          issue.user_id == user.id || (user.id == issue.project.owner_id && issue.project.owner_type == 'User') ||
-          issue.project.relations.exists?(:role => 'admin', :object_type => 'User', :object_id => user.id)
-        end
-        can [:create, :new], Comment do |comment|
-          comment.commentable.project.relations.exists?(:object_type => 'User', :object_id => user.id)
-        end
-        can [:edit, :update], Comment do |comment|
-          comment.user_id == user.id || (user.id == comment.commentable.project.owner_id && comment.commentable.project.owner_type == 'User') ||
-          comment.commentable.project.relations.exists?(:role => 'admin', :object_type => 'User', :object_id => user.id)
-        end
-        #
-        cannot [:index, :edit, :update, :create, :new, :read, :show], Issue do |issue|
-          !issue.project.has_issues
-        end
-        cannot [:edit, :update, :create, :new, :destroy], Comment do |comment|
-          !comment.commentable.project.has_issues
-        end
-
-        #can :read, Repository
-        # TODO: Add personal repos rules
-
-        # Same rights for groups:
         can [:read, :create], PrivateUser, :platform => {:owner_type => 'Group', :owner_id => user.group_ids}
-        can :publish, BuildList do |build_list|
-          build_list.can_publish? && build_list.project.relations.exists?(:object_type => 'Group', :object_id => user.group_ids)
-        end
-        can [:index, :read], BuildList, build_lists_in_relations_with(:object_type => 'Group', :object_id => user.group_ids) do |build_list|
-          build_list.project.relations.exists?(:object_type => 'Group', :object_id => user.group_ids)
-        end
 
-        can :manage_collaborators, Project, projects_in_relations_with(:role => 'admin', :object_type => 'Group', :object_id => user.group_ids) do |project|
-          project.relations.exists? :object_id => user.group_ids, :object_type => 'Group', :role => 'admin'
-        end
+        # can :read, Issue, :status => 'open'
+        can :read, Issue, :project => {:visibility => 'open'}
+        can :read, Issue, :project => {:owner_type => 'User', :owner_id => user.id}
+        can :read, Issue, :project => {:owner_type => 'Group', :owner_id => user.group_ids}
+        can(:read, Issue, read_relations_for('issues', 'projects')) {|issue| can? :read, issue.project rescue nil}
+        can(:create, Issue) {|issue| can? :write, issue.project}
+        can([:update, :destroy], Issue) {|issue| issue.user_id == user.id or local_admin?(issue.project)}
+        cannot :manage, Issue, :project => {:has_issues => false} # switch off issues
 
-        can [:read, :update, :destroy], Project, :owner_type => 'Group', :owner_id => user.group_ids
-        #can :read, Project, :relations => {:role => 'reader', :object_type => 'Group', :object_id => user.group_ids}
-        can :read, Project, projects_in_relations_with(:role => 'reader', :object_type => 'Group', :object_id => user.group_ids) do |project|
-          project.relations.exists?(:role => 'reader', :object_type => 'Group', :object_id => user.group_ids)
-        end
-        #can [:update], Project, :relations => {:role => 'writer', :object_type => 'Group', :object_id => user.group_ids}
-        can [:read, :update], Project, projects_in_relations_with(:role => ['writer', 'admin'], :object_type => 'Group', :object_id => user.group_ids) do |project|
-          project.relations.exists?(:role => ['writer', 'admin'], :object_type => 'Group', :object_id => user.group_ids)
-        end
-
-        can :manage, Platform, :owner_type => 'Group', :owner_id => user.group_ids
-        #can :read, Platform, :groups => {:id => user.group_ids}
-        can :read, Platform, platforms_in_relations_with(:role => 'reader', :object_type => 'Group', :object_id => user.group_ids) do |platform|
-          platform.relations.exists?(:role => 'reader', :object_type => 'Group', :object_id => user.group_ids)
-        end
-
-        can [:manage, :add_project, :remove_project], Repository, :owner_type => 'Group', :owner_id => user.group_ids
-        #can :read, Platform, :groups => {:id => user.group_ids}
-        can :read, Repository, repositories_in_relations_with(:role => 'reader', :object_type => 'Group', :object_id => user.group_ids) do |repository|
-          repository.relations.exists?(:role => 'reader', :object_type => 'Group', :object_id => user.group_ids)
-        end
-
-        can(:fork, Project) {|p| can? :read, p}
-        can(:create, BuildList) {|bl| can? :update, bl.project}
-
-        # Things that can not do simple user
-        cannot :create, [Platform, User]
+        can(:create, Comment) {|comment| can? :read, comment.commentable.project}
+        can(:update, Comment) {|comment| can? :update, comment.user_id == user.id or local_admin?(comment.commentable.project)}
+        cannot :manage, Comment, :commentable => {:project => {:has_issues => false}} # switch off issues
       end
     end
 
@@ -183,42 +100,34 @@ class Ability
     cannot :destroy, Issue
   end
 
-  # Sub query for platforms, projects relations
-  # TODO: Replace table names list by method_missing way
-  %w[platforms projects products repositories groups].each do |table_name|
-    define_method table_name + "_in_relations_with" do |opts|
-      query = "#{ table_name }.id IN (SELECT target_id FROM relations WHERE relations.target_type = '#{ table_name.singularize.camelize }'"
-      opts.each do |key, value|
-        query = query + " AND relations.#{ key } #{ value.class == Array ? 'IN (?)' : '= ?' } "
-      end
-      query = query + ")"
-
-      return opts.values.unshift query
-    end
+  # TODO group_ids ??
+  def read_relations_for(table, parent = nil)
+    key = parent ? "#{parent.singularize}_id" : 'id'
+    parent ||= table
+    ["#{table}.#{key} IN (
+      SELECT target_id FROM relations WHERE relations.target_type = ? AND
+      (relations.object_type = 'User' AND relations.object_id = ? OR
+       relations.object_type = 'Group' AND relations.object_id IN (?)))", parent.classify, @user, @user.group_ids]
   end
 
-  def with_project_id_in_relations_with(opts = {})
-    query = "issues.project_id IN (SELECT target_id FROM relations WHERE relations.target_type = 'issues'"
-    opts.each do |key, value|
-      query = query + " AND relations.#{ key } #{ value.class == Array ? 'IN (?)' : '= ?' } "
-    end
-    query = query + ")"
-
-    return opts.values.unshift query
+  def relation_exists_for(object, roles)
+    object.relations.exists?(:object_id => @user.id, :object_type => 'User', :role => roles) or
+    object.relations.exists?(:object_id => @user.group_ids, :object_type => 'Group', :role => roles)
   end
 
-  def build_lists_in_relations_with(opts)
-    query = "build_lists.project_id IN (SELECT target_id FROM relations WHERE relations.target_type = 'Project'"
-    opts.each do |key, value|
-      query = query + " AND relations.#{ key } #{ value.class == Array ? 'IN (?)' : '= ?' } "
-    end
-    query = query + ")"
-
-    return opts.values.unshift query
+  def local_reader?(object)
+    relation_exists_for(object, %w{reader writer admin}) or owner?(object)
   end
 
-  ## Sub query for project relations
-  #def projects_in_relations_with(opts={})
-  #  ["projects.id IN (SELECT target_id FROM relations WHERE relations.object_id #{ opts[:object_id].class == Array ? 'IN (?)' : '= ?' } AND relations.object_type = '#{ opts[:object_type] }' AND relations.target_type = 'Platform') AND relations.role", opts[:object_id]]
-  #end
+  def local_writer?(object)
+    relation_exists_for(object, %w{writer admin}) or owner?(object)
+  end
+
+  def local_admin?(object)
+    relation_exists_for(object, 'admin') or owner?(object)
+  end
+
+  def owner?(object)
+    object.owner == @user or @user.own_groups.include?(object.owner)
+  end
 end

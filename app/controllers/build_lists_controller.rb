@@ -9,7 +9,7 @@ class BuildListsController < ApplicationController
   before_filter :find_build_list_by_bs, :only => [:publish_build, :status_build, :pre_build, :post_build]
 
   load_and_authorize_resource :project, :only => NESTED_ACTIONS
-  load_and_authorize_resource :through => :project, :only => NESTED_ACTIONS, :shallow => true
+  load_and_authorize_resource :build_list, :through => :project, :only => NESTED_ACTIONS, :shallow => true
   load_and_authorize_resource :except => CALLBACK_ACTIONS.concat(NESTED_ACTIONS)
 
   def index
@@ -36,7 +36,7 @@ class BuildListsController < ApplicationController
 
   def create
     notices, errors = [], []
-    Arch.where(:id => params[:archs]).each do |arch|
+    Arch.where(:id => params[:arches]).each do |arch|
       Platform.main.where(:id => params[:bpls]).each do |bpl|
         @build_list = @project.build_lists.build(params[:build_list])
         @build_list.bpl = bpl; @build_list.arch = arch; @build_list.user = current_user

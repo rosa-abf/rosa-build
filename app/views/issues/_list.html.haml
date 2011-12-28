@@ -7,12 +7,12 @@
   - @issues.each do |issue|
     %tr{:class => cycle("odd", "even")}
       %td
-        = link_to issue.title, show_issue_path(@project, issue.serial_id)
+        = link_to issue.title, [@project, issue]
       %td
         = link_to issue.user.uname, user_path(issue.user) if issue.user
       %td
         = issue.status
       %td.last
-        = link_to t("layout.show"), show_issue_path(@project, issue.serial_id)
+        = link_to t("layout.show"), [@project, issue]
         |
         = link_to t("layout.delete"), project_issue_path(@project, issue), :method => :delete, :confirm => t("layout.issues.confirm_delete")  if can? :destroy, issue
