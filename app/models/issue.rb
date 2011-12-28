@@ -12,6 +12,10 @@ class Issue < ActiveRecord::Base
 
   after_create :set_serial_id
 
+  def to_param
+    serial_id.to_s
+  end
+
   protected
 
   def set_serial_id

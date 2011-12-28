@@ -9,7 +9,7 @@ class BuildListsController < ApplicationController
   before_filter :find_build_list_by_bs, :only => [:publish_build, :status_build, :pre_build, :post_build]
 
   load_and_authorize_resource :project, :only => NESTED_ACTIONS
-  load_and_authorize_resource :through => :project, :only => NESTED_ACTIONS, :shallow => true
+  load_and_authorize_resource :build_list, :through => :project, :only => NESTED_ACTIONS, :shallow => true
   load_and_authorize_resource :except => CALLBACK_ACTIONS.concat(NESTED_ACTIONS)
 
   def index

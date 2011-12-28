@@ -2,7 +2,7 @@
   .secondary-navigation
     %ul.wat-cf
       %li.first= link_to t("layout.issues.list"), project_issues_path(@project)
-      %li= link_to t("layout.issues.edit"), edit_project_issue_path(@project, @issue.serial_id) if can? :edit, @issue
+      %li= link_to t("layout.issues.edit"), edit_project_issue_path(@project, @issue) if can? :edit, @issue
   .content
     .inner
       %p

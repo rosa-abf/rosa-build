@@ -8,7 +8,7 @@ shared_examples_for 'issue user with project reader rights' do
   end
 
   it 'should be able to perform show action' do
-    get :show, :project_id => @project.id, :serial_id => @issue.serial_id
+    get :show, :project_id => @project.id, :id => @issue.serial_id
     response.should render_template(:show)
   end
 end
@@ -26,36 +26,36 @@ end
 
 shared_examples_for 'user with issue update rights' do
   it 'should be able to perform update action' do
-    put :update, {:id => @issue.id}.merge(@update_params)
-    response.should redirect_to(show_issue_path(@project, @issue.serial_id))
+    put :update, {:id => @issue.serial_id}.merge(@update_params)
+    response.should redirect_to([@project, @issue])
   end
 
   it 'should update issue title' do
-    put :update, {:id => @issue.id}.merge(@update_params)
+    put :update, {:id => @issue.serial_id}.merge(@update_params)
     @issue.reload.title.should == 'issue2'
   end
 end
 
 shared_examples_for 'user without issue update rights' do
   it 'should not be able to perform update action' do
-    put :update, {:id => @issue.id}.merge(@update_params)
+    put :update, {:id => @issue.serial_id}.merge(@update_params)
     response.should redirect_to(forbidden_path)
   end
 
   it 'should not update issue title' do
-    put :update, {:id => @issue.id}.merge(@update_params)
+    put :update, {:id => @issue.serial_id}.merge(@update_params)
     @issue.reload.title.should_not == 'issue2'
   end
 end
 
 shared_examples_for 'user without issue destroy rights' do
   it 'should not be able to perform destroy action' do
-    delete :destroy, :id => @issue.id, :project_id => @project.id
+    delete :destroy, :id => @issue.serial_id, :project_id => @project.id
     response.should redirect_to(forbidden_path)
   end
 
   it 'should not reduce issues count' do
-    lambda{ delete :destroy, :id => @issue.id, :project_id => @project.id }.should change{ Issue.count }.by(0)
+    lambda{ delete :destroy, :id => @issue.serial_id, :project_id => @project.id }.should change{ Issue.count }.by(0)
   end
 end
 
@@ -67,7 +67,7 @@ shared_examples_for 'project with issues turned off' do
   end
 
   it 'should not be able to perform show action' do
-    get :show, :project_id => @project_with_turned_off_issues.id, :serial_id => @turned_of_issue.serial_id
+    get :show, :project_id => @project_with_turned_off_issues.id, :id => @turned_of_issue.serial_id
     response.should redirect_to(forbidden_path)
   end
 end
