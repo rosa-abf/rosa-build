@@ -64,7 +64,7 @@ class PlatformsController < ApplicationController
       flash[:notice] = I18n.t("flash.platform.saved")
       redirect_to @platform
     else
-      flash[:error] = I18n.t("flash.platform.saved_error")
+      flash[:error] = I18n.t("flash.platform.save_error")
       render :action => :new
     end
   end
@@ -81,7 +81,7 @@ class PlatformsController < ApplicationController
       flash[:notice] = I18n.t("flash.platform.saved")
       redirect_to @platform
     else
-      flash[:error] = I18n.t("flash.platform.saved_error")
+      flash[:error] = I18n.t("flash.platform.save_error")
       render :action => :new
     end
   end

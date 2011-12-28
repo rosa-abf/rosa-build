@@ -3,11 +3,9 @@ class Product < ActiveRecord::Base
 
   belongs_to :platform
   has_many :product_build_lists, :dependent => :destroy
-  has_many :relations, :as => :target, :dependent => :destroy
 
   after_validation :merge_tar_errors
   before_save :destroy_tar?
-  after_create :add_admin_relations
 
   has_attached_file :tar
 
@@ -69,21 +67,12 @@ class Product < ActiveRecord::Base
 
   protected
 
-    def destroy_tar?
-      self.tar.clear if @delete_tar == "1"
-    end
+  def destroy_tar?
+    self.tar.clear if @delete_tar == "1"
+  end
 
-    def merge_tar_errors
-      errors[:tar] += errors[:tar_content_type]
-      errors[:tar_content_type] = []
-    end
-
-    def add_admin_relations
-      platform.relations.where(:role => 'admin').each do |rel|
-        r = relations.build(:role => 'admin', :object_type => rel.object_type)
-        r.object_id = rel.object_id
-        r.save
-      end
-    end
-
+  def merge_tar_errors
+    errors[:tar] += errors[:tar_content_type]
+    errors[:tar_content_type] = []
+  end
 end

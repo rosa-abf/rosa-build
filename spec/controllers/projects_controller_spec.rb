@@ -28,7 +28,7 @@ describe ProjectsController do
   		set_session_for(@admin)
 		end
 
-    it_should_behave_like 'projects user with writer rights'
+    it_should_behave_like 'projects user with admin rights'
     it_should_behave_like 'projects user with reader rights'
 
     it 'should be able to perform create action' do
@@ -49,7 +49,7 @@ describe ProjectsController do
   		@project.relations.create!(:object_type => 'User', :object_id => @user.id, :role => 'admin')
 		end
 
-    it_should_behave_like 'projects user with writer rights'
+    it_should_behave_like 'projects user with admin rights'
     it_should_behave_like 'user with rights to view projects'
 
     it 'should be able to perform destroy action' do
@@ -90,7 +90,6 @@ describe ProjectsController do
   		@project.relations.create!(:object_type => 'User', :object_id => @user.id, :role => 'writer')
 		end
 
-    it_should_behave_like 'projects user with writer rights'
     it_should_behave_like 'projects user with reader rights'
   end
 

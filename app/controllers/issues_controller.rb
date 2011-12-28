@@ -1,15 +1,14 @@
 class IssuesController < ApplicationController
   before_filter :authenticate_user!
-  before_filter :find_project, :except => [:destroy]
-  before_filter :find_and_authorize_by_serial_id, :only => [:show, :edit]
-  before_filter :set_issue_stub, :only => [:new, :create]
+  before_filter :find_project
+  before_filter :find_issue_by_serial_id, :only => [:show, :edit, :update, :destroy]
 
-  load_and_authorize_resource :except => [:show, :edit, :index]
-  authorize_resource :project, :only => [:index]
+  load_and_authorize_resource :project
+  load_and_authorize_resource :issue, :through => :project, :find_by => :serial_id
+
   autocomplete :user, :uname
 
   def index
-    @issues = Issue.scoped
     @issues = @project.issues
     case params[:status]
     when 'open'
@@ -20,6 +19,10 @@ class IssuesController < ApplicationController
     @issues = @issues.paginate :per_page => 10, :page => params[:page]
   end
 
+  def new
+    @issue = Issue.new(:project => @project)
+  end
+
   def create
     @user_id = params[:user_id]
     @user_uname = params[:user_uname]
@@ -27,11 +30,11 @@ class IssuesController < ApplicationController
     @issue = Issue.new(params[:issue])
     @issue.user_id = @user_id
     @issue.project_id = @project.id
-    if @issue.save!
+    if @issue.save
       flash[:notice] = I18n.t("flash.issue.saved")
       redirect_to project_issues_path(@project)
     else
-      flash[:error] = I18n.t("flash.issue.saved_error")
+      flash[:error] = I18n.t("flash.issue.save_error")
       render :action => :new
     end
   end
@@ -47,9 +50,9 @@ class IssuesController < ApplicationController
 
     if @issue.update_attributes( params[:issue].merge({:user_id => @user_id}) )
       flash[:notice] = I18n.t("flash.issue.saved")
-      redirect_to show_issue_path(@project, @issue.serial_id)
+      redirect_to [@project, @issue]
     else
-      flash[:error] = I18n.t("flash.issue.saved_error")
+      flash[:error] = I18n.t("flash.issue.save_error")
       render :action => :new
     end
   end
@@ -67,12 +70,7 @@ class IssuesController < ApplicationController
     @project = Project.find(params[:project_id])
   end
 
-  def find_and_authorize_by_serial_id
-    @issue = @project.issues.where(:serial_id => params[:serial_id])[0]
-    authorize! params[:action].to_sym, @issue
-  end
-
-  def set_issue_stub
-    @issue = Issue.new(:project => @project)
+  def find_issue_by_serial_id
+    @issue = @project.issues.find_by_serial_id!(params[:id])
   end
 end

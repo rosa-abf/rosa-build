@@ -94,9 +94,8 @@ describe BuildListsController do
           @build_list1 = Factory(:build_list_core)
           @build_list2 = Factory(:build_list_core, :project => Factory(:project, :visibility => 'hidden'))
           @build_list3 = Factory(:build_list_core, :project => Factory(:project, :owner => @user, :visibility => 'hidden'))
-            b = Factory(:build_list_core, :project => Factory(:project, :visibility => 'hidden'))
-            b.project.relations.create :role => 'reader', :object_id => @user.id, :object_type => 'User'
-          @build_list4 = b
+          @build_list4 = Factory(:build_list_core, :project => Factory(:project, :visibility => 'hidden'))
+          @build_list4.project.relations.create :role => 'reader', :object_id => @user.id, :object_type => 'User'
         end
 
         it 'should be able to perform index action' do
@@ -180,9 +179,8 @@ describe BuildListsController do
           @build_list1 = Factory(:build_list_core)
           @build_list2 = Factory(:build_list_core, :project => Factory(:project, :visibility => 'hidden'))
           @build_list3 = Factory(:build_list_core, :project => Factory(:project, :owner => @group, :visibility => 'hidden'))
-            b = Factory(:build_list_core, :project => Factory(:project, :visibility => 'hidden'))
-            b.project.relations.create :role => 'reader', :object_id => @group.id, :object_type => 'Group'
-          @build_list4 = b
+          @build_list4 = Factory(:build_list_core, :project => Factory(:project, :visibility => 'hidden'))
+          @build_list4.project.relations.create :role => 'reader', :object_id => @group.id, :object_type => 'Group'
         end
 
         it 'should be able to perform index action' do

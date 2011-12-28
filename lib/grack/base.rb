@@ -28,7 +28,7 @@ module Grack
     end
 
     def action
-      write? ? :update : :read
+      write? ? :write : :read
     end
 
     def project

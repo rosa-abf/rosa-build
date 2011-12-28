@@ -7,7 +7,7 @@ shared_examples_for 'projects user with reader rights' do
   end
 end
 
-shared_examples_for 'projects user with writer rights' do
+shared_examples_for 'projects user with admin rights' do
   it 'should be able to perform update action' do
     put :update, {:id => @project.id}.merge(@update_params)
     response.should redirect_to(project_path(@project))
