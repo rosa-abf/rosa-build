@@ -42,12 +42,13 @@ class Issue < ActiveRecord::Base
     recipients = collect_recipient_ids
     recipients.each do |recipient_id|
       recipient = User.find(recipient_id)
-      UserMailer.new_issue_notification(self, recipient).deliver
+      UserMailer.delay.new_issue_notification(self, recipient)#.deliver
     end
   end
 
   def deliver_issue_assign_notification
-    UserMailer.issue_assign_notification(self, self.user).deliver if self.user_id_was != self.user_id
+    #UserMailer.delay.issue_assign_notification(self, self.user).deliver if self.user_id_was != self.user_id
+    UserMailer.delay.issue_assign_notification(self, self.user) if self.user_id_was != self.user_id
   end
 
   def subscribe_users

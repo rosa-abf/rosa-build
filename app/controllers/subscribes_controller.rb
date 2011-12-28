@@ -23,6 +23,7 @@ class SubscribesController < ApplicationController
 
   private
 
+  # Sets instances for parent resources (@issue, etc.)
   def set_instances
     params.each do |name, value|
       if name =~ /(.+)_id$/
@@ -31,6 +32,7 @@ class SubscribesController < ApplicationController
     end
   end
 
+  # Sets current parent resource by setted instance
   def set_subscribeable
     @subscribeable = @issue if @issue
   end
