@@ -50,6 +50,10 @@
               = f.label :include_repos, t("activerecord.attributes.build_list.include_repos"), :class => :label
               #include_repos
 
+            .group
+              = f.check_box :auto_publish
+              = f.label :auto_publish, t("activerecord.attributes.build_list.auto_publish")
+
         .group.navform.wat-cf
           %button.button{:type => "submit"}
             = image_tag("web-app-theme/icons/tick.png", :alt => t("layout.projects.build_button"))

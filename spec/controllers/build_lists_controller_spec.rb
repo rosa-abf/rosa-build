@@ -50,10 +50,10 @@ describe BuildListsController do
     end
   end
 
+  before { stub_rsync_methods }
+
   context 'crud' do
     before(:each) do
-      stub_rsync_methods
-
       platform = Factory(:platform_with_repos)
       @create_params = {
         :build_list => { 
@@ -257,7 +257,6 @@ describe BuildListsController do
   context 'filter' do
     
     before(:each) do 
-      stub_rsync_methods
       set_session_for Factory(:admin)
 
       @build_list1 = Factory(:build_list_core)
@@ -297,5 +296,99 @@ describe BuildListsController do
   end
 
   context 'callbacks' do
+    let(:build_list) { Factory(:build_list_core) }
+
+    describe 'publish_build' do
+      def do_get(status)
+        get :publish_build, :id => build_list.bs_id, :status => status
+        build_list.reload
+      end
+
+      it { do_get(BuildServer::SUCCESS); response.should be_ok }
+      it { lambda{ do_get(BuildServer::SUCCESS) }.should change(build_list, :status).to(BuildList::BUILD_PUBLISHED) }
+      it { lambda{ do_get(BuildServer::ERROR) }.should change(build_list, :status).to(BuildList::FAILED_PUBLISH) }
+      it { lambda{ do_get(BuildServer::ERROR) }.should change(build_list, :notified_at) }
+    end
+
+    describe 'status_build' do
+      before { @item = build_list.items.create(:name => build_list.project.name, :version => build_list.project_version, :level => 0) }
+
+      def do_get
+        get :status_build, :id => build_list.bs_id, :package_name => build_list.project.name, :status => BuildServer::SUCCESS, :container_path => '/path/to'
+        build_list.reload
+        @item.reload
+      end
+
+      it { do_get; response.should be_ok }
+      it { lambda{ do_get }.should change(@item, :status) }
+      it { lambda{ do_get }.should change(build_list, :container_path) }
+      it { lambda{ do_get }.should change(build_list, :notified_at) }
+    end
+
+    describe 'pre_build' do
+      def do_get
+        get :pre_build, :id => build_list.bs_id
+        build_list.reload
+      end
+
+      it { do_get; response.should be_ok }
+      it { lambda{ do_get }.should change(build_list, :status).to(BuildServer::BUILD_STARTED) }
+      it { lambda{ do_get }.should change(build_list, :notified_at) }
+    end
+
+    describe 'post_build' do
+      def do_get(status)
+        get :post_build, :id => build_list.bs_id, :status => status, :container_path => '/path/to'
+        build_list.reload
+      end
+
+      it { do_get(BuildServer::SUCCESS); response.should be_ok }
+      it { lambda{ do_get(BuildServer::SUCCESS) }.should change(build_list, :container_path) }
+      it { lambda{ do_get(BuildServer::SUCCESS) }.should change(build_list, :notified_at) }
+
+      context 'with auto_publish' do
+        it { lambda{ do_get(BuildServer::SUCCESS) }.should change(build_list, :status).to(BuildList::BUILD_PUBLISH) }
+        it { lambda{ do_get(BuildServer::ERROR) }.should change(build_list, :status).to(BuildServer::ERROR) }
+      end
+
+      context 'without auto_publish' do
+        before { build_list.update_attribute(:auto_publish, false) }
+
+        it { lambda{ do_get(BuildServer::SUCCESS) }.should change(build_list, :status).to(BuildServer::SUCCESS) }
+        it { lambda{ do_get(BuildServer::ERROR) }.should change(build_list, :status).to(BuildServer::ERROR) }
+      end
+    end
+
+    describe 'circle_build' do
+      def do_get
+        get :circle_build, :id => build_list.bs_id, :container_path => '/path/to'
+        build_list.reload
+      end
+
+      it { do_get; response.should be_ok }
+      it { lambda{ do_get }.should change(build_list, :is_circle).to(true) }
+      it { lambda{ do_get }.should change(build_list, :container_path) }
+      it { lambda{ do_get }.should change(build_list, :notified_at) }
+    end
+
+    describe 'new_bbdt' do
+      before { @items = build_list.items }
+
+      def do_get
+        get :new_bbdt, :id => 123, :web_id => build_list.id, :name => build_list.project.name, :is_circular => 1,
+            :additional_repos => ActiveSupport::JSON.encode([{:name => 'build_repos'}, {:name => 'main'}]),
+            :items => ActiveSupport::JSON.encode(0 => [{:name => build_list.project.name, :version => build_list.project_version}])
+        build_list.reload
+        @items.reload
+      end
+
+      it { do_get; response.should be_ok }
+      it { lambda{ do_get }.should change(build_list, :name).to(build_list.project.name) }
+      it { lambda{ do_get }.should change(build_list, :additional_repos) }
+      it { lambda{ do_get }.should change(@items, :first) }
+      it { lambda{ do_get }.should change(build_list, :is_circle).to(true) }
+      it { lambda{ do_get }.should change(build_list, :bs_id).to(123) }
+      it { lambda{ do_get }.should change(build_list, :notified_at) }
+    end
   end
 end

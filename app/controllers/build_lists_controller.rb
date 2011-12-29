@@ -6,7 +6,7 @@ class BuildListsController < ApplicationController
   before_filter :authenticate_build_service!, :only => CALLBACK_ACTIONS
   before_filter :find_project, :only => NESTED_ACTIONS
   before_filter :find_build_list, :only => [:show, :publish, :cancel]
-  before_filter :find_build_list_by_bs, :only => [:publish_build, :status_build, :pre_build, :post_build]
+  before_filter :find_build_list_by_bs, :only => [:publish_build, :status_build, :pre_build, :post_build, :circle_build]
 
   load_and_authorize_resource :project, :only => NESTED_ACTIONS
   load_and_authorize_resource :build_list, :through => :project, :only => NESTED_ACTIONS, :shallow => true
@@ -113,6 +113,8 @@ class BuildListsController < ApplicationController
     @build_list.notified_at = Time.current
     @build_list.save
 
+    @build_list.publish if @build_list.auto_publish # && @build_list.can_publish?
+
     render :nothing => true, :status => 200
   end
 
@@ -130,10 +132,9 @@ class BuildListsController < ApplicationController
     @build_list.name = params[:name]
     @build_list.additional_repos = ActiveSupport::JSON.decode(params[:additional_repos])
     @build_list.set_items(ActiveSupport::JSON.decode(params[:items]))
-    @build_list.notified_at = Time.current
-    @build_list.is_circle = (params[:is_circular] != "0")
+    @build_list.is_circle = (params[:is_circular].to_i != 0)
     @build_list.bs_id = params[:id]
-    params[:arch]
+    @build_list.notified_at = Time.current
     @build_list.save
 
     render :nothing => true, :status => 200
