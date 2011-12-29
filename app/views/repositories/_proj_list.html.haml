@@ -5,7 +5,7 @@
   - @projects.each do |project|
     %tr{:class => cycle("odd", "even")}
       %td
-        = link_to project.owner.name + '/' + project.name, project_path(project)
+        = link_to project.owner.uname + '/' + project.name, project_path(project)
       %td.last
         #{link_to t("layout.show"), project_path(project)} | #{link_to t("layout.add"), url_for(:controller => :repositories, :action => :add_project, :project_id => project.id)}
 
