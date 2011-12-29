@@ -33,12 +33,6 @@ class Issue < ActiveRecord::Base
   end
 
   def deliver_new_issue_notification
-    #UserMailer.new_issue_notification(self, self.project.owner).deliver
-    #self.project.relations.by_role('admin').each do |rel|
-    #  admin = User.find(rel.object_id)
-    #  UserMailer.new_issue_notification(self, admin).deliver
-    #end
-
     recipients = collect_recipient_ids
     recipients.each do |recipient_id|
       recipient = User.find(recipient_id)
@@ -47,7 +41,6 @@ class Issue < ActiveRecord::Base
   end
 
   def deliver_issue_assign_notification
-    #UserMailer.delay.issue_assign_notification(self, self.user).deliver if self.user_id_was != self.user_id
     UserMailer.delay.issue_assign_notification(self, self.user) if self.user_id_was != self.user_id
   end
 

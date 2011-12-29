@@ -78,8 +78,6 @@ describe IssuesController do
 
     @project = Factory(:project)
     @issue_user = Factory(:user)
-    @create_params = {:project => {:name => 'pro'}}
-    @update_params = {:project => {:name => 'pro2'}}
 
     any_instance_of(Project, :versions => ['v1.0', 'v2.0'])
 
