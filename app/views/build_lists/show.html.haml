@@ -51,6 +51,11 @@
         = @build_list.build_requires
       %p
         %b
+          = t("activerecord.attributes.build_list.auto_publish")
+          \:
+        = @build_list.auto_publish
+      %p
+        %b
           = t("activerecord.attributes.build_list.status")
           \:
         = @build_list.human_status
