@@ -6,7 +6,7 @@ shared_examples_for 'user with create comment rights' do
     response.should redirect_to(project_issue_path(@project, @issue))
   end
 
-  it 'should create issue object into db' do
+  it 'should create subscribe object into db' do
     lambda{ post :create, @create_params }.should change{ Comment.count }.by(1)
   end
 end
@@ -17,7 +17,7 @@ shared_examples_for 'user with update own comment rights' do
     response.should redirect_to([@project, @issue])
   end
 
-  it 'should update issue title' do
+  it 'should update subscribe body' do
     put :update, {:id => @own_comment.id}.merge(@update_params)
     @own_comment.reload.body.should == 'updated'
   end

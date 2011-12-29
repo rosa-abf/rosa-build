@@ -1,6 +1,4 @@
-# Read about factories at http://github.com/thoughtbot/factory_girl
-
-FactoryGirl.define do
-  factory :subscribe do
-    end
+Factory.define(:subscribe) do |p|
+  p.association :subscribeable, :factory => :issue
+  p.association :user, :factory => :user
 end
