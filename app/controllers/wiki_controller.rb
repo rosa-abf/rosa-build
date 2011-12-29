@@ -1,7 +1,8 @@
+require 'lib/gollum'
 require 'cgi'
 
 class WikiController < ApplicationController
-  WIKI_OPTIONS = {:page_file_dir => '/', :ref => 'master'}
+  WIKI_OPTIONS = {:page_file_dir => '/', :ref => 'master', :page_class => Gollum::PageImproved}
 
   load_and_authorize_resource :project
 
@@ -22,16 +23,47 @@ class WikiController < ApplicationController
   def show
     @name = params[:id]
     rev = params[:rev] ? params[:rev] : nil
-
+    if page = @wiki.page(@name, rev)
+      @page = page
+      @name = name
+      @content = page.formatted_data
+      @editable = true
+    else
+      render :new if rev.nil?
+      redirect_to :index
+    end
   end
 
   def edit
+    @name = params[:id]
+    if page = @wiki.page(@name)
+      @page = page
+      @content = page.raw_data
+      render :edit
+    else
+      render :new
+    end
   end
 
   def update
+    name = params[:id]
+    page = @wiki.page(@name)
+    name = params[:rename] || page.name
+    committer = Gollum::Commiter.new(wiki, commit_message.merge({:name => current_user.name, :email => current_user.email}))
+    commit = {:committer => committer}
+
+    update_wiki_page(@wiki, page, params[:content], commit, name, params[:format])
+    update_wiki_page(@wiki, page.footer, params[:footer], commit) if params[:footer]
+    update_wiki_page(@wiki, page.sidebar, params[:sidebar], commit) if params[:sidebar]
+
+    committer.commit
+
+    flash[:notice] = t('flash.wiki.successfully_updated')
+    redirect_to project_wiki_path(@project, CGI.escape(@name))
   end
 
   def new
+    @name = ''
   end
 
   def create
@@ -78,13 +110,14 @@ class WikiController < ApplicationController
     sha2  = params[:sha2]
 
     if @wiki.revert_page(@page, sha1, sha2, commit_message)
+      flash[:notice]  = t("flash.wiki.revert_success")
       redirect_to project_wiki_path(@project, "#{CGI.escape(@name)}")
     else
       sha2, sha1 = sha1, "#{sha1}^" if !sha2
       @versions = [sha1, sha2]
       diffs     = @wiki.repo.diff(@versions.first, @versions.last, @page.path)
       @diff     = diffs.first
-      @message  = "The patch does not apply."
+      flash[:error]  = t("flash.wiki.patch_does_not_apply")
       render :compare
     end
   end
@@ -100,7 +133,7 @@ class WikiController < ApplicationController
   def history
     @name = params[:name]
     @page = @wiki.page(@name)
-    @versions = @page.versions :page => params[:page] #try to use will_paginate
+    @versions = @page.versions.paginate :page => params[:page] #try to use will_paginate
   end
 
   def search
@@ -117,7 +150,16 @@ class WikiController < ApplicationController
   protected
 
     def get_wiki
-      @wiki = Gollum::Wiki.new(@project.wiki_path, WIKI_OPTIONS.merge(:base_path => project_wiki_path(@project)))
+      @wiki = Gollum::Wiki.new(@project.wiki_path, WIKI_OPTIONS.merge(:base_path => project_wiki_index_path(@project)))
+    end
+
+    def update_wiki_page(wiki, page, content, commit_message, name = nil, format = nil)
+      return if !page ||  
+        ((!content || page.raw_data == content) && page.format == format)
+      name    ||= page.name
+      format    = (format || page.format).to_sym
+      content ||= page.raw_data
+      wiki.update_page(page, name, format, content.to_s, commit_message)
     end
 
     def commit_message
