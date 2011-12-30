@@ -24,28 +24,24 @@ end
 
 shared_examples_for 'can unsubscribe' do
   it 'should be able to perform destroy action' do
-    #set_objects_to_destroy
     delete :destroy, @destroy_params
 
     response.should redirect_to([@project, @issue])
   end
 
   it 'should reduce subscribes count' do
-    #set_objects_to_destroy
     lambda{ delete :destroy, @destroy_params }.should change{ Subscribe.count }.by(-1)
   end
 end
 
 shared_examples_for 'can not unsubscribe' do
   it 'should not be able to perform destroy action' do
-    #set_objects_to_destroy
     delete :destroy, @destroy_params
 
     response.should redirect_to(forbidden_path)
   end
 
   it 'should not reduce subscribes count' do
-    #set_objects_to_destroy
     lambda{ delete :destroy, @destroy_params }.should change{ Subscribe.count }.by(0)
   end
 end
@@ -85,7 +81,6 @@ describe SubscribesController do
 
     context 'not subscribed' do
       it_should_behave_like 'can subscribe'
-      #it_should_behave_like 'can not unsubscribe'
     end
   end
 
@@ -108,7 +103,6 @@ describe SubscribesController do
 
     context 'not subscribed' do
       it_should_behave_like 'can subscribe'
-      #it_should_behave_like 'can not unsubscribe'
     end
   end
 
