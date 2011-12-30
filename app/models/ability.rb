@@ -13,6 +13,8 @@ class Ability
 
     if user.admin?
       can :manage, :all
+      cannot :destroy, Subscribe
+      cannot :create, Subscribe
     else
       # Shared rights between guests and registered users
       can :forbidden, Platform

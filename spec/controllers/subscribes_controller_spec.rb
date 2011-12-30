@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-shared_examples_for 'user with create subscribe rights' do
+shared_examples_for 'can subscribe' do
   it 'should be able to perform create action' do
     post :create, @create_params
     response.should redirect_to(project_issue_path(@project, @issue))
@@ -11,14 +11,42 @@ shared_examples_for 'user with create subscribe rights' do
   end
 end
 
-shared_examples_for 'user without destroy subscribe rights' do
+shared_examples_for 'can not subscribe' do
+  it 'should not be able to perform create action' do
+    post :create, @create_params
+    response.should redirect_to(forbidden_path)
+  end
+
+  it 'should not create subscribe object into db' do
+    lambda{ post :create, @create_params }.should change{ Subscribe.count }.by(0)
+  end
+end
+
+shared_examples_for 'can unsubscribe' do
+  it 'should be able to perform destroy action' do
+    #set_objects_to_destroy
+    delete :destroy, @destroy_params
+
+    response.should redirect_to([@project, @issue])
+  end
+
+  it 'should reduce subscribes count' do
+    #set_objects_to_destroy
+    lambda{ delete :destroy, @destroy_params }.should change{ Subscribe.count }.by(-1)
+  end
+end
+
+shared_examples_for 'can not unsubscribe' do
   it 'should not be able to perform destroy action' do
-    delete :destroy, :id => @subscribe.id, :issue_id => @issue.id, :project_id => @project.id
+    #set_objects_to_destroy
+    delete :destroy, @destroy_params
+
     response.should redirect_to(forbidden_path)
   end
 
   it 'should not reduce subscribes count' do
-    lambda{ delete :destroy, :id => @subscribe.id, :issue_id => @issue.id, :project_id => @project.id }.should change{ Subscribe.count }.by(0)
+    #set_objects_to_destroy
+    lambda{ delete :destroy, @destroy_params }.should change{ Subscribe.count }.by(0)
   end
 end
 
@@ -28,7 +56,9 @@ describe SubscribesController do
 
     @project = Factory(:project)
     @issue = Factory(:issue, :project_id => @project.id)
-    @subscribe = Factory(:subscribe, :subscribeable => @issue, :user => @user)
+
+    @create_params = {:issue_id => @issue.serial_id, :project_id => @project.id}
+    @destroy_params = {:issue_id => @issue.serial_id, :project_id => @project.id}
 
     any_instance_of(Project, :versions => ['v1.0', 'v2.0'])
 
@@ -40,30 +70,46 @@ describe SubscribesController do
       @user = Factory(:admin)
       set_session_for(@user)
       @project.relations.create!(:object_type => 'User', :object_id => @user.id, :role => 'admin')
+      @destroy_params = @destroy_params.merge({:id => @user.id})
     end
 
-    it 'should be able to perform create action' do
-      post :create, :project_id => @project.id, :issue_id => @issue.id
-      response.should redirect_to(project_issue_path(@project, @issue))
+    context 'subscribed' do
+      before(:each) do
+        ss = @issue.subscribes.build(:user => @user)
+        ss.save!
+      end
+
+      it_should_behave_like 'can unsubscribe'
+      it_should_behave_like 'can not subscribe'
     end
 
-    it 'should create issue object into db' do
-      lambda{ post :create, :project_id => @project.id, :issue_id => @issue.id }.should change{ Subscribe.count }.by(1)
+    context 'not subscribed' do
+      it_should_behave_like 'can subscribe'
+      #it_should_behave_like 'can not unsubscribe'
+    end
+  end
+
+  context 'for simple user' do
+    before(:each) do
+      @user = Factory(:user)
+      set_session_for(@user)
+      @destroy_params = @destroy_params.merge({:id => @user.id})
     end
 
-    it 'should be able to perform destroy action' do
-      delete :destroy, :id => @subscribe.id, :issue_id => @issue.id, :project_id => @project.id
-      response.should redirect_to(forbidden_path)
+    context 'subscribed' do
+      before(:each) do
+        ss = @issue.subscribes.build(:user => @user)
+        ss.save!
+      end
+
+      it_should_behave_like 'can unsubscribe'
+      it_should_behave_like 'can not subscribe'
     end
 
-    it 'should reduce subscribes count' do
-      lambda{ delete :destroy, :id => @subscribe.id, :issue_id => @issue.id, :project_id => @project.id }.should change{ Issue.count }.by(-1)
+    context 'not subscribed' do
+      it_should_behave_like 'can subscribe'
+      #it_should_behave_like 'can not unsubscribe'
     end
-
-    #it_should_behave_like 'user with create subscribe rights'
-    #it_should_behave_like 'user with update stranger subscribe rights'
-    #it_should_behave_like 'user with update own subscribe rights'
-    #it_should_behave_like 'user without destroy subscribe rights'
   end
 
 end
