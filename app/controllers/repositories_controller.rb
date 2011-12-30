@@ -63,13 +63,30 @@ class RepositoriesController < ApplicationController
       end
       redirect_to repository_path(@repository)
     else
-      if @repository.platform.platform_type == 'main'
-        @projects = Project.addable_to_repository(@repository.id).by_visibilities(['open']).paginate(:page => params[:project_page])
-      else
-        @projects = Project.addable_to_repository(@repository.id).paginate(:page => params[:project_page])
-      end
+#      if @repository.platform.platform_type == 'main'
+#        @projects = Project.addable_to_repository(@repository.id).by_visibilities(['open']).paginate(:page => params[:project_page])
+#      else
+#        @projects = Project.addable_to_repository(@repository.id).paginate(:page => params[:project_page])
+#      end
       render 'projects_list'
     end
+  end
+
+  def projects_list
+    colName = ['owner.uname', 'projects.name']
+    sort_col = params[:iSortCol_0] || 0
+    sort_dir = params[:sSortDir_0]=="asc" ? 'asc' : 'desc'
+    order = "#{colName[sort_col.to_i]} #{sort_dir}"
+
+    @projects = Project.addable_to_repository(@repository.id)
+    @projects = @projects.by_visibilities(['open']) if @repository.platform.platform_type == 'main'
+
+    @total_projects = @projects.count
+    @projects = @projects.where(['projects.name LIKE ?', "#{params[:sSearch]}%"]) if params[:sSearch] and !params[:sSearch].empty?
+    @total_project = @projects.count
+    @projects = @projects.order(order)#.includes(:owner) #WTF????
+
+    render :partial => 'proj_ajax', :layout => false
   end
 
   def remove_project

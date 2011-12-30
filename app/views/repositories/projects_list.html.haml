@@ -41,7 +41,7 @@
     .inner
       = render :partial => 'shared/search_form'
       = render :partial => 'proj_list', :object => @projects
-      .actions-bar.wat-cf
+      -#.actions-bar.wat-cf
         .actions
           = will_paginate @projects, :param_name => :project_page
 
