@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20111226141947) do
+ActiveRecord::Schema.define(:version => 20111228182425) do
 
   create_table "arches", :force => true do |t|
     t.string   "name",       :null => false
@@ -71,6 +71,7 @@ ActiveRecord::Schema.define(:version => 20111226141947) do
     t.integer  "pl_id"
     t.text     "include_repos"
     t.integer  "user_id"
+    t.boolean  "auto_publish",     :default => true
   end
 
   add_index "build_lists", ["arch_id"], :name => "index_build_lists_on_arch_id"

@@ -110,7 +110,7 @@ class BuildList < ActiveRecord::Base
   def publish
     return false unless can_publish?
     has_published = BuildServer.publish_container bs_id
-    update_attribute(:status, BUILD_PUBLISH) if has_published == 0
+    update_attribute(:status, has_published == 0 ? BUILD_PUBLISH : FAILED_PUBLISH)
     return has_published == 0
   end
 
