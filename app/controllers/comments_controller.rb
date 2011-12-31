@@ -16,7 +16,7 @@ class CommentsController < ApplicationController
     @comment.user = current_user
     if @comment.save
       flash[:notice] = I18n.t("flash.comment.saved")
-      redirect_to :back
+      redirect_to [@commentable.project, @commentable]
     else
       flash[:error] = I18n.t("flash.comment.save_error")
       render :action => 'new'

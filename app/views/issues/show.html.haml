@@ -52,5 +52,5 @@
     %h2.title
       = t("layout.comments.new_header")
     .inner
-      = form_for :comment, :url => project_issue_comments_path(@project, @issue), :method => :post, :html => { :class => :form } do |f|
+      = form_for :comment, :url => project_issue_comments_path(@project, @issue.id), :method => :post, :html => { :class => :form } do |f|
         = render :partial => "comments/form", :locals => {:f => f}

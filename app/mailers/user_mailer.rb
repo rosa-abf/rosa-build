@@ -1,7 +1,7 @@
 # coding: UTF-8
 
 class UserMailer < ActionMailer::Base
-  default :from => APP_CONFIG['no-reply-email']
+  default :from => APP_CONFIG['do-not-reply-email']
 
   def new_user_notification(user)
     @user = user
