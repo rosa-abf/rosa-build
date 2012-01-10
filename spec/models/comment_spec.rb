@@ -1,7 +1,7 @@
 require 'spec_helper'
 require "cancan/matchers"
 
-def set_testable_data
+def set_comments_data
   @ability = Ability.new(@user)
 
   @project = Factory(:project)
@@ -19,7 +19,7 @@ describe Comment do
       @user = Factory(:admin)
       @stranger = Factory(:user)
 
-      set_testable_data
+      set_comments_data
     end
 
     it 'should create comment' do
@@ -48,7 +48,7 @@ describe Comment do
       @user = Factory(:user)
       @stranger = Factory(:user)
 
-      set_testable_data
+      set_comments_data
 
       @project.relations.create!(:object_type => 'User', :object_id => @user.id, :role => 'admin')
     end
@@ -75,7 +75,7 @@ describe Comment do
       @user = Factory(:user)
       @stranger = Factory(:user)
 
-      set_testable_data
+      set_comments_data
 
       @project.update_attribute(:owner, @user)
       @project.relations.create!(:object_type => 'User', :object_id => @user.id, :role => 'admin')
@@ -103,7 +103,7 @@ describe Comment do
       @user = Factory(:user)
       @stranger = Factory(:user)
 
-      set_testable_data
+      set_comments_data
     end
 
     it 'should create comment' do
