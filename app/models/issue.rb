@@ -41,7 +41,7 @@ class Issue < ActiveRecord::Base
   end
 
   def deliver_issue_assign_notification
-    UserMailer.delay.issue_assign_notification(self, self.user) if self.user_id_was != self.user_id
+    UserMailer.delay.issue_assign_notification(self, self.user) if self.user_id_was != self.user_id && self.user.notifier.issue_assign
   end
 
   def subscribe_users
@@ -56,7 +56,12 @@ class Issue < ActiveRecord::Base
     recipients = self.project.relations.by_role('admin').where(:object_type => 'User').map { |rel| rel.read_attribute(:object_id) }
     recipients = recipients | [self.user_id] if self.user_id
     recipients = recipients | [self.project.owner_id] if self.project.owner_type == 'User'
+
+    # filter by notification settings
+    recipients = recipients.select do |recipient|
+      User.find(recipient).notifier.new_issue
+    end
+
     recipients
   end
-
 end

@@ -30,6 +30,10 @@ ru:
     not_access: Нет доступа!
     owner: Владелец
     confirm: Уверенны?
+    settings:
+      notifier: Настройки оповещений
+      notifiers:
+        edit_header: Настройки оповещений
 
     downloads:
       title: Статистика закачек пакетов
@@ -353,6 +357,11 @@ ru:
         project_version_not_found: версия не найден
 
   flash:
+    settings:
+      saved: Настройки успешно сохранены
+      save_error: При обновлении настроек произошла ошибка
+      
+
     subscribe:
       saved: Вы подписаны на оповещения для этой задачи
       destroyed: Подписка на оповещения для этой задачи убрана
@@ -478,8 +487,17 @@ ru:
       build_list_item: Элемент сборочного листа
       download: Статистика
       auto_build_list: Автоматическая пересборка пакетов
+      settings:
+        notifier: Настройки оповещений
 
     attributes:
+      settings:
+        notifier:
+          new_comment: Оповещать о новом комментарии в задаче
+          new_comment_reply: Оповещать о новом ответе на мой комментарий
+          new_issue: Оповещать о новых задачах в моих проектах
+          issue_assign: Оповещать, когда на меня выставляют задачу
+
       auto_build_list:
         project_id: Проект
         project: Проект

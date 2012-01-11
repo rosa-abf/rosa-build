@@ -28,6 +28,8 @@ class Ability
       else # Registered user rights
         can [:show, :autocomplete_user_uname], User
 
+        can [:show, :update], Settings::Notifier, :user_id => user.id
+
         can [:read, :create], Group
         can [:update, :manage_members], Group do |group|
           group.objects.exists?(:object_type => 'User', :object_id => user.id, :role => 'admin') # or group.owner_id = user.id
