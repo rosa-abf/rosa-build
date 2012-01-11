@@ -32,3 +32,20 @@
               <pre>#{render_blob(@blob)}</pre>
 
 - content_for :sidebar, render(:partial => 'git/shared/sidebar')
+
+%a{ :name => "comments" }
+.block#block-list
+  .content
+    %h2.title
+      = t("layout.issues.comments_header")
+    .inner
+      %ul.list
+        - @project.commit_comments(@commit).each do |comment|
+          %li
+            .left
+              = link_to comment.user.uname, user_path(comment.user.uname)
+            .item
+              = comment.body
+              %br
+              %br
+

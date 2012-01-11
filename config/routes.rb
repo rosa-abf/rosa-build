@@ -1,11 +1,11 @@
 Rosa::Application.routes.draw do
   # XML RPC
   match 'api/xmlrpc' => 'rpc#xe_index'
-  
+
   devise_for :users, :controllers => {:omniauth_callbacks => 'users/omniauth_callbacks'} do
     get '/users/auth/:provider' => 'users/omniauth_callbacks#passthru'
   end
-  
+
   resources :users do
     resources :groups, :only => [:new, :create, :index]
     get :autocomplete_user_uname, :on => :collection
@@ -142,20 +142,24 @@ Rosa::Application.routes.draw do
 
   # Tree
   match '/projects/:project_id/git/tree/:treeish(/*path)', :controller => "git/trees", :action => :show, :treeish => /[0-9a-zA-Z_.\-]*/, :defaults => { :treeish => :master }, :as => :tree
-         
+
   # Commits
   match '/projects/:project_id/git/commits/:treeish(/*path)', :controller => "git/commits", :action => :index, :treeish => /[0-9a-zA-Z_.\-]*/, :defaults => { :treeish => :master }, :as => :commits
   match '/projects/:project_id/git/commit/:id(.:format)', :controller => "git/commits", :action => :show, :defaults => { :format => :html }, :as => :commit
-         
+  # Commit Comments
+  match '/projects/:project_id/git/commit/:commit_id/comments/:id(.:format)', :controller => "comments", :action => :edit, :as => :edit_project_commit_comment, :via => :get
+  match '/projects/:project_id/git/commit/:commit_id/comments/:id(.:format)', :controller => "comments", :action => :update, :as => :project_commit_comment, :via => :put
+  match '/projects/:project_id/git/commit/:commit_id/comments/:id(.:format)', :controller => "comments", :action => :destroy, :via => :delete
+  match '/projects/:project_id/git/commit/:commit_id/comments(.:format)', :controller => "comments", :action => :create, :as => :project_commit_comments, :via => :post
   # Blobs
   match '/projects/:project_id/git/blob/:treeish/*path', :controller => "git/blobs", :action => :show, :treeish => /[0-9a-zA-Z_.\-]*/, :defaults => { :treeish => :master }, :as => :blob
   match '/projects/:project_id/git/commit/blob/:commit_hash/*path', :controller => "git/blobs", :action => :show, :project_name => /[0-9a-zA-Z_.\-]*/, :as => :blob_commit
-         
+
   # Blame
   match '/projects/:project_id/git/blame/:treeish/*path', :controller => "git/blobs", :action => :blame, :treeish => /[0-9a-zA-Z_.\-]*/, :defaults => { :treeish => :master }, :as => :blame
   match '/projects/:project_id/git/commit/blame/:commit_hash/*path', :controller => "git/blobs", :action => :blame, :as => :blame_commit
-         
-  # Raw  
+
+  # Raw
   match '/projects/:project_id/git/raw/:treeish/*path', :controller => "git/blobs", :action => :raw, :treeish => /[0-9a-zA-Z_.\-]*/, :defaults => { :treeish => :master }, :as => :raw
   match '/projects/:project_id/git/commit/raw/:commit_hash/*path', :controller => "git/blobs", :action => :raw, :as => :raw_commit
 

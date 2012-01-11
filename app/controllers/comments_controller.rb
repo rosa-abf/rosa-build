@@ -1,8 +1,8 @@
 class CommentsController < ApplicationController
   before_filter :authenticate_user!
-  before_filter :set_commentable, :only => [:index, :edit, :create]
-  before_filter :find_project, :only => [:index]
   before_filter :find_comment, :only => [:edit, :update, :destroy]
+  before_filter :set_commentable, :only => [:index, :edit, :create, :update]
+  #before_filter :find_project, :only => [:index, :edit]
 
   authorize_resource :only => [:show, :edit, :update, :destroy]
   authorize_resource :project, :only => [:index]
@@ -12,11 +12,12 @@ class CommentsController < ApplicationController
   end
 
   def create
-    @comment = @commentable.comments.build(params[:comment])
+    @comment = @commentable.comments.build(params[:comment]) if @commentable.class == Issue
+    @comment = Comment.new(params[:comment].merge(:commentable_id => @commentable.id, :commentable_type => @commentable.class.name)) if @commentable.class == Grit::Commit
     @comment.user = current_user
     if @comment.save
       flash[:notice] = I18n.t("flash.comment.saved")
-      redirect_to [@commentable.project, @commentable]
+      redirect_to :back
     else
       flash[:error] = I18n.t("flash.comment.save_error")
       render :action => 'new'
@@ -24,15 +25,19 @@ class CommentsController < ApplicationController
   end
 
   def edit
-    @issue = @commentable
-    @project = @issue.project
+    @update_url = case @commentable.class.name
+                  when "Issue"
+                    project_issue_comment_path(@project, @commentable, @comment)
+                  when "Grit::Commit"
+                    project_commit_comment_path(@project, @commentable.id, @comment)
+                  end
   end
 
   def update
     if @comment.update_attributes(params[:comment])
       flash[:notice] = I18n.t("flash.comment.saved")
       #redirect_to :back
-      redirect_to [@comment.commentable.project, @comment.commentable]
+      redirect_to @commentable_path
     else
       flash[:error] = I18n.t("flash.comment.save_error")
       render :action => 'new'
@@ -55,11 +60,17 @@ class CommentsController < ApplicationController
     #  end
     #end
     #nil
-    return Issue.find(params[:issue_id])
+    if params[:issue_id].present?
+      return Issue.find(params[:issue_id])
+    elsif params[:commit_id].present?
+      return @project.git_repository.commit(params[:commit_id])
+    end
   end
 
   def set_commentable
+    find_project
     @commentable = find_commentable
+    @commentable_path = @commentable.class == Issue ? project_issue_path(@project, @commentable) : commit_path(@project.id, @commentable.id)
   end
 
   def find_comment
@@ -67,6 +78,6 @@ class CommentsController < ApplicationController
   end
 
   def find_project
-    @project = @comment.commentable.project
+    @project = Project.find(params[:project_id])
   end
 end
