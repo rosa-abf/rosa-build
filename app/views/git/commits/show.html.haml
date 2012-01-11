@@ -26,3 +26,21 @@
         %p= t 'layout.git.repositories.commit_diff_too_big'
 
 - content_for :sidebar, render(:partial => 'git/shared/sidebar')
+
+%a{ :name => "comments" }
+.block#block-list
+  .content
+    %h2.title
+      = t("layout.issues.comments_header")
+    .inner
+      %ul.list
+        - Project.commit_comments(@commit).each do |comment|
+          %li
+            .left
+              = link_to comment.user.uname, user_path(comment.user.uname)
+            .item
+              = comment.body
+              %br
+              %br
+              = link_to t("layout.edit"), edit_project_commit_comment_path(@project, @commit, comment) if can? :update, comment
+              = link_to image_tag("web-app-theme/icons/cross.png", :alt => t("layout.delete")) + " " + t("layout.delete"), project_commit_comment_path(@project, @commit, comment), :method => "delete", :class => "button", :confirm => t("layout.comments.confirm_delete") if can? :delete, comment

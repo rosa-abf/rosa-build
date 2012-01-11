@@ -1,10 +1,10 @@
 .block
   .secondary-navigation
     %ul.wat-cf
-      %li.first= link_to t("layout.issues.list"), project_issue_path(@project, @issue)
+      %li.first= link_to t("layout.issues.list"), @issue ? project_issue_path(@project, @issue) : commit_path(@project, @commit)
   .content
     %h2.title
       = t("layout.issues.edit_header")
     .inner
-      = form_for @comment, :url => project_issue_comment_path(@project, @issue.id, @comment), :html => { :class => :form } do |f|
+      = form_for @comment, :url => @update_url, :html => { :class => :form } do |f|
         = render :partial => "form", :locals => {:f => f}

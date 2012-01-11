@@ -1,7 +1,7 @@
 class CommentsController < ApplicationController
   before_filter :authenticate_user!
   before_filter :set_commentable, :only => [:index, :edit, :create]
-  before_filter :find_project, :only => [:index]
+  before_filter :find_project, :only => [:index, :edit]
   before_filter :find_comment, :only => [:edit, :update, :destroy]
 
   authorize_resource :only => [:show, :edit, :update, :destroy]
@@ -24,8 +24,14 @@ class CommentsController < ApplicationController
   end
 
   def edit
-    @issue = @commentable
-    @project = @issue.project
+    if @commentable
+      @issue = @commentable
+      @update_url = project_issue_comment_path(@project, @issue.id, @comment)
+    end
+    if @comment.commentable_type == 'Commit'
+      @commit = @project.git_repository.commit(@comment.commentable_id)
+      @update_url = project_commit_comment_path(@project, @commit, @comment)
+    end
   end
 
   def update
@@ -55,7 +61,8 @@ class CommentsController < ApplicationController
     #  end
     #end
     #nil
-    return Issue.find(params[:issue_id])
+    return nil if params[:issue_id].nil?
+    Issue.find(params[:issue_id])
   end
 
   def set_commentable
@@ -67,6 +74,6 @@ class CommentsController < ApplicationController
   end
 
   def find_project
-    @project = @comment.commentable.project
+    @project = Project.find(params[:project_id])
   end
 end
