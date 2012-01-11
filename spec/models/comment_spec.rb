@@ -26,6 +26,10 @@ describe Comment do
       @ability.should be_able_to(:create, Comment.new(:commentable => @issue, :user => @user))
     end
 
+    pending "sends an e-mail" do
+      ActionMailer::Base.deliveries.last.to.include?(@stranger.email).should == true
+    end
+
     it 'should update comment' do
       @ability.should be_able_to(:update, @comment)
     end
@@ -35,7 +39,7 @@ describe Comment do
     end
 
     it 'should destroy own comment' do
-        @ability.should be_able_to(:destroy, @comment)
+      @ability.should be_able_to(:destroy, @comment)
     end
 
     it 'should destroy stranger comment' do
