@@ -4,7 +4,11 @@ class Issue < ActiveRecord::Base
   belongs_to :project
   belongs_to :user
 
-  has_many :comments, :as => :commentable
+  has_many :comments, :as => :commentable,
+    :finder_sql => 'SELECT comments.* FROM comments ' +
+                   'WHERE comments.commentable_id = \'#{self.id}\' ' +
+                   '  AND comments.commentable_type = \'#{self.class.name}\' ' +
+                   'ORDER BY comments.created_at'
   has_many :subscribes, :as => :subscribeable
 
   validates :title, :body, :project_id, :presence => true

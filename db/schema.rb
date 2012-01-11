@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20111228182425) do
+ActiveRecord::Schema.define(:version => 20120111080234) do
 
   create_table "arches", :force => true do |t|
     t.string   "name",       :null => false
@@ -87,7 +87,7 @@ ActiveRecord::Schema.define(:version => 20111228182425) do
   end
 
   create_table "comments", :force => true do |t|
-    t.integer  "commentable_id"
+    t.string   "commentable_id"
     t.string   "commentable_type"
     t.integer  "user_id"
     t.text     "body"
@@ -164,6 +164,13 @@ ActiveRecord::Schema.define(:version => 20111228182425) do
   end
 
   add_index "issues", ["project_id", "serial_id"], :name => "index_issues_on_project_id_and_serial_id", :unique => true
+
+  create_table "permissions", :force => true do |t|
+    t.integer  "right_id"
+    t.integer  "role_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "platforms", :force => true do |t|
     t.string   "description"
@@ -260,6 +267,14 @@ ActiveRecord::Schema.define(:version => 20111228182425) do
     t.string   "name",        :null => false
     t.integer  "owner_id"
     t.string   "owner_type"
+  end
+
+  create_table "rights", :force => true do |t|
+    t.string   "name",       :null => false
+    t.string   "controller", :null => false
+    t.string   "action",     :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "rpms", :force => true do |t|
