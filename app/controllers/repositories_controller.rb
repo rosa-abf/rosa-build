@@ -68,7 +68,7 @@ class RepositoriesController < ApplicationController
 #      else
 #        @projects = Project.addable_to_repository(@repository.id).paginate(:page => params[:project_page])
 #      end
-      render 'projects_list'
+      render :projects_list
     end
   end
 

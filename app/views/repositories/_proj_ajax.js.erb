@@ -1,12 +1,15 @@
-{"sEcho": <%= params[:sEcho] || -1 %>,
- "iTotalRecords": <%= @total_projects %>,
- "iTotalDisplayRecords": <%= @total_project %>,
- "aaData":[
-<% @projects.each do |project| %>
-  ['<%= link_to(project.owner.uname, project.owner) %>',
-   '<%= link_to(project.name, project) %>',
-   '<%= link_to t("layout.add"), url_for(:controller => :repositories, :action => :add_project, :project_id => project.id) %>'
-  ],
-<% end %>
-]}
+{
+  "sEcho": <%=h params[:sEcho].to_i || -1 %>,
+  "iTotalRecords": <%= @total_projects %>,
+  "iTotalDisplayRecords": <%= @total_project %>,
+  "aaData": [
+  <% @projects.each do |project| %>
+    [
+      "<%=j link_to project.owner.uname, project.owner %>",
+      "<%=j link_to project.name, project %>",
+      "<%=j link_to t("layout.add"), url_for(:controller => :repositories, :action => :add_project, :project_id => project.id) %>"
+    ]<%= project == @projects.last ? '' : ',' %>
+  <% end %>
+  ]
+}
 

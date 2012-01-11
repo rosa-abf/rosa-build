@@ -2,16 +2,12 @@
 = raw datatable(columns, {:sort_by => "[1, 'asc']", :ajax_source => "#{url_for :controller => :repositories, :action => :projects_list, :id => @repository.id}" })
 
 %table.table.datatable
-  %tr
-    %th.first= t("activerecord.attributes.user.uname")
-    %th= t("activerecord.attributes.project.name")
-    %th.last &nbsp;
-  -# @projects.each do |project|
-    %tr{:class => cycle("odd", "even")}
-      %td
-        = link_to project.owner.uname + '/' + project.name, project_path(project)
-      %td.last
-        #{link_to t("layout.show"), project_path(project)} | #{link_to t("layout.add"), url_for(:controller => :repositories, :action => :add_project, :project_id => project.id)}
+  %thead
+    %tr
+      %th.first= t("activerecord.attributes.user.uname")
+      %th= t("activerecord.attributes.project.name")
+      %th.last &nbsp;
+  %tbody
 
 = content_for :javascripts do
   = javascript_include_tag 'jquery.dataTables.min.js'
