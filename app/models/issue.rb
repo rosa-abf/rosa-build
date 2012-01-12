@@ -16,6 +16,7 @@ class Issue < ActiveRecord::Base
   after_create :deliver_new_issue_notification
   after_create :deliver_issue_assign_notification
   after_update :deliver_issue_assign_notification
+  after_update :subscribe_issue_assigned_user
 
   def assign_uname
     user.uname if user
@@ -63,5 +64,14 @@ class Issue < ActiveRecord::Base
     end
 
     recipients
+  end
+
+  def subscribe_issue_assigned_user
+    if self.user_id_was != self.user_id
+      self.subscribes.where(:user_id => self.user_id_was).first.destroy
+      if self.user.notifier.issue_assign && !self.subscribes.exists?(:user_id => self.user_id)
+        self.subscribes.create(:user_id => self.user_id) 
+      end
+    end
   end
 end

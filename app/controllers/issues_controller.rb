@@ -41,12 +41,12 @@ class IssuesController < ApplicationController
 
   def edit
     @user_id = @issue.user_id
-    @user_uname = @issue.user.uname
+    @user_uname = @issue.assign_uname
   end
 
   def update
     @user_id = params[:user_id].blank? ? @issue.user_id : params[:user_id]
-    @user_uname = params[:user_uname].blank? ? @issue.user.uname : params[:user_uname]
+    @user_uname = params[:user_uname].blank? ? @issue.assign_uname : params[:user_uname]
 
     if @issue.update_attributes( params[:issue].merge({:user_id => @user_id}) )
       flash[:notice] = I18n.t("flash.issue.saved")
