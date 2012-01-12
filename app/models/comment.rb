@@ -12,7 +12,7 @@ class Comment < ActiveRecord::Base
     subscribes = self.commentable.subscribes
     subscribes.each do |subscribe|
       recipient = subscribe.user
-      UserMailer.delay.new_comment_notification(self, recipient)
+      UserMailer.delay.new_comment_notification(self, recipient) unless self.user_id == subscribe.user_id
     end
   end
 end
