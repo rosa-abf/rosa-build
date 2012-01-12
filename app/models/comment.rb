@@ -10,8 +10,8 @@ class Comment < ActiveRecord::Base
   protected
 
   def deliver_new_comment_notification
-    return if self.commentable_type = 'Commit'
-    subscribes = self.commentable.try(:subscribes)
+    return if self.commentable_type == 'Grit::Commit' # FIXME
+    subscribes = self.commentable.subscribes
     subscribes.each do |subscribe|
       recipient = subscribe.user
       UserMailer.delay.new_comment_notification(self, recipient)
