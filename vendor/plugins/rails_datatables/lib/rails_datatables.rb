@@ -12,6 +12,22 @@ module RailsDatatables
     auto_width = opts[:auto_width].present? ? opts[:auto_width].to_s : "true"
     row_callback = opts[:row_callback] || nil
 
+    empty_label      = opts[:empty_label]      if opts[:empty_label].present?
+    info_label       = opts[:info_label]       if opts[:info_label].present?
+    info_empty_label = opts[:info_empty_label] if opts[:info_empty_label].present?
+    filtered_label   = opts[:filtered_label]   if opts[:filtered_label].present?
+
+    if opts[:pagination_labels].present?
+      pagination_labels = []
+      pagination_labels << "'sFirst': '#{opts[:pagination_labels][:first]}'" if opts[:pagination_labels][:first].present?
+      pagination_labels << "'sLast': '#{opts[:pagination_labels][:last]}'" if opts[:pagination_labels][:last].present?
+      pagination_labels << "'sPrevious': '#{opts[:pagination_labels][:previous]}'" if opts[:pagination_labels][:previous].present?
+      pagination_labels << "'sNext': '#{opts[:pagination_labels][:next]}'" if opts[:pagination_labels][:next].present?
+      pagination_labels = pagination_labels.join(",\n")
+    else
+      pagination_labels = false
+    end
+
     append = opts[:append] || nil
 
     ajax_source = opts[:ajax_source] || nil
@@ -30,6 +46,17 @@ module RailsDatatables
           "oLanguage": {
             "sSearch": "#{search_label}",
             #{"'sZeroRecords': '#{no_records_message}'," if no_records_message}
+            #{"
+              'oPaginate': {
+                #{pagination_labels}
+              },
+            " if pagination_labels}
+
+            #{"'sEmptyTable': '#{empty_label}',"      if empty_label}
+            #{"'sInfo': '#{info_label}',"             if info_label}
+            #{"'sInfoEmpty': '#{info_empty_label}',"  if info_empty_label}
+            #{"'sInfoFiltered': '#{filtered_label}'," if filtered_label}
+
             "sProcessing": '#{processing}'
           },
           "sPaginationType": "full_numbers",

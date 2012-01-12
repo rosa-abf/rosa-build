@@ -1,13 +1,21 @@
-- columns = [{:type => 'html', :sortable => false, :searchable => false}, {:type => 'html'}, {:type => nil}]
-= raw datatable(columns, {:sort_by => "[1, 'asc']", :ajax_source => "#{url_for :controller => :repositories, :action => :projects_list, :id => @repository.id}" })
+- columns = [{:type => 'html', :searchable => false}, {:type => 'html'}, {:type => nil, :sortable => false, :searchable => false}]
+= raw datatable(columns, {:sort_by => "[1, 'asc']", :search_label => t("layout.search_by_name"), :processing => t("layout.processing"),
+                          :pagination_labels => {:first => t("datatables.first_label"), :previous => t("datatables.previous_label"),
+                                                 :next => t("datatables.next_label"), :last => t("datatables.last_label")},
+                          :empty_label      => t("datatables.empty_label"),
+                          :info_label       => t("datatables.info_label"),
+                          :info_empty_label => t("datatables.info_empty_label"),
+                          :filtered_label   => t("datatables.filtered_label"),
+                          :ajax_source => "#{url_for :controller => :repositories, :action => :projects_list, :id => @repository.id}" })
 
 %table.table.datatable
   %thead
     %tr
-      %th.first= t("activerecord.attributes.user.uname")
+      %th.first{:style => 'width: 80px'}= t("activerecord.attributes.user.uname")
       %th= t("activerecord.attributes.project.name")
       %th.last &nbsp;
   %tbody
+%br
 
 = content_for :javascripts do
   = javascript_include_tag 'jquery.dataTables.min.js'
