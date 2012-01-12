@@ -34,7 +34,7 @@
       = t("layout.issues.comments_header")
     .inner
       %ul.list
-        - Project.commit_comments(@commit).each do |comment|
+        - Project.commit_comments(@commit, @project).each do |comment|
           %li
             .left
               = link_to comment.user.uname, user_path(comment.user.uname)

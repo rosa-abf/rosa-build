@@ -135,8 +135,9 @@ class Project < ActiveRecord::Base
   end
 
   class << self
-    def commit_comments(commit)
-     Comment.where(:commentable_id => commit.id, :commentable_type => 'Commit')
+    def commit_comments(commit, project)
+     comments = Comment.where(:commentable_id => commit.id, :commentable_type => 'Grit::Commit')
+     comments.each {|x| x.project = project}
     end
   end
 

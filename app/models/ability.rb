@@ -1,8 +1,8 @@
 # If rules goes one by one CanCan joins them by 'OR' sql operator
 # If rule has multiple conditions CanCan joins them by 'AND' sql operator
-# WARNING:      
+# WARNING:
 # - put cannot rules _after_ can rules and not before!
-# - beware inner joins. Use sub queries against them! 
+# - beware inner joins. Use sub queries against them!
 
 class Ability
   include CanCan::Ability
@@ -89,9 +89,10 @@ class Ability
         can([:update, :destroy], Issue) {|issue| issue.user_id == user.id or local_admin?(issue.project)}
         cannot :manage, Issue, :project => {:has_issues => false} # switch off issues
 
-        can(:create, Comment) {|comment| can? :read, comment.commentable.project}
-        can(:update, Comment) {|comment| comment.user_id == user.id or local_admin?(comment.commentable.project)}
-        cannot :manage, Comment, :commentable => {:project => {:has_issues => false}} # switch off issues
+        can(:create, Comment) {|comment| can? :read, comment.project || comment.commentable.project}
+        can([:update, :delete], Comment) {|comment| comment.user_id == user.id or local_admin?(comment.project || comment.commentable.project)}
+        #cannot :manage, Comment, :commentable => {:project => {:has_issues => false}} # switch off issues
+        cannot(:manage, Comment) {|comment| comment.commentable_type == 'Issue' && !comment.commentable.project.has_issues} # switch off issues
       end
     end
 
