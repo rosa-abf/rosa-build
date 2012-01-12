@@ -1,7 +1,6 @@
 require 'spec_helper'
 
 shared_examples_for 'issue user with project reader rights' do
-  #it_should_behave_like 'user with rights to view issues'
   it 'should be able to perform index action' do
     get :index, :project_id => @project.id
     response.should render_template(:index)
@@ -62,7 +61,6 @@ end
 shared_examples_for 'project with issues turned off' do
   pending 'should not be able to perform index action' do
     get :index, :project_id => @project_with_turned_off_issues.id
-    #response.should redirect_to(forbidden_path)
     response.should render_template(:index)
   end
 
@@ -78,8 +76,6 @@ describe IssuesController do
 
     @project = Factory(:project)
     @issue_user = Factory(:user)
-    @create_params = {:project => {:name => 'pro'}}
-    @update_params = {:project => {:name => 'pro2'}}
 
     any_instance_of(Project, :versions => ['v1.0', 'v2.0'])
 
@@ -116,8 +112,6 @@ describe IssuesController do
 
   context 'for project admin user' do
     before(:each) do
-      #@admin = Factory(:admin)
-      #set_session_for(@admin)
       @user = Factory(:user)
       set_session_for(@user)
       @project.relations.create!(:object_type => 'User', :object_id => @user.id, :role => 'admin')
@@ -184,7 +178,6 @@ describe IssuesController do
   context 'for issue assign user' do
     before(:each) do
       set_session_for(@issue_user)
-      #@project.relations.create!(:object_type => 'User', :object_id => @user.id, :role => 'writer')
     end
 
     it_should_behave_like 'user with issue update rights'

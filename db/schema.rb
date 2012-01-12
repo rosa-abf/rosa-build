@@ -272,6 +272,14 @@ ActiveRecord::Schema.define(:version => 20111228182425) do
   add_index "rpms", ["project_id", "arch_id"], :name => "index_rpms_on_project_id_and_arch_id"
   add_index "rpms", ["project_id"], :name => "index_rpms_on_project_id"
 
+  create_table "subscribes", :force => true do |t|
+    t.integer  "subscribeable_id"
+    t.string   "subscribeable_type"
+    t.integer  "user_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "users", :force => true do |t|
     t.string   "name"
     t.string   "email",                               :default => "", :null => false

@@ -1,6 +1,5 @@
-# Read about factories at http://github.com/thoughtbot/factory_girl
-
-FactoryGirl.define do
-  factory :comment do
-    end
+Factory.define(:comment) do |p|
+  p.body { Factory.next(:string) }
+  p.association :user, :factory => :user
+  p.association :commentable, :factory => :issue
 end

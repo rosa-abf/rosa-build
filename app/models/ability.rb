@@ -13,6 +13,8 @@ class Ability
 
     if user.admin?
       can :manage, :all
+      cannot :destroy, Subscribe
+      cannot :create, Subscribe
     else
       # Shared rights between guests and registered users
       can :forbidden, Platform
@@ -88,7 +90,7 @@ class Ability
         cannot :manage, Issue, :project => {:has_issues => false} # switch off issues
 
         can(:create, Comment) {|comment| can? :read, comment.commentable.project}
-        can(:update, Comment) {|comment| can? :update, comment.user_id == user.id or local_admin?(comment.commentable.project)}
+        can(:update, Comment) {|comment| comment.user_id == user.id or local_admin?(comment.commentable.project)}
         cannot :manage, Comment, :commentable => {:project => {:has_issues => false}} # switch off issues
       end
     end
@@ -98,6 +100,13 @@ class Ability
     cannot :destroy, Repository, :platform => {:platform_type => 'personal'}
     cannot :fork, Project, :owner_id => user.id, :owner_type => user.class.to_s
     cannot :destroy, Issue
+
+    can :create, Subscribe do |subscribe|
+      !subscribe.subscribeable.subscribes.exists?(:user_id => user.id)
+    end
+    can :destroy, Subscribe do |subscribe|
+      subscribe.subscribeable.subscribes.exists?(:user_id => user.id) && user.id == subscribe.user_id
+    end
   end
 
   # TODO group_ids ??

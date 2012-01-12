@@ -112,11 +112,15 @@ ru:
       new: Новая задача
       list_header: Список
       confirm_delete: Вы уверены, что хотите удалить эту задачу?
+      edit_header: Редактирование задачи
       new_header: Новая задача
       statuses:
         open: Открытые
         closed: Закрытые
         any: Все
+      subscribe: Подписка на уведомления
+      subscribe_btn: Подписаться
+      unsubscribe_btn: Отписаться
 
     comments:
       confirm_delete: Вы уверены, что хотите удалить комментарий?
@@ -360,6 +364,10 @@ ru:
         project_version_not_found: версия не найден
 
   flash:
+    subscribe:
+      saved: Вы подписаны на оповещения для этой задачи
+      destroyed: Подписка на оповещения для этой задачи убрана
+
     exception_message: У Вас нет доступа к этой странице!
 
     downloads:
@@ -500,7 +508,8 @@ ru:
       issue:
         title: Заголовок
         body: Содержание
-        user: Назначено
+        user: Назначена
+        user_id: Назначена
         project: Проект
         status: Статус
 
@@ -664,3 +673,9 @@ ru:
         distro: Дистрибутив
         platform: Архитектура
         counter: Закачки
+  notifications:
+    subjects:
+      new_comment_notification: Новый комментарий к Вашей задаче
+      new_issue_notification: Новая задача добавлена к проекту
+      new_user_notification: Регистрация на проекте «%{ project_name }»
+      issue_assign_notification: Вам назначили задачу
