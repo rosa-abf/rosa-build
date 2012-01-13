@@ -3,6 +3,16 @@ ru:
     previous_label: ‹ Предыдущая
     next_label: Следующая › 
     page_gap: ...
+    
+  datatables:
+    previous_label: ‹ Пред.
+    next_label: След. › 
+    first_label: « Первая
+    last_label: Последняя »
+    empty_label: Нет доступных данных
+    info_label: Показаны записи с _START_ по _END_ из _TOTAL_
+    info_empty_label: Показаны записи с 0 по 0 из 0
+    filtered_label: (отфильтровано из _MAX_)
 
   layout:
     logged_in_as: Вы вошли как
@@ -30,6 +40,7 @@ ru:
     not_access: Нет доступа!
     owner: Владелец
     confirm: Уверенны?
+    processing: Обрабатывается...
 
     downloads:
       title: Статистика закачек пакетов
