@@ -1,8 +1,8 @@
 class CommentsController < ApplicationController
   before_filter :authenticate_user!
-  before_filter :find_comment, :only => [:edit, :update, :destroy]
   before_filter :set_commentable, :only => [:index, :edit, :create, :update]
   #before_filter :find_project, :only => [:index, :edit]
+  before_filter :find_comment, :only => [:edit, :update, :destroy]
 
   authorize_resource :only => [:show, :edit, :update, :destroy]
   authorize_resource :project, :only => [:index]
@@ -75,6 +75,7 @@ class CommentsController < ApplicationController
 
   def find_comment
     @comment = Comment.find(params[:id])
+    @comment.project = @project if @comment.commentable_type == 'Grit::Commit'
   end
 
   def find_project
