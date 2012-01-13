@@ -12,12 +12,11 @@ class Comment < ActiveRecord::Base
   def deliver_new_comment_notification
     subscribes = self.commentable.subscribes
     subscribes.each do |subscribe|
-      recipient = subscribe.user
-      if self.user_id != subscribe.user_id && User.find(recipient).notifier.new_comment_reply && User.find(recipient).notifier.can_notify
-        if self.commentable.comments.exists?(:user_id => recipient.id)
-          UserMailer.delay.new_comment_reply_notification(self, recipient)
+      if self.user_id != subscribe.user_id && User.find(subscribe.user).notifier.new_comment_reply && User.find(subscribe.user).notifier.can_notify
+        if self.commentable.comments.exists?(:user_id => subscribe.user.id)
+          UserMailer.delay.new_comment_reply_notification(self, subscribe.user)
         else
-          UserMailer.delay.new_comment_notification(self, recipient)
+          UserMailer.delay.new_comment_notification(self, subscribe.user)
         end
       end
     end

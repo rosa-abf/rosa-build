@@ -55,7 +55,7 @@ class CommentsController < ApplicationController
     #  end
     #end
     #nil
-    return Issue.find(params[:issue_id])
+    return Issue.find_by_serial_id_and_project_id(params[:issue_id], params[:project_id])
   end
 
   def set_commentable
