@@ -300,13 +300,15 @@ describe BuildListsController do
 
     describe 'publish_build' do
       def do_get(status)
-        get :publish_build, :id => build_list.bs_id, :status => status
+        get :publish_build, :id => build_list.bs_id, :status => status, :version => '4.7.5.3', :release => '1'
         build_list.reload
       end
 
       it { do_get(BuildServer::SUCCESS); response.should be_ok }
       it { lambda{ do_get(BuildServer::SUCCESS) }.should change(build_list, :status).to(BuildList::BUILD_PUBLISHED) }
+      it { lambda{ do_get(BuildServer::SUCCESS) }.should change(build_list, :package_version).to('4.7.5.3-1') }
       it { lambda{ do_get(BuildServer::ERROR) }.should change(build_list, :status).to(BuildList::FAILED_PUBLISH) }
+      it { lambda{ do_get(BuildServer::ERROR) }.should_not change(build_list, :package_version) }
       it { lambda{ do_get(BuildServer::ERROR) }.should change(build_list, :notified_at) }
     end
 
