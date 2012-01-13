@@ -5,6 +5,7 @@ class User < ActiveRecord::Base
          :recoverable, :rememberable, :validatable #, :trackable, :confirmable, :lockable
 
   has_many :authentications, :dependent => :destroy
+  has_many :build_lists, :dependent => :destroy
 
   has_many :relations, :as => :object, :dependent => :destroy
   has_many :targets, :as => :object, :class_name => 'Relation'

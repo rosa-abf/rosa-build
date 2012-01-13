@@ -3,6 +3,16 @@ ru:
     previous_label: ‹ Предыдущая
     next_label: Следующая › 
     page_gap: ...
+    
+  datatables:
+    previous_label: ‹ Пред.
+    next_label: След. › 
+    first_label: « Первая
+    last_label: Последняя »
+    empty_label: Нет доступных данных
+    info_label: Показаны записи с _START_ по _END_ из _TOTAL_
+    info_empty_label: Показаны записи с 0 по 0 из 0
+    filtered_label: (отфильтровано из _MAX_)
 
   layout:
     logged_in_as: Вы вошли как
@@ -30,6 +40,7 @@ ru:
     not_access: Нет доступа!
     owner: Владелец
     confirm: Уверенны?
+    processing: Обрабатывается...
 
     downloads:
       title: Статистика закачек пакетов
@@ -83,6 +94,7 @@ ru:
       confirm_regenerate: Вы уверены, что хотите перегенерировать эту пару логин/пароль?
       regenerate_btn: Перегенерировать
       warning_message: Примечание - При получении новых данных старые становятся недействительными
+
     categories:
       list: Список
       new: Создать
@@ -92,6 +104,27 @@ ru:
       new_header: Новая категория
       edit_header: Редактировать категорию
       confirm_delete: Вы уверены, что хотите удалить эту категорию?
+
+    issues:
+      list: Список
+      edit: Редактировать
+      comments_header: Комментарии
+      new: Новая задача
+      list_header: Список
+      confirm_delete: Вы уверены, что хотите удалить эту задачу?
+      edit_header: Редактирование задачи
+      new_header: Новая задача
+      statuses:
+        open: Открытые
+        closed: Закрытые
+        any: Все
+      subscribe: Подписка на уведомления
+      subscribe_btn: Подписаться
+      unsubscribe_btn: Отписаться
+
+    comments:
+      confirm_delete: Вы уверены, что хотите удалить комментарий?
+      new_header: Новый комментарий
 
     platforms:
       admin_id: Владелец
@@ -214,6 +247,7 @@ ru:
       collaborators: Коллабораторы
       groups: Группы
       edit_collaborators: Изменить список участников
+      issues: Задачи
 
     collaborators:
       back_to_proj: Вернуться к проекту
@@ -280,7 +314,6 @@ ru:
     build_lists:
       filter_header: Фильтр
       current: Текущие
-      all: Все
       created_at_start: "Время постановки на сборку с:"
       created_at_end: "Время постановки на сборку по:"
       notified_at_start: "Время последнего обновления от BS с:"
@@ -291,11 +324,12 @@ ru:
       items_header: Элементы сборки
       no_items_data: Данных нет
       show: Просмотр
-      confirm_publish: Вы уверены, что хотите опубликовать контейнер?
       cancel_button_header: Действие
       cancel_button: Отмена
-      cancel_successed: 'Сборка отменена.'
-      cancel_failed: 'При отмене сборки произошла ошибка!'
+      cancel_success: 'Сборка отменена.'
+      cancel_fail: 'При отмене сборки произошла ошибка!'
+      publish_success: 'Сборка поставлена в очередь на публикацию.'
+      publish_fail: 'При публикации сборки произошла ошибка!'
       
       build_server_status:
         header: Статус сборочного сервера
@@ -314,6 +348,8 @@ ru:
       statuses:
         build_error: ошибка сборки
         build_published: опубликован
+        build_publish: публикуется
+        failed_publish: ошибка публикации
         dependencies_fail: зависимости не найдены
         waiting_for_response: ожидает ответа
         build_pending: ожидает сборку
@@ -328,11 +364,15 @@ ru:
         project_version_not_found: версия не найден
 
   flash:
+    subscribe:
+      saved: Вы подписаны на оповещения для этой задачи
+      destroyed: Подписка на оповещения для этой задачи убрана
+
     exception_message: У Вас нет доступа к этой странице!
 
     downloads:
       statistics_refreshed: Статистика обновлена
-    
+
     collaborators:
       successfully_changed: Список коллабораторов успешно изменен
       error_in_changing: Ошибка изменения списка коллабораторов
@@ -353,11 +393,21 @@ ru:
       failed: Не удалось автоматизировать сборку!
       cancel: Автоматическая сборка проекта отменена!
       cancel_failed: Не удалось отменить автоматическую сборку проекта!
-    
+
     category:
       saved: Категория успешно сохранена
       save_error: Не удалось сохранить категорию
       destroyed: Категория успешно удалена
+
+    comment:
+      saved: Комментарий успешно сохранен
+      save_error: Ошибка сохранения комментария
+      destroyed: Комментарий удален
+
+    issue:
+      saved: Задача успешно сохранена
+      save_error: Не удалось сохранить задачу
+      destroyed: Задача успешно удалена
 
     project:
       saved: Проект успешно сохранен
@@ -378,10 +428,6 @@ ru:
       destroyed: Группа успешно удалена
       user_uname_exists: Пользователь с таким именем уже зарегестрирован
 
-    role:
-      saved: Роль успешно сохранена
-      save_error: Ошибка сохранения роли
-
     repository:
       saved: Репозиторий успешно добавлен
       save_error: Не удалось добавить репозиторий
@@ -399,7 +445,7 @@ ru:
 
     platform:
       saved: Платформа успешно добавлена
-      saved_error: Не удалось создать платформу
+      save_error: Не удалось создать платформу
       freezed: Платформа успешно заморожена
       freeze_error: Не удалось заморозить платформу, попробуйте еще раз
       unfreezed: Платформа успешно разморожена
@@ -412,8 +458,7 @@ ru:
       save_error: Не удалось сохранить билд лист для версии '%{project_version}', платформы '%{bpl}' и архитектуры '%{arch}'
       no_project_version_selected: Выберите какую-нибудь версию
       no_project_version_found: Выбранная версия '%{project_version}' не найдена
-      no_arch_selected: Выберите хотя бы одну ахритектуру
-      no_arch_found: Выбранные ахритектуры не найдены
+      no_arch_or_platform_selected: Выберите хотя бы одну ахритектуру и платформу
       wrong_platform: Для основного репозитория (main) может быть выбран только его же основная платформа!
       can_not_published: Опубликовать сборку можно только со статусом "Собран"
 
@@ -455,7 +500,19 @@ ru:
         pl: Платформа
         arch_id: Архитектура
         arch: Архитектура
-      
+
+      comment:
+        body: Содержание
+        user: Автор
+
+      issue:
+        title: Заголовок
+        body: Содержание
+        user: Назначена
+        user_id: Назначена
+        project: Проект
+        status: Статус
+
       private_user:
         login: Логин
         password: Пароль
@@ -536,6 +593,7 @@ ru:
         repository: Репозиторий
         created_at: Создан
         updated_at: Обновлен
+        has_issues: Включить трэкер
 
       rpm:
         name: Название
@@ -590,6 +648,7 @@ ru:
         is_circle: Циклическая сборка
         notified_at: Информация получена
         additional_repos: Дополнительные репозитории
+        include_repos: Подключаемые репозитории
         updated_at: Обновлен
         created_at: Создан
         pl: Репозиторий для сохранения пакетов
@@ -598,6 +657,7 @@ ru:
         bpl_id: Платформа
         update_type: Критичность обновления
         build_requires: Пересборка с зависимостями
+        auto_publish: Автоматическая публикация
         project_version: Версия
         user: Пользователь
 
@@ -613,3 +673,9 @@ ru:
         distro: Дистрибутив
         platform: Архитектура
         counter: Закачки
+  notifications:
+    subjects:
+      new_comment_notification: Новый комментарий к Вашей задаче
+      new_issue_notification: Новая задача добавлена к проекту
+      new_user_notification: Регистрация на проекте «%{ project_name }»
+      issue_assign_notification: Вам назначили задачу

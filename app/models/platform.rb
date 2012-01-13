@@ -14,7 +14,7 @@ class Platform < ActiveRecord::Base
   has_many :groups,  :through => :objects, :source => :object, :source_type => 'Group'
 
   validates :description, :presence => true, :uniqueness => true
-  validates :name, :uniqueness => true, :presence => true, :format => { :with => /^[a-zA-Z0-9_]+$/ }
+  validates :name, :uniqueness => true, :presence => true, :format => { :with => /^[a-zA-Z0-9_\-]+$/ }
   validates :distrib_type, :presence => true, :inclusion => {:in => APP_CONFIG['distr_types']}
 
   before_create :xml_rpc_create, :unless => lambda {Thread.current[:skip]}
@@ -43,14 +43,17 @@ class Platform < ActiveRecord::Base
       urpmi_commands[pl.name] = []
       local_pair = pl.id != self.id ? blank_pair : pair
       head = hidden? ? "http://#{local_pair[:login]}@#{local_pair[:pass]}:#{host}/private/" : "http://#{host}/downloads/"
-      if pl.distrib_type == APP_CONFIG['distr_types'].first
+      # prefix = prefix_url hidden?, :host => host, :login => local_pair[:login], :password => local_pair[:pass]
+      if pl.distrib_type == APP_CONFIG['distr_types'].first # mdv
         Arch.all.each do |arch|
           tail = "/#{arch.name}/main/release"
           urpmi_commands[pl.name] << "urpmi.addmedia #{name} #{head}#{name}/repository/#{pl.name}#{tail}"
+          # urpmi_commands[pl.name] << "urpmi.addmedia #{name} #{prefix}/#{name}/repository#{pl.downloads_url '', arch.name, 'main', 'release'}"
         end
       else
         tail = ''
         urpmi_commands[pl.name] << "urpmi.addmedia #{name} #{head}#{name}/repository/#{pl.name}#{tail}"
+        # urpmi_commands[pl.name] << "urpmi.addmedia #{name} #{prefix}/#{name}/repository#{pl.downloads_url ''}"
       end
     end
 
@@ -63,6 +66,27 @@ class Platform < ActiveRecord::Base
 
   def mount_path
     Rails.root.join("public", "downloads", name)
+  end
+
+  def prefix_url(pub, options = {})
+    options[:host] ||= EventLog.current_controller.request.host_with_port rescue ::Rosa::Application.config.action_mailer.default_url_options[:host]
+    pub ? "http://#{options[:host]}/downloads" : "http://#{options[:login]}:#{options[:password]}@#{options[:host]}/private"
+  end
+
+  def public_downloads_url(host = nil, arch = nil, repo = nil, suffix = nil)
+    downloads_url prefix_url(true, :host => host), arch, repo, suffix
+  end
+
+  def private_downloads_url(login, password, host = nil, arch = nil, repo = nil, suffix = nil)
+    downloads_url prefix_url(false, :host => host, :login => login, :password => password), arch, repo, suffix
+  end
+
+  def downloads_url(prefix, arch = nil, repo = nil, suffix = nil)
+    "#{prefix}/#{name}/repository/".tap do |url|
+      url << "#{arch}/" if arch.present?
+      url << "#{repo}/" if repo.present?
+      url << "#{suffix}/" if suffix.present?
+    end
   end
 
   def hidden?
@@ -115,9 +139,7 @@ class Platform < ActiveRecord::Base
     system("sudo mkdir -p #{mount_path}")
     system("sudo mount --bind #{path} #{mount_path}")
     Arch.all.each do |arch|
-      host = EventLog.current_controller.request.host_with_port rescue ::Rosa::Application.config.action_mailer.default_url_options[:host]
-      url = "http://#{host}/downloads/#{name}/repository/"
-      str = "country=Russian Federation,city=Moscow,latitude=52.18,longitude=48.88,bw=1GB,version=2011,arch=#{arch.name},type=distrib,url=#{url}\n"
+      str = "country=Russian Federation,city=Moscow,latitude=52.18,longitude=48.88,bw=1GB,version=2011,arch=#{arch.name},type=distrib,url=#{public_downloads_url}\n"
       File.open(File.join(mount_path, "#{name}.#{arch.name}.list"), 'w') {|f| f.write(str) }
     end
   end

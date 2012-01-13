@@ -6,22 +6,20 @@
     %th= t("activerecord.attributes.build_list.project")
     %th= t("activerecord.attributes.build_list.arch")
     %th= t("activerecord.attributes.build_list.user")
-    %th= t("activerecord.attributes.build_list.is_circle")
-    - if controller.action_name = 'all'
+    - unless @project
       %th= t("layout.build_lists.cancel_button_header")
     %th.last= t("activerecord.attributes.build_list.notified_at")
 
   - build_lists.each do |build_list|
     %tr{:class => cycle("odd", "even")}
-      %td= link_to (build_list.bs_id.present? ? build_list.bs_id : t("layout.build_lists.bs_id_not_set")), project_build_list_path(build_list.project, build_list)
+      %td= link_to (build_list.bs_id.present? ? build_list.bs_id : t("layout.build_lists.bs_id_not_set")), build_list
       %td= build_list.human_status
       %td= link_to build_list.project_version, "#"
       %td= link_to build_list.project.name, project_path(build_list.project)
       %td= build_list.arch.name
-      %td= build_list.user.fullname
-      %td= t("layout.#{build_list.is_circle?}_")
-      - if controller.action_name = 'all'
-        %td= link_to t("layout.build_lists.cancel_button"), build_list_cancel_path(build_list) if build_list.can_cancel?
+      %td= build_list.user.try(:fullname)
+      - unless @project
+        %td= link_to t("layout.build_lists.cancel_button"), cancel_build_list_path(build_list), :method => "put", :confirm => t("layout.confirm") if build_list.can_cancel?
       %td.last= build_list.notified_at
 
 = will_paginate build_lists

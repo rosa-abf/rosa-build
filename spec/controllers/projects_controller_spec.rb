@@ -8,17 +8,6 @@ describe ProjectsController do
     @another_user = Factory(:user)
     @create_params = {:project => {:name => 'pro'}}
     @update_params = {:project => {:name => 'pro2'}}
-
-    platform = Factory(:platform)
-    @process_build_params = {:build => {
-      :arches => {Factory(:arch).id => '1'}, 
-      :project_version => 'v1.0',
-      :bpl => {platform.id => '1'},
-      :pl => platform.id,
-      :update_type => 'security'
-    }}
-
-    any_instance_of(Project, :versions => ['v1.0', 'v2.0'])
 	end
 
 	context 'for guest' do
@@ -39,7 +28,7 @@ describe ProjectsController do
   		set_session_for(@admin)
 		end
 
-    it_should_behave_like 'projects user with writer rights'
+    it_should_behave_like 'projects user with admin rights'
     it_should_behave_like 'projects user with reader rights'
 
     it 'should be able to perform create action' do
@@ -60,7 +49,7 @@ describe ProjectsController do
   		@project.relations.create!(:object_type => 'User', :object_id => @user.id, :role => 'admin')
 		end
 
-    it_should_behave_like 'projects user with writer rights'
+    it_should_behave_like 'projects user with admin rights'
     it_should_behave_like 'user with rights to view projects'
 
     it 'should be able to perform destroy action' do
@@ -101,7 +90,6 @@ describe ProjectsController do
   		@project.relations.create!(:object_type => 'User', :object_id => @user.id, :role => 'writer')
 		end
 
-    it_should_behave_like 'projects user with writer rights'
     it_should_behave_like 'projects user with reader rights'
   end
 

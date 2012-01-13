@@ -25,8 +25,49 @@ describe BuildListsController do
       response.should redirect_to(forbidden_url)
     end
   end
+  
+  shared_examples_for 'create build list' do
+    it 'should be able to perform new action' do
+      get :new, :project_id => @project.id
+      response.should render_template(:new)
+    end
+
+    it 'should be able to perform create action' do
+      post :create, {:project_id => @project.id}.merge(@create_params)
+      response.should redirect_to(@project)
+    end
+  end
+
+  shared_examples_for 'not create build list' do
+    it 'should not be able to perform new action' do
+      get :new, :project_id => @project.id
+      response.should redirect_to(forbidden_url)
+    end
+
+    it 'should not be able to perform create action' do
+      post :create, {:project_id => @project.id}.merge(@create_params)
+      response.should redirect_to(forbidden_url)
+    end
+  end
+
+  before { stub_rsync_methods }
 
   context 'crud' do
+    before(:each) do
+      platform = Factory(:platform_with_repos)
+      @create_params = {
+        :build_list => { 
+          :project_version => 'v1.0',
+          :pl_id => platform.id,
+          :update_type => 'security',
+          :include_repos => [platform.repositories.first.id]
+        },
+        :arches => [Factory(:arch).id],
+        :bpls => [platform.id]
+      }
+      any_instance_of(Project, :versions => ['v1.0', 'v2.0'])
+    end
+
     context 'for guest' do
       it 'should not be able to perform index action' do
         get :index
@@ -36,7 +77,6 @@ describe BuildListsController do
 
     context 'for user' do
       before(:each) do
-        stub_rsync_methods
         @build_list = Factory(:build_list_core)
         @project = @build_list.project
         @owner_user = @project.owner
@@ -47,7 +87,6 @@ describe BuildListsController do
         @user = Factory(:user)
         set_session_for(@user)
         @show_params = {:project_id => @project.id, :id => @build_list.id}
-
       end
   
       context 'for all build lists' do
@@ -55,9 +94,8 @@ describe BuildListsController do
           @build_list1 = Factory(:build_list_core)
           @build_list2 = Factory(:build_list_core, :project => Factory(:project, :visibility => 'hidden'))
           @build_list3 = Factory(:build_list_core, :project => Factory(:project, :owner => @user, :visibility => 'hidden'))
-            b = Factory(:build_list_core, :project => Factory(:project, :visibility => 'hidden'))
-            b.project.relations.create :role => 'reader', :object_id => @user.id, :object_type => 'User'
-          @build_list4 = b
+          @build_list4 = Factory(:build_list_core, :project => Factory(:project, :visibility => 'hidden'))
+          @build_list4.project.relations.create :role => 'reader', :object_id => @user.id, :object_type => 'User'
         end
 
         it 'should be able to perform index action' do
@@ -76,15 +114,18 @@ describe BuildListsController do
 
       context 'for open project' do
         it_should_behave_like 'show build list'
+        it_should_behave_like 'not create build list'
 
         context 'if user is project owner' do
           before(:each) {set_session_for(@owner_user)}
           it_should_behave_like 'show build list'
+          it_should_behave_like 'create build list'
         end
 
-        context 'if user is project member' do
+        context 'if user is project read member' do
           before(:each) {set_session_for(@member_user)}
           it_should_behave_like 'show build list'
+          it_should_behave_like 'not create build list'
         end
       end
 
@@ -95,23 +136,24 @@ describe BuildListsController do
         end
 
         it_should_behave_like 'not show build list'
+        it_should_behave_like 'not create build list'
 
         context 'if user is project owner' do
           before(:each) {set_session_for(@owner_user)}
           it_should_behave_like 'show build list'
+          it_should_behave_like 'create build list'
         end
 
-        context 'if user is project member' do
+        context 'if user is project read member' do
           before(:each) {set_session_for(@member_user)}
           it_should_behave_like 'show build list'
+          it_should_behave_like 'not create build list'
         end
       end
-
     end
 
     context 'for group' do
       before(:each) do
-        stub_rsync_methods
         @owner_group = Factory(:group)
         @owner_user = Factory(:user)
         @owner_group.objects.create :role => 'reader', :object_id => @owner_user.id, :object_type => 'User'
@@ -137,9 +179,8 @@ describe BuildListsController do
           @build_list1 = Factory(:build_list_core)
           @build_list2 = Factory(:build_list_core, :project => Factory(:project, :visibility => 'hidden'))
           @build_list3 = Factory(:build_list_core, :project => Factory(:project, :owner => @group, :visibility => 'hidden'))
-            b = Factory(:build_list_core, :project => Factory(:project, :visibility => 'hidden'))
-            b.project.relations.create :role => 'reader', :object_id => @group.id, :object_type => 'Group'
-          @build_list4 = b
+          @build_list4 = Factory(:build_list_core, :project => Factory(:project, :visibility => 'hidden'))
+          @build_list4.project.relations.create :role => 'reader', :object_id => @group.id, :object_type => 'Group'
         end
 
         it 'should be able to perform index action' do
@@ -158,15 +199,18 @@ describe BuildListsController do
 
       context 'for open project' do
         it_should_behave_like 'show build list'
+        it_should_behave_like 'not create build list'
 
         context 'if user is group owner' do
           before(:each) {set_session_for(@owner_user)}
           it_should_behave_like 'show build list'
+          it_should_behave_like 'create build list'
         end
 
-        context 'if user is group member' do
+        context 'if user is group read member' do
           before(:each) {set_session_for(@member_user)}
           it_should_behave_like 'show build list'
+          it_should_behave_like 'not create build list'
         end
       end
 
@@ -177,15 +221,18 @@ describe BuildListsController do
         end
 
         it_should_behave_like 'not show build list'
+        it_should_behave_like 'not create build list'
 
         context 'if user is group owner' do
           before(:each) {set_session_for(@owner_user)}
           it_should_behave_like 'show build list'
+          it_should_behave_like 'create build list'
         end
 
-        context 'if user is group member' do
+        context 'if user is group read member' do
           before(:each) {set_session_for(@member_user)}
           it_should_behave_like 'show build list'
+          it_should_behave_like 'not create build list'
         end
       end
 
@@ -210,7 +257,6 @@ describe BuildListsController do
   context 'filter' do
     
     before(:each) do 
-      stub_rsync_methods
       set_session_for Factory(:admin)
 
       @build_list1 = Factory(:build_list_core)
@@ -250,5 +296,99 @@ describe BuildListsController do
   end
 
   context 'callbacks' do
+    let(:build_list) { Factory(:build_list_core) }
+
+    describe 'publish_build' do
+      def do_get(status)
+        get :publish_build, :id => build_list.bs_id, :status => status
+        build_list.reload
+      end
+
+      it { do_get(BuildServer::SUCCESS); response.should be_ok }
+      it { lambda{ do_get(BuildServer::SUCCESS) }.should change(build_list, :status).to(BuildList::BUILD_PUBLISHED) }
+      it { lambda{ do_get(BuildServer::ERROR) }.should change(build_list, :status).to(BuildList::FAILED_PUBLISH) }
+      it { lambda{ do_get(BuildServer::ERROR) }.should change(build_list, :notified_at) }
+    end
+
+    describe 'status_build' do
+      before { @item = build_list.items.create(:name => build_list.project.name, :version => build_list.project_version, :level => 0) }
+
+      def do_get
+        get :status_build, :id => build_list.bs_id, :package_name => build_list.project.name, :status => BuildServer::SUCCESS, :container_path => '/path/to'
+        build_list.reload
+        @item.reload
+      end
+
+      it { do_get; response.should be_ok }
+      it { lambda{ do_get }.should change(@item, :status) }
+      it { lambda{ do_get }.should change(build_list, :container_path) }
+      it { lambda{ do_get }.should change(build_list, :notified_at) }
+    end
+
+    describe 'pre_build' do
+      def do_get
+        get :pre_build, :id => build_list.bs_id
+        build_list.reload
+      end
+
+      it { do_get; response.should be_ok }
+      it { lambda{ do_get }.should change(build_list, :status).to(BuildServer::BUILD_STARTED) }
+      it { lambda{ do_get }.should change(build_list, :notified_at) }
+    end
+
+    describe 'post_build' do
+      def do_get(status)
+        get :post_build, :id => build_list.bs_id, :status => status, :container_path => '/path/to'
+        build_list.reload
+      end
+
+      it { do_get(BuildServer::SUCCESS); response.should be_ok }
+      it { lambda{ do_get(BuildServer::SUCCESS) }.should change(build_list, :container_path) }
+      it { lambda{ do_get(BuildServer::SUCCESS) }.should change(build_list, :notified_at) }
+
+      context 'with auto_publish' do
+        it { lambda{ do_get(BuildServer::SUCCESS) }.should change(build_list, :status).to(BuildList::BUILD_PUBLISH) }
+        it { lambda{ do_get(BuildServer::ERROR) }.should change(build_list, :status).to(BuildServer::ERROR) }
+      end
+
+      context 'without auto_publish' do
+        before { build_list.update_attribute(:auto_publish, false) }
+
+        it { lambda{ do_get(BuildServer::SUCCESS) }.should change(build_list, :status).to(BuildServer::SUCCESS) }
+        it { lambda{ do_get(BuildServer::ERROR) }.should change(build_list, :status).to(BuildServer::ERROR) }
+      end
+    end
+
+    describe 'circle_build' do
+      def do_get
+        get :circle_build, :id => build_list.bs_id, :container_path => '/path/to'
+        build_list.reload
+      end
+
+      it { do_get; response.should be_ok }
+      it { lambda{ do_get }.should change(build_list, :is_circle).to(true) }
+      it { lambda{ do_get }.should change(build_list, :container_path) }
+      it { lambda{ do_get }.should change(build_list, :notified_at) }
+    end
+
+    describe 'new_bbdt' do
+      before { @items = build_list.items }
+
+      def do_get
+        get :new_bbdt, :id => 123, :web_id => build_list.id, :name => build_list.project.name, :is_circular => 1,
+            :additional_repos => ActiveSupport::JSON.encode([{:name => 'build_repos'}, {:name => 'main'}]),
+            :items => ActiveSupport::JSON.encode(0 => [{:name => build_list.project.name, :version => build_list.project_version}])
+        build_list.reload
+        @items.reload
+      end
+
+      it { do_get; response.should be_ok }
+      it { lambda{ do_get }.should change(build_list, :name).to(build_list.project.name) }
+      it { lambda{ do_get }.should change(build_list, :additional_repos) }
+      it { lambda{ do_get }.should change(@items, :first) }
+      it { lambda{ do_get }.should change(build_list, :is_circle).to(true) }
+      it { lambda{ do_get }.should change(build_list, :bs_id).to(123) }
+      it { lambda{ do_get }.should change(build_list, :notified_at) }
+    end
   end
 end

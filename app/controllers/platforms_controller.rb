@@ -30,7 +30,7 @@ class PlatformsController < ApplicationController
                           {:name => p.name,
                            :architectures => ['i586', 'x86_64'],
                            :repositories => p.repositories.map(&:name),
-                           :url => "http://#{request.host_with_port}/downloads/#{p.name}/repository/"}
+                           :url => p.public_downloads_url(request.host_with_port)}
                         end
         }
       end
@@ -64,7 +64,7 @@ class PlatformsController < ApplicationController
       flash[:notice] = I18n.t("flash.platform.saved")
       redirect_to @platform
     else
-      flash[:error] = I18n.t("flash.platform.saved_error")
+      flash[:error] = I18n.t("flash.platform.save_error")
       render :action => :new
     end
   end
@@ -81,7 +81,7 @@ class PlatformsController < ApplicationController
       flash[:notice] = I18n.t("flash.platform.saved")
       redirect_to @platform
     else
-      flash[:error] = I18n.t("flash.platform.saved_error")
+      flash[:error] = I18n.t("flash.platform.save_error")
       render :action => :new
     end
   end

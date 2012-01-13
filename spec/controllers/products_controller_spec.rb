@@ -61,8 +61,7 @@ describe ProductsController do
   	before(:each) do
   		@user = Factory(:user)
   		set_session_for(@user)
-      r = @product.relations.create!(:object_type => 'User', :object_id => @user.id, :role => 'admin')
-      r = @platform.relations.create!(:object_type => 'User', :object_id => @user.id, :role => 'admin')
+      @platform.relations.create!(:object_type => 'User', :object_id => @user.id, :role => 'admin')
 		end
 
     it 'should be able to perform create action' do

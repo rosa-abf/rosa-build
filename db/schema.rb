@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20111221194422) do
+ActiveRecord::Schema.define(:version => 20111228182425) do
 
   create_table "arches", :force => true do |t|
     t.string   "name",       :null => false
@@ -71,6 +71,7 @@ ActiveRecord::Schema.define(:version => 20111221194422) do
     t.integer  "pl_id"
     t.text     "include_repos"
     t.integer  "user_id"
+    t.boolean  "auto_publish",     :default => true
   end
 
   add_index "build_lists", ["arch_id"], :name => "index_build_lists_on_arch_id"
@@ -81,6 +82,15 @@ ActiveRecord::Schema.define(:version => 20111221194422) do
     t.string   "name"
     t.string   "ancestry"
     t.integer  "projects_count", :default => 0, :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "comments", :force => true do |t|
+    t.integer  "commentable_id"
+    t.string   "commentable_type"
+    t.integer  "user_id"
+    t.text     "body"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -141,6 +151,19 @@ ActiveRecord::Schema.define(:version => 20111221194422) do
     t.datetime "updated_at"
     t.string   "uname"
   end
+
+  create_table "issues", :force => true do |t|
+    t.integer  "serial_id"
+    t.integer  "project_id"
+    t.integer  "user_id"
+    t.string   "title"
+    t.text     "body"
+    t.string   "status"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "issues", ["project_id", "serial_id"], :name => "index_issues_on_project_id_and_serial_id", :unique => true
 
   create_table "platforms", :force => true do |t|
     t.string   "description"
@@ -214,6 +237,7 @@ ActiveRecord::Schema.define(:version => 20111221194422) do
     t.text     "description"
     t.string   "ancestry"
     t.boolean  "has_wiki"
+    t.boolean  "has_issues",  :default => true
   end
 
   add_index "projects", ["category_id"], :name => "index_projects_on_category_id"
@@ -248,6 +272,14 @@ ActiveRecord::Schema.define(:version => 20111221194422) do
 
   add_index "rpms", ["project_id", "arch_id"], :name => "index_rpms_on_project_id_and_arch_id"
   add_index "rpms", ["project_id"], :name => "index_rpms_on_project_id"
+
+  create_table "subscribes", :force => true do |t|
+    t.integer  "subscribeable_id"
+    t.string   "subscribeable_type"
+    t.integer  "user_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "users", :force => true do |t|
     t.string   "name"

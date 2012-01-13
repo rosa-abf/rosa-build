@@ -1,0 +1,56 @@
+.block
+  .secondary-navigation
+    %ul.wat-cf
+      %li.first= link_to t("layout.issues.list"), project_issues_path(@project)
+      %li= link_to t("layout.issues.edit"), edit_project_issue_path(@project, @issue) if can? :edit, @issue
+  .content
+    .inner
+      %p
+        %b
+          = t("activerecord.attributes.issue.title")
+          \:
+        = @issue.title
+      %p
+        %b
+          = t("activerecord.attributes.issue.body")
+          \:
+        = @issue.body
+      %p
+        %b
+          = t('activerecord.attributes.issue.status')
+          \:
+        = @issue.status
+      %p
+        %b
+          = t('layout.issues.subscribe')
+          \:
+        - if @issue.subscribes.exists? :user_id => current_user.id
+          = link_to t('layout.issues.unsubscribe_btn'), project_issue_subscribe_path(@project, @issue, current_user.id), :method => :delete
+        - else
+          = link_to t('layout.issues.subscribe_btn'), project_issue_subscribes_path(@project, @issue), :method => :post
+
+%a{ :name => "comments" }
+.block#block-list
+  .content
+    %h2.title
+      = t("layout.issues.comments_header")
+    .inner
+      %ul.list
+        - @issue.comments.each do |comment|
+          %li
+            .left
+              = link_to comment.user.uname, user_path(comment.user.uname)
+            .item
+              = comment.body
+              %br
+              %br
+              = link_to t("layout.edit"), edit_project_issue_comment_path(@project, @issue.id, comment) if can? :update, comment
+              = link_to image_tag("web-app-theme/icons/cross.png", :alt => t("layout.delete")) + " " + t("layout.delete"), project_issue_comment_path(@project, @issue.id, comment), :method => "delete", :class => "button", :confirm => t("layout.comments.confirm_delete") if can? :delete, comment
+
+.block
+  .content
+    %h2.title
+      = t("layout.comments.new_header")
+    .inner
+      = form_for :comment, :url => project_issue_comments_path(@project, @issue), :method => :post, :html => { :class => :form } do |f|
+        = render :partial => "comments/form", :locals => {:f => f}

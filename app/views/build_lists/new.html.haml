@@ -1,0 +1,66 @@
+.block
+  .secondary-navigation
+    %ul.wat-cf
+      %li.first=# link_to t("layout.projects.list"), platform_repository_path(@platform, @repository) + "#projects"
+      %li= link_to t("layout.projects.new"), new_project_path
+      %li= link_to t("layout.projects.show"), project_path(@project)
+      %li=# link_to "git-repo", project_repo_path(@platform, @repository, @project)
+      %li.active= link_to t("layout.projects.build"), new_project_build_list_path(@project)
+
+  .content
+    %h2.title= t("layout.projects.new_build", :project_name => @project.name)
+
+    .inner
+      = form_for [@project, @build_list], :html => { :class => :form, :method => :post } do |f|
+        .columns.wat-cf
+          .column.left
+            .group
+              = f.label :project_version, t("activerecord.attributes.build_list.project_version"), :class => :label
+              = f.select :project_version, @project.versions
+              
+            .group.base_platforms
+              = f.label :bpl, t("activerecord.attributes.build_list.bpl"), :class => :label
+              - Platform.main.each do |bpl|
+                = check_box_tag "bpls[]", bpl.id, (params[:bpls]||[]).include?(bpl.id.to_s), :class => 'build_bpl_ids', :id => "bpls_#{bpl.id}"
+                = label_tag "bpls_#{bpl.id}", bpl.name
+                %br
+
+            .group
+              = f.label :update_type, t("activerecord.attributes.build_list.update_type"), :class => :label
+              = f.select :update_type, BuildList::UPDATE_TYPES
+
+            .group
+              = f.check_box :build_requires
+              = f.label :build_requires, t("activerecord.attributes.build_list.build_requires")
+
+
+          .column.right
+            .group
+              = f.label :arches, t("activerecord.attributes.build_list.arch"), :class => :label
+              - Arch.recent.each do |arch|
+                = check_box_tag "arches[]", arch.id, (params[:arches]||[]).include?(arch.id.to_s), :id => "arches_#{arch.id}"
+                = label_tag "arches_#{arch.id}", arch.name
+                %br
+
+            .group
+              = f.label :pl_id, t("activerecord.attributes.build_list.pl"), :class => :label
+              = f.select :pl_id, @project.repositories.collect{|r| ["#{r.platform.name}/#{r.name}", r.platform.id]}
+
+            .group
+              = f.label :include_repos, t("activerecord.attributes.build_list.include_repos"), :class => :label
+              #include_repos
+
+            .group
+              = f.check_box :auto_publish
+              = f.label :auto_publish, t("activerecord.attributes.build_list.auto_publish")
+
+        .group.navform.wat-cf
+          %button.button{:type => "submit"}
+            = image_tag("web-app-theme/icons/tick.png", :alt => t("layout.projects.build_button"))
+            = t("layout.projects.build_button")
+          %span.text_button_padding= t("layout.or")
+          = link_to t("layout.cancel"), root_path, :class => "text_button_padding link_button"          
+
+.preloaded_include_repos{:style => 'display: none'}
+  - @project.platforms.each do |p|
+    %div{:class => "include_repos_#{p.id}"}= render 'include_repos', :platform => p

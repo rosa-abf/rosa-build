@@ -1,0 +1,18 @@
+%table.table
+  %tr
+    %th.first= t("activerecord.attributes.issue.title")
+    %th.first= t("activerecord.attributes.issue.user")
+    %th.first= t("activerecord.attributes.issue.status")
+    %th.last &nbsp;
+  - @issues.each do |issue|
+    %tr{:class => cycle("odd", "even")}
+      %td
+        = link_to issue.title, [@project, issue]
+      %td
+        = link_to issue.user.uname, user_path(issue.user) if issue.user
+      %td
+        = issue.status
+      %td.last
+        = link_to t("layout.show"), [@project, issue]
+        |
+        = link_to t("layout.delete"), project_issue_path(@project, issue), :method => :delete, :confirm => t("layout.issues.confirm_delete")  if can? :destroy, issue

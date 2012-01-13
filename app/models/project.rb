@@ -4,6 +4,7 @@ class Project < ActiveRecord::Base
   belongs_to :category, :counter_cache => true
   belongs_to :owner, :polymorphic => true
 
+  has_many :issues, :dependent => :destroy
   has_many :build_lists, :dependent => :destroy
   has_many :auto_build_lists, :dependent => :destroy
 
@@ -134,6 +135,10 @@ class Project < ActiveRecord::Base
     else
       raise "Failed to delete repository #{name} (repo main) inside platform #{owner.uname}_personal with code #{result}."
     end
+  end
+
+  def platforms
+    @platforms ||= repositories.map(&:platform).uniq
   end
 
   protected
