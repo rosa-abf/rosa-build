@@ -18,6 +18,14 @@ class UserMailer < ActionMailer::Base
     end
   end
 
+  def new_comment_reply_notification(comment, user)
+    @user = user
+    @comment = comment
+    mail(:to => user.email, :subject => I18n.t("notifications.subjects.new_comment_reply_notification")) do |format|
+      format.html
+    end
+  end
+
   def new_issue_notification(issue, user)
     @user = user
     @issue = issue

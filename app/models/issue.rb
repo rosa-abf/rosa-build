@@ -26,6 +26,12 @@ class Issue < ActiveRecord::Base
     serial_id.to_s
   end
 
+  def subscribe_creator(creator_id)
+    if !self.subscribes.exists?(:user_id => creator_id)
+      self.subscribes.create(:user_id => creator_id)
+    end
+  end
+
   protected
 
   def set_serial_id
@@ -37,12 +43,12 @@ class Issue < ActiveRecord::Base
     recipients = collect_recipient_ids
     recipients.each do |recipient_id|
       recipient = User.find(recipient_id)
-      UserMailer.delay.new_issue_notification(self, recipient)#.deliver
+      UserMailer.delay.new_issue_notification(self, recipient) if User.find(recipient).notifier.can_notify && User.find(recipient).notifier.new_issue
     end
   end
 
   def deliver_issue_assign_notification
-    UserMailer.delay.issue_assign_notification(self, self.user) if self.user_id_was != self.user_id && self.user.notifier.issue_assign
+    UserMailer.delay.issue_assign_notification(self, self.user) if self.user_id_was != self.user_id && self.user.notifier.issue_assign && self.user.notifier.can_notify
   end
 
   def subscribe_users
@@ -60,7 +66,7 @@ class Issue < ActiveRecord::Base
 
     # filter by notification settings
     recipients = recipients.select do |recipient|
-      User.find(recipient).notifier.new_issue
+      User.find(recipient).notifier.new_issue && User.find(recipient).notifier.can_notify
     end
 
     recipients
@@ -68,9 +74,9 @@ class Issue < ActiveRecord::Base
 
   def subscribe_issue_assigned_user
     if self.user_id_was != self.user_id
-      self.subscribes.where(:user_id => self.user_id_was).first.destroy
+      self.subscribes.where(:user_id => self.user_id_was).first.destroy unless self.user_id_was.blank?
       if self.user.notifier.issue_assign && !self.subscribes.exists?(:user_id => self.user_id)
-        self.subscribes.create(:user_id => self.user_id) 
+        self.subscribes.create(:user_id => self.user_id)
       end
     end
   end

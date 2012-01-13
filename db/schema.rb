@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120111135443) do
+ActiveRecord::Schema.define(:version => 20120113121748) do
 
   create_table "arches", :force => true do |t|
     t.string   "name",       :null => false
@@ -158,7 +158,7 @@ ActiveRecord::Schema.define(:version => 20120111135443) do
     t.integer  "user_id"
     t.string   "title"
     t.text     "body"
-    t.string   "status"
+    t.string   "status",     :default => "open"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -274,6 +274,7 @@ ActiveRecord::Schema.define(:version => 20120111135443) do
 
   create_table "settings_notifiers", :force => true do |t|
     t.integer  "user_id",                             :null => false
+    t.boolean  "can_notify",        :default => true
     t.boolean  "new_comment",       :default => true
     t.boolean  "new_comment_reply", :default => true
     t.boolean  "new_issue",         :default => true
