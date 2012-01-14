@@ -52,6 +52,10 @@ shared_examples_for 'user without destroy comment rights' do
     delete :destroy, :id => @comment.id, :commit_id => @commit.id, :project_id => @project.id
     response.should redirect_to(forbidden_path)
   end
+
+  it 'should not reduce comments count' do
+    lambda{ delete :destroy, :id => @comment.id, :commit_id => @commit.id, :project_id => @project.id }.should change{ Comment.count }.by(0)
+  end
 end
 
 #shared_examples_for 'user with destroy rights' do
@@ -98,22 +102,21 @@ describe CommentsController do
     it_should_behave_like 'user without destroy comment rights'
   end
 
-  #~ context 'for project owner user' do
-    #~ before(:each) do
-      #~ @user = Factory(:user)
-      #~ set_session_for(@user)
-      #~ @project.update_attribute(:owner, @user)
-      #~ @project.relations.create!(:object_type => 'User', :object_id => @user.id, :role => 'admin')
+  context 'for project owner user' do
+    before(:each) do
+      @user = @project.owner
+      set_session_for(@user)
+      @project.relations.create!(:object_type => 'User', :object_id => @user.id, :role => 'admin')
 
-      #~ @own_comment = Factory(:comment, :user => @user)
-      #~ @own_comment.update_attributes(:commentable_type => @commit.class.name, :commentable_id => @commit.id)
-    #~ end
+      @own_comment = Factory(:comment, :user => @user)
+      @own_comment.update_attributes(:commentable_type => @commit.class.name, :commentable_id => @commit.id)
+    end
 
-   #~ it_should_behave_like 'user with create comment rights'
-   #~ it_should_behave_like 'user with update stranger comment rights'
-   #~ it_should_behave_like 'user with update own comment rights'
-   #~ it_should_behave_like 'user without destroy comment rights'
-  #~ end
+   it_should_behave_like 'user with create comment rights'
+   it_should_behave_like 'user with update stranger comment rights'
+   it_should_behave_like 'user with update own comment rights'
+   it_should_behave_like 'user without destroy comment rights'
+  end
 
   context 'for project reader user' do
     before(:each) do

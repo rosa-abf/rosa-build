@@ -1,6 +1,6 @@
 class CommentsController < ApplicationController
   before_filter :authenticate_user!
-  before_filter :set_commentable, :only => [:index, :edit, :create, :update]
+  before_filter :set_commentable, :only => [:index, :edit, :create, :update, :destroy]
   #before_filter :find_project, :only => [:index, :edit]
   before_filter :find_comment, :only => [:edit, :update, :destroy]
 
