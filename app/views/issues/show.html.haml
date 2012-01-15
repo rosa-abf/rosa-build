@@ -29,28 +29,4 @@
         - else
           = link_to t('layout.issues.subscribe_btn'), project_issue_subscribes_path(@project, @issue), :method => :post
 
-%a{ :name => "comments" }
-.block#block-list
-  .content
-    %h2.title
-      = t("layout.issues.comments_header")
-    .inner
-      %ul.list
-        - @issue.comments.each do |comment|
-          %li
-            .left
-              = link_to comment.user.uname, user_path(comment.user.uname)
-            .item
-              = comment.body
-              %br
-              %br
-              = link_to t("layout.edit"), edit_project_issue_comment_path(@project, @issue.id, comment) if can? :update, comment
-              = link_to image_tag("web-app-theme/icons/cross.png", :alt => t("layout.delete")) + " " + t("layout.delete"), project_issue_comment_path(@project, @issue.id, comment), :method => "delete", :class => "button", :confirm => t("layout.comments.confirm_delete") if can? :delete, comment
-
-.block
-  .content
-    %h2.title
-      = t("layout.comments.new_header")
-    .inner
-      = form_for :comment, :url => project_issue_comments_path(@project, @issue.id), :method => :post, :html => { :class => :form } do |f|
-        = render :partial => "comments/form", :locals => {:f => f}
+= render :partial => "comments/list", :locals => {:list => @issue.comments, :project => @project, :commentable => @issue}
