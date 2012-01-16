@@ -1,0 +1,65 @@
+#gollum-editor-function-bar
+  #gollum-editor-function-buttons
+    = link_to "#", :id => "function-bold", :class => "function-button" do
+      %span= t("layout.wiki.bold")
+    = link_to "#", :id => "function-italic", :class => "function-button" do
+      %span= t("layout.wiki.italic")
+    = link_to "#", :id => "function-code", :class => "function-button" do
+      %span= t("layout.wiki.code")
+
+    %span.function-divider
+      &nbsp;
+
+    = link_to "#", :id => "function-ul", :class => "function-button" do
+      %span= t("layout.wiki.unordered_list")
+    = link_to "#", :id => "function-ol", :class => "function-button" do
+      %span= t("layout.wiki.ordered_list")
+    = link_to "#", :id => "function-blockquote", :class => "function-button" do
+      %span= t("layout.wiki.blockquote")
+    = link_to "#", :id => "function-hr", :class => "function-button" do
+      %span= t("layout.wiki.horizontal_rule")
+
+    %span.function-divider
+      &nbsp;
+
+    = link_to "#", :id => "function-h1", :class => "function-button" do
+      %span= t("layout.wiki.h1")
+    = link_to "#", :id => "function-h2", :class => "function-button" do
+      %span= t("layout.wiki.h2")
+    = link_to "#", :id => "function-h3", :class => "function-button" do
+      %span= t("layout.wiki.h3")
+
+    %span.function-divider
+      &nbsp;
+
+    = link_to "#", :id => "function-link", :class => "function-button" do
+      %span= t("layout.wiki.link")
+    = link_to "#", :id => "function-image", :class => "function-button" do
+      %span= t("layout.wiki.image")
+
+    %span.function-divider
+      &nbsp;
+
+    = link_to "#", :id => "function-help", :class => "function-button" do
+      %span= t("layout.wiki.help")
+
+  #gollum-editor-format-selector
+    = select_tag :format, options_for_select(formats, format), :id => "wiki_format"
+    = label_tag :format, t("layout.wiki.format")
+#gollum-editor-help.jaws
+  %ul#gollum-editor-help-parent
+    %li= link_to t("layout.wiki.help_1"), "javascript:void(0);", :class => "selected"
+    %li= link_to t("layout.wiki.help_1"), "javascript:void(0);"
+    %li= link_to t("layout.wiki.help_1"), "javascript:void(0);"
+  %ul#gollum-editor-help-list
+    %li= link_to t("layout.wiki.help_2"), "javascript:void(0);"
+    %li= link_to t("layout.wiki.help_3"), "javascript:void(0);"
+    %li= link_to t("layout.wiki.help_4"), "javascript:void(0);"
+    %li= link_to t("layout.wiki.help_5"), "javascript:void(0);"
+    %li= link_to t("layout.wiki.help_6"), "javascript:void(0);"
+    %li= link_to t("layout.wiki.help_7"), "javascript:void(0);"
+    %li= link_to t("layout.wiki.help_8"), "javascript:void(0);"
+  #gollum-editor-help-wrapper
+    #gollum-editor-help-content
+      %p
+

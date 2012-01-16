@@ -2,7 +2,8 @@ require 'lib/gollum'
 require 'cgi'
 
 class WikiController < ApplicationController
-  WIKI_OPTIONS = {:page_file_dir => '/', :ref => 'master', :page_class => Gollum::PageImproved}
+#  WIKI_OPTIONS = {:page_file_dir => '/', :ref => 'master', :page_class => Gollum::PageImproved}
+  WIKI_OPTIONS = { :page_class => Gollum::PageImproved}
 
   load_and_authorize_resource :project
 
@@ -15,22 +16,28 @@ class WikiController < ApplicationController
       @content = page.formatted_data
       @editable = true
       render :show
+    elsif file = @wiki.file(@name)
+      render :text => file.raw_data, :content_type => file.mime_type
     else
+      @new = true
+      @content = ''
       render :new
     end
   end
 
   def show
-    @name = params[:id]
-    rev = params[:rev] ? params[:rev] : nil
-    if page = @wiki.page(@name, rev)
+    @name = params['id']
+    ref = params['ref'] ? params['ref'] : @wiki.ref
+    puts @name.inspect
+    puts @wiki.page(@name, ref)
+    if page = @wiki.page(@name, ref)
       @page = page
-      @name = name
       @content = page.formatted_data
       @editable = true
+      render
     else
-      render :new if rev.nil?
-      redirect_to :index
+      @new = true
+      render :new
     end
   end
 
@@ -49,7 +56,7 @@ class WikiController < ApplicationController
     name = params[:id]
     page = @wiki.page(@name)
     name = params[:rename] || page.name
-    committer = Gollum::Commiter.new(wiki, commit_message.merge({:name => current_user.name, :email => current_user.email}))
+    committer = Gollum::Committer.new(@wiki, commit_message.merge({:name => current_user.name, :email => current_user.email}))
     commit = {:committer => committer}
 
     update_wiki_page(@wiki, page, params[:content], commit, name, params[:format])
@@ -67,12 +74,15 @@ class WikiController < ApplicationController
   end
 
   def create
-    @name = params[:name]
-    format = params[:format].intern
+    @name = params['page']
+    format = params['format'].intern
+
+    committer = Gollum::Committer.new(@wiki, commit_message.merge({:name => current_user.name, :email => current_user.email}))
+    commit = {:committer => committer}
 
     begin
-      @wiki.write_page(@name, format, params[:content], commit_message)
-      redirect project_wiki_path(@project, @name)
+      @wiki.write_page(@name, format, params['content'], commit).commit
+      redirect_to project_wiki_path(@project, @name)
     rescue Gollum::DuplicatePageError => e
       @message = "Duplicate page: #{@name}"
       render :action => :new
@@ -123,8 +133,13 @@ class WikiController < ApplicationController
   end
 
   def preview
+    puts @wiki.inspect
+    puts params['content']
+    puts params['format']
     @name = 'Preview'
-    @page = @wiki.preview_page(@name, params[:content], params[:format])
+    @page = @wiki.preview_page(@name, params['content'], params['format'])
+    puts @page.inspect
+    puts @page.version.inspect
     @content = @page.formatted_data
     @editable = false
     render :show
@@ -163,7 +178,7 @@ class WikiController < ApplicationController
     end
 
     def commit_message
-      { :message => params[:message] }
+      { :message => params['message'] }
     end
 end
 
