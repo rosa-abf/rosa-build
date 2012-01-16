@@ -80,7 +80,12 @@ class BuildListsController < ApplicationController
   end
 
   def publish_build
-    @build_list.status = (params[:status].to_i == 0 ? BuildList::BUILD_PUBLISHED : BuildList::FAILED_PUBLISH)
+    if params[:status].to_i == 0 # ok
+      @build_list.status = BuildList::BUILD_PUBLISHED
+      @build_list.package_version = "#{params[:version]}-#{params[:release]}"
+    else
+      @build_list.status = BuildList::FAILED_PUBLISH
+    end
     @build_list.notified_at = Time.current
     @build_list.save
 
@@ -113,7 +118,7 @@ class BuildListsController < ApplicationController
     @build_list.notified_at = Time.current
     @build_list.save
 
-    @build_list.publish if @build_list.auto_publish # && @build_list.can_publish?
+    @build_list.delay.publish if @build_list.auto_publish # && @build_list.can_publish?
 
     render :nothing => true, :status => 200
   end

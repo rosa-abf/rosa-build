@@ -114,6 +114,7 @@ Rosa::Application.routes.draw do
     member do
       get :add_project
       get :remove_project
+      get :projects_list
     end
   end
 

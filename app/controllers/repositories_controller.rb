@@ -54,7 +54,6 @@ class RepositoriesController < ApplicationController
   def add_project
     if params[:project_id]
       @project = Project.find(params[:project_id])
-      # params[:project_id] = nil
       unless @repository.projects.find_by_name(@project.name)
         @repository.projects << @project
         flash[:notice] = t('flash.repository.project_added')
@@ -63,13 +62,35 @@ class RepositoriesController < ApplicationController
       end
       redirect_to repository_path(@repository)
     else
-      if @repository.platform.platform_type == 'main'
-        @projects = Project.addable_to_repository(@repository.id).by_visibilities(['open']).paginate(:page => params[:project_page])
-      else
-        @projects = Project.addable_to_repository(@repository.id).paginate(:page => params[:project_page])
-      end
-      render 'projects_list'
+      render :projects_list
     end
+  end
+
+  def projects_list
+    owner_subquery = "
+      INNER JOIN (
+        SELECT id, 'User' AS type, uname
+        FROM users
+        UNION
+        SELECT id, 'Group' AS type, uname
+        FROM groups
+      ) AS owner
+      ON projects.owner_id = owner.id AND projects.owner_type = owner.type"
+    colName = ['owner.uname', 'projects.name']
+    sort_col = params[:iSortCol_0] || 0
+    sort_dir = params[:sSortDir_0]=="asc" ? 'asc' : 'desc'
+    order = "#{colName[sort_col.to_i]} #{sort_dir}"
+
+    @projects = Project.joins(owner_subquery).addable_to_repository(@repository.id)
+    @projects = @projects.paginate(:page => (params[:iDisplayStart].to_i/params[:iDisplayLength].to_i).to_i + 1, :per_page => params[:iDisplayLength])
+    @projects = @projects.by_visibilities(['open']) if @repository.platform.platform_type == 'main'
+
+    @total_projects = @projects.count
+    @projects = @projects.where(['projects.name LIKE ?', "#{params[:sSearch]}%"]) if params[:sSearch] and !params[:sSearch].empty?
+    @total_project = @projects.count
+    @projects = @projects.order(order)#.includes(:owner) #WTF????
+
+    render :partial => 'proj_ajax', :layout => false
   end
 
   def remove_project
