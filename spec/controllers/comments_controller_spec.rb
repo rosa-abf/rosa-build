@@ -77,8 +77,8 @@ describe CommentsController do
     @issue = Factory(:issue, :project_id => @project.id)
     @comment = Factory(:comment, :commentable => @issue)
 
-    @create_params = {:comment => {:body => 'I am a comment!'}, :project_id => @project.id, :issue_id => @issue.id}
-    @update_params = {:comment => {:body => 'updated'}, :project_id => @project.id, :issue_id => @issue.id}
+    @create_params = {:comment => {:body => 'I am a comment!'}, :project_id => @project.id, :issue_id => @issue.serial_id}
+    @update_params = {:comment => {:body => 'updated'}, :project_id => @project.id, :issue_id => @issue.serial_id}
 
     any_instance_of(Project, :versions => ['v1.0', 'v2.0'])
 
