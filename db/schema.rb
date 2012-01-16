@@ -159,7 +159,7 @@ ActiveRecord::Schema.define(:version => 20120113151305) do
     t.integer  "user_id"
     t.string   "title"
     t.text     "body"
-    t.string   "status"
+    t.string   "status",     :default => "open"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -272,6 +272,17 @@ ActiveRecord::Schema.define(:version => 20120113151305) do
 
   add_index "rpms", ["project_id", "arch_id"], :name => "index_rpms_on_project_id_and_arch_id"
   add_index "rpms", ["project_id"], :name => "index_rpms_on_project_id"
+
+  create_table "settings_notifiers", :force => true do |t|
+    t.integer  "user_id",                             :null => false
+    t.boolean  "can_notify",        :default => true
+    t.boolean  "new_comment",       :default => true
+    t.boolean  "new_comment_reply", :default => true
+    t.boolean  "new_issue",         :default => true
+    t.boolean  "issue_assign",      :default => true
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "subscribes", :force => true do |t|
     t.integer  "subscribeable_id"

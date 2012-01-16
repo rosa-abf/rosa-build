@@ -1,3 +1,13 @@
+function disableNotifierCbx(global_cbx) {
+  if ($(global_cbx).attr('checked')) {
+    $('.notify_cbx').removeAttr('disabled');
+    $('.notify_cbx').each(function(i,el) { $(el).prev().removeAttr('disabled'); })
+  } else {
+    $('.notify_cbx').attr('disabled', 'disabled');
+    $('.notify_cbx').each(function(i,el) { $(el).prev().attr('disabled', 'disabled'); })
+  }
+}
+
 $(document).ready(function() {
 	$('select#build_list_pl_id').change(function() {
 	  var platform_id = $(this).val();
@@ -29,4 +39,8 @@ $(document).ready(function() {
 			}
 		});
 	});
+
+  $('#settings_notifier_can_notify').click(function() {
+    disableNotifierCbx($(this));
+  });
 });

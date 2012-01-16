@@ -4,6 +4,8 @@ class User < ActiveRecord::Base
   devise :database_authenticatable, :registerable, :omniauthable, # :token_authenticatable, :encryptable, :timeoutable
          :recoverable, :rememberable, :validatable #, :trackable, :confirmable, :lockable
 
+  has_one :notifier, :class_name => 'Settings::Notifier' #:notifier
+
   has_many :authentications, :dependent => :destroy
   has_many :build_lists, :dependent => :destroy
 
@@ -30,6 +32,8 @@ class User < ActiveRecord::Base
   attr_accessible :email, :password, :password_confirmation, :remember_me, :login, :name, :ssh_key, :uname
   attr_readonly :uname
   attr_accessor :login
+
+  after_create :create_settings_notifier
 
   def admin?
     role == 'admin'
@@ -74,6 +78,12 @@ class User < ActiveRecord::Base
     result = update_attributes(params)
     clean_up_passwords
     result
+  end
+  
+  private
+
+  def create_settings_notifier
+    self.create_notifier
   end
 
 end

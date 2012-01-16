@@ -1,0 +1,5 @@
+#block-signup.block
+  %h2= title t("layout.settings.notifiers.edit_header")
+  .content
+    = form_for @notifier, :url => user_settings_notifier_path(@user), :html => { :class => :form } do |f|
+      = render :partial => "form", :locals => {:f => f}
