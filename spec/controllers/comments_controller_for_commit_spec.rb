@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-shared_examples_for 'user with create comment rights' do
+shared_examples_for 'user with create comment rights for commits' do
   it 'should be able to perform create action' do
     post :create, @create_params
     response.should redirect_to(commit_path(@project, @commit.id))
@@ -11,7 +11,7 @@ shared_examples_for 'user with create comment rights' do
   end
 end
 
-shared_examples_for 'user with update own comment rights' do
+shared_examples_for 'user with update own comment rights for commits' do
   it 'should be able to perform update action' do
     put :update, {:id => @own_comment.id}.merge(@update_params)
     response.should redirect_to(commit_path(@project, @commit.id))
@@ -23,7 +23,7 @@ shared_examples_for 'user with update own comment rights' do
   end
 end
 
-shared_examples_for 'user with update stranger comment rights' do
+shared_examples_for 'user with update stranger comment rights for commits' do
   it 'should be able to perform update action' do
     put :update, {:id => @comment.id}.merge(@update_params)
     response.should redirect_to(commit_path(@project, @commit.id))
@@ -35,7 +35,7 @@ shared_examples_for 'user with update stranger comment rights' do
   end
 end
 
-shared_examples_for 'user without update stranger comment rights' do
+shared_examples_for 'user without update stranger comment rights for commits' do
   it 'should not be able to perform update action' do
     put :update, {:id => @comment.id}.merge(@update_params)
     response.should redirect_to(forbidden_path)
@@ -47,7 +47,7 @@ shared_examples_for 'user without update stranger comment rights' do
   end
 end
 
-shared_examples_for 'user without destroy comment rights' do
+shared_examples_for 'user without destroy comment rights for commits' do
   it 'should not be able to perform destroy action' do
     delete :destroy, :id => @comment.id, :commit_id => @commit.id, :project_id => @project.id
     response.should redirect_to(forbidden_path)
@@ -96,10 +96,10 @@ describe CommentsController do
       @own_comment.update_attributes(:commentable_type => @commit.class.name, :commentable_id => @commit.id)
     end
 
-    it_should_behave_like 'user with create comment rights'
-    it_should_behave_like 'user with update stranger comment rights'
-    it_should_behave_like 'user with update own comment rights'
-    it_should_behave_like 'user without destroy comment rights'
+    it_should_behave_like 'user with create comment rights for commits'
+    it_should_behave_like 'user with update stranger comment rights for commits'
+    it_should_behave_like 'user with update own comment rights for commits'
+    it_should_behave_like 'user without destroy comment rights for commits'
   end
 
   context 'for project owner user' do
@@ -112,10 +112,10 @@ describe CommentsController do
       @own_comment.update_attributes(:commentable_type => @commit.class.name, :commentable_id => @commit.id)
     end
 
-   it_should_behave_like 'user with create comment rights'
-   it_should_behave_like 'user with update stranger comment rights'
-   it_should_behave_like 'user with update own comment rights'
-   it_should_behave_like 'user without destroy comment rights'
+   it_should_behave_like 'user with create comment rights for commits'
+   it_should_behave_like 'user with update stranger comment rights for commits'
+   it_should_behave_like 'user with update own comment rights for commits'
+   it_should_behave_like 'user without destroy comment rights for commits'
   end
 
   context 'for project reader user' do
@@ -128,10 +128,10 @@ describe CommentsController do
       @own_comment.update_attributes(:commentable_type => @commit.class.name, :commentable_id => @commit.id)
     end
 
-   it_should_behave_like 'user with create comment rights'
-   it_should_behave_like 'user without update stranger comment rights'
-   it_should_behave_like 'user with update own comment rights'
-   it_should_behave_like 'user without destroy comment rights'
+   it_should_behave_like 'user with create comment rights for commits'
+   it_should_behave_like 'user without update stranger comment rights for commits'
+   it_should_behave_like 'user with update own comment rights for commits'
+   it_should_behave_like 'user without destroy comment rights for commits'
   end
 
   context 'for project writer user' do
@@ -144,9 +144,9 @@ describe CommentsController do
       @own_comment.update_attributes(:commentable_type => @commit.class.name, :commentable_id => @commit.id)
     end
 
-   it_should_behave_like 'user with create comment rights'
-   it_should_behave_like 'user without update stranger comment rights'
-   it_should_behave_like 'user with update own comment rights'
-   it_should_behave_like 'user without destroy comment rights'
+   it_should_behave_like 'user with create comment rights for commits'
+   it_should_behave_like 'user without update stranger comment rights for commits'
+   it_should_behave_like 'user with update own comment rights for commits'
+   it_should_behave_like 'user without destroy comment rights for commits'
   end
 end
