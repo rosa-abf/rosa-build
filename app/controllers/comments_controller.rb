@@ -29,7 +29,7 @@ class CommentsController < ApplicationController
                   when "Issue"
                     project_issue_comment_path(@project, @commentable, @comment)
                   when "Grit::Commit"
-                    project_commit_comment_path(@project, @commentable.id, @comment)
+                    project_commit_comment_path(@project, @commentable, @comment)
                   end
   end
 
@@ -61,7 +61,7 @@ class CommentsController < ApplicationController
     #end
     #nil
     if params[:issue_id].present?
-      return Issue.find(params[:issue_id])
+      return Issue.find_by_serial_id_and_project_id(params[:issue_id], params[:project_id])
     elsif params[:commit_id].present?
       return @project.git_repository.commit(params[:commit_id])
     end

@@ -14,11 +14,11 @@
               %br
               %br
               - if commentable.class == Issue
-                - edit_path = edit_project_issue_comment_path(project, commentable.id, comment)
-                - delete_path = project_issue_comment_path(project, commentable.id, comment)
+                - edit_path = edit_project_issue_comment_path(project, commentable, comment)
+                - delete_path = project_issue_comment_path(project, commentable, comment)
               - elsif commentable.class == Grit::Commit
-                - edit_path = edit_project_commit_comment_path(project, commentable.id, comment)
-                - delete_path = project_commit_comment_path(project, commentable.id, comment)
+                - edit_path = edit_project_commit_comment_path(project, commentable, comment)
+                - delete_path = project_commit_comment_path(project, commentable, comment)
               = link_to t("layout.edit"), edit_path if can? :update, comment
               = link_to image_tag("web-app-theme/icons/cross.png", :alt => t("layout.delete")) + " " + t("layout.delete"), delete_path, :method => "delete", :class => "button", :confirm => t("layout.comments.confirm_delete") if can? :delete, comment
 
@@ -27,7 +27,7 @@
     %h2.title
       = t("layout.comments.new_header")
     .inner
-      - new_path = project_issue_comments_path(project, commentable.id) if commentable.class == Issue
-      - new_path = project_commit_comments_path(project, commentable.id) if commentable.class == Grit::Commit
+      - new_path = project_issue_comments_path(project, commentable) if commentable.class == Issue
+      - new_path = project_commit_comments_path(project, commentable) if commentable.class == Grit::Commit
       = form_for :comment, :url => new_path, :method => :post, :html => { :class => :form } do |f|
         = render :partial => "comments/form", :locals => {:f => f}
