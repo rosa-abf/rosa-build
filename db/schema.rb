@@ -73,6 +73,7 @@ ActiveRecord::Schema.define(:version => 20120117110723) do
     t.integer  "user_id"
     t.boolean  "auto_publish",     :default => true
     t.string   "package_version"
+    t.string   "commit_hash"
   end
 
   add_index "build_lists", ["arch_id"], :name => "index_build_lists_on_arch_id"

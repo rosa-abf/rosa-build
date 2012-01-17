@@ -8,6 +8,7 @@ Factory.define(:build_list) do |p|
   p.build_requires true
   p.update_type 'security'
   p.include_repos {|bl| bl.pl.repositories.map(&:id)}
+  p.commit_hash 'e681644ed702fae285483d2ca73d85ee2930b8de'
 end
 
 Factory.define(:build_list_core, :parent => :build_list) do |p|
