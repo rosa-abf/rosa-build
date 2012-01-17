@@ -37,6 +37,11 @@ def stub_rsync_methods
   any_instance_of(Platform, :umount_directory_for_rsync => true)
 end
 
+def test_git_commit(project)
+  project.git_repository.repo.index.add('test', 'TEST')
+  project.git_repository.repo.index.commit('Test commit')
+end
+
 Delayed::Worker.delay_jobs = false # Execute all jobs realtime
 
 # Add testing root_path

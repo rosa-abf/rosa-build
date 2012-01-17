@@ -39,6 +39,7 @@ class BuildListsController < ApplicationController
     Arch.where(:id => params[:arches]).each do |arch|
       Platform.main.where(:id => params[:bpls]).each do |bpl|
         @build_list = @project.build_lists.build(params[:build_list])
+        @build_list.commit_hash = @project.git_repository.commits(@build_list.project_version.match(/(.+)_latest$/).to_a.last || @build_list.project_version).first.id
         @build_list.bpl = bpl; @build_list.arch = arch; @build_list.user = current_user
         flash_options = {:project_version => @build_list.project_version, :arch => arch.name, :bpl => bpl.name, :pl => @build_list.pl}
         if @build_list.save
@@ -83,6 +84,8 @@ class BuildListsController < ApplicationController
     if params[:status].to_i == 0 # ok
       @build_list.status = BuildList::BUILD_PUBLISHED
       @build_list.package_version = "#{params[:version]}-#{params[:release]}"
+      system("cd #{@build_list.project.git_repository.path} &&
+              git tag -a -m '#{@build_list.package_version}' #{@build_list.package_version} #{@build_list.commit_hash}") # TODO REDO through grit
     else
       @build_list.status = BuildList::FAILED_PUBLISH
     end
