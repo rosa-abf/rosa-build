@@ -165,18 +165,6 @@ ru:
       confirm_clone: Клонировать?
       clone: Клонировать
 
-    roles:
-      confirm_delete: Вы уверены, что хотите удалить эту роль?
-      list_header: Роли
-      list: Список
-      new: Создать
-      get_dump: Скачать в YML
-      from_file: Загрузить из файлa
-      wrong_file_type: Неверный тип файла
-      wrong_file_format: Неверный формат файла
-      successful_load: Все роли успешно загружены
-      seeding_fail: Ошибка при записи в базу
-
     event_logs:
       list: Список
       list_header: Лог событий
@@ -334,6 +322,7 @@ ru:
       cancel_fail: 'При отмене сборки произошла ошибка!'
       publish_success: 'Сборка поставлена в очередь на публикацию.'
       publish_fail: 'При публикации сборки произошла ошибка!'
+      container_published: 'Контейнер размещен в репозитории'
       
       build_server_status:
         header: Статус сборочного сервера
