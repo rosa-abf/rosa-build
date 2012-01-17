@@ -84,8 +84,7 @@ class BuildListsController < ApplicationController
     if params[:status].to_i == 0 # ok
       @build_list.status = BuildList::BUILD_PUBLISHED
       @build_list.package_version = "#{params[:version]}-#{params[:release]}"
-      system("cd #{@build_list.project.git_repository.path} &&
-              git tag -a -m '#{@build_list.package_version}' #{@build_list.package_version} #{@build_list.commit_hash}") # TODO REDO through grit
+      system("cd #{@build_list.project.git_repository.path} && git tag #{@build_list.package_version} #{@build_list.commit_hash}") # TODO REDO through grit
     else
       @build_list.status = BuildList::FAILED_PUBLISH
     end
