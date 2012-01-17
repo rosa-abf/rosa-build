@@ -41,7 +41,7 @@
         .left
           = f.label :language, :class => "label"
         .right
-          = f.select :language, User::LANGUAGES
+          = f.select :language, User::LANGUAGES_FOR_SELECT
 
       .group.navform.wat-cf
         %button.button{ :type => "submit" }

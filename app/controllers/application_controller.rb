@@ -18,15 +18,15 @@ class ApplicationController < ActionController::Base
   protected
 
   def set_locale
-    I18n.locale = extract_locale_from_request
-  end
-
-  def extract_locale_from_request
-    get_user_locale || request.env['HTTP_ACCEPT_LANGUAGE'].to_sym || :en
+    I18n.locale = check_locale( get_user_locale || request.env['HTTP_ACCEPT_LANGUAGE'].to_sym )
   end
 
   def get_user_locale
     user_signed_in? ? current_user.language : nil
+  end
+
+  def check_locale(locale)
+    User::LANGUAGES.include?(locale.to_s) ? locale : :en
   end
 
   def get_owner
