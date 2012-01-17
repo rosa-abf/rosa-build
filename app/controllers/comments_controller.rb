@@ -17,7 +17,7 @@ class CommentsController < ApplicationController
     @comment.user = current_user
     if @comment.save
       flash[:notice] = I18n.t("flash.comment.saved")
-      redirect_to :back
+      redirect_to commentable_path
     else
       flash[:error] = I18n.t("flash.comment.save_error")
       render :action => 'new'
@@ -31,13 +31,13 @@ class CommentsController < ApplicationController
                   when "Grit::Commit"
                     project_commit_comment_path(@project, @commentable, @comment)
                   end
+    @commentable_path = commentable_path
   end
 
   def update
     if @comment.update_attributes(params[:comment])
       flash[:notice] = I18n.t("flash.comment.saved")
-      redirect_to :back
-      #redirect_to  @commentable.class == Issue ? project_issue_path(@project, @commentable) : commit_path(@project.id, @commentable.id)
+      redirect_to commentable_path
     else
       flash[:error] = I18n.t("flash.comment.save_error")
       render :action => 'new'
@@ -48,7 +48,7 @@ class CommentsController < ApplicationController
     @comment.destroy
 
     flash[:notice] = t("flash.comment.destroyed")
-    redirect_to :back
+    redirect_to commentable_path
   end
 
   private
@@ -80,4 +80,11 @@ class CommentsController < ApplicationController
   def find_project
     @project = Project.find(params[:project_id])
   end
+
+  protected
+
+  def commentable_path
+    @commentable.class == Issue ? [@project, @commentable] : commit_path(@project, @commentable.id)
+  end
+
 end
