@@ -1,0 +1,62 @@
+- content_for :javascripts do
+  = javascript_include_tag 'gollum/gollum.js', 'gollum/gollum.dialog.js', 'gollum/gollum.placeholder.js'
+
+- content_for :stylesheets do
+  = stylesheet_link_tag 'gollum/gollum.css', 'gollum/dialog.css', 'gollum/ie7.css', 'gollum/template.css'
+
+.block
+  .secondary-navigation
+    %ul.wat-cf
+      %li.first= link_to t("layout.projects.list"), projects_path
+      %li= link_to t("layout.projects.new"), new_project_path
+      %li.active= link_to t("layout.projects.show"), project_path(@project)
+      %li= link_to t("layout.git.repositories.source"), project_repo_path(@project)
+      %li= link_to t("layout.projects.build"), new_project_build_list_path(@project)
+      %li= link_to t("layout.projects.issues"), project_issues_path(@project)
+
+  .content
+    .inner
+      %p
+        %b
+          = t("activerecord.attributes.project.name")
+          \:
+        = @project.name
+      %p
+        %b
+          = t("activerecord.attributes.project.owner")
+          \:
+        = link_to @project.owner.try(:name), url_for(@project.owner)
+
+%a{ :name => "wiki"}
+.block
+  .secondary-navigation
+    %ul.wat-cf
+      %li.first= link_to t("layout.wiki.home"), project_wiki_index_path(@project)
+      %li= link_to t("layout.wiki.new"), new_project_wiki_path(@project)
+      %li= link_to t("layout.wiki.pages"), pages_project_wiki_index_path(@project)
+
+  .content
+    #wiki-wrapper.inner
+      #head
+        %h1
+          = t("layout.wiki.editing_page")
+          %strong= @name
+
+        %ul.actions
+          %li.minibutton
+            = link_to t("layout.wiki.view_page"), view_path(@project, escaped_name),
+                      :class => 'action-view-page'
+          %li.minibutton
+            = link_to t("layout.wiki.page_history"), history_project_wiki_path(@project, escaped_name),
+                      :class => 'aciton-view-history'
+
+      #wiki-content
+        = render :partial => "editor"
+
+:javascript
+  jQuery(document).ready(function() {
+    $.GollumEditor();
+  });
+
+- content_for :sidebar do
+  - render :partial => 'projects/sidebar'

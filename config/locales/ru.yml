@@ -172,6 +172,11 @@ ru:
       search_and_hellip: Ключевые слова
       search: Искать
       search_popup: Искать в этой Wiki
+      commit_message_placeholder: Введите сопровождающее сообщение (опционально)
+      preview_title: Посмотреть в новом окне
+      preview: Предпросмотр
+      save_changes: Сохранить текущие изменения
+      save_button: Сохранить
 
 
     roles:

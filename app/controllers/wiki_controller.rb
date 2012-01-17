@@ -3,7 +3,8 @@ require 'cgi'
 
 class WikiController < ApplicationController
 #  WIKI_OPTIONS = {:page_file_dir => '/', :ref => 'master', :page_class => Gollum::PageImproved}
-  WIKI_OPTIONS = { :page_class => Gollum::PageImproved}
+#  WIKI_OPTIONS = { :page_class => Gollum::PageImproved}
+  WIKI_OPTIONS = {}
 
   load_and_authorize_resource :project
 
@@ -77,11 +78,12 @@ class WikiController < ApplicationController
     @name = params['page']
     format = params['format'].intern
 
-    committer = Gollum::Committer.new(@wiki, commit_message.merge({:name => current_user.name, :email => current_user.email}))
-    commit = {:committer => committer}
+#    committer = Gollum::Committer.new(@wiki, commit_message.merge({:name => current_user.name, :email => current_user.email}))
+#    commit = {:committer => committer}
+    commit = commit_message.merge({:name => current_user.name, :email => current_user.email})
 
     begin
-      @wiki.write_page(@name, format, params['content'], commit).commit
+      @wiki.write_page(@name, format, params['content'], commit)
       redirect_to project_wiki_path(@project, @name)
     rescue Gollum::DuplicatePageError => e
       @message = "Duplicate page: #{@name}"
@@ -146,9 +148,12 @@ class WikiController < ApplicationController
   end
 
   def history
-    @name = params[:name]
-    @page = @wiki.page(@name)
-    @versions = @page.versions.paginate :page => params[:page] #try to use will_paginate
+    @name = params['id']
+    if @page = @wiki.page(@name)
+      @versions = @page.versions(:page => params['page'], :per_page => 25)#.paginate :page => params[:page] #try to use will_paginate
+    else
+      redirect_to :back
+    end
   end
 
   def search

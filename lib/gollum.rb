@@ -18,8 +18,10 @@ module Gollum
     def versions(options = {})
       options.delete :page
       options.delete :per_page
+      puts super(options)
 
-      res = PaginatableArray.new(super(options))
+      res = PaginateableArray.new(super(options))
+      puts res.inspect
     end
   end
 end

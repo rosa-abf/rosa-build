@@ -36,7 +36,12 @@
       %li= link_to t("layout.wiki.pages"), pages_project_wiki_index_path(@project)
 
   .content
-    = render :partial => "editor"
+    #wiki-wrapper.inner
+      #head
+        %h1= t("layout.wiki.create_page")
+
+      #wiki-content
+        = render :partial => "editor"
 
 :javascript
   jQuery(document).ready(function() {

@@ -89,11 +89,11 @@ Rosa::Application.routes.draw do
         get :pages
       end
       member do
+        get :history
         get :edit
         match 'revert/:sha1/:sha2' => 'wiki#revert', :as => :revert_page, :via => :get
         match ':ref' => 'wiki#show', :as => :versioned, :via => :get
 
-        get :history
         post :compare
         match 'compare/*versions' => 'wiki#compare', :as => :compare_versions, :via => :get
       end

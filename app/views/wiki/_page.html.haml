@@ -1,37 +1,21 @@
-.inner
-  #wiki-wrapper.page
-    #head
-      %h1.title= @name
-      %ul.actions
-        %li.minibutton.jaws
-          = link_to t("layout.wiki.new_page"), '#', :'data-url' => project_wiki_index_path(@project),
-                    :id => 'minibutton-new-page'
-        - if @editable
-          %li.minibutton
-            = link_to t("layout.wiki.edit_page"), edit_project_wiki_path(@project, escaped_name), :class => "action-edit-page"
-        %li.minibutton= link_to t("layout.wiki.page_history"), history_project_wiki_path(@project, escaped_name)
+#wiki-content
+  .wrap{:class => "#{has_footer? ? 'has-footer' : ''} #{has_sidebar? ? 'has-rightbar' : ''}"}
+    #wiki-body{:class => "gollum-#{format}-content"}
+      #template
+        = raw @content
+    - if has_sidebar?
+      #wiki-rightbar{:class => "gollum-#{sidebar_format}-content"}
+        = raw sidebar_content
+    - if has_footer?
+      #wiki-footer{:class => "gollum-#{footer_format}-content"}
+        #footer-content
+          = raw footer_content
+#gollum-footer
+  %p#last-edit
+    = t("layout.wiki.last_edited_by")
+    %b
+      = author
+    = time_ago_in_words date.to_time - 4.hours, true
+    = t("layout.time.ago")
 
-      = render :partial => 'searchbar'
-
-    #wiki-content
-      .wrap{:class => "#{has_footer? ? 'has-footer' : ''} #{has_sidebar? ? 'has-rightbar' : ''}"}
-        #wiki-body{:class => "gollum-#{format}-content"}
-          #template
-            = raw @content
-        - if has_sidebar?
-          #wiki-rightbar{:class => "gollum-#{sidebar_format}-content"}
-            = raw sidebar_content
-        - if has_footer?
-          #wiki-footer{:class => "gollum-#{footer_format}-content"}
-            #footer-content
-              = raw footer_content
-    #gollum-footer
-      %p#last-edit
-        = t("layout.wiki.last_edited_by")
-        %b
-          = author
-        = time_ago_in_words date.to_time - 4.hours, true
-        = t("layout.time.ago")
-
-= javascript_include_tag 'autocomplete-rails.js'
 =#javascript_include_tag 'MathJax/MathJax.js'
