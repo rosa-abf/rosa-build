@@ -45,7 +45,7 @@ describe BuildListsController do
     end
 
     it 'should save correct commit_hash for tag based build' do
-      system("cd #{@project.git_repository.path} && git tag -a -m '4.7.5.3' 4.7.5.3") # TODO REDO through grit
+      system("cd #{@project.git_repository.path} && git tag 4.7.5.3") # TODO REDO through grit
       post :create, {:project_id => @project.id}.merge(@create_params).deep_merge(:build_list => {:project_version => "4.7.5.3"})
       @project.build_lists.last.commit_hash.should == @project.git_repository.commits('4.7.5.3').last.id
     end
@@ -312,14 +312,19 @@ describe BuildListsController do
     let(:build_list) { Factory(:build_list_core) }
 
     describe 'publish_build' do
-      before {test_git_commit(build_list.project); build_list.update_attribute :commit_hash, build_list.project.git_repository.commits.last.id}
+      before { test_git_commit(build_list.project); build_list.update_attribute :commit_hash, build_list.project.git_repository.commits('master').last.id }
 
       def do_get(status)
         get :publish_build, :id => build_list.bs_id, :status => status, :version => '4.7.5.3', :release => '1'
         build_list.reload
       end
 
-      it { do_get(BuildServer::SUCCESS); build_list.project.git_repository.tags.last.name.should == build_list.package_version; response.should be_ok }
+      it { do_get(BuildServer::SUCCESS); response.should be_ok }
+      it 'should create correct git tag for correct commit' do
+        do_get(BuildServer::SUCCESS)
+        build_list.project.git_repository.tags.last.name.should == build_list.package_version
+        build_list.project.git_repository.commits(build_list.package_version).last.id.should == build_list.commit_hash
+      end
       it { lambda{ do_get(BuildServer::SUCCESS) }.should change(build_list, :status).to(BuildList::BUILD_PUBLISHED) }
       it { lambda{ do_get(BuildServer::SUCCESS) }.should change(build_list, :package_version).to('4.7.5.3-1') }
       it { lambda{ do_get(BuildServer::ERROR) }.should change(build_list, :status).to(BuildList::FAILED_PUBLISH) }
