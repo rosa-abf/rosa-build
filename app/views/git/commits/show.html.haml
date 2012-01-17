@@ -27,4 +27,4 @@
 
 - content_for :sidebar, render(:partial => 'git/shared/sidebar')
 
-= render :partial => "comments/list", :locals => {:list => Project.commit_comments(@commit, @project).order(:created_at), :project => @project, :commentable => @commit}
+= render :partial => "comments/list", :locals => {:list => Project.commit_comments(@commit, @project), :project => @project, :commentable => @commit}
