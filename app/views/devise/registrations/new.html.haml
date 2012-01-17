@@ -37,6 +37,12 @@
           .right
             = f.password_field :password_confirmation, :class => "text_field"
 
+      .group.wat-cf
+        .left
+          = f.label :language, :class => "label"
+        .right
+          = f.select :language, User::LANGUAGES
+
       .group.navform.wat-cf
         %button.button{ :type => "submit" }
           #{image_tag("web-app-theme/icons/tick.png", :alt => t("devise.registrations.sign_up_header"))} #{t("devise.registrations.sign_up_header")}

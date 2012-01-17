@@ -39,6 +39,12 @@
           - else
             = resource.role
 
+      .group.wat-cf
+        .left
+          = f.label :language, :class => "label"
+        .right
+          = f.select :language, User::LANGUAGES
+
       / .group.wat-cf
       /   .left
       /     = f.label :current_password, :class => "label"

@@ -1,5 +1,6 @@
 class User < ActiveRecord::Base
   ROLES = ['admin']
+  LANGUAGES = [['Russian', 'ru'], ['English', 'en']]
 
   devise :database_authenticatable, :registerable, :omniauthable, # :token_authenticatable, :encryptable, :timeoutable
          :recoverable, :rememberable, :validatable #, :trackable, :confirmable, :lockable
@@ -29,7 +30,7 @@ class User < ActiveRecord::Base
   validates :ssh_key, :uniqueness => true, :allow_blank => true
   validates :role, :inclusion => {:in => ROLES}, :allow_blank => true
 
-  attr_accessible :email, :password, :password_confirmation, :remember_me, :login, :name, :ssh_key, :uname
+  attr_accessible :email, :password, :password_confirmation, :remember_me, :login, :name, :ssh_key, :uname, :language
   attr_readonly :uname
   attr_accessor :login
 
