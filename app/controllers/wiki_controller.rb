@@ -29,11 +29,15 @@ class WikiController < ApplicationController
   def show
     @name = params['id']
     ref = params['ref'] ? params['ref'] : @wiki.ref
-    puts @name.inspect
-    puts @wiki.page(@name, ref)
-    if page = @wiki.page(@name, ref)
-      @page = page
-      @content = page.formatted_data
+    @page = @wiki.page(@name, ref)
+    if !@page && @wiki.page(@name)
+      flash[:error] = t('flash.wiki.ref_not_exist')
+      redirect_to project_wiki_path(@project, @name)
+      return
+    end
+
+    if @page
+      @content = @page.formatted_data
       @editable = true
       render
     else
