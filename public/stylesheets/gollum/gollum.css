@@ -4,19 +4,19 @@
 */
 
 /* @section core */
-body, html {
+/*body, html {
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-  font-size: 10px; /* -> 1em */
-  margin: 0;
+  font-size: 10px;*/ /* -> 1em */
+/*  margin: 0;
   padding: 0;
-}
+}*/
 
 #wiki-wrapper {
   margin: 0 auto;
   overflow: visible;
-  width: 80%;
+/*  width: 80%; */
 }
-
+/*
 a:link {
   color: #4183c4;
   text-decoration: none;
@@ -25,7 +25,7 @@ a:link {
 a:hover, a:visited {
   color: #4183c4;
   text-decoration: underline;
-}
+}*/
 
 
 /* @section head */
@@ -34,6 +34,8 @@ a:hover, a:visited {
   margin: 4.5em 0 0.5em;
   padding: 0.5em 0;
   overflow: hidden;
+
+  font-size: 10px;*/ /* -> 1em */
 }
 
   #head h1 {
@@ -205,19 +207,19 @@ a:hover, a:visited {
     }
   
   /* @section page-footer */
-  .page #footer {
+  .page #gollum-footer {
     border-top: 1px solid #ccc;
     margin: 1em 0 7em;
   }
   
-  #footer p#last-edit {
+  #gollum-footer p#last-edit {
     font-size: 1.2em;
     line-height: 1.6em;
     color: #999;
     margin: 0.9em 0;
   }
   
-    #footer p#last-edit span.username {
+    #gollum-footer p#last-edit span.username {
       font-weight: bold;
     }
 
@@ -583,14 +585,14 @@ ul.actions {
 
 
 /* @control searchbar */
-#head #searchbar {
+#head #gollum-searchbar {
   float: right;
   margin: 1em 0 0 0;
   padding: 0;
   overflow: hidden;
 }
 
-  #head #searchbar #searchbar-fauxtext {
+  #head #gollum-searchbar #gollum-searchbar-fauxtext {
     background: #fff;
     border: 1px solid #d4d4d4;
     overflow: hidden;
@@ -600,7 +602,7 @@ ul.actions {
     -webkit-border-radius: 0.3em;
   }
 
-  #head #searchbar #searchbar-fauxtext input#search-query {
+  #head #gollum-searchbar #gollum-searchbar-fauxtext input#search-query {
     border: none;
     color: #000;
     float: left;
@@ -611,19 +613,19 @@ ul.actions {
     -webkit-focus-ring: none;
   }
 
-  .ff #head #searchbar #searchbar-fauxtext input#search-query {
+  .ff #head #gollum-searchbar #gollum-searchbar-fauxtext input#search-query {
     padding: 0.2em 0 0.2em 0.5em;
   }
   
-  .ie #head #searchbar #searchbar-fauxtext input#search-query {
+  .ie #head #gollum-searchbar #gollum-searchbar-fauxtext input#search-query {
     padding: 0.4em 0 0 0.5em;
   }
   
-  #head #searchbar #searchbar-fauxtext input#search-query.ph {
+  #head #gollum-searchbar #gollum-searchbar-fauxtext input#search-query.ph {
     color: #999;
   }
   
-  #head #searchbar #searchbar-fauxtext #search-submit {
+  #head #gollum-searchbar #gollum-searchbar-fauxtext #search-submit {
     border: 0;
     border-left: 1px solid #d4d4d4;
     cursor: pointer;
@@ -637,8 +639,8 @@ ul.actions {
     -webkit-border-radius: 0 3px 3px 0;
   }
   
-  #head #searchbar #searchbar-fauxtext #search-submit span {
-    background-image: url(/images/icon-sprite.png);
+  #head #gollum-searchbar #gollum-searchbar-fauxtext #search-submit span {
+    background-image: url(/images/gollum/icon-sprite.png);
     background-position: -431px -1px;
     background-repeat: no-repeat;
     display: block;
@@ -648,12 +650,12 @@ ul.actions {
     width: 28px;
   }
   
-  .ff #head #searchbar #searchbar-fauxtext #search-submit span,
-  .ie #head #searchbar #searchbar-fauxtext #search-submit span {
+  .ff #head #gollum-searchbar #gollum-searchbar-fauxtext #search-submit span,
+  .ie #head #gollum-searchbar #gollum-searchbar-fauxtext #search-submit span {
     height: 2.2em;
   }
   
-  #head #searchbar #searchbar-fauxtext #search-submit:hover span {
+  #head #gollum-searchbar #gollum-searchbar-fauxtext #search-submit:hover span {
     background-position: -431px -28px;
     padding: 0;
   }

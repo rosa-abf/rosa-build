@@ -66,6 +66,9 @@ ru:
       Saturday: Субота
       Sunday: Воскресенье
 
+    time:
+      ago: назад
+
     menu:
       categories: Каталог
       containers: Контейнеры
@@ -160,6 +163,16 @@ ru:
       private_users: Данные для доступа
       confirm_clone: Клонировать?
       clone: Клонировать
+
+    wiki:
+      new_page: Новая
+      edit_page: Изменить
+      page_history: История
+      last_edited_by: Последним редактировал
+      search_and_hellip: Ключевые слова
+      search: Искать
+      search_popup: Искать в этой Wiki
+
 
     roles:
       confirm_delete: Вы уверены, что хотите удалить эту роль?

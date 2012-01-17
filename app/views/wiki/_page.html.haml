@@ -10,7 +10,8 @@
           %li.minibutton
             = link_to t("layout.wiki.edit_page"), edit_project_wiki_path(@project, escaped_name), :class => "action-edit-page"
         %li.minibutton= link_to t("layout.wiki.page_history"), history_project_wiki_path(@project, escaped_name)
-        -#{{>searchbar}}
+
+      = render :partial => 'searchbar'
 
     #wiki-content
       .wrap{:class => "#{has_footer? ? 'has-footer' : ''} #{has_sidebar? ? 'has-rightbar' : ''}"}
@@ -24,13 +25,13 @@
           #wiki-footer{:class => "gollum-#{footer_format}-content"}
             #footer-content
               = raw footer_content
+    #gollum-footer
+      %p#last-edit
+        = t("layout.wiki.last_edited_by")
+        %b
+          = author
+        = time_ago_in_words date.to_time - 4.hours, true
+        = t("layout.time.ago")
 
-= content_for :footer do
-  %p#last-edit
-    = t("layout.wiki.last_edited_by")
-    %b
-      = author
-    ,
-    = date
-
+= javascript_include_tag 'autocomplete-rails.js'
 =#javascript_include_tag 'MathJax/MathJax.js'

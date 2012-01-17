@@ -1,4 +1,3 @@
-// ua
 $(document).ready(function() {
   
   // ua detection
@@ -56,13 +55,13 @@ $(document).ready(function() {
   
 
   
-  if ($('#searchbar a#search-submit').length) {
-    $.GollumPlaceholder.add($('#searchbar #search-query'));
-    $('#searchbar a#search-submit').click(function(e) {
+  if ($('#gollum-searchbar a#search-submit').length) {
+    $.GollumPlaceholder.add($('#gollum-searchbar #search-query'));
+    $('#gollum-searchbar a#search-submit').click(function(e) {
       e.preventDefault();
-      $('#searchbar #search-form')[0].submit();
+      $('#gollum-searchbar #gollum-search-form')[0].submit();
     });
-    $('#searchbar #search-form').submit(function(e) {
+    $('#gollum-searchbar #gollum-search-form').submit(function(e) {
       $.GollumPlaceholder.clearAll();
       $(this).unbind('submit');
       $(this).submit();
