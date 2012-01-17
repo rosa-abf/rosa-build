@@ -29,7 +29,7 @@ class CommentsController < ApplicationController
                   when "Issue"
                     project_issue_comment_path(@project, @commentable, @comment)
                   when "Grit::Commit"
-                    project_commit_comment_path(@project, @commentable.id, @comment)
+                    project_commit_comment_path(@project, @commentable, @comment)
                   end
   end
 
