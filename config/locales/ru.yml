@@ -177,7 +177,10 @@ ru:
       preview: Предпросмотр
       save_changes: Сохранить текущие изменения
       save_button: Сохранить
-
+      view_page: Показать
+      view_commit: Показать версию
+      compare_revisions: Сравнить версии
+      back_to_top: Наверх
 
     roles:
       confirm_delete: Вы уверены, что хотите удалить эту роль?

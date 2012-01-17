@@ -1,4 +1,9 @@
 module WikiHelper
+
+  def gravatar_url(email)
+    "http://www.gravatar.com/avatar/#{Digest::MD5.hexdigest(email)}?s=16"
+  end
+
   def escaped_name
     CGI.escape(@name)
   end
@@ -9,6 +14,10 @@ module WikiHelper
     else
       url_for(:controller => :wiki, :action => :update, :project_id => project.id, :id => name)
     end
+  end
+
+  def view_path(project, name)
+    name == 'Home' ? project_wiki_index_path(project) : project_wiki_path(project, name)
   end
 
   def formats
