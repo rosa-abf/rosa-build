@@ -54,9 +54,9 @@ class WikiController < ApplicationController
   end
 
   def update
-    name = params[:id]
+    @name = params[:id]
     page = @wiki.page(@name)
-    name = params[:rename] || page.name
+    name = params[:rename] || @name
     committer = Gollum::Committer.new(@wiki, commit_message.merge({:name => current_user.name, :email => current_user.email}))
     commit = {:committer => committer}
 
