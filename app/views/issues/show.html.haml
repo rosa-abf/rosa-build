@@ -29,4 +29,4 @@
         - else
           = link_to t('layout.issues.subscribe_btn'), project_issue_subscribes_path(@project, @issue), :method => :post
 
-= render :partial => "comments/list", :locals => {:list => @issue.comments, :project => @project, :commentable => @issue}
+= render :partial => "comments/list", :locals => {:list => @issue.comments.order(:created_at), :project => @project, :commentable => @issue}

@@ -36,8 +36,8 @@ class CommentsController < ApplicationController
   def update
     if @comment.update_attributes(params[:comment])
       flash[:notice] = I18n.t("flash.comment.saved")
-      #redirect_to :back
-      redirect_to @commentable_path
+      redirect_to :back
+      #redirect_to  @commentable.class == Issue ? project_issue_path(@project, @commentable) : commit_path(@project.id, @commentable.id)
     else
       flash[:error] = I18n.t("flash.comment.save_error")
       render :action => 'new'
@@ -61,7 +61,7 @@ class CommentsController < ApplicationController
     #end
     #nil
     if params[:issue_id].present?
-      return Issue.find(params[:issue_id])
+      return Issue.find_by_serial_id_and_project_id(params[:issue_id], params[:project_id])
     elsif params[:commit_id].present?
       return @project.git_repository.commit(params[:commit_id])
     end
@@ -70,7 +70,6 @@ class CommentsController < ApplicationController
   def set_commentable
     find_project
     @commentable = find_commentable
-    @commentable_path = @commentable.class == Issue ? project_issue_path(@project, @commentable) : commit_path(@project.id, @commentable.id)
   end
 
   def find_comment

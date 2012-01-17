@@ -60,12 +60,12 @@ end
 
 #shared_examples_for 'user with destroy rights' do
 #  it 'should be able to perform destroy action' do
-#    delete :destroy, :id => @comment.id, :issue_id => @issue.id, :project_id => @project.id
+#    delete :destroy, :id => @comment.id, :issue_id => @issue.serial_id, :project_id => @project.id
 #    response.should redirect_to([@project, @issue])
 #  end
 #
 #  it 'should reduce comments count' do
-#    lambda{ delete :destroy, :id => @comment.id, :issue_id => @issue.id, :project_id => @project.id }.should change{ Comment.count }.by(-1)
+#    lambda{ delete :destroy, :id => @comment.id, :issue_id => @issue.serial_id, :project_id => @project.id }.should change{ Comment.count }.by(-1)
 #  end
 #end
 
