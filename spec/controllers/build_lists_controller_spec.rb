@@ -36,8 +36,18 @@ describe BuildListsController do
 
     it 'should be able to perform create action' do
       post :create, {:project_id => @project.id}.merge(@create_params)
-      @project.build_lists.last.commit_hash.should == @project.git_repository.commits.last.id
       response.should redirect_to(@project)
+    end
+
+    it 'should save correct commit_hash for branch based build' do
+      post :create, {:project_id => @project.id}.merge(@create_params).deep_merge(:build_list => {:project_version => "master_latest"})
+      @project.build_lists.last.commit_hash.should == @project.git_repository.commits('master').last.id
+    end
+
+    it 'should save correct commit_hash for tag based build' do
+      system("cd #{@project.git_repository.path} && git tag -a -m '4.7.5.3' 4.7.5.3") # TODO REDO through grit
+      post :create, {:project_id => @project.id}.merge(@create_params).deep_merge(:build_list => {:project_version => "4.7.5.3"})
+      @project.build_lists.last.commit_hash.should == @project.git_repository.commits('4.7.5.3').last.id
     end
   end
 
