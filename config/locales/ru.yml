@@ -1,12 +1,12 @@
 ru:
   will_paginate:
     previous_label: ‹ Предыдущая
-    next_label: Следующая › 
+    next_label: Следующая ›
     page_gap: ...
-    
+
   datatables:
     previous_label: ‹ Пред.
-    next_label: След. › 
+    next_label: След. ›
     first_label: « Первая
     last_label: Последняя »
     empty_label: Нет доступных данных
@@ -50,7 +50,7 @@ ru:
       title: Статистика закачек пакетов
       message: Обновляется автоматически каждые 5 минут
       refresh_btn: Обновить
-      
+
     auto_build_lists:
       header: Проекты с автоматической сборкой
       message: Все проекты собираются под пользовательский репозиторий и архитектуру i586
@@ -182,7 +182,7 @@ ru:
       back_to_the_list: ⇐ К списку репозиториев
       confirm_delete: Вы уверены, что хотите удалить этот репозиторий?
       current_repository_header: Текущий репозиторий
-      
+
     personal_repositories:
       settings_header: Настройки
       change_visibility_from_hidden: Сменить статус на "Открытый"
@@ -324,13 +324,13 @@ ru:
       publish_success: 'Сборка поставлена в очередь на публикацию.'
       publish_fail: 'При публикации сборки произошла ошибка!'
       container_published: 'Контейнер размещен в репозитории'
-      
+
       build_server_status:
         header: Статус сборочного сервера
         client_count: Число клиентов
         count_new_task: Число заданий в очереди
         count_build_task: Число выполняемых заданий
-      
+
       items:
         statuses:
           build_started: собирается
@@ -361,7 +361,7 @@ ru:
     settings:
       saved: Настройки успешно сохранены
       save_error: При обновлении настроек произошла ошибка
-      
+
 
     subscribe:
       saved: Вы подписаны на оповещения для этой задачи
@@ -499,6 +499,9 @@ ru:
           new_comment_reply: Оповещать о новом ответе на мой комментарий
           new_issue: Оповещать о новых задачах в моих проектах
           issue_assign: Оповещать, когда на меня выставляют задачу
+          new_comment_commit_owner: Оповещать о комментариях к моему коммиту
+          new_comment_commit_repo_owner: Оповещать о комментариях к коммитам в моем репозитории
+          new_comment_commit_commentor: Оповещать о комментариях к коммиту после моего
 
       auto_build_list:
         project_id: Проект

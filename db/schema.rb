@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120117110723) do
+ActiveRecord::Schema.define(:version => 20120118173141) do
 
   create_table "arches", :force => true do |t|
     t.string   "name",       :null => false
@@ -290,14 +290,17 @@ ActiveRecord::Schema.define(:version => 20120117110723) do
   add_index "rpms", ["project_id"], :name => "index_rpms_on_project_id"
 
   create_table "settings_notifiers", :force => true do |t|
-    t.integer  "user_id",                             :null => false
-    t.boolean  "can_notify",        :default => true
-    t.boolean  "new_comment",       :default => true
-    t.boolean  "new_comment_reply", :default => true
-    t.boolean  "new_issue",         :default => true
-    t.boolean  "issue_assign",      :default => true
+    t.integer  "user_id",                                         :null => false
+    t.boolean  "can_notify",                    :default => true
+    t.boolean  "new_comment",                   :default => true
+    t.boolean  "new_comment_reply",             :default => true
+    t.boolean  "new_issue",                     :default => true
+    t.boolean  "issue_assign",                  :default => true
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.boolean  "new_comment_commit_owner",      :default => true
+    t.boolean  "new_comment_commit_repo_owner", :default => true
+    t.boolean  "new_comment_commit_commentor",  :default => true
   end
 
   create_table "subscribes", :force => true do |t|
