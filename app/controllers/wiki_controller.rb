@@ -32,7 +32,7 @@ class WikiController < ApplicationController
     @page = @wiki.page(@name, ref)
     if !@page && @wiki.page(@name)
       flash[:error] = t('flash.wiki.ref_not_exist')
-      redirect_to project_wiki_path(@project, @name)
+      redirect_to project_wiki_path(@project, CGI.escape(@name))
       return
     end
 
@@ -82,15 +82,13 @@ class WikiController < ApplicationController
     @name = params['page']
     format = params['format'].intern
 
-#    committer = Gollum::Committer.new(@wiki, commit_message.merge({:name => current_user.name, :email => current_user.email}))
-#    commit = {:committer => committer}
     commit = commit_message.merge({:name => current_user.name, :email => current_user.email})
 
     begin
       @wiki.write_page(@name, format, params['content'], commit)
-      redirect_to project_wiki_path(@project, @name)
+      redirect_to project_wiki_path(@project, CGI.escape(@name))
     rescue Gollum::DuplicatePageError => e
-      @message = "Duplicate page: #{@name}"
+      flash[:error] = t("flash.wiki.duplicate_page", :page_name => @name)
       render :action => :new
     end
   end
