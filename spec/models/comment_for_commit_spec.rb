@@ -32,8 +32,12 @@ describe Comment do
       @ability.should be_able_to(:create, Comment.new(@create_params))
     end
 
-    pending "sends an e-mail" do
-      ActionMailer::Base.deliveries.last.to.include?(@stranger.email).should == true
+    it 'should send an e-mail' do
+      ActionMailer::Base.deliveries = []
+      comment = Comment.new(:user => @stranger, :body => 'hello!', :project => @project,
+          :commentable_type => @commit.class.name, :commentable_id => @commit.id)
+      comment.save
+      ActionMailer::Base.deliveries.last.to.include?(@user.email).should == true
     end
 
     it 'should update comment' do

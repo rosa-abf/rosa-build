@@ -7,7 +7,7 @@ class Comment < ActiveRecord::Base
 
   # FIXME
   after_create :subscribe_on_reply, :unless => "commentable_type == 'Grit::Commit'"
-  after_create :deliver_new_comment_notification, :unless => "commentable_type == 'Grit::Commit'"
+  after_create :deliver_new_comment_notification#, :unless => "commentable_type == 'Grit::Commit'"
 
   protected
 
