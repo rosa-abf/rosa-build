@@ -17,7 +17,7 @@
                   %img{:src => gravatar_url(v.author.email), :alt => "avatar: #{v.author.name}", :class => "mini-gravatar"}
                   %span.username= v.author.name
               %td.commit-name
-                %span.time-elapsed= "#{v.committed_date.strftime("%B %d, %Y")}:"
+                %span.time-elapsed= "#{l v.committed_date.to_date, :format => :long}:"
                 &nbsp;
                 = v.message
                 = raw "[#{link_to v.id[0..6], versioned_project_wiki_path(@project, escaped_name, v.id), :title => t("layout.wiki.view_commit")}]"
