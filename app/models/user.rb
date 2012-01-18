@@ -1,7 +1,7 @@
 class User < ActiveRecord::Base
   ROLES = ['admin']
-  LANGUAGES = ['ru', 'en']
   LANGUAGES_FOR_SELECT = [['Russian', 'ru'], ['English', 'en']]
+  LANGUAGES = LANGUAGES_FOR_SELECT.map(&:last)
 
   devise :database_authenticatable, :registerable, :omniauthable, # :token_authenticatable, :encryptable, :timeoutable
          :recoverable, :rememberable, :validatable #, :trackable, :confirmable, :lockable
