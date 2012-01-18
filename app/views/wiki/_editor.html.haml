@@ -36,7 +36,8 @@
         %br
 
       = submit_tag t("layout.wiki.save_button"), :id => "gollum-editor-submit", :title => t("layout.wiki.save_changes")
-      = link_to t("layout.wiki.preview"), "javascript:void(0)", :id => "gollum-editor-preview", :class => "minibutton", :title => t("layout.wiki.preview_title")
+      = link_to t("layout.wiki.preview"), "javascript:void(0)", :id => "gollum-editor-preview",
+                :class => "minibutton", :title => t("layout.wiki.preview_title"), :'data-url' => preview_project_wiki_index_path(@project)
 
 - content_for :javascripts do
   = javascript_include_tag 'gollum/editor/gollum.editor.js'

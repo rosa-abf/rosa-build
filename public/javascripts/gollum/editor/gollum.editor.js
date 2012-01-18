@@ -63,11 +63,18 @@
           // get form fields
           var oldAction = $('#gollum-editor form').attr('action');
           var $form = $($('#gollum-editor form').get(0));
-          $form.attr('action', $form.attr('action') + '/preview');
+          $form.attr('action', $('#gollum-editor #gollum-editor-preview').attr('data-url'));
           $form.attr('target', '_blank');
+          //$form.find('input[name=_method]').val('post');
+          var $oldMeth = $('#gollum-editor form input[name=_method]');
+          if ( $oldMeth.length ) {
+            $oldMeth.remove();
+          }
           $form.submit();
 
-
+          if ( $oldMeth.length ) {
+            $form.append($oldMeth);
+          }
           $form.attr('action', oldAction);
           $form.removeAttr('target');
           return false;
