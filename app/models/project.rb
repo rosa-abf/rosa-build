@@ -66,7 +66,7 @@ class Project < ActiveRecord::Base
     res = tags.select{|tag| tag.name =~ /^v\./}
     return res if res and res.size > 0
     tags
-  end  
+  end
   def collected_project_versions
     project_versions.collect{|tag| tag.name.gsub(/^\w+\./, "")}
   end
@@ -118,7 +118,7 @@ class Project < ActiveRecord::Base
       return true
     else
       raise "Failed to create project #{name} (repo #{repository.name}) inside platform #{repository.platform.name} in path #{path} with code #{result}."
-    end      
+    end
   end
 
   def xml_rpc_destroy(repository)
@@ -132,6 +132,13 @@ class Project < ActiveRecord::Base
 
   def platforms
     @platforms ||= repositories.map(&:platform).uniq
+  end
+
+  class << self
+    def commit_comments(commit, project)
+     comments = Comment.where(:commentable_id => commit.id, :commentable_type => 'Grit::Commit').order(:created_at)
+     comments.each {|x| x.project = project}
+    end
   end
 
   protected

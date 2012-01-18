@@ -1,11 +1,13 @@
 class Comment < ActiveRecord::Base
   belongs_to :commentable, :polymorphic => true
   belongs_to :user
+  attr_accessor :project
 
   validates :body, :user_id, :commentable_id, :commentable_type, :presence => true
 
-  after_create :subscribe_on_reply
-  after_create :deliver_new_comment_notification
+  # FIXME
+  after_create :subscribe_on_reply, :unless => "commentable_type == 'Grit::Commit'"
+  after_create :deliver_new_comment_notification, :unless => "commentable_type == 'Grit::Commit'"
 
   protected
 

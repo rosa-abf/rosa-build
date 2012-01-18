@@ -49,12 +49,12 @@ end
 
 shared_examples_for 'user without destroy comment rights' do
   it 'should not be able to perform destroy action' do
-    delete :destroy, :id => @comment.id, :issue_id => @issue.id, :project_id => @project.id
+    delete :destroy, :id => @comment.id, :issue_id => @issue.serial_id, :project_id => @project.id
     response.should redirect_to(forbidden_path)
   end
 
   it 'should not reduce comments count' do
-    lambda{ delete :destroy, :id => @comment.id, :issue_id => @issue.id, :project_id => @project.id }.should change{ Issue.count }.by(0)
+    lambda{ delete :destroy, :id => @comment.id, :issue_id => @issue.serial_id, :project_id => @project.id }.should change{ Issue.count }.by(0)
   end
 end
 

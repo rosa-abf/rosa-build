@@ -48,7 +48,7 @@ class Repository < ActiveRecord::Base
         return true
       else
         raise "Failed to create repository #{name} inside platform #{platform.name} with code #{result}."
-      end      
+      end
     end
 
     def xml_rpc_destroy

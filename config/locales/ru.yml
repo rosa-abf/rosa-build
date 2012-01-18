@@ -129,6 +129,7 @@ ru:
     comments:
       confirm_delete: Вы уверены, что хотите удалить комментарий?
       new_header: Новый комментарий
+      edit_header: Редактирование комментария
 
     platforms:
       admin_id: Владелец
