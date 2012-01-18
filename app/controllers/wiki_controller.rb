@@ -61,7 +61,7 @@ class WikiController < ApplicationController
     @name = params[:id]
     page = @wiki.page(@name)
     name = params[:rename] || @name
-    committer = Gollum::Committer.new(@wiki, commit_message.merge({:name => current_user.name, :email => current_user.email}))
+    committer = Gollum::Committer.new(@wiki, commit)
     commit = {:committer => committer}
 
     update_wiki_page(@wiki, page, params[:content], commit, name, params[:format])
@@ -82,8 +82,6 @@ class WikiController < ApplicationController
     @name = params['page']
     format = params['format'].intern
 
-    commit = commit_message.merge({:name => current_user.name, :email => current_user.email})
-
     begin
       @wiki.write_page(@name, format, params['content'], commit)
       redirect_to project_wiki_path(@project, CGI.escape(@name))
@@ -94,6 +92,14 @@ class WikiController < ApplicationController
   end
 
   def destroy
+    page = @wiki.page(params[:id])
+    if page
+      @wiki.delete_page(page, commit.merge(:message => 'Page removed'))
+      flash[:notice] = t("flash.wiki.page_successfully_removed")
+    else
+      flash[:notice] = t("flash.wiki.page_not_found")
+    end
+    redirect_to project_wiki_index_path(@project)
   end
 
   def compare
@@ -186,6 +192,10 @@ class WikiController < ApplicationController
 
     def commit_message
       { :message => params['message'] }
+    end
+
+    def commit
+      commit_message.merge({:name => current_user.name, :email => current_user.email})
     end
 end
 

@@ -31,7 +31,7 @@
   color: #36393d;
 }
 
-a:link, a:visited, a:hover, a:active, h1, h2, h3 { color: #111; }
+a, a:link, a:visited, a:hover, a:active, h1, h2, h3 { color: #111; }
 a { -moz-outline: none; }
 
 body {

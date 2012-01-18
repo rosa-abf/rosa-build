@@ -17,5 +17,8 @@
       = author
     = time_ago_in_words date.to_time - 4.hours, true
     = t("layout.time.ago")
+  %p#delete-link
+    = link_to project_wiki_path(@project, @name), :method => :delete, :confirm => t("layout.confirm") do
+      %span= t("layout.wiki.delete_page")
 
 =#javascript_include_tag 'MathJax/MathJax.js'
