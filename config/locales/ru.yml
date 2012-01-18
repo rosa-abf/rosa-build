@@ -637,6 +637,7 @@ ru:
         created_at: Создан
         updated_at: Обновлен
         role: Роль в системе
+        language: Язык
 
       product_build_list:
         id: Id

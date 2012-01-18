@@ -1,8 +1,10 @@
 # coding: UTF-8
 class ApplicationController < ActionController::Base
   protect_from_forgery
+
   layout :layout_by_resource
 
+  before_filter :set_locale
   before_filter lambda { EventLog.current_controller = self },
                 :only => [:create, :destroy, :open_id, :auto_build, :cancel, :publish, :change_visibility] # :update
   after_filter lambda { EventLog.current_controller = nil }
@@ -14,26 +16,39 @@ class ApplicationController < ActionController::Base
   end
   
   protected
-    def get_owner
+
+  def set_locale
+    I18n.locale = check_locale( get_user_locale || request.env['HTTP_ACCEPT_LANGUAGE'].to_sym )
+  end
+
+  def get_user_locale
+    user_signed_in? ? current_user.language : nil
+  end
+
+  def check_locale(locale)
+    User::LANGUAGES.include?(locale.to_s) ? locale : :en
+  end
+
+  def get_owner
 #      params['user_id'] && User.find_by_id(params['user_id']) ||
 #      params['group_id'] && Group.find_by_id(params['group_id']) || current_user
-      if self.class.method_defined? :parent
-        if parent and (parent.is_a? User or parent.is_a? Group)
-          return parent
-        else
-         return current_user
-        end
+    if self.class.method_defined? :parent
+      if parent and (parent.is_a? User or parent.is_a? Group)
+        return parent
       else
-        params['user_id'] && User.find_by_id(params['user_id']) ||
-        params['group_id'] && Group.find_by_id(params['group_id']) || current_user
+       return current_user
       end
+    else
+      params['user_id'] && User.find_by_id(params['user_id']) ||
+      params['group_id'] && Group.find_by_id(params['group_id']) || current_user
     end
+  end
 
-    def layout_by_resource
-      if devise_controller?
-        "sessions"
-      else
-        "application"
-      end
+  def layout_by_resource
+    if devise_controller?
+      "sessions"
+    else
+      "application"
     end
+  end
 end
