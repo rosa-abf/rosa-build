@@ -1,4 +1,5 @@
 ru:
+
   will_paginate:
     previous_label: ‹ Предыдущая
     next_label: Следующая › 
@@ -39,7 +40,7 @@ ru:
     upload: Загрузить
     not_access: Нет доступа!
     owner: Владелец
-    confirm: Уверенны?
+    confirm: Уверены?
     processing: Обрабатывается...
 
     downloads:
