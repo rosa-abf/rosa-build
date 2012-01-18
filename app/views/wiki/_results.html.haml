@@ -1,0 +1,13 @@
+#results
+  - if @results and !@results.empty?
+    %ul
+      - @results.each do |result|
+        %li= link_to result.name, project_wiki_path(@project, CGI.escape(result.name))
+  - else
+    %p#no-results
+      = t("layout.wiki.no_pages_in")
+      %strong= @ref
+
+#footer
+  %ul.actions
+    %li.minibutton= link_to t("layout.wiki.back_to_top"), '#wiki'

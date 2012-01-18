@@ -182,6 +182,7 @@ ru:
       view_commit: Показать версию
       compare_revisions: Сравнить версии
       back_to_top: Наверх
+      all_pages_in: Все страницы в
 
     roles:
       confirm_delete: Вы уверены, что хотите удалить эту роль?
