@@ -1,15 +1,17 @@
 $:.unshift(File.expand_path('./lib', ENV['rvm_path']))
 set :rvm_type, :user
+
 require 'rvm/capistrano'
 require 'bundler/capistrano'
 require 'delayed/recipes'
 require 'airbrake/capistrano'
+
 set :whenever_command, "bundle exec whenever"
 # require "whenever/capistrano"
 
-set :default_stage, "staging"
-# set :stages, %w(production staging pingwinsoft ui) # auto readed
 require 'capistrano/ext/multistage'
+set :default_stage, "staging"
+# set :stages, %w(production staging pingwinsoft) # auto readed
 
 # main details
 ssh_options[:forward_agent] = true
@@ -21,19 +23,14 @@ set :user, "rosa"
 set :use_sudo, false
 set :keep_releases, 3
 
+set :scm, :git
 set :repository,  "git@github.com:warpc/rosa-build.git"
-# set :git_shallow_clone, 1
-set :scm, "git"
-# set :deploy_via, :copy
-# set :copy_cache, true
+set :deploy_via,  :remote_cache
 
 require 'lib/recipes/nginx'
 require 'lib/recipes/unicorn'
 require 'lib/recipes/bluepill'
 namespace :deploy do
-  # task :restart, :roles => :app, :except => { :no_release => true } do
-  #   run "touch #{current_release}/tmp/restart.txt"
-  # end
 
   task :stub_xml_rpc do
     path = File.join(release_path, 'config', 'environment.rb')
@@ -44,11 +41,16 @@ namespace :deploy do
 
   task :symlink_all, :roles => :web do
     run "mkdir -p #{fetch :shared_path}/config"
+    
+    # Setup DB
     run "cp -n #{fetch :release_path}/config/database.yml.sample #{fetch :shared_path}/config/database.yml"
-    run "cp -n #{fetch :release_path}/config/application.yml.sample #{fetch :shared_path}/config/application.yml"
     run "ln -nfs #{fetch :shared_path}/config/database.yml #{fetch :release_path}/config/database.yml"
+    
+    # Setup application
+    run "cp -n #{fetch :release_path}/config/deploy/application.#{fetch :stage}.yml #{fetch :shared_path}/config/application.yml"
     run "ln -nfs #{fetch :shared_path}/config/application.yml #{fetch :release_path}/config/application.yml"
 
+    # It will survive downloads folder between deployments
     run "mkdir -p #{fetch :shared_path}/downloads"
     run "ln -nfs #{fetch :shared_path}/downloads/ #{fetch :release_path}/public/downloads"
   end
@@ -60,7 +62,6 @@ after "deploy:restart", "delayed_job:restart", "bluepill:restart", "deploy:clean
 require 'cape'
 namespace :rake_tasks do
   Cape do
-    # mirror_rake_tasks
     mirror_rake_tasks 'db:seeds'
   end
 end
