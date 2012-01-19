@@ -14,7 +14,7 @@ class Project < ActiveRecord::Base
   has_many :relations, :as => :target, :dependent => :destroy
   has_many :collaborators, :through => :relations, :source => :object, :source_type => 'User'
   has_many :groups,        :through => :relations, :source => :object, :source_type => 'Group'
-  has_many :commit_comments_subscribers, :as => :subscribeable, :class_name => 'Subscribe'
+  has_many :commit_comments_subscribes, :as => :subscribeable, :class_name => 'Subscribe'
 
   validates :name, :uniqueness => {:scope => [:owner_id, :owner_type]}, :presence => true, :format => { :with => /^[a-zA-Z0-9_\-\+\.]+$/ }
   validates :owner, :presence => true
@@ -31,6 +31,7 @@ class Project < ActiveRecord::Base
 
   after_create :attach_to_personal_repository
   after_create :create_git_repo
+  after_create :subscribe_users
   after_destroy :destroy_git_repo
   # after_rollback lambda { destroy_git_repo rescue true if new_record? }
 
@@ -158,5 +159,9 @@ class Project < ActiveRecord::Base
 
     def destroy_git_repo
       FileUtils.rm_rf path
+    end
+
+    def subscribe_users
+      self.commit_comments_subscribes.create(:user_id => self.owner.id)
     end
 end
