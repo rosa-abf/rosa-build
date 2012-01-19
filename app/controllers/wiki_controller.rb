@@ -146,7 +146,7 @@ class WikiController < ApplicationController
     puts @wiki.inspect
     puts params['content']
     puts params['format']
-    @name = 'Preview'
+    @name = params['page']#'Preview'
     @page = @wiki.preview_page(@name, params['content'], params['format'])
     puts @page.inspect
     puts @page.version.inspect
@@ -167,7 +167,6 @@ class WikiController < ApplicationController
   def search
     @query = params[:q]
     @results = @wiki.search @query
-    @name = @query
   end
 
   def pages
