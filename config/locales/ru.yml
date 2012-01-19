@@ -182,7 +182,11 @@ ru:
       view_commit: Показать версию
       compare_revisions: Сравнить версии
       back_to_top: Наверх
-      all_pages_in: Все страницы в
+      all_pages_in: "Все страницы в %{ref}:"
+      search_results_for: "Результаты поиска для %{query}:"
+      no_pages_in: В %{ref} нет страниц для отображения.
+      no_results_for_search: По запросу %{query} ничего не найдено.
+      matches: Совпадений
 
     roles:
       confirm_delete: Вы уверены, что хотите удалить эту роль?

@@ -5,9 +5,8 @@
 .block
   .secondary-navigation
     %ul.wat-cf
-      %li.first{:class => "#{(@name == 'Home') ? 'active' : ''}" }
-        = link_to t("layout.wiki.home"), project_wiki_index_path(@project)
-      %li.active= link_to t("layout.wiki.pages"), pages_project_wiki_index_path(@project)
+      %li.first= link_to t("layout.wiki.home"), project_wiki_index_path(@project)
+      %li= link_to t("layout.wiki.pages"), pages_project_wiki_index_path(@project)
       %li= link_to t("layout.wiki.wiki_history"), '#'
       %li= link_to t("layout.wiki.git_access"), '#'
 
@@ -15,7 +14,7 @@
     .inner
       #wiki-wrapper.results
         #head
-          %h1.title= t("layout.wiki.all_pages_in", :ref => @ref)
+          %h1.title= t("layout.wiki.search_results_for", :query => @query)
           %ul.actions
             %li.minibutton
               = link_to t("layout.wiki.home"), project_wiki_index_path(@project),
