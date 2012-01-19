@@ -30,8 +30,8 @@ set :deploy_via,  :remote_cache
 require 'lib/recipes/nginx'
 require 'lib/recipes/unicorn'
 require 'lib/recipes/bluepill'
-namespace :deploy do
 
+namespace :deploy do
   task :stub_xml_rpc do
     path = File.join(release_path, 'config', 'environment.rb')
     code = %Q{\nrequire 'stub_xml_rpc'\n}
@@ -39,7 +39,7 @@ namespace :deploy do
     run %Q{echo "#{code}" >> #{path}}
   end
 
-  task :symlink_all, :roles => :web do
+  task :symlink_all, :roles => :app do
     run "mkdir -p #{fetch :shared_path}/config"
     
     # Setup DB
@@ -54,10 +54,15 @@ namespace :deploy do
     run "mkdir -p #{fetch :shared_path}/downloads"
     run "ln -nfs #{fetch :shared_path}/downloads/ #{fetch :release_path}/public/downloads"
   end
+
+  task :symlink_pids, :roles => :app do
+    run "cd #{fetch :shared_path}/tmp && ln -nfs ../pids pids"
+  end
 end
 
 after "deploy:update_code", "deploy:symlink_all", "deploy:migrate"
 after "deploy:restart", "delayed_job:restart", "bluepill:restart", "deploy:cleanup"
+after "deploy:setup", "deploy:symlink_pids"
 
 require 'cape'
 namespace :rake_tasks do
