@@ -98,6 +98,7 @@
       confirm_regenerate: Are you sure to regenerate this pair login/password?
       regenerate_btn: Regenerate
       warning_message: Warning - Old data set as invalid when new data obtaining
+    
     categories:
       list: List
       new: Create
@@ -117,9 +118,10 @@
       confirm_delete: Are you sure to delete this task?
       edit_header: Task edit
       new_header: New task
-      open: Opened
-      closed: Closed
-      any: Any
+      statuses:
+        open: Opened
+        closed: Closed
+        any: Any
       subscribe: Subscribe
       subscribe_btn: Subscribe
       unsubscribe_btn: Unsubscribe
@@ -127,6 +129,7 @@
     comments:
       confirm_delete: Are you sure to delete the comment?
       new_header: New comment
+      edit_header: Editing a comment
 
     platforms:
       admin_id: Owner
@@ -635,6 +638,7 @@
         created_at: Created
         updated_at: Updated
         role: System role
+        language: Language
 
       product_build_list:
         id: Id
@@ -673,12 +677,14 @@
         status: Status
         version: Version
         build_list: Build list
+      
       download:
         name: Name
         version: Version
         distro: Source
         platform: Platform
         counter: Downloads
+  
   notifications:
     subjects:
       new_comment_notification: New comment to your task
