@@ -1,15 +1,15 @@
 ﻿en:
   will_paginate:
     previous_label: ‹ Previous
-    next_label: Next › 
+    next_label: Next ›
     page_gap: ...
-    
+
   datatables:
     previous_label: ‹ Prev.
-    next_label: Next › 
+    next_label: Next ›
     first_label: « First
     last_label: Last »
-    empty_label: No data accessible 
+    empty_label: No data accessible
     info_label: Records displayed from _START_ to _END_ total _TOTAL_
     info_empty_label: Records displayed from 0 to 0 total 0
     filtered_label: (filtered of _MAX_)
@@ -50,7 +50,7 @@
       title: Downloads statistic
       message: Automatically updated every 5 minutes
       refresh_btn: Refresh
-      
+
     auto_build_lists:
       header: Automated build projects
       message: All projects build under user repository and architecture i586
@@ -62,7 +62,7 @@
       already_automated: Automated
 
     weekdays:
-     Monday: Monday
+      Monday: Monday
       Tuesday: Tuesday
       Wednesday: Wednesday
       Thursday: Thursday
@@ -117,9 +117,9 @@
       confirm_delete: Are you sure to delete this task?
       edit_header: Task edit
       new_header: New task
-        open: Opened
-        closed: Closed
-        any: Any
+      open: Opened
+      closed: Closed
+      any: Any
       subscribe: Subscribe
       subscribe_btn: Subscribe
       unsubscribe_btn: Unsubscribe
@@ -179,7 +179,7 @@
       back_to_the_list: ⇐ List of repositories
       confirm_delete: Are you sure to delete this repository?
       current_repository_header: Current repository
-      
+
     personal_repositories:
       settings_header: Settings
       change_visibility_from_hidden: Replace the status to "Opened"
@@ -190,7 +190,7 @@
 
     products:
       list: List
-      new:New product
+      new: New product
       list_header: Products
       clone: Clone
       build: Build
@@ -207,7 +207,7 @@
         every_hour: Every hour
         every_day: Every day
         every_month: Every month
-        every_weekday: Every weekdays 
+        every_weekday: Every weekdays
         minutes: Minutes
         hours: Hours
         days: Days
@@ -309,7 +309,7 @@
       notified_at_start: "Last update time by BS from:"
       notified_at_end: " Last update time by BS to:"
       bs_id_search: 'Id search'
-      project_name_search: Project name search 
+      project_name_search: Project name search
       bs_id_not_set: Id isn’t set
       items_header: Build items
       no_items_data: No data
@@ -321,13 +321,13 @@
       publish_success: 'Build on publish queue'
       publish_fail: 'Errors on publish queue!'
       container_published: 'Container in a repository'
-      
+
       build_server_status:
         header: Build server status
         client_count: Clients count
         count_new_task: New task count
         count_build_task: Build task count
-      
+
       items:
         statuses:
           build_started: Build started
@@ -358,7 +358,7 @@
     settings:
       saved: Settings saved success
       save_error: Setting update error
-      
+
 
     subscribe:
       saved: Subscription on notifications for this task is created
@@ -613,7 +613,7 @@
       role:
         name: Name
         on: Slave
-        to:Master
+        to: Master
         use_default: By default
         use_default_for_owner: Default by owner
 
@@ -631,7 +631,7 @@
         uname: Nickname
         ssh_key: SSH key
         current_password: Current password
-        role:Role
+        role: Role
         created_at: Created
         updated_at: Updated
         role: System role
