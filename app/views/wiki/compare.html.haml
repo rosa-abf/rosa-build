@@ -1,0 +1,29 @@
+= render :partial => 'gollum_includes'
+= render :partial => 'project_short'
+
+%a{ :name => "wiki"}
+.block
+  .secondary-navigation
+    %ul.wat-cf
+      %li.first= link_to t("layout.wiki.home"), project_wiki_index_path(@project)
+      %li= link_to t("layout.wiki.pages"), pages_project_wiki_index_path(@project)
+      %li= link_to t("layout.wiki.wiki_history"), '#'
+      %li= link_to t("layout.wiki.git_access"), '#'
+
+  .content
+    #wiki-wrapper.inner.compare
+      #head
+        %h1
+          = t("layout.wiki.history_for")
+          %strong= @name
+
+        %ul.actions
+          %li.minibutton= link_to t("layout.wiki.back_to_history"), history_project_wiki_path(@project, escaped_name)
+        = render :partial => 'searchbar'
+
+      #wiki-content
+        = render :partial => "compare"
+
+- content_for :sidebar do
+  - render :partial => 'projects/sidebar'
+

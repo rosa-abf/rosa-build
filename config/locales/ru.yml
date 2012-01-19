@@ -187,6 +187,9 @@ ru:
       no_pages_in: В %{ref} нет страниц для отображения.
       no_results_for_search: По запросу %{query} ничего не найдено.
       matches: Совпадений
+      back_to_history: Назад к истории
+      history_for: История для
+      revert_changes: Откатить изменения
 
     roles:
       confirm_delete: Вы уверены, что хотите удалить эту роль?

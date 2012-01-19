@@ -117,6 +117,7 @@ class WikiController < ApplicationController
       @page = @wiki.page(@name)
       diffs = @wiki.repo.diff(@versions.first, @versions.last, @page.path)
       @diff = diffs.first
+      @helper = WikiHelper::CompareHelper.new(@diff, @versions)
       render :compare
     else
       redirect_to project_wiki_path(@project, CGI.escape(@name))
@@ -137,6 +138,7 @@ class WikiController < ApplicationController
       @versions = [sha1, sha2]
       diffs     = @wiki.repo.diff(@versions.first, @versions.last, @page.path)
       @diff     = diffs.first
+      @helper = WikiHelper::CompareHelper.new(@diff, @versions)
       flash[:error]  = t("flash.wiki.patch_does_not_apply")
       render :compare
     end
@@ -158,7 +160,7 @@ class WikiController < ApplicationController
   def history
     @name = params['id']
     if @page = @wiki.page(@name)
-      @versions = @page.versions(:page => params['page'], :per_page => 25)#.paginate :page => params[:page] #try to use will_paginate
+      @versions = @page.versions#(:page => params['page'], :per_page => 25)#.paginate :page => params[:page] #try to use will_paginate
     else
       redirect_to :back
     end

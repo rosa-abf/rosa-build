@@ -274,6 +274,7 @@
   #wiki-history table tr td.checkbox {
     min-width: 2em;
     padding: 0.3em;
+    width: 24px;
   }
   
   #wiki-history table tr td.checkbox input {
@@ -415,7 +416,12 @@
   .compare .data {
     border: 1px solid #ddd;
     margin-top: 1em;
+    margin-bottom: 1em;
     overflow: auto;
+  }
+
+  .compare .data table {
+    width: 100%;
   }
   
   .compare .data pre {
@@ -440,6 +446,7 @@
     border-right: 1px solid #999;
     color: #999; 
     padding: 0 0 0 0.5em;
+    width: 1%;
   }
 
 .compare #compare-content ul.actions li,
