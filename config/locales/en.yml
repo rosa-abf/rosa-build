@@ -1,5 +1,688 @@
-# Sample localization file for English. Add more files in this directory for other locales.
-# See http://github.com/svenfuchs/rails-i18n/tree/master/rails%2Flocale for starting points.
+﻿en:
+  will_paginate:
+    previous_label: ‹ Previous
+    next_label: Next › 
+    page_gap: ...
+    
+  datatables:
+    previous_label: ‹ Prev.
+    next_label: Next › 
+    first_label: « First
+    last_label: Last »
+    empty_label: No data accessible 
+    info_label: Records displayed from _START_ to _END_ total _TOTAL_
+    info_empty_label: Records displayed from 0 to 0 total 0
+    filtered_label: (filtered of _MAX_)
 
-en:
-  hello: "Hello world"
+  layout:
+    logged_in_as: You logged as
+    logout: Logout
+    user_list: User list
+    edit: Edit
+    show: View
+    cancel: Cancel
+    create: Create
+    delete: Erase
+    save: Save
+    search: Search
+    clone: Clone
+    search_by_name: Filter by name
+    are_you_sure: "Sure?"
+    login: Login
+    or: or
+    yes_: Yes
+    no_: No
+    true_: True
+    false_: False
+    publish: Publish
+    add: Add
+    upload: Upload
+    not_access: Access denied!
+    owner: Owner
+    confirm: Sure?
+    settings:
+      notifier: Notifier setting
+      notifiers:
+        edit_header: Notifier setting
+    processing: working ...
+
+    downloads:
+      title: Downloads statistic
+      message: Automatically updated every 5 minutes
+      refresh_btn: Refresh
+      
+    auto_build_lists:
+      header: Automated build projects
+      message: All projects build under user repository and architecture i586
+      project: Project
+      action: Action
+      automate_btn: Automate
+      cancel_btn: Cancel
+      not_automated: Not automated
+      already_automated: Automated
+
+    weekdays:
+     Monday: Monday
+      Tuesday: Tuesday
+      Wednesday: Wednesday
+      Thursday: Thursday
+      Friday: Friday
+      Saturday: Saturday
+      Sunday: Sunday
+
+    menu:
+      categories: Catalogue
+      containers: Containers
+      downloads: Statistics
+      event_logs: Event log
+      build_lists: Task monitoring
+      groups: Groups
+      platforms: Platforms
+      products: Products
+      projects: Projects
+      repositories: Repositories
+      rights: Rights
+      roles: Roles
+      users: Users
+      personal_repository: My repository
+      auto_build_lists: Automated build
+
+    sessions:
+      sign_in_header: Sign in
+
+    private_users:
+      list: List
+      new: New pair
+      list_header: Pair login/password
+      confirm_delete: Are you sure to delete this pair login/password?
+      confirm_regenerate: Are you sure to regenerate this pair login/password?
+      regenerate_btn: Regenerate
+      warning_message: Warning - Old data set as invalid when new data obtaining
+    categories:
+      list: List
+      new: Create
+      edit: Edit
+      platforms: By platform
+      list_header: Catalogue
+      new_header: New category
+      edit_header: Edit category
+      confirm_delete: Are you sure to delete this category?
+
+    issues:
+      list: List
+      edit: Edit
+      comments_header: Comments
+      new: New task
+      list_header: List
+      confirm_delete: Are you sure to delete this task?
+      edit_header: Task edit
+      new_header: New task
+        open: Opened
+        closed: Closed
+        any: Any
+      subscribe: Subscribe
+      subscribe_btn: Subscribe
+      unsubscribe_btn: Unsubscribe
+
+    comments:
+      confirm_delete: Are you sure to delete the comment?
+      new_header: New comment
+
+    platforms:
+      admin_id: Owner
+      build_all: Build all
+      list: List
+      new: Create
+      edit: Edit
+      new_header: New platform
+      edit_header: Edit
+      list_header: Platforms
+      list_header_main: General
+      list_header_personal: Personal
+      list_header_all: All
+      clone_header: Platform clone
+      show: Platform
+      projects: Projects
+      products: Products
+      location: Location
+      repositories: Repositories
+      back_to_the_list: ⇐To platform list
+      freeze: Freeze
+      unfreeze: Unfeeze
+      confirm_freeze: Are you sure to freeze this platform?
+      confirm_freeze: Are you sure to clone this platform?
+      confirm_unfreeze: Are you sure to defrost this platform?
+      released_suffix: (released)
+      confirm_delete: Are you sure to delete this platform?
+      current_platform_header: Current platform
+      owner: Owner
+      visibility: Visibility
+      platform_type: Platform type
+      distrib_type: Distribution kit type
+      private_users: Access data
+      confirm_clone: To clone?
+      clone: To clone
+
+    event_logs:
+      list:List
+      list_header: Event log
+
+    repositories:
+      list: List
+      list_header: Repositories
+      new: New repository
+      new_header: New repository
+      show: Repository
+      location: Location
+      projects: Projects
+      new_header: New repository
+      back_to_the_list: ⇐ List of repositories
+      confirm_delete: Are you sure to delete this repository?
+      current_repository_header: Current repository
+      
+    personal_repositories:
+      settings_header: Settings
+      change_visibility_from_hidden: Replace the status to "Opened"
+      change_visibility_from_open: Replace the status to "Private"
+      settings: Settings
+      show: My repository
+      private_users: Private repository users
+
+    products:
+      list: List
+      new:New product
+      list_header: Products
+      clone: Clone
+      build: Build
+      new_header: New product
+      edit_header: Product editing
+      confirm_delete: Are you sure to delete this product?
+      invalid_content_type: incorrect type
+
+      cron_tab_generator:
+        show: Show cron tab the generator
+        hide: Hide cron tab the generator
+        choose: Choose
+        every_minute: Every minute
+        every_hour: Every hour
+        every_day: Every day
+        every_month: Every month
+        every_weekday: Every weekdays 
+        minutes: Minutes
+        hours: Hours
+        days: Days
+        months: Months
+        weekdays: weekdays
+
+    projects:
+      add: Add
+      edit: Edit
+      list: List
+      list_header: Projects
+      edit_header: Edit the project
+      show: Project
+      build: Build
+      new_build: New build %{project_name}
+      confirm_delete: Are you sure to delete this project?
+      new: New project
+      new_header: New project
+      new_header: New project
+      location: Location
+      git_repo_location: Path to git repo
+      current_project_header: Current project
+      current_build_lists: Current builds
+      build_button: Start build
+      add_collaborators: Add collaborators
+      members: Members
+      collaborators: Collaborators
+      groups: Groups
+      edit_collaborators: Edit collaborators
+      issues: Issues
+
+    collaborators:
+      back_to_proj: Back to project
+      edit: Edit list
+      add: Add/Remove
+      list: List
+      edit_roles: Edit roles
+      roles_header: Roles to
+      add_role: Add/Remove a role
+      input_username: Enter an username
+      input_groupname: Enter a groupname
+
+    members:
+      back_to_group: Back to group
+      edit: Edit list
+      roles: Roles
+      add_member: Add member
+      input_username: Username
+
+    groups:
+      list: List
+      new: Create
+      edit: Edit
+      members: Members
+      new_header: New group
+      edit_header: Edit
+      list_header: Groups
+      show: Group
+      back_to_the_list: ⇐ List of groups
+      confirm_delete: Are you sure to remove this group?
+      edit_members: Edit members
+
+    users:
+      list: List
+      new: Create
+      edit: Edit
+      new_header: New user
+      edit_header: Edit
+      list_header: Users
+      groups: Groups
+      show: User
+      back_to_the_list: ⇐ List of users
+      confirm_delete: Are you sure to remove this user?
+      own_projects: My projects
+      part_projects: Participate projects
+      filter_header: Filter
+
+    git:
+      repositories:
+        empty: Empty repository
+        source: Source
+        commits: Commits
+        commit_diff_too_big: Sorry, commit too big!
+        tags: Tags
+        branches: Branches
+        project_versions: Versions
+
+    product_build_lists:
+      statuses:
+        '0': 'build'
+        '1': 'build error'
+        '2': 'build in progress'
+
+    build_lists:
+      filter_header: Filter
+      current: Curent
+      created_at_start: "Build start from:"
+      created_at_end: "Build start to:"
+      notified_at_start: "Last update time by BS from:"
+      notified_at_end: " Last update time by BS to:"
+      bs_id_search: 'Id search'
+      project_name_search: Project name search 
+      bs_id_not_set: Id isn’t set
+      items_header: Build items
+      no_items_data: No data
+      show: Show
+      cancel_button_header: Action
+      cancel_button: Cancel
+      cancel_success: 'Build canceled'
+      cancel_fail: 'Errors on build cancelling!'
+      publish_success: 'Build on publish queue'
+      publish_fail: 'Errors on publish queue!'
+      container_published: 'Container in a repository'
+      
+      build_server_status:
+        header: Build server status
+        client_count: Clients count
+        count_new_task: New task count
+        count_build_task: Build task count
+      
+      items:
+        statuses:
+          build_started: Build started
+          build_error: Build error
+          dependencies_error: Dependences not found
+          success: Build complete
+          unknown: Build waiting
+
+      statuses:
+        build_error: Build error
+        build_published: Build published
+        build_publish: Build publishing
+        failed_publish: Publishing error
+        dependencies_fail: Dependences not found
+        waiting_for_response: Waiting for response
+        build_pending: Build pending
+        dependency_test_failed: Dependency test failed
+        binary_test_failed: Binary test failed
+        build_canceled: Build canceled
+        success: Build complete
+        build_started: Build started
+        platform_not_found: Platform not found
+        platform_pending: Platforn pending
+        project_not_found: Project not found
+        project_version_not_found: Project version not found
+
+  flash:
+    settings:
+      saved: Settings saved success
+      save_error: Setting update error
+      
+
+    subscribe:
+      saved: Subscription on notifications for this task is created
+      destroyed: Subscription on notifications for this task is cleaned
+
+    exception_message: Access violation to this page!
+
+    downloads:
+      statistics_refreshed: Statistics refreshed
+
+    collaborators:
+      successfully_changed: Collaborators list successfully changed
+      error_in_changing: Collaborators list changing error
+      member_already_added: Member %s already added
+      group_already_added: Group already added
+      successfully_added: Member %s successfully added
+      error_in_adding: Member %s adding error
+
+    members:
+      successfully_changed: Members list successfully changed
+      error_in_changing: Members list changing error
+      successfully_added: Member successfully added
+      error_in_adding: Member adding error
+      already_added: User already added
+
+    auto_build_list:
+      success: Automated build success!
+      failed: Automated build failed!
+      cancel: Automated build canceled!
+      cancel_failed: Automated build canceling failed!
+
+    category:
+      saved: Category saved
+      save_error: Category saves error
+      destroyed: Category deleted
+
+    comment:
+      saved: Comment saved
+      save_error: Comment saves error
+      destroyed: Comment deleted
+
+    issue:
+      saved: Task saved
+      save_error: Task saves error
+      destroyed: Task deleted
+
+    project:
+      saved: Project saved
+      save_error: Project saves error
+      save_warning_ssh_key: Owner of the project must specify in profile a SSH key
+      destroyed: Project deleted
+      forked: Project forked
+      fork_error: Project fork error
+
+    user:
+      saved: User saved
+      save_error: User data saves error
+      destroyed: User account deleted
+
+    group:
+      saved: Group saved
+      save_error: Group saves error
+      destroyed: Group deleted
+      user_uname_exists: User already exists
+
+    repository:
+      saved: Repository added
+      save_error: Repository adding error
+      destroyed: Repository deleted
+      project_added: Project added on repository
+      project_not_added: Project adding error. In this repository already is a project with such name. First remove the old project
+      project_removed: Project deleted
+      project_not_removed: Project deleting failed
+
+    product:
+      saved: Product saved
+      save_error: Product saves error
+      build_started: Product build started
+      destroyed: Product deleted
+
+    platform:
+      saved: Platform saved
+      save_error: Platform saves error
+      freezed: Platform freezed
+      freeze_error: Platform freezing error, try again
+      unfreezed: Platform unfreezed
+      unfreeze_error: Platform unfreezing error, try again
+      destroyed: Platform deleted
+      build_all_success: All project build in progress
+
+    build_list:
+      saved: Project version '%{project_version}' build list, platform '%{bpl}', architecture '%{arch}' creation success
+      save_error: Project version '%{project_version}' build list, platform '%{bpl}', architecture '%{arch}' creation error
+      no_project_version_selected: Select any version of project
+      no_project_version_found: Project version '%{project_version}' not found
+      no_arch_or_platform_selected: At least one of architecture of platform must selected
+      wrong_platform: For the main repository its mail platform can be chosen only!
+      can_not_published: Build publishing with status "Build" available only
+
+  attributes:
+    password: Password
+    password_confirmation: Confirmation
+    remember_me: Remember
+    name: Name
+    parent_platform_id: Parent platform
+    build_list: Build list
+
+  activerecord:
+    models:
+      category: Category
+      repository: Repository
+      arch: Arch
+      container: Container
+      platform: Platform
+      group: Group
+      event_log: Event log
+      project: Project
+      rpm: RPM
+      user: User
+      private_user: Private user
+      product: Product
+      product_build_list: Product build list
+      build_list: Build list
+      build_list_item: Build list item
+      download: Statistics
+      auto_build_list: Auto rebuild list
+      settings:
+        notifier: Notifies setting
+
+    attributes:
+      settings:
+        notifier:
+          can_notify: Notifications by e-mail
+          new_comment: New task comment notifications
+          new_comment_reply: New reply of comment notifications
+          new_issue: New task notifications
+          issue_assign: New task assignment notifications
+
+      auto_build_list:
+        project_id: Project
+        project: Project
+        bpl_id: Repository for saving
+        bpl: Repository for saving
+        pl_id: Platform
+        pl: Platform
+        arch_id: Architecture
+        arch: Architecture
+
+      comment:
+        body: Content
+        user: Author
+
+      issue:
+        title: Title
+        body: Content
+        user: Assigned
+        user_id: Assigned
+        project: Project
+        status: Status
+
+      private_user:
+        login: Login
+        password: Password
+
+      category:
+        parent_id: Parent
+        name: Name
+
+      repository:
+        name: Name
+        description: Description
+        platform_id: Platform
+        platform: Platform
+        created_at: Created
+        updated_at: Updated
+        owner: Owner
+
+      product:
+        name: Name
+        platform_id: Platform
+        build_status: Build status
+        build_path: ISO path
+        created_at: Created
+        updated_at: Updated
+        ks: Content .ks.template
+        counter: Content .counter
+        build_script: Content build
+        menu: Content .menu.xml
+        tar: Tar.bz2 file
+        is_template: Template
+        system_wide: System
+        cron_tab: Cront tab
+        use_cron: Cron usage
+
+      arch:
+        name: Name
+        created_at: Created
+        updated_at: Updated
+
+      container:
+        name: Name
+        project_id: Project
+        project: Project
+        owner_id: Owner
+        owner: Owner
+        created_at: Created
+        updated_at: Updated
+
+      platform:
+        name: Name
+        description: Description
+        parent_platform_id: Parent platform
+        parent: Parent platform
+        released: Released
+        created_at: Created
+        updated_at: Updated
+        distrib_type: Source type
+        visibility: Status
+        visibility_types:
+          open: Open
+          hidden: Hidden
+
+      event_log:
+        kind: Event type
+        created_at: Event date and time
+        user: User
+        ip: User IP
+        protocol: Access protocol
+        description: Description
+
+      project:
+        category_id: Category
+        name: Name
+        description: Descripton
+        owner: Owner
+        visibility: Visibility
+        repository_id: Repository
+        repository: Repository
+        created_at: Created
+        updated_at: Updated
+        has_issues: Tracker on
+
+      rpm:
+        name: Name
+        arch_id: Arch
+        arch: Arch
+        project_id: Project
+        project: Project
+        created_at: Created
+        updated_at: Updated
+
+      role:
+        name: Name
+        on: Slave
+        to:Master
+        use_default: By default
+        use_default_for_owner: Default by owner
+
+      group:
+        name: Name
+        uname: Nickname
+        owner: Owner
+        created_at: Created
+        updated_at: Updated
+
+      user:
+        name: User
+        login: Nickname or Email
+        email: Email
+        uname: Nickname
+        ssh_key: SSH key
+        current_password: Current password
+        role:Role
+        created_at: Created
+        updated_at: Updated
+        role: System role
+
+      product_build_list:
+        id: Id
+        product: Product
+        status: Status
+        notified_at: Notified at
+
+      build_list:
+        bs_id: Id
+        name: Name
+        container_path: Container path
+        status: Status
+        project_id: Project
+        project: Project
+        arch_id: Architecture
+        arch: Architecture
+        is_circle: Recurrent
+        notified_at: Notified at
+        additional_repos: Additional repository
+        include_repos: Includes repository
+        updated_at: Updated
+        created_at: Created
+        pl: Packet list repository
+        pl_id: Packet list repository
+        bpl: Platform
+        bpl_id: Platform
+        update_type: Update type
+        build_requires: Dependable build requires
+        auto_publish: Automated publising
+        project_version: Version
+        user: User
+
+      build_list/item:
+        name: Name
+        level: Level
+        status: Status
+        version: Version
+        build_list: Build list
+      download:
+        name: Name
+        version: Version
+        distro: Source
+        platform: Platform
+        counter: Downloads
+  notifications:
+    subjects:
+      new_comment_notification: New comment to your task
+      new_issue_notification: New task added to project
+      new_user_notification: Registered on project «%{ project_name }»
+      issue_assign_notification: New task assigned
+
