@@ -81,12 +81,14 @@ Rosa::Application.routes.draw do
   resources :projects do
     resources :wiki do
       collection do
-# Uncomment if gollum can revert page without name
-#        match 'revert/:sha1/:sha2' => 'wiki#revert', :as => :revert, :via => :get, :constrains => {:sha1 => /[0-9a-f]{40}/, :sha2 => /[0-9a-f]{40}/}
-
+        match '_history' => 'wiki#history', :as => :history, :via => :get
+        match '_access' => 'wiki#git', :as => :git, :via => :get
+        match '_revert/:sha1/:sha2' => 'wiki#revert', :as => :revert_page, :via => [:get, :post]
+        match '_compare' => 'wiki#compare', :as => :compare, :via => :post
         post :preview
         get :search
         get :pages
+        match '_compare/*versions' => 'wiki#compare', :as => :compare_versions, :via => :get
       end
       member do
         get :history

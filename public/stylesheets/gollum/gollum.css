@@ -449,6 +449,10 @@
     width: 1%;
   }
 
+  #compare-content .spacer {
+    height: 20px;
+  }
+
 .compare #compare-content ul.actions li,
 .compare #footer ul.actions li {
   margin-left: 0;

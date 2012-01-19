@@ -107,17 +107,37 @@ class WikiController < ApplicationController
     if request.post?
       @versions = params[:versions] || []
       if @versions.size < 2
-        redirect_to history_project_wiki_path(@project, CGI.escape(@name))
+        if @name
+          redirect_to history_project_wiki_path(@project, CGI.escape(@name))
+        else
+          redirect_to history_project_wiki_index_path(@project)
+        end
       else
-        redirect_to compare_versions_project_wiki_path(@project, CGI.escape(@name),
+        if @name
+          redirect_to compare_versions_project_wiki_path(@project, CGI.escape(@name),
                                                        sprintf('%s...%s', @versions.last, @versions.first))
+        else
+          redirect_to compare_versions_project_wiki_index_path(@project,
+                                                       sprintf('%s...%s', @versions.last, @versions.first))
+        end
       end
     elsif request.get?
       @versions = params[:versions].split(/\.{2,3}/)
-      @page = @wiki.page(@name)
-      diffs = @wiki.repo.diff(@versions.first, @versions.last, @page.path)
-      @diff = diffs.first
-      @helper = WikiHelper::CompareHelper.new(@diff, @versions)
+      if @versions.size < 2
+        if @name
+          redirect_to history_project_wiki_path(@project, CGI.escape(@name))
+        else
+          redirect_to history_project_wiki_index_path(@project)
+          return
+        end
+      end
+      if @name
+        page = @wiki.page(@name)
+        @diff = @wiki.repo.diff(@versions.first, @versions.last, page.path).first
+        @diffs = [@diff]
+      else
+        @diffs = @wiki.repo.diff(@versions.first, @versions.last)
+      end
       render :compare
     else
       redirect_to project_wiki_path(@project, CGI.escape(@name))
@@ -158,11 +178,14 @@ class WikiController < ApplicationController
   end
 
   def history
-    @name = params['id']
-    if @page = @wiki.page(@name)
-      @versions = @page.versions#(:page => params['page'], :per_page => 25)#.paginate :page => params[:page] #try to use will_paginate
+    if @name = params['id']
+      if @page = @wiki.page(@name)
+        @versions = @page.versions(:per_page => 1000000)#(:page => params['page'], :per_page => 25)#.paginate :page => params[:page] #try to use will_paginate
+      else
+        redirect_to :back
+      end
     else
-      redirect_to :back
+      @versions = @wiki.log(:per_page => 100000)
     end
   end
 

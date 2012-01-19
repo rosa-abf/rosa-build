@@ -7,18 +7,23 @@
     %ul.wat-cf
       %li.first= link_to t("layout.wiki.home"), project_wiki_index_path(@project)
       %li= link_to t("layout.wiki.pages"), pages_project_wiki_index_path(@project)
-      %li= link_to t("layout.wiki.wiki_history"), '#'
+      %li{:class => (!@name and action_name == 'compare') ? 'active' : ''}
+        = link_to t("layout.wiki.wiki_history"), history_project_wiki_index_path(@project)
       %li= link_to t("layout.wiki.git_access"), '#'
 
   .content
     #wiki-wrapper.inner.compare
       #head
         %h1.title
-          = t("layout.wiki.history_for")
-          %strong= @name
+          - if @name
+            = t("layout.wiki.history_for")
+            %strong= @name
+          - else
+            = t("layout.wiki.wiki_history")
 
         %ul.actions
-          %li.minibutton= link_to t("layout.wiki.back_to_history"), history_project_wiki_path(@project, escaped_name)
+          %li.minibutton= link_to t("layout.wiki.back_to_history"),
+                @name ? history_project_wiki_path(@project, escaped_name) : history_project_wiki_index_path(@project)
         = render :partial => 'searchbar'
 
       #wiki-content

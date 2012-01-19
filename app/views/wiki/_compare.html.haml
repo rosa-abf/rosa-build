@@ -1,20 +1,25 @@
 #compare-content
-  - if action_name != 'revert'
+  - if action_name != 'revert' 
     %ul.actions
       %li.minibutton
-        = form_tag revert_page_project_wiki_path(@project, escaped_name, @helper.before, @helper.after),
+        = form_tag revert_path(@project, @versions[0][0..6], @versions[1][0..6], @name),
             :name => "gollum-revert", :id => "gollum-revert-form" do
           = link_to t("layout.wiki.revert_changes"), '#', :class => "gollum-revert-button"
 
-  .data.highlight
-    %table{:cellpadding => "0", :cellspacing => "0"}
-      - @helper.lines.each do |line|
-        %tr
-          %td.line_numbers= line[:ldln]
-          %td.line_numbers= line[:rdln]
-          %td
-            %pre
-              %div{:class => line[:class]}= line[:line]
+  = render :partial => 'diff_data', :collection => @diffs, :as => :diff
+  .spacer
+  -# if @name
+    .data.highlight
+      %table{:cellpadding => "0", :cellspacing => "0"}
+        - @helper.lines.each do |line|
+          %tr
+            %td.line_numbers= line[:ldln]
+            %td.line_numbers= line[:rdln]
+            %td
+              %pre
+                %div{:class => line[:class]}= line[:line]
+  -# else 
+    = debug @diffs
 
 #gollum-footer
   %ul.actions
