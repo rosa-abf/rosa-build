@@ -15,16 +15,19 @@
     .inner
       #wiki-wrapper.page
         #head
-          %h1.title= @name
-          %ul.actions
-            %li.minibutton.jaws
-              = link_to t("layout.wiki.new_page"), '#', :'data-url' => project_wiki_index_path(@project),
-                        :id => 'minibutton-new-page'
-            - if @editable
-              %li.minibutton
-                = link_to t("layout.wiki.edit_page"), edit_project_wiki_path(@project, escaped_name), :class => "action-edit-page"
-            %li.minibutton= link_to t("layout.wiki.page_history"), history_project_wiki_path(@project, escaped_name)
-          = render :partial => 'searchbar'
+          %h1.title
+            = @name
+            = "(#{t("layout.wiki.preview")})" if action_name == 'preview'
+          - unless action_name == 'preview'
+            %ul.actions
+              %li.minibutton.jaws
+                = link_to t("layout.wiki.new_page"), '#', :'data-url' => project_wiki_index_path(@project),
+                          :id => 'minibutton-new-page'
+              - if @editable
+                %li.minibutton
+                  = link_to t("layout.wiki.edit_page"), edit_project_wiki_path(@project, escaped_name), :class => "action-edit-page"
+              %li.minibutton= link_to t("layout.wiki.page_history"), history_project_wiki_path(@project, escaped_name)
+            = render :partial => 'searchbar'
 
         = render :partial => "page"
 
