@@ -13,7 +13,9 @@
   .content
     #wiki-wrapper.inner
       #head
-        %h1= t("layout.wiki.create_page")
+        %h1.title
+          = t("layout.wiki.create_page")
+          %strong= @name
 
       #wiki-content
         = render :partial => "editor"

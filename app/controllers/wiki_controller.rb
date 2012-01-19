@@ -70,7 +70,7 @@ class WikiController < ApplicationController
 
     committer.commit
 
-    flash[:notice] = t('flash.wiki.successfully_updated')
+    flash[:notice] = t('flash.wiki.successfully_updated', :name => @name)
     redirect_to project_wiki_path(@project, CGI.escape(@name))
   end
 
@@ -86,7 +86,7 @@ class WikiController < ApplicationController
       @wiki.write_page(@name, format, params['content'], commit)
       redirect_to project_wiki_path(@project, CGI.escape(@name))
     rescue Gollum::DuplicatePageError => e
-      flash[:error] = t("flash.wiki.duplicate_page", :page_name => @name)
+      flash[:error] = t("flash.wiki.duplicate_page", :name => @name)
       render :action => :new
     end
   end
@@ -97,7 +97,7 @@ class WikiController < ApplicationController
       @wiki.delete_page(page, commit.merge(:message => 'Page removed'))
       flash[:notice] = t("flash.wiki.page_successfully_removed")
     else
-      flash[:notice] = t("flash.wiki.page_not_found")
+      flash[:notice] = t("flash.wiki.page_not_found", :name => params[:id])
     end
     redirect_to project_wiki_index_path(@project)
   end
