@@ -30,9 +30,6 @@ class Git::BlobsController < Git::BaseController
     render :text => @blob.data, :content_type => @blob.mime_type
   end
 
-  def image
-  end
-
   protected
     def set_path
       @path = params[:path]
