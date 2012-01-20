@@ -8,22 +8,20 @@
       %li.first= link_to t("layout.wiki.home"), project_wiki_index_path(@project)
       %li= link_to t("layout.wiki.pages"), pages_project_wiki_index_path(@project)
       %li= link_to t("layout.wiki.wiki_history"), history_project_wiki_index_path(@project)
-      %li= link_to t("layout.wiki.git_access"), git_project_wiki_index_path(@project)
+      %li.active= link_to t("layout.wiki.git_access"), git_project_wiki_index_path(@project)
 
   .content
-    #wiki-wrapper.inner
+    #wiki-wrapper.inner.compare
       #head
         %h1.title
-          = t("layout.wiki.create_page")
-          %strong= @name
+          = t("layout.wiki.wiki_git_access")
 
       #wiki-content
-        = render :partial => "editor"
-
-:javascript
-  jQuery(document).ready(function() {
-    $.GollumEditor({ NewFile: true });
-  });
+        = render :partial => "git_access"
+        %br
+        = render :partial => "git_access_message"
 
 - content_for :sidebar do
   - render :partial => 'projects/sidebar'
+
+

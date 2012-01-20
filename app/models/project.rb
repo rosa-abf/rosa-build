@@ -148,7 +148,7 @@ class Project < ActiveRecord::Base
     end
 
     def build_wiki_path(dir)
-      File.join(APP_CONFIG['root_path'], 'projects_wiki', "#{dir}.wiki.git")
+      File.join(APP_CONFIG['root_path'], 'git_projects', "#{dir}.wiki.git")
     end
 
     def attach_to_personal_repository

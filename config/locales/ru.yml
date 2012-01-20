@@ -171,6 +171,7 @@ ru:
       delete_page: Удалить страницу
       page_history: История
       create_page: Создать страницу
+      wiki_git_access: Доступ к Wiki через Git
       page_title: Заголовок страницы
       expand_collapse: Развернуть
       last_edited_by: Последним редактировал
@@ -201,6 +202,9 @@ ru:
       all_pages_in: "Все страницы в %{ref}:"
       search_results_for: "Результаты поиска для %{query}:"
       preview: Предпросмотр
+
+      clones:
+        http: HTTP
 
       editor:
         bold: Жирный

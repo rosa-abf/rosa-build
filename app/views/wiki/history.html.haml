@@ -9,7 +9,7 @@
       %li= link_to t("layout.wiki.pages"), pages_project_wiki_index_path(@project)
       %li{:class => (!@name and action_name == 'history') ? 'active' : ''}
         = link_to t("layout.wiki.wiki_history"), history_project_wiki_index_path(@project)
-      %li= link_to t("layout.wiki.git_access"), '#'
+      %li= link_to t("layout.wiki.git_access"), git_project_wiki_index_path(@project)
 
   .content
     #wiki-wrapper.inner.history

@@ -102,6 +102,9 @@ class WikiController < ApplicationController
     redirect_to project_wiki_index_path(@project)
   end
 
+  def git
+  end
+
   def compare
     @name = params[:id]
     if request.post?

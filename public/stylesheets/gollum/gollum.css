@@ -459,7 +459,111 @@
   margin-right: 0.6em;
 }
   
+
+/* git_access */
+#wiki-content .url-box {
+  border: medium none;
+  margin-left: 0;
+  padding: 0;
+}
+
+.url-box {
+  border-top: 1px solid #DDDDDD;
+  height: 23px;
+  margin-left: -10px;
+  margin-top: 10px;
+  padding: 10px 10px 0;
+  width: 100%;
+}
   
+#wiki-content .url-box ul.clone_urls {
+  float: left;
+  height: 23px;
+  margin: 0;
+}
+
+#wiki-content ul.clone-urls li.selected {
+  border-right-color: #BBBBBB;
+}
+
+#wiki-content ul.clone-urls li {
+  border: medium none;
+  cursor: pointer;
+  float: left;
+  height: 23px;
+  list-style-type: none;
+  margin: 0;
+  overflow: visible;
+  padding: 0;
+  white-space: nowrap;
+}
+
+ul.clone-urls li {
+  list-style-type: none;
+  margin: 5px 0 0;
+}
+
+.url-box p {
+  color: #666666;
+  float: left;
+  font-size: 11px;
+  height: 23px;
+  line-height: 23px;
+  margin: 0 0 0 5px;
+}
+
+#wiki-content ul.clone-urls li.selected > a {
+  background: -moz-linear-gradient(center top , #D7D7D7, #ABABAB) repeat scroll 0 0 transparent;
+  border-color: #C9C9C9 #C9C9C9 #9A9A9A;
+  color: #000000;
+  text-shadow: 1px 1px 0 rgba(255, 255, 255, 0.6);
+}
+
+#wiki-content ul.clone-urls li:first-child a {
+  border-bottom-left-radius: 3px;
+  border-left: 1px solid #D4D4D4;
+  border-top-left-radius: 3px;
+}
+
+#wiki-content ul.clone-urls li > a {
+  -moz-border-bottom-colors: none;
+  -moz-border-image: none;
+  -moz-border-left-colors: none;
+  -moz-border-right-colors: none;
+  -moz-border-top-colors: none;
+  background: -moz-linear-gradient(center top , #F4F4F4, #ECECEC) repeat scroll 0 0 transparent;
+  border-color: #D4D4D4 #D4D4D4 #D4D4D4 -moz-use-text-color;
+  border-style: solid solid solid none;
+  border-width: 1px 1px 1px medium;
+  color: #333333;
+  display: block;
+  font-size: 11px;
+  font-weight: bold;
+  height: 21px;
+  line-height: 21px;
+  margin: 0;
+  padding: 0 9px;
+  text-decoration: none;
+  text-shadow: 1px 1px 0 #FFFFFF;
+}
+
+#wiki-content input.url-field {
+    -moz-border-bottom-colors: none;
+    -moz-border-image: none;
+    -moz-border-left-colors: none;
+    -moz-border-right-colors: none;
+    -moz-border-top-colors: none;
+    border-color: #CCCCCC #CCCCCC #CCCCCC -moz-use-text-color;
+    border-style: solid solid solid none;
+    border-width: 1px 1px 1px medium;
+    color: #666666;
+    float: left;
+    font-family: Monaco, "Courier New", "DejaVu Sans Mono", "Bitstream Vera Sans Mono", monospace;
+    font-size: 11px;
+    height: 16px;
+    padding: 3px 5px 2px;
+    width: 400px;
+}
   
 /* @control syntax */
 .highlight  { background: #ffffff; }
