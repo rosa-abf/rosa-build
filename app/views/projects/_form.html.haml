@@ -13,6 +13,9 @@
 .group
   = f.label :has_issues, t("activerecord.attributes.project.has_issues"), :class => :label
   = f.check_box :has_issues
+.group
+  = f.label :has_wiki, t("activerecord.attributes.project.has_wiki"), :class => :label
+  = f.check_box :has_wiki
 
 .group.navform.wat-cf
   %button.button{:type => "submit"}
