@@ -81,7 +81,6 @@ describe Comment do
         comment = Comment.new(:user => @stranger, :body => 'hello!', :project => @project,
             :commentable_type => @commit.class.name, :commentable_id => @commit.id)
         comment.save
-        puts "deliveries is #{ActionMailer::Base.deliveries.inspect}"
         ActionMailer::Base.deliveries.count.should == 1
         ActionMailer::Base.deliveries.last.to.include?(@user.email).should == true
       end
@@ -130,7 +129,7 @@ describe Comment do
       set_comments_data_for_commit
 
       @project.update_attribute(:owner, @user)
-      @project.relations.create!(:object_type => 'User', :object_id => @user.id, :role => 'admin')
+      #@project.relations.create!(:object_type => 'User', :object_id => @user.id, :role => 'admin')
     end
 
     it 'should create comment' do
@@ -155,8 +154,6 @@ describe Comment do
         comment = Comment.new(:user => @stranger, :body => 'hello!', :project => @project,
             :commentable_type => @commit.class.name, :commentable_id => @commit.id)
         comment.save
-        puts "owner email is #{@project.owner}"
-        puts "deliveries is #{ActionMailer::Base.deliveries.last.to}"
         ActionMailer::Base.deliveries.count.should == 1
         ActionMailer::Base.deliveries.last.to.include?(@project.owner.email).should == true
       end
@@ -200,9 +197,14 @@ describe Comment do
   context 'for simple user' do
     before(:each) do
       @user = Factory(:user)
+      @simple = Factory(:user)
       @stranger = Factory(:user)
-
       set_comments_data_for_commit
+      @create_params = {:commentable_type => @commit.class.name, :commentable_id => @commit.id,
+        :user => @simple, :project => @project}
+      @comment = Factory(:comment, :user => @simple)
+      @comment.update_attributes(:commentable_type => @commit.class.name, :commentable_id => @commit.id)
+      @ability = Ability.new(@simple)
     end
 
     it 'should create comment' do
@@ -227,8 +229,6 @@ describe Comment do
         comment = Comment.new(:user => @stranger, :body => 'hello!', :project => @project,
             :commentable_type => @commit.class.name, :commentable_id => @commit.id)
         comment.save
-        puts "owner email is #{@project.owner}"
-        puts "deliveries is #{ActionMailer::Base.deliveries.last.to}"
         ActionMailer::Base.deliveries.count.should == 1
         ActionMailer::Base.deliveries.last.to.include?(@stranger.email).should == false
       end
@@ -246,7 +246,7 @@ describe Comment do
         ActionMailer::Base.deliveries.last.to.include?(@stranger.email).should == true
       end
 
-      it 'should send an e-mail for own comment' do
+      it 'should not send an e-mail for own comment' do
         ActionMailer::Base.deliveries = []
         @project.owner.notifier.update_attribute :can_notify, false
         @project.commit_comments_subscribes.create(:user_id => @stranger.id)
