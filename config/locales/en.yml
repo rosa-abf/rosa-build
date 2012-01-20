@@ -46,6 +46,15 @@ en:
           edit_header: Notifier setting
       processing: working ...
 
+      devise:
+        shared_links:
+          sign_in: Sign in
+          sign_up: Sign up
+          forgot_password: Forgot your password?
+          confirm_again: Do not receive the confirmation link?
+          unlock: Do not receive unlock instructions?
+          sign_in_through: Sign in by %{provider}
+
       downloads:
         title: Downloads statistic
         message: Automatically updated every 5 minutes
