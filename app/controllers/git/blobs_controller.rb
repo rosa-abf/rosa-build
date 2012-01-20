@@ -5,6 +5,16 @@ class Git::BlobsController < Git::BaseController
 
   def show
     @blob = @tree / @path
+
+    if params[:raw]
+      image_url = Rails.root.to_s + "/" + @path
+
+      response.headers['Cache-Control'] = "public, max-age=#{12.hours.to_i}"
+      response.headers['Content-Type'] = @blob.mime_type
+      response.headers['Content-Disposition'] = 'inline'
+
+      render(:text => open(image_url).read) and return
+    end
   end
 
   def blame
@@ -18,6 +28,9 @@ class Git::BlobsController < Git::BaseController
 
     headers["Content-Disposition"] = %[attachment;filename="#{@blob.name}"]
     render :text => @blob.data, :content_type => @blob.mime_type
+  end
+
+  def image
   end
 
   protected
