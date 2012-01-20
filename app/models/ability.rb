@@ -46,8 +46,9 @@ class Ability
         can(:fork, Project) {|project| can? :read, project}
         can(:destroy, Project) {|project| owner? project}
 
-        can :create, AutoBuildList
-        can [:index, :destroy], AutoBuildList, :project_id => user.own_project_ids
+        # TODO: Turn on AAA when it will be updated
+        #can :create, AutoBuildList
+        #can [:index, :destroy], AutoBuildList, :project_id => user.own_project_ids
 
         can :read, BuildList, :project => {:visibility => 'open'}
         can :read, BuildList, :project => {:owner_type => 'User', :owner_id => user.id}

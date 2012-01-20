@@ -355,7 +355,7 @@ ru:
         platform_not_found: платформа не найдена
         platform_pending: платформа в процессе создания
         project_not_found: проект не найден
-        project_version_not_found: версия не найден
+        project_version_not_found: версия не найдена
 
   flash:
     settings:
@@ -680,12 +680,14 @@ ru:
         status: Статус
         version: Версия
         build_list: Сборочный лист
+      
       download:
         name: Название
         version: Версия
         distro: Дистрибутив
         platform: Архитектура
         counter: Закачки
+  
   notifications:
     subjects:
       new_comment_notification: Новый комментарий к Вашей задаче
