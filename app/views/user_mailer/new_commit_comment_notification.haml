@@ -1,0 +1,9 @@
+%p== Здравствуйте, #{@user.name}.
+
+
+%p На Ваш комментарий в коммите #{ link_to @comment.commentable.message, commit_path(@comment.project, @comment.commentable_id]) } был дан ответ.
+
+%p "#{ @comment.body }"
+
+
+%p== Команда поддержки «ROSA Build System»

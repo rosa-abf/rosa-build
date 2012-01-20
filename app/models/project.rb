@@ -139,7 +139,7 @@ class Project < ActiveRecord::Base
   class << self
     def commit_comments(commit, project)
      comments = Comment.where(:commentable_id => commit.id, :commentable_type => 'Grit::Commit').order(:created_at)
-     comments.each {|x| x.project = project}
+     comments.each {|x| x.project = project; x.helper}
     end
   end
 
