@@ -2,8 +2,6 @@ require 'lib/gollum'
 require 'cgi'
 
 class WikiController < ApplicationController
-#  WIKI_OPTIONS = {:page_file_dir => '/', :ref => 'master', :page_class => Gollum::PageImproved}
-#  WIKI_OPTIONS = { :page_class => Gollum::PageImproved}
   WIKI_OPTIONS = {}
 
   load_and_authorize_resource :project
@@ -160,21 +158,15 @@ class WikiController < ApplicationController
       sha2, sha1 = sha1, "#{sha1}^" if !sha2
       @versions = [sha1, sha2]
       diffs     = @wiki.repo.diff(@versions.first, @versions.last, @page.path)
-      @diff     = diffs.first
-      @helper = WikiHelper::CompareHelper.new(@diff, @versions)
+      @diffs    = [diffs.first]
       flash[:error]  = t("flash.wiki.patch_does_not_apply")
       render :compare
     end
   end
 
   def preview
-    puts @wiki.inspect
-    puts params['content']
-    puts params['format']
     @name = params['page']#'Preview'
     @page = @wiki.preview_page(@name, params['content'], params['format'])
-    puts @page.inspect
-    puts @page.version.inspect
     @content = @page.formatted_data
     @editable = false
     render :show
@@ -208,17 +200,22 @@ class WikiController < ApplicationController
       @wiki = Gollum::Wiki.new(@project.wiki_path, WIKI_OPTIONS.merge(:base_path => project_wiki_index_path(@project)))
     end
 
-    def update_wiki_page(wiki, page, content, commit_message, name = nil, format = nil)
+    def update_wiki_page(wiki, page, content, commit_msg, name = nil, format = nil)
       return if !page ||  
         ((!content || page.raw_data == content) && page.format == format)
       name    ||= page.name
       format    = (format || page.format).to_sym
       content ||= page.raw_data
-      wiki.update_page(page, name, format, content.to_s, commit_message)
+      wiki.update_page(page, name, format, content.to_s, commit_msg)
     end
 
     def commit_message
-      { :message => params['message'] }
+      if params['message'] and !params['message'].empty?
+        msg = params['message']
+      else
+        msg = "#{!!@wiki.page(@name) ? 'Updated page' : 'Created page'} #{@name}"
+      end
+      { :message => msg }
     end
 
     def commit
