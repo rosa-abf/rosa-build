@@ -17,8 +17,11 @@ class Comment < ActiveRecord::Base
 
   def deliver_new_comment_notification
     subscribes = self.commentable.subscribes if self.commentable_type == 'Issue'
-    # FIXME (true) for rspec
-    subscribes = self.project.commit_comments_subscribes(true) if self.commentable_type == 'Grit::Commit'
+
+    if self.commentable_type == 'Grit::Commit'
+      subscribe_committer
+      subscribes = self.project.commit_comments_subscribes(true) # FIXME (true) for rspec
+    end
     subscribes.each do |subscribe|
       if self.commentable_type == 'Issue' && self.user_id != subscribe.user_id && User.find(subscribe.user).notifier.new_comment_reply && User.find(subscribe.user).notifier.can_notify
         if self.commentable.comments.exists?(:user_id => subscribe.user.id)
@@ -45,4 +48,10 @@ class Comment < ActiveRecord::Base
     self.helper
   end
 
+  def subscribe_committer
+    committer = User.where(:email => self.commentable.committer.email).first
+    if committer && !self.project.commit_comments_subscribes.exists?(:user_id => committer.id) && committer.notifier.new_comment_commit_owner
+      self.project.commit_comments_subscribes.create(:user_id => committer.id)
+    end
+  end
 end
