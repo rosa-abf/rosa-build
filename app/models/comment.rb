@@ -17,6 +17,7 @@ class Comment < ActiveRecord::Base
     user_id == user.id
   end
 
+
   protected
 
   def subscribe_on_reply
@@ -26,12 +27,5 @@ class Comment < ActiveRecord::Base
 
   def invoke_helper
     self.helper
-  end
-
-  def subscribe_committer
-    committer = User.where(:email => self.commentable.committer.email).first
-    if committer && !self.project.commit_comments_subscribes.exists?(:user_id => committer.id) && committer.notifier.new_comment_commit_owner
-      self.project.commit_comments_subscribes.create(:user_id => committer.id)
-    end
   end
 end

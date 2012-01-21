@@ -12,6 +12,8 @@ class Relation < ActiveRecord::Base
   scope :by_target, lambda {|tar| {:conditions => ['target_id = ? AND target_type = ?', tar.id, tar.class.to_s]}}
   scope :by_role, lambda {|role| {:conditions => ['role = ?', role]}}
 
+  after_create :subscribe_project_admin, :if => "role == 'admin' && object_id == 'User' && targer_type == 'Project'"
+
   def self.create_with_role(object, target, role)
     r = new
     r.object = object
@@ -23,5 +25,9 @@ class Relation < ActiveRecord::Base
   protected
     def add_default_role
       self.role = ROLES.first if role.nil? || role.empty?
+    end
+
+    def subscribe_project_admin
+      Subscribe.subscribe_user(self.target_id, self.object_id)
     end
 end

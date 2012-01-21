@@ -31,7 +31,7 @@ class Project < ActiveRecord::Base
 
   after_create :attach_to_personal_repository
   after_create :create_git_repo
-  after_create :subscribe_users
+  after_create :subscribe_owner
   after_destroy :destroy_git_repo
   # after_rollback lambda { destroy_git_repo rescue true if new_record? }
 
@@ -161,7 +161,7 @@ class Project < ActiveRecord::Base
       FileUtils.rm_rf path
     end
 
-    def subscribe_users
-      self.commit_comments_subscribes.create(:user_id => self.owner.id)
+    def subscribe_owner
+      Subscribe.subscribe_user(self, self.owner.id)
     end
 end
