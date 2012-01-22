@@ -316,8 +316,8 @@ describe Comment do
         ActionMailer::Base.deliveries.last.to.include?(@simple.email).should == true
       end
 
-      context 'for own commit' do
-        it 'should send an e-mail' do
+      context 'for committer' do
+        it 'should send a one e-mail' do
           ActionMailer::Base.deliveries = []
           @stranger.update_attribute :email, 'code@tpope.net'
           comment = Comment.create(:user => @user, :body => 'hello!', :project => @project,
@@ -325,9 +325,36 @@ describe Comment do
           ActionMailer::Base.deliveries.count.should == 1
           ActionMailer::Base.deliveries.last.to.include?(@stranger.email).should == true
         end
+
+        it 'should not send an e-mail for own comment' do
+          ActionMailer::Base.deliveries = []
+          #@project.owner.notifier.update_attribute :can_notify, false
+          @stranger.update_attribute :email, 'code@tpope.net'
+          comment = Comment.create(:user => @stranger, :body => 'hello!', :project => @project,
+              :commentable_type => @commit.class.name, :commentable_id => @commit.id)
+          ActionMailer::Base.deliveries.count.should == 0
+        end
+
+        it 'should not send an e-mail if global notify off' do
+          ActionMailer::Base.deliveries = []
+          @project.owner.notifier.update_attribute :can_notify, false
+          @stranger.update_attribute :email, 'code@tpope.net'
+          comment = Comment.create(:user => @user, :body => 'hello!', :project => @project,
+              :commentable_type => @commit.class.name, :commentable_id => @commit.id)
+          ActionMailer::Base.deliveries.count.should == 0
+        end
+
+        it 'should not send an e-mail if notify for my commits off' do
+          ActionMailer::Base.deliveries = []
+          @stranger.notifier.update_attribute :new_comment_commit_owner, false
+          @stranger.update_attribute :email, 'code@tpope.net'
+          comment = Comment.create(:user => @user, :body => 'hello!', :project => @project,
+              :commentable_type => @commit.class.name, :commentable_id => @commit.id)
+          ActionMailer::Base.deliveries.count.should == 0
+        end
       end
 
-      it 'should send an e-mail' do
+      it 'should send an e-mail when subscribed to project' do
         ActionMailer::Base.deliveries = []
         @project.owner.notifier.update_attribute :can_notify, false
         @stranger.notifier.update_attribute :new_comment_commit_repo_owner, false
