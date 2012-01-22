@@ -18,12 +18,6 @@ class UserMailer < ActionMailer::Base
     end
   end
 
-  def new_comment_reply_notification(comment, user)
-    @user = user
-    @comment = comment
-    template = 'new_commit_comment_reply_notification' if @comment.commentable_type == 'Grit::Commit'
-    mail(:to => user.email, :subject => I18n.t("notifications.subjects.new_comment_reply_notification"), :template_name => template)  end
-
   def new_issue_notification(issue, user)
     @user = user
     @issue = issue
