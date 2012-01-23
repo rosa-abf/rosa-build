@@ -30,14 +30,6 @@
           = t("activerecord.attributes.project.repository")
           \:
         = git_repo_url @project.git_repo_name
-      %p
-        %b
-          = t('layout.issues.subscribe')
-          \:
-        - if @project.commit_comments_subscribes.exists? :user_id => current_user.id
-          = link_to t('layout.issues.unsubscribe_btn'), project_subscribe_path(@project, current_user.id), :method => :delete
-        - else
-          = link_to t('layout.issues.subscribe_btn'), project_subscribes_path(@project), :method => :post
       .wat-cf
         = link_to image_tag("web-app-theme/icons/application_edit.png", :alt => t("layout.edit")) + " " + t("layout.edit"), edit_project_path(@project), :class => "button" if can? :update, @project
         = link_to image_tag("web-app-theme/icons/cross.png", :alt => t("layout.delete")) + " " + t("layout.delete"), project_path(@project), :method => "delete", :class => "button", :confirm => t("layout.projects.confirm_delete") if can? :destroy, @project

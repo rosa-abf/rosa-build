@@ -88,7 +88,6 @@ Rosa::Application.routes.draw do
     end
     resource :repo, :controller => "git/repositories", :only => [:show]
     resources :build_lists, :only => [:index, :new, :create]
-    resources :subscribes, :only => [:create, :destroy], :controller => 'project_subscribes'
 
     resources :collaborators, :only => [:index, :edit, :update, :add] do
       collection do
@@ -156,6 +155,9 @@ Rosa::Application.routes.draw do
   match '/projects/:project_id/git/commit/:commit_id/comments/:id(.:format)', :controller => "comments", :action => :update, :as => :project_commit_comment, :via => :put
   match '/projects/:project_id/git/commit/:commit_id/comments/:id(.:format)', :controller => "comments", :action => :destroy, :via => :delete
   match '/projects/:project_id/git/commit/:commit_id/comments(.:format)', :controller => "comments", :action => :create, :as => :project_commit_comments, :via => :post
+  # Commits subscribe
+  match '/projects/:project_id/git/commit/:commit_id/subscribe', :controller => "commit_subscribes", :action => :create, :defaults => { :format => :html }, :as => :subscribe_commit, :via => :post
+  match '/projects/:project_id/git/commit/:commit_id/unsubscribe', :controller => "commit_subscribes", :action => :destroy, :defaults => { :format => :html }, :as => :unsubscribe_commit, :via => :delete
   # Blobs
   match '/projects/:project_id/git/blob/:treeish/*path', :controller => "git/blobs", :action => :show, :treeish => /[0-9a-zA-Z_.\-]*/, :defaults => { :treeish => :master }, :as => :blob
   match '/projects/:project_id/git/commit/blob/:commit_hash/*path', :controller => "git/blobs", :action => :show, :project_name => /[0-9a-zA-Z_.\-]*/, :as => :blob_commit

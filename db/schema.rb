@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120118173141) do
+ActiveRecord::Schema.define(:version => 20120123161250) do
 
   create_table "arches", :force => true do |t|
     t.string   "name",       :null => false
@@ -304,12 +304,24 @@ ActiveRecord::Schema.define(:version => 20120118173141) do
   end
 
   create_table "subscribes", :force => true do |t|
-    t.integer  "subscribeable_id"
+    t.string   "subscribeable_id"
     t.string   "subscribeable_type"
     t.integer  "user_id"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "status",             :default => 1
+    t.integer  "project_id"
   end
+
+  create_table "user_emails", :force => true do |t|
+    t.integer  "user_id",    :null => false
+    t.string   "email",      :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "user_emails", ["email"], :name => "index_user_emails_on_email"
+  add_index "user_emails", ["user_id"], :name => "index_user_emails_on_user_id"
 
   create_table "users", :force => true do |t|
     t.string   "name"

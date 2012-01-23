@@ -11,7 +11,9 @@ class Issue < ActiveRecord::Base
                    #'WHERE comments.commentable_id = \'#{self.id}\' ' +
                    #'  AND comments.commentable_type = \'#{self.class.name}\' ' +
                    #'ORDER BY comments.created_at'
-  has_many :subscribes, :as => :subscribeable
+  has_many :subscribes, :as => :subscribeable,
+    :finder_sql => proc { "subscribes.subscribeable_id = '#{self.id}' " +
+                   "  AND subscribes.subscribeable_type = '#{self.class.name}'"}
 
   validates :title, :body, :project_id, :presence => true
 
