@@ -1,11 +1,15 @@
 class BuildList::Item < ActiveRecord::Base
+  
   belongs_to :build_list
 
   attr_protected :build_list_id
 
-  STATUSES = [BuildServer::SUCCESS, BuildServer::DEPENDENCIES_ERROR, BuildServer::BUILD_ERROR, BuildServer::BUILD_STARTED]
+  GIT_ERROR = 5
+  
+  STATUSES = [BuildServer::SUCCESS, BuildServer::DEPENDENCIES_ERROR, BuildServer::BUILD_ERROR, BuildServer::BUILD_STARTED, GIT_ERROR]
   HUMAN_STATUSES = {
                      nil => :unknown,
+                     GIT_ERROR => :git_error,
                      BuildServer::DEPENDENCIES_ERROR => :dependencies_error,
                      BuildServer::SUCCESS => :success,
                      BuildServer::BUILD_STARTED => :build_started,

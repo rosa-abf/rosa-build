@@ -338,6 +338,7 @@ en:
             dependencies_error: Dependences not found
             success: Build complete
             unknown: Build waiting
+            git_error: Git error
 
         statuses:
           build_error: Build error
