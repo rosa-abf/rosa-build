@@ -159,6 +159,9 @@ class WikiController < ApplicationController
       flash[:notice]  = t("flash.wiki.revert_success")
       redirect_to project_wiki_path(@project, "#{CGI.escape(@name)}")
     else
+      # if revert wasn't successful then redirect back to comparsion.
+      # if second commit version is missed, then second version is 
+      # params[:sha1] and first version is previous version related to params[:sha1]
       sha2, sha1 = sha1, "#{sha1}^" if !sha2
       @versions = [sha1, sha2]
       diffs     = @wiki.repo.diff(@versions.first, @versions.last, @page.path)
@@ -169,7 +172,7 @@ class WikiController < ApplicationController
   end
 
   def preview
-    @name = params['page']#'Preview'
+    @name = params['page']
     @page = @wiki.preview_page(@name, params['content'], params['format'])
     @content = @page.formatted_data
     @editable = false
@@ -201,9 +204,12 @@ class WikiController < ApplicationController
   protected
 
     def get_wiki
-      @wiki = Gollum::Wiki.new(@project.wiki_path, WIKI_OPTIONS.merge(:base_path => project_wiki_index_path(@project)))
+      @wiki = Gollum::Wiki.new(@project.wiki_path,
+               WIKI_OPTIONS.merge(:base_path => project_wiki_index_path(@project)))
     end
 
+    # This method was grabbed from sinatra application, shipped with Gollum gem.
+    # See Gollum gem and Gollum License if you have any questions about license notes.
     def update_wiki_page(wiki, page, content, commit_msg, name = nil, format = nil)
       return if !page ||  
         ((!content || page.raw_data == content) && page.format == format)
