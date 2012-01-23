@@ -60,7 +60,7 @@ class Project < ActiveRecord::Base
       bl.build_requires = false # already set as db default
       bl.user = user
       bl.auto_publish = true # already  set as db default
-      bl.include_repos = [] << platform.repositories.find_by_name('main').id
+      bl.include_repos = [platform.repositories.find_by_name('main').id]
     end
   end
 
