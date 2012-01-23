@@ -108,37 +108,41 @@ class WikiController < ApplicationController
     if request.post?
       @versions = params[:versions] || []
       if @versions.size < 2
-        if @name
-          redirect_to history_project_wiki_path(@project, CGI.escape(@name))
-        else
-          redirect_to history_project_wiki_index_path(@project)
-        end
+        redirect_to history_project_wiki_path(@project, CGI.escape(@name))
       else
-        if @name
-          redirect_to compare_versions_project_wiki_path(@project, CGI.escape(@name),
+        redirect_to compare_versions_project_wiki_path(@project, CGI.escape(@name),
                                                        sprintf('%s...%s', @versions.last, @versions.first))
-        else
-          redirect_to compare_versions_project_wiki_index_path(@project,
-                                                       sprintf('%s...%s', @versions.last, @versions.first))
-        end
       end
     elsif request.get?
       @versions = params[:versions].split(/\.{2,3}/)
       if @versions.size < 2
-        if @name
-          redirect_to history_project_wiki_path(@project, CGI.escape(@name))
-        else
-          redirect_to history_project_wiki_index_path(@project)
-          return
-        end
+        redirect_to history_project_wiki_path(@project, CGI.escape(@name))
+        return
       end
-      if @name
-        page = @wiki.page(@name)
-        @diff = @wiki.repo.diff(@versions.first, @versions.last, page.path).first
-        @diffs = [@diff]
+      page = @wiki.page(@name)
+      @diffs = [@wiki.repo.diff(@versions.first, @versions.last, page.path).first]
+      render :compare
+    else
+      redirect_to project_wiki_path(@project, CGI.escape(@name))
+    end
+  end
+
+  def compare_wiki
+    if request.post?
+      @versions = params[:versions] || []
+      if @versions.size < 2
+        redirect_to history_project_wiki_index_path(@project)
       else
-        @diffs = @wiki.repo.diff(@versions.first, @versions.last)
+        redirect_to compare_versions_project_wiki_index_path(@project,
+                                                       sprintf('%s...%s', @versions.last, @versions.first))
       end
+    elsif request.get?
+      @versions = params[:versions].split(/\.{2,3}/)
+      if @versions.size < 2
+        redirect_to history_project_wiki_index_path(@project)
+        return
+      end
+      @diffs = @wiki.repo.diff(@versions.first, @versions.last)
       render :compare
     else
       redirect_to project_wiki_path(@project, CGI.escape(@name))
@@ -175,12 +179,12 @@ class WikiController < ApplicationController
   def history
     if @name = params['id']
       if @page = @wiki.page(@name)
-        @versions = @page.versions(:per_page => 1000000)#(:page => params['page'], :per_page => 25)#.paginate :page => params[:page] #try to use will_paginate
+        @versions = @page.versions
       else
         redirect_to :back
       end
     else
-      @versions = @wiki.log(:per_page => 100000)
+      @versions = @wiki.log
     end
   end
 

@@ -84,11 +84,11 @@ Rosa::Application.routes.draw do
         match '_history' => 'wiki#history', :as => :history, :via => :get
         match '_access' => 'wiki#git', :as => :git, :via => :get
         match '_revert/:sha1/:sha2' => 'wiki#revert', :as => :revert_page, :via => [:get, :post]
-        match '_compare' => 'wiki#compare', :as => :compare, :via => :post
+        match '_compare' => 'wiki#compare_wiki', :as => :compare, :via => :post
+        match '_compare/*versions' => 'wiki#compare_wiki', :as => :compare_versions, :via => :get
         post :preview
         get :search
         get :pages
-        match '_compare/*versions' => 'wiki#compare', :as => :compare_versions, :via => :get
       end
       member do
         get :history
