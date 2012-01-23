@@ -55,11 +55,12 @@ class Project < ActiveRecord::Base
       bl.bpl = platform
       bl.update_type = 'recommended'
       bl.arch = Arch.find_by_name('i586')
-      bl.project_version = "latest_#{platform.name}"
+      # FIXME: Need to set "latest_#{platform.name}"
+      bl.project_version = "latest_mandriva2011"
       bl.build_requires = false # already set as db default
       bl.user = user
       bl.auto_publish = true # already  set as db default
-      bl.include_repos << Platform.find_by_id(platform).repositories.find_by_name('main').id
+      bl.include_repos = [] << platform.repositories.find_by_name('main').id
     end
   end
 
