@@ -39,7 +39,8 @@ ru:
     upload: Загрузить
     not_access: Нет доступа!
     owner: Владелец
-    confirm: Уверенны?
+    confirm: Уверены?
+    back: Назад
     settings:
       notifier: Настройки оповещений
       notifiers:
