@@ -180,15 +180,17 @@ class WikiController < ApplicationController
   end
 
   def history
-    if @name = params['id']
-      if @page = @wiki.page(@name)
-        @versions = @page.versions
-      else
-        redirect_to :back
-      end
+    @name = params[:id]
+    if @page = @wiki.page(@name)
+      @versions = @page.versions
     else
-      @versions = @wiki.log
+      redirect_to :back
     end
+  end
+
+  def wiki_history
+    @versions = @wiki.log
+    render :history
   end
 
   def search

@@ -3,13 +3,7 @@
 
 %a{ :name => "wiki"}
 .block
-  .secondary-navigation
-    %ul.wat-cf
-      %li.first= link_to t("layout.wiki.home"), project_wiki_index_path(@project)
-      %li= link_to t("layout.wiki.pages"), pages_project_wiki_index_path(@project)
-      %li{:class => (!@name and action_name == 'history') ? 'active' : ''}
-        = link_to t("layout.wiki.wiki_history"), history_project_wiki_index_path(@project)
-      %li= link_to t("layout.wiki.git_access"), git_project_wiki_index_path(@project)
+  = render :partial => 'navigation'
 
   .content
     #wiki-wrapper.inner.history
