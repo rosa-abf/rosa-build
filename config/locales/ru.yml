@@ -130,6 +130,7 @@ ru:
     comments:
       confirm_delete: Вы уверены, что хотите удалить комментарий?
       new_header: Новый комментарий
+      edit_header: Редактирование комментария
 
     platforms:
       admin_id: Владелец
@@ -355,7 +356,7 @@ ru:
         platform_not_found: платформа не найдена
         platform_pending: платформа в процессе создания
         project_not_found: проект не найден
-        project_version_not_found: версия не найден
+        project_version_not_found: версия не найдена
 
   flash:
     settings:
@@ -639,6 +640,7 @@ ru:
         created_at: Создан
         updated_at: Обновлен
         role: Роль в системе
+        language: Язык
 
       product_build_list:
         id: Id
