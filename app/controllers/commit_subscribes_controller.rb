@@ -7,7 +7,7 @@ class CommitSubscribesController < ApplicationController
 
   def create
     if Subscribe.set_subscribe(@project, @commit, current_user.id, Subscribe::ON)
-      flash[:notice] = I18n.t("flash.subscribe.saved")
+      flash[:notice] = I18n.t("flash.subscribe.commit.saved")
       # TODO js
       redirect_to commit_path(@project, @commit)
     else
@@ -18,7 +18,7 @@ class CommitSubscribesController < ApplicationController
 
   def destroy
     Subscribe.set_subscribe(@project, @commit, current_user.id, Subscribe::OFF)
-    flash[:notice] = t("flash.subscribe.destroyed")
+    flash[:notice] = t("flash.subscribe.commit.destroyed")
     redirect_to commit_path(@project, @commit)
   end
 

@@ -12,7 +12,7 @@ class Subscribe < ActiveRecord::Base
   scope :finder_hack, order('') # FIXME .subscribes - error; .subscribes.finder_hack - success Oo
 
   def self.comment_subscribes(comment)
-    Subscribe.where(:subscribeable_id => comment.commentable.id, :subscribeable_type => comment.commentable.class.name.to_s, :project_id => comment.project)
+    Subscribe.where(:subscribeable_id => comment.commentable.id, :subscribeable_type => comment.commentable.class.name, :project_id => comment.project)
   end
 
   def self.new_comment_notification(comment)

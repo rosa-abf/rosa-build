@@ -348,6 +348,17 @@ describe Comment do
         ActionMailer::Base.deliveries.last.to.include?(@stranger.email).should == true
       end
 
+      it 'should send an e-mail with user locale' do
+        ActionMailer::Base.deliveries = []
+        @stranger.update_attribute :email, 'code@tpope.net'
+        @stranger.update_attribute :language, 'ru'
+        comment = Comment.create(:user => @user, :body => 'hello!', :project => @project,
+            :commentable_type => @commit.class.name, :commentable_id => @commit.id)
+        ActionMailer::Base.deliveries.count.should == 1
+        ActionMailer::Base.deliveries.last.to.include?(@stranger.email).should == true
+        ActionMailer::Base.deliveries.last.subject.include?('Новый комментарий к коммиту').should == true
+      end
+
       it 'should send a one e-mail when subscribed to commit' do
         ActionMailer::Base.deliveries = []
         Subscribe.set_subscribe(@project, @commit, @stranger.id, Subscribe::ON)

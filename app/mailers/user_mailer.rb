@@ -13,7 +13,7 @@ class UserMailer < ActionMailer::Base
   def new_comment_notification(comment, user)
     @user = user
     @comment = comment
-    mail(:to => user.email, :subject => I18n.t("notifications.subjects.new_comment_notification")) do |format|
+    mail(:to => user.email, :subject => I18n.t("notifications.subjects.new_#{comment.commentable.class == Grit::Commit ? 'commit_' : ''}comment_notification")) do |format|
       format.html
     end
   end

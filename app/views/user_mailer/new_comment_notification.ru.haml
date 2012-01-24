@@ -1,14 +1,14 @@
-%p== Hello, #{@user.name}.
+%p== Здравствуйте, #{@user.name}.
 
 - if @comment.commentable.class == Issue
   - link = link_to @comment.commentable.title, [@comment.commentable.project, @comment.commentable]
-  - object = 'issue'
+  - object = 'задаче'
 - elsif @comment.commentable.class == Grit::Commit
   - link = link_to @comment.commentable.message, commit_path(@comment.project, @comment.commentable_id])
-  - object = 'commit'
-%p User #{ link_to @comment.user.uname, user_path(@comment.user)} added new comment to #{object} #{link}.
+  - object = 'коммиту'
+%p #{ link_to @comment.user.uname, user_path(@comment.user)} добавил комментарий к #{object} #{link}.
 
 %p "#{ @comment.body }"
 
 
-%p== Support Team «ROSA Build System»
+%p== Команда поддержки «ROSA Build System»
