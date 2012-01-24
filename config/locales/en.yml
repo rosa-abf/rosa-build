@@ -46,6 +46,7 @@ en:
         notifiers:
           edit_header: Notifier setting
       processing: working ...
+      invalid_content_type: incorrect type
 
       downloads:
         title: Downloads statistic
@@ -201,7 +202,6 @@ en:
         new_header: New product
         edit_header: Product editing
         confirm_delete: Are you sure to delete this product?
-        invalid_content_type: incorrect type
 
         cron_tab_generator:
           show: Show cron tab the generator
@@ -605,6 +605,7 @@ en:
           created_at: Created
           updated_at: Updated
           has_issues: Tracker on
+          srpm: Import code from src.rpm
 
         rpm:
           name: Name
