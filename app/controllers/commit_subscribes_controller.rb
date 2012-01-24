@@ -1,13 +1,12 @@
 class CommitSubscribesController < ApplicationController
   before_filter :authenticate_user!
 
-  load_resource :subscribe
   load_and_authorize_resource :project
 
   before_filter :find_commit
 
   def create
-    if Subscribe.set_subscribe(@project, @commit, current_user.id, 1)
+    if Subscribe.set_subscribe(@project, @commit, current_user.id, Subscribe::ON)
       flash[:notice] = I18n.t("flash.subscribe.saved")
       # TODO js
       redirect_to commit_path(@project, @commit)
@@ -18,7 +17,7 @@ class CommitSubscribesController < ApplicationController
   end
 
   def destroy
-    Subscribe.set_subscribe(@project, @commit, current_user.id, 0)
+    Subscribe.set_subscribe(@project, @commit, current_user.id, Subscribe::OFF)
     flash[:notice] = t("flash.subscribe.destroyed")
     redirect_to commit_path(@project, @commit)
   end

@@ -18,12 +18,11 @@ class Comment < ActiveRecord::Base
     user_id == user.id
   end
 
-
   protected
 
   def subscribe_on_reply
     self.commentable.subscribes.create(:user_id => self.user_id) if self.commentable_type == 'Issue' && !self.commentable.subscribes.exists?(:user_id => self.user_id)
-    Subscribe.subscribe_user_to_commit(self, self.user_id) if self.commentable_type == 'Grit::Commit'
+    Subscribe.subscribe_user_to_commit(self, self.user.id) if self.commentable_type == 'Grit::Commit'
   end
 
   def invoke_helper
