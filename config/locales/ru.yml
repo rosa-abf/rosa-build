@@ -45,6 +45,7 @@ ru:
       notifiers:
         edit_header: Настройки оповещений
     processing: Обрабатывается...
+    invalid_content_type: имеет неверный тип
 
     downloads:
       title: Статистика закачек пакетов
@@ -129,7 +130,6 @@ ru:
     comments:
       confirm_delete: Вы уверены, что хотите удалить комментарий?
       new_header: Новый комментарий
-      edit_header: Редактирование комментария
 
     platforms:
       admin_id: Владелец
@@ -200,7 +200,6 @@ ru:
       new_header: Новый продукт
       edit_header: Редактирование продукта
       confirm_delete: Вы уверены, что хотите удалить этот продукт?
-      invalid_content_type: имеет неверный тип
 
       cron_tab_generator:
         show: Показать cron tab генератор
@@ -356,7 +355,7 @@ ru:
         platform_not_found: платформа не найдена
         platform_pending: платформа в процессе создания
         project_not_found: проект не найден
-        project_version_not_found: версия не найдена
+        project_version_not_found: версия не найден
 
   flash:
     settings:
@@ -604,6 +603,7 @@ ru:
         created_at: Создан
         updated_at: Обновлен
         has_issues: Включить трэкер
+        srpm: Импортировать код из src.rpm
 
       rpm:
         name: Название
@@ -639,7 +639,6 @@ ru:
         created_at: Создан
         updated_at: Обновлен
         role: Роль в системе
-        language: Язык
 
       product_build_list:
         id: Id
@@ -678,14 +677,12 @@ ru:
         status: Статус
         version: Версия
         build_list: Сборочный лист
-      
       download:
         name: Название
         version: Версия
         distro: Дистрибутив
         platform: Архитектура
         counter: Закачки
-  
   notifications:
     subjects:
       new_comment_notification: Новый комментарий к Вашей задаче

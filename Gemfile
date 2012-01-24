@@ -18,7 +18,7 @@ gem "yui-compressor", "0.9.5" # Higher versions depends on Platform gem which co
 gem 'rails3-jquery-autocomplete'
 
 gem 'ancestry', '~> 1.2.4'
-gem 'paperclip', "~> 2.3"
+gem 'paperclip', "~> 2.5"
 gem "will_paginate", "~> 3.0.2"
 gem 'meta-tags', '~> 1.2.4', :require => 'meta_tags'
 gem "russian"

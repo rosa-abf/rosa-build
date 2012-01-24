@@ -8,6 +8,7 @@ class Project < ActiveRecord::Base
   has_many :build_lists, :dependent => :destroy
   has_many :auto_build_lists, :dependent => :destroy
 
+  # has_many :project_imports, :dependent => :destroy
   has_many :project_to_repositories, :dependent => :destroy
   has_many :repositories, :through => :project_to_repositories
 
@@ -18,6 +19,8 @@ class Project < ActiveRecord::Base
   validates :name, :uniqueness => {:scope => [:owner_id, :owner_type]}, :presence => true, :format => { :with => /^[a-zA-Z0-9_\-\+\.]+$/ }
   validates :owner, :presence => true
   # validate {errors.add(:base, I18n.t('flash.project.save_warning_ssh_key')) if owner.ssh_key.blank?}
+  validates_attachment_size :srpm, :less_than => 500.megabytes
+  validates_attachment_content_type :srpm, :content_type => ['application/octet-stream'], :message => I18n.t('layout.invalid_content_type') # "application/x-rpm", "application/x-redhat-package-manager" ?
 
   #attr_accessible :category_id, :name, :description, :visibility
   attr_readonly :name
@@ -31,9 +34,12 @@ class Project < ActiveRecord::Base
   after_create :attach_to_personal_repository
   after_create :create_git_repo
   after_destroy :destroy_git_repo
+  after_save {|p| p.delay.import_srpm if p.srpm?} # should be after create_git_repo
   # after_rollback lambda { destroy_git_repo rescue true if new_record? }
 
   has_ancestry
+
+  has_attached_file :srpm
 
   include Modules::Models::Owner
 
@@ -135,6 +141,13 @@ class Project < ActiveRecord::Base
 
   def platforms
     @platforms ||= repositories.map(&:platform).uniq
+  end
+
+  def import_srpm(branch_name = 'import')
+    if srpm?
+      system("#{Rails.root.join('bin', 'import_srpm.sh')} #{srpm.path} #{path} #{branch_name} >> /dev/null 2>&1")
+      self.srpm = nil; save :validate => false # clear srpm
+    end
   end
 
   class << self
