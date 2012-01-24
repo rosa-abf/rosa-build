@@ -146,7 +146,7 @@ class Project < ActiveRecord::Base
   def import_srpm(branch_name = 'import')
     if srpm?
       system("#{Rails.root.join('bin', 'import_srpm.sh')} #{srpm.path} #{path} #{branch_name} >> /dev/null 2>&1")
-      self.srpm = nil; save :validate => false # clear srpm
+      self.srpm = nil; save # clear srpm
     end
   end
 
