@@ -29,7 +29,7 @@ class Subscribe < ActiveRecord::Base
   end
 
   def self.new_comment_commit_notification(comment)
-    subscribes = Subscribe.comment_subscribes(comment).on(true) # FIXME (true) for rspec
+    subscribes = Subscribe.comment_subscribes(comment).on#(true) # FIXME (true) for rspec
     subscribes.each do |subscribe|
       next if comment.own_comment?(subscribe.user) || !subscribe.user.notifier.can_notify
       UserMailer.delay.new_comment_notification(comment, subscribe.user)
@@ -37,29 +37,25 @@ class Subscribe < ActiveRecord::Base
   end
 
   def self.subscribe_user_to_commit(comment, user)
-    Subscribe.set_subscribe(comment.project, comment.commentable, user, Subscribe::ON) if Subscribe.subscribed_for_commit?(comment.project, User.find(user), comment.commentable)
+    Subscribe.set_subscribe_to_commit(comment.project, comment.commentable, user, Subscribe::ON) if Subscribe.subscribed_to_commit?(comment.project, User.find(user), comment.commentable)
   end
 
-  def self.subscribed_for_commit?(project, user, commentable)
-    is_owner = (project.owner_id == user.id)
+  def self.subscribed_to_commit?(project, user, commentable)
     is_commentor = (Comment.where(:commentable_type => commentable.class.name, :commentable_id => commentable.id).exists?(:user_id => user.id))
     is_committer = (user.email == commentable.committer.email)
-    return false if Subscribe.where(:subscribeable_id => commentable.id, :subscribeable_type => commentable.class.name,
-                     :user_id => user.id, :project_id => project.id, :status => Subscribe::OFF).first.present?
-    (is_owner && user.notifier.new_comment_commit_repo_owner) or
+    return false if user.subscribes.where(:subscribeable_id => commentable.id, :subscribeable_type => commentable.class.name,
+                     :project_id => project.id, :status => Subscribe::OFF).first.present?
+    (project.owner?(user) && user.notifier.new_comment_commit_repo_owner) or
     (is_commentor && user.notifier.new_comment_commit_commentor) or
     (is_committer && user.notifier.new_comment_commit_owner)
   end
 
-  def self.set_subscribe(project, commit, user, status)
-    # FIXME maybe?
-    subscribe = Subscribe.where(:subscribeable_id => commit.id, :subscribeable_type => commit.class.name,
-                    :user_id => user, :project_id => project).first
-    if subscribe
+  def self.set_subscribe_to_commit(project, commit, user, status)
+    options = {:subscribeable_id => commit.id, :subscribeable_type => commit.class.name, :user_id => user, :project_id => project.id}
+    if subscribe = Subscribe.where(options).first # FIXME maybe?
       subscribe.update_attribute(:status, status)
     else
-      Subscribe.create(:subscribeable_id => commit.id, :subscribeable_type => commit.class.name,
-                       :user_id => user, :project_id => project.id, :status => status)
+      Subscribe.create(options.merge(:status => status))
     end
   end
 end

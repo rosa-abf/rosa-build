@@ -32,8 +32,8 @@
   %b
     = t('layout.issues.subscribe')
     \:
-  - subscribe = Subscribe.where(:subscribeable_id => @commit.id, :subscribeable_type => @commit.class.name.to_s, :project_id => @project, :user_id => current_user.id).first
-  - if subscribe.try(:status) == Subscribe::ON or (subscribe.nil? && Subscribe.subscribed_for_commit?(@project, current_user, @commit))
+  - subscribe = current_user.subscribes.where(:subscribeable_id => @commit.id, :subscribeable_type => @commit.class.name.to_s, :project_id => @project, :status => Subscribe::OFF).first
+  - if subscribe.nil? or Subscribe.subscribed_to_commit?(@project, current_user, @commit)
     = link_to t('layout.commits.unsubscribe_btn'), unsubscribe_commit_path(@project, @commit), :method => :delete
   - else
     = link_to t('layout.commits.subscribe_btn'), subscribe_commit_path(@project, @commit), :method => :post

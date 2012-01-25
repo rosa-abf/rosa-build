@@ -141,6 +141,10 @@ class Project < ActiveRecord::Base
     end
   end
 
+  def owner?(user)
+    owner_id == user.id
+  end
+
   protected
 
     def build_path(dir)
