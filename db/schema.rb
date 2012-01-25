@@ -10,7 +10,14 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120117110723) do
+ActiveRecord::Schema.define(:version => 20120124065207) do
+
+  create_table "activity_feeds", :force => true do |t|
+    t.integer  "user_id",    :null => false
+    t.text     "body"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "arches", :force => true do |t|
     t.string   "name",       :null => false
@@ -167,13 +174,6 @@ ActiveRecord::Schema.define(:version => 20120117110723) do
 
   add_index "issues", ["project_id", "serial_id"], :name => "index_issues_on_project_id_and_serial_id", :unique => true
 
-  create_table "permissions", :force => true do |t|
-    t.integer  "right_id"
-    t.integer  "role_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
   create_table "platforms", :force => true do |t|
     t.string   "description"
     t.string   "name"
@@ -268,14 +268,6 @@ ActiveRecord::Schema.define(:version => 20120117110723) do
     t.string   "name",        :null => false
     t.integer  "owner_id"
     t.string   "owner_type"
-  end
-
-  create_table "rights", :force => true do |t|
-    t.string   "name",       :null => false
-    t.string   "controller", :null => false
-    t.string   "action",     :null => false
-    t.datetime "created_at"
-    t.datetime "updated_at"
   end
 
   create_table "rpms", :force => true do |t|
