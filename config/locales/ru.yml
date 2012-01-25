@@ -46,6 +46,9 @@ ru:
         edit_header: Настройки оповещений
     processing: Обрабатывается...
 
+    activity_feed:
+      header: Лента активности
+
     downloads:
       title: Статистика закачек пакетов
       message: Обновляется автоматически каждые 5 минут

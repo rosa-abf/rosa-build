@@ -1,0 +1,21 @@
+%a{ :name => "comments" }
+.block#block-list
+  .content
+    %h2.title
+      = t("layout.activity_feed.header")
+    .inner
+      %ul.list
+        - @activity_feeds.each do |activity_feed|
+          %li
+            .left
+              = link_to activity_feed.user.uname, user_path(activity_feed.user.uname)
+              %br
+              %br
+              = activity_feed.created_at
+              %br
+              %br
+            .item
+              = raw activity_feed.body
+              %br
+              %br
+              %br
