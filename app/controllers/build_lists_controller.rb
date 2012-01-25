@@ -120,9 +120,9 @@ class BuildListsController < ApplicationController
     @build_list.notified_at = Time.current
     @build_list.save
 
-    @build_list.delay.publish if @build_list.auto_publish # && @build_list.can_publish?
-
     render :nothing => true, :status => 200
+
+    @build_list.delay.publish if @build_list.auto_publish # && @build_list.can_publish?
   end
 
   def circle_build
