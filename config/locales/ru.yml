@@ -48,6 +48,15 @@ ru:
     processing: Обрабатывается...
     invalid_content_type: имеет неверный тип
 
+    devise:
+      shared_links:
+        sign_in: Войти
+        sign_up: Зарегистрироваться
+        forgot_password: Забыли пароль?
+        confirm_again: Не получили инструкции по подтверждению?
+        unlock: Не получили инструкции по разблокировке?
+        sign_in_through: Войти через %{provider}
+
     downloads:
       title: Статистика закачек пакетов
       message: Обновляется автоматически каждые 5 минут
@@ -453,6 +462,7 @@ ru:
       unfreeze_error: Не удалось разморозить платформу, попробуйте еще раз
       destroyed: Платформа успешно удалена
       build_all_success: Все проекты успешно отправлены на сборку
+      clone_success: Клонирование успешно
 
     build_list:
       saved: Билд лист для версии '%{project_version}', платформы '%{bpl}' и архитектуры '%{arch}' создан успешно

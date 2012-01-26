@@ -1,0 +1,9 @@
+%p== Hello, #{@user.name}.
+
+
+%p Your comment into issue #{ link_to @comment.commentable.title, [@comment.commentable.project, @comment.commentable] } has been answered.
+
+%p "#{ @comment.body }"
+
+
+%p== Support team «ROSA Build System»
