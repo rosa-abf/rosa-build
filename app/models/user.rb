@@ -1,4 +1,5 @@
 class User < ActiveRecord::Base
+  MAX_OWN_PROJECTS = 32000
   ROLES = ['admin']
 
   devise :database_authenticatable, :registerable, :omniauthable, # :token_authenticatable, :encryptable, :timeoutable
@@ -25,6 +26,7 @@ class User < ActiveRecord::Base
   validates :uname, :presence => true, :uniqueness => {:case_sensitive => false}, :format => { :with => /^[a-z0-9_]+$/ }
   validate { errors.add(:uname, :taken) if Group.where('uname LIKE ?', uname).present? }
   validates :ssh_key, :uniqueness => true, :allow_blank => true
+  validate { errors.add(:own_projects_count, :less_than_or_equal_to, :count => MAX_OWN_PROJECTS) if own_projects.size >= MAX_OWN_PROJECTS }
   validates :role, :inclusion => {:in => ROLES}, :allow_blank => true
 
   attr_accessible :email, :password, :password_confirmation, :remember_me, :login, :name, :ssh_key, :uname

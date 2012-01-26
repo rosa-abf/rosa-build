@@ -2,7 +2,7 @@ class Project < ActiveRecord::Base
   VISIBILITIES = ['open', 'hidden']
 
   belongs_to :category, :counter_cache => true
-  belongs_to :owner, :polymorphic => true, :counter_cache => :own_projects_count
+  belongs_to :owner, :polymorphic => true, :validate => true, :counter_cache => :own_projects_count
 
   has_many :issues, :dependent => :destroy
   has_many :build_lists, :dependent => :destroy
