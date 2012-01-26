@@ -23,6 +23,7 @@ class User < ActiveRecord::Base
   has_many :projects,     :through => :targets, :source => :target, :source_type => 'Project',    :autosave => true
   has_many :platforms,    :through => :targets, :source => :target, :source_type => 'Platform',   :autosave => true
   has_many :repositories, :through => :targets, :source => :target, :source_type => 'Repository', :autosave => true
+  has_many :subscribes, :foreign_key => :user_id, :dependent => :destroy
 
   has_many :user_emails, :dependent => :destroy, :as => :emails
 

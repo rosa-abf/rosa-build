@@ -6,7 +6,7 @@ class Comment < ActiveRecord::Base
   validates :body, :user_id, :commentable_id, :commentable_type, :presence => true
 
   after_create :invoke_helper, :if => "commentable_type == 'Grit::Commit'"
-  after_create :subscribe_on_reply
+  after_create :subscribe_users
   after_create {|comment| Subscribe.new_comment_notification(comment)}
 
   def helper
@@ -17,15 +17,20 @@ class Comment < ActiveRecord::Base
     user_id == user.id
   end
 
-
   protected
-
-  def subscribe_on_reply
-    self.commentable.subscribes.create(:user_id => self.user_id) if self.commentable_type == 'Issue' && !self.commentable.subscribes.exists?(:user_id => self.user_id)
-    self.project.commit_comments_subscribes.create(:user_id => self.user_id) if self.commentable_type == 'Grit::Commit' && !self.project.commit_comments_subscribes.exists?(:user_id => self.user_id)
-  end
 
   def invoke_helper
     self.helper
+  end
+
+  def subscribe_users
+    if self.commentable.class == Issue
+      self.commentable.subscribes.create(:user_id => self.user_id) if !self.commentable.subscribes.exists?(:user_id => self.user_id)
+    elsif self.commentable.class == Grit::Commit
+      recipients = self.project.relations.by_role('admin').where(:object_type => 'User').map &:object # admins
+      recipients << self.user << User.where(:email => self.commentable.committer.email).first # commentor and committer
+      recipients << self.project.owner if self.project.owner_type == 'User' # project owner
+      recipients.compact.uniq.each {|user| Subscribe.subscribe_user_to_commit(self, user.id)}
+    end
   end
 end

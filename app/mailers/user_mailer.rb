@@ -13,24 +13,41 @@ class UserMailer < ActionMailer::Base
   def new_comment_notification(comment, user)
     @user = user
     @comment = comment
-    mail(:to => user.email, :subject => I18n.t("notifications.subjects.new_comment_notification")) do |format|
+    set_locale
+    mail(:to => user.email, :subject => I18n.t("notifications.subjects.new_#{comment.commentable.class == Grit::Commit ? 'commit_' : ''}comment_notification")) do |format|
       format.html
     end
+  ensure reset_locale
   end
 
   def new_issue_notification(issue, user)
     @user = user
     @issue = issue
+    set_locale
     mail(:to => user.email, :subject => I18n.t("notifications.subjects.new_issue_notification")) do |format|
       format.html
     end
+  ensure reset_locale
   end
 
   def issue_assign_notification(issue, user)
     @user = user
     @issue = issue
+    set_locale
     mail(:to => user.email, :subject => I18n.t("notifications.subjects.issue_assign_notification")) do |format|
       format.html
     end
+  ensure reset_locale
   end
+
+  protected
+
+  def set_locale
+    @initial_locale, I18n.locale = I18n.locale, @user.language
+  end
+
+  def reset_locale
+    I18n.locale = @initial_locale
+  end
+
 end

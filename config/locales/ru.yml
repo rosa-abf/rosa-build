@@ -366,7 +366,11 @@ ru:
 
     subscribe:
       saved: Вы подписаны на оповещения для этой задачи
+      saved_error: При создании подписки произошла ошибка
       destroyed: Подписка на оповещения для этой задачи убрана
+      commit:
+        saved: Вы подписаны на оповещения для этого коммита
+        destroyed: Подписка на оповещения для этого коммита убрана
 
     exception_message: У Вас нет доступа к этой странице!
 
@@ -695,3 +699,4 @@ ru:
       new_issue_notification: Новая задача добавлена к проекту
       new_user_notification: Регистрация на проекте «%{ project_name }»
       issue_assign_notification: Вам назначили задачу
+      new_commit_comment_notification: Новый комментарий к коммиту

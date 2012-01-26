@@ -28,3 +28,12 @@
 - content_for :sidebar, render(:partial => 'git/shared/sidebar')
 
 = render :partial => "comments/list", :locals => {:list => Project.commit_comments(@commit, @project), :project => @project, :commentable => @commit}
+%p
+  %b
+    = t('layout.issues.subscribe')
+    \:
+  - subscribe = current_user.subscribes.where(:subscribeable_id => @commit.id, :subscribeable_type => @commit.class.name.to_s, :project_id => @project, :status => Subscribe::OFF).first
+  - if subscribe.nil? or Subscribe.subscribed_to_commit?(@project, current_user, @commit)
+    = link_to t('layout.commits.unsubscribe_btn'), unsubscribe_commit_path(@project, @commit), :method => :delete
+  - else
+    = link_to t('layout.commits.subscribe_btn'), subscribe_commit_path(@project, @commit), :method => :post

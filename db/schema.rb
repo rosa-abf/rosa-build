@@ -278,6 +278,19 @@ ActiveRecord::Schema.define(:version => 20120123161250) do
     t.datetime "updated_at"
   end
 
+  create_table "role_lines", :force => true do |t|
+    t.integer  "role_id"
+    t.integer  "relation_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "roles", :force => true do |t|
+    t.string   "name"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "rpms", :force => true do |t|
     t.string   "name",       :null => false
     t.integer  "arch_id",    :null => false
