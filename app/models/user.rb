@@ -28,7 +28,7 @@ class User < ActiveRecord::Base
   validates :role, :inclusion => {:in => ROLES}, :allow_blank => true
 
   attr_accessible :email, :password, :password_confirmation, :remember_me, :login, :name, :ssh_key, :uname
-  attr_readonly :uname
+  attr_readonly :uname, :own_projects_count
   attr_accessor :login
 
   def admin?
