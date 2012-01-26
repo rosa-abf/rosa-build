@@ -17,15 +17,18 @@
 
         %ul.actions
           - if @name
-            %li.minibutton
-              = link_to t("layout.wiki.view_page"), view_path(@project, escaped_name),
-                        :class => 'action-view-page'
-            %li.minibutton
-              = link_to t("layout.wiki.edit_page"), edit_project_wiki_path(@project, escaped_name),
-                        :class => 'aciton-edit-page'
+            - if can? :read, @project
+              %li.minibutton
+                = link_to t("layout.wiki.view_page"), view_path(@project, escaped_name),
+                          :class => 'action-view-page'
+            - if can? :update, @project
+              %li.minibutton
+                = link_to t("layout.wiki.edit_page"), edit_project_wiki_path(@project, escaped_name),
+                          :class => 'aciton-edit-page'
           - else
-            %li.minibutton
-              = link_to t("layout.wiki.view_page"), project_wiki_index_path(@project)
+            - if can? :read, @project
+              %li.minibutton
+                = link_to t("layout.wiki.view_page"), project_wiki_index_path(@project)
         = render :partial => 'searchbar'
 
       #wiki-content

@@ -13,9 +13,10 @@
             %strong= @ref
           %h1.title= raw t("layout.wiki.all_pages_in", :ref => @st_ref)
           %ul.actions
-            %li.minibutton
-              = link_to t("layout.wiki.home"), project_wiki_index_path(@project),
-                        :class => 'action-edit-page'
+            - if can? :read, @project
+              %li.minibutton
+                = link_to t("layout.wiki.home"), project_wiki_index_path(@project),
+                          :class => 'action-edit-page'
           = render :partial => 'searchbar'
 
         = render :partial => "results"

@@ -16,8 +16,9 @@
             = t("layout.wiki.wiki_history")
 
         %ul.actions
-          %li.minibutton= link_to t("layout.wiki.back_to_history"),
-                @name ? history_project_wiki_path(@project, escaped_name) : history_project_wiki_index_path(@project)
+          - if can? :read, @project
+            %li.minibutton= link_to t("layout.wiki.back_to_history"),
+                  @name ? history_project_wiki_path(@project, escaped_name) : history_project_wiki_index_path(@project)
         = render :partial => 'searchbar'
 
       #wiki-content

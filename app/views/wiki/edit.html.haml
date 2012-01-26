@@ -13,12 +13,13 @@
           %strong= @name
 
         %ul.actions
-          %li.minibutton
-            = link_to t("layout.wiki.view_page"), view_path(@project, escaped_name),
-                      :class => 'action-view-page'
-          %li.minibutton
-            = link_to t("layout.wiki.page_history"), history_project_wiki_path(@project, escaped_name),
-                      :class => 'aciton-view-history'
+          - if can? :read, @project
+            %li.minibutton
+              = link_to t("layout.wiki.view_page"), view_path(@project, escaped_name),
+                        :class => 'action-view-page'
+            %li.minibutton
+              = link_to t("layout.wiki.page_history"), history_project_wiki_path(@project, escaped_name),
+                        :class => 'aciton-view-history'
 
       #wiki-content
         = render :partial => "editor"
