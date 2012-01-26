@@ -1,7 +1,3 @@
-%p== Здравствуйте, #{user.name}.
+%p== #{ t("notifications.bodies.issue_assign_notification.title", :user_name => user_name) }
 
-
-%p Вам была назначена задача #{ link_to issue.title, [issue.project, issue] }
-
-
-%p== Команда поддержки «ROSA Build System»
+%p #{ t("notifications.bodies.issue_assign_notification.content", :issue_link => link_to(issue_title, [project_id, issue_id])) }

@@ -14,7 +14,8 @@ ActiveRecord::Schema.define(:version => 20120124065207) do
 
   create_table "activity_feeds", :force => true do |t|
     t.integer  "user_id",    :null => false
-    t.text     "body"
+    t.string   "kind"
+    t.text     "data"
     t.datetime "created_at"
     t.datetime "updated_at"
   end

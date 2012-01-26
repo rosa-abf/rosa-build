@@ -1,9 +1,5 @@
-%p== Здравствуйте, #{user.name}.
+%p== #{ t("notifications.bodies.new_comment_reply_notification.title", :user_name => user_name) }
 
+%p #{ t("notifications.bodies.new_comment_reply_notification.content", :issue_link => link_to(issue_title, [project_id, issue_id])) }
 
-%p На Ваш комментарий в задаче #{ link_to comment.commentable.title, [comment.commentable.project, comment.commentable] } был дан ответ.
-
-%p "#{ comment.body }"
-
-
-%p== Команда поддержки «ROSA Build System»
+%p "#{ comment_body }"
