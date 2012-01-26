@@ -10,38 +10,23 @@ class WikiController < ApplicationController
 
   def index
     @name = 'Home'
-    if page = @wiki.page(@name)
-      @page = page
-      @content = page.formatted_data
-      @editable = true
-      render :show
-    elsif file = @wiki.file(@name)
-      render :text => file.raw_data, :content_type => file.mime_type
-    else
-      @new = true
-      @content = ''
-      render :new
-    end
+    @page = @wiki.page(@name)
+
+    show_or_create_page
   end
 
   def show
     @name = params['id']
+    redirect_to project_wiki_index_path(@project) and return if @name == 'Home'
+
     ref = params['ref'] ? params['ref'] : @wiki.ref
     @page = @wiki.page(@name, ref)
     if !@page && @wiki.page(@name)
       flash[:error] = t('flash.wiki.ref_not_exist')
-      redirect_to project_wiki_path(@project, CGI.escape(@name))
-      return
+      redirect_to project_wiki_path(@project, CGI.escape(@name)) and return
     end
 
-    if @page
-      @content = @page.formatted_data
-      @editable = true
-      render
-    else
-      @new = true
-      render :new
-    end
+    show_or_create_page
   end
 
   def edit
@@ -232,6 +217,19 @@ class WikiController < ApplicationController
 
     def commit
       commit_message.merge({:name => current_user.name, :email => current_user.email})
+    end
+
+    def show_or_create_page
+      if @page
+        @content = @page.formatted_data
+        @editable = true
+        render :show
+      elsif file = @wiki.file(@name)
+        render :text => file.raw_data, :content_type => file.mime_type
+      else
+        @new = true
+        render :new
+      end
     end
 end
 
