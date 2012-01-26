@@ -1,0 +1,15 @@
+= f.fields_for :emails do |m|
+  .group
+    .left
+      = m.text_field :email, :class => :text_field
+    .right
+
+.group.navform.wat-cf
+  %button.button{:type => "submit"}
+    = image_tag("web-app-theme/icons/tick.png", :alt => t("layout.save"))
+    = t("layout.save")
+  %span.text_button_padding= t("layout.or")
+  = link_to t("layout.cancel"), edit_user_emails_path(current_user.id), :class => "text_button_padding link_button"
+.group.navform.wat-cf
+  %span.text_button_padding
+  = link_to t('layout.back'), edit_user_registration_path, :class => "text_button_padding link_button"

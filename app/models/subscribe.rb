@@ -42,7 +42,7 @@ class Subscribe < ActiveRecord::Base
 
   def self.subscribed_to_commit?(project, user, commentable)
     is_commentor = (Comment.where(:commentable_type => commentable.class.name, :commentable_id => commentable.id).exists?(:user_id => user.id))
-    is_committer = (user.email == commentable.committer.email)
+    is_committer = (user.emails.exists? :email => commentable.committer.email)
     return false if user.subscribes.where(:subscribeable_id => commentable.id, :subscribeable_type => commentable.class.name,
                      :project_id => project.id, :status => Subscribe::OFF).first.present?
     (project.owner?(user) && user.notifier.new_comment_commit_repo_owner) or

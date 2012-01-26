@@ -25,7 +25,7 @@ class User < ActiveRecord::Base
   has_many :repositories, :through => :targets, :source => :target, :source_type => 'Repository', :autosave => true
   has_many :subscribes, :foreign_key => :user_id, :dependent => :destroy
 
-  has_many :user_emails, :dependent => :destroy, :as => :emails
+  has_many :emails, :class_name => 'UserEmail', :dependent => :destroy
 
   include Modules::Models::PersonalRepository
 
@@ -39,7 +39,10 @@ class User < ActiveRecord::Base
   attr_readonly :uname
   attr_accessor :login
 
+  accepts_nested_attributes_for :emails, :allow_destroy => true
+
   after_create :create_settings_notifier
+  after_create :add_user_email
 
   def admin?
     role == 'admin'
@@ -57,7 +60,7 @@ class User < ActiveRecord::Base
       conditions = warden_conditions.dup
       login = conditions.delete(:login)
       where(conditions).where("lower(uname) = :value OR " +
-        "exists (select null from user_emails m where users.user_id = m.user_id and lower(m.email) = :value)",
+        "exists (select null from user_emails m where m.user_id = m.user_id and lower(m.email) = :value)",
         {:value => login.downcase}).first
     end
 
@@ -94,4 +97,7 @@ class User < ActiveRecord::Base
     self.create_notifier
   end
 
+  def add_user_email
+    UserEmail.create(:user_id => self.id, :email => self.email)
+  end
 end

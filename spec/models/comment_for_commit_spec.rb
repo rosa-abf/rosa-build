@@ -341,7 +341,7 @@ describe Comment do
     context 'for committer' do
       it 'should send an e-mail' do
         ActionMailer::Base.deliveries = []
-        @stranger.update_attribute :email, 'code@tpope.net'
+        @stranger.emails.first.update_attribute :email, 'code@tpope.net'
         comment = Comment.create(:user => @user, :body => 'hello!', :project => @project,
             :commentable_type => @commit.class.name, :commentable_id => @commit.id)
         ActionMailer::Base.deliveries.count.should == 1
@@ -350,7 +350,7 @@ describe Comment do
 
       it 'should send an e-mail with user locale' do
         ActionMailer::Base.deliveries = []
-        @stranger.update_attribute :email, 'code@tpope.net'
+        @stranger.emails.first.update_attribute :email, 'code@tpope.net'
         @stranger.update_attribute :language, 'ru'
         comment = Comment.create(:user => @user, :body => 'hello!', :project => @project,
             :commentable_type => @commit.class.name, :commentable_id => @commit.id)
@@ -362,7 +362,7 @@ describe Comment do
       it 'should send a one e-mail when subscribed to commit' do
         ActionMailer::Base.deliveries = []
         Subscribe.set_subscribe_to_commit(@project, @commit, @stranger.id, Subscribe::ON)
-        @stranger.update_attribute :email, 'code@tpope.net'
+        @stranger.emails.first.update_attribute :email, 'code@tpope.net'
         comment = Comment.create(:user => @user, :body => 'hello!', :project => @project,
             :commentable_type => @commit.class.name, :commentable_id => @commit.id)
         ActionMailer::Base.deliveries.count.should == 1
@@ -372,7 +372,7 @@ describe Comment do
       it 'should not send an e-mail for own comment' do
         ActionMailer::Base.deliveries = []
         #@project.owner.notifier.update_attribute :can_notify, false
-        @stranger.update_attribute :email, 'code@tpope.net'
+        @stranger.emails.first.update_attribute :email, 'code@tpope.net'
         comment = Comment.create(:user => @stranger, :body => 'hello!', :project => @project,
             :commentable_type => @commit.class.name, :commentable_id => @commit.id)
         ActionMailer::Base.deliveries.count.should == 1
@@ -382,7 +382,7 @@ describe Comment do
       it 'should not send an e-mail if global notify off' do
         ActionMailer::Base.deliveries = []
         @project.owner.notifier.update_attribute :can_notify, false
-        @stranger.update_attribute :email, 'code@tpope.net'
+        @stranger.emails.first.update_attribute :email, 'code@tpope.net'
         @stranger.notifier.update_attribute :can_notify, false
         comment = Comment.create(:user => @user, :body => 'hello!', :project => @project,
             :commentable_type => @commit.class.name, :commentable_id => @commit.id)
@@ -392,7 +392,7 @@ describe Comment do
       it 'should not send an e-mail if notify for my commits off' do
         ActionMailer::Base.deliveries = []
         @stranger.notifier.update_attribute :new_comment_commit_owner, false
-        @stranger.update_attribute :email, 'code@tpope.net'
+        @stranger.emails.first.update_attribute :email, 'code@tpope.net'
         comment = Comment.create(:user => @user, :body => 'hello!', :project => @project,
             :commentable_type => @commit.class.name, :commentable_id => @commit.id)
         ActionMailer::Base.deliveries.count.should == 0
