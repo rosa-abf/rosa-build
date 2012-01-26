@@ -39,7 +39,7 @@ gem 'unicorn', '~> 4.1.1'
 
 group :production do
   gem "airbrake", '~> 3.0.5'
-  # gem 'newrelic_rpm', '~> 3.1.1'
+  gem 'newrelic_rpm'
   gem 'bluepill', :require => false
 end
 
