@@ -4,7 +4,7 @@ require 'cgi'
 class WikiController < ApplicationController
   WIKI_OPTIONS = {}
 
-  load_and_authorize_resource :project
+  load_resource :project
 
   before_filter :get_wiki
 
