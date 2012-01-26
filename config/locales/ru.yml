@@ -44,6 +44,7 @@ ru:
       notifier: Настройки оповещений
       notifiers:
         edit_header: Настройки оповещений
+      emails: Список Email
     processing: Обрабатывается...
 
     downloads:
@@ -680,14 +681,14 @@ ru:
         status: Статус
         version: Версия
         build_list: Сборочный лист
-      
+
       download:
         name: Название
         version: Версия
         distro: Дистрибутив
         platform: Архитектура
         counter: Закачки
-  
+
   notifications:
     subjects:
       new_comment_notification: Новый комментарий к Вашей задаче

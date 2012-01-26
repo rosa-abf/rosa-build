@@ -7,7 +7,7 @@ class Subscribe < ActiveRecord::Base
     subscribes = comment.commentable.subscribes if commentable_class == Issue
     if commentable_class == Grit::Commit
       subscribes = comment.project.commit_comments_subscribes(true) # FIXME (true) for rspec
-      committer = User.where(:email => comment.commentable.committer.email).first
+      committer = User.includes(:user_emails).where("user_emails.email = ?", comment.commentable.committer.email).first
       UserMailer.delay.new_comment_notification(comment, committer) if committer && !comment.own_comment?(committer) && committer.notifier.new_comment_commit_owner && !committer.notifier.can_notify && subscribes.where(:user_id => committer).empty?
     end
     subscribes.each do |subscribe|

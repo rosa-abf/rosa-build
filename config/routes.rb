@@ -8,6 +8,10 @@ Rosa::Application.routes.draw do
 
   resources :users do
     resources :groups, :only => [:new, :create, :index]
+    resources :emails, :only => [:index, :destroy], :controller => :user_emails do
+      put :update, :as => :member
+    end
+
     get :autocomplete_user_uname, :on => :collection
     namespace :settings do
       resource :notifier, :only => [:show, :update]

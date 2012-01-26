@@ -24,6 +24,8 @@ class User < ActiveRecord::Base
   has_many :platforms,    :through => :targets, :source => :target, :source_type => 'Platform',   :autosave => true
   has_many :repositories, :through => :targets, :source => :target, :source_type => 'Repository', :autosave => true
 
+  has_many :user_emails, :dependent => :destroy, :as => :emails
+
   include Modules::Models::PersonalRepository
 
   validates :uname, :presence => true, :uniqueness => {:case_sensitive => false}, :format => { :with => /^[a-z0-9_]+$/ }
@@ -41,7 +43,7 @@ class User < ActiveRecord::Base
   def admin?
     role == 'admin'
   end
-  
+
   def guest?
     self.id.blank? # persisted?
   end
@@ -53,7 +55,9 @@ class User < ActiveRecord::Base
     def find_for_database_authentication(warden_conditions)
       conditions = warden_conditions.dup
       login = conditions.delete(:login)
-      where(conditions).where(["lower(uname) = :value OR lower(email) = :value", { :value => login.downcase }]).first
+      where(conditions).where("lower(uname) = :value OR " +
+        "exists (select null from user_emails m where users.user_id = m.user_id and lower(m.email) = :value)",
+        {:value => login.downcase}).first
     end
 
     def new_with_session(params, session)
@@ -82,7 +86,7 @@ class User < ActiveRecord::Base
     clean_up_passwords
     result
   end
-  
+
   private
 
   def create_settings_notifier

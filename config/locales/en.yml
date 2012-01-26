@@ -1,9 +1,9 @@
 en:
     will_paginate:
-      previous_label: ‹ Previous!!! 
+      previous_label: ‹ Previous!!!
       next_label: Next ›
       page_gap: ...
-    
+
     datatables:
       previous_label: ‹ Prev.
       next_label: Next ›b r
@@ -44,6 +44,7 @@ en:
         notifier: Notifier setting
         notifiers:
           edit_header: Notifier setting
+        email: Email addresses
       processing: working ...
 
       downloads:
