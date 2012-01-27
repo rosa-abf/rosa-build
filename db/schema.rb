@@ -168,13 +168,6 @@ ActiveRecord::Schema.define(:version => 20120126214447) do
 
   add_index "issues", ["project_id", "serial_id"], :name => "index_issues_on_project_id_and_serial_id", :unique => true
 
-  create_table "permissions", :force => true do |t|
-    t.integer  "right_id"
-    t.integer  "role_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
   create_table "platforms", :force => true do |t|
     t.string   "description"
     t.string   "name"
@@ -242,12 +235,16 @@ ActiveRecord::Schema.define(:version => 20120126214447) do
     t.datetime "updated_at"
     t.integer  "owner_id"
     t.string   "owner_type"
-    t.string   "visibility",  :default => "open"
+    t.string   "visibility",        :default => "open"
     t.integer  "category_id"
     t.text     "description"
     t.string   "ancestry"
-    t.boolean  "has_wiki", :default => false
-    t.boolean  "has_issues",  :default => true
+    t.boolean  "has_wiki"
+    t.boolean  "has_issues",        :default => true
+    t.integer  "srpm_file_size"
+    t.string   "srpm_file_name"
+    t.string   "srpm_content_type"
+    t.datetime "srpm_updated_at"
   end
 
   add_index "projects", ["category_id"], :name => "index_projects_on_category_id"
@@ -272,10 +269,15 @@ ActiveRecord::Schema.define(:version => 20120126214447) do
     t.string   "owner_type"
   end
 
-  create_table "rights", :force => true do |t|
-    t.string   "name",       :null => false
-    t.string   "controller", :null => false
-    t.string   "action",     :null => false
+  create_table "role_lines", :force => true do |t|
+    t.integer  "role_id"
+    t.integer  "relation_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "roles", :force => true do |t|
+    t.string   "name"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -323,7 +325,7 @@ ActiveRecord::Schema.define(:version => 20120126214447) do
     t.text     "ssh_key"
     t.string   "uname"
     t.string   "role"
-    t.integer  "own_projects_count",                  :default => 0,  :null => false
+    t.integer  "own_projects_count",                  :default => 0,    :null => false
     t.string   "language",                            :default => "en"
   end
 

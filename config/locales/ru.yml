@@ -235,19 +235,7 @@ ru:
         h3: Заголовок третьего уровня
         link: Ссылка
         image: Изображение
-        help: Поиск
-
-    roles:
-      confirm_delete: Вы уверены, что хотите удалить эту роль?
-      list_header: Роли
-      list: Список
-      new: Создать
-      get_dump: Скачать в YML
-      from_file: Загрузить из файлa
-      wrong_file_type: Неверный тип файла
-      wrong_file_format: Неверный формат файла
-      successful_load: Все роли успешно загружены
-      seeding_fail: Ошибка при записи в базу
+        help: Помощь
 
     event_logs:
       list: Список
@@ -564,6 +552,7 @@ ru:
     build_list: Сборочный лист
 
   activerecord:
+
     errors:
       models:
         project:
@@ -780,12 +769,14 @@ ru:
         status: Статус
         version: Версия
         build_list: Сборочный лист
+
       download:
         name: Название
         version: Версия
         distro: Дистрибутив
         platform: Архитектура
         counter: Закачки
+
   notifications:
     subjects:
       new_comment_notification: Новый комментарий к Вашей задаче
