@@ -37,7 +37,7 @@ module WikiHelper
   end
 
   def formats
-    Gollum::Page::FORMAT_NAMES.map do |key, val|
+    APP_CONFIG['wiki_formats'].map do |key, val|
       [ val, key.to_s ]
     end.sort do |a, b|
       a.first.downcase <=> b.first.downcase

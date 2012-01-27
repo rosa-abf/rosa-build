@@ -178,9 +178,11 @@ class WikiController < ApplicationController
       sha1  = params[:sha1]
       sha2  = params[:sha2]
 
-      if @wiki.revert_page(@page, sha1, sha2, commit_message)
-        flash[:notice]  = t("flash.wiki.revert_success")
-        redirect_to project_wiki_path(@project, "#{CGI.escape(@name)}")
+      if @wiki.revert_page(@page, sha1, sha2, commit)
+        flash[:notice] = t("flash.wiki.revert_success")
+        puts 'TEST!!!'
+        puts @name
+        redirect_to project_wiki_path(@project, CGI.escape(@name))
       else
         # if revert wasn't successful then redirect back to comparsion.
         # if second commit version is missed, then second version is 
@@ -271,7 +273,12 @@ class WikiController < ApplicationController
       if params['message'] and !params['message'].empty?
         msg = params['message']
       else
-        msg = "#{!!@wiki.page(@name) ? 'Updated page' : 'Created page'} #{@name}"
+#        msg = "#{!!@wiki.page(@name) ? 'Updated page' : 'Created page'} #{@name}"
+        msg = case action_name.to_s
+          when 'create' then 'Created page '
+          when 'update' then 'Updated page '
+          when 'revert' then 'Reverted page '
+        end + @name.to_s
       end
       { :message => msg }
     end

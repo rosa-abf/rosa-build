@@ -33,6 +33,11 @@ gem 'highline', '~> 1.6.8'
 # Wiki
 gem "gollum", "1.3.1"
 gem "redcarpet", "1.17.2"
+gem 'creole'
+gem 'rdiscount'
+gem 'org-ruby'
+gem 'RedCloth'
+gem 'wikicloth'
 
 # XML-RPC support
 # gem 'actionwebservice' #, :git => 'git://github.com/ywen/actionwebservice.git'
