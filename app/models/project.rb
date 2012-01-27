@@ -60,7 +60,7 @@ class Project < ActiveRecord::Base
       bl.pl = platform
       bl.bpl = platform
       bl.update_type = 'recommended'
-      bl.arch = Arch.find_by_name('i586')
+      bl.arch = Arch.find_by_name('x86_64') # Return i586 after mass rebuild
       # FIXME: Need to set "latest_#{platform.name}"
       bl.project_version = "latest_mandriva2011"
       bl.build_requires = false # already set as db default
