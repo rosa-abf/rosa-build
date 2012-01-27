@@ -118,7 +118,7 @@
          $('#gollum-dialog-dialog').animate({ opacity: 0 }, {
             duration: 200,
             complete: function() {
-              $('#gollum-dialog-dialog').removeClass('active');
+              $('#gollum-dialog-dialog').hide().removeClass('active');
             }
           });
         }
