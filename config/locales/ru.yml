@@ -700,18 +700,18 @@ ru:
     bodies:
       new_comment_notification: 
         title: Здравствуйте, %{user_name}.
-        content: К задаче %{ issue_link } был добавлен новый комментарий.
+        content: К задаче %{issue_link} был добавлен новый комментарий.
       new_comment_reply_notification:
         title: Здравствуйте, %{user_name}.
-        content: На Ваш комментарий в задаче %{ issue_link } был дан ответ.
+        content: На Ваш комментарий в задаче %{issue_link} был дан ответ.
       new_issue_notification: 
         title: Здравствуйте, %{user_name}.
-        content: К проекту %{ project_link } была добавлена задача %{ issue_link }
+        content: К проекту %{project_link} была добавлена задача %{issue_link}
       new_user_notification: 
         title: Здравствуйте, %{user_name}.
         content: Вы зарегистрированы на проекте «ROSA Build System» и теперь можете войти в систему.
-        email: ==Ваш email : %{user_email}
-        password: ==Ваш пароль: %{user_password}
+        email: ==Ваш email %{user_email}
+        password: ==Ваш пароль %{user_password}
       issue_assign_notification: 
         title: Здравствуйте, %{user_name}.
-        content: Вам была назначена задача %{ issue_link }
+        content: Вам была назначена задача %{issue_link}

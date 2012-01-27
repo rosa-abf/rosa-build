@@ -38,6 +38,19 @@ class Issue < ActiveRecord::Base
     end
   end
 
+  def collect_recipient_ids
+    recipients = self.project.relations.by_role('admin').where(:object_type => 'User').map { |rel| rel.read_attribute(:object_id) }
+    recipients = recipients | [self.user_id] if self.user_id
+    recipients = recipients | [self.project.owner_id] if self.project.owner_type == 'User'
+
+    # filter by notification settings
+    recipients = recipients.select do |recipient|
+      User.find(recipient).notifier.new_issue && User.find(recipient).notifier.can_notify
+    end
+
+    recipients
+  end
+
   protected
 
   def set_serial_id
@@ -63,19 +76,6 @@ class Issue < ActiveRecord::Base
       ss = self.subscribes.build(:user_id => recipient_id)
       ss.save!
     end
-  end
-
-  def collect_recipient_ids
-    recipients = self.project.relations.by_role('admin').where(:object_type => 'User').map { |rel| rel.read_attribute(:object_id) }
-    recipients = recipients | [self.user_id] if self.user_id
-    recipients = recipients | [self.project.owner_id] if self.project.owner_type == 'User'
-
-    # filter by notification settings
-    recipients = recipients.select do |recipient|
-      User.find(recipient).notifier.new_issue && User.find(recipient).notifier.can_notify
-    end
-
-    recipients
   end
 
   def subscribe_issue_assigned_user
