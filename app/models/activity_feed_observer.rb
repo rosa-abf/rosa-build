@@ -1,10 +1,14 @@
 class ActivityFeedObserver < ActiveRecord::Observer
-  observe :issue, :comment
+  observe :issue, :comment, :user
 
   def after_create(record)
     case record.class.to_s
     when 'User'
-      ActivityFeed.create(:user => record, :kind => 'new_user_notification', :date => {:user_name => record.name, :user_email => record.email, :password => user.password})
+      ActivityFeed.create(
+        :user => record,
+        :kind => 'new_user_notification',
+        :date => {:user_name => record.name, :user_email => record.email, :password => user.password}
+      )
 
     when 'Issue'
       recipients = record.collect_recipient_ids
