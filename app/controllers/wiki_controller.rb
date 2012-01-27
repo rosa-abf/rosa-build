@@ -21,7 +21,7 @@ class WikiController < ApplicationController
 
   def show
     if can? :read, @project
-      @name = params['id']
+      @name = CGI.unescape(params['id'])
       redirect_to project_wiki_index_path(@project) and return if @name == 'Home'
 
       ref = params['ref'] ? params['ref'] : @wiki.ref
@@ -39,7 +39,7 @@ class WikiController < ApplicationController
 
   def edit
     if can? :update, @project
-      @name = params[:id]
+      @name = CGI.unescape(params[:id])
       if page = @wiki.page(@name)
         @page = page
         @content = page.raw_data
@@ -54,7 +54,7 @@ class WikiController < ApplicationController
 
   def update
     if can? :update, @project
-      @name = params[:id]
+      @name = CGI.unescape(params[:id])
       page = @wiki.page(@name)
       name = params[:rename] || @name
       committer = Gollum::Committer.new(@wiki, commit)
@@ -100,7 +100,8 @@ class WikiController < ApplicationController
 
   def destroy
     if can? :update, @project
-      page = @wiki.page(params[:id])
+      @name = CGI.unescape(params[:id])
+      page = @wiki.page(@name)
       if page
         @wiki.delete_page(page, commit.merge(:message => 'Page removed'))
         flash[:notice] = t("flash.wiki.page_successfully_removed")
@@ -119,7 +120,7 @@ class WikiController < ApplicationController
 
   def compare
     if can? :read, @project
-      @name = params[:id]
+      @name = CGI.unescape(params[:id])
       if request.post?
         @versions = params[:versions] || []
         if @versions.size < 2
@@ -173,15 +174,13 @@ class WikiController < ApplicationController
 
   def revert
     if can? :update, @project
-      @name = params[:id]
+      @name = CGI.unescape(params[:id])
       @page = @wiki.page(@name)
       sha1  = params[:sha1]
       sha2  = params[:sha2]
 
       if @wiki.revert_page(@page, sha1, sha2, commit)
         flash[:notice] = t("flash.wiki.revert_success")
-        puts 'TEST!!!'
-        puts @name
         redirect_to project_wiki_path(@project, CGI.escape(@name))
       else
         # if revert wasn't successful then redirect back to comparsion.
@@ -213,7 +212,7 @@ class WikiController < ApplicationController
 
   def history
     if can? :read, @project
-      @name = params[:id]
+      @name = CGI.unescape(params[:id])
       if @page = @wiki.page(@name)
         @versions = @page.versions
       else
@@ -295,6 +294,7 @@ class WikiController < ApplicationController
       elsif file = @wiki.file(@name)
         render :text => file.raw_data, :content_type => file.mime_type
       elsif can? :update, @project
+#        @name = CGI.escape(@name)
         @new = true
         render :new
       else
