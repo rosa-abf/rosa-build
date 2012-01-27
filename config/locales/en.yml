@@ -436,6 +436,7 @@ en:
         emails:
           saved: User emails saved
           error: That emails addresses is already in use
+          delete: User email delete
       group:
         saved: Group saved
         save_error: Group saves error

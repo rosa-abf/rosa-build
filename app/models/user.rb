@@ -35,11 +35,11 @@ class User < ActiveRecord::Base
   validates :role, :inclusion => {:in => ROLES}, :allow_blank => true
   validates :language, :inclusion => {:in => LANGUAGES}, :allow_blank => true
 
-  attr_accessible :email, :password, :password_confirmation, :remember_me, :login, :name, :ssh_key, :uname, :language
+  attr_accessible :email, :password, :password_confirmation, :remember_me, :login, :name, :ssh_key, :uname, :language, :emails_attributes
   attr_readonly :uname
   attr_accessor :login
 
-  accepts_nested_attributes_for :emails, :allow_destroy => true
+  accepts_nested_attributes_for :emails, :allow_destroy => true, :reject_if => proc {|attributes| attributes['email'].blank?}
 
   after_create :create_settings_notifier
   after_create :add_user_email
