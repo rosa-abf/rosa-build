@@ -41,7 +41,22 @@ ru:
     not_access: Нет доступа!
     owner: Владелец
     confirm: Уверены?
+    back: Назад
+    settings:
+      notifier: Настройки оповещений
+      notifiers:
+        edit_header: Настройки оповещений
     processing: Обрабатывается...
+    invalid_content_type: имеет неверный тип
+
+    devise:
+      shared_links:
+        sign_in: Войти
+        sign_up: Зарегистрироваться
+        forgot_password: Забыли пароль?
+        confirm_again: Не получили инструкции по подтверждению?
+        unlock: Не получили инструкции по разблокировке?
+        sign_in_through: Войти через %{provider}
 
     downloads:
       title: Статистика закачек пакетов
@@ -129,6 +144,7 @@ ru:
     comments:
       confirm_delete: Вы уверены, что хотите удалить комментарий?
       new_header: Новый комментарий
+      edit_header: Редактирование комментария
 
     platforms:
       admin_id: Владелец
@@ -267,7 +283,6 @@ ru:
       new_header: Новый продукт
       edit_header: Редактирование продукта
       confirm_delete: Вы уверены, что хотите удалить этот продукт?
-      invalid_content_type: имеет неверный тип
 
       cron_tab_generator:
         show: Показать cron tab генератор
@@ -391,6 +406,7 @@ ru:
       cancel_fail: 'При отмене сборки произошла ошибка!'
       publish_success: 'Сборка поставлена в очередь на публикацию.'
       publish_fail: 'При публикации сборки произошла ошибка!'
+      container_published: 'Контейнер размещен в репозитории'
       
       build_server_status:
         header: Статус сборочного сервера
@@ -405,6 +421,7 @@ ru:
           dependencies_error: зависимости не найдены
           success: собран
           unknown: ожидает сборки
+          git_error: проблема с гит
 
       statuses:
         build_error: ошибка сборки
@@ -422,9 +439,14 @@ ru:
         platform_not_found: платформа не найдена
         platform_pending: платформа в процессе создания
         project_not_found: проект не найден
-        project_version_not_found: версия не найден
+        project_version_not_found: версия не найдена
 
   flash:
+    settings:
+      saved: Настройки успешно сохранены
+      save_error: При обновлении настроек произошла ошибка
+      
+
     subscribe:
       saved: Вы подписаны на оповещения для этой задачи
       destroyed: Подписка на оповещения для этой задачи убрана
@@ -513,6 +535,7 @@ ru:
       unfreeze_error: Не удалось разморозить платформу, попробуйте еще раз
       destroyed: Платформа успешно удалена
       build_all_success: Все проекты успешно отправлены на сборку
+      clone_success: Клонирование успешно
 
     build_list:
       saved: Билд лист для версии '%{project_version}', платформы '%{bpl}' и архитектуры '%{arch}' создан успешно
@@ -566,8 +589,18 @@ ru:
       build_list_item: Элемент сборочного листа
       download: Статистика
       auto_build_list: Автоматическая пересборка пакетов
+      settings:
+        notifier: Настройки оповещений
 
     attributes:
+      settings:
+        notifier:
+          can_notify: Включить оповещения по электронной почте
+          new_comment: Оповещать о новом комментарии в задаче
+          new_comment_reply: Оповещать о новом ответе на мой комментарий
+          new_issue: Оповещать о новых задачах в моих проектах
+          issue_assign: Оповещать, когда на меня выставляют задачу
+
       auto_build_list:
         project_id: Проект
         project: Проект
@@ -672,6 +705,7 @@ ru:
         updated_at: Обновлен
         has_issues: Включить трэкер
         has_wiki: Включить Wiki
+        srpm: Импортировать код из src.rpm
 
       rpm:
         name: Название
@@ -707,6 +741,7 @@ ru:
         created_at: Создан
         updated_at: Обновлен
         role: Роль в системе
+        language: Язык
 
       product_build_list:
         id: Id

@@ -9,6 +9,7 @@ class Project < ActiveRecord::Base
   has_many :build_lists, :dependent => :destroy
   has_many :auto_build_lists, :dependent => :destroy
 
+  # has_many :project_imports, :dependent => :destroy
   has_many :project_to_repositories, :dependent => :destroy
   has_many :repositories, :through => :project_to_repositories
 
@@ -20,6 +21,8 @@ class Project < ActiveRecord::Base
   validates :owner, :presence => true
   validate { errors.add(:base, :can_have_less_or_equal, :count => MAX_OWN_PROJECTS) if owner.projects.size >= MAX_OWN_PROJECTS }
   # validate {errors.add(:base, I18n.t('flash.project.save_warning_ssh_key')) if owner.ssh_key.blank?}
+  validates_attachment_size :srpm, :less_than => 500.megabytes
+  validates_attachment_content_type :srpm, :content_type => ['application/octet-stream'], :message => I18n.t('layout.invalid_content_type') # "application/x-rpm", "application/x-redhat-package-manager" ?
 
   #attr_accessible :category_id, :name, :description, :visibility
   attr_readonly :name
@@ -36,9 +39,12 @@ class Project < ActiveRecord::Base
 
   after_destroy :destroy_git_repo
   after_destroy :destroy_wiki
+  after_save {|p| p.delay.import_srpm if p.srpm?} # should be after create_git_repo
   # after_rollback lambda { destroy_git_repo rescue true if new_record? }
 
   has_ancestry
+
+  has_attached_file :srpm
 
   include Modules::Models::Owner
 
@@ -59,10 +65,13 @@ class Project < ActiveRecord::Base
       bl.pl = platform
       bl.bpl = platform
       bl.update_type = 'recommended'
-      bl.arch = Arch.find_by_name('i586')
-      bl.project_version = "latest_#{platform.name}"
+      bl.arch = Arch.find_by_name('x86_64') # Return i586 after mass rebuild
+      # FIXME: Need to set "latest_#{platform.name}"
+      bl.project_version = "latest_mandriva2011"
       bl.build_requires = false # already set as db default
       bl.user = user
+      bl.auto_publish = true # already  set as db default
+      bl.include_repos = [platform.repositories.find_by_name('main').id]
     end
   end
 
@@ -71,7 +80,7 @@ class Project < ActiveRecord::Base
     res = tags.select{|tag| tag.name =~ /^v\./}
     return res if res and res.size > 0
     tags
-  end  
+  end
   def collected_project_versions
     project_versions.collect{|tag| tag.name.gsub(/^\w+\./, "")}
   end
@@ -127,7 +136,7 @@ class Project < ActiveRecord::Base
       return true
     else
       raise "Failed to create project #{name} (repo #{repository.name}) inside platform #{repository.platform.name} in path #{path} with code #{result}."
-    end      
+    end
   end
 
   def xml_rpc_destroy(repository)
@@ -141,6 +150,20 @@ class Project < ActiveRecord::Base
 
   def platforms
     @platforms ||= repositories.map(&:platform).uniq
+  end
+
+  def import_srpm(branch_name = 'import')
+    if srpm?
+      system("#{Rails.root.join('bin', 'import_srpm.sh')} #{srpm.path} #{path} #{branch_name} >> /dev/null 2>&1")
+      self.srpm = nil; save # clear srpm
+    end
+  end
+
+  class << self
+    def commit_comments(commit, project)
+     comments = Comment.where(:commentable_id => commit.id, :commentable_type => 'Grit::Commit').order(:created_at)
+     comments.each {|x| x.project = project}
+    end
   end
 
   protected

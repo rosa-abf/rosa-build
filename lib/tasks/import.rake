@@ -5,8 +5,9 @@ namespace :import do
   desc "Load projects"
   task :projects => :environment do
     source = ENV['SOURCE'] || 'http://dl.dropbox.com/u/984976/package_list.txt'
-    owner = User.find_by_uname(ENV['OWNER_UNAME']) || Group.find_by_uname(ENV['OWNER_UNAME']) || User.first
-    platform = Platform.find_by_name(ENV['PLATFORM_NAME']) # 'mandriva2011'
+    #owner = User.find_by_uname(ENV['OWNER_UNAME']) || Group.find_by_uname(ENV['OWNER_UNAME']) || User.first
+    owner =  Group.find_by_uname("npp_team")
+    platform = Platform.find_by_name("RosaNPP") # RosaNPP
     repo = platform.repositories.first rescue nil
     say "START import projects from '#{source}' for '#{owner.uname}'.#{repo ? " To repo '#{platform.name}/#{repo.name}'." : ''}"
     ask 'Press enter to continue'

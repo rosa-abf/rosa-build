@@ -49,12 +49,12 @@ end
 
 shared_examples_for 'user without destroy comment rights' do
   it 'should not be able to perform destroy action' do
-    delete :destroy, :id => @comment.id, :issue_id => @issue.id, :project_id => @project.id
+    delete :destroy, :id => @comment.id, :issue_id => @issue.serial_id, :project_id => @project.id
     response.should redirect_to(forbidden_path)
   end
 
   it 'should not reduce comments count' do
-    lambda{ delete :destroy, :id => @comment.id, :issue_id => @issue.id, :project_id => @project.id }.should change{ Issue.count }.by(0)
+    lambda{ delete :destroy, :id => @comment.id, :issue_id => @issue.serial_id, :project_id => @project.id }.should change{ Issue.count }.by(0)
   end
 end
 
@@ -77,8 +77,8 @@ describe CommentsController do
     @issue = Factory(:issue, :project_id => @project.id)
     @comment = Factory(:comment, :commentable => @issue)
 
-    @create_params = {:comment => {:body => 'I am a comment!'}, :project_id => @project.id, :issue_id => @issue.id}
-    @update_params = {:comment => {:body => 'updated'}, :project_id => @project.id, :issue_id => @issue.id}
+    @create_params = {:comment => {:body => 'I am a comment!'}, :project_id => @project.id, :issue_id => @issue.serial_id}
+    @update_params = {:comment => {:body => 'updated'}, :project_id => @project.id, :issue_id => @issue.serial_id}
 
     any_instance_of(Project, :versions => ['v1.0', 'v2.0'])
 

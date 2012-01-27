@@ -1,8 +1,8 @@
 # If rules goes one by one CanCan joins them by 'OR' sql operator
 # If rule has multiple conditions CanCan joins them by 'AND' sql operator
-# WARNING:      
+# WARNING:
 # - put cannot rules _after_ can rules and not before!
-# - beware inner joins. Use sub queries against them! 
+# - beware inner joins. Use sub queries against them!
 
 class Ability
   include CanCan::Ability
@@ -28,6 +28,8 @@ class Ability
       else # Registered user rights
         can [:show, :autocomplete_user_uname], User
 
+        can [:show, :update], Settings::Notifier, :user_id => user.id
+
         can [:read, :create], Group
         can [:update, :manage_members], Group do |group|
           group.objects.exists?(:object_type => 'User', :object_id => user.id, :role => 'admin') # or group.owner_id = user.id
@@ -44,8 +46,9 @@ class Ability
         can(:fork, Project) {|project| can? :read, project}
         can(:destroy, Project) {|project| owner? project}
 
-        can :create, AutoBuildList
-        can [:index, :destroy], AutoBuildList, :project_id => user.own_project_ids
+        # TODO: Turn on AAA when it will be updated
+        #can :create, AutoBuildList
+        #can [:index, :destroy], AutoBuildList, :project_id => user.own_project_ids
 
         can :read, BuildList, :project => {:visibility => 'open'}
         can :read, BuildList, :project => {:owner_type => 'User', :owner_id => user.id}
@@ -89,9 +92,10 @@ class Ability
         can([:update, :destroy], Issue) {|issue| issue.user_id == user.id or local_admin?(issue.project)}
         cannot :manage, Issue, :project => {:has_issues => false} # switch off issues
 
-        can(:create, Comment) {|comment| can? :read, comment.commentable.project}
-        can(:update, Comment) {|comment| comment.user_id == user.id or local_admin?(comment.commentable.project)}
-        cannot :manage, Comment, :commentable => {:project => {:has_issues => false}} # switch off issues
+        can(:create, Comment) {|comment| can? :read, comment.project || comment.commentable.project}
+        can(:update, Comment) {|comment| comment.user_id == user.id or local_admin?(comment.project || comment.commentable.project)}
+        #cannot :manage, Comment, :commentable => {:project => {:has_issues => false}} # switch off issues
+        cannot(:manage, Comment) {|comment| comment.commentable_type == 'Issue' && !comment.commentable.project.has_issues} # switch off issues
       end
     end
 

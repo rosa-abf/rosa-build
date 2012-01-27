@@ -1,7 +1,7 @@
 # coding: UTF-8
 
 class UserMailer < ActionMailer::Base
-  default :from => APP_CONFIG['no-reply-email']
+  default :from => APP_CONFIG['do-not-reply-email']
 
   def new_user_notification(user)
     @user = user
@@ -14,6 +14,14 @@ class UserMailer < ActionMailer::Base
     @user = user
     @comment = comment
     mail(:to => user.email, :subject => I18n.t("notifications.subjects.new_comment_notification")) do |format|
+      format.html
+    end
+  end
+
+  def new_comment_reply_notification(comment, user)
+    @user = user
+    @comment = comment
+    mail(:to => user.email, :subject => I18n.t("notifications.subjects.new_comment_reply_notification")) do |format|
       format.html
     end
   end

@@ -39,6 +39,12 @@
           - else
             = resource.role
 
+      .group.wat-cf
+        .left
+          = f.label :language, :class => "label"
+        .right
+          = f.select :language, User::LANGUAGES_FOR_SELECT
+
       / .group.wat-cf
       /   .left
       /     = f.label :current_password, :class => "label"
@@ -68,3 +74,5 @@
         %span.text_button_padding
         = link_to t('layout.back'), :back, :class => "text_button_padding link_button"
 
+      .group.navform.wat-cf
+        = link_to t('layout.settings.notifier'), user_settings_notifier_path(current_user)#, :class => "text_button_padding link_button"
