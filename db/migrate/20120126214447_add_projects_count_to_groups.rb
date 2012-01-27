@@ -9,6 +9,6 @@ class AddProjectsCountToGroups < ActiveRecord::Migration
   end
 
   def self.down
-    remove_column :groups, :projects_count
+    remove_column :groups, :own_projects_count
   end
 end

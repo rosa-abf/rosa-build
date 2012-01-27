@@ -72,6 +72,8 @@ ActiveRecord::Schema.define(:version => 20120126214447) do
     t.text     "include_repos"
     t.integer  "user_id"
     t.boolean  "auto_publish",     :default => true
+    t.string   "package_version"
+    t.string   "commit_hash"
   end
 
   add_index "build_lists", ["arch_id"], :name => "index_build_lists_on_arch_id"
@@ -87,7 +89,7 @@ ActiveRecord::Schema.define(:version => 20120126214447) do
   end
 
   create_table "comments", :force => true do |t|
-    t.integer  "commentable_id"
+    t.string   "commentable_id"
     t.string   "commentable_type"
     t.integer  "user_id"
     t.text     "body"
@@ -159,12 +161,19 @@ ActiveRecord::Schema.define(:version => 20120126214447) do
     t.integer  "user_id"
     t.string   "title"
     t.text     "body"
-    t.string   "status"
+    t.string   "status",     :default => "open"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
   add_index "issues", ["project_id", "serial_id"], :name => "index_issues_on_project_id_and_serial_id", :unique => true
+
+  create_table "permissions", :force => true do |t|
+    t.integer  "right_id"
+    t.integer  "role_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "platforms", :force => true do |t|
     t.string   "description"
@@ -237,7 +246,7 @@ ActiveRecord::Schema.define(:version => 20120126214447) do
     t.integer  "category_id"
     t.text     "description"
     t.string   "ancestry"
-    t.boolean  "has_wiki"
+    t.boolean  "has_wiki", :default => false
     t.boolean  "has_issues",  :default => true
   end
 
@@ -263,6 +272,14 @@ ActiveRecord::Schema.define(:version => 20120126214447) do
     t.string   "owner_type"
   end
 
+  create_table "rights", :force => true do |t|
+    t.string   "name",       :null => false
+    t.string   "controller", :null => false
+    t.string   "action",     :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "rpms", :force => true do |t|
     t.string   "name",       :null => false
     t.integer  "arch_id",    :null => false
@@ -274,6 +291,17 @@ ActiveRecord::Schema.define(:version => 20120126214447) do
   add_index "rpms", ["project_id", "arch_id"], :name => "index_rpms_on_project_id_and_arch_id"
   add_index "rpms", ["project_id"], :name => "index_rpms_on_project_id"
 
+  create_table "settings_notifiers", :force => true do |t|
+    t.integer  "user_id",                             :null => false
+    t.boolean  "can_notify",        :default => true
+    t.boolean  "new_comment",       :default => true
+    t.boolean  "new_comment_reply", :default => true
+    t.boolean  "new_issue",         :default => true
+    t.boolean  "issue_assign",      :default => true
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "subscribes", :force => true do |t|
     t.integer  "subscribeable_id"
     t.string   "subscribeable_type"
@@ -284,9 +312,9 @@ ActiveRecord::Schema.define(:version => 20120126214447) do
 
   create_table "users", :force => true do |t|
     t.string   "name"
-    t.string   "email",                               :default => "", :null => false
-    t.string   "encrypted_password",   :limit => 128, :default => "", :null => false
-    t.string   "password_salt",                       :default => "", :null => false
+    t.string   "email",                               :default => "",   :null => false
+    t.string   "encrypted_password",   :limit => 128, :default => "",   :null => false
+    t.string   "password_salt",                       :default => "",   :null => false
     t.string   "reset_password_token"
     t.string   "remember_token"
     t.datetime "remember_created_at"
@@ -296,6 +324,7 @@ ActiveRecord::Schema.define(:version => 20120126214447) do
     t.string   "uname"
     t.string   "role"
     t.integer  "own_projects_count",                  :default => 0,  :null => false
+    t.string   "language",                            :default => "en"
   end
 
   add_index "users", ["email"], :name => "index_users_on_email", :unique => true

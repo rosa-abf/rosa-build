@@ -21,7 +21,9 @@
         %b
           = t("activerecord.attributes.build_list.container_path")
           \:
-        - if @build_list.container_path.present?
+        - if @build_list.status == BuildList::BUILD_PUBLISHED
+          = t("layout.build_lists.container_published")
+        - elsif @build_list.container_path.present?
           - container_url = "http://#{request.host_with_port}/downloads#{@build_list.container_path}"
           = link_to container_url, container_url
       %p

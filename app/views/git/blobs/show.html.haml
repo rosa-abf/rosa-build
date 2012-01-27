@@ -13,6 +13,7 @@
   .content
     .inner
       %h3= render_path
+      %h3= @blob.mime_type
 
       .blob_header
         .size #{(@blob.size / 1024.0).round(3)} Kb
@@ -22,13 +23,33 @@
           - else
             #{link_to "Raw", raw_path(@project, @treeish, @path)} #{link_to "Blame", blame_path(@project, @treeish, @path)} #{link_to "History", commits_path(@project, @treeish, @path)}
         .clear
-      %table.table.blob
-        %tr
-          %td.lines
-            :plain
-              <pre>#{render_line_numbers(@blob.data.split("\n").length)}</pre>
-          %td.blob
-            :plain
-              <pre>#{render_blob(@blob)}</pre>
+      - case choose_render_way(@blob)
+      - when :image
+        %table.table.blob
+          %tr
+            %td.lines
+            %td.blob
+              :plain
+                <br/>
+                <center> <img src='?raw=true'/></center>
+                <br/>
+      - when :text
+        %table.table.blob
+          %tr
+            %td.lines
+              :plain
+                <pre>#{render_line_numbers(@blob.data.split("\n").length)}</pre>
+            %td.blob
+              :plain
+                <pre>#{render_blob(@blob)}</pre>
+      - when :binary
+        %table.table.blob
+          %tr
+            %td.lines
+            %td.blob
+              :plain
+                <br/>
+                <pre>#{ link_to @blob.basename, raw_path(@project, @treeish, @path) }</pre>
+                <br/>
 
 - content_for :sidebar, render(:partial => 'git/shared/sidebar')

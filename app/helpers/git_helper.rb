@@ -40,4 +40,9 @@ module GitHelper
     blob.data.split("\n").collect{|line| "<div>#{line.present? ? h(line) : "<br>"}</div>"}.join
   end
 
+  def choose_render_way(blob)
+    return :image if blob.mime_type.match(/image/)
+    return :text  if blob.mime_type.match(/text|xml|json/)
+    :binary
+  end
 end
