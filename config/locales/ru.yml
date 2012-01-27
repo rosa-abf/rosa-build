@@ -541,6 +541,10 @@ ru:
     build_list: Сборочный лист
 
   activerecord:
+    errors:
+      project:
+        can_have_less_or_equal: Нельзя иметь больше, чем %{count} проектов.
+
     models:
       category: Категория
       repository: Репозиторий

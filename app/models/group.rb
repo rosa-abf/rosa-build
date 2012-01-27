@@ -1,5 +1,4 @@
 class Group < ActiveRecord::Base
-  MAX_OWN_PROJECTS = 32000
   belongs_to :owner, :class_name => 'User'
 
   has_many :own_projects, :as => :owner, :class_name => 'Project'
@@ -16,7 +15,6 @@ class Group < ActiveRecord::Base
   validates :name, :owner, :presence => true
   validates :uname, :presence => true, :uniqueness => {:case_sensitive => false}, :format => { :with => /^[a-z0-9_]+$/ }
   validate { errors.add(:uname, :taken) if User.where('uname LIKE ?', uname).present? }
-  validate { errors.add(:own_projects_count, :less_than_or_equal_to, :count => MAX_OWN_PROJECTS) if own_projects.size >= MAX_OWN_PROJECTS }
 
   attr_readonly :uname, :own_projects_count
 
