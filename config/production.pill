@@ -19,8 +19,9 @@ Bluepill.application(app_name) do |app|
     process.stop_grace_time     = 10.seconds
     process.restart_grace_time  = 10.seconds
 
-    process.start_command = "/usr/bin/env /usr/local/bin/nrsysmond -c /etc/newrelic/nrsysmond.cfg"
-    process.pid_file = File.join(app.working_dir, 'tmp', 'pids', 'newrelic.pid')
+    path = File.join(app.working_dir, 'tmp', 'pids', 'newrelic.pid')
+    process.start_command = "/usr/bin/env /usr/local/bin/nrsysmond -c /etc/newrelic/nrsysmond.cfg -p #{path}"
+    process.pid_file = path
   end
 
   app.process("unicorn") do |process|
