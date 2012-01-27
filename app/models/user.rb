@@ -4,7 +4,7 @@ class User < ActiveRecord::Base
   LANGUAGES = LANGUAGES_FOR_SELECT.map(&:last)
 
   devise :database_authenticatable, :registerable, :omniauthable, # :token_authenticatable, :encryptable, :timeoutable
-         :recoverable, :rememberable, :validatable #, :trackable, :confirmable, :lockable
+         :recoverable, :rememberable, :validatable, :confirmable, :reconfirmable #, :trackable, , :lockable
 
   has_one :notifier, :class_name => 'Settings::Notifier' #:notifier
 
