@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120117110723) do
+ActiveRecord::Schema.define(:version => 20120124101727) do
 
   create_table "arches", :force => true do |t|
     t.string   "name",       :null => false
@@ -167,13 +167,6 @@ ActiveRecord::Schema.define(:version => 20120117110723) do
 
   add_index "issues", ["project_id", "serial_id"], :name => "index_issues_on_project_id_and_serial_id", :unique => true
 
-  create_table "permissions", :force => true do |t|
-    t.integer  "right_id"
-    t.integer  "role_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
   create_table "platforms", :force => true do |t|
     t.string   "description"
     t.string   "name"
@@ -228,6 +221,15 @@ ActiveRecord::Schema.define(:version => 20120117110723) do
     t.boolean  "use_cron",         :default => false
   end
 
+  create_table "project_imports", :force => true do |t|
+    t.integer  "project_id"
+    t.string   "name"
+    t.string   "version"
+    t.datetime "file_mtime"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "project_to_repositories", :force => true do |t|
     t.integer  "project_id"
     t.integer  "repository_id"
@@ -241,11 +243,15 @@ ActiveRecord::Schema.define(:version => 20120117110723) do
     t.datetime "updated_at"
     t.integer  "owner_id"
     t.string   "owner_type"
-    t.string   "visibility",  :default => "open"
+    t.string   "visibility",        :default => "open"
     t.integer  "category_id"
     t.text     "description"
     t.string   "ancestry"
-    t.boolean  "has_issues",  :default => true
+    t.boolean  "has_issues",        :default => true
+    t.string   "srpm_content_type"
+    t.datetime "srpm_updated_at"
+    t.integer  "srpm_file_size"
+    t.string   "srpm_file_name"
   end
 
   add_index "projects", ["category_id"], :name => "index_projects_on_category_id"
@@ -268,14 +274,6 @@ ActiveRecord::Schema.define(:version => 20120117110723) do
     t.string   "name",        :null => false
     t.integer  "owner_id"
     t.string   "owner_type"
-  end
-
-  create_table "rights", :force => true do |t|
-    t.string   "name",       :null => false
-    t.string   "controller", :null => false
-    t.string   "action",     :null => false
-    t.datetime "created_at"
-    t.datetime "updated_at"
   end
 
   create_table "rpms", :force => true do |t|

@@ -25,4 +25,73 @@ namespace :import do
     end
     say 'DONE'
   end
+
+  namespace :sync do
+    task :all => [:rsync, :parse]
+
+    desc "Rsync with mirror.yandex.ru"
+    task :rsync => :environment do
+      release = ENV['RELEASE'] || 'official/2011'
+      repository = ENV['REPOSITORY'] || 'main'
+      source = "rsync://mirror.yandex.ru/mandriva/#{release}/SRPMS/#{repository}/"
+      destination = ENV['DESTINATION'] || File.join(APP_CONFIG['root_path'], 'mirror.yandex.ru', 'mandriva', release, 'SRPMS', repository)
+      say "START rsync projects (*.src.rpm) from '#{source}' to '#{destination}'"
+      if system "rsync -rtv --delete #{source} #{destination}" # TODO --include='*.src.rpm' --exclude='*'
+        say 'Rsync ok!'
+      else
+        say 'Rsync failed!'
+      end
+      say 'DONE'
+    end
+
+    desc "Parse repository for changes"
+    task :parse => :environment do
+      release = ENV['RELEASE'] || 'official/2011'
+      platform = Platform.find_by_name(ENV['PLATFORM'] || "mandriva2011")
+      repository = platform.repositories.find_by_name(ENV['REPOSITORY'] || 'main')
+      source = ENV['SOURCE'] || File.join(APP_CONFIG['root_path'], 'mirror.yandex.ru', 'mandriva', release, 'SRPMS', repository.name)
+      owner = Group.find_or_create_by_uname(ENV['OWNER'] || 'import') {|g| g.owner = User.first}
+      branch = "import_#{platform.name}"
+
+      say 'START'
+      Dir[File.join source, '{release,updates}', '*.src.rpm'].each do |srpm_file|
+        say "=== Processing '#{srpm_file}'..."
+        if name = `rpm -q --qf '[%{Name}]' -p #{srpm_file}` and $?.success? and name.present? and
+           version = `rpm -q --qf '[%{Version}]' -p #{srpm_file}` and $?.success? and version.present?
+          project_import = ProjectImport.find_or_initialize_by_name name
+          if version != project_import.version.to_s and File.mtime(srpm_file) > project_import.file_mtime
+            unless project = project_import.project
+              if project = repository.projects.find_by_name(name)
+                say "Found project '#{project.owner.uname}/#{project.name}'"
+              elsif project = Project.where(:name => name, :owner_id => owner.id, :owner_type => owner.class.to_s).first
+                repository.projects << project
+                say "Add project '#{project.owner.uname}/#{project.name}' to '#{platform.name}/#{repository.name}'"
+              else
+                description = ::Iconv.conv('UTF-8//IGNORE', 'UTF-8', `rpm -q --qf '[%{Description}]' -p #{srpm_file}`)
+                project = Project.create!(:name => name, :description => description) {|p| p.owner = owner}
+                repository.projects << project
+                say "Create project #{project.owner.uname}/#{project.name} in #{platform.name}/#{repository.name}"
+              end
+            end
+            project.import_srpm(srpm_file, branch)
+            say "New version (#{version}) for '#{project.owner.uname}/#{project.name}' successfully imported to branch '#{branch}'!"
+
+            project_import.project = project
+            project_import.version = version
+            project_import.file_mtime = File.mtime(srpm_file)
+            project_import.save!
+
+            # TODO notify import.members
+
+            say '=== Success!'
+          else
+            say '=== Not changed!'
+          end
+        else
+          say '=== Fail!'
+        end
+      end
+      say 'DONE'
+    end
+  end
 end
