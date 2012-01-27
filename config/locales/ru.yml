@@ -542,8 +542,11 @@ ru:
 
   activerecord:
     errors:
-      project:
-        can_have_less_or_equal: Нельзя иметь больше, чем %{count} проектов.
+      models:
+        project:
+          attributes:
+            base:
+              can_have_less_or_equal: Нельзя иметь больше, чем %{count} проектов.
 
     models:
       category: Категория

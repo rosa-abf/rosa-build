@@ -3,7 +3,7 @@ class Project < ActiveRecord::Base
   MAX_OWN_PROJECTS = 32000
 
   belongs_to :category, :counter_cache => true
-  belongs_to :owner, :polymorphic => true, :validate => true, :counter_cache => :own_projects_count
+  belongs_to :owner, :polymorphic => true, :counter_cache => :own_projects_count
 
   has_many :issues, :dependent => :destroy
   has_many :build_lists, :dependent => :destroy
@@ -18,7 +18,7 @@ class Project < ActiveRecord::Base
 
   validates :name, :uniqueness => {:scope => [:owner_id, :owner_type]}, :presence => true, :format => { :with => /^[a-zA-Z0-9_\-\+\.]+$/ }
   validates :owner, :presence => true
-  validate { errors[:base] << I18n.t('activerecord.errors.project.can_have_less_or_equal', :count => MAX_OWN_PROJECTS) if owner.projects.size >= MAX_OWN_PROJECTS }
+  validate { errors.add(:base, :can_have_less_or_equal, :count => MAX_OWN_PROJECTS) if owner.projects.size >= MAX_OWN_PROJECTS }
   # validate {errors.add(:base, I18n.t('flash.project.save_warning_ssh_key')) if owner.ssh_key.blank?}
 
   #attr_accessible :category_id, :name, :description, :visibility
