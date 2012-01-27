@@ -13,6 +13,15 @@ Bluepill.application(app_name) do |app|
     process.stop_command  = "/usr/bin/env RAILS_ENV=production script/delayed_job stop"
     process.pid_file = File.join(app.working_dir, 'tmp', 'pids', 'delayed_job.pid')
   end
+  
+  app.process("newrelic") do |process|
+    process.start_grace_time    = 10.seconds
+    process.stop_grace_time     = 10.seconds
+    process.restart_grace_time  = 10.seconds
+
+    process.start_command = "/usr/bin/env /usr/local/bin/nrsysmond -c /etc/newrelic/nrsysmond.cfg"
+    process.pid_file = File.join(app.working_dir, 'tmp', 'pids', 'newrelic.pid')
+  end
 
   app.process("unicorn") do |process|
     process.start_grace_time = 8.seconds
