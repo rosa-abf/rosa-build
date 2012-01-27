@@ -8,7 +8,7 @@ class Project < ActiveRecord::Base
   has_many :build_lists, :dependent => :destroy
   has_many :auto_build_lists, :dependent => :destroy
 
-  # has_many :project_imports, :dependent => :destroy
+  has_many :project_imports, :dependent => :destroy
   has_many :project_to_repositories, :dependent => :destroy
   has_many :repositories, :through => :project_to_repositories
 
@@ -20,7 +20,7 @@ class Project < ActiveRecord::Base
   validates :owner, :presence => true
   # validate {errors.add(:base, I18n.t('flash.project.save_warning_ssh_key')) if owner.ssh_key.blank?}
   validates_attachment_size :srpm, :less_than => 500.megabytes
-  validates_attachment_content_type :srpm, :content_type => ['application/octet-stream'], :message => I18n.t('layout.invalid_content_type') # "application/x-rpm", "application/x-redhat-package-manager" ?
+  validates_attachment_content_type :srpm, :content_type => ['application/octet-stream', "application/x-rpm", "application/x-redhat-package-manager"], :message => I18n.t('layout.invalid_content_type')
 
   #attr_accessible :category_id, :name, :description, :visibility
   attr_readonly :name
@@ -34,7 +34,7 @@ class Project < ActiveRecord::Base
   after_create :attach_to_personal_repository
   after_create :create_git_repo
   after_destroy :destroy_git_repo
-  after_save {|p| p.delay.import_srpm if p.srpm?} # should be after create_git_repo
+  after_save {|p| p.delay.import_attached_srpm if p.srpm?} # should be after create_git_repo
   # after_rollback lambda { destroy_git_repo rescue true if new_record? }
 
   has_ancestry
@@ -143,11 +143,8 @@ class Project < ActiveRecord::Base
     @platforms ||= repositories.map(&:platform).uniq
   end
 
-  def import_srpm(branch_name = 'import')
-    if srpm?
-      system("#{Rails.root.join('bin', 'import_srpm.sh')} #{srpm.path} #{path} #{branch_name} >> /dev/null 2>&1")
-      self.srpm = nil; save # clear srpm
-    end
+  def import_srpm(srpm_path = srpm.path, branch_name = 'import')
+    system("#{Rails.root.join('bin', 'import_srpm.sh')} #{srpm_path} #{path} #{branch_name} >> /dev/null 2>&1")
   end
 
   class << self
@@ -159,19 +156,26 @@ class Project < ActiveRecord::Base
 
   protected
 
-    def build_path(dir)
-      File.join(APP_CONFIG['root_path'], 'git_projects', "#{dir}.git")
-    end
+  def build_path(dir)
+    File.join(APP_CONFIG['root_path'], 'git_projects', "#{dir}.git")
+  end
 
-    def attach_to_personal_repository
-      repositories << self.owner.personal_repository if !repositories.exists?(:id => self.owner.personal_repository)
-    end
+  def attach_to_personal_repository
+    repositories << self.owner.personal_repository if !repositories.exists?(:id => self.owner.personal_repository)
+  end
 
-    def create_git_repo
-      is_root? ? Grit::Repo.init_bare(path) : parent.git_repository.repo.delay.fork_bare(path)
-    end
+  def create_git_repo
+    is_root? ? Grit::Repo.init_bare(path) : parent.git_repository.repo.delay.fork_bare(path)
+  end
 
-    def destroy_git_repo
-      FileUtils.rm_rf path
+  def destroy_git_repo
+    FileUtils.rm_rf path
+  end
+
+  def import_attached_srpm
+    if srpm?
+      import_srpm # srpm.path
+      self.srpm = nil; save # clear srpm
     end
+  end
 end
