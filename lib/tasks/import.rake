@@ -27,7 +27,17 @@ namespace :import do
   end
 
   namespace :sync do
-    task :all => [:rsync, :parse]
+    desc "Sync all repos"
+    task :all do
+      system("bundle exec rake import:sync:run")
+      system("bundle exec rake import:sync:run REPOSITORY=contrib")
+      system("bundle exec rake import:sync:run REPOSITORY=non-free")
+      system("bundle exec rake import:sync:run RELEASE=devel/cooker PLATFORM=cooker")
+      system("bundle exec rake import:sync:run RELEASE=devel/cooker PLATFORM=cooker REPOSITORY=contrib")
+      system("bundle exec rake import:sync:run RELEASE=devel/cooker PLATFORM=cooker REPOSITORY=non-free")
+    end
+
+    task :run => [:rsync, :parse]
 
     desc "Rsync with mirror.yandex.ru"
     task :rsync => :environment do
@@ -58,12 +68,13 @@ namespace :import do
         say "=== Processing '#{srpm_file}'..."
         if name = `rpm -q --qf '[%{Name}]' -p #{srpm_file}` and $?.success? and name.present? and
            version = `rpm -q --qf '[%{Version}]' -p #{srpm_file}` and $?.success? and version.present?
-          project_import = ProjectImport.find_or_initialize_by_name name
+          project_import = ProjectImport.find_by_name(name) || ProjectImport.by_name(name).first || ProjectImport.new(:name => name)
           if version != project_import.version.to_s and File.mtime(srpm_file) > project_import.file_mtime
             unless project = project_import.project
-              if project = repository.projects.find_by_name(name)
+              if project = repository.projects.find_by_name(name) || repository.projects.by_name(name).first # fallback to speedup
                 say "Found project '#{project.owner.uname}/#{project.name}'"
-              elsif project = Project.where(:name => name, :owner_id => owner.id, :owner_type => owner.class.to_s).first
+              elsif scoped = Project.where(:owner_id => owner.id, :owner_type => owner.class) and
+                    project = scoped.find_by_name(name).first || scoped.by_name(name).first
                 repository.projects << project
                 say "Add project '#{project.owner.uname}/#{project.name}' to '#{platform.name}/#{repository.name}'"
               else

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120124101727) do
+ActiveRecord::Schema.define(:version => 20120127234602) do
 
   create_table "arches", :force => true do |t|
     t.string   "name",       :null => false
@@ -230,6 +230,8 @@ ActiveRecord::Schema.define(:version => 20120124101727) do
     t.datetime "updated_at"
   end
 
+  add_index "project_imports", ["name"], :name => "index_project_imports_on_name"
+
   create_table "project_to_repositories", :force => true do |t|
     t.integer  "project_id"
     t.integer  "repository_id"
@@ -255,6 +257,7 @@ ActiveRecord::Schema.define(:version => 20120124101727) do
   end
 
   add_index "projects", ["category_id"], :name => "index_projects_on_category_id"
+  add_index "projects", ["name"], :name => "index_projects_on_name"
 
   create_table "relations", :force => true do |t|
     t.integer  "object_id"
