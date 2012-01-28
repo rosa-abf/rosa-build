@@ -239,7 +239,7 @@ ActiveRecord::Schema.define(:version => 20120126214447) do
     t.integer  "category_id"
     t.text     "description"
     t.string   "ancestry"
-    t.boolean  "has_wiki"
+    t.boolean  "has_wiki",          :default => false
     t.boolean  "has_issues",        :default => true
     t.integer  "srpm_file_size"
     t.string   "srpm_file_name"
