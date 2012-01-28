@@ -214,7 +214,8 @@ en:
       history_for: History for
       editing_page: Editing
       create_page: Create Page
-      revert_changes: Revert Page
+      revert_page: Revert Page
+      revert_pages: Revert Pages
       all_pages_in: "All pages in %{ref}:"
       search_results_for: "Search results for %{query}:"
       preview: Preview

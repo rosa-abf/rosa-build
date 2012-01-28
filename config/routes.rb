@@ -86,7 +86,7 @@ Rosa::Application.routes.draw do
       collection do
         match '_history' => 'wiki#wiki_history', :as => :history, :via => :get
         match '_access' => 'wiki#git', :as => :git, :via => :get
-        match '_revert/:sha1/:sha2' => 'wiki#revert', :as => :revert_page, :via => [:get, :post]
+        match '_revert/:sha1/:sha2' => 'wiki#revert_wiki', :as => :revert, :via => [:get, :post]
         match '_compare' => 'wiki#compare_wiki', :as => :compare, :via => :post
         match '_compare/*versions' => 'wiki#compare_wiki', :as => :compare_versions, :via => :get
         post :preview

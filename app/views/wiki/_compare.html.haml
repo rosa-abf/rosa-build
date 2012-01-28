@@ -1,10 +1,13 @@
+- revert_button = capture do
+  = link_to t("layout.wiki.revert_page#{action_name == 'revert' ? '' : 's'}"), '#', :class => "gollum-revert-button"
+
 #compare-content
   - if action_name != 'revert' 
     %ul.actions
       %li.minibutton
         = form_tag revert_path(@project, @versions[0][0..6], @versions[1][0..6], @name),
             :name => "gollum-revert", :id => "gollum-revert-form" do
-          = link_to t("layout.wiki.revert_changes"), '#', :class => "gollum-revert-button"
+          = revert_button
 
   = render :partial => 'diff_data', :collection => @diffs, :as => :diff
   .spacer
@@ -13,5 +16,5 @@
   %ul.actions
     - if action_name != 'revert'
       %li.minibutton
-        = link_to t("layout.wiki.revert_changes"), '#', :class => "gollum-revert-button"
+        = revert_button
     %li.minibutton= link_to t("layout.wiki.back_to_top"), '#wiki'

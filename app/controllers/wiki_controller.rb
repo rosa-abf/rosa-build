@@ -6,6 +6,8 @@ class WikiController < ApplicationController
 
   load_resource :project
 
+  before_filter :authorize_read_actions,  :only => [:index, :show, :git, :compare, :compare_wiki, :history, :wiki_history, :search, :pages]
+  before_filter :authorize_write_actions, :only => [:edit, :update, :new, :create, :destroy, :revert, :revert_wiki, :preview]
   before_filter :get_wiki
 
   def index
@@ -55,14 +57,14 @@ class WikiController < ApplicationController
   def update
     if can? :write, @project
       @name = CGI.unescape(params[:id])
-      page = @wiki.page(@name)
+      @page = @wiki.page(@name)
       name = params[:rename] || @name
       committer = Gollum::Committer.new(@wiki, commit)
-      commit = {:committer => committer}
+      commit_arg = {:committer => committer}
 
-      update_wiki_page(@wiki, page, params[:content], commit, name, params[:format])
-      update_wiki_page(@wiki, page.footer, params[:footer], commit) if params[:footer]
-      update_wiki_page(@wiki, page.sidebar, params[:sidebar], commit) if params[:sidebar]
+      update_wiki_page(@wiki, @page, params[:content], commit_arg, name, params[:format])
+      update_wiki_page(@wiki, @page.footer, params[:footer], commit_arg) if params[:footer]
+      update_wiki_page(@wiki, @page.sidebar, params[:sidebar], commit_arg) if params[:sidebar]
 
       committer.commit
 
@@ -185,12 +187,33 @@ class WikiController < ApplicationController
       else
         # if revert wasn't successful then redirect back to comparsion.
         # if second commit version is missed, then second version is 
-        # params[:sha1] and first version is previous version related to params[:sha1]
+        # params[:sha1] and first version is parent of params[:sha1]
+        # (see Gollum::Wiki#revert_page)
         sha2, sha1 = sha1, "#{sha1}^" if !sha2
         @versions = [sha1, sha2]
         diffs     = @wiki.repo.diff(@versions.first, @versions.last, @page.path)
         @diffs    = [diffs.first]
         flash[:error]  = t("flash.wiki.patch_does_not_apply")
+        render :compare
+      end
+    else
+      redirect_to forbidden_path
+    end
+  end
+
+  def revert_wiki
+    if can? :write, @project
+      sha1 = params[:sha1]
+      sha2 = params[:sha2]
+      if @wiki.revert_commit(sha1, sha2, commit)
+        flash[:notice] = t("flash.wiki.revert_success")
+        redirect_to project_wiki_index_path(@project)
+      else
+        sha2, sha1 = sha1, "#{sha1}^" if !sha2
+        @versions = [sha1, sha2]
+        diffs     = @wiki.repo.diff(@versions.first, @versions.last)
+        @diffs    = [diffs.first]
+        flash[:error] = t("flash.wiki.patch_does_not_apply")
         render :compare
       end
     else
@@ -274,11 +297,14 @@ class WikiController < ApplicationController
       else
 #        msg = "#{!!@wiki.page(@name) ? 'Updated page' : 'Created page'} #{@name}"
         msg = case action_name.to_s
-          when 'create' then 'Created page '
-          when 'update' then 'Updated page '
-          when 'revert' then 'Reverted page '
-        end + @name.to_s
+          when 'create' then "Created page #{@name.to_s}"
+          when 'update' then "Updated page #{@name.to_s}"
+          when 'revert' then "Reverted page #{@name.to_s}"
+          when 'revert_wiki' then "Reverted wiki"
+        end
+        msg += " (#{params['format']})" if params['format']
       end
+      msg = 'Unhandled action' if !msg || msg.empty?
       { :message => msg }
     end
 
@@ -288,6 +314,7 @@ class WikiController < ApplicationController
 
     def show_or_create_page
       if @page
+        puts @page.format
         @content = @page.formatted_data
         @editable = can?(:write, @project)
         render :show
@@ -300,6 +327,14 @@ class WikiController < ApplicationController
       else
         redirect_to forbidden_path
       end
+    end
+
+    def authorize_read_actions
+      puts "authorize action #{action_name}"
+    end
+
+    def authorize_write_actions
+      puts "authorize action #{action_name}"
     end
 end
 

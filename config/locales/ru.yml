@@ -214,7 +214,8 @@ ru:
       history_for: История для
       editing_page: Редактирование страницы
       create_page: Создать страницу
-      revert_changes: Откатить изменения
+      revert_page: Откатить изменения
+      revert_pages: Откатить изменения
       all_pages_in: "Все страницы в %{ref}:"
       search_results_for: "Результаты поиска для %{query}:"
       preview: Предпросмотр

@@ -4,7 +4,7 @@ module WikiHelper
     if name
       revert_page_project_wiki_path(project, CGI.escape(name), first, second)
     else
-      revert_page_project_wiki_index_path(project, first, second)
+      revert_project_wiki_index_path(project, first, second)
     end
   end
 
