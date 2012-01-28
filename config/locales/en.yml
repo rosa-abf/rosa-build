@@ -187,15 +187,15 @@ en:
       delete_page: Delete this Page
       page_history: Page History
       create_page: Create page
-      wiki_git_access: Git access
+      wiki_git_access: Git Access
       page_title: Page header
       expand_collapse: Expand
       last_edited_by: Last edited by
       home: Home
       pages: Pages
       wiki_history: Wiki History
-      git_access: Git access
-      search_and_hellip: Search and hellip
+      git_access: Git Access
+      search_and_hellip: Search & Hellip
       search: Search
       search_popup: Search this Wiki
       commit_message_placeholder: Write a small message here explaining this change. (Optional)
@@ -210,7 +210,7 @@ en:
       no_pages_in: No pages in %{ref}.
       no_results_for_search: Nothing found for %{query}.
       matches: matches
-      back_to_history: Back to history
+      back_to_history: Back to History
       history_for: History for
       editing_page: Editing
       create_page: Create Page
