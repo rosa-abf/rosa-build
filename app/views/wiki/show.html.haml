@@ -10,7 +10,7 @@
       #wiki-wrapper.page
         #head
           %h1.title
-            = @name
+            = @page.name
             = "(#{t("layout.wiki.preview")})" if action_name == 'preview'
           - unless action_name == 'preview'
             %ul.actions

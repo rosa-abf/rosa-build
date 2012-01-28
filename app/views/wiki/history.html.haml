@@ -11,7 +11,7 @@
         %h1.title
           - if @name
             = t("layout.wiki.history_for")
-            %strong= @name
+            %strong= @page.name
           - else
             = t("layout.wiki.wiki_history")
 

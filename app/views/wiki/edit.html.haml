@@ -10,7 +10,7 @@
       #head
         %h1.title
           = t("layout.wiki.editing_page")
-          %strong= @name
+          %strong= @page.name
 
         %ul.actions
           - if can? :read, @project
