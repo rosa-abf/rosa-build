@@ -13,11 +13,5 @@ every 5.minutes do
 end
 
 every 1.day, :at => '4:00 am' do
-  rake "import:sync:all > log/sync.log"
-  # rake "import:sync:run" # RELEASE=official/2011 PLATFORM=mandriva2011 REPOSITORY=main
-  # rake "import:sync:run REPOSITORY=contrib" # RELEASE=official/2011 PLATFORM=mandriva2011
-  # rake "import:sync:run REPOSITORY=non-free" # RELEASE=official/2011 PLATFORM=mandriva2011
-  # rake "import:sync:run RELEASE=devel/cooker PLATFORM=cooker" # REPOSITORY=main
-  # rake "import:sync:run RELEASE=devel/cooker PLATFORM=cooker REPOSITORY=contrib"
-  # rake "import:sync:run RELEASE=devel/cooker PLATFORM=cooker REPOSITORY=non-free"
+  rake "import:sync:all", :output => 'sync.log'
 end

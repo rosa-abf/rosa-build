@@ -29,10 +29,10 @@ namespace :import do
   namespace :sync do
     desc "Sync all repos"
     task :all do
-      system("bundle exec rake import:sync:run")
-      system("bundle exec rake import:sync:run REPOSITORY=contrib")
-      system("bundle exec rake import:sync:run REPOSITORY=non-free")
-      system("bundle exec rake import:sync:run RELEASE=devel/cooker PLATFORM=cooker")
+      system("bundle exec rake import:sync:run RELEASE=official/2011 PLATFORM=mandriva2011 REPOSITORY=main")
+      system("bundle exec rake import:sync:run RELEASE=official/2011 PLATFORM=mandriva2011 REPOSITORY=contrib")
+      system("bundle exec rake import:sync:run RELEASE=official/2011 PLATFORM=mandriva2011 REPOSITORY=non-free")
+      system("bundle exec rake import:sync:run RELEASE=devel/cooker PLATFORM=cooker REPOSITORY=main")
       system("bundle exec rake import:sync:run RELEASE=devel/cooker PLATFORM=cooker REPOSITORY=contrib")
       system("bundle exec rake import:sync:run RELEASE=devel/cooker PLATFORM=cooker REPOSITORY=non-free")
     end

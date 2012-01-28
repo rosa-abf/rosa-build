@@ -160,6 +160,8 @@ GEM
     rbx-require-relative (0.0.5)
     rdoc (3.11)
       json (~> 1.4)
+    redhillonrails_core (1.2.0)
+      activerecord (>= 2)
     rr (1.0.4)
     rspec (2.7.0)
       rspec-core (~> 2.7.0)
@@ -238,6 +240,7 @@ DEPENDENCIES
   rails-xmlrpc (~> 0.3.6)
   rails3-generators
   rails3-jquery-autocomplete
+  redhillonrails_core (~> 1.2.0)
   rr
   rspec-rails (~> 2.7.0)
   ruby-debug

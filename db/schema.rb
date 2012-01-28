@@ -230,7 +230,7 @@ ActiveRecord::Schema.define(:version => 20120127234602) do
     t.datetime "updated_at"
   end
 
-  add_index "project_imports", ["name"], :name => "index_project_imports_on_name"
+  add_index "project_imports", ["name"], :name => "index_project_imports_on_name", :unique => true, :case_sensitive => false
 
   create_table "project_to_repositories", :force => true do |t|
     t.integer  "project_id"
@@ -257,7 +257,7 @@ ActiveRecord::Schema.define(:version => 20120127234602) do
   end
 
   add_index "projects", ["category_id"], :name => "index_projects_on_category_id"
-  add_index "projects", ["name"], :name => "index_projects_on_name"
+  add_index "projects", ["owner_id"], :name => "index_projects_on_name_and_owner_id_and_owner_type", :unique => true, :case_sensitive => false
 
   create_table "relations", :force => true do |t|
     t.integer  "object_id"
