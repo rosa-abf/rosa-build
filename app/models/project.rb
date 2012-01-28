@@ -16,7 +16,7 @@ class Project < ActiveRecord::Base
   has_many :collaborators, :through => :relations, :source => :object, :source_type => 'User'
   has_many :groups,        :through => :relations, :source => :object, :source_type => 'Group'
 
-  validates :name, :uniqueness => {:scope => [:owner_id, :owner_type]}, :presence => true, :format => { :with => /^[a-zA-Z0-9_\-\+\.]+$/ }
+  validates :name, :uniqueness => {:scope => [:owner_id, :owner_type], :case_sensitive => false}, :presence => true, :format => { :with => /^[a-zA-Z0-9_\-\+\.]+$/ }
   validates :owner, :presence => true
   # validate {errors.add(:base, I18n.t('flash.project.save_warning_ssh_key')) if owner.ssh_key.blank?}
   validates_attachment_size :srpm, :less_than => 500.megabytes
@@ -26,7 +26,7 @@ class Project < ActiveRecord::Base
   attr_readonly :name
 
   scope :recent, order("name ASC")
-  scope :by_name, lambda { |name| where('name like ?', "%#{ name }%") }
+  scope :by_name, lambda {|name| where('projects.name ILIKE ?', name)}
   scope :by_visibilities, lambda {|v| {:conditions => ['visibility in (?)', v.join(',')]}}
   scope :addable_to_repository, lambda { |repository_id| where("projects.id NOT IN (SELECT project_to_repositories.project_id FROM project_to_repositories WHERE (project_to_repositories.repository_id = #{ repository_id }))") }
   scope :automateable, where("projects.id NOT IN (SELECT auto_build_lists.project_id FROM auto_build_lists)")
