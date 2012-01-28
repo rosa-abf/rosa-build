@@ -21,7 +21,7 @@
               %li.minibutton
                 = link_to t("layout.wiki.view_page"), view_path(@project, escaped_name),
                           :class => 'action-view-page'
-            - if can? :update, @project
+            - if can? :write, @project
               %li.minibutton
                 = link_to t("layout.wiki.edit_page"), edit_project_wiki_path(@project, escaped_name),
                           :class => 'aciton-edit-page'

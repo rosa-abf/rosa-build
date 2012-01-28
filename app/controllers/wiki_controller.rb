@@ -38,7 +38,7 @@ class WikiController < ApplicationController
   end
 
   def edit
-    if can? :update, @project
+    if can? :write, @project
       @name = CGI.unescape(params[:id])
       if page = @wiki.page(@name)
         @page = page
@@ -53,7 +53,7 @@ class WikiController < ApplicationController
   end
 
   def update
-    if can? :update, @project
+    if can? :write, @project
       @name = CGI.unescape(params[:id])
       page = @wiki.page(@name)
       name = params[:rename] || @name
@@ -74,7 +74,7 @@ class WikiController < ApplicationController
   end
 
   def new
-    if can? :update, @project
+    if can? :write, @project
       @name = ''
     else
       redirect_to forbidden_path
@@ -82,7 +82,7 @@ class WikiController < ApplicationController
   end
 
   def create
-    if can? :update, @project
+    if can? :write, @project
       @name = params['page']
       format = params['format'].intern
 
@@ -99,7 +99,7 @@ class WikiController < ApplicationController
   end
 
   def destroy
-    if can? :update, @project
+    if can? :write, @project
       @name = CGI.unescape(params[:id])
       page = @wiki.page(@name)
       if page
@@ -173,7 +173,7 @@ class WikiController < ApplicationController
   end
 
   def revert
-    if can? :update, @project
+    if can? :write, @project
       @name = CGI.unescape(params[:id])
       @page = @wiki.page(@name)
       sha1  = params[:sha1]
@@ -199,7 +199,7 @@ class WikiController < ApplicationController
   end
 
   def preview
-    if can? :update, @project
+    if can? :write, @project
       @name = params['page']
       @page = @wiki.preview_page(@name, params['content'], params['format'])
       @content = @page.formatted_data
@@ -289,11 +289,11 @@ class WikiController < ApplicationController
     def show_or_create_page
       if @page
         @content = @page.formatted_data
-        @editable = can?(:update, @project)
+        @editable = can?(:write, @project)
         render :show
       elsif file = @wiki.file(@name)
         render :text => file.raw_data, :content_type => file.mime_type
-      elsif can? :update, @project
+      elsif can? :write, @project
 #        @name = CGI.escape(@name)
         @new = true
         render :new

@@ -14,7 +14,7 @@
             = "(#{t("layout.wiki.preview")})" if action_name == 'preview'
           - unless action_name == 'preview'
             %ul.actions
-              - if can? :update, @project
+              - if can? :write, @project
                 %li.minibutton.jaws
                   = link_to t("layout.wiki.new_page"), '#', :'data-url' => project_wiki_index_path(@project),
                             :id => 'minibutton-new-page'
