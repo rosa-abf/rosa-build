@@ -89,10 +89,12 @@ var MarkDown = {
                                     }
                                   ],
                                   OK: function( res ) {
-                                   var rep = '';
-                                   if ( res['text'] && res['href'] ) {
-                                      rep = '[' + res['text'] + '](' 
-                                             + res['href'] + ')';
+                                    var rep = '';
+                                    if ( res['text'] && res['href'] ) {
+                                       rep = '[[' + res['text'] + '|' 
+                                              + res['href'] + ']]';
+                                    } else if ( res['href'] ) {
+                                        rep = '[[' + res['href'] + ']]';
                                     }
                                     $.GollumEditor.replaceSelection( rep );
                                   }
