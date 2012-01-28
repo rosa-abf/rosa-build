@@ -74,7 +74,7 @@ namespace :import do
               if project = repository.projects.find_by_name(name) || repository.projects.by_name(name).first # fallback to speedup
                 say "Found project '#{project.owner.uname}/#{project.name}'"
               elsif scoped = Project.where(:owner_id => owner.id, :owner_type => owner.class) and
-                    project = scoped.find_by_name(name).first || scoped.by_name(name).first
+                    project = scoped.find_by_name(name) || scoped.by_name(name).first
                 repository.projects << project
                 say "Add project '#{project.owner.uname}/#{project.name}' to '#{platform.name}/#{repository.name}'"
               else
