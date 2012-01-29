@@ -88,6 +88,15 @@ module WikiHelper
     @page.version.author.name
   end
 
+  def author_email
+    @page.version.author.email
+  end
+
+  def user_path_by_email(author_email)
+    user = User.find_by_email(author_email)
+    (!!user) ? user_path(user) : 'javascript:void(0)'
+  end
+
   def date
     @page.version.authored_date.strftime("%Y-%m-%d %H:%M:%S")
   end
