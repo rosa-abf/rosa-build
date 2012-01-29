@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120123161250) do
+ActiveRecord::Schema.define(:version => 20120129120025) do
 
   create_table "arches", :force => true do |t|
     t.string   "name",       :null => false
@@ -167,13 +167,6 @@ ActiveRecord::Schema.define(:version => 20120123161250) do
 
   add_index "issues", ["project_id", "serial_id"], :name => "index_issues_on_project_id_and_serial_id", :unique => true
 
-  create_table "permissions", :force => true do |t|
-    t.integer  "right_id"
-    t.integer  "role_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
   create_table "platforms", :force => true do |t|
     t.string   "description"
     t.string   "name"
@@ -270,27 +263,6 @@ ActiveRecord::Schema.define(:version => 20120123161250) do
     t.string   "owner_type"
   end
 
-  create_table "rights", :force => true do |t|
-    t.string   "name",       :null => false
-    t.string   "controller", :null => false
-    t.string   "action",     :null => false
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  create_table "role_lines", :force => true do |t|
-    t.integer  "role_id"
-    t.integer  "relation_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  create_table "roles", :force => true do |t|
-    t.string   "name"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
   create_table "rpms", :force => true do |t|
     t.string   "name",       :null => false
     t.integer  "arch_id",    :null => false
@@ -327,29 +299,29 @@ ActiveRecord::Schema.define(:version => 20120123161250) do
   end
 
   create_table "user_emails", :force => true do |t|
-    t.integer  "user_id",    :null => false
-    t.string   "email",      :null => false
+    t.integer  "user_id",     :null => false
+    t.string   "email",       :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "email_lower", :null => false
   end
 
-  add_index "user_emails", ["email"], :name => "index_user_emails_on_email"
+  add_index "user_emails", ["email_lower"], :name => "index_user_emails_on_email_lower"
   add_index "user_emails", ["user_id"], :name => "index_user_emails_on_user_id"
 
   create_table "users", :force => true do |t|
     t.string   "name"
-    t.string   "email",                               :default => "",   :null => false
-    t.string   "encrypted_password",   :limit => 128, :default => "",   :null => false
-    t.string   "password_salt",                       :default => "",   :null => false
+    t.string   "email",                                 :default => "",   :null => false
+    t.string   "encrypted_password",     :limit => 128, :default => "",   :null => false
     t.string   "reset_password_token"
-    t.string   "remember_token"
+    t.datetime "reset_password_sent_at"
     t.datetime "remember_created_at"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.text     "ssh_key"
     t.string   "uname"
     t.string   "role"
-    t.string   "language",                            :default => "en"
+    t.string   "language",                              :default => "en"
   end
 
   add_index "users", ["email"], :name => "index_users_on_email", :unique => true
