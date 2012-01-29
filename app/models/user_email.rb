@@ -6,6 +6,7 @@ class UserEmail < ActiveRecord::Base
   validates :email_lower, :uniqueness => true
   validates :email, :presence => true
 
+  before_save :set_lower
   before_validation :set_lower
 
   private

@@ -142,7 +142,7 @@ class Project < ActiveRecord::Base
   end
 
   def owner?(user)
-    owner_id == user.id
+    owner == user
   end
 
   protected

@@ -25,12 +25,15 @@ class Comment < ActiveRecord::Base
 
   def subscribe_users
     if self.commentable.class == Issue
-      self.commentable.subscribes.create(:user_id => self.user_id) if !self.commentable.subscribes.exists?(:user_id => self.user_id)
+      self.commentable.subscribes.create(:user => self.user) if !self.commentable.subscribes.exists?(:user_id => self.user.id)
     elsif self.commentable.class == Grit::Commit
       recipients = self.project.relations.by_role('admin').where(:object_type => 'User').map &:object # admins
       recipients << self.user << UserEmail.where(:email_lower => self.commentable.committer.email.downcase).first.try(:user) # commentor and committer
       recipients << self.project.owner if self.project.owner_type == 'User' # project owner
-      recipients.compact.uniq.each {|user| Subscribe.subscribe_user_to_commit(self, user.id)}
+      recipients.compact.uniq.each do |user|
+        options = {:project_id => self.project.id, :subscribeable_id => self.commentable.id, :subscribeable_type => self.commentable.class.name, :user_id => user.id}
+        Subscribe.set_subscribe_to_commit(options, Subscribe::ON) if Subscribe.subscribed_to_commit?(self.project, user, self.commentable)
+      end
     end
   end
 end

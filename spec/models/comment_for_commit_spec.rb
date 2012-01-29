@@ -131,7 +131,7 @@ describe Comment do
     context 'for unsubscribe commit' do
       it 'should not send an e-mail' do
         ActionMailer::Base.deliveries = []
-        Subscribe.set_subscribe_to_commit(@project, @commit, @user.id, Subscribe::OFF)
+        Subscribe.set_subscribe_to_commit({:project_id => @project.id, :subscribeable_id => @commit.id, :subscribeable_type => @commit.class.name, :user_id => @user.id}, Subscribe::OFF)
         comment = Comment.create(:user => @stranger, :body => 'hello!', :project => @project,
             :commentable_type => @commit.class.name, :commentable_id => @commit.id)
         ActionMailer::Base.deliveries.count.should == 0 # cache project.commit_comments_subscribes ...
@@ -234,7 +234,7 @@ describe Comment do
     context 'for unsubscribe project' do
       it 'should not send an e-mail' do
         ActionMailer::Base.deliveries = []
-        Subscribe.set_subscribe_to_commit(@project, @commit, @user.id, Subscribe::OFF)
+        Subscribe.set_subscribe_to_commit({:project_id => @project.id, :subscribeable_id => @commit.id, :subscribeable_type => @commit.class.name, :user_id => @user.id}, Subscribe::OFF)
         comment = Comment.create(:user => @stranger, :body => 'hello!', :project => @project,
             :commentable_type => @commit.class.name, :commentable_id => @commit.id)
         ActionMailer::Base.deliveries.count.should == 0
@@ -321,7 +321,7 @@ describe Comment do
         @stranger.notifier.update_attribute :new_comment_commit_owner, false
         #@stranger.notifier.update_attribute :new_comment_commit_commentor, false
 
-        Subscribe.set_subscribe_to_commit(@project, @commit, @stranger.id, Subscribe::ON)
+        Subscribe.set_subscribe_to_commit({:project_id => @project.id, :subscribeable_id => @commit.id, :subscribeable_type => @commit.class.name, :user_id => @stranger.id}, Subscribe::ON)
         comment = Comment.create(:user => @project.owner, :body => 'hello!', :project => @project,
             :commentable_type => @commit.class.name, :commentable_id => @commit.id)
         ActionMailer::Base.deliveries.count.should == 1
@@ -331,7 +331,7 @@ describe Comment do
       it 'should not send an e-mail for own comment' do
         ActionMailer::Base.deliveries = []
         #@project.owner.notifier.update_attribute :can_notify, false
-        Subscribe.set_subscribe_to_commit(@project, @commit, @stranger.id, Subscribe::ON)
+        Subscribe.set_subscribe_to_commit({:project_id => @project.id, :subscribeable_id => @commit.id, :subscribeable_type => @commit.class.name, :user_id => @stranger.id}, Subscribe::ON)
         comment = Comment.create(:user => @owner, :body => 'hello!', :project => @project,
             :commentable_type => @commit.class.name, :commentable_id => @commit.id)
         ActionMailer::Base.deliveries.count.should == 0
@@ -361,7 +361,7 @@ describe Comment do
 
       it 'should send a one e-mail when subscribed to commit' do
         ActionMailer::Base.deliveries = []
-        Subscribe.set_subscribe_to_commit(@project, @commit, @stranger.id, Subscribe::ON)
+        Subscribe.set_subscribe_to_commit({:project_id => @project.id, :subscribeable_id => @commit.id, :subscribeable_type => @commit.class.name, :user_id => @stranger.id}, Subscribe::ON)
         @stranger.emails.first.update_attribute :email, 'code@tpope.net'
         comment = Comment.create(:user => @user, :body => 'hello!', :project => @project,
             :commentable_type => @commit.class.name, :commentable_id => @commit.id)

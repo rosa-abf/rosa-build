@@ -25,6 +25,7 @@ class User < ActiveRecord::Base
   has_many :repositories, :through => :targets, :source => :target, :source_type => 'Repository', :autosave => true
   has_many :subscribes, :foreign_key => :user_id, :dependent => :destroy
 
+  has_many :comments, :dependent => :destroy
   has_many :emails, :class_name => 'UserEmail', :dependent => :destroy
 
   include Modules::Models::PersonalRepository
@@ -89,6 +90,14 @@ class User < ActiveRecord::Base
     result = update_attributes(params)
     clean_up_passwords
     result
+  end
+
+  def commentor?(commentable)
+    comments.exists?(:commentable_type => commentable.class.name, :commentable_id => commentable.id)
+  end
+
+  def committer?(commit)
+    emails.exists? :email_lower => commit.committer.email.downcase
   end
 
   private
