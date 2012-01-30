@@ -217,6 +217,7 @@ class WikiController < ApplicationController
 
     # This method was grabbed from sinatra application, shipped with Gollum gem.
     # See Gollum gem and Gollum License if you have any questions about license notes.
+    # https://github.com/github/gollum  https://github.com/github/gollum/blob/master/LICENSE
     def update_wiki_page(wiki, page, content, commit_msg, name = nil, format = nil)
       return if !page ||  
         ((!content || page.raw_data == content) && page.format == format)

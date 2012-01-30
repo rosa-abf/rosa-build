@@ -46,14 +46,14 @@ module WikiHelper
 
   def footer
     if @footer.nil?
-      @footer = !!@page.footer ? @page.footer.raw_data : false
+      @footer = !!@page.footer ? @page.footer : false
     end
     @footer
   end
 
   def sidebar
     if @sidebar.nil?
-      @sidebar = !!@page.sidebar ? @page.sidebar.raw_data : false
+      @sidebar = !!@page.sidebar ? @page.sidebar : false
     end
     @sidebar
   end
