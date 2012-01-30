@@ -52,7 +52,7 @@ group :development do
   gem 'ruby_parser'
 
   # debug
-  gem 'ruby-debug'
+  # gem 'ruby-debug19', :require => 'ruby-debug', :platforms => :mri_19
   # gem 'looksee'
   # gem 'awesome_print'
 #  gem 'wirble'

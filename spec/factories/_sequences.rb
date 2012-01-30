@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 Factory.sequence :integer do |n|
   n
 end

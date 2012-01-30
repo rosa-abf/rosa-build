@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 # RelatedModels
 module RelatedModels
   autoload :ClassMethods,       'related_models/class_methods'

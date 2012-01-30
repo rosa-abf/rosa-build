@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class Git::BlobsController < Git::BaseController
   before_filter :set_path
   before_filter :set_commit_hash

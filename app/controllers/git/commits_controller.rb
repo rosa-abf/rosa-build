@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class Git::CommitsController < Git::BaseController
 
   def index

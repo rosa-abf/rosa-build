@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class RenameNameAndUnixname < ActiveRecord::Migration
   def self.up
   	remove_column :projects, :name

@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 require 'spec_helper'
 
 describe BuildListsController do
@@ -40,7 +41,7 @@ describe BuildListsController do
     end
 
     it 'should save correct commit_hash for branch based build' do
-      post :create, {:project_id => @project.id}.merge(@create_params).deep_merge(:build_list => {:project_version => "master_latest"})
+      post :create, {:project_id => @project.id}.merge(@create_params).deep_merge(:build_list => {:project_version => "latest_master"})
       @project.build_lists.last.commit_hash.should == @project.git_repository.commits('master').last.id
     end
 
@@ -70,7 +71,7 @@ describe BuildListsController do
       platform = Factory(:platform_with_repos)
       @create_params = {
         :build_list => { 
-          :project_version => 'master_latest',
+          :project_version => 'latest_master',
           :pl_id => platform.id,
           :update_type => 'security',
           :include_repos => [platform.repositories.first.id]

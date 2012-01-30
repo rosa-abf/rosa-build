@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 Factory.define(:build_list) do |p|
   p.association :user
   p.association :project

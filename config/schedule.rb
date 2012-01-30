@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 #every 1.day, :at => '0:05 am' do
 #  runner "Download.rotate_nginx_log"
 #end

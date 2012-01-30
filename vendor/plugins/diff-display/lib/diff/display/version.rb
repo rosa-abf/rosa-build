@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 module Diff
   module Display #:nodoc:
     module VERSION #:nodoc:

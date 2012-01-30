@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 DEFAULT_KS = <<-eos
 timezone Europe/Moscow
 auth --useshadow --enablemd5

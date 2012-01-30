@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 module DiffHelper
 
   def render_diff(diff)

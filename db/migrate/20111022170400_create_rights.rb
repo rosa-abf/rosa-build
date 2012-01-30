@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class CreateRights < ActiveRecord::Migration
   def self.up
     create_table :rights do |t|

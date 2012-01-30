@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class AddReleasedToPlatforms < ActiveRecord::Migration
   def self.up
     add_column :platforms, :released, :boolean, :default => false

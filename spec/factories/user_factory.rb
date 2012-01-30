@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 Factory.define(:user) do |u|
   u.email { Factory.next(:email) }
   u.name { Factory.next(:string) }

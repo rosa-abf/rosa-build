@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class Product < ActiveRecord::Base
   ATTRS_TO_CLONE = [ 'build_path', 'build_script', 'counter', 'ks', 'menu', 'tar', 'use_cron', 'cron_tab' ]
 

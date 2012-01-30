@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class AddAttachmentTarToProduct < ActiveRecord::Migration
   def self.up
     add_column :products, :tar_file_name, :string

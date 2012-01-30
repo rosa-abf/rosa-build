@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class MembersController < ApplicationController
   before_filter :authenticate_user!
   is_related_controller!

@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class BuildList::Filter
   def initialize(project, options = {})
     @project = project

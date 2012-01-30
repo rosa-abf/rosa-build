@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 Capistrano::Configuration.instance(:must_exist).load do
   namespace :deploy do
     set :unicorn_binary, "bundle exec unicorn"

@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class ProjectImport < ActiveRecord::Base
   belongs_to :project
 
