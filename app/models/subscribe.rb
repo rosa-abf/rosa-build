@@ -1,18 +1,12 @@
 class Subscribe < ActiveRecord::Base
-  ON = 1
-  OFF = 0
   belongs_to :subscribeable, :polymorphic => true
   belongs_to :user
   belongs_to :project
 
-  validates :status, :inclusion => {:in => 0..1}
-
-  scope :on, where(:status => ON)
-  scope :off, where(:status => OFF)
   scope :finder_hack, order('') # FIXME .subscribes - error; .subscribes.finder_hack - success Oo
 
   def subscribed?
-    status == ON
+    status
   end
 
   def self.comment_subscribes(comment)
@@ -33,7 +27,7 @@ class Subscribe < ActiveRecord::Base
   end
 
   def self.new_comment_commit_notification(comment)
-    subscribes = Subscribe.comment_subscribes(comment).on
+    subscribes = Subscribe.comment_subscribes(comment).where(:status => true)
     subscribes.each do |subscribe|
       next if comment.own_comment?(subscribe.user) || !subscribe.user.notifier.can_notify
       UserMailer.delay.new_comment_notification(comment, subscribe.user)
@@ -49,6 +43,18 @@ class Subscribe < ActiveRecord::Base
     (user.committer?(commit) && user.notifier.new_comment_commit_owner)
   end
 
+
+  def self.subscribe_to_commit(options)
+    Subscribe.set_subscribe_to_commit(options, true)
+  end
+
+
+  def self.unsubscribe_from_commit(options)
+    Subscribe.set_subscribe_to_commit(options, false)
+  end
+
+  private
+
   def self.set_subscribe_to_commit(options, status)
     if subscribe = Subscribe.where(options).first
       subscribe.update_attribute(:status, status)
@@ -56,4 +62,5 @@ class Subscribe < ActiveRecord::Base
       Subscribe.create(options.merge(:status => status))
     end
   end
+
 end

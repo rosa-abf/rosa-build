@@ -6,7 +6,7 @@ class CommitSubscribesController < ApplicationController
   before_filter :find_commit
 
   def create
-    if Subscribe.set_subscribe_to_commit(@options, Subscribe::ON)
+    if Subscribe.subscribe_to_commit(@options)
       flash[:notice] = I18n.t("flash.subscribe.commit.saved")
       # TODO js
       redirect_to commit_path(@project, @commit)
@@ -17,7 +17,7 @@ class CommitSubscribesController < ApplicationController
   end
 
   def destroy
-    Subscribe.set_subscribe_to_commit(@options, Subscribe::OFF)
+    Subscribe.unsubscribe_from_commit(@options)
     flash[:notice] = t("flash.subscribe.commit.destroyed")
     redirect_to commit_path(@project, @commit)
   end

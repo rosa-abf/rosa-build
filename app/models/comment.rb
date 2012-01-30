@@ -32,7 +32,7 @@ class Comment < ActiveRecord::Base
       recipients << self.project.owner if self.project.owner_type == 'User' # project owner
       recipients.compact.uniq.each do |user|
         options = {:project_id => self.project.id, :subscribeable_id => self.commentable.id, :subscribeable_type => self.commentable.class.name, :user_id => user.id}
-        Subscribe.set_subscribe_to_commit(options, Subscribe::ON) if Subscribe.subscribed_to_commit?(self.project, user, self.commentable)
+        Subscribe.subscribe_to_commit(options) if Subscribe.subscribed_to_commit?(self.project, user, self.commentable)
       end
     end
   end

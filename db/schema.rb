@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120129120025) do
+ActiveRecord::Schema.define(:version => 20120130111133) do
 
   create_table "arches", :force => true do |t|
     t.string   "name",       :null => false
@@ -299,8 +299,8 @@ ActiveRecord::Schema.define(:version => 20120129120025) do
     t.integer  "user_id"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "status",             :default => 1
     t.integer  "project_id"
+    t.boolean  "status",             :default => true
   end
 
   create_table "users", :force => true do |t|
