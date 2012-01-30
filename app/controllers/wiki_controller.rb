@@ -1,4 +1,4 @@
-require 'lib/gollum'
+#require 'lib/gollum'
 require 'cgi'
 
 class WikiController < ApplicationController
