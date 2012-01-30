@@ -44,10 +44,7 @@ ru:
       notifier: Настройки оповещений
       notifiers:
         edit_header: Настройки оповещений
-      email:
-        list: Список Email
-        delete: Удалить
-        confirm_delete: Вы уверены?
+      emails: Список Email
     processing: Обрабатывается...
 
     downloads:
@@ -428,9 +425,6 @@ ru:
       saved: Пользователь успешно сохранен
       save_error: Не удалось сохранить данные о пользователе
       destroyed: Учетная запись успешно удалена
-      emails:
-        saved: Список еmail успешно сохранен
-        error: Такой email уже используется
 
     group:
       saved: Группа успешно сохранена

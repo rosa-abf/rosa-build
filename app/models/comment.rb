@@ -28,7 +28,7 @@ class Comment < ActiveRecord::Base
       self.commentable.subscribes.create(:user => self.user) if !self.commentable.subscribes.exists?(:user_id => self.user.id)
     elsif self.commentable.class == Grit::Commit
       recipients = self.project.relations.by_role('admin').where(:object_type => 'User').map &:object # admins
-      recipients << self.user << UserEmail.where(:email => self.commentable.committer.email).first.try(:user) # commentor and committer
+      recipients << self.user << User.where(:email => self.commentable.committer.email).first # commentor and committer
       recipients << self.project.owner if self.project.owner_type == 'User' # project owner
       recipients.compact.uniq.each do |user|
         options = {:project_id => self.project.id, :subscribeable_id => self.commentable.id, :subscribeable_type => self.commentable.class.name, :user_id => user.id}

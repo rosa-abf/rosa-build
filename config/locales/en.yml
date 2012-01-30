@@ -45,10 +45,7 @@ en:
         notifier: Notifier setting
         notifiers:
           edit_header: Notifier setting
-        email:
-          list: Email addresses
-          delete: Destroy
-          confirm_delete: Are you sure?
+        email: Email addresses
       processing: working ...
 
       downloads:
@@ -433,9 +430,7 @@ en:
         saved: User saved
         save_error: User data saves error
         destroyed: User account deleted
-        emails:
-          saved: User emails saved
-          error: That emails addresses is already in use
+
       group:
         saved: Group saved
         save_error: Group saves error

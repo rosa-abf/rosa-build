@@ -8,15 +8,15 @@ Rosa::Application.routes.draw do
 
   resources :users do
     resources :groups, :only => [:new, :create, :index]
+    resources :emails, :only => [:index, :destroy], :controller => :user_emails do
+      put :update, :as => :member
+    end
 
     get :autocomplete_user_uname, :on => :collection
     namespace :settings do
       resource :notifier, :only => [:show, :update]
     end
   end
-
-  match 'users/:id/emails' => 'user_emails#edit', :as => :edit_user_emails, :via => :get, :action => :edit
-  match 'users/:id/emails' => 'user_emails#update', :as => :update_user_emails, :via => :put, :action => :update
 
   resources :event_logs, :only => :index
 

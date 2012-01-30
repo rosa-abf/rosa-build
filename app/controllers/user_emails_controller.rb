@@ -1,21 +1,27 @@
 # coding: UTF-8
-class UserEmailsController < ApplicationController
-  layout 'sessions'
-  before_filter :authenticate_user!
+class UserEmailsController < UsersController
+  before_filter :find_user
 
-  def edit
-    (5 - current_user.emails.count).times {current_user.emails.build }
-    render 'users/emails/emails'
+  def index
+    @emails = @user.emails
+    (5 - @user.emails.count).times {|e| @emails << UserEmail.new(:user_id => @user) }
   end
 
   def update
-    new_emails = []
-    params[:user][:emails_attributes].each_value {|x| new_emails << x[:email] if x[:email].present?}
-    emails = current_user.emails
-    emails.each {|e| e.destroy unless new_emails.include?(e.email)}
-    new_emails.each {|e| emails.create(:email => e) unless emails.include? e}
-
-    flash[:notice] = t('flash.user.emails.saved')
-    redirect_to edit_user_emails_path
+    @user.role = params[:user][:role]
+    if @user.update_attributes(params[:user])
+      flash[:notice] = t('flash.user.saved')
+      redirect_to users_path
+    else
+      flash[:error] = t('flash.user.save_error')
+      render :action => :edit
+    end
   end
+
+  def destroy
+    @user.destroy
+    flash[:notice] = t("flash.user.destroyed")
+    redirect_to users_path
+  end
+
 end

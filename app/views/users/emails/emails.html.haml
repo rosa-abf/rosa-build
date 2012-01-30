@@ -1,5 +1,0 @@
-#block-signup.block
-  %h2= title t("layout.settings.email.list")
-  .content
-    = form_for current_user, :url => update_user_emails_path(@user), :html => {:method => :put, :id => current_user.id } do |f|
-      = render :partial => "users/emails/form", :locals => {:f => f}
