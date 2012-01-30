@@ -44,7 +44,6 @@ ru:
       notifier: Настройки оповещений
       notifiers:
         edit_header: Настройки оповещений
-      emails: Список Email
     processing: Обрабатывается...
 
     downloads:
