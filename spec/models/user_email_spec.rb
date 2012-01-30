@@ -13,16 +13,5 @@ describe UserEmail do
       @stranger.emails.create(:email => @user.emails.first.email)
       @stranger.emails.exists?(:email => @user.emails.first.email).should be_false
     end
-
-    it 'should not create duplicate lowercase emails' do
-      @stranger = Factory(:user)
-      @stranger.emails.create(:email => @user.email.upcase)
-      @stranger.emails.exists?(:email => @user.email.upcase).should be_false
-    end
-
-    it 'should not create too many emails' do
-      15.times {|i| @user.emails.create(:email => Factory.next(:email))}
-      @user.emails.count.should be_equal(UserEmail::MAX_EMAILS)
-    end
   end
 end
