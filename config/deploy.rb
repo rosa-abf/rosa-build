@@ -27,9 +27,9 @@ set :scm, :git
 set :repository,  "git@github.com:warpc/rosa-build.git"
 set :deploy_via,  :remote_cache
 
-require 'lib/recipes/nginx'
-require 'lib/recipes/unicorn'
-require 'lib/recipes/bluepill'
+require './lib/recipes/nginx'
+require './lib/recipes/unicorn'
+require './lib/recipes/bluepill'
 
 namespace :deploy do
   task :stub_xml_rpc do

@@ -1,5 +1,4 @@
 .bundle
-.rvmrc
 .DS_Store
 db/*.sqlite3
 log/*.log
@@ -12,6 +11,5 @@ public/assets/*
 config/initializers/local.rb
 public/system/*
 public/downloads/*
-.rvmrc
 *.swp
 *.tmproj
