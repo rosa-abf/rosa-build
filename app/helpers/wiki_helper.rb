@@ -92,8 +92,8 @@ module WikiHelper
     @page.version.author.email
   end
 
-  def user_path_by_email(author_email)
-    user = User.find_by_email(author_email)
+  def user_path_by_email(email)
+    user = User.where(:email => email).first
     (!!user) ? user_path(user) : 'javascript:void(0)'
   end
 
