@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class AddHasIssuesToProjects < ActiveRecord::Migration
   def self.up
     add_column :projects, :has_issues, :boolean, :default => true

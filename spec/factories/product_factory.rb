@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 Factory.define(:product) do |p|
   p.name { Factory.next(:string) }
   p.association :platform, :factory => :platform

@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 module Diff::Display
   # Processes the diff and generates a Data object which contains the
   # resulting data structure.

@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class CreateSettingsNotifiers < ActiveRecord::Migration
   def self.up
     create_table :settings_notifiers do |t|

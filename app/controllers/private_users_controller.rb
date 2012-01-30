@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class PrivateUsersController < ApplicationController
   before_filter :authenticate_user!
   before_filter :find_platform_and_private_users

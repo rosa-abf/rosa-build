@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class Git::Repository
   delegate :commits, :commit, :tree, :tags, :heads, :commit_count, :log, :branches, :to => :repo
 

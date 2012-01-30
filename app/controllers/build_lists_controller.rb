@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class BuildListsController < ApplicationController
   CALLBACK_ACTIONS = [:publish_build, :status_build, :pre_build, :post_build, :circle_build, :new_bbdt]
   NESTED_ACTIONS = [:index, :new, :create]

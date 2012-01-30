@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 Capistrano::Configuration.instance(:must_exist).load do
   namespace :bluepill do
     set(:bluepill_binary) {"bundle exec bluepill --no-privileged"}

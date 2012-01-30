@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class AddExtraFieldsToUsers < ActiveRecord::Migration
   def self.up
     add_column :users, :nickname, :string
