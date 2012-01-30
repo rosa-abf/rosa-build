@@ -1,22 +1,15 @@
-- @emails.each do |email|
-  = f.fields_for :emails, email do |m|
-    .group.wat-cf.emails
-      = m.text_field :email, :class => :text_field, :style => "width: 300px;"
-      = link_to image_tag("web-app-theme/icons/cross.png", :alt => t("layout.settings.email.delete")), email.id ? destroy_user_email_path(email.id) : '#', :class => "link_button delete_button"
+= f.fields_for :emails do |m|
+  .group
+    .left
+      = m.text_field :email, :class => :text_field
+    .right
 
 .group.navform.wat-cf
-
   %button.button{:type => "submit"}
     = image_tag("web-app-theme/icons/tick.png", :alt => t("layout.save"))
     = t("layout.save")
-
-
-  %button.button{:type => "submit", :id => 'add_button'}
-    = image_tag("web-app-theme/icons/tick.png", :alt => t("layout.add"))
-    = t("layout.add")
-
   %span.text_button_padding= t("layout.or")
-  = link_to t("layout.cancel"), edit_user_emails_path, :class => "text_button_padding link_button"
+  = link_to t("layout.cancel"), edit_user_emails_path(current_user.id), :class => "text_button_padding link_button"
 .group.navform.wat-cf
   %span.text_button_padding
   = link_to t('layout.back'), edit_user_registration_path, :class => "text_button_padding link_button"

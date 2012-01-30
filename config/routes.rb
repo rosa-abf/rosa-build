@@ -15,9 +15,8 @@ Rosa::Application.routes.draw do
     end
   end
 
-  match 'user/emails' => 'user_emails#edit', :as => :edit_user_emails, :via => :get, :action => :edit
-  match 'user/emails' => 'user_emails#update', :as => :update_user_emails, :via => :put, :action => :update
-  match 'user/emails/:email_id' => 'user_emails#destroy', :as => :destroy_user_email, :via => :post, :action => :destroy
+  match 'users/:id/emails' => 'user_emails#edit', :as => :edit_user_emails, :via => :get, :action => :edit
+  match 'users/:id/emails' => 'user_emails#update', :as => :update_user_emails, :via => :put, :action => :update
 
   resources :event_logs, :only => :index
 
