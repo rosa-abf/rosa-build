@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 module RelatedModels
   class Base < ::ApplicationController
     def self.is_child!(base)

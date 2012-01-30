@@ -1,4 +1,4 @@
-# coding: UTF-8
+# -*- encoding : utf-8 -*-
 class EventLogsController < ApplicationController
   before_filter :authenticate_user!
   load_and_authorize_resource

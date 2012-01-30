@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class User < ActiveRecord::Base
   ROLES = ['admin']
   LANGUAGES_FOR_SELECT = [['Russian', 'ru'], ['English', 'en']]

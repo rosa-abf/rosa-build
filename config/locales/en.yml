@@ -580,7 +580,16 @@ en:
       download: Statistics
       auto_build_list: Auto rebuild list
       settings:
-        notifier: Notifies setting
+        saved: Settings saved success
+        save_error: Setting update error
+
+      private_users: "Login: %{login} Password: %{password}"
+
+      subscribe:
+        saved: Subscription on notifications for this task is created
+        destroyed: Subscription on notifications for this task is cleaned
+
+      exception_message: Access violation to this page!
 
     attributes:
       settings:

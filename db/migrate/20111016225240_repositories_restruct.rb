@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class RepositoriesRestruct < ActiveRecord::Migration
   def self.up
     change_table :repositories do |t|

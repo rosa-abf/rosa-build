@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class PrivateUsersController < ApplicationController
   before_filter :authenticate_user!
   before_filter :find_platform_and_private_users
@@ -13,7 +14,7 @@ class PrivateUsersController < ApplicationController
   	
   	@pair = PrivateUser.generate_pair(params[:platform_id], current_user.id)
   	@urpmi_list = @platform.urpmi_list(request.host, @pair)
-    redirect_to platform_private_users_path(params[:platform_id]), :notice => "Логин: #{@pair[:login]} Пароль: #{@pair[:pass]}"
+    redirect_to platform_private_users_path(params[:platform_id]), :notice => I18n.t('flash.private_users', :login => @pair[:login], :password => @pair[:pass])
   end
 
   #def destroy

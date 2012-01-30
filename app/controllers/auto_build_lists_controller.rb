@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class AutoBuildListsController < ApplicationController
   before_filter :authenticate_user!, :except => :auto_build
   before_filter :find_auto_build_list, :only => :destroy

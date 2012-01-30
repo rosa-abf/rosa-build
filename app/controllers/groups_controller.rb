@@ -1,4 +1,4 @@
-# coding: UTF-8
+# -*- encoding : utf-8 -*-
 class GroupsController < ApplicationController
   is_related_controller!
 

@@ -1,4 +1,4 @@
-# coding: UTF-8
+# -*- encoding : utf-8 -*-
 class PlatformsController < ApplicationController
   before_filter :authenticate_user!, :except => :easy_urpmi
   before_filter :find_platform, :only => [:freeze, :unfreeze, :clone, :edit, :destroy]

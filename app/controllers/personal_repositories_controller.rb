@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class PersonalRepositoriesController < ApplicationController
   before_filter :authenticate_user!
   before_filter :find_repository#, :only => [:show, :destroy, :add_project, :remove_project, :make_private, :settings]

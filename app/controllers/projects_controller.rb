@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class ProjectsController < ApplicationController
   is_related_controller!
 

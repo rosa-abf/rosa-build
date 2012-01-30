@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 Rosa::Application.routes.draw do
   # XML RPC
   match 'api/xmlrpc' => 'rpc#xe_index'

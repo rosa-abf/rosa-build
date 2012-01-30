@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 base_path = File.expand_path(File.join File.dirname(__FILE__), '..')
 rails_env = ENV['RAILS_ENV'] || 'production'
 

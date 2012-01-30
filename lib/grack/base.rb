@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 module Grack
   class Base # abstract
     def call(env)

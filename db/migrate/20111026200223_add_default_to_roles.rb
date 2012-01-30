@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class AddDefaultToRoles < ActiveRecord::Migration
   def self.up
     add_column :roles, :use_default, :boolean, :default => false

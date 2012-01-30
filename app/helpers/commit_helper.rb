@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 module CommitHelper
 
   def render_commit_stats(stats)

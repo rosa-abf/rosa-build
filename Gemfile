@@ -36,7 +36,7 @@ gem "gollum", "1.3.1"
 gem "redcarpet", "1.17.2"
 gem 'creole'
 gem 'rdiscount'
-gem 'org-ruby'
+#gem 'org-ruby'
 gem 'RedCloth'
 gem 'wikicloth'
 
@@ -61,7 +61,7 @@ group :development do
   gem 'ruby_parser'
 
   # debug
-  gem 'ruby-debug'
+  # gem 'ruby-debug19', :require => 'ruby-debug', :platforms => :mri_19
   # gem 'looksee'
   # gem 'awesome_print'
 #  gem 'wirble'

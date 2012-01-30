@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 Factory.define(:issue) do |p|
   p.title { Factory.next(:string) }
   p.body { Factory.next(:string) }

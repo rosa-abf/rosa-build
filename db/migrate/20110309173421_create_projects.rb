@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class CreateProjects < ActiveRecord::Migration
   def self.up
     create_table :projects do |t|
