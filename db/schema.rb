@@ -71,8 +71,8 @@ ActiveRecord::Schema.define(:version => 20120127234602) do
     t.boolean  "auto_publish",     :default => true
     t.string   "package_version"
     t.string   "commit_hash"
-    t.index ["arch_id"], :name => "index_build_lists_on_arch_id"
     t.index ["bs_id"], :name => "index_build_lists_on_bs_id", :unique => true
+    t.index ["arch_id"], :name => "index_build_lists_on_arch_id"
     t.index ["project_id"], :name => "index_build_lists_on_project_id"
   end
 
@@ -215,22 +215,6 @@ ActiveRecord::Schema.define(:version => 20120127234602) do
     t.boolean  "use_cron",         :default => false
   end
 
-  create_table "project_imports", :force => true do |t|
-    t.integer  "project_id"
-    t.string   "name"
-    t.string   "version"
-    t.datetime "file_mtime"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  create_table "project_to_repositories", :force => true do |t|
-    t.integer  "project_id"
-    t.integer  "repository_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
   create_table "projects", :force => true do |t|
     t.string   "name"
     t.datetime "created_at"
@@ -241,15 +225,33 @@ ActiveRecord::Schema.define(:version => 20120127234602) do
     t.integer  "category_id"
     t.text     "description"
     t.string   "ancestry"
-<<<<<<< HEAD
-    t.boolean  "has_wiki",          :default => false
+    t.boolean  "has_wiki"
     t.boolean  "has_issues",        :default => true
     t.integer  "srpm_file_size"
     t.string   "srpm_file_name"
     t.string   "srpm_content_type"
     t.datetime "srpm_updated_at"
+    t.index ["name", "owner_id", "owner_type"], :name => "index_projects_on_name_and_owner_id_and_owner_type", :unique => true
     t.index ["category_id"], :name => "index_projects_on_category_id"
-    t.index ["owner_id"], :name => "index_projects_on_name_and_owner_id_and_owner_type", :unique => true
+  end
+
+  create_table "project_imports", :force => true do |t|
+    t.integer  "project_id"
+    t.string   "name"
+    t.string   "version"
+    t.datetime "file_mtime"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.index ["name"], :name => "index_project_imports_on_name", :unique => true
+    t.index ["project_id"], :name => "index_project_imports_on_project_id"
+    t.foreign_key ["project_id"], "projects", ["id"], :on_update => :restrict, :on_delete => :restrict, :name => "project_imports_ibfk_1"
+  end
+
+  create_table "project_to_repositories", :force => true do |t|
+    t.integer  "project_id"
+    t.integer  "repository_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "relations", :force => true do |t|
@@ -272,14 +274,27 @@ ActiveRecord::Schema.define(:version => 20120127234602) do
     t.string   "owner_type"
   end
 
+  create_table "role_lines", :force => true do |t|
+    t.integer  "role_id"
+    t.integer  "relation_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "roles", :force => true do |t|
+    t.string   "name"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "rpms", :force => true do |t|
     t.string   "name",       :null => false
     t.integer  "arch_id",    :null => false
     t.integer  "project_id", :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.index ["project_id"], :name => "index_rpms_on_project_id"
     t.index ["project_id", "arch_id"], :name => "index_rpms_on_project_id_and_arch_id"
+    t.index ["project_id"], :name => "index_rpms_on_project_id"
   end
 
   create_table "settings_notifiers", :force => true do |t|

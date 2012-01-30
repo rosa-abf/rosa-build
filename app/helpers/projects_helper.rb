@@ -6,8 +6,4 @@ module ProjectsHelper
       "http://#{request.host_with_port}/#{name}.git"
     end
   end
-
-  def git_wiki_repo_url(name)
-    git_repo_url("#{name}.wiki")
-  end
 end

@@ -109,6 +109,10 @@ class Project < ActiveRecord::Base
     File.join owner.uname, name
   end
 
+  def wiki_repo_name
+    File.join owner.uname, "#{name}.wiki"
+  end
+
   def public?
     visibility == 'open'
   end

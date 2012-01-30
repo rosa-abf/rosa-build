@@ -1,7 +1,7 @@
 .url-box
   %ul.clone-urls
     %li.http-clone-url.selected
-      = link_to t("layout.wiki.clones.http"), git_wiki_repo_url(@project.name),
+      = link_to t("layout.wiki.clones.http"), git_repo_url(@project.wiki_repo_name),
           :'data-permissions' => (can? @project, :write) ? 'Read+Write' : 'Read'
   %input.url-field{:type => 'text', :spellcheck => 'false'}
   %p.url-description

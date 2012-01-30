@@ -121,7 +121,6 @@ GEM
       actionpack
     mime-types (1.17.2)
     mustache (0.99.4)
-    mysql2 (0.2.9)
     net-scp (1.0.4)
       net-ssh (>= 1.99.1)
     net-sftp (2.0.5)
@@ -267,7 +266,6 @@ DEPENDENCIES
   hpricot
   jammit
   meta-tags (~> 1.2.4)
-  mysql2 (<= 0.2.9)
   newrelic_rpm
   omniauth (~> 1.0.1)
   omniauth-openid (~> 1.0.1)
