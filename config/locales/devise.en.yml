@@ -20,6 +20,8 @@ en:
     passwords:
       send_instructions: 'You will receive an email with instructions about how to reset your password in a few minutes.'
       updated: 'Your password was changed successfully. You are now signed in.'
+      button: 'Submit'
+      edit_button: 'Change my password'
     confirmations:
       send_instructions: 'You will receive an email with instructions about how to confirm your account in a few minutes.'
       confirmed: 'Your account was successfully confirmed. You are now signed in.'
@@ -28,6 +30,10 @@ en:
       updated: 'You updated your account successfully.'
       destroyed: 'Bye! Your account was successfully cancelled. We hope to see you again soon.'
       sign_up_header: 'Signup'
+      edit_password_description: Leave blank if you don't want to change it
+      current_password_description: 'We need your current password to confirm your changes'
+      cancel: 'Cancel my account'
+      cancel_confirmation: 'Are you sure?'
     unlocks:
       send_instructions: 'You will receive an email with instructions about how to unlock your account in a few minutes.'
       unlocked: 'Your account was successfully unlocked. You are now signed in.'

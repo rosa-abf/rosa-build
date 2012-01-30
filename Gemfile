@@ -4,6 +4,7 @@ gem 'rails', '3.0.11' #, :git => 'git://github.com/rails/rails.git'
 
 gem 'pg', '~> 0.11.0'
 gem 'silent-postgres', '~> 0.1.1'
+gem 'schema_plus', '~> 0.2.1'
 
 gem 'devise', '~> 1.5.2'
 gem 'omniauth', '~> 1.0.1'
@@ -18,7 +19,7 @@ gem "yui-compressor", "0.9.5" # Higher versions depends on Platform gem which co
 gem 'rails3-jquery-autocomplete'
 
 gem 'ancestry', '~> 1.2.4'
-gem 'paperclip', "~> 2.3"
+gem 'paperclip', "~> 2.5"
 gem "will_paginate", "~> 3.0.2"
 gem 'meta-tags', '~> 1.2.4', :require => 'meta_tags'
 gem "russian"
@@ -39,7 +40,7 @@ gem 'unicorn', '~> 4.1.1'
 
 group :production do
   gem "airbrake", '~> 3.0.5'
-  # gem 'newrelic_rpm', '~> 3.1.1'
+  gem 'newrelic_rpm'
   gem 'bluepill', :require => false
 end
 

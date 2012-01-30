@@ -6,9 +6,9 @@
 - elsif @comment.commentable.class == Grit::Commit
   - link = link_to @comment.commentable.message, commit_path(@comment.project, @comment.commentable_id)
   - object = 'commit'
-%p User #{ link_to @comment.user.uname, user_path(@comment.user)} added new comment to #{object} #{link}.
+%p #{ link_to @comment.user.uname, user_path(@comment.user)} added new comment to #{object} #{link}.
 
 %p "#{ @comment.body }"
 
 
-%p== Support Team «ROSA Build System»
+%p== Support team «ROSA Build System»

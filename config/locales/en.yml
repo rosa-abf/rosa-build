@@ -1,6 +1,6 @@
 en:
     will_paginate:
-      previous_label: ‹ Previous!!!
+      previous_label: ‹ Previous
       next_label: Next ›
       page_gap: ...
 
@@ -46,6 +46,16 @@ en:
         notifiers:
           edit_header: Notifier setting
       processing: working ...
+      invalid_content_type: incorrect type
+
+      devise:
+        shared_links:
+          sign_in: Sign in
+          sign_up: Sign up
+          forgot_password: Forgot your password?
+          confirm_again: Do not receive the confirmation link?
+          unlock: Do not receive unlock instructions?
+          sign_in_through: Sign in by %{provider}
 
       downloads:
         title: Downloads statistic
@@ -205,7 +215,6 @@ en:
         new_header: New product
         edit_header: Product editing
         confirm_delete: Are you sure to delete this product?
-        invalid_content_type: incorrect type
 
         cron_tab_generator:
           show: Show cron tab the generator
@@ -343,6 +352,7 @@ en:
             dependencies_error: Dependences not found
             success: Build complete
             unknown: Build waiting
+            git_error: Git error
 
         statuses:
           build_error: Build error
@@ -612,6 +622,7 @@ en:
           created_at: Created
           updated_at: Updated
           has_issues: Tracker on
+          srpm: Import code from src.rpm
 
         rpm:
           name: Name

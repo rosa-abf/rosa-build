@@ -39,12 +39,23 @@ ru:
     upload: Загрузить
     not_access: Нет доступа!
     owner: Владелец
-    confirm: Уверенны?
+    confirm: Уверены?
+    back: Назад
     settings:
       notifier: Настройки оповещений
       notifiers:
         edit_header: Настройки оповещений
     processing: Обрабатывается...
+    invalid_content_type: имеет неверный тип
+
+    devise:
+      shared_links:
+        sign_in: Войти
+        sign_up: Зарегистрироваться
+        forgot_password: Забыли пароль?
+        confirm_again: Не получили инструкции по подтверждению?
+        unlock: Не получили инструкции по разблокировке?
+        sign_in_through: Войти через %{provider}
 
     downloads:
       title: Статистика закачек пакетов
@@ -200,7 +211,6 @@ ru:
       new_header: Новый продукт
       edit_header: Редактирование продукта
       confirm_delete: Вы уверены, что хотите удалить этот продукт?
-      invalid_content_type: имеет неверный тип
 
       cron_tab_generator:
         show: Показать cron tab генератор
@@ -338,6 +348,7 @@ ru:
           dependencies_error: зависимости не найдены
           success: собран
           unknown: ожидает сборки
+          git_error: проблема с гит
 
       statuses:
         build_error: ошибка сборки
@@ -455,6 +466,7 @@ ru:
       unfreeze_error: Не удалось разморозить платформу, попробуйте еще раз
       destroyed: Платформа успешно удалена
       build_all_success: Все проекты успешно отправлены на сборку
+      clone_success: Клонирование успешно
 
     build_list:
       saved: Билд лист для версии '%{project_version}', платформы '%{bpl}' и архитектуры '%{arch}' создан успешно
@@ -610,6 +622,7 @@ ru:
         created_at: Создан
         updated_at: Обновлен
         has_issues: Включить трэкер
+        srpm: Импортировать код из src.rpm
 
       rpm:
         name: Название
