@@ -21,6 +21,7 @@ class Group < ActiveRecord::Base
   delegate :ssh_key, :to => :owner
 
   after_create :add_owner_to_members
+  after_initialize lambda {|r| r.name ||= r.uname } # default
 
   include Modules::Models::PersonalRepository
 #  include Modules::Models::Owner

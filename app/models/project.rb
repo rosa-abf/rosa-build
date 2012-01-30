@@ -9,7 +9,7 @@ class Project < ActiveRecord::Base
   has_many :build_lists, :dependent => :destroy
   has_many :auto_build_lists, :dependent => :destroy
 
-  # has_many :project_imports, :dependent => :destroy
+  has_many :project_imports, :dependent => :destroy
   has_many :project_to_repositories, :dependent => :destroy
   has_many :repositories, :through => :project_to_repositories
 
@@ -17,18 +17,18 @@ class Project < ActiveRecord::Base
   has_many :collaborators, :through => :relations, :source => :object, :source_type => 'User'
   has_many :groups,        :through => :relations, :source => :object, :source_type => 'Group'
 
-  validates :name, :uniqueness => {:scope => [:owner_id, :owner_type]}, :presence => true, :format => { :with => /^[a-zA-Z0-9_\-\+\.]+$/ }
+  validates :name, :uniqueness => {:scope => [:owner_id, :owner_type], :case_sensitive => false}, :presence => true, :format => { :with => /^[a-zA-Z0-9_\-\+\.]+$/ }
   validates :owner, :presence => true
   validate { errors.add(:base, :can_have_less_or_equal, :count => MAX_OWN_PROJECTS) if owner.projects.size >= MAX_OWN_PROJECTS }
   # validate {errors.add(:base, I18n.t('flash.project.save_warning_ssh_key')) if owner.ssh_key.blank?}
   validates_attachment_size :srpm, :less_than => 500.megabytes
-  validates_attachment_content_type :srpm, :content_type => ['application/octet-stream'], :message => I18n.t('layout.invalid_content_type') # "application/x-rpm", "application/x-redhat-package-manager" ?
+  validates_attachment_content_type :srpm, :content_type => ['application/octet-stream', "application/x-rpm", "application/x-redhat-package-manager"], :message => I18n.t('layout.invalid_content_type')
 
   #attr_accessible :category_id, :name, :description, :visibility
   attr_readonly :name
 
   scope :recent, order("name ASC")
-  scope :by_name, lambda { |name| where('name like ?', "%#{ name }%") }
+  scope :by_name, lambda {|name| where('projects.name ILIKE ?', name)}
   scope :by_visibilities, lambda {|v| {:conditions => ['visibility in (?)', v.join(',')]}}
   scope :addable_to_repository, lambda { |repository_id| where("projects.id NOT IN (SELECT project_to_repositories.project_id FROM project_to_repositories WHERE (project_to_repositories.repository_id = #{ repository_id }))") }
   scope :automateable, where("projects.id NOT IN (SELECT auto_build_lists.project_id FROM auto_build_lists)")
@@ -39,7 +39,7 @@ class Project < ActiveRecord::Base
 
   after_destroy :destroy_git_repo
   after_destroy :destroy_wiki
-  after_save {|p| p.delay.import_srpm if p.srpm?} # should be after create_git_repo
+  after_save {|p| p.delay.import_attached_srpm if p.srpm?} # should be after create_git_repo
   # after_rollback lambda { destroy_git_repo rescue true if new_record? }
 
   has_ancestry
@@ -152,11 +152,8 @@ class Project < ActiveRecord::Base
     @platforms ||= repositories.map(&:platform).uniq
   end
 
-  def import_srpm(branch_name = 'import')
-    if srpm?
-      system("#{Rails.root.join('bin', 'import_srpm.sh')} #{srpm.path} #{path} #{branch_name} >> /dev/null 2>&1")
-      self.srpm = nil; save # clear srpm
-    end
+  def import_srpm(srpm_path = srpm.path, branch_name = 'import')
+    system("#{Rails.root.join('bin', 'import_srpm.sh')} #{srpm_path} #{path} #{branch_name} >> /dev/null 2>&1")
   end
 
   class << self
@@ -168,36 +165,43 @@ class Project < ActiveRecord::Base
 
   protected
 
-    def build_path(dir)
-      File.join(APP_CONFIG['root_path'], 'git_projects', "#{dir}.git")
-    end
+  def build_path(dir)
+    File.join(APP_CONFIG['root_path'], 'git_projects', "#{dir}.git")
+  end
 
-    def build_wiki_path(dir)
-      File.join(APP_CONFIG['root_path'], 'git_projects', "#{dir}.wiki.git")
-    end
+  def build_wiki_path(dir)
+    File.join(APP_CONFIG['root_path'], 'git_projects', "#{dir}.wiki.git")
+  end
 
-    def attach_to_personal_repository
-      repositories << self.owner.personal_repository if !repositories.exists?(:id => self.owner.personal_repository)
-    end
+  def attach_to_personal_repository
+    repositories << self.owner.personal_repository if !repositories.exists?(:id => self.owner.personal_repository)
+  end
 
-    def create_git_repo
-      is_root? ? Grit::Repo.init_bare(path) : parent.git_repository.repo.delay.fork_bare(path)
-    end
+  def create_git_repo
+    is_root? ? Grit::Repo.init_bare(path) : parent.git_repository.repo.delay.fork_bare(path)
+  end
 
-    def destroy_git_repo
-      FileUtils.rm_rf path
-    end
+  def destroy_git_repo
+    FileUtils.rm_rf path
+  end
 
-    def create_wiki
-      if has_wiki && !FileTest.exist?(wiki_path)
-        Grit::Repo.init_bare(wiki_path)
-        wiki = Gollum::Wiki.new(wiki_path, {:base_path => Rails.application.routes.url_helpers.project_wiki_index_path(self)})
-        wiki.write_page('Home', :markdown, I18n.t("wiki.seed.welcome_content"),
-                {:name => owner.name, :email => owner.email, :message => 'Initial commit'})
-      end
+  def import_attached_srpm
+    if srpm?
+      import_srpm # srpm.path
+      self.srpm = nil; save # clear srpm
     end
+  end
 
-    def destroy_wiki
-      FileUtils.rm_rf wiki_path
+  def create_wiki
+    if has_wiki && !FileTest.exist?(wiki_path)
+      Grit::Repo.init_bare(wiki_path)
+      wiki = Gollum::Wiki.new(wiki_path, {:base_path => Rails.application.routes.url_helpers.project_wiki_index_path(self)})
+      wiki.write_page('Home', :markdown, I18n.t("wiki.seed.welcome_content"),
+                      {:name => owner.name, :email => owner.email, :message => 'Initial commit'})
     end
+  end
+
+  def destroy_wiki
+    FileUtils.rm_rf wiki_path
+  end
 end

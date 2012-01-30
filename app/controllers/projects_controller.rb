@@ -17,13 +17,13 @@ class ProjectsController < ApplicationController
                 end.accessible_by(current_ability)
 
     @projects = if params[:query]
-                  @projects.by_name(params[:query]).order("CHAR_LENGTH(name) ASC")
+                  @projects.by_name("%#{params[:query]}%").order("CHAR_LENGTH(name) ASC")
                 else
                   @projects
                 end.paginate(:page => params[:project_page])
 
     @own_projects = current_user.own_projects
-    @part_projects = current_user.projects + current_user.groups.map(&:projects).flatten.uniq - @own_projects
+    #@part_projects = current_user.projects + current_user.groups.map(&:projects).flatten.uniq - @own_projects
   end
 
   def show

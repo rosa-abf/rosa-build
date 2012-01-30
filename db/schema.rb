@@ -10,15 +10,14 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120126214447) do
+ActiveRecord::Schema.define(:version => 20120127234602) do
 
   create_table "arches", :force => true do |t|
     t.string   "name",       :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.index ["name"], :name => "index_arches_on_name", :unique => true
   end
-
-  add_index "arches", ["name"], :name => "index_arches_on_name", :unique => true
 
   create_table "authentications", :force => true do |t|
     t.integer  "user_id"
@@ -26,10 +25,9 @@ ActiveRecord::Schema.define(:version => 20120126214447) do
     t.string   "uid"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.index ["provider", "uid"], :name => "index_authentications_on_provider_and_uid", :unique => true
+    t.index ["user_id"], :name => "index_authentications_on_user_id"
   end
-
-  add_index "authentications", ["provider", "uid"], :name => "index_authentications_on_provider_and_uid", :unique => true
-  add_index "authentications", ["user_id"], :name => "index_authentications_on_user_id"
 
   create_table "auto_build_lists", :force => true do |t|
     t.integer  "project_id"
@@ -48,9 +46,8 @@ ActiveRecord::Schema.define(:version => 20120126214447) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "version"
+    t.index ["build_list_id"], :name => "index_build_list_items_on_build_list_id"
   end
-
-  add_index "build_list_items", ["build_list_id"], :name => "index_build_list_items_on_build_list_id"
 
   create_table "build_lists", :force => true do |t|
     t.integer  "bs_id"
@@ -74,11 +71,10 @@ ActiveRecord::Schema.define(:version => 20120126214447) do
     t.boolean  "auto_publish",     :default => true
     t.string   "package_version"
     t.string   "commit_hash"
+    t.index ["arch_id"], :name => "index_build_lists_on_arch_id"
+    t.index ["bs_id"], :name => "index_build_lists_on_bs_id", :unique => true
+    t.index ["project_id"], :name => "index_build_lists_on_project_id"
   end
-
-  add_index "build_lists", ["arch_id"], :name => "index_build_lists_on_arch_id"
-  add_index "build_lists", ["bs_id"], :name => "index_build_lists_on_bs_id", :unique => true
-  add_index "build_lists", ["project_id"], :name => "index_build_lists_on_project_id"
 
   create_table "categories", :force => true do |t|
     t.string   "name"
@@ -116,9 +112,8 @@ ActiveRecord::Schema.define(:version => 20120126214447) do
     t.string   "locked_by"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.index ["priority", "run_at"], :name => "delayed_jobs_priority"
   end
-
-  add_index "delayed_jobs", ["priority", "run_at"], :name => "delayed_jobs_priority"
 
   create_table "downloads", :force => true do |t|
     t.string   "name",                      :null => false
@@ -164,9 +159,8 @@ ActiveRecord::Schema.define(:version => 20120126214447) do
     t.string   "status",     :default => "open"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.index ["project_id", "serial_id"], :name => "index_issues_on_project_id_and_serial_id", :unique => true
   end
-
-  add_index "issues", ["project_id", "serial_id"], :name => "index_issues_on_project_id_and_serial_id", :unique => true
 
   create_table "platforms", :force => true do |t|
     t.string   "description"
@@ -197,9 +191,8 @@ ActiveRecord::Schema.define(:version => 20120126214447) do
     t.datetime "notified_at"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.index ["product_id"], :name => "index_product_build_lists_on_product_id"
   end
-
-  add_index "product_build_lists", ["product_id"], :name => "index_product_build_lists_on_product_id"
 
   create_table "products", :force => true do |t|
     t.string   "name",                                :null => false
@@ -222,6 +215,15 @@ ActiveRecord::Schema.define(:version => 20120126214447) do
     t.boolean  "use_cron",         :default => false
   end
 
+  create_table "project_imports", :force => true do |t|
+    t.integer  "project_id"
+    t.string   "name"
+    t.string   "version"
+    t.datetime "file_mtime"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "project_to_repositories", :force => true do |t|
     t.integer  "project_id"
     t.integer  "repository_id"
@@ -239,15 +241,16 @@ ActiveRecord::Schema.define(:version => 20120126214447) do
     t.integer  "category_id"
     t.text     "description"
     t.string   "ancestry"
+<<<<<<< HEAD
     t.boolean  "has_wiki",          :default => false
     t.boolean  "has_issues",        :default => true
     t.integer  "srpm_file_size"
     t.string   "srpm_file_name"
     t.string   "srpm_content_type"
     t.datetime "srpm_updated_at"
+    t.index ["category_id"], :name => "index_projects_on_category_id"
+    t.index ["owner_id"], :name => "index_projects_on_name_and_owner_id_and_owner_type", :unique => true
   end
-
-  add_index "projects", ["category_id"], :name => "index_projects_on_category_id"
 
   create_table "relations", :force => true do |t|
     t.integer  "object_id"
@@ -269,29 +272,15 @@ ActiveRecord::Schema.define(:version => 20120126214447) do
     t.string   "owner_type"
   end
 
-  create_table "role_lines", :force => true do |t|
-    t.integer  "role_id"
-    t.integer  "relation_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  create_table "roles", :force => true do |t|
-    t.string   "name"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
   create_table "rpms", :force => true do |t|
     t.string   "name",       :null => false
     t.integer  "arch_id",    :null => false
     t.integer  "project_id", :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.index ["project_id"], :name => "index_rpms_on_project_id"
+    t.index ["project_id", "arch_id"], :name => "index_rpms_on_project_id_and_arch_id"
   end
-
-  add_index "rpms", ["project_id", "arch_id"], :name => "index_rpms_on_project_id_and_arch_id"
-  add_index "rpms", ["project_id"], :name => "index_rpms_on_project_id"
 
   create_table "settings_notifiers", :force => true do |t|
     t.integer  "user_id",                             :null => false
@@ -327,10 +316,9 @@ ActiveRecord::Schema.define(:version => 20120126214447) do
     t.string   "role"
     t.integer  "own_projects_count",                  :default => 0,    :null => false
     t.string   "language",                            :default => "en"
+    t.index ["email"], :name => "index_users_on_email", :unique => true
+    t.index ["reset_password_token"], :name => "index_users_on_reset_password_token", :unique => true
+    t.index ["uname"], :name => "index_users_on_uname", :unique => true
   end
-
-  add_index "users", ["email"], :name => "index_users_on_email", :unique => true
-  add_index "users", ["reset_password_token"], :name => "index_users_on_reset_password_token", :unique => true
-  add_index "users", ["uname"], :name => "index_users_on_uname", :unique => true
 
 end

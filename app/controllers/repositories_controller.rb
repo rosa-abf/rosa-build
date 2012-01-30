@@ -19,7 +19,7 @@ class RepositoriesController < ApplicationController
 
   def show
     if params[:query]
-      @projects = @repository.projects.recent.by_name(params[:query]).paginate :page => params[:project_page], :per_page => 30
+      @projects = @repository.projects.recent.by_name("%#{params[:query]}%").paginate :page => params[:project_page], :per_page => 30
     else
       @projects = @repository.projects.recent.paginate :page => params[:project_page], :per_page => 30
     end

@@ -37,7 +37,8 @@ module Grack
         name.gsub! /\.git$/, ''
         name.gsub! /\.wiki$/, ''
         owner = User.find_by_uname(uname) || Group.find_by_uname(uname)
-        Project.where(:owner_id => owner.id, :owner_type => owner.class).find_by_name(name)
+        scoped = Project.where(:owner_id => owner.id, :owner_type => owner.class)
+        scoped.find_by_name(name) || scoped.by_name(name).first
       end
     end
 

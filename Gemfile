@@ -4,6 +4,7 @@ gem 'rails', '3.0.11' #, :git => 'git://github.com/rails/rails.git'
 
 gem 'pg', '~> 0.11.0'
 gem 'silent-postgres', '~> 0.1.1'
+gem 'schema_plus', '~> 0.2.1'
 
 gem 'devise', '~> 1.5.2'
 gem 'omniauth', '~> 1.0.1'
