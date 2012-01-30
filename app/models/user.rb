@@ -91,7 +91,7 @@ class User < ActiveRecord::Base
   end
 
   def committer?(commit)
-    emails.exists? :email_lower => commit.committer.email.downcase
+    email.downcase == commit.committer.email.downcase
   end
 
   private
