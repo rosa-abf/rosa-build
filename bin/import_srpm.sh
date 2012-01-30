@@ -32,8 +32,9 @@ rm -f srpm.cpio
 
 # Commit and push changes
 git add -A .
-git commit -m "Automatic import for version $version" 
-git push origin HEAD
+git commit -m "Automatic import for version $version"
+git branch $git_branch # Ensure branch exists
+git push origin master $git_branch
 
 # Cleanup
 rm -rf $tmp_dir
