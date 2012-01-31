@@ -18,7 +18,7 @@
             %span= t("layout.wiki.expand_collapse")
           %h4
             Footer
-          = text_area_tag :footer, footer.raw_data, :id => "gollum-editor-footer"
+          = text_area_tag :footer, footer.raw_data.force_encoding(Encoding::UTF_8), :id => "gollum-editor-footer"
 
       - if has_sidebar?
         #gollum-editor-edit-sidebar.collapsed
@@ -26,7 +26,7 @@
             %span= t("layout.wiki.expand_collapse")
           %h4
             Sidebar
-          = text_area_tag :sidebar, sidebar.raw_data, :id => "gollum-editor-sidebar"
+          = text_area_tag :sidebar, sidebar.raw_data.force_encoding(Encoding::UTF_8), :id => "gollum-editor-sidebar"
 
       #gollum-editor-edit-summary.singleline
         = label_tag :message, t("layout.wiki.edit_commit_message"), :class => "jaws"

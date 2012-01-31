@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 #require 'lib/gollum'
 require 'cgi'
 
@@ -35,7 +36,7 @@ class WikiController < ApplicationController
     @name = CGI.unescape(params[:id])
     if page = @wiki.page(@name)
       @page = page
-      @content = page.raw_data
+      @content = page.raw_data.force_encoding(Encoding::UTF_8)
       render :edit
     else
       render :new
@@ -68,7 +69,7 @@ class WikiController < ApplicationController
     format = params['format'].intern
 
     begin
-      @wiki.write_page(@name, format, params['content'], commit)
+      @wiki.write_page(@name, format, params['content'] || '', commit)
       redirect_to project_wiki_path(@project, CGI.escape(@name))
     rescue Gollum::DuplicatePageError => e
       flash[:error] = t("flash.wiki.duplicate_page", :name => @name)
@@ -250,7 +251,6 @@ class WikiController < ApplicationController
 
     def show_or_create_page
       if @page
-        puts @page.format
         @content = @page.formatted_data
         @editable = can?(:write, @project)
         render :show

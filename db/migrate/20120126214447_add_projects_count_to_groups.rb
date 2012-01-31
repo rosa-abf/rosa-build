@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class AddProjectsCountToGroups < ActiveRecord::Migration
   def self.up
     add_column :groups, :own_projects_count, :integer, :default => 0, :null => false
