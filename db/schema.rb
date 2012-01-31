@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 # This file is auto-generated from the current state of the database. Instead
 # of editing this file, please use the migrations feature of Active Record to
 # incrementally modify your database, and then regenerate this schema definition.
@@ -241,10 +242,10 @@ ActiveRecord::Schema.define(:version => 20120130111133) do
     t.text     "description"
     t.string   "ancestry"
     t.boolean  "has_issues",        :default => true
-    t.string   "srpm_content_type"
-    t.datetime "srpm_updated_at"
-    t.integer  "srpm_file_size"
     t.string   "srpm_file_name"
+    t.string   "srpm_content_type"
+    t.integer  "srpm_file_size"
+    t.datetime "srpm_updated_at"
     t.index ["category_id"], :name => "index_projects_on_category_id"
     t.index ["owner_id"], :name => "index_projects_on_name_and_owner_id_and_owner_type", :unique => true
   end
@@ -305,18 +306,17 @@ ActiveRecord::Schema.define(:version => 20120130111133) do
 
   create_table "users", :force => true do |t|
     t.string   "name"
-    t.string   "email",                               :default => "",   :null => false
-    t.string   "encrypted_password",   :limit => 128, :default => "",   :null => false
-    t.string   "password_salt",                       :default => "",   :null => false
+    t.string   "email",                                 :default => "",   :null => false
+    t.string   "encrypted_password",     :limit => 128, :default => "",   :null => false
     t.string   "reset_password_token"
-    t.string   "remember_token"
+    t.datetime "reset_password_sent_at"
     t.datetime "remember_created_at"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.text     "ssh_key"
     t.string   "uname"
     t.string   "role"
-    t.string   "language",                            :default => "en"
+    t.string   "language",                              :default => "en"
     t.index ["email"], :name => "index_users_on_email", :unique => true
     t.index ["reset_password_token"], :name => "index_users_on_reset_password_token", :unique => true
     t.index ["uname"], :name => "index_users_on_uname", :unique => true

@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class BuildList::Item < ActiveRecord::Base
   
   belongs_to :build_list

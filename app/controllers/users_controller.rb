@@ -1,4 +1,4 @@
-# coding: UTF-8
+# -*- encoding : utf-8 -*-
 class UsersController < ApplicationController
   before_filter :authenticate_user!
   before_filter :find_user, :only => [:show, :edit, :update, :destroy]

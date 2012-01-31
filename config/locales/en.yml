@@ -377,6 +377,7 @@ en:
         saved: Settings saved success
         save_error: Setting update error
 
+      private_users: "Login: %{login} Password: %{password}"
 
       subscribe:
         saved: Subscription on notifications for this task is created

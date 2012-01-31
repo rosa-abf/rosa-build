@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class BuildListsController < ApplicationController
   CALLBACK_ACTIONS = [:publish_build, :status_build, :pre_build, :post_build, :circle_build, :new_bbdt]
   NESTED_ACTIONS = [:index, :new, :create]
@@ -39,7 +40,7 @@ class BuildListsController < ApplicationController
     Arch.where(:id => params[:arches]).each do |arch|
       Platform.main.where(:id => params[:bpls]).each do |bpl|
         @build_list = @project.build_lists.build(params[:build_list])
-        @build_list.commit_hash = @project.git_repository.commits(@build_list.project_version.match(/(.+)_latest$/).to_a.last || @build_list.project_version).first.id
+        @build_list.commit_hash = @project.git_repository.commits(@build_list.project_version.match(/^latest_(.+)/).to_a.last || @build_list.project_version).first.id
         @build_list.bpl = bpl; @build_list.arch = arch; @build_list.user = current_user
         flash_options = {:project_version => @build_list.project_version, :arch => arch.name, :bpl => bpl.name, :pl => @build_list.pl}
         if @build_list.save

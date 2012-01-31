@@ -7,4 +7,6 @@
       %td
         = link_to project.name, project_path(project)
       %td.last
-        #{link_to t("layout.show"), project_path(project)} | #{link_to t("layout.delete"), url_for (:action => :remove_project, :project_id => project.id), :confirm => t("layout.projects.confirm_delete")}
+        = link_to t("layout.show"), project_path(project)
+        \|
+        = link_to t("layout.delete"), url_for(:action => :remove_project, :project_id => project.id), :confirm => t("layout.projects.confirm_delete")

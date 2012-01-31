@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 Factory.define(:comment) do |p|
   p.body { Factory.next(:string) }
   p.association :user, :factory => :user

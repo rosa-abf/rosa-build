@@ -1,5 +1,6 @@
 require 'highline/import'
 require 'open-uri'
+require 'iconv'
 
 namespace :import do
   desc "Load projects"

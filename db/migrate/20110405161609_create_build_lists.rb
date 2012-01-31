@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class CreateBuildLists < ActiveRecord::Migration
   def self.up
     create_table :build_lists, :force => true do |t|

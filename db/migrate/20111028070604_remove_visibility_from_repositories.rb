@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class RemoveVisibilityFromRepositories < ActiveRecord::Migration
   def self.up
     remove_column :repositories, :visibility

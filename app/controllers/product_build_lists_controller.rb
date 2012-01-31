@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class ProductBuildListsController < ApplicationController
   before_filter :authenticate_user!, :except => [:status_build]
   load_and_authorize_resource :platform, :only => [:create]

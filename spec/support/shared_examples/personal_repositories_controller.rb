@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 shared_examples_for 'not destroy personal repository' do
   it 'should not be able to destroy personal repository' do
     delete :destroy, :id => @personal_repository.id

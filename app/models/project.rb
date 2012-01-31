@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class Project < ActiveRecord::Base
   VISIBILITIES = ['open', 'hidden']
 
@@ -49,7 +50,7 @@ class Project < ActiveRecord::Base
         :pl => auto_build_list.pl,
         :bpl => auto_build_list.bpl,
         :arch => auto_build_list.arch,
-        :project_version => collected_project_versions.last,
+        :project_version => versions.last,
         :build_requires => true,
         :update_type => 'bugfix') unless build_lists.for_creation_date_period(Time.current - 15.seconds, Time.current).present?
     end
@@ -68,16 +69,6 @@ class Project < ActiveRecord::Base
       bl.auto_publish = true # already  set as db default
       bl.include_repos = [platform.repositories.find_by_name('main').id]
     end
-  end
-
-  # TODO deprecate and remove project_versions and collected_project_versions ?
-  def project_versions
-    res = tags.select{|tag| tag.name =~ /^v\./}
-    return res if res and res.size > 0
-    tags
-  end
-  def collected_project_versions
-    project_versions.collect{|tag| tag.name.gsub(/^\w+\./, "")}
   end
 
   def tags

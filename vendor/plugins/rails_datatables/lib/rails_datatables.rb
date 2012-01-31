@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 module RailsDatatables
   def datatable(columns, opts={})
     sort_by = opts[:sort_by] || nil

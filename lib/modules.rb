@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 module Modules
   module Controllers
     extend ActiveSupport::Autoload

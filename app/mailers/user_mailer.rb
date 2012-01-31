@@ -1,4 +1,4 @@
-# coding: UTF-8
+# -*- encoding : utf-8 -*-
 
 class UserMailer < ActionMailer::Base
   default :from => APP_CONFIG['do-not-reply-email']

@@ -12,6 +12,5 @@ public/assets/*
 config/initializers/local.rb
 public/system/*
 public/downloads/*
-.rvmrc
 *.swp
 *.tmproj

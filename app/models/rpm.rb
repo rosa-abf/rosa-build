@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class Rpm < ActiveRecord::Base
   belongs_to :arch
   belongs_to :project

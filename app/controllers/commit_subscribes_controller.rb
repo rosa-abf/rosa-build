@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class CommitSubscribesController < ApplicationController
   before_filter :authenticate_user!
 

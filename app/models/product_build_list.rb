@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class ProductBuildList < ActiveRecord::Base
   BUILD_STARTED = 2
   BUILD_COMPLETED = 0

@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 set :branch, "pingwinsoft"
 
 set :domain, "b.pingwinsoft.ru" # "195.19.76.12"

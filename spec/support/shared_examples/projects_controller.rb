@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 shared_examples_for 'projects user with reader rights' do
   it_should_behave_like 'user with rights to view projects'
 
