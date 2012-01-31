@@ -155,11 +155,8 @@ describe Comment do
     before(:each) do
       @user = Factory(:user)
       @stranger = Factory(:user)
-
       set_comments_data_for_commit
-
       @project.update_attribute(:owner, @user)
-      #@project.relations.create!(:object_type => 'User', :object_id => @user.id, :role => 'admin')
     end
 
     it 'should create comment' do
@@ -204,7 +201,7 @@ describe Comment do
         @user.notifier.update_attribute :new_comment_commit_owner, false
         comment = Comment.create(:user => @stranger, :body => 'hello!', :project => @project,
             :commentable_type => @commit.class.name, :commentable_id => @commit.id)
-        ActionMailer::Base.deliveries.count.should == 1 # cache project.commit_comments_subscribes ...
+        ActionMailer::Base.deliveries.count.should == 1
         ActionMailer::Base.deliveries.last.to.include?(@user.email).should == true
       end
     end
@@ -215,7 +212,7 @@ describe Comment do
         @user.notifier.update_attribute :new_comment_commit_commentor, false
         comment = Comment.create(:user => @stranger, :body => 'hello!', :project => @project,
             :commentable_type => @commit.class.name, :commentable_id => @commit.id)
-        ActionMailer::Base.deliveries.count.should == 1 # cache project.commit_comments_subscribes ...
+        ActionMailer::Base.deliveries.count.should == 1
         ActionMailer::Base.deliveries.last.to.include?(@user.email).should == true
       end
     end
@@ -320,7 +317,6 @@ describe Comment do
         @project.owner.notifier.update_attribute :can_notify, false
         @stranger.notifier.update_attribute :new_comment_commit_repo_owner, false
         @stranger.notifier.update_attribute :new_comment_commit_owner, false
-        #@stranger.notifier.update_attribute :new_comment_commit_commentor, false
 
         Subscribe.subscribe_to_commit(:project_id => @project.id, :subscribeable_id => @commit.id, :subscribeable_type => @commit.class.name, :user_id => @stranger.id)
         comment = Comment.create(:user => @project.owner, :body => 'hello!', :project => @project,
@@ -331,7 +327,6 @@ describe Comment do
 
       it 'should not send an e-mail for own comment' do
         ActionMailer::Base.deliveries = []
-        #@project.owner.notifier.update_attribute :can_notify, false
         Subscribe.subscribe_to_commit(:project_id => @project.id, :subscribeable_id => @commit.id, :subscribeable_type => @commit.class.name, :user_id => @stranger.id)
         comment = Comment.create(:user => @owner, :body => 'hello!', :project => @project,
             :commentable_type => @commit.class.name, :commentable_id => @commit.id)
@@ -361,7 +356,6 @@ describe Comment do
 
       it 'should not send an e-mail for own comment' do
         ActionMailer::Base.deliveries = []
-        #@project.owner.notifier.update_attribute :can_notify, false
         @stranger.update_attribute :email, 'code@tpope.net'
         comment = Comment.create(:user => @stranger, :body => 'hello!', :project => @project,
             :commentable_type => @commit.class.name, :commentable_id => @commit.id)

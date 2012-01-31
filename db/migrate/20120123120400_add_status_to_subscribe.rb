@@ -1,6 +1,6 @@
 class AddStatusToSubscribe < ActiveRecord::Migration
   def self.up
-    add_column :subscribes, :status, :integer, :default => 1
+    add_column :subscribes, :status, :boolean, :default => true
   end
 
   def self.down

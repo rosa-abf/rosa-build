@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120130111133) do
+ActiveRecord::Schema.define(:version => 20120127234602) do
 
   create_table "arches", :force => true do |t|
     t.string   "name",       :null => false
