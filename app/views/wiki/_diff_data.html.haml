@@ -1,5 +1,8 @@
 .blob_header
-  .size= h(diff.a_path)
+  .size= h(diff.deleted_file ? diff.a_path : diff.b_path)
+  - puts 'in view'
+  - puts diff.a_path
+  - puts diff.b_path
   .clear
 
 .diff_data.highlight

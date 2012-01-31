@@ -36,7 +36,7 @@ class WikiController < ApplicationController
     @name = CGI.unescape(params[:id])
     if page = @wiki.page(@name)
       @page = page
-      @content = page.raw_data.force_encoding(Encoding::UTF_8)
+      @content = page.text_data
       render :edit
     else
       render :new
@@ -65,7 +65,7 @@ class WikiController < ApplicationController
   end
 
   def create
-    @name = params['page']
+    @name = CGI.unescape(params['page'])
     format = params['format'].intern
 
     begin
@@ -108,8 +108,14 @@ class WikiController < ApplicationController
         redirect_to history_project_wiki_path(@project, CGI.escape(@name))
         return
       end
-      page = @wiki.page(@name)
-      @diffs = [@wiki.repo.diff(@versions.first, @versions.last, page.path).first]
+      @page = @wiki.page(@name)
+      puts 'test'
+      puts @versions.inspect
+      puts @wiki.repo.diff(@versions.first, @versions.last, @page.path).inspect
+      puts @page.path
+      puts @page.path.encoding
+      @diffs = [@wiki.repo.diff(@versions.first, @versions.last, @page.path).first]
+      puts @diffs.inspect
       render :compare
     else
       redirect_to project_wiki_path(@project, CGI.escape(@name))

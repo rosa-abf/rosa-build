@@ -1,6 +1,6 @@
 GIT
-  remote: git://github.com/mojombo/grit.git
-  revision: 3fc864f3c637e06e2fa7a81f6b48a5df58a9bc5b
+  remote: git://github.com/github/grit.git
+  revision: ff015074ef35bd94cba943f9c0f98e161ab5851c
   branch: master
   specs:
     grit (2.4.1)

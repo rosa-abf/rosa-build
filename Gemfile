@@ -26,7 +26,8 @@ gem "russian"
 
 # gem 'ghoul_grack', '~> 0.0.1'
 gem 'grack', :git => 'git://github.com/rdblue/grack.git', :require => 'git_http'
-gem "grit", :git => 'git://github.com/mojombo/grit.git', :branch => 'master'
+#gem "grit", :git => 'git://github.com/mojombo/grit.git', :branch => 'master'
+gem "grit", :git => 'git://github.com/github/grit.git', :branch => 'master'
 gem 'whenever', :require => false
 gem 'delayed_job'
 gem 'highline', '~> 1.6.8'

@@ -19,7 +19,7 @@
               %td.commit-name
                 %span.time-elapsed= "#{l v.committed_date.to_date, :format => :long}:"
                 &nbsp;
-                = v.message
+                = v.message.force_encoding(Encoding.default_internal)
                 - if @name
                   = raw "[#{link_to v.id[0..6], versioned_project_wiki_path(@project, escaped_name, v.id), :title => t("layout.wiki.view_commit")}]"
                 - else
