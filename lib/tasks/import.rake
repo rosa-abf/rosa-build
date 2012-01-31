@@ -47,7 +47,7 @@ namespace :import do
       source = "rsync://mirror.yandex.ru/mandriva/#{release}/SRPMS/#{repository}/"
       destination = ENV['DESTINATION'] || File.join(APP_CONFIG['root_path'], 'mirror.yandex.ru', 'mandriva', release, 'SRPMS', repository)
       say "START rsync projects (*.src.rpm) from '#{source}' to '#{destination}'"
-      if system "rsync -rtv --delete #{source} #{destination}" # TODO --include='*.src.rpm' --exclude='*'
+      if system "rsync -rtv --delete --exclude='backports/*' --exclude='testing/*' #{source} #{destination}" # --include='*.src.rpm'
         say 'Rsync ok!'
       else
         say 'Rsync failed!'
@@ -69,7 +69,7 @@ namespace :import do
         say "=== Processing '#{srpm_file}'..."
         if name = `rpm -q --qf '[%{Name}]' -p #{srpm_file}` and $?.success? and name.present? and
            version = `rpm -q --qf '[%{Version}]' -p #{srpm_file}` and $?.success? and version.present?
-          project_import = ProjectImport.find_by_name(name) || ProjectImport.by_name(name).first || ProjectImport.new(:name => name)
+          project_import = ProjectImport.find_by_name_and_platform_id(name, platform.id) || ProjectImport.by_name(name).where(:platform_id => platform.id).first || ProjectImport.new(:name => name, :platform_id => platform.id)
           if version != project_import.version.to_s and File.mtime(srpm_file) > project_import.file_mtime
             unless project = project_import.project
               if project = repository.projects.find_by_name(name) || repository.projects.by_name(name).first # fallback to speedup
@@ -89,6 +89,7 @@ namespace :import do
             say "New version (#{version}) for '#{project.owner.uname}/#{project.name}' successfully imported to branch '#{branch}'!"
 
             project_import.project = project
+            # project_import.platform = platform
             project_import.version = version
             project_import.file_mtime = File.mtime(srpm_file)
             project_import.save!
