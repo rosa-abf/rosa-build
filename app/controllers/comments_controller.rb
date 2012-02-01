@@ -14,7 +14,7 @@ class CommentsController < ApplicationController
 
   def create
     @comment = @commentable.comments.build(params[:comment]) if @commentable.class == Issue
-    @comment = Comment.new(params[:comment].merge(:commentable_id => @commentable.id, :commentable_type => @commentable.class.name)) if @commentable.class == Grit::Commit
+    @comment = Comment.new(params[:comment].merge(:commentable_id => @commentable.id, :commentable_type => @commentable.class.name, :project => @project)) if @commentable.class == Grit::Commit
     @comment.user = current_user
     if @comment.save
       flash[:notice] = I18n.t("flash.comment.saved")
@@ -75,7 +75,10 @@ class CommentsController < ApplicationController
 
   def find_comment
     @comment = Comment.find(params[:id])
-    @comment.project = @project if @comment.commentable_type == 'Grit::Commit'
+    if @comment.commentable_type == 'Grit::Commit'
+      @comment.project = @project
+      @comment.helper
+    end
   end
 
   def find_project

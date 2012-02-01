@@ -30,7 +30,6 @@
           = t("activerecord.attributes.project.repository")
           \:
         = git_repo_url @project.git_repo_name
-
       .wat-cf
         = link_to image_tag("web-app-theme/icons/application_edit.png", :alt => t("layout.edit")) + " " + t("layout.edit"), edit_project_path(@project), :class => "button" if can? :update, @project
         = link_to image_tag("web-app-theme/icons/cross.png", :alt => t("layout.delete")) + " " + t("layout.delete"), project_path(@project), :method => "delete", :class => "button", :confirm => t("layout.projects.confirm_delete") if can? :destroy, @project

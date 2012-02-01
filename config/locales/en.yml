@@ -3,7 +3,7 @@ en:
       previous_label: ‹ Previous
       next_label: Next ›
       page_gap: ...
-    
+
     datatables:
       previous_label: ‹ Prev.
       next_label: Next ›b r
@@ -136,6 +136,10 @@ en:
         subscribe: Subscribe
         subscribe_btn: Subscribe
         unsubscribe_btn: Unsubscribe
+
+      commits:
+        subscribe_btn: Subscribe to commit
+        unsubscribe_btn: Unsubscribe from commit
 
       comments:
         confirm_delete: Are you sure to delete the comment?
@@ -377,7 +381,11 @@ en:
 
       subscribe:
         saved: Subscription on notifications for this task is created
+        saved_error: Subscription create error
         destroyed: Subscription on notifications for this task is cleaned
+        commit:
+          saved: Subscription on notifications for this commit is created
+          destroyed: Subscription on notifications for this commit is cleaned
 
       exception_message: Access violation to this page!
 
@@ -704,3 +712,4 @@ en:
         new_issue_notification: New task added to project
         new_user_notification: Registered on project «%{ project_name }»
         issue_assign_notification: New task assigned
+        new_commit_comment_notification: New comment to commit
