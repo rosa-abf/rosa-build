@@ -5,13 +5,13 @@ gem 'shotgun'
 
 gem 'pg', '~> 0.11.0'
 gem 'silent-postgres', '~> 0.1.1'
-gem 'schema_plus', '~> 0.2.1'
+gem 'redhillonrails_core', '~> 1.2.0' # deprecated
+# gem 'schema_plus', '~> 0.2.1' # buggy shit!
 
 gem 'devise', '~> 1.5.2'
 gem 'omniauth', '~> 1.0.1'
 gem 'omniauth-openid', '~> 1.0.1'
 gem 'cancan', '~> 1.6.7'
-#gem 'bitmask_attributes'
 
 gem "haml-rails", '~> 0.3.4'
 # gem "compass", '~> 0.11.5' # update when it will be needed
@@ -25,7 +25,6 @@ gem "will_paginate", "~> 3.0.2"
 gem 'meta-tags', '~> 1.2.4', :require => 'meta_tags'
 gem "russian"
 
-# gem 'ghoul_grack', '~> 0.0.1'
 gem 'grack', :git => 'git://github.com/rdblue/grack.git', :require => 'git_http'
 #gem "grit", :git => 'git://github.com/gvino/grit.git', :branch => 'master'
 gem "grit", :git => 'git://github.com/mojombo/grit.git', :branch => 'master'
@@ -44,17 +43,16 @@ gem 'RedCloth'
 gem 'wikicloth'
 
 # XML-RPC support
-# gem 'actionwebservice' #, :git => 'git://github.com/ywen/actionwebservice.git'
 gem "rails-xmlrpc", '~> 0.3.6' # :git => 'git://github.com/chipiga/rails-xmlrpc.git'
 
-# gem 'passenger', '~> 3.0.11'
 gem 'unicorn', '~> 4.1.1'
 
 group :production do
   gem "airbrake", '~> 3.0.5'
-  gem 'newrelic_rpm'
   gem 'bluepill', :require => false
 end
+
+gem 'newrelic_rpm'
 
 group :development do
   # gem 'letter_opener'
@@ -63,20 +61,12 @@ group :development do
   gem 'hpricot'
   gem 'ruby_parser'
 
-  # debug
-  # gem 'ruby-debug19', :require => 'ruby-debug', :platforms => :mri_19
-  # gem 'looksee'
-  # gem 'awesome_print'
-#  gem 'wirble'
   gem 'hirb'
-  # gem 'rails-footnotes', '>= 3.7.5.rc4' # this shit is very buggy don't forget to switch it off back
 
   # deploy
   gem 'capistrano', :require => false
   gem 'capistrano-ext', :require => false
   gem 'cape', :require => false
-  # gem 'capistrano-exts', :require => false #, :git => 'git://github.com/chipiga/capistrano-exts.git'
-  # gem 'capistrano-recipes', :require => false
   gem 'capistrano_colors', :require => false
 end
 
