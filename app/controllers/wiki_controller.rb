@@ -109,13 +109,7 @@ class WikiController < ApplicationController
         return
       end
       @page = @wiki.page(@name)
-      puts 'test'
-      puts @versions.inspect
-      puts @wiki.repo.diff(@versions.first, @versions.last, @page.path).inspect
-      puts @page.path
-      puts @page.path.encoding
       @diffs = [@wiki.repo.diff(@versions.first, @versions.last, @page.path).first]
-      puts @diffs.inspect
       render :compare
     else
       redirect_to project_wiki_path(@project, CGI.escape(@name))
