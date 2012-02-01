@@ -42,6 +42,8 @@ Rosa::Application.routes.draw do
     end
   end
 
+  match 'build_lists', :via => :post, :to => 'build_lists#index', :as => 'build_lists'
+
   resources :auto_build_lists, :only => [:index, :create, :destroy]
 
   resources :personal_repositories, :only => [:show] do

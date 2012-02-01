@@ -14,20 +14,29 @@ class BuildListsController < ApplicationController
   load_and_authorize_resource :except => CALLBACK_ACTIONS.concat(NESTED_ACTIONS)
 
   def index
-    filter_params = params[:filter] || {}
-    if @project
-      @action_url = project_build_lists_path(@project)
+    if request.post?
+      new_params = {:filter => {}}
+      params[:filter].each do |k,v|
+        new_params[:filter][k] = v unless v.empty?
+      end
+
+      redirect_to build_lists_path(new_params)
     else
-      @action_url = build_lists_path
-    end
+      filter_params = params[:filter] || {}
+      if @project
+        @action_url = project_build_lists_path(@project)
+      else
+        @action_url = build_lists_path
+      end
 
-    @filter = BuildList::Filter.new(@project, filter_params)
-    @build_lists = @filter.find.accessible_by(current_ability).recent.paginate :page => params[:page]
+      @filter = BuildList::Filter.new(@project, filter_params)
+      @build_lists = @filter.find.accessible_by(current_ability).recent.paginate :page => params[:page]
 
-    @build_server_status = begin
-      BuildServer.get_status
-    rescue Exception # Timeout::Error
-      {}
+      @build_server_status = begin
+        BuildServer.get_status
+      rescue Exception # Timeout::Error
+        {}
+      end
     end
   end
 
