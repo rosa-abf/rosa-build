@@ -11,7 +11,7 @@
         #head
           - @st_ref = capture do
             %strong= @ref
-          %h1.title= raw t("layout.wiki.all_pages_in", :ref => @st_ref)
+          %h1.title= raw t("layout.wiki.all_pages_in")
           %ul.actions
             - if can? :read, @project
               %li.minibutton

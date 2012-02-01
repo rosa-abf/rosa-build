@@ -216,7 +216,7 @@ ru:
       create_page: Создать страницу
       revert_page: Откатить изменения
       revert_pages: Откатить изменения
-      all_pages_in: "Все страницы в %{ref}:"
+      all_pages_in: "Все страницы:"
       search_results_for: "Результаты поиска для %{query}:"
       preview: Предпросмотр
 
