@@ -153,6 +153,7 @@ ActiveRecord::Schema.define(:version => 20120131124517) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "uname"
+    t.integer  "own_projects_count", :default => 0, :null => false
   end
 
   create_table "issues", :force => true do |t|
@@ -256,6 +257,7 @@ ActiveRecord::Schema.define(:version => 20120131124517) do
     t.string   "srpm_content_type"
     t.integer  "srpm_file_size"
     t.datetime "srpm_updated_at"
+    t.boolean  "has_wiki",          :default => false
   end
 
   add_index "projects", ["category_id"], :name => "index_projects_on_category_id"
@@ -312,23 +314,25 @@ ActiveRecord::Schema.define(:version => 20120131124517) do
     t.integer  "user_id"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "project_id"
     t.boolean  "status",             :default => true
+    t.integer  "project_id"
   end
 
   create_table "users", :force => true do |t|
     t.string   "name"
-    t.string   "email",                                 :default => "",   :null => false
-    t.string   "encrypted_password",     :limit => 128, :default => "",   :null => false
+    t.string   "email",                               :default => "",   :null => false
+    t.string   "encrypted_password",   :limit => 128, :default => "",   :null => false
+    t.string   "password_salt",                       :default => "",   :null => false
     t.string   "reset_password_token"
-    t.datetime "reset_password_sent_at"
+    t.string   "remember_token"
     t.datetime "remember_created_at"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.text     "ssh_key"
     t.string   "uname"
     t.string   "role"
-    t.string   "language",                              :default => "en"
+    t.string   "language",                            :default => "en"
+    t.integer  "own_projects_count",                  :default => 0,    :null => false
   end
 
   add_index "users", ["email"], :name => "index_users_on_email", :unique => true

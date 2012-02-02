@@ -947,96 +947,96 @@ en:
       issue_assign_notification: New task assigned
       new_commit_comment_notification: New comment to commit
 
-        project:
-          category_id: Category
-          name: Name
-          description: Descripton
-          owner: Owner
-          visibility: Visibility
-          repository_id: Repository
-          repository: Repository
-          created_at: Created
-          updated_at: Updated
-          has_issues: Tracker on
-          srpm: Import code from src.rpm
+      project:
+        category_id: Category
+        name: Name
+        description: Descripton
+        owner: Owner
+        visibility: Visibility
+        repository_id: Repository
+        repository: Repository
+        created_at: Created
+        updated_at: Updated
+        has_issues: Tracker on
+        srpm: Import code from src.rpm
 
-        rpm:
-          name: Name
-          arch_id: Arch
-          arch: Arch
-          project_id: Project
-          project: Project
-          created_at: Created
-          updated_at: Updated
+      rpm:
+        name: Name
+        arch_id: Arch
+        arch: Arch
+        project_id: Project
+        project: Project
+        created_at: Created
+        updated_at: Updated
 
-        role:
-          name: Name
-          on: Slave
-          to: Master
-          use_default: By default
-          use_default_for_owner: Default by owner
+      role:
+        name: Name
+        on: Slave
+        to: Master
+        use_default: By default
+        use_default_for_owner: Default by owner
 
-        group:
-          name: Name
-          uname: Nickname
-          owner: Owner
-          created_at: Created
-          updated_at: Updated
+      group:
+        name: Name
+        uname: Nickname
+        owner: Owner
+        created_at: Created
+        updated_at: Updated
 
-        user:
-          name: User
-          login: Nickname or Email
-          email: Email
-          uname: Nickname
-          ssh_key: SSH key
-          current_password: Current password
-          role: Role
-          created_at: Created
-          updated_at: Updated
-          role: System role
-          language: Language
+      user:
+        name: User
+        login: Nickname or Email
+        email: Email
+        uname: Nickname
+        ssh_key: SSH key
+        current_password: Current password
+        role: Role
+        created_at: Created
+        updated_at: Updated
+        role: System role
+        language: Language
 
-        product_build_list:
-          id: Id
-          product: Product
-          status: Status
-          notified_at: Notified at
+      product_build_list:
+        id: Id
+        product: Product
+        status: Status
+        notified_at: Notified at
 
-        build_list:
-          bs_id: Id
-          name: Name
-          container_path: Container path
-          status: Status
-          project_id: Project
-          project: Project
-          arch_id: Architecture
-          arch: Architecture
-          is_circle: Recurrent
-          notified_at: Notified at
-          additional_repos: Additional repository
-          include_repos: Includes repository
-          updated_at: Updated
-          created_at: Created
-          pl: Packet list repository
-          pl_id: Packet list repository
-          bpl: Platform
-          bpl_id: Platform
-          update_type: Update type
-          build_requires: Dependable build requires
-          auto_publish: Automated publising
-          project_version: Version
-          user: User
+      build_list:
+        bs_id: Id
+        name: Name
+        container_path: Container path
+        status: Status
+        project_id: Project
+        project: Project
+        arch_id: Architecture
+        arch: Architecture
+        is_circle: Recurrent
+        notified_at: Notified at
+        additional_repos: Additional repository
+        include_repos: Includes repository
+        updated_at: Updated
+        created_at: Created
+        pl: Packet list repository
+        pl_id: Packet list repository
+        bpl: Platform
+        bpl_id: Platform
+        update_type: Update type
+        build_requires: Dependable build requires
+        auto_publish: Automated publising
+        project_version: Version
+        user: User
 
-        build_list/item:
-          name: Name
-          level: Level
-          status: Status
-          version: Version
-          build_list: Build list
+      build_list/item:
+        name: Name
+        level: Level
+        status: Status
+        version: Version
+        build_list: Build list
 
-        download:
-          name: Name
-          version: Version
-          distro: Source
-          platform: Platform
-          counter: Downloads
+      download:
+        name: Name
+        version: Version
+        distro: Source
+        platform: Platform
+        counter: Downloads
