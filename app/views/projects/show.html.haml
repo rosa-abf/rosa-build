@@ -7,6 +7,8 @@
       %li= link_to t("layout.git.repositories.source"), project_repo_path(@project)
       %li= link_to t("layout.projects.build"), new_project_build_list_path(@project)
       %li= link_to t("layout.projects.issues"), project_issues_path(@project)
+      - if @project.has_wiki
+        %li= link_to t("layout.projects.wiki"), project_wiki_index_path(@project)
 
   .content
     .inner

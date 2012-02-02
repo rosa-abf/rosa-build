@@ -1,9 +1,10 @@
 # -*- encoding : utf-8 -*-
 class Project < ActiveRecord::Base
   VISIBILITIES = ['open', 'hidden']
+  MAX_OWN_PROJECTS = 32000
 
   belongs_to :category, :counter_cache => true
-  belongs_to :owner, :polymorphic => true
+  belongs_to :owner, :polymorphic => true, :counter_cache => :own_projects_count
 
   has_many :issues, :dependent => :destroy
   has_many :build_lists, :dependent => :destroy
@@ -19,6 +20,7 @@ class Project < ActiveRecord::Base
 
   validates :name, :uniqueness => {:scope => [:owner_id, :owner_type], :case_sensitive => false}, :presence => true, :format => { :with => /^[a-zA-Z0-9_\-\+\.]+$/ }
   validates :owner, :presence => true
+  validate { errors.add(:base, :can_have_less_or_equal, :count => MAX_OWN_PROJECTS) if owner.projects.size >= MAX_OWN_PROJECTS }
   # validate {errors.add(:base, I18n.t('flash.project.save_warning_ssh_key')) if owner.ssh_key.blank?}
   validates_attachment_size :srpm, :less_than => 500.megabytes
   validates_attachment_content_type :srpm, :content_type => ['application/octet-stream', "application/x-rpm", "application/x-redhat-package-manager"], :message => I18n.t('layout.invalid_content_type')
@@ -34,7 +36,10 @@ class Project < ActiveRecord::Base
 
   after_create :attach_to_personal_repository
   after_create :create_git_repo
+  after_save :create_wiki
+
   after_destroy :destroy_git_repo
+  after_destroy :destroy_wiki
   after_save {|p| p.delay.import_attached_srpm if p.srpm?} # should be after create_git_repo
   # after_rollback lambda { destroy_git_repo rescue true if new_record? }
 
@@ -95,6 +100,10 @@ class Project < ActiveRecord::Base
     File.join owner.uname, name
   end
 
+  def wiki_repo_name
+    File.join owner.uname, "#{name}.wiki"
+  end
+
   def public?
     visibility == 'open'
   end
@@ -110,6 +119,10 @@ class Project < ActiveRecord::Base
 
   def path
     build_path(git_repo_name)
+  end
+
+  def wiki_path
+    build_wiki_path(git_repo_name)
   end
 
   def xml_rpc_create(repository)
@@ -155,6 +168,10 @@ class Project < ActiveRecord::Base
     File.join(APP_CONFIG['root_path'], 'git_projects', "#{dir}.git")
   end
 
+  def build_wiki_path(dir)
+    File.join(APP_CONFIG['root_path'], 'git_projects', "#{dir}.wiki.git")
+  end
+
   def attach_to_personal_repository
     repositories << self.owner.personal_repository if !repositories.exists?(:id => self.owner.personal_repository)
   end
@@ -172,6 +189,20 @@ class Project < ActiveRecord::Base
       import_srpm # srpm.path
       self.srpm = nil; save # clear srpm
     end
+  end
+
+
+  def create_wiki
+    if has_wiki && !FileTest.exist?(wiki_path)
+      Grit::Repo.init_bare(wiki_path)
+      wiki = Gollum::Wiki.new(wiki_path, {:base_path => Rails.application.routes.url_helpers.project_wiki_index_path(self)})
+      wiki.write_page('Home', :markdown, I18n.t("wiki.seed.welcome_content"),
+                      {:name => owner.name, :email => owner.email, :message => 'Initial commit'})
+    end
+  end
+
+  def destroy_wiki
+    FileUtils.rm_rf wiki_path
   end
 
 end

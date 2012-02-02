@@ -1,4 +1,14 @@
 GIT
+  remote: git://github.com/mojombo/grit.git
+  revision: 3fc864f3c637e06e2fa7a81f6b48a5df58a9bc5b
+  branch: master
+  specs:
+    grit (2.4.1)
+      diff-lcs (~> 1.1)
+      mime-types (~> 1.15)
+      posix-spawn (~> 0.3.6)
+
+GIT
   remote: git://github.com/rdblue/grack.git
   revision: 020be3fef3fb308b9d214252522aa5945bf6584a
   specs:
@@ -7,6 +17,7 @@ GIT
 GEM
   remote: http://rubygems.org/
   specs:
+    RedCloth (4.2.9)
     abstract (1.0.0)
     actionmailer (3.0.11)
       actionpack (= 3.0.11)
@@ -34,21 +45,23 @@ GEM
       activemodel (= 3.0.11)
       activesupport (= 3.0.11)
     activesupport (3.0.11)
-    airbrake (3.0.5)
+    airbrake (3.0.9)
       activesupport
       builder
+    albino (1.3.3)
+      posix-spawn (>= 0.3.6)
     ancestry (1.2.4)
       activerecord (>= 2.2.2)
     arel (2.0.10)
     bcrypt-ruby (3.0.1)
-    bluepill (0.0.51)
+    bluepill (0.0.52)
       activesupport (>= 3.0.0)
       daemons (~> 1.1.0)
       i18n (>= 0.5.0)
-      state_machine (~> 0.9.4)
+      state_machine (~> 1.1.0)
     builder (2.1.2)
     cancan (1.6.7)
-    cape (1.0.1)
+    cape (1.2.0)
     capistrano (2.9.0)
       highline
       net-scp (>= 1.0.0)
@@ -58,27 +71,36 @@ GEM
     capistrano-ext (1.2.1)
       capistrano (>= 1.0.0)
     capistrano_colors (0.5.5)
-    chronic (0.6.6)
+    chronic (0.6.7)
     cocaine (0.2.1)
-    daemons (1.1.4)
+    creole (0.4.2)
+    daemons (1.1.6)
     delayed_job (2.1.4)
       activesupport (~> 3.0)
       daemons
-    devise (1.5.2)
+    devise (1.5.3)
       bcrypt-ruby (~> 3.0)
       orm_adapter (~> 0.0.3)
       warden (~> 1.1)
     diff-lcs (1.1.3)
     erubis (2.6.6)
       abstract (>= 1.0.0)
+    expression_parser (0.9.0)
     factory_girl (2.3.2)
       activesupport
     factory_girl_rails (1.4.0)
       factory_girl (~> 2.3.0)
       railties (>= 3.0.0)
-    grit (2.4.1)
-      diff-lcs (~> 1.1)
-      mime-types (~> 1.15)
+    github-markup (0.7.0)
+    gollum (1.3.1)
+      albino (~> 1.3.2)
+      github-markup (>= 0.4.0, < 1.0.0)
+      grit (~> 2.4.1)
+      mustache (>= 0.11.2, < 1.0.0)
+      nokogiri (~> 1.4)
+      redcarpet
+      sanitize (~> 2.0.0)
+      sinatra (~> 1.0)
     haml (3.1.4)
     haml-rails (0.3.4)
       actionpack (~> 3.0)
@@ -86,14 +108,14 @@ GEM
       haml (~> 3.0)
       railties (~> 3.0)
     hashie (1.2.0)
-    highline (1.6.8)
+    highline (1.6.11)
     hirb (0.6.0)
-    hpricot (0.8.5)
+    hpricot (0.8.6)
     i18n (0.5.0)
     jammit (0.6.5)
       yui-compressor (>= 0.9.3)
-    json (1.6.3)
-    kgio (2.6.0)
+    json (1.6.5)
+    kgio (2.7.2)
     mail (2.2.19)
       activesupport (>= 2.3.6)
       i18n (>= 0.4.0)
@@ -102,29 +124,32 @@ GEM
     meta-tags (1.2.4)
       actionpack
     mime-types (1.17.2)
+    mustache (0.99.4)
     net-scp (1.0.4)
       net-ssh (>= 1.99.1)
     net-sftp (2.0.5)
       net-ssh (>= 2.0.9)
-    net-ssh (2.2.1)
+    net-ssh (2.3.0)
     net-ssh-gateway (1.1.0)
       net-ssh (>= 1.99.1)
     newrelic_rpm (3.3.1)
-    omniauth (1.0.1)
+    nokogiri (1.5.0)
+    omniauth (1.0.2)
       hashie (~> 1.2)
       rack
     omniauth-openid (1.0.1)
       omniauth (~> 1.0)
       rack-openid (~> 1.3.1)
-    orm_adapter (0.0.5)
-    paperclip (2.5.0)
+    orm_adapter (0.0.6)
+    paperclip (2.5.2)
       activerecord (>= 2.3.0)
       activesupport (>= 2.3.2)
       cocaine (>= 0.0.2)
       mime-types
     pg (0.11.0)
     polyglot (0.3.3)
-    rack (1.2.4)
+    posix-spawn (0.3.6)
+    rack (1.2.5)
     rack-mount (0.6.14)
       rack (>= 1.0.0)
     rack-openid (1.3.1)
@@ -143,7 +168,7 @@ GEM
     rails-xmlrpc (0.3.6)
     rails3-generators (0.17.4)
       railties (>= 3.0.0)
-    rails3-jquery-autocomplete (1.0.4)
+    rails3-jquery-autocomplete (1.0.5)
       rails (~> 3.0)
     railties (3.0.11)
       actionpack (= 3.0.11)
@@ -153,8 +178,10 @@ GEM
       thor (~> 0.14.4)
     raindrops (0.8.0)
     rake (0.9.2.2)
-    rdoc (3.11)
+    rdiscount (1.6.8)
+    rdoc (3.12)
       json (~> 1.4)
+    redcarpet (1.17.2)
     redhillonrails_core (1.2.0)
       activerecord (>= 2)
     rr (1.0.4)
@@ -176,10 +203,18 @@ GEM
       sexp_processor (~> 3.0)
     russian (0.6.0)
       i18n (>= 0.5.0)
-    sexp_processor (3.0.8)
+    sanitize (2.0.3)
+      nokogiri (>= 1.4.4, < 1.6)
+    sexp_processor (3.0.10)
+    shotgun (0.9)
+      rack (>= 1.0)
     silent-postgres (0.1.1)
-    state_machine (0.9.4)
+    sinatra (1.2.8)
+      rack (~> 1.1)
+      tilt (>= 1.2.2, < 2.0)
+    state_machine (1.1.2)
     thor (0.14.6)
+    tilt (1.3.3)
     treetop (1.4.10)
       polyglot
       polyglot (>= 0.3.1)
@@ -191,16 +226,20 @@ GEM
     warden (1.1.0)
       rack (>= 1.0)
     web-app-theme (0.7.0)
-    whenever (0.7.0)
+    whenever (0.7.2)
       activesupport (>= 2.3.4)
       chronic (~> 0.6.3)
-    will_paginate (3.0.2)
+    wikicloth (0.7.1)
+      builder
+      expression_parser
+    will_paginate (3.0.3)
     yui-compressor (0.9.5)
 
 PLATFORMS
   ruby
 
 DEPENDENCIES
+  RedCloth
   airbrake (~> 3.0.5)
   ancestry (~> 1.2.4)
   bluepill
@@ -209,11 +248,13 @@ DEPENDENCIES
   capistrano
   capistrano-ext
   capistrano_colors
-  delayed_job
+  creole
+  delayed_job (= 2.1.4)
   devise (~> 1.5.2)
   factory_girl_rails (~> 1.4.0)
+  gollum (= 1.3.1)
   grack!
-  grit
+  grit!
   haml-rails (~> 0.3.4)
   highline (~> 1.6.8)
   hirb
@@ -229,14 +270,18 @@ DEPENDENCIES
   rails-xmlrpc (~> 0.3.6)
   rails3-generators
   rails3-jquery-autocomplete
+  rdiscount
+  redcarpet (= 1.17.2)
   redhillonrails_core (~> 1.2.0)
   rr
   rspec-rails (~> 2.7.0)
   ruby_parser
   russian
+  shotgun
   silent-postgres (~> 0.1.1)
   unicorn (~> 4.1.1)
   web-app-theme
   whenever
+  wikicloth
   will_paginate (~> 3.0.2)
   yui-compressor (= 0.9.5)

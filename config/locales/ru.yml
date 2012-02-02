@@ -1,4 +1,5 @@
 ru:
+
   will_paginate:
     previous_label: ‹ Предыдущая
     next_label: Следующая ›
@@ -80,6 +81,9 @@ ru:
       Friday: Пятница
       Saturday: Субота
       Sunday: Воскресенье
+
+    time:
+      ago: назад
 
     menu:
       categories: Каталог
@@ -177,6 +181,63 @@ ru:
       confirm_clone: Клонировать?
       clone: Клонировать
 
+    wiki:
+      new_page: Новая
+      edit_page: Изменить
+      delete_page: Удалить страницу
+      page_history: История
+      create_page: Создать страницу
+      wiki_git_access: Доступ к Wiki через Git
+      page_title: Заголовок страницы
+      expand_collapse: Развернуть
+      last_edited_by: Последним редактировал
+      home: Главная
+      pages: Все страницы
+      wiki_history: История Wiki
+      git_access: Доступ через Git
+      search_and_hellip: Ключевые слова
+      search: Искать
+      search_popup: Искать в этой Wiki
+      commit_message_placeholder: Введите сопровождающее сообщение (опционально)
+      edit_commit_message: Редактировать сопровождающее сообщение
+      preview_title: Посмотреть в новом окне
+      save_changes: Сохранить текущие изменения
+      save_button: Сохранить
+      view_page: Показать
+      view_commit: Показать версию
+      compare_revisions: Сравнить версии
+      back_to_top: Наверх
+      no_pages_in: В %{ref} нет страниц для отображения.
+      no_results_for_search: По запросу %{query} ничего не найдено.
+      matches: Совпадений
+      back_to_history: Назад к истории
+      history_for: История для
+      editing_page: Редактирование страницы
+      create_page: Создать страницу
+      revert_page: Откатить изменения
+      revert_pages: Откатить изменения
+      all_pages_in: "Все страницы:"
+      search_results_for: "Результаты поиска для %{query}:"
+      preview: Предпросмотр
+
+      clones:
+        http: HTTP
+
+      editor:
+        bold: Жирный
+        italic: Курсив
+        code: Исходный код
+        unordered_list: Маркированный список
+        ordered_list: Нумерованный список
+        blockquote: Цитата
+        horizontal_rule: Горизонтальная черта
+        h1: Заголовок первого уровня
+        h2: Заголовок второго уровня
+        h3: Заголовок третьего уровня
+        link: Ссылка
+        image: Изображение
+        help: Помощь
+
     event_logs:
       list: Список
       list_header: Лог событий
@@ -251,6 +312,7 @@ ru:
       groups: Группы
       edit_collaborators: Изменить список участников
       issues: Задачи
+      wiki: Wiki
 
     collaborators:
       back_to_proj: Вернуться к проекту
@@ -478,6 +540,15 @@ ru:
       wrong_platform: Для основного репозитория (main) может быть выбран только его же основная платформа!
       can_not_published: Опубликовать сборку можно только со статусом "Собран"
 
+    wiki:
+      ref_not_exist: Версия не существует
+      successfully_updated: Страница '%{name}' успешно обновлена
+      duplicate_page: Страница '%{name}' уже существует
+      page_successfully_removed: Страница успешно удалена
+      page_not_found: Страница '%{name}' не найдена.
+      revert_success: Изменения успешно откачены
+      patch_does_not_apply: Не удалось откатить изменения
+
   attributes:
     password: Пароль
     password_confirmation: Подтверждение
@@ -487,6 +558,14 @@ ru:
     build_list: Сборочный лист
 
   activerecord:
+
+    errors:
+      models:
+        project:
+          attributes:
+            base:
+              can_have_less_or_equal: Нельзя иметь больше, чем %{count} проектов.
+
     models:
       category: Категория
       repository: Репозиторий
@@ -623,6 +702,7 @@ ru:
         created_at: Создан
         updated_at: Обновлен
         has_issues: Включить трэкер
+        has_wiki: Включить Wiki
         srpm: Импортировать код из src.rpm
 
       rpm:

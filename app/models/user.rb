@@ -37,6 +37,7 @@ class User < ActiveRecord::Base
   validates :language, :inclusion => {:in => LANGUAGES}, :allow_blank => true
 
   attr_accessible :email, :password, :password_confirmation, :remember_me, :login, :name, :ssh_key, :uname, :language
+  attr_readonly :uname, :own_projects_count
   attr_readonly :uname
   attr_accessor :login
 

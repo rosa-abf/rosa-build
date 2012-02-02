@@ -17,7 +17,7 @@ class Group < ActiveRecord::Base
   validates :uname, :presence => true, :uniqueness => {:case_sensitive => false}, :format => { :with => /^[a-z0-9_]+$/ }
   validate { errors.add(:uname, :taken) if User.where('uname LIKE ?', uname).present? }
 
-  attr_readonly :uname
+  attr_readonly :uname, :own_projects_count
 
   delegate :ssh_key, :to => :owner
 

@@ -111,6 +111,7 @@ table.blob td.blob pre {
     background-color: #EAEAEA;
     border-bottom: 1px solid #DDDDDD;
     font-family: Monaco,"Courier New","DejaVu Sans Mono","Bitstream Vera Sans Mono",monospace;
+    font-size: 1.2em;
     padding: 5px;
     margin-top: 20px;
 }
@@ -143,6 +144,7 @@ table.commit_stats tr {
 
 table.diff {
     line-height: 1.4em;
+    font-size: 1.2em;
     font-family: 'Bitstream Vera Sans Mono','Courier',monospace;
     border-top: 1px solid #EAEAEA;
     border-bottom: 1px solid #EAEAEA;
@@ -153,8 +155,7 @@ table.diff tr td.line_numbers {
     background-color: #ECECEC;
     border-right: 1px solid #DDDDDD;
     color: #AAAAAA;
-    padding-left: 10px;
-    padding-right: 10px;
+    padding: 0 0.5em;
     text-align: right;
 }
 

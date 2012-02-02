@@ -1,6 +1,7 @@
 source 'http://rubygems.org'
 
 gem 'rails', '3.0.11' #, :git => 'git://github.com/rails/rails.git'
+gem 'shotgun'
 
 gem 'pg', '~> 0.11.0'
 gem 'silent-postgres', '~> 0.1.1'
@@ -25,10 +26,20 @@ gem 'meta-tags', '~> 1.2.4', :require => 'meta_tags'
 gem "russian"
 
 gem 'grack', :git => 'git://github.com/rdblue/grack.git', :require => 'git_http'
-gem "grit"
+gem "grit", :git => 'git://github.com/mojombo/grit.git', :branch => 'master'
+
 gem 'whenever', :require => false
-gem 'delayed_job'
+gem 'delayed_job', '2.1.4'
 gem 'highline', '~> 1.6.8'
+
+# Wiki
+gem "gollum", "1.3.1"
+gem "redcarpet", "1.17.2"
+gem 'creole'
+gem 'rdiscount'
+#gem 'org-ruby'
+gem 'RedCloth'
+gem 'wikicloth'
 
 # XML-RPC support
 gem "rails-xmlrpc", '~> 0.3.6' # :git => 'git://github.com/chipiga/rails-xmlrpc.git'

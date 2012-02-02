@@ -12,7 +12,7 @@ module DiffHelper
     res += "</tbody>"
     res += "</table>"
 
-    res.html_safe
+    res.html_safe.force_encoding(Encoding.default_internal || Encoding::UTF_8)
   end
 
 end
