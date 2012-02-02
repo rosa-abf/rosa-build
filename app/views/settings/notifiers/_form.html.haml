@@ -17,7 +17,19 @@
 .group
   = f.label :issue_assign, t('activerecord.attributes.settings.notifier.issue_assign'), :class => :label
   = f.check_box :issue_assign, :class => 'notify_cbx'
-  
+
+.group
+  = f.label :new_comment_commit_owner, t('activerecord.attributes.settings.notifier.new_comment_commit_owner'), :class => :label
+  = f.check_box :new_comment_commit_owner, :class => 'notify_cbx'
+
+.group
+  = f.label :new_comment_commit_repo_owner, t('activerecord.attributes.settings.notifier.new_comment_commit_repo_owner'), :class => :label
+  = f.check_box :new_comment_commit_repo_owner, :class => 'notify_cbx'
+
+.group
+  = f.label :new_comment_commit_commentor, t('activerecord.attributes.settings.notifier.new_comment_commit_commentor'), :class => :label
+  = f.check_box :new_comment_commit_commentor, :class => 'notify_cbx'
+
 .group.navform.wat-cf
   %button.button{:type => "submit"}
     = image_tag("web-app-theme/icons/tick.png", :alt => t("layout.save"))

@@ -154,8 +154,12 @@ class Project < ActiveRecord::Base
   class << self
     def commit_comments(commit, project)
      comments = Comment.where(:commentable_id => commit.id, :commentable_type => 'Grit::Commit').order(:created_at)
-     comments.each {|x| x.project = project}
+     comments.each {|x| x.project = project; x.helper}
     end
+  end
+
+  def owner?(user)
+    owner == user
   end
 
   protected
@@ -187,6 +191,7 @@ class Project < ActiveRecord::Base
     end
   end
 
+
   def create_wiki
     if has_wiki && !FileTest.exist?(wiki_path)
       Grit::Repo.init_bare(wiki_path)
@@ -199,4 +204,5 @@ class Project < ActiveRecord::Base
   def destroy_wiki
     FileUtils.rm_rf wiki_path
   end
+
 end

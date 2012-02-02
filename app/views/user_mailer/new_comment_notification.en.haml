@@ -1,7 +1,12 @@
 %p== Hello, #{@user.name}.
 
-
-%p To the issue #{ link_to @comment.commentable.title, [@comment.commentable.project, @comment.commentable] } added a comment.
+- if @comment.commentable.class == Issue
+  - link = link_to @comment.commentable.title, [@comment.commentable.project, @comment.commentable]
+  - object = 'issue'
+- elsif @comment.commentable.class == Grit::Commit
+  - link = link_to @comment.commentable.message, commit_path(@comment.project, @comment.commentable_id)
+  - object = 'commit'
+%p #{ link_to @comment.user.uname, user_path(@comment.user)} added new comment to #{object} #{link}.
 
 %p "#{ @comment.body }"
 

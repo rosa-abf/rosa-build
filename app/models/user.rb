@@ -24,6 +24,9 @@ class User < ActiveRecord::Base
   has_many :projects,     :through => :targets, :source => :target, :source_type => 'Project',    :autosave => true
   has_many :platforms,    :through => :targets, :source => :target, :source_type => 'Platform',   :autosave => true
   has_many :repositories, :through => :targets, :source => :target, :source_type => 'Repository', :autosave => true
+  has_many :subscribes, :foreign_key => :user_id, :dependent => :destroy
+
+  has_many :comments, :dependent => :destroy
 
   include Modules::Models::PersonalRepository
 
@@ -43,7 +46,7 @@ class User < ActiveRecord::Base
   def admin?
     role == 'admin'
   end
-  
+
   def guest?
     self.id.blank? # persisted?
   end
@@ -84,7 +87,15 @@ class User < ActiveRecord::Base
     clean_up_passwords
     result
   end
-  
+
+  def commentor?(commentable)
+    comments.exists?(:commentable_type => commentable.class.name, :commentable_id => commentable.id)
+  end
+
+  def committer?(commit)
+    email.downcase == commit.committer.email.downcase
+  end
+
   private
 
   def create_settings_notifier
