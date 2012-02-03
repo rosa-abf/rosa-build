@@ -293,22 +293,27 @@ ActiveRecord::Schema.define(:version => 20120131124517) do
   add_index "rpms", ["project_id"], :name => "index_rpms_on_project_id"
 
   create_table "settings_notifiers", :force => true do |t|
-    t.integer  "user_id",                             :null => false
-    t.boolean  "can_notify",        :default => true
-    t.boolean  "new_comment",       :default => true
-    t.boolean  "new_comment_reply", :default => true
-    t.boolean  "new_issue",         :default => true
-    t.boolean  "issue_assign",      :default => true
+    t.integer  "user_id",                                         :null => false
+    t.boolean  "can_notify",                    :default => true
+    t.boolean  "new_comment",                   :default => true
+    t.boolean  "new_comment_reply",             :default => true
+    t.boolean  "new_issue",                     :default => true
+    t.boolean  "issue_assign",                  :default => true
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.boolean  "new_comment_commit_owner",      :default => true
+    t.boolean  "new_comment_commit_repo_owner", :default => true
+    t.boolean  "new_comment_commit_commentor",  :default => true
   end
 
   create_table "subscribes", :force => true do |t|
-    t.integer  "subscribeable_id"
+    t.string   "subscribeable_id"
     t.string   "subscribeable_type"
     t.integer  "user_id"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "project_id"
+    t.boolean  "status",             :default => true
   end
 
   create_table "users", :force => true do |t|

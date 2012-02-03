@@ -7,7 +7,7 @@
       %li.minibutton
         = form_tag revert_path(@project, @versions[0][0..6], @versions[1][0..6], @name),
             :name => "gollum-revert", :id => "gollum-revert-form" do
-          = revert_button
+          = revert_button if can? :write, @project
 
   = render :partial => 'diff_data', :collection => @diffs, :as => :diff
   .spacer
@@ -16,5 +16,5 @@
   %ul.actions
     - if action_name != 'revert'
       %li.minibutton
-        = revert_button
+        = revert_button if can? :write, @project
     %li.minibutton= link_to t("layout.wiki.back_to_top"), '#wiki'
