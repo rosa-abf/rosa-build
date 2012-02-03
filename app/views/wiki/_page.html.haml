@@ -14,7 +14,7 @@
   %p#last-edit
     = t("layout.wiki.last_edited_by")
     %b
-      = link_to author, user_path_by_email(author_email)
+      = user_link_by_user User.where(:email => author_email).first
     = time_ago_in_words date.to_time - 4.hours, true
     = t("layout.time.ago")
   - unless action_name == 'preview' or cannot? :write, @project
