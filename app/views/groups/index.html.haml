@@ -22,7 +22,8 @@
             %td
               = link_to group.owner.name, user_path(group.owner)
             %td.last
-              #{link_to t("layout.show"), group_path(group)} | #{link_to t("layout.edit"), edit_group_path(group)} | #{link_to t("layout.delete"), group_path(group), :method => :delete, :confirm => t("layout.groups.confirm_delete")}
+              = raw [(link_to t("layout.edit"), edit_group_path(group) if can? :update, group),
+                (link_to t("layout.delete"), group_path(group), :method => :delete, :confirm => t("layout.groups.confirm_delete") if can? :destroy, group)].compact.join('&nbsp;|&nbsp;')
       .actions-bar.wat-cf
         .actions= will_paginate @groups, :param_name => :group_page
 
