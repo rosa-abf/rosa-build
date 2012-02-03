@@ -13,9 +13,12 @@
               %td.checkbox
                 = check_box_tag "versions[]", v.id
               %td.author
-                = link_to user_path_by_email(v.author.email) do
-                  %img{:src => gravatar_url(v.author.email), :alt => "avatar: #{v.author.name}", :class => "mini-gravatar"}
-                  %span.username= v.author.name
+                - user = User.where(:email => v.author.email).first
+                = link_to user_path_by_user(user) do
+                  %img{:src => gravatar_url(v.author.email),
+                    :alt => "avatar: #{v.author.name.force_encoding(Encoding.default_internal || Encoding::UTF_8)}",
+                    :class => "mini-gravatar"}
+                  %span.username= user.uname
               %td.commit-name
                 %span.time-elapsed= "#{l v.committed_date.to_date, :format => :long}:"
                 &nbsp;

@@ -246,7 +246,7 @@ class WikiController < ApplicationController
     end
 
     def commit
-      commit_message.merge({:name => current_user.name, :email => current_user.email})
+      commit_message.merge({:name => current_user.uname, :email => current_user.email})
     end
 
     def show_or_create_page
