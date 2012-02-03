@@ -18,7 +18,7 @@
                   %img{:src => gravatar_url(v.author.email),
                     :alt => "avatar: #{v.author.name.force_encoding(Encoding.default_internal || Encoding::UTF_8)}",
                     :class => "mini-gravatar"}
-                  %span.username= user.uname
+                  %span.username= user.present? ? user.uname : v.author.name
               %td.commit-name
                 %span.time-elapsed= "#{l v.committed_date.to_date, :format => :long}:"
                 &nbsp;
