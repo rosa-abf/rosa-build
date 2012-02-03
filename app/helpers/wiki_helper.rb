@@ -86,16 +86,19 @@ module WikiHelper
   end
 
   def author
-    @page.version.author.name
+    @page.version.author.name.force_encoding(Encoding.default_internal || Encoding::UTF_8)
   end
 
   def author_email
     @page.version.author.email
   end
 
-  def user_path_by_email(email)
-    user = User.where(:email => email).first
-    (!!user) ? user_path(user) : 'javascript:void(0)'
+  def user_path_by_user(user)
+    (user.present?) ? user_path(user) : 'javascript:void(0)'
+  end
+
+  def user_link_by_user(user)
+    link_to (user.present?) ? user.uname : author, user_path_by_user(user)
   end
 
   def date

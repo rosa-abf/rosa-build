@@ -5,6 +5,7 @@ require 'cgi'
 class WikiController < ApplicationController
   WIKI_OPTIONS = {}
 
+  before_filter :authenticate_user!
   load_resource :project
 
   before_filter :authorize_read_actions,  :only => [:index, :show, :git, :compare, :compare_wiki, :history, :wiki_history, :search, :pages]
@@ -246,7 +247,7 @@ class WikiController < ApplicationController
     end
 
     def commit
-      commit_message.merge({:name => current_user.name, :email => current_user.email})
+      commit_message.merge({:name => current_user.uname, :email => current_user.email})
     end
 
     def show_or_create_page
