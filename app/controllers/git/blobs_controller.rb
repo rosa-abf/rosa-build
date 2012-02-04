@@ -5,7 +5,7 @@ class Git::BlobsController < Git::BaseController
   before_filter :find_tree
 
   def show
-    @blob = @tree / @path
+    @blob = @tree / @path.force_encoding(Encoding::ASCII_8BIT)
 
     if params[:raw]
       image_url = Rails.root.to_s + "/" + @path
@@ -19,13 +19,13 @@ class Git::BlobsController < Git::BaseController
   end
 
   def blame
-    @blob = @tree / @path
+    @blob = @tree / @path.force_encoding(Encoding::ASCII_8BIT)
 
     @blame = Grit::Blob.blame(@git_repository.repo, @commit.try(:id), @path)
   end
 
   def raw
-    @blob = @tree / @path
+    @blob = @tree / @path.force_encoding(Encoding::ASCII_8BIT)
 
     headers["Content-Disposition"] = %[attachment;filename="#{@blob.name}"]
     render :text => @blob.data, :content_type => @blob.mime_type

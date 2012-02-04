@@ -13,7 +13,7 @@ module CommitHelper
     end
     res << "</table>"
 
-    res.join("\n").html_safe
+    res.join("\n").force_encoding(Encoding.default_internal || Encoding::UTF_8).html_safe
   end
 
 #  def format_commit_message(message)
@@ -34,7 +34,7 @@ module CommitHelper
 
   def short_commit_message(message)
     # Why 42? Because it is the Answer!
-    truncate(message, :length => 42, :omission => "...")
+    truncate(message, :length => 42, :omission => "...").force_encoding(Encoding.default_internal || Encoding::UTF_8)
   end
 
 end

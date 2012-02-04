@@ -49,7 +49,7 @@
             %td.blob
               :plain
                 <br/>
-                <pre>#{ link_to @blob.basename, raw_path(@project, @treeish, @path) }</pre>
+                <pre>#{ link_to @blob.basename.force_encoding(Encoding.default_internal || Encoding::UTF_8), raw_path(@project, @treeish, @path) }</pre>
                 <br/>
 
 - content_for :sidebar, render(:partial => 'git/shared/sidebar')

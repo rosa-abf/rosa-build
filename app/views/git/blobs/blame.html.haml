@@ -29,7 +29,9 @@
           - @blame.each do |elem|
             %tr
               %td.message{ :rowspan => elem[1].length }
-                .commit #{link_to shortest_hash_id(elem[0].id), commit_path(@project, elem[0].id)} by #{elem[0].author} #{elem[0].author != elem[0].committer ? "(#{elem[0].committer})" : "" }
+                .commit
+                  #{link_to shortest_hash_id(elem[0].id), commit_path(@project, elem[0].id)} by
+                  #{elem[0].author.to_s.encode_to_default} #{elem[0].author != elem[0].committer ? "(#{elem[0].committer.to_s.encode_to_default})" : "" }
                 .message
                   %span.date= commit_date(elem[0].committed_date)
                   %span.message= short_commit_message(elem[0].message)
@@ -40,7 +42,7 @@
 
               %td.code
                 %pre
-                  %div= elem[1].first
+                  %div= elem[1].first.force_encoding(Encoding.default_internal || Encoding::UTF_8)
 
               - elem[1][1..-1].each do |line|
                 %tr
@@ -49,6 +51,6 @@
                     - index += 1
                   %td.code
                     %pre
-                      %div= line
+                      %div= line.force_encoding(Encoding.default_internal || Encoding::UTF_8)
 
 - content_for :sidebar, render(:partial => 'git/shared/sidebar')

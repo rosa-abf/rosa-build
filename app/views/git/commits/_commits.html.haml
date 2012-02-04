@@ -4,12 +4,12 @@
       %table
         %tr
           %td.committers
-            .author #{commit.author}, #{commit_date(commit.authored_date)}
+            .author #{commit.author.to_s.encode_to_default}, #{commit_date(commit.authored_date)}
             - if commit.committer != commit.author
               .committer
-                (committed by: #{commit.committer}, #{commit_date(commit.committed_date)})
+                (committed by: #{commit.committer.to_s.encode_to_default}, #{commit_date(commit.committed_date)})
           %td.message
-            %p= link_to commit.message, commit_path(@project, commit.id)
+            %p= link_to commit.message.encode_to_default, commit_path(@project, commit.id)
           %td.trees
             .commit
               Commit:
