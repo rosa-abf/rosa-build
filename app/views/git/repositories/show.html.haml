@@ -37,9 +37,9 @@
                 = image_tag("git/icons/folder_16.png")
             %td.tree_element
               - if entry.is_a?(Grit::Blob)
-                = link_to entry.name, blob_path(@project, @treeish, File.join([@path, entry.name].compact))
+                = link_to entry.name.encode_to_default, blob_path(@project, @treeish, File.join([@path, entry.name.encode_to_default].compact))
               - else
-                = link_to "#{entry.name}/", tree_path(@project, @treeish, File.join([@path, entry.name].compact))
+                = link_to "#{entry.name.encode_to_default}/", tree_path(@project, @treeish, File.join([@path, entry.name.encode_to_default].compact))
             %td== &nbsp;
             %td.last== &nbsp;
 

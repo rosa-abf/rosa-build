@@ -2,13 +2,13 @@
   .content
     .inner
 
-      %a{ :name => h(commit_diff.a_path) }
+      %a{ :name => h(commit_diff.a_path.encode_to_default) }
 
       .blob_header
-        .size= h(commit_diff.a_path)
+        .size= h(commit_diff.a_path.encode_to_default)
         - if commit_diff.b_path.present?
           .buttons
-            = link_to("view file @ #{short_hash_id(@commit.id)}", blob_commit_path(@project, @commit.id, commit_diff.b_path))
+            = link_to("view file @ #{short_hash_id(@commit.id)}", blob_commit_path(@project, @commit.id, commit_diff.b_path.encode_to_default))
         .clear
 
       .diff_data
