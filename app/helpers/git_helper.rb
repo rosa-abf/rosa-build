@@ -38,7 +38,7 @@ module GitHelper
 
   def render_blob(blob)
     res = ""
-    blob.data.force_encoding(Encoding.default_internal || Encoding::UTF_8).split("\n").collect do |line|
+    blob.data.encode_to_default.split("\n").collect do |line|
       "<div>#{line.present? ? h(line) : "<br>"}</div>"
     end.join
   end
@@ -50,7 +50,7 @@ module GitHelper
   end
 
   def force_encoding_to_site(string)
-    string.dup.force_encoding(Encoding.default_internal || Encoding::UTF_8)
+    string.dup.encode_to_default
   end
 
 end

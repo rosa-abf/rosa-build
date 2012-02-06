@@ -42,7 +42,7 @@
 
               %td.code
                 %pre
-                  %div= elem[1].first.force_encoding(Encoding.default_internal || Encoding::UTF_8)
+                  %div= elem[1].first.encode_to_default
 
               - elem[1][1..-1].each do |line|
                 %tr
@@ -51,6 +51,6 @@
                     - index += 1
                   %td.code
                     %pre
-                      %div= line.force_encoding(Encoding.default_internal || Encoding::UTF_8)
+                      %div= line.encode_to_default
 
 - content_for :sidebar, render(:partial => 'git/shared/sidebar')

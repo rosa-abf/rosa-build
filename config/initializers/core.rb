@@ -1,1 +1,1 @@
-require './lib/core'
+require './lib/ext/core/string'
