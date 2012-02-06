@@ -1,12 +1,10 @@
 # -*- encoding : utf-8 -*-
 class Git::BlobsController < Git::BaseController
-  before_filter :set_path
-  before_filter :set_commit_hash
   before_filter :find_tree
+  before_filter :set_path_blob
+  before_filter :set_commit_hash
 
   def show
-    @blob = @tree / @path
-
     if params[:raw]
       image_url = Rails.root.to_s + "/" + @path
 
@@ -19,21 +17,18 @@ class Git::BlobsController < Git::BaseController
   end
 
   def blame
-    @blob = @tree / @path
-
     @blame = Grit::Blob.blame(@git_repository.repo, @commit.try(:id), @path)
   end
 
   def raw
-    @blob = @tree / @path
-
     headers["Content-Disposition"] = %[attachment;filename="#{@blob.name}"]
     render :text => @blob.data, :content_type => @blob.mime_type
   end
 
   protected
-    def set_path
+    def set_path_blob
       @path = params[:path]
+      @blob = @tree / @path.encode_to_default
     end
 
     def set_commit_hash
