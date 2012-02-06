@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 module ProjectsHelper
   def git_repo_url(name)
     if current_user

@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 module GitHelper
 
   def render_path
@@ -25,7 +26,7 @@ module GitHelper
       res = "#{link_to @project.name, tree_path(@project)} /"
     end
 
-    res.html_safe
+    res.encode_to_default.html_safe
   end
 
   def render_line_numbers(n)
@@ -37,7 +38,9 @@ module GitHelper
 
   def render_blob(blob)
     res = ""
-    blob.data.split("\n").collect{|line| "<div>#{line.present? ? h(line) : "<br>"}</div>"}.join
+    blob.data.encode_to_default.split("\n").collect do |line|
+      "<div>#{line.present? ? h(line) : "<br>"}</div>"
+    end.join
   end
 
   def choose_render_way(blob)
@@ -45,4 +48,9 @@ module GitHelper
     return :text  if blob.mime_type.match(/text|xml|json/)
     :binary
   end
+
+  def force_encoding_to_site(string)
+    string.dup.encode_to_default
+  end
+
 end

@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class ProjectToRepository < ActiveRecord::Base
   belongs_to :project
   belongs_to :repository
@@ -13,8 +14,7 @@ class ProjectToRepository < ActiveRecord::Base
   protected
 
   def one_project_in_platform_repositories
-    c = Platform.scoped.select('projects.*').joins(:repositories => :projects).where(
-      :projects => {:name => project.name}, :id => repository.platform_id).count
-    errors.add(:project, 'should be one in platform') if c > 0
+    errors.add(:project, 'should be one in platform') if Project.joins(:repositories => :platform).
+                                                                 where('platforms.id = ?', repository.platform_id).by_name(project.name).count > 0
   end
 end

@@ -1,0 +1,36 @@
+#wiki-history
+  %ul.actions
+    %li.minibutton
+      = link_to t("layout.wiki.compare_revisions"), "javascript:void(0);",
+                :class => "action-compare-revision"
+
+  = form_tag compare_path(@project, @name), :name => "compare-versions", :id => "version-form" do
+    %fieldset
+      %table
+        %tbody
+          - @versions.each do |v|
+            %tr{:class => cycle("odd", "even")}
+              %td.checkbox
+                = check_box_tag "versions[]", v.id
+              %td.author
+                - user = User.where(:email => v.author.email).first
+                = link_to user_path_by_user(user) do
+                  %img{:src => gravatar_url(v.author.email),
+                    :alt => "avatar: #{v.author.name.force_encoding(Encoding.default_internal || Encoding::UTF_8)}",
+                    :class => "mini-gravatar"}
+                  %span.username= user.present? ? user.uname : v.author.name
+              %td.commit-name
+                %span.time-elapsed= "#{l v.committed_date.to_date, :format => :long}:"
+                &nbsp;
+                = v.message.force_encoding(Encoding.default_internal)
+                - if @name
+                  = raw "[#{link_to v.id[0..6], versioned_project_wiki_path(@project, escaped_name, v.id), :title => t("layout.wiki.view_commit")}]"
+                - else
+                  = "[#{v.id[0..6]}]"
+
+#gollum-footer
+  %ul.actions
+    %li.minibutton
+      = link_to t("layout.wiki.compare_revisions"), "javascript:void(0);", :class => "action-compare-revision"
+    %li.minibutton
+      = link_to t("layout.wiki.back_to_top"), "#wiki", :class => "action-back-to-top"

@@ -1,12 +1,13 @@
 ru:
+
   will_paginate:
     previous_label: ‹ Предыдущая
-    next_label: Следующая › 
+    next_label: Следующая ›
     page_gap: ...
-    
+
   datatables:
     previous_label: ‹ Пред.
-    next_label: След. › 
+    next_label: След. ›
     first_label: « Первая
     last_label: Последняя »
     empty_label: Нет доступных данных
@@ -39,12 +40,23 @@ ru:
     upload: Загрузить
     not_access: Нет доступа!
     owner: Владелец
-    confirm: Уверенны?
+    confirm: Уверены?
+    back: Назад
     settings:
       notifier: Настройки оповещений
       notifiers:
         edit_header: Настройки оповещений
     processing: Обрабатывается...
+    invalid_content_type: имеет неверный тип
+
+    devise:
+      shared_links:
+        sign_in: Войти
+        sign_up: Зарегистрироваться
+        forgot_password: Забыли пароль?
+        confirm_again: Не получили инструкции по подтверждению?
+        unlock: Не получили инструкции по разблокировке?
+        sign_in_through: Войти через %{provider}
 
     activity_feed:
       header: Лента активности
@@ -53,7 +65,7 @@ ru:
       title: Статистика закачек пакетов
       message: Обновляется автоматически каждые 5 минут
       refresh_btn: Обновить
-      
+
     auto_build_lists:
       header: Проекты с автоматической сборкой
       message: Все проекты собираются под пользовательский репозиторий и архитектуру i586
@@ -72,6 +84,9 @@ ru:
       Friday: Пятница
       Saturday: Субота
       Sunday: Воскресенье
+
+    time:
+      ago: назад
 
     menu:
       categories: Каталог
@@ -169,6 +184,63 @@ ru:
       confirm_clone: Клонировать?
       clone: Клонировать
 
+    wiki:
+      new_page: Новая
+      edit_page: Изменить
+      delete_page: Удалить страницу
+      page_history: История
+      create_page: Создать страницу
+      wiki_git_access: Доступ к Wiki через Git
+      page_title: Заголовок страницы
+      expand_collapse: Развернуть
+      last_edited_by: Последним редактировал
+      home: Главная
+      pages: Все страницы
+      wiki_history: История Wiki
+      git_access: Доступ через Git
+      search_and_hellip: Ключевые слова
+      search: Искать
+      search_popup: Искать в этой Wiki
+      commit_message_placeholder: Введите сопровождающее сообщение (опционально)
+      edit_commit_message: Редактировать сопровождающее сообщение
+      preview_title: Посмотреть в новом окне
+      save_changes: Сохранить текущие изменения
+      save_button: Сохранить
+      view_page: Показать
+      view_commit: Показать версию
+      compare_revisions: Сравнить версии
+      back_to_top: Наверх
+      no_pages_in: В %{ref} нет страниц для отображения.
+      no_results_for_search: По запросу %{query} ничего не найдено.
+      matches: Совпадений
+      back_to_history: Назад к истории
+      history_for: История для
+      editing_page: Редактирование страницы
+      create_page: Создать страницу
+      revert_page: Откатить изменения
+      revert_pages: Откатить изменения
+      all_pages_in: "Все страницы:"
+      search_results_for: "Результаты поиска для %{query}:"
+      preview: Предпросмотр
+
+      clones:
+        http: HTTP
+
+      editor:
+        bold: Жирный
+        italic: Курсив
+        code: Исходный код
+        unordered_list: Маркированный список
+        ordered_list: Нумерованный список
+        blockquote: Цитата
+        horizontal_rule: Горизонтальная черта
+        h1: Заголовок первого уровня
+        h2: Заголовок второго уровня
+        h3: Заголовок третьего уровня
+        link: Ссылка
+        image: Изображение
+        help: Помощь
+
     event_logs:
       list: Список
       list_header: Лог событий
@@ -185,7 +257,7 @@ ru:
       back_to_the_list: ⇐ К списку репозиториев
       confirm_delete: Вы уверены, что хотите удалить этот репозиторий?
       current_repository_header: Текущий репозиторий
-      
+
     personal_repositories:
       settings_header: Настройки
       change_visibility_from_hidden: Сменить статус на "Открытый"
@@ -203,7 +275,6 @@ ru:
       new_header: Новый продукт
       edit_header: Редактирование продукта
       confirm_delete: Вы уверены, что хотите удалить этот продукт?
-      invalid_content_type: имеет неверный тип
 
       cron_tab_generator:
         show: Показать cron tab генератор
@@ -244,6 +315,7 @@ ru:
       groups: Группы
       edit_collaborators: Изменить список участников
       issues: Задачи
+      wiki: Wiki
 
     collaborators:
       back_to_proj: Вернуться к проекту
@@ -327,13 +399,13 @@ ru:
       publish_success: 'Сборка поставлена в очередь на публикацию.'
       publish_fail: 'При публикации сборки произошла ошибка!'
       container_published: 'Контейнер размещен в репозитории'
-      
+
       build_server_status:
         header: Статус сборочного сервера
         client_count: Число клиентов
         count_new_task: Число заданий в очереди
         count_build_task: Число выполняемых заданий
-      
+
       items:
         statuses:
           build_started: собирается
@@ -365,11 +437,16 @@ ru:
     settings:
       saved: Настройки успешно сохранены
       save_error: При обновлении настроек произошла ошибка
-      
+
+    private_users: "Логин: %{login} Пароль: %{password}"
 
     subscribe:
       saved: Вы подписаны на оповещения для этой задачи
+      saved_error: При создании подписки произошла ошибка
       destroyed: Подписка на оповещения для этой задачи убрана
+      commit:
+        saved: Вы подписаны на оповещения для этого коммита
+        destroyed: Подписка на оповещения для этого коммита убрана
 
     exception_message: У Вас нет доступа к этой странице!
 
@@ -455,6 +532,7 @@ ru:
       unfreeze_error: Не удалось разморозить платформу, попробуйте еще раз
       destroyed: Платформа успешно удалена
       build_all_success: Все проекты успешно отправлены на сборку
+      clone_success: Клонирование успешно
 
     build_list:
       saved: Билд лист для версии '%{project_version}', платформы '%{bpl}' и архитектуры '%{arch}' создан успешно
@@ -465,6 +543,15 @@ ru:
       wrong_platform: Для основного репозитория (main) может быть выбран только его же основная платформа!
       can_not_published: Опубликовать сборку можно только со статусом "Собран"
 
+    wiki:
+      ref_not_exist: Версия не существует
+      successfully_updated: Страница '%{name}' успешно обновлена
+      duplicate_page: Страница '%{name}' уже существует
+      page_successfully_removed: Страница успешно удалена
+      page_not_found: Страница '%{name}' не найдена.
+      revert_success: Изменения успешно откачены
+      patch_does_not_apply: Не удалось откатить изменения
+
   attributes:
     password: Пароль
     password_confirmation: Подтверждение
@@ -474,6 +561,14 @@ ru:
     build_list: Сборочный лист
 
   activerecord:
+
+    errors:
+      models:
+        project:
+          attributes:
+            base:
+              can_have_less_or_equal: Нельзя иметь больше, чем %{count} проектов.
+
     models:
       category: Категория
       repository: Репозиторий
@@ -503,6 +598,9 @@ ru:
           new_comment_reply: Оповещать о новом ответе на мой комментарий
           new_issue: Оповещать о новых задачах в моих проектах
           issue_assign: Оповещать, когда на меня выставляют задачу
+          new_comment_commit_owner: Оповещать о комментариях к моему коммиту
+          new_comment_commit_repo_owner: Оповещать о комментариях к коммитам в моем репозитории
+          new_comment_commit_commentor: Оповещать о комментариях к коммиту после моего
 
       auto_build_list:
         project_id: Проект
@@ -607,6 +705,8 @@ ru:
         created_at: Создан
         updated_at: Обновлен
         has_issues: Включить трэкер
+        has_wiki: Включить Wiki
+        srpm: Импортировать код из src.rpm
 
       rpm:
         name: Название
@@ -681,14 +781,14 @@ ru:
         status: Статус
         version: Версия
         build_list: Сборочный лист
-      
+
       download:
         name: Название
         version: Версия
         distro: Дистрибутив
         platform: Архитектура
         counter: Закачки
-  
+
   notifications:
     subjects:
       new_comment_notification: Новый комментарий к Вашей задаче
@@ -715,3 +815,4 @@ ru:
       issue_assign_notification: 
         title: Здравствуйте, %{user_name}.
         content: Вам была назначена задача %{issue_link}
+      new_commit_comment_notification: Новый комментарий к коммиту

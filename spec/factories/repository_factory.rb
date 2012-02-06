@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 Factory.define(:repository) do |p|
   p.description { Factory.next(:string) }
   p.name { Factory.next(:unixname) }

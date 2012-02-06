@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class AddNewFieldsToBuildLists < ActiveRecord::Migration
   def self.up
     add_column :build_lists, :build_requires, :boolean

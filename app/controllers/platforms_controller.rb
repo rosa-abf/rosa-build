@@ -1,4 +1,4 @@
-# coding: UTF-8
+# -*- encoding : utf-8 -*-
 class PlatformsController < ApplicationController
   before_filter :authenticate_user!, :except => :easy_urpmi
   before_filter :find_platform, :only => [:freeze, :unfreeze, :clone, :edit, :destroy]
@@ -113,7 +113,7 @@ class PlatformsController < ApplicationController
       @cloned = @platform.make_clone(:name => params[:platform]['name'], :description => params[:platform]['description'],
                                     :owner_id => current_user.id, :owner_type => current_user.class.to_s)
       if @cloned.persisted?
-        flash[:notice] = 'Клонирование успешно'
+        flash[:notice] = I18n.t("flash.platform.clone_success")
         redirect_to @cloned
       else
         flash[:error] = @cloned.errors.full_messages.join('. ')

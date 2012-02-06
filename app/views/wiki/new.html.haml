@@ -1,0 +1,24 @@
+= render :partial => 'gollum_includes'
+= render :partial => 'project_short'
+
+%a{ :name => "wiki"}
+.block
+  = render :partial => 'navigation'
+
+  .content
+    #wiki-wrapper.inner
+      #head
+        %h1.title
+          = t("layout.wiki.create_page")
+          %strong= @name
+
+      #wiki-content
+        = render :partial => "editor"
+
+:javascript
+  jQuery(document).ready(function() {
+    $.GollumEditor({ NewFile: true });
+  });
+
+- content_for :sidebar do
+  - render :partial => 'projects/sidebar'

@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 module Git
   module Diff
     class InlineCallback < ::Diff::Renderer::Base

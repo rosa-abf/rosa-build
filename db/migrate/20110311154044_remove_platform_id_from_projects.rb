@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class RemovePlatformIdFromProjects < ActiveRecord::Migration
   def self.up
     remove_column :projects, :platform_id

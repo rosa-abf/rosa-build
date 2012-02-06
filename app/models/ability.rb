@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 # If rules goes one by one CanCan joins them by 'OR' sql operator
 # If rule has multiple conditions CanCan joins them by 'AND' sql operator
 # WARNING:
@@ -30,7 +31,7 @@ class Ability
 
         can [:show, :update], Settings::Notifier, :user_id => user.id
 
-        can [:read, :create], Group
+        can [:read, :create, :autocomplete_group_uname], Group
         can [:update, :manage_members], Group do |group|
           group.objects.exists?(:object_type => 'User', :object_id => user.id, :role => 'admin') # or group.owner_id = user.id
         end

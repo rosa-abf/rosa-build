@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class Issue < ActiveRecord::Base
   STATUSES = ['open', 'closed']
 
@@ -5,13 +6,9 @@ class Issue < ActiveRecord::Base
   belongs_to :user
 
   has_many :comments, :as => :commentable,
-    :finder_sql => proc { "comments.commentable_id = '#{self.id}' " +
-                   "  AND comments.commentable_type = '#{self.class.name}'"}
-                   #'SELECT comments.* FROM comments ' +
-                   #'WHERE comments.commentable_id = \'#{self.id}\' ' +
-                   #'  AND comments.commentable_type = \'#{self.class.name}\' ' +
-                   #'ORDER BY comments.created_at'
-  has_many :subscribes, :as => :subscribeable
+    :finder_sql => proc { "comments.commentable_id = '#{self.id}' AND comments.commentable_type = '#{self.class.name}'"}
+  has_many :subscribes, :as => :subscribeable,
+    :finder_sql => proc { "subscribes.subscribeable_id = '#{self.id}' AND subscribes.subscribeable_type = '#{self.class.name}'"}
 
   validates :title, :body, :project_id, :presence => true
 

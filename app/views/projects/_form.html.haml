@@ -13,6 +13,12 @@
 .group
   = f.label :has_issues, t("activerecord.attributes.project.has_issues"), :class => :label
   = f.check_box :has_issues
+.group
+  = f.label :has_wiki, t("activerecord.attributes.project.has_wiki"), :class => :label
+  = f.check_box :has_wiki
+.group
+  = f.label :srpm, t("activerecord.attributes.project.srpm"), :class => :label
+  = f.file_field :srpm, :class => 'file_field'
 
 .group.navform.wat-cf
   %button.button{:type => "submit"}

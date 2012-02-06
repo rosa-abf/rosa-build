@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class PrivatesController < ApplicationController
 	require 'digest/sha2'
 

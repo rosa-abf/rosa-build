@@ -1,7 +1,8 @@
+# -*- encoding : utf-8 -*-
 class Git::CommitsController < Git::BaseController
 
   def index
-    @branch_name = (params[:branch] ? params[:branch] : "master")
+    @branch_name = params[:treeish] || "master"
     @path = params[:path]
 
     if @path.present?

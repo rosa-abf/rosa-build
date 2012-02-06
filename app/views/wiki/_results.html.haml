@@ -1,0 +1,22 @@
+#results
+  - if @results and !@results.empty?
+    %ul
+      - @results.each do |result|
+        %li
+          - if action_name == 'search'
+            = link_to result[:name], project_wiki_path(@project, CGI.escape(result[:name]))
+            %span.count= "(#{result.count} #{t("layout.wiki.matches")})"
+          -else
+            = link_to result.name, project_wiki_path(@project, CGI.escape(result.name))
+  - else
+    %p#no-results
+      - @st_ref = capture do
+        %strong= @ref || @query
+      - if action_name == 'search'
+        = raw t("layout.wiki.no_results_for_search", :query => @st_ref)
+      - else
+        = raw t("layout.wiki.no_pages_in", :ref => @st_ref)
+
+#footer
+  %ul.actions
+    %li.minibutton= link_to t("layout.wiki.back_to_top"), '#wiki'

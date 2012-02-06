@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class Repository < ActiveRecord::Base
   belongs_to :platform
   belongs_to :owner, :polymorphic => true
@@ -11,7 +12,7 @@ class Repository < ActiveRecord::Base
   has_many :groups,  :through => :objects, :source => :object, :source_type => 'Group'
 
   validates :description, :uniqueness => {:scope => :platform_id}, :presence => true
-  validates :name, :uniqueness => {:scope => :platform_id}, :presence => true, :format => { :with => /^[a-z0-9_\-]+$/ }
+  validates :name, :uniqueness => {:scope => :platform_id, :case_sensitive => false}, :presence => true, :format => { :with => /^[a-z0-9_\-]+$/ }
   # validates :platform_id, :presence => true # if you uncomment this platform clone will not work
 
   scope :recent, order("name ASC")
@@ -56,7 +57,7 @@ class Repository < ActiveRecord::Base
       if result == BuildServer::SUCCESS
         return true
       else
-        raise "Failed to delete repository #{name} inside platform #{platform.name}."
+        raise "Failed to delete repository #{name} inside platform #{platform.name} with code #{result}."
       end
     end
 

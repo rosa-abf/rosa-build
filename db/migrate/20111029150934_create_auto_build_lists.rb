@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class CreateAutoBuildLists < ActiveRecord::Migration
   def self.up
     create_table :auto_build_lists do |t|

@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class BuildListsController < ApplicationController
   CALLBACK_ACTIONS = [:publish_build, :status_build, :pre_build, :post_build, :circle_build, :new_bbdt]
   NESTED_ACTIONS = [:index, :new, :create]
@@ -13,20 +14,29 @@ class BuildListsController < ApplicationController
   load_and_authorize_resource :except => CALLBACK_ACTIONS.concat(NESTED_ACTIONS)
 
   def index
-    filter_params = params[:filter] || {}
-    if @project
-      @action_url = project_build_lists_path(@project)
+    if request.post?
+      new_params = {:filter => {}}
+      params[:filter].each do |k,v|
+        new_params[:filter][k] = v unless v.empty?
+      end
+
+      redirect_to build_lists_path(new_params)
     else
-      @action_url = build_lists_path
-    end
+      filter_params = params[:filter] || {}
+      if @project
+        @action_url = project_build_lists_path(@project)
+      else
+        @action_url = build_lists_path
+      end
 
-    @filter = BuildList::Filter.new(@project, filter_params)
-    @build_lists = @filter.find.accessible_by(current_ability).recent.paginate :page => params[:page]
+      @filter = BuildList::Filter.new(@project, filter_params)
+      @build_lists = @filter.find.accessible_by(current_ability).recent.paginate :page => params[:page]
 
-    @build_server_status = begin
-      BuildServer.get_status
-    rescue Exception # Timeout::Error
-      {}
+      @build_server_status = begin
+        BuildServer.get_status
+      rescue Exception # Timeout::Error
+        {}
+      end
     end
   end
 
@@ -39,7 +49,7 @@ class BuildListsController < ApplicationController
     Arch.where(:id => params[:arches]).each do |arch|
       Platform.main.where(:id => params[:bpls]).each do |bpl|
         @build_list = @project.build_lists.build(params[:build_list])
-        @build_list.commit_hash = @project.git_repository.commits(@build_list.project_version.match(/(.+)_latest$/).to_a.last || @build_list.project_version).first.id
+        @build_list.commit_hash = @project.git_repository.commits(@build_list.project_version.match(/^latest_(.+)/).to_a.last || @build_list.project_version).first.id
         @build_list.bpl = bpl; @build_list.arch = arch; @build_list.user = current_user
         flash_options = {:project_version => @build_list.project_version, :arch => arch.name, :bpl => bpl.name, :pl => @build_list.pl}
         if @build_list.save
@@ -120,9 +130,9 @@ class BuildListsController < ApplicationController
     @build_list.notified_at = Time.current
     @build_list.save
 
-    @build_list.delay.publish if @build_list.auto_publish # && @build_list.can_publish?
-
     render :nothing => true, :status => 200
+
+    @build_list.delay.publish if @build_list.auto_publish # && @build_list.can_publish?
   end
 
   def circle_build

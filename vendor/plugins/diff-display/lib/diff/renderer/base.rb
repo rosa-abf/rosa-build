@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 module Diff
   module Renderer
     class Base

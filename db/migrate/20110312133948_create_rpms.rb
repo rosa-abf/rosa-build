@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class CreateRpms < ActiveRecord::Migration
   def self.up
     create_table :rpms do |t|

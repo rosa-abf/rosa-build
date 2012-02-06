@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class AddAncestryToProjects < ActiveRecord::Migration
   def self.up
     add_column :projects, :ancestry, :string

@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class IssuesController < ApplicationController
   before_filter :authenticate_user!
   before_filter :find_project

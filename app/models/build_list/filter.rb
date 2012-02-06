@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class BuildList::Filter
   def initialize(project, options = {})
     @project = project
@@ -67,7 +68,7 @@ class BuildList::Filter
   def build_date_from_params(field_name, params)
     if params["#{field_name}(1i)"].present? || params["#{field_name}(2i)"].present? || params["#{field_name}(3i)"].present?
       Date.civil((params["#{field_name}(1i)"].presence || Date.today.year).to_i, 
-                 (params["#{field_name}(2i)"].presence || Date.today.mohth).to_i,
+                 (params["#{field_name}(2i)"].presence || Date.today.month).to_i,
                  (params["#{field_name}(3i)"].presence || Date.today.day).to_i)
     else
       nil

@@ -1,3 +1,4 @@
+# encoding: UTF-8
 # This file is auto-generated from the current state of the database. Instead
 # of editing this file, please use the migrations feature of Active Record to
 # incrementally modify your database, and then regenerate this schema definition.
@@ -10,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120124065207) do
+ActiveRecord::Schema.define(:version => 20120131124517) do
 
   create_table "activity_feeds", :force => true do |t|
     t.integer  "user_id",    :null => false
@@ -160,6 +161,7 @@ ActiveRecord::Schema.define(:version => 20120124065207) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "uname"
+    t.integer  "own_projects_count", :default => 0, :null => false
   end
 
   create_table "issues", :force => true do |t|
@@ -229,6 +231,18 @@ ActiveRecord::Schema.define(:version => 20120124065207) do
     t.boolean  "use_cron",         :default => false
   end
 
+  create_table "project_imports", :force => true do |t|
+    t.integer  "project_id"
+    t.string   "name"
+    t.string   "version"
+    t.datetime "file_mtime"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "platform_id"
+  end
+
+  add_index "project_imports", ["platform_id", "name"], :name => "index_project_imports_on_name_and_platform_id", :unique => true, :case_sensitive => false
+
   create_table "project_to_repositories", :force => true do |t|
     t.integer  "project_id"
     t.integer  "repository_id"
@@ -242,14 +256,20 @@ ActiveRecord::Schema.define(:version => 20120124065207) do
     t.datetime "updated_at"
     t.integer  "owner_id"
     t.string   "owner_type"
-    t.string   "visibility",  :default => "open"
+    t.string   "visibility",        :default => "open"
     t.integer  "category_id"
     t.text     "description"
     t.string   "ancestry"
-    t.boolean  "has_issues",  :default => true
+    t.boolean  "has_issues",        :default => true
+    t.string   "srpm_file_name"
+    t.string   "srpm_content_type"
+    t.integer  "srpm_file_size"
+    t.datetime "srpm_updated_at"
+    t.boolean  "has_wiki",          :default => false
   end
 
   add_index "projects", ["category_id"], :name => "index_projects_on_category_id"
+  add_index "projects", ["owner_id"], :name => "index_projects_on_name_and_owner_id_and_owner_type", :unique => true, :case_sensitive => false
 
   create_table "relations", :force => true do |t|
     t.integer  "object_id"
@@ -283,22 +303,27 @@ ActiveRecord::Schema.define(:version => 20120124065207) do
   add_index "rpms", ["project_id"], :name => "index_rpms_on_project_id"
 
   create_table "settings_notifiers", :force => true do |t|
-    t.integer  "user_id",                             :null => false
-    t.boolean  "can_notify",        :default => true
-    t.boolean  "new_comment",       :default => true
-    t.boolean  "new_comment_reply", :default => true
-    t.boolean  "new_issue",         :default => true
-    t.boolean  "issue_assign",      :default => true
+    t.integer  "user_id",                                         :null => false
+    t.boolean  "can_notify",                    :default => true
+    t.boolean  "new_comment",                   :default => true
+    t.boolean  "new_comment_reply",             :default => true
+    t.boolean  "new_issue",                     :default => true
+    t.boolean  "issue_assign",                  :default => true
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.boolean  "new_comment_commit_owner",      :default => true
+    t.boolean  "new_comment_commit_repo_owner", :default => true
+    t.boolean  "new_comment_commit_commentor",  :default => true
   end
 
   create_table "subscribes", :force => true do |t|
-    t.integer  "subscribeable_id"
+    t.string   "subscribeable_id"
     t.string   "subscribeable_type"
     t.integer  "user_id"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.boolean  "status",             :default => true
+    t.integer  "project_id"
   end
 
   create_table "users", :force => true do |t|
@@ -315,6 +340,7 @@ ActiveRecord::Schema.define(:version => 20120124065207) do
     t.string   "uname"
     t.string   "role"
     t.string   "language",                            :default => "en"
+    t.integer  "own_projects_count",                  :default => 0,    :null => false
   end
 
   add_index "users", ["email"], :name => "index_users_on_email", :unique => true

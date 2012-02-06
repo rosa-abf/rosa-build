@@ -42,3 +42,9 @@ ru:
       create: 'создано'
       update: 'обновлено'
       destroy: 'удалено'
+    notices:
+      platforms_list: список платформ
+      users_list: список пользовательских проектов
+      versions_list: список версий
+      status: статус сборки
+      project_build: сборка пакета
