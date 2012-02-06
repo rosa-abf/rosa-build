@@ -4,14 +4,14 @@ class Group < ActiveRecord::Base
 
   has_many :own_projects, :as => :owner, :class_name => 'Project'
 
-  has_many :relations, :as => :object, :dependent => :destroy
   has_many :objects, :as => :target, :class_name => 'Relation'
   has_many :targets, :as => :object, :class_name => 'Relation'
 
   has_many :members,      :through => :objects, :source => :object, :source_type => 'User',       :autosave => true
   has_many :projects,     :through => :targets, :source => :target, :source_type => 'Project',    :autosave => true
-  has_many :platforms,    :through => :targets, :source => :target, :source_type => 'Platform',   :autosave => true
+  has_many :platforms,    :through => :targets, :source => :target, :source_type => 'Platform',   :autosave => true, :dependent => :destroy
   has_many :repositories, :through => :targets, :source => :target, :source_type => 'Repository', :autosave => true
+  has_many :relations, :as => :object, :dependent => :destroy
 
   validates :name, :owner, :presence => true
   validates :uname, :presence => true, :uniqueness => {:case_sensitive => false}, :format => { :with => /^[a-z0-9_]+$/ }
