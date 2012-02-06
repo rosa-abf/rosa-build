@@ -37,7 +37,7 @@ module WikiHelper
     name == 'Home' ? project_wiki_index_path(project) : project_wiki_path(project, name)
   end
 
-  def formats
+  def wiki_formats
     APP_CONFIG['wiki_formats'].map do |key, val|
       [ val, key.to_s ]
     end.sort do |a, b|
