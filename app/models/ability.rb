@@ -67,7 +67,7 @@ class Ability
         can :autocomplete_user_uname, Platform
 
         # TODO delegate to platform?
-        can :read, Repository, :visibility => 'open'
+        can :read, Repository, :platform => {:visibility => 'open'}
         can :read, Repository, :owner_type => 'User', :owner_id => user.id
         can :read, Repository, :owner_type => 'Group', :owner_id => user.group_ids
         can(:read, Repository, read_relations_for('repositories')) {|repository| local_reader? repository}
