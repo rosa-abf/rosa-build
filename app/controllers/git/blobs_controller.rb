@@ -16,6 +16,14 @@ class Git::BlobsController < Git::BaseController
     end
   end
 
+  def edit
+  end
+
+  def update
+    @git_repository.update_file(params[:path], params[:content], :message => params[:message], :actor => current_user, :ref => @treeish)
+    redirect_to :action => :show
+  end
+
   def blame
     @blame = Grit::Blob.blame(@git_repository.repo, @commit.try(:id), @path)
   end

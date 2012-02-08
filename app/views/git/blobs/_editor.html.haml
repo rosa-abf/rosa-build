@@ -1,0 +1,39 @@
+#gollum-editor.edit{:'data-escaped-name' => @path}
+  = form_tag blob_file_path, :name => 'blob-editor', :method => :put do
+    %fieldset#gollum-editor-fields
+
+      = text_area_tag :content, @blob.data.encode_to_default, :id => "gollum-editor-body"
+
+      #gollum-editor-edit-summary.singleline
+        = label_tag :message, t("layout.wiki.edit_commit_message"), :class => "jaws"
+        = text_field_tag :message, t("layout.wiki.commit_message_placeholder"), :id => "editor-commit-message-field"
+
+      %span.jaws
+        %br
+
+      = submit_tag t("layout.wiki.save_button"), :id => "gollum-editor-submit", :title => t("layout.wiki.save_changes")
+      = link_to t("layout.cancel"), blob_file_path, :class => 'minibutton', :id => 'gollum-editor-preview'
+
+:javascript
+  (function($) {
+    $.Editor = function() {
+      $.Editor.Placeholder.add($('#gollum-editor-edit-summary input'));
+      $('#gollum-editor form[name="blob-editor"]').submit(function( e ) {
+        e.preventDefault();
+        $.Editor.Placeholder.clearAll();
+        //debug('submitting');
+        $(this).unbind('submit');
+        $(this).submit();
+      });
+    };
+
+    $.Editor.Placeholder = $.GollumPlaceholder;
+
+    $.Editor();
+  })(jQuery);
+
+- content_for :javascripts do
+  = javascript_include_tag 'gollum/gollum.placeholder.js'
+
+- content_for :stylesheets do
+  = stylesheet_link_tag 'gollum/editor.css'
