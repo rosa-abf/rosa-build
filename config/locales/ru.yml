@@ -1,5 +1,4 @@
 ru:
-
   will_paginate:
     previous_label: ‹ Предыдущая
     next_label: Следующая ›
@@ -16,6 +15,7 @@ ru:
     filtered_label: (отфильтровано из _MAX_)
 
   layout:
+    search: Поиск
     logged_in_as: Вы вошли как
     logout: Выйти
     user_list: Список пользователей
@@ -43,12 +43,13 @@ ru:
     confirm: Уверены?
     back: Назад
     settings:
+      label: 'Настройки'
       notifier: Настройки оповещений
       notifiers:
         edit_header: Настройки оповещений
     processing: Обрабатывается...
     invalid_content_type: имеет неверный тип
-
+      
     devise:
       shared_links:
         sign_in: Войти
@@ -84,23 +85,6 @@ ru:
 
     time:
       ago: назад
-
-    menu:
-      categories: Каталог
-      containers: Контейнеры
-      downloads: Статистика
-      event_logs: Лог событий
-      build_lists: Мониторинг задач
-      groups: Группы
-      platforms: Платформы
-      products: Продукты
-      projects: Проекты
-      repositories: Репозитории
-      rights: Права
-      roles: Роли
-      users: Пользователи
-      personal_repository: Мой репозиторий
-      auto_build_lists: Авто. сборки
 
     sessions:
       sign_in_header: Вход в систему

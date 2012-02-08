@@ -15,6 +15,7 @@ en:
     filtered_label: (filtered from _MAX_)
 
   layout:
+    search: Search
     logged_in_as: You logged as
     logout: Logout
     user_list: User list
@@ -42,6 +43,7 @@ en:
     confirm: Sure?
     back: Back
     settings:
+      label: Settings
       notifier: Notifier setting
       notifiers:
         edit_header: Notifier setting
@@ -83,23 +85,6 @@ en:
 
     time:
       ago: ago
-
-    menu:
-      categories: Catalogue
-      containers: Containers
-      downloads: Statistics
-      event_logs: Event log
-      build_lists: Task monitoring
-      groups: Groups
-      platforms: Platforms
-      products: Products
-      projects: Projects
-      repositories: Repositories
-      rights: Rights
-      roles: Roles
-      users: Users
-      personal_repository: My repository
-      auto_build_lists: Automated build
 
     sessions:
       sign_in_header: Sign in
@@ -366,6 +351,7 @@ en:
       confirm: Sure?
       back: Back
       settings:
+        label: Settings
         notifier: Notifier setting
         notifiers:
           edit_header: Notifier setting
@@ -404,23 +390,6 @@ en:
         Friday: Friday
         Saturday: Saturday
         Sunday: Sunday
-
-      menu:
-        categories: Catalogue
-        containers: Containers
-        downloads: Statistics
-        event_logs: Event log
-        build_lists: Task monitoring
-        groups: Groups
-        platforms: Platforms
-        products: Products
-        projects: Projects
-        repositories: Repositories
-        rights: Rights
-        roles: Roles
-        users: Users
-        personal_repository: My repository
-        auto_build_lists: Automated build
 
       sessions:
         sign_in_header: Sign in
@@ -506,7 +475,7 @@ en:
         clone: To clone
 
       event_logs:
-        list:List
+        list: List
         list_header: Event log
 
       repositories:
