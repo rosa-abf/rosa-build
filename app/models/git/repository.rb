@@ -21,10 +21,35 @@ class Git::Repository
     @repo ||= Grit::Repo.new(path)
   end
 
+  # Adds a callback to be fired after update file.
+  #
+  # block - A block that expects this Git::Repository instance and the created
+  #         commit's SHA1 as the arguments.
+  #
+  # For example:
+  #
+  # after_update_file do |repo, sha|
+  #   # callback body
+  # end
+  #
+  # Returns nothing.
   def after_update_file(&block)
     @update_callbacks << block
   end
 
+  # Writes file to repo and runs 'after_update_file' callbacks
+  #
+  # path    - path to file in repository
+  # data    - new content of file
+  # options - an optional Hash of options
+  #           :ref     - ref name to write this commit to
+  #                      (Default: 'master')
+  #           :actor   - author of this commit. (See Git::Repository#get_actor)
+  #                      (Default: nil)
+  #           :message - commit message
+  #                      (Default: "Updated file <filename>")
+  #
+  # Returns commits sha if committing was successful and false otherwise
   def update_file(path, data, options = {})
     ref = options[:ref].to_s || 'master'
     actor = get_actor(options[:actor])
@@ -39,9 +64,11 @@ class Git::Repository
     index.read_tree(parent.tree.id)
 
     index.add(path, data)
-    sha = index.commit(message, :parents => [parent], :actor => actor, :last_tree => parent.tree.id, :head => ref)
+    sha = index.commit(message, :parents => [parent], :actor => actor,
+                                :last_tree => parent.tree.id, :head => ref)
+    # call all defined callbacks
     @update_callbacks.each do |cb|
-      cb.call(self, sha1)
+      cb.call(self, sha)
     end
     sha
   end
@@ -71,6 +98,13 @@ class Git::Repository
 
   protected
 
+    # Creates new Grit::Actor instance
+    #
+    #           Might be:
+    #                      * A Hash containing :name and :email
+    #                      * An instance of Grit::Actor
+    #                      * A String like "John Doe <j.doe@example.com>
+    #                      * Any object that responds to `name` and `email` methods
     def get_actor(actor = nil)
       @last_actor = case actor.class.to_s
         when 'Grit::Actor' then options[:actor]
