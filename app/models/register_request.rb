@@ -13,6 +13,6 @@ class RegisterRequest < ActiveRecord::Base
   protected
 
     def generate_token
-      token = Digest::SHA1.hexdigest(name + email + Time.now.to_s + rand.to_s)
+      self.token = Digest::SHA1.hexdigest(name + email + Time.now.to_s + rand.to_s)
     end
 end
