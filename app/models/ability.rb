@@ -16,6 +16,7 @@ class Ability
       can :manage, :all
       cannot :destroy, Subscribe
       cannot :create, Subscribe
+      cannot :create, RegisterRequest
     else
       # Shared rights between guests and registered users
       can :forbidden, Platform
@@ -26,6 +27,7 @@ class Ability
 
       if user.guest? # Guest rights
         can :create, User
+        can [:create, :show_message], RegisterRequest
       else # Registered user rights
         can [:show, :autocomplete_user_uname], User
 
@@ -97,6 +99,7 @@ class Ability
         can(:update, Comment) {|comment| comment.user_id == user.id or local_admin?(comment.project || comment.commentable.project)}
         #cannot :manage, Comment, :commentable => {:project => {:has_issues => false}} # switch off issues
         cannot(:manage, Comment) {|comment| comment.commentable_type == 'Issue' && !comment.commentable.project.has_issues} # switch off issues
+        cannot :manage, RegisterRequest
       end
     end
 

@@ -1,0 +1,47 @@
+.block
+  .secondary-navigation
+    %ul.wat-cf
+      %li.first= link_to t("layout.users.list"), users_path
+      %li= link_to t("layout.users.new"), new_user_path
+      %li.active= link_to t("layout.users.register_requests"), register_requests_path
+  .content
+    %h2.title
+      = t("layout.register_request.list_header")
+    .inner
+      = form_tag register_requests_path, :method => :put, :class => 'update_form' do
+        = hidden_field_tag 'update_type'
+        %table.table
+          %tr
+            %th &nbsp;
+            %th= t("activerecord.attributes.register_request.name")
+            %th= t("activerecord.attributes.register_request.email")
+            %th= t("activerecord.attributes.register_request.created_at")
+            %th.last &nbsp;
+          - @register_requests.each do |request|
+            %tr{:class => cycle("odd", "even")}
+              %td= check_box_tag 'request_ids[]', request.id
+              %td= request.name
+              %td= request.email
+              %td
+                = link_to t("layout.approve"), register_request_approve_path(request) if can? :approve, request
+                |
+                = link_to t("layout.reject"), register_request_reject_path(request) if can? :reject, request
+      .actions-bar.wat-cf
+        .actions
+          = submit_tag t("layout.register_request.approve_selected"), :class => 'approve_registration'
+          = submit_tag t("layout.register_request.reject_selected"), :class => 'reject_registration'
+        .pagination
+          = will_paginate @register_requests
+:javascript
+  $(function() {
+    var form = $('form.update_form')
+    var change_update_type = function (type) {
+      $('input#update_type').val(type);
+    };
+    $('.approve_registration').live('click', function(e) {
+      //set update_type to 'approve'
+    });
+    $('.approve_registration').live('click', function(e) {
+      //set update_type to 'reject'
+    });
+  });

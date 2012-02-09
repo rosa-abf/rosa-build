@@ -1,7 +1,6 @@
 source 'http://rubygems.org'
 
 gem 'rails', '3.0.11' #, :git => 'git://github.com/rails/rails.git'
-gem 'shotgun'
 
 gem 'pg', '~> 0.11.0'
 gem 'silent-postgres', '~> 0.1.1'
@@ -61,6 +60,7 @@ group :development do
   gem 'ruby_parser'
 
   gem 'hirb'
+  gem 'shotgun'
 
   # deploy
   gem 'capistrano', :require => false
