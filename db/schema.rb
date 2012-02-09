@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120131124517) do
+ActiveRecord::Schema.define(:version => 20120209135822) do
 
   create_table "arches", :force => true do |t|
     t.string   "name",       :null => false
@@ -253,15 +253,27 @@ ActiveRecord::Schema.define(:version => 20120131124517) do
     t.text     "description"
     t.string   "ancestry"
     t.boolean  "has_issues",        :default => true
+    t.boolean  "has_wiki",          :default => false
     t.string   "srpm_file_name"
     t.string   "srpm_content_type"
     t.integer  "srpm_file_size"
     t.datetime "srpm_updated_at"
-    t.boolean  "has_wiki",          :default => false
   end
 
   add_index "projects", ["category_id"], :name => "index_projects_on_category_id"
-  add_index "projects", ["owner_id"], :name => "index_projects_on_name_and_owner_id_and_owner_type", :unique => true, :case_sensitive => false
+  add_index "projects", ["owner_id"], :name => "index_projects_on_name_and_owner_id_and_owner_type", :unique => true
+
+  create_table "register_requests", :force => true do |t|
+    t.string   "name"
+    t.string   "email"
+    t.string   "token"
+    t.boolean  "approved",   :default => false
+    t.boolean  "rejected",   :default => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "register_requests", ["email"], :name => "index_register_requests_on_email", :unique => true, :case_sensitive => false
 
   create_table "relations", :force => true do |t|
     t.integer  "object_id"
@@ -320,19 +332,18 @@ ActiveRecord::Schema.define(:version => 20120131124517) do
 
   create_table "users", :force => true do |t|
     t.string   "name"
-    t.string   "email",                               :default => "",   :null => false
-    t.string   "encrypted_password",   :limit => 128, :default => "",   :null => false
-    t.string   "password_salt",                       :default => "",   :null => false
+    t.string   "email",                                 :default => "",   :null => false
+    t.string   "encrypted_password",     :limit => 128, :default => "",   :null => false
     t.string   "reset_password_token"
-    t.string   "remember_token"
+    t.datetime "reset_password_sent_at"
     t.datetime "remember_created_at"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.text     "ssh_key"
     t.string   "uname"
     t.string   "role"
-    t.string   "language",                            :default => "en"
-    t.integer  "own_projects_count",                  :default => 0,    :null => false
+    t.string   "language",                              :default => "en"
+    t.integer  "own_projects_count",                    :default => 0,    :null => false
   end
 
   add_index "users", ["email"], :name => "index_users_on_email", :unique => true

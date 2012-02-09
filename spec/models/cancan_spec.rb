@@ -22,6 +22,7 @@ describe CanCan do
 	let(:personal_repository) { Factory(:personal_repository) }
 	let(:open_platform) { Factory(:platform, :visibility => 'open') }
 	let(:hidden_platform) { Factory(:platform, :visibility => 'hidden') }
+  let(:register_request) { Factory(:register_request) }
 
   before(:each) do
     stub_rsync_methods
@@ -44,6 +45,10 @@ describe CanCan do
 		it 'should not be able to destroy personal repositories' do
 			@ability.should_not be_able_to(:destroy, personal_repository)
 		end
+
+    it 'should not be able to create new register requests' do
+      @ability.should_not be_able_to(:create, RegisterRequest)
+    end
 	end
 
 	context 'Site guest' do
@@ -68,6 +73,22 @@ describe CanCan do
 				@ability.should be_able_to(action, BuildList)
 			end
 		end
+
+    it 'should be able to create register request' do
+      @ability.should be_able_to(:create, RegisterRequest)
+    end
+
+    it 'should not be able to update register request' do
+      @ability.should_not be_able_to(:update, register_request)
+    end
+
+    it 'should not be able to list register requests' do
+      @ability.should_not be_able_to(:read, register_request)
+    end
+
+    it 'should not be able to destroy register requests' do
+      @ability.should_not be_able_to(:destroy, register_request)
+    end
 
 		it 'should be able to register new user' do
 			@ability.should be_able_to(:create, User)
@@ -103,6 +124,10 @@ describe CanCan do
 
     it "shoud be able to create project" do
       @ability.should be_able_to(:create, Project)
+    end
+
+    it "should not be able to manage register requests" do
+      @ability.should_not be_able_to(:manage, RegisterRequest)
     end
 
     context "private users relations" do

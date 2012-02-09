@@ -3,6 +3,7 @@
     %ul.wat-cf
       %li.first.active= link_to t("layout.users.list"), users_path
       %li= link_to t("layout.users.new"), new_user_path
+      %li= link_to t("layout.users.register_requests"), register_requests_path if can? :read, RegisterRequest
   .content
     %h2.title
       = t("layout.users.list_header")

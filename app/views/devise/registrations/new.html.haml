@@ -24,6 +24,13 @@
         .right
           = f.text_field :name, :class => "text_field"
 
+      .group.wat-cf
+        .left
+          = f.label 'Token', :class => "label"
+        .right
+          = text_field_tag :token, '', :class => "text_field", :style => 'width: 70%'
+          = link_to t('get_token'), new_register_request_path, :style => 'display: inline-block; float: right'
+
       - if resource.authentications.blank?
         .group.wat-cf
           .left

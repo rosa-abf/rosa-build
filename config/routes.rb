@@ -9,7 +9,15 @@ Rosa::Application.routes.draw do
 
   resources :users do
     resources :groups, :only => [:new, :create, :index]
-    get :autocomplete_user_uname, :on => :collection
+    collection do
+      resources :register_requests, :only => [:index, :new, :create, :show_message, :approve, :reject] do
+        get :show_message, :on => :collection
+        get :approve
+        get :reject
+      end
+      get :autocomplete_user_uname
+    end
+
     namespace :settings do
       resource :notifier, :only => [:show, :update]
     end
