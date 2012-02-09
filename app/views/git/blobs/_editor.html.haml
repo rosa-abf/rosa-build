@@ -15,25 +15,12 @@
       = link_to t("layout.cancel"), blob_file_path, :class => 'minibutton', :id => 'gollum-editor-preview'
 
 :javascript
-  (function($) {
-    $.Editor = function() {
-      $.Editor.Placeholder.add($('#gollum-editor-edit-summary input'));
-      $('#gollum-editor form[name="blob-editor"]').submit(function( e ) {
-        e.preventDefault();
-        $.Editor.Placeholder.clearAll();
-        //debug('submitting');
-        $(this).unbind('submit');
-        $(this).submit();
-      });
-    };
-
-    $.Editor.Placeholder = $.GollumPlaceholder;
-
-    $.Editor();
-  })(jQuery);
+  $(function() {
+    $.BlobEditor();
+  });
 
 - content_for :javascripts do
-  = javascript_include_tag 'gollum/gollum.placeholder.js'
+  = javascript_include_tag 'gollum/gollum.placeholder.js', 'blob.editor.js'
 
 - content_for :stylesheets do
   = stylesheet_link_tag 'gollum/editor.css'
