@@ -8,7 +8,7 @@ class RegisterRequest < ActiveRecord::Base
   before_create :generate_token
 
   validate :name, :presence => true
-  validate :email, :presence => true, :uniqueness => {:case_sensitive => false}
+  validate :email, :presence => true, :uniqueness => {:case_sensitive => false}, :format => { :with => /\A([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})\z/i }
 
   protected
 

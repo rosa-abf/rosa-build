@@ -27,7 +27,7 @@ class Ability
 
       if user.guest? # Guest rights
         can :create, User
-        can :create, RegisterRequest
+        can [:create, :show_message], RegisterRequest
       else # Registered user rights
         can [:show, :autocomplete_user_uname], User
 

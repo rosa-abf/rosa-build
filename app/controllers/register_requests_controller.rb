@@ -7,26 +7,34 @@ class RegisterRequestsController < ApplicationController
   end
 
   def new
-    render :layout => 'sessions'
+#    render :layout => 'sessions'
+    redirect_to '/invite.html'
   end
 
   def show_message
   end
 
   def create
-    if @register_request = RegisterRequest.create(params[:register_request])
-      redirect_to show_message_register_requests_path
-    else
-      redirect_to :action => :new
+    RegisterRequest.create(params[:register_request])
+    redirect_to '/thanks.html' #show_message_register_requests_path
+  end
+
+  def update
+    case params[:update_type]
+      when 'approve' # see approve method
+      when 'reject'  # see reject method
     end
+    redirect_to :action => :index
   end
 
   def approve
     @register_request.update_attributes(:approved => true, :rejected => false)
+    redirect_to :action => :index
   end
 
   def reject
     @register_request.update_attributes(:approved => false, :rejected => true)
+    redirect_to :action => :index
   end
 end
 

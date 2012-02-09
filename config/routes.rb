@@ -12,6 +12,7 @@ Rosa::Application.routes.draw do
     collection do
       resources :register_requests, :only => [:index, :new, :create, :show_message, :approve, :reject] do
         get :show_message, :on => :collection
+        put :update,       :on => :collection
         get :approve
         get :reject
       end
