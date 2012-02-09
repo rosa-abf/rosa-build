@@ -549,6 +549,10 @@ ru:
       revert_success: Изменения успешно откачены
       patch_does_not_apply: Не удалось откатить изменения
 
+    blob:
+      successfully_updated: Файл '%{name}' успешно обновлен
+      updating_error: Ошибка обновления файла '%{name}'
+
   attributes:
     password: Пароль
     password_confirmation: Подтверждение
