@@ -20,7 +20,17 @@ class Git::BlobsController < Git::BaseController
   end
 
   def update
-    @git_repository.update_file(params[:path], params[:content], :message => params[:message], :actor => current_user, :ref => @treeish)
+    # Here might be callbacks for notification purposes:
+    # @git_repository.after_update_file do |repo, sha|
+    # end
+
+    res = @git_repository.update_file(params[:path], params[:content],
+                                      :message => params[:message], :actor => current_user, :head => @treeish)
+    if res
+      flash[:notice] = t("flash.blob.successfully_updated", :name => params[:path].encode_to_default)
+    else
+      flash[:notice] = t("flash.blob.updating_error", :name => params[:path].encode_to_default)
+    end
     redirect_to :action => :show
   end
 
@@ -36,7 +46,8 @@ class Git::BlobsController < Git::BaseController
   protected
     def set_path_blob
       @path = params[:path]
-      @blob = @tree / @path.encode_to_default
+      @path.force_encoding(Encoding::ASCII_8BIT)
+      @blob = @tree / @path
     end
 
     def set_commit_hash

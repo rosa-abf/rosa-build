@@ -1,4 +1,4 @@
-#gollum-editor.edit{:'data-escaped-name' => @path}
+#gollum-editor.edit{:'data-escaped-name' => @path.encode_to_default}
   = form_tag blob_file_path, :name => 'blob-editor', :method => :put do
     %fieldset#gollum-editor-fields
 
