@@ -42,7 +42,7 @@ class Git::Repository
   # path    - path to file in repository
   # data    - new content of file
   # options - an optional Hash of options
-  #           :ref     - ref name to write this commit to
+  #           :head    - branch name to write this commit to
   #                      (Default: 'master')
   #           :actor   - author of this commit. (See Git::Repository#get_actor)
   #                      (Default: nil)
@@ -51,21 +51,28 @@ class Git::Repository
   #
   # Returns commits sha if committing was successful and false otherwise
   def update_file(path, data, options = {})
-    ref = options[:ref].to_s || 'master'
+    path.force_encoding(Encoding::ASCII_8BIT) # some magic
+
+    head = options[:head].to_s || 'master'
     actor = get_actor(options[:actor])
-    message = options[:message] || "Updated file #{File.split(path).last}"
+    filename = File.split(path).last
+    message = options[:message]
+    message = "Updated file #{filename}" if message.nil? or message.empty?
 
     # can not write to unexisted branch
-    return false if branches.select{|b| b.name == ref}.size != 1
+    return false if branches.select{|b| b.name == head}.size != 1
 
-    parent = commits(ref).first
+    parent = commits(head).first
 
     index = repo.index
     index.read_tree(parent.tree.id)
 
+    # can not create new file
+    return false if (index.current_tree / path).nil?
+
     index.add(path, data)
     sha = index.commit(message, :parents => [parent], :actor => actor,
-                                :last_tree => parent.tree.id, :head => ref)
+                                :last_tree => parent.tree.id, :head => head)
     # call all defined callbacks
     @update_callbacks.each do |cb|
       cb.call(self, sha)
