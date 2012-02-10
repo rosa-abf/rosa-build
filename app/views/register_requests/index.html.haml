@@ -22,6 +22,7 @@
               %td= check_box_tag 'request_ids[]', request.id
               %td= request.name
               %td= request.email
+              %td= request.created_at
               %td
                 = link_to t("layout.approve"), register_request_approve_path(request) if can? :approve, request
                 |

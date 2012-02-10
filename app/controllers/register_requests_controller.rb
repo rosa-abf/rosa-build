@@ -2,6 +2,8 @@
 class RegisterRequestsController < ApplicationController
   load_and_authorize_resource
 
+  before_filter :find_register_request, :only => [:approve, :reject]
+
   def index
     @register_requests = @register_requests.unprocessed.paginate(:page => params[:page])
   end
@@ -36,5 +38,10 @@ class RegisterRequestsController < ApplicationController
     @register_request.update_attributes(:approved => false, :rejected => true)
     redirect_to :action => :index
   end
-end
 
+  protected
+
+    def find_register_request
+      @register_request = RegisterRequest.find(params[:register_request_id])
+    end
+end
