@@ -53,7 +53,7 @@ end
 gem 'newrelic_rpm'
 
 group :development do
-  # gem 'letter_opener'
+  gem 'mailcatcher' # 'letter_opener'
   gem 'rails3-generators'
   gem 'web-app-theme'
   gem 'hpricot'

@@ -15,33 +15,44 @@
             %th &nbsp;
             %th= t("activerecord.attributes.register_request.name")
             %th= t("activerecord.attributes.register_request.email")
+            %th= t("activerecord.attributes.register_request.interest")
+            %th= t("activerecord.attributes.register_request.more")
             %th= t("activerecord.attributes.register_request.created_at")
-            %th.last &nbsp;
+            %th
           - @register_requests.each do |request|
             %tr{:class => cycle("odd", "even")}
               %td= check_box_tag 'request_ids[]', request.id
               %td= request.name
               %td= request.email
+              %td= request.interest
+              %td= request.more
+              %td= request.created_at
               %td
                 = link_to t("layout.approve"), register_request_approve_path(request) if can? :approve, request
                 |
                 = link_to t("layout.reject"), register_request_reject_path(request) if can? :reject, request
       .actions-bar.wat-cf
         .actions
-          = submit_tag t("layout.register_request.approve_selected"), :class => 'approve_registration'
-          = submit_tag t("layout.register_request.reject_selected"), :class => 'reject_registration'
+          <input type='button' id='approve_registration' value="Approve Selected" />
+          <input type='button' id='reject_registration' value="Reject Selected" />
+          =# button_tag t("layout.register_request.approve_selected"), :class => 'approve_registration'
+          =# button_tag t("layout.register_request.reject_selected"), :class => 'reject_registration'
         .pagination
           = will_paginate @register_requests
 :javascript
   $(function() {
-    var form = $('form.update_form')
+    var $form = $('form.update_form')
     var change_update_type = function (type) {
       $('input#update_type').val(type);
     };
-    $('.approve_registration').live('click', function(e) {
+    $('#approve_registration').live('click', function(e) {
       //set update_type to 'approve'
+      change_update_type('approve');
+      $form.submit();
     });
-    $('.approve_registration').live('click', function(e) {
+    $('#reject_registration').live('click', function(e) {
       //set update_type to 'reject'
+      change_update_type('reject');
+      $form.submit();
     });
   });

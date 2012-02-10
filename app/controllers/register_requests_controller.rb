@@ -2,6 +2,8 @@
 class RegisterRequestsController < ApplicationController
   load_and_authorize_resource
 
+  before_filter :find_register_request, :only => [:approve, :reject]
+
   def index
     @register_requests = @register_requests.unprocessed.paginate(:page => params[:page])
   end
@@ -20,9 +22,14 @@ class RegisterRequestsController < ApplicationController
   end
 
   def update
-    case params[:update_type]
-      when 'approve' # see approve method
-      when 'reject'  # see reject method
+    if params[:update_type].present? and params[:request_ids].present?
+      updates = RegisterRequest.where(:id => params[:request_ids])
+      case params[:update_type]
+        when 'approve' # see approve method
+          updates.each {|req| req.update_attributes(:approved => true, :rejected => false)}
+        when 'reject'  # see reject method
+          updates.each {|req| req.update_attributes(:approved => false, :rejected => true)}
+      end
     end
     redirect_to :action => :index
   end
@@ -36,5 +43,10 @@ class RegisterRequestsController < ApplicationController
     @register_request.update_attributes(:approved => false, :rejected => true)
     redirect_to :action => :index
   end
-end
 
+  protected
+
+    def find_register_request
+      @register_request = RegisterRequest.find(params[:register_request_id])
+    end
+end

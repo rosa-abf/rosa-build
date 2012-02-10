@@ -33,4 +33,9 @@ class UserMailer < ActionMailer::Base
       format.html
     end
   end
+
+  def invite_approve_notification(register_request)
+    @register_request = register_request
+    mail :to => register_request.email, :subject => I18n.t("notifications.subjects.invite_approve_notification")
+  end
 end

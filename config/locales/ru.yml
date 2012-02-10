@@ -793,3 +793,4 @@ ru:
       new_user_notification: Регистрация на проекте «%{ project_name }»
       issue_assign_notification: Вам назначили задачу
       new_commit_comment_notification: Новый комментарий к коммиту
+      invite_approve_notification: Приглашение в ABF

@@ -1,0 +1,7 @@
+%p== Здравствуйте, #{@register_request.name}.
+
+%p
+  Вы приглашены в проект ABF. Чтобы зарегистрироваться перейдите по
+  = link_to 'ссылке', new_user_registration_url(:invitation_token => @register_request.token)
+
+%p== Команда поддержки «ROSA Build System»
