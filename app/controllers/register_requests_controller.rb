@@ -22,9 +22,14 @@ class RegisterRequestsController < ApplicationController
   end
 
   def update
-    case params[:update_type]
-      when 'approve' # see approve method
-      when 'reject'  # see reject method
+    if params[:update_type].present? and params[:request_ids].present?
+      updates = RegisterRequest.where(:id => params[:request_ids])
+      case params[:update_type]
+        when 'approve' # see approve method
+          updates.each {|req| req.update_attributes(:approved => true, :rejected => false)}
+        when 'reject'  # see reject method
+          updates.each {|req| req.update_attributes(:approved => false, :rejected => true)}
+      end
     end
     redirect_to :action => :index
   end
