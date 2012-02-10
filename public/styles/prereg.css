@@ -104,7 +104,7 @@ article div.right {
 
 article div.left a {
 	color: #FFF;
-	padding-right: 29px;
+/*  padding-right: 29px;*/
 }
 
 article div.left a.last {
@@ -117,7 +117,7 @@ article div.right p {
 
 article div.all a {
 	color: #FFF;
-	padding-right: 29px;
+/*  padding-right: 29px;*/
 }
 
 article div.all p {
@@ -147,17 +147,27 @@ article div.signup-right {
 
 article div.signup-right input {
 	height: 21px;
-	width: 170px;
+	width: 185px;
 	border: 1px solid #8199a9;
 	border-radius: 2px;
-	color: #cfcfcf;
 	font-family: Tahoma;
 	font-size: 12px;
-	padding-left: 10px;
+/*  padding-left: 10px;*/
 	margin-top: 6px;
 	margin-top: 14px;
 	margin-right: 15px;
 }
+article div.signup-right textarea, article div.signup-right select {
+  width: 185px;
+	border: 1px solid #8199a9;
+	border-radius: 2px;
+	font-family: Tahoma;
+	font-size: 12px;
+	margin-top: 6px;
+	margin-top: 14px;
+	margin-right: 15px;
+}
+article div.signup-right select { width: 190px; }
 
 article div.button {
 	float: right;

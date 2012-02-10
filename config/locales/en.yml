@@ -946,6 +946,7 @@ en:
       new_user_notification: Registered on project «%{ project_name }»
       issue_assign_notification: New task assigned
       new_commit_comment_notification: New comment to commit
+      invite_approve_notification: Invitation to ABF
 
       project:
         category_id: Category

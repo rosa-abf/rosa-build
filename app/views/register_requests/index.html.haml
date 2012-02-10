@@ -15,13 +15,17 @@
             %th &nbsp;
             %th= t("activerecord.attributes.register_request.name")
             %th= t("activerecord.attributes.register_request.email")
+            %th= t("activerecord.attributes.register_request.interest")
+            %th= t("activerecord.attributes.register_request.more")
             %th= t("activerecord.attributes.register_request.created_at")
-            %th.last &nbsp;
+            %th
           - @register_requests.each do |request|
             %tr{:class => cycle("odd", "even")}
               %td= check_box_tag 'request_ids[]', request.id
               %td= request.name
               %td= request.email
+              %td= request.interest
+              %td= request.more
               %td= request.created_at
               %td
                 = link_to t("layout.approve"), register_request_approve_path(request) if can? :approve, request
