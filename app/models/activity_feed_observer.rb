@@ -52,6 +52,31 @@ class ActivityFeedObserver < ActiveRecord::Observer
           end
         end
       end
+    when 'GitHook'
+      change_type = record.change_type
+      branch_name = record.refname.match(/\/([\w\d]+)$/)[1]
+      #user_name = record.
+
+      owner = record.owner
+      project = Project.find_by_name(record.repo)
+
+      last_commits = project.git_repository.repo.log(branch_name, nil).first(3).collect do |commit| #:author => 'author'
+        [commit.sha, commit.message]
+      end
+
+      if change_type == 'delete'
+        ActivityFeed.create(
+          :user => owner,
+          :kind => 'git_delete_branch_notification',
+          :data => {:user_id => owner.id, :user_name => owner.uname,  :project_id => project.id, :project_name => project.name, :branch_name => branch_name, :change_type => change_type}
+        )
+      else
+        ActivityFeed.create(
+          :user => owner,#record.user,
+          :kind => 'git_new_push_notification',
+          :data => {:user_id => owner.id, :user_name => owner.uname, :project_id => project.id, :project_name => project.name, :last_commits => last_commits, :branch_name => branch_name, :change_type => change_type}
+        )
+      end
     end
   end
 
