@@ -5,7 +5,7 @@ class Git::BlobsController < Git::BaseController
   before_filter :set_commit_hash
 
   def show
-    redirect_to project_repo_path(@project) unless @blob.present?
+    redirect_to project_repo_path(@project) and return unless @blob.present?
     if params[:raw]
       image_url = Rails.root.to_s + "/" + @path
 
@@ -18,12 +18,12 @@ class Git::BlobsController < Git::BaseController
   end
 
   def edit
-    redirect_to project_repo_path(@project) unless @blob.present?
+    redirect_to project_repo_path(@project) and return unless @blob.present?
     authorize! :write, @project
   end
 
   def update
-    redirect_to project_repo_path(@project) unless @blob.present?
+    redirect_to project_repo_path(@project) and return unless @blob.present?
     authorize! :write, @project
     # Here might be callbacks for notification purposes:
     # @git_repository.after_update_file do |repo, sha|
@@ -44,7 +44,7 @@ class Git::BlobsController < Git::BaseController
   end
 
   def raw
-    redirect_to project_repo_path(@project) unless @blob.present?
+    redirect_to project_repo_path(@project) and return unless @blob.present?
     headers["Content-Disposition"] = %[attachment;filename="#{@blob.name}"]
     render :text => @blob.data, :content_type => @blob.mime_type
   end
