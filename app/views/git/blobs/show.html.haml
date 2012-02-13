@@ -23,7 +23,7 @@
             #{link_to "Blame",   blame_commit_path(@project, @commit_hash, @path)}
             #{link_to "History", commits_path(@project, @treeish, @path)}
           - else
-            #{link_to "Edit",    edit_blob_path(@project, @treeish, @path) if choose_render_way(@blob) == :text}
+            #{link_to "Edit",    edit_blob_path(@project, @treeish, @path) if choose_render_way(@blob) == :text and can? :write, @project}
             #{link_to "Raw",     raw_path(@project, @treeish, @path)}
             #{link_to "Blame",   blame_path(@project, @treeish, @path)}
             #{link_to "History", commits_path(@project, @treeish, @path)}

@@ -17,9 +17,11 @@ class Git::BlobsController < Git::BaseController
   end
 
   def edit
+    authorize! :write, @project
   end
 
   def update
+    authorize! :write, @project
     # Here might be callbacks for notification purposes:
     # @git_repository.after_update_file do |repo, sha|
     # end
