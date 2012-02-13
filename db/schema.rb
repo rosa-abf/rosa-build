@@ -254,11 +254,11 @@ ActiveRecord::Schema.define(:version => 20120210141153) do
     t.text     "description"
     t.string   "ancestry"
     t.boolean  "has_issues",        :default => true
+    t.boolean  "has_wiki",          :default => false
     t.string   "srpm_file_name"
     t.string   "srpm_content_type"
     t.integer  "srpm_file_size"
     t.datetime "srpm_updated_at"
-    t.boolean  "has_wiki",          :default => false
   end
 
   add_index "projects", ["category_id"], :name => "index_projects_on_category_id"

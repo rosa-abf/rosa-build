@@ -36,10 +36,13 @@
               - else
                 = image_tag("git/icons/folder_16.png")
             %td.tree_element
+              - entry_path = File.join([@path.present? ? @path.encode_to_default : nil, entry.name.encode_to_default].compact)
               - if entry.is_a?(Grit::Blob)
-                = link_to entry.name.encode_to_default, blob_path(@project, @treeish, File.join([@path, entry.name.encode_to_default].compact))
+                = link_to entry.name.encode_to_default,
+                  blob_path(@project, @treeish.encode_to_default, entry_path)
               - else
-                = link_to "#{entry.name.encode_to_default}/", tree_path(@project, @treeish, File.join([@path, entry.name.encode_to_default].compact))
+                = link_to "#{entry.name.encode_to_default}/",
+                  tree_path(@project, @treeish.encode_to_default, entry_path)
             %td== &nbsp;
             %td.last== &nbsp;
 
