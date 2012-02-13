@@ -1,11 +1,11 @@
 # -*- encoding : utf-8 -*-
 module Gollum
   class Page
-    alias_method :native_gollum_name, :name
-
-    def name
-      native_gollum_name.force_encoding(Encoding.default_internal || Encoding::UTF_8)
+    def name_with_encoding
+      name_without_encoding.encode_to_default
     end
+
+    alias_method_chain :name, :encoding
 
   end
 end

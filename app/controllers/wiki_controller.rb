@@ -48,12 +48,10 @@ class WikiController < ApplicationController
     @name = CGI.unescape(params[:id])
     @page = @wiki.page(@name)
     name = params[:rename] || @name
-    committer = Gollum::Committer.new(@wiki, commit)
-    commit_arg = {:committer => committer}
 
-    update_wiki_page(@wiki, @page, params[:content], commit_arg, name, params[:format])
-    update_wiki_page(@wiki, @page.footer, params[:footer], commit_arg) if params[:footer]
-    update_wiki_page(@wiki, @page.sidebar, params[:sidebar], commit_arg) if params[:sidebar]
+    update_wiki_page(@wiki, @page, params[:content], {:committer => committer}, name, params[:format])
+    update_wiki_page(@wiki, @page.footer, params[:footer], {:committer => committer}) if params[:footer]
+    update_wiki_page(@wiki, @page.sidebar, params[:sidebar], {:committer => committer}) if params[:sidebar]
 
     committer.commit
 
@@ -68,9 +66,8 @@ class WikiController < ApplicationController
   def create
     @name = CGI.unescape(params['page'])
     format = params['format'].intern
-
     begin
-      @wiki.write_page(@name, format, params['content'] || '', commit)
+      @wiki.write_page(@name, format, params['content'] || '', {:committer => committer}).commit
       redirect_to project_wiki_path(@project, CGI.escape(@name))
     rescue Gollum::DuplicatePageError => e
       flash[:error] = t("flash.wiki.duplicate_page", :name => @name)
@@ -82,7 +79,7 @@ class WikiController < ApplicationController
     @name = CGI.unescape(params[:id])
     page = @wiki.page(@name)
     if page
-      @wiki.delete_page(page, commit.merge(:message => 'Page removed'))
+      @wiki.delete_page(page, {:committer => committer}).commit
       flash[:notice] = t("flash.wiki.page_successfully_removed")
     else
       flash[:notice] = t("flash.wiki.page_not_found", :name => params[:id])
@@ -145,7 +142,7 @@ class WikiController < ApplicationController
     sha1  = params[:sha1]
     sha2  = params[:sha2]
 
-    if @wiki.revert_page(@page, sha1, sha2, commit)
+    if @wiki.revert_page(@page, sha1, sha2, {:committer => committer}).commit
       flash[:notice] = t("flash.wiki.revert_success")
       redirect_to project_wiki_path(@project, CGI.escape(@name))
     else
@@ -165,7 +162,7 @@ class WikiController < ApplicationController
   def revert_wiki
     sha1 = params[:sha1]
     sha2 = params[:sha2]
-    if @wiki.revert_commit(sha1, sha2, commit)
+    if @wiki.revert_commit(sha1, sha2, {:committer => committer}).commit
       flash[:notice] = t("flash.wiki.revert_success")
       redirect_to project_wiki_index_path(@project)
     else
@@ -233,11 +230,11 @@ class WikiController < ApplicationController
       if params['message'] and !params['message'].empty?
         msg = params['message']
       else
-#        msg = "#{!!@wiki.page(@name) ? 'Updated page' : 'Created page'} #{@name}"
         msg = case action_name.to_s
-          when 'create' then "Created page #{@name.to_s}"
-          when 'update' then "Updated page #{@name.to_s}"
-          when 'revert' then "Reverted page #{@name.to_s}"
+          when 'create'      then "Created page #{@name.to_s}"
+          when 'update'      then "Updated page #{@name.to_s}"
+          when 'destroy'     then "Removed page #{@name.to_s}"
+          when 'revert'      then "Reverted page #{@name.to_s}"
           when 'revert_wiki' then "Reverted wiki"
         end
         msg += " (#{params['format']})" if params['format']
@@ -246,8 +243,13 @@ class WikiController < ApplicationController
       { :message => msg }
     end
 
-    def commit
-      commit_message.merge({:name => current_user.uname, :email => current_user.email})
+    def committer
+      p = commit_message.merge({:name => current_user.uname, :email => current_user.email})
+      @committer ||= Gollum::Committer.new(@wiki, p)
+      # @committer.after_commit do |committer, sha1|
+      #   here goes callback for notification
+      # end
+      @committer
     end
 
     def show_or_create_page
