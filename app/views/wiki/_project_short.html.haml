@@ -5,7 +5,8 @@
       %li= link_to t("layout.projects.new"), new_project_path
       %li= link_to t("layout.projects.show"), project_path(@project)
       %li= link_to t("layout.git.repositories.source"), project_repo_path(@project)
-      %li= link_to t("layout.projects.build"), new_project_build_list_path(@project)
+      - if can? :write, @project
+        %li= link_to t("layout.projects.build"), new_project_build_list_path(@project)
       %li= link_to t("layout.projects.issues"), project_issues_path(@project)
       %li.active= link_to t("layout.projects.wiki"), project_wiki_index_path(@project)
 
