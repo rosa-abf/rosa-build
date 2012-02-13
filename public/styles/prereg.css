@@ -1,0 +1,243 @@
+html, body {
+	margin: 0;
+	padding: 0;
+	font-family: Tahoma, Arial;
+	color: #565667;
+	background: #1f60a1 url("../pics/bg.png") repeat-x; 
+	min-width: 940px;
+	min-height: 300px;
+	text-align: center;
+	height: 100%;
+}
+
+header, section, footer, aside, nav, article, menu {
+	display: block;
+}
+
+input[type="text"]:focus { outline: none; }
+   
+input[type="password"]:focus { outline: none; }
+   
+input:focus { outline: none; }
+   
+select:focus { outline: none; }
+
+a img { border: none; }
+  
+.wrap {
+	width: 940px;
+	margin: 0 auto;
+	text-align: center;
+	min-height: 95%;
+}
+
+.both {
+	clear: both;
+}
+
+
+/* Header */
+
+header div.logo {
+	background: url("../pics/logo.png") no-repeat 50% 100%;
+	height: 89px;
+	width: 233px;
+	margin: 0 auto;
+	text-align: center;
+	padding-top: 8%;
+}
+
+header div.text {
+	color: #FFF;
+	font-size: 28px;
+	width: 800px;
+	text-align: left;
+	margin-left: 90px;
+	margin-top: 50px;
+	font-family: Arial;
+	text-shadow: 0px 1px 1px #000000;
+	filter: dropshadow(color=#000000, offx=0, offy=1); 
+	padding-left: 0px;
+}
+
+/* Content */
+
+article {
+	width: 760px;
+	height: 305px;
+	background: #1c394c url("../pics/bg-signup.png") repeat-x;
+	border-radius: 5px;
+	border: 1px solid #38658c;
+	margin: 0 auto;
+	text-align: center;
+	margin-top: 50px;
+	-webkit-box-shadow: 0px 3px 5px 0px rgba(0, 0, 0, 0.5);
+	-moz-box-shadow: 0px 3px 5px 0px rgba(0, 0, 0, 0.5);
+	box-shadow: 0px 3px 5px 0px rgba(0, 0, 0, 0.5); 
+	padding-top: 5px;
+	color: #FFF;
+	font-size: 14px;
+}
+
+article p{
+	margin: 0;
+	padding: 10px 15px;
+	margin: 0px 0 0px 0;
+}
+
+article div.left {
+	float: left;
+	width: 340px;
+	text-align: left;
+	font-size: 14px;
+	margin-top: 0px;
+	padding: 10px 20px;
+}
+
+article div.right {
+	float: right;
+	width: 338px;
+	margin-top: 0px;
+	border-left: 2px solid #223e51;
+	padding: 10px 20px;
+}
+
+article div.left a {
+	color: #FFF;
+/*  padding-right: 29px;*/
+}
+
+article div.left a.last {
+	padding-right: 0px;
+}
+
+article div.right p {
+	text-align: left;
+}
+
+article div.all a {
+	color: #FFF;
+/*  padding-right: 29px;*/
+}
+
+article div.all p {
+	text-align: left;
+}
+
+article div.all {
+	float: left;
+	text-align: left;
+	font-size: 14px;
+	margin-top: 25px;
+	padding: 10px 20px;
+}
+
+
+article div.signup-left {
+	float: left;
+	color: #FFF;
+	font-size: 12px;
+	padding-top: 16px;
+	padding-left: 15px;
+}
+
+article div.signup-right {
+	float: right;
+}
+
+article div.signup-right input {
+	height: 21px;
+	width: 185px;
+	border: 1px solid #8199a9;
+	border-radius: 2px;
+	font-family: Tahoma;
+	font-size: 12px;
+/*  padding-left: 10px;*/
+	margin-top: 6px;
+	margin-top: 14px;
+	margin-right: 15px;
+}
+article div.signup-right textarea, article div.signup-right select {
+  width: 185px;
+	border: 1px solid #8199a9;
+	border-radius: 2px;
+	font-family: Tahoma;
+	font-size: 12px;
+	margin-top: 6px;
+	margin-top: 14px;
+	margin-right: 15px;
+}
+article div.signup-right select { width: 190px; }
+
+article div.button {
+	float: right;
+	margin: 19px 15px 0px 0px;
+}
+
+a.button {
+	background: #125687;
+    background: url("../pics/button-green-normal.png");
+    border-radius: 3px;
+    color: #FFF;
+    font-family: Tahoma;
+    font-size: 12px;
+    -webkit-font-smoothing: antialiased;
+    font-weight: normal;
+    padding: 6px 25px;
+    text-align: center;
+	border: none;
+	height: 27px;
+	width: 106px;
+	text-decoration: none;
+}
+
+a.button:hover {
+    background: #1874b6;
+    background: url("../pics/button-green-hover.png");
+    cursor: pointer;
+}
+
+a.button:active{
+    background: url("../pics/button-green-press.png");
+}
+
+a.button:disabled, a.button.disabled {
+    background: #125687;
+	background: url("../pics/button-blue-disabled.png");
+    padding: 5px 15px;
+	cursor: default;
+  }
+
+/* Footer */
+
+footer {
+	height: 32px;
+	padding-left: 15px;
+	width: 900px;
+	margin: 0 auto;
+	text-align: center;
+}
+
+footer ul {
+	margin: 0;
+	padding: 0;
+	list-style: none;
+	font-size: 12px;
+	color: #FFF;
+	padding-top: 10px;
+	text-align: center;
+}
+
+footer ul li {
+	display: inline;
+}
+
+footer ul li a {
+	font-size: 12px;
+	color: #FFF;
+	text-decoration: none;
+}
+
+footer ul li a:hover {
+	text-decoration: underline;
+}

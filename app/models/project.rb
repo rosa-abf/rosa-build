@@ -61,14 +61,14 @@ class Project < ActiveRecord::Base
     end
   end
 
-  def build_for(platform, user)
+  def build_for(platform, user)  
     build_lists.create do |bl|
       bl.pl = platform
       bl.bpl = platform
       bl.update_type = 'recommended'
       bl.arch = Arch.find_by_name('x86_64') # Return i586 after mass rebuild
       # FIXME: Need to set "latest_#{platform.name}"
-      bl.project_version = "latest_mandriva2011"
+      bl.project_version = "latest_import_mandriva2011"
       bl.build_requires = false # already set as db default
       bl.user = user
       bl.auto_publish = true # already  set as db default
