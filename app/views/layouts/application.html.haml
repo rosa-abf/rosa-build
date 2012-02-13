@@ -57,3 +57,4 @@
         #sidebar
           = yield :sidebar
 
+    = render 'layouts/counters' unless current_user.try(:admin?)
