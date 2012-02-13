@@ -86,7 +86,7 @@ module WikiHelper
   end
 
   def author
-    @page.version.author.name.force_encoding(Encoding.default_internal || Encoding::UTF_8)
+    @page.version.author.name.encode_to_default
   end
 
   def author_email

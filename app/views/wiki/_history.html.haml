@@ -16,13 +16,13 @@
                 - user = User.where(:email => v.author.email).first
                 = link_to user_path_by_user(user) do
                   %img{:src => gravatar_url(v.author.email),
-                    :alt => "avatar: #{v.author.name.force_encoding(Encoding.default_internal || Encoding::UTF_8)}",
+                    :alt => "avatar: #{v.author.name.encode_to_default}",
                     :class => "mini-gravatar"}
-                  %span.username= user.present? ? user.uname : v.author.name
+                  %span.username= user.present? ? user.uname : v.author.name.encode_to_default
               %td.commit-name
                 %span.time-elapsed= "#{l v.committed_date.to_date, :format => :long}:"
                 &nbsp;
-                = v.message.force_encoding(Encoding.default_internal)
+                = v.message.encode_to_default
                 - if @name
                   = raw "[#{link_to v.id[0..6], versioned_project_wiki_path(@project, escaped_name, v.id), :title => t("layout.wiki.view_commit")}]"
                 - else

@@ -2,26 +2,90 @@
 module Gollum
   class Wiki
 
-    alias_method :native_gollum_page, :page
-    alias_method :native_gollum_file, :file
-    alias_method :native_gollum_write_page,  :write_page
-    alias_method :native_gollum_update_page, :update_page
-
-    def page(name, version = @ref)
-      native_gollum_page(force_grit_encoding(name), version)
+    def page_with_forced_encoding(name, version = @ref)
+      page_without_forced_encoding(force_grit_encoding(name), version)
     end
+    alias_method_chain :page, :forced_encoding
 
-    def file(name, version = @ref)
-      native_gollum_file(force_grit_encoding(name), version)
+    def file_with_forced_encoding(name, version = @ref)
+      file_without_forced_encoding(force_grit_encoding(name), version)
     end
+    alias_method_chain :file, :forced_encoding
 
-    def write_page(name, format, data, commit = {})
-      native_gollum_write_page(force_grit_encoding(name), format, data, commit)
+    def write_page_with_forced_encoding(name, format, data, commit = {})
+      write_page_without_forced_encoding(force_grit_encoding(name), format, data, commit)
     end
+    alias_method_chain :write_page, :forced_encoding
 
-    def update_page(page, name, format, data, commit = {})
-      native_gollum_update_page(page, force_grit_encoding(name), format, data, commit)
+    def update_page_with_forced_encoding(page, name, format, data, commit = {})
+      update_page_without_forced_encoding(page, force_grit_encoding(name), format, data, commit)
     end
+    alias_method_chain :update_page, :forced_encoding
+
+    # Public: Applies a reverse diff for a given page.  If only 1 SHA is given,
+    # the reverse diff will be taken from its parent (^SHA...SHA).  If two SHAs
+    # are given, the reverse diff is taken from SHA1...SHA2.
+    #
+    # page   - The Gollum::Page to delete.
+    # sha1   - String SHA1 of the earlier parent if two SHAs are given,
+    #          or the child.
+    # sha2   - Optional String SHA1 of the child.
+    # commit - The commit Hash details:
+    #          :message - The String commit message.
+    #          :name    - The String author full name.
+    #          :email   - The String email address.
+    #          :parent  - Optional Grit::Commit parent to this update.
+    #
+    # Returns a String SHA1 of the new commit, or nil if the reverse diff does
+    # not apply.
+    def revert_page_with_committer(page, sha1, sha2 = nil, commit = {})
+      if sha2.is_a?(Hash)
+        commit = sha2
+        sha2   = nil
+      end
+
+      multi_commit = false
+
+      patch     = full_reverse_diff_for(page, sha1, sha2)
+      committer = if obj = commit[:committer]
+        multi_commit = true
+        obj
+      else
+        Committer.new(self, commit)
+      end
+      parent    = committer.parents[0]
+      committer.options[:tree] = @repo.git.apply_patch(parent.sha, patch)
+      return false unless committer.options[:tree]
+      committer.after_commit do |index, sha|
+        @access.refresh
+
+        files = []
+        if page
+          files << [page.path, page.name, page.format]
+        else
+          # Grit::Diff can't parse reverse diffs.... yet
+          patch.each_line do |line|
+            if line =~ %r{^diff --git b/.+? a/(.+)$}
+              path = $1
+              ext  = ::File.extname(path)
+              name = ::File.basename(path, ext)
+              if format = ::Gollum::Page.format_for(ext)
+                files << [path, name, format]
+              end
+            end
+          end
+        end
+
+        files.each do |(path, name, format)|
+          dir = ::File.dirname(path)
+          dir = '' if dir == '.'
+          index.update_working_dir(dir, name, format)
+        end
+      end
+
+      multi_commit ? committer : committer.commit
+    end
+    alias_method_chain :revert_page, :committer
 
     private
 
