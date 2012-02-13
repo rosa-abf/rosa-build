@@ -257,20 +257,19 @@ class WikiController < ApplicationController
       elsif file = @wiki.file(@name)
         render :text => file.raw_data, :content_type => file.mime_type
       elsif can? :write, @project
-#        @name = CGI.escape(@name)
         @new = true
         render :new
       else
-        redirect_to forbidden_path
+        redirect_to :action => :index #forbidden_path
       end
     end
 
     def authorize_read_actions
-      redirect_to forbidden_path and return if cannot? :read, @project
+      authorize! :read, @project
     end
 
     def authorize_write_actions
-      redirect_to forbidden_path and return if cannot? :write, @project
+      authorize! :write, @project
     end
 end
 
