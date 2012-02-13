@@ -61,14 +61,14 @@ class Project < ActiveRecord::Base
     end
   end
 
-  def build_for(platform, user)
+  def build_for(platform, user)  
     build_lists.create do |bl|
       bl.pl = platform
       bl.bpl = platform
       bl.update_type = 'recommended'
       bl.arch = Arch.find_by_name('x86_64') # Return i586 after mass rebuild
       # FIXME: Need to set "latest_#{platform.name}"
-      bl.project_version = "latest_mandriva2011"
+      bl.project_version = "latest_import_mandriva2011"
       bl.build_requires = false # already set as db default
       bl.user = user
       bl.auto_publish = true # already  set as db default
@@ -162,6 +162,11 @@ class Project < ActiveRecord::Base
     owner == user
   end
 
+  def self.process_hook(owner_uname, repo, newrev, oldrev, ref, newrev_type, oldrev_type)
+    rec = GitHook.new(owner_uname, repo, newrev, oldrev, ref, newrev_type, oldrev_type)
+    #ActivityFeedObserver.instance.after_create rec # for example
+  end
+
   protected
 
   def build_path(dir)
@@ -178,6 +183,7 @@ class Project < ActiveRecord::Base
 
   def create_git_repo
     is_root? ? Grit::Repo.init_bare(path) : parent.git_repository.repo.delay.fork_bare(path)
+    write_hook.delay
   end
 
   def destroy_git_repo
@@ -205,4 +211,10 @@ class Project < ActiveRecord::Base
     FileUtils.rm_rf wiki_path
   end
 
+  def write_hook
+    hook_file = File.join(path, 'hooks', 'post-receive')
+    FileUtils.cp(File.join(::Rails.root.to_s, 'lib', 'post-receive-hook'), hook_file)
+    #File.chmod(0775, hook_file) # need?
+  rescue Exception # FIXME
+  end
 end

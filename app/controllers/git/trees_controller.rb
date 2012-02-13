@@ -3,6 +3,7 @@ class Git::TreesController < Git::BaseController
 
   def show
     @path = params[:path]
+    @path.force_encoding(Encoding::ASCII_8BIT) if @path
 
     @tree = @git_repository.tree(@treeish)
 

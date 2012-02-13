@@ -44,7 +44,7 @@
       %span= t("layout.wiki.editor.help")
 
   #gollum-editor-format-selector
-    = select_tag :format, options_for_select(formats, format), :id => "wiki_format"
+    = select_tag :format, options_for_select(wiki_formats, format), :id => "wiki_format"
     = label_tag :format, t("layout.wiki.editor.format")
 #gollum-editor-help.jaws
   %ul#gollum-editor-help-parent

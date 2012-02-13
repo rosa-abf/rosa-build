@@ -37,7 +37,7 @@ li.commit .message {
 
 li.commit .trees {
     padding-left: 5px;
-    width: 180px;
+    width: 200px;
 }
 
 li.commit .message a {
