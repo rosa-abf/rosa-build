@@ -2,9 +2,12 @@
 
 FactoryGirl.define do
   factory :register_request do
-      name "MyString"
-      email "MyString"
-      token "MyString"
-      approved false
-    end
+    name "MyString"
+    email { Factory.next(:email) }
+    token "MyString"
+    interest "MyString"
+    more "MyText"
+    approved false
+    rejected false
+  end
 end
