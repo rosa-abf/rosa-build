@@ -5,6 +5,7 @@ class Git::BlobsController < Git::BaseController
   before_filter :set_commit_hash
 
   def show
+    redirect_to project_repo_path(@project) and return unless @blob.present?
     if params[:raw]
       image_url = Rails.root.to_s + "/" + @path
 
@@ -16,11 +17,34 @@ class Git::BlobsController < Git::BaseController
     end
   end
 
+  def edit
+    redirect_to project_repo_path(@project) and return unless @blob.present?
+    authorize! :write, @project
+  end
+
+  def update
+    redirect_to project_repo_path(@project) and return unless @blob.present?
+    authorize! :write, @project
+    # Here might be callbacks for notification purposes:
+    # @git_repository.after_update_file do |repo, sha|
+    # end
+
+    res = @git_repository.update_file(params[:path], params[:content],
+                                      :message => params[:message], :actor => current_user, :head => @treeish)
+    if res
+      flash[:notice] = t("flash.blob.successfully_updated", :name => params[:path].encode_to_default)
+    else
+      flash[:notice] = t("flash.blob.updating_error", :name => params[:path].encode_to_default)
+    end
+    redirect_to :action => :show
+  end
+
   def blame
     @blame = Grit::Blob.blame(@git_repository.repo, @commit.try(:id), @path)
   end
 
   def raw
+    redirect_to project_repo_path(@project) and return unless @blob.present?
     headers["Content-Disposition"] = %[attachment;filename="#{@blob.name}"]
     render :text => @blob.data, :content_type => @blob.mime_type
   end
@@ -28,7 +52,8 @@ class Git::BlobsController < Git::BaseController
   protected
     def set_path_blob
       @path = params[:path]
-      @blob = @tree / @path.encode_to_default
+      @path.force_encoding(Encoding::ASCII_8BIT)
+      @blob = @tree / @path
     end
 
     def set_commit_hash

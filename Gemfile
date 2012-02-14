@@ -1,7 +1,6 @@
 source 'http://rubygems.org'
 
 gem 'rails', '3.0.11' #, :git => 'git://github.com/rails/rails.git'
-gem 'shotgun'
 
 gem 'pg', '~> 0.11.0'
 gem 'silent-postgres', '~> 0.1.1'
@@ -54,13 +53,14 @@ end
 gem 'newrelic_rpm'
 
 group :development do
-  # gem 'letter_opener'
+  gem 'mailcatcher' # 'letter_opener'
   gem 'rails3-generators'
   gem 'web-app-theme'
   gem 'hpricot'
   gem 'ruby_parser'
 
   gem 'hirb'
+  gem 'shotgun'
 
   # deploy
   gem 'capistrano', :require => false

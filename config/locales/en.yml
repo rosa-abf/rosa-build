@@ -695,6 +695,10 @@ en:
       revert_success: Changes successfully reverted
       patch_does_not_apply: Patch does not apply
 
+    blob:
+      successfully_updated: File '%{name}' successfully updated
+      updating_error: Error updating file '%{name}'
+
   attributes:
     password: Password
     password_confirmation: Confirmation
@@ -949,6 +953,7 @@ en:
       new_user_notification: Registered on project «%{ project_name }»
       issue_assign_notification: New task assigned
       new_commit_comment_notification: New comment to commit
+      invite_approve_notification: Invitation to ABF
 
       project:
         category_id: Category
