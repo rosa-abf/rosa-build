@@ -167,6 +167,12 @@ class Project < ActiveRecord::Base
     ActivityFeedObserver.instance.after_create rec
   end
 
+  def owner_and_admin_ids
+    recipients = self.relations.by_role('admin').where(:object_type => 'User').map { |rel| rel.read_attribute(:object_id) }
+    recipients = recipients | [self.owner_id] if self.owner_type == 'User'
+    recipients
+  end
+
   protected
 
   def build_path(dir)

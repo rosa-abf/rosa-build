@@ -57,7 +57,7 @@ class ActivityFeedObserver < ActiveRecord::Observer
       branch_name = record.refname.match(/\/([\w\d]+)$/)[1]
       #user_name = record.
 
-      owner = record.owner
+      #owner = record.owner
       project = Project.find_by_name(record.repo)
 
       last_commits = project.git_repository.repo.log(branch_name, nil).first(3).collect do |commit| #:author => 'author'
@@ -65,16 +65,18 @@ class ActivityFeedObserver < ActiveRecord::Observer
       end
 
       if change_type == 'delete'
-        ActivityFeed.create(
-          :user => owner,
-          :kind => 'git_delete_branch_notification',
-          :data => {:user_id => owner.id, :user_name => owner.uname,  :project_id => project.id, :project_name => project.name, :branch_name => branch_name, :change_type => change_type}
-        )
+        kind = 'git_delete_branch_notification'
+        options = {:project_id => project.id, :project_name => project.name, :branch_name => branch_name, :change_type => change_type}
       else
+        kind = 'git_new_push_notification'
+        options = {:project_id => project.id, :project_name => project.name, :last_commits => last_commits, :branch_name => branch_name, :change_type => change_type}
+      end
+
+      project.owner_and_admin_ids.each do |recipient|
         ActivityFeed.create(
-          :user => owner,#record.user,
-          :kind => 'git_new_push_notification',
-          :data => {:user_id => owner.id, :user_name => owner.uname, :project_id => project.id, :project_name => project.name, :last_commits => last_commits, :branch_name => branch_name, :change_type => change_type}
+          :user => User.find(recipient),
+          :kind => kind,
+          :data => options
         )
       end
     when 'Gollum::Committer'
@@ -84,11 +86,7 @@ class ActivityFeedObserver < ActiveRecord::Observer
       commit_sha = record.commit
       #wiki_name = record.wiki.name
 
-      # TODO: Move this logic into Gollum::Wiki
-      recipients = project.relations.by_role('admin').where(:object_type => 'User').map { |rel| rel.read_attribute(:object_id) }
-      recipients = recipients | [project.owner_id] if project.owner_type == 'User'
-
-      recipients.each do |recipient|
+      project.owner_and_admin_ids.each do |recipient|
         ActivityFeed.create(
           :user => User.find(recipient),#record.user,
           :kind => 'wiki_new_commit_notification',
