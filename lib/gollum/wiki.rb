@@ -47,6 +47,8 @@ module Gollum
       multi_commit = false
 
       patch     = full_reverse_diff_for(page, sha1, sha2)
+      puts 'patch'
+      puts patch
       committer = if obj = commit[:committer]
         multi_commit = true
         obj
@@ -83,9 +85,17 @@ module Gollum
         end
       end
 
+     puts 'IN MY RELOADED FILE'
+
       multi_commit ? committer : committer.commit
     end
     alias_method_chain :revert_page, :committer
+
+    def revert_commit_with_committer(sha1, sha2 = nil, commit = {})
+      puts "i'm here"
+      revert_page_with_committer(nil, sha1, sha2, commit)
+    end
+    alias_method_chain :revert_commit, :committer
 
     private
 
