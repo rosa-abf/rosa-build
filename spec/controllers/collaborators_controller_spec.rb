@@ -69,7 +69,7 @@ describe CollaboratorsController do
       @user.relations
       set_session_for(@user)
       @group = Factory(:group)
-      @project.relations.create!(:object_type => 'User', :object_id => @user.id, :role => 'reader')
+      @project.relations.create!(:object_type => 'User', :object_id => @user.id, :role => 'admin')
     end
 
     it_should_behave_like 'project admin user'
