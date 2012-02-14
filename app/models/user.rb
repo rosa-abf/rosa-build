@@ -89,7 +89,7 @@ class User < ActiveRecord::Base
   end
 
   def commentor?(commentable)
-    comments.exists?(:commentable_type => commentable.class.name, :commentable_id => commentable.id)
+    comments.exists?(:commentable_type => commentable.class.name, :commentable_id => commentable.id.hex)
   end
 
   def committer?(commit)
