@@ -17,6 +17,8 @@ class Ability
       cannot :destroy, Subscribe
       cannot :create, Subscribe
       cannot :create, RegisterRequest
+      cannot :approve, RegisterRequest, :approved => true
+      cannot :reject, RegisterRequest, :rejected => true
     else
       # Shared rights between guests and registered users
       can :forbidden, Platform
