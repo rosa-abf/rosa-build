@@ -55,10 +55,10 @@ group :production do
 end
 
 group :development do
-  gem 'shotgun'
-  # gem 'letter_opener'
+  gem 'mailcatcher' # 'letter_opener'
   gem 'rails3-generators'
   gem 'hirb'
+  gem 'shotgun'
   # deploy
   gem 'whenever', :require => false
   gem 'capistrano', :require => false

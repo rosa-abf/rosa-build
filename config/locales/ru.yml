@@ -533,6 +533,10 @@ ru:
       revert_success: Изменения успешно откачены
       patch_does_not_apply: Не удалось откатить изменения
 
+    blob:
+      successfully_updated: Файл '%{name}' успешно обновлен
+      updating_error: Ошибка обновления файла '%{name}'
+
   attributes:
     password: Пароль
     password_confirmation: Подтверждение
@@ -777,3 +781,4 @@ ru:
       new_user_notification: Регистрация на проекте «%{ project_name }»
       issue_assign_notification: Вам назначили задачу
       new_commit_comment_notification: Новый комментарий к коммиту
+      invite_approve_notification: Приглашение в ABF

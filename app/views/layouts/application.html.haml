@@ -47,3 +47,4 @@
         .both
 
     %footer= render "layouts/menu/bottom"
+    = render 'layouts/counters' unless current_user.try(:admin?)

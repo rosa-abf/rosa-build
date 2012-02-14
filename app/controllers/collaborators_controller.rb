@@ -6,9 +6,10 @@ class CollaboratorsController < ApplicationController
   before_filter :find_users
   before_filter :find_groups
 
-  load_and_authorize_resource :project
+  load_resource :project
+  before_filter :authorize_collaborators
 
-  def index    
+  def index
     redirect_to edit_project_collaborators_path(@project)
   end
 
@@ -49,7 +50,7 @@ class CollaboratorsController < ApplicationController
     groups_for_removing.each do |u|
       Relation.by_object(u).by_target(@project).each {|r| r.destroy}
     end
-    
+
     # Create relations
     Relation::ROLES.each { |r|
       #users_for_creating = users_for_creating params[:user].keys.map{|p| p.to_i} - @project.collaborators.map(&:id)
@@ -128,5 +129,9 @@ class CollaboratorsController < ApplicationController
 
     def find_groups
       @groups = @project.groups#Group.all
+    end
+
+    def authorize_collaborators
+      authorize! :update, @project
     end
 end

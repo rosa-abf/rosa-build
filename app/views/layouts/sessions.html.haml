@@ -11,3 +11,5 @@
       #box
         = render :partial => "layouts/flashes"
         = yield
+
+    = render 'layouts/counters' unless current_user.try(:admin?)

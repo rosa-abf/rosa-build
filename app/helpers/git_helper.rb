@@ -29,6 +29,14 @@ module GitHelper
     res.encode_to_default.html_safe
   end
 
+  def blob_file_path
+    if @commit_hash.present? 
+      blob_commit_path(@project, @commit_hash, @path)
+    else
+      blob_path(@project, @treeish, @path)
+    end
+  end
+
   def render_line_numbers(n)
     res = ""
     1.upto(n) {|i| res += "<span>#{i}</span>\n" }
