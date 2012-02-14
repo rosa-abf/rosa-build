@@ -121,16 +121,11 @@ class WikiController < ApplicationController
         when 1 then @versions.first
         when 2 then sprintf('%s...%s', @versions.last, @versions.first)
         else begin
-          redirect_to history_project_wiki_index_path(@project) and return
+          redirect_to history_project_wiki_index_path(@project)
+          return
         end
       end
       redirect_to compare_versions_project_wiki_index_path(@project, versions_string)
-#      if @versions.size < 2
-#        redirect_to history_project_wiki_index_path(@project)
-#      else
-#        redirect_to compare_versions_project_wiki_index_path(@project,
-#                                                       sprintf('%s...%s', @versions.last, @versions.first))
-#      end
     elsif request.get?
       @versions = params[:versions].split(/\.{2,3}/) || []
       @diffs = case @versions.size
@@ -141,13 +136,6 @@ class WikiController < ApplicationController
           return
         end
       end
-      puts 'DIFFS'
-      puts @diffs.inspect
-#      if @versions.size < 2
-#        redirect_to history_project_wiki_index_path(@project)
-#        return
-#      end
-#      @diffs = @wiki.repo.diff(@versions.first, @versions.last)
       render :compare
     else
       redirect_to project_wiki_path(@project, CGI.escape(@name))
@@ -189,7 +177,6 @@ class WikiController < ApplicationController
       sha2, sha1 = sha1, "#{sha1}^" if !sha2
       @versions = [sha1, sha2]
       @diffs     = @wiki.repo.diff(@versions.first, @versions.last)
-#      @diffs    = [diffs.first]
       flash[:error] = t("flash.wiki.patch_does_not_apply")
       render :compare
     end
