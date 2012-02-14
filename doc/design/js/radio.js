@@ -1,7 +1,7 @@
 jQuery(document).ready(function(){
 
 jQuery(".niceRadio").each(
-/* при загрузке страницы меняем обычные на стильные radio */
+
 function() {
      
      changeRadioStart(jQuery(this));
@@ -13,9 +13,7 @@ function() {
 
 
 function changeRadio(el)
-/* 
-	функция смены вида и значения radio при клике на контейнер
-*/
+
 {
 
 	var el = el,
@@ -46,9 +44,7 @@ function changeRadio(el)
 
 function changeVisualRadio(input)
 {
-/*
-	меняем вид radio при смене значения
-*/
+
 	var wrapInput = input.parent();
 	var nm=input.attr("name");
 		
@@ -71,10 +67,7 @@ function changeVisualRadio(input)
 }
 
 function changeRadioStart(el)
-/* 
-	новый контрол выглядит так <span class="niceRadio"><input type="radio" name="[name radio]" id="[id radio]" [checked="checked"] /></span>
-	новый контрол получает теже name, id и другие атрибуты что и были у обычного
-*/
+
 {
 
 try
@@ -102,7 +95,7 @@ var el = el,
 			"tabindex='"+radioTab+"'"+
 			"value='"+radioValue+"' /></span>");
 	
-	/* если контрол disabled - добавляем соответсвующий класс для нужного вида и добавляем атрибут disabled для вложенного radio */		
+
 	if(radioDisabled)
 	{
 		el.next().addClass("niceRadioDisabled");
@@ -117,7 +110,7 @@ var el = el,
 }
 catch(e)
 {
-	// если ошибка, ничего не делаем
+
 }
 
     return true;

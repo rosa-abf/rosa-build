@@ -1,7 +1,7 @@
 jQuery(document).ready(function(){
 
 jQuery(".niceRadio").each(
-/* Russsian comments deleted */
+
 function() {
      
      changeRadioStart(jQuery(this));
@@ -13,9 +13,7 @@ function() {
 
 
 function changeRadio(el)
-/* 
-	Russsian comments deleted
-*/
+
 {
 
 	var el = el,
@@ -46,9 +44,7 @@ function changeRadio(el)
 
 function changeVisualRadio(input)
 {
-/*
-	Russsian comments deleted
-*/
+
 	var wrapInput = input.parent();
 	var nm=input.attr("name");
 		
@@ -71,10 +67,7 @@ function changeVisualRadio(input)
 }
 
 function changeRadioStart(el)
-/* 
-	Russsian comments deleted <span class="niceRadio"><input type="radio" name="[name radio]" id="[id radio]" [checked="checked"] /></span>
-	Russsian comments deleted
-*/
+
 {
 
 try
@@ -102,14 +95,13 @@ var el = el,
 			"tabindex='"+radioTab+"'"+
 			"value='"+radioValue+"' /></span>");
 	
-	/* Russsian comments deleted */		
+
 	if(radioDisabled)
 	{
 		el.next().addClass("niceRadioDisabled");
 		el.next().find("input").eq(0).attr("disabled","disabled");
 	}
-	
-	/* Russsian comments deleted */		
+
 	el.next().bind("mousedown", function(e) { changeRadio(jQuery(this)) });
 	if(jQuery.browser.msie)	el.next().find("input").eq(0).bind("click", function(e) { changeVisualRadio(jQuery(this)) });	
 	else el.next().find("input").eq(0).bind("change", function(e) { changeVisualRadio(jQuery(this)) });
@@ -117,7 +109,7 @@ var el = el,
 }
 catch(e)
 {
-	// Russsian comments deleted
+
 }
 
     return true;

@@ -11,9 +11,9 @@
 .jScrollPaneDrag,
 .jScrollArrowUp,
 .jScrollArrowDown {
-	background: url(../pics/selects-2.png) no-repeat;
+	background: url("../pics/selects-2.png") no-repeat;
 }
-.cusel { /* общий вид селекта включая стрелку справа */
+.cusel { 
 	height: 24px;
 	background-position: left top;
 	display: inline-block;
@@ -22,7 +22,7 @@
 	font-size: 12px;
 	z-index: 1;
 }
-.cuselFrameRight { /* левая чсть селект. обыно скругление и левая граница */
+.cuselFrameRight { 
 	position: absolute;
 	z-index: 2;
 	top: 0;
@@ -32,34 +32,34 @@
 	background-position: right top;
 }
 
-.cuselText { /* контейнер для отображенного текста селект */
+.cuselText { 
 	height: 29px;
-	padding: 6px 0 0 10px; /* подбираем отступы и высоту для видимого текста в селекте */
+	padding: 6px 0 0 10px; 
 	cursor: pointer;
 	overflow: hidden;
 	position: relative;
 	z-index: 1;
-	font: 12px Tahoma, Arial; /* шрифты */
+	font: 12px Tahoma, Arial; 
 	position: absolute;
 	top: 0;
 	left: 0;
 }
-* html .cuselText { /* высота блока для текста для ие6 */
+* html .cuselText { 
 	height: 22px;
 }
-.cusel span { /* оформление оптиона */
+.cusel span { 
 	display: block;
 	cursor: pointer;
 	white-space: nowrap;
-	padding: 2px 5px 2px 5px; /* паддинг справа - это отступ текста от ползунка */
+	padding: 2px 5px 2px 5px; 
 	zoom: 1;
 }
 .cusel span:hover,
-.cusel .cuselOptHover { /* реакция оптиона на наведение */
+.cusel .cuselOptHover { 
 	background: #dcecfa;
 	border-radius: 0px;
 }
-.cusel .cuselActive { /* оформление активного оптиона в списке */
+.cusel .cuselActive {
 	cursor: default;
 }
 
@@ -72,7 +72,7 @@
 .cusel:focus .cuselFrameRight,
 .cuselFocus,
 .cuselFocus .cuselFrameRight {
-	background-image: url(../pics/selects-focus.png);
+	background-image: url("../pics/selects-focus.png");
 }
 
 .cuselOpen {
@@ -84,7 +84,7 @@
 */
 .classDisCusel,
 .classDisCusel .cuselFrameRight {
-	background-image: url(../pics/selects-2-dis.png) !important;
+	background-image: url("../pics/selects-2-dis.png") !important;
 	cursor: default;
 	color: #575756;
 }
@@ -96,13 +96,13 @@
 /*
 	styles for scrollbar
 */
-.cusel .cusel-scroll-wrap { /* контейнер для блока с прокруткой */
+.cusel .cusel-scroll-wrap { 
 	display: block;
 	visibility: hidden;
 	position: absolute;
 	left: 0;
 	top: 100%;
-	background: #fff; /* фон выпадающего списка */
+	background: #fff; 
 	width: 198px;
 	border: 1px solid #dcdcdc;
 	border-top: none;
@@ -113,10 +113,10 @@
 	position: relative;
 	overflow: hidden;
 	z-index: 5;
-	border: 1px solid #999; /* границы выпадающего спиcка */
+	border: 1px solid #999; 
 }
 
-.cusel .jScrollPaneTrack { /* трек для ползунка прокрутки */
+.cusel .jScrollPaneTrack { 
 	height: 100%;
 	width: 7px !important;
 	background: #ccc;
@@ -124,7 +124,7 @@
 	top: 0;
 	right: 4px;
 }
-.cusel .jScrollPaneDrag { /* ползунок */
+.cusel .jScrollPaneDrag {
 	position: absolute;
 	background-position: -40px -26px;
 	cursor: pointer;
@@ -146,7 +146,7 @@
 	left: 0;
 	overflow: hidden;
 }
-.cusel .jScrollArrowUp { /* стрелка вверх */
+.cusel .jScrollArrowUp {
 	position: absolute;
 	top: 0;
 	right: 2px;
@@ -156,7 +156,7 @@
 	background-position: -2px -26px;
 	overflow: hidden;
 }
-.cusel .jScrollArrowDown { /* стрелка вниз */
+.cusel .jScrollArrowDown { 
 	width: 25px;
 	height: 12px;
 	position: absolute;

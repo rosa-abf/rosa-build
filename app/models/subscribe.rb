@@ -6,6 +6,12 @@ class Subscribe < ActiveRecord::Base
 
   scope :finder_hack, order('') # FIXME .subscribes - error; .subscribes.finder_hack - success Oo
 
+  before_save lambda {|c| c.subscribeable_id = c.subscribeable_id.to_s.hex if c.commit_subscribe? and c.subscribeable_id_changed?}
+
+  def commit_subscribe?
+    subscribeable_type == 'Grit::Commit'
+  end
+
   def subscribed?
     status
   end

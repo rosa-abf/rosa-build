@@ -1,9 +1,5 @@
 function changeCheck(el)
-/* 
-	Russsian comments deleted
-	el - span
-	input
-*/
+
 {
      var el = el,
           input = el.getElementsByTagName("input")[0];
@@ -21,9 +17,7 @@ function changeCheck(el)
      return true;
 }
 function startChangeCheck(el)
-/*
-	Russsian comments deleted
-*/
+
 {
 	var el = el,
           input = el.getElementsByTagName("input")[0];
@@ -36,10 +30,7 @@ function startChangeCheck(el)
 
 function startCheck()
 {
-	/*
-		 Russsian comments deleted
-		 Russsian comments deleted
-	 */
+
 	startChangeCheck(document.getElementById("niceCheckbox1"));
 	startChangeCheck(document.getElementById("niceCheckbox2"));
 	startChangeCheck(document.getElementById("niceCheckbox3"));

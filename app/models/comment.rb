@@ -8,14 +8,19 @@ class Comment < ActiveRecord::Base
 
   after_create :invoke_helper, :if => "commentable_type == 'Grit::Commit'"
   after_create :subscribe_users
-  after_create {|comment| Subscribe.new_comment_notification(comment)}
+  after_create {|c| Subscribe.new_comment_notification(c)}
+  before_save lambda {|c| c.commentable_id = c.commentable_id.to_s.hex if c.commit_comment? and c.commentable_id_changed?}
 
   def helper
-    class_eval "def commentable; project.git_repository.commit('#{commentable_id}'); end" if commentable_type == 'Grit::Commit'
+    class_eval "def commentable; project.git_repository.commit('#{commentable_id}'); end" if commit_comment?
   end
 
   def own_comment?(user)
     user_id == user.id
+  end
+
+  def commit_comment?
+    commentable_type == 'Grit::Commit'
   end
 
   protected

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120210141153) do
+ActiveRecord::Schema.define(:version => 20120214021626) do
 
   create_table "arches", :force => true do |t|
     t.string   "name",       :null => false
@@ -90,12 +90,12 @@ ActiveRecord::Schema.define(:version => 20120210141153) do
   end
 
   create_table "comments", :force => true do |t|
-    t.string   "commentable_id"
     t.string   "commentable_type"
     t.integer  "user_id"
     t.text     "body"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.decimal  "commentable_id",   :precision => 50, :scale => 0
   end
 
   create_table "containers", :force => true do |t|
@@ -117,6 +117,7 @@ ActiveRecord::Schema.define(:version => 20120210141153) do
     t.string   "locked_by"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "queue"
   end
 
   add_index "delayed_jobs", ["priority", "run_at"], :name => "delayed_jobs_priority"
@@ -253,11 +254,11 @@ ActiveRecord::Schema.define(:version => 20120210141153) do
     t.text     "description"
     t.string   "ancestry"
     t.boolean  "has_issues",        :default => true
+    t.boolean  "has_wiki",          :default => false
     t.string   "srpm_file_name"
     t.string   "srpm_content_type"
     t.integer  "srpm_file_size"
     t.datetime "srpm_updated_at"
-    t.boolean  "has_wiki",          :default => false
   end
 
   add_index "projects", ["category_id"], :name => "index_projects_on_category_id"
@@ -324,13 +325,13 @@ ActiveRecord::Schema.define(:version => 20120210141153) do
   end
 
   create_table "subscribes", :force => true do |t|
-    t.string   "subscribeable_id"
     t.string   "subscribeable_type"
     t.integer  "user_id"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.boolean  "status",             :default => true
+    t.boolean  "status",                                            :default => true
     t.integer  "project_id"
+    t.decimal  "subscribeable_id",   :precision => 50, :scale => 0
   end
 
   create_table "users", :force => true do |t|

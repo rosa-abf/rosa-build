@@ -1,42 +1,28 @@
-/* -------------------------------------
-
-	cusel version 2.5
-	last update: 31.10.11
-	смена обычного селект на стильный
-	autor: Evgen Ryzhkov
-	updates by:
-		- Alexey Choporov
-		- Roman Omelkovitch
-	using libs:
-		- jScrollPane
-		- mousewheel
-	www.xiper.net
-----------------------------------------*/
 function cuSel(params) {
 							
 	jQuery(params.changedEl).each(
 	function(num)
 	{
 	var chEl = jQuery(this),
-		chElWid = chEl.outerWidth(), // ширина селекта
-		chElClass = chEl.prop("class"), // класс селекта
-		chElId = chEl.prop("id"), // id
-		chElName = chEl.prop("name"), // имя
-		defaultVal = chEl.val(), // начальное значение
+		chElWid = chEl.outerWidth(), 
+		chElClass = chEl.prop("class"), 
+		chElId = chEl.prop("id"), 
+		chElName = chEl.prop("name"), 
+		defaultVal = chEl.val(), 
 		activeOpt = chEl.find("option[value='"+defaultVal+"']").eq(0),
-		defaultText = activeOpt.text(), // начальный текст
-		disabledSel = chEl.prop("disabled"), // заблокирован ли селект
+		defaultText = activeOpt.text(), 
+		disabledSel = chEl.prop("disabled"), 
 		scrollArrows = params.scrollArrows,
 		chElOnChange = chEl.prop("onchange"),
 		chElTab = chEl.prop("tabindex"),
 		chElMultiple = chEl.prop("multiple");
 		
-		if(!chElId || chElMultiple)	return false; // не стилизируем селект если не задан id
+		if(!chElId || chElMultiple)	return false; 
 		
 		if(!disabledSel)
 		{
-			classDisCuselText = "", // для отслеживания клика по задизайбленному селекту
-			classDisCusel=""; // для оформления задизейбленного селекта
+			classDisCuselText = "", 
+			classDisCusel=""; 
 		}
 		else
 		{
@@ -49,22 +35,16 @@ function cuSel(params) {
 			classDisCusel+=" cuselScrollArrows";
 		}
 			
-		activeOpt.addClass("cuselActive");  // активному оптиону сразу добавляем класс для подсветки
+		activeOpt.addClass("cuselActive");  
 	
-	var optionStr = chEl.html(), // список оптионов
+	var optionStr = chEl.html(), 
 
 		
-	/* 
-		делаем замену тегов option на span, полностью сохраняя начальную конструкцию
-	*/
 	
-	spanStr = optionStr.replace(/option/ig,"span").replace(/value=/ig,"val="); // value меняем на val, т.к. jquery отказывается воспринимать value у span
 	
-	/* 
-		для IE проставляем кавычки для значений, т.к. html() возращает код без кавычек
-		что произошла корректная обработка value должно быть последний атрибутом option,
-		например <option class="country" id="ukraine" value="/ukrane/">Украина</option>
-	*/
+	spanStr = optionStr.replace(/option/ig,"span").replace(/value=/ig,"val="); 
+	
+	
 	if($.browser.msie && parseInt($.browser.version) < 9)
 	{
 		var pattern = /(val=)(.*?)(>)/g;
@@ -72,7 +52,7 @@ function cuSel(params) {
 	}
 
 	
-	/* каркас стильного селекта	*/
+	
 	var cuselFrame = '<div class="cusel '+chElClass+' '+classDisCusel+'"'+
 					' id=cuselFrame-'+chElId+
 					' style="width:'+chElWid+'px"'+
@@ -87,17 +67,13 @@ function cuSel(params) {
 					'</div>';
 					
 					
-	/* удаляем обычный селект, на его место вставляем стильный */
+	
 	chEl.replaceWith(cuselFrame);
 	
-	/* если был поцеплен onchange - цепляем его полю */
+
 	if(chElOnChange) jQuery("#"+chElId).bind('change',chElOnChange);
 
 	
-	/*
-		устаналиваем высоту выпадающих списков основываясь на числе видимых позиций и высоты одной позиции
-		при чем только тем, у которых число оптионов больше числа заданного числа видимых
-	*/
 	var newSel = jQuery("#cuselFrame-"+chElId),
 		arrSpan = newSel.find("span"),
 		defaultHeight;
@@ -125,7 +101,7 @@ function cuSel(params) {
 			.css({display : "none", visibility: "visible" });
 	}
 	
-	/* вставляем в оптионы дополнительные теги */
+
 	
 	var arrAddTags = jQuery("#cusel-scroll-"+chElId).find("span[addTags]"),
 		lenAddTags = arrAddTags.length;
@@ -138,10 +114,7 @@ function cuSel(params) {
 	
 	});
 
-/* ---------------------------------------
-	привязка событий селектам
-------------------------------------------
-*/
+
 function cuselEvents() {
 jQuery("html").unbind("click");
 
@@ -153,26 +126,26 @@ jQuery("html").click(
 			clickedId = clicked.attr("id"),
 			clickedClass = clicked.prop("class");
 			
-		/* если кликнули по самому селекту (текст) */
+		
 		if((clickedClass.indexOf("cuselText")!=-1 || clickedClass.indexOf("cuselFrameRight")!=-1) && clicked.parent().prop("class").indexOf("classDisCusel")==-1)
 		{
 			var cuselWrap = clicked.parent().find(".cusel-scroll-wrap").eq(0);
 			
-			/* если выпадающее меню скрыто - показываем */
+			
 			cuselShowList(cuselWrap);
 		}
-		/* если кликнули по самому селекту (контейнер) */
+		
 		else if(clickedClass.indexOf("cusel")!=-1 && clickedClass.indexOf("classDisCusel")==-1 && clicked.is("div"))
 		{
 	
 			var cuselWrap = clicked.find(".cusel-scroll-wrap").eq(0);
 			
-			/* если выпадающее меню скрыто - показываем */
+			
 			cuselShowList(cuselWrap);
 	
 		}
 		
-		/* если выбрали позицию в списке */
+		
 		else if(clicked.is(".cusel-scroll-wrap span") && clickedClass.indexOf("cuselActive")==-1)
 		{
 			var clickedVal;
@@ -194,9 +167,7 @@ jQuery("html").click(
 			return;
 		}
 		
-		/*
-			скрываем раскрытые списки, если кликнули вне списка
-		*/
+		
 		else
 		{
 			jQuery(".cusel-scroll-wrap")
@@ -208,15 +179,13 @@ jQuery("html").click(
 		
 	});
 
-jQuery(".cusel").unbind("keydown"); /* чтобы не было двлйного срабатывания события */
+jQuery(".cusel").unbind("keydown"); 
 
 jQuery(".cusel").keydown(
 function(event)
 {
 	
-	/*
-		если селект задизайблин, с не го работает только таб
-	*/
+	
 	var key, keyChar;
 		
 	if(window.event) key=window.event.keyCode;
@@ -226,9 +195,7 @@ function(event)
 	
 	if(jQuery(this).prop("class").indexOf("classDisCusel")!=-1) return false;
 		
-	/*
-		если нажали стрелку вниз
-	*/
+	
 	if(key==40)
 	{
 		var cuselOptHover = jQuery(this).find(".cuselOptHover").eq(0);
@@ -245,7 +212,7 @@ function(event)
 			
 			$(this).find("input").eq(0).val(cuselActiveNext.attr("val"));
 					
-			/* прокручиваем к текущему оптиону */
+			
 			cuselScrollToCurent($(this).find(".cusel-scroll-wrap").eq(0));
 			
 			return false;
@@ -253,9 +220,7 @@ function(event)
 		else return false;
 	}
 	
-	/*
-		если нажали стрелку вверх
-	*/
+	
 	if(key==38)
 	{
 		var cuselOptHover = $(this).find(".cuselOptHover").eq(0);
@@ -272,7 +237,7 @@ function(event)
 			
 			$(this).find("input").eq(0).val(cuselActivePrev.attr("val"));
 			
-			/* прокручиваем к текущему оптиону */
+
 			cuselScrollToCurent($(this).find(".cusel-scroll-wrap").eq(0));
 			
 			return false;
@@ -280,9 +245,7 @@ function(event)
 		else return false;
 	}
 	
-	/*
-		если нажали esc
-	*/
+	
 	if(key==27)
 	{
 		var cuselActiveText = $(this).find(".cuselActive").eq(0).text();
@@ -294,9 +257,7 @@ function(event)
 
 	}
 	
-	/*
-		если нажали enter
-	*/
+	
 	if(key==13)
 	{
 		
@@ -315,26 +276,20 @@ function(event)
 		$(this).find("input").eq(0).change();
 	}
 	
-	/*
-		если нажали пробел и это опера - раскрывем список
-	*/
+	
 	if(key==32 && $.browser.opera)
 	{
 		var cuselWrap = $(this).find(".cusel-scroll-wrap").eq(0);
 		
-		/* ракрываем список */
+		
 		cuselShowList(cuselWrap);
 	}
 		
-	if($.browser.opera) return false; /* специально для опера, чтоб при нажатиии на клавиши не прокручивалось окно браузера */
+	if($.browser.opera) return false; 
 
 });
 
-/*
-	функция отбора по нажатым символам (от Alexey Choporov)
-	отбор идет пока пауза между нажатиями сиволов не будет больше 0.5 сек
-	keypress нужен для отлова символа нажатой клавиш
-*/
+
 var arr = [];
 jQuery(".cusel").keypress(function(event)
 {
@@ -377,7 +332,7 @@ jQuery(".cusel").keypress(function(event)
 			{
 				jQuery(o).find(".cuselOptHover").removeClass("cuselOptHover").end().find("span").eq(i).addClass("cuselOptHover").end().end().find(".cuselText").eq(0).text(arrOption.eq(i).text());
 			
-			/* прокручиваем к текущему оптиону */
+			
 			cuselScrollToCurent($(o).find(".cusel-scroll-wrap").eq(0));
 			arr = arr.splice;
 			arr = [];
@@ -420,10 +375,7 @@ function()
 
 function cuSelRefresh(params)
 {
-	/*
-		устаналиваем высоту выпадающих списков основываясь на числе видимых позиций и высоты одной позиции
-		при чем только тем, у которых число оптионов больше числа заданного числа видимых
-	*/
+	
 
 	var arrRefreshEl = params.refreshEl.split(","),
 		lenArr = arrRefreshEl.length,
@@ -453,14 +405,12 @@ function cuSelRefresh(params)
 	}
 	
 }
-/*
-	фукция раскрытия/скрытия списка 
-*/
+
 function cuselShowList(cuselWrap)
 {
 	var cuselMain = cuselWrap.parent(".cusel");
 	
-	/* если выпадающее меню скрыто - показываем */
+	
 	if(cuselWrap.css("display")=="none")
 	{
 		$(".cusel-scroll-wrap").css("display","none");
@@ -474,7 +424,7 @@ function cuselShowList(cuselWrap)
 			cuselWrap.find("div").eq(0).jScrollPaneCusel({showArrows:cuselArrows});
 		}
 				
-		/* прокручиваем к текущему оптиону */
+		
 		cuselScrollToCurent(cuselWrap);
 		}
 		else
@@ -485,9 +435,7 @@ function cuselShowList(cuselWrap)
 }
 
 
-/*
-	функция прокрутки к текущему элементу
-*/
+
 function cuselScrollToCurent(cuselWrap)
 {
 	var cuselScrollEl = null;

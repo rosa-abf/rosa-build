@@ -16,7 +16,7 @@
   overflow: visible;
 
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-  font-size: 10px;*/ /* -> 1em */
+  font-size: 10px; /* -> 1em */
 }
 
 #wiki-wrapper a:link {
@@ -24,7 +24,7 @@
   text-decoration: none;
 }
 
-#wiki-wrapper a:hover, a:visited {
+#wiki-wrapper a:hover, #wiki-wrapper a:visited {
   color: #4183c4;
   text-decoration: underline;
 }
@@ -37,7 +37,7 @@
   padding: 0.5em 0;
   overflow: hidden;
 
-  font-size: 10px;*/ /* -> 1em */
+  font-size: 10px; /* -> 1em */
 }
 
   #head h1 {
