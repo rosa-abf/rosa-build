@@ -1,3 +1,3 @@
 # -*- encoding : utf-8 -*-
 
-require './lib/grit'
+require './lib/grit1'

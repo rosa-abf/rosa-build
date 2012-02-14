@@ -90,12 +90,12 @@ ActiveRecord::Schema.define(:version => 20120210141153) do
   end
 
   create_table "comments", :force => true do |t|
+    t.string   "commentable_id"
     t.string   "commentable_type"
     t.integer  "user_id"
     t.text     "body"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.decimal  "commentable_id",   :precision => 50, :scale => 0
   end
 
   create_table "containers", :force => true do |t|
@@ -117,7 +117,6 @@ ActiveRecord::Schema.define(:version => 20120210141153) do
     t.string   "locked_by"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "queue"
   end
 
   add_index "delayed_jobs", ["priority", "run_at"], :name => "delayed_jobs_priority"
@@ -339,6 +338,7 @@ ActiveRecord::Schema.define(:version => 20120210141153) do
     t.string   "email",                                 :default => "",   :null => false
     t.string   "encrypted_password",     :limit => 128, :default => "",   :null => false
     t.string   "reset_password_token"
+    t.datetime "reset_password_sent_at"
     t.datetime "remember_created_at"
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -346,7 +346,6 @@ ActiveRecord::Schema.define(:version => 20120210141153) do
     t.string   "uname"
     t.string   "role"
     t.string   "language",                              :default => "en"
-    t.datetime "reset_password_sent_at"
     t.integer  "own_projects_count",                    :default => 0,    :null => false
   end
 
