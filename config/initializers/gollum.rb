@@ -1,1 +1,1 @@
-require './lib/gollum'
+require './lib/gollum1'
