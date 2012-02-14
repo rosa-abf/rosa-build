@@ -77,6 +77,24 @@ class ActivityFeedObserver < ActiveRecord::Observer
           :data => {:user_id => owner.id, :user_name => owner.uname, :project_id => project.id, :project_name => project.name, :last_commits => last_commits, :branch_name => branch_name, :change_type => change_type}
         )
       end
+    when 'Gollum::Committer'
+      actor = User.find_by_uname(record.actor.name)
+      project_name = record.wiki.path.match(/\/(\w+)\.wiki\.git$/)[1]
+      project = Project.find_by_name(project_name)
+      commit_sha = record.commit
+      #wiki_name = record.wiki.name
+
+      # TODO: Move this logic into Gollum::Wiki
+      recipients = project.relations.by_role('admin').where(:object_type => 'User').map { |rel| rel.read_attribute(:object_id) }
+      recipients = recipients | [project.owner_id] if project.owner_type == 'User'
+
+      recipients.each do |recipient|
+        ActivityFeed.create(
+          :user => User.find(recipient),#record.user,
+          :kind => 'wiki_new_commit_notification',
+          :data => {:user_id => actor.id, :user_name => actor.name, :project_id => project.id, :project_name => project_name, :commit_sha => commit_sha}
+        )
+      end
     end
   end
 

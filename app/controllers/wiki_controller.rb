@@ -249,6 +249,7 @@ class WikiController < ApplicationController
       # @committer.after_commit do |committer, sha1|
       #   here goes callback for notification
       # end
+      ActivityFeedObserver.instance.after_create(@committer)
       @committer
     end
 

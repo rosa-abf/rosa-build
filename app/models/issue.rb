@@ -16,9 +16,6 @@ class Issue < ActiveRecord::Base
 
   after_create :set_serial_id
   after_create :subscribe_users
-  #after_create :deliver_new_issue_notification
-  #after_create :deliver_issue_assign_notification
-  #after_update :deliver_issue_assign_notification
   after_update :subscribe_issue_assigned_user
 
   def assign_uname
@@ -40,11 +37,6 @@ class Issue < ActiveRecord::Base
     recipients = recipients | [self.user_id] if self.user_id
     recipients = recipients | [self.project.owner_id] if self.project.owner_type == 'User'
 
-    # filter by notification settings
-    recipients = recipients.select do |recipient|
-      User.find(recipient).notifier.new_issue && User.find(recipient).notifier.can_notify
-    end
-
     recipients
   end
 
@@ -54,18 +46,6 @@ class Issue < ActiveRecord::Base
     self.serial_id = self.project.issues.count
     self.save!
   end
-
-  #def deliver_new_issue_notification
-  #  recipients = collect_recipient_ids
-  #  recipients.each do |recipient_id|
-  #    recipient = User.find(recipient_id)
-  #    UserMailer.delay.new_issue_notification(self, recipient) if User.find(recipient).notifier.can_notify && User.find(recipient).notifier.new_issue
-  #  end
-  #end
-
-  #def deliver_issue_assign_notification
-  #  UserMailer.delay.issue_assign_notification(self, self.user) if self.user_id_was != self.user_id && self.user.notifier.issue_assign && self.user.notifier.can_notify
-  #end
 
   def subscribe_users
     recipients = collect_recipient_ids
