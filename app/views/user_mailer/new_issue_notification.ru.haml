@@ -1,7 +1,7 @@
 %p== Здравствуйте, #{@user.name}.
 
 
-%p К проекту #{ link_to @issue.project.name, project_path(@issue.project) } была добавлена задача #{ link_to @issue.title, [@issue.project, @issue] }
+%p К проекту #{ link_to @issue.project.name, project_url(@issue.project) } была добавлена задача #{ link_to @issue.title, project_issue_url(@issue.project, @issue) }
 
 
 %p== Команда поддержки «ROSA Build System»

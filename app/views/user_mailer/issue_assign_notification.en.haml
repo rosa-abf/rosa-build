@@ -1,7 +1,7 @@
 %p== Hello, #{@user.name}.
 
 
-%p You have been assigned to issue #{ link_to @issue.title, [@issue.project, @issue] }
+%p You have been assigned to issue #{ link_to @issue.title, project_issue_url(@issue.project, @issue) }
 
 
 %p== Support team «ROSA Build System»

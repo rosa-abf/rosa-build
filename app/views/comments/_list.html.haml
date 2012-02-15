@@ -20,7 +20,8 @@
                 - edit_path = edit_project_commit_comment_path(project, commentable, comment)
                 - delete_path = project_commit_comment_path(project, commentable, comment)
               = link_to t("layout.edit"), edit_path if can? :update, comment
-              = link_to image_tag("web-app-theme/icons/cross.png", :alt => t("layout.delete")) + " " + t("layout.delete"), delete_path, :method => "delete", :class => "button", :confirm => t("layout.comments.confirm_delete") if can? :delete, comment
+              =# link_to image_tag("web-app-theme/icons/cross.png", :alt => t("layout.delete")) + " " + t("layout.delete"), delete_path, :method => "delete", :class => "button", :confirm => t("layout.comments.confirm_delete") if can? :delete, comment
+              = link_to t("layout.delete"), delete_path, :method => "delete", :confirm => t("layout.comments.confirm_delete") if can? :delete, comment
 
 .block
   .content
