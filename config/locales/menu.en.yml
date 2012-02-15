@@ -19,3 +19,11 @@ en:
     contacts: Contacts
     tos: Terms Of Service
     security: Security
+  project_menu:
+    project: Project
+    commits: Commits
+    builds: Builds
+    tracker: Tracker
+    wiki: Wiki
+    readme: Readme
+    settings: Settings

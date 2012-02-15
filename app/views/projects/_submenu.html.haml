@@ -1,0 +1,14 @@
+- content_for :sub_menu do
+  - act = action_name.to_sym
+  - contr = controller_name.to_sym
+  .left
+    = @project.name
+  %nav
+    %ul
+      %li= link_to t("project_menu.project"), project_path(@project), {:class => (act == :show && contr == :projects) ? 'active' : ''}
+      %li= link_to t("project_menu.commits"), commits_path(@project), {:class => (act == :index && contr == :commits) ? 'active' : ''}
+      %li= link_to t("project_menu.builds"), project_build_lists_path(@project), {:class => (act == :index && contr == :builds) ? 'active' : ''}
+      %li= link_to t("project_menu.tracker"), project_issues_path(@project), {:class => (act == :index && contr == :issues) ? 'active' : ''}
+      %li= link_to t("project_menu.wiki"), project_wiki_index_path(@project), {:class => (act == :index && contr == :wiki) ? 'active' : ''}
+      %li= link_to t("project_menu.readme"), "#" #pending
+      %li= link_to t("project_menu.settings"), edit_project_path(@project), {:class => (act == :edit && contr == :projects) ? 'active' : ''}
