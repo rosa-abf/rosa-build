@@ -1,12 +1,12 @@
 %p== Здравствуйте, #{@user.name}.
 
 - if @comment.commentable.class == Issue
-  - link = link_to @comment.commentable.title, [@comment.commentable.project, @comment.commentable]
+  - link = link_to @comment.commentable.title, project_issue_url(@comment.commentable.project, @comment.commentable)
   - object = 'задаче'
 - elsif @comment.commentable.class == Grit::Commit
-  - link = link_to @comment.commentable.message, commit_path(@comment.project, @comment.commentable_id)
+  - link = link_to @comment.commentable.message, commit_url(@comment.project, @comment.commentable_id)
   - object = 'коммиту'
-%p #{ link_to @comment.user.uname, user_path(@comment.user)} добавил комментарий к #{object} #{link}.
+%p #{ link_to @comment.user.uname, user_url(@comment.user)} добавил комментарий к #{object} #{link}.
 
 %p "#{ @comment.body }"
 
