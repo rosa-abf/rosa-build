@@ -61,7 +61,7 @@ namespace :import do
       platform = Platform.find_by_name(ENV['PLATFORM'] || "mandriva2011")
       repository = platform.repositories.find_by_name(ENV['REPOSITORY'] || 'main')
       source = ENV['SOURCE'] || File.join(APP_CONFIG['root_path'], 'mirror.yandex.ru', 'mandriva', release, 'SRPMS', repository.name)
-      owner = Group.find_or_create_by_uname(ENV['OWNER'] || 'import') {|g| g.owner = User.first}
+      owner = Group.find_or_create_by_uname(ENV['OWNER'] || 'import') {|g| g.name = g.uname; g.owner = User.first}
       branch = "import_#{platform.name}"
 
       say 'START'

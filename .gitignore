@@ -7,10 +7,10 @@ tmp/
 config/database.yml
 .idea
 config/application.yml
-public/stylesheets/compiled/*
 public/assets/*
 config/initializers/local.rb
 public/system/*
 public/downloads/*
 *.swp
 *.tmproj
+.sass-cache/

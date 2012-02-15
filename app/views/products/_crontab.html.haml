@@ -1,67 +1,66 @@
-- content_for :javascripts do
-  :javascript
-    $(function(){
-      $(".chooser").click(function() {
-        var for_element = this.name.replace(/_chooser/,"");
-        $("#" + for_element).attr("disabled", (this.value !== "1"));
-      });
-
-      $(".cron").change(function() {
-        var minute, hour, day, month, weekday;
-
-        minute = getSelected('minute');
-        hour = getSelected('hour');
-        day = getSelected('day');
-        month	= getSelected('month');
-        weekday = getSelected('weekday');
-
-        $("#cron").attr("value", minute + " " + hour + " " + day + " " + month + " " + weekday);
-
-        return false;
-      });
-
-      $("#product_use_cron").change(function(){
-        if ($("#product_use_cron:checked").length > 0) {
-          $("#cron").attr("disabled", false);
-        } else {
-          $("#cron").attr("disabled", true);
-        }
-      });
-
-      $("#genereator_btn a").click(function(){
-        $("#crontab_generator").slideToggle(function(){
-
-          if ($("#crontab_generator").css("display") == "none") {
-            $("#genereator_btn a").text("#{t("layout.products.cron_tab_generator.show")}");
-          } else {
-            $("#genereator_btn a").text("#{t("layout.products.cron_tab_generator.hide")}");
-          }
-
-        });
-
-        return false;
-      });
+:javascript
+  $(function(){
+    $(".chooser").click(function() {
+      var for_element = this.name.replace(/_chooser/,"");
+      $("#" + for_element).attr("disabled", (this.value !== "1"));
     });
 
-    function getSelected(name) {
-      var chosen;
+    $(".cron").change(function() {
+      var minute, hour, day, month, weekday;
 
-      if ($("#" + name + "_chooser_every").attr("checked")) {
-        chosen = '*';
+      minute = getSelected('minute');
+      hour = getSelected('hour');
+      day = getSelected('day');
+      month	= getSelected('month');
+      weekday = getSelected('weekday');
+
+      $("#cron").attr("value", minute + " " + hour + " " + day + " " + month + " " + weekday);
+
+      return false;
+    });
+
+    $("#product_use_cron").change(function(){
+      if ($("#product_use_cron:checked").length > 0) {
+        $("#cron").attr("disabled", false);
       } else {
-        var all_selected = [];
-
-        $("#" + name + " option:selected").each(function(i, ele) { all_selected.push($(ele).attr("value")); });
-
-        if (all_selected.length) {
-          chosen = all_selected.join(",");
-        } else {
-          chosen = '*';
-        }
+        $("#cron").attr("disabled", true);
       }
+    });
 
-      return chosen;
+    $("#genereator_btn a").click(function(){
+      $("#crontab_generator").slideToggle(function(){
+
+        if ($("#crontab_generator").css("display") == "none") {
+          $("#genereator_btn a").text("#{t("layout.products.cron_tab_generator.show")}");
+        } else {
+          $("#genereator_btn a").text("#{t("layout.products.cron_tab_generator.hide")}");
+        }
+
+      });
+
+      return false;
+    });
+  });
+
+  function getSelected(name) {
+    var chosen;
+
+    if ($("#" + name + "_chooser_every").attr("checked")) {
+      chosen = '*';
+    } else {
+      var all_selected = [];
+
+      $("#" + name + " option:selected").each(function(i, ele) { all_selected.push($(ele).attr("value")); });
+
+      if (all_selected.length) {
+        chosen = all_selected.join(",");
+      } else {
+        chosen = '*';
+      }
     }
+
+    return chosen;
+  }
 
 
 .group

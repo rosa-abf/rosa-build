@@ -1,0 +1,21 @@
+en:
+  menu:
+    repositories: Repositories
+    personal_repository: My repository
+    products: Products
+    categories: Catalogue
+    auto_build_lists: Automated build
+    downloads: Statistics
+  top_menu:
+    platforms: Platforms
+    projects: Projects
+    build_lists: Task monitoring
+    users: Users
+    groups: Groups
+    event_logs: Event log
+  bottom_menu:
+    copyright: ROSA Lab © 2012
+    about: About company
+    contacts: Contacts
+    tos: Terms Of Service
+    security: Security

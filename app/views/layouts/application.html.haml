@@ -1,60 +1,50 @@
 !!!
 %html
   %head
+    %meta{:content => "text/html; charset=utf-8", "http-equiv" => "Content-Type"}
     %title= choose_title
-    = render :partial => "layouts/stylesheets"
-    = render :partial => "layouts/javascripts"
+    = stylesheet_link_tag 'http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.17/themes/base/jquery-ui.css', :media => 'screen, projection'
+    = stylesheet_link_tag "application"
+    = javascript_include_tag "application"
     = csrf_meta_tag
+
   %body
-    #container
-      #header
-        %h1
-          %a{:href => "/"}= choose_title
-        #user-navigation
-          %ul.wat-cf
-            %li= link_to current_user.uname, edit_user_registration_path
-            %li= link_to t('layout.logout'), destroy_user_session_path, :method => :delete, :class => "logout"
-        #main-navigation
-          %ul.wat-cf
-            -if can? :index, User
-              %li{:class => controller.controller_path == 'users' ? 'active' : '' }
-                %a{:href => users_path}= t("layout.menu.users")
-            -if can? :index, Platform
-              %li{:class => controller.controller_path == 'platforms' ? 'active' : '' }
-                %a{:href => platforms_path}= t("layout.menu.platforms")
-            -if can? :index, Project
-              %li{:class => controller.controller_path == 'projects' ? 'active' : '' }
-                %a{:href => projects_path}= t("layout.menu.projects")
-            -if can? :index, Group
-              %li{:class => controller.controller_path == 'groups' ? 'active' : '' }
-                %a{:href => groups_path}= t("layout.menu.groups")
-            -if can? :index, Download
-              %li{:class => controller.controller_path == 'downloads' ? 'active' : '' }
-                %a{:href => downloads_path}= t("layout.menu.downloads")
-            -if can? :index, EventLog
-              %li{:class => controller.controller_path == 'event_logs' ? 'active' : '' }
-                %a{:href => event_logs_path}= t("layout.menu.event_logs")
-            -if can? :index, BuildList
-              %li{:class => controller.controller_path == 'build_lists' ? 'active' : '' }
-                %a{:href => build_lists_path}= t("layout.menu.build_lists")
-            -if can? :platforms, Category
-              %li{:class => controller.controller_path == 'categories' ? 'active' : '' }
-                %a{:href => catalogs_path}= t("layout.menu.categories")
-            -if can? :read, current_user.personal_repository
-              %li{:class => controller.controller_path == 'personal_repositories' ? 'active' : '' }
-                %a{:href => personal_repository_path( current_user.personal_repository.id )}= t("layout.menu.personal_repository")
-            - if can? :index, AutoBuildList
-              %li{:class => controller.controller_path == 'auto_build_lists' ? 'active' : '' }
-                %a{:href => auto_build_lists_path}= t("layout.menu.auto_build_lists")
-      #wrapper.wat-cf
-        = render :partial => "layouts/flashes"
-        #main
-          = yield
-          #footer
-            .block
-              = yield :footer
+    .wrap
+      %header
+        .left
+        .middle
+          %menu
+            = render 'layouts/menu/top'
+            .logo= image_tag 'logo-mini.png', :alt => 'logo'
+          .information
+            .search
+              .pic
+              .field
+                %input.gray{:onclick => "if(this.value=='#{t "layout.search"}'){this.value='';this.className='black';}", :onblur => "if(this.value==''){this.value='#{t "layout.search"}';this.className='gray';}", :type => "text", :value => "#{t "layout.search"}"}
+            .avatar{:onclick => "droplist();"}= image_tag 'ava.png', :alt => 'avatar', :height => "30"
+            .profile{:onclick => "droplist();"}
+              %a{:href => "#", :onclick => "droplist();"}
+                = current_user.uname
+                = image_tag 'expand-white.png', :alt => 'ex'
+            .both
+            .droplist-wrap
+              #droplist.droplist
+                .a= link_to current_user.uname, current_user
+                .a= link_to t('layout.settings.label'), edit_user_registration_path
+                .a= link_to t('layout.logout'), destroy_user_session_path, :method => :delete
+        .right
+        .both
+      - if content_for?(:sub_menu)
+        .sub-menu= yield :sub_menu
+      .both
+      = render "layouts/flashes"
+      %article
+        - if content_for?(:sidebar)
+          %aside= yield :sidebar
+          .right= yield
+        - else
+          .all= yield
+        .both
 
-        #sidebar
-          = yield :sidebar
-
+    %footer= render "layouts/menu/bottom"
     = render 'layouts/counters' unless current_user.try(:admin?)

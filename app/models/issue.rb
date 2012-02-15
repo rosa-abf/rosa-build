@@ -5,10 +5,8 @@ class Issue < ActiveRecord::Base
   belongs_to :project
   belongs_to :user
 
-  has_many :comments, :as => :commentable,
-    :finder_sql => proc { "comments.commentable_id = '#{self.id}' AND comments.commentable_type = '#{self.class.name}'"}
-  has_many :subscribes, :as => :subscribeable,
-    :finder_sql => proc { "subscribes.subscribeable_id = '#{self.id}' AND subscribes.subscribeable_type = '#{self.class.name}'"}
+  has_many :comments, :as => :commentable, :dependent => :destroy #, :finder_sql => proc { "comments.commentable_id = '#{self.id}' AND comments.commentable_type = '#{self.class.name}'"}
+  has_many :subscribes, :as => :subscribeable, :dependent => :destroy #, :finder_sql => proc { "subscribes.subscribeable_id = '#{self.id}' AND subscribes.subscribeable_type = '#{self.class.name}'"}
 
   validates :title, :body, :project_id, :presence => true
 

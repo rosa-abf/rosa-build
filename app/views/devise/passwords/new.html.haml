@@ -15,7 +15,8 @@
           = f.text_field :email, :class => "text_field"
 
       .group.navform.wat-cf
-        %button.button{ :tyle => "submit" }
-          #{image_tag("web-app-theme/icons/tick.png", :alt => t("devise.passwords.button"))} #{t("devise.passwords.button")}
+        %button.button{:tyle => "submit"}
+          = image_tag "web-app-theme/icons/tick.png", :alt => t("devise.passwords.button")
+          = t("devise.passwords.button")
         %span.text_button_padding
         = render :partial => "devise/shared/links"

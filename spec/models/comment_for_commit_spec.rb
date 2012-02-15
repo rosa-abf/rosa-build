@@ -79,7 +79,7 @@ describe Comment do
       it 'should send an e-mail' do
         ActionMailer::Base.deliveries = []
         comment = Comment.create(:user => @stranger, :body => 'hello!', :project => @project,
-            :commentable_type => @commit.class.name, :commentable_id => @commit.id)
+            :commentable_type => @commit.class.name, :commentable_id => @commit.id.hex)
         ActionMailer::Base.deliveries.count.should == 1
         ActionMailer::Base.deliveries.last.to.include?(@user.email).should == true
       end
@@ -90,7 +90,7 @@ describe Comment do
         ActionMailer::Base.deliveries = []
         @user.notifier.update_attribute :new_comment_commit_repo_owner, false
         comment = Comment.create(:user => @stranger, :body => 'hello!', :project => @project,
-            :commentable_type => @commit.class.name, :commentable_id => @commit.id)
+            :commentable_type => @commit.class.name, :commentable_id => @commit.id.hex)
         ActionMailer::Base.deliveries.count.should == 0
       end
     end
@@ -100,7 +100,7 @@ describe Comment do
         ActionMailer::Base.deliveries = []
         @user.notifier.update_attribute :new_comment_commit_owner, false
         comment = Comment.create(:user => @stranger, :body => 'hello!', :project => @project,
-            :commentable_type => @commit.class.name, :commentable_id => @commit.id)
+            :commentable_type => @commit.class.name, :commentable_id => @commit.id.hex)
         ActionMailer::Base.deliveries.count.should == 1
         ActionMailer::Base.deliveries.last.to.include?(@user.email).should == true
       end
@@ -111,7 +111,7 @@ describe Comment do
         ActionMailer::Base.deliveries = []
         @user.notifier.update_attribute :new_comment_commit_commentor, false
         comment = Comment.create(:user => @stranger, :body => 'hello!', :project => @project,
-            :commentable_type => @commit.class.name, :commentable_id => @commit.id)
+            :commentable_type => @commit.class.name, :commentable_id => @commit.id.hex)
         ActionMailer::Base.deliveries.count.should == 1
         ActionMailer::Base.deliveries.last.to.include?(@user.email).should == true
       end
@@ -124,7 +124,7 @@ describe Comment do
         @user.notifier.update_attribute :new_comment_commit_owner, false
         @user.notifier.update_attribute :new_comment_commit_commentor, false
         comment = Comment.create(:user => @stranger, :body => 'hello!', :project => @project,
-            :commentable_type => @commit.class.name, :commentable_id => @commit.id)
+            :commentable_type => @commit.class.name, :commentable_id => @commit.id.hex)
         ActionMailer::Base.deliveries.count.should == 0
       end
     end
@@ -132,10 +132,10 @@ describe Comment do
     context 'for unsubscribe commit' do
       it 'should not send an e-mail' do
         ActionMailer::Base.deliveries = []
-        Subscribe.unsubscribe_from_commit(:project_id => @project.id, :subscribeable_id => @commit.id, :subscribeable_type => @commit.class.name, :user_id => @user.id)
+        Subscribe.unsubscribe_from_commit(:project_id => @project.id, :subscribeable_id => @commit.id.hex, :subscribeable_type => @commit.class.name, :user_id => @user.id)
         comment = Comment.create(:user => @stranger, :body => 'hello!', :project => @project,
-            :commentable_type => @commit.class.name, :commentable_id => @commit.id)
-        ActionMailer::Base.deliveries.count.should == 0 # cache project.commit_comments_subscribes ...
+            :commentable_type => @commit.class.name, :commentable_id => @commit.id.hex)
+        ActionMailer::Base.deliveries.count.should == 0
       end
     end
 
@@ -144,7 +144,7 @@ describe Comment do
         ActionMailer::Base.deliveries = []
         @user.notifier.update_attribute :can_notify, false
         comment = Comment.create(:user => @stranger, :body => 'hello!', :project => @project,
-            :commentable_type => @commit.class.name, :commentable_id => @commit.id)
+            :commentable_type => @commit.class.name, :commentable_id => @commit.id.hex)
         ActionMailer::Base.deliveries.count.should == 0
       end
     end
@@ -179,7 +179,7 @@ describe Comment do
       it 'should send an e-mail by default settings' do
         ActionMailer::Base.deliveries = []
         comment = Comment.create(:user => @stranger, :body => 'hello!', :project => @project,
-            :commentable_type => @commit.class.name, :commentable_id => @commit.id)
+            :commentable_type => @commit.class.name, :commentable_id => @commit.id.hex)
         ActionMailer::Base.deliveries.count.should == 1
         ActionMailer::Base.deliveries.last.to.include?(@project.owner.email).should == true
       end
@@ -190,7 +190,7 @@ describe Comment do
         ActionMailer::Base.deliveries = []
         @user.notifier.update_attribute :new_comment_commit_repo_owner, false
         comment = Comment.create(:user => @stranger, :body => 'hello!', :project => @project,
-            :commentable_type => @commit.class.name, :commentable_id => @commit.id)
+            :commentable_type => @commit.class.name, :commentable_id => @commit.id.hex)
         ActionMailer::Base.deliveries.count.should == 0
       end
     end
@@ -200,7 +200,7 @@ describe Comment do
         ActionMailer::Base.deliveries = []
         @user.notifier.update_attribute :new_comment_commit_owner, false
         comment = Comment.create(:user => @stranger, :body => 'hello!', :project => @project,
-            :commentable_type => @commit.class.name, :commentable_id => @commit.id)
+            :commentable_type => @commit.class.name, :commentable_id => @commit.id.hex)
         ActionMailer::Base.deliveries.count.should == 1
         ActionMailer::Base.deliveries.last.to.include?(@user.email).should == true
       end
@@ -211,7 +211,7 @@ describe Comment do
         ActionMailer::Base.deliveries = []
         @user.notifier.update_attribute :new_comment_commit_commentor, false
         comment = Comment.create(:user => @stranger, :body => 'hello!', :project => @project,
-            :commentable_type => @commit.class.name, :commentable_id => @commit.id)
+            :commentable_type => @commit.class.name, :commentable_id => @commit.id.hex)
         ActionMailer::Base.deliveries.count.should == 1
         ActionMailer::Base.deliveries.last.to.include?(@user.email).should == true
       end
@@ -224,7 +224,7 @@ describe Comment do
         @user.notifier.update_attribute :new_comment_commit_owner, false
         @user.notifier.update_attribute :new_comment_commit_commentor, false
         comment = Comment.create(:user => @stranger, :body => 'hello!', :project => @project,
-            :commentable_type => @commit.class.name, :commentable_id => @commit.id)
+            :commentable_type => @commit.class.name, :commentable_id => @commit.id.hex)
         ActionMailer::Base.deliveries.count.should == 0
       end
     end
@@ -232,9 +232,9 @@ describe Comment do
     context 'for unsubscribe project' do
       it 'should not send an e-mail' do
         ActionMailer::Base.deliveries = []
-        Subscribe.unsubscribe_from_commit(:project_id => @project.id, :subscribeable_id => @commit.id, :subscribeable_type => @commit.class.name, :user_id => @user.id)
+        Subscribe.unsubscribe_from_commit(:project_id => @project.id, :subscribeable_id => @commit.id.hex, :subscribeable_type => @commit.class.name, :user_id => @user.id)
         comment = Comment.create(:user => @stranger, :body => 'hello!', :project => @project,
-            :commentable_type => @commit.class.name, :commentable_id => @commit.id)
+            :commentable_type => @commit.class.name, :commentable_id => @commit.id.hex)
         ActionMailer::Base.deliveries.count.should == 0
       end
     end
@@ -244,7 +244,7 @@ describe Comment do
         ActionMailer::Base.deliveries = []
         @user.notifier.update_attribute :can_notify, false
         comment = Comment.create(:user => @stranger, :body => 'hello!', :project => @project,
-            :commentable_type => @commit.class.name, :commentable_id => @commit.id)
+            :commentable_type => @commit.class.name, :commentable_id => @commit.id.hex)
         ActionMailer::Base.deliveries.count.should == 0
       end
     end
@@ -254,7 +254,7 @@ describe Comment do
         ActionMailer::Base.deliveries = []
         @project.owner.update_attribute :email, 'code@tpope.net'
         comment = Comment.create(:user => @stranger, :body => 'hello!', :project => @project,
-            :commentable_type => @commit.class.name, :commentable_id => @commit.id)
+            :commentable_type => @commit.class.name, :commentable_id => @commit.id.hex)
 
         ActionMailer::Base.deliveries.count.should == 1
         ActionMailer::Base.deliveries.last.to.include?(@project.owner.email).should == true
@@ -272,7 +272,7 @@ describe Comment do
       @create_params = {:commentable_type => @commit.class.name, :commentable_id => @commit.id,
         :user => @simple, :project => @project}
       @comment = Factory(:comment, :user => @simple)
-      @comment.update_attributes(:commentable_type => @commit.class.name, :commentable_id => @commit.id)
+      @comment.update_attributes(:commentable_type => @commit.class.name, :commentable_id => @commit.id.hex)
       @ability = Ability.new(@simple)
     end
 
@@ -296,18 +296,18 @@ describe Comment do
       it 'should not send an e-mail' do
         ActionMailer::Base.deliveries = []
         comment = Comment.create(:user => @stranger, :body => 'hello!', :project => @project,
-            :commentable_type => @commit.class.name, :commentable_id => @commit.id)
+            :commentable_type => @commit.class.name, :commentable_id => @commit.id.hex)
         ActionMailer::Base.deliveries.count.should == 1
         ActionMailer::Base.deliveries.last.to.include?(@stranger.email).should == false
       end
 
       it 'should send an e-mail for comments after his comment' do
         comment = Comment.create(:user => @simple, :body => 'hello!', :project => @project,
-            :commentable_type => @commit.class.name, :commentable_id => @commit.id)
+            :commentable_type => @commit.class.name, :commentable_id => @commit.id.hex)
 
         ActionMailer::Base.deliveries = []
         comment = Comment.create(:user => @user, :body => 'owner comment', :project => @project,
-            :commentable_type => @commit.class.name, :commentable_id => @commit.id)
+            :commentable_type => @commit.class.name, :commentable_id => @commit.id.hex)
         ActionMailer::Base.deliveries.count.should == 1
         ActionMailer::Base.deliveries.last.to.include?(@simple.email).should == true
       end
@@ -318,18 +318,18 @@ describe Comment do
         @stranger.notifier.update_attribute :new_comment_commit_repo_owner, false
         @stranger.notifier.update_attribute :new_comment_commit_owner, false
 
-        Subscribe.subscribe_to_commit(:project_id => @project.id, :subscribeable_id => @commit.id, :subscribeable_type => @commit.class.name, :user_id => @stranger.id)
+        Subscribe.subscribe_to_commit(:project_id => @project.id, :subscribeable_id => @commit.id.hex, :subscribeable_type => @commit.class.name, :user_id => @stranger.id)
         comment = Comment.create(:user => @project.owner, :body => 'hello!', :project => @project,
-            :commentable_type => @commit.class.name, :commentable_id => @commit.id)
+            :commentable_type => @commit.class.name, :commentable_id => @commit.id.hex)
         ActionMailer::Base.deliveries.count.should == 1
         ActionMailer::Base.deliveries.last.to.include?(@stranger.email).should == true
       end
 
       it 'should not send an e-mail for own comment' do
         ActionMailer::Base.deliveries = []
-        Subscribe.subscribe_to_commit(:project_id => @project.id, :subscribeable_id => @commit.id, :subscribeable_type => @commit.class.name, :user_id => @stranger.id)
+        Subscribe.subscribe_to_commit(:project_id => @project.id, :subscribeable_id => @commit.id.hex, :subscribeable_type => @commit.class.name, :user_id => @stranger.id)
         comment = Comment.create(:user => @owner, :body => 'hello!', :project => @project,
-            :commentable_type => @commit.class.name, :commentable_id => @commit.id)
+            :commentable_type => @commit.class.name, :commentable_id => @commit.id.hex)
         ActionMailer::Base.deliveries.count.should == 0
       end
     end
@@ -339,17 +339,17 @@ describe Comment do
         ActionMailer::Base.deliveries = []
         @stranger.update_attribute :email, 'code@tpope.net'
         comment = Comment.create(:user => @user, :body => 'hello!', :project => @project,
-            :commentable_type => @commit.class.name, :commentable_id => @commit.id)
+            :commentable_type => @commit.class.name, :commentable_id => @commit.id.hex)
         ActionMailer::Base.deliveries.count.should == 1
         ActionMailer::Base.deliveries.last.to.include?(@stranger.email).should == true
       end
 
       it 'should send a one e-mail when subscribed to commit' do
         ActionMailer::Base.deliveries = []
-        Subscribe.subscribe_to_commit(:project_id => @project.id, :subscribeable_id => @commit.id, :subscribeable_type => @commit.class.name, :user_id => @stranger.id)
+        Subscribe.subscribe_to_commit(:project_id => @project.id, :subscribeable_id => @commit.id.hex, :subscribeable_type => @commit.class.name, :user_id => @stranger.id)
         @stranger.update_attribute :email, 'code@tpope.net'
         comment = Comment.create(:user => @user, :body => 'hello!', :project => @project,
-            :commentable_type => @commit.class.name, :commentable_id => @commit.id)
+            :commentable_type => @commit.class.name, :commentable_id => @commit.id.hex)
         ActionMailer::Base.deliveries.count.should == 1
         ActionMailer::Base.deliveries.last.to.include?(@stranger.email).should == true
       end
@@ -358,7 +358,7 @@ describe Comment do
         ActionMailer::Base.deliveries = []
         @stranger.update_attribute :email, 'code@tpope.net'
         comment = Comment.create(:user => @stranger, :body => 'hello!', :project => @project,
-            :commentable_type => @commit.class.name, :commentable_id => @commit.id)
+            :commentable_type => @commit.class.name, :commentable_id => @commit.id.hex)
         ActionMailer::Base.deliveries.count.should == 1
         ActionMailer::Base.deliveries.last.to.include?(@stranger.email).should == false
       end
@@ -369,7 +369,7 @@ describe Comment do
         @stranger.update_attribute :email, 'code@tpope.net'
         @stranger.notifier.update_attribute :can_notify, false
         comment = Comment.create(:user => @user, :body => 'hello!', :project => @project,
-            :commentable_type => @commit.class.name, :commentable_id => @commit.id)
+            :commentable_type => @commit.class.name, :commentable_id => @commit.id.hex)
         ActionMailer::Base.deliveries.count.should == 0
       end
 
@@ -378,7 +378,7 @@ describe Comment do
         @stranger.notifier.update_attribute :new_comment_commit_owner, false
         @stranger.update_attribute :email, 'code@tpope.net'
         comment = Comment.create(:user => @user, :body => 'hello!', :project => @project,
-            :commentable_type => @commit.class.name, :commentable_id => @commit.id)
+            :commentable_type => @commit.class.name, :commentable_id => @commit.id.hex)
         ActionMailer::Base.deliveries.count.should == 0
       end
     end

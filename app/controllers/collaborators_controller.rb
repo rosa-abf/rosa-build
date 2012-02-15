@@ -110,10 +110,9 @@ class CollaboratorsController < ApplicationController
       if flash[k].size > 0
         flash[k] = flash[k].map{|i| (i.is_a? Array) ? sprintf(i.first, i.last) : i}.join('; ')
       else
-        flash[k] = nil
+        flash.delete k
       end
     end
-    flash.delete_if{|k, v| v.nil?}
 
     redirect_to(edit_project_collaborators_path(@project))
   end

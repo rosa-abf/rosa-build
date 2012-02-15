@@ -19,11 +19,9 @@ class Group < ActiveRecord::Base
 
   attr_readonly :uname, :own_projects_count
 
-  delegate :ssh_key, :to => :owner
-  delegate :email, :to => :owner
+  delegate :ssh_key, :email, :to => :owner
 
   after_create :add_owner_to_members
-  after_initialize lambda {|r| r.name ||= r.uname } # default
 
   include Modules::Models::PersonalRepository
 #  include Modules::Models::Owner

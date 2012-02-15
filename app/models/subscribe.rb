@@ -6,12 +6,16 @@ class Subscribe < ActiveRecord::Base
 
   scope :finder_hack, order('') # FIXME .subscribes - error; .subscribes.finder_hack - success Oo
 
+  def commit_subscribe?
+    subscribeable_type == 'Grit::Commit'
+  end
+
   def subscribed?
     status
   end
 
   def self.comment_subscribes(comment)
-    Subscribe.where(:subscribeable_id => comment.commentable.id, :subscribeable_type => comment.commentable.class.name, :project_id => comment.project)
+    Subscribe.where(:subscribeable_id => comment.commentable_id, :subscribeable_type => comment.commentable.class.name, :project_id => comment.project)
   end
 
   def self.new_comment_notification(comment)
@@ -36,7 +40,7 @@ class Subscribe < ActiveRecord::Base
   end
 
   def self.subscribed_to_commit?(project, user, commit)
-    subscribe = user.subscribes.where(:subscribeable_id => commit.id, :subscribeable_type => commit.class.name, :project_id => project.id).first
+    subscribe = user.subscribes.where(:subscribeable_id => commit.id.hex, :subscribeable_type => commit.class.name, :project_id => project.id).first
     return subscribe.subscribed? if subscribe # return status if already subscribe present
     # return status by settings
     (project.owner?(user) && user.notifier.new_comment_commit_repo_owner) or

@@ -8,14 +8,18 @@ class Comment < ActiveRecord::Base
 
   after_create :invoke_helper, :if => "commentable_type == 'Grit::Commit'"
   after_create :subscribe_users
-  after_create {|comment| Subscribe.new_comment_notification(comment)}
+  after_create {|c| Subscribe.new_comment_notification(c)}
 
   def helper
-    class_eval "def commentable; project.git_repository.commit('#{commentable_id}'); end" if commentable_type == 'Grit::Commit'
+    class_eval { def commentable; project.git_repository.commit(commentable_id.to_s(16)); end } if commit_comment?
   end
 
   def own_comment?(user)
     user_id == user.id
+  end
+
+  def commit_comment?
+    commentable_type == 'Grit::Commit'
   end
 
   protected
@@ -32,7 +36,7 @@ class Comment < ActiveRecord::Base
       recipients << self.user << User.where(:email => self.commentable.committer.email).first # commentor and committer
       recipients << self.project.owner if self.project.owner_type == 'User' # project owner
       recipients.compact.uniq.each do |user|
-        options = {:project_id => self.project.id, :subscribeable_id => self.commentable.id, :subscribeable_type => self.commentable.class.name, :user_id => user.id}
+        options = {:project_id => self.project.id, :subscribeable_id => self.commentable_id, :subscribeable_type => self.commentable.class.name, :user_id => user.id}
         Subscribe.subscribe_to_commit(options) if Subscribe.subscribed_to_commit?(self.project, user, self.commentable)
       end
     end

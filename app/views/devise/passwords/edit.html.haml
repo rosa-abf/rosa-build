@@ -21,7 +21,8 @@
           = f.text_field :password_confirmation, :class => "text_field"
 
       .group.navform.wat-cf
-        %button.button{ :tyle => "submit" }
-          #{image_tag("web-app-theme/icons/application_edit.png", :alt => t("devise.passwords.edit_button"))} #{t("devise.passwords.edit_button")}
+        %button.button{:tyle => "submit"}
+          = image_tag("web-app-theme/icons/application_edit.png", :alt => t("devise.passwords.edit_button"))
+          = t("devise.passwords.edit_button")
         %span.text_button_padding
         = render :partial => "devise/shared/links"

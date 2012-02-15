@@ -1,0 +1,4 @@
+%ul
+  - (collection = t 'top_menu').each do |base, title|
+    - if can? :index, base.to_s.classify.constantize
+      %li= link_to title, send(:"#{base}_path"), :class => [].tap{|c| c << 'first' if collection.first.first == base; c << 'active' if params[:controller] == base.to_s}.join(' ')

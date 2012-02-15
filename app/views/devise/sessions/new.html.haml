@@ -6,20 +6,17 @@
         - flash.each do |key, value|
           .message{ :title => key.to_s.humanize, :class => (key == :alert ? "error" : key) }
             %p= value
-    - form_for(resource, :as => resource_name, :url => session_path(resource_name), :html => { :class => "form login" }) do |f|
+    = form_for(resource, :as => resource_name, :url => session_path(resource_name), :html => { :class => "form login" }) do |f|
       .group.wat-cf
-        .left
-          = f.label :login, :class => "label right"
-        .right
-          = f.text_field :login, :class => "text_field"
+        .left= f.label :login, :class => "label right"
+        .right= f.text_field :login, :class => "text_field"
       .group.wat-cf
-        .left
-          = f.label :password, :class => "label right"
-        .right
-          = f.password_field :password, :class => "text_field"
+        .left= f.label :password, :class => "label right"
+        .right= f.password_field :password, :class => "text_field"
       .group.navform.wat-cf
         .right
-          %button.button{ :type => "submit" }
-            %img{ :src => "/images/web-app-theme/icons/key.png", :alt => "Save" }= t("layout.login")
+          %button.button{:type => "submit"}
+            = image_tag 'web-app-theme/icons/key.png', :alt => "Save"
+            = t("layout.login")
           %span.text_button_padding
           = render :partial => "devise/shared/links"
