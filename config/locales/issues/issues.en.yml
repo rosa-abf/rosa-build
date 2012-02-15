@@ -1,0 +1,38 @@
+en:
+  activerecord:
+    attributes:
+      issue:
+        title: Title
+        body: Content
+        user: Assigned
+        user_id: Assigned
+        project: Project
+        status: Status
+
+  layout:
+    issues:
+      accessory: Accessory issues
+      list: List
+      all: All
+      mine: Assigned to me
+      edit: Edit
+      comments_header: Comments
+      new: New task
+      list_header: List
+      confirm_delete: Are you sure to delete this task?
+      edit_header: Task edit
+      new_header: New task
+      statuses:
+        open: Opened
+        closed: Closed
+        any: Any
+      subscribe: Subscribe
+      subscribe_btn: Subscribe
+      unsubscribe_btn: Unsubscribe
+
+  flash:
+    issue:
+      saved: Task saved
+      save_error: Task saves error
+      destroyed: Task deleted
+

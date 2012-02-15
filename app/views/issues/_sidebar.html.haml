@@ -1,0 +1,118 @@
+-content_for :sidebar do
+  .bordered.nopadding
+    %h3=t("layout.issues.accessory")
+    %table
+      %tr
+        %td.width18
+          %input#myradio1.niceRadio{:checked => "checked", :name => "myradio", :tabindex => "1", :type => "radio"}
+        %td.width135
+          =t("layout.issues.all")
+        %td.width30.right
+          = @project.issues.count
+      %tr
+        %td
+          %input#myradio2.niceRadio{:name => "myradio", :tabindex => "2", :type => "radio"}
+        %td
+          =t("layout.issues.mine")
+        %td.width30.right
+          = @project.issues.where(:user_id => current_user).count
+  .bordered.bpadding20
+    %input.gray{:onClick => "if(this.value=='Найти задачу...'){this.value='';this.className='black';}", :onblur => "if(this.value==''){this.value='Найти задачу...';this.className='gray';}", :type => "text", :value => "Найти задачу..."}/
+  .bordered.nopadding
+    %h3.bmargin10 Добавить задачу
+    %a.button{:href => "#"} Добавить
+  .block
+    %h3 Метки
+    #labels-edit{:style => "display: none;"}
+      #label-delete1.label.edit
+        .labeltext.edit{:style => "background: #39b54a;"}
+          .text 2-3 stable
+          #delete1.delete
+            %img{:alt => "x", :src => "pics/x-label.png"}/
+        .both
+      #label-delete2.label.edit
+        .labeltext.edit{:style => "background: #ed1c24;"}
+          .text 3-0 stable
+          #delete2.delete
+            %img{:alt => "x", :src => "pics/x-label.png"}/
+        .both
+      #label-delete3.label.edit
+        .labeltext.edit{:style => "background: #ed145b;"}
+          .text actionpack
+          #delete3.delete
+            %img{:alt => "x", :src => "pics/x-label.png"}/
+        .both
+      #label-delete4.label.edit
+        .labeltext.edit{:style => "background: #92278f;"}
+          .text activemodel
+          #delete4.delete
+            %img{:alt => "x", :src => "pics/x-label.png"}/
+        .both
+      %input.gray{:onClick => "if(this.value=='Название новой метки'){this.value='';this.className='black';}", :onblur => "if(this.value==''){this.value='Название новой метки';this.className='gray';}", :type => "text", :value => "Название новой метки"}/
+      .colors
+        .color{:style => "background: #0054a6;"}
+          #choose1.choose.selected
+        .color{:style => "background: #00a651;"}
+          #choose2.choose
+        .color{:style => "background: #ed1c24;"}
+          #choose3.choose
+        .color{:style => "background: #e65c00;"}
+          #choose4.choose
+        .color{:style => "background: #9e005d;"}
+          #choose5.choose
+        .color{:style => "background: #464646;"}
+          #choose6.choose
+        .color{:style => "background: #8c6239;"}
+          #choose7.choose
+        .both
+      .lefter
+        %a{:href => "#"} Custom color
+      .righter
+        %a.button{:href => "#"} Добавить
+      .both
+    #labels-stock
+      #label-2-3-stable.div-tracker-lables{:name => "label"}
+        .div-label-left
+          .label
+            #flag-2-3-stable.flag{:style => "background-color: #39b54a;"}
+            .labeltext
+              2-3 stable
+            .both
+        .div-label-right
+          15
+        .both
+      .both
+      #label-3-0-stable.div-tracker-lables{:name => "label"}
+        .div-label-left
+          .label
+            #flag-3-0-stable.flag{:style => "background-color: #ed1c24;"}
+            .labeltext
+              3-0 stable
+            .both
+        .div-label-right
+          100
+        .both
+      .both
+      #label-actionpack.div-tracker-lables{:name => "label"}
+        .div-label-left
+          .label
+            #flag-actionpack.flag{:style => "background-color: #ed145b;"}
+            .labeltext
+              actionpack
+            .both
+        .div-label-right
+          22
+        .both
+      .both
+      #label-activemodel.div-tracker-lables{:name => "label"}
+        .div-label-left
+          .label
+            #flag-activemodel.flag{:style => "background-color: #92278f;"}
+            .labeltext
+              activemodel
+            .both
+        .div-label-right
+          3
+        .both
+      .both
+      %a#manage-labels.button.tmargin10{:href => "#"} Manage

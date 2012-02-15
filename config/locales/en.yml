@@ -108,23 +108,6 @@ en:
       edit_header: Edit category
       confirm_delete: Are you sure to delete this category?
 
-    issues:
-      list: List
-      edit: Edit
-      comments_header: Comments
-      new: New task
-      list_header: List
-      confirm_delete: Are you sure to delete this task?
-      edit_header: Task edit
-      new_header: New task
-      statuses:
-        open: Opened
-        closed: Closed
-        any: Any
-      subscribe: Subscribe
-      subscribe_btn: Subscribe
-      unsubscribe_btn: Unsubscribe
-
     comments:
       confirm_delete: Are you sure to delete the comment?
       new_header: New comment
@@ -413,23 +396,6 @@ en:
         edit_header: Edit category
         confirm_delete: Are you sure to delete this category?
 
-      issues:
-        list: List
-        edit: Edit
-        comments_header: Comments
-        new: New task
-        list_header: List
-        confirm_delete: Are you sure to delete this task?
-        edit_header: Task edit
-        new_header: New task
-        statuses:
-          open: Opened
-          closed: Closed
-          any: Any
-        subscribe: Subscribe
-        subscribe_btn: Subscribe
-        unsubscribe_btn: Unsubscribe
-
       commits:
         subscribe_btn: Subscribe to commit
         unsubscribe_btn: Unsubscribe from commit
@@ -593,11 +559,6 @@ en:
       save_error: Comment saves error
       destroyed: Comment deleted
 
-    issue:
-      saved: Task saved
-      save_error: Task saves error
-      destroyed: Task deleted
-
     project:
       saved: Project saved
       save_error: Project saves error
@@ -738,14 +699,6 @@ en:
       comment:
         body: Content
         user: Author
-
-      issue:
-        title: Title
-        body: Content
-        user: Assigned
-        user_id: Assigned
-        project: Project
-        status: Status
 
       private_user:
         login: Login
