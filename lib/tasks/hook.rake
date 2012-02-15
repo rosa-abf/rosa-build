@@ -1,15 +1,28 @@
 namespace :hook do
   desc "Inserting hook to all repos"
   task :install => :environment do
-    origin_hook = File.join(::Rails.root.to_s, 'bin', "post-receive-hook#{ENV['RAILS_ENV'] == 'production' ? '_prod' : '_dev'}")
-    say "process.. #{origin_hook}"
+    is_production = ENV['RAILS_ENV'] == 'production'
+    say "Generate temporary file..."
+    hook = File.join(::Rails.root.to_s, 'tmp', "post-receive-hook")
+    FileUtils.cp(File.join(::Rails.root.to_s, 'bin', "post-receive-hook.partial"), hook)
+    File.open(hook, 'a') do |f|
+      s = "\n  /bin/bash -l -c \"cd #{is_production ? '/srv/rosa_build/current' : Rails.root.to_s} && \
+      bundle exec rails runner 'Project.delay.process_hook(\"$owner\", \"$reponame\", \"$newrev\", \"$oldrev\", \"$ref\", \"$newrev_type\", \"$oldrev_type\")'\""
+      s << " > /dev/null 2>&1" if is_production
+      s << "\ndone\n"
+      f.write(s)
+    end
+
+    say "Install process.."
     count = 0
     Project.all.each do |project|
       hook_file = File.join(project.path, 'hooks', 'post-receive')
-      FileUtils.cp(origin_hook, hook_file)
+      FileUtils.cp(hook, hook_file)
       count = count + 1
     end
-    say "Done! Writing to #{count.to_s} repo(s)"
+    say "Writing to #{count.to_s} repo(s)"
+    say "Removing temporary file"
+    FileUtils.rm_rf(hook)
   end
 
   desc "remove git hook from all repos"
@@ -20,4 +33,3 @@ namespace :hook do
     say "Done! Removing from #{count.to_s} repo(s)"
   end
 end
-
