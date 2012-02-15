@@ -27,6 +27,6 @@ class CommitSubscribesController < ApplicationController
 
   def find_commit
     @commit = @project.git_repository.commit(params[:commit_id])
-    @options = {:project_id => @project.id, :subscribeable_id => @commit.id, :subscribeable_type => @commit.class.name, :user_id => current_user.id}
+    @options = {:project_id => @project.id, :subscribeable_id => @commit.id.hex, :subscribeable_type => @commit.class.name, :user_id => current_user.id}
   end
 end
