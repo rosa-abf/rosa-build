@@ -12,7 +12,7 @@ namespace :hook do
     say "Done! Writing to #{count.to_s} repo(s)"
   end
 
-  desc "remove with git hook"
+  desc "remove git hook from all repos"
   task :remove => :environment do
     say "process.."
     count = 0
