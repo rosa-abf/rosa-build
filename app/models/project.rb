@@ -219,7 +219,7 @@ class Project < ActiveRecord::Base
 
   def write_hook
     hook_file = File.join(path, 'hooks', 'post-receive')
-    FileUtils.cp(File.join(::Rails.root.to_s, 'lib', 'post-receive-hook'), hook_file)
+    FileUtils.cp(File.join(::Rails.root.to_s, 'bin', "post-receive-hook#{ENV['RAILS_ENV'] == 'production' ? '_prod' : '_dev'}"), hook_file)
     #File.chmod(0775, hook_file) # need?
   rescue Exception # FIXME
   end
