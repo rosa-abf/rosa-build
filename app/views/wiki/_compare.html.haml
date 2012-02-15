@@ -5,7 +5,7 @@
   - if action_name != 'revert' 
     %ul.actions
       %li.minibutton
-        = form_tag revert_path(@project, @versions[0][0..6], @versions[1][0..6], @name),
+        = form_tag revert_path(@project, @versions.first[0..6], (@versions.size == 1) ? 'prev' : @versions.last[0..6], @name),
             :name => "gollum-revert", :id => "gollum-revert-form" do
           = revert_button if can? :write, @project
 
