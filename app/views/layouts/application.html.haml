@@ -20,12 +20,16 @@
             .search
               .pic
               .field
-                %input.gray{:onclick => "if(this.value=='#{t "layout.search"}'){this.value='';this.className='black';}", :onblur => "if(this.value==''){this.value='#{t "layout.search"}';this.className='gray';}", :type => "text", :value => "#{t "layout.search"}"}
-            .avatar{:onclick => "droplist();"}= image_tag 'ava.png', :alt => 'avatar', :height => "30"
-            .profile{:onclick => "droplist();"}
-              %a{:href => "#", :onclick => "droplist();"}
-                = current_user.uname
-                = image_tag 'expand-white.png', :alt => 'ex'
+                %input.gray{:onclick => "if(this.value=='#{t "layout.search"}'){this.value='';this.className='black';}",
+                :onblur => "if(this.value==''){this.value='#{t "layout.search"}';this.className='gray';}",
+                :type => "text", :value => "#{t "layout.search"}"}
+            .user
+              .avatar= image_tag 'ava.png', :alt => 'avatar', :height => "30"
+              .profile
+                %a{:href => "#"}
+                  = current_user.uname
+                  = image_tag 'expand-white.png', :alt => 'ex'
+              .both
             .both
             .droplist-wrap
               #droplist.droplist
