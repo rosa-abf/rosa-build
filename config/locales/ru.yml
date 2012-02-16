@@ -362,7 +362,7 @@ ru:
 
     git:
       repositories:
-        empty: Пустой репозиторий
+        empty: "Репозиторий пока пустой. Если форкнули или импортировали, необходимо немного подожать"
         source: Source
         commits: Commits
         commit_diff_too_big: Извините, коммит слишком большой!
