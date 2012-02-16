@@ -218,9 +218,20 @@ class Project < ActiveRecord::Base
   end
 
   def write_hook
+    is_production = ENV['RAILS_ENV'] == 'production'
+    hook = File.join(::Rails.root.to_s, 'tmp', "post-receive-hook")
+    FileUtils.cp(File.join(::Rails.root.to_s, 'bin', "post-receive-hook.partial"), hook)
+    File.open(hook, 'a') do |f|
+      s = "\n  /bin/bash -l -c \"cd #{is_production ? '/srv/rosa_build/current' : Rails.root.to_s} && bundle exec rails runner 'Project.delay.process_hook(\"$owner\", \"$reponame\", \"$newrev\", \"$oldrev\", \"$ref\", \"$newrev_type\", \"$oldrev_type\")'\""
+      s << " > /dev/null 2>&1" if is_production
+      s << "\ndone\n"
+      f.write(s)
+    end
+
     hook_file = File.join(path, 'hooks', 'post-receive')
-    FileUtils.cp(File.join(::Rails.root.to_s, 'bin', "post-receive-hook#{ENV['RAILS_ENV'] == 'production' ? '_prod' : '_dev'}"), hook_file)
-    #File.chmod(0775, hook_file) # need?
+    FileUtils.cp(hook, hook_file)
+    FileUtils.rm_rf(hook)
+
   rescue Exception # FIXME
   end
 end
