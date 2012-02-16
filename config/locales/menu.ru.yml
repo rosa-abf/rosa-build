@@ -19,3 +19,11 @@ ru:
     contacts: Контакты
     tos: Условия использования
     security: Безопасность
+  project_menu:
+    project: Проект
+    commits: Коммиты
+    builds: Сборки
+    tracker: Трекер
+    wiki: Wiki
+    readme: Readme
+    settings: Настройки
