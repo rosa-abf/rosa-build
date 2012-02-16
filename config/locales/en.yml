@@ -513,7 +513,7 @@ en:
         list_header: Event log
 
       repositories:
-        empty: Empty repository
+        empty: "Repository is still empty. You need to wait some time if you have forked or imported"
         source: Source
         commits: Commits
         commit_diff_too_big: Sorry, commit too big!
