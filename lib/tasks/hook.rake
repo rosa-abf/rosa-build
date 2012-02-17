@@ -14,7 +14,8 @@ namespace :hook do
 
     say "Install process.."
     count = 0
-    Project.all.each do |project|
+    projects = ENV['project_id'] ? Project.where(:id => eval(ENV['project_id'])) : Project
+    projects.where('created_at >= ?', Time.now.ago(ENV['period'] ? eval(ENV['period']) : 100.years)).each do |project|
       hook_file = File.join(project.path, 'hooks', 'post-receive')
       FileUtils.cp(hook, hook_file)
       count = count + 1
@@ -28,7 +29,11 @@ namespace :hook do
   task :remove => :environment do
     say "process.."
     count = 0
-    Project.all.each { |project| FileUtils.rm_rf File.join(project.path, 'hooks', 'post-receive'); count = count + 1}
+    projects = ENV['project_id'] ? Project.where(:id => eval(ENV['project_id'])) : Project
+    projects.where('created_at >= ?', Time.now.ago(ENV['period'] ? eval(ENV['period']) : 100.years)).each do |project|
+      FileUtils.rm_rf File.join(project.path, 'hooks', 'post-receive')
+      count = count + 1
+    end
     say "Done! Removing from #{count.to_s} repo(s)"
   end
 end
