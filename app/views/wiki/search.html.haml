@@ -1,25 +1,37 @@
-= render :partial => 'gollum_includes'
-= render :partial => 'project_short'
+=# render :partial => 'gollum_includes'
+=# render :partial => 'project_short'
+= render :partial => 'projects/submenu'
 
-%a{ :name => "wiki"}
-.block
-  = render :partial => 'navigation'
+- @st_query = capture do
+  %strong= @query
+%h1.title= raw t("layout.wiki.search_results_for", :query => @st_query)
+%ul.actions
+  - if can? :read, @project
+    %li.minibutton
+      = link_to t("layout.wiki.home"), project_wiki_index_path(@project),
+                :class => 'action-edit-page'
 
-  .content
-    .inner
-      #wiki-wrapper.results
-        #head
-          - @st_query = capture do
-            %strong= @query
-          %h1.title= raw t("layout.wiki.search_results_for", :query => @st_query)
-          %ul.actions
-            - if can? :read, @project
-              %li.minibutton
-                = link_to t("layout.wiki.home"), project_wiki_index_path(@project),
-                          :class => 'action-edit-page'
-          = render :partial => 'searchbar'
-
-        = render :partial => "results"
+= render :partial => "results"
 
 - content_for :sidebar do
-  - render :partial => 'projects/sidebar'
+  - render :partial => 'sidebar'
+
+-#%a{ :name => "wiki"}
+-#.block
+-#  = render :partial => 'navigation'
+-#
+-#  .content
+-#    .inner
+-#      #wiki-wrapper.results
+-#        #head
+-#          - @st_query = capture do
+-#            %strong= @query
+-#          %h1.title= raw t("layout.wiki.search_results_for", :query => @st_query)
+-#          %ul.actions
+-#            - if can? :read, @project
+-#              %li.minibutton
+-#                = link_to t("layout.wiki.home"), project_wiki_index_path(@project),
+-#                          :class => 'action-edit-page'
+-#          = render :partial => 'searchbar'
+-#
+-#        = render :partial => "results"

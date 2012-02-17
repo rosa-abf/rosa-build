@@ -1,25 +1,29 @@
-= render :partial => 'gollum_includes'
-= render :partial => 'project_short'
+=# render :partial => 'gollum_includes'
+=# render :partial => 'project_short'
+= render :partial => 'projects/submenu'
 
-%a{ :name => "wiki"}
-.block
-  = render :partial => 'navigation'
+- if can? :write, @project
+  .r
+    = link_to t("layout.wiki.new_page"), '#', :'data-url' => project_wiki_index_path(@project),
+              :id => 'minibutton-new-page', :class => 'button width100'
+.both
+= render :partial => "results"
 
-  .content
-    .inner
-      #wiki-wrapper.results
-        #head
-          - @st_ref = capture do
-            %strong= @ref
-          %h1.title= raw t("layout.wiki.all_pages_in")
-          %ul.actions
-            - if can? :read, @project
-              %li.minibutton
-                = link_to t("layout.wiki.home"), project_wiki_index_path(@project),
-                          :class => 'action-edit-page'
-          = render :partial => 'searchbar'
-
-        = render :partial => "results"
+-#  .content
+-#    .inner
+-#      #wiki-wrapper.results
+-#        #head
+-#          - @st_ref = capture do
+-#            %strong= @ref
+-#          %h1.title= raw t("layout.wiki.all_pages_in")
+-#          %ul.actions
+-#            - if can? :read, @project
+-#              %li.minibutton
+-#                = link_to t("layout.wiki.home"), project_wiki_index_path(@project),
+-#                          :class => 'action-edit-page'
+-#          = render :partial => 'searchbar'
+-#
+-#        = render :partial => "results"
 
 - content_for :sidebar do
-  - render :partial => 'projects/sidebar'
+  - render :partial => 'sidebar'

@@ -1,23 +1,19 @@
-.url-box
-  %ul.clone-urls
-    %li.http-clone-url.selected
-      = link_to t("layout.wiki.clones.http"), git_repo_url(@project.wiki_repo_name),
-          :'data-permissions' => (can? :write, @project) ? 'Read+Write' : 'Read'
-  %input.url-field{:type => 'text', :spellcheck => 'false'}
-  %p.url-description
-    %strong
-    access
+.name
+  = link_to t("layout.wiki.clones.http"), git_repo_url(@project.wiki_repo_name),
+            :'data-permissions' => (can? :write, @project) ? 'Read+Write' : 'Read'
+  #url-field{:style => 'display: inline'}
+.role
 
 :javascript
   $(document).ready(function() {
-    var link = $('li.http-clone-url a').first();
+    var link = $('.name a').first();
 
-    $('.url-box input.url-field').attr('value', link.attr('href'));
-    $('.url-box p.url-description strong').text(link.attr('data-permissions'));
+    $('.name #url-field').text(link.attr('href'));
+    $('.role').text(link.attr('data-permissions'));
 
-    $('li.http-clone-url a').live('click', function(e) {
+    $('.name a').live('click', function(e) {
       e.preventDefault();
-      $('.url-box input.url-field').attr('value', $(this).attr('href'));
-      $('.url-box p.url-description strong').text($(this).attr('data-permissions'));
+      $('.name #url-field').text($(this).attr('href'));
+      $('.role').text($(this).attr('data-permissions'));
     });
   });
