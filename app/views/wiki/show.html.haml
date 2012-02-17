@@ -15,9 +15,15 @@
     - if can? :write, @project
       = link_to t("layout.wiki.new_page"), '#', :'data-url' => project_wiki_index_path(@project),
                 :id => 'minibutton-new-page', :class => 'button width100'
+%br
+%br
+%br
 .both
 =# render :partial => 'searchbar'
 = render :partial => "page"
 
 - content_for :sidebar do
   - render :partial => 'sidebar'
+
+:css
+  #wiki-content .wrap { width: 100% }

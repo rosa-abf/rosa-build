@@ -1,24 +1,36 @@
 = render :partial => 'gollum_includes'
-= render :partial => 'project_short'
+=# render :partial => 'project_short'
+= render :partial => 'projects/submenu'
 
-%a{ :name => "wiki"}
-.block
-  = render :partial => 'navigation'
+%h3.wiki
+  = t("layout.wiki.create_page")
+  %strong= @name
+%br
 
-  .content
-    #wiki-wrapper.inner
-      #head
-        %h1.title
-          = t("layout.wiki.create_page")
-          %strong= @name
+#wiki-content
+  = render :partial => "editor"
 
-      #wiki-content
-        = render :partial => "editor"
+//%a{ :name => "wiki"}
+//.block
+//  = render :partial => 'navigation'
+//
+//  .content
+//    #wiki-wrapper.inner
+//      #head
+//        %h1.title
+//          = t("layout.wiki.create_page")
+//          %strong= @name
+//
+//      #wiki-content
+//        = render :partial => "editor"
 
 :javascript
   jQuery(document).ready(function() {
     $.GollumEditor({ NewFile: true });
   });
 
+:css
+  #gollum-editor { width: 100%; }
+
 - content_for :sidebar do
-  - render :partial => 'projects/sidebar'
+  - render :partial => 'sidebar'
