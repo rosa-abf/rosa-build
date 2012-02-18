@@ -1,4 +1,19 @@
-.block
+= render :partial => 'submenu'
+= render :partial => 'repo_block', :locals => {:project => @project}
+
+.description
+  %h3= t("layout.projects.about_subheader")
+  %p
+    = @project.description
+    = link_to t('layout.read_more'), '#'
+
+%h3= t("layout.projects.last_commit")
+- GitPresenters::CommitAsMessagePresenter.present(@project.last_active_branch.commit,
+                                      :branch => @project.last_active_branch) do |presenter|
+  = render :partial => 'shared/feed_message', :locals => {:presenter => presenter,
+                                                          :item_no => 1}
+
+-#.block
   .secondary-navigation
     %ul.wat-cf
       %li.first= link_to t("layout.projects.list"), projects_path
@@ -38,8 +53,8 @@
         = link_to image_tag("web-app-theme/icons/cross.png", :alt => t("layout.delete")) + " " + t("layout.delete"), project_path(@project), :method => "delete", :class => "button", :confirm => t("layout.projects.confirm_delete") if can? :destroy, @project
         = link_to "Fork", fork_project_path(@project), :class => "button", :method => "post", :confirm => t("layout.confirm") if can? :fork, @project
 
-%a{ :name => "build_lists"}
-.block
+-#%a{ :name => "build_lists"}
+-#.block
   .secondary-navigation
     %ul.wat-cf
       %li.first.active= link_to t("layout.build_lists.current"), project_path(@project) + "#build_lists"
@@ -48,4 +63,4 @@
   .content
     = render :partial => "build_lists/build_lists", :object => @current_build_lists
 
-- content_for :sidebar, render('sidebar')
+-# content_for :sidebar, render('sidebar')

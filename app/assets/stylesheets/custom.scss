@@ -12,3 +12,76 @@ header menu ul li a {
     padding: 15px 8px 15px 8px;
 }
 
+div.description-top div.name {
+    width: 300px;
+    padding: 0;
+}
+
+div.description-top div.name input {
+    width: 100%;
+    height: 100%;
+}
+
+article div.activity {
+    border: 1px solid #D6D6D6;
+    border-radius: 5px 5px 5px 5px;
+    color: #333333;
+    margin-top: 15px;
+    padding: 6px;
+}
+
+article div.activity .top div.image {
+    position: absolute;
+    float: left;
+    width: 40px;
+    height: 40px;
+    margin-left: 2px;
+    margin-top: 2px;
+}
+
+article div.activity .top div.text {
+    float: left;
+    font-size: 12px;
+    padding-left: 10px;
+}
+
+article div.activity .top div.text.imaged {
+    margin-left: 44px;
+}
+
+article div.activity .top div.text .name {
+    font-weight: 700;
+}
+
+article div.activity .top div.text .date {
+    font-size: 11px;
+}
+
+article div.activity .top div.text {
+    font-size: 12px;
+}
+
+article div.activity .fulltext {
+    font-size: 12px;
+    padding-top: 10px;
+}
+
+article div.activity .fulltext.hidden {
+    display: none;
+}
+
+div.activity .data-expander {
+    margin-left: 10px;
+    display: inline-block;
+    width: 12px;
+}
+
+div.activity .data-expander.collapsed {
+    background: #FFF image-url('expand-gray.png') no-repeat;
+    background-position: 0 2px;
+}
+
+div.activity .data-expander.expanded {
+    background: #FFF image-url('expand-gray2.png') no-repeat;
+    background-position: 0 2px;
+}

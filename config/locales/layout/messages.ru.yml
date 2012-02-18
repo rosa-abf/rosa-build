@@ -1,0 +1,5 @@
+ru:
+  layout:
+    messages:
+      commits:
+        header_with_branch: "%{committer} добавил коммит %{commit} в ветку %{branch}"

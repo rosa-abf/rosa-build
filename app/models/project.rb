@@ -84,6 +84,18 @@ class Project < ActiveRecord::Base
     self.git_repository.branches
   end
 
+  def last_active_branch
+    @last_active_branch ||= branches.inject do |r, c|
+      r_last = r.commit.committed_date || r.commit.authored_date unless r.nil?
+      c_last = c.commit.committed_date || c.commit.authored_date
+      if r.nil? or r_last < c_last
+        r = c
+      end
+      r
+    end
+    @last_active_branch
+  end
+
   def versions
     tags.map(&:name) + branches.map{|b| "latest_#{b.name}"}
   end
