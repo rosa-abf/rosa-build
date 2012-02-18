@@ -2,13 +2,13 @@ class ApplicationPresenter
   include Rails.application.routes.url_helpers
   include ActionView::Helpers::UrlHelper
 
-  def initialize(*args)
+  def initialize(item, opts)
   end
 
   # TODO it needs to be refactored!
   class << self
-    def present(*args, &block)
-      block.call(self.new(*args))
+    def present(item, opts, &block)
+      block.call(self.new(item, opts))
     end
 
     def present_collection(collection, &block)
