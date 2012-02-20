@@ -33,6 +33,8 @@ ru:
       number: Номер
       description: Описание
       by:
+      labels: Метки
+      invalid_labels: Неверный hex код
 
   flash:
     issue:

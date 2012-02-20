@@ -33,10 +33,11 @@ en:
       number: Number
       description: Description
       by: by
+      labels: Labels
+      invalid_labels: Invalid hex color code
 
   flash:
     issue:
       saved: Task saved
       save_error: Task saves error
       destroyed: Task deleted
-

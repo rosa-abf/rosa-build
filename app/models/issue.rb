@@ -8,6 +8,7 @@ class Issue < ActiveRecord::Base
 
   has_many :comments, :as => :commentable, :dependent => :destroy #, :finder_sql => proc { "comments.commentable_id = '#{self.id}' AND comments.commentable_type = '#{self.class.name}'"}
   has_many :subscribes, :as => :subscribeable, :dependent => :destroy #, :finder_sql => proc { "subscribes.subscribeable_id = '#{self.id}' AND subscribes.subscribeable_type = '#{self.class.name}'"}
+  has_many :tags, :dependent => :destroy
 
   validates :title, :body, :project_id, :presence => true
 
