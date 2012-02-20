@@ -117,7 +117,6 @@ class WikiController < ApplicationController
   def compare_wiki
     if request.post?
       @versions = params[:versions] || []
-      puts "VERSIONS1: " + @versions.inspect
       if @versions.size < 2
         redirect_to history_project_wiki_index_path(@project)
       else
@@ -126,7 +125,6 @@ class WikiController < ApplicationController
       end
     elsif request.get?
       @versions = params[:versions].split(/\.{2,3}/)
-      puts "VERSIONS2: " + @versions.inspect
       if @versions.size < 2
         redirect_to history_project_wiki_index_path(@project)
         return
