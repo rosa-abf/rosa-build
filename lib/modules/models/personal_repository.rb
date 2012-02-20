@@ -20,7 +20,6 @@ module Modules
           pl.save!
 
           rep = pl.repositories.build
-          rep.owner = pl.owner
           rep.name = 'main'
           rep.description = 'main'
           rep.save!

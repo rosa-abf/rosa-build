@@ -13,22 +13,19 @@ class User < ActiveRecord::Base
 
   has_many :authentications, :dependent => :destroy
   has_many :build_lists, :dependent => :destroy
+  has_many :subscribes, :foreign_key => :user_id, :dependent => :destroy
+  has_many :comments, :dependent => :destroy
 
   has_many :relations, :as => :object, :dependent => :destroy
   has_many :targets, :as => :object, :class_name => 'Relation'
 
-  has_many :own_projects, :as => :owner, :class_name => 'Project', :dependent => :destroy
-  has_many :own_groups,   :foreign_key => :owner_id, :class_name => 'Group'
-  has_many :own_platforms, :as => :owner, :class_name => 'Platform', :dependent => :destroy
-  has_many :own_repositories, :as => :owner, :class_name => 'Repository', :dependent => :destroy
-
-  has_many :groups,       :through => :targets, :source => :target, :source_type => 'Group',      :autosave => true
   has_many :projects,     :through => :targets, :source => :target, :source_type => 'Project',    :autosave => true
+  has_many :groups,       :through => :targets, :source => :target, :source_type => 'Group',      :autosave => true
   has_many :platforms,    :through => :targets, :source => :target, :source_type => 'Platform',   :autosave => true
-  has_many :repositories, :through => :targets, :source => :target, :source_type => 'Repository', :autosave => true
-  has_many :subscribes, :foreign_key => :user_id, :dependent => :destroy
 
-  has_many :comments, :dependent => :destroy
+  has_many :own_projects, :as => :owner, :class_name => 'Project', :dependent => :destroy
+  has_many :own_groups,   :foreign_key => :owner_id, :class_name => 'Group', :dependent => :destroy
+  has_many :own_platforms, :as => :owner, :class_name => 'Platform', :dependent => :destroy
 
   include Modules::Models::PersonalRepository
 

@@ -22,19 +22,9 @@
         = link_to @repository.platform.name, url_for(@repository.platform)
       %p
         %b
-          = t("activerecord.attributes.repository.owner")
-          \:
-        = link_to @repository.owner.name, url_for(@repository.owner)
-      %p
-        %b
           = t("activerecord.attributes.platform.visibility")
           \:
         = @repository.platform.visibility
-      %p
-        %b
-          = t("activerecord.attributes.repository.platform")
-          \:
-        = link_to @repository.platform.name, platform_path(@platform)
       .wat-cf
         = link_to image_tag("web-app-theme/icons/cross.png", :alt => t("layout.delete")) + " " + t("layout.delete"), @repository_path, :method => "delete", :class => "button", :confirm => t("layout.repositories.confirm_delete")
 

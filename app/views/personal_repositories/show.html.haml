@@ -6,12 +6,6 @@
       %li= link_to t("layout.personal_repositories.private_users"), platform_private_users_path(@repository.platform) if @repository.platform.hidden?
   .content
     .inner
-      %p
-        %b
-          = t("activerecord.attributes.repository.owner")
-          \:
-        = link_to @repository.owner.name, url_for(@repository.owner)
-      
       = render 'shared/urpmi_list', :urpmi_commands => @urpmi_commands 
       .wat-cf
         =# link_to image_tag("web-app-theme/icons/cross.png", :alt => t("layout.delete")) + " " + t("layout.delete"), @repository_path, :method => "delete", :class => "button", :confirm => t("layout.repositories.confirm_delete")
