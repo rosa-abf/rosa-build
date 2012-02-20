@@ -42,7 +42,6 @@ class RepositoriesController < ApplicationController
   def create
     @repository = Repository.new(params[:repository])
     @repository.platform_id = params[:platform_id]
-    @repository.owner = get_owner
     if @repository.save
       flash[:notice] = t('flash.repository.saved')
       redirect_to @repositories_path
