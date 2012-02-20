@@ -1,18 +1,24 @@
-%table.table
-  %tr
-    %th.first= t("activerecord.attributes.issue.title")
-    %th.first= t("activerecord.attributes.issue.user")
-    %th.first= t("activerecord.attributes.issue.status")
-    %th.last &nbsp;
-  - @issues.each do |issue|
-    %tr{:class => cycle("odd", "even")}
-      %td
-        = link_to issue.title, [@project, issue]
-      %td
-        = link_to issue.user.uname, user_path(issue.user) if issue.user
-      %td
-        = issue.status
-      %td.last
-        = link_to t("layout.show"), [@project, issue]
-        |
-        = link_to t("layout.delete"), project_issue_path(@project, issue), :method => :delete, :confirm => t("layout.issues.confirm_delete")  if can? :destroy, issue
+%tr#row1.2-3-stable{:name => "row"}
+  %td.td0
+    %span{:style => "display: none;"}=issue.serial_id
+  %td.td1=issue.serial_id
+  %td
+    %div=issue.title
+    .smalltext
+      =issue.created_at.to_s(:long)
+      =t("layout.issues.by") if issue.creator
+      =link_to(issue.creator.uname, user_path(issue.creator)) if issue.creator
+      .label.selected.tracker
+        .labeltext.selected{:style => "background: #39b54a;"}
+          2-3 stable
+        .both
+  %td.td3
+    .code=link_to '#', [@project, issue]
+    .avatar
+      =link_to image_tag(issue.user.avatar(22), :alt => 'avatar'), user_path(issue.user) if issue.user
+    %a{:href => "#{project_issue_path @project, issue}#block-list"}
+      .answers
+        .pic
+          %img{:alt => '', :src => "/assets/answers.png"}
+        .count=issue.comments.count
+        .both

@@ -8,16 +8,21 @@ class IssuesController < ApplicationController
   load_and_authorize_resource :issue, :through => :project, :find_by => :serial_id
 
   autocomplete :user, :uname
+  layout 'application'
 
   def index
     @issues = @project.issues
-    case params[:status]
-    when 'open'
-      @issues = @issues.where(:status => 'open')
-    when 'closed'
-      @issues = @issues.where(:status => 'closed')
+    @is_assigned_to_me = params[:filter] == 'to_me'
+    @is_all = params[:filter] == 'all'
+    @issues = @issues.where(:user_id => current_user.id) if @is_assigned_to_me
+    @status = (params[:status] if ['open', 'closed'].include? params[:status]) || 'open'
+
+    if params[:search]
+      @is_assigned_to_me = false
+      @issues = @project.issues.where('issues.title ILIKE ?', "%#{params[:search]}%")
     end
-    @issues = @issues.paginate :per_page => 10, :page => params[:page]
+    @issues = @issues.includes(:creator, :user).paginate :per_page => 10, :page => params[:page]
+    render :layout => request.format == '*/*' ? 'issues' : 'application' # maybe FIXME '*/*'?
   end
 
   def new

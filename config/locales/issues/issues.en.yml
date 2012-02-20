@@ -14,10 +14,11 @@ en:
       accessory: Accessory issues
       list: List
       all: All
-      mine: Assigned to me
+      to_me: Assigned to me
       edit: Edit
+      search: Search issue...
       comments_header: Comments
-      new: New task
+      new: New issue
       list_header: List
       confirm_delete: Are you sure to delete this task?
       edit_header: Task edit
@@ -29,6 +30,9 @@ en:
       subscribe: Subscribe
       subscribe_btn: Subscribe
       unsubscribe_btn: Unsubscribe
+      number: Number
+      description: Description
+      by: by
 
   flash:
     issue:

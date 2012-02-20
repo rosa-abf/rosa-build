@@ -14,10 +14,11 @@ ru:
       accessory: Принадлежность заданий
       list: Список
       all: Все
-      mine: Назначенные мне
+      to_me: Назначенные мне
       edit: Редактировать
+      search: Найти задачу...
       comments_header: Комментарии
-      new: Новая задача
+      new: Добавить задачу
       list_header: Список
       confirm_delete: Вы уверены, что хотите удалить эту задачу?
       edit_header: Редактирование задачи
@@ -29,6 +30,9 @@ ru:
       subscribe: Подписка на уведомления
       subscribe_btn: Подписаться
       unsubscribe_btn: Отписаться
+      number: Номер
+      description: Описание
+      by:
 
   flash:
     issue:
