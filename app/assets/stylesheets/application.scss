@@ -1,7 +1,9 @@
 //@import "vendor";
 @import "main";
 @import "custom";
+@import "blue/style";
 
 //= require main
+//= require blue/style
 //= require vendor
 //= require custom

@@ -9,7 +9,7 @@
     = csrf_meta_tag
 
   %body
-    .wrap.columns
+    .wrap{:class => content_for?(:sidebar) ? 'columns' : ''}
       %header
         .left
         .middle

@@ -84,6 +84,46 @@ class Project < ActiveRecord::Base
     self.git_repository.branches
   end
 
+  def last_active_branch
+    @last_active_branch ||= branches.inject do |r, c|
+      r_last = r.commit.committed_date || r.commit.authored_date unless r.nil?
+      c_last = c.commit.committed_date || c.commit.authored_date
+      if r.nil? or r_last < c_last
+        r = c
+      end
+      r
+    end
+    @last_active_branch
+  end
+
+  def branch(name = nil)
+    name = default_branch if name.blank?
+    branches.select{|b| b.name == name}.first
+  end
+
+  def tree_info(tree, treeish = nil, path = nil)
+    treeish = tree.id unless treeish.present?
+    # initialize result as hash of <tree_entry> => nil
+    res = (tree.trees.sort + tree.blobs.sort).inject({}){|h, e| h.merge!({e => nil})}
+    # fills result vith commits that describes this file
+    res = res.inject(res) do |h, (entry, commit)|
+      # only if commit == nil ...
+      if commit.nil? and entry.respond_to? :name
+        # ... find last commit corresponds to this file ...
+        c = git_repository.log(treeish, File.join([path, entry.name].compact), :max_count => 1).first
+        # ... and add it to result.
+        h[entry] = c
+        # find another files, that linked to this commit and set them their commit
+        c.diffs.map{|diff| diff.b_path.split(File::SEPARATOR, 2).first}.each do |name|
+          h.each_pair do |k, v|
+            h[k] = c if k.name == name and v.nil?
+          end
+        end
+      end
+      h
+    end
+  end
+
   def versions
     tags.map(&:name) + branches.map{|b| "latest_#{b.name}"}
   end

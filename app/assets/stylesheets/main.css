@@ -3,7 +3,7 @@ html, body {
 	padding: 0;
 	font-family: Tahoma, Arial;
 	color: #565657;
-	background: #1f60a1 image-url("bg.png") repeat-x; 
+	background: #1f60a1 url("../pics/bg.png") repeat-x; 
 	min-width: 940px;
 	min-height: 600px;
 	text-align: center;
@@ -37,7 +37,7 @@ a img { border: none; }
 }
 
 .wrap.columns {
-	background: #FFF image-url("page-bg.png") repeat-y;
+	background: #FFF url("../pics/page-bg.png") repeat-y;
 }
 
 .both {
@@ -55,21 +55,21 @@ header {
 }
 
 header div.left {
-	background: image-url("top-left.png");
+	background: url("../pics/top-left.png");
 	height: 46px;
 	width: 14px;
 	float: left;
 }
 
 header div.middle {
-	background: image-url("top-middle.png");
+	background: url("../pics/top-middle.png");
 	float: left;
 	height: 46px;
 	width: 912px;
 }
 
 header div.right {
-	background: image-url("top-right.png");
+	background: url("../pics/top-right.png");
 	height: 46px;
 	width: 14px;
 	float: right;
@@ -110,7 +110,7 @@ header menu ul li a.first {
 }
 
 header menu ul li a.active {
-	background: image-url("menu-hover.png") repeat-x;
+	background: url("../pics/menu-hover.png") repeat-x;
 }
 
 header div.logo {
@@ -140,7 +140,7 @@ header div.search {
 }
 
 header div.search div.pic {
-	background: image-url("search-button.png");
+	background: url("../pics/search-button.png");
 	height: 22px;
 	width: 24px;
 	float: left;
@@ -200,7 +200,7 @@ header div.droplist-wrap {
 }
 
 header div.droplist {
-	background: image-url("bg-droplist.png") repeat-x;
+	background: url("../pics/bg-droplist.png") repeat-x;
 	height: 91px;
 	width: 151px;
 	-webkit-box-shadow: 0px 2px 4px 0px rgba(0, 0, 0, 0.5);
@@ -265,7 +265,7 @@ header div.droplist a:hover{
 }
 
 
-.sub-menu nav { /*–î–ª—è –ø–æ–¥–º–µ–Ω—é –±–µ–∑ –Ω–∞–∑–≤–∞–Ω–∏—è*/
+.sub-menu nav { /*ƒÎˇ ÔÓ‰ÏÂÌ˛ ·ÂÁ Ì‡Á‚‡ÌËˇ*/
 	float: left;
 	margin: 0px 0px 0px 0px;
 }
@@ -291,7 +291,7 @@ header div.droplist a:hover{
 }
 
 .sub-menu nav ul li a.active {
-	background: image-url("submenu-hover.png") repeat-x;
+	background: url("../pics/submenu-hover.png") repeat-x;
 }
 
 .sub-menu nav ul li a:hover {
@@ -393,11 +393,11 @@ div.expand-gray-down, div.expand-gray-up {
 }
 
 div.expand-gray-down {
-	background: image-url("expand-gray.png") no-repeat;
+	background: url("../pics/expand-gray.png") no-repeat;
 }
 
 div.expand-gray-up {
-	background: image-url("expand-gray2.png") no-repeat;
+	background: url("../pics/expand-gray2.png") no-repeat;
 }
 
 article a.button {
@@ -818,7 +818,7 @@ article input.black {
 	height: 17px;
 	display: inline-block;
 	cursor: pointer;
-	background: image-url("radio.png");
+	background: url("../pics/radio.png");
 	overflow: hidden;
 }
 .radioChecked {
@@ -847,7 +847,7 @@ article input.black {
 	height: 17px;
 	display: inline-block;
 	cursor: pointer;
-	background: image-url("checkbox.png");
+	background: url("../pics/checkbox.png");
 }
 .niceCheck input {
 	display: none;
@@ -858,7 +858,7 @@ article input.black {
 	height: 18px;
 	display: inline-block;
 	cursor: pointer;
-	background: image-url("checkbox-main.png");
+	background: url("../pics/checkbox-main.png");
 }
 .niceCheck-main input {
 	display: none;
@@ -1147,14 +1147,14 @@ div.label div.flag {
 aside div.switcher, aside div.switcher-off {
 	height: 23px;
 	width: 194px;
-	background: image-url("switch-on.png");
+	background: url("../pics/switch-on.png");
 	color: #FFF;
 	font-size: 12px;
 	cursor: pointer;
 }
 
 aside div.switcher-off {
-	background: image-url("switch-off.png");
+	background: url("../pics/switch-off.png");
 }
 
 aside div.switcher div.swleft, aside div.switcher-off div.swleft {
@@ -1284,7 +1284,7 @@ h3.bmargin10 {
 	padding-top: 9px;
 }
 
-div.description-top {
+div.desription-top {
 	background: #dcecfa;
 	font-size: 12px;
 	color: #575756;
@@ -1294,13 +1294,13 @@ div.description-top {
 	margin-bottom: 20px;
 }
 
-div.description-top div.img {
+div.desription-top div.img {
 	float: left;
 	padding-left: 10px;
 	margin-top: 14px;
 }
 
-div.description-top div.name {
+div.desription-top div.name {
 	float: left;
 	margin-top: 5px;
 	margin-left: 10px;
@@ -1314,19 +1314,19 @@ div.description-top div.name {
 	padding-top: 5px;
 }
 
-div.description-top div.role {
+div.desription-top div.role {
 	float: left;
 	margin-top: 11px;
 	margin-left: 10px;
 	font-size: 11px;
 }
 
-div.description-top div.fork {
+div.desription-top div.fork {
 	float: right;
 	margin-top: 5px;
 	margin-right: 10px;
 }	
-div.description-top div.fork p {
+div.desription-top div.fork p {
 	float: right;
 	margin-top: 5px;
 	margin-right: 2px;
@@ -1623,7 +1623,7 @@ div.label.edit {
 	padding-left: 15px;
 }
 
-div.label.edit:hover {
+div.label.edit:hover{
 	background: none;
 }
 
@@ -1676,7 +1676,7 @@ aside div.colors div.choose {
 }
 
 aside div.colors div.choose.selected, aside div.colors div.choose:hover {
-	background: image-url("choose.png") no-repeat 50% 50%;
+	background: url("../pics/choose.png") no-repeat 50% 50%;
 	height: 14px;
 	width: 14px;
 	padding: 4px;
@@ -1803,7 +1803,7 @@ div.right-error {
 	float: left;
 	width: 369px;
 	height: 59px;
-	background: image-url("error-groups.png");
+	background: url("../pics/error-groups.png");
 	margin: 0px 0px 5px -3px;
 	text-align: center;
 }

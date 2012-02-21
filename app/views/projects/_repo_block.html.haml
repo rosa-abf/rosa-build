@@ -1,0 +1,16 @@
+.description-top
+  .img
+    %img{:alt => "pic", :src => "/assets/code.png"}/
+  .name
+    = text_field_tag :url, git_repo_url(project.git_repo_name), :class => 'url-field',
+      :type => 'text',:spellcheck => 'false', :disabled => 'disabled'
+  .role
+    чтение и запись
+  .lineForm.fork
+    = form_tag do
+      = select_tag :branch,
+        options_from_collection_for_select(project.branches, :name, :name),
+        :class => 'sel80', :id => 'branch_selector'
+  .fork
+    %p= t('layout.projects.current_branch')+':'
+  .both

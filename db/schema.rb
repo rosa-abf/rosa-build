@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120214021626) do
+ActiveRecord::Schema.define(:version => 20120220131333) do
 
   create_table "arches", :force => true do |t|
     t.string   "name",       :null => false
@@ -259,6 +259,7 @@ ActiveRecord::Schema.define(:version => 20120214021626) do
     t.string   "srpm_content_type"
     t.integer  "srpm_file_size"
     t.datetime "srpm_updated_at"
+    t.string   "default_branch",    :default => "master"
   end
 
   add_index "projects", ["category_id"], :name => "index_projects_on_category_id"
@@ -277,7 +278,6 @@ ActiveRecord::Schema.define(:version => 20120214021626) do
   end
 
   add_index "register_requests", ["email"], :name => "index_register_requests_on_email", :unique => true, :case_sensitive => false
-  add_index "register_requests", ["token"], :name => "index_register_requests_on_token", :unique => true, :case_sensitive => false
 
   create_table "relations", :force => true do |t|
     t.integer  "object_id"

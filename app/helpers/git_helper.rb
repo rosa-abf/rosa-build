@@ -61,4 +61,14 @@ module GitHelper
     string.dup.encode_to_default
   end
 
+  def iterate_path(path, &block)
+    path.split(File::SEPARATOR).inject('') do |a, e|
+      if e != '.' and e != '..'
+        a = File.join(a, e)
+        a = a[1..-1] if a[0] == File::SEPARATOR
+        block.call(a, e) if a.length > 1
+      end
+      a
+    end
+  end
 end
