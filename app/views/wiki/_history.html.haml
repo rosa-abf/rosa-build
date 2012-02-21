@@ -4,7 +4,8 @@
       %tr.history
         %td.td1
           %span#niceCheckbox1.niceCheck-main{:onclick => "changeCheck(this)"}
-            = check_box_tag "versions[]", v.id
+            =# check_box_tag "versions[]", v.id, :html => {:class => 'history_cbx'}
+            %input{:type => 'checkbox', :id => 'versions_', :name => 'versions[]', :value => v.id, :class => 'history_cbx'}
         %td.td2
           - user = User.where(:email => v.author.email).first
           .avatar
@@ -24,39 +25,4 @@
           - else
             = "[#{v.id[0..6]}]"
 
--##wiki-history
--#  %ul.actions
--#    %li.minibutton
--#      = link_to t("layout.wiki.compare_revisions"), "javascript:void(0);",
--#                :class => "action-compare-revision"
--#
--#  = form_tag compare_path(@project, @name), :name => "compare-versions", :id => "version-form" do
--#    %fieldset
--#      %table
--#        %tbody
--#          - @versions.each do |v|
--#            %tr{:class => cycle("odd", "even")}
--#              %td.checkbox
--#                = check_box_tag "versions[]", v.id
--#              %td.author
--#                - user = User.where(:email => v.author.email).first
--#                = link_to user_path_by_user(user) do
--#                  %img{:src => gravatar_url(v.author.email),
--#                    :alt => "avatar: #{v.author.name.encode_to_default}",
--#                    :class => "mini-gravatar"}
--#                  %span.username= user.present? ? user.uname : v.author.name.encode_to_default
--#              %td.commit-name
--#                %span.time-elapsed= "#{l v.committed_date.to_date, :format => :long}:"
--#                &nbsp;
--#                = v.message.encode_to_default
--#                - if @name
--#                  = raw "[#{link_to v.id[0..6], versioned_project_wiki_path(@project, escaped_name, v.id), :title => t("layout.wiki.view_commit")}]"
--#                - else
--#                  = "[#{v.id[0..6]}]"
--#
--##gollum-footer
--#  %ul.actions
--#    %li.minibutton
--#      = link_to t("layout.wiki.compare_revisions"), "javascript:void(0);", :class => "action-compare-revision"
--#    %li.minibutton
--#      = link_to t("layout.wiki.back_to_top"), "#wiki", :class => "action-back-to-top"
+= javascript_include_tag 'wiki_history'
