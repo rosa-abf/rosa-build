@@ -98,23 +98,21 @@ class Platform < ActiveRecord::Base
     platform_type == 'personal'
   end
 
-  def full_clone(attrs) # :description, :name, :owner
+  def full_clone(attrs = {}) # :description, :name, :owner
     clone.tap do |c|
-      c.attributes = attrs
+      c.attributes = attrs # do not set protected
       c.updated_at = nil; c.created_at = nil # :id = nil
       c.parent = self
-      new_attrs = {:platform_id => nil}
-      c.repositories = repositories.map{|r| r.full_clone(new_attrs.merge(:owner_id => attrs[:owner_id], :owner_type => attrs[:owner_type]))}
-      c.products = products.map{|p| p.full_clone(new_attrs)}
+      c.repositories = repositories.map(&:full_clone)
+      c.products = products.map(&:full_clone)
     end
   end
 
-  # TODO * make it Delayed Job *  
   def make_clone(attrs)
     p = full_clone(attrs)
     begin
       Thread.current[:skip] = true
-      p.save and xml_rpc_clone(attrs[:name])
+      p.save and self.delay.xml_rpc_clone(attrs[:name])
     ensure
       Thread.current[:skip] = false
     end

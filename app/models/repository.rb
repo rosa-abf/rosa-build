@@ -15,10 +15,10 @@ class Repository < ActiveRecord::Base
 
   attr_accessible :description, :name
 
-  def full_clone(attrs) # owner
+  def full_clone(attrs = {})
     clone.tap do |c| # dup
-      c.attributes = attrs
-      c.updated_at = nil; c.created_at = nil # :id = nil
+      c.attributes = attrs # do not set protected
+      c.platform_id = nil; c.updated_at = nil; c.created_at = nil # :id = nil
       c.projects = projects
     end
   end
