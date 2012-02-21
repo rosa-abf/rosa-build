@@ -121,7 +121,6 @@ class PlatformsController < ApplicationController
       flash[:notice] = I18n.t("flash.platform.clone_success")
       redirect_to @cloned
     else
-      raise @cloned.repositories.first.inspect
       flash[:error] = @cloned.errors.full_messages.join('. ')
       render 'clone'
     end
