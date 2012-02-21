@@ -109,19 +109,21 @@ class PlatformsController < ApplicationController
   end
 
   def clone
-    if request.post?
-      @cloned = @platform.make_clone(:name => params[:platform]['name'], :description => params[:platform]['description'],
-                                    :owner_id => current_user.id, :owner_type => current_user.class.to_s)
-      if @cloned.persisted?
-        flash[:notice] = I18n.t("flash.platform.clone_success")
-        redirect_to @cloned
-      else
-        flash[:error] = @cloned.errors.full_messages.join('. ')
-      end
+    @cloned = Platform.new
+    @cloned.name = @platform.name + "_clone"
+    @cloned.description = @platform.description + "_clone"
+  end
+
+  def make_clone
+    @cloned = @platform.make_clone(:name => params[:platform]['name'], :description => params[:platform]['description'],
+                                   :owner_id => current_user.id, :owner_type => current_user.class.to_s)
+    if @cloned.persisted? # valid?
+      flash[:notice] = I18n.t("flash.platform.clone_success")
+      redirect_to @cloned
     else
-      @cloned = Platform.new
-      @cloned.name = @platform.name + "_clone"
-      @cloned.description = @platform.description + "_clone"
+      raise @cloned.repositories.first.inspect
+      flash[:error] = @cloned.errors.full_messages.join('. ')
+      render 'clone'
     end
   end
 
