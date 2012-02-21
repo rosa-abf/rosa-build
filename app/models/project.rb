@@ -17,6 +17,8 @@ class Project < ActiveRecord::Base
   has_many :relations, :as => :target, :dependent => :destroy
   has_many :collaborators, :through => :relations, :source => :object, :source_type => 'User'
   has_many :groups,        :through => :relations, :source => :object, :source_type => 'Group'
+  has_many :labelings
+  has_many :labels, :through => :labelings
 
   validates :name, :uniqueness => {:scope => [:owner_id, :owner_type], :case_sensitive => false}, :presence => true, :format => { :with => /^[a-zA-Z0-9_\-\+\.]+$/ }
   validates :owner, :presence => true
@@ -61,7 +63,7 @@ class Project < ActiveRecord::Base
     end
   end
 
-  def build_for(platform, user)  
+  def build_for(platform, user)
     build_lists.create do |bl|
       bl.pl = platform
       bl.bpl = platform

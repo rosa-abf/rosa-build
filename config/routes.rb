@@ -119,6 +119,10 @@ Rosa::Application.routes.draw do
     resources :issues do
       resources :comments, :only => [:edit, :create, :update, :destroy]
       resources :subscribes, :only => [:create, :destroy]
+      collection do
+        post :create_label
+        post :delete_label
+      end
     end
     resource :repo, :controller => "git/repositories", :only => [:show]
     resources :build_lists, :only => [:index, :new, :create]
