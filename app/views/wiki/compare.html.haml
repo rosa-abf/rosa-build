@@ -21,28 +21,28 @@
 #wiki-content
   = render :partial => "compare"
 
-//%a{ :name => "wiki"}
-//.block
-//  = render :partial => 'navigation'
-//
-//  .content
-//    #wiki-wrapper.inner.compare
-//      #head
-//        %h1.title
-//          - if @name
-//            = t("layout.wiki.history_for")
-//            %strong= @page.name
-//          - else
-//            = t("layout.wiki.wiki_history")
-//
-//        %ul.actions
-//          - if can? :read, @project
-//            %li.minibutton= link_to t("layout.wiki.back_to_history"),
-//                  @name ? history_project_wiki_path(@project, escaped_name) : history_project_wiki_index_path(@project)
-//        = render :partial => 'searchbar'
-//
-//      #wiki-content
-//        = render :partial => "compare"
+-#%a{ :name => "wiki"}
+-#.block
+-#  = render :partial => 'navigation'
+-#
+-#  .content
+-#    #wiki-wrapper.inner.compare
+-#      #head
+-#        %h1.title
+-#          - if @name
+-#            = t("layout.wiki.history_for")
+-#            %strong= @page.name
+-#          - else
+-#            = t("layout.wiki.wiki_history")
+-#
+-#        %ul.actions
+-#          - if can? :read, @project
+-#            %li.minibutton= link_to t("layout.wiki.back_to_history"),
+-#                  @name ? history_project_wiki_path(@project, escaped_name) : history_project_wiki_index_path(@project)
+-#        = render :partial => 'searchbar'
+-#
+-#      #wiki-content
+-#        = render :partial => "compare"
 
 - content_for :sidebar do
   - render :partial => 'sidebar'

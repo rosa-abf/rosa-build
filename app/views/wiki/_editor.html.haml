@@ -39,8 +39,8 @@
       = link_to t("layout.wiki.preview"), "javascript:void(0)", :id => "gollum-editor-preview",
                 :class => "minibutton", :title => t("layout.wiki.preview_title"), :'data-url' => preview_project_wiki_index_path(@project)
 
-/ - content_for :javascripts do
-/   = javascript_include_tag 'gollum/editor/gollum.editor.js'
-/ 
-/ - content_for :stylesheets do
-/   = stylesheet_link_tag 'gollum/editor.css'
+-# - content_for :javascripts do
+-#   = javascript_include_tag 'gollum/editor/gollum.editor.js'
+-# 
+-# - content_for :stylesheets do
+-#   = stylesheet_link_tag 'gollum/editor.css'
