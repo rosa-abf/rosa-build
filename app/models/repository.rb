@@ -2,11 +2,11 @@
 class Repository < ActiveRecord::Base
   belongs_to :platform
 
-  has_many :projects, :through => :project_to_repositories #, :dependent => :destroy
-  has_many :project_to_repositories, :validate => true, :dependent => :destroy
+  has_many :project_to_repositories, :dependent => :destroy, :validate => true
+  has_many :projects, :through => :project_to_repositories
 
-  validates :description, :uniqueness => {:scope => :platform_id}, :presence => true
-  validates :name, :uniqueness => {:scope => :platform_id, :case_sensitive => false}, :presence => true, :format => { :with => /^[a-z0-9_\-]+$/ }
+  validates :description, :presence => true
+  validates :name, :uniqueness => {:scope => :platform_id, :case_sensitive => false}, :presence => true, :format => {:with => /^[a-z0-9_\-]+$/}
 
   scope :recent, order("name ASC")
 
