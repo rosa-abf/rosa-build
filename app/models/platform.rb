@@ -100,30 +100,20 @@ class Platform < ActiveRecord::Base
 
   def base_clone(attrs = {}) # :description, :name, :owner
     clone.tap do |c|
-      c.attributes = attrs # do not set protected
+      c.attributes = attrs # attrs.each {|k,v| c.send("#{k}=", v)}
       c.updated_at = nil; c.created_at = nil # :id = nil
       c.parent = self
     end
   end
 
-  # def full_clone(attrs = {}) # :description, :name, :owner
-  #   clone.tap do |c|
-  #     c.attributes = attrs # do not set protected
-  #     c.updated_at = nil; c.created_at = nil # :id = nil
-  #     c.parent = self
-  #     c.repositories = repositories.map(&:full_clone)
-  #     c.products = products.map(&:full_clone)
-  #   end
-  # end
-
   def clone_relations(from = parent)
-    self.repositories = from.repositories.map(&:full_clone)
+    self.repositories = from.repositories.map{|r| r.full_clone(:platform_id => id)}
     self.products = from.products.map(&:full_clone)
   end
 
-  def clone_complete
-    with_skip do
-      clone_relations and xml_rpc_clone
+  def full_clone(attrs = {})
+    base_clone(attrs).tap do |c|
+      with_skip {c.save} and c.clone_relations(self) and c.delay.xml_rpc_clone
     end
   end
 
