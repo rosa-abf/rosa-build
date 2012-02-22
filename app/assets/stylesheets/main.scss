@@ -1,7 +1,7 @@
 html, body {
 	margin: 0;
 	padding: 0;
-	font-family: Tahoma, Arial;
+	font-family: Tahoma, Geneva, Arial;
 	color: #565657;
 	background: #1f60a1 image-url("bg.png") repeat-x; 
 	min-width: 940px;
@@ -1300,18 +1300,17 @@ div.description-top div.img {
 	margin-top: 14px;
 }
 
-div.description-top div.name {
-	float: left;
-	margin-top: 5px;
-	margin-left: 10px;
-	background: #FFF;
-	border: 1px solid #d1deeb;
-	height: 21px;
-	width: auto;
-	color: #575756;
-	padding-right: 5px;
-	padding-left: 5px;
-	padding-top: 5px;
+div.description-top input.name {
+    background: none repeat scroll 0 0 #FFFFFF;
+    border: 1px solid #D1DEEB;
+    color: #575756;
+    float: left;
+    font-size: 12px;
+    height: 21px;
+    margin-left: 10px;
+    margin-top: 5px;
+    padding: 2px 5px 3px;
+    width: 315px;
 }
 
 div.description-top div.role {

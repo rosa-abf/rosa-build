@@ -1,16 +1,24 @@
 .description-top
   .img
     %img{:alt => "pic", :src => "/assets/code.png"}/
-  .name
-    = text_field_tag :url, git_repo_url(project.git_repo_name), :class => 'url-field',
+  = text_field_tag :url, git_repo_url(project.git_repo_name), :class => 'name',
       :type => 'text',:spellcheck => 'false', :disabled => 'disabled'
   .role
     чтение и запись
   .lineForm.fork
-    = form_tag do
+    = form_tag project_path(project), :id => 'branch_changer' do
       = select_tag :branch,
-        options_from_collection_for_select(project.branches, :name, :name),
+        options_from_collection_for_select(project.branches, :name, :name, @branch.name),
         :class => 'sel80', :id => 'branch_selector'
   .fork
     %p= t('layout.projects.current_branch')+':'
   .both
+
+:javascript
+  $(document).ready(function() {
+    $('select#branch_selector').live('change', function(e) {
+      $form = $('form#branch_changer');
+      $form.attr('action', $form.attr('action') + '/git/tree/' + $(this).val());
+      $form.submit();
+    });
+  });

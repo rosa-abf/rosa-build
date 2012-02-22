@@ -85,3 +85,11 @@ div.activity .data-expander.expanded {
     background: #FFF image-url('expand-gray2.png') no-repeat;
     background-position: 0 2px;
 }
+
+table.blob td.lines pre {
+    background-color: #ECECEC;
+    border-right: 1px solid #DDDDDD;
+    color: #AAAAAA;
+    padding: 10px;
+    text-align: right;
+}

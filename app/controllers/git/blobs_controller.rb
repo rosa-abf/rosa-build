@@ -1,8 +1,9 @@
 # -*- encoding : utf-8 -*-
 class Git::BlobsController < Git::BaseController
   before_filter :find_tree
-  before_filter :set_path_blob
+  before_filter :find_branch
   before_filter :set_commit_hash
+  before_filter :set_path_blob
 
   def show
     redirect_to project_repo_path(@project) and return unless @blob.present?
@@ -50,6 +51,10 @@ class Git::BlobsController < Git::BaseController
   end
 
   protected
+    def find_branch
+      @branch = @project.branch(@treeish)
+    end
+
     def set_path_blob
       @path = params[:path]
       @path.force_encoding(Encoding::ASCII_8BIT)
@@ -68,9 +73,7 @@ class Git::BlobsController < Git::BaseController
       else
         puts "2"
         @tree = @git_repository.tree(@treeish)
-        puts @tree.name.inspect
-
-        @commit = @git_repository.log(@treeish, @path).first # TODO WTF nil ?
+        @commit = @git_repository.log(@treeish, @path, :max_count => 1).first # TODO WTF nil ?
       end
     end
 end
