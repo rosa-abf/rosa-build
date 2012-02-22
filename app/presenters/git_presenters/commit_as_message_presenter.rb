@@ -42,7 +42,7 @@ class GitPresenters::CommitAsMessagePresenter < ApplicationPresenter
 
     def committer_link
       @committer_link ||= if committer.is_a? User
-        self.link_to committer.uname, user_path(committer)
+        link_to committer.uname, '#'#user_path(committer)
       else
         self.mail_to committer.email.encode_to_default, committer.name.encode_to_default
       end

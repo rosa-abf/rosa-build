@@ -142,6 +142,7 @@ Rosa::Application.routes.draw do
     end
     collection do
       get :auto_build
+      get :settings
     end
   end
 
