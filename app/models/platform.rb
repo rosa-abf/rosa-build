@@ -18,6 +18,7 @@ class Platform < ActiveRecord::Base
   validates :name, :uniqueness => {:case_sensitive => false}, :presence => true, :format => { :with => /^[a-zA-Z0-9_\-]+$/ }
   validates :distrib_type, :presence => true, :inclusion => {:in => APP_CONFIG['distr_types']}
 
+  before_create :create_directory, :if => lambda {Thread.current[:skip]} # TODO remove this when core will be ready
   before_create :xml_rpc_create, :unless => lambda {Thread.current[:skip]}
   before_destroy :xml_rpc_destroy
 #  before_update :check_freezing
@@ -131,9 +132,13 @@ class Platform < ActiveRecord::Base
     end
   end
 
+  def create_directory
+    system("sudo mkdir -p -m 0777 #{path}")
+  end
+
   def mount_directory_for_rsync
     # umount_directory_for_rsync # TODO ignore errors
-    system("sudo mkdir -p #{mount_path}")
+    system("sudo mkdir -p -m 0777 #{mount_path}")
     system("sudo mount --bind #{path} #{mount_path}")
     Arch.all.each do |arch|
       str = "country=Russian Federation,city=Moscow,latitude=52.18,longitude=48.88,bw=1GB,version=2011,arch=#{arch.name},type=distrib,url=#{public_downloads_url}\n"
@@ -151,6 +156,10 @@ class Platform < ActiveRecord::Base
       r = relations.where(:object_id => owner_id_was, :object_type => owner_type_was)[0]
       r.update_attributes(:object_id => owner_id, :object_type => owner_type)
     end
+  end
+
+  def destroy
+    with_skip {super} # avoid cascade XML RPC requests
   end
 
   protected
