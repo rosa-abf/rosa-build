@@ -1,28 +1,104 @@
-.group
-  = f.label :category_id, t("activerecord.attributes.project.category_id"), :class => :label
-  = f.grouped_collection_select :category_id, Category.roots, :children, :name, :id, :name, :include_blank => true
-.group
-  = f.label :name, t("activerecord.attributes.project.name"), :class => :label
-  = f.text_field :name, :class => 'text_field', :disabled => f.object.try(:persisted?)
-.group
-  = f.label :visibility, t("activerecord.attributes.project.visibility"), :class => :label
-  = f.select :visibility, Project::VISIBILITIES
-.group
+= act = controller.action_name.to_sym
+- if [:new, :create].include? act
+  .leftlist
+    = f.label :name, t("activerecord.attributes.project.name"), :class => :label
+  .rightlist
+    = f.text_field :name, :class => 'text_field', :disabled => f.object.try(:persisted?)
+  .both
+.leftlist
   = f.label :description, t("activerecord.attributes.project.description"), :class => :label
+.rightlist
   = f.text_area :description, :class => 'text_field', :cols => 80
-.group
-  = f.label :has_issues, t("activerecord.attributes.project.has_issues"), :class => :label
-  = f.check_box :has_issues
-.group
-  = f.label :has_wiki, t("activerecord.attributes.project.has_wiki"), :class => :label
-  = f.check_box :has_wiki
-.group
-  = f.label :srpm, t("activerecord.attributes.project.srpm"), :class => :label
-  = f.file_field :srpm, :class => 'file_field'
+.both
+- if [:new, :create].include? act
+  .leftlist
+    = f.label :category_id, t("activerecord.attributes.project.category_id"), :class => :label
+  .rightlist
+    = f.grouped_collection_select :category_id, Category.roots, :children, :name, :id, :name, :include_blank => true
+  .both
+.leftlist
+  = f.label :visibility, t("activerecord.attributes.project.visibility"), :class => :label
+.rightlist
+  =# f.select :visibility, Project::VISIBILITIES
+  - Project::VISIBILITIES.each do |visibility|
+    %span.niceRadio.radioChecked
+      = f.radio_button :visibility, visibility, :class => 'niceRadio'
+    - if visibility == 'open'
+      = image_tag("unlock.png")
+    - else
+      = image_tag("lock.png")
+    = t("activerecord.attributes.project.visibilities.#{visibility}")
+.both
+.leftlist
+  Ветка по умолчанию:
+.rightlist
+  = f.select :default_branch, options_from_collection_for_select(@project.branches, :name, :name, @project.default_branch), :class => 'sel80', :id => 'branch_selector'
+  -#.lineForm
+  -#  #cuselFrame-ext.cusel.sel80{:style => "width:200px", :tabindex => "2"}
+  -#    .cuselFrameRight
+  -#    .cuselText Master
+  -#    .cusel-scroll-wrap{:style => "display: none; visibility: visible; "}
+  -#      #cusel-scroll-ext.cusel-scroll-pane
+  -#        %span.cuselActive{:selected => "selected", :val => "1000"} Master
+  -#        %span{:val => "1"} Extend
+  -#        %span{:val => "2"} Fork4Driver
+  -#    %input#ext{:name => "ext", :type => "hidden", :value => "1000"}/
+.both
+.leftlist
+  \ 
+.rightlist
+  .check
+    %span#niceCheckbox1.niceCheck-main{:onclick => "changeCheck(this)"}
+      %input{:name => "ch1", :type => "checkbox"}/
+  .forcheck
+    Проект является пакетом
+  .both
+.both
+- if [:new, :create].include? act
+  .leftlist
+    = f.label :srpm, t("activerecord.attributes.project.srpm"), :class => :label
+  .rightlist
+    = f.file_field :srpm, :class => 'file_field'
+  .both
+.leftlist
+  \ 
+.rightlist
+  -#%a.button{:href => "#"} Сохранить
+  = submit_tag t("layout.save"), :class => 'button'
+.both
+.hr
+.leftside
+  = t("layout.projects.delete_warning")
+.rightside
+  = link_to t("layout.delete"), project_path(@project), :method => :delete, :confirm => t("layout.projects.confirm_delete"), :class => 'button' if can? :destroy, @project
+.both
 
-.group.navform.wat-cf
-  %button.button{:type => "submit"}
-    = image_tag("web-app-theme/icons/tick.png", :alt => t("layout.save"))
-    = t("layout.save")
-  %span.text_button_padding= t("layout.or")
-  = link_to t("layout.cancel"), @projects_path, :class => "text_button_padding link_button"
+
+-#.group
+-#  = f.label :category_id, t("activerecord.attributes.project.category_id"), :class => :label
+-#  = f.grouped_collection_select :category_id, Category.roots, :children, :name, :id, :name, :include_blank => true
+-#.group
+-#  = f.label :name, t("activerecord.attributes.project.name"), :class => :label
+-#  = f.text_field :name, :class => 'text_field', :disabled => f.object.try(:persisted?)
+-#.group
+-#  = f.label :visibility, t("activerecord.attributes.project.visibility"), :class => :label
+-#  = f.select :visibility, Project::VISIBILITIES
+-#.group
+-#  = f.label :description, t("activerecord.attributes.project.description"), :class => :label
+-#  = f.text_area :description, :class => 'text_field', :cols => 80
+-#.group
+-#  = f.label :has_issues, t("activerecord.attributes.project.has_issues"), :class => :label
+-#  = f.check_box :has_issues
+-#.group
+-#  = f.label :has_wiki, t("activerecord.attributes.project.has_wiki"), :class => :label
+-#  = f.check_box :has_wiki
+-#.group
+-#  = f.label :srpm, t("activerecord.attributes.project.srpm"), :class => :label
+-#  = f.file_field :srpm, :class => 'file_field'
+-#
+-#.group.navform.wat-cf
+-#  %button.button{:type => "submit"}
+-#    = image_tag("web-app-theme/icons/tick.png", :alt => t("layout.save"))
+-#    = t("layout.save")
+-#  %span.text_button_padding= t("layout.or")
+-#  = link_to t("layout.cancel"), @projects_path, :class => "text_button_padding link_button"

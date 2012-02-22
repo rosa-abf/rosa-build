@@ -297,6 +297,7 @@ ru:
       edit_collaborators: Изменить список участников
       issues: Задачи
       wiki: Wiki
+      delete_warning: Внимание! Удаленный проект восстановлению не подлежит.
 
     collaborators:
       back_to_proj: Вернуться к проекту
@@ -685,6 +686,9 @@ ru:
         description: Описание
         owner: Владелец
         visibility: Видимость
+        visibilities:
+          open: Публичная
+          hidden: Приватная
         repository_id: Репозиторий
         repository: Репозиторий
         created_at: Создан
