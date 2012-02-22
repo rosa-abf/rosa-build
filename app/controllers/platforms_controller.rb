@@ -115,10 +115,8 @@ class PlatformsController < ApplicationController
   end
 
   def make_clone
-    @cloned = @platform.base_clone(:name => params[:platform]['name'], :description => params[:platform]['description'],
-                                   :owner_id => current_user.id, :owner_type => current_user.class.to_s)
-    if with_skip{@cloned.save}
-      @cloned.delay.clone_complete
+    @cloned = @platform.full_clone params[:platform].merge(:owner => current_user)
+    if @cloned.persisted?
       flash[:notice] = I18n.t("flash.platform.clone_success")
       redirect_to @cloned
     else

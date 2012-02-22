@@ -61,8 +61,9 @@ class Product < ActiveRecord::Base
 
   def full_clone(attrs = {})
     clone.tap do |c| # dup
-      c.attributes = attrs # do not set protected
-      c.platform_id = nil; c.updated_at = nil; c.created_at = nil # :id = nil
+      c.platform_id = nil
+      attrs.each {|k,v| c.send("#{k}=", v)}
+      c.updated_at = nil; c.created_at = nil # :id = nil
     end
   end
 
