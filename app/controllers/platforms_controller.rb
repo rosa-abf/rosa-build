@@ -115,9 +115,10 @@ class PlatformsController < ApplicationController
   end
 
   def make_clone
-    @cloned = @platform.make_clone(:name => params[:platform]['name'], :description => params[:platform]['description'],
+    @cloned = @platform.base_clone(:name => params[:platform]['name'], :description => params[:platform]['description'],
                                    :owner_id => current_user.id, :owner_type => current_user.class.to_s)
-    if @cloned.persisted? # valid?
+    if with_skip{@cloned.save}
+      @cloned.delay.clone_complete
       flash[:notice] = I18n.t("flash.platform.clone_success")
       redirect_to @cloned
     else
@@ -127,7 +128,7 @@ class PlatformsController < ApplicationController
   end
 
   def destroy
-    @platform.destroy if @platform
+    @platform.delay.destroy if @platform
 
     flash[:notice] = t("flash.platform.destroyed")
     redirect_to root_path

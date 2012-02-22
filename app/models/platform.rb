@@ -14,7 +14,7 @@ class Platform < ActiveRecord::Base
   has_many :members, :through => :objects, :source => :object, :source_type => 'User'
   has_many :groups,  :through => :objects, :source => :object, :source_type => 'Group'
 
-  validates :description, :presence => true, :uniqueness => true
+  validates :description, :presence => true
   validates :name, :uniqueness => {:case_sensitive => false}, :presence => true, :format => { :with => /^[a-zA-Z0-9_\-]+$/ }
   validates :distrib_type, :presence => true, :inclusion => {:in => APP_CONFIG['distr_types']}
 
@@ -98,25 +98,33 @@ class Platform < ActiveRecord::Base
     platform_type == 'personal'
   end
 
-  def full_clone(attrs = {}) # :description, :name, :owner
+  def base_clone(attrs = {}) # :description, :name, :owner
     clone.tap do |c|
       c.attributes = attrs # do not set protected
       c.updated_at = nil; c.created_at = nil # :id = nil
       c.parent = self
-      c.repositories = repositories.map(&:full_clone)
-      c.products = products.map(&:full_clone)
     end
   end
 
-  def make_clone(attrs)
-    p = full_clone(attrs)
-    begin
-      Thread.current[:skip] = true
-      p.save and self.delay.xml_rpc_clone(attrs[:name])
-    ensure
-      Thread.current[:skip] = false
+  # def full_clone(attrs = {}) # :description, :name, :owner
+  #   clone.tap do |c|
+  #     c.attributes = attrs # do not set protected
+  #     c.updated_at = nil; c.created_at = nil # :id = nil
+  #     c.parent = self
+  #     c.repositories = repositories.map(&:full_clone)
+  #     c.products = products.map(&:full_clone)
+  #   end
+  # end
+
+  def clone_relations(from = parent)
+    self.repositories = from.repositories.map(&:full_clone)
+    self.products = from.products.map(&:full_clone)
+  end
+
+  def clone_complete
+    with_skip do
+      clone_relations and xml_rpc_clone
     end
-    p
   end
 
   def name
@@ -179,12 +187,12 @@ class Platform < ActiveRecord::Base
       end
     end
 
-    def xml_rpc_clone(new_name)
-      result = BuildServer.clone_platform new_name, self.name, APP_CONFIG['root_path'] + '/platforms'
+    def xml_rpc_clone(old_name = parent.name, new_name = name)
+      result = BuildServer.clone_platform new_name, old_name, APP_CONFIG['root_path'] + '/platforms'
       if result == BuildServer::SUCCESS
         return true
       else
-        raise "Failed to clone platform #{name} with code #{result}. Path: #{build_path(name)} to platform #{new_name}"
+        raise "Failed to clone platform #{old_name} with code #{result}. Path: #{build_path(old_name)} to platform #{new_name}"
       end
     end
 
