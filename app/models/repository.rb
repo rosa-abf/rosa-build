@@ -15,11 +15,23 @@ class Repository < ActiveRecord::Base
 
   attr_accessible :description, :name
 
-  def full_clone(attrs = {})
+  def base_clone(attrs = {})
     clone.tap do |c| # dup
-      c.attributes = attrs # do not set protected
-      c.platform_id = nil; c.updated_at = nil; c.created_at = nil # :id = nil
-      c.projects = projects
+      c.platform_id = nil
+      attrs.each {|k,v| c.send("#{k}=", v)}
+      c.updated_at = nil; c.created_at = nil # :id = nil
+    end
+  end
+
+  def clone_relations(from)
+    with_skip do
+      from.projects.find_each {|p| self.projects << p}
+    end
+  end
+
+  def full_clone(attrs = {})
+    base_clone(attrs).tap do |c|
+      with_skip {c.save} and c.delay.clone_relations(self)
     end
   end
 
