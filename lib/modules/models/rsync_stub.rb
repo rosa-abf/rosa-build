@@ -5,6 +5,10 @@ module Modules
       extend ActiveSupport::Concern
 
       included do
+        def create_directory
+          true
+        end
+
         def mount_directory_for_rsync
           true
         end

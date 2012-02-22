@@ -49,9 +49,11 @@ class BuildServer
   end
 
   def self.clone_repo new_name, old_name, new_platform_name
+    tmp = self.client.timeout # TODO remove this when core will be ready
+    self.client.timeout = 30.minutes
     self.client.call('clone_repo', new_name, old_name, new_platform_name)
+    self.client.timeout = tmp
   end
-
 
   def self.publish_container container_id
     self.client.call('publish_container', container_id)
