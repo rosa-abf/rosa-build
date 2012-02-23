@@ -28,32 +28,34 @@ class BuildServer
     self.client.call('add_platform', name, platforms_root_folder, repos, distrib_type)
   end
 
-
   def self.delete_platform name
     self.client.call('delete_platform', name)
+  rescue Timeout::Error => e # TODO remove this when core will be ready
+    0
   end
-
 
   def self.clone_platform new_name, old_name, new_root_folder
     self.client.call('clone_platform', new_name, old_name, new_root_folder)
+  rescue Timeout::Error => e # TODO remove this when core will be ready
+    0
   end
-
 
   def self.create_repo name, platform_name
     self.client.call('create_repository', name, platform_name)
   end
 
-
   def self.delete_repo name, platform_name
     self.client.call('delete_repository', name, platform_name)
+  rescue Timeout::Error => e # TODO remove this when core will be ready
+    0
   end
 
   def self.clone_repo new_name, old_name, new_platform_name
-    tmp = self.client.timeout # TODO remove this when core will be ready
-    self.client.timeout = 30.minutes
     self.client.call('clone_repo', new_name, old_name, new_platform_name)
-    self.client.timeout = tmp
+  rescue Timeout::Error => e # TODO remove this when core will be ready
+    0
   end
+
 
   def self.publish_container container_id
     self.client.call('publish_container', container_id)
