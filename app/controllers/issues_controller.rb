@@ -11,8 +11,7 @@ class IssuesController < ApplicationController
 
   def index(status = 200)
     @is_assigned_to_me = params[:filter] == 'to_me'
-    @is_all = params[:filter] == 'all'
-    @status = (params[:status] if ['open', 'closed'].include? params[:status]) || 'open'
+    @status = params[:status] == 'closed' ? 'closed' : 'open'
     @labels = params[:labels] || []
 
     @issues = @project.issues
@@ -21,10 +20,9 @@ class IssuesController < ApplicationController
 
     if params[:search]
       @is_assigned_to_me = false
-      @is_all = 'all'
       @status = 'open'
       @labels = []
-      @issues = @project.issues.where('issues.title ILIKE ?', "%#{params[:search]}%")
+      @issues = @project.issues.where('issues.title ILIKE ?', "%#{params[:search].mb_chars.downcase}%")
     end
     @issues = @issues.includes(:creator, :user).order('serial_id desc').uniq.paginate :per_page => 10, :page => params[:page]
     if status == 200

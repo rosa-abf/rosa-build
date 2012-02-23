@@ -7,8 +7,7 @@
           .div-label-left
             .label
               .flag{:id => "flag-#{label.name}", :style => "background-color: ##{label.color};"}
-              .labeltext
-                =label.name
+              .labeltext=label.name
               =check_box_tag 'labels[]', label.name, @labels.include?(label.name), :style => 'display:none'
               .both
           .div-label-right=Labeling.joins(:label).where(:labels => {:name => label.name, :project_id => @project.id}).count

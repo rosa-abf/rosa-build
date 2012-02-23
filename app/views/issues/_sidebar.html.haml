@@ -4,19 +4,13 @@
       %h3=t("layout.issues.accessory")
       %table
         %tr
-          %td.width18
-            =radio_button_tag :myradio, 'all', !@is_assigned_to_me, {:id => 'myradio1', :class => 'niceRadio', :name => 'filter'}
-          %td.width135
-            =t("layout.issues.all")
-          %td.width30.right
-            = @project.issues.count
+          %td.width18=radio_button_tag :myradio, 'all', !@is_assigned_to_me, {:id => 'myradio1', :class => 'niceRadio', :name => 'filter'}
+          %td.width135=t("layout.issues.all")
+          %td.width30.right=@project.issues.count
         %tr
-          %td
-            =radio_button_tag :myradio, 'to_me', @is_assigned_to_me, {:id => 'myradio1', :class => 'niceRadio', :name => 'filter'}
-          %td
-            =t("layout.issues.to_me")
-          %td.width30.right
-            = @project.issues.where(:user_id => current_user).count
+          %td=radio_button_tag :myradio, 'to_me', @is_assigned_to_me, {:id => 'myradio1', :class => 'niceRadio', :name => 'filter'}
+          %td=t("layout.issues.to_me")
+          %td.width30.right=@project.issues.where(:user_id => current_user).count
   =form_tag project_issues_path(@project), :id => 'search_issue', :method => :get do
     .bordered.bpadding20
       =text_field_tag :search, t('layout.issues.search'), :class => 'gray', :onClick => "if(this.value=='#{t('layout.issues.search')}'){this.value='';this.className='black';}", :onblur => "if(this.value==''){this.value='#{t('layout.issues.search')}';this.className='gray';}"
