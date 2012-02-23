@@ -8,11 +8,7 @@ class PlatformsController < ApplicationController
   autocomplete :user, :uname
 
   def build_all
-    @platform.repositories.each do |repository|
-      repository.projects.each do |project|
-        project.delay.build_for(@platform, current_user)
-      end
-    end
+    @platform.delay.build_all(current_user)
 
     redirect_to(platform_path(@platform), :notice => t("flash.platform.build_all_success"))
   end
