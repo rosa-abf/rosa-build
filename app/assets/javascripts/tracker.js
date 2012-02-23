@@ -1,5 +1,4 @@
 $(document).ready(function() {
-  var locale = {};
 
   $("#closed-switcher").live('click', function() {
     if ($("#blue-switch-select").css("margin-left") != "130px") {
@@ -14,33 +13,20 @@ $(document).ready(function() {
       $("#table1").fadeIn("slow");
       $('#issues_status').val('open');
     }
-    var form = $('#filter_issues');
-    return send_request('GET', form.attr("action"));
+    return send_request('GET');
   });
-
-  function showEditLabels() {
-    $("#labels-stock").fadeOut(0);
-    $("#labels-edit").fadeIn("slow");
-  };
-  function hideEditLabels() {
-    $("#labels-edit").fadeOut(0);
-    $("#labels-stock").fadeIn("slow");
-  };
 
   $("#manage-labels").live('click', function () {
       var toggled = $(this).data('toggled');
       $(this).data('toggled', !toggled);
       if (!toggled) {
-          showEditLabels();
+        $("#labels-stock").fadeOut(0);
+        $("#labels-edit").fadeIn("slow");
       }
       else {
-          hideEditLabels();
+        $("#labels-edit").fadeOut(0);
+        $("#labels-stock").fadeIn("slow");
       }
-  });
-
-  $("div.delete").click(function() {
-  var div = "#label-"+this.id;
-  $(div).fadeOut("slow");
   });
 
   $("div.div-tracker-labels").live('click', function() {
@@ -57,27 +43,11 @@ $(document).ready(function() {
       $(this).css("color","#565657");
       checkbox.removeAttr('checked');
     }
-    send_request('GET');
+    return send_request('GET');
   });
 
-  function showRow(elem) {
-    if ($("#"+elem).css("display") == "none") {
-      $("#"+elem).fadeIn("slow");
-    } else {
-      //$("#"+elem).fadeOut(0);
-    }
-  }
-
-  function hideRow(elem) {
-    if ($("#"+elem).css("display") != "none") {
-      $("#"+elem).fadeOut("fast");
-    } else {
-      //$("#"+elem).fadeOut(0);
-    }
-  }
-
   $("#myradio1").live('change', function(event) {
-    return send_request('GET', $('#filter_issues').attr("action"));
+    return send_request('GET');
   });
 
   $('#search_issue').live('submit', function() {
@@ -97,6 +67,7 @@ $(document).ready(function() {
     parent.find('.choose.selected').removeClass('selected');
     $(this).addClass('selected');
     parent.siblings('.lefter').find('#label_color').val($(this).attr('value'));
+    return false;
   });
 
   $('.custom_color').live('click', function() {
@@ -129,7 +100,7 @@ $(document).ready(function() {
                  $(".niceRadio").each(function() { changeRadioStart(jQuery(this)) });
                },
       error: function(data){
-               alert('error')
+               alert('error') // TODO remove
              }
      });
     return false;

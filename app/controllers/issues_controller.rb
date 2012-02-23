@@ -14,7 +14,7 @@ class IssuesController < ApplicationController
     @status = params[:status] == 'closed' ? 'closed' : 'open'
     @labels = params[:labels] || []
 
-    @issues = @project.issues
+    @issues = @project.issues.where(:status => @status)
     @issues = @issues.where(:user_id => current_user.id) if @is_assigned_to_me
     @issues = @issues.joins(:labels).where(:labels => {:name => @labels}) unless @labels == []
 
