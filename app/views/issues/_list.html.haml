@@ -1,4 +1,4 @@
-%tr#row1.2-3-stable{:name => "row"}
+%tr#row1{:name => "row", :class => issue.labels.map(&:name).compact}
   %td.td0
     %span{:style => "display: none;"}=issue.serial_id
   %td.td1=issue.serial_id
@@ -9,8 +9,8 @@
       =t("layout.issues.by") if issue.creator
       =link_to(issue.creator.uname, user_path(issue.creator)) if issue.creator
       .label.selected.tracker
-        .labeltext.selected{:style => "background: #39b54a;"}
-          2-3 stable
+        -issue.labels.each do |label|
+          .labeltext.selected{:style => "background: ##{label.color};"}=label.name
         .both
   %td.td3
     .code=link_to '#', [@project, issue]

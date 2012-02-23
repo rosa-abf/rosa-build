@@ -23,6 +23,7 @@ en:
     show: View
     cancel: Cancel
     create: Create
+    update: Update
     delete: Erase
     save: Save
     search: Search

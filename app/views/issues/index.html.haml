@@ -2,6 +2,7 @@
 -render :partial => 'issues/sidebar'
 
 #closed-switcher.blue-switcher
+  =hidden_field_tag :issues_status, @status, :id => 'issues_status'
   .open
     ="#{t('layout.issues.statuses.open')} (#{@issues.where(:status => 'open').count})"
   #closed-tasks.closed
@@ -18,5 +19,5 @@
         %th{:colspan => "2"}
           =t('layout.issues.description')
     %tbody
-      - @issues.where(:status => @status).each do |issue|
+      - @issues.each do |issue|
         = render :partial => 'issues/list', :locals => {:issue => issue}

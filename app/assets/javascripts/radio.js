@@ -102,12 +102,12 @@ var el = el,
 		el.next().find("input").eq(0).attr("disabled","disabled");
 	}
 
-  el.next().bind("mousedown", function(e) { 
+  el.next().bind("mousedown", function(e) {
     changeRadio(jQuery(this));
-    $(this).find("input:radio").change(); 
+    $(this).find("input:radio").change();
   });
 
-	if(jQuery.browser.msie)	el.next().find("input").eq(0).bind("click", function(e) { changeVisualRadio(jQuery(this)) });	
+	if(jQuery.browser.msie)	el.next().find("input").eq(0).bind("click", function(e) { changeVisualRadio(jQuery(this)) });
 	else el.next().find("input").eq(0).bind("change", function(e) { changeVisualRadio(jQuery(this)) });
 	el.remove();
 }

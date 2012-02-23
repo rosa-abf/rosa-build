@@ -36,6 +36,7 @@ en:
       labels: Labels
       invalid_labels: Invalid hex color code
       new_label: New label name
+      update_label: Update label
       label_custom_color: Custom color
       label_manage: Manage
 
