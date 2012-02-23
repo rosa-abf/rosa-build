@@ -158,6 +158,21 @@ class Platform < ActiveRecord::Base
     end
   end
 
+  def build_all(user)
+    repositories.each do |r|
+      r.projects.find_in_batches(:batch_size => 5) do |group|
+        sleep 1
+        group.each do |p|
+          begin
+            p.build_for(self, user)
+          rescue RuntimeError, Exception
+            p.delay.build_for(self, user)
+          end
+        end
+      end
+    end
+  end
+
   def destroy
     with_skip {super} # avoid cascade XML RPC requests
   end
