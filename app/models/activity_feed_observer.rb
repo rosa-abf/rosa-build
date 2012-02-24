@@ -7,7 +7,7 @@ class ActivityFeedObserver < ActiveRecord::Observer
       ActivityFeed.create(
         :user => record,
         :kind => 'new_user_notification',
-        :date => {:user_name => record.name, :user_email => record.email, :password => user.password}
+        :data => {:user_name => record.name, :user_email => record.email}
       )
 
     when 'Issue'
@@ -52,6 +52,7 @@ class ActivityFeedObserver < ActiveRecord::Observer
           end
         end
       end
+    
     when 'GitHook'
       change_type = record.change_type
       branch_name = record.refname.match(/\/([\w\d]+)$/)[1]
@@ -79,6 +80,7 @@ class ActivityFeedObserver < ActiveRecord::Observer
           :data => options
         )
       end
+      
     when 'Gollum::Committer'
       actor = User.find_by_uname(record.actor.name)
       project_name = record.wiki.path.match(/\/(\w+)\.wiki\.git$/)[1]
