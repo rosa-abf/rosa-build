@@ -32,24 +32,30 @@ class ActivityFeedObserver < ActiveRecord::Observer
       end
 
     when 'Comment'
-      subscribes = record.commentable.subscribes
-      subscribes.each do |subscribe|
-        if record.user_id != subscribe.user_id
-          if record.reply? subscribe
-            UserMailer.delay.new_comment_reply_notification(record, subscribe.user) if record.can_notify_on_reply?(subscribe)
-            ActivityFeed.create(
-              :user => subscribe.user,
-              :kind => 'new_comment_reply_notification',
-              :data => {:user_name => subscribe.user.name, :comment_body => record.body, :issue_title => record.commentable.title, :issue_serial_id => record.commentable.serial_id, :project_id => record.commentable.project.id}
-            )
-          else
+      if record.commentable.class == Issue
+        subscribes = record.commentable.subscribes.finder_hack
+        subscribes.each do |subscribe|
+          if record.user_id != subscribe.user_id
             UserMailer.delay.new_comment_notification(record, subscribe.user) if record.can_notify_on_new_comment?(subscribe)
             ActivityFeed.create(
               :user => subscribe.user,
               :kind => 'new_comment_notification',
-              :data => {:user_name => subscribe.user.name, :comment_body => record.body, :issue_title => record.commentable.title, :issue_serial_id => record.commentable.serial_id, :project_id => record.commentable.project.id}
+              :data => {:user_name => subscribe.user.name, :comment_body => record.body, :issue_title => record.commentable.title,
+                                 :issue_serial_id => record.commentable.serial_id, :project_id => record.commentable.project.id}
             )
           end
+        end
+      elsif record.commentable.class == Grit::Commit
+        subscribes = Subscribe.comment_subscribes(record).where(:status => true)
+        subscribes.each do |subscribe|
+          next if record.own_comment?(subscribe.user)
+          UserMailer.delay.new_comment_notification(record, subscribe.user) if subscribe.user.notifier.can_notify
+            ActivityFeed.create(
+              :user => subscribe.user,
+              :kind => 'new_comment_commit_notification',
+              :data => {:user_name => subscribe.user.name, :comment_body => record.body, :commit_message => record.commentable.message.encode_to_default,
+                                 :commit_id => record.commentable.id, :project_id => record.project.id}
+            )
         end
       end
     

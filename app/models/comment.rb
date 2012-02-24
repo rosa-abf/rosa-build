@@ -10,7 +10,6 @@ class Comment < ActiveRecord::Base
   after_create :subscribe_on_reply, :unless => "commentable_type == 'Grit::Commit'"
   after_create :invoke_helper, :if => "commentable_type == 'Grit::Commit'"
   after_create :subscribe_users
-  after_create {|comment| Subscribe.new_comment_notification(comment)}
 
   def helper
     class_eval "def commentable; project.git_repository.commit('#{commentable_id}'); end" if commentable_type == 'Grit::Commit'
@@ -18,10 +17,6 @@ class Comment < ActiveRecord::Base
 
   def own_comment?(user)
     user_id == user.id
-  end
-
-  def reply?(subscribe)
-    self.commentable.comments.exists?(:user_id => subscribe.user.id)
   end
 
   def can_notify_on_reply?(subscribe)

@@ -6,8 +6,8 @@ ru:
 
   notifications:
     subjects:
-      new_comment_notification: Новый комментарий к Вашей задаче
-      new_comment_reply_notification: Новый комментарий к Вашей задаче
+      new_comment_notification: Новый комментарий к задаче
+      new_commit_comment_notification: Новый комментарий к коммиту
       new_issue_notification: Новая задача добавлена к проекту
       new_user_notification: Регистрация на проекте «%{ project_name }»
       issue_assign_notification: Вам назначили задачу
@@ -16,9 +16,7 @@ ru:
       new_comment_notification: 
         title: Здравствуйте, %{user_name}.
         content: К задаче %{issue_link} был добавлен новый комментарий.
-      new_comment_reply_notification:
-        title: Здравствуйте, %{user_name}.
-        content: На Ваш комментарий в задаче %{issue_link} был дан ответ.
+        commit_content: К коммиту %{commit_link} был добавлен новый комментарий.
       new_issue_notification: 
         title: Здравствуйте, %{user_name}.
         content: К проекту %{project_link} была добавлена задача %{issue_link}
@@ -30,5 +28,4 @@ ru:
       issue_assign_notification: 
         title: Здравствуйте, %{user_name}.
         content: Вам была назначена задача %{issue_link}
-      new_commit_comment_notification: Новый комментарий к коммиту
       invite_approve_notification: Приглашение в ABF

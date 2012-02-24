@@ -6,7 +6,8 @@ en:
 
   notifications:
     subjects:
-      new_comment_notification: New comment to your task
+      new_comment_notification: New comment to task
+      new_commit_comment_notification: New comment to commit
       new_issue_notification: New task added to project
       new_user_notification: Registered on project «%{ project_name }»
       issue_assign_notification: New task assigned
@@ -15,9 +16,7 @@ en:
       new_comment_notification: 
         title: Hello, %{user_name}.
         content: To the issue %{issue_link} added a comment.
-      new_comment_reply_notification:
-        title: Hello, %{user_name}.
-        content: Your comment into issue %{issue_link} has been answered.
+        commit_content: To the commit %{commit_link} added a comment.
       new_issue_notification: 
         title: Hello, %{user_name}.
         content: To project %{project_link} has been added an issue %{issue_link}
