@@ -1,29 +1,14 @@
-=# render :partial => 'gollum_includes'
-=# render :partial => 'project_short'
-= render :partial => 'projects/submenu'
-
+/ = render 'gollum_includes'
+/ = render 'project_short'
+= render 'projects/submenu'
 
 .desription-top
-  .img
-    = image_tag("code.png")
-  = render :partial => "git_access"
+  .img= image_tag("code.png")
+  = render "git_access"
   .both
-= render :partial => "git_access_message"
+= render "git_access_message"
 
 .both
 
--#.content
--#  #wiki-wrapper.inner.compare
--#    #head
--#      %h1.title
--#        = t("layout.wiki.wiki_git_access")
--#
--#    #wiki-content
--#      = render :partial => "git_access"
--#      %br
--#      = render :partial => "git_access_message"
-
 - content_for :sidebar do
-  - render :partial => 'sidebar'
-
-
+  - render 'sidebar'

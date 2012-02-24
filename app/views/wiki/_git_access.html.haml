@@ -1,6 +1,5 @@
 .name
-  = link_to t("layout.wiki.clones.http"), git_repo_url(@project.wiki_repo_name),
-            :'data-permissions' => (can? :write, @project) ? 'Read+Write' : 'Read'
+  = link_to t("wiki.clones.http"), git_repo_url(@project.wiki_repo_name), :'data-permissions' => (can? :write, @project) ? 'Read+Write' : 'Read'
   #url-field{:style => 'display: inline'}
 .role
 

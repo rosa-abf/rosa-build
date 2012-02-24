@@ -1,43 +1,11 @@
-=# render :partial => 'gollum_includes'
-=# render :partial => 'project_short'
-= render :partial => 'projects/submenu'
+/ = render 'gollum_includes'
+/ = render 'project_short'
+= render 'projects/submenu'
 
-.r
-  = link_to t("layout.wiki.compare_revisions"), "javascript:void(0);",
-            :class => "action-compare-revision button width100"
+.r= link_to t("wiki.compare_revisions"), "javascript:void(0);", :class => "action-compare-revision button width100"
 .both
-= render :partial => 'history'
+= render 'history'
 .both
 
 - content_for :sidebar do
-  - render :partial => 'sidebar'
-
-
--#  .content
--#    #wiki-wrapper.inner.history
--#      #head
--#        %h1.title
--#          - if @name
--#            = t("layout.wiki.history_for")
--#            %strong= @page.name
--#          - else
--#            = t("layout.wiki.wiki_history")
--#
--#        %ul.actions
--#          - if @name
--#            - if can? :read, @project
--#              %li.minibutton
--#                = link_to t("layout.wiki.view_page"), view_path(@project, escaped_name),
--#                          :class => 'action-view-page'
--#            - if can? :write, @project
--#              %li.minibutton
--#                = link_to t("layout.wiki.edit_page"), edit_project_wiki_path(@project, escaped_name),
--#                          :class => 'aciton-edit-page'
--#          - else
--#            - if can? :read, @project
--#              %li.minibutton
--#                = link_to t("layout.wiki.view_page"), project_wiki_index_path(@project)
--#        = render :partial => 'searchbar'
--#
--#      #wiki-content
--#        = render :partial => "history"
+  - render 'sidebar'
