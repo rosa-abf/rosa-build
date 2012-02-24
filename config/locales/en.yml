@@ -381,9 +381,6 @@ en:
           unlock: Do not receive unlock instructions?
           sign_in_through: Sign in by %{provider}
 
-      activity_feed:
-        header: Activity Feed
-
       downloads:
         title: Downloads statistic
         message: Automatically updated every 5 minutes
@@ -1134,4 +1131,3 @@ en:
           distro: Source
           platform: Platform
           counter: Downloads
-

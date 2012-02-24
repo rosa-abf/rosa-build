@@ -58,9 +58,6 @@ ru:
         unlock: Не получили инструкции по разблокировке?
         sign_in_through: Войти через %{provider}
 
-    activity_feed:
-      header: Лента активности
-
     downloads:
       title: Статистика закачек пакетов
       message: Обновляется автоматически каждые 24 часа
