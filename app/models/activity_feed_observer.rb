@@ -110,9 +110,4 @@ class ActivityFeedObserver < ActiveRecord::Observer
     end
   end
 
-  #def (partial_name, locals={})
-  #  @@stub_controller ||= StubController.new
-  #  @@stub_controller.partial_to_string('activity_feeds/partials/' + partial_name, locals)
-  #end
-
 end
