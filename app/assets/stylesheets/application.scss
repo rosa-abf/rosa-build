@@ -1,5 +1,7 @@
-//= require vendor
-
 //@import "vendor";
 @import "main";
 @import "custom";
+
+//= require main
+//= require vendor
+//= require custom

@@ -1,10 +1,6 @@
-var state = 0;
 
-function droplist() {
-	if (state == 0) {
-		$("#droplist").slideToggle("slow");
-		state = 1;
-	}
+var droplist = function() {
+    $user_menu.slideToggle("slow");
 }
 
 function loadMessages() {
@@ -15,15 +11,26 @@ function loadOldMessages() {
 	$("#old-messages").fadeIn("slow");
 }
 
+$(document).ready(function(){
+    $user_menu = $('#droplist');
+    $user_menu.die('click');
+
+    $('div.information > div.user').live('click', function() {
+        if ($user_menu.is(":hidden")) {
+            droplist();
+        }
+    });
+
+    $('div.information > div.profile > a').live('click', function(e) {
+        e.preventDefault();
+    });
+    
+});
  
-$(document).click(function() {
-	var dl = $("#droplist").css("height");
-	var dl2 = $("#droplist").css("display");
-	if ((dl2 == "block")&&(dl == "91px")) {
-		state = 0;
-		droplist();
-		state = 0;
-	}
+$(document).click(function(e) {
+    if (!$user_menu.is(":hidden") && ($(e.target).parent().attr('id') != $user_menu.attr('id'))) {
+        droplist();
+    }
 });
 
 function showActivity(elem) {
