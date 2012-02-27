@@ -38,20 +38,18 @@ $(document).ready(function() {
     });
   }
   
-  if ($('#wiki-wrapper').hasClass('history')) {
-    $('#wiki-history td.checkbox input').each(function() {
+  //if ($('#wiki-wrapper').hasClass('history')) {
+    $('tr.history td input').each(function() {
       $(this).click(highlightChecked);
       if ( $(this).is(':checked') ) {
         nodeSelector.checkNode($(this));
       }
     });
 
-    if ($('.history a.action-compare-revision').length) {
-      $('.history a.action-compare-revision').click(function() {
-        $("#version-form").submit();
-      });
-    }
-  }
+    $('a.action-compare-revision').click(function() {
+      $("#version-form").submit();
+    });
+  //}
   
 
   

@@ -1,7 +1,6 @@
 - act = action_name.intern
-.sub-menu
-  .left= @project.name
-  %nav
+%aside
+  .admin-preferences
     %ul
       %li{:class => ((act == :show and @name == 'Home') or act == :index) ? 'active' : ''}
         = link_to t("wiki.home"), project_wiki_index_path(@project)
@@ -11,3 +10,5 @@
         = link_to t("wiki.wiki_history"), history_project_wiki_index_path(@project)
       %li{:class => (act == :git) ? 'active' : ''}
         = link_to t("wiki.git_access"), git_project_wiki_index_path(@project)
+    %br
+    = render 'searchbar'

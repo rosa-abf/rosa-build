@@ -9,7 +9,7 @@
     = csrf_meta_tag
 
   %body
-    .wrap
+    .wrap{:class => content_for?(:sidebar) ? 'columns' : ''}
       %header
         .left
         .middle
@@ -20,9 +20,7 @@
             .search
               .pic
               .field
-                %input.gray{:onclick => "if(this.value=='#{t "layout.search"}'){this.value='';this.className='black';}",
-                :onblur => "if(this.value==''){this.value='#{t "layout.search"}';this.className='gray';}",
-                :type => "text", :value => "#{t "layout.search"}"}
+                %input.gray{:onclick => "if(this.value=='#{t "layout.search"}'){this.value='';this.className='black';}", :onblur => "if(this.value==''){this.value='#{t "layout.search"}';this.className='gray';}", :type => "text", :value => "#{t "layout.search"}"}
             .user
               .avatar= image_tag 'ava.png', :alt => 'avatar', :height => "30"
               .profile

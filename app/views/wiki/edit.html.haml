@@ -1,33 +1,27 @@
-= render :partial => 'gollum_includes'
-= render :partial => 'project_short'
+= render 'gollum_includes'
+/ = render 'project_short'
+= render 'projects/submenu'
 
-%a{ :name => "wiki"}
-.block
-  = render :partial => 'navigation'
+%h3.wiki
+  = t("wiki.editing_page")
+  %strong= @page.name
+- if can? :read, @project
+  .r= link_to t("wiki.view_page"), view_path(@project, escaped_name), :class => 'action-view-page button width100'
+  .r= link_to t("wiki.page_history"), history_project_wiki_path(@project, escaped_name), :class => 'aciton-view-history button width100'
 
-  .content
-    #wiki-wrapper.inner
-      #head
-        %h1.title
-          = t("layout.wiki.editing_page")
-          %strong= @page.name
+%br
+%br
+%br
 
-        %ul.actions
-          - if can? :read, @project
-            %li.minibutton
-              = link_to t("layout.wiki.view_page"), view_path(@project, escaped_name),
-                        :class => 'action-view-page'
-            %li.minibutton
-              = link_to t("layout.wiki.page_history"), history_project_wiki_path(@project, escaped_name),
-                        :class => 'aciton-view-history'
-
-      #wiki-content
-        = render :partial => "editor"
+#wiki-content= render "editor"
 
 :javascript
   jQuery(document).ready(function() {
     $.GollumEditor();
   });
 
+:css
+  #gollum-editor { width: 100%; }
+
 - content_for :sidebar do
-  - render :partial => 'projects/sidebar'
+  - render 'sidebar'
