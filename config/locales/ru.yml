@@ -748,6 +748,7 @@ ru:
       product_build_list:
         id: Id
         product: Продукт
+        container_path: Контейнер
         status: Статус
         notified_at: Информация получена
 
