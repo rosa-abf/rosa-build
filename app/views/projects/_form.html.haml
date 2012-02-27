@@ -10,6 +10,16 @@
 .rightlist
   = f.text_area :description, :class => 'text_field', :cols => 80
 .both
+- if ['new', 'create'].include? controller.action_name
+  .leftlist
+    = f.label :owner_id, t("activerecord.attributes.project.owner"), :class => :label
+  .rightlist
+    = label_tag t("activerecord.attributes.project.who_owns.me")
+    = radio_button_tag :who_owns, 'me'
+    = label_tag t("activerecord.attributes.project.who_owns.group")
+    = radio_button_tag :who_owns, 'group'
+    = select_tag :owner_id, options_for_select( Group.can_own_project(current_user) )
+  .both
 -#- if [:new, :create].include? act
 -#  .leftlist
 -#    = f.label :category_id, t("activerecord.attributes.project.category_id"), :class => :label

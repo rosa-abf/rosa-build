@@ -696,6 +696,9 @@ ru:
         has_issues: Включить трэкер
         has_wiki: Включить Wiki
         srpm: Импортировать код из src.rpm
+        who_owns:
+          me: Я
+          group: Группа
 
       rpm:
         name: Название
