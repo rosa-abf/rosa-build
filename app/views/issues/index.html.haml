@@ -1,5 +1,5 @@
 -render :partial => 'projects/submenu'
--render :partial => 'issues/sidebar'
+-render :partial => 'issues/index_sidebar'
 
 #closed-switcher.blue-switcher
   =hidden_field_tag :issues_status, @status, :id => 'issues_status'
@@ -18,3 +18,4 @@
         %th{:colspan => "2"}=t('layout.issues.description')
     %tbody
       = render :partial => 'issues/issue', :collection => @issues
+  = will_paginate @issues

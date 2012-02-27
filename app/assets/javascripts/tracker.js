@@ -13,7 +13,7 @@ $(document).ready(function() {
       $("#table1").fadeIn("slow");
       $('#issues_status').val('open');
     }
-    return send_request('GET');
+    return send_index_tracker_request('GET');
   });
 
   $("#manage-labels").live('click', function () {
@@ -43,23 +43,23 @@ $(document).ready(function() {
       $(this).css("color","#565657");
       checkbox.removeAttr('checked');
     }
-    return send_request('GET');
+    return send_index_tracker_request('GET');
   });
 
   $("#myradio1").live('change', function(event) {
-    return send_request('GET');
+    return send_index_tracker_request('GET');
   });
 
   $('#search_issue').live('submit', function() {
-    return send_request('GET', $(this).attr("action"), $(this).serialize());
+    return send_index_tracker_request('GET', $(this).attr("action"), $(this).serialize());
   });
 
   $('#add_label').live('click', function() {
-    return send_request('POST', $(this).attr("href"), $('#new_label').serialize());
+    return send_index_tracker_request('POST', $(this).attr("href"), $('#new_label').serialize());
   });
 
   $('.righter #update_label').live('click', function() {
-    return send_request('POST', $(this).attr("href"), $(this).parents('#update_label').serialize());
+    return send_index_tracker_request('POST', $(this).attr("href"), $(this).parents('#update_label').serialize());
   });
 
   $('.colors .choose').live('click', function() {
@@ -82,10 +82,10 @@ $(document).ready(function() {
   });
 
   $('.delete_label').live('click', function() {
-    return send_request('POST', $(this).attr('href'));
+    return send_index_tracker_request('POST', $(this).attr('href'));
   });
 
-  function send_request(type_request, url, data) {
+  function send_index_tracker_request(type_request, url, data) {
     data = data || '';
     var filter_form = $('#filter_issues');
     url = url || filter_form.attr("action");
@@ -105,5 +105,70 @@ $(document).ready(function() {
      });
     return false;
   };
+
+  $('#search_user, #search_labels').live('submit', function() {
+    var id = $(this).attr('id');
+    if(id.indexOf('user') != -1) { // FIXME
+      var which = 'users';
+    }
+    else if (id.indexOf('labels') != -1) {
+      var which = 'labels';
+    }
+    $.ajax({
+      type: 'GET',
+      url: $(this).attr("action"),
+      data: $(this).serialize(),
+      success: function(data){
+                  var tmp = $('#create_issue_'+ which +'_list');
+                 $('#create_issue_'+ which +'_list').html(data);
+               },
+      error: function(data){
+               alert('error') // TODO remove
+             }
+     });
+    return false;
+  });
+
+  function remExecutor(form) {
+    var el = form.find('.people.selected.remove_executor');
+    var id = el.attr('id');
+    $('#'+id+'.add_executor.people.selected').fadeIn('slow');
+    el.fadeOut('slow').remove();
+  }
+
+  $('.add_executor.people.selected').live('click', function() {
+    var form = $('.form.issue');
+    form.find('#people-span').fadeOut(0);
+    remExecutor(form);
+    form.find('#issue_executor').html($(this).clone().removeClass('add_executor').addClass('remove_executor'));
+    $(this).fadeOut(0);
+  });
+
+  $('.remove_executor.people.selected').live('click', function() {
+    var form = $('.form.issue');
+    form.find('#people-span').fadeIn(0);
+    remExecutor(form);
+  });
+
+  function remLabel(form, id) {
+    var el = form.find('.label.selected.remove_label'+'#'+id);
+    $('#'+id+'.add_label.label.selected').fadeIn('slow');
+    el.fadeOut('slow').remove();
+  }
+
+  $('.add_label.label.selected').live('click', function() {
+    var form = $('.form.issue');
+    form.find('#flag-span').fadeOut(0);
+    form.find('#issue_labels').append($(this).clone().removeClass('add_label').addClass('remove_label'));
+    $(this).fadeOut(0);
+  });
+
+  $('.remove_label.label.selected').live('click', function() {
+    var form = $('.form.issue');
+    if(form.find('.remove_label.label.selected').length == 1) {
+      form.find('#flag-span').fadeIn(0);
+    }
+    remLabel(form, $(this).attr('id'));
+  });
 
 });

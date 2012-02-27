@@ -1,0 +1,14 @@
+-content_for :sidebar do
+  .bordered.nopadding
+    %h3=t('layout.issues.executor')
+    =form_tag search_collaborators_project_issues_path(@project), :id => 'search_user', :method => :get do
+      =tracker_search_field(:search_user, t('layout.issues.search_user'))
+    #create_issue_users_list
+      =render 'issues/search_collaborators'
+
+  .block
+    %h3=t('layout.issues.labels')
+    =form_tag search_labels_project_issues_path(@project), :id => 'search_labels', :method => :get do
+      =tracker_search_field(:search_labels, t('layout.issues.search_labels'))
+    #create_issue_labels_list
+      =render 'issues/search_labels'

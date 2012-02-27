@@ -36,7 +36,7 @@
               .both
 
       =form_tag create_label_project_issues_path(@project), :id => 'new_label', :method => :post do
-        %input.gray{:name => 'name', :onClick => "if(this.value=='#{t('layout.issues.new_label')}'){this.value='';this.className='black';}", :onblur => "if(this.value==''){this.value='#{t('layout.issues.new_label')}';this.className='gray';}", :type => "text", :value => "#{t('layout.issues.new_label')}"}
+        =tracker_search_field(:name, t('layout.issues.new_label'))
         =render :partial => 'issues/colors_chooser'
         .lefter
           %a{:href => "#custom_color", :id => 'custom_color', :class => 'custom_color'}=t('layout.issues.label_custom_color')

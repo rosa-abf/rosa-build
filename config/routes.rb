@@ -119,7 +119,11 @@ Rosa::Application.routes.draw do
     resources :issues do
       resources :comments, :only => [:edit, :create, :update, :destroy]
       resources :subscribes, :only => [:create, :destroy]
-      post :create_label, :on => :collection
+      collection do
+        post :create_label
+        get :search_collaborators
+        get :search_labels
+      end
     end
     post "labels/:label_id" => "issues#destroy_label", :as => :issues_delete_label
     post "labels/:label_id/update" => "issues#update_label", :as => :issues_update_label

@@ -22,6 +22,9 @@ class Issue < ActiveRecord::Base
   after_update :deliver_issue_assign_notification
   after_update :subscribe_issue_assigned_user
 
+  attr_accessible :labelings_attributes, :title, :body, :project, :project_id
+  accepts_nested_attributes_for :labelings, :allow_destroy => true
+
   def assign_uname
     user.uname if user
   end

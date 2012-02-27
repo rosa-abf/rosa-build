@@ -1,12 +1,12 @@
 # -*- encoding : utf-8 -*-
 class IssuesController < ApplicationController
+  NON_RESTFUL_ACTION = [:create_label, :update_label, :destroy_label, :search_collaborators]
   before_filter :authenticate_user!
 
-  load_and_authorize_resource :project, :except => [:create_lable, :delete_label]
+  load_and_authorize_resource :project, :except => NON_RESTFUL_ACTION
   load_and_authorize_resource :issue, :through => :project, :find_by => :serial_id, :only => [:show, :edit, :update, :destroy]
-  before_filter :load_and_authorize_label, :only => [:create_label, :update_label, :destroy_label]
+  before_filter :load_and_authorize_label, :only => NON_RESTFUL_ACTION
 
-  autocomplete :user, :uname
   layout 'application'
 
   def index(status = 200)
@@ -18,11 +18,8 @@ class IssuesController < ApplicationController
     @issues = @issues.where(:user_id => current_user.id) if @is_assigned_to_me
     @issues = @issues.joins(:labels).where(:labels => {:name => @labels}) unless @labels == []
 
-    if params[:search]
-      @is_assigned_to_me = false
-      @status = 'open'
-      @labels = []
-      @issues = @project.issues.where('issues.title ILIKE ?', "%#{params[:search].mb_chars.downcase}%")
+    if params[:search_issue]
+      @issues = @issues.where('issues.title ILIKE ?', "%#{params[:search_issue].mb_chars.downcase}%")
     end
     @issues = @issues.includes(:creator, :user).order('serial_id desc').uniq.paginate :per_page => 10, :page => params[:page]
     if status == 200
@@ -41,6 +38,7 @@ class IssuesController < ApplicationController
     @user_uname = params[:user_uname]
 
     @issue = Issue.new(params[:issue])
+    @issue.creator_id = current_user.id
     @issue.user_id = @user_id
     @issue.project_id = @project.id
 
@@ -93,6 +91,19 @@ class IssuesController < ApplicationController
   def destroy_label
     status = (@label && @label_destroy) ? 200 : 500
     index(status)
+  end
+
+  def search_collaborators
+    search = "%#{params[:search_user]}%"
+    users = User.joins(:groups => :projects).where(:projects => {:id => @project.id}).where("users.uname ILIKE ?", search)
+    users2 = @project.collaborators.where("users.uname ILIKE ?", search)
+    @users = (users + users2).uniq.sort {|x,y| x.uname <=> y.uname}.first(10)
+    render 'issues/_search_collaborators', :layout => false
+  end
+
+  def search_labels
+    @labels = @project.labels.where("labels.name ILIKE ?", "%#{params[:search_labels]}%").order('labels.name').limit(10)
+    render 'issues/_search_labels', :layout => false
   end
 
   private

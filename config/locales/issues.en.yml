@@ -2,8 +2,8 @@ en:
   activerecord:
     attributes:
       issue:
-        title: Title
-        body: Content
+        title: Name
+        body: Description
         user: Assigned
         user_id: Assigned
         project: Project
@@ -22,7 +22,7 @@ en:
       list_header: List
       confirm_delete: Are you sure to delete this task?
       edit_header: Task edit
-      new_header: New task
+      create_header: Create task
       statuses:
         open: Opened
         closed: Closed
@@ -39,6 +39,11 @@ en:
       update_label: Update label
       label_custom_color: Custom color
       label_manage: Manage
+      executor: Executor
+      search_user: Search user...
+      search_labels: Search labels...
+      choose_user_on_left: Choose executor on the left
+      choose_labels_on_left: Choose labels on the left
 
   flash:
     issue:

@@ -2,8 +2,8 @@ ru:
   activerecord:
     attributes:
       issue:
-        title: Заголовок
-        body: Содержание
+        title: Название
+        body: Описание
         user: Назначена
         user_id: Назначена
         project: Проект
@@ -22,7 +22,7 @@ ru:
       list_header: Список
       confirm_delete: Вы уверены, что хотите удалить эту задачу?
       edit_header: Редактирование задачи
-      new_header: Новая задача
+      create_header: Создать задачу
       statuses:
         open: Открытые
         closed: Закрытые
@@ -32,13 +32,18 @@ ru:
       unsubscribe_btn: Отписаться
       number: Номер
       description: Описание
-      by:
+      by: ' '
       labels: Метки
       invalid_labels: Неверный hex код
       new_label: Название новой метки
       update_label: Обновить метку
       label_custom_color: Свой цвет
       label_manage: Управление
+      executor: Исполнитель
+      search_user: Найти пользователя...
+      search_labels: Найти метки...
+      choose_user_on_left: выберите исполнителя слева
+      choose_labels_on_left: выберите метки слева
 
   flash:
     issue:
