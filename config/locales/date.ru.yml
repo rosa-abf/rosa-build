@@ -1,0 +1,4 @@
+ru:
+  time:
+    formats:
+      date_block_format: "%d<br />%B"

@@ -198,7 +198,7 @@ Rosa::Application.routes.draw do
 
   # Editing files
   match '/projects/:project_id/git/blob/:treeish/*path/edit', :controller => "git/blobs", :action => :edit, :treeish => /[0-9a-zA-Z_.\-]*/, :defaults => { :treeish => :master }, :as => :edit_blob, :via => :get
-  match '/projects/:project_id/git/blob/:treeish/*path', :controller => "git/blobs", :action => :update, :treeish => /[0-9a-zA-Z_.\-]*/, :defaults => { :treeish => :master }, :via => :put
+  match '/projects/:project_id/git/blob/:treeish/*path', :controller => "git/blobs", :action => :update, :treeish => /[0-9a-zA-Z_.\-]*/, :defaults => { :treeish => :master }, :via => :put, :format => false
 
   # Blobs
   match '/projects/:project_id/git/blob/:treeish/*path', :controller => "git/blobs", :action => :show, :treeish => /[0-9a-zA-Z_.\-]*/, :defaults => { :treeish => :master }, :as => :blob, :via => :get, :format => false

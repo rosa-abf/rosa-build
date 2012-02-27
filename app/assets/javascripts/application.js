@@ -4,6 +4,7 @@
 //= require autocomplete-rails
 //= require vendor
 //= require_tree .
+//
 // require_self
 
 // function disableNotifierCbx(global_cbx) {

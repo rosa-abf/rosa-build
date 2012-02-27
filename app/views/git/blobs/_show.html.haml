@@ -26,15 +26,12 @@
               <center> <img src='?raw=true'/></center>
               <br/>
     - when :text
-      %table.table.blob
-        %tr
-          %td.lines
-            :plain
-              <pre>#{render_line_numbers(text.length)}</pre>
-          %td.blob
-            %pre{:class => "brush: #{@blob.mime_type.split('/').last}"}
-              =#{render_blob(@blob)}
-              = @blob.data.encode_to_default.html_safe
+      .gutter-new
+        :plain
+          <pre>#{render_line_numbers(text.length)}</pre>
+      %pre{:class => "brush: #{@blob.mime_type.split('/').last}"}
+        =#{render_blob(@blob)}
+        = @blob.data.encode_to_default.html_safe
     - when :binary
       %table.table.blob
         %tr

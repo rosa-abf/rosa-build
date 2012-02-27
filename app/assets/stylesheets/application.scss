@@ -1,9 +1,30 @@
-//@import "vendor";
+@import "vendor";
 @import "main";
 @import "custom";
 @import "blue/style";
+@import "hl/my";
+@import "hl/shCore";
+//@import "hl/shCoreDefault";
+//@import "hl/shCoreDjango";
+@import "hl/shCoreEclipse";
+//@import "hl/shCoreEmacs";
+//@import "hl/shCoreFadeToGrey";
+//@import "hl/shCoreMDUltra";
+//@import "hl/shCoreMidnight";
+//@import "hl/shCoreRDark";
+//@import "hl/shThemeDefault";
+//@import "hl/shThemeDjango";
+@import "hl/shThemeEclipse";
+//@import "hl/shThemeEmacs";
+//@import "hl/shThemeFadeToGrey";
+//@import "hl/shThemeMDUltra";
+//@import "hl/shThemeMidnight";
+//@import "hl/shThemeRDark";
 
-//= require main
-//= require blue/style
-//= require vendor
-//= require custom
+/*
+*= require main
+*= require blue/style
+*= require_tree hl/
+*= require vendor
+*= require custom
+*/

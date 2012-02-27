@@ -50,8 +50,12 @@ class GitPresenters::CommitAsMessagePresenter < ApplicationPresenter
 
     def prepare_message
       (@caption, @content) = @commit.message.encode_to_default.split("\n\n", 2)
+      @caption = 'empty message' unless @caption.present?
+      puts @caption.inspect
+      puts @content.inspect
       if @caption.length > 72
-        @content = '...' + @caption[69..-1] + @content
+        tmp = '...' + @caption[69..-1]
+        @content = (@content.present?) ? tmp + @content : tmp
         @caption = @caption[0..68] + '...'
       end
       @content = @content.gsub("\n", "<br />").html_safe if @content

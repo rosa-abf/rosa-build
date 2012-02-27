@@ -1,20 +1,21 @@
-.block
-  = render :partial => "git/shared/navigation"
-
-  = render :partial => "git/shared/info"
-
-- if @commit
-  .block
-    .content
-      .inner
-        = render :partial => "git/commits/commits", :object => [@commit]
-
-.block
-  .content
-    .inner
-      %h3 #{render_path} (#{@blob.mime_type})
-
-      = render :partial => 'editor'
-
-- content_for :sidebar, render(:partial => 'git/shared/sidebar')
-
+= render :partial => "git/blobs/editor", :layout => 'projects/show'
+-#.block
+-#  = render :partial => "git/shared/navigation"
+-#
+-#  = render :partial => "git/shared/info"
+-#
+-#- if @commit
+-#  .block
+-#    .content
+-#      .inner
+-#        = render :partial => "git/commits/commits", :object => [@commit]
+-#
+-#.block
+-#  .content
+-#    .inner
+-#      %h3 #{render_path} (#{@blob.mime_type})
+-#
+-#      = render :partial => 'editor'
+-#
+-#- content_for :sidebar, render(:partial => 'git/shared/sidebar')
+-#

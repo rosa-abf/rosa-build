@@ -5,14 +5,8 @@
       :type => 'text',:spellcheck => 'false', :disabled => 'disabled'
   .role
     чтение и запись
-  .lineForm.fork
-    = form_tag project_path(project), :id => 'branch_changer' do
-      = select_tag :branch,
-        options_from_collection_for_select(project.branches, :name, :name, @branch.name),
-        :class => 'sel80', :id => 'branch_selector'
-  .fork
-    %p= t('layout.projects.current_branch')+':'
-  .both
+  = render :partial => 'projects/branch_select', :locals => {:project => project}
+.both
 
 :javascript
   $(document).ready(function() {

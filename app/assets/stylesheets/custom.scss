@@ -12,8 +12,8 @@ header menu ul li a {
     padding: 15px 8px 15px 8px;
 }
 
-div.description-top div.name {
-    width: 300px;
+div.description-top input.name {
+    width: 350px;
     padding: 0;
 }
 
@@ -28,6 +28,11 @@ article div.activity {
     color: #333333;
     margin-top: 15px;
     padding: 6px;
+}
+
+article div.messages div.activity {
+    margin-top: 0;
+    margin-bottom: 10px;
 }
 
 article div.activity .top div.image {
@@ -92,4 +97,26 @@ table.blob td.lines pre {
     color: #AAAAAA;
     padding: 10px;
     text-align: right;
+}
+
+textarea#code {
+    width: 845px;
+    resize: none;
+    height: 30em;
+}
+
+article div.date-block {
+    margin-bottom: 30px;
+}
+
+article div.year {
+    margin-top: 0;
+}
+
+article h3 {
+    margin-bottom: 10px;
+}
+
+article div.date-block div.date {
+    height: 52px;
 }

@@ -1,4 +1,18 @@
-#gollum-editor.edit{:'data-escaped-name' => @path.encode_to_default}
+= form_tag blob_file_path, :name => 'blob-editor', :method => :put do
+  .file
+    = text_area_tag :content, @blob.data.encode_to_default, :id => 'code'
+
+  .both
+  = t("enter_commit_message")
+  = text_area_tag :message, '', :class => 'commit-message'
+
+  %br
+  %br
+  = submit_tag t("layout.save"), :title => t("layout.save")
+  = t("layout.or")
+  = link_to t("layout.cancel"), blob_file_path, :class => 'button'
+
+-##gollum-editor.edit{:'data-escaped-name' => @path.encode_to_default}
   = form_tag blob_file_path, :name => 'blob-editor', :method => :put do
     %fieldset#gollum-editor-fields
 
@@ -16,11 +30,5 @@
 
 :javascript
   $(function() {
-    $.BlobEditor();
+    var editor = CodeMirror.fromTextArea(document.getElementById('code'), {lineNumbers: true, mode: '#{@blob.mime_type}', theme: 'eclipse'});
   });
-
-- content_for :javascripts do
-  = javascript_include_tag 'gollum/gollum.placeholder.js', 'blob.editor.js'
-
-- content_for :stylesheets do
-  = stylesheet_link_tag 'gollum/editor.css'

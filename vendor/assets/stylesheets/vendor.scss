@@ -1,4 +1,9 @@
 //= require_tree ./hl
+/*
+*= require codemirror
+*= require codemirror/themes/night
+*/
+
 
 @import "tablesorter";
 @import "cusel";
@@ -8,3 +13,7 @@
 @import "gollum/ie7";
 @import "gollum/template";
 @import "gollum/editor";
+
+
+@import "codemirror";
+@import "codemirror/themes/eclipse";

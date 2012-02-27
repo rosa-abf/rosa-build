@@ -57,8 +57,11 @@ class Git::BlobsController < Git::BaseController
 
     def set_path_blob
       @path = params[:path]
+      @unenc_path = @path.dup
       @path.force_encoding(Encoding::ASCII_8BIT)
+      puts @path.inspect
       @blob = @tree / @path
+      puts @blob.inspect
     end
 
     def set_commit_hash
@@ -75,5 +78,7 @@ class Git::BlobsController < Git::BaseController
         @tree = @git_repository.tree(@treeish)
         @commit = @git_repository.log(@treeish, @path, :max_count => 1).first # TODO WTF nil ?
       end
+      puts @tree.inspect
+      puts @commit.inspect
     end
 end
