@@ -57,6 +57,9 @@ Rosa::Application.configure do
 
   # Generate digests for assets URLs
   config.assets.digest = true
+
+  # Precompile additional assets (application.js, application.css, and all non-JS/CSS are already added)
+  config.assets.precompile += %w()
 end
 
 # require 'stub_xml_rpc'

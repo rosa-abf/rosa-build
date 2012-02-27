@@ -46,12 +46,9 @@ $(document).ready(function() {
       }
     });
 
-    // ATTENTION: santaux edited these lines
-    if ($('a.action-compare-revision').length) {
-      $('a.action-compare-revision').click(function() {
-        $("#version-form").submit();
-      });
-    }
+    $('a.action-compare-revision').click(function() {
+      $("#version-form").submit();
+    });
   //}
   
 
