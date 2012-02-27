@@ -81,7 +81,8 @@ class Ability
         can :read, Product, :platform => {:owner_type => 'Group', :owner_id => user.group_ids}
         can(:manage, Product, read_relations_for('products', 'platforms')) {|product| local_admin? product.platform}
         can(:create, ProductBuildList) {|pbl| pbl.product.can_build? and can?(:update, pbl.product)}
-
+        can(:destroy, ProductBuildList) {|pbl| can?(:destroy, pbl.product)}
+        
         can [:read, :platforms], Category
 
         can [:read, :create], PrivateUser, :platform => {:owner_type => 'User', :owner_id => user.id}

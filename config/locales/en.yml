@@ -431,6 +431,8 @@ en:
         project_versions: Versions
 
     product_build_lists:
+      delete: Delete
+      action: Action
       statuses:
         '0': 'build'
         '1': 'build error'
@@ -574,6 +576,7 @@ en:
       save_error: Product saves error
       build_started: Product build started
       destroyed: Product deleted
+      build_list_delete: Product build list deleted
 
     platform:
       saved: Platform saved

@@ -298,6 +298,8 @@ ru:
         project_versions: Версии
 
     product_build_lists:
+      delete: Удалить
+      action: Действие
       statuses:
         '0': 'собран'
         '1': 'ошибка сборки'
@@ -446,6 +448,7 @@ ru:
       save_error: Не удалось сохранить изменения
       build_started: Запущена сборка продукта
       destroyed: Продукт удален
+      build_list_delete: Сборочный лист продукта удален
 
     platform:
       saved: Платформа успешно добавлена

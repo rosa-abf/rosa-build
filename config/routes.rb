@@ -86,7 +86,7 @@ Rosa::Application.routes.draw do
       #   get :clone
       #   get :build
       # end
-      resources :product_build_lists, :only => [:create]
+      resources :product_build_lists, :only => [:create, :destroy]
     end
 
     resources :repositories
