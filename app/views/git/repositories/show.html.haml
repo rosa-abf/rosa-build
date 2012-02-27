@@ -32,9 +32,9 @@
           %tr{ :class => cycle("even", "odd")}
             %td.icon
               - if entry.is_a?(Grit::Blob)
-                = image_tag("git/icons/text_document_16.png")
+                = image_tag("code.png")
               - else
-                = image_tag("git/icons/folder_16.png")
+                = image_tag("folder.png")
             %td.tree_element
               - entry_path = File.join([@path.present? ? @path.encode_to_default : nil, entry.name.encode_to_default].compact)
               - if entry.is_a?(Grit::Blob)
