@@ -10,6 +10,3 @@ while read oldrev newrev ref
 do
   newrev_type=$(git cat-file -t $newrev 2> /dev/null)
   oldrev_type=$(git cat-file -t "$oldrev" 2> /dev/null)
-
-  /bin/bash -l -c "cd /srv/rosa_build/current && bundle exec rails runner 'Project.delay.process_hook(\"$owner\", \"$reponame\", \"$newrev\", \"$oldrev\", \"$ref\", \"$newrev_type\", \"$oldrev_type\")'"
-done

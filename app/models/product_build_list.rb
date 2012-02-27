@@ -15,6 +15,10 @@ class ProductBuildList < ActiveRecord::Base
 
   after_create :xml_rpc_create
 
+  def container_path
+    "/downloads/#{product.platform.name}/product/#{id}/"
+  end
+
   def human_status
     I18n.t("layout.product_build_lists.statuses.#{status}")
   end

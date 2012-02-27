@@ -11,7 +11,11 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
+<<<<<<< HEAD
 ActiveRecord::Schema.define(:version => 20120214021626) do
+=======
+ActiveRecord::Schema.define(:version => 20120220185458) do
+>>>>>>> master
 
   create_table "arches", :force => true do |t|
     t.string   "name",       :null => false
@@ -295,8 +299,6 @@ ActiveRecord::Schema.define(:version => 20120214021626) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "name",        :null => false
-    t.integer  "owner_id"
-    t.string   "owner_type"
   end
 
   create_table "rpms", :force => true do |t|

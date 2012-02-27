@@ -278,24 +278,19 @@ describe CanCan do
 
       context 'with owner rights' do
         before(:each) do
-          @repository.update_attribute(:owner, @user)
+          @repository.platform.update_attribute(:owner, @user)
         end
 
-        [:read, :update, :destroy, :add_project, :remove_project, :change_visibility, :settings].each do |action|
+        [:read, :create, :update, :destroy, :add_project, :remove_project, :change_visibility, :settings].each do |action|
           it "should be able to #{action} repository" do
             @ability.should be_able_to(action, @repository)
           end
-        end
-
-        it do
-          @repository.platform.update_attribute(:owner, @user)
-          @ability.should be_able_to(:create, @repository)
         end
       end
 
       context 'with read rights' do
         before(:each) do
-          @repository.relations.create!(:object_id => @user.id, :object_type => 'User', :role => 'reader')
+          @repository.platform.relations.create!(:object_id => @user.id, :object_type => 'User', :role => 'reader')
         end
 
         it "should be able to read repository" do

@@ -72,7 +72,7 @@ Rosa::Application.routes.draw do
       post 'freeze'
       post 'unfreeze'
       get 'clone'
-      post 'clone'
+      post 'make_clone'
       post 'build_all'
     end
 
