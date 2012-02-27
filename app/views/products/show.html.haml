@@ -43,7 +43,8 @@
           %th.first= t("activerecord.attributes.product_build_list.id")
           %th= t("activerecord.attributes.product_build_list.product")
           %th= t("activerecord.attributes.product_build_list.container_path")
-          %th= t("activerecord.attributes.product_build_list.status")
+          %th= t("activerecord.attributes.product_build_list.status")  
+          %th= t("layout.product_build_lists.action")
           %th.last= t("activerecord.attributes.product_build_list.notified_at")
         = render @product.product_build_lists.default_order
       / = will_paginate build_lists
