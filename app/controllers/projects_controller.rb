@@ -42,8 +42,8 @@ class ProjectsController < ApplicationController
 
   def create
     @project = Project.new params[:project]
-    @project.owner = get_owner
-#    puts @project.owner.inspect
+    #@project.owner = get_owner
+    @project.owner = choose_owner
 
     if @project.save
       flash[:notice] = t('flash.project.saved') 
@@ -115,5 +115,13 @@ class ProjectsController < ApplicationController
 
     def find_project
       @project = Project.find params[:id]
+    end
+
+    def choose_owner
+      if params[:who_owns] == 'group'
+        Group.find(params[:owner_id])
+      else
+        current_user
+      end
     end
 end

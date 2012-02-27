@@ -834,6 +834,9 @@ en:
         has_issues: Tracker on
         has_wiki:  Wiki on
         srpm: Import code from src.rpm
+        who_owns:
+          me: I
+          group: Group
 
       rpm:
         name: Name

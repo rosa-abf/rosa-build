@@ -17,6 +17,9 @@ class Group < ActiveRecord::Base
   validates :uname, :presence => true, :uniqueness => {:case_sensitive => false}, :format => { :with => /^[a-z0-9_]+$/ }
   validate { errors.add(:uname, :taken) if User.where('uname LIKE ?', uname).present? }
 
+  scope :by_owner, lambda { |owner| where(:owner_id => owner.id) }
+  scope :by_admin, lambda { |admin| joins(:relations).where(:'relations.role' => 'admin', :'relations.target_id' => admin.id, :'relations.target_type' => 'User') }
+
   attr_readonly :uname, :own_projects_count
 
   delegate :ssh_key, :email, :to => :owner
@@ -25,6 +28,10 @@ class Group < ActiveRecord::Base
 
   include Modules::Models::PersonalRepository
 #  include Modules::Models::Owner
+
+  def self.can_own_project(user)
+    (by_owner(user) | by_admin(user)).collect { |el| [el.name, el.id] }
+  end
 
   protected
     def add_owner_to_members

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120220131333) do
+ActiveRecord::Schema.define(:version => 20120224122738) do
 
   create_table "activity_feeds", :force => true do |t|
     t.integer  "user_id",    :null => false
@@ -268,6 +268,7 @@ ActiveRecord::Schema.define(:version => 20120220131333) do
     t.integer  "srpm_file_size"
     t.datetime "srpm_updated_at"
     t.string   "default_branch",    :default => "master"
+    t.boolean  "is_rpm",            :default => true
   end
 
   create_table "register_requests", :force => true do |t|

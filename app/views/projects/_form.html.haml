@@ -1,4 +1,4 @@
-= act = controller.action_name.to_sym
+- act = controller.action_name.to_sym
 - if [:new, :create].include? act
   .leftlist
     = f.label :name, t("activerecord.attributes.project.name"), :class => :label
@@ -10,12 +10,22 @@
 .rightlist
   = f.text_area :description, :class => 'text_field', :cols => 80
 .both
-- if [:new, :create].include? act
+- if ['new', 'create'].include? controller.action_name
   .leftlist
-    = f.label :category_id, t("activerecord.attributes.project.category_id"), :class => :label
+    = f.label :owner_id, t("activerecord.attributes.project.owner"), :class => :label
   .rightlist
-    = f.grouped_collection_select :category_id, Category.roots, :children, :name, :id, :name, :include_blank => true
+    = label_tag t("activerecord.attributes.project.who_owns.me")
+    = radio_button_tag :who_owns, 'me'
+    = label_tag t("activerecord.attributes.project.who_owns.group")
+    = radio_button_tag :who_owns, 'group'
+    = select_tag :owner_id, options_for_select( Group.can_own_project(current_user) )
   .both
+-#- if [:new, :create].include? act
+-#  .leftlist
+-#    = f.label :category_id, t("activerecord.attributes.project.category_id"), :class => :label
+-#  .rightlist
+-#    = f.grouped_collection_select :category_id, Category.roots, :children, :name, :id, :name, :include_blank => true
+-#  .both
 .leftlist
   = f.label :visibility, t("activerecord.attributes.project.visibility"), :class => :label
 .rightlist
@@ -29,30 +39,33 @@
       = image_tag("lock.png")
     = t("activerecord.attributes.project.visibilities.#{visibility}")
 .both
-.leftlist
-  Ветка по умолчанию:
-.rightlist
-  = f.select :default_branch, options_from_collection_for_select(@project.branches, :name, :name, @project.default_branch), :class => 'sel80', :id => 'branch_selector'
-  -#.lineForm
-  -#  #cuselFrame-ext.cusel.sel80{:style => "width:200px", :tabindex => "2"}
-  -#    .cuselFrameRight
-  -#    .cuselText Master
-  -#    .cusel-scroll-wrap{:style => "display: none; visibility: visible; "}
-  -#      #cusel-scroll-ext.cusel-scroll-pane
-  -#        %span.cuselActive{:selected => "selected", :val => "1000"} Master
-  -#        %span{:val => "1"} Extend
-  -#        %span{:val => "2"} Fork4Driver
-  -#    %input#ext{:name => "ext", :type => "hidden", :value => "1000"}/
-.both
-.leftlist
-  \ 
-.rightlist
-  .check
-    %span#niceCheckbox1.niceCheck-main{:onclick => "changeCheck(this)"}
-      %input{:name => "ch1", :type => "checkbox"}/
-  .forcheck
-    Проект является пакетом
+- if [:edit, :update].include? act
+  .leftlist
+    Ветка по умолчанию:
+  .rightlist
+    = f.select :default_branch, options_from_collection_for_select(@project.branches, :name, :name, @project.default_branch), :class => 'sel80', :id => 'branch_selector'
+    -#.lineForm
+    -#  #cuselFrame-ext.cusel.sel80{:style => "width:200px", :tabindex => "2"}
+    -#    .cuselFrameRight
+    -#    .cuselText Master
+    -#    .cusel-scroll-wrap{:style => "display: none; visibility: visible; "}
+    -#      #cusel-scroll-ext.cusel-scroll-pane
+    -#        %span.cuselActive{:selected => "selected", :val => "1000"} Master
+    -#        %span{:val => "1"} Extend
+    -#        %span{:val => "2"} Fork4Driver
+    -#    %input#ext{:name => "ext", :type => "hidden", :value => "1000"}/
   .both
+- if [:edit, :update].include? act
+  .leftlist
+    \ 
+  .rightlist
+    .check
+      -#%span#niceCheckbox1.niceCheck-main{:onclick => "changeCheck(this)"}
+      -#  %input{:name => "ch1", :type => "checkbox"}/
+      = f.check_box :is_rpm, :class => 'niceCheck-main'
+    .forcheck
+      Проект является пакетом
+    .both
 .both
 - if [:new, :create].include? act
   .leftlist
@@ -65,12 +78,6 @@
 .rightlist
   -#%a.button{:href => "#"} Сохранить
   = submit_tag t("layout.save"), :class => 'button'
-.both
-.hr
-.leftside
-  = t("layout.projects.delete_warning")
-.rightside
-  = link_to t("layout.delete"), project_path(@project), :method => :delete, :confirm => t("layout.projects.confirm_delete"), :class => 'button' if can? :destroy, @project
 .both
 
 
