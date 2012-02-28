@@ -6,9 +6,10 @@ class Comment < ActiveRecord::Base
 
   validates :body, :user_id, :commentable_id, :commentable_type, :presence => true
 
+  # FIXME
+  after_create :subscribe_on_reply, :unless => "commentable_type == 'Grit::Commit'"
   after_create :invoke_helper, :if => "commentable_type == 'Grit::Commit'"
   after_create :subscribe_users
-  after_create {|comment| Subscribe.new_comment_notification(comment)}
 
   def helper
     class_eval "def commentable; project.git_repository.commit('#{commentable_id}'); end" if commentable_type == 'Grit::Commit'
@@ -18,7 +19,19 @@ class Comment < ActiveRecord::Base
     user_id == user.id
   end
 
+  def can_notify_on_reply?(subscribe)
+    User.find(subscribe.user).notifier.new_comment_reply && User.find(subscribe.user).notifier.can_notify
+  end
+
+  def can_notify_on_new_comment?(subscribe)
+    User.find(subscribe.user).notifier.new_comment && User.find(subscribe.user).notifier.can_notify
+  end
+
   protected
+
+  def subscribe_on_reply
+    self.commentable.subscribes.create(:user_id => self.user_id) if !self.commentable.subscribes.exists?(:user_id => self.user_id)
+  end
 
   def invoke_helper
     self.helper

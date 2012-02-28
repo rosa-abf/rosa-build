@@ -163,7 +163,13 @@ class Project < ActiveRecord::Base
 
   def self.process_hook(owner_uname, repo, newrev, oldrev, ref, newrev_type, oldrev_type)
     rec = GitHook.new(owner_uname, repo, newrev, oldrev, ref, newrev_type, oldrev_type)
-    #ActivityFeedObserver.instance.after_create rec # for example
+    ActivityFeedObserver.instance.after_create rec
+  end
+
+  def owner_and_admin_ids
+    recipients = self.relations.by_role('admin').where(:object_type => 'User').map { |rel| rel.read_attribute(:object_id) }
+    recipients = recipients | [self.owner_id] if self.owner_type == 'User'
+    recipients
   end
 
   protected
