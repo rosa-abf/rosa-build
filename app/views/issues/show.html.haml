@@ -25,6 +25,7 @@
     .rightlist= f.text_area :body
     .both
     =f.submit t('layout.update'), :id => 'update_issue_content'
+    =link_to t('layout.issues.cancel_button'), '#', :id => 'cancel_edit_issue_content', :class => 'button'
 .hr
 
 =render :partial => 'issues/status'

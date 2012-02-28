@@ -206,8 +206,13 @@ $(document).ready(function() {
   });
 
   $('#edit_issue_content').live('click', function() {
-    $('.edit_form.issue').fadeIn('slow');
-    $(this).fadeOut('slow');
+    $('.edit_form.issue').fadeIn('fast');
+    $(this).fadeOut('fast');
+  });
+
+  $('#cancel_edit_issue_content').live('click', function() {
+    $('.edit_form.issue').fadeOut('fast');
+    $('#edit_issue_content').fadeIn('fast');
   });
 
   $('.edit_form.issue').live('submit', function() {

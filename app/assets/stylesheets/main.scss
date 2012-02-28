@@ -3,7 +3,7 @@ html, body {
   padding: 0;
   font-family: Tahoma, Geneva, Helvetica, sans-serif;
   color: #565657;
-  background: #1f60a1 url("../pics/bg.png") repeat-x;
+  background: #1f60a1 image-url("bg.png") repeat-x;
   min-width: 940px;
   min-height: 600px;
   text-align: center;
@@ -33,7 +33,7 @@ a img {
   background: #FFF;
   min-height: 92%;
   &.columns {
-    background: white url("../pics/page-bg.png") repeat-y; } }
+    background: white image-url("page-bg.png") repeat-y; } }
 
 .both {
   clear: both; }
@@ -48,17 +48,17 @@ header {
   z-index: 1000;
   div {
     &.left {
-      background: url("../pics/top-left.png");
+      background: image-url("top-left.png");
       height: 46px;
       width: 14px;
       float: left; }
     &.middle {
-      background: url("../pics/top-middle.png");
+      background: image-url("top-middle.png");
       float: left;
       height: 46px;
       width: 912px; }
     &.right {
-      background: url("../pics/top-right.png");
+      background: image-url("top-right.png");
       height: 46px;
       width: 14px;
       float: right; } }
@@ -83,7 +83,7 @@ header {
           &.first {
             padding-left: 45px; }
           &.active {
-            background: url("../pics/menu-hover.png") repeat-x; } } } } }
+            background: image-url("menu-hover.png") repeat-x; } } } } }
   div {
     &.logo {
       float: left;
@@ -105,7 +105,7 @@ header {
       border: 1px solid #7691aa;
       div {
         &.pic {
-          background: url("../pics/search-button.png");
+          background: image-url("search-button.png");
           height: 22px;
           width: 24px;
           float: left; }
@@ -129,7 +129,7 @@ header {
       padding: 6px 10px 10px 10px; }
     &.information div {
       &.active {
-        background: url("../pics/menu-hover.png") repeat-x; }
+        background: image-url("menu-hover.png") repeat-x; }
       &.user {
         float: left;
         margin-left: 14px; } }
@@ -148,7 +148,7 @@ header {
     &.droplist-wrap {
       margin: -4px 0px 0px 0px; }
     &.droplist {
-      background: url("../pics/bg-droplist.png") repeat-x;
+      background: image-url("bg-droplist.png") repeat-x;
       height: 91px;
       width: 151px;
       -webkit-box-shadow: 0px 2px 4px 0px rgba(0, 0, 0, 0.5);
@@ -222,7 +222,7 @@ header {
           height: 34px;
           padding: 0px 20px 6px 20px;
           &.active {
-            background: url("../pics/submenu-hover.png") repeat-x; }
+            background: image-url("submenu-hover.png") repeat-x; }
           &:hover {
             color: #2b6daf; } } } } } }
 
@@ -304,9 +304,9 @@ div {
     margin: 3px 0px 0px 3px;
     cursor: pointer; }
   &.expand-gray-down {
-    background: url("../pics/expand-gray.png") no-repeat; }
+    background: image-url("expand-gray.png") no-repeat; }
   &.expand-gray-up {
-    background: url("../pics/expand-gray2.png") no-repeat; } }
+    background: image-url("expand-gray2.png") no-repeat; } }
 
 article {
   a {
@@ -682,7 +682,7 @@ article input {
   height: 17px;
   display: inline-block;
   cursor: pointer;
-  background: url("../pics/radio.png");
+  background: image-url("radio.png");
   overflow: hidden; }
 
 .radioChecked {
@@ -706,7 +706,7 @@ article input {
   height: 17px;
   display: inline-block;
   cursor: pointer;
-  background: url("../pics/checkbox.png");
+  background: image-url("checkbox.png");
   input {
     display: none; } }
 
@@ -715,7 +715,7 @@ article input {
   height: 18px;
   display: inline-block;
   cursor: pointer;
-  background: url("../pics/checkbox-main.png");
+  background: image-url("checkbox-main.png");
   input {
     display: none; } }
 
@@ -965,18 +965,18 @@ aside div {
   &.switcher {
     height: 23px;
     width: 194px;
-    background: url("../pics/switch-on.png");
+    background: image-url("switch-on.png");
     color: #FFF;
     font-size: 12px;
     cursor: pointer; }
   &.switcher-off {
     height: 23px;
     width: 194px;
-    background: url("../pics/switch-on.png");
+    background: image-url("switch-on.png");
     color: #FFF;
     font-size: 12px;
     cursor: pointer;
-    background: url("../pics/switch-off.png"); }
+    background: image-url("switch-off.png"); }
   &.switcher div.swleft, &.switcher-off div.swleft {
     float: left;
     width: 96px;
@@ -1415,7 +1415,7 @@ aside div {
         width: 14px;
         padding: 4px;
         &.selected, &:hover {
-          background: url("../pics/choose.png") no-repeat 50% 50%;
+          background: image-url("choose.png") no-repeat 50% 50%;
           height: 14px;
           width: 14px;
           padding: 4px; } } } }
@@ -1514,7 +1514,7 @@ div {
     float: left;
     width: 369px;
     height: 59px;
-    background: url("../pics/error-groups.png");
+    background: image-url("error-groups.png");
     margin: 0px 0px 5px -3px;
     text-align: center;
     p {
@@ -1652,7 +1652,7 @@ div.pagination {
 /*404*/
 
 article div.all.error404 {
-  background: url("../pics/404.png") no-repeat 59% 0;
+  background: image-url("404.png") no-repeat 59% 0;
   height: 500px;
   text-align: center;
   h1 {

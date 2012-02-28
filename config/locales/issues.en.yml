@@ -48,6 +48,7 @@ en:
       choose_user_on_left: Choose executor on the left
       choose_labels_on_left: Choose labels on the left
       at: at
+      cancel_button: Cancel
 
   flash:
     issue:
