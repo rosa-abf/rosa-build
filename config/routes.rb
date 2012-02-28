@@ -139,10 +139,11 @@ Rosa::Application.routes.draw do
     member do
       post :fork
       get 'show', :controller => 'git/trees', :action => :show, :as => :show
+      get :sections
+      post :sections
     end
     collection do
       get :auto_build
-      get :settings
     end
   end
 

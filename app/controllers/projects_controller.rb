@@ -5,7 +5,7 @@ class ProjectsController < ApplicationController
   belongs_to :user, :group, :polymorphic => true, :optional => true
 
   before_filter :authenticate_user!, :except => :auto_build
-  before_filter :find_project, :only => [:show, :edit, :update, :destroy, :fork]
+  before_filter :find_project, :only => [:show, :edit, :update, :destroy, :fork, :sections]
   before_filter :get_paths, :only => [:new, :create, :edit, :update]
 
   load_and_authorize_resource
@@ -94,6 +94,18 @@ class ProjectsController < ApplicationController
     logger.info "Git hook recieved from #{params[:git_user]} to #{params[:git_repo]}"
 
     render :nothing => true
+  end
+
+  def sections
+    if request.post?
+      if @project.update_attributes(params[:project])
+        flash[:notice] = t('flash.project.saved')
+      else
+        @project.save
+        flash[:error] = t('flash.project.save_error')
+      end
+      render :action => :sections
+    end
   end
 
   protected

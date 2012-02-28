@@ -18,6 +18,7 @@
     = radio_button_tag :who_owns, 'me'
     = label_tag t("activerecord.attributes.project.who_owns.group")
     = radio_button_tag :who_owns, 'group'
+    -# TODO: Make our own select_box helper with new design, blackjack and bitches!
     = select_tag :owner_id, options_for_select( Group.can_own_project(current_user) )
   .both
 -#- if [:new, :create].include? act
