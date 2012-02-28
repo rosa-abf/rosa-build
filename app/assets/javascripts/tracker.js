@@ -205,4 +205,28 @@ $(document).ready(function() {
     return false;
   });
 
+  $('#edit_issue_content').live('click', function() {
+    $('.edit_form.issue').fadeIn('slow');
+    $(this).fadeOut('slow');
+  });
+
+  $('.edit_form.issue').live('submit', function() {
+    var form = $(this);
+    $.ajax({
+      type: 'POST',
+      url: form.attr("action"),
+      data: form.serialize(),
+      success: function(data){
+                  form.fadeOut('slow');
+                  $('#edit_issue_content').fadeIn('slow');
+                  $('h3.issue_title').html(form.find('#issue_title').attr('value'));
+                  $('.fulltext.view.issue_body').html(form.find('#issue_body').attr('value'));
+                },
+      error: function(data){
+               alert('error') // TODO remove
+             }
+     });
+    return false;
+  });
+
 });

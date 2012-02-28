@@ -65,9 +65,13 @@ class IssuesController < ApplicationController
       @issue.set_close(current_user) if status == 'closed'
       @issue.set_open if status == 'open'
       status = 200 if @issue.save
+      render action, :status => (status || 500), :layout => false
+    else
+      @issue.title = params[:issue][:title]
+      @issue.body = params[:issue][:body]
+      status = 200 if @issue.save
+      render :nothing => true, :status => (status || 500), :layout => false
     end
-
-    render action, :status => (status || 500), :layout => false
   end
 
   def destroy
