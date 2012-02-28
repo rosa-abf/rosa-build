@@ -184,4 +184,25 @@ $(document).ready(function() {
 
   });
 
+  $('.issue_status.switch_issue_status').live('click', function () {
+    var button = $(this);
+    var status = (button.hasClass('switcher')) ? 'closed' : 'open';
+    var form = $('#update_issue_status');
+    form.find('#issue_status').attr('value', status);
+    $.ajax({
+      type: 'POST',
+      url: form.attr("action"),
+      data: form.serialize(),
+      success: function(data){
+                  if (status == "open") { button.addClass('switcher').removeClass("switcher-off"); }
+                  else { button.removeClass('switcher').addClass("switcher-off"); }
+                  $('#closed_issue_text').html(data);
+                },
+      error: function(data){
+               alert('error') // TODO remove
+             }
+     });
+    return false;
+  });
+
 });

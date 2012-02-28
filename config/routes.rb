@@ -116,7 +116,7 @@ Rosa::Application.routes.draw do
         match 'compare/*versions' => 'wiki#compare', :as => :compare_versions, :via => :get
       end
     end
-    resources :issues do
+    resources :issues, :except => :edit do
       resources :comments, :only => [:edit, :create, :update, :destroy]
       resources :subscribes, :only => [:create, :destroy]
       collection do

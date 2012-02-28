@@ -27,6 +27,9 @@ ru:
         open: Открытые
         closed: Закрытые
         any: Все
+      status:
+        open: Открыто
+        closed: Закрыто
       subscribe: Подписка на уведомления
       subscribe_btn: Подписаться
       unsubscribe_btn: Отписаться
@@ -44,6 +47,7 @@ ru:
       search_labels: Найти метки...
       choose_user_on_left: выберите исполнителя слева
       choose_labels_on_left: выберите метки слева
+      at: в
 
   flash:
     issue:

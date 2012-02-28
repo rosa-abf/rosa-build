@@ -56,16 +56,14 @@ class IssuesController < ApplicationController
   end
 
   def update
-    @user_id = params[:user_id].blank? ? @issue.user_id : params[:user_id]
-    @user_uname = params[:user_uname].blank? ? @issue.assign_uname : params[:user_uname]
-
-    if @issue.update_attributes( params[:issue].merge({:user_id => @user_id}) )
-      flash[:notice] = I18n.t("flash.issue.saved")
-      redirect_to [@project, @issue]
-    else
-      flash[:error] = I18n.t("flash.issue.save_error")
-      render :action => :new
+    if status = params[:issue][:status]
+      action = 'issues/_status'
+      @issue.set_close(current_user) if status == 'closed'
+      @issue.set_open if status == 'open'
+      status = 200 if @issue.save
     end
+
+    render action, :status => (status || 500), :layout => false
   end
 
   def destroy

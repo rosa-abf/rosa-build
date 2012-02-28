@@ -27,6 +27,9 @@ en:
         open: Opened
         closed: Closed
         any: Any
+      status:
+        open: Открыто
+        closed: Closed
       subscribe: Subscribe
       subscribe_btn: Subscribe
       unsubscribe_btn: Unsubscribe
@@ -44,6 +47,7 @@ en:
       search_labels: Search labels...
       choose_user_on_left: Choose executor on the left
       choose_labels_on_left: Choose labels on the left
+      at: at
 
   flash:
     issue:
