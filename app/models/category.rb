@@ -4,7 +4,7 @@ class Category < ActiveRecord::Base
 
   validates :name, :presence => true
 
-  scope :default_order, order('categories.name')
+  default_scope order('categories.name')
 
   has_ancestry
 end
