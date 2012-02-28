@@ -37,6 +37,7 @@ end
 
 describe CollaboratorsController do
 	before(:each) do
+    stub_rsync_methods
     @project = Factory(:project)
     @another_user = Factory(:user)
     @update_params = {:user => {:read => {@another_user.id => '1'}}}

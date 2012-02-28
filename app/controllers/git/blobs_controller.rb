@@ -30,8 +30,8 @@ class Git::BlobsController < Git::BaseController
     # @git_repository.after_update_file do |repo, sha|
     # end
 
-    res = @git_repository.update_file(params[:path], params[:content],
-                                      :message => params[:message], :actor => current_user, :head => @treeish)
+    res = @git_repository.update_file(params[:path], params[:content].gsub("\r", ''),
+                                      :message => params[:message].gsub("\r", ''), :actor => current_user, :head => @treeish)
     if res
       flash[:notice] = t("flash.blob.successfully_updated", :name => params[:path].encode_to_default)
     else

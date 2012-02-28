@@ -15,6 +15,7 @@ $(document).ready(function() {
 
 
 $(document).ready(function() { 
+/*
 $("#myTable").tablesorter({ 
 	headers: { 
 		1: { 
@@ -22,34 +23,27 @@ $("#myTable").tablesorter({
 		}
 	}
 }); 
-});
 
-$(document).ready(function() { 
 $("#myTable2").tablesorter({ 
 	headers: { 
 		1: { 
 			sorter: false 
 		}
 	}
-}); 
-});
+}); */
 
-$(document).ready(function() {
-  $("#manage-labels").click(function() {
+$("#manage-labels").click(function() {
 	$("#labels-stock").fadeOut(0);
 	$("#labels-edit").fadeIn("slow");
-  });
 });
 
-$(document).ready(function() {
-  $("div.delete").click(function() {
+$("div.delete").click(function() {
 	var div = "#label-"+this.id;
 	$(div).fadeOut("slow");
-  });
 });
 
-$(document).ready(function() {
-  $("div.div-tracker-lables").click(function() {
+
+$("div.div-tracker-labels").click(function() {
 	var flag = this.id;
 	flag = flag.replace("label-","flag-");
 	var bg = $("#"+flag).css("background-color");
@@ -118,6 +112,8 @@ $(document).ready(function() {
 		}
 	}
   });
+
+
 });
 
 

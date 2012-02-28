@@ -32,11 +32,11 @@
   float: none !important;
   height: auto !important;
   left: auto !important;
-  line-height: 1.1em !important;
   margin: 0 !important;
   outline: 0 !important;
   overflow: visible !important;
-  padding: 0 !important;
+  padding: 0;
+  /*padding-left: 5px;*/
   position: static !important;
   right: auto !important;
   text-align: left !important;
@@ -52,8 +52,10 @@
   min-height: auto !important;
 }
 
+
+
 .syntaxhighlighter {
-  width: 100% !important;
+  width: auto;
   margin: 0 !important;
   position: relative !important;
   overflow: auto !important;
@@ -72,11 +74,11 @@
   white-space: pre !important;
 }
 .syntaxhighlighter table {
-  width: 100% !important;
+  width: auto;
 }
 
 .syntaxhighlighter table tr td{
-	padding: 10px 0px;
+	padding: 10px 5px;
 }
 
 .syntaxhighlighter table caption {
@@ -84,7 +86,7 @@
   padding: .5em 0 0.5em 1em !important;
 }
 .syntaxhighlighter table td.code {
-  width: 100% !important;
+  width: auto;
 }
 .syntaxhighlighter table td.code .container {
   position: relative !important;
@@ -94,7 +96,7 @@
   position: absolute !important;
   left: 0 !important;
   top: 0 !important;
-  width: 100% !important;
+  width: auto;
   height: 100% !important;
   border: none !important;
   
@@ -280,6 +282,7 @@
   color: #a0a0a0 !important;
   background: #d4d0c8 !important;
   border: none !important;
+  
 }
 .syntaxhighlighter .toolbar a {
   color: #a0a0a0 !important;

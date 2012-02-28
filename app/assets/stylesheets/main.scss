@@ -27,14 +27,16 @@ a img { border: none; }
 .wrap {
 	width: 940px;
 	margin: 0 auto;
-	text-align: center;
-	border: 1px solid #3f668c;
-	-webkit-box-shadow: 0px 0px 7px 0px rgba(0, 0, 0, 0.5);
-	-moz-box-shadow: 0px 0px 7px 0px rgba(0, 0, 0, 0.5);
-	box-shadow: 0px 0px 7px 0px rgba(0, 0, 0, 0.5); 
+// text-align: center;
+//	border: 1px solid #3f668c;
+//	-webkit-box-shadow: 0px 0px 7px 0px rgba(0, 0, 0, 0.5);
+//	-moz-box-shadow: 0px 0px 7px 0px rgba(0, 0, 0, 0.5);
+//	box-shadow: 0px 0px 7px 0px rgba(0, 0, 0, 0.5); 
 	background: #FFF;
 	min-height: 92%;
 }
+
+.hui {text-align: center;}
 
 .wrap.columns {
 	background: #FFF image-url("page-bg.png") repeat-y;

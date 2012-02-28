@@ -1,4 +1,4 @@
-$(document).ready(function() { 
+/*$(document).ready(function() { 
 $("#myTable").tablesorter({ 
 	headers: { 
 		2: { 
@@ -8,7 +8,7 @@ $("#myTable").tablesorter({
 
 }); 
 });
-
+*/
 $(document).ready(function() {
   $("a.files-see").click(function() {
 	$("#file1").fadeOut(0);

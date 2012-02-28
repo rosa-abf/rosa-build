@@ -1,5 +1,5 @@
 $(document).ready(function() { 
-	$("#myTable").tablesorter({ 
+	/*$("#myTable").tablesorter({ 
 		headers: { 
 			1: { 
 				sorter: false 
@@ -8,7 +8,7 @@ $(document).ready(function() {
 				sorter: false 
 			} 
 		} 
-	}); 
+	}); */
 });
 
 function deleteRow(num) {

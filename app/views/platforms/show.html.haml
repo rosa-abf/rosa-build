@@ -56,8 +56,8 @@
 
 
       .wat-cf
-        -#= link_to image_tag("web-app-theme/icons/application_edit.png", :alt => t("layout.edit")) + " " + t("layout.edit"), edit_platform_path(@platform), :class => "button"
-        = link_to image_tag("web-app-theme/icons/cross.png", :alt => t("layout.delete")) + " " + t("layout.delete"), platform_path(@platform), :method => "delete", :class => "button", :confirm => t("layout.platforms.confirm_delete") if can? :delete, @platform
+        -#= link_to image_tag("code.png", :alt => t("layout.edit")) + " " + t("layout.edit"), edit_platform_path(@platform), :class => "button"
+        = link_to image_tag("x.png", :alt => t("layout.delete")) + " " + t("layout.delete"), platform_path(@platform), :method => "delete", :class => "button", :confirm => t("layout.platforms.confirm_delete") if can? :delete, @platform
         - if @platform.released?
           = link_to t("layout.platforms.unfreeze"), unfreeze_platform_path(@platform), :confirm => I18n.t("layout.platforms.confirm_unfreeze"), :method => :post, :class => "button" if can? :unfreeze, @platform
         - else

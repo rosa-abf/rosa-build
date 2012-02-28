@@ -8,7 +8,7 @@ module DiffHelper
 
     res += "<table class='diff inline' cellspacing='0' cellpadding='0'>"
     res += "<tbody>"
-    res += diff_display.render(Git::Diff::InlineCallback.new)
+    res += diff_display.render(Git::Diff::InlineCallback.new).encode_to_default
     res += "</tbody>"
     res += "</table>"
 

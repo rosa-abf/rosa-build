@@ -27,8 +27,8 @@
           \:
         = @group.created_at
       .wat-cf
-        = link_to image_tag("web-app-theme/icons/application_edit.png", :alt => t("layout.edit")) + " " + t("layout.edit"), edit_group_path(@group), :class => "button"
-        = link_to image_tag("web-app-theme/icons/cross.png", :alt => t("layout.delete")) + " " + t("layout.delete"), group_path(@group), :method => "delete", :class => "button", :confirm => t("layout.groups.confirm_delete")
+        = link_to image_tag("code.png", :alt => t("layout.edit")) + " " + t("layout.edit"), edit_group_path(@group), :class => "button"
+        = link_to image_tag("x.png", :alt => t("layout.delete")) + " " + t("layout.delete"), group_path(@group), :method => "delete", :class => "button", :confirm => t("layout.groups.confirm_delete")
 
 .block
   .secondary-navigation

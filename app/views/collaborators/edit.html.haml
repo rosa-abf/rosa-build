@@ -6,7 +6,6 @@
   .content
     .inner
       = form_tag add_project_collaborators_path(@project) do
-        = javascript_include_tag 'autocomplete-rails.js'
         .group
           %h2.title= t("layout.collaborators.add")
           = label_tag "member_uname", t("layout.collaborators.input_username")
@@ -22,7 +21,7 @@
         %br
         .group.navform.wat-cf
           %button.button{:type => "submit"}
-            = image_tag("web-app-theme/icons/tick.png", :alt => t("layout.add"))
+            = image_tag("choose.png", :alt => t("layout.add"))
             = t("layout.add")
 
       = form_tag project_collaborators_path(@project) do
@@ -67,7 +66,7 @@
                 = group.uname
         .group.navform.wat-cf
           %button.button{:type => "submit"}
-            = image_tag("web-app-theme/icons/tick.png", :alt => t("layout.save"))
+            = image_tag("choose.png", :alt => t("layout.save"))
             = t("layout.save")
           %span.text_button_padding= t("layout.or")
           = link_to t("layout.cancel"), project_path(@project), :class => "text_button_padding link_button"

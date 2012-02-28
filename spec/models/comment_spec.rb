@@ -15,6 +15,7 @@ def set_commentable_data
 end
 
 describe Comment do
+  before { stub_rsync_methods }
   context 'for global admin user' do
     before(:each) do
       @user = Factory(:admin)

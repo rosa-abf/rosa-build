@@ -1,7 +1,7 @@
 %p== Hello, #{@user.name}.
 
 
-%p To project #{ link_to @issue.project.name, project_path(@issue.project) } has been added an issue #{ link_to @issue.title, [@issue.project, @issue] }
+%p To project #{ link_to @issue.project.name, project_url(@issue.project) } has been added an issue #{ link_to @issue.title, project_issue_url(@issue.project, @issue) }
 
 
 %p== Support team «ROSA Build System»

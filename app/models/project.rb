@@ -18,7 +18,7 @@ class Project < ActiveRecord::Base
   has_many :collaborators, :through => :relations, :source => :object, :source_type => 'User'
   has_many :groups,        :through => :relations, :source => :object, :source_type => 'Group'
 
-  validates :name, :uniqueness => {:scope => [:owner_id, :owner_type], :case_sensitive => false}, :presence => true, :format => { :with => /^[a-zA-Z0-9_\-\+\.]+$/ }
+  validates :name, :uniqueness => {:scope => [:owner_id, :owner_type], :case_sensitive => false}, :presence => true, :format => {:with => /^[a-zA-Z0-9_\-\+\.]+$/}
   validates :owner, :presence => true
   validate { errors.add(:base, :can_have_less_or_equal, :count => MAX_OWN_PROJECTS) if owner.projects.size >= MAX_OWN_PROJECTS }
   # validate {errors.add(:base, I18n.t('flash.project.save_warning_ssh_key')) if owner.ssh_key.blank?}
@@ -61,14 +61,13 @@ class Project < ActiveRecord::Base
     end
   end
 
-  def build_for(platform, user)  
+  def build_for(platform, user)
     build_lists.create do |bl|
       bl.pl = platform
       bl.bpl = platform
-      bl.update_type = 'recommended'
+      bl.update_type = 'newpackage'
       bl.arch = Arch.find_by_name('x86_64') # Return i586 after mass rebuild
-      # FIXME: Need to set "latest_#{platform.name}"
-      bl.project_version = "latest_import_mandriva2011"
+      bl.project_version = "latest_#{platform.name}" # "latest_import_mandriva2011"
       bl.build_requires = false # already set as db default
       bl.user = user
       bl.auto_publish = true # already  set as db default
@@ -252,9 +251,20 @@ class Project < ActiveRecord::Base
   end
 
   def write_hook
+    is_production = ENV['RAILS_ENV'] == 'production'
+    hook = File.join(::Rails.root.to_s, 'tmp', "post-receive-hook")
+    FileUtils.cp(File.join(::Rails.root.to_s, 'bin', "post-receive-hook.partial"), hook)
+    File.open(hook, 'a') do |f|
+      s = "\n  /bin/bash -l -c \"cd #{is_production ? '/srv/rosa_build/current' : Rails.root.to_s} && #{is_production ? 'RAILS_ENV=production' : ''} bundle exec rails runner 'Project.delay.process_hook(\"$owner\", \"$reponame\", \"$newrev\", \"$oldrev\", \"$ref\", \"$newrev_type\", \"$oldrev_type\")'\""
+      s << " > /dev/null 2>&1" if is_production
+      s << "\ndone\n"
+      f.write(s)
+    end
+
     hook_file = File.join(path, 'hooks', 'post-receive')
-    FileUtils.cp(File.join(::Rails.root.to_s, 'lib', 'post-receive-hook'), hook_file)
-    #File.chmod(0775, hook_file) # need?
+    FileUtils.cp(hook, hook_file)
+    FileUtils.rm_rf(hook)
+
   rescue Exception # FIXME
   end
 end

@@ -61,7 +61,7 @@ ru:
 
     downloads:
       title: Статистика закачек пакетов
-      message: Обновляется автоматически каждые 5 минут
+      message: Обновляется автоматически каждые 24 часа
       refresh_btn: Обновить
 
     auto_build_lists:
@@ -164,63 +164,6 @@ ru:
       private_users: Данные для доступа
       confirm_clone: Клонировать?
       clone: Клонировать
-
-    wiki:
-      new_page: Новая
-      edit_page: Изменить
-      delete_page: Удалить страницу
-      page_history: История
-      create_page: Создать страницу
-      wiki_git_access: Доступ к Wiki через Git
-      page_title: Заголовок страницы
-      expand_collapse: Развернуть
-      last_edited_by: Последним редактировал
-      home: Главная
-      pages: Все страницы
-      wiki_history: История Wiki
-      git_access: Доступ через Git
-      search_and_hellip: Ключевые слова
-      search: Искать
-      search_popup: Искать в этой Wiki
-      commit_message_placeholder: Введите сопровождающее сообщение (опционально)
-      edit_commit_message: Редактировать сопровождающее сообщение
-      preview_title: Посмотреть в новом окне
-      save_changes: Сохранить текущие изменения
-      save_button: Сохранить
-      view_page: Показать
-      view_commit: Показать версию
-      compare_revisions: Сравнить версии
-      back_to_top: Наверх
-      no_pages_in: В %{ref} нет страниц для отображения.
-      no_results_for_search: По запросу %{query} ничего не найдено.
-      matches: Совпадений
-      back_to_history: Назад к истории
-      history_for: История для
-      editing_page: Редактирование страницы
-      create_page: Создать страницу
-      revert_page: Откатить изменения
-      revert_pages: Откатить изменения
-      all_pages_in: "Все страницы:"
-      search_results_for: "Результаты поиска для %{query}:"
-      preview: Предпросмотр
-
-      clones:
-        http: HTTP
-
-      editor:
-        bold: Жирный
-        italic: Курсив
-        code: Исходный код
-        unordered_list: Маркированный список
-        ordered_list: Нумерованный список
-        blockquote: Цитата
-        horizontal_rule: Горизонтальная черта
-        h1: Заголовок первого уровня
-        h2: Заголовок второго уровня
-        h3: Заголовок третьего уровня
-        link: Ссылка
-        image: Изображение
-        help: Помощь
 
     event_logs:
       list: Список
@@ -350,7 +293,7 @@ ru:
 
     git:
       repositories:
-        empty: Пустой репозиторий
+        empty: "Репозиторий пуст. Если вы клонировали(Fork) проект или импортировали пакет, данные скоро появятся"
         source: Source
         commits: Commits
         commit_diff_too_big: Извините, коммит слишком большой!
@@ -359,6 +302,8 @@ ru:
         project_versions: Версии
 
     product_build_lists:
+      delete: Удалить
+      action: Действие
       statuses:
         '0': 'собран'
         '1': 'ошибка сборки'
@@ -507,6 +452,7 @@ ru:
       save_error: Не удалось сохранить изменения
       build_started: Запущена сборка продукта
       destroyed: Продукт удален
+      build_list_delete: Сборочный лист продукта удален
 
     platform:
       saved: Платформа успешно добавлена
@@ -742,6 +688,7 @@ ru:
       product_build_list:
         id: Id
         product: Продукт
+        container_path: Контейнер
         status: Статус
         notified_at: Информация получена
 

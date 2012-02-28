@@ -20,7 +20,7 @@
       - if @urpmi_list
         = render 'shared/urpmi_list', :urpmi_commands => @urpmi_list
       .wat-cf
-        =# link_to image_tag("web-app-theme/icons/cross.png", :alt => t("layout.delete")) + " " + t("layout.delete"), platform_repository_path(@platform, @repository), :method => "delete", :class => "button", :confirm => t("layout.repositories.confirm_delete")
+        =# link_to image_tag("x.png", :alt => t("layout.delete")) + " " + t("layout.delete"), platform_repository_path(@platform, @repository), :method => "delete", :class => "button", :confirm => t("layout.repositories.confirm_delete")
     %br
     .inner
       =t('layout.private_users.warning_message')

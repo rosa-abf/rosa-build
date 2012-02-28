@@ -67,10 +67,10 @@
 
       .group.navform.wat-cf
         %button.button{:type => "submit"}
-          = image_tag("web-app-theme/icons/tick.png", :alt => t("devise.registrations.signed_up"))
+          = image_tag("choose.png", :alt => t("devise.registrations.signed_up"))
           = t("layout.save")
 
-        = link_to image_tag("web-app-theme/icons/cross.png", :alt => t("devise.registrations.cancel")) + " " + t("devise.registrations.cancel"), registration_path(resource_name), :method => :delete, :class => "button", :confirm => t("devise.registrations.cancel_confirmation")
+        = link_to image_tag("x.png", :alt => t("devise.registrations.cancel")) + " " + t("devise.registrations.cancel"), registration_path(resource_name), :method => :delete, :class => "button", :confirm => t("devise.registrations.cancel_confirmation")
 
         %span.text_button_padding
         = link_to t('layout.back'), :back, :class => "text_button_padding link_button"

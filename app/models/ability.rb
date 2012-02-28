@@ -17,6 +17,8 @@ class Ability
       cannot :destroy, Subscribe
       cannot :create, Subscribe
       cannot :create, RegisterRequest
+      cannot :approve, RegisterRequest, :approved => true
+      cannot :reject, RegisterRequest, :rejected => true
     else
       # Shared rights between guests and registered users
       can :forbidden, Platform
@@ -64,23 +66,23 @@ class Ability
         can :read, Platform, :owner_type => 'User', :owner_id => user.id
         can :read, Platform, :owner_type => 'Group', :owner_id => user.group_ids
         can(:read, Platform, read_relations_for('platforms')) {|platform| local_reader? platform}
-        can(:update, Platform) {|platform| local_admin? platform}
+        can([:update, :build_all], Platform) {|platform| local_admin? platform}
         can([:freeze, :unfreeze, :destroy], Platform) {|platform| owner? platform}
         can :autocomplete_user_uname, Platform
 
-        # TODO delegate to platform?
         can :read, Repository, :platform => {:visibility => 'open'}
-        can :read, Repository, :owner_type => 'User', :owner_id => user.id
-        can :read, Repository, :owner_type => 'Group', :owner_id => user.group_ids
-        can(:read, Repository, read_relations_for('repositories')) {|repository| local_reader? repository}
-        can(:create, Repository) {|repository| local_admin? repository.platform}
-        can([:update, :add_project, :remove_project], Repository) {|repository| local_admin? repository}
-        can([:change_visibility, :settings, :destroy], Repository) {|repository| owner? repository}
+        can :read, Repository, :platform => {:owner_type => 'User', :owner_id => user.id}
+        can :read, Repository, :platform => {:owner_type => 'Group', :owner_id => user.group_ids}
+        can(:read, Repository, read_relations_for('repositories', 'platforms')) {|repository| local_reader? repository.platform}
+        can([:create, :update, :projects_list, :add_project, :remove_project], Repository) {|repository| local_admin? repository.platform}
+        can([:change_visibility, :settings, :destroy], Repository) {|repository| owner? repository.platform}
 
         can :read, Product, :platform => {:owner_type => 'User', :owner_id => user.id}
         can :read, Product, :platform => {:owner_type => 'Group', :owner_id => user.group_ids}
         can(:manage, Product, read_relations_for('products', 'platforms')) {|product| local_admin? product.platform}
-
+        can(:create, ProductBuildList) {|pbl| pbl.product.can_build? and can?(:update, pbl.product)}
+        can(:destroy, ProductBuildList) {|pbl| can?(:destroy, pbl.product)}
+        
         can [:read, :platforms], Category
 
         can [:read, :create], PrivateUser, :platform => {:owner_type => 'User', :owner_id => user.id}

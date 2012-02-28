@@ -94,7 +94,7 @@
 
       - if @build_list.can_publish?  
         .wat-cf
-          = link_to image_tag("web-app-theme/icons/tick.png", :alt => t("layout.publish")) + " " + t("layout.publish"), publish_build_list_path(@build_list), :method => "put", :class => "button", :confirm => t("layout.confirm")
+          = link_to image_tag("choose.png", :alt => t("layout.publish")) + " " + t("layout.publish"), publish_build_list_path(@build_list), :method => "put", :class => "button", :confirm => t("layout.confirm")
 
 .block
   .content
