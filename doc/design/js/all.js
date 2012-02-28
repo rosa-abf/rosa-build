@@ -28,10 +28,10 @@ $(document).click(function() {
 
 function showActivity(elem) {
 	$("#activity-bottom"+elem).slideToggle("slow");
-	var img = $("#expand" + elem).attr("src");
-	if (img == "pics/expand-gray.png") {
-		$("#expand" + elem).attr("src","pics/expand-gray2.png");
+	var img = document.getElementById("expand" + elem).className;
+	if (img == "expand-gray-down") {
+		document.getElementById("expand" + elem).className = "expand-gray-up";
 	} else {
-		$("#expand" + elem).attr("src","pics/expand-gray.png");
+		document.getElementById("expand" + elem).className = "expand-gray-down";
 	}
 }

@@ -1,7 +1,7 @@
 html, body {
 	margin: 0;
 	padding: 0;
-	font-family: Tahoma, Arial;
+	font-family: Tahoma, Geneva, Helvetica, sans-serif;
 	color: #565657;
 	background: #1f60a1 url("../pics/bg.png") repeat-x; 
 	min-width: 940px;
@@ -113,6 +113,8 @@ header menu ul li a.active {
 	background: url("../pics/menu-hover.png") repeat-x;
 }
 
+
+
 header div.logo {
 	float: left;
 	margin-top: -25px;
@@ -171,10 +173,17 @@ header div.search div.field input.black {
 
 header div.avatar {
 	float:left;
-	padding-top: 6px;
-	padding-right: 10px;
-	padding-bottom: 10px;
-	padding: 6px 10px 10px 24px;
+	padding: 6px 10px 10px 10px;
+	
+}
+
+header div.information div.active {
+	background: url("../pics/menu-hover.png") repeat-x;
+}
+
+header div.information div.user {
+	float: left;
+	margin-left: 14px;
 }
 
 header div.profile {
@@ -188,6 +197,7 @@ header div.profile {
 header div.profile a {
 	color: #FFF;
 	text-decoration: none;
+	padding-right: 10px;
 }
 
 header div.profile a:hover {
@@ -321,6 +331,23 @@ article div.right.bigpadding {
 	padding: 20px 140px 40px 140px;
 }
 
+article div.right.middlepadding {
+	width: 510px;
+	padding: 20px 120px 40px 50px;
+}
+
+article div.right.middlepadding div.rightlist{
+	width: 300px;
+}
+
+article div.right.middlepadding div.rightlist input{
+	width: 300px;
+}
+
+article div.right.middlepadding div.rightlist textarea{
+	width: 300px;
+}
+
 article div.all {
 	width: 855px;
 	padding: 20px 40px 20px 40px;
@@ -332,6 +359,31 @@ article div.all.bigpadding {
 	padding: 0px 40px 20px 200px;
 	text-align: left;
 }
+
+article div.all.verybigpadding {
+	width: 545px;
+	padding: 0px 40px 20px 200px;
+	text-align: left;
+}
+
+article div.all.verybigpadding div.left {
+	float: left;
+}
+
+article div.all.verybigpadding div.left img{
+	padding-right: 40px;
+	margin-top: 20px;
+}
+
+article div.all.verybigpadding div.left h3, article div.all.verybigpadding div.left h4, article div.all.verybigpadding div.left p{
+	width: 420px;
+}
+
+article div.all.verybigpadding div.left .tmargin5 {
+	padding-top: 5px;
+	position: relative;
+}
+
 
 /* Left part of page markup */
 
@@ -347,6 +399,33 @@ aside div.block {
 }
 
 /* Common page parts markups */
+
+article h4 {
+	font-size: 12px;
+	margin-bottom: 0px;
+	padding-bottom: 2px;
+}
+
+article p {
+	margin: 0;
+	padding: 0;
+}
+
+div.expand-gray-down, div.expand-gray-up {
+	height: 10px;
+	width: 12px;
+	float: left;
+	margin: 3px 0px 0px 3px;
+	cursor: pointer;
+}
+
+div.expand-gray-down {
+	background: url("../pics/expand-gray.png") no-repeat;
+}
+
+div.expand-gray-up {
+	background: url("../pics/expand-gray2.png") no-repeat;
+}
 
 article a.button {
 	display: inline-block;
@@ -412,6 +491,80 @@ article a.disabled {
 	text-align: center;
 }
 
+article input[type="file"] {
+
+	
+}
+
+article input[type="submit"] {
+	display: inline-block;
+	white-space: nowrap;
+	background-color: #125687;
+	background-image: -webkit-gradient(linear, left top, left bottom, from(#68a3d8), to(#125687));
+	background-image: -webkit-linear-gradient(top, #68a3d8, #125687);
+	background-image: -moz-linear-gradient(top, #68a3d8, #125687);
+	background-image: -ms-linear-gradient(top, #68a3d8, #125687);
+	background-image: -o-linear-gradient(top, #68a3d8, #125687);
+	background-image: linear-gradient(top, #68a3d8, #125687);
+	filter: progid:DXImageTransform.Microsoft.gradient(startColorStr='#68a3d8', EndColorStr='#125687');
+	border: 1px solid #5084b4;
+	padding: 4px 20px;
+	margin: 0;
+	font-size: 12px;
+	text-decoration: none;
+	color: #FFF;
+	-moz-border-radius: 5px;
+	-webkit-border-radius: 5px;
+	border-radius: 5px;
+	text-align: center;
+	height: auto;
+	width: auto;
+	
+}
+
+article input[type="submit"]:hover{
+    background-color: #34719d;
+	background-image: -webkit-gradient(linear, left top, left bottom, from(#7fb3e1), to(#34719d));
+	background-image: -webkit-linear-gradient(top, #7fb3e1, #34719d);
+	background-image: -moz-linear-gradient(top, #7fb3e1, #34719d);
+	background-image: -ms-linear-gradient(top, #7fb3e1, #34719d);
+	background-image: -o-linear-gradient(top, #7fb3e1, #34719d);
+	background-image: linear-gradient(top, #7fb3e1, #34719d);
+	filter: progid:DXImageTransform.Microsoft.gradient(startColorStr='#7fb3e1', EndColorStr='#34719d');
+	text-decoration: none;
+	cursor: pointer;
+}
+
+
+
+article input[type="submit"]:active{
+	background-color: #125687;
+	background-image: -webkit-gradient(linear, left top, left bottom, from(#68a3d8), to(#125687));
+	background-image: -webkit-linear-gradient(top, #68a3d8, #125687);
+	background-image: -moz-linear-gradient(top, #68a3d8, #125687);
+	background-image: -ms-linear-gradient(top, #68a3d8, #125687);
+	background-image: -o-linear-gradient(top, #68a3d8, #125687);
+	background-image: linear-gradient(top, #68a3d8, #125687);
+	filter: progid:DXImageTransform.Microsoft.gradient(startColorStr='#68a3d8', EndColorStr='#125687');
+}
+
+article input[type="submit"]:disabled {
+	background-color: #888888;
+	background-image: -webkit-gradient(linear, left top, left bottom, from(#aaaaaa), to(#888888));
+	background-image: -webkit-linear-gradient(top, #aaaaaa, #888888);
+	background-image: -moz-linear-gradient(top, #aaaaaa, #888888);
+	background-image: -ms-linear-gradient(top, #aaaaaa, #888888);
+	background-image: -o-linear-gradient(top, #aaaaaa, #888888);
+	background-image: linear-gradient(top, #aaaaaa, #888888);
+	filter: progid:DXImageTransform.Microsoft.gradient(startColorStr='#aaaaaa', EndColorStr='#888888');
+	cursor: default;
+	color: #d8d8d8;
+	border: 1px solid #aaaaaa;
+	cursor: default;
+	text-align: center;
+}
+
+
 article h3{
 	font-size: 14px;
 	color: #575756;
@@ -454,12 +607,16 @@ article div.right div.hr.top {
 	margin-bottom: 20px;
 }
 
-article div.right div.leftside {
+article div.leftside {
 	float: left;
 }
 
-article div.right div.rightside {
+article div.rightside {
 	float: right;
+}
+
+article div.all.bigpadding div.rightside {
+	margin-right: 40px;
 }
 
 .lefter {
@@ -574,7 +731,7 @@ article div.right div.messages p{
 	padding: 0;
 }
 
-article div.right div.activity {
+article div.activity {
 	border: 1px solid #d6d6d6;
 	/*width: 614px;*/
 	border-radius: 5px;
@@ -583,35 +740,39 @@ article div.right div.activity {
 	color: #333;
 }
 
-article div.right div.activity div.top div.image {
+article div.activity div.top div.image {
 	float: left;
 }
 
-article div.right div.activity div.top div.text {
+article div.activity div.top div.text {
 	float: left;
 	padding-left: 10px;
 	font-size: 12px;
 }
 
-article div.right div.activity div.top div.text span.name {
+article div.activity div.top div.text span.name {
 	font-weight: 700;
 }
 
-article div.right div.activity div.top div.text span.date {
+article div.activity div.top div.text span.date {
 	font-size: 11px;
 }
 
-article div.right div.activity div.top div.text span.subject img {
+article div.text span.subject {
+	float: left;
+}
+
+article div.activity div.top div.text span.subject img {
 	cursor: pointer;
 }
 
-article div.right div.activity div.fulltext {
+article div.activity div.fulltext {
 	font-size: 12px;
 	padding-top: 10px;
 	display: none;
 }
 
-article div.right div.activity div.fulltext.view  {
+article div.activity div.fulltext.view  {
 	display: block;
 }
 
@@ -668,21 +829,21 @@ article div.right div.activity div.fulltext.view  {
 }	
 div.rightlist textarea {
 	height: 110px;
-	width: 340px;
+	width: 350px;
 	border: 1px solid #dedede;
 	border-radius: 4px;
 	padding: 5px;
-	font-family: Tahoma, Arial;
+	font-family: Tahoma, Geneva, Helvetica, sans-serif;
 	font-size: 12px;
 }
 
-div.rightlist input[type="text"] {
+div.rightlist input[type="text"], div.rightlist input[type="password"] {
 	height: 15px;
-	width: 340px;
+	width: 350px;
 	border: 1px solid #dedede;
 	border-radius: 4px;
 	padding: 5px;
-	font-family: Tahoma, Arial;
+	font-family: Tahoma, Geneva, Helvetica, sans-serif;
 	font-size: 12px;
 }
 
@@ -727,15 +888,15 @@ div.rightlist input[type="text"] {
 	border-radius: 3px;
 	margin-top: 1px;
 	font-size: 12px;
-	font-family: Tahoma, Arial;
+	font-family: Tahoma, Geneva, Helvetica, sans-serif;
 	padding-left: 5px;
 }
 
-.right div.admin-search input.gray {
+article input.gray {
 	color: #cfcfcf;
 }
 
-.right div.admin-search input.black {
+article input.black {
 	color: #333333;
 }
 
@@ -772,6 +933,10 @@ div.rightlist input[type="text"] {
 	width: 200px;
 	padding-bottom: 4px;
 	text-align: left;
+}
+
+.sel80.aside {
+	width: 185px;
 }
 .lineForm,
 .lineForm3 {
@@ -823,14 +988,6 @@ section .left  {
 
 /* Commits history */
 
-article .fright {
-	float: right;
-}
-
-article .fright p{
-	margin: 0;
-	padding: 5px 5px 0px 0px;
-}
 
 article .date-block {
 	width: 100%;
@@ -978,6 +1135,10 @@ article div.year p{
 	color: #477CAE;
 }
 
+div.pagination.tmargin30 {
+	margin-top: 30px;
+}
+
 /* Create issue */
 
 .bordered.nopadding, .right.nopadding {
@@ -994,7 +1155,7 @@ aside input {
 	border: 1px solid #dedede;
 	border-radius: 4px;
 	padding: 0px 5px;
-	font-family: Tahoma, Arial;
+	font-family: Tahoma, Geneva, Helvetica, sans-serif;
 	font-size: 12px;
 	margin-bottom: 5px;
 	margin-top: 5px;
@@ -1127,7 +1288,7 @@ div.nopointer:hover {
 	background: none;
 }
 
-a.button.tmargin10 {
+a.button.tmargin10, input[type="submit"].tmargin10 {
 	margin-top: 10px;
 }
 
@@ -1170,7 +1331,7 @@ h3.bmargin10 {
 	border: 1px solid #dedede;
 	border-radius: 4px;
 	padding: 5px;
-	font-family: Tahoma, Arial;
+	font-family: Tahoma, Geneva, Helvetica, sans-serif;
 	font-size: 12px;
 	color: #575756;
 	margin: 10px 0px;
@@ -1236,7 +1397,7 @@ div.desription-top div.img {
 	margin-top: 14px;
 }
 
-div.desription-top div.name {
+div.desription-top input.name {
 	float: left;
 	margin-top: 5px;
 	margin-left: 10px;
@@ -1245,9 +1406,9 @@ div.desription-top div.name {
 	height: 21px;
 	width: auto;
 	color: #575756;
-	padding-right: 5px;
-	padding-left: 5px;
-	padding-top: 5px;
+	font-size: 12px;
+	width: 215px;
+	padding: 2px 5px 3px;
 }
 
 div.desription-top div.role {
@@ -1257,18 +1418,19 @@ div.desription-top div.role {
 	font-size: 11px;
 }
 
-div.desription-top div.fork {
+ div.fork {
 	float: right;
 	margin-top: 5px;
-	margin-right: 10px;
 }	
-div.desription-top div.fork p {
+ div.fork p {
 	float: right;
 	margin-top: 5px;
 	margin-right: 2px;
 }
 
-
+div.desription-top div.fork {
+	margin-right: 10px;
+}
 
 .all div.description {
 	text-align: left;
@@ -1306,12 +1468,12 @@ div.desription-top div.fork p {
 
 table.tablesorter.project .th1 {
 	width: 130px;
-	padding-left: 17px;
+	/*padding-left: 17px;*/
 }
 
 table.tablesorter.project .th2 {
 	width: 110px;
-	padding-left: 17px;
+	/*padding-left: 17px;*/
 }
 
 table.tablesorter.project .th3 {
@@ -1319,7 +1481,7 @@ table.tablesorter.project .th3 {
 }
 
 table.tablesorter.project .th4 {
-	padding-left: 17px;
+	/*padding-left: 17px;*/
 }
 
 table.tablesorter.project div.name {
@@ -1372,10 +1534,40 @@ div.files div.r {
 	display: none;
 }
 
+div.file {
+	margin-bottom: 10px;
+}
+
+textarea.commit-message {
+	height: 60px;
+	width: 845px;
+	resize: none;
+	border: 1px solid #dedede;
+	border-radius: 4px;
+	padding: 5px;
+	font-family: Tahoma, Geneva, Helvetica, sans-serif;
+	font-size: 12px;
+	margin-top: 5px;
+}
+
 div.files div.l p{
 	padding: 0;
 	margin: 5px 0px 0px 0px;
 }
+
+
+/* Code */
+
+div.gutter {
+	float: left;
+	border: 0 !important;
+	padding: 10px 5px 10px 0px;
+	font-family: "Consolas", "Bitstream Vera Sans Mono", "Courier New", Courier, monospace !important;
+	background: #EDEDED;
+	width: 40px;
+	text-align: right;
+}
+
 
 /* Tracker */
 
@@ -1589,6 +1781,16 @@ div.labeltext.edit div.delete {
 	margin-top: 1px;
 }
 
+div.labeltext a {
+	text-decoration: none;
+	color: #565657;
+}
+
+div.labeltext.edit a {
+	text-decoration: none;
+	color: #FFF;
+}
+
 aside div.colors {
 	margin: 10px 0px;
 }
@@ -1675,7 +1877,7 @@ a.button.width100 {
 	width: 100px;
 }
 
-.div-tracker-lables {
+.div-tracker-labels {
 	margin: 2px 13px 2px 0px;
 	cursor: pointer;
 	border-radius: 4px;
@@ -1705,4 +1907,256 @@ div.div-label-left div.label {
 
 div.div-label-left div.label:hover {
 	background: none;
+}
+
+/* Monitoring */
+
+aside div.table {
+	margin-top: 5px;
+}
+
+h3.small {
+	font-size: 12px;
+	margin: 0px;
+	padding: 3px 0px;
+}
+
+table.tablesorter th.lpadding16 {
+	padding-left: 16px;
+}
+
+div.right.slim {
+	padding: 5px 14px 40px;
+	width: 695px;
+}
+
+img.delete-row {
+	cursor: pointer;
+}
+
+
+/* Create group */
+
+div.right-error {
+	float: left;
+	width: 369px;
+	height: 59px;
+	background: url("../pics/error-groups.png");
+	margin: 0px 0px 5px -3px;
+	text-align: center;
+}
+
+div.right-error p {
+	margin: 0;
+	padding: 27px 0px 0px 0px;
+}
+
+div.rightlist.nomargin {
+	margin: 0;
+}
+
+article div.rightlist input.error {
+	border: 1px solid #bd4d40;
+	-webkit-box-shadow: 0px 0px 2px 0px rgba(189, 77, 64, 1);
+	-moz-box-shadow: 0px 0px 2px 0px rgba(189, 77, 64, 1);
+	box-shadow: 0px 0px 2px 0px rgba(189, 77, 64, 1); 
+}
+
+/* Group pages */
+
+article div.groups-profile {
+	float: left;
+}
+
+article div.groups-profile a {
+	margin: 0px 0px 0px 5px;
+}
+
+article div.groups-profile img {
+	margin: 2px 0px 0px 0px;
+}
+
+table.tablesorter.group-list th.th2 {
+	width: 540px;
+}
+
+/* Platform */
+
+table.tablesorter.create-platform th.th1 {
+	/*padding-left: 17px;*/
+	width: 120px;
+}
+
+div.right div.left {
+	float: left;
+	margin-right: 5px;
+}
+table.tablesorter.platform-products th.th1 {
+	/*padding-left: 17px;*/
+	width: 560px;
+}
+
+table.tablesorter.platform-products td.td2 {
+	text-align: center;
+}
+
+table.tablesorter.platform-repos th.th1 {
+	/*padding-left: 17px;*/
+	width: 480px;
+}
+
+table.tablesorter.platform-repos th.th2 {
+	/*padding-left: 17px;*/
+	width: 80px;
+}
+
+table.tablesorter.platform-repos td.td3 {
+	text-align: center;
+}
+
+div.new-owner div.field {
+	float: left;
+	margin-right: 10px;
+}
+
+div.new-owner div.field input {
+	width: 230px;
+}
+
+div.new-owner div.search {
+	float: left;
+}
+
+.tpadding10 {
+	padding-top: 10px;
+}
+
+article div.all div.hr {
+	border-bottom: 1px solid #dedede;
+	width: 565px;
+	padding-top: 30px;
+	margin-bottom: 30px;
+}
+
+table.tablesorter.platform-product-main th.th1 {
+	/*padding-left: 17px;*/
+	width: 60px;
+}
+
+table.tablesorter.platform-product-main th.th2 {
+	/*padding-left: 17px;*/
+	width: 400px;
+}
+
+table.tablesorter.platform-product-main th.th3 {
+	padding-left: 0px;
+}
+
+table.tablesorter.platform-product-main th.th4 {
+	/*padding-left: 17px;*/
+	width: 150px;
+}
+
+div.right.rpadding0 {
+	padding-right: 0px;
+}
+
+article div.loadFile div.btn {
+	float: left;
+}
+
+article div.loadFile div.name {
+	float: left;
+	margin-left: 20px;
+	padding-top: 4px;
+}
+
+/* Profile */
+
+.bpadding10 {
+	padding-bottom: 10px;
+}
+
+article div.rightlist div.load {
+	float: left;
+	margin-left: 40px;
+}
+
+.notify {
+	border: 1px solid #c86b60;
+	background: #f4e1df;
+	border-radius: 4px;
+	width: 100%;
+	margin-top: 20px;
+}
+
+.notify p {
+	padding: 5px 10px;
+}
+
+/* Pagination */
+
+div.pagination em {
+	font-style: normal;
+}
+
+div.pagination em, div.pagination span, div.pagination a {
+	border: 1px solid #dddddd;
+	border-radius: 1px;
+	background: #ededed;
+	padding: 3px 7px;
+}
+
+div.pagination em.current {
+	background: #d5e7f9;
+	border: 1px solid #c1daed;
+}
+
+div.pagination a {
+	color: #4c90d0;
+}
+
+/*404*/
+
+article div.all.error404 {
+	background: url("../pics/404.png") no-repeat 59% 0;
+	height: 500px;
+	text-align: center;
+}
+
+article div.all.error404 h1 {
+	margin: 0;
+	padding: 0;
+	margin-top: 165px;
+	font-size: 48px;
+	font-weight: normal;
+}
+
+article div.all.error404 h1 span {
+	color: #4496d0;
+}
+
+article div.all.error404 h2 {
+	margin: 0;
+	padding: 0;
+	margin-top: 5px;
+	font-size: 18px;
+	font-weight: normal;
+}
+
+article div.all.error404 p {
+	margin: 0 auto;
+	padding: 0;
+	text-align: center;
+	font-size: 14px;
+}
+
+article div.all.error404 p.pages {
+	margin-top: 72px;
+	width: 280px;
+}
+
+article div.all.error404 p.search {
+	margin-top: 80px;
+	width: 230px;
 }

@@ -54,11 +54,13 @@
 						</div>  
 					</div>
 					
-					<div class="avatar" onclick="droplist();">
-						<img src="pics/ava.png" alt="avatar" height="30" />
-					</div>
-					<div class="profile"  onclick="droplist();">
-						<a href="#" onclick="droplist();">mikimaus <img src="pics/expand-white.png" alt="ex" /></a>
+					<div class="user">
+						<div class="avatar" onclick="droplist();">
+							<img src="pics/ava.png" alt="avatar" height="30" />
+						</div>
+						<div class="profile"  onclick="droplist();">
+							<a href="#" onclick="droplist();">mikimaus <img src="pics/expand-white.png" alt="ex" /></a>
+						</div>
 					</div>
 					
 					<div class="both">
@@ -117,16 +119,16 @@
 		<!--Page-->
 		<article>
 			<div class="all">
-				<div class="lineForm fright">
-						<select class="sel80" id="country" name="country" tabindex="2">
-							<option selected="selected" value="1000">Master</option>
-							<option value="1">Extend</option>
-							<option value="2">Beta</option>
-						</select>
-				</div>
-				<div class="fright">
+				<div class="lineForm fork">
+							<select class="sel80" id="country" name="country" tabindex="2">
+								<option selected="selected" value="1000">Master</option>
+								<option value="1">Extend</option>
+								<option value="2">Beta</option>
+							</select>
+						</div>
+					<div class="fork">
 					<p>Текущая ветка:</p>
-				</div>
+					</div>
 				<div class="both"></div>
 				
 				
@@ -148,7 +150,7 @@
 								<div class="text">
 									<span class="name">Mike Shane</span><br />
 									<span class="date">сегодня в 11:45</span><br />
-									<span class="subject">Merge pull request #112 from snigipigi/issues <img src="pics/expand-gray.png" alt="expand" class="activity-full" onclick="showActivity(1)" id="expand1" /></span>
+									<span class="subject">Merge pull request #112 from snigipigi/issues</span><div class="expand-gray-down" onclick="showActivity(1)" id="expand1"></div>
 								</div>
 									<div style="clear: both">
 									</div>
@@ -187,7 +189,7 @@
 								<div class="text">
 									<span class="name">Mike Shane</span><br />
 									<span class="date">сегодня в 11:45</span><br />
-									<span class="subject">Merge pull request #112 from snigipigi/issues <img src="pics/expand-gray.png" alt="expand" class="activity-full" onclick="showActivity(2)" id="expand2" /></span>
+									<span class="subject">Merge pull request #112 from snigipigi/issues</span><div class="expand-gray-down" onclick="showActivity(2)" id="expand2"></div>
 								</div>
 									<div style="clear: both">
 									</div>
@@ -228,7 +230,7 @@
 								<div class="text">
 									<span class="name">Mike Shane</span><br />
 									<span class="date">сегодня в 11:45</span><br />
-									<span class="subject">Merge pull request #112 from snigipigi/issues <img src="pics/expand-gray.png" alt="expand" class="activity-full" onclick="showActivity(3)" id="expand3" /></span>
+									<span class="subject">Merge pull request #112 from snigipigi/issues</span><div class="expand-gray-down" onclick="showActivity(3)" id="expand3"></div>
 								</div>
 									<div style="clear: both">
 									</div>
@@ -286,7 +288,7 @@
 								<div class="text">
 									<span class="name">Mike Shane</span><br />
 									<span class="date">сегодня в 11:45</span><br />
-									<span class="subject">Merge pull request #112 from snigipigi/issues <img src="pics/expand-gray.png" alt="expand" class="activity-full" onclick="showActivity(4)" id="expand4" /></span>
+									<span class="subject">Merge pull request #112 from snigipigi/issues</span><div class="expand-gray-down" onclick="showActivity(4)" id="expand4"></div>
 								</div>
 									<div style="clear: both">
 									</div>
@@ -325,7 +327,7 @@
 								<div class="text">
 									<span class="name">Mike Shane</span><br />
 									<span class="date">сегодня в 11:45</span><br />
-									<span class="subject">Merge pull request #112 from snigipigi/issues <img src="pics/expand-gray.png" alt="expand" class="activity-full" onclick="showActivity(5)" id="expand5" /></span>
+									<span class="subject">Merge pull request #112 from snigipigi/issues</span><div class="expand-gray-down" onclick="showActivity(5)" id="expand5"></div>
 								</div>
 									<div style="clear: both">
 									</div>
@@ -366,7 +368,7 @@
 								<div class="text">
 									<span class="name">Mike Shane</span><br />
 									<span class="date">сегодня в 11:45</span><br />
-									<span class="subject">Merge pull request #112 from snigipigi/issues <img src="pics/expand-gray.png" alt="expand" class="activity-full" onclick="showActivity(6)" id="expand6" /></span>
+									<span class="subject">Merge pull request #112 from snigipigi/issues</span><div class="expand-gray-down" onclick="showActivity(6)" id="expand6"></div>
 								</div>
 									<div style="clear: both">
 									</div>
@@ -404,7 +406,10 @@
 				</div>
 				
 				
-				
+				<div class="pagination tmargin30">
+					<span class="previous_page disabled">‹ Предыдущая</span>
+					<a class="next_page" rel="next" href="/users?user_page=2">Следующая ›</a>
+				</div>
 				
 				
 			</div>

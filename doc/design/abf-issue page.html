@@ -52,11 +52,13 @@
 						</div>  
 					</div>
 					
-					<div class="avatar" onclick="droplist();">
-						<img src="pics/ava.png" alt="avatar" height="30" />
-					</div>
-					<div class="profile"  onclick="droplist();">
-						<a href="#" onclick="droplist();">mikimaus <img src="pics/expand-white.png" alt="ex" /></a>
+					<div class="user">
+						<div class="avatar" onclick="droplist();">
+							<img src="pics/ava.png" alt="avatar" height="30" />
+						</div>
+						<div class="profile"  onclick="droplist();">
+							<a href="#" onclick="droplist();">mikimaus <img src="pics/expand-white.png" alt="ex" /></a>
+						</div>
 					</div>
 					
 					<div class="both">
@@ -188,9 +190,7 @@
 								<div class="both">
 								</div>
 							</div>
-							
-						
-						<a class="button tmargin10" onclick="manage('people');" href="#">Done</a>
+						<input type="submit" class="tmargin10" value="Done"  onclick="manage('people');"/>
 					</div>
 				</div>
 				<div class="block">
@@ -251,7 +251,7 @@
 							<div class="both">
 							</div>
 						</div>
-						<a class="button tmargin10" href="#" onclick="manage('labels');">Done</a>
+						<input type="submit" class="tmargin10" value="Done"  onclick="manage('labels');"/>
 					</div>
 					
 					
@@ -297,7 +297,7 @@
 							Notifications for new comments are <span class="bold">on</span>. <a href="#">Disable notifications for this Issue</a>
 						</div>
 						<div class="issue-right">
-							<a class="button" href="#">Comment</a>
+							<input type="submit" value="Comment" />
 						</div>
 						<div class="both"></div>
 					</div>
