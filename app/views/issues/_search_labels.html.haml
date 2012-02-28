@@ -1,5 +1,6 @@
 - (@labels || []).each_with_index do |label, index|
-  .add_label.label.selected{:id => "flag#{index}"}
-    .labeltext.selected{:style => "background: ##{label.color};"}=label.name
+  .add_label.label{:id => "flag#{index}"}
+    .flag{:style => "background: ##{label.color};"}
+    .labeltext=label.name
     =hidden_field_tag "label-#{index}", label.id, :name => "issue[labelings_attributes][#{index}][label_id]"
     .both

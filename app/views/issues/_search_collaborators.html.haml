@@ -1,5 +1,5 @@
 - (@users || []).each_with_index do |user, index|
-  .people.select{:id => "user-#{index}", :class => 'add_executor'}
+  .people.selected{:id => "user-#{index}", :class => 'add_executor'}
     .avatar=image_tag(user.avatar(25), :alt => 'avatar')
     .name="#{user.uname} (#{user.name})"
     =hidden_field_tag "user-#{index}", user.id, :name => 'user_id'

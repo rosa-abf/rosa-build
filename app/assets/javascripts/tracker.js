@@ -132,8 +132,8 @@ $(document).ready(function() {
   function remExecutor(form) {
     var el = form.find('.people.selected.remove_executor');
     var id = el.attr('id');
-    $('#'+id+'.add_executor.people.selected').fadeIn('slow');
-    el.fadeOut('slow').remove();
+    $('#'+id+'.add_executor.people.selected').removeClass('select');
+    el.remove();
   }
 
   $('.add_executor.people.selected').live('click', function() {
@@ -141,7 +141,7 @@ $(document).ready(function() {
     form.find('#people-span').fadeOut(0);
     remExecutor(form);
     form.find('#issue_executor').html($(this).clone().removeClass('add_executor').addClass('remove_executor'));
-    $(this).fadeOut(0);
+    $(this).addClass('select');
   });
 
   $('.remove_executor.people.selected').live('click', function() {
@@ -151,16 +151,23 @@ $(document).ready(function() {
   });
 
   function remLabel(form, id) {
-    var el = form.find('.label.selected.remove_label'+'#'+id);
-    $('#'+id+'.add_label.label.selected').fadeIn('slow');
+    var el = form.find('.label.remove_label'+'#'+id);
+    var label = $('#'+id+'.remove_label.label.selected');
+    label.find('.flag').fadeIn(0);
+    label.find('.labeltext.selected').removeClass('selected').attr('style', '');
+    label.fadeIn('slow');
     el.fadeOut('slow').remove();
   }
 
-  $('.add_label.label.selected').live('click', function() {
+  $('.add_label.label').live('click', function() {
+    $(this).addClass('selected').removeClass('add_label').addClass('remove_label');
+    $(this).find('.labeltext').addClass('selected');
+    var style = $(this).find('.flag').attr('style');
+    $(this).find('.flag').fadeOut(0);
+    $(this).find('.labeltext.selected').attr('style', style);
     var form = $('.form.issue');
     form.find('#flag-span').fadeOut(0);
-    form.find('#issue_labels').append($(this).clone().removeClass('add_label').addClass('remove_label'));
-    $(this).fadeOut(0);
+    form.find('#issue_labels').append($(this).clone());
   });
 
   $('.remove_label.label.selected').live('click', function() {
@@ -168,7 +175,13 @@ $(document).ready(function() {
     if(form.find('.remove_label.label.selected').length == 1) {
       form.find('#flag-span').fadeIn(0);
     }
-    remLabel(form, $(this).attr('id'));
+    var str = '.label.remove_label'+'#'+$(this).attr('id');
+    form.find(str).remove();
+    var label = $(str);
+    label.removeClass('selected').addClass('add_label').removeClass('remove_label');
+    label.find('.labeltext.selected').attr('style', '').removeClass('selected');
+    label.find('.flag').fadeIn(0);
+
   });
 
 });

@@ -10,6 +10,8 @@ class IssuesController < ApplicationController
   layout 'application'
 
   def index(status = 200)
+    logger.debug "!!!!!!!!!!!!!!!!!!"
+    logger.debug "request format is #{request.format}"
     @is_assigned_to_me = params[:filter] == 'to_me'
     @status = params[:status] == 'closed' ? 'closed' : 'open'
     @labels = params[:labels] || []
@@ -51,11 +53,6 @@ class IssuesController < ApplicationController
       flash[:error] = I18n.t("flash.issue.save_error")
       render :action => :new
     end
-  end
-
-  def edit
-    @user_id = @issue.user_id
-    @user_uname = @issue.assign_uname
   end
 
   def update
