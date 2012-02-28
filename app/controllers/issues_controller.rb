@@ -15,14 +15,18 @@ class IssuesController < ApplicationController
     @is_assigned_to_me = params[:filter] == 'to_me'
     @status = params[:status] == 'closed' ? 'closed' : 'open'
     @labels = params[:labels] || []
-
-    @issues = @project.issues.where(:status => @status)
+    @issues = @project.issues
     @issues = @issues.where(:user_id => current_user.id) if @is_assigned_to_me
     @issues = @issues.joins(:labels).where(:labels => {:name => @labels}) unless @labels == []
 
     if params[:search_issue]
       @issues = @issues.where('issues.title ILIKE ?', "%#{params[:search_issue].mb_chars.downcase}%")
     end
+    @opened_issues = @issues.opened.count
+    @closed_issues = @issues.closed.count
+    @issues = @issues.where(:status => @status)
+
+
     @issues = @issues.includes(:creator, :user).order('serial_id desc').uniq.paginate :per_page => 10, :page => params[:page]
     if status == 200
       render 'index', :layout => request.format == '*/*' ? 'issues' : 'application' # maybe FIXME '*/*'?

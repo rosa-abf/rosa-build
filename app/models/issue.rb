@@ -26,6 +26,9 @@ class Issue < ActiveRecord::Base
   attr_accessible :labelings_attributes, :title, :body, :project, :project_id, :closed_at, :closed_by
   accepts_nested_attributes_for :labelings, :allow_destroy => true
 
+  scope :opened, where(:status => 'open', :closed_by => nil, :closed_at => nil)
+  scope :closed, where(:status => 'closed').where("closed_by is not null and closed_at is not null")
+
   def assign_uname
     user.uname if user
   end
