@@ -93,6 +93,10 @@ class User < ActiveRecord::Base
     email.downcase == commit.committer.email.downcase
   end
 
+  def avatar(size)
+    "https://secure.gravatar.com/avatar/#{Digest::MD5.hexdigest(email.downcase)}?s=#{size}&r=pg"
+  end
+
   private
 
   def create_settings_notifier

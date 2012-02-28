@@ -1,32 +1,31 @@
-.block
-  .secondary-navigation
-    %ul.wat-cf
-      %li.first= link_to t("layout.issues.list"), project_issues_path(@project)
-      %li= link_to t("layout.issues.edit"), edit_project_issue_path(@project, @issue) if can? :edit, @issue
-  .content
-    .inner
-      %p
-        %b
-          = t("activerecord.attributes.issue.title")
-          \:
-        = @issue.title
-      %p
-        %b
-          = t("activerecord.attributes.issue.body")
-          \:
-        = @issue.body
-      %p
-        %b
-          = t('activerecord.attributes.issue.status')
-          \:
-        = @issue.status
-      %p
-        %b
-          = t('layout.issues.subscribe')
-          \:
-        - if @issue.subscribes.exists? :user_id => current_user.id
-          = link_to t('layout.issues.unsubscribe_btn'), project_issue_subscribe_path(@project, @issue, current_user.id), :method => :delete
-        - else
-          = link_to t('layout.issues.subscribe_btn'), project_issue_subscribes_path(@project, @issue), :method => :post
+-render :partial => 'projects/submenu'
+-render :partial => 'issues/create_sidebar'
+-content_for :right_nopadding do
+  dummy
+%h3.issue_title=@issue.title
+.activity
+  .top
+    .image
+      =image_tag(@issue.creator.avatar(42), :alt => 'avatar') if @issue.creator
+    .text
+      %span.name=link_to(@issue.creator.uname, user_path(@issue.creator)) if @issue.creator
+      %br/
+      %span.date=@issue.created_at.to_s(:long)
+      %br/
+  .both
+  .fulltext.view.issue_body=@issue.body
+.both
+%br
+- if can? :write, @issue.project
+  =link_to t('layout.edit'), '#', :id => 'edit_issue_content', :class => 'button'
+  =form_for :issue, :url => [@project, @issue], :method => :put, :html => { :class => 'edit_form issue', :style => 'display:none;' } do |f|
+    .leftlist= t('activerecord.attributes.issue.title') + ':'
+    .rightlist= f.text_field :title
+    .leftlist= t('activerecord.attributes.issue.body') + ':'
+    .rightlist= f.text_area :body
+    .both
+    =f.submit t('layout.update'), :id => 'update_issue_content'
+    =link_to t('layout.issues.cancel_button'), '#', :id => 'cancel_edit_issue_content', :class => 'button'
+.hr
 
-= render :partial => "comments/list", :locals => {:list => @issue.comments.order(:created_at), :project => @project, :commentable => @issue}
+=render :partial => 'issues/status'

@@ -43,7 +43,7 @@
       %article
         - if content_for?(:sidebar)
           %aside= yield :sidebar
-          .right= yield
+          .right{:class => content_for?(:right_nopadding) ? ' nopadding' : ''}= yield
         - else
           .all= yield
         .both
