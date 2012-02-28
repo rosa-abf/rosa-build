@@ -64,7 +64,7 @@ header div.text {
 
 article {
 	width: 760px;
-	height: 305px;
+	height: auto;
 	background: #1c394c url("../pics/bg-signup.png") repeat-x;
 	border-radius: 5px;
 	border: 1px solid #38658c;
