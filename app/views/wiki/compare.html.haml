@@ -1,29 +1,22 @@
-= render :partial => 'gollum_includes'
-= render :partial => 'project_short'
+= render 'gollum_includes'
+/ = render 'project_short'
+= render 'projects/submenu'
 
-%a{ :name => "wiki"}
-.block
-  = render :partial => 'navigation'
+%h3.wiki
+  - if @name
+    = t("wiki.history_for")
+    %strong= @page.name
+  - else
+    = t("wiki.wiki_history")
 
-  .content
-    #wiki-wrapper.inner.compare
-      #head
-        %h1.title
-          - if @name
-            = t("layout.wiki.history_for")
-            %strong= @page.name
-          - else
-            = t("layout.wiki.wiki_history")
+%br
+%br
 
-        %ul.actions
-          - if can? :read, @project
-            %li.minibutton= link_to t("layout.wiki.back_to_history"),
-                  @name ? history_project_wiki_path(@project, escaped_name) : history_project_wiki_index_path(@project)
-        = render :partial => 'searchbar'
+.r
+  - if can? :read, @project
+    = link_to t("wiki.back_to_history"), @name ? history_project_wiki_path(@project, escaped_name) : history_project_wiki_index_path(@project), :class => 'button width100'
 
-      #wiki-content
-        = render :partial => "compare"
+#wiki-content= render "compare"
 
 - content_for :sidebar do
-  - render :partial => 'projects/sidebar'
-
+  - render 'sidebar'

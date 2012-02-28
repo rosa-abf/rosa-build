@@ -8,11 +8,7 @@ class PlatformsController < ApplicationController
   autocomplete :user, :uname
 
   def build_all
-    @platform.repositories.each do |repository|
-      repository.projects.each do |project|
-        project.delay.build_for(@platform, current_user)
-      end
-    end
+    @platform.delay.build_all(current_user)
 
     redirect_to(platform_path(@platform), :notice => t("flash.platform.build_all_success"))
   end
@@ -109,24 +105,24 @@ class PlatformsController < ApplicationController
   end
 
   def clone
-    if request.post?
-      @cloned = @platform.make_clone(:name => params[:platform]['name'], :description => params[:platform]['description'],
-                                    :owner_id => current_user.id, :owner_type => current_user.class.to_s)
-      if @cloned.persisted?
-        flash[:notice] = I18n.t("flash.platform.clone_success")
-        redirect_to @cloned
-      else
-        flash[:error] = @cloned.errors.full_messages.join('. ')
-      end
+    @cloned = Platform.new
+    @cloned.name = @platform.name + "_clone"
+    @cloned.description = @platform.description + "_clone"
+  end
+
+  def make_clone
+    @cloned = @platform.full_clone params[:platform].merge(:owner => current_user)
+    if @cloned.persisted?
+      flash[:notice] = I18n.t("flash.platform.clone_success")
+      redirect_to @cloned
     else
-      @cloned = Platform.new
-      @cloned.name = @platform.name + "_clone"
-      @cloned.description = @platform.description + "_clone"
+      flash[:error] = @cloned.errors.full_messages.join('. ')
+      render 'clone'
     end
   end
 
   def destroy
-    @platform.destroy if @platform
+    @platform.delay.destroy if @platform
 
     flash[:notice] = t("flash.platform.destroyed")
     redirect_to root_path

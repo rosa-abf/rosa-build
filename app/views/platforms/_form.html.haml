@@ -1,5 +1,3 @@
-= javascript_include_tag "autocomplete-rails.js"
-
 - unless ['edit', 'update'].include? controller.action_name
   .group
     = f.label :name, :class => :label
@@ -29,7 +27,7 @@
   
 .group.navform.wat-cf
   %button.button{:type => "submit"}
-    = image_tag("web-app-theme/icons/tick.png", :alt => t("layout.save"))
+    = image_tag("choose.png", :alt => t("layout.save"))
     = t("layout.save")
   %span.text_button_padding= t("layout.or")
   = link_to t("layout.cancel"), @platforms_path, :class => "text_button_padding link_button"

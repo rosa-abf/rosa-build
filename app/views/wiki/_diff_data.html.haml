@@ -1,9 +1,4 @@
 .blob_header
-  .size= h(diff.deleted_file ? diff.a_path : diff.b_path)
-  - puts 'in view'
-  - puts diff.a_path
-  - puts diff.b_path
+  .size= h(diff.deleted_file ? diff.a_path : diff.b_path).encode_to_default
   .clear
-
-.diff_data.highlight
-  = render_diff(diff)
+.diff_data.highlight= render_diff(diff)

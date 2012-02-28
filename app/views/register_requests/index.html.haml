@@ -5,6 +5,10 @@
       %li= link_to t("layout.users.new"), new_user_path
       %li.active= link_to t("layout.users.register_requests"), register_requests_path
   .content
+    %div{:style => 'float: right; margin: 20px'}
+      = link_to t("layout.register_request.approved"), register_requests_path(:scope => :approved)
+      \|
+      = link_to t("layout.register_request.rejected"), register_requests_path(:scope => :rejected)
     %h2.title
       = t("layout.register_request.list_header")
     .inner
@@ -23,7 +27,8 @@
             %tr{:class => cycle("odd", "even")}
               %td= check_box_tag 'request_ids[]', request.id
               %td= request.name
-              %td= request.email
+              - @user = User.find_by_email(request.email) if request.approved
+              %td= link_to_if @user, request.email, @user
               %td= request.interest
               %td= request.more
               %td= request.created_at

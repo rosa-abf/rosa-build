@@ -1,22 +1,14 @@
-= render :partial => 'gollum_includes'
-= render :partial => 'project_short'
+/ = render 'gollum_includes'
+/ = render 'project_short'
+= render 'projects/submenu'
 
-%a{ :name => "wiki"}
-.block
-  = render :partial => 'navigation'
+.desription-top
+  .img= image_tag("code.png")
+  = render "git_access"
+  .both
+= render "git_access_message"
 
-  .content
-    #wiki-wrapper.inner.compare
-      #head
-        %h1.title
-          = t("layout.wiki.wiki_git_access")
-
-      #wiki-content
-        = render :partial => "git_access"
-        %br
-        = render :partial => "git_access_message"
+.both
 
 - content_for :sidebar do
-  - render :partial => 'projects/sidebar'
-
-
+  - render 'sidebar'

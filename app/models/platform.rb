@@ -14,10 +14,11 @@ class Platform < ActiveRecord::Base
   has_many :members, :through => :objects, :source => :object, :source_type => 'User'
   has_many :groups,  :through => :objects, :source => :object, :source_type => 'Group'
 
-  validates :description, :presence => true, :uniqueness => true
+  validates :description, :presence => true
   validates :name, :uniqueness => {:case_sensitive => false}, :presence => true, :format => { :with => /^[a-zA-Z0-9_\-]+$/ }
   validates :distrib_type, :presence => true, :inclusion => {:in => APP_CONFIG['distr_types']}
 
+  before_create :create_directory, :if => lambda {Thread.current[:skip]} # TODO remove this when core will be ready
   before_create :xml_rpc_create, :unless => lambda {Thread.current[:skip]}
   before_destroy :xml_rpc_destroy
 #  before_update :check_freezing
@@ -98,27 +99,23 @@ class Platform < ActiveRecord::Base
     platform_type == 'personal'
   end
 
-  def full_clone(attrs) # :description, :name, :owner
+  def base_clone(attrs = {}) # :description, :name, :owner
     clone.tap do |c|
-      c.attributes = attrs
+      c.attributes = attrs # attrs.each {|k,v| c.send("#{k}=", v)}
       c.updated_at = nil; c.created_at = nil # :id = nil
       c.parent = self
-      new_attrs = {:platform_id => nil}
-      c.repositories = repositories.map{|r| r.full_clone(new_attrs.merge(:owner_id => attrs[:owner_id], :owner_type => attrs[:owner_type]))}
-      c.products = products.map{|p| p.full_clone(new_attrs)}
     end
   end
 
-  # TODO * make it Delayed Job *  
-  def make_clone(attrs)
-    p = full_clone(attrs)
-    begin
-      Thread.current[:skip] = true
-      p.save and xml_rpc_clone(attrs[:name])
-    ensure
-      Thread.current[:skip] = false
+  def clone_relations(from = parent)
+    self.repositories = from.repositories.map{|r| r.full_clone(:platform_id => id)}
+    self.products = from.products.map(&:full_clone)
+  end
+
+  def full_clone(attrs = {})
+    base_clone(attrs).tap do |c|
+      with_skip {c.save} and c.clone_relations(self) and c.delay.xml_rpc_clone
     end
-    p
   end
 
   def name
@@ -135,9 +132,13 @@ class Platform < ActiveRecord::Base
     end
   end
 
+  def create_directory
+    system("sudo mkdir -p -m 0777 #{path}")
+  end
+
   def mount_directory_for_rsync
     # umount_directory_for_rsync # TODO ignore errors
-    system("sudo mkdir -p #{mount_path}")
+    system("sudo mkdir -p -m 0777 #{mount_path}")
     system("sudo mount --bind #{path} #{mount_path}")
     Arch.all.each do |arch|
       str = "country=Russian Federation,city=Moscow,latitude=52.18,longitude=48.88,bw=1GB,version=2011,arch=#{arch.name},type=distrib,url=#{public_downloads_url}\n"
@@ -155,6 +156,23 @@ class Platform < ActiveRecord::Base
       r = relations.where(:object_id => owner_id_was, :object_type => owner_type_was)[0]
       r.update_attributes(:object_id => owner_id, :object_type => owner_type)
     end
+  end
+
+  def build_all(user)
+    repositories.find_by_name('main').projects.find_in_batches(:batch_size => 5) do |group|
+      sleep 1
+      group.each do |p|
+        begin
+          p.build_for(self, user)
+        rescue RuntimeError, Exception
+          p.delay.build_for(self, user)
+        end
+      end
+    end
+  end
+
+  def destroy
+    with_skip {super} # avoid cascade XML RPC requests
   end
 
   protected
@@ -181,12 +199,12 @@ class Platform < ActiveRecord::Base
       end
     end
 
-    def xml_rpc_clone(new_name)
-      result = BuildServer.clone_platform new_name, self.name, APP_CONFIG['root_path'] + '/platforms'
+    def xml_rpc_clone(old_name = parent.name, new_name = name)
+      result = BuildServer.clone_platform new_name, old_name, APP_CONFIG['root_path'] + '/platforms'
       if result == BuildServer::SUCCESS
         return true
       else
-        raise "Failed to clone platform #{name} with code #{result}. Path: #{build_path(name)} to platform #{new_name}"
+        raise "Failed to clone platform #{old_name} with code #{result}. Path: #{build_path(old_name)} to platform #{new_name}"
       end
     end
 

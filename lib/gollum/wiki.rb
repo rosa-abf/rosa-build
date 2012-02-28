@@ -87,6 +87,11 @@ module Gollum
     end
     alias_method_chain :revert_page, :committer
 
+    def revert_commit_with_committer(sha1, sha2 = nil, commit = {})
+      revert_page_with_committer(nil, sha1, sha2, commit)
+    end
+    alias_method_chain :revert_commit, :committer
+
     private
 
     def force_grit_encoding(str)
