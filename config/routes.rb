@@ -129,6 +129,7 @@ Rosa::Application.routes.draw do
         get :edit
         post :update
         post :add
+        delete :remove
       end
       member do
         post :update
