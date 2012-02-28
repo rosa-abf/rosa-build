@@ -8,6 +8,7 @@ require 'bundler/capistrano'
 require 'delayed/recipes'
 require 'airbrake/capistrano'
 
+
 set :whenever_command, "bundle exec whenever"
 # require "whenever/capistrano"
 
@@ -65,7 +66,13 @@ end
 after "deploy:finalize_update", "deploy:symlink_all"
 after "deploy:update_code", "deploy:migrate"
 after "deploy:setup", "deploy:symlink_pids"
-after "deploy:restart", "bluepill:start" # "bluepill:processes:restart_dj" # "bluepill:restart"
+# after "deploy:restart", "bluepill:start" # "bluepill:processes:restart_dj" # "bluepill:restart"
+
+# DJ
+after "deploy:stop",    "delayed_job:stop"  
+after "deploy:start",   "delayed_job:start"  
+after "deploy:restart", "delayed_job:restart"
+
 after "deploy:restart", "deploy:cleanup"
 
 require 'cape'

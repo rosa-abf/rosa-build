@@ -8,6 +8,11 @@ table.tablesorter {
 	border: 1px solid #DDD;
 	border-bottom: none;
 }
+
+table.tablesorter thead th{
+	padding-left: 5px;
+}
+
 table.tablesorter thead tr th, table.tablesorter tfoot tr th {
 	font-size: 12px;
 	margin: 0px;
@@ -75,7 +80,7 @@ table.tablesorter tbody td {
 
 table.tablesorter .th1 {
 	width: 180px;
-	padding-left: 17px;
+	/*padding-left: 17px;*/
 }
 
 table.tablesorter .th2 {
@@ -84,7 +89,7 @@ table.tablesorter .th2 {
 
 table.tablesorter .th3 {
 	width: 110px;
-	padding-left: 17px;
+	/*padding-left: 17px;*/
 }
 
 table.tablesorter .td2 {

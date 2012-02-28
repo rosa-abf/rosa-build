@@ -35,4 +35,5 @@ function startCheck()
 	startChangeCheck(document.getElementById("niceCheckbox2"));
 	startChangeCheck(document.getElementById("niceCheckbox3"));
 	startChangeCheck(document.getElementById("niceCheckbox4"));
+	startChangeCheck(document.getElementById("niceCheckbox5"));
 }
