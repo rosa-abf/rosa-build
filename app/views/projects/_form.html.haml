@@ -15,9 +15,9 @@
     = f.label :owner_id, t("activerecord.attributes.project.owner"), :class => :label
   .rightlist
     = label_tag t("activerecord.attributes.project.who_owns.me")
-    = radio_button_tag :who_owns, 'me'
+    = radio_button_tag :who_owns, 'me', :class => 'niceRadio'
     = label_tag t("activerecord.attributes.project.who_owns.group")
-    = radio_button_tag :who_owns, 'group'
+    = radio_button_tag :who_owns, 'group', :class => 'niceRadio'
     -# TODO: Make our own select_box helper with new design, blackjack and bitches!
     = select_tag :owner_id, options_for_select( Group.can_own_project(current_user) )
   .both
@@ -64,18 +64,12 @@
   .rightlist
     = f.file_field :srpm, :class => 'file_field'
   .both
--#.leftlist
--#  \ 
--#.rightlist
--#  -#%a.button{:href => "#"} Сохранить
--#  = submit_tag t("layout.save"), :class => 'button'
--#.both
-.group.navform.wat-cf
-  %button.button{:type => "submit"}
-    = image_tag("choose.png", :alt => t("layout.save"))
-    = t("layout.save")
-  %span.text_button_padding= t("layout.or")
-  = link_to t("layout.cancel"), @projects_path, :class => "text_button_padding link_button"
+.leftlist
+  \ 
+.rightlist
+  -#%a.button{:href => "#"} Сохранить
+  = submit_tag t("layout.save"), :class => 'button'
+.both
 
 -#.group
 -#  = f.label :category_id, t("activerecord.attributes.project.category_id"), :class => :label
