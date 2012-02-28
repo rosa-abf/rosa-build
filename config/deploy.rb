@@ -62,8 +62,9 @@ namespace :deploy do
 end
 
 after "deploy:update_code", "deploy:symlink_all", "deploy:migrate"
+after "deploy:update", "bluepill:quit", "bluepill:start"
 after "deploy:setup", "deploy:symlink_pids"
-after "deploy:restart", "bluepill:start" # "bluepill:processes:restart_dj" # "bluepill:restart"
+after "deploy:restart", "bluepill:quit", "bluepill:start"
 after "deploy:restart", "deploy:cleanup"
 
 require 'cape'

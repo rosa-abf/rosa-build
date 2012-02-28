@@ -36,7 +36,8 @@ Capistrano::Configuration.instance(:must_exist).load do
     end
 
     desc "Quit bluepill"
-    task :stop, :roles => [:app] do
+    task :quit, :roles => [:app] do
+      run "cd #{fetch :current_path} && #{try_sudo} #{bluepill_binary} #{fetch :application} stop"
       run "cd #{fetch :current_path} && #{try_sudo} #{bluepill_binary} #{fetch :application} quit"
     end
 
