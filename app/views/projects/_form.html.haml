@@ -32,8 +32,7 @@
 .rightlist
   =# f.select :visibility, Project::VISIBILITIES
   - Project::VISIBILITIES.each do |visibility|
-    %span.niceRadio.radioChecked
-      = f.radio_button :visibility, visibility, :class => 'niceRadio'
+    = f.radio_button :visibility, visibility, :class => 'niceRadio'
     - if visibility == 'open'
       = image_tag("unlock.png")
     - else
@@ -45,16 +44,6 @@
     Ветка по умолчанию:
   .rightlist
     = f.select :default_branch, options_from_collection_for_select(@project.branches, :name, :name, @project.default_branch), :class => 'sel80', :id => 'branch_selector'
-    -#.lineForm
-    -#  #cuselFrame-ext.cusel.sel80{:style => "width:200px", :tabindex => "2"}
-    -#    .cuselFrameRight
-    -#    .cuselText Master
-    -#    .cusel-scroll-wrap{:style => "display: none; visibility: visible; "}
-    -#      #cusel-scroll-ext.cusel-scroll-pane
-    -#        %span.cuselActive{:selected => "selected", :val => "1000"} Master
-    -#        %span{:val => "1"} Extend
-    -#        %span{:val => "2"} Fork4Driver
-    -#    %input#ext{:name => "ext", :type => "hidden", :value => "1000"}/
   .both
 - if [:edit, :update].include? act
   .leftlist
@@ -63,7 +52,8 @@
     .check
       -#%span#niceCheckbox1.niceCheck-main{:onclick => "changeCheck(this)"}
       -#  %input{:name => "ch1", :type => "checkbox"}/
-      = f.check_box :is_rpm, :class => 'niceCheck-main'
+      %span#niceCheckbox1.niceCheck-main
+        = f.check_box :is_rpm#, :class => 'niceCheckbox1'
     .forcheck
       Проект является пакетом
     .both

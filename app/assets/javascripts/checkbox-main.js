@@ -1,38 +1,32 @@
-function changeCheck(el)
+function changeCheck(el) {
+  var el = el, input = el.find('input[type="checkbox"]');
 
-{
-     var el = el,
-          input = el.getElementsByTagName("input")[0];
-		
-     if(input.checked)
-     {
-	     el.style.backgroundPosition="0 0"; 
-		 input.checked=false;
-     }
-     else
-     {
-          el.style.backgroundPosition="0 -18px"; 
-		  input.checked=true;
-     }
-     return true;
-}
-function startChangeCheck(el)
+  if(input.attr("checked")) {
+    el.css('backgroundPosition', '0 0');
+    input.removeAttr('checked');
+  } else {
+    el.css('backgroundPosition', '0 -18px');
+    input.attr('checked', true);
+  }
 
-{
-	var el = el,
-          input = el.getElementsByTagName("input")[0];
-     if(input.checked)
-     {
-          el.style.backgroundPosition="0 -18px";     
-      }
-     return true;
+  return true;
 }
 
-function startCheck()
-{
+function startChangeCheck(el) {
+  var el = el, input = el.find('input[type="checkbox"]');
 
-	startChangeCheck(document.getElementById("niceCheckbox1"));
-	startChangeCheck(document.getElementById("niceCheckbox2"));
-	startChangeCheck(document.getElementById("niceCheckbox3"));
-	startChangeCheck(document.getElementById("niceCheckbox4"));
+  if(input.attr('checked')) {
+    el.css('backgroundPosition', '0 -18px');
+  }
+
+  return true;
 }
+
+$(document).ready(function(){
+  $('.niceCheck-main').each(function(i,el) {
+    startChangeCheck($(el));
+  });
+  $('.niceCheck-main').click(function() {
+    changeCheck($(this));
+  });
+});
