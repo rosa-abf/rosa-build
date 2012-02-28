@@ -3,13 +3,11 @@
   %head
     %meta{:content => "text/html; charset=utf-8", "http-equiv" => "content-type"}
     = display_meta_tags :site => APP_CONFIG['project_name']
-    = stylesheet_link_tag "application"
-    = javascript_include_tag "application"
+    = stylesheet_link_tag "login"
+    = javascript_include_tag "login"
     = csrf_meta_tag
   %body
-    #container
-      #box
-        = render :partial => "layouts/flashes"
-        = yield
+    -# render :partial => "layouts/flashes"
+    = yield
 
     = render 'layouts/counters' unless current_user.try(:admin?)
