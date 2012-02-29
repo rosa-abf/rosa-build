@@ -108,9 +108,9 @@ input.button {
   height: 25px;
   width: 106px;
   text-decoration: none;
-  padding: 5px 27px 8px 27px;
-  height: 28px;
-  width: 110px; }
+  padding: 3px 27px 8px 27px;
+  height: 25px;
+  width: auto; }
 
 a.button:hover, input.button:hover {
   background: #1874b6;
@@ -126,10 +126,11 @@ a.button {
     background: image-url("button-green-disabled.png");
     cursor: default; } }
 
-input.button:disabled {
-  background: #125687;
-  background: image-url("button-green-disabled.png");
-  cursor: default; }
+input.button {
+  &:disabled, &.disabled {
+    background: #125687;
+    background: image-url("button-green-disabled.png");
+    cursor: default; } }
 
 article h1 {
   color: #FFF;
