@@ -16,7 +16,7 @@ class GitPresenters::CommitAsMessagePresenter < ApplicationPresenter
                   I18n.t("layout.messages.commits.header_with_branch",
                    :committer => committer_link, :commit => commit_link, :branch => options[:branch].name)
                 elsif options[:project].present?
-                  I18n.t("layout.messages.commits.header_with_project",
+                  I18n.t("layout.messages.commits.header",
                    :committer => committer_link, :commit => commit_link, :project => options[:project].name)
                 end.html_safe
   end
