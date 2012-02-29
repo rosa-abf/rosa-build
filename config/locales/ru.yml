@@ -271,7 +271,7 @@ ru:
 
     groups:
       list: Список
-      new: Создать
+      new: Создать группу
       edit: Редактировать
       members: Участники
       new_header: Новая группа
@@ -281,6 +281,10 @@ ru:
       back_to_the_list: ⇐ К списку групп
       confirm_delete: Вы уверены, что хотите удалить эту группу?
       edit_members: Изменить список участников
+      group: Группа
+      description: Описание
+      leave_group: Покинуть группу
+      projects_list: Список проектов
 
     users:
       list: Список
@@ -677,6 +681,7 @@ ru:
         owner: Владелец
         created_at: Создана
         updated_at: Обновлена
+        description: Описание
 
       user:
         name: Имя

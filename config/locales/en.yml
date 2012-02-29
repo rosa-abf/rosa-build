@@ -296,6 +296,9 @@ en:
       own_projects: My projects
       part_projects: Participate projects
       filter_header: Filter
+      group: Group
+      description: Descripton
+      leave_group: Leave group
 
     git:
       upload: Upload

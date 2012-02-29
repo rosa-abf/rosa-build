@@ -12,11 +12,12 @@ class GroupsController < ApplicationController
 
   def index
     puts parent.inspect
-    @groups = if parent? and !parent.nil?
-                parent.groups
-              else
-                Group
-              end.accessible_by(current_ability)
+    #@groups = #if parent? and !parent.nil?
+              #  parent.groups
+              #else
+              #  Group
+              #end.accessible_by(current_ability)
+    @groups = current_user.groups#accessible_by(current_ability)
 
     @groups = if params[:query]
                 @groups.where(["name LIKE ?", "%#{params[:query]}%"])
