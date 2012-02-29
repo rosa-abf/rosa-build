@@ -170,21 +170,6 @@ div.in {
   margin-right: 15px;
   margin-top: 12px; }
 
-div.error {
-  background: image-url("error-message.png");
-  width: 237px;
-  height: 35px;
-  font-size: 12px;
-  position: absolute;
-  margin-top: -159px;
-  margin-left: 645px;
-  display: none;
-  p {
-    margin: 0;
-    padding: 0;
-    padding-top: 7px;
-    text-align: center; } }
-
 /* Footer */
 
 footer {
@@ -209,3 +194,34 @@ footer {
         text-decoration: none;
         &:hover {
           text-decoration: underline; } } } } }
+
+div.error {
+  background: image-url("error-message.png");
+  width: 237px;
+  height: 35px;
+  font-size: 12px;
+  position: absolute;
+  margin-top: -159px;
+  margin-left: 582px;
+  //display: none;
+  p {
+    margin: 0;
+    padding: 0;
+    padding-top: 7px;
+    text-align: center; }
+  &.login {
+    margin-top: -242px;
+    margin-left: 650px; }
+  &.name {
+    margin-top: -202px;
+    margin-left: 650px; }
+  &.email {
+    margin-top: -161px;
+    margin-left: 650px; }
+  &.password {
+    margin-top: -101px;
+    margin-left: 650px; } }
+
+div.error.forgot {
+  margin-top: 8px;
+  margin-left: 308px; }

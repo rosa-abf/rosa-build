@@ -6,10 +6,14 @@
     - if controller_name == 'sessions' && action_name == 'new'
       = stylesheet_link_tag "login"
       = javascript_include_tag "login"
-    - elsif controller_name == 'registrations' && ['new', 'create'].include?(action_name)
+    - elsif ['registrations', 'passwords'].include?(controller_name) && ['new', 'create'].include?(action_name)
       = stylesheet_link_tag "registration"
+      = javascript_include_tag "registration"
     = csrf_meta_tag
+    
   %body
+    =controller_name
+    =action_name
     -# render :partial => "layouts/flashes"
     = yield
 
