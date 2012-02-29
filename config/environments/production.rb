@@ -50,7 +50,7 @@ Rosa::Application.configure do
   config.active_support.deprecation = :notify
 
   # Force SSL
-  config.force_ssl = true
+  # config.force_ssl = true
 
   # Compress JavaScripts and CSS
   config.assets.compress = true

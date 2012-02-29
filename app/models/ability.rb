@@ -55,12 +55,14 @@ class Ability
         #can :create, AutoBuildList
         #can [:index, :destroy], AutoBuildList, :project_id => user.own_project_ids
 
+        can [:read, :owned], BuildList, :user_id => user.id
         can :read, BuildList, :project => {:visibility => 'open'}
-        can :read, BuildList, :project => {:owner_type => 'User', :owner_id => user.id}
-        can :read, BuildList, :project => {:owner_type => 'Group', :owner_id => user.group_ids}
+        can [:read, :related], BuildList, :project => {:owner_type => 'User', :owner_id => user.id}
+        can [:read, :related], BuildList, :project => {:owner_type => 'Group', :owner_id => user.group_ids}
         can(:read, BuildList, read_relations_for('build_lists', 'projects')) {|build_list| can? :read, build_list.project}
         can(:create, BuildList) {|build_list| can? :write, build_list.project}
         can(:publish, BuildList) {|build_list| build_list.can_publish? && can?(:write, build_list.project)}
+        can(:cancel, BuildList) {|build_list| build_list.can_cancel? && can?(:write, build_list.project)}
 
         can :read, Platform, :visibility => 'open'
         can :read, Platform, :owner_type => 'User', :owner_id => user.id

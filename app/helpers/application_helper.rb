@@ -9,4 +9,15 @@ module ApplicationHelper
     
     return title
   end
+
+  def layout_class
+    case
+    when params[:controller] == 'issues' && params[:action] == 'new'
+      'nopadding'
+    when params[:controller] == 'build_lists'
+      'slim'
+    else
+      nil
+    end
+  end
 end

@@ -43,7 +43,7 @@
       %article
         - if content_for?(:sidebar)
           %aside= yield :sidebar
-          .right= yield
+          .right{:class => layout_class}= yield
         - else
           .all= yield
         .both

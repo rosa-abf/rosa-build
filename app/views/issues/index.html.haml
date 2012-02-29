@@ -1,22 +1,21 @@
-.block
-  .secondary-navigation
-    %ul.wat-cf
-      %li.first.active= link_to t("layout.issues.list"), project_issues_path(@project)
-      %li= link_to t("layout.issues.new"), new_project_issue_path(@project) if can? :new, Issue.new(:project_id => @project.id)
-  .secondary-navigation
-    %ul.wat-cf
-      %li{:class => "first " + (params[:status].blank? ? "active" : "")}
-        = link_to t("layout.issues.statuses.any"), project_issues_path(@project)
-      %li{:class => "first " + (params[:status] == 'open' ? "active" : "")}
-        = link_to t("layout.issues.statuses.open"), project_issues_path(@project, :status => 'open')
-      %li{:class => "first " + (params[:status] == 'closed' ? "active" : "")}
-        = link_to t("layout.issues.statuses.closed"), project_issues_path(@project, :status => 'closed')
-  .content
-    %h2.title
-      = t("layout.issues.list_header")
-    .inner
-      = render :partial => 'shared/search_form'
-      = render :partial => 'issues/list'
-      .actions-bar.wat-cf
-        .actions
-          = will_paginate @issues#, :param_name => :issue_page
+-render :partial => 'projects/submenu'
+-render :partial => 'issues/index_sidebar'
+
+#closed-switcher.blue-switcher
+  =hidden_field_tag :issues_status, @status, :id => 'issues_status'
+  .open
+    ="#{t('layout.issues.statuses.open')} (#{@opened_issues})"
+  #closed-tasks.closed
+    ="#{t('layout.issues.statuses.closed')} (#{@closed_issues})"
+  #blue-switch-select.selected{:style => "margin-left: #{@status == 'open' ? '0' : '130'}px;"}
+  .both
+.both
+#table1
+  %table#myTable.tablesorter.tracker{:cellpadding => "0", :cellspacing => "0"}
+    %thead
+      %tr
+        %th.th1{:colspan => "2"}=t('layout.issues.number')
+        %th{:colspan => "2"}=t('layout.issues.description')
+    %tbody
+      = render :partial => 'issues/issue', :collection => @issues
+  = will_paginate @issues

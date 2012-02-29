@@ -35,8 +35,9 @@ class BuildList < ActiveRecord::Base
                 BuildServer::PLATFORM_PENDING,
                 BuildServer::PROJECT_NOT_FOUND,
                 BuildServer::PROJECT_VERSION_NOT_FOUND,
-                BuildServer::BINARY_TEST_FAILED,
-                BuildServer::DEPENDENCY_TEST_FAILED  ]
+                # BuildServer::BINARY_TEST_FAILED,
+                # BuildServer::DEPENDENCY_TEST_FAILED
+              ]
 
   HUMAN_STATUSES = { WAITING_FOR_RESPONSE => :waiting_for_response,
                      BUILD_CANCELED => :build_canceled,
@@ -51,8 +52,8 @@ class BuildList < ActiveRecord::Base
                      BuildServer::PLATFORM_PENDING => :platform_pending,
                      BuildServer::PROJECT_NOT_FOUND => :project_not_found,
                      BuildServer::PROJECT_VERSION_NOT_FOUND => :project_version_not_found,
-                     BuildServer::DEPENDENCY_TEST_FAILED => :dependency_test_failed,
-                     BuildServer::BINARY_TEST_FAILED => :binary_test_failed
+                     # BuildServer::DEPENDENCY_TEST_FAILED => :dependency_test_failed,
+                     # BuildServer::BINARY_TEST_FAILED => :binary_test_failed
                     }
 
   scope :recent, order("#{table_name}.updated_at DESC")

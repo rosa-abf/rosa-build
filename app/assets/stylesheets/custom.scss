@@ -1,4 +1,12 @@
 // PUT custom styles here ONLY
+
+a#manage-labels {
+  margin-bottom: 10px;
+}
+article a.edit_label {
+  color: #FFF;
+}
+
 header div.information div.user {
     float: left;
     margin-left: 5px;
@@ -36,7 +44,7 @@ article div.messages div.activity {
 }
 
 article div.activity .top div.image {
-    position: absolute;
+    //position: absolute; // TODO broken issue page
     float: left;
     width: 40px;
     height: 40px;
@@ -129,137 +137,6 @@ article div.date-block div.date {
     height: 52px;
 }
 
-article div#repo-wrapper div.hr {
-    width: 100%;
-}
-
-article table.commit_stats {
-    line-height: 1.4em;
-    margin-top: 12px;
-    width: 100%;
-    border-spacing: 0;
-    border-top: 1px solid #DDDDDD;
-    margin: 10px 0;
-    padding: 0;
-    font-size: 90%;
-    border-collapse: collapse;
-}
-
-article table.commit_stats td {
-    border-bottom: 1px solid #DDDDDD;
-    padding: 0.4em 5px;
-}
-
-article table.commit_stats .diffstat {
-    text-align: right;
-    white-space: nowrap;
-    padding-right: 0;
-    width: 1%;
-}
-
-article div.file div.diff_data {
-    overflow-x: auto;
-}
-
-article div.file table {
-    border-spacing: 0;
-    border-collapse: collapse;
-}
-
-#repo-wrapper table.diff td.line_numbers {
-     -moz-user-select: none;
-    font-size: 12px;
-    padding: 0 0.5em;
-    background-color: #ECECEC;
-    border-right: 1px solid #DDDDDD;
-    color: #999999;
-    text-align: right;
-}
-
-#repo-wrapper table.diff td.line_numbers,
-#repo-wrapper table.diff td.header,
-#repo-wrapper table.diff td.code {
-    font-family: 'Bitstream Vera Sans Mono','Courier',monospace;
-}
-
-#repo-wrapper table.diff td.header {
-    background-color: #ECECEC;
-    color: #999999;
-    width: 100%;
-    line-height: 1.4em;
-    font-size: 90%;
-}
-
-#repo-wrapper table.diff td.code, #repo-wrapper table.diff td.header {
-    padding-left: 10px;
-}
-
-#repo-wrapper table.diff pre {
-    padding: 0;
-    margin: 0;
-}
-
-#repo-wrapper table.diff .diff-content {
-    padding: 0;
-    margin: 0;
-}
-
-#repo-wrapper table.diff tr td.code.del {
-    background-color: #FFDDDD;
-}
-
-#repo-wrapper table.diff tr td.code.del .idiff {
-    background-color: #F2ACAD;
-}
-
-#repo-wrapper table.diff tr td.code.ins {
-    background-color: #DDFFDD;
-}
-
-#repo-wrapper table.diff tr td.code.ins .idiff {
-    background-color: #BAFBAD;
-}
-
-#repo-wrapper div.comment {
-    background: none repeat scroll 0 0 #DCECFA;
-    border: 1px solid #B3CCE0;
-    border-radius: 4px 4px 4px 4px;
-    margin-bottom: 10px;
-    margin-top: 15px;
-    padding: 6px;
-    text-align: left;
-}
-
-#repo-wrapper div.view {
-    display: block;
-}
-
-#repo-wrapper div.comment div.wrapper {
-    border: 1px solid #DEDEDE;
-    border-radius: 4px 4px 4px 4px;
-    color: #575756;
-    background: #FFFFFF;
-    font-size: 12px;
-    height: 110px;
-    margin: 10px 0;
-    padding: 5px;
-}
-
-#repo-wrapper div.comment div.wrapper textarea {
-    border: none;
-    color: #575756;
-    font-family: Tahoma,Geneva,Helvetica,sans-serif;
-    width: 100%;
-    height: 100%;
-    resize: none;
-}
-
-#repo-wrapper div.comment div.comment-left {
-    float: left;
-    font-size: 12px;
-    margin-top: 4px;
-}
-
-#repo-wrapper div.comment div.comment-right {
-    float: right;
+.date_select {
+  select {margin:3px 0px; padding:0px;}
 }

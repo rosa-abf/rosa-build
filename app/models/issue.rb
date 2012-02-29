@@ -4,9 +4,13 @@ class Issue < ActiveRecord::Base
 
   belongs_to :project
   belongs_to :user
+  belongs_to :creator, :class_name => 'User', :foreign_key => 'creator_id'
+  belongs_to :closer, :class_name => 'User', :foreign_key => 'closed_by'
 
   has_many :comments, :as => :commentable, :dependent => :destroy #, :finder_sql => proc { "comments.commentable_id = '#{self.id}' AND comments.commentable_type = '#{self.class.name}'"}
   has_many :subscribes, :as => :subscribeable, :dependent => :destroy #, :finder_sql => proc { "subscribes.subscribeable_id = '#{self.id}' AND subscribes.subscribeable_type = '#{self.class.name}'"}
+  has_many :labels, :through => :labelings
+  has_many :labelings
 
   validates :title, :body, :project_id, :presence => true
 
@@ -18,6 +22,12 @@ class Issue < ActiveRecord::Base
   after_create :deliver_issue_assign_notification
   after_update :deliver_issue_assign_notification
   after_update :subscribe_issue_assigned_user
+
+  attr_accessible :labelings_attributes, :title, :body, :project, :project_id, :closed_at, :closed_by
+  accepts_nested_attributes_for :labelings, :allow_destroy => true
+
+  scope :opened, where(:status => 'open', :closed_by => nil, :closed_at => nil)
+  scope :closed, where(:status => 'closed').where("closed_by is not null and closed_at is not null")
 
   def assign_uname
     user.uname if user
@@ -31,6 +41,21 @@ class Issue < ActiveRecord::Base
     if !self.subscribes.exists?(:user_id => creator_id)
       self.subscribes.create(:user_id => creator_id)
     end
+  end
+
+  def closed?
+    closed_by && closed_at && status == 'closed'
+  end
+
+  def set_close(closed_by)
+    self.closed_at = Time.now
+    self.closer = closed_by
+    self.status = 'closed'
+  end
+
+  def set_open
+    self.closed_at = self.closed_by = nil
+    self.status = 'open'
   end
 
   protected
@@ -81,4 +106,5 @@ class Issue < ActiveRecord::Base
       end
     end
   end
+
 end

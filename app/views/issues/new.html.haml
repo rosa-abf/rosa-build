@@ -1,11 +1,6 @@
-.block
-  .secondary-navigation
-    %ul.wat-cf
-      %li.first= link_to "#{t("layout.issues.list")}", project_issues_path(@project)
-      %li.active= link_to "#{t("layout.issues.new")}", new_project_issue_path(@project)
-  .content
-    %h2.title
-      = t("layout.issues.new_header")
-    .inner
-      = form_for :issue, :url => project_issues_path(@project), :html => { :class => :form } do |f|
-        = render :partial => "form", :locals => {:f => f}
+-render :partial => 'projects/submenu'
+-render :partial => 'issues/create_sidebar'
+
+%h3.bpadding10= t("layout.issues.create_header")
+= form_for :issue, :url => project_issues_path(@project), :html => { :class => 'form issue' } do |f|
+  = render :partial => "form", :locals => {:f => f}

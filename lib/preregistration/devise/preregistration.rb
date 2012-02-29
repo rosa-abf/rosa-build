@@ -19,7 +19,7 @@ module Preregistration
           resource.email = req.email if resource.respond_to? :email
           @invitation_token = req.token
 
-          respond_with_navigational(resource){ render_with_scope :new }
+          respond_with_navigational(resource){ render :new }
         else
           redirect_to new_register_request_path
         end
@@ -46,7 +46,7 @@ module Preregistration
           end
         else
           clean_up_passwords(resource)
-          respond_with_navigational(resource) { render_with_scope :new }
+          respond_with_navigational(resource) { render :new }
         end
       end
 

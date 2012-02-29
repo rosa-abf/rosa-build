@@ -117,10 +117,18 @@ Rosa::Application.routes.draw do
         match 'compare/*versions' => 'wiki#compare', :as => :compare_versions, :via => :get
       end
     end
-    resources :issues do
+    resources :issues, :except => :edit do
       resources :comments, :only => [:edit, :create, :update, :destroy]
       resources :subscribes, :only => [:create, :destroy]
+      collection do
+        post :create_label
+        get :search_collaborators
+        get :search_labels
+      end
     end
+    post "labels/:label_id" => "issues#destroy_label", :as => :issues_delete_label
+    post "labels/:label_id/update" => "issues#update_label", :as => :issues_update_label
+
     resource :repo, :controller => "git/repositories", :only => [:show]
     resources :build_lists, :only => [:index, :new, :create]
 
