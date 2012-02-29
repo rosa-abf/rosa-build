@@ -56,6 +56,15 @@ article div.activity .top div.text.imaged {
 
 article div.activity .top div.text .name {
     font-weight: 700;
+    display: block;
+    float: left;
+}
+
+article div.activity .top .buttons {
+    font-weight: 700;
+    display: block;
+    position: relative;
+    float: right;
 }
 
 article div.activity .top div.text .date {
@@ -210,4 +219,48 @@ article div.file table {
 
 #repo-wrapper table.diff tr td.code.ins .idiff {
     background-color: #BAFBAD;
+}
+
+#repo-wrapper div.comment {
+    background: none repeat scroll 0 0 #DCECFA;
+    border: 1px solid #B3CCE0;
+    border-radius: 4px 4px 4px 4px;
+    margin-bottom: 10px;
+    margin-top: 15px;
+    padding: 6px;
+    text-align: left;
+}
+
+#repo-wrapper div.view {
+    display: block;
+}
+
+#repo-wrapper div.comment div.wrapper {
+    border: 1px solid #DEDEDE;
+    border-radius: 4px 4px 4px 4px;
+    color: #575756;
+    background: #FFFFFF;
+    font-size: 12px;
+    height: 110px;
+    margin: 10px 0;
+    padding: 5px;
+}
+
+#repo-wrapper div.comment div.wrapper textarea {
+    border: none;
+    color: #575756;
+    font-family: Tahoma,Geneva,Helvetica,sans-serif;
+    width: 100%;
+    height: 100%;
+    resize: none;
+}
+
+#repo-wrapper div.comment div.comment-left {
+    float: left;
+    font-size: 12px;
+    margin-top: 4px;
+}
+
+#repo-wrapper div.comment div.comment-right {
+    float: right;
 }

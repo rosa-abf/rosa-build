@@ -33,6 +33,10 @@ class GitPresenters::CommitAsMessagePresenter < ApplicationPresenter
     true
   end
 
+  def buttons?
+    false
+  end
+
   def content?
     !content.blank?
   end

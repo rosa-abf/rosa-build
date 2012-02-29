@@ -1,10 +1,12 @@
 .activity
   .top
+    - if presenter.buttons?
+      %span.buttons= raw presenter.buttons.join(' | ').html_safe
     .image
       %img{:alt => "avatar", :src => presenter.image}
     .text.imaged
       %span.name= presenter.header
-      %br/
+      .both
       %span.date= presenter.date
       %br/
       %span.subject

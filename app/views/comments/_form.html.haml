@@ -1,8 +1,12 @@
-.group
+.wrapper
+  = f.text_area :body, :cols => 80
+.comment-right
+  = submit_tag t("layout.save")
+-#.group
   = f.label :body, t("activerecord.attributes.comment.body"), :class => :label
   = f.text_area :body, :class => 'text_field', :cols => 80
 
-.group.navform.wat-cf
+-#.group.navform.wat-cf
   %button.button{:type => "submit"}
     = image_tag("choose.png", :alt => t("layout.save"))
     = t("layout.save")
