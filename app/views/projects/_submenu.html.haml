@@ -5,8 +5,8 @@
     = @project.name
   %nav
     %ul
-      %li= link_to t("project_menu.project"), project_path(@project), {:class => (act == :show && contr.in?([:trees, :blobs])) ? 'active' : ''}
-      %li= link_to t("project_menu.commits"), commits_path(@project), {:class => (act == :index && contr == :commits) ? 'active' : ''}
+      %li= link_to t("project_menu.project"), project_path(@project), {:class => (act.in?([:show, :edit]) && contr.in?([:trees, :blobs])) ? 'active' : ''}
+      %li= link_to t("project_menu.commits"), commits_path(@project), {:class => (act.in?([:index, :show]) && contr == :commits) ? 'active' : ''}
       - if @project.is_rpm
         %li= link_to t("project_menu.builds"), project_build_lists_path(@project), {:class => (act == :index && contr == :builds) ? 'active' : ''}
       %li= link_to t("project_menu.tracker"), project_issues_path(@project), {:class => (act == :index && contr == :issues) ? 'active' : ''}
