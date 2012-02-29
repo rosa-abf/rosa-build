@@ -1,4 +1,4 @@
-function deleteAdminMember() {
+/*function deleteAdminMember() {
 	if (document.getElementById("niceCheckbox1-1").checked == true) {
 		$("#admin-table-members-row1").fadeOut("slow");
 	}
@@ -11,4 +11,16 @@ function deleteAdminMember() {
 	if (document.getElementById("niceCheckbox4-1").checked == true) {
 		$("#admin-table-members-row4").fadeOut("slow");
 	}
+}*/
+
+function saveAdminMember() {
+  $('#_method').attr('value', 'post');
+  $('form#members_form').submit();
+}
+
+function deleteAdminMember() {
+  $('#_method').attr('value', 'delete');
+  var delete_url = $('form#members_form').attr('delete_url');
+  $('form#members_form').attr('action', delete_url);
+  $('form#members_form').submit();
 }

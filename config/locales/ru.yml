@@ -255,6 +255,12 @@ ru:
       add_role: Добавить/Удалить роль
       input_username: Введите псевдоним пользователя
       input_groupname: Введите псевдоним группы
+      members: Участники
+      roles: Роли
+      role_names:
+        reader: Читатель
+        writer: Писатель
+        admin: Админ
 
     members:
       back_to_group: Вернуться к группе

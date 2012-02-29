@@ -255,6 +255,12 @@ en:
       add_role: Add/Remove a role
       input_username: Enter an username
       input_groupname: Enter a groupname
+      members: Members
+      roles: Roles
+      role_names:
+        reader: Reader
+        writer: Writer
+        admin: Admin
 
     members:
       back_to_group: Back to group

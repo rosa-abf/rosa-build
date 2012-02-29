@@ -30,48 +30,6 @@ class CollaboratorsController < ApplicationController
   end
 
   def update
-    #all_user_ids = []
-    #all_groups_ids = []
-    #Relation::ROLES.each { |r| 
-    #  all_user_ids = all_user_ids | params['user'][r.to_sym].keys if params['user'] && params['user'][r.to_sym]
-    #  all_groups_ids = all_groups_ids | params['group'][r.to_sym].keys if params['group'] && params['group'][r.to_sym]
-    #}
-
-    # Remove relations
-    #users_for_removing = @project.collaborators.select do |u|
-    #  !all_user_ids.map{|k| k.to_i}.include? u.id and @project.owner != u
-    #end
-    #users_for_removing.each do |u|
-    #  Relation.by_object(u).by_target(@project).each {|r| r.destroy}
-    #end
-    #groups_for_removing = @project.groups.select do |u|
-    #  !all_groups_ids.map{|k| k.to_i}.include? u.id and @project.owner != u
-    #end
-    #groups_for_removing.each do |u|
-    #  Relation.by_object(u).by_target(@project).each {|r| r.destroy}
-    #end
-
-    # Create relations
-    #Relation::ROLES.each { |r|
-    #  #users_for_creating = users_for_creating params[:user].keys.map{|p| p.to_i} - @project.collaborators.map(&:id)
-    #  params['user'][r.to_sym].keys.each { |u|
-    #    if relation = @project.relations.find_by_object_id_and_object_type(u, 'User')
-    #      relation.update_attribute(:role, r)
-    #    else
-    #      relation = @project.relations.build(:object_id => u, :object_type => 'User', :role => r)
-    #      relation.save!
-    #    end
-    #  } if params['user'] && params['user'][r.to_sym]
-    #  params['group'][r.to_sym].keys.each { |u|
-    #    if relation = @project.relations.find_by_object_id_and_object_type(u, 'Group')
-    #      relation.update_attribute(:role, r)
-    #    else
-    #      relation = @project.relations.build(:object_id => u, :object_type => 'Group', :role => r)
-    #      relation.save!
-    #    end
-    #  } if params['group'] && params['group'][r.to_sym]
-    #}
-
     params['user'].keys.each { |user_id|
       role = params['user'][user_id]
 
@@ -81,7 +39,7 @@ class CollaboratorsController < ApplicationController
         relation = @project.relations.build(:object_id => user_id, :object_type => 'User', :role => role)
         relation.save!
       end
-    } if params['user']# && params['user'][r.to_sym]
+    } if params['user']
 
     params['group'].keys.each { |group_id|
       role = params['group'][group_id]
@@ -91,7 +49,7 @@ class CollaboratorsController < ApplicationController
         relation = @project.relations.build(:object_id => user_id, :object_type => 'Group', :role => role)
         relation.save!
       end
-    } if params['group']# && params['group'][r.to_sym]
+    } if params['group']
 
     if @project.save
       flash[:notice] = t("flash.collaborators.successfully_changed")

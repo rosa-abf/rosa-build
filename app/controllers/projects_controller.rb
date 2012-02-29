@@ -35,6 +35,7 @@ class ProjectsController < ApplicationController
 
   def new
     @project = Project.new
+    @who_owns = :me
   end
 
   def edit
@@ -44,6 +45,9 @@ class ProjectsController < ApplicationController
     @project = Project.new params[:project]
     #@project.owner = get_owner
     @project.owner = choose_owner
+    puts "OWNER_TYPE: " + @project.owner_type
+    @who_owns = (@project.owner_type == 'User' ? :me : :group)
+    puts "WHO_OWNS: " + @who_owns.to_s
 
     if @project.save
       flash[:notice] = t('flash.project.saved') 
