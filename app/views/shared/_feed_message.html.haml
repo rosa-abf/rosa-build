@@ -1,0 +1,20 @@
+.activity
+  .top
+    - if presenter.buttons?
+      %span.buttons= raw presenter.buttons.join(' | ').html_safe
+    .image
+      %img{:alt => "avatar", :src => presenter.image}
+    .text.imaged
+      %span.name= presenter.header
+      .both
+      %span.date= presenter.date
+      %br/
+      %span.subject
+        = presenter.caption
+      - if presenter.expandable? and presenter.content?
+        %span.data-expander.collapsed{:id => "expand#{item_no}"} &nbsp;
+    .both
+    - if presenter.content?
+      .fulltext{:class => presenter.expandable? ? "hidden" : '',
+                :id    => presenter.expandable? ? "content-expand#{item_no}" : ''}
+        = presenter.content

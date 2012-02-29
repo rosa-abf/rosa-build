@@ -6,10 +6,14 @@ module CommitHelper
     stats.files.each do |filename, adds, deletes, total|
       res << "<tr>"
       res << "<td><a href='##{h(filename)}'>#{h(filename)}</a></td>"
-      res << "<td>#{total}</td>"
-      res << "<td><small class='deletions'>#{(0...deletes).map{|i| "-" }.join}</small>"
-      res << "<small class='insertions'>#{(0...adds).map{|i| "+" }.join}</small></td>"
-      res << "</tr>"
+      res << "<td class='diffstat'>"
+      res << I18n.t("layout.projects.inline_changes_count", :count => total).strip +
+             " (" +
+             I18n.t("layout.projects.inline_additions_count", :count => adds).strip +
+             ", " +
+             I18n.t("layout.projects.inline_deletions_count", :count => deletes).strip +
+             ")"
+      res << "</td>"
     end
     res << "</table>"
 

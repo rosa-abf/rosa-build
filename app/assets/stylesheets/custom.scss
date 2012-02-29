@@ -64,6 +64,14 @@ article div.activity .top div.text.imaged {
 
 article div.activity .top div.text .name {
     font-weight: 700;
+    display: block;
+    float: left;
+}
+
+article div.activity .top .buttons {
+    display: block;
+    position: relative;
+    float: right;
 }
 
 article div.activity .top div.text .date {

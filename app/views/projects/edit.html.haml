@@ -1,14 +1,13 @@
-.block
-  .secondary-navigation
-    %ul.wat-cf
-      %li.first= link_to t("layout.projects.list"), @projects_path # url_for(get_owner) + "#projects"
-      %li= link_to t("layout.projects.new"), @new_project_path # new_platform_repository_project_path(@platform, @repository)
-      %li.active= link_to t("layout.projects.edit"), @edit_project_path
+= render :partial => 'projects/submenu'
 
-  .content
-    %h2.title= t("layout.projects.edit_header")
-    .inner
-      = form_for @project, :html => { :class => :form, :multipart => true } do |f|
-        = render :partial => "form", :locals => {:f => f}
+= form_for @project, :html => { :class => :form, :multipart => true } do |f|
+  = render :partial => "form", :locals => {:f => f}
+
+.hr
+.leftside
+  = t("layout.projects.delete_warning")
+.rightside
+  = link_to t("layout.delete"), project_path(@project), :method => :delete, :confirm => t("layout.projects.confirm_delete"), :class => 'button' if can? :destroy, @project
+.both
 
 - content_for :sidebar, render('sidebar')

@@ -137,6 +137,7 @@ Rosa::Application.routes.draw do
         get :edit
         post :update
         post :add
+        delete :remove
       end
       member do
         post :update
@@ -147,6 +148,9 @@ Rosa::Application.routes.draw do
 
     member do
       post :fork
+      get 'show', :controller => 'git/trees', :action => :show, :as => :show
+      get :sections
+      post :sections
     end
     collection do
       get :auto_build
@@ -191,7 +195,7 @@ Rosa::Application.routes.draw do
   match '/projects/:project_id/git/tree/:treeish(/*path)', :controller => "git/trees", :action => :show, :treeish => /[0-9a-zA-Z_.\-]*/, :defaults => { :treeish => :master }, :as => :tree
 
   # Commits
-  match '/projects/:project_id/git/commits/:treeish(/*path)', :controller => "git/commits", :action => :index, :treeish => /[0-9a-zA-Z_.\-]*/, :defaults => { :treeish => :master }, :as => :commits
+  match '/projects/:project_id/git/commits/:treeish(/*path)', :controller => "git/commits", :action => :index, :treeish => /[0-9a-zA-Z_.\-]*/, :defaults => { :treeish => :master }, :as => :commits, :format => false
   match '/projects/:project_id/git/commit/:id(.:format)', :controller => "git/commits", :action => :show, :defaults => { :format => :html }, :as => :commit
   # Commit Comments
   match '/projects/:project_id/git/commit/:commit_id/comments/:id(.:format)', :controller => "comments", :action => :edit, :as => :edit_project_commit_comment, :via => :get
@@ -205,11 +209,11 @@ Rosa::Application.routes.draw do
 
   # Editing files
   match '/projects/:project_id/git/blob/:treeish/*path/edit', :controller => "git/blobs", :action => :edit, :treeish => /[0-9a-zA-Z_.\-]*/, :defaults => { :treeish => :master }, :as => :edit_blob, :via => :get
-  match '/projects/:project_id/git/blob/:treeish/*path', :controller => "git/blobs", :action => :update, :treeish => /[0-9a-zA-Z_.\-]*/, :defaults => { :treeish => :master }, :via => :put
+  match '/projects/:project_id/git/blob/:treeish/*path', :controller => "git/blobs", :action => :update, :treeish => /[0-9a-zA-Z_.\-]*/, :defaults => { :treeish => :master }, :via => :put, :format => false
 
   # Blobs
-  match '/projects/:project_id/git/blob/:treeish/*path', :controller => "git/blobs", :action => :show, :treeish => /[0-9a-zA-Z_.\-]*/, :defaults => { :treeish => :master }, :as => :blob, :via => :get
-  match '/projects/:project_id/git/commit/blob/:commit_hash/*path', :controller => "git/blobs", :action => :show, :project_id => /[0-9a-zA-Z_.\-]*/, :as => :blob_commit, :via => :get
+  match '/projects/:project_id/git/blob/:treeish/*path', :controller => "git/blobs", :action => :show, :treeish => /[0-9a-zA-Z_.\-]*/, :defaults => { :treeish => :master }, :as => :blob, :via => :get, :format => false
+  match '/projects/:project_id/git/commit/blob/:commit_hash/*path', :controller => "git/blobs", :action => :show, :project_id => /[0-9a-zA-Z_.\-]*/, :as => :blob_commit, :via => :get, :format => false
 
   # Blame
   match '/projects/:project_id/git/blame/:treeish/*path', :controller => "git/blobs", :action => :blame, :treeish => /[0-9a-zA-Z_.\-]*/, :defaults => { :treeish => :master }, :as => :blame

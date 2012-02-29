@@ -1,0 +1,7 @@
+ru:
+  layout:
+    read_more: Читать дальше
+    turned_on: включены
+    turned_off: выключены
+
+    enter_commit_message: Сопровождающее сообщение

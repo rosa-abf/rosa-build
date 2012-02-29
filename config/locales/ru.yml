@@ -224,6 +224,10 @@ ru:
       edit_collaborators: Изменить список участников
       issues: Задачи
       wiki: Wiki
+      delete_warning: Внимание! Удаленный проект восстановлению не подлежит.
+      sections: Разделы
+      has_issue_description: Трэкер предоставляет лекговесный менеджер для задач по разработке Вашего проекта.
+      has_wiki_description: Wiki - это самый простой способ предоставить другим вносить свой вклад в развитие Вашего проекта. Каждый пользователь нашего сервиса может использовать Wiki для документирования, примеров, поддержки или всего другого, в чем у Вас появится необходимость.
 
     collaborators:
       back_to_proj: Вернуться к проекту
@@ -235,6 +239,12 @@ ru:
       add_role: Добавить/Удалить роль
       input_username: Введите псевдоним пользователя
       input_groupname: Введите псевдоним группы
+      members: Участники
+      roles: Роли
+      role_names:
+        reader: Читатель
+        writer: Писатель
+        admin: Админ
 
     members:
       back_to_group: Вернуться к группе
@@ -536,6 +546,9 @@ ru:
         description: Описание
         owner: Владелец
         visibility: Видимость
+        visibilities:
+          open: Публичная
+          hidden: Приватная
         repository_id: Репозиторий
         repository: Репозиторий
         created_at: Создан
@@ -543,6 +556,9 @@ ru:
         has_issues: Включить трэкер
         has_wiki: Включить Wiki
         srpm: Импортировать код из src.rpm
+        who_owns:
+          me: Я
+          group: Группа
 
       rpm:
         name: Название

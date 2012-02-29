@@ -1,0 +1,6 @@
+en:
+  layout:
+    messages:
+      commits:
+        header_with_branch: "%{committer} add %{commit} into %{branch} branch"
+        header: "%{committer} add %{commit}"

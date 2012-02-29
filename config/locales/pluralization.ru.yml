@@ -1,0 +1,28 @@
+ru:
+  layout:
+    projects:
+      commit_files_count:
+        one:  "Показан %{count} файл"
+        few:  "Показано %{count} файла"
+        many: "Показано %{count} файлов"
+      commit_additions_count:
+        one:  "%{count} добавлением"
+        few:  "%{count} добавлениями"
+        many: "%{count} добавлениями"
+      commit_deletions_count:
+        one:  "%{count} удалением"
+        few:  "%{count} удалениями"
+        many: "%{count} удалениями"
+
+      inline_additions_count:
+        one:  "%{count} добавление"
+        few:  "%{count} добавления"
+        many: "%{count} добавлений"
+      inline_deletions_count:
+        one:  "%{count} удаление"
+        few:  "%{count} удаления"
+        many: "%{count} удалений"
+      inline_changes_count:
+        one:  "%{count} изменение"
+        few:  "%{count} изменения"
+        many: "%{count} изменений"

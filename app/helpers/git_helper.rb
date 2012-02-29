@@ -61,4 +61,32 @@ module GitHelper
     string.dup.encode_to_default
   end
 
+  def iterate_path(path, &block)
+    path.split(File::SEPARATOR).inject('') do |a, e|
+      if e != '.' and e != '..'
+        a = File.join(a, e)
+        a = a[1..-1] if a[0] == File::SEPARATOR
+        block.call(a, e) if a.length > 1
+      end
+      a
+    end
+  end
+
+  # TODO This is very dirty hack. Maybe need to be changed.
+  def branch_selector_options(project)
+    tmp = params
+    unless tmp['treeish'].present?
+      tmp.merge!('project_id' => project.id, 'treeish' => project.default_branch).delete('id')
+    end
+    res = {}
+    current = url_for(tmp).split('?', 2).first
+
+    res = project.branches.inject(res) do |h, branch|
+      h[branch.name] = url_for(tmp.merge('treeish' => branch.name)).split('?', 2).first
+      h
+    end
+    res.merge!(tmp['treeish'] => current)
+
+    options_for_select(res.sort, current).html_safe
+  end
 end

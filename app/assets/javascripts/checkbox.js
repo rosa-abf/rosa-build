@@ -1,4 +1,6 @@
-function changeCheck(el)
+
+
+/*function changeCheck(el)
 
 {
      var el = el,
@@ -32,4 +34,4 @@ function startCheck()
 {
 
 	startChangeCheck(document.getElementById("niceCheckbox1"));
-}
+}*/

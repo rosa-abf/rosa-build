@@ -1,0 +1,20 @@
+#open-comment.comment.view
+  %h3.tmargin0= t("layout.comments.new_header")
+  - new_path = project_issue_comments_path(project, commentable) if commentable.class == Issue
+  - new_path = project_commit_comments_path(project, commentable) if commentable.class == Grit::Commit
+  = form_for :comment, :url => new_path, :method => :post, :html => { :class => :form } do |f|
+    = render :partial => "comments/form", :locals => {:f => f}
+    .comment-left
+      = t("layout.comments.notifications_are")
+      %span.bold
+        - if Subscribe.subscribed_to_commit?(@project, current_user, @commit)
+          = t("layout.turned_on")\
+        - else
+          = t("layout.turned_off")\
+      \.
+
+      - if Subscribe.subscribed_to_commit?(@project, current_user, @commit)
+        = link_to t('layout.commits.unsubscribe_btn'), unsubscribe_commit_path(@project, @commit), :method => :delete
+      - else
+        = link_to t('layout.commits.subscribe_btn'), subscribe_commit_path(@project, @commit), :method => :post
+    .both

@@ -5,7 +5,7 @@ class ProjectsController < ApplicationController
   belongs_to :user, :group, :polymorphic => true, :optional => true
 
   before_filter :authenticate_user!, :except => :auto_build
-  before_filter :find_project, :only => [:show, :edit, :update, :destroy, :fork]
+  before_filter :find_project, :only => [:show, :edit, :update, :destroy, :fork, :sections]
   before_filter :get_paths, :only => [:new, :create, :edit, :update]
 
   load_and_authorize_resource
@@ -29,10 +29,13 @@ class ProjectsController < ApplicationController
 
   def show
     @current_build_lists = @project.build_lists.current.recent.paginate :page => params[:page]
+    @branch = @project.branch(params[:treeish])
+    @commit = @branch.present? ? @branch.commit : @git_repository.log(@treeish).first
   end
 
   def new
     @project = Project.new
+    @who_owns = :me
   end
 
   def edit
@@ -40,8 +43,11 @@ class ProjectsController < ApplicationController
 
   def create
     @project = Project.new params[:project]
-    @project.owner = get_owner
-#    puts @project.owner.inspect
+    #@project.owner = get_owner
+    @project.owner = choose_owner
+    puts "OWNER_TYPE: " + @project.owner_type
+    @who_owns = (@project.owner_type == 'User' ? :me : :group)
+    puts "WHO_OWNS: " + @who_owns.to_s
 
     if @project.save
       flash[:notice] = t('flash.project.saved') 
@@ -94,6 +100,18 @@ class ProjectsController < ApplicationController
     render :nothing => true
   end
 
+  def sections
+    if request.post?
+      if @project.update_attributes(params[:project])
+        flash[:notice] = t('flash.project.saved')
+      else
+        @project.save
+        flash[:error] = t('flash.project.save_error')
+      end
+      render :action => :sections
+    end
+  end
+
   protected
 
     def get_paths
@@ -113,5 +131,13 @@ class ProjectsController < ApplicationController
 
     def find_project
       @project = Project.find params[:id]
+    end
+
+    def choose_owner
+      if params[:who_owns] == 'group'
+        Group.find(params[:owner_id])
+      else
+        current_user
+      end
     end
 end

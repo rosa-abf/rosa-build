@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class AddSettingsToSettingsNotifiers < ActiveRecord::Migration
   def self.up
     add_column :settings_notifiers, :new_comment_commit_owner, :boolean, :default => true

@@ -280,6 +280,8 @@ ActiveRecord::Schema.define(:version => 20120228100121) do
     t.string   "srpm_content_type"
     t.integer  "srpm_file_size"
     t.datetime "srpm_updated_at"
+    t.string   "default_branch",    :default => "master"
+    t.boolean  "is_rpm",            :default => true
     t.boolean  "has_wiki",          :default => false
   end
 
@@ -299,7 +301,6 @@ ActiveRecord::Schema.define(:version => 20120228100121) do
   end
 
   add_index "register_requests", ["email"], :name => "index_register_requests_on_email", :unique => true, :case_sensitive => false
-  add_index "register_requests", ["token"], :name => "index_register_requests_on_token", :unique => true, :case_sensitive => false
 
   create_table "relations", :force => true do |t|
     t.integer  "object_id"

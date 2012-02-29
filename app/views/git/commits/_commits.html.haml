@@ -1,4 +1,23 @@
-%ul.list.commits
+- commits = split_commits_by_date(commits)
+- cur_year = Date.today.year
+- counter = 1
+
+- commits.each_pair do |year, by_month|
+  - if year != cur_year
+    .year= "#{year} #{t("year")}"
+
+  - by_month.each_pair do |month, by_day|
+    - by_day.each_pair do |day, commits|
+      .date-block
+        .date
+          = raw l(commits.first.authored_date, :format => :date_block_format)
+        .messages
+          - commits.each_with_index do |commit|
+            - GitPresenters::CommitAsMessagePresenter.present(commit, :branch => @branch, :project => @project) do |presenter|
+              = render :partial => 'shared/feed_message', :locals => {:presenter => presenter, :item_no => counter}
+              - counter += 1
+        .both
+-#%ul.list.commits
   - commits.each do |commit|
     %li.commit
       %table

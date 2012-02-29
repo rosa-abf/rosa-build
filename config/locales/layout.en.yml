@@ -1,0 +1,7 @@
+en:
+  layout:
+    read_more: Read more
+    turned_on: on
+    turned_off: of
+
+    enter_commit_message: Commit message
