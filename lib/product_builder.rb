@@ -14,4 +14,8 @@ class ProductBuilder
     call('create_product', pbl.id.to_s, pbl.product.platform.name, pbl.product.ks, pbl.product.menu, pbl.product.build_script,
                            pbl.product.counter, [], pbl.product.tar.exists? ? "#{pbl.base_url}#{pbl.product.tar.url}" : '')
   end
+  
+  def self.delete_iso_container(plname, id):
+    self.client(pbl.product.platform.distrib_type).call('delete_iso_container', plname, id)
+  end
 end
