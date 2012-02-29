@@ -8,7 +8,6 @@
       = javascript_include_tag "login"
     - elsif ['registrations', 'passwords'].include?(controller_name) && ['new', 'create'].include?(action_name)
       = stylesheet_link_tag "registration"
-      = javascript_include_tag "registration"
     = csrf_meta_tag
     
   %body
