@@ -3,7 +3,8 @@
     %span{:style => "display: none;"}=issue.serial_id
   %td.td1=issue.serial_id
   %td
-    %div=issue.title
+    %a{:href => project_issue_path(@project.id, issue.serial_id)}
+      %div.issue_title=issue.title
     .smalltext
       =issue.created_at.to_s(:long)
       =t("layout.issues.by") if issue.creator
@@ -13,8 +14,6 @@
           .labeltext.selected{:style => "background: ##{label.color};"}=label.name
         .both
   %td.td3
-    %a{:href => project_issue_path(@project.id, issue.serial_id)}
-      .code='#'
     .avatar
       =link_to image_tag(issue.user.avatar(22), :alt => 'avatar'), user_path(issue.user) if issue.user
     %a{:href => "#{project_issue_path @project, issue}#block-list"}
