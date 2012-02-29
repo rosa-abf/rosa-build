@@ -1,12 +1,12 @@
 $(document).ready(function() { 
-    $("#myTable").tablesorter({ 
-        headers: { 
-            2: { 
-                sorter: false 
-            }
-        }
-
-    }); 
+//    $("#myTable").tablesorter({ 
+//        headers: { 
+//            2: { 
+//                sorter: false 
+//            }
+//        }
+//
+//    }); 
 });
 
 $(document).ready(function() {

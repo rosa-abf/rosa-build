@@ -3,7 +3,7 @@ html, body {
 	padding: 0;
 	font-family: Tahoma, Geneva, Helvetica, sans-serif;
 	color: #565657;
-	background: #1f60a1 image-url("bg.png") repeat-x; 
+	background: #1f60a1 url("../pics/bg.png") repeat-x; 
 	min-width: 940px;
 	min-height: 600px;
 	text-align: center;
@@ -27,17 +27,17 @@ a img { border: none; }
 .wrap {
 	width: 940px;
 	margin: 0 auto;
-    text-align: center;
-  	border: 1px solid #3f668c;
-  	-webkit-box-shadow: 0px 0px 7px 0px rgba(0, 0, 0, 0.5);
-  	-moz-box-shadow: 0px 0px 7px 0px rgba(0, 0, 0, 0.5);
-  	box-shadow: 0px 0px 7px 0px rgba(0, 0, 0, 0.5); 
+	text-align: center;
+	border: 1px solid #3f668c;
+	-webkit-box-shadow: 0px 0px 7px 0px rgba(0, 0, 0, 0.5);
+	-moz-box-shadow: 0px 0px 7px 0px rgba(0, 0, 0, 0.5);
+	box-shadow: 0px 0px 7px 0px rgba(0, 0, 0, 0.5); 
 	background: #FFF;
 	min-height: 92%;
 }
 
 .wrap.columns {
-	background: #FFF image-url("page-bg.png") repeat-y;
+	background: #FFF url("../pics/page-bg.png") repeat-y;
 }
 
 .both {
@@ -55,21 +55,21 @@ header {
 }
 
 header div.left {
-	background: image-url("top-left.png");
+	background: url("../pics/top-left.png");
 	height: 46px;
 	width: 14px;
 	float: left;
 }
 
 header div.middle {
-	background: image-url("top-middle.png");
+	background: url("../pics/top-middle.png");
 	float: left;
 	height: 46px;
 	width: 912px;
 }
 
 header div.right {
-	background: image-url("top-right.png");
+	background: url("../pics/top-right.png");
 	height: 46px;
 	width: 14px;
 	float: right;
@@ -110,7 +110,7 @@ header menu ul li a.first {
 }
 
 header menu ul li a.active {
-	background: image-url("menu-hover.png") repeat-x;
+	background: url("../pics/menu-hover.png") repeat-x;
 }
 
 
@@ -142,7 +142,7 @@ header div.search {
 }
 
 header div.search div.pic {
-	background: image-url("search-button.png");
+	background: url("../pics/search-button.png");
 	height: 22px;
 	width: 24px;
 	float: left;
@@ -174,11 +174,11 @@ header div.search div.field input.black {
 header div.avatar {
 	float:left;
 	padding: 6px 10px 10px 10px;
-    
+	
 }
 
 header div.information div.active {
-	background: image-url("menu-hover.png") repeat-x;
+	background: url("../pics/menu-hover.png") repeat-x;
 }
 
 header div.information div.user {
@@ -212,7 +212,7 @@ header div.droplist-wrap {
 }
 
 header div.droplist {
-	background: image-url("bg-droplist.png") repeat-x;
+	background: url("../pics/bg-droplist.png") repeat-x;
 	height: 91px;
 	width: 151px;
 	-webkit-box-shadow: 0px 2px 4px 0px rgba(0, 0, 0, 0.5);
@@ -230,7 +230,7 @@ header div.droplist-wrap div.a {
 	margin-top: 5px;
 }
 
-header div.droplist a {
+header div.droplist a{
 	position: relative;
 	padding-left: 15px;
 	font-size: 12px;
@@ -240,7 +240,7 @@ header div.droplist a {
 	margin-top: 10px;
 }
 
-header div.droplist a:hover {
+header div.droplist a:hover{
 	text-decoration: underline;
 }
 
@@ -276,7 +276,7 @@ header div.droplist a:hover {
 }
 
 
-.sub-menu nav { /*–î–ª—è –ø–æ–¥–º–µ–Ω—é –±–µ–∑ –Ω–∞–∑–≤–∞–Ω–∏—è*/
+.sub-menu nav { /*ƒÎˇ ÔÓ‰ÏÂÌ˛ ·ÂÁ Ì‡Á‚‡ÌËˇ*/
 	float: left;
 	margin: 0px 0px 0px 0px;
 }
@@ -302,7 +302,7 @@ header div.droplist a:hover {
 }
 
 .sub-menu nav ul li a.active {
-	background: image-url("submenu-hover.png") repeat-x;
+	background: url("../pics/submenu-hover.png") repeat-x;
 }
 
 .sub-menu nav ul li a:hover {
@@ -421,11 +421,11 @@ div.expand-gray-down, div.expand-gray-up {
 }
 
 div.expand-gray-down {
-	background: image-url("expand-gray.png") no-repeat;
+	background: url("../pics/expand-gray.png") no-repeat;
 }
 
 div.expand-gray-up {
-	background: image-url("expand-gray2.png") no-repeat;
+	background: url("../pics/expand-gray2.png") no-repeat;
 }
 
 article a.button {
@@ -451,7 +451,7 @@ article a.button {
 	text-align: center;
 }
 
-article a.button:hover {
+article a.button:hover{
     background-color: #34719d;
 	background-image: -webkit-gradient(linear, left top, left bottom, from(#7fb3e1), to(#34719d));
 	background-image: -webkit-linear-gradient(top, #7fb3e1, #34719d);
@@ -465,7 +465,7 @@ article a.button:hover {
 
 
 
-article a.button:active {
+article a.button:active{
 	background-color: #125687;
 	background-image: -webkit-gradient(linear, left top, left bottom, from(#68a3d8), to(#125687));
 	background-image: -webkit-linear-gradient(top, #68a3d8, #125687);
@@ -523,7 +523,7 @@ article input[type="submit"] {
 	
 }
 
-article input[type="submit"]:hover {
+article input[type="submit"]:hover{
     background-color: #34719d;
 	background-image: -webkit-gradient(linear, left top, left bottom, from(#7fb3e1), to(#34719d));
 	background-image: -webkit-linear-gradient(top, #7fb3e1, #34719d);
@@ -538,7 +538,7 @@ article input[type="submit"]:hover {
 
 
 
-article input[type="submit"]:active {
+article input[type="submit"]:active{
 	background-color: #125687;
 	background-image: -webkit-gradient(linear, left top, left bottom, from(#68a3d8), to(#125687));
 	background-image: -webkit-linear-gradient(top, #68a3d8, #125687);
@@ -566,7 +566,7 @@ article input[type="submit"]:disabled {
 }
 
 
-article h3 {
+article h3{
 	font-size: 14px;
 	color: #575756;
 	margin-bottom: 0;
@@ -578,14 +578,14 @@ article h3.fix {
 	padding-top: 0px;
 }
 
-article a {
+article a{
 	color: #7eb7ed;
 	font-size: 12px;
 	text-decoration: none;
 	padding: 0px 0px;
 }
 
-article a:hover {
+article a:hover{
 	text-decoration: underline;
 }
 
@@ -727,7 +727,7 @@ article div.right div.messages:hover {
 	background: #dceffa;
 }
 
-article div.right div.messages p {
+article div.right div.messages p{
 	margin: 0;
 	padding: 0;
 }
@@ -788,7 +788,7 @@ article div.activity div.fulltext.view  {
 	text-align: left;
 }
 
-.admin-preferences ul li {
+.admin-preferences ul li{
 	padding-top: 5px;
 	padding-bottom: 5px;
 	width: 215px;
@@ -798,7 +798,7 @@ article div.activity div.fulltext.view  {
 	background: #dcecfa;
 }
 
-.admin-preferences ul li a {
+.admin-preferences ul li a{
 	color: #575756;
 	text-decoration: none;
 	padding-top: 5px;
@@ -920,7 +920,7 @@ article input.black {
 	height: 17px;
 	display: inline-block;
 	cursor: pointer;
-	background: image-url("radio.png");
+	background: url("../pics/radio.png");
 	overflow: hidden;
 }
 .radioChecked {
@@ -949,7 +949,7 @@ article input.black {
 	height: 17px;
 	display: inline-block;
 	cursor: pointer;
-	background: image-url("checkbox.png");
+	background: url("../pics/checkbox.png");
 }
 .niceCheck input {
 	display: none;
@@ -960,7 +960,7 @@ article input.black {
 	height: 18px;
 	display: inline-block;
 	cursor: pointer;
-	background: image-url("checkbox-main.png");
+	background: url("../pics/checkbox-main.png");
 }
 .niceCheck-main input {
 	display: none;
@@ -1245,14 +1245,14 @@ div.label div.flag {
 aside div.switcher, aside div.switcher-off {
 	height: 23px;
 	width: 194px;
-	background: image-url("switch-on.png");
+	background: url("../pics/switch-on.png");
 	color: #FFF;
 	font-size: 12px;
 	cursor: pointer;
 }
 
 aside div.switcher-off {
-	background: image-url("switch-off.png");
+	background: url("../pics/switch-off.png");
 }
 
 aside div.switcher div.swleft, aside div.switcher-off div.swleft {
@@ -1382,7 +1382,7 @@ h3.bmargin10 {
 	padding-top: 9px;
 }
 
-div.description-top {
+div.desription-top {
 	background: #dcecfa;
 	font-size: 12px;
 	color: #575756;
@@ -1392,13 +1392,13 @@ div.description-top {
 	margin-bottom: 20px;
 }
 
-div.description-top div.img {
+div.desription-top div.img {
 	float: left;
 	padding-left: 10px;
 	margin-top: 14px;
 }
 
-div.description-top input.name {
+div.desription-top input.name {
 	float: left;
 	margin-top: 5px;
 	margin-left: 10px;
@@ -1412,24 +1412,24 @@ div.description-top input.name {
 	padding: 2px 5px 3px;
 }
 
-div.description-top div.role {
+div.desription-top div.role {
 	float: left;
 	margin-top: 11px;
 	margin-left: 10px;
 	font-size: 11px;
 }
 
-div.fork {
+ div.fork {
 	float: right;
 	margin-top: 5px;
 }	
-div.fork p {
+ div.fork p {
 	float: right;
 	margin-top: 5px;
 	margin-right: 2px;
 }
 
-div.description-top div.fork {
+div.desription-top div.fork {
 	margin-right: 10px;
 }
 
@@ -1752,7 +1752,7 @@ div.label.edit {
 	padding-left: 15px;
 }
 
-div.label.edit:hover {
+div.label.edit:hover{
 	background: none;
 }
 
@@ -1815,7 +1815,7 @@ aside div.colors div.choose {
 }
 
 aside div.colors div.choose.selected, aside div.colors div.choose:hover {
-	background: image-url("choose.png") no-repeat 50% 50%;
+	background: url("../pics/choose.png") no-repeat 50% 50%;
 	height: 14px;
 	width: 14px;
 	padding: 4px;
@@ -1942,7 +1942,7 @@ div.right-error {
 	float: left;
 	width: 369px;
 	height: 59px;
-	background: image-url("error-groups.png");
+	background: url("../pics/error-groups.png");
 	margin: 0px 0px 5px -3px;
 	text-align: center;
 }
@@ -2120,7 +2120,7 @@ div.pagination a {
 /*404*/
 
 article div.all.error404 {
-	background: image-url("404.png") no-repeat 59% 0;
+	background: url("../pics/404.png") no-repeat 59% 0;
 	height: 500px;
 	text-align: center;
 }

@@ -32,7 +32,7 @@
               <center> <img src='?raw=true'/></center>
               <br/>
     - when :text
-      .gutter-new
+      .gutter
         :plain
           <pre>#{render_line_numbers(text.length)}</pre>
       %pre{:class => "brush: #{@blob.mime_type.split('/').last}"}

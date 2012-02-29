@@ -15,23 +15,23 @@ $(document).ready(function() {
 
 
 $(document).ready(function() { 
-$("#myTable").tablesorter({ 
-	headers: { 
-		1: { 
-			sorter: false 
-		}
-	}
-}); 
+//$("#myTable").tablesorter({ 
+//	headers: { 
+//		1: { 
+//			sorter: false 
+//		}
+//	}
+//}); 
 });
 
 $(document).ready(function() { 
-$("#myTable2").tablesorter({ 
-	headers: { 
-		1: { 
-			sorter: false 
-		}
-	}
-}); 
+//$("#myTable2").tablesorter({ 
+//	headers: { 
+//		1: { 
+//			sorter: false 
+//		}
+//	}
+//}); 
 });
 
 $(document).ready(function() {

@@ -9,8 +9,8 @@
     = text_area_tag :content, @blob.data.encode_to_default, :id => 'code'
 
   .both
-  = t("enter_commit_message")
-  = text_area_tag :message, '', :class => 'commit-message'
+  = t("layout.enter_commit_message")
+  = text_area_tag :message, "Updated #{@blob.name}", :class => 'commit-message'
 
   %br
   %br

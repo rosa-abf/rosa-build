@@ -1,0 +1,5 @@
+ru:
+  layout:
+    commits:
+      subscribe_btn: Включить уведомления.
+      unsubscribe_btn: Выключить уведомления.

@@ -1,0 +1,5 @@
+ru:
+  layout:
+    comments:
+      has_commented: "оставил комментарий"
+      notifications_are: "Уведомления о последующих комментариях"

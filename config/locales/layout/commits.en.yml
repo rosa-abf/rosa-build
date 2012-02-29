@@ -1,0 +1,5 @@
+en:
+  layout:
+    commits:
+      subscribe_btn: Enable notifications.
+      unsubscribe_btn: Disable notifications.
