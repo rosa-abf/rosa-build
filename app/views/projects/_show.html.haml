@@ -8,16 +8,9 @@
     = link_to t('layout.read_more'), '#'
 
 %h3= t("layout.projects.last_commit")
-- GitPresenters::CommitAsMessagePresenter.present(@commit, :branch => @branch) do |presenter|
+- GitPresenters::CommitAsMessagePresenter.present(@commit, :branch => @branch, :project => @project) do |presenter|
   = render :partial => 'shared/feed_message', :locals => {:presenter => presenter, :item_no => 1}
 
-%h3= t("layout.projects.files_in_project")
-.files
-  .l
-    = render :partial => 'git/shared/whereami'
-
-  #fork-and-edit.r
-    %a.button{:href => "#"} Fork and edit
 .both
 
 #repo-wrapper

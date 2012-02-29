@@ -1,0 +1,4 @@
+ru:
+  layout:
+    projects:
+      diff_show_header:    "%{files} с %{additions} и %{deletions}."

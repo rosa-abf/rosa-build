@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class CreateRegisterRequests < ActiveRecord::Migration
   def self.up
     create_table :register_requests do |t|

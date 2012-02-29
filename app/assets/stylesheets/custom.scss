@@ -120,3 +120,94 @@ article h3 {
 article div.date-block div.date {
     height: 52px;
 }
+
+article div#repo-wrapper div.hr {
+    width: 100%;
+}
+
+article table.commit_stats {
+    line-height: 1.4em;
+    margin-top: 12px;
+    width: 100%;
+    border-spacing: 0;
+    border-top: 1px solid #DDDDDD;
+    margin: 10px 0;
+    padding: 0;
+    font-size: 90%;
+    border-collapse: collapse;
+}
+
+article table.commit_stats td {
+    border-bottom: 1px solid #DDDDDD;
+    padding: 0.4em 5px;
+}
+
+article table.commit_stats .diffstat {
+    text-align: right;
+    white-space: nowrap;
+    padding-right: 0;
+    width: 1%;
+}
+
+article div.file div.diff_data {
+    overflow-x: auto;
+}
+
+article div.file table {
+    border-spacing: 0;
+    border-collapse: collapse;
+}
+
+#repo-wrapper table.diff td.line_numbers {
+     -moz-user-select: none;
+    font-size: 12px;
+    padding: 0 0.5em;
+    background-color: #ECECEC;
+    border-right: 1px solid #DDDDDD;
+    color: #999999;
+    text-align: right;
+}
+
+#repo-wrapper table.diff td.line_numbers,
+#repo-wrapper table.diff td.header,
+#repo-wrapper table.diff td.code {
+    font-family: 'Bitstream Vera Sans Mono','Courier',monospace;
+}
+
+#repo-wrapper table.diff td.header {
+    background-color: #ECECEC;
+    color: #999999;
+    width: 100%;
+    line-height: 1.4em;
+    font-size: 90%;
+}
+
+#repo-wrapper table.diff td.code, #repo-wrapper table.diff td.header {
+    padding-left: 10px;
+}
+
+#repo-wrapper table.diff pre {
+    padding: 0;
+    margin: 0;
+}
+
+#repo-wrapper table.diff .diff-content {
+    padding: 0;
+    margin: 0;
+}
+
+#repo-wrapper table.diff tr td.code.del {
+    background-color: #FFDDDD;
+}
+
+#repo-wrapper table.diff tr td.code.del .idiff {
+    background-color: #F2ACAD;
+}
+
+#repo-wrapper table.diff tr td.code.ins {
+    background-color: #DDFFDD;
+}
+
+#repo-wrapper table.diff tr td.code.ins .idiff {
+    background-color: #BAFBAD;
+}

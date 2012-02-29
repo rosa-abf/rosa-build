@@ -1,3 +1,9 @@
+%h3= t("layout.projects.files_in_project")
+.files
+  .l
+    = render :partial => 'git/shared/whereami'
+.both
+
 - render_way = choose_render_way(@blob)
 .file
   .top

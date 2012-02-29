@@ -7,12 +7,3 @@
     чтение и запись
   = render :partial => 'projects/branch_select', :locals => {:project => project}
 .both
-
-:javascript
-  $(document).ready(function() {
-    $('select#branch_selector').live('change', function(e) {
-      $form = $('form#branch_changer');
-      $form.attr('action', $form.attr('action') + '/git/tree/' + $(this).val());
-      $form.submit();
-    });
-  });

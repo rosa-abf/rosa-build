@@ -205,7 +205,7 @@ Rosa::Application.routes.draw do
 
   # Blobs
   match '/projects/:project_id/git/blob/:treeish/*path', :controller => "git/blobs", :action => :show, :treeish => /[0-9a-zA-Z_.\-]*/, :defaults => { :treeish => :master }, :as => :blob, :via => :get, :format => false
-  match '/projects/:project_id/git/commit/blob/:commit_hash/*path', :controller => "git/blobs", :action => :show, :project_id => /[0-9a-zA-Z_.\-]*/, :as => :blob_commit, :via => :get
+  match '/projects/:project_id/git/commit/blob/:commit_hash/*path', :controller => "git/blobs", :action => :show, :project_id => /[0-9a-zA-Z_.\-]*/, :as => :blob_commit, :via => :get, :format => false
 
   # Blame
   match '/projects/:project_id/git/blame/:treeish/*path', :controller => "git/blobs", :action => :blame, :treeish => /[0-9a-zA-Z_.\-]*/, :defaults => { :treeish => :master }, :as => :blame

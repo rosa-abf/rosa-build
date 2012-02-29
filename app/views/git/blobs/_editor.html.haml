@@ -1,3 +1,9 @@
+%h3= t("layout.projects.files_in_project")
+.files
+  .l
+    = render :partial => 'git/shared/whereami'
+.both
+
 = form_tag blob_file_path, :name => 'blob-editor', :method => :put do
   .file
     = text_area_tag :content, @blob.data.encode_to_default, :id => 'code'

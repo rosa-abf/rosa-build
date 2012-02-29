@@ -13,7 +13,7 @@
           = raw l(commits.first.authored_date, :format => :date_block_format)
         .messages
           - commits.each_with_index do |commit|
-            - GitPresenters::CommitAsMessagePresenter.present(commit, :branch => @branch) do |presenter|
+            - GitPresenters::CommitAsMessagePresenter.present(commit, :branch => @branch, :project => @project) do |presenter|
               = render :partial => 'shared/feed_message', :locals => {:presenter => presenter, :item_no => counter}
               - counter += 1
         .both

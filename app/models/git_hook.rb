@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class GitHook
   attr_reader :repo, :newrev, :oldrev, :newrev_type, :oldrev_type, :refname,
                       :change_type, :rev, :rev_type, :refname_type, :owner, :project

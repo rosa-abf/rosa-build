@@ -1,15 +1,31 @@
-.block
+= render :partial => 'projects/submenu'
+
+.description
+  %h3= t("layout.projects.about_subheader")
+  %p
+    = @project.description
+    = link_to t('layout.read_more'), '#'
+
+%h3= t("layout.projects.last_commit")
+- GitPresenters::CommitAsMessagePresenter.present(@commit, :branch => @branch, :project => @project) do |presenter|
+  = render :partial => 'shared/feed_message', :locals => {:presenter => presenter, :item_no => 1}
+
+.both
+
+#repo-wrapper
+  = render :partial => 'show'
+-#.block
   = render :partial => "git/shared/navigation"
 
   = render :partial => "git/shared/info"
 
 
-.block
+-#.block
   .content
     .inner
       = render :partial => "git/commits/commits", :object => [@commit]
 
-- begin
+-#- begin
   .block
     .content
       .inner
@@ -21,16 +37,16 @@
         = render_commit_stats(@commit.stats)
 
   = render :partial => "git/commits/commit_diff", :collection => @commit.diffs
-- rescue Grit::Git::GitTimeout
+-#- rescue Grit::Git::GitTimeout
   .block
     .content
       .inner
         %p= t 'layout.git.repositories.commit_diff_too_big'
 
-- content_for :sidebar, render(:partial => 'git/shared/sidebar')
+-#- content_for :sidebar, render(:partial => 'git/shared/sidebar')
 
-= render :partial => "comments/list", :locals => {:list => Project.commit_comments(@commit, @project), :project => @project, :commentable => @commit}
-%p
+-#= render :partial => "comments/list", :locals => {:list => Project.commit_comments(@commit, @project), :project => @project, :commentable => @commit}
+-#%p
   %b
     = t('layout.issues.subscribe')
     \:
