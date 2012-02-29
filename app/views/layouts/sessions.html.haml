@@ -3,11 +3,15 @@
   %head
     %meta{:content => "text/html; charset=utf-8", "http-equiv" => "content-type"}
     = display_meta_tags :site => APP_CONFIG['project_name']
-    = stylesheet_link_tag "login"
-    = javascript_include_tag "login"
+    - if controller_name == 'sessions' && action_name == 'new'
+      = stylesheet_link_tag "login"
+      = javascript_include_tag "login"
+    - elsif controller_name == 'registrations' && ['new', 'create'].include?(action_name)
+      = stylesheet_link_tag "registration"
     = csrf_meta_tag
   %body
     -# render :partial => "layouts/flashes"
     = yield
 
     = render 'layouts/counters' unless current_user.try(:admin?)
+  %footer= render "layouts/menu/bottom"

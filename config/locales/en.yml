@@ -766,6 +766,8 @@ en:
         updated_at: Updated
         role: System role
         language: Language
+        password: Password
+        password_confirm: Confirmation
 
       product_build_list:
         id: Id
