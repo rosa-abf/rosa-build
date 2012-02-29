@@ -40,7 +40,7 @@ class ProductBuildList < ActiveRecord::Base
   end  
     
   def xml_delete_iso_container
-    result = ProductBuilder.delete_iso_container platform.name, id
+    result = ProductBuilder.delete_iso_container self
     if result == ProductBuilder::SUCCESS
       return true
     else
