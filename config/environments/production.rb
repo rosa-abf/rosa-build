@@ -62,7 +62,7 @@ Rosa::Application.configure do
   config.assets.digest = true
 
   # Precompile additional assets (application.js, application.css, and all non-JS/CSS are already added)
-  config.assets.precompile += %w(login.css login.js)
+  config.assets.precompile += %w(login.css login.js registration.css)
 end
 
 # require 'stub_xml_rpc'
