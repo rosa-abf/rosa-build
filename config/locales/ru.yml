@@ -612,16 +612,6 @@ ru:
         platform: Архитектура
         counter: Закачки
 
-  notifications:
-    subjects:
-      new_comment_notification: Новый комментарий к Вашей задаче
-      new_issue_notification: Новая задача добавлена к проекту
-      new_user_notification: Регистрация на проекте «%{ project_name }»
-      issue_assign_notification: Вам назначили задачу
-      new_commit_comment_notification: Новый комментарий к коммиту
-      invite_approve_notification: Приглашение в ABF
-
-  activerecord:
     errors:
       messages:
         too_long:
@@ -634,3 +624,12 @@ ru:
           few:   "не может быть меньше %{count} символов"
           many:  "не может быть меньше %{count} символов"
           other: "не может быть меньше %{count} символа"
+
+  notifications:
+    subjects:
+      new_comment_notification: Новый комментарий к Вашей задаче
+      new_issue_notification: Новая задача добавлена к проекту
+      new_user_notification: Регистрация на проекте «%{ project_name }»
+      issue_assign_notification: Вам назначили задачу
+      new_commit_comment_notification: Новый комментарий к коммиту
+      invite_approve_notification: Приглашение в ABF
