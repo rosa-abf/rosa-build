@@ -1,10 +1,53 @@
-.block.notice
-  %h3= t("layout.repositories.current_repository_header")
-  .content
-    - project.repositories.each do |repository|
-      %p= link_to "#{repository.name} (#{repository.platform.name})", platform_repository_path(repository.platform, repository)
+- content_for :sidebar do
+  .bordered.nopadding
+    %h3= t('layout.build_lists.build_server_status.header')
+    .table
+      .lefter= t('layout.build_lists.build_server_status.client_count')
+      .righter= @build_server_status['client_count']
+    .both
+    .table
+      .lefter= t('layout.build_lists.build_server_status.count_new_task')
+      .righter= @build_server_status['count_new_task']
+    .both
+    .table
+      .lefter= t('layout.build_lists.build_server_status.count_build_task')
+      .righter= @build_server_status['count_build_task']
+    .both
 
-.block.notice
-  %h3= t("layout.projects.current_project_header")
-  .content
-    %p= link_to project.name, project
+  = form_for :filter, :url => @action_url, :html => { :method => :post, :class => :form } do |f|
+    .bordered.nopadding
+      %h3= t("layout.build_lists.ownership.header")
+      .table
+        .lefter= f.radio_button :ownership, 'owned', :class => 'niceRadio', :id => 'myradio1'
+        .lefter= t("layout.build_lists.ownership.owned")
+      .both
+      .table
+        .lefter= f.radio_button :ownership, 'related', :class => 'niceRadio', :id => 'myradio2'
+        .lefter= t("layout.build_lists.ownership.related")
+      .both
+      .table
+        .lefter= f.radio_button :ownership, 'index', :class => 'niceRadio', :id => 'myradio3'
+        .lefter= t("layout.build_lists.ownership.index")
+      .both
+    .block
+      %h3.small= t("activerecord.attributes.build_list.status")
+      .lineForm.aside= f.select :status, BuildList::STATUSES.collect{|status| [BuildList.human_status(status), status]}, {:include_blank => true, :selected => @filter.status}, {:class => 'sel80 aside', :id => 'status', :tabindex => 2}
+      %h3.small= t("activerecord.attributes.build_list.is_circle")
+      .lineForm.aside= f.select :is_circle, [[t("layout.yes_"), 1], [t("layout.no_"), 0]], {:include_blank => true, :selected => @filter.is_circle.present? ? (@filter.is_circle ? "1" : "0") : nil}, {:class => 'sel80 aside', :id => 'recurrent', :tabindex => 2}
+      %h3.small= t("activerecord.attributes.build_list.arch")
+      .lineForm.aside= f.select :arch_id, Arch.recent.collect{|arch| [arch.name, arch.id]}, {:include_blank => true, :selected => @filter.arch_id}, {:class => 'sel80 aside', :id => 'architecture', :tabindex => 2}
+      %h3.small= t("layout.build_lists.created_at_start")
+      .date_select= f.date_select(:created_at_start, :include_blank => true, :selected => @filter.created_at_start)
+      %h3.small= t("layout.build_lists.created_at_end")
+      .date_select= f.date_select(:created_at_end, :include_blank => true, :selected => @filter.created_at_end)
+      %h3.small= t("layout.build_lists.notified_at_start")
+      .date_select= f.date_select(:notified_at_start, :include_blank => true, :selected => @filter.notified_at_start)
+      %h3.small= t("layout.build_lists.notified_at_end")
+      .date_select= f.date_select(:notified_at_end, :include_blank => true, :selected => @filter.notified_at_end)
+      %h3.small= t("layout.build_lists.project_name_search")
+      = f.text_field :project_name
+      %h3.small= t("layout.build_lists.bs_id_search")
+      = f.text_field :bs_id
+      %br
+      %br
+      = f.submit t("layout.search")

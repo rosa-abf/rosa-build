@@ -1,7 +1,5 @@
 -render :partial => 'projects/submenu'
 -render :partial => 'issues/create_sidebar'
--content_for :right_nopadding do
-  dummy
 
 %h3.bpadding10= t("layout.issues.create_header")
 = form_for :issue, :url => project_issues_path(@project), :html => { :class => 'form issue' } do |f|

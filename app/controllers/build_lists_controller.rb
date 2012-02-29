@@ -19,18 +19,11 @@ class BuildListsController < ApplicationController
       params[:filter].each do |k,v|
         new_params[:filter][k] = v unless v.empty?
       end
-
       redirect_to build_lists_path(new_params)
     else
-      filter_params = params[:filter] || {}
-      if @project
-        @action_url = project_build_lists_path(@project)
-      else
-        @action_url = build_lists_path
-      end
-
-      @filter = BuildList::Filter.new(@project, filter_params)
-      @build_lists = @filter.find.accessible_by(current_ability).recent.paginate :page => params[:page]
+      @action_url = @project ? project_build_lists_path(@project) : build_lists_path
+      @filter = BuildList::Filter.new(@project, current_user, params[:filter] || {})
+      @build_lists = @filter.find.recent.paginate :page => params[:page]
 
       @build_server_status = begin
         BuildServer.get_status
