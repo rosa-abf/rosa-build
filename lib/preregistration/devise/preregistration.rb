@@ -46,7 +46,7 @@ module Preregistration
           end
         else
           clean_up_passwords(resource)
-          respond_with_navigational(resource) { render_with_scope :new }
+          respond_with_navigational(resource) { render :new }
         end
       end
 
