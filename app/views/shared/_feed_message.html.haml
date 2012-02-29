@@ -4,7 +4,8 @@
       %span.buttons= raw presenter.buttons.join(' | ').html_safe
     .image
       %img{:alt => "avatar", :src => presenter.image}
-    .text.imaged
+    .text
+      -#.imaged move up a line.
       %span.name= presenter.header
       .both
       %span.date= presenter.date
