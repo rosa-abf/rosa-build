@@ -601,16 +601,6 @@ en:
         platform: Platform
         counter: Downloads
 
-  notifications:
-    subjects:
-      new_comment_notification: New comment to your task
-      new_issue_notification: New task added to project
-      new_user_notification: Registered on project «%{ project_name }»
-      issue_assign_notification: New task assigned
-      new_commit_comment_notification: New comment to commit
-      invite_approve_notification: Invitation to ABF
-
-  activerecord:
     errors:
       messages:
         too_long:
@@ -619,3 +609,12 @@ en:
         too_short:
           one:   "minimum is %{count} character"
           other:  "minimum is %{count} characters"
+
+  notifications:
+    subjects:
+      new_comment_notification: New comment to your task
+      new_issue_notification: New task added to project
+      new_user_notification: Registered on project «%{ project_name }»
+      issue_assign_notification: New task assigned
+      new_commit_comment_notification: New comment to commit
+      invite_approve_notification: Invitation to ABF
