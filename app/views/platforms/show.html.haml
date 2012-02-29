@@ -113,7 +113,7 @@
               = link_to t("layout.edit"), edit_platform_product_path(@platform, product) if can? :update, product
               | 
               = link_to t("layout.delete"), platform_product_path(@platform, product), :method => :delete, :confirm => t("layout.products.confirm_delete") if can? :destroy, product
-              = (product.can_clone? ? "| #{link_to t("layout.products.clone"), clone_platform_product_path(@platform, product)}" : "").html_safe
+              =# (product.can_clone? ? "| #{link_to t("layout.products.clone"), clone_platform_product_path(@platform, product)}" : "").html_safe
       .actions-bar.wat-cf
         .actions
 - content_for :sidebar, render(:partial => 'sidebar')
