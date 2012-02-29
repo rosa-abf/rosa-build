@@ -7,7 +7,7 @@
     .logo
   / Page
   %article
-    - is_error = flash.try(:first).try(:first) == :alert # Trash
+    - is_error = (flash.try(:first).try(:first) == :alert && flash.try(:first).try(:last) == t('devise.failure.invalid')) # Trash
     - login = t('devise.sessions.login'); password = t('devise.sessions.password')
     =hidden_field_tag :login_default, login
     =hidden_field_tag :password_default, password
