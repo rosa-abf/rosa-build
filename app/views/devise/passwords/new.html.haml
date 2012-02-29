@@ -7,7 +7,9 @@
     .logo
   / Page
   %article
-    %h2= title t('devise.passwords.forgot')
+    %br
+    %h1= title t('devise.passwords.forgot')
+    %br
     .content
       - if resource.errors.present?
         .flash
@@ -16,7 +18,7 @@
             = messages
 
     = form_for(resource, :as => resource_name, :url => password_path(resource_name), :html => { :method => :post, :class => "form" }) do |f|
-      = f.text_field :login, :name => 'user[email]', :class => "registartion-input", :onblur => "if(this.value==''){this.value='#{t('activerecord.attributes.user.email')}';this.className='registartion-input';} else{this.className='registartion-input-no-focus';};buttonCheck();", :onfocus => "if(this.value=='#{t('activerecord.attributes.user.email')}'){this.value='';this.className='registartion-input-focus';};", :onkeydown => "buttonCheck();", :type => "text", :value => t('activerecord.attributes.user.email')
+      = f.text_field :login, :name => 'user[email]', :class => "registartion-input", :onblur => "if(this.value==''){this.value='#{t('activerecord.attributes.user.email')}';this.className='registartion-input';} else{this.className='registartion-input-no-focus';};", :onfocus => "if(this.value=='#{t('activerecord.attributes.user.email')}'){this.value='';this.className='registartion-input-focus';};", :value => t('activerecord.attributes.user.email')
       .both
       %br
       =f.submit t("devise.passwords.send"), :class => 'button', :id => 'btnLogin'
