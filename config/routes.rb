@@ -182,7 +182,7 @@ Rosa::Application.routes.draw do
   resources :users, :groups do
     resources :platforms, :only => [:new, :create]
 
-    resources :projects, :only => [:new, :create, :index]
+    resources :projects, :only => [:index]
 
 #    resources :repositories, :only => [:new, :create]
   end
