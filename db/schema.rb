@@ -276,11 +276,11 @@ ActiveRecord::Schema.define(:version => 20120229182356) do
     t.text     "description"
     t.string   "ancestry"
     t.boolean  "has_issues",        :default => true
-    t.boolean  "has_wiki",          :default => false
     t.string   "srpm_file_name"
     t.string   "srpm_content_type"
     t.integer  "srpm_file_size"
     t.datetime "srpm_updated_at"
+    t.boolean  "has_wiki",          :default => false
     t.string   "default_branch",    :default => "master"
     t.boolean  "is_rpm",            :default => true
   end
@@ -301,6 +301,7 @@ ActiveRecord::Schema.define(:version => 20120229182356) do
   end
 
   add_index "register_requests", ["email"], :name => "index_register_requests_on_email", :unique => true, :case_sensitive => false
+  add_index "register_requests", ["token"], :name => "index_register_requests_on_token", :unique => true, :case_sensitive => false
 
   create_table "relations", :force => true do |t|
     t.integer  "object_id"
@@ -360,7 +361,6 @@ ActiveRecord::Schema.define(:version => 20120229182356) do
     t.string   "email",                                 :default => "",   :null => false
     t.string   "encrypted_password",     :limit => 128, :default => "",   :null => false
     t.string   "reset_password_token"
-    t.datetime "reset_password_sent_at"
     t.datetime "remember_created_at"
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -368,6 +368,7 @@ ActiveRecord::Schema.define(:version => 20120229182356) do
     t.string   "uname"
     t.string   "role"
     t.string   "language",                              :default => "en"
+    t.datetime "reset_password_sent_at"
     t.integer  "own_projects_count",                    :default => 0,    :null => false
   end
 

@@ -1,6 +1,0 @@
-- content_for :sub_menu do
-  .left
-  %nav
-    %ul
-      %li= link_to t('layout.projects.list_header'), build_lists_path, :class => current_page?(:controller => 'build_lists') ? 'active' : nil
-      %li= link_to t('layout.products.list_header'), '#'

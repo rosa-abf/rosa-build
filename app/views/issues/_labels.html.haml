@@ -21,8 +21,7 @@
           .labeltext.edit{:style => "background: ##{label.color};"}
             .text=link_to(label.name, project_issues_update_label_path(@project, label.id), :class => 'edit_label')
             .delete{:id => "delete#{index}"}
-              %a{:href => project_issues_delete_label_path(@project, label.id), :class => 'delete_label'}
-                %img{:alt => "x", :src => "/assets/x-label.png"}
+              %a{:href => project_issues_delete_label_path(@project, label.id), :class => 'delete_label'}= image_tag 'x-label.png'
           .both
           .edit_label_form{:style => 'display:none'}
             =form_tag project_issues_update_label_path(@project, label.id), :id => 'update_label', :method => :post do

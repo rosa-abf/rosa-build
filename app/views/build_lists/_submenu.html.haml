@@ -1,0 +1,7 @@
+- content_for :submenu do
+  - if content_for?(:sidebar)
+    .left
+  %nav
+    %ul
+      %li= link_to t('layout.projects.list_header'), build_lists_path, :class => (params[:controller] == 'build_lists' ? 'active' : nil)
+      %li= link_to t('layout.products.list_header'), '#'

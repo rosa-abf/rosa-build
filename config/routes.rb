@@ -50,9 +50,8 @@ Rosa::Application.routes.draw do
       put :cancel
       put :publish
     end
+    collection { post :search }
   end
-
-  post 'build_lists' => 'build_lists#index', :as => 'build_lists'
 
   resources :auto_build_lists, :only => [:index, :create, :destroy]
 
@@ -130,7 +129,9 @@ Rosa::Application.routes.draw do
     post "labels/:label_id/update" => "issues#update_label", :as => :issues_update_label
 
     resource :repo, :controller => "git/repositories", :only => [:show]
-    resources :build_lists, :only => [:index, :new, :create]
+    resources :build_lists, :only => [:index, :new, :create] do
+      collection { post :search }
+    end
 
     resources :collaborators, :only => [:index, :edit, :update, :add] do
       collection do

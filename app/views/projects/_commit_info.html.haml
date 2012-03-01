@@ -11,7 +11,7 @@
         = presenter.caption
       - if presenter.expandable? and presenter.content?
         %span.data-expander.collapsed{:id => "expand#{item_no}"} &nbsp;
-        -#%img#expand1.activity-full{:alt => "expand", :onclick => "showActivity(4)", :src => "/assets/expand-gray.png"}/
+        / = image_tag 'expand-gray.png', :class => 'activity-full', :id => 'expand1', :onclick => "showActivity(4)"
     .both
     - if presenter.content?
       .fulltext{:class => presenter.expandable? ? "hidden" : '',

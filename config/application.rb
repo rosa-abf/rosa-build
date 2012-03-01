@@ -55,5 +55,8 @@ module Rosa
 
     # Version of your assets, change this if you want to expire all your assets
     config.assets.version = '1.0'
+
+    # Compass
+    config.sass.load_paths << Compass::Frameworks['compass'].stylesheets_directory if config.respond_to?(:sass)
   end
 end

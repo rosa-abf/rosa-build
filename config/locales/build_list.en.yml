@@ -28,6 +28,7 @@ en:
         auto_publish: Automated publising
         project_version: Version
         user: User
+        preferences: Preferences
 
       build_list/item:
         name: Name
@@ -56,6 +57,7 @@ en:
       publish_fail: 'Errors on publish queue!'
       container_published: 'Container in a repository'
       action: Action
+      new_header: New build
 
       ownership:
         header: Build list ownership
