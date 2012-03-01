@@ -94,7 +94,7 @@ Rosa::Application.routes.draw do
     resources :categories, :only => [:index, :show]
   end
 
-  resources :projects do
+  resources :projects, :except => [:new, :show] do
     resources :wiki do
       collection do
         match '_history' => 'wiki#wiki_history', :as => :history, :via => :get
@@ -146,14 +146,16 @@ Rosa::Application.routes.draw do
 #    resources :groups, :controller => 'project_groups' do
 #    end
 
-    member do
-      post :fork
-      get 'show', :controller => 'git/trees', :action => :show, :as => :show
-      get :sections
-      post :sections
-    end
+    #match 'new' => "projects#new", :as => :new
     collection do
       get :auto_build
+    end
+    member do
+      post :fork
+      get :new, :controller => 'projects', :action => 'new', :id => /new/, :as => :new
+      get :show, :controller => 'git/trees', :action => :show
+      get :sections
+      post :sections
     end
   end
 
