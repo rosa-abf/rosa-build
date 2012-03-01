@@ -299,6 +299,9 @@ en:
       group: Group
       description: Descripton
       leave_group: Leave group
+      projects_list: Projects list
+      public_profile: Public profile
+      delete_warning: Attention! Deleted group can not be restored!
 
     git:
       upload: Upload

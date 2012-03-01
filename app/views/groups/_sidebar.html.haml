@@ -1,15 +1,49 @@
-.block.notice
-  %h3= t("layout.groups.members")
-  .content
-    %p
-      %ul
-      - @group.members.each do |user|
+.admin-preferences
+- act = action_name.to_sym
+- contr = controller_name.to_sym
+
+%aside
+  .admin-preferences
+    %ul
+      - if can? :edit, @project
+        %li{:class => (act == :edit && contr == :groups) ? 'active' : ''}
+          = link_to t("layout.groups.edit"), edit_group_path(@group)
+      - if can? :manage_members, @group
         %li
-          - if can? :read, user
-            = link_to user.name, user_path(user)
-          - else
-            = user.name
-          - if (@group.owner == user)
-            = '(' + t("layout.owner") + ')'
-      %br
-      = link_to t("layout.groups.edit_members"), edit_group_members_path(@group) if can? :manage_members, @group
+          = link_to t("layout.groups.edit_members"), edit_group_members_path(@group) 
+
+-#.block.notice
+-#  %h3= t("layout.groups.members")
+-#  .content
+-#    %p
+-#      %ul
+-#      - @group.members.each do |user|
+-#        %li
+-#          - if can? :read, user
+-#            = link_to user.name, user_path(user)
+-#          - else
+-#            = user.name
+-#          - if (@group.owner == user)
+-#            = '(' + t("layout.owner") + ')'
+-#      %br
+-#      = link_to t("layout.groups.edit_members"), edit_group_members_path(@group) if can? :manage_members, @group
+  %ul
+    %li.active
+      %a{:href => "#"} Основное
+    %li
+      %a{:href => "#"} Участники
+-#.block.notice
+-#  %h3= t("layout.groups.members")
+-#  .content
+-#    %p
+-#      %ul
+-#      - @group.members.each do |user|
+-#        %li
+-#          - if can? :read, user
+-#            = link_to user.name, user_path(user)
+-#          - else
+-#            = user.name
+-#          - if (@group.owner == user)
+-#            = '(' + t("layout.owner") + ')'
+-#      %br
+-#      = link_to t("layout.groups.edit_members"), edit_group_members_path(@group) if can? :manage_members, @group

@@ -1,13 +1,31 @@
-.block
-  .secondary-navigation
-    %ul.wat-cf
-      %li.first= link_to t("layout.groups.list"), groups_path
-      %li= link_to t("layout.groups.new"), new_group_path
-      %li.active= link_to t("layout.groups.edit"), edit_group_path
-  .content
-    %h2.title= t("layout.groups.edit_header")
-    .inner
-      = form_for @group, :url => group_path(@group), :html => { :class => :form } do |f|
-        = render :partial => "form", :locals => {:f => f}
+= form_for @group, :html => { :class => :form, :multipart => true } do |f|
+  = render :partial => "form", :locals => {:f => f}
+
+.hr
+.groups-profile
+  = image_tag('code.png')
+.groups-profile
+  = link_to t("layout.groups.public_profile"), @group
+.both
+.hr
+.leftside
+  = t("layout.groups.delete_warning")
+.rightside
+  = link_to t("layout.delete"), group_path(@group), :method => :delete, :confirm => t("layout.groups.confirm_delete"), :class => 'button' if can? :destroy, @group
+.both
 
 - content_for :sidebar, render('sidebar')
+
+-#.block
+-#  .secondary-navigation
+-#    %ul.wat-cf
+-#      %li.first= link_to t("layout.groups.list"), groups_path
+-#      %li= link_to t("layout.groups.new"), new_group_path
+-#      %li.active= link_to t("layout.groups.edit"), edit_group_path
+-#  .content
+-#    %h2.title= t("layout.groups.edit_header")
+-#    .inner
+-#      = form_for @group, :url => group_path(@group), :html => { :class => :form } do |f|
+-#        = render :partial => "form", :locals => {:f => f}
+-#
+-#- content_for :sidebar, render('sidebar')
