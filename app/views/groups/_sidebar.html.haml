@@ -9,7 +9,7 @@
         %li{:class => (act == :edit && contr == :groups) ? 'active' : ''}
           = link_to t("layout.groups.edit"), edit_group_path(@group)
       - if can? :manage_members, @group
-        %li
+        %li{:class => (act == :edit && contr == :members) ? 'active' : ''}
           = link_to t("layout.groups.edit_members"), edit_group_members_path(@group) 
 
 -#.block.notice

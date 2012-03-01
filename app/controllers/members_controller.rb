@@ -65,7 +65,7 @@ class MembersController < ApplicationController
     redirect_to parent_path
   end
 
-  def destroy
+  def remove
   end
 
   def add
