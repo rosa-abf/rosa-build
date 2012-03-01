@@ -11,20 +11,23 @@
     %h1= title t('devise.passwords.edit')
     %br
     .content
-    - is_error = resource.errors.present?
+    -password_error = nil
+    - if resource.errors.present?
+      - resource.errors.each do |attr, array|
+        -password_error = array if attr == :password
 
     = form_for(resource, :as => resource_name, :url => password_path(resource_name), :html => { :method => :put, :class => "form" }) do |f|
       = f.hidden_field :reset_password_token
       .left.first=t('activerecord.attributes.user.password')
       .right.first
-        = f.text_field :password, :id => 'pass',  :class => "registartion-input #{is_error ? "registartion-input-error" : ''}", :onblur => "if(this.value==''){this.value='';this.className='registartion-input';}else{this.className='registartion-input-no-focus';};", :onfocus => "if(this.value==''){this.value='';this.className='registartion-input-focus';};"
+        = f.text_field :password, :id => 'pass',  :class => "registartion-input #{password_error ? "registartion-input-error" : ''}", :onblur => "if(this.value==''){this.value='';this.className='registartion-input';}else{this.className='registartion-input-no-focus';};", :onfocus => "if(this.value==''){this.value='';this.className='registartion-input-focus';};"
       .both
       .left=t('activerecord.attributes.user.password_confirm')
       .right
-        = f.text_field :password_confirmation, :id => 'pass2',  :class => "registartion-input #{is_error ? "registartion-input-error" : ''}", :onClick => "this.className='registartion-input-focus';disError(this);", :onblur => "if(this.value==''){this.value='';this.className='registartion-input';}else{this.className='registartion-input-no-focus';};buttonCheck();", :onfocus => "if(this.value==''){this.value='';this.className='registartion-input-focus';};", :onkeydown => "buttonCheck();"
+        = f.text_field :password_confirmation, :id => 'pass2',  :class => "registartion-input #{password_error ? "registartion-input-error" : ''}", :onClick => "this.className='registartion-input-focus';disError(this);", :onblur => "if(this.value==''){this.value='';this.className='registartion-input';}else{this.className='registartion-input-no-focus';};buttonCheck();", :onfocus => "if(this.value==''){this.value='';this.className='registartion-input-focus';};", :onkeydown => "buttonCheck();"
       .both
       %br
       =f.submit t("devise.passwords.edit_button"), :class => 'button', :id => 'btnLogin'
-
-  #hint.error.reset{:style => is_error ? 'display: block;' : ''}
-    %p=resource.errors.full_messages.first
+  - if password_error
+    #hint.error.reset{:style => 'display: block;'}
+      %p=password_error
