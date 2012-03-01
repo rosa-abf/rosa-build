@@ -612,19 +612,6 @@ ru:
         platform: Архитектура
         counter: Закачки
 
-    errors:
-      messages:
-        too_long:
-          one:   "не может быть больше чем %{count} символ"
-          few:   "не может быть больше чем %{count} символа"
-          many:  "не может быть больше чем %{count} символов"
-          other: "не может быть больше чем %{count} символа"
-        too_short:
-          one:   "не может быть меньше %{count} символа"
-          few:   "не может быть меньше %{count} символов"
-          many:  "не может быть меньше %{count} символов"
-          other: "не может быть меньше %{count} символа"
-
   notifications:
     subjects:
       new_comment_notification: Новый комментарий к Вашей задаче

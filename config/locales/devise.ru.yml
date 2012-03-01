@@ -11,6 +11,11 @@ ru:
         many: "%{resource}: сохранение не удалось из-за %{count} ошибок"
         other: "%{resource}: сохранение не удалось из-за %{count} ошибки"
 
+  activerecord:
+    errors:
+      messages:
+        confirmation: "пароли не совпадают"
+
   devise:
     failure:
       already_authenticated: 'Вы уже вошли в систему.'
@@ -34,6 +39,7 @@ ru:
       send_paranoid_instructions: "Если Ваш e-mail существует, в течение нескольких минут вы получите e-mail с инструкциями по восстановлению вашего пароля."
       forgot: 'Забыли пароль'
       send: 'Послать'
+      edit_button: 'Изменить'
     confirmations:
       send_instructions: "В течение нескольких минут вы получите e-mail с инструкциями по подтверждению вашей учётной записи."
       send_paranoid_instructions: 'Если Ваш e-mail существует, то в течение нескольких минут вы получите e-mail с инструкциями по подтверждению вашей учётной записи.'

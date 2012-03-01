@@ -6,7 +6,7 @@
     - if controller_name == 'sessions' && action_name == 'new'
       = stylesheet_link_tag "login"
       = javascript_include_tag "login"
-    - elsif ['registrations', 'passwords'].include?(controller_name) && ['new', 'create'].include?(action_name)
+    - elsif ['registrations', 'passwords'].include?(controller_name) && ['new', 'create', 'edit', 'update'].include?(action_name)
       = stylesheet_link_tag "reg_session"
     = csrf_meta_tag
     

@@ -9,6 +9,11 @@ en:
         one: "1 error prohibited this %{resource} from being saved:"
         other: "%{count} errors prohibited this %{resource} from being saved:"
 
+  activerecord:
+    errors:
+      messages:
+        confirmation: "passwords doesn't match"
+
   devise:
     failure:
       already_authenticated: 'You are already signed in.'
@@ -32,6 +37,7 @@ en:
       send_paranoid_instructions: "If your e-mail exists on our database, you will receive a password recovery link on your e-mail"
       forgot: 'Forgot password'
       send: 'Send'
+      edit_button: 'Change'
     confirmations:
       send_instructions: 'You will receive an email with instructions about how to confirm your account in a few minutes.'
       send_paranoid_instructions: 'If your e-mail exists on our database, you will receive an email with instructions about how to confirm your account in a few minutes.'

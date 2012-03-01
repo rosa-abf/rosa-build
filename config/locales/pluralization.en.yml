@@ -20,3 +20,13 @@ en:
       inline_changes_count:
         one:   "%{count} change"
         other: "%{count} changes"
+
+  activerecord:
+    errors:
+      messages:
+        too_long:
+          one:   "maximum is %{count} character"
+          other:  "maximum is %{count} characters"
+        too_short:
+          one:   "minimum is %{count} character"
+          other:  "minimum is %{count} characters"
