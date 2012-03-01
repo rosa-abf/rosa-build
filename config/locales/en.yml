@@ -617,15 +617,6 @@ en:
         platform: Platform
         counter: Downloads
 
-    errors:
-      messages:
-        too_long:
-          one:   "maximum is %{count} character"
-          other:  "maximum is %{count} characters"
-        too_short:
-          one:   "minimum is %{count} character"
-          other:  "minimum is %{count} characters"
-
   notifications:
     subjects:
       new_comment_notification: New comment to your task
