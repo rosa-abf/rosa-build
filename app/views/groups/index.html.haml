@@ -11,7 +11,7 @@
         %td= link_to group.name, group_path(group)
         %td.td2= group.description
         %td.td5
-          = link_to image_tag('x.png'), '#' unless group.owner_id == current_user.id
+          = link_to image_tag('x.png'), remove_group_member_path(group, current_user), :method => :delete unless group.owner_id == current_user.id
 
 -#.block
 -#  .secondary-navigation

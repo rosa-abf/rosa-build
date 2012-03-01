@@ -11,9 +11,9 @@
           = t("layout.collaborators.roles")
     %tbody
       - @users.each do |user|
-        %tr#admin-table-members-row1
+        %tr
           %td
-            %span#niceCheckbox1.niceCheck-main{:onclick => "changeCheck(this)", :style => "background-position: 0px 0px; "}
+            %span#niceCheckbox1.niceCheck-main
               = check_box_tag "user_remove[#{user.id}][]"
           %td
             .img
@@ -23,9 +23,6 @@
             %td
               .radio
                 = radio_button_tag "user[#{user.id}]", role, ((parent.objects.exists? :object_id => user.id, :object_type => 'User', :role => role) ? :checked : nil), :class => 'niceRadio'
-                -# f.radio_button "group[#{role}][#{group.id}]", '1', ((@project.relations.exists? :object_id => group.id, :object_type => 'Group', :role => role) ? :checked : nil)
-                -#%span.niceRadio.radioChecked
-                -#  %input#myradio1{:checked => "checked", :name => "myradio", :tabindex => "1", :type => "radio", :value => "on"}/
               .forradio= t("layout.collaborators.role_names.#{ role }")
   = link_to_function t("layout.delete"), "deleteAdminMember();", :class => 'button'
   .both
@@ -38,11 +35,6 @@
     .lineForm
       = select_tag 'role', options_for_collaborators_roles_select
   .both
-  -#.admin-search
-  -#  = label_tag "group_uname", t("layout.collaborators.input_groupname")
-  -#  = autocomplete_field_tag 'group_id', params[:group_id], autocomplete_group_uname_groups_path, :id_element => '#group_id_field'
-  =# hidden_field_tag 'member_id', nil, :id => 'member_id_field'
-  =# hidden_field_tag 'group_id', nil, :id => 'group_id_field'
   %br
   = submit_tag t("layout.add"), :class => 'button'
 
@@ -51,50 +43,3 @@
 = link_to_function t("layout.save"), "saveAdminMember();", :class => 'button'
 
 - content_for :sidebar, render('groups/sidebar')
-
--#.block
--#  .secondary-navigation
--#    %ul.wat-cf
--#      %li.first= link_to t("layout.members.back_to_group"), parent_path
--#      %li.active= link_to t("layout.members.edit"), edit_group_members_path(@group)
--#  .content
--#    .inner
--#      = form_tag group_members_path(parent) do
--#        %h2.title= t("layout.users.list_header")
--#        %table.table
--#          %tr
--#            %th.first ID
--#            %th= t("activerecord.attributes.user.name")
--#            %th= t("activerecord.attributes.user.roles")
--#            %th= t("activerecord.attributes.user.uname")
--#          - #TODO: Replace this Chelyabinsk add/remove collaborators method by more human method
--#          - @users.each do |user|
--#            %tr{:class => cycle("odd", "even")}
--#              %td
--#                = user.id
--#              %td
--#                = link_to user.name, user_path(user)
--#              %td
--#                - Relation::ROLES.each do |role|
--#                  = check_box_tag "#{ role }[#{user.id}]", '1', ((parent.objects.exists? :object_id => user.id, :object_type => 'User', :role => role) ? :checked : nil), {:class => "user_role_chbx"}
--#                  = label_tag "#{ role }[#{user.id}]", t("layout.members.roles.#{ role }")
--#              %td
--#                = user.uname
--#        .group.navform.wat-cf
--#          %button.button{:type => "submit"}
--#            = image_tag("choose.png", :alt => t("layout.save"))
--#            = t("layout.save")
--#          %span.text_button_padding= t("layout.or")
--#          = link_to t("layout.cancel"), group_path(parent), :class => "text_button_padding link_button"
--#
--#      = form_tag add_group_members_path(parent) do
--#        .group
--#          %h2.title= t("layout.members.add_member")
--#          = label_tag "", t("layout.members.input_username")
--#          = autocomplete_field_tag 'user_id', params[:user_id], autocomplete_user_uname_users_path
--#        %br
--#        .group.navform.wat-cf
--#          %button.button{:type => "submit"}
--#            = image_tag("choose.png", :alt => t("layout.add"))
--#            = t("layout.add")
--#
