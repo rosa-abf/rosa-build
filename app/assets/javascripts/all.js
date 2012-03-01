@@ -16,8 +16,18 @@ $(document).ready(function() {
     if ((dl2 == "block")&&(dl == "91px")) {
       dropbox.slideUp("slow");
     }
+
   });
 
+  $('.data-expander').live('click', function(e) {
+    var $button = $(e.target);
+    var id = "#content-" + $button.attr('id');
+    var $slider = $(id);
+    $slider.slideToggle("slow", function(){
+      $button.toggleClass('expanded collapsed');
+    });
+  });
+    
   function showActivity(elem) {
     $("#activity-bottom"+elem).slideToggle("slow");
     var img = document.getElementById("expand" + elem).className;

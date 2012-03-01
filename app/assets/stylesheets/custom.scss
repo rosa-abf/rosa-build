@@ -107,6 +107,11 @@ div.activity .data-expander.expanded {
     background-position: 0 2px;
 }
 
+div.activity .fulltext p {
+    margin: 5px;
+    line-height: 1.3em;
+}
+
 table.blob td.lines pre {
     background-color: #ECECEC;
     border-right: 1px solid #DDDDDD;

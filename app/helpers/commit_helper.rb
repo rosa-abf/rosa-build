@@ -5,7 +5,7 @@ module CommitHelper
     res = ["<table class='commit_stats'>"]
     stats.files.each do |filename, adds, deletes, total|
       res << "<tr>"
-      res << "<td><a href='##{h(filename)}'>#{h(filename)}</a></td>"
+      res << "<td><a href='##{h(filename)}'>#{h(filename)}</a></td>".encode_to_default
       res << "<td class='diffstat'>"
       res << I18n.t("layout.projects.inline_changes_count", :count => total).strip +
              " (" +
