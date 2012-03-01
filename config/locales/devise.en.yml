@@ -9,6 +9,11 @@ en:
         one: "1 error prohibited this %{resource} from being saved:"
         other: "%{count} errors prohibited this %{resource} from being saved:"
 
+  activerecord:
+    errors:
+      messages:
+        confirmation: "passwords doesn't match"
+
   devise:
     failure:
       already_authenticated: 'You are already signed in.'

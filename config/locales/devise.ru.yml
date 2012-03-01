@@ -11,6 +11,11 @@ ru:
         many: "%{resource}: сохранение не удалось из-за %{count} ошибок"
         other: "%{resource}: сохранение не удалось из-за %{count} ошибки"
 
+  activerecord:
+    errors:
+      messages:
+        confirmation: "пароли не совпадают"
+
   devise:
     failure:
       already_authenticated: 'Вы уже вошли в систему.'
