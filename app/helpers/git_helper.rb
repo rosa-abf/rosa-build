@@ -39,9 +39,9 @@ module GitHelper
 
   def render_line_numbers(n)
     res = ""
-    1.upto(n) {|i| res += "<span>#{i}</span>\n" }
+    1.upto(n) {|i| res += "<span>#{i}</span><br/>" }
 
-    res
+    res.html_safe
   end
 
   def render_blob(blob)

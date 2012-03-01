@@ -281,6 +281,30 @@ article div.file table {
     float: right;
 }
 
+#repo-wrapper div.file div.data .formatted {
+    overflow-x: auto;
+    overflow-y: none;
+}
+
 table.tablesorter tbody td a .issue_title {
     color: #58595B;
 }
+
+.syntaxhighlighter {
+    padding: 11px;
+}
+
+#output.formatted {
+    width: auto;
+    font-family: "Consolas","Bitstream Vera Sans Mono","Courier New",Courier,monospace;
+    padding: 10px;
+    margin-left: 45px;
+}
+
+#output.formatted pre {
+    font-family: "Consolas","Bitstream Vera Sans Mono","Courier New",Courier,monospace;
+    padding: 0;
+    margin: 0;
+}
+
+

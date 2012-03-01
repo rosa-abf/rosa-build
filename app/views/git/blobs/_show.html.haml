@@ -33,11 +33,13 @@
               <br/>
     - when :text
       .gutter
-        :plain
-          <pre>#{render_line_numbers(text.length)}</pre>
-      %pre{:class => "brush: #{@blob.mime_type.split('/').last}"}
-        =#{render_blob(@blob)}
-        = @blob.data.encode_to_default.html_safe
+        = render_line_numbers(text.length)
+      #output.formatted
+        %pre#code
+          =#{render_blob(@blob)}
+          :preserve
+            #{@blob.data.encode_to_default.html_safe}
+      .both
     - when :binary
       %table.table.blob
         %tr
@@ -47,3 +49,8 @@
               <br/>
               <pre>#{ link_to @blob.basename.encode_to_default, raw_path(@project, @treeish, @path) }</pre>
               <br/>
+:javascript
+  $(document).ready(function() {
+    //CodeMirror.runMode(document.getElementById("code").innerHTML, "#{@blob.mime_type}",
+    //                   document.getElementById("output"));
+  });
