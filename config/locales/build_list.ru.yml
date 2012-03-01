@@ -28,6 +28,7 @@ ru:
         auto_publish: Автоматическая публикация
         project_version: Версия
         user: Пользователь
+        preferences: Настройки
 
       build_list/item:
         name: Название
@@ -56,6 +57,7 @@ ru:
       publish_fail: 'При публикации сборки произошла ошибка!'
       container_published: 'Контейнер размещен в репозитории'
       action: Действие
+      new_header: Новая сборка
 
       ownership:
         header: Принадлежность заданий

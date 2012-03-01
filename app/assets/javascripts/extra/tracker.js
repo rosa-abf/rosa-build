@@ -46,7 +46,7 @@ $(document).ready(function() {
     return send_index_tracker_request('GET');
   });
 
-  $("#myradio1").live('change', function(event) {
+  $("#filter_issues #myradio1").live('change', function(event) {
     return send_index_tracker_request('GET');
   });
 

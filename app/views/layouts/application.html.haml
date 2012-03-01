@@ -36,16 +36,14 @@
                 .a= link_to t('layout.logout'), destroy_user_session_path, :method => :delete
         .right
         .both
-      - if content_for?(:sub_menu)
-        .sub-menu= yield :sub_menu
+      - if content_for?(:submenu)
+        .sub-menu= yield :submenu
       .both
       = render "layouts/flashes"
       %article
         - if content_for?(:sidebar)
           %aside= yield :sidebar
-          .right{:class => layout_class}= yield
-        - else
-          .all= yield
+        %div{:class => layout_class}= yield
         .both
 
     %footer= render "layouts/menu/bottom"

@@ -44,8 +44,12 @@ class User < ActiveRecord::Base
     role == 'admin'
   end
 
+  def user?
+    persisted?
+  end
+
   def guest?
-    self.id.blank? # persisted?
+    new_record?
   end
 
   def fullname
