@@ -1,8 +1,17 @@
+- act = controller.action_name.to_sym
+- if [:new, :create].include? act
+  .leftlist
+    = f.label :name, t("activerecord.attributes.group.name"), :class => :label
+  .rightlist.nomargin
+    = f.text_field :name
+  .both
+%br
 .leftlist
   = f.label :description, t("activerecord.attributes.group.description"), :class => :label
-.rightlist
+.rightlist.nomargin
   = f.text_area :description
 .both
+%br
 .leftlist
   \ 
 .rightlist
