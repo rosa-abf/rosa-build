@@ -49,6 +49,7 @@ class CommentPresenter < ApplicationPresenter
       res << link_to(t("layout.delete"), dp, :method => "delete",
                      :confirm => t("layout.comments.confirm_delete")).html_safe
     end
+    res
   end
 
   def header
