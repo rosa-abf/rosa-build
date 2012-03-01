@@ -9,13 +9,15 @@
       %span.name= presenter.header
       .both
       %span.date= presenter.date
-      %br/
-      %span.subject
-        = presenter.caption
-      - if presenter.expandable? and presenter.content?
-        %span.data-expander.collapsed{:id => "expand#{item_no}"} &nbsp;
+      .both
+      - if presenter.caption?
+        %span.subject= presenter.caption
+        - if presenter.expandable? and presenter.content?
+          %span.data-expander.collapsed{:id => "expand#{item_no}"} &nbsp;
+        .both
     .both
     - if presenter.content?
-      .fulltext{:class => presenter.expandable? ? "hidden" : '',
+      .fulltext{:class => "#{presenter.expandable? ? "hidden" : ''} #{presenter.caption? ? "" : "alone"}",
                 :id    => presenter.expandable? ? "content-expand#{item_no}" : ''}
         = presenter.content
+      .both

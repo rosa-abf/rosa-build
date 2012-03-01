@@ -52,13 +52,19 @@ article div.activity .top div.image {
     margin-top: 2px;
 }
 
+article div.activity .top .buttons {
+    display: block;
+    position: relative;
+    float: right;
+}
+
 article div.activity .top div.text {
     float: left;
     font-size: 12px;
     padding-left: 10px;
 }
 
-article div.activity .top div.text.imaged {
+article div.activity .top .imaged {
     margin-left: 44px;
 }
 
@@ -68,23 +74,19 @@ article div.activity .top div.text .name {
     float: left;
 }
 
-article div.activity .top .buttons {
-    display: block;
-    position: relative;
-    float: right;
-}
-
 article div.activity .top div.text .date {
     font-size: 11px;
+    float: left;
 }
 
-article div.activity .top div.text {
-    font-size: 12px;
-}
-
-article div.activity .fulltext {
+article div.activity div.fulltext {
     font-size: 12px;
     padding-top: 10px;
+    display: block;
+}
+
+article div.activity div.fulltext.alone {
+    padding-top: 0px;
 }
 
 article div.activity .fulltext.hidden {

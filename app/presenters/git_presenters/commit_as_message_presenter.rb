@@ -41,6 +41,10 @@ class GitPresenters::CommitAsMessagePresenter < ApplicationPresenter
     !content.blank?
   end
 
+  def caption?
+    true
+  end
+
   protected
 
     def committer

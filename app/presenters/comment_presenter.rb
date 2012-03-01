@@ -9,7 +9,7 @@ class CommentPresenter < ApplicationPresenter
     @user = comment.user
     @options = opts
 
-    @caption = @comment.body
+    @content = simple_format(@comment.body, {}, :sanitize => true).html_safe
   end
 
   def expandable?
@@ -21,9 +21,12 @@ class CommentPresenter < ApplicationPresenter
   end
 
   def content?
-    false
+    true
   end
 
+  def caption?
+    false
+  end
   def buttons
     project = options[:project]
     commentable = options[:commentable]
