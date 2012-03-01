@@ -1,22 +1,34 @@
-#block-login.block
-  %h2= title t("layout.sessions.sign_in_header")
-  .content.login
-    - if flash.present?
-      .flash
-        - flash.each do |key, value|
-          .message{ :title => key.to_s.humanize, :class => (key == :alert ? "error" : key) }
-            %p= value
+.wrap
+  %nav
+    %a{:href => new_register_request_path}
+      %p=t("layout.devise.shared_links.sign_up")
+  / Top block
+  %header
+    .logo
+  / Page
+  %article
+    - is_error = (flash.try(:first).try(:first) == :alert && flash.try(:first).try(:last) == t('devise.failure.invalid')) # Trash
+    - login = t('devise.sessions.login'); password = t('devise.sessions.password')
+    =hidden_field_tag :login_default, login
+    =hidden_field_tag :password_default, password
     = form_for(resource, :as => resource_name, :url => session_path(resource_name), :html => { :class => "form login" }) do |f|
-      .group.wat-cf
-        .left= f.label :login, :class => "label right"
-        .right= f.text_field :login, :class => "text_field"
-      .group.wat-cf
-        .left= f.label :password, :class => "label right"
-        .right= f.password_field :password, :class => "text_field"
-      .group.navform.wat-cf
-        .right
-          %button.button{:type => "submit"}
-            = image_tag 'code.png', :alt => "Save"
-            = t("layout.login")
-          %span.text_button_padding
-          = render :partial => "devise/shared/links"
+      %h1= title t("layout.sessions.sign_in_header")
+      = f.text_field :login, :class => "registartion-input #{is_error ? "registartion-input-error" : ''}", :onblur => "if(this.value==''){this.value='#{login}';this.className='registartion-input';} else{this.className='registartion-input-no-focus';};buttonCheck();", :onfocus => "if(this.value=='#{login}'){this.value='';this.className='registartion-input-focus';};", :onkeydown => "buttonCheck();", :type => "text", :value => login
+      %br/
+      = f.password_field :password, :class => "registartion-input #{is_error ? "registartion-input-error" : ''}", :onblur => "if(this.value==''){this.value='#{password}';this.className='registartion-input';}else{this.className='registartion-input-no-focus';};buttonCheck();", :onfocus => "if(this.value=='#{password}'){this.value='';this.className='registartion-input-focus';};", :onkeydown => "buttonCheck();", :type => "password", :value => password
+      %br/
+      .registration
+        .remember
+          .check
+            %span#niceCheckbox1.niceCheck{:onclick => "changeCheck(this)"}
+              = f.check_box :remember_me
+          .text=t('devise.sessions.remember_me')
+        .in=f.submit t('layout.devise.shared_links.sign_in'), :class => 'button disabled', :id => 'btnLogin'
+      %div{:style => "clear: both;"}
+      .hr
+      .both
+  #hint.error{:style => is_error ? 'display: block;' : ''}
+    %p=t('devise.failure.invalid')
+  .forgot
+    .password
+      %p= link_to t("layout.devise.shared_links.forgot_password"), new_password_path(resource_name)

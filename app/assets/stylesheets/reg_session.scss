@@ -1,0 +1,15 @@
+@import "registration";
+
+nav {
+  width: 96px;
+  height: 47px;
+  background: image-url("registration.png") no-repeat;
+  float: right;
+  cursor: pointer;
+  a {
+    font-size: 14px;
+    color: #FFF;
+    margin: 0;
+    padding: 0;
+    padding-top: 10px;
+    text-decoration: none;} }

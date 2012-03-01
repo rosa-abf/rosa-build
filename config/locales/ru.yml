@@ -54,7 +54,7 @@ ru:
     devise:
       shared_links:
         sign_in: Войти
-        sign_up: Зарегистрироваться
+        sign_up: Регистрация
         forgot_password: Забыли пароль?
         confirm_again: Не получили инструкции по подтверждению?
         unlock: Не получили инструкции по разблокировке?
@@ -587,7 +587,7 @@ ru:
         name: Имя
         login: Псевдоним или Email
         email: Email
-        uname: Псевдоним
+        uname: Никнейм
         ssh_key: SSH ключ
         current_password: Текущий пароль
         role: Роль
@@ -595,6 +595,8 @@ ru:
         updated_at: Обновлен
         role: Роль в системе
         language: Язык
+        password: Пароль
+        password_confirm: Повторите пароль
 
       product_build_list:
         id: Id
@@ -609,6 +611,19 @@ ru:
         distro: Дистрибутив
         platform: Архитектура
         counter: Закачки
+
+    errors:
+      messages:
+        too_long:
+          one:   "не может быть больше чем %{count} символ"
+          few:   "не может быть больше чем %{count} символа"
+          many:  "не может быть больше чем %{count} символов"
+          other: "не может быть больше чем %{count} символа"
+        too_short:
+          one:   "не может быть меньше %{count} символа"
+          few:   "не может быть меньше %{count} символов"
+          many:  "не может быть меньше %{count} символов"
+          other: "не может быть меньше %{count} символа"
 
   notifications:
     subjects:

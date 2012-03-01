@@ -600,6 +600,8 @@ en:
         updated_at: Updated
         role: System role
         language: Language
+        password: Password
+        password_confirm: Confirmation
 
       product_build_list:
         id: Id
@@ -614,6 +616,15 @@ en:
         distro: Source
         platform: Platform
         counter: Downloads
+
+    errors:
+      messages:
+        too_long:
+          one:   "maximum is %{count} character"
+          other:  "maximum is %{count} characters"
+        too_short:
+          one:   "minimum is %{count} character"
+          other:  "minimum is %{count} characters"
 
   notifications:
     subjects:
