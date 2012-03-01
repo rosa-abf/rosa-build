@@ -4,3 +4,4 @@ en:
       has_commented:     "adds a note"
       notifications_are: "Notifications for new comments are"
       comments_header:   "Comments"
+      back: 'Back'
