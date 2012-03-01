@@ -2,18 +2,18 @@ source 'http://rubygems.org'
 
 gem 'rails', '3.2.2' #, :git => 'git://github.com/rails/rails.git'
 
-gem 'pg', '~> 0.13.1'
+gem 'pg', '~> 0.13.2'
 # gem 'silent-postgres', :git => 'git://github.com/dolzenko/silent-postgres.git' #'~> 0.1.1'
 gem 'redhillonrails_core', :git => 'git://github.com/chipiga/redhillonrails_core.git', :branch => 'rails31' # '~> 2.0.0.pre' # deprecated
 # gem 'schema_plus', '~> 0.2.1' # buggy shit!
 
-gem 'devise', '~> 2.0.1'
+gem 'devise', '~> 2.0.4'
 gem 'omniauth', '~> 1.0.2'
 gem 'omniauth-openid', '~> 1.0.1'
 gem 'cancan', '~> 1.6.7'
 
 gem 'ancestry', '~> 1.2.4'
-gem 'paperclip', '~> 2.5.2'
+gem 'paperclip', '~> 2.7.0'
 gem 'delayed_job_active_record', '~> 0.3.2'
 gem 'russian', '~> 0.6.0'
 gem 'highline', '~> 1.6.11'
@@ -32,26 +32,26 @@ gem 'RedCloth'
 gem 'wikicloth'
 
 gem 'unicorn', '~> 4.2.0'
-gem 'newrelic_rpm', '~> 3.3.1'
+gem 'newrelic_rpm', '~> 3.3.2'
 
 gem 'rails3-jquery-autocomplete', '~> 1.0.6'
 gem 'will_paginate', '~> 3.0.3'
 gem 'meta-tags', '~> 1.2.4', :require => 'meta_tags'
 gem "haml-rails", '~> 0.3.4'
-gem 'jquery-rails', '~> 2.0.0'
+gem 'jquery-rails', '~> 2.0.1'
 
 group :assets do
   gem 'sass-rails', '~> 3.2.4'
   gem 'coffee-rails', '~> 3.2.2'
   gem 'uglifier', '~> 1.2.1'
   gem 'compass', '~> 0.12.rc.1' # :git => 'git://github.com/chriseppstein/compass.git', :branch => 'rails31'
-  gem 'therubyracer', '~> 0.9.9'
+  gem 'therubyracer', '~> 0.9.10'
 end
 
 group :production do
   gem "airbrake", '~> 3.0.9'
-  gem 'bluepill', '~> 0.0.55', :require => false
-  gem 'daemons', '~> 1.1.8' # for DJ
+  gem 'bluepill', '~> 0.0.59', :require => false
+  gem 'daemons', '1.1.6' # for DJ
 end
 
 group :development do
@@ -69,6 +69,6 @@ end
 
 group :test do
   gem 'rspec-rails',        '~> 2.8.1'
-  gem 'factory_girl_rails', '~> 1.6.0'
+  gem 'factory_girl_rails', '~> 1.7.0'
   gem 'rr',                 '~> 1.0.4'
 end
