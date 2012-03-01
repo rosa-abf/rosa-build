@@ -18,7 +18,6 @@
       =link_to image_tag(issue.user.avatar(22), :alt => 'avatar'), user_path(issue.user) if issue.user
     %a{:href => "#{project_issue_path @project, issue}#block-list"}
       .answers
-        .pic
-          %img{:alt => '', :src => "/assets/answers.png"}
+        .pic= image_tag 'answers.png'
         .count=issue.comments.count
         .both

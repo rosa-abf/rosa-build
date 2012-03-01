@@ -1,13 +1,3 @@
-/*
-*= require hl/shCore
-*= require hl/shCoreEclipse
-*= require hl/shThemeEclipse
-
-*= require codemirror
-*= require codemirror/themes/night
-*/
-
-
 @import "tablesorter";
 @import "cusel";
 @import "jquery.dataTables";
@@ -17,10 +7,5 @@
 //@import "gollum/template";
 @import "gollum/editor";
 
-@import "hl/shCore";
-@import "hl/shCoreEclipse";
-@import "hl/shThemeEclipse";
-
 @import "codemirror";
 @import "codemirror/themes/eclipse";
-@import "git/style";

@@ -15,5 +15,7 @@
 
 = will_paginate @build_lists
 
-= render 'build_lists/sub_menu'
-= render 'build_lists/sidebar'
+= link_to t('layout.build_lists.new_header'), new_project_build_list_path(@project), :class => 'button' if @project and can?(:create, @project => BuildList)
+
+= render 'build_lists/filter'
+= render @project ? 'projects/submenu' : 'build_lists/submenu'
