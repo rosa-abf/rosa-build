@@ -11,12 +11,7 @@ class GroupsController < ApplicationController
   autocomplete :group, :uname
 
   def index
-    puts parent.inspect
-    @groups = if parent? and !parent.nil?
-                parent.groups
-              else
-                Group
-              end.accessible_by(current_ability)
+    @groups = current_user.groups#accessible_by(current_ability)
 
     @groups = if params[:query]
                 @groups.where(["name LIKE ?", "%#{params[:query]}%"])
@@ -46,7 +41,7 @@ class GroupsController < ApplicationController
                      current_user
                    end
 
-    if @group.save
+    if @group.save!
       flash[:notice] = t('flash.group.saved')
       redirect_to group_path(@group)
     else
