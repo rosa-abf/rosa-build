@@ -38,7 +38,7 @@
         %pre#code
           =#{render_blob(@blob)}
           :preserve
-            #{@blob.data.encode_to_default.html_safe}
+            #{h(@blob.data.encode_to_default).html_safe}
       .both
     - when :binary
       %table.table.blob
@@ -51,6 +51,6 @@
               <br/>
 :javascript
   $(document).ready(function() {
-    //CodeMirror.runMode(document.getElementById("code").innerHTML, "#{@blob.mime_type}",
-    //                   document.getElementById("output"));
+    var text = $('#code').innerHTML.replace(/&amp;/gi, '&');
+    CodeMirror.runMode(text, "#{@blob.mime_type}", document.getElementById("output"));
   });
