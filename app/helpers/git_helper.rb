@@ -74,18 +74,20 @@ module GitHelper
 
   # TODO This is very dirty hack. Maybe need to be changed.
   def branch_selector_options(project)
-    tmp = params
+    tmp = params.dup
     unless tmp['treeish'].present?
       tmp.merge!('project_id' => project.id, 'treeish' => project.default_branch).delete('id')
     end
+    tmp.delete('treeish') if tmp['commit_hash'].present?
     res = {}
     current = url_for(tmp).split('?', 2).first
+    tmp['commit_hash'] = truncate(tmp['commit_hash'], :length => 20) if tmp['commit_hash']
 
     res = project.branches.inject(res) do |h, branch|
-      h[branch.name] = url_for(tmp.merge('treeish' => branch.name)).split('?', 2).first
+      h[truncate(branch.name, :length => 20)] = url_for(tmp.merge('treeish' => branch.name)).split('?', 2).first
       h
     end
-    res.merge!(tmp['treeish'] => current)
+    res.merge!(tmp['commit_hash'] || tmp['treeish'] => current)
 
     options_for_select(res.sort, current).html_safe
   end

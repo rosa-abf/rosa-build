@@ -11,4 +11,5 @@ en:
       author:   Author
 
       current_branch: Current branch
+      current_commit: Current commit
       files_in_project: Files in
