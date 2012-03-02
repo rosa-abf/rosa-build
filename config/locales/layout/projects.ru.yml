@@ -10,5 +10,6 @@ ru:
       message:  Сообщение
       author:   Автор
 
-      current_branch: Текущий бранч
+      current_branch: Текущая ветка
+      current_commit: Текущий коммит
       files_in_project: Файлы в

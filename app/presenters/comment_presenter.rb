@@ -30,9 +30,6 @@ class CommentPresenter < ApplicationPresenter
   def buttons
     project = options[:project]
     commentable = options[:commentable]
-    puts "PROJECT = " + project.inspect
-    puts "COMMENTABLE = " + commentable.inspect
-    puts "COMMENT = " + comment.inspect
     (ep, dp) = if commentable.class == Issue
       [edit_project_issue_comment_path(project, commentable, comment),
        project_issue_comment_path(project, commentable, comment)]
