@@ -17,7 +17,7 @@
       - if render_way == :text and can? :write, @project and @treeish.in? @project.branches.map(&:name)
         = raw "#{link_to "Edit", edit_blob_path(@project, @treeish, @path) } | "
       = raw "#{link_to "Raw",    raw_path(@project, @treeish, @path)} | "
-      = raw "#{link_to "Blame",  blame_path(@project, @treeish, @path)} | "
+      =# raw "#{link_to "Blame",  blame_path(@project, @treeish, @path)} | "
       = link_to "History",       commits_path(@project, @treeish, @path)
     .both
   .data

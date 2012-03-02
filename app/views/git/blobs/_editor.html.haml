@@ -10,7 +10,7 @@
 
   .both
   = t("layout.enter_commit_message")
-  = text_area_tag :message, "Updated #{@blob.name}", :class => 'commit-message'
+  = text_area_tag :message, "Updated #{@blob.name.encode_to_default}", :class => 'commit-message'
 
   %br
   %br
