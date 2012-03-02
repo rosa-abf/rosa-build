@@ -3,51 +3,36 @@
   %header
     .logo
   / Page
-  - uname_error = name_error = email_error = password_error = password_confirm_error = nil
-  - if resource.errors.present? # Trash
-    - resource.errors.each do |attr, array|
-      -uname_error = array if attr == :uname
-      -name_error = array if attr == :name
-      -email_error = array if attr == :email
-      -password_error = array if attr == :password
-      -password_confirm_error = array if attr == :password_confirmation
-
+  - uname_error, name_error, email_error, password_error = getDeviseErrors(:uname, :name, :email, :password)
   %article
     = form_for(resource, :as => resource_name, :url => registration_path(resource_name), :html => { :class => "form" }) do |f|
       = hidden_field_tag :invitation_token, @invitation_token
       .left.first=t('activerecord.attributes.user.uname')
       .right.first
-        = f.text_field :uname, :id => 'login', :class => "registartion-input #{uname_error ? "registartion-input-error" : ''}", :onblur => "if(this.value==''){this.value='';this.className='registartion-input';}else{this.className='registartion-input-no-focus';};", :onfocus => "if(this.value==''){this.value='';this.className='registartion-input-focus';};"
+        = f.text_field :uname, :id => 'login', :class => "registartion-input #{uname_error ? 'registartion-input-error' : ''}"
       .both
       .left=t('activerecord.attributes.user.name')
       .right
-        = f.text_field :name, :id => 'name',  :class => "registartion-input #{name_error ? "registartion-input-error" : ''}", :onblur => "if(this.value==''){this.value='';this.className='registartion-input';}else{this.className='registartion-input-no-focus';};", :onfocus => "if(this.value==''){this.value='';this.className='registartion-input-focus';};"
+        = f.text_field :name, :id => 'name',  :class => "registartion-input #{name_error ? 'registartion-input-error' : ''}"
       .both
       .left=t('activerecord.attributes.user.email')
       .right
-        = f.text_field :email, :id => 'email', :readonly => 'readonly',  :class => "registartion-input #{email_error ? "registartion-input-error" : ''}", :onblur => "if(this.value==''){this.value='';this.className='registartion-input';}else{this.className='registartion-input-no-focus';};", :onfocus => "if(this.value==''){this.value='';this.className='registartion-input-focus';};"
+        = f.text_field :email, :id => 'email', :readonly => 'readonly',  :class => "registartion-input #{email_error ? 'registartion-input-error' : ''}"
       .both
       .left=t('activerecord.attributes.user.password')
       .right
-        = f.text_field :password, :id => 'pass',  :class => "registartion-input #{password_error ? "registartion-input-error" : ''}", :onblur => "if(this.value==''){this.value='';this.className='registartion-input';}else{this.className='registartion-input-no-focus';};", :onfocus => "if(this.value==''){this.value='';this.className='registartion-input-focus';};"
+        = f.text_field :password, :id => 'password',  :class => "registartion-input #{password_error ? 'registartion-input-error' : ''}"
       .both
       .left=t('activerecord.attributes.user.password_confirm')
       .right
-        = f.text_field :password_confirmation, :id => 'pass2',  :class => "registartion-input #{password_confirm_error ? "registartion-input-error" : ''}", :onClick => "this.className='registartion-input-focus';disError(this);", :onblur => "if(this.value==''){this.value='';this.className='registartion-input';}else{this.className='registartion-input-no-focus';};buttonCheck();", :onfocus => "if(this.value==''){this.value='';this.className='registartion-input-focus';};", :onkeydown => "buttonCheck();"
+        = f.text_field :password_confirmation, :id => 'password2',  :class => "registartion-input #{password_error ? 'registartion-input-error' : ''}"
       .both
       .in
         =f.submit t("layout.devise.shared_links.sign_up"), :class => 'button', :id => 'btnLogin'
       .both
 
-  -if uname_error
-    .error.login#hintLogin
-      %p=uname_error
-  -if name_error
-    .error.name#hintName
-      %p=name_error
-  -if email_error
-    .error.email#hintEmail
-      %p=email_error
-  -if password_error
-    .error.password#hintPassword
-      %p=password_error
+  =showDeviseHintError(:login, uname_error)
+  =showDeviseHintError(:name, name_error)
+  =showDeviseHintError(:email, email_error)
+  =showDeviseHintError(:password, password_error)
+
