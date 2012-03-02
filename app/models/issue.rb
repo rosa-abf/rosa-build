@@ -20,7 +20,7 @@ class Issue < ActiveRecord::Base
   after_create :subscribe_users
   after_update :subscribe_issue_assigned_user
 
-  attr_accessible :labelings_attributes, :title, :body, :project, :project_id, :closed_at, :closed_by
+  attr_accessible :labelings_attributes, :title, :body
   accepts_nested_attributes_for :labelings, :allow_destroy => true
 
   scope :opened, where(:status => 'open', :closed_by => nil, :closed_at => nil)
