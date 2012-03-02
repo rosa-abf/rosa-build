@@ -5,10 +5,10 @@
     = display_meta_tags :site => APP_CONFIG['project_name']
     - if controller_name == 'sessions' && action_name == 'new'
       = stylesheet_link_tag "login"
-      = javascript_include_tag "login"
     - elsif ['registrations', 'passwords'].include?(controller_name) && ['new', 'create', 'edit', 'update'].include?(action_name)
       = stylesheet_link_tag "reg_session"
     = csrf_meta_tag
+    = javascript_include_tag "login"
     
   %body
     -# render :partial => "layouts/flashes"

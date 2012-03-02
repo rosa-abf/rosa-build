@@ -1,55 +1,23 @@
-function disError(elem) {
-  $("#hint").fadeOut("fast");
-  if (document.getElementById("user_login").className=="registartion-input-error") {
-    if (this.id=="user_login") {
-      document.getElementById("user_login").className="registartion-input-focus";
-    } else {
-      document.getElementById("user_login").className="registartion-input-no-focus";
-    }
-  }
-  if (document.getElementById("user_password").className=="registartion-input-error") {
-   if (this.id=="user_password") {
-      document.getElementById("user_password").className="registartion-input-focus";
-    } else {
-      document.getElementById("user_password").className="registartion-input-no-focus";
-    }
-  }
-  buttonCheck();
-}
+//= require jquery
 
-function buttonCheck() {
-  var login_default = document.getElementById("login_default").value;
-  var pass_default = document.getElementById("password_default").value;
-  if ((document.getElementById("user_login").value!="")&&(document.getElementById("user_login").value!=login_default)&&
-       (document.getElementById("user_password").value!="")&&(document.getElementById("user_password").value!=pass_default)) {
-    document.getElementById("btnLogin").className = "button";
-  } else {
-    document.getElementById("btnLogin").className = "button disabled";
-  }
-}
+$(document).ready(function() {
+  var login_default = $('#login_default').val();
+  var pass_default = $('#password_default').val();
 
-function changeCheck(el) {
-  var el = el,
-    input = el.getElementsByTagName("input")[0];
+  $('.registartion-input').live('keydown', function() {
+    var id = $(this).attr('id');
+     if(id == 'user_login' || id == 'user_password') { id = 'login_error'}
+    $('.error.'+id).fadeOut('slow');
+  }).live('focus', function() {
+    var id = $(this).attr('id');
+    if(id == 'user_login' && $(this).val() == login_default) { $(this).val('')}
+    else if(id == 'user_password' && $(this).val() == pass_default) { $(this).val('')}
+    $(this).addClass('registartion-input-focus').removeClass('registartion-input-error');
+  }).live('blur', function() {
+    var id = $(this).attr('id');
+    if(id == 'user_login') { $(this).val(login_default)}
+    else if(id == 'user_password') {$(this).val(pass_default)}
+    $(this).addClass('registartion-input-no-focus').removeClass('registartion-input-focus');
+  });
 
-   if(input.checked) {
-      el.style.backgroundPosition="0 0"; 
-      input.checked=false;
-   }
-   else {
-      el.style.backgroundPosition="0 -17px"; 
-      input.checked=true;
-   }
-   return true;
-}
-
-function startChangeCheck(el) {
-  var el = el,
-    input = el.getElementsByTagName("input")[0];
-  if(input.checked) { el.style.backgroundPosition="0 -17px"; }
-  return true;
-}
-
-function startCheck() {
-  startChangeCheck(document.getElementById("niceCheckbox1"));
-}
+});
