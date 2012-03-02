@@ -1,9 +1,9 @@
 - act = controller.action_name.to_sym
 - if [:new, :create].include? act
   .leftlist
-    = f.label :name, t("activerecord.attributes.group.name"), :class => :label
+    = f.label :uname, t("activerecord.attributes.group.uname"), :class => :label
   .rightlist.nomargin
-    = f.text_field :name
+    = f.text_field :uname
   .both
 %br
 .leftlist
