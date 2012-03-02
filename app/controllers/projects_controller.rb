@@ -45,9 +45,7 @@ class ProjectsController < ApplicationController
     @project = Project.new params[:project]
     #@project.owner = get_owner
     @project.owner = choose_owner
-    puts "OWNER_TYPE: " + @project.owner_type
     @who_owns = (@project.owner_type == 'User' ? :me : :group)
-    puts "WHO_OWNS: " + @who_owns.to_s
 
     if @project.save
       flash[:notice] = t('flash.project.saved') 
@@ -118,11 +116,11 @@ class ProjectsController < ApplicationController
       if params[:user_id]
         @user = User.find params[:user_id]
         @projects_path = user_path(@user) # user_projects_path @user
-        @new_project_path = new_user_project_path @user
+        @new_project_path = new_project_path
       elsif params[:group_id]
         @group = Group.find params[:group_id]
         @projects_path = group_path(@group) # group_projects_path @group
-        @new_projects_path = new_group_project_path @group
+        @new_projects_path = new_project_path
       else
         @projects_path = projects_path
         @new_projects_path = new_project_path

@@ -44,8 +44,12 @@ class User < ActiveRecord::Base
     role == 'admin'
   end
 
+  def user?
+    persisted?
+  end
+
   def guest?
-    self.id.blank? # persisted?
+    new_record?
   end
 
   def fullname
@@ -91,6 +95,10 @@ class User < ActiveRecord::Base
 
   def committer?(commit)
     email.downcase == commit.committer.email.downcase
+  end
+
+  def avatar(size)
+    "https://secure.gravatar.com/avatar/#{Digest::MD5.hexdigest(email.downcase)}?s=#{size}&r=pg"
   end
 
   private

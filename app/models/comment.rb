@@ -6,6 +6,8 @@ class Comment < ActiveRecord::Base
 
   validates :body, :user_id, :commentable_id, :commentable_type, :presence => true
 
+  default_scope order('created_at')
+
   after_create :invoke_helper, :if => "commentable_type == 'Grit::Commit'"
   after_create :subscribe_users
   after_create {|c| Subscribe.new_comment_notification(c)}

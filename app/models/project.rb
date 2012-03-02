@@ -17,6 +17,7 @@ class Project < ActiveRecord::Base
   has_many :relations, :as => :target, :dependent => :destroy
   has_many :collaborators, :through => :relations, :source => :object, :source_type => 'User'
   has_many :groups,        :through => :relations, :source => :object, :source_type => 'Group'
+  has_many :labels
 
   validates :name, :uniqueness => {:scope => [:owner_id, :owner_type], :case_sensitive => false}, :presence => true, :format => {:with => /^[a-zA-Z0-9_\-\+\.]+$/}
   validates :owner, :presence => true
@@ -192,7 +193,7 @@ class Project < ActiveRecord::Base
 
   class << self
     def commit_comments(commit, project)
-     comments = Comment.where(:commentable_id => commit.id.hex, :commentable_type => 'Grit::Commit').order(:created_at)
+     comments = Comment.where(:commentable_id => commit.id.hex, :commentable_type => 'Grit::Commit')
      comments.each {|x| x.project = project; x.helper}
     end
   end

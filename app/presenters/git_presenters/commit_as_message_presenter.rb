@@ -16,7 +16,7 @@ class GitPresenters::CommitAsMessagePresenter < ApplicationPresenter
                   I18n.t("layout.messages.commits.header_with_branch",
                    :committer => committer_link, :commit => commit_link, :branch => options[:branch].name)
                 elsif options[:project].present?
-                  I18n.t("layout.messages.commits.header_with_project",
+                  I18n.t("layout.messages.commits.header",
                    :committer => committer_link, :commit => commit_link, :project => options[:project].name)
                 end.html_safe
   end
@@ -33,8 +33,16 @@ class GitPresenters::CommitAsMessagePresenter < ApplicationPresenter
     true
   end
 
+  def buttons?
+    false
+  end
+
   def content?
     !content.blank?
+  end
+
+  def caption?
+    true
   end
 
   protected
@@ -63,6 +71,7 @@ class GitPresenters::CommitAsMessagePresenter < ApplicationPresenter
         @content = (@content.present?) ? tmp + @content : tmp
         @caption = @caption[0..68] + '...'
       end
-      @content = @content.gsub("\n", "<br />").html_safe if @content
+#      @content = @content.gsub("\n", "<br />").html_safe if @content
+      @content = simple_format(@content, {}, :sanitize => true).html_safe if @content
     end
 end

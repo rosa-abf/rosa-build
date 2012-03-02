@@ -22,7 +22,7 @@
               .field
                 %input.gray{:onclick => "if(this.value=='#{t "layout.search"}'){this.value='';this.className='black';}", :onblur => "if(this.value==''){this.value='#{t "layout.search"}';this.className='gray';}", :type => "text", :value => "#{t "layout.search"}"}
             .user
-              .avatar= image_tag 'ava.png', :alt => 'avatar', :height => "30"
+              .avatar= image_tag gravatar_url(current_user.email, 30), :alt => 'avatar', :height => "30"
               .profile
                 %a{:href => "#"}
                   = current_user.uname
@@ -36,16 +36,14 @@
                 .a= link_to t('layout.logout'), destroy_user_session_path, :method => :delete
         .right
         .both
-      - if content_for?(:sub_menu)
-        .sub-menu= yield :sub_menu
+      - if content_for?(:submenu)
+        .sub-menu= yield :submenu
       .both
       = render "layouts/flashes"
       %article
         - if content_for?(:sidebar)
           %aside= yield :sidebar
-          .right= yield
-        - else
-          .all= yield
+        %div{:class => layout_class}= yield
         .both
 
     %footer= render "layouts/menu/bottom"

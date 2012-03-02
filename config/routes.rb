@@ -50,9 +50,8 @@ Rosa::Application.routes.draw do
       put :cancel
       put :publish
     end
+    collection { post :search }
   end
-
-  post 'build_lists' => 'build_lists#index', :as => 'build_lists'
 
   resources :auto_build_lists, :only => [:index, :create, :destroy]
 
@@ -94,7 +93,8 @@ Rosa::Application.routes.draw do
     resources :categories, :only => [:index, :show]
   end
 
-  resources :projects do
+  resources :projects, :only => [:new]
+  resources :projects, :except => [:show] do
     resources :wiki do
       collection do
         match '_history' => 'wiki#wiki_history', :as => :history, :via => :get
@@ -117,12 +117,22 @@ Rosa::Application.routes.draw do
         match 'compare/*versions' => 'wiki#compare', :as => :compare_versions, :via => :get
       end
     end
-    resources :issues do
+    resources :issues, :except => :edit do
       resources :comments, :only => [:edit, :create, :update, :destroy]
       resources :subscribes, :only => [:create, :destroy]
+      collection do
+        post :create_label
+        get :search_collaborators
+        get :search_labels
+      end
     end
+    post "labels/:label_id" => "issues#destroy_label", :as => :issues_delete_label
+    post "labels/:label_id/update" => "issues#update_label", :as => :issues_update_label
+
     resource :repo, :controller => "git/repositories", :only => [:show]
-    resources :build_lists, :only => [:index, :new, :create]
+    resources :build_lists, :only => [:index, :new, :create] do
+      collection { post :search }
+    end
 
     resources :collaborators, :only => [:index, :edit, :update, :add] do
       collection do
@@ -138,14 +148,15 @@ Rosa::Application.routes.draw do
 #    resources :groups, :controller => 'project_groups' do
 #    end
 
-    member do
-      post :fork
-      get 'show', :controller => 'git/trees', :action => :show, :as => :show
-      get :sections
-      post :sections
-    end
     collection do
       get :auto_build
+    end
+    member do
+      post :fork
+#      get :new, :controller => 'projects', :action => 'new', :id => /new/, :as => :new
+      get :show, :controller => 'git/trees', :action => :show
+      get :sections
+      post :sections
     end
   end
 
@@ -176,7 +187,7 @@ Rosa::Application.routes.draw do
   resources :users, :groups do
     resources :platforms, :only => [:new, :create]
 
-    resources :projects, :only => [:new, :create, :index]
+    resources :projects, :only => [:index]
 
 #    resources :repositories, :only => [:new, :create]
   end
@@ -189,7 +200,7 @@ Rosa::Application.routes.draw do
   match '/projects/:project_id/git/tree/:treeish(/*path)', :controller => "git/trees", :action => :show, :treeish => /[0-9a-zA-Z_.\-]*/, :defaults => { :treeish => :master }, :as => :tree
 
   # Commits
-  match '/projects/:project_id/git/commits/:treeish(/*path)', :controller => "git/commits", :action => :index, :treeish => /[0-9a-zA-Z_.\-]*/, :defaults => { :treeish => :master }, :as => :commits
+  match '/projects/:project_id/git/commits/:treeish(/*path)', :controller => "git/commits", :action => :index, :treeish => /[0-9a-zA-Z_.\-]*/, :defaults => { :treeish => :master }, :as => :commits, :format => false
   match '/projects/:project_id/git/commit/:id(.:format)', :controller => "git/commits", :action => :show, :defaults => { :format => :html }, :as => :commit
   # Commit Comments
   match '/projects/:project_id/git/commit/:commit_id/comments/:id(.:format)', :controller => "comments", :action => :edit, :as => :edit_project_commit_comment, :via => :get
@@ -210,11 +221,11 @@ Rosa::Application.routes.draw do
   match '/projects/:project_id/git/commit/blob/:commit_hash/*path', :controller => "git/blobs", :action => :show, :project_id => /[0-9a-zA-Z_.\-]*/, :as => :blob_commit, :via => :get, :format => false
 
   # Blame
-  match '/projects/:project_id/git/blame/:treeish/*path', :controller => "git/blobs", :action => :blame, :treeish => /[0-9a-zA-Z_.\-]*/, :defaults => { :treeish => :master }, :as => :blame
+  match '/projects/:project_id/git/blame/:treeish/*path', :controller => "git/blobs", :action => :blame, :treeish => /[0-9a-zA-Z_.\-]*/, :defaults => { :treeish => :master }, :as => :blame, :format => false
   match '/projects/:project_id/git/commit/blame/:commit_hash/*path', :controller => "git/blobs", :action => :blame, :as => :blame_commit
 
   # Raw
-  match '/projects/:project_id/git/raw/:treeish/*path', :controller => "git/blobs", :action => :raw, :treeish => /[0-9a-zA-Z_.\-]*/, :defaults => { :treeish => :master }, :as => :raw
+  match '/projects/:project_id/git/raw/:treeish/*path', :controller => "git/blobs", :action => :raw, :treeish => /[0-9a-zA-Z_.\-]*/, :defaults => { :treeish => :master }, :as => :raw, :format => false
   match '/projects/:project_id/git/commit/raw/:commit_hash/*path', :controller => "git/blobs", :action => :raw, :as => :raw_commit
 
   root :to => "platforms#index"

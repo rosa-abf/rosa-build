@@ -1,10 +1,3 @@
-//= require_tree ./hl
-/*
-*= require codemirror
-*= require codemirror/themes/night
-*/
-
-
 @import "tablesorter";
 @import "cusel";
 @import "jquery.dataTables";
@@ -16,4 +9,3 @@
 
 @import "codemirror";
 @import "codemirror/themes/eclipse";
-@import "git/style";

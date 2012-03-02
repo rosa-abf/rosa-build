@@ -11,8 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120229163054) do
-
+ActiveRecord::Schema.define(:version => 20120229182356) do
   create_table "activity_feeds", :force => true do |t|
     t.integer  "user_id",    :null => false
     t.string   "kind"
@@ -175,9 +174,31 @@ ActiveRecord::Schema.define(:version => 20120229163054) do
     t.string   "status",     :default => "open"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "creator_id"
+    t.datetime "closed_at"
+    t.integer  "closed_by"
   end
 
   add_index "issues", ["project_id", "serial_id"], :name => "index_issues_on_project_id_and_serial_id", :unique => true
+
+  create_table "labelings", :force => true do |t|
+    t.integer  "label_id",   :null => false
+    t.integer  "issue_id"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+  end
+
+  add_index "labelings", ["issue_id"], :name => "index_labelings_on_issue_id"
+
+  create_table "labels", :force => true do |t|
+    t.string   "name",       :null => false
+    t.string   "color",      :null => false
+    t.integer  "project_id"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+  end
+
+  add_index "labels", ["project_id"], :name => "index_labels_on_project_id"
 
   create_table "platforms", :force => true do |t|
     t.string   "description"
@@ -263,11 +284,11 @@ ActiveRecord::Schema.define(:version => 20120229163054) do
     t.text     "description"
     t.string   "ancestry"
     t.boolean  "has_issues",        :default => true
-    t.boolean  "has_wiki",          :default => false
     t.string   "srpm_file_name"
     t.string   "srpm_content_type"
     t.integer  "srpm_file_size"
     t.datetime "srpm_updated_at"
+    t.boolean  "has_wiki",          :default => false
     t.string   "default_branch",    :default => "master"
     t.boolean  "is_rpm",            :default => true
   end

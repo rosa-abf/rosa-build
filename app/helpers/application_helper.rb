@@ -9,4 +9,17 @@ module ApplicationHelper
     
     return title
   end
+
+  def layout_class
+    case
+    when params[:controller] == 'issues' && params[:action] == 'new'
+      'right nopadding'
+    when params[:controller] == 'build_lists' && params[:action] == 'index'
+      'right slim'
+    when params[:controller] == 'build_lists' && ['new', 'create'].include?(params[:action])
+      nil
+    else
+      content_for?(:sidebar) ? 'right' : 'all'
+    end
+  end
 end

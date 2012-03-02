@@ -1,0 +1,11 @@
+en:
+  layout:
+    read_more: Read more
+    turned_on: on
+    turned_off: off
+
+    year: year
+
+    enter_commit_message: Commit message
+
+    read_write_access: read & write

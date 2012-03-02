@@ -2,7 +2,8 @@
 = render :partial => 'projects/repo_block', :locals => {:project => @project}
 
 = render :partial => 'git/commits/commits', :object => @commits
-= render :partial => 'git/commits/paginate'
+- if @render_paginate
+  = render :partial => 'git/commits/paginate'
 -#.block
   .content
     .inner

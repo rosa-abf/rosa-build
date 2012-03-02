@@ -50,7 +50,7 @@ Rosa::Application.configure do
   config.active_support.deprecation = :notify
 
   # Force SSL
-  config.force_ssl = true
+  # config.force_ssl = true
 
   # Compress JavaScripts and CSS
   config.assets.compress = true
@@ -62,7 +62,7 @@ Rosa::Application.configure do
   config.assets.digest = true
 
   # Precompile additional assets (application.js, application.css, and all non-JS/CSS are already added)
-  config.assets.precompile += %w()
+  config.assets.precompile += %w(login.css login.js reg_session.css)
 end
 
 # require 'stub_xml_rpc'

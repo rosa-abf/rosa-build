@@ -1,4 +1,14 @@
 ru:
   layout:
     projects:
-      diff_show_header:    "%{files} с %{additions} и %{deletions}."
+      diff_show_header: "%{files} с %{additions} и %{deletions}."
+      about_subheader:  "О проекте"
+      last_commit:      "Последний коммит"
+
+      filename: Файл
+      age:      Дата модификации
+      message:  Сообщение
+      author:   Автор
+
+      current_branch: Текущий бранч
+      files_in_project: Файлы в

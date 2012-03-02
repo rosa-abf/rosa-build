@@ -7,16 +7,15 @@
 %table#myTable.tablesorter.project{:cellpadding => "0", :cellspacing => "0"}
   %thead
     %tr
-      %th.th1.header= t("layout.project.filename")
-      %th.th2.header= t("layout.project.age")
-      %th.th3= t("layout.project.message")
-      %th.th4.header= t("layout.project.author")
+      %th.th1= t("layout.projects.filename")
+      %th.th2= t("layout.projects.age")
+      %th.th3= t("layout.projects.message")
+      %th.th4= t("layout.projects.author")
   %tbody
     - if @path.present?
       %tr
         %td
-          .pic
-            %img{:src => "/assets/folder.png"}/
+          .pic= image_tag 'folder.png'
           .name
             = link_to "..", tree_path(@project, @treeish, File.join([@path.dup.encode_to_default, ".."].compact).encode_to_default)
         %td== &nbsp;
@@ -27,13 +26,11 @@
         %td
           - entry_path = File.join([@path.present? ? @path : nil, entry.name].compact).encode_to_default
           - if entry.is_a? Grit::Blob
-            .pic
-              %img{:src => "/assets/code.png"}/
+            .pic= image_tag 'code.png'
             .name
               = link_to(entry.name, blob_path(@project, @treeish, entry_path), :class => 'files-see').encode_to_default
           - else
-            .pic
-              %img{:src => "/assets/folder.png"}/
+            .pic= image_tag 'folder.png'
             .name
               = link_to(entry.name, tree_path(@project, @treeish, entry_path), :class => 'files-see').encode_to_default
         %td
