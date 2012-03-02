@@ -3,15 +3,13 @@ class IssuesController < ApplicationController
   NON_RESTFUL_ACTION = [:create_label, :update_label, :destroy_label, :search_collaborators]
   before_filter :authenticate_user!
 
-  load_and_authorize_resource :project, :except => NON_RESTFUL_ACTION
+  load_resource :project
   load_and_authorize_resource :issue, :through => :project, :find_by => :serial_id, :only => [:show, :edit, :update, :destroy, :new, :create]
   before_filter :load_and_authorize_label, :only => NON_RESTFUL_ACTION
 
   layout 'application'
 
   def index(status = 200)
-    logger.debug "!!!!!!!!!!!!!!!!!!"
-    logger.debug "request format is #{request.format}"
     @is_assigned_to_me = params[:filter] == 'to_me'
     @status = params[:status] == 'closed' ? 'closed' : 'open'
     @labels = params[:labels] || []
@@ -112,7 +110,6 @@ class IssuesController < ApplicationController
   private
 
   def load_and_authorize_label
-    @project = Project.find(params[:project_id])
     @label = Label.find(params[:label_id]) if params[:label_id]
     authorize! :write, @project
   end
