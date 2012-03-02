@@ -65,9 +65,7 @@ class IssuesController < ApplicationController
       status = 200 if @issue.save
       render action, :status => (status || 500), :layout => false
     else
-      @issue.title = params[:issue][:title] if params[:issue][:title]
-      @issue.body = params[:issue][:body] if params[:issue][:body]
-      status = 200 if @issue.save
+      status = 200 if @issue.update_attributes(params[:issue])
       render :nothing => true, :status => (status || 500), :layout => false
     end
   end
