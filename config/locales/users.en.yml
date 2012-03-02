@@ -1,0 +1,36 @@
+en:
+  layout:
+    users:
+      list: List
+      new: Create
+      edit: Edit
+      new_header: New user
+      edit_header: Edit
+      list_header: Users
+      groups: Groups
+      show: User
+      back_to_the_list: ⇐ List of users
+      confirm_delete: Are you sure to remove this user?
+      own_projects: My projects
+      part_projects: Participate projects
+      filter_header: Filter
+      public_projects_list: Public projects list
+
+  activerecord:
+    attributes:
+      user:
+        name: User
+        login: Nickname or Email
+        email: Email
+        uname: Nickname
+        ssh_key: SSH key
+        current_password: Current password
+        role: Role
+        created_at: Created
+        updated_at: Updated
+        role: System role
+        language: Language
+        password: Password
+        password_confirm: Confirmation
+        professional_experience: Professional experience
+

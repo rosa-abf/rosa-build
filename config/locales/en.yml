@@ -266,21 +266,6 @@ en:
       confirm_delete: Are you sure to remove this group?
       edit_members: Edit members
 
-    users:
-      list: List
-      new: Create
-      edit: Edit
-      new_header: New user
-      edit_header: Edit
-      list_header: Users
-      groups: Groups
-      show: User
-      back_to_the_list: ⇐ List of users
-      confirm_delete: Are you sure to remove this user?
-      own_projects: My projects
-      part_projects: Participate projects
-      filter_header: Filter
-
     git:
       repositories:
         empty: "Repository is empty. You need to wait some time if you have forked project or imported package"
@@ -587,21 +572,6 @@ en:
         owner: Owner
         created_at: Created
         updated_at: Updated
-
-      user:
-        name: User
-        login: Nickname or Email
-        email: Email
-        uname: Nickname
-        ssh_key: SSH key
-        current_password: Current password
-        role: Role
-        created_at: Created
-        updated_at: Updated
-        role: System role
-        language: Language
-        password: Password
-        password_confirm: Confirmation
 
       product_build_list:
         id: Id
