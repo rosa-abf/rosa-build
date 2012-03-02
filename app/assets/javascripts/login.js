@@ -15,8 +15,8 @@ $(document).ready(function() {
     $(this).addClass('registartion-input-focus').removeClass('registartion-input-error');
   }).live('blur', function() {
     var id = $(this).attr('id');
-    if(id == 'user_login') { $(this).val(login_default)}
-    else if(id == 'user_password') {$(this).val(pass_default)}
+    if(id == 'user_login' && $(this).val() == '') { $(this).val(login_default)}
+    else if(id == 'user_password' && $(this).val() == '') { $(this).val(pass_default)}
     $(this).addClass('registartion-input-no-focus').removeClass('registartion-input-focus');
   });
 
