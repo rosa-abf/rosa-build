@@ -246,26 +246,6 @@ en:
         writer: Writer
         admin: Admin
 
-    members:
-      back_to_group: Back to group
-      edit: Edit list
-      roles: Roles
-      add_member: Add member
-      input_username: Username
-
-    groups:
-      list: List
-      new: Create
-      edit: Edit
-      members: Members
-      new_header: New group
-      edit_header: Edit
-      list_header: Groups
-      show: Group
-      back_to_the_list: ⇐ List of groups
-      confirm_delete: Are you sure to remove this group?
-      edit_members: Edit members
-
     users:
       list: List
       new: Create
@@ -280,6 +260,12 @@ en:
       own_projects: My projects
       part_projects: Participate projects
       filter_header: Filter
+      group: Group
+      description: Descripton
+      leave_group: Leave group
+      projects_list: Projects list
+      public_profile: Public profile
+      delete_warning: Attention! Deleted group can not be restored!
 
     git:
       repositories:
@@ -321,13 +307,6 @@ en:
       group_already_added: Group already added
       successfully_added: Member %s successfully added
       error_in_adding: Member %s adding error
-
-    members:
-      successfully_changed: Members list successfully changed
-      error_in_changing: Members list changing error
-      successfully_added: Member successfully added
-      error_in_adding: Member adding error
-      already_added: User already added
 
     auto_build_list:
       success: Automated build success!
@@ -580,13 +559,6 @@ en:
         to: Master
         use_default: By default
         use_default_for_owner: Default by owner
-
-      group:
-        name: Name
-        uname: Nickname
-        owner: Owner
-        created_at: Created
-        updated_at: Updated
 
       user:
         name: User

@@ -12,6 +12,13 @@
 # It's strongly recommended to check this file into your version control system.
 
 ActiveRecord::Schema.define(:version => 20120229182356) do
+  create_table "activity_feeds", :force => true do |t|
+    t.integer  "user_id",    :null => false
+    t.string   "kind"
+    t.text     "data"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "arches", :force => true do |t|
     t.string   "name",       :null => false
@@ -155,6 +162,7 @@ ActiveRecord::Schema.define(:version => 20120229182356) do
     t.datetime "updated_at"
     t.string   "uname"
     t.integer  "own_projects_count", :default => 0, :null => false
+    t.text     "description"
   end
 
   create_table "issues", :force => true do |t|
@@ -285,17 +293,14 @@ ActiveRecord::Schema.define(:version => 20120229182356) do
     t.boolean  "is_rpm",            :default => true
   end
 
-  add_index "projects", ["category_id"], :name => "index_projects_on_category_id"
-  add_index "projects", ["owner_id"], :name => "index_projects_on_name_and_owner_id_and_owner_type", :unique => true, :case_sensitive => false
-
   create_table "register_requests", :force => true do |t|
     t.string   "name"
     t.string   "email"
     t.string   "token"
     t.boolean  "approved",   :default => false
     t.boolean  "rejected",   :default => false
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at",                    :null => false
+    t.datetime "updated_at",                    :null => false
     t.string   "interest"
     t.text     "more"
   end
@@ -360,6 +365,7 @@ ActiveRecord::Schema.define(:version => 20120229182356) do
     t.string   "name"
     t.string   "email",                                 :default => "",   :null => false
     t.string   "encrypted_password",     :limit => 128, :default => "",   :null => false
+    t.string   "password_salt",                         :default => "",   :null => false
     t.string   "reset_password_token"
     t.datetime "remember_created_at"
     t.datetime "created_at"
@@ -368,10 +374,14 @@ ActiveRecord::Schema.define(:version => 20120229182356) do
     t.string   "uname"
     t.string   "role"
     t.string   "language",                              :default => "en"
-    t.datetime "reset_password_sent_at"
+    t.string   "confirmation_token"
+    t.datetime "confirmed_at"
+    t.datetime "confirmation_sent_at"
     t.integer  "own_projects_count",                    :default => 0,    :null => false
+    t.datetime "reset_password_sent_at"
   end
 
+  add_index "users", ["confirmation_token"], :name => "index_users_on_confirmation_token", :unique => true
   add_index "users", ["email"], :name => "index_users_on_email", :unique => true
   add_index "users", ["reset_password_token"], :name => "index_users_on_reset_password_token", :unique => true
   add_index "users", ["uname"], :name => "index_users_on_uname", :unique => true
