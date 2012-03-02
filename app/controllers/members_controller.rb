@@ -23,6 +23,7 @@ class MembersController < ApplicationController
       @user = User.find params[:id]
       render :edit_rights and return
     end
+    @group = parent
   end
 
   def create
