@@ -19,10 +19,10 @@ class CategoriesController < ApplicationController
     if @platform
       @categories = Category.select('categories.id, categories.name, categories.ancestry, count(projects.id) projects_count').
                              joins(:projects => :repositories).where('repositories.platform_id = ?', @platform.id).
-                             having('count(projects.id) > 0').group('categories.id, categories.name, categories.ancestry, projects_count').default_order
+                             having('count(projects.id) > 0').group('categories.id, categories.name, categories.ancestry, projects_count')
       render 'index2'
     else
-      @categories = Category.default_order.paginate(:page => params[:page])
+      @categories = Category.paginate(:page => params[:page])
     end
   end
 
