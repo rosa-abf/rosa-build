@@ -4,7 +4,7 @@
 
 - commits.each_pair do |year, by_month|
   - if year != cur_year
-    .year= "#{year} #{t("year")}"
+    .year= "#{year} #{t("layout.year")}"
 
   - by_month.each_pair do |month, by_day|
     - by_day.each_pair do |day, commits|

@@ -1,7 +1,7 @@
 .lineForm.fork
-  = form_tag '', :id => 'branch_changer', :'data-action' => controller_name do
-    = select_tag :branch, branch_selector_options(project),
-      :class => 'sel80', :id => 'branch_selector'
+  = select_tag :branch, branch_selector_options(project),
+    :class => 'sel80', :id => 'branch_selector'
+  %form{ :action => '', :method => :get, :id => 'branch_changer', :'data-action' => "#{controller_name}"}
 .fork
   %p= t('layout.projects.current_branch')+':'
 .both

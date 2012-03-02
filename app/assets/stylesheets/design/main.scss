@@ -509,7 +509,7 @@ article input[type="submit"] {
 	background-image: linear-gradient(top, #68a3d8, #125687);
 	filter: progid:DXImageTransform.Microsoft.gradient(startColorStr='#68a3d8', EndColorStr='#125687');
 	border: 1px solid #5084b4;
-	padding: 4px 20px;
+	padding: 0px 20px 0px;
 	margin: 0;
 	font-size: 12px;
 	text-decoration: none;
@@ -519,8 +519,9 @@ article input[type="submit"] {
 	border-radius: 5px;
 	text-align: center;
 	height: auto;
+	height: 28px;
 	width: auto;
-	
+	font-family: Tahoma;
 }
 
 article input[type="submit"]:hover{
@@ -839,7 +840,7 @@ div.rightlist textarea {
 }
 
 div.rightlist input[type="text"], div.rightlist input[type="password"] {
-	height: 15px;
+	height: 16px;
 	width: 350px;
 	border: 1px solid #dedede;
 	border-radius: 4px;
@@ -2169,7 +2170,7 @@ input.button.width100 {
 }
 
 input[type="text"].exsearch {
-	height: 15px;
+	height: 16px;
 	border: 1px solid #dedede;
 	border-radius: 4px;
 	padding: 5px;

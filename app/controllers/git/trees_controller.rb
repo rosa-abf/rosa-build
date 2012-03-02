@@ -14,6 +14,7 @@ class Git::TreesController < Git::BaseController
 #    @commit = @git_repository.commits(@treeish, 1).first
 #   Raises Grit::Git::GitTimeout
     @commit = @branch.present? ? @branch.commit() : @git_repository.log(@treeish, @path, :max_count => 1).first
+    render :template => "git/repositories/empty" and return unless @commit
 
     if @path
       @path.force_encoding(Encoding::ASCII_8BIT)

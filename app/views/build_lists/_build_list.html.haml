@@ -1,8 +1,8 @@
 %tr{:id => "row#{build_list_counter}"}
   %td= link_to (build_list.bs_id.present? ? build_list.bs_id : t("layout.build_lists.bs_id_not_set")), build_list
   %td= build_list.human_status
-  %td= link_to build_list.project_version, "#"
   %td= link_to build_list.project.name, build_list.project
+  %td= link_to build_list.project_version, "#"
   %td= build_list.arch.name
   %td= link_to build_list.user.try(:fullname), build_list.user
   %td= link_to image_tag('x.png', :class => 'delete-row', :id => "delete-row#{build_list_counter}"), cancel_build_list_path(build_list), :method => :put, :confirm => t('layout.confirm') if build_list.can_cancel? and can?(:cancel, build_list)

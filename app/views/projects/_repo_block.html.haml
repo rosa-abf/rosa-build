@@ -3,6 +3,6 @@
   = text_field_tag :url, git_repo_url(project.git_repo_name), :class => 'name',
       :type => 'text',:spellcheck => 'false', :disabled => 'disabled'
   .role
-    чтение и запись
+    = t("layout.read_write_access")
   = render :partial => 'projects/branch_select', :locals => {:project => project}
 .both
