@@ -4,7 +4,7 @@ class IssuesController < ApplicationController
   before_filter :authenticate_user!
 
   load_and_authorize_resource :project, :except => NON_RESTFUL_ACTION
-  load_and_authorize_resource :issue, :through => :project, :find_by => :serial_id, :only => [:show, :edit, :update, :destroy]
+  load_and_authorize_resource :issue, :through => :project, :find_by => :serial_id, :only => [:show, :edit, :update, :destroy, :new, :create]
   before_filter :load_and_authorize_label, :only => NON_RESTFUL_ACTION
 
   layout 'application'
@@ -67,8 +67,8 @@ class IssuesController < ApplicationController
       status = 200 if @issue.save
       render action, :status => (status || 500), :layout => false
     else
-      @issue.title = params[:issue][:title]
-      @issue.body = params[:issue][:body]
+      @issue.title = params[:issue][:title] if params[:issue][:title]
+      @issue.body = params[:issue][:body] if params[:issue][:body]
       status = 200 if @issue.save
       render :nothing => true, :status => (status || 500), :layout => false
     end
