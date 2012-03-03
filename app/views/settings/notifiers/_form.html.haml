@@ -1,41 +1,90 @@
-.group
-  = f.label :can_notify, t('activerecord.attributes.settings.notifier.can_notify'), :class => :label
-  = f.check_box :can_notify#, :class => 'text_field'
-
-.group
-  = f.label :new_comment, t('activerecord.attributes.settings.notifier.new_comment'), :class => :label
+.leftside.w25
+  = f.check_box :can_notify
+.leftside
+  = f.label :can_notify, t('activerecord.attributes.settings.notifier.can_notify')
+.both
+%h3 Код
+.leftside.w25
   = f.check_box :new_comment, :class => 'notify_cbx'
-
-.group
-  = f.label :new_comment_reply, t('activerecord.attributes.settings.notifier.new_comment_reply'), :class => :label
+.leftside
+  = f.label :new_comment, t('activerecord.attributes.settings.notifier.new_comment')
+.both
+.leftside.w25
   = f.check_box :new_comment_reply, :class => 'notify_cbx'
-
-.group
-  = f.label :new_issue, t('activerecord.attributes.settings.notifier.new_issue'), :class => :label
+.leftside
+  = f.label :new_comment_reply, t('activerecord.attributes.settings.notifier.new_comment_reply')
+.both
+.leftside.w25
   = f.check_box :new_issue, :class => 'notify_cbx'
-
-.group
-  = f.label :issue_assign, t('activerecord.attributes.settings.notifier.issue_assign'), :class => :label
+.leftside
+  = f.label :new_issue, t('activerecord.attributes.settings.notifier.new_issue')
+.both
+.leftside.w25
   = f.check_box :issue_assign, :class => 'notify_cbx'
-
-.group
-  = f.label :new_comment_commit_owner, t('activerecord.attributes.settings.notifier.new_comment_commit_owner'), :class => :label
+.leftside
+  = f.label :issue_assign, t('activerecord.attributes.settings.notifier.issue_assign')
+.both
+.leftside.w25
   = f.check_box :new_comment_commit_owner, :class => 'notify_cbx'
-
-.group
-  = f.label :new_comment_commit_repo_owner, t('activerecord.attributes.settings.notifier.new_comment_commit_repo_owner'), :class => :label
+.leftside
+  = f.label :new_comment_commit_owner, t('activerecord.attributes.settings.notifier.new_comment_commit_owner')
+.both
+.leftside.w25
   = f.check_box :new_comment_commit_repo_owner, :class => 'notify_cbx'
-
-.group
-  = f.label :new_comment_commit_commentor, t('activerecord.attributes.settings.notifier.new_comment_commit_commentor'), :class => :label
+.leftside
+  = f.label :new_comment_commit_repo_owner, t('activerecord.attributes.settings.notifier.new_comment_commit_repo_owner')
+.both
+.leftside.w25
   = f.check_box :new_comment_commit_commentor, :class => 'notify_cbx'
-
-.group.navform.wat-cf
-  %button.button{:type => "submit"}
-    = image_tag("choose.png", :alt => t("layout.save"))
-    = t("layout.save")
-  %span.text_button_padding= t("layout.or")
-  = link_to t("layout.cancel"), user_settings_notifier_path(@user), :class => "text_button_padding link_button"
+.leftside
+  = f.label :new_comment_commit_commentor, t('activerecord.attributes.settings.notifier.new_comment_commit_commentor')
+.both
+%br
+.leftside.w25
+  \ 
+.leftside.w420
+  = submit_tag t("layout.save")
+.both
 
 :javascript
   disableNotifierCbx($('#settings_notifier_can_notify'));
+
+-#.group
+-#  = f.label :can_notify, t('activerecord.attributes.settings.notifier.can_notify'), :class => :label
+-#  = f.check_box :can_notify#, :class => 'text_field'
+-#
+-#.group
+-#  = f.label :new_comment, t('activerecord.attributes.settings.notifier.new_comment'), :class => :label
+-#  = f.check_box :new_comment, :class => 'notify_cbx'
+-#
+-#.group
+-#  = f.label :new_comment_reply, t('activerecord.attributes.settings.notifier.new_comment_reply'), :class => :label
+-#  = f.check_box :new_comment_reply, :class => 'notify_cbx'
+-#
+-#.group
+-#  = f.label :new_issue, t('activerecord.attributes.settings.notifier.new_issue'), :class => :label
+-#  = f.check_box :new_issue, :class => 'notify_cbx'
+-#
+-#.group
+-#  = f.label :issue_assign, t('activerecord.attributes.settings.notifier.issue_assign'), :class => :label
+-#  = f.check_box :issue_assign, :class => 'notify_cbx'
+-#
+-#.group
+-#  = f.label :new_comment_commit_owner, t('activerecord.attributes.settings.notifier.new_comment_commit_owner'), :class => :label
+-#  = f.check_box :new_comment_commit_owner, :class => 'notify_cbx'
+-#
+-#.group
+-#  = f.label :new_comment_commit_repo_owner, t('activerecord.attributes.settings.notifier.new_comment_commit_repo_owner'), :class => :label
+-#  = f.check_box :new_comment_commit_repo_owner, :class => 'notify_cbx'
+-#
+-#.group
+-#  = f.label :new_comment_commit_commentor, t('activerecord.attributes.settings.notifier.new_comment_commit_commentor'), :class => :label
+-#  = f.check_box :new_comment_commit_commentor, :class => 'notify_cbx'
+-#
+-#.group.navform.wat-cf
+-#  %button.button{:type => "submit"}
+-#    = image_tag("choose.png", :alt => t("layout.save"))
+-#    = t("layout.save")
+-#  %span.text_button_padding= t("layout.or")
+-#  = link_to t("layout.cancel"), user_settings_notifier_path(@user), :class => "text_button_padding link_button"
+-#

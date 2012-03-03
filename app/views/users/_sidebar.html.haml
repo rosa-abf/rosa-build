@@ -11,7 +11,7 @@
         %li{:class => (act == :private && contr == :users) ? 'active' : ''}
           = link_to t("layout.users.user_private_settings"), user_private_settings_path(@user)
       - if can? :user_settings_notifier, @user
-        %li{:class => (act == :show && contr == :'settings/notifier') ? 'active' : ''}
+        %li{:class => (act == :show && contr == :notifiers) ? 'active' : ''}
           = link_to t("layout.users.settings_notifier"), user_settings_notifier_path(@user)
 
 -#.block.notice

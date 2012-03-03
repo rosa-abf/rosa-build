@@ -48,6 +48,8 @@ en:
       notifier: Notifier setting
       notifiers:
         edit_header: Notifier setting
+        notice_header: You can receive notifies from other collaborators about changes into code of your projects. Notifies will be sent to your email %{email}.
+        change_email_link: Change email address
     processing: working ...
     invalid_content_type: incorrect type
 
