@@ -15,6 +15,12 @@ ru:
       part_projects: Участвую в проектах
       filter_header: Фильтр
       public_projects_list: Список публичных проектов
+      public_data_edit_warning: Данные доступны для публичного профиля. Если вы не хотите показывать какие-либо данные, просто не заполняйте их.
+      user_private_settings: Настройки
+      settings_notifier: Центр подписки
+      delete_header: Удалить аккаунт
+      delete_warning: Внимание! Удаленный аккаунт восстановлению не подлежит.
+      private_settings_header: Изменение пароля
 
   activerecord:
     attributes:
@@ -33,4 +39,7 @@ ru:
         password: Пароль
         password_confirm: Повторите пароль
         professional_experience: Профессиональный опыт
+        site: Вэб-сайт
+        location: Местонахождение
+        company: Компания
 

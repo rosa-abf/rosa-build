@@ -24,6 +24,7 @@ Rosa::Application.routes.draw do
       resource :notifier, :only => [:show, :update]
     end
   end
+  match 'users/:id/settings/private' => 'users#private', :as => :user_private_settings
 
   resources :event_logs, :only => :index
 

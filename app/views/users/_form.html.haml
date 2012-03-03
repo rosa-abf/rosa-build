@@ -1,22 +1,67 @@
-.group
-  = f.label :name, t("activerecord.attributes.user.name"), :class => :label
-  = f.text_field :name, :class => 'text_field'
-.group
-  = f.label :uname, t("activerecord.attributes.user.uname"), :class => :label
-  = f.text_field :uname, :class => 'text_field', :disabled => f.object.try(:persisted?)
-.group
-  = f.label :email, t("activerecord.attributes.user.email"), :class => :label
-  = f.text_field :email, :class => 'text_field'
-.group
-  = f.label :role, t("activerecord.attributes.user.role"), :class => :label
-  = f.select :role, User::ROLES, :include_blank => 'user'
-.group
-  = f.label :ssh_key, t("activerecord.attributes.user.ssh_key"), :class => :label
-  = f.text_area :ssh_key, :class => 'text_area'
+.leftlist
+  = f.label :name, t("activerecord.attributes.user.name")
+.rightlist
+  = f.text_field :name
+.both
+.leftlist
+  = f.label :email, t("activerecord.attributes.user.email")
+.rightlist
+  = f.text_field :email
+.both
+.leftlist
+  = f.label :site, t("activerecord.attributes.user.site")
+.rightlist
+  = f.text_field :site
+.both
+.leftlist
+  = f.label :company, t("activerecord.attributes.user.company")
+.rightlist
+  = f.text_field :company
+.both
+.leftlist
+  = f.label :location, t("activerecord.attributes.user.location")
+.rightlist
+  = f.text_field :location
+.both
+.leftlist
+  Аватарка:
+.rightlist
+  %div
+    .avatar
+      %img{:alt => "avatar", :src => "pics/ava-admin.png"}
+    .load
+      %a.button{:href => "#"} Загрузить
+.both
+.leftlist
+  = f.label :professional_experience, t("activerecord.attributes.user.professional_experience")
+.rightlist
+  = f.text_area :professional_experience
+.both
+.leftlist
+  \ 
+.rightlist
+  = submit_tag t("layout.save")
+.both
 
-.group.navform.wat-cf
-  %button.button{:type => "submit"}
-    = image_tag("choose.png", :alt => t("layout.save"))
-    = t("layout.save")
-  %span.text_button_padding= t("layout.or")
-  = link_to t("layout.cancel"), users_path, :class => "text_button_padding link_button"
+-#.group
+-#  = f.label :name, t("activerecord.attributes.user.name"), :class => :label
+-#  = f.text_field :name, :class => 'text_field'
+-#.group
+-#  = f.label :uname, t("activerecord.attributes.user.uname"), :class => :label
+-#  = f.text_field :uname, :class => 'text_field', :disabled => f.object.try(:persisted?)
+-#.group
+-#  = f.label :email, t("activerecord.attributes.user.email"), :class => :label
+-#  = f.text_field :email, :class => 'text_field'
+-#.group
+-#  = f.label :role, t("activerecord.attributes.user.role"), :class => :label
+-#  = f.select :role, User::ROLES, :include_blank => 'user'
+-#.group
+-#  = f.label :ssh_key, t("activerecord.attributes.user.ssh_key"), :class => :label
+-#  = f.text_area :ssh_key, :class => 'text_area'
+-#
+-#.group.navform.wat-cf
+-#  %button.button{:type => "submit"}
+-#    = image_tag("choose.png", :alt => t("layout.save"))
+-#    = t("layout.save")
+-#  %span.text_button_padding= t("layout.or")
+-#  = link_to t("layout.cancel"), users_path, :class => "text_button_padding link_button"

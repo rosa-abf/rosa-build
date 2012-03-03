@@ -15,6 +15,11 @@ en:
       part_projects: Participate projects
       filter_header: Filter
       public_projects_list: Public projects list
+      public_data_edit_warning: This data is able for public profile. If you don't want to show some data, just don't fill them.
+      user_private_settings: Settings
+      settings_notifier: Notifier centr
+      delete_header: Delete aacount
+      delete_warning: Warning! Deleted account can not be recovered.
 
   activerecord:
     attributes:
@@ -33,4 +38,7 @@ en:
         password: Password
         password_confirm: Confirmation
         professional_experience: Professional experience
+        site: Web-Site
+        location: Location
+        company: Company
 

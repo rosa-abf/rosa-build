@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120302114735) do
+ActiveRecord::Schema.define(:version => 20120303062601) do
 
   create_table "activity_feeds", :force => true do |t|
     t.integer  "user_id",    :null => false
@@ -380,6 +380,9 @@ ActiveRecord::Schema.define(:version => 20120302114735) do
     t.integer  "own_projects_count",                     :default => 0,    :null => false
     t.datetime "reset_password_sent_at"
     t.text     "professional_experience"
+    t.string   "site"
+    t.string   "company"
+    t.string   "location"
   end
 
   add_index "users", ["confirmation_token"], :name => "index_users_on_confirmation_token", :unique => true
