@@ -1,6 +1,6 @@
 %h3.fix.bpadding10= t('layout.users.private_settings_header')
 
-= form_for(@user, :url => registration_path(@user), :html => { :method => :put, :class => "form" }) do |f|
+= form_for(@user, :url => user_private_settings_path(@user), :html => { :method => :put, :class => "form" }) do |f|
   .leftlist
     = f.label :current_password
   .rightlist
@@ -21,16 +21,6 @@
   .rightlist
     = submit_tag t('layout.save')
   .both
-  .hr
-  %h3= t("layout.users.delete_header")
-  .leftside
-    = t("layout.users.delete_warning")
-  .rightside
-    = link_to t("layout.delete"), user_path(@project), :method => :delete, :confirm => t("layout.users.confirm_delete"), :class => 'button' if can? :destroy, @user
-  .both
-
-.notify
-  %p= t('layout.users.public_data_edit_warning')
 
 :javascript
   $('article .right').addClass('middlepadding');

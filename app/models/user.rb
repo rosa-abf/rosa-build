@@ -29,11 +29,13 @@ class User < ActiveRecord::Base
 
   validates :uname, :presence => true, :uniqueness => {:case_sensitive => false}, :format => { :with => /^[a-z0-9_]+$/ }
   validate { errors.add(:uname, :taken) if Group.where('uname LIKE ?', uname).present? }
-  validates :ssh_key, :uniqueness => true, :allow_blank => true
   validates :role, :inclusion => {:in => ROLES}, :allow_blank => true
   validates :language, :inclusion => {:in => LANGUAGES}, :allow_blank => true
+  validates_confirmation_of :password
 
-  attr_accessible :email, :password, :password_confirmation, :remember_me, :login, :name, :ssh_key, :uname, :language
+  attr_accessor :password, :password_confirmation, :current_password
+  attr_accessible :email, :password, :password_confirmation, :current_password, :remember_me, :login, :name, :ssh_key, :uname, :language,
+                  :site, :company, :professional_experience, :location
   attr_readonly :uname, :own_projects_count
   attr_readonly :uname
   attr_accessor :login

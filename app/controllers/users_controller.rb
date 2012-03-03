@@ -42,13 +42,25 @@ class UsersController < ApplicationController
   end
 
   def update
-    @user.role = params[:user][:role]
+    @user.role = params[:user][:role] if params[:user][:role] && current_user.admin?
     if @user.update_attributes(params[:user])
       flash[:notice] = t('flash.user.saved')
-      redirect_to users_path
+      redirect_to edit_user_path(@user)
     else
       flash[:error] = t('flash.user.save_error')
-      render :action => :edit
+      render(:action => :edit)
+    end
+  end
+
+  def private
+    if request.put?
+      if @user.update_attributes(params[:user])
+        flash[:notice] = t('flash.user.saved')
+        redirect_to user_private_settings_path(@user)
+      else
+        flash[:error] = t('flash.user.save_error')
+        render(:action => :private)
+      end
     end
   end
 

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120303062601) do
+ActiveRecord::Schema.define(:version => 20120303151303) do
 
   create_table "activity_feeds", :force => true do |t|
     t.integer  "user_id",    :null => false
@@ -370,7 +370,6 @@ ActiveRecord::Schema.define(:version => 20120303062601) do
     t.datetime "remember_created_at"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.text     "ssh_key"
     t.string   "uname"
     t.string   "role"
     t.string   "language",                               :default => "en"

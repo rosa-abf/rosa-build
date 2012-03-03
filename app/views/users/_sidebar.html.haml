@@ -5,17 +5,11 @@
   .admin-preferences
     %ul
       - if can? :edit, @user
-        %li{:class => (act == :edit && contr == :registrations) ? 'active' : ''}
+        %li{:class => (act == :edit && :users == contr) ? 'active' : ''}
           = link_to t("layout.users.edit"), edit_user_path(@user)
-      - if can? :edit_platform_private_user, @user
+      - if can? :private, @user
         %li{:class => (act == :private && contr == :users) ? 'active' : ''}
           = link_to t("layout.users.user_private_settings"), user_private_settings_path(@user)
-      - if can? :user_settings_notifier, @user
+      - if can? :show, @user.notifier
         %li{:class => (act == :show && contr == :notifiers) ? 'active' : ''}
           = link_to t("layout.users.settings_notifier"), user_settings_notifier_path(@user)
-
--#.block.notice
--#  %h3= t("layout.users.groups")
--#  .content
--#    - @user.groups.each do |group|
--#      %p= link_to group.name, group
