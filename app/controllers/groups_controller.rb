@@ -35,11 +35,7 @@ class GroupsController < ApplicationController
 
   def create
     @group = Group.new params[:group]
-    @group.owner = if parent? and parent.is_a? User
-                     parent
-                   else
-                     current_user
-                   end
+    @group.owner = current_user
 
     if @group.save
       flash[:notice] = t('flash.group.saved')
