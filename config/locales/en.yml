@@ -3,7 +3,7 @@ en:
     previous_label: ‹ Previous
     next_label: Next ›
     page_gap: ...
-  
+
   datatables:
     previous_label: ‹ Prev.
     next_label: Next ›
@@ -109,126 +109,6 @@ en:
       edit_header: Edit category
       confirm_delete: Are you sure to delete this category?
 
-    comments:
-      confirm_delete: Are you sure to delete the comment?
-      new_header: New comment
-      edit_header: Editing a comment
-
-    platforms:
-      admin_id: Owner
-      build_all: Build all
-      list: List
-      new: Create
-      edit: Edit
-      new_header: New platform
-      edit_header: Edit
-      list_header: Platforms
-      list_header_main: General
-      list_header_personal: Personal
-      list_header_all: All
-      clone_header: Platform clone
-      show: Platform
-      projects: Projects
-      products: Products
-      location: Location
-      repositories: Repositories
-      back_to_the_list: ⇐To platform list
-      freeze: Freeze
-      unfreeze: Unfeeze
-      confirm_freeze: Are you sure to freeze this platform?
-      confirm_freeze: Are you sure to clone this platform?
-      confirm_unfreeze: Are you sure to defrost this platform?
-      released_suffix: (released)
-      confirm_delete: Are you sure to delete this platform?
-      current_platform_header: Current platform
-      owner: Owner
-      visibility: Visibility
-      platform_type: Platform type
-      distrib_type: Distribution kit type
-      private_users: Access data
-      confirm_clone: To clone?
-      clone: To clone
-
-    event_logs:
-      list: List
-      list_header: Event log
-
-    repositories:
-      list: List
-      list_header: Repositories
-      new: New repository
-      new_header: New repository
-      show: Repository
-      location: Location
-      projects: Projects
-      new_header: New repository
-      back_to_the_list: ⇐ List of repositories
-      confirm_delete: Are you sure to delete this repository?
-      current_repository_header: Current repository
-
-    personal_repositories:
-      settings_header: Settings
-      change_visibility_from_hidden: Replace the status to "Opened"
-      change_visibility_from_open: Replace the status to "Private"
-      settings: Settings
-      show: My repository
-      private_users: Private repository users
-
-    products:
-      list: List
-      new: New product
-      list_header: Products
-      clone: Clone
-      build: Build
-      new_header: New product
-      edit_header: Product editing
-      confirm_delete: Are you sure to delete this product?
-
-      cron_tab_generator:
-        show: Show cron tab the generator
-        hide: Hide cron tab the generator
-        choose: Choose
-        every_minute: Every minute
-        every_hour: Every hour
-        every_day: Every day
-        every_month: Every month
-        every_weekday: Every weekdays
-        minutes: Minutes
-        hours: Hours
-        days: Days
-        months: Months
-        weekdays: weekdays
-
-    projects:
-      add: Add
-      edit: Edit
-      list: List
-      list_header: Projects
-      edit_header: Edit the project
-      show: Project
-      build: Build
-      new_build: New build %{project_name}
-      confirm_delete: Are you sure to delete this project?
-      new: New project
-      new_header: New project
-      new_header: New project
-      location: Location
-      git_repo_location: Path to git repo
-      current_project_header: Current project
-      current_build_lists: Current builds
-      build_button: Start build
-      add_collaborators: Add collaborators
-      members: Members
-      collaborators: Collaborators
-      groups: Groups
-      edit_collaborators: Edit collaborators
-      issues: Issues
-      wiki: Wiki
-      delete_warning: Attention! Deleted project can not be restored!
-      sections: Sections
-      has_issue_description: Issues adds lightweight issue tracking tightly integrated with your repository. Add issues to milestones, label issues, and close & reference issues from commit messages.
-      has_wiki_description: Wikis are the simplest way to let others contribute content. Any user can create and edit pages to use for documentation, examples, support or anything you wish.
-
     collaborators:
       back_to_proj: Back to project
       edit: Edit list
@@ -245,27 +125,6 @@ en:
         reader: Reader
         writer: Writer
         admin: Admin
-
-    users:
-      list: List
-      new: Create
-      edit: Edit
-      new_header: New user
-      edit_header: Edit
-      list_header: Users
-      groups: Groups
-      show: User
-      back_to_the_list: ⇐ List of users
-      confirm_delete: Are you sure to remove this user?
-      own_projects: My projects
-      part_projects: Participate projects
-      filter_header: Filter
-      group: Group
-      description: Descripton
-      leave_group: Leave group
-      projects_list: Projects list
-      public_profile: Public profile
-      delete_warning: Attention! Deleted group can not be restored!
 
     git:
       repositories:
@@ -290,10 +149,15 @@ en:
       saved: Settings saved success
       save_error: Setting update error
 
+    private_users: "Login: %{login} Password: %{password}"
 
     subscribe:
       saved: Subscription on notifications for this task is created
+      saved_error: Subscription create error
       destroyed: Subscription on notifications for this task is cleaned
+      commit:
+        saved: Subscription on notifications for this commit is created
+        destroyed: Subscription on notifications for this commit is cleaned
 
     exception_message: Access violation to this page!
 
@@ -319,66 +183,6 @@ en:
       save_error: Category saves error
       destroyed: Category deleted
 
-    comment:
-      saved: Comment saved
-      save_error: Comment saves error
-      destroyed: Comment deleted
-
-    project:
-      saved: Project saved
-      save_error: Project saves error
-      save_warning_ssh_key: Owner of the project must specify in profile a SSH key
-      destroyed: Project deleted
-      forked: Project forked
-      fork_error: Project fork error
-
-    user:
-      saved: User saved
-      save_error: User data saves error
-      destroyed: User account deleted
-
-    group:
-      saved: Group saved
-      save_error: Group saves error
-      destroyed: Group deleted
-      user_uname_exists: User already exists
-
-    repository:
-      saved: Repository added
-      save_error: Repository adding error
-      destroyed: Repository deleted
-      project_added: Project added on repository
-      project_not_added: Project adding error. In this repository already is a project with such name. First remove the old project
-      project_removed: Project deleted
-      project_not_removed: Project deleting failed
-
-    product:
-      saved: Product saved
-      save_error: Product saves error
-      build_started: Product build started
-      destroyed: Product deleted
-      build_list_delete: Product build list deleted
-
-    platform:
-      saved: Platform saved
-      save_error: Platform saves error
-      freezed: Platform freezed
-      freeze_error: Platform freezing error, try again
-      unfreezed: Platform unfreezed
-      unfreeze_error: Platform unfreezing error, try again
-      destroyed: Platform deleted
-      build_all_success: All project build in progress
-      clone_success: Cloned successfully
-
-    wiki:
-      ref_not_exist: No such version
-      successfully_updated: Page '%{name}' successfully updated
-      duplicate_page: Page '%{name}' already exists
-      page_successfully_removed: Page successfully removed
-      page_not_found: Page '%{name}' not found
-      revert_success: Changes successfully reverted
-      patch_does_not_apply: Patch does not apply
-
     blob:
       successfully_updated: File '%{name}' successfully updated
       updating_error: Error updating file '%{name}'
@@ -401,35 +205,13 @@ en:
 
     models:
       category: Category
-      repository: Repository
       arch: Arch
       container: Container
-      platform: Platform
-      group: Group
-      event_log: Event log
-      project: Project
       rpm: RPM
-      user: User
       private_user: Private user
-      product: Product
       product_build_list: Product build list
       download: Statistics
       auto_build_list: Auto rebuild list
-      settings:
-        saved: Settings saved success
-        save_error: Setting update error
-
-      private_users: "Login: %{login} Password: %{password}"
-
-      subscribe:
-        saved: Subscription on notifications for this task is created
-        saved_error: Subscription create error
-        destroyed: Subscription on notifications for this task is cleaned
-        commit:
-          saved: Subscription on notifications for this commit is created
-          destroyed: Subscription on notifications for this commit is cleaned
-
-      exception_message: Access violation to this page!
 
     attributes:
       settings:
@@ -439,6 +221,9 @@ en:
           new_comment_reply: New reply of comment notifications
           new_issue: New task notifications
           issue_assign: New task assignment notifications
+          new_comment_commit_owner: Notify about comments to my commit
+          new_comment_commit_repo_owner: Notify about comments to my repository commits
+          new_comment_commit_commentor: Notify about comments after my commit
 
       auto_build_list:
         project_id: Project
@@ -450,10 +235,6 @@ en:
         arch_id: Architecture
         arch: Architecture
 
-      comment:
-        body: Content
-        user: Author
-
       private_user:
         login: Login
         password: Password
@@ -461,32 +242,6 @@ en:
       category:
         parent_id: Parent
         name: Name
-
-      repository:
-        name: Name
-        description: Description
-        platform_id: Platform
-        platform: Platform
-        created_at: Created
-        updated_at: Updated
-        owner: Owner
-
-      product:
-        name: Name
-        platform_id: Platform
-        build_status: Build status
-        build_path: ISO path
-        created_at: Created
-        updated_at: Updated
-        ks: Content .ks.template
-        counter: Content .counter
-        build_script: Content build
-        menu: Content .menu.xml
-        tar: Tar.bz2 file
-        is_template: Template
-        system_wide: System
-        cron_tab: Cront tab
-        use_cron: Cron usage
 
       arch:
         name: Name
@@ -502,48 +257,6 @@ en:
         created_at: Created
         updated_at: Updated
 
-      platform:
-        name: Name
-        description: Description
-        parent_platform_id: Parent platform
-        parent: Parent platform
-        released: Released
-        created_at: Created
-        updated_at: Updated
-        distrib_type: Source type
-        visibility: Status
-        visibility_types:
-          open: Open
-          hidden: Hidden
-
-      event_log:
-        kind: Event type
-        created_at: Event date and time
-        user: User
-        ip: User IP
-        protocol: Access protocol
-        description: Description
-
-      project:
-        category_id: Category
-        name: Name
-        description: Descripton
-        owner: Owner
-        visibility: Visibility
-        visibility_types:
-          open: Open
-          hidden: Hidden
-        repository_id: Repository
-        repository: Repository
-        created_at: Created
-        updated_at: Updated
-        has_issues: Tracker on
-        has_wiki:  Wiki on
-        srpm: Import code from src.rpm
-        who_owns:
-          me: I
-          group: Group
-
       rpm:
         name: Name
         arch_id: Arch
@@ -552,28 +265,6 @@ en:
         project: Project
         created_at: Created
         updated_at: Updated
-
-      role:
-        name: Name
-        on: Slave
-        to: Master
-        use_default: By default
-        use_default_for_owner: Default by owner
-
-      user:
-        name: User
-        login: Nickname or Email
-        email: Email
-        uname: Nickname
-        ssh_key: SSH key
-        current_password: Current password
-        role: Role
-        created_at: Created
-        updated_at: Updated
-        role: System role
-        language: Language
-        password: Password
-        password_confirm: Confirmation
 
       product_build_list:
         id: Id
@@ -588,12 +279,3 @@ en:
         distro: Source
         platform: Platform
         counter: Downloads
-
-  notifications:
-    subjects:
-      new_comment_notification: New comment to your task
-      new_issue_notification: New task added to project
-      new_user_notification: Registered on project «%{ project_name }»
-      issue_assign_notification: New task assigned
-      new_commit_comment_notification: New comment to commit
-      invite_approve_notification: Invitation to ABF

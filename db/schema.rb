@@ -21,6 +21,14 @@ ActiveRecord::Schema.define(:version => 20120302102734) do
     t.datetime "updated_at"
   end
 
+  create_table "activity_feeds", :force => true do |t|
+    t.integer  "user_id",    :null => false
+    t.string   "kind"
+    t.text     "data"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "arches", :force => true do |t|
     t.string   "name",       :null => false
     t.datetime "created_at"
