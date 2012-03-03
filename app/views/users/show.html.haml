@@ -1,5 +1,5 @@
 .left
-  = image_tag gravatar_url(current_user.email, 81)
+  = image_tag avatar_url(current_user, :big)
 .left
   %h3= @user.uname
   = @user.name

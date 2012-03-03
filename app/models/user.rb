@@ -4,6 +4,8 @@ class User < ActiveRecord::Base
   LANGUAGES_FOR_SELECT = [['Russian', 'ru'], ['English', 'en']]
   LANGUAGES = LANGUAGES_FOR_SELECT.map(&:last)
 
+  has_attached_file :avatar, :styles => { :micro => "16x16", :small => "30x30>", :medium => "40x40>", :big => "81x81" }
+
   devise :database_authenticatable, :registerable, #:omniauthable, # :token_authenticatable, :encryptable, :timeoutable
          :recoverable, :rememberable, :validatable #, :trackable, :confirmable, :lockable
 
@@ -35,7 +37,7 @@ class User < ActiveRecord::Base
 
   attr_accessor :password, :password_confirmation, :current_password
   attr_accessible :email, :password, :password_confirmation, :current_password, :remember_me, :login, :name, :ssh_key, :uname, :language,
-                  :site, :company, :professional_experience, :location
+                  :site, :company, :professional_experience, :location, :avatar
   attr_readonly :uname, :own_projects_count
   attr_readonly :uname
   attr_accessor :login
@@ -99,9 +101,9 @@ class User < ActiveRecord::Base
     email.downcase == commit.committer.email.downcase
   end
 
-  def avatar(size)
-    "https://secure.gravatar.com/avatar/#{Digest::MD5.hexdigest(email.downcase)}?s=#{size}&r=pg"
-  end
+  #def avatar(size)
+  #  "https://secure.gravatar.com/avatar/#{Digest::MD5.hexdigest(email.downcase)}?s=#{size}&r=pg"
+  #end
 
   private
 

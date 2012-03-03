@@ -21,6 +21,7 @@ ru:
       delete_header: Удалить аккаунт
       delete_warning: Внимание! Удаленный аккаунт восстановлению не подлежит.
       private_settings_header: Изменение пароля
+      avatar_notice: При отсутствии загруженной аватарки будет использована Ваша аватарка на сервисе gravatar.
 
   activerecord:
     attributes:
