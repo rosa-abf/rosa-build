@@ -12,6 +12,12 @@ en:
       back_to_the_list: ⇐ List of groups
       confirm_delete: Are you sure to remove this group?
       edit_members: Edit members
+      group: Group
+      description: Descripton
+      leave_group: Leave group
+      projects_list: Projects list
+      public_profile: Public profile
+      delete_warning: Attention! Deleted group can not be restored!
 
     members:
       back_to_group: Back to group
@@ -21,6 +27,12 @@ en:
       input_username: Username
 
   flash:
+    group:
+      saved: Group saved
+      save_error: Group saves error
+      destroyed: Group deleted
+      user_uname_exists: User already exists
+
     members:
       successfully_changed: Members list successfully changed
       error_in_changing: Members list changing error
@@ -29,6 +41,8 @@ en:
       already_added: User already added
 
   activerecord:
+    models:
+      group: Group
     attributes:
       group:
         name: Name
@@ -36,3 +50,4 @@ en:
         owner: Owner
         created_at: Created
         updated_at: Updated
+        description: Description

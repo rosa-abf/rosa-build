@@ -69,9 +69,9 @@ after "deploy:setup", "deploy:symlink_pids"
 # after "deploy:restart", "bluepill:start" # "bluepill:processes:restart_dj" # "bluepill:restart"
 
 # DJ
-after "deploy:stop",    "delayed_job:stop"  
-after "deploy:start",   "delayed_job:start"  
-after "deploy:restart", "delayed_job:restart"
+# after "deploy:stop",    "delayed_job:stop"  
+# after "deploy:start",   "delayed_job:start"  
+# after "deploy:restart", "delayed_job:restart"
 
 after "deploy:restart", "deploy:cleanup"
 

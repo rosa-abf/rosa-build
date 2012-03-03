@@ -17,22 +17,14 @@ ActiveRecord::Schema.define(:version => 20120302102734) do
     t.integer  "user_id",    :null => false
     t.string   "kind"
     t.text     "data"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  create_table "activity_feeds", :force => true do |t|
-    t.integer  "user_id",    :null => false
-    t.string   "kind"
-    t.text     "data"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
   end
 
   create_table "arches", :force => true do |t|
     t.string   "name",       :null => false
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
   end
 
   add_index "arches", ["name"], :name => "index_arches_on_name", :unique => true
@@ -41,8 +33,8 @@ ActiveRecord::Schema.define(:version => 20120302102734) do
     t.integer  "user_id"
     t.string   "provider"
     t.string   "uid"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
   end
 
   add_index "authentications", ["provider", "uid"], :name => "index_authentications_on_provider_and_uid", :unique => true
@@ -53,8 +45,8 @@ ActiveRecord::Schema.define(:version => 20120302102734) do
     t.integer  "arch_id"
     t.integer  "pl_id"
     t.integer  "bpl_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
   end
 
   create_table "build_list_items", :force => true do |t|
@@ -62,8 +54,8 @@ ActiveRecord::Schema.define(:version => 20120302102734) do
     t.integer  "level"
     t.integer  "status"
     t.integer  "build_list_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at",    :null => false
+    t.datetime "updated_at",    :null => false
     t.string   "version"
   end
 
@@ -77,8 +69,8 @@ ActiveRecord::Schema.define(:version => 20120302102734) do
     t.integer  "project_id"
     t.integer  "arch_id"
     t.datetime "notified_at"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at",                          :null => false
+    t.datetime "updated_at",                          :null => false
     t.boolean  "is_circle",        :default => false
     t.text     "additional_repos"
     t.string   "name"
@@ -101,16 +93,16 @@ ActiveRecord::Schema.define(:version => 20120302102734) do
     t.string   "name"
     t.string   "ancestry"
     t.integer  "projects_count", :default => 0, :null => false
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at",                    :null => false
+    t.datetime "updated_at",                    :null => false
   end
 
   create_table "comments", :force => true do |t|
     t.string   "commentable_type"
     t.integer  "user_id"
     t.text     "body"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at",                                      :null => false
+    t.datetime "updated_at",                                      :null => false
     t.decimal  "commentable_id",   :precision => 50, :scale => 0
   end
 
@@ -118,8 +110,8 @@ ActiveRecord::Schema.define(:version => 20120302102734) do
     t.string   "name",       :null => false
     t.integer  "project_id", :null => false
     t.integer  "owner_id",   :null => false
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
   end
 
   create_table "delayed_jobs", :force => true do |t|
@@ -131,8 +123,8 @@ ActiveRecord::Schema.define(:version => 20120302102734) do
     t.datetime "locked_at"
     t.datetime "failed_at"
     t.string   "locked_by"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at",                :null => false
+    t.datetime "updated_at",                :null => false
     t.string   "queue"
   end
 
@@ -144,8 +136,8 @@ ActiveRecord::Schema.define(:version => 20120302102734) do
     t.string   "distro"
     t.string   "platform"
     t.integer  "counter",    :default => 0
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at",                :null => false
+    t.datetime "updated_at",                :null => false
   end
 
   create_table "event_logs", :force => true do |t|
@@ -160,14 +152,14 @@ ActiveRecord::Schema.define(:version => 20120302102734) do
     t.string   "controller"
     t.string   "action"
     t.text     "message"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at",  :null => false
+    t.datetime "updated_at",  :null => false
   end
 
   create_table "groups", :force => true do |t|
     t.integer  "owner_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at",                        :null => false
+    t.datetime "updated_at",                        :null => false
     t.string   "uname"
     t.integer  "own_projects_count", :default => 0, :null => false
     t.text     "description"
@@ -180,8 +172,8 @@ ActiveRecord::Schema.define(:version => 20120302102734) do
     t.string   "title"
     t.text     "body"
     t.string   "status",     :default => "open"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at",                     :null => false
+    t.datetime "updated_at",                     :null => false
     t.integer  "creator_id"
     t.datetime "closed_at"
     t.integer  "closed_by"
@@ -212,8 +204,8 @@ ActiveRecord::Schema.define(:version => 20120302102734) do
     t.string   "description"
     t.string   "name"
     t.integer  "parent_platform_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at",                             :null => false
+    t.datetime "updated_at",                             :null => false
     t.boolean  "released",           :default => false
     t.integer  "owner_id"
     t.string   "owner_type"
@@ -226,8 +218,8 @@ ActiveRecord::Schema.define(:version => 20120302102734) do
     t.integer  "platform_id"
     t.string   "login"
     t.string   "password"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at",  :null => false
+    t.datetime "updated_at",  :null => false
     t.integer  "user_id"
   end
 
@@ -235,8 +227,8 @@ ActiveRecord::Schema.define(:version => 20120302102734) do
     t.integer  "product_id"
     t.integer  "status",      :default => 2, :null => false
     t.datetime "notified_at"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at",                 :null => false
+    t.datetime "updated_at",                 :null => false
   end
 
   add_index "product_build_lists", ["product_id"], :name => "index_product_build_lists_on_product_id"
@@ -246,8 +238,8 @@ ActiveRecord::Schema.define(:version => 20120302102734) do
     t.integer  "platform_id",                         :null => false
     t.integer  "build_status",     :default => 2,     :null => false
     t.string   "build_path"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at",                          :null => false
+    t.datetime "updated_at",                          :null => false
     t.text     "build_script"
     t.text     "counter"
     t.text     "ks"
@@ -267,8 +259,8 @@ ActiveRecord::Schema.define(:version => 20120302102734) do
     t.string   "name"
     t.string   "version"
     t.datetime "file_mtime"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at",  :null => false
+    t.datetime "updated_at",  :null => false
     t.integer  "platform_id"
   end
 
@@ -277,14 +269,14 @@ ActiveRecord::Schema.define(:version => 20120302102734) do
   create_table "project_to_repositories", :force => true do |t|
     t.integer  "project_id"
     t.integer  "repository_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at",    :null => false
+    t.datetime "updated_at",    :null => false
   end
 
   create_table "projects", :force => true do |t|
     t.string   "name"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at",                              :null => false
+    t.datetime "updated_at",                              :null => false
     t.integer  "owner_id"
     t.string   "owner_type"
     t.string   "visibility",        :default => "open"
@@ -300,6 +292,9 @@ ActiveRecord::Schema.define(:version => 20120302102734) do
     t.string   "default_branch",    :default => "master"
     t.boolean  "is_rpm",            :default => true
   end
+
+  add_index "projects", ["category_id"], :name => "index_projects_on_category_id"
+  add_index "projects", ["owner_id"], :name => "index_projects_on_name_and_owner_id_and_owner_type", :unique => true, :case_sensitive => false
 
   create_table "register_requests", :force => true do |t|
     t.string   "name"
@@ -321,16 +316,16 @@ ActiveRecord::Schema.define(:version => 20120302102734) do
     t.string   "object_type"
     t.integer  "target_id"
     t.string   "target_type"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at",  :null => false
+    t.datetime "updated_at",  :null => false
     t.string   "role"
   end
 
   create_table "repositories", :force => true do |t|
     t.string   "description", :null => false
     t.integer  "platform_id", :null => false
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at",  :null => false
+    t.datetime "updated_at",  :null => false
     t.string   "name",        :null => false
   end
 
@@ -338,8 +333,8 @@ ActiveRecord::Schema.define(:version => 20120302102734) do
     t.string   "name",       :null => false
     t.integer  "arch_id",    :null => false
     t.integer  "project_id", :null => false
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
   end
 
   add_index "rpms", ["project_id", "arch_id"], :name => "index_rpms_on_project_id_and_arch_id"
@@ -352,8 +347,8 @@ ActiveRecord::Schema.define(:version => 20120302102734) do
     t.boolean  "new_comment_reply",             :default => true
     t.boolean  "new_issue",                     :default => true
     t.boolean  "issue_assign",                  :default => true
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at",                                      :null => false
+    t.datetime "updated_at",                                      :null => false
     t.boolean  "new_comment_commit_owner",      :default => true
     t.boolean  "new_comment_commit_repo_owner", :default => true
     t.boolean  "new_comment_commit_commentor",  :default => true
@@ -362,8 +357,8 @@ ActiveRecord::Schema.define(:version => 20120302102734) do
   create_table "subscribes", :force => true do |t|
     t.string   "subscribeable_type"
     t.integer  "user_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at",                                                          :null => false
+    t.datetime "updated_at",                                                          :null => false
     t.boolean  "status",                                            :default => true
     t.integer  "project_id"
     t.decimal  "subscribeable_id",   :precision => 50, :scale => 0
@@ -371,25 +366,20 @@ ActiveRecord::Schema.define(:version => 20120302102734) do
 
   create_table "users", :force => true do |t|
     t.string   "name"
-    t.string   "email",                                 :default => "",   :null => false
-    t.string   "encrypted_password",     :limit => 128, :default => "",   :null => false
-    t.string   "password_salt",                         :default => "",   :null => false
+    t.string   "email",                  :default => "",   :null => false
+    t.string   "encrypted_password",     :default => "",   :null => false
     t.string   "reset_password_token"
+    t.datetime "reset_password_sent_at"
     t.datetime "remember_created_at"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at",                               :null => false
+    t.datetime "updated_at",                               :null => false
     t.text     "ssh_key"
     t.string   "uname"
     t.string   "role"
-    t.string   "language",                              :default => "en"
-    t.string   "confirmation_token"
-    t.datetime "confirmed_at"
-    t.datetime "confirmation_sent_at"
-    t.integer  "own_projects_count",                    :default => 0,    :null => false
-    t.datetime "reset_password_sent_at"
+    t.string   "language",               :default => "en"
+    t.integer  "own_projects_count",     :default => 0,    :null => false
   end
 
-  add_index "users", ["confirmation_token"], :name => "index_users_on_confirmation_token", :unique => true
   add_index "users", ["email"], :name => "index_users_on_email", :unique => true
   add_index "users", ["reset_password_token"], :name => "index_users_on_reset_password_token", :unique => true
   add_index "users", ["uname"], :name => "index_users_on_uname", :unique => true

@@ -63,3 +63,13 @@ en:
         # Welcome to **Wiki** #
 
         Edit this page and create new ones.
+
+  flash:
+    wiki:
+      ref_not_exist: No such version
+      successfully_updated: Page '%{name}' successfully updated
+      duplicate_page: Page '%{name}' already exists
+      page_successfully_removed: Page successfully removed
+      page_not_found: Page '%{name}' not found
+      revert_success: Changes successfully reverted
+      patch_does_not_apply: Patch does not apply

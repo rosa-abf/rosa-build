@@ -26,7 +26,6 @@ ru:
       add_member: Добавить участника
       input_username: Псевдоним пользователя
 
-
   flash:
     group:
       saved: Группа успешно сохранена
@@ -41,9 +40,9 @@ ru:
       error_in_adding: Ошибка при добавлении участника
       already_added: Пользователь уже добавлен
 
-
-
   activerecord:
+    models:
+      group: Группа
     attributes:
       group:
         name: Название

@@ -6,8 +6,8 @@ describe GroupsController do
     stub_rsync_methods
     @group = Factory(:group)
     @another_user  = Factory(:user)
-    @create_params = {:group => {:name => 'grp1', :uname => 'un_grp1'}}
-    @update_params = {:group => {:name => 'grp2'}}
+    @create_params = {:group => {:description => 'grp1', :uname => 'un_grp1'}}
+    @update_params = {:group => {:description => 'grp2'}}
   end
 
   context 'for guest' do

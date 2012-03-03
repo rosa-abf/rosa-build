@@ -1,0 +1,66 @@
+ru:
+  layout:
+    platforms:
+      admin_id: Владелец
+      build_all: Собрать все
+      list: Список
+      new: Создать
+      edit: Редактировать
+      new_header: Новая платформа
+      edit_header: Редактировать
+      list_header: Платформы
+      list_header_main: Основные
+      list_header_personal: Персональные
+      list_header_all: Все
+      clone_header: Клонирование платформы
+      show: Платформа
+      projects: Проекты
+      products: Продукты
+      location: Расположение
+      repositories: Репозитории
+      back_to_the_list: ⇐ К списку платформ
+      freeze: Заморозить
+      unfreeze: Разморозить
+      confirm_freeze: Вы уверены, что хотите заморозить эту платформу?
+      confirm_freeze: Вы уверены, что хотите клонировать эту платформу?
+      confirm_unfreeze: Вы уверены, что хотите разморозить эту платформу?
+      released_suffix: (выпущена)
+      confirm_delete: Вы уверены, что хотите удалить эту платформу?
+      current_platform_header: Текущая платформа
+      owner: Владелец
+      visibility: Видимость
+      platform_type: Тип платформы
+      distrib_type: Тип дистрибутива
+      private_users: Данные для доступа
+      confirm_clone: Клонировать?
+      clone: Клонировать
+
+  flash:
+    platform:
+      saved: Платформа успешно добавлена
+      save_error: Не удалось создать платформу
+      freezed: Платформа успешно заморожена
+      freeze_error: Не удалось заморозить платформу, попробуйте еще раз
+      unfreezed: Платформа успешно разморожена
+      unfreeze_error: Не удалось разморозить платформу, попробуйте еще раз
+      destroyed: Платформа успешно удалена
+      build_all_success: Все проекты успешно отправлены на сборку
+      clone_success: Клонирование успешно
+
+  activerecord:
+    models:
+      platform: Платформа
+    attributes:
+      platform:
+        name: Название
+        description: Описание
+        parent_platform_id: Родительская платформа
+        parent: Родительская платформа
+        released: Released
+        created_at: Создана
+        updated_at: Обновлена
+        distrib_type: Тип дистрибутива
+        visibility: Статус
+        visibility_types:
+          open: Открытый
+          hidden: Закрытый
