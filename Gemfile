@@ -62,7 +62,6 @@ group :development do
   # deploy
   gem 'whenever', :require => false
   gem 'capistrano', :require => false
-  gem 'capistrano-ext', :require => false
   gem 'cape', :require => false
   gem 'capistrano_colors', :require => false
 end
