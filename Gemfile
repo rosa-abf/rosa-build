@@ -44,7 +44,6 @@ group :assets do
   gem 'sass-rails', '~> 3.2.4'
   gem 'coffee-rails', '~> 3.2.2'
   gem 'compass-rails', '~> 1.0.0.rc.3'
-  gem 'compass_twitter_bootstrap', '~> 2.0.1.2'
   gem 'uglifier', '~> 1.2.1'
   gem 'therubyracer', '~> 0.9.10'
 end
