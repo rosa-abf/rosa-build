@@ -3,7 +3,7 @@
 - if @comment.commentable.class == Issue
   - link = link_to @comment.commentable.title, project_issue_url(@comment.commentable.project, @comment.commentable)
   - object = 'задаче'
-- elsif @comment.commentable.class == Grit::Commit
+- elsif @comment.commit_comment?
   - link = link_to @comment.commentable.message, commit_url(@comment.project, @comment.commentable_id)
   - object = 'коммиту'
 %p #{ link_to @comment.user.uname, user_url(@comment.user)} добавил комментарий к #{object} #{link}.

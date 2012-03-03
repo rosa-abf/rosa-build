@@ -45,7 +45,7 @@ class ActivityFeedObserver < ActiveRecord::Observer
             )
           end
         end
-      elsif record.commentable.class == Grit::Commit
+      elsif record.commit_comment?
         subscribes = Subscribe.comment_subscribes(record).where(:status => true)
         subscribes.each do |subscribe|
           next if record.own_comment?(subscribe.user)

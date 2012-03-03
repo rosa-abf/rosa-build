@@ -63,3 +63,13 @@ ru:
         # Добро пожаловать в **Wiki** #
 
         Отредактируйте эту страницу и создайте новые.
+  
+  flash:
+    wiki:
+      ref_not_exist: Версия не существует
+      successfully_updated: Страница '%{name}' успешно обновлена
+      duplicate_page: Страница '%{name}' уже существует
+      page_successfully_removed: Страница успешно удалена
+      page_not_found: Страница '%{name}' не найдена.
+      revert_success: Изменения успешно откачены
+      patch_does_not_apply: Не удалось откатить изменения

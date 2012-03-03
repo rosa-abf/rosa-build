@@ -41,7 +41,7 @@ class GroupsController < ApplicationController
                      current_user
                    end
 
-    if @group.save!
+    if @group.save
       flash[:notice] = t('flash.group.saved')
       redirect_to group_path(@group)
     else
