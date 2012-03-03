@@ -283,6 +283,8 @@ div.comment div.comment-right {
     float: right;
 }
 
+div.comment textarea { resize: none }
+
 #repo-wrapper div.file div.data .formatted {
     overflow-x: auto;
     overflow-y: none;

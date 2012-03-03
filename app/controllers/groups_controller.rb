@@ -46,7 +46,7 @@ class GroupsController < ApplicationController
       redirect_to group_path(@group)
     else
       flash[:error] = t('flash.group.save_error')
-      flash[:warning] = @group.errors[:base]
+      flash[:warning] = @group.errors.full_messages.join('. ')
       render :action => :new
     end
   end
