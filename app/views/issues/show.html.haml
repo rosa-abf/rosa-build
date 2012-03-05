@@ -24,6 +24,7 @@
     .leftlist= t('activerecord.attributes.issue.body') + ':'
     .rightlist= f.text_area :body
     .both
+    =hidden_field_tag "issue_user", @issue.user_id, :name => "issue[user_id]"
     =f.submit t('layout.update'), :id => 'update_issue_content'
     =link_to t('layout.issues.cancel_button'), '#', :id => 'cancel_edit_issue_content', :class => 'button'
 %br

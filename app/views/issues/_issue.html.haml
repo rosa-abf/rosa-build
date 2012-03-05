@@ -7,7 +7,7 @@
       %div.issue_title=issue.title
     .smalltext
       =issue.created_at.to_s(:long)
-      =t("layout.issues.by") if issue.creator
+      =t("layout.by") if issue.creator
       =link_to(issue.creator.uname, user_path(issue.creator)) if issue.creator
       .label.selected.tracker
         -issue.labels.each do |label|

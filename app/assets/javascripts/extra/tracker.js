@@ -119,8 +119,7 @@ $(document).ready(function() {
       url: $(this).attr("action"),
       data: $(this).serialize(),
       success: function(data){
-                  var tmp = $('#create_issue_'+ which +'_list');
-                 $('#create_issue_'+ which +'_list').html(data);
+                 $('#manage_issue_'+ which +'_list').html(data);
                },
       error: function(data){
                alert('error') // TODO remove
@@ -132,20 +131,22 @@ $(document).ready(function() {
   function remExecutor(form) {
     var el = form.find('.people.selected.remove_executor');
     var id = el.attr('id');
-    $('#'+id+'.add_executor.people.selected').removeClass('select');
+    $('#manage_issue_users_list .add_executor.people.selected').removeClass('select');
     el.remove();
   }
 
   $('.add_executor.people.selected').live('click', function() {
-    var form = $('.form.issue');
-    form.find('#people-span').fadeOut(0);
-    remExecutor(form);
-    form.find('#issue_executor').html($(this).clone().removeClass('add_executor').addClass('remove_executor'));
+    var form_new = $('form.issue');
+    var form_edit = $('form.edit_form.issue');
+    form_new.find('#people-span').fadeOut(0);
+    remExecutor(form_new);
+    form_new.find('#issue_executor').html($(this).clone().removeClass('add_executor').addClass('remove_executor'));
+    form_edit.find('#issue_user').val($(this).find("input[name='user_id']").val());
     $(this).addClass('select');
   });
 
   $('.remove_executor.people.selected').live('click', function() {
-    var form = $('.form.issue');
+    var form = $('form.issue, form.edit_form issue');
     form.find('#people-span').fadeIn(0);
     remExecutor(form);
   });
@@ -228,8 +229,32 @@ $(document).ready(function() {
                   $('.fulltext.view.issue_body').html(form.find('#issue_body').attr('value'));
                 },
       error: function(data){
-               alert('error') // TODO remove
+               alert('error'); // TODO remove
              }
+     });
+    return false;
+  });
+
+  $('.button.manage_executor').live('click', function() {
+    $('form#search_user, .button.update_executor').fadeIn(0);
+    $(this).fadeOut(0);
+  });
+
+  $('.button.update_executor').live('click', function() {
+    var form = $('.edit_form.issue');
+    $.ajax({
+      type: 'POST',
+      url: form.attr("action"),
+      data: form.serialize(),
+      success: function(data){
+                      $('.current_executor').html($('#manage_issue_users_list .add_executor.people.selected.select').clone());
+                      $('form#search_user, .button.update_executor').fadeOut(0);
+                      $('.button.manage_executor').fadeIn(0);
+                      $('#manage_issue_users_list').html('');
+                    },
+      error: function(data){
+                   alert('error'); // TODO remove
+                }
      });
     return false;
   });
