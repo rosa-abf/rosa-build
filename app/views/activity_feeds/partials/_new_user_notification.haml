@@ -1,5 +1,15 @@
-%p== #{ t("notifications.bodies.new_user_notification.title", :user_name => user_name) }
-
-%p #{ t("notifications.bodies.new_user_notification.content") }
-
-%p #{ t("notifications.bodies.new_user_notification.email", :user_email => user_email) }
+.top
+  .image
+    = image_tag(gravatar_url(activity_feed.user.email, 30))
+  .text
+    %span.name
+      = link_to activity_feed.user.uname, user_path(activity_feed.user.uname)
+    %br
+      %span.date= activity_feed.created_at
+      %br
+        %span.subject #{ t("notifications.bodies.new_user_notification.title", :user_name => user_name) }
+  .both
+.fulltext
+  #{ t("notifications.bodies.new_user_notification.content") }
+  %br
+  #{ t("notifications.bodies.new_user_notification.email", :user_email => user_email) }

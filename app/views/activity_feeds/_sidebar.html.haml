@@ -1,0 +1,47 @@
+.bordered
+  = link_to t("layout.activity_feed.new_project"), new_project_path, :class => 'button'
+  %h3= t("layout.activity_feed.my_last_projects")
+  %table
+    %tbody
+      - current_user.projects.each do |project|
+        %tr
+          %td
+            - if project.public?
+              = image_tag("unlock.png")
+            - else
+              = image_tag("lock.png")
+          %td
+            = link_to "#{project.owner.uname}/#{project.name}", project_path(project)
+        %tr
+          %td
+            \ 
+          %td
+            = link_to t("layout.activity_feed.all_my_projects"), projects_path
+.block
+  %h3= t("layout.activity_feed.my_builds_by_day")
+  %table{:cellpadding => "0", :cellspacing => "0"}
+    %tbody
+      %tr
+        %td.first
+          = link_to t("layout.build_lists.statuses.#{:build_published}"), build_lists_path(:filter => {:status => BuildList::BUILD_PUBLISHED})
+        %td= BuildList.for_status(BuildList::BUILD_PUBLISHED).for_user(current_user).count
+      %tr
+        %td.first
+          = link_to t("layout.build_lists.statuses.#{:success}"), build_lists_path(:filter => {:status => BuildServer::SUCCESS})
+        %td= BuildList.for_status(BuildServer::SUCCESS).for_user(current_user).count
+      %tr
+        %td.first
+          = link_to t("layout.build_lists.statuses.#{:build_started}"), build_lists_path(:filter => {:status => BuildServer::BUILD_STARTED})
+        %td= BuildList.for_status(BuildServer::BUILD_STARTED).for_user(current_user).count
+      %tr
+        %td.first
+          = link_to t("layout.build_lists.statuses.#{:build_pending}"), build_lists_path(:filter => {:status => BuildList::BUILD_PENDING})
+        %td= BuildList.for_status(BuildList::BUILD_PENDING).for_user(current_user).count
+      %tr
+        %td.first
+          = link_to t("layout.build_lists.statuses.#{:build_error}"), build_lists_path(:filter => {:status => BuildServer::BUILD_ERROR})
+        %td= BuildList.for_status(BuildServer::BUILD_ERROR).for_user(current_user).count
+      %tr
+        %td.first
+          = link_to t("layout.activity_feed.all_my_builds"), build_lists_path
+        %td  

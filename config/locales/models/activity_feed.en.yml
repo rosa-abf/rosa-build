@@ -2,6 +2,11 @@ en:
   layout:
     activity_feed: 
       header: Activity Feed
+      my_last_projects: My last projects
+      all_my_projects: All my projects
+      all_my_builds: All my builds
+      my_builds_by_day: My buils for last 24 hours
+      new_project: Create project
 
   notifications:
     subjects:

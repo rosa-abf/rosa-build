@@ -1,7 +1,19 @@
-%p== Branch #{ branch_name } has been #{ change_type }d
-%p== Into project #{ link_to(project_name, project_path(project_id)) }
-
-- last_commits.each do |commit|
-  = link_to commit[0], commit_path(project_id, commit[0])
-  = commit[1]
+.top
+  .image
+    = image_tag(gravatar_url(activity_feed.user.email, 30))
+  .text
+    %span.name
+      = link_to activity_feed.user.uname, user_path(activity_feed.user.uname)
+    %br
+      %span.date= activity_feed.created_at
+      %br
+        %span.subject Branch #{ branch_name } has been #{ change_type }d
+  .both
+.fulltext
+  Into project #{ link_to(project_name, project_path(project_id)) }
   %br
+  %br
+  - last_commits.each do |commit|
+    = link_to commit[0], commit_path(project_id, commit[0])
+    = commit[1]
+    %br

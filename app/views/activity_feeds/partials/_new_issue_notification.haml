@@ -1,3 +1,13 @@
-%p== #{ t("notifications.bodies.new_issue_notification.title", :user_name => user_name) }
-
-%p= raw t("notifications.bodies.new_issue_notification.content", :issue_link => link_to(issue_title, project_issue_path(project_id, issue_serial_id)), :project_link => link_to(project_name, project_path(project_id)))
+.top
+  .image
+    = image_tag(gravatar_url(activity_feed.user.email, 30))
+  .text
+    %span.name
+      = link_to activity_feed.user.uname, user_path(activity_feed.user.uname)
+    %br
+      %span.date= activity_feed.created_at
+      %br
+        %span.subject #{ t("notifications.bodies.new_issue_notification.title", :user_name => user_name) }
+  .both
+.fulltext
+  = raw t("notifications.bodies.new_issue_notification.content", :issue_link => link_to(issue_title, project_issue_path(project_id, issue_serial_id)), :project_link => link_to(project_name, project_path(project_id)))
