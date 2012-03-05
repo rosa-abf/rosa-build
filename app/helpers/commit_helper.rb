@@ -41,4 +41,10 @@ module CommitHelper
     truncate(message, :length => 42, :omission => "...").encode_to_default
   end
 
+  def commit_author_link(author)
+    name = author.name.encode_to_default
+    email = author.email
+    u = User.where(:email => email).first
+    u.present? ? link_to(name, user_path(u)) : mail_to(email, name)
+  end
 end

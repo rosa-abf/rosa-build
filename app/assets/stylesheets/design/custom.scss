@@ -321,3 +321,52 @@ table.tablesorter tr td.centered {
 header div.user div.avatar img {
     border: 1px solid #DDDDDD;
 }
+
+div.blame_data {
+    font-size: 80%;
+}
+
+div.blame_data tr.firstrow {
+    border-top: 1px solid #DDDDDD;
+}
+
+
+div.blame_data tr td.commit_info {
+    padding: 0.5em !important;
+    vertical-align: top;
+    width: 210px;
+    border-right: 1px solid #DDDDDD;
+}
+
+div.blame_data tr td.commit_info .date {
+    display: block;
+    float: left;
+    color: #666666;
+}
+
+div.blame_data tr td.commit_info .message {
+    width: 210px;
+    display: block;
+    float: right;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: 12px;
+}
+
+div.blame_data tr td.lines {
+    padding: 0 0.5em !important;
+    width: 1%;
+    font-size: 12px;
+    line-height: 1.4em;
+}
+
+div.blame_data tr td.code {
+    padding: 0 10px !important;
+    font-size: 12px;
+}
+
+div.blame_data tr td.code pre {
+    padding: 0;
+    margin: 0;
+}
