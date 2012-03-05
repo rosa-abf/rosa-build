@@ -34,7 +34,7 @@
   = f.text_field :location
 .both
 .leftlist
-  Аватарка:
+  = f.label :avatar, t("activerecord.attributes.user.avatar")
 .rightlist
   = image_tag(avatar_url(@user, :medium))
   %br

@@ -17,15 +17,16 @@ en:
       public_projects_list: Public projects list
       public_data_edit_warning: This data is able for public profile. If you don't want to show some data, just don't fill them.
       user_private_settings: Settings
-      settings_notifier: Notifier centr
+      settings_notifier: Notification center
       delete_header: Delete aacount
       delete_warning: Warning! Deleted account can not be recovered.
+      private_settings_header: Password change
       avatar_notice: Without uploaded avatar will be used avatar from gravar web service.
 
   activerecord:
     attributes:
       user:
-        name: User
+        name: Name
         login: Nickname or Email
         email: Email
         uname: Nickname
@@ -42,4 +43,5 @@ en:
         site: Web-Site
         location: Location
         company: Company
+        avatar: Avatar
 

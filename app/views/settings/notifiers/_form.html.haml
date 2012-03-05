@@ -3,7 +3,7 @@
 .leftside
   = f.label :can_notify, t('activerecord.attributes.settings.notifier.can_notify')
 .both
-%h3 Код
+%h3= t("layout.settings.notifiers.code_header")
 .leftside.w25
   = f.check_box :new_comment, :class => 'notify_cbx'
 .leftside

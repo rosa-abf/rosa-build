@@ -43,6 +43,9 @@ en:
     owner: Owner
     confirm: Sure?
     back: Back
+    processing: working ...
+    invalid_content_type: incorrect type
+
     settings:
       label: Settings
       notifier: Notifier setting
@@ -50,8 +53,7 @@ en:
         edit_header: Notifier setting
         notice_header: You can receive notifies from other collaborators about changes into code of your projects. Notifies will be sent to your email %{email}.
         change_email_link: Change email address
-    processing: working ...
-    invalid_content_type: incorrect type
+        code_header: Code
 
     devise:
       shared_links:
@@ -218,7 +220,7 @@ en:
     attributes:
       settings:
         notifier:
-          can_notify: Notifications by e-mail
+          can_notify: Notifications by email
           new_comment: New task comment notifications
           new_comment_reply: New reply of comment notifications
           new_issue: New task notifications
