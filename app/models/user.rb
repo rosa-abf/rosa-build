@@ -35,9 +35,7 @@ class User < ActiveRecord::Base
   validate { errors.add(:uname, :taken) if Group.where('uname LIKE ?', uname).present? }
   validates :role, :inclusion => {:in => ROLES}, :allow_blank => true
   validates :language, :inclusion => {:in => LANGUAGES}, :allow_blank => true
-  validates_confirmation_of :password
 
-  attr_accessor :password, :password_confirmation, :current_password
   attr_accessible :email, :password, :password_confirmation, :current_password, :remember_me, :login, :name, :ssh_key, :uname, :language,
                   :site, :company, :professional_experience, :location, :avatar
   attr_readonly :uname, :own_projects_count
@@ -83,17 +81,17 @@ class User < ActiveRecord::Base
     end
   end
 
-  def update_with_password(params={})
-    params.delete(:current_password)
-    # self.update_without_password(params) # Don't allow password update
-    if params[:password].blank?
-      params.delete(:password)
-      params.delete(:password_confirmation) if params[:password_confirmation].blank?
-    end
-    result = update_attributes(params)
-    clean_up_passwords
-    result
-  end
+  # def update_with_password(params={})
+  #   params.delete(:current_password)
+  #   # self.update_without_password(params) # Don't allow password update
+  #   if params[:password].blank?
+  #     params.delete(:password)
+  #     params.delete(:password_confirmation) if params[:password_confirmation].blank?
+  #   end
+  #   result = update_attributes(params)
+  #   clean_up_passwords
+  #   result
+  # end
 
   def commentor?(commentable)
     comments.exists?(:commentable_type => commentable.class.name, :commentable_id => commentable.id.hex)
