@@ -17,7 +17,8 @@
       - if render_way == :text and can? :write, @project and @treeish.in? @project.branches.map(&:name)
         = raw "#{link_to "Edit", edit_blob_path(@project, @treeish, @path) } | "
       = raw "#{link_to "Raw",    raw_path(@project, @treeish, @path)} | "
-      =# raw "#{link_to "Blame",  blame_path(@project, @treeish, @path)} | "
+      - if render_way == :text
+        = raw "#{link_to "Blame",  blame_path(@project, @treeish, @path)} | "
       = link_to "History",       commits_path(@project, @treeish, @path)
     .both
   .data
@@ -34,7 +35,7 @@
     - when :text
       .gutter
         = render_line_numbers(text.length)
-      #output.formatted
+      #output.formatted.cm-s-default
         %pre#code
           =#{render_blob(@blob)}
           :preserve
@@ -51,6 +52,6 @@
               <br/>
 :javascript
   $(document).ready(function() {
-    var text = $('#code').innerHTML.replace(/&amp;/gi, '&');
-    CodeMirror.runMode(text, "#{@blob.mime_type}", document.getElementById("output"));
+    var text = $('#code').text().replace(/&amp;/gi, '&');
+    CodeMirror.runMode(text, "#{File.extname(@blob.name) == '.spec' ? 'text/x-rpm-spec' : @blob.mime_type}", document.getElementById("output"));
   });
