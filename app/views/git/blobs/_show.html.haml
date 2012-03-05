@@ -34,7 +34,7 @@
     - when :text
       .gutter
         = render_line_numbers(text.length)
-      #output.formatted
+      #output.formatted.cm-s-default
         %pre#code
           =#{render_blob(@blob)}
           :preserve
@@ -51,6 +51,6 @@
               <br/>
 :javascript
   $(document).ready(function() {
-    var text = $('#code').innerHTML.replace(/&amp;/gi, '&');
-    CodeMirror.runMode(text, "#{@blob.mime_type}", document.getElementById("output"));
+    var text = $('#code').text().replace(/&amp;/gi, '&');
+    CodeMirror.runMode(text, "#{File.extname(@blob.name) == '.spec' ? 'text/x-rpm-spec' : @blob.mime_type}", document.getElementById("output"));
   });
