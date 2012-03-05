@@ -48,3 +48,20 @@ en:
       versions_list: version list
       status: the status of the assembly
       project_build: build package
+
+  layout:
+    event_logs:
+      list: List
+      list_header: Event log
+
+  activerecord:
+    models:
+      event_log: Event log
+    attributes:
+      event_log:
+        kind: Event type
+        created_at: Event date and time
+        user: User
+        ip: User IP
+        protocol: Access protocol
+        description: Description

@@ -3,15 +3,13 @@ class IssuesController < ApplicationController
   NON_RESTFUL_ACTION = [:create_label, :update_label, :destroy_label, :search_collaborators]
   before_filter :authenticate_user!
 
-  load_and_authorize_resource :project, :except => NON_RESTFUL_ACTION
-  load_and_authorize_resource :issue, :through => :project, :find_by => :serial_id, :only => [:show, :edit, :update, :destroy]
+  load_resource :project
+  load_and_authorize_resource :issue, :through => :project, :find_by => :serial_id, :only => [:show, :edit, :update, :destroy, :new, :create]
   before_filter :load_and_authorize_label, :only => NON_RESTFUL_ACTION
 
   layout 'application'
 
   def index(status = 200)
-    logger.debug "!!!!!!!!!!!!!!!!!!"
-    logger.debug "request format is #{request.format}"
     @is_assigned_to_me = params[:filter] == 'to_me'
     @status = params[:status] == 'closed' ? 'closed' : 'open'
     @labels = params[:labels] || []
@@ -36,17 +34,16 @@ class IssuesController < ApplicationController
   end
 
   def new
-    @issue = Issue.new(:project => @project)
+    @issue = @project.issues.new
   end
 
   def create
     @user_id = params[:user_id]
     @user_uname = params[:user_uname]
 
-    @issue = Issue.new(params[:issue])
+    @issue = @project.issues.new(params[:issue])
     @issue.creator_id = current_user.id
     @issue.user_id = @user_id
-    @issue.project_id = @project.id
 
     if @issue.save
       @issue.subscribe_creator(current_user.id)
@@ -67,9 +64,7 @@ class IssuesController < ApplicationController
       status = 200 if @issue.save
       render action, :status => (status || 500), :layout => false
     else
-      @issue.title = params[:issue][:title]
-      @issue.body = params[:issue][:body]
-      status = 200 if @issue.save
+      status = 200 if @issue.update_attributes(params[:issue])
       render :nothing => true, :status => (status || 500), :layout => false
     end
   end
@@ -112,7 +107,6 @@ class IssuesController < ApplicationController
   private
 
   def load_and_authorize_label
-    @project = Project.find(params[:project_id])
     @label = Label.find(params[:label_id]) if params[:label_id]
     authorize! :write, @project
   end

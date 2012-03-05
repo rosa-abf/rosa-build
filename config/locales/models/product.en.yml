@@ -1,0 +1,55 @@
+en:
+  layout:
+    products:
+      list: List
+      new: New product
+      list_header: Products
+      clone: Clone
+      build: Build
+      new_header: New product
+      edit_header: Product editing
+      confirm_delete: Are you sure to delete this product?
+
+      cron_tab_generator:
+        show: Show cron tab the generator
+        hide: Hide cron tab the generator
+        choose: Choose
+        every_minute: Every minute
+        every_hour: Every hour
+        every_day: Every day
+        every_month: Every month
+        every_weekday: Every weekdays
+        minutes: Minutes
+        hours: Hours
+        days: Days
+        months: Months
+        weekdays: weekdays
+
+  flash:
+    product:
+      saved: Product saved
+      save_error: Product saves error
+      build_started: Product build started
+      destroyed: Product deleted
+      build_list_delete: Product build list deleted
+
+  activerecord:
+    models:
+      product: Product
+    attributes:
+      product:
+        name: Name
+        platform_id: Platform
+        build_status: Build status
+        build_path: ISO path
+        created_at: Created
+        updated_at: Updated
+        ks: Content .ks.template
+        counter: Content .counter
+        build_script: Content build
+        menu: Content .menu.xml
+        tar: Tar.bz2 file
+        is_template: Template
+        system_wide: System
+        cron_tab: Cront tab
+        use_cron: Cron usage

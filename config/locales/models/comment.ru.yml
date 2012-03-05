@@ -1,0 +1,22 @@
+ru:
+  layout:
+    comments:
+      confirm_delete: Вы уверены, что хотите удалить комментарий?
+      new_header: Новый комментарий
+      edit_header: Редактирование комментария
+      has_commented: "оставил комментарий"
+      notifications_are: "Уведомления о последующих комментариях"
+      comments_header: "Комментарии"
+      back: 'Назад'
+
+  flash:
+    comment:
+      saved: Комментарий успешно сохранен
+      save_error: Ошибка сохранения комментария
+      destroyed: Комментарий удален
+  
+  activerecord:
+    attributes:
+      comment:
+        body: Содержание
+        user: Автор

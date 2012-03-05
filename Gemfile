@@ -43,8 +43,8 @@ gem 'jquery-rails', '~> 2.0.1'
 group :assets do
   gem 'sass-rails', '~> 3.2.4'
   gem 'coffee-rails', '~> 3.2.2'
+  gem 'compass-rails', '~> 1.0.0.rc.3'
   gem 'uglifier', '~> 1.2.1'
-  gem 'compass', '~> 0.12.rc.1' # :git => 'git://github.com/chriseppstein/compass.git', :branch => 'rails31'
   gem 'therubyracer', '~> 0.9.10'
 end
 
@@ -62,7 +62,6 @@ group :development do
   # deploy
   gem 'whenever', :require => false
   gem 'capistrano', :require => false
-  gem 'capistrano-ext', :require => false
   gem 'cape', :require => false
   gem 'capistrano_colors', :require => false
 end

@@ -48,3 +48,20 @@ ru:
       versions_list: список версий
       status: статус сборки
       project_build: сборка пакета
+
+  layout:
+    event_logs:
+      list: Список
+      list_header: Лог событий
+
+  activerecord:
+    models:
+      event_log: Лог событий
+    attributes:
+      event_log:
+        kind: Тип события
+        created_at: Дата и время события
+        user: Пользователь
+        ip: IP пользователя
+        protocol: Протокол доступа
+        description: Описание события

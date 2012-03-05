@@ -1,0 +1,30 @@
+en:
+  layout:
+    activity_feed: 
+      header: Activity Feed
+
+  notifications:
+    subjects:
+      new_comment_notification: New comment to your task
+      new_commit_comment_notification: New comment to commit
+      new_issue_notification: New task added to project
+      new_user_notification: Registered on project «%{ project_name }»
+      issue_assign_notification: New task assigned
+      invite_approve_notification: Invitation to ABF
+
+    bodies:
+      new_comment_notification: 
+        title: Hello, %{user_name}.
+        content: To the issue %{issue_link} added a comment.
+        commit_content: To the commit %{commit_link} added a comment.
+      new_issue_notification: 
+        title: Hello, %{user_name}.
+        content: To project %{project_link} has been added an issue %{issue_link}
+      new_user_notification: 
+        title: Hello, %{user_name}.
+        content: You have been sign up to project «ROSA Build System» and now can sign in.
+        email: ==Your email %{user_email}
+        password: ==Your password %{user_password}
+      issue_assign_notification: 
+        title: Hello, %{user_name}.
+        content: You have been assigned to issue %{issue_link}

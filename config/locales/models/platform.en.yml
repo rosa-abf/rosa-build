@@ -1,0 +1,66 @@
+en:
+  layout:
+    platforms:
+      admin_id: Owner
+      build_all: Build all
+      list: List
+      new: Create
+      edit: Edit
+      new_header: New platform
+      edit_header: Edit
+      list_header: Platforms
+      list_header_main: General
+      list_header_personal: Personal
+      list_header_all: All
+      clone_header: Platform clone
+      show: Platform
+      projects: Projects
+      products: Products
+      location: Location
+      repositories: Repositories
+      back_to_the_list: ⇐To platform list
+      freeze: Freeze
+      unfreeze: Unfeeze
+      confirm_freeze: Are you sure to freeze this platform?
+      confirm_freeze: Are you sure to clone this platform?
+      confirm_unfreeze: Are you sure to defrost this platform?
+      released_suffix: (released)
+      confirm_delete: Are you sure to delete this platform?
+      current_platform_header: Current platform
+      owner: Owner
+      visibility: Visibility
+      platform_type: Platform type
+      distrib_type: Distribution kit type
+      private_users: Access data
+      confirm_clone: To clone?
+      clone: To clone
+
+  flash:
+    platform:
+      saved: Platform saved
+      save_error: Platform saves error
+      freezed: Platform freezed
+      freeze_error: Platform freezing error, try again
+      unfreezed: Platform unfreezed
+      unfreeze_error: Platform unfreezing error, try again
+      destroyed: Platform deleted
+      build_all_success: All project build in progress
+      clone_success: Cloned successfully
+
+  activerecord:
+    models:
+      platform: Platform
+    attributes:
+      platform:
+        name: Name
+        description: Description
+        parent_platform_id: Parent platform
+        parent: Parent platform
+        released: Released
+        created_at: Created
+        updated_at: Updated
+        distrib_type: Source type
+        visibility: Status
+        visibility_types:
+          open: Open
+          hidden: Hidden

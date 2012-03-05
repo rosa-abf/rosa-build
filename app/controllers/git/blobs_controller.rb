@@ -6,7 +6,7 @@ class Git::BlobsController < Git::BaseController
   before_filter :set_path_blob
 
   def show
-    redirect_to project_repo_path(@project) and return unless @blob.present?
+    redirect_to project_path(@project) and return unless @blob.present?
     if params[:raw]
       image_url = Rails.root.to_s + "/" + @path
 

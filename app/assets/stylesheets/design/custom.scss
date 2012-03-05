@@ -283,6 +283,8 @@ div.comment div.comment-right {
     float: right;
 }
 
+div.comment textarea { resize: none }
+
 #repo-wrapper div.file div.data .formatted {
     overflow-x: auto;
     overflow-y: none;
@@ -299,7 +301,7 @@ table.tablesorter tbody td a .issue_title {
 #output.formatted {
     width: auto;
     font-family: "Consolas","Bitstream Vera Sans Mono","Courier New",Courier,monospace;
-    padding: 10px 5px;
+    padding: 10px 5px 0px;
     margin-left: 45px;
 }
 

@@ -11,6 +11,8 @@ class User < ActiveRecord::Base
 
   has_one :notifier, :class_name => 'Settings::Notifier' #:notifier
 
+  has_many :activity_feeds
+
   has_many :authentications, :dependent => :destroy
   has_many :build_lists, :dependent => :destroy
   has_many :subscribes, :foreign_key => :user_id, :dependent => :destroy

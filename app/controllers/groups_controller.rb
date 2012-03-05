@@ -11,12 +11,7 @@ class GroupsController < ApplicationController
   autocomplete :group, :uname
 
   def index
-    puts parent.inspect
-    @groups = if parent? and !parent.nil?
-                parent.groups
-              else
-                Group
-              end.accessible_by(current_ability)
+    @groups = current_user.groups#accessible_by(current_ability)
 
     @groups = if params[:query]
                 @groups.where(["name LIKE ?", "%#{params[:query]}%"])
@@ -40,18 +35,14 @@ class GroupsController < ApplicationController
 
   def create
     @group = Group.new params[:group]
-    @group.owner = if parent? and parent.is_a? User
-                     parent
-                   else
-                     current_user
-                   end
+    @group.owner = current_user
 
     if @group.save
       flash[:notice] = t('flash.group.saved')
       redirect_to group_path(@group)
     else
       flash[:error] = t('flash.group.save_error')
-      flash[:warning] = @group.errors[:base]
+      flash[:warning] = @group.errors.full_messages.join('. ')
       render :action => :new
     end
   end

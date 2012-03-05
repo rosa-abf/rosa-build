@@ -177,12 +177,16 @@ Rosa::Application.routes.draw do
         get  :edit
         post :add
         post :update
+        delete :remove
       end
       member do
         post :update
+        delete :remove
       end
     end
   end
+
+  resources :activity_feeds, :only => [:index]
 
   resources :users, :groups do
     resources :platforms, :only => [:new, :create]
@@ -228,6 +232,6 @@ Rosa::Application.routes.draw do
   match '/projects/:project_id/git/raw/:treeish/*path', :controller => "git/blobs", :action => :raw, :treeish => /[0-9a-zA-Z_.\-]*/, :defaults => { :treeish => :master }, :as => :raw, :format => false
   match '/projects/:project_id/git/commit/raw/:commit_hash/*path', :controller => "git/blobs", :action => :raw, :as => :raw_commit
 
-  root :to => "platforms#index"
+  root :to => "activity_feeds#index"
   match '/forbidden', :to => 'platforms#forbidden', :as => 'forbidden'
 end

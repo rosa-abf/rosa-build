@@ -52,7 +52,7 @@ class ProjectsController < ApplicationController
       redirect_to @project
     else
       flash[:error] = t('flash.project.save_error')
-      flash[:warning] = @project.errors[:base]
+      flash[:warning] = @project.errors.full_messages.join('. ')
       render :action => :new
     end
   end

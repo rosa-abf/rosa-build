@@ -75,7 +75,7 @@ class CommentsController < ApplicationController
 
   def find_comment
     @comment = Comment.find(params[:id])
-    if @comment.commentable_type == 'Grit::Commit'
+    if @comment.commit_comment?
       @comment.project = @project
       @comment.helper
     end
