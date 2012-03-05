@@ -8,10 +8,7 @@
       %span.date= activity_feed.created_at
       %br
         %span.subject
-        -#TODO: Fix wiki compare routes.
-        -# User #{ link_to user_name, user_path(user_id) } has been update wiki #{ link_to "history", compare_versions_project_wiki_index_path(project_id, commit_sha) }
+          User #{ link_to user_name, user_path(user_id) } has been update wiki #{ link_to "history", history_project_wiki_index_path(project_id) }
   .both
 .fulltext
-  -#TODO: Fix wiki compare routes.
-  -#%p== User #{ link_to user_name, user_path(user_id) } has been update wiki #{ link_to "history", compare_versions_project_wiki_index_path(project_id, commit_sha) }
   Into project #{ link_to(project_name, project_path(project_id)) }
