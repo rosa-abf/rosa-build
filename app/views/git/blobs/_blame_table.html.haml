@@ -4,10 +4,9 @@
     %tr.firstrow
       %td.commit_info{ :rowspan => elem[1].length, :nowrap => 'nowrap' }
         %code
-          #{link_to shortest_hash_id(elem[0].id), commit_path(@project, elem[0].id)} by
+          #{link_to shortest_hash_id(elem[0].id), commit_path(@project, elem[0].id)} #{t('layout.by')}
           - author = elem[0].author
           - committer = elem[0].committer
-          -##{elem[0].author.to_s.encode_to_default} #{elem[0].author != elem[0].committer ? "(#{elem[0].committer.to_s.encode_to_default})" : "" }
           = commit_author_link(author)
           - if author.email != committer.email
             (#{commit_author_link(committer)})
