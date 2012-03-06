@@ -7,9 +7,9 @@ class User < ActiveRecord::Base
   devise :database_authenticatable, :registerable, #:omniauthable, # :token_authenticatable, :encryptable, :timeoutable
          :recoverable, :rememberable, :validatable #, :trackable, :confirmable, :lockable
 
-  has_one :notifier, :class_name => 'Settings::Notifier' #:notifier
+  has_one :notifier, :class_name => 'Settings::Notifier', :dependent => :destroy #:notifier
 
-  has_many :activity_feeds
+  has_many :activity_feeds, :dependent => :destroy
 
   has_many :authentications, :dependent => :destroy
   has_many :build_lists, :dependent => :destroy
@@ -17,7 +17,7 @@ class User < ActiveRecord::Base
   has_many :comments, :dependent => :destroy
 
   has_many :relations, :as => :object, :dependent => :destroy
-  has_many :targets, :as => :object, :class_name => 'Relation'
+  has_many :targets, :as => :object, :class_name => 'Relation', :dependent => :destroy
 
   has_many :projects,     :through => :targets, :source => :target, :source_type => 'Project',    :autosave => true
   has_many :groups,       :through => :targets, :source => :target, :source_type => 'Group',      :autosave => true
@@ -40,7 +40,9 @@ class User < ActiveRecord::Base
   attr_readonly :uname
   attr_accessor :login
 
-  after_create :create_settings_notifier
+  scope :search, lambda {|q| where("uname ILIKE ?", "%#{q}%")}
+
+  after_create lambda { self.create_notifier }
 
   def admin?
     role == 'admin'
@@ -57,6 +59,7 @@ class User < ActiveRecord::Base
   def fullname
     return "#{uname} (#{name})"
   end
+
   class << self
     def find_for_database_authentication(warden_conditions)
       conditions = warden_conditions.dup
@@ -102,11 +105,4 @@ class User < ActiveRecord::Base
   def avatar(size)
     "https://secure.gravatar.com/avatar/#{Digest::MD5.hexdigest(email.downcase)}?s=#{size}&r=pg"
   end
-
-  private
-
-  def create_settings_notifier
-    self.create_notifier
-  end
-
 end

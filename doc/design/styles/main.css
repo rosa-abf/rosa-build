@@ -207,6 +207,8 @@ header div.profile a:hover {
 
 header div.droplist-wrap {
 	margin: -4px 0px 0px 0px;
+	width: 151px;
+	float: right;
 }
 
 header div.droplist {
@@ -218,7 +220,6 @@ header div.droplist {
 	box-shadow: 0px 2px 4px 0px rgba(0, 0, 0, 0.5);
 	position: absolute;
 	margin-top: 0px;
-	margin-left: 138px;
 	border-radius: 0px 0px 4px 4px;
 	display: none;
 	text-align: right;
@@ -508,7 +509,7 @@ article input[type="submit"] {
 	background-image: linear-gradient(top, #68a3d8, #125687);
 	filter: progid:DXImageTransform.Microsoft.gradient(startColorStr='#68a3d8', EndColorStr='#125687');
 	border: 1px solid #5084b4;
-	padding: 4px 20px;
+	padding: 0px 20px 0px;
 	margin: 0;
 	font-size: 12px;
 	text-decoration: none;
@@ -518,8 +519,9 @@ article input[type="submit"] {
 	border-radius: 5px;
 	text-align: center;
 	height: auto;
+	height: 28px;
 	width: auto;
-	
+	font-family: Tahoma;
 }
 
 article input[type="submit"]:hover{
@@ -838,7 +840,7 @@ div.rightlist textarea {
 }
 
 div.rightlist input[type="text"], div.rightlist input[type="password"] {
-	height: 15px;
+	height: 16px;
 	width: 350px;
 	border: 1px solid #dedede;
 	border-radius: 4px;
@@ -849,30 +851,30 @@ div.rightlist input[type="text"], div.rightlist input[type="password"] {
 
 /* Admin-members page */
 
-.right table div.img {
+div.img {
 	float: left;
 }
 
-.right table div.radio {
+ table div.radio {
 	float: left;
 	margin: 5px 0px 0px 0px;
 }
 
-.right table div.forimg {
+div.forimg {
 	float: left;
 	margin: 5px 0px 0px 5px;
 }
 
-.right table div.forradio {
+table div.forradio {
 	float: left;
 	margin: 5px 0px 0px 5px;
 }
 
-.right table span.niceCheck-main {
+table span.niceCheck-main {
 	margin-top: 3px;
 }
 
-.right div.admin-search {
+div.admin-search {
 	float: left;
 }
 
@@ -2159,4 +2161,50 @@ article div.all.error404 p.pages {
 article div.all.error404 p.search {
 	margin-top: 80px;
 	width: 230px;
+}
+
+/*search*/
+
+input.button.width100 {
+	width: 100px;
+}
+
+input[type="text"].exsearch {
+	height: 16px;
+	border: 1px solid #dedede;
+	border-radius: 4px;
+	padding: 5px;
+	font-family: Tahoma, Geneva, Helvetica, sans-serif;
+	font-size: 12px;
+	width: 520px;
+	margin-right: 10px;
+}
+
+div.lineForm.leftside.rmargin10 {
+	margin-right: 10px;
+}
+
+table.tablesorter.bmargin5 {
+	margin-bottom: 1px;
+}
+
+div.width400 {
+	width: 400px;
+	float: left;
+}
+
+div.width400.rmargin55 {
+	margin-right: 55px;
+}
+
+div.tmargin10 {
+	margin-top: 10px;
+}
+
+a.lmargin7 {
+	margin-left: 7px;
+}
+
+a.lmargin5 {
+	margin-left: 5px;
 }

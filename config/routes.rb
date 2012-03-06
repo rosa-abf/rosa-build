@@ -184,8 +184,6 @@ Rosa::Application.routes.draw do
     end
   end
 
-  resources :activity_feeds, :only => [:index]
-
   resources :users, :groups do
     resources :platforms, :only => [:new, :create]
 
@@ -193,6 +191,10 @@ Rosa::Application.routes.draw do
 
 #    resources :repositories, :only => [:new, :create]
   end
+
+  resources :activity_feeds, :only => [:index]
+
+  resources :search, :only => [:index]
 
   match '/catalogs', :to => 'categories#platforms', :as => :catalogs
 

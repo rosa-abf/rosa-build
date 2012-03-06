@@ -17,10 +17,7 @@
             = render 'layouts/menu/top'
             .logo= image_tag 'logo-mini.png', :alt => 'logo'
           .information
-            .search
-              .pic
-              .field
-                %input.gray{:onclick => "if(this.value=='#{t "layout.search"}'){this.value='';this.className='black';}", :onblur => "if(this.value==''){this.value='#{t "layout.search"}';this.className='gray';}", :type => "text", :value => "#{t "layout.search"}"}
+            = render 'search/form'
             .user
               .avatar= image_tag gravatar_url(current_user.email, 30), :alt => 'avatar', :height => "30"
               .profile

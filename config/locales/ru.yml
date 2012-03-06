@@ -15,7 +15,6 @@ ru:
     filtered_label: (отфильтровано из _MAX_)
 
   layout:
-    search: Поиск
     logged_in_as: Вы вошли как
     logout: Выйти
     user_list: Список пользователей
@@ -26,7 +25,6 @@ ru:
     update: Обновить
     delete: Удалить
     save: Сохранить
-    search: Искать
     clone: Клонировать
     search_by_name: Фильтр по имени
     are_you_sure: "Вы уверены?"

@@ -30,8 +30,10 @@ class Project < ActiveRecord::Base
   attr_readonly :name
 
   scope :recent, order("name ASC")
+  scope :search, lambda {|q| by_name("%#{q}%").open}
   scope :by_name, lambda {|name| where('projects.name ILIKE ?', name)}
-  scope :by_visibilities, lambda {|v| {:conditions => ['visibility in (?)', v.join(',')]}}
+  scope :by_visibilities, lambda {|v| where(:visibility => v)}
+  scope :open, where(:visibility => 'open')
   scope :addable_to_repository, lambda { |repository_id| where("projects.id NOT IN (SELECT project_to_repositories.project_id FROM project_to_repositories WHERE (project_to_repositories.repository_id = #{ repository_id }))") }
   scope :automateable, where("projects.id NOT IN (SELECT auto_build_lists.project_id FROM auto_build_lists)")
 

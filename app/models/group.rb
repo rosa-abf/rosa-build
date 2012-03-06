@@ -17,8 +17,9 @@ class Group < ActiveRecord::Base
   validates :uname, :presence => true, :uniqueness => {:case_sensitive => false}, :format => { :with => /^[a-z0-9_]+$/ }
   validate { errors.add(:uname, :taken) if User.where('uname LIKE ?', uname).present? }
 
-  scope :by_owner, lambda { |owner| where(:owner_id => owner.id) }
-  scope :by_admin, lambda { |admin| joins(:relations).where(:'relations.role' => 'admin', :'relations.target_id' => admin.id, :'relations.target_type' => 'User') }
+  scope :search, lambda {|q| where("uname ILIKE ?", "%#{q}%")}
+  scope :by_owner, lambda {|owner| where(:owner_id => owner.id)}
+  scope :by_admin, lambda {|admin| joins(:relations).where(:'relations.role' => 'admin', :'relations.target_id' => admin.id, :'relations.target_type' => 'User')}
 
   attr_readonly :own_projects_count
 
