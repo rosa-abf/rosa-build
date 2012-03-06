@@ -49,6 +49,7 @@ class UsersController < ApplicationController
       redirect_to edit_user_path(@user)
     else
       flash[:error] = t('flash.user.save_error')
+      flash[:warning] = @user.errors.full_messages.join('. ')
       render(:action => :edit)
     end
   end
@@ -60,6 +61,7 @@ class UsersController < ApplicationController
         redirect_to user_private_settings_path(@user)
       else
         flash[:error] = t('flash.user.save_error')
+        flash[:warning] = @user.errors.full_messages.join('. ')
         render(:action => :private)
       end
     end
