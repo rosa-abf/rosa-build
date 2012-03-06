@@ -45,7 +45,7 @@ class ApplicationController < ActionController::Base
   end
 
   def layout_by_resource
-    if devise_controller?
+    if devise_controller? && !(params[:controller] == 'devise/registrations' && params[:action] == 'edit')
       "sessions"
     else
       "application"

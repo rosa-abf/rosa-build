@@ -34,6 +34,7 @@ class Ability
 
       if user.user?
         can [:show, :autocomplete_user_uname], User
+        can [:edit, :update, :private], User, :id => user.id
 
         can [:show, :update], Settings::Notifier, :user_id => user.id
 

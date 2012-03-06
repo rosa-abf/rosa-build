@@ -8,7 +8,7 @@ gem 'redhillonrails_core', :git => 'git://github.com/chipiga/redhillonrails_core
 # gem 'schema_plus', '~> 0.2.1' # buggy shit!
 
 gem 'devise', '~> 2.0.4'
-gem 'omniauth', '~> 1.0.2'
+gem 'omniauth', '~> 1.0.3'
 gem 'omniauth-openid', '~> 1.0.1'
 gem 'cancan', '~> 1.6.7'
 
@@ -36,7 +36,7 @@ gem 'newrelic_rpm', '~> 3.3.2'
 
 gem 'rails3-jquery-autocomplete', '~> 1.0.6'
 gem 'will_paginate', '~> 3.0.3'
-gem 'meta-tags', '~> 1.2.4', :require => 'meta_tags'
+gem 'meta-tags', '~> 1.2.5', :require => 'meta_tags'
 gem "haml-rails", '~> 0.3.4'
 gem 'jquery-rails', '~> 2.0.1'
 
@@ -50,7 +50,7 @@ end
 
 group :production do
   gem "airbrake", '~> 3.0.9'
-  gem 'bluepill', '~> 0.0.59', :require => false
+  gem 'bluepill', '~> 0.0.60', :require => false
   gem 'daemons', '1.1.6' # for DJ
 end
 

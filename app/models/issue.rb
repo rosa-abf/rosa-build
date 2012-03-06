@@ -9,7 +9,7 @@ class Issue < ActiveRecord::Base
 
   has_many :comments, :as => :commentable, :dependent => :destroy #, :finder_sql => proc { "comments.commentable_id = '#{self.id}' AND comments.commentable_type = '#{self.class.name}'"}
   has_many :subscribes, :as => :subscribeable, :dependent => :destroy #, :finder_sql => proc { "subscribes.subscribeable_id = '#{self.id}' AND subscribes.subscribeable_type = '#{self.class.name}'"}
-  has_many :labels, :through => :labelings
+  has_many :labels, :through => :labelings, :uniq => true
   has_many :labelings
 
   validates :title, :body, :project_id, :presence => true
@@ -20,7 +20,7 @@ class Issue < ActiveRecord::Base
   after_create :subscribe_users
   after_update :subscribe_issue_assigned_user
 
-  attr_accessible :labelings_attributes, :title, :body
+  attr_accessible :labelings_attributes, :title, :body, :user_id
   accepts_nested_attributes_for :labelings, :allow_destroy => true
 
   scope :opened, where(:status => 'open', :closed_by => nil, :closed_at => nil)

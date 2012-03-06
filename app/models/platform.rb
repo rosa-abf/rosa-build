@@ -26,7 +26,8 @@ class Platform < ActiveRecord::Base
   after_destroy lambda { umount_directory_for_rsync unless hidden? }
   after_update :update_owner_relation
 
-  scope :by_visibilities, lambda {|v| {:conditions => ['visibility in (?)', v.join(',')]}}
+  scope :search, lambda {|q| where("name ILIKE ?", "%#{q}%").open}
+  scope :by_visibilities, lambda {|v| where(:visibility => v)}
   scope :open, where(:visibility => 'open')
   scope :hidden, where(:visibility => 'hidden')
   scope :main, where(:platform_type => 'main')

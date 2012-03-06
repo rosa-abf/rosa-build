@@ -9,3 +9,5 @@ ru:
     enter_commit_message: Сопровождающее сообщение
 
     read_write_access: чтение и запись
+
+    by: ''

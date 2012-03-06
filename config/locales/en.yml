@@ -15,7 +15,6 @@ en:
     filtered_label: (filtered from _MAX_)
 
   layout:
-    search: Search
     logged_in_as: You logged as
     logout: Logout
     user_list: User list
@@ -26,7 +25,6 @@ en:
     update: Update
     delete: Erase
     save: Save
-    search: Search
     clone: Clone
     search_by_name: Filter by name
     are_you_sure: "Sure?"
@@ -43,13 +41,17 @@ en:
     owner: Owner
     confirm: Sure?
     back: Back
+    processing: working ...
+    invalid_content_type: incorrect type
+
     settings:
       label: Settings
       notifier: Notifier setting
       notifiers:
         edit_header: Notifier setting
-    processing: working ...
-    invalid_content_type: incorrect type
+        notice_header: You can receive notifies from other collaborators about changes into code of your projects. Notifies will be sent to your email %{email}.
+        change_email_link: Change email address
+        code_header: Code
 
     devise:
       shared_links:
@@ -216,7 +218,7 @@ en:
     attributes:
       settings:
         notifier:
-          can_notify: Notifications by e-mail
+          can_notify: Notifications by email
           new_comment: New task comment notifications
           new_comment_reply: New reply of comment notifications
           new_issue: New task notifications

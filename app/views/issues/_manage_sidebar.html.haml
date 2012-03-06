@@ -1,0 +1,61 @@
+-content_for :sidebar do
+  - can_manage = can? :write, @issue.project
+  - if @issue.persisted?
+    .bordered.nopadding
+      %h3=t('activerecord.attributes.issue.status')
+      #switcher.issue_status{:class => "#{@issue.closed? ? 'switcher-off' : 'switcher'} #{can_manage ? "switch_issue_status" : ''}"}
+        .swleft=t('layout.issues.status.open')
+        .swright=t('layout.issues.status.closed')
+        - if can_manage
+          =form_tag [@project, @issue], :id => 'update_issue_status', :method => :put do
+            =hidden_field_tag "issue_status", @issue.closed? ? 'closed' : 'open', :name => "issue[status]"
+  .bordered.nopadding
+    %h3=t('layout.issues.executor')
+    - if @issue.persisted?
+      -if can_manage
+        =form_for :issue, :url => [@project, @issue], :method => :put, :html => { :class => 'edit_executor issue'} do |f|
+          .current_executor
+            - if @issue.user
+              #user-0.people
+                .avatar=image_tag avatar_url(@issue.user), :alt => 'avatar'
+                .name="#{@issue.user.uname} (#{@issue.user.name})"
+                =hidden_field_tag "user-0", @issue.user.id, :name => 'issue[user_id]'
+                .both
+      - else
+        .people.nopointer
+          .avatar=image_tag(@issue.user.avatar(25), :alt => 'avatar')
+          .name="#{@issue.user.uname} (#{@issue.user.name})"
+          .both
+      =link_to(t('layout.issues.label_manage'), '#', :class => "button tmargin10 manage_executor") if can_manage
+    - if can_manage
+      =form_tag search_collaborators_project_issues_path(@project), :id => 'search_user', :method => :get, :style => @issue.persisted? ? 'display:none' : '' do
+        =tracker_search_field(:search_user, t('layout.issues.search_user'))
+      #manage_issue_users_list
+        =render 'issues/search_collaborators'
+      =link_to(t('layout.issues.done'), '#', :class => "button tmargin10 update_executor", :style => 'display:none') if can_manage
+
+  .block
+    %h3=t('layout.issues.labels')
+    - if @issue.persisted?
+      - if can_manage
+        =form_for :issue, :url => [@project, @issue], :method => :put, :html => { :class => 'edit_labels issue'} do |f|
+          .current_labels
+            - (@issue.labels || []).each do |label|
+              .label.selected{:id => "flag#{label.id}"}
+                .flag{:style => "display:none; background: ##{label.color}"}
+                .labeltext.selected{:style => "background: ##{label.color}"}=label.name
+                =hidden_field_tag "label-#{label.id}", label.id, :name => "issue[labelings_attributes][#{label.id}][label_id]"
+                .both
+      - else
+        - (@issue.labels || []).each do |label|
+          .label.nopointer
+            .labeltext.selected{:style => "background: ##{label.color};"}
+              =label.name
+            .both
+      =link_to(t('layout.issues.label_manage'), '#', :class => "button tmargin10 manage_labels") if can_manage
+    - if can_manage
+      =form_tag search_labels_project_issues_path(@project), :id => 'search_labels', :method => :get, :style => @issue.persisted? ? 'display:none' : '' do
+        =tracker_search_field(:search_labels, t('layout.issues.search_labels'))
+      #manage_issue_labels_list
+        =render 'issues/search_labels'
+      =link_to(t('layout.issues.done'), '#', :class => "button tmargin10 update_labels", :style => 'display:none') if can_manage

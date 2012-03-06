@@ -3,7 +3,7 @@
     #closed-comment.comment-closed{:style => 'display: block;'}
       .state=t('layout.issues.status.closed')
       .text
-        .avatar=image_tag(@issue.closer.avatar(25), :alt => 'avatar')
+        .avatar= image_tag(avatar_url(@issue.closer), :alt => 'avatar')
         .name="#{@issue.closer.uname} (#{@issue.closer.name}) #{t('layout.issues.at')} #{@issue.closed_at.to_s(:long)}"
     .both
     %br/
