@@ -61,3 +61,11 @@ a#search-submit span {
 a#search-submit:hover span {
     background-position: -430px -29px;
 }
+
+table.wiki .history .td2 .name span.username {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    width: 164px;
+}
+
