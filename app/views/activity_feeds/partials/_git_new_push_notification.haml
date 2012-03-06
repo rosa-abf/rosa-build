@@ -1,9 +1,9 @@
 .top
   .image
-    = image_tag(gravatar_url(activity_feed.user.email, 30))
+    = image_tag(gravatar_url(user_email, 30))
   .text
     %span.name
-      = link_to activity_feed.user.uname, user_path(activity_feed.user.uname)
+      = link_to user_name, user_path(user_id)
     %br
       %span.date= activity_feed.created_at
       %br

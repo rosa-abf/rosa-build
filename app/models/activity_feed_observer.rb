@@ -18,7 +18,7 @@ class ActivityFeedObserver < ActiveRecord::Observer
         ActivityFeed.create(
           :user => recipient,
           :kind => 'new_issue_notification',
-          :data => {:user_name => record.user.name, :issue_serial_id => record.serial_id, :issue_title => record.title, :project_id => record.project.id, :project_name => record.project.name}
+          :data => {:user_name => record.creator.name, :user_email => record.creator.email, :user_id => record.creator_id, :issue_serial_id => record.serial_id, :issue_title => record.title, :project_id => record.project.id, :project_name => record.project.name}
         )
       end
 
@@ -27,7 +27,7 @@ class ActivityFeedObserver < ActiveRecord::Observer
         ActivityFeed.create(
           :user => record.user,
           :kind => 'issue_assign_notification',
-          :data => {:user_name => record.user.name, :issue_serial_id => record.serial_id, :project_id => record.project.id, :issue_title => record.title}
+          :data => {:user_name => record.creator.name, :user_email => record.creator.email, :user_id => record.creator_id, :issue_serial_id => record.serial_id, :project_id => record.project.id, :issue_title => record.title}
         )
       end
 
@@ -40,7 +40,7 @@ class ActivityFeedObserver < ActiveRecord::Observer
             ActivityFeed.create(
               :user => subscribe.user,
               :kind => 'new_comment_notification',
-              :data => {:user_name => subscribe.user.name, :comment_body => record.body, :issue_title => record.commentable.title,
+              :data => {:user_name => record.user.name, :user_email => record.user.email, :user_id => record.user_id, :comment_body => record.body, :issue_title => record.commentable.title,
                                  :issue_serial_id => record.commentable.serial_id, :project_id => record.commentable.project.id}
             )
           end
@@ -53,7 +53,7 @@ class ActivityFeedObserver < ActiveRecord::Observer
             ActivityFeed.create(
               :user => subscribe.user,
               :kind => 'new_comment_commit_notification',
-              :data => {:user_name => subscribe.user.name, :comment_body => record.body, :commit_message => record.commentable.message.encode_to_default,
+              :data => {:user_name => record.user.name, :user_email => record.user.email, :user_id => record.user_id, :comment_body => record.body, :commit_message => record.commentable.message.encode_to_default,
                                  :commit_id => record.commentable.id, :project_id => record.project.id}
             )
         end
@@ -67,13 +67,15 @@ class ActivityFeedObserver < ActiveRecord::Observer
       #owner = record.owner
       project = Project.find_by_name(record.repo)
 
-      last_commits = project.git_repository.repo.log(branch_name, nil).first(3).collect do |commit| #:author => 'author'
+      last_commits = project.git_repository.repo.log(branch_name, nil).first(3)
+      first_commiter = User.find_by_email(last_commits[0].author.email) if last_commits.size > 0
+      last_commits = last_commits.collect do |commit| #:author => 'author'
         [commit.sha, commit.message]
       end
 
       if change_type == 'delete'
         kind = 'git_delete_branch_notification'
-        options = {:project_id => project.id, :project_name => project.name, :branch_name => branch_name, :change_type => change_type}
+        options = {:user_id => first_commiter.id, :user_name => first_commiter.name, :user_email => first_commiter.email, :project_id => project.id, :project_name => project.name, :branch_name => branch_name, :change_type => change_type}
       else
         kind = 'git_new_push_notification'
         options = {:project_id => project.id, :project_name => project.name, :last_commits => last_commits, :branch_name => branch_name, :change_type => change_type}
@@ -98,7 +100,7 @@ class ActivityFeedObserver < ActiveRecord::Observer
         ActivityFeed.create(
           :user => User.find(recipient),#record.user,
           :kind => 'wiki_new_commit_notification',
-          :data => {:user_id => actor.id, :user_name => actor.name, :project_id => project.id, :project_name => project_name, :commit_sha => commit_sha}
+          :data => {:user_id => actor.id, :user_name => actor.name, :user_email => actor.email, :project_id => project.id, :project_name => project_name, :commit_sha => commit_sha}
         )
       end
     end
@@ -112,7 +114,7 @@ class ActivityFeedObserver < ActiveRecord::Observer
         ActivityFeed.create(
           :user => record.user,
           :kind => 'issue_assign_notification',
-          :data => {:user_name => record.user.name, :issue_serial_id => record.serial_id, :project_id => record.project.id, :issue_title => record.title}
+          :data => {:user_name => record.user.name, :user_email => record.user.email, :issue_serial_id => record.serial_id, :project_id => record.project.id, :issue_title => record.title}
         )
       end
     end

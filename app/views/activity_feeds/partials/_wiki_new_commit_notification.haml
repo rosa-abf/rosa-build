@@ -1,14 +1,13 @@
 .top
   .image
-    = image_tag(gravatar_url(activity_feed.user.email, 30))
+    = image_tag(gravatar_url(user_email, 30))
   .text
     %span.name
-      = link_to activity_feed.user.uname, user_path(activity_feed.user.uname)
+      = link_to user_name, user_path(user_id)
     %br
       %span.date= activity_feed.created_at
       %br
-        %span.subject
-          User #{ link_to user_name, user_path(user_id) } has been update wiki #{ link_to "history", history_project_wiki_index_path(project_id) }
+        %span.subject #{ t("notifications.bodies.wiki_new_commit_notification.title", :user_name => user_name) }
   .both
 .fulltext
-  Into project #{ link_to(project_name, project_path(project_id)) }
+  = raw t("notifications.bodies.wiki_new_commit_notification.content", {:history_link => link_to("wiki", history_project_wiki_index_path(project_id)), :project_link => link_to(project_name, project_path(project_id)) })

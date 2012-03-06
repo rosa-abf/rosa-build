@@ -7,7 +7,7 @@
     %br
       %span.date= activity_feed.created_at
       %br
-        %span.subject #{ t("notifications.bodies.issue_assign_notification.title", :user_name => user_name) }
+        %span.subject= raw t("notifications.bodies.issue_assign_notification.title", :issue_link => link_to(issue_title, project_issue_path(project_id, issue_serial_id)))
   .both
 .fulltext
-  = raw t("notifications.bodies.issue_assign_notification.content", :issue_link => link_to(issue_title, project_issue_path(project_id, issue_serial_id)))
+  =# raw t("notifications.bodies.issue_assign_notification.content", :issue_link => link_to(issue_title, project_issue_path(project_id, issue_serial_id)))
