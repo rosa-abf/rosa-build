@@ -6,7 +6,7 @@
 .activity
   .top
     .image
-      =image_tag(@issue.creator.avatar(42), :alt => 'avatar') if @issue.creator
+      =image_tag(avatar_url(@issue.creator, :medium), :alt => 'avatar') if @issue.creator
     .text
       %span.name=link_to(@issue.creator.uname, user_path(@issue.creator)) if @issue.creator
       %br/

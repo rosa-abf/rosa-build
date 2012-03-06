@@ -15,7 +15,7 @@
         .both
   %td.td3
     .avatar
-      =link_to image_tag(issue.user.avatar(22), :alt => 'avatar'), user_path(issue.user) if issue.user
+      =link_to image_tag(avatar_url(issue.user), :alt => 'avatar'), user_path(issue.user) if issue.user
     %a{:href => "#{project_issue_path @project, issue}#block-list"}
       .answers
         .pic= image_tag 'answers.png'

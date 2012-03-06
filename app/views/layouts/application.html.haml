@@ -19,7 +19,7 @@
           .information
             = render 'search/form'
             .user
-              .avatar= image_tag gravatar_url(current_user.email, 30), :alt => 'avatar', :height => "30"
+              .avatar= image_tag avatar_url(current_user), :alt => 'avatar', :height => "30"
               .profile
                 %a{:href => "#"}
                   = current_user.uname

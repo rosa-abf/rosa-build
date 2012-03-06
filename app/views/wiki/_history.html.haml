@@ -11,9 +11,11 @@
           .avatar
             %a{:href => "#"}
               = link_to user_path_by_user(user) do
-                %img.mini-gravatar{:src => gravatar_url(v.author.email), :alt => "avatar: #{v.author.name.encode_to_default}"}
+                %img.mini-gravatar{:src => avatar_url(v.author), :alt => "avatar: #{v.author.name.encode_to_default}"}
                 %span.username= user.present? ? user.uname : v.author.name.encode_to_default
           .name
+            = link_to user_path_by_user(user) do
+              %span.username= user.present? ? "#{user.uname} (#{user.name})" : v.author.name.encode_to_default
           .both
         %td.td3
           %span.wiki-gray= "#{l v.committed_date.to_date, :format => :long}:"
