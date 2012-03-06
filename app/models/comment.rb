@@ -2,7 +2,7 @@
 class Comment < ActiveRecord::Base
   belongs_to :commentable, :polymorphic => true
   belongs_to :user
-  attr_accessor :project
+  belongs_to :project
 
   validates :body, :user_id, :commentable_id, :commentable_type, :presence => true
 
