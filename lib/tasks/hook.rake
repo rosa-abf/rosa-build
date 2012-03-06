@@ -10,7 +10,7 @@ namespace :hook do
       s << " > /dev/null 2>&1" if is_production
       s << "\ndone\n"
       f.write(s)
-      f.chmod(0775)
+      f.chmod(0755)
     end
 
     say "Install process.."
