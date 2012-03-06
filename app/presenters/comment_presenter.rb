@@ -50,7 +50,7 @@ class CommentPresenter < ApplicationPresenter
   end
 
   def header
-    res = link_to @user.uname, user_path(@user.uname)
+    res = link_to "#{@user.uname} (#{@user.name})", user_path(@user.uname)
     res += ' ' + t("layout.comments.has_commented")
   end
 

@@ -8,7 +8,7 @@
     .image
       =image_tag(@issue.creator.avatar(42), :alt => 'avatar') if @issue.creator
     .text
-      %span.name=link_to(@issue.creator.uname, user_path(@issue.creator)) if @issue.creator
+      %span.name=link_to("#{@issue.creator.uname} (#{@issue.creator.name})", user_path(@issue.creator)) if @issue.creator
       %br/
       %span.date=@issue.created_at.to_s(:long)
       %br/
