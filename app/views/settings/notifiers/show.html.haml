@@ -1,5 +1,20 @@
-#block-signup.block
-  %h2= title t("layout.settings.notifiers.edit_header")
-  .content
-    = form_for @notifier, :url => user_settings_notifier_path(@user), :html => { :class => :form } do |f|
-      = render :partial => "form", :locals => {:f => f}
+%p
+  = t("layout.settings.notifiers.notice_header", :email => @user.email)
+  %br
+    = link_to t("layout.settings.notifiers.change_email_link"), edit_user_path(@user)
+    %br
+      %br/
+
+= form_for @notifier, :url => user_settings_notifier_path(@user), :html => { :class => :form } do |f|
+  = render :partial => "form", :locals => {:f => f}
+
+:javascript
+  $('article .right').addClass('bigpadding');
+
+- content_for :sidebar, render('users/sidebar')
+
+-##block-signup.block
+-#  %h2= title t("layout.settings.notifiers.edit_header")
+-#  .content
+-#    = form_for @notifier, :url => user_settings_notifier_path(@user), :html => { :class => :form } do |f|
+-#      = render :partial => "form", :locals => {:f => f}

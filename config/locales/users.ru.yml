@@ -1,0 +1,47 @@
+ru:
+  layout:
+    users:
+      list: Список
+      new: Создать
+      edit: Редактировать
+      new_header: Новый пользователь
+      edit_header: Редактировать
+      list_header: Пользователи
+      groups: Группы
+      show: Пользователь
+      back_to_the_list: ⇐ К списку пользователей
+      confirm_delete: Вы уверены, что хотите удалить этого пользователя?
+      own_projects: Мои проекты
+      part_projects: Участвую в проектах
+      filter_header: Фильтр
+      public_projects_list: Список публичных проектов
+      public_data_edit_warning: Данные доступны для публичного профиля. Если вы не хотите показывать какие-либо данные, просто не заполняйте их.
+      user_private_settings: Настройки
+      settings_notifier: Центр подписки
+      delete_header: Удалить аккаунт
+      delete_warning: Внимание! Удаленный аккаунт восстановлению не подлежит.
+      private_settings_header: Изменение пароля
+      avatar_notice: При отсутствии загруженной аватарки будет использована Ваша аватарка на сервисе gravatar.
+
+  activerecord:
+    attributes:
+      user:
+        name: Имя
+        login: Псевдоним или Email
+        email: Email
+        uname: Никнейм
+        ssh_key: SSH ключ
+        current_password: Текущий пароль
+        role: Роль
+        created_at: Создан
+        updated_at: Обновлен
+        role: Роль в системе
+        language: Язык
+        password: Пароль
+        password_confirm: Повторите пароль
+        professional_experience: Профессиональный опыт
+        site: Вэб-сайт
+        location: Местонахождение
+        company: Компания
+        avatar: Аватар
+
