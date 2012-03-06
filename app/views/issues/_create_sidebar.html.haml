@@ -14,7 +14,7 @@
     - if @issue.persisted? && @issue.user
       .bordered.nopadding
         .people.nopointer
-          .avatar=image_tag(@issue.user.avatar(25), :alt => 'avatar')
+          .avatar= image_tag avatar_url(@issue.user), :alt => 'avatar'
           .name="#{@issue.user.uname} (#{@issue.user.name})"
           =hidden_field_tag "user-0", @issue.user.id, :name => 'user_id'
           .both

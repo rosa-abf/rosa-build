@@ -40,7 +40,7 @@ class UsersController < ApplicationController
   end
 
   def update
-    if params[:user][:role] && current_user.admin? 
+    if params[:user][:role] && current_user.admin?
       @user.role = params[:user][:role]
       params[:user].delete(:role)
     end  

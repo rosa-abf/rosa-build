@@ -30,7 +30,7 @@
         .lefter= t("layout.build_lists.ownership.index")
       .both
       %br
-      = f.submit t("layout.search")
+      = f.submit t("layout.search.header")
     .block
       %h3.small= t("activerecord.attributes.build_list.status")
       .lineForm.aside= f.select :status, BuildList::STATUSES.collect{|status| [BuildList.human_status(status), status]}, {:include_blank => true, :selected => @filter.status}, {:class => 'sel80 aside', :id => 'status', :tabindex => 2}
@@ -52,4 +52,4 @@
       = f.text_field :bs_id
       %br
       %br
-      = f.submit t("layout.search")
+      = f.submit t("layout.search.header")

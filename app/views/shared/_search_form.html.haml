@@ -2,5 +2,4 @@
   .group
     = label_tag :query, t("layout.search_by_name"), :class => :label
     = text_field_tag :query
-    %button.search{:type => "submit"}
-      = t("layout.search")
+    %button.search{:type => "submit"}= t("layout.search.header")
