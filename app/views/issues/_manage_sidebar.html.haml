@@ -30,14 +30,26 @@
 
   .block
     %h3=t('layout.issues.labels')
-    - if @issue.new_record?
-      =form_tag search_labels_project_issues_path(@project), :id => 'search_labels', :method => :get do
+    - if @issue.persisted?
+      - if can_manage
+        =form_for :issue, :url => [@project, @issue], :method => :put, :html => { :class => 'edit_labels issue'} do |f|
+          .current_labels
+            - (@issue.labels || []).each do |label|
+              .label.selected{:id => "flag#{label.id}"}
+                .flag{:style => "display:none; background: ##{label.color}"}
+                .labeltext.selected{:style => "background: ##{label.color}"}=label.name
+                =hidden_field_tag "label-#{label.id}", label.id, :name => "issue[labelings_attributes][#{label.id}][label_id]"
+                .both
+      - else
+        - (@issue.labels || []).each do |label|
+          .label.nopointer
+            .labeltext.selected{:style => "background: ##{label.color};"}
+              =label.name
+            .both
+      =link_to(t('layout.issues.label_manage'), '#', :class => "button tmargin10 manage_labels") if can_manage
+    - if can_manage
+      =form_tag search_labels_project_issues_path(@project), :id => 'search_labels', :method => :get, :style => @issue.persisted? ? 'display:none' : '' do
         =tracker_search_field(:search_labels, t('layout.issues.search_labels'))
       #manage_issue_labels_list
         =render 'issues/search_labels'
-    - else
-      - (@issue.labels || []).each_with_index do |label|
-        .label.selected.nopointer
-          .labeltext.selected{:style => "background: ##{label.color};"}
-            =label.name
-          .both
+      =link_to(t('layout.issues.done'), '#', :class => "button tmargin10 update_labels", :style => 'display:none') if can_manage

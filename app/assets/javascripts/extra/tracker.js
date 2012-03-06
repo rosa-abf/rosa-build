@@ -166,23 +166,28 @@ $(document).ready(function() {
     var style = $(this).find('.flag').attr('style');
     $(this).find('.flag').fadeOut(0);
     $(this).find('.labeltext.selected').attr('style', style);
-    var form = $('.form.issue');
-    form.find('#flag-span').fadeOut(0);
-    form.find('#issue_labels').append($(this).clone());
+    var form_new = $('form.form.issue');
+    var clone = $(this).clone();
+    form_new.find('#flag-span').fadeOut(0);
+    form_new.find('#issue_labels').append(clone);
+    var labels = $('#active_labels');
+    labels.find('#'+$(this).attr('id')).remove();
+    labels.append(clone);
   });
 
   $('.remove_label.label.selected').live('click', function() {
+    var id = $(this).attr('id');
+    $('.current_labels, #active_labels').find('#'+id+'.label.selected.remove_label').remove();
     var form = $('.form.issue');
     if(form.find('.remove_label.label.selected').length == 1) {
       form.find('#flag-span').fadeIn(0);
     }
-    var str = '.label.remove_label'+'#'+$(this).attr('id');
+    var str = '.label.remove_label'+'#'+id;
     form.find(str).remove();
     var label = $(str);
     label.removeClass('selected').addClass('add_label').removeClass('remove_label');
     label.find('.labeltext.selected').attr('style', '').removeClass('selected');
     label.find('.flag').fadeIn(0);
-
   });
 
   $('.issue_status.switch_issue_status').live('click', function () {
@@ -240,8 +245,14 @@ $(document).ready(function() {
     $(this).fadeOut(0);
   });
 
+  $('.button.manage_labels').live('click', function() {
+    $('form#search_labels, .button.update_labels').fadeIn(0);
+    //~ $('.current_labels').
+    $(this).fadeOut(0);
+  });
+
   $('.button.update_executor').live('click', function() {
-    var form = $('.edit_form.issue');
+    var form = $('form.edit_form.issue');
     $.ajax({
       type: 'POST',
       url: form.attr("action"),
@@ -251,6 +262,24 @@ $(document).ready(function() {
                       $('form#search_user, .button.update_executor').fadeOut(0);
                       $('.button.manage_executor').fadeIn(0);
                       $('#manage_issue_users_list').html('');
+                    },
+      error: function(data){
+                   alert('error'); // TODO remove
+                }
+     });
+    return false;
+  });
+
+  $('.button.update_labels').live('click', function() {
+    var form = $('form.edit_labels.issue');
+    $.ajax({
+      type: 'POST',
+      url: form.attr("action"),
+      data: form.serialize(),
+      success: function(data){
+                      $('form#search_labels, .button.update_labels').fadeOut(0);
+                      $('.button.manage_labels').fadeIn(0);
+                      $('#manage_issue_labels_list').html('');
                     },
       error: function(data){
                    alert('error'); // TODO remove
