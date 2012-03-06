@@ -327,3 +327,109 @@ table.tablesorter tr td.centered {
 header div.user div.avatar img {
     border: 1px solid #DDDDDD;
 }
+
+div.blame_data {
+    font-size: 80%;
+}
+
+div.blame_data tr.firstrow {
+    border-top: 1px solid #DDDDDD;
+}
+
+
+div.blame_data tr td.commit_info {
+    padding: 0.5em !important;
+    vertical-align: top;
+    width: 210px;
+    border-right: 1px solid #DDDDDD;
+}
+
+div.blame_data tr td.commit_info .date {
+    display: block;
+    float: left;
+    color: #666666;
+}
+
+div.blame_data tr td.commit_info .message {
+    width: 210px;
+    display: block;
+    float: right;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: 12px;
+}
+
+div.blame_data tr td.lines {
+    padding: 0 0.5em !important;
+    width: 1%;
+    font-size: 12px;
+    line-height: 1.4em;
+}
+
+div.blame_data tr td.code {
+    padding: 0 10px !important;
+    font-size: 12px;
+}
+
+div.blame_data tr td.code pre {
+    padding: 0;
+    margin: 0;
+}
+
+div#gollum-searchbar-fauxtext {
+    padding-left: 10px;
+}
+
+div#gollum-searchbar-fauxtext input#search-query {
+    display: inline-block;
+    float: left;
+    width: 145px;
+    border: 1px solid #D3D3D3;
+    border-bottom-left-radius: 3px;
+    border-top-left-radius: 3px;
+    border-bottom-right-radius: 0;
+    border-top-right-radius: 0;
+    font-size: 12px;
+    height: 24px;
+    margin: 0;
+    padding: 0 4px;
+    vertical-align: middle;
+    white-space: nowrap;
+}
+
+a#search-submit {
+    -moz-box-sizing: content-box;
+    border-left: medium none;
+    border-radius: 0 3px 3px 0;
+    height: 24px;
+    margin-left: 0;
+    padding: 0;
+    position: relative;
+    vertical-align: middle;
+    display: inline-block;
+    float: left;
+}
+
+a#search-submit span {
+    background: image-url("gollum/icon-sprite.png") no-repeat scroll 50% 4px transparent;
+    background-position: -430px -2px;
+    height: 24px;
+    text-indent: -9999px;
+    width: 16px;
+    display: block;
+    height: 21px;
+    line-height: 21px;
+    padding: 0 9px 0 7px;
+}
+
+a#search-submit:hover span {
+    background-position: -430px -29px;
+}
+
+table.wiki .history .td2 .name span.username {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    width: 164px;
+}
