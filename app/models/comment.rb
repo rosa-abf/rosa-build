@@ -8,10 +8,11 @@ class Comment < ActiveRecord::Base
 
   default_scope order('created_at')
 
-  # FIXME
   after_create :subscribe_on_reply, :unless => lambda {|c| c.commit_comment?}
-  after_create :invoke_helper, :if => lambda {|c| c.commit_comment?}
+  after_create :helper, :if => lambda {|c| c.commit_comment?}
   after_create :subscribe_users
+
+  attr_accessible :body, :commentable_id, :commentable_type
 
   def helper
     class_eval { def commentable; project.git_repository.commit(commentable_id.to_s(16)); end } if commit_comment?
@@ -33,10 +34,6 @@ class Comment < ActiveRecord::Base
 
   def subscribe_on_reply
     self.commentable.subscribes.create(:user_id => self.user_id) if !self.commentable.subscribes.exists?(:user_id => self.user_id)
-  end
-
-  def invoke_helper
-    self.helper
   end
 
   def subscribe_users
