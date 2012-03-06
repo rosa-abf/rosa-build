@@ -1,0 +1,109 @@
+en:
+  activerecord:
+    models:
+      build_list: Build list
+      build_list_item: Build list item
+    attributes:
+      build_list:
+        bs_id: Id
+        name: Name
+        container_path: Container path
+        status: Status
+        project_id: Project
+        project: Project
+        arch_id: Architecture
+        arch: Architecture
+        is_circle: Recurrent
+        notified_at: Notified at
+        additional_repos: Additional repository
+        include_repos: Includes repository
+        updated_at: Updated
+        created_at: Created
+        pl: Packet list repository
+        pl_id: Packet list repository
+        bpl: Platform
+        bpl_id: Platform
+        update_type: Update type
+        build_requires: Dependable build requires
+        auto_publish: Automated publising
+        project_version: Version
+        user: User
+        preferences: Preferences
+
+      build_list/item:
+        name: Name
+        level: Level
+        status: Status
+        version: Version
+        build_list: Build list
+
+  layout:
+    build_lists:
+      filter_header: Filter
+      current: Curent
+      created_at_start: "Build start from:"
+      created_at_end: "Build start to:"
+      notified_at_start: "Last update time by BS from:"
+      notified_at_end: " Last update time by BS to:"
+      bs_id_search: 'Id search'
+      project_name_search: Project name search
+      bs_id_not_set: Id isn’t set
+      items_header: Build items
+      no_items_data: No data
+      show: Show
+      cancel_success: 'Build canceled'
+      cancel_fail: 'Errors on build cancelling!'
+      publish_success: 'Build on publish queue'
+      publish_fail: 'Errors on publish queue!'
+      container_published: 'Container in a repository'
+      action: Action
+      new_header: New build
+
+      ownership:
+        header: Build list ownership
+        owned: My
+        related: Related
+        index: All
+
+      build_server_status:
+        header: Build server status
+        client_count: Clients count
+        count_new_task: New task count
+        count_build_task: Build task count
+
+      items:
+        statuses:
+          build_started: Build started
+          build_error: Build error
+          dependencies_error: Dependences not found
+          success: Build complete
+          unknown: Build waiting
+          git_error: Git error
+
+      statuses:
+        build_error: Build error
+        build_published: Build published
+        build_publish: Build publishing
+        failed_publish: Publishing error
+        dependencies_fail: Dependences not found
+        waiting_for_response: Waiting for response
+        build_pending: Build pending
+        dependency_test_failed: Dependency test failed
+        binary_test_failed: Binary test failed
+        build_canceled: Build canceled
+        success: Build complete
+        build_started: Build started
+        platform_not_found: Platform not found
+        platform_pending: Platforn pending
+        project_not_found: Project not found
+        project_version_not_found: Project version not found
+
+  flash:
+    build_list:
+      saved: Project version '%{project_version}' build list, platform '%{bpl}', architecture '%{arch}' creation success
+      save_error: Project version '%{project_version}' build list, platform '%{bpl}', architecture '%{arch}' creation error
+      no_project_version_selected: Select any version of project
+      no_project_version_found: Project version '%{project_version}' not found
+      no_arch_or_platform_selected: At least one of architecture of platform must selected
+      wrong_platform: For the main repository its mail platform can be chosen only!
+      can_not_published: Build publishing with status "Build" available only

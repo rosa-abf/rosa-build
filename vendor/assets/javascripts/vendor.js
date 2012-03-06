@@ -2,5 +2,10 @@
 //= require gollum/gollum.dialog
 //= require gollum/gollum.placeholder
 //= require gollum/editor/gollum.editor
-//= require hl/shCore
-//= require_tree .
+// require hl/shCore
+//= require codemirror
+//= require codemirror/runmode
+//= require_tree ./codemirror/modes
+// require_tree .
+
+

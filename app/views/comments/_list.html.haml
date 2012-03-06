@@ -1,5 +1,10 @@
 %a{ :name => "comments" }
-.block#block-list
+.hr
+%h3= t("layout.comments.comments_header")
+- list.each do |comment|
+  - CommentPresenter.present(comment, :project => project, :commentable => commentable) do |presenter|
+    = render :partial => 'shared/feed_message', :locals => {:presenter => presenter}
+-#.block#block-list
   .content
     %h2.title
       = t("layout.issues.comments_header")
@@ -20,9 +25,10 @@
                 - edit_path = edit_project_commit_comment_path(project, commentable, comment)
                 - delete_path = project_commit_comment_path(project, commentable, comment)
               = link_to t("layout.edit"), edit_path if can? :update, comment
-              = link_to image_tag("web-app-theme/icons/cross.png", :alt => t("layout.delete")) + " " + t("layout.delete"), delete_path, :method => "delete", :class => "button", :confirm => t("layout.comments.confirm_delete") if can? :delete, comment
+              =# link_to image_tag("x.png", :alt => t("layout.delete")) + " " + t("layout.delete"), delete_path, :method => "delete", :class => "button", :confirm => t("layout.comments.confirm_delete") if can? :delete, comment
+              = link_to t("layout.delete"), delete_path, :method => "delete", :confirm => t("layout.comments.confirm_delete") if can? :delete, comment
 
-.block
+-#.block
   .content
     %h2.title
       = t("layout.comments.new_header")

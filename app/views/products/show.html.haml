@@ -26,11 +26,13 @@
           = t("layout.#{@product.system_wide?}_")
         
       .wat-cf
-        = link_to image_tag("web-app-theme/icons/application_edit.png", :alt => t("layout.edit")) + " " + t("layout.edit"), edit_platform_product_path(@platform, @product), :class => "button"
-        = link_to image_tag("web-app-theme/icons/cross.png", :alt => t("layout.delete")) + " " + t("layout.delete"), platform_product_path(@platform, @product), :method => "delete", :class => "button", :confirm => t("layout.products.confirm_delete")
+        - if can? :update, @product
+          = link_to image_tag("code.png", :alt => t("layout.edit")) + " " + t("layout.edit"), edit_platform_product_path(@platform, @product), :class => "button"
+        - if can? :destroy, @product
+          = link_to image_tag("x.png", :alt => t("layout.delete")) + " " + t("layout.delete"), platform_product_path(@platform, @product), :method => "delete", :class => "button", :confirm => t("layout.products.confirm_delete")
         - if @product.can_clone?
-          = link_to t("layout.products.clone"), clone_platform_product_path(@platform, @product), :class => "button"
-        - if @product.can_build?
+          =# link_to t("layout.products.clone"), clone_platform_product_path(@platform, @product), :class => "button"
+        - if can?(:create, @product => ProductBuildList)
           = link_to t("layout.products.build"), platform_product_product_build_lists_path(@platform, @product), :class => "button", :method => 'post', :confirm => t("layout.confirm")
 
 .block
@@ -40,7 +42,9 @@
         %tr
           %th.first= t("activerecord.attributes.product_build_list.id")
           %th= t("activerecord.attributes.product_build_list.product")
-          %th= t("activerecord.attributes.product_build_list.status")
+          %th= t("activerecord.attributes.product_build_list.container_path")
+          %th= t("activerecord.attributes.product_build_list.status")  
+          %th= t("layout.product_build_lists.action")
           %th.last= t("activerecord.attributes.product_build_list.notified_at")
         = render @product.product_build_lists.default_order
       / = will_paginate build_lists

@@ -5,7 +5,7 @@ class ProjectsController < ApplicationController
   belongs_to :user, :group, :polymorphic => true, :optional => true
 
   before_filter :authenticate_user!, :except => :auto_build
-  before_filter :find_project, :only => [:show, :edit, :update, :destroy, :fork]
+  before_filter :find_project, :only => [:show, :edit, :update, :destroy, :fork, :sections]
   before_filter :get_paths, :only => [:new, :create, :edit, :update]
 
   load_and_authorize_resource
@@ -29,10 +29,13 @@ class ProjectsController < ApplicationController
 
   def show
     @current_build_lists = @project.build_lists.current.recent.paginate :page => params[:page]
+    @branch = @project.branch(params[:treeish])
+    @commit = @branch.present? ? @branch.commit : @git_repository.log(@treeish).first
   end
 
   def new
     @project = Project.new
+    @who_owns = :me
   end
 
   def edit
@@ -40,15 +43,16 @@ class ProjectsController < ApplicationController
 
   def create
     @project = Project.new params[:project]
-    @project.owner = get_owner
-#    puts @project.owner.inspect
+    #@project.owner = get_owner
+    @project.owner = choose_owner
+    @who_owns = (@project.owner_type == 'User' ? :me : :group)
 
     if @project.save
       flash[:notice] = t('flash.project.saved') 
       redirect_to @project
     else
       flash[:error] = t('flash.project.save_error')
-      flash[:warning] = @project.errors[:base]
+      flash[:warning] = @project.errors.full_messages.join('. ')
       render :action => :new
     end
   end
@@ -94,17 +98,29 @@ class ProjectsController < ApplicationController
     render :nothing => true
   end
 
+  def sections
+    if request.post?
+      if @project.update_attributes(params[:project])
+        flash[:notice] = t('flash.project.saved')
+      else
+        @project.save
+        flash[:error] = t('flash.project.save_error')
+      end
+      render :action => :sections
+    end
+  end
+
   protected
 
     def get_paths
       if params[:user_id]
         @user = User.find params[:user_id]
         @projects_path = user_path(@user) # user_projects_path @user
-        @new_project_path = new_user_project_path @user
+        @new_project_path = new_project_path
       elsif params[:group_id]
         @group = Group.find params[:group_id]
         @projects_path = group_path(@group) # group_projects_path @group
-        @new_projects_path = new_group_project_path @group
+        @new_projects_path = new_project_path
       else
         @projects_path = projects_path
         @new_projects_path = new_project_path
@@ -113,5 +129,13 @@ class ProjectsController < ApplicationController
 
     def find_project
       @project = Project.find params[:id]
+    end
+
+    def choose_owner
+      if params[:who_owns] == 'group'
+        Group.find(params[:owner_id])
+      else
+        current_user
+      end
     end
 end

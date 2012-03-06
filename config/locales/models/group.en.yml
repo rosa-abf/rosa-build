@@ -1,0 +1,53 @@
+en:
+  layout:
+    groups:
+      list: List
+      new: Create
+      edit: Edit
+      members: Members
+      new_header: New group
+      edit_header: Edit
+      list_header: Groups
+      show: Group
+      back_to_the_list: ⇐ List of groups
+      confirm_delete: Are you sure to remove this group?
+      edit_members: Edit members
+      group: Group
+      description: Descripton
+      leave_group: Leave group
+      projects_list: Projects list
+      public_profile: Public profile
+      delete_warning: Attention! Deleted group can not be restored!
+
+    members:
+      back_to_group: Back to group
+      edit: Edit list
+      roles: Roles
+      add_member: Add member
+      input_username: Username
+
+  flash:
+    group:
+      saved: Group saved
+      save_error: Group saves error
+      destroyed: Group deleted
+      user_uname_exists: User already exists
+
+    members:
+      successfully_changed: Members list successfully changed
+      error_in_changing: Members list changing error
+      successfully_added: Member successfully added
+      error_in_adding: Member adding error
+      already_added: User already added
+
+  activerecord:
+    models:
+      group: Group
+    attributes:
+      group:
+        name: Name
+        uname: Nickname
+        owner: Owner
+        created_at: Created
+        updated_at: Updated
+        description: Description

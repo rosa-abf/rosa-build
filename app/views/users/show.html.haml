@@ -33,9 +33,9 @@
         = @user.created_at
       .wat-cf
         - if can? :edit, @user
-          = link_to image_tag("web-app-theme/icons/application_edit.png", :alt => t("layout.edit")) + " " + t("layout.edit"), edit_user_path(@user), :class => "button"
+          = link_to image_tag("code.png", :alt => t("layout.edit")) + " " + t("layout.edit"), edit_user_path(@user), :class => "button"
         - if can? :destroy, @user
-          = link_to image_tag("web-app-theme/icons/cross.png", :alt => t("layout.delete")) + " " + t("layout.delete"), user_path(@user), :method => "delete", :class => "button", :confirm => t("layout.users.confirm_delete")
+          = link_to image_tag("x.png", :alt => t("layout.delete")) + " " + t("layout.delete"), user_path(@user), :method => "delete", :class => "button", :confirm => t("layout.users.confirm_delete")
 
 .block
   .secondary-navigation
@@ -71,7 +71,7 @@
   .secondary-navigation
     %ul.wat-cf
       %li.first.active= link_to t("layout.projects.list"), projects_path
-      %li= link_to t("layout.projects.new"), new_user_project_path(@user)
+      %li= link_to t("layout.projects.new"), new_project_path
   .content
     %h2.title
       = t("layout.projects.list_header")

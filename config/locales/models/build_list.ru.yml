@@ -1,0 +1,109 @@
+ru:
+  activerecord:
+    models:
+      build_list: Сборочный лист
+      build_list_item: Элемент сборочного листа
+    attributes:
+      build_list:
+        bs_id: Id
+        name: Название
+        container_path: Путь до контейнера
+        status: Статус
+        project_id: Проект
+        project: Проект
+        arch_id: Архитектура
+        arch: Архитектура
+        is_circle: Циклическая сборка
+        notified_at: Информация получена
+        additional_repos: Дополнительные репозитории
+        include_repos: Подключаемые репозитории
+        updated_at: Обновлен
+        created_at: Создан
+        pl: Репозиторий для сохранения пакетов
+        pl_id: Репозиторий для сохранения пакетов
+        bpl: Платформа
+        bpl_id: Платформа
+        update_type: Критичность обновления
+        build_requires: Пересборка с зависимостями
+        auto_publish: Автоматическая публикация
+        project_version: Версия
+        user: Пользователь
+        preferences: Настройки
+
+      build_list/item:
+        name: Название
+        level: Уровень
+        status: Статус
+        version: Версия
+        build_list: Сборочный лист
+
+  layout:
+    build_lists:
+      filter_header: Фильтр
+      current: Текущие
+      created_at_start: "Время постановки на сборку с:"
+      created_at_end: "Время постановки на сборку по:"
+      notified_at_start: "Время последнего обновления от BS с:"
+      notified_at_end: "Время последнего обновления от BS по:"
+      bs_id_search: 'Поиск по Id'
+      project_name_search: Поиск по названию проекта
+      bs_id_not_set: Id еще не присвоен
+      items_header: Элементы сборки
+      no_items_data: Данных нет
+      show: Просмотр
+      cancel_success: 'Сборка отменена.'
+      cancel_fail: 'При отмене сборки произошла ошибка!'
+      publish_success: 'Сборка поставлена в очередь на публикацию.'
+      publish_fail: 'При публикации сборки произошла ошибка!'
+      container_published: 'Контейнер размещен в репозитории'
+      action: Действие
+      new_header: Новая сборка
+
+      ownership:
+        header: Принадлежность заданий
+        owned: Мне
+        related: Связанные со мной
+        index: Все
+
+      build_server_status:
+        header: Статус сборочного сервера
+        client_count: Число клиентов
+        count_new_task: Число заданий в очереди
+        count_build_task: Число выполняемых заданий
+
+      items:
+        statuses:
+          build_started: собирается
+          build_error: ошибка сборки
+          dependencies_error: зависимости не найдены
+          success: собран
+          unknown: ожидает сборки
+          git_error: проблема с гит
+
+      statuses:
+        build_error: ошибка сборки
+        build_published: опубликован
+        build_publish: публикуется
+        failed_publish: ошибка публикации
+        dependencies_fail: зависимости не найдены
+        waiting_for_response: ожидает ответа
+        build_pending: ожидает сборку
+        dependency_test_failed: тестирование зависимостей не пройдено
+        binary_test_failed: тестирование бинарной совместимости не пройдено
+        build_canceled: сборка отменена
+        success: собран
+        build_started: собирается
+        platform_not_found: платформа не найдена
+        platform_pending: платформа в процессе создания
+        project_not_found: проект не найден
+        project_version_not_found: версия не найдена
+
+  flash:
+    build_list:
+      saved: Билд лист для версии '%{project_version}', платформы '%{bpl}' и архитектуры '%{arch}' создан успешно
+      save_error: Не удалось сохранить билд лист для версии '%{project_version}', платформы '%{bpl}' и архитектуры '%{arch}'
+      no_project_version_selected: Выберите какую-нибудь версию
+      no_project_version_found: Выбранная версия '%{project_version}' не найдена
+      no_arch_or_platform_selected: Выберите хотя бы одну ахритектуру и платформу
+      wrong_platform: Для основного репозитория (main) может быть выбран только его же основная платформа!
+      can_not_published: Опубликовать сборку можно только со статусом "Собран"

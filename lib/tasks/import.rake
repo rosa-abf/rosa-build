@@ -47,7 +47,7 @@ namespace :import do
       source = "rsync://mirror.yandex.ru/mandriva/#{release}/SRPMS/#{repository}/"
       destination = ENV['DESTINATION'] || File.join(APP_CONFIG['root_path'], 'mirror.yandex.ru', 'mandriva', release, 'SRPMS', repository)
       say "START rsync projects (*.src.rpm) from '#{source}' to '#{destination}'"
-      if system "rsync -rtv --delete --exclude='backports/*' --exclude='testing/*' #{source} #{destination}" # --include='*.src.rpm'
+      if system "rsync -rtv --exclude='backports/*' --exclude='testing/*' #{source} #{destination}" # --delete --include='*.src.rpm'
         say 'Rsync ok!'
       else
         say 'Rsync failed!'

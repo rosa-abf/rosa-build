@@ -1,0 +1,41 @@
+%table.table.blame
+  - index = 1
+  - @blame.each do |elem|
+    %tr.firstrow
+      %td.commit_info{ :rowspan => elem[1].length, :nowrap => 'nowrap' }
+        %code
+          #{link_to shortest_hash_id(elem[0].id), commit_path(@project, elem[0].id)} #{t('layout.by')}
+          - author = elem[0].author
+          - committer = elem[0].committer
+          = commit_author_link(author)
+          - if author.email != committer.email
+            (#{commit_author_link(committer)})
+        %br
+        %span.date= commit_date(elem[0].committed_date)
+        %span.message{:title => elem[0].message.encode_to_default}= short_commit_message(elem[0].message)
+
+      %td.lines
+        = index
+        - index += 1
+
+      %td.code.cm-s-default
+        %pre
+          %div= elem[1].first.encode_to_default
+
+      - elem[1][1..-1].each do |line|
+        %tr
+          %td.lines
+            = index
+            - index += 1
+          %td.code.cm-s-default
+            %pre
+              %div= line.encode_to_default
+
+:javascript
+  $(document).ready(function() {
+    var $code_rows = $('.code.cm-s-default pre div');
+    var mode = "#{File.extname(@blob.name) == '.spec' ? 'text/x-rpm-spec' : @blob.mime_type}"
+    $code_rows.each(function() {
+      CodeMirror.runMode($(this).text().replace(/&amp;/gi, '&'), mode, this.parentElement.parentElement);
+    });
+  });

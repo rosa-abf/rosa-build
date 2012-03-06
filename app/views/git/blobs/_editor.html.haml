@@ -1,4 +1,24 @@
-#gollum-editor.edit{:'data-escaped-name' => @path.encode_to_default}
+%h3= t("layout.projects.files_in_project")
+.files
+  .l
+    = render :partial => 'git/shared/whereami'
+.both
+
+= form_tag blob_file_path, :name => 'blob-editor', :method => :put do
+  .file
+    = text_area_tag :content, @blob.data.encode_to_default, :id => 'code'
+
+  .both
+  = t("layout.enter_commit_message")
+  = text_area_tag :message, "Updated #{@blob.name.encode_to_default}", :class => 'commit-message'
+
+  %br
+  %br
+  = submit_tag t("layout.save"), :title => t("layout.save")
+  = t("layout.or")
+  = link_to t("layout.cancel"), blob_file_path, :class => 'button'
+
+-##gollum-editor.edit{:'data-escaped-name' => @path.encode_to_default}
   = form_tag blob_file_path, :name => 'blob-editor', :method => :put do
     %fieldset#gollum-editor-fields
 
@@ -16,11 +36,11 @@
 
 :javascript
   $(function() {
-    $.BlobEditor();
+    var editor = CodeMirror.fromTextArea(document.getElementById('code'), {lineNumbers: true, mode: '#{@blob.mime_type}', theme: 'eclipse'});
   });
 
-- content_for :javascripts do
-  = javascript_include_tag 'gollum/gollum.placeholder.js', 'blob.editor.js'
-
-- content_for :stylesheets do
-  = stylesheet_link_tag 'gollum/editor.css'
+/ - content_for :javascripts do
+/   = javascript_include_tag 'gollum/gollum.placeholder.js', 'blob.editor.js'
+/ 
+/ - content_for :stylesheets do
+/   = stylesheet_link_tag 'gollum/editor.css'

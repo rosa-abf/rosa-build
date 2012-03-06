@@ -1,0 +1,19 @@
+.activity
+  .top
+    .image
+      %img{:alt => "avatar", :src => presenter.image}
+    .text.imaged
+      %span.name= presenter.header
+      %br/
+      %span.date= presenter.date
+      %br/
+      %span.subject
+        = presenter.caption
+      - if presenter.expandable? and presenter.content?
+        %span.data-expander.collapsed{:id => "expand#{item_no}"} &nbsp;
+        / = image_tag 'expand-gray.png', :class => 'activity-full', :id => 'expand1', :onclick => "showActivity(4)"
+    .both
+    - if presenter.content?
+      .fulltext{:class => presenter.expandable? ? "hidden" : '',
+                :id    => presenter.expandable? ? "content-expand#{item_no}" : ''}
+        = presenter.content

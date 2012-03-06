@@ -14,7 +14,7 @@ class Git::BaseController < ApplicationController
 
   protected
     def find_project
-      @project = Project.find(params[:project_id])
+      @project = Project.find(params[:project_id] || params[:id])
     end
 
     def find_git_repository
@@ -30,7 +30,7 @@ class Git::BaseController < ApplicationController
     end
 
     def set_treeish
-      @treeish = params[:treeish].present? ? params[:treeish] : "master"
+      @treeish = params[:treeish].present? ? params[:treeish] : @project.default_branch
     end
 
     def set_current_tag

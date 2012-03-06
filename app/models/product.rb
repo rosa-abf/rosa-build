@@ -10,7 +10,7 @@ class Product < ActiveRecord::Base
 
   has_attached_file :tar
 
-  validates_attachment_content_type :tar, :content_type => ["application/gnutar", "application/x-compressed", "application/x-gzip", "application/x-bzip", "application/x-bzip2", "application/x-tar"], :message => I18n.t('layout.invalid_content_type')
+  validates_attachment_content_type :tar, :content_type => ["application/gnutar", "application/x-compressed", "application/x-gzip", "application/x-bzip", "application/x-bzip2", "application/x-tar", "application/octet-stream"], :message => I18n.t('layout.invalid_content_type')
   validates :name, :presence => true, :uniqueness => {:scope => :platform_id}
 
   scope :recent, order("name ASC")
@@ -59,9 +59,10 @@ class Product < ActiveRecord::Base
       EOF
   end
 
-  def full_clone(attrs) # owner
+  def full_clone(attrs = {})
     clone.tap do |c| # dup
-      c.attributes = attrs
+      c.platform_id = nil
+      attrs.each {|k,v| c.send("#{k}=", v)}
       c.updated_at = nil; c.created_at = nil # :id = nil
     end
   end

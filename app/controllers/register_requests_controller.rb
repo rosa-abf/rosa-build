@@ -5,7 +5,7 @@ class RegisterRequestsController < ApplicationController
   before_filter :find_register_request, :only => [:approve, :reject]
 
   def index
-    @register_requests = @register_requests.unprocessed.paginate(:page => params[:page])
+    @register_requests = @register_requests.send((params[:scope] || 'unprocessed').to_sym).paginate(:page => params[:page])
   end
 
   def new

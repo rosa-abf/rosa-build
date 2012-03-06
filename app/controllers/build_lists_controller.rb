@@ -1,7 +1,7 @@
 # -*- encoding : utf-8 -*-
 class BuildListsController < ApplicationController
   CALLBACK_ACTIONS = [:publish_build, :status_build, :pre_build, :post_build, :circle_build, :new_bbdt]
-  NESTED_ACTIONS = [:index, :new, :create]
+  NESTED_ACTIONS = [:search, :index, :new, :create]
 
   before_filter :authenticate_user!, :except => CALLBACK_ACTIONS
   before_filter :authenticate_build_service!, :only => CALLBACK_ACTIONS
@@ -13,30 +13,23 @@ class BuildListsController < ApplicationController
   load_and_authorize_resource :build_list, :through => :project, :only => NESTED_ACTIONS, :shallow => true
   load_and_authorize_resource :except => CALLBACK_ACTIONS.concat(NESTED_ACTIONS)
 
+  def search
+    new_params = {:filter => {}}
+    params[:filter].each do |k,v|
+      new_params[:filter][k] = v unless v.empty?
+    end
+    redirect_to @project ? project_build_lists_path(@project, new_params) : build_lists_path(new_params)
+  end
+
   def index
-    if request.post?
-      new_params = {:filter => {}}
-      params[:filter].each do |k,v|
-        new_params[:filter][k] = v unless v.empty?
-      end
+    @action_url = @project ? search_project_build_lists_path(@project) : search_build_lists_path
+    @filter = BuildList::Filter.new(@project, current_user, params[:filter] || {})
+    @build_lists = @filter.find.recent.paginate :page => params[:page]
 
-      redirect_to build_lists_path(new_params)
-    else
-      filter_params = params[:filter] || {}
-      if @project
-        @action_url = project_build_lists_path(@project)
-      else
-        @action_url = build_lists_path
-      end
-
-      @filter = BuildList::Filter.new(@project, filter_params)
-      @build_lists = @filter.find.accessible_by(current_ability).recent.paginate :page => params[:page]
-
-      @build_server_status = begin
-        BuildServer.get_status
-      rescue Exception # Timeout::Error
-        {}
-      end
+    @build_server_status = begin
+      BuildServer.get_status
+    rescue Exception # Timeout::Error
+      {}
     end
   end
 

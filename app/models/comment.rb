@@ -6,9 +6,12 @@ class Comment < ActiveRecord::Base
 
   validates :body, :user_id, :commentable_id, :commentable_type, :presence => true
 
-  after_create :invoke_helper, :if => "commentable_type == 'Grit::Commit'"
+  default_scope order('created_at')
+
+  # FIXME
+  after_create :subscribe_on_reply, :unless => lambda {|c| c.commit_comment?}
+  after_create :invoke_helper, :if => lambda {|c| c.commit_comment?}
   after_create :subscribe_users
-  after_create {|c| Subscribe.new_comment_notification(c)}
 
   def helper
     class_eval { def commentable; project.git_repository.commit(commentable_id.to_s(16)); end } if commit_comment?
@@ -22,7 +25,15 @@ class Comment < ActiveRecord::Base
     commentable_type == 'Grit::Commit'
   end
 
+  def can_notify_on_new_comment?(subscribe)
+    User.find(subscribe.user).notifier.new_comment && User.find(subscribe.user).notifier.can_notify
+  end
+
   protected
+
+  def subscribe_on_reply
+    self.commentable.subscribes.create(:user_id => self.user_id) if !self.commentable.subscribes.exists?(:user_id => self.user_id)
+  end
 
   def invoke_helper
     self.helper
@@ -31,7 +42,7 @@ class Comment < ActiveRecord::Base
   def subscribe_users
     if self.commentable.class == Issue
       self.commentable.subscribes.create(:user => self.user) if !self.commentable.subscribes.exists?(:user_id => self.user.id)
-    elsif self.commentable.class == Grit::Commit
+    elsif self.commit_comment?
       recipients = self.project.relations.by_role('admin').where(:object_type => 'User').map &:object # admins
       recipients << self.user << User.where(:email => self.commentable.committer.email).first # commentor and committer
       recipients << self.project.owner if self.project.owner_type == 'User' # project owner

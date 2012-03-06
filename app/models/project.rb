@@ -17,8 +17,9 @@ class Project < ActiveRecord::Base
   has_many :relations, :as => :target, :dependent => :destroy
   has_many :collaborators, :through => :relations, :source => :object, :source_type => 'User'
   has_many :groups,        :through => :relations, :source => :object, :source_type => 'Group'
+  has_many :labels
 
-  validates :name, :uniqueness => {:scope => [:owner_id, :owner_type], :case_sensitive => false}, :presence => true, :format => { :with => /^[a-zA-Z0-9_\-\+\.]+$/ }
+  validates :name, :uniqueness => {:scope => [:owner_id, :owner_type], :case_sensitive => false}, :presence => true, :format => {:with => /^[a-zA-Z0-9_\-\+\.]+$/}
   validates :owner, :presence => true
   validate { errors.add(:base, :can_have_less_or_equal, :count => MAX_OWN_PROJECTS) if owner.projects.size >= MAX_OWN_PROJECTS }
   # validate {errors.add(:base, I18n.t('flash.project.save_warning_ssh_key')) if owner.ssh_key.blank?}
@@ -61,14 +62,13 @@ class Project < ActiveRecord::Base
     end
   end
 
-  def build_for(platform, user)  
+  def build_for(platform, user)
     build_lists.create do |bl|
       bl.pl = platform
       bl.bpl = platform
-      bl.update_type = 'recommended'
+      bl.update_type = 'newpackage'
       bl.arch = Arch.find_by_name('x86_64') # Return i586 after mass rebuild
-      # FIXME: Need to set "latest_#{platform.name}"
-      bl.project_version = "latest_import_mandriva2011"
+      bl.project_version = "latest_#{platform.name}" # "latest_import_mandriva2011"
       bl.build_requires = false # already set as db default
       bl.user = user
       bl.auto_publish = true # already  set as db default
@@ -82,6 +82,46 @@ class Project < ActiveRecord::Base
 
   def branches
     self.git_repository.branches
+  end
+
+  def last_active_branch
+    @last_active_branch ||= branches.inject do |r, c|
+      r_last = r.commit.committed_date || r.commit.authored_date unless r.nil?
+      c_last = c.commit.committed_date || c.commit.authored_date
+      if r.nil? or r_last < c_last
+        r = c
+      end
+      r
+    end
+    @last_active_branch
+  end
+
+  def branch(name = nil)
+    name = default_branch if name.blank?
+    branches.select{|b| b.name == name}.first
+  end
+
+  def tree_info(tree, treeish = nil, path = nil)
+    treeish = tree.id unless treeish.present?
+    # initialize result as hash of <tree_entry> => nil
+    res = (tree.trees.sort + tree.blobs.sort).inject({}){|h, e| h.merge!({e => nil})}
+    # fills result vith commits that describes this file
+    res = res.inject(res) do |h, (entry, commit)|
+      # only if commit == nil ...
+      if commit.nil? and entry.respond_to? :name
+        # ... find last commit corresponds to this file ...
+        c = git_repository.log(treeish, File.join([path, entry.name].compact), :max_count => 1).first
+        # ... and add it to result.
+        h[entry] = c
+        # find another files, that linked to this commit and set them their commit
+        c.diffs.map{|diff| diff.b_path.split(File::SEPARATOR, 2).first}.each do |name|
+          h.each_pair do |k, v|
+            h[k] = c if k.name == name and v.nil?
+          end
+        end
+      end
+      h
+    end
   end
 
   def versions
@@ -153,7 +193,7 @@ class Project < ActiveRecord::Base
 
   class << self
     def commit_comments(commit, project)
-     comments = Comment.where(:commentable_id => commit.id.hex, :commentable_type => 'Grit::Commit').order(:created_at)
+     comments = Comment.where(:commentable_id => commit.id.hex, :commentable_type => 'Grit::Commit')
      comments.each {|x| x.project = project; x.helper}
     end
   end
@@ -164,7 +204,13 @@ class Project < ActiveRecord::Base
 
   def self.process_hook(owner_uname, repo, newrev, oldrev, ref, newrev_type, oldrev_type)
     rec = GitHook.new(owner_uname, repo, newrev, oldrev, ref, newrev_type, oldrev_type)
-    #ActivityFeedObserver.instance.after_create rec # for example
+    ActivityFeedObserver.instance.after_create rec
+  end
+
+  def owner_and_admin_ids
+    recipients = self.relations.by_role('admin').where(:object_type => 'User').map { |rel| rel.read_attribute(:object_id) }
+    recipients = recipients | [self.owner_id] if self.owner_type == 'User'
+    recipients
   end
 
   protected
@@ -212,9 +258,20 @@ class Project < ActiveRecord::Base
   end
 
   def write_hook
+    is_production = ENV['RAILS_ENV'] == 'production'
+    hook = File.join(::Rails.root.to_s, 'tmp', "post-receive-hook")
+    FileUtils.cp(File.join(::Rails.root.to_s, 'bin', "post-receive-hook.partial"), hook)
+    File.open(hook, 'a') do |f|
+      s = "\n  /bin/bash -l -c \"cd #{is_production ? '/srv/rosa_build/current' : Rails.root.to_s} && #{is_production ? 'RAILS_ENV=production' : ''} bundle exec rails runner 'Project.delay.process_hook(\"$owner\", \"$reponame\", \"$newrev\", \"$oldrev\", \"$ref\", \"$newrev_type\", \"$oldrev_type\")'\""
+      s << " > /dev/null 2>&1" if is_production
+      s << "\ndone\n"
+      f.write(s)
+    end
+
     hook_file = File.join(path, 'hooks', 'post-receive')
-    FileUtils.cp(File.join(::Rails.root.to_s, 'lib', 'post-receive-hook'), hook_file)
-    #File.chmod(0775, hook_file) # need?
+    FileUtils.cp(hook, hook_file)
+    FileUtils.rm_rf(hook)
+
   rescue Exception # FIXME
   end
 end

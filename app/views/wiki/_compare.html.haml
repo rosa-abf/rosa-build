@@ -2,7 +2,7 @@
   = link_to t("wiki.revert_page#{action_name == 'revert' ? '' : 's'}"), '#', :class => "gollum-revert-button button width100"
 
 - if action_name != 'revert'
-  = form_tag revert_path(@project, @versions[0][0..6], @versions[1][0..6], @name), :name => "gollum-revert", :id => "gollum-revert-form" do
+  = form_tag revert_path(@project, @versions.first[0..6], (@versions.size == 1) ? 'prev' : @versions.last[0..6], @name), :name => "gollum-revert", :id => "gollum-revert-form" do
     = revert_button if can? :write, @project
 
   %br

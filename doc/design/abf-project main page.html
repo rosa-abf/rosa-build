@@ -12,15 +12,21 @@
 	<script type="text/javascript" src="js/all.js"></script>
 	<script type="text/javascript" src="js/project-page.js"></script>
 	<link rel="stylesheet" href="styles/blue/style.css" type="text/css" id="" media="print, projection, screen" />
-	<script type="text/javascript" src="js/jquery.tablesorter.js"></script>
+	<!-- <script type="text/javascript" src="js/jquery.tablesorter.js"></script> -->
 	
-	<!--Code Highliter-->
+	<!--Code Highliter
 	<script type="text/javascript" src="js/hl/shCore.js"></script>
 	<script type="text/javascript" src="js/hl/shBrushJScript.js"></script>
 	<script type="text/javascript" src="js/hl/shBrushRuby.js"></script>
 	<link type="text/css" rel="stylesheet" href="styles/hl/shCoreEclipse.css"/>
 	<link type="text/css" rel="Stylesheet" href="styles/hl/shThemeEclipse.css"/>
-	<script type="text/javascript">SyntaxHighlighter.all();</script>
+	<script type="text/javascript">SyntaxHighlighter.defaults.gutter = false;SyntaxHighlighter.all();</script>-->
+	
+	<!-- Highliter -->
+	<link rel="stylesheet" href="styles/codemirror.css">
+    <script src="js/codemirror.js"></script>
+    <link rel="stylesheet" href="styles/eclipse.css">
+	<script src="js/mode/ruby/ruby.js"></script>
 </head>
 <body>
 	<div class="wrap">
@@ -65,11 +71,13 @@
 						</div>  
 					</div>
 					
-					<div class="avatar" onclick="droplist();">
-						<img src="pics/ava.png" alt="avatar" height="30" />
-					</div>
-					<div class="profile"  onclick="droplist();">
-						<a href="#" onclick="droplist();">mikimaus <img src="pics/expand-white.png" alt="ex" /></a>
+					<div class="user">
+						<div class="avatar" onclick="droplist();">
+							<img src="pics/ava.png" alt="avatar" height="30" />
+						</div>
+						<div class="profile"  onclick="droplist();">
+							<a href="#" onclick="droplist();">mikimaus <img src="pics/expand-white.png" alt="ex" /></a>
+						</div>
 					</div>
 					
 					<div class="both">
@@ -133,9 +141,7 @@
 					<div class="img">
 						<img src="pics/code.png" alt="pic" />
 					</div>
-					<div class="name">
-						git@git.com:snigipini/wacomdrivers.git
-					</div>
+					<input class="name" value="git@git.com:snigipini/wacomdrivers.git" />
 					<div class="role">
 						чтение и запись
 					</div>
@@ -162,17 +168,22 @@
 				
 				<h3>Последний коммит</h3>
 				
-				<div class="last-commit">
-					<div class="image">
-						<img src="pics/ava.png" alt="avatar" />
+				<div class="activity">
+					<div class="top">
+						<div class="image">
+							<img src="pics/ava.png" alt="avatar" />
+						</div>
+						<div class="text">
+							<span class="name">Mike Shane внес изменения в проект <a href="#">gsapronov/ROSA-Jabber</a></span><br />
+							<span class="date">сегодня в 11:45</span><br />
+							<span class="subject">Merge pull request #112 from snigipigi/issues</span><div class="expand-gray-down" onclick="showActivity(1)" id="expand1"></div>
+						</div>
+						
+						<div class="both">
+						</div>
+						
 					</div>
-					<div class="text">
-						<span class="name">Mike Shane оставил коммит <a href="#">1245ef48</a> в ветке <a href="#">Master</a></span><br />
-						<span class="date">сегодня в 11:45</span><br />
-						<span class="subject">Merge pull request #112 from snigipigi/issues <img src="pics/expand-gray.png" alt="expand" class="activity-full" onclick="showActivity(4)" id="expand4" /></span>
-					</div>
-						<div class="both"></div>
-					<div class="fulltext non-view" id="activity-bottom4">
+					<div class="fulltext non-view" id="activity-bottom1">
 						Наша команда благодарит вас за то, что решили уделить нашему продукту немного внимания. Наша сборочная среда предоставляет широкий спектр возможностей как для личного использования, так и для бизнеса. Нам бы хотелось немного подробнее узнать о вас, поэтому, в удобное для вас время, <a href="#">заполните ваш профиль.</a>
 						<br /><br />
 						Также вы можете познакомиться с <a href="#">подробной документацией</a>, включающей в себя не только описание с картинками, но и видеоуроки.
@@ -304,23 +315,18 @@
 				</div>
 				<div id="file2" class="non-view">
 					<div class="file">
-					<div class="top">
-						<div class="l">
-							100644  |  94 lines (75 sloc)  |  2.18kb
-						</div>
-						<div class="r">
-							<a href="#">raw</a>  |  <a href="#">blame</a>  | <a href="#">history</a>
-						</div>
-					</div>
-						<pre class="brush: ruby;">
-source 'https//rubygems.org'
+					<form>
+						<textarea id="code" name="code">source 'https//rubygems.org'
 gemspec
 if ENV[ 'AREL']
 	gem 'arel', :path => ENV['AREL']
 else
-	gem 'arel'
-						</pre>
+	gem 'arel'</textarea></form>
+
+						<div class="both"></div>
 					</div>
+					Введите сопровождающее сообщение:<br />
+					<textarea class="commit-message"></textarea>
 				</div>
 				<div class="both"></div>
 				
@@ -354,5 +360,12 @@ else
 			</li>
 		</ul>
 	</footer>
+	<script>
+  var editor = CodeMirror.fromTextArea(document.getElementById("code"), {
+    lineNumbers: true
+  });
+  
+</script>
+
 </body>
 </html>

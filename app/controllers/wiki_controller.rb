@@ -117,19 +117,25 @@ class WikiController < ApplicationController
   def compare_wiki
     if request.post?
       @versions = params[:versions] || []
-      if @versions.size < 2
-        redirect_to history_project_wiki_index_path(@project)
-      else
-        redirect_to compare_versions_project_wiki_index_path(@project,
-                                                       sprintf('%s...%s', @versions.last, @versions.first))
+      versions_string = case @versions.size
+        when 1 then @versions.first
+        when 2 then sprintf('%s...%s', @versions.last, @versions.first)
+        else begin
+          redirect_to history_project_wiki_index_path(@project)
+          return
+        end
       end
+      redirect_to compare_versions_project_wiki_index_path(@project, versions_string)
     elsif request.get?
-      @versions = params[:versions].split(/\.{2,3}/)
-      if @versions.size < 2
-        redirect_to history_project_wiki_index_path(@project)
-        return
+      @versions = params[:versions].split(/\.{2,3}/) || []
+      @diffs = case @versions.size
+        when 1 then @wiki.repo.commit_diff(@versions.first)
+        when 2 then @wiki.repo.diff(@versions.first, @versions.last)
+        else begin
+          redirect_to history_project_wiki_index_path(@project)
+          return
+        end
       end
-      @diffs = @wiki.repo.diff(@versions.first, @versions.last)
       render :compare
     else
       redirect_to project_wiki_path(@project, CGI.escape(@name))
@@ -141,8 +147,9 @@ class WikiController < ApplicationController
     @page = @wiki.page(@name)
     sha1  = params[:sha1]
     sha2  = params[:sha2]
+    sha2  = nil if params[:sha2] == 'prev'
 
-    if @wiki.revert_page(@page, sha1, sha2, {:committer => committer}).commit
+    if c = @wiki.revert_page(@page, sha1, sha2, {:committer => committer}) and c.commit
       flash[:notice] = t("flash.wiki.revert_success")
       redirect_to project_wiki_path(@project, CGI.escape(@name))
     else
@@ -162,14 +169,14 @@ class WikiController < ApplicationController
   def revert_wiki
     sha1 = params[:sha1]
     sha2 = params[:sha2]
-    if @wiki.revert_commit(sha1, sha2, {:committer => committer}).commit
+    sha2 = nil if sha2 == 'prev'
+    if c = @wiki.revert_commit(sha1, sha2, {:committer => committer}) and c.commit
       flash[:notice] = t("flash.wiki.revert_success")
       redirect_to project_wiki_index_path(@project)
     else
       sha2, sha1 = sha1, "#{sha1}^" if !sha2
       @versions = [sha1, sha2]
-      diffs     = @wiki.repo.diff(@versions.first, @versions.last)
-      @diffs    = [diffs.first]
+      @diffs     = @wiki.repo.diff(@versions.first, @versions.last)
       flash[:error] = t("flash.wiki.patch_does_not_apply")
       render :compare
     end
@@ -249,6 +256,7 @@ class WikiController < ApplicationController
       # @committer.after_commit do |committer, sha1|
       #   here goes callback for notification
       # end
+      ActivityFeedObserver.instance.after_create(@committer).delay
       @committer
     end
 

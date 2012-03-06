@@ -1,0 +1,16 @@
+.lineForm.fork
+  = select_tag :branch, branch_selector_options(project),
+    :class => 'sel80', :id => 'branch_selector'
+  %form{ :action => '', :method => :get, :id => 'branch_changer', :'data-action' => "#{controller_name}"}
+.fork
+  %p= t("layout.projects.#{params[:commit_hash].present? ? 'current_commit' : 'current_branch'}")+':'
+.both
+
+:javascript
+  $(document).ready(function() {
+    $('select#branch_selector').live('change', function(e) {
+      $form = $('form#branch_changer');
+      $form.attr('action', $(this).val());
+      $form.submit();
+    });
+  });

@@ -23,6 +23,7 @@ ru:
     show: Просмотр
     cancel: Отмена
     create: Создать
+    update: Обновить
     delete: Удалить
     save: Сохранить
     search: Искать
@@ -49,11 +50,11 @@ ru:
         edit_header: Настройки оповещений
     processing: Обрабатывается...
     invalid_content_type: имеет неверный тип
-      
+
     devise:
       shared_links:
         sign_in: Войти
-        sign_up: Зарегистрироваться
+        sign_up: Регистрация
         forgot_password: Забыли пароль?
         confirm_again: Не получили инструкции по подтверждению?
         unlock: Не получили инструкции по разблокировке?
@@ -61,7 +62,7 @@ ru:
 
     downloads:
       title: Статистика закачек пакетов
-      message: Обновляется автоматически каждые 5 минут
+      message: Обновляется автоматически каждые 24 часа
       refresh_btn: Обновить
 
     auto_build_lists:
@@ -108,139 +109,6 @@ ru:
       edit_header: Редактировать категорию
       confirm_delete: Вы уверены, что хотите удалить эту категорию?
 
-    issues:
-      list: Список
-      edit: Редактировать
-      comments_header: Комментарии
-      new: Новая задача
-      list_header: Список
-      confirm_delete: Вы уверены, что хотите удалить эту задачу?
-      edit_header: Редактирование задачи
-      new_header: Новая задача
-      statuses:
-        open: Открытые
-        closed: Закрытые
-        any: Все
-      subscribe: Подписка на уведомления
-      subscribe_btn: Подписаться
-      unsubscribe_btn: Отписаться
-
-    comments:
-      confirm_delete: Вы уверены, что хотите удалить комментарий?
-      new_header: Новый комментарий
-      edit_header: Редактирование комментария
-
-    platforms:
-      admin_id: Владелец
-      build_all: Собрать все
-      list: Список
-      new: Создать
-      edit: Редактировать
-      new_header: Новая платформа
-      edit_header: Редактировать
-      list_header: Платформы
-      list_header_main: Основные
-      list_header_personal: Персональные
-      list_header_all: Все
-      clone_header: Клонирование платформы
-      show: Платформа
-      projects: Проекты
-      products: Продукты
-      location: Расположение
-      repositories: Репозитории
-      back_to_the_list: ⇐ К списку платформ
-      freeze: Заморозить
-      unfreeze: Разморозить
-      confirm_freeze: Вы уверены, что хотите заморозить эту платформу?
-      confirm_freeze: Вы уверены, что хотите клонировать эту платформу?
-      confirm_unfreeze: Вы уверены, что хотите разморозить эту платформу?
-      released_suffix: (выпущена)
-      confirm_delete: Вы уверены, что хотите удалить эту платформу?
-      current_platform_header: Текущая платформа
-      owner: Владелец
-      visibility: Видимость
-      platform_type: Тип платформы
-      distrib_type: Тип дистрибутива
-      private_users: Данные для доступа
-      confirm_clone: Клонировать?
-      clone: Клонировать
-
-    event_logs:
-      list: Список
-      list_header: Лог событий
-
-    repositories:
-      list: Список
-      list_header: Репозитории
-      new: Новый репозиторий
-      new_header: Новый репозиторий
-      show: Репозиторий
-      location: Расположение
-      projects: Проекты
-      new_header: Новый репозиторий
-      back_to_the_list: ⇐ К списку репозиториев
-      confirm_delete: Вы уверены, что хотите удалить этот репозиторий?
-      current_repository_header: Текущий репозиторий
-
-    personal_repositories:
-      settings_header: Настройки
-      change_visibility_from_hidden: Сменить статус на "Открытый"
-      change_visibility_from_open: Сменить статус на "Приватный"
-      settings: Настройки
-      show: Мой репозиторий
-      private_users: Пользователи приватного репозитория
-
-    products:
-      list: Список
-      new: Новый продукт
-      list_header: Продукты
-      clone: Клонировать
-      build: Собрать
-      new_header: Новый продукт
-      edit_header: Редактирование продукта
-      confirm_delete: Вы уверены, что хотите удалить этот продукт?
-
-      cron_tab_generator:
-        show: Показать cron tab генератор
-        hide: Спрятать cron tab генератор
-        choose: Выберите
-        every_minute: Каждую минуту
-        every_hour: Каждый час
-        every_day: Каждый день
-        every_month: Каждый месяц
-        every_weekday: Каждый день недели
-        minutes: Минуты
-        hours: Часы
-        days: Дни
-        months: Месяцы
-        weekdays: Дни недели
-
-    projects:
-      add: Добавить
-      edit: Редактировать
-      list: Список
-      list_header: Проекты
-      edit_header: Редактировать проект
-      show: Проект
-      build: Собрать
-      new_build: Новая сборка %{project_name}
-      confirm_delete: Вы уверены, что хотите удалить этот проект?
-      new: Новый проект
-      new_header: Новый проект
-      new_header: Новый проект
-      location: Расположение
-      git_repo_location: Путь к git-репозиторию
-      current_project_header: Текущий проект
-      current_build_lists: Текущие сборки
-      build_button: Начать сборку
-      add_collaborators: Добавить коллабораторов
-      members: Участники
-      collaborators: Коллабораторы
-      groups: Группы
-      edit_collaborators: Изменить список участников
-      issues: Задачи
-      wiki: Wiki
-
     collaborators:
       back_to_proj: Вернуться к проекту
       edit: Редактировать список
@@ -251,45 +119,16 @@ ru:
       add_role: Добавить/Удалить роль
       input_username: Введите псевдоним пользователя
       input_groupname: Введите псевдоним группы
-
-    members:
-      back_to_group: Вернуться к группе
-      edit: Редактировать список
-      roles: Роли
-      add_member: Добавить участника
-      input_username: Псевдоним пользователя
-
-    groups:
-      list: Список
-      new: Создать
-      edit: Редактировать
       members: Участники
-      new_header: Новая группа
-      edit_header: Редактировать
-      list_header: Группы
-      show: Группа
-      back_to_the_list: ⇐ К списку групп
-      confirm_delete: Вы уверены, что хотите удалить эту группу?
-      edit_members: Изменить список участников
-
-    users:
-      list: Список
-      new: Создать
-      edit: Редактировать
-      new_header: Новый пользователь
-      edit_header: Редактировать
-      list_header: Пользователи
-      groups: Группы
-      show: Пользователь
-      back_to_the_list: ⇐ К списку пользователей
-      confirm_delete: Вы уверены, что хотите удалить этого пользователя?
-      own_projects: Мои проекты
-      part_projects: Участвую в проектах
-      filter_header: Фильтр
+      roles: Роли
+      role_names:
+        reader: Читатель
+        writer: Писатель
+        admin: Админ
 
     git:
       repositories:
-        empty: Пустой репозиторий
+        empty: "Репозиторий пуст. Если вы клонировали(Fork) проект или импортировали пакет, данные скоро появятся"
         source: Source
         commits: Commits
         commit_diff_too_big: Извините, коммит слишком большой!
@@ -298,64 +137,12 @@ ru:
         project_versions: Версии
 
     product_build_lists:
+      delete: Удалить
+      action: Действие
       statuses:
         '0': 'собран'
         '1': 'ошибка сборки'
         '2': 'собирается'
-
-    build_lists:
-      filter_header: Фильтр
-      current: Текущие
-      created_at_start: "Время постановки на сборку с:"
-      created_at_end: "Время постановки на сборку по:"
-      notified_at_start: "Время последнего обновления от BS с:"
-      notified_at_end: "Время последнего обновления от BS по:"
-      bs_id_search: 'Поиск по Id'
-      project_name_search: Поиск по названию проекта
-      bs_id_not_set: Id еще не присвоен
-      items_header: Элементы сборки
-      no_items_data: Данных нет
-      show: Просмотр
-      cancel_button_header: Действие
-      cancel_button: Отмена
-      cancel_success: 'Сборка отменена.'
-      cancel_fail: 'При отмене сборки произошла ошибка!'
-      publish_success: 'Сборка поставлена в очередь на публикацию.'
-      publish_fail: 'При публикации сборки произошла ошибка!'
-      container_published: 'Контейнер размещен в репозитории'
-
-      build_server_status:
-        header: Статус сборочного сервера
-        client_count: Число клиентов
-        count_new_task: Число заданий в очереди
-        count_build_task: Число выполняемых заданий
-
-      items:
-        statuses:
-          build_started: собирается
-          build_error: ошибка сборки
-          dependencies_error: зависимости не найдены
-          success: собран
-          unknown: ожидает сборки
-          git_error: проблема с гит
-
-      statuses:
-        build_error: ошибка сборки
-        build_published: опубликован
-        build_publish: публикуется
-        failed_publish: ошибка публикации
-        dependencies_fail: зависимости не найдены
-        waiting_for_response: ожидает ответа
-        build_pending: ожидает сборку
-        dependency_test_failed: тестирование зависимостей не пройдено
-        binary_test_failed: тестирование бинарной совместимости не пройдено
-        build_canceled: сборка отменена
-        success: собран
-        build_started: собирается
-        platform_not_found: платформа не найдена
-        platform_pending: платформа в процессе создания
-        project_not_found: проект не найден
-        project_version_not_found: версия не найдена
 
   flash:
     settings:
@@ -385,13 +172,6 @@ ru:
       successfully_added: Участник %s успешно добавлен
       error_in_adding: Ошибка при добавлении участника %s
 
-    members:
-      successfully_changed: Список участников успешно изменен
-      error_in_changing: Ошибка изменения списка участников
-      successfully_added: Участник успешно добавлен
-      error_in_adding: Ошибка при добавлении участника
-      already_added: Пользователь уже добавлен
-
     auto_build_list:
       success: Сборка проекта автоматизорована!
       failed: Не удалось автоматизировать сборку!
@@ -403,79 +183,6 @@ ru:
       save_error: Не удалось сохранить категорию
       destroyed: Категория успешно удалена
 
-    comment:
-      saved: Комментарий успешно сохранен
-      save_error: Ошибка сохранения комментария
-      destroyed: Комментарий удален
-
-    issue:
-      saved: Задача успешно сохранена
-      save_error: Не удалось сохранить задачу
-      destroyed: Задача успешно удалена
-
-    project:
-      saved: Проект успешно сохранен
-      save_error: Не удалось сохранить проект
-      save_warning_ssh_key: Владельцу проекта необходимо указать в профиле свой SSH ключ
-      destroyed: Проект успешно удален
-      forked: Проект успешно форкнут
-      fork_error: Ошибка форка
-
-    user:
-      saved: Пользователь успешно сохранен
-      save_error: Не удалось сохранить данные о пользователе
-      destroyed: Учетная запись успешно удалена
-
-    group:
-      saved: Группа успешно сохранена
-      save_error: Не удалось сохранить группу
-      destroyed: Группа успешно удалена
-      user_uname_exists: Пользователь с таким именем уже зарегестрирован
-
-    repository:
-      saved: Репозиторий успешно добавлен
-      save_error: Не удалось добавить репозиторий
-      destroyed: Репозиторий успешно удален
-      project_added: Проект добавлен к репозиторию
-      project_not_added: Не удалось добавить проект. В этом репозитории уже есть проект с таким именем. Сначала нужно удалить старый проект
-      project_removed: Проект удален из репозитория
-      project_not_removed: Не удалось удалить проект из репозитория
-
-    product:
-      saved: Продукт успешно сохранен
-      save_error: Не удалось сохранить изменения
-      build_started: Запущена сборка продукта
-      destroyed: Продукт удален
-
-    platform:
-      saved: Платформа успешно добавлена
-      save_error: Не удалось создать платформу
-      freezed: Платформа успешно заморожена
-      freeze_error: Не удалось заморозить платформу, попробуйте еще раз
-      unfreezed: Платформа успешно разморожена
-      unfreeze_error: Не удалось разморозить платформу, попробуйте еще раз
-      destroyed: Платформа успешно удалена
-      build_all_success: Все проекты успешно отправлены на сборку
-      clone_success: Клонирование успешно
-
-    build_list:
-      saved: Билд лист для версии '%{project_version}', платформы '%{bpl}' и архитектуры '%{arch}' создан успешно
-      save_error: Не удалось сохранить билд лист для версии '%{project_version}', платформы '%{bpl}' и архитектуры '%{arch}'
-      no_project_version_selected: Выберите какую-нибудь версию
-      no_project_version_found: Выбранная версия '%{project_version}' не найдена
-      no_arch_or_platform_selected: Выберите хотя бы одну ахритектуру и платформу
-      wrong_platform: Для основного репозитория (main) может быть выбран только его же основная платформа!
-      can_not_published: Опубликовать сборку можно только со статусом "Собран"
-
-    wiki:
-      ref_not_exist: Версия не существует
-      successfully_updated: Страница '%{name}' успешно обновлена
-      duplicate_page: Страница '%{name}' уже существует
-      page_successfully_removed: Страница успешно удалена
-      page_not_found: Страница '%{name}' не найдена.
-      revert_success: Изменения успешно откачены
-      patch_does_not_apply: Не удалось откатить изменения
-
     blob:
       successfully_updated: Файл '%{name}' успешно обновлен
       updating_error: Ошибка обновления файла '%{name}'
@@ -486,7 +193,6 @@ ru:
     remember_me: Запомнить
     name: Название
     parent_platform_id: Родительская платформа
-    build_list: Сборочный лист
 
   activerecord:
 
@@ -499,24 +205,13 @@ ru:
 
     models:
       category: Категория
-      repository: Репозиторий
       arch: Arch
       container: Container
-      platform: Платформа
-      group: Группа
-      event_log: Лог событий
-      project: Проект
       rpm: RPM
-      user: Пользователь
       private_user: Приватный пользователь
-      product: Продукт
       product_build_list: Сборочный лист продукта
-      build_list: Сборочный лист
-      build_list_item: Элемент сборочного листа
       download: Статистика
       auto_build_list: Автоматическая пересборка пакетов
-      settings:
-        notifier: Настройки оповещений
 
     attributes:
       settings:
@@ -540,18 +235,6 @@ ru:
         arch_id: Архитектура
         arch: Архитектура
 
-      comment:
-        body: Содержание
-        user: Автор
-
-      issue:
-        title: Заголовок
-        body: Содержание
-        user: Назначена
-        user_id: Назначена
-        project: Проект
-        status: Статус
-
       private_user:
         login: Логин
         password: Пароль
@@ -559,32 +242,6 @@ ru:
       category:
         parent_id: Родитель
         name: Название
-
-      repository:
-        name: Название
-        description: Описание
-        platform_id: Платформа
-        platform: Платформа
-        created_at: Создан
-        updated_at: Обновлен
-        owner: Владелец
-
-      product:
-        name: Название
-        platform_id: Платформа
-        build_status: Статус последней сборки
-        build_path: Путь к iso
-        created_at: Создан
-        updated_at: Обновлен
-        ks: Содержимое .ks.template
-        counter: Содержимое .counter
-        build_script: Содержимое build
-        menu: Содержимое .menu.xml
-        tar: Tar.bz2 файл
-        is_template: Шаблон
-        system_wide: Общесистемный
-        cron_tab: Cront tab
-        use_cron: Использовать крон
 
       arch:
         name: Название
@@ -600,42 +257,6 @@ ru:
         created_at: Создан
         updated_at: Обновлен
 
-      platform:
-        name: Название
-        description: Описание
-        parent_platform_id: Родительская платформа
-        parent: Родительская платформа
-        released: Released
-        created_at: Создана
-        updated_at: Обновлена
-        distrib_type: Тип дистрибутива
-        visibility: Статус
-        visibility_types:
-          open: Открытый
-          hidden: Закрытый
-
-      event_log:
-        kind: Тип события
-        created_at: Дата и время события
-        user: Пользователь
-        ip: IP пользователя
-        protocol: Протокол доступа
-        description: Описание события
-
-      project:
-        category_id: Категория
-        name: Название
-        description: Описание
-        owner: Владелец
-        visibility: Видимость
-        repository_id: Репозиторий
-        repository: Репозиторий
-        created_at: Создан
-        updated_at: Обновлен
-        has_issues: Включить трэкер
-        has_wiki: Включить Wiki
-        srpm: Импортировать код из src.rpm
-
       rpm:
         name: Название
         arch_id: Arch
@@ -645,70 +266,12 @@ ru:
         created_at: Создан
         updated_at: Обновлен
 
-      role:
-        name: Название
-        on: Ведомый
-        to: Ведущий
-        use_default: По умолчанию
-        use_default_for_owner: По умолчанию для владельца
-
-      group:
-        name: Название
-        uname: Псевдоним
-        owner: Владелец
-        created_at: Создана
-        updated_at: Обновлена
-
-      user:
-        name: Имя
-        login: Псевдоним или Email
-        email: Email
-        uname: Псевдоним
-        ssh_key: SSH ключ
-        current_password: Текущий пароль
-        role: Роль
-        created_at: Создан
-        updated_at: Обновлен
-        role: Роль в системе
-        language: Язык
-
       product_build_list:
         id: Id
         product: Продукт
+        container_path: Контейнер
         status: Статус
         notified_at: Информация получена
-
-      build_list:
-        bs_id: Id
-        name: Название
-        container_path: Путь до контейнера
-        status: Статус
-        project_id: Проект
-        project: Проект
-        arch_id: Архитектура
-        arch: Архитектура
-        is_circle: Циклическая сборка
-        notified_at: Информация получена
-        additional_repos: Дополнительные репозитории
-        include_repos: Подключаемые репозитории
-        updated_at: Обновлен
-        created_at: Создан
-        pl: Репозиторий для сохранения пакетов
-        pl_id: Репозиторий для сохранения пакетов
-        bpl: Платформа
-        bpl_id: Платформа
-        update_type: Критичность обновления
-        build_requires: Пересборка с зависимостями
-        auto_publish: Автоматическая публикация
-        project_version: Версия
-        user: Пользователь
-
-      build_list/item:
-        name: Название
-        level: Уровень
-        status: Статус
-        version: Версия
-        build_list: Сборочный лист
 
       download:
         name: Название
@@ -716,12 +279,3 @@ ru:
         distro: Дистрибутив
         platform: Архитектура
         counter: Закачки
-
-  notifications:
-    subjects:
-      new_comment_notification: Новый комментарий к Вашей задаче
-      new_issue_notification: Новая задача добавлена к проекту
-      new_user_notification: Регистрация на проекте «%{ project_name }»
-      issue_assign_notification: Вам назначили задачу
-      new_commit_comment_notification: Новый комментарий к коммиту
-      invite_approve_notification: Приглашение в ABF

@@ -1,0 +1,22 @@
+en:
+  layout:
+    comments:
+      confirm_delete: Are you sure to delete the comment?
+      new_header: New comment
+      edit_header: Editing a comment
+      has_commented:     "adds a note"
+      notifications_are: "Notifications for new comments are"
+      comments_header:   "Comments"
+      back: 'Back'
+
+  flash:
+    comment:
+      saved: Comment saved
+      save_error: Comment saves error
+      destroyed: Comment deleted
+
+  activerecord:
+    attributes:
+      comment:
+        body: Content
+        user: Author

@@ -1,51 +1,59 @@
-.block
-  .secondary-navigation
-    %ul.wat-cf
-      %li.first= link_to t("layout.projects.list"), projects_path
-      %li= link_to t("layout.projects.new"), new_project_path
-      %li.active= link_to t("layout.projects.show"), project_path(@project)
-      %li= link_to t("layout.git.repositories.source"), project_repo_path(@project)
-      - if can? :write, @project
-        %li= link_to t("layout.projects.build"), new_project_build_list_path(@project)
-      %li= link_to t("layout.projects.issues"), project_issues_path(@project)
-      - if @project.has_wiki
-        %li= link_to t("layout.projects.wiki"), project_wiki_index_path(@project)
+= render :partial => 'projects/submenu'
+= render :partial => 'projects/repo_block', :locals => {:project => @project}
 
-  .content
-    .inner
-      %p
-        %b
-          = t("activerecord.attributes.project.name")
-          \:
-        = @project.name
-      %p
-        %b
-          = t("activerecord.attributes.project.owner")
-          \:
-        = link_to @project.owner.try(:name), url_for(@project.owner)
-      %p
-        %b
-          = t("activerecord.attributes.project.visibility")
-          \:
-        = @project.visibility
-      %p
-        %b
-          = t("activerecord.attributes.project.repository")
-          \:
-        = git_repo_url @project.git_repo_name
-      .wat-cf
-        = link_to image_tag("web-app-theme/icons/application_edit.png", :alt => t("layout.edit")) + " " + t("layout.edit"), edit_project_path(@project), :class => "button" if can? :update, @project
-        = link_to image_tag("web-app-theme/icons/cross.png", :alt => t("layout.delete")) + " " + t("layout.delete"), project_path(@project), :method => "delete", :class => "button", :confirm => t("layout.projects.confirm_delete") if can? :destroy, @project
-        = link_to "Fork", fork_project_path(@project), :class => "button", :method => "post", :confirm => t("layout.confirm") if can? :fork, @project
+.description
+  %h3= t("layout.projects.about_subheader")
+  %p
+    = @project.description
+    = link_to t('layout.read_more'), '#'
 
-%a{ :name => "build_lists"}
-.block
-  .secondary-navigation
-    %ul.wat-cf
-      %li.first.active= link_to t("layout.build_lists.current"), project_path(@project) + "#build_lists"
-      %li= link_to t("layout.build_lists.all"), project_build_lists_path(@project)
+%h3= t("layout.projects.last_commit")
+- GitPresenters::CommitAsMessagePresenter.present(@commit, :branch => @branch) do |presenter|
+  = render :partial => 'shared/feed_message', :locals => {:presenter => presenter, :item_no => 1}
 
-  .content
-    = render :partial => "build_lists/build_lists", :object => @current_build_lists
+%h3= t("layout.projects.files_in_project")
+.files
+  .l
+    = render :partial => 'git/shared/whereami'
 
-- content_for :sidebar, render('sidebar')
+  #fork-and-edit.r
+    %a.button{:href => "#"} Fork and edit
+.both
+
+#repo-wrapper
+  %table#myTable.tablesorter.project{:cellpadding => "0", :cellspacing => "0"}
+    %thead
+      %tr
+        %th.th1.header= t("layout.project.filename")
+        %th.th2.header= t("layout.project.age")
+        %th.th3= t("layout.project.message")
+        %th.th4.header= t("layout.project.author")
+    %tbody
+      - if @path.present?
+        %tr
+          %td
+            .pic= image_tag 'folder.png'
+            .name
+              = link_to "..", tree_path(@project, @treeish, File.join([@path.dup.encode_to_default, ".."].compact).encode_to_default)
+          %td== &nbsp;
+          %td== &nbsp;
+          %td== &nbsp;
+      - @project.tree_info(@tree, @treeish, @path).each_pair do |entry, commit|
+        %tr
+          %td
+            - entry_path = File.join([@path.present? ? @path : nil, entry.name].compact).encode_to_default
+            - if entry.is_a? Grit::Blob
+              .pic= image_tag 'code.png'
+              .name
+                = link_to(entry.name, blob_path(@project, @treeish, entry_path), :class => 'files-see').encode_to_default
+            - else
+              .pic= image_tag 'folder.png'
+              .name
+                = link_to(entry.name, tree_path(@project, @treeish, entry_path), :class => 'files-see').encode_to_default
+          %td
+            %span{:style => "display: none;"}= commit.committed_date || commit.authored_date#> Dec 31, 2011
+            = l(commit.committed_date || commit.authored_date, :format => :short) #31 декабря 2011
+          %td
+            = commit.short_message.encode_to_default #Redo autostart script to start from user
+          %td
+            = (commit.committer || commit.author).name.encode_to_default #chipiga

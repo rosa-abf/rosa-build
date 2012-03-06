@@ -39,9 +39,9 @@ module GitHelper
 
   def render_line_numbers(n)
     res = ""
-    1.upto(n) {|i| res += "<span>#{i}</span>\n" }
+    1.upto(n) {|i| res += "<span>#{i}</span><br/>" }
 
-    res
+    res.html_safe
   end
 
   def render_blob(blob)
@@ -61,4 +61,34 @@ module GitHelper
     string.dup.encode_to_default
   end
 
+  def iterate_path(path, &block)
+    path.split(File::SEPARATOR).inject('') do |a, e|
+      if e != '.' and e != '..'
+        a = File.join(a, e)
+        a = a[1..-1] if a[0] == File::SEPARATOR
+        block.call(a, e) if a.length > 1
+      end
+      a
+    end
+  end
+
+  # TODO This is very dirty hack. Maybe need to be changed.
+  def branch_selector_options(project)
+    tmp = params.dup
+    unless tmp['treeish'].present?
+      tmp.merge!('project_id' => project.id, 'treeish' => project.default_branch).delete('id')
+    end
+    tmp.delete('treeish') if tmp['commit_hash'].present?
+    res = {}
+    current = url_for(tmp).split('?', 2).first
+    tmp['commit_hash'] = truncate(tmp['commit_hash'], :length => 20) if tmp['commit_hash']
+
+    res = project.branches.inject(res) do |h, branch|
+      h[truncate(branch.name, :length => 20)] = url_for(tmp.merge('treeish' => branch.name)).split('?', 2).first
+      h
+    end
+    res.merge!(tmp['commit_hash'] || tmp['treeish'] => current)
+
+    options_for_select(res.sort, current).html_safe
+  end
 end

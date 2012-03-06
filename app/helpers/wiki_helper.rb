@@ -17,8 +17,8 @@ module WikiHelper
     end
   end
 
-  def gravatar_url(email)
-    "http://www.gravatar.com/avatar/#{Digest::MD5.hexdigest(email.downcase)}?s=16&r=pg"
+  def gravatar_url(email, size = 16)
+    "https://secure.gravatar.com/avatar/#{Digest::MD5.hexdigest(email.downcase)}?s=#{size}&r=pg"
   end
 
   def escaped_name

@@ -1,0 +1,57 @@
+en:
+  activerecord:
+    attributes:
+      issue:
+        title: Name
+        body: Description
+        user: Assigned
+        user_id: Assigned
+        project: Project
+        status: Status
+
+  layout:
+    issues:
+      accessory: Accessory issues
+      list: List
+      all: All
+      to_me: Assigned to me
+      edit: Edit
+      search: Search issue...
+      comments_header: Comments
+      new: New issue
+      list_header: List
+      confirm_delete: Are you sure to delete this task?
+      edit_header: Task edit
+      create_header: Create task
+      statuses:
+        open: Opened
+        closed: Closed
+        any: Any
+      status:
+        open: Открыто
+        closed: Closed
+      subscribe: Subscribe
+      subscribe_btn: Subscribe
+      unsubscribe_btn: Unsubscribe
+      number: Number
+      description: Description
+      by: by
+      labels: Labels
+      invalid_labels: Invalid hex color code
+      new_label: New label name
+      update_label: Update label
+      label_custom_color: Custom color
+      label_manage: Manage
+      executor: Executor
+      search_user: Search user...
+      search_labels: Search labels...
+      choose_user_on_left: Choose executor on the left
+      choose_labels_on_left: Choose labels on the left
+      at: at
+      cancel_button: Cancel
+
+  flash:
+    issue:
+      saved: Task saved
+      save_error: Task saves error
+      destroyed: Task deleted

@@ -1,5 +1,3 @@
-//= require_tree ./hl
-
 @import "tablesorter";
 @import "cusel";
 @import "jquery.dataTables";
@@ -8,4 +6,9 @@
 @import "gollum/ie7";
 //@import "gollum/template";
 @import "gollum/editor";
-@import "git/style";
+
+@import "codemirror";
+@import "codemirror/themes/eclipse";
+@import "codemirror/modes/diff";
+@import "codemirror/modes/rpm-spec";
+@import "codemirror/modes/tiddlywiki";

@@ -1,0 +1,13 @@
+ru:
+  layout:
+    read_more: Читать дальше
+    turned_on: включены
+    turned_off: выключены
+
+    year: год
+
+    enter_commit_message: Сопровождающее сообщение
+
+    read_write_access: чтение и запись
+
+    by: ''

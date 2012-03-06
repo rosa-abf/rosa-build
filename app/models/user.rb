@@ -9,24 +9,23 @@ class User < ActiveRecord::Base
 
   has_one :notifier, :class_name => 'Settings::Notifier' #:notifier
 
+  has_many :activity_feeds
+
   has_many :authentications, :dependent => :destroy
   has_many :build_lists, :dependent => :destroy
+  has_many :subscribes, :foreign_key => :user_id, :dependent => :destroy
+  has_many :comments, :dependent => :destroy
 
   has_many :relations, :as => :object, :dependent => :destroy
   has_many :targets, :as => :object, :class_name => 'Relation'
 
-  has_many :own_projects, :as => :owner, :class_name => 'Project', :dependent => :destroy
-  has_many :own_groups,   :foreign_key => :owner_id, :class_name => 'Group'
-  has_many :own_platforms, :as => :owner, :class_name => 'Platform', :dependent => :destroy
-  has_many :own_repositories, :as => :owner, :class_name => 'Repository', :dependent => :destroy
-
-  has_many :groups,       :through => :targets, :source => :target, :source_type => 'Group',      :autosave => true
   has_many :projects,     :through => :targets, :source => :target, :source_type => 'Project',    :autosave => true
+  has_many :groups,       :through => :targets, :source => :target, :source_type => 'Group',      :autosave => true
   has_many :platforms,    :through => :targets, :source => :target, :source_type => 'Platform',   :autosave => true
-  has_many :repositories, :through => :targets, :source => :target, :source_type => 'Repository', :autosave => true
-  has_many :subscribes, :foreign_key => :user_id, :dependent => :destroy
 
-  has_many :comments, :dependent => :destroy
+  has_many :own_projects, :as => :owner, :class_name => 'Project', :dependent => :destroy
+  has_many :own_groups,   :foreign_key => :owner_id, :class_name => 'Group', :dependent => :destroy
+  has_many :own_platforms, :as => :owner, :class_name => 'Platform', :dependent => :destroy
 
   include Modules::Models::PersonalRepository
 
@@ -47,8 +46,12 @@ class User < ActiveRecord::Base
     role == 'admin'
   end
 
+  def user?
+    persisted?
+  end
+
   def guest?
-    self.id.blank? # persisted?
+    new_record?
   end
 
   def fullname
@@ -94,6 +97,10 @@ class User < ActiveRecord::Base
 
   def committer?(commit)
     email.downcase == commit.committer.email.downcase
+  end
+
+  def avatar(size)
+    "https://secure.gravatar.com/avatar/#{Digest::MD5.hexdigest(email.downcase)}?s=#{size}&r=pg"
   end
 
   private
