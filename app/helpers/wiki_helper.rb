@@ -17,28 +17,6 @@ module WikiHelper
     end
   end
 
-  def avatar_url(user, size)
-    unless user.avatar?
-      gsize = case size
-      when :micro
-        16
-      when :small
-        30
-      when :medium
-        40
-      when :big
-        81
-      end
-      gravatar_url(user.email, gsize)
-    else
-      user.avatar.url(size)
-    end
-  end
-
-  def gravatar_url(email, size = 16)
-    "https://secure.gravatar.com/avatar/#{Digest::MD5.hexdigest(email.downcase)}?s=#{size}&r=pg"
-  end
-
   def escaped_name
     CGI.escape(@name)
   end

@@ -377,6 +377,14 @@ div.blame_data tr td.code pre {
     margin: 0;
 }
 
+// Search
+p.block { margin-bottom: 10px; clear: both; }
+table.tablesorter.bmargin5 {
+  th { padding: 5px; }
+  td p.block {margin-bottom: 0px;}
+}
+
+
 div#gollum-searchbar-fauxtext {
     padding-left: 10px;
 }

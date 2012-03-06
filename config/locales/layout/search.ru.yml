@@ -1,0 +1,12 @@
+ru:
+  layout:
+    search:
+      header: Поиск
+      advanced: Расширенный поиск
+      all: Показать все
+      types:
+        all: Все
+        projects: Проекты
+        users: Пользователи
+        groups: Группы
+        platforms: Платформы

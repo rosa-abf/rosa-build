@@ -7,19 +7,7 @@
 	<script type="text/javascript" src="js/jquery-1.7.1.min.js"></script>
 	<link rel="stylesheet" type="text/css" href="styles/registration.css" />
 	<script type='text/javascript' src='js/checkbox.js'></script>
-	<script type='text/javascript'>
-		function disError(elem) {
-			buttonCheck();
-		}
-		
-		function buttonCheck() {
-			if ((document.getElementById("login").value!="")&&(document.getElementById("name").value!="")&&(document.getElementById("pass").value!="")&&(document.getElementById("pass2").value!="")&&(document.getElementById("email").value!="")) {
-				document.getElementById("btnLogin").className = "button";
-			} else {
-				document.getElementById("btnLogin").className = "button disabled";
-			}
-		}
-	</script>
+	<script type='text/javascript' src='js/registration.js'></script>
 </head>
 <body>
 	<div class="wrap">
@@ -73,13 +61,35 @@
 				<div class="both"></div>
 				
 				<div class="in">
-					<a id="btnLogin" class="button disabled" href="#">Регистрация</a>
+					<input type="submit" id="btnLogin" class="button disabled" value="Регистрация"></input>
 				</div>
 				
 				
 				<div class="both"></div>
 			
 		</article>
+		
+		<div class="error login" id="hintLogin">
+			<div class="img"></div>
+			<div class="msg">Содержит только латинские буквы.</div>
+			<div class="both"></div>
+		</div>
+		
+		<div class="error name" id="hintName">
+			<div class="img"></div>
+			<div class="msg">Использование спецзнаков запрещено.</div>
+			<div class="both"></div>
+		</div>
+		<div class="error email" id="hintEmail">
+			<div class="img"></div>
+			<div class="msg">Введенный текст не является адресом почты.<br />Или такой адрес уже зарегистирован.</div>
+			<div class="both"></div>
+		</div>
+		<div class="error password" id="hintPassword">
+			<div class="img"></div>
+			<div class="msg">Пароль должен содержать от 5 до 20 символов.<br />Допустимы только латинские символы, спецзнаки и цифры.<br />Или пароли не совпадают.</div>
+			<div class="both"></div>
+		</div>
 		
 	</div>
 	<!--Footer-->

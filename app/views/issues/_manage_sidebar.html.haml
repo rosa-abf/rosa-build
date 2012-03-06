@@ -17,7 +17,7 @@
           .current_executor
             - if @issue.user
               #user-0.people
-                .avatar=image_tag(@issue.user.avatar(25), :alt => 'avatar')
+                .avatar=image_tag avatar_url(@issue.user), :alt => 'avatar'
                 .name="#{@issue.user.uname} (#{@issue.user.name})"
                 =hidden_field_tag "user-0", @issue.user.id, :name => 'issue[user_id]'
                 .both

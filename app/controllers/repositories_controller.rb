@@ -83,7 +83,7 @@ class RepositoriesController < ApplicationController
 
     @projects = Project.joins(owner_subquery).addable_to_repository(@repository.id)
     @projects = @projects.paginate(:page => (params[:iDisplayStart].to_i/params[:iDisplayLength].to_i).to_i + 1, :per_page => params[:iDisplayLength])
-    @projects = @projects.by_visibilities(['open']) if @repository.platform.platform_type == 'main'
+    @projects = @projects.by_visibilities('open') if @repository.platform.platform_type == 'main'
 
     @total_projects = @projects.count
     @projects = @projects.where(['projects.name LIKE ?', "#{params[:sSearch]}%"]) if params[:sSearch] and !params[:sSearch].empty?

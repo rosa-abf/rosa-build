@@ -18,11 +18,6 @@
 .rightlist
   = f.select :language, User::LANGUAGES_FOR_SELECT
 .both
-- if current_user.admin?
-  .leftlist
-    = f.label :role, t("activerecord.attributes.user.role"), :class => :label
-  .rightlist
-    = f.select :role, User::ROLES.push(""), :selected => resource.role
 .leftlist
   = f.label :company, t("activerecord.attributes.user.company")
 .rightlist
