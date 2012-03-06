@@ -140,8 +140,9 @@ $(document).ready(function() {
     var form_edit = $('form.edit_form.issue');
     form_new.find('#people-span').fadeOut(0);
     remExecutor(form_new);
-    form_new.find('#issue_executor').html($(this).clone().removeClass('add_executor').addClass('remove_executor'));
-    form_edit.find('#issue_user').val($(this).find("input[name='user_id']").val());
+    var clone = $(this).clone().removeClass('add_executor').addClass('remove_executor');
+    form_new.find('#issue_executor').html(clone);
+    $('.current_executor').html(clone.removeClass('select'));
     $(this).addClass('select');
   });
 
@@ -242,23 +243,22 @@ $(document).ready(function() {
 
   $('.button.manage_executor').live('click', function() {
     $('form#search_user, .button.update_executor').fadeIn(0);
+    $('.current_executor .people').addClass('remove_executor selected');
     $(this).fadeOut(0);
   });
 
   $('.button.manage_labels').live('click', function() {
     $('form#search_labels, .button.update_labels').fadeIn(0);
-    //~ $('.current_labels').
     $(this).fadeOut(0);
   });
 
   $('.button.update_executor').live('click', function() {
-    var form = $('form.edit_form.issue');
+    var form = $('form.edit_executor.issue');
     $.ajax({
       type: 'POST',
       url: form.attr("action"),
       data: form.serialize(),
       success: function(data){
-                      $('.current_executor').html($('#manage_issue_users_list .add_executor.people.selected.select').clone());
                       $('form#search_user, .button.update_executor').fadeOut(0);
                       $('.button.manage_executor').fadeIn(0);
                       $('#manage_issue_users_list').html('');

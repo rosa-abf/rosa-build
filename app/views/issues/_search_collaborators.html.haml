@@ -2,5 +2,5 @@
   .people.selected{:id => "user-#{index}", :class => 'add_executor'}
     .avatar=image_tag(user.avatar(25), :alt => 'avatar')
     .name="#{user.uname} (#{user.name})"
-    =hidden_field_tag "user-#{index}", user.id, :name => 'user_id'
+    =hidden_field_tag "user-#{index}", user.id, :name => 'issue[user_id]'
     .both
