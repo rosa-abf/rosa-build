@@ -35,7 +35,6 @@ en:
       unsubscribe_btn: Unsubscribe
       number: Number
       description: Description
-      by: by
       labels: Labels
       invalid_labels: Invalid hex color code
       new_label: New label name
@@ -49,6 +48,7 @@ en:
       choose_labels_on_left: Choose labels on the left
       at: at
       cancel_button: Cancel
+      done: Done
 
   flash:
     issue:

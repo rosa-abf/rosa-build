@@ -57,15 +57,18 @@ class IssuesController < ApplicationController
   end
 
   def update
-    if status = params[:issue][:status]
+    if params[:issue] && status = params[:issue][:status]
       action = 'issues/_status'
       @issue.set_close(current_user) if status == 'closed'
       @issue.set_open if status == 'open'
       status = 200 if @issue.save
       render action, :status => (status || 500), :layout => false
-    else
+    elsif params[:issue]
+      @issue.labelings.destroy_all if params[:issue][:labelings_attributes] # FIXME
       status = 200 if @issue.update_attributes(params[:issue])
       render :nothing => true, :status => (status || 500), :layout => false
+    else
+      render :nothing => true, :status => 200, :layout => false 
     end
   end
 
