@@ -1,85 +1,109 @@
-.block
-  .secondary-navigation
-    %ul.wat-cf
-      %li.first= link_to t("layout.users.list"), users_path
-      %li= link_to t("layout.users.new"), new_user_path
-      %li.active= link_to t("layout.users.show"), user_path
-  .content
-    .inner
+.left
+  = image_tag avatar_url(current_user, :big)
+.left
+  %h3= @user.uname
+  = @user.name
+  %br
+    = link_to @user.email, "mailto:#{ @user.email }"
+    %br
+      %h4= t("activerecord.attributes.user.professional_experience") + ":"
+      %p= @user.professional_experience
+      %h4= t("layout.users.public_projects_list") + ":"
       %p
-        %b
-          Id
-          \:
-        = @user.id
-      %p
-        %b
-          = t("activerecord.attributes.user.name")
-          \:
-        = @user.name
-      %p
-        %b
-          = t("activerecord.attributes.user.uname")
-          \:
-        = @user.uname
-      %p
-        %b
-          = t("activerecord.attributes.user.email")
-          \:
-        = @user.email
-      %p
-        %b
-          = t("activerecord.attributes.user.created_at")
-          \:
-        = @user.created_at
-      .wat-cf
-        - if can? :edit, @user
-          = link_to image_tag("code.png", :alt => t("layout.edit")) + " " + t("layout.edit"), edit_user_path(@user), :class => "button"
-        - if can? :destroy, @user
-          = link_to image_tag("x.png", :alt => t("layout.delete")) + " " + t("layout.delete"), user_path(@user), :method => "delete", :class => "button", :confirm => t("layout.users.confirm_delete")
+        - @user.projects.by_visibilities(['open']).each do |project|
+          = link_to project.name, project
+          %br
 
-.block
-  .secondary-navigation
-    %ul.wat-cf
-      %li.first.active= link_to t("layout.platforms.list"), platforms_path
-      %li= link_to t("layout.platforms.new"), new_user_platform_path(@user)
-  .content
-    %h2.title
-      = t("layout.platforms.list_header")
-    .inner
-      = render :partial => 'shared/search_form'
-      = render :partial => 'platforms/list', :object => @platforms
-      .actions-bar.wat-cf
-        .actions
-          = will_paginate @platforms, :param_name => :platform_page
+
+.left
+  %br
+  = link_to t("layout.users.edit"), edit_user_path(@user), :class => 'button' if can? :edit, @user
+
+:javascript
+  $('article .all').addClass('verybigpadding');
 
 -#.block
-  .secondary-navigation
-    %ul.wat-cf
-      %li.first.active= link_to t("layout.repositories.list"), repositories_path
-      %li= link_to t("layout.repositories.new"), new_user_repository_path(@user)
-  .content
-    %h2.title
-      = t("layout.repositories.list_header")
-    .inner
-      = render :partial => 'shared/search_form'
-      = render :partial => 'repositories/list', :object => @repositories
-      .actions-bar.wat-cf
-        .actions
-          = will_paginate @repositories, :param_name => :repository_page
-
-.block
-  .secondary-navigation
-    %ul.wat-cf
-      %li.first.active= link_to t("layout.projects.list"), projects_path
-      %li= link_to t("layout.projects.new"), new_project_path
-  .content
-    %h2.title
-      = t("layout.projects.list_header")
-    .inner
-      = render :partial => 'shared/search_form'
-      = render :partial => 'projects/list', :object => @projects
-      .actions-bar.wat-cf
-        .actions
-          = will_paginate @projects, :param_name => :project_page
-
-- content_for :sidebar, render('sidebar')
+-#  .secondary-navigation
+-#    %ul.wat-cf
+-#      %li.first= link_to t("layout.users.list"), users_path
+-#      %li= link_to t("layout.users.new"), new_user_path
+-#      %li.active= link_to t("layout.users.show"), user_path
+-#  .content
+-#    .inner
+-#      %p
+-#        %b
+-#          Id
+-#          \:
+-#        = @user.id
+-#      %p
+-#        %b
+-#          = t("activerecord.attributes.user.name")
+-#          \:
+-#        = @user.name
+-#      %p
+-#        %b
+-#          = t("activerecord.attributes.user.uname")
+-#          \:
+-#        = @user.uname
+-#      %p
+-#        %b
+-#          = t("activerecord.attributes.user.email")
+-#          \:
+-#        = @user.email
+-#      %p
+-#        %b
+-#          = t("activerecord.attributes.user.created_at")
+-#          \:
+-#        = @user.created_at
+-#      .wat-cf
+-#        - if can? :edit, @user
+-#          = link_to image_tag("code.png", :alt => t("layout.edit")) + " " + t("layout.edit"), edit_user_path(@user), :class => "button"
+-#        - if can? :destroy, @user
+-#          = link_to image_tag("x.png", :alt => t("layout.delete")) + " " + t("layout.delete"), user_path(@user), :method => "delete", :class => "button", :confirm => t("layout.users.confirm_delete")
+-#
+-#.block
+-#  .secondary-navigation
+-#    %ul.wat-cf
+-#      %li.first.active= link_to t("layout.platforms.list"), platforms_path
+-#      %li= link_to t("layout.platforms.new"), new_user_platform_path(@user)
+-#  .content
+-#    %h2.title
+-#      = t("layout.platforms.list_header")
+-#    .inner
+-#      = render :partial => 'shared/search_form'
+-#      = render :partial => 'platforms/list', :object => @platforms
+-#      .actions-bar.wat-cf
+-#        .actions
+-#          = will_paginate @platforms, :param_name => :platform_page
+-#
+-#-#.block
+-#  .secondary-navigation
+-#    %ul.wat-cf
+-#      %li.first.active= link_to t("layout.repositories.list"), repositories_path
+-#      %li= link_to t("layout.repositories.new"), new_user_repository_path(@user)
+-#  .content
+-#    %h2.title
+-#      = t("layout.repositories.list_header")
+-#    .inner
+-#      = render :partial => 'shared/search_form'
+-#      = render :partial => 'repositories/list', :object => @repositories
+-#      .actions-bar.wat-cf
+-#        .actions
+-#          = will_paginate @repositories, :param_name => :repository_page
+-#
+-#.block
+-#  .secondary-navigation
+-#    %ul.wat-cf
+-#      %li.first.active= link_to t("layout.projects.list"), projects_path
+-#      %li= link_to t("layout.projects.new"), new_project_path
+-#  .content
+-#    %h2.title
+-#      = t("layout.projects.list_header")
+-#    .inner
+-#      = render :partial => 'shared/search_form'
+-#      = render :partial => 'projects/list', :object => @projects
+-#      .actions-bar.wat-cf
+-#        .actions
+-#          = will_paginate @projects, :param_name => :project_page
+-#
+-#- content_for :sidebar, render('sidebar')

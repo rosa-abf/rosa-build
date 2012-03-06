@@ -4,6 +4,8 @@ class User < ActiveRecord::Base
   LANGUAGES_FOR_SELECT = [['Russian', 'ru'], ['English', 'en']]
   LANGUAGES = LANGUAGES_FOR_SELECT.map(&:last)
 
+  has_attached_file :avatar, :styles => { :micro => "16x16", :small => "30x30>", :medium => "40x40>", :big => "81x81" }
+
   devise :database_authenticatable, :registerable, #:omniauthable, # :token_authenticatable, :encryptable, :timeoutable
          :recoverable, :rememberable, :validatable #, :trackable, :confirmable, :lockable
 
@@ -31,11 +33,11 @@ class User < ActiveRecord::Base
 
   validates :uname, :presence => true, :uniqueness => {:case_sensitive => false}, :format => { :with => /^[a-z0-9_]+$/ }
   validate { errors.add(:uname, :taken) if Group.where('uname LIKE ?', uname).present? }
-  validates :ssh_key, :uniqueness => true, :allow_blank => true
   validates :role, :inclusion => {:in => ROLES}, :allow_blank => true
   validates :language, :inclusion => {:in => LANGUAGES}, :allow_blank => true
 
-  attr_accessible :email, :password, :password_confirmation, :remember_me, :login, :name, :ssh_key, :uname, :language
+  attr_accessible :email, :password, :password_confirmation, :current_password, :remember_me, :login, :name, :ssh_key, :uname, :language,
+                  :site, :company, :professional_experience, :location, :avatar
   attr_readonly :uname, :own_projects_count
   attr_readonly :uname
   attr_accessor :login
@@ -79,17 +81,17 @@ class User < ActiveRecord::Base
     end
   end
 
-  def update_with_password(params={})
-    params.delete(:current_password)
-    # self.update_without_password(params) # Don't allow password update
-    if params[:password].blank?
-      params.delete(:password)
-      params.delete(:password_confirmation) if params[:password_confirmation].blank?
-    end
-    result = update_attributes(params)
-    clean_up_passwords
-    result
-  end
+  # def update_with_password(params={})
+  #   params.delete(:current_password)
+  #   # self.update_without_password(params) # Don't allow password update
+  #   if params[:password].blank?
+  #     params.delete(:password)
+  #     params.delete(:password_confirmation) if params[:password_confirmation].blank?
+  #   end
+  #   result = update_attributes(params)
+  #   clean_up_passwords
+  #   result
+  # end
 
   def commentor?(commentable)
     comments.exists?(:commentable_type => commentable.class.name, :commentable_id => commentable.id.hex)
@@ -99,9 +101,9 @@ class User < ActiveRecord::Base
     email.downcase == commit.committer.email.downcase
   end
 
-  def avatar(size)
-    "https://secure.gravatar.com/avatar/#{Digest::MD5.hexdigest(email.downcase)}?s=#{size}&r=pg"
-  end
+  #def avatar(size)
+  #  "https://secure.gravatar.com/avatar/#{Digest::MD5.hexdigest(email.downcase)}?s=#{size}&r=pg"
+  #end
 
   private
 

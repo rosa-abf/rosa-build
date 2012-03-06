@@ -19,7 +19,7 @@
               = check_box_tag "user_remove[#{user.id}][]"
           %td
             .img
-              = image_tag(gravatar_url(user.email))
+              = image_tag(avatar_url(user, :micro))
             .forimg= link_to "#{user.uname} (#{user.name})", user_path(user)
           - Relation::ROLES.each_with_index do |role, i|
             %td

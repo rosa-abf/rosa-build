@@ -9,8 +9,10 @@
         %td.td2
           - user = User.where(:email => v.author.email).first
           .avatar
-            = link_to user_path_by_user(user) do
-              %img.mini-gravatar{:src => gravatar_url(v.author.email), :alt => "avatar: #{v.author.name.encode_to_default}"}
+            %a{:href => "#"}
+              = link_to user_path_by_user(user) do
+                %img.mini-gravatar{:src => avatar_url(v.author, :micro), :alt => "avatar: #{v.author.name.encode_to_default}"}
+                %span.username= user.present? ? user.uname : v.author.name.encode_to_default
           .name
             = link_to user_path_by_user(user) do
               %span.username= user.present? ? "#{user.uname} (#{user.name})" : v.author.name.encode_to_default
