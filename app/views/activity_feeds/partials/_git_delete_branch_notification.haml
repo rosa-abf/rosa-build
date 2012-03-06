@@ -1,13 +1,7 @@
 .top
-  .image
-    =# image_tag(gravatar_url(activity_feed.user.email, 30))
-  .text
-    %span.name
-      =# link_to activity_feed.user.uname, user_path(activity_feed.user.uname)
-    %br
-      %span.date= activity_feed.created_at
-      %br
-        %span.subject Branch #{ branch_name } has been deleted
+  %span.date= activity_feed.created_at
+  %br
+  %span.subject Branch #{ branch_name } has been deleted
   .both
 .fulltext
   Into project #{ link_to(project_name, project_path(project_id)) }

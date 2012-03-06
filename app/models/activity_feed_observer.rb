@@ -68,17 +68,18 @@ class ActivityFeedObserver < ActiveRecord::Observer
       project = Project.find_by_name(record.repo)
 
       last_commits = project.git_repository.repo.log(branch_name, nil).first(3)
-      first_commiter = User.find_by_email(last_commits[0].author.email) if last_commits.size > 0
+      first_commiter = User.find_by_email(last_commits[0].author.email) unless last_commits.blank?
       last_commits = last_commits.collect do |commit| #:author => 'author'
         [commit.sha, commit.message]
       end
 
       if change_type == 'delete'
         kind = 'git_delete_branch_notification'
-        options = {:user_id => first_commiter.id, :user_name => first_commiter.name, :user_email => first_commiter.email, :project_id => project.id, :project_name => project.name, :branch_name => branch_name, :change_type => change_type}
+        options = {:project_id => project.id, :project_name => project.name, :branch_name => branch_name, :change_type => change_type}
       else
         kind = 'git_new_push_notification'
         options = {:project_id => project.id, :project_name => project.name, :last_commits => last_commits, :branch_name => branch_name, :change_type => change_type}
+        options.merge!({:user_id => first_commiter.id, :user_name => first_commiter.name, :user_email => first_commiter.email}) if first_commiter
       end
 
       project.owner_and_admin_ids.each do |recipient|
