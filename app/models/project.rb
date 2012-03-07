@@ -61,12 +61,13 @@ class Project < ActiveRecord::Base
     end
   end
 
-  def build_for(platform, user)
+  def build_for(platform, user, arch = 'x86_64') # Return i586 after mass rebuild
+    arch = Arch.find_by_name(arch) if arch.acts_like?(:string)
     build_lists.create do |bl|
       bl.pl = platform
       bl.bpl = platform
       bl.update_type = 'newpackage'
-      bl.arch = Arch.find_by_name('x86_64') # Return i586 after mass rebuild
+      bl.arch = arch
       bl.project_version = "latest_#{platform.name}" # "latest_import_mandriva2011"
       bl.build_requires = false # already set as db default
       bl.user = user
