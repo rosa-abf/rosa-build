@@ -249,6 +249,7 @@ $(document).ready(function() {
 
   $('.button.manage_labels').live('click', function() {
     $('form#search_labels, .button.update_labels').fadeIn(0);
+    $('.current_labels .label').addClass('remove_label selected').removeClass('nopointer');
     $(this).fadeOut(0);
   });
 
@@ -278,6 +279,7 @@ $(document).ready(function() {
       url: form.attr("action"),
       data: form.serialize(),
       success: function(data){
+                      $('.current_labels .label').removeClass('remove_label selected').addClass('nopointer');
                       $('form#search_labels, .button.update_labels').fadeOut(0);
                       $('.button.manage_labels').fadeIn(0);
                       $('#manage_issue_labels_list').html('');

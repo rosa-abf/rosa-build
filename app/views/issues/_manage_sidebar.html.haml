@@ -41,7 +41,7 @@
         =form_for :issue, :url => [@project, @issue], :method => :put, :html => { :class => 'edit_labels issue'} do |f|
           .current_labels
             - (@issue.labels || []).each do |label|
-              .label.selected{:id => "flag#{label.id}"}
+              .label.nopointer{:id => "flag#{label.id}"}
                 .flag{:style => "display:none; background: ##{label.color}"}
                 .labeltext.selected{:style => "background: ##{label.color}"}=label.name
                 =hidden_field_tag "label-#{label.id}", label.id, :name => "issue[labelings_attributes][#{label.id}][label_id]"
