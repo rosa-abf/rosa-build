@@ -23,7 +23,7 @@
                 .both
       - else
         .people.nopointer
-          .avatar=image_tag(@issue.user.avatar(25), :alt => 'avatar')
+          .avatar=image_tag avatar_url(@issue.user), :alt => 'avatar'
           .name="#{@issue.user.uname} (#{@issue.user.name})"
           .both
       =link_to(t('layout.issues.label_manage'), '#', :class => "button tmargin10 manage_executor") if can_manage
