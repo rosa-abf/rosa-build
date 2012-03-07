@@ -106,7 +106,7 @@ $(document).ready(function() {
     return false;
   };
 
-  $('#search_user, #search_labels').live('submit', function() {
+  $('#search_user').live('submit', function() {
     var id = $(this).attr('id');
     if(id.indexOf('user') != -1) { // FIXME
       var which = 'users';
@@ -248,7 +248,7 @@ $(document).ready(function() {
   });
 
   $('.button.manage_labels').live('click', function() {
-    $('form#search_labels, .button.update_labels').fadeIn(0);
+    $('.button.update_labels').fadeIn(0);
     $('.current_labels .label .labeltext.selected').parent().addClass('remove_label selected').removeClass('nopointer');
     $('.current_labels .label .labeltext:not(.selected)').parent().addClass('add_label').removeClass('nopointer');
     $(this).fadeOut(0);
@@ -281,7 +281,7 @@ $(document).ready(function() {
       data: form.serialize(),
       success: function(data){
                       $('.current_labels .label').removeClass('remove_label selected').addClass('nopointer');
-                      $('form#search_labels, .button.update_labels').fadeOut(0);
+                      $('.button.update_labels').fadeOut(0);
                       $('.button.manage_labels').fadeIn(0);
                       $('#manage_issue_labels_list').html('');
                     },
