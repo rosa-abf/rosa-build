@@ -3,7 +3,7 @@
   #labels-stock
     =form_tag project_issues_path(@project), :id => 'filter_labels', :method => :get do
       - @project.labels.each_with_index do |label, index|
-        .div-tracker-labels{:id => "label-#{label.name}", :style => @labels.include?(label.name) ? "background-color:##{label.color};color:'#FFF'" : ''}
+        .div-tracker-labels{:id => "label-#{label.name}", :style => @labels.include?(label.name) ? "background-color:##{label.color};color:#FFF" : ''}
           .div-label-left
             .label
               .flag{:id => "flag-#{label.name}", :style => "background-color: ##{label.color};"}
