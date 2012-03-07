@@ -43,7 +43,8 @@ class UsersController < ApplicationController
     if params[:user][:role] && current_user.admin?
       @user.role = params[:user][:role]
       params[:user].delete(:role)
-    end  
+    end
+    @user ||= current_user
     if @user.update_without_password(params[:user])
       flash[:notice] = t('flash.user.saved')
       redirect_to edit_user_path(@user)
