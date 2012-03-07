@@ -15,4 +15,12 @@ Rosa::Application.config.middleware.insert_before ::Grack::Handler, ::Grack::Aut
 Dir[Rails.root.join("lib/ext/**/*.rb")].each {|f| require f}
 
 # add rpm spec as mime type for *.spec files
-MIME::Types.add(MIME::Type.from_array(["text/x-rpm-spec", ['spec'], '8bit']))
+types = [
+  ["text/x-python",   ['py'],     '8bit'],
+  ["text/x-rpm-spec", ['spec'],   '8bit'],
+  ["text/x-csrc",     ['h', 'c'], '8bit'],
+  ["text/x-c++src",   ['cpp'],    '8bit']
+]
+types.each do |type|
+  MIME::Types.add MIME::Type.from_array(type)
+end

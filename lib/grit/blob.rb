@@ -28,9 +28,21 @@ module Grit
 
       # store all associated MIME::Types inside class
       def set_associated_mimes
-        @associated_mimes ||= MIME::Types.type_for(self.name) rescue [DEFAULT_RAW_MIME_TYPE]
-        @associated_mimes = [DEFAULT_RAW_MIME_TYPE] if @associated_mimes.empty?
+        @associated_mimes ||= []
+        if @associated_mimes.empty?
+          guesses = MIME::Types.type_for(self.name) rescue [DEFAULT_RAW_MIME_TYPE]
+          guesses = [DEFAULT_RAW_MIME_TYPE] if guesses.empty?
+
+          @associated_mimes = guesses.sort{|a,b| mime_sort(a, b)}
+        end
         @associated_mimes
+      end
+
+      # TODO make more clever function
+      def mime_sort(a,b)
+        return 0 if a.media_type == b.media_type and a.registered? == b.registered?
+        return -1 if a.media_type == 'text' and !a.registered?
+        return 1
       end
 
   end
