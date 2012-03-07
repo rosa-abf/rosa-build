@@ -125,7 +125,6 @@ Rosa::Application.routes.draw do
       collection do
         post :create_label
         get :search_collaborators
-        get :search_labels
       end
     end
     post "labels/:label_id" => "issues#destroy_label", :as => :issues_delete_label

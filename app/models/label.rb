@@ -6,4 +6,5 @@ class Label < ActiveRecord::Base
   validates :name, :uniqueness => { :scope => :project_id}
   validates :name, :color, :presence => true
   validates :color, :format => { :with => /\A([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})\z/, :message => I18n.t('layout.issues.invalid_labels')}
+
 end
