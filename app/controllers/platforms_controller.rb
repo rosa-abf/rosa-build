@@ -14,7 +14,7 @@ class PlatformsController < ApplicationController
   end
 
   def index
-    @platforms = Platform.accessible_by(current_ability).paginate(:page => params[:platform_page])
+    @platforms = @platforms.paginate(:page => params[:platform_page])
   end
 
   def easy_urpmi

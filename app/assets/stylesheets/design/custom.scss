@@ -442,3 +442,21 @@ table.wiki .history .td2 .name span.username {
     text-overflow: ellipsis;
     width: 164px;
 }
+
+table.tablesorter.platforms .th1 {
+    width: 290px;
+}
+
+table.tablesorter.platforms .th2 {
+    width: 280px;
+}
+
+table.tablesorter.platforms tr td.td3 {
+    text-align: center;
+}
+
+table.tablesorter.platforms tr td.td3 a span {
+    background: image-url('x.png') no-repeat 0 0 transparent;
+    width: 12px;
+    display: inline-block;
+}

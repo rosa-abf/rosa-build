@@ -1,4 +1,22 @@
-%table.table
+%table#myTable.tablesorter.platforms{:cellspacing => "0", :cellpadding => "0"}
+  %thead
+    %tr
+      %th.th1= t("activerecord.attributes.platform.name")
+      %th.th2= t("activerecord.attributes.platform.distrib_type")
+      %th.th3= t("layout.delete")
+  %tbody
+    - @platforms.each do |platform|
+      %tr{:class => cycle("odd", "even")}
+        %td
+          = link_to platform.name, platform_path(platform)
+        %td
+          = platform.distrib_type
+        %td.td3
+          - if can? :destroy, platform
+            = link_to platform_path(platform), :method => :delete, :confirm => t("layout.platforms.confirm_delete") do
+              %span &nbsp;
+
+-#%table.table
   %tr
     %th.first= t("activerecord.attributes.platform.name")
     %th.first= t("activerecord.attributes.platform.distrib_type")
