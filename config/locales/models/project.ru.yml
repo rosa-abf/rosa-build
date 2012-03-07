@@ -3,6 +3,7 @@ ru:
     projects:
       add: Добавить
       edit: Редактировать
+      fork_and_edit: Клонировать и редактировать
       list: Список
       list_header: Проекты
       edit_header: Редактировать проект
@@ -11,8 +12,6 @@ ru:
       new_build: Новая сборка %{project_name}
       confirm_delete: Вы уверены, что хотите удалить этот проект?
       new: Новый проект
-      new_header: Новый проект
-      new_header: Новый проект
       location: Расположение
       git_repo_location: Путь к git-репозиторию
       current_project_header: Текущий проект
@@ -23,6 +22,8 @@ ru:
       collaborators: Коллабораторы
       groups: Группы
       edit_collaborators: Изменить список участников
+      role: Роль в проекте
+      remove_user: Покинуть проект
       issues: Задачи
       wiki: Wiki
       delete_warning: Внимание! Удаленный проект восстановлению не подлежит.
@@ -51,6 +52,7 @@ ru:
       destroyed: Проект успешно удален
       forked: Проект успешно форкнут
       fork_error: Ошибка форка
+      user_removed: Пользователь успешно удален из проекта
 
   activerecord:
     models:

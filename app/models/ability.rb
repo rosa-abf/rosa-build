@@ -53,6 +53,7 @@ class Ability
         can([:update, :sections, :manage_collaborators], Project) {|project| local_admin? project}
         can(:fork, Project) {|project| can? :read, project}
         can(:destroy, Project) {|project| owner? project}
+        can :remove_user, Project
 
         # TODO: Turn on AAA when it will be updated
         #can :create, AutoBuildList

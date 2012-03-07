@@ -1,7 +1,7 @@
 %h3= t("layout.projects.files_in_project")
 .files
-  .l
-    = render :partial => 'git/shared/whereami'
+  .l= render :partial => 'git/shared/whereami'
+  = render :partial => 'git/shared/fork'
 .both
 
 = form_tag blob_file_path, :name => 'blob-editor', :method => :put do

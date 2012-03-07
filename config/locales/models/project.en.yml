@@ -3,6 +3,7 @@ en:
     projects:
       add: Add
       edit: Edit
+      fork_and_edit: Fork and Edit
       list: List
       list_header: Projects
       edit_header: Edit the project
@@ -11,8 +12,6 @@ en:
       new_build: New build %{project_name}
       confirm_delete: Are you sure to delete this project?
       new: New project
-      new_header: New project
-      new_header: New project
       location: Location
       git_repo_location: Path to git repo
       current_project_header: Current project
@@ -23,6 +22,8 @@ en:
       collaborators: Collaborators
       groups: Groups
       edit_collaborators: Edit collaborators
+      role: Project role
+      remove_user: Leave project
       issues: Issues
       wiki: Wiki
       delete_warning: Attention! Deleted project can not be restored!
@@ -51,6 +52,7 @@ en:
       destroyed: Project deleted
       forked: Project forked
       fork_error: Project fork error
+      user_removed: User successfully removed from project
 
   activerecord:
     models:
