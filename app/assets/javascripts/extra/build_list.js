@@ -1,5 +1,5 @@
 $(document).ready(function() {
-  $('select#build_list_pl_id').change(function() {
+  $('#build_list_pl_id').change(function() {
     var platform_id = $(this).val();
     var base_platforms = $('.base_platforms input[type=checkbox]');
 
@@ -19,5 +19,5 @@ $(document).ready(function() {
       }
     });
   });
-  $('select#build_list_pl_id').trigger('change');
+  $('#build_list_pl_id').trigger('change');
 });
