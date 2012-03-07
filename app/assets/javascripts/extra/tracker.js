@@ -171,7 +171,7 @@ $(document).ready(function() {
     var clone = $(this).clone();
     form_new.find('#flag-span').fadeOut(0);
     form_new.find('#issue_labels').append(clone);
-    var labels = $('#active_labels');
+    var labels = $('.current_labels');
     labels.find('#'+$(this).attr('id')).remove();
     labels.append(clone);
   });
@@ -243,7 +243,7 @@ $(document).ready(function() {
 
   $('.button.manage_executor').live('click', function() {
     $('form#search_user, .button.update_executor').fadeIn(0);
-    $('.current_executor .people').addClass('remove_executor selected');
+    $('.current_executor .people').addClass('remove_executor selected').removeClass('nopointer');
     $(this).fadeOut(0);
   });
 
@@ -259,6 +259,7 @@ $(document).ready(function() {
       url: form.attr("action"),
       data: form.serialize(),
       success: function(data){
+                      $('.current_executor .people').removeClass('remove_executor selected').addClass('nopointer');
                       $('form#search_user, .button.update_executor').fadeOut(0);
                       $('.button.manage_executor').fadeIn(0);
                       $('#manage_issue_users_list').html('');
