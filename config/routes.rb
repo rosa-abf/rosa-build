@@ -147,18 +147,13 @@ Rosa::Application.routes.draw do
         post :update
       end
     end
-#    resources :groups, :controller => 'project_groups' do
-#    end
 
-    collection do
-      get :auto_build
-    end
     member do
       post :fork
-#      get :new, :controller => 'projects', :action => 'new', :id => /new/, :as => :new
       get :show, :controller => 'git/trees', :action => :show
       get :sections
       post :sections
+      delete :remove_user
     end
   end
 
@@ -188,8 +183,6 @@ Rosa::Application.routes.draw do
 
   resources :users, :groups do
     resources :platforms, :only => [:new, :create]
-
-    resources :projects, :only => [:index]
 
 #    resources :repositories, :only => [:new, :create]
   end

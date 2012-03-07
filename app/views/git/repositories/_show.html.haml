@@ -1,7 +1,7 @@
 %h3= t("layout.projects.files_in_project")
 .files
-  .l
-    = render :partial => 'git/shared/whereami'
+  .l= render :partial => 'git/shared/whereami'
+  = render :partial => 'git/shared/fork'
 .both
 
 %table#myTable.tablesorter.project{:cellpadding => "0", :cellspacing => "0"}
