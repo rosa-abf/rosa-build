@@ -13,3 +13,6 @@ Rosa::Application.config.middleware.insert_before ::Grack::Handler, ::Grack::Aut
 # Grit::Git.git_timeout = 60
 
 Dir[Rails.root.join("lib/ext/**/*.rb")].each {|f| require f}
+
+# add rpm spec as mime type for *.spec files
+MIME::Types.add(MIME::Type.from_array(["text/x-rpm-spec", ['spec'], '8bit']))
