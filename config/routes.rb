@@ -117,7 +117,8 @@ Rosa::Application.routes.draw do
         match ':ref' => 'wiki#show', :as => :versioned, :via => :get
 
         post :compare
-        match 'compare/*versions' => 'wiki#compare', :as => :compare_versions, :via => :get
+        #match 'compare/*versions' => 'wiki#compare', :as => :compare_versions, :via => :get
+        match 'compare/:versions' => 'wiki#compare', :versions => /([a-f0-9\^]{6,40})(\.\.\.[a-f0-9\^]{6,40})/, :as => :compare_versions, :via => :get
       end
     end
     resources :issues, :except => :edit do

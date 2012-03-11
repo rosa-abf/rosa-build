@@ -1,12 +1,11 @@
 # -*- encoding : utf-8 -*-
 class CommentsController < ApplicationController
   before_filter :authenticate_user!
-  before_filter :set_commentable, :only => [:index, :edit, :create, :update, :destroy]
-  #before_filter :find_project, :only => [:index, :edit]
-  before_filter :find_comment, :only => [:edit, :update, :destroy]
 
-  authorize_resource :only => [:show, :edit, :update, :destroy]
-  authorize_resource :project, :only => [:index]
+  load_resource :project
+  before_filter :set_commentable
+  before_filter :find_comment, :only => [:edit, :update, :destroy]
+  authorize_resource
 
   def index
     @comments = @commentable.comments
@@ -14,8 +13,11 @@ class CommentsController < ApplicationController
 
   def create
     @comment = @commentable.comments.build(params[:comment]) if @commentable.class == Issue
-    @comment = Comment.new(params[:comment].merge(:commentable_id => @commentable.id.hex, :commentable_type => @commentable.class.name, :project => @project)) if @commentable.class == Grit::Commit
-    @comment.user = current_user
+    if @commentable.class == Grit::Commit
+      @comment = Comment.new(params[:comment].merge(:commentable_id => @commentable.id.hex, :commentable_type => @commentable.class.name))
+      @comment.project = @project
+    end
+    @comment.user_id = current_user.id
     if @comment.save
       flash[:notice] = I18n.t("flash.comment.saved")
       redirect_to commentable_path
@@ -54,23 +56,12 @@ class CommentsController < ApplicationController
 
   private
 
-  def find_commentable
-    #params.each do |name, value|
-    #  if name =~ /(.+)_id$/
-    #    return $1.classify.constantize.find(value)
-    #  end
-    #end
-    #nil
-    if params[:issue_id].present?
-      return Issue.find_by_serial_id_and_project_id(params[:issue_id], params[:project_id])
-    elsif params[:commit_id].present?
-      return @project.git_repository.commit(params[:commit_id])
-    end
-  end
-
   def set_commentable
-    find_project
-    @commentable = find_commentable
+    @commentable = if params[:issue_id].present?
+                                  @project.issues.find_by_serial_id params[:issue_id]
+                                elsif params[:commit_id].present?
+                                  @project.git_repository.commit params[:commit_id]
+                                end
   end
 
   def find_comment
@@ -80,12 +71,6 @@ class CommentsController < ApplicationController
       @comment.helper
     end
   end
-
-  def find_project
-    @project = Project.find(params[:project_id])
-  end
-
-  protected
 
   def commentable_path
     @commentable.class == Issue ? [@project, @commentable] : commit_path(@project, @commentable.id)

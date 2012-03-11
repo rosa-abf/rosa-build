@@ -1,7 +1,12 @@
 ru:
   layout:
-    activity_feed: 
-      header: Лента активности    
+    activity_feed:
+      header: Лента активности
+      my_last_projects: Мои последние проекты
+      all_my_projects: Все мои проекты
+      all_my_builds: Все мои сборки
+      my_builds_by_day: Мои сборки за 24 часа
+      new_project: Создать проект
 
   notifications:
     subjects:
@@ -13,19 +18,21 @@ ru:
       invite_approve_notification: Приглашение в ABF
 
     bodies:
-      new_comment_notification: 
-        title: Здравствуйте, %{user_name}.
-        content: К задаче %{issue_link} был добавлен новый комментарий.
-        commit_content: К коммиту %{commit_link} был добавлен новый комментарий.
-      new_issue_notification: 
-        title: Здравствуйте, %{user_name}.
-        content: К проекту %{project_link} была добавлена задача %{issue_link}
-      new_user_notification: 
+      new_comment_notification:
+        title: Пользователь %{user_name} добавил новый комментарий
+        content: Задача %{issue_link}
+        commit_content: Коммит %{commit_link}
+      new_issue_notification:
+        title: Пользователь %{user_name} добавил новую задачу
+        content: Проект %{project_link}. Задача %{issue_link}
+      new_user_notification:
         title: Здравствуйте, %{user_name}.
         content: Вы зарегистрированы на проекте «ROSA Build System» и теперь можете войти в систему.
         email: ==Ваш email %{user_email}
         password: ==Ваш пароль %{user_password}
-      issue_assign_notification: 
-        title: Здравствуйте, %{user_name}.
-        content: Вам была назначена задача %{issue_link}
+      issue_assign_notification:
+        title: Вам была назначена задача %{issue_link}
+      wiki_new_commit_notification: 
+        title: Пользователь  обновил wiki
+        content: Изменил %{history_link} в проекте %{project_link}
       invite_approve_notification: Приглашение в ABF

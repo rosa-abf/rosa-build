@@ -11,7 +11,7 @@
     %span.subject #{ t("notifications.bodies.new_comment_notification.title", :user_name => user_name) }
   .both
 .fulltext
-  = raw t("notifications.bodies.new_comment_notification.content", {:issue_link => link_to(issue_title, project_issue_path(project_id, issue_serial_id))})
+  = raw t("notifications.bodies.new_comment_notification.commit_content", {:commit_link => link_to(commit_message, commit_path(project_id, commit_id))})
   %br
   %br
   "#{ comment_body }"

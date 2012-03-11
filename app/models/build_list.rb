@@ -62,6 +62,7 @@ class BuildList < ActiveRecord::Base
     where(["status in (?) OR (status in (?) AND notified_at >= ?)", [WAITING_FOR_RESPONSE, BUILD_PENDING, BuildServer::BUILD_STARTED], outdatable_statuses, Time.now - 2.days])
   }
   scope :for_status, lambda {|status| where(:status => status) }
+  scope :for_user, lambda { |user| where(:user_id => user.id)  }
   scope :scoped_to_arch, lambda {|arch| where(:arch_id => arch) }
   scope :scoped_to_project_version, lambda {|project_version| where(:project_version => project_version) }
   scope :scoped_to_is_circle, lambda {|is_circle| where(:is_circle => is_circle) }
