@@ -6,6 +6,7 @@ en:
       list: List
       new: Create
       edit: Edit
+      about: About platform
       new_header: New platform
       edit_header: Edit
       list_header: Platforms

@@ -462,3 +462,22 @@ table.tablesorter.platforms tr td.td3 a span {
 }
 
 #fork-and-edit {display:block;}
+
+a.button.left_floated {
+    display: inline-block;
+    float: left;
+    margin-right: 5px;
+}
+
+div.buttons_block {
+    margin-top: 20px;
+}
+
+table.tablesorter.unbordered {
+    border: none;
+}
+
+table.tablesorter.unbordered tr td {
+    border: none;
+    padding: 3px;
+}
