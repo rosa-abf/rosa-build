@@ -1,7 +1,7 @@
 .left
   = image_tag avatar_url(@user, :big)
   %br
-  = link_to t("layout.users.edit"), edit_user_path(@user), :class => 'button width81' if can? :edit, @user
+  = link_to t("layout.users.settings"), edit_user_path(@user), :class => 'button width81' if can? :edit, @user
 .left
   %h3= @user.uname
   = @user.name

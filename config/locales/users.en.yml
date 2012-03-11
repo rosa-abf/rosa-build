@@ -4,6 +4,7 @@ en:
       list: List
       new: Create
       edit: Edit
+      settings: Settings
       new_header: New user
       edit_header: Edit
       list_header: Users
