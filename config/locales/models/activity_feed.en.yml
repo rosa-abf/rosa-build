@@ -21,7 +21,7 @@ en:
       new_comment_notification: 
         title: User %{user_name} has been added a new comment.
         content: Issue %{issue_link}
-        commit_content: To the commit %{commit_link} added a comment.
+        commit_content: Commit %{commit_link}
       new_issue_notification: 
         title: User %{user_name} has been added an issue.
         content: Project %{project_link}. Issue %{issue_link}

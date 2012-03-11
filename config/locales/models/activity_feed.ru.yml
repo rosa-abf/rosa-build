@@ -21,7 +21,7 @@ ru:
       new_comment_notification:
         title: Пользователь %{user_name} добавил новый комментарий
         content: Задача %{issue_link}
-        commit_content: К коммиту %{commit_link} был добавлен новый комментарий.
+        commit_content: Коммит %{commit_link}
       new_issue_notification:
         title: Пользователь %{user_name} добавил новую задачу
         content: Проект %{project_link}. Задача %{issue_link}

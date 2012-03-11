@@ -4,10 +4,11 @@
   .text
     %span.name
       = link_to user_name, user_path(user_id)
-    %br
+    .both
       %span.date= activity_feed.created_at
-      %br
-        %span.subject #{ t("notifications.bodies.new_commit_comment_notification.title", :user_name => user_name) }
+    .both
+  .both
+    %span.subject #{ t("notifications.bodies.new_comment_notification.title", :user_name => user_name) }
   .both
 .fulltext
   = raw t("notifications.bodies.new_comment_notification.commit_content", {:commit_link => link_to(commit_message, commit_path(project_id, commit_id))})

@@ -4,10 +4,11 @@
   .text
     %span.name
       = link_to activity_feed.user.uname, user_path(activity_feed.user.uname)
-    %br
+    .both
       %span.date= activity_feed.created_at
-      %br
-        %span.subject #{ t("notifications.bodies.new_user_notification.title", :user_name => user_name) }
+    .both
+  .both
+    %span.subject #{ t("notifications.bodies.new_user_notification.title", :user_name => user_name) }
   .both
 .fulltext
   #{ t("notifications.bodies.new_user_notification.content") }
