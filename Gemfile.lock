@@ -341,6 +341,6 @@ DEPENDENCIES
   therubyracer (~> 0.9.10)
   uglifier (~> 1.2.1)
   unicorn (~> 4.2.0)
-  whenever
+  whenever (~> 0.7.3)
   wikicloth
   will_paginate (~> 3.0.3)
