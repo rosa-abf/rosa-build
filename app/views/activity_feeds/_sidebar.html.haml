@@ -3,7 +3,7 @@
   %h3= t("layout.activity_feed.my_last_projects")
   %table
     %tbody
-      - current_user.projects.each do |project|
+      - current_user.projects.order('updated_at DESC').limit(5).each do |project|
         %tr
           %td
             - if project.public?
