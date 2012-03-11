@@ -18,7 +18,7 @@ class Git::Repository
   end
 
   def repo
-    @repo ||= Grit::Repo.new(path)
+    @repo ||= Grit::Repo.new(path) rescue Grit::Repo.new(GAP_REPO_PATH)
   end
 
   # Adds a callback to be fired after update file.

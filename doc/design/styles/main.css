@@ -298,7 +298,7 @@ header div.droplist a:hover{
 	color: #575756;
 	text-decoration: none;
 	height: 34px;
-	padding: 0px 20px 6px 20px;
+	padding: 0px 20px 8px 20px;
 }
 
 .sub-menu nav ul li a.active {
@@ -649,6 +649,13 @@ article div.all.bigpadding div.rightside {
 
 .width70 {
 	width: 70px;
+}
+
+a.button.width81 {
+	width: 79px;
+	padding: 4px 0px;
+	text-align: center;
+	
 }
 
 
@@ -1936,6 +1943,13 @@ img.delete-row {
 	cursor: pointer;
 }
 
+table tbody tr.error td {
+	background: #e7bcbc;
+}
+
+table tbody tr.success td {
+	background: #e3edb7;
+}
 
 /* Create group */
 
@@ -2121,7 +2135,7 @@ div.pagination a {
 /*404*/
 
 article div.all.error404 {
-	background: url("../pics/404.png") no-repeat 59% 0;
+	background: url("../pics/404.png") no-repeat 49% 0;
 	height: 500px;
 	text-align: center;
 }
@@ -2161,6 +2175,98 @@ article div.all.error404 p.pages {
 article div.all.error404 p.search {
 	margin-top: 80px;
 	width: 230px;
+}
+
+/*500*/
+
+article div.all.error500 {
+	background: url("../pics/500.png") no-repeat 49% 0;
+	height: 500px;
+	text-align: center;
+}
+
+article div.all.error500 h1 {
+	margin: 0;
+	padding: 0;
+	margin-top: 135px;
+	font-size: 48px;
+	font-weight: normal;
+}
+
+article div.all.error500 h1 span {
+	color: #4496d0;
+}
+
+article div.all.error500 h2 {
+	margin: 0;
+	padding: 0;
+	margin-top: 5px;
+	font-size: 18px;
+	font-weight: normal;
+	text-align: left;
+	margin-left: 298px;
+}
+
+article div.all.error500 p {
+	margin: 0 auto;
+	padding: 0;
+	text-align: center;
+	font-size: 14px;
+}
+
+article div.all.error500 p.pages {
+	margin-top: 55px;
+	width: 280px;
+}
+
+article div.all.error500 p.search {
+	margin-top: 80px;
+	width: 230px;
+}
+
+/*503*/
+
+article div.all.error503 {
+	background: url("../pics/503.png") no-repeat 50% 0;
+	height: 500px;
+	text-align: center;
+}
+
+article div.all.error503 h1 {
+	margin: 0;
+	padding: 0;
+	margin-top: 395px;
+	font-size: 38px;
+	font-weight: normal;
+	text-align: center;
+	
+}
+
+article div.all.error503 h1 span {
+	color: #4496d0;
+}
+
+article div.all.error503 h2 {
+	margin: 0;
+	padding: 0;
+	margin-top: 25px;
+	font-size: 18px;
+	font-weight: normal;
+	text-align: left;
+	margin-left: 215px;
+}
+
+article div.all.error503 {
+	min-height: 630px;
+}
+
+article div.all.error503 h2 span {
+	color: #4496d0;
+}
+
+div.wrap.tmargin30 {
+	margin-top: 30px;
+	min-height: 91%;
 }
 
 /*search*/

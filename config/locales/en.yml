@@ -52,6 +52,7 @@ en:
         notice_header: You can receive notifies from other collaborators about changes into code of your projects. Notifies will be sent to your email %{email}.
         change_email_link: Change email address
         code_header: Code
+        tracker_header: Tracker
 
     devise:
       shared_links:

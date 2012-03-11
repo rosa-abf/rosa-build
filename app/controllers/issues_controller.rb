@@ -38,12 +38,9 @@ class IssuesController < ApplicationController
   end
 
   def create
-    @user_id = params[:user_id]
     @user_uname = params[:user_uname]
-
     @issue = @project.issues.new(params[:issue])
     @issue.creator_id = current_user.id
-    @issue.user_id = @user_id
 
     if @issue.save
       @issue.subscribe_creator(current_user.id)
@@ -68,7 +65,7 @@ class IssuesController < ApplicationController
       status = 200 if @issue.update_attributes(params[:issue])
       render :nothing => true, :status => (status || 500), :layout => false
     else
-      render :nothing => true, :status => 200, :layout => false 
+      render :nothing => true, :status => 200, :layout => false
     end
   end
 
@@ -100,11 +97,6 @@ class IssuesController < ApplicationController
     users2 = @project.collaborators.where("users.uname ILIKE ?", search)
     @users = (users + users2).uniq.sort {|x,y| x.uname <=> y.uname}.first(10)
     render 'issues/_search_collaborators', :layout => false
-  end
-
-  def search_labels
-    @labels = @project.labels.where("labels.name ILIKE ?", "%#{params[:search_labels]}%").order('labels.name').limit(10)
-    render 'issues/_search_labels', :layout => false
   end
 
   private

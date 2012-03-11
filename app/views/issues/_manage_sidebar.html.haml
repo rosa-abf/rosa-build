@@ -16,7 +16,7 @@
         =form_for :issue, :url => [@project, @issue], :method => :put, :html => { :class => 'edit_executor issue'} do |f|
           .current_executor
             - if @issue.user
-              #user-0.people
+              #user-0.people.nopointer
                 .avatar=image_tag avatar_url(@issue.user), :alt => 'avatar'
                 .name="#{@issue.user.uname} (#{@issue.user.name})"
                 =hidden_field_tag "user-0", @issue.user.id, :name => 'issue[user_id]'
@@ -36,26 +36,23 @@
 
   .block
     %h3=t('layout.issues.labels')
-    - if @issue.persisted?
-      - if can_manage
-        =form_for :issue, :url => [@project, @issue], :method => :put, :html => { :class => 'edit_labels issue'} do |f|
-          .current_labels
-            - (@issue.labels || []).each do |label|
-              .label.selected{:id => "flag#{label.id}"}
-                .flag{:style => "display:none; background: ##{label.color}"}
-                .labeltext.selected{:style => "background: ##{label.color}"}=label.name
-                =hidden_field_tag "label-#{label.id}", label.id, :name => "issue[labelings_attributes][#{label.id}][label_id]"
-                .both
-      - else
-        - (@issue.labels || []).each do |label|
-          .label.nopointer
-            .labeltext.selected{:style => "background: ##{label.color};"}
-              =label.name
-            .both
-      =link_to(t('layout.issues.label_manage'), '#', :class => "button tmargin10 manage_labels") if can_manage
     - if can_manage
-      =form_tag search_labels_project_issues_path(@project), :id => 'search_labels', :method => :get, :style => @issue.persisted? ? 'display:none' : '' do
-        =tracker_search_field(:search_labels, t('layout.issues.search_labels'))
-      #manage_issue_labels_list
-        =render 'issues/search_labels'
-      =link_to(t('layout.issues.done'), '#', :class => "button tmargin10 update_labels", :style => 'display:none') if can_manage
+      .current_labels
+        - (@project.labels || []).each do |label|
+          - is_issue_label = @issue.labels.include? label
+          .label{:id => "flag#{label.id}", :class => @issue.persisted? ? 'nopointer' : 'add_label'}
+            .flag{:style => "background: ##{label.color}; #{is_issue_label ? 'display:none;' : ''}"}
+            .labeltext{:class => is_issue_label ? 'selected' : '', :style => is_issue_label ? "background: ##{label.color}" : ''}=label.name
+            .both=hidden_field_tag "flag#{label.id}", label.id, :name => "issue[labelings_attributes][#{label.id}][label_id]"
+      =form_for :issue, :url => [@project, @issue], :method => :put, :html => { :class => 'edit_labels issue'} do |f|
+        .manage_labels
+          - @issue.labels.each do |label|
+            =hidden_field_tag "flag#{label.id}", label.id, :name => "issue[labelings_attributes][#{label.id}][label_id]"
+    - else
+      - (@issue.labels || []).each do |label|
+        .label.nopointer
+          .labeltext.selected{:style => "background: ##{label.color};"}=label.name
+          .both
+    - if can_manage && @issue.persisted?
+      =link_to(t('layout.issues.label_manage'), '#', :class => "button tmargin10 manage_labels")
+      =link_to(t('layout.issues.done'), '#', :class => "button tmargin10 update_labels", :style => 'display:none')

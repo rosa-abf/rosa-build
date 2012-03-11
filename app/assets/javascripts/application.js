@@ -31,10 +31,6 @@ $(document).ready(function() {
       disableNotifierCbx($(this));
   });
 
-  $('div.information > div.user').live('click', function() {
-      droplist();
-  });
-
   $('div.information > div.profile > a').live('click', function(e) {
       e.preventDefault();
   });

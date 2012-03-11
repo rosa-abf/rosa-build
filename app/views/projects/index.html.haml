@@ -1,16 +1,12 @@
-.block
-  .secondary-navigation
-    %ul.wat-cf
-      %li.first.active= link_to t("layout.projects.list"), projects_path
-      %li= link_to t("layout.projects.new"), new_project_path
-  .content
-    %h2.title
-      = t("layout.projects.list_header")
-    .inner
-      = render :partial => 'shared/search_form'
-      = render :partial => 'projects/list', :object => @projects
-      .actions-bar.wat-cf
-        .actions
-          = will_paginate @projects, :param_name => :project_page
+= link_to t('layout.projects.new'), new_project_path, :class => 'button' if can?(:create, Project)
 
-- content_for :sidebar, render(:partial => 'own_projects_sidebar')
+%table#myTable.tablesorter{:cellpadding => "0", :cellspacing => "0"}
+  %thead
+    %tr
+      %th.th1= t("activerecord.attributes.project.name")
+      %th.th2= t("activerecord.attributes.project.description")
+      %th.th3= t("layout.projects.role")
+      %th.th4= t("layout.projects.remove_user")
+  %tbody= render @projects
+
+= will_paginate

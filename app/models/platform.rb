@@ -26,6 +26,7 @@ class Platform < ActiveRecord::Base
   after_destroy lambda { umount_directory_for_rsync unless hidden? }
   after_update :update_owner_relation
 
+  scope :search_order, order("CHAR_LENGTH(name) ASC")
   scope :search, lambda {|q| where("name ILIKE ?", "%#{q}%").open}
   scope :by_visibilities, lambda {|v| where(:visibility => v)}
   scope :open, where(:visibility => 'open')

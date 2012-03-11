@@ -15,4 +15,8 @@ module ProjectsHelper
       }
     )
   end
+
+  def visibility_icon(visibility)
+    visibility == 'open' ? 'unlock.png' : 'lock.png'
+  end
 end
