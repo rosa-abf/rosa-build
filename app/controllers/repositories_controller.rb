@@ -12,9 +12,9 @@ class RepositoriesController < ApplicationController
 
   def index
     if params[:platform_id]
-      @repositories = Platform.find(params[:platform_id]).repositories.paginate(:page => params[:repository_page])
+      @repositories = Platform.find(params[:platform_id]).repositories.paginate(:page => params[:page])
     else
-      @repositories = Repository.paginate(:page => params[:repository_page])
+      @repositories = Repository.paginate(:page => params[:page])
     end
   end
 

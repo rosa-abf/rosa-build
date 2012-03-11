@@ -11,10 +11,10 @@
           = link_to platform.name, platform_path(platform)
         %td
           = platform.distrib_type
-        %td.td3
+        %td.buttons
           - if can? :destroy, platform
             = link_to platform_path(platform), :method => :delete, :confirm => t("layout.platforms.confirm_delete") do
-              %span &nbsp;
+              %span.delete &nbsp;
 
 -#%table.table
   %tr
