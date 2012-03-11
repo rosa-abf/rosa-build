@@ -38,12 +38,9 @@ class IssuesController < ApplicationController
   end
 
   def create
-    @user_id = params[:user_id]
     @user_uname = params[:user_uname]
-
     @issue = @project.issues.new(params[:issue])
     @issue.creator_id = current_user.id
-    @issue.user_id = @user_id
 
     if @issue.save
       @issue.subscribe_creator(current_user.id)
