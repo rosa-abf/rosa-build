@@ -251,12 +251,14 @@ class WikiController < ApplicationController
     end
 
     def committer
-      p = commit_message.merge({:name => current_user.uname, :email => current_user.email})
-      @committer ||= Gollum::Committer.new(@wiki, p)
+      unless @committer
+        p = commit_message.merge({:name => current_user.uname, :email => current_user.email})
+        @committer = Gollum::Committer.new(@wiki, p)
       # @committer.after_commit do |committer, sha1|
       #   here goes callback for notification
       # end
-      ActivityFeedObserver.instance.after_create(@committer).delay
+        ActivityFeedObserver.instance.after_create(@committer).delay
+      end
       @committer
     end
 
