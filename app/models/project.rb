@@ -26,10 +26,11 @@ class Project < ActiveRecord::Base
   validates_attachment_size :srpm, :less_than => 500.megabytes
   validates_attachment_content_type :srpm, :content_type => ['application/octet-stream', "application/x-rpm", "application/x-redhat-package-manager"], :message => I18n.t('layout.invalid_content_type')
 
-  #attr_accessible :category_id, :name, :description, :visibility
+  attr_accessible :name, :description, :visibility, :srpm, :is_rpm, :default_branch, :has_issues, :has_wiki
   attr_readonly :name
 
   scope :recent, order("name ASC")
+  scope :search_order, order("CHAR_LENGTH(name) ASC")
   scope :search, lambda {|q| by_name("%#{q}%").open}
   scope :by_name, lambda {|name| where('projects.name ILIKE ?', name)}
   scope :by_visibilities, lambda {|v| where(:visibility => v)}
@@ -151,7 +152,7 @@ class Project < ActiveRecord::Base
   end
 
   def fork(new_owner)
-    clone.tap do |c|
+    dup.tap do |c|
       c.parent_id = id
       c.owner = new_owner
       c.updated_at = nil; c.created_at = nil # :id = nil

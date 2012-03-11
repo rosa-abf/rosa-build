@@ -1,7 +1,4 @@
-%h3.bpadding10
-  = t("layout.projects.new_header")
+%h3.bpadding10= t("layout.projects.new")
 
 = form_for @project, :html => { :class => :form, :multipart => true } do |f|
   = render :partial => "form", :locals => {:f => f}
-
--# content_for :sidebar, render('sidebar')

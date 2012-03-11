@@ -1,7 +1,7 @@
 %h3= t("layout.projects.files_in_project")
 .files
-  .l
-    = render :partial => 'git/shared/whereami'
+  .l= render :partial => 'git/shared/whereami'
+  = render :partial => 'git/shared/fork'
 .both
 
 = form_tag blob_file_path, :name => 'blob-editor', :method => :put do
@@ -36,7 +36,7 @@
 
 :javascript
   $(function() {
-    var editor = CodeMirror.fromTextArea(document.getElementById('code'), {lineNumbers: true, mode: '#{@blob.mime_type}', theme: 'eclipse'});
+    var editor = CodeMirror.fromTextArea(document.getElementById('code'), {lineNumbers: true, mode: '#{@blob.raw_mime_type.content_type}', theme: 'eclipse'});
   });
 
 / - content_for :javascripts do

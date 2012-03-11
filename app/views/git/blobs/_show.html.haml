@@ -1,7 +1,7 @@
 %h3= t("layout.projects.files_in_project")
 .files
-  .l
-    = render :partial => 'git/shared/whereami'
+  .l= render :partial => 'git/shared/whereami'
+  = render :partial => 'git/shared/fork'
 .both
 
 - render_way = choose_render_way(@blob)
@@ -53,5 +53,5 @@
 :javascript
   $(document).ready(function() {
     var text = $('#code').text().replace(/&amp;/gi, '&');
-    CodeMirror.runMode(text, "#{File.extname(@blob.name) == '.spec' ? 'text/x-rpm-spec' : @blob.mime_type}", document.getElementById("output"));
+    CodeMirror.runMode(text, "#{@blob.raw_mime_type.content_type}", document.getElementById("output"));
   });

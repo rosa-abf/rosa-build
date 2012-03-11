@@ -1,6 +1,7 @@
 - content_for :sidebar do
   .bordered.nopadding
     %h3= t('layout.build_lists.build_server_status.header')
+
     .table
       .lefter= t('layout.build_lists.build_server_status.client_count')
       .righter= @build_server_status['client_count']
@@ -13,6 +14,8 @@
       .lefter= t('layout.build_lists.build_server_status.count_build_task')
       .righter= @build_server_status['count_build_task']
     .both
+    %br
+    = link_to t('layout.build_lists.new_header'), new_project_build_list_path(@project), :class => 'button' if @project and can?(:create, @project.build_lists.build)
 
   = form_for :filter, :url => @action_url, :html => { :method => :post, :class => :form } do |f|
     .bordered.nopadding

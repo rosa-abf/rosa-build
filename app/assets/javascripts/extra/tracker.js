@@ -106,7 +106,7 @@ $(document).ready(function() {
     return false;
   };
 
-  $('#search_user, #search_labels').live('submit', function() {
+  $('#search_user').live('submit', function() {
     var id = $(this).attr('id');
     if(id.indexOf('user') != -1) { // FIXME
       var which = 'users';
@@ -171,14 +171,13 @@ $(document).ready(function() {
     var clone = $(this).clone();
     form_new.find('#flag-span').fadeOut(0);
     form_new.find('#issue_labels').append(clone);
-    var labels = $('#active_labels');
-    labels.find('#'+$(this).attr('id')).remove();
-    labels.append(clone);
+    var labels = $('.manage_labels');
+    labels.append($(this).find('#'+$(this).attr('id')));
   });
 
   $('.remove_label.label.selected').live('click', function() {
     var id = $(this).attr('id');
-    $('.current_labels, #active_labels').find('#'+id+'.label.selected.remove_label').remove();
+    $('.manage_labels, #active_labels').find('#'+id+'.label.selected.remove_label').remove();
     var form = $('.form.issue');
     if(form.find('.remove_label.label.selected').length == 1) {
       form.find('#flag-span').fadeIn(0);
@@ -189,6 +188,7 @@ $(document).ready(function() {
     label.removeClass('selected').addClass('add_label').removeClass('remove_label');
     label.find('.labeltext.selected').attr('style', '').removeClass('selected');
     label.find('.flag').fadeIn(0);
+    $('.manage_labels').find('#'+$(this).attr('id')).remove();
   });
 
   $('.issue_status.switch_issue_status').live('click', function () {
@@ -243,12 +243,14 @@ $(document).ready(function() {
 
   $('.button.manage_executor').live('click', function() {
     $('form#search_user, .button.update_executor').fadeIn(0);
-    $('.current_executor .people').addClass('remove_executor selected');
+    $('.current_executor .people').addClass('remove_executor selected').removeClass('nopointer');
     $(this).fadeOut(0);
   });
 
   $('.button.manage_labels').live('click', function() {
-    $('form#search_labels, .button.update_labels').fadeIn(0);
+    $('.button.update_labels').fadeIn(0);
+    $('.current_labels .label .labeltext.selected').parent().addClass('remove_label selected').removeClass('nopointer');
+    $('.current_labels .label .labeltext:not(.selected)').parent().addClass('add_label').removeClass('nopointer');
     $(this).fadeOut(0);
   });
 
@@ -259,6 +261,7 @@ $(document).ready(function() {
       url: form.attr("action"),
       data: form.serialize(),
       success: function(data){
+                      $('.current_executor .people').removeClass('remove_executor selected').addClass('nopointer');
                       $('form#search_user, .button.update_executor').fadeOut(0);
                       $('.button.manage_executor').fadeIn(0);
                       $('#manage_issue_users_list').html('');
@@ -277,7 +280,8 @@ $(document).ready(function() {
       url: form.attr("action"),
       data: form.serialize(),
       success: function(data){
-                      $('form#search_labels, .button.update_labels').fadeOut(0);
+                      $('.current_labels .label').removeClass('remove_label selected').addClass('nopointer');
+                      $('.button.update_labels').fadeOut(0);
                       $('.button.manage_labels').fadeIn(0);
                       $('#manage_issue_labels_list').html('');
                     },

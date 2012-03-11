@@ -52,9 +52,11 @@ module GitHelper
   end
 
   def choose_render_way(blob)
-    return :image if blob.mime_type.match(/image/)
-    return :text  if blob.mime_type.match(/text|xml|json/)
-    :binary
+    return :image  if blob.mime_type.match(/image/)
+    return :binary if blob.binary?
+    :text
+#    return :text  if blob.mime_type.match(/text|xml|json/)
+#    :binary
   end
 
   def force_encoding_to_site(string)

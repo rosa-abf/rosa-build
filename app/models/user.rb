@@ -42,6 +42,7 @@ class User < ActiveRecord::Base
   attr_readonly :uname
   attr_accessor :login
 
+  scope :search_order, order("CHAR_LENGTH(uname) ASC")
   scope :search, lambda {|q| where("uname ILIKE ?", "%#{q}%")}
 
   after_create lambda { self.create_notifier }

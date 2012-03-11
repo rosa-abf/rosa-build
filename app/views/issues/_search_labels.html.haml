@@ -1,6 +1,0 @@
-- (@labels || []).each do |label|
-  .add_label.label{:id => "flag#{label.id}"}
-    .flag{:style => "background: ##{label.color};"}
-    .labeltext=label.name
-    =hidden_field_tag "label-#{label.id}", label.id, :name => "issue[labelings_attributes][#{label.id}][label_id]"
-    .both
