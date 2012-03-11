@@ -1,6 +1,6 @@
 .top
   .image
-    = image_tag(gravatar_url(activity_feed.user.email, 30))
+    = image_tag(avatar_url_by_email(activity_feed.user.email, :small), :alt => 'avatar')
   .text
     %span.name
       = link_to activity_feed.user.uname, user_path(activity_feed.user.uname)
