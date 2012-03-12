@@ -8,6 +8,10 @@ class ProductsController < ApplicationController
   load_and_authorize_resource :platform
   load_and_authorize_resource :product, :through => :platform
 
+  def index
+    @products = @products.paginate(:page => params[:page])
+  end
+
   def new
     @product = @platform.products.new
     @product.ks = DEFAULT_KS

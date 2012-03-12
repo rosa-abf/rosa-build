@@ -1,3 +1,4 @@
+= render :partial => 'platforms/submenu' if params[:platform_id]
 = render :partial => 'platforms/sidebar' if params[:platform_id]
 = link_to t("layout.repositories.new"), new_platform_repository_path(@platform), :class => 'button' if can? :create, @platform.repositories.build
 = render :partial => 'list', :object => @repositories
