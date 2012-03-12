@@ -23,6 +23,7 @@ ru:
       private_settings_header: Изменение пароля
       avatar_notice: При отсутствии загруженной аватарки будет использована Ваша аватарка на сервисе gravatar.
       delete_avatar: Удалить аватар
+      avatar_with_size: Аватар (менее %{max})
 
   activerecord:
     attributes:
@@ -45,4 +46,4 @@ ru:
         location: Местонахождение
         company: Компания
         avatar: Аватар
-
+        avatar_file_size: Размер аватара

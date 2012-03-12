@@ -29,7 +29,7 @@
   = f.text_field :location
 .both
 .leftlist
-  = f.label :avatar, t("activerecord.attributes.user.avatar")
+  = f.label :avatar, t("layout.users.avatar_with_size", :max => number_to_human_size(User::MAX_AVATAR_SIZE))
 .rightlist
   = image_tag(avatar_url(@user, :medium))
 .leftlist
