@@ -3,7 +3,7 @@ ru:
     users:
       list: Список
       new: Создать
-      edit: Редактировать
+      edit: Профиль
       new_header: Новый пользователь
       edit_header: Редактировать
       list_header: Пользователи
