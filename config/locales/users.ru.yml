@@ -3,7 +3,7 @@ ru:
     users:
       list: Список
       new: Создать
-      edit: Профиль
+      profile: Профиль
       settings: Настройки
       new_header: Новый пользователь
       edit_header: Редактировать

@@ -3,7 +3,7 @@ en:
     users:
       list: List
       new: Create
-      edit: Profile
+      profile: Profile
       settings: Settings
       new_header: New user
       edit_header: Edit
