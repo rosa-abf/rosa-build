@@ -29,11 +29,16 @@
   = f.text_field :location
 .both
 .leftlist
-  = f.label :avatar, t("activerecord.attributes.user.avatar")
+  = f.label :avatar, t("layout.users.avatar_with_size", :max => number_to_human_size(User::MAX_AVATAR_SIZE))
 .rightlist
   = image_tag(avatar_url(@user, :medium))
-  %br
-  %br
+.leftlist
+.rightlist
+  .check
+    %span#niceCheckbox1.niceCheck-main
+      = check_box_tag "delete_avatar", 1, false, :class => 'niceCheckbox1'
+  .forcheck= t('layout.users.delete_avatar')
+  .both
   = f.file_field :avatar
 .both
 .leftlist

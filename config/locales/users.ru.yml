@@ -3,7 +3,7 @@ ru:
     users:
       list: Список
       new: Создать
-      edit: Редактировать
+      edit: Профиль
       settings: Настройки
       new_header: Новый пользователь
       edit_header: Редактировать
@@ -23,6 +23,8 @@ ru:
       delete_warning: Внимание! Удаленный аккаунт восстановлению не подлежит.
       private_settings_header: Изменение пароля
       avatar_notice: При отсутствии загруженной аватарки будет использована Ваша аватарка на сервисе gravatar.
+      delete_avatar: Удалить аватар
+      avatar_with_size: Аватар (менее %{max})
 
   activerecord:
     attributes:
@@ -41,8 +43,8 @@ ru:
         password: Пароль
         password_confirm: Повторите пароль
         professional_experience: Профессиональный опыт
-        site: Вэб-сайт
+        site: Веб-сайт
         location: Местонахождение
         company: Компания
         avatar: Аватар
-
+        avatar_file_size: Размер аватара
