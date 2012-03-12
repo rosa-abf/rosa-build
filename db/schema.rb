@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120303171802) do
+ActiveRecord::Schema.define(:version => 20120306212914) do
 
   create_table "activity_feeds", :force => true do |t|
     t.integer  "user_id",    :null => false
@@ -104,6 +104,7 @@ ActiveRecord::Schema.define(:version => 20120303171802) do
     t.datetime "created_at",                                      :null => false
     t.datetime "updated_at",                                      :null => false
     t.decimal  "commentable_id",   :precision => 50, :scale => 0
+    t.integer  "project_id"
   end
 
   create_table "containers", :force => true do |t|
