@@ -59,6 +59,7 @@ class Ability
         #can :create, AutoBuildList
         #can [:index, :destroy], AutoBuildList, :project_id => user.own_project_ids
 
+        can :search, BuildList
         can [:read, :owned], BuildList, :user_id => user.id
         can :read, BuildList, :project => {:visibility => 'open'}
         can [:read, :related], BuildList, :project => {:owner_type => 'User', :owner_id => user.id}
