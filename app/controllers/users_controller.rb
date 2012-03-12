@@ -46,6 +46,10 @@ class UsersController < ApplicationController
     end
     @user ||= current_user
     if @user.update_without_password(params[:user])
+      if @user.avatar && params[:delete_avatar] == '1'
+        @user.avatar = nil
+        @user.save
+      end
       flash[:notice] = t('flash.user.saved')
       redirect_to edit_user_path(@user)
     else
