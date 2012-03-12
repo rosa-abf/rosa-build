@@ -1,3 +1,7 @@
-%p== Branch #{ branch_name } has been deleted
-
-%p== Into project #{ link_to(project_name, project_path(project_id)) }
+.top
+  %span.date= activity_feed.created_at
+  %br
+  %span.subject Branch #{ branch_name } has been deleted
+  .both
+.fulltext
+  Into project #{ link_to(project_name, project_path(project_id)) }

@@ -125,7 +125,8 @@ Rosa::Application.routes.draw do
         match ':ref' => 'wiki#show', :as => :versioned, :via => :get
 
         post :compare
-        match 'compare/*versions' => 'wiki#compare', :as => :compare_versions, :via => :get
+        #match 'compare/*versions' => 'wiki#compare', :as => :compare_versions, :via => :get
+        match 'compare/:versions' => 'wiki#compare', :versions => /([a-f0-9\^]{6,40})(\.\.\.[a-f0-9\^]{6,40})/, :as => :compare_versions, :via => :get
       end
     end
     resources :issues, :except => :edit do
@@ -134,7 +135,6 @@ Rosa::Application.routes.draw do
       collection do
         post :create_label
         get :search_collaborators
-        get :search_labels
       end
     end
     post "labels/:label_id" => "issues#destroy_label", :as => :issues_delete_label
@@ -156,18 +156,13 @@ Rosa::Application.routes.draw do
         post :update
       end
     end
-#    resources :groups, :controller => 'project_groups' do
-#    end
 
-    collection do
-      get :auto_build
-    end
     member do
       post :fork
-#      get :new, :controller => 'projects', :action => 'new', :id => /new/, :as => :new
       get :show, :controller => 'git/trees', :action => :show
       get :sections
       post :sections
+      delete :remove_user
     end
   end
 
@@ -197,8 +192,6 @@ Rosa::Application.routes.draw do
 
   resources :users, :groups do
     resources :platforms, :only => [:new, :create]
-
-    resources :projects, :only => [:index]
 
 #    resources :repositories, :only => [:new, :create]
   end

@@ -26,10 +26,11 @@ class Project < ActiveRecord::Base
   validates_attachment_size :srpm, :less_than => 500.megabytes
   validates_attachment_content_type :srpm, :content_type => ['application/octet-stream', "application/x-rpm", "application/x-redhat-package-manager"], :message => I18n.t('layout.invalid_content_type')
 
-  #attr_accessible :category_id, :name, :description, :visibility
+  attr_accessible :name, :description, :visibility, :srpm, :is_rpm, :default_branch, :has_issues, :has_wiki
   attr_readonly :name
 
   scope :recent, order("name ASC")
+  scope :search_order, order("CHAR_LENGTH(name) ASC")
   scope :search, lambda {|q| by_name("%#{q}%").open}
   scope :by_name, lambda {|name| where('projects.name ILIKE ?', name)}
   scope :by_visibilities, lambda {|v| where(:visibility => v)}
@@ -64,12 +65,13 @@ class Project < ActiveRecord::Base
     end
   end
 
-  def build_for(platform, user)
+  def build_for(platform, user, arch = 'x86_64') # Return i586 after mass rebuild
+    arch = Arch.find_by_name(arch) if arch.acts_like?(:string)
     build_lists.create do |bl|
       bl.pl = platform
       bl.bpl = platform
       bl.update_type = 'newpackage'
-      bl.arch = Arch.find_by_name('x86_64') # Return i586 after mass rebuild
+      bl.arch = arch
       bl.project_version = "latest_#{platform.name}" # "latest_import_mandriva2011"
       bl.build_requires = false # already set as db default
       bl.user = user
@@ -151,7 +153,7 @@ class Project < ActiveRecord::Base
   end
 
   def fork(new_owner)
-    clone.tap do |c|
+    dup.tap do |c|
       c.parent_id = id
       c.owner = new_owner
       c.updated_at = nil; c.created_at = nil # :id = nil
@@ -264,10 +266,11 @@ class Project < ActiveRecord::Base
     hook = File.join(::Rails.root.to_s, 'tmp', "post-receive-hook")
     FileUtils.cp(File.join(::Rails.root.to_s, 'bin', "post-receive-hook.partial"), hook)
     File.open(hook, 'a') do |f|
-      s = "\n  /bin/bash -l -c \"cd #{is_production ? '/srv/rosa_build/current' : Rails.root.to_s} && #{is_production ? 'RAILS_ENV=production' : ''} bundle exec rails runner 'Project.delay.process_hook(\"$owner\", \"$reponame\", \"$newrev\", \"$oldrev\", \"$ref\", \"$newrev_type\", \"$oldrev_type\")'\""
+      s = "\n  /bin/bash -l -c \"cd #{is_production ? '/srv/rosa_build/current' : Rails.root.to_s} && #{is_production ? 'RAILS_ENV=production' : ''} bundle exec rails runner 'Project.delay.process_hook(\\\"$owner\\\", \\\"$reponame\\\", \\\"$newrev\\\", \\\"$oldrev\\\", \\\"$ref\\\", \\\"$newrev_type\\\", \\\"$oldrev_type\\\")'\""
       s << " > /dev/null 2>&1" if is_production
       s << "\ndone\n"
       f.write(s)
+      f.chmod(0755)
     end
 
     hook_file = File.join(path, 'hooks', 'post-receive')

@@ -13,6 +13,7 @@ class UserMailer < ActionMailer::Base
   def new_comment_notification(comment, user)
     @user = user
     @comment = comment
+    @comment.helper
     mail(:to => user.email, :subject => I18n.t("notifications.subjects.new_#{comment.commit_comment? ? 'commit_' : ''}comment_notification")) do |format|
       format.html
     end

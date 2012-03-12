@@ -1,21 +1,6 @@
-%a{ :name => "comments" }
-.block#block-list
-  .content
-    %h2.title
-      = t("layout.activity_feed.header")
-    .inner
-      %ul.list
-        - @activity_feeds.each do |activity_feed|
-          %li
-            .left
-              = link_to activity_feed.user.uname, user_path(activity_feed.user.uname)
-              %br
-              %br
-              = activity_feed.created_at
-              %br
-              %br
-            .item
-              = render_activity_feed(activity_feed)
-              %br
-              %br
-              %br
+%h3.fix= t("layout.activity_feed.header")
+- @activity_feeds.each do |activity_feed|
+  .activity
+    = render_activity_feed(activity_feed)
+
+- content_for :sidebar, render('sidebar')

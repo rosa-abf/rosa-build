@@ -53,11 +53,13 @@ class Ability
         can([:update, :sections, :manage_collaborators], Project) {|project| local_admin? project}
         can(:fork, Project) {|project| can? :read, project}
         can(:destroy, Project) {|project| owner? project}
+        can :remove_user, Project
 
         # TODO: Turn on AAA when it will be updated
         #can :create, AutoBuildList
         #can [:index, :destroy], AutoBuildList, :project_id => user.own_project_ids
 
+        can :search, BuildList
         can [:read, :owned], BuildList, :user_id => user.id
         can :read, BuildList, :project => {:visibility => 'open'}
         can [:read, :related], BuildList, :project => {:owner_type => 'User', :owner_id => user.id}
@@ -102,10 +104,9 @@ class Ability
         can([:update, :destroy], Issue) {|issue| issue.user_id == user.id or local_admin?(issue.project)}
         cannot :manage, Issue, :project => {:has_issues => false} # switch off issues
 
-        can(:create, Comment) {|comment| can? :read, comment.project || comment.commentable.project}
+        can(:create, Comment) {|comment| can? :read, comment.project}
         can(:update, Comment) {|comment| comment.user_id == user.id or local_admin?(comment.project || comment.commentable.project)}
-        #cannot :manage, Comment, :commentable => {:project => {:has_issues => false}} # switch off issues
-        cannot(:manage, Comment) {|comment| comment.commentable_type == 'Issue' && !comment.commentable.project.has_issues} # switch off issues
+        cannot :manage, Comment, :commentable_type => 'Issue', :commentable => {:project => {:has_issues => false}} # switch off issues
         cannot :manage, RegisterRequest
       end
 

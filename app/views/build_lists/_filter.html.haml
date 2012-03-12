@@ -15,7 +15,7 @@
       .righter= @build_server_status['count_build_task']
     .both
     %br
-    = link_to t('layout.build_lists.new_header'), new_project_build_list_path(@project), :class => 'button' if @project and can?(:create, @project => BuildList)
+    = link_to t('layout.build_lists.new_header'), new_project_build_list_path(@project), :class => 'button' if @project and can?(:create, @project.build_lists.build)
 
   = form_for :filter, :url => @action_url, :html => { :method => :post, :class => :form } do |f|
     .bordered.nopadding
