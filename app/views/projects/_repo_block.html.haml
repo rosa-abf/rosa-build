@@ -6,3 +6,9 @@
     = t("layout.read_write_access")
   = render :partial => 'projects/branch_select', :locals => {:project => project}
 .both
+:javascript
+  $(document).ready(function() {
+    $('#url').live('click', function() {
+      $(this).select();
+    });
+  });

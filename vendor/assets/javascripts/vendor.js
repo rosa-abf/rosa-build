@@ -2,6 +2,7 @@
 //= require gollum/gollum.dialog
 //= require gollum/gollum.placeholder
 //= require gollum/editor/gollum.editor
+//= require jquery.dataTables
 //= require codemirror
 //= require codemirror/runmode
 //= require_tree ./codemirror/modes

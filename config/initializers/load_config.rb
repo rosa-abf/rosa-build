@@ -24,3 +24,6 @@ types = [
 types.each do |type|
   MIME::Types.add MIME::Type.from_array(type)
 end
+
+# load datatables plugin
+require Rails.root.join("lib/rails_datatables")

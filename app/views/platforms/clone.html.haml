@@ -1,4 +1,21 @@
-.block
+= render :partial => 'submenu'
+= render :partial => 'sidebar'
+
+= form_for @cloned, :url => make_clone_platform_path(@platform), :html => { :class => :form } do |f|
+  .leftlist= f.label :name, :class => :label
+  .rightlist= f.text_field :name, :class => 'text_field'
+
+  .leftlist= f.label :description, :class => :label
+  .rightlist= f.text_field :description, :class => 'text_field'
+
+  .button_block
+    = submit_tag t("layout.clone")
+    -#%input.button{:type => "submit", :class => "button"}
+      -#= image_tag("choose.png", :alt => t("layout.save"))
+      -#= t("layout.clone")
+    %span.text_button_padding= t("layout.or")
+    = link_to t("layout.cancel"), @platforms_path, :class => "button"
+-#.block
   .secondary-navigation
     %ul.wat-cf
       %li.first= link_to "#{t("layout.platforms.list")}", @platforms_path

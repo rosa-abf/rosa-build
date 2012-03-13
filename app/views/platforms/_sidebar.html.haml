@@ -7,9 +7,9 @@
       %ul
         %li{:class => (act == :show && contr == :platforms) ? 'active' : ''}
           = link_to t("layout.platforms.about"), platform_path(@platform)
-        %li{:class => (act == :index && contr == :repositories) ? 'active' : ''}
+        %li{:class => (contr == :repositories) ? 'active' : ''}
           = link_to t("layout.repositories.list_header"), platform_repositories_path(@platform)
-        %li{:class => (act == :index && contr == :products) ? 'active' : ''}
+        %li{:class => (contr == :products) ? 'active' : ''}
           = link_to t("layout.products.list_header"), platform_products_path(@platform)
         -#- if current_user.owner_of? @platform or current_user.admin?
           %li{:class => (act == :index && contr == :private_users) ? 'active' : ''}
