@@ -33,7 +33,7 @@ class ActivityFeedObserver < ActiveRecord::Observer
 
     when 'Comment'
       if record.commentable.class == Issue
-        subscribes = record.commentable.subscribes.finder_hack
+        subscribes = record.commentable.subscribes
         subscribes.each do |subscribe|
           if record.user_id != subscribe.user_id
             UserMailer.delay.new_comment_notification(record, subscribe.user) if record.can_notify_on_new_comment?(subscribe)

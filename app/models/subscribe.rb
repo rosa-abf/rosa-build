@@ -4,8 +4,6 @@ class Subscribe < ActiveRecord::Base
   belongs_to :user
   belongs_to :project
 
-  scope :finder_hack, order('') # FIXME .subscribes - error; .subscribes.finder_hack - success Oo
-
   def commit_subscribe?
     subscribeable_type == 'Grit::Commit'
   end
