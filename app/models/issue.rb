@@ -73,8 +73,9 @@ class Issue < ActiveRecord::Base
   def subscribe_users
     recipients = collect_recipient_ids
     recipients.each do |recipient_id|
-      ss = self.subscribes.build(:user_id => recipient_id)
-      ss.save!
+      if User.find(recipient_id).notifier.new_comment && !self.subscribes.exists?(:user_id => recipient_id)
+        ss = self.subscribes.create(:user_id => recipient_id)
+      end
     end
   end
 
