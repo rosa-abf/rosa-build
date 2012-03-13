@@ -5,17 +5,12 @@ Rosa::Application.routes.draw do
 
   devise_scope :user do
     get '/users/auth/:provider' => 'users/omniauth_callbacks#passthru'
-  end
-  devise_for :users, :controllers => {:omniauth_callbacks => 'users/omniauth_callbacks'}, :skip => [:registrations] do
-    get '/users/cancel' => 'devise/registrations#cancel', :as => 'cancel_user_registration'
-    post '/users' => 'devise/registrations#create', :as => 'user_registration'
-    get '/users/sign_up' => 'devise/registrations#new', :as => 'new_user_registration'
-    delete '/users' => 'devise/registrations#destroy'
     get '/user' => 'users#profile', :as => 'edit_profile'
     put '/user' => 'users#update', :as => 'update_profile'
-    get '/users/:id' => 'users#profile', :as => 'edit_user'
-    put '/users/:id' => 'users#update', :as => 'update_user'
+    get '/users/:id/edit' => 'users#profile', :as => 'edit_user'
+    put '/users/:id/edit' => 'users#update', :as => 'update_user'
   end
+  devise_for :users, :controllers => {:omniauth_callbacks => 'users/omniauth_callbacks'}
 
   resources :users do
     resources :groups, :only => [:new, :create, :index]
