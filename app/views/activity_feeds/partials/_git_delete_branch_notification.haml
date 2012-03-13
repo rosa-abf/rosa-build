@@ -1,7 +1,6 @@
 .top
-  %span.date= activity_feed.created_at
-  %br
-  %span.subject Branch #{ branch_name } has been deleted
+  %span= t('notifications.bodies.delete_branch', {:branch_name => branch_name, :project_name => project_name}
+  = activity_feed.created_at
   .both
 .fulltext
-  Into project #{ link_to(project_name, project_path(project_id)) }
+  = link_to(project_name, project_path(project_id))

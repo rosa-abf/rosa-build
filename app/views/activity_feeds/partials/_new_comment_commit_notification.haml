@@ -2,16 +2,10 @@
   .image
     = image_tag(avatar_url_by_email(user_email, :small), :alt => 'avatar')
   .text
-    %span.name
-      = link_to user_name, user_path(user_id)
+    %span
+      = raw t("notifications.bodies.new_comment_notification.title", :user_link => link_to(user_name, user_path(user_id)) )
+      = raw t("notifications.bodies.new_comment_notification.commit_content", {:commit_link => link_to(commit_message, commit_path(project_id, commit_id))})
     .both
       %span.date= activity_feed.created_at
-    .both
   .both
-    %span.subject #{ t("notifications.bodies.new_comment_notification.title", :user_name => user_name) }
-  .both
-.fulltext
-  = raw t("notifications.bodies.new_comment_notification.commit_content", {:commit_link => link_to(commit_message, commit_path(project_id, commit_id))})
-  %br
-  %br
-  "#{ comment_body }"
+    %span.subject= link_to comment_body, commit_path(project_id, commit_id) + (defined?(comment_id) ? "#comment##{comment_id}" : '')
