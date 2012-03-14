@@ -1,6 +1,8 @@
 .top
-  %span= t('notifications.bodies.delete_branch', {:branch_name => branch_name, :project_name => project_name})
-  = activity_feed.created_at
+  .text
+    %span
+      = t('notifications.bodies.delete_branch', :branch_name => branch_name)
+      = raw t("notifications.bodies.project", :project_link => link_to("#{project_owner}/#{project_name}", project_path(project_id)) )
+    .both
+      %span.date= activity_feed.created_at
   .both
-.fulltext
-  = link_to(project_name, project_path(project_id))
