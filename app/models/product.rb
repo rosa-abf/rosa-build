@@ -23,13 +23,13 @@ class Product < ActiveRecord::Base
     @delete_tar = value
   end
 
-  def can_clone?
-    is_template
-  end
+#  def can_clone?
+#    is_template
+#  end
 
-  def can_build?
-    !is_template
-  end
+#  def can_build?
+#    !is_template
+#  end
 
   def clone_from!(template)
     raise "Only templates can be cloned" unless template.can_clone?

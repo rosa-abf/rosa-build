@@ -41,6 +41,7 @@ ru:
     attributes:
       product:
         name: Название
+        description: Описание
         platform_id: Платформа
         build_status: Статус последней сборки
         build_path: Путь к iso
