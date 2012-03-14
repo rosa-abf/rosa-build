@@ -1,5 +1,5 @@
 -content_for :sidebar do
-  - can_manage = can? :write, @issue.project
+  - can_manage = can?(:update, @issue) && @issue.persisted? || can?(:create, @project.issues.new) && @issue.new_record?
   - if @issue.persisted?
     .bordered.nopadding
       %h3=t('activerecord.attributes.issue.status')
@@ -21,7 +21,7 @@
                 .name="#{@issue.user.uname} (#{@issue.user.name})"
                 =hidden_field_tag "user-0", @issue.user.id, :name => 'issue[user_id]'
                 .both
-      - else
+      - elsif @issue.user
         .people.nopointer
           .avatar=image_tag avatar_url(@issue.user), :alt => 'avatar'
           .name="#{@issue.user.uname} (#{@issue.user.name})"
