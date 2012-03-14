@@ -14,6 +14,7 @@
     - if @issue.persisted?
       -if can_manage
         =form_for :issue, :url => [@project, @issue], :method => :put, :html => { :class => 'edit_executor issue'} do |f|
+          =hidden_field_tag "user-default_executor", nil, :name => 'issue[user_id]'
           .current_executor
             - if @issue.user
               #user-0.people.nopointer

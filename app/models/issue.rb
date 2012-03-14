@@ -79,7 +79,7 @@ class Issue < ActiveRecord::Base
   end
 
   def subscribe_issue_assigned_user
-    if self.user_id_was != self.user_id
+    if self.user_id && self.user_id_was != self.user_id
       self.subscribes.where(:user_id => self.user_id_was).first.destroy unless self.user_id_was.blank?
       if self.user.notifier.issue_assign && !self.subscribes.exists?(:user_id => self.user_id)
         self.subscribes.create(:user_id => self.user_id)
