@@ -60,7 +60,7 @@ module RailsDatatables
 
             "sProcessing": '#{processing}'
           },
-          "sPaginationType": "full_numbers",
+          "sPaginationType": "will_paginate_like",
           "iDisplayLength": #{per_page},
           "bProcessing": true,
           "bServerSide": #{server_side},
@@ -81,6 +81,8 @@ module RailsDatatables
       			} );
           }
         })#{append};
+
+        $('#datatable_wrapper').append("<div class='both'></div>");
     });
     </script>
     }

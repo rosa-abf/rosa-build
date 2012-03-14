@@ -1,4 +1,32 @@
-.block
+= render :partial => 'platforms/submenu'
+= render :partial => 'platforms/sidebar'
+
+%h3= "#{t("layout.products.about")} #{@product.name}"
+
+%p= @product.description
+
+.buttons_block
+  - if can? :update, @product
+    = link_to image_tag("code.png", :alt => t("layout.edit")) + " " + t("layout.edit"), edit_platform_product_path(@platform, @product), :class => "button"
+  - if can? :destroy, @product
+    = link_to image_tag("x.png", :alt => t("layout.delete")) + " " + t("layout.delete"), platform_product_path(@platform, @product), :method => "delete", :class => "button", :confirm => t("layout.products.confirm_delete")
+  -# if @product.can_clone?
+    =# link_to t("layout.products.clone"), clone_platform_product_path(@platform, @product), :class => "button"
+  - if can?(:create, @product => ProductBuildList)
+    = link_to t("layout.products.build"), platform_product_product_build_lists_path(@platform, @product), :class => "button", :method => 'post', :confirm => t("layout.confirm")
+
+%h3= t("layout.products.build_lists_monitoring")
+
+%table#myTable.tablesorter.platform-product-main{:cellspacing => "0", :cellpadding => "0"}
+  %thead
+    %tr
+      %th.th1= t("activerecord.attributes.product_build_list.id")
+      %th.th2= t("activerecord.attributes.product_build_list.status")
+      %th.th3= t("layout.product_build_lists.action")
+      %th.th4= t("activerecord.attributes.product_build_list.notified_at")  
+  %tbody
+    = render @product.product_build_lists.default_order
+-#.block
   .secondary-navigation
     %ul.wat-cf
       %li.first= link_to @platform.name, platform_path(@platform) + "#products"
@@ -35,7 +63,7 @@
         - if can?(:create, @product => ProductBuildList)
           = link_to t("layout.products.build"), platform_product_product_build_lists_path(@platform, @product), :class => "button", :method => 'post', :confirm => t("layout.confirm")
 
-.block
+-#.block
   .content
     .inner
       %table.table

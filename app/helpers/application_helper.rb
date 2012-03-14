@@ -18,6 +18,10 @@ module ApplicationHelper
       'right slim'
     when params[:controller] == 'build_lists' && ['new', 'create'].include?(params[:action])
       nil
+    when params[:controller] == 'platforms' && params[:action] == 'show'
+      'right bigpadding'
+    when params[:controller] == 'platforms' && params[:action] == 'clone'
+      'right middlepadding'
     else
       content_for?(:sidebar) ? 'right' : 'all'
     end

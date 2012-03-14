@@ -1,7 +1,9 @@
 en:
   layout:
     repositories:
+      add_project_to: Add project to repository
       list: List
+      about: About repository
       list_header: Repositories
       new: New repository
       new_header: New repository

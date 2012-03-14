@@ -11,3 +11,7 @@ ru:
     read_write_access: чтение и запись
 
     by: ''
+
+    visibilities:
+      open: открытая
+      hidden: скрытая

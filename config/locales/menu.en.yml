@@ -27,3 +27,5 @@ en:
     wiki: Wiki
     readme: Readme
     settings: Settings
+  platform_menu:
+    settings: Settings

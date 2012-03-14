@@ -6,6 +6,7 @@ en:
       list: List
       new: Create
       edit: Edit
+      about: About platform
       new_header: New platform
       edit_header: Edit
       list_header: Platforms
@@ -22,7 +23,7 @@ en:
       freeze: Freeze
       unfreeze: Unfeeze
       confirm_freeze: Are you sure to freeze this platform?
-      confirm_freeze: Are you sure to clone this platform?
+      confirm_clone: Are you sure to clone this platform?
       confirm_unfreeze: Are you sure to defrost this platform?
       released_suffix: (released)
       confirm_delete: Are you sure to delete this platform?

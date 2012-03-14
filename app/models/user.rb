@@ -112,6 +112,14 @@ class User < ActiveRecord::Base
     email.downcase == commit.committer.email.downcase
   end
 
+  def owner_of? object
+    if object.respond_to? :owner
+      object.owner_id == self.id or self.group_ids.include? object.owner_id
+    else
+      false
+    end
+  end
+
   private
 
   def create_settings_notifier
