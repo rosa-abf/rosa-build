@@ -51,7 +51,12 @@ class ActivityFeedObserver < ActiveRecord::Observer
         subscribes = Subscribe.comment_subscribes(record).where(:status => true)
         subscribes.each do |subscribe|
           next if record.own_comment?(subscribe.user)
-          UserMailer.delay.new_comment_notification(record, subscribe.user) if subscribe.user.notifier.can_notify
+          if subscribe.user.notifier.can_notify and
+              ( (subscribe.project.owner?(subscribe.user) && subscribe.user.notifier.new_comment_commit_repo_owner) or
+                (subscribe.user.commentor?(record.commentable) && subscribe.user.notifier.new_comment_commit_commentor) or
+                (subscribe.user.committer?(record.commentable) && subscribe.user.notifier.new_comment_commit_owner) )
+            UserMailer.delay.new_comment_notification(record, subscribe.user)
+          end
             ActivityFeed.create(
               :user => subscribe.user,
               :kind => 'new_comment_commit_notification',

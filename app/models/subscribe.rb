@@ -21,10 +21,7 @@ class Subscribe < ActiveRecord::Base
   def self.subscribed_to_commit?(project, user, commit)
     subscribe = user.subscribes.where(:subscribeable_id => commit.id.hex, :subscribeable_type => commit.class.name, :project_id => project.id).first
     return subscribe.subscribed? if subscribe # return status if already subscribe present
-    # return status by settings
-    (project.owner?(user) && user.notifier.new_comment_commit_repo_owner) or
-    (user.commentor?(commit) && user.notifier.new_comment_commit_commentor) or
-    (user.committer?(commit) && user.notifier.new_comment_commit_owner)
+    true
   end
 
   def self.subscribe_to_commit(options)
