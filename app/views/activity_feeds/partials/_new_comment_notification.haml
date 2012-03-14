@@ -5,6 +5,7 @@
     %span
       = raw t("notifications.bodies.new_comment_notification.title", {:user_link => link_to(user_name, user_path(user_id))})
       = raw t("notifications.bodies.new_comment_notification.content", {:issue_link => link_to(issue_title, project_issue_path(project_id, issue_serial_id))})
+      = raw t("notifications.bodies.project", :project_link => link_to(project_name, project_path(project_id))) if defined?(project_name)
     .both
       %span.date= activity_feed.created_at
   .both

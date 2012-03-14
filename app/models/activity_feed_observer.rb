@@ -42,8 +42,9 @@ class ActivityFeedObserver < ActiveRecord::Observer
             ActivityFeed.create(
               :user => subscribe.user,
               :kind => 'new_comment_notification',
-              :data => {:user_name => record.user.name, :user_email => record.user.email, :user_id => record.user_id, :comment_body => record.body, :issue_title => record.commentable.title,
-                                 :issue_serial_id => record.commentable.serial_id, :project_id => record.commentable.project.id, :comment_id => record.id}
+              :data => {:user_name => record.user.name, :user_email => record.user.email, :user_id => record.user_id, :comment_body => record.body,
+                               :issue_title => record.commentable.title, :issue_serial_id => record.commentable.serial_id, :project_id => record.commentable.project.id,
+                               :comment_id => record.id, :project_name => record.project.name}
             )
           end
         end
@@ -60,8 +61,9 @@ class ActivityFeedObserver < ActiveRecord::Observer
             ActivityFeed.create(
               :user => subscribe.user,
               :kind => 'new_comment_commit_notification',
-              :data => {:user_name => record.user.name, :user_email => record.user.email, :user_id => record.user_id, :comment_body => record.body, :commit_message => record.commentable.message.encode_to_default,
-                                 :commit_id => record.commentable.id, :project_id => record.project.id, :comment_id => record.id}
+              :data => {:user_name => record.user.name, :user_email => record.user.email, :user_id => record.user_id, :comment_body => record.body,
+                               :commit_message => record.commentable.message.encode_to_default, :commit_id => record.commentable.id,
+                                 :project_id => record.project.id, :comment_id => record.id, :project_name => record.project.name}
             )
         end
       end
