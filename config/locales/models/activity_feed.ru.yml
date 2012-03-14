@@ -20,19 +20,20 @@ ru:
     bodies:
       new_comment_notification:
         title: '%{user_link} добавил новый комментарий'
-        content: в задаче %{issue_link}.
-        commit_content: в коммите %{commit_link}.
-      new_issue_notification: '%{user_link} добавил новую задачу'
+        content: в задаче %{issue_link}
+        commit_content: в коммите %{commit_link}
+      new_issue_notification: '%{user_link} добавил новую <a href="%{issue_link}">задачу</a>'
+      issue: задачу
       new_user_notification:
         title: Здравствуйте, %{user_name}.
         content: Вы зарегистрированы на проекте «ROSA Build System» и теперь можете войти в систему.
         email: ==Ваш email %{user_email}
         password: ==Ваш пароль %{user_password}
       issue_assign_notification: Вам была назначена задача %{issue_link}
-      wiki_new_commit_notification: '%{user_link} обновил wiki %{history_link}'
+      wiki_new_commit_notification: '%{user_link} обновил %{history_link}'
       invite_approve_notification: Приглашение в ABF
-      project: в проекте %{project_link}.
+      project: в проекте %{project_link}
 
       delete_branch: Удалена ветка %{branch_name}
-      create_branch: создал новую ветку %{branch_name}
-      update_branch: внес изменения в ветку %{branch_name}
+      create_branch: '%{user_link} создал новую ветку %{branch_name}'
+      update_branch: '%{user_link} внес изменения в ветку %{branch_name}'
