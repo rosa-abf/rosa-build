@@ -3,7 +3,7 @@ en:
     users:
       list: List
       new: Create
-      edit: Edit
+      profile: Profile
       settings: Settings
       new_header: New user
       edit_header: Edit
@@ -23,6 +23,8 @@ en:
       delete_warning: Warning! Deleted account can not be recovered.
       private_settings_header: Password change
       avatar_notice: Without uploaded avatar will be used avatar from gravar web service.
+      delete_avatar: Delete avatar
+      avatar_with_size: Avatar (less than %{max})
 
   activerecord:
     attributes:
@@ -45,4 +47,4 @@ en:
         location: Location
         company: Company
         avatar: Avatar
-
+        avatar_file_size:  Avatar file size

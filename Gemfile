@@ -33,6 +33,7 @@ gem 'wikicloth'
 
 gem 'unicorn', '~> 4.2.0'
 gem 'newrelic_rpm', '~> 3.3.2'
+gem 'whenever', '~> 0.7.3', :require => false
 
 gem 'rails3-jquery-autocomplete', '~> 1.0.6'
 gem 'will_paginate', '~> 3.0.3'
@@ -60,7 +61,6 @@ group :development do
   gem 'hirb'
   gem 'shotgun'
   # deploy
-  gem 'whenever', :require => false
   gem 'capistrano', :require => false
   gem 'cape', :require => false
   gem 'capistrano_colors', :require => false

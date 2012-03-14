@@ -45,6 +45,10 @@ class GitPresenters::CommitAsMessagePresenter < ApplicationPresenter
     true
   end
 
+  def comment_id?
+    false
+  end
+
   protected
 
     def committer

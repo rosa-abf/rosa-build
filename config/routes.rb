@@ -3,9 +3,12 @@ Rosa::Application.routes.draw do
   # XML RPC
   match 'api/xmlrpc' => 'rpc#xe_index'
 
-  put '/users' => 'users#update'
   devise_scope :user do
     get '/users/auth/:provider' => 'users/omniauth_callbacks#passthru'
+    get '/user' => 'users#profile', :as => 'edit_profile'
+    put '/user' => 'users#update', :as => 'update_profile'
+    get '/users/:id/edit' => 'users#profile', :as => 'edit_user'
+    put '/users/:id/edit' => 'users#update', :as => 'update_user'
   end
   devise_for :users, :controllers => {:omniauth_callbacks => 'users/omniauth_callbacks'}
 

@@ -276,7 +276,7 @@ header div.droplist a:hover{
 }
 
 
-.sub-menu nav { /*Для подменю без названия*/
+.sub-menu nav { /*пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ*/
 	float: left;
 	margin: 0px 0px 0px 0px;
 }
@@ -405,6 +405,10 @@ article h4 {
 	font-size: 12px;
 	margin-bottom: 0px;
 	padding-bottom: 2px;
+}
+
+article h4.nomargin {
+	margin: 0px;
 }
 
 article p {
@@ -1415,8 +1419,8 @@ div.desription-top input.name {
 	height: 21px;
 	width: auto;
 	color: #575756;
-	font-size: 12px;
-	width: 215px;
+	font-size: 11px;
+	width: 415px;
 	padding: 2px 5px 3px;
 }
 
@@ -1590,6 +1594,10 @@ table td.width135 {
 
 table td.width145 {
 	width: 145px;
+}
+
+.width125 {
+	width: 125px;
 }
 
 table td.width30 {
@@ -1944,7 +1952,7 @@ img.delete-row {
 }
 
 table tbody tr.error td {
-	background: #e7bcbc;
+	background: #fedede;
 }
 
 table tbody tr.success td {
@@ -2108,6 +2116,22 @@ article div.rightlist div.load {
 
 .notify p {
 	padding: 5px 10px;
+}
+
+.notify.blue {
+	border: 1px solid #a9c6dd;
+	background: #dcecfa;
+	border-radius: 1px;
+	width: 555px;
+	margin-top: 20px;
+	text-align: right;
+	padding: 5px;
+}
+
+.notify.blue div.green {
+	border: 1px solid #bad099;
+	background: #d7e599;
+	float: left;
 }
 
 /* Pagination */
@@ -2307,10 +2331,36 @@ div.tmargin10 {
 	margin-top: 10px;
 }
 
+.tmargin10 {
+	margin-top: 10px;
+}
+
 a.lmargin7 {
 	margin-left: 7px;
 }
 
 a.lmargin5 {
 	margin-left: 5px;
+}
+
+/*My projects*/
+
+table.tablesorter tr.search td {
+	background: #dcecfa;
+}
+
+table.tablesorter tr.search td input[type="text"] {
+	height: 16px;
+	width: 830px;
+	border: 1px solid #cdcdcd;
+	border-radius: 4px;
+	padding: 5px;
+	font-family: Tahoma, Geneva, Helvetica, sans-serif;
+	font-size: 12px;
+	margin-top: 2px;
+}
+
+
+table.tablesorter.width565 {
+	width: 565px;
 }

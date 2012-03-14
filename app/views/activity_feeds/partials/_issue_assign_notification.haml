@@ -1,14 +1,8 @@
 .top
-  .image
-    = image_tag(avatar_url_by_email(activity_feed.user.email, :small), :alt => 'avatar')
   .text
-    %span.name
-      = link_to activity_feed.user.uname, user_path(activity_feed.user.uname)
+    %span
+      = raw t("notifications.bodies.issue_assign_notification", { :issue_link => link_to(issue_title, project_issue_path(project_id, issue_serial_id))})
+      = raw t("notifications.bodies.project", :project_link => link_to("#{project_owner}/#{project_name}", project_path(project_id)) )
     .both
       %span.date= activity_feed.created_at
-    .both
   .both
-  %span.subject= raw t("notifications.bodies.issue_assign_notification.title", :issue_link => link_to(issue_title, project_issue_path(project_id, issue_serial_id)))
-  .both
-.fulltext
-  =# raw t("notifications.bodies.issue_assign_notification.content", :issue_link => link_to(issue_title, project_issue_path(project_id, issue_serial_id)))
