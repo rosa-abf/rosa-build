@@ -2,6 +2,8 @@ en:
   layout:
     products:
       list: List
+      about: About product
+      build_lists_monitoring: Build lists monitoring
       new: New product
       list_header: Products
       clone: Clone

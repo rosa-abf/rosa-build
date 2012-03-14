@@ -1,5 +1,11 @@
-= render :partial => 'submenu'
-= render :partial => 'sidebar'
+= render :partial => 'platforms/submenu'
+= render :partial => 'platforms/sidebar'
+
+%h3= t("layout.repositories.new_header")
+
+= form_for :repository, :url => @repositories_path, :html => { :class => :form } do |f|
+  = render :partial => "form", :locals => {:f => f}
+
 -#.block
   .secondary-navigation
     %ul.wat-cf

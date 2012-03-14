@@ -1,44 +1,55 @@
-.group
-  = f.label :name, t("activerecord.attributes.product.name"), :class => :label
-  = f.text_field :name, :class => 'text_field'
-.group
-  = f.label :build_script, t("activerecord.attributes.product.build_script"), :class => :label
-  = f.text_area :build_script, :class => 'text_field', :cols => 80
-.group
-  = f.label :counter, t("activerecord.attributes.product.counter"), :class => :label
-  = f.text_area :counter, :class => 'text_field', :cols => 80
-.group
-  = f.label :ks, t("activerecord.attributes.product.ks"), :class => :label
-  = f.text_area :ks, :class => 'text_field', :cols => 80
-.group
-  = f.label :menu, t("activerecord.attributes.product.menu"), :class => :label
-  = f.text_area :menu, :class => 'text_field', :cols => 80
-.group
-  %p
-    = f.label :tar, t("activerecord.attributes.product.tar"), :class => :label
-    = f.file_field :tar, :class => 'file_field'
-  %p
-  - if @product.tar?
-    = link_to @product.tar_file_name, @product.tar.url
-    = f.check_box :delete_tar
-    = f.label :delete_tar, t('layout.delete')
+.leftlist= f.label :name, t("activerecord.attributes.product.name"), :class => :label
+.rightlist= f.text_field :name, :class => 'text_field'
+.both
 
-.group
-  = render :partial => "products/crontab", :locals => { :form => f }
+.leftlist= f.label :description, t("activerecord.attributes.product.description"), :class => :label
+.rightlist= f.text_area :description, :class => 'text_field', :cols => 80
+.both
+
+.leftlist= f.label :build_script, t("activerecord.attributes.product.build_script"), :class => :label
+.rightlist= f.text_area :build_script, :class => 'text_field', :cols => 80
+.both
+
+.leftlist= f.label :counter, t("activerecord.attributes.product.counter"), :class => :label
+.rightlist= f.text_area :counter, :class => 'text_field', :cols => 80
+.both
+
+.leftlist= f.label :ks, t("activerecord.attributes.product.ks"), :class => :label
+.rightlist= f.text_area :ks, :class => 'text_field', :cols => 80
+.both
+
+.leftlist= f.label :menu, t("activerecord.attributes.product.menu"), :class => :label
+.rightlist= f.text_area :menu, :class => 'text_field', :cols => 80
+.both
+
+%p
+  .leftlist= f.label :tar, t("activerecord.attributes.product.tar"), :class => :label
+  .rightlist= f.file_field :tar, :class => 'file_field'
+  .both
+%p
+- if @product.tar?
+  .leftlist= link_to @product.tar_file_name, @product.tar.url
+  .both
+  %br
+  .leftlist= f.label :delete_tar, t('layout.delete')
+  .rightlist= f.check_box :delete_tar
+  .both
+
+= render :partial => "products/crontab", :locals => { :form => f }
     
-.group
-  = f.label :is_template, :class => :label
-  = f.check_box :is_template, :class => 'check_box'
+.leftlist= f.label :is_template, :class => :label
+.rightlist= f.check_box :is_template, :class => 'check_box'
 
 - content_for :commented do
-  .group
-    = f.label :system_wide, :class => :label
-    = f.check_box :system_wide, :class => 'check_box'
+  .leftlist= f.label :system_wide, :class => :label
+  .rightlist= f.check_box :system_wide, :class => 'check_box'
 
-.group.navform.wat-cf
-  %button.button{:type => "submit"}
-    = image_tag("choose.png", :alt => t("layout.save"))
-    = t("layout.save")
+.both
+.button_block
+  = submit_tag t("layout.save")
+  -#%input.button{:type => "submit", :class => "button"}
+    -#= image_tag("choose.png", :alt => t("layout.save"))
+    -#= t("layout.clone")
   %span.text_button_padding= t("layout.or")
-  = link_to t("layout.cancel"), platform_path(@platform), :class => "text_button_padding link_button"
+  = link_to t("layout.cancel"), platform_path(@platform), :class => "button"
 

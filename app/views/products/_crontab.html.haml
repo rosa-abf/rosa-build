@@ -63,9 +63,9 @@
   }
 
 
-.group
-  = form.check_box :use_cron
-  = form.label :use_cron
+.leftlist= form.label :use_cron
+.rightlist= form.check_box :use_cron
+.both
 
 #genereator_btn
   %a{ :href => "#" }= t("layout.products.cron_tab_generator.show")
@@ -144,7 +144,7 @@
           - Date::DAYNAMES.each_with_index do |day, index|
             %option{ :value => index, :selected => @product.cron_tab_weekdays.include?(index) }= t("layout.weekdays.#{day}")
 
-.group
-  = form.label :cron_tab, :class => :label
-  = form.text_field :cron_tab, :id => "cron", :class => "text_field", :style => "width: 40%", :disabled => !@product.use_cron, :value => @product.cron_tab
-  = @product.cron_command
+.leftlist= form.label :cron_tab, :class => :label
+.rightlist= form.text_field :cron_tab, :id => "cron", :class => "text_field", :style => "width: 40%", :disabled => !@product.use_cron, :value => @product.cron_tab
+= @product.cron_command
+.both

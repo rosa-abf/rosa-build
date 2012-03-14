@@ -554,3 +554,7 @@ div.dataTables_paginate.paging_will_paginate_like a.paginate_active {
 div.dataTables_processing {
     z-index: 999;
 }
+
+div.rightlist textarea {
+    resize: none;
+}

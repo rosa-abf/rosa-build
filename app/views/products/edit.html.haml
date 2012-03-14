@@ -1,4 +1,15 @@
-.block
+= render :partial => 'platforms/submenu'
+= render :partial => 'platforms/sidebar'
+
+%h3
+  = t("layout.products.edit_header")
+  = link_to @product.name, platform_product_path(@platform, @product)
+%br
+
+= form_for [@platform, @product], :html => { :class => :form, :multipart => true } do |f|
+  = render :partial => "form", :locals => {:f => f}
+
+-#.block
   .secondary-navigation
     %ul.wat-cf
       %li.first= link_to @platform.name, platform_path(@platform) + "#products"

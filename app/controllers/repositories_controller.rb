@@ -60,7 +60,7 @@ class RepositoriesController < ApplicationController
       else
         flash[:error] = t('flash.repository.project_not_added')
       end
-      redirect_to repository_path(@repository)
+      redirect_to platform_repository_path(@platform, @repository)
     else
       render :projects_list
     end
@@ -96,7 +96,7 @@ class RepositoriesController < ApplicationController
   def remove_project
     @project = Project.find(params[:project_id])
     ProjectToRepository.where(:project_id => @project.id, :repository_id => @repository.id).destroy_all
-    redirect_to repository_path(@repository), :notice => t('flash.repository.project_removed')
+    redirect_to platform_repository_path(@platform, @repository), :notice => t('flash.repository.project_removed')
   end
 
   protected
