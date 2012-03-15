@@ -39,7 +39,9 @@ en:
   flash:
     platform:
       saved: Platform saved
+      created: Platform created
       save_error: Platform saves error
+      create_error: Platform create error
       freezed: Platform freezed
       freeze_error: Platform freezing error, try again
       unfreezed: Platform unfreezed

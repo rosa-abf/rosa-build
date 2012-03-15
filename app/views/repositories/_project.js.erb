@@ -15,22 +15,17 @@
       %>",
       "<%=j project.description %>",
       "<%=
-      j(link_to('<span class="delete">&nbsp;</span>'.html_safe, remove_project_repository_path(@repository, :project_id => project.id), :method => :delete, :confirm => t("layout.confirm")))
-        #j link_to t("layout.add"), url_for(:controller => :repositories, :action => :add_project, :project_id => project.id)
+      if can? :remove_project, @repository
+        j(link_to('<span class="delete">&nbsp;</span>'.html_safe,
+                  remove_project_repository_path(@repository, :project_id => project.id),
+                  :method => :delete, :confirm => t("layout.confirm")
+                 )
+         )
+      else
+        ''
+      end
       %>"
     ]<%= project == @projects.last ? '' : ',' %>
   <% end %>
   ]
-  <%
-    # %tr{:id => "Row#{project_counter}", :class => cycle('odd', 'even')}
-    #    %td
-    #      = link_to project do
-    #        .table-sort-left= image_tag visibility_icon(project.visibility)
-    #        .table-sort-right #{project.owner.uname} / #{project.name}
-    #    %td.td2
-    #      %span= project.description
-    #    %td.buttons
-    #      = link_to remove_project_repository_path(@repository, :project_id => project.id), :method => :delete, :confirm => t("layout.confirm") do
-    #        %span.delete &nbsp;
-  %>
 }

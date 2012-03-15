@@ -12,4 +12,4 @@
     -#= image_tag("choose.png", :alt => t("layout.save"))
     -#= t("layout.clone")
   %span.text_button_padding= t("layout.or")
-  = link_to t("layout.cancel"), @repositories_path, :class => "button"
+  = link_to t("layout.cancel"), @repository.new_record? ? platform_repositories_path(@platform) : platform_repository_path(@platform, @repository), :class => "button"
