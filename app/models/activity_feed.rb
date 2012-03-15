@@ -16,7 +16,4 @@ class ActivityFeed < ActiveRecord::Base
     'activity_feeds/partials/' + self.kind
   end
 
-  def self.last_messages?(relation, page)
-    true #relation.count <= ActivityFeed::PER_PAGE * page
-  end
 end
