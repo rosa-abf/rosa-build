@@ -444,7 +444,7 @@ article a.button {
 	background-image: linear-gradient(top, #68a3d8, #125687);
 	filter: progid:DXImageTransform.Microsoft.gradient(startColorStr='#68a3d8', EndColorStr='#125687');
 	border: 1px solid #5084b4;
-	padding: 4px 20px;
+	padding: 4px 20px 6px;
 	margin: 0;
 	font-size: 12px;
 	text-decoration: none;
@@ -513,7 +513,7 @@ article input[type="submit"] {
 	background-image: linear-gradient(top, #68a3d8, #125687);
 	filter: progid:DXImageTransform.Microsoft.gradient(startColorStr='#68a3d8', EndColorStr='#125687');
 	border: 1px solid #5084b4;
-	padding: 0px 20px 0px;
+	padding: 3px 20px 5px;
 	margin: 0;
 	font-size: 12px;
 	text-decoration: none;
@@ -523,7 +523,6 @@ article input[type="submit"] {
 	border-radius: 5px;
 	text-align: center;
 	height: auto;
-	height: 28px;
 	width: auto;
 	font-family: Tahoma;
 }
@@ -2363,4 +2362,8 @@ table.tablesorter tr.search td input[type="text"] {
 
 table.tablesorter.width565 {
 	width: 565px;
+}
+
+article h3 a {
+	font-size: 14px;
 }
