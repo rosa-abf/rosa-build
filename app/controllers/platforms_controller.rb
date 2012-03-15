@@ -57,10 +57,10 @@ class PlatformsController < ApplicationController
     @platform.owner = @admin_id.blank? ? get_owner : User.find(@admin_id)
 
     if @platform.save
-      flash[:notice] = I18n.t("flash.platform.saved")
+      flash[:notice] = I18n.t("flash.platform.created")
       redirect_to @platform
     else
-      flash[:error] = I18n.t("flash.platform.save_error")
+      flash[:error] = I18n.t("flash.platform.create_error")
       render :action => :new
     end
   end
@@ -125,7 +125,7 @@ class PlatformsController < ApplicationController
     @platform.delay.destroy if @platform
 
     flash[:notice] = t("flash.platform.destroyed")
-    redirect_to root_path
+    redirect_to platforms_path
   end
   
   def forbidden

@@ -48,5 +48,5 @@
     -#= image_tag("choose.png", :alt => t("layout.save"))
     -#= t("layout.clone")
   %span.text_button_padding= t("layout.or")
-  = link_to t("layout.cancel"), platform_path(@platform), :class => "button"
+  = link_to t("layout.cancel"), @product.new_record? ? platform_path(@platform) : platform_product_path(@platform, @product), :class => "button"
 

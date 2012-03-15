@@ -79,10 +79,10 @@ class Ability
         can(:destroy, Platform) {|platform| owner? platform}
         can :autocomplete_user_uname, Platform
 
-        can :read, Repository, :platform => {:visibility => 'open'}
-        can :read, Repository, :platform => {:owner_type => 'User', :owner_id => user.id}
-        can :read, Repository, :platform => {:owner_type => 'Group', :owner_id => user.group_ids}
-        can(:read, Repository, read_relations_for('repositories', 'platforms')) {|repository| local_reader? repository.platform}
+        can [:read, :projects_list], Repository, :platform => {:visibility => 'open'}
+        can [:read, :projects_list], Repository, :platform => {:owner_type => 'User', :owner_id => user.id}
+        can [:read, :projects_list], Repository, :platform => {:owner_type => 'Group', :owner_id => user.group_ids}
+        can([:read, :projects_list], Repository, read_relations_for('repositories', 'platforms')) {|repository| local_reader? repository.platform}
         can([:create, :update, :projects_list, :add_project, :remove_project], Repository) {|repository| local_admin? repository.platform}
         can([:change_visibility, :settings, :destroy], Repository) {|repository| owner? repository.platform}
 

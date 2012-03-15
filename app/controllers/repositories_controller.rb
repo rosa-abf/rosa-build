@@ -36,7 +36,7 @@ class RepositoriesController < ApplicationController
     platform_id = @repository.platform_id
 
     flash[:notice] = t("flash.repository.destroyed")
-    redirect_to platform_path(platform_id)
+    redirect_to platform_repositories_path(platform_id)
   end
 
   def create
