@@ -1,6 +1,6 @@
 = render :partial => 'platforms/submenu'
 = render :partial => 'platforms/sidebar'
 
-%h3= "#{t("layout.repositories.add_project_to")}: #{@repository.name}"
+%h3= raw "#{t("layout.repositories.add_project_to")}: #{link_to @repository.name, platform_repository_path(@platform, @repository)}"
 
 = render :partial => 'proj_list', :object => @projects

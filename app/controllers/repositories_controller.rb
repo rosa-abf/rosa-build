@@ -67,6 +67,7 @@ class RepositoriesController < ApplicationController
   end
 
   def projects_list
+
     owner_subquery = "
       INNER JOIN (
         SELECT id, 'User' AS type, uname
@@ -76,21 +77,25 @@ class RepositoriesController < ApplicationController
         FROM groups
       ) AS owner
       ON projects.owner_id = owner.id AND projects.owner_type = owner.type"
-    colName = ['owner.uname', 'projects.name']
+    colName = ['projects.name']
     sort_col = params[:iSortCol_0] || 0
     sort_dir = params[:sSortDir_0]=="asc" ? 'asc' : 'desc'
     order = "#{colName[sort_col.to_i]} #{sort_dir}"
 
-    @projects = Project.joins(owner_subquery).addable_to_repository(@repository.id)
+    if params[:added] == "true"
+      @projects = @repository.projects
+    else
+      @projects = Project.joins(owner_subquery).addable_to_repository(@repository.id)
+      @projects = @projects.by_visibilities('open') if @repository.platform.platform_type == 'main'
+    end
     @projects = @projects.paginate(:page => (params[:iDisplayStart].to_i/params[:iDisplayLength].to_i).to_i + 1, :per_page => params[:iDisplayLength])
-    @projects = @projects.by_visibilities('open') if @repository.platform.platform_type == 'main'
 
     @total_projects = @projects.count
-    @projects = @projects.where(['projects.name LIKE ?', "#{params[:sSearch]}%"]) if params[:sSearch] and !params[:sSearch].empty?
+    @projects = @projects.where(['projects.name ILIKE ?', "#{params[:sSearch]}%"]) if params[:sSearch] and !params[:sSearch].empty?
     @total_project = @projects.count
     @projects = @projects.order(order)#.includes(:owner) #WTF????
 
-    render :partial => 'proj_ajax', :layout => false
+    render :partial => (params[:added] == "true") ? 'project' : 'proj_ajax', :layout => false
   end
 
   def remove_project
