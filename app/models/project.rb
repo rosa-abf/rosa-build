@@ -262,7 +262,7 @@ class Project < ActiveRecord::Base
   end
 
   def write_hook
-    is_production = ENV['RAILS_ENV'] == 'production'
+    is_production = Rails.env == "production"
     hook = File.join(::Rails.root.to_s, 'tmp', "post-receive-hook")
     FileUtils.cp(File.join(::Rails.root.to_s, 'bin', "post-receive-hook.partial"), hook)
     File.open(hook, 'a') do |f|
