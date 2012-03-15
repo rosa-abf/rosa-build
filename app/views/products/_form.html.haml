@@ -36,9 +36,6 @@
   .both
 
 = render :partial => "products/crontab", :locals => { :form => f }
-    
-.leftlist= f.label :is_template, :class => :label
-.rightlist= f.check_box :is_template, :class => 'check_box'
 
 - content_for :commented do
   .leftlist= f.label :system_wide, :class => :label

@@ -73,8 +73,10 @@ class Ability
         can :read, Platform, :owner_type => 'User', :owner_id => user.id
         can :read, Platform, :owner_type => 'Group', :owner_id => user.group_ids
         can(:read, Platform, read_relations_for('platforms')) {|platform| local_reader? platform}
-        can([:update, :build_all], Platform) {|platform| local_admin? platform}
-        can([:freeze, :unfreeze, :destroy], Platform) {|platform| owner? platform}
+#        can([:update, :build_all], Platform) {|platform| local_admin? platform}
+        can([:freeze, :unfreeze, :update], Platform) {|platform| local_admin? platform}
+        #can([:freeze, :unfreeze, :destroy], Platform) {|platform| owner? platform}
+        can(:destroy, Platform) {|platform| owner? platform}
         can :autocomplete_user_uname, Platform
 
         can :read, Repository, :platform => {:visibility => 'open'}
@@ -84,12 +86,15 @@ class Ability
         can([:create, :update, :projects_list, :add_project, :remove_project], Repository) {|repository| local_admin? repository.platform}
         can([:change_visibility, :settings, :destroy], Repository) {|repository| owner? repository.platform}
 
+        can :read, Product, :platform => {:platform_type => 'main'}
         can :read, Product, :platform => {:owner_type => 'User', :owner_id => user.id}
         can :read, Product, :platform => {:owner_type => 'Group', :owner_id => user.group_ids}
-        can(:manage, Product, read_relations_for('products', 'platforms')) {|product| local_admin? product.platform}
-        can(:create, ProductBuildList) {|pbl| pbl.product.can_build? and can?(:update, pbl.product)}
+        can(:read, Product, read_relations_for('products', 'platforms')) {|product| product.platform.platform_type == 'main'}
+        can([:create, :update, :destroy, :clone], Product) {|product| local_admin? product.platform }
+
+        can(:create, ProductBuildList) {|pbl| can?(:update, pbl.product)}
         can(:destroy, ProductBuildList) {|pbl| can?(:destroy, pbl.product)}
-      
+
         can [:read, :platforms], Category
 
         can [:read, :create], PrivateUser, :platform => {:owner_type => 'User', :owner_id => user.id}
@@ -111,9 +116,14 @@ class Ability
 
       # Shared cannot rights for all users (registered, admin)
       cannot :destroy, Platform, :platform_type => 'personal'
-      cannot :destroy, Repository, :platform => {:platform_type => 'personal'}
+      cannot [:create, :destroy, :add_project, :remove_project], Repository, :platform => {:platform_type => 'personal'}
       cannot :fork, Project, :owner_id => user.id, :owner_type => user.class.to_s
       cannot :destroy, Issue
+
+#      cannot :read, Product, :platform => {:platform_type => 'personal'}
+#      cannot(:read, Product, read_relations_for('products', 'platforms')) {|product| product.platform.platform_type == 'personal'}
+      cannot [:create, :update, :destroy, :clone], Product, :platform => {:platform_type => 'personal'}
+      cannot [:clone, :build_all, :freeze, :unfreeze], Platform, :platform_type => 'personal'
 
       can :create, Subscribe do |subscribe|
         !subscribe.subscribeable.subscribes.exists?(:user_id => user.id)

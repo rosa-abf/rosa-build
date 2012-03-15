@@ -1,0 +1,36 @@
+{
+  "sEcho": <%=h params[:sEcho].to_i || -1 %>,
+  "iTotalRecords": <%= @total_projects %>,
+  "iTotalDisplayRecords": <%= @total_project %>,
+  "aaData": [
+  <% @projects.each do |project| %>
+    [
+      "<%=(
+        "<div class='table-sort-left'>" +
+        j(image_tag(visibility_icon(project.visibility))) +
+        "</div>" +
+        "<div class='table-sort-right'>" +
+        j(link_to("#{project.owner.respond_to?(:uname) ? project.owner.uname : project.owner.name} / #{project.name}", project)) +
+        "</div>").html_safe
+      %>",
+      "<%=j project.description %>",
+      "<%=
+      j(link_to('<span class="delete">&nbsp;</span>'.html_safe, remove_project_repository_path(@repository, :project_id => project.id), :method => :delete, :confirm => t("layout.confirm")))
+        #j link_to t("layout.add"), url_for(:controller => :repositories, :action => :add_project, :project_id => project.id)
+      %>"
+    ]<%= project == @projects.last ? '' : ',' %>
+  <% end %>
+  ]
+  <%
+    # %tr{:id => "Row#{project_counter}", :class => cycle('odd', 'even')}
+    #    %td
+    #      = link_to project do
+    #        .table-sort-left= image_tag visibility_icon(project.visibility)
+    #        .table-sort-right #{project.owner.uname} / #{project.name}
+    #    %td.td2
+    #      %span= project.description
+    #    %td.buttons
+    #      = link_to remove_project_repository_path(@repository, :project_id => project.id), :method => :delete, :confirm => t("layout.confirm") do
+    #        %span.delete &nbsp;
+  %>
+}

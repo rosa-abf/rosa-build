@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120314162313) do
+ActiveRecord::Schema.define(:version => 20120314223151) do
 
   create_table "activity_feeds", :force => true do |t|
     t.integer  "user_id",    :null => false
@@ -249,7 +249,6 @@ ActiveRecord::Schema.define(:version => 20120314162313) do
     t.string   "tar_content_type"
     t.integer  "tar_file_size"
     t.datetime "tar_updated_at"
-    t.boolean  "is_template",      :default => false
     t.boolean  "system_wide",      :default => false
     t.text     "cron_tab"
     t.boolean  "use_cron",         :default => false

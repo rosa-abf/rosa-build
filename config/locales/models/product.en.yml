@@ -41,6 +41,7 @@ en:
     attributes:
       product:
         name: Name
+        description: Description
         platform_id: Platform
         build_status: Build status
         build_path: ISO path
