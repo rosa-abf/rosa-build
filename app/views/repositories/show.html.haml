@@ -11,6 +11,7 @@
 = link_to t("layout.projects.add"), add_project_repository_path(@repository), :class => 'button'
 
 = render :partial => 'proj_list1', :object => @projects
+= will_paginate @projects
 -#.block
   .secondary-navigation
     %ul.wat-cf

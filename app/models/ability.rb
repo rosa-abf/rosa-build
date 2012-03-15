@@ -86,13 +86,15 @@ class Ability
         can([:create, :update, :projects_list, :add_project, :remove_project], Repository) {|repository| local_admin? repository.platform}
         can([:change_visibility, :settings, :destroy], Repository) {|repository| owner? repository.platform}
 
+        can :read, Product, :platform => {:platform_type => 'main'}
         can :read, Product, :platform => {:owner_type => 'User', :owner_id => user.id}
         can :read, Product, :platform => {:owner_type => 'Group', :owner_id => user.group_ids}
-        # TODO: WTF???
-        #can(:manage, Product, read_relations_for('products', 'platforms')) {|product| local_admin? product.platform}
+        can(:read, Product, read_relations_for('products', 'platforms')) {|product| product.platform.platform_type == 'main'}
+        can([:create, :update, :destroy, :clone], Product) {|product| local_admin? product.platform }
+
         can(:create, ProductBuildList) {|pbl| pbl.product.can_build? and can?(:update, pbl.product)}
         can(:destroy, ProductBuildList) {|pbl| can?(:destroy, pbl.product)}
-      
+
         can [:read, :platforms], Category
 
         can [:read, :create], PrivateUser, :platform => {:owner_type => 'User', :owner_id => user.id}
@@ -118,7 +120,9 @@ class Ability
       cannot :fork, Project, :owner_id => user.id, :owner_type => user.class.to_s
       cannot :destroy, Issue
 
-      cannot :manage, Product, :platform => {:platform_type => 'personal'}
+#      cannot :read, Product, :platform => {:platform_type => 'personal'}
+#      cannot(:read, Product, read_relations_for('products', 'platforms')) {|product| product.platform.platform_type == 'personal'}
+      cannot [:create, :update, :destroy, :clone], Product, :platform => {:platform_type => 'personal'}
       cannot [:clone, :build_all, :freeze, :unfreeze], Platform, :platform_type => 'personal'
 
       can :create, Subscribe do |subscribe|
