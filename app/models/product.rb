@@ -23,18 +23,7 @@ class Product < ActiveRecord::Base
     @delete_tar = value
   end
 
-  def can_clone?
-    #is_template
-    false
-  end
-
-  def can_build?
-#    !is_template
-    true
-  end
-
   def clone_from!(template)
-    raise "Only templates can be cloned" unless template.can_clone?
     attrs = ATTRS_TO_CLONE.inject({}) {|result, attr|
       result[attr] = template.send(attr)
       result

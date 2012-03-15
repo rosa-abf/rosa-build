@@ -92,7 +92,7 @@ class Ability
         can(:read, Product, read_relations_for('products', 'platforms')) {|product| product.platform.platform_type == 'main'}
         can([:create, :update, :destroy, :clone], Product) {|product| local_admin? product.platform }
 
-        can(:create, ProductBuildList) {|pbl| pbl.product.can_build? and can?(:update, pbl.product)}
+        can(:create, ProductBuildList) {|pbl| can?(:update, pbl.product)}
         can(:destroy, ProductBuildList) {|pbl| can?(:destroy, pbl.product)}
 
         can [:read, :platforms], Category
