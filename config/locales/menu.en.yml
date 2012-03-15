@@ -27,3 +27,9 @@ en:
     wiki: Wiki
     readme: Readme
     settings: Settings
+  feed_menu:
+    all: Все
+    code: Код
+    tracker: Трекер
+    build: Сборка
+    wiki: Вики
