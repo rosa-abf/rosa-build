@@ -33,3 +33,5 @@ ru:
     tracker: Трекер
     build: Сборка
     wiki: Вики
+  platform_menu:
+    settings: Настройки

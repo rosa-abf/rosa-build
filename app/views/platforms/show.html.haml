@@ -1,4 +1,46 @@
-.block
+= render :partial => 'submenu'
+= render :partial => 'sidebar'
+
+%h3.fix= t("layout.platforms.about")
+
+%p= @platform.description
+
+%table.tablesorter.unbordered
+  - if @platform.parent
+    %tr
+      %td
+        %b= "#{t("activerecord.attributes.platform.parent")}:"
+      %td= link_to @platform.parent.description, platform_path(@platform.parent)
+  %tr
+    %td
+      %b= "#{t('layout.platforms.owner')}:"
+    %td= link_to @platform.owner.try(:name), url_for(@platform.owner)
+  %tr
+    %td
+      %b= "#{t('layout.platforms.visibility')}:"
+    %td= t("layout.visibilities.#{@platform.visibility}")
+  %tr
+    %td
+      %b= "#{t('layout.platforms.platform_type')}:"
+    %td= @platform.platform_type
+  %tr
+    %td
+      %b= "#{t('layout.platforms.distrib_type')}:"
+    %td= @platform.distrib_type
+
+.buttons_block
+  - if can? :build_all, @platform
+    = link_to t("layout.platforms.build_all"), build_all_platform_path(@platform), :confirm => I18n.t("layout.confirm"), :method => :post, :class => "button left_floated"
+  - if @platform.released?
+    - if can? :unfreeze, @platform
+      = link_to t("layout.platforms.unfreeze"), unfreeze_platform_path(@platform), :confirm => I18n.t("layout.platforms.confirm_unfreeze"), :method => :post, :class => "button left_floated"
+  - else
+    - if can? :freeze, @platform
+      = link_to t("layout.platforms.freeze"), freeze_platform_path(@platform), :confirm => I18n.t("layout.platforms.confirm_freeze"), :method => :post, :class => "button left_floated"
+  = link_to "Клонировать", clone_platform_path(@platform), :class => "button left_floated" if can? :clone, @platform
+  .both
+
+-#.block
   .secondary-navigation
     %ul.wat-cf
       %li.first= link_to t("layout.platforms.list"), platforms_path
@@ -66,8 +108,8 @@
         = link_to t("layout.platforms.build_all"), build_all_platform_path(@platform), :confirm => I18n.t("layout.confirm"), :method => :post, :class => "button" if can? :build_all, @platform
         = link_to t("layout.platforms.edit"), edit_platform_path(@platform), :class => "button" if can? :edit, @platform
 
-%a{ :name => "repositories" }
-.block
+-#%a{ :name => "repositories" }
+-#.block
   .secondary-navigation
     %ul.wat-cf
       %li.first.active= link_to t("layout.repositories.list"), platform_path(@platform) + "#repositories"
@@ -91,8 +133,8 @@
       .actions-bar.wat-cf
         .actions
 
-%a{ :name => "producs" }
-.block
+-#%a{ :name => "producs" }
+-#.block
   .secondary-navigation
     %ul.wat-cf
       %li.first.active= link_to t("layout.products.list"), platform_path(@platform) + "#products"
@@ -116,4 +158,4 @@
               =# (product.can_clone? ? "| #{link_to t("layout.products.clone"), clone_platform_product_path(@platform, product)}" : "").html_safe
       .actions-bar.wat-cf
         .actions
-- content_for :sidebar, render(:partial => 'sidebar')
+-# content_for :sidebar, render(:partial => 'sidebar')

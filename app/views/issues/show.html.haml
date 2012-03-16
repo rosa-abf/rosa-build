@@ -16,7 +16,7 @@
   .fulltext.view.issue_body=@issue.body
 .both
 %br
-- if can? :write, @issue.project
+- if can? :update, @issue
   =link_to t('layout.edit'), '#', :id => 'edit_issue_content', :class => 'button'
   =form_for :issue, :url => [@project, @issue], :method => :put, :html => { :class => 'edit_form issue', :style => 'display:none;' } do |f|
     .leftlist= t('activerecord.attributes.issue.title') + ':'

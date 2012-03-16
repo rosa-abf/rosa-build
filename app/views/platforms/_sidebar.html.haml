@@ -1,4 +1,21 @@
-.block.notice
+- act = action_name.to_sym
+- contr = controller_name.to_sym
+
+- content_for :sidebar do
+  %aside
+    .admin-preferences
+      %ul
+        %li{:class => (act == :show && contr == :platforms) ? 'active' : ''}
+          = link_to t("layout.platforms.about"), platform_path(@platform)
+        %li{:class => (contr == :repositories) ? 'active' : ''}
+          = link_to t("layout.repositories.list_header"), platform_repositories_path(@platform)
+        - if can? :read, @platform.products.build
+          %li{:class => (contr == :products) ? 'active' : ''}
+            = link_to t("layout.products.list_header"), platform_products_path(@platform)
+        -#- if current_user.owner_of? @platform or current_user.admin?
+          %li{:class => (act == :index && contr == :private_users) ? 'active' : ''}
+            = link_to t("layout.platforms.private_users"), platform_private_users_path(@platform)
+-#.block.notice
   %h3= t("layout.groups.members")
   .content
     - @platform.members.uniq.each do |member|

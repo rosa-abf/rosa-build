@@ -2,6 +2,8 @@ ru:
   layout:
     products:
       list: Список
+      about: О продукте
+      build_lists_monitoring: Мониторинг сборочных заданий
       new: Новый продукт
       list_header: Продукты
       clone: Клонировать
@@ -39,6 +41,7 @@ ru:
     attributes:
       product:
         name: Название
+        description: Описание
         platform_id: Платформа
         build_status: Статус последней сборки
         build_path: Путь к iso

@@ -23,7 +23,7 @@ class ActivityFeedObserver < ActiveRecord::Observer
         )
       end
 
-      if record.user_id_was != record.user_id
+      if record.user_id_changed?
         UserMailer.delay.issue_assign_notification(record, record.user) if record.user.notifier.issue_assign && record.user.notifier.can_notify
         ActivityFeed.create(
           :user => record.user,
@@ -119,7 +119,7 @@ class ActivityFeedObserver < ActiveRecord::Observer
   def after_update(record)
     case record.class.to_s
     when 'Issue'
-      if record.user_id_was != record.user_id
+      if record.user_id && record.user_id_changed?
         UserMailer.delay.issue_assign_notification(record, record.user) if record.user.notifier.issue_assign && record.user.notifier.can_notify
         ActivityFeed.create(
           :user => record.user,

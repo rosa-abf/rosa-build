@@ -11,3 +11,7 @@ en:
     read_write_access: read & write
 
     by: by
+
+    visibilities:
+      open: open
+      hidden: hidden

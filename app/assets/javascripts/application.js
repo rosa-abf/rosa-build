@@ -3,6 +3,7 @@
 //= require jquery-ui
 //= require autocomplete-rails
 //= require vendor
+//= require jquery.dataTables_ext
 //= require_tree ./design
 //= require_tree ./extra
 //= require_self

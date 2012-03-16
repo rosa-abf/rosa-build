@@ -33,3 +33,5 @@ en:
     tracker: Tracker
     build: Build
     wiki: Wiki
+  platform_menu:
+    settings: Settings

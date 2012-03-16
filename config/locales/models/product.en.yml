@@ -2,6 +2,8 @@ en:
   layout:
     products:
       list: List
+      about: About product
+      build_lists_monitoring: Build lists monitoring
       new: New product
       list_header: Products
       clone: Clone
@@ -39,6 +41,7 @@ en:
     attributes:
       product:
         name: Name
+        description: Description
         platform_id: Platform
         build_status: Build status
         build_path: ISO path

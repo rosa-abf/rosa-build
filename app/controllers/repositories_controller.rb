@@ -12,9 +12,9 @@ class RepositoriesController < ApplicationController
 
   def index
     if params[:platform_id]
-      @repositories = Platform.find(params[:platform_id]).repositories.paginate(:page => params[:repository_page])
+      @repositories = Platform.find(params[:platform_id]).repositories.paginate(:page => params[:page])
     else
-      @repositories = Repository.paginate(:page => params[:repository_page])
+      @repositories = Repository.paginate(:page => params[:page])
     end
   end
 
@@ -36,7 +36,7 @@ class RepositoriesController < ApplicationController
     platform_id = @repository.platform_id
 
     flash[:notice] = t("flash.repository.destroyed")
-    redirect_to platform_path(platform_id)
+    redirect_to platform_repositories_path(platform_id)
   end
 
   def create
@@ -60,13 +60,14 @@ class RepositoriesController < ApplicationController
       else
         flash[:error] = t('flash.repository.project_not_added')
       end
-      redirect_to repository_path(@repository)
+      redirect_to platform_repository_path(@platform, @repository)
     else
       render :projects_list
     end
   end
 
   def projects_list
+
     owner_subquery = "
       INNER JOIN (
         SELECT id, 'User' AS type, uname
@@ -76,27 +77,31 @@ class RepositoriesController < ApplicationController
         FROM groups
       ) AS owner
       ON projects.owner_id = owner.id AND projects.owner_type = owner.type"
-    colName = ['owner.uname', 'projects.name']
+    colName = ['projects.name']
     sort_col = params[:iSortCol_0] || 0
     sort_dir = params[:sSortDir_0]=="asc" ? 'asc' : 'desc'
     order = "#{colName[sort_col.to_i]} #{sort_dir}"
 
-    @projects = Project.joins(owner_subquery).addable_to_repository(@repository.id)
+    if params[:added] == "true"
+      @projects = @repository.projects
+    else
+      @projects = Project.joins(owner_subquery).addable_to_repository(@repository.id)
+      @projects = @projects.by_visibilities('open') if @repository.platform.platform_type == 'main'
+    end
     @projects = @projects.paginate(:page => (params[:iDisplayStart].to_i/params[:iDisplayLength].to_i).to_i + 1, :per_page => params[:iDisplayLength])
-    @projects = @projects.by_visibilities('open') if @repository.platform.platform_type == 'main'
 
     @total_projects = @projects.count
-    @projects = @projects.where(['projects.name LIKE ?', "#{params[:sSearch]}%"]) if params[:sSearch] and !params[:sSearch].empty?
+    @projects = @projects.where(['projects.name ILIKE ?', "#{params[:sSearch]}%"]) if params[:sSearch] and !params[:sSearch].empty?
     @total_project = @projects.count
     @projects = @projects.order(order)#.includes(:owner) #WTF????
 
-    render :partial => 'proj_ajax', :layout => false
+    render :partial => (params[:added] == "true") ? 'project' : 'proj_ajax', :layout => false
   end
 
   def remove_project
     @project = Project.find(params[:project_id])
     ProjectToRepository.where(:project_id => @project.id, :repository_id => @repository.id).destroy_all
-    redirect_to repository_path(@repository), :notice => t('flash.repository.project_removed')
+    redirect_to platform_repository_path(@platform, @repository), :notice => t('flash.repository.project_removed')
   end
 
   protected

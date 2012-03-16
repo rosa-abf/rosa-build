@@ -443,4 +443,137 @@ table.wiki .history .td2 .name span.username {
     width: 164px;
 }
 
+table.tablesorter.platforms .th1 {
+    width: 290px;
+}
+
+table.tablesorter.platforms .th2 {
+    width: 280px;
+}
+
+table.tablesorter tr td.buttons {
+    text-align: center;
+}
+
+table.tablesorter tr td.buttons a span.delete {
+    background: image-url('x.png') no-repeat 0 0 transparent;
+    width: 12px;
+    display: inline-block;
+}
+
 #fork-and-edit {display:block;}
+
+a.button.left_floated {
+    display: inline-block;
+    float: left;
+    margin-right: 5px;
+}
+
+div.buttons_block {
+    margin-top: 20px;
+}
+
+table.tablesorter.unbordered {
+    border: none;
+}
+
+table.tablesorter.unbordered tr td {
+    border: none;
+    padding: 3px;
+}
+
+table.tablesorter.repo-projects th.th1 {
+    width: 250px;
+}
+
+table.tablesorter.repo-projects th.th3 {
+    width: 60px;
+}
+
+table.tablesorter.repo-projects td.td2,
+.table-sort-right {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+div.dataTables_filter {
+    margin-bottom: 15px;
+}
+
+div.dataTables_paginate {
+    float: left;
+}
+
+div.dataTables_info {
+    float: right;
+}
+
+div.dataTables_info,
+div.dataTables_paginate.paging_will_paginate_like {
+    margin-top: 15px;
+}
+
+div.dataTables_paginate.paging_will_paginate_like a.paginate_button,
+div.dataTables_paginate.paging_will_paginate_like a.paginate_active {
+    background: none repeat scroll 0 0 #EDEDED;
+    color: #4C90D0 !important;
+    border: 1px solid #DDDDDD;
+    border-radius: 1px 1px 1px 1px;
+    padding: 3px 7px;
+    margin-right: 3px;
+    cursor: pointer;
+}
+
+div.dataTables_paginate.paging_will_paginate_like a.paginate_button_disabled,
+div.dataTables_paginate.paging_will_paginate_like a.paginate_active {
+    color: #565657 !important;
+    cursor: default;
+}
+
+div.dataTables_paginate.paging_will_paginate_like a.paginate_button_disabled:hover,
+div.dataTables_paginate.paging_will_paginate_like a.paginate_active:hover {
+    text-decoration: none;
+}
+
+div.dataTables_paginate.paging_will_paginate_like a.previous {
+    margin-left: 0px;
+    margin-right: 4px;
+}
+
+div.dataTables_paginate.paging_will_paginate_like a.next {
+    margin-left: 1px;
+    margin-right: 0px;
+}
+
+div.dataTables_paginate.paging_will_paginate_like a.paginate_active {
+    background: none repeat scroll 0 0 #D5E7F9;
+    border: 1px solid #C1DAED;
+}
+
+div.dataTables_processing {
+    z-index: 999;
+}
+
+div.rightlist textarea {
+    resize: none;
+}
+
+div#crontab_generator .leftlist,
+div#crontab_generator .rightlist {
+    width: 50%;
+}
+
+div#crontab_generator .leftlist select,
+div#crontab_generator .rightlist select {
+    margin-top: 10px;
+}
+
+table.dataTable tr.odd td.sorting_1 {
+    background-color: #F0F0F6;
+}
+
+table.dataTable tr.even td.sorting_1 {
+    background-color: #FFFFFF;
+}
+

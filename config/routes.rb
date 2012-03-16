@@ -164,7 +164,7 @@ Rosa::Application.routes.draw do
   resources :repositories do
     member do
       get :add_project
-      get :remove_project
+      delete :remove_project
       get :projects_list
     end
   end
