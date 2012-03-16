@@ -1,0 +1,17 @@
+.top
+  .image
+    = image_tag(avatar_url_by_email(user_email, :small), :alt => 'avatar')
+  .text
+    %span
+      = raw t('notifications.bodies.build_task', :task_num => task_num, :task_link => build_list_path(build_list_id))
+      = raw t('notifications.bodies.project', :project_link => link_to("#{project_owner}/#{project_name}", project_path(project_id)) )
+      - message, error = case status
+        - when BuildList::BUILD_PUBLISHED
+          - ['published', nil]
+        - when BuildServer::SUCCESS
+          - ['success', nil]
+        - else ['failed', t("layout.build_lists.statuses.#{BuildList::HUMAN_STATUSES[status]}")]
+      = raw t("notifications.bodies.build_status.#{message}", :error => error)
+    .both
+      %span.date= notified_at
+  .both

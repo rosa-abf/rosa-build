@@ -1,5 +1,5 @@
 class ActivityFeedObserver < ActiveRecord::Observer
-  observe :issue, :comment, :user
+  observe :issue, :comment, :user, :build_list
 
   def after_create(record)
     case record.class.to_s
@@ -127,6 +127,20 @@ class ActivityFeedObserver < ActiveRecord::Observer
           :data => {:user_name => record.user.name, :user_email => record.user.email, :issue_serial_id => record.serial_id, :issue_title => record.title,
                            :project_id => record.project.id, :project_name => record.project.name, :project_owner => record.project.owner.uname}
         )
+      end
+
+    when 'BuildList'
+      if [BuildList::BUILD_PUBLISHED, BuildServer::SUCCESS, BuildServer::BUILD_ERROR, BuildServer::PLATFORM_NOT_FOUND,
+           BuildServer::PROJECT_NOT_FOUND, BuildServer::PROJECT_VERSION_NOT_FOUND, BuildList::FAILED_PUBLISH].include? record.status
+        record.project.owner_and_admin_ids.each do |recipient|
+          ActivityFeed.create(
+            :user => User.find(recipient),
+            :kind => 'build_list_notification',
+            :data => {:task_num => record.bs_id, :build_list_id => record.id, :status => record.status, :notified_at => record.notified_at,
+                             :project_id => record.project_id, :project_name => record.project.name, :project_owner => record.project.owner.uname,
+                             :user_name => record.user.name, :user_email => record.user.email, :user_id => record.user_id}
+          )
+        end
       end
     end
   end
