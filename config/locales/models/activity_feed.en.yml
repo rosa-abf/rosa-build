@@ -33,7 +33,11 @@ en:
       wiki_new_commit_notification: '%{user_link} has been updated %{history_link}'
       invite_approve_notification: Invite to ABF
       project: in project %{project_link}
-
       delete_branch: Branch %{branch_name} has been deleted
       create_branch: '%{user_link} has been created a new branch %{branch_name}'
       update_branch: '%{user_link} has been pushed to branch %{branch_name}'
+      build_task: 'Build <a href="%{task_link}">task #%{task_num}</a>'
+      build_status:
+        published: published successfully
+        success: complete successfully
+        failed: complete with error "%{error}"

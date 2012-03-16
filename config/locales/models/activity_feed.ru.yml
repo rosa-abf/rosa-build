@@ -17,6 +17,7 @@ ru:
       new_user_notification: Регистрация на проекте «%{ project_name }»
       issue_assign_notification: Вам назначили задачу
       invite_approve_notification: Приглашение в ABF
+      build_task: Сборочное задание
 
     bodies:
       new_comment_notification:
@@ -37,3 +38,8 @@ ru:
       delete_branch: Удалена ветка %{branch_name}
       create_branch: '%{user_link} создал новую ветку %{branch_name}'
       update_branch: '%{user_link} внес изменения в ветку %{branch_name}'
+      build_task: 'Сборочное <a href="%{task_link}">задание №%{task_num}</a>'
+      build_status:
+        published: успешно опубликовано
+        success: успешно собрано
+        failed: завершилось с ошибкой "%{error}"
