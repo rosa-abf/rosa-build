@@ -16,14 +16,15 @@
   .rightlist= f.collection_select :parent_platform_id, Platform.all, :id, :description, :include_blank => true
   .both
 
-.leftlist= f.label :released, :class => :label
-.rightlist= f.check_box :released, :class => 'check_box'
-.both
+- unless @platform.platform_type.in? ['personal']
+  .leftlist= f.label :released, :class => :label
+  .rightlist= f.check_box :released, :class => 'check_box'
+  .both
 
-.leftlist= label_tag "", t("layout.platforms.admin_id"), :class => :label
-.rightlist= autocomplete_field_tag 'admin_id', @admin_uname, autocomplete_user_uname_platforms_path, :id_element => '#admin_id_field'
-= hidden_field_tag 'admin_id', @admin_id, :id => 'admin_id_field'
-.both
+  .leftlist= label_tag "", t("layout.platforms.admin_id"), :class => :label
+  .rightlist= autocomplete_field_tag 'admin_id', @admin_uname, autocomplete_user_uname_platforms_path, :id_element => '#admin_id_field'
+  = hidden_field_tag 'admin_id', @admin_id, :id => 'admin_id_field'
+  .both
 
 .button_block
   = submit_tag t("layout.save")

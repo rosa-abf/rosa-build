@@ -35,6 +35,7 @@ ru:
       private_users: Данные для доступа
       confirm_clone: Клонировать?
       clone: Клонировать
+      delete_warning: Внимание! Удаленная платформа удалению не подлежит.
 
   flash:
     platform:

@@ -35,6 +35,7 @@ en:
       private_users: Access data
       confirm_clone: To clone?
       clone: To clone
+      delete_warning: Attention! Deleted platform can not be restored!
 
   flash:
     platform:
