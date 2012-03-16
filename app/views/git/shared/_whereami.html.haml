@@ -1,5 +1,5 @@
 %p#file-name1
-  = link_to @project.name, tree_path(@project, :treeish => html_escape(@treeish.encode_to_default))
+  = link_to @project.name, tree_path(@project, :treeish => @treeish.encode_to_default)
   = File::SEPARATOR
   - if @path.present?
     - paths = File.split(@path)
