@@ -1,81 +1,161 @@
-%table.columns2.info
-  %tr
-    %td.first= t("activerecord.attributes.build_list.name")
-    %td= @build_list.present? ? @build_list.name : t("layout.build_lists.name_not_yet_defined")
-  %tr
-    %td= t("activerecord.attributes.build_list.bs_id")
-    %td= @build_list.bs_id
-  %tr
-    %td= t("activerecord.attributes.build_list.container_path")
-    %td
-      - if @build_list.status == BuildList::BUILD_PUBLISHED
-        = t("layout.build_lists.container_published")
-      - elsif @build_list.container_path.present?
-        - container_url = "http://#{request.host_with_port}/downloads#{@build_list.container_path}"
-        = link_to container_url, container_url
-  %tr
-    %td= t("activerecord.attributes.build_list.bpl")
-    %td= link_to @build_list.bpl.name, @build_list.bpl
-  %tr
-    %td= t("activerecord.attributes.build_list.pl")
-    %td= link_to @build_list.pl.name, @build_list.pl
-  %tr
-    %td= t("activerecord.attributes.build_list.include_repos")
-    %td= (@build_list.include_repos||[]).map{|r| Repository.find(r).name}.join(', ')
-  %tr
-    %td= t("activerecord.attributes.build_list.update_type")
-    %td= @build_list.update_type
-  %tr
-    %td= t("activerecord.attributes.build_list.build_requires")
-    %td= @build_list.build_requires
-  %tr
-    %td= t("activerecord.attributes.build_list.auto_publish")
-    %td= @build_list.auto_publish
-  %tr
-    %td= t("activerecord.attributes.build_list.status")
-    %td= @build_list.human_status
-  %tr
-    %td= t("activerecord.attributes.build_list.project")
-    %td= link_to @build_list.project.name, project_path(@build_list.project)
-  %tr
-    %td= t("activerecord.attributes.build_list.project_version")
-    %td= @build_list.project_version
-  %tr
-    %td= t("activerecord.attributes.build_list.arch")
-    %td= @build_list.arch.name
-  %tr
-    %td= t("activerecord.attributes.build_list.user")
-    %td= link_to @build_list.user.try(:fullname), @build_list.user
-  %tr
-    %td= t("activerecord.attributes.build_list.notified_at")
-    %td= @build_list.notified_at
-  %tr
-    %td= t("activerecord.attributes.build_list.is_circle")
-    %td= t("layout.#{@build_list.is_circle?}_")
-
-%br
-%br
-
-= link_to t("layout.publish"), publish_build_list_path(@build_list), :method => "put", :confirm => t("layout.confirm"), :class => "button" if @build_list.can_publish? and can?(:publish, @build_list)
-
-%br
-%br
-
-%h2= t("layout.build_lists.items_header")
-= t("layout.build_lists.no_items_data") if @item_groups.blank?
-
+.notify.blue
+  %div{:class => build_list_status_color(@build_list.status)}
+    %p= @build_list.human_status
+  %p 2012-01-27 17:28:05 UTC
+  .both
+%h3= t("layout.build_lists.main_data")
+.leftside.width125= t("activerecord.attributes.build_list.container_path")
+.leftside
+  - if @build_list.status == BuildList::BUILD_PUBLISHED
+    = t("layout.build_lists.container_published")
+  - elsif @build_list.container_path.present?
+    - container_url = "http://#{request.host_with_port}/downloads#{@build_list.container_path}"
+    = link_to container_url, container_url
+.both
+.leftside.width125= t("activerecord.attributes.build_list.user")
+.leftside
+  = link_to @build_list.user.try(:fullname), @build_list.user
+.both
+= link_to t("layout.publish"), publish_build_list_path(@build_list), :method => "put", :confirm => t("layout.confirm"), :class => "button tmargin10" if @build_list.can_publish? and can?(:publish, @build_list)
+.hr
+%h3= t("layout.build_lists.main_data")
+.leftside.width125= t("activerecord.attributes.build_list.bpl")
+.leftside
+  = link_to @build_list.bpl.name, @build_list.bpl
+.both
+.leftside.width125= t("activerecord.attributes.build_list.pl")
+.leftside
+  = link_to @build_list.pl.name, @build_list.pl
+.both
+.leftside.width125= t("activerecord.attributes.build_list.include_repos")
+.leftside= (@build_list.include_repos||[]).map{|r| Repository.find(r).name}.join(', ')
+.both
+.leftside.width125= t("activerecord.attributes.build_list.update_type")
+.leftside= @build_list.update_type
+.both
+.leftside.width125= t("activerecord.attributes.build_list.build_requires")
+.leftside= @build_list.build_requires
+.both
+.leftside.width125= t("activerecord.attributes.build_list.auto_publish")
+.leftside= @build_list.auto_publish
+.both
+.leftside.width125= t("activerecord.attributes.build_list.project_version")
+.leftside= @build_list.project_version
+.both
+.leftside.width125= t("activerecord.attributes.build_list.arch")
+.leftside= @build_list.arch.name
+.both
+.leftside.width125= t("activerecord.attributes.build_list.notified_at")
+.leftside= @build_list.notified_at
+.both
+.leftside.width125= t("activerecord.attributes.build_list.is_circle")
+.leftside= t("layout.#{@build_list.is_circle?}_")
+.both
+.leftside.width125 Recurrent
+.leftside false
+.both
+.hr
+%h3= t("layout.build_lists.items_header")
+- if @item_groups.blank?
+  %h4.nomargin= t("layout.build_lists.no_items_data")
 - @item_groups.each_with_index do |group, level|
-  %h3.title Level ##{level}
-  %table.columns3.info
-    %tr
-      %th.first= t("activerecord.attributes.build_list/item.name")
-      %th= t("activerecord.attributes.build_list/item.version")
-      %th.last= t("activerecord.attributes.build_list/item.status")
+  -#%h4.nomargin= "#{group} ##{level}"
+  - group.each do |item|
+    %h4.nomargin= "#{item.name} ##{level}"
+    %table.tablesorter.width565{:cellpadding => "0", :cellspacing => "0"}
+      %thead
+        %tr
+          %th= t("activerecord.attributes.build_list/item.name")
+          %th= t("activerecord.attributes.build_list/item.version")
+          %th= t("activerecord.attributes.build_list/item.status")
+      %tbody
+        %tr{:class => build_list_item_status_color(item.status)}
+          %td= item.name
+          %td= item.version
+          %td= item.human_status
+.both
 
-    - group.each do |item|
-      %tr{:class => cycle("odd", "even")}
-        %td= item.name
-        %td= item.version
-        %td= item.human_status
+:javascript
+  $('article .all').addClass('bigpadding');
+
+-#%table.columns2.info
+-#  %tr
+-#    %td.first= t("activerecord.attributes.build_list.name")
+-#    %td= @build_list.present? ? @build_list.name : t("layout.build_lists.name_not_yet_defined")
+-#  %tr
+-#    %td= t("activerecord.attributes.build_list.bs_id")
+-#    %td= @build_list.bs_id
+-#  %tr
+-#    %td= t("activerecord.attributes.build_list.container_path")
+-#    %td
+-#      - if @build_list.status == BuildList::BUILD_PUBLISHED
+-#        = t("layout.build_lists.container_published")
+-#      - elsif @build_list.container_path.present?
+-#        - container_url = "http://#{request.host_with_port}/downloads#{@build_list.container_path}"
+-#        = link_to container_url, container_url
+-#  %tr
+-#    %td= t("activerecord.attributes.build_list.bpl")
+-#    %td= link_to @build_list.bpl.name, @build_list.bpl
+-#  %tr
+-#    %td= t("activerecord.attributes.build_list.pl")
+-#    %td= link_to @build_list.pl.name, @build_list.pl
+-#  %tr
+-#    %td= t("activerecord.attributes.build_list.include_repos")
+-#    %td= (@build_list.include_repos||[]).map{|r| Repository.find(r).name}.join(', ')
+-#  %tr
+-#    %td= t("activerecord.attributes.build_list.update_type")
+-#    %td= @build_list.update_type
+-#  %tr
+-#    %td= t("activerecord.attributes.build_list.build_requires")
+-#    %td= @build_list.build_requires
+-#  %tr
+-#    %td= t("activerecord.attributes.build_list.auto_publish")
+-#    %td= @build_list.auto_publish
+-#  %tr
+-#    %td= t("activerecord.attributes.build_list.status")
+-#    %td= @build_list.human_status
+-#  %tr
+-#    %td= t("activerecord.attributes.build_list.project")
+-#    %td= link_to @build_list.project.name, project_path(@build_list.project)
+-#  %tr
+-#    %td= t("activerecord.attributes.build_list.project_version")
+-#    %td= @build_list.project_version
+-#  %tr
+-#    %td= t("activerecord.attributes.build_list.arch")
+-#    %td= @build_list.arch.name
+-#  %tr
+-#    %td= t("activerecord.attributes.build_list.user")
+-#    %td= link_to @build_list.user.try(:fullname), @build_list.user
+-#  %tr
+-#    %td= t("activerecord.attributes.build_list.notified_at")
+-#    %td= @build_list.notified_at
+-#  %tr
+-#    %td= t("activerecord.attributes.build_list.is_circle")
+-#    %td= t("layout.#{@build_list.is_circle?}_")
+-#
+-#%br
+-#%br
+-#
+-#= link_to t("layout.publish"), publish_build_list_path(@build_list), :method => "put", :confirm => t("layout.confirm"), :class => "button" if @build_list.can_publish? and can?(:publish, @build_list)
+-#
+-#%br
+-#%br
+-#
+-#%h2= t("layout.build_lists.items_header")
+-#= t("layout.build_lists.no_items_data") if @item_groups.blank?
+-#
+-#- @item_groups.each_with_index do |group, level|
+-#  %h3.title Level ##{level}
+-#  %table.columns3.info
+-#    %tr
+-#      %th.first= t("activerecord.attributes.build_list/item.name")
+-#      %th= t("activerecord.attributes.build_list/item.version")
+-#      %th.last= t("activerecord.attributes.build_list/item.status")
+-#
+-#    - group.each do |item|
+-#      %tr{:class => cycle("odd", "even")}
+-#        %td= item.name
+-#        %td= item.version
+-#        %td= item.human_status
 
 = render 'build_lists/submenu'

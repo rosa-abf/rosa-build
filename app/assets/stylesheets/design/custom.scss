@@ -444,3 +444,15 @@ table.wiki .history .td2 .name span.username {
 }
 
 #fork-and-edit {display:block;}
+
+div.notify.blue div.nocolor {
+  float: left;
+  border: 1px solid #a9c6dd;
+}
+
+div.notify.blue div.red {
+  float: left;
+  border: 1px solid #ddd;
+  background-color: #FBE3E4;
+  border-color: #FBC2C4;
+}

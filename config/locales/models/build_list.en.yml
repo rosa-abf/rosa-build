@@ -58,6 +58,7 @@ en:
       container_published: 'Container in a repository'
       action: Action
       new_header: New build
+      main_data: Main data
 
       ownership:
         header: Build list ownership
