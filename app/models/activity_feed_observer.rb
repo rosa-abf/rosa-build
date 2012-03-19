@@ -7,7 +7,7 @@ class ActivityFeedObserver < ActiveRecord::Observer
       ActivityFeed.create(
         :user => record,
         :kind => 'new_user_notification',
-        :data => {:user_name => record.name, :user_email => record.email}
+        :data => {:user_name => record.user_appeal, :user_email => record.email}
       )
 
     when 'Issue'
