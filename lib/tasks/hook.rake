@@ -18,7 +18,7 @@ namespace :hook do
     projects = ENV['project_id'] ? Project.where(:id => eval(ENV['project_id'])) : Project
     projects.where('created_at >= ?', Time.now.ago(ENV['period'] ? eval(ENV['period']) : 100.years)).each do |project|
       hook_file = File.join(project.path, 'hooks', 'post-receive')
-      FileUtils.cp(hook, hook_file)
+      FileUtils.copy_entry(hook, hook_file, false, false, true)
       count = count + 1
     end
     say "Writing to #{count.to_s} repo(s)"
