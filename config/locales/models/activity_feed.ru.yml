@@ -7,6 +7,7 @@ ru:
       all_my_builds: Все мои сборки
       my_builds_by_day: Мои сборки за день
       new_project: Создать проект
+      load_messages: Загрузить сообщения
 
   notifications:
     subjects:
@@ -16,14 +17,14 @@ ru:
       new_user_notification: Регистрация на проекте «%{ project_name }»
       issue_assign_notification: Вам назначили задачу
       invite_approve_notification: Приглашение в ABF
+      build_task: Сборочное задание
 
     bodies:
       new_comment_notification:
         title: '%{user_link} добавил новый комментарий'
-        content: в задаче %{issue_link}
-        commit_content: в коммите %{commit_link}
+        content: к задаче %{issue_link}
+        commit_content: к коммиту %{commit_link}
       new_issue_notification: '%{user_link} добавил новую <a href="%{issue_link}">задачу</a>'
-      issue: задачу
       new_user_notification:
         title: Здравствуйте, %{user_name}.
         content: Вы зарегистрированы на проекте «ROSA Build System» и теперь можете войти в систему.
@@ -37,3 +38,9 @@ ru:
       delete_branch: Удалена ветка %{branch_name}
       create_branch: '%{user_link} создал новую ветку %{branch_name}'
       update_branch: '%{user_link} внес изменения в ветку %{branch_name}'
+      build_task: 'Сборочное <a href="%{task_link}">задание №%{task_num}</a>'
+      build_status:
+        published: успешно опубликовано
+        success: успешно собрано
+        failed: завершилось с ошибкой "%{error}"
+        pending: ожидает сборки

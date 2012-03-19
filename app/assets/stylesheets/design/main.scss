@@ -440,7 +440,7 @@ article a.button {
 	background-image: linear-gradient(top, #68a3d8, #125687);
 	filter: progid:DXImageTransform.Microsoft.gradient(startColorStr='#68a3d8', EndColorStr='#125687');
 	border: 1px solid #5084b4;
-	padding: 4px 20px;
+	padding: 4px 20px 6px;
 	margin: 0;
 	font-size: 12px;
 	text-decoration: none;
@@ -509,7 +509,7 @@ article input[type="submit"] {
 	background-image: linear-gradient(top, #68a3d8, #125687);
 	filter: progid:DXImageTransform.Microsoft.gradient(startColorStr='#68a3d8', EndColorStr='#125687');
 	border: 1px solid #5084b4;
-	padding: 0px 20px 0px;
+	padding: 3px 20px 5px;
 	margin: 0;
 	font-size: 12px;
 	text-decoration: none;
@@ -519,7 +519,6 @@ article input[type="submit"] {
 	border-radius: 5px;
 	text-align: center;
 	height: auto;
-	height: 28px;
 	width: auto;
 	font-family: Tahoma;
 }
@@ -1590,6 +1589,10 @@ table td.width145 {
 	width: 145px;
 }
 
+.width125 {
+	width: 125px;
+}
+
 table td.width30 {
 	width: 30px;
 }
@@ -1949,6 +1952,14 @@ table tbody tr.success td {
 	background: #e3edb7;
 }
 
+table.tablesorter.width565 {
+	width: 565px;
+}
+
+table.tablesorter thead th {
+  padding-left: 5px;
+}
+
 /* Create group */
 
 div.right-error {
@@ -2108,6 +2119,22 @@ article div.rightlist div.load {
 	padding: 5px 10px;
 }
 
+.notify.blue {
+	border: 1px solid #a9c6dd;
+	background: #dcecfa;
+	border-radius: 1px;
+	width: 555px;
+	margin-top: 20px;
+	text-align: right;
+	padding: 5px;
+}
+
+.notify.blue div.green {
+	border: 1px solid #bad099;
+	background: #d7e599;
+	float: left;
+}
+
 /* Pagination */
 
 div.pagination em {
@@ -2211,4 +2238,10 @@ div.width400.rmargin55 {
 
 div.tmargin10 {
 	margin-top: 10px;
+}
+
+/*My projects*/
+
+article h3 a {
+	font-size: 14px;
 }
