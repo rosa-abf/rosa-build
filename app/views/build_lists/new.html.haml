@@ -38,8 +38,8 @@
         = label_tag "arches_#{arch.id}", arch.name
     %h3= t("activerecord.attributes.build_list.pl")
     .lineForm= f.select :pl_id, @project.repositories.collect{|r| ["#{r.platform.name}/#{r.name}", r.platform.id]}
-    %h3= t("activerecord.attributes.build_list.include_repos")
-    #include_repos
+-#    %h3= t("activerecord.attributes.build_list.include_repos")
+-#    #include_repos
 
 -#.preloaded_include_repos{:style => 'display: none'}
 -#  - @project.platforms.each do |p|
