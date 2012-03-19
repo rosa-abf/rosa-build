@@ -1589,6 +1589,10 @@ table td.width145 {
 	width: 145px;
 }
 
+.width125 {
+	width: 125px;
+}
+
 table td.width30 {
 	width: 30px;
 }
@@ -1948,6 +1952,14 @@ table tbody tr.success td {
 	background: #e3edb7;
 }
 
+table.tablesorter.width565 {
+	width: 565px;
+}
+
+table.tablesorter thead th {
+  padding-left: 5px;
+}
+
 /* Create group */
 
 div.right-error {
@@ -2105,6 +2117,22 @@ article div.rightlist div.load {
 
 .notify p {
 	padding: 5px 10px;
+}
+
+.notify.blue {
+	border: 1px solid #a9c6dd;
+	background: #dcecfa;
+	border-radius: 1px;
+	width: 555px;
+	margin-top: 20px;
+	text-align: right;
+	padding: 5px;
+}
+
+.notify.blue div.green {
+	border: 1px solid #bad099;
+	background: #d7e599;
+	float: left;
 }
 
 /* Pagination */

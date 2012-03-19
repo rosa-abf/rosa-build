@@ -463,6 +463,31 @@ table.tablesorter tr td.buttons a span.delete {
 
 #fork-and-edit {display:block;}
 
+.notify.blue div.success {
+  border: 1px solid #bad099;
+  background: #d7e599;
+  float: left;
+}
+
+div.notify.blue div.error {
+  float: left;
+  border: 1px solid #ddd;
+  background-color: #FBE3E4;
+  border-color: #FBC2C4;
+}
+
+div.notify.blue div.nocolor {
+  float: left;
+  border: 1px solid #a9c6dd;
+}
+
+div.notify.blue div.red {
+  float: left;
+  border: 1px solid #ddd;
+  background-color: #FBE3E4;
+  border-color: #FBC2C4;
+}
+
 a.button.left_floated {
     display: inline-block;
     float: left;
@@ -576,4 +601,3 @@ table.dataTable tr.odd td.sorting_1 {
 table.dataTable tr.even td.sorting_1 {
     background-color: #FFFFFF;
 }
-
