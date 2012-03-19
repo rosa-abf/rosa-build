@@ -41,3 +41,4 @@ en:
         published: published successfully
         success: complete successfully
         failed: complete with error "%{error}"
+        pending: build waiting

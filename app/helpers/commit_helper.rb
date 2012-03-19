@@ -33,7 +33,7 @@ module CommitHelper
   end
 
   def shortest_hash_id(id)
-    id[0..8]
+    id[0..9]
   end
 
   def short_commit_message(message)
