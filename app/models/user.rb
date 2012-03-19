@@ -120,6 +120,10 @@ class User < ActiveRecord::Base
     end
   end
 
+  def user_appeal
+    name.blank? ? uname : name
+  end
+
   private
 
   def create_settings_notifier
