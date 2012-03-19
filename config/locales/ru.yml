@@ -5,8 +5,8 @@ ru:
     page_gap: ...
 
   datatables:
-    previous_label: ‹ Пред.
-    next_label: След. ›
+    previous_label: ‹ Предыдущая
+    next_label: Следующая ›
     first_label: « Первая
     last_label: Последняя »
     empty_label: Нет доступных данных

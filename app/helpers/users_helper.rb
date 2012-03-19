@@ -2,7 +2,7 @@
 module UsersHelper
 
   def avatar_url_by_email(email, size = :small)
-    avatar_url(User.where(:email => email).first, size)
+    avatar_url(User.where(:email => email).first || User.new(:email => email), size)
   end
 
   def avatar_url(user, size = :small)

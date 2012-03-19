@@ -62,4 +62,11 @@ class CommentPresenter < ApplicationPresenter
     @date ||= I18n.l(@comment.updated_at, :format => :long)
   end
 
+  def comment_id?
+    true
+  end
+
+  def comment_id
+    @comment.id
+  end
 end

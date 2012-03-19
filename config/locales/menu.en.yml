@@ -27,3 +27,11 @@ en:
     wiki: Wiki
     readme: Readme
     settings: Settings
+  feed_menu:
+    all: All
+    code: Code
+    tracker: Tracker
+    build: Build
+    wiki: Wiki
+  platform_menu:
+    settings: Settings

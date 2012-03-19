@@ -25,7 +25,8 @@ class UsersController < ApplicationController
     @user = User.new
   end
 
-  def edit
+  def profile
+    @user ||= current_user
   end
 
   def create
@@ -46,12 +47,16 @@ class UsersController < ApplicationController
     end
     @user ||= current_user
     if @user.update_without_password(params[:user])
+      if @user.avatar && params[:delete_avatar] == '1'
+        @user.avatar = nil
+        @user.save
+      end
       flash[:notice] = t('flash.user.saved')
-      redirect_to edit_user_path(@user)
+      redirect_to @user == current_user ? edit_profile_path : edit_user_path(@user)
     else
       flash[:error] = t('flash.user.save_error')
       flash[:warning] = @user.errors.full_messages.join('. ')
-      render(:action => :edit)
+      render(:action => :profile)
     end
   end
 

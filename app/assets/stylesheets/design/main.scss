@@ -440,7 +440,7 @@ article a.button {
 	background-image: linear-gradient(top, #68a3d8, #125687);
 	filter: progid:DXImageTransform.Microsoft.gradient(startColorStr='#68a3d8', EndColorStr='#125687');
 	border: 1px solid #5084b4;
-	padding: 4px 20px;
+	padding: 4px 20px 6px;
 	margin: 0;
 	font-size: 12px;
 	text-decoration: none;
@@ -509,7 +509,7 @@ article input[type="submit"] {
 	background-image: linear-gradient(top, #68a3d8, #125687);
 	filter: progid:DXImageTransform.Microsoft.gradient(startColorStr='#68a3d8', EndColorStr='#125687');
 	border: 1px solid #5084b4;
-	padding: 0px 20px 0px;
+	padding: 3px 20px 5px;
 	margin: 0;
 	font-size: 12px;
 	text-decoration: none;
@@ -519,7 +519,6 @@ article input[type="submit"] {
 	border-radius: 5px;
 	text-align: center;
 	height: auto;
-	height: 28px;
 	width: auto;
 	font-family: Tahoma;
 }
@@ -1413,8 +1412,8 @@ div.description-top input.name {
 	height: 21px;
 	width: auto;
 	color: #575756;
-	font-size: 12px;
-	width: 215px;
+	font-size: 11px;
+	width: 415px;
 	padding: 2px 5px 3px;
 }
 
@@ -2239,4 +2238,10 @@ div.width400.rmargin55 {
 
 div.tmargin10 {
 	margin-top: 10px;
+}
+
+/*My projects*/
+
+article h3 a {
+	font-size: 14px;
 }

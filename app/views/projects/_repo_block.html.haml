@@ -1,8 +1,13 @@
 .description-top
-  .img= image_tag 'code.png'
   = text_field_tag :url, git_repo_url(project.git_repo_name), :class => 'name',
-      :type => 'text',:spellcheck => 'false', :readonly => true, :onfocus => "this.select()"
+      :type => 'text',:spellcheck => 'false', :readonly => true
   .role
     = t("layout.read_write_access")
   = render :partial => 'projects/branch_select', :locals => {:project => project}
 .both
+:javascript
+  $(document).ready(function() {
+    $('#url').live('click', function() {
+      $(this).select();
+    });
+  });

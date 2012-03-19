@@ -6,7 +6,7 @@
     %ul
       - if can? :edit, @user
         %li{:class => (act == :edit && :users == contr) ? 'active' : ''}
-          = link_to t("layout.users.edit"), edit_user_path(@user)
+          = link_to t("layout.users.profile"), @user == current_user ? edit_profile_path : edit_user_path(@user)
       - if can? :private, @user
         %li{:class => (act == :private && contr == :users) ? 'active' : ''}
           = link_to t("layout.users.user_private_settings"), user_private_settings_path(@user)

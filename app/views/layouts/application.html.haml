@@ -29,7 +29,7 @@
             .droplist-wrap
               #droplist.droplist
                 .a= link_to current_user.uname, current_user
-                .a= link_to t('layout.settings.label'), edit_user_registration_path
+                .a= link_to t('layout.settings.label'), edit_profile_path
                 .a= link_to t('layout.logout'), destroy_user_session_path, :method => :delete
         .right
         .both
@@ -37,6 +37,8 @@
         .sub-menu= yield :submenu
       .both
       = render "layouts/flashes"
+      - if content_for?(:feed_tabs)
+        = yield :feed_tabs
       %article
         - if content_for?(:sidebar)
           %aside= yield :sidebar

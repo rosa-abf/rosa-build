@@ -14,7 +14,7 @@ class PlatformsController < ApplicationController
   end
 
   def index
-    @platforms = Platform.accessible_by(current_ability).paginate(:page => params[:platform_page])
+    @platforms = @platforms.paginate(:page => params[:page], :per_page => 20)
   end
 
   def easy_urpmi
@@ -35,8 +35,8 @@ class PlatformsController < ApplicationController
 
   def show
     @platform = Platform.find params[:id], :include => :repositories
-    @repositories = @platform.repositories
-    @members = @platform.members.uniq
+    #@repositories = @platform.repositories
+    #@members = @platform.members.uniq
   end
 
   def new
@@ -44,7 +44,7 @@ class PlatformsController < ApplicationController
     @admin_uname = current_user.uname
     @admin_id = current_user.id
   end
-  
+
   def edit
     @admin_id = @platform.owner.id
     @admin_uname = @platform.owner.uname
@@ -57,10 +57,10 @@ class PlatformsController < ApplicationController
     @platform.owner = @admin_id.blank? ? get_owner : User.find(@admin_id)
 
     if @platform.save
-      flash[:notice] = I18n.t("flash.platform.saved")
+      flash[:notice] = I18n.t("flash.platform.created")
       redirect_to @platform
     else
-      flash[:error] = I18n.t("flash.platform.save_error")
+      flash[:error] = I18n.t("flash.platform.create_error")
       render :action => :new
     end
   end
@@ -125,7 +125,7 @@ class PlatformsController < ApplicationController
     @platform.delay.destroy if @platform
 
     flash[:notice] = t("flash.platform.destroyed")
-    redirect_to root_path
+    redirect_to platforms_path
   end
   
   def forbidden

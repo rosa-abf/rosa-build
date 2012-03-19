@@ -3,8 +3,15 @@ class User < ActiveRecord::Base
   ROLES = ['admin']
   LANGUAGES_FOR_SELECT = [['Russian', 'ru'], ['English', 'en']]
   LANGUAGES = LANGUAGES_FOR_SELECT.map(&:last)
+  MAX_AVATAR_SIZE = 5.megabyte
 
-  has_attached_file :avatar, :styles => { :micro => "16x16", :small => "30x30>", :medium => "40x40>", :big => "81x81" }
+  has_attached_file :avatar, :styles =>
+    { :micro => { :geometry => "16x16#",  :format => :jpg, :convert_options => '-strip -background white -flatten -quality 70'},
+       :small => { :geometry => "30x30#",  :format => :jpg, :convert_options => '-strip -background white -flatten -quality 70'},
+       :medium => { :geometry => "40x40#",  :format => :jpg, :convert_options => '-strip -background white -flatten -quality 70'},
+       :big => { :geometry => "81x81#",  :format => :jpg, :convert_options => '-strip -background white -flatten -quality 70'}
+    }
+  validates_inclusion_of :avatar_file_size, :in => (0..MAX_AVATAR_SIZE), :allow_nil => true
 
   devise :database_authenticatable, :registerable, #:omniauthable, # :token_authenticatable, :encryptable, :timeoutable
          :recoverable, :rememberable, :validatable #, :trackable, :confirmable, :lockable
@@ -103,6 +110,14 @@ class User < ActiveRecord::Base
 
   def committer?(commit)
     email.downcase == commit.committer.email.downcase
+  end
+
+  def owner_of? object
+    if object.respond_to? :owner
+      object.owner_id == self.id or self.group_ids.include? object.owner_id
+    else
+      false
+    end
   end
 
   private

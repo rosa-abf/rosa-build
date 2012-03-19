@@ -2,5 +2,9 @@
 - @activity_feeds.each do |activity_feed|
   .activity
     = render_activity_feed(activity_feed)
+- if @activity_feeds.next_page
+  %a{:href => activity_feeds_path({:filter => @filter, :page => @activity_feeds.next_page})}
+    .messages.messages-last=t('layout.activity_feed.load_messages')
 
 - content_for :sidebar, render('sidebar')
+- content_for :feed_tabs, render('feed_tabs')

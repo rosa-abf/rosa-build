@@ -15,8 +15,8 @@ class CommentsController < ApplicationController
     @comment = @commentable.comments.build(params[:comment]) if @commentable.class == Issue
     if @commentable.class == Grit::Commit
       @comment = Comment.new(params[:comment].merge(:commentable_id => @commentable.id.hex, :commentable_type => @commentable.class.name))
-      @comment.project = @project
     end
+    @comment.project = @project
     @comment.user_id = current_user.id
     if @comment.save
       flash[:notice] = I18n.t("flash.comment.saved")

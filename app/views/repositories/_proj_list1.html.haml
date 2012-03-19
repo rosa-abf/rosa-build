@@ -1,6 +1,15 @@
-%table.table
+%table#myTable.tablesorter.repo-projects{:cellpadding => "0", :cellspacing => "0"}
+  %thead
+    %tr
+      %th.th1= t("activerecord.attributes.project.name")
+      %th.th2= t("activerecord.attributes.project.description")
+      %th.th3= t("layout.remove")
+  %tbody= render :partial => 'repositories/project', :collection => @projects
+
+-#%table.tablesorter
   %tr
     %th.first= t("activerecord.attributes.project.name")
+    %th.
     %th.last &nbsp;
   - @projects.each do |project|
     %tr{:class => cycle("odd", "even")}
