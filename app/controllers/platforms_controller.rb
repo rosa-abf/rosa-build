@@ -1,7 +1,7 @@
 # -*- encoding : utf-8 -*-
 class PlatformsController < ApplicationController
   before_filter :authenticate_user!, :except => :easy_urpmi
-  before_filter :find_platform, :only => [:freeze, :unfreeze, :clone, :edit, :destroy]
+  before_filter :find_platform, :only => [:clone, :edit, :destroy]
   before_filter :get_paths, :only => [:new, :create, :clone]
   
   load_and_authorize_resource
@@ -80,28 +80,6 @@ class PlatformsController < ApplicationController
       flash[:error] = I18n.t("flash.platform.save_error")
       render :action => :new
     end
-  end
-
-  def freeze
-    @platform.released = true
-    if @platform.save
-      flash[:notice] = I18n.t("flash.platform.freezed")
-    else
-      flash[:notice] = I18n.t("flash.platform.freeze_error")
-    end
-
-    redirect_to @platform
-  end
-
-  def unfreeze
-    @platform.released = false
-    if @platform.save
-      flash[:notice] = I18n.t("flash.platform.unfreezed")
-    else
-      flash[:notice] = I18n.t("flash.platform.unfreeze_error")
-    end
-
-    redirect_to @platform
   end
 
   def clone

@@ -602,6 +602,20 @@ table.dataTable tr.even td.sorting_1 {
     background-color: #FFFFFF;
 }
 
+div.right.bigpadding div.command_select div.rightlist {
+    width: 245px;
+}
+
+div.right.bigpadding div.command_select div.rightlist select {
+    width: 240px;
+    height: 23px;
+}
+
+div.right.bigpadding div.command_select div.rightlist textarea {
+    width: 430px;
+    height: 50px;
+}
+
 div.rightlist textarea.resizable {
     resize: both;
 }

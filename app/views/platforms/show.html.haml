@@ -31,15 +31,11 @@
 .buttons_block
   - if can? :build_all, @platform
     = link_to t("layout.platforms.build_all"), build_all_platform_path(@platform), :confirm => I18n.t("layout.confirm"), :method => :post, :class => "button left_floated"
-  - if @platform.released?
-    - if can? :unfreeze, @platform
-      = link_to t("layout.platforms.unfreeze"), unfreeze_platform_path(@platform), :confirm => I18n.t("layout.platforms.confirm_unfreeze"), :method => :post, :class => "button left_floated"
-  - else
-    - if can? :freeze, @platform
-      = link_to t("layout.platforms.freeze"), freeze_platform_path(@platform), :confirm => I18n.t("layout.platforms.confirm_freeze"), :method => :post, :class => "button left_floated"
   = link_to "Клонировать", clone_platform_path(@platform), :class => "button left_floated" if can? :clone, @platform
   .both
 
+- if @platform.platform_type == 'personal' and @platform.visibility == 'open'
+  = render :partial => 'connection_info'
 -#.block
   .secondary-navigation
     %ul.wat-cf

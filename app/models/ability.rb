@@ -24,6 +24,7 @@ class Ability
     else # Registered user rights
       if user.admin?
         can :manage, :all
+        cannot :read, Product, :platform => {:platform_type => 'personal'}
         cannot :destroy, Subscribe
         cannot :create, Subscribe
         cannot :create, RegisterRequest
@@ -74,7 +75,7 @@ class Ability
         can :read, Platform, :owner_type => 'Group', :owner_id => user.group_ids
         can(:read, Platform, read_relations_for('platforms')) {|platform| local_reader? platform}
 #        can([:update, :build_all], Platform) {|platform| local_admin? platform}
-        can([:freeze, :unfreeze, :update], Platform) {|platform| local_admin? platform}
+        can([:update], Platform) {|platform| local_admin? platform}
         #can([:freeze, :unfreeze, :destroy], Platform) {|platform| owner? platform}
         can(:destroy, Platform) {|platform| owner? platform}
         can :autocomplete_user_uname, Platform
@@ -87,10 +88,10 @@ class Ability
         can([:change_visibility, :settings, :destroy], Repository) {|repository| owner? repository.platform}
 
         can :read, Product, :platform => {:platform_type => 'main'}
-        can :read, Product, :platform => {:owner_type => 'User', :owner_id => user.id}
-        can :read, Product, :platform => {:owner_type => 'Group', :owner_id => user.group_ids}
+        can :read, Product, :platform => {:owner_type => 'User', :owner_id => user.id, :platform_type => 'main'}
+        can :read, Product, :platform => {:owner_type => 'Group', :owner_id => user.group_ids, :platform_type => 'main'}
         can(:read, Product, read_relations_for('products', 'platforms')) {|product| product.platform.platform_type == 'main'}
-        can([:create, :update, :destroy, :clone], Product) {|product| local_admin? product.platform }
+        can([:create, :update, :destroy, :clone], Product) {|product| local_admin? product.platform and product.platform.platform_type == 'main'}
 
         can(:create, ProductBuildList) {|pbl| can?(:update, pbl.product)}
         can(:destroy, ProductBuildList) {|pbl| can?(:destroy, pbl.product)}
@@ -123,7 +124,7 @@ class Ability
 #      cannot :read, Product, :platform => {:platform_type => 'personal'}
 #      cannot(:read, Product, read_relations_for('products', 'platforms')) {|product| product.platform.platform_type == 'personal'}
       cannot [:create, :update, :destroy, :clone], Product, :platform => {:platform_type => 'personal'}
-      cannot [:clone, :build_all, :freeze, :unfreeze], Platform, :platform_type => 'personal'
+      cannot [:clone, :build_all], Platform, :platform_type => 'personal'
 
       can :create, Subscribe do |subscribe|
         !subscribe.subscribeable.subscribes.exists?(:user_id => user.id)

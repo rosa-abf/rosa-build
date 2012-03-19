@@ -43,21 +43,13 @@ class Platform < ActiveRecord::Base
     pair = blank_pair if pair.blank?
     urpmi_commands = ActiveSupport::OrderedHash.new
 
-    Platform.main.open.each do |pl|
-      urpmi_commands[pl.name] = []
+    Platform.main.open.where(:distrib_type => APP_CONFIG['distr_types'].first).each do |pl|
+      urpmi_commands[pl.name] = {}
       local_pair = pl.id != self.id ? blank_pair : pair
       head = hidden? ? "http://#{local_pair[:login]}@#{local_pair[:pass]}:#{host}/private/" : "http://#{host}/downloads/"
-      # prefix = prefix_url hidden?, :host => host, :login => local_pair[:login], :password => local_pair[:pass]
-      if pl.distrib_type == APP_CONFIG['distr_types'].first # mdv
-        Arch.all.each do |arch|
-          tail = "/#{arch.name}/main/release"
-          urpmi_commands[pl.name] << "urpmi.addmedia #{name} #{head}#{name}/repository/#{pl.name}#{tail}"
-          # urpmi_commands[pl.name] << "urpmi.addmedia #{name} #{prefix}/#{name}/repository#{pl.downloads_url '', arch.name, 'main', 'release'}"
-        end
-      else
-        tail = ''
-        urpmi_commands[pl.name] << "urpmi.addmedia #{name} #{head}#{name}/repository/#{pl.name}#{tail}"
-        # urpmi_commands[pl.name] << "urpmi.addmedia #{name} #{prefix}/#{name}/repository#{pl.downloads_url ''}"
+      Arch.all.each do |arch|
+        tail = "/#{arch.name}/main/release"
+        urpmi_commands[pl.name][arch.name] = "urpmi.addmedia #{name} #{head}#{name}/repository/#{pl.name}#{tail}"
       end
     end
 

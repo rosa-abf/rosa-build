@@ -35,6 +35,8 @@ ru:
       private_users: Данные для доступа
       confirm_clone: Клонировать?
       clone: Клонировать
+      delete_warning: Внимание! Удаленная платформа удалению не подлежит.
+      sys_repos_header: Данные для подключения
 
   flash:
     platform:

@@ -74,8 +74,6 @@ Rosa::Application.routes.draw do
     resources :private_users, :except => [:show, :destroy, :update]
 
     member do
-      post 'freeze'
-      post 'unfreeze'
       get 'clone'
       post 'make_clone'
       post 'build_all'
