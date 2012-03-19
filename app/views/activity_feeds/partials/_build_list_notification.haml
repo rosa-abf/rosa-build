@@ -6,6 +6,8 @@
       = raw t('notifications.bodies.build_task', :task_num => task_num, :task_link => build_list_path(build_list_id))
       = raw t('notifications.bodies.project', :project_link => link_to("#{project_owner}/#{project_name}", project_path(project_id)) )
       - message, error = case status
+        - when BuildList::BUILD_PENDING
+          - ['pending', nil]
         - when BuildList::BUILD_PUBLISHED
           - ['published', nil]
         - when BuildServer::SUCCESS
