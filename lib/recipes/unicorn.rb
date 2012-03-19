@@ -18,8 +18,9 @@ Capistrano::Configuration.instance(:must_exist).load do
       run "#{try_sudo} kill -s USR2 `cat #{unicorn_pid}`" rescue warn 'deploy:reload FAILED'
     end
     task :restart, :roles => :app, :except => { :no_release => true } do
-      stop
-      start # blue pill will do it?
+      reload
+      #stop
+      #start # blue pill will do it?
     end
   end
 end
