@@ -1,7 +1,7 @@
 .command_select
   %h3= t("layout.platforms.sys_repos_header")
 
-  - platforms = Platform.main.open.order('name ASC')
+  - platforms = Platform.main.open.where(:distrib_type => APP_CONFIG['distr_types'].first).order('name ASC')
   .leftlist= label_tag :platform, t("layout.platforms.target_platform")
   .rightlist= select_tag :platform, options_from_collection_for_select(platforms, :name, :name, platforms.first.id)
   .both
