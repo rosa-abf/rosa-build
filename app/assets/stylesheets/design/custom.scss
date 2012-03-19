@@ -601,3 +601,7 @@ table.dataTable tr.odd td.sorting_1 {
 table.dataTable tr.even td.sorting_1 {
     background-color: #FFFFFF;
 }
+
+div.rightlist textarea.resizable {
+    resize: both;
+}
