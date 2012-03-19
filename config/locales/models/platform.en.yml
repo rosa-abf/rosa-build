@@ -36,6 +36,7 @@ en:
       confirm_clone: To clone?
       clone: To clone
       delete_warning: Attention! Deleted platform can not be restored!
+      sys_repos_header: Connecting info
 
   flash:
     platform:

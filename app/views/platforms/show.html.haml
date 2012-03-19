@@ -34,6 +34,42 @@
   = link_to "Клонировать", clone_platform_path(@platform), :class => "button left_floated" if can? :clone, @platform
   .both
 
+- if @platform.platform_type == 'personal' and @platform.visibility == 'open'
+  .command_select
+    %h3= t("layout.platforms.sys_repos_header")
+
+    - platforms = Platform.main.open.order('name ASC')
+    .leftlist= label_tag :platform, t("layout.platforms.target_platform")
+    .rightlist= select_tag :platform, options_from_collection_for_select(platforms, :name, :name, platforms.first.id)
+    .both
+
+    - arches = Arch.order('name ASC')
+    .leftlist= label_tag :arch, t("layout.platforms.target_architecture")
+    .rightlist= select_tag :arch, options_from_collection_for_select(arches, :name, :name, arches.first.id)
+    .both
+
+    .rightlist
+      %textarea{:id => 'command_string', :readonly => 'readonly'}
+    .both
+
+    :javascript
+      $(document).ready(function(){
+        var path_getter = function() {
+          var list = #{@platform.urpmi_list(request.host).to_json};
+          var $platform = $("select#platform");
+          var $arch = $("select#arch");
+
+          $('#command_string').val(list[$platform.val()][$arch.val()]);
+        //  alert('hello');
+        }
+        $("select#platform").live('change', path_getter);
+        $("select#arch").live('change', path_getter);
+        $("textarea#command_string").live('click', function() {
+          this.select();
+        });
+        path_getter();
+      });
+
 -#.block
   .secondary-navigation
     %ul.wat-cf

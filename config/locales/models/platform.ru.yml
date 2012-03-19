@@ -36,6 +36,7 @@ ru:
       confirm_clone: Клонировать?
       clone: Клонировать
       delete_warning: Внимание! Удаленная платформа удалению не подлежит.
+      sys_repos_header: Данные для подключения
 
   flash:
     platform:
