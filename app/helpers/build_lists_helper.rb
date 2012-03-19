@@ -1,11 +1,11 @@
 module BuildListsHelper
   def build_list_status_color(status)
     if [BuildList::BUILD_PUBLISHED, BuildServer::SUCCESS].include? status
-      return 'green'
+      return 'success'
     end
     if [BuildServer::BUILD_ERROR, BuildServer::PLATFORM_NOT_FOUND,
         BuildServer::PROJECT_NOT_FOUND,BuildServer::PROJECT_VERSION_NOT_FOUND, BuildList::FAILED_PUBLISH].include? status
-      return 'red'
+      return 'error'
     end
 
     'nocolor'
@@ -21,14 +21,4 @@ module BuildListsHelper
 
     ''
   end
-
-  def build_list_status(build_list)
-    if [BuildList::BUILD_PUBLISHED, BuildServer::SUCCESS].include? build_list.status
-      "success"
-    elsif [BuildServer::BUILD_ERROR, BuildServer::PLATFORM_NOT_FOUND, BuildServer::PROJECT_NOT_FOUND, 
-      BuildServer::PROJECT_VERSION_NOT_FOUND, BuildList::FAILED_PUBLISH].include? build_list.status
-      "error"
-    end
-  end
-
 end
