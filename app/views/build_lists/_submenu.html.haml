@@ -1,7 +1,7 @@
 - content_for :submenu do
   - if @build_list
     .left
-      = @build_list.project.name
+      = link_to @build_list.project.name, @build_list.project
   - else
     - if content_for?(:sidebar)
       .left
