@@ -29,7 +29,7 @@ stdout_path File.join(base_path, 'log', 'unicorn.stdout.log')
 
 # combine REE with "preload_app true" for memory savings
 # http://rubyenterpriseedition.com/faq.html#adapt_apps_for_cow
-preload_app true
+#preload_app true
 
 before_fork do |server, worker|
   ##
