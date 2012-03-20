@@ -511,8 +511,10 @@ table.tablesorter.repo-projects th.th1 {
     width: 250px;
 }
 
-table.tablesorter.repo-projects th.th3 {
+table.tablesorter.repo-projects th.th3,
+table.tablesorter th.buttons {
     width: 60px;
+    text-align: center;
 }
 
 table.tablesorter.repo-projects td.td2,

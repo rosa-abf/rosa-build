@@ -4,13 +4,13 @@
 = form_for @platform, :url => platform_path(@platform), :html => { :class => :form } do |f|
   = render :partial => "form", :locals => {:f => f}
 
-.hr
-.leftside
-  = t("layout.platforms.delete_warning")
-.rightside
-  - if can? :destroy, @platform
-    = link_to t("layout.delete"), platform_path(@platform), :method => :delete, :confirm => t("layout.platforms.confirm_delete"), :class => 'button'
-.both
+- if can? :destroy, @platform
+  .hr
+  .leftside
+    = t("layout.platforms.delete_warning")
+  .rightside
+      = link_to t("layout.delete"), platform_path(@platform), :method => :delete, :confirm => t("layout.platforms.confirm_delete"), :class => 'button'
+  .both
 
 -#.block
   .secondary-navigation

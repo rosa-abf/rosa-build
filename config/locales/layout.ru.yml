@@ -12,6 +12,8 @@ ru:
 
     by: ''
 
+    remove: Убрать
+
     visibilities:
       open: открытая
       hidden: скрытая
