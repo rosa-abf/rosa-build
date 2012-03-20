@@ -29,6 +29,7 @@ en:
         all: All
         admins: Admins
         real: Real
+        banned: Banned
 
   activerecord:
     attributes:

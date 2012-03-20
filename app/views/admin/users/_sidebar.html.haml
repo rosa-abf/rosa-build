@@ -2,13 +2,8 @@
   .bordered.nopadding
     %h3= t("layout.users.filter_header")
     %table
-      %tr
-        %td.width18=radio_button_tag :myradio, 'all', @filter == 'all', {:id => 'users_filter', :class => 'niceRadio', :name => 'filter'}
-        %td.width135=t("layout.users.users_filter.all")
-      %tr
-        %td=radio_button_tag :myradio, 'admins', @filter == 'admins', {:id => 'users_filter', :class => 'niceRadio', :name => 'filter'}
-        %td=t("layout.users.users_filter.admins")
-      %tr
-        %td=radio_button_tag :myradio, 'real', @filter == 'real', {:id => 'users_filter', :class => 'niceRadio', :name => 'filter'}
-        %td=t("layout.users.users_filter.real")
+      - t('layout.users.users_filter').each_key do |base|
+        %tr
+          %td.width18=radio_button_tag :myradio, base, @filter == base, {:id => 'users_filter', :class => 'niceRadio', :name => 'filter'}
+          %td.width135=t("layout.users.users_filter.#{base}")
     .both

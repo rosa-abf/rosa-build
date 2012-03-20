@@ -32,22 +32,20 @@ class Admin::UsersController < ApplicationController
   end
 
   def profile
-    render 'users/profile'
   end
 
   def update
-    if params[:user][:role] && current_user.admin?
-      @user.role = params[:user][:role]
-      params[:user].delete(:role)
-    end
-    @user ||= current_user
+    @user.role = params[:user][:role] if params[:user][:role]
+    @user.banned = params[:user][:banned] if params[:user][:banned]
+    params[:user].delete(:role)
+    params[:user].delete(:banned)
     if @user.update_without_password(params[:user])
       if @user.avatar && params[:delete_avatar] == '1'
         @user.avatar = nil
         @user.save
       end
       flash[:notice] = t('flash.user.saved')
-      redirect_to @user == current_user ? edit_profile_path : edit_user_path(@user)
+      redirect_to users_path#edit_user_path(@user)
     else
       flash[:error] = t('flash.user.save_error')
       flash[:warning] = @user.errors.full_messages.join('. ')
@@ -78,6 +76,7 @@ class Admin::UsersController < ApplicationController
     unless @filter.blank?
       @users = @users.where(:role => nil) if @filter == 'real'
       @users = @users.where(:role => 'admin') if @filter == 'admins'
+      @users = @users.where(:banned => true) if @filter == 'banned'
     end
 
     render :partial =>'users_ajax', :layout => false

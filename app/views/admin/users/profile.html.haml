@@ -1,0 +1,15 @@
+%h3.fix.bpadding10= @user.uname
+
+= form_for @user, :url => update_user_path(@user), :html => { :class => :form } do |f|
+  = render :partial => "users/form", :locals => {:f => f}
+
+.notify
+  %p= t('layout.users.public_data_edit_warning')
+.notify
+  %p= t('layout.users.avatar_notice')
+
+:javascript
+  $('article .right').addClass('middlepadding');
+
+- content_for :sidebar do
+  .bordered.nopadding

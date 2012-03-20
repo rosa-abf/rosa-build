@@ -11,7 +11,7 @@
       "<%= user.role %>",
       "<%= j raw [(link_to t('layout.show'), user_path(user) if can? :read, user),
                   (link_to t('layout.edit'), edit_user_path(user) if can? :edit, user),
-                  (link_to t('layout.delete'), user_path(user), :method => :delete, :confirm => t('layout.users.confirm_delete') if can? :destroy, user)
+                  (link_to t('layout.delete'), delete_user_path(user), :method => :delete, :confirm => t('layout.users.confirm_delete') if can? :destroy, user)
                 ].compact.join('&nbsp;|&nbsp;') %>"
     ]<%= user == @users.last ? '' : ',' %>
   <% end %>

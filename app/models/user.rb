@@ -66,6 +66,10 @@ class User < ActiveRecord::Base
     new_record?
   end
 
+  def banned?
+    banned
+  end
+
   def fullname
     return "#{uname} (#{name})"
   end

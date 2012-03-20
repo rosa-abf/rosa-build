@@ -29,6 +29,7 @@ ru:
         all: Все
         admins: Админы
         real: Обычные
+        banned: Забаненные
 
   activerecord:
     attributes:

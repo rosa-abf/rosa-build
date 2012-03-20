@@ -3,6 +3,12 @@
     = f.label :role, t("activerecord.attributes.user.role"), :class => :label
   .rightlist
     = f.select :role, User::ROLES, :include_blank => true
+  .leftlist
+    = f.label :role, t("activerecord.attributes.user.banned"), :class => :label
+  .rightlist
+    .check
+      %span#niceCheckbox1.niceCheck-main
+        = f.check_box :banned, :class => 'niceCheckbox1'
 .leftlist
   = f.label :name, t("activerecord.attributes.user.name")
 .rightlist

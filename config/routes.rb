@@ -13,7 +13,7 @@ Rosa::Application.routes.draw do
     post '/users' => 'admin/users#create', :as => :create_user
     get '/users/:id/edit' => 'admin/users#profile', :as => :edit_user
     put '/users/:id/edit' => 'admin/users#update', :as => :update_user
-    delete '/users/:id' => 'admin/users#destroy'
+    delete '/users/:id/delete' => 'admin/users#destroy', :as => :delete_user
   end
   devise_for :users, :controllers => {:omniauth_callbacks => 'users/omniauth_callbacks'}
 
