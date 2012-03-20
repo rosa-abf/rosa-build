@@ -21,6 +21,10 @@ if GC.respond_to?(:copy_on_write_friendly=)
   GC.copy_on_write_friendly = true
 end
 
+before_exec do |server|
+  ENV["BUNDLE_GEMFILE"] = "#{base_path}/Gemfile"
+end
+
 # By default, the Unicorn logger will write to stderr.
 # Additionally, ome applications/frameworks log to stderr or stdout,
 # so prevent them from going to /dev/null when daemonized here:
@@ -29,10 +33,14 @@ stdout_path File.join(base_path, 'log', 'unicorn.stdout.log')
 
 # combine REE with "preload_app true" for memory savings
 # http://rubyenterpriseedition.com/faq.html#adapt_apps_for_cow
-#preload_app true
+preload_app true
 
 before_fork do |server, worker|
-  ##
+  # This option works in together with preload_app true setting
+  # What is does is prevent the master process from holding
+  # the database connection
+  defined?(ActiveRecord::Base) and ActiveRecord::Base.connection.disconnect!
+  
   # When sent a USR2, Unicorn will suffix its pidfile with .oldbin and
   # immediately start loading up a new version of itself (loaded with a new
   # version of our app). When this new Unicorn is completely loaded
@@ -50,11 +58,6 @@ before_fork do |server, worker|
       # someone else did our job for us
     end
   end
-
-  # This option works in together with preload_app true setting
-  # What is does is prevent the master process from holding
-  # the database connection
-  defined?(ActiveRecord::Base) and ActiveRecord::Base.connection.disconnect!
 end
 
 after_fork do |server, worker|
@@ -66,5 +69,5 @@ after_fork do |server, worker|
   # and Redis.  TokyoCabinet file handles are safe to reuse
   # between any number of forked children (assuming your kernel
   # correctly implements pread()/pwrite() system calls)
-  srand
+  # srand
 end
