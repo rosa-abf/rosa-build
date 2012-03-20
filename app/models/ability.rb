@@ -120,6 +120,8 @@ class Ability
       cannot :fork, Project, :owner_id => user.id, :owner_type => user.class.to_s
       cannot :destroy, Issue
 
+      cannot [:members, :add_member, :remove_member, :remove_members], Platform, :platform_type => 'personal'
+
 #      cannot :read, Product, :platform => {:platform_type => 'personal'}
 #      cannot(:read, Product, read_relations_for('products', 'platforms')) {|product| product.platform.platform_type == 'personal'}
       cannot [:create, :update, :destroy, :clone], Product, :platform => {:platform_type => 'personal'}
