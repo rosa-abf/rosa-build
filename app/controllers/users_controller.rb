@@ -3,56 +3,28 @@ class UsersController < ApplicationController
   before_filter :authenticate_user!
 
   load_and_authorize_resource
+  before_filter {@user = current_user}
   autocomplete :user, :uname
-
-  def index
-    @user = User.scoped
-    if !params[:filter].blank? && !params[:filter][:email].blank?
-      @users = @users.where(:email => params[:filter][:email])
-      @email = params[:filter][:email]
-    end
-    @users = @users.paginate(:page => params[:user_page])
-    @action_url = users_path
-  end
 
   def show
     @groups       = @user.groups.uniq
-    @platforms    = @user.platforms.paginate(:page => params[:platform_page], :per_page => 10)
+    @platforms   = @user.platforms.paginate(:page => params[:platform_page], :per_page => 10)
     @projects     = @user.projects.paginate(:page => params[:project_page], :per_page => 10)
   end
 
-  def new
-    @user = User.new
-  end
-
   def profile
-    @user ||= current_user
-  end
-
-  def create
-    @user = User.new params[:user]
-    if @user.save
-      flash[:notice] = t('flash.user.saved')
-      redirect_to users_path
-    else
-      flash[:error] = t('flash.user.save_error')
-      render :action => :new
-    end
+    @user = current_user
   end
 
   def update
-    if params[:user][:role] && current_user.admin?
-      @user.role = params[:user][:role]
-      params[:user].delete(:role)
-    end
-    @user ||= current_user
+    @user = current_user
     if @user.update_without_password(params[:user])
       if @user.avatar && params[:delete_avatar] == '1'
         @user.avatar = nil
         @user.save
       end
       flash[:notice] = t('flash.user.saved')
-      redirect_to @user == current_user ? edit_profile_path : edit_user_path(@user)
+      redirect_to edit_profile_path
     else
       flash[:error] = t('flash.user.save_error')
       flash[:warning] = @user.errors.full_messages.join('. ')
@@ -71,12 +43,6 @@ class UsersController < ApplicationController
         render(:action => :private)
       end
     end
-  end
-
-  def destroy
-    @user.destroy
-    flash[:notice] = t("flash.user.destroyed")
-    redirect_to users_path
   end
 
 end

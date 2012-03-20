@@ -1,0 +1,19 @@
+{
+  "sEcho": <%=h params[:sEcho].to_i || -1 %>,
+  "iTotalRecords": <%= @total_users %>,
+  "iTotalDisplayRecords": <%= @total_user %>,
+  "aaData": [
+  <% @users.each do |user| %>
+    [
+      "<%= user.name %>",
+      "<%= user.uname %>",
+      "<%= user.email %>",
+      "<%= user.role %>",
+      "<%= j raw [(link_to t('layout.show'), user_path(user) if can? :read, user),
+                  (link_to t('layout.edit'), edit_user_path(user) if can? :edit, user),
+                  (link_to t('layout.delete'), user_path(user), :method => :delete, :confirm => t('layout.users.confirm_delete') if can? :destroy, user)
+                ].compact.join('&nbsp;|&nbsp;') %>"
+    ]<%= user == @users.last ? '' : ',' %>
+  <% end %>
+  ]
+}

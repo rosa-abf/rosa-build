@@ -1,3 +1,8 @@
+- if current_user.admin?
+  .leftlist
+    = f.label :role, t("activerecord.attributes.user.role"), :class => :label
+  .rightlist
+    = f.select :role, User::ROLES, :include_blank => true
 .leftlist
   = f.label :name, t("activerecord.attributes.user.name")
 .rightlist
