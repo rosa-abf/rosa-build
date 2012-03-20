@@ -46,7 +46,7 @@ class BuildListsController < ApplicationController
         @build_list.bpl = bpl; @build_list.arch = arch; @build_list.user = current_user
         @build_list.include_repos = @build_list.include_repos.select { |ir| @build_list.bpl.repository_ids.include? ir.to_i }
         flash_options = {:project_version => @build_list.project_version, :arch => arch.name, :bpl => bpl.name, :pl => @build_list.pl}
-        if @build_list.save!
+        if @build_list.save
           notices << t("flash.build_list.saved", flash_options)
         else
           errors << t("flash.build_list.save_error", flash_options)
