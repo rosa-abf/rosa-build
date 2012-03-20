@@ -35,7 +35,7 @@ ru:
       private_users: Данные для доступа
       confirm_clone: Клонировать?
       clone: Клонировать
-      delete_warning: Внимание! Удаленная платформа удалению не подлежит.
+      delete_warning: Внимание! Удаленная платформа восстановлению не подлежит.
       sys_repos_header: Данные для подключения
       target_platform: Целевая платформа
       target_architecture: Целевая архитектура
