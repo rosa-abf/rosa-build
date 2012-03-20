@@ -145,7 +145,7 @@ class BuildList < ActiveRecord::Base
 
     def place_build
       #XML-RPC params: project_name, project_version, plname, arch, bplname, update_type, build_requires, id_web, include_repos
-      self.status = BuildServer.add_build_list project.name, project_version, pl.name, arch.name, (pl_id == bpl_id ? '' : bpl.name), update_type, build_requires, id, include_repos
+      self.status = BuildServer.add_build_list project.name, project_version, pl.name, arch.name, (pl_id == bpl_id ? '' : bpl.name), update_type, build_requires, id, include_repos, 5
       self.status = BUILD_PENDING if self.status == 0
       save
     end
