@@ -3,5 +3,3 @@
   .left= @platform.name
   %nav
     %ul
-      - if can? :update, @platform
-        %li= link_to t("platform_menu.settings"), edit_platform_path(@platform), :class => (act == :edit && contr == :platforms) ? 'active' : nil

@@ -12,6 +12,8 @@ en:
 
     by: by
 
+    remove: Remove
+
     visibilities:
       open: open
       hidden: hidden

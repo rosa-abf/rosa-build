@@ -1,7 +1,7 @@
 = render :partial => 'submenu'
 = render :partial => 'sidebar'
 
-%h3.fix= t("layout.platforms.about")
+%h3.fix= "#{t("layout.platforms.about")} #{@platform.name}"
 
 %p= @platform.description
 
