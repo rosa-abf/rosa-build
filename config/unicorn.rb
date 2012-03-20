@@ -16,15 +16,13 @@ timeout 600
 
 # feel free to point this anywhere accessible on the filesystem
 pid_file = File.join(base_path, 'shared', 'pids', 'unicorn.pid')
-old_pid = pid + '.oldbin'
+old_pid = pid_file + '.oldbin'
 
 pid pid_file
 
-# REE
+# REE or Ruby 2.0
 # http://www.rubyenterpriseedition.com/faq.html#adapt_apps_for_cow
-if GC.respond_to?(:copy_on_write_friendly=)
-  GC.copy_on_write_friendly = true
-end
+GC.copy_on_write_friendly = true if GC.respond_to?(:copy_on_write_friendly=)
 
 before_exec do |server|
   ENV["BUNDLE_GEMFILE"] = "#{base_path}/current/Gemfile"
