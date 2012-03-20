@@ -36,3 +36,4 @@
                 #{link_to t("layout.delete"), user_path(user), :method => :delete, :confirm => t("layout.users.confirm_delete")}
       .actions-bar.wat-cf
         .actions= will_paginate @users, :param_name => :user_page
+= render 'admins/submenu'

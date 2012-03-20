@@ -10,9 +10,7 @@ en:
     platforms: Platforms
     projects: Projects
     build_lists: Task monitoring
-    users: Users
     groups: Groups
-    event_logs: Event log
   bottom_menu:
     copyright: ROSA Lab © 2012
     about: About company
@@ -35,3 +33,6 @@ en:
     wiki: Wiki
   platform_menu:
     settings: Settings
+  admins_menu:
+    users: Пользователи
+    event_logs: Лог событий

@@ -10,9 +10,7 @@ ru:
     platforms: Платформы
     projects: Проекты
     build_lists: Мониторинг задач
-    users: Пользователи
     groups: Группы
-    event_logs: Лог событий
   bottom_menu:
     copyright: ROSA Лаб. © 2012
     about: О компании
@@ -35,3 +33,6 @@ ru:
     wiki: Вики
   platform_menu:
     settings: Настройки
+  admins_menu:
+    users: Пользователи
+    event_logs: Лог событий

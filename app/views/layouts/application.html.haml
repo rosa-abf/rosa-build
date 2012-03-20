@@ -14,7 +14,7 @@
         .left
         .middle
           %menu
-            = render 'layouts/menu/top'
+            = render :partial => 'layouts/menu/top', :locals => {:which_menu => 'top_menu'}
             .logo= link_to image_tag('logo-mini.png', :alt => 'logo'), root_path
           .information
             = render 'search/form'
