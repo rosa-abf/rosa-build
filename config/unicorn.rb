@@ -5,7 +5,7 @@ base_path  = "/srv/rosa_build"
 rails_env = ENV['RAILS_ENV'] || 'production'
 
 worker_processes 4
-working_directory base_path # available in 0.94.0+
+working_directory File.join(base_path, 'current') # available in 0.94.0+
 
 # listen File.join(base_path, 'tmp', 'pids', 'unicorn.sock')
 # listen "/tmp/.sock", :backlog => 64
