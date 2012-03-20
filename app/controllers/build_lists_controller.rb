@@ -44,6 +44,7 @@ class BuildListsController < ApplicationController
         @build_list = @project.build_lists.build(params[:build_list])
         @build_list.commit_hash = @project.git_repository.commits(@build_list.project_version.match(/^latest_(.+)/).to_a.last || @build_list.project_version).first.id if @build_list.project_version
         @build_list.bpl = bpl; @build_list.arch = arch; @build_list.user = current_user
+        @build_list.include_repos = @build_list.include_repos.select { |ir| @build_list.bpl.repository_ids.include? ir.to_i }
         flash_options = {:project_version => @build_list.project_version, :arch => arch.name, :bpl => bpl.name, :pl => @build_list.pl}
         if @build_list.save
           notices << t("flash.build_list.saved", flash_options)
