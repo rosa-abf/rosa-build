@@ -13,7 +13,7 @@
         j(link_to("#{project.owner.respond_to?(:uname) ? project.owner.uname : project.owner.name} / #{project.name}", project)) +
         "</div>").html_safe
       %>",
-      "<%= truncate(project.description, :length => 60).gsub("\n", ' ') %>",
+      "<%= truncate(project.description || '', :length => 60).gsub("\n", ' ') %>",
       "<%=
       if can? :remove_project, @repository
         j(link_to('<span class="delete">&nbsp;</span>'.html_safe,
