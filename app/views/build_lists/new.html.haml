@@ -4,7 +4,7 @@
     .lineForm= f.select :project_version, @project.versions
     %h3= t("activerecord.attributes.build_list.bpl")
     .all_platforms
-      - (Platform.main | @project.platforms).each do |pl|
+      - Platform.main.each do |pl|
         .both
           - if pl.platform_type == 'main'
             = check_box_tag "bpls[]", pl.id, (params[:bpls]||[]).include?(pl.id.to_s), :class => 'build_bpl_ids', :id => "bpls_#{pl.id}"

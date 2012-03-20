@@ -16,11 +16,11 @@ $(document).ready(function() {
           $(this).attr('disabled', 'disabled');
           $(this).parent().find('.offset25 input[type="checkbox"]').attr('disabled', 'disabled');
         }
-        $('.additional_pl').parent().find('.offset25 input[type="checkbox"]').attr('disabled', 'disabled');
+        //$('.additional_pl').parent().find('.offset25 input[type="checkbox"]').attr('disabled', 'disabled');
       } else {
         $(this).removeAttr('disabled');
         $(this).parent().find('.offset25 input[type="checkbox"]').removeAttr('disabled');
-        $('.additional_pl').parent().find('.offset25 input[type="checkbox"]').removeAttr('disabled');
+        //$('.additional_pl').parent().find('.offset25 input[type="checkbox"]').removeAttr('disabled');
       }
     });
   });
