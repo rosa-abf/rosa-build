@@ -14,7 +14,7 @@ class Admin::UsersController < ApplicationController
 
   def create
     role = params[:user].delete(:role)
-    @user = User.new params[:user]
+    @user = User.new params[:user], :as => :create
     @user.set_role role
     if @user.save
       flash[:notice] = t('flash.user.saved')

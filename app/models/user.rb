@@ -40,11 +40,13 @@ class User < ActiveRecord::Base
 
   validates :uname, :presence => true, :uniqueness => {:case_sensitive => false}, :format => { :with => /^[a-z0-9_]+$/ }
   validate { errors.add(:uname, :taken) if Group.where('uname LIKE ?', uname).present? }
-  validates :role, :inclusion => {:in => ROLES - ['banned']}
+  validates :role, :inclusion => {:in => ROLES - ['banned']}, :allow_blank => true
   validates :language, :inclusion => {:in => LANGUAGES}, :allow_blank => true
 
-  attr_accessible :email, :password, :password_confirmation, :current_password, :remember_me, :login, :name, :ssh_key, :uname, :language,
+  attr_accessible :email, :password, :password_confirmation, :current_password, :remember_me, :login, :name, :ssh_key, :language,
                   :site, :company, :professional_experience, :location, :avatar
+  attr_accessible :uname, :name, :email, :password, :password_confirmation, :language, :site, :company,
+                  :professional_experience, :location, :avatar, :as => :create
   attr_readonly :uname, :own_projects_count
   attr_readonly :uname
   attr_accessor :login

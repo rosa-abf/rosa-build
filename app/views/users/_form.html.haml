@@ -3,10 +3,21 @@
     = f.label :role, t("activerecord.attributes.user.role"), :class => :label
   .rightlist
     = f.select :role, User::ROLES, :selected => @user.get_role
-  .leftlist
-    = f.label :uname, t("activerecord.attributes.user.uname")
-  .rightlist
-    = f.text_field :uname
+  - if @user.new_record?
+    .leftlist
+      = f.label :uname, t("activerecord.attributes.user.uname")
+    .rightlist
+      = f.text_field :uname
+    .leftlist
+      = f.label :password, t("activerecord.attributes.user.password")
+    .rightlist
+      = f.password_field :password
+    .both
+    .leftlist
+      = f.label :password_confirmation, t("activerecord.attributes.user.password_confirmation")
+    .rightlist
+      = f.password_field :password_confirmation
+    .both
 .leftlist
   = f.label :name, t("activerecord.attributes.user.name")
 .rightlist
