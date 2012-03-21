@@ -61,10 +61,10 @@ class Admin::UsersController < ApplicationController
     if !params[:sSearch].blank? && search = "%#{params[:sSearch]}%"
       @users = @users.where('users.name ILIKE ? or users.uname ILIKE ? or users.email ILIKE ?', search, search, search)
     end
+    @filter = params[:filter] || 'all'
+    @users = @users.send(@filter) if ['real', 'admin', 'banned'].include? @filter
     @total_user = @users.count
     @users = @users.order(order)
-    @filter = params[:filter] || 'all'
-    @user.send(@filter.to_sym) if ['real', 'admin', 'banned'].include? @filter
 
     render :partial =>'users_ajax', :layout => false
   end

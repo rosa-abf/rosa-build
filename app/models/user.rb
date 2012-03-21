@@ -52,8 +52,8 @@ class User < ActiveRecord::Base
   scope :search_order, order("CHAR_LENGTH(uname) ASC")
   scope :search, lambda {|q| where("uname ILIKE ?", "%#{q}%")}
   scope :banned, where('users.locked_at is not null')
-  scope :admin, where(:role => 'admin')
-  scope :real, where(:role => ['', nil])
+  scope :admin, where(:role => 'admin').where(:locked_at => nil)
+  scope :real, where(:role => ['', nil]).where(:locked_at => nil)
 
   after_create lambda { self.create_notifier }
 
