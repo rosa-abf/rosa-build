@@ -285,17 +285,17 @@ ActiveRecord::Schema.define(:version => 20120314223151) do
     t.text     "description"
     t.string   "ancestry"
     t.boolean  "has_issues",        :default => true
+    t.boolean  "has_wiki",          :default => false
     t.string   "srpm_file_name"
     t.string   "srpm_content_type"
     t.integer  "srpm_file_size"
     t.datetime "srpm_updated_at"
-    t.boolean  "has_wiki",          :default => false
     t.string   "default_branch",    :default => "master"
     t.boolean  "is_rpm",            :default => true
   end
 
   add_index "projects", ["category_id"], :name => "index_projects_on_category_id"
-  add_index "projects", ["owner_id"], :name => "index_projects_on_name_and_owner_id_and_owner_type", :unique => true
+  add_index "projects", ["owner_id"], :name => "index_projects_on_name_and_owner_id_and_owner_type", :unique => true, :case_sensitive => false
 
   create_table "register_requests", :force => true do |t|
     t.string   "name"
@@ -303,14 +303,13 @@ ActiveRecord::Schema.define(:version => 20120314223151) do
     t.string   "token"
     t.boolean  "approved",   :default => false
     t.boolean  "rejected",   :default => false
-    t.datetime "created_at",                    :null => false
-    t.datetime "updated_at",                    :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
     t.string   "interest"
     t.text     "more"
   end
 
   add_index "register_requests", ["email"], :name => "index_register_requests_on_email", :unique => true, :case_sensitive => false
-  add_index "register_requests", ["token"], :name => "index_register_requests_on_token", :unique => true, :case_sensitive => false
 
   create_table "relations", :force => true do |t|
     t.integer  "object_id"

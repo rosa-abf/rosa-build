@@ -11,11 +11,6 @@ shared_examples_for 'group user without update rights' do
     put :update, :id => @group.id, :group => {:description => 'new description'}
     @group.reload.description.should_not == 'new description'
   end
-
-  pending 'should be able to manage_members group' do
-    get :manage_members, :id => @group.id
-    response.should render_template("")
-  end
 end
 
 shared_examples_for 'group user without destroy rights' do
@@ -40,11 +35,6 @@ shared_examples_for 'group admin' do
   it 'should be able to perform update action' do
     put :update, {:id => @group.id}.merge(@update_params)
     response.should redirect_to(group_path(@group))
-  end
-
-  pending 'should be able to manage_members group' do
-    get :manage_members, :id => @group.id
-    response.should render_template("")
   end
 end
 
@@ -94,6 +84,11 @@ describe GroupsController do
 
     it 'should not be able to perform update action' do
       put :update, {:id => @group.id}.merge(@update_params)
+      response.should redirect_to(new_user_session_path)
+    end
+
+    it 'should not be able to perform create action' do
+      post :create, @create_params
       response.should redirect_to(new_user_session_path)
     end
   end

@@ -33,6 +33,7 @@ describe Group do
   context 'for group admin' do
     before(:each) do
       @user = Factory(:user)
+      @another_user = Factory(:user)
       @group.objects.create(:object_type => 'User', :object_id => @user.id, :role => 'admin')
       @ability = Ability.new(@user)
     end
@@ -45,6 +46,16 @@ describe Group do
 
     it "should not be able to destroy group" do
       @ability.should_not be_able_to(:destroy, @group)
+    end
+
+    context 'with mass assignment' do
+      it 'should not be able to update uname' do
+        @group.should_not allow_mass_assignment_of :uname => 'new_uname'
+      end
+
+      it 'should not be able to update owner' do
+        @group.should_not allow_mass_assignment_of :owner_type => 'User', :owner_id => @another_user.id
+      end
     end
   end
 
