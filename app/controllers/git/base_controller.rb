@@ -3,7 +3,6 @@ class Git::BaseController < ApplicationController
   before_filter :authenticate_user!
   load_and_authorize_resource :project
 
-  before_filter :find_project
   before_filter :find_git_repository
   before_filter :find_tags
   before_filter :find_branches
@@ -12,10 +11,6 @@ class Git::BaseController < ApplicationController
   before_filter :set_current_branch
 
   protected
-    def find_project
-      @project ||= Project.find(params[:project_id] || params[:id]) # TODO remove?
-    end
-
     def find_git_repository
       @git_repository = @project.git_repository
     end

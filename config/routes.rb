@@ -101,7 +101,6 @@ Rosa::Application.routes.draw do
     resources :categories, :only => [:index, :show]
   end
 
-  resources :projects, :only => [:new]
   resources :projects, :except => [:show] do
     resources :wiki do
       collection do
@@ -155,7 +154,6 @@ Rosa::Application.routes.draw do
 
     member do
       post :fork
-      get :show, :controller => 'git/trees', :action => :show
       get :sections
       post :sections
       delete :remove_user
@@ -201,6 +199,7 @@ Rosa::Application.routes.draw do
   match 'product_status', :to => 'product_build_lists#status_build'
 
   # Tree
+  get '/projects/:project_id' => "git/trees#show", :as => :project
   get '/projects/:project_id/tree/:treeish(/*path)' => "git/trees#show", :defaults => {:treeish => :master}, :as => :tree
   # Commits
   get '/projects/:project_id/commits/:treeish(/*path)' => "git/commits#index", :defaults => {:treeish => :master}, :as => :commits, :format => false

@@ -10,7 +10,7 @@
           - user = User.where(:email => v.author.email).first
           .avatar
             = link_to user_path_by_user(user) do
-              %img.mini-gravatar{:src => gravatar_url(v.author.email), :alt => "avatar: #{v.author.name}"}
+              = image_tag avatar_url_by_email(v.author.email), :alt => "avatar: #{v.author.name}", :class => 'mini-gravatar'
           .name
             = link_to user_path_by_user(user) do
               %span.username= user.present? ? "#{user.uname} (#{user.name})" : v.author.name
