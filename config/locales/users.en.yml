@@ -27,7 +27,7 @@ en:
       avatar_with_size: Avatar (less than %{max})
       users_filter:
         all: All
-        admins: Admins
+        admin: Admins
         real: Real
         banned: Banned
 

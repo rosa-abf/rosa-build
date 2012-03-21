@@ -4,6 +4,6 @@
     %table
       - t('layout.users.users_filter').each_key do |base|
         %tr
-          %td.width18=radio_button_tag :myradio, base, @filter == base, {:id => 'users_filter', :class => 'niceRadio', :name => 'filter'}
+          %td.width18=radio_button_tag :myradio, base, @filter.to_sym == base, {:id => 'users_filter', :class => 'niceRadio', :name => 'filter'}
           %td.width135=t("layout.users.users_filter.#{base}")
     .both

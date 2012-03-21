@@ -27,7 +27,7 @@ ru:
       avatar_with_size: Аватар (менее %{max})
       users_filter:
         all: Все
-        admins: Админы
+        admin: Админы
         real: Обычные
         banned: Забаненные
 

@@ -2,13 +2,11 @@
   .leftlist
     = f.label :role, t("activerecord.attributes.user.role"), :class => :label
   .rightlist
-    = f.select :role, User::ROLES, :include_blank => true
+    = f.select :role, User::ROLES, :selected => @user.get_role
   .leftlist
-    = f.label :role, t("activerecord.attributes.user.banned"), :class => :label
+    = f.label :uname, t("activerecord.attributes.user.uname")
   .rightlist
-    .check
-      %span#niceCheckbox1.niceCheck-main
-        = f.check_box :banned, :class => 'niceCheckbox1'
+    = f.text_field :uname
 .leftlist
   = f.label :name, t("activerecord.attributes.user.name")
 .rightlist

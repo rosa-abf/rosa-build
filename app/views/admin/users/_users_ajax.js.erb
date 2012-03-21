@@ -8,7 +8,7 @@
       "<%= user.name %>",
       "<%= user.uname %>",
       "<%= user.email %>",
-      "<%= user.role %>",
+      "<span style='<%=user.access_locked? ? 'background: #FEDEDE' : ''%>'><%= user.get_role %></span>",
       "<%= j raw [(link_to t('layout.show'), user_path(user) if can? :read, user),
                   (link_to t('layout.edit'), edit_user_path(user) if can? :edit, user),
                   (link_to t('layout.delete'), delete_user_path(user), :method => :delete, :confirm => t('layout.users.confirm_delete') if can? :destroy, user)

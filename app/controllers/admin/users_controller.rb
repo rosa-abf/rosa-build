@@ -1,19 +1,11 @@
 # -*- encoding : utf-8 -*-
 class Admin::UsersController < ApplicationController
   before_filter :authenticate_user!
-
-  load_and_authorize_resource
-  #autocomplete :user, :uname
+  load_and_authorize_resource :except => :create
+  authorize_resource :only => :create
 
   def index
     @filter = params[:filter] || 'all'
-    @user = User.scoped
-    if !params[:filter].blank? && !params[:filter][:email].blank?
-      @users = @users.where(:email => params[:filter][:email])
-      @email = params[:filter][:email]
-    end
-    @users = @users.paginate(:page => params[:user_page])
-    @action_url = users_path
   end
 
   def new
@@ -21,7 +13,9 @@ class Admin::UsersController < ApplicationController
   end
 
   def create
+    role = params[:user].delete(:role)
     @user = User.new params[:user]
+    @user.set_role role
     if @user.save
       flash[:notice] = t('flash.user.saved')
       redirect_to users_path
@@ -35,10 +29,7 @@ class Admin::UsersController < ApplicationController
   end
 
   def update
-    @user.role = params[:user][:role] if params[:user][:role]
-    @user.banned = params[:user][:banned] if params[:user][:banned]
-    params[:user].delete(:role)
-    params[:user].delete(:banned)
+    @user.set_role params[:user].delete(:role)
     if @user.update_without_password(params[:user])
       if @user.avatar && params[:delete_avatar] == '1'
         @user.avatar = nil
@@ -73,13 +64,8 @@ class Admin::UsersController < ApplicationController
     @total_user = @users.count
     @users = @users.order(order)
     @filter = params[:filter] || 'all'
-    unless @filter.blank?
-      @users = @users.where(:role => nil) if @filter == 'real'
-      @users = @users.where(:role => 'admin') if @filter == 'admins'
-      @users = @users.where(:banned => true) if @filter == 'banned'
-    end
+    @user.send(@filter.to_sym) if ['real', 'admin', 'banned'].include? @filter
 
     render :partial =>'users_ajax', :layout => false
   end
-
 end
