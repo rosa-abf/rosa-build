@@ -11,15 +11,21 @@ $(document).ready(function() {
           $(this).attr('checked', 'checked');
           $(this).removeAttr('disabled');
           $(this).parent().find('.offset25 input[type="checkbox"]').removeAttr('disabled');
+          if ($(this).parent().find('.offset25 label').text() == 'main') {
+            $(this).parent().find('.offset25 input[type="checkbox"]').attr('checked', 'checked');
+          }
         } else {
           $(this).removeAttr('checked');
           $(this).attr('disabled', 'disabled');
           $(this).parent().find('.offset25 input[type="checkbox"]').attr('disabled', 'disabled');
+          $(this).parent().find('.offset25 input[type="checkbox"]').removeAttr('checked');
         }
         //$('.additional_pl').parent().find('.offset25 input[type="checkbox"]').attr('disabled', 'disabled');
       } else {
         $(this).removeAttr('disabled');
+        $(this).removeAttr('checked');
         $(this).parent().find('.offset25 input[type="checkbox"]').removeAttr('disabled');
+        $(this).parent().find('.offset25 input[type="checkbox"]').removeAttr('checked');
         //$('.additional_pl').parent().find('.offset25 input[type="checkbox"]').removeAttr('disabled');
       }
     });

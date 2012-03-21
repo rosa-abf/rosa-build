@@ -35,10 +35,10 @@
         .both
       - if content_for?(:submenu)
         .sub-menu= yield :submenu
-      .both
-      = render "layouts/flashes"
       - if content_for?(:feed_tabs)
         = yield :feed_tabs
+      .both
+      = render "layouts/flashes"
       %article
         - if content_for?(:sidebar)
           %aside= yield :sidebar

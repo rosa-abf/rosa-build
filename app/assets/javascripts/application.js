@@ -35,4 +35,18 @@ $(document).ready(function() {
   $('div.information > div.profile > a').live('click', function(e) {
       e.preventDefault();
   });
+
+  $('.more_activities').live('click', function(){
+    var button = $(this);
+    $.ajax({
+      type: 'GET',
+      url: button.attr("href"),
+      success: function(data){
+                      button.fadeOut('slow').after(data);
+                      button.remove();
+                    }
+     });
+    return false;
+  });
+
 });
