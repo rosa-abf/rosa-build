@@ -37,6 +37,10 @@ en:
       clone: To clone
       delete_warning: Attention! Deleted platform can not be restored!
       sys_repos_header: Connecting info
+      target_platform: Target platform
+      target_architecture: Target architecture
+      members: Members
+        
 
   flash:
     platform:
@@ -51,6 +55,10 @@ en:
       destroyed: Platform deleted
       build_all_success: All project build in progress
       clone_success: Cloned successfully
+      members:
+        already_added: "%{name} is already added to platform"
+        successfully_added: "%{name} successfully added as member"
+        error_in_adding: "Fail to add %{name} as member"
 
   activerecord:
     models:

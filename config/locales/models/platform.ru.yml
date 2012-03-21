@@ -35,10 +35,11 @@ ru:
       private_users: Данные для доступа
       confirm_clone: Клонировать?
       clone: Клонировать
-      delete_warning: Внимание! Удаленная платформа удалению не подлежит.
+      delete_warning: Внимание! Удаленная платформа восстановлению не подлежит.
       sys_repos_header: Данные для подключения
       target_platform: Целевая платформа
       target_architecture: Целевая архитектура
+      members: Участники
 
   flash:
     platform:
@@ -53,6 +54,10 @@ ru:
       destroyed: Платформа успешно удалена
       build_all_success: Все проекты успешно отправлены на сборку
       clone_success: Клонирование успешно
+      members:
+        already_added: "%{name} уже является участником платформы"
+        successfully_added: "Участник %{name} успешно добавлен к платформе"
+        error_in_adding: "Не удалось добавить участника %{name}"
 
   activerecord:
     models:

@@ -33,6 +33,7 @@ class Ability
         cannot :approve, RegisterRequest, :approved => true
         cannot :reject, RegisterRequest, :rejected => true
         cannot [:owned, :related], BuildList
+        cannot [:owned, :related], Platform
       end
 
       if user.user?
@@ -72,14 +73,12 @@ class Ability
         can(:publish, BuildList) {|build_list| build_list.can_publish? && can?(:write, build_list.project)}
         can(:cancel, BuildList) {|build_list| build_list.can_cancel? && can?(:write, build_list.project)}
 
-        can :read, Platform, :visibility => 'open'
-        can :read, Platform, :owner_type => 'User', :owner_id => user.id
-        can :read, Platform, :owner_type => 'Group', :owner_id => user.group_ids
-        can(:read, Platform, read_relations_for('platforms')) {|platform| local_reader? platform}
-#        can([:update, :build_all], Platform) {|platform| local_admin? platform}
-        can([:update], Platform) {|platform| local_admin? platform}
-        #can([:freeze, :unfreeze, :destroy], Platform) {|platform| owner? platform}
-        can(:destroy, Platform) {|platform| owner? platform}
+        can [:read, :members], Platform, :visibility => 'open'
+        can [:read, :owned, :related, :members], Platform, :owner_type => 'User', :owner_id => user.id
+        can [:read, :related, :members], Platform, :owner_type => 'Group', :owner_id => user.group_ids
+        can([:read, :related, :members], Platform, read_relations_for('platforms')) {|platform| local_reader? platform}
+        can([:update, :members], Platform) {|platform| local_admin? platform}
+        can([:destroy, :members, :add_member, :remove_member, :remove_members] , Platform) {|platform| owner? platform}
         can :autocomplete_user_uname, Platform
 
         can [:read, :projects_list], Repository, :platform => {:visibility => 'open'}
@@ -122,6 +121,8 @@ class Ability
       cannot [:create, :destroy, :add_project, :remove_project], Repository, :platform => {:platform_type => 'personal'}
       cannot :fork, Project, :owner_id => user.id, :owner_type => user.class.to_s
       cannot :destroy, Issue
+
+      cannot [:members, :add_member, :remove_member, :remove_members], Platform, :platform_type => 'personal'
 
 #      cannot :read, Product, :platform => {:platform_type => 'personal'}
 #      cannot(:read, Product, read_relations_for('products', 'platforms')) {|product| product.platform.platform_type == 'personal'}

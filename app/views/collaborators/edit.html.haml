@@ -15,7 +15,7 @@
       - @users.each do |user|
         %tr#admin-table-members-row1
           %td
-            %span#niceCheckbox1.niceCheck-main{:onclick => "changeCheck(this)", :style => "background-position: 0px 0px; "}
+            %span#niceCheckbox1.niceCheck-main{ :style => "background-position: 0px 0px; "}
               = check_box_tag "user_remove[#{user.id}][]"
           %td
             .img

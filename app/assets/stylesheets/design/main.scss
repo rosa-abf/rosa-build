@@ -2,7 +2,7 @@ html, body {
 	margin: 0;
 	padding: 0;
 	font-family: Tahoma, Geneva, Helvetica, sans-serif;
-	color: #565657;
+	color: #292929;
 	background: #1f60a1 image-url("bg.png") repeat-x; 
 	min-width: 940px;
 	min-height: 600px;
@@ -86,7 +86,7 @@ header menu {
 header menu ul {
 	list-style: none;
 	margin: 0;
-	padding: 10px 0px 0px 0px;
+	padding-top: 10px;
 }
 
 header menu ul li {
@@ -98,7 +98,7 @@ header menu ul li a {
 	color: #FFF;
 	text-decoration: none;
 	height: 43px;
-	padding: 15px 15px 15px 15px;
+	padding: 15px 10px 15px 10px;
 }
 
 header menu ul li a:hover {
@@ -106,20 +106,17 @@ header menu ul li a:hover {
 }
 
 header menu ul li a.first {
-	padding-left: 45px;
 }
 
 header menu ul li a.active {
 	background: image-url("menu-hover.png") repeat-x;
 }
 
-
-
 header div.logo {
 	float: left;
-	margin-top: -25px;
-	padding-left: 10px;
-	position: absolute;
+	margin-top: 5px;
+	padding-left: 0px;
+	padding-right: 0px;
 }
 
 /* Right part of top menu */
@@ -234,7 +231,7 @@ header div.droplist a{
 	position: relative;
 	padding-left: 15px;
 	font-size: 12px;
-	color: #7eb7ed;
+	color: #447cae;
 	text-decoration: none;
 	padding-right: 15px;
 	margin-top: 10px;
@@ -276,7 +273,7 @@ header div.droplist a:hover{
 }
 
 
-.sub-menu nav { /*Для подменю без названия*/
+.sub-menu nav {
 	float: left;
 	margin: 0px 0px 0px 0px;
 }
@@ -286,7 +283,7 @@ header div.droplist a:hover{
 	text-align: left;
 	padding: 0;
 	margin: 0;
-	padding-top: 5px;
+	padding-top: 4px;
 }
 
 .sub-menu nav ul li {
@@ -295,14 +292,14 @@ header div.droplist a:hover{
 
 .sub-menu nav ul li a {
 	font-size: 12px;
-	color: #575756;
+	color: #292929;
 	text-decoration: none;
 	height: 34px;
-	padding: 0px 20px 8px 20px;
+	padding: 0px 20px 9px 20px;
 }
 
 .sub-menu nav ul li a.active {
-	background: image-url("submenu-hover.png") repeat-x;
+	background: image-url("submenu-hover.png") repeat-x scroll 0 100% transparent;
 }
 
 .sub-menu nav ul li a:hover {
@@ -568,7 +565,7 @@ article input[type="submit"]:disabled {
 
 article h3{
 	font-size: 14px;
-	color: #575756;
+	color: #292929;
 	margin-bottom: 0;
 	padding-bottom: 2px;
 }
@@ -579,7 +576,7 @@ article h3.fix {
 }
 
 article a{
-	color: #7eb7ed;
+	color: #447cae;
 	font-size: 12px;
 	text-decoration: none;
 	padding: 0px 0px;
@@ -804,7 +801,7 @@ article div.activity div.fulltext.view  {
 }
 
 .admin-preferences ul li a{
-	color: #575756;
+	color: #292929;
 	text-decoration: none;
 	padding-top: 5px;
 	padding-bottom: 5px;
@@ -821,7 +818,7 @@ article div.activity div.fulltext.view  {
 	float: left;
 	width: 400px;
 	font-size: 12px;
-	color: #575756;
+	color: #292929;
 	margin: 0px 0px 10px 0px;
 }
 
@@ -1339,7 +1336,7 @@ h3.bmargin10 {
 	padding: 5px;
 	font-family: Tahoma, Geneva, Helvetica, sans-serif;
 	font-size: 12px;
-	color: #575756;
+	color: #292929;
 	margin: 10px 0px;
 }
 
@@ -1390,7 +1387,7 @@ h3.bmargin10 {
 div.description-top {
 	background: #dcecfa;
 	font-size: 12px;
-	color: #575756;
+	color: #292929;
 	border: 1px solid #a9c6dd;
 	height: 38px;
 	width: 100%;
@@ -1411,7 +1408,7 @@ div.description-top input.name {
 	border: 1px solid #d1deeb;
 	height: 21px;
 	width: auto;
-	color: #575756;
+	color: #292929;
 	font-size: 11px;
 	width: 415px;
 	padding: 2px 5px 3px;
@@ -1443,7 +1440,7 @@ div.description-top div.fork {
 }
 
 .all div.description h3{
-	color: #575756;
+	color: #292929;
 	font-weight: 700;
 	font-size: 14px;
 	margin-bottom: 5px;
@@ -1454,7 +1451,7 @@ div.description-top div.fork {
 	font-size: 12px;
 	padding: 0;
 	margin: 0;
-	color: #575756;
+	color: #292929;
 }
 
 .all div.last-commit {
@@ -1628,7 +1625,7 @@ div.blue-switcher {
 	width: 258px;
 	border: 1px solid #a0a0a1;
 	border-radius: 3px;
-	background-color: #575756;
+	background-color: #292929;
 	color: #FFF;
 	-webkit-box-shadow: inset 0px 2px 5px 0px rgba(0, 0, 0, 0.3);
 	-moz-box-shadow: inset 0px 2px 5px 0px rgba(0, 0, 0, 0.3);
@@ -1793,7 +1790,7 @@ div.labeltext.edit div.delete {
 
 div.labeltext a {
 	text-decoration: none;
-	color: #565657;
+	color: #292929;
 }
 
 div.labeltext.edit a {

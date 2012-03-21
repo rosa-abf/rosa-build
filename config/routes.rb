@@ -80,13 +80,17 @@ Rosa::Application.routes.draw do
     resources :private_users, :except => [:show, :destroy, :update]
 
     member do
-      get 'clone'
-      post 'make_clone'
-      post 'build_all'
+      get    :clone
+      get    :members
+      post   :remove_members
+      delete :remove_member
+      post   :add_member
+      post   :make_clone
+      post   :build_all
     end
 
     collection do
-      get 'easy_urpmi'
+      get :easy_urpmi
       get :autocomplete_user_uname
     end
 

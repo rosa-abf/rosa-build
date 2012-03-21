@@ -12,9 +12,9 @@
   .rightlist= f.select :distrib_type, options_for_select(APP_CONFIG['distr_types'])
   .both
 
-  .leftlist= f.label :parent, :class => :label
-  .rightlist= f.collection_select :parent_platform_id, Platform.all, :id, :description, :include_blank => true
-  .both
+  -#.leftlist= f.label :parent, :class => :label
+    .rightlist= f.collection_select :parent_platform_id, Platform.all, :id, :description, :include_blank => true
+    .both
 
 - unless @platform.platform_type.in? ['personal']
   .leftlist= f.label :released, :class => :label

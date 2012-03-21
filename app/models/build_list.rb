@@ -8,6 +8,8 @@ class BuildList < ActiveRecord::Base
   has_many :items, :class_name => "BuildList::Item", :dependent => :destroy
 
   validates :project_id, :project_version, :arch, :include_repos, :presence => true
+  validates_numericality_of :priority, :greater_than_or_equal_to => 0
+  
   UPDATE_TYPES = %w[security bugfix enhancement recommended newpackage]
   validates :update_type, :inclusion => UPDATE_TYPES
   validate lambda {  
@@ -57,10 +59,10 @@ class BuildList < ActiveRecord::Base
                     }
 
   scope :recent, order("#{table_name}.updated_at DESC")
-  scope :current, lambda {
-    outdatable_statuses = [BuildServer::SUCCESS, BuildServer::ERROR, BuildServer::PLATFORM_NOT_FOUND, BuildServer::PLATFORM_PENDING, BuildServer::PROJECT_NOT_FOUND, BuildServer::PROJECT_VERSION_NOT_FOUND]
-    where(["status in (?) OR (status in (?) AND notified_at >= ?)", [WAITING_FOR_RESPONSE, BUILD_PENDING, BuildServer::BUILD_STARTED], outdatable_statuses, Time.now - 2.days])
-  }
+  # scope :current, lambda {
+  #   outdatable_statuses = [BuildServer::SUCCESS, BuildServer::ERROR, BuildServer::PLATFORM_NOT_FOUND, BuildServer::PLATFORM_PENDING, BuildServer::PROJECT_NOT_FOUND, BuildServer::PROJECT_VERSION_NOT_FOUND]
+  #   where(["status in (?) OR (status in (?) AND notified_at >= ?)", [WAITING_FOR_RESPONSE, BUILD_PENDING, BuildServer::BUILD_STARTED], outdatable_statuses, Time.now - 2.days])
+  # }
   scope :for_status, lambda {|status| where(:status => status) }
   scope :for_user, lambda { |user| where(:user_id => user.id)  }
   scope :scoped_to_arch, lambda {|arch| where(:arch_id => arch) }
@@ -144,8 +146,8 @@ class BuildList < ActiveRecord::Base
     end
 
     def place_build
-      #XML-RPC params: project_name, project_version, plname, arch, bplname, update_type, build_requires, id_web, include_repos
-      self.status = BuildServer.add_build_list project.name, project_version, pl.name, arch.name, (pl_id == bpl_id ? '' : bpl.name), update_type, build_requires, id, include_repos
+      #XML-RPC params: project_name, project_version, plname, arch, bplname, update_type, build_requires, id_web, include_repos, priority
+      self.status = BuildServer.add_build_list project.name, project_version, pl.name, arch.name, (pl_id == bpl_id ? '' : bpl.name), update_type, build_requires, id, include_repos, priority
       self.status = BUILD_PENDING if self.status == 0
       save
     end
