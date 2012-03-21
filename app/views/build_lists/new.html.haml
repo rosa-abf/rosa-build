@@ -5,20 +5,20 @@
     %h3= t("activerecord.attributes.build_list.bpl")
     .all_platforms
       - Platform.main.each do |pl|
-        .both
-          - if pl.platform_type == 'main'
+        - if pl.repository_ids.size > 0
+          .both
             = check_box_tag "bpls[]", pl.id, (params[:bpls]||[]).include?(pl.id.to_s), :class => 'build_bpl_ids', :id => "bpls_#{pl.id}"
             = label_tag "bpls_#{pl.id}", pl.name
-          - else
-            = check_box_tag "", "", :class => "additional_pl", :disabled => :disabled
-            = label_tag "", pl.name, :class => "additional_pl"
-          .offset25{:style => 'padding-left: 25px'}
-            = render 'include_repos', :platform => pl
-        -#%div{:class => "include_repos_#{p.id}"}= render 'include_repos', :platform => p
-      -#- Platform.main.each do |bpl|
-      -#  .both
-      -#    = check_box_tag "bpls[]", bpl.id, (params[:bpls]||[]).include?(bpl.id.to_s), :class => 'build_bpl_ids', :id => "bpls_#{bpl.id}"
-      -#    = label_tag "bpls_#{bpl.id}", bpl.name
+            .offset25{:style => 'padding-left: 25px'}
+              = render 'include_repos', :platform => pl
+  %section.right
+    %h3= t("activerecord.attributes.build_list.arch")
+    - Arch.recent.each do |arch|
+      .both
+        = check_box_tag "arches[]", arch.id, (params[:arches]||[]).include?(arch.id.to_s), :id => "arches_#{arch.id}"
+        = label_tag "arches_#{arch.id}", arch.name
+    %h3= t("activerecord.attributes.build_list.pl")
+    .lineForm= f.select :pl_id, @project.repositories.collect{|r| ["#{r.platform.name}/#{r.name}", r.platform.id]}
     %h3= t("activerecord.attributes.build_list.update_type")
     .lineForm= f.select :update_type, BuildList::UPDATE_TYPES
     %h3= t("activerecord.attributes.build_list.preferences")
@@ -30,19 +30,5 @@
       = f.label :build_requires
     %br
     = f.submit t("layout.projects.build_button")
-  %section.right
-    %h3= t("activerecord.attributes.build_list.arch")
-    - Arch.recent.each do |arch|
-      .both
-        = check_box_tag "arches[]", arch.id, (params[:arches]||[]).include?(arch.id.to_s), :id => "arches_#{arch.id}"
-        = label_tag "arches_#{arch.id}", arch.name
-    %h3= t("activerecord.attributes.build_list.pl")
-    .lineForm= f.select :pl_id, @project.repositories.collect{|r| ["#{r.platform.name}/#{r.name}", r.platform.id]}
--#    %h3= t("activerecord.attributes.build_list.include_repos")
--#    #include_repos
-
--#.preloaded_include_repos{:style => 'display: none'}
--#  - @project.platforms.each do |p|
--#    %div{:class => "include_repos_#{p.id}"}= render 'include_repos', :platform => p
 
 = render 'projects/submenu'
