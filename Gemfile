@@ -70,4 +70,5 @@ group :test do
   gem 'rspec-rails',        '~> 2.8.1'
   gem 'factory_girl_rails', '~> 1.7.0'
   gem 'rr',                 '~> 1.0.4'
+  gem 'shoulda'
 end

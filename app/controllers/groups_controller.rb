@@ -7,7 +7,8 @@ class GroupsController < ApplicationController
   before_filter :authenticate_user!
   before_filter :find_group, :only => [:show, :edit, :update, :destroy]
 
-  load_and_authorize_resource
+  load_and_authorize_resource :except => :create
+  authorize_resource :only => :create
   autocomplete :group, :uname
 
   def index
@@ -34,8 +35,9 @@ class GroupsController < ApplicationController
   end
 
   def create
-    @group = Group.new params[:group]
+    @group = Group.new(:description => params[:group][:description])
     @group.owner = current_user
+    @group.uname = params[:group][:uname]
 
     if @group.save
       flash[:notice] = t('flash.group.saved')
