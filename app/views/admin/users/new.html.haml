@@ -4,11 +4,6 @@
     .inner
       = form_for @user, :url => users_path, :html => { :class => :form } do |f|
         .leftlist
-          = f.label :uname, t("activerecord.attributes.user.uname")
-        .rightlist
-          = f.text_field :uname
-        .both
-        .leftlist
           = f.label :password, t("activerecord.attributes.user.password")
         .rightlist
           = f.password_field :password
@@ -22,3 +17,4 @@
 
 - content_for :sidebar do
   .bordered.nopadding
+= render 'admin/submenu'
