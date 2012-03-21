@@ -14,7 +14,7 @@ class User < ActiveRecord::Base
   validates_inclusion_of :avatar_file_size, :in => (0..MAX_AVATAR_SIZE), :allow_nil => true
 
   devise :database_authenticatable, :registerable, #:omniauthable, # :token_authenticatable, :encryptable, :timeoutable
-         :recoverable, :rememberable, :validatable #, :trackable, :confirmable, :lockable
+         :recoverable, :rememberable, :validatable, :lockable #, :trackable, :confirmable
 
   has_one :notifier, :class_name => 'Settings::Notifier', :dependent => :destroy #:notifier
 
