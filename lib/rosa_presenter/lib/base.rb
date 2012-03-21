@@ -15,6 +15,10 @@ module RosaPresenter
       Thread.current[:rosa_presenter_controller]
     end
 
+    def helpers
+      controller.view_context
+    end
+
     # TODO it needs to be refactored!
     class << self
       def present(item, opts, &block)

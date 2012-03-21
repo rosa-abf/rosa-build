@@ -22,7 +22,13 @@ class GitPresenters::CommitAsMessagePresenter < ApplicationPresenter
   end
 
   def image
-    @image ||= "https://secure.gravatar.com/avatar/#{Digest::MD5.hexdigest(committer.email.downcase)}?s=40&r=pg"
+    #@image ||= "https://secure.gravatar.com/avatar/#{Digest::MD5.hexdigest(committer.email.downcase)}?s=40&r=pg"
+    c = committer
+    @image ||= if c.class == User
+      helpers.avatar_url(c, :medium)
+    else
+      helpers.gravatar_url(c.email, 40)
+    end
   end
 
   def date

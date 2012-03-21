@@ -55,7 +55,7 @@ class CommentPresenter < ApplicationPresenter
   end
 
   def image
-    @image ||= "https://secure.gravatar.com/avatar/#{Digest::MD5.hexdigest(@user.email.downcase)}?s=40&r=pg"
+    @image ||= helpers.avatar_url(@user, :medium)
   end
 
   def date
