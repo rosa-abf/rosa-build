@@ -51,8 +51,6 @@ class Git::Repository
   #
   # Returns commits sha if committing was successful and false otherwise
   def update_file(path, data, options = {})
-    path.force_encoding(Encoding::ASCII_8BIT) # some magic
-
     head = options[:head].to_s || 'master'
     actor = get_actor(options[:actor])
     filename = File.split(path).last

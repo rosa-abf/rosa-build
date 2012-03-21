@@ -9,37 +9,10 @@
   - by_month.each_pair do |month, by_day|
     - by_day.each_pair do |day, commits|
       .date-block
-        .date
-          = raw l(commits.first.authored_date, :format => :date_block_format)
+        .date= raw l(commits.first.authored_date, :format => :date_block_format)
         .messages
           - commits.each_with_index do |commit|
             - GitPresenters::CommitAsMessagePresenter.present(commit, :branch => @branch, :project => @project) do |presenter|
               = render :partial => 'shared/feed_message', :locals => {:presenter => presenter, :item_no => counter}
               - counter += 1
         .both
--#%ul.list.commits
-  - commits.each do |commit|
-    %li.commit
-      %table
-        %tr
-          %td.committers
-            .author #{commit.author.to_s.encode_to_default}, #{commit_date(commit.authored_date)}
-            - if commit.committer != commit.author
-              .committer
-                (committed by: #{commit.committer.to_s.encode_to_default}, #{commit_date(commit.committed_date)})
-          %td.message
-            %p= link_to commit.message.encode_to_default, commit_path(@project, commit.id)
-          %td.trees
-            .commit
-              Commit:
-              %span{ :style => "float: right;"}
-                #{link_to short_hash_id(commit.id), commit_path(@project, commit.id)}
-            .tree
-              Tree:
-              %span{ :style => "float: right;"}
-                #{link_to short_hash_id(commit.tree.id), tree_path(@project, :treeish => commit.tree.id)}
-            - commit.parents.each do |parent|
-              .parent
-                Parent:
-                %span{ :style => "float: right;"}
-                  #{link_to short_hash_id(parent.id), tree_path(@project, :treeish => parent.id)}

@@ -5,7 +5,7 @@ module CommitHelper
     res = ["<table class='commit_stats'>"]
     stats.files.each do |filename, adds, deletes, total|
       res << "<tr>"
-      res << "<td><a href='##{h(filename)}'>#{h(filename)}</a></td>".encode_to_default
+      res << "<td><a href='##{h(filename)}'>#{h(filename)}</a></td>"
       res << "<td class='diffstat'>"
       res << I18n.t("layout.projects.inline_changes_count", :count => total).strip +
              " (" +
@@ -17,7 +17,7 @@ module CommitHelper
     end
     res << "</table>"
 
-    res.join("\n").encode_to_default.html_safe
+    res.join("\n").html_safe.default_encoding!
   end
 
 #  def format_commit_message(message)
@@ -38,11 +38,11 @@ module CommitHelper
 
   def short_commit_message(message)
     # Why 42? Because it is the Answer!
-    truncate(message, :length => 42, :omission => "...").encode_to_default
+    truncate(message, :length => 42, :omission => "...")
   end
 
   def commit_author_link(author)
-    name = author.name.encode_to_default
+    name = author.name
     email = author.email
     u = User.where(:email => email).first
     u.present? ? link_to(name, user_path(u)) : mail_to(email, name)

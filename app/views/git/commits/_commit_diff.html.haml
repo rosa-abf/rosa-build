@@ -1,11 +1,10 @@
+- commit_id = commit_diff.deleted_file ? @commit.parents.first.id : @commit.id
 .file
-  %a{ :name => h(commit_diff.a_path.encode_to_default) }
+  %a{:name => h(commit_diff.a_path)}
   .top
-    .l= h(commit_diff.a_path.encode_to_default)
+    .l= h(commit_diff.a_path)
     - if commit_diff.b_path.present?
-      .r
-        = link_to("view file @ #{short_hash_id(@commit.id)}", blob_commit_path(@project, @commit.id, commit_diff.b_path.encode_to_default))
+      .r= link_to "view file @ #{short_hash_id(commit_id)}", blob_path(@project, commit_id, commit_diff.b_path)
     .clear
 
-  .diff_data
-    = render_diff(commit_diff)
+  .diff_data= render_diff(commit_diff) unless (@git_repository.tree(commit_id) / commit_diff.b_path).binary?

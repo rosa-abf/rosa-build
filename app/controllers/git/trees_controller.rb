@@ -1,26 +1,18 @@
 # -*- encoding : utf-8 -*-
 class Git::TreesController < Git::BaseController
-
   def show
-    if params[:treeish].present? and @treeish.dup.encode_to_default == @project.default_branch
-      redirect_to project_path(@project) and return
-    end
+    redirect_to project_path(@project) and return if params[:treeish] == @project.default_branch and params[:path].blank?
 
     @path = params[:path]
-
     @tree = @git_repository.tree(@treeish)
     @branch = @project.branch(@treeish)
 
 #    @commit = @git_repository.commits(@treeish, 1).first
 #   Raises Grit::Git::GitTimeout
     @commit = @branch.present? ? @branch.commit() : @git_repository.log(@treeish, @path, :max_count => 1).first
-    render :template => "git/repositories/empty" and return unless @commit
+    render :template => "git/trees/empty" and return unless @commit
 
-    if @path
-      @path.force_encoding(Encoding::ASCII_8BIT)
-      @tree = @tree / @path
-    end
-
-    render :template => "git/repositories/show"
+    @tree = @tree / @path if @path
+    render :template => "git/trees/show"
   end
 end
