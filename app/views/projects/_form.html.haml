@@ -1,18 +1,13 @@
 - act = controller.action_name.to_sym
 - if [:new, :create].include? act
-  .leftlist
-    = f.label :name, t("activerecord.attributes.project.name"), :class => :label
-  .rightlist
-    = f.text_field :name, :class => 'text_field', :disabled => f.object.try(:persisted?)
+  .leftlist= f.label :name, t("activerecord.attributes.project.name"), :class => :label
+  .rightlist= f.text_field :name, :class => 'text_field', :disabled => f.object.try(:persisted?)
   .both
-.leftlist
-  = f.label :description, t("activerecord.attributes.project.description"), :class => :label
-.rightlist
-  = f.text_area :description, :class => 'text_field', :cols => 80
+.leftlist= f.label :description, t("activerecord.attributes.project.description"), :class => :label
+.rightlist= f.text_area :description, :class => 'text_field', :cols => 80
 .both
 - if ['new', 'create'].include? controller.action_name
-  .leftlist
-    = f.label :owner_id, t("activerecord.attributes.project.owner"), :class => :label
+  .leftlist= f.label :owner_id, t("activerecord.attributes.project.owner"), :class => :label
   .rightlist
     = label_tag t("activerecord.attributes.project.who_owns.me")
     - if Group.can_own_project(current_user).count > 0
@@ -27,13 +22,10 @@
       = hidden_field_tag :who_owns, :me
   .both
 -#- if [:new, :create].include? act
--#  .leftlist
--#    = f.label :category_id, t("activerecord.attributes.project.category_id"), :class => :label
--#  .rightlist
--#    = f.grouped_collection_select :category_id, Category.roots, :children, :name, :id, :name, :include_blank => true
+-#  .leftlist= f.label :category_id, t("activerecord.attributes.project.category_id"), :class => :label
+-#  .rightlist= f.grouped_collection_select :category_id, Category.roots, :children, :name, :id, :name, :include_blank => true
 -#  .both
-.leftlist
-  = f.label :visibility, t("activerecord.attributes.project.visibility"), :class => :label
+.leftlist= f.label :visibility, t("activerecord.attributes.project.visibility"), :class => :label
 .rightlist
   =# f.select :visibility, Project::VISIBILITIES
   - Project::VISIBILITIES.each do |visibility|
@@ -45,30 +37,23 @@
     = t("activerecord.attributes.project.visibilities.#{visibility}")
 .both
 - if [:edit, :update].include? act
-  .leftlist
-    Ветка по умолчанию:
-  .rightlist
-    = f.select :default_branch, options_from_collection_for_select(@project.branches, :name, :name, @project.default_branch), :class => 'sel80', :id => 'branch_selector'
+  .leftlist= t("activerecord.attributes.project.default_branch")
+  .rightlist= f.select :default_branch, options_from_collection_for_select(@project.branches, :name, :name, @project.default_branch), :class => 'sel80', :id => 'branch_selector'
   .both
 - if [:edit, :update].include? act
   .leftlist
     \ 
   .rightlist
     .check
-      %span#niceCheckbox1.niceCheck-main
-        = f.check_box :is_rpm#, :class => 'niceCheckbox1'
-    .forcheck
-      Проект является пакетом
+      %span#niceCheckbox1.niceCheck-main= f.check_box :is_rpm#, :class => 'niceCheckbox1'
+    .forcheck= t("activerecord.attributes.project.is_rpm")
     .both
 .both
 - if [:new, :create].include? act
-  .leftlist
-    = f.label :srpm, t("activerecord.attributes.project.srpm"), :class => :label
-  .rightlist
-    = f.file_field :srpm, :class => 'file_field'
+  .leftlist= f.label :srpm, t("activerecord.attributes.project.srpm"), :class => :label
+  .rightlist= f.file_field :srpm, :class => 'file_field'
   .both
 .leftlist
   \ 
-.rightlist
-  = submit_tag t("layout.save"), :class => 'button'
+.rightlist= submit_tag t("layout.save"), :class => 'button'
 .both

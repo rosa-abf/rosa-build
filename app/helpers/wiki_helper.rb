@@ -82,7 +82,7 @@ module WikiHelper
   end
 
   def author
-    @page.version.author.name.encode_to_default
+    @page.version.author.name
   end
 
   def author_email

@@ -59,7 +59,7 @@ class GitPresenters::CommitAsMessagePresenter < ApplicationPresenter
       @committer_link ||= if committer.is_a? User
         link_to committer.uname, user_path(committer)
       else
-        mail_to committer.email.encode_to_default, committer.name.encode_to_default
+        mail_to committer.email, committer.name
       end
     end
 
@@ -68,7 +68,7 @@ class GitPresenters::CommitAsMessagePresenter < ApplicationPresenter
     end
 
     def prepare_message
-      (@caption, @content) = @commit.message.encode_to_default.split("\n\n", 2)
+      (@caption, @content) = @commit.message.split("\n\n", 2)
       @caption = 'empty message' unless @caption.present?
       if @caption.length > 72
         tmp = '...' + @caption[69..-1]

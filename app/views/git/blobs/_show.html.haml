@@ -6,21 +6,7 @@
 
 - render_way = choose_render_way(@blob)
 .file
-  .top
-    .l
-      = @blob.mode + ' | '
-      - if (render_way == :text)
-        - text = @blob.data.split("\n")
-        = "#{text.length} lines (#{text.select{|s| s.strip.length > 0}.length} sloc) | "
-      = "#{(@blob.size / 1024.0).round(3)} Kb"
-    .r
-      - if render_way == :text and can? :write, @project and @treeish.in? @project.branches.map(&:name)
-        = raw "#{link_to "Edit", edit_blob_path(@project, @treeish, @path) } | "
-      = raw "#{link_to "Raw",    raw_path(@project, @treeish, @path)} | "
-      - if render_way == :text
-        = raw "#{link_to "Blame",  blame_path(@project, @treeish, @path)} | "
-      = link_to "History",       commits_path(@project, @treeish, @path)
-    .both
+  .top= render 'top', :render_way => render_way
   .data
     - case render_way
     - when :image
@@ -33,13 +19,12 @@
               <center> <img src='?raw=true'/></center>
               <br/>
     - when :text
-      .gutter
-        = render_line_numbers(text.length)
+      .gutter= render_line_numbers(@text.length)
       #output.formatted.cm-s-default
         %pre#code
           =#{render_blob(@blob)}
           :preserve
-            #{h(@blob.data.encode_to_default).html_safe}
+            #{h(@blob.data).html_safe}
       .both
     - when :binary
       %table.table.blob
@@ -48,7 +33,7 @@
           %td.blob
             :plain
               <br/>
-              <pre>#{ link_to @blob.basename.encode_to_default, raw_path(@project, @treeish, @path) }</pre>
+              <pre>#{ link_to @blob.basename, raw_path(@project, @treeish, @path) }</pre>
               <br/>
 :javascript
   $(document).ready(function() {

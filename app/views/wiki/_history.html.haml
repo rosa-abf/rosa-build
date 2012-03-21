@@ -10,14 +10,14 @@
           - user = User.where(:email => v.author.email).first
           .avatar
             = link_to user_path_by_user(user) do
-              %img.mini-gravatar{:src => gravatar_url(v.author.email), :alt => "avatar: #{v.author.name.encode_to_default}"}
+              %img.mini-gravatar{:src => gravatar_url(v.author.email), :alt => "avatar: #{v.author.name}"}
           .name
             = link_to user_path_by_user(user) do
-              %span.username= user.present? ? "#{user.uname} (#{user.name})" : v.author.name.encode_to_default
+              %span.username= user.present? ? "#{user.uname} (#{user.name})" : v.author.name
           .both
         %td.td3
           %span.wiki-gray= "#{l v.committed_date.to_date, :format => :long}:"
-          = v.message.encode_to_default
+          = v.message
           - if @name
             = raw "[#{link_to v.id[0..6], versioned_project_wiki_path(@project, escaped_name, v.id), :title => t("wiki.view_commit")}]"
           - else
