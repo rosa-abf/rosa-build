@@ -31,4 +31,18 @@ $(document).ready(function() {
     });
   });
   $('#build_list_pl_id').trigger('change');
+
+  $('.offset25 label').click(function() {
+    setPlChecked($(this).prev()[0], !$(this).prev().attr('checked'));
+  });
+  $('.offset25 input[type="checkbox"]').click(function() {
+    setPlChecked(this, $(this).attr('checked'));
+  });
 });
+
+function setPlChecked(pointer, checked) {
+  pl_cbx = $(pointer).parent().parent().parent().find('input[type="checkbox"].build_bpl_ids');
+  if (checked && !$(pointer).attr('disabled')) {
+    pl_cbx.attr('checked', 'checked');
+  }
+}
