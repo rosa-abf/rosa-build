@@ -75,8 +75,7 @@ describe CommentsController do
     stub_rsync_methods
 
     @project = Factory(:project)
-    user = Factory(:user)
-    @issue = Factory(:issue, :project_id => @project.id, :creator => user)
+    @issue = Factory(:issue, :project_id => @project.id, :creator => Factory(:user))
     @comment = Factory(:comment, :commentable => @issue, :project_id => @project.id)
 
     @create_params = {:comment => {:body => 'I am a comment!'}, :project_id => @project.id, :issue_id => @issue.serial_id}
