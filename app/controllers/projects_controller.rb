@@ -5,7 +5,6 @@ class ProjectsController < ApplicationController
 
   def index
     @projects = current_user.projects.paginate(:page => params[:page])
-    #@projects = @projects.search(params[:query]).search_order if params[:query]
   end
 
   def new

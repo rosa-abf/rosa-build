@@ -9,8 +9,13 @@ def set_comments_data_for_commit
   %x(cp -Rf #{Rails.root}/spec/tests.git/* #{@project.git_repository.path}) # maybe FIXME ?
   @commit = @project.git_repository.commits.first
 
-  @comment = Factory(:comment, :user => @user)
-  @comment.update_attributes(:commentable_type => @commit.class.name, :commentable_id => @commit.id)
+  #@comment = Factory(:comment, :user => @user, :commentable_type => @commit.class.name, :commentable_id => @commit.id, :project => @project)
+  @comment = Factory.build(:comment, :user => @user, :project => @project)
+  @comment.commentable_type = @commit.class.name
+  @comment.commentable_id = @commit.id.hex
+  puts @comment.inspect
+  @comment.save
+  #@comment.update_attributes(:commentable_type => @commit.class.name, :commentable_id => @commit.id)
 
   @stranger_comment = Factory(:comment, :user => @stranger)
   @stranger_comment.update_attributes(:commentable_type => @commit.class.name, :commentable_id => @commit.id, :project => @project)

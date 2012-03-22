@@ -15,7 +15,7 @@ shared_examples_for 'platform owner' do
 
   it 'should be able to perform destroy action' do
     delete :destroy, :id => @platform.id
-    response.should redirect_to(root_path)
+    response.should redirect_to(platforms_path)
   end
 end
 
@@ -61,7 +61,7 @@ describe PlatformsController do
       end
     end
 
-    [:show, :new, :edit, :freeze, :unfreeze, :clone, :destroy].each do |action|
+    [:show, :new, :edit, :clone, :destroy].each do |action|
       it "should not be able to perform #{ action } action" do
         get action, :id => @platform
         response.should redirect_to(new_user_session_path)
