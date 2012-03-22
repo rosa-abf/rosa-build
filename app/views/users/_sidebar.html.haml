@@ -5,7 +5,7 @@
   .admin-preferences
     %ul
       - if can? :edit, @user
-        %li{:class => (act == :edit && :users == contr) ? 'active' : ''}
+        %li{:class => (act == :profile && :users == contr) ? 'active' : ''}
           = link_to t("layout.users.profile"), @user == current_user ? edit_profile_path : edit_user_path(@user)
       - if can? :private, @user
         %li{:class => (act == :private && contr == :users) ? 'active' : ''}

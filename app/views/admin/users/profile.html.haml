@@ -1,6 +1,6 @@
 %h3.fix.bpadding10= @user.uname
 
-= form_for @user, :url => user_path(@user), :html => { :class => :form } do |f|
+= form_for @user, :url => update_user_path(@user), :html => { :class => :form } do |f|
   = render :partial => "users/form", :locals => {:f => f}
 
 .notify
@@ -11,4 +11,6 @@
 :javascript
   $('article .right').addClass('middlepadding');
 
-- content_for :sidebar, render('sidebar')
+= render 'admin/submenu'
+- content_for :sidebar do
+  .bordered.nopadding
