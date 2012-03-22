@@ -1,14 +1,16 @@
-- act = action_name.to_sym
-- contr = controller_name.to_sym
+- content_for :sidebar do
 
-%aside
-  .admin-preferences
-    %ul
-      - if can? :edit, @project
-        %li{:class => (act == :edit && contr == :projects) ? 'active' : ''}
-          = link_to t("layout.projects.edit"), edit_project_path(@project)
-        %li{:class => (act == :sections && contr == :projects) ? 'active' : ''}
-          = link_to t("layout.projects.sections"), sections_project_path(@project)
-      - if can? :manage_collaborators, @project
-        %li{:class => (act == :edit && contr == :collaborators) ? 'active' : ''}
-          = link_to t("layout.projects.edit_collaborators"), edit_project_collaborators_path(@project)
+  - act = action_name.to_sym
+  - contr = controller_name.to_sym
+
+  %aside
+    .admin-preferences
+      %ul
+        - if can? :edit, @project
+          %li{:class => (act == :edit && contr == :projects) ? 'active' : ''}
+            = link_to t("layout.projects.edit"), edit_project_path(@project)
+          %li{:class => (act == :sections && contr == :projects) ? 'active' : ''}
+            = link_to t("layout.projects.sections"), sections_project_path(@project)
+        - if can? :manage_collaborators, @project
+          %li{:class => (act == :edit && contr == :collaborators) ? 'active' : ''}
+            = link_to t("layout.projects.edit_collaborators"), edit_project_collaborators_path(@project)
