@@ -163,7 +163,6 @@ ru:
         destroyed: Подписка на оповещения для этого коммита убрана
 
     exception_message: У Вас нет доступа к этой странице!
-    banned: Вы забанены!
 
     downloads:
       statistics_refreshed: Статистика обновлена

@@ -12,7 +12,7 @@ class ApplicationController < ActionController::Base
   helper_method :get_owner
 
   rescue_from CanCan::AccessDenied do |exception|
-    redirect_to forbidden_url, :alert => t("flash.#{current_user.access_locked? ? 'banned':'exception_message'}")#:alert => exception.message
+    redirect_to forbidden_url, :alert => t("flash.exception_message")
   end
 
   protected

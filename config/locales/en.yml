@@ -163,7 +163,6 @@ en:
         destroyed: Subscription on notifications for this commit is cleaned
 
     exception_message: Access violation to this page!
-    banned: You are banned!
 
     downloads:
       statistics_refreshed: Statistics refreshed
