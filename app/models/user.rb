@@ -45,10 +45,7 @@ class User < ActiveRecord::Base
 
   attr_accessible :email, :password, :password_confirmation, :current_password, :remember_me, :login, :name, :ssh_key, :language,
                   :site, :company, :professional_experience, :location, :avatar
-  attr_accessible :uname, :name, :email, :password, :password_confirmation, :language, :site, :company,
-                  :professional_experience, :location, :avatar, :as => :create
   attr_readonly :uname, :own_projects_count
-  attr_readonly :uname
   attr_accessor :login
 
   scope :search_order, order("CHAR_LENGTH(uname) ASC")

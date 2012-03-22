@@ -12,9 +12,9 @@ class Admin::UsersController < ApplicationController
   end
 
   def create
-    role = params[:user].delete(:role)
-    @user = User.new params[:user], :as => :create
-    @user.set_role role
+    @user = User.new params[:user]
+    @user.set_role params[:role]
+    @user.uname = params[:uname]
     if @user.save
       flash[:notice] = t('flash.user.saved')
       redirect_to users_path
@@ -28,7 +28,7 @@ class Admin::UsersController < ApplicationController
   end
 
   def update
-    @user.set_role params[:user].delete(:role)
+    @user.set_role params[:role]
     if @user.update_without_password(params[:user])
       if @user.avatar && params[:delete_avatar] == '1'
         @user.avatar = nil
