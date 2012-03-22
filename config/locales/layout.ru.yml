@@ -9,3 +9,11 @@ ru:
     enter_commit_message: Сопровождающее сообщение
 
     read_write_access: чтение и запись
+
+    by: ''
+
+    remove: Убрать
+
+    visibilities:
+      open: открытая
+      hidden: скрытая

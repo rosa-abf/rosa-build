@@ -1,3 +1,8 @@
-%p== Branch #{ branch_name } has been deleted
-
-%p== Into project #{ link_to(project_name, project_path(project_id)) }
+.top
+  .text
+    %span
+      = t('notifications.bodies.delete_branch', :branch_name => branch_name)
+      = raw t("notifications.bodies.project", :project_link => link_to("#{project_owner}/#{project_name}", project_path(project_id)) )
+    .both
+      %span.date= activity_feed.created_at
+  .both

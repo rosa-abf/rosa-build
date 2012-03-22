@@ -2,7 +2,7 @@ html, body {
 	margin: 0;
 	padding: 0;
 	font-family: Tahoma, Geneva, Helvetica, sans-serif;
-	color: #565657;
+	color: #292929;
 	background: #1f60a1 url("../pics/bg.png") repeat-x; 
 	min-width: 940px;
 	min-height: 600px;
@@ -86,7 +86,7 @@ header menu {
 header menu ul {
 	list-style: none;
 	margin: 0;
-	padding: 10px 0px 0px 0px;
+	padding-top: 10px;
 }
 
 header menu ul li {
@@ -98,7 +98,7 @@ header menu ul li a {
 	color: #FFF;
 	text-decoration: none;
 	height: 43px;
-	padding: 15px 15px 15px 15px;
+	padding: 15px 10px 15px 10px;
 }
 
 header menu ul li a:hover {
@@ -106,7 +106,7 @@ header menu ul li a:hover {
 }
 
 header menu ul li a.first {
-	padding-left: 45px;
+	
 }
 
 header menu ul li a.active {
@@ -117,9 +117,10 @@ header menu ul li a.active {
 
 header div.logo {
 	float: left;
-	margin-top: -25px;
-	padding-left: 10px;
-	position: absolute;
+	margin-top: 5px;
+	padding-left: 0px;
+	padding-right: 0px;
+	
 }
 
 /* Right part of top menu */
@@ -207,6 +208,8 @@ header div.profile a:hover {
 
 header div.droplist-wrap {
 	margin: -4px 0px 0px 0px;
+	width: 151px;
+	float: right;
 }
 
 header div.droplist {
@@ -218,7 +221,6 @@ header div.droplist {
 	box-shadow: 0px 2px 4px 0px rgba(0, 0, 0, 0.5);
 	position: absolute;
 	margin-top: 0px;
-	margin-left: 138px;
 	border-radius: 0px 0px 4px 4px;
 	display: none;
 	text-align: right;
@@ -233,7 +235,7 @@ header div.droplist a{
 	position: relative;
 	padding-left: 15px;
 	font-size: 12px;
-	color: #7eb7ed;
+	color: #447cae;
 	text-decoration: none;
 	padding-right: 15px;
 	margin-top: 10px;
@@ -275,7 +277,7 @@ header div.droplist a:hover{
 }
 
 
-.sub-menu nav { /*Для подменю без названия*/
+.sub-menu nav { 
 	float: left;
 	margin: 0px 0px 0px 0px;
 }
@@ -285,7 +287,7 @@ header div.droplist a:hover{
 	text-align: left;
 	padding: 0;
 	margin: 0;
-	padding-top: 5px;
+	padding-top: 4px;
 }
 
 .sub-menu nav ul li {
@@ -294,14 +296,14 @@ header div.droplist a:hover{
 
 .sub-menu nav ul li a {
 	font-size: 12px;
-	color: #575756;
+	color: #292929;
 	text-decoration: none;
 	height: 34px;
-	padding: 0px 20px 6px 20px;
+	padding: 0px 20px 9px 20px;
 }
 
 .sub-menu nav ul li a.active {
-	background: url("../pics/submenu-hover.png") repeat-x;
+	background: url("../pics/submenu-hover.png") repeat-x scroll 0 100% transparent;
 }
 
 .sub-menu nav ul li a:hover {
@@ -406,6 +408,10 @@ article h4 {
 	padding-bottom: 2px;
 }
 
+article h4.nomargin {
+	margin: 0px;
+}
+
 article p {
 	margin: 0;
 	padding: 0;
@@ -439,7 +445,7 @@ article a.button {
 	background-image: linear-gradient(top, #68a3d8, #125687);
 	filter: progid:DXImageTransform.Microsoft.gradient(startColorStr='#68a3d8', EndColorStr='#125687');
 	border: 1px solid #5084b4;
-	padding: 4px 20px;
+	padding: 4px 20px 6px;
 	margin: 0;
 	font-size: 12px;
 	text-decoration: none;
@@ -508,7 +514,7 @@ article input[type="submit"] {
 	background-image: linear-gradient(top, #68a3d8, #125687);
 	filter: progid:DXImageTransform.Microsoft.gradient(startColorStr='#68a3d8', EndColorStr='#125687');
 	border: 1px solid #5084b4;
-	padding: 4px 20px;
+	padding: 3px 20px 5px;
 	margin: 0;
 	font-size: 12px;
 	text-decoration: none;
@@ -519,7 +525,7 @@ article input[type="submit"] {
 	text-align: center;
 	height: auto;
 	width: auto;
-	
+	font-family: Tahoma;
 }
 
 article input[type="submit"]:hover{
@@ -567,7 +573,7 @@ article input[type="submit"]:disabled {
 
 article h3{
 	font-size: 14px;
-	color: #575756;
+	color: #292929;
 	margin-bottom: 0;
 	padding-bottom: 2px;
 }
@@ -578,7 +584,7 @@ article h3.fix {
 }
 
 article a{
-	color: #7eb7ed;
+	color: #447cae;
 	font-size: 12px;
 	text-decoration: none;
 	padding: 0px 0px;
@@ -647,6 +653,13 @@ article div.all.bigpadding div.rightside {
 
 .width70 {
 	width: 70px;
+}
+
+a.button.width81 {
+	width: 79px;
+	padding: 4px 0px;
+	text-align: center;
+	
 }
 
 
@@ -798,7 +811,7 @@ article div.activity div.fulltext.view  {
 }
 
 .admin-preferences ul li a{
-	color: #575756;
+	color: #292929;
 	text-decoration: none;
 	padding-top: 5px;
 	padding-bottom: 5px;
@@ -815,7 +828,7 @@ article div.activity div.fulltext.view  {
 	float: left;
 	width: 400px;
 	font-size: 12px;
-	color: #575756;
+	color: #292929;
 	margin: 0px 0px 10px 0px;
 }
 
@@ -838,7 +851,7 @@ div.rightlist textarea {
 }
 
 div.rightlist input[type="text"], div.rightlist input[type="password"] {
-	height: 15px;
+	height: 16px;
 	width: 350px;
 	border: 1px solid #dedede;
 	border-radius: 4px;
@@ -849,30 +862,30 @@ div.rightlist input[type="text"], div.rightlist input[type="password"] {
 
 /* Admin-members page */
 
-.right table div.img {
+div.img {
 	float: left;
 }
 
-.right table div.radio {
+ table div.radio {
 	float: left;
 	margin: 5px 0px 0px 0px;
 }
 
-.right table div.forimg {
+div.forimg {
 	float: left;
 	margin: 5px 0px 0px 5px;
 }
 
-.right table div.forradio {
+table div.forradio {
 	float: left;
 	margin: 5px 0px 0px 5px;
 }
 
-.right table span.niceCheck-main {
+table span.niceCheck-main {
 	margin-top: 3px;
 }
 
-.right div.admin-search {
+div.admin-search {
 	float: left;
 }
 
@@ -1333,7 +1346,7 @@ h3.bmargin10 {
 	padding: 5px;
 	font-family: Tahoma, Geneva, Helvetica, sans-serif;
 	font-size: 12px;
-	color: #575756;
+	color: #292929;
 	margin: 10px 0px;
 }
 
@@ -1384,7 +1397,7 @@ h3.bmargin10 {
 div.desription-top {
 	background: #dcecfa;
 	font-size: 12px;
-	color: #575756;
+	color: #292929;
 	border: 1px solid #a9c6dd;
 	height: 38px;
 	width: 100%;
@@ -1405,9 +1418,9 @@ div.desription-top input.name {
 	border: 1px solid #d1deeb;
 	height: 21px;
 	width: auto;
-	color: #575756;
-	font-size: 12px;
-	width: 215px;
+	color: #292929;
+	font-size: 11px;
+	width: 415px;
 	padding: 2px 5px 3px;
 }
 
@@ -1437,7 +1450,7 @@ div.desription-top div.fork {
 }
 
 .all div.description h3{
-	color: #575756;
+	color: #292929;
 	font-weight: 700;
 	font-size: 14px;
 	margin-bottom: 5px;
@@ -1448,7 +1461,7 @@ div.desription-top div.fork {
 	font-size: 12px;
 	padding: 0;
 	margin: 0;
-	color: #575756;
+	color: #292929;
 }
 
 .all div.last-commit {
@@ -1495,7 +1508,7 @@ table.tablesorter.project div.pic {
 }
 
 a.files-see {
-	color: #565657;
+	color: #292929;
 	text-decoration: underline;
 }
 
@@ -1583,6 +1596,10 @@ table td.width145 {
 	width: 145px;
 }
 
+.width125 {
+	width: 125px;
+}
+
 table td.width30 {
 	width: 30px;
 }
@@ -1618,7 +1635,7 @@ div.blue-switcher {
 	width: 258px;
 	border: 1px solid #a0a0a1;
 	border-radius: 3px;
-	background-color: #575756;
+	background-color: #292929;
 	color: #FFF;
 	-webkit-box-shadow: inset 0px 2px 5px 0px rgba(0, 0, 0, 0.3);
 	-moz-box-shadow: inset 0px 2px 5px 0px rgba(0, 0, 0, 0.3);
@@ -1783,7 +1800,7 @@ div.labeltext.edit div.delete {
 
 div.labeltext a {
 	text-decoration: none;
-	color: #565657;
+	color: #292929;
 }
 
 div.labeltext.edit a {
@@ -1934,6 +1951,13 @@ img.delete-row {
 	cursor: pointer;
 }
 
+table tbody tr.error td {
+	background: #fedede;
+}
+
+table tbody tr.success td {
+	background: #e3edb7;
+}
 
 /* Create group */
 
@@ -2094,6 +2118,22 @@ article div.rightlist div.load {
 	padding: 5px 10px;
 }
 
+.notify.blue {
+	border: 1px solid #a9c6dd;
+	background: #dcecfa;
+	border-radius: 1px;
+	width: 555px;
+	margin-top: 20px;
+	text-align: right;
+	padding: 5px;
+}
+
+.notify.blue div.green {
+	border: 1px solid #bad099;
+	background: #d7e599;
+	float: left;
+}
+
 /* Pagination */
 
 div.pagination em {
@@ -2119,7 +2159,7 @@ div.pagination a {
 /*404*/
 
 article div.all.error404 {
-	background: url("../pics/404.png") no-repeat 59% 0;
+	background: url("../pics/404.png") no-repeat 49% 0;
 	height: 500px;
 	text-align: center;
 }
@@ -2159,4 +2199,172 @@ article div.all.error404 p.pages {
 article div.all.error404 p.search {
 	margin-top: 80px;
 	width: 230px;
+}
+
+/*500*/
+
+article div.all.error500 {
+	background: url("../pics/500.png") no-repeat 49% 0;
+	height: 500px;
+	text-align: center;
+}
+
+article div.all.error500 h1 {
+	margin: 0;
+	padding: 0;
+	margin-top: 135px;
+	font-size: 48px;
+	font-weight: normal;
+}
+
+article div.all.error500 h1 span {
+	color: #4496d0;
+}
+
+article div.all.error500 h2 {
+	margin: 0;
+	padding: 0;
+	margin-top: 5px;
+	font-size: 18px;
+	font-weight: normal;
+	text-align: left;
+	margin-left: 298px;
+}
+
+article div.all.error500 p {
+	margin: 0 auto;
+	padding: 0;
+	text-align: center;
+	font-size: 14px;
+}
+
+article div.all.error500 p.pages {
+	margin-top: 55px;
+	width: 280px;
+}
+
+article div.all.error500 p.search {
+	margin-top: 80px;
+	width: 230px;
+}
+
+/*503*/
+
+article div.all.error503 {
+	background: url("../pics/503.png") no-repeat 50% 0;
+	height: 500px;
+	text-align: center;
+}
+
+article div.all.error503 h1 {
+	margin: 0;
+	padding: 0;
+	margin-top: 395px;
+	font-size: 38px;
+	font-weight: normal;
+	text-align: center;
+	
+}
+
+article div.all.error503 h1 span {
+	color: #4496d0;
+}
+
+article div.all.error503 h2 {
+	margin: 0;
+	padding: 0;
+	margin-top: 25px;
+	font-size: 18px;
+	font-weight: normal;
+	text-align: left;
+	margin-left: 215px;
+}
+
+article div.all.error503 {
+	min-height: 630px;
+}
+
+article div.all.error503 h2 span {
+	color: #4496d0;
+}
+
+div.wrap.tmargin30 {
+	margin-top: 30px;
+	min-height: 91%;
+}
+
+/*search*/
+
+input.button.width100 {
+	width: 100px;
+}
+
+input[type="text"].exsearch {
+	height: 16px;
+	border: 1px solid #dedede;
+	border-radius: 4px;
+	padding: 5px;
+	font-family: Tahoma, Geneva, Helvetica, sans-serif;
+	font-size: 12px;
+	width: 520px;
+	margin-right: 10px;
+}
+
+div.lineForm.leftside.rmargin10 {
+	margin-right: 10px;
+}
+
+table.tablesorter.bmargin5 {
+	margin-bottom: 1px;
+}
+
+div.width400 {
+	width: 400px;
+	float: left;
+}
+
+div.width400.rmargin55 {
+	margin-right: 55px;
+}
+
+div.tmargin10 {
+	margin-top: 10px;
+}
+
+.tmargin10 {
+	margin-top: 10px;
+}
+
+a.lmargin7 {
+	margin-left: 7px;
+}
+
+a.lmargin5 {
+	margin-left: 5px;
+}
+
+/*My projects*/
+
+table.tablesorter tr.search td {
+	background: #dcecfa;
+}
+
+table.tablesorter tr.search td input[type="text"] {
+	height: 16px;
+	width: 830px;
+	border: 1px solid #cdcdcd;
+	border-radius: 4px;
+	padding: 5px;
+	font-family: Tahoma, Geneva, Helvetica, sans-serif;
+	font-size: 12px;
+	margin-top: 2px;
+}
+
+
+table.tablesorter.width565 {
+	width: 565px;
+}
+
+article h3 a {
+	font-size: 14px;
 }

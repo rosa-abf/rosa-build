@@ -1,13 +1,6 @@
 # -*- encoding : utf-8 -*-
 class ProjectsController < ApplicationController
-  is_related_controller!
-
-  belongs_to :user, :group, :polymorphic => true, :optional => true
-
-  before_filter :authenticate_user!, :except => :auto_build
-  before_filter :find_project, :only => [:show, :edit, :update, :destroy, :fork, :sections]
-  before_filter :get_paths, :only => [:new, :create, :edit, :update]
-
+  before_filter :authenticate_user!
   load_and_authorize_resource
 
   def index
@@ -37,7 +30,6 @@ class ProjectsController < ApplicationController
 
   def create
     @project = Project.new params[:project]
-    #@project.owner = get_owner
     @project.owner = choose_owner
     @who_owns = (@project.owner_type == 'User' ? :me : :group)
 
@@ -46,7 +38,7 @@ class ProjectsController < ApplicationController
       redirect_to @project
     else
       flash[:error] = t('flash.project.save_error')
-      flash[:warning] = @project.errors[:base]
+      flash[:warning] = @project.errors.full_messages.join('. ')
       render :action => :new
     end
   end
@@ -78,20 +70,6 @@ class ProjectsController < ApplicationController
     end
   end
 
-  # TODO remove this?
-  def auto_build
-    uname, name = params[:git_repo].split('/')
-    owner = User.find_by_uname(uname) || Group.find_by_uname(uname)
-    project = Project.where(:owner_id => owner.id, :owner_type => owner.class).find_by_name!(name)
-    project.delay.auto_build # TODO don't queue duplicates
-
-    # p = params.delete_if{|k,v| k == 'controller' or k == 'action'}
-    # ActiveSupport::Notifications.instrument("event_log.observer", :object => project, :message => p.inspect)
-    logger.info "Git hook recieved from #{params[:git_user]} to #{params[:git_repo]}"
-
-    render :nothing => true
-  end
-
   def sections
     if request.post?
       if @project.update_attributes(params[:project])
@@ -104,32 +82,19 @@ class ProjectsController < ApplicationController
     end
   end
 
+  def remove_user
+    @project.relations.by_object(current_user).destroy_all
+    flash[:notice] = t("flash.project.user_removed")
+    redirect_to projects_path
+  end
+
   protected
 
-    def get_paths
-      if params[:user_id]
-        @user = User.find params[:user_id]
-        @projects_path = user_path(@user) # user_projects_path @user
-        @new_project_path = new_project_path
-      elsif params[:group_id]
-        @group = Group.find params[:group_id]
-        @projects_path = group_path(@group) # group_projects_path @group
-        @new_projects_path = new_project_path
-      else
-        @projects_path = projects_path
-        @new_projects_path = new_project_path
-      end
+  def choose_owner
+    if params[:who_owns] == 'group'
+      Group.find(params[:owner_id])
+    else
+      current_user
     end
-
-    def find_project
-      @project = Project.find params[:id]
-    end
-
-    def choose_owner
-      if params[:who_owns] == 'group'
-        Group.find(params[:owner_id])
-      else
-        current_user
-      end
-    end
+  end
 end

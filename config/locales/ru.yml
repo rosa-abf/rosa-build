@@ -5,8 +5,8 @@ ru:
     page_gap: ...
 
   datatables:
-    previous_label: ‹ Пред.
-    next_label: След. ›
+    previous_label: ‹ Предыдущая
+    next_label: Следующая ›
     first_label: « Первая
     last_label: Последняя »
     empty_label: Нет доступных данных
@@ -15,7 +15,6 @@ ru:
     filtered_label: (отфильтровано из _MAX_)
 
   layout:
-    search: Поиск
     logged_in_as: Вы вошли как
     logout: Выйти
     user_list: Список пользователей
@@ -26,7 +25,6 @@ ru:
     update: Обновить
     delete: Удалить
     save: Сохранить
-    search: Искать
     clone: Клонировать
     search_by_name: Фильтр по имени
     are_you_sure: "Вы уверены?"
@@ -43,13 +41,18 @@ ru:
     owner: Владелец
     confirm: Уверены?
     back: Назад
+    processing: Обрабатывается...
+    invalid_content_type: имеет неверный тип
+
     settings:
       label: 'Настройки'
       notifier: Настройки оповещений
       notifiers:
         edit_header: Настройки оповещений
-    processing: Обрабатывается...
-    invalid_content_type: имеет неверный тип
+        notice_header: Вы можете получать уведомления об изменениях, которые вносят другие участники, в код ваших программ. Уведомления будут высылаться на указанный вами адрес электронной почты %{email}.
+        change_email_link: Изменить адрес электронной почты
+        code_header: Код
+        tracker_header: Трекер задач
 
     devise:
       shared_links:
@@ -130,10 +133,10 @@ ru:
       repositories:
         empty: "Репозиторий пуст. Если вы клонировали(Fork) проект или импортировали пакет, данные скоро появятся"
         source: Source
-        commits: Commits
+        commits: Коммиты
         commit_diff_too_big: Извините, коммит слишком большой!
-        tags: Tags
-        branches: Branches
+        tags: Теги
+        branches: Ветки
         project_versions: Версии
 
     product_build_lists:

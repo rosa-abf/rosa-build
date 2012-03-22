@@ -5,8 +5,9 @@ class GitHook
 
   def initialize(owner_uname, repo, newrev, oldrev, ref, newrev_type, oldrev_type)
     @repo, @newrev, @oldrev, @refname, @newrev_type, @oldrev_type = repo, newrev, oldrev, ref, newrev_type, oldrev_type
-    @owner = User.find_by_uname owner_uname
-    @project = @owner.projects.where(:name => repo).first
+    if @owner = User.where(:uname => owner_uname).first || Group.where(:uname => owner_uname).first
+      @project = @owner.projects.where(:name => repo).first
+    end
     @change_type = git_change_type
     git_revision_types
     commit_type

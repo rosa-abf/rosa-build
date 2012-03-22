@@ -20,4 +20,16 @@ $(document).ready(function() {
     $(this).addClass('registartion-input-no-focus').removeClass('registartion-input-focus');
   });
 
+  $('#niceCheckbox1').click(function() {
+    var el = $(this),
+          input = el.find('input[type="checkbox"]');
+    if(input.attr("checked")) {
+      el.css('backgroundPosition', '0 0');
+      input.removeAttr('checked');
+    } else {
+      el.css('backgroundPosition', '0 -18px');
+      input.attr('checked', true);
+    }
+     return true;
+  });
 });

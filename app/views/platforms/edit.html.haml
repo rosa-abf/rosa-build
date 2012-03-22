@@ -1,4 +1,18 @@
-.block
+= render :partial => 'submenu'
+= render :partial => 'sidebar'
+
+= form_for @platform, :url => platform_path(@platform), :html => { :class => :form } do |f|
+  = render :partial => "form", :locals => {:f => f}
+
+- if can? :destroy, @platform
+  .hr
+  .leftside
+    = t("layout.platforms.delete_warning")
+  .rightside
+    = link_to t("layout.delete"), platform_path(@platform), :method => :delete, :confirm => t("layout.platforms.confirm_delete"), :class => 'button'
+  .both
+
+-#.block
   .secondary-navigation
     %ul.wat-cf
       %li.first= link_to t("layout.platforms.list"), platforms_path
@@ -10,4 +24,4 @@
     .inner
       = form_for @platform, :url => platform_path(@platform), :html => { :class => :form } do |f|
         = render :partial => "form", :locals => {:f => f}
-- content_for :sidebar, render(:partial => 'sidebar')
+-# content_for :sidebar, render(:partial => 'sidebar')

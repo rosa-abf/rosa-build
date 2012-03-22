@@ -1,7 +1,9 @@
 ru:
   layout:
     repositories:
+      add_project_to: Добавить проект к репозиторию
       list: Список
+      about: О репозитории
       list_header: Репозитории
       new: Новый репозиторий
       new_header: Новый репозиторий

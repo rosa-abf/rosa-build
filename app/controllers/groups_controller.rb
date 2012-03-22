@@ -7,7 +7,8 @@ class GroupsController < ApplicationController
   before_filter :authenticate_user!
   before_filter :find_group, :only => [:show, :edit, :update, :destroy]
 
-  load_and_authorize_resource
+  load_and_authorize_resource :except => :create
+  authorize_resource :only => :create
   autocomplete :group, :uname
 
   def index
@@ -34,19 +35,16 @@ class GroupsController < ApplicationController
   end
 
   def create
-    @group = Group.new params[:group]
-    @group.owner = if parent? and parent.is_a? User
-                     parent
-                   else
-                     current_user
-                   end
+    @group = Group.new(:description => params[:group][:description])
+    @group.owner = current_user
+    @group.uname = params[:group][:uname]
 
     if @group.save
       flash[:notice] = t('flash.group.saved')
       redirect_to group_path(@group)
     else
       flash[:error] = t('flash.group.save_error')
-      flash[:warning] = @group.errors[:base]
+      flash[:warning] = @group.errors.full_messages.join('. ')
       render :action => :new
     end
   end

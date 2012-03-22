@@ -58,6 +58,7 @@ ru:
       container_published: 'Контейнер размещен в репозитории'
       action: Действие
       new_header: Новая сборка
+      main_data: Основные данные
 
       ownership:
         header: Принадлежность заданий

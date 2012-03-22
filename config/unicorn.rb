@@ -1,9 +1,11 @@
 # -*- encoding : utf-8 -*-
-base_path = File.expand_path(File.join File.dirname(__FILE__), '..')
+#base_path = File.expand_path(File.join File.dirname(__FILE__), '..')
+base_path  = "/srv/rosa_build"
+
 rails_env = ENV['RAILS_ENV'] || 'production'
 
 worker_processes 4
-working_directory base_path # available in 0.94.0+
+working_directory File.join(base_path, 'current') # available in 0.94.0+
 
 # listen File.join(base_path, 'tmp', 'pids', 'unicorn.sock')
 # listen "/tmp/.sock", :backlog => 64
@@ -13,26 +15,35 @@ working_directory base_path # available in 0.94.0+
 timeout 600
 
 # feel free to point this anywhere accessible on the filesystem
-pid File.join(base_path, 'tmp', 'pids', 'unicorn.pid')
+pid_file = File.join(base_path, 'shared', 'pids', 'unicorn.pid')
+old_pid = pid_file + '.oldbin'
 
-# REE
+pid pid_file
+
+# REE or Ruby 2.0
 # http://www.rubyenterpriseedition.com/faq.html#adapt_apps_for_cow
-if GC.respond_to?(:copy_on_write_friendly=)
-  GC.copy_on_write_friendly = true
+GC.copy_on_write_friendly = true if GC.respond_to?(:copy_on_write_friendly=)
+
+before_exec do |server|
+  ENV["BUNDLE_GEMFILE"] = "#{base_path}/current/Gemfile"
 end
 
 # By default, the Unicorn logger will write to stderr.
 # Additionally, ome applications/frameworks log to stderr or stdout,
 # so prevent them from going to /dev/null when daemonized here:
-stderr_path File.join(base_path, 'log', 'unicorn.stderr.log')
-stdout_path File.join(base_path, 'log', 'unicorn.stdout.log')
+stderr_path File.join(base_path, 'current', 'log', 'unicorn.stderr.log')
+stdout_path File.join(base_path, 'current', 'log', 'unicorn.stdout.log')
 
 # combine REE with "preload_app true" for memory savings
 # http://rubyenterpriseedition.com/faq.html#adapt_apps_for_cow
 preload_app true
 
 before_fork do |server, worker|
-  ##
+  # This option works in together with preload_app true setting
+  # What is does is prevent the master process from holding
+  # the database connection
+  defined?(ActiveRecord::Base) and ActiveRecord::Base.connection.disconnect!
+  
   # When sent a USR2, Unicorn will suffix its pidfile with .oldbin and
   # immediately start loading up a new version of itself (loaded with a new
   # version of our app). When this new Unicorn is completely loaded
@@ -42,7 +53,7 @@ before_fork do |server, worker|
   # we send it a QUIT.
   #
   # Using this method we get 0 downtime deploys.
-  old_pid = File.join(base_path, 'tmp', 'pids', '/unicorn.pid.oldbin')
+  
   if File.exists?(old_pid) && server.pid != old_pid
     begin
       Process.kill("QUIT", File.read(old_pid).to_i)
@@ -50,11 +61,6 @@ before_fork do |server, worker|
       # someone else did our job for us
     end
   end
-
-  # This option works in together with preload_app true setting
-  # What is does is prevent the master process from holding
-  # the database connection
-  defined?(ActiveRecord::Base) and ActiveRecord::Base.connection.disconnect!
 end
 
 after_fork do |server, worker|
@@ -66,5 +72,5 @@ after_fork do |server, worker|
   # and Redis.  TokyoCabinet file handles are safe to reuse
   # between any number of forked children (assuming your kernel
   # correctly implements pread()/pwrite() system calls)
-  srand
+  # srand
 end

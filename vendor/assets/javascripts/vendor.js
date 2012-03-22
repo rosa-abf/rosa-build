@@ -2,10 +2,9 @@
 //= require gollum/gollum.dialog
 //= require gollum/gollum.placeholder
 //= require gollum/editor/gollum.editor
-// require hl/shCore
+//= require jquery.dataTables
 //= require codemirror
 //= require codemirror/runmode
 //= require_tree ./codemirror/modes
+//= require cusel
 // require_tree .
-
-

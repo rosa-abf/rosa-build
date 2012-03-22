@@ -35,7 +35,6 @@ ru:
       unsubscribe_btn: Отписаться
       number: Номер
       description: Описание
-      by: ' '
       labels: Метки
       invalid_labels: Неверный hex код
       new_label: Название новой метки
@@ -49,6 +48,7 @@ ru:
       choose_labels_on_left: выберите метки слева
       at: в
       cancel_button: Отменить
+      done: Обновить
 
   flash:
     issue:

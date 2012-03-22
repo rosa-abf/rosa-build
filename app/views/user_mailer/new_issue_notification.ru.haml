@@ -1,4 +1,4 @@
-%p== Здравствуйте, #{@user.name}.
+%p== Здравствуйте, #{@user.user_appeal}.
 
 
 %p К проекту #{ link_to @issue.project.name, project_url(@issue.project) } была добавлена задача #{ link_to @issue.title, project_issue_url(@issue.project, @issue) }

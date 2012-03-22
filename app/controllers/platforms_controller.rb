@@ -1,7 +1,7 @@
 # -*- encoding : utf-8 -*-
 class PlatformsController < ApplicationController
   before_filter :authenticate_user!, :except => :easy_urpmi
-  before_filter :find_platform, :only => [:freeze, :unfreeze, :clone, :edit, :destroy]
+  before_filter :find_platform, :only => [:clone, :edit, :destroy, :members]
   before_filter :get_paths, :only => [:new, :create, :clone]
   
   load_and_authorize_resource
@@ -14,7 +14,7 @@ class PlatformsController < ApplicationController
   end
 
   def index
-    @platforms = Platform.accessible_by(current_ability).paginate(:page => params[:platform_page])
+    @platforms = @platforms.accessible_by(current_ability, :related).paginate(:page => params[:page], :per_page => 20)
   end
 
   def easy_urpmi
@@ -35,8 +35,8 @@ class PlatformsController < ApplicationController
 
   def show
     @platform = Platform.find params[:id], :include => :repositories
-    @repositories = @platform.repositories
-    @members = @platform.members.uniq
+    #@repositories = @platform.repositories
+    #@members = @platform.members.uniq
   end
 
   def new
@@ -44,7 +44,7 @@ class PlatformsController < ApplicationController
     @admin_uname = current_user.uname
     @admin_id = current_user.id
   end
-  
+
   def edit
     @admin_id = @platform.owner.id
     @admin_uname = @platform.owner.uname
@@ -57,10 +57,10 @@ class PlatformsController < ApplicationController
     @platform.owner = @admin_id.blank? ? get_owner : User.find(@admin_id)
 
     if @platform.save
-      flash[:notice] = I18n.t("flash.platform.saved")
+      flash[:notice] = I18n.t("flash.platform.created")
       redirect_to @platform
     else
-      flash[:error] = I18n.t("flash.platform.save_error")
+      flash[:error] = I18n.t("flash.platform.create_error")
       render :action => :new
     end
   end
@@ -80,28 +80,6 @@ class PlatformsController < ApplicationController
       flash[:error] = I18n.t("flash.platform.save_error")
       render :action => :new
     end
-  end
-
-  def freeze
-    @platform.released = true
-    if @platform.save
-      flash[:notice] = I18n.t("flash.platform.freezed")
-    else
-      flash[:notice] = I18n.t("flash.platform.freeze_error")
-    end
-
-    redirect_to @platform
-  end
-
-  def unfreeze
-    @platform.released = false
-    if @platform.save
-      flash[:notice] = I18n.t("flash.platform.unfreezed")
-    else
-      flash[:notice] = I18n.t("flash.platform.unfreeze_error")
-    end
-
-    redirect_to @platform
   end
 
   def clone
@@ -125,10 +103,47 @@ class PlatformsController < ApplicationController
     @platform.delay.destroy if @platform
 
     flash[:notice] = t("flash.platform.destroyed")
-    redirect_to root_path
+    redirect_to platforms_path
   end
-  
+
   def forbidden
+  end
+
+  def members
+    @members = @platform.members.order('name')
+  end
+
+  def remove_members
+    all_user_ids = params['user_remove'].inject([]) {|a, (k, v)| a << k if v.first == '1'; a}
+    all_user_ids.each do |uid|
+      Relation.by_target(@platform).where(:object_id => uid, :object_type => 'User').each{|r| r.destroy}
+    end
+    redirect_to members_platform_path(@platform)
+  end
+
+  def remove_member
+    u = User.find(params[:member_id])
+    Relation.by_object(u).by_target(@platform).each{|r| r.destroy}
+
+    redirect_to members_platform_path(@platform)
+  end
+
+  def add_member
+    if params[:member_id].present?
+      member = User.find(params[:member_id])
+      if @platform.relations.exists?(:object_id => member.id, :object_type => member.class.to_s) or @platform.owner == member
+        flash[:warning] = t('flash.platform.members.already_added', :name => member.uname)
+      else
+        rel = @platform.relations.build(:role => 'admin')
+        rel.object = member
+        if rel.save
+          flash[:notice] = t('flash.platform.members.successfully_added', :name => member.uname)
+        else
+          flash[:error] = t('flash.platform.members.error_in_adding', :name => member.uname)
+        end
+      end
+    end
+    redirect_to members_platform_url(@platform)
   end
 
   protected

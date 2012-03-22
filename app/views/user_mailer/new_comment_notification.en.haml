@@ -1,4 +1,4 @@
-%p== Hello, #{@user.name}.
+%p== Hello, #{@user.user_appeal}.
 
 - if @comment.commentable.class == Issue
   - link = link_to @comment.commentable.title, project_issue_url(@comment.commentable.project, @comment.commentable)

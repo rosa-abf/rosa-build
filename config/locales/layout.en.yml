@@ -9,3 +9,11 @@ en:
     enter_commit_message: Commit message
 
     read_write_access: read & write
+
+    by: by
+
+    remove: Remove
+
+    visibilities:
+      open: open
+      hidden: hidden

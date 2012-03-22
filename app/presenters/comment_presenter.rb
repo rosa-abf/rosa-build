@@ -50,16 +50,23 @@ class CommentPresenter < ApplicationPresenter
   end
 
   def header
-    res = link_to @user.uname, user_path(@user.uname)
+    res = link_to "#{@user.uname} (#{@user.name})", user_path(@user.uname)
     res += ' ' + t("layout.comments.has_commented")
   end
 
   def image
-    @image ||= "https://secure.gravatar.com/avatar/#{Digest::MD5.hexdigest(@user.email.downcase)}?s=40&r=pg"
+    @image ||= helpers.avatar_url(@user, :medium)
   end
 
   def date
     @date ||= I18n.l(@comment.updated_at, :format => :long)
   end
 
+  def comment_id?
+    true
+  end
+
+  def comment_id
+    @comment.id
+  end
 end

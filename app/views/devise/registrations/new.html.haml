@@ -21,11 +21,11 @@
       .both
       .left=t('activerecord.attributes.user.password')
       .right
-        = f.text_field :password, :id => 'password',  :class => "registartion-input #{password_error ? 'registartion-input-error' : ''}"
+        = f.password_field :password, :id => 'password',  :class => "registartion-input #{password_error ? 'registartion-input-error' : ''}"
       .both
       .left=t('activerecord.attributes.user.password_confirm')
       .right
-        = f.text_field :password_confirmation, :id => 'password2',  :class => "registartion-input #{password_error ? 'registartion-input-error' : ''}"
+        = f.password_field :password_confirmation, :id => 'password2',  :class => "registartion-input #{password_error ? 'registartion-input-error' : ''}"
       .both
       .in
         =f.submit t("layout.devise.shared_links.sign_up"), :class => 'button', :id => 'btnLogin'

@@ -17,4 +17,6 @@ Add to /etc/rc.d/rc.sysinit
   . /etc/rc.local
   fi
 
-==
+=== Tips
+gem install charlock_holmes -- --with-icu-dir=/opt/local
+git config --global core.quotepath false

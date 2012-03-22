@@ -1,4 +1,19 @@
-.block
+= render :partial => 'platforms/submenu'
+= render :partial => 'platforms/sidebar'
+
+%h3.fix= "#{t("layout.repositories.about")}: #{@repository.name}"
+
+%p= @platform.description
+
+%br
+%br
+%h3.fix= t("layout.projects.list_header")
+- if can? :add_project, @repository
+  = link_to t("layout.projects.add"), add_project_repository_path(@repository), :class => 'button'
+
+= render :partial => 'proj_list'#, :object => @projects
+=# will_paginate @projects
+-#.block
   .secondary-navigation
     %ul.wat-cf
       %li.first= link_to t("layout.repositories.list"), @repositories_path + "#repositories"
@@ -24,8 +39,8 @@
       .wat-cf
         = link_to image_tag("x.png", :alt => t("layout.delete")) + " " + t("layout.delete"), @repository_path, :method => "delete", :class => "button", :confirm => t("layout.repositories.confirm_delete") if can? :destroy, @repository
 
-%a{ :name => "projects" }
-.block
+-#%a{ :name => "projects" }
+-#.block
   .secondary-navigation
     %ul.wat-cf
       %li.first.active= link_to t("layout.projects.list"), repository_path(@repository) + "#projects"

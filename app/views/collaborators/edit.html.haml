@@ -15,11 +15,11 @@
       - @users.each do |user|
         %tr#admin-table-members-row1
           %td
-            %span#niceCheckbox1.niceCheck-main{:onclick => "changeCheck(this)", :style => "background-position: 0px 0px; "}
+            %span#niceCheckbox1.niceCheck-main{ :style => "background-position: 0px 0px; "}
               = check_box_tag "user_remove[#{user.id}][]"
           %td
             .img
-              = image_tag(gravatar_url(user.email))
+              = image_tag avatar_url(user)
             .forimg= link_to "#{user.uname} (#{user.name})", user_path(user)
           - Relation::ROLES.each_with_index do |role, i|
             %td

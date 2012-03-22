@@ -1,4 +1,17 @@
-%table.table
+%table#myTable.tablesorter.platforms{:cellspacing => "0", :cellpadding => "0"}
+  %thead
+    %tr
+      %th.th1= t("activerecord.attributes.platform.name")
+      %th.th2= t("activerecord.attributes.platform.distrib_type")
+  %tbody
+    - @platforms.each do |platform|
+      %tr{:class => cycle("odd", "even")}
+        %td
+          = link_to platform.name, platform_path(platform)
+        %td
+          = platform.distrib_type
+
+-#%table.table
   %tr
     %th.first= t("activerecord.attributes.platform.name")
     %th.first= t("activerecord.attributes.platform.distrib_type")

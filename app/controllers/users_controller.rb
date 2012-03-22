@@ -1,7 +1,6 @@
 # -*- encoding : utf-8 -*-
 class UsersController < ApplicationController
   before_filter :authenticate_user!
-  before_filter :find_user, :only => [:show, :edit, :update, :destroy]
 
   load_and_authorize_resource
   autocomplete :user, :uname
@@ -19,7 +18,6 @@ class UsersController < ApplicationController
   def show
     @groups       = @user.groups.uniq
     @platforms    = @user.platforms.paginate(:page => params[:platform_page], :per_page => 10)
-#    @repositories = @user.repositories.paginate(:page => params[:repository_page], :per_page => 10)
     @projects     = @user.projects.paginate(:page => params[:project_page], :per_page => 10)
   end
 
@@ -27,7 +25,8 @@ class UsersController < ApplicationController
     @user = User.new
   end
 
-  def edit
+  def profile
+    @user ||= current_user
   end
 
   def create
@@ -42,13 +41,35 @@ class UsersController < ApplicationController
   end
 
   def update
-    @user.role = params[:user][:role]
-    if @user.update_attributes(params[:user])
+    if params[:user][:role] && current_user.admin?
+      @user.role = params[:user][:role]
+      params[:user].delete(:role)
+    end
+    @user ||= current_user
+    if @user.update_without_password(params[:user])
+      if @user.avatar && params[:delete_avatar] == '1'
+        @user.avatar = nil
+        @user.save
+      end
       flash[:notice] = t('flash.user.saved')
-      redirect_to users_path
+      redirect_to @user == current_user ? edit_profile_path : edit_user_path(@user)
     else
       flash[:error] = t('flash.user.save_error')
-      render :action => :edit
+      flash[:warning] = @user.errors.full_messages.join('. ')
+      render(:action => :profile)
+    end
+  end
+
+  def private
+    if request.put?
+      if @user.update_with_password(params[:user])
+        flash[:notice] = t('flash.user.saved')
+        redirect_to user_private_settings_path(@user)
+      else
+        flash[:error] = t('flash.user.save_error')
+        flash[:warning] = @user.errors.full_messages.join('. ')
+        render(:action => :private)
+      end
     end
   end
 
@@ -58,9 +79,4 @@ class UsersController < ApplicationController
     redirect_to users_path
   end
 
-  protected
-
-    def find_user
-      @user = User.find(params[:id])
-    end
 end
