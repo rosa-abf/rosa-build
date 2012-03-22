@@ -75,8 +75,9 @@ describe CommentsController do
     stub_rsync_methods
 
     @project = Factory(:project)
-    @issue = Factory(:issue, :project_id => @project.id)
-    @comment = Factory(:comment, :commentable => @issue)
+    user = Factory(:user)
+    @issue = Factory(:issue, :project_id => @project.id, :creator => user)
+    @comment = Factory(:comment, :commentable => @issue, :project_id => @project.id)
 
     @create_params = {:comment => {:body => 'I am a comment!'}, :project_id => @project.id, :issue_id => @issue.serial_id}
     @update_params = {:comment => {:body => 'updated'}, :project_id => @project.id, :issue_id => @issue.serial_id}
@@ -92,7 +93,7 @@ describe CommentsController do
       set_session_for(@user)
       @project.relations.create!(:object_type => 'User', :object_id => @user.id, :role => 'admin')
 
-      @own_comment = Factory(:comment, :commentable => @issue, :user => @user)
+      @own_comment = Factory(:comment, :commentable => @issue, :user => @user, :project_id => @project.id)
     end
 
     it_should_behave_like 'user with create comment rights'
@@ -108,7 +109,7 @@ describe CommentsController do
       @project.update_attribute(:owner, @user)
       @project.relations.create!(:object_type => 'User', :object_id => @user.id, :role => 'admin')
 
-      @own_comment = Factory(:comment, :commentable => @issue, :user => @user)
+      @own_comment = Factory(:comment, :commentable => @issue, :user => @user, :project_id => @project.id)
     end
 
    it_should_behave_like 'user with create comment rights'
@@ -123,7 +124,7 @@ describe CommentsController do
       set_session_for(@user)
       @project.relations.create!(:object_type => 'User', :object_id => @user.id, :role => 'reader')
 
-      @own_comment = Factory(:comment, :commentable => @issue, :user => @user)
+      @own_comment = Factory(:comment, :commentable => @issue, :user => @user, :project_id => @project.id)
     end
 
    it_should_behave_like 'user with create comment rights'
@@ -138,7 +139,7 @@ describe CommentsController do
       set_session_for(@user)
       @project.relations.create!(:object_type => 'User', :object_id => @user.id, :role => 'writer')
 
-      @own_comment = Factory(:comment, :commentable => @issue, :user => @user)
+      @own_comment = Factory(:comment, :commentable => @issue, :user => @user, :project_id => @project.id)
     end
 
    it_should_behave_like 'user with create comment rights'
