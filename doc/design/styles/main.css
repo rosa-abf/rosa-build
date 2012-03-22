@@ -2,7 +2,7 @@ html, body {
 	margin: 0;
 	padding: 0;
 	font-family: Tahoma, Geneva, Helvetica, sans-serif;
-	color: #565657;
+	color: #292929;
 	background: #1f60a1 url("../pics/bg.png") repeat-x; 
 	min-width: 940px;
 	min-height: 600px;
@@ -86,7 +86,7 @@ header menu {
 header menu ul {
 	list-style: none;
 	margin: 0;
-	padding: 10px 0px 0px 0px;
+	padding-top: 10px;
 }
 
 header menu ul li {
@@ -98,7 +98,7 @@ header menu ul li a {
 	color: #FFF;
 	text-decoration: none;
 	height: 43px;
-	padding: 15px 15px 15px 15px;
+	padding: 15px 10px 15px 10px;
 }
 
 header menu ul li a:hover {
@@ -106,7 +106,7 @@ header menu ul li a:hover {
 }
 
 header menu ul li a.first {
-	padding-left: 45px;
+	
 }
 
 header menu ul li a.active {
@@ -117,9 +117,10 @@ header menu ul li a.active {
 
 header div.logo {
 	float: left;
-	margin-top: -25px;
-	padding-left: 10px;
-	position: absolute;
+	margin-top: 5px;
+	padding-left: 0px;
+	padding-right: 0px;
+	
 }
 
 /* Right part of top menu */
@@ -234,7 +235,7 @@ header div.droplist a{
 	position: relative;
 	padding-left: 15px;
 	font-size: 12px;
-	color: #7eb7ed;
+	color: #447cae;
 	text-decoration: none;
 	padding-right: 15px;
 	margin-top: 10px;
@@ -276,7 +277,7 @@ header div.droplist a:hover{
 }
 
 
-.sub-menu nav { /*��� ������� ��� ��������*/
+.sub-menu nav { 
 	float: left;
 	margin: 0px 0px 0px 0px;
 }
@@ -286,7 +287,7 @@ header div.droplist a:hover{
 	text-align: left;
 	padding: 0;
 	margin: 0;
-	padding-top: 5px;
+	padding-top: 4px;
 }
 
 .sub-menu nav ul li {
@@ -295,14 +296,14 @@ header div.droplist a:hover{
 
 .sub-menu nav ul li a {
 	font-size: 12px;
-	color: #575756;
+	color: #292929;
 	text-decoration: none;
 	height: 34px;
-	padding: 0px 20px 8px 20px;
+	padding: 0px 20px 9px 20px;
 }
 
 .sub-menu nav ul li a.active {
-	background: url("../pics/submenu-hover.png") repeat-x;
+	background: url("../pics/submenu-hover.png") repeat-x scroll 0 100% transparent;
 }
 
 .sub-menu nav ul li a:hover {
@@ -572,7 +573,7 @@ article input[type="submit"]:disabled {
 
 article h3{
 	font-size: 14px;
-	color: #575756;
+	color: #292929;
 	margin-bottom: 0;
 	padding-bottom: 2px;
 }
@@ -583,7 +584,7 @@ article h3.fix {
 }
 
 article a{
-	color: #7eb7ed;
+	color: #447cae;
 	font-size: 12px;
 	text-decoration: none;
 	padding: 0px 0px;
@@ -810,7 +811,7 @@ article div.activity div.fulltext.view  {
 }
 
 .admin-preferences ul li a{
-	color: #575756;
+	color: #292929;
 	text-decoration: none;
 	padding-top: 5px;
 	padding-bottom: 5px;
@@ -827,7 +828,7 @@ article div.activity div.fulltext.view  {
 	float: left;
 	width: 400px;
 	font-size: 12px;
-	color: #575756;
+	color: #292929;
 	margin: 0px 0px 10px 0px;
 }
 
@@ -1345,7 +1346,7 @@ h3.bmargin10 {
 	padding: 5px;
 	font-family: Tahoma, Geneva, Helvetica, sans-serif;
 	font-size: 12px;
-	color: #575756;
+	color: #292929;
 	margin: 10px 0px;
 }
 
@@ -1393,23 +1394,23 @@ h3.bmargin10 {
 	padding-top: 9px;
 }
 
-div.desription-top {
+div.description-top {
 	background: #dcecfa;
 	font-size: 12px;
-	color: #575756;
+	color: #292929;
 	border: 1px solid #a9c6dd;
 	height: 38px;
 	width: 100%;
 	margin-bottom: 20px;
 }
 
-div.desription-top div.img {
+div.description-top div.img {
 	float: left;
 	padding-left: 10px;
 	margin-top: 14px;
 }
 
-div.desription-top input.name {
+div.description-top input.name {
 	float: left;
 	margin-top: 5px;
 	margin-left: 10px;
@@ -1417,13 +1418,13 @@ div.desription-top input.name {
 	border: 1px solid #d1deeb;
 	height: 21px;
 	width: auto;
-	color: #575756;
+	color: #292929;
 	font-size: 11px;
 	width: 415px;
 	padding: 2px 5px 3px;
 }
 
-div.desription-top div.role {
+div.description-top div.role {
 	float: left;
 	margin-top: 11px;
 	margin-left: 10px;
@@ -1440,7 +1441,7 @@ div.desription-top div.role {
 	margin-right: 2px;
 }
 
-div.desription-top div.fork {
+div.description-top div.fork {
 	margin-right: 10px;
 }
 
@@ -1449,7 +1450,7 @@ div.desription-top div.fork {
 }
 
 .all div.description h3{
-	color: #575756;
+	color: #292929;
 	font-weight: 700;
 	font-size: 14px;
 	margin-bottom: 5px;
@@ -1460,7 +1461,7 @@ div.desription-top div.fork {
 	font-size: 12px;
 	padding: 0;
 	margin: 0;
-	color: #575756;
+	color: #292929;
 }
 
 .all div.last-commit {
@@ -1507,7 +1508,7 @@ table.tablesorter.project div.pic {
 }
 
 a.files-see {
-	color: #565657;
+	color: #292929;
 	text-decoration: underline;
 }
 
@@ -1634,7 +1635,7 @@ div.blue-switcher {
 	width: 258px;
 	border: 1px solid #a0a0a1;
 	border-radius: 3px;
-	background-color: #575756;
+	background-color: #292929;
 	color: #FFF;
 	-webkit-box-shadow: inset 0px 2px 5px 0px rgba(0, 0, 0, 0.3);
 	-moz-box-shadow: inset 0px 2px 5px 0px rgba(0, 0, 0, 0.3);
@@ -1697,13 +1698,13 @@ table.tablesorter.tracker td.td3{
 }
 
 table.tablesorter.tracker td.td3 div.code {
-	height: 19px;
+	height: 23px;
 	width: 15px;
 	background: #FFF;
 	color: #009fe3;
 	border: 1px solid #83d1f2;
 	font-size: 16px;
-	padding: 1px 0px 0px 5px;
+	padding: 5px 0px 0px 5px;
 	float: left;
 	margin-right: 5px;
 	cursor: pointer;
@@ -1716,7 +1717,7 @@ table.tablesorter.tracker td.td3 div.avatar {
 }
 
 table.tablesorter.tracker td.td3 div.answers {
-	height: 20px;
+	height: 28px;
 	background: #FFF;
 	color: #009fe3;
 	border: 1px solid #83d1f2;
@@ -1728,11 +1729,12 @@ table.tablesorter.tracker td.td3 div.answers {
 table.tablesorter.tracker td.td3 div.answers div.pic {
 	float: left;
 	margin: 2px;
+	margin-top: 6px;
 }
 
 table.tablesorter.tracker td.td3 div.answers div.count {
 	float: left;
-	margin: 0px 5px 0px 2px;
+	margin: 4px 5px 0px 2px;
 }
 
 table.tablesorter.tracker div.smalltext {
@@ -1749,7 +1751,7 @@ div.label.selected.tracker {
 	cursor: default;
 	margin-left: 0px;
 	padding: 5px;
-	float: right;
+	float: left;
 	margin-top: -6px;
 }
 
@@ -1799,7 +1801,7 @@ div.labeltext.edit div.delete {
 
 div.labeltext a {
 	text-decoration: none;
-	color: #565657;
+	color: #292929;
 }
 
 div.labeltext.edit a {
