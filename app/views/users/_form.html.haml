@@ -2,7 +2,7 @@
   .leftlist
     = f.label :role, t("activerecord.attributes.user.role"), :class => :label
   .rightlist
-    = f.select :role, User::ROLES, {:selected => @user.get_role}, {:name => 'role'}
+    = f.select :role, User::ROLES, {}, {:name => 'role'}
   - if @user.new_record?
     .leftlist
       = f.label :uname, t("activerecord.attributes.user.uname")

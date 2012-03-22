@@ -21,8 +21,6 @@ class Ability
     if user.guest? # Guest rights
       can :create, User
       can [:create, :show_message], RegisterRequest
-    elsif user.access_locked?
-      nil
     else # Registered user rights
       if user.admin?
         can :manage, :all

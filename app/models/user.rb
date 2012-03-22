@@ -40,7 +40,7 @@ class User < ActiveRecord::Base
 
   validates :uname, :presence => true, :uniqueness => {:case_sensitive => false}, :format => { :with => /^[a-z0-9_]+$/ }
   validate { errors.add(:uname, :taken) if Group.where('uname LIKE ?', uname).present? }
-  validates :role, :inclusion => {:in => ROLES - ['banned']}, :allow_blank => true
+  validates :role, :inclusion => {:in => ROLES}, :allow_blank => true
   validates :language, :inclusion => {:in => LANGUAGES}, :allow_blank => true
 
   attr_accessible :email, :password, :password_confirmation, :current_password, :remember_me, :login, :name, :language,
@@ -50,9 +50,9 @@ class User < ActiveRecord::Base
 
   scope :search_order, order("CHAR_LENGTH(uname) ASC")
   scope :search, lambda {|q| where("uname ILIKE ?", "%#{q}%")}
-  scope :banned, where('users.locked_at is not null')
-  scope :admin, where(:role => 'admin').where(:locked_at => nil)
-  scope :real, where(:role => ['', nil]).where(:locked_at => nil)
+  scope :banned, where(:role => 'banned')
+  scope :admin, where(:role => 'admin')
+  scope :real, where(:role => ['', nil])
 
   after_create lambda { self.create_notifier }
 
@@ -66,6 +66,10 @@ class User < ActiveRecord::Base
 
   def guest?
     new_record?
+  end
+
+  def access_locked?
+      role == 'banned'
   end
 
   def fullname
@@ -124,18 +128,6 @@ class User < ActiveRecord::Base
 
   def user_appeal
     name.blank? ? uname : name
-  end
-
-  def get_role
-    return 'banned' if access_locked?
-    role
-  end
-
-  def set_role param
-    self.role = '' if ['', nil, 'banned'].include? param
-    self.role = 'admin' if param == 'admin'
-    unlock_access! if ['', nil, 'admin'].include? param
-    lock_access! if param == 'banned'
   end
 
   private

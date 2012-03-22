@@ -13,7 +13,7 @@ class Admin::UsersController < ApplicationController
 
   def create
     @user = User.new params[:user]
-    @user.set_role params[:role]
+    @user.role = params[:role]
     @user.uname = params[:uname]
     if @user.save
       flash[:notice] = t('flash.user.saved')
@@ -28,7 +28,7 @@ class Admin::UsersController < ApplicationController
   end
 
   def update
-    @user.set_role params[:role]
+    @user.role = params[:role]
     if @user.update_without_password(params[:user])
       if @user.avatar && params[:delete_avatar] == '1'
         @user.avatar = nil
