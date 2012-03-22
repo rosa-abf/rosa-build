@@ -37,7 +37,7 @@ class CollaboratorsController < ApplicationController
         relation.update_attribute(:role, role)
       else
         relation = @project.relations.build(:object_id => user_id, :object_type => 'User', :role => role)
-        relation.save!
+        relation.save
       end
     } if params['user']
 
@@ -47,7 +47,7 @@ class CollaboratorsController < ApplicationController
         relation.update_attribute(:role, role)
       else
         relation = @project.relations.build(:object_id => user_id, :object_type => 'Group', :role => role)
-        relation.save!
+        relation.save
       end
     } if params['group']
 
@@ -62,7 +62,7 @@ class CollaboratorsController < ApplicationController
 
   def remove
     all_user_ids = []
-    all_groups_ids = []
+    all_group_ids = []
 
     params['user_remove'].keys.each { |user_id|
       all_user_ids << user_id if params['user_remove'][user_id] == ["1"]
@@ -75,12 +75,12 @@ class CollaboratorsController < ApplicationController
       u = User.find(user_id)
       Relation.by_object(u).by_target(@project).each {|r| r.destroy}
     end
-    all_groups_ids.each do |group_id|
+    all_group_ids.each do |group_id|
       g = Group.find(group_id)
       Relation.by_object(g).by_target(@project).each {|r| r.destroy}
     end
 
-    redirect_to edit_project_collaborators_path(@project)
+    redirect_to edit_project_collaborators_path(@project) + "##{params['user_remove'].present? ? 'users' : 'groups'}"
   end
 
   def add
@@ -114,7 +114,8 @@ class CollaboratorsController < ApplicationController
       end
     end
 
-    redirect_to(edit_project_collaborators_path(@project))
+    # if add an anchor, adding will be more pleasant, but flash message wouldn't be shown.
+    redirect_to edit_project_collaborators_path(@project) # + "##{(params['member_id'].present?) ? 'users' : 'groups'}"
   end
 
   protected
@@ -124,11 +125,11 @@ class CollaboratorsController < ApplicationController
     end
 
     def find_users
-      @users = @project.collaborators#User.all
+      @users = @project.collaborators.order('uname')#User.all
     end
 
     def find_groups
-      @groups = @project.groups#Group.all
+      @groups = @project.groups.order('uname')#Group.all
     end
 
     def authorize_collaborators

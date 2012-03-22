@@ -621,3 +621,12 @@ div.right.bigpadding div.command_select div.rightlist textarea {
 div.rightlist textarea.resizable {
     resize: both;
 }
+
+div.admin-role {
+    padding-right: 10px;
+}
+
+/* TODO think, how to do it more beautiful */
+ul.ui-autocomplete {
+    z-index: 999 !important;
+}
