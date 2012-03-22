@@ -12,7 +12,7 @@
             (#{commit_author_link(committer)})
         %br
         %span.date= commit_date(elem[0].committed_date)
-        %span.message{:title => elem[0].message.encode_to_default}= short_commit_message(elem[0].message)
+        %span.message{:title => elem[0].message}= short_commit_message(elem[0].message)
 
       %td.lines
         = index
@@ -20,7 +20,7 @@
 
       %td.code.cm-s-default
         %pre
-          %div= elem[1].first.encode_to_default
+          %div= elem[1].first
 
       - elem[1][1..-1].each do |line|
         %tr
@@ -29,7 +29,7 @@
             - index += 1
           %td.code.cm-s-default
             %pre
-              %div= line.encode_to_default
+              %div= line
 
 :javascript
   $(document).ready(function() {

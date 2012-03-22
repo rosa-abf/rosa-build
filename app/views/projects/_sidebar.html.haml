@@ -9,7 +9,6 @@
         - if can? :edit, @project
           %li{:class => (act == :edit && contr == :projects) ? 'active' : ''}
             = link_to t("layout.projects.edit"), edit_project_path(@project)
-        - if can? :manage_collaborators, @project
           %li{:class => (act == :sections && contr == :projects) ? 'active' : ''}
             = link_to t("layout.projects.sections"), sections_project_path(@project)
         - if can? :manage_collaborators, @project
