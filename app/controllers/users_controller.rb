@@ -2,8 +2,8 @@
 class UsersController < ApplicationController
   before_filter :authenticate_user!
 
-  load_and_authorize_resource
-  before_filter {@user = current_user}
+  load_and_authorize_resource :only => :show
+  before_filter :set_current_user, :only => [:profile, :update, :private]
   autocomplete :user, :uname
 
   def show
@@ -13,11 +13,9 @@ class UsersController < ApplicationController
   end
 
   def profile
-    @user = current_user
   end
 
   def update
-    @user = current_user
     if @user.update_without_password(params[:user])
       if @user.avatar && params[:delete_avatar] == '1'
         @user.avatar = nil
@@ -43,6 +41,12 @@ class UsersController < ApplicationController
         render(:action => :private)
       end
     end
+  end
+
+  protected
+
+  def set_current_user
+    @user = current_user
   end
 
 end
