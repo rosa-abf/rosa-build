@@ -40,7 +40,7 @@ ru:
       message:  Сообщение
       author:   Автор
 
-      current_branch: Текущая ветка
+      current_branch: Текущая ветка/тег
       current_commit: Текущий коммит
       files_in_project: Файлы в
   
@@ -77,3 +77,5 @@ ru:
         who_owns:
           me: Я
           group: Группа
+        default_branch: Ветка по умолчанию
+        is_rpm: Проект является пакетом

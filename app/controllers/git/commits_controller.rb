@@ -1,6 +1,5 @@
 # -*- encoding : utf-8 -*-
 class Git::CommitsController < Git::BaseController
-
   helper_method :split_commits_by_date
 
   def index
@@ -22,7 +21,7 @@ class Git::CommitsController < Git::BaseController
 
     respond_to do |format|
       format.html
-      format.diff  { render :text => (@commit.diffs.map{|d| d.diff}.join("\n") rescue ''), :content_type => "text/plain" }
+      format.diff  { render :text => (@commit.diffs.map(&:diff).join("\n") rescue ''), :content_type => "text/plain" }
       format.patch { render :text => (@commit.to_patch rescue ''), :content_type => "text/plain" }
     end
   end
@@ -40,5 +39,4 @@ class Git::CommitsController < Git::BaseController
     end
     return res
   end
-
 end

@@ -24,3 +24,15 @@ function deleteAdminMember() {
   $('form#members_form').attr('action', delete_url);
   $('form#members_form').submit();
 }
+
+function saveAdminGroup() {
+  $('#groups_method').attr('value', 'post');
+  $('form#groups_form').submit();
+}
+
+function deleteAdminGroup() {
+  $('#groups_method').attr('value', 'delete');
+  var delete_url = $('form#groups_form').attr('delete_url');
+  $('form#groups_form').attr('action', delete_url);
+  $('form#groups_form').submit();
+}

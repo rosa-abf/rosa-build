@@ -24,6 +24,7 @@ ru:
     create: Создать
     update: Обновить
     delete: Удалить
+    delete_selected: Удалить выбранное
     save: Сохранить
     clone: Клонировать
     search_by_name: Фильтр по имени
@@ -133,10 +134,10 @@ ru:
       repositories:
         empty: "Репозиторий пуст. Если вы клонировали(Fork) проект или импортировали пакет, данные скоро появятся"
         source: Source
-        commits: Commits
+        commits: Коммиты
         commit_diff_too_big: Извините, коммит слишком большой!
-        tags: Tags
-        branches: Branches
+        tags: Теги
+        branches: Ветки
         project_versions: Версии
 
     product_build_lists:

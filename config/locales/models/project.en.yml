@@ -40,7 +40,7 @@ en:
       message:  Message
       author:   Author
 
-      current_branch: Current branch
+      current_branch: Current branch/tag
       current_commit: Current commit
       files_in_project: Files in
 
@@ -77,3 +77,5 @@ en:
         who_owns:
           me: I
           group: Group
+        default_branch: Default branch
+        is_rpm: Project is a packet

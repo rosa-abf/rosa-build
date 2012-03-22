@@ -107,7 +107,6 @@ Rosa::Application.routes.draw do
     resources :categories, :only => [:index, :show]
   end
 
-  resources :projects, :only => [:new]
   resources :projects, :except => [:show] do
     resources :wiki do
       collection do
@@ -143,7 +142,6 @@ Rosa::Application.routes.draw do
     post "labels/:label_id" => "issues#destroy_label", :as => :issues_delete_label
     post "labels/:label_id/update" => "issues#update_label", :as => :issues_update_label
 
-    resource :repo, :controller => "git/repositories", :only => [:show]
     resources :build_lists, :only => [:index, :new, :create] do
       collection { post :search }
     end
@@ -162,7 +160,6 @@ Rosa::Application.routes.draw do
 
     member do
       post :fork
-      get :show, :controller => 'git/trees', :action => :show
       get :sections
       post :sections
       delete :remove_user
@@ -208,36 +205,28 @@ Rosa::Application.routes.draw do
   match 'product_status', :to => 'product_build_lists#status_build'
 
   # Tree
-  match '/projects/:project_id/git/tree/:treeish(/*path)', :controller => "git/trees", :action => :show, :treeish => /[0-9a-zA-Z_.\-]*/, :defaults => { :treeish => :master }, :as => :tree
-
+  get '/projects/:project_id' => "git/trees#show", :as => :project
+  get '/projects/:project_id/tree/:treeish(/*path)' => "git/trees#show", :defaults => {:treeish => :master}, :as => :tree
   # Commits
-  match '/projects/:project_id/git/commits/:treeish(/*path)', :controller => "git/commits", :action => :index, :treeish => /[0-9a-zA-Z_.\-]*/, :defaults => { :treeish => :master }, :as => :commits, :format => false
-  match '/projects/:project_id/git/commit/:id(.:format)', :controller => "git/commits", :action => :show, :defaults => { :format => :html }, :as => :commit
-  # Commit Comments
-  match '/projects/:project_id/git/commit/:commit_id/comments/:id(.:format)', :controller => "comments", :action => :edit, :as => :edit_project_commit_comment, :via => :get
-  match '/projects/:project_id/git/commit/:commit_id/comments/:id(.:format)', :controller => "comments", :action => :update, :as => :project_commit_comment, :via => :put
-  match '/projects/:project_id/git/commit/:commit_id/comments/:id(.:format)', :controller => "comments", :action => :destroy, :via => :delete
-  match '/projects/:project_id/git/commit/:commit_id/comments(.:format)', :controller => "comments", :action => :create, :as => :project_commit_comments, :via => :post
-
-  # Commits subscribe
-  match '/projects/:project_id/git/commit/:commit_id/subscribe', :controller => "commit_subscribes", :action => :create, :defaults => { :format => :html }, :as => :subscribe_commit, :via => :post
-  match '/projects/:project_id/git/commit/:commit_id/unsubscribe', :controller => "commit_subscribes", :action => :destroy, :defaults => { :format => :html }, :as => :unsubscribe_commit, :via => :delete
-
+  get '/projects/:project_id/commits/:treeish(/*path)' => "git/commits#index", :defaults => {:treeish => :master}, :as => :commits, :format => false
+  get '/projects/:project_id/commit/:id(.:format)' => "git/commits#show", :as => :commit
+  # Commit comments
+  post '/projects/:project_id/commit/:commit_id/comments(.:format)' => "comments#create", :as => :project_commit_comments
+  get '/projects/:project_id/commit/:commit_id/comments/:id(.:format)' => "comments#edit", :as => :edit_project_commit_comment
+  put '/projects/:project_id/commit/:commit_id/comments/:id(.:format)' => "comments#update", :as => :project_commit_comment
+  delete '/projects/:project_id/commit/:commit_id/comments/:id(.:format)' => "comments#destroy"
+  # Commit subscribes
+  post '/projects/:project_id/commit/:commit_id/subscribe' => "commit_subscribes#create", :as => :subscribe_commit
+  delete '/projects/:project_id/commit/:commit_id/unsubscribe' => "commit_subscribes#destroy", :as => :unsubscribe_commit
   # Editing files
-  match '/projects/:project_id/git/blob/:treeish/*path/edit', :controller => "git/blobs", :action => :edit, :treeish => /[0-9a-zA-Z_.\-]*/, :defaults => { :treeish => :master }, :as => :edit_blob, :via => :get
-  match '/projects/:project_id/git/blob/:treeish/*path', :controller => "git/blobs", :action => :update, :treeish => /[0-9a-zA-Z_.\-]*/, :defaults => { :treeish => :master }, :via => :put, :format => false
-
+  get '/projects/:project_id/blob/:treeish/*path/edit' => "git/blobs#edit", :defaults => {:treeish => :master}, :as => :edit_blob
+  put '/projects/:project_id/blob/:treeish/*path' => "git/blobs#update", :defaults => {:treeish => :master}, :format => false
   # Blobs
-  match '/projects/:project_id/git/blob/:treeish/*path', :controller => "git/blobs", :action => :show, :treeish => /[0-9a-zA-Z_.\-]*/, :defaults => { :treeish => :master }, :as => :blob, :via => :get, :format => false
-  match '/projects/:project_id/git/commit/blob/:commit_hash/*path', :controller => "git/blobs", :action => :show, :project_id => /[0-9a-zA-Z_.\-]*/, :as => :blob_commit, :via => :get, :format => false
-
+  get '/projects/:project_id/blob/:treeish/*path' => "git/blobs#show", :defaults => {:treeish => :master}, :as => :blob, :format => false
   # Blame
-  match '/projects/:project_id/git/blame/:treeish/*path', :controller => "git/blobs", :action => :blame, :treeish => /[0-9a-zA-Z_.\-]*/, :defaults => { :treeish => :master }, :as => :blame, :format => false
-  match '/projects/:project_id/git/commit/blame/:commit_hash/*path', :controller => "git/blobs", :action => :blame, :as => :blame_commit
-
+  get '/projects/:project_id/blame/:treeish/*path' => "git/blobs#blame", :defaults => {:treeish => :master}, :as => :blame, :format => false
   # Raw
-  match '/projects/:project_id/git/raw/:treeish/*path', :controller => "git/blobs", :action => :raw, :treeish => /[0-9a-zA-Z_.\-]*/, :defaults => { :treeish => :master }, :as => :raw, :format => false
-  match '/projects/:project_id/git/commit/raw/:commit_hash/*path', :controller => "git/blobs", :action => :raw, :as => :raw_commit
+  get '/projects/:project_id/raw/:treeish/*path' => "git/blobs#raw", :defaults => {:treeish => :master}, :as => :raw, :format => false
 
   root :to => "activity_feeds#index"
   match '/forbidden', :to => 'platforms#forbidden', :as => 'forbidden'

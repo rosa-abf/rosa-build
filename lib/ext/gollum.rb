@@ -1,27 +1,6 @@
-# -*- encoding : utf-8 -*-
+# # -*- encoding : utf-8 -*-
 module Gollum
   class Wiki
-
-    def page_with_forced_encoding(name, version = @ref)
-      page_without_forced_encoding(force_grit_encoding(name), version)
-    end
-    alias_method_chain :page, :forced_encoding
-
-    def file_with_forced_encoding(name, version = @ref)
-      file_without_forced_encoding(force_grit_encoding(name), version)
-    end
-    alias_method_chain :file, :forced_encoding
-
-    def write_page_with_forced_encoding(name, format, data, commit = {})
-      write_page_without_forced_encoding(force_grit_encoding(name), format, data, commit)
-    end
-    alias_method_chain :write_page, :forced_encoding
-
-    def update_page_with_forced_encoding(page, name, format, data, commit = {})
-      update_page_without_forced_encoding(page, force_grit_encoding(name), format, data, commit)
-    end
-    alias_method_chain :update_page, :forced_encoding
-
     # Public: Applies a reverse diff for a given page.  If only 1 SHA is given,
     # the reverse diff will be taken from its parent (^SHA...SHA).  If two SHAs
     # are given, the reverse diff is taken from SHA1...SHA2.
@@ -91,12 +70,5 @@ module Gollum
       revert_page_with_committer(nil, sha1, sha2, commit)
     end
     alias_method_chain :revert_commit, :committer
-
-    private
-
-    def force_grit_encoding(str)
-      str.dup.force_encoding(Encoding::ASCII_8BIT)
-    end
-
   end
 end

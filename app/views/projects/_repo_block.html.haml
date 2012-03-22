@@ -1,8 +1,6 @@
 .description-top
-  = text_field_tag :url, git_repo_url(project.git_repo_name), :class => 'name',
-      :type => 'text',:spellcheck => 'false', :readonly => true
-  .role
-    = t("layout.read_write_access")
+  = text_field_tag :url, git_repo_url(project.git_repo_name), :class => 'name', :spellcheck => 'false', :readonly => true
+  .role= t("layout.read_write_access")
   = render :partial => 'projects/branch_select', :locals => {:project => project}
 .both
 :javascript

@@ -637,3 +637,16 @@ table.tablesorter.list-users th.th3 {
 table.tablesorter.list-users th.th4 {
     width: 50px;
 }
+
+div.admin-role {
+    padding-right: 10px;
+}
+
+article a.right_floated {
+    float: right;
+}
+
+/* TODO think, how to do it more beautiful */
+ul.ui-autocomplete {
+    z-index: 999 !important;
+}

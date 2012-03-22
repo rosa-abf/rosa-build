@@ -1,13 +1,11 @@
 = render :partial => 'projects/submenu'
+= render :partial => 'projects/sidebar'
 
 = form_for @project, :html => { :class => :form, :multipart => true } do |f|
   = render :partial => "form", :locals => {:f => f}
 
 .hr
-.leftside
-  = t("layout.projects.delete_warning")
-.rightside
-  = link_to t("layout.delete"), project_path(@project), :method => :delete, :confirm => t("layout.projects.confirm_delete"), :class => 'button' if can? :destroy, @project
+.leftside= t("layout.projects.delete_warning")
+.rightside= link_to t("layout.delete"), project_path(@project), :method => :delete, :confirm => t("layout.projects.confirm_delete"), :class => 'button' if can? :destroy, @project
 .both
 
-- content_for :sidebar, render('sidebar')

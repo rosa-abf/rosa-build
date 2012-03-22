@@ -1,20 +1,19 @@
 GIT
+  remote: git://github.com/chipiga/grit.git
+  revision: 696b0967cb7e6bac044569d898e5acef431d4f97
+  specs:
+    grit (2.4.1)
+      diff-lcs (~> 1.1)
+      mime-types (~> 1.15)
+      posix-spawn (~> 0.3.6)
+
+GIT
   remote: git://github.com/chipiga/redhillonrails_core.git
   revision: 5f58167c41882890c223168b0a5521d99e8d92aa
   branch: rails31
   specs:
     redhillonrails_core (2.0.0.pre)
       activerecord (>= 3.1.0.rc)
-
-GIT
-  remote: git://github.com/mojombo/grit.git
-  revision: 3fc864f3c637e06e2fa7a81f6b48a5df58a9bc5b
-  branch: master
-  specs:
-    grit (2.4.1)
-      diff-lcs (~> 1.1)
-      mime-types (~> 1.15)
-      posix-spawn (~> 0.3.6)
 
 GIT
   remote: git://github.com/rdblue/grack.git
@@ -26,6 +25,7 @@ GEM
   remote: http://rubygems.org/
   specs:
     RedCloth (4.2.9)
+    RedCloth (4.2.9-java)
     actionmailer (3.2.2)
       actionpack (= 3.2.2)
       mail (~> 2.4.0)
@@ -58,10 +58,11 @@ GEM
       builder
     albino (1.3.3)
       posix-spawn (>= 0.3.6)
-    ancestry (1.2.4)
+    ancestry (1.2.5)
       activerecord (>= 2.2.2)
     arel (3.0.2)
     bcrypt-ruby (3.0.1)
+    bcrypt-ruby (3.0.1-java)
     bluepill (0.0.60)
       activesupport (>= 3.0.0)
       daemons (~> 1.1.4, <= 1.1.6)
@@ -77,6 +78,7 @@ GEM
       net-ssh (>= 2.0.14)
       net-ssh-gateway (>= 1.1.0)
     capistrano_colors (0.5.5)
+    charlock_holmes (0.6.8)
     chronic (0.6.7)
     chunky_png (1.2.5)
     cocaine (0.2.1)
@@ -87,12 +89,12 @@ GEM
       coffee-script-source
       execjs
     coffee-script-source (1.2.0)
-    compass (0.12.rc.1)
+    compass (0.12.1)
       chunky_png (~> 1.2)
       fssm (>= 0.2.7)
       sass (~> 3.1)
-    compass-rails (1.0.0.rc.3)
-      compass (~> 0.12.rc.0)
+    compass-rails (1.0.1)
+      compass (~> 0.12.0)
     creole (0.4.2)
     daemons (1.1.6)
     delayed_job (3.0.1)
@@ -108,10 +110,11 @@ GEM
     diff-lcs (1.1.3)
     erubis (2.7.0)
     eventmachine (0.12.10)
+    eventmachine (0.12.10-java)
     execjs (1.3.0)
       multi_json (~> 1.0)
     expression_parser (0.9.0)
-    factory_girl (2.6.1)
+    factory_girl (2.6.4)
       activesupport (>= 2.3.9)
     factory_girl_rails (1.7.0)
       factory_girl (~> 2.6.0)
@@ -136,16 +139,18 @@ GEM
     hashie (1.2.0)
     highline (1.6.11)
     hike (1.2.1)
-    hirb (0.6.0)
+    hirb (0.6.2)
     i18n (0.6.0)
     journey (1.0.3)
     jquery-rails (2.0.1)
       railties (>= 3.2.0, < 5.0)
       thor (~> 0.14)
+    jruby-rack (1.1.4)
     json (1.6.5)
-    kgio (2.7.2)
+    json (1.6.5-java)
+    kgio (2.7.3)
     libv8 (3.3.10.4)
-    mail (2.4.3)
+    mail (2.4.4)
       i18n (>= 0.4.0)
       mime-types (~> 1.16)
       treetop (~> 1.4.8)
@@ -160,7 +165,7 @@ GEM
       thin (~> 1.2)
     meta-tags (1.2.6)
       actionpack
-    mime-types (1.17.2)
+    mime-types (1.18)
     multi_json (1.1.0)
     mustache (0.99.4)
     net-scp (1.0.4)
@@ -170,8 +175,9 @@ GEM
     net-ssh (2.3.0)
     net-ssh-gateway (1.1.0)
       net-ssh (>= 1.99.1)
-    newrelic_rpm (3.3.2)
-    nokogiri (1.5.0)
+    newrelic_rpm (3.3.2.1)
+    nokogiri (1.5.2)
+    nokogiri (1.5.2-java)
     omniauth (1.0.3)
       hashie (~> 1.2)
       rack
@@ -245,7 +251,7 @@ GEM
     sanitize (2.0.3)
       nokogiri (>= 1.4.4, < 1.6)
     sass (3.1.15)
-    sass-rails (3.2.4)
+    sass-rails (3.2.5)
       railties (~> 3.2.0)
       sass (>= 3.1.10)
       tilt (~> 1.3)
@@ -271,6 +277,7 @@ GEM
     state_machine (1.1.2)
     therubyracer (0.9.10)
       libv8 (~> 3.3.10)
+    therubyrhino (1.73.1)
     thin (1.3.1)
       daemons (>= 1.0.9)
       eventmachine (>= 0.12.6)
@@ -280,6 +287,10 @@ GEM
     treetop (1.4.10)
       polyglot
       polyglot (>= 0.3.1)
+    trinidad (1.0.5)
+      jruby-rack (>= 1.0.2)
+      trinidad_jars (>= 0.3.0)
+    trinidad_jars (1.0.2)
     tzinfo (0.3.32)
     uglifier (1.2.3)
       execjs (>= 0.3.0)
@@ -299,19 +310,21 @@ GEM
     will_paginate (3.0.3)
 
 PLATFORMS
+  java
   ruby
 
 DEPENDENCIES
   RedCloth
   airbrake (~> 3.0.9)
-  ancestry (~> 1.2.4)
+  ancestry (~> 1.2.5)
   bluepill (~> 0.0.60)
   cancan (~> 1.6.7)
   cape
   capistrano
   capistrano_colors
+  charlock_holmes (~> 0.6.8)
   coffee-rails (~> 3.2.2)
-  compass-rails (~> 1.0.0.rc.3)
+  compass-rails (~> 1.0.1)
   creole
   daemons (= 1.1.6)
   delayed_job_active_record (~> 0.3.2)
@@ -341,10 +354,12 @@ DEPENDENCIES
   rr (~> 1.0.4)
   rspec-rails (~> 2.8.1)
   russian (~> 0.6.0)
-  sass-rails (~> 3.2.4)
+  sass-rails (~> 3.2.5)
   shotgun
   shoulda
   therubyracer (~> 0.9.10)
+  therubyrhino (~> 1.73.1)
+  trinidad (~> 1.0.2)
   uglifier (~> 1.2.1)
   unicorn (~> 4.2.0)
   whenever (~> 0.7.3)

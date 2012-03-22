@@ -22,6 +22,7 @@ class Group < ActiveRecord::Base
   scope :by_owner, lambda {|owner| where(:owner_id => owner.id)}
   scope :by_admin, lambda {|admin| joins(:relations).where(:'relations.role' => 'admin', :'relations.target_id' => admin.id, :'relations.target_type' => 'User')}
 
+  attr_accessible :description
   attr_readonly :own_projects_count
 
   delegate :email, :to => :owner

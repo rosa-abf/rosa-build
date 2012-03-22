@@ -118,11 +118,11 @@ class Project < ActiveRecord::Base
         # ... and add it to result.
         h[entry] = c
         # find another files, that linked to this commit and set them their commit
-        c.diffs.map{|diff| diff.b_path.split(File::SEPARATOR, 2).first}.each do |name|
-          h.each_pair do |k, v|
-            h[k] = c if k.name == name and v.nil?
-          end
-        end
+        # c.diffs.map{|diff| diff.b_path.split(File::SEPARATOR, 2).first}.each do |name|
+        #   h.each_pair do |k, v|
+        #     h[k] = c if k.name == name and v.nil?
+        #   end
+        # end
       end
       h
     end

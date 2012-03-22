@@ -4,43 +4,20 @@
   = render :partial => 'git/shared/fork'
 .both
 
-= form_tag blob_file_path, :name => 'blob-editor', :method => :put do
-  .file
-    = text_area_tag :content, @blob.data.encode_to_default, :id => 'code'
+= form_tag blob_path(@project, @treeish, @path), :name => 'blob-editor', :method => :put do
+  .file= text_area_tag :content, @blob.data, :id => 'code'
 
   .both
   = t("layout.enter_commit_message")
-  = text_area_tag :message, "Updated #{@blob.name.encode_to_default}", :class => 'commit-message'
+  = text_area_tag :message, "Updated #{@blob.name}", :class => 'commit-message'
 
   %br
   %br
   = submit_tag t("layout.save"), :title => t("layout.save")
   = t("layout.or")
-  = link_to t("layout.cancel"), blob_file_path, :class => 'button'
-
--##gollum-editor.edit{:'data-escaped-name' => @path.encode_to_default}
-  = form_tag blob_file_path, :name => 'blob-editor', :method => :put do
-    %fieldset#gollum-editor-fields
-
-      = text_area_tag :content, @blob.data.encode_to_default, :id => "gollum-editor-body"
-
-      #gollum-editor-edit-summary.singleline
-        = label_tag :message, t("wiki.edit_commit_message"), :class => "jaws"
-        = text_field_tag :message, t("wiki.commit_message_placeholder"), :id => "editor-commit-message-field"
-
-      %span.jaws
-        %br
-
-      = submit_tag t("wiki.save_button"), :id => "gollum-editor-submit", :title => t("wiki.save_changes")
-      = link_to t("layout.cancel"), blob_file_path, :class => 'minibutton', :id => 'gollum-editor-preview'
+  = link_to t("layout.cancel"), blob_path(@project, @treeish, @path), :class => 'button'
 
 :javascript
   $(function() {
-    var editor = CodeMirror.fromTextArea(document.getElementById('code'), {lineNumbers: true, mode: '#{@blob.raw_mime_type.content_type}', theme: 'eclipse'});
+    var editor = CodeMirror.fromTextArea(document.getElementById('code'), {lineNumbers: true, mode: '#{@blob.raw_mime_type.content_type}'});
   });
-
-/ - content_for :javascripts do
-/   = javascript_include_tag 'gollum/gollum.placeholder.js', 'blob.editor.js'
-/ 
-/ - content_for :stylesheets do
-/   = stylesheet_link_tag 'gollum/editor.css'
