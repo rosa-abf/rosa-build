@@ -30,6 +30,7 @@ class ProjectsController < ApplicationController
   def show
     @current_build_lists = @project.build_lists.current.recent.paginate :page => params[:page]
     @branch = @project.branch(params[:treeish])
+    @git_repository = @project.git_repository
     @commit = @branch.present? ? @branch.commit : @git_repository.log(@treeish).first
   end
 
