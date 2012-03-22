@@ -13,7 +13,7 @@ describe UserMailer do
 
       any_instance_of(Project, :versions => ['v1.0', 'v2.0'])
 
-      @issue = Factory(:issue, :project_id => @project.id, :user_id => @issue_user.id)
+      @issue = Factory(:issue, :project_id => @project.id, :user_id => @issue_user.id, :creator => @issue_user)
       @email = UserMailer.new_issue_notification(@issue, @issue_user).deliver
     end
 
@@ -52,7 +52,7 @@ describe UserMailer do
 
       any_instance_of(Project, :versions => ['v1.0', 'v2.0'])
 
-      @issue = Factory(:issue, :project_id => @project.id, :user_id => @issue_user.id)
+      @issue = Factory(:issue, :project_id => @project.id, :user_id => @issue_user.id, :creator => @issue_user)
       @email = UserMailer.issue_assign_notification(@issue, @user).deliver
     end
 
@@ -88,8 +88,8 @@ describe UserMailer do
 
       any_instance_of(Project, :versions => ['v1.0', 'v2.0'])
 
-      @issue = Factory(:issue, :project_id => @project.id, :user_id => @issue_user.id)
-      @comment = Factory(:comment, :commentable => @issue, :user_id => @user.id)
+      @issue = Factory(:issue, :project_id => @project.id, :user_id => @issue_user.id, :creator => @issue_user)
+      @comment = Factory(:comment, :commentable => @issue, :user_id => @user.id, :project => @project)
       @email = UserMailer.new_comment_notification(@comment, @issue_user).deliver
     end
 
