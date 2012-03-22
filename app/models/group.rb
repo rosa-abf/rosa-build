@@ -24,7 +24,7 @@ class Group < ActiveRecord::Base
 
   attr_readonly :own_projects_count
 
-  delegate :ssh_key, :email, :to => :owner
+  delegate :email, :to => :owner
 
   after_create :add_owner_to_members
 
