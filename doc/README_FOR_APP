@@ -18,5 +18,7 @@ Add to /etc/rc.d/rc.sysinit
   fi
 
 === Tips
-gem install charlock_holmes -- --with-icu-dir=/opt/local
+sudo urpmi lib64icu-devel # mandriva
+gem install charlock_holmes -- --with-icu-dir=/opt/local # macports
+
 git config --global core.quotepath false
