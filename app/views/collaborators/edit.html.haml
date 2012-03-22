@@ -40,8 +40,8 @@
               .radio
                 = radio_button_tag "user[#{user.id}]", role, ((@project.relations.exists? :object_id => user.id, :object_type => 'User', :role => role) ? :checked : nil), :class => 'niceRadio'
               .forradio= t("layout.collaborators.role_names.#{ role }")
-  = link_to_function t("layout.delete"), "deleteAdminMember();", :class => 'button'
-  = link_to_function t("layout.save"), "saveAdminMember();", :class => 'button'
+  = link_to_function t("layout.delete_selected"), "deleteAdminMember();", :class => 'button'
+  = link_to_function t("layout.save"), "saveAdminMember();", :class => 'button right_floated'
   .both
 %br
 
@@ -85,11 +85,8 @@
               .radio
                 = radio_button_tag "group[#{group.id}]", role, ((@project.relations.exists? :object_id => group.id, :object_type => 'Group', :role => role) ? :checked : nil), :class => 'niceRadio'
               .forradio= t("layout.collaborators.role_names.#{ role }")
-  = link_to_function t("layout.delete"), "deleteAdminGroup();", :class => 'button'
-  = link_to_function t("layout.save"), "saveAdminGroup();", :class => 'button'
+  = link_to_function t("layout.delete_selected"), "deleteAdminGroup();", :class => 'button'
+  = link_to_function t("layout.save"), "saveAdminGroup();", :class => 'button right_floated'
   .both
-%br
-
-.hr.bottom
 .both
 

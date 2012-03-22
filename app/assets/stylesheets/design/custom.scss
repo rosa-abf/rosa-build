@@ -626,6 +626,10 @@ div.admin-role {
     padding-right: 10px;
 }
 
+article a.right_floated {
+    float: right;
+}
+
 /* TODO think, how to do it more beautiful */
 ul.ui-autocomplete {
     z-index: 999 !important;
