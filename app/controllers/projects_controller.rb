@@ -4,20 +4,8 @@ class ProjectsController < ApplicationController
   load_and_authorize_resource
 
   def index
-    @projects = if parent? and !parent.nil?
-                  parent.projects
-                else
-                  Project
-                end.accessible_by(current_ability)
-
-    @projects = if params[:query]
-                  @projects.by_name("%#{params[:query]}%").order("CHAR_LENGTH(name) ASC")
-                else
-                  @projects
-                end.paginate(:page => params[:project_page])
-
-    @own_projects = current_user.own_projects
-    #@part_projects = current_user.projects + current_user.groups.map(&:projects).flatten.uniq - @own_projects
+    @projects = current_user.projects.paginate(:page => params[:page])
+    #@projects = @projects.search(params[:query]).search_order if params[:query]
   end
 
   def new
