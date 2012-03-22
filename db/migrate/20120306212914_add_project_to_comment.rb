@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class AddProjectToComment < ActiveRecord::Migration
   def up
     add_column :comments, :project_id, :integer

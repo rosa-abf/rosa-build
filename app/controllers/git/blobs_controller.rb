@@ -37,7 +37,7 @@ class Git::BlobsController < Git::BaseController
   end
 
   def blame
-    @blame = Grit::Blob.blame(@git_repository.repo, @commit.try(:id), @path)
+    @blame = Grit::Blob.blame(@git_repository.repo, @commit.id, @path)
   end
 
   def raw
@@ -55,10 +55,10 @@ class Git::BlobsController < Git::BaseController
   def set_path_blob
     @path = params[:path]
     @blob = @tree / @path
+    @commit = @git_repository.log(@treeish, @path, :max_count => 1).first
   end
 
   def find_tree
     @tree = @git_repository.tree(@treeish)
-    @commit = @git_repository.log(@treeish, @path, :max_count => 1).first # TODO WTF nil ?
   end
 end

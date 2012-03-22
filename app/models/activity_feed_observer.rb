@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class ActivityFeedObserver < ActiveRecord::Observer
   observe :issue, :comment, :user, :build_list
 
@@ -70,7 +71,7 @@ class ActivityFeedObserver < ActiveRecord::Observer
 
     when 'GitHook'
       change_type = record.change_type
-      branch_name = record.refname.match(/\/([\w\d]+)$/)[1]
+      branch_name = record.refname.split('/').last
 
       last_commits = record.project.git_repository.repo.log(branch_name, nil).first(3)
       first_commiter = User.find_by_email(last_commits[0].author.email) unless last_commits.blank?

@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class AddAvatarToUsers < ActiveRecord::Migration
   def change
     change_table :users do |t|

@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 module BuildListsHelper
   def build_list_status_color(status)
     if [BuildList::BUILD_PUBLISHED, BuildServer::SUCCESS].include? status

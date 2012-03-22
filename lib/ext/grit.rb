@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 # -*- ruby encoding: utf-8 -*-
 
 module Grit

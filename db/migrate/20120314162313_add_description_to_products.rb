@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class AddDescriptionToProducts < ActiveRecord::Migration
   def self.up
     add_column :products, :description, :text
