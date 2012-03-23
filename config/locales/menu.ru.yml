@@ -33,6 +33,7 @@ ru:
     wiki: Вики
   platform_menu:
     settings: Настройки
+  admins_menu_header: Центр управления
   admins_menu:
     users: Пользователи
     event_logs: Лог событий
