@@ -9,6 +9,6 @@ end
 shared_examples_for 'destroy personal repository' do
   it 'should be able to perform destroy action' do
     delete :destroy, :id => @repository.id
-    response.should redirect_to(platform_path(@repository.platform.id))
+    response.should redirect_to(platform_repositories_path(@repository.platform.id))
   end
 end

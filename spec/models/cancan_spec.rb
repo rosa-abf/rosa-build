@@ -253,7 +253,7 @@ describe CanCan do
           @platform.update_attribute(:owner, @user)
         end
 
-        [:read, :update, :destroy, :freeze, :unfreeze].each do |action|
+        [:read, :update, :destroy].each do |action|
           it "should be able to #{action} platform" do
             @ability.should be_able_to(action, @platform)
           end

@@ -36,7 +36,7 @@ describe ProductsController do
 
     it 'should be able to perform create action' do
       post :create, @create_params
-      response.should redirect_to(platform_path( Product.last.platform.id ))
+      response.should redirect_to(platform_product_path( Product.last.platform.id, Product.last ))
     end
 
     it 'should change objects count on create' do
@@ -54,7 +54,7 @@ describe ProductsController do
 
     it 'should be able to perform destroy action' do
       delete :destroy, :platform_id => @platform.id, :id => @product.id
-      response.should redirect_to(platform_path(@platform))
+      response.should redirect_to(platform_products_path(@platform))
     end
   end
 
@@ -67,7 +67,7 @@ describe ProductsController do
 
     it 'should be able to perform create action' do
       post :create, @create_params
-      response.should redirect_to(platform_path( Product.last.platform.id ))
+      response.should redirect_to(platform_product_path( Product.last.platform.id, Product.last ))
     end
 
     it 'should change objects count on create' do
@@ -85,7 +85,7 @@ describe ProductsController do
 
     it 'should be able to perform destroy action' do
       delete :destroy, :platform_id => @platform.id, :id => @product.id
-      response.should redirect_to(platform_path(@platform))
+      response.should redirect_to(platform_products_path(@platform))
     end
   end
 

@@ -9,7 +9,7 @@ shared_examples_for 'project admin user' do
 
   it 'should be able to perform update action' do
     post :update, {:project_id => @project.id}.merge(@update_params)
-    response.should redirect_to(project_path(@project))
+    response.should redirect_to(edit_project_collaborators_path(@project))
   end
 
   it 'should be able to set reader role for any user' do
@@ -26,7 +26,7 @@ shared_examples_for 'user with no rights for this project' do
 
   it 'should not be able to perform update action' do
     post :update, {:project_id => @project.id}.merge(@update_params)
-    response.should redirect_to(project_path(@project))
+    response.should redirect_to(edit_project_collaborators_path(@project))
   end
 
   it 'should not be able to set reader role for any user' do
@@ -40,7 +40,7 @@ describe CollaboratorsController do
     stub_rsync_methods
     @project = Factory(:project)
     @another_user = Factory(:user)
-    @update_params = {:user => {:read => {@another_user.id => '1'}}}
+    @update_params = {:user => {@another_user.id => :reader}}
 	end
 
 	context 'for guest' do
