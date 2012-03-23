@@ -1,5 +1,7 @@
 - content_for :sidebar do
-  .bordered.nopadding
+  .bordered
+    - if can? :create, User.new
+      = link_to t("layout.users.new"), new_user_path, :class => 'button'
     %h3= t("layout.users.filter_header")
     %table
       - t('layout.users.users_filter').each_key do |base|
