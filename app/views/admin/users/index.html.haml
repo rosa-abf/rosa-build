@@ -1,7 +1,7 @@
 %h3.fix= t("layout.users.list_header")
 
 - columns = [{:type => 'html'}, {:type => 'html'}, {:type => 'html'}, {:type => 'html', :sortable => false, :searchable => false}, {:type => nil, :sortable => false, :searchable => false, :class => 'buttons'}]
-= raw datatable(columns, {:sort_by => "[0, 'asc']", :processing => t("layout.processing"),
+= raw datatable(columns, {:sort_by => "[0, 'asc']", :processing => t("layout.processing"), :search_label => t("layout.search.header"),
                           :pagination_labels => {:previous => t("datatables.previous_label"), :next => t("datatables.next_label")},
                           :empty_label      => t("datatables.empty_label"),
                           :info_label       => t("datatables.info_label"),
