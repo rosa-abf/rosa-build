@@ -2369,3 +2369,45 @@ table.tablesorter.width565 {
 article h3 a {
 	font-size: 14px;
 }
+
+
+/*Wiki*/
+
+div#wiki-content div.wrap {
+	width: 100%;
+	text-align: left;
+	border: none;
+	-webkit-box-shadow: none;
+	-moz-box-shadow: none;
+	box-shadow: none; 
+	background: #FFF;
+	margin-top: 20px;
+}
+
+div#wiki-content div#wiki-body {
+	float: left;
+	width: 410px;
+	margin: 0px 0px 20px;
+}
+
+div#wiki-content div#wiki-rightbar {
+	float: right;
+	width: 170px;
+}
+
+div#wiki-content div#wiki-footer {
+	clear: both;
+	margin: 20px 0px;
+}
+
+div#wiki-content div#wiki-rightbar, div#wiki-content div#wiki-footer {
+	background-color: #f7f7f7;
+    border: 1px solid #DDDDDD;
+    border-radius: 3px;
+    line-height: 1.5em;
+    padding: 10px 20px;
+}
+
+div#gollum-footer {
+	color: #727272;
+}
