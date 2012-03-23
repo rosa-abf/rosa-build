@@ -4,8 +4,8 @@ class ProjectsController < ApplicationController
   load_and_authorize_resource
 
   def index
-    @projects = current_user.projects.paginate(:page => params[:page])
-    #@projects = @projects.search(params[:query]).search_order if params[:query]
+    @projects = Project.accessible_by(current_ability, :members).recent.paginate(:page => params[:page])
+    # @projects = @projects.search(params[:query]).search_order if params[:query]
   end
 
   def new
