@@ -2,7 +2,7 @@ en:
   layout:
     projects:
       add: Add
-      edit: Edit
+      edit: Settings
       fork_and_edit: Fork and Edit
       list: List
       list_header: Projects
@@ -17,11 +17,10 @@ en:
       current_project_header: Current project
       current_build_lists: Current builds
       build_button: Start build
-      add_collaborators: Add collaborators
+      add_collaborators: Add members
       members: Members
-      collaborators: Collaborators
       groups: Groups
-      edit_collaborators: Edit collaborators
+      edit_collaborators: Members
       role: Project role
       remove_user: Leave project
       issues: Issues

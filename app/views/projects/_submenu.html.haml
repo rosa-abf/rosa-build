@@ -1,6 +1,8 @@
 - content_for :submenu do
   - act = action_name.to_sym; contr = controller_name.to_sym
-  .left= @project.name
+  .left
+    .table-sort-left=image_tag visibility_icon(@project.visibility)
+    .table-sort-right=@project.name
   %nav
     %ul
       %li= link_to t("project_menu.project"), project_path(@project), :class => (act.in?([:show, :edit]) && contr.in?([:trees, :blobs]) ? 'active' : nil)

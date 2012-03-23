@@ -5,7 +5,7 @@
 %aside
   .admin-preferences
     %ul
-      - if can? :edit, @project
+      - if can? :edit, @group
         %li{:class => (act == :edit && contr == :groups) ? 'active' : ''}
           = link_to t("layout.groups.edit"), edit_group_path(@group)
       - if can? :manage_members, @group

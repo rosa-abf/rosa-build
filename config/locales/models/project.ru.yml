@@ -2,7 +2,7 @@ ru:
   layout:
     projects:
       add: Добавить
-      edit: Редактировать
+      edit: Настройки
       fork_and_edit: Клонировать и редактировать
       list: Список
       list_header: Проекты
@@ -17,11 +17,10 @@ ru:
       current_project_header: Текущий проект
       current_build_lists: Текущие сборки
       build_button: Начать сборку
-      add_collaborators: Добавить коллабораторов
+      add_collaborators: Добавить участников
       members: Участники
-      collaborators: Коллабораторы
       groups: Группы
-      edit_collaborators: Изменить список участников
+      edit_collaborators: Участники
       role: Роль в проекте
       remove_user: Покинуть проект
       issues: Задачи
