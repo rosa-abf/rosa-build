@@ -60,7 +60,7 @@ class BuildListsController < ApplicationController
       render :action => :new
     else
       flash[:notice] = notices.join('<br>').html_safe
-      redirect_to @project
+      redirect_to project_build_lists_path(@project)
     end
   end
 
