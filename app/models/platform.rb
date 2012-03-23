@@ -156,10 +156,12 @@ class Platform < ActiveRecord::Base
     repositories.find_by_name('main').projects.find_in_batches(:batch_size => 5) do |group|
       sleep 1
       group.each do |p|
-        begin
-          p.build_for(self, user)
-        rescue RuntimeError, Exception
-          p.delay.build_for(self, user)
+        %w(i586 x86_64).each do |arch|
+          begin
+            p.build_for(self, user, arch)
+          rescue RuntimeError, Exception
+            p.delay.build_for(self, user, arch)
+          end
         end
       end
     end
