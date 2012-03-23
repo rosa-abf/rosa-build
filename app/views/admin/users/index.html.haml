@@ -1,6 +1,4 @@
 %h3.fix= t("layout.users.list_header")
-- if can? :create, User.new
-  = link_to t("layout.users.new"), new_user_path, :class => 'button'
 
 - columns = [{:type => 'html'}, {:type => 'html'}, {:type => 'html'}, {:type => 'html', :sortable => false, :searchable => false}, {:type => nil, :sortable => false, :searchable => false, :class => 'buttons'}]
 = raw datatable(columns, {:sort_by => "[0, 'asc']", :processing => t("layout.processing"),
