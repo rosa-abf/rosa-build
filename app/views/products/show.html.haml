@@ -20,9 +20,9 @@
 %table#myTable.tablesorter.platform-product-main{:cellspacing => "0", :cellpadding => "0"}
   %thead
     %tr
-      %th.th1= t("activerecord.attributes.product_build_list.id")
-      %th.th2= t("activerecord.attributes.product_build_list.status")
-      %th.th3= t("activerecord.attributes.product_build_list.container_path")
-      %th.th4= t("layout.product_build_lists.action")
-      %th.th5= t("activerecord.attributes.product_build_list.notified_at")  
+      %th= t("activerecord.attributes.product_build_list.id")
+      %th= t("activerecord.attributes.product_build_list.status")
+      %th= t("activerecord.attributes.product_build_list.container_path")
+      %th= t("layout.product_build_lists.action")
+      %th= t("activerecord.attributes.product_build_list.notified_at")  
   %tbody= render @product.product_build_lists.default_order
