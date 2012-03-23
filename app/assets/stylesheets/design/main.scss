@@ -1689,7 +1689,7 @@ table.tablesorter.tracker td.td0{
 }
 
 table.tablesorter.tracker td.td3{
-  width: 120px;
+  min-width: 110px;
   padding-top: 10px;
 }
 
@@ -1702,13 +1702,13 @@ table.tablesorter.tracker td.td3 div.code {
   font-size: 16px;
   padding: 5px 0px 0px 5px;
   float: left;
-  margin-right: 5px;
+  margin-right: 3px;
   cursor: pointer;
 }
 
 table.tablesorter.tracker td.td3 div.avatar {
   float: left;
-  margin-right: 5px;
+  margin-right: 8px;
   cursor: pointer;
 }
 
@@ -1746,9 +1746,14 @@ div.label.selected.tracker {
   clear: both;
   cursor: default;
   margin-left: 0px;
-  padding: 5px;
+  padding: 0px 0px 0px 2px;
   float: left;
-  margin-top: -6px;
+  margin-top: 3px;
+}
+
+div.right div.left.nomargin {
+  margin: 0px;
+  padding: 0px;
 }
 
 div.label.selected.tracker:hover {
