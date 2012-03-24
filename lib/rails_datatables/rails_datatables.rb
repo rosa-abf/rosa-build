@@ -12,6 +12,7 @@ module RailsDatatables
     no_records_message = opts[:no_records_message] || nil
     auto_width = opts[:auto_width].present? ? opts[:auto_width].to_s : "true"
     row_callback = opts[:row_callback] || nil
+    sdom = opts[:sdom] || nil
 
     empty_label      = opts[:empty_label]      if opts[:empty_label].present?
     info_label       = opts[:info_label]       if opts[:info_label].present?
@@ -62,7 +63,6 @@ module RailsDatatables
           },
           "sPaginationType": "will_paginate_like",
           "iDisplayLength": #{per_page},
-          "bProcessing": true,
           "bServerSide": #{server_side},
           "bLengthChange": false,
           "bStateSave": #{persist_state},
@@ -70,22 +70,28 @@ module RailsDatatables
           "bAutoWidth": #{auto_width},
           #{"'aaSorting': [#{sort_by}]," if sort_by}
           #{"'sAjaxSource': '#{ajax_source}'," if ajax_source}
+          #{"'sDom': '#{sdom}'," if sdom}
           "aoColumns": [
-      			#{formatted_columns(columns)}
-      				],
-      		#{"'fnRowCallback': function( nRow, aData, iDisplayIndex ) { #{row_callback} }," if row_callback}
-          "fnServerData": function ( sSource, aoData, fnCallback ) {
+            #{formatted_columns(columns)}
+          ],
+          #{"'fnRowCallback': function( nRow, aData, iDisplayIndex ) { #{row_callback} }," if row_callback}
+          #{"'fnServerData': function ( sSource, aoData, fnCallback ) {
             aoData.push( #{additional_data_string} );
             $.getJSON( sSource, aoData, function (json) {
-      				fnCallback(json);
-      			} );
-          }
+              fnCallback(json);
+            } );
+          }," if ajax_data_source}
+          "bProcessing": true
         })#{append};
 
         $('#datatable_wrapper').append("<div class='both'></div>");
     });
     </script>
     }
+  end
+
+  def format_columns_for_datatable(columns)
+    formatted_columns(columns)
   end
 
   private

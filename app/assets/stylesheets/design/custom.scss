@@ -634,3 +634,18 @@ article a.right_floated {
 ul.ui-autocomplete {
     z-index: 999 !important;
 }
+
+table.tablesorter tr.search th {
+    background: none repeat scroll 0 0 #DCECFA;
+}
+
+table.tablesorter tr.search th input[type="text"] {
+    border: 1px solid #CDCDCD;
+    border-radius: 4px 4px 4px 4px;
+    font-family: Tahoma,Geneva,Helvetica,sans-serif;
+    font-size: 12px;
+    height: 16px;
+    padding: 5px;
+    width: 830px;
+    margin-top: 2px;
+}

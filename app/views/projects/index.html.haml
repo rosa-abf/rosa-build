@@ -1,12 +1,70 @@
 = link_to t('layout.projects.new'), new_project_path, :class => 'button' if can?(:create, Project)
 
-%table#myTable.tablesorter{:cellpadding => "0", :cellspacing => "0"}
+- columns = [{:type => 'html'},
+             {:type => 'html', :sortable => false, :searchable => false},
+             {:type => nil, :sortable => false, :searchable => false, :class => 'buttons'},
+             {:type => nil, :sortable => false, :searchable => false, :class => 'buttons'}]
+-#= raw datatable(columns, {:sort_by => "[0, 'asc']", :search_label => t("layout.search_by_name"), :processing => t("layout.processing"),
+-#                          :pagination_labels => {:previous => t("datatables.previous_label"), :next => t("datatables.next_label")},
+-#                          :empty_label      => t("datatables.empty_label"),
+-#                          :info_label       => t("datatables.info_label"),
+-#                          :info_empty_label => t("datatables.info_empty_label"),
+-#                          :filtered_label   => t("datatables.filtered_label"),
+-#                          :table_dom_id     => 'datatable',
+-#                          :auto_width       => 'false',
+-#                          :sdom             => 'rtip'})
+
+%table#datatable.tablesorter{:cellpadding => "0", :cellspacing => "0"}
   %thead
     %tr
       %th.th1= t("activerecord.attributes.project.name")
       %th.th2= t("activerecord.attributes.project.description")
       %th.th3= t("layout.projects.role")
       %th.th4= t("layout.projects.remove_user")
+    %tr.search
+      %th{:colspan => 4}
+        <input class="gray" type="text" value="#{ t('layout.find_project') }">
+
   %tbody= render @projects
 
-= will_paginate
+:javascript
+  $(document).ready(function() {
+
+    var oTable = $('#datatable').dataTable({
+      "oLanguage": {
+        #{t("datatables.full")}
+      },
+      "sPaginationType": "will_paginate_like",
+      "iDisplayLength": 25,
+      "bLengthChange": false,
+      "aaSorting": [[ 0, 'asc' ]],
+      "sDom": 'rtip',
+      "aoColumns": [
+        #{ format_columns_for_datatable(columns) }
+      ]
+    });
+    $('#datatable_wrapper').append("<div class='both'></div>");
+
+    var $search = $('tr.search input[type="text"]');
+    $search.live('blur', function() {
+      $this = $(this);
+      if ($this.val() == '') {
+        $this.val('#{ t('layout.find_project') }');
+        $this.toggleClass('gray black');
+      }
+      return true;
+    });
+    $search.live('focus', function() {
+      $this = $(this);
+      if ($this.val() == '#{ t('layout.find_project') }') {
+        $this.val('');
+        $this.toggleClass('gray black');
+      }
+      return true;
+    });
+    $search.live('keyup', function() {
+      oTable.fnFilter(this.value);
+    });
+  });
+
+=# will_paginate
