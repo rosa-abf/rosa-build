@@ -153,7 +153,7 @@ class Platform < ActiveRecord::Base
   end
 
   def build_all(user)
-    repositories.find_by_name('main').projects.find_in_batches(:batch_size => 5) do |group|
+    repositories.find_by_name('main').projects.find_in_batches(:batch_size => 2) do |group|
       sleep 1
       group.each do |p|
         %w(i586 x86_64).each do |arch|
