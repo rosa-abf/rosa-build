@@ -1,4 +1,4 @@
-# coding: UTF-8
+# -*- encoding : utf-8 -*-
 class ApplicationController < ActionController::Base
   protect_from_forgery
 
@@ -10,11 +10,11 @@ class ApplicationController < ActionController::Base
   after_filter lambda { EventLog.current_controller = nil }
 
   helper_method :get_owner
-  
+
   rescue_from CanCan::AccessDenied do |exception|
     redirect_to forbidden_url, :alert => t('flash.exception_message')#:alert => exception.message
   end
-  
+
   protected
 
   def set_locale
@@ -45,7 +45,7 @@ class ApplicationController < ActionController::Base
   end
 
   def layout_by_resource
-    if devise_controller?
+    if devise_controller? && !(params[:controller] == 'devise/registrations' && ['edit', 'update'].include?(params[:action]))
       "sessions"
     else
       "application"

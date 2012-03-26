@@ -1,0 +1,50 @@
+en:
+  layout:
+    users:
+      list: List
+      new: Create
+      profile: Profile
+      settings: Settings
+      new_header: New user
+      edit_header: Edit
+      list_header: Users
+      groups: Groups
+      show: User
+      back_to_the_list: ⇐ List of users
+      confirm_delete: Are you sure to remove this user?
+      own_projects: My projects
+      part_projects: Participate projects
+      filter_header: Filter
+      public_projects_list: Public projects list
+      public_data_edit_warning: This data is able for public profile. If you don't want to show some data, just don't fill them.
+      user_private_settings: Settings
+      settings_notifier: Notification center
+      delete_header: Delete aacount
+      delete_warning: Warning! Deleted account can not be recovered.
+      private_settings_header: Password change
+      avatar_notice: Without uploaded avatar will be used avatar from gravar web service.
+      delete_avatar: Delete avatar
+      avatar_with_size: Avatar (less than %{max})
+
+  activerecord:
+    attributes:
+      user:
+        name: Name
+        login: Nickname or Email
+        email: Email
+        uname: Nickname
+        ssh_key: SSH key
+        current_password: Current password
+        role: Role
+        created_at: Created
+        updated_at: Updated
+        role: System role
+        language: Language
+        password: Password
+        password_confirm: Confirmation
+        professional_experience: Professional experience
+        site: Web-Site
+        location: Location
+        company: Company
+        avatar: Avatar
+        avatar_file_size:  Avatar file size

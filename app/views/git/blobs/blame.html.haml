@@ -1,54 +1,25 @@
-.block
-  = render :partial => "git/shared/navigation"
+= render :partial => 'projects/submenu'
+= render :partial => 'projects/repo_block', :locals => {:project => @project}
 
-  = render :partial => "git/shared/info"
+.description
+  %h3= t("layout.projects.about_subheader")
+  %p
+    = @project.description
+    = link_to t('layout.read_more'), '#'
 
-- if @commit
-  .block
-    .content
-      .inner
-        = render :partial => "git/commits/commits", :object => [@commit]
+%h3= t("layout.projects.last_commit")
+- GitPresenters::CommitAsMessagePresenter.present(@commit, :branch => @branch, :project => @project) do |presenter|
+  = render :partial => 'shared/feed_message', :locals => {:presenter => presenter, :item_no => 1}
 
-.block
-  .content
-    .inner
-      %h3= render_path
+.both
 
-      .blob_header
-        .size #{(@blob.size / 1024.0).round(3)} Kb
-        .buttons
-          - if @commit_hash
-            #{link_to "Raw", raw_commit_path(@project, @commit_hash, @path)} #{link_to "Normal", blob_commit_path(@project, @commit_hash, @path)} #{link_to "History", commits_path(@project, @treeish, @path)}
-          - else
-            #{link_to "Raw", raw_path(@project, @treeish, @path)} #{link_to "Normal", blob_path(@project, @treeish, @path)} #{link_to "History", commits_path(@project, @treeish, @path)}
+#repo-wrapper
+  %h3= t("layout.projects.files_in_project")
+  .files
+    .l= render :partial => 'git/shared/whereami'
+  .both
 
-        .clear
-      .blame_data
-        %table.table.blame
-          - index = 1
-          - @blame.each do |elem|
-            %tr
-              %td.message{ :rowspan => elem[1].length }
-                .commit #{link_to shortest_hash_id(elem[0].id), commit_path(@project, elem[0].id)} by #{elem[0].author} #{elem[0].author != elem[0].committer ? "(#{elem[0].committer})" : "" }
-                .message
-                  %span.date= commit_date(elem[0].committed_date)
-                  %span.message= short_commit_message(elem[0].message)
-
-              %td.lines
-                = index
-                - index += 1
-
-              %td.code
-                %pre
-                  %div= elem[1].first
-
-              - elem[1][1..-1].each do |line|
-                %tr
-                  %td.lines
-                    = index
-                    - index += 1
-                  %td.code
-                    %pre
-                      %div= line
-
-- content_for :sidebar, render(:partial => 'git/shared/sidebar')
+  - render_way = choose_render_way(@blob)
+  .file
+    .top= render 'top', :render_way => render_way
+    .blame_data= render 'blame_table'

@@ -1,0 +1,63 @@
+.block
+  .secondary-navigation
+    %ul.wat-cf
+      %li.first= link_to t("layout.users.list"), users_path
+      %li= link_to t("layout.users.new"), new_user_path
+      %li.active= link_to t("layout.users.register_requests"), register_requests_path
+  .content
+    %div{:style => 'float: right; margin: 20px'}
+      = link_to t("layout.register_request.approved"), register_requests_path(:scope => :approved)
+      \|
+      = link_to t("layout.register_request.rejected"), register_requests_path(:scope => :rejected)
+    %h2.title
+      = t("layout.register_request.list_header")
+    .inner
+      = form_tag register_requests_path, :method => :put, :class => 'update_form' do
+        = hidden_field_tag 'update_type'
+        %table.table
+          %tr
+            %th &nbsp;
+            %th= t("activerecord.attributes.register_request.name")
+            %th= t("activerecord.attributes.register_request.email")
+            %th= t("activerecord.attributes.register_request.interest")
+            %th= t("activerecord.attributes.register_request.more")
+            %th= t("activerecord.attributes.register_request.created_at")
+            %th
+          - @register_requests.each do |request|
+            %tr{:class => cycle("odd", "even")}
+              %td= check_box_tag 'request_ids[]', request.id
+              %td= request.name
+              - @user = User.find_by_email(request.email) if request.approved
+              %td= link_to_if @user, request.email, @user
+              %td= request.interest
+              %td= request.more
+              %td= request.created_at
+              %td
+                = link_to t("layout.approve"), register_request_approve_path(request) if can? :approve, request
+                |
+                = link_to t("layout.reject"), register_request_reject_path(request) if can? :reject, request
+      .actions-bar.wat-cf
+        .actions
+          <input type='button' id='approve_registration' value="Approve Selected" />
+          <input type='button' id='reject_registration' value="Reject Selected" />
+          =# button_tag t("layout.register_request.approve_selected"), :class => 'approve_registration'
+          =# button_tag t("layout.register_request.reject_selected"), :class => 'reject_registration'
+        .pagination
+          = will_paginate @register_requests
+:javascript
+  $(function() {
+    var $form = $('form.update_form')
+    var change_update_type = function (type) {
+      $('input#update_type').val(type);
+    };
+    $('#approve_registration').live('click', function(e) {
+      //set update_type to 'approve'
+      change_update_type('approve');
+      $form.submit();
+    });
+    $('#reject_registration').live('click', function(e) {
+      //set update_type to 'reject'
+      change_update_type('reject');
+      $form.submit();
+    });
+  });

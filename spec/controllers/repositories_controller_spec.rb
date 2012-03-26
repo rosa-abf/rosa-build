@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 require 'spec_helper'
 
 describe RepositoriesController do
@@ -78,8 +79,8 @@ describe RepositoriesController do
   	before(:each) do
   		@user = Factory(:user)
   		set_session_for(@user)
-  		@repository.update_attribute(:owner, @user)
-  		@repository.relations.create!(:object_type => 'User', :object_id => @user.id, :role => 'admin')
+  		@repository.platform.update_attribute(:owner, @user)
+  		@repository.platform.relations.create!(:object_type => 'User', :object_id => @user.id, :role => 'admin')
 		end
 
     it_should_behave_like 'repository user with owner rights'
@@ -89,7 +90,7 @@ describe RepositoriesController do
   	before(:each) do
   		@user = Factory(:user)
   		set_session_for(@user)
-  		@repository.relations.create!(:object_type => 'User', :object_id => @user.id, :role => 'reader')
+  		@repository.platform.relations.create!(:object_type => 'User', :object_id => @user.id, :role => 'reader')
 		end
 
     it_should_behave_like 'repository user with reader rights'

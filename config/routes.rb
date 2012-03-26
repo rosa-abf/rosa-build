@@ -1,18 +1,35 @@
+# -*- encoding : utf-8 -*-
 Rosa::Application.routes.draw do
   # XML RPC
   match 'api/xmlrpc' => 'rpc#xe_index'
 
-  devise_for :users, :controllers => {:omniauth_callbacks => 'users/omniauth_callbacks'} do
+  devise_scope :user do
     get '/users/auth/:provider' => 'users/omniauth_callbacks#passthru'
+    get '/user' => 'users#profile', :as => 'edit_profile'
+    put '/user' => 'users#update', :as => 'update_profile'
+    get '/users/:id/edit' => 'users#profile', :as => 'edit_user'
+    put '/users/:id/edit' => 'users#update', :as => 'update_user'
   end
+  devise_for :users, :controllers => {:omniauth_callbacks => 'users/omniauth_callbacks'}
 
   resources :users do
     resources :groups, :only => [:new, :create, :index]
-    get :autocomplete_user_uname, :on => :collection
+    collection do
+      resources :register_requests, :only => [:index, :new, :create, :show_message, :approve, :reject] do
+        get :show_message, :on => :collection
+        put :update,       :on => :collection
+        get :approve
+        get :reject
+      end
+      get :autocomplete_user_uname
+    end
+
     namespace :settings do
       resource :notifier, :only => [:show, :update]
     end
   end
+  match 'users/:id/settings/private' => 'users#private', :as => :user_private_settings, :via => :get
+  match 'users/:id/settings/private' => 'users#private', :as => :user_private_settings, :via => :put
 
   resources :event_logs, :only => :index
 
@@ -39,6 +56,7 @@ Rosa::Application.routes.draw do
       put :cancel
       put :publish
     end
+    collection { post :search }
   end
 
   resources :auto_build_lists, :only => [:index, :create, :destroy]
@@ -56,15 +74,17 @@ Rosa::Application.routes.draw do
     resources :private_users, :except => [:show, :destroy, :update]
 
     member do
-      post 'freeze'
-      post 'unfreeze'
-      get 'clone'
-      post 'clone'
-      post 'build_all'
+      get    :clone
+      get    :members
+      post   :remove_members
+      delete :remove_member
+      post   :add_member
+      post   :make_clone
+      post   :build_all
     end
 
     collection do
-      get 'easy_urpmi'
+      get :easy_urpmi
       get :autocomplete_user_uname
     end
 
@@ -73,7 +93,7 @@ Rosa::Application.routes.draw do
       #   get :clone
       #   get :build
       # end
-      resources :product_build_lists, :only => [:create]
+      resources :product_build_lists, :only => [:create, :destroy]
     end
 
     resources :repositories
@@ -81,39 +101,69 @@ Rosa::Application.routes.draw do
     resources :categories, :only => [:index, :show]
   end
 
-  resources :projects do
-    resources :issues do
+  resources :projects, :except => [:show] do
+    resources :wiki do
+      collection do
+        match '_history' => 'wiki#wiki_history', :as => :history, :via => :get
+        match '_access' => 'wiki#git', :as => :git, :via => :get
+        match '_revert/:sha1/:sha2' => 'wiki#revert_wiki', :as => :revert, :via => [:get, :post]
+        match '_compare' => 'wiki#compare_wiki', :as => :compare, :via => :post
+        #match '_compare/:versions' => 'wiki#compare_wiki', :versions => /.*/, :as => :compare_versions, :via => :get
+        match '_compare/:versions' => 'wiki#compare_wiki', :versions => /([a-f0-9\^]{6,40})(\.\.\.[a-f0-9\^]{6,40})/, :as => :compare_versions, :via => :get
+        post :preview
+        get :search
+        get :pages
+      end
+      member do
+        get :history
+        get :edit
+        match 'revert/:sha1/:sha2' => 'wiki#revert', :as => :revert_page, :via => [:get, :post]
+        match ':ref' => 'wiki#show', :as => :versioned, :via => :get
+
+        post :compare
+        #match 'compare/*versions' => 'wiki#compare', :as => :compare_versions, :via => :get
+        match 'compare/:versions' => 'wiki#compare', :versions => /([a-f0-9\^]{6,40})(\.\.\.[a-f0-9\^]{6,40})/, :as => :compare_versions, :via => :get
+      end
+    end
+    resources :issues, :except => :edit do
       resources :comments, :only => [:edit, :create, :update, :destroy]
       resources :subscribes, :only => [:create, :destroy]
+      collection do
+        post :create_label
+        get :search_collaborators
+      end
     end
-    resource :repo, :controller => "git/repositories", :only => [:show]
-    resources :build_lists, :only => [:index, :new, :create]
+    post "labels/:label_id" => "issues#destroy_label", :as => :issues_delete_label
+    post "labels/:label_id/update" => "issues#update_label", :as => :issues_update_label
+
+    resources :build_lists, :only => [:index, :new, :create] do
+      collection { post :search }
+    end
 
     resources :collaborators, :only => [:index, :edit, :update, :add] do
       collection do
         get :edit
         post :update
         post :add
+        delete :remove
       end
       member do
         post :update
       end
     end
-#    resources :groups, :controller => 'project_groups' do
-#    end
 
     member do
       post :fork
-    end
-    collection do
-      get :auto_build
+      get :sections
+      post :sections
+      delete :remove_user
     end
   end
 
   resources :repositories do
     member do
       get :add_project
-      get :remove_project
+      delete :remove_project
       get :projects_list
     end
   end
@@ -125,51 +175,53 @@ Rosa::Application.routes.draw do
         get  :edit
         post :add
         post :update
+        delete :remove
       end
       member do
         post :update
+        delete :remove
       end
     end
   end
 
-  resources :activity_feeds, :only => [:index]
-
   resources :users, :groups do
     resources :platforms, :only => [:new, :create]
 
-    resources :projects, :only => [:new, :create, :index]
-
 #    resources :repositories, :only => [:new, :create]
   end
+
+  resources :activity_feeds, :only => [:index]
+
+  resources :search, :only => [:index]
 
   match '/catalogs', :to => 'categories#platforms', :as => :catalogs
 
   match 'product_status', :to => 'product_build_lists#status_build'
 
   # Tree
-  match '/projects/:project_id/git/tree/:treeish(/*path)', :controller => "git/trees", :action => :show, :treeish => /[0-9a-zA-Z_.\-]*/, :defaults => { :treeish => :master }, :as => :tree
-
+  get '/projects/:project_id' => "git/trees#show", :as => :project
+  get '/projects/:project_id/tree/:treeish(/*path)' => "git/trees#show", :defaults => {:treeish => :master}, :as => :tree
   # Commits
-  match '/projects/:project_id/git/commits/:treeish(/*path)', :controller => "git/commits", :action => :index, :treeish => /[0-9a-zA-Z_.\-]*/, :defaults => { :treeish => :master }, :as => :commits
-  match '/projects/:project_id/git/commit/:id(.:format)', :controller => "git/commits", :action => :show, :defaults => { :format => :html }, :as => :commit
-  # Commit Comments
-  match '/projects/:project_id/git/commit/:commit_id/comments/:id(.:format)', :controller => "comments", :action => :edit, :as => :edit_project_commit_comment, :via => :get
-  match '/projects/:project_id/git/commit/:commit_id/comments/:id(.:format)', :controller => "comments", :action => :update, :as => :project_commit_comment, :via => :put
-  match '/projects/:project_id/git/commit/:commit_id/comments/:id(.:format)', :controller => "comments", :action => :destroy, :via => :delete
-  match '/projects/:project_id/git/commit/:commit_id/comments(.:format)', :controller => "comments", :action => :create, :as => :project_commit_comments, :via => :post
+  get '/projects/:project_id/commits/:treeish(/*path)' => "git/commits#index", :defaults => {:treeish => :master}, :as => :commits, :format => false
+  get '/projects/:project_id/commit/:id(.:format)' => "git/commits#show", :as => :commit
+  # Commit comments
+  post '/projects/:project_id/commit/:commit_id/comments(.:format)' => "comments#create", :as => :project_commit_comments
+  get '/projects/:project_id/commit/:commit_id/comments/:id(.:format)' => "comments#edit", :as => :edit_project_commit_comment
+  put '/projects/:project_id/commit/:commit_id/comments/:id(.:format)' => "comments#update", :as => :project_commit_comment
+  delete '/projects/:project_id/commit/:commit_id/comments/:id(.:format)' => "comments#destroy"
+  # Commit subscribes
+  post '/projects/:project_id/commit/:commit_id/subscribe' => "commit_subscribes#create", :as => :subscribe_commit
+  delete '/projects/:project_id/commit/:commit_id/unsubscribe' => "commit_subscribes#destroy", :as => :unsubscribe_commit
+  # Editing files
+  get '/projects/:project_id/blob/:treeish/*path/edit' => "git/blobs#edit", :defaults => {:treeish => :master}, :as => :edit_blob
+  put '/projects/:project_id/blob/:treeish/*path' => "git/blobs#update", :defaults => {:treeish => :master}, :format => false
   # Blobs
-  match '/projects/:project_id/git/blob/:treeish/*path', :controller => "git/blobs", :action => :show, :treeish => /[0-9a-zA-Z_.\-]*/, :defaults => { :treeish => :master }, :as => :blob
-  match '/projects/:project_id/git/commit/blob/:commit_hash/*path', :controller => "git/blobs", :action => :show, :project_name => /[0-9a-zA-Z_.\-]*/, :as => :blob_commit
-
+  get '/projects/:project_id/blob/:treeish/*path' => "git/blobs#show", :defaults => {:treeish => :master}, :as => :blob, :format => false
   # Blame
-  match '/projects/:project_id/git/blame/:treeish/*path', :controller => "git/blobs", :action => :blame, :treeish => /[0-9a-zA-Z_.\-]*/, :defaults => { :treeish => :master }, :as => :blame
-  match '/projects/:project_id/git/commit/blame/:commit_hash/*path', :controller => "git/blobs", :action => :blame, :as => :blame_commit
-
+  get '/projects/:project_id/blame/:treeish/*path' => "git/blobs#blame", :defaults => {:treeish => :master}, :as => :blame, :format => false
   # Raw
-  match '/projects/:project_id/git/raw/:treeish/*path', :controller => "git/blobs", :action => :raw, :treeish => /[0-9a-zA-Z_.\-]*/, :defaults => { :treeish => :master }, :as => :raw
-  match '/projects/:project_id/git/commit/raw/:commit_hash/*path', :controller => "git/blobs", :action => :raw, :as => :raw_commit
+  get '/projects/:project_id/raw/:treeish/*path' => "git/blobs#raw", :defaults => {:treeish => :master}, :as => :raw, :format => false
 
-  #root :to => "platforms#index"
   root :to => "activity_feeds#index"
   match '/forbidden', :to => 'platforms#forbidden', :as => 'forbidden'
 end

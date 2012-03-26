@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 require 'spec_helper'
 
 shared_examples_for 'issue user with project reader rights' do
@@ -26,7 +27,7 @@ end
 shared_examples_for 'user with issue update rights' do
   it 'should be able to perform update action' do
     put :update, {:id => @issue.serial_id}.merge(@update_params)
-    response.should redirect_to([@project, @issue])
+    response.code.should eq('200')
   end
 
   it 'should update issue title' do

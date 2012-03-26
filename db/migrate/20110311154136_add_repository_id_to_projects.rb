@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class AddRepositoryIdToProjects < ActiveRecord::Migration
   def self.up
     add_column :projects, :repository_id, :integer, :null => false

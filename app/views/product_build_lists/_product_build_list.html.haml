@@ -1,5 +1,5 @@
 %tr{:class => cycle("odd", "even")}
   %td= product_build_list.id
-  %td= link_to product_build_list.product.name, [product_build_list.product.platform, product_build_list.product]
   %td= product_build_list.human_status
-  %td= product_build_list.notified_at
+  %td= link_to nil, product_build_list.container_path
+  %td= l(product_build_list.notified_at, :format => :long)

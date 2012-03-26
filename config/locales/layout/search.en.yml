@@ -1,0 +1,12 @@
+en:
+  layout:
+    search:
+      header: Search
+      advanced: Advanced search
+      all: Show All
+      types:
+        all: All
+        projects: Projects
+        users: Users
+        groups: Groups
+        platforms: Platforms

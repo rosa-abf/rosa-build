@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 require 'spec_helper'
 
 describe BuildListsController do
@@ -40,7 +41,7 @@ describe BuildListsController do
     end
 
     it 'should save correct commit_hash for branch based build' do
-      post :create, {:project_id => @project.id}.merge(@create_params).deep_merge(:build_list => {:project_version => "master_latest"})
+      post :create, {:project_id => @project.id}.merge(@create_params).deep_merge(:build_list => {:project_version => "latest_master"})
       @project.build_lists.last.commit_hash.should == @project.git_repository.commits('master').last.id
     end
 
@@ -70,7 +71,7 @@ describe BuildListsController do
       platform = Factory(:platform_with_repos)
       @create_params = {
         :build_list => { 
-          :project_version => 'master_latest',
+          :project_version => 'latest_master',
           :pl_id => platform.id,
           :update_type => 'security',
           :include_repos => [platform.repositories.first.id]
@@ -117,7 +118,7 @@ describe BuildListsController do
         end
 
         it 'should show only accessible build_lists' do
-          get :index
+          get :index, :filter => {:ownership => 'index'}
           assigns(:build_lists).should include(@build_list1)
           assigns(:build_lists).should_not include(@build_list2)
           assigns(:build_lists).should include(@build_list3)
@@ -202,7 +203,7 @@ describe BuildListsController do
         end
 
         it 'should show only accessible build_lists' do
-          get :index
+          get :index, :filter => {:ownership => 'index'}
           assigns(:build_lists).should include(@build_list1)
           assigns(:build_lists).should_not include(@build_list2)
           assigns(:build_lists).should include(@build_list3)
@@ -289,14 +290,14 @@ describe BuildListsController do
 
     it 'should filter by project_name' do
       # Project.where(:id => build_list2.project.id).update_all(:name => 'project_name')
-      get :index, :filter => {:project_name => @build_list2.project.name}
+      get :index, :filter => {:project_name => @build_list2.project.name, :ownership => 'index'}
       assigns[:build_lists].should_not include(@build_list1)
       assigns[:build_lists].should include(@build_list2)
       assigns[:build_lists].should_not include(@build_list3)
     end
 
     it 'should filter by project_name and start_date' do
-      get :index, :filter => {:project_name => @build_list3.project.name, 
+      get :index, :filter => {:project_name => @build_list3.project.name, :ownership => 'index',
                             "created_at_start(1i)" => @build_list3.created_at.year.to_s,
                             "created_at_start(2i)" => @build_list3.created_at.month.to_s,
                             "created_at_start(3i)" => @build_list3.created_at.day.to_s}

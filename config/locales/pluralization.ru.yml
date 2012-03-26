@@ -1,0 +1,42 @@
+ru:
+  layout:
+    projects:
+      commit_files_count:
+        one:  "Показан %{count} файл"
+        few:  "Показано %{count} файла"
+        many: "Показано %{count} файлов"
+      commit_additions_count:
+        one:  "%{count} добавлением"
+        few:  "%{count} добавлениями"
+        many: "%{count} добавлениями"
+      commit_deletions_count:
+        one:  "%{count} удалением"
+        few:  "%{count} удалениями"
+        many: "%{count} удалениями"
+
+      inline_additions_count:
+        one:  "%{count} добавление"
+        few:  "%{count} добавления"
+        many: "%{count} добавлений"
+      inline_deletions_count:
+        one:  "%{count} удаление"
+        few:  "%{count} удаления"
+        many: "%{count} удалений"
+      inline_changes_count:
+        one:  "%{count} изменение"
+        few:  "%{count} изменения"
+        many: "%{count} изменений"
+
+  activerecord:
+    errors:
+      messages:
+        too_long:
+          one:   "не может быть больше чем %{count} символ"
+          few:   "не может быть больше чем %{count} символа"
+          many:  "не может быть больше чем %{count} символов"
+          other: "не может быть больше чем %{count} символа"
+        too_short:
+          one:   "не может быть меньше %{count} символа"
+          few:   "не может быть меньше %{count} символов"
+          many:  "не может быть меньше %{count} символов"
+          other: "не может быть меньше %{count} символа"

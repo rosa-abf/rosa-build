@@ -1,28 +1,19 @@
-.block
-  - if @project
-    .secondary-navigation
-      %ul.wat-cf
-        %li.first= link_to t("layout.build_lists.current"), project_path(@project) + "#build_lists"
-        %li.active= link_to t("layout.build_lists.all"), project_build_lists_path(@project)
+/ #myTable
+%table.tablesorter{:cellpadding => "0", :cellspacing => "0"}
+  %thead
+    %tr
+      %th.lpadding16= t("activerecord.attributes.build_list.bs_id")
+      %th.lpadding16= t("activerecord.attributes.build_list.status")
+      %th.lpadding16= t("activerecord.attributes.build_list.project")
+      %th.lpadding16= t("activerecord.attributes.build_list.project_version")
+      %th.lpadding16= t("activerecord.attributes.build_list.arch")
+      %th.lpadding16= t("activerecord.attributes.build_list.user")
+      %th= t("layout.build_lists.action")
+      %th.lpadding16= t("activerecord.attributes.build_list.notified_at")
+  %tbody= render @build_lists
+.both
 
-  .content
-    - unless @project
-      .inner
-        %h2= t('layout.build_lists.build_server_status.header')
-        .field
-          %span= t('layout.build_lists.build_server_status.client_count') + ":"
-          %span= @build_server_status['client_count']
-        .field
-          %span= t('layout.build_lists.build_server_status.count_new_task') + ":"
-          %span= @build_server_status['count_new_task']
-        .field
-          %span= t('layout.build_lists.build_server_status.count_build_task') + ":"
-          %span= @build_server_status['count_build_task']
-            
-    .inner
-      = render :partial => "build_lists/filter", :action_url => @action_url
+= will_paginate @build_lists
 
-    .inner
-      = render :partial => "build_lists/build_lists", :object => @build_lists
-
-- content_for :sidebar, render('sidebar', :project => @project) if @project
+= render 'build_lists/filter'
+= render @project ? 'projects/submenu' : 'build_lists/submenu'

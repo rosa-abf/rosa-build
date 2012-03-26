@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 require 'spec_helper'
 
 shared_examples_for 'user with create comment rights for commits' do
@@ -77,8 +78,9 @@ describe CommentsController do
     %x(cp -Rf #{Rails.root}/spec/tests.git/* #{@project.git_repository.path}) # maybe FIXME ?
     @commit = @project.git_repository.commits.first
 
-    @comment = Factory(:comment)
-    @comment.update_attributes(:commentable_type => @commit.class.name, :commentable_id => @commit.id)
+    @comment = Factory(:commit_comment, :project => @project,
+      :commentable_type => @commit.class.name, :commentable_id => @commit.id)
+    @comment.helper
     @create_params = {:comment => {:body => 'I am a comment!'}, :project_id => @project.id, :commit_id => @commit.id}
     @update_params = {:comment => {:body => 'updated'}, :project_id => @project.id, :commit_id => @commit.id}
 

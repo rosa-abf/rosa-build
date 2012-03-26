@@ -1,0 +1,81 @@
+ru:
+  layout:
+    projects:
+      add: Добавить
+      edit: Редактировать
+      fork_and_edit: Клонировать и редактировать
+      list: Список
+      list_header: Проекты
+      edit_header: Редактировать проект
+      show: Проект
+      build: Собрать
+      new_build: Новая сборка %{project_name}
+      confirm_delete: Вы уверены, что хотите удалить этот проект?
+      new: Новый проект
+      location: Расположение
+      git_repo_location: Путь к git-репозиторию
+      current_project_header: Текущий проект
+      current_build_lists: Текущие сборки
+      build_button: Начать сборку
+      add_collaborators: Добавить коллабораторов
+      members: Участники
+      collaborators: Коллабораторы
+      groups: Группы
+      edit_collaborators: Изменить список участников
+      role: Роль в проекте
+      remove_user: Покинуть проект
+      issues: Задачи
+      wiki: Wiki
+      delete_warning: Внимание! Удаленный проект восстановлению не подлежит.
+      sections: Разделы
+      has_issue_description: Трэкер предоставляет лекговесный менеджер для задач по разработке Вашего проекта.
+      has_wiki_description: Wiki - это самый простой способ предоставить другим вносить свой вклад в развитие Вашего проекта. Каждый пользователь нашего сервиса может использовать Wiki для документирования, примеров, поддержки или всего другого, в чем у Вас появится необходимость.
+
+      diff_show_header: "%{files} с %{additions} и %{deletions}."
+      about_subheader:  "О проекте"
+      last_commit:      "Последний коммит"
+
+      filename: Файл
+      age:      Дата модификации
+      message:  Сообщение
+      author:   Автор
+
+      current_branch: Текущая ветка/тег
+      current_commit: Текущий коммит
+      files_in_project: Файлы в
+  
+  flash:
+    project:
+      saved: Проект успешно сохранен
+      save_error: Не удалось сохранить проект
+      save_warning_ssh_key: Владельцу проекта необходимо указать в профиле свой SSH ключ
+      destroyed: Проект успешно удален
+      forked: Проект успешно форкнут
+      fork_error: Ошибка форка
+      user_removed: Пользователь успешно удален из проекта
+
+  activerecord:
+    models:
+      project: Проект
+    attributes:
+      project:
+        category_id: Категория
+        name: Название
+        description: Описание
+        owner: Владелец
+        visibility: Видимость
+        visibilities:
+          open: Публичная
+          hidden: Приватная
+        repository_id: Репозиторий
+        repository: Репозиторий
+        created_at: Создан
+        updated_at: Обновлен
+        has_issues: Включить трэкер
+        has_wiki: Включить Wiki
+        srpm: Импортировать код из src.rpm
+        who_owns:
+          me: Я
+          group: Группа
+        default_branch: Ветка по умолчанию
+        is_rpm: Проект является пакетом

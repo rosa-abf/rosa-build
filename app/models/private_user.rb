@@ -1,6 +1,6 @@
+# -*- encoding : utf-8 -*-
 class PrivateUser < ActiveRecord::Base
   require 'digest/sha2'
-  require 'active_support/secure_random'
   
   belongs_to :platform
   belongs_to :user

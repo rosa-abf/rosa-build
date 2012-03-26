@@ -1,0 +1,31 @@
+{
+  "sEcho": <%=h params[:sEcho].to_i || -1 %>,
+  "iTotalRecords": <%= @total_projects %>,
+  "iTotalDisplayRecords": <%= @total_project %>,
+  "aaData": [
+  <% @projects.each do |project| %>
+    [
+      "<%=(
+        "<div class='table-sort-left'>" +
+        j(image_tag(visibility_icon(project.visibility))) +
+        "</div>" +
+        "<div class='table-sort-right'>" +
+        j(link_to("#{project.owner.respond_to?(:uname) ? project.owner.uname : project.owner.name} / #{project.name}", project)) +
+        "</div>").html_safe
+      %>",
+      "<%= truncate(project.description || '', :length => 60).gsub("\n", ' ') %>",
+      "<%=
+      if can? :remove_project, @repository
+        j(link_to('<span class="delete">&nbsp;</span>'.html_safe,
+                  remove_project_repository_path(@repository, :project_id => project.id),
+                  :method => :delete, :confirm => t("layout.confirm")
+                 )
+         )
+      else
+        ''
+      end
+      %>"
+    ]<%= project == @projects.last ? '' : ',' %>
+  <% end %>
+  ]
+}

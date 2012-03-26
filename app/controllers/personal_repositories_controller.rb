@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class PersonalRepositoriesController < ApplicationController
   before_filter :authenticate_user!
   before_filter :find_repository#, :only => [:show, :destroy, :add_project, :remove_project, :make_private, :settings]
@@ -7,11 +8,11 @@ class PersonalRepositoriesController < ApplicationController
 
   def show
     if params[:query]
-      @projects = @repository.projects.recent.by_name(params[:query]).paginate :page => params[:project_page], :per_page => 30
+      @projects = @repository.projects.recent.by_name("%#{params[:query]}%").paginate :page => params[:project_page], :per_page => 30
     else
       @projects = @repository.projects.recent.paginate :page => params[:project_page], :per_page => 30
     end
-    @user = @repository.owner
+    @user = @repository.platform.owner
     @urpmi_commands = @repository.platform.urpmi_list(request.host)
   end
   

@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 module CommitHelper
 
   def render_commit_stats(stats)
@@ -5,14 +6,18 @@ module CommitHelper
     stats.files.each do |filename, adds, deletes, total|
       res << "<tr>"
       res << "<td><a href='##{h(filename)}'>#{h(filename)}</a></td>"
-      res << "<td>#{total}</td>"
-      res << "<td><small class='deletions'>#{(0...deletes).map{|i| "-" }.join}</small>"
-      res << "<small class='insertions'>#{(0...adds).map{|i| "+" }.join}</small></td>"
-      res << "</tr>"
+      res << "<td class='diffstat'>"
+      res << I18n.t("layout.projects.inline_changes_count", :count => total).strip +
+             " (" +
+             I18n.t("layout.projects.inline_additions_count", :count => adds).strip +
+             ", " +
+             I18n.t("layout.projects.inline_deletions_count", :count => deletes).strip +
+             ")"
+      res << "</td>"
     end
     res << "</table>"
 
-    res.join("\n").html_safe
+    res.join("\n").html_safe.default_encoding!
   end
 
 #  def format_commit_message(message)
@@ -28,7 +33,7 @@ module CommitHelper
   end
 
   def shortest_hash_id(id)
-    id[0..8]
+    id[0..9]
   end
 
   def short_commit_message(message)
@@ -36,4 +41,10 @@ module CommitHelper
     truncate(message, :length => 42, :omission => "...")
   end
 
+  def commit_author_link(author)
+    name = author.name
+    email = author.email
+    u = User.where(:email => email).first
+    u.present? ? link_to(name, user_path(u)) : mail_to(email, name)
+  end
 end

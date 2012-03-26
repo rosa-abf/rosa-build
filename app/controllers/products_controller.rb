@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class ProductsController < ApplicationController
   before_filter :authenticate_user!
   before_filter :find_product, :only => [:show, :edit, :update, :destroy]
@@ -6,6 +7,10 @@ class ProductsController < ApplicationController
 
   load_and_authorize_resource :platform
   load_and_authorize_resource :product, :through => :platform
+
+  def index
+    @products = @products.paginate(:page => params[:page])
+  end
 
   def new
     @product = @platform.products.new
@@ -30,7 +35,7 @@ class ProductsController < ApplicationController
     @product = @platform.products.new params[:product]
     if @product.save
       flash[:notice] = t('flash.product.saved') 
-      redirect_to @platform
+      redirect_to platform_product_path(@platform, @product)
     else
       flash[:error] = t('flash.product.save_error')
       render :action => :new
@@ -53,7 +58,7 @@ class ProductsController < ApplicationController
   def destroy
     @product.destroy
     flash[:notice] = t("flash.product.destroyed")
-    redirect_to @platform
+    redirect_to platform_products_path(@platform)
   end
 
   protected

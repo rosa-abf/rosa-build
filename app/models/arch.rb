@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class Arch < ActiveRecord::Base
   has_many :build_lists, :dependent => :destroy
 

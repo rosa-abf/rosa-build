@@ -1,0 +1,11 @@
+/ = render 'gollum_includes'
+/ = render 'project_short'
+= render 'projects/submenu'
+
+.r= link_to t("wiki.compare_revisions"), "javascript:void(0);", :class => "action-compare-revision button width100"
+.both
+= render 'history'
+.both
+
+- content_for :sidebar do
+  - render 'sidebar'

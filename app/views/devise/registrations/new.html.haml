@@ -1,50 +1,38 @@
-#block-signup.block
-  %h2= title t("devise.registrations.sign_up_header")
-  .content
+.wrap
+  / Top block
+  %header
+    .logo
+  / Page
+  - uname_error, name_error, email_error, password_error = getDeviseErrors(:uname, :name, :email, :password)
+  %article
     = form_for(resource, :as => resource_name, :url => registration_path(resource_name), :html => { :class => "form" }) do |f|
-      - if resource.errors.present?
-        .flash
-          .message.error= resource.errors.full_messages.map { |msg| content_tag(:p, msg) }.join.html_safe
+      = hidden_field_tag :invitation_token, @invitation_token
+      .left.first=t('activerecord.attributes.user.uname')
+      .right.first
+        = f.text_field :uname, :id => 'login', :class => "registartion-input #{uname_error ? 'registartion-input-error' : ''}"
+      .both
+      .left=t('activerecord.attributes.user.name')
+      .right
+        = f.text_field :name, :id => 'name',  :class => "registartion-input #{name_error ? 'registartion-input-error' : ''}"
+      .both
+      .left=t('activerecord.attributes.user.email')
+      .right
+        = f.text_field :email, :id => 'email', :readonly => 'readonly',  :class => "registartion-input #{email_error ? 'registartion-input-error' : ''}"
+      .both
+      .left=t('activerecord.attributes.user.password')
+      .right
+        = f.password_field :password, :id => 'password',  :class => "registartion-input #{password_error ? 'registartion-input-error' : ''}"
+      .both
+      .left=t('activerecord.attributes.user.password_confirm')
+      .right
+        = f.password_field :password_confirmation, :id => 'password2',  :class => "registartion-input #{password_error ? 'registartion-input-error' : ''}"
+      .both
+      .in
+        =f.submit t("layout.devise.shared_links.sign_up"), :class => 'button', :id => 'btnLogin'
+      .both
 
-      .group.wat-cf
-        .left
-          = f.label :uname, :class => "label"
-        .right
-          = f.text_field :uname, :class => "text_field"
+  =showDeviseHintError(:login, uname_error)
+  =showDeviseHintError(:name, name_error)
+  =showDeviseHintError(:email, email_error)
+  =showDeviseHintError(:password, password_error)
 
-      .group.wat-cf
-        .left
-          = f.label :email, :class => "label"
-        .right
-          = f.text_field :email, :class => "text_field"
-
-      .group.wat-cf
-        .left
-          = f.label :name, :class => "label"
-        .right
-          = f.text_field :name, :class => "text_field"
-
-      - if resource.authentications.blank?
-        .group.wat-cf
-          .left
-            = f.label :password, :class => "label"
-          .right
-            = f.password_field :password, :class => "text_field"
-
-        .group.wat-cf
-          .left
-            = f.label :password_confirmation, :class => "label"
-          .right
-            = f.password_field :password_confirmation, :class => "text_field"
-
-      .group.wat-cf
-        .left
-          = f.label :language, :class => "label"
-        .right
-          = f.select :language, User::LANGUAGES_FOR_SELECT
-
-      .group.navform.wat-cf
-        %button.button{ :type => "submit" }
-          #{image_tag("web-app-theme/icons/tick.png", :alt => t("devise.registrations.sign_up_header"))} #{t("devise.registrations.sign_up_header")}
-        %span.text_button_padding
-        = render :partial => "devise/shared/links"

@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 module GitHelper
 
   def render_path
@@ -30,19 +31,50 @@ module GitHelper
 
   def render_line_numbers(n)
     res = ""
-    1.upto(n) {|i| res += "<span>#{i}</span>\n" }
+    1.upto(n) {|i| res += "<span>#{i}</span><br/>" }
 
-    res
+    res.html_safe
   end
 
   def render_blob(blob)
-    res = ""
-    blob.data.split("\n").collect{|line| "<div>#{line.present? ? h(line) : "<br>"}</div>"}.join
+    blob.data.split("\n").collect do |line|
+      content_tag :div, line.present? ? h(line) : tag(:br)
+    end.join.html_safe
   end
 
   def choose_render_way(blob)
-    return :image if blob.mime_type.match(/image/)
-    return :text  if blob.mime_type.match(/text|xml|json/)
-    :binary
+    case
+    when blob.mime_type.match(/image/); :image
+    when blob.binary?; :binary
+    else
+      @text = @blob.data.split("\n")
+      :text
+    end
+  end
+
+  def iterate_path(path, &block)
+    path.split(File::SEPARATOR).inject('') do |a, e|
+      if e != '.' and e != '..'
+        a = File.join(a, e)
+        a = a[1..-1] if a[0] == File::SEPARATOR
+        block.call(a, e) if a.length > 1
+      end
+      a
+    end
+  end
+
+  # TODO This is very dirty hack. Maybe need to be changed.
+  def branch_selector_options(project)
+    p = params.dup
+    p.delete(:path) if p[:path].present? # to root path
+    p.merge!(:project_id => project.id, :treeish => project.default_branch).delete(:id) unless p[:treeish].present?
+    current = url_for(p).split('?', 2).first
+
+    res = []
+    res << [I18n.t('layout.git.repositories.commits'), [truncate(params[:treeish], :length => 20)]] unless (project.branches + project.tags).map(&:name).include?(params[:treeish] || project.default_branch)
+    res << [I18n.t('layout.git.repositories.branches'), project.branches.map{|b| [truncate(b.name, :length => 20), url_for(p.merge :treeish => b.name).split('?', 2).first]}]
+    res << [I18n.t('layout.git.repositories.tags'), project.tags.map{|t| [truncate(t.name, :length => 20), url_for(p.merge :treeish => t.name).split('?', 2).first]}]
+
+    grouped_options_for_select(res, current)
   end
 end

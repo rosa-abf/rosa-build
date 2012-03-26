@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 require 'spec_helper'
 require "cancan/matchers"
 
@@ -21,6 +22,7 @@ describe CanCan do
 	let(:personal_repository) { Factory(:personal_repository) }
 	let(:open_platform) { Factory(:platform, :visibility => 'open') }
 	let(:hidden_platform) { Factory(:platform, :visibility => 'hidden') }
+  let(:register_request) { Factory(:register_request) }
 
   before(:each) do
     stub_rsync_methods
@@ -43,6 +45,10 @@ describe CanCan do
 		it 'should not be able to destroy personal repositories' do
 			@ability.should_not be_able_to(:destroy, personal_repository)
 		end
+
+    it 'should not be able to create new register requests' do
+      @ability.should_not be_able_to(:create, RegisterRequest)
+    end
 	end
 
 	context 'Site guest' do
@@ -68,6 +74,22 @@ describe CanCan do
 			end
 		end
 
+    it 'should be able to create register request' do
+      @ability.should be_able_to(:create, RegisterRequest)
+    end
+
+    it 'should not be able to update register request' do
+      @ability.should_not be_able_to(:update, register_request)
+    end
+
+    it 'should not be able to list register requests' do
+      @ability.should_not be_able_to(:read, register_request)
+    end
+
+    it 'should not be able to destroy register requests' do
+      @ability.should_not be_able_to(:destroy, register_request)
+    end
+
 		it 'should be able to register new user' do
 			@ability.should be_able_to(:create, User)
 		end
@@ -91,7 +113,7 @@ describe CanCan do
       @ability.should be_able_to(:read, @admin)
     end
 
-    it "shoud be able to read index AutoBuildList" do
+    pending "shoud be able to read index AutoBuildList" do
       @ability.should be_able_to(:index, AutoBuildList)
     end
 
@@ -102,6 +124,10 @@ describe CanCan do
 
     it "shoud be able to create project" do
       @ability.should be_able_to(:create, Project)
+    end
+
+    it "should not be able to manage register requests" do
+      @ability.should_not be_able_to(:manage, RegisterRequest)
     end
 
     context "private users relations" do
@@ -252,24 +278,19 @@ describe CanCan do
 
       context 'with owner rights' do
         before(:each) do
-          @repository.update_attribute(:owner, @user)
+          @repository.platform.update_attribute(:owner, @user)
         end
 
-        [:read, :update, :destroy, :add_project, :remove_project, :change_visibility, :settings].each do |action|
+        [:read, :create, :update, :destroy, :add_project, :remove_project, :change_visibility, :settings].each do |action|
           it "should be able to #{action} repository" do
             @ability.should be_able_to(action, @repository)
           end
-        end
-
-        it do
-          @repository.platform.update_attribute(:owner, @user)
-          @ability.should be_able_to(:create, @repository)
         end
       end
 
       context 'with read rights' do
         before(:each) do
-          @repository.relations.create!(:object_id => @user.id, :object_type => 'User', :role => 'reader')
+          @repository.platform.relations.create!(:object_id => @user.id, :object_type => 'User', :role => 'reader')
         end
 
         it "should be able to read repository" do

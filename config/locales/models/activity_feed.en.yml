@@ -1,0 +1,44 @@
+en:
+  layout:
+    activity_feed: 
+      header: Activity Feed
+      my_last_projects: My last projects
+      all_my_projects: All my projects
+      all_my_builds: All my builds
+      my_builds_by_day: My today builds
+      new_project: Create project
+      load_messages: Load messages
+
+  notifications:
+    subjects:
+      new_comment_notification: New comment to your task
+      new_commit_comment_notification: New comment to commit
+      new_issue_notification: New task added to project
+      new_user_notification: Registered on project «%{ project_name }»
+      issue_assign_notification: New task assigned
+      invite_approve_notification: Invitation to ABF
+
+    bodies:
+      new_comment_notification: 
+        title: '%{user_link} has been added a new comment'
+        content: in issue %{issue_link}
+        commit_content: in commit %{commit_link}
+      new_issue_notification: '%{user_link} has been added a new <a href="%{issue_link}">issue</a>'
+      new_user_notification: 
+        title: Hello, %{user_name}.
+        content: You have been sign up to project «ROSA Build System» and now can sign in.
+        email: ==Your email %{user_email}
+        password: ==Your password %{user_password}
+      issue_assign_notification: You have been assigned to issue %{issue_link}
+      wiki_new_commit_notification: '%{user_link} has been updated %{history_link}'
+      invite_approve_notification: Invite to ABF
+      project: in project %{project_link}
+      delete_branch: Branch %{branch_name} has been deleted
+      create_branch: '%{user_link} has been created a new branch %{branch_name}'
+      update_branch: '%{user_link} has been pushed to branch %{branch_name}'
+      build_task: 'Build <a href="%{task_link}">task #%{task_num}</a>'
+      build_status:
+        published: published successfully
+        success: complete successfully
+        failed: complete with error "%{error}"
+        pending: build waiting

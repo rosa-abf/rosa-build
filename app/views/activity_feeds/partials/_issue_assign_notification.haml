@@ -1,3 +1,8 @@
-%p== #{ t("notifications.bodies.issue_assign_notification.title", :user_name => user_name) }
-
-%p= raw t("notifications.bodies.issue_assign_notification.content", :issue_link => link_to(issue_title, project_issue_path(project_id, issue_serial_id)))
+.top
+  .text
+    %span
+      = raw t("notifications.bodies.issue_assign_notification", { :issue_link => link_to(issue_title, project_issue_path(project_id, issue_serial_id))})
+      = raw t("notifications.bodies.project", :project_link => link_to("#{project_owner}/#{project_name}", project_path(project_id)) )
+    .both
+      %span.date= activity_feed.created_at
+  .both

@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 require 'spec_helper'
 require "cancan/matchers"
 
@@ -5,15 +6,16 @@ def set_commentable_data
   @ability = Ability.new(@user)
 
   @project = Factory(:project)
-  @issue = Factory(:issue, :project_id => @project.id)
+  @issue = Factory(:issue, :project_id => @project.id, :creator => @user)
 
-  @comment = Factory(:comment, :commentable => @issue, :user => @user)
-  @stranger_comment = Factory(:comment, :commentable => @issue, :user => @stranger)
+  @comment = Factory(:comment, :commentable => @issue, :user => @user, :project => @project)
+  @stranger_comment = Factory(:comment, :commentable => @issue, :user => @stranger, :project => @project)
 
   any_instance_of(Project, :versions => ['v1.0', 'v2.0'])
 end
 
 describe Comment do
+  before { stub_rsync_methods }
   context 'for global admin user' do
     before(:each) do
       @user = Factory(:admin)
@@ -23,7 +25,7 @@ describe Comment do
     end
 
     it 'should create comment' do
-      @ability.should be_able_to(:create, Comment.new(:commentable => @issue, :user => @user))
+      @ability.should be_able_to(:create, @comment)
     end
 
     pending "sends an e-mail" do
@@ -58,7 +60,8 @@ describe Comment do
     end
 
     it 'should create comment' do
-      @ability.should be_able_to(:create, Comment.new(:commentable => @issue, :user => @user))
+      @comment.user = @user
+      @ability.should be_able_to(:create, @comment)
     end
 
     it 'should update comment' do
@@ -86,7 +89,7 @@ describe Comment do
     end
 
     it 'should create comment' do
-      @ability.should be_able_to(:create, Comment.new(:commentable => @issue, :user => @user))
+      @ability.should be_able_to(:create, @comment)
     end
 
     it 'should update comment' do
@@ -111,7 +114,7 @@ describe Comment do
     end
 
     it 'should create comment' do
-      @ability.should be_able_to(:create, Comment.new(:commentable => @issue, :user => @user))
+      @ability.should be_able_to(:create, @comment)
     end
 
     it 'should update comment' do

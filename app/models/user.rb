@@ -1,56 +1,74 @@
+# -*- encoding : utf-8 -*-
 class User < ActiveRecord::Base
   ROLES = ['admin']
   LANGUAGES_FOR_SELECT = [['Russian', 'ru'], ['English', 'en']]
   LANGUAGES = LANGUAGES_FOR_SELECT.map(&:last)
+  MAX_AVATAR_SIZE = 5.megabyte
 
   devise :database_authenticatable, :registerable, :omniauthable, # :token_authenticatable, :encryptable, :timeoutable
-         :recoverable, :rememberable, :validatable, :confirmable, :reconfirmable #, :trackable, , :lockable
+         :recoverable, :rememberable, :validatable, :lockable, :confirmable, :reconfirmable #, :trackable, , :lockable
+  has_attached_file :avatar, :styles =>
+    { :micro => { :geometry => "16x16#",  :format => :jpg, :convert_options => '-strip -background white -flatten -quality 70'},
+       :small => { :geometry => "30x30#",  :format => :jpg, :convert_options => '-strip -background white -flatten -quality 70'},
+       :medium => { :geometry => "40x40#",  :format => :jpg, :convert_options => '-strip -background white -flatten -quality 70'},
+       :big => { :geometry => "81x81#",  :format => :jpg, :convert_options => '-strip -background white -flatten -quality 70'}
+    }
+  validates_inclusion_of :avatar_file_size, :in => (0..MAX_AVATAR_SIZE), :allow_nil => true
 
-  has_one :notifier, :class_name => 'Settings::Notifier' #:notifier
+  has_one :notifier, :class_name => 'Settings::Notifier', :dependent => :destroy #:notifier
 
-  has_many :activity_feeds
+  has_many :activity_feeds, :dependent => :destroy
 
   has_many :authentications, :dependent => :destroy
   has_many :build_lists, :dependent => :destroy
+  has_many :subscribes, :foreign_key => :user_id, :dependent => :destroy
+  has_many :comments, :dependent => :destroy
 
   has_many :relations, :as => :object, :dependent => :destroy
-  has_many :targets, :as => :object, :class_name => 'Relation'
+  has_many :targets, :as => :object, :class_name => 'Relation', :dependent => :destroy
+
+  has_many :projects,     :through => :targets, :source => :target, :source_type => 'Project',    :autosave => true
+  has_many :groups,       :through => :targets, :source => :target, :source_type => 'Group',      :autosave => true
+  has_many :platforms,    :through => :targets, :source => :target, :source_type => 'Platform',   :autosave => true
 
   has_many :own_projects, :as => :owner, :class_name => 'Project', :dependent => :destroy
-  has_many :own_groups,   :foreign_key => :owner_id, :class_name => 'Group'
+  has_many :own_groups,   :foreign_key => :owner_id, :class_name => 'Group', :dependent => :destroy
   has_many :own_platforms, :as => :owner, :class_name => 'Platform', :dependent => :destroy
-  has_many :own_repositories, :as => :owner, :class_name => 'Repository', :dependent => :destroy
-
-  has_many :groups,       :through => :targets, :source => :target, :source_type => 'Group',      :autosave => true
-  has_many :projects,     :through => :targets, :source => :target, :source_type => 'Project',    :autosave => true
-  has_many :platforms,    :through => :targets, :source => :target, :source_type => 'Platform',   :autosave => true
-  has_many :repositories, :through => :targets, :source => :target, :source_type => 'Repository', :autosave => true
 
   include Modules::Models::PersonalRepository
 
   validates :uname, :presence => true, :uniqueness => {:case_sensitive => false}, :format => { :with => /^[a-z0-9_]+$/ }
   validate { errors.add(:uname, :taken) if Group.where('uname LIKE ?', uname).present? }
-  validates :ssh_key, :uniqueness => true, :allow_blank => true
   validates :role, :inclusion => {:in => ROLES}, :allow_blank => true
   validates :language, :inclusion => {:in => LANGUAGES}, :allow_blank => true
 
-  attr_accessible :email, :password, :password_confirmation, :remember_me, :login, :name, :ssh_key, :uname, :language
+  attr_accessible :email, :password, :password_confirmation, :current_password, :remember_me, :login, :name, :ssh_key, :uname, :language,
+                  :site, :company, :professional_experience, :location, :avatar
+  attr_readonly :uname, :own_projects_count
   attr_readonly :uname
   attr_accessor :login
 
-  after_create :create_settings_notifier
+  scope :search_order, order("CHAR_LENGTH(uname) ASC")
+  scope :search, lambda {|q| where("uname ILIKE ?", "%#{q}%")}
+
+  after_create lambda { self.create_notifier }
 
   def admin?
     role == 'admin'
   end
-  
+
+  def user?
+    persisted?
+  end
+
   def guest?
-    self.id.blank? # persisted?
+    new_record?
   end
 
   def fullname
     return "#{uname} (#{name})"
   end
+
   class << self
     def find_for_database_authentication(warden_conditions)
       conditions = warden_conditions.dup
@@ -73,22 +91,41 @@ class User < ActiveRecord::Base
     end
   end
 
-  def update_with_password(params={})
-    params.delete(:current_password)
-    # self.update_without_password(params) # Don't allow password update
-    if params[:password].blank?
-      params.delete(:password)
-      params.delete(:password_confirmation) if params[:password_confirmation].blank?
-    end
-    result = update_attributes(params)
-    clean_up_passwords
-    result
+  # def update_with_password(params={})
+  #   params.delete(:current_password)
+  #   # self.update_without_password(params) # Don't allow password update
+  #   if params[:password].blank?
+  #     params.delete(:password)
+  #     params.delete(:password_confirmation) if params[:password_confirmation].blank?
+  #   end
+  #   result = update_attributes(params)
+  #   clean_up_passwords
+  #   result
+  # end
+
+  def commentor?(commentable)
+    comments.exists?(:commentable_type => commentable.class.name, :commentable_id => commentable.id.hex)
   end
-  
+
+  def committer?(commit)
+    email.downcase == commit.committer.email.downcase
+  end
+
+  def owner_of? object
+    if object.respond_to? :owner
+      object.owner_id == self.id or self.group_ids.include? object.owner_id
+    else
+      false
+    end
+  end
+
+  def user_appeal
+    name.blank? ? uname : name
+  end
+
   private
 
   def create_settings_notifier
     self.create_notifier
   end
-
 end

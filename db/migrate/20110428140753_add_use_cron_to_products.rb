@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class AddUseCronToProducts < ActiveRecord::Migration
   def self.up
     add_column :products, :use_cron, :boolean, :default => false

@@ -1,0 +1,6 @@
+%ul
+  - (collection = t which_menu).each do |base, title|
+    - if can? :index, base.to_s.classify.constantize
+      %li= link_to title, send(:"#{base}_path"), :class => [].tap{|c| c << 'active' if params[:controller] == base.to_s}.join(' ')
+  - if current_user.admin? && which_menu == 'top_menu'
+    %li= link_to 'Admin', users_path, :class => t('admins_menu').has_key?(params[:controller].to_sym) ? 'active' : ''

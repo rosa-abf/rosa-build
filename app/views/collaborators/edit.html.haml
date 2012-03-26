@@ -1,73 +1,55 @@
-.block
-  .secondary-navigation
-    %ul.wat-cf
-      %li.first= link_to t("layout.collaborators.back_to_proj"), project_path(@project)
-      %li.active= link_to t("layout.collaborators.edit"), edit_project_collaborators_path(@project)
-  .content
-    .inner
-      = form_tag add_project_collaborators_path(@project) do
-        = javascript_include_tag 'autocomplete-rails.js'
-        .group
-          %h2.title= t("layout.collaborators.add")
-          = label_tag "member_uname", t("layout.collaborators.input_username")
-          = autocomplete_field_tag 'member_id', params[:member_id], autocomplete_user_uname_users_path, :id_element => '#member_id_field'
-          &nbsp;
-          = t('layout.or')
-          &nbsp;
-          = label_tag "group_uname", t("layout.collaborators.input_groupname")
-          = autocomplete_field_tag 'group_id', params[:group_id], autocomplete_group_uname_groups_path, :id_element => '#group_id_field'
+= render :partial => 'projects/submenu'
 
-          = hidden_field_tag 'member_id', nil, :id => 'member_id_field'
-          = hidden_field_tag 'group_id', nil, :id => 'group_id_field'
-        %br
-        .group.navform.wat-cf
-          %button.button{:type => "submit"}
-            = image_tag("web-app-theme/icons/tick.png", :alt => t("layout.add"))
-            = t("layout.add")
+= form_tag project_collaborators_path(@project), :id => 'members_form', :delete_url => remove_project_collaborators_path(@project) do
+  = hidden_field_tag "_method", "post"
+  %table.tablesorter{:cellpadding => "0", :cellspacing => "0"}
+    %thead
+      %tr
+        %th
+          \ 
+        %th
+          = t("layout.collaborators.members")
+        %th{:colspan => "3"}
+          = t("layout.collaborators.roles")
+    %tbody
+      - @users.each do |user|
+        %tr#admin-table-members-row1
+          %td
+            %span#niceCheckbox1.niceCheck-main{ :style => "background-position: 0px 0px; "}
+              = check_box_tag "user_remove[#{user.id}][]"
+          %td
+            .img
+              = image_tag avatar_url(user)
+            .forimg= link_to "#{user.uname} (#{user.name})", user_path(user)
+          - Relation::ROLES.each_with_index do |role, i|
+            %td
+              .radio
+                = radio_button_tag "user[#{user.id}]", role, ((@project.relations.exists? :object_id => user.id, :object_type => 'User', :role => role) ? :checked : nil), :class => 'niceRadio'
+                -# f.radio_button "group[#{role}][#{group.id}]", '1', ((@project.relations.exists? :object_id => group.id, :object_type => 'Group', :role => role) ? :checked : nil)
+                -#%span.niceRadio.radioChecked
+                -#  %input#myradio1{:checked => "checked", :name => "myradio", :tabindex => "1", :type => "radio", :value => "on"}/
+              .forradio= t("layout.collaborators.role_names.#{ role }")
+  = link_to_function t("layout.delete"), "deleteAdminMember();", :class => 'button'
+  .both
+.hr.top
 
-      = form_tag project_collaborators_path(@project) do
-        %h2.title= t("layout.users.list_header")
-        %table.table
-          %tr
-            %th.first ID
-            %th= t("activerecord.attributes.user.name")
-            %th= t("activerecord.attributes.user.roles")
-            %th= t("activerecord.attributes.user.uname")
-          - #TODO: Replace this Chelyabinsk add/remove collaborators method by more human method
-          - @users.each do |user|
-            %tr{:class => cycle("odd", "even")}
-              %td
-                = user.id
-              %td
-                = link_to user.name, user_path(user)
-              %td
-                - Relation::ROLES.each do |role|
-                  = check_box_tag "user[#{ role }][#{user.id}]", '1', ((@project.relations.exists? :object_id => user.id, :object_type => 'User', :role => role) ? :checked : nil), {:class => "user_role_chbx"}
-                  = label_tag "user[#{ role }][#{user.id}]", t("layout.collaborators.roles.#{ role }")
-              %td
-                = user.uname
-        %h2.title= t("layout.groups.list_header")
-        %table.table
-          %tr
-            %th.first ID
-            %th= t("activerecord.attributes.group.name")
-            %th= t("activerecord.attributes.group.roles")
-            %th= t("activerecord.attributes.group.uname")
-          - @groups.each do |group|
-            %tr{:class => cycle("odd", "even")}
-              %td
-                = group.id
-              %td
-                = link_to group.name, group_path(group)
-              %td
-                - Relation::ROLES.each do |role|
-                  = check_box_tag "group[#{role}][#{group.id}]", '1', ((@project.relations.exists? :object_id => group.id, :object_type => 'Group', :role => role) ? :checked : nil), {:class => "user_role_chbx"}
-                  = label_tag "group[#{role}][#{group.id}]", t("layout.collaborators.roles.#{role}")
-              %td
-                = group.uname
-        .group.navform.wat-cf
-          %button.button{:type => "submit"}
-            = image_tag("web-app-theme/icons/tick.png", :alt => t("layout.save"))
-            = t("layout.save")
-          %span.text_button_padding= t("layout.or")
-          = link_to t("layout.cancel"), project_path(@project), :class => "text_button_padding link_button"
+= form_tag add_project_collaborators_path(@project) do
+  .admin-search
+    = autocomplete_field_tag 'member_id', params[:member_id], autocomplete_user_uname_users_path, :id_element => '#member_id_field'
+  .admin-role
+    .lineForm
+      = select_tag 'role', options_for_collaborators_roles_select
+  .both
+  -#.admin-search
+  -#  = label_tag "group_uname", t("layout.collaborators.input_groupname")
+  -#  = autocomplete_field_tag 'group_id', params[:group_id], autocomplete_group_uname_groups_path, :id_element => '#group_id_field'
+  = hidden_field_tag 'member_id', nil, :id => 'member_id_field'
+  =# hidden_field_tag 'group_id', nil, :id => 'group_id_field'
+  %br
+  = submit_tag t("layout.add"), :class => 'button'
+
+.hr.bottom
+.both
+= link_to_function t("layout.save"), "saveAdminMember();", :class => 'button'
+
+- content_for :sidebar, render('projects/sidebar')

@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 shared_examples_for 'repository user with reader rights' do
   it 'should be able to perform index action' do
     get :index

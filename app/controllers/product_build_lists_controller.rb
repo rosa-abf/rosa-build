@@ -1,8 +1,9 @@
+# -*- encoding : utf-8 -*-
 class ProductBuildListsController < ApplicationController
   before_filter :authenticate_user!, :except => [:status_build]
-  load_and_authorize_resource :platform, :only => [:create]
-  load_and_authorize_resource :product, :through => :platform, :only => [:create]
-  load_and_authorize_resource :product_build_list, :through => :product, :only => [:create]
+  load_and_authorize_resource :platform, :only => [:create, :destroy]
+  load_and_authorize_resource :product, :through => :platform, :only => [:create, :destroy]
+  load_and_authorize_resource :product_build_list, :through => :product, :only => [:create, :destroy]
 
   before_filter :authenticate_product_builder!, :only => [:status_build]
   before_filter :find_product_build_list, :only => [:status_build]
@@ -18,6 +19,12 @@ class ProductBuildListsController < ApplicationController
     @product_build_list.notified_at = Time.current
     @product_build_list.save!
     render :nothing => true
+  end
+  
+  def destroy
+    @product_build_list.destroy
+    flash[:notice] = t('flash.product.build_list_delete')
+    redirect_to [@platform, @product]
   end
 
   protected

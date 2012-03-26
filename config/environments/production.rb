@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 Rosa::Application.configure do
   # Settings specified here will take precedence over those in config/application.rb
 
@@ -36,7 +37,7 @@ Rosa::Application.configure do
 
   # Disable delivery errors, bad email addresses will be ignored
   # config.action_mailer.raise_delivery_errors = false
-  config.action_mailer.default_url_options = { :host => 'rosa-build.rosalab.ru' }
+  config.action_mailer.default_url_options = { :host => 'abf.rosalinux.ru' }
 
   # Enable threaded mode
   # config.threadsafe!
@@ -47,6 +48,21 @@ Rosa::Application.configure do
 
   # Send deprecation notices to registered listeners
   config.active_support.deprecation = :notify
+
+  # Force SSL
+  # config.force_ssl = true
+
+  # Compress JavaScripts and CSS
+  config.assets.compress = true
+
+  # Don't fallback to assets pipeline if a precompiled asset is missed
+  config.assets.compile = false
+
+  # Generate digests for assets URLs
+  config.assets.digest = true
+
+  # Precompile additional assets (application.js, application.css, and all non-JS/CSS are already added)
+  config.assets.precompile += %w(login.css login.js reg_session.css)
 end
 
 # require 'stub_xml_rpc'

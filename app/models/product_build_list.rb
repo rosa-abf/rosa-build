@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class ProductBuildList < ActiveRecord::Base
   BUILD_STARTED = 2
   BUILD_COMPLETED = 0
@@ -13,6 +14,11 @@ class ProductBuildList < ActiveRecord::Base
   attr_accessor :base_url
 
   after_create :xml_rpc_create
+  after_destroy :xml_delete_iso_container
+
+  def container_path
+    "/downloads/#{product.platform.name}/product/#{id}/"
+  end
 
   def human_status
     I18n.t("layout.product_build_lists.statuses.#{status}")
@@ -29,8 +35,17 @@ class ProductBuildList < ActiveRecord::Base
     if result == ProductBuilder::SUCCESS
       return true
     else
-      # return false
-      raise "Failed to create product_build_list #{id} inside platform #{product.platform.name} tar url #{tar_url} with code #{result}."
+      raise "Failed to create product_build_list #{id} inside platform #{platform.name} tar url #{tar_url} with code #{result}."
+    end
+  end  
+    
+  def xml_delete_iso_container
+    result = ProductBuilder.delete_iso_container self
+    if result == ProductBuilder::SUCCESS
+      return true
+    else
+      raise "Failed to destroy product_build_list #{id} inside platform #{platform.name} with code #{result}."
     end
   end
+    
 end

@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class AddNameToBuildLists < ActiveRecord::Migration
   def self.up
     add_column :build_lists, :name, :string

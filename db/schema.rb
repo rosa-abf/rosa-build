@@ -1,3 +1,4 @@
+# encoding: UTF-8
 # This file is auto-generated from the current state of the database. Instead
 # of editing this file, please use the migrations feature of Active Record to
 # incrementally modify your database, and then regenerate this schema definition.
@@ -10,14 +11,14 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120127141211) do
+ActiveRecord::Schema.define(:version => 20120321130436) do
 
   create_table "activity_feeds", :force => true do |t|
     t.integer  "user_id",    :null => false
     t.string   "kind"
     t.text     "data"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
   end
 
   create_table "arches", :force => true do |t|
@@ -82,6 +83,7 @@ ActiveRecord::Schema.define(:version => 20120127141211) do
     t.boolean  "auto_publish",     :default => true
     t.string   "package_version"
     t.string   "commit_hash"
+    t.integer  "priority",         :default => 0,     :null => false
   end
 
   add_index "build_lists", ["arch_id"], :name => "index_build_lists_on_arch_id"
@@ -97,12 +99,13 @@ ActiveRecord::Schema.define(:version => 20120127141211) do
   end
 
   create_table "comments", :force => true do |t|
-    t.string   "commentable_id"
     t.string   "commentable_type"
     t.integer  "user_id"
     t.text     "body"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.decimal  "commentable_id",   :precision => 50, :scale => 0
+    t.integer  "project_id"
   end
 
   create_table "containers", :force => true do |t|
@@ -124,6 +127,7 @@ ActiveRecord::Schema.define(:version => 20120127141211) do
     t.string   "locked_by"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "queue"
   end
 
   add_index "delayed_jobs", ["priority", "run_at"], :name => "delayed_jobs_priority"
@@ -155,11 +159,12 @@ ActiveRecord::Schema.define(:version => 20120127141211) do
   end
 
   create_table "groups", :force => true do |t|
-    t.string   "name"
     t.integer  "owner_id"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "uname"
+    t.integer  "own_projects_count", :default => 0, :null => false
+    t.text     "description"
   end
 
   create_table "issues", :force => true do |t|
@@ -171,9 +176,31 @@ ActiveRecord::Schema.define(:version => 20120127141211) do
     t.string   "status",     :default => "open"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "creator_id"
+    t.datetime "closed_at"
+    t.integer  "closed_by"
   end
 
   add_index "issues", ["project_id", "serial_id"], :name => "index_issues_on_project_id_and_serial_id", :unique => true
+
+  create_table "labelings", :force => true do |t|
+    t.integer  "label_id",   :null => false
+    t.integer  "issue_id"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+  end
+
+  add_index "labelings", ["issue_id"], :name => "index_labelings_on_issue_id"
+
+  create_table "labels", :force => true do |t|
+    t.string   "name",       :null => false
+    t.string   "color",      :null => false
+    t.integer  "project_id"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+  end
+
+  add_index "labels", ["project_id"], :name => "index_labels_on_project_id"
 
   create_table "platforms", :force => true do |t|
     t.string   "description"
@@ -223,11 +250,23 @@ ActiveRecord::Schema.define(:version => 20120127141211) do
     t.string   "tar_content_type"
     t.integer  "tar_file_size"
     t.datetime "tar_updated_at"
-    t.boolean  "is_template",      :default => false
     t.boolean  "system_wide",      :default => false
     t.text     "cron_tab"
     t.boolean  "use_cron",         :default => false
+    t.text     "description"
   end
+
+  create_table "project_imports", :force => true do |t|
+    t.integer  "project_id"
+    t.string   "name"
+    t.string   "version"
+    t.datetime "file_mtime"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "platform_id"
+  end
+
+  add_index "project_imports", ["platform_id", "name"], :name => "index_project_imports_on_name_and_platform_id", :unique => true, :case_sensitive => false
 
   create_table "project_to_repositories", :force => true do |t|
     t.integer  "project_id"
@@ -242,14 +281,37 @@ ActiveRecord::Schema.define(:version => 20120127141211) do
     t.datetime "updated_at"
     t.integer  "owner_id"
     t.string   "owner_type"
-    t.string   "visibility",  :default => "open"
+    t.string   "visibility",        :default => "open"
     t.integer  "category_id"
     t.text     "description"
     t.string   "ancestry"
-    t.boolean  "has_issues",  :default => true
+    t.boolean  "has_issues",        :default => true
+    t.string   "srpm_file_name"
+    t.string   "srpm_content_type"
+    t.integer  "srpm_file_size"
+    t.datetime "srpm_updated_at"
+    t.boolean  "has_wiki",          :default => false
+    t.string   "default_branch",    :default => "master"
+    t.boolean  "is_rpm",            :default => true
   end
 
   add_index "projects", ["category_id"], :name => "index_projects_on_category_id"
+  add_index "projects", ["owner_id"], :name => "index_projects_on_name_and_owner_id_and_owner_type", :unique => true, :case_sensitive => false
+
+  create_table "register_requests", :force => true do |t|
+    t.string   "name"
+    t.string   "email"
+    t.string   "token"
+    t.boolean  "approved",   :default => false
+    t.boolean  "rejected",   :default => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string   "interest"
+    t.text     "more"
+  end
+
+  add_index "register_requests", ["email"], :name => "index_register_requests_on_email", :unique => true, :case_sensitive => false
+  add_index "register_requests", ["token"], :name => "index_register_requests_on_token", :unique => true, :case_sensitive => false
 
   create_table "relations", :force => true do |t|
     t.integer  "object_id"
@@ -267,8 +329,6 @@ ActiveRecord::Schema.define(:version => 20120127141211) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "name",        :null => false
-    t.integer  "owner_id"
-    t.string   "owner_type"
   end
 
   create_table "rpms", :force => true do |t|
@@ -283,46 +343,62 @@ ActiveRecord::Schema.define(:version => 20120127141211) do
   add_index "rpms", ["project_id"], :name => "index_rpms_on_project_id"
 
   create_table "settings_notifiers", :force => true do |t|
-    t.integer  "user_id",                             :null => false
-    t.boolean  "can_notify",        :default => true
-    t.boolean  "new_comment",       :default => true
-    t.boolean  "new_comment_reply", :default => true
-    t.boolean  "new_issue",         :default => true
-    t.boolean  "issue_assign",      :default => true
+    t.integer  "user_id",                                         :null => false
+    t.boolean  "can_notify",                    :default => true
+    t.boolean  "new_comment",                   :default => true
+    t.boolean  "new_comment_reply",             :default => true
+    t.boolean  "new_issue",                     :default => true
+    t.boolean  "issue_assign",                  :default => true
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.boolean  "new_comment_commit_owner",      :default => true
+    t.boolean  "new_comment_commit_repo_owner", :default => true
+    t.boolean  "new_comment_commit_commentor",  :default => true
   end
 
   create_table "subscribes", :force => true do |t|
-    t.integer  "subscribeable_id"
     t.string   "subscribeable_type"
     t.integer  "user_id"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.boolean  "status",                                            :default => true
+    t.integer  "project_id"
+    t.decimal  "subscribeable_id",   :precision => 50, :scale => 0
   end
 
   create_table "users", :force => true do |t|
     t.string   "name"
-    t.string   "email",                               :default => "",   :null => false
-    t.string   "encrypted_password",   :limit => 128, :default => "",   :null => false
-    t.string   "password_salt",                       :default => "",   :null => false
+    t.string   "email",                                  :default => "",   :null => false
+    t.string   "encrypted_password",      :limit => 128, :default => "",   :null => false
     t.string   "reset_password_token"
-    t.string   "remember_token"
     t.datetime "remember_created_at"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.text     "ssh_key"
     t.string   "uname"
     t.string   "role"
-    t.string   "language",                            :default => "en"
     t.string   "confirmation_token"
     t.datetime "confirmed_at"
     t.datetime "confirmation_sent_at"
+    t.datetime "reset_password_sent_at"
+    t.integer  "own_projects_count",                     :default => 0,    :null => false
+    t.text     "professional_experience"
+    t.string   "site"
+    t.string   "company"
+    t.string   "location"
+    t.string   "avatar_file_name"
+    t.string   "avatar_content_type"
+    t.integer  "avatar_file_size"
+    t.datetime "avatar_updated_at"
+    t.integer  "failed_attempts",                        :default => 0
+    t.string   "unlock_token"
+    t.datetime "locked_at"
   end
 
   add_index "users", ["confirmation_token"], :name => "index_users_on_confirmation_token", :unique => true
   add_index "users", ["email"], :name => "index_users_on_email", :unique => true
   add_index "users", ["reset_password_token"], :name => "index_users_on_reset_password_token", :unique => true
   add_index "users", ["uname"], :name => "index_users_on_uname", :unique => true
+  add_index "users", ["unlock_token"], :name => "index_users_on_unlock_token", :unique => true
 
 end

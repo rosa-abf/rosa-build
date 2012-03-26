@@ -1,0 +1,47 @@
+en:
+  layout:
+    repositories:
+      add_project_to: Add project to repository
+      list: List
+      about: About repository
+      list_header: Repositories
+      new: New repository
+      new_header: New repository
+      show: Repository
+      location: Location
+      projects: Projects
+      new_header: New repository
+      back_to_the_list: ⇐ List of repositories
+      confirm_delete: Are you sure to delete this repository?
+      current_repository_header: Current repository
+
+    personal_repositories:
+      settings_header: Settings
+      change_visibility_from_hidden: Replace the status to "Opened"
+      change_visibility_from_open: Replace the status to "Private"
+      settings: Settings
+      show: My repository
+      private_users: Private repository users
+
+  flash:
+    repository:
+      saved: Repository added
+      save_error: Repository adding error
+      destroyed: Repository deleted
+      project_added: Project added on repository
+      project_not_added: Project adding error. In this repository already is a project with such name. First remove the old project
+      project_removed: Project deleted
+      project_not_removed: Project deleting failed
+
+  activerecord:
+    models:
+      repository: Repository
+    attributes:
+      repository:
+        name: Name
+        description: Description
+        platform_id: Platform
+        platform: Platform
+        created_at: Created
+        updated_at: Updated
+        owner: Owner

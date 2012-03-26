@@ -1,36 +1,39 @@
+# -*- encoding : utf-8 -*-
 class Repository < ActiveRecord::Base
   belongs_to :platform
-  belongs_to :owner, :polymorphic => true
 
-  has_many :projects, :through => :project_to_repositories #, :dependent => :destroy
-  has_many :project_to_repositories, :validate => true, :dependent => :destroy
+  has_many :project_to_repositories, :dependent => :destroy, :validate => true
+  has_many :projects, :through => :project_to_repositories
 
-  has_many :relations, :as => :target, :dependent => :destroy
-  has_many :objects, :as => :target, :class_name => 'Relation', :dependent => :destroy
-  has_many :members, :through => :objects, :source => :object, :source_type => 'User'
-  has_many :groups,  :through => :objects, :source => :object, :source_type => 'Group'
-
-  validates :description, :uniqueness => {:scope => :platform_id}, :presence => true
-  validates :name, :uniqueness => {:scope => :platform_id}, :presence => true, :format => { :with => /^[a-z0-9_\-]+$/ }
-  # validates :platform_id, :presence => true # if you uncomment this platform clone will not work
+  validates :description, :presence => true
+  validates :name, :uniqueness => {:scope => :platform_id, :case_sensitive => false}, :presence => true, :format => {:with => /^[a-z0-9_\-]+$/}
 
   scope :recent, order("name ASC")
 
   before_create :xml_rpc_create, :unless => lambda {Thread.current[:skip]}
-  before_destroy :xml_rpc_destroy
-  after_create :add_admin_relations
+  before_destroy :xml_rpc_destroy, :unless => lambda {Thread.current[:skip]}
 
-  attr_accessible :description, :name #, :platform_id
+  attr_accessible :description, :name
 
-  def full_clone(attrs) # owner
+  def base_clone(attrs = {})
     clone.tap do |c| # dup
-      c.attributes = attrs
+      c.platform_id = nil
+      attrs.each {|k,v| c.send("#{k}=", v)}
       c.updated_at = nil; c.created_at = nil # :id = nil
-      c.projects = projects
     end
   end
 
-  include Modules::Models::Owner
+  def clone_relations(from)
+    with_skip do
+      from.projects.find_each {|p| self.projects << p}
+    end
+  end
+
+  def full_clone(attrs = {})
+    base_clone(attrs).tap do |c|
+      with_skip {c.save} and c.delay.clone_relations(self)
+    end
+  end
 
   class << self
     def build_stub(platform)
@@ -42,31 +45,21 @@ class Repository < ActiveRecord::Base
 
   protected
 
-    def xml_rpc_create
-      result = BuildServer.create_repo name, platform.name
-      if result == BuildServer::SUCCESS
-        return true
-      else
-        raise "Failed to create repository #{name} inside platform #{platform.name} with code #{result}."
-      end
+  def xml_rpc_create
+    result = BuildServer.create_repo name, platform.name
+    if result == BuildServer::SUCCESS
+      return true
+    else
+      raise "Failed to create repository #{name} inside platform #{platform.name} with code #{result}."
     end
+  end
 
-    def xml_rpc_destroy
-      result = BuildServer.delete_repo name, platform.name
-      if result == BuildServer::SUCCESS
-        return true
-      else
-        raise "Failed to delete repository #{name} inside platform #{platform.name}."
-      end
+  def xml_rpc_destroy
+    result = BuildServer.delete_repo name, platform.name
+    if result == BuildServer::SUCCESS
+      return true
+    else
+      raise "Failed to delete repository #{name} inside platform #{platform.name} with code #{result}."
     end
-
-    def add_admin_relations
-      platform.relations.where(:role => 'admin').each do |rel|
-        if !relations.exists?(:role => 'admin', :object_type => rel.object_type, :object_id => rel.object_id) && rel.object != owner
-          r = relations.build(:role => 'admin', :object_type => rel.object_type)
-          r.object_id = rel.object_id
-          r.save
-        end
-      end
-    end
+  end
 end

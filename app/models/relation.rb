@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class Relation < ActiveRecord::Base
   belongs_to :target, :polymorphic => true
   belongs_to :object, :polymorphic => true
@@ -21,7 +22,8 @@ class Relation < ActiveRecord::Base
   end
 
   protected
-    def add_default_role
-      self.role = ROLES.first if role.nil? || role.empty?
-    end
+
+  def add_default_role
+    self.role = ROLES.first if role.nil? || role.empty?
+  end
 end

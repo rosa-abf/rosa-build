@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 require 'spec_helper'
 
 shared_examples_for 'project admin user' do
@@ -36,6 +37,7 @@ end
 
 describe CollaboratorsController do
 	before(:each) do
+    stub_rsync_methods
     @project = Factory(:project)
     @another_user = Factory(:user)
     @update_params = {:user => {:read => {@another_user.id => '1'}}}
@@ -68,7 +70,7 @@ describe CollaboratorsController do
       @user.relations
       set_session_for(@user)
       @group = Factory(:group)
-      @project.relations.create!(:object_type => 'User', :object_id => @user.id, :role => 'reader')
+      @project.relations.create!(:object_type => 'User', :object_id => @user.id, :role => 'admin')
     end
 
     it_should_behave_like 'project admin user'

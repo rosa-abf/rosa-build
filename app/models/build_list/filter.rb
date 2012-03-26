@@ -1,6 +1,8 @@
+# -*- encoding : utf-8 -*-
 class BuildList::Filter
-  def initialize(project, options = {})
+  def initialize(project, user, options = {})
     @project = project
+    @user = user
     set_options(options)
   end
 
@@ -10,6 +12,7 @@ class BuildList::Filter
     if @options[:bs_id]
       build_lists = build_lists.where(:bs_id => @options[:bs_id])
     else
+      build_lists = build_lists.accessible_by(::Ability.new(@user), @options[:ownership].to_sym) if @options[:ownership]
       build_lists = build_lists.for_status(@options[:status]) if @options[:status]
       build_lists = build_lists.scoped_to_arch(@options[:arch_id]) if @options[:arch_id]
       build_lists = build_lists.scoped_to_project_version(@options[:project_version]) if @options[:project_version]
@@ -24,7 +27,7 @@ class BuildList::Filter
       end
     end
 
-    build_lists.recent
+    build_lists
   end
 
   def respond_to?(name)
@@ -40,6 +43,7 @@ class BuildList::Filter
 
   def set_options(options)
     @options = HashWithIndifferentAccess.new(options.reverse_merge({
+        :ownership => nil,
         :status => nil,
         :created_at_start => nil,
         :created_at_end => nil,
@@ -52,6 +56,7 @@ class BuildList::Filter
         :project_name => nil
     }))
 
+    @options[:ownership] = @options[:ownership].presence || 'owned'
     @options[:status] = @options[:status].present? ? @options[:status].to_i : nil
     @options[:created_at_start] = build_date_from_params(:created_at_start, @options)
     @options[:created_at_end] = build_date_from_params(:created_at_end, @options)
@@ -67,7 +72,7 @@ class BuildList::Filter
   def build_date_from_params(field_name, params)
     if params["#{field_name}(1i)"].present? || params["#{field_name}(2i)"].present? || params["#{field_name}(3i)"].present?
       Date.civil((params["#{field_name}(1i)"].presence || Date.today.year).to_i, 
-                 (params["#{field_name}(2i)"].presence || Date.today.mohth).to_i,
+                 (params["#{field_name}(2i)"].presence || Date.today.month).to_i,
                  (params["#{field_name}(3i)"].presence || Date.today.day).to_i)
     else
       nil

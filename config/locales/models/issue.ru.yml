@@ -1,0 +1,57 @@
+ru:
+  activerecord:
+    attributes:
+      issue:
+        title: Название
+        body: Описание
+        user: Назначена
+        user_id: Назначена
+        project: Проект
+        status: Статус
+
+  layout:
+    issues:
+      accessory: Принадлежность заданий
+      list: Список
+      all: Все
+      to_me: Назначенные мне
+      edit: Редактировать
+      search: Найти задачу...
+      comments_header: Комментарии
+      new: Добавить задачу
+      list_header: Список
+      confirm_delete: Вы уверены, что хотите удалить эту задачу?
+      edit_header: Редактирование задачи
+      create_header: Создать задачу
+      statuses:
+        open: Открытые
+        closed: Закрытые
+        any: Все
+      status:
+        open: Открыто
+        closed: Закрыто
+      subscribe: Подписка на уведомления
+      subscribe_btn: Подписаться
+      unsubscribe_btn: Отписаться
+      number: Номер
+      description: Описание
+      labels: Метки
+      invalid_labels: Неверный hex код
+      new_label: Название новой метки
+      update_label: Обновить метку
+      label_custom_color: Свой цвет
+      label_manage: Управление
+      executor: Исполнитель
+      search_user: Найти пользователя...
+      search_labels: Найти метки...
+      choose_user_on_left: выберите исполнителя слева
+      choose_labels_on_left: выберите метки слева
+      at: в
+      cancel_button: Отменить
+      done: Обновить
+
+  flash:
+    issue:
+      saved: Задача успешно сохранена
+      save_error: Не удалось сохранить задачу
+      destroyed: Задача успешно удалена

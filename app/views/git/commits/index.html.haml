@@ -1,17 +1,5 @@
-.block
-  = render :partial => "git/shared/navigation"
+= render :partial => 'projects/submenu'
+= render :partial => 'projects/repo_block', :locals => {:project => @project}
 
-  = render :partial => "git/shared/info"
-
-
-.block
-  .content
-    .inner
-      = render :partial => "git/commits/commits", :object => @commits
-
-      - if @render_paginate
-        .actions-bar.wat-cf
-          .pagination
-            = render :partial => "git/commits/paginate"
-
-- content_for :sidebar, render(:partial => 'git/shared/sidebar')
+= render :partial => 'git/commits/commits', :object => @commits
+= render 'git/commits/paginate' if @render_paginate

@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class AddCanSeeToRoles < ActiveRecord::Migration
   def self.up
     add_column :roles, :can_see, :text

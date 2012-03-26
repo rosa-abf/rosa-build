@@ -1,0 +1,623 @@
+// PUT custom styles here ONLY
+
+span.error {
+  display: none;
+}
+
+a#manage-labels {
+  margin-bottom: 10px;
+}
+article a.edit_label {
+  color: #FFF;
+}
+
+header div.information div.user {
+    float: left;
+    margin-left: 5px;
+}
+
+header div.user div.avatar {
+    padding: 6px 10px 10px 10px;
+}
+
+header menu ul li a {
+    padding: 15px 8px 15px 8px;
+}
+
+div.description-top input.name {
+    width: 350px;
+    padding: 0;
+}
+
+div.description-top div.name input {
+    width: 100%;
+    height: 100%;
+}
+
+article div.activity {
+    border: 1px solid #D6D6D6;
+    border-radius: 5px 5px 5px 5px;
+    color: #333333;
+    margin-top: 15px;
+    padding: 6px;
+}
+
+article div.messages div.activity {
+    margin-top: 0;
+    margin-bottom: 10px;
+}
+
+article div.activity .top div.image {
+    //position: absolute; // TODO broken issue page
+    float: left;
+    width: 40px;
+    height: 40px;
+    margin-left: 2px;
+    margin-top: 2px;
+}
+
+article div.activity .top .buttons {
+    display: block;
+    position: relative;
+    float: right;
+}
+
+article div.activity .top div.text {
+    float: left;
+    font-size: 12px;
+    padding-left: 10px;
+}
+
+article div.activity .top .imaged {
+    margin-left: 44px;
+}
+
+article div.activity .top div.text .name {
+    font-weight: 700;
+    display: block;
+    float: left;
+}
+
+article div.activity .top div.text .date {
+    font-size: 11px;
+    float: left;
+}
+
+article div.activity div.fulltext {
+    font-size: 12px;
+    padding-top: 10px;
+    display: block;
+}
+
+article div.activity div.fulltext.alone {
+    padding-top: 0px;
+}
+
+article div.activity .fulltext.hidden {
+    display: none;
+}
+
+div.activity .data-expander {
+    margin-left: 10px;
+    display: inline-block;
+    width: 12px;
+}
+
+div.activity .data-expander.collapsed {
+    background: #FFF image-url('expand-gray.png') no-repeat;
+    background-position: 0 2px;
+}
+
+div.activity .data-expander.expanded {
+    background: #FFF image-url('expand-gray2.png') no-repeat;
+    background-position: 0 2px;
+}
+
+div.activity .fulltext p {
+    margin: 5px;
+    line-height: 1.3em;
+}
+
+table.blob td.lines pre {
+    background-color: #ECECEC;
+    border-right: 1px solid #DDDDDD;
+    color: #AAAAAA;
+    padding: 10px;
+    text-align: right;
+}
+
+textarea#code {
+    width: 845px;
+    resize: none;
+    height: 30em;
+}
+
+article div.date-block {
+    margin-bottom: 30px;
+}
+
+article div.year {
+    margin-top: 0;
+}
+
+article h3 {
+    margin-bottom: 10px;
+}
+
+article div.date-block div.date {
+    height: 52px;
+}
+
+.date_select {
+  select {margin:3px 0px; padding:0px;}
+}
+
+article div#repo-wrapper div.hr {
+    width: 100%;
+}
+
+article table.commit_stats {
+    line-height: 1.4em;
+    margin-top: 12px;
+    width: 100%;
+    border-spacing: 0;
+    border-top: 1px solid #DDDDDD;
+    margin: 10px 0;
+    padding: 0;
+    font-size: 90%;
+    border-collapse: collapse;
+}
+
+article table.commit_stats td {
+    border-bottom: 1px solid #DDDDDD;
+    padding: 0.4em 5px;
+}
+
+article table.commit_stats .diffstat {
+    text-align: right;
+    white-space: nowrap;
+    padding-right: 0;
+    width: 1%;
+}
+
+article div.file div.diff_data {
+    overflow-x: auto;
+}
+
+article div.file table {
+    border-spacing: 0;
+    border-collapse: collapse;
+}
+
+#repo-wrapper table.diff td.line_numbers {
+     -moz-user-select: none;
+    font-size: 12px;
+    padding: 0 0.5em;
+    background-color: #ECECEC;
+    border-right: 1px solid #DDDDDD;
+    color: #999999;
+    text-align: right;
+}
+
+#repo-wrapper table.diff td.line_numbers,
+#repo-wrapper table.diff td.header,
+#repo-wrapper table.diff td.code {
+    font-family: 'Bitstream Vera Sans Mono','Courier',monospace;
+}
+
+#repo-wrapper table.diff td.header {
+    background-color: #ECECEC;
+    color: #999999;
+    width: 100%;
+    line-height: 1.4em;
+    font-size: 90%;
+}
+
+#repo-wrapper table.diff td.code, #repo-wrapper table.diff td.header {
+    padding-left: 10px;
+}
+
+#repo-wrapper table.diff pre {
+    padding: 0;
+    margin: 0;
+}
+
+#repo-wrapper table.diff .diff-content {
+    padding: 0;
+    margin: 0;
+}
+
+#repo-wrapper table.diff tr td.code.del {
+    background-color: #FFDDDD;
+}
+
+#repo-wrapper table.diff tr td.code.del .idiff {
+    background-color: #F2ACAD;
+}
+
+#repo-wrapper table.diff tr td.code.ins {
+    background-color: #DDFFDD;
+}
+
+#repo-wrapper table.diff tr td.code.ins .idiff {
+    background-color: #BAFBAD;
+}
+
+#repo-wrapper div.comment {
+    background: none repeat scroll 0 0 #DCECFA;
+    border: 1px solid #B3CCE0;
+    border-radius: 4px 4px 4px 4px;
+    margin-bottom: 10px;
+    margin-top: 15px;
+    padding: 6px;
+    text-align: left;
+}
+
+#repo-wrapper div.view {
+    display: block;
+}
+
+#repo-wrapper div.comment div.wrapper {
+    border: 1px solid #DEDEDE;
+    border-radius: 4px 4px 4px 4px;
+    color: #575756;
+    background: #FFFFFF;
+    font-size: 12px;
+    height: 110px;
+    margin: 10px 0;
+    padding: 5px;
+}
+
+#repo-wrapper div.comment div.wrapper textarea {
+    border: none;
+    color: #575756;
+    font-family: Tahoma,Geneva,Helvetica,sans-serif;
+    width: 100%;
+    height: 100%;
+    resize: none;
+}
+
+div.comment div.comment-left {
+    float: left;
+    font-size: 12px;
+    margin-top: 4px;
+}
+
+div.comment div.comment-right {
+    float: right;
+}
+
+div.comment textarea { resize: none }
+
+#repo-wrapper div.file div.data .formatted {
+    overflow-x: auto;
+    overflow-y: none;
+}
+
+table.tablesorter tbody td a .issue_title {
+    color: #58595B;
+}
+
+.syntaxhighlighter {
+    padding: 11px;
+}
+
+#output.formatted {
+    width: auto;
+    font-family: "Consolas","Bitstream Vera Sans Mono","Courier New",Courier,monospace;
+    color: #000000;
+    padding: 10px 5px 0px;
+    margin-left: 45px;
+}
+
+#output.formatted pre {
+    font-family: "Consolas","Bitstream Vera Sans Mono","Courier New",Courier,monospace;
+    padding: 0;
+    margin: 0;
+}
+
+div.gutter {
+    border-right: 1px solid #CCCCCC !important;
+}
+
+table.tablesorter tr td.centered {
+    text-align: center;
+}
+
+/* TODO change this */
+header div.user div.avatar img {
+    border: 1px solid #DDDDDD;
+}
+
+div.blame_data {
+    font-size: 80%;
+}
+
+div.blame_data tr.firstrow {
+    border-top: 1px solid #DDDDDD;
+}
+
+
+div.blame_data tr td.commit_info {
+    padding: 0.5em !important;
+    vertical-align: top;
+    width: 210px;
+    border-right: 1px solid #DDDDDD;
+}
+
+div.blame_data tr td.commit_info .date {
+    display: block;
+    float: left;
+    color: #666666;
+}
+
+div.blame_data tr td.commit_info .message {
+    width: 210px;
+    display: block;
+    float: right;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: 12px;
+}
+
+div.blame_data tr td.lines {
+    padding: 0 0.5em !important;
+    width: 1%;
+    font-size: 12px;
+    line-height: 1.4em;
+}
+
+div.blame_data tr td.code {
+    padding: 0 10px !important;
+    font-size: 12px;
+}
+
+div.blame_data tr td.code pre {
+    padding: 0;
+    margin: 0;
+}
+
+// Search
+p.block { margin-bottom: 10px; clear: both; }
+table.tablesorter.bmargin5 {
+  th { padding: 5px; }
+  td p.block {margin-bottom: 0px;}
+}
+
+
+div#gollum-searchbar-fauxtext {
+    padding-left: 10px;
+}
+
+div#gollum-searchbar-fauxtext input#search-query {
+    display: inline-block;
+    float: left;
+    width: 145px;
+    border: 1px solid #D3D3D3;
+    border-bottom-left-radius: 3px;
+    border-top-left-radius: 3px;
+    border-bottom-right-radius: 0;
+    border-top-right-radius: 0;
+    font-size: 12px;
+    height: 24px;
+    margin: 0;
+    padding: 0 4px;
+    vertical-align: middle;
+    white-space: nowrap;
+}
+
+a#search-submit {
+    -moz-box-sizing: content-box;
+    border-left: medium none;
+    border-radius: 0 3px 3px 0;
+    height: 24px;
+    margin-left: 0;
+    padding: 0;
+    position: relative;
+    vertical-align: middle;
+    display: inline-block;
+    float: left;
+}
+
+a#search-submit span {
+    background: image-url("gollum/icon-sprite.png") no-repeat scroll 50% 4px transparent;
+    background-position: -430px -2px;
+    height: 24px;
+    text-indent: -9999px;
+    width: 16px;
+    display: block;
+    height: 21px;
+    line-height: 21px;
+    padding: 0 9px 0 7px;
+}
+
+a#search-submit:hover span {
+    background-position: -430px -29px;
+}
+
+table.wiki .history .td2 .name span.username {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    width: 164px;
+}
+
+table.tablesorter.platforms .th1 {
+    width: 290px;
+}
+
+table.tablesorter.platforms .th2 {
+    width: 280px;
+}
+
+table.tablesorter tr td.buttons {
+    text-align: center;
+}
+
+table.tablesorter tr td.buttons a span.delete {
+    background: image-url('x.png') no-repeat 0 0 transparent;
+    width: 12px;
+    display: inline-block;
+}
+
+#fork-and-edit {display:block;}
+
+.notify.blue div.success {
+  border: 1px solid #bad099;
+  background: #d7e599;
+  float: left;
+}
+
+div.notify.blue div.error {
+  float: left;
+  border: 1px solid #ddd;
+  background-color: #FBE3E4;
+  border-color: #FBC2C4;
+}
+
+div.notify.blue div.nocolor {
+  float: left;
+  border: 1px solid #a9c6dd;
+}
+
+div.notify.blue div.red {
+  float: left;
+  border: 1px solid #ddd;
+  background-color: #FBE3E4;
+  border-color: #FBC2C4;
+}
+
+a.button.left_floated {
+    display: inline-block;
+    float: left;
+    margin-right: 5px;
+}
+
+div.buttons_block {
+    margin-top: 20px;
+}
+
+table.tablesorter.unbordered {
+    border: none;
+}
+
+table.tablesorter.unbordered tr td {
+    border: none;
+    padding: 3px;
+}
+
+table.tablesorter.repo-projects th.th1 {
+    width: 250px;
+}
+
+table.tablesorter.repo-projects th.th3,
+table.tablesorter th.buttons {
+    width: 60px;
+    text-align: center;
+}
+
+table.tablesorter.repo-projects td.td2,
+.table-sort-right {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+div.dataTables_filter {
+    margin-bottom: 15px;
+}
+
+div.dataTables_paginate {
+    float: left;
+}
+
+div.dataTables_info {
+    float: right;
+}
+
+div.dataTables_info,
+div.dataTables_paginate.paging_will_paginate_like {
+    margin-top: 15px;
+}
+
+div.dataTables_paginate.paging_will_paginate_like a.paginate_button,
+div.dataTables_paginate.paging_will_paginate_like a.paginate_active {
+    background: none repeat scroll 0 0 #EDEDED;
+    color: #4C90D0 !important;
+    border: 1px solid #DDDDDD;
+    border-radius: 1px 1px 1px 1px;
+    padding: 3px 7px;
+    margin-right: 3px;
+    cursor: pointer;
+}
+
+div.dataTables_paginate.paging_will_paginate_like a.paginate_button_disabled,
+div.dataTables_paginate.paging_will_paginate_like a.paginate_active {
+    color: #565657 !important;
+    cursor: default;
+}
+
+div.dataTables_paginate.paging_will_paginate_like a.paginate_button_disabled:hover,
+div.dataTables_paginate.paging_will_paginate_like a.paginate_active:hover {
+    text-decoration: none;
+}
+
+div.dataTables_paginate.paging_will_paginate_like a.previous {
+    margin-left: 0px;
+    margin-right: 4px;
+}
+
+div.dataTables_paginate.paging_will_paginate_like a.next {
+    margin-left: 1px;
+    margin-right: 0px;
+}
+
+div.dataTables_paginate.paging_will_paginate_like a.paginate_active {
+    background: none repeat scroll 0 0 #D5E7F9;
+    border: 1px solid #C1DAED;
+}
+
+div.dataTables_processing {
+    z-index: 999;
+}
+
+div.rightlist textarea {
+    resize: none;
+}
+
+div#crontab_generator .leftlist,
+div#crontab_generator .rightlist {
+    width: 50%;
+}
+
+div#crontab_generator .leftlist select,
+div#crontab_generator .rightlist select {
+    margin-top: 10px;
+}
+
+table.dataTable tr.odd td.sorting_1 {
+    background-color: #F0F0F6;
+}
+
+table.dataTable tr.even td.sorting_1 {
+    background-color: #FFFFFF;
+}
+
+div.right.bigpadding div.command_select div.rightlist {
+    width: 245px;
+}
+
+div.right.bigpadding div.command_select div.rightlist select {
+    width: 240px;
+    height: 23px;
+}
+
+div.right.bigpadding div.command_select div.rightlist textarea {
+    width: 430px;
+    height: 50px;
+}
+
+div.rightlist textarea.resizable {
+    resize: both;
+}

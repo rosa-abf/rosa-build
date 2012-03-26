@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 module Grack
   class Auth < Base
     def initialize(app)

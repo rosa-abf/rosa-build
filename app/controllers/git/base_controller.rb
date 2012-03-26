@@ -1,7 +1,8 @@
+# -*- encoding : utf-8 -*-
 class Git::BaseController < ApplicationController
   before_filter :authenticate_user!
+  load_and_authorize_resource :project
 
-  before_filter :find_project
   before_filter :find_git_repository
   before_filter :find_tags
   before_filter :find_branches
@@ -9,13 +10,7 @@ class Git::BaseController < ApplicationController
   before_filter :set_current_tag
   before_filter :set_current_branch
 
-  load_and_authorize_resource :project
-
   protected
-    def find_project
-      @project = Project.find(params[:project_id])
-    end
-
     def find_git_repository
       @git_repository = @project.git_repository
     end
@@ -29,7 +24,7 @@ class Git::BaseController < ApplicationController
     end
 
     def set_treeish
-      @treeish = params[:treeish].present? ? params[:treeish] : "master"
+      @treeish = params[:treeish].presence || @project.default_branch
     end
 
     def set_current_tag

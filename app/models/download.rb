@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class Download < ActiveRecord::Base
   PREV_LOG_FILE = "#{ APP_CONFIG['nginx_log'] }.0"
 

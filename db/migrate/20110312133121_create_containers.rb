@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class CreateContainers < ActiveRecord::Migration
   def self.up
     create_table :containers do |t|

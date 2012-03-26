@@ -3,6 +3,7 @@
 for f in `ls /srv/rosa_build/shared/downloads`
 do
   if [ -d /home/share ]
+  then
     # Staging case
 	  if [ -d /home/share/platforms/$f ]
   	then

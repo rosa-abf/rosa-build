@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 require 'xmlrpc/client'
 
 class ProductBuilder
@@ -12,5 +13,9 @@ class ProductBuilder
     self.client(pbl.product.platform.distrib_type).
     call('create_product', pbl.id.to_s, pbl.product.platform.name, pbl.product.ks, pbl.product.menu, pbl.product.build_script,
                            pbl.product.counter, [], pbl.product.tar.exists? ? "#{pbl.base_url}#{pbl.product.tar.url}" : '')
+  end
+  
+  def self.delete_iso_container pbl # product_build_list
+    self.client(pbl.product.platform.distrib_type).call('delete_iso_container', pbl.product.platform.name, pbl.id.to_s)
   end
 end

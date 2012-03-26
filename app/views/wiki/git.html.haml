@@ -1,0 +1,14 @@
+/ = render 'gollum_includes'
+/ = render 'project_short'
+= render 'projects/submenu'
+
+.desription-top
+  .img= image_tag("code.png")
+  = render "git_access"
+  .both
+= render "git_access_message"
+
+.both
+
+- content_for :sidebar do
+  - render 'sidebar'

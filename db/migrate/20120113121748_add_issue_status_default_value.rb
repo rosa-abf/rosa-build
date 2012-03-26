@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class AddIssueStatusDefaultValue < ActiveRecord::Migration
   def self.up
     change_column :issues, :status, :string, :default => 'open'

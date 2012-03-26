@@ -1,7 +1,9 @@
+# -*- encoding : utf-8 -*-
 require 'spec_helper'
 
 describe MembersController do
   before(:each) do
+    stub_rsync_methods
     @group = Factory(:group)
     @user = @group.owner
     set_session_for @user

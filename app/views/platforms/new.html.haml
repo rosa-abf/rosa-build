@@ -1,4 +1,9 @@
-.block
+%h3= t("layout.platforms.new_header")
+
+= form_for :platform, :url => platforms_path, :html => { :class => :form } do |f|
+  = render :partial => "form", :locals => {:f => f}
+
+-#.block
   .secondary-navigation
     %ul.wat-cf
       %li.first= link_to "#{t("layout.platforms.list")}", @platforms_path

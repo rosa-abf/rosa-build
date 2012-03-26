@@ -1,0 +1,38 @@
+ru:
+  menu:
+    categories: Каталог
+    products: Продукты
+    repositories: Репозитории
+    personal_repository: Мой репозиторий
+    auto_build_lists: Авто. сборки
+    downloads: Статистика
+  top_menu:
+    platforms: Платформы
+    projects: Проекты
+    build_lists: Мониторинг задач
+    groups: Группы
+  bottom_menu:
+    copyright: ROSA Лаб. © 2012
+    about: О компании
+    contacts: Контакты
+    tos: Условия использования
+    security: Безопасность
+  project_menu:
+    project: Проект
+    commits: Коммиты
+    builds: Сборки
+    tracker: Трекер
+    wiki: Wiki
+    readme: Readme
+    settings: Настройки
+  feed_menu:
+    all: Все
+    code: Код
+    tracker: Трекер
+    build: Сборка
+    wiki: Вики
+  platform_menu:
+    settings: Настройки
+  admins_menu:
+    users: Пользователи
+    event_logs: Лог событий
