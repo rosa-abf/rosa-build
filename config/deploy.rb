@@ -3,6 +3,12 @@ $:.unshift File.expand_path('.')
 $:.unshift(File.expand_path('./lib', ENV['rvm_path']))
 set :rvm_type, :user
 
+set :default_environment, {
+  'LANG' => 'en_US.UTF-8'
+}
+
+# set :rake, "rake --trace" 
+
 require 'rvm/capistrano'
 require 'bundler/capistrano'
 require 'delayed/recipes'
