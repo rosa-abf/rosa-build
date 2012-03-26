@@ -6,7 +6,7 @@ class User < ActiveRecord::Base
   MAX_AVATAR_SIZE = 5.megabyte
 
   devise :database_authenticatable, :registerable, :omniauthable, # :token_authenticatable, :encryptable, :timeoutable
-         :recoverable, :rememberable, :validatable, :lockable, :confirmable, :reconfirmable #, :trackable, , :lockable
+         :recoverable, :rememberable, :validatable, :lockable, :confirmable#, :reconfirmable, :trackable
   has_attached_file :avatar, :styles =>
     { :micro => { :geometry => "16x16#",  :format => :jpg, :convert_options => '-strip -background white -flatten -quality 70'},
        :small => { :geometry => "30x30#",  :format => :jpg, :convert_options => '-strip -background white -flatten -quality 70'},
