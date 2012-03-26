@@ -10,7 +10,7 @@ Rosa::Application.routes.draw do
     get '/users' => 'admin/users#index', :as => :users
     get '/users/new' => 'admin/users#new', :as => :new_user
     get '/users/list' => 'admin/users#list', :as => :users_list
-    post '/users' => 'admin/users#create', :as => :create_user
+    post '/users/create' => 'admin/users#create', :as => :create_user
     get '/users/:id/edit' => 'admin/users#profile', :as => :edit_user
     put '/users/:id/edit' => 'admin/users#update', :as => :update_user
     delete '/users/:id/delete' => 'admin/users#destroy', :as => :delete_user

@@ -1,8 +1,7 @@
 # -*- encoding : utf-8 -*-
 class Admin::UsersController < ApplicationController
   before_filter :authenticate_user!
-  load_and_authorize_resource :except => :create
-  authorize_resource :only => :create
+  load_and_authorize_resource
 
   def index
     @filter = params[:filter] || 'all'
@@ -12,14 +11,13 @@ class Admin::UsersController < ApplicationController
   end
 
   def create
-    @user = User.new params[:user]
     @user.role = params[:role]
-    @user.uname = params[:uname]
     if @user.save
       flash[:notice] = t('flash.user.saved')
       redirect_to users_path
     else
       flash[:error] = t('flash.user.save_error')
+      flash[:warning] = @user.errors.full_messages.join('. ')
       render :action => :new
     end
   end

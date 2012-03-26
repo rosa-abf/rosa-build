@@ -43,7 +43,7 @@ class User < ActiveRecord::Base
   validates :role, :inclusion => {:in => ROLES}, :allow_blank => true
   validates :language, :inclusion => {:in => LANGUAGES}, :allow_blank => true
 
-  attr_accessible :email, :password, :password_confirmation, :current_password, :remember_me, :login, :name, :language,
+  attr_accessible :email, :password, :password_confirmation, :current_password, :remember_me, :login, :name, :uname, :language,
                   :site, :company, :professional_experience, :location, :avatar
   attr_readonly :uname, :own_projects_count
   attr_accessor :login
