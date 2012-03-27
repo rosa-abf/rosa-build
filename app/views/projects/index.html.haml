@@ -1,12 +1,122 @@
 = link_to t('layout.projects.new'), new_project_path, :class => 'button' if can?(:create, Project)
 
-%table#myTable.tablesorter{:cellpadding => "0", :cellspacing => "0"}
+- columns = [{:type => 'html'},
+             {:type => 'html', :sortable => false, :searchable => false},
+             {:type => nil, :sortable => false, :searchable => false, :class => 'buttons'},
+             {:type => nil, :sortable => false, :searchable => false, :class => 'buttons'}]
+-#= raw datatable(columns, {:sort_by => "[0, 'asc']", :search_label => t("layout.search_by_name"), :processing => t("layout.processing"),
+-#                          :pagination_labels => {:previous => t("datatables.previous_label"), :next => t("datatables.next_label")},
+-#                          :empty_label      => t("datatables.empty_label"),
+-#                          :info_label       => t("datatables.info_label"),
+-#                          :info_empty_label => t("datatables.info_empty_label"),
+-#                          :filtered_label   => t("datatables.filtered_label"),
+-#                          :table_dom_id     => 'datatable',
+-#                          :auto_width       => 'false',
+-#                          :sdom             => 'rtip'})
+
+%table#datatable.tablesorter{:cellpadding => "0", :cellspacing => "0"}
   %thead
     %tr
       %th.th1= t("activerecord.attributes.project.name")
       %th.th2= t("activerecord.attributes.project.description")
       %th.th3= t("layout.projects.role")
       %th.th4= t("layout.projects.remove_user")
+    %tr.search
+      %th{:colspan => 4}
+        <input class="gray" type="text" value="#{ t('layout.find_project') }">
+
   %tbody= render @projects
 
-= will_paginate
+:javascript
+  $(document).ready(function() {
+
+    var JsonParser = function (json) {
+
+      var firstColumn = function(row) {
+        var project = row.project
+
+        var image   = '<img alt="' + project.visibility + '" src="' + icons.visibilities[project.visibility] + '" />';
+
+        var owner   = '<a href="' +  project.owner.link + '">' + project.owner.name + '</a>';
+        var project = '<a href="' +  project.link + '">' + project.name + '</a>';
+
+        return '<div class="table-sort-left">' + image + "</div>\n" +
+               '<div class="table-sort-right">' + owner + ' / ' + project + '<div>';
+      }
+
+      var lastColumn = function(row) {
+        var project = row.project
+        var res = '';
+        if (project.leave_link !== undefined) {
+          res = '<a href="' + project.leave_link + '" data-method="delete" rel="nofollow" data-confirm="' + messages.remove_confirm + '">' +
+                '<span class="delete">&nbsp;</span></a>';
+        }
+        return res;
+      }
+
+      var icons = json.icons;
+      var messages = json.messages;
+
+      var res = [];
+      for ( var i=0, iLen=json.aaData.length ; i<iLen ; i++ ) {
+        var data = json.aaData[i];
+        var inner = [];
+        inner.push( firstColumn(data) );
+        inner.push( data.project.description );
+        inner.push( data.project.role );
+        inner.push( lastColumn(data) );
+        res.push( inner );
+      }
+      return res;
+    }
+
+    var oTable = $('#datatable').dataTable({
+      "oLanguage": {
+        #{t("datatables.full")}
+      },
+      "sPaginationType": "will_paginate_like",
+      "iDisplayLength": 25,
+      "bLengthChange": false,
+      "aaSorting": [[ 0, 'asc' ]],
+      "sDom": 'rtip',
+      "bServerSide": true,
+      "sAjaxSource": "#{ projects_path :format => :json }",
+      "iDeferLoading": #{ @projects.count },
+      "aoColumns": [
+        #{ format_columns_for_datatable(columns) }
+      ],
+      "fnServerData": function ( sSource, aoData, fnCallback ) {
+        $.getJSON( sSource, aoData, function (json) {
+          json.aaData = JsonParser(json);
+          fnCallback(json);
+        } );
+      }
+
+    });
+    $('#datatable_wrapper').append("<div class='both'></div>");
+
+    var $search = $('tr.search input[type="text"]');
+    $search.live('blur', function() {
+      $this = $(this);
+      if ($this.val() == '') {
+        $this.val('#{ t('layout.find_project') }');
+        $this.toggleClass('gray black');
+      }
+      return true;
+    });
+    $search.live('focus', function() {
+      $this = $(this);
+      if ($this.val() == '#{ t('layout.find_project') }') {
+        $this.val('');
+        $this.toggleClass('gray black');
+      }
+      return true;
+    });
+    $search.live('keyup', function() {
+      if (this.value.length > 1) {
+        oTable.fnFilter(this.value);
+      }
+    });
+  });
+
+=# will_paginate
