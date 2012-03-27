@@ -5,13 +5,13 @@ class ProjectsController < ApplicationController
 
   def index
     @projects = Project.accessible_by(current_ability, :membered)
+    # @projects = @projects.search(params[:query]).search_order if params[:query].present?
 
     #puts prepare_list(@projects).inspect
     respond_to do |format|
       format.html { @projects = @projects.recent.paginate(:page => params[:page], :per_page => 25) }
       format.json { @projects = prepare_list(@projects) }
     end
-    # @projects = @projects.search(params[:query]).search_order if params[:query]
   end
 
   def new
@@ -93,7 +93,7 @@ class ProjectsController < ApplicationController
     order = "#{colName[sort_col.to_i]} #{sort_dir}"
 
     res[:total_count] = projects.count
-    projects = projects.where(['projects.name ILIKE ?', "%#{ params[:sSearch] }%"]) if params[:sSearch] and !params[:sSearch].empty?
+    projects = projects.search(params[:sSearch]).search_order if params[:sSearch].present?
     res[:filtered_count] = projects.count
 
     projects = projects.order(order)
