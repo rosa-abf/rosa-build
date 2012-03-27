@@ -128,5 +128,22 @@ describe Comment do
     it 'should not destroy comment' do
       @ability.should_not be_able_to(:destroy, @comment)
     end
+
+    context 'with mass assignment' do
+      it 'should not be able to update commentable' do
+        @comment.update_attributes({:commentable_type => 'Grit::Commit', :commentable_id => 0})
+        @comment.reload.commentable_id.should eql @issue.id
+        @comment.reload.commentable_type.should eql @issue.class.name
+      end
+
+      it 'should not be able to update owner' do
+        @comment.should_not allow_mass_assignment_of :user_id
+      end
+
+      it 'should not be able to update project' do
+        @comment.should_not allow_mass_assignment_of :project_id
+      end
+    end
+
   end
 end

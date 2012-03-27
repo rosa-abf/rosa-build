@@ -15,6 +15,7 @@ class Comment < ActiveRecord::Base
   end
 
   attr_accessible :body, :commentable_id, :commentable_type
+  attr_readonly :commentable_id, :commentable_type
 
   def own_comment?(user)
     user_id == user.id
