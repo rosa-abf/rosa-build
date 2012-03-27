@@ -4,7 +4,13 @@ class ProjectsController < ApplicationController
   load_and_authorize_resource
 
   def index
-    @projects = Project.accessible_by(current_ability, :members).recent.paginate(:page => params[:page])
+    @projects = Project.accessible_by(current_ability, :members)
+
+    #puts prepare_list(@projects).inspect
+    respond_to do |format|
+      format.html { @projects = @projects.recent.paginate(:page => params[:page], :per_page => 25) }
+      format.json { @projects = prepare_list(@projects) }
+    end
     # @projects = @projects.search(params[:query]).search_order if params[:query]
   end
 
@@ -77,6 +83,32 @@ class ProjectsController < ApplicationController
   end
 
   protected
+
+  def prepare_list(projects)
+    res = {}
+
+    colName = ['name']
+    sort_col = params[:iSortCol_0] || 0
+    sort_dir = params[:sSortDir_0] == "desc" ? 'desc' : 'asc'
+    order = "#{colName[sort_col.to_i]} #{sort_dir}"
+
+    res[:total_count] = projects.count
+    projects = projects.where(['projects.name ILIKE ?', "%#{ params[:sSearch] }%"]) if params[:sSearch] and !params[:sSearch].empty?
+    res[:filtered_count] = projects.count
+
+    projects = projects.order(order)
+    res[:projects] = if params[:iDisplayLength].present?
+      start = params[:iDisplayStart].present? ? params[:iDisplayStart].to_i : 0
+      length = params[:iDisplayLength].to_i
+      page = start/length + 1
+
+      projects.paginate(:page => page, :per_page => length)
+    else
+      projects
+    end
+
+    res
+  end
 
   def choose_owner
     if params[:who_owns] == 'group'

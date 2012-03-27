@@ -19,6 +19,8 @@ gem 'russian', '~> 0.6.0'
 gem 'highline', '~> 1.6.11'
 gem 'rails-xmlrpc', '~> 0.3.6' # :git => 'git://github.com/chipiga/rails-xmlrpc.git'
 
+gem 'jbuilder'
+
 # gem 'rugged', '~> 0.16.0'
 gem 'grack', :git => 'git://github.com/rdblue/grack.git', :require => 'git_http'
 gem "grit", :git => 'git://github.com/chipiga/grit.git'
