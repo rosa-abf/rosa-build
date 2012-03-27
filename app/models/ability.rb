@@ -21,14 +21,15 @@ class Ability
     else # Registered user rights
       if user.admin?
         can :manage, :all
-        cannot :read, Product, :platform => {:platform_type => 'personal'}
-        cannot :destroy, Subscribe
-        cannot :create, Subscribe
+        # Protection
         cannot :create, RegisterRequest
         cannot :approve, RegisterRequest, :approved => true
         cannot :reject, RegisterRequest, :rejected => true
+        cannot [:destroy, :create], Subscribe
+        # Act admin as simple user
+        cannot :read, Product, :platform => {:platform_type => 'personal'}
         cannot [:owned, :related], [BuildList, Platform]
-        #cannot :members, Project
+        cannot :membered, Project # list products which user members
       end
 
       if user.user?
@@ -47,7 +48,7 @@ class Ability
         can :read, Project, :visibility => 'open'
         can :read, Project, :owner_type => 'User', :owner_id => user.id
         can :read, Project, :owner_type => 'Group', :owner_id => user.group_ids
-        can([:read, :members], Project, read_relations_for('projects')) {|project| local_reader? project}
+        can([:read, :membered], Project, read_relations_for('projects')) {|project| local_reader? project}
         can(:write, Project) {|project| local_writer? project} # for grack
         can([:update, :sections, :manage_collaborators], Project) {|project| local_admin? project}
         can(:fork, Project) {|project| can? :read, project}
