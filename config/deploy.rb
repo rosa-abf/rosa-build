@@ -3,11 +3,16 @@ $:.unshift File.expand_path('.')
 $:.unshift(File.expand_path('./lib', ENV['rvm_path']))
 set :rvm_type, :user
 
+set :default_environment, {
+  'LANG' => 'en_US.UTF-8'
+}
+
+#set :rake, "#{rake} --trace"
+
 require 'rvm/capistrano'
 require 'bundler/capistrano'
 require 'delayed/recipes'
 require 'airbrake/capistrano'
-
 
 set :whenever_command, "bundle exec whenever"
 # require "whenever/capistrano"
@@ -61,6 +66,19 @@ namespace :deploy do
   task :symlink_pids, :roles => :app do
     run "cd #{fetch :shared_path}/tmp && ln -nfs ../pids pids"
   end
+  
+  # Speed up precompile (http://www.bencurtis.com/2011/12/skipping-asset-compilation-with-capistrano )
+  namespace :assets do
+    task :precompile, :roles => :web, :except => { :no_release => true } do
+      from = source.next_revision(current_revision)
+      if capture("cd #{latest_release} && #{source.local.log(from)} app/assets/ lib/assets/ vendor/assets/  | wc -l").to_i > 0
+        run %Q{cd #{latest_release} && #{rake} RAILS_ENV=#{rails_env} #{asset_env} assets:precompile}
+      else
+        logger.info "Skipping asset pre-compilation because there were no asset changes"
+      end
+    end
+  end
+  
 end
 
 after "deploy:finalize_update", "deploy:symlink_all"

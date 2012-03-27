@@ -3,7 +3,7 @@ ru:
     groups:
       list: Список
       new: Создать группу
-      edit: Редактировать
+      edit: Настройки
       members: Участники
       new_header: Новая группа
       edit_header: Редактировать
@@ -11,7 +11,7 @@ ru:
       show: Группа
       back_to_the_list: ⇐ К списку групп
       confirm_delete: Вы уверены, что хотите удалить эту группу?
-      edit_members: Изменить список участников
+      edit_members: Участники
       group: Группа
       description: Описание
       leave_group: Покинуть группу

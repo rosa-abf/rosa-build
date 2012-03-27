@@ -24,10 +24,11 @@
         .lefter= f.radio_button :ownership, 'owned', :class => 'niceRadio', :id => 'myradio1'
         .lefter= t("layout.build_lists.ownership.owned")
       .both
-      .table
-        .lefter= f.radio_button :ownership, 'related', :class => 'niceRadio', :id => 'myradio2'
-        .lefter= t("layout.build_lists.ownership.related")
-      .both
+      - unless @project
+        .table
+          .lefter= f.radio_button :ownership, 'related', :class => 'niceRadio', :id => 'myradio2'
+          .lefter= t("layout.build_lists.ownership.related")
+        .both
       .table
         .lefter= f.radio_button :ownership, 'index', :class => 'niceRadio', :id => 'myradio3'
         .lefter= t("layout.build_lists.ownership.index")

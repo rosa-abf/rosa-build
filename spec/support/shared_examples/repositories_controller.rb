@@ -19,21 +19,21 @@ shared_examples_for 'repository user with owner rights' do
 
   it 'should be able to perform add_project action with project_id param' do
     get :add_project, :id => @repository.id, :project_id => @project.id
-    response.should redirect_to(repository_path(@repository))
+    response.should redirect_to(platform_repository_path(@repository.platform, @repository))
   end
 
   it_should_behave_like 'repository user with add project rights'
 
   it 'should be able to perform remove_project action' do
     get :remove_project, :id => @repository.id, :project_id => @project.id
-    response.should redirect_to(repository_path(@repository))
+    response.should redirect_to(platform_repository_path(@repository.platform, @repository))
   end
 
   it_should_behave_like 'repository user with remove project rights'
 
   it 'should be able to perform destroy action' do
     delete :destroy, :id => @repository.id
-    response.should redirect_to(platform_path(@repository.platform.id))
+    response.should redirect_to(platform_repositories_path(@repository.platform))
   end
 
   it 'should change objects count after destroy action' do

@@ -9,10 +9,10 @@
       =issue.created_at.to_s(:long)
       =t("layout.by") if issue.creator
       =link_to(issue.creator.uname, user_path(issue.creator)) if issue.creator
-      .label.selected.tracker
-        -issue.labels.each do |label|
+    -issue.labels.each do |label|
+      .left.nomargin
+        .label.selected.tracker.left
           .labeltext.selected{:style => "background: ##{label.color};"}=label.name
-        .both
   %td.td3
     .avatar
       =link_to image_tag(avatar_url(issue.user), :alt => 'avatar'), user_path(issue.user) if issue.user

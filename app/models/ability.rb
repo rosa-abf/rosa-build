@@ -14,12 +14,9 @@ class Ability
 
     # Shared rights between guests and registered users
     can :forbidden, Platform
-    # TODO remove because auth callbacks skipped
-    can :auto_build, Project
     can [:publish_build, :status_build, :pre_build, :post_build, :circle_build, :new_bbdt], BuildList
 
     if user.guest? # Guest rights
-      can :create, User
       can [:create, :show_message], RegisterRequest
     else # Registered user rights
       if user.admin?

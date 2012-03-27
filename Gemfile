@@ -23,7 +23,7 @@ gem 'jbuilder'
 
 # gem 'rugged', '~> 0.16.0'
 gem 'grack', :git => 'git://github.com/rdblue/grack.git', :require => 'git_http'
-gem "grit", :git => 'git://github.com/chipiga/grit.git'
+gem "grit", :git => 'git://github.com/chipiga/grit.git' #, :path => '~/Sites/code/grit'
 gem 'charlock_holmes', '~> 0.6.8' #, :git => 'git://github.com/brianmario/charlock_holmes.git', :branch => 'bundle-icu'
 
 # Wiki

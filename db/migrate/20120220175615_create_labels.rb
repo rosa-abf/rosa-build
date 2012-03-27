@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class CreateLabels < ActiveRecord::Migration
   def change
     create_table :labels do |t|

@@ -1394,7 +1394,7 @@ h3.bmargin10 {
 	padding-top: 9px;
 }
 
-div.desription-top {
+div.description-top {
 	background: #dcecfa;
 	font-size: 12px;
 	color: #292929;
@@ -1404,13 +1404,13 @@ div.desription-top {
 	margin-bottom: 20px;
 }
 
-div.desription-top div.img {
+div.description-top div.img {
 	float: left;
 	padding-left: 10px;
 	margin-top: 14px;
 }
 
-div.desription-top input.name {
+div.description-top input.name {
 	float: left;
 	margin-top: 5px;
 	margin-left: 10px;
@@ -1424,7 +1424,7 @@ div.desription-top input.name {
 	padding: 2px 5px 3px;
 }
 
-div.desription-top div.role {
+div.description-top div.role {
 	float: left;
 	margin-top: 11px;
 	margin-left: 10px;
@@ -1441,7 +1441,7 @@ div.desription-top div.role {
 	margin-right: 2px;
 }
 
-div.desription-top div.fork {
+div.description-top div.fork {
 	margin-right: 10px;
 }
 
@@ -1693,31 +1693,31 @@ table.tablesorter.tracker td.td0{
 }
 
 table.tablesorter.tracker td.td3{
-	width: 120px;
+	min-width: 110px;
 	padding-top: 10px;
 }
 
 table.tablesorter.tracker td.td3 div.code {
-	height: 19px;
+	height: 23px;
 	width: 15px;
 	background: #FFF;
 	color: #009fe3;
 	border: 1px solid #83d1f2;
 	font-size: 16px;
-	padding: 1px 0px 0px 5px;
+	padding: 5px 0px 0px 5px;
 	float: left;
-	margin-right: 5px;
+	margin-right: 3px;
 	cursor: pointer;
 }
 
 table.tablesorter.tracker td.td3 div.avatar {
 	float: left;
-	margin-right: 5px;
+	margin-right: 8px;
 	cursor: pointer;
 }
 
 table.tablesorter.tracker td.td3 div.answers {
-	height: 20px;
+	height: 28px;
 	background: #FFF;
 	color: #009fe3;
 	border: 1px solid #83d1f2;
@@ -1729,11 +1729,12 @@ table.tablesorter.tracker td.td3 div.answers {
 table.tablesorter.tracker td.td3 div.answers div.pic {
 	float: left;
 	margin: 2px;
+	margin-top: 6px;
 }
 
 table.tablesorter.tracker td.td3 div.answers div.count {
 	float: left;
-	margin: 0px 5px 0px 2px;
+	margin: 4px 5px 0px 2px;
 }
 
 table.tablesorter.tracker div.smalltext {
@@ -1749,9 +1750,14 @@ div.label.selected.tracker {
 	clear: both;
 	cursor: default;
 	margin-left: 0px;
-	padding: 5px;
-	float: right;
-	margin-top: -6px;
+	padding: 0px 0px 0px 2px;
+	float: left;
+	margin-top: 3px;
+}
+
+div.right div.left.nomargin {
+	margin: 0px;
+	padding: 0px;
 }
 
 div.label.selected.tracker:hover {
@@ -2367,4 +2373,46 @@ table.tablesorter.width565 {
 
 article h3 a {
 	font-size: 14px;
+}
+
+
+/*Wiki*/
+
+div#wiki-content div.wrap {
+	width: 100%;
+	text-align: left;
+	border: none;
+	-webkit-box-shadow: none;
+	-moz-box-shadow: none;
+	box-shadow: none; 
+	background: #FFF;
+	margin-top: 20px;
+}
+
+div#wiki-content div#wiki-body {
+	float: left;
+	width: 410px;
+	margin: 0px 0px 20px;
+}
+
+div#wiki-content div#wiki-rightbar {
+	float: right;
+	width: 170px;
+}
+
+div#wiki-content div#wiki-footer {
+	clear: both;
+	margin: 20px 0px;
+}
+
+div#wiki-content div#wiki-rightbar, div#wiki-content div#wiki-footer {
+	background-color: #f7f7f7;
+    border: 1px solid #DDDDDD;
+    border-radius: 3px;
+    line-height: 1.5em;
+    padding: 10px 20px;
+}
+
+div#gollum-footer {
+	color: #727272;
 }

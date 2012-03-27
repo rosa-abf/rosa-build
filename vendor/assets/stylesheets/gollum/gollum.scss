@@ -152,20 +152,7 @@
     .has-rightbar #wiki-footer {
       width: 70%;
     }
-    
-    #wiki-footer #footer-content {
-      background-color: #f7f7f7;
-      border: 1px solid #ddd;
-      font-size: 1.2em;
-      line-height: 1.5em;
-      margin-top: 1.5em;
-      padding: 1em;
-      
-      border-radius: 0.5em;
-      -moz-border-radius: 0.5em;
-      -webkit-border-radius: 0.5em;
-    }
-    
+
     #wiki-footer #footer-content h3 {
       font-size: 1.2em;
       color: #333;
@@ -213,18 +200,6 @@
     border-top: 1px solid #ccc;
     margin: 1em 0 7em;
   }
-  
-  #gollum-footer p#last-edit {
-    font-size: 1.2em;
-    line-height: 1.6em;
-    color: #999;
-    margin: 0.9em 0;
-  }
-  
-    #gollum-footer p#last-edit span.username {
-      font-weight: bold;
-    }
-
 
 /* @section history */
 .history h1 {

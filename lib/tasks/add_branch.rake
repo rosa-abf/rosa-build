@@ -9,12 +9,12 @@ task :add_branch => :environment do
   Platform.find_by_name(dst_branch).repositories.each do |r|
     say "=== Process #{r.name} repo"
     r.projects.find_each do |p|
+      next if p.branches.map(&:name).include?(dst_branch)
       say "===== Process #{p.name} project"
       tmp_path = Rails.root.join('tmp', p.name)
       system("git clone #{p.path} #{tmp_path}")
-      system("cd #{tmp_path} && git checkout remotes/origin/#{src_branch}") or system("cd #{tmp_path} && git checkout master")
-      system("cd #{tmp_path} && git checkout -b #{dst_branch}")
-      system("cd #{tmp_path} && git push origin HEAD")
+      system("cd #{tmp_path} && git checkout remotes/origin/#{src_branch} || git checkout master")
+      system("cd #{tmp_path} && git checkout -b #{dst_branch} && git push origin HEAD")
       FileUtils.rm_rf tmp_path
     end
   end

@@ -33,6 +33,8 @@ en:
     wiki: Wiki
   platform_menu:
     settings: Settings
+  admins_menu_header: Admin
   admins_menu:
-    users: Пользователи
-    event_logs: Лог событий
+    users: Users
+    register_requests: Invites
+    event_logs: Event log

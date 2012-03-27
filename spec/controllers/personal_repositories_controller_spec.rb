@@ -11,19 +11,19 @@ end
 shared_examples_for 'personal repository owner' do
   it_should_behave_like 'personal repository viewer'
 
-  it 'should be able to perform add_project action' do
+  it 'should not be able to perform add_project action' do
     get :add_project, :id => @repository.id
-    response.should render_template(:projects_list)
+    response.should redirect_to(forbidden_path)
   end
 
-  it 'should be able to add project personal repository with project_id param' do
+  it 'should not be able to add project personal repository with project_id param' do
     get :add_project, :id => @repository.id, :project_id => @project.id
-    response.should redirect_to(personal_repository_path(@repository))
+    response.should redirect_to(forbidden_path)
   end
 
-  it 'should be able to perform remove_project action' do
+  it 'should not be able to perform remove_project action' do
     get :remove_project, :id => @repository.id, :project_id => @project.id
-    response.should redirect_to(personal_repository_path(@repository))
+    response.should redirect_to(forbidden_path)
   end
 
 
@@ -64,12 +64,11 @@ describe PersonalRepositoriesController do
     end
   end
 
-  context 'for admin' do
+  context 'for global admin' do
   	before(:each) do
   		@admin = Factory(:admin)
-  		set_session_for(@admin)
-
       @project.update_attribute(:owner, @admin)
+  		set_session_for(@admin)
 		end
 
     it_should_behave_like 'personal repository owner'
@@ -77,7 +76,7 @@ describe PersonalRepositoriesController do
     it_should_behave_like 'repository user with remove project rights'
   end
 
-  context 'for anyone except admin' do
+  pending 'for anyone except admin' do
   	before(:each) do
   		@user = Factory(:user)
   		set_session_for(@user)
@@ -88,12 +87,13 @@ describe PersonalRepositoriesController do
   context 'for owner user' do
   	before(:each) do
   		@user = Factory(:user)
-  		set_session_for(@user)
 
       @project.update_attribute(:owner, @user)
 
   		@repository.platform.update_attribute(:owner, @user)
   		@repository.platform.relations.create!(:object_type => 'User', :object_id => @user.id, :role => 'admin')
+
+  		set_session_for(@user)
 		end
 
     it_should_behave_like 'personal repository owner'
@@ -104,8 +104,8 @@ describe PersonalRepositoriesController do
   context 'for reader user' do
   	before(:each) do
   		@user = Factory(:user)
-  		set_session_for(@user)
   		@repository.platform.relations.create!(:object_type => 'User', :object_id => @user.id, :role => 'reader')
+  		set_session_for(@user)
 		end
 
     it_should_behave_like 'personal repository viewer'

@@ -65,7 +65,7 @@ class Project < ActiveRecord::Base
     end
   end
 
-  def build_for(platform, user, arch = 'x86_64') # Return i586 after mass rebuild
+  def build_for(platform, user, arch = 'i586') # Return i586 after mass rebuild
     arch = Arch.find_by_name(arch) if arch.acts_like?(:string)
     build_lists.create do |bl|
       bl.pl = platform
@@ -195,11 +195,8 @@ class Project < ActiveRecord::Base
     system("#{Rails.root.join('bin', 'import_srpm.sh')} #{srpm_path} #{path} #{branch_name} >> /dev/null 2>&1")
   end
 
-  class << self
-    def commit_comments(commit, project)
-     comments = Comment.where(:commentable_id => commit.id.hex, :commentable_type => 'Grit::Commit')
-     comments.each {|x| x.project = project; x.helper}
-    end
+  def self.commit_comments(commit, project)
+    comments = Comment.where(:commentable_id => commit.id.hex, :commentable_type => 'Grit::Commit')
   end
 
   def owner?(user)

@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class Label < ActiveRecord::Base
   has_many :labelings, :dependent => :destroy
   has_many :issues, :through => :labelings
