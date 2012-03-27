@@ -14,8 +14,7 @@ class Comment < ActiveRecord::Base
     class_eval { def commentable; project.git_repository.commit(commentable_id.to_s(16)); end } if commit_comment?
   end
 
-  attr_accessible :body, :commentable_id, :commentable_type, :project_id
-  attr_readonly :project_id
+  attr_accessible :body, :commentable_id, :commentable_type
 
   def own_comment?(user)
     user_id == user.id
