@@ -36,4 +36,5 @@ ru:
   admins_menu_header: Центр управления
   admins_menu:
     users: Пользователи
+    register_requests: Инвайты
     event_logs: Лог событий
