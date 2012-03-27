@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class RemoveIsTemplateFromProducts < ActiveRecord::Migration
   def up
     remove_column :products, :is_template

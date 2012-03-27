@@ -24,6 +24,7 @@ ru:
     create: Создать
     update: Обновить
     delete: Удалить
+    delete_selected: Удалить выбранное
     save: Сохранить
     clone: Клонировать
     search_by_name: Фильтр по имени

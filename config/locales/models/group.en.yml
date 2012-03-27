@@ -3,7 +3,7 @@ en:
     groups:
       list: List
       new: Create
-      edit: Edit
+      edit: Settings
       members: Members
       new_header: New group
       edit_header: Edit
@@ -11,7 +11,7 @@ en:
       show: Group
       back_to_the_list: ⇐ List of groups
       confirm_delete: Are you sure to remove this group?
-      edit_members: Edit members
+      edit_members: Members
       group: Group
       description: Descripton
       leave_group: Leave group

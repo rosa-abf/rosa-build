@@ -24,6 +24,7 @@ en:
     create: Create
     update: Update
     delete: Erase
+    delete_selected: Remove selected
     save: Save
     clone: Clone
     search_by_name: Filter by name

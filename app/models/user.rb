@@ -1,6 +1,6 @@
 # -*- encoding : utf-8 -*-
 class User < ActiveRecord::Base
-  ROLES = ['admin']
+  ROLES = ['', 'admin', 'banned']
   LANGUAGES_FOR_SELECT = [['Russian', 'ru'], ['English', 'en']]
   LANGUAGES = LANGUAGES_FOR_SELECT.map(&:last)
   MAX_AVATAR_SIZE = 5.megabyte
@@ -42,14 +42,16 @@ class User < ActiveRecord::Base
   validates :role, :inclusion => {:in => ROLES}, :allow_blank => true
   validates :language, :inclusion => {:in => LANGUAGES}, :allow_blank => true
 
-  attr_accessible :email, :password, :password_confirmation, :current_password, :remember_me, :login, :name, :ssh_key, :uname, :language,
+  attr_accessible :email, :password, :password_confirmation, :current_password, :remember_me, :login, :name, :uname, :language,
                   :site, :company, :professional_experience, :location, :avatar
   attr_readonly :uname, :own_projects_count
-  attr_readonly :uname
   attr_accessor :login
 
   scope :search_order, order("CHAR_LENGTH(uname) ASC")
   scope :search, lambda {|q| where("uname ILIKE ?", "%#{q}%")}
+  scope :banned, where(:role => 'banned')
+  scope :admin, where(:role => 'admin')
+  scope :real, where(:role => ['', nil])
 
   after_create lambda { self.create_notifier }
 
@@ -63,6 +65,10 @@ class User < ActiveRecord::Base
 
   def guest?
     new_record?
+  end
+
+  def access_locked?
+      role == 'banned'
   end
 
   def fullname

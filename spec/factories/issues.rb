@@ -4,5 +4,6 @@ Factory.define(:issue) do |p|
   p.body { Factory.next(:string) }
   p.association :project, :factory => :project
   p.association :user, :factory => :user
+  p.association :creator, :factory => :user
   p.status "open"
 end

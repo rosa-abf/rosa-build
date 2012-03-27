@@ -19,5 +19,8 @@
 
 :javascript
   $(function() {
-    var editor = CodeMirror.fromTextArea(document.getElementById('code'), {lineNumbers: true, mode: '#{@blob.raw_mime_type.content_type}', theme: 'eclipse'});
+    var editor = CodeMirror.fromTextArea(document.getElementById('code'), {
+      lineNumbers: true,
+      mode: '#{@blob.raw_mime_type.content_type}'
+    });
   });

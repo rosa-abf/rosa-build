@@ -7,15 +7,17 @@
     .logo
   / Page
   %article
-    - is_error = (flash.try(:first).try(:first) == :alert && flash.try(:first).try(:last) == t('devise.failure.invalid')) # Trash
+    - if flash.try(:first).try(:first) == :alert && [t('devise.failure.invalid'), t('devise.failure.locked')].include?(flash.try(:first).try(:last))
+      - error = flash.first.last
+    - error ||= false
     - login = t('devise.sessions.login'); password = t('devise.sessions.password')
     =hidden_field_tag :login_default, login
     =hidden_field_tag :password_default, password
     = form_for(resource, :as => resource_name, :url => session_path(resource_name), :html => { :class => "form login" }) do |f|
       %h1= title t("layout.sessions.sign_in_header")
-      = f.text_field :login, :class => "registartion-input #{is_error ? "registartion-input-error" : ''}", :value => login
+      = f.text_field :login, :class => "registartion-input #{error ? "registartion-input-error" : ''}", :value => login
       %br/
-      = f.password_field :password, :class => "registartion-input #{is_error ? "registartion-input-error" : ''}", :value => password
+      = f.password_field :password, :class => "registartion-input #{error ? "registartion-input-error" : ''}", :value => password
       %br/
       .registration
         .remember
@@ -30,4 +32,4 @@
   .forgot
     .password
       %p= link_to t("layout.devise.shared_links.forgot_password"), new_password_path(resource_name)
-  =showDeviseHintError(:login_error, is_error ? t('devise.failure.invalid') : false)
+  =showDeviseHintError(:login_error, error)

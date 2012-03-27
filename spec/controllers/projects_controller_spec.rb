@@ -76,12 +76,6 @@ describe ProjectsController do
 		end
 
     it_should_behave_like 'projects user with reader rights'
-
-    pending 'should be able to perform show action' do
-      get :show, :id => @project.id
-      response.should render_template(:show)
-    end
-
   end
 
   context 'for writer user' do

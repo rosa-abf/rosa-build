@@ -1,12 +1,7 @@
 %h3.fix.bpadding10= @user.uname
 
 = form_for @user, :url => user_path(@user), :html => { :class => :form } do |f|
-  - if current_user.admin? 
-    .leftlist
-      = f.label :role, t("activerecord.attributes.user.role"), :class => :label
-    .rightlist
-      = f.select :role, User::ROLES, :include_blank => true
-  = render :partial => "form", :locals => {:f => f}
+  = render :partial => "users/form", :locals => {:f => f}
 
 .notify
   %p= t('layout.users.public_data_edit_warning')

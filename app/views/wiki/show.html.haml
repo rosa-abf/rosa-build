@@ -1,23 +1,19 @@
 / = render 'gollum_includes'
 / = render 'project_short'
 = render 'projects/submenu'
-
-%h3.wiki
-  = @page.name
-  = "(#{t("wiki.preview")})" if action_name == 'preview'
+.left
+  %h3
+    = @page.name
+    = "(#{t("wiki.preview")})" if action_name == 'preview'
 - unless action_name == 'preview'
   .r
-    = link_to t("wiki.page_history"), history_project_wiki_path(@project, escaped_name), :class => 'button width100'
+    = link_to t("wiki.page_history"), history_project_wiki_path(@project, escaped_name), :class => 'button'
   .r
     - if @editable
-      = link_to t("wiki.edit_page"), edit_project_wiki_path(@project, escaped_name), :class => "button width100"
+      = link_to t("wiki.edit_page"), edit_project_wiki_path(@project, escaped_name), :class => 'button'
   .r
     - if can? :write, @project
-      = link_to t("wiki.new_page"), '#', :'data-url' => project_wiki_index_path(@project), :id => 'minibutton-new-page', :class => 'button width100'
-
-%br
-%br
-%br
+      = link_to t("wiki.new_page"), '#', :'data-url' => project_wiki_index_path(@project), :id => 'minibutton-new-page', :class => 'button'
 .both
 / = render 'searchbar'
 = render "page"

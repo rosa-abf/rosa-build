@@ -65,7 +65,7 @@ class Project < ActiveRecord::Base
     end
   end
 
-  def build_for(platform, user, arch = 'x86_64') # Return i586 after mass rebuild
+  def build_for(platform, user, arch = 'i586') # Return i586 after mass rebuild
     arch = Arch.find_by_name(arch) if arch.acts_like?(:string)
     build_lists.create do |bl|
       bl.pl = platform

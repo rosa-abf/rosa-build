@@ -5,14 +5,19 @@ Rosa::Application.routes.draw do
 
   devise_scope :user do
     get '/users/auth/:provider' => 'users/omniauth_callbacks#passthru'
-    get '/user' => 'users#profile', :as => 'edit_profile'
-    put '/user' => 'users#update', :as => 'update_profile'
-    get '/users/:id/edit' => 'users#profile', :as => 'edit_user'
-    put '/users/:id/edit' => 'users#update', :as => 'update_user'
+    get '/user' => 'users#profile', :as => :edit_profile
+    put '/user' => 'users#update', :as => :update_profile
+    get '/users' => 'admin/users#index', :as => :users
+    get '/users/new' => 'admin/users#new', :as => :new_user
+    get '/users/list' => 'admin/users#list', :as => :users_list
+    post '/users/create' => 'admin/users#create', :as => :create_user
+    get '/users/:id/edit' => 'admin/users#profile', :as => :edit_user
+    put '/users/:id/edit' => 'admin/users#update', :as => :update_user
+    delete '/users/:id/delete' => 'admin/users#destroy', :as => :delete_user
   end
   devise_for :users, :controllers => {:omniauth_callbacks => 'users/omniauth_callbacks'}
 
-  resources :users do
+  resources :users, :only => [:show, :profile, :update] do
     resources :groups, :only => [:new, :create, :index]
     collection do
       resources :register_requests, :only => [:index, :new, :create, :show_message, :approve, :reject] do
@@ -27,6 +32,7 @@ Rosa::Application.routes.draw do
     namespace :settings do
       resource :notifier, :only => [:show, :update]
     end
+    resources :platforms, :only => [:new, :create]
   end
   match 'users/:id/settings/private' => 'users#private', :as => :user_private_settings, :via => :get
   match 'users/:id/settings/private' => 'users#private', :as => :user_private_settings, :via => :put
@@ -182,13 +188,13 @@ Rosa::Application.routes.draw do
         delete :remove
       end
     end
-  end
-
-  resources :users, :groups do
     resources :platforms, :only => [:new, :create]
-
-#    resources :repositories, :only => [:new, :create]
   end
+
+#  resources :users, :groups do
+#    resources :platforms, :only => [:new, :create]
+#    resources :repositories, :only => [:new, :create]
+#  end
 
   resources :activity_feeds, :only => [:index]
 
