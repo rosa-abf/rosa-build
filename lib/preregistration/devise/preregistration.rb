@@ -34,6 +34,7 @@ module Preregistration
         redirect_to new_register_request_path and return unless req and resource.email == req.email
 
         @invitation_token = req.token
+        resource.skip_confirmation!
         if resource.save
           if resource.active_for_authentication?
             set_flash_message :notice, :signed_up if is_navigational_format?
