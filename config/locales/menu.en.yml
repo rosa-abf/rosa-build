@@ -36,4 +36,5 @@ en:
   admins_menu_header: Admin
   admins_menu:
     users: Пользователи
+    register_requests: Invites
     event_logs: Лог событий
