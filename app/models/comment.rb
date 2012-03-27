@@ -4,19 +4,18 @@ class Comment < ActiveRecord::Base
   belongs_to :user
   belongs_to :project
 
-  validates :body, :user_id, :commentable_id, :commentable_type, :presence => true
+  validates :body, :user_id, :commentable_id, :commentable_type, :project_id, :presence => true
 
   default_scope order('created_at')
 
   after_create :subscribe_on_reply, :unless => lambda {|c| c.commit_comment?}
-  after_create :helper, :if => lambda {|c| c.commit_comment?}
   after_create :subscribe_users
-
-  attr_accessible :body, :commentable_id, :commentable_type
-
-  def helper
+  after_initialize do |comment|
     class_eval { def commentable; project.git_repository.commit(commentable_id.to_s(16)); end } if commit_comment?
   end
+
+  attr_accessible :body, :commentable_id, :commentable_type
+  attr_readonly :commentable_id, :commentable_type
 
   def own_comment?(user)
     user_id == user.id

@@ -68,7 +68,6 @@ class CommentsController < ApplicationController
     @comment = Comment.find(params[:id])
     if @comment.commit_comment?
       @comment.project = @project
-      @comment.helper
     end
   end
 

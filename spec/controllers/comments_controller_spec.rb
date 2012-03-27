@@ -83,16 +83,14 @@ describe CommentsController do
 
     any_instance_of(Project, :versions => ['v1.0', 'v2.0'])
 
-    @request.env['HTTP_REFERER'] = project_issue_path(@project, @issue)
+    @user = Factory(:user)
+    set_session_for(@user)
+    @own_comment = Factory(:comment, :commentable => @issue, :user => @user, :project_id => @project.id)
   end
 
   context 'for project admin user' do
     before(:each) do
-      @user = Factory(:user)
-      set_session_for(@user)
       @project.relations.create!(:object_type => 'User', :object_id => @user.id, :role => 'admin')
-
-      @own_comment = Factory(:comment, :commentable => @issue, :user => @user, :project_id => @project.id)
     end
 
     it_should_behave_like 'user with create comment rights'
@@ -103,12 +101,7 @@ describe CommentsController do
 
   context 'for project owner user' do
     before(:each) do
-      @user = Factory(:user)
-      set_session_for(@user)
       @project.update_attribute(:owner, @user)
-      @project.relations.create!(:object_type => 'User', :object_id => @user.id, :role => 'admin')
-
-      @own_comment = Factory(:comment, :commentable => @issue, :user => @user, :project_id => @project.id)
     end
 
    it_should_behave_like 'user with create comment rights'
@@ -119,11 +112,7 @@ describe CommentsController do
 
   context 'for project reader user' do
     before(:each) do
-      @user = Factory(:user)
-      set_session_for(@user)
       @project.relations.create!(:object_type => 'User', :object_id => @user.id, :role => 'reader')
-
-      @own_comment = Factory(:comment, :commentable => @issue, :user => @user, :project_id => @project.id)
     end
 
    it_should_behave_like 'user with create comment rights'
@@ -134,11 +123,7 @@ describe CommentsController do
 
   context 'for project writer user' do
     before(:each) do
-      @user = Factory(:user)
-      set_session_for(@user)
       @project.relations.create!(:object_type => 'User', :object_id => @user.id, :role => 'writer')
-
-      @own_comment = Factory(:comment, :commentable => @issue, :user => @user, :project_id => @project.id)
     end
 
    it_should_behave_like 'user with create comment rights'
