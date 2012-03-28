@@ -80,7 +80,7 @@ module RailsDatatables
             $.getJSON( sSource, aoData, function (json) {
               fnCallback(json);
             } );
-          }," if ajax_data_source}
+          }," if ajax_source}
           "bProcessing": true
         })#{append};
 

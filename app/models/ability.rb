@@ -28,7 +28,7 @@ class Ability
         cannot :approve, RegisterRequest, :approved => true
         cannot :reject, RegisterRequest, :rejected => true
         cannot [:owned, :related], [BuildList, Platform]
-        #cannot :members, Project
+        cannot :members, Project
       end
 
       if user.user?
