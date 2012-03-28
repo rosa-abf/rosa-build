@@ -2,5 +2,6 @@
   %td= product_build_list.id
   %td= product_build_list.human_status
   %td= link_to nil, product_build_list.container_path
+  %td= link_to product_build_list.product, platform_product_path(product_build_list.product.platform, product_build_list.product)
   %td= link_to image_tag('x.png'), platform_product_product_build_list_path(product_build_list.product.platform, product_build_list.product, product_build_list), :method => :delete, :confirm => t("layout.confirm") if can? :destroy, product_build_list
   %td= l(product_build_list.notified_at, :format => :long)
