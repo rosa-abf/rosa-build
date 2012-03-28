@@ -27,9 +27,9 @@ class Platform < ActiveRecord::Base
   after_update :update_owner_relation
 
   scope :search_order, order("CHAR_LENGTH(name) ASC")
-  scope :search, lambda {|q| where("name ILIKE ?", "%#{q}%").open}
+  scope :search, lambda {|q| where("name ILIKE ?", "%#{q.strip}%")}
   scope :by_visibilities, lambda {|v| where(:visibility => v)}
-  scope :open, where(:visibility => 'open')
+  scope :opened, where(:visibility => 'open')
   scope :hidden, where(:visibility => 'hidden')
   scope :main, where(:platform_type => 'main')
   scope :personal, where(:platform_type => 'personal')
@@ -43,7 +43,7 @@ class Platform < ActiveRecord::Base
     pair = blank_pair if pair.blank?
     urpmi_commands = ActiveSupport::OrderedHash.new
 
-    Platform.main.open.where(:distrib_type => APP_CONFIG['distr_types'].first).each do |pl|
+    Platform.main.opened.where(:distrib_type => APP_CONFIG['distr_types'].first).each do |pl|
       urpmi_commands[pl.name] = {}
       local_pair = pl.id != self.id ? blank_pair : pair
       head = hidden? ? "http://#{local_pair[:login]}@#{local_pair[:pass]}:#{host}/private/" : "http://#{host}/downloads/"

@@ -49,7 +49,8 @@ class User < ActiveRecord::Base
   attr_accessor :login
 
   scope :search_order, order("CHAR_LENGTH(uname) ASC")
-  scope :search, lambda {|q| where("uname ILIKE ?", "%#{q}%")}
+  scope :search, lambda {|q| where("uname ILIKE ?", "%#{q.strip}%")}
+  scope :opened, where('1=1')
   scope :banned, where(:role => 'banned')
   scope :admin, where(:role => 'admin')
   scope :real, where(:role => ['', nil])
