@@ -4,7 +4,7 @@ class ProjectsController < ApplicationController
   load_and_authorize_resource
 
   def index
-    @projects = Project.accessible_by(current_ability, :members)
+    @projects = Project.accessible_by(current_ability, :membered)
 
     #puts prepare_list(@projects).inspect
     respond_to do |format|
