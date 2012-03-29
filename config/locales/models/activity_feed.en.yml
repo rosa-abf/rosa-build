@@ -20,13 +20,13 @@ en:
 
     bodies:
       new_comment_notification: 
-        title: '%{user_link} has been added a new comment'
+        title: '%{user_link} added a new comment'
         content: in issue %{issue_link}
         commit_content: in commit %{commit_link}
-      new_issue_notification: '%{user_link} has been added a new <a href="%{issue_link}">issue</a>'
+      new_issue_notification: '%{user_link} added a new <a href="%{issue_link}">issue</a>'
       new_user_notification: 
         title: Hello, %{user_name}.
-        content: You have been sign up to project «ROSA Build System» and now can sign in.
+        content: You have registered in project «ROSA ABF» and now you can sign in.
         email: ==Your email %{user_email}
         password: ==Your password %{user_password}
       issue_assign_notification: You have been assigned to issue %{issue_link}
@@ -34,11 +34,11 @@ en:
       invite_approve_notification: Invite to ABF
       project: in project %{project_link}
       delete_branch: Branch %{branch_name} has been deleted
-      create_branch: '%{user_link} has been created a new branch %{branch_name}'
-      update_branch: '%{user_link} has been pushed to branch %{branch_name}'
+      create_branch: '%{user_link} created a new branch %{branch_name}'
+      update_branch: '%{user_link} pushed to branch %{branch_name}'
       build_task: 'Build <a href="%{task_link}">task #%{task_num}</a>'
       build_status:
         published: published successfully
-        success: complete successfully
-        failed: complete with error "%{error}"
-        pending: build waiting
+        success: completed successfully
+        failed: completed with error "%{error}"
+        pending: build is pending

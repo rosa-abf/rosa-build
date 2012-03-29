@@ -10,15 +10,15 @@ en:
       groups: Groups
       show: User
       back_to_the_list: ⇐ List of users
-      confirm_delete: Are you sure to remove this user?
+      confirm_delete: Are you sure you want to remove this user?
       own_projects: My projects
-      part_projects: Participate projects
+      part_projects: Projects participation
       filter_header: Filter
 
   flash:
     user:
-      saved: User saved
-      save_error: User data saves error
+      saved: User saved successtully
+      save_error: Unable to save user data
       destroyed: User account deleted
 
   activerecord:

@@ -2,36 +2,36 @@ en:
   event_log:
     controllers:
       products_controller: 'Product Management'
-      platforms_controller: 'Management of platforms'
-      repositories_controller: 'Manage Repositories'
-      projects_controller: 'Project Management'
-      build_lists_controller: 'Management index chart'
-      auto_build_lists_controller: 'Control automatic build'
-      product_build_lists_controller: 'Build management products'
+      platforms_controller: 'Platforms Management'
+      repositories_controller: 'Repositories Management'
+      projects_controller: 'Projects Management'
+      build_lists_controller: 'Build lists management'
+      auto_build_lists_controller: 'Automatic builds management'
+      product_build_lists_controller: 'Products build management'
       'devise/registrations_controller': 'User Registration'
       'devise/sessions_controller': 'User Authentication'
-      'devise/passwords_controller': 'password recovery'
-      'users/omniauth_callbacks_controller': 'External authentication of users'
+      'devise/passwords_controller': 'Password recovery'
+      'users/omniauth_callbacks_controller': 'External users authentication'
       rpc_controller: 'XML RPC'
       private_users_controller: 'access to private repositories'
-      personal_repositories_controller: 'Managing personal repositories'
+      personal_repositories_controller: 'Personal repositories management'
     actions:
       'devise/sessions_controller':
-        create: 'input'
+        create: 'enter'
         destroy: 'exit'
       'users/omniauth_callbacks_controller':
         open_id: 'login via OpenID'
       projects_controller:
-        auto_build: 'sent to the automatic assembly'
+        auto_build: 'sent to automatic build'
       build_lists_controller:
-        create: 'sent to assembly'
-        cancel: 'assembly abolished'
-        publish: 'assembly issued'
+        create: 'sent to build'
+        cancel: 'build abolished'
+        publish: 'build published'
       auto_build_lists_controller:
         create: 'assigned'
         destroy: 'canceled'
       product_build_lists_controller:
-        create: 'sent to assembly'
+        create: 'sent to build'
       rpc_controller:
         xe_index: inquiry
       private_users_controller:
@@ -43,11 +43,11 @@ en:
       update: 'updated'
       destroy: 'deleted'
     notices:
-      platforms_list: a list of platforms
+      platforms_list: list of platforms
       users_list: list of custom projects
-      versions_list: version list
-      status: the status of the assembly
-      project_build: build package
+      versions_list: list of versions
+      status: build status
+      project_build: package build
 
   layout:
     event_logs:

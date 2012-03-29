@@ -74,5 +74,5 @@ ru:
         distrib_type: Тип дистрибутива
         visibility: Статус
         visibility_types:
-          open: Открытый
-          hidden: Закрытый
+          open: Публичный
+          hidden: Приватный

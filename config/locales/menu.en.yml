@@ -4,7 +4,7 @@ en:
     personal_repository: My repository
     products: Products
     categories: Catalogue
-    auto_build_lists: Automated build
+    auto_build_lists: Automated builds
     downloads: Statistics
   top_menu:
     platforms: Platforms
@@ -13,7 +13,7 @@ en:
     groups: Groups
   bottom_menu:
     copyright: ROSA Lab © 2012
-    about: About company
+    about: About the company
     contacts: Contacts
     tos: Terms Of Service
     security: Security
@@ -39,3 +39,4 @@ en:
     register_requests: Invites
     event_logs: Event log
     downloads: Download statistic
+    
