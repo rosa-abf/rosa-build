@@ -7,9 +7,11 @@
       = stylesheet_link_tag "login"
     - elsif ['registrations', 'passwords'].include?(controller_name) && ['new', 'create', 'edit', 'update'].include?(action_name)
       = stylesheet_link_tag "reg_session"
-    = csrf_meta_tag
+    /[if lt IE 9]
+      = javascript_include_tag 'http://html5shiv.googlecode.com/svn/trunk/html5.js'
     = javascript_include_tag "login"
-    
+    = csrf_meta_tag
+
   %body
     -# render :partial => "layouts/flashes"
     = yield
