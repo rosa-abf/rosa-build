@@ -68,7 +68,7 @@ describe BuildListsController do
 
   context 'crud' do
     before(:each) do
-      platform = Factory(:platform_with_repos)
+      platform = FactoryGirl.create(:platform_with_repos)
       @create_params = {
         :build_list => { 
           :project_version => 'latest_master',
@@ -76,7 +76,7 @@ describe BuildListsController do
           :update_type => 'security',
           :include_repos => [platform.repositories.first.id]
         },
-        :arches => [Factory(:arch).id],
+        :arches => [FactoryGirl.create(:arch).id],
         :bpls => [platform.id]
       }
       any_instance_of(Project, :versions => ['v1.0', 'v2.0'])
@@ -91,24 +91,24 @@ describe BuildListsController do
 
     context 'for user' do
       before(:each) do
-        @build_list = Factory(:build_list_core)
+        @build_list = FactoryGirl.create(:build_list_core)
         @project = @build_list.project
         @owner_user = @project.owner
-        @member_user = Factory(:user)
+        @member_user = FactoryGirl.create(:user)
         rel = @project.relations.build(:role => 'reader')
         rel.object = @member_user
         rel.save
-        @user = Factory(:user)
+        @user = FactoryGirl.create(:user)
         set_session_for(@user)
         @show_params = {:project_id => @project.id, :id => @build_list.id}
       end
   
       context 'for all build lists' do
         before(:each) do
-          @build_list1 = Factory(:build_list_core)
-          @build_list2 = Factory(:build_list_core, :project => Factory(:project, :visibility => 'hidden'))
-          @build_list3 = Factory(:build_list_core, :project => Factory(:project, :owner => @user, :visibility => 'hidden'))
-          @build_list4 = Factory(:build_list_core, :project => Factory(:project, :visibility => 'hidden'))
+          @build_list1 = FactoryGirl.create(:build_list_core)
+          @build_list2 = FactoryGirl.create(:build_list_core, :project => FactoryGirl.create(:project, :visibility => 'hidden'))
+          @build_list3 = FactoryGirl.create(:build_list_core, :project => FactoryGirl.create(:project, :owner => @user, :visibility => 'hidden'))
+          @build_list4 = FactoryGirl.create(:build_list_core, :project => FactoryGirl.create(:project, :visibility => 'hidden'))
           @build_list4.project.relations.create :role => 'reader', :object_id => @user.id, :object_type => 'User'
         end
 
@@ -168,21 +168,21 @@ describe BuildListsController do
 
     context 'for group' do
       before(:each) do
-        @owner_group = Factory(:group)
-        @owner_user = Factory(:user)
+        @owner_group = FactoryGirl.create(:group)
+        @owner_user = FactoryGirl.create(:user)
         @owner_group.objects.create :role => 'reader', :object_id => @owner_user.id, :object_type => 'User'
-        @member_group = Factory(:group)
-        @member_user = Factory(:user)
+        @member_group = FactoryGirl.create(:group)
+        @member_user = FactoryGirl.create(:user)
         @member_group.objects.create :role => 'reader', :object_id => @member_user.id, :object_type => 'User'
 
-        @group = Factory(:group)
-        @user = Factory(:user)
+        @group = FactoryGirl.create(:group)
+        @user = FactoryGirl.create(:user)
         @group.objects.create :role => 'reader', :object_id => @user.id, :object_type => 'User'
 
-        @project = Factory(:project, :owner => @owner_group)
+        @project = FactoryGirl.create(:project, :owner => @owner_group)
         @project.relations.create :role => 'reader', :object_id => @member_group.id, :object_type => 'Group'
 
-        @build_list = Factory(:build_list_core, :project => @project)
+        @build_list = FactoryGirl.create(:build_list_core, :project => @project)
 
         set_session_for(@user)
         @show_params = {:project_id => @project.id, :id => @build_list.id}
@@ -190,10 +190,10 @@ describe BuildListsController do
   
       context 'for all build lists' do
         before(:each) do
-          @build_list1 = Factory(:build_list_core)
-          @build_list2 = Factory(:build_list_core, :project => Factory(:project, :visibility => 'hidden'))
-          @build_list3 = Factory(:build_list_core, :project => Factory(:project, :owner => @group, :visibility => 'hidden'))
-          @build_list4 = Factory(:build_list_core, :project => Factory(:project, :visibility => 'hidden'))
+          @build_list1 = FactoryGirl.create(:build_list_core)
+          @build_list2 = FactoryGirl.create(:build_list_core, :project => FactoryGirl.create(:project, :visibility => 'hidden'))
+          @build_list3 = FactoryGirl.create(:build_list_core, :project => FactoryGirl.create(:project, :owner => @group, :visibility => 'hidden'))
+          @build_list4 = FactoryGirl.create(:build_list_core, :project => FactoryGirl.create(:project, :visibility => 'hidden'))
           @build_list4.project.relations.create :role => 'reader', :object_id => @group.id, :object_type => 'Group'
         end
 
@@ -253,7 +253,7 @@ describe BuildListsController do
     end
 
     context 'for admin' do
-      before(:each) { set_session_for Factory(:admin) }
+      before(:each) { set_session_for FactoryGirl.create(:admin) }
 
       it "should be able to perform index action without exception" do
         any_instance_of(XMLRPC::Client) do |xml_rpc|
@@ -271,12 +271,12 @@ describe BuildListsController do
   context 'filter' do
     
     before(:each) do 
-      set_session_for Factory(:admin)
+      set_session_for FactoryGirl.create(:admin)
 
-      @build_list1 = Factory(:build_list_core)
-      @build_list2 = Factory(:build_list_core)
-      @build_list3 = Factory(:build_list_core)
-      @build_list4 = Factory(:build_list_core, :created_at => (Time.now - 1.day),
+      @build_list1 = FactoryGirl.create(:build_list_core)
+      @build_list2 = FactoryGirl.create(:build_list_core)
+      @build_list3 = FactoryGirl.create(:build_list_core)
+      @build_list4 = FactoryGirl.create(:build_list_core, :created_at => (Time.now - 1.day),
                              :project => @build_list3.project, :pl => @build_list3.pl,
                              :arch => @build_list3.arch)
     end
@@ -310,7 +310,7 @@ describe BuildListsController do
   end
 
   context 'callbacks' do
-    let(:build_list) { Factory(:build_list_core) }
+    let(:build_list) { FactoryGirl.create(:build_list_core) }
 
     describe 'publish_build' do
       before { test_git_commit(build_list.project); build_list.update_attribute :commit_hash, build_list.project.git_repository.commits('master').last.id }

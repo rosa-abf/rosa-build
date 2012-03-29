@@ -5,11 +5,11 @@ require "cancan/matchers"
 def set_commentable_data
   @ability = Ability.new(@user)
 
-  @project = Factory(:project)
-  @issue = Factory(:issue, :project_id => @project.id, :creator => @user)
+  @project = FactoryGirl.create(:project)
+  @issue = FactoryGirl.create(:issue, :project_id => @project.id, :creator => @user)
 
-  @comment = Factory(:comment, :commentable => @issue, :user => @user, :project => @project)
-  @stranger_comment = Factory(:comment, :commentable => @issue, :user => @stranger, :project => @project)
+  @comment = FactoryGirl.create(:comment, :commentable => @issue, :user => @user, :project => @project)
+  @stranger_comment = FactoryGirl.create(:comment, :commentable => @issue, :user => @stranger, :project => @project)
 
   any_instance_of(Project, :versions => ['v1.0', 'v2.0'])
 end
@@ -18,8 +18,8 @@ describe Comment do
   before { stub_rsync_methods }
   context 'for global admin user' do
     before(:each) do
-      @user = Factory(:admin)
-      @stranger = Factory(:user)
+      @user = FactoryGirl.create(:admin)
+      @stranger = FactoryGirl.create(:user)
 
       set_commentable_data
     end
@@ -51,8 +51,8 @@ describe Comment do
 
   context 'for project admin user' do
     before(:each) do
-      @user = Factory(:user)
-      @stranger = Factory(:user)
+      @user = FactoryGirl.create(:user)
+      @stranger = FactoryGirl.create(:user)
 
       set_commentable_data
 
@@ -79,8 +79,8 @@ describe Comment do
 
   context 'for project owner user' do
     before(:each) do
-      @user = Factory(:user)
-      @stranger = Factory(:user)
+      @user = FactoryGirl.create(:user)
+      @stranger = FactoryGirl.create(:user)
 
       set_commentable_data
 
@@ -107,8 +107,8 @@ describe Comment do
 
   context 'for simple user' do
     before(:each) do
-      @user = Factory(:user)
-      @stranger = Factory(:user)
+      @user = FactoryGirl.create(:user)
+      @stranger = FactoryGirl.create(:user)
 
       set_commentable_data
     end

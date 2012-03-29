@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class ConfirmAllRegisteredUsers < ActiveRecord::Migration
   def up
     User.all.each { |user| user.confirm! }

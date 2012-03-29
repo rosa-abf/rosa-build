@@ -1,6 +1,8 @@
 # -*- encoding : utf-8 -*-
-Factory.define(:group) do |g|
-  g.uname { Factory.next(:uname) }
-  g.description 'Description'
-  g.association :owner, :factory => :user
+FactoryGirl.define do
+  factory :group do
+    uname { FactoryGirl.generate(:uname) }
+    description 'Description'
+    association :owner, :factory => :user
+  end
 end

@@ -1,13 +1,4 @@
 GIT
-  remote: git://github.com/chipiga/grit.git
-  revision: 696b0967cb7e6bac044569d898e5acef431d4f97
-  specs:
-    grit (2.4.1)
-      diff-lcs (~> 1.1)
-      mime-types (~> 1.15)
-      posix-spawn (~> 0.3.6)
-
-GIT
   remote: git://github.com/chipiga/redhillonrails_core.git
   revision: 5f58167c41882890c223168b0a5521d99e8d92aa
   branch: rails31
@@ -20,6 +11,15 @@ GIT
   revision: 020be3fef3fb308b9d214252522aa5945bf6584a
   specs:
     grack (0.2.0)
+
+GIT
+  remote: git://github.com/warpc/grit.git
+  revision: 696b0967cb7e6bac044569d898e5acef431d4f97
+  specs:
+    grit (2.4.1)
+      diff-lcs (~> 1.1)
+      mime-types (~> 1.15)
+      posix-spawn (~> 0.3.6)
 
 GEM
   remote: http://rubygems.org/
@@ -108,6 +108,7 @@ GEM
       orm_adapter (~> 0.0.3)
       railties (~> 3.1)
       warden (~> 1.1.1)
+    diff-display (0.0.1)
     diff-lcs (1.1.3)
     erubis (2.7.0)
     eventmachine (0.12.10)
@@ -115,10 +116,10 @@ GEM
     execjs (1.3.0)
       multi_json (~> 1.0)
     expression_parser (0.9.0)
-    factory_girl (2.6.4)
-      activesupport (>= 2.3.9)
-    factory_girl_rails (1.7.0)
-      factory_girl (~> 2.6.0)
+    factory_girl (3.0.0)
+      activesupport (>= 3.0.0)
+    factory_girl_rails (3.0.0)
+      factory_girl (~> 3.0.0)
       railties (>= 3.0.0)
     fssm (0.2.8.1)
     github-markup (0.7.1)
@@ -150,15 +151,15 @@ GEM
       railties (>= 3.2.0, < 5.0)
       thor (~> 0.14)
     jruby-rack (1.1.4)
-    json (1.6.5)
-    json (1.6.5-java)
-    kgio (2.7.3)
+    json (1.6.6)
+    json (1.6.6-java)
+    kgio (2.7.4)
     libv8 (3.3.10.4)
     mail (2.4.4)
       i18n (>= 0.4.0)
       mime-types (~> 1.16)
       treetop (~> 1.4.8)
-    mailcatcher (0.5.5)
+    mailcatcher (0.5.6)
       activesupport (~> 3.0)
       eventmachine (~> 0.12)
       haml (~> 3.1)
@@ -170,7 +171,7 @@ GEM
     meta-tags (1.2.6)
       actionpack
     mime-types (1.18)
-    multi_json (1.1.0)
+    multi_json (1.2.0)
     mustache (0.99.4)
     net-scp (1.0.4)
       net-ssh (>= 1.99.1)
@@ -188,7 +189,7 @@ GEM
     omniauth-openid (1.0.1)
       omniauth (~> 1.0)
       rack-openid (~> 1.3.1)
-    orm_adapter (0.0.6)
+    orm_adapter (0.0.7)
     paperclip (2.7.0)
       activerecord (>= 2.3.0)
       activesupport (>= 2.3.2)
@@ -235,19 +236,19 @@ GEM
       json (~> 1.4)
     redcarpet (1.17.2)
     rr (1.0.4)
-    rspec (2.8.0)
-      rspec-core (~> 2.8.0)
-      rspec-expectations (~> 2.8.0)
-      rspec-mocks (~> 2.8.0)
-    rspec-core (2.8.0)
-    rspec-expectations (2.8.0)
-      diff-lcs (~> 1.1.2)
-    rspec-mocks (2.8.0)
-    rspec-rails (2.8.1)
+    rspec (2.9.0)
+      rspec-core (~> 2.9.0)
+      rspec-expectations (~> 2.9.0)
+      rspec-mocks (~> 2.9.0)
+    rspec-core (2.9.0)
+    rspec-expectations (2.9.0)
+      diff-lcs (~> 1.1.3)
+    rspec-mocks (2.9.0)
+    rspec-rails (2.9.0)
       actionpack (>= 3.0)
       activesupport (>= 3.0)
       railties (>= 3.0)
-      rspec (~> 2.8.0)
+      rspec (~> 2.9.0)
     ruby-openid (2.1.8)
     russian (0.6.0)
       i18n (>= 0.5.0)
@@ -278,7 +279,7 @@ GEM
       tilt (~> 1.1, != 1.3.0)
     sqlite3 (1.3.5)
     state_machine (1.1.2)
-    therubyracer (0.9.10)
+    therubyracer (0.10.0)
       libv8 (~> 3.3.10)
     therubyrhino (1.73.1)
     thin (1.3.1)
@@ -295,10 +296,10 @@ GEM
       trinidad_jars (>= 0.3.0)
     trinidad_jars (1.0.2)
     tzinfo (0.3.32)
-    uglifier (1.2.3)
+    uglifier (1.2.4)
       execjs (>= 0.3.0)
       multi_json (>= 1.0.2)
-    unicorn (4.2.0)
+    unicorn (4.2.1)
       kgio (~> 2.6)
       rack
       raindrops (~> 0.7)
@@ -332,7 +333,8 @@ DEPENDENCIES
   daemons (= 1.1.6)
   delayed_job_active_record (~> 0.3.2)
   devise (~> 2.0.4)
-  factory_girl_rails (~> 1.7.0)
+  diff-display (~> 0.0.1)
+  factory_girl_rails (~> 3.0.0)
   gollum (= 1.3.1)
   grack!
   grit!
@@ -355,16 +357,16 @@ DEPENDENCIES
   redcarpet (= 1.17.2)
   redhillonrails_core!
   rr (~> 1.0.4)
-  rspec-rails (~> 2.8.1)
+  rspec-rails (~> 2.9.0)
   russian (~> 0.6.0)
   sass-rails (~> 3.2.5)
   shotgun
   shoulda
-  therubyracer (~> 0.9.10)
+  therubyracer (~> 0.10.0)
   therubyrhino (~> 1.73.1)
   trinidad (~> 1.0.2)
-  uglifier (~> 1.2.1)
-  unicorn (~> 4.2.0)
+  uglifier (~> 1.2.4)
+  unicorn (~> 4.2.1)
   whenever (~> 0.7.3)
   wikicloth
   will_paginate (~> 3.0.3)

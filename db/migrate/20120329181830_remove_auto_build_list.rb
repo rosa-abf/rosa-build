@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class RemoveAutoBuildList < ActiveRecord::Migration
   def self.up
     drop_table :auto_build_lists

@@ -5,8 +5,8 @@ require "cancan/matchers"
 def set_testable_data
   @ability = Ability.new(@user)
 
-  @project = Factory(:project)
-  @issue = Factory(:issue, :project_id => @project.id)
+  @project = FactoryGirl.create(:project)
+  @issue = FactoryGirl.create(:issue, :project_id => @project.id)
 
   any_instance_of(Project, :versions => ['v1.0', 'v2.0'])
 end
@@ -15,8 +15,8 @@ describe Subscribe do
   before { stub_rsync_methods }
   context 'for global admin user' do
     before(:each) do
-      @user = Factory(:admin)
-      @stranger = Factory(:user)
+      @user = FactoryGirl.create(:admin)
+      @stranger = FactoryGirl.create(:user)
 
       set_testable_data
     end
@@ -27,8 +27,8 @@ describe Subscribe do
 
     context 'destroy' do
       before(:each) do
-        @subscribe = Factory(:subscribe, :subscribeable => @issue, :user => @user)
-        @stranger_subscribe = Factory(:subscribe, :subscribeable => @issue, :user => @stranger)
+        @subscribe = FactoryGirl.create(:subscribe, :subscribeable => @issue, :user => @user)
+        @stranger_subscribe = FactoryGirl.create(:subscribe, :subscribeable => @issue, :user => @stranger)
       end
 
       context 'own subscribe' do
@@ -47,8 +47,8 @@ describe Subscribe do
 
   context 'for simple user' do
     before(:each) do
-      @user = Factory(:user)
-      @stranger = Factory(:user)
+      @user = FactoryGirl.create(:user)
+      @stranger = FactoryGirl.create(:user)
 
       set_testable_data
     end
@@ -59,8 +59,8 @@ describe Subscribe do
 
     context 'destroy' do
       before(:each) do
-        @subscribe = Factory(:subscribe, :subscribeable => @issue, :user => @user)
-        @stranger_subscribe = Factory(:subscribe, :subscribeable => @issue, :user => @stranger)
+        @subscribe = FactoryGirl.create(:subscribe, :subscribeable => @issue, :user => @user)
+        @stranger_subscribe = FactoryGirl.create(:subscribe, :subscribeable => @issue, :user => @stranger)
       end
 
       context 'own subscribe' do

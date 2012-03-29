@@ -6,7 +6,5 @@ module Modules
 
   module Models
     extend ActiveSupport::Autoload
-
-    autoload :Owner
   end
 end

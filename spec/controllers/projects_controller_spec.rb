@@ -5,8 +5,8 @@ describe ProjectsController do
 	before(:each) do
     stub_rsync_methods
 
-    @project = Factory(:project)
-    @another_user = Factory(:user)
+    @project = FactoryGirl.create(:project)
+    @another_user = FactoryGirl.create(:user)
     @create_params = {:project => {:name => 'pro'}}
     @update_params = {:project => {:name => 'pro2'}}
 	end
@@ -25,7 +25,7 @@ describe ProjectsController do
 
   context 'for admin' do
   	before(:each) do
-  		@admin = Factory(:admin)
+  		@admin = FactoryGirl.create(:admin)
   		set_session_for(@admin)
 		end
 
@@ -44,7 +44,7 @@ describe ProjectsController do
 
   context 'for owner user' do
   	before(:each) do
-  		@user = Factory(:user)
+  		@user = FactoryGirl.create(:user)
   		set_session_for(@user)
   		@project.update_attribute(:owner, @user)
   		@project.relations.create!(:object_type => 'User', :object_id => @user.id, :role => 'admin')
@@ -70,7 +70,7 @@ describe ProjectsController do
 
   context 'for reader user' do
   	before(:each) do
-  		@user = Factory(:user)
+  		@user = FactoryGirl.create(:user)
   		set_session_for(@user)
   		@project.relations.create!(:object_type => 'User', :object_id => @user.id, :role => 'reader')
 		end
@@ -80,7 +80,7 @@ describe ProjectsController do
 
   context 'for writer user' do
   	before(:each) do
-  		@user = Factory(:user)
+  		@user = FactoryGirl.create(:user)
   		set_session_for(@user)
   		@project.relations.create!(:object_type => 'User', :object_id => @user.id, :role => 'writer')
 		end
@@ -91,9 +91,9 @@ describe ProjectsController do
   context 'search projects' do
 
     before(:each) do
-      @admin = Factory(:admin)
-      @project1 = Factory(:project, :name => 'perl-debug')
-      @project2 = Factory(:project, :name => 'perl')
+      @admin = FactoryGirl.create(:admin)
+      @project1 = FactoryGirl.create(:project, :name => 'perl-debug')
+      @project2 = FactoryGirl.create(:project, :name => 'perl')
       set_session_for(@admin)
     end
 

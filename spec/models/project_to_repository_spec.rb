@@ -4,10 +4,10 @@ require 'spec_helper'
 describe ProjectToRepository do
   before(:each) do
     stub_rsync_methods
-    @platform = Factory(:platform)
-    @first_repo = Factory(:repository, :platform_id => @platform.id)
-    @second_repo = Factory(:repository, :platform_id => @platform.id)
-    @project = Factory(:project)
+    @platform = FactoryGirl.create(:platform)
+    @first_repo = FactoryGirl.create(:repository, :platform_id => @platform.id)
+    @second_repo = FactoryGirl.create(:repository, :platform_id => @platform.id)
+    @project = FactoryGirl.create(:project)
     @first_repo.projects << @project
     @first_repo.save
   end

@@ -79,7 +79,7 @@ end
 describe CommentsController do
   before(:each) do
     stub_rsync_methods
-    @project = Factory(:project)
+    @project = FactoryGirl.create(:project)
     %x(cp -Rf #{Rails.root}/spec/tests.git/* #{@project.git_repository.path}) # maybe FIXME ?
     @commit = @project.git_repository.commits.first
 
@@ -87,8 +87,8 @@ describe CommentsController do
     @update_params = {:comment => {:body => 'updated'}, :project_id => @project.id, :commit_id => @commit.id}
 
     any_instance_of(Project, :versions => ['v1.0', 'v2.0'])
-    @stranger_comment = create_comment Factory(:user)
-    @user = Factory(:user)
+    @stranger_comment = create_comment FactoryGirl.create(:user)
+    @user = FactoryGirl.create(:user)
     @own_comment = create_comment @user
     set_session_for(@user)
   end

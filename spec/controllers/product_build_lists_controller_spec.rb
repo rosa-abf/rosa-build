@@ -11,7 +11,7 @@ describe ProductBuildListsController do
       {:product_id => product.id, :platform_id => product.platform_id}
     end
 
-    let(:product) { Factory(:product) }
+    let(:product) { FactoryGirl.create(:product) }
 
     context 'for guest' do
       it 'should not be able to perform create action' do
@@ -21,7 +21,7 @@ describe ProductBuildListsController do
     end
 
     context 'for user' do
-      before(:each) { set_session_for Factory(:user) }
+      before(:each) { set_session_for FactoryGirl.create(:user) }
   
       it 'should not be able to perform create action' do
         post :create, valid_attributes
@@ -30,7 +30,7 @@ describe ProductBuildListsController do
     end
 
     context 'for admin' do
-      before(:each) { set_session_for Factory(:admin) }
+      before(:each) { set_session_for FactoryGirl.create(:admin) }
 
       it "creates a new ProductBuildList" do
         expect {
@@ -46,7 +46,7 @@ describe ProductBuildListsController do
   end
 
   context 'callbacks' do
-    let(:product_build_list) { Factory(:product_build_list) }
+    let(:product_build_list) { FactoryGirl.create(:product_build_list) }
 
     def do_get
       get :status_build, :id => product_build_list.id, :status => ProductBuildList::BUILD_FAILED

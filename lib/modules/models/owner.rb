@@ -8,9 +8,6 @@ module Modules
         after_create lambda { relations.create :object_id => owner.id, :object_type => owner.class.to_s, :role => 'admin' }
       end
 
-      module InstanceMethods
-      end
-
       module ClassMethods
       end
     end

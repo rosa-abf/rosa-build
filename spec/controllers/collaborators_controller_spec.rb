@@ -38,8 +38,8 @@ end
 describe CollaboratorsController do
 	before(:each) do
     stub_rsync_methods
-    @project = Factory(:project)
-    @another_user = Factory(:user)
+    @project = FactoryGirl.create(:project)
+    @another_user = FactoryGirl.create(:user)
     @update_params = {:user => {@another_user.id => :reader}}
 	end
 
@@ -57,7 +57,7 @@ describe CollaboratorsController do
 
   context 'for global admin' do
   	before(:each) do
-  		@admin = Factory(:admin)
+  		@admin = FactoryGirl.create(:admin)
   		set_session_for(@admin)
 		end
 
@@ -66,10 +66,10 @@ describe CollaboratorsController do
 
   context 'for admin user' do
     before(:each) do
-      @user = Factory(:user)
+      @user = FactoryGirl.create(:user)
       @user.relations
       set_session_for(@user)
-      @group = Factory(:group)
+      @group = FactoryGirl.create(:group)
       @project.relations.create!(:object_type => 'User', :object_id => @user.id, :role => 'admin')
     end
 
@@ -91,7 +91,7 @@ describe CollaboratorsController do
 
   context 'for owner user' do
   	before(:each) do
-  		@user = Factory(:user)
+  		@user = FactoryGirl.create(:user)
   		set_session_for(@user)
   		@project.update_attribute(:owner, @user)
   		@project.relations.create!(:object_type => 'User', :object_id => @user.id, :role => 'admin')
@@ -102,7 +102,7 @@ describe CollaboratorsController do
 
   context 'for reader user' do
   	before(:each) do
-  		@user = Factory(:user)
+  		@user = FactoryGirl.create(:user)
   		set_session_for(@user)
   		@project.update_attribute(:owner, @user)
   		@project.relations.create!(:object_type => 'User', :object_id => @user.id, :role => 'reader')
@@ -113,7 +113,7 @@ describe CollaboratorsController do
 
   context 'for writer user' do
   	before(:each) do
-  		@user = Factory(:user)
+  		@user = FactoryGirl.create(:user)
   		set_session_for(@user)
   		@project.update_attribute(:owner, @user)
   		@project.relations.create!(:object_type => 'User', :object_id => @user.id, :role => 'writer')
