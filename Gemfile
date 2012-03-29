@@ -22,7 +22,7 @@ gem 'jbuilder'
 
 # gem 'rugged', '~> 0.16.0'
 gem 'grack', :git => 'git://github.com/rdblue/grack.git', :require => 'git_http'
-gem "grit", :git => 'git://github.com/chipiga/grit.git' #, :path => '~/Sites/code/grit'
+gem "grit", :git => 'git://github.com/warpc/grit.git' #, :path => '~/Sites/code/grit'
 gem 'charlock_holmes', '~> 0.6.8' #, :git => 'git://github.com/brianmario/charlock_holmes.git', :branch => 'bundle-icu'
 gem 'diff-display', '~> 0.0.1'
 
@@ -73,7 +73,7 @@ group :development do
 end
 
 group :test do
-  gem 'rspec-rails',        '~> 2.9.0'
+  gem 'rspec-rails',        '~> 2.9.0', :group => 'development'
   gem 'factory_girl_rails', '~> 3.0.0'
   gem 'rr',                 '~> 1.0.4'
   gem 'shoulda'

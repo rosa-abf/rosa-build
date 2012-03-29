@@ -115,5 +115,3 @@ module RailsDatatables
       }.join(",")
     end
 end
-
-ActionView::Base.send :include, RailsDatatables
