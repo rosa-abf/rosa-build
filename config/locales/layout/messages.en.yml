@@ -2,5 +2,5 @@ en:
   layout:
     messages:
       commits:
-        header_with_branch: "%{committer} add %{commit} into %{branch} branch"
-        header: "%{committer} add %{commit}"
+        header_with_branch: "%{committer} has added %{commit} into %{branch} branch"
+        header: "%{committer} has added %{commit}"

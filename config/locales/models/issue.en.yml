@@ -16,34 +16,34 @@ en:
       all: All
       to_me: Assigned to me
       edit: Edit
-      search: Search issue...
+      search: Find issue...
       comments_header: Comments
       new: New issue
       list_header: List
-      confirm_delete: Are you sure to delete this task?
-      edit_header: Task edit
+      confirm_delete: Are you sure you want to delete this task?
+      edit_header: Edit task
       create_header: Create task
       statuses:
-        open: Opened
+        open: Open
         closed: Closed
         any: Any
       status:
-        open: Открыто
+        open: Open
         closed: Closed
-      subscribe: Subscribe
+      subscribe: Subscribe to notifications
       subscribe_btn: Subscribe
       unsubscribe_btn: Unsubscribe
       number: Number
       description: Description
       labels: Labels
-      invalid_labels: Invalid hex color code
+      invalid_labels: Invalid color hex code
       new_label: New label name
       update_label: Update label
       label_custom_color: Custom color
-      label_manage: Manage
+      label_manage: Manage labels
       executor: Executor
-      search_user: Search user...
-      search_labels: Search labels...
+      search_user: Find user...
+      search_labels: Find labels...
       choose_user_on_left: Choose executor on the left
       choose_labels_on_left: Choose labels on the left
       at: at
@@ -53,5 +53,5 @@ en:
   flash:
     issue:
       saved: Task saved
-      save_error: Task saves error
+      save_error: Unable to save task
       destroyed: Task deleted

@@ -19,24 +19,24 @@ en:
       products: Products
       location: Location
       repositories: Repositories
-      back_to_the_list: ⇐To platform list
+      back_to_the_list: ⇐To platforms list
       freeze: Freeze
-      unfreeze: Unfeeze
-      confirm_freeze: Are you sure to freeze this platform?
-      confirm_clone: Are you sure to clone this platform?
-      confirm_unfreeze: Are you sure to defrost this platform?
+      unfreeze: Unfreeze
+      confirm_freeze: Are you sure you want to freeze this platform?
+      confirm_clone: Are you sure you want to clone this platform?
+      confirm_unfreeze: Are you sure you want to unfreeze this platform?
       released_suffix: (released)
-      confirm_delete: Are you sure to delete this platform?
+      confirm_delete: Are you sure you want to delete this platform?
       current_platform_header: Current platform
       owner: Owner
       visibility: Visibility
       platform_type: Platform type
-      distrib_type: Distribution kit type
+      distrib_type: Distribution type
       private_users: Access data
-      confirm_clone: To clone?
-      clone: To clone
+      confirm_clone: Clone?
+      clone: Clone
       delete_warning: Attention! Deleted platform can not be restored!
-      sys_repos_header: Connecting info
+      sys_repos_header: Connection info
       target_platform: Target platform
       target_architecture: Target architecture
       members: Members
@@ -46,19 +46,19 @@ en:
     platform:
       saved: Platform saved
       created: Platform created
-      save_error: Platform saves error
+      save_error: Platform save error
       create_error: Platform create error
-      freezed: Platform freezed
+      freezed: Platform frozen
       freeze_error: Platform freezing error, try again
-      unfreezed: Platform unfreezed
+      unfreezed: Platform unfrozen
       unfreeze_error: Platform unfreezing error, try again
       destroyed: Platform deleted
       build_all_success: All project build in progress
       clone_success: Cloned successfully
       members:
-        already_added: "%{name} is already added to platform"
-        successfully_added: "%{name} successfully added as member"
-        error_in_adding: "Fail to add %{name} as member"
+        already_added: "%{name} is already a member of platform"
+        successfully_added: "%{name} successfully added to the platform"
+        error_in_adding: "Unable to add %{name} as member"
 
   activerecord:
     models:
@@ -75,5 +75,5 @@ en:
         distrib_type: Source type
         visibility: Status
         visibility_types:
-          open: Open
-          hidden: Hidden
+          open: Public
+          hidden: Private
