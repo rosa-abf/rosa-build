@@ -17,7 +17,6 @@ gem 'paperclip', '~> 2.7.0'
 gem 'delayed_job_active_record', '~> 0.3.2'
 gem 'russian', '~> 0.6.0'
 gem 'highline', '~> 1.6.11'
-gem 'rails-xmlrpc', '~> 0.3.6' # :git => 'git://github.com/chipiga/rails-xmlrpc.git'
 
 gem 'jbuilder'
 

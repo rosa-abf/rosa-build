@@ -6,7 +6,6 @@ ru:
       repositories_controller: 'Управление репозиториями'
       projects_controller: 'Управление проектами'
       build_lists_controller: 'Управление сборочными листами'
-      auto_build_lists_controller: 'Управление автоматической сборкой'
       product_build_lists_controller: 'Управление сборкой продуктов'
       'devise/registrations_controller': 'Регистрация пользователей'
       'devise/sessions_controller': 'Аутентификация пользователей'
@@ -21,15 +20,10 @@ ru:
         destroy: 'выход'
       'users/omniauth_callbacks_controller':
         open_id: 'вход через OpenID'
-      projects_controller:
-        auto_build: 'отправлен на автоматическую сборку'
       build_lists_controller:
         create: 'отправлен на сборку'
         cancel: 'сборка отменена'
         publish: 'сборка опубликована'
-      auto_build_lists_controller:
-        create: 'назначена'
-        destroy: 'отменена'
       product_build_lists_controller:
         create: 'отправлен на сборку'
       rpc_controller:

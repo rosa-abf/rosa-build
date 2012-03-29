@@ -1,9 +1,0 @@
-%tr{:class => cycle("odd", "even")}
-  %td
-    = link_to category.name, category
-    (#{category.projects_count})
-  %td= category.parent.try(:name)
-  %td.last
-    = link_to t("layout.edit"), edit_category_path(category)
-    |
-    = link_to t("layout.delete"), category_path(category), :method => :delete, :confirm => t("layout.categories.confirm_delete")
