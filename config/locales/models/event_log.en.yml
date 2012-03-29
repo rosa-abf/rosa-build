@@ -6,7 +6,6 @@ en:
       repositories_controller: 'Repositories Management'
       projects_controller: 'Projects Management'
       build_lists_controller: 'Build lists management'
-      auto_build_lists_controller: 'Automatic builds management'
       product_build_lists_controller: 'Products build management'
       'devise/registrations_controller': 'User Registration'
       'devise/sessions_controller': 'User Authentication'
@@ -21,15 +20,10 @@ en:
         destroy: 'exit'
       'users/omniauth_callbacks_controller':
         open_id: 'login via OpenID'
-      projects_controller:
-        auto_build: 'sent to automatic build'
       build_lists_controller:
         create: 'sent to build'
         cancel: 'build abolished'
         publish: 'build published'
-      auto_build_lists_controller:
-        create: 'assigned'
-        destroy: 'canceled'
       product_build_lists_controller:
         create: 'sent to build'
       rpc_controller:

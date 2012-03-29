@@ -65,8 +65,6 @@ Rosa::Application.routes.draw do
     collection { post :search }
   end
 
-  resources :auto_build_lists, :only => [:index, :create, :destroy]
-
   resources :personal_repositories, :only => [:show] do
     member do
       get :settings

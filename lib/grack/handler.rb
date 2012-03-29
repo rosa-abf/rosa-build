@@ -9,8 +9,6 @@ module Grack
     def call(env)
       super
       if git?
-        # TODO event_log?
-        project.delay.auto_build if write? # hook
         ::GitHttp::App.new(@config).call(env)
       else
         @app.call(env)

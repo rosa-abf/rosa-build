@@ -69,16 +69,6 @@ ru:
       message: Обновляется автоматически каждые 24 часа
       refresh_btn: Обновить
 
-    auto_build_lists:
-      header: Проекты с автоматической сборкой
-      message: Все проекты собираются под пользовательский репозиторий и архитектуру i586
-      project: Проект
-      action: Действие
-      automate_btn: Автоматизировать
-      cancel_btn: Отменить
-      not_automated: Не автоматизированы
-      already_automated: Автоматизированы
-
     weekdays:
       Monday: Понедельник
       Tuesday: Вторник
@@ -176,12 +166,6 @@ ru:
       successfully_added: Участник %s успешно добавлен
       error_in_adding: Ошибка при добавлении участника %s
 
-    auto_build_list:
-      success: Сборка проекта автоматизорована!
-      failed: Не удалось автоматизировать сборку!
-      cancel: Автоматическая сборка проекта отменена!
-      cancel_failed: Не удалось отменить автоматическую сборку проекта!
-
     category:
       saved: Категория успешно сохранена
       save_error: Не удалось сохранить категорию
@@ -228,16 +212,6 @@ ru:
           new_comment_commit_owner: Оповещать о комментариях к моему коммиту
           new_comment_commit_repo_owner: Оповещать о комментариях к коммитам в моем репозитории
           new_comment_commit_commentor: Оповещать о комментариях к коммиту после моего
-
-      auto_build_list:
-        project_id: Проект
-        project: Проект
-        bpl_id: Репозиторий для сохранения
-        bpl: Репозиторий для сохранения
-        pl_id: Платформа
-        pl: Платформа
-        arch_id: Архитектура
-        arch: Архитектура
 
       private_user:
         login: Логин

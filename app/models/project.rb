@@ -8,7 +8,6 @@ class Project < ActiveRecord::Base
 
   has_many :issues, :dependent => :destroy
   has_many :build_lists, :dependent => :destroy
-  has_many :auto_build_lists, :dependent => :destroy
 
   has_many :project_imports, :dependent => :destroy
   has_many :project_to_repositories, :dependent => :destroy
@@ -36,7 +35,6 @@ class Project < ActiveRecord::Base
   scope :by_visibilities, lambda {|v| where(:visibility => v)}
   scope :opened, where(:visibility => 'open')
   scope :addable_to_repository, lambda { |repository_id| where("projects.id NOT IN (SELECT project_to_repositories.project_id FROM project_to_repositories WHERE (project_to_repositories.repository_id = #{ repository_id }))") }
-  scope :automateable, where("projects.id NOT IN (SELECT auto_build_lists.project_id FROM auto_build_lists)")
 
   after_create :attach_to_personal_repository
   after_create :create_git_repo
@@ -52,18 +50,6 @@ class Project < ActiveRecord::Base
   has_attached_file :srpm
 
   include Modules::Models::Owner
-
-  def auto_build
-    auto_build_lists.each do |auto_build_list|
-      build_lists.create(
-        :pl => auto_build_list.pl,
-        :bpl => auto_build_list.bpl,
-        :arch => auto_build_list.arch,
-        :project_version => versions.last,
-        :build_requires => true,
-        :update_type => 'bugfix') unless build_lists.for_creation_date_period(Time.current - 15.seconds, Time.current).present?
-    end
-  end
 
   def build_for(platform, user, arch = 'i586') # Return i586 after mass rebuild
     arch = Arch.find_by_name(arch) if arch.acts_like?(:string)

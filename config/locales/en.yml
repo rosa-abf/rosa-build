@@ -69,16 +69,6 @@ en:
       message: Automatically updated every 24 hours
       refresh_btn: Refresh
 
-    auto_build_lists:
-      header: Automated build projects
-      message: All projects build under user repository and architecture i586
-      project: Project
-      action: Action
-      automate_btn: Automate
-      cancel_btn: Cancel
-      not_automated: Not automated
-      already_automated: Automated
-
     weekdays:
       Monday: Monday
       Tuesday: Tuesday
@@ -176,12 +166,6 @@ en:
       successfully_added: Member %s successfully added
       error_in_adding: Member %s adding error
 
-    auto_build_list:
-      success: Automated build success!
-      failed: Automated build failed!
-      cancel: Automated build canceled!
-      cancel_failed: Automated build canceling failed!
-
     category:
       saved: Category saved
       save_error: Category saves error
@@ -215,7 +199,6 @@ en:
       private_user: Private user
       product_build_list: Product build list
       download: Statistics
-      auto_build_list: Auto rebuild list
 
     attributes:
       settings:
@@ -228,16 +211,6 @@ en:
           new_comment_commit_owner: Notify about comments to my commit
           new_comment_commit_repo_owner: Notify about comments to my repository commits
           new_comment_commit_commentor: Notify about comments after my commit
-
-      auto_build_list:
-        project_id: Project
-        project: Project
-        bpl_id: Repository for saving
-        bpl: Repository for saving
-        pl_id: Platform
-        pl: Platform
-        arch_id: Architecture
-        arch: Architecture
 
       private_user:
         login: Login
