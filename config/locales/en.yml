@@ -93,16 +93,6 @@ en:
       regenerate_btn: Regenerate
       warning_message: Warning - Old data set as invalid when new data obtaining
 
-    categories:
-      list: List
-      new: Create
-      edit: Edit
-      platforms: By platform
-      list_header: Catalogue
-      new_header: New category
-      edit_header: Edit category
-      confirm_delete: Are you sure to delete this category?
-
     collaborators:
       back_to_proj: Back to project
       edit: Edit list
@@ -166,11 +156,6 @@ en:
       successfully_added: Member %s successfully added
       error_in_adding: Member %s adding error
 
-    category:
-      saved: Category saved
-      save_error: Category saves error
-      destroyed: Category deleted
-
     blob:
       successfully_updated: File '%{name}' successfully updated
       updating_error: Error updating file '%{name}'
@@ -192,7 +177,6 @@ en:
               can_have_less_or_equal: You cannot have more than %{count} projects.
 
     models:
-      category: Category
       arch: Arch
       container: Container
       rpm: RPM
@@ -215,10 +199,6 @@ en:
       private_user:
         login: Login
         password: Password
-
-      category:
-        parent_id: Parent
-        name: Name
 
       arch:
         name: Name

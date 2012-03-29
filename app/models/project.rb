@@ -3,7 +3,6 @@ class Project < ActiveRecord::Base
   VISIBILITIES = ['open', 'hidden']
   MAX_OWN_PROJECTS = 32000
 
-  belongs_to :category, :counter_cache => true
   belongs_to :owner, :polymorphic => true, :counter_cache => :own_projects_count
 
   has_many :issues, :dependent => :destroy
@@ -21,7 +20,7 @@ class Project < ActiveRecord::Base
   validates :name, :uniqueness => {:scope => [:owner_id, :owner_type], :case_sensitive => false}, :presence => true, :format => {:with => /^[a-zA-Z0-9_\-\+\.]+$/}
   validates :owner, :presence => true
   validate { errors.add(:base, :can_have_less_or_equal, :count => MAX_OWN_PROJECTS) if owner.projects.size >= MAX_OWN_PROJECTS }
-  # validate {errors.add(:base, I18n.t('flash.project.save_warning_ssh_key')) if owner.ssh_key.blank?}
+  
   validates_attachment_size :srpm, :less_than => 500.megabytes
   validates_attachment_content_type :srpm, :content_type => ['application/octet-stream', "application/x-rpm", "application/x-redhat-package-manager"], :message => I18n.t('layout.invalid_content_type')
 

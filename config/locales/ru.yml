@@ -93,16 +93,6 @@ ru:
       regenerate_btn: Перегенерировать
       warning_message: Примечание - При получении новых данных старые становятся недействительными
 
-    categories:
-      list: Список
-      new: Создать
-      edit: Редактировать
-      platforms: По платформам
-      list_header: Каталог
-      new_header: Новая категория
-      edit_header: Редактировать категорию
-      confirm_delete: Вы уверены, что хотите удалить эту категорию?
-
     collaborators:
       back_to_proj: Вернуться к проекту
       edit: Редактировать список
@@ -166,11 +156,6 @@ ru:
       successfully_added: Участник %s успешно добавлен
       error_in_adding: Ошибка при добавлении участника %s
 
-    category:
-      saved: Категория успешно сохранена
-      save_error: Не удалось сохранить категорию
-      destroyed: Категория успешно удалена
-
     blob:
       successfully_updated: Файл '%{name}' успешно обновлен
       updating_error: Ошибка обновления файла '%{name}'
@@ -192,7 +177,6 @@ ru:
               can_have_less_or_equal: Нельзя иметь больше, чем %{count} проектов.
 
     models:
-      category: Категория
       arch: Arch
       container: Container
       rpm: RPM
@@ -216,10 +200,6 @@ ru:
       private_user:
         login: Логин
         password: Пароль
-
-      category:
-        parent_id: Родитель
-        name: Название
 
       arch:
         name: Название

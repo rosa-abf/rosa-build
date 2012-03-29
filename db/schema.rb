@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120329181830) do
+ActiveRecord::Schema.define(:version => 20120329182602) do
 
   create_table "activity_feeds", :force => true do |t|
     t.integer  "user_id",    :null => false
@@ -80,14 +80,6 @@ ActiveRecord::Schema.define(:version => 20120329181830) do
   add_index "build_lists", ["arch_id"], :name => "index_build_lists_on_arch_id"
   add_index "build_lists", ["bs_id"], :name => "index_build_lists_on_bs_id", :unique => true
   add_index "build_lists", ["project_id"], :name => "index_build_lists_on_project_id"
-
-  create_table "categories", :force => true do |t|
-    t.string   "name"
-    t.string   "ancestry"
-    t.integer  "projects_count", :default => 0, :null => false
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
 
   create_table "comments", :force => true do |t|
     t.string   "commentable_type"
@@ -273,7 +265,6 @@ ActiveRecord::Schema.define(:version => 20120329181830) do
     t.integer  "owner_id"
     t.string   "owner_type"
     t.string   "visibility",        :default => "open"
-    t.integer  "category_id"
     t.text     "description"
     t.string   "ancestry"
     t.boolean  "has_issues",        :default => true
@@ -286,7 +277,6 @@ ActiveRecord::Schema.define(:version => 20120329181830) do
     t.boolean  "is_rpm",            :default => true
   end
 
-  add_index "projects", ["category_id"], :name => "index_projects_on_category_id"
   add_index "projects", ["owner_id"], :name => "index_projects_on_name_and_owner_id_and_owner_type", :unique => true, :case_sensitive => false
 
   create_table "register_requests", :force => true do |t|

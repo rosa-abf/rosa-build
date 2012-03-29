@@ -3,7 +3,6 @@ en:
     repositories: Repositories
     personal_repository: My repository
     products: Products
-    categories: Catalogue
     downloads: Statistics
   top_menu:
     platforms: Platforms
