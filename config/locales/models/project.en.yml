@@ -39,6 +39,8 @@ en:
       message:  Message
       author:   Author
 
+      participant_type: Part. type
+
       current_branch: Current branch/tag
       current_commit: Current commit
       files_in_project: Files in
