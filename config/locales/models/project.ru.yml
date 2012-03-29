@@ -39,6 +39,8 @@ ru:
       message:  Сообщение
       author:   Автор
 
+      participant_type: Тип участия
+
       current_branch: Текущая ветка/тег
       current_commit: Текущий коммит
       files_in_project: Файлы в

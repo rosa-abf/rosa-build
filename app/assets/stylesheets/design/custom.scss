@@ -670,3 +670,26 @@ table.tablesorter tr.search th input[type="text"] {
     width: 830px;
     margin-top: 2px;
 }
+
+table.dataTable tr td.rights span.group {
+    background: image-url('group16.png') no-repeat 0 0 transparent;
+}
+
+table.dataTable tr td.rights span.user {
+    background: image-url('user16.png') no-repeat 0 0 transparent;
+}
+
+table.dataTable tr td.rights span.group_owner {
+    background: image-url('group16g.png') no-repeat 0 0 transparent;
+}
+
+table.dataTable tr td.rights span.user_owner {
+    background: image-url('user16g.png') no-repeat 0 0 transparent;
+}
+
+table.dataTable tr td.rights span.group_owner,
+table.dataTable tr td.rights span.user_owner,
+table.dataTable tr td.rights span.group,
+table.dataTable tr td.rights span.user {
+    padding-left: 20px;
+}
