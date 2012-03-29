@@ -49,10 +49,6 @@ describe PlatformsController do
 	end
 
   context 'for guest' do
-    it "should not be able to perform easy_urpmi action" do
-      get :easy_urpmi
-      response.should redirect_to(forbidden_path)
-    end
 
     [:index, :create].each do |action|
       it "should not be able to perform #{ action } action" do

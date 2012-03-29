@@ -60,7 +60,6 @@ ru:
       project: Проект
     attributes:
       project:
-        category_id: Категория
         name: Название
         description: Описание
         owner: Владелец

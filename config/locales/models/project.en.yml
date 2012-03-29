@@ -60,7 +60,6 @@ en:
       project: Project
     attributes:
       project:
-        category_id: Category
         name: Name
         description: Descripton
         owner: Owner
