@@ -74,18 +74,18 @@ describe CommentsController do
   before(:each) do
     stub_rsync_methods
 
-    @project = Factory(:project)
-    @issue = Factory(:issue, :project_id => @project.id, :creator => Factory(:user))
-    @comment = Factory(:comment, :commentable => @issue, :project_id => @project.id)
+    @project = FactoryGirl.create(:project)
+    @issue = FactoryGirl.create(:issue, :project_id => @project.id, :creator => FactoryGirl.create(:user))
+    @comment = FactoryGirl.create(:comment, :commentable => @issue, :project_id => @project.id)
 
     @create_params = {:comment => {:body => 'I am a comment!'}, :project_id => @project.id, :issue_id => @issue.serial_id}
     @update_params = {:comment => {:body => 'updated'}, :project_id => @project.id, :issue_id => @issue.serial_id}
 
     any_instance_of(Project, :versions => ['v1.0', 'v2.0'])
 
-    @user = Factory(:user)
+    @user = FactoryGirl.create(:user)
     set_session_for(@user)
-    @own_comment = Factory(:comment, :commentable => @issue, :user => @user, :project_id => @project.id)
+    @own_comment = FactoryGirl.create(:comment, :commentable => @issue, :user => @user, :project_id => @project.id)
   end
 
   context 'for project admin user' do

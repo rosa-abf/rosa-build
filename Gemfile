@@ -25,6 +25,7 @@ gem 'jbuilder'
 gem 'grack', :git => 'git://github.com/rdblue/grack.git', :require => 'git_http'
 gem "grit", :git => 'git://github.com/chipiga/grit.git' #, :path => '~/Sites/code/grit'
 gem 'charlock_holmes', '~> 0.6.8' #, :git => 'git://github.com/brianmario/charlock_holmes.git', :branch => 'bundle-icu'
+gem 'diff-display', '~> 0.0.1'
 
 # Wiki
 gem "gollum", "1.3.1"
@@ -35,7 +36,7 @@ gem 'rdiscount'
 gem 'RedCloth'
 gem 'wikicloth'
 
-gem 'unicorn', '~> 4.2.0', :platforms => [:mri, :rbx]
+gem 'unicorn', '~> 4.2.1', :platforms => [:mri, :rbx]
 gem 'trinidad', '~> 1.0.2', :platforms => :jruby
 gem 'newrelic_rpm', '~> 3.3.2', :platforms => [:mri, :rbx]
 gem 'whenever', '~> 0.7.3', :require => false
@@ -50,8 +51,8 @@ group :assets do
   gem 'sass-rails', '~> 3.2.5'
   gem 'coffee-rails', '~> 3.2.2'
   gem 'compass-rails', '~> 1.0.1'
-  gem 'uglifier', '~> 1.2.1'
-  gem 'therubyracer', '~> 0.9.10', :platforms => [:mri, :rbx]
+  gem 'uglifier', '~> 1.2.4'
+  gem 'therubyracer', '~> 0.10.0', :platforms => [:mri, :rbx]
   gem 'therubyrhino', '~> 1.73.1', :platforms => :jruby
 end
 
@@ -73,8 +74,8 @@ group :development do
 end
 
 group :test do
-  gem 'rspec-rails',        '~> 2.8.1'
-  gem 'factory_girl_rails', '~> 1.7.0'
+  gem 'rspec-rails',        '~> 2.9.0'
+  gem 'factory_girl_rails', '~> 3.0.0'
   gem 'rr',                 '~> 1.0.4'
   gem 'shoulda'
 end

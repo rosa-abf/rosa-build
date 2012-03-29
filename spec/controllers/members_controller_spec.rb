@@ -4,10 +4,10 @@ require 'spec_helper'
 describe MembersController do
   before(:each) do
     stub_rsync_methods
-    @group = Factory(:group)
+    @group = FactoryGirl.create(:group)
     @user = @group.owner
     set_session_for @user
-    @another_user = Factory(:user)
+    @another_user = FactoryGirl.create(:user)
     @add_params = {:group_id => @group.id, :user_id => @another_user.uname}
   end
 

@@ -11,7 +11,7 @@ end
 def set_comments_data_for_commit
   @ability = Ability.new(@user)
 
-  @project = Factory(:project, :owner => @user)
+  @project = FactoryGirl.create(:project, :owner => @user)
   %x(cp -Rf #{Rails.root}/spec/tests.git/* #{@project.git_repository.path}) # maybe FIXME ?
   @commit = @project.git_repository.commits.first
 
@@ -28,8 +28,8 @@ describe Comment do
   before { stub_rsync_methods }
   context 'for global admin user' do
     before(:each) do
-      @user = Factory(:admin)
-      @stranger = Factory(:user)
+      @user = FactoryGirl.create(:admin)
+      @stranger = FactoryGirl.create(:user)
 
       set_comments_data_for_commit
     end
@@ -57,11 +57,11 @@ describe Comment do
 
   context 'for project admin user' do
     before(:each) do
-      @user = Factory(:user)
-      @stranger = Factory(:user)
+      @user = FactoryGirl.create(:user)
+      @stranger = FactoryGirl.create(:user)
 
       set_comments_data_for_commit
-      @admin = Factory(:user)
+      @admin = FactoryGirl.create(:user)
       @ability = Ability.new(@admin)
       @project.relations.create!(:object_type => 'User', :object_id => @admin.id, :role => 'admin')
       ActionMailer::Base.deliveries = []
@@ -147,8 +147,8 @@ describe Comment do
 
   context 'for project owner user' do
     before(:each) do
-      @user = Factory(:user)
-      @stranger = Factory(:user)
+      @user = FactoryGirl.create(:user)
+      @stranger = FactoryGirl.create(:user)
       set_comments_data_for_commit
       @project.update_attribute(:owner, @user)
       ActionMailer::Base.deliveries = []
@@ -244,9 +244,9 @@ describe Comment do
 
   context 'for simple user' do
     before(:each) do
-      @user = Factory(:user)
-      @simple = Factory(:user)
-      @stranger = Factory(:user)
+      @user = FactoryGirl.create(:user)
+      @simple = FactoryGirl.create(:user)
+      @stranger = FactoryGirl.create(:user)
       set_comments_data_for_commit
       @comment = create_comment(@simple)
       @ability = Ability.new(@simple)

@@ -5,11 +5,11 @@ describe RepositoriesController do
 	before(:each) do
     stub_rsync_methods
 
-    @repository = Factory(:repository)
-    @personal_repository = Factory(:personal_repository)
-    @platform = Factory(:platform)
-    @project = Factory(:project)
-    @another_user = Factory(:user)
+    @repository = FactoryGirl.create(:repository)
+    @personal_repository = FactoryGirl.create(:personal_repository)
+    @platform = FactoryGirl.create(:platform)
+    @project = FactoryGirl.create(:project)
+    @another_user = FactoryGirl.create(:user)
     @create_params = {:repository => {:name => 'pro', :description => 'pro2'}, :platform_id => @platform.id}
 	end
 
@@ -31,7 +31,7 @@ describe RepositoriesController do
 
   context 'for admin' do
   	before(:each) do
-  		@admin = Factory(:admin)
+  		@admin = FactoryGirl.create(:admin)
   		set_session_for(@admin)
 		end
 
@@ -54,7 +54,7 @@ describe RepositoriesController do
 
   context 'for anyone except admin' do
   	before(:each) do
-  		@user = Factory(:user)
+  		@user = FactoryGirl.create(:user)
   		set_session_for(@user)
 		end
 
@@ -77,7 +77,7 @@ describe RepositoriesController do
 
   context 'for owner user' do
   	before(:each) do
-  		@user = Factory(:user)
+  		@user = FactoryGirl.create(:user)
   		set_session_for(@user)
   		@repository.platform.update_attribute(:owner, @user)
   		@repository.platform.relations.create!(:object_type => 'User', :object_id => @user.id, :role => 'admin')
@@ -88,7 +88,7 @@ describe RepositoriesController do
 
   context 'for reader user' do
   	before(:each) do
-  		@user = Factory(:user)
+  		@user = FactoryGirl.create(:user)
   		set_session_for(@user)
   		@repository.platform.relations.create!(:object_type => 'User', :object_id => @user.id, :role => 'reader')
 		end

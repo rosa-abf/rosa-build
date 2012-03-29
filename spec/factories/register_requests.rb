@@ -4,7 +4,7 @@
 FactoryGirl.define do
   factory :register_request do
     name "MyString"
-    email { Factory.next(:email) }
+    email { FactoryGirl.generate(:email) }
     token "MyString"
     interest "MyString"
     more "MyText"

@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class AddConfirmableToUsers < ActiveRecord::Migration
   def self.up
     add_column :users, :confirmation_token,   :string

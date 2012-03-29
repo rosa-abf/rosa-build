@@ -75,12 +75,12 @@ describe IssuesController do
   before(:each) do
     stub_rsync_methods
 
-    @project = Factory(:project)
-    @issue_user = Factory(:user)
+    @project = FactoryGirl.create(:project)
+    @issue_user = FactoryGirl.create(:user)
 
     any_instance_of(Project, :versions => ['v1.0', 'v2.0'])
 
-    @issue = Factory(:issue, :project_id => @project.id, :user_id => @issue_user.id)
+    @issue = FactoryGirl.create(:issue, :project_id => @project.id, :user_id => @issue_user.id)
     @create_params = {
       :project_id => @project.id,
       :issue => {
@@ -98,13 +98,13 @@ describe IssuesController do
       }
     }
 
-    @project_with_turned_off_issues = Factory(:project, :has_issues => false)
-    @turned_of_issue = Factory(:issue, :project_id => @project_with_turned_off_issues.id, :user_id => @issue_user.id)
+    @project_with_turned_off_issues = FactoryGirl.create(:project, :has_issues => false)
+    @turned_of_issue = FactoryGirl.create(:issue, :project_id => @project_with_turned_off_issues.id, :user_id => @issue_user.id)
   end
 
   context 'for global admin user' do
     before(:each) do
-      @admin = Factory(:admin)
+      @admin = FactoryGirl.create(:admin)
       set_session_for(@admin)
     end
 
@@ -113,7 +113,7 @@ describe IssuesController do
 
   context 'for project admin user' do
     before(:each) do
-      @user = Factory(:user)
+      @user = FactoryGirl.create(:user)
       set_session_for(@user)
       @project.relations.create!(:object_type => 'User', :object_id => @user.id, :role => 'admin')
     end
@@ -127,7 +127,7 @@ describe IssuesController do
 
   context 'for project owner user' do
     before(:each) do
-      @user = Factory(:user)
+      @user = FactoryGirl.create(:user)
       set_session_for(@user)
       @project.update_attribute(:owner, @user)
       @project.relations.create!(:object_type => 'User', :object_id => @user.id, :role => 'admin')
@@ -142,7 +142,7 @@ describe IssuesController do
 
   context 'for project reader user' do
     before(:each) do
-      @user = Factory(:user)
+      @user = FactoryGirl.create(:user)
       set_session_for(@user)
       @project.relations.create!(:object_type => 'User', :object_id => @user.id, :role => 'reader')
     end
@@ -164,7 +164,7 @@ describe IssuesController do
 
   context 'for project writer user' do
     before(:each) do
-      @user = Factory(:user)
+      @user = FactoryGirl.create(:user)
       set_session_for(@user)
       @project.relations.create!(:object_type => 'User', :object_id => @user.id, :role => 'writer')
     end

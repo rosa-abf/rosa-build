@@ -37,9 +37,9 @@ describe PlatformsController do
   before(:each) do
     stub_rsync_methods
 
-    @platform = Factory(:platform)
-    @personal_platform = Factory(:platform, :platform_type => 'personal')
-    @user = Factory(:user)
+    @platform = FactoryGirl.create(:platform)
+    @personal_platform = FactoryGirl.create(:platform, :platform_type => 'personal')
+    @user = FactoryGirl.create(:user)
     @create_params = {:platform => {
       :name => 'pl1',
       :description => 'pl1',
@@ -71,8 +71,8 @@ describe PlatformsController do
 
   context 'for global admin' do
     before(:each) do
-      @admin = Factory(:admin)
-      @user = Factory(:user)
+      @admin = FactoryGirl.create(:admin)
+      @user = FactoryGirl.create(:user)
       set_session_for(@admin)
     end
 
@@ -107,7 +107,7 @@ describe PlatformsController do
 
   context 'for owner user' do
     before(:each) do
-      @user = Factory(:user)
+      @user = FactoryGirl.create(:user)
       set_session_for(@user)
       @platform.update_attribute(:owner, @user)
       @platform.relations.create!(:object_type => 'User', :object_id => @user.id, :role => 'admin')
@@ -130,7 +130,7 @@ describe PlatformsController do
 
   context 'for reader user' do
     before(:each) do
-      @user = Factory(:user)
+      @user = FactoryGirl.create(:user)
       set_session_for(@user)
       @platform.relations.create!(:object_type => 'User', :object_id => @user.id, :role => 'reader')
     end

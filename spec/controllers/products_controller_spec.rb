@@ -5,9 +5,9 @@ describe ProductsController do
 	before(:each) do
     stub_rsync_methods
 
-    @another_user = Factory(:user)
-    @platform = Factory(:platform)
-    @product = Factory(:product, :platform => @platform)
+    @another_user = FactoryGirl.create(:user)
+    @platform = FactoryGirl.create(:platform)
+    @product = FactoryGirl.create(:product, :platform => @platform)
     @create_params = {:product => {:name => 'pro'}, :platform_id => @platform.id}
     @update_params = {:product => {:name => 'pro2'}, :platform_id => @platform.id}
 	end
@@ -30,7 +30,7 @@ describe ProductsController do
 
   context 'for global admin' do
   	before(:each) do
-  		@admin = Factory(:admin)
+  		@admin = FactoryGirl.create(:admin)
   		set_session_for(@admin)
 		end
 
@@ -60,7 +60,7 @@ describe ProductsController do
 
   context 'for admin relation user' do
   	before(:each) do
-  		@user = Factory(:user)
+  		@user = FactoryGirl.create(:user)
   		set_session_for(@user)
       @platform.relations.create!(:object_type => 'User', :object_id => @user.id, :role => 'admin')
 		end
@@ -91,7 +91,7 @@ describe ProductsController do
 
   context 'for no relation user' do
   	before(:each) do
-  		@user = Factory(:user)
+  		@user = FactoryGirl.create(:user)
   		set_session_for(@user)
 		end
 
