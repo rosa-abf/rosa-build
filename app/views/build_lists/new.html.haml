@@ -1,3 +1,4 @@
+-title "#{t('layout.build_lists.new_header')} - #{title_project(@project)}"
 = form_for [@project, @build_list], :html => { :class => :form, :method => :post } do |f|
   %section.left
     %h3= t("activerecord.attributes.build_list.project_version")

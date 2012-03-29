@@ -1,0 +1,14 @@
+ru:
+  title_editing:
+    'Редактирование'
+  at: at
+  users:
+    profile:
+      title: 'Ваш профиль'
+  build_lists:
+    index:
+      title: 'Сборки'
+  git:
+    commits:
+      index:
+        title: 'История коммитов'

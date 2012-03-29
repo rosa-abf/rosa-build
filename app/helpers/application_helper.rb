@@ -1,15 +1,5 @@
 # -*- encoding : utf-8 -*-
 module ApplicationHelper
-  def choose_title
-    title = if ['personal_repositories', 'downloads'].include?(controller.controller_name)
-      APP_CONFIG['repo_project_name']
-    else
-      APP_CONFIG['project_name']
-    end
-    
-    return title
-  end
-
   def layout_class
     case
     when params[:controller] == 'issues' && params[:action] == 'new'
@@ -25,5 +15,17 @@ module ApplicationHelper
     else
       content_for?(:sidebar) ? 'right' : 'all'
     end
+  end
+
+  def title_project project
+    "#{t 'activerecord.models.project'} #{project.owner.uname}/#{project.name}"
+  end
+
+  def title_platform platform
+    "#{t 'activerecord.models.platform'} #{platform.owner.uname}/#{platform.name}"
+  end
+
+  def title_group group
+    "#{t 'activerecord.models.group'} #{group.uname}"
   end
 end

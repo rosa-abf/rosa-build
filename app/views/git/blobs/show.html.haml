@@ -1,1 +1,2 @@
+-title "#{@project.name}/#{@path} #{t('at') if @branch} #{@branch.try :name} - #{title_project @project}"
 = render :partial => "git/blobs/show", :layout => 'projects/show'

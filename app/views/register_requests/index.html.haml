@@ -10,7 +10,7 @@
       \|
       = link_to t("layout.register_request.rejected"), register_requests_path(:scope => :rejected)
     %h2.title
-      = t("layout.register_request.list_header")
+      = title t("layout.register_request.list_header")
     .inner
       = form_tag register_requests_path, :method => :put, :class => 'update_form' do
         = hidden_field_tag 'update_type'

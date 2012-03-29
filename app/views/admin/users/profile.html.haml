@@ -1,4 +1,4 @@
-%h3.fix.bpadding10= @user.uname
+%h3.fix.bpadding10= title @user.uname
 
 = form_for @user, :url => update_user_path(@user), :html => { :class => :form } do |f|
   = render :partial => "users/form", :locals => {:f => f}

@@ -1,0 +1,14 @@
+en:
+  title_editing:
+    'Editing'
+  at: at
+  users:
+    profile:
+      title: 'Your Profile'
+  build_lists:
+    index:
+      title: 'Build Lists'
+  git:
+    commits:
+      index:
+        title: 'Commit History'

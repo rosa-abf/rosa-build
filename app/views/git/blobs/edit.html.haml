@@ -1,1 +1,2 @@
+-title "#{t :title_editing} #{@project.name}/#{@path} #{t('at') if @branch} #{@branch.try :name} - #{title_project @project}"
 = render :partial => "git/blobs/editor", :layout => 'projects/show'

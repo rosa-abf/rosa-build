@@ -1,3 +1,4 @@
+-title "#{title_project @project} #{t('at') if @branch} #{@branch.try :name}"
 = render :partial => 'projects/submenu'
 = render :partial => 'projects/repo_block', :locals => {:project => @project}
 

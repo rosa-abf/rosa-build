@@ -1,3 +1,4 @@
+- title "#{t('activerecord.models.build_list')} - #{title_project(@build_list.project)}"
 .notify.blue
   %div{:class => build_list_status_color(@build_list.status)}
     %p= @build_list.human_status
