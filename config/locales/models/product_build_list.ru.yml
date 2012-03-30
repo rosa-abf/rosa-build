@@ -1,0 +1,30 @@
+ru:
+  layout:
+    product_build_lists:
+      delete: Удалить
+      action: Действие
+      id_search: 'Поиск по Id'
+      statuses:
+        '0': 'собран'
+        '1': 'ошибка сборки'
+        '2': 'собирается'
+        build_failed: Ошибка сборки
+        build_started: Собирается
+        build_completed: Собран
+
+      ownership:
+        header: Принадлежность заданий
+        owned: Мне
+        related: Связанные со мной
+        index: Все
+
+  activerecord:
+    attributes:
+      product_build_list:
+        id: Id
+        product: Продукт
+        container_path: Контейнер
+        status: Статус
+        user: Пользователь
+        notified_at: Информация получена
+

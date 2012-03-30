@@ -4,6 +4,7 @@ class ProductBuildListsController < ApplicationController
   load_and_authorize_resource :platform, :only => [:create, :destroy]
   load_and_authorize_resource :product, :through => :platform, :only => [:create, :destroy]
   load_and_authorize_resource :product_build_list, :through => :product, :only => [:create, :destroy]
+  load_and_authorize_resource :only => [:index]
 
   before_filter :authenticate_product_builder!, :only => [:status_build]
   before_filter :find_product_build_list, :only => [:status_build]
@@ -25,6 +26,26 @@ class ProductBuildListsController < ApplicationController
     @product_build_list.destroy
     flash[:notice] = t('flash.product.build_list_delete')
     redirect_to [@platform, @product]
+  end
+
+#  def index
+#     @product_build_lists = ProductBuildList.paginate :page => params[:page]
+#  end
+
+  def search
+    new_params = {:filter => {}}
+    params[:filter].each do |k,v|
+      new_params[:filter][k] = v unless v.empty?
+    end
+    #redirect_to @product ? product_build_lists_path(@product, new_params) : product_build_lists_path(new_params)
+    redirect_to product_build_lists_path(new_params)
+  end
+
+  def index
+    #@action_url = @product ? search_product_build_lists_path(@product) : search_build_lists_path
+    @action_url = search_product_build_lists_path
+    @filter = ProductBuildList::Filter.new(@product, current_user, params[:filter] || {})
+    @product_build_lists = @filter.find.recent.paginate :page => params[:page]
   end
 
   protected
