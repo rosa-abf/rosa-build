@@ -30,6 +30,8 @@ ru:
         admin: Админы
         real: Обычные
         banned: Забаненные
+    register_request:
+      list_header: Заявки на регистрацию
 
   activerecord:
     attributes:

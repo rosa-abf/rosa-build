@@ -1,3 +1,4 @@
+-set_meta_tags :title => [title_object(@build_list.project), t('activerecord.models.build_list')]
 .notify.blue
   %div{:class => build_list_status_color(@build_list.status)}
     %p= @build_list.human_status

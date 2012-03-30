@@ -5,10 +5,10 @@ en:
       build_all: Build all
       list: List
       new: Create
-      edit: Edit
+      edit: Settings
       about: About platform
       new_header: New platform
-      edit_header: Edit
+      edit_header: Settings
       list_header: Platforms
       list_header_main: General
       list_header_personal: Personal
