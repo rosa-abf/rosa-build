@@ -1,4 +1,4 @@
--title "#{t '.title'} - #{title_project @project}"
+-set_meta_tags :title => [title_object(@project), t('.title')]
 -render :partial => 'projects/submenu'
 -render :partial => 'issues/index_sidebar'
 

@@ -1,4 +1,4 @@
--set_meta_tags :title => "#{t 'layout.platforms.edit'} - #{title_platform @platform}"
+-set_meta_tags :title => [title_object(@platform), t('layout.platforms.edit')]
 = render :partial => 'submenu'
 = render :partial => 'sidebar'
 

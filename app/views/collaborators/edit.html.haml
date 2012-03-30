@@ -1,4 +1,4 @@
-- title "#{t 'layout.projects.members'} - #{title_project(@project)}"
+-set_meta_tags :title => [title_object(@project), t('layout.projects.members')]
 = render :partial => 'projects/sidebar'
 = render :partial => 'projects/submenu'
 

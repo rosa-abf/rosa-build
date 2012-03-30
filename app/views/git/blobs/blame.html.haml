@@ -1,4 +1,4 @@
--title "#{title_project @project} #{t('at') if @branch} #{@branch.try :name}"
+-set_meta_tags :title => "#{title_object @project} #{t('at') if @branch} #{@branch.try :name}"
 = render :partial => 'projects/submenu'
 = render :partial => 'projects/repo_block', :locals => {:project => @project}
 

@@ -17,18 +17,6 @@ module ApplicationHelper
     end
   end
 
-  def title_project project
-    "#{t 'activerecord.models.project'} #{project.owner.uname}/#{project.name}"
-  end
-
-  def title_platform platform
-    "#{t 'activerecord.models.platform'} #{platform.owner.uname}/#{platform.name}"
-  end
-
-  def title_group group
-    "#{t 'activerecord.models.group'} #{group.uname}"
-  end
-
   def title_object object
     name = object.class == Group ? object.uname : object.name
     object_name = t "activerecord.models.#{object.class.name.downcase}"

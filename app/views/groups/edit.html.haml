@@ -1,4 +1,4 @@
--title "#{t 'layout.groups.edit'} - #{title_group @group}"
+-set_meta_tags :title => [title_object(@group), t('layout.groups.edit')]
 = form_for @group, :html => { :class => :form, :multipart => true } do |f|
   = render :partial => "form", :locals => {:f => f}
 

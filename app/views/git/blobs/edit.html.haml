@@ -1,2 +1,2 @@
--title "#{t :title_editing} #{@project.name}/#{@path} #{t('at') if @branch} #{@branch.try :name} - #{title_project @project}"
+-set_meta_tags :title => [title_object(@project), "#{t :title_editing} #{@project.name}/#{@path} #{t('at') if @branch} #{@branch.try :name}"]
 = render :partial => "git/blobs/editor", :layout => 'projects/show'

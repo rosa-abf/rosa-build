@@ -1,4 +1,4 @@
--title "#{@commit.message} - #{shortest_hash_id(@commit.id)} - #{title_project @project}"
+-set_meta_tags :title => [title_object(@project), shortest_hash_id(@commit.id), @commit.message]
 = render :partial => 'projects/submenu'
 
 .description

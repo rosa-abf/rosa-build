@@ -1,4 +1,4 @@
--set_meta_tags :title => "#{t 'layout.personal_repositories.settings'} #{@repository.name} - #{title_platform @repository.platform}"
+-set_meta_tags :title => [title_object(@repository), t('layout.personal_repositories.settings')]
 .block
   .secondary-navigation
     %ul.wat-cf

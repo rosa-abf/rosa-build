@@ -1,4 +1,4 @@
--set_meta_tags :title => "#{t 'layout.groups.members'} - #{title_group @group}"
+-set_meta_tags :title => [title_object(@group), t('layout.groups.members')]
 = form_tag group_members_path(@group), :id => 'members_form', :delete_url => remove_group_members_path(@group) do
   = hidden_field_tag "_method", "post"
   %table.tablesorter{:cellpadding => "0", :cellspacing => "0"}

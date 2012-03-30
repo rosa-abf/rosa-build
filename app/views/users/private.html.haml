@@ -1,4 +1,4 @@
-- title t('layout.users.settings')
+-set_meta_tags :title => t('layout.users.settings')
 %h3.fix.bpadding10= t('layout.users.private_settings_header')
 
 = form_for(@user, :url => user_private_settings_path(@user), :html => { :method => :put, :class => "form" }) do |f|

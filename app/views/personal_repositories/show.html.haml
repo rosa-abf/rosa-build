@@ -1,4 +1,4 @@
--set_meta_tags :title => "#{t 'activerecord.models.repository'} #{@repository.name} - #{title_platform @repository.platform}"
+-set_meta_tags :title => [title_object(@repository), t('activerecord.models.repository')]
 .block
   .secondary-navigation
     %ul.wat-cf
