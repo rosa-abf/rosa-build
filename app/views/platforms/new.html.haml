@@ -1,4 +1,4 @@
-%h3= t("layout.platforms.new_header")
+%h3= title t("layout.platforms.new_header")
 
 = form_for :platform, :url => platforms_path, :html => { :class => :form } do |f|
   = render :partial => "form", :locals => {:f => f}

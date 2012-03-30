@@ -1,17 +1,15 @@
 # -*- encoding : utf-8 -*-
-Factory.define(:user) do |u|
-  u.email { Factory.next(:email) }
-  u.name { Factory.next(:string) }
-  u.uname { Factory.next(:uname) }
-  u.password '123456'
-  u.password_confirmation { |user| user.password }
-end
+FactoryGirl.define do
+  factory :user do
+    email { FactoryGirl.generate(:email) }
+    name { FactoryGirl.generate(:string) }
+    uname { FactoryGirl.generate(:uname) }
+    password '123456'
+    password_confirmation {|u| u.password}
+    confirmed_at { Time.current }
+  end
 
-Factory.define(:admin, :class => 'User') do |u|
-  u.email { Factory.next(:email) }
-  u.name { Factory.next(:string) }
-  u.uname { Factory.next(:uname) }
-  u.password '123456'
-  u.password_confirmation { |user| user.password }
-  u.role 'admin'
+  factory :admin, :parent => :user do
+    role 'admin'
+  end
 end

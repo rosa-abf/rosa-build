@@ -1,1 +1,2 @@
+-set_meta_tags :title => "#{title_object @project} #{t('at') if @branch} #{@branch.try :name}"
 = render :partial => "git/trees/show", :layout => 'projects/show'

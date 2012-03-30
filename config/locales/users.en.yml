@@ -30,6 +30,8 @@ en:
         admin: Admins
         real: Real
         banned: Banned
+    register_request:
+      list_header: Register requests
 
   activerecord:
     attributes:

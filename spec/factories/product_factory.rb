@@ -1,5 +1,7 @@
 # -*- encoding : utf-8 -*-
-Factory.define(:product) do |p|
-  p.name { Factory.next(:string) }
-  p.association :platform, :factory => :platform
+FactoryGirl.define do
+  factory :product do
+    name { FactoryGirl.generate(:string) }
+    association :platform, :factory => :platform
+  end
 end

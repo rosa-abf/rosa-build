@@ -55,10 +55,6 @@ class Ability
         can(:destroy, Project) {|project| owner? project}
         can :remove_user, Project
 
-        # TODO: Turn on AAA when it will be updated
-        #can :create, AutoBuildList
-        #can [:index, :destroy], AutoBuildList, :project_id => user.own_project_ids
-
         can :search, BuildList
         can [:read, :owned], BuildList, :user_id => user.id
         can :read, BuildList, :project => {:visibility => 'open'}
@@ -92,8 +88,7 @@ class Ability
 
         can(:create, ProductBuildList) {|pbl| can?(:update, pbl.product)}
         can(:destroy, ProductBuildList) {|pbl| can?(:destroy, pbl.product)}
-
-        can [:read, :platforms], Category
+        can(:read, ProductBuildList) {|pbl| can?(:read, pbl.product)}
 
         can [:read, :create], PrivateUser, :platform => {:owner_type => 'User', :owner_id => user.id}
         can [:read, :create], PrivateUser, :platform => {:owner_type => 'Group', :owner_id => user.group_ids}

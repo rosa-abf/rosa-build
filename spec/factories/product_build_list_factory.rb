@@ -1,4 +1,6 @@
 # -*- encoding : utf-8 -*-
-Factory.define(:product_build_list) do |p|
-  p.association :product, :factory => :product
+FactoryGirl.define do
+  factory :product_build_list do
+    association :product, :factory => :product
+  end
 end

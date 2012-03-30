@@ -5,10 +5,10 @@ ru:
       build_all: Собрать все
       list: Список
       new: Создать
-      edit: Редактировать
+      edit: Настройки
       about: О платформе
       new_header: Новая платформа
-      edit_header: Редактировать
+      edit_header: Настройки
       list_header: Платформы
       list_header_main: Основные
       list_header_personal: Персональные
@@ -74,5 +74,5 @@ ru:
         distrib_type: Тип дистрибутива
         visibility: Статус
         visibility_types:
-          open: Открытый
-          hidden: Закрытый
+          open: Публичный
+          hidden: Приватный

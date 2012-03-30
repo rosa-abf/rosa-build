@@ -3,12 +3,10 @@ class Project < ActiveRecord::Base
   VISIBILITIES = ['open', 'hidden']
   MAX_OWN_PROJECTS = 32000
 
-  belongs_to :category, :counter_cache => true
   belongs_to :owner, :polymorphic => true, :counter_cache => :own_projects_count
 
   has_many :issues, :dependent => :destroy
   has_many :build_lists, :dependent => :destroy
-  has_many :auto_build_lists, :dependent => :destroy
 
   has_many :project_imports, :dependent => :destroy
   has_many :project_to_repositories, :dependent => :destroy
@@ -22,7 +20,7 @@ class Project < ActiveRecord::Base
   validates :name, :uniqueness => {:scope => [:owner_id, :owner_type], :case_sensitive => false}, :presence => true, :format => {:with => /^[a-zA-Z0-9_\-\+\.]+$/}
   validates :owner, :presence => true
   validate { errors.add(:base, :can_have_less_or_equal, :count => MAX_OWN_PROJECTS) if owner.projects.size >= MAX_OWN_PROJECTS }
-  # validate {errors.add(:base, I18n.t('flash.project.save_warning_ssh_key')) if owner.ssh_key.blank?}
+  
   validates_attachment_size :srpm, :less_than => 500.megabytes
   validates_attachment_content_type :srpm, :content_type => ['application/octet-stream', "application/x-rpm", "application/x-redhat-package-manager"], :message => I18n.t('layout.invalid_content_type')
 
@@ -31,12 +29,11 @@ class Project < ActiveRecord::Base
 
   scope :recent, order("name ASC")
   scope :search_order, order("CHAR_LENGTH(name) ASC")
-  scope :search, lambda {|q| by_name("%#{q}%").open}
+  scope :search, lambda {|q| by_name("%#{q.strip}%")}
   scope :by_name, lambda {|name| where('projects.name ILIKE ?', name)}
   scope :by_visibilities, lambda {|v| where(:visibility => v)}
-  scope :open, where(:visibility => 'open')
+  scope :opened, where(:visibility => 'open')
   scope :addable_to_repository, lambda { |repository_id| where("projects.id NOT IN (SELECT project_to_repositories.project_id FROM project_to_repositories WHERE (project_to_repositories.repository_id = #{ repository_id }))") }
-  scope :automateable, where("projects.id NOT IN (SELECT auto_build_lists.project_id FROM auto_build_lists)")
 
   after_create :attach_to_personal_repository
   after_create :create_git_repo
@@ -52,18 +49,6 @@ class Project < ActiveRecord::Base
   has_attached_file :srpm
 
   include Modules::Models::Owner
-
-  def auto_build
-    auto_build_lists.each do |auto_build_list|
-      build_lists.create(
-        :pl => auto_build_list.pl,
-        :bpl => auto_build_list.bpl,
-        :arch => auto_build_list.arch,
-        :project_version => versions.last,
-        :build_requires => true,
-        :update_type => 'bugfix') unless build_lists.for_creation_date_period(Time.current - 15.seconds, Time.current).present?
-    end
-  end
 
   def build_for(platform, user, arch = 'i586') # Return i586 after mass rebuild
     arch = Arch.find_by_name(arch) if arch.acts_like?(:string)

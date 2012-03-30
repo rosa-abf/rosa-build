@@ -3,12 +3,12 @@ require 'spec_helper'
 require "cancan/matchers"
 
 def admin_create
-	@admin = Factory(:admin)
+	@admin = FactoryGirl.create(:admin)
   @ability = Ability.new(@admin)
 end
 
 def user_create
-	@user = Factory(:user)
+	@user = FactoryGirl.create(:user)
   @ability = Ability.new(@user)
 end
 
@@ -18,11 +18,11 @@ end
 
 describe CanCan do
 
-	let(:personal_platform) { Factory(:platform, :platform_type => 'personal') }
-	let(:personal_repository) { Factory(:personal_repository) }
-	let(:open_platform) { Factory(:platform, :visibility => 'open') }
-	let(:hidden_platform) { Factory(:platform, :visibility => 'hidden') }
-  let(:register_request) { Factory(:register_request) }
+	let(:personal_platform) { FactoryGirl.create(:platform, :platform_type => 'personal') }
+	let(:personal_repository) { FactoryGirl.create(:personal_repository) }
+	let(:open_platform) { FactoryGirl.create(:platform, :visibility => 'open') }
+	let(:hidden_platform) { FactoryGirl.create(:platform, :visibility => 'hidden') }
+  let(:register_request) { FactoryGirl.create(:register_request) }
 
   before(:each) do
     stub_rsync_methods
@@ -118,7 +118,7 @@ describe CanCan do
     end
 
     it "shoud be able to read open projects" do
-      @project = Factory(:project, :visibility => 'open')
+      @project = FactoryGirl.create(:project, :visibility => 'open')
       @ability.should be_able_to(:read, @project)
     end
 
@@ -132,7 +132,7 @@ describe CanCan do
 
     context "private users relations" do
       before(:each) do
-        @private_user = Factory(:private_user)
+        @private_user = FactoryGirl.create(:private_user)
         @private_user.platform.update_attribute(:owner, @user)
       end
 
@@ -145,8 +145,8 @@ describe CanCan do
 
     context 'as project collaborator' do
       before(:each) do
-        @project = Factory(:project)
-        @issue = Factory(:issue, :project_id => @project.id)
+        @project = FactoryGirl.create(:project)
+        @issue = FactoryGirl.create(:issue, :project_id => @project.id)
       end
 
       context 'with read rights' do
@@ -180,7 +180,7 @@ describe CanCan do
 
         [:new, :create].each do |action|
           it "should be able to #{action} build_list" do
-            @build_list = Factory(:build_list, :project => @project)
+            @build_list = FactoryGirl.create(:build_list, :project => @project)
             @ability.should be_able_to(action, @build_list)
           end
         end
@@ -199,7 +199,7 @@ describe CanCan do
 
         [:new, :create].each do |action|
           it "should be able to #{action} build_list" do
-            @build_list = Factory(:build_list, :project => @project)
+            @build_list = FactoryGirl.create(:build_list, :project => @project)
             @ability.should be_able_to(action, @build_list)
           end
         end
@@ -229,7 +229,7 @@ describe CanCan do
 
         [:new, :create].each do |action|
           it "should be able to #{action} build_list" do
-            @build_list = Factory(:build_list, :project => @project)
+            @build_list = FactoryGirl.create(:build_list, :project => @project)
             @ability.should be_able_to(action, @build_list)
           end
         end
@@ -245,7 +245,7 @@ describe CanCan do
 
     context 'platform relations' do
       before(:each) do
-        @platform = Factory(:platform)
+        @platform = FactoryGirl.create(:platform)
       end
 
       context 'with owner rights' do
@@ -273,7 +273,7 @@ describe CanCan do
 
     context 'repository relations' do
       before(:each) do
-        @repository = Factory(:repository)
+        @repository = FactoryGirl.create(:repository)
       end
 
       context 'with owner rights' do
@@ -301,9 +301,9 @@ describe CanCan do
 
     context 'build list relations' do
       before(:each) do
-        @project = Factory(:project)
+        @project = FactoryGirl.create(:project)
         @project.relations.create!(:object_id => @user.id, :object_type => 'User', :role => 'writer')
-        @build_list = Factory(:build_list, :project => @project)
+        @build_list = FactoryGirl.create(:build_list, :project => @project)
       end
 
       it 'should be able to publish build list with SUCCESS status' do

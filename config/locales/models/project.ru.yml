@@ -60,14 +60,13 @@ ru:
       project: Проект
     attributes:
       project:
-        category_id: Категория
         name: Название
         description: Описание
         owner: Владелец
         visibility: Видимость
         visibilities:
-          open: Публичная
-          hidden: Приватная
+          open: Публичный
+          hidden: Приватный
         repository_id: Репозиторий
         repository: Репозиторий
         created_at: Создан

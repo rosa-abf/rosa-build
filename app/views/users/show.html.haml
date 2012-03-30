@@ -3,7 +3,7 @@
   %br
   = link_to t("layout.users.settings"), current_user == @user ? edit_profile_path : edit_user_path(@user), :class => 'button width81' if can? :edit, @user
 .left
-  %h3= @user.uname
+  %h3= title @user.uname
   = @user.name
   %br
     = link_to @user.email, "mailto:#{ @user.email }"

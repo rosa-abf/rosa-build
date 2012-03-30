@@ -5,7 +5,7 @@ require "cancan/matchers"
 describe Group do
   before(:each) do
     stub_rsync_methods
-    @group = Factory(:group)
+    @group = FactoryGirl.create(:group)
     @ability = Ability.new(User.new)
   end
 
@@ -19,7 +19,7 @@ describe Group do
 
   context 'for global admin' do
     before(:each) do
-      @admin = Factory(:admin)
+      @admin = FactoryGirl.create(:admin)
       @ability = Ability.new(@admin)
     end
 
@@ -32,8 +32,8 @@ describe Group do
 
   context 'for group admin' do
     before(:each) do
-      @user = Factory(:user)
-      @another_user = Factory(:user)
+      @user = FactoryGirl.create(:user)
+      @another_user = FactoryGirl.create(:user)
       @group.objects.create(:object_type => 'User', :object_id => @user.id, :role => 'admin')
       @ability = Ability.new(@user)
     end
@@ -61,7 +61,7 @@ describe Group do
 
   context 'for group owner' do
     before(:each) do
-      @user = Factory(:user)
+      @user = FactoryGirl.create(:user)
       @group.update_attribute(:owner, @user)
       @group.objects.create(:object_type => 'User', :object_id => @user.id, :role => 'admin')
       @ability = Ability.new(@user)
@@ -76,7 +76,7 @@ describe Group do
 
   context 'for group reader and writer user' do
     before(:each) do
-      @user = Factory(:user)
+      @user = FactoryGirl.create(:user)
       @group.objects.create(:object_type => 'User', :object_id => @user.id, :role => 'reader')
       @ability = Ability.new(@user)
     end

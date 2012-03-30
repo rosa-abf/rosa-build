@@ -1,0 +1,30 @@
+en:
+  layout:
+    product_build_lists:
+      delete: Delete
+      action: Action
+      id_search: 'Id search'
+      statuses:
+        '0': 'build'
+        '1': 'build error'
+        '2': 'build in progress'
+        build_failed: Build failed
+        build_started: Build in progress
+        build_completed: Build
+
+      ownership:
+        header: Build list ownership
+        owned: My
+        related: Related
+        index: All
+
+  activerecord:
+    attributes:
+      product_build_list:
+        id: Id
+        product: Product
+        container_path: Container
+        status: Status
+        notified_at: Notified at
+        user: User
+        notified_at: Notified at

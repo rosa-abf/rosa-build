@@ -51,8 +51,8 @@ describe SubscribesController do
   before(:each) do
     stub_rsync_methods
 
-    @project = Factory(:project)
-    @issue = Factory(:issue, :project_id => @project.id)
+    @project = FactoryGirl.create(:project)
+    @issue = FactoryGirl.create(:issue, :project_id => @project.id)
 
     @create_params = {:issue_id => @issue.serial_id, :project_id => @project.id}
     @destroy_params = {:issue_id => @issue.serial_id, :project_id => @project.id}
@@ -64,7 +64,7 @@ describe SubscribesController do
 
   context 'for global admin user' do
     before(:each) do
-      @user = Factory(:admin)
+      @user = FactoryGirl.create(:admin)
       set_session_for(@user)
       @project.relations.create!(:object_type => 'User', :object_id => @user.id, :role => 'admin')
       @destroy_params = @destroy_params.merge({:id => @user.id})
@@ -87,7 +87,7 @@ describe SubscribesController do
 
   context 'for simple user' do
     before(:each) do
-      @user = Factory(:user)
+      @user = FactoryGirl.create(:user)
       set_session_for(@user)
       @destroy_params = @destroy_params.merge({:id => @user.id})
     end

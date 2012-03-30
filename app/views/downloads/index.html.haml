@@ -1,7 +1,7 @@
 .block
   .content
     %h2.title
-      = t("layout.downloads.title")
+      = title t("layout.downloads.title")
     .inner
       %h3= t("layout.downloads.message")
     .inner
@@ -27,4 +27,4 @@
       .actions-bar.wat-cf
         .actions
           = will_paginate @downloads
-
+= render 'admin/submenu'

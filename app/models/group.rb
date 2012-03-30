@@ -19,7 +19,8 @@ class Group < ActiveRecord::Base
 
   scope :search_order, order("CHAR_LENGTH(uname) ASC")
   scope :without, lambda {|l| where("groups.id NOT IN (?)", Array(l))}
-  scope :search, lambda {|q| where("uname ILIKE ?", "%#{q}%")}
+  scope :search, lambda {|q| where("uname ILIKE ?", "%#{q.strip}%")}
+  scope :opened, where('1=1')
   scope :by_owner, lambda {|owner| where(:owner_id => owner.id)}
   scope :by_admin, lambda {|admin| joins(:relations).where(:'relations.role' => 'admin', :'relations.target_id' => admin.id, :'relations.target_type' => 'User')}
 

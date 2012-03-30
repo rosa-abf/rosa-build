@@ -10,7 +10,7 @@ describe Platform do
 
   context 'released' do
     it 'should add suffix to name when released' do
-      @platform = Factory(:platform)
+      @platform = FactoryGirl.create(:platform)
       old_name = @platform.name
 
       @platform.released = true
@@ -20,7 +20,7 @@ describe Platform do
     end
 
     it 'should not add suffix to name when not released' do
-      @platform = Factory(:platform, :name => 'name')
+      @platform = FactoryGirl.create(:platform, :name => 'name')
       @platform.name.should == 'name'
     end
   end

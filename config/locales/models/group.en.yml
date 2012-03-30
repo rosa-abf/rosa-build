@@ -10,7 +10,7 @@ en:
       list_header: Groups
       show: Group
       back_to_the_list: ⇐ List of groups
-      confirm_delete: Are you sure to remove this group?
+      confirm_delete: Are you sure you want to remove this group?
       edit_members: Members
       group: Group
       description: Descripton
@@ -29,15 +29,15 @@ en:
   flash:
     group:
       saved: Group saved
-      save_error: Group saves error
+      save_error: Unable to save group
       destroyed: Group deleted
       user_uname_exists: User already exists
 
     members:
-      successfully_changed: Members list successfully changed
-      error_in_changing: Members list changing error
-      successfully_added: Member successfully added
-      error_in_adding: Member adding error
+      successfully_changed: Members list modified successfully
+      error_in_changing: Error while modifying members
+      successfully_added: Member added successfully
+      error_in_adding: Error while adding member
       already_added: User already added
 
   activerecord:

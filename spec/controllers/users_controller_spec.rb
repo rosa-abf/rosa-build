@@ -5,11 +5,11 @@ describe UsersController do
   before(:each) do
     stub_rsync_methods
 
-    @simple_user = Factory(:user)
-    @other_user = Factory(:user)
-    @admin = Factory(:admin)
+    @simple_user = FactoryGirl.create(:user)
+    @other_user = FactoryGirl.create(:user)
+    @admin = FactoryGirl.create(:admin)
     %w[user1 user2 user3].each do |uname|
-      Factory(:user, :uname => uname, :email => "#{ uname }@nonexistanceserver.com")
+      FactoryGirl.create(:user, :uname => uname, :email => "#{ uname }@nonexistanceserver.com")
     end
     @update_params = {:email => 'new_email@test.com'}
   end

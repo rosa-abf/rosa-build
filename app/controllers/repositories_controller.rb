@@ -19,11 +19,8 @@ class RepositoriesController < ApplicationController
   end
 
   def show
-    if params[:query]
-      @projects = @repository.projects.recent.by_name("%#{params[:query]}%").paginate :page => params[:project_page], :per_page => 30
-    else
-      @projects = @repository.projects.recent.paginate :page => params[:project_page], :per_page => 30
-    end
+    @projects = @repository.projects.recent.paginate :page => params[:project_page], :per_page => 30
+    @projects = @projects.search(params[:query]).search_order if params[:query].present?
   end
 
   def new
@@ -91,7 +88,7 @@ class RepositoriesController < ApplicationController
     @projects = @projects.paginate(:page => (params[:iDisplayStart].to_i/params[:iDisplayLength].to_i).to_i + 1, :per_page => params[:iDisplayLength])
 
     @total_projects = @projects.count
-    @projects = @projects.where(['projects.name ILIKE ?', "#{params[:sSearch]}%"]) if params[:sSearch] and !params[:sSearch].empty?
+    @projects = @projects.search(params[:sSearch]).search_order if params[:sSearch].present?
     @total_project = @projects.count
     @projects = @projects.order(order)#.includes(:owner) #WTF????
 
