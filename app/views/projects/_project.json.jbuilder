@@ -9,6 +9,7 @@ json.project do |proj|
 
   proj.leave_link  remove_user_project_path(project) unless project.owner == current_user or !alone_member? project
   proj.rights_class participant_class(alone_member?(project), project)
+  proj.title t("layout.relations.#{participant_class(alone_member?(project), project)}")
 
   proj.owner do |owner|
     owner.name project.owner.uname

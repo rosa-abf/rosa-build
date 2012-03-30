@@ -28,7 +28,6 @@ module ProjectsHelper
   end
 
   def alone_member?(project)
-    urel = Relation.by_target(project).by_object(current_user)
-    return urel.size == 0 ? false : true
+    Relation.by_target(project).by_object(current_user).size > 0
   end
 end

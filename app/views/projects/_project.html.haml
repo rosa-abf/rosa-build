@@ -9,7 +9,8 @@
   %td.td2= project.description
   - alone_member = alone_member? project
   %td
-    %span{:class => participant_class(alone_member, project)}
+    - c = participant_class(alone_member, project)
+    %span{:class => c, :title => t("layout.relations.#{c}")}
       = t("layout.collaborators.role_names.#{project.relations.by_user_through_groups(current_user).first.role}")
   %td.td5
     - unless project.owner == current_user or !alone_member
