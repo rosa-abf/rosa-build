@@ -49,6 +49,7 @@ class User < ActiveRecord::Base
   attr_accessor :login
 
   scope :search_order, order("CHAR_LENGTH(uname) ASC")
+  scope :without, lambda {|l| where("users.id NOT IN (?)", Array(l))}
   scope :search, lambda {|q| where("uname ILIKE ?", "%#{q}%")}
   scope :banned, where(:role => 'banned')
   scope :admin, where(:role => 'admin')
