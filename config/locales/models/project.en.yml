@@ -3,7 +3,7 @@ en:
     projects:
       add: Add
       edit: Settings
-      fork_and_edit: Fork and Edit
+      fork_and_edit: Fork
       list: List
       list_header: Projects
       edit_header: Edit project

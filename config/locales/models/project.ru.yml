@@ -3,7 +3,7 @@ ru:
     projects:
       add: Добавить
       edit: Настройки
-      fork_and_edit: Клонировать и редактировать
+      fork_and_edit: Клонировать
       list: Список
       list_header: Проекты
       edit_header: Редактировать проект

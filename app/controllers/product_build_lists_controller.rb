@@ -1,6 +1,7 @@
 # -*- encoding : utf-8 -*-
 class ProductBuildListsController < ApplicationController
   before_filter :authenticate_user!, :except => [:status_build]
+  skip_before_filter :authenticate_user!, :only => [:index] if APP_CONFIG['anonymous_access']
   load_and_authorize_resource :platform, :only => [:create, :destroy]
   load_and_authorize_resource :product, :through => :platform, :only => [:create, :destroy]
   load_and_authorize_resource :product_build_list, :through => :product, :only => [:create, :destroy]
@@ -21,31 +22,21 @@ class ProductBuildListsController < ApplicationController
     @product_build_list.save!
     render :nothing => true
   end
-  
+
   def destroy
     @product_build_list.destroy
     flash[:notice] = t('flash.product.build_list_delete')
     redirect_to [@platform, @product]
   end
 
-#  def index
-#     @product_build_lists = ProductBuildList.paginate :page => params[:page]
-#  end
-
-  def search
-    new_params = {:filter => {}}
-    params[:filter].each do |k,v|
-      new_params[:filter][k] = v unless v.empty?
-    end
-    #redirect_to @product ? product_build_lists_path(@product, new_params) : product_build_lists_path(new_params)
-    redirect_to product_build_lists_path(new_params)
-  end
-
   def index
-    #@action_url = @product ? search_product_build_lists_path(@product) : search_build_lists_path
-    @action_url = search_product_build_lists_path
-    @filter = ProductBuildList::Filter.new(@product, current_user, params[:filter] || {})
-    @product_build_lists = @filter.find.recent.paginate :page => params[:page]
+    if params[:product_id].present?
+      @product_build_lists = @product_build_lists.where(:id => params[:product_id])
+    else
+      @product_build_lists = @product_build_lists.scoped_to_product_name(params[:product_name]) if params[:product_name].present?
+      @product_build_lists = @product_build_lists.for_status(params[:status]) if params[:status].present?
+    end
+    @product_build_lists = @product_build_lists.recent.paginate :page => params[:page]
   end
 
   protected

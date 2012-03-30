@@ -6,5 +6,5 @@
   %td.td2
     %span= project.description
   %td.buttons
-    = link_to remove_project_repository_path(@repository, :project_id => project.id), :method => :delete, :confirm => t("layout.confirm") do
+    = link_to remove_project_platform_repository_path(@platform, @repository, :project_id => project.id), :method => :delete, :confirm => t("layout.confirm") do
       %span.delete &nbsp;

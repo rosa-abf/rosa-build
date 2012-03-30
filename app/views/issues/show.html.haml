@@ -32,4 +32,4 @@
 
 = render :partial => "comments/list", :locals => {:list => @issue.comments, :project => @project, :commentable => @issue}
 %br
-= render :partial => "comments/add", :locals => {:project => @project, :commentable => @issue}
+= render :partial => "comments/add", :locals => {:project => @project, :commentable => @issue} if current_user

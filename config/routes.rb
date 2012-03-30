@@ -1,6 +1,5 @@
 # -*- encoding : utf-8 -*-
 Rosa::Application.routes.draw do
-
   devise_scope :user do
     get '/users/auth/:provider' => 'users/omniauth_callbacks#passthru'
     get '/user' => 'users#profile', :as => :edit_profile
@@ -14,9 +13,7 @@ Rosa::Application.routes.draw do
     delete '/users/:id/delete' => 'admin/users#destroy', :as => :delete_user
   end
   devise_for :users, :controllers => {:omniauth_callbacks => 'users/omniauth_callbacks'}
-
   resources :users, :only => [:show, :profile, :update] do
-    resources :groups, :only => [:new, :create, :index]
     collection do
       resources :register_requests, :only => [:index, :new, :create, :show_message, :approve, :reject] do
         get :show_message, :on => :collection
@@ -26,54 +23,31 @@ Rosa::Application.routes.draw do
       end
       get :autocomplete_user_uname
     end
-
     namespace :settings do
       resource :notifier, :only => [:show, :update]
     end
-    resources :platforms, :only => [:new, :create]
   end
-  match 'users/:id/settings/private' => 'users#private', :as => :user_private_settings, :via => :get
-  match 'users/:id/settings/private' => 'users#private', :as => :user_private_settings, :via => :put
+  get 'users/:id/settings/private' => 'users#private', :as => :user_private_settings
+  get 'users/:id/settings/private' => 'users#private', :as => :user_private_settings
 
-  resources :event_logs, :only => :index
-
-  #resources :downloads, :only => :index
-  match 'statistics/' => 'downloads#index', :as => :downloads
-  match 'statistics/refresh' => 'downloads#refresh', :as => :downloads_refresh
-  match 'statistics/test_sudo' => 'downloads#test_sudo', :as => :test_sudo_downloads
-
-  match '/private/:platform_name/*file_path' => 'privates#show'
-
-  match 'build_lists/publish_build', :to => "build_lists#publish_build"
-  match 'build_lists/status_build', :to => "build_lists#status_build"
-  match 'build_lists/post_build', :to => "build_lists#post_build"
-  match 'build_lists/pre_build', :to => "build_lists#pre_build"
-  match 'build_lists/circle_build', :to => "build_lists#circle_build"
-  match 'build_lists/new_bbdt', :to => "build_lists#new_bbdt"
-
-  resources :build_lists, :only => [:index, :show] do
-    member do
-      put :cancel
-      put :publish
-    end
-    collection { post :search }
-  end
-  resources :product_build_lists, :only => [:index] do
-    collection { post :search }
-  end
-
-  resources :personal_repositories, :only => [:show] do
-    member do
-      get :settings
-      get :change_visibility
-      get :add_project
-      get :remove_project
+  resources :groups do
+    get :autocomplete_group_uname, :on => :collection
+    resources :members, :only => [:index, :edit, :update, :add] do
+      collection do
+        get  :edit
+        post :add
+        post :update
+        delete :remove
+      end
+      member do
+        post :update
+        delete :remove
+      end
     end
   end
 
   resources :platforms do
     resources :private_users, :except => [:show, :destroy, :update]
-
     member do
       get    :clone
       get    :members
@@ -83,21 +57,21 @@ Rosa::Application.routes.draw do
       post   :make_clone
       post   :build_all
     end
-
     collection do
       get :autocomplete_user_uname
     end
-
+    resources :repositories do
+      member do
+        get :add_project
+        delete :remove_project
+        get :projects_list
+      end
+    end
     resources :products do
-      # member do
-      #   get :clone
-      #   get :build
-      # end
       resources :product_build_lists, :only => [:create, :destroy]
     end
-
-    resources :repositories
   end
+  match '/private/:platform_name/*file_path' => 'privates#show'
 
   resources :projects, :except => [:show] do
     resources :wiki do
@@ -133,11 +107,9 @@ Rosa::Application.routes.draw do
     end
     post "labels/:label_id" => "issues#destroy_label", :as => :issues_delete_label
     post "labels/:label_id/update" => "issues#update_label", :as => :issues_update_label
-
     resources :build_lists, :only => [:index, :new, :create] do
       collection { post :search }
     end
-
     resources :collaborators, :only => [:index, :edit, :update, :add] do
       collection do
         get :edit
@@ -149,7 +121,6 @@ Rosa::Application.routes.draw do
         post :update
       end
     end
-
     member do
       post :fork
       get :sections
@@ -157,43 +128,6 @@ Rosa::Application.routes.draw do
       delete :remove_user
     end
   end
-
-  resources :repositories do
-    member do
-      get :add_project
-      delete :remove_project
-      get :projects_list
-    end
-  end
-
-  resources :groups do
-    get :autocomplete_group_uname, :on => :collection
-    resources :members, :only => [:index, :edit, :update, :add] do
-      collection do
-        get  :edit
-        post :add
-        post :update
-        delete :remove
-      end
-      member do
-        post :update
-        delete :remove
-      end
-    end
-    resources :platforms, :only => [:new, :create]
-  end
-
-#  resources :users, :groups do
-#    resources :platforms, :only => [:new, :create]
-#    resources :repositories, :only => [:new, :create]
-#  end
-
-  resources :activity_feeds, :only => [:index]
-
-  resources :search, :only => [:index]
-
-  match 'product_status', :to => 'product_build_lists#status_build'
-
   # Tree
   get '/projects/:project_id' => "git/trees#show", :as => :project
   get '/projects/:project_id/tree/:treeish(/*path)' => "git/trees#show", :defaults => {:treeish => :master}, :as => :tree
@@ -218,6 +152,39 @@ Rosa::Application.routes.draw do
   # Raw
   get '/projects/:project_id/raw/:treeish/*path' => "git/blobs#raw", :defaults => {:treeish => :master}, :as => :raw, :format => false
 
-  root :to => "activity_feeds#index"
-  match '/forbidden', :to => 'platforms#forbidden', :as => 'forbidden'
+  # Core callbacks
+  match 'build_lists/publish_build', :to => "build_lists#publish_build"
+  match 'build_lists/status_build', :to => "build_lists#status_build"
+  match 'build_lists/post_build', :to => "build_lists#post_build"
+  match 'build_lists/pre_build', :to => "build_lists#pre_build"
+  match 'build_lists/circle_build', :to => "build_lists#circle_build"
+  match 'build_lists/new_bbdt', :to => "build_lists#new_bbdt"
+  match 'product_status', :to => 'product_build_lists#status_build'
+
+  resources :build_lists, :only => [:index, :show] do
+    member do
+      put :cancel
+      put :publish
+    end
+    collection { post :search }
+  end
+  resources :product_build_lists, :only => [:index]
+
+  resources :search, :only => [:index]
+
+  resources :event_logs, :only => :index
+
+  match 'statistics/' => 'downloads#index', :as => :downloads
+  match 'statistics/refresh' => 'downloads#refresh', :as => :downloads_refresh
+
+  match '/forbidden', :to => 'pages#forbidden', :as => 'forbidden'
+
+  if APP_CONFIG['anonymous_access']
+    authenticated do
+      root :to => "activity_feeds#index"
+    end
+    root :to => 'pages#root'
+  else
+    root :to => "activity_feeds#index"
+  end
 end

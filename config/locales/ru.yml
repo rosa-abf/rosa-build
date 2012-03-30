@@ -170,8 +170,6 @@ ru:
 
     models:
       arch: Arch
-      container: Container
-      rpm: RPM
       private_user: Приватный пользователь
       product_build_list: Сборочный лист продукта
       download: Статистика
@@ -197,24 +195,6 @@ ru:
         name: Название
         created_at: Создана
         updated_at: Обновлена
-
-      container:
-        name: Название
-        project_id: Проект
-        project: Проект
-        owner_id: Владелец
-        owner: Владелец
-        created_at: Создан
-        updated_at: Обновлен
-
-      rpm:
-        name: Название
-        arch_id: Arch
-        arch: Arch
-        project_id: Проект
-        project: Проект
-        created_at: Создан
-        updated_at: Обновлен
 
       download:
         name: Название

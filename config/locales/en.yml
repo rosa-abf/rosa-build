@@ -170,8 +170,6 @@ en:
 
     models:
       arch: Arch
-      container: Container
-      rpm: RPM
       private_user: Private user
       product_build_list: Product build list
       download: Statistics
@@ -194,24 +192,6 @@ en:
 
       arch:
         name: Name
-        created_at: Created
-        updated_at: Updated
-
-      container:
-        name: Name
-        project_id: Project
-        project: Project
-        owner_id: Owner
-        owner: Owner
-        created_at: Created
-        updated_at: Updated
-
-      rpm:
-        name: Name
-        arch_id: Arch
-        arch: Arch
-        project_id: Project
-        project: Project
         created_at: Created
         updated_at: Updated
 

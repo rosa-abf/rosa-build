@@ -17,4 +17,4 @@
   = render :partial => 'show'
 
   = render :partial => "comments/list", :locals => {:list => Project.commit_comments(@commit, @project), :project => @project, :commentable => @commit}
-  = render :partial => "comments/add", :locals => {:project => @project, :commentable => @commit}
+  = render :partial => "comments/add", :locals => {:project => @project, :commentable => @commit} if current_user

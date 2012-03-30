@@ -12,9 +12,11 @@ en:
   bottom_menu:
     copyright: ROSA Lab © 2012
     about: About the company
+    about_url: http://www.rosalab.com/about
     contacts: Contacts
+    contacts_url: http://www.rosalab.com/about/contacts
     tos: Terms Of Service
-    security: Security
+    tos_url: http://www.rosalab.com/about
   project_menu:
     project: Project
     commits: Commits
