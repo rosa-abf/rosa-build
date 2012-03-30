@@ -1,4 +1,12 @@
-= link_to t('layout.projects.new'), new_project_path, :class => 'button' if can?(:create, Project)
+.toolbar
+  = link_to t('layout.projects.new'), new_project_path, :class => 'button' if can?(:create, Project)
+
+  .legend.rights
+    %span.user_owner= t("layout.relations.user_owner")
+    %span.group_owner= t("layout.relations.group_owner")
+    %span.user= t("layout.relations.user")
+    %span.group= t("layout.relations.group")
+  .both
 
 - columns = [{:type => 'html'},
              {:type => 'html', :sortable => false, :searchable => false},
@@ -47,7 +55,7 @@
       var thirdColumn = function(row) {
         var project = row.project
 
-        return '<span class="' + project.rights_class + '">' + project.role + '</span>';
+        return '<span class="' + project.rights_class + '" title="' + project.title + '">' + project.role + '</span>';
       }
 
       var lastColumn = function(row) {
