@@ -7,7 +7,10 @@ ru:
       title: 'Ваш профиль'
   build_lists:
     index:
-      title: 'Сборки'
+      title: 'Мониторинг проектов'
+  product_build_lists:
+    index:
+      title: 'Мониторинг продуктов'
   git:
     commits:
       index:

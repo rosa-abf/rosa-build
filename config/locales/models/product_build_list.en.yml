@@ -11,7 +11,6 @@ en:
         build_failed: Build failed
         build_started: Build in progress
         build_completed: Build
-      list_header: Products
 
       ownership:
         header: Build list ownership
