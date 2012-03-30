@@ -10,7 +10,8 @@
       = javascript_include_tag 'http://html5shiv.googlecode.com/svn/trunk/html5.js'
     = javascript_include_tag "login"
     = csrf_meta_tag
-    = display_meta_tags :site => APP_CONFIG['project_name'], :reverse => true
+    = display_meta_tags :site => APP_CONFIG['project_name'], :reverse => true, :separator => '-'
+
   %body
     -# render :partial => "layouts/flashes"
     = yield

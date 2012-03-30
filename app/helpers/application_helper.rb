@@ -28,4 +28,18 @@ module ApplicationHelper
   def title_group group
     "#{t 'activerecord.models.group'} #{group.uname}"
   end
+
+  def title_object object
+    name = object.class == Group ? object.uname : object.name
+    object_name = t "activerecord.models.#{object.class.name.downcase}"
+    case object.class.name
+    when 'Project', 'Platform'
+      "#{object_name} #{object.owner.uname}/#{object.name}"
+    when 'Repository', 'Product'
+      "#{object_name} #{object.name} - #{title_object object.platform}"
+    when 'Group'
+      "#{object_name} #{object.uname}"
+    else object.class.name
+    end
+  end
 end

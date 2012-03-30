@@ -12,3 +12,11 @@ ru:
     commits:
       index:
         title: 'История коммитов'
+  issues:
+    index:
+      title: 'Трекер'
+  wiki:
+    compare:
+      title: 'Сравнение версий'
+    searching:
+      title: 'Поиск в вики'
