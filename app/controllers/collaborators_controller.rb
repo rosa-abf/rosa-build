@@ -34,7 +34,9 @@ class CollaboratorsController < ApplicationController
       role = params['user'][user_id]
 
       if relation = @project.relations.find_by_object_id_and_object_type(user_id, 'User')
-        relation.update_attribute(:role, role)
+        unless @project.owner_type == 'User' and @project.owner_id.to_i == user_id.to_i
+          relation.update_attribute(:role, role)
+        end
       else
         relation = @project.relations.build(:object_id => user_id, :object_type => 'User', :role => role)
         relation.save
@@ -44,7 +46,9 @@ class CollaboratorsController < ApplicationController
     params['group'].keys.each { |group_id|
       role = params['group'][group_id]
       if relation = @project.relations.find_by_object_id_and_object_type(group_id, 'Group')
-        relation.update_attribute(:role, role)
+        unless @project.owner_type == 'Group' and @project.owner_id.to_i == group_id.to_i
+          relation.update_attribute(:role, role)
+        end
       else
         relation = @project.relations.build(:object_id => user_id, :object_type => 'Group', :role => role)
         relation.save
@@ -71,13 +75,14 @@ class CollaboratorsController < ApplicationController
       all_group_ids << group_id if params['group_remove'][group_id] == ["1"]
     } if params['group_remove']
 
+
     all_user_ids.each do |user_id|
       u = User.find(user_id)
-      Relation.by_object(u).by_target(@project).each {|r| r.destroy}
+      Relation.by_object(u).by_target(@project).each {|r| r.destroy} unless u.id == @project.owner_id and @project.owner_type == 'User'
     end
     all_group_ids.each do |group_id|
       g = Group.find(group_id)
-      Relation.by_object(g).by_target(@project).each {|r| r.destroy}
+      Relation.by_object(g).by_target(@project).each {|r| r.destroy} unless g.id == @project.owner_id and @project.owner_type == 'Group'
     end
 
     redirect_to edit_project_collaborators_path(@project) + "##{params['user_remove'].present? ? 'users' : 'groups'}"
@@ -126,10 +131,12 @@ class CollaboratorsController < ApplicationController
 
     def find_users
       @users = @project.collaborators.order('uname')#User.all
+      @users = @users.without(@project.owner_id) if @project.owner_type == 'User'
     end
 
     def find_groups
       @groups = @project.groups.order('uname')#Group.all
+      @groups = @groups.without(@project.owner_id) if @project.owner_type == 'Group'
     end
 
     def authorize_collaborators
