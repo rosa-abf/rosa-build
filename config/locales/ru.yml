@@ -120,14 +120,6 @@ ru:
         branches: Ветки
         project_versions: Версии
 
-    product_build_lists:
-      delete: Удалить
-      action: Действие
-      statuses:
-        '0': 'собран'
-        '1': 'ошибка сборки'
-        '2': 'собирается'
-
   flash:
     settings:
       saved: Настройки успешно сохранены
@@ -223,13 +215,6 @@ ru:
         project: Проект
         created_at: Создан
         updated_at: Обновлен
-
-      product_build_list:
-        id: Id
-        product: Продукт
-        container_path: Контейнер
-        status: Статус
-        notified_at: Информация получена
 
       download:
         name: Название

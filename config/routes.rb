@@ -58,6 +58,9 @@ Rosa::Application.routes.draw do
     end
     collection { post :search }
   end
+  resources :product_build_lists, :only => [:index] do
+    collection { post :search }
+  end
 
   resources :personal_repositories, :only => [:show] do
     member do

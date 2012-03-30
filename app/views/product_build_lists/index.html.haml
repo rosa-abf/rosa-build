@@ -1,0 +1,19 @@
+/ #myTable
+%table.tablesorter{:cellpadding => "0", :cellspacing => "0"}
+  %thead
+    %tr
+      -#%th.lpadding16= t("activerecord.attributes.product_build_list.bs_id")
+      %th.lpadding16= t("activerecord.attributes.product_build_list.id")
+      %th.lpadding16= t("activerecord.attributes.product_build_list.status")
+      %th.lpadding16= t("activerecord.attributes.product_build_list.container_path")
+      %th.lpadding16= t("activerecord.attributes.product_build_list.product")
+      -#%th.lpadding16= t("activerecord.attributes.product_build_list.user")
+      %th= t("layout.product_build_lists.action")
+      %th.lpadding16= t("activerecord.attributes.product_build_list.notified_at")
+  %tbody= render @product_build_lists
+.both
+
+= will_paginate @product_build_lists
+
+= render 'product_build_lists/filter'
+= render @product ? 'products/submenu' : 'build_lists/submenu'

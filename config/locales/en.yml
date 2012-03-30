@@ -120,14 +120,6 @@ en:
         branches: Branches
         project_versions: Versions
 
-    product_build_lists:
-      delete: Delete
-      action: Action
-      statuses:
-        '0': 'build'
-        '1': 'build error'
-        '2': 'build in progress'
-
   flash:
     settings:
       saved: Settings saved success
@@ -222,13 +214,6 @@ en:
         project: Project
         created_at: Created
         updated_at: Updated
-
-      product_build_list:
-        id: Id
-        product: Product
-        container_path: Container
-        status: Status
-        notified_at: Notified at
 
       download:
         name: Name

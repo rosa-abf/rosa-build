@@ -4,12 +4,26 @@ class ProductBuildList < ActiveRecord::Base
   BUILD_COMPLETED = 0
   BUILD_FAILED = 1
 
+  STATUSES = [  BUILD_STARTED,
+                BUILD_COMPLETED,
+                BUILD_FAILED
+              ]
+
+  HUMAN_STATUSES = { BUILD_STARTED => :build_started,
+                     BUILD_COMPLETED => :build_completed,
+                     BUILD_FAILED => :build_failed
+                    }
+
   belongs_to :product
 
   validates :product, :status, :presence => true
   validates :status, :inclusion => { :in => [BUILD_STARTED, BUILD_COMPLETED, BUILD_FAILED] }
 
   scope :default_order, order('notified_at DESC')
+  scope :for_status, lambda {|status| where(:status => status) }
+  scope :for_user, lambda { |user| where(:user_id => user.id)  }
+  scope :scoped_to_product_name, lambda {|product_name| joins(:product).where('products.name LIKE ?', "%#{product_name}%")}
+  scope :recent, order("#{table_name}.updated_at DESC")
 
   attr_accessor :base_url
 
@@ -20,12 +34,20 @@ class ProductBuildList < ActiveRecord::Base
     "/downloads/#{product.platform.name}/product/#{id}/"
   end
 
-  def human_status
-    I18n.t("layout.product_build_lists.statuses.#{status}")
-  end
+#  def human_status
+#    I18n.t("layout.product_build_lists.statuses.#{status}")
+#  end
 
   def event_log_message
     {:product => product.name}.inspect
+  end
+
+  def self.human_status(status)
+    I18n.t("layout.product_build_lists.statuses.#{HUMAN_STATUSES[status]}")
+  end
+
+  def human_status
+    self.class.human_status(status)
   end
 
   protected
