@@ -90,9 +90,6 @@ class PlatformsController < ApplicationController
     redirect_to platforms_path
   end
 
-  def forbidden
-  end
-
   def members
     @members = @platform.members.order('name')
   end

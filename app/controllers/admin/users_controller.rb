@@ -12,6 +12,7 @@ class Admin::UsersController < ApplicationController
 
   def create
     @user.role = params[:role]
+    @user.confirmed_at = Time.now.utc
     if @user.save
       flash[:notice] = t('flash.user.saved')
       redirect_to users_path

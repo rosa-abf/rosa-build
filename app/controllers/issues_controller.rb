@@ -2,7 +2,7 @@
 class IssuesController < ApplicationController
   NON_RESTFUL_ACTION = [:create_label, :update_label, :destroy_label, :search_collaborators]
   before_filter :authenticate_user!
-
+  skip_before_filter :authenticate_user!, :only => [:index, :show] if APP_CONFIG['anonymous_access']
   load_resource :project
   load_and_authorize_resource :issue, :through => :project, :find_by => :serial_id, :only => [:show, :edit, :update, :destroy, :new, :create]
   before_filter :load_and_authorize_label, :only => NON_RESTFUL_ACTION

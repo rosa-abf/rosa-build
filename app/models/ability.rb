@@ -13,7 +13,12 @@ class Ability
     @user = user
 
     # Shared rights between guests and registered users
-    can :forbidden, Platform
+    can :show, Project, :visibility => 'open'
+    can :read, Issue, :project => {:visibility => 'open'}
+    can :search, BuildList
+    can :read, BuildList, :project => {:visibility => 'open'}
+    can :read, ProductBuildList, :product => {:platform => {:visibility => 'open'}}
+    # Core callbacks
     can [:publish_build, :status_build, :pre_build, :post_build, :circle_build, :new_bbdt], BuildList
 
     if user.guest? # Guest rights
@@ -55,9 +60,7 @@ class Ability
         can(:destroy, Project) {|project| owner? project}
         can :remove_user, Project
 
-        can :search, BuildList
         can [:read, :owned], BuildList, :user_id => user.id
-        can :read, BuildList, :project => {:visibility => 'open'}
         can [:read, :related], BuildList, :project => {:owner_type => 'User', :owner_id => user.id}
         can [:read, :related], BuildList, :project => {:owner_type => 'Group', :owner_id => user.group_ids}
         can(:read, BuildList, read_relations_for('build_lists', 'projects')) {|build_list| can? :read, build_list.project}
@@ -80,7 +83,7 @@ class Ability
         can([:create, :update, :projects_list, :add_project, :remove_project], Repository) {|repository| local_admin? repository.platform}
         can([:change_visibility, :settings, :destroy], Repository) {|repository| owner? repository.platform}
 
-        can :read, Product, :platform => {:platform_type => 'main'}
+        can :read, Product, :platform => {:visibility => 'open'}
         can :read, Product, :platform => {:owner_type => 'User', :owner_id => user.id, :platform_type => 'main'}
         can :read, Product, :platform => {:owner_type => 'Group', :owner_id => user.group_ids, :platform_type => 'main'}
         can(:read, Product, read_relations_for('products', 'platforms')) {|product| product.platform.platform_type == 'main'}
@@ -88,13 +91,10 @@ class Ability
 
         can(:create, ProductBuildList) {|pbl| can?(:update, pbl.product)}
         can(:destroy, ProductBuildList) {|pbl| can?(:destroy, pbl.product)}
-        can(:read, ProductBuildList) {|pbl| can?(:read, pbl.product)}
 
         can [:read, :create], PrivateUser, :platform => {:owner_type => 'User', :owner_id => user.id}
         can [:read, :create], PrivateUser, :platform => {:owner_type => 'Group', :owner_id => user.group_ids}
 
-        # can :read, Issue, :status => 'open'
-        can :read, Issue, :project => {:visibility => 'open'}
         can :read, Issue, :project => {:owner_type => 'User', :owner_id => user.id}
         can :read, Issue, :project => {:owner_type => 'Group', :owner_id => user.group_ids}
         can(:read, Issue, read_relations_for('issues', 'projects')) {|issue| can? :read, issue.project rescue nil}

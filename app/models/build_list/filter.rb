@@ -56,7 +56,7 @@ class BuildList::Filter
         :project_name => nil
     }))
 
-    @options[:ownership] = @options[:ownership].presence || (@project ? 'index' : 'owned')
+    @options[:ownership] = @options[:ownership].presence || (@project || !@user ? 'index' : 'owned')
     @options[:status] = @options[:status].present? ? @options[:status].to_i : nil
     @options[:created_at_start] = build_date_from_params(:created_at_start, @options)
     @options[:created_at_end] = build_date_from_params(:created_at_end, @options)

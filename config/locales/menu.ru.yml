@@ -12,9 +12,11 @@ ru:
   bottom_menu:
     copyright: ROSA Лаб. © 2012
     about: О компании
+    about_url: http://www.rosalab.ru/about
     contacts: Контакты
+    contacts_url: http://www.rosalab.ru/about/contacts
     tos: Условия использования
-    security: Безопасность
+    tos_url: http://www.rosalab.ru/about
   project_menu:
     project: Проект
     commits: Коммиты

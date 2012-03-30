@@ -51,10 +51,10 @@ class RepositoriesController < ApplicationController
   def add_project
     if params[:project_id]
       @project = Project.find(params[:project_id])
-      unless @repository.projects.find_by_name(@project.name)
+      begin
         @repository.projects << @project
         flash[:notice] = t('flash.repository.project_added')
-      else
+      rescue ActiveRecord::RecordInvalid
         flash[:error] = t('flash.repository.project_not_added')
       end
       redirect_to platform_repository_path(@platform, @repository)

@@ -5,6 +5,7 @@ class BuildListsController < ApplicationController
 
   before_filter :authenticate_user!, :except => CALLBACK_ACTIONS
   before_filter :authenticate_build_service!, :only => CALLBACK_ACTIONS
+  skip_before_filter :authenticate_user!, :only => [:show, :index, :search] if APP_CONFIG['anonymous_access']
   before_filter :find_project, :only => NESTED_ACTIONS
   before_filter :find_build_list, :only => [:show, :publish, :cancel]
   before_filter :find_build_list_by_bs, :only => [:publish_build, :status_build, :pre_build, :post_build, :circle_build]

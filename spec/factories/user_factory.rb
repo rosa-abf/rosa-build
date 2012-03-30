@@ -6,7 +6,7 @@ FactoryGirl.define do
     uname { FactoryGirl.generate(:uname) }
     password '123456'
     password_confirmation {|u| u.password}
-    confirmed_at { Time.current }
+    confirmed_at { Time.now.utc }
   end
 
   factory :admin, :parent => :user do

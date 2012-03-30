@@ -10,7 +10,7 @@
 %br
 %h3.fix= t("layout.projects.list_header")
 - if can? :add_project, @repository
-  = link_to t("layout.projects.add"), add_project_repository_path(@repository), :class => 'button'
+  = link_to t("layout.projects.add"), add_project_platform_repository_path(@platform, @repository), :class => 'button'
 
 = render :partial => 'proj_list'#, :object => @projects
 =# will_paginate @projects

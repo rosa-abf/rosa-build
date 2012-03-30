@@ -34,10 +34,6 @@ class ProductBuildList < ActiveRecord::Base
     "/downloads/#{product.platform.name}/product/#{id}/"
   end
 
-#  def human_status
-#    I18n.t("layout.product_build_lists.statuses.#{status}")
-#  end
-
   def event_log_message
     {:product => product.name}.inspect
   end
@@ -60,7 +56,7 @@ class ProductBuildList < ActiveRecord::Base
       raise "Failed to create product_build_list #{id} inside platform #{platform.name} tar url #{tar_url} with code #{result}."
     end
   end  
-    
+
   def xml_delete_iso_container
     result = ProductBuilder.delete_iso_container self
     if result == ProductBuilder::SUCCESS
@@ -69,5 +65,4 @@ class ProductBuildList < ActiveRecord::Base
       raise "Failed to destroy product_build_list #{id} inside platform #{platform.name} with code #{result}."
     end
   end
-    
 end

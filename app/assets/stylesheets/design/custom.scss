@@ -721,3 +721,15 @@ div.toolbar div.legend.rights span.group,
 div.toolbar div.legend.rights span.user {
     margin: 0 10px;
 }
+
+.root {
+  width: 100%;
+  text-align: center;
+  margin-top: 150px;
+  input.query {
+    width: 80%;
+    border: 1px solid;
+    line-height: 20px;
+    font-size: 14px;
+  }
+}

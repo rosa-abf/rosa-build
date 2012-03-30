@@ -17,7 +17,7 @@
       "<%=
       if can? :remove_project, @repository
         j(link_to('<span class="delete">&nbsp;</span>'.html_safe,
-                  remove_project_repository_path(@repository, :project_id => project.id),
+                  remove_project_platform_repository_path(@platform, @repository, :project_id => project.id),
                   :method => :delete, :confirm => t("layout.confirm")
                  )
          )
