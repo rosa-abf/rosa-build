@@ -18,6 +18,7 @@ class Group < ActiveRecord::Base
   validate { errors.add(:uname, :taken) if User.where('uname LIKE ?', uname).present? }
 
   scope :search_order, order("CHAR_LENGTH(uname) ASC")
+  scope :without, lambda {|a| where("groups.id NOT IN (?)", a)}
   scope :search, lambda {|q| where("uname ILIKE ?", "%#{q.strip}%")}
   scope :opened, where('1=1')
   scope :by_owner, lambda {|owner| where(:owner_id => owner.id)}
