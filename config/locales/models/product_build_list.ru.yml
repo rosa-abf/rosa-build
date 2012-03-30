@@ -11,6 +11,7 @@ ru:
         build_failed: Ошибка сборки
         build_started: Собирается
         build_completed: Собран
+      list_header: Продукты
 
       ownership:
         header: Принадлежность заданий
