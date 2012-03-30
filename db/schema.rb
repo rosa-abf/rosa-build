@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120326142636) do
+ActiveRecord::Schema.define(:version => 20120329182602) do
 
   create_table "activity_feeds", :force => true do |t|
     t.integer  "user_id",    :null => false
@@ -39,15 +39,6 @@ ActiveRecord::Schema.define(:version => 20120326142636) do
 
   add_index "authentications", ["provider", "uid"], :name => "index_authentications_on_provider_and_uid", :unique => true
   add_index "authentications", ["user_id"], :name => "index_authentications_on_user_id"
-
-  create_table "auto_build_lists", :force => true do |t|
-    t.integer  "project_id"
-    t.integer  "arch_id"
-    t.integer  "pl_id"
-    t.integer  "bpl_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
 
   create_table "build_list_items", :force => true do |t|
     t.string   "name"
@@ -89,14 +80,6 @@ ActiveRecord::Schema.define(:version => 20120326142636) do
   add_index "build_lists", ["arch_id"], :name => "index_build_lists_on_arch_id"
   add_index "build_lists", ["bs_id"], :name => "index_build_lists_on_bs_id", :unique => true
   add_index "build_lists", ["project_id"], :name => "index_build_lists_on_project_id"
-
-  create_table "categories", :force => true do |t|
-    t.string   "name"
-    t.string   "ancestry"
-    t.integer  "projects_count", :default => 0, :null => false
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
 
   create_table "comments", :force => true do |t|
     t.string   "commentable_type"
@@ -282,18 +265,19 @@ ActiveRecord::Schema.define(:version => 20120326142636) do
     t.integer  "owner_id"
     t.string   "owner_type"
     t.string   "visibility",        :default => "open"
-    t.integer  "category_id"
     t.text     "description"
     t.string   "ancestry"
     t.boolean  "has_issues",        :default => true
-    t.boolean  "has_wiki",          :default => false
     t.string   "srpm_file_name"
     t.string   "srpm_content_type"
     t.integer  "srpm_file_size"
     t.datetime "srpm_updated_at"
+    t.boolean  "has_wiki",          :default => false
     t.string   "default_branch",    :default => "master"
     t.boolean  "is_rpm",            :default => true
   end
+
+  add_index "projects", ["owner_id"], :name => "index_projects_on_name_and_owner_id_and_owner_type", :unique => true, :case_sensitive => false
 
   create_table "register_requests", :force => true do |t|
     t.string   "name"
@@ -301,8 +285,8 @@ ActiveRecord::Schema.define(:version => 20120326142636) do
     t.string   "token"
     t.boolean  "approved",   :default => false
     t.boolean  "rejected",   :default => false
-    t.datetime "created_at",                    :null => false
-    t.datetime "updated_at",                    :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
     t.string   "interest"
     t.text     "more"
   end
@@ -375,9 +359,6 @@ ActiveRecord::Schema.define(:version => 20120326142636) do
     t.string   "uname"
     t.string   "role"
     t.string   "language",                               :default => "en"
-    t.string   "confirmation_token"
-    t.datetime "confirmed_at"
-    t.datetime "confirmation_sent_at"
     t.integer  "own_projects_count",                     :default => 0,    :null => false
     t.datetime "reset_password_sent_at"
     t.text     "professional_experience"
@@ -391,6 +372,9 @@ ActiveRecord::Schema.define(:version => 20120326142636) do
     t.integer  "failed_attempts",                        :default => 0
     t.string   "unlock_token"
     t.datetime "locked_at"
+    t.string   "confirmation_token"
+    t.datetime "confirmed_at"
+    t.datetime "confirmation_sent_at"
   end
 
   add_index "users", ["confirmation_token"], :name => "index_users_on_confirmation_token", :unique => true

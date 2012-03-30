@@ -1,6 +1,6 @@
 # -*- encoding : utf-8 -*-
 class PlatformsController < ApplicationController
-  before_filter :authenticate_user!, :except => :easy_urpmi
+  before_filter :authenticate_user!
   before_filter :find_platform, :only => [:clone, :edit, :destroy, :members]
   before_filter :get_paths, :only => [:new, :create, :clone]
   
@@ -15,22 +15,6 @@ class PlatformsController < ApplicationController
 
   def index
     @platforms = @platforms.accessible_by(current_ability, :related).paginate(:page => params[:page], :per_page => 20)
-  end
-
-  def easy_urpmi
-    @platforms = Platform.where(:distrib_type => APP_CONFIG['distr_types'].first, :visibility => 'open', :platform_type => 'main')
-    respond_to do |format|
-      format.json do
-        render :json => {
-          :platforms => @platforms.map do |p|
-                          {:name => p.name,
-                           :architectures => ['i586', 'x86_64'],
-                           :repositories => p.repositories.map(&:name),
-                           :url => p.public_downloads_url(request.host_with_port)}
-                        end
-        }
-      end
-    end
   end
 
   def show

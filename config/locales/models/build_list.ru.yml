@@ -105,6 +105,6 @@ ru:
       save_error: Не удалось сохранить билд лист для версии '%{project_version}', платформы '%{bpl}' и архитектуры '%{arch}'
       no_project_version_selected: Выберите какую-нибудь версию
       no_project_version_found: Выбранная версия '%{project_version}' не найдена
-      no_arch_or_platform_selected: Выберите хотя бы одну ахритектуру и платформу
+      no_arch_or_platform_selected: Выберите хотя бы одну архитектуру и платформу
       wrong_platform: Для основного репозитория (main) может быть выбран только его же основная платформа!
       can_not_published: Опубликовать сборку можно только со статусом "Собран"

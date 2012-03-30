@@ -54,5 +54,5 @@ ru:
         tar: Tar.bz2 файл
         is_template: Шаблон
         system_wide: Общесистемный
-        cron_tab: Cront tab
+        cron_tab: Cron tab
         use_cron: Использовать крон

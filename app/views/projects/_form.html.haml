@@ -21,10 +21,7 @@
     - else
       = hidden_field_tag :who_owns, :me
   .both
--#- if [:new, :create].include? act
--#  .leftlist= f.label :category_id, t("activerecord.attributes.project.category_id"), :class => :label
--#  .rightlist= f.grouped_collection_select :category_id, Category.roots, :children, :name, :id, :name, :include_blank => true
--#  .both
+
 .leftlist= f.label :visibility, t("activerecord.attributes.project.visibility"), :class => :label
 .rightlist
   =# f.select :visibility, Project::VISIBILITIES

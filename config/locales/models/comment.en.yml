@@ -1,10 +1,10 @@
 en:
   layout:
     comments:
-      confirm_delete: Are you sure to delete the comment?
+      confirm_delete: Are you sure you want to delete the comment?
       new_header: New comment
       edit_header: Editing a comment
-      has_commented:     "adds a note"
+      has_commented:     "added a note"
       notifications_are: "Notifications for new comments are"
       comments_header:   "Comments"
       back: 'Back'
@@ -12,7 +12,7 @@ en:
   flash:
     comment:
       saved: Comment saved
-      save_error: Comment saves error
+      save_error: Error while saving comment
       destroyed: Comment deleted
 
   activerecord:

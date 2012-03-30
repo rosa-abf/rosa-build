@@ -70,8 +70,8 @@ end
 describe GroupsController do
   before(:each) do
     stub_rsync_methods
-    @group = Factory(:group)
-    @another_user  = Factory(:user)
+    @group = FactoryGirl.create(:group)
+    @another_user  = FactoryGirl.create(:user)
     @create_params = {:group => {:description => 'grp1', :uname => 'un_grp1'}}
     @update_params = {:group => {:description => 'grp2'}}
   end
@@ -95,7 +95,7 @@ describe GroupsController do
 
   context 'for global admin' do
     before(:each) do
-      @admin = Factory(:admin)
+      @admin = FactoryGirl.create(:admin)
       set_session_for(@admin)
     end
 
@@ -115,7 +115,7 @@ describe GroupsController do
 
   context 'for group admin' do
     before(:each) do
-      @user = Factory(:user)
+      @user = FactoryGirl.create(:user)
       set_session_for(@user)
       @group.objects.create(:object_type => 'User', :object_id => @user.id, :role => 'admin')
     end
@@ -127,7 +127,7 @@ describe GroupsController do
 
   context 'for group owner' do
     before(:each) do
-      @user = Factory(:user)
+      @user = FactoryGirl.create(:user)
       set_session_for(@user)
       @group.update_attribute(:owner, @user)
       @group.objects.create(:object_type => 'User', :object_id => @user.id, :role => 'admin')
@@ -139,7 +139,7 @@ describe GroupsController do
 
   context 'for group reader and writer user' do
     before(:each) do
-      @user = Factory(:user)
+      @user = FactoryGirl.create(:user)
       set_session_for(@user)
       @group.objects.create(:object_type => 'User', :object_id => @user.id, :role => 'reader')
     end

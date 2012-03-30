@@ -28,7 +28,7 @@ RSpec.configure do |config|
 end
 
 def set_session_for(user=nil)
-  current_user = user.is_a?(Symbol) ? Factory.create(user) : user
+  current_user = user.is_a?(Symbol) ? FactoryGirl.create(user) : user
   @request.env["devise.mapping"] = :user
   sign_in current_user
 end

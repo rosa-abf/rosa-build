@@ -1,5 +1,7 @@
 # -*- encoding : utf-8 -*-
-Factory.define(:subscribe) do |p|
-  p.association :subscribeable, :factory => :issue
-  p.association :user, :factory => :user
+FactoryGirl.define do
+  factory :subscribe do
+    association :subscribeable, :factory => :issue
+    association :user, :factory => :user
+  end
 end

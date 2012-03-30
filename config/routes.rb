@@ -1,7 +1,5 @@
 # -*- encoding : utf-8 -*-
 Rosa::Application.routes.draw do
-  # XML RPC
-  match 'api/xmlrpc' => 'rpc#xe_index'
 
   devise_scope :user do
     get '/users/auth/:provider' => 'users/omniauth_callbacks#passthru'
@@ -44,10 +42,6 @@ Rosa::Application.routes.draw do
   match 'statistics/refresh' => 'downloads#refresh', :as => :downloads_refresh
   match 'statistics/test_sudo' => 'downloads#test_sudo', :as => :test_sudo_downloads
 
-  resources :categories do
-    get :platforms, :on => :collection
-  end
-
   match '/private/:platform_name/*file_path' => 'privates#show'
 
   match 'build_lists/publish_build', :to => "build_lists#publish_build"
@@ -67,8 +61,6 @@ Rosa::Application.routes.draw do
   resources :product_build_lists, :only => [:index] do
     collection { post :search }
   end
-
-  resources :auto_build_lists, :only => [:index, :create, :destroy]
 
   resources :personal_repositories, :only => [:show] do
     member do
@@ -93,7 +85,6 @@ Rosa::Application.routes.draw do
     end
 
     collection do
-      get :easy_urpmi
       get :autocomplete_user_uname
     end
 
@@ -106,8 +97,6 @@ Rosa::Application.routes.draw do
     end
 
     resources :repositories
-
-    resources :categories, :only => [:index, :show]
   end
 
   resources :projects, :except => [:show] do
@@ -202,8 +191,6 @@ Rosa::Application.routes.draw do
   resources :activity_feeds, :only => [:index]
 
   resources :search, :only => [:index]
-
-  match '/catalogs', :to => 'categories#platforms', :as => :catalogs
 
   match 'product_status', :to => 'product_build_lists#status_build'
 

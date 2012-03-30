@@ -5,6 +5,8 @@
     %title= choose_title
     = stylesheet_link_tag 'http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.17/themes/base/jquery-ui.css', :media => 'screen, projection'
     = stylesheet_link_tag "application"
+    /[if lt IE 9]
+      = javascript_include_tag 'http://html5shiv.googlecode.com/svn/trunk/html5.js'
     = javascript_include_tag "application"
     = csrf_meta_tag
 
@@ -18,19 +20,23 @@
             = render :partial => 'layouts/menu/top', :locals => {:which_menu => 'top_menu'}
           .information
             = render 'search/form'
-            .user
-              .avatar= image_tag avatar_url(current_user), :alt => 'avatar', :height => "30"
-              .profile
-                %a{:href => "#"}
-                  = current_user.uname
-                  = image_tag 'expand-white.png', :alt => 'ex'
+            - if current_user
+              .user
+                .avatar= image_tag avatar_url(current_user), :alt => 'avatar', :height => "30"
+                .profile
+                  %a{:href => "#"}
+                    = current_user.uname
+                    = image_tag 'expand-white.png', :alt => 'ex'
+                .both
               .both
-            .both
-            .droplist-wrap
-              #droplist.droplist
-                .a= link_to current_user.uname, current_user
-                .a= link_to t('layout.settings.label'), edit_profile_path
-                .a= link_to t('layout.logout'), destroy_user_session_path, :method => :delete
+              .droplist-wrap
+                #droplist.droplist
+                  .a= link_to current_user.uname, current_user
+                  .a= link_to t('layout.settings.label'), edit_profile_path
+                  .a= link_to t('layout.logout'), destroy_user_session_path, :method => :delete
+            - else
+              .user
+                .profile= link_to t("layout.devise.shared_links.sign_in"), new_user_session_path
         .right
         .both
       - if content_for?(:submenu)

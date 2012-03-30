@@ -69,16 +69,6 @@ en:
       message: Automatically updated every 24 hours
       refresh_btn: Refresh
 
-    auto_build_lists:
-      header: Automated build projects
-      message: All projects build under user repository and architecture i586
-      project: Project
-      action: Action
-      automate_btn: Automate
-      cancel_btn: Cancel
-      not_automated: Not automated
-      already_automated: Automated
-
     weekdays:
       Monday: Monday
       Tuesday: Tuesday
@@ -102,16 +92,6 @@ en:
       confirm_regenerate: Are you sure to regenerate this pair login/password?
       regenerate_btn: Regenerate
       warning_message: Warning - Old data set as invalid when new data obtaining
-
-    categories:
-      list: List
-      new: Create
-      edit: Edit
-      platforms: By platform
-      list_header: Catalogue
-      new_header: New category
-      edit_header: Edit category
-      confirm_delete: Are you sure to delete this category?
 
     collaborators:
       back_to_proj: Back to project
@@ -168,17 +148,6 @@ en:
       successfully_added: Member %s successfully added
       error_in_adding: Member %s adding error
 
-    auto_build_list:
-      success: Automated build success!
-      failed: Automated build failed!
-      cancel: Automated build canceled!
-      cancel_failed: Automated build canceling failed!
-
-    category:
-      saved: Category saved
-      save_error: Category saves error
-      destroyed: Category deleted
-
     blob:
       successfully_updated: File '%{name}' successfully updated
       updating_error: Error updating file '%{name}'
@@ -200,14 +169,12 @@ en:
               can_have_less_or_equal: You cannot have more than %{count} projects.
 
     models:
-      category: Category
       arch: Arch
       container: Container
       rpm: RPM
       private_user: Private user
       product_build_list: Product build list
       download: Statistics
-      auto_build_list: Auto rebuild list
 
     attributes:
       settings:
@@ -221,23 +188,9 @@ en:
           new_comment_commit_repo_owner: Notify about comments to my repository commits
           new_comment_commit_commentor: Notify about comments after my commit
 
-      auto_build_list:
-        project_id: Project
-        project: Project
-        bpl_id: Repository for saving
-        bpl: Repository for saving
-        pl_id: Platform
-        pl: Platform
-        arch_id: Architecture
-        arch: Architecture
-
       private_user:
         login: Login
         password: Password
-
-      category:
-        parent_id: Parent
-        name: Name
 
       arch:
         name: Name

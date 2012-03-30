@@ -19,4 +19,15 @@ module ProjectsHelper
   def visibility_icon(visibility)
     visibility == 'open' ? 'unlock.png' : 'lock.png'
   end
+
+  def participant_class(alone_member, project)
+    c = alone_member ? 'user' : 'group'
+    c = 'user_owner' if project.owner == current_user
+    c = 'group_owner' if project.owner.in? current_user.groups
+    return c
+  end
+
+  def alone_member?(project)
+    Relation.by_target(project).by_object(current_user).size > 0
+  end
 end

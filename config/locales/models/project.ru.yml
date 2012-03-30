@@ -39,6 +39,8 @@ ru:
       message:  Сообщение
       author:   Автор
 
+      participant_type: Тип участия
+
       current_branch: Текущая ветка/тег
       current_commit: Текущий коммит
       files_in_project: Файлы в
@@ -58,14 +60,13 @@ ru:
       project: Проект
     attributes:
       project:
-        category_id: Категория
         name: Название
         description: Описание
         owner: Владелец
         visibility: Видимость
         visibilities:
-          open: Публичная
-          hidden: Приватная
+          open: Публичный
+          hidden: Приватный
         repository_id: Репозиторий
         repository: Репозиторий
         created_at: Создан

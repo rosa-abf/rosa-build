@@ -1,8 +1,16 @@
-= link_to t('layout.projects.new'), new_project_path, :class => 'button' if can?(:create, Project)
+.toolbar
+  = link_to t('layout.projects.new'), new_project_path, :class => 'button' if can?(:create, Project)
+
+  .legend.rights
+    %span.user_owner= t("layout.relations.user_owner")
+    %span.group_owner= t("layout.relations.group_owner")
+    %span.user= t("layout.relations.user")
+    %span.group= t("layout.relations.group")
+  .both
 
 - columns = [{:type => 'html'},
              {:type => 'html', :sortable => false, :searchable => false},
-             {:type => nil, :sortable => false, :searchable => false, :class => 'buttons'},
+             {:type => nil, :sortable => false, :searchable => false, :class => 'rights'},
              {:type => nil, :sortable => false, :searchable => false, :class => 'buttons'}]
 -#= raw datatable(columns, {:sort_by => "[0, 'asc']", :search_label => t("layout.search_by_name"), :processing => t("layout.processing"),
 -#                          :pagination_labels => {:previous => t("datatables.previous_label"), :next => t("datatables.next_label")},
@@ -44,6 +52,12 @@
                '<div class="table-sort-right">' + owner + ' / ' + project + '<div>';
       }
 
+      var thirdColumn = function(row) {
+        var project = row.project
+
+        return '<span class="' + project.rights_class + '" title="' + project.title + '">' + project.role + '</span>';
+      }
+
       var lastColumn = function(row) {
         var project = row.project
         var res = '';
@@ -63,7 +77,7 @@
         var inner = [];
         inner.push( firstColumn(data) );
         inner.push( data.project.description );
-        inner.push( data.project.role );
+        inner.push( thirdColumn(data) );
         inner.push( lastColumn(data) );
         res.push( inner );
       }
@@ -113,9 +127,7 @@
       return true;
     });
     $search.live('keyup', function() {
-      if (this.value.length > 1) {
-        oTable.fnFilter(this.value);
-      }
+      oTable.fnFilter(this.value);
     });
   });
 

@@ -1,9 +1,11 @@
 # -*- encoding : utf-8 -*-
-Factory.define(:issue) do |p|
-  p.title { Factory.next(:string) }
-  p.body { Factory.next(:string) }
-  p.association :project, :factory => :project
-  p.association :user, :factory => :user
-  p.association :creator, :factory => :user
-  p.status "open"
+FactoryGirl.define do
+  factory :issue do
+    title { FactoryGirl.generate(:string) }
+    body { FactoryGirl.generate(:string) }
+    association :project, :factory => :project
+    association :user, :factory => :user
+    association :creator, :factory => :user
+    status "open"
+  end
 end

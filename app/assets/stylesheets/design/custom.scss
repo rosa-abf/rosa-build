@@ -670,3 +670,54 @@ table.tablesorter tr.search th input[type="text"] {
     width: 830px;
     margin-top: 2px;
 }
+
+div.toolbar {
+}
+
+div.toolbar a.button {
+    float: left;
+}
+
+div.toolbar div.legend {
+    float: left;
+    margin-left: 50px;
+    padding: 4px 0 6px;
+}
+
+table.dataTable tr td.rights span.group,
+div.toolbar div.legend.rights span.group {
+    background: image-url('group16.png') no-repeat 0 0 transparent;
+}
+
+table.dataTable tr td.rights span.user,
+div.toolbar div.legend.rights span.user {
+    background: image-url('user16.png') no-repeat 0 0 transparent;
+}
+
+table.dataTable tr td.rights span.group_owner,
+div.toolbar div.legend.rights span.group_owner {
+    background: image-url('group16g.png') no-repeat 0 0 transparent;
+}
+
+table.dataTable tr td.rights span.user_owner,
+div.toolbar div.legend.rights span.user_owner {
+    background: image-url('user16g.png') no-repeat 0 0 transparent;
+}
+
+table.dataTable tr td.rights span.group_owner,
+div.toolbar div.legend.rights span.group_owner,
+table.dataTable tr td.rights span.user_owner,
+div.toolbar div.legend.rights span.user_owner,
+table.dataTable tr td.rights span.group,
+div.toolbar div.legend.rights span.group,
+table.dataTable tr td.rights span.user,
+div.toolbar div.legend.rights span.user {
+    padding-left: 20px;
+}
+
+div.toolbar div.legend.rights span.group_owner,
+div.toolbar div.legend.rights span.user_owner,
+div.toolbar div.legend.rights span.group,
+div.toolbar div.legend.rights span.user {
+    margin: 0 10px;
+}

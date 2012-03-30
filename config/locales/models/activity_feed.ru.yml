@@ -27,7 +27,7 @@ ru:
       new_issue_notification: '%{user_link} добавил новую <a href="%{issue_link}">задачу</a>'
       new_user_notification:
         title: Здравствуйте, %{user_name}.
-        content: Вы зарегистрированы на проекте «ROSA Build System» и теперь можете войти в систему.
+        content: Вы зарегистрированы на проекте «ROSA ABF» и теперь можете войти в систему.
         email: ==Ваш email %{user_email}
         password: ==Ваш пароль %{user_password}
       issue_assign_notification: Вам была назначена задача %{issue_link}

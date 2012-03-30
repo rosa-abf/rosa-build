@@ -1,4 +1,6 @@
 # -*- encoding : utf-8 -*-
-Factory.define(:arch) do |p|
-  p.name { Factory.next(:string) }
+FactoryGirl.define do
+  factory :arch do
+    name { FactoryGirl.generate(:string) }
+  end
 end

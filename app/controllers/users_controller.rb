@@ -16,10 +16,15 @@ class UsersController < ApplicationController
   end
 
   def update
+    send_confirmation = params[:user][:email] != @user.email
     if @user.update_without_password(params[:user])
       if @user.avatar && params[:delete_avatar] == '1'
         @user.avatar = nil
         @user.save
+      end
+      if send_confirmation
+        @user.confirmed_at, @user.confirmation_sent_at = nil
+        @user.send_confirmation_instructions
       end
       flash[:notice] = t('flash.user.saved')
       redirect_to edit_profile_path
