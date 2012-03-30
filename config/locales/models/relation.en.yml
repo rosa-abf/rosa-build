@@ -1,0 +1,7 @@
+en:
+  layout:
+    relations:
+      user_owner: I'm owner
+      group_owner: I'm member of owner group
+      user: I'm collaborator
+      group: I'm member of collaborator group
