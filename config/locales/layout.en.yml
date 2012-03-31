@@ -9,6 +9,7 @@ en:
     enter_commit_message: Commit message
 
     read_write_access: read & write
+    read_access: read
 
     by: by
 
