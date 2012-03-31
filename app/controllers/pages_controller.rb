@@ -8,4 +8,7 @@ class PagesController < ApplicationController
 
   def forbidden
   end
+
+  def tos
+  end
 end

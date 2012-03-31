@@ -1,0 +1,10 @@
+- content_for :sidebar do
+
+  .tos_sidebar
+    %h3= link_to t("layout.tos.begin"), '#'
+    %ul
+      %li= link_to "  I. #{t("layout.tos.account_terms")}", '#Account_Terms'
+      %li= link_to " II. #{t("layout.tos.cancellation_and_termination")}", '#Cancellation_and_Termination'
+      %li= link_to "III. #{t("layout.tos.service_modifications")}", '#Service_Modifications'
+      %li= link_to " IV. #{t("layout.tos.copyright_and_ownership")}", '#Copyright_and_Ownership'
+      %li= link_to "  V. #{t("layout.tos.general_conditions")}", '#General_Conditions'
