@@ -20,3 +20,11 @@ ru:
     visibilities:
       open: открытая
       hidden: скрытая
+
+    tos:
+      begin: Terms of Service
+      account_terms: Account Terms
+      cancellation_and_termination: Cancellation and Termination
+      service_modifications: Modifications to the Service and Conditions
+      copyright_and_ownership: Copyright and Content Ownership
+      general_conditions: General Conditions

@@ -178,6 +178,7 @@ Rosa::Application.routes.draw do
   match 'statistics/refresh' => 'downloads#refresh', :as => :downloads_refresh
 
   match '/forbidden', :to => 'pages#forbidden', :as => 'forbidden'
+  match '/terms-of-service', :to => 'pages#tos', :as => 'tos'
 
   if APP_CONFIG['anonymous_access']
     authenticated do

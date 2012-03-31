@@ -727,3 +727,40 @@ div.toolbar div.legend.rights span.user {
   text-align: center;
   margin-top: 150px;
 }
+
+div.tos {
+}
+
+div.tos p {
+    margin: 5px 0;
+}
+
+div.tos ol li {
+    margin: 3px 0;
+}
+
+div.tos_sidebar ul {
+    list-style: none outside none; 
+    margin: 20px 0 0;
+    padding: 0;
+    text-align: left;
+    width: 215px;
+}
+
+div.tos_sidebar ul li {
+    padding-bottom: 5px;
+    padding-top: 5px;
+    width: 215px;
+}
+
+div.tos_sidebar ul li:hover {
+    background: none repeat scroll 0 0 #DCECFA;
+}
+
+div.tos_sidebar ul li a {
+    color: #292929;
+    padding-bottom: 5px;
+    padding-left: 15px;
+    padding-top: 5px;
+    text-decoration: none;
+}
