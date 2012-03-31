@@ -7,7 +7,7 @@
     %ul
       %li= link_to t("project_menu.project"), project_path(@project), :class => (act.in?([:show, :edit]) && contr.in?([:trees, :blobs]) ? 'active' : nil)
       %li= link_to t("project_menu.commits"), commits_path(@project), :class => (act.in?([:index, :show]) && contr == :commits ? 'active' : nil)
-      - if @project.is_rpm and can?(:create, @project => BuildList)
+      - if @project.is_rpm and can?(:read, @project => BuildList)
         %li= link_to t("project_menu.builds"), project_build_lists_path(@project), :class => (contr == :build_lists ? 'active' : nil)
       - if @project.has_issues
         %li= link_to t("project_menu.tracker"), project_issues_path(@project), :class => (contr == :issues ? 'active' : nil)
