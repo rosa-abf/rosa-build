@@ -1,10 +1,9 @@
 # -*- encoding : utf-8 -*-
 class PlatformsController < ApplicationController
-  before_filter :authenticate_user!
-  before_filter :find_platform, :only => [:clone, :edit, :destroy, :members]
-  before_filter :get_paths, :only => [:new, :create, :clone]
   
+  before_filter :authenticate_user!
   load_and_authorize_resource
+  
   autocomplete :user, :uname
 
   def build_all
@@ -18,13 +17,10 @@ class PlatformsController < ApplicationController
   end
 
   def show
-    @platform = Platform.find params[:id], :include => :repositories
-    #@repositories = @platform.repositories
-    #@members = @platform.members.uniq
+    
   end
 
   def new
-    @platform = Platform.new
     @admin_uname = current_user.uname
     @admin_id = current_user.id
   end
@@ -35,9 +31,9 @@ class PlatformsController < ApplicationController
   end
 
   def create
-    @platform = Platform.new params[:platform]
     @admin_id = params[:admin_id]
     @admin_uname = params[:admin_uname]
+    # FIXME: do not allow manipulate owner model, only platforms onwer_id and onwer_type
     @platform.owner = @admin_id.blank? ? get_owner : User.find(@admin_id)
 
     if @platform.save
@@ -45,6 +41,7 @@ class PlatformsController < ApplicationController
       redirect_to @platform
     else
       flash[:error] = I18n.t("flash.platform.create_error")
+      flash[:warning] = @platform.errors.full_messages.join('. ')
       render :action => :new
     end
   end
@@ -62,7 +59,8 @@ class PlatformsController < ApplicationController
       redirect_to @platform
     else
       flash[:error] = I18n.t("flash.platform.save_error")
-      render :action => :new
+      flash[:warning] = @platform.errors.full_messages.join('. ')
+      render :action => :edit
     end
   end
 
@@ -127,23 +125,4 @@ class PlatformsController < ApplicationController
     redirect_to members_platform_url(@platform)
   end
 
-  protected
-    def get_paths
-      if params[:user_id]
-        @user = User.find params[:user_id]
-        @platforms_path = user_platforms_path @user
-        @new_platform_path = new_user_platform_path @user
-      elsif params[:group_id]
-        @group = Group.find params[:group_id]
-        @platforms_path = group_platforms_path @group
-        @new_platform_path = new_group_platform_path @group
-      else
-        @platforms_path = platforms_path
-        @new_platform_path = new_platform_path
-      end
-    end
-
-    def find_platform
-      @platform = Platform.find params[:id]
-    end
 end

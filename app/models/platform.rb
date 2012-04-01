@@ -12,16 +12,18 @@ class Platform < ActiveRecord::Base
   has_many :relations, :as => :target, :dependent => :destroy
   has_many :objects, :as => :target, :class_name => 'Relation', :dependent => :destroy
   has_many :members, :through => :objects, :source => :object, :source_type => 'User'
-  has_many :groups,  :through => :objects, :source => :object, :source_type => 'Group'
 
   validates :description, :presence => true
+  validates :visibility, :presence => true, :inclusion => {:in => VISIBILITIES}
   validates :name, :uniqueness => {:case_sensitive => false}, :presence => true, :format => { :with => /^[a-zA-Z0-9_\-]+$/ }
   validates :distrib_type, :presence => true, :inclusion => {:in => APP_CONFIG['distr_types']}
 
   before_create :create_directory, :if => lambda {Thread.current[:skip]} # TODO remove this when core will be ready
   before_create :xml_rpc_create, :unless => lambda {Thread.current[:skip]}
   before_destroy :xml_rpc_destroy
-#  before_update :check_freezing
+  
+  after_update :freeze_platform
+  
   after_create lambda { mount_directory_for_rsync unless hidden? }
   after_destroy lambda { umount_directory_for_rsync unless hidden? }
   after_update :update_owner_relation
@@ -34,7 +36,10 @@ class Platform < ActiveRecord::Base
   scope :main, where(:platform_type => 'main')
   scope :personal, where(:platform_type => 'personal')
 
-  #attr_accessible :visibility
+  attr_accessible :owner, :visibility, :description, :released #, :owner_id, :owner_type
+  
+  attr_accessible :name, :distrib_type, :parent_platform_id, :platform_type
+  attr_readonly   :name, :distrib_type, :parent_platform_id, :platform_type
 
   include Modules::Models::Owner
 
@@ -110,10 +115,6 @@ class Platform < ActiveRecord::Base
     base_clone(attrs).tap do |c|
       with_skip {c.save} and c.clone_relations(self) and c.delay.xml_rpc_clone
     end
-  end
-
-  def name
-    released? ? "#{self[:name]} #{I18n.t("layout.platforms.released_suffix")}" : self[:name]
   end
   
   def change_visibility
@@ -204,9 +205,10 @@ class Platform < ActiveRecord::Base
       end
     end
 
-    def check_freezing
-      if released_changed?
-        BuildServer.freeze_platform self.name
-      end
+    def freeze_platform
+      if released_changed? && released == true
+        result = BuildServer.freeze(name) 
+        raise "Failed freeze platform #{name} with code #{result}" if result != BuildServer::SUCCESS
+      end  
     end
 end

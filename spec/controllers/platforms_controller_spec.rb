@@ -88,7 +88,6 @@ describe PlatformsController do
 
     it_should_behave_like 'platform owner'
 
-
     it 'should create platform with mentioned owner if owner id present' do
       post :create, @create_params.merge({:admin_id => @user.id, :admin_uname => @user.uname})
       Platform.last.owner.id.should eql(@user.id)

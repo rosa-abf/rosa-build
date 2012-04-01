@@ -44,6 +44,7 @@ class ProjectsController < ApplicationController
     else
       @project.save
       flash[:error] = t('flash.project.save_error')
+      flash[:warning] = @project.errors.full_messages.join('. ')
       render :action => :edit
     end
   end

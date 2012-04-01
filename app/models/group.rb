@@ -8,7 +8,6 @@ class Group < ActiveRecord::Base
 
   has_many :members,      :through => :objects, :source => :object, :source_type => 'User',       :autosave => true
   has_many :projects,     :through => :targets, :source => :target, :source_type => 'Project',    :autosave => true
-  has_many :platforms,    :through => :targets, :source => :target, :source_type => 'Platform',   :autosave => true
 
   has_many :own_projects, :as => :owner, :class_name => 'Project', :dependent => :destroy
   has_many :own_platforms, :as => :owner, :class_name => 'Platform', :dependent => :destroy
