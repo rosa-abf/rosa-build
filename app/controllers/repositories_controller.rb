@@ -11,11 +11,7 @@ class RepositoriesController < ApplicationController
   load_and_authorize_resource :repository, :through => :platform, :shallow => true
 
   def index
-    if params[:platform_id]
-      @repositories = Platform.find(params[:platform_id]).repositories.paginate(:page => params[:page])
-    else
-      @repositories = Repository.paginate(:page => params[:page])
-    end
+    @repositories = @repositories.paginate(:page => params[:page])
   end
 
   def show
@@ -44,6 +40,7 @@ class RepositoriesController < ApplicationController
       redirect_to @repositories_path
     else
       flash[:error] = t('flash.repository.save_error')
+      flash[:warning] = @repository.errors.full_messages.join('. ')
       render :action => :new
     end
   end

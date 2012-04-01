@@ -9,7 +9,7 @@ module Modules
       end
 
       def create_personal_repository
-        pl = platforms.build
+        pl = own_platforms.build
         pl.owner = self
         pl.name = "#{self.uname}_personal"
         pl.description = "#{self.uname}_personal"
