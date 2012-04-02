@@ -18,8 +18,14 @@ namespace :hook do
     projects = ENV['project_id'] ? Project.where(:id => eval(ENV['project_id'])) : Project
     projects.where('created_at >= ?', Time.now.ago(ENV['period'] ? eval(ENV['period']) : 100.years)).each do |project|
       hook_file = File.join(project.path, 'hooks', 'post-receive')
-      FileUtils.copy_entry(hook, hook_file, false, false, true)
-      count = count + 1
+      begin
+        FileUtils.copy_entry(hook, hook_file, false, false, true)
+        count = count + 1
+      rescue Exception => e
+        say "----\nCatching exception with project #{project.id}"
+        say e.message
+        say '----'
+      end
     end
     say "Writing to #{count.to_s} repo(s)"
     say "Removing temporary file"
