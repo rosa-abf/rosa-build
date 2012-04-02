@@ -53,7 +53,7 @@ class ProductBuildList < ActiveRecord::Base
     if result == ProductBuilder::SUCCESS
       return true
     else
-      raise "Failed to create product_build_list #{id} inside platform #{platform.name} tar url #{tar_url} with code #{result}."
+      raise "Failed to create product_build_list #{id} inside platform #{product.platform.name} tar url #{tar_url} with code #{result}."
     end
   end  
 
@@ -62,7 +62,7 @@ class ProductBuildList < ActiveRecord::Base
     if result == ProductBuilder::SUCCESS
       return true
     else
-      raise "Failed to destroy product_build_list #{id} inside platform #{platform.name} with code #{result}."
+      raise "Failed to destroy product_build_list #{id} inside platform #{product.platform.name} with code #{result}."
     end
   end
 end
