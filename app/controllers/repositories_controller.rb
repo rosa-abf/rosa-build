@@ -1,11 +1,6 @@
 # -*- encoding : utf-8 -*-
 class RepositoriesController < ApplicationController
   before_filter :authenticate_user!
-  before_filter :find_repository, :except => [:index, :new, :create]
-  before_filter :find_platform, :only => [:show, :destroy, :add_project, :remove_project]
-  before_filter :get_paths, :only => [:show, :new, :create, :add_project, :remove_project]
-  before_filter :find_platforms, :only => [:new, :create]
-  before_filter :build_repository_stub, :only => [:new, :create]
 
   load_and_authorize_resource :platform
   load_and_authorize_resource :repository, :through => :platform, :shallow => true
@@ -26,10 +21,9 @@ class RepositoriesController < ApplicationController
 
   def destroy
     @repository.destroy
-    platform_id = @repository.platform_id
 
     flash[:notice] = t("flash.repository.destroyed")
-    redirect_to platform_repositories_path(platform_id)
+    redirect_to platform_repositories_path(@repository.platform)
   end
 
   def create
@@ -37,7 +31,7 @@ class RepositoriesController < ApplicationController
     @repository.platform_id = params[:platform_id]
     if @repository.save
       flash[:notice] = t('flash.repository.saved')
-      redirect_to @repositories_path
+      redirect_to platform_repository_path(@platform, @repository)
     else
       flash[:error] = t('flash.repository.save_error')
       flash[:warning] = @repository.errors.full_messages.join('. ')
@@ -87,7 +81,7 @@ class RepositoriesController < ApplicationController
     @total_projects = @projects.count
     @projects = @projects.search(params[:sSearch]).search_order if params[:sSearch].present?
     @total_project = @projects.count
-    @projects = @projects.order(order)#.includes(:owner) #WTF????
+    @projects = @projects.order(order)
 
     render :partial => (params[:added] == "true") ? 'project' : 'proj_ajax', :layout => false
   end
@@ -98,40 +92,4 @@ class RepositoriesController < ApplicationController
     redirect_to platform_repository_path(@platform, @repository), :notice => t('flash.repository.project_removed')
   end
 
-  protected
-
-    def get_paths
-      if params[:user_id]
-        @user = User.find params[:user_id]
-        @repositories_path = user_repositories_path @user
-        @new_repository_path = new_user_repository_path @user
-      elsif params[:group_id]
-        @group = Group.find params[:group_id]
-        @repositories_path = group_repositories_path @group
-        @new_repository_path = new_group_repository_path @group
-      elsif params[:platform_id]
-        @platform = Platform.find params[:platform_id]
-        @repositories_path = platform_repositories_path @platform
-        @new_repository_path = new_platform_repository_path @platform
-      else
-        @repositories_path = repositories_path
-        @new_repository_path = new_repository_path
-      end
-    end
-
-    def find_platform
-      @platform = @repository.platform
-    end
-
-    def find_platforms
-      @platforms = Platform.all
-    end
-
-    def find_repository
-      @repository = Repository.find(params[:id])
-    end
-
-    def build_repository_stub
-      @repository = Repository.build_stub(Platform.find(params[:platform_id]))
-    end
 end

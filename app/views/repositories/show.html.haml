@@ -4,7 +4,7 @@
 
 %h3.fix= "#{t("layout.repositories.about")}: #{@repository.name}"
 
-%p= @platform.description
+%p= @repository.description
 
 %br
 %br
@@ -12,49 +12,4 @@
 - if can? :add_project, @repository
   = link_to t("layout.projects.add"), add_project_platform_repository_path(@platform, @repository), :class => 'button'
 
-= render :partial => 'proj_list'#, :object => @projects
-=# will_paginate @projects
--#.block
-  .secondary-navigation
-    %ul.wat-cf
-      %li.first= link_to t("layout.repositories.list"), @repositories_path + "#repositories"
-      %li= link_to t("layout.repositories.new"), @new_repository_path
-      %li.active= link_to t("layout.repositories.show"), repository_path(@repository)
-  .content
-    .inner
-      %p
-        %b
-          = t("activerecord.attributes.repository.name")
-          \:
-        = @repository.name
-      %p
-        %b
-          = t("activerecord.attributes.repository.description")
-          \:
-        = @repository.description
-      %p
-        %b
-          = t("activerecord.attributes.repository.platform")
-          \:
-        = link_to @repository.platform.description, url_for(@repository.platform)
-      .wat-cf
-        = link_to image_tag("x.png", :alt => t("layout.delete")) + " " + t("layout.delete"), @repository_path, :method => "delete", :class => "button", :confirm => t("layout.repositories.confirm_delete") if can? :destroy, @repository
-
--#%a{ :name => "projects" }
--#.block
-  .secondary-navigation
-    %ul.wat-cf
-      %li.first.active= link_to t("layout.projects.list"), repository_path(@repository) + "#projects"
-      %li= link_to t("layout.projects.add"), url_for(:controller => :repositories, :action => :add_project)
-  .content
-    %h2.title
-      = t("layout.projects.list_header")
-    .inner
-      = render :partial => 'shared/search_form'
-      = render :partial => 'proj_list1', :object => @projects
-      .actions-bar.wat-cf
-        .actions
-          = will_paginate @projects, :param_name => :project_page
-
-
--# content_for :sidebar, render(:partial => 'sidebar')
+= render :partial => 'proj_list'

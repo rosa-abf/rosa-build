@@ -7,10 +7,7 @@ FactoryGirl.define do
   end
 
   factory :personal_repository, :parent => :repository do
-    after_create {|r| 
-    	r.platform.platform_type = 'personal'
-      r.platform.visibility = 'hidden'
-      r.platform.save!
-    }
+    association :platform, :factory => :personal_platform
   end
+  
 end

@@ -11,4 +11,9 @@ FactoryGirl.define do
   factory :platform_with_repos, :parent => :platform do
     repositories {|r| [r.association(:repository)]}
   end
+  
+  factory :personal_platform, :parent => :platform do
+    platform_type 'personal'
+  end
+  
 end
