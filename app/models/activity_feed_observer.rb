@@ -70,6 +70,7 @@ class ActivityFeedObserver < ActiveRecord::Observer
       end
 
     when 'GitHook'
+      return unless record.project
       change_type = record.change_type
       branch_name = record.refname.split('/').last
 
