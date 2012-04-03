@@ -27,7 +27,7 @@ class ProductsController < ApplicationController
       redirect_to platform_product_path(@platform, @product)
     else
       flash[:error] = t('flash.product.save_error')
-      flash[:warning] = @platform.errors.full_messages.join('. ')
+      flash[:warning] = @product.errors.full_messages.join('. ')
       render :action => :new
     end
   end
@@ -38,7 +38,7 @@ class ProductsController < ApplicationController
       redirect_to platform_product_path(@platform, @product)
     else
       flash[:error] = t('flash.product.save_error')
-      flash[:warning] = @platform.errors.full_messages.join('. ')
+      flash[:warning] = @product.errors.full_messages.join('. ')
       render :action => "edit"
     end
   end
