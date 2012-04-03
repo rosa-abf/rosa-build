@@ -1,6 +1,27 @@
 # -*- encoding : utf-8 -*-
 require 'spec_helper'
 
+shared_examples_for 'admin user' do
+
+  it 'should be able to create product' do
+    lambda { post :create, @create_params }.should change{ Product.count }.by(1)
+    response.should redirect_to(platform_product_path( Product.last.platform.id, Product.last ))
+  end
+
+  it 'should be able to update product' do
+    put :update, {:id => @product.id}.merge(@update_params)
+    response.should redirect_to platform_product_path(@platform, @product)
+    @product.reload
+    @product.name.should eql('pro2')
+  end
+
+  it 'should be able to destroy product' do
+    lambda { delete :destroy, :id => @product.id, :platform_id => @platform }.should change{ Product.count }.by(-1)
+    response.should redirect_to(platform_products_path(@platform))
+  end
+
+end
+
 describe ProductsController do
 	before(:each) do
     stub_rsync_methods
@@ -34,29 +55,10 @@ describe ProductsController do
   		set_session_for(@admin)
 		end
 
-    it 'should be able to perform create action' do
-      post :create, @create_params
-      response.should redirect_to(platform_product_path( Product.last.platform.id, Product.last ))
-    end
-
-    it 'should change objects count on create' do
-      lambda { post :create, @create_params }.should change{ Product.count }.by(1)
-    end
-
-    it 'should be able to perform update action' do
-      put :update, {:id => @product.id}.merge(@update_params)
-      response.should redirect_to(platform_path(@platform))
-    end
-
-    it 'should change objects count on destroy success' do
-      lambda { delete :destroy, :id => @product.id, :platform_id => @platform }.should change{ Product.count }.by(-1)
-    end
-
-    it 'should be able to perform destroy action' do
-      delete :destroy, :platform_id => @platform.id, :id => @product.id
-      response.should redirect_to(platform_products_path(@platform))
-    end
+    it_should_behave_like 'admin user'
   end
+
+   
 
   context 'for admin relation user' do
   	before(:each) do
@@ -65,28 +67,7 @@ describe ProductsController do
       @platform.relations.create!(:object_type => 'User', :object_id => @user.id, :role => 'admin')
 		end
 
-    it 'should be able to perform create action' do
-      post :create, @create_params
-      response.should redirect_to(platform_product_path( Product.last.platform.id, Product.last ))
-    end
-
-    it 'should change objects count on create' do
-      lambda { post :create, @create_params }.should change{ Product.count }.by(1)
-    end
-
-    it 'should be able to perform update action' do
-      put :update, {:id => @product.id}.merge(@update_params)
-      response.should redirect_to(platform_path(@platform))
-    end
-
-    it 'should change objects count on destroy success' do
-      lambda { delete :destroy, :id => @product.id, :platform_id => @platform }.should change{ Product.count }.by(-1)
-    end
-
-    it 'should be able to perform destroy action' do
-      delete :destroy, :platform_id => @platform.id, :id => @product.id
-      response.should redirect_to(platform_products_path(@platform))
-    end
+    it_should_behave_like 'admin user'
   end
 
   context 'for no relation user' do
@@ -95,13 +76,9 @@ describe ProductsController do
   		set_session_for(@user)
 		end
 
-    it 'should not be able to perform create action' do
-      post :create, @create_params
-      response.should redirect_to(forbidden_path)
-    end
-
-    it 'should not change objects count on create' do
+    it 'should not be able to create product' do
       lambda { post :create, @create_params }.should change{ Product.count }.by(0)
+      response.should redirect_to(forbidden_path)
     end
 
     it 'should not be able to perform update action' do
@@ -109,14 +86,11 @@ describe ProductsController do
       response.should redirect_to(forbidden_path)
     end
 
-    it 'should not change objects count on destroy success' do
+    it 'should not be able to destroy product' do
       lambda { delete :destroy, :id => @product.id, :platform_id => @platform }.should change{ Product.count }.by(0)
-    end
-
-    it 'should not be able to perform destroy action' do
-      delete :destroy, :platform_id => @platform.id, :id => @product.id
       response.should redirect_to(forbidden_path)
     end
+
   end
 
 end

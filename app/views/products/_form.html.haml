@@ -37,16 +37,9 @@
 
 = render :partial => "products/crontab", :locals => { :form => f }
 
-- content_for :commented do
-  .leftlist= f.label :system_wide, :class => :label
-  .rightlist= f.check_box :system_wide, :class => 'check_box'
-
 .both
 .button_block
   = submit_tag t("layout.save")
-  -#%input.button{:type => "submit", :class => "button"}
-    -#= image_tag("choose.png", :alt => t("layout.save"))
-    -#= t("layout.clone")
   %span.text_button_padding= t("layout.or")
   = link_to t("layout.cancel"), @product.new_record? ? platform_path(@platform) : platform_product_path(@platform, @product), :class => "button"
 
