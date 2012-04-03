@@ -36,7 +36,8 @@ class Project < ActiveRecord::Base
   scope :addable_to_repository, lambda { |repository_id| where("projects.id NOT IN (SELECT project_to_repositories.project_id FROM project_to_repositories WHERE (project_to_repositories.repository_id = #{ repository_id }))") }
 
   after_create :attach_to_personal_repository
-  after_create {|p| p.delay(:queue => 'fork').create_git_repo}
+  after_create :create_git_repo
+  after_create {|p| p.delay(:queue => 'fork').fork_git_repo unless root?}
   after_save :create_wiki
 
   after_destroy :destroy_git_repo
@@ -214,7 +215,14 @@ class Project < ActiveRecord::Base
   end
 
   def create_git_repo
-    is_root? ? Grit::Repo.init_bare(path) : (dummy = Grit::Repo.new(path) rescue parent.git_repository.repo.fork_bare(path))
+    if root?
+      Grit::Repo.init_bare(path)
+      write_hook.delay(:queue => 'fork')
+    end
+  end
+
+  def fork_git_repo
+    dummy = Grit::Repo.new(path) rescue parent.git_repository.repo.fork_bare(path)
     write_hook
   end
 
