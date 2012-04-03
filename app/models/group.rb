@@ -21,7 +21,7 @@ class Group < ActiveRecord::Base
   scope :search, lambda {|q| where("uname ILIKE ?", "%#{q.strip}%")}
   scope :opened, where('1=1')
   scope :by_owner, lambda {|owner| where(:owner_id => owner.id)}
-  scope :by_admin, lambda {|admin| joins(:relations).where(:'relations.role' => 'admin', :'relations.target_id' => admin.id, :'relations.target_type' => 'User')}
+  scope :by_admin, lambda {|admin| joins(:objects).where(:'relations.role' => 'admin', :'relations.object_id' => admin.id, :'relations.object_type' => 'User')}
 
   attr_accessible :description
   attr_readonly :own_projects_count
@@ -34,7 +34,7 @@ class Group < ActiveRecord::Base
   # include Modules::Models::Owner
 
   def self.can_own_project(user)
-    (by_owner(user) | by_admin(user)).collect { |el| [el.name, el.id] }
+    (by_owner(user) | by_admin(user))
   end
 
   def name
