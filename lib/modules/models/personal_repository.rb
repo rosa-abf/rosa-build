@@ -25,7 +25,7 @@ module Modules
       end
 
       def personal_platform
-        platforms.personal.first
+        own_platforms.personal.first
       end
 
       def personal_repository
