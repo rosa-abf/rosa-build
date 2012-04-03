@@ -37,7 +37,7 @@ describe BuildListsController do
 
     it 'should be able to perform create action' do
       post :create, {:project_id => @project.id}.merge(@create_params)
-      response.should redirect_to(@project)
+      response.should redirect_to project_build_lists_path(@project)
     end
 
     it 'should save correct commit_hash for branch based build' do

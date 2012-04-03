@@ -2,6 +2,7 @@
 require 'spec_helper'
 
 describe ProjectsController do
+  
 	before(:each) do
     stub_rsync_methods
 
