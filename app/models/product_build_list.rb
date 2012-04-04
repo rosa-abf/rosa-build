@@ -16,16 +16,19 @@ class ProductBuildList < ActiveRecord::Base
 
   belongs_to :product
 
-  validates :product, :status, :presence => true
+  validates :product_id, :status, :presence => true
   validates :status, :inclusion => { :in => [BUILD_STARTED, BUILD_COMPLETED, BUILD_FAILED] }
+
+  attr_accessor :base_url
+  attr_accessible :status, :notified_at, :base_url
+  attr_readonly :product_id
+
 
   scope :default_order, order('notified_at DESC')
   scope :for_status, lambda {|status| where(:status => status) }
   scope :for_user, lambda { |user| where(:user_id => user.id)  }
   scope :scoped_to_product_name, lambda {|product_name| joins(:product).where('products.name LIKE ?', "%#{product_name}%")}
   scope :recent, order("#{table_name}.updated_at DESC")
-
-  attr_accessor :base_url
 
   after_create :xml_rpc_create
   after_destroy :xml_delete_iso_container
