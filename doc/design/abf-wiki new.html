@@ -52,7 +52,7 @@
 						</div>  
 					</div>
 					
-					<div class="user active">
+					<div class="user">
 						<div class="avatar" onclick="droplist();">
 							<img src="pics/ava.png" alt="avatar" height="30" />
 						</div>
@@ -80,6 +80,37 @@
 			<div class="both">
 			</div>
 		</header>
+		<!--Submenu-->
+		<div class="sub-menu">
+			<div class="left">
+				WacomDrivers
+			</div>
+			<nav>
+				<ul>
+					<li>
+						<a href="#">Проект</a>
+					</li>
+					<li>
+						<a href="#">Коммиты</a>
+					</li>
+					<li>
+						<a href="#">Сборки</a>
+					</li>
+					<li>
+						<a href="#">Трекер</a>
+					</li>
+					<li>
+						<a href="#" class="active">Wiki</a>
+					</li>
+					<li>
+						<a href="#">Readme</a>
+					</li>
+					<li>
+						<a href="#">Настройки</a>
+					</li>
+				</ul>
+			</nav>
+		</div>
 		<div class="both">
 		</div>
 		
@@ -89,107 +120,67 @@
 			<aside>
 				<div class="admin-preferences">
 					<ul>
+						<li>
+							<a href="#">Home</a>
+						</li>
 						<li class="active">
-							<a href="#">Общее</a>
+							<a href="#">Pages</a>
 						</li>
 						<li>
-							<a href="#">Настройки</a>
+							<a href="#">Wiki history</a>
 						</li>
 						<li>
-							<a href="#">Центр подписки</a>
+							<a href="#">Git access</a>
 						</li>
 					</ul>
 				</div>
 			</aside>
 			<!--Right part of page-->
-			<div class="right middlepadding">
-					<h3 class="fix bpadding10">mikimaus</h3>
-					<div class="leftlist">
-						Имя:
-					</div>
-					
-					<div class="rightlist">
-						<input type="text" value=""></input>
-					</div>
-					<div class="both"></div>
-					
-					<div class="leftlist">
-						Электронная почта:
-					</div>
-					
-					<div class="rightlist">
-						<input type="text" value=""></input>
-					</div>
-					<div class="both"></div>
-					
-					<div class="leftlist">
-						Личный веб-сайт:
-					</div>
-					
-					<div class="rightlist">
-						<input type="text" value=""></input>
-					</div>
-					<div class="both"></div>
-					
-					<div class="leftlist">
-						Компания:
-					</div>
-					
-					<div class="rightlist">
-						<input type="text" value=""></input>
-					</div>
-					<div class="both"></div>
-					
-					<div class="leftlist">
-						Местонахождение:
-					</div>
-					
-					<div class="rightlist">
-						<input type="text" value=""></input>
-					</div>
-					<div class="both"></div>
-					
-					<div class="leftlist">
-						Аватарка:
-					</div>
-					
-					<div class="rightlist">
-						<div>
-							<div class="avatar">
-								<img src="pics/ava-admin.png" alt="avatar" />
-							</div>
-							<div class="load">
-								<a class="button" href="#">Загрузить</a>
+			<div class="right">
+				<div class="left">
+					<h3>Home</h3>
+				</div>
+				<div class="r">
+					<a class="button" href="#">История</a>
+				</div>
+				<div class="both"></div>
+				
+				<div id='wiki-content'>
+					<div class='has-footer has-rightbar wrap'>
+						<div class='gollum-markdown-content' id='wiki-body'>
+							<div id='template'><p>Lorem ipsum.</p>
+
+							<p>Lorem ipsum dolor sit amet.</p>
+
+							<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse sit amet ullamcorper arcu. Cras congue, velit sed sollicitudin dignissim, turpis erat ultrices risus, vitae gravida ligula elit vel urna. Curabitur mattis dapibus rhoncus. Aenean lorem nisi, lacinia sed elementum nec, consectetur ac augue. Quisque vulputate sodales nunc, et imperdiet ante tincidunt eu. Donec velit enim, dapibus at pharetra a, scelerisque ut sapien. Nullam luctus pulvinar dui nec convallis. Nullam viverra nisi nec orci fringilla varius.</p>
 							</div>
 						</div>
+						<div class='gollum-markdown-content' id='wiki-rightbar'>
+							<p>Это сайдбар.
+							Это сайдбар.
+							Это сайдбар.
+							Это сайдбар.
+							Это сайдбар.
+							Это сайдбар.
+							Это сайдбар.</p>
+						</div>
+						<div class='gollum-markdown-content' id='wiki-footer'>
+							<div id='footer-content'><p>Футер Футер Футер Футер</p></div>
+						</div>
 					</div>
-					<div class="both"></div>
-					
-					<div class="leftlist">
-						Опыт работы:
-					</div>
-					
-					<div class="rightlist">
-						<textarea></textarea>
-					</div>
-					<div class="both"></div>
-						
-					
-					<div class="leftlist">
-						&nbsp;
-					</div>
-					
-					<div class="rightlist">
-						<a class="button" href="#">Сохранить</a>
-					</div>
-					<div class="both"></div>
-					
-					<div class="notify">
-						<p>
-							Данные доступны для публичного профиля. Если вы не хотите показывать какие-либо данные, просто не заполняйте их.
-						</p>
-					</div>
-					
+				</div>
+				<div id='gollum-footer'>
+					<p id='last-edit'>
+					Последним редактировал
+					<b><a href="/users/14">ironsnake</a></b>
+					около 19 часов
+					назад
+					</p>
+				</div>
+
+				<div class='both'></div>
+				
+				
 			</div>
 			
 			<div class="both"></div>
