@@ -11,7 +11,6 @@ set :default_environment, {
 
 require 'rvm/capistrano'
 require 'bundler/capistrano'
-require 'delayed/recipes'
 require 'airbrake/capistrano'
 
 set :whenever_command, "bundle exec whenever"
@@ -34,11 +33,11 @@ set :keep_releases, 3
 set :scm, :git
 set :repository,  "git@github.com:warpc/rosa-build.git"
 set :deploy_via,  :remote_cache
-set :delayed_job_args, "-n 4"
 
 require 'lib/recipes/nginx'
 require 'lib/recipes/unicorn'
 require 'lib/recipes/bluepill'
+require 'lib/recipes/delayed_job'
 
 namespace :deploy do
   task :stub_xml_rpc do
