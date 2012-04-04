@@ -180,10 +180,6 @@ class Project < ActiveRecord::Base
     system("#{Rails.root.join('bin', 'import_srpm.sh')} #{srpm_path} #{path} #{branch_name} >> /dev/null 2>&1")
   end
 
-  def self.commit_comments(commit, project)
-    comments = Comment.where(:commentable_id => commit.id.hex, :commentable_type => 'Grit::Commit')
-  end
-
   def owner?(user)
     owner == user
   end

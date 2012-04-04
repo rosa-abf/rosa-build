@@ -83,9 +83,16 @@ describe BuildListsController do
     end
 
     context 'for guest' do
-      it 'should not be able to perform index action' do
-        get :index
-        response.should redirect_to(new_user_session_path)
+      if APP_CONFIG['anonymous_access']
+        it 'should be able to perform index action' do
+          get :index
+          response.should be_success
+        end
+      else
+        it 'should not be able to perform index action' do
+          get :index
+          response.should redirect_to(new_user_session_path)
+        end
       end
     end
 

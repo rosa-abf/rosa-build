@@ -2,10 +2,10 @@
 .block
   .secondary-navigation
     %ul.wat-cf
-      %li.first= link_to t("layout.comments.back"), @commentable_path
+      %li.first= link_to t("layout.comments.back"), project_commentable_path(@project, @commentable)
   .content
     %h2.title
       = t("layout.comments.edit_header")
     .inner
-      = form_for @comment, :url => @update_url, :html => { :class => :form } do |f|
+      = form_for @comment, :url => project_commentable_comment_path(@project, @commentable, @comment), :html => {:class => :form} do |f|
         = render :partial => "form", :locals => {:f => f}

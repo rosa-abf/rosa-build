@@ -64,10 +64,6 @@ describe CanCan do
     	@ability.should_not be_able_to(:read, hidden_platform)
     end
 
-    it 'should be able to auto build projects' do
-    	@ability.should be_able_to(:auto_build, Project)
-    end
-
 		[:publish_build, :status_build, :pre_build, :post_build, :circle_build, :new_bbdt].each do |action|
 			it "should be able to #{ action } build list" do
 				@ability.should be_able_to(action, BuildList)
@@ -90,7 +86,7 @@ describe CanCan do
       @ability.should_not be_able_to(:destroy, register_request)
     end
 
-		it 'should be able to register new user' do
+		pending 'should be able to register new user' do # while self registration is closed
 			@ability.should be_able_to(:create, User)
 		end
 	end
