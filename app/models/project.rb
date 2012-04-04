@@ -20,7 +20,7 @@ class Project < ActiveRecord::Base
   validates :name, :uniqueness => {:scope => [:owner_id, :owner_type], :case_sensitive => false}, :presence => true, :format => {:with => /^[a-zA-Z0-9_\-\+\.]+$/}
   validates :owner, :presence => true
   validate { errors.add(:base, :can_have_less_or_equal, :count => MAX_OWN_PROJECTS) if owner.projects.size >= MAX_OWN_PROJECTS }
-  
+
   validates_attachment_size :srpm, :less_than => 500.megabytes
   validates_attachment_content_type :srpm, :content_type => ['application/octet-stream', "application/x-rpm", "application/x-redhat-package-manager"], :message => I18n.t('layout.invalid_content_type')
 
@@ -37,12 +37,12 @@ class Project < ActiveRecord::Base
 
   after_create :attach_to_personal_repository
   after_create :create_git_repo
-  after_create {|p| p.delay(:queue => 'fork').fork_git_repo unless root?}
+  after_create {|p| p.delay(:queue => 'fork', :priority => 20).fork_git_repo unless root?}
   after_save :create_wiki
 
   after_destroy :destroy_git_repo
   after_destroy :destroy_wiki
-  after_save {|p| p.delay(:queue => 'import').import_attached_srpm if p.srpm?} # should be after create_git_repo
+  after_save {|p| p.delay(:queue => 'import', :priority => 10).import_attached_srpm if p.srpm?} # should be after create_git_repo
   # after_rollback lambda { destroy_git_repo rescue true if new_record? }
 
   has_ancestry
@@ -217,7 +217,7 @@ class Project < ActiveRecord::Base
   def create_git_repo
     if root?
       Grit::Repo.init_bare(path)
-      write_hook.delay(:queue => 'fork')
+      write_hook.delay(:queue => 'fork', :priority => 15)
     end
   end
 
