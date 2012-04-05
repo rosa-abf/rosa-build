@@ -30,10 +30,10 @@ class CommentPresenter < ApplicationPresenter
   def buttons
     project = options[:project]
     commentable = options[:commentable]
-    (ep, dp) = if commentable.class == Issue
+    (ep, dp) = if Comment.issue_comment?(commentable.class)
       [edit_project_issue_comment_path(project, commentable, comment),
        project_issue_comment_path(project, commentable, comment)]
-    elsif commentable.class == Grit::Commit
+    elsif Comment.commit_comment?(commentable.class)
       [edit_project_commit_comment_path(project, commentable, comment),
        project_commit_comment_path(project, commentable, comment)]
     end

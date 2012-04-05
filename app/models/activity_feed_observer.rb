@@ -35,7 +35,7 @@ class ActivityFeedObserver < ActiveRecord::Observer
       end
 
     when 'Comment'
-      if record.commentable.class == Issue
+      if record.issue_comment?
         subscribes = record.commentable.subscribes
         subscribes.each do |subscribe|
           if record.user_id != subscribe.user_id

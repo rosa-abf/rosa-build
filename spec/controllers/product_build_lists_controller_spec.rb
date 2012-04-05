@@ -55,10 +55,17 @@ describe ProductBuildListsController do
         response.should redirect_to(new_user_session_path)
       end
 
-      it 'should not be able to view ProductBuildLists' do
-        get :index
-        response.should redirect_to(new_user_session_path)
-      end      
+      if APP_CONFIG['anonymous_access']
+        it 'should be able to view ProductBuildLists' do
+          get :index
+          response.should be_success
+        end
+      else
+        it 'should not be able to view ProductBuildLists' do
+          get :index
+          response.should redirect_to(new_user_session_path)
+        end
+      end
     end
 
     context 'for user' do
