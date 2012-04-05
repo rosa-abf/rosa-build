@@ -777,5 +777,8 @@ div.description-top div.git_help {
 div#git_help_data {
   display: none;
   padding-left: 10px;
-  padding-top: 15px;
+}
+
+div#git_help_data p {
+  padding-bottom: 5px;
 }

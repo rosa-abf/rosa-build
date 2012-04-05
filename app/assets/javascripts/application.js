@@ -56,7 +56,7 @@ $(document).ready(function() {
     if ($('#git_help_data').css('display') == 'none') {
       desc.css('height', '38px');
     } else {
-      desc.css('height', '200px');
+      desc.css('height', '196px');
     }
   });
 

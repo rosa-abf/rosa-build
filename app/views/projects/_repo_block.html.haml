@@ -4,24 +4,16 @@
   .role= can?(:write, project) ? t("layout.read_write_access") : t("layout.read_access")
   = render :partial => 'projects/branch_select', :locals => {:project => project}
   #git_help_data
-    = t("layout.projects.git_help.cloning") + ":"
-    %br
-    %br
-    %b git clone #{git_repo_url(project.git_repo_name)} #{project.name}
-    %br
-    %b cd #{project.name}
-    %br
-    %br
-    = t("layout.projects.git_help.remote") + ":"
-    %br
-    %br
-    %b git remote add #{project.name} #{git_repo_url(project.git_repo_name)}
-    %br
-    %b git fetch #{project.name}
-    %br
-    %b git checkout -b my-local-tracking-branch #{project.name}/master_or_other_branch
-    %br
-    %br
+    %p= t("layout.projects.git_help.cloning") + ":"
+    %p
+    %p~ "git clone #{git_repo_url(project.git_repo_name)} #{project.name}"
+    %p~ "cd #{project.name}"
+    %p
+    %p= t("layout.projects.git_help.remote") + ":"
+    %p
+    %p~ "git remote add #{project.name} #{git_repo_url(project.git_repo_name)}"
+    %p~ "git fetch #{project.name}"
+    %p~ "git checkout -b my-local-tracking-branch #{project.name}/master_or_other_branch"
 .both
 :javascript
   $(document).ready(function() {
