@@ -764,3 +764,21 @@ div.tos_sidebar ul li a {
     padding-top: 5px;
     text-decoration: none;
 }
+
+div.description-top div.git_help {
+  float: left;
+  margin-top: 11px;
+  margin-left: 10px;
+  font-size: 11px;
+  color: green;
+  cursor: pointer;
+}
+
+div#git_help_data {
+  display: none;
+  padding-left: 10px;
+}
+
+div#git_help_data p {
+  padding-bottom: 5px;
+}

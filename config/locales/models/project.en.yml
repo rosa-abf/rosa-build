@@ -30,6 +30,10 @@ en:
       has_issue_description: Tracker adds a lightweight issue management system tightly integrated with your repository.
       has_wiki_description: Wikis are the simplest way to allow other users to contribute content. Any user can create and edit pages for documentation, examples, support or anything you wish.
 
+      git_help:
+        cloning: Cloning the repository
+        remote: Add this repository as a remote to an existing local repository
+
       diff_show_header: "%{files} with %{additions} and %{deletions}."
       about_subheader:  "About project"
       last_commit:      "Last commit"

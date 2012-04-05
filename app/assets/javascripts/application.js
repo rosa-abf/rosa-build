@@ -49,4 +49,15 @@ $(document).ready(function() {
     return false;
   });
 
+  $('.description-top .git_help').click(function() {
+    $('#git_help_data').toggle();
+    var desc = $('.description-top');
+
+    if ($('#git_help_data').css('display') == 'none') {
+      desc.css('height', '38px');
+    } else {
+      desc.css('height', '196px');
+    }
+  });
+
 });
