@@ -37,7 +37,7 @@ class Project < ActiveRecord::Base
 
   after_create :attach_to_personal_repository
   after_create :create_git_repo
-  after_create {|p| p.delay(:queue => 'fork', :priority => 20).fork_git_repo unless root?}
+  after_create {|p| p.delay(:queue => 'fork', :priority => 20).fork_git_repo unless is_root?}
   after_save :create_wiki
 
   after_destroy :destroy_git_repo
@@ -215,7 +215,7 @@ class Project < ActiveRecord::Base
   end
 
   def create_git_repo
-    if root?
+    if is_root?
       Grit::Repo.init_bare(path)
       write_hook.delay(:queue => 'fork', :priority => 15)
     end
