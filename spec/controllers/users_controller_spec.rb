@@ -38,10 +38,6 @@ describe UsersController do
     end
 
     context 'with mass assignment' do
-      it 'should not be able to update uname' do
-        @simple_user.should_not allow_mass_assignment_of :uname
-      end
-
       it 'should not be able to update role' do
         @simple_user.should_not allow_mass_assignment_of :role
       end

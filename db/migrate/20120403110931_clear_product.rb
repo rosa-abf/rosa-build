@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class ClearProduct < ActiveRecord::Migration
   def self.up
     remove_column :products, :build_status
