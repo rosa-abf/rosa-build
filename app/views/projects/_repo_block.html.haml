@@ -1,7 +1,27 @@
 .description-top
   = text_field_tag :url, git_repo_url(project.git_repo_name), :class => 'name', :spellcheck => 'false', :readonly => true
+  .git_help ?
   .role= can?(:write, project) ? t("layout.read_write_access") : t("layout.read_access")
   = render :partial => 'projects/branch_select', :locals => {:project => project}
+  #git_help_data
+    = t("layout.projects.git_help.cloning") + ":"
+    %br
+    %br
+    %b git clone #{git_repo_url(project.git_repo_name)} #{project.name}
+    %br
+    %b cd #{project.name}
+    %br
+    %br
+    = t("layout.projects.git_help.remote") + ":"
+    %br
+    %br
+    %b git remote add #{project.name} #{git_repo_url(project.git_repo_name)}
+    %br
+    %b git fetch #{project.name}
+    %br
+    %b git checkout -b my-local-tracking-branch #{project.name}/master_or_other_branch
+    %br
+    %br
 .both
 :javascript
   $(document).ready(function() {
