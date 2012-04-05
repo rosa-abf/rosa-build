@@ -24,9 +24,11 @@ Capistrano::Configuration.instance(:must_exist).load do
         run "cd #{fetch :current_path} && #{try_sudo} #{bluepill_binary} #{fetch :application} status"
       end
 
-      desc "Restart DJ process"
+      desc "Restart DJ processes"
       task :restart_dj, :roles => [:app] do
-        run "cd #{fetch :current_path} && #{try_sudo} #{bluepill_binary} #{fetch :application} restart delayed_job"
+        %w(fork import hook default).each do |queue|
+          run "cd #{fetch :current_path} && #{try_sudo} #{bluepill_binary} #{fetch :application} restart delayed_job_#{queue}_queue"
+        end
       end
     end
 
