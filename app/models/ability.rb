@@ -58,6 +58,7 @@ class Ability
         can([:update, :sections, :manage_collaborators], Project) {|project| local_admin? project}
         can(:fork, Project) {|project| can? :read, project}
         can(:destroy, Project) {|project| owner? project}
+        can(:destroy, Project) {|project| project.owner_type == 'Group' and project.owner.objects.exists?(:object_type => 'User', :object_id => user.id, :role => 'admin')}
         can :remove_user, Project
 
         can [:read, :owned], BuildList, :user_id => user.id
