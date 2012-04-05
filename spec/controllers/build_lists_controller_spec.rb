@@ -312,12 +312,15 @@ describe BuildListsController do
       assigns[:build_lists].should_not include(@build_list2)
       assigns[:build_lists].should include(@build_list3)
       assigns[:build_lists].should_not include(@build_list4)
-#      response.should be_success
     end
   end
 
   context 'callbacks' do
     let(:build_list) { FactoryGirl.create(:build_list_core) }
+
+    before(:each) do
+      mock(controller).authenticate_build_service! {true}
+    end
 
     describe 'publish_build' do
       before { test_git_commit(build_list.project); build_list.update_attribute :commit_hash, build_list.project.git_repository.commits('master').last.id }
