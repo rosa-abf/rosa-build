@@ -49,7 +49,7 @@ class User < ActiveRecord::Base
 
   scope :search_order, order("CHAR_LENGTH(uname) ASC")
   scope :without, lambda {|a| where("users.id NOT IN (?)", a)}
-  scope :search, lambda {|q| where("uname ILIKE ?", "%#{q.strip}%")}
+  scope :search, lambda {|q| where("uname ILIKE ?", "%#{q.to_s.strip}%")}
   scope :opened, where('1=1')
   scope :banned, where(:role => 'banned')
   scope :admin, where(:role => 'admin')

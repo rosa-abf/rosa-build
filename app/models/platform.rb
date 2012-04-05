@@ -29,7 +29,7 @@ class Platform < ActiveRecord::Base
   after_update :update_owner_relation
 
   scope :search_order, order("CHAR_LENGTH(name) ASC")
-  scope :search, lambda {|q| where("name ILIKE ?", "%#{q.strip}%")}
+  scope :search, lambda {|q| where("name ILIKE ?", "%#{q.to_s.strip}%")}
   scope :by_visibilities, lambda {|v| where(:visibility => v)}
   scope :opened, where(:visibility => 'open')
   scope :hidden, where(:visibility => 'hidden')

@@ -29,7 +29,7 @@ class Project < ActiveRecord::Base
 
   scope :recent, order("name ASC")
   scope :search_order, order("CHAR_LENGTH(name) ASC")
-  scope :search, lambda {|q| by_name("%#{q.strip}%")}
+  scope :search, lambda {|q| by_name("%#{q.to_s.strip}%")}
   scope :by_name, lambda {|name| where('projects.name ILIKE ?', name)}
   scope :by_visibilities, lambda {|v| where(:visibility => v)}
   scope :opened, where(:visibility => 'open')
