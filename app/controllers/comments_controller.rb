@@ -46,6 +46,6 @@ class CommentsController < ApplicationController
 
   def find_or_build_comment
     @comment = params[:id].present? && Comment.find(params[:id]) ||
-               Comment.new(params[:comment]){|c| c.commentable = @commentable; c.project = @project; c.user_id = current_user.id}
+               current_user.comments.build(params[:comment]) {|c| c.commentable = @commentable; c.project = @project}
   end
 end
