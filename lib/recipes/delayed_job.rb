@@ -16,21 +16,21 @@ Capistrano::Configuration.instance(:must_exist).load do
     desc "Stop the delayed_job process"
     task :stop, :roles => lambda { roles } do
       dj_queues.each do |queue|
-        run "cd #{current_path};#{rails_env} script/delayed_job --pid-dir=#{current_path}/tmp/#{queue}_pids stop"
+        run "cd #{current_path};#{rails_env} script/delayed_job --pid-dir=#{shared_path}/pids/#{queue} stop"
       end
     end
 
     desc "Start the delayed_job process"
     task :start, :roles => lambda { roles } do
       dj_queues.each do |queue|
-        run "cd #{current_path};#{rails_env} script/delayed_job --queue=#{queue} -p #{queue} --pid-dir=#{current_path}/tmp/#{queue}_pids  start"
+        run "cd #{current_path};#{rails_env} script/delayed_job --queue=#{queue} -p #{queue} --pid-dir=#{shared_path}/pids/#{queue} start"
       end
     end
 
     desc "Restart the delayed_job process"
     task :restart, :roles => lambda { roles } do
       dj_queues.each do |queue|
-        run "cd #{current_path};#{rails_env} script/delayed_job --queue=#{queue} -p #{queue} --pid-dir=#{current_path}/tmp/#{queue}_pids restart"
+        run "cd #{current_path};#{rails_env} script/delayed_job --queue=#{queue} -p #{queue} --pid-dir=#{shared_path}/pids/#{queue} restart"
       end
     end
   end
