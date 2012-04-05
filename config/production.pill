@@ -4,16 +4,18 @@ app_name = ENV['APP_NAME'] || 'rosa_build'
 Bluepill.application(app_name) do |app|
   app.uid = app.gid = 'rosa'
   app.working_dir = "/srv/#{app_name}/current"
-  app.process("delayed_job") do |process|
-    process.start_grace_time    = 10.seconds
-    process.stop_grace_time     = 10.seconds
-    process.restart_grace_time  = 10.seconds
+  %w(fork import hook default).each do |queue|
+    app.process("delayed_job_#{queue}_queue") do |process|
+      process.start_grace_time    = 10.seconds
+      process.stop_grace_time     = 10.seconds
+      process.restart_grace_time  = 10.seconds
 
-    process.start_command = "/usr/bin/env ruby script/delayed_job start"
-    process.stop_command  = "/usr/bin/env ruby script/delayed_job stop"
-    process.pid_file = File.join(app.working_dir, 'tmp', 'pids', 'delayed_job.pid')
+      process.start_command = "/usr/bin/env ruby script/delayed_job --queue=#{queue} -p #{queue} --pid-dir=/srv/#{app_name}/current/tmp/#{queue}_pids start"
+      process.stop_command  = "/usr/bin/env ruby script/delayed_job --pid-dir=/srv/#{app_name}/current/tmp/#{queue}_pids stop"
+      process.pid_file = File.join(app.working_dir, 'tmp', "#{queue}_pids", 'delayed_job.pid')
+    end
   end
-  
+
   app.process("newrelic") do |process|
     process.start_grace_time    = 10.seconds
     process.stop_grace_time     = 10.seconds
