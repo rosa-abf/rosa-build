@@ -87,6 +87,20 @@ describe ProjectsController do
 		end
 
     it_should_behave_like 'projects user with reader rights'
+
+    it 'should not be able to fork project to other group' do
+      group = FactoryGirl.create(:group)
+      post :fork, :id => @project.id, :group => group.id
+      response.should redirect_to(forbidden_path)
+    end
+
+    it 'should be able to fork project to group' do
+      group = FactoryGirl.create(:group)
+      group.objects.create(:object_type => 'User', :object_id => @user.id, :role => 'admin')
+      post :fork, :id => @project.id, :group => group.id
+      response.should redirect_to(project_path(group.projects.first.id))
+    end
+
   end
 
   context 'search projects' do

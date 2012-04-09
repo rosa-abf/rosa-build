@@ -4,6 +4,9 @@ ru:
       add: Добавить
       edit: Настройки
       fork_and_edit: Клонировать
+      fork_to: Клонировать в %{to}
+      fork_modal_header: Куда Вы хотите клонировать проект?
+      already_exists: Уже существует проект %{path}
       list: Список
       list_header: Проекты
       edit_header: Редактировать проект
