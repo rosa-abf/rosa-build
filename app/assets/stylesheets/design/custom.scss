@@ -782,3 +782,35 @@ div#git_help_data {
 div#git_help_data p {
   padding-bottom: 5px;
 }
+
+// for bootstrap
+.close {
+  float: right;
+  font-size: 20px;
+  font-weight: bold;
+  line-height: 18px;
+  color: #000000;
+  text-shadow: 0 1px 0 #ffffff;
+  opacity: 0.2;
+  filter: alpha(opacity=20);
+}
+
+.close:hover {
+  color: #000000;
+  text-decoration: none;
+  opacity: 0.4;
+  filter: alpha(opacity=40);
+  cursor: pointer;
+}
+
+.modal {
+  margin: -150px 0 0 -280px;
+}
+
+#forkModal.modal .btn.btn-primary {
+  width: 100%;
+}
+
+.center {
+  text-align: center;
+}
