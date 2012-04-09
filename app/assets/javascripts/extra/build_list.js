@@ -38,11 +38,18 @@ $(document).ready(function() {
   $('.offset25 input[type="checkbox"]').click(function() {
     setPlChecked(this, $(this).attr('checked'));
   });
+
+  $('.build_bpl_ids').click(function() {
+    return false;
+  });
 });
 
 function setPlChecked(pointer, checked) {
-  pl_cbx = $(pointer).parent().parent().parent().find('input[type="checkbox"].build_bpl_ids');
+  var pl_cbx = $(pointer).parent().parent().parent().find('input[type="checkbox"].build_bpl_ids');
+  var pl_id = pl_cbx.val();
   if (checked && !$(pointer).attr('disabled')) {
     pl_cbx.attr('checked', 'checked');
+  } else if ($('input[pl_id=' + pl_id + '][checked="checked"]').size() == 0) {
+    pl_cbx.removeAttr('checked');
   }
 }

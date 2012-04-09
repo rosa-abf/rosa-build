@@ -16,7 +16,10 @@
     %h3= t("activerecord.attributes.build_list.arch")
     - Arch.recent.each do |arch|
       .both
-        = check_box_tag "arches[]", arch.id, (params[:arches]||[]).include?(arch.id.to_s), :id => "arches_#{arch.id}"
+        - if controller.action_name == 'new'
+          = check_box_tag "arches[]", arch.id, (params[:arches]||[]).include?(arch.id.to_s), :id => "arches_#{arch.id}", :checked => 'checked'
+        - else
+          = check_box_tag "arches[]", arch.id, (params[:arches]||[]).include?(arch.id.to_s), :id => "arches_#{arch.id}"
         = label_tag "arches_#{arch.id}", arch.name
     %h3= t("activerecord.attributes.build_list.pl")
     .lineForm= f.select :pl_id, @project.repositories.collect{|r| ["#{r.platform.name}/#{r.name}", r.platform.id]}
