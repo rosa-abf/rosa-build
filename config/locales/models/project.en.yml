@@ -6,7 +6,7 @@ en:
       fork_and_edit: Fork
       fork_to: Fork to %{to}
       fork_modal_header: Where do you want to fork this project?
-      already_exists: Already exists project %{path}
+      already_exists: Already exists project
       list: List
       list_header: Projects
       edit_header: Edit project

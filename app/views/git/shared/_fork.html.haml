@@ -8,14 +8,18 @@
         %h3=t 'layout.projects.fork_modal_header'
       .modal-footer
         - if current_user.projects.exists? :name => @project.name
-          %p.center=raw t 'layout.projects.already_exists', :path => (link_to "#{current_user.uname}/#{@project.name}", project_path(current_user.projects.by_name(@project.name).first.id))
+          %p.center
+            =t 'layout.projects.already_exists'
+            =link_to "#{current_user.uname}/#{@project.name}", project_path(current_user.projects.by_name(@project.name).first.id)
         - else
           = form_for @project, :url => fork_project_path(@project), :html => { :class => :form, :multipart => true, :method => :post } do |f|
             =f.submit t('layout.projects.fork_to', :to => current_user.uname), :class => 'btn btn-primary'
       - Group.can_own_project(current_user).each do |group|
         .modal-footer
           - if group.projects.exists? :name => @project.name
-            %p.center=raw t 'layout.projects.already_exists', :path => (link_to "#{group.uname}/#{@project.name} (#{t 'activerecord.models.group'})", project_path(group.projects.by_name(@project.name).first.id))
+            %p.center
+              =t 'layout.projects.already_exists'
+              =link_to "#{group.uname}/#{@project.name} (#{t 'activerecord.models.group'})", project_path(group.projects.by_name(@project.name).first.id)
           - else
             = form_for @project, :url => fork_project_path(@project), :html => { :class => :form, :multipart => true, :method => :post } do |f|
               = hidden_field_tag :group, group.id
