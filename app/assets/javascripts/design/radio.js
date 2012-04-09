@@ -76,7 +76,9 @@ function changeRadioStart(el) {
       }
 
       el.next().bind("mousedown", function(e) {
-        changeRadio($(this));
+        if (e.which === 0) {
+            changeRadio($(this));
+        };
         $(this).find("input:radio").change();
       });
       if($.browser.msie) {

@@ -1,7 +1,11 @@
 // PUT custom styles here ONLY
 
-span.error {
+span.error, .hidden {
   display: none;
+}
+
+.centered {
+    text-align: center;
 }
 
 a#manage-labels {
@@ -456,10 +460,12 @@ table.tablesorter tr td.buttons {
     text-align: center;
 }
 
-table.tablesorter tr td.buttons a span.delete {
+table.tablesorter tr td.buttons a span.delete,
+span.delete {
     background: image-url('x.png') no-repeat 0 0 transparent;
     width: 12px;
     display: inline-block;
+    cursor: pointer;
 }
 
 #fork-and-edit {display:block;}
@@ -763,4 +769,8 @@ div.tos_sidebar ul li a {
     padding-left: 15px;
     padding-top: 5px;
     text-decoration: none;
+}
+
+table.tablesorter tbody tr.removed td {
+    background-color: #FFECEC;
 }

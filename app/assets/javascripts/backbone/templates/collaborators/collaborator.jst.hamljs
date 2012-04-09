@@ -1,0 +1,38 @@
+%td
+  %span#niceCheckbox1.nicecheck-main{ style: "background-position: 0px 0px; "}
+    - if (removed === true) {
+    %input{ type: 'checkbox', value: 1, id: type + '_remove_' + id + '_', name: type + '_remove[' + id + '][]', checked: 'checked' }
+    - } else {
+    %input{ type: 'checkbox', value: 1, id: type + '_remove_' + id + '_', name: type + '_remove[' + id + '][]' }
+    - }
+%td
+  - if (type === 'user') {
+  .img
+    %img{src: avatar, alt: avatar}
+  - }
+  .forimg
+    %a{href: collaborator_link}
+      = name
+- var ROLES = Rosa.bootstrapedData.ROLES;
+- for (var i = 0; i < ROLES.length; i++) {
+%td
+  .radio
+    - var radio_id = type + '_' + id + '_' + ROLES[i];
+    - var radio_type = type + '[' + id + ']';
+    - if (ROLES[i] === role) {
+    - if ( removed ) {
+    %input.niceRadio{type: 'radio', value: ROLES[i], id: radio_id, name: radio_type, disabled: 'disabled', checked: 'checked'}
+    - } else {
+    %input.niceRadio{type: 'radio', value: ROLES[i], id: radio_id, name: radio_type, checked: 'checked'}
+    - };
+    - } else {
+    - if ( removed ) {
+    %input.niceRadio{type: 'radio', value: ROLES[i], id: radio_id, name: radio_type, disabled: 'disabled' }
+    - } else {
+    %input.niceRadio{type: 'radio', value: ROLES[i], id: radio_id, name: radio_type }
+    - };
+    - }
+  .forradio
+    %label{for: radio_id}
+      = ROLES[i]
+- }

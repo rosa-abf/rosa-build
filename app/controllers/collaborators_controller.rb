@@ -1,5 +1,7 @@
 # -*- encoding : utf-8 -*-
 class CollaboratorsController < ApplicationController
+  respond_to :html, :json
+
   before_filter :authenticate_user!
 
   before_filter :find_project
@@ -10,7 +12,9 @@ class CollaboratorsController < ApplicationController
   before_filter :authorize_collaborators
 
   def index
-    redirect_to edit_project_collaborators_path(@project)
+#    redirect_to edit_project_collaborators_path(@project)
+    @collaborators = Collaborator.find_by_project(@project)
+    respond_with @collaborators
   end
 
   def show
@@ -30,38 +34,44 @@ class CollaboratorsController < ApplicationController
   end
 
   def update
-    params['user'].keys.each { |user_id|
-      role = params['user'][user_id]
-
-      if relation = @project.relations.find_by_object_id_and_object_type(user_id, 'User')
-        unless @project.owner_type == 'User' and @project.owner_id.to_i == user_id.to_i
-          relation.update_attribute(:role, role)
-        end
-      else
-        relation = @project.relations.build(:object_id => user_id, :object_type => 'User', :role => role)
-        relation.save
-      end
-    } if params['user']
-
-    params['group'].keys.each { |group_id|
-      role = params['group'][group_id]
-      if relation = @project.relations.find_by_object_id_and_object_type(group_id, 'Group')
-        unless @project.owner_type == 'Group' and @project.owner_id.to_i == group_id.to_i
-          relation.update_attribute(:role, role)
-        end
-      else
-        relation = @project.relations.build(:object_id => user_id, :object_type => 'Group', :role => role)
-        relation.save
-      end
-    } if params['group']
-
-    if @project.save
-      flash[:notice] = t("flash.collaborators.successfully_changed")
+    @c = Collaborator.new(params[:collaborator])
+    if @c.save 
+      respond_with @c
     else
-      flash[:error] = t("flash.collaborators.error_in_changing")
+      raise
     end
-
-    redirect_to edit_project_collaborators_path(@project)
+#    params['user'].keys.each { |user_id|
+#      role = params['user'][user_id]
+#
+#      if relation = @project.relations.find_by_object_id_and_object_type(user_id, 'User')
+#        unless @project.owner_type == 'User' and @project.owner_id.to_i == user_id.to_i
+#          relation.update_attribute(:role, role)
+#        end
+#      else
+#        relation = @project.relations.build(:object_id => user_id, :object_type => 'User', :role => role)
+#        relation.save
+#      end
+#    } if params['user']
+#
+#    params['group'].keys.each { |group_id|
+#      role = params['group'][group_id]
+#      if relation = @project.relations.find_by_object_id_and_object_type(group_id, 'Group')
+#        unless @project.owner_type == 'Group' and @project.owner_id.to_i == group_id.to_i
+#          relation.update_attribute(:role, role)
+#        end
+#      else
+#        relation = @project.relations.build(:object_id => user_id, :object_type => 'Group', :role => role)
+#        relation.save
+#      end
+#    } if params['group']
+#
+#    if @project.save
+#      flash[:notice] = t("flash.collaborators.successfully_changed")
+#    else
+#      flash[:error] = t("flash.collaborators.error_in_changing")
+#    end
+#
+#    redirect_to edit_project_collaborators_path(@project)
   end
 
   def remove
@@ -86,6 +96,12 @@ class CollaboratorsController < ApplicationController
     end
 
     redirect_to edit_project_collaborators_path(@project) + "##{params['user_remove'].present? ? 'users' : 'groups'}"
+  end
+
+  def destroy
+    @cb = Collaborator.find_by_project(@project, :id => params[:id])
+    @cb.destroy if @cb
+    respond_with @cb
   end
 
   def add
@@ -120,7 +136,7 @@ class CollaboratorsController < ApplicationController
     end
 
     # if add an anchor, adding will be more pleasant, but flash message wouldn't be shown.
-    redirect_to edit_project_collaborators_path(@project) # + "##{(params['member_id'].present?) ? 'users' : 'groups'}"
+    redirect_to project_collaborators_path(@project) # + "##{(params['member_id'].present?) ? 'users' : 'groups'}"
   end
 
   protected

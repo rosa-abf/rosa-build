@@ -110,7 +110,7 @@ Rosa::Application.routes.draw do
     resources :build_lists, :only => [:index, :new, :create] do
       collection { post :search }
     end
-    resources :collaborators, :only => [:index, :edit, :update, :add] do
+    resources :collaborators, :only => [:index, :edit, :update, :add, :destroy] do
       collection do
         get :edit
         post :update

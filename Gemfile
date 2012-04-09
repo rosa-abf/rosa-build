@@ -44,6 +44,8 @@ gem 'rails3-jquery-autocomplete', '~> 1.0.6'
 gem 'will_paginate', '~> 3.0.3'
 gem 'meta-tags', '~> 1.2.5', :require => 'meta_tags'
 gem "haml-rails", '~> 0.3.4'
+gem 'ruby-haml-js'
+gem 'rails-backbone'
 gem 'jquery-rails', '~> 2.0.1'
 
 group :assets do
