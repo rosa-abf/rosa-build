@@ -13,6 +13,7 @@ en:
       show: Project
       build: Build
       new_build: New build %{project_name}
+      new_build_list: New build
       confirm_delete: Are you sure you want to delete this project?
       new: New project
       location: Location

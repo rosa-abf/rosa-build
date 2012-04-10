@@ -118,6 +118,13 @@ class Project < ActiveRecord::Base
     tags.map(&:name) + branches.map{|b| "latest_#{b.name}"}
   end
 
+  def versions_for_group_select
+    [
+      ['Tags', tags.map(&:name)],
+      ['Branches', branches.map{|b| "latest_#{b.name}"}]
+    ]
+  end
+
   def members
     collaborators + groups.map(&:members).flatten
   end

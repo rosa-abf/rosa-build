@@ -13,6 +13,7 @@ ru:
       show: Проект
       build: Собрать
       new_build: Новая сборка %{project_name}
+      new_build_list: Новая сборка
       confirm_delete: Вы уверены, что хотите удалить этот проект?
       new: Новый проект
       location: Расположение
