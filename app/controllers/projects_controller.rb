@@ -26,9 +26,10 @@ class ProjectsController < ApplicationController
     @project = Project.new params[:project]
     @project.owner = choose_owner
     @who_owns = (@project.owner_type == 'User' ? :me : :group)
+    authorize! :update, @project.owner if @project.owner.class == Group
 
     if @project.save
-      flash[:notice] = t('flash.project.saved') 
+      flash[:notice] = t('flash.project.saved')
       redirect_to @project
     else
       flash[:error] = t('flash.project.save_error')
@@ -56,7 +57,9 @@ class ProjectsController < ApplicationController
   end
 
   def fork
-    if forked = @project.fork(current_user) and forked.valid?
+    owner = (Group.find params[:group] if params[:group].present?) || current_user
+    authorize! :update, owner if owner.class == Group
+    if forked = @project.fork(owner) and forked.valid?
       redirect_to forked, :notice => t("flash.project.forked")
     else
       flash[:warning] = t("flash.project.fork_error")

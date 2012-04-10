@@ -1,4 +1,29 @@
-- if can? :fork, @project
-  .r#fork-and-edit= link_to t('layout.projects.fork_and_edit'), fork_project_path(@project), :method => :post, :confirm => t("layout.confirm"), :class => 'button'
+- if Group.can_own_project(current_user).present?
+  .r#fork-and-edit= link_to t('layout.projects.fork_and_edit'), '#forkModal', :class => 'button', 'data-toggle' => 'modal'
 - if can? :create, @project.build_lists.new
   .r{:style => "display: block"}= link_to t('layout.projects.new_build_list'), new_project_build_list_path(@project), :class => 'button'
+
+  #forkModal.modal{:style => 'display: none;'}
+    .modal-header
+      %a.close{"data-dismiss" => "modal"} ×
+      %h3=t 'layout.projects.fork_modal_header'
+    .modal-footer
+      - if current_user.projects.exists? :name => @project.name
+        %p.center
+          =t 'layout.projects.already_exists'
+          =link_to "#{current_user.uname}/#{@project.name}", project_path(current_user.projects.by_name(@project.name).first.id)
+      - else
+        = form_for @project, :url => fork_project_path(@project), :html => { :class => :form, :multipart => true, :method => :post } do |f|
+          =f.submit t('layout.projects.fork_to', :to => current_user.uname), :class => 'btn btn-primary'
+    - Group.can_own_project(current_user).each do |group|
+      .modal-footer
+        - if group.projects.exists? :name => @project.name
+          %p.center
+            =t 'layout.projects.already_exists'
+            =link_to "#{group.uname}/#{@project.name} (#{t 'activerecord.models.group'})", project_path(group.projects.by_name(@project.name).first.id)
+        - else
+          = form_for @project, :url => fork_project_path(@project), :html => { :class => :form, :multipart => true, :method => :post } do |f|
+            = hidden_field_tag :group, group.id
+            =f.submit t('layout.projects.fork_to', :to => "#{group.uname} (#{t 'activerecord.models.group'})"), :class => 'btn btn-primary'
+- else
+  .r#fork-and-edit= link_to t('layout.projects.fork_and_edit'), fork_project_path(@project), :method => :post, :confirm => t("layout.confirm"), :class => 'button'
