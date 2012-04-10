@@ -120,8 +120,8 @@ class Project < ActiveRecord::Base
 
   def versions_for_group_select
     [
-      ['Tags', tags.map(&:name)],
-      ['Branches', branches.map{|b| "latest_#{b.name}"}]
+      ['Branches', branches.map{|b| "latest_#{b.name}"}],
+      ['Tags', tags.map(&:name)]
     ]
   end
 
