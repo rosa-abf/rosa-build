@@ -26,9 +26,10 @@ class ProjectsController < ApplicationController
     @project = Project.new params[:project]
     @project.owner = choose_owner
     @who_owns = (@project.owner_type == 'User' ? :me : :group)
+    authorize! :update, @project.owner if @project.owner.class == Group
 
     if @project.save
-      flash[:notice] = t('flash.project.saved') 
+      flash[:notice] = t('flash.project.saved')
       redirect_to @project
     else
       flash[:error] = t('flash.project.save_error')
