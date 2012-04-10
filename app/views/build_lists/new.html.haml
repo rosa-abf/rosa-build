@@ -2,7 +2,10 @@
 = form_for [@project, @build_list], :html => { :class => :form, :method => :post } do |f|
   %section.left
     %h3= t("activerecord.attributes.build_list.project_version")
-    .lineForm= f.select :project_version, @project.versions
+    - if controller.action_name == 'new'
+      .lineForm= f.select :project_version, @project.versions_for_group_select, :selected => "latest_" + @project.default_branch
+    - else
+      .lineForm= f.select :project_version, @project.versions_for_group_select
     %h3= t("activerecord.attributes.build_list.bpl")
     .all_platforms
       - Platform.main.each do |pl|
