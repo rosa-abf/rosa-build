@@ -1,2 +1,4 @@
 - if can? :fork, @project
   .r#fork-and-edit= link_to t('layout.projects.fork_and_edit'), fork_project_path(@project), :method => :post, :confirm => t("layout.confirm"), :class => 'button'
+- if can? :create, @project.build_lists.new
+  .r{:style => "display: block"}= link_to t('layout.projects.new_build_list'), new_project_build_list_path(@project), :class => 'button'
