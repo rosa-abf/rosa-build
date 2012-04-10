@@ -2,10 +2,8 @@
   %nav
     %a{:href => new_register_request_path}
       %p=t("layout.devise.shared_links.sign_up")
-  / Top block
   %header
     .logo
-  / Page
   %article
     %br
     %h1= title t('devise.passwords.edit')
@@ -17,11 +15,11 @@
       = f.hidden_field :reset_password_token
       .left.first=t('activerecord.attributes.user.password')
       .right.first
-        = f.text_field :password, :id => 'password',  :class => "registartion-input #{password_error ? 'registartion-input-error' : ''}"
+        = f.password_field :password, :id => 'password',  :class => "registartion-input #{password_error ? 'registartion-input-error' : ''}"
       .both
       .left=t('activerecord.attributes.user.password_confirm')
       .right
-        = f.text_field :password_confirmation, :id => 'password2',  :class => "registartion-input #{password_error ? 'registartion-input-error' : ''}"
+        = f.password_field :password_confirmation, :id => 'password2',  :class => "registartion-input #{password_error ? 'registartion-input-error' : ''}"
       .both
       %br
       =f.submit t("devise.passwords.edit_button"), :class => 'button', :id => 'btnLogin'
