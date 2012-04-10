@@ -6,8 +6,7 @@ $(document).ready(function() {
     base_platforms.each(function(){
       if ($.inArray(platform_id, base_platforms.map(function(){ return $(this).val() }).get()) >= 0) {
         if ($(this).val() == platform_id) {
-          $(this).attr('checked', 'checked');
-          $(this).removeAttr('disabled');
+          $(this).attr('checked', 'checked').removeAttr('disabled');
           $(this).parent().find('.offset25 input[type="checkbox"]').removeAttr('disabled');
 
           var rep_name = $('#build_list_pl_id option[value="' + $(this).val() + '"]').text().match(/[\w-]+\/([\w-]+)/)[1];
@@ -16,16 +15,12 @@ $(document).ready(function() {
           }
           $(this).parent().find('.offset25 input[type="checkbox"][rep_name="main"]').attr('checked', 'checked');
         } else {
-          $(this).removeAttr('checked');
-          $(this).attr('disabled', 'disabled');
-          $(this).parent().find('.offset25 input[type="checkbox"]').attr('disabled', 'disabled');
-          $(this).parent().find('.offset25 input[type="checkbox"]').removeAttr('checked');
+          $(this).removeAttr('checked').attr('disabled', 'disabled');
+          $(this).parent().find('.offset25 input[type="checkbox"]').attr('disabled', 'disabled').removeAttr('checked');
         }
       } else {
-        $(this).removeAttr('disabled');
-        $(this).removeAttr('checked');
-        $(this).parent().find('.offset25 input[type="checkbox"]').removeAttr('disabled');
-        $(this).parent().find('.offset25 input[type="checkbox"]').removeAttr('checked');
+        $(this).removeAttr('disabled').removeAttr('checked');
+        $(this).parent().find('.offset25 input[type="checkbox"]').removeAttr('disabled').removeAttr('checked');
       }
     });
   });
