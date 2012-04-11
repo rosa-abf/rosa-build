@@ -1,4 +1,6 @@
 .description-top
+  .zip= link_to "ZIP", archive_path(project.id, 'zip', @treeish)
+
   = text_field_tag :url, git_repo_url(project.git_repo_name), :class => 'name', :spellcheck => 'false', :readonly => true
   .git_help ?
   .role= can?(:write, project) ? t("layout.read_write_access") : t("layout.read_access")

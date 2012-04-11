@@ -86,6 +86,16 @@ class ProjectsController < ApplicationController
     redirect_to projects_path
   end
 
+  def archive
+    treeish = params[:treeish].presence || @project.default_branch
+    format = params[:format] || 'zip'
+    file = Tempfile.new(treeish, 'tmp')
+    system("cd #{@project.path}; git archive --format=#{format} -o #{file.path} #{treeish} >> /dev/null 2>&1")
+    file.close
+    send_file file.path, :disposition => 'attachment', :type => "application/#{format == 'tar' ? 'x-tar' : 'zip'}",
+      :filename => "#{@project.owner.uname}-#{@project.name}-#{treeish}.#{format}"
+  end
+
   protected
 
   def prepare_list(projects)
