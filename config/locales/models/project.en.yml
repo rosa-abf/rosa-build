@@ -33,6 +33,7 @@ en:
       sections: Sections
       has_issue_description: Tracker adds a lightweight issue management system tightly integrated with your repository.
       has_wiki_description: Wikis are the simplest way to allow other users to contribute content. Any user can create and edit pages for documentation, examples, support or anything you wish.
+      human_average_build_time: Average build time is %{minutes} minutes %{seconds} seconds
 
       git_help:
         cloning: Cloning the repository

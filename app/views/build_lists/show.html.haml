@@ -57,6 +57,15 @@
   .leftside.width125
   .leftside= @build_list.human_duration
   .both
+- if !@build_list.finished? && @build_list.started_at
+  %br
+  .leftside.width125
+  .leftside= @build_list.human_current_duration
+  .both
+  .leftside.width125
+  .leftside= @build_list.project.human_average_build_time
+  .both
+
 .hr
 %h3= t("layout.build_lists.items_header")
 - if @item_groups.blank?

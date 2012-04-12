@@ -60,6 +60,7 @@ ru:
       new_header: Новая сборка
       main_data: Основные данные
       human_duration: Сборка продлилась %{minutes} минут %{seconds} секунд
+      human_current_duration: Сборка длится уже %{minutes} минут %{seconds} секунд
 
       ownership:
         header: Принадлежность заданий

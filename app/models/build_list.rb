@@ -139,6 +139,14 @@ class BuildList < ActiveRecord::Base
     {:project => project.name, :version => project_version, :arch => arch.name}.inspect
   end
 
+  def current_duration
+    (Time.now - started_at).to_i
+  end
+
+  def human_current_duration
+    I18n.t("layout.build_lists.human_current_duration", {:minutes => (current_duration/60).to_i, :seconds => (current_duration%60).to_i})
+  end
+
   def human_duration
     I18n.t("layout.build_lists.human_duration", {:minutes => (duration/60).to_i, :seconds => (duration%60).to_i})
   end

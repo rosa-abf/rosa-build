@@ -203,6 +203,15 @@ class Project < ActiveRecord::Base
     recipients
   end
 
+  def average_build_time
+    build_lists.where(:status => BuildServer::SUCCESS).average(:duration)
+  end
+
+  def human_average_build_time
+    time = average_build_time
+    I18n.t("layout.projects.human_average_build_time", :minutes => (time/60).to_i, :seconds => (time%60).to_i)
+  end
+
   protected
 
   def build_path(dir)

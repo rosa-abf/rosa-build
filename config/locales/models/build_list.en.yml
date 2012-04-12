@@ -61,6 +61,7 @@ en:
       new_header: New build
       main_data: Main data
       human_duration: Build lasted %{minutes} minutes %{seconds} seconds
+      human_current_duration: Build currently takes %{minutes} minutes %{seconds} seconds
 
       ownership:
         header: Build list ownership
