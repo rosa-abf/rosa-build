@@ -4,68 +4,56 @@ class Collaborator
   include ActiveModel::Validations
   include ActiveModel::Serializers::JSON
   include ActiveModel::MassAssignmentSecurity
+  extend ActiveModel::Naming
 
-  attr_accessor :role, :actor, :project
-  attr_reader :id, :type, :name, :project_id
+  attr_accessor :role, :actor, :project, :relation
+  attr_reader :id, :actor_id, :actor_type, :actor_name, :project_id
 
   attr_accessible :role
 
   delegate :new_record?, :to => :relation
 
   class << self
-    def find_by_project(project, opts = {})
-      (id, type) = if opts[:id].present?
-                     if opts[:type].present?
-                       [opts[:id], opts[:type]]
-                     else
-                       opts[:id].split('-', 2)
-                     end
-                   else
-                     [nil, nil]
-                   end
-      puts id
-      puts type
-      if id.present? and type.present?
-        rel = project.relations.where(:object_id => id, :object_type => type.classify).first
-        puts rel.inspect
-        res = from_relation(project.relations.where(:object_id => id, :object_type => type.classify).first)
-      else
-        res = []
-        project.relations.each do |r|
-          res << from_relation(r) unless project.owner_id == r.object_id and project.owner_type == r.object_type
-        end
+    def find_by_project(project)
+      res = []
+      project.relations.each do |r|
+        res << from_relation(r) unless project.owner_id == r.object_id and project.owner_type == r.object_type
       end
       return res
     end
 
-    def from_relation(relation)
-      return self.new(:relation => relation, :id => relation.object_id,
-                      :type => relation.object_type, :project_id => relation.target_id)
+    def find(id)
+      return self.from_relation(Relation.find(id)) || nil
+    end
+
+    def create(args)
+      self.new(args).save
+    end
+
+    def create!(args)
+      self.new(args).save!
     end
   end
 
   def initialize(args = {})
     args.to_options!
-    acc_options = args.select{ |(k, v)| k.in? [:actor, :project] }
+    acc_options = args.select{ |(k, v)| k.in? [:actor, :project, :relation] }
     acc_options.each_pair do |name, value|
       send("#{name}=", value)
     end
 
-    if @project.nil? and args[:project_id].present?
+    if args[:project_id].present?
       @project = Project.find(args[:project_id])
     end
-
-    if @actor.nil? and args[:type].present? and args[:id].present?
-      @actor = args[:type].classify.constantize.find(args[:id].to_s.split('-', 2).first.to_i) rescue nil
+    if args[:actor_id].present? and args[:actor_type].present?
+      @actor = args[:actor_type].classify.constantize.find(args[:actor_id])
     end
 
-    if args[:relation]
-      @relation = args[:relation]
-    else
-      setup_relation
+    if @relation.nil? and @actor.present? and @project.present?
+      @relation = Relation.by_object(@actor).by_target(@project).limit(1).first
+      @relation ||= Relation.new(:object => @actor, :target => @project)
     end
-
-    @relation.role = args[:role] if args[:role]
+    @relation.role = args[:role] if @relation.present? and args[:role].present?
   end
 
   def update_attributes(attributes, options = {})
@@ -75,27 +63,25 @@ class Collaborator
     save
   end
 
-  def actor=(model)
-    @actor = model
-
-    setup_relation
-  end
-
-  def project=(model)
-    @project = model
-
-    setup_relation
+  def relation=(model)
+    @relation = model
+    @actor = @relation.object
+    @project = @relation.target
   end
 
   def id
+    @relation.try(:id)
+  end
+
+  def actor_id
     @actor.try(:id)
   end
 
-  def type
+  def actor_type
     @actor.class.to_s.underscore
   end
 
-  def name
+  def actor_name
     if @actor.present?
       @actor.instance_of?(User) ? "#{@actor.uname} (#{@actor.name})" : @actor.uname
     else
@@ -108,7 +94,7 @@ class Collaborator
   end
 
   def role
-    @relation.role
+    @relation.try(:role)
   end
 
   def role=(arg)
@@ -128,7 +114,7 @@ class Collaborator
   end
 
   def attributes
-    %w{ id type name project_id role}.inject({}) do |h, e|
+    %w{ id actor_id actor_type actor_name project_id role}.inject({}) do |h, e|
       h.merge(e => send(e))
     end
   end
@@ -139,15 +125,26 @@ class Collaborator
 
   protected
 
+  class << self
+
+    def from_relation(relation)
+      return nil unless relation.present?
+      return self.new(:relation => relation)
+    end
+
+  end
+
   def relation
     setup_relation
     @relation
   end
 
   def setup_relation
+    return @relation if @relation.present? and @relation.object == @actor and @relation.target == @project
+
     if @actor.present? and @project.present?
       @relation = Relation.by_object(@actor).by_target(@project).limit(1).first
-      @relation ||= Relation.new(:object_id => @actor.id,   :object_type => @actor.class.to_s.underscore,
+      @relation ||= Relation.new(:object_id => @actor.id,   :object_type => @actor.class.to_s,
                                  :target_id => @project.id, :target_type => 'Project')
     else
       @relation = Relation.new

@@ -774,3 +774,64 @@ div.tos_sidebar ul li a {
 table.tablesorter tbody tr.removed td {
     background-color: #FFECEC;
 }
+
+ul.ui-autocomplete li.item {
+/*    padding: 1px 0; */
+}
+
+ul.ui-autocomplete li.item div.collaborator {
+    padding: 0px 10px;
+}
+
+/*
+ul.ui-autocomplete li.item.highlighted div.collaborator {
+    background-color: #DCECFA;
+    border: 1px solid #65A6F7;
+    border-radius: 3px;
+    padding: 1px 9px;
+}
+*/
+
+ul.ui-autocomplete li.item a.ui-corner-all {
+    padding: 0;
+}
+
+ul.ui-autocomplete li.item a.ui-corner-all.ui-state-hover {
+    background: #DCECFA;
+    border: 1px solid #65A6F7;
+}
+
+ul.ui-autocomplete li.item div.collaborator div.img {
+    padding: 0;
+    padding-top: 1px;
+}
+ul.ui-autocomplete li.item div.collaborator div.name {
+    padding: 0;
+    margin-left: 5px;
+}
+
+ul.ui-autocomplete.has_results {
+    height: 200px;
+    overflow: auto;
+}
+
+#add_collaborator_form div.search_string {
+    margin-left: 5px;
+    float: left;
+    padding-top: 6px;
+}
+#add_collaborator_form div.img {
+    width: 32px;
+    height: 32px;
+    border: 1px solid #DDDDDD;
+    border-radius: 2px;
+}
+
+#add_collaborator_form div.img img {
+    margin-top: 1px;
+    margin-left: 1px;
+}
+
+#add_collaborator_form .admin-role .lineForm {
+    padding-top: 7px;
+}

@@ -2,10 +2,15 @@ Rosa.Models.Collaborator = Backbone.Model.extend({
     paramRoot: 'collaborator',
 
     defaults: {
-        id: null,
-        name: null,
-        role: null,
-        removed: false
+        id:         null,
+        actor_id:   null,
+        actor_name: null,
+        actor_type: null,
+        avatar:     null, 
+        actor_path: null,
+        project_id: null,
+        role:       null, 
+        removed:    false
     },
 
     changeRole: function(r) {
@@ -16,6 +21,10 @@ Rosa.Models.Collaborator = Backbone.Model.extend({
                        model.set({role: model._prevState});
                    }
         });
+        return this;
+    },
+    setRole: function(r) {
+        this.set({ role: r });
         return this;
     },
     toggleRemoved: function() {
@@ -31,22 +40,40 @@ Rosa.Models.Collaborator = Backbone.Model.extend({
 Rosa.Collections.CollaboratorsCollection = Backbone.Collection.extend({
     model: Rosa.Models.Collaborator,
 
-    initialize: function() {
-        this.url = window.location.pathname;
-        this.on('change:removed add', this.sort, this);
+    initialize: function(coll, opts) {
+        if (opts === undefined || opts['url'] === undefined) {
+            this.url = window.location.pathname;
+        } else {
+            this.url = opts['url'];
+        }
+        this.on('change:removed change:id add', this.sort, this);
     },
     comparator: function(m) {
-        return ((m.get('removed') === true) ? '0' : '1') + m.get('name');
+        var res = ''
+        if (m.get('removed') === true) {
+            res = 0;
+        } else if (m.isNew()) {
+            res = 1;
+        } else { res = 2 }
+        return res + m.get('actor_name');
     },
 
-    removeMarked: function(params) {
+    removeMarked: function() {
         var marked = this.where({removed: true});
-        if (params['type'] !== undefined) {
-            marked = marked.where({type: params['type']});
-        }
         marked.forEach(function(el) {
             el.destroy({wait: true, silent: true});
         });
-//        this.trigger('reset');
+    },
+
+    saveAndAdd: function(model) {
+
+        model.urlRoot = this.url;
+        var self = this;
+        model.save({}, {
+            wait: true,
+            success: function(m) {
+                self.add(m.toJSON());
+            }
+        });
     }
 });

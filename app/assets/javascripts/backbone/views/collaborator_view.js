@@ -8,7 +8,7 @@ Rosa.Views.CollaboratorView = Backbone.View.extend({
     },
 
     initialize: function() {
-        this.$el.attr('id', 'admin-table-members-row' + this.options.model.get('id') + this.options.model.get('type'));
+        this.$el.attr('id', 'admin-table-members-row' + this.options.model.get('id') + this.options.model.get('actor_type'));
         this.model.on('change', this.render, this);
         this.model.on('destroy', this.hide, this);
     },
@@ -28,8 +28,6 @@ Rosa.Views.CollaboratorView = Backbone.View.extend({
     },
 
     toggleRemoved: function(e) {
-        //var mod = this.model
-        //this.$el.addClass('removed').fadeOut(1000, function() { mod.toggleRemoved() });
         this.model.toggleRemoved();
     },
 

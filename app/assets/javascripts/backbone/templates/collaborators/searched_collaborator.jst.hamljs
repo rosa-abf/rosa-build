@@ -1,0 +1,7 @@
+%a
+  .collaborator
+    .img
+      %img{width: '16px', src: avatar, alt: 'avatar'}
+    .name
+      = actor_name
+    .both
