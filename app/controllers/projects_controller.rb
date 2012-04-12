@@ -88,12 +88,15 @@ class ProjectsController < ApplicationController
 
   def archive
     treeish = params[:treeish].presence || @project.default_branch
-    format = params[:format] || 'zip'
-    file = Tempfile.new(treeish, 'tmp')
-    system("cd #{@project.path}; git archive --format=#{format} -o #{file.path} #{treeish} >> /dev/null 2>&1")
+    format = params[:format] || 'tar'
+    commit = @project.git_repository.log(treeish, nil, :max_count => 1).first
+    name = "#{@project.owner.uname}-#{@project.name}#{@project.tags.include?(treeish) ? "-#{treeish}" : ''}-#{commit.id[0..19]}"
+    fullname = "#{name}.#{format == 'tar' ? 'tar.gz' : 'zip'}"
+    file = Tempfile.new fullname, 'tmp'
+    system("cd #{@project.path}; git archive --format=#{format} --prefix=#{name}/ #{treeish} #{format == 'tar' ? ' | gzip -9' : ''} > #{file.path}")
     file.close
     send_file file.path, :disposition => 'attachment', :type => "application/#{format == 'tar' ? 'x-tar' : 'zip'}",
-      :filename => "#{@project.owner.uname}-#{@project.name}-#{treeish}.#{format}"
+      :filename => fullname
   end
 
   protected
