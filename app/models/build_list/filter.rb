@@ -22,8 +22,8 @@ class BuildList::Filter
       if @options[:created_at_start] || @options[:created_at_end]
         build_lists = build_lists.for_creation_date_period(@options[:created_at_start], @options[:created_at_end])
       end
-      if @options[:notified_at_start] || @options[:notified_at_end]
-        build_lists = build_lists.for_notified_date_period(@options[:notified_at_start], @options[:notified_at_end])
+      if @options[:updated_at_start] || @options[:updated_at_end]
+        build_lists = build_lists.for_notified_date_period(@options[:updated_at_start], @options[:updated_at_end])
       end
     end
 
@@ -47,8 +47,8 @@ class BuildList::Filter
         :status => nil,
         :created_at_start => nil,
         :created_at_end => nil,
-        :notified_at_start => nil,
-        :notified_at_end => nil,
+        :updated_at_start => nil,
+        :updated_at_end => nil,
         :arch_id => nil,
         :is_circle => nil,
         :project_version => nil,
@@ -60,8 +60,8 @@ class BuildList::Filter
     @options[:status] = @options[:status].present? ? @options[:status].to_i : nil
     @options[:created_at_start] = build_date_from_params(:created_at_start, @options)
     @options[:created_at_end] = build_date_from_params(:created_at_end, @options)
-    @options[:notified_at_start] = build_date_from_params(:notified_at_start, @options)
-    @options[:notified_at_end] = build_date_from_params(:notified_at_end, @options)
+    @options[:updated_at_start] = build_date_from_params(:updated_at_start, @options)
+    @options[:updated_at_end] = build_date_from_params(:updated_at_end, @options)
     @options[:project_version] = @options[:project_version].presence
     @options[:arch_id] = @options[:arch_id].present? ? @options[:arch_id].to_i : nil
     @options[:is_circle] = @options[:is_circle].present? ? @options[:is_circle] == "1" : nil

@@ -24,23 +24,23 @@
     %tbody
       %tr
         %td.first
-          = link_to t("layout.build_lists.statuses.#{:build_published}"), build_lists_path(:filter => {:status => BuildList::BUILD_PUBLISHED, :notified_at => midnight})
+          = link_to t("layout.build_lists.statuses.#{:build_published}"), build_lists_path(:filter => {:status => BuildList::BUILD_PUBLISHED, :updated_at => midnight})
         %td= BuildList.for_status(BuildList::BUILD_PUBLISHED).for_user(current_user).for_notified_date_period(midnight, nil).count
       %tr
         %td.first
-          = link_to t("layout.build_lists.statuses.#{:success}"), build_lists_path(:filter => {:status => BuildServer::SUCCESS, :notified_at => midnight})
+          = link_to t("layout.build_lists.statuses.#{:success}"), build_lists_path(:filter => {:status => BuildServer::SUCCESS, :updated_at => midnight})
         %td= BuildList.for_status(BuildServer::SUCCESS).for_user(current_user).for_notified_date_period(midnight, nil).count
       %tr
         %td.first
-          = link_to t("layout.build_lists.statuses.#{:build_started}"), build_lists_path(:filter => {:status => BuildServer::BUILD_STARTED, :notified_at => midnight})
+          = link_to t("layout.build_lists.statuses.#{:build_started}"), build_lists_path(:filter => {:status => BuildServer::BUILD_STARTED, :updated_at => midnight})
         %td= BuildList.for_status(BuildServer::BUILD_STARTED).for_user(current_user).for_notified_date_period(midnight, nil).count
       %tr
         %td.first
-          = link_to t("layout.build_lists.statuses.#{:build_pending}"), build_lists_path(:filter => {:status => BuildList::BUILD_PENDING, :notified_at => midnight})
+          = link_to t("layout.build_lists.statuses.#{:build_pending}"), build_lists_path(:filter => {:status => BuildList::BUILD_PENDING, :updated_at => midnight})
         %td= BuildList.for_status(BuildList::BUILD_PENDING).for_user(current_user).for_notified_date_period(midnight, nil).count
       %tr
         %td.first
-          = link_to t("layout.build_lists.statuses.#{:build_error}"), build_lists_path(:filter => {:status => BuildServer::BUILD_ERROR, :notified_at => midnight})
+          = link_to t("layout.build_lists.statuses.#{:build_error}"), build_lists_path(:filter => {:status => BuildServer::BUILD_ERROR, :updated_at => midnight})
         %td= BuildList.for_status(BuildServer::BUILD_ERROR).for_user(current_user).for_notified_date_period(midnight, nil).count
       %tr
         %td.first

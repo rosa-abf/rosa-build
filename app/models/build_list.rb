@@ -61,7 +61,7 @@ class BuildList < ActiveRecord::Base
   scope :recent, order("#{table_name}.updated_at DESC")
   # scope :current, lambda {
   #   outdatable_statuses = [BuildServer::SUCCESS, BuildServer::ERROR, BuildServer::PLATFORM_NOT_FOUND, BuildServer::PLATFORM_PENDING, BuildServer::PROJECT_NOT_FOUND, BuildServer::PROJECT_VERSION_NOT_FOUND]
-  #   where(["status in (?) OR (status in (?) AND notified_at >= ?)", [WAITING_FOR_RESPONSE, BUILD_PENDING, BuildServer::BUILD_STARTED], outdatable_statuses, Time.now - 2.days])
+  #   where(["status in (?) OR (status in (?) AND updated_at >= ?)", [WAITING_FOR_RESPONSE, BUILD_PENDING, BuildServer::BUILD_STARTED], outdatable_statuses, Time.now - 2.days])
   # }
   scope :for_status, lambda {|status| where(:status => status) }
   scope :for_user, lambda { |user| where(:user_id => user.id)  }
@@ -79,11 +79,11 @@ class BuildList < ActiveRecord::Base
   }
   scope :for_notified_date_period, lambda{|start_date, end_date|
     if start_date && end_date
-      where(["notified_at BETWEEN ? AND ?", start_date, end_date])
+      where(["updated_at BETWEEN ? AND ?", start_date, end_date])
     elsif start_date && !end_date
-      where(["notified_at >= ?", start_date])
+      where(["updated_at >= ?", start_date])
     elsif !start_date && end_date
-      where(["notified_at <= ?", end_date])
+      where(["updated_at <= ?", end_date])
     end
   }
   scope :scoped_to_project_name, lambda {|project_name| joins(:project).where('projects.name LIKE ?', "%#{project_name}%")}

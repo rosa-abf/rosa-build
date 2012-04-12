@@ -94,7 +94,6 @@ class BuildListsController < ApplicationController
     else
       @build_list.status = BuildList::FAILED_PUBLISH
     end
-    @build_list.notified_at = Time.current
     @build_list.save
 
     render :nothing => true, :status => 200
@@ -106,7 +105,6 @@ class BuildListsController < ApplicationController
     @item.save
 
     @build_list.container_path = params[:container_path]
-    @build_list.notified_at = Time.current
     @build_list.save
 
     render :nothing => true, :status => 200
@@ -114,7 +112,6 @@ class BuildListsController < ApplicationController
 
   def pre_build
     @build_list.status = BuildServer::BUILD_STARTED
-    @build_list.notified_at = Time.current
     @build_list.save
 
     render :nothing => true, :status => 200
@@ -123,7 +120,6 @@ class BuildListsController < ApplicationController
   def post_build
     @build_list.status = params[:status]
     @build_list.container_path = params[:container_path]
-    @build_list.notified_at = Time.current
     @build_list.save
 
     render :nothing => true, :status => 200
@@ -134,7 +130,6 @@ class BuildListsController < ApplicationController
   def circle_build
     @build_list.is_circle = true
     @build_list.container_path = params[:container_path]
-    @build_list.notified_at = Time.current
     @build_list.save
 
     render :nothing => true, :status => 200
@@ -147,7 +142,6 @@ class BuildListsController < ApplicationController
     @build_list.set_items(ActiveSupport::JSON.decode(params[:items]))
     @build_list.is_circle = (params[:is_circular].to_i != 0)
     @build_list.bs_id = params[:id]
-    @build_list.notified_at = Time.current
     @build_list.save
 
     render :nothing => true, :status => 200
