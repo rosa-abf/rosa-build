@@ -139,6 +139,14 @@ class BuildList < ActiveRecord::Base
     {:project => project.name, :version => project_version, :arch => arch.name}.inspect
   end
 
+  def human_duration
+    I18n.t("layout.build_lists.human_duration", {:minutes => (duration/60).to_i, :seconds => (duration%60).to_i})
+  end
+
+  def finished?
+    [BuildServer::BUILD_ERROR, BuildServer::SUCCESS].include? status
+  end
+
   private
     def set_default_status
       self.status = WAITING_FOR_RESPONSE unless self.status.present?
