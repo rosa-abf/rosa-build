@@ -66,14 +66,16 @@ class BuildList < ActiveRecord::Base
   scope :scoped_to_project_version, lambda {|project_version| where(:project_version => project_version) }
   scope :scoped_to_is_circle, lambda {|is_circle| where(:is_circle => is_circle) }
   scope :for_creation_date_period, lambda{|start_date, end_date|
-    scoped = scoped.where(["build_lists.created_at >= ?", start_date]) if start_date
-    scoped = scoped.where(["build_lists.created_at <= ?", end_date]) if end_date
-    scoped
+    s = scoped
+    s = s.where(["build_lists.created_at >= ?", start_date]) if start_date
+    s = s.where(["build_lists.created_at <= ?", end_date]) if end_date
+    s
   }
   scope :for_notified_date_period, lambda{|start_date, end_date|
-    scoped = scoped.where(["build_lists.updated_at >= ?", start_date]) if start_date
-    scoped = scoped.where(["build_lists.updated_at <= ?", end_date]) if end_date
-    scoped
+    s = scoped
+    s = s.where(["build_lists.updated_at >= ?", start_date]) if start_date
+    s = s.where(["build_lists.updated_at <= ?", end_date]) if end_date
+    s
   }
   scope :scoped_to_project_name, lambda {|project_name| joins(:project).where('projects.name LIKE ?', "%#{project_name}%")}
 
