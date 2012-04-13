@@ -59,10 +59,7 @@ class BuildList < ActiveRecord::Base
                     }
 
   scope :recent, order("#{table_name}.updated_at DESC")
-  # scope :current, lambda {
-  #   outdatable_statuses = [BuildServer::SUCCESS, BuildServer::ERROR, BuildServer::PLATFORM_NOT_FOUND, BuildServer::PLATFORM_PENDING, BuildServer::PROJECT_NOT_FOUND, BuildServer::PROJECT_VERSION_NOT_FOUND]
-  #   where(["status in (?) OR (status in (?) AND updated_at >= ?)", [WAITING_FOR_RESPONSE, BUILD_PENDING, BuildServer::BUILD_STARTED], outdatable_statuses, Time.now - 2.days])
-  # }
+
   scope :for_status, lambda {|status| where(:status => status) }
   scope :for_user, lambda { |user| where(:user_id => user.id)  }
   scope :scoped_to_arch, lambda {|arch| where(:arch_id => arch) }
@@ -144,11 +141,11 @@ class BuildList < ActiveRecord::Base
   end
 
   def human_current_duration
-    I18n.t("layout.build_lists.human_current_duration", {:minutes => (current_duration/60).to_i, :seconds => (current_duration%60).to_i})
+    I18n.t("layout.build_lists.human_current_duration", {:hours => (current_duration/360).to_i, :minutes => (current_duration/60).to_i})
   end
 
   def human_duration
-    I18n.t("layout.build_lists.human_duration", {:minutes => (duration/60).to_i, :seconds => (duration%60).to_i})
+    I18n.t("layout.build_lists.human_duration", {:hours => (duration/360).to_i, :minutes => (duration/60).to_i})
   end
 
   def finished?

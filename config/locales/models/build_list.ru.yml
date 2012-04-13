@@ -59,8 +59,9 @@ ru:
       action: Действие
       new_header: Новая сборка
       main_data: Основные данные
-      human_duration: Сборка продлилась %{minutes} минут %{seconds} секунд
-      human_current_duration: Сборка длится уже %{minutes} минут %{seconds} секунд
+
+      human_current_duration: Сборка длится уже %{hours} ч. %{minutes} мин.
+      human_duration: Собрано за %{hours} ч. %{minutes} мин.
 
       ownership:
         header: Принадлежность заданий

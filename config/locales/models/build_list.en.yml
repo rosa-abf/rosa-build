@@ -60,8 +60,8 @@ en:
       action: Action
       new_header: New build
       main_data: Main data
-      human_duration: Build lasted %{minutes} minutes %{seconds} seconds
-      human_current_duration: Build currently takes %{minutes} minutes %{seconds} seconds
+      human_current_duration: Build currently takes %{hours} h. %{minutes} min.
+      human_duration: Builded in %{hours} h. %{minutes} min.
 
       ownership:
         header: Build list ownership
