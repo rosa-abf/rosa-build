@@ -6,7 +6,7 @@ def set_commentable_data
   @ability = Ability.new(@user)
 
   @project = FactoryGirl.create(:project)
-  @issue = FactoryGirl.create(:issue, :project_id => @project.id, :creator => @user)
+  @issue = FactoryGirl.create(:issue, :project_id => @project.id, :user => @user)
 
   @comment = FactoryGirl.create(:comment, :commentable => @issue, :user => @user, :project => @project)
   @stranger_comment = FactoryGirl.create(:comment, :commentable => @issue, :user => @stranger, :project => @project)

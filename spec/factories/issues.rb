@@ -5,7 +5,7 @@ FactoryGirl.define do
     body { FactoryGirl.generate(:string) }
     association :project, :factory => :project
     association :user, :factory => :user
-    association :creator, :factory => :user
+    association :assignee, :factory => :user
     status "open"
   end
 end

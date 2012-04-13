@@ -4,8 +4,8 @@ en:
       issue:
         title: Name
         body: Description
-        user: Assigned
-        user_id: Assigned
+        assignee: Assigned
+        assignee_id: Assigned
         project: Project
         status: Status
 
@@ -41,10 +41,10 @@ en:
       update_label: Update label
       label_custom_color: Custom color
       label_manage: Manage labels
-      executor: Executor
+      assignee: Assignee
       search_user: Find user...
       search_labels: Find labels...
-      choose_user_on_left: Choose executor on the left
+      choose_user_on_left: Choose assignee on the left
       choose_labels_on_left: Choose labels on the left
       at: at
       cancel_button: Cancel

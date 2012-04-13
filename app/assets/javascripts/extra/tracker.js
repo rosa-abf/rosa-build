@@ -128,28 +128,28 @@ $(document).ready(function() {
     return false;
   });
 
-  function remExecutor(form) {
-    var el = form.find('.people.selected.remove_executor');
+  function remAssignee(form) {
+    var el = form.find('.people.selected.remove_assignee');
     var id = el.attr('id');
-    $('#manage_issue_users_list .add_executor.people.selected').removeClass('select');
+    $('#manage_issue_users_list .add_assignee.people.selected').removeClass('select');
     el.remove();
   }
 
-  $('.add_executor.people.selected').live('click', function() {
+  $('.add_assignee.people.selected').live('click', function() {
     var form_new = $('form.issue');
     var form_edit = $('form.edit_form.issue');
     form_new.find('#people-span').fadeOut(0);
-    remExecutor(form_new);
-    var clone = $(this).clone().removeClass('add_executor').addClass('remove_executor');
-    form_new.find('#issue_executor').html(clone);
-    $('.current_executor').html(clone.removeClass('select'));
+    remAssignee(form_new);
+    var clone = $(this).clone().removeClass('add_assignee').addClass('remove_assignee');
+    form_new.find('#issue_assignee').html(clone);
+    $('.current_assignee').html(clone.removeClass('select'));
     $(this).addClass('select');
   });
 
-  $('.remove_executor.people.selected').live('click', function() {
+  $('.remove_assignee.people.selected').live('click', function() {
     var form = $('form.issue, form.edit_form issue');
     form.find('#people-span').fadeIn(0);
-    remExecutor(form);
+    remAssignee(form);
   });
 
   function remLabel(form, id) {
@@ -241,9 +241,9 @@ $(document).ready(function() {
     return false;
   });
 
-  $('.button.manage_executor').live('click', function() {
-    $('form#search_user, .button.update_executor').fadeIn(0);
-    $('.current_executor .people').addClass('remove_executor selected').removeClass('nopointer');
+  $('.button.manage_assignee').live('click', function() {
+    $('form#search_user, .button.update_assignee').fadeIn(0);
+    $('.current_assignee .people').addClass('remove_assignee selected').removeClass('nopointer');
     $(this).fadeOut(0);
   });
 
@@ -254,16 +254,16 @@ $(document).ready(function() {
     $(this).fadeOut(0);
   });
 
-  $('.button.update_executor').live('click', function() {
-    var form = $('form.edit_executor.issue');
+  $('.button.update_assignee').live('click', function() {
+    var form = $('form.edit_assignee.issue');
     $.ajax({
       type: 'POST',
       url: form.attr("action"),
       data: form.serialize(),
       success: function(data){
-                      $('.current_executor .people').removeClass('remove_executor selected').addClass('nopointer');
-                      $('form#search_user, .button.update_executor').fadeOut(0);
-                      $('.button.manage_executor').fadeIn(0);
+                      $('.current_assignee .people').removeClass('remove_assignee selected').addClass('nopointer');
+                      $('form#search_user, .button.update_assignee').fadeOut(0);
+                      $('.button.manage_assignee').fadeIn(0);
                       $('#manage_issue_users_list').html('');
                     },
       error: function(data){

@@ -4,8 +4,8 @@ ru:
       issue:
         title: Название
         body: Описание
-        user: Назначена
-        user_id: Назначена
+        assignee: Назначена
+        assignee_id: Назначена
         project: Проект
         status: Статус
 
@@ -41,7 +41,7 @@ ru:
       update_label: Обновить метку
       label_custom_color: Свой цвет
       label_manage: Управление
-      executor: Исполнитель
+      assignee: Исполнитель
       search_user: Найти пользователя...
       search_labels: Найти метки...
       choose_user_on_left: выберите исполнителя слева
