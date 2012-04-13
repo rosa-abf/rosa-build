@@ -95,7 +95,7 @@ class ProjectsController < ApplicationController
     file = Tempfile.new fullname, 'tmp'
     system("cd #{@project.path}; git archive --format=#{format} --prefix=#{name}/ #{treeish} #{format == 'tar' ? ' | gzip -9' : ''} > #{file.path}")
     file.close
-    send_file file.path, :disposition => 'attachment', :type => "application/#{format == 'tar' ? 'x-tar' : 'zip'}",
+    send_file file.path, :disposition => 'attachment', :type => "application/#{format == 'tar' ? 'x-tar-gz' : 'zip'}",
       :filename => fullname
   end
 
