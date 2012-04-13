@@ -10,11 +10,9 @@ class BuildListObserver < ActiveRecord::Observer
         
         if record.status == BuildServer::SUCCESS
           # Update project average build time
-          av_time = record.project.average_build_time
-          n = record.project.build_count
-          new_av_time = ( av_time * n + record.duration ) / ( n + 1 )
-          record.project.update_attribute(:average_build_time, new_av_time)
-          record.project.update_attribute(:build_count, n + 1 )
+          build_count = record.project.build_count
+          new_av_time = ( record.project.average_build_time * build_count + record.duration ) / ( build_count + 1 )
+          record.project.update_attributes({ :average_build_time => new_av_time, :build_count => build_count + 1 }, :without_protection => true)
         end  
       end
     end
