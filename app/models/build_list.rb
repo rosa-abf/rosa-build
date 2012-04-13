@@ -66,22 +66,16 @@ class BuildList < ActiveRecord::Base
   scope :scoped_to_project_version, lambda {|project_version| where(:project_version => project_version) }
   scope :scoped_to_is_circle, lambda {|is_circle| where(:is_circle => is_circle) }
   scope :for_creation_date_period, lambda{|start_date, end_date|
-    if start_date && end_date
-      where(["#{table_name}.created_at BETWEEN ? AND ?", start_date, end_date])
-    elsif start_date && !end_date
-      where(["#{table_name}.created_at >= ?", start_date])
-    elsif !start_date && end_date
-      where(["#{table_name}.created_at <= ?", end_date])
-    end
+    scoped = BuildList.scoped
+    scoped = scoped.where(["created_at >= ?", start_date]) if start_date
+    scoped = scoped.where(["created_at <= ?", end_date]) if end_date
+    scoped
   }
   scope :for_notified_date_period, lambda{|start_date, end_date|
-    if start_date && end_date
-      where(["updated_at BETWEEN ? AND ?", start_date, end_date])
-    elsif start_date && !end_date
-      where(["updated_at >= ?", start_date])
-    elsif !start_date && end_date
-      where(["updated_at <= ?", end_date])
-    end
+    scoped = BuildList.scoped
+    scoped = scoped.where(["updated_at >= ?", start_date]) if start_date
+    scoped = scoped.where(["updated_at <= ?", end_date]) if end_date
+    scoped
   }
   scope :scoped_to_project_name, lambda {|project_name| joins(:project).where('projects.name LIKE ?', "%#{project_name}%")}
 
