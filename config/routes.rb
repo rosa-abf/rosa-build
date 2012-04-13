@@ -154,6 +154,8 @@ Rosa::Application.routes.draw do
   # Raw
   get '/projects/:project_id/raw/:treeish/*path' => "git/blobs#raw", :defaults => {:treeish => :master}, :as => :raw, :format => false
 
+  get '/projects/:id/archive/:format/tree/:treeish' => "projects#archive", :defaults => {:treeish => :master}, :as => :archive, :format => /zip|tar/
+
   # Core callbacks
   match 'build_lists/publish_build', :to => "build_lists#publish_build"
   match 'build_lists/status_build', :to => "build_lists#status_build"
