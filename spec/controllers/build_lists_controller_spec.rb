@@ -340,7 +340,7 @@ describe BuildListsController do
       it { lambda{ do_get(BuildServer::SUCCESS) }.should change(build_list, :package_version).to('4.7.5.3-1') }
       it { lambda{ do_get(BuildServer::ERROR) }.should change(build_list, :status).to(BuildList::FAILED_PUBLISH) }
       it { lambda{ do_get(BuildServer::ERROR) }.should_not change(build_list, :package_version) }
-      it { lambda{ do_get(BuildServer::ERROR) }.should change(build_list, :notified_at) }
+      it { lambda{ do_get(BuildServer::ERROR) }.should change(build_list, :updated_at) }
     end
 
     describe 'status_build' do
@@ -355,7 +355,7 @@ describe BuildListsController do
       it { do_get; response.should be_ok }
       it { lambda{ do_get }.should change(@item, :status) }
       it { lambda{ do_get }.should change(build_list, :container_path) }
-      it { lambda{ do_get }.should change(build_list, :notified_at) }
+      it { lambda{ do_get }.should change(build_list, :updated_at) }
     end
 
     describe 'pre_build' do
@@ -366,18 +366,20 @@ describe BuildListsController do
 
       it { do_get; response.should be_ok }
       it { lambda{ do_get }.should change(build_list, :status).to(BuildServer::BUILD_STARTED) }
-      it { lambda{ do_get }.should change(build_list, :notified_at) }
+      it { lambda{ do_get }.should change(build_list, :updated_at) }
     end
 
     describe 'post_build' do
       def do_get(status)
+        build_list.started_at = Time.now
+        build_list.save
         get :post_build, :id => build_list.bs_id, :status => status, :container_path => '/path/to'
         build_list.reload
       end
 
       it { do_get(BuildServer::SUCCESS); response.should be_ok }
       it { lambda{ do_get(BuildServer::SUCCESS) }.should change(build_list, :container_path) }
-      it { lambda{ do_get(BuildServer::SUCCESS) }.should change(build_list, :notified_at) }
+      it { lambda{ do_get(BuildServer::SUCCESS) }.should change(build_list, :updated_at) }
 
       context 'with auto_publish' do
         it { lambda{ do_get(BuildServer::SUCCESS) }.should change(build_list, :status).to(BuildList::BUILD_PUBLISH) }
@@ -401,7 +403,7 @@ describe BuildListsController do
       it { do_get; response.should be_ok }
       it { lambda{ do_get }.should change(build_list, :is_circle).to(true) }
       it { lambda{ do_get }.should change(build_list, :container_path) }
-      it { lambda{ do_get }.should change(build_list, :notified_at) }
+      it { lambda{ do_get }.should change(build_list, :updated_at) }
     end
 
     describe 'new_bbdt' do
@@ -421,7 +423,7 @@ describe BuildListsController do
       it { lambda{ do_get }.should change(@items, :first) }
       it { lambda{ do_get }.should change(build_list, :is_circle).to(true) }
       it { lambda{ do_get }.should change(build_list, :bs_id).to(123) }
-      it { lambda{ do_get }.should change(build_list, :notified_at) }
+      it { lambda{ do_get }.should change(build_list, :updated_at) }
     end
   end
 end
