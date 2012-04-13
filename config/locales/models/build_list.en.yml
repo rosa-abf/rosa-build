@@ -14,10 +14,9 @@ en:
         arch_id: Architecture
         arch: Architecture
         is_circle: Recurrent build
-        notified_at: Notified at
+        updated_at: Notified at
         additional_repos: Additional repositories
         include_repos: Included repositories
-        updated_at: Updated on
         created_at: Created on
         pl: Repository for package storage
         pl_id: Repository for package storage
@@ -45,8 +44,8 @@ en:
       current: Curent
       created_at_start: "Build to start on:"
       created_at_end: "Build to start until:"
-      notified_at_start: "Last update from BS on:"
-      notified_at_end: " Last update from BS until:"
+      updated_at_start: "Last update from BS on:"
+      updated_at_end: " Last update from BS until:"
       bs_id_search: 'Search by Id'
       project_name_search: Search by project name
       bs_id_not_set: Id has not been configured yet
@@ -61,6 +60,7 @@ en:
       action: Action
       new_header: New build
       main_data: Main data
+      human_current_duration: Build currently takes %{hours} h. %{minutes} min.
       human_duration: Builded in %{hours} h. %{minutes} min.
 
       ownership:

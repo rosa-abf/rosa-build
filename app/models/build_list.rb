@@ -66,22 +66,16 @@ class BuildList < ActiveRecord::Base
   scope :scoped_to_project_version, lambda {|project_version| where(:project_version => project_version) }
   scope :scoped_to_is_circle, lambda {|is_circle| where(:is_circle => is_circle) }
   scope :for_creation_date_period, lambda{|start_date, end_date|
-    if start_date && end_date
-      where(["#{table_name}.created_at BETWEEN ? AND ?", start_date, end_date])
-    elsif start_date && !end_date
-      where(["#{table_name}.created_at >= ?", start_date])
-    elsif !start_date && end_date
-      where(["#{table_name}.created_at <= ?", end_date])
-    end
+    scoped = BuildList.scoped
+    scoped = scoped.where(["created_at >= ?", start_date]) if start_date
+    scoped = scoped.where(["created_at <= ?", end_date]) if end_date
+    scoped
   }
   scope :for_notified_date_period, lambda{|start_date, end_date|
-    if start_date && end_date
-      where(["notified_at BETWEEN ? AND ?", start_date, end_date])
-    elsif start_date && !end_date
-      where(["notified_at >= ?", start_date])
-    elsif !start_date && end_date
-      where(["notified_at <= ?", end_date])
-    end
+    scoped = BuildList.scoped
+    scoped = scoped.where(["updated_at >= ?", start_date]) if start_date
+    scoped = scoped.where(["updated_at <= ?", end_date]) if end_date
+    scoped
   }
   scope :scoped_to_project_name, lambda {|project_name| joins(:project).where('projects.name LIKE ?', "%#{project_name}%")}
 
@@ -134,6 +128,14 @@ class BuildList < ActiveRecord::Base
 
   def event_log_message
     {:project => project.name, :version => project_version, :arch => arch.name}.inspect
+  end
+
+  def current_duration
+    (Time.now - started_at).to_i
+  end
+
+  def human_current_duration
+    I18n.t("layout.build_lists.human_current_duration", {:hours => (current_duration/360).to_i, :minutes => (current_duration/60).to_i})
   end
 
   def human_duration

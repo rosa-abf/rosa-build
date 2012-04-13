@@ -203,6 +203,11 @@ class Project < ActiveRecord::Base
     recipients
   end
 
+  def human_average_build_time
+    time = average_build_time
+    I18n.t("layout.projects.human_average_build_time", {:hours => (time/360).to_i, :minutes => (time/60).to_i})
+  end
+
   protected
 
   def build_path(dir)
