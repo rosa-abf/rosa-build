@@ -66,13 +66,11 @@ class BuildList < ActiveRecord::Base
   scope :scoped_to_project_version, lambda {|project_version| where(:project_version => project_version) }
   scope :scoped_to_is_circle, lambda {|is_circle| where(:is_circle => is_circle) }
   scope :for_creation_date_period, lambda{|start_date, end_date|
-    scoped = BuildList.scoped
     scoped = scoped.where(["build_lists.created_at >= ?", start_date]) if start_date
     scoped = scoped.where(["build_lists.created_at <= ?", end_date]) if end_date
     scoped
   }
   scope :for_notified_date_period, lambda{|start_date, end_date|
-    scoped = BuildList.scoped
     scoped = scoped.where(["build_lists.updated_at >= ?", start_date]) if start_date
     scoped = scoped.where(["build_lists.updated_at <= ?", end_date]) if end_date
     scoped
@@ -135,11 +133,11 @@ class BuildList < ActiveRecord::Base
   end
 
   def human_current_duration
-    I18n.t("layout.build_lists.human_current_duration", {:hours => (current_duration/360).to_i, :minutes => (current_duration/60).to_i})
+    I18n.t("layout.build_lists.human_current_duration", {:hours => (current_duration/3600).to_i, :minutes => (current_duration%3600/60).to_i})
   end
 
   def human_duration
-    I18n.t("layout.build_lists.human_duration", {:hours => (duration/360).to_i, :minutes => (duration/60).to_i})
+    I18n.t("layout.build_lists.human_duration", {:hours => (duration/3600).to_i, :minutes => (duration%3600/60).to_i})
   end
 
   def in_work?
