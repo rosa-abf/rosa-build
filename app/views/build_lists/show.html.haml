@@ -52,6 +52,11 @@
 .leftside.width125= t("activerecord.attributes.build_list.is_circle")
 .leftside= t("layout.#{@build_list.is_circle?}_")
 .both
+- if @build_list.finished?
+  %br
+  .leftside.width125
+  .leftside= @build_list.human_duration
+  .both
 .hr
 %h3= t("layout.build_lists.items_header")
 - if @item_groups.blank?

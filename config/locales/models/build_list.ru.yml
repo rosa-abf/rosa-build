@@ -29,6 +29,7 @@ ru:
         project_version: Версия
         user: Пользователь
         preferences: Настройки
+        duration: Длительность билда в секундах
 
       build_list/item:
         name: Название
@@ -59,6 +60,7 @@ ru:
       action: Действие
       new_header: Новая сборка
       main_data: Основные данные
+      human_duration: Собрано за %{hours} ч. %{minutes} мин.
 
       ownership:
         header: Принадлежность заданий

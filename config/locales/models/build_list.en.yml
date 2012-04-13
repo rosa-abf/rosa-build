@@ -29,6 +29,8 @@ en:
         project_version: Version
         user: User
         preferences: Preferences
+        started_at: Build started at
+        duration: Build duration in seconds
 
       build_list/item:
         name: Name
@@ -59,6 +61,7 @@ en:
       action: Action
       new_header: New build
       main_data: Main data
+      human_duration: Builded in %{hours} h. %{minutes} min.
 
       ownership:
         header: Build list ownership
