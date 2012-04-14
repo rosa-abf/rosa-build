@@ -53,8 +53,8 @@ class Project < ActiveRecord::Base
 
   def build_for(platform, user, arch = 'i586') 
     # Select main and project platform repository(contrib, non-free and etc)
-    # If main does not exsist, connecting only project platform repository
-    # If project platform repository is main, only main will be connect  
+    # If main does not exist, will connect only project platform repository
+    # If project platform repository is main, only main will be connect
     build_reps = [platform.repositories.find_by_name('main')]
     build_reps += platform.repositories.select {|rep| self.repository_ids.include? rep.id}
     build_ids = build_reps.compact.map(&:id).uniq
@@ -212,7 +212,7 @@ class Project < ActiveRecord::Base
 
   def human_average_build_time
     time = average_build_time
-    I18n.t("layout.projects.human_average_build_time", {:hours => (time/360).to_i, :minutes => (time/60).to_i})
+    I18n.t("layout.projects.human_average_build_time", {:hours => (time/3600).to_i, :minutes => (time%3600/60).to_i})
   end
 
   protected
