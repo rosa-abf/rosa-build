@@ -51,18 +51,25 @@ class Project < ActiveRecord::Base
 
   include Modules::Models::Owner
 
-  def build_for(platform, user, arch = 'i586') # Return i586 after mass rebuild
+  def build_for(platform, user, arch = 'i586') 
+    # Select main and project platform repository(contrib, non-free and etc)
+    # If main does not exsist, connecting only project platform repository
+    # If project platform repository is main, only main will be connect  
+    build_reps = [platform.repositories.find_by_name('main')]
+    build_reps += platform.repositories.select {|rep| self.repository_ids.include? rep.id}
+    build_ids = build_reps.compact.map(&:id).uniq
+    
     arch = Arch.find_by_name(arch) if arch.acts_like?(:string)
     build_lists.create do |bl|
       bl.pl = platform
       bl.bpl = platform
       bl.update_type = 'newpackage'
       bl.arch = arch
-      bl.project_version = "latest_#{platform.name}" # "latest_import_mandriva2011"
+      bl.project_version = "latest_#{platform.name}"
       bl.build_requires = false # already set as db default
       bl.user = user
       bl.auto_publish = true # already  set as db default
-      bl.include_repos = [platform.repositories.find_by_name('main').id]
+      bl.include_repos = build_ids
     end
   end
 
