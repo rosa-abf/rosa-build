@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120413102757) do
+ActiveRecord::Schema.define(:version => 20120413160722) do
 
   create_table "activity_feeds", :force => true do |t|
     t.integer  "user_id",    :null => false
@@ -147,13 +147,13 @@ ActiveRecord::Schema.define(:version => 20120413102757) do
   create_table "issues", :force => true do |t|
     t.integer  "serial_id"
     t.integer  "project_id"
-    t.integer  "user_id"
+    t.integer  "assignee_id"
     t.string   "title"
     t.text     "body"
-    t.string   "status",     :default => "open"
+    t.string   "status",      :default => "open"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "creator_id"
+    t.integer  "user_id"
     t.datetime "closed_at"
     t.integer  "closed_by"
   end

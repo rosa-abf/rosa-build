@@ -181,7 +181,7 @@ describe IssuesController do
       set_session_for(@issue_user)
     end
 
-    it_should_behave_like 'user with issue update rights'
+    it_should_behave_like 'user without issue update rights'
     it_should_behave_like 'user without issue destroy rights'
     it_should_behave_like 'project with issues turned off'
   end

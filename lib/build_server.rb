@@ -96,7 +96,7 @@ class BuildServer
     self.client.call('get_status')
   end
 
-  def self.freeze platform_name, new_repo_name = nil
-    self.client.call('freeze_platform', platform_name, new_repo_name)
+  def self.freeze platform_name
+    self.client.call('freeze_platform', platform_name)
   end
 end

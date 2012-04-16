@@ -75,7 +75,7 @@ describe CommentsController do
     stub_rsync_methods
 
     @project = FactoryGirl.create(:project)
-    @issue = FactoryGirl.create(:issue, :project_id => @project.id, :creator => FactoryGirl.create(:user))
+    @issue = FactoryGirl.create(:issue, :project_id => @project.id, :user => FactoryGirl.create(:user))
     @comment = FactoryGirl.create(:comment, :commentable => @issue, :project_id => @project.id)
 
     @create_params = {:comment => {:body => 'I am a comment!'}, :project_id => @project.id, :issue_id => @issue.serial_id}
