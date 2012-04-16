@@ -55,6 +55,8 @@ Rosa.Views.AddCollaboratorView = Backbone.View.extend({
             _.each( items, function( item ) {
                 self.addOne( ul, item );
             });
+            var factor = (items.length > 10) ? 10 : items.length;
+            ul.height(ul.children('li').first() * factor);
         }
     },
 

@@ -12,4 +12,4 @@
           = link_to t("layout.projects.sections"), sections_project_path(@project)
       - if can? :manage_collaborators, @project
         %li{:class => (act == :edit && contr == :collaborators) ? 'active' : ''}
-          = link_to t("layout.projects.edit_collaborators"), edit_project_collaborators_path(@project)
+          = link_to t("layout.projects.edit_collaborators"), project_collaborators_path(@project)

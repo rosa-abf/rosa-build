@@ -771,8 +771,17 @@ div.tos_sidebar ul li a {
     text-decoration: none;
 }
 
-table.tablesorter tbody tr.removed td {
+table.tablesorter tbody tr.regular td {
+    background-color: #FFFFFF;
+}
+
+table.tablesorter tbody tr.removed td,
+table.tablesorter tbody tr.sync_error td {
     background-color: #FFECEC;
+}
+
+table.tablesorter tbody tr.sync_success td {
+    background-color: #E0ECFF;
 }
 
 ul.ui-autocomplete li.item {
@@ -811,7 +820,7 @@ ul.ui-autocomplete li.item div.collaborator div.name {
 }
 
 ul.ui-autocomplete.has_results {
-    height: 200px;
+/*    height: 200px; */
     overflow: auto;
 }
 

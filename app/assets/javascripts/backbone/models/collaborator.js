@@ -14,11 +14,16 @@ Rosa.Models.Collaborator = Backbone.Model.extend({
     },
 
     changeRole: function(r) {
+        var self = this;
         this._prevState = this.get('role');
         this.save({role: r},
                   {wait: true,
+                   success: function(model, response) {
+                       self.trigger('sync_success');
+                   },
                    error: function(model, response) {
                        model.set({role: model._prevState});
+                       self.trigger('sync_failed');
                    }
         });
         return this;

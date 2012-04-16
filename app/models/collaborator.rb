@@ -83,7 +83,7 @@ class Collaborator
 
   def actor_name
     if @actor.present?
-      @actor.instance_of?(User) ? "#{@actor.uname} (#{@actor.name})" : @actor.uname
+      @actor.instance_of?(User) ? "#{@actor.uname}#{ @actor.try(:name) and !@actor.name.empty? ? " (#{@actor.name})" : ''}" : @actor.uname
     else
       nil
     end
