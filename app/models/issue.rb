@@ -4,30 +4,28 @@ class Issue < ActiveRecord::Base
 
   belongs_to :project
   belongs_to :user
-  belongs_to :creator, :class_name => 'User', :foreign_key => 'creator_id'
+  belongs_to :assignee, :class_name => 'User', :foreign_key => 'assignee_id'
   belongs_to :closer, :class_name => 'User', :foreign_key => 'closed_by'
 
-  has_many :comments, :as => :commentable, :dependent => :destroy #, :finder_sql => proc { "comments.commentable_id = '#{self.id}' AND comments.commentable_type = '#{self.class.name}'"}
-  has_many :subscribes, :as => :subscribeable, :dependent => :destroy #, :finder_sql => proc { "subscribes.subscribeable_id = '#{self.id}' AND subscribes.subscribeable_type = '#{self.class.name}'"}
+  has_many :comments, :as => :commentable, :dependent => :destroy
+  has_many :subscribes, :as => :subscribeable, :dependent => :destroy
   has_many :labels, :through => :labelings, :uniq => true
   has_many :labelings
 
   validates :title, :body, :project_id, :presence => true
 
-  #attr_readonly :serial_id
-
   after_create :set_serial_id
   after_create :subscribe_users
   after_update :subscribe_issue_assigned_user
 
-  attr_accessible :labelings_attributes, :title, :body, :user_id
+  attr_accessible :labelings_attributes, :title, :body, :assignee_id
   accepts_nested_attributes_for :labelings, :allow_destroy => true
 
   scope :opened, where(:status => 'open', :closed_by => nil, :closed_at => nil)
   scope :closed, where(:status => 'closed').where("closed_by is not null and closed_at is not null")
 
   def assign_uname
-    user.uname if user
+    assignee.uname if assignee
   end
 
   def to_param
@@ -57,7 +55,7 @@ class Issue < ActiveRecord::Base
 
   def collect_recipient_ids
     recipients = self.project.relations.by_role('admin').where(:object_type => 'User').map { |rel| rel.read_attribute(:object_id) }
-    recipients = recipients | [self.user_id] if self.user_id
+    recipients = recipients | [self.assignee_id] if self.assignee_id
     recipients = recipients | [self.project.owner_id] if self.project.owner_type == 'User'
 
     recipients
@@ -80,10 +78,10 @@ class Issue < ActiveRecord::Base
   end
 
   def subscribe_issue_assigned_user
-    if self.user_id && self.user_id_changed?
-      self.subscribes.where(:user_id => self.user_id_was).first.destroy unless self.user_id_was.blank?
-      if self.user.notifier.issue_assign && !self.subscribes.exists?(:user_id => self.user_id)
-        self.subscribes.create(:user_id => self.user_id)
+    if self.assignee_id && self.assignee_id_changed?
+      self.subscribes.where(:user_id => self.assignee_id_was).first.destroy unless self.assignee_id_was.blank?
+      if self.assignee.notifier.issue_assign && !self.subscribes.exists?(:user_id => self.assignee_id)
+        self.subscribes.create(:user_id => self.assignee_id)
       end
     end
   end

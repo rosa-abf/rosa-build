@@ -80,7 +80,7 @@ describe IssuesController do
 
     any_instance_of(Project, :versions => ['v1.0', 'v2.0'])
 
-    @issue = FactoryGirl.create(:issue, :project_id => @project.id, :user_id => @issue_user.id)
+    @issue = FactoryGirl.create(:issue, :project_id => @project.id, :assignee_id => @issue_user.id)
     @create_params = {
       :project_id => @project.id,
       :issue => {
@@ -88,8 +88,8 @@ describe IssuesController do
         :body => "issue body",
         :project_id => @project.id
       },
-      :user_id => @issue_user.id,
-      :user_uname => @issue_user.uname
+      :assignee_id => @issue_user.id,
+      :assignee_uname => @issue_user.uname
     }
     @update_params = {
       :project_id => @project.id,
@@ -99,7 +99,7 @@ describe IssuesController do
     }
 
     @project_with_turned_off_issues = FactoryGirl.create(:project, :has_issues => false)
-    @turned_of_issue = FactoryGirl.create(:issue, :project_id => @project_with_turned_off_issues.id, :user_id => @issue_user.id)
+    @turned_of_issue = FactoryGirl.create(:issue, :project_id => @project_with_turned_off_issues.id, :assignee_id => @issue_user.id)
   end
 
   context 'for global admin user' do

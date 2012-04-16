@@ -19,17 +19,17 @@ class ActivityFeedObserver < ActiveRecord::Observer
         ActivityFeed.create(
           :user => recipient,
           :kind => 'new_issue_notification',
-          :data => {:user_name => record.creator.name, :user_email => record.creator.email, :user_id => record.creator_id,:issue_serial_id => record.serial_id,
+          :data => {:user_name => record.user.name, :user_email => record.user.email, :user_id => record.user_id,:issue_serial_id => record.serial_id,
                            :issue_title => record.title, :project_id => record.project.id, :project_name => record.project.name, :project_owner => record.project.owner.uname}
         )
       end
 
-      if record.user_id_changed?
-        UserMailer.delay.issue_assign_notification(record, record.user) if record.user.notifier.issue_assign && record.user.notifier.can_notify
+      if record.assignee_id_changed?
+        UserMailer.delay.issue_assign_notification(record, record.assignee) if record.assignee.notifier.issue_assign && record.assignee.notifier.can_notify
         ActivityFeed.create(
           :user => record.user,
           :kind => 'issue_assign_notification',
-          :data => {:user_name => record.creator.name, :user_email => record.creator.email, :user_id => record.creator_id, :issue_serial_id => record.serial_id,
+          :data => {:user_name => record.user.name, :user_email => record.user.email, :user_id => record.user_id, :issue_serial_id => record.serial_id,
                            :project_id => record.project.id, :issue_title => record.title, :project_name => record.project.name, :project_owner => record.project.owner.uname}
         )
       end
@@ -121,12 +121,12 @@ class ActivityFeedObserver < ActiveRecord::Observer
   def after_update(record)
     case record.class.to_s
     when 'Issue'
-      if record.user_id && record.user_id_changed?
-        UserMailer.delay.issue_assign_notification(record, record.user) if record.user.notifier.issue_assign && record.user.notifier.can_notify
+      if record.assignee_id && record.assignee_id_changed?
+        UserMailer.delay.issue_assign_notification(record, record.assignee) if record.assignee.notifier.issue_assign && record.assignee.notifier.can_notify
         ActivityFeed.create(
-          :user => record.user,
+          :user => record.assignee,
           :kind => 'issue_assign_notification',
-          :data => {:user_name => record.user.name, :user_email => record.user.email, :issue_serial_id => record.serial_id, :issue_title => record.title,
+          :data => {:user_name => record.assignee.name, :user_email => record.assignee.email, :issue_serial_id => record.serial_id, :issue_title => record.title,
                            :project_id => record.project.id, :project_name => record.project.name, :project_owner => record.project.owner.uname}
         )
       end

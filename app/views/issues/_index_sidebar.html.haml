@@ -11,7 +11,7 @@
           %tr
             %td=radio_button_tag :myradio, 'to_me', @is_assigned_to_me, {:id => 'myradio1', :class => 'niceRadio', :name => 'filter'}
             %td=t("layout.issues.to_me")
-            %td.width30.right=@project.issues.where(:user_id => current_user).count
+            %td.width30.right=@project.issues.where(:assignee_id => current_user.id).count
   =form_tag project_issues_path(@project), :id => 'search_issue', :method => :get do
     .bordered.bpadding20
       =tracker_search_field(:search_issue, t('layout.issues.search'))
