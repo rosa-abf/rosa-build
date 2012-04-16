@@ -6,6 +6,7 @@ class Project < ActiveRecord::Base
   belongs_to :owner, :polymorphic => true, :counter_cache => :own_projects_count
 
   has_many :issues, :dependent => :destroy
+  has_many :pull_requests, :dependent => :destroy
   has_many :build_lists, :dependent => :destroy
 
   has_many :project_imports, :dependent => :destroy
@@ -51,14 +52,14 @@ class Project < ActiveRecord::Base
 
   include Modules::Models::Owner
 
-  def build_for(platform, user, arch = 'i586') 
+  def build_for(platform, user, arch = 'i586')
     # Select main and project platform repository(contrib, non-free and etc)
     # If main does not exist, will connect only project platform repository
     # If project platform repository is main, only main will be connect
     build_reps = [platform.repositories.find_by_name('main')]
     build_reps += platform.repositories.select {|rep| self.repository_ids.include? rep.id}
     build_ids = build_reps.compact.map(&:id).uniq
-    
+
     arch = Arch.find_by_name(arch) if arch.acts_like?(:string)
     build_lists.create do |bl|
       bl.pl = platform
