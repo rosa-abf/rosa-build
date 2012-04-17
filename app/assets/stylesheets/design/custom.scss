@@ -664,6 +664,7 @@ table.dataTable {
 
 table.tablesorter tr.search th {
     background: none repeat scroll 0 0 #DCECFA;
+    padding: 0 17px 0 5px;
 }
 
 table.tablesorter tr.search th input[type="text"] {
@@ -673,7 +674,8 @@ table.tablesorter tr.search th input[type="text"] {
     font-size: 12px;
     height: 16px;
     padding: 5px;
-    width: 830px;
+    width: 100%;
+
     margin-top: 2px;
 }
 
@@ -792,15 +794,6 @@ ul.ui-autocomplete li.item div.collaborator {
     padding: 0px 10px;
 }
 
-/*
-ul.ui-autocomplete li.item.highlighted div.collaborator {
-    background-color: #DCECFA;
-    border: 1px solid #65A6F7;
-    border-radius: 3px;
-    padding: 1px 9px;
-}
-*/
-
 ul.ui-autocomplete li.item a.ui-corner-all {
     padding: 0;
 }
@@ -820,7 +813,6 @@ ul.ui-autocomplete li.item div.collaborator div.name {
 }
 
 ul.ui-autocomplete.has_results {
-/*    height: 200px; */
     overflow: auto;
 }
 
@@ -843,4 +835,19 @@ ul.ui-autocomplete.has_results {
 
 #add_collaborator_form .admin-role .lineForm {
     padding-top: 7px;
+}
+
+input:-moz-placeholder,
+textarea:-moz-placeholder {
+    color: #CFCFCF;
+}
+
+input::-webkit-input-placeholder,
+textarea::-webkit-input-placeholder {
+    color: #CFCFCF;
+}
+
+input.placeholder,
+textarea.placeholder {
+    color: #CFCFCF;
 }

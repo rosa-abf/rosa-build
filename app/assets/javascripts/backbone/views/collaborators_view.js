@@ -13,11 +13,7 @@ Rosa.Views.CollaboratorsView = Backbone.View.extend({
     render: function() {
         this.$el.empty();
         this.collection.forEach(this.addOne, this);
-        //if (this.collection.where({ removed: true }).length > 0) {
-            this._$deleter.show();
-        //} else {
-        //    this._$deleter.hide();
-        //}
+        this._$deleter.show();
         return this;
     },
 
