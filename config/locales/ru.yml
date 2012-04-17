@@ -64,11 +64,6 @@ ru:
         unlock: Не получили инструкции по разблокировке?
         sign_in_through: Войти через %{provider}
 
-    downloads:
-      title: Статистика закачек пакетов
-      message: Обновляется автоматически каждые 24 часа
-      refresh_btn: Обновить
-
     weekdays:
       Monday: Понедельник
       Tuesday: Вторник
@@ -137,9 +132,6 @@ ru:
 
     exception_message: У Вас нет доступа к этой странице!
 
-    downloads:
-      statistics_refreshed: Статистика обновлена
-
     collaborators:
       successfully_changed: Список коллабораторов успешно изменен
       error_in_changing: Ошибка изменения списка коллабораторов
@@ -172,7 +164,6 @@ ru:
       arch: Arch
       private_user: Приватный пользователь
       product_build_list: Сборочный лист продукта
-      download: Статистика
       auto_build_list: Автоматическая пересборка пакетов
 
     attributes:
@@ -196,9 +187,3 @@ ru:
         created_at: Создана
         updated_at: Обновлена
 
-      download:
-        name: Название
-        version: Версия
-        distro: Дистрибутив
-        platform: Архитектура
-        counter: Закачки
