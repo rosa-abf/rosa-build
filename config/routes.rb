@@ -181,6 +181,8 @@ Rosa::Application.routes.draw do
   match '/forbidden', :to => 'pages#forbidden', :as => 'forbidden'
   match '/terms-of-service', :to => 'pages#tos', :as => 'tos'
 
+  match '/.atom', :to => "activity_feeds#index", :format => :atom, :as => :atom_feed
+
   if APP_CONFIG['anonymous_access']
     authenticated do
       root :to => "activity_feeds#index"
