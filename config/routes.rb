@@ -178,9 +178,6 @@ Rosa::Application.routes.draw do
 
   resources :event_logs, :only => :index
 
-  match 'statistics/' => 'downloads#index', :as => :downloads
-  match 'statistics/refresh' => 'downloads#refresh', :as => :downloads_refresh
-
   match '/forbidden', :to => 'pages#forbidden', :as => 'forbidden'
   match '/terms-of-service', :to => 'pages#tos', :as => 'tos'
 
