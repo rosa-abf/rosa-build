@@ -7,8 +7,9 @@ class BuildListsController < ApplicationController
   before_filter :authenticate_build_service!, :only => CALLBACK_ACTIONS
   skip_before_filter :authenticate_user!, :only => [:show, :index, :search] if APP_CONFIG['anonymous_access']
   before_filter :find_project, :only => NESTED_ACTIONS
-  before_filter :find_build_list, :only => [:show, :publish, :cancel]
+  before_filter :find_build_list, :only => [:show, :publish, :cancel, :reject_publish]
   before_filter :find_build_list_by_bs, :only => [:publish_build, :status_build, :pre_build, :post_build, :circle_build]
+  before_filter :find_platform, :only => [:create]
 
   load_and_authorize_resource :project, :only => NESTED_ACTIONS
   load_and_authorize_resource :build_list, :through => :project, :only => NESTED_ACTIONS, :shallow => true
@@ -40,6 +41,7 @@ class BuildListsController < ApplicationController
 
   def create
     notices, errors = [], []
+    params[:build_list].delete(:auto_publish) if @platform.released
     Arch.where(:id => params[:arches]).each do |arch|
       Platform.main.where(:id => params[:bpls]).each do |bpl|
         @build_list = @project.build_lists.build(params[:build_list])
@@ -75,6 +77,14 @@ class BuildListsController < ApplicationController
       redirect_to :back, :notice => t('layout.build_lists.publish_success')
     else
       redirect_to :back, :notice => t('layout.build_lists.publish_fail')
+    end
+  end
+
+  def reject_publish
+    if @build_list.reject_publish
+      redirect_to :back, :notice => t('layout.build_lists.reject_publish_success')
+    else
+      redirect_to :back, :notice => t('layout.build_lists.reject_publish_fail')
     end
   end
 
@@ -151,6 +161,10 @@ class BuildListsController < ApplicationController
 
   def find_project
     @project = Project.find_by_id params[:project_id]
+  end
+
+  def find_platform
+    @platform = Platform.find params[:build_list][:pl_id]
   end
 
   def find_build_list

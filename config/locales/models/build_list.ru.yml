@@ -54,7 +54,9 @@ ru:
       cancel_success: 'Сборка отменена.'
       cancel_fail: 'При отмене сборки произошла ошибка!'
       publish_success: 'Сборка поставлена в очередь на публикацию.'
+      reject_publish_success: 'Сборке запрещена публикация'
       publish_fail: 'При публикации сборки произошла ошибка!'
+      reject_publish_fail: 'Не удалось запретить публикацию сборки'
       container_published: 'Контейнер размещен в репозитории'
       action: Действие
       new_header: Новая сборка
@@ -87,6 +89,7 @@ ru:
       statuses:
         build_error: ошибка сборки
         build_published: опубликован
+        rejected_publish: публикация отменена
         build_publish: публикуется
         failed_publish: ошибка публикации
         dependencies_fail: зависимости не найдены

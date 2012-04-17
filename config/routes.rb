@@ -169,6 +169,7 @@ Rosa::Application.routes.draw do
     member do
       put :cancel
       put :publish
+      put :reject_publish
     end
     collection { post :search }
   end

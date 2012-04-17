@@ -23,6 +23,7 @@ class BuildList < ActiveRecord::Base
   BUILD_PUBLISHED = 6000
   BUILD_PUBLISH = 7000
   FAILED_PUBLISH = 8000
+  REJECTED_PUBLISH = 9000
 
   STATUSES = [  WAITING_FOR_RESPONSE,
                 BUILD_CANCELED,
@@ -30,6 +31,7 @@ class BuildList < ActiveRecord::Base
                 BUILD_PUBLISHED,
                 BUILD_PUBLISH,
                 FAILED_PUBLISH,
+                REJECTED_PUBLISH,
                 BuildServer::SUCCESS,
                 BuildServer::BUILD_STARTED,
                 BuildServer::BUILD_ERROR,
@@ -47,6 +49,7 @@ class BuildList < ActiveRecord::Base
                      BUILD_PUBLISHED => :build_published,
                      BUILD_PUBLISH => :build_publish,
                      FAILED_PUBLISH => :failed_publish,
+                     REJECTED_PUBLISH => :rejected_publish,
                      BuildServer::BUILD_ERROR => :build_error,
                      BuildServer::BUILD_STARTED => :build_started,
                      BuildServer::SUCCESS => :success,
@@ -112,6 +115,15 @@ class BuildList < ActiveRecord::Base
 
   def can_publish?
     status == BuildServer::SUCCESS or status == FAILED_PUBLISH
+  end
+
+  def reject_publish
+    return false unless can_reject_publish?
+    update_attribute(:status, REJECTED_PUBLISH)
+  end
+
+  def can_reject_publish?
+    can_publish? and pl.released
   end
 
   def cancel

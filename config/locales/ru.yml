@@ -36,6 +36,7 @@ ru:
     true_: Да
     false_: Нет
     publish: Опубликовать
+    reject_publish: Отменить
     add: Добавить
     upload: Загрузить
     not_access: Нет доступа!

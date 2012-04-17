@@ -55,7 +55,9 @@ en:
       cancel_success: 'Build canceled'
       cancel_fail: 'Errors during build cancelation!'
       publish_success: 'Build is queued for publishing'
+      reject_publish_success: 'Build is rejected for publishing'
       publish_fail: 'Errors during build publishing!'
+      reject_publish_fail: 'Errors during rejecting build publishing'
       container_published: 'Container published in a repository'
       action: Action
       new_header: New build
@@ -87,6 +89,7 @@ en:
       statuses:
         build_error: Build error
         build_published: Build has been published
+        rejected_publish: Publishing rejected
         build_publish: Build is being publishing
         failed_publish: Publishing error
         dependencies_fail: Dependences not found

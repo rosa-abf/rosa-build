@@ -18,6 +18,7 @@
   = link_to @build_list.user.try(:fullname), @build_list.user
 .both
 = link_to t("layout.publish"), publish_build_list_path(@build_list), :method => "put", :confirm => t("layout.confirm"), :class => "button tmargin10" if @build_list.can_publish? and can?(:publish, @build_list)
+= link_to t("layout.reject_publish"), reject_publish_build_list_path(@build_list), :method => "put", :confirm => t("layout.confirm"), :class => "button tmargin10" if @build_list.can_reject_publish? and can?(:reject_publish, @build_list)
 .hr
 %h3= t("layout.build_lists.main_data")
 .leftside.width125= t("activerecord.attributes.build_list.bpl")
