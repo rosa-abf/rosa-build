@@ -1,7 +1,7 @@
 # -*- encoding : utf-8 -*-
 class Git::BaseController < ApplicationController
   before_filter :authenticate_user!
-  skip_before_filter :authenticate_user!, :only => [:show, :index, :blame, :raw] if APP_CONFIG['anonymous_access']
+  skip_before_filter :authenticate_user!, :only => [:show, :index, :blame, :raw, :archive] if APP_CONFIG['anonymous_access']
   load_and_authorize_resource :project
 
   before_filter :find_git_repository

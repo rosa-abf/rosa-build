@@ -818,14 +818,19 @@ div#git_help_data p {
 .zip {
   float: left;
   padding-left: 5px;
+  margin-top: 6px;
   list-style: none;
 }
 
 .nav > li > a:hover {
   text-decoration: none;
-  background-color: #D6E4E1;
+  background-color: #DCECFA;
 }
 
 .dropdown-menu {
     min-width: 0;
+}
+
+.dropdown.open .dropdown-toggle {
+    background: none repeat scroll 0 0;
 }
