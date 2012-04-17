@@ -2,7 +2,7 @@
   %ul.nav.zip
     %li#menu-archive.dropdown
       %a.dropdown-toggle{"data-toggle" => "dropdown", :href => "#menu-archive"}
-        ZIP
+        =image_tag 'zip.png', :alt => 'ZIP'
         %b.caret
       %ul.dropdown-menu
         %li=link_to "tar.gz", archive_path(project.id, 'tar', @treeish)
