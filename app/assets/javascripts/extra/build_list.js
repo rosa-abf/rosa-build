@@ -1,5 +1,4 @@
 $(document).ready(function() {
-//  $('input[type="checkbox"].build_bpl_ids').on('change', platformChange);
   $('#build_list_pl_id').change(function() {
     var platform_id = $(this).val();
     var base_platforms = $('.all_platforms input[type=checkbox].build_bpl_ids');
