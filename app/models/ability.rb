@@ -51,6 +51,7 @@ class Ability
         can :destroy, Group, :owner_id => user.id
 
         can :create, Project
+        can :read, Project, :visibility => 'open'
         can [:read, :archive], Project, :owner_type => 'User', :owner_id => user.id
         can [:read, :archive], Project, :owner_type => 'Group', :owner_id => user.group_ids
         can([:read, :membered], Project, read_relations_for('projects')) {|project| local_reader? project}
