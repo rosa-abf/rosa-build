@@ -47,6 +47,7 @@ gem "haml-rails", '~> 0.3.4'
 gem 'ruby-haml-js'
 gem 'rails-backbone'
 gem 'jquery-rails', '~> 2.0.1'
+gem 'state_machine', :require => 'state_machine/core'
 
 group :assets do
   gem 'sass-rails', '~> 3.2.5'
