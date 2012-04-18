@@ -6,7 +6,7 @@
       - Platform.main.each do |pl|
         - if pl.repository_ids.size > 0
           .both
-            = check_box_tag "bpls[]", pl.id, (params[:bpls]||[]).include?(pl.id.to_s), :class => 'build_bpl_ids', :id => "bpls_#{pl.id}"
+            = check_box_tag "bpls[]", pl.id, (params[:bpls]||[]).include?(pl.id.to_s), :class => 'build_bpl_ids', :id => "bpls_#{pl.id}", :'data-released' => pl.released ? 1 : 0
             = label_tag "bpls_#{pl.id}", pl.name
             .offset25{:style => 'padding-left: 25px'}
               = render 'include_repos', :platform => pl
