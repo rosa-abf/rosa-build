@@ -9,6 +9,7 @@
     = javascript_include_tag "application"
     = csrf_meta_tag
     = display_meta_tags :site => APP_CONFIG['project_name'], :reverse => true, :separator => '-'
+    = auto_discovery_link_tag :atom, root_path + '.atom', :title => "Rosalab News Feed"
 
   %body
     .wrap{:class => content_for?(:sidebar) ? 'columns' : ''}

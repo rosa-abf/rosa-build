@@ -4,6 +4,8 @@ class AddTokenAuthenticatableToUsers < ActiveRecord::Migration
       t.token_authenticatable
     end
 
+    add_index :users, :authentication_token
+
     User.all.each do |user|
       user.ensure_authentication_token!
     end
