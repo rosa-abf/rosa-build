@@ -27,6 +27,7 @@ $(document).ready(function() {
       } else {
         $(this).removeAttr('disabled').removeAttr('checked').trigger('change');
         $(this).parent().find('.offset25 input[type="checkbox"]').removeAttr('disabled').removeAttr('checked');
+        $('#build_list_auto_publish').removeAttr('disabled').attr('checked', 'checked');
       }
     });
 
