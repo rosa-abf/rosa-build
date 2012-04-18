@@ -109,16 +109,6 @@ ActiveRecord::Schema.define(:version => 20120418100619) do
 
   add_index "delayed_jobs", ["priority", "run_at"], :name => "delayed_jobs_priority"
 
-  create_table "downloads", :force => true do |t|
-    t.string   "name",                      :null => false
-    t.string   "version"
-    t.string   "distro"
-    t.string   "platform"
-    t.integer  "counter",    :default => 0
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
   create_table "event_logs", :force => true do |t|
     t.integer  "user_id"
     t.string   "user_name"
