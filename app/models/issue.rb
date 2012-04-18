@@ -21,8 +21,8 @@ class Issue < ActiveRecord::Base
   attr_accessible :labelings_attributes, :title, :body, :assignee_id
   accepts_nested_attributes_for :labelings, :allow_destroy => true
 
-  scope :opened, where(:status => 'open', :closed_by => nil, :closed_at => nil)
-  scope :closed, where(:status => 'closed').where("closed_by is not null and closed_at is not null")
+  scope :opened, where(:status => 'open')
+  scope :closed, where(:status => 'closed')
 
   def assign_uname
     assignee.uname if assignee

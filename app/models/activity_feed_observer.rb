@@ -90,6 +90,7 @@ class ActivityFeedObserver < ActiveRecord::Observer
                           :change_type => change_type, :user_email => record.project.git_repository.repo.log(branch_name, nil).first.author.email,
                           :project_owner => record.project.owner.uname}
         options.merge!({:user_id => first_commiter.id, :user_name => first_commiter.name}) if first_commiter
+        record.project.pull_requests.needed_checking.each {|pull| pull.check}
       end
 
       record.project.owner_and_admin_ids.each do |recipient|
