@@ -36,7 +36,7 @@ en:
     true_: True
     false_: False
     publish: Publish
-    reject_publish: Cancel
+    reject_publish: Reject
     add: Add
     upload: Upload
     not_access: Access denied!

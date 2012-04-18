@@ -55,9 +55,9 @@ en:
       cancel_success: 'Build canceled'
       cancel_fail: 'Errors during build cancelation!'
       publish_success: 'Build is queued for publishing'
-      reject_publish_success: 'Build is rejected for publishing'
+      reject_publish_success: 'Publishing rejected'
       publish_fail: 'Errors during build publishing!'
-      reject_publish_fail: 'Errors during rejecting build publishing'
+      reject_publish_fail: 'Rejecting publishing failed'
       container_published: 'Container published in a repository'
       action: Action
       new_header: New build
