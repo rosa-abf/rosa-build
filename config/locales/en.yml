@@ -44,6 +44,7 @@ en:
     back: Back
     processing: working ...
     invalid_content_type: incorrect type
+    atom_link_tag_title: Private feed for %{nickname} | %{app_name}
 
     settings:
       label: Settings
