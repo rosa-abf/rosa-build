@@ -8,9 +8,11 @@ Rosa::Application.routes.draw do
     get '/users/new' => 'admin/users#new', :as => :new_user
     get '/users/list' => 'admin/users#list', :as => :users_list
     post '/users/create' => 'admin/users#create', :as => :create_user
-    get '/users/:id/edit' => 'admin/users#profile', :as => :edit_user
-    put '/users/:id/edit' => 'admin/users#update', :as => :update_user
-    delete '/users/:id/delete' => 'admin/users#destroy', :as => :delete_user
+    constraints :id => /\d+/ do
+      get '/users/:id/edit' => 'admin/users#profile', :as => :edit_user
+      put '/users/:id/edit' => 'admin/users#update', :as => :update_user
+      delete '/users/:id/delete' => 'admin/users#destroy', :as => :delete_user
+    end
   end
   devise_for :users, :controllers => {:omniauth_callbacks => 'users/omniauth_callbacks'}
   resources :users, :only => [:show, :profile, :update] do
@@ -28,7 +30,7 @@ Rosa::Application.routes.draw do
     end
   end
   get 'users/:id/settings/private' => 'users#private', :as => :user_private_settings
-  get 'users/:id/settings/private' => 'users#private', :as => :user_private_settings
+  put 'users/:id/settings/private' => 'users#private'
 
   resources :groups do
     get :autocomplete_group_uname, :on => :collection
@@ -144,6 +146,8 @@ Rosa::Application.routes.draw do
   # Raw
   get '/projects/:project_id/raw/:treeish/*path' => "git/blobs#raw", :defaults => {:treeish => :master}, :as => :raw, :format => false
 
+  get '/projects/:project_id/archive/:format/tree/:treeish' => "git/trees#archive", :defaults => {:treeish => :master}, :as => :archive, :format => /zip|tar/
+
   # Core callbacks
   match 'build_lists/publish_build', :to => "build_lists#publish_build"
   match 'build_lists/status_build', :to => "build_lists#status_build"
@@ -157,6 +161,7 @@ Rosa::Application.routes.draw do
     member do
       put :cancel
       put :publish
+      put :reject_publish
     end
     collection { post :search }
   end
@@ -166,18 +171,15 @@ Rosa::Application.routes.draw do
 
   resources :event_logs, :only => :index
 
-  match 'statistics/' => 'downloads#index', :as => :downloads
-  match 'statistics/refresh' => 'downloads#refresh', :as => :downloads_refresh
-
   match '/forbidden', :to => 'pages#forbidden', :as => 'forbidden'
   match '/terms-of-service', :to => 'pages#tos', :as => 'tos'
 
   if APP_CONFIG['anonymous_access']
     authenticated do
-      root :to => "activity_feeds#index"
+      get "/(.:format)" => "activity_feeds#index", :as => :root
     end
     root :to => 'pages#root'
   else
-    root :to => "activity_feeds#index"
+    get "/(.:format)" => "activity_feeds#index", :as => :root
   end
 end

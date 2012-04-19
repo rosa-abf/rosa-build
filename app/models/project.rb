@@ -20,7 +20,7 @@ class Project < ActiveRecord::Base
   validates :name, :uniqueness => {:scope => [:owner_id, :owner_type], :case_sensitive => false}, :presence => true, :format => {:with => /^[a-zA-Z0-9_\-\+\.]+$/}
   validates :owner, :presence => true
   validate { errors.add(:base, :can_have_less_or_equal, :count => MAX_OWN_PROJECTS) if owner.projects.size >= MAX_OWN_PROJECTS }
-  
+
   validates_attachment_size :srpm, :less_than => 500.megabytes
   validates_attachment_content_type :srpm, :content_type => ['application/octet-stream', "application/x-rpm", "application/x-redhat-package-manager"], :message => I18n.t('layout.invalid_content_type')
 
@@ -29,7 +29,7 @@ class Project < ActiveRecord::Base
 
   scope :recent, order("name ASC")
   scope :search_order, order("CHAR_LENGTH(name) ASC")
-  scope :search, lambda {|q| by_name("%#{q.strip}%")}
+  scope :search, lambda {|q| by_name("%#{q.to_s.strip}%")}
   scope :by_name, lambda {|name| where('projects.name ILIKE ?', name)}
   scope :by_visibilities, lambda {|v| where(:visibility => v)}
   scope :opened, where(:visibility => 'open')
@@ -37,11 +37,12 @@ class Project < ActiveRecord::Base
 
   after_create :attach_to_personal_repository
   after_create :create_git_repo
+  after_create {|p| p.delay(:queue => 'fork', :priority => 20).fork_git_repo unless is_root?}
   after_save :create_wiki
 
   after_destroy :destroy_git_repo
   after_destroy :destroy_wiki
-  after_save {|p| p.delay.import_attached_srpm if p.srpm?} # should be after create_git_repo
+  after_save {|p| p.delay(:queue => 'import', :priority => 10).import_attached_srpm if p.srpm?} # should be after create_git_repo
   # after_rollback lambda { destroy_git_repo rescue true if new_record? }
 
   has_ancestry
@@ -50,18 +51,25 @@ class Project < ActiveRecord::Base
 
   include Modules::Models::Owner
 
-  def build_for(platform, user, arch = 'i586') # Return i586 after mass rebuild
+  def build_for(platform, user, arch = 'i586') 
+    # Select main and project platform repository(contrib, non-free and etc)
+    # If main does not exist, will connect only project platform repository
+    # If project platform repository is main, only main will be connect
+    build_reps = [platform.repositories.find_by_name('main')]
+    build_reps += platform.repositories.select {|rep| self.repository_ids.include? rep.id}
+    build_ids = build_reps.compact.map(&:id).uniq
+    
     arch = Arch.find_by_name(arch) if arch.acts_like?(:string)
     build_lists.create do |bl|
       bl.pl = platform
       bl.bpl = platform
       bl.update_type = 'newpackage'
       bl.arch = arch
-      bl.project_version = "latest_#{platform.name}" # "latest_import_mandriva2011"
+      bl.project_version = "latest_#{platform.name}"
       bl.build_requires = false # already set as db default
       bl.user = user
       bl.auto_publish = true # already  set as db default
-      bl.include_repos = [platform.repositories.find_by_name('main').id]
+      bl.include_repos = build_ids
     end
   end
 
@@ -115,6 +123,13 @@ class Project < ActiveRecord::Base
 
   def versions
     tags.map(&:name) + branches.map{|b| "latest_#{b.name}"}
+  end
+
+  def versions_for_group_select
+    [
+      ['Branches', branches.map{|b| "latest_#{b.name}"}],
+      ['Tags', tags.map(&:name)]
+    ]
   end
 
   def members
@@ -180,10 +195,6 @@ class Project < ActiveRecord::Base
     system("#{Rails.root.join('bin', 'import_srpm.sh')} #{srpm_path} #{path} #{branch_name} >> /dev/null 2>&1")
   end
 
-  def self.commit_comments(commit, project)
-    comments = Comment.where(:commentable_id => commit.id.hex, :commentable_type => 'Grit::Commit')
-  end
-
   def owner?(user)
     owner == user
   end
@@ -197,6 +208,11 @@ class Project < ActiveRecord::Base
     recipients = self.relations.by_role('admin').where(:object_type => 'User').map { |rel| rel.read_attribute(:object_id) }
     recipients = recipients | [self.owner_id] if self.owner_type == 'User'
     recipients
+  end
+
+  def human_average_build_time
+    time = average_build_time
+    I18n.t("layout.projects.human_average_build_time", {:hours => (time/3600).to_i, :minutes => (time%3600/60).to_i})
   end
 
   protected
@@ -214,8 +230,15 @@ class Project < ActiveRecord::Base
   end
 
   def create_git_repo
-    is_root? ? Grit::Repo.init_bare(path) : parent.git_repository.repo.delay.fork_bare(path)
-    write_hook.delay
+    if is_root?
+      Grit::Repo.init_bare(path)
+      write_hook.delay(:queue => 'fork', :priority => 15)
+    end
+  end
+
+  def fork_git_repo
+    dummy = Grit::Repo.new(path) rescue parent.git_repository.repo.fork_bare(path)
+    write_hook
   end
 
   def destroy_git_repo
@@ -248,7 +271,7 @@ class Project < ActiveRecord::Base
     hook = File.join(::Rails.root.to_s, 'tmp', "post-receive-hook")
     FileUtils.cp(File.join(::Rails.root.to_s, 'bin', "post-receive-hook.partial"), hook)
     File.open(hook, 'a') do |f|
-      s = "\n  /bin/bash -l -c \"cd #{is_production ? '/srv/rosa_build/current' : Rails.root.to_s} && #{is_production ? 'RAILS_ENV=production' : ''} bundle exec rails runner 'Project.delay.process_hook(\\\"$owner\\\", \\\"$reponame\\\", \\\"$newrev\\\", \\\"$oldrev\\\", \\\"$ref\\\", \\\"$newrev_type\\\", \\\"$oldrev_type\\\")'\""
+      s = "\n  /bin/bash -l -c \"cd #{is_production ? '/srv/rosa_build/current' : Rails.root.to_s} && #{is_production ? 'RAILS_ENV=production' : ''} bundle exec rails runner 'Project.delay(:queue => \\\"hook\\\").process_hook(\\\"$owner\\\", \\\"$reponame\\\", \\\"$newrev\\\", \\\"$oldrev\\\", \\\"$ref\\\", \\\"$newrev_type\\\", \\\"$oldrev_type\\\")'\""
       s << " > /dev/null 2>&1" if is_production
       s << "\ndone\n"
       f.write(s)

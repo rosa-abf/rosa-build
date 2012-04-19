@@ -2,9 +2,7 @@
 require 'spec_helper'
 
 def create_comment user
-  comment = user.comments.create(:commentable_id => @commit.id.hex, :commentable_type => @commit.class.name,
-    :body => 'test', :project_id => @project.id)
-  comment
+  FactoryGirl.create(:comment, :user => user, :commentable => @commit, :project => @project)
 end
 
 shared_examples_for 'user with create comment rights for commits' do

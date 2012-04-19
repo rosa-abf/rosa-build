@@ -4,12 +4,16 @@ ru:
       add: Добавить
       edit: Настройки
       fork_and_edit: Клонировать
+      fork_to: Клонировать в %{to}
+      fork_modal_header: Куда Вы хотите клонировать проект?
+      already_exists: Проект уже существует
       list: Список
       list_header: Проекты
       edit_header: Редактировать проект
       show: Проект
       build: Собрать
       new_build: Новая сборка %{project_name}
+      new_build_list: Новая сборка
       confirm_delete: Вы уверены, что хотите удалить этот проект?
       new: Новый проект
       location: Расположение
@@ -29,6 +33,7 @@ ru:
       sections: Разделы
       has_issue_description: Трэкер предоставляет лекговесный менеджер для задач по разработке Вашего проекта.
       has_wiki_description: Wiki - это самый простой способ предоставить другим вносить свой вклад в развитие Вашего проекта. Каждый пользователь нашего сервиса может использовать Wiki для документирования, примеров, поддержки или всего другого, в чем у Вас появится необходимость.
+      human_average_build_time: 'Ожидаемое время: %{hours} ч. %{minutes} мин.'
 
       diff_show_header: "%{files} с %{additions} и %{deletions}."
       about_subheader:  "О проекте"
@@ -44,7 +49,11 @@ ru:
       current_branch: Текущая ветка/тег
       current_commit: Текущий коммит
       files_in_project: Файлы в
-  
+
+      git_help:
+        cloning: Клонирование этого репозитория
+        remote: Добавление этого репозитория как удаленного к существующему локальному репозиторию
+
   flash:
     project:
       saved: Проект успешно сохранен

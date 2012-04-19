@@ -2,4 +2,4 @@
   %td= link_to (platform_build_list.bs_id.present? ? platform_build_list.bs_id : t("layout.build_lists.bs_id_not_set")), platform_build_list
   %td= platform_build_list.human_status
   %td= link_to platform_build_list.project.name, platform_build_list.project
-  %td= platform_build_list.notified_at
+  %td= platform_build_list.updated_at

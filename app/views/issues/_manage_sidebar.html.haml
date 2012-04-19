@@ -10,30 +10,30 @@
           =form_tag [@project, @issue], :id => 'update_issue_status', :method => :put do
             =hidden_field_tag "issue_status", @issue.closed? ? 'closed' : 'open', :name => "issue[status]"
   .bordered.nopadding
-    %h3=t('layout.issues.executor')
+    %h3=t('layout.issues.assignee')
     - if @issue.persisted?
       -if can_manage
-        =form_for :issue, :url => [@project, @issue], :method => :put, :html => { :class => 'edit_executor issue'} do |f|
-          =hidden_field_tag "user-default_executor", nil, :name => 'issue[user_id]'
-          .current_executor
-            - if @issue.user
+        =form_for :issue, :url => [@project, @issue], :method => :put, :html => { :class => 'edit_assignee issue'} do |f|
+          =hidden_field_tag "user-default_assignee", nil, :name => 'issue[assignee_id]'
+          .current_assignee
+            - if @issue.assignee
               #user-0.people.nopointer
-                .avatar=image_tag avatar_url(@issue.user), :alt => 'avatar'
-                .name="#{@issue.user.uname} (#{@issue.user.name})"
-                =hidden_field_tag "user-0", @issue.user.id, :name => 'issue[user_id]'
+                .avatar=image_tag avatar_url(@issue.assignee), :alt => 'avatar'
+                .name="#{@issue.user.uname} (#{@issue.assignee.name})"
+                =hidden_field_tag "user-0", @issue.assignee.id, :name => 'issue[assignee_id]'
                 .both
-      - elsif @issue.user
+      - elsif @issue.assignee
         .people.nopointer
-          .avatar=image_tag avatar_url(@issue.user), :alt => 'avatar'
-          .name="#{@issue.user.uname} (#{@issue.user.name})"
+          .avatar=image_tag avatar_url(@issue.assignee), :alt => 'avatar'
+          .name="#{@issue.assignee.uname} (#{@issue.assignee.name})"
           .both
-      =link_to(t('layout.issues.label_manage'), '#', :class => "button tmargin10 manage_executor") if can_manage
+      =link_to(t('layout.issues.label_manage'), '#', :class => "button tmargin10 manage_assignee") if can_manage
     - if can_manage
       =form_tag search_collaborators_project_issues_path(@project), :id => 'search_user', :method => :get, :style => @issue.persisted? ? 'display:none' : '' do
         =tracker_search_field(:search_user, t('layout.issues.search_user'))
       #manage_issue_users_list
         =render 'issues/search_collaborators'
-      =link_to(t('layout.issues.done'), '#', :class => "button tmargin10 update_executor", :style => 'display:none') if can_manage
+      =link_to(t('layout.issues.done'), '#', :class => "button tmargin10 update_assignee", :style => 'display:none') if can_manage
 
   .block
     %h3=t('layout.issues.labels')

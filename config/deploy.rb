@@ -11,7 +11,6 @@ set :default_environment, {
 
 require 'rvm/capistrano'
 require 'bundler/capistrano'
-require 'delayed/recipes'
 require 'airbrake/capistrano'
 
 set :whenever_command, "bundle exec whenever"
@@ -38,6 +37,7 @@ set :deploy_via,  :remote_cache
 require 'lib/recipes/nginx'
 require 'lib/recipes/unicorn'
 require 'lib/recipes/bluepill'
+require 'lib/recipes/delayed_job'
 
 namespace :deploy do
   task :stub_xml_rpc do
@@ -49,11 +49,11 @@ namespace :deploy do
 
   task :symlink_all, :roles => :app do
     run "mkdir -p #{fetch :shared_path}/config"
-    
+
     # Setup DB
     run "cp -n #{fetch :release_path}/config/database.yml.sample #{fetch :shared_path}/config/database.yml"
     run "ln -nfs #{fetch :shared_path}/config/database.yml #{fetch :release_path}/config/database.yml"
-    
+
     # Setup application
     run "cp -n #{fetch :release_path}/config/deploy/application.#{fetch :stage}.yml #{fetch :shared_path}/config/application.yml"
     run "ln -nfs #{fetch :shared_path}/config/application.yml #{fetch :release_path}/config/application.yml"
@@ -66,7 +66,7 @@ namespace :deploy do
   task :symlink_pids, :roles => :app do
     run "cd #{fetch :shared_path}/tmp && ln -nfs ../pids pids"
   end
-  
+
   # Speed up precompile (http://www.bencurtis.com/2011/12/skipping-asset-compilation-with-capistrano )
   # namespace :assets do
   #   task :precompile, :roles => :web, :except => { :no_release => true } do
@@ -77,7 +77,7 @@ namespace :deploy do
   #       logger.info "Skipping asset pre-compilation because there were no asset changes"
   #     end
   #   end
-  # end  
+  # end
 end
 
 after "deploy:finalize_update", "deploy:symlink_all"
@@ -88,7 +88,7 @@ after "deploy:setup", "deploy:symlink_pids"
 # DJ
 after "deploy:stop",    "delayed_job:stop"
 after "deploy:start",   "delayed_job:start"
-# after "deploy:restart", "delayed_job:restart"
+after "deploy:restart", "delayed_job:restart"
 
 after "deploy:restart", "deploy:cleanup"
 

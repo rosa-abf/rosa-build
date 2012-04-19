@@ -7,5 +7,8 @@
 //= require codemirror/runmode
 //= require_tree ./codemirror/modes
 //= require cusel
+//= require bootstrap-modal
+//= require bootstrap-button
+//= require bootstrap-dropdown
 // require html5shiv
 // require_tree .

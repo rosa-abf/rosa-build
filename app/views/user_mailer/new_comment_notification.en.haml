@@ -1,6 +1,6 @@
 %p== Hello, #{@user.user_appeal}.
 
-- if @comment.commentable.class == Issue
+- if @comment.issue_comment?
   - link = link_to @comment.commentable.title, project_issue_url(@comment.commentable.project, @comment.commentable)
   - object = 'issue'
 - elsif @comment.commit_comment?

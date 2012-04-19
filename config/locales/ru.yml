@@ -36,6 +36,7 @@ ru:
     true_: Да
     false_: Нет
     publish: Опубликовать
+    reject_publish: Отклонить
     add: Добавить
     upload: Загрузить
     not_access: Нет доступа!
@@ -44,6 +45,7 @@ ru:
     back: Назад
     processing: Обрабатывается...
     invalid_content_type: имеет неверный тип
+    atom_link_tag_title: Приватная лента для %{nickname} | %{app_name}
 
     settings:
       label: 'Настройки'
@@ -63,11 +65,6 @@ ru:
         confirm_again: Не получили инструкции по подтверждению?
         unlock: Не получили инструкции по разблокировке?
         sign_in_through: Войти через %{provider}
-
-    downloads:
-      title: Статистика закачек пакетов
-      message: Обновляется автоматически каждые 24 часа
-      refresh_btn: Обновить
 
     weekdays:
       Monday: Понедельник
@@ -137,9 +134,6 @@ ru:
 
     exception_message: У Вас нет доступа к этой странице!
 
-    downloads:
-      statistics_refreshed: Статистика обновлена
-
     collaborators:
       successfully_changed: Список коллабораторов успешно изменен
       error_in_changing: Ошибка изменения списка коллабораторов
@@ -172,7 +166,6 @@ ru:
       arch: Arch
       private_user: Приватный пользователь
       product_build_list: Сборочный лист продукта
-      download: Статистика
       auto_build_list: Автоматическая пересборка пакетов
 
     attributes:
@@ -196,9 +189,3 @@ ru:
         created_at: Создана
         updated_at: Обновлена
 
-      download:
-        name: Название
-        version: Версия
-        distro: Дистрибутив
-        platform: Архитектура
-        counter: Закачки

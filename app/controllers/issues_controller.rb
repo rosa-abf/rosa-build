@@ -14,7 +14,7 @@ class IssuesController < ApplicationController
     @status = params[:status] == 'closed' ? 'closed' : 'open'
     @labels = params[:labels] || []
     @issues = @project.issues
-    @issues = @issues.where(:user_id => current_user.id) if @is_assigned_to_me
+    @issues = @issues.where(:assignee_id => current_user.id) if @is_assigned_to_me
     @issues = @issues.joins(:labels).where(:labels => {:name => @labels}) unless @labels == []
 
     if params[:search_issue]
@@ -25,7 +25,7 @@ class IssuesController < ApplicationController
     @issues = @issues.where(:status => @status)
 
 
-    @issues = @issues.includes(:creator, :user).order('serial_id desc').uniq.paginate :per_page => 10, :page => params[:page]
+    @issues = @issues.includes(:assignee, :user).order('serial_id desc').uniq.paginate :per_page => 10, :page => params[:page]
     if status == 200
       render 'index', :layout => request.format == '*/*' ? 'issues' : 'application' # maybe FIXME '*/*'?
     else
@@ -38,9 +38,9 @@ class IssuesController < ApplicationController
   end
 
   def create
-    @user_uname = params[:user_uname]
+    @assignee_uname = params[:assignee_uname]
     @issue = @project.issues.new(params[:issue])
-    @issue.creator_id = current_user.id
+    @issue.user_id = current_user.id
 
     if @issue.save
       @issue.subscribe_creator(current_user.id)

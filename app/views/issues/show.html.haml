@@ -7,9 +7,9 @@
 .activity
   .top
     .image
-      =image_tag(avatar_url(@issue.creator, :medium), :alt => 'avatar') if @issue.creator
+      =image_tag(avatar_url(@issue.user, :medium), :alt => 'avatar') if @issue.user
     .text
-      %span.name=link_to("#{@issue.creator.uname} (#{@issue.creator.name})", user_path(@issue.creator)) if @issue.creator
+      %span.name=link_to("#{@issue.user.uname} (#{@issue.user.name})", user_path(@issue.user)) if @issue.user
       %br/
       %span.date=@issue.created_at.to_s(:long)
       %br/

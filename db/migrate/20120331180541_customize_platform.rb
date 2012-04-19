@@ -1,7 +1,8 @@
+# -*- encoding : utf-8 -*-
 class CustomizePlatform < ActiveRecord::Migration
   def self.up
     change_column_null :platforms, :name, false
-    change_column_null :platforms, :distrib_type, false
+    #change_column_null :platforms, :distrib_type, false
     change_column_null :platforms, :platform_type, false
     change_column_null :platforms, :released, false
     change_column_null :platforms, :visibility, false

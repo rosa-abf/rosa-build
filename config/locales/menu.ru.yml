@@ -3,7 +3,6 @@ ru:
     products: Продукты
     repositories: Репозитории
     personal_repository: Мой репозиторий
-    downloads: Статистика
   top_menu:
     platforms: Платформы
     projects: Проекты
@@ -38,4 +37,3 @@ ru:
     users: Пользователи
     register_requests: Инвайты
     event_logs: Лог событий
-    downloads: Статистика закачек пакетов

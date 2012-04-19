@@ -14,6 +14,7 @@ class Ability
 
     # Shared rights between guests and registered users
     can :show, Project, :visibility => 'open'
+    can :archive, Project, :visibility => 'open'
     can :read, Issue, :project => {:visibility => 'open'}
     can :search, BuildList
     can :read, BuildList, :project => {:visibility => 'open'}
@@ -51,13 +52,15 @@ class Ability
 
         can :create, Project
         can :read, Project, :visibility => 'open'
-        can :read, Project, :owner_type => 'User', :owner_id => user.id
-        can :read, Project, :owner_type => 'Group', :owner_id => user.group_ids
+        can [:read, :archive], Project, :owner_type => 'User', :owner_id => user.id
+        can [:read, :archive], Project, :owner_type => 'Group', :owner_id => user.group_ids
         can([:read, :membered], Project, read_relations_for('projects')) {|project| local_reader? project}
         can(:write, Project) {|project| local_writer? project} # for grack
         can([:update, :sections, :manage_collaborators], Project) {|project| local_admin? project}
         can(:fork, Project) {|project| can? :read, project}
+        can(:fork_to_group, Project) {|project| project.owner_type == 'Group' and can? :update, project.owner}
         can(:destroy, Project) {|project| owner? project}
+        can(:destroy, Project) {|project| project.owner_type == 'Group' and project.owner.objects.exists?(:object_type => 'User', :object_id => user.id, :role => 'admin')}
         can :remove_user, Project
 
         can [:read, :owned], BuildList, :user_id => user.id
@@ -65,7 +68,12 @@ class Ability
         can [:read, :related], BuildList, :project => {:owner_type => 'Group', :owner_id => user.group_ids}
         can(:read, BuildList, read_relations_for('build_lists', 'projects')) {|build_list| can? :read, build_list.project}
         can(:create, BuildList) {|build_list| build_list.project.is_rpm && can?(:write, build_list.project)}
-        can(:publish, BuildList) {|build_list| build_list.can_publish? && can?(:write, build_list.project)}
+        can(:publish, BuildList) do |build_list|
+          build_list.can_publish? and build_list.pl.released ? local_admin?(build_list.pl) : can?(:write, build_list.project)
+        end
+        can(:reject_publish, BuildList) do |build_list|
+          build_list.can_reject_publish? and build_list.pl.released and local_admin?(build_list.pl)
+        end
         can(:cancel, BuildList) {|build_list| build_list.can_cancel? && can?(:write, build_list.project)}
 
         can [:read, :members], Platform, :visibility => 'open'

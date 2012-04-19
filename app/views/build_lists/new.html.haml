@@ -1,25 +1,31 @@
 -set_meta_tags :title => [title_object(@project), t('layout.build_lists.new_header')]
 = form_for [@project, @build_list], :html => { :class => :form, :method => :post } do |f|
   %section.left
-    %h3= t("activerecord.attributes.build_list.project_version")
-    .lineForm= f.select :project_version, @project.versions
     %h3= t("activerecord.attributes.build_list.bpl")
     .all_platforms
       - Platform.main.each do |pl|
         - if pl.repository_ids.size > 0
           .both
-            = check_box_tag "bpls[]", pl.id, (params[:bpls]||[]).include?(pl.id.to_s), :class => 'build_bpl_ids', :id => "bpls_#{pl.id}"
+            = check_box_tag "bpls[]", pl.id, (params[:bpls]||[]).include?(pl.id.to_s), :class => 'build_bpl_ids', :id => "bpls_#{pl.id}", :'data-released' => pl.released ? 1 : 0
             = label_tag "bpls_#{pl.id}", pl.name
             .offset25{:style => 'padding-left: 25px'}
               = render 'include_repos', :platform => pl
   %section.right
+    %h3= t("activerecord.attributes.build_list.pl")
+    .lineForm= f.select :pl_id, @project.repositories.collect{|r| ["#{r.platform.name}/#{r.name}", r.platform.id]}
+    %h3= t("activerecord.attributes.build_list.project_version")
+    - if controller.action_name == 'new'
+      .lineForm= f.select :project_version, @project.versions_for_group_select, :selected => "latest_" + @project.default_branch
+    - else
+      .lineForm= f.select :project_version, @project.versions_for_group_select
     %h3= t("activerecord.attributes.build_list.arch")
     - Arch.recent.each do |arch|
       .both
-        = check_box_tag "arches[]", arch.id, (params[:arches]||[]).include?(arch.id.to_s), :id => "arches_#{arch.id}"
+        - if controller.action_name == 'new'
+          = check_box_tag "arches[]", arch.id, (params[:arches]||[]).include?(arch.id.to_s), :id => "arches_#{arch.id}", :checked => 'checked'
+        - else
+          = check_box_tag "arches[]", arch.id, (params[:arches]||[]).include?(arch.id.to_s), :id => "arches_#{arch.id}"
         = label_tag "arches_#{arch.id}", arch.name
-    %h3= t("activerecord.attributes.build_list.pl")
-    .lineForm= f.select :pl_id, @project.repositories.collect{|r| ["#{r.platform.name}/#{r.name}", r.platform.id]}
     %h3= t("activerecord.attributes.build_list.update_type")
     .lineForm= f.select :update_type, BuildList::UPDATE_TYPES
     %h3= t("activerecord.attributes.build_list.preferences")

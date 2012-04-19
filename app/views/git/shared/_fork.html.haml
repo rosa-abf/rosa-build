@@ -1,2 +1,11 @@
 - if can? :fork, @project
-  .r#fork-and-edit= link_to t('layout.projects.fork_and_edit'), fork_project_path(@project), :method => :post, :confirm => t("layout.confirm"), :class => 'button'
+  .r#fork-and-edit= link_to t('layout.projects.fork_and_edit'), '#forkModal', :class => 'button', 'data-toggle' => 'modal'
+  #forkModal.modal{:style => 'display: none;'}
+    .modal-header
+      %a.close{"data-dismiss" => "modal"} ×
+      %h3=t 'layout.projects.fork_modal_header'
+    .modal-footer=render :partial => 'git/shared/choose_fork', :locals => {:owner => current_user}
+    - Group.can_own_project(current_user).each do |group|
+      .modal-footer=render :partial => 'git/shared/choose_fork', :locals => {:owner => group}
+- if can? :create, @project.build_lists.new
+  .r{:style => "display: block"}= link_to t('layout.projects.new_build_list'), new_project_build_list_path(@project), :class => 'button'

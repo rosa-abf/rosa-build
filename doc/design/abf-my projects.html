@@ -21,9 +21,12 @@
 			<div class="middle">
 				<!--Main menu-->
 				<menu>
+				<div class="logo">
+					<a href="#"><img src="pics/logo-mini.png" alt="Главная" /></a>
+				</div>
 					<ul>
 						<li>
-							<a href="#" class="first">Главная</a>
+							<a href="#">Главная</a>
 						</li>
 						<li>
 							<a href="#" class="active">Проекты</a>
@@ -41,9 +44,6 @@
 							<a href="#">Документация</a>
 						</li>
 					</ul>
-					<div class="logo">
-						<img src="pics/logo-mini.png" alt="logo" />
-					</div>
 				</menu>
 				<div class="information">
 					<!--Search-->
@@ -100,8 +100,14 @@
 							<th class="th3">Роль в проекте</th>
 							<th class="th4">Покинуть проект</th> 
 						</tr>
+						
 					</thead>
 					<tbody>
+						<tr class="search">
+							<td colspan="4">
+								<input type="text" value="Найти проект..." class="gray" onClick="if(this.value=='Найти проект...'){this.value='';this.className='black';}" onblur="if(this.value==''){this.value='Найти проект...';this.className='gray';}" />
+							</td>
+						</tr>
 						<tr id="Row1">
 							<td><a href="#"><div class="table-sort-left"><img src="pics/unlock.png" alt="unlock"></div><div class="table-sort-right">gsapronov/ROSA-Jabber</div></a></td>
 							<td class="td2">Проект создан для разработки интернет-пейджера, с простым 

@@ -14,10 +14,9 @@ ru:
         arch_id: Архитектура
         arch: Архитектура
         is_circle: Циклическая сборка
-        notified_at: Информация получена
+        updated_at: Информация получена
         additional_repos: Дополнительные репозитории
         include_repos: Подключаемые репозитории
-        updated_at: Обновлен
         created_at: Создан
         pl: Репозиторий для сохранения пакетов
         pl_id: Репозиторий для сохранения пакетов
@@ -29,6 +28,7 @@ ru:
         project_version: Версия
         user: Пользователь
         preferences: Настройки
+        duration: Длительность билда в секундах
 
       build_list/item:
         name: Название
@@ -43,8 +43,8 @@ ru:
       current: Текущие
       created_at_start: "Время постановки на сборку с:"
       created_at_end: "Время постановки на сборку по:"
-      notified_at_start: "Время последнего обновления от BS с:"
-      notified_at_end: "Время последнего обновления от BS по:"
+      updated_at_start: "Время последнего обновления от BS с:"
+      updated_at_end: "Время последнего обновления от BS по:"
       bs_id_search: 'Поиск по Id'
       project_name_search: Поиск по названию проекта
       bs_id_not_set: Id еще не присвоен
@@ -54,11 +54,16 @@ ru:
       cancel_success: 'Сборка отменена.'
       cancel_fail: 'При отмене сборки произошла ошибка!'
       publish_success: 'Сборка поставлена в очередь на публикацию.'
+      reject_publish_success: 'Публикация отклонена'
       publish_fail: 'При публикации сборки произошла ошибка!'
+      reject_publish_fail: 'Не удалось отклонить публикацию сборки'
       container_published: 'Контейнер размещен в репозитории'
       action: Действие
       new_header: Новая сборка
       main_data: Основные данные
+
+      human_current_duration: Сборка длится уже %{hours} ч. %{minutes} мин.
+      human_duration: Собрано за %{hours} ч. %{minutes} мин.
 
       ownership:
         header: Принадлежность заданий
@@ -84,6 +89,7 @@ ru:
       statuses:
         build_error: ошибка сборки
         build_published: опубликован
+        rejected_publish: публикация отклонена
         build_publish: публикуется
         failed_publish: ошибка публикации
         dependencies_fail: зависимости не найдены

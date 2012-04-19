@@ -36,6 +36,7 @@ en:
     true_: True
     false_: False
     publish: Publish
+    reject_publish: Reject
     add: Add
     upload: Upload
     not_access: Access denied!
@@ -44,6 +45,7 @@ en:
     back: Back
     processing: working ...
     invalid_content_type: incorrect type
+    atom_link_tag_title: Private feed for %{nickname} | %{app_name}
 
     settings:
       label: Settings
@@ -63,11 +65,6 @@ en:
         confirm_again: Do not receive the confirmation link?
         unlock: Do not receive unlock instructions?
         sign_in_through: Sign in by %{provider}
-
-    downloads:
-      title: Downloads statistic
-      message: Automatically updated every 24 hours
-      refresh_btn: Refresh
 
     weekdays:
       Monday: Monday
@@ -137,9 +134,6 @@ en:
 
     exception_message: Access violation to this page!
 
-    downloads:
-      statistics_refreshed: Statistics refreshed
-
     collaborators:
       successfully_changed: Collaborators list successfully changed
       error_in_changing: Collaborators list changing error
@@ -172,7 +166,6 @@ en:
       arch: Arch
       private_user: Private user
       product_build_list: Product build list
-      download: Statistics
 
     attributes:
       settings:
@@ -195,9 +188,3 @@ en:
         created_at: Created
         updated_at: Updated
 
-      download:
-        name: Name
-        version: Version
-        distro: Source
-        platform: Platform
-        counter: Downloads

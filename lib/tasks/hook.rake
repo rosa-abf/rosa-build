@@ -6,7 +6,7 @@ namespace :hook do
     hook = File.join(::Rails.root.to_s, 'tmp', "post-receive-hook")
     FileUtils.cp(File.join(::Rails.root.to_s, 'bin', "post-receive-hook.partial"), hook)
     File.open(hook, 'a') do |f|
-      s = "\n  /bin/bash -l -c \"cd #{is_production ? '/srv/rosa_build/current' : Rails.root.to_s} && #{is_production ? 'RAILS_ENV=production' : ''} bundle exec rails runner 'Project.delay.process_hook(\\\"$owner\\\", \\\"$reponame\\\", \\\"$newrev\\\", \\\"$oldrev\\\", \\\"$ref\\\", \\\"$newrev_type\\\", \\\"$oldrev_type\\\")'\""
+      s = "\n  /bin/bash -l -c \"cd #{is_production ? '/srv/rosa_build/current' : Rails.root.to_s} && #{is_production ? 'RAILS_ENV=production' : ''} bundle exec rails runner 'Project.delay(:queue => \\\"hook\\\").process_hook(\\\"$owner\\\", \\\"$reponame\\\", \\\"$newrev\\\", \\\"$oldrev\\\", \\\"$ref\\\", \\\"$newrev_type\\\", \\\"$oldrev_type\\\")'\""
       s << " > /dev/null 2>&1" if is_production
       s << "\ndone\n"
       f.write(s)
@@ -18,8 +18,14 @@ namespace :hook do
     projects = ENV['project_id'] ? Project.where(:id => eval(ENV['project_id'])) : Project
     projects.where('created_at >= ?', Time.now.ago(ENV['period'] ? eval(ENV['period']) : 100.years)).each do |project|
       hook_file = File.join(project.path, 'hooks', 'post-receive')
-      FileUtils.copy_entry(hook, hook_file, false, false, true)
-      count = count + 1
+      begin
+        FileUtils.copy_entry(hook, hook_file, false, false, true)
+        count = count + 1
+      rescue Exception => e
+        say "----\nCatching exception with project #{project.id}"
+        say e.message
+        say '----'
+      end
     end
     say "Writing to #{count.to_s} repo(s)"
     say "Removing temporary file"

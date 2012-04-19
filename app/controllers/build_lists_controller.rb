@@ -7,8 +7,9 @@ class BuildListsController < ApplicationController
   before_filter :authenticate_build_service!, :only => CALLBACK_ACTIONS
   skip_before_filter :authenticate_user!, :only => [:show, :index, :search] if APP_CONFIG['anonymous_access']
   before_filter :find_project, :only => NESTED_ACTIONS
-  before_filter :find_build_list, :only => [:show, :publish, :cancel]
+  before_filter :find_build_list, :only => [:show, :publish, :cancel, :reject_publish]
   before_filter :find_build_list_by_bs, :only => [:publish_build, :status_build, :pre_build, :post_build, :circle_build]
+  before_filter :find_platform, :only => [:create]
 
   load_and_authorize_resource :project, :only => NESTED_ACTIONS
   load_and_authorize_resource :build_list, :through => :project, :only => NESTED_ACTIONS, :shallow => true
@@ -40,12 +41,13 @@ class BuildListsController < ApplicationController
 
   def create
     notices, errors = [], []
+    params[:build_list].delete(:auto_publish) if @platform.released
     Arch.where(:id => params[:arches]).each do |arch|
       Platform.main.where(:id => params[:bpls]).each do |bpl|
         @build_list = @project.build_lists.build(params[:build_list])
         @build_list.commit_hash = @project.git_repository.commits(@build_list.project_version.match(/^latest_(.+)/).to_a.last || @build_list.project_version).first.id if @build_list.project_version
         @build_list.bpl = bpl; @build_list.arch = arch; @build_list.user = current_user
-        @build_list.include_repos = @build_list.include_repos.select { |ir| @build_list.bpl.repository_ids.include? ir.to_i }
+        @build_list.include_repos = @build_list.include_repos.select {|ir| @build_list.bpl.repository_ids.include? ir.to_i}
         @build_list.priority = 100 # User builds more priority than mass rebuild with zero priority
         flash_options = {:project_version => @build_list.project_version, :arch => arch.name, :bpl => bpl.name, :pl => @build_list.pl}
         if @build_list.save
@@ -78,6 +80,14 @@ class BuildListsController < ApplicationController
     end
   end
 
+  def reject_publish
+    if @build_list.reject_publish
+      redirect_to :back, :notice => t('layout.build_lists.reject_publish_success')
+    else
+      redirect_to :back, :notice => t('layout.build_lists.reject_publish_fail')
+    end
+  end
+
   def cancel
     if @build_list.cancel
       redirect_to :back, :notice => t('layout.build_lists.cancel_success')
@@ -94,7 +104,6 @@ class BuildListsController < ApplicationController
     else
       @build_list.status = BuildList::FAILED_PUBLISH
     end
-    @build_list.notified_at = Time.current
     @build_list.save
 
     render :nothing => true, :status => 200
@@ -106,7 +115,6 @@ class BuildListsController < ApplicationController
     @item.save
 
     @build_list.container_path = params[:container_path]
-    @build_list.notified_at = Time.current
     @build_list.save
 
     render :nothing => true, :status => 200
@@ -114,7 +122,6 @@ class BuildListsController < ApplicationController
 
   def pre_build
     @build_list.status = BuildServer::BUILD_STARTED
-    @build_list.notified_at = Time.current
     @build_list.save
 
     render :nothing => true, :status => 200
@@ -123,7 +130,6 @@ class BuildListsController < ApplicationController
   def post_build
     @build_list.status = params[:status]
     @build_list.container_path = params[:container_path]
-    @build_list.notified_at = Time.current
     @build_list.save
 
     render :nothing => true, :status => 200
@@ -134,7 +140,6 @@ class BuildListsController < ApplicationController
   def circle_build
     @build_list.is_circle = true
     @build_list.container_path = params[:container_path]
-    @build_list.notified_at = Time.current
     @build_list.save
 
     render :nothing => true, :status => 200
@@ -147,7 +152,6 @@ class BuildListsController < ApplicationController
     @build_list.set_items(ActiveSupport::JSON.decode(params[:items]))
     @build_list.is_circle = (params[:is_circular].to_i != 0)
     @build_list.bs_id = params[:id]
-    @build_list.notified_at = Time.current
     @build_list.save
 
     render :nothing => true, :status => 200
@@ -157,6 +161,10 @@ class BuildListsController < ApplicationController
 
   def find_project
     @project = Project.find_by_id params[:project_id]
+  end
+
+  def find_platform
+    @platform = Platform.find params[:build_list][:pl_id]
   end
 
   def find_build_list

@@ -39,7 +39,7 @@ end
 shared_examples_for 'user without issue update rights' do
   it 'should not be able to perform update action' do
     put :update, {:id => @issue.serial_id}.merge(@update_params)
-    response.should redirect_to(forbidden_path)
+    response.should redirect_to(controller.current_user ? forbidden_path : new_user_session_path)
   end
 
   it 'should not update issue title' do
@@ -51,11 +51,11 @@ end
 shared_examples_for 'user without issue destroy rights' do
   it 'should not be able to perform destroy action' do
     delete :destroy, :id => @issue.serial_id, :project_id => @project.id
-    response.should redirect_to(forbidden_path)
+    response.should redirect_to(controller.current_user ? forbidden_path : new_user_session_path)
   end
 
   it 'should not reduce issues count' do
-    lambda{ delete :destroy, :id => @issue.serial_id, :project_id => @project.id }.should change{ Issue.count }.by(0)
+    lambda{ delete :destroy, :id => @issue.serial_id, :project_id => @project.id }.should_not change{ Issue.count }
   end
 end
 
@@ -80,7 +80,7 @@ describe IssuesController do
 
     any_instance_of(Project, :versions => ['v1.0', 'v2.0'])
 
-    @issue = FactoryGirl.create(:issue, :project_id => @project.id, :user_id => @issue_user.id)
+    @issue = FactoryGirl.create(:issue, :project_id => @project.id, :assignee_id => @issue_user.id)
     @create_params = {
       :project_id => @project.id,
       :issue => {
@@ -88,8 +88,8 @@ describe IssuesController do
         :body => "issue body",
         :project_id => @project.id
       },
-      :user_id => @issue_user.id,
-      :user_uname => @issue_user.uname
+      :assignee_id => @issue_user.id,
+      :assignee_uname => @issue_user.uname
     }
     @update_params = {
       :project_id => @project.id,
@@ -99,7 +99,7 @@ describe IssuesController do
     }
 
     @project_with_turned_off_issues = FactoryGirl.create(:project, :has_issues => false)
-    @turned_of_issue = FactoryGirl.create(:issue, :project_id => @project_with_turned_off_issues.id, :user_id => @issue_user.id)
+    @turned_of_issue = FactoryGirl.create(:issue, :project_id => @project_with_turned_off_issues.id, :assignee_id => @issue_user.id)
   end
 
   context 'for global admin user' do
@@ -181,8 +181,36 @@ describe IssuesController do
       set_session_for(@issue_user)
     end
 
-    it_should_behave_like 'user with issue update rights'
+    it_should_behave_like 'user without issue update rights'
     it_should_behave_like 'user without issue destroy rights'
     it_should_behave_like 'project with issues turned off'
+  end
+
+  context 'for guest' do
+    if APP_CONFIG['anonymous_access']
+      it_should_behave_like 'issue user with project reader rights'
+    else
+      it 'should not be able to perform index action' do
+        get :index, :project_id => @project.id
+        response.should redirect_to(new_user_session_path)
+      end
+
+      it 'should not be able to perform show action' do
+        get :show, :project_id => @project.id, :id => @issue.serial_id
+        response.should redirect_to(new_user_session_path)
+      end
+    end
+
+    it 'should not be able to perform create action' do
+      post :create, @create_params
+      response.should redirect_to(new_user_session_path)
+    end
+
+    it 'should not create issue object into db' do
+      lambda{ post :create, @create_params }.should_not change{ Issue.count }
+    end
+
+    it_should_behave_like 'user without issue update rights'
+    it_should_behave_like 'user without issue destroy rights'
   end
 end
