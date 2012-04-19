@@ -14,7 +14,7 @@ class PullRequest < Issue
     end
 
     event :block do
-      transition [:open, :ready] => :block
+      transition [:open, :ready] => :blocked
     end
 
     event :merging do
@@ -35,7 +35,7 @@ class PullRequest < Issue
   end
 
   def check
-    if ret = merge
+    if ret = merge #FIXME already up-to-date...
       system("cd #{path} && git reset --hard HEAD^") # remove merge commit
       ready
     else
@@ -76,14 +76,11 @@ class PullRequest < Issue
 
     unless git.exist?
       FileUtils.mkdir_p(path)
-      Dir.chdir(path) do
-        system("git clone --local --no-hardlinks #{project.path} #{path}")
-      end
-    else
-      Dir.chdir(path) do
-        [data[:base_branch], data[:head_branch]].each do |branch|
-          system "git checkout #{branch} && git pull origin #{branch}"
-        end
+      system("git clone --local --no-hardlinks #{project.path} #{path}")
+    end
+    Dir.chdir(path) do
+      [data[:base_branch], data[:head_branch]].each do |branch|
+        system "git checkout #{branch} && git pull origin #{branch}"
       end
     end
     # TODO catch errors

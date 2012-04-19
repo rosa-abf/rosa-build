@@ -298,7 +298,8 @@ describe Comment do
 
     context 'for committer' do
       it 'should send an e-mail' do
-        @simple.update_attribute :email, 'code@tpope.net'
+        @simple.subscribes.destroy_all
+        @simple.update_attribute :email, 'test@test.test'
         comment = create_comment(@user)
         ActionMailer::Base.deliveries.count.should == 1
         ActionMailer::Base.deliveries.last.to.include?(@simple.email).should == true
@@ -306,21 +307,22 @@ describe Comment do
 
       it 'should send a one e-mail when subscribed to commit' do
         Subscribe.subscribe_to_commit @subscribe_params.merge(:user_id => @simple.id)
-        @simple.update_attribute :email, 'code@tpope.net'
+        @simple.update_attribute :email, 'test@test.test'
         comment = create_comment(@user)
         ActionMailer::Base.deliveries.count.should == 1
         ActionMailer::Base.deliveries.last.to.include?(@simple.email).should == true
       end
 
       it 'should not send an e-mail for own comment' do
-        @simple.update_attribute :email, 'code@tpope.net'
+        @simple.subscribes.destroy_all
+        @simple.update_attribute :email, 'test@test.test'
         comment = create_comment(@simple)
         ActionMailer::Base.deliveries.count.should == 0
       end
 
       it 'should not send an e-mail if global notify off' do
         @project.owner.notifier.update_attribute :can_notify, false
-        @simple.update_attribute :email, 'code@tpope.net'
+        @simple.update_attribute :email, 'test@test.test'
         @simple.notifier.update_attribute :can_notify, false
         comment = create_comment(@user)
         ActionMailer::Base.deliveries.count.should == 0
@@ -329,7 +331,7 @@ describe Comment do
       it 'should not send an e-mail if notify for my commits off' do
         Comment.destroy_all
         @simple.notifier.update_attribute :new_comment_commit_owner, false
-        @simple.update_attribute :email, 'code@tpope.net'
+        @simple.update_attribute :email, 'test@test.test'
         comment = create_comment(@user)
         ActionMailer::Base.deliveries.count.should == 0
       end
