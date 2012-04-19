@@ -179,15 +179,17 @@ Rosa::Application.routes.draw do
 
   resources :event_logs, :only => :index
 
-  match '/forbidden', :to => 'pages#forbidden', :as => 'forbidden'
-  match '/terms-of-service', :to => 'pages#tos', :as => 'tos'
+  get '/forbidden' => 'pages#forbidden', :as => 'forbidden'
+  get '/terms-of-service' => 'pages#tos', :as => 'tos'
+
+  get '/activity_feeds.:format' => 'activity_feeds#index', :as => 'atom_activity_feeds', :format => /atom/
 
   if APP_CONFIG['anonymous_access']
     authenticated do
-      get "/(.:format)" => "activity_feeds#index", :as => :root
+      root :to => 'activity_feeds#index'
     end
     root :to => 'pages#root'
   else
-    get "/(.:format)" => "activity_feeds#index", :as => :root
+    root :to => 'activity_feeds#index'
   end
 end
