@@ -5,7 +5,7 @@ class User < ActiveRecord::Base
   LANGUAGES = LANGUAGES_FOR_SELECT.map(&:last)
   MAX_AVATAR_SIZE = 5.megabyte
 
-  devise :database_authenticatable, :registerable, :omniauthable, # :token_authenticatable, :encryptable, :timeoutable
+  devise :database_authenticatable, :registerable, :omniauthable, :token_authenticatable,# :encryptable, :timeoutable
          :recoverable, :rememberable, :validatable, :lockable, :confirmable#, :reconfirmable, :trackable
   has_attached_file :avatar, :styles =>
     { :micro => { :geometry => "16x16#",  :format => :jpg, :convert_options => '-strip -background white -flatten -quality 70'},
@@ -56,6 +56,7 @@ class User < ActiveRecord::Base
   scope :real, where(:role => ['', nil])
 
   after_create lambda { self.create_notifier }
+  before_create :ensure_authentication_token
 
   def admin?
     role == 'admin'

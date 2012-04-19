@@ -184,10 +184,10 @@ Rosa::Application.routes.draw do
 
   if APP_CONFIG['anonymous_access']
     authenticated do
-      root :to => "activity_feeds#index"
+      get "/(.:format)" => "activity_feeds#index", :as => :root
     end
     root :to => 'pages#root'
   else
-    root :to => "activity_feeds#index"
+    get "/(.:format)" => "activity_feeds#index", :as => :root
   end
 end
