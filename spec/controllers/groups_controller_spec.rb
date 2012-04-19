@@ -41,7 +41,7 @@ end
 shared_examples_for 'no group user' do
   it 'should be able to perform create action' do
     post :create, @create_params
-    response.should redirect_to(group_path( Group.last.id ))
+    response.should redirect_to(group_path(Group.last))
   end
 
   it 'should change objects count on create' do

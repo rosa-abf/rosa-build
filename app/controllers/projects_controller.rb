@@ -3,6 +3,8 @@ class ProjectsController < ApplicationController
   before_filter :authenticate_user!
   load_and_authorize_resource
 
+  include Modules::Controllers::FindProject
+
   def index
     @projects = Project.accessible_by(current_ability, :membered)
     # @projects = @projects.search(params[:query]).search_order if params[:query].present?
@@ -72,11 +74,11 @@ class ProjectsController < ApplicationController
     if request.post?
       if @project.update_attributes(params[:project])
         flash[:notice] = t('flash.project.saved')
+        redirect_to sections_project_path(@project)
       else
         @project.save
         flash[:error] = t('flash.project.save_error')
       end
-      render :action => :sections
     end
   end
 

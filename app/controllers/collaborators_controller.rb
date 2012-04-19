@@ -1,13 +1,13 @@
 # -*- encoding : utf-8 -*-
 class CollaboratorsController < ApplicationController
   before_filter :authenticate_user!
+  load_resource :project
+  before_filter :authorize_collaborators
 
-  before_filter :find_project
   before_filter :find_users
   before_filter :find_groups
 
-  load_resource :project
-  before_filter :authorize_collaborators
+  include Modules::Controllers::FindProject
 
   def index
     redirect_to edit_project_collaborators_path(@project)
@@ -125,21 +125,17 @@ class CollaboratorsController < ApplicationController
 
   protected
 
-    def find_project
-      @project = Project.find params[:project_id]
-    end
+  def find_users
+    @users = @project.collaborators.order('uname')#User.all
+    @users = @users.without(@project.owner_id) if @project.owner_type == 'User'
+  end
 
-    def find_users
-      @users = @project.collaborators.order('uname')#User.all
-      @users = @users.without(@project.owner_id) if @project.owner_type == 'User'
-    end
+  def find_groups
+    @groups = @project.groups.order('uname')#Group.all
+    @groups = @groups.without(@project.owner_id) if @project.owner_type == 'Group'
+  end
 
-    def find_groups
-      @groups = @project.groups.order('uname')#Group.all
-      @groups = @groups.without(@project.owner_id) if @project.owner_type == 'Group'
-    end
-
-    def authorize_collaborators
-      authorize! :update, @project
-    end
+  def authorize_collaborators
+    authorize! :update, @project
+  end
 end

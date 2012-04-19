@@ -1,10 +1,11 @@
 # -*- encoding : utf-8 -*-
 class CommitSubscribesController < ApplicationController
   before_filter :authenticate_user!
-
   load_and_authorize_resource :project
 
   before_filter :find_commit
+
+  include Modules::Controllers::FindProject
 
   def create
     if Subscribe.subscribe_to_commit(@options)

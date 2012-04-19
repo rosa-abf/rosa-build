@@ -37,7 +37,7 @@ class User < ActiveRecord::Base
 
   include Modules::Models::PersonalRepository
 
-  validates :uname, :presence => true, :uniqueness => {:case_sensitive => false}, :format => { :with => /^[a-z0-9_]+$/ }
+  validates :uname, :presence => true, :uniqueness => {:case_sensitive => false}, :format => {:with => /^[a-z0-9_]+$/}, :reserved_name => true
   validate { errors.add(:uname, :taken) if Group.where('uname LIKE ?', uname).present? }
   validates :role, :inclusion => {:in => ROLES}, :allow_blank => true
   validates :language, :inclusion => {:in => LANGUAGES}, :allow_blank => true
@@ -57,6 +57,8 @@ class User < ActiveRecord::Base
 
   after_create lambda { self.create_notifier }
   before_create :ensure_authentication_token
+
+  def to_param; uname; end
 
   def admin?
     role == 'admin'

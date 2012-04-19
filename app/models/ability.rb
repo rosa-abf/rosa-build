@@ -58,7 +58,7 @@ class Ability
         can(:write, Project) {|project| local_writer? project} # for grack
         can([:update, :sections, :manage_collaborators], Project) {|project| local_admin? project}
         can(:fork, Project) {|project| can? :read, project}
-        can(:fork_to_group, Project) {|project| project.owner_type == 'Group' and can? :update, project.owner}
+        can(:fork, Project) {|project| project.owner_type == 'Group' and can? :update, project.owner}
         can(:destroy, Project) {|project| owner? project}
         can(:destroy, Project) {|project| project.owner_type == 'Group' and project.owner.objects.exists?(:object_type => 'User', :object_id => user.id, :role => 'admin')}
         can :remove_user, Project
@@ -118,13 +118,10 @@ class Ability
       # Shared cannot rights for all users (registered, admin)
       cannot :destroy, Platform, :platform_type => 'personal'
       cannot [:create, :destroy, :add_project, :remove_project], Repository, :platform => {:platform_type => 'personal'}
-      cannot :fork, Project, :owner_id => user.id, :owner_type => user.class.to_s
       cannot :destroy, Issue
 
       cannot [:members, :add_member, :remove_member, :remove_members], Platform, :platform_type => 'personal'
 
-#      cannot :read, Product, :platform => {:platform_type => 'personal'}
-#      cannot(:read, Product, read_relations_for('products', 'platforms')) {|product| product.platform.platform_type == 'personal'}
       cannot [:create, :update, :destroy, :clone], Product, :platform => {:platform_type => 'personal'}
       cannot [:clone, :build_all], Platform, :platform_type => 'personal'
 

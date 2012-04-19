@@ -6,6 +6,8 @@ class SubscribesController < ApplicationController
   load_and_authorize_resource :issue, :through => :project, :find_by => :serial_id
   load_and_authorize_resource :subscribe, :through => :issue, :find_by => :user_id
 
+  include Modules::Controllers::FindProject
+
   def create
     @subscribe = @issue.subscribes.build(:user_id => current_user.id)
     if @subscribe.save

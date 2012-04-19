@@ -7,6 +7,7 @@ class CommentsController < ApplicationController
   load_and_authorize_resource
 
   include CommentsHelper
+  include Modules::Controllers::FindProject
 
   def create
     if @comment.save

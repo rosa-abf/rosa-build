@@ -9,7 +9,7 @@ describe ProjectsController do
     @project = FactoryGirl.create(:project)
     @another_user = FactoryGirl.create(:user)
     @create_params = {:project => {:name => 'pro'}}
-    @update_params = {:project => {:name => 'pro2'}}
+    @update_params = {:project => {:description => 'pro2'}}
   end
 
   context 'for guest' do
@@ -19,7 +19,7 @@ describe ProjectsController do
     end
 
     it 'should not be able to perform update action' do
-      put :update, {:id => @project.id}.merge(@update_params)
+      put :update, {:owner_name => @project.owner.uname, :project_name => @project.name}.merge(@update_params)
       response.should redirect_to(new_user_session_path)
     end
   end
@@ -35,7 +35,7 @@ describe ProjectsController do
 
     it 'should be able to perform create action' do
       post :create, @create_params
-      response.should redirect_to(project_path( Project.last.id ))
+      response.should redirect_to(project_path( Project.last ))
     end
 
     it 'should change objects count on create' do
@@ -55,17 +55,18 @@ describe ProjectsController do
     it_should_behave_like 'user with rights to view projects'
 
     it 'should be able to perform destroy action' do
-      delete :destroy, {:id => @project.id}
+      delete :destroy, {:owner_name => @project.owner.uname, :project_name => @project.name}
       response.should redirect_to(@project.owner)
     end
 
     it 'should change objects count on destroy' do
-      lambda { delete :destroy, :id => @project.id }.should change{ Project.count }.by(-1)
+      lambda { delete :destroy, :owner_name => @project.owner.uname, :project_name => @project.name }.should change{ Project.count }.by(-1)
     end
 
     it 'should not be able to fork project' do
-      post :fork, :id => @project.id
-      response.should redirect_to(forbidden_path)
+      post :fork, :owner_name => @project.owner.uname, :project_name => @project.name
+      # @project.errors.count.should == 1
+      response.should redirect_to(@project)
     end
 
   end
@@ -97,15 +98,15 @@ describe ProjectsController do
 
     it 'should not be able to fork project to other group' do
       group = FactoryGirl.create(:group)
-      post :fork, :id => @project.id, :group => group.id
+      post :fork, :owner_name => @project.owner.uname, :project_name => @project.name, :group => group.id
       response.should redirect_to(forbidden_path)
     end
 
     it 'should be able to fork project to group' do
       group = FactoryGirl.create(:group)
       group.objects.create(:object_type => 'User', :object_id => @user.id, :role => 'admin')
-      post :fork, :id => @project.id, :group => group.id
-      response.should redirect_to(project_path(group.projects.first.id))
+      post :fork, :owner_name => @project.owner.uname, :project_name => @project.name, :group => group.id
+      response.should redirect_to(project_path(group.projects.first))
     end
   end
 
@@ -128,8 +129,8 @@ describe ProjectsController do
       @user = FactoryGirl.create(:user)
       set_session_for(@user)
       @project.update_attribute(:visibility, 'hidden')
-      post :fork, :id => @project.id
-      response.should redirect_to(forbidden_path)
+      post :fork, :owner_name => @project.owner.uname, :project_name => @project.name
+      response.should redirect_to(@project)
     end
   end
 end

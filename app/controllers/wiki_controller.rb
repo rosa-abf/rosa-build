@@ -13,6 +13,8 @@ class WikiController < ApplicationController
   before_filter :authorize_write_actions, :only => [:edit, :update, :new, :create, :destroy, :revert, :revert_wiki, :preview]
   before_filter :get_wiki
 
+  include Modules::Controllers::FindProject
+
   def index
     @name = 'Home'
     @page = @wiki.page(@name)

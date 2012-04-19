@@ -3,7 +3,7 @@
     %span{:style => "display: none;"}=issue.serial_id
   %td.td1=issue.serial_id
   %td
-    %a{:href => project_issue_path(@project.id, issue.serial_id)}
+    %a{:href => project_issue_path(@project, issue)}
       %div.issue_title=issue.title
     .smalltext
       =issue.created_at.to_s(:long)

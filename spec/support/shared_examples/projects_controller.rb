@@ -3,14 +3,14 @@ shared_examples_for 'projects user with reader rights' do
   it_should_behave_like 'user with rights to view projects'
 
   it 'should be able to fork project' do
-    post :fork, :id => @project.id
+    post :fork, :owner_name => @project.owner.uname, :project_name => @project.name
     response.should redirect_to(project_path(Project.last))
   end
 end
 
 shared_examples_for 'projects user with admin rights' do
   it 'should be able to perform update action' do
-    put :update, {:id => @project.id}.merge(@update_params)
+    put :update, {:owner_name => @project.owner.uname, :project_name => @project.name}.merge(@update_params)
     response.should redirect_to(project_path(@project))
   end
 end

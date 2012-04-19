@@ -51,6 +51,18 @@ class Project < ActiveRecord::Base
 
   include Modules::Models::Owner
 
+  def to_param; name; end
+
+  def self.find_by_owner_and_name(owner_name, project_name)
+    owner = User.find_by_uname(owner_name) || Group.find_by_uname(owner_name) and
+    scoped = where(:owner_id => owner.id, :owner_type => owner.class) and
+    scoped.find_by_name(project_name) || scoped.by_name(project_name).first
+  end
+
+  def self.find_by_owner_and_name!(owner_name, project_name)
+    find_by_owner_and_name(owner_name, project_name) or raise ActiveRecord::RecordNotFound
+  end
+
   def build_for(platform, user, arch = 'i586') 
     # Select main and project platform repository(contrib, non-free and etc)
     # If main does not exist, will connect only project platform repository
@@ -58,7 +70,6 @@ class Project < ActiveRecord::Base
     build_reps = [platform.repositories.find_by_name('main')]
     build_reps += platform.repositories.select {|rep| self.repository_ids.include? rep.id}
     build_ids = build_reps.compact.map(&:id).uniq
-    
     arch = Arch.find_by_name(arch) if arch.acts_like?(:string)
     build_lists.create do |bl|
       bl.pl = platform

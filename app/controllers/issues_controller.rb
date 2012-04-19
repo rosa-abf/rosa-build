@@ -9,6 +9,8 @@ class IssuesController < ApplicationController
 
   layout 'application'
 
+  include Modules::Controllers::FindProject
+
   def index(status = 200)
     @is_assigned_to_me = params[:filter] == 'to_me'
     @status = params[:status] == 'closed' ? 'closed' : 'open'
@@ -77,12 +79,12 @@ class IssuesController < ApplicationController
   end
 
   def create_label
-    status = @project.labels.create(:name => params[:name], :color => params[:color]) ? 200 : 500
+    status = @project.labels.create!(:name => params[:name], :color => params[:color]) ? 200 : 500
     index(status)
   end
 
   def update_label
-    status = @label.update_attributes( :name => params[:name], :color => params[:color]) ? 200 : 500
+    status = @label.update_attributes(:name => params[:name], :color => params[:color]) ? 200 : 500
     index(status)
   end
 

@@ -13,7 +13,7 @@ class Group < ActiveRecord::Base
   has_many :own_platforms, :as => :owner, :class_name => 'Platform', :dependent => :destroy
 
   validates :owner, :presence => true
-  validates :uname, :presence => true, :uniqueness => {:case_sensitive => false}, :format => { :with => /^[a-z0-9_]+$/ }
+  validates :uname, :presence => true, :uniqueness => {:case_sensitive => false}, :format => {:with => /^[a-z0-9_]+$/}, :reserved_name => true
   validate { errors.add(:uname, :taken) if User.where('uname LIKE ?', uname).present? }
 
   scope :search_order, order("CHAR_LENGTH(uname) ASC")
@@ -36,6 +36,8 @@ class Group < ActiveRecord::Base
   def self.can_own_project(user)
     (by_owner(user) | by_admin(user))
   end
+
+  def to_param; uname; end
 
   def name
     uname
