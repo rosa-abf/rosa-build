@@ -80,5 +80,18 @@ Rosa.Collections.CollaboratorsCollection = Backbone.Collection.extend({
                 self.add(m.toJSON());
             }
         });
+    },
+
+    filterByName: function(term, options) {
+        if (term == "") return this;
+        console.log(term);
+ 
+		var pattern = new RegExp(term, "i");
+        
+		return _(this.filter(function(data) {
+            console.log(data.get("actor_name"));
+            console.log(pattern.test(data.get("actor_name")));
+		  	return pattern.test(data.get("actor_name"));
+		}));
     }
 });

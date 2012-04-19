@@ -135,11 +135,6 @@ class Collaborator
   end
 
   def relation
-    setup_relation
-    @relation
-  end
-
-  def setup_relation
     return @relation if @relation.present? and @relation.object == @actor and @relation.target == @project
 
     if @actor.present? and @project.present?
@@ -151,6 +146,7 @@ class Collaborator
       @relation.object = @actor
       @relation.target = @project
     end
+    @relation
   end
 
 end

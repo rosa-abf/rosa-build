@@ -27,6 +27,7 @@ Rosa.Views.CollaboratorView = Backbone.View.extend({
     },
 
     changeRole: function(e) {
+        this.$('input[type="radio"]').attr('disabled', 'disabled');
         this.model.changeRole(e.target.value);
     },
 
