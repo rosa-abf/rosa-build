@@ -909,6 +909,41 @@ article input.black {
   color: #333333;
 }
 
+article input.gray.withimage, article input.black.withimage {
+	padding-left: 30px;
+	width: 275px;
+	background-size: 25px 25px;
+}
+
+div.admin-search.withimage {
+	width: 300px;
+	margin-right: 5px;
+	height: 25px;
+	border: 1px solid #dedede;
+	border-radius: 3px;
+	margin-top: 1px;
+}
+
+div.admin-search.withimage img {
+	width: 25px;
+	height: 25px;
+	float: left;
+}
+
+.right div.admin-search.withimage input {
+	width: 270px;
+	float: left;
+	margin-right: 0px;
+	height: 22px;
+	border: none;
+	border-radius: none;
+	margin-top: 1px;
+	font-size: 12px;
+	font-family: Tahoma, Geneva, Helvetica, sans-serif;
+	padding-left: 5px;
+}
+
+
 .right div.admin-add {
   float: left;
   padding-top: 1px;

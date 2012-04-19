@@ -45,7 +45,7 @@ Rosa.Views.CollaboratorView = Backbone.View.extend({
         this.$('td').animate({
             'background-color': '#FFFFFF'
         }, {
-            duration: 1500,
+            duration: 800,
             easing: 'easeInCirc',
             complete: function() {
                 self.$el.removeClass('sync_error');
@@ -59,7 +59,7 @@ Rosa.Views.CollaboratorView = Backbone.View.extend({
         this.$('td').animate({
            'background-color': '#FFFFFF'
         }, {
-            duration: 1500,
+            duration: 800,
             easing: 'easeInCirc',
             complete: function() {
                 self.$el.removeClass('sync_success');

@@ -6,11 +6,10 @@
 %h3= t("layout.users.list_header")
 
 #add_collaborator_form
-  .admin-search
+  .admin-search.withimage
     .img
       %img{ :alt => 'avatar', :src => '', :style => 'display: none;' }
-    .search_string
-      = text_field_tag :collaborator_name, nil
+    = text_field_tag :collaborator_name, nil
     .both
   .admin-role
     .lineForm

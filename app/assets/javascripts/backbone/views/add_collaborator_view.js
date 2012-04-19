@@ -10,7 +10,7 @@ Rosa.Views.AddCollaboratorView = Backbone.View.extend({
 
         this.$el            = $('#add_collaborator_form');
         this.$_search_input = this.$('#collaborator_name');
-        this.$_image        = this.$('div.img img');
+        this.$_image        = this.$('.admin-search.withimage img');
         this.$_role         = this.$('#role');
 
         this.ac = this.$_search_input.autocomplete({
@@ -28,10 +28,12 @@ Rosa.Views.AddCollaboratorView = Backbone.View.extend({
     },
 
     getData: function(request, response) {
+        var self = this;
         var res = this.collection.fetch({
             data: {term: request.term},
             wait: true,
             success: function(collection) {
+                self.$_image.hide();
                 if (collection.length !== 0) {
                     response(collection.models);
                 } else {
