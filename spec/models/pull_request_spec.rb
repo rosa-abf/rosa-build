@@ -40,7 +40,7 @@ describe PullRequest do
     it 'should not be merged when already up-to-date branches' do
       @pull.data[:head_branch] = 'master'
       @pull.check
-      @pull.state.should == 'blocked' # FIXME
+      @pull.state.should == 'already'
     end
   end
 
