@@ -16,6 +16,7 @@ ru:
     remove: Убрать
 
     find_project: Найти проект...
+    filter_by_name: Фильтр по имени
 
     visibilities:
       open: открытая

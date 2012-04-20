@@ -16,12 +16,11 @@ class Group < ActiveRecord::Base
   validates :uname, :presence => true, :uniqueness => {:case_sensitive => false}, :format => { :with => /^[a-z0-9_]+$/ }
   validate { errors.add(:uname, :taken) if User.where('uname LIKE ?', uname).present? }
 
-  scope :search_order, order("CHAR_LENGTH(uname) ASC")
-  scope :without, lambda {|a| where("groups.id NOT IN (?)", a)}
-  scope :search, lambda {|q| where("uname ILIKE ?", "%#{q.to_s.strip}%")}
   scope :opened, where('1=1')
   scope :by_owner, lambda {|owner| where(:owner_id => owner.id)}
   scope :by_admin, lambda {|admin| joins(:objects).where(:'relations.role' => 'admin', :'relations.object_id' => admin.id, :'relations.object_type' => 'User')}
+
+  include Modules::Models::ActsLikeMember
 
   attr_accessible :description
   attr_readonly :own_projects_count
