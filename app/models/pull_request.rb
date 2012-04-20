@@ -17,6 +17,10 @@ class PullRequest < Issue
       transition [:open, :ready] => :blocked
     end
 
+    event :already do
+      transition [:open, :blocked, :ready] => :already
+    end
+
     event :merging do
       transition :ready => :merged
     end
@@ -35,7 +39,10 @@ class PullRequest < Issue
   end
 
   def check
-    if ret = merge #FIXME already up-to-date...
+    ret = merge
+    if ret =~ /Already up-to-date/
+      already
+    elsif ret =~ /Merge made by recursive/
       system("cd #{path} && git reset --hard HEAD^") # remove merge commit
       ready
     else
@@ -68,7 +75,7 @@ class PullRequest < Issue
 
   def merge
     clone
-    system("cd #{path} && git checkout #{data[:base_branch]} && git merge --no-ff #{data[:head_branch]}")
+    %x(cd #{path} && git checkout #{data[:base_branch]} && git merge --no-ff #{data[:head_branch]}) #FIXME need sanitize branch name!
   end
 
   def clone
@@ -80,7 +87,8 @@ class PullRequest < Issue
     end
     Dir.chdir(path) do
       [data[:base_branch], data[:head_branch]].each do |branch|
-        system "git checkout #{branch} && git pull origin #{branch}"
+        system 'git', 'checkout', branch
+        system 'git', 'pull', 'origin', branch
       end
     end
     # TODO catch errors
