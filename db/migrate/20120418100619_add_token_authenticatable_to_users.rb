@@ -10,6 +10,5 @@ class AddTokenAuthenticatableToUsers < ActiveRecord::Migration
 
   def self.down
     remove_column :users, :authentication_token
-    remove_index :users, :authentication_token
   end
 end
