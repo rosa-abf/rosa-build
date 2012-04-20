@@ -21,8 +21,8 @@ class Issue < ActiveRecord::Base
   attr_accessible :labelings_attributes, :title, :body, :assignee_id
   accepts_nested_attributes_for :labelings, :allow_destroy => true
 
-  scope :opened, where(:status => 'open')
-  scope :closed, where(:status => 'closed')
+  scope :opened, where(:state => 'open')
+  scope :closed, where(:state => 'closed')
 
   def assign_uname
     assignee.uname if assignee
@@ -39,18 +39,18 @@ class Issue < ActiveRecord::Base
   end
 
   def closed?
-    closed_by && closed_at && status == 'closed'
+    closed_by && closed_at && state == 'closed'
   end
 
   def set_close(closed_by)
     self.closed_at = Time.now
     self.closer = closed_by
-    self.status = 'closed'
+    self.state = 'closed'
   end
 
   def set_open
     self.closed_at = self.closed_by = nil
-    self.status = 'open'
+    self.state = 'open'
   end
 
   def collect_recipient_ids

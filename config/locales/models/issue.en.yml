@@ -7,7 +7,7 @@ en:
         assignee: Assigned
         assignee_id: Assigned
         project: Project
-        status: Status
+        state: Status
 
   layout:
     issues:
@@ -27,7 +27,7 @@ en:
         open: Open
         closed: Closed
         any: Any
-      status:
+      state:
         open: Open
         closed: Closed
       subscribe: Subscribe to notifications

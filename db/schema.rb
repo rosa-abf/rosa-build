@@ -140,14 +140,13 @@ ActiveRecord::Schema.define(:version => 20120418100619) do
     t.integer  "assignee_id"
     t.string   "title"
     t.text     "body"
-    t.string   "status",      :default => "open"
+    t.string   "state",       :default => "open"
     t.datetime "created_at",                      :null => false
     t.datetime "updated_at",                      :null => false
     t.integer  "user_id"
     t.datetime "closed_at"
     t.integer  "closed_by"
     t.string   "type"
-    t.string   "state"
     t.text     "data",        :default => "0",    :null => false
   end
 

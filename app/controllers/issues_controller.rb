@@ -11,7 +11,7 @@ class IssuesController < ApplicationController
 
   def index(status = 200)
     @is_assigned_to_me = params[:filter] == 'to_me'
-    @status = params[:status] == 'closed' ? 'closed' : 'open'
+    @state = params[:state] == 'closed' ? 'closed' : 'open'
     @labels = params[:labels] || []
     @issues = @project.issues
     @issues = @issues.where(:assignee_id => current_user.id) if @is_assigned_to_me
@@ -22,7 +22,7 @@ class IssuesController < ApplicationController
     end
     @opened_issues = @issues.opened.count
     @closed_issues = @issues.closed.count
-    @issues = @issues.where(:status => @status)
+    @issues = @issues.where(:state => @state)
 
 
     @issues = @issues.includes(:assignee, :user).order('serial_id desc').uniq.paginate :per_page => 10, :page => params[:page]
@@ -54,10 +54,10 @@ class IssuesController < ApplicationController
   end
 
   def update
-    if params[:issue] && status = params[:issue][:status]
+    if params[:issue] && state = params[:issue][:state]
       action = 'issues/_status'
-      @issue.set_close(current_user) if status == 'closed'
-      @issue.set_open if status == 'open'
+      @issue.set_close(current_user) if state == 'closed'
+      @issue.set_open if state == 'open'
       status = 200 if @issue.save
       render action, :status => (status || 500), :layout => false
     elsif params[:issue]
