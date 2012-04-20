@@ -3,12 +3,12 @@
 -render :partial => 'issues/index_sidebar'
 
 #closed-switcher.blue-switcher
-  =hidden_field_tag :issues_status, @status, :id => 'issues_status'
+  =hidden_field_tag :issues_status, @state, :id => 'issues_status'
   .open
     ="#{t('layout.issues.statuses.open')} (#{@opened_issues})"
   #closed-tasks.closed
     ="#{t('layout.issues.statuses.closed')} (#{@closed_issues})"
-  #blue-switch-select.selected{:style => "margin-left: #{@status == 'open' ? '0' : '130'}px;"}
+  #blue-switch-select.selected{:style => "margin-left: #{@state == 'open' ? '0' : '130'}px;"}
   .both
 .both
 #table1

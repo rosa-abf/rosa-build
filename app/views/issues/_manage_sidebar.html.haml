@@ -2,13 +2,13 @@
   - can_manage = can?(:update, @issue) && @issue.persisted? || @issue.new_record?
   - if @issue.persisted?
     .bordered.nopadding
-      %h3=t('activerecord.attributes.issue.status')
+      %h3=t('activerecord.attributes.issue.state')
       #switcher.issue_status{:class => "#{@issue.closed? ? 'switcher-off' : 'switcher'} #{can_manage ? "switch_issue_status" : ''}"}
-        .swleft=t('layout.issues.status.open')
-        .swright=t('layout.issues.status.closed')
+        .swleft=t('layout.issues.state.open')
+        .swright=t('layout.issues.state.closed')
         - if can_manage
           =form_tag [@project, @issue], :id => 'update_issue_status', :method => :put do
-            =hidden_field_tag "issue_status", @issue.closed? ? 'closed' : 'open', :name => "issue[status]"
+            =hidden_field_tag "issue_status", @issue.closed? ? 'closed' : 'open', :name => "issue[state]"
   .bordered.nopadding
     %h3=t('layout.issues.assignee')
     - if @issue.persisted?
