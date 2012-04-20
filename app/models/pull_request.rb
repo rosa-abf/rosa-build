@@ -47,7 +47,8 @@ class PullRequest < Issue
   def merge!(who)
     return false unless can_merge?
     Dir.chdir(path) do
-      system "git config user.name \"#{who.uname}\" && git config user.email \"#{who.email}\""
+      system 'git config user.name', '\"#{who.uname}\"'
+      system 'git config user.email', '\"#{who.email}\"'
       if merge
         merging
         system("git push origin HEAD")
@@ -68,7 +69,10 @@ class PullRequest < Issue
 
   def merge
     clone
-    system("cd #{path} && git checkout #{data[:base_branch]} && git merge --no-ff #{data[:head_branch]}")
+    Dir.chdir(path) do
+      system 'git checkout', data[:base_branch]
+      system 'git merge', '--no-ff', data[:head_branch]
+    end
   end
 
   def clone
@@ -80,7 +84,8 @@ class PullRequest < Issue
     end
     Dir.chdir(path) do
       [data[:base_branch], data[:head_branch]].each do |branch|
-        system "git checkout #{branch} && git pull origin #{branch}"
+        system 'git checkout', branch
+        system 'git pull origin', branch
       end
     end
     # TODO catch errors
