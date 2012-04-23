@@ -816,6 +816,10 @@ ul.ui-autocomplete.has_results {
     overflow: auto;
 }
 
+#add_collaborator_form div.admin-search.withimage {
+    width: 301px;
+}
+
 #add_collaborator_form div.search_string {
     margin-left: 5px;
     float: left;
@@ -824,13 +828,9 @@ ul.ui-autocomplete.has_results {
 #add_collaborator_form div.img {
     width: 25px;
     height: 25px;
-//    border: 1px solid #DDDDDD;
-//    border-radius: 2px;
 }
 
 #add_collaborator_form div.img img {
-//    margin-top: 1px;
-//    margin-left: 1px;
 }
 
 #add_collaborator_form .admin-role .lineForm {
