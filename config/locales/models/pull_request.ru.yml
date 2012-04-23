@@ -1,0 +1,7 @@
+ru:
+  pull_requests:
+    new:
+      new: 'Создать запрос на слияние в <span class="label label-info font14">%{base}</span> из <span class="label label-info font14">%{head}</span>'
+      base: 'База'
+      head: 'Источник'
+      refs: 'ветка · тег · коммит'

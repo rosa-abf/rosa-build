@@ -24,6 +24,7 @@ ru:
     wiki: Wiki
     readme: Readme
     settings: Настройки
+    pull_requests: Запросы на слияние
   feed_menu:
     all: Все
     code: Код

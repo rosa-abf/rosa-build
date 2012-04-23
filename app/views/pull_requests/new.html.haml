@@ -1,0 +1,16 @@
+-set_meta_tags :title => [title_object(@project), t('.title')]
+= render :partial => 'projects/submenu'
+
+=form_for @project.pull_requests.new, :url => project_pull_requests_path do |f|
+  .row-fluid
+    .span12
+      %h3=raw t '.new', {:base => @base, :head => @head}
+      .row-fluid
+        .span6
+          .span
+            %h3 #{t '.base'} #{t '.refs'}:
+            =text_field_tag :base_ref, @base
+        .span6
+          .span
+            %h3 #{t '.head'} #{t '.refs'}:
+            =text_field_tag :head_ref, @head

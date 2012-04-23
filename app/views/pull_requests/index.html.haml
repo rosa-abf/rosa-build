@@ -1,0 +1,20 @@
+-set_meta_tags :title => [title_object(@project), t('.title')]
+= render :partial => 'projects/submenu'
+-#render :partial => 'pull_requests/index_sidebar'
+%ul.nav.nav-tabs
+  %li
+    %a{"data-toggle" => "tab", :href => "#show"} Home
+  %li
+    %a{"data-toggle" => "tab", :href => "#diff"} Profile
+  %li
+    %a{"data-toggle" => "tab", :href => "#commits"} Messages
+
+.tab-content
+  #show.tab-pane.active ...
+  #diff.tab-pane ...
+  #commits.tab-pane ...
+/
+  :javascript
+    $(function () {
+    $('.tabs a:last').tab('show')
+    })

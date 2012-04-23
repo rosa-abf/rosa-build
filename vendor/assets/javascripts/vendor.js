@@ -10,5 +10,6 @@
 //= require bootstrap-modal
 //= require bootstrap-button
 //= require bootstrap-dropdown
+//= require bootstrap-tab
 // require html5shiv
 // require_tree .

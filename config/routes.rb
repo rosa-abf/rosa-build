@@ -107,6 +107,11 @@ Rosa::Application.routes.draw do
         get :search_collaborators
       end
     end
+
+    resources :pull_requests, :except => :destroy do
+      #get :autocomplete_refs, :on => :collection
+    end
+
     post "labels/:label_id" => "issues#destroy_label", :as => :issues_delete_label
     post "labels/:label_id/update" => "issues#update_label", :as => :issues_update_label
     resources :build_lists, :only => [:index, :new, :create] do

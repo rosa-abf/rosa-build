@@ -23,3 +23,8 @@ ru:
       title: 'Сравнение версий'
     searching:
       title: 'Поиск в вики'
+  pull_requests:
+    index:
+      title: 'Запросы на слияние'
+    new:
+      title: 'Создать запрос на слияние'

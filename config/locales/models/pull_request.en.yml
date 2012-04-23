@@ -1,0 +1,7 @@
+en:
+  pull_requests:
+    new:
+      new: 'Create a pull request into <span class="label label-info font14">%{base}</span> from <span class="label label-info font14">%{head}</span>'
+      base: 'Base'
+      head: 'Head'
+      refs: 'branch · tag · commit'
