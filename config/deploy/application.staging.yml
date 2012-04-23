@@ -1,4 +1,5 @@
 production:
+  action_mailer_host: "http://dev-abf.rosalinux.ru/"
   root_path: /share
   nginx_log: /srv/rosa_build/shared/log/nginx.access.log
   do-not-reply-email: do-not-reply@rosalab.ru
