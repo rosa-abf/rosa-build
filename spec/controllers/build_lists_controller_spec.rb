@@ -10,7 +10,7 @@ describe BuildListsController do
     end
 
     it 'should be able to perform index action in project scope' do
-      get :index, :project_id => @project.id
+      get :index, :owner_name => @project.owner.uname, :project_name => @project.name
       response.should be_success
     end
   end
@@ -22,7 +22,7 @@ describe BuildListsController do
     end
 
     it 'should not be able to perform index action in project scope' do
-      get :index, :project_id => @project.id
+      get :index, :owner_name => @project.owner.uname, :project_name => @project.name
       response.should redirect_to(forbidden_url)
     end
   end
@@ -31,35 +31,35 @@ describe BuildListsController do
     before {test_git_commit(@project)}
 
     it 'should be able to perform new action' do
-      get :new, :project_id => @project.id
+      get :new, :owner_name => @project.owner.uname, :project_name => @project.name
       response.should render_template(:new)
     end
 
     it 'should be able to perform create action' do
-      post :create, {:project_id => @project.id}.merge(@create_params)
+      post :create, {:owner_name => @project.owner.uname, :project_name => @project.name}.merge(@create_params)
       response.should redirect_to project_build_lists_path(@project)
     end
 
     it 'should save correct commit_hash for branch based build' do
-      post :create, {:project_id => @project.id}.merge(@create_params).deep_merge(:build_list => {:project_version => "latest_master"})
+      post :create, {:owner_name => @project.owner.uname, :project_name => @project.name}.merge(@create_params).deep_merge(:build_list => {:project_version => "latest_master"})
       @project.build_lists.last.commit_hash.should == @project.git_repository.commits('master').last.id
     end
 
     it 'should save correct commit_hash for tag based build' do
       system("cd #{@project.git_repository.path} && git tag 4.7.5.3") # TODO REDO through grit
-      post :create, {:project_id => @project.id}.merge(@create_params).deep_merge(:build_list => {:project_version => "4.7.5.3"})
+      post :create, {:owner_name => @project.owner.uname, :project_name => @project.name}.merge(@create_params).deep_merge(:build_list => {:project_version => "4.7.5.3"})
       @project.build_lists.last.commit_hash.should == @project.git_repository.commits('4.7.5.3').last.id
     end
   end
 
   shared_examples_for 'not create build list' do
     it 'should not be able to perform new action' do
-      get :new, :project_id => @project.id
+      get :new, :owner_name => @project.owner.uname, :project_name => @project.name
       response.should redirect_to(forbidden_url)
     end
 
     it 'should not be able to perform create action' do
-      post :create, {:project_id => @project.id}.merge(@create_params)
+      post :create, {:owner_name => @project.owner.uname, :project_name => @project.name}.merge(@create_params)
       response.should redirect_to(forbidden_url)
     end
   end
@@ -107,7 +107,7 @@ describe BuildListsController do
         rel.save
         @user = FactoryGirl.create(:user)
         set_session_for(@user)
-        @show_params = {:project_id => @project.id, :id => @build_list.id}
+        @show_params = {:owner_name => @project.owner.uname, :project_name => @project.name, :id => @build_list.id}
       end
   
       context 'for all build lists' do
@@ -192,7 +192,7 @@ describe BuildListsController do
         @build_list = FactoryGirl.create(:build_list_core, :project => @project)
 
         set_session_for(@user)
-        @show_params = {:project_id => @project.id, :id => @build_list.id}
+        @show_params = {:owner_name => @project.owner.uname, :project_name => @project.name, :id => @build_list.id}
       end
   
       context 'for all build lists' do

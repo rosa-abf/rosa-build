@@ -3,12 +3,12 @@ require 'spec_helper'
 
 shared_examples_for 'issue user with project reader rights' do
   it 'should be able to perform index action' do
-    get :index, :project_id => @project.id
+    get :index, :owner_name => @project.owner.uname, :project_name => @project.name
     response.should render_template(:index)
   end
 
   it 'should be able to perform show action' do
-    get :show, :project_id => @project.id, :id => @issue.serial_id
+    get :show, :owner_name => @project.owner.uname, :project_name => @project.name, :id => @issue.serial_id
     response.should render_template(:show)
   end
 end
@@ -50,12 +50,12 @@ end
 
 shared_examples_for 'user without issue destroy rights' do
   it 'should not be able to perform destroy action' do
-    delete :destroy, :id => @issue.serial_id, :project_id => @project.id
+    delete :destroy, :id => @issue.serial_id, :owner_name => @project.owner.uname, :project_name => @project.name
     response.should redirect_to(controller.current_user ? forbidden_path : new_user_session_path)
   end
 
   it 'should not reduce issues count' do
-    lambda{ delete :destroy, :id => @issue.serial_id, :project_id => @project.id }.should_not change{ Issue.count }
+    lambda{ delete :destroy, :id => @issue.serial_id, :owner_name => @project.owner.uname, :project_name => @project.name }.should_not change{ Issue.count }
   end
 end
 
@@ -82,17 +82,16 @@ describe IssuesController do
 
     @issue = FactoryGirl.create(:issue, :project_id => @project.id, :assignee_id => @issue_user.id)
     @create_params = {
-      :project_id => @project.id,
+      :owner_name => @project.owner.uname, :project_name => @project.name,
       :issue => {
         :title => "issue1",
-        :body => "issue body",
-        :project_id => @project.id
+        :body => "issue body"
       },
       :assignee_id => @issue_user.id,
       :assignee_uname => @issue_user.uname
     }
     @update_params = {
-      :project_id => @project.id,
+      :owner_name => @project.owner.uname, :project_name => @project.name,
       :issue => {
         :title => "issue2"
       }
@@ -129,7 +128,7 @@ describe IssuesController do
     before(:each) do
       @user = FactoryGirl.create(:user)
       set_session_for(@user)
-      @project.update_attribute(:owner, @user)
+      @project.update_attribute(:owner, @user); @create_params[:owner_name] = @user.uname; @update_params[:owner_name] = @user.uname
       @project.relations.create!(:object_type => 'User', :object_id => @user.id, :role => 'admin')
     end
 
@@ -191,12 +190,12 @@ describe IssuesController do
       it_should_behave_like 'issue user with project reader rights'
     else
       it 'should not be able to perform index action' do
-        get :index, :project_id => @project.id
+        get :index, :owner_name => @project.owner.uname, :project_name => @project.name
         response.should redirect_to(new_user_session_path)
       end
 
       it 'should not be able to perform show action' do
-        get :show, :project_id => @project.id, :id => @issue.serial_id
+        get :show, :owner_name => @project.owner.uname, :project_name => @project.name, :id => @issue.serial_id
         response.should redirect_to(new_user_session_path)
       end
     end

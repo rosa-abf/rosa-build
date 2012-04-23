@@ -54,23 +54,23 @@ end
 
 shared_examples_for 'user without destroy comment rights for commits' do
   it 'should not be able to perform destroy action' do
-    delete :destroy, :id => @stranger_comment.id, :commit_id => @commit.id, :project_id => @project.id
+    delete :destroy, :id => @stranger_comment.id, :commit_id => @commit.id, :owner_name => @project.owner.uname, :project_name => @project.name
     response.should redirect_to(forbidden_path)
   end
 
   it 'should not reduce comments count' do
-    lambda{ delete :destroy, :id => @stranger_comment.id, :commit_id => @commit.id, :project_id => @project.id }.should change{ Comment.count }.by(0)
+    lambda{ delete :destroy, :id => @stranger_comment.id, :commit_id => @commit.id, :owner_name => @project.owner.uname, :project_name => @project.name }.should change{ Comment.count }.by(0)
   end
 end
 
 #shared_examples_for 'user with destroy rights' do
 #  it 'should be able to perform destroy action' do
-#    delete :destroy, :id => @stranger_comment.id, :project_id => @project.id
+#    delete :destroy, :id => @stranger_comment.id, :owner_name => @project.owner.uname, :project_name => @project.name
 #    response.should redirect_to(commit_path(@project, @commit.id))
 #  end
 #
 #  it 'should reduce comments count' do
-#    lambda{ delete :destroy, :id => @stranger_comment.id, :issue_id => @issue.serial_id, :project_id => @project.id }.should change{ Comment.count }.by(-1)
+#    lambda{ delete :destroy, :id => @stranger_comment.id, :issue_id => @issue.serial_id, :owner_name => @project.owner.uname, :project_name => @project.name }.should change{ Comment.count }.by(-1)
 #  end
 #end
 
@@ -81,8 +81,8 @@ describe CommentsController do
     %x(cp -Rf #{Rails.root}/spec/tests.git/* #{@project.git_repository.path}) # maybe FIXME ?
     @commit = @project.git_repository.commits.first
 
-    @create_params = {:comment => {:body => 'I am a comment!'}, :project_id => @project.id, :commit_id => @commit.id}
-    @update_params = {:comment => {:body => 'updated'}, :project_id => @project.id, :commit_id => @commit.id}
+    @create_params = {:comment => {:body => 'I am a comment!'}, :owner_name => @project.owner.uname, :project_name => @project.name, :commit_id => @commit.id}
+    @update_params = {:comment => {:body => 'updated'}, :owner_name => @project.owner.uname, :project_name => @project.name, :commit_id => @commit.id}
 
     any_instance_of(Project, :versions => ['v1.0', 'v2.0'])
     @stranger_comment = create_comment FactoryGirl.create(:user)

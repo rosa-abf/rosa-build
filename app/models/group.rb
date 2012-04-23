@@ -36,7 +36,9 @@ class Group < ActiveRecord::Base
     (by_owner(user) | by_admin(user))
   end
 
-  def to_param; uname; end
+  def to_param
+    uname
+  end
 
   def name
     uname

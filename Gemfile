@@ -35,7 +35,7 @@ gem 'rdiscount'
 gem 'RedCloth'
 gem 'wikicloth'
 
-gem 'unicorn', '~> 4.3.0', :platforms => [:mri, :rbx]
+gem 'unicorn', '~> 4.2.1', :platforms => [:mri, :rbx]
 gem 'trinidad', '~> 1.0.2', :platforms => :jruby
 gem 'newrelic_rpm', '~> 3.3.3', :platforms => [:mri, :rbx]
 gem 'whenever', '~> 0.7.3', :require => false
@@ -45,8 +45,8 @@ gem 'will_paginate', '~> 3.0.3'
 gem 'meta-tags', '~> 1.2.5', :require => 'meta_tags'
 gem "haml-rails", '~> 0.3.4'
 gem 'jquery-rails', '~> 2.0.2'
-gem 'ruby-haml-js'
-gem 'rails-backbone'
+gem 'ruby-haml-js', '~> 0.0.3'
+gem 'rails-backbone', '~> 0.7.2'
 
 group :assets do
   gem 'sass-rails', '~> 3.2.5'

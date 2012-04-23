@@ -57,7 +57,9 @@ class User < ActiveRecord::Base
   after_create lambda { self.create_notifier }
   before_create :ensure_authentication_token
 
-  def to_param; uname; end
+  def to_param
+    uname
+  end
 
   def admin?
     role == 'admin'

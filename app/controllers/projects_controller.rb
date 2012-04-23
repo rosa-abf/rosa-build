@@ -59,6 +59,7 @@ class ProjectsController < ApplicationController
   end
 
   def fork
+    authorize! :fork, @project # TODO WTF ?
     owner = (Group.find params[:group] if params[:group].present?) || current_user
     authorize! :update, owner if owner.class == Group
     if forked = @project.fork(owner) and forked.valid?

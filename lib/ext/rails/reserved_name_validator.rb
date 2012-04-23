@@ -22,11 +22,16 @@ class ReservedNameValidator < ActiveModel::EachValidator
     unfollow unsubscribe url user
     widget widgets wiki
     xfn xmpp
-  } << Rails.application.routes.routes.map{|r| r.path.spec.to_s.match(/^\/([\w-]+)/)[1] rescue nil}.uniq.compact # current routes
+  }
+
+  def reserved_names
+    @reserved_names ||= RESERVED_NAMES +
+                        Rails.application.routes.routes.map{|r| r.path.spec.to_s.match(/^\/([\w-]+)/)[1] rescue nil}.uniq.compact # current routes
+  end
 
   def validate_each(record, attribute, value)
-    if RESERVED_NAMES.include?(value.downcase)
-      record.errors.add(attribute, :exclusion, options.merge!(:value => value))
+    if reserved_names.include?(value.downcase)
+      record.errors.add(attribute, :exclusion, options.merge(:value => value))
     end
   end
 end

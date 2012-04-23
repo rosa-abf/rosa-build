@@ -21,7 +21,7 @@ module Modules
 
         scope :search_order, order("CHAR_LENGTH(uname) ASC")
         scope :without, lambda {|a| where("#{klass.table_name}.id NOT IN (?)", a)}
-        scope :search, lambda {|q| where("#{klass.table_name}.uname ILIKE ?", "%#{q.strip}%")}
+        scope :search, lambda {|q| where("#{klass.table_name}.uname ILIKE ?", "%#{q.to_s.strip}%")}
 
       end
 

@@ -3,12 +3,9 @@ module ActionDispatch
   module Routing
     module UrlFor
       def url_for_with_defaults(options = nil)
-        # raise options.inspect
         if options.kind_of?(Hash)
-          # if options[:controller] == 'projects' and options[:action] == 'show' and post = options[:_positional_args].try(:first) and post.blog
-          if project = options[:_positional_args].try(:first) and project.is_a?(Project)
-            options[:_positional_args].unshift(project.owner)
-            # options[:use_route] = 'blog_post'
+          if project = options[:_positional_args].try(:first) and project.is_a?(Project) # for project routes
+            options[:_positional_args].unshift(project.owner) # add owner to URL for correct generation
           end
         end
         url_for_without_defaults(options)

@@ -130,7 +130,7 @@ describe ProjectsController do
       set_session_for(@user)
       @project.update_attribute(:visibility, 'hidden')
       post :fork, :owner_name => @project.owner.uname, :project_name => @project.name
-      response.should redirect_to(@project)
+      response.should redirect_to(forbidden_path)
     end
   end
 end

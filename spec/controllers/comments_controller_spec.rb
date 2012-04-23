@@ -50,23 +50,23 @@ end
 
 shared_examples_for 'user without destroy comment rights' do
   it 'should not be able to perform destroy action' do
-    delete :destroy, :id => @comment.id, :issue_id => @issue.serial_id, :project_id => @project.id
+    delete :destroy, :id => @comment.id, :issue_id => @issue.serial_id, :owner_name => @project.owner.uname, :project_name => @project.name
     response.should redirect_to(forbidden_path)
   end
 
   it 'should not reduce comments count' do
-    lambda{ delete :destroy, :id => @comment.id, :issue_id => @issue.serial_id, :project_id => @project.id }.should change{ Issue.count }.by(0)
+    lambda{ delete :destroy, :id => @comment.id, :issue_id => @issue.serial_id, :owner_name => @project.owner.uname, :project_name => @project.name }.should change{ Issue.count }.by(0)
   end
 end
 
 #shared_examples_for 'user with destroy rights' do
 #  it 'should be able to perform destroy action' do
-#    delete :destroy, :id => @comment.id, :issue_id => @issue.id, :project_id => @project.id
+#    delete :destroy, :id => @comment.id, :issue_id => @issue.id, :owner_name => @project.owner.uname, :project_name => @project.name
 #    response.should redirect_to([@project, @issue])
 #  end
 #
 #  it 'should reduce comments count' do
-#    lambda{ delete :destroy, :id => @comment.id, :issue_id => @issue.id, :project_id => @project.id }.should change{ Comment.count }.by(-1)
+#    lambda{ delete :destroy, :id => @comment.id, :issue_id => @issue.id, :owner_name => @project.owner.uname, :project_name => @project.name }.should change{ Comment.count }.by(-1)
 #  end
 #end
 
@@ -78,8 +78,8 @@ describe CommentsController do
     @issue = FactoryGirl.create(:issue, :project_id => @project.id, :user => FactoryGirl.create(:user))
     @comment = FactoryGirl.create(:comment, :commentable => @issue, :project_id => @project.id)
 
-    @create_params = {:comment => {:body => 'I am a comment!'}, :project_id => @project.id, :issue_id => @issue.serial_id}
-    @update_params = {:comment => {:body => 'updated'}, :project_id => @project.id, :issue_id => @issue.serial_id}
+    @create_params = {:comment => {:body => 'I am a comment!'}, :owner_name => @project.owner.uname, :project_name => @project.name, :issue_id => @issue.serial_id}
+    @update_params = {:comment => {:body => 'updated'}, :owner_name => @project.owner.uname, :project_name => @project.name, :issue_id => @issue.serial_id}
 
     any_instance_of(Project, :versions => ['v1.0', 'v2.0'])
 
@@ -102,6 +102,7 @@ describe CommentsController do
   context 'for project owner user' do
     before(:each) do
       @project.update_attribute(:owner, @user)
+      @create_params[:owner_name] = @user.uname; @update_params[:owner_name] = @user.uname
     end
 
    it_should_behave_like 'user with create comment rights'
