@@ -1,7 +1,11 @@
 // PUT custom styles here ONLY
 
-span.error {
+span.error, .hidden {
   display: none;
+}
+
+.centered {
+    text-align: center;
 }
 
 a#manage-labels {
@@ -456,10 +460,12 @@ table.tablesorter tr td.buttons {
     text-align: center;
 }
 
-table.tablesorter tr td.buttons a span.delete {
+table.tablesorter tr td.buttons a span.delete,
+span.delete {
     background: image-url('x.png') no-repeat 0 0 transparent;
     width: 12px;
     display: inline-block;
+    cursor: pointer;
 }
 
 #fork-and-edit {display:block;}
@@ -658,6 +664,7 @@ table.dataTable {
 
 table.tablesorter tr.search th {
     background: none repeat scroll 0 0 #DCECFA;
+    padding: 0 17px 0 5px;
 }
 
 table.tablesorter tr.search th input[type="text"] {
@@ -667,7 +674,8 @@ table.tablesorter tr.search th input[type="text"] {
     font-size: 12px;
     height: 16px;
     padding: 5px;
-    width: 830px;
+    width: 100%;
+
     margin-top: 2px;
 }
 
@@ -763,6 +771,85 @@ div.tos_sidebar ul li a {
     padding-left: 15px;
     padding-top: 5px;
     text-decoration: none;
+}
+
+table.tablesorter tbody tr.regular td {
+    background-color: #FFFFFF;
+}
+
+table.tablesorter tbody tr.removed td,
+table.tablesorter tbody tr.sync_error td {
+    background-color: #FFECEC;
+}
+
+table.tablesorter tbody tr.sync_success td {
+    background-color: #E0ECFF;
+}
+
+ul.ui-autocomplete li.item {
+/*    padding: 1px 0; */
+}
+
+ul.ui-autocomplete li.item div.collaborator {
+    padding: 0px 10px;
+}
+
+ul.ui-autocomplete li.item a.ui-corner-all {
+    padding: 0;
+}
+
+ul.ui-autocomplete li.item a.ui-corner-all.ui-state-hover {
+    background: #DCECFA;
+    border: 1px solid #65A6F7;
+}
+
+ul.ui-autocomplete li.item div.collaborator div.img {
+    padding: 0;
+    padding-top: 1px;
+}
+ul.ui-autocomplete li.item div.collaborator div.name {
+    padding: 0;
+    margin-left: 5px;
+}
+
+ul.ui-autocomplete.has_results {
+    overflow: auto;
+}
+
+#add_collaborator_form div.search_string {
+    margin-left: 5px;
+    float: left;
+    padding-top: 6px;
+}
+#add_collaborator_form div.img {
+    width: 25px;
+    height: 25px;
+//    border: 1px solid #DDDDDD;
+//    border-radius: 2px;
+}
+
+#add_collaborator_form div.img img {
+//    margin-top: 1px;
+//    margin-left: 1px;
+}
+
+#add_collaborator_form .admin-role .lineForm {
+    padding-top: 7px;
+}
+
+input:-moz-placeholder,
+textarea:-moz-placeholder {
+    color: #CFCFCF;
+}
+
+input::-webkit-input-placeholder,
+textarea::-webkit-input-placeholder {
+    color: #CFCFCF;
+}
+
+input.placeholder,
+textarea.placeholder {
+    color: #CFCFCF;
 }
 
 div.description-top div.git_help {

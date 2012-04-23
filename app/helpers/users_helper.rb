@@ -6,6 +6,7 @@ module UsersHelper
   end
 
   def avatar_url(user, size = :small)
+    return image_path('group32.png') if user.kind_of? Group
     if user.try('avatar?')
       user.avatar.url(size)
     else

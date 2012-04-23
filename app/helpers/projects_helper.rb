@@ -30,4 +30,8 @@ module ProjectsHelper
   def alone_member?(project)
     Relation.by_target(project).by_object(current_user).size > 0
   end
+
+  def participant_path(participant)
+    participant.kind_of?(User) ? user_path(participant) : group_path(participant)
+  end
 end

@@ -101,8 +101,6 @@ Rosa::Application.routes.draw do
   get '/forbidden' => 'pages#forbidden', :as => 'forbidden'
   get '/terms-of-service' => 'pages#tos', :as => 'tos'
 
-  get '/activity_feeds.:format' => 'activity_feeds#index', :as => 'atom_activity_feeds', :format => /atom/
-
   resources :projects, :only => [:index, :new, :create]
   scope ':owner_name' do # Owner
     # TODO User routes here
@@ -144,16 +142,8 @@ Rosa::Application.routes.draw do
       resources :build_lists, :only => [:index, :new, :create] do
         collection { post :search }
       end
-      resources :collaborators, :only => [:index, :edit, :update, :add] do
-        collection do
-          get :edit
-          post :update
-          post :add
-          delete :remove
-        end
-        member do
-          post :update
-        end
+      resources :collaborators do
+        get :find, :on => :collection
       end
     end
     scope ':project_name' do
@@ -194,6 +184,7 @@ Rosa::Application.routes.draw do
     end
   end
 
+  get '/activity_feeds.:format' => 'activity_feeds#index', :as => 'atom_activity_feeds', :format => /atom/
   if APP_CONFIG['anonymous_access']
     authenticated do
       root :to => 'activity_feeds#index'

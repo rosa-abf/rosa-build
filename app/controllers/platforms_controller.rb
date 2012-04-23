@@ -53,7 +53,7 @@ class PlatformsController < ApplicationController
     if @platform.update_attributes(
       :owner => @admin_id.blank? ? get_owner : User.find(@admin_id),
       :description => params[:platform][:description],
-      :released => params[:platform][:released]
+      :released => (params[:platform][:released] || @platform.released)
     )
       flash[:notice] = I18n.t("flash.platform.saved")
       redirect_to @platform

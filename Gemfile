@@ -45,6 +45,8 @@ gem 'will_paginate', '~> 3.0.3'
 gem 'meta-tags', '~> 1.2.5', :require => 'meta_tags'
 gem "haml-rails", '~> 0.3.4'
 gem 'jquery-rails', '~> 2.0.2'
+gem 'ruby-haml-js'
+gem 'rails-backbone'
 
 group :assets do
   gem 'sass-rails', '~> 3.2.5'

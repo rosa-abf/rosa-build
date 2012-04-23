@@ -16,6 +16,7 @@ en:
     remove: Remove
     
     find_project: Find project...
+    filter_by_name: Filter by name
 
     visibilities:
       open: open

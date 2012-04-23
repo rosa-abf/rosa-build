@@ -4,8 +4,15 @@
 //= require autocomplete-rails
 //= require vendor
 //= require jquery.dataTables_ext
+//= require_tree ./lib
 //= require_tree ./design
 //= require_tree ./extra
+
+//= require underscore
+//= require backbone
+//= require backbone_rails_sync
+//= require backbone_datalink
+//= require backbone/rosa
 //= require_self
 
 function disableNotifierCbx(global_cbx) {
@@ -19,6 +26,10 @@ function disableNotifierCbx(global_cbx) {
 }
 
 $(document).ready(function() {
+  // setup all placeholders on page
+  $('input[placeholder], textarea[placeholder]').placeholder();
+
+
   $('input.user_role_chbx').click(function() {
       var current = $(this);
       current.parent().find('input.user_role_chbx').each(function(i,el) {
