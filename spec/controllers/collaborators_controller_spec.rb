@@ -1,6 +1,23 @@
 # -*- encoding : utf-8 -*-
 require 'spec_helper'
 
+def create_params
+      @user_params = {
+          :actor_id => @another_user.id.to_s,
+          :actor_type => 'user',
+          :role => 'reader'
+      }
+      @group_params = {
+          :actor_id => @group.id.to_s,
+          :actor_type => 'group',
+          :role => 'reader'
+      }
+      @create_params = {
+        :project_id => @project.id.to_s,
+        :format => :json
+      }
+end
+
 shared_examples_for 'project admin user' do
   it 'should be able to view collaborators list' do
     get :index, :project_id => @project.id
@@ -73,20 +90,7 @@ describe CollaboratorsController do
       @admin = FactoryGirl.create(:admin)
       set_session_for(@admin)
       @group = FactoryGirl.create(:group)
-      @user_params = {
-          :actor_id => @another_user.id.to_s,
-          :actor_type => 'user',
-          :role => 'reader'
-      }
-      @group_params = {
-          :actor_id => @group.id.to_s,
-          :actor_type => 'group',
-          :role => 'reader'
-      }
-      @create_params = {
-        :project_id => @project.id.to_s,
-        :format => :json
-      }
+      create_params
     end
 
     it_should_behave_like 'project admin user'
@@ -99,20 +103,7 @@ describe CollaboratorsController do
       set_session_for(@user)
       @group = FactoryGirl.create(:group)
       @project.relations.create!(:object_type => 'User', :object_id => @user.id, :role => 'admin')
-      @user_params = {
-          :actor_id => @another_user.id.to_s,
-          :actor_type => 'user',
-          :role => 'reader'
-      }
-      @group_params = {
-          :actor_id => @group.id.to_s,
-          :actor_type => 'group',
-          :role => 'reader'
-      }
-      @create_params = {
-        :project_id => @project.id.to_s,
-        :format => :json
-      }
+      create_params
     end
 
     it_should_behave_like 'project admin user'
@@ -128,20 +119,7 @@ describe CollaboratorsController do
       @project.update_attribute(:owner, @user)
       @project.relations.create!(:object_type => 'User', :object_id => @user.id, :role => 'admin')
 
-      @user_params = {
-          :actor_id => @another_user.id.to_s,
-          :actor_type => 'user',
-          :role => 'reader'
-      }
-      @group_params = {
-          :actor_id => @group.id.to_s,
-          :actor_type => 'group',
-          :role => 'reader'
-      }
-      @create_params = {
-        :project_id => @project.id.to_s,
-        :format => :json
-      }
+      create_params
     end
 
     it_should_behave_like 'project admin user'
