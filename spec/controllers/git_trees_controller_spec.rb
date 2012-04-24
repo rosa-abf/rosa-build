@@ -16,10 +16,18 @@ describe Git::TreesController do
   end
 
   context 'for guest' do
-    it 'should be able to perform archive action' do
-      fill_project
-      get :archive, @params
-      response.should be_success
+    if APP_CONFIG['anonymous_access']
+      it 'should be able to perform archive action with anonymous acccess' do
+        fill_project
+        get :archive, @params
+        response.should be_success
+      end
+    else
+      it 'should not be able to perform archive action without anonymous acccess' do
+        fill_project
+        get :archive, @params
+        response.code.should == '401'
+      end
     end
   end
 
@@ -45,6 +53,8 @@ describe Git::TreesController do
     end
 
     it 'should be able to perform archive action' do
+      @user = FactoryGirl.create(:user)
+      set_session_for(@user)
       fill_project
       get :archive, @params
       response.should be_success
