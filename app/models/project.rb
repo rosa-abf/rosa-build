@@ -51,7 +51,7 @@ class Project < ActiveRecord::Base
 
   include Modules::Models::Owner
 
-  def build_for(platform, user, arch = 'i586') 
+  def build_for(platform, user, arch = 'i586', priority = 0) 
     # Select main and project platform repository(contrib, non-free and etc)
     # If main does not exist, will connect only project platform repository
     # If project platform repository is main, only main will be connect
@@ -70,6 +70,7 @@ class Project < ActiveRecord::Base
       bl.user = user
       bl.auto_publish = true # already  set as db default
       bl.include_repos = build_ids
+      bl.priority = priority
     end
   end
 
