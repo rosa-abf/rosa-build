@@ -52,10 +52,6 @@ class Collaborator
       @actor = args[:actor_type].classify.constantize.find(args[:actor_id])
     end
 
-#    if @relation.nil? and @actor.present? and @project.present?
-#      @relation = Relation.by_object(@actor).by_target(@project).limit(1).first
-#      @relation ||= Relation.new(:object => @actor, :target => @project)
-#    end
     relation.role = args[:role] if args[:role].present? #if @relation.present? and args[:role].present?
   end
 
