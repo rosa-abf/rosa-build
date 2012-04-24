@@ -39,7 +39,6 @@ class CollaboratorsController < ApplicationController
   end
 
   def create
-    puts params.inspect
     @collaborator = Collaborator.new(params[:collaborator])
     @collaborator.project = @project
     if @collaborator.save

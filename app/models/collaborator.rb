@@ -27,11 +27,14 @@ class Collaborator
     end
 
     def create(args)
-      self.new(args).save
+      c = self.new(args)
+      return c.save ? c : false
     end
 
     def create!(args)
-      self.new(args).save!
+      c = self.new(args)
+      c.save!
+      return c
     end
   end
 
@@ -49,11 +52,7 @@ class Collaborator
       @actor = args[:actor_type].classify.constantize.find(args[:actor_id])
     end
 
-    if @relation.nil? and @actor.present? and @project.present?
-      @relation = Relation.by_object(@actor).by_target(@project).limit(1).first
-      @relation ||= Relation.new(:object => @actor, :target => @project)
-    end
-    @relation.role = args[:role] if @relation.present? and args[:role].present?
+    relation.role = args[:role] if args[:role].present? #if @relation.present? and args[:role].present?
   end
 
   def update_attributes(attributes, options = {})
@@ -70,7 +69,7 @@ class Collaborator
   end
 
   def id
-    @relation.try(:id)
+    relation.try(:id)
   end
 
   def actor_id
@@ -94,23 +93,23 @@ class Collaborator
   end
 
   def role
-    @relation.try(:role)
+    relation.try(:role)
   end
 
   def role=(arg)
-    @relation.role = arg
+    relation.role = arg
   end
 
   def save
-    @relation.try(:save)
+    relation.try(:save)
   end
 
   def save!
-    @relation.try(:save!)
+    relation.try(:save!)
   end
 
   def destroy
-    @relation.try(:destroy)
+    relation.try(:destroy)
   end
 
   def attributes
