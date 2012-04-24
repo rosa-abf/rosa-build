@@ -4,7 +4,7 @@ require 'spec_helper'
 shared_examples_for 'project admin user' do
   it 'should be able to view collaborators list' do
     get :index, :project_id => @project.id
-    response.should be_succes
+    response.should be_success
   end
 
   it 'should be able to perform update action' do
