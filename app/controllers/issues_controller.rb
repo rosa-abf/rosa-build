@@ -27,7 +27,7 @@ class IssuesController < ApplicationController
 
     @issues = @issues.includes(:assignee, :user).order('serial_id desc').uniq.paginate :per_page => 10, :page => params[:page]
     if status == 200
-      render 'index', :layout => request.format == '*/*' ? 'issues' : 'application' # maybe FIXME '*/*'?
+      render 'index', :layout => request.xhr? ? 'issues' : 'application'
     else
       render :status => status, :nothing => true
     end
