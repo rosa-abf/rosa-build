@@ -66,7 +66,7 @@ describe SubscribesController do
     before(:each) do
       @user = FactoryGirl.create(:admin)
       set_session_for(@user)
-      @project.relations.create!(:object_type => 'User', :object_id => @user.id, :role => 'admin')
+      @project.relations.create!(:actor_type => 'User', :actor_id => @user.id, :role => 'admin')
       @destroy_params = @destroy_params.merge({:id => @user.id})
     end
 

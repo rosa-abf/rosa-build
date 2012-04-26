@@ -33,10 +33,10 @@ class MembersController < ApplicationController
     params['user'].keys.each { |user_id|
       role = params['user'][user_id]
 
-      if relation = parent.objects.find_by_object_id_and_object_type(user_id, 'User')
+      if relation = parent.actors.where(:actor_id => user_id, :actor_type => 'User') #find_by_actor_id_and_actor_type(user_id, 'User')
         relation.update_attribute(:role, role)
       else
-        relation = parent.objects.build(:object_id => user_id, :object_type => 'User', :role => role)
+        relation = parent.actors.build(:actor_id => user_id, :actor_type => 'User', :role => role)
         relation.save!
       end
     } if params['user']
@@ -53,7 +53,7 @@ class MembersController < ApplicationController
   def remove
     if params[:id]
       u = User.find(params[:id])
-      Relation.by_object(u).by_target(parent)[0].destroy
+      Relation.by_actor(u).by_target(parent)[0].destroy
 
       redirect_to groups_path
     else
@@ -65,7 +65,7 @@ class MembersController < ApplicationController
 
       all_user_ids.each do |user_id|
         u = User.find(user_id)
-        Relation.by_object(u).by_target(parent).each {|r| r.destroy}
+        Relation.by_actor(u).by_target(parent).each {|r| r.destroy}
       end
 
       redirect_to edit_group_members_path(parent)
@@ -75,8 +75,8 @@ class MembersController < ApplicationController
   def add
     if params['user_id'] and !params['user_id'].empty?
       @user = User.find_by_uname(params['user_id'])
-      unless parent.objects.exists? :object_id => @user.id, :object_type => 'User'
-        relation = parent.objects.build(:object_id => @user.id, :object_type => 'User', :role => params[:role])
+      unless parent.actors.exists? :actor_id => @user.id, :actor_type => 'User'
+        relation = parent.actors.build(:actor_id => @user.id, :actor_type => 'User', :role => params[:role])
         if relation.save
           flash[:notice] = t("flash.members.successfully_added")
         else

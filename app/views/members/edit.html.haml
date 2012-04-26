@@ -23,7 +23,7 @@
           - Relation::ROLES.each_with_index do |role, i|
             %td
               .radio
-                = radio_button_tag "user[#{user.id}]", role, ((parent.objects.exists? :object_id => user.id, :object_type => 'User', :role => role) ? :checked : nil), :class => 'niceRadio'
+                = radio_button_tag "user[#{user.id}]", role, ((parent.actors.exists? :actor_id => user.id, :actor_type => 'User', :role => role) ? :checked : nil), :class => 'niceRadio'
               .forradio= t("layout.collaborators.role_names.#{ role }")
   = link_to_function t("layout.delete"), "deleteAdminMember();", :class => 'button'
   .both

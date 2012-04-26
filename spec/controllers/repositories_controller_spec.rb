@@ -108,7 +108,7 @@ describe RepositoriesController do
       @user = FactoryGirl.create(:user)
       set_session_for(@user)
       @repository.platform.update_attribute(:owner, @user)
-      @repository.platform.relations.create!(:object_type => 'User', :object_id => @user.id, :role => 'admin')
+      @repository.platform.relations.create!(:actor_type => 'User', :actor_id => @user.id, :role => 'admin')
     end
 
     it_should_behave_like 'platform admin user'

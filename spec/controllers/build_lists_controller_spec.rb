@@ -103,7 +103,7 @@ describe BuildListsController do
         @owner_user = @project.owner
         @member_user = FactoryGirl.create(:user)
         rel = @project.relations.build(:role => 'reader')
-        rel.object = @member_user
+        rel.actor = @member_user
         rel.save
         @user = FactoryGirl.create(:user)
         set_session_for(@user)
@@ -116,7 +116,7 @@ describe BuildListsController do
           @build_list2 = FactoryGirl.create(:build_list_core, :project => FactoryGirl.create(:project, :visibility => 'hidden'))
           @build_list3 = FactoryGirl.create(:build_list_core, :project => FactoryGirl.create(:project, :owner => @user, :visibility => 'hidden'))
           @build_list4 = FactoryGirl.create(:build_list_core, :project => FactoryGirl.create(:project, :visibility => 'hidden'))
-          @build_list4.project.relations.create :role => 'reader', :object_id => @user.id, :object_type => 'User'
+          @build_list4.project.relations.create :role => 'reader', :actor_id => @user.id, :actor_type => 'User'
         end
 
         it 'should be able to perform index action' do
@@ -177,17 +177,17 @@ describe BuildListsController do
       before(:each) do
         @owner_group = FactoryGirl.create(:group)
         @owner_user = FactoryGirl.create(:user)
-        @owner_group.objects.create :role => 'reader', :object_id => @owner_user.id, :object_type => 'User'
+        @owner_group.actors.create :role => 'reader', :actor_id => @owner_user.id, :actor_type => 'User'
         @member_group = FactoryGirl.create(:group)
         @member_user = FactoryGirl.create(:user)
-        @member_group.objects.create :role => 'reader', :object_id => @member_user.id, :object_type => 'User'
+        @member_group.actors.create :role => 'reader', :actor_id => @member_user.id, :actor_type => 'User'
 
         @group = FactoryGirl.create(:group)
         @user = FactoryGirl.create(:user)
-        @group.objects.create :role => 'reader', :object_id => @user.id, :object_type => 'User'
+        @group.actors.create :role => 'reader', :actor_id => @user.id, :actor_type => 'User'
 
         @project = FactoryGirl.create(:project, :owner => @owner_group)
-        @project.relations.create :role => 'reader', :object_id => @member_group.id, :object_type => 'Group'
+        @project.relations.create :role => 'reader', :actor_id => @member_group.id, :actor_type => 'Group'
 
         @build_list = FactoryGirl.create(:build_list_core, :project => @project)
 
@@ -201,7 +201,7 @@ describe BuildListsController do
           @build_list2 = FactoryGirl.create(:build_list_core, :project => FactoryGirl.create(:project, :visibility => 'hidden'))
           @build_list3 = FactoryGirl.create(:build_list_core, :project => FactoryGirl.create(:project, :owner => @group, :visibility => 'hidden'))
           @build_list4 = FactoryGirl.create(:build_list_core, :project => FactoryGirl.create(:project, :visibility => 'hidden'))
-          @build_list4.project.relations.create :role => 'reader', :object_id => @group.id, :object_type => 'Group'
+          @build_list4.project.relations.create :role => 'reader', :actor_id => @group.id, :actor_type => 'Group'
         end
 
         it 'should be able to perform index action' do

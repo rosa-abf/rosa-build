@@ -56,7 +56,7 @@ describe Comment do
 
       set_commentable_data
 
-      @project.relations.create!(:object_type => 'User', :object_id => @user.id, :role => 'admin')
+      @project.relations.create!(:actor_type => 'User', :actor_id => @user.id, :role => 'admin')
     end
 
     it 'should create comment' do
@@ -85,7 +85,7 @@ describe Comment do
       set_commentable_data
 
       @project.update_attribute(:owner, @user)
-      @project.relations.create!(:object_type => 'User', :object_id => @user.id, :role => 'admin')
+      @project.relations.create!(:actor_type => 'User', :actor_id => @user.id, :role => 'admin')
     end
 
     it 'should create comment' do
