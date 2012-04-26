@@ -154,14 +154,16 @@ class Platform < ActiveRecord::Base
   end
 
   def build_all(user)
-    repositories.find_by_name('main').projects.find_in_batches(:batch_size => 2) do |group|
-      sleep 1
-      group.each do |p|
-        %w(i586 x86_64).each do |arch|
-          begin
-            p.build_for(self, user, arch)
-          rescue RuntimeError, Exception
-            p.delay.build_for(self, user, arch)
+    repositories.each do |rep|
+      rep.projects.find_in_batches(:batch_size => 2) do |group|
+        sleep 1
+        group.each do |p|
+          Arch.all.map(&:name).each do |arch|
+            begin
+              p.build_for(self, user, arch)
+            rescue RuntimeError, Exception
+              p.delay.build_for(self, user, arch)
+            end
           end
         end
       end
