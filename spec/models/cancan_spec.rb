@@ -147,7 +147,7 @@ describe CanCan do
 
       context 'with read rights' do
         before(:each) do
-          @project.relations.create!(:object_id => @user.id, :object_type => 'User', :role => 'reader')
+          @project.relations.create!(:actor_id => @user.id, :actor_type => 'User', :role => 'reader')
         end
 
         it 'should be able to read project' do
@@ -165,7 +165,7 @@ describe CanCan do
 
       context 'with writer rights' do
         before(:each) do
-          @project.relations.create!(:object_id => @user.id, :object_type => 'User', :role => 'writer')
+          @project.relations.create!(:actor_id => @user.id, :actor_type => 'User', :role => 'writer')
         end
 
         [:read, :create, :new].each do |action|
@@ -184,7 +184,7 @@ describe CanCan do
 
       context 'with admin rights' do
         before(:each) do
-          @project.relations.create!(:object_id => @user.id, :object_type => 'User', :role => 'admin')
+          @project.relations.create!(:actor_id => @user.id, :actor_type => 'User', :role => 'admin')
         end
 
         [:read, :update].each do |action|
@@ -258,7 +258,7 @@ describe CanCan do
 
       context 'with read rights' do
         before(:each) do
-          @platform.relations.create!(:object_id => @user.id, :object_type => 'User', :role => 'reader')
+          @platform.relations.create!(:actor_id => @user.id, :actor_type => 'User', :role => 'reader')
         end
 
         it "should be able to read platform" do
@@ -286,7 +286,7 @@ describe CanCan do
 
       context 'with read rights' do
         before(:each) do
-          @repository.platform.relations.create!(:object_id => @user.id, :object_type => 'User', :role => 'reader')
+          @repository.platform.relations.create!(:actor_id => @user.id, :actor_type => 'User', :role => 'reader')
         end
 
         it "should be able to read repository" do
@@ -298,7 +298,7 @@ describe CanCan do
     context 'build list relations' do
       before(:each) do
         @project = FactoryGirl.create(:project)
-        @project.relations.create!(:object_id => @user.id, :object_type => 'User', :role => 'writer')
+        @project.relations.create!(:actor_id => @user.id, :actor_type => 'User', :role => 'writer')
         @build_list = FactoryGirl.create(:build_list, :project => @project)
       end
 

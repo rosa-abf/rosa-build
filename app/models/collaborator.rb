@@ -17,7 +17,7 @@ class Collaborator
     def find_by_project(project)
       res = []
       project.relations.each do |r|
-        res << from_relation(r) unless project.owner_id == r.object_id and project.owner_type == r.object_type
+        res << from_relation(r) unless project.owner_id == r.actor_id and project.owner_type == r.actor_type
       end
       return res
     end
@@ -64,7 +64,7 @@ class Collaborator
 
   def relation=(model)
     @relation = model
-    @actor = @relation.object
+    @actor = @relation.actor
     @project = @relation.target
   end
 
@@ -134,15 +134,15 @@ class Collaborator
   end
 
   def relation
-    return @relation if @relation.present? and @relation.object == @actor and @relation.target == @project
+    return @relation if @relation.present? and @relation.actor == @actor and @relation.target == @project
 
     if @actor.present? and @project.present?
-      @relation = Relation.by_object(@actor).by_target(@project).limit(1).first
-      @relation ||= Relation.new(:object_id => @actor.id,   :object_type => @actor.class.to_s,
+      @relation = Relation.by_actor(@actor).by_target(@project).limit(1).first
+      @relation ||= Relation.new(:actor_id  => @actor.id,   :actor_type  => @actor.class.to_s,
                                  :target_id => @project.id, :target_type => 'Project')
     else
       @relation = Relation.new
-      @relation.object = @actor
+      @relation.actor = @actor
       @relation.target = @project
     end
     @relation

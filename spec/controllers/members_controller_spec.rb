@@ -15,12 +15,12 @@ describe MembersController do
     it 'should add member to group' do
       post :add, @add_params
       response.should redirect_to(edit_group_members_path(@group))
-      Relation.by_target(@group).by_object(@another_user).count.should eql(1)
+      Relation.by_target(@group).by_actor(@another_user).count.should eql(1)
     end
 
     it 'should add reader member to group' do
       post :add, @add_params
-      Relation.by_target(@group).by_object(@another_user).first.role.should eql('reader')
+      Relation.by_target(@group).by_actor(@another_user).first.role.should eql('reader')
     end
   end
 end

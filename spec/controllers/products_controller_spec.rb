@@ -64,7 +64,7 @@ describe ProductsController do
   	before(:each) do
   		@user = FactoryGirl.create(:user)
   		set_session_for(@user)
-      @platform.relations.create!(:object_type => 'User', :object_id => @user.id, :role => 'admin')
+      @platform.relations.create!(:actor_type => 'User', :actor_id => @user.id, :role => 'admin')
 		end
 
     it_should_behave_like 'admin user'

@@ -115,7 +115,7 @@ describe IssuesController do
     before(:each) do
       @user = FactoryGirl.create(:user)
       set_session_for(@user)
-      @project.relations.create!(:object_type => 'User', :object_id => @user.id, :role => 'admin')
+      @project.relations.create!(:actor_type => 'User', :actor_id => @user.id, :role => 'admin')
     end
 
     it_should_behave_like 'issue user with project reader rights'
@@ -130,7 +130,7 @@ describe IssuesController do
       @user = FactoryGirl.create(:user)
       set_session_for(@user)
       @project.update_attribute(:owner, @user)
-      @project.relations.create!(:object_type => 'User', :object_id => @user.id, :role => 'admin')
+      @project.relations.create!(:actor_type => 'User', :actor_id => @user.id, :role => 'admin')
     end
 
     it_should_behave_like 'issue user with project reader rights'
@@ -144,7 +144,7 @@ describe IssuesController do
     before(:each) do
       @user = FactoryGirl.create(:user)
       set_session_for(@user)
-      @project.relations.create!(:object_type => 'User', :object_id => @user.id, :role => 'reader')
+      @project.relations.create!(:actor_type => 'User', :actor_id => @user.id, :role => 'reader')
     end
 
     it_should_behave_like 'issue user with project reader rights'
@@ -166,7 +166,7 @@ describe IssuesController do
     before(:each) do
       @user = FactoryGirl.create(:user)
       set_session_for(@user)
-      @project.relations.create!(:object_type => 'User', :object_id => @user.id, :role => 'writer')
+      @project.relations.create!(:actor_type => 'User', :actor_id => @user.id, :role => 'writer')
     end
 
     it_should_behave_like 'issue user with project reader rights'

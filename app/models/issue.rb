@@ -54,7 +54,7 @@ class Issue < ActiveRecord::Base
   end
 
   def collect_recipient_ids
-    recipients = self.project.relations.by_role('admin').where(:object_type => 'User').map { |rel| rel.read_attribute(:object_id) }
+    recipients = self.project.relations.by_role('admin').where(:actor_type => 'User').map { |rel| rel.read_attribute(:actor_id) }
     recipients = recipients | [self.assignee_id] if self.assignee_id
     recipients = recipients | [self.project.owner_id] if self.project.owner_type == 'User'
 

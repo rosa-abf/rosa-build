@@ -13,8 +13,8 @@ class Project < ActiveRecord::Base
   has_many :repositories, :through => :project_to_repositories
 
   has_many :relations, :as => :target, :dependent => :destroy
-  has_many :collaborators, :through => :relations, :source => :object, :source_type => 'User'
-  has_many :groups,        :through => :relations, :source => :object, :source_type => 'Group'
+  has_many :collaborators, :through => :relations, :source => :actor, :source_type => 'User'
+  has_many :groups,        :through => :relations, :source => :actor, :source_type => 'Group'
   has_many :labels
 
   validates :name, :uniqueness => {:scope => [:owner_id, :owner_type], :case_sensitive => false}, :presence => true, :format => {:with => /^[a-zA-Z0-9_\-\+\.]+$/}
@@ -206,7 +206,7 @@ class Project < ActiveRecord::Base
   end
 
   def owner_and_admin_ids
-    recipients = self.relations.by_role('admin').where(:object_type => 'User').map { |rel| rel.read_attribute(:object_id) }
+    recipients = self.relations.by_role('admin').where(:actor_type => 'User').map { |rel| rel.read_attribute(:actor_id) }
     recipients = recipients | [self.owner_id] if self.owner_type == 'User'
     recipients
   end
