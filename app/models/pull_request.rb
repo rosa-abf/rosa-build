@@ -1,8 +1,14 @@
-class PullRequest < Issue
+class PullRequest < ActiveRecord::Base
   extend StateMachine::MacroMethods # no method state_machine WTF?!
-  serialize :data
   #TODO add validates to serialized data
   scope :needed_checking, where(:state => ['open', 'blocked', 'ready'])
+
+  belongs_to :issue, :autosave => true, :dependent => :destroy, :touch => true, :validate => true
+  belongs_to :base_project, :class_name => 'Project', :foreign_key => 'base_project_id'
+  belongs_to :head_project, :class_name => 'Project', :foreign_key => 'head_project_id'
+  delegate :user, :title, :body, :serial_id, :assignee, :to => :issue, :allow_nil => true
+  accepts_nested_attributes_for :issue
+  #attr_accessible #FIXME disable for development
 
   state_machine :initial => :open do
     #after_transition [:ready, :blocked] => [:merged, :closed] do |pull, transition|
@@ -62,10 +68,28 @@ class PullRequest < Issue
     end
   end
 
+  def self.default_base_project(project)
+    project.is_root? ? project : project.root
+  end
+
+  def clean #FIXME move to protected
+    Dir.chdir(path) do
+      base_project.branches.each {|branch| system 'git', 'checkout', branch.name}
+      system 'git', 'checkout', base_ref
+
+      base_project.branches.each do |branch|
+        system 'git', 'branch', '-D', branch.name unless [base_ref, head_ref].include? branch.name
+      end
+      base_project.tags.each do |tag|
+        system 'git', 'tag', '-d', tag.name unless [base_ref, head_ref].include? tag.name
+      end
+    end
+  end
+
   protected
 
   def path
-    filename = [id, project.owner.uname, project.name].join('-')
+    filename = [id, base_project.owner.uname, base_project.name].join('-')
     if Rails.env == "production"
       File.join('/srv/rosa_build/shared/tmp', "pull_requests", filename)
     else
@@ -75,7 +99,7 @@ class PullRequest < Issue
 
   def merge
     clone
-    %x(cd #{path} && git checkout #{data[:base_branch]} && git merge --no-ff #{data[:head_branch]}) #FIXME need sanitize branch name!
+    %x(cd #{path} && git checkout #{base_ref} && git merge --no-ff #{head_ref}) #FIXME need sanitize branch name!
   end
 
   def clone
@@ -83,18 +107,27 @@ class PullRequest < Issue
 
     unless git.exist?
       FileUtils.mkdir_p(path)
-      system("git clone --local --no-hardlinks #{project.path} #{path}")
+      system("git clone --local --no-hardlinks #{base_project.path} #{path}")
+      if base_project != head_project
+        Dir.chdir(path) do
+          system 'git', 'remote', 'add', 'head', head_project.path
+        end
+      end
     end
+
+    clean
     Dir.chdir(path) do
-      [data[:base_branch], data[:head_branch]].each do |branch|
-        system 'git', 'checkout', branch
-        system 'git', 'pull', 'origin', branch
+      system 'git', 'checkout', base_ref
+      system 'git', 'pull',  'origin', base_ref
+      if base_project == head_project
+        system 'git', 'checkout', head_ref
+        system 'git', 'pull', 'origin', head_ref
+      else
+        system 'git', 'fetch', 'head', "+#{head_ref}:head_#{head_ref}"
       end
     end
     # TODO catch errors
   end
 
-  def set_serial_id
-    self.update_attribute :serial_id, self.project.pull_requests.count
-  end
+
 end

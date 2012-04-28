@@ -146,8 +146,6 @@ ActiveRecord::Schema.define(:version => 20120418100619) do
     t.integer  "user_id"
     t.datetime "closed_at"
     t.integer  "closed_by"
-    t.string   "type"
-    t.text     "data",        :default => "0",    :null => false
   end
 
   add_index "issues", ["project_id", "serial_id"], :name => "index_issues_on_project_id_and_serial_id", :unique => true
@@ -265,6 +263,14 @@ ActiveRecord::Schema.define(:version => 20120418100619) do
   end
 
   add_index "projects", ["owner_id"], :name => "index_projects_on_name_and_owner_id_and_owner_type", :unique => true, :case_sensitive => false
+
+  create_table "pull_requests", :force => true do |t|
+    t.integer "issue_id",        :null => false
+    t.integer "base_project_id", :null => false
+    t.integer "head_project_id", :null => false
+    t.string  "base_ref",        :null => false
+    t.string  "head_ref",        :null => false
+  end
 
   create_table "register_requests", :force => true do |t|
     t.string   "name"

@@ -6,7 +6,7 @@ class Project < ActiveRecord::Base
   belongs_to :owner, :polymorphic => true, :counter_cache => :own_projects_count
 
   has_many :issues, :dependent => :destroy
-  has_many :pull_requests, :dependent => :destroy
+  has_many :pull_requests, :dependent => :destroy, :foreign_key => 'base_project_id'
   has_many :build_lists, :dependent => :destroy
 
   has_many :project_imports, :dependent => :destroy

@@ -1,16 +1,28 @@
 -set_meta_tags :title => [title_object(@project), t('.title')]
 = render :partial => 'projects/submenu'
+%h3.bpadding10= raw t '.new', {:base => @base, :head => @head}
 
-=form_for @project.pull_requests.new, :url => project_pull_requests_path do |f|
-  .row-fluid
-    .span12
-      %h3=raw t '.new', {:base => @base, :head => @head}
-      .row-fluid
-        .span6
-          .span
-            %h3 #{t '.base'} #{t '.refs'}:
-            =text_field_tag :base_ref, @base
-        .span6
-          .span
-            %h3 #{t '.head'} #{t '.refs'}:
-            =text_field_tag :head_ref, @head
+=form_for @pull, :url => project_pull_requests_path, :html => {:class => 'well well-large'} do |f|
+  .leftlist=f.label :base_project, t('.base_project'), :class => :label
+  .rightlist=f.text_field :base_project_id
+  .both
+  .leftlist=f.label :base_ref, "#{t '.base_ref'} #{t '.refs'}", :class => :label
+  .rightlist=text_field_tag :base_ref, @base_ref
+  .both
+  .leftlist=f.label :head_project, t('.head_project'), :class => :label
+  .rightlist=f.text_field :head_project_id
+  .both
+  .leftlist=f.label :head_ref, "#{t '.head_ref'} #{t '.refs'}", :class => :label
+  .rightlist=text_field_tag :head_ref, @head_ref
+  .both
+  = f.fields_for :issue do |issue|
+    .leftlist=issue.label :title, t('activerecord.attributes.issue.title'), :class => :label
+    .rightlist=issue.text_field :title
+    .both
+    .leftlist=issue.label :title, t('activerecord.attributes.issue.body'), :class => :label
+    .rightlist=issue.text_area :body
+    .both
+  .leftlist
+    \ 
+  .rightlist=f.submit t('.submit'), :class => 'btn btn-primary disabled', 'data-loading-text' => t('layout.processing'), :id => 'create_pull'
+  .both
