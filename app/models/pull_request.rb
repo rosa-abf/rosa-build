@@ -128,6 +128,4 @@ class PullRequest < ActiveRecord::Base
     end
     # TODO catch errors
   end
-
-
 end

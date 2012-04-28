@@ -91,5 +91,4 @@ describe PullRequest do
     FileUtils.rm_rf(APP_CONFIG['root_path'])
     #~ FileUtils.rm_rf File.join(Rails.root, "tmp", Rails.env, "pull_requests")
   end
-
 end
