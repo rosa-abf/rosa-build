@@ -95,14 +95,14 @@ class PlatformsController < ApplicationController
   def remove_members
     all_user_ids = params['user_remove'].inject([]) {|a, (k, v)| a << k if v.first == '1'; a}
     all_user_ids.each do |uid|
-      Relation.by_target(@platform).where(:object_id => uid, :object_type => 'User').each{|r| r.destroy}
+      Relation.by_target(@platform).where(:actor_id => uid, :actor_type => 'User').each{|r| r.destroy}
     end
     redirect_to members_platform_path(@platform)
   end
 
   def remove_member
     u = User.find(params[:member_id])
-    Relation.by_object(u).by_target(@platform).each{|r| r.destroy}
+    Relation.by_actor(u).by_target(@platform).each{|r| r.destroy}
 
     redirect_to members_platform_path(@platform)
   end
@@ -110,11 +110,11 @@ class PlatformsController < ApplicationController
   def add_member
     if params[:member_id].present?
       member = User.find(params[:member_id])
-      if @platform.relations.exists?(:object_id => member.id, :object_type => member.class.to_s) or @platform.owner == member
+      if @platform.relations.exists?(:actor_id => member.id, :actor_type => member.class.to_s) or @platform.owner == member
         flash[:warning] = t('flash.platform.members.already_added', :name => member.uname)
       else
         rel = @platform.relations.build(:role => 'admin')
-        rel.object = member
+        rel.actor = member
         if rel.save
           flash[:notice] = t('flash.platform.members.successfully_added', :name => member.uname)
         else

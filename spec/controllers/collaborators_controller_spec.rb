@@ -31,12 +31,12 @@ shared_examples_for 'project admin user' do
 
   it 'should add new collaborator with reader role' do
     post :create, @create_params.merge(:collaborator => @user_params)
-    @project.relations.exists?(:object_type => 'User', :object_id => @another_user.id, :role => 'reader').should be_true
+    @project.relations.exists?(:actor_type => 'User', :actor_id => @another_user.id, :role => 'reader').should be_true
   end
 
   it 'should add new group with reader role' do
     post :create, @create_params.merge(:collaborator => @group_params)
-    @project.relations.exists?(:object_type => 'Group', :object_id => @group.id, :role => 'reader').should be_true
+    @project.relations.exists?(:actor_type => 'Group', :actor_id => @group.id, :role => 'reader').should be_true
   end
 
   it 'should be able to set reader role for any user' do
@@ -102,7 +102,7 @@ describe CollaboratorsController do
 #      @user.relations
       set_session_for(@user)
       @group = FactoryGirl.create(:group)
-      @project.relations.create!(:object_type => 'User', :object_id => @user.id, :role => 'admin')
+      @project.relations.create!(:actor_type => 'User', :actor_id => @user.id, :role => 'admin')
       create_params
     end
 
@@ -117,7 +117,7 @@ describe CollaboratorsController do
       @group = FactoryGirl.create(:group)
 
       @project.update_attribute(:owner, @user)
-      @project.relations.create!(:object_type => 'User', :object_id => @user.id, :role => 'admin')
+      @project.relations.create!(:actor_type => 'User', :actor_id => @user.id, :role => 'admin')
 
       create_params
     end
@@ -129,7 +129,7 @@ describe CollaboratorsController do
     before(:each) do
       @user = FactoryGirl.create(:user)
       set_session_for(@user)
-      @project.relations.create!(:object_type => 'User', :object_id => @user.id, :role => 'reader')
+      @project.relations.create!(:actor_type => 'User', :actor_id => @user.id, :role => 'reader')
     end
 
     it_should_behave_like 'user with no rights for this project'
@@ -139,7 +139,7 @@ describe CollaboratorsController do
     before(:each) do
       @user = FactoryGirl.create(:user)
       set_session_for(@user)
-      @project.relations.create!(:object_type => 'User', :object_id => @user.id, :role => 'writer')
+      @project.relations.create!(:actor_type => 'User', :actor_id => @user.id, :role => 'writer')
     end
 
     it_should_behave_like 'user with no rights for this project'

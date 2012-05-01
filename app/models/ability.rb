@@ -46,7 +46,7 @@ class Ability
 
         can [:read, :create, :autocomplete_group_uname], Group
         can [:update, :manage_members], Group do |group|
-          group.objects.exists?(:object_type => 'User', :object_id => user.id, :role => 'admin') # or group.owner_id = user.id
+          group.actors.exists?(:actor_type => 'User', :actor_id => user.id, :role => 'admin') # or group.owner_id = user.id
         end
         can :destroy, Group, :owner_id => user.id
 
@@ -60,7 +60,7 @@ class Ability
         can(:fork, Project) {|project| can? :read, project}
         can(:fork, Project) {|project| project.owner_type == 'Group' and can? :update, project.owner}
         can(:destroy, Project) {|project| owner? project}
-        can(:destroy, Project) {|project| project.owner_type == 'Group' and project.owner.objects.exists?(:object_type => 'User', :object_id => user.id, :role => 'admin')}
+        can(:destroy, Project) {|project| project.owner_type == 'Group' and project.owner.actors.exists?(:actor_type => 'User', :actor_id => user.id, :role => 'admin')}
         can :remove_user, Project
 
         can [:read, :owned], BuildList, :user_id => user.id
@@ -81,7 +81,7 @@ class Ability
         can [:read, :related, :members], Platform, :owner_type => 'Group', :owner_id => user.group_ids
         can([:read, :related, :members], Platform, read_relations_for('platforms')) {|platform| local_reader? platform}
         can([:update, :members], Platform) {|platform| local_admin? platform}
-        can([:destroy, :members, :add_member, :remove_member, :remove_members] , Platform) {|platform| owner? platform}
+        can([:destroy, :members, :add_member, :remove_member, :remove_members, :build_all] , Platform) {|platform| owner? platform}
         can :autocomplete_user_uname, Platform
 
         can [:read, :projects_list], Repository, :platform => {:visibility => 'open'}
@@ -140,28 +140,28 @@ class Ability
     parent ||= table
     ["#{table}.#{key} IN (
       SELECT target_id FROM relations WHERE relations.target_type = ? AND
-      (relations.object_type = 'User' AND relations.object_id = ? OR
-       relations.object_type = 'Group' AND relations.object_id IN (?)))", parent.classify, @user, @user.group_ids]
+      (relations.actor_type = 'User' AND relations.actor_id = ? OR
+       relations.actor_type = 'Group' AND relations.actor_id IN (?)))", parent.classify, @user, @user.group_ids]
   end
 
-  def relation_exists_for(object, roles)
-    object.relations.exists?(:object_id => @user.id, :object_type => 'User', :role => roles) or
-    object.relations.exists?(:object_id => @user.group_ids, :object_type => 'Group', :role => roles)
+  def relation_exists_for(target, roles)
+    target.relations.exists?(:actor_id => @user.id, :actor_type => 'User', :role => roles) or
+    target.relations.exists?(:actor_id => @user.group_ids, :actor_type => 'Group', :role => roles)
   end
 
-  def local_reader?(object)
-    relation_exists_for(object, %w{reader writer admin}) or owner?(object)
+  def local_reader?(target)
+    relation_exists_for(target, %w{reader writer admin}) or owner?(target)
   end
 
-  def local_writer?(object)
-    relation_exists_for(object, %w{writer admin}) or owner?(object)
+  def local_writer?(target)
+    relation_exists_for(target, %w{writer admin}) or owner?(target)
   end
 
-  def local_admin?(object)
-    relation_exists_for(object, 'admin') or owner?(object)
+  def local_admin?(target)
+    relation_exists_for(target, 'admin') or owner?(target)
   end
 
-  def owner?(object)
-    object.owner == @user or @user.own_groups.include?(object.owner)
+  def owner?(target)
+    target.owner == @user or @user.own_groups.include?(target.owner)
   end
 end

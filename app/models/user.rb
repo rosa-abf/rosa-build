@@ -24,8 +24,8 @@ class User < ActiveRecord::Base
   has_many :subscribes, :foreign_key => :user_id, :dependent => :destroy
   has_many :comments, :dependent => :destroy
 
-  has_many :relations, :as => :object, :dependent => :destroy
-  has_many :targets, :as => :object, :class_name => 'Relation', :dependent => :destroy
+  has_many :relations, :as => :actor, :dependent => :destroy
+  has_many :targets, :as => :actor, :class_name => 'Relation', :dependent => :destroy
 
   has_many :projects,     :through => :targets, :source => :target, :source_type => 'Project',    :autosave => true
   has_many :groups,       :through => :targets, :source => :target, :source_type => 'Group',      :autosave => true

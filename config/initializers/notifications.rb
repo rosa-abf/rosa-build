@@ -1,6 +1,6 @@
 # -*- encoding : utf-8 -*-
 Warden::Manager.after_authentication do |user,auth,opts| # after_set_user, :except => fetch
-  ActiveSupport::Notifications.instrument("event_log.observer", :object => user)
+  ActiveSupport::Notifications.instrument("event_log.observer", :eventable => user)
 end
 
 Warden::Manager.before_failure do |env, opts|
@@ -10,14 +10,14 @@ Warden::Manager.before_failure do |env, opts|
 end
 
 Warden::Manager.before_logout do |user,auth,opts|
-  ActiveSupport::Notifications.instrument("event_log.observer", :object => user)
+  ActiveSupport::Notifications.instrument("event_log.observer", :eventable => user)
 end
 
 ActiveSupport::Notifications.subscribe "event_log.observer" do |name, start, finish, id, payload|
   if c = EventLog.current_controller
-    object = payload[:object]
-    message = payload[:message].presence; message ||= object.event_log_message if object.respond_to?(:event_log_message)
+    eventable = payload[:eventable]
+    message = payload[:message].presence; message ||= eventable.event_log_message if eventable.respond_to?(:event_log_message)
     EventLog.create_with_current_controller :kind => (payload[:kind].presence || 'info'), :message => message,
-                                            :object => object, :object_name => payload[:object_name].presence
+                                            :eventable => eventable, :eventable_name => payload[:eventable_name].presence
   end
 end

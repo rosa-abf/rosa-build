@@ -8,10 +8,10 @@ module Modules
         scope :not_member_of, lambda { |item|
           where("
             #{klass.table_name}.id NOT IN (
-              SELECT relations.object_id
+              SELECT relations.actor_id
               FROM relations
               WHERE (
-                relations.object_type = '#{klass.to_s}'
+                relations.actor_type = '#{klass.to_s}'
                 AND relations.target_type = '#{item.class.to_s}'
                 AND relations.target_id = #{item.id}
               )

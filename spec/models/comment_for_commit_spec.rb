@@ -61,7 +61,7 @@ describe Comment do
       set_comments_data_for_commit
       @admin = FactoryGirl.create(:user)
       @ability = Ability.new(@admin)
-      @project.relations.create!(:object_type => 'User', :object_id => @admin.id, :role => 'admin')
+      @project.relations.create!(:actor_type => 'User', :actor_id => @admin.id, :role => 'admin')
       ActionMailer::Base.deliveries = []
     end
 

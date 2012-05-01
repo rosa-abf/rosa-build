@@ -13,8 +13,8 @@ class Project < ActiveRecord::Base
   has_many :repositories, :through => :project_to_repositories
 
   has_many :relations, :as => :target, :dependent => :destroy
-  has_many :collaborators, :through => :relations, :source => :object, :source_type => 'User'
-  has_many :groups,        :through => :relations, :source => :object, :source_type => 'Group'
+  has_many :collaborators, :through => :relations, :source => :actor, :source_type => 'User'
+  has_many :groups,        :through => :relations, :source => :actor, :source_type => 'Group'
   has_many :labels
 
   validates :name, :uniqueness => {:scope => [:owner_id, :owner_type], :case_sensitive => false}, :presence => true, :format => {:with => /^[a-zA-Z0-9_\-\+\.]+$/}
@@ -63,7 +63,7 @@ class Project < ActiveRecord::Base
     find_by_owner_and_name(owner_name, project_name) or raise ActiveRecord::RecordNotFound
   end
 
-  def build_for(platform, user, arch = 'i586') 
+  def build_for(platform, user, arch = 'i586', priority = 0) 
     # Select main and project platform repository(contrib, non-free and etc)
     # If main does not exist, will connect only project platform repository
     # If project platform repository is main, only main will be connect
@@ -81,6 +81,7 @@ class Project < ActiveRecord::Base
       bl.user = user
       bl.auto_publish = true # already  set as db default
       bl.include_repos = build_ids
+      bl.priority = priority
     end
   end
 
@@ -216,7 +217,7 @@ class Project < ActiveRecord::Base
   end
 
   def owner_and_admin_ids
-    recipients = self.relations.by_role('admin').where(:object_type => 'User').map { |rel| rel.read_attribute(:object_id) }
+    recipients = self.relations.by_role('admin').where(:actor_type => 'User').map { |rel| rel.read_attribute(:actor_id) }
     recipients = recipients | [self.owner_id] if self.owner_type == 'User'
     recipients
   end

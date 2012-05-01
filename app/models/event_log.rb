@@ -1,7 +1,7 @@
 # -*- encoding : utf-8 -*-
 class EventLog < ActiveRecord::Base
   belongs_to :user
-  belongs_to :object, :polymorphic => true
+  belongs_to :eventable, :polymorphic => true
 
   # self.per_page = 1
 
@@ -10,7 +10,7 @@ class EventLog < ActiveRecord::Base
 
   before_create do
     self.user_name = user.try(:uname) || 'guest'
-    self.object_name ||= object.name if object.respond_to?(:name)
+    self.eventable_name ||= eventable.name if eventable.respond_to?(:name)
   end
   # after_create { self.class.current_controller = nil }
 

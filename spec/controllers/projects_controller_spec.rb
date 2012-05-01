@@ -48,7 +48,7 @@ describe ProjectsController do
       @user = FactoryGirl.create(:user)
       set_session_for(@user)
       @project.update_attribute(:owner, @user)
-      @project.relations.create!(:object_type => 'User', :object_id => @user.id, :role => 'admin')
+      @project.relations.create!(:actor_type => 'User', :actor_id => @user.id, :role => 'admin')
     end
 
     it_should_behave_like 'projects user with admin rights'
@@ -75,7 +75,7 @@ describe ProjectsController do
     before(:each) do
       @user = FactoryGirl.create(:user)
       set_session_for(@user)
-      @project.relations.create!(:object_type => 'User', :object_id => @user.id, :role => 'reader')
+      @project.relations.create!(:actor_type => 'User', :actor_id => @user.id, :role => 'reader')
     end
 
     it_should_behave_like 'projects user with reader rights'
@@ -85,7 +85,7 @@ describe ProjectsController do
     before(:each) do
       @user = FactoryGirl.create(:user)
       set_session_for(@user)
-      @project.relations.create!(:object_type => 'User', :object_id => @user.id, :role => 'writer')
+      @project.relations.create!(:actor_type => 'User', :actor_id => @user.id, :role => 'writer')
     end
 
     it_should_behave_like 'projects user with reader rights'
@@ -104,9 +104,9 @@ describe ProjectsController do
 
     it 'should be able to fork project to group' do
       group = FactoryGirl.create(:group)
-      group.objects.create(:object_type => 'User', :object_id => @user.id, :role => 'admin')
+      group.actors.create(:actor_type => 'User', :actor_id => @user.id, :role => 'admin')
       post :fork, :owner_name => @project.owner.uname, :project_name => @project.name, :group => group.id
-      response.should redirect_to(project_path(group.projects.first))
+      response.should redirect_to(project_path(group.projects.first.id))
     end
   end
 
