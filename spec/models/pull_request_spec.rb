@@ -17,6 +17,10 @@ def set_data_for_pull
 end
 
 describe PullRequest do
+  after (:each) do
+    FileUtils.rm_rf File.join(Rails.root, "tmp", Rails.env, "pull_requests")
+  end
+
   context 'for owner user' do
     before (:all) do
       stub_rsync_methods
@@ -59,15 +63,15 @@ describe PullRequest do
       end
 
       it 'master should not be merged with conflicts branch' do
-        @pull.head_ref = 'conflicts'
-        @pull.check
-        @pull.state.should == 'blocked'
+        @other_pull.head_ref = 'conflicts'
+        @other_pull.check
+        @other_pull.state.should == 'blocked'
       end
 
       it 'should not be merged when already up-to-date branches' do
-        @pull.head_ref = 'master'
-        @pull.check
-        @pull.state.should == 'already'
+        @other_pull.head_ref = 'master'
+        @other_pull.check
+        @other_pull.state.should == 'already'
       end
     end
   end
@@ -89,6 +93,5 @@ describe PullRequest do
     User.delete_all
     Repository.delete_all
     FileUtils.rm_rf(APP_CONFIG['root_path'])
-    #~ FileUtils.rm_rf File.join(Rails.root, "tmp", Rails.env, "pull_requests")
   end
 end

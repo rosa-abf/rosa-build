@@ -48,12 +48,15 @@ class PullRequest < ActiveRecord::Base
     ret = merge
     if ret =~ /Already up-to-date/
       already
-    elsif ret =~ /Merge made by recursive/
+    elsif ret =~ /Merge made by the 'recursive' strategy/
       system("cd #{path} && git reset --hard HEAD^") # remove merge commit
       ready
-    else
+    elsif ret =~ /Automatic merge failed/
       system("cd #{path} && git reset --hard HEAD")
       block
+    else
+      puts "ret is #{ret}"
+      raise
     end
   end
 
