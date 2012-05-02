@@ -117,7 +117,7 @@ describe GroupsController do
     before(:each) do
       @user = FactoryGirl.create(:user)
       set_session_for(@user)
-      @group.objects.create(:object_type => 'User', :object_id => @user.id, :role => 'admin')
+      @group.actors.create(:actor_type => 'User', :actor_id => @user.id, :role => 'admin')
     end
 
     it_should_behave_like 'update_member_relation'
@@ -130,7 +130,7 @@ describe GroupsController do
       @user = FactoryGirl.create(:user)
       set_session_for(@user)
       @group.update_attribute(:owner, @user)
-      @group.objects.create(:object_type => 'User', :object_id => @user.id, :role => 'admin')
+      @group.actors.create(:actor_type => 'User', :actor_id => @user.id, :role => 'admin')
     end
 
     it_should_behave_like 'update_member_relation'
@@ -141,7 +141,7 @@ describe GroupsController do
     before(:each) do
       @user = FactoryGirl.create(:user)
       set_session_for(@user)
-      @group.objects.create(:object_type => 'User', :object_id => @user.id, :role => 'reader')
+      @group.actors.create(:actor_type => 'User', :actor_id => @user.id, :role => 'reader')
     end
 
     it_should_behave_like 'no group user'

@@ -5,7 +5,7 @@ module Modules
       extend ActiveSupport::Concern
 
       included do
-        after_create lambda { relations.create :object_id => owner.id, :object_type => owner.class.to_s, :role => 'admin' }
+        after_create lambda { relations.create :actor_id => owner.id, :actor_type => owner.class.to_s, :role => 'admin' }
       end
 
       module ClassMethods

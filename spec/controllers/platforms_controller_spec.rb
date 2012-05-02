@@ -105,7 +105,7 @@ describe PlatformsController do
       @user = FactoryGirl.create(:user)
       set_session_for(@user)
       @platform.update_attribute(:owner, @user)
-      @platform.relations.create!(:object_type => 'User', :object_id => @user.id, :role => 'admin')
+      @platform.relations.create!(:actor_type => 'User', :actor_id => @user.id, :role => 'admin')
     end
 
     it_should_behave_like 'user without create rights'
@@ -127,7 +127,7 @@ describe PlatformsController do
     before(:each) do
       @user = FactoryGirl.create(:user)
       set_session_for(@user)
-      @platform.relations.create!(:object_type => 'User', :object_id => @user.id, :role => 'reader')
+      @platform.relations.create!(:actor_type => 'User', :actor_id => @user.id, :role => 'reader')
     end
 
     it_should_behave_like 'platform index viewer'

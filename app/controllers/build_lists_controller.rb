@@ -41,7 +41,8 @@ class BuildListsController < ApplicationController
 
   def create
     notices, errors = [], []
-    params[:build_list].delete(:auto_publish) if @platform.released
+    # Disable auto_publish if platform released
+    params[:build_list][:auto_publish] = false if @platform.released
     Arch.where(:id => params[:arches]).each do |arch|
       Platform.main.where(:id => params[:bpls]).each do |bpl|
         @build_list = @project.build_lists.build(params[:build_list])

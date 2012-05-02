@@ -10,8 +10,8 @@ class Platform < ActiveRecord::Base
   has_many :products, :dependent => :destroy
 
   has_many :relations, :as => :target, :dependent => :destroy
-  has_many :objects, :as => :target, :class_name => 'Relation', :dependent => :destroy
-  has_many :members, :through => :objects, :source => :object, :source_type => 'User'
+  has_many :actors, :as => :target, :class_name => 'Relation', :dependent => :destroy
+  has_many :members, :through => :actors, :source => :actor, :source_type => 'User'
 
   validates :description, :presence => true
   validates :visibility, :presence => true, :inclusion => {:in => VISIBILITIES}
@@ -148,20 +148,22 @@ class Platform < ActiveRecord::Base
 
   def update_owner_relation
     if owner_id_was != owner_id
-      r = relations.where(:object_id => owner_id_was, :object_type => owner_type_was)[0]
-      r.update_attributes(:object_id => owner_id, :object_type => owner_type)
+      r = relations.where(:actor_id => owner_id_was, :actor_type => owner_type_was)[0]
+      r.update_attributes(:actor_id => owner_id, :actor_type => owner_type)
     end
   end
 
   def build_all(user)
-    repositories.find_by_name('main').projects.find_in_batches(:batch_size => 2) do |group|
-      sleep 1
-      group.each do |p|
-        %w(i586 x86_64).each do |arch|
-          begin
-            p.build_for(self, user, arch)
-          rescue RuntimeError, Exception
-            p.delay.build_for(self, user, arch)
+    repositories.each do |rep|
+      rep.projects.find_in_batches(:batch_size => 2) do |group|
+        sleep 1
+        group.each do |p|
+          Arch.all.map(&:name).each do |arch|
+            begin
+              p.build_for(self, user, arch)
+            rescue RuntimeError, Exception
+              p.delay.build_for(self, user, arch)
+            end
           end
         end
       end

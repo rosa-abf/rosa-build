@@ -93,7 +93,7 @@ describe CommentsController do
 
   context 'for project admin user' do
     before(:each) do
-      @project.relations.create!(:object_type => 'User', :object_id => @user.id, :role => 'admin')
+      @project.relations.create!(:actor_type => 'User', :actor_id => @user.id, :role => 'admin')
     end
 
     it_should_behave_like 'user with create comment rights for commits'
@@ -119,7 +119,7 @@ describe CommentsController do
 
   context 'for project reader user' do
     before(:each) do
-      @project.relations.create!(:object_type => 'User', :object_id => @user.id, :role => 'reader')
+      @project.relations.create!(:actor_type => 'User', :actor_id => @user.id, :role => 'reader')
     end
 
    it_should_behave_like 'user with create comment rights for commits'
@@ -130,7 +130,7 @@ describe CommentsController do
 
   context 'for project writer user' do
     before(:each) do
-      @project.relations.create!(:object_type => 'User', :object_id => @user.id, :role => 'writer')
+      @project.relations.create!(:actor_type => 'User', :actor_id => @user.id, :role => 'writer')
     end
 
    it_should_behave_like 'user with create comment rights for commits'

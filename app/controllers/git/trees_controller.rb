@@ -20,6 +20,9 @@ class Git::TreesController < Git::BaseController
     treeish = params[:treeish].presence || @project.default_branch
     format = params[:format] || 'tar'
     commit = @project.git_repository.log(treeish, nil, :max_count => 1).first
+    if !commit or !['tar', 'zip'].include?(format)
+      raise ActiveRecord::RecordNotFound#("Couldn't send Project archive with id=#{@project.id}, treeish=#{treeish} and format=#{format}")
+    end
     name = "#{@project.owner.uname}-#{@project.name}#{@project.tags.include?(treeish) ? "-#{treeish}" : ''}-#{commit.id[0..19]}"
     fullname = "#{name}.#{format == 'tar' ? 'tar.gz' : 'zip'}"
     file = Tempfile.new fullname, 'tmp'

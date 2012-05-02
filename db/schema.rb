@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120418100619) do
+ActiveRecord::Schema.define(:version => 20120425190938) do
 
   create_table "activity_feeds", :force => true do |t|
     t.integer  "user_id",    :null => false
@@ -112,17 +112,17 @@ ActiveRecord::Schema.define(:version => 20120418100619) do
   create_table "event_logs", :force => true do |t|
     t.integer  "user_id"
     t.string   "user_name"
-    t.integer  "object_id"
-    t.string   "object_type"
-    t.string   "object_name"
+    t.integer  "eventable_id"
+    t.string   "eventable_type"
+    t.string   "eventable_name"
     t.string   "ip"
     t.string   "kind"
     t.string   "protocol"
     t.string   "controller"
     t.string   "action"
     t.text     "message"
-    t.datetime "created_at",  :null => false
-    t.datetime "updated_at",  :null => false
+    t.datetime "created_at",     :null => false
+    t.datetime "updated_at",     :null => false
   end
 
   create_table "groups", :force => true do |t|
@@ -288,8 +288,8 @@ ActiveRecord::Schema.define(:version => 20120418100619) do
   add_index "register_requests", ["token"], :name => "index_register_requests_on_token", :unique => true, :case_sensitive => false
 
   create_table "relations", :force => true do |t|
-    t.integer  "object_id"
-    t.string   "object_type"
+    t.integer  "actor_id"
+    t.string   "actor_type"
     t.integer  "target_id"
     t.string   "target_type"
     t.datetime "created_at",  :null => false

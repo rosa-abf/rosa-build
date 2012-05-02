@@ -34,7 +34,7 @@ describe Group do
     before(:each) do
       @user = FactoryGirl.create(:user)
       @another_user = FactoryGirl.create(:user)
-      @group.objects.create(:object_type => 'User', :object_id => @user.id, :role => 'admin')
+      @group.actors.create(:actor_type => 'User', :actor_id => @user.id, :role => 'admin')
       @ability = Ability.new(@user)
     end
 
@@ -63,7 +63,7 @@ describe Group do
     before(:each) do
       @user = FactoryGirl.create(:user)
       @group.update_attribute(:owner, @user)
-      @group.objects.create(:object_type => 'User', :object_id => @user.id, :role => 'admin')
+      @group.actors.create(:actor_type => 'User', :actor_id => @user.id, :role => 'admin')
       @ability = Ability.new(@user)
     end
 
@@ -77,7 +77,7 @@ describe Group do
   context 'for group reader and writer user' do
     before(:each) do
       @user = FactoryGirl.create(:user)
-      @group.objects.create(:object_type => 'User', :object_id => @user.id, :role => 'reader')
+      @group.actors.create(:actor_type => 'User', :actor_id => @user.id, :role => 'reader')
       @ability = Ability.new(@user)
     end
 

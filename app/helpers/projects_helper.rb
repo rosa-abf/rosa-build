@@ -28,7 +28,7 @@ module ProjectsHelper
   end
 
   def alone_member?(project)
-    Relation.by_target(project).by_object(current_user).size > 0
+    Relation.by_target(project).by_actor(current_user).size > 0
   end
 
   def participant_path(participant)

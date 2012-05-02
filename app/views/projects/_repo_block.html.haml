@@ -1,12 +1,13 @@
 .description-top
-  %ul.nav.zip
-    %li#menu-archive.dropdown
-      %a.dropdown-toggle{"data-toggle" => "dropdown", :href => "#menu-archive"}
-        =image_tag 'zip.png', :alt => 'ZIP'
-        %b.caret
-      %ul.dropdown-menu
-        %li=link_to "tar.gz", archive_path(project.id, 'tar', @treeish)
-        %li=link_to "zip", archive_path(project.id, 'zip', @treeish)
+  -if @commit
+    %ul.nav.zip
+      %li#menu-archive.dropdown
+        %a.dropdown-toggle{"data-toggle" => "dropdown", :href => "#menu-archive"}
+          =image_tag 'zip.png', :alt => 'ZIP'
+          %b.caret
+        %ul.dropdown-menu
+          %li=link_to "tar.gz", archive_path(project.id, 'tar', @treeish)
+          %li=link_to "zip", archive_path(project.id, 'zip', @treeish)
 
   = text_field_tag :url, git_repo_url(project.git_repo_name), :class => 'name', :spellcheck => 'false', :readonly => true
   .git_help ?

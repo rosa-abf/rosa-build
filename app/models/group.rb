@@ -2,12 +2,12 @@
 class Group < ActiveRecord::Base
   belongs_to :owner, :class_name => 'User'
 
-  has_many :relations, :as => :object, :dependent => :destroy
-  has_many :objects, :as => :target, :class_name => 'Relation'
-  has_many :targets, :as => :object, :class_name => 'Relation'
+  has_many :relations, :as => :actor, :dependent => :destroy
+  has_many :actors, :as => :target, :class_name => 'Relation'
+  has_many :targets, :as => :actor, :class_name => 'Relation'
 
-  has_many :members,      :through => :objects, :source => :object, :source_type => 'User',       :autosave => true
-  has_many :projects,     :through => :targets, :source => :target, :source_type => 'Project',    :autosave => true
+  has_many :members,  :through => :actors,  :source => :actor,  :source_type => 'User',    :autosave => true
+  has_many :projects, :through => :targets, :source => :target, :source_type => 'Project', :autosave => true
 
   has_many :own_projects, :as => :owner, :class_name => 'Project', :dependent => :destroy
   has_many :own_platforms, :as => :owner, :class_name => 'Platform', :dependent => :destroy
@@ -18,7 +18,7 @@ class Group < ActiveRecord::Base
 
   scope :opened, where('1=1')
   scope :by_owner, lambda {|owner| where(:owner_id => owner.id)}
-  scope :by_admin, lambda {|admin| joins(:objects).where(:'relations.role' => 'admin', :'relations.object_id' => admin.id, :'relations.object_type' => 'User')}
+  scope :by_admin, lambda {|admin| joins(:actors).where(:'relations.role' => 'admin', :'relations.actor_id' => admin.id, :'relations.actor_type' => 'User')}
 
   include Modules::Models::ActsLikeMember
 
