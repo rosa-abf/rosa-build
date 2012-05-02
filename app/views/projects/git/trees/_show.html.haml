@@ -1,0 +1,37 @@
+%h3= t("layout.projects.files_in_project")
+.files
+  .l= render 'whereami'
+  = render 'fork'
+.both
+
+%table#myTable.tablesorter.project{:cellpadding => "0", :cellspacing => "0"}
+  %thead
+    %tr
+      %th.th1= t("layout.projects.filename")
+      %th.th2= t("layout.projects.age")
+      %th.th3= t("layout.projects.message")
+      %th.th4= t("layout.projects.author")
+  %tbody
+    - if @path.present?
+      %tr
+        %td
+          .pic= image_tag 'folder.png'
+          .name= link_to "..", tree_path(@project, @treeish, File.join([@path, ".."].compact))
+        %td== &nbsp;
+        %td== &nbsp;
+        %td== &nbsp;
+    - @project.tree_info(@tree, @treeish, @path).each_pair do |entry, commit|
+      %tr
+        %td
+          - entry_path = File.join([@path.present? ? @path : nil, entry.name].compact)
+          - if entry.is_a? Grit::Blob
+            .pic= image_tag 'code.png'
+            .name= link_to(entry.name, blob_path(@project, @treeish, entry_path), :class => 'files-see')
+          - else
+            .pic= image_tag 'folder.png'
+            .name= link_to(entry.name, tree_path(@project, @treeish, entry_path), :class => 'files-see')
+        %td
+          %span{:style => "display: none;"}= commit.committed_date || commit.authored_date
+          = l(commit.committed_date || commit.authored_date, :format => :short)
+        %td= commit.short_message
+        %td= (commit.committer || commit.author).name

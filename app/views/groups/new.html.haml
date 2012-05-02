@@ -1,6 +1,0 @@
-%h3.bpadding10= title t("layout.groups.new_header")
-= form_for @group, :url => groups_path do |f|
-  = render :partial => "form", :locals => {:f => f}
-
-:javascript
-  $('article .all').addClass('bigpadding');

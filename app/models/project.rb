@@ -6,6 +6,7 @@ class Project < ActiveRecord::Base
   belongs_to :owner, :polymorphic => true, :counter_cache => :own_projects_count
 
   has_many :issues, :dependent => :destroy
+  has_many :labels, :dependent => :destroy
   has_many :build_lists, :dependent => :destroy
 
   has_many :project_imports, :dependent => :destroy
@@ -15,7 +16,6 @@ class Project < ActiveRecord::Base
   has_many :relations, :as => :target, :dependent => :destroy
   has_many :collaborators, :through => :relations, :source => :actor, :source_type => 'User'
   has_many :groups,        :through => :relations, :source => :actor, :source_type => 'Group'
-  has_many :labels
 
   validates :name, :uniqueness => {:scope => [:owner_id, :owner_type], :case_sensitive => false}, :presence => true, :format => {:with => /^[a-zA-Z0-9_\-\+\.]+$/}
   validates :owner, :presence => true
@@ -51,10 +51,12 @@ class Project < ActiveRecord::Base
 
   include Modules::Models::Owner
 
-  def to_param; name; end
+  def to_param
+    name
+  end
 
   def self.find_by_owner_and_name(owner_name, project_name)
-    owner = User.find_by_uname(owner_name) || Group.find_by_uname(owner_name) and
+    owner = User.find_by_uname(owner_name) || Group.find_by_uname(owner_name) || User.by_uname(owner_name).first || Group.by_uname(owner_name).first and
     scoped = where(:owner_id => owner.id, :owner_type => owner.class) and
     scoped.find_by_name(project_name) || scoped.by_name(project_name).first
   end
@@ -268,7 +270,7 @@ class Project < ActiveRecord::Base
   def create_wiki
     if has_wiki && !FileTest.exist?(wiki_path)
       Grit::Repo.init_bare(wiki_path)
-      wiki = Gollum::Wiki.new(wiki_path, {:base_path => Rails.application.routes.url_helpers.project_wiki_index_path(self)})
+      wiki = Gollum::Wiki.new(wiki_path, {:base_path => Rails.application.routes.url_helpers.project_wiki_index_path(owner, self)})
       wiki.write_page('Home', :markdown, I18n.t("wiki.seed.welcome_content"),
                       {:name => owner.name, :email => owner.email, :message => 'Initial commit'})
     end

@@ -5,6 +5,6 @@ class OwnerConstraint
   end
 
   def matches?(request)
-    !!@class_name.find_by_uname(request.params[:owner_name])
+    !!(@class_name.find_by_uname(request.params[:owner_name]) || @class_name.by_uname(request.params[:owner_name]).first)
   end
 end

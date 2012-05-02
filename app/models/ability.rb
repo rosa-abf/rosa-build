@@ -23,12 +23,11 @@ class Ability
     can [:publish_build, :status_build, :pre_build, :post_build, :circle_build, :new_bbdt], BuildList
 
     if user.guest? # Guest rights
-      can [:create, :show_message], RegisterRequest
+      # can [:new, :create], RegisterRequest
     else # Registered user rights
       if user.admin?
         can :manage, :all
         # Protection
-        cannot :create, RegisterRequest
         cannot :approve, RegisterRequest, :approved => true
         cannot :reject, RegisterRequest, :rejected => true
         cannot [:destroy, :create], Subscribe
@@ -40,15 +39,13 @@ class Ability
 
       if user.user?
         can [:show, :autocomplete_user_uname], User
-        can [:profile, :update, :private], User, :id => user.id
-
-        can [:show, :update], Settings::Notifier, :user_id => user.id
 
         can [:read, :create, :autocomplete_group_uname], Group
         can [:update, :manage_members], Group do |group|
           group.actors.exists?(:actor_type => 'User', :actor_id => user.id, :role => 'admin') # or group.owner_id = user.id
         end
         can :destroy, Group, :owner_id => user.id
+        can :remove_user, Group
 
         can :create, Project
         can :read, Project, :visibility => 'open'

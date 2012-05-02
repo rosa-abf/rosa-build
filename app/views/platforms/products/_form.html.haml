@@ -1,0 +1,45 @@
+.leftlist= f.label :name, t("activerecord.attributes.product.name"), :class => :label
+.rightlist= f.text_field :name, :class => 'text_field'
+.both
+
+.leftlist= f.label :description, t("activerecord.attributes.product.description"), :class => :label
+.rightlist= f.text_area :description, :class => 'text_field resizable', :cols => 80
+.both
+
+.leftlist= f.label :build_script, t("activerecord.attributes.product.build_script"), :class => :label
+.rightlist= f.text_area :build_script, :class => 'text_field resizable', :cols => 80
+.both
+
+.leftlist= f.label :counter, t("activerecord.attributes.product.counter"), :class => :label
+.rightlist= f.text_area :counter, :class => 'text_field resizable', :cols => 80
+.both
+
+.leftlist= f.label :ks, t("activerecord.attributes.product.ks"), :class => :label
+.rightlist= f.text_area :ks, :class => 'text_field resizable', :cols => 80
+.both
+
+.leftlist= f.label :menu, t("activerecord.attributes.product.menu"), :class => :label
+.rightlist= f.text_area :menu, :class => 'text_field resizable', :cols => 80
+.both
+
+%p
+  .leftlist= f.label :tar, t("activerecord.attributes.product.tar"), :class => :label
+  .rightlist= f.file_field :tar, :class => 'file_field'
+  .both
+%p
+- if @product.tar?
+  .leftlist= link_to @product.tar_file_name, @product.tar.url
+  .both
+  %br
+  .leftlist= f.label :delete_tar, t('layout.delete')
+  .rightlist= f.check_box :delete_tar
+  .both
+
+= render "crontab", :form => f
+
+.both
+.button_block
+  = submit_tag t("layout.save")
+  %span.text_button_padding= t("layout.or")
+  = link_to t("layout.cancel"), @product.new_record? ? platform_path(@platform) : platform_product_path(@platform, @product), :class => "button"
+

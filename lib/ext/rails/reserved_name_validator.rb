@@ -1,6 +1,6 @@
 class ReservedNameValidator < ActiveModel::EachValidator
   RESERVED_NAMES = %w{
-    about account add admin administrator api
+    about account add admin administrator api autocomplete_group_uname
     app apps archive archives auth
     blog
     config connect contact create commit commits 
@@ -12,6 +12,7 @@ class ReservedNameValidator < ActiveModel::EachValidator
     jobs
     login log-in log_in logout log-out log_out logs
     map maps
+    new
     oauth oauth_clients openid
     privacy
     register remove replies rss root
@@ -30,7 +31,7 @@ class ReservedNameValidator < ActiveModel::EachValidator
   end
 
   def validate_each(record, attribute, value)
-    if reserved_names.include?(value.downcase)
+    if reserved_names.include?(value.to_s.downcase)
       record.errors.add(attribute, :exclusion, options.merge(:value => value))
     end
   end

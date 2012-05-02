@@ -1,8 +1,0 @@
--set_meta_tags :title => [title_object(@platform), t('layout.repositories.new')]
-= render :partial => 'platforms/submenu'
-= render :partial => 'platforms/sidebar'
-
-%h3= t("layout.repositories.new_header")
-
-= form_for :repository, :url => platform_repositories_path(@platform), :html => { :class => :form } do |f|
-  = render :partial => "form", :locals => {:f => f}

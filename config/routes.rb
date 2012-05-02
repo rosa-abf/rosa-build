@@ -1,111 +1,118 @@
 # -*- encoding : utf-8 -*-
 Rosa::Application.routes.draw do
-  devise_scope :user do
+  devise_scope :users do
     get '/users/auth/:provider' => 'users/omniauth_callbacks#passthru'
-    get '/user' => 'users#profile', :as => :edit_profile
-    put '/user' => 'users#update', :as => :update_profile
-    get '/users' => 'admin/users#index', :as => :users
-    get '/users/new' => 'admin/users#new', :as => :new_user
-    get '/users/list' => 'admin/users#list', :as => :users_list
-    post '/users/create' => 'admin/users#create', :as => :create_user
-    constraints :id => /\d+/ do
-      get '/users/:id/edit' => 'admin/users#profile', :as => :edit_user
-      put '/users/:id/edit' => 'admin/users#update', :as => :update_user
-      delete '/users/:id/delete' => 'admin/users#destroy', :as => :delete_user
-    end
   end
   devise_for :users, :controllers => {:omniauth_callbacks => 'users/omniauth_callbacks'}
-  resources :users, :only => [:show, :profile, :update] do
-    collection do
-      resources :register_requests, :only => [:index, :new, :create, :show_message, :approve, :reject] do
-        get :show_message, :on => :collection
-        put :update,       :on => :collection
-        get :approve
-        get :reject
-      end
-      get :autocomplete_user_uname
-    end
-    namespace :settings do
-      resource :notifier, :only => [:show, :update]
-    end
-  end
-  get 'users/:id/settings/private' => 'users#private', :as => :user_private_settings
-  put 'users/:id/settings/private' => 'users#private'
-
-  resources :groups do
-    get :autocomplete_group_uname, :on => :collection
-    resources :members, :only => [:index, :edit, :update, :add] do
-      collection do
-        get  :edit
-        post :add
-        post :update
-        delete :remove
-      end
-      member do
-        post :update
-        delete :remove
-      end
-    end
-  end
-
-  resources :platforms do
-    resources :private_users, :except => [:show, :destroy, :update]
-    member do
-      get    :clone
-      get    :members
-      post   :remove_members
-      delete :remove_member
-      post   :add_member
-      post   :make_clone
-      post   :build_all
-    end
-    collection do
-      get :autocomplete_user_uname
-    end
-    resources :repositories do
-      member do
-        get :add_project
-        delete :remove_project
-        get :projects_list
-      end
-    end
-    resources :products do
-      resources :product_build_lists, :only => [:create, :destroy]
-    end
-  end
-  match '/private/:platform_name/*file_path' => 'privates#show'
-
-  # Core callbacks
-  match 'build_lists/publish_build', :to => "build_lists#publish_build"
-  match 'build_lists/status_build', :to => "build_lists#status_build"
-  match 'build_lists/post_build', :to => "build_lists#post_build"
-  match 'build_lists/pre_build', :to => "build_lists#pre_build"
-  match 'build_lists/circle_build', :to => "build_lists#circle_build"
-  match 'build_lists/new_bbdt', :to => "build_lists#new_bbdt"
-  match 'product_status', :to => 'product_build_lists#status_build'
-
-  resources :build_lists, :only => [:index, :show] do
-    member do
-      put :cancel
-      put :publish
-      put :reject_publish
-    end
-    collection { post :search }
-  end
-  resources :product_build_lists, :only => [:index]
 
   resources :search, :only => [:index]
-
-  resources :event_logs, :only => :index
 
   get '/forbidden' => 'pages#forbidden', :as => 'forbidden'
   get '/terms-of-service' => 'pages#tos', :as => 'tos'
 
-  resources :projects, :only => [:index, :new, :create]
-  scope ':owner_name' do # Owner
-    # TODO User routes here
+  scope :module => 'platforms' do
+    resources :platforms do
+      resources :private_users, :except => [:show, :destroy, :update]
+      member do
+        get    :clone
+        get    :members
+        post   :remove_members
+        delete :remove_member
+        post   :add_member
+        post   :make_clone
+        post   :build_all
+      end
+      get :autocomplete_user_uname, :on => :collection
+      resources :repositories do
+        member do
+          get :add_project
+          delete :remove_project
+          get :projects_list
+        end
+      end
+      resources :products do
+        resources :product_build_lists, :only => [:create, :destroy]
+      end
+    end
+    match '/private/:platform_name/*file_path' => 'privates#show'
 
-    scope ':project_name', :as => 'project' do
+    resources :product_build_lists, :only => [:index]
+  end
+
+  namespace :admin do
+    resources :users do
+      get :list, :on => :collection
+    end
+    resources :register_requests, :only => [:index] do
+      put :update, :on => :collection
+      member do
+        get :approve
+        get :reject
+      end
+    end
+    resources :event_logs, :only => :index
+  end
+
+  scope :module => 'users' do
+    resources :settings, :only => [] do
+      collection do
+        get :profile
+        put :profile
+        get :private
+        put :private
+        get :notifiers
+        put :notifiers
+      end
+    end
+    resources :users, :controller => 'profile', :only => [] do
+      get :autocomplete_user_uname, :on => :collection
+    end
+    resources :register_requests, :only => [:new, :create]
+  end
+
+  scope :module => 'groups' do
+    resources :groups, :controller => 'profile' do
+      get :autocomplete_group_uname, :on => :collection
+      delete :remove_user, :on => :member
+      resources :members, :only => [:index] do
+        collection do
+          post :add
+          post :update
+          delete :remove
+        end
+      end
+    end
+  end
+
+  scope :module => 'projects' do
+    # Core callbacks
+    match 'build_lists/publish_build', :to => "build_lists#publish_build"
+    match 'build_lists/status_build', :to => "build_lists#status_build"
+    match 'build_lists/post_build', :to => "build_lists#post_build"
+    match 'build_lists/pre_build', :to => "build_lists#pre_build"
+    match 'build_lists/circle_build', :to => "build_lists#circle_build"
+    match 'build_lists/new_bbdt', :to => "build_lists#new_bbdt"
+    match 'product_status', :to => 'product_build_lists#status_build'
+
+    resources :build_lists, :only => [:index, :show] do
+      member do
+        put :cancel
+        put :publish
+        put :reject_publish
+      end
+      collection { post :search }
+    end
+
+    resources :projects, :only => [:index, :new, :create]
+  end
+  scope ':owner_name' do # Owner
+    constraints OwnerConstraint.new(User) do
+      get '/' => 'users/profile#show', :as => :user
+    end
+    constraints OwnerConstraint.new(Group) do
+      get '/' => 'groups/profile#show', :as => :group_profile
+    end
+    scope ':project_name', :as => 'project', :module => 'projects' do
       resources :wiki do
         collection do
           match '_history' => 'wiki#wiki_history', :as => :history, :via => :get
@@ -146,7 +153,7 @@ Rosa::Application.routes.draw do
         get :find, :on => :collection
       end
     end
-    scope ':project_name' do
+    scope ':project_name', :module => 'projects' do
       # Resource
       get '/edit' => 'projects#edit', :as => :edit_project
       put '/' => 'projects#update'
@@ -158,7 +165,7 @@ Rosa::Application.routes.draw do
       delete '/remove_user' => 'projects#remove_user', :as => :remove_user_project
       # Tree
       get '/' => "git/trees#show", :as => :project
-      get '/tree/:treeish(/*path)' => "git/trees#show", :defaults => {:treeish => :master}, :as => :tree
+      get '/tree/:treeish(/*path)' => "git/trees#show", :defaults => {:treeish => :master}, :as => :tree, :format => false
       # Commits
       get '/commits/:treeish(/*path)' => "git/commits#index", :defaults => {:treeish => :master}, :as => :commits, :format => false
       get '/commit/:id(.:format)' => "git/commits#show", :as => :commit

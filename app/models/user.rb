@@ -15,7 +15,7 @@ class User < ActiveRecord::Base
     }
   validates_inclusion_of :avatar_file_size, :in => (0..MAX_AVATAR_SIZE), :allow_nil => true
 
-  has_one :notifier, :class_name => 'Settings::Notifier', :dependent => :destroy #:notifier
+  has_one :notifier, :class_name => 'SettingsNotifier', :dependent => :destroy #:notifier
 
   has_many :activity_feeds, :dependent => :destroy
 
@@ -35,16 +35,14 @@ class User < ActiveRecord::Base
   has_many :own_groups,   :foreign_key => :owner_id, :class_name => 'Group', :dependent => :destroy
   has_many :own_platforms, :as => :owner, :class_name => 'Platform', :dependent => :destroy
 
-  include Modules::Models::PersonalRepository
-
   validates :uname, :presence => true, :uniqueness => {:case_sensitive => false}, :format => {:with => /^[a-z0-9_]+$/}, :reserved_name => true
-  validate { errors.add(:uname, :taken) if Group.where('uname LIKE ?', uname).present? }
+  validate { errors.add(:uname, :taken) if Group.by_uname(uname).present? }
   validates :role, :inclusion => {:in => ROLES}, :allow_blank => true
   validates :language, :inclusion => {:in => LANGUAGES}, :allow_blank => true
 
   attr_accessible :email, :password, :password_confirmation, :current_password, :remember_me, :login, :name, :uname, :language,
                   :site, :company, :professional_experience, :location, :avatar
-  attr_readonly :uname, :own_projects_count
+  attr_readonly :uname
   attr_accessor :login
 
   scope :opened, where('1=1')
@@ -52,14 +50,11 @@ class User < ActiveRecord::Base
   scope :admin, where(:role => 'admin')
   scope :real, where(:role => ['', nil])
 
-  include Modules::Models::ActsLikeMember
-
   after_create lambda { self.create_notifier }
   before_create :ensure_authentication_token
 
-  def to_param
-    uname
-  end
+  include Modules::Models::PersonalRepository
+  include Modules::Models::ActsLikeMember
 
   def admin?
     role == 'admin'
@@ -74,11 +69,15 @@ class User < ActiveRecord::Base
   end
 
   def access_locked?
-      role == 'banned'
+    role == 'banned'
   end
 
   def fullname
     return "#{uname} (#{name})"
+  end
+
+  def user_appeal
+    name.presence || uname
   end
 
   class << self
@@ -129,15 +128,5 @@ class User < ActiveRecord::Base
     else
       false
     end
-  end
-
-  def user_appeal
-    name.blank? ? uname : name
-  end
-
-  private
-
-  def create_settings_notifier
-    self.create_notifier
   end
 end

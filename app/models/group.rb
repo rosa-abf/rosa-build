@@ -14,30 +14,25 @@ class Group < ActiveRecord::Base
 
   validates :owner, :presence => true
   validates :uname, :presence => true, :uniqueness => {:case_sensitive => false}, :format => {:with => /^[a-z0-9_]+$/}, :reserved_name => true
-  validate { errors.add(:uname, :taken) if User.where('uname LIKE ?', uname).present? }
+  validate { errors.add(:uname, :taken) if User.by_uname(uname).present? }
 
   scope :opened, where('1=1')
   scope :by_owner, lambda {|owner| where(:owner_id => owner.id)}
   scope :by_admin, lambda {|admin| joins(:actors).where(:'relations.role' => 'admin', :'relations.actor_id' => admin.id, :'relations.actor_type' => 'User')}
 
-  include Modules::Models::ActsLikeMember
-
-  attr_accessible :description
-  attr_readonly :own_projects_count
+  attr_accessible :uname, :description
+  attr_readonly :uname
 
   delegate :email, :to => :owner
 
   after_create :add_owner_to_members
 
+  include Modules::Models::ActsLikeMember
   include Modules::Models::PersonalRepository
   # include Modules::Models::Owner
 
   def self.can_own_project(user)
     (by_owner(user) | by_admin(user))
-  end
-
-  def to_param
-    uname
   end
 
   def name
@@ -47,7 +42,6 @@ class Group < ActiveRecord::Base
   protected
 
   def add_owner_to_members
-    Relation.create_with_role(self.owner, self, 'admin')
-    # members << self.owner if !members.exists?(:id => self.owner.id)
+    Relation.create_with_role(self.owner, self, 'admin') # members << self.owner if !members.exists?(:id => self.owner.id)
   end
 end
