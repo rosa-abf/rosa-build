@@ -28,8 +28,8 @@ class Groups::MembersController < Groups::BaseController
 
   def remove
     all_user_ids = []
-    params['user_remove'].keys.each do |user_id|
-      all_user_ids << user_id if params['user_remove'][user_id] == ["1"] && parent.owner.id.to_s != user_id
+    params['user_remove'].each do |user_id, remove|
+      all_user_ids << user_id if remove == ["1"] && parent.owner.id.to_s != user_id
     end if params['user_remove']
     all_user_ids.each do |user_id|
       u = User.find(user_id)
