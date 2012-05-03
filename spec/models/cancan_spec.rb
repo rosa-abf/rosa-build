@@ -45,10 +45,6 @@ describe CanCan do
 		it 'should not be able to destroy personal repositories' do
 			@ability.should_not be_able_to(:destroy, personal_repository)
 		end
-
-    it 'should not be able to create new register requests' do
-      @ability.should_not be_able_to(:create, RegisterRequest)
-    end
 	end
 
 	context 'Site guest' do
@@ -69,10 +65,6 @@ describe CanCan do
 				@ability.should be_able_to(action, BuildList)
 			end
 		end
-
-    it 'should be able to create register request' do
-      @ability.should be_able_to(:create, RegisterRequest)
-    end
 
     it 'should not be able to update register request' do
       @ability.should_not be_able_to(:update, register_request)

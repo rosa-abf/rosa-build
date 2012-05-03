@@ -15,8 +15,7 @@ class Product < ActiveRecord::Base
 
   scope :recent, order("name ASC")
 
-  attr_accessible :name, :counter, :ks, :menu, :tar, :cron_tab, :use_cron
-  attr_accessible :description, :build_script, :delete_tar
+  attr_accessible :name, :counter, :ks, :menu, :tar, :cron_tab, :use_cron, :description, :build_script, :delete_tar
   attr_readonly :platform_id
 
   def delete_tar

@@ -23,12 +23,11 @@ class Ability
     can [:publish_build, :status_build, :pre_build, :post_build, :circle_build, :new_bbdt], BuildList
 
     if user.guest? # Guest rights
-      can [:create, :show_message], RegisterRequest
+      # can [:new, :create], RegisterRequest
     else # Registered user rights
       if user.admin?
         can :manage, :all
         # Protection
-        cannot :create, RegisterRequest
         cannot :approve, RegisterRequest, :approved => true
         cannot :reject, RegisterRequest, :rejected => true
         cannot [:destroy, :create], Subscribe
@@ -40,15 +39,13 @@ class Ability
 
       if user.user?
         can [:show, :autocomplete_user_uname], User
-        can [:profile, :update, :private], User, :id => user.id
-
-        can [:show, :update], Settings::Notifier, :user_id => user.id
 
         can [:read, :create, :autocomplete_group_uname], Group
         can [:update, :manage_members], Group do |group|
           group.actors.exists?(:actor_type => 'User', :actor_id => user.id, :role => 'admin') # or group.owner_id = user.id
         end
         can :destroy, Group, :owner_id => user.id
+        can :remove_user, Group
 
         can :create, Project
         can :read, Project, :visibility => 'open'
@@ -58,7 +55,7 @@ class Ability
         can(:write, Project) {|project| local_writer? project} # for grack
         can([:update, :sections, :manage_collaborators], Project) {|project| local_admin? project}
         can(:fork, Project) {|project| can? :read, project}
-        can(:fork_to_group, Project) {|project| project.owner_type == 'Group' and can? :update, project.owner}
+        can(:fork, Project) {|project| project.owner_type == 'Group' and can? :update, project.owner}
         can(:destroy, Project) {|project| owner? project}
         can(:destroy, Project) {|project| project.owner_type == 'Group' and project.owner.actors.exists?(:actor_type => 'User', :actor_id => user.id, :role => 'admin')}
         can :remove_user, Project
@@ -118,13 +115,10 @@ class Ability
       # Shared cannot rights for all users (registered, admin)
       cannot :destroy, Platform, :platform_type => 'personal'
       cannot [:create, :destroy, :add_project, :remove_project], Repository, :platform => {:platform_type => 'personal'}
-      cannot :fork, Project, :owner_id => user.id, :owner_type => user.class.to_s
       cannot :destroy, Issue
 
       cannot [:members, :add_member, :remove_member, :remove_members], Platform, :platform_type => 'personal'
 
-#      cannot :read, Product, :platform => {:platform_type => 'personal'}
-#      cannot(:read, Product, read_relations_for('products', 'platforms')) {|product| product.platform.platform_type == 'personal'}
       cannot [:create, :update, :destroy, :clone], Product, :platform => {:platform_type => 'personal'}
       cannot [:clone, :build_all], Platform, :platform_type => 'personal'
 

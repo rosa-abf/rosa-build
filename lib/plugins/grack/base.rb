@@ -35,11 +35,8 @@ module Grack
     def project
       @project ||= begin
         uname, name = @env['PATH_INFO'].split('/')[1,2]
-        name.gsub! /\.git$/, ''
-        name.gsub! /\.wiki$/, ''
-        owner = User.find_by_uname(uname) || Group.find_by_uname(uname)
-        scoped = Project.where(:owner_id => owner.id, :owner_type => owner.class)
-        scoped.find_by_name(name) || scoped.by_name(name).first
+        name.gsub!(/\.git$/, '').gsub!(/\.wiki$/, '')
+        Project.find_by_owner_and_name uname, name
       end
     end
 

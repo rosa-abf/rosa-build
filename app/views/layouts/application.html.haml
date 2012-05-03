@@ -19,7 +19,7 @@
         .middle
           %menu
             .logo= link_to image_tag('logo-mini.png', :alt => 'logo'), root_path
-            = render :partial => 'layouts/menu/top', :locals => {:which_menu => 'top_menu'}
+            = render 'layouts/menu/top', :which_menu => 'top_menu'
           .information
             = render 'search/form'
             - if current_user
@@ -34,7 +34,7 @@
               .droplist-wrap
                 #droplist.droplist
                   .a= link_to current_user.uname, current_user
-                  .a= link_to t('layout.settings.label'), edit_profile_path
+                  .a= link_to t('layout.settings.label'), profile_settings_path
                   .a= link_to t('layout.logout'), destroy_user_session_path, :method => :delete
             - else
               .user

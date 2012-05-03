@@ -1,0 +1,6 @@
+%a{ :name => "comments" }
+.hr
+%h3= t("layout.comments.comments_header")
+- list.each do |comment|
+  - CommentPresenter.present(comment, :project => project, :commentable => commentable) do |presenter|
+    = render 'shared/feed_message', :presenter => presenter

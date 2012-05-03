@@ -1,0 +1,11 @@
+-set_meta_tags :title => [title_object(@platform), t('layout.platforms.edit')]
+= render 'submenu'
+= render 'sidebar'
+
+= form_for @platform, :url => platform_path(@platform), :html => { :class => :form } do |f|
+  = render "form", :f => f
+
+- if can? :destroy, @platform
+  .hr
+  .leftside= t("layout.platforms.delete_warning")
+  .rightside= link_to t("layout.delete"), platform_path(@platform), :method => :delete, :confirm => t("layout.platforms.confirm_delete"), :class => 'button'

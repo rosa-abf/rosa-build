@@ -11,6 +11,14 @@ class RegisterRequest < ActiveRecord::Base
 
   validates :email, :presence => true, :uniqueness => {:case_sensitive => false}, :format => { :with => /\A([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})\z/i }
 
+  def approve
+    update_attributes(:approved => true, :rejected => false)
+  end
+
+  def reject
+    update_attributes(:approved => false, :rejected => true)
+  end
+
   protected
 
   def generate_token
