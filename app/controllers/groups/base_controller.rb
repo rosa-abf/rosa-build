@@ -6,7 +6,7 @@ class Groups::BaseController < ApplicationController
   protected
 
   def find_group
-    if group_id = params[:owner_name] || params[:group_id] || params[:id]
+    if group_id = params[:uname] || params[:group_id] || params[:id]
       @group = Group.find_by_insensitive_uname! group_id
     end
   end
