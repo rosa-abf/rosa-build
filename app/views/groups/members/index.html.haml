@@ -9,7 +9,7 @@
         %th= t("layout.collaborators.members")
         %th{:colspan => "3"}= t("layout.collaborators.roles")
     %tbody
-      - parent.members.each do |user|
+      - (parent.members - [parent.owner]).each do |user|
         %tr
           %td
             %span#niceCheckbox1.niceCheck-main= check_box_tag "user_remove[#{user.id}][]"
