@@ -1,7 +1,6 @@
 # -*- encoding : utf-8 -*-
-$:.unshift File.expand_path('.')
-$:.unshift(File.expand_path('./lib', ENV['rvm_path']))
-set :rvm_type, :user
+require 'cape'
+require 'capistrano_colors'
 
 set :default_environment, {
   'LANG' => 'en_US.UTF-8'
@@ -34,10 +33,10 @@ set :scm, :git
 set :repository,  "git@github.com:warpc/rosa-build.git"
 set :deploy_via,  :remote_cache
 
-require 'lib/recipes/nginx'
-require 'lib/recipes/unicorn'
-require 'lib/recipes/bluepill'
-require 'lib/recipes/delayed_job'
+require './lib/recipes/nginx'
+require './lib/recipes/unicorn'
+require './lib/recipes/bluepill'
+require './lib/recipes/delayed_job'
 
 namespace :deploy do
   task :stub_xml_rpc do
@@ -92,7 +91,6 @@ after "deploy:restart", "delayed_job:restart"
 
 after "deploy:restart", "deploy:cleanup"
 
-require 'cape'
 namespace :rake_tasks do
   Cape do
     mirror_rake_tasks 'db:seeds'

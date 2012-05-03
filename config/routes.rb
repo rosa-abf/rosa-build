@@ -82,6 +82,7 @@ Rosa::Application.routes.draw do
 
   scope :module => 'groups' do
     resources :groups, :controller => 'profile' do
+      get '/' => 'groups/profile#show', :as => :profile, :on => :member
       get :autocomplete_group_uname, :on => :collection
       delete :remove_user, :on => :member
       resources :members, :only => [:index] do
@@ -120,7 +121,7 @@ Rosa::Application.routes.draw do
       get '/' => 'users/profile#show', :as => :user
     end
     constraints OwnerConstraint.new(Group, true) do
-      get '/' => 'groups/profile#show', :as => :group_profile
+      get '/' => 'groups/profile#show', :as => :group
     end
     scope ':project_name', :as => 'project', :module => 'projects' do
       resources :wiki do
