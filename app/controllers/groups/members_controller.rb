@@ -13,7 +13,7 @@ class Groups::MembersController < Groups::BaseController
       role = params['user'][user_id]
 
       if relation = parent.actors.where(:actor_id => user_id, :actor_type => 'User') #find_by_actor_id_and_actor_type(user_id, 'User')
-        relation.update_all(:role => role)
+        relation.update_all(:role => role) if parent.owner.id.to_s != user_id
       else
         relation = parent.actors.build(:actor_id => user_id, :actor_type => 'User', :role => role)
         relation.save!
@@ -30,7 +30,7 @@ class Groups::MembersController < Groups::BaseController
   def remove
     all_user_ids = []
     params['user_remove'].keys.each { |user_id|
-      all_user_ids << user_id if params['user_remove'][user_id] == ["1"]
+      all_user_ids << user_id if params['user_remove'][user_id] == ["1"] && parent.owner.id.to_s != user_id
     } if params['user_remove']
     all_user_ids.each do |user_id|
       u = User.find(user_id)
