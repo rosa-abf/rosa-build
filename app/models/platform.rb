@@ -36,7 +36,7 @@ class Platform < ActiveRecord::Base
   scope :main, where(:platform_type => 'main')
   scope :personal, where(:platform_type => 'personal')
 
-  attr_accessible :name, :distrib_type, :parent_platform_id, :platform_type, :owner, :visibility, :description, :released #, :owner_id, :owner_type
+  attr_accessible :name, :distrib_type, :parent_platform_id, :platform_type, :owner, :visibility, :description, :released
   attr_readonly   :name, :distrib_type, :parent_platform_id, :platform_type
 
   include Modules::Models::Owner

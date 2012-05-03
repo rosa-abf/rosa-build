@@ -7,7 +7,7 @@ class Users::BaseController < ApplicationController
 
   def find_user
     if user_id = params[:owner_name] || params[:user_id] || params[:id]
-      @user = User.find_by_owner_name! user_id
+      @user = User.find_by_insensitive_uname! user_id
     end
   end
 end

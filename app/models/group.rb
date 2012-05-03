@@ -2,9 +2,9 @@
 class Group < ActiveRecord::Base
   belongs_to :owner, :class_name => 'User'
 
-  has_many :relations, :as => :actor, :dependent => :destroy
-  has_many :actors, :as => :target, :class_name => 'Relation'
-  has_many :targets, :as => :actor, :class_name => 'Relation'
+  has_many :relations, :as => :actor, :dependent => :destroy, :dependent => :destroy
+  has_many :actors, :as => :target, :class_name => 'Relation', :dependent => :destroy
+  has_many :targets, :as => :actor, :class_name => 'Relation', :dependent => :destroy
 
   has_many :members,  :through => :actors,  :source => :actor,  :source_type => 'User',    :autosave => true
   has_many :projects, :through => :targets, :source => :target, :source_type => 'Project', :autosave => true

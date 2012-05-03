@@ -5,25 +5,17 @@ class Admin::RegisterRequestsController < Admin::BaseController
   end
 
   def update
-    if params[:update_type].present? and params[:request_ids].present?
-      updates = RegisterRequest.where(:id => params[:request_ids])
-      case params[:update_type]
-      when 'approve' # see approve method
-        updates.each {|req| req.update_attributes(:approved => true, :rejected => false)}
-      when 'reject'  # see reject method
-        updates.each {|req| req.update_attributes(:approved => false, :rejected => true)}
-      end
-    end
+    RegisterRequest.where(:id => params[:request_ids]).each(&params[:update_type].to_sym) if params[:update_type].present? && params[:request_ids].present?
     redirect_to :action => :index
   end
 
   def approve
-    @register_request.update_attributes(:approved => true, :rejected => false)
+    @register_request.approve
     redirect_to :action => :index
   end
 
   def reject
-    @register_request.update_attributes(:approved => false, :rejected => true)
+    @register_request.reject
     redirect_to :action => :index
   end
 end

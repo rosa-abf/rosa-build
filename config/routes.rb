@@ -10,6 +10,16 @@ Rosa::Application.routes.draw do
   get '/forbidden' => 'pages#forbidden', :as => 'forbidden'
   get '/terms-of-service' => 'pages#tos', :as => 'tos'
 
+  get '/activity_feeds.:format' => 'activity_feeds#index', :as => 'atom_activity_feeds', :format => /atom/
+  if APP_CONFIG['anonymous_access']
+    authenticated do
+      root :to => 'activity_feeds#index'
+    end
+    root :to => 'pages#root'
+  else
+    root :to => 'activity_feeds#index'
+  end
+
   scope :module => 'platforms' do
     resources :platforms do
       resources :private_users, :except => [:show, :destroy, :update]
@@ -109,7 +119,7 @@ Rosa::Application.routes.draw do
     constraints OwnerConstraint.new(User) do
       get '/' => 'users/profile#show', :as => :user
     end
-    constraints OwnerConstraint.new(Group) do
+    constraints OwnerConstraint.new(Group, true) do
       get '/' => 'groups/profile#show', :as => :group_profile
     end
     scope ':project_name', :as => 'project', :module => 'projects' do
@@ -189,15 +199,5 @@ Rosa::Application.routes.draw do
       # Archive
       get '/archive/:format/tree/:treeish' => "git/trees#archive", :defaults => {:treeish => :master}, :as => :archive, :format => /zip|tar/
     end
-  end
-
-  get '/activity_feeds.:format' => 'activity_feeds#index', :as => 'atom_activity_feeds', :format => /atom/
-  if APP_CONFIG['anonymous_access']
-    authenticated do
-      root :to => 'activity_feeds#index'
-    end
-    root :to => 'pages#root'
-  else
-    root :to => 'activity_feeds#index'
   end
 end

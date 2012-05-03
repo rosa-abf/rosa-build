@@ -7,7 +7,7 @@ class Groups::BaseController < ApplicationController
 
   def find_group
     if group_id = params[:owner_name] || params[:group_id] || params[:id]
-      @group = Group.find_by_owner_name! group_id
+      @group = Group.find_by_insensitive_uname! group_id
     end
   end
 end

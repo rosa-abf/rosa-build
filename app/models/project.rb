@@ -59,6 +59,7 @@ class Project < ActiveRecord::Base
     owner = User.find_by_uname(owner_name) || Group.find_by_uname(owner_name) || User.by_uname(owner_name).first || Group.by_uname(owner_name).first and
     scoped = where(:owner_id => owner.id, :owner_type => owner.class) and
     scoped.find_by_name(project_name) || scoped.by_name(project_name).first
+    # owner.projects.find_by_name(project_name) || owner.projects.by_name(project_name).first # TODO force this work?
   end
 
   def self.find_by_owner_and_name!(owner_name, project_name)

@@ -29,8 +29,12 @@ module Modules
       end
 
       module ClassMethods
-        def find_by_owner_name!(uname)
-          by_uname(uname).first!
+        def find_by_insensitive_uname(uname)
+          find_by_uname(uname) || by_uname(uname).first
+        end
+
+        def find_by_insensitive_uname!(uname)
+          find_by_insensitive_uname(uname) or raise ActiveRecord::RecordNotFound
         end
       end
     end
