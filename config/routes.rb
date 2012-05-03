@@ -201,6 +201,5 @@ Rosa::Application.routes.draw do
       # Archive
       get '/archive/:format/tree/:treeish' => "git/trees#archive", :defaults => {:treeish => :master}, :as => :archive, :format => /zip|tar/
     end
-    end
   end
 end
