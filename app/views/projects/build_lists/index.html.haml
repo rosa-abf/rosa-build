@@ -1,0 +1,20 @@
+-set_meta_tags :title => t('.title')
+/ #myTable
+%table.tablesorter{:cellpadding => "0", :cellspacing => "0"}
+  %thead
+    %tr
+      %th.lpadding16= t("activerecord.attributes.build_list.bs_id")
+      %th.lpadding16= t("activerecord.attributes.build_list.status")
+      %th.lpadding16= t("activerecord.attributes.build_list.project")
+      %th.lpadding16= t("activerecord.attributes.build_list.project_version")
+      %th.lpadding16= t("activerecord.attributes.build_list.arch")
+      %th.lpadding16= t("activerecord.attributes.build_list.user")
+      %th= t("layout.build_lists.action")
+      %th.lpadding16= t("activerecord.attributes.build_list.updated_at")
+  %tbody= render :partial => 'projects/build_lists/build_list', :collection => @build_lists
+.both
+
+= will_paginate @build_lists
+
+= render 'filter'
+= render @project ? 'projects/base/submenu' : 'projects/build_lists/submenu'

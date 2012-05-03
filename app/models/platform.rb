@@ -36,9 +36,7 @@ class Platform < ActiveRecord::Base
   scope :main, where(:platform_type => 'main')
   scope :personal, where(:platform_type => 'personal')
 
-  attr_accessible :owner, :visibility, :description, :released #, :owner_id, :owner_type
-  
-  attr_accessible :name, :distrib_type, :parent_platform_id, :platform_type
+  attr_accessible :name, :distrib_type, :parent_platform_id, :platform_type, :owner, :visibility, :description, :released
   attr_readonly   :name, :distrib_type, :parent_platform_id, :platform_type
 
   include Modules::Models::Owner
@@ -100,7 +98,8 @@ class Platform < ActiveRecord::Base
 
   def base_clone(attrs = {}) # :description, :name, :owner
     clone.tap do |c|
-      c.attributes = attrs # attrs.each {|k,v| c.send("#{k}=", v)}
+      # c.attributes = attrs #
+      attrs.each {|k,v| c.send("#{k}=", v)}
       c.updated_at = nil; c.created_at = nil # :id = nil
       c.parent = self
     end

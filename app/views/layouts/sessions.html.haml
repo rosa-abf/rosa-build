@@ -13,7 +13,7 @@
     = display_meta_tags :site => APP_CONFIG['project_name'], :reverse => true, :separator => '-'
 
   %body
-    -# render :partial => "layouts/flashes"
+    -# render "layouts/flashes"
     = yield
 
     = render 'layouts/counters' unless current_user.try(:admin?)

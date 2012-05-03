@@ -1,0 +1,22 @@
+-content_for :sidebar do
+  - if current_user
+    =form_tag project_issues_path(@project), :id => 'filter_issues', :method => :get do
+      .bordered.nopadding
+        %h3=t("layout.issues.accessory")
+        %table
+          %tr
+            %td.width18=radio_button_tag :myradio, 'all', !@is_assigned_to_me, {:id => 'myradio1', :class => 'niceRadio', :name => 'filter'}
+            %td.width135=t("layout.issues.all")
+            %td.width30.right=@project.issues.count
+          %tr
+            %td=radio_button_tag :myradio, 'to_me', @is_assigned_to_me, {:id => 'myradio1', :class => 'niceRadio', :name => 'filter'}
+            %td=t("layout.issues.to_me")
+            %td.width30.right=@project.issues.where(:assignee_id => current_user.id).count
+  =form_tag project_issues_path(@project), :id => 'search_issue', :method => :get do
+    .bordered.bpadding20
+      =tracker_search_field(:search_issue, t('layout.issues.search'))
+  - if can? :new, @project.issues.new
+    .bordered.nopadding
+      %h3.bmargin10=t('layout.issues.new')
+      = link_to t("layout.add"), new_project_issue_path(@project), :class => 'button'
+  =render 'labels'

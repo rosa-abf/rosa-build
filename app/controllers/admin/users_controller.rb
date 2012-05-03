@@ -1,7 +1,6 @@
 # -*- encoding : utf-8 -*-
-class Admin::UsersController < ApplicationController
-  before_filter :authenticate_user!
-  load_and_authorize_resource
+class Admin::UsersController < Admin::BaseController
+  prepend_before_filter :find_user
 
   def index
     @filter = params[:filter] || 'all'
@@ -15,7 +14,7 @@ class Admin::UsersController < ApplicationController
     @user.confirmed_at = Time.now.utc
     if @user.save
       flash[:notice] = t('flash.user.saved')
-      redirect_to users_path
+      redirect_to admin_users_path
     else
       flash[:error] = t('flash.user.save_error')
       flash[:warning] = @user.errors.full_messages.join('. ')
@@ -23,7 +22,7 @@ class Admin::UsersController < ApplicationController
     end
   end
 
-  def profile
+  def edit
   end
 
   def update
@@ -34,18 +33,18 @@ class Admin::UsersController < ApplicationController
         @user.save
       end
       flash[:notice] = t('flash.user.saved')
-      redirect_to users_path#edit_user_path(@user)
+      redirect_to admin_users_path
     else
       flash[:error] = t('flash.user.save_error')
       flash[:warning] = @user.errors.full_messages.join('. ')
-      render(:action => :profile)
+      render :action => :edit
     end
   end
 
   def destroy
     @user.destroy
     flash[:notice] = t("flash.user.destroyed")
-    redirect_to users_path
+    redirect_to admin_users_path
   end
 
   def list
@@ -64,6 +63,12 @@ class Admin::UsersController < ApplicationController
     @total_user = @users.count
     @users = @users.order(order)
 
-    render :partial =>'users_ajax', :layout => false
+    render :partial => 'users_ajax', :layout => false
+  end
+
+  protected
+
+  def find_user
+    @user = User.find_by_uname!(params[:id]) if params[:id]
   end
 end

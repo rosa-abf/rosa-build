@@ -1,0 +1,20 @@
+.left
+  = image_tag avatar_url(@user, :big)
+  %br
+  = link_to t("layout.users.settings"), current_user == @user ? profile_settings_path : edit_admin_user_path(@user), :class => 'button width81' if can? :edit, @user
+.left
+  %h3= title @user.uname
+  = @user.name
+  %br
+    = link_to @user.email, "mailto:#{@user.email}"
+    %br
+      %h4= t("activerecord.attributes.user.professional_experience") + ":"
+      %p= @user.professional_experience
+      %h4= t("layout.users.public_projects_list") + ":"
+      %p
+        - @user.projects.by_visibilities(['open']).each do |project|
+          = link_to project.name, project
+          %br
+
+:javascript
+  $('article .all').addClass('verybigpadding');

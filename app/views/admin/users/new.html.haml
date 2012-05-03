@@ -2,10 +2,9 @@
   .content
     %h2.title= title t("layout.users.new_header")
     .inner
-      = form_for @user, :url => create_user_path, :html => { :class => :form } do |f|
-        = render :partial => "users/form", :locals => {:f => f}
+      = form_for @user, :url => admin_users_path, :html => {:class => :form} do |f|
+        = render "users/base/form", :f => f
 
 - content_for :sidebar do
   .bordered.nopadding
-
-= render 'admin/submenu'
+= render 'submenu'

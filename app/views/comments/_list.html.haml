@@ -1,6 +1,0 @@
-%a{ :name => "comments" }
-.hr
-%h3= t("layout.comments.comments_header")
-- list.each do |comment|
-  - CommentPresenter.present(comment, :project => project, :commentable => commentable) do |presenter|
-    = render :partial => 'shared/feed_message', :locals => {:presenter => presenter}
