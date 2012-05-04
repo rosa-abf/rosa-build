@@ -20,6 +20,8 @@ class Projects::PullRequestsController < Projects::BaseController
   def create
     @pull = @project.pull_requests.new(params[:pull_request]) # FIXME need validation!
     @pull.issue.user, @pull.issue.project = current_user, @pull.base_project
+    @pull.base_ref = params[:base_ref] # FIXME need validation!
+    @pull.head_ref = params[:head_ref] # FIXME need validation!
 
     if @pull.save
       render :index #FIXME redirect to show

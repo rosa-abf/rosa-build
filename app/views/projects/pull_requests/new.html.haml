@@ -1,28 +1,40 @@
 -set_meta_tags :title => [title_object(@project), t('.title')]
 = render :partial => 'submenu'
 %h3.bpadding10= raw t '.new', {:base => @base, :head => @head}
+%ul.nav.nav-tabs
+  -t('pull_requests.tabs').each do |base, title|
+    %li
+      %a{"data-toggle" => "tab", :href => "##{base}"}=title
+.tab-content
+  #discussion.tab-pane.active
+    =form_for @pull, :url => project_pull_requests_path, :html => {:class => 'well well-large'} do |f|
+      .leftlist=f.label :base_project, t('.base_project'), :class => :label
+      .rightlist=f.text_field :base_project_id
+      .both
+      .leftlist=f.label :base_ref, "#{t '.base_ref'} #{t '.refs'}", :class => :label
+      .rightlist=select_tag :base_ref, branch_selector_options(@project), :id => 'branch_selector'
+      .both
+      .leftlist=f.label :head_project, t('.head_project'), :class => :label
+      .rightlist=f.text_field :head_project_id
+      .both
+      .leftlist=f.label :head_ref, "#{t '.head_ref'} #{t '.refs'}", :class => :label
+      .rightlist=select_tag :head_ref, branch_selector_options(@pull.head_project), :id => 'branch_selector'
+      .both
+      = f.fields_for :issue do |issue|
+        .leftlist=issue.label :title, t('activerecord.attributes.issue.title'), :class => :label
+        .rightlist=issue.text_field :title
+        .both
+        .leftlist=issue.label :title, t('activerecord.attributes.issue.body'), :class => :label
+        .rightlist=issue.text_area :body
+        .both
+      .leftlist
+        \ 
+      .rightlist=f.submit t('.submit'), :class => 'btn btn-primary disabled', 'data-loading-text' => t('layout.processing'), :id => 'create_pull'
+      .both
+  #diff.tab-pane.active ...
+  #commits.tab-pane.active ...
 
-=form_for @pull, :url => project_pull_requests_path, :html => {:class => 'well well-large'} do |f|
-  .leftlist=f.label :base_project, t('.base_project'), :class => :label
-  .rightlist=f.text_field :base_project_id
-  .both
-  .leftlist=f.label :base_ref, "#{t '.base_ref'} #{t '.refs'}", :class => :label
-  .rightlist=text_field_tag :base_ref, @base_ref
-  .both
-  .leftlist=f.label :head_project, t('.head_project'), :class => :label
-  .rightlist=f.text_field :head_project_id
-  .both
-  .leftlist=f.label :head_ref, "#{t '.head_ref'} #{t '.refs'}", :class => :label
-  .rightlist=text_field_tag :head_ref, @head_ref
-  .both
-  = f.fields_for :issue do |issue|
-    .leftlist=issue.label :title, t('activerecord.attributes.issue.title'), :class => :label
-    .rightlist=issue.text_field :title
-    .both
-    .leftlist=issue.label :title, t('activerecord.attributes.issue.body'), :class => :label
-    .rightlist=issue.text_area :body
-    .both
-  .leftlist
-    \ 
-  .rightlist=f.submit t('.submit'), :class => 'btn btn-primary disabled', 'data-loading-text' => t('layout.processing'), :id => 'create_pull'
-  .both
+:javascript
+  $(function () {
+    $('.nav.nav-tabs a:first').tab('show');
+  });

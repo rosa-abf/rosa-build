@@ -9,3 +9,9 @@ ru:
         base_project: 'Базовый проект'
         head_project: 'Проект-источник'
         submit: 'Создать запрос на слияние'
+
+  pull_requests:
+    tabs:
+      discussion: Дискуссия
+      diff: Diff
+      Commits: Коммиты

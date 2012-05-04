@@ -9,3 +9,9 @@ en:
         base_project: 'Base project'
         head_project: 'Head project'
         submit: 'Send pull request'
+
+  pull_requests:
+    tabs:
+      discussion: Discussion
+      diff: Diff
+      Commits: Commits
