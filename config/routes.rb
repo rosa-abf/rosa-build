@@ -60,6 +60,7 @@ Rosa::Application.routes.draw do
     end
     match '/private/:platform_name/*file_path' => 'privates#show'
 
+    resources :advisories, :only => [:index, :show]
     resources :product_build_lists, :only => [:index]
   end
 

@@ -57,7 +57,7 @@
 
   - if @build_list.advisory.present?
     .leftlist= t("layout.build_lists.connected_advisory")
-    .rightlist= @build_list.advisory.advisory_id
+    .rightlist= link_to @build_list.advisory.advisory_id, advisory_path(@build_list.advisory)
     .both
   - if !@build_list.in_work? && @build_list.started_at
     %br

@@ -1,0 +1,35 @@
+-#set_meta_tags :title => [title_object(@build_list.project), t('activerecord.models.build_list')]
+%h3= "#{t("activerecord.models.advisory")} #{@advisory.advisory_id}".html_safe
+
+.leftlist= "#{t("layout.advisories.project_name")}:".html_safe
+.rightlist= @advisory.project.name
+.both
+
+.leftlist= "#{t("layout.advisories.creation_date")}:".html_safe
+.rightlist= @advisory.created_at
+.both
+
+.leftlist= "#{t("activerecord.attributes.advisory.advisory_id")}:".html_safe
+.rightlist= @advisory.advisory_id
+.both
+
+.leftlist= "#{t("layout.advisories.affected_versions")}:".html_safe
+.rightlist
+  - @advisory.platforms.each do |platform|
+    = link_to platform.name, platform_path(platform)
+    %br
+.both
+
+.leftlist= "#{t("activerecord.attributes.advisory.description")}:".html_safe
+.rightlist= @advisory.description
+.both
+
+.leftlist= "#{t("activerecord.attributes.advisories.references")}:".html_safe
+.rightlist
+  - sanitize(@advisory.references).gsub("\r", '').split("\n").each do |ref|
+    = link_to ref
+    %br
+.both
+
+:javascript
+  $('article .all').addClass('bigpadding');
