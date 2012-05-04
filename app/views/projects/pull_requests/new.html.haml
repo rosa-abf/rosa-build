@@ -1,5 +1,5 @@
 -set_meta_tags :title => [title_object(@project), t('.title')]
-= render :partial => 'projects/submenu'
+= render :partial => 'submenu'
 %h3.bpadding10= raw t '.new', {:base => @base, :head => @head}
 
 =form_for @pull, :url => project_pull_requests_path, :html => {:class => 'well well-large'} do |f|

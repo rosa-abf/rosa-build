@@ -1,10 +1,11 @@
 ru:
-  pull_requests:
-    new:
-      new: 'Создать запрос на слияние в <span class="label label-info font14">%{base}</span> из <span class="label label-info font14">%{head}</span>'
-      base_ref: 'База'
-      head_ref: 'Источник'
-      refs: 'branch · tag · commit'
-      base_project: 'Базовый проект'
-      head_project: 'Проект-источник'
-      submit: 'Создать запрос на слияние'
+  projects:
+    pull_requests:
+      new:
+        new: 'Создать запрос на слияние в <span class="label label-info font14">%{base}</span> из <span class="label label-info font14">%{head}</span>'
+        base_ref: 'База'
+        head_ref: 'Источник'
+        refs: 'branch · tag · commit'
+        base_project: 'Базовый проект'
+        head_project: 'Проект-источник'
+        submit: 'Создать запрос на слияние'

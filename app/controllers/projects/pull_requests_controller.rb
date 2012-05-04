@@ -1,5 +1,5 @@
 # -*- encoding : utf-8 -*-
-class PullRequestsController < ApplicationController
+class Projects::PullRequestsController < Projects::BaseController
   before_filter :authenticate_user!
   load_resource :project
   #load_and_authorize_resource :pull_request, :through => :project, :find_by => :serial_id #FIXME Disable for development

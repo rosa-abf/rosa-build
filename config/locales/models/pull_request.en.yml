@@ -1,10 +1,11 @@
 en:
-  pull_requests:
-    new:
-      new: 'Create a pull request into <span class="label label-info font14">%{base}</span> from <span class="label label-info font14">%{head}</span>'
-      base_ref: 'Base'
-      head_ref: 'Head'
-      refs: 'branch · tag · commit'
-      base_project: 'Base project'
-      head_project: 'Head project'
-      submit: 'Send pull request'
+  projects:
+    pull_requests:
+      new:
+        new: 'Create a pull request into <span class="label label-info font14">%{base}</span> from <span class="label label-info font14">%{head}</span>'
+        base_ref: 'Base'
+        head_ref: 'Head'
+        refs: 'branch · tag · commit'
+        base_project: 'Base project'
+        head_project: 'Head project'
+        submit: 'Send pull request'
