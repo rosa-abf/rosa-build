@@ -1,0 +1,23 @@
+%tr#row1{:name => "row", :class => issue.labels.map(&:name).compact}
+  %td.td0
+    %span{:style => "display: none;"}=issue.serial_id
+  %td.td1=issue.serial_id
+  %td
+    %a{:href => project_issue_path(@project, issue)}
+      %div.issue_title=issue.title
+    .smalltext
+      =issue.created_at.to_s(:long)
+      =t("layout.by") if issue.user
+      =link_to(issue.user.uname, user_path(issue.user)) if issue.user
+    -issue.labels.each do |label|
+      .left.nomargin
+        .label.selected.tracker.left
+          .labeltext.selected{:style => "background: ##{label.color};"}=label.name
+  %td.td3
+    .avatar
+      =link_to image_tag(avatar_url(issue.assignee), :alt => 'avatar'), user_path(issue.assignee) if issue.assignee
+    %a{:href => "#{project_issue_path @project, issue}#block-list"}
+      .answers
+        .pic= image_tag 'answers.png'
+        .count=issue.comments.count
+        .both

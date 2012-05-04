@@ -1,0 +1,55 @@
+# -*- encoding : utf-8 -*-
+class Users::SettingsController < Users::BaseController
+  before_filter :set_current_user
+
+  def profile
+    if request.put?
+      send_confirmation = params[:user][:email] != @user.email
+      if @user.update_without_password(params[:user])
+        if @user.avatar && params[:delete_avatar] == '1'
+          @user.avatar = nil
+          @user.save
+        end
+        if send_confirmation
+          @user.confirmed_at, @user.confirmation_sent_at = nil
+          @user.send_confirmation_instructions
+        end
+        flash[:notice] = t('flash.user.saved')
+        redirect_to profile_settings_path
+      else
+        flash[:error] = t('flash.user.save_error')
+        flash[:warning] = @user.errors.full_messages.join('. ')
+      end
+    end
+  end
+
+  def private
+    if request.put?
+      if @user.update_with_password(params[:user])
+        flash[:notice] = t('flash.user.saved')
+        redirect_to private_settings_path
+      else
+        flash[:error] = t('flash.user.save_error')
+        flash[:warning] = @user.errors.full_messages.join('. ')
+        render(:action => :private)
+      end
+    end
+  end
+
+  def notifiers
+    if request.put?
+      if @user.notifier.update_attributes(params[:settings_notifier])
+        flash[:notice] = I18n.t("flash.settings.saved")
+        redirect_to notifiers_settings_path
+      else
+        flash[:error] = I18n.t("flash.settings.save_error")
+      end
+    end
+  end
+
+  protected
+
+  def set_current_user
+    @user = current_user
+  end
+end

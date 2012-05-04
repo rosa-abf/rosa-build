@@ -2,15 +2,15 @@
 module ApplicationHelper
   def layout_class
     case
-    when params[:controller] == 'issues' && params[:action] == 'new'
+    when controller_name == 'issues' && action_name == 'new'
       'right nopadding'
-    when params[:controller] == 'build_lists' && params[:action] == 'index'
+    when controller_name == 'build_lists' && action_name == 'index'
       'right slim'
-    when params[:controller] == 'build_lists' && ['new', 'create'].include?(params[:action])
+    when controller_name == 'build_lists' && ['new', 'create'].include?(action_name)
       nil
-    when params[:controller] == 'platforms' && params[:action] == 'show'
+    when controller_name == 'platforms' && action_name == 'show'
       'right bigpadding'
-    when params[:controller] == 'platforms' && params[:action] == 'clone'
+    when controller_name == 'platforms' && action_name == 'clone'
       'right middlepadding'
     else
       content_for?(:sidebar) ? 'right' : 'all'

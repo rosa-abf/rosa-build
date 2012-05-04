@@ -1,7 +1,0 @@
--set_meta_tags :title => [title_object(@project), t('layout.issues.create_header')]
--render :partial => 'projects/submenu'
--render :partial => 'issues/manage_sidebar'
-
-%h3.bpadding10= t("layout.issues.create_header")
-= form_for :issue, :url => project_issues_path(@project), :html => { :class => 'form issue' } do |f|
-  = render :partial => "form", :locals => {:f => f}

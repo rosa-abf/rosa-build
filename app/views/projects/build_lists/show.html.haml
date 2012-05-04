@@ -1,0 +1,110 @@
+-set_meta_tags :title => [title_object(@build_list.project), t('activerecord.models.build_list')]
+.notify.blue
+  %div{:class => build_list_status_color(@build_list.status)}
+    %p= @build_list.human_status
+  %p= @build_list.updated_at
+  .both
+= form_for @build_list do |f|
+  %h3= t("layout.build_lists.main_data")
+  .leftlist= t("activerecord.attributes.build_list.container_path")
+  .rightlist
+    - if @build_list.status == BuildList::BUILD_PUBLISHED
+      = t("layout.build_lists.container_published")
+    - elsif @build_list.container_path.present?
+      - container_url = "http://#{request.host_with_port}/downloads#{@build_list.container_path}"
+      = link_to container_url, container_url
+  .both
+  .leftlist= t("activerecord.attributes.build_list.user")
+  .rightlist
+    = link_to @build_list.user.try(:fullname), @build_list.user
+  .both
+  .leftlist= t("activerecord.attributes.build_list.bpl")
+  .rightlist
+    = link_to @build_list.build_for_platform.name, @build_list.build_for_platform
+  .both
+  .leftlist= t("activerecord.attributes.build_list.pl")
+  .rightlist
+    = link_to @build_list.save_to_platform.name, @build_list.save_to_platform
+  .both
+  .leftlist= t("activerecord.attributes.build_list.include_repos")
+  .rightlist= (@build_list.include_repos||[]).map{|r| Repository.find(r).name}.join(', ')
+  .both
+  .leftlist= t("activerecord.attributes.build_list.update_type")
+  .rightlist
+    - if @build_list.can_publish? and can?(:publish, @build_list)
+      = f.select :update_type, options_for_select(BuildList::RELEASE_UPDATE_TYPES, @build_list.update_type)
+    - else
+      = @build_list.update_type
+  .both
+  .leftlist= t("activerecord.attributes.build_list.build_requires")
+  .rightlist= t("layout.#{@build_list.build_requires}_")
+  .both
+  .leftlist= t("activerecord.attributes.build_list.auto_publish")
+  .rightlist= t("layout.#{@build_list.auto_publish}_")
+  .both
+  .leftlist= t("activerecord.attributes.build_list.project_version")
+  .rightlist= @build_list.project_version
+  .both
+  .leftlist= t("activerecord.attributes.build_list.arch")
+  .rightlist= @build_list.arch.name
+  .both
+  .leftlist= t("activerecord.attributes.build_list.updated_at")
+  .rightlist= @build_list.updated_at
+  .both
+  .leftlist= t("activerecord.attributes.build_list.is_circle")
+  .rightlist= t("layout.#{@build_list.is_circle?}_")
+  .both
+
+  - if @build_list.advisory.present?
+    .leftlist= t("layout.build_lists.connected_advisory")
+    .rightlist= @build_list.advisory.advisory_id
+    .both
+  - if !@build_list.in_work? && @build_list.started_at
+    %br
+    .leftlist
+    .rightlist= @build_list.human_duration
+    .both
+  - if @build_list.in_work?
+    %br
+    .leftlist
+    .rightlist
+      = "#{@build_list.human_current_duration} / #{@build_list.project.human_average_build_time}"
+    .both
+
+  - if @build_list.can_publish? and @build_list.save_to_platform.released and @build_list.advisory.nil?
+    .leftlist= label_tag :create_advisory, t("layout.build_lists.create_advisory")
+    .rightlist= check_box_tag :create_advisory, 1, false
+    .both
+    = f.fields_for @build_list.build_advisory do |f|
+      = render :partial => 'advisories/form', :locals => {:f => f}
+
+  =# link_to t("layout.publish"), publish_build_list_path(@build_list), :method => "put", :confirm => t("layout.confirm"), :class => "button tmargin10" if @build_list.can_publish? and can?(:publish, @build_list)
+  =# link_to t("layout.reject_publish"), reject_publish_build_list_path(@build_list), :method => "put", :confirm => t("layout.confirm"), :class => "button tmargin10" if @build_list.can_reject_publish? and can?(:reject_publish, @build_list)
+  = submit_tag t("layout.publish"), :confirm => t("layout.confirm"), :name => 'publish' if @build_list.can_publish? and can?(:publish, @build_list)
+  = submit_tag t("layout.reject_publish"), :confirm => t("layout.confirm"), :name => 'reject_publish' if @build_list.can_reject_publish? and can?(:reject_publish, @build_list)
+
+.hr
+%h3= t("layout.build_lists.items_header")
+- if @item_groups.blank?
+  %h4.nomargin= t("layout.build_lists.no_items_data")
+- @item_groups.each_with_index do |group, level|
+  -#%h4.nomargin= "#{group} ##{level}"
+  - group.each do |item|
+    %h4.nomargin= "#{item.name} ##{level}"
+    %table.tablesorter.width565{:cellpadding => "0", :cellspacing => "0"}
+      %thead
+        %tr
+          %th= t("activerecord.attributes.build_list/item.name")
+          %th= t("activerecord.attributes.build_list/item.version")
+          %th= t("activerecord.attributes.build_list/item.status")
+      %tbody
+        %tr{:class => build_list_item_status_color(item.status)}
+          %td= item.name
+          %td= item.version
+          %td= item.human_status
+.both
+
+:javascript
+  $('article .all').addClass('bigpadding');
+
+= render 'submenu'

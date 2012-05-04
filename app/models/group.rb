@@ -2,9 +2,9 @@
 class Group < ActiveRecord::Base
   belongs_to :owner, :class_name => 'User'
 
-  has_many :relations, :as => :actor, :dependent => :destroy
-  has_many :actors, :as => :target, :class_name => 'Relation'
-  has_many :targets, :as => :actor, :class_name => 'Relation'
+  has_many :relations, :as => :actor, :dependent => :destroy, :dependent => :destroy
+  has_many :actors, :as => :target, :class_name => 'Relation', :dependent => :destroy
+  has_many :targets, :as => :actor, :class_name => 'Relation', :dependent => :destroy
 
   has_many :members,  :through => :actors,  :source => :actor,  :source_type => 'User',    :autosave => true
   has_many :projects, :through => :targets, :source => :target, :source_type => 'Project', :autosave => true
@@ -13,22 +13,21 @@ class Group < ActiveRecord::Base
   has_many :own_platforms, :as => :owner, :class_name => 'Platform', :dependent => :destroy
 
   validates :owner, :presence => true
-  validates :uname, :presence => true, :uniqueness => {:case_sensitive => false}, :format => { :with => /^[a-z0-9_]+$/ }
-  validate { errors.add(:uname, :taken) if User.where('uname LIKE ?', uname).present? }
+  validates :uname, :presence => true, :uniqueness => {:case_sensitive => false}, :format => {:with => /^[a-z0-9_]+$/}, :reserved_name => true
+  validate { errors.add(:uname, :taken) if User.by_uname(uname).present? }
 
   scope :opened, where('1=1')
   scope :by_owner, lambda {|owner| where(:owner_id => owner.id)}
   scope :by_admin, lambda {|admin| joins(:actors).where(:'relations.role' => 'admin', :'relations.actor_id' => admin.id, :'relations.actor_type' => 'User')}
 
-  include Modules::Models::ActsLikeMember
-
-  attr_accessible :description
-  attr_readonly :own_projects_count
+  attr_accessible :uname, :description
+  attr_readonly :uname
 
   delegate :email, :to => :owner
 
   after_create :add_owner_to_members
 
+  include Modules::Models::ActsLikeMember
   include Modules::Models::PersonalRepository
   # include Modules::Models::Owner
 
@@ -43,7 +42,6 @@ class Group < ActiveRecord::Base
   protected
 
   def add_owner_to_members
-    Relation.create_with_role(self.owner, self, 'admin')
-    # members << self.owner if !members.exists?(:id => self.owner.id)
+    Relation.create_with_role(self.owner, self, 'admin') # members << self.owner if !members.exists?(:id => self.owner.id)
   end
 end
