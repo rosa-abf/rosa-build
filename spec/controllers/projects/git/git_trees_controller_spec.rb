@@ -12,7 +12,7 @@ describe Projects::Git::TreesController do
 
     @project = FactoryGirl.create(:project)
     @another_user = FactoryGirl.create(:user)
-    @params = {:project_id => @project.id, :format => 'tar'}
+    @params = {:owner_name => @project.owner.uname, :project_name => @project.name, :format => 'tar'}
   end
 
   context 'for guest' do

@@ -20,6 +20,20 @@ Rosa::Application.routes.draw do
     root :to => 'activity_feeds#index'
   end
 
+  namespace :admin do
+    resources :users do
+      get :list, :on => :collection
+    end
+    resources :register_requests, :only => [:index] do
+      put :update, :on => :collection
+      member do
+        get :approve
+        get :reject
+      end
+    end
+    resources :event_logs, :only => :index
+  end
+
   scope :module => 'platforms' do
     resources :platforms do
       resources :private_users, :except => [:show, :destroy, :update]
@@ -49,20 +63,6 @@ Rosa::Application.routes.draw do
     resources :product_build_lists, :only => [:index]
   end
 
-  namespace :admin do
-    resources :users do
-      get :list, :on => :collection
-    end
-    resources :register_requests, :only => [:index] do
-      put :update, :on => :collection
-      member do
-        get :approve
-        get :reject
-      end
-    end
-    resources :event_logs, :only => :index
-  end
-
   scope :module => 'users' do
     resources :settings, :only => [] do
       collection do
@@ -81,6 +81,8 @@ Rosa::Application.routes.draw do
   end
 
   scope :module => 'groups' do
+    get '/groups/new' => 'profile#new' # need to force next route exclude :id => 'new'
+    get '/groups/:id' => redirect("/%{id}"), :as => :profile_group # override default group show route
     resources :groups, :controller => 'profile' do
       get :autocomplete_group_uname, :on => :collection
       delete :remove_user, :on => :member
@@ -114,56 +116,49 @@ Rosa::Application.routes.draw do
     end
 
     resources :projects, :only => [:index, :new, :create]
-  end
-  scope ':owner_name' do # Owner
-    constraints OwnerConstraint.new(User) do
-      get '/' => 'users/profile#show', :as => :user
-    end
-    constraints OwnerConstraint.new(Group, true) do
-      get '/' => 'groups/profile#show', :as => :group_profile
-    end
-    scope ':project_name', :as => 'project', :module => 'projects' do
-      resources :wiki do
-        collection do
-          match '_history' => 'wiki#wiki_history', :as => :history, :via => :get
-          match '_access' => 'wiki#git', :as => :git, :via => :get
-          match '_revert/:sha1/:sha2' => 'wiki#revert_wiki', :as => :revert, :via => [:get, :post]
-          match '_compare' => 'wiki#compare_wiki', :as => :compare, :via => :post
-          #match '_compare/:versions' => 'wiki#compare_wiki', :versions => /.*/, :as => :compare_versions, :via => :get
-          match '_compare/:versions' => 'wiki#compare_wiki', :versions => /([a-f0-9\^]{6,40})(\.\.\.[a-f0-9\^]{6,40})/, :as => :compare_versions, :via => :get
-          post :preview
-          get :search
-          get :pages
-        end
-        member do
-          get :history
-          get :edit
-          match 'revert/:sha1/:sha2' => 'wiki#revert', :as => :revert_page, :via => [:get, :post]
-          match ':ref' => 'wiki#show', :as => :versioned, :via => :get
 
-          post :compare
-          #match 'compare/*versions' => 'wiki#compare', :as => :compare_versions, :via => :get
-          match 'compare/:versions' => 'wiki#compare', :versions => /([a-f0-9\^]{6,40})(\.\.\.[a-f0-9\^]{6,40})/, :as => :compare_versions, :via => :get
+    scope ':owner_name/:project_name' do # project
+      scope :as => 'project' do
+        resources :wiki do
+          collection do
+            match '_history' => 'wiki#wiki_history', :as => :history, :via => :get
+            match '_access' => 'wiki#git', :as => :git, :via => :get
+            match '_revert/:sha1/:sha2' => 'wiki#revert_wiki', :as => :revert, :via => [:get, :post]
+            match '_compare' => 'wiki#compare_wiki', :as => :compare, :via => :post
+            #match '_compare/:versions' => 'wiki#compare_wiki', :versions => /.*/, :as => :compare_versions, :via => :get
+            match '_compare/:versions' => 'wiki#compare_wiki', :versions => /([a-f0-9\^]{6,40})(\.\.\.[a-f0-9\^]{6,40})/, :as => :compare_versions, :via => :get
+            post :preview
+            get :search
+            get :pages
+          end
+          member do
+            get :history
+            get :edit
+            match 'revert/:sha1/:sha2' => 'wiki#revert', :as => :revert_page, :via => [:get, :post]
+            match ':ref' => 'wiki#show', :as => :versioned, :via => :get
+
+            post :compare
+            #match 'compare/*versions' => 'wiki#compare', :as => :compare_versions, :via => :get
+            match 'compare/:versions' => 'wiki#compare', :versions => /([a-f0-9\^]{6,40})(\.\.\.[a-f0-9\^]{6,40})/, :as => :compare_versions, :via => :get
+          end
+        end
+        resources :issues, :except => :edit do
+          resources :comments, :only => [:edit, :create, :update, :destroy]
+          resources :subscribes, :only => [:create, :destroy]
+          collection do
+            post :create_label
+            get :search_collaborators
+          end
+        end
+        post "/labels/:label_id" => "issues#destroy_label", :as => :issues_delete_label
+        post "/labels/:label_id/update" => "issues#update_label", :as => :issues_update_label
+        resources :build_lists, :only => [:index, :new, :create] do
+          collection { post :search }
+        end
+        resources :collaborators do
+          get :find, :on => :collection
         end
       end
-      resources :issues, :except => :edit do
-        resources :comments, :only => [:edit, :create, :update, :destroy]
-        resources :subscribes, :only => [:create, :destroy]
-        collection do
-          post :create_label
-          get :search_collaborators
-        end
-      end
-      post "/labels/:label_id" => "issues#destroy_label", :as => :issues_delete_label
-      post "/labels/:label_id/update" => "issues#update_label", :as => :issues_update_label
-      resources :build_lists, :only => [:index, :new, :create] do
-        collection { post :search }
-      end
-      resources :collaborators do
-        get :find, :on => :collection
-      end
-    end
-    scope ':project_name', :module => 'projects' do
       # Resource
       get '/edit' => 'projects#edit', :as => :edit_project
       put '/' => 'projects#update'
@@ -198,6 +193,15 @@ Rosa::Application.routes.draw do
       get '/raw/:treeish/*path' => "git/blobs#raw", :defaults => {:treeish => :master}, :as => :raw, :format => false
       # Archive
       get '/archive/:format/tree/:treeish' => "git/trees#archive", :defaults => {:treeish => :master}, :as => :archive, :format => /zip|tar/
+    end
+  end
+
+  scope ':uname' do # project owner profile
+    constraints OwnerConstraint.new(User) do
+      get '/' => 'users/profile#show', :as => :user
+    end
+    constraints OwnerConstraint.new(Group, true) do
+      get '/' => 'groups/profile#show', :as => :group
     end
   end
 end

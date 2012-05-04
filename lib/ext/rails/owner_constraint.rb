@@ -7,6 +7,6 @@ class OwnerConstraint
   end
 
   def matches?(request)
-    @class_name.send(@finder, request.params[:owner_name]).present?
+    @class_name.send(@finder, request.params[:uname]).present?
   end
 end

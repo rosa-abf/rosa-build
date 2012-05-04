@@ -27,7 +27,7 @@ describe Users::ProfileController do
     end
 
     it 'should be able to view profile' do
-      get :show, :owner_name => @other_user.uname
+      get :show, :uname => @other_user.uname
       response.code.should eq('200')
     end
 
