@@ -2,18 +2,25 @@
 class BuildList < ActiveRecord::Base
   belongs_to :project
   belongs_to :arch
-  belongs_to :pl, :class_name => 'Platform'
-  belongs_to :bpl, :class_name => 'Platform'
+  belongs_to :save_to_platform, :class_name => 'Platform'
+  belongs_to :build_for_platform, :class_name => 'Platform'
   belongs_to :user
   has_many :items, :class_name => "BuildList::Item", :dependent => :destroy
+
+  belongs_to :advisory
 
   validates :project_id, :project_version, :arch, :include_repos, :presence => true
   validates_numericality_of :priority, :greater_than_or_equal_to => 0
   
   UPDATE_TYPES = %w[security bugfix enhancement recommended newpackage]
-  validates :update_type, :inclusion => UPDATE_TYPES
+  RELEASE_UPDATE_TYPES = %w[security bugfix]
+
+  validates :update_type, :inclusion => UPDATE_TYPES,
+            :unless => Proc.new { |b| b.save_to_platform.released }
+  validates :update_type, :inclusion => RELEASE_UPDATE_TYPES,
+            :if => Proc.new { |b| b.save_to_platform.released }
   validate lambda {  
-    errors.add(:bpl, I18n.t('flash.build_list.wrong_platform')) if pl.platform_type == 'main' && pl_id != bpl_id
+    errors.add(:build_for_platform, I18n.t('flash.build_list.wrong_platform')) if save_to_platform.platform_type == 'main' && save_to_platform_id != build_for_platform_id
   }
 
   # The kernel does not send these statuses directly
@@ -123,7 +130,7 @@ class BuildList < ActiveRecord::Base
   end
 
   def can_reject_publish?
-    can_publish? and pl.released
+    can_publish? and save_to_platform.released
   end
 
   def cancel
@@ -167,7 +174,7 @@ class BuildList < ActiveRecord::Base
 
     def place_build
       #XML-RPC params: project_name, project_version, plname, arch, bplname, update_type, build_requires, id_web, include_repos, priority
-      self.status = BuildServer.add_build_list project.name, project_version, pl.name, arch.name, (pl_id == bpl_id ? '' : bpl.name), update_type, build_requires, id, include_repos, priority
+      self.status = BuildServer.add_build_list project.name, project_version, save_to_platform.name, arch.name, (save_to_platform_id == build_for_platform_id ? '' : build_for_platform.name), update_type, build_requires, id, include_repos, priority
       self.status = BUILD_PENDING if self.status == 0
       save
     end

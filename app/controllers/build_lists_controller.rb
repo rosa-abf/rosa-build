@@ -7,7 +7,7 @@ class BuildListsController < ApplicationController
   before_filter :authenticate_build_service!, :only => CALLBACK_ACTIONS
   skip_before_filter :authenticate_user!, :only => [:show, :index, :search] if APP_CONFIG['anonymous_access']
   before_filter :find_project, :only => NESTED_ACTIONS
-  before_filter :find_build_list, :only => [:show, :publish, :cancel, :reject_publish]
+  before_filter :find_build_list, :only => [:show, :publish, :cancel, :reject_publish, :update]
   before_filter :find_build_list_by_bs, :only => [:publish_build, :status_build, :pre_build, :post_build, :circle_build]
   before_filter :find_platform, :only => [:create]
 
@@ -44,13 +44,13 @@ class BuildListsController < ApplicationController
     # Disable auto_publish if platform released
     params[:build_list][:auto_publish] = false if @platform.released
     Arch.where(:id => params[:arches]).each do |arch|
-      Platform.main.where(:id => params[:bpls]).each do |bpl|
+      Platform.main.where(:id => params[:build_for_platforms]).each do |build_for_platform|
         @build_list = @project.build_lists.build(params[:build_list])
         @build_list.commit_hash = @project.git_repository.commits(@build_list.project_version.match(/^latest_(.+)/).to_a.last || @build_list.project_version).first.id if @build_list.project_version
-        @build_list.bpl = bpl; @build_list.arch = arch; @build_list.user = current_user
-        @build_list.include_repos = @build_list.include_repos.select {|ir| @build_list.bpl.repository_ids.include? ir.to_i}
+        @build_list.build_for_platform = build_for_platform; @build_list.arch = arch; @build_list.user = current_user
+        @build_list.include_repos = @build_list.include_repos.select {|ir| @build_list.build_for_platform.repository_ids.include? ir.to_i}
         @build_list.priority = 100 # User builds more priority than mass rebuild with zero priority
-        flash_options = {:project_version => @build_list.project_version, :arch => arch.name, :bpl => bpl.name, :pl => @build_list.pl}
+        flash_options = {:project_version => @build_list.project_version, :arch => arch.name, :build_for_platform => build_for_platform.name, :save_to_platform => @build_list.save_to_platform}
         if @build_list.save
           notices << t("flash.build_list.saved", flash_options)
         else
@@ -73,20 +73,16 @@ class BuildListsController < ApplicationController
     @item_groups = @build_list.items.group_by_level
   end
 
-  def publish
-    if @build_list.publish
-      redirect_to :back, :notice => t('layout.build_lists.publish_success')
-    else
-      redirect_to :back, :notice => t('layout.build_lists.publish_fail')
+  def update
+    # King Arthur, we are under attack!
+    if ( !@build_list.can_publish? || cannot?(:publish, @build_list) ) && params[:publish].present? or
+       ( !@build_list.can_reject_publish? || cannot?(:reject_publish, @build_list) ) && params[:reject_publish].present?
+       redirect_to :forbidden and return
     end
-  end
-
-  def reject_publish
-    if @build_list.reject_publish
-      redirect_to :back, :notice => t('layout.build_lists.reject_publish_success')
-    else
-      redirect_to :back, :notice => t('layout.build_lists.reject_publish_fail')
-    end
+    #raise
+    publish if params[:publish].present?
+    reject_publish if params[:reject_publish].present?
+    #raise
   end
 
   def cancel
@@ -165,7 +161,7 @@ class BuildListsController < ApplicationController
   end
 
   def find_platform
-    @platform = Platform.find params[:build_list][:pl_id]
+    @platform = Platform.find params[:build_list][:save_to_platform_id]
   end
 
   def find_build_list
@@ -181,4 +177,29 @@ class BuildListsController < ApplicationController
       render :nothing => true, :status => 403
     end
   end
+
+  def publish
+    @build_list.update_type = params[:build_list][:update_type] if params[:build_list][:update_type].present?
+    if params[:create_advisory].present?
+      a = @build_list.build_advisory
+      a.update_type = @build_list.update_type
+      a.project     = @build_list.project
+      a.platforms << @build_list.save_to_platform unless a.platforms.include? @build_list.save_to_platform
+      redirect_to :back, :notice => t('layout.build_lists.publish_fail') unless a.update_attributes(params[:build_list][:advisory])
+    end
+    if @build_list.save and @build_list.publish
+      redirect_to :back, :notice => t('layout.build_lists.publish_success')
+    else
+      redirect_to :back, :notice => t('layout.build_lists.publish_fail')
+    end
+  end
+
+  def reject_publish
+    if @build_list.reject_publish
+      redirect_to :back, :notice => t('layout.build_lists.reject_publish_success')
+    else
+      redirect_to :back, :notice => t('layout.build_lists.reject_publish_fail')
+    end
+  end
+
 end

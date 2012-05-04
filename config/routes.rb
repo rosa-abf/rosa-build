@@ -157,7 +157,7 @@ Rosa::Application.routes.draw do
   match 'build_lists/new_bbdt', :to => "build_lists#new_bbdt"
   match 'product_status', :to => 'product_build_lists#status_build'
 
-  resources :build_lists, :only => [:index, :show] do
+  resources :build_lists, :only => [:index, :show, :update] do
     member do
       put :cancel
       put :publish

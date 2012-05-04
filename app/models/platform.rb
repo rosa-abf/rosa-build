@@ -13,6 +13,8 @@ class Platform < ActiveRecord::Base
   has_many :actors, :as => :target, :class_name => 'Relation', :dependent => :destroy
   has_many :members, :through => :actors, :source => :actor, :source_type => 'User'
 
+  has_and_belongs_to_many :advisories
+
   validates :description, :presence => true
   validates :visibility, :presence => true, :inclusion => {:in => VISIBILITIES}
   validates :name, :uniqueness => {:case_sensitive => false}, :presence => true, :format => { :with => /^[a-zA-Z0-9_\-]+$/ }

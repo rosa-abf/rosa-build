@@ -69,10 +69,10 @@ class Ability
         can(:read, BuildList, read_relations_for('build_lists', 'projects')) {|build_list| can? :read, build_list.project}
         can(:create, BuildList) {|build_list| build_list.project.is_rpm && can?(:write, build_list.project)}
         can(:publish, BuildList) do |build_list|
-          build_list.can_publish? and build_list.pl.released ? local_admin?(build_list.pl) : can?(:write, build_list.project)
+          build_list.can_publish? and build_list.save_to_platform.released ? local_admin?(build_list.save_to_platform) : can?(:write, build_list.project)
         end
         can(:reject_publish, BuildList) do |build_list|
-          build_list.can_reject_publish? and build_list.pl.released and local_admin?(build_list.pl)
+          build_list.can_reject_publish? and build_list.save_to_platform.released and local_admin?(build_list.save_to_platform)
         end
         can(:cancel, BuildList) {|build_list| build_list.can_cancel? && can?(:write, build_list.project)}
 
