@@ -73,6 +73,8 @@ class Ability
         end
         can(:cancel, BuildList) {|build_list| build_list.can_cancel? && can?(:write, build_list.project)}
 
+        can [:read], Advisory
+
         can [:read, :members], Platform, :visibility => 'open'
         can [:read, :owned, :related, :members], Platform, :owner_type => 'User', :owner_id => user.id
         can [:read, :related, :members], Platform, :owner_type => 'Group', :owner_id => user.group_ids

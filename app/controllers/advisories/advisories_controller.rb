@@ -1,10 +1,11 @@
 # -*- encoding : utf-8 -*-
-class Platforms::AdvisoriesController < Platforms::BaseController
+class Advisories::AdvisoriesController < Advisories::BaseController
   before_filter :authenticate_user!
   before_filter :find_advisory, :only => [:show]
   load_and_authorize_resource
 
   def index
+    @advisories = @advisories.paginate(:page => params[:page])
   end
 
   def show

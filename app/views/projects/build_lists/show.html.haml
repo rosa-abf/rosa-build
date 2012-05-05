@@ -56,7 +56,7 @@
   .both
 
   - if @build_list.advisory.present?
-    .leftlist= t("layout.build_lists.connected_advisory")
+    .leftlist= t("layout.build_lists.attached_advisory")
     .rightlist= link_to @build_list.advisory.advisory_id, advisory_path(@build_list.advisory)
     .both
   - if !@build_list.in_work? && @build_list.started_at
@@ -76,7 +76,7 @@
     .rightlist= check_box_tag :create_advisory, 1, false
     .both
     = f.fields_for @build_list.build_advisory do |f|
-      = render :partial => 'advisories/form', :locals => {:f => f}
+      = render :partial => 'advisories/advisories/form', :locals => {:f => f}
 
   =# link_to t("layout.publish"), publish_build_list_path(@build_list), :method => "put", :confirm => t("layout.confirm"), :class => "button tmargin10" if @build_list.can_publish? and can?(:publish, @build_list)
   =# link_to t("layout.reject_publish"), reject_publish_build_list_path(@build_list), :method => "put", :confirm => t("layout.confirm"), :class => "button tmargin10" if @build_list.can_reject_publish? and can?(:reject_publish, @build_list)

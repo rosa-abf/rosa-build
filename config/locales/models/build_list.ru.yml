@@ -65,6 +65,9 @@ ru:
       human_current_duration: Сборка длится уже %{hours} ч. %{minutes} мин.
       human_duration: Собрано за %{hours} ч. %{minutes} мин.
 
+      attached_advisory: Связанный бюллетень
+      create_advisory: Создать новый бюллетень
+
       ownership:
         header: Принадлежность заданий
         owned: Мне

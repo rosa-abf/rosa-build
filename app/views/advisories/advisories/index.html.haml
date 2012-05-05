@@ -1,0 +1,4 @@
+- set_meta_tags :title => t('layout.advisories.list_header')
+- render :partial => 'submenu'
+= render :partial => 'list', :object => @advisories
+= will_paginate @advisories

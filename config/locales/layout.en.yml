@@ -4,6 +4,8 @@ en:
     turned_on: on
     turned_off: off
 
+    list: List
+
     year: year
 
     enter_commit_message: Commit message

@@ -62,8 +62,12 @@ en:
       action: Action
       new_header: New build
       main_data: Main data
+
       human_current_duration: Build currently takes %{hours} h. %{minutes} min.
       human_duration: Builded in %{hours} h. %{minutes} min.
+
+      attached_advisory: Attached advisory
+      create_advisory: Create new advisory
 
       ownership:
         header: Build list ownership

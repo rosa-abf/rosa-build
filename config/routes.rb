@@ -34,6 +34,10 @@ Rosa::Application.routes.draw do
     resources :event_logs, :only => :index
   end
 
+  scope :module => 'advisories' do
+    resources :advisories, :only => [:index, :show]
+  end
+
   scope :module => 'platforms' do
     resources :platforms do
       resources :private_users, :except => [:show, :destroy, :update]
@@ -60,7 +64,6 @@ Rosa::Application.routes.draw do
     end
     match '/private/:platform_name/*file_path' => 'privates#show'
 
-    resources :advisories, :only => [:index, :show]
     resources :product_build_lists, :only => [:index]
   end
 

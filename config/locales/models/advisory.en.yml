@@ -1,0 +1,22 @@
+en:
+  layout:
+    advisories:
+      list_header: Advisories
+      form_header: New advisory
+      project_name: Project
+      affected_versions: Affected versions
+      ref_comment: Add links one by row
+
+  flash:
+    advisories:
+
+  activerecord:
+    models:
+      advisory: Advisory
+
+    attributes:
+      advisory:
+        created_at: Creation date
+        advisory_id: Identifier
+        description: Description
+        references: References

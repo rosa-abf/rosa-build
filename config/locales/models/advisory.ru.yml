@@ -1,0 +1,22 @@
+ru:
+  layout:
+    advisories:
+      list_header: Бюллетени
+      form_header: Новый бюллетень
+      project_name: Проект
+      affected_versions: Применен в версиях
+      ref_comment: Вставляйте ссылки по одной на строку
+
+  flash:
+    advisories:
+
+  activerecord:
+    models:
+      advisory: Бюллетень
+
+    attributes:
+      advisory:
+        created_at: Дата создания
+        advisory_id: Идентификатор
+        description: Описание проблемы
+        references: Ссылки
