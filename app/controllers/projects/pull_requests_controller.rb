@@ -13,8 +13,14 @@ class Projects::PullRequestsController < Projects::BaseController
     @pull.issue = @project.issues.new
     @pull.head_project = @project
 
-    @base_ref = @pull.base_project.default_branch
-    @head_ref = params[:treeish].presence || @pull.head_project.default_branch
+    @pull.base_ref = @pull.base_project.default_branch
+    @pull.head_ref = params[:treeish].presence || @pull.head_project.default_branch
+
+    @base_commit = @pull.base_project.git_repository.commits(@base_ref).first
+    @head_commit = @pull.head_project.git_repository.commits(@head_ref).first
+    @pull.check
+    #@pull.save
+    @diff = Grit::Repo.new(@pull.path).diff @base_commit, @head_commit
   end
 
   def create

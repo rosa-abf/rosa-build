@@ -1,0 +1,10 @@
+- commit_id = commit_diff.deleted_file ? @head_commit.parents.first.id : @head_commit.id
+.file
+  %a{:name => h(commit_diff.a_path)}
+  .top
+    .l= h(commit_diff.a_path)
+    -# if commit_diff.b_path.present?
+      .r= link_to "view file @ #{short_hash_id(commit_id)}", blob_path(@project, commit_id, commit_diff.b_path)
+    .clear
+
+  .diff_data= render_diff(commit_diff) unless (Git::Repository.new(@pull.path).tree(commit_id) / commit_diff.b_path).binary?

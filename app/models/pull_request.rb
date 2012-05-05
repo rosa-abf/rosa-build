@@ -6,7 +6,7 @@ class PullRequest < ActiveRecord::Base
   belongs_to :issue, :autosave => true, :dependent => :destroy, :touch => true, :validate => true
   belongs_to :base_project, :class_name => 'Project', :foreign_key => 'base_project_id'
   belongs_to :head_project, :class_name => 'Project', :foreign_key => 'head_project_id'
-  delegate :user, :title, :body, :serial_id, :assignee, :to => :issue, :allow_nil => true
+  delegate :user, :title, :body, :serial_id, :assignee, :state, :to => :issue, :allow_nil => true
   accepts_nested_attributes_for :issue
   #attr_accessible #FIXME disable for development
 
@@ -89,16 +89,16 @@ class PullRequest < ActiveRecord::Base
     end
   end
 
-  protected
-
   def path
-    filename = [id, base_project.owner.uname, base_project.name].join('-')
+    filename = [base_project.owner.uname, base_project.name, base_ref, head_ref].join('-')
     if Rails.env == "production"
       File.join('/srv/rosa_build/shared/tmp', "pull_requests", filename)
     else
       File.join(Rails.root, "tmp", Rails.env, "pull_requests", filename)
     end
   end
+
+  protected
 
   def merge
     clone
