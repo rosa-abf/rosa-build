@@ -40,7 +40,7 @@ class Projects::BuildListsController < Projects::BaseController
 
   def create
     notices, errors = [], []
-    @platform = Platform.find params[:build_list][:pl_id]
+    @platform = Platform.find params[:build_list][:save_to_platform_id]
     params[:build_list][:auto_publish] = false if @platform.released
     Arch.where(:id => params[:arches]).each do |arch|
       Platform.main.where(:id => params[:build_for_platforms]).each do |build_for_platform|
@@ -49,7 +49,7 @@ class Projects::BuildListsController < Projects::BaseController
         @build_list.build_for_platform = build_for_platform; @build_list.arch = arch; @build_list.user = current_user
         @build_list.include_repos = @build_list.include_repos.select {|ir| @build_list.build_for_platform.repository_ids.include? ir.to_i}
         @build_list.priority = current_user.build_priority # User builds more priority than mass rebuild with zero priority
-        flash_options = {:project_version => @build_list.project_version, :arch => arch.name, :build_for_platform => build_for_platform.name, :save_to_platform => @build_list.save_to_platform}
+        flash_options = {:project_version => @build_list.project_version, :arch => arch.name, :build_for_platform => build_for_platform.name}
         if @build_list.save
           notices << t("flash.build_list.saved", flash_options)
         else

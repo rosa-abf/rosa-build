@@ -205,7 +205,7 @@ ActiveRecord::Schema.define(:version => 20120505101650) do
     t.string   "owner_type"
     t.string   "visibility",         :default => "open", :null => false
     t.string   "platform_type",      :default => "main", :null => false
-    t.string   "distrib_type"
+    t.string   "distrib_type",                           :null => false
   end
 
   add_index "platforms", ["name"], :name => "index_platforms_on_name", :unique => true, :case_sensitive => false
@@ -276,11 +276,11 @@ ActiveRecord::Schema.define(:version => 20120505101650) do
     t.text     "description"
     t.string   "ancestry"
     t.boolean  "has_issues",         :default => true
-    t.boolean  "has_wiki",           :default => false
     t.string   "srpm_file_name"
     t.string   "srpm_content_type"
     t.integer  "srpm_file_size"
     t.datetime "srpm_updated_at"
+    t.boolean  "has_wiki",           :default => false
     t.string   "default_branch",     :default => "master"
     t.boolean  "is_rpm",             :default => true
     t.integer  "average_build_time", :default => 0,        :null => false
@@ -302,6 +302,7 @@ ActiveRecord::Schema.define(:version => 20120505101650) do
   end
 
   add_index "register_requests", ["email"], :name => "index_register_requests_on_email", :unique => true, :case_sensitive => false
+  add_index "register_requests", ["token"], :name => "index_register_requests_on_token", :unique => true, :case_sensitive => false
 
   create_table "relations", :force => true do |t|
     t.integer  "actor_id"
@@ -350,13 +351,13 @@ ActiveRecord::Schema.define(:version => 20120505101650) do
     t.string   "email",                                  :default => "",   :null => false
     t.string   "encrypted_password",      :limit => 128, :default => "",   :null => false
     t.string   "reset_password_token"
-    t.datetime "reset_password_sent_at"
     t.datetime "remember_created_at"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "uname"
     t.string   "role"
     t.string   "language",                               :default => "en"
+    t.datetime "reset_password_sent_at"
     t.integer  "own_projects_count",                     :default => 0,    :null => false
     t.text     "professional_experience"
     t.string   "site"
