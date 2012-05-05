@@ -17,6 +17,10 @@ module ApplicationHelper
     end
   end
 
+  def top_menu_class(base)
+    (controller_name.include?('build_lists') ? controller_name : params[:controller]).include?(base.to_s) ? 'active' : nil
+  end
+
   def title_object object
     name = object.class == Group ? object.uname : object.name
     object_name = t "activerecord.models.#{object.class.name.downcase}"
