@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120428105843) do
+ActiveRecord::Schema.define(:version => 20120505101650) do
 
   create_table "activity_feeds", :force => true do |t|
     t.integer  "user_id",    :null => false
@@ -354,7 +354,6 @@ ActiveRecord::Schema.define(:version => 20120428105843) do
     t.datetime "remember_created_at"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.text     "ssh_key"
     t.string   "uname"
     t.string   "role"
     t.string   "language",                               :default => "en"
@@ -374,6 +373,7 @@ ActiveRecord::Schema.define(:version => 20120428105843) do
     t.datetime "confirmed_at"
     t.datetime "confirmation_sent_at"
     t.string   "authentication_token"
+    t.integer  "build_priority",                         :default => 50
   end
 
   add_index "users", ["authentication_token"], :name => "index_users_on_authentication_token"
