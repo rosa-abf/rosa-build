@@ -3,7 +3,7 @@ FactoryGirl.define do
   factory :build_list do
     association :user
     association :project
-    association save_to_platform, :factory => :platform_with_repos
+    association :save_to_platform, :factory => :platform_with_repos
     association :arch
     build_for_platform {|bl| bl.save_to_platform}
     project_version "1.0"

@@ -94,7 +94,9 @@ describe CanCan do
       end
     end
     
-    it { @ability.should be_able_to(:show, User) }
+    it "shoud be able to show user profile" do
+      @ability.should be_able_to(:show, User)
+    end
 
     it "shoud be able to read another user object" do
       admin_create
