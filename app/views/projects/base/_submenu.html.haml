@@ -16,4 +16,14 @@
       %li= link_to t("project_menu.readme"), "#" #pending
       - if can? :update, @project
         %li= link_to t("project_menu.settings"), edit_project_path(@project), :class => (act == :edit && contr == :projects ? 'active' : nil)
-      %li= link_to t("project_menu.pull_requests"), project_pull_requests_path(@project), :class => (contr == :pull_requests ? 'active' : nil)
+      %li=link_to t("project_menu.pull_requests"), '#', :class => (contr == :pull_requests ? 'active' : nil), :id => 'send_pull_request'
+
+    =form_for PullRequest.new, :url => new_project_pull_requests_path, :html => { :method => :post, :class => :form } do |f|
+      =hidden_field_tag :ref, @treeish
+
+:javascript
+  $(function () {
+    $('#send_pull_request').click(function(){
+      $('#new_pull_request').submit();
+    });
+  })

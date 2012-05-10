@@ -163,7 +163,10 @@ Rosa::Application.routes.draw do
       resources :collaborators do
         get :find, :on => :collection
       end
-      resources :pull_requests, :except => :destroy
+      resources :pull_requests, :except => [:destroy, :new] do
+        post '/new' => 'pull_requests#new', :on => :collection
+      end
+
     end
     scope ':project_name', :module => 'projects' do
       # Resource
