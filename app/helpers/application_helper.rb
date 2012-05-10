@@ -22,6 +22,7 @@ module ApplicationHelper
   end
 
   def title_object object
+    return object.advisory_id if object.class == Advisory
     name = object.class == Group ? object.uname : object.name
     object_name = t "activerecord.models.#{object.class.name.downcase}"
     case object.class.name

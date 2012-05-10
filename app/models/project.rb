@@ -17,6 +17,8 @@ class Project < ActiveRecord::Base
   has_many :collaborators, :through => :relations, :source => :actor, :source_type => 'User'
   has_many :groups,        :through => :relations, :source => :actor, :source_type => 'Group'
 
+  has_many :advisories
+
   validates :name, :uniqueness => {:scope => [:owner_id, :owner_type], :case_sensitive => false}, :presence => true, :format => {:with => /^[a-zA-Z0-9_\-\+\.]+$/}
   validates :owner, :presence => true
   validate { errors.add(:base, :can_have_less_or_equal, :count => MAX_OWN_PROJECTS) if owner.projects.size >= MAX_OWN_PROJECTS }
@@ -75,8 +77,8 @@ class Project < ActiveRecord::Base
     build_ids = build_reps.compact.map(&:id).uniq
     arch = Arch.find_by_name(arch) if arch.acts_like?(:string)
     build_lists.create do |bl|
-      bl.pl = platform
-      bl.bpl = platform
+      bl.save_to_platform = platform
+      bl.build_to_platform = platform
       bl.update_type = 'newpackage'
       bl.arch = arch
       bl.project_version = "latest_#{platform.name}"

@@ -1,0 +1,8 @@
+%table#myTable.tablesorter.advisories{:cellspacing => "0", :cellpadding => "0"}
+  %thead
+    %tr
+      %th.th1= t("activerecord.attributes.advisory.advisory_id")
+      %th.th2= t("layout.advisories.affected_versions")
+      %th.th3= t("activerecord.attributes.advisory.description")
+  %tbody
+    = render :partial => 'list_item', :collection => list, :as => :advisory

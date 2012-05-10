@@ -72,12 +72,12 @@ describe Projects::BuildListsController do
       @create_params = {
         :build_list => { 
           :project_version => 'latest_master',
-          :pl_id => platform.id,
+          :save_to_platform_id => platform.id,
           :update_type => 'security',
           :include_repos => [platform.repositories.first.id]
         },
         :arches => [FactoryGirl.create(:arch).id],
-        :bpls => [platform.id]
+        :build_for_platforms => [platform.id]
       }
       any_instance_of(Project, :versions => ['v1.0', 'v2.0'])
     end
@@ -284,7 +284,7 @@ describe Projects::BuildListsController do
       @build_list2 = FactoryGirl.create(:build_list_core)
       @build_list3 = FactoryGirl.create(:build_list_core)
       @build_list4 = FactoryGirl.create(:build_list_core, :created_at => (Time.now - 1.day),
-                             :project => @build_list3.project, :pl => @build_list3.pl,
+                             :project => @build_list3.project, :save_to_platform => @build_list3.save_to_platform,
                              :arch => @build_list3.arch)
     end
 

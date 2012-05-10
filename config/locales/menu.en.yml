@@ -8,6 +8,7 @@ en:
     projects: Projects
     build_lists: Task monitoring
     groups: Groups
+    advisories: Advisories
   bottom_menu:
     copyright: ROSA Lab © 2012
     about: About the company

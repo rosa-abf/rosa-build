@@ -34,6 +34,8 @@ Rosa::Application.routes.draw do
     resources :event_logs, :only => :index
   end
 
+  resources :advisories, :only => [:index, :show]
+
   scope :module => 'platforms' do
     resources :platforms do
       resources :private_users, :except => [:show, :destroy, :update]
@@ -106,11 +108,9 @@ Rosa::Application.routes.draw do
     match 'build_lists/new_bbdt', :to => "build_lists#new_bbdt"
     match 'product_status', :to => 'product_build_lists#status_build'
 
-    resources :build_lists, :only => [:index, :show] do
+    resources :build_lists, :only => [:index, :show, :update] do
       member do
         put :cancel
-        put :publish
-        put :reject_publish
       end
       collection { post :search }
     end

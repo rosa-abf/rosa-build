@@ -1,5 +1,5 @@
 $(document).ready(function() {
-  $('#build_list_pl_id').change(function() {
+  $('#build_list_save_to_platform_id').change(function() {
     var platform_id = $(this).val();
     var base_platforms = $('.all_platforms input[type=checkbox].build_bpl_ids');
 
@@ -15,7 +15,7 @@ $(document).ready(function() {
           $(this).attr('checked', 'checked').removeAttr('disabled').trigger('change');
           $(this).parent().find('.offset25 input[type="checkbox"]').removeAttr('disabled');
 
-          var rep_name = $('#build_list_pl_id option[value="' + $(this).val() + '"]').text().match(/[\w-]+\/([\w-]+)/)[1];
+          var rep_name = $('#build_list_save_to_platform_id option[value="' + $(this).val() + '"]').text().match(/[\w-]+\/([\w-]+)/)[1];
           if (rep_name != 'main') {
             $(this).parent().find('.offset25 input[type="checkbox"][rep_name="' + rep_name + '"]').attr('checked', 'checked');
           }
@@ -33,7 +33,7 @@ $(document).ready(function() {
 
     setBranchSelected();
   });
-  $('#build_list_pl_id').trigger('change');
+  $('#build_list_save_to_platform_id').trigger('change');
 
   $('.offset25 label').click(function() {
     setPlChecked($(this).prev()[0], !$(this).prev().attr('checked'));
@@ -58,10 +58,10 @@ function setPlChecked(pointer, checked) {
 }
 
 function setBranchSelected() {
-  var pl_id = $('#build_list_pl_id').val();
+  var pl_id = $('#build_list_save_to_platform_id').val();
   // Checks if selected platform is main or not:
   if ( $('.all_platforms').find('input[type="checkbox"][value=' + pl_id + '].build_bpl_ids').size() > 0 ) {
-    var pl_name = $('#build_list_pl_id option[value="' + pl_id + '"]').text().match(/([\w-]+)\/[\w-]+/)[1];
+    var pl_name = $('#build_list_save_to_platform_id option[value="' + pl_id + '"]').text().match(/([\w-]+)\/[\w-]+/)[1];
     var branch_pl_opt = $('#build_list_project_version option[value="latest_' + pl_name + '"]');
     // If there is branch we need - set it selected:
     if ( branch_pl_opt.size() > 0 ) {

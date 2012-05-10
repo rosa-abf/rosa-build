@@ -6,5 +6,5 @@
   %tbody
     - @platforms.each do |platform|
       %tr{:class => cycle("odd", "even")}
-        %td= link_to platfrom_printed_name(platform), platform_path(platform)
+        %td= link_to platform_printed_name(platform), platform_path(platform)
         %td= platform.distrib_type

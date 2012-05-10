@@ -21,6 +21,29 @@ ActiveRecord::Schema.define(:version => 20120505101650) do
     t.datetime "updated_at", :null => false
   end
 
+  create_table "advisories", :force => true do |t|
+    t.string   "advisory_id"
+    t.integer  "project_id"
+    t.text     "description", :default => ""
+    t.text     "references",  :default => ""
+    t.text     "update_type", :default => ""
+    t.datetime "created_at",                  :null => false
+    t.datetime "updated_at",                  :null => false
+  end
+
+  add_index "advisories", ["advisory_id"], :name => "index_advisories_on_advisory_id", :unique => true
+  add_index "advisories", ["project_id"], :name => "index_advisories_on_project_id"
+  add_index "advisories", ["update_type"], :name => "index_advisories_on_update_type"
+
+  create_table "advisories_platforms", :id => false, :force => true do |t|
+    t.integer "advisory_id"
+    t.integer "platform_id"
+  end
+
+  add_index "advisories_platforms", ["advisory_id"], :name => "index_advisories_platforms_on_advisory_id"
+  add_index "advisories_platforms", ["advisory_id", "platform_id"], :name => "advisory_platform_index", :unique => true
+  add_index "advisories_platforms", ["platform_id"], :name => "index_advisories_platforms_on_platform_id"
+
   create_table "arches", :force => true do |t|
     t.string   "name",       :null => false
     t.datetime "created_at"
@@ -62,23 +85,25 @@ ActiveRecord::Schema.define(:version => 20120505101650) do
     t.datetime "notified_at"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.boolean  "is_circle",        :default => false
+    t.boolean  "is_circle",             :default => false
     t.text     "additional_repos"
     t.string   "name"
-    t.boolean  "build_requires",   :default => false
+    t.boolean  "build_requires",        :default => false
     t.string   "update_type"
-    t.integer  "bpl_id"
-    t.integer  "pl_id"
+    t.integer  "build_for_platform_id"
+    t.integer  "save_to_platform_id"
     t.text     "include_repos"
     t.integer  "user_id"
-    t.boolean  "auto_publish",     :default => true
+    t.boolean  "auto_publish",          :default => true
     t.string   "package_version"
     t.string   "commit_hash"
-    t.integer  "priority",         :default => 0,     :null => false
+    t.integer  "priority",              :default => 0,     :null => false
     t.datetime "started_at"
     t.integer  "duration"
+    t.integer  "advisory_id"
   end
 
+  add_index "build_lists", ["advisory_id"], :name => "index_build_lists_on_advisory_id"
   add_index "build_lists", ["arch_id"], :name => "index_build_lists_on_arch_id"
   add_index "build_lists", ["bs_id"], :name => "index_build_lists_on_bs_id", :unique => true
   add_index "build_lists", ["project_id"], :name => "index_build_lists_on_project_id"
@@ -342,11 +367,14 @@ ActiveRecord::Schema.define(:version => 20120505101650) do
     t.string   "avatar_content_type"
     t.integer  "avatar_file_size"
     t.datetime "avatar_updated_at"
-    t.integer  "failed_attempts",         :default => 0
+    t.integer  "failed_attempts",                        :default => 0
     t.string   "unlock_token"
     t.datetime "locked_at"
+    t.string   "confirmation_token"
+    t.datetime "confirmed_at"
+    t.datetime "confirmation_sent_at"
     t.string   "authentication_token"
-    t.integer  "build_priority",          :default => 50
+    t.integer  "build_priority",                         :default => 50
   end
 
   add_index "users", ["authentication_token"], :name => "index_users_on_authentication_token"
