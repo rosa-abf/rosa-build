@@ -40,6 +40,10 @@ class PullRequest < ActiveRecord::Base
     end
   end
 
+  def state=(value)
+    issue.state = value
+  end
+
   def can_merge?
     state == 'ready'
   end
@@ -55,8 +59,7 @@ class PullRequest < ActiveRecord::Base
       system("cd #{path} && git reset --hard HEAD")
       block
     else
-      puts "ret is #{ret}"
-      raise
+      raise ret
     end
   end
 
