@@ -1,5 +1,5 @@
 # -*- encoding : utf-8 -*-
-class Advisories::AdvisoriesController < Advisories::BaseController
+class AdvisoriesController < ApplicationController
   before_filter :authenticate_user!
   before_filter :find_advisory, :only => [:show]
   load_and_authorize_resource

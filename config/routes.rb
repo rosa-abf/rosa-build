@@ -34,9 +34,7 @@ Rosa::Application.routes.draw do
     resources :event_logs, :only => :index
   end
 
-  scope :module => 'advisories' do
-    resources :advisories, :only => [:index, :show]
-  end
+  resources :advisories, :only => [:index, :show]
 
   scope :module => 'platforms' do
     resources :platforms do
