@@ -1,4 +1,4 @@
--#set_meta_tags :title => [title_object(@build_list.project), t('activerecord.models.build_list')]
+- set_meta_tags :title => [title_object(@advisory), t('activerecord.models.advisory')]
 - render :partial => 'submenu'
 
 %h3= "#{t("activerecord.models.advisory")} #{@advisory.advisory_id}".html_safe
@@ -18,7 +18,7 @@
 .leftlist= "#{t("layout.advisories.affected_versions")}:".html_safe
 .rightlist
   - @advisory.platforms.each do |platform|
-    = link_to platform_printed_name(platform), platform_path(platform)
+    = link_to platfrom_printed_name(platform), platform_path(platform)
     %br
 .both
 

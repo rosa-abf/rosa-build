@@ -73,15 +73,14 @@ class Projects::BuildListsController < Projects::BaseController
   end
 
   def update
-    # King Arthur, we are under attack!
-    if ( !@build_list.can_publish? || cannot?(:publish, @build_list) ) && params[:publish].present? or
-       ( !@build_list.can_reject_publish? || cannot?(:reject_publish, @build_list) ) && params[:reject_publish].present?
-       redirect_to :forbidden and return
+    if params[:publish].present? and can?(:publish, @build_list)
+      publish
+    elsif params[:reject_publish].present? and can?(:reject_publish)
+      reject_publish
+    else
+      # King Arthur, we are under attack!
+      redirect_to :forbidden and return
     end
-    #raise
-    publish if params[:publish].present?
-    reject_publish if params[:reject_publish].present?
-    #raise
   end
 
   def cancel
