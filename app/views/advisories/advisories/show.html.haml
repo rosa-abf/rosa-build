@@ -18,7 +18,7 @@
 .leftlist= "#{t("layout.advisories.affected_versions")}:".html_safe
 .rightlist
   - @advisory.platforms.each do |platform|
-    = link_to platfrom_printed_name(platform), platform_path(platform)
+    = link_to platform_printed_name(platform), platform_path(platform)
     %br
 .both
 

@@ -2,6 +2,6 @@
   %td= link_to advisory.advisory_id, advisory_path(advisory)
   %td
     - advisory.platforms.each do |platform|
-      = link_to platfrom_printed_name(platform), platform_path(platform)
+      = link_to platform_printed_name(platform), platform_path(platform)
       %br
   %td= truncate(advisory.description, :length => 50)

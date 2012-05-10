@@ -78,8 +78,6 @@
     = f.fields_for @build_list.build_advisory do |f|
       = render :partial => 'advisories/advisories/form', :locals => {:f => f}
 
-  =# link_to t("layout.publish"), publish_build_list_path(@build_list), :method => "put", :confirm => t("layout.confirm"), :class => "button tmargin10" if @build_list.can_publish? and can?(:publish, @build_list)
-  =# link_to t("layout.reject_publish"), reject_publish_build_list_path(@build_list), :method => "put", :confirm => t("layout.confirm"), :class => "button tmargin10" if @build_list.can_reject_publish? and can?(:reject_publish, @build_list)
   = submit_tag t("layout.publish"), :confirm => t("layout.confirm"), :name => 'publish' if @build_list.can_publish? and can?(:publish, @build_list)
   = submit_tag t("layout.reject_publish"), :confirm => t("layout.confirm"), :name => 'reject_publish' if @build_list.can_reject_publish? and can?(:reject_publish, @build_list)
 
