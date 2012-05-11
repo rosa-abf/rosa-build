@@ -84,10 +84,10 @@ class PullRequest < ActiveRecord::Base
       system 'git', 'checkout', base_ref
 
       base_project.branches.each do |branch|
-        system 'git', 'branch', '-D', branch.name unless [base_ref, head_ref].include? branch.name
+        system 'git', 'branch', '-D', branch.name unless [base_ref, "head_#{head_ref}"].include? branch.name
       end
       base_project.tags.each do |tag|
-        system 'git', 'tag', '-d', tag.name unless [base_ref, head_ref].include? tag.name
+        system 'git', 'tag', '-d', tag.name unless [base_ref, "head_#{head_ref}"].include? tag.name
       end
     end
   end
@@ -105,7 +105,7 @@ class PullRequest < ActiveRecord::Base
 
   def merge
     clone
-    %x(cd #{path} && git checkout #{base_ref} && git merge --no-ff #{head_ref}) #FIXME need sanitize branch name!
+    %x(cd #{path} && git checkout #{base_ref} && git merge --no-ff head_#{head_ref}) #FIXME need sanitize branch name!
   end
 
   def clone

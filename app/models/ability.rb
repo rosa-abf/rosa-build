@@ -59,6 +59,7 @@ class Ability
         can(:destroy, Project) {|project| owner? project}
         can(:destroy, Project) {|project| project.owner_type == 'Group' and project.owner.actors.exists?(:actor_type => 'User', :actor_id => user.id, :role => 'admin')}
         can :remove_user, Project
+        can :pull, Project #FIXME!
 
         can [:read, :owned], BuildList, :user_id => user.id
         can [:read, :related], BuildList, :project => {:owner_type => 'User', :owner_id => user.id}

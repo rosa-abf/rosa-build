@@ -14,8 +14,7 @@ class Projects::PullRequestsController < Projects::BaseController
     @pull.head_project = @project
 
     @pull.base_ref = @pull.base_project.default_branch
-    @pull.head_ref = params[:treeish].presence || @pull.head_project.default_branch
-
+    @pull.head_ref = "head_#{params[:treeish].presence || @pull.head_project.default_branch}"
     @pull.check
 
     repo = Git::Repository.new(@pull.path)
