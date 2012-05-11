@@ -8,11 +8,7 @@ namespace :buildlist do
       outdated = BuildList.outdated
       say "There are #{outdated.count} outdated BuildLists at #{Time.now}"
 
-      begin
-        BuildList.outdated.map(&:destroy)
-      rescue Exception => e
-        say "There was an error: #{e.message}"
-      end
+      BuildList.outdated.destroy_all
 
       say "Outdated BuildLists was successfully removed"
     end

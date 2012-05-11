@@ -99,10 +99,8 @@ class BuildList < ActiveRecord::Base
   before_create :set_default_status
   after_create :place_build
 
-  class << self
-    def human_status(status)
-      I18n.t("layout.build_lists.statuses.#{HUMAN_STATUSES[status]}")
-    end
+  def self.human_status(status)
+    I18n.t("layout.build_lists.statuses.#{HUMAN_STATUSES[status]}")
   end
 
   def human_status
