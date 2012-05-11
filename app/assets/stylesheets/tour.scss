@@ -55,7 +55,7 @@ header {
 }
 
 header div.left {
-	background: image-url("top-left.png");
+	background: image-url("top-left.png") #5555FF;
 	height: 46px;
 	width: 14px;
 	float: left;
@@ -69,7 +69,7 @@ header div.middle {
 }
 
 header div.right {
-	background: image-url("top-right.png");
+	background: image-url("top-right.png") #5555FF;
 	height: 46px;
 	width: 14px;
 	float: right;
