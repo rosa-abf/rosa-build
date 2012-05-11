@@ -1,0 +1,40 @@
+.feature-wrap
+  .feature
+    .left
+      =image_tag "tour/1/control.png", :alt => "Управление проектами"
+    .right
+      %a{:href => tour_inside_path('1_1')}
+        %h1 Управление проектами
+      %p
+        Каждый git-репозиторий на ABF поставляется с инструментами,
+        необходимыми для управления проектами, вне зависимости от
+        того, публичный или приватный проект.
+        %br/
+        =link_to 'Читать далее...', tour_inside_path('1_1')
+    .both
+.feature-wrap
+  .feature
+    .left
+      %a{:href => tour_inside_path('1_2')}
+        %h1 Исходный 	код
+      %p
+        ABF — полноценный git-хостинг с удобным веб-интерфейсом.
+        %br/
+        =link_to 'Читать далее...', tour_inside_path('1_2')
+    .right
+      =image_tag "tour/2/code.png", :alt => "Исходный код"
+    .both
+.feature-wrap
+  .feature
+    .left
+      =image_tag "tour/3/monitoring.png", :alt => "Сборка пакетов"
+    .right
+      %a{:href => tour_inside_path('1_3')}
+        %h1 Сборка пакетов
+      %p
+        ABF — это не только хостинг исходного кода, но и система сборки
+        и хостинга пакетов. Собирайте свои проекты под множество
+        дистрибутивов и архитектур в свой персональный репозиторий.
+        %br/
+        =link_to 'Читать далее...', tour_inside_path('1_3')
+    .both
