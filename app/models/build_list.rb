@@ -23,6 +23,8 @@ class BuildList < ActiveRecord::Base
     errors.add(:build_for_platform, I18n.t('flash.build_list.wrong_platform')) if save_to_platform.platform_type == 'main' && save_to_platform_id != build_for_platform_id
   }
 
+  LIVE_TIME = 3.week
+
   # The kernel does not send these statuses directly
   BUILD_CANCELED = 5000
   WAITING_FOR_RESPONSE = 4000
@@ -89,9 +91,11 @@ class BuildList < ActiveRecord::Base
   }
   scope :scoped_to_project_name, lambda {|project_name| joins(:project).where('projects.name LIKE ?', "%#{project_name}%")}
 
+  scope :outdated, where('updated_at < ? AND status <> ?', Time.now - LIVE_TIME, BUILD_PUBLISHED)
+
   serialize :additional_repos
   serialize :include_repos
-  
+
   before_create :set_default_status
   after_create :place_build
 
