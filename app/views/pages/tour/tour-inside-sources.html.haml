@@ -14,7 +14,8 @@
   .feature-wrap
     .feature
       .left
-        =image_tag('tour/2/code.png', :alt => 'Исходный код онлайн')
+        %a.pirobox{:href => image_path('tour/big/source.png'), :rel => "single", :title => "Исходный код онлайн"}
+          =image_tag 'tour/2/source.png'
       .right
         %h1 Исходный код онлайн
         %p
@@ -34,12 +35,14 @@
           Каждый файл в git-репозитории имеет историю, которую вы
           легко можете посмотреть: кто, когда и что в нем поменял.
       .right
-        =image_tag('tour/2/history.png', :alt => 'История файла')
+        %a.pirobox{:href => image_path('tour/big/history.png'), :rel => "single", :title => "История файла"}
+          =image_tag 'tour/2/history.png'
       .both
   .feature-wrap
     .feature
       .left
-        =image_tag('tour/2/annotation.png', :alt => 'Аннотация файла')
+        %a.pirobox{:href => image_path('tour/big/annotation.png'), :rel => "single", :title => "Аннотация файла"}
+          =image_tag 'tour/2/annotation.png'
       .right
         %h1 Аннотация файла
         %p
@@ -57,5 +60,6 @@
           Мы предлагаем простой редактор для каждого файла в
           git-репозитории.
       .right
-        =image_tag('tour/2/edit.png', :alt => 'Редактирования онлайн')
+        %a.pirobox{:href => image_path('tour/big/edit.png'), :rel => "single", :title => "Редактирования онлайн"}
+          =image_tag 'tour/2/edit.png'
       .both

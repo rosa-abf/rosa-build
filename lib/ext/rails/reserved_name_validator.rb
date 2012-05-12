@@ -23,10 +23,7 @@ class ReservedNameValidator < ActiveModel::EachValidator
     unfollow unsubscribe url user
     widget widgets wiki
     xfn xmpp
-    abf-tour-project-description-1
-    tour-inside-1_1
-    tour-inside-1_2
-    tour-inside-1_3
+    tour
   }
 
   def reserved_names

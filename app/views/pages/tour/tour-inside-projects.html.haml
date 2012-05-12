@@ -15,7 +15,8 @@
   .feature-wrap
     .feature
       .left
-        =image_tag('tour/1/control.png', :alt => 'Управление проектами')
+        %a.pirobox{:href => image_path('tour/big/control.png'), :rel => "single", :title => "Управление проектами"}
+          =image_tag 'tour/1/control.png'
       .right
         %h1 Управление проектами
         %p
@@ -42,12 +43,14 @@
           Примечание: для приватного проекта вики доступна только его
           участникам. Для публичного — всем для чтения.
       .right
-        =image_tag "tour/1/git.png", :alt => "Git Wiki"
+        %a.pirobox{:href => image_path('tour/big/git.png'), :rel => "single", :title => "Git Wiki"}
+          =image_tag 'tour/1/git.png'
       .both
   .feature-wrap
     .feature
       .left
-        =image_tag "tour/1/tracker.png", :alt => "Легкий трекер задач"
+        %a.pirobox{:href => image_path('tour/big/tracker.png'), :rel => "single", :title => "Легкий трекер задач"}
+          =image_tag 'tour/1/tracker.png'
       .right
         %h1 Легкий трекер задач
         %p

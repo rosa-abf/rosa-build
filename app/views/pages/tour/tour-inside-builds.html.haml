@@ -14,7 +14,8 @@
   .feature-wrap
     .feature
       .left
-        =image_tag "tour/3/repo.png", :alt => "Персональный репозиторий"
+        %a.pirobox{:href => image_path('tour/big/repo.png'), :rel => "single", :title => "Персональный репозиторий"}
+          =image_tag 'tour/3/repo.png'
       .right
         %h1 Персональный репозиторий
         %p
@@ -35,12 +36,14 @@
           и дистрибутивов, используя свои вычислительные мощности.
           Никаких затрат с вашей стороны!
       .right
-        =image_tag "tour/3/build.png", :alt => "Сборка пакета"
+        %a.pirobox{:href => image_path('tour/big/build.png'), :rel => "single", :title => "Сборка пакета"}
+          =image_tag 'tour/3/build.png'
       .both
   .feature-wrap
     .feature
       .left
-        =image_tag "tour/3/monitoring.png", :alt => "Мониторинг"
+        %a.pirobox{:href => image_path('tour/big/monitoring.png'), :rel => "single", :title => "Мониторинг"}
+          =image_tag 'tour/3/monitoring.png'
       .right
         %h1 Мониторинг
         %p

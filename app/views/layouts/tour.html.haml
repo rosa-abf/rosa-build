@@ -3,8 +3,11 @@
   %head
     %meta{:content => "text/html; charset=utf-8", "http-equiv" => "Content-Type"}/
     %title Сборочная среда
-    %script{:src => "http://html5shiv.googlecode.com/svn/trunk/html5.js", :type => "text/javascript"}
     = stylesheet_link_tag "tour"
+    /[if lt IE 9]
+      = javascript_include_tag 'https://html5shiv.googlecode.com/svn/trunk/html5.js'
+    = javascript_include_tag "tour"
+    = csrf_meta_tag
   %body
     .wrap
       %header.top
@@ -45,3 +48,11 @@
         -#.tour-gap
     %footer= render "layouts/menu/bottom"
     = render 'layouts/counters' unless current_user.try(:admin?)
+    :javascript
+      $(document).ready(function() {
+          $().piroBox_ext({
+              piro_speed : 700,
+              bg_alpha : 0.5,
+              piro_scroll : true //pirobox always positioned at the center of the page
+          });
+      });
