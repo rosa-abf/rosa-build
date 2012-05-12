@@ -9,6 +9,7 @@ Rosa::Application.routes.draw do
 
   get '/forbidden' => 'pages#forbidden', :as => 'forbidden'
   get '/terms-of-service' => 'pages#tos', :as => 'tos'
+  get '/tour/:id' => 'pages#tour_inside', :as => 'tour_inside', :id => /projects|sources|builds/
 
   get '/activity_feeds.:format' => 'activity_feeds#index', :as => 'atom_activity_feeds', :format => /atom/
   if APP_CONFIG['anonymous_access']
