@@ -375,6 +375,18 @@ describe Projects::BuildListsController do
       it { lambda{ do_get }.should change(build_list, :container_path) }
       it { lambda{ do_get }.should change(build_list, :updated_at) }
       it('should create packages for build list') { lambda{ do_get }.should change(build_list.packages, :count).to(3) }
+      it 'should create correct packages for build list' do
+        do_get
+        package = build_list.packages.order('created_at ASC').first
+        package.fullname.should == 'srpm_filename.srpm'
+        package.name.should == build_list.project.name
+        package.version.should == 'version1'
+        package.release.should == 'release1'
+        package.package_type == 'source'
+        package.build_list.should == build_list
+        package.platform.should == build_list.save_to_platform
+        package.project.should == build_list.project
+      end
     end
 
     describe 'pre_build' do

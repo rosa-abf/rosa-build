@@ -187,7 +187,6 @@ class BuildList < ActiveRecord::Base
     self.status = BUILD_PENDING if self.status == 0
     save
   end
-  #handle_asynchronously :place_build
 
   def build_package(pkg_hash, package_type)
     packages.create(pkg_hash) do |p|
