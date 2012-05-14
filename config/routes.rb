@@ -118,7 +118,7 @@ Rosa::Application.routes.draw do
 
     resources :projects, :only => [:index, :new, :create]
 
-    scope ':owner_name/:project_name' do # project
+    scope ':owner_name/:project_name', :constraints => {:project_name => Project::NAME_REGEXP} do # project
       scope :as => 'project' do
         resources :wiki do
           collection do
