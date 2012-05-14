@@ -344,10 +344,28 @@ describe Projects::BuildListsController do
     end
 
     describe 'status_build' do
-      before { @item = build_list.items.create(:name => build_list.project.name, :version => build_list.project_version, :level => 0) }
+      before do
+        @item = build_list.items.create(:name => build_list.project.name, :version => build_list.project_version, :level => 0)
+        repo = build_list.save_to_platform.repositories.first
+        repo.projects << build_list.project
+        @project2 = FactoryGirl.create(:project)
+        repo.projects << @project2
+      end
 
       def do_get
-        get :status_build, :id => build_list.bs_id, :package_name => build_list.project.name, :status => BuildServer::SUCCESS, :container_path => '/path/to'
+        get :status_build, :id => build_list.bs_id, :package_name => build_list.project.name, :status => BuildServer::SUCCESS, :container_path => '/path/to',
+            :pkg_info => ActiveSupport::JSON.encode({'srpm' =>  {'fullname' => 'srpm_filename.srpm',
+                                                                 'name' => build_list.project.name,
+                                                                 'version' => 'version1',
+                                                                 'release' => 'release1'},
+                                                      'rpm' => [{'fullname' => 'filename1.rpm',
+                                                                 'name' => build_list.project.name,
+                                                                 'version' => 'version2',
+                                                                 'release' => 'release2'},
+                                                                {'fullname' => 'filename2.rpm',
+                                                                 'name' => @project2.name,
+                                                                 'version' => 'version2',
+                                                                 'release' => 'release2'}]})
         build_list.reload
         @item.reload
       end
@@ -356,6 +374,7 @@ describe Projects::BuildListsController do
       it { lambda{ do_get }.should change(@item, :status) }
       it { lambda{ do_get }.should change(build_list, :container_path) }
       it { lambda{ do_get }.should change(build_list, :updated_at) }
+      it('should create packages for build list') { lambda{ do_get }.should change(build_list.packages, :count).to(3) }
     end
 
     describe 'pre_build' do
