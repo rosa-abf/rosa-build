@@ -9,13 +9,16 @@
   #discussion.tab-pane.active
     =form_for @pull, :url => project_pull_requests_path, :html => {:class => 'well well-large'} do |f|
       .leftlist=f.label :base_project, t('.base_project'), :class => :label
-      .rightlist=f.text_field :base_project_id
+      .rightlist
+        =f.autocomplete_field :base_project, autocomplete_base_project_name_project_pull_requests_path, :value => @pull.base_project.full_name, :id_element => '#pull_request_base_project_id'
+        =f.hidden_field :base_project_id
       .both
       .leftlist=f.label :base_ref, "#{t '.base_ref'} #{t '.refs'}", :class => :label
       .rightlist=select_tag :base_ref, branch_selector_options(@project), :id => 'branch_selector'
       .both
       .leftlist=f.label :head_project, t('.head_project'), :class => :label
-      .rightlist=f.text_field :head_project_id
+        =f.autocomplete_field :head_project, autocomplete_head_project_name_project_pull_requests_path, :value => @pull.head_project.full_name, :id_element => '#pull_request_head_project_id'
+        =f.hidden_field :head_project_id
       .both
       .leftlist=f.label :head_ref, "#{t '.head_ref'} #{t '.refs'}", :class => :label
       .rightlist=select_tag :head_ref, branch_selector_options(@pull.head_project), :id => 'branch_selector'

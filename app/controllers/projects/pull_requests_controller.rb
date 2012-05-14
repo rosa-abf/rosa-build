@@ -40,4 +40,9 @@ class Projects::PullRequestsController < Projects::BaseController
   def update
   end
 
+  def autocomplete_base_project_name
+    items = Project.accessible_by(current_ability, :membered)
+    render :json => json_for_autocomplete(items, 'full_name')
+  end
+
 end

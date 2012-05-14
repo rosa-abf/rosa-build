@@ -67,7 +67,7 @@ class Project < ActiveRecord::Base
     find_by_owner_and_name(owner_name, project_name) or raise ActiveRecord::RecordNotFound
   end
 
-  def build_for(platform, user, arch = 'i586', priority = 0) 
+  def build_for(platform, user, arch = 'i586', priority = 0)
     # Select main and project platform repository(contrib, non-free and etc)
     # If main does not exist, will connect only project platform repository
     # If project platform repository is main, only main will be connect
@@ -230,6 +230,10 @@ class Project < ActiveRecord::Base
   def human_average_build_time
     time = average_build_time
     I18n.t("layout.projects.human_average_build_time", {:hours => (time/3600).to_i, :minutes => (time%3600/60).to_i})
+  end
+
+  def full_name
+    "#{owner.uname}/#{name}"
   end
 
   protected
