@@ -23,11 +23,9 @@ class Platform < ActiveRecord::Base
   before_create :create_directory, :if => lambda {Thread.current[:skip]} # TODO remove this when core will be ready
   before_create :xml_rpc_create, :unless => lambda {Thread.current[:skip]}
   before_destroy :xml_rpc_destroy
-  
+
   after_update :freeze_platform
-  
-  after_create lambda { mount_directory_for_rsync unless hidden? }
-  after_destroy lambda { umount_directory_for_rsync unless hidden? }
+
   after_update :update_owner_relation
 
   scope :search_order, order("CHAR_LENGTH(name) ASC")
@@ -117,34 +115,17 @@ class Platform < ActiveRecord::Base
       with_skip {c.save} and c.clone_relations(self) and c.delay.xml_rpc_clone
     end
   end
-  
+
   def change_visibility
     if !self.hidden?
       self.update_attribute(:visibility, 'hidden')
-      umount_directory_for_rsync
     else
       self.update_attribute(:visibility, 'open')
-      mount_directory_for_rsync
     end
   end
 
   def create_directory
     system("sudo mkdir -p -m 0777 #{path}")
-  end
-
-  def mount_directory_for_rsync
-    # umount_directory_for_rsync # TODO ignore errors
-    system("sudo mkdir -p -m 0777 #{mount_path}")
-    system("sudo mount --bind #{path} #{mount_path}")
-    Arch.all.each do |arch|
-      str = "country=Russian Federation,city=Moscow,latitude=52.18,longitude=48.88,bw=1GB,version=2011,arch=#{arch.name},type=distrib,url=#{public_downloads_url}\n"
-      File.open(File.join(mount_path, "#{name}.#{arch.name}.list"), 'w') {|f| f.write(str) }
-    end
-  end
-
-  def umount_directory_for_rsync
-    system("sudo umount #{mount_path}")
-    system("sudo rm -Rf #{mount_path}")
   end
 
   def update_owner_relation
@@ -212,6 +193,6 @@ class Platform < ActiveRecord::Base
       if released_changed? && released == true
         result = BuildServer.freeze(name) 
         raise "Failed freeze platform #{name} with code #{result}" if result != BuildServer::SUCCESS
-      end  
+      end
     end
 end
