@@ -76,7 +76,7 @@
     .rightlist= check_box_tag :create_advisory, 1, false
     .both
     = f.fields_for @build_list.build_advisory do |f|
-      = render :partial => 'advisories/advisories/form', :locals => {:f => f}
+      = render :partial => 'advisories/form', :locals => {:f => f}
 
   = submit_tag t("layout.publish"), :confirm => t("layout.confirm"), :name => 'publish' if @build_list.can_publish? and can?(:publish, @build_list)
   = submit_tag t("layout.reject_publish"), :confirm => t("layout.confirm"), :name => 'reject_publish' if @build_list.can_reject_publish? and can?(:reject_publish, @build_list)
