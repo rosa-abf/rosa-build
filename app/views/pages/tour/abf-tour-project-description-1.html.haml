@@ -1,43 +1,39 @@
 .feature-wrap
   .feature
     .left
-      %a.pirobox{:href => image_path('tour/big/control.png'), :rel => "single", :title => "Управление проектами"}
-        =image_tag 'tour/1/control.png'
+      %a.pirobox{:href => image_path('tour/big/control.png'), :rel => "single", :title => t('tour.projects')}
+        =image_tag 'tour/control.png'
     .right
       %a{:href => tour_inside_path('projects')}
-        %h1 Управление проектами
+        %h1=t 'tour.projects'
       %p
-        Каждый git-репозиторий на ABF поставляется с инструментами,
-        необходимыми для управления проектами, вне зависимости от
-        того, публичный или приватный проект.
-        %br/
-        =link_to 'Читать далее...', tour_inside_path('projects')
+        =t 'tour.projects_header'
+        %br
+        =link_to t('tour.read_more'), tour_inside_path('projects')
     .both
 .feature-wrap
   .feature
     .left
       %a{:href => tour_inside_path('sources')}
-        %h1 Исходный 	код
+        %h1=t 'tour.sources'
       %p
-        ABF — полноценный git-хостинг с удобным веб-интерфейсом.
+        =t 'tour.sources_header'
         %br/
-        =link_to 'Читать далее...', tour_inside_path('sources')
+        =link_to t('tour.read_more'), tour_inside_path('sources')
     .right
-      %a.pirobox{:href => image_path('tour/big/source.png'), :rel => "single", :title => "Исходный код"}
-        =image_tag 'tour/2/source.png'
+      %a.pirobox{:href => image_path('tour/big/source.png'), :rel => "single", :title => t('tour.sources')}
+        =image_tag 'tour/source.png'
     .both
 .feature-wrap
   .feature
     .left
-      %a.pirobox{:href => image_path('tour/big/monitoring.png'), :rel => "single", :title => "Сборка пакетов"}
-        =image_tag 'tour/3/monitoring.png'
+      %a.pirobox{:href => image_path('tour/big/monitoring.png'), :rel => "single", :title => t('tour.builds')}
+        =image_tag 'tour/monitoring.png'
     .right
       %a{:href => tour_inside_path('builds')}
-        %h1 Сборка пакетов
+        %h1=t 'tour.builds'
       %p
-        ABF — это не только хостинг исходного кода, но и система сборки
-        и хостинга пакетов. Собирайте свои проекты под множество
-        дистрибутивов и архитектур в свой персональный репозиторий.
+        =t 'tour.builds_header'
         %br/
-        =link_to 'Читать далее...', tour_inside_path('builds')
+        =link_to t('tour.read_more'), tour_inside_path('builds')
     .both
