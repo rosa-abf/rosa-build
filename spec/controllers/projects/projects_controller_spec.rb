@@ -125,12 +125,31 @@ describe Projects::ProjectsController do
   end
 
   context 'for other user' do
-    it 'should not be able to fork hidden project' do
+    before(:each) do
       @user = FactoryGirl.create(:user)
       set_session_for(@user)
+    end
+
+    it 'should not be able to fork hidden project' do
       @project.update_attribute(:visibility, 'hidden')
       post :fork, :owner_name => @project.owner.uname, :project_name => @project.name
       response.should redirect_to(forbidden_path)
+    end
+
+    it 'should not be able to edit project' do
+      description = @project.description
+      put :update, :project=>{:description =>"hack"}, :owner_name => @project.owner.uname, :project_name => @project.name
+      response.should redirect_to(forbidden_path)
+      Project.find(@project.id).description.should == description
+    end
+
+    it 'should not be able to edit project sections' do
+      has_wiki, has_issues = @project.has_wiki, @project.has_issues
+      post :sections, :project =>{:has_wiki => !has_wiki, :has_issues => !has_issues}, :owner_name => @project.owner.uname, :project_name => @project.name
+      response.should redirect_to(forbidden_path)
+      project = Project.find(@project.id)
+      project.has_wiki.should == has_wiki
+      project.has_issues.should == has_issues
     end
   end
 end
