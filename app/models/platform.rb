@@ -26,6 +26,9 @@ class Platform < ActiveRecord::Base
 
   after_update :freeze_platform
 
+  after_create lambda { symlink_directory unless hidden? }
+  after_destroy lambda { remove_symlink_directory unless hidden? }
+
   after_update :update_owner_relation
 
   scope :search_order, order("CHAR_LENGTH(name) ASC")
@@ -42,7 +45,7 @@ class Platform < ActiveRecord::Base
   include Modules::Models::Owner
 
   def urpmi_list(host, pair = nil)
-    blank_pair = {:login => 'login', :pass => 'password'} 
+    blank_pair = {:login => 'login', :pass => 'password'}
     pair = blank_pair if pair.blank?
     urpmi_commands = ActiveSupport::OrderedHash.new
 
@@ -119,13 +122,29 @@ class Platform < ActiveRecord::Base
   def change_visibility
     if !self.hidden?
       self.update_attribute(:visibility, 'hidden')
+      remove_symlink_directory
     else
       self.update_attribute(:visibility, 'open')
+      symlink_directory
     end
   end
 
   def create_directory
     system("sudo mkdir -p -m 0777 #{path}")
+  end
+
+  def symlink_directory
+    # umount_directory_for_rsync # TODO ignore errors
+    system("sudo mkdir -p -m 0777 #{mount_path}")
+    system("sudo ln -s #{path} #{mount_path}")
+    Arch.all.each do |arch|
+      str = "country=Russian Federation,city=Moscow,latitude=52.18,longitude=48.88,bw=1GB,version=2011,arch=#{arch.name},type=distrib,url=#{public_downloads_url}\n"
+      File.open(File.join(mount_path, "#{name}.#{arch.name}.list"), 'w') {|f| f.write(str) }
+    end
+  end
+
+  def remove_symlink_directory
+    system("sudo rm -Rf #{mount_path}")
   end
 
   def update_owner_relation
