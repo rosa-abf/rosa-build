@@ -19,7 +19,7 @@ class Project < ActiveRecord::Base
 
   has_many :advisories
 
-  validates :name, :uniqueness => {:scope => [:owner_id, :owner_type], :case_sensitive => false}, :presence => true, :format => {:with => /^[a-zA-Z0-9_\-\+\.]+$/}
+  validates :name, :uniqueness => {:scope => [:owner_id, :owner_type], :case_sensitive => false}, :presence => true, :format => {:with => /^[a-zA-Z0-9_\-\+\.]+$/, :message => I18n.t("activerecord.errors.project.uname")}
   validates :owner, :presence => true
   validate { errors.add(:base, :can_have_less_or_equal, :count => MAX_OWN_PROJECTS) if owner.projects.size >= MAX_OWN_PROJECTS }
 
