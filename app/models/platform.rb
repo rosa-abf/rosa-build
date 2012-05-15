@@ -66,7 +66,7 @@ class Platform < ActiveRecord::Base
     build_path(name)
   end
 
-  def mount_path
+  def symlink_path
     Rails.root.join("public", "downloads", name)
   end
 
@@ -135,16 +135,16 @@ class Platform < ActiveRecord::Base
 
   def symlink_directory
     # umount_directory_for_rsync # TODO ignore errors
-    system("sudo mkdir -p -m 0777 #{mount_path}")
-    system("sudo ln -s #{path} #{mount_path}")
+    system("sudo mkdir -p -m 0777 #{symlink_path}")
+    system("sudo ln -s #{path} #{symlink_path}")
     Arch.all.each do |arch|
       str = "country=Russian Federation,city=Moscow,latitude=52.18,longitude=48.88,bw=1GB,version=2011,arch=#{arch.name},type=distrib,url=#{public_downloads_url}\n"
-      File.open(File.join(mount_path, "#{name}.#{arch.name}.list"), 'w') {|f| f.write(str) }
+      File.open(File.join(symlink_path, "#{name}.#{arch.name}.list"), 'w') {|f| f.write(str) }
     end
   end
 
   def remove_symlink_directory
-    system("sudo rm -Rf #{mount_path}")
+    system("sudo rm -Rf #{symlink_path}")
   end
 
   def update_owner_relation
