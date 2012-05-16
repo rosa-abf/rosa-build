@@ -24,7 +24,7 @@ end
 
 describe Platforms::ProductsController do
 	before(:each) do
-    stub_rsync_methods
+    stub_symlink_methods
 
     @another_user = FactoryGirl.create(:user)
     @platform = FactoryGirl.create(:platform)

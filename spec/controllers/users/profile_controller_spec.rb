@@ -3,7 +3,7 @@ require 'spec_helper'
 
 describe Users::ProfileController do
   before(:each) do
-    stub_rsync_methods
+    stub_symlink_methods
 
     @simple_user = FactoryGirl.create(:user)
     @other_user = FactoryGirl.create(:user)

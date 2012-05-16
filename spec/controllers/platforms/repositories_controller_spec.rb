@@ -67,7 +67,7 @@ end
 
 describe Platforms::RepositoriesController do
   before(:each) do
-    stub_rsync_methods
+    stub_symlink_methods
 
     @platform = FactoryGirl.create(:platform)
     @repository = FactoryGirl.create(:repository, :platform =>  @platform)

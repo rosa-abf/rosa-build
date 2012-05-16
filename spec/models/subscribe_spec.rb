@@ -12,7 +12,7 @@ def set_testable_data
 end
 
 describe Subscribe do
-  before { stub_rsync_methods }
+  before { stub_symlink_methods }
   context 'for global admin user' do
     before(:each) do
       @user = FactoryGirl.create(:admin)

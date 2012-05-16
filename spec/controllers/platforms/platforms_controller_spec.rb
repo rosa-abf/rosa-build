@@ -35,7 +35,7 @@ end
 
 describe Platforms::PlatformsController do
   before(:each) do
-    stub_rsync_methods
+    stub_symlink_methods
 
     @platform = FactoryGirl.create(:platform)
     @personal_platform = FactoryGirl.create(:platform, :platform_type => 'personal')
