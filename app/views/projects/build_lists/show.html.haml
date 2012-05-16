@@ -18,11 +18,11 @@
   .rightlist
     = link_to @build_list.user.try(:fullname), @build_list.user
   .both
-  .leftlist= t("activerecord.attributes.build_list.bpl")
+  .leftlist= t("activerecord.attributes.build_list.build_for_platform")
   .rightlist
     = link_to @build_list.build_for_platform.name, @build_list.build_for_platform
   .both
-  .leftlist= t("activerecord.attributes.build_list.pl")
+  .leftlist= t("activerecord.attributes.build_list.save_to_platform")
   .rightlist
     = link_to @build_list.save_to_platform.name, @build_list.save_to_platform
   .both
@@ -101,6 +101,25 @@
           %td= item.version
           %td= item.human_status
 .both
+
+- if @build_list.packages.present?
+  .hr
+  %h3= t("layout.build_lists.packages_header")
+  %table.tablesorter.width565{:cellpadding => "0", :cellspacing => "0"}
+    %thead
+      %tr
+        %th= t("activerecord.attributes.build_list/package.fullname")
+        %th= t("activerecord.attributes.build_list/package.name")
+        %th= t("activerecord.attributes.build_list/package.version")
+        %th= t("activerecord.attributes.build_list/package.release")
+    %tbody
+      - @build_list.packages.each do |package|
+        %tr
+          %td= package.fullname
+          %td= package.name
+          %td= package.version
+          %td= package.release
+  .both
 
 :javascript
   $('article .all').addClass('bigpadding');

@@ -2,6 +2,7 @@
 class Project < ActiveRecord::Base
   VISIBILITIES = ['open', 'hidden']
   MAX_OWN_PROJECTS = 32000
+  NAME_REGEXP = /[a-zA-Z0-9_\-\+\.]+/
 
   belongs_to :owner, :polymorphic => true, :counter_cache => :own_projects_count
 
@@ -17,9 +18,10 @@ class Project < ActiveRecord::Base
   has_many :collaborators, :through => :relations, :source => :actor, :source_type => 'User'
   has_many :groups,        :through => :relations, :source => :actor, :source_type => 'Group'
 
-  has_many :advisories
+  has_many :advisories # should be without :dependent => :destroy
+  has_many :packages, :class_name => "BuildList::Package", :dependent => :destroy
 
-  validates :name, :uniqueness => {:scope => [:owner_id, :owner_type], :case_sensitive => false}, :presence => true, :format => {:with => /^[a-zA-Z0-9_\-\+\.]+$/}
+  validates :name, :uniqueness => {:scope => [:owner_id, :owner_type], :case_sensitive => false}, :presence => true, :format => {:with => /^#{NAME_REGEXP}$/}
   validates :owner, :presence => true
   validate { errors.add(:base, :can_have_less_or_equal, :count => MAX_OWN_PROJECTS) if owner.projects.size >= MAX_OWN_PROJECTS }
 

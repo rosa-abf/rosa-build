@@ -112,6 +112,8 @@ class Projects::BuildListsController < Projects::BaseController
     @build_list.container_path = params[:container_path]
     @build_list.save
 
+    @build_list.set_packages(ActiveSupport::JSON.decode(params[:pkg_info])) if params[:status].to_i == BuildServer::SUCCESS and params[:pkg_info].present?
+
     render :nothing => true, :status => 200
   end
 

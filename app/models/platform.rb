@@ -15,6 +15,8 @@ class Platform < ActiveRecord::Base
 
   has_and_belongs_to_many :advisories
 
+  has_many :packages, :class_name => "BuildList::Package", :dependent => :destroy
+
   validates :description, :presence => true
   validates :visibility, :presence => true, :inclusion => {:in => VISIBILITIES}
   validates :name, :uniqueness => {:case_sensitive => false}, :presence => true, :format => { :with => /^[a-zA-Z0-9_\-]+$/ }

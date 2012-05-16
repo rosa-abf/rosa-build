@@ -75,6 +75,23 @@ ActiveRecord::Schema.define(:version => 20120515095324) do
 
   add_index "build_list_items", ["build_list_id"], :name => "index_build_list_items_on_build_list_id"
 
+  create_table "build_list_packages", :force => true do |t|
+    t.integer  "build_list_id"
+    t.integer  "project_id"
+    t.integer  "platform_id"
+    t.string   "fullname"
+    t.string   "name"
+    t.string   "version"
+    t.string   "release"
+    t.string   "package_type"
+    t.datetime "created_at",    :null => false
+    t.datetime "updated_at",    :null => false
+  end
+
+  add_index "build_list_packages", ["build_list_id"], :name => "index_build_list_packages_on_build_list_id"
+  add_index "build_list_packages", ["platform_id"], :name => "index_build_list_packages_on_platform_id"
+  add_index "build_list_packages", ["project_id"], :name => "index_build_list_packages_on_project_id"
+
   create_table "build_lists", :force => true do |t|
     t.integer  "bs_id"
     t.string   "container_path"
