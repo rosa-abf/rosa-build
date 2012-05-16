@@ -5,16 +5,15 @@ class BuildList < ActiveRecord::Base
   belongs_to :save_to_platform, :class_name => 'Platform'
   belongs_to :build_for_platform, :class_name => 'Platform'
   belongs_to :user
-  has_many :items, :class_name => "BuildList::Item", :dependent => :destroy
-
   belongs_to :advisory
+  has_many :items, :class_name => "BuildList::Item", :dependent => :destroy
+  has_many :packages, :class_name => "BuildList::Package", :dependent => :destroy
 
-  validates :project_id, :project_version, :arch, :include_repos, :presence => true
-  validates_numericality_of :priority, :greater_than_or_equal_to => 0
-  
   UPDATE_TYPES = %w[security bugfix enhancement recommended newpackage]
   RELEASE_UPDATE_TYPES = %w[security bugfix]
 
+  validates :project_id, :project_version, :arch, :include_repos, :presence => true
+  validates_numericality_of :priority, :greater_than_or_equal_to => 0
   validates :update_type, :inclusion => UPDATE_TYPES,
             :unless => Proc.new { |b| b.save_to_platform.released }
   validates :update_type, :inclusion => RELEASE_UPDATE_TYPES,
@@ -71,7 +70,6 @@ class BuildList < ActiveRecord::Base
                     }
 
   scope :recent, order("#{table_name}.updated_at DESC")
-
   scope :for_status, lambda {|status| where(:status => status) }
   scope :for_user, lambda { |user| where(:user_id => user.id)  }
   scope :scoped_to_arch, lambda {|arch| where(:arch_id => arch) }
@@ -90,7 +88,6 @@ class BuildList < ActiveRecord::Base
     s
   }
   scope :scoped_to_project_name, lambda {|project_name| joins(:project).where('projects.name LIKE ?', "%#{project_name}%")}
-
   scope :outdated, where('updated_at < ? AND status <> ?', Time.now - LIVE_TIME, BUILD_PUBLISHED)
 
   serialize :additional_repos
@@ -114,6 +111,13 @@ class BuildList < ActiveRecord::Base
       items.each do |item|
         self.items << self.items.build(:name => item['name'], :version => item['version'], :level => level.to_i)
       end
+    end
+  end
+
+  def set_packages(pkg_hash)
+    build_package(pkg_hash['srpm'], 'source') {|p| p.save!}
+    pkg_hash['rpm'].each do |rpm_hash|
+      build_package(rpm_hash, 'binary') {|p| p.save!}
     end
   end
 
@@ -170,18 +174,26 @@ class BuildList < ActiveRecord::Base
     #[WAITING_FOR_RESPONSE, BuildServer::BUILD_PENDING, BuildServer::BUILD_STARTED].include?(status)
   end
 
-  private
-    def set_default_status
-      self.status = WAITING_FOR_RESPONSE unless self.status.present?
-      return true
-    end
+  protected
 
-    def place_build
-      #XML-RPC params: project_name, project_version, plname, arch, bplname, update_type, build_requires, id_web, include_repos, priority
-      self.status = BuildServer.add_build_list project.name, project_version, save_to_platform.name, arch.name, (save_to_platform_id == build_for_platform_id ? '' : build_for_platform.name), update_type, build_requires, id, include_repos, priority
-      self.status = BUILD_PENDING if self.status == 0
-      save
-    end
-    #handle_asynchronously :place_build
+  def set_default_status
+    self.status = WAITING_FOR_RESPONSE unless self.status.present?
+    return true
+  end
 
+  def place_build
+    #XML-RPC params: project_name, project_version, plname, arch, bplname, update_type, build_requires, id_web, include_repos, priority
+    self.status = BuildServer.add_build_list project.name, project_version, save_to_platform.name, arch.name, (save_to_platform_id == build_for_platform_id ? '' : build_for_platform.name), update_type, build_requires, id, include_repos, priority
+    self.status = BUILD_PENDING if self.status == 0
+    save
+  end
+
+  def build_package(pkg_hash, package_type)
+    packages.create(pkg_hash) do |p|
+      p.project = Project.joins(:repositories => :platform).where('platforms.id = ?', save_to_platform.id).find_by_name!(pkg_hash['name'])
+      p.platform = save_to_platform
+      p.package_type = package_type
+      yield p
+    end
+  end
 end
