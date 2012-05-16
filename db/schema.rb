@@ -205,7 +205,7 @@ ActiveRecord::Schema.define(:version => 20120515095324) do
     t.string   "owner_type"
     t.string   "visibility",         :default => "open", :null => false
     t.string   "platform_type",      :default => "main", :null => false
-    t.string   "distrib_type"
+    t.string   "distrib_type",                           :null => false
   end
 
   add_index "platforms", ["name"], :name => "index_platforms_on_name", :unique => true, :case_sensitive => false
@@ -282,7 +282,7 @@ ActiveRecord::Schema.define(:version => 20120515095324) do
     t.integer  "srpm_file_size"
     t.datetime "srpm_updated_at"
     t.string   "default_branch",     :default => "master"
-    t.boolean  "is_package",         :default => true
+    t.boolean  "is_package",         :default => true,     :null => false
     t.integer  "average_build_time", :default => 0,        :null => false
     t.integer  "build_count",        :default => 0,        :null => false
   end

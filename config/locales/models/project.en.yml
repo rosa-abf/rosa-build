@@ -87,4 +87,4 @@ en:
           me: Myself
           group: Group
         default_branch: Default branch
-        is_rpm: Project is a packet
+        is_package: Project is a packet
