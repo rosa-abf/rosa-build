@@ -1,7 +1,6 @@
 class PullRequest < ActiveRecord::Base
   extend StateMachine::MacroMethods # no method state_machine WTF?!
   #TODO add validates to serialized data
-  scope :needed_checking, where(:state => ['open', 'blocked', 'ready'])
 
   belongs_to :issue, :autosave => true, :dependent => :destroy, :touch => true, :validate => true
   belongs_to :base_project, :class_name => 'Project', :foreign_key => 'base_project_id'
@@ -9,6 +8,7 @@ class PullRequest < ActiveRecord::Base
   delegate :user, :title, :body, :serial_id, :assignee, :state, :to => :issue, :allow_nil => true
   accepts_nested_attributes_for :issue
   #attr_accessible #FIXME disable for development
+  scope :needed_checking, where(:state => ['open', 'blocked', 'ready'])
 
   state_machine :initial => :open do
     #after_transition [:ready, :blocked] => [:merged, :closed] do |pull, transition|

@@ -27,8 +27,9 @@ class Projects::PullRequestsController < Projects::BaseController
   def create
     @pull = @project.pull_requests.new(params[:pull_request]) # FIXME need validation!
     @pull.issue.user, @pull.issue.project = current_user, @pull.base_project
-    @pull.base_ref = params[:base_ref] # FIXME need validation!
-    @pull.head_ref = params[:head_ref] # FIXME need validation!
+    @pull.base_project, @pull.head_project = PullRequest.default_base_project(@project), @project
+    #@pull.base_ref = params[:base_ref] # FIXME need validation!
+    #@pull.head_ref = params[:head_ref] # FIXME need validation!
 
     if @pull.save
       render :index #FIXME redirect to show
@@ -42,7 +43,32 @@ class Projects::PullRequestsController < Projects::BaseController
 
   def autocomplete_base_project_name
     items = Project.accessible_by(current_ability, :membered)
+    items << PullRequest.default_base_project(@project)
+    items.uniq!
     render :json => json_for_autocomplete(items, 'full_name')
   end
 
+  def autocomplete_head_project_name
+    items = Project.accessible_by(current_ability, :membered)
+    render :json => json_for_autocomplete(items, 'full_name')
+  end
+
+  def autocomplete_base_ref
+    project = PullRequest.default_base_project(@project)
+    items = (project.branches + project.tags).select {|e| Regexp.new(params[:term].downcase).match e.name.downcase}
+    render :json => json_for_autocomplete_ref(items)
+  end
+
+  def autocomplete_head_ref
+    items = (@project.branches + @project.tags).select {|e| Regexp.new(params[:term].downcase).match e.name.downcase}
+    render :json => json_for_autocomplete_ref(items)
+  end
+
+  protected
+
+  def json_for_autocomplete_ref(items)
+    items.collect do |item|
+      {"id" => item.name, "label" => item.name, "value" => item.name}
+    end
+  end
 end

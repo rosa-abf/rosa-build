@@ -1,6 +1,6 @@
 -set_meta_tags :title => [title_object(@project), t('.title')]
 = render :partial => 'submenu'
-%h3.bpadding10= raw t '.new', {:base => @base, :head => @head}
+%h3.bpadding10= raw t '.new', {:base => @pull.base_ref, :head => @pull.head_ref}
 %ul.nav.nav-tabs
   -t('pull_requests.tabs').each do |base, title|
     %li
@@ -10,18 +10,21 @@
     =form_for @pull, :url => project_pull_requests_path, :html => {:class => 'well well-large'} do |f|
       .leftlist=f.label :base_project, t('.base_project'), :class => :label
       .rightlist
-        =f.autocomplete_field :base_project, autocomplete_base_project_name_project_pull_requests_path, :value => @pull.base_project.full_name, :id_element => '#pull_request_base_project_id'
-        =f.hidden_field :base_project_id
+        = @pull.base_project.full_name
+        =#f.autocomplete_field :base_project, autocomplete_base_project_name_project_pull_requests_path, :value => @pull.base_project.full_name, :id_element => '#pull_request_base_project_id'
+        =#f.hidden_field :base_project_id
       .both
       .leftlist=f.label :base_ref, "#{t '.base_ref'} #{t '.refs'}", :class => :label
-      .rightlist=select_tag :base_ref, branch_selector_options(@project), :id => 'branch_selector'
+      .rightlist=f.autocomplete_field :base_ref, autocomplete_base_ref_project_pull_requests_path, :value => @pull.base_ref
       .both
       .leftlist=f.label :head_project, t('.head_project'), :class => :label
-        =f.autocomplete_field :head_project, autocomplete_head_project_name_project_pull_requests_path, :value => @pull.head_project.full_name, :id_element => '#pull_request_head_project_id'
-        =f.hidden_field :head_project_id
+      .rightlist
+        = @pull.head_project.full_name
+        =#f.autocomplete_field :head_project, autocomplete_head_project_name_project_pull_requests_path, :value => @pull.head_project.full_name, :id_element => '#pull_request_head_project_id'
+        =#f.hidden_field :head_project_id
       .both
       .leftlist=f.label :head_ref, "#{t '.head_ref'} #{t '.refs'}", :class => :label
-      .rightlist=select_tag :head_ref, branch_selector_options(@pull.head_project), :id => 'branch_selector'
+      .rightlist=f.autocomplete_field :head_ref, autocomplete_head_ref_project_pull_requests_path, :value => @pull.head_ref
       .both
       = f.fields_for :issue do |issue|
         .leftlist=issue.label :title, t('activerecord.attributes.issue.title'), :class => :label
