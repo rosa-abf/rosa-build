@@ -64,7 +64,7 @@ end
 
 describe Projects::CollaboratorsController do
   before(:each) do
-    stub_rsync_methods
+    stub_symlink_methods
     @project = FactoryGirl.create(:project)
     @another_user = FactoryGirl.create(:user)
     @member_user = FactoryGirl.create(:user)

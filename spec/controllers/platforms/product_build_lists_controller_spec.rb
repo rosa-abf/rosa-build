@@ -26,7 +26,7 @@ end
 
 describe Platforms::ProductBuildListsController do
   before(:each) do
-    stub_rsync_methods
+    stub_symlink_methods
   end
 
   context 'crud' do

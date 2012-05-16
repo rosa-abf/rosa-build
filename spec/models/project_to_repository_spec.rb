@@ -3,7 +3,7 @@ require 'spec_helper'
 
 describe ProjectToRepository do
   before(:each) do
-    stub_rsync_methods
+    stub_symlink_methods
     @platform = FactoryGirl.create(:platform)
     @first_repo = FactoryGirl.create(:repository, :platform_id => @platform.id)
     @second_repo = FactoryGirl.create(:repository, :platform_id => @platform.id)

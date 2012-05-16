@@ -76,7 +76,7 @@ end
 
 describe Projects::CommentsController do
   before(:each) do
-    stub_rsync_methods
+    stub_symlink_methods
     @project = FactoryGirl.create(:project)
     %x(cp -Rf #{Rails.root}/spec/tests.git/* #{@project.git_repository.path}) # maybe FIXME ?
     @commit = @project.git_repository.commits.first

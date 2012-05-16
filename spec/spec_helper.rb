@@ -33,7 +33,7 @@ def set_session_for(user=nil)
   sign_in current_user
 end
 
-def stub_rsync_methods
+def stub_symlink_methods
   any_instance_of(Platform, :symlink_directory => true)
   any_instance_of(Platform, :remove_symlink_directory => true)
 end

@@ -5,7 +5,7 @@ describe Repository do
 
   context 'when create with same owner that platform' do
     before (:each) do
-      stub_rsync_methods
+      stub_symlink_methods
       @platform = FactoryGirl.create(:platform)
       @params = {:name => 'tst_platform', :description => 'test platform'}
     end
@@ -17,7 +17,7 @@ describe Repository do
   end
   
   before(:all) do
-    stub_rsync_methods
+    stub_symlink_methods
     Platform.delete_all
     User.delete_all
     Repository.delete_all

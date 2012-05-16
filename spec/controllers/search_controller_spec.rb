@@ -16,7 +16,7 @@ shared_examples_for 'not able search' do
 end
 
 describe SearchController do
-  before { stub_rsync_methods }
+  before { stub_symlink_methods }
 
   context 'as guest' do
     if APP_CONFIG['anonymous_access']

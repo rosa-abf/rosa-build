@@ -3,7 +3,7 @@ require 'spec_helper'
 
 describe ProductBuildList do
   before(:all) do
-    stub_rsync_methods
+    stub_symlink_methods
   end
 
   it { should belong_to(:product) }

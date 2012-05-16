@@ -72,7 +72,7 @@ end
 
 describe Projects::CommentsController do
   before(:each) do
-    stub_rsync_methods
+    stub_symlink_methods
 
     @project = FactoryGirl.create(:project)
     @issue = FactoryGirl.create(:issue, :project_id => @project.id, :user => FactoryGirl.create(:user))

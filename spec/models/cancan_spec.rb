@@ -25,7 +25,7 @@ describe CanCan do
   let(:register_request) { FactoryGirl.create(:register_request) }
 
   before(:each) do
-    stub_rsync_methods
+    stub_symlink_methods
   end
 
 	context 'Site admin' do
