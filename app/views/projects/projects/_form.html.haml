@@ -42,8 +42,8 @@
     \ 
   .rightlist
     .check
-      %span#niceCheckbox1.niceCheck-main= f.check_box :is_rpm#, :class => 'niceCheckbox1'
-    .forcheck= t("activerecord.attributes.project.is_rpm")
+      %span#niceCheckbox1.niceCheck-main= f.check_box :is_package#, :class => 'niceCheckbox1'
+    .forcheck= t("activerecord.attributes.project.is_package")
     .both
 .both
 - if [:new, :create].include? act
