@@ -7,7 +7,7 @@ class Advisory < ActiveRecord::Base
 
   after_create :generate_advisory_id
 
-  ID_TEMPLATE = 'ROSA%<type>s-%<year>d:%<id>04d'
+  ID_TEMPLATE = 'ROSA-%<type>s-%<year>d:%<id>04d'
   TYPES = {'security' => 'SA', 'bugfix' => 'A'}
 
   def to_param
