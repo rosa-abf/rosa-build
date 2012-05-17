@@ -40,7 +40,9 @@ en:
       target_platform: Target platform
       target_architecture: Target architecture
       members: Members
-        
+      project: Project
+      arch: Architecture
+      build_task: Build Task
 
   flash:
     platform:

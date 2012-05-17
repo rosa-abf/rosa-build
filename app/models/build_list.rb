@@ -72,6 +72,7 @@ class BuildList < ActiveRecord::Base
   scope :recent, order("#{table_name}.updated_at DESC")
   scope :for_status, lambda {|status| where(:status => status) }
   scope :for_user, lambda { |user| where(:user_id => user.id)  }
+  scope :for_platform, lambda { |platform| where(:build_for_platform_id => platform.id)  }
   scope :scoped_to_arch, lambda {|arch| where(:arch_id => arch) }
   scope :scoped_to_project_version, lambda {|project_version| where(:project_version => project_version) }
   scope :scoped_to_is_circle, lambda {|is_circle| where(:is_circle => is_circle) }

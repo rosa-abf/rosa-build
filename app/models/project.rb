@@ -70,7 +70,7 @@ class Project < ActiveRecord::Base
     find_by_owner_and_name(owner_name, project_name) or raise ActiveRecord::RecordNotFound
   end
 
-  def build_for(platform, user, arch = 'i586', priority = 0) 
+  def build_for(platform, user, arch = 'i586', auto_publish = false, priority = 0)
     # Select main and project platform repository(contrib, non-free and etc)
     # If main does not exist, will connect only project platform repository
     # If project platform repository is main, only main will be connect

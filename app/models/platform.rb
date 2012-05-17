@@ -155,16 +155,22 @@ class Platform < ActiveRecord::Base
     end
   end
 
-  def build_all(user)
+  def build_all(opt={})
+    # Set options to build all need
+    repositories = opts[:repositories] ? self.repositories.where(:id => opts[:repositories]) : self.repositories
+    arches = opts[:arches] ? Arch.where(:id => opts[:arches]) : Arch.all
+    auto_publish = opts[:auto_publish] || false
+    user = opts[:user]
+
     repositories.each do |rep|
       rep.projects.find_in_batches(:batch_size => 2) do |group|
         sleep 1
         group.each do |p|
-          Arch.all.map(&:name).each do |arch|
+          arches.map(&:name).each do |arch|
             begin
-              p.build_for(self, user, arch)
+              p.build_for(self, user, arch, auto_publish)
             rescue RuntimeError, Exception
-              p.delay.build_for(self, user, arch)
+              p.delay.build_for(self, user, arch, auto_publish)
             end
           end
         end
