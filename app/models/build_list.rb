@@ -114,10 +114,11 @@ class BuildList < ActiveRecord::Base
     end
   end
 
-  def set_packages(pkg_hash)
-    build_package(pkg_hash['srpm'], 'source') {|p| p.save!}
+  def set_packages(pkg_hash, project_name)
+    prj = Project.joins(:repositories => :platform).where('platforms.id = ?', save_to_platform.id).find_by_name!(project_name)
+    build_package(pkg_hash['srpm'], 'source', prj) {|p| p.save!}
     pkg_hash['rpm'].each do |rpm_hash|
-      build_package(rpm_hash, 'binary') {|p| p.save!}
+      build_package(rpm_hash, 'binary', prj) {|p| p.save!}
     end
   end
 
@@ -188,9 +189,9 @@ class BuildList < ActiveRecord::Base
     save
   end
 
-  def build_package(pkg_hash, package_type)
+  def build_package(pkg_hash, package_type, prj)
     packages.create(pkg_hash) do |p|
-      p.project = project # Project.joins(:repositories => :platform).where('platforms.id = ?', save_to_platform.id).find_by_name!(pkg_hash['name'])
+      p.project = prj
       p.platform = save_to_platform
       p.package_type = package_type
       yield p

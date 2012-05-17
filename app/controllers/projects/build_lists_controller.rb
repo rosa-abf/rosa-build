@@ -75,7 +75,7 @@ class Projects::BuildListsController < Projects::BaseController
   def update
     if params[:publish].present? and can?(:publish, @build_list)
       publish
-    elsif params[:reject_publish].present? and can?(:reject_publish)
+    elsif params[:reject_publish].present? and can?(:reject_publish, @build_list)
       reject_publish
     else
       # King Arthur, we are under attack!
@@ -112,7 +112,7 @@ class Projects::BuildListsController < Projects::BaseController
     @build_list.container_path = params[:container_path]
     @build_list.save
 
-    @build_list.set_packages(ActiveSupport::JSON.decode(params[:pkg_info])) if params[:status].to_i == BuildServer::SUCCESS and params[:pkg_info].present?
+    @build_list.set_packages(ActiveSupport::JSON.decode(params[:pkg_info]), params[:package_name]) if params[:status].to_i == BuildServer::SUCCESS and params[:pkg_info].present?
 
     render :nothing => true, :status => 200
   end
@@ -172,12 +172,12 @@ class Projects::BuildListsController < Projects::BaseController
 
   def publish
     @build_list.update_type = params[:build_list][:update_type] if params[:build_list][:update_type].present?
-    if params[:create_advisory].present?
-      a = @build_list.build_advisory
-      a.update_type = @build_list.update_type
-      a.project     = @build_list.project
-      a.platforms << @build_list.save_to_platform unless a.platforms.include? @build_list.save_to_platform
-      redirect_to :back, :notice => t('layout.build_lists.publish_fail') unless a.update_attributes(params[:build_list][:advisory])
+    if params[:create_advisory].present? and !@build_list.build_advisory(params[:build_list][:advisory]) do |a|
+         a.update_type = @build_list.update_type
+         a.project     = @build_list.project
+         a.platforms << @build_list.save_to_platform unless a.platforms.include? @build_list.save_to_platform
+       end.save
+      redirect_to :back, :notice => t('layout.build_lists.publish_fail') and return
     end
     if @build_list.save and @build_list.publish
       redirect_to :back, :notice => t('layout.build_lists.publish_success')
