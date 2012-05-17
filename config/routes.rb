@@ -164,12 +164,15 @@ Rosa::Application.routes.draw do
         get :find, :on => :collection
       end
       resources :pull_requests, :except => [:destroy, :new] do
-        post '/new' => 'pull_requests#new', :on => :collection
         collection do
+          post '/new' => 'pull_requests#new'
           get :autocomplete_base_project_name
           get :autocomplete_head_project_name
           get :autocomplete_base_ref
           get :autocomplete_head_ref
+        end
+        member do
+          put :merge, :as => 'merge'
         end
       end
 

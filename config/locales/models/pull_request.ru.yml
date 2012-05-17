@@ -9,6 +9,7 @@ ru:
         base_project: 'Базовый проект'
         head_project: 'Проект-источник'
         submit: 'Создать запрос на слияние'
+      merge: Слияние
 
   pull_requests:
     tabs:

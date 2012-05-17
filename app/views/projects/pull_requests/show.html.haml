@@ -1,0 +1,47 @@
+-set_meta_tags :title => [title_object(@project), t('.title')]
+= render :partial => 'submenu'
+%h3.bpadding10= raw t '.new', {:base => @pull.base_ref, :head => @pull.head_ref}
+%ul.nav.nav-tabs
+  -t('pull_requests.tabs').each do |base, title|
+    %li
+      %a{"data-toggle" => "tab", :href => "##{base}"}=title
+.tab-content
+  #discussion.tab-pane.active
+    .leftlist=t('projects.pull_requests.new.base_project')
+    .rightlist= @pull.base_project.full_name
+    .both
+    .leftlist="#{t 'projects.pull_requests.new.base_ref'} #{t 'projects.pull_requests.new.refs'}"
+    .rightlist=@pull.base_ref
+    .both
+    .leftlist=t('projects.pull_requests.new.head_project')
+    .rightlist= @pull.head_project.full_name
+    .both
+    .leftlist="#{t 'projects.pull_requests.new.head_ref'} #{t 'projects.pull_requests.new.refs'}"
+    .rightlist=@pull.head_ref
+    .both
+    .leftlist=t('activerecord.attributes.issue.title')
+    .rightlist=@pull.issue.title
+    .both
+    .leftlist=t('activerecord.attributes.issue.body')
+    .rightlist=@pull.issue.body
+    .both
+    .leftlist=t('activerecord.attributes.issue.state')
+    .rightlist=@pull.issue.state
+    .both
+    - if can? :merge, @pull
+      =form_for PullRequest.new, :url => merge_project_pull_request_path(@project, @pull), :html => { :method => :put, :class => :form } do |f|
+        =f.submit t 'projects.pull_requests.merge'
+
+  #diff.tab-pane
+    -begin
+      =# render_commit_stats(stats)
+
+      = render :partial => 'commit_diff', :collection => @diff
+    - rescue Grit::Git::GitTimeout
+      %p= t 'layout.git.repositories.commit_diff_too_big'
+  #commits.tab-pane ...
+
+:javascript
+  $(function () {
+    $('.nav.nav-tabs a:first').tab('show');
+  });

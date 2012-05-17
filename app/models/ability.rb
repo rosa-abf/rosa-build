@@ -112,6 +112,8 @@ class Ability
         can(:create, Comment) {|comment| can? :read, comment.project}
         can(:update, Comment) {|comment| comment.user_id == user.id or local_admin?(comment.project || comment.commentable.project)}
         cannot :manage, Comment, :commentable_type => 'Issue', :commentable => {:project => {:has_issues => false}} # switch off issues
+
+        can [:merge], PullRequest, :state => 'ready'
       end
 
       # Shared cannot rights for all users (registered, admin)

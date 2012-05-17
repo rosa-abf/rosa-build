@@ -9,6 +9,7 @@ en:
         base_project: 'Base project'
         head_project: 'Head project'
         submit: 'Send pull request'
+      merge: Merge
 
   pull_requests:
     tabs:

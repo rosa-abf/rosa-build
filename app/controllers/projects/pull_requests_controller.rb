@@ -3,12 +3,14 @@ class Projects::PullRequestsController < Projects::BaseController
   before_filter :authenticate_user!
   load_resource :project
   #load_and_authorize_resource :pull_request, :through => :project, :find_by => :serial_id #FIXME Disable for development
+  load_resource :pull_request
 
   def index
   end
 
   def new
     @pull = PullRequest.default_base_project(@project).pull_requests.new
+    FileUtils.rm_rf @pull.path
     #@pull.build_issue
     @pull.issue = @project.issues.new
     @pull.head_project = @project
@@ -39,6 +41,21 @@ class Projects::PullRequestsController < Projects::BaseController
   end
 
   def update
+  end
+
+  def merge
+    @pull_request.check
+    @pull_request.merge! current_user
+    redirect_to :show
+  end
+
+  def show
+    @pull = @pull_request
+    repo = Git::Repository.new(@pull.path)
+    @base_commit = repo.commits(@pull.base_ref).first
+    @head_commit = repo.commits(@pull.head_branch).first
+
+    @diff = Grit::Repo.new(@pull.path).diff @base_commit, @head_commit
   end
 
   def autocomplete_base_project_name

@@ -70,6 +70,7 @@ class PullRequest < ActiveRecord::Base
       if merge
         merging
         system("git push origin HEAD")
+        system("git reset --hard HEAD") # for diff maybe FIXME
       end
     end
   end
@@ -93,11 +94,11 @@ class PullRequest < ActiveRecord::Base
   end
 
   def path
-    filename = [base_project.owner.uname, base_project.name, base_ref, head_ref].join('-')
+    filename = [id, base_ref, head_project.owner.uname, head_project.name, head_ref].compact.join('-')
     if Rails.env == "production"
-      File.join('/srv/rosa_build/shared/tmp', "pull_requests", filename)
+      File.join('/srv/rosa_build/shared/tmp', "pull_requests", base_project.owner.uname, base_project.name, filename)
     else
-      File.join(Rails.root, "tmp", Rails.env, "pull_requests", filename)
+      File.join(Rails.root, "tmp", Rails.env, "pull_requests", base_project.owner.uname, base_project.name, filename)
     end
   end
 
