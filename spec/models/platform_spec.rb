@@ -3,7 +3,7 @@ require 'spec_helper'
 
 describe Platform do
   before(:all) do
-    stub_rsync_methods
+    stub_symlink_methods
     Platform.delete_all
     User.delete_all
     FileUtils.rm_rf(APP_CONFIG['root_path'])

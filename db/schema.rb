@@ -304,6 +304,8 @@ ActiveRecord::Schema.define(:version => 20120515095324) do
     t.integer  "build_count",        :default => 0,        :null => false
   end
 
+  add_index "projects", ["owner_id"], :name => "index_projects_on_name_and_owner_id_and_owner_type", :unique => true
+
   create_table "register_requests", :force => true do |t|
     t.string   "name"
     t.string   "email"
@@ -367,9 +369,11 @@ ActiveRecord::Schema.define(:version => 20120515095324) do
     t.string   "encrypted_password",      :limit => 128, :default => "",   :null => false
     t.string   "password_salt",                          :default => "",   :null => false
     t.string   "reset_password_token"
+    t.datetime "reset_password_sent_at"
     t.datetime "remember_created_at"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.text     "ssh_key"
     t.string   "uname"
     t.string   "role"
     t.string   "language",                               :default => "en"

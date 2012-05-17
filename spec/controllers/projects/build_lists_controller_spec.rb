@@ -64,7 +64,7 @@ describe Projects::BuildListsController do
     end
   end
 
-  before { stub_rsync_methods }
+  before { stub_symlink_methods }
 
   context 'crud' do
     before(:each) do

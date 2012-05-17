@@ -4,7 +4,7 @@ require 'spec_helper'
 describe Projects::ProjectsController do
 
   before(:each) do
-    stub_rsync_methods
+    stub_symlink_methods
 
     @project = FactoryGirl.create(:project)
     @another_user = FactoryGirl.create(:user)

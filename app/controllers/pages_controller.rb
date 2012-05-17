@@ -8,7 +8,15 @@ class PagesController < ApplicationController
   end
 
   def tour_inside
-    render "pages/tour/tour-inside-#{params[:id]}", :layout => 'tour'
+    @entries = case params[:id]
+                      when 'projects'
+                        %w(repo builds monitoring)
+                      when 'sources'
+                        %w(source history annotation edit)
+                      when 'builds'
+                        %w(control git tracker)
+                      end
+    render "pages/tour/tour-inside", :layout => 'tour'
   end
 
   def forbidden

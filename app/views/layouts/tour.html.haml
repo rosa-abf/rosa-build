@@ -39,7 +39,7 @@
         .both
       / Page
       .tour
-        =image_tag 'tour-top.png', :alt => 'ABF'
+        =image_tag "tour-top#{I18n.locale == :en ? '-eng' : ''}.png", :alt => 'ABF'
       .both
       %article
         = yield

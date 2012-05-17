@@ -49,7 +49,7 @@ end
 
 describe Projects::SubscribesController do
   before(:each) do
-    stub_rsync_methods
+    stub_symlink_methods
 
     @project = FactoryGirl.create(:project)
     @issue = FactoryGirl.create(:issue, :project_id => @project.id)
