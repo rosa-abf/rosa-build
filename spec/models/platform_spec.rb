@@ -3,7 +3,7 @@ require 'spec_helper'
 
 describe Platform do
   before(:all) do
-    stub_rsync_methods
+    stub_symlink_methods
     Platform.delete_all
     User.delete_all
     FileUtils.rm_rf(APP_CONFIG['root_path'])
@@ -18,7 +18,7 @@ describe Platform do
   
   it { should validate_presence_of(:name)}
   it { should validate_uniqueness_of(:name).case_insensitive }
-  it { should validate_format_of(:name).with('Basic_platfrom-name-1234') }
+  it { should validate_format_of(:name).with('Basic_platform-name-1234') }
   it { should validate_format_of(:name).not_with('.!') }
   it { should validate_presence_of(:description) }
   it { should validate_presence_of(:distrib_type) }

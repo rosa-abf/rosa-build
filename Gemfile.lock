@@ -255,6 +255,8 @@ GEM
     ruby-openid (2.1.8)
     russian (0.6.0)
       i18n (>= 0.5.0)
+    rvm-capistrano (1.1.0)
+      capistrano (>= 2.0.0)
     sanitize (2.0.3)
       nokogiri (>= 1.4.4, < 1.6)
     sass (3.1.16)
@@ -358,6 +360,7 @@ DEPENDENCIES
   rspec-rails (~> 2.9.0)
   ruby-haml-js (~> 0.0.3)
   russian (~> 0.6.0)
+  rvm-capistrano
   sass-rails (~> 3.2.5)
   shotgun
   shoulda

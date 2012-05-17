@@ -23,6 +23,7 @@ class ReservedNameValidator < ActiveModel::EachValidator
     unfollow unsubscribe url user
     widget widgets wiki
     xfn xmpp
+    tour
   }
 
   def reserved_names

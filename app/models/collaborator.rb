@@ -4,7 +4,7 @@ class Collaborator
   include ActiveModel::Validations
   include ActiveModel::Serializers::JSON
   include ActiveModel::MassAssignmentSecurity
-  extend ActiveModel::Naming
+  extend  ActiveModel::Naming
 
   attr_accessor :role, :actor, :project, :relation
   attr_reader :id, :actor_id, :actor_type, :actor_name, :project_id

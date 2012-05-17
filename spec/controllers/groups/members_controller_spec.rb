@@ -3,7 +3,7 @@ require 'spec_helper'
 
 describe Groups::MembersController do
   before(:each) do
-    stub_rsync_methods
+    stub_symlink_methods
     @group = FactoryGirl.create(:group)
     @user = @group.owner
     set_session_for @user

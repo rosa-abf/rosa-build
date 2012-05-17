@@ -3,26 +3,29 @@ ru:
     'Редактирование'
   at: at
   users:
-    profile:
-      title: 'Ваш профиль'
-  build_lists:
-    index:
-      title: 'Мониторинг проектов'
-  product_build_lists:
-    index:
-      title: 'Мониторинг продуктов'
-  git:
-    commits:
+    settings:
+      profile:
+        title: 'Ваш профиль'
+  projects:
+    build_lists:
       index:
-        title: 'История коммитов'
-  issues:
-    index:
-      title: 'Трекер'
-  wiki:
-    compare:
-      title: 'Сравнение версий'
-    searching:
-      title: 'Поиск в вики'
+        title: 'Мониторинг проектов'
+    git:
+      commits:
+        index:
+          title: 'История коммитов'
+    issues:
+      index:
+        title: 'Трекер'
+    wiki:
+      compare:
+        title: 'Сравнение версий'
+      searching:
+        title: 'Поиск в вики'
+  platforms:
+    product_build_lists:
+      index:
+        title: 'Мониторинг продуктов'
   pull_requests:
     index:
       title: 'Запросы на слияние'

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120425190938) do
+ActiveRecord::Schema.define(:version => 20120512102707) do
 
   create_table "activity_feeds", :force => true do |t|
     t.integer  "user_id",    :null => false
@@ -20,6 +20,29 @@ ActiveRecord::Schema.define(:version => 20120425190938) do
     t.datetime "created_at", :null => false
     t.datetime "updated_at", :null => false
   end
+
+  create_table "advisories", :force => true do |t|
+    t.string   "advisory_id"
+    t.integer  "project_id"
+    t.text     "description", :default => ""
+    t.text     "references",  :default => ""
+    t.text     "update_type", :default => ""
+    t.datetime "created_at",                  :null => false
+    t.datetime "updated_at",                  :null => false
+  end
+
+  add_index "advisories", ["advisory_id"], :name => "index_advisories_on_advisory_id", :unique => true
+  add_index "advisories", ["project_id"], :name => "index_advisories_on_project_id"
+  add_index "advisories", ["update_type"], :name => "index_advisories_on_update_type"
+
+  create_table "advisories_platforms", :id => false, :force => true do |t|
+    t.integer "advisory_id"
+    t.integer "platform_id"
+  end
+
+  add_index "advisories_platforms", ["advisory_id"], :name => "index_advisories_platforms_on_advisory_id"
+  add_index "advisories_platforms", ["advisory_id", "platform_id"], :name => "advisory_platform_index", :unique => true
+  add_index "advisories_platforms", ["platform_id"], :name => "index_advisories_platforms_on_platform_id"
 
   create_table "arches", :force => true do |t|
     t.string   "name",       :null => false
@@ -52,6 +75,23 @@ ActiveRecord::Schema.define(:version => 20120425190938) do
 
   add_index "build_list_items", ["build_list_id"], :name => "index_build_list_items_on_build_list_id"
 
+  create_table "build_list_packages", :force => true do |t|
+    t.integer  "build_list_id"
+    t.integer  "project_id"
+    t.integer  "platform_id"
+    t.string   "fullname"
+    t.string   "name"
+    t.string   "version"
+    t.string   "release"
+    t.string   "package_type"
+    t.datetime "created_at",    :null => false
+    t.datetime "updated_at",    :null => false
+  end
+
+  add_index "build_list_packages", ["build_list_id"], :name => "index_build_list_packages_on_build_list_id"
+  add_index "build_list_packages", ["platform_id"], :name => "index_build_list_packages_on_platform_id"
+  add_index "build_list_packages", ["project_id"], :name => "index_build_list_packages_on_project_id"
+
   create_table "build_lists", :force => true do |t|
     t.integer  "bs_id"
     t.string   "container_path"
@@ -60,25 +100,27 @@ ActiveRecord::Schema.define(:version => 20120425190938) do
     t.integer  "project_id"
     t.integer  "arch_id"
     t.datetime "notified_at"
-    t.datetime "created_at",                          :null => false
-    t.datetime "updated_at",                          :null => false
-    t.boolean  "is_circle",        :default => false
+    t.datetime "created_at",                               :null => false
+    t.datetime "updated_at",                               :null => false
+    t.boolean  "is_circle",             :default => false
     t.text     "additional_repos"
     t.string   "name"
-    t.boolean  "build_requires",   :default => false
+    t.boolean  "build_requires",        :default => false
     t.string   "update_type"
-    t.integer  "bpl_id"
-    t.integer  "pl_id"
+    t.integer  "build_for_platform_id"
+    t.integer  "save_to_platform_id"
     t.text     "include_repos"
     t.integer  "user_id"
-    t.boolean  "auto_publish",     :default => true
+    t.boolean  "auto_publish",          :default => true
     t.string   "package_version"
     t.string   "commit_hash"
-    t.integer  "priority",         :default => 0,     :null => false
+    t.integer  "priority",              :default => 0,     :null => false
     t.datetime "started_at"
     t.integer  "duration"
+    t.integer  "advisory_id"
   end
 
+  add_index "build_lists", ["advisory_id"], :name => "index_build_lists_on_advisory_id"
   add_index "build_lists", ["arch_id"], :name => "index_build_lists_on_arch_id"
   add_index "build_lists", ["bs_id"], :name => "index_build_lists_on_bs_id", :unique => true
   add_index "build_lists", ["project_id"], :name => "index_build_lists_on_project_id"
@@ -331,8 +373,8 @@ ActiveRecord::Schema.define(:version => 20120425190938) do
 
   create_table "users", :force => true do |t|
     t.string   "name"
-    t.string   "email",                                  :default => "",   :null => false
-    t.string   "encrypted_password",      :limit => 128, :default => "",   :null => false
+    t.string   "email",                   :default => "",   :null => false
+    t.string   "encrypted_password",      :default => "",   :null => false
     t.string   "reset_password_token"
     t.datetime "reset_password_sent_at"
     t.datetime "remember_created_at"
@@ -341,9 +383,11 @@ ActiveRecord::Schema.define(:version => 20120425190938) do
     t.text     "ssh_key"
     t.string   "uname"
     t.string   "role"
-    t.string   "language",                               :default => "en"
-    t.datetime "reset_password_sent_at"
-    t.integer  "own_projects_count",                     :default => 0,    :null => false
+    t.string   "language",                :default => "en"
+    t.integer  "own_projects_count",      :default => 0,    :null => false
+    t.string   "confirmation_token"
+    t.datetime "confirmed_at"
+    t.datetime "confirmation_sent_at"
     t.text     "professional_experience"
     t.string   "site"
     t.string   "company"
@@ -356,6 +400,7 @@ ActiveRecord::Schema.define(:version => 20120425190938) do
     t.string   "unlock_token"
     t.datetime "locked_at"
     t.string   "authentication_token"
+    t.integer  "build_priority",          :default => 50
   end
 
   add_index "users", ["authentication_token"], :name => "index_users_on_authentication_token"

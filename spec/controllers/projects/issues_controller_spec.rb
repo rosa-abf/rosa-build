@@ -73,7 +73,7 @@ end
 
 describe Projects::IssuesController do
   before(:each) do
-    stub_rsync_methods
+    stub_symlink_methods
 
     @project = FactoryGirl.create(:project)
     @issue_user = FactoryGirl.create(:user)

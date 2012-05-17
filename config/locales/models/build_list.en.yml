@@ -18,10 +18,8 @@ en:
         additional_repos: Additional repositories
         include_repos: Included repositories
         created_at: Created on
-        pl: Repository for package storage
-        pl_id: Repository for package storage
-        bpl: Platform
-        bpl_id: Platform
+        save_to_platform: Repository for package storage
+        build_for_platform: Platform
         update_type: Update type
         build_requires: Build with all the required packages
         auto_publish: Automated publising
@@ -38,6 +36,12 @@ en:
         version: Version
         build_list: Build list
 
+      build_list/package:
+        name: Name
+        fullname: Fullname
+        release: Release
+        version: Version
+
   layout:
     build_lists:
       filter_header: Filter
@@ -50,6 +54,7 @@ en:
       project_name_search: Search by project name
       bs_id_not_set: Id has not been configured yet
       items_header: Build items
+      packages_header: Container data
       no_items_data: No data
       show: Show
       cancel_success: 'Build canceled'
@@ -62,8 +67,12 @@ en:
       action: Action
       new_header: New build
       main_data: Main data
+
       human_current_duration: Build currently takes %{hours} h. %{minutes} min.
       human_duration: Builded in %{hours} h. %{minutes} min.
+
+      attached_advisory: Attached advisory
+      create_advisory: Create new advisory
 
       ownership:
         header: Build list ownership
@@ -107,8 +116,8 @@ en:
 
   flash:
     build_list:
-      saved: Build list for project version '%{project_version}', platform '%{bpl}' and architecture '%{arch}' has been created successfully
-      save_error: Build list for project version '%{project_version}', platform '%{bpl}' and architecture '%{arch}' could not been created
+      saved: Build list for project version '%{project_version}', platform '%{build_for_platform}' and architecture '%{arch}' has been created successfully
+      save_error: Build list for project version '%{project_version}', platform '%{build_for_platform}' and architecture '%{arch}' could not been created
       no_project_version_selected: Select any version of the project
       no_project_version_found: Project version '%{project_version}' not found
       no_arch_or_platform_selected: At least one of architecture of platform must selected

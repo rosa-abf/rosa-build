@@ -71,6 +71,7 @@ group :development do
   gem 'shotgun'
   # deploy
   gem 'capistrano', :require => false
+  gem 'rvm-capistrano', :require => false
   gem 'cape', :require => false
   gem 'capistrano_colors', :require => false
 end

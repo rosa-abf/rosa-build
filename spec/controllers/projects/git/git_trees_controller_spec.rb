@@ -8,24 +8,24 @@ describe Projects::Git::TreesController do
   end
 
   before(:each) do
-    stub_rsync_methods
+    stub_symlink_methods
 
     @project = FactoryGirl.create(:project)
     @another_user = FactoryGirl.create(:user)
-    @params = {:project_id => @project.id, :format => 'tar'}
+    @params = {:owner_name => @project.owner.uname, :project_name => @project.name}
   end
 
   context 'for guest' do
     if APP_CONFIG['anonymous_access']
       it 'should be able to perform archive action with anonymous acccess' do
         fill_project
-        get :archive, @params
+        get :archive, @params.merge(:format => 'tar')
         response.should be_success
       end
     else
       it 'should not be able to perform archive action without anonymous acccess' do
         fill_project
-        get :archive, @params
+        get :archive, @params.merge(:format => 'tar')
         response.code.should == '401'
       end
     end
@@ -35,7 +35,7 @@ describe Projects::Git::TreesController do
     it 'should not be able to archive empty project' do
       @user = FactoryGirl.create(:user)
       set_session_for(@user)
-      expect { get :archive, @params }.to raise_error(ActiveRecord::RecordNotFound)
+      expect { get :archive, @params.merge(:format => 'tar') }.to raise_error(ActiveRecord::RecordNotFound)
     end
 
     it 'should not be able to injection code with format' do
@@ -56,7 +56,7 @@ describe Projects::Git::TreesController do
       @user = FactoryGirl.create(:user)
       set_session_for(@user)
       fill_project
-      get :archive, @params
+      get :archive, @params.merge(:format => 'tar')
       response.should be_success
     end
   end

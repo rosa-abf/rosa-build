@@ -64,7 +64,7 @@ describe Projects::BuildListsController do
     end
   end
 
-  before { stub_rsync_methods }
+  before { stub_symlink_methods }
 
   context 'crud' do
     before(:each) do
@@ -72,12 +72,12 @@ describe Projects::BuildListsController do
       @create_params = {
         :build_list => { 
           :project_version => 'latest_master',
-          :pl_id => platform.id,
+          :save_to_platform_id => platform.id,
           :update_type => 'security',
           :include_repos => [platform.repositories.first.id]
         },
         :arches => [FactoryGirl.create(:arch).id],
-        :bpls => [platform.id]
+        :build_for_platforms => [platform.id]
       }
       any_instance_of(Project, :versions => ['v1.0', 'v2.0'])
     end
@@ -284,7 +284,7 @@ describe Projects::BuildListsController do
       @build_list2 = FactoryGirl.create(:build_list_core)
       @build_list3 = FactoryGirl.create(:build_list_core)
       @build_list4 = FactoryGirl.create(:build_list_core, :created_at => (Time.now - 1.day),
-                             :project => @build_list3.project, :pl => @build_list3.pl,
+                             :project => @build_list3.project, :save_to_platform => @build_list3.save_to_platform,
                              :arch => @build_list3.arch)
     end
 
@@ -344,10 +344,28 @@ describe Projects::BuildListsController do
     end
 
     describe 'status_build' do
-      before { @item = build_list.items.create(:name => build_list.project.name, :version => build_list.project_version, :level => 0) }
+      before do
+        @item = build_list.items.create(:name => build_list.project.name, :version => build_list.project_version, :level => 0)
+        repo = build_list.save_to_platform.repositories.first
+        repo.projects << build_list.project
+        @project2 = FactoryGirl.create(:project)
+        repo.projects << @project2
+      end
 
       def do_get
-        get :status_build, :id => build_list.bs_id, :package_name => build_list.project.name, :status => BuildServer::SUCCESS, :container_path => '/path/to'
+        get :status_build, :id => build_list.bs_id, :package_name => build_list.project.name, :status => BuildServer::SUCCESS, :container_path => '/path/to',
+            :pkg_info => ActiveSupport::JSON.encode({'srpm' =>  {'fullname' => 'srpm_filename.srpm',
+                                                                 'name' => build_list.project.name,
+                                                                 'version' => 'version1',
+                                                                 'release' => 'release1'},
+                                                      'rpm' => [{'fullname' => 'filename1.rpm',
+                                                                 'name' => build_list.project.name,
+                                                                 'version' => 'version2',
+                                                                 'release' => 'release2'},
+                                                                {'fullname' => 'filename2.rpm',
+                                                                 'name' => @project2.name,
+                                                                 'version' => 'version2',
+                                                                 'release' => 'release2'}]})
         build_list.reload
         @item.reload
       end
@@ -356,6 +374,19 @@ describe Projects::BuildListsController do
       it { lambda{ do_get }.should change(@item, :status) }
       it { lambda{ do_get }.should change(build_list, :container_path) }
       it { lambda{ do_get }.should change(build_list, :updated_at) }
+      it('should create packages for build list') { lambda{ do_get }.should change(build_list.packages, :count).to(3) }
+      it 'should create correct packages for build list' do
+        do_get
+        package = build_list.packages.order('created_at ASC').first
+        package.fullname.should == 'srpm_filename.srpm'
+        package.name.should == build_list.project.name
+        package.version.should == 'version1'
+        package.release.should == 'release1'
+        package.package_type == 'source'
+        package.build_list.should == build_list
+        package.platform.should == build_list.save_to_platform
+        package.project.should == build_list.project
+      end
     end
 
     describe 'pre_build' do

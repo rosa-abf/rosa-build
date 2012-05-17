@@ -3,7 +3,7 @@ require 'spec_helper'
 
 describe Product do
   before(:all) do
-    stub_rsync_methods
+    stub_symlink_methods
     Platform.delete_all
     User.delete_all
     Product.delete_all

@@ -3,7 +3,7 @@ require 'spec_helper'
 
 describe Users::ProfileController do
   before(:each) do
-    stub_rsync_methods
+    stub_symlink_methods
 
     @simple_user = FactoryGirl.create(:user)
     @other_user = FactoryGirl.create(:user)
@@ -27,7 +27,7 @@ describe Users::ProfileController do
     end
 
     it 'should be able to view profile' do
-      get :show, :owner_name => @other_user.uname
+      get :show, :uname => @other_user.uname
       response.code.should eq('200')
     end
 

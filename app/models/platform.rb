@@ -13,6 +13,10 @@ class Platform < ActiveRecord::Base
   has_many :actors, :as => :target, :class_name => 'Relation', :dependent => :destroy
   has_many :members, :through => :actors, :source => :actor, :source_type => 'User'
 
+  has_and_belongs_to_many :advisories
+
+  has_many :packages, :class_name => "BuildList::Package", :dependent => :destroy
+
   validates :description, :presence => true
   validates :visibility, :presence => true, :inclusion => {:in => VISIBILITIES}
   validates :name, :uniqueness => {:case_sensitive => false}, :presence => true, :format => { :with => /^[a-zA-Z0-9_\-]+$/ }
@@ -21,11 +25,12 @@ class Platform < ActiveRecord::Base
   before_create :create_directory, :if => lambda {Thread.current[:skip]} # TODO remove this when core will be ready
   before_create :xml_rpc_create, :unless => lambda {Thread.current[:skip]}
   before_destroy :xml_rpc_destroy
-  
+
   after_update :freeze_platform
-  
-  after_create lambda { mount_directory_for_rsync unless hidden? }
-  after_destroy lambda { umount_directory_for_rsync unless hidden? }
+
+  after_create lambda { symlink_directory unless hidden? }
+  after_destroy lambda { remove_symlink_directory unless hidden? }
+
   after_update :update_owner_relation
 
   scope :search_order, order("CHAR_LENGTH(name) ASC")
@@ -42,7 +47,7 @@ class Platform < ActiveRecord::Base
   include Modules::Models::Owner
 
   def urpmi_list(host, pair = nil)
-    blank_pair = {:login => 'login', :pass => 'password'} 
+    blank_pair = {:login => 'login', :pass => 'password'}
     pair = blank_pair if pair.blank?
     urpmi_commands = ActiveSupport::OrderedHash.new
 
@@ -63,7 +68,7 @@ class Platform < ActiveRecord::Base
     build_path(name)
   end
 
-  def mount_path
+  def symlink_path
     Rails.root.join("public", "downloads", name)
   end
 
@@ -115,14 +120,14 @@ class Platform < ActiveRecord::Base
       with_skip {c.save} and c.clone_relations(self) and c.delay.xml_rpc_clone
     end
   end
-  
+
   def change_visibility
     if !self.hidden?
       self.update_attribute(:visibility, 'hidden')
-      umount_directory_for_rsync
+      remove_symlink_directory
     else
       self.update_attribute(:visibility, 'open')
-      mount_directory_for_rsync
+      symlink_directory
     end
   end
 
@@ -130,19 +135,17 @@ class Platform < ActiveRecord::Base
     system("sudo mkdir -p -m 0777 #{path}")
   end
 
-  def mount_directory_for_rsync
+  def symlink_directory
     # umount_directory_for_rsync # TODO ignore errors
-    system("sudo mkdir -p -m 0777 #{mount_path}")
-    system("sudo mount --bind #{path} #{mount_path}")
+    system("ln -s #{path} #{symlink_path}")
     Arch.all.each do |arch|
       str = "country=Russian Federation,city=Moscow,latitude=52.18,longitude=48.88,bw=1GB,version=2011,arch=#{arch.name},type=distrib,url=#{public_downloads_url}\n"
-      File.open(File.join(mount_path, "#{name}.#{arch.name}.list"), 'w') {|f| f.write(str) }
+      File.open(File.join(symlink_path, "#{name}.#{arch.name}.list"), 'w') {|f| f.write(str) }
     end
   end
 
-  def umount_directory_for_rsync
-    system("sudo umount #{mount_path}")
-    system("sudo rm -Rf #{mount_path}")
+  def remove_symlink_directory
+    system("rm -Rf #{symlink_path}")
   end
 
   def update_owner_relation
@@ -210,6 +213,6 @@ class Platform < ActiveRecord::Base
       if released_changed? && released == true
         result = BuildServer.freeze(name) 
         raise "Failed freeze platform #{name} with code #{result}" if result != BuildServer::SUCCESS
-      end  
+      end
     end
 end

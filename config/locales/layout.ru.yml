@@ -4,6 +4,8 @@ ru:
     turned_on: включены
     turned_off: выключены
 
+    list: Список
+
     year: год
 
     enter_commit_message: Сопровождающее сообщение

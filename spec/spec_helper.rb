@@ -33,9 +33,9 @@ def set_session_for(user=nil)
   sign_in current_user
 end
 
-def stub_rsync_methods
-  any_instance_of(Platform, :mount_directory_for_rsync => true)
-  any_instance_of(Platform, :umount_directory_for_rsync => true)
+def stub_symlink_methods
+  any_instance_of(Platform, :symlink_directory => true)
+  any_instance_of(Platform, :remove_symlink_directory => true)
 end
 
 def test_git_commit(project)

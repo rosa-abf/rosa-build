@@ -3,26 +3,29 @@ en:
     'Editing'
   at: at
   users:
-    profile:
-      title: 'Your Profile'
-  build_lists:
-    index:
-      title: 'Projects Monitoring'
-  product_build_lists:
-    index:
-      title: 'Products Monitoring'
-  git:
-    commits:
+    settings:
+      profile:
+        title: 'Your Profile'
+  projects:
+    build_lists:
       index:
-        title: 'Commit History'
-  issues:
-    index:
-      title: 'Tracker'
-  wiki:
-    compare:
-      title: 'Compare Revisions'
-    searching:
-      title: 'Search in Wiki'
+        title: 'Projects Monitoring'
+    git:
+      commits:
+        index:
+          title: 'Commit History'
+    issues:
+      index:
+        title: 'Tracker'
+    wiki:
+      compare:
+        title: 'Compare Revisions'
+      searching:
+        title: 'Search in Wiki'
+  platforms:
+    product_build_lists:
+      index:
+        title: 'Products Monitoring'
   pull_requests:
     index:
       title: 'Pull Requests'

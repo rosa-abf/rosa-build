@@ -10,3 +10,7 @@
 every 1.day, :at => '4:00 am' do
   rake "import:sync:all", :output => 'log/sync.log'
 end
+
+every 1.day, :at => '3:50 am' do
+  rake "buildlist:clear:outdated", :output => 'log/build_list_clear.log'
+end

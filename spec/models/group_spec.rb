@@ -4,7 +4,7 @@ require "cancan/matchers"
 
 describe Group do
   before(:each) do
-    stub_rsync_methods
+    stub_symlink_methods
     @group = FactoryGirl.create(:group)
     @ability = Ability.new(User.new)
   end

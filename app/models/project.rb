@@ -2,6 +2,7 @@
 class Project < ActiveRecord::Base
   VISIBILITIES = ['open', 'hidden']
   MAX_OWN_PROJECTS = 32000
+  NAME_REGEXP = /[a-zA-Z0-9_\-\+\.]+/
 
   belongs_to :owner, :polymorphic => true, :counter_cache => :own_projects_count
 
@@ -18,7 +19,10 @@ class Project < ActiveRecord::Base
   has_many :collaborators, :through => :relations, :source => :actor, :source_type => 'User'
   has_many :groups,        :through => :relations, :source => :actor, :source_type => 'Group'
 
-  validates :name, :uniqueness => {:scope => [:owner_id, :owner_type], :case_sensitive => false}, :presence => true, :format => {:with => /^[a-zA-Z0-9_\-\+\.]+$/}
+  has_many :advisories # should be without :dependent => :destroy
+  has_many :packages, :class_name => "BuildList::Package", :dependent => :destroy
+
+  validates :name, :uniqueness => {:scope => [:owner_id, :owner_type], :case_sensitive => false}, :presence => true, :format => {:with => /^#{NAME_REGEXP}$/, :message => I18n.t("activerecord.errors.project.uname")}
   validates :owner, :presence => true
   validate { errors.add(:base, :can_have_less_or_equal, :count => MAX_OWN_PROJECTS) if owner.projects.size >= MAX_OWN_PROJECTS }
 
@@ -77,8 +81,8 @@ class Project < ActiveRecord::Base
 
     arch = Arch.find_by_name(arch) if arch.acts_like?(:string)
     build_lists.create do |bl|
-      bl.pl = platform
-      bl.bpl = platform
+      bl.save_to_platform = platform
+      bl.build_to_platform = platform
       bl.update_type = 'newpackage'
       bl.arch = arch
       bl.project_version = "latest_#{platform.name}"

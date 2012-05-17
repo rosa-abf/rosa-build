@@ -69,7 +69,7 @@ end
 
 describe Groups::ProfileController do
   before(:each) do
-    stub_rsync_methods
+    stub_symlink_methods
     @group = FactoryGirl.create(:group)
     @another_user  = FactoryGirl.create(:user)
     @create_params = {:group => {:description => 'grp1', :uname => 'un_grp1'}}

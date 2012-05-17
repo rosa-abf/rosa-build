@@ -18,10 +18,8 @@ ru:
         additional_repos: Дополнительные репозитории
         include_repos: Подключаемые репозитории
         created_at: Создан
-        pl: Репозиторий для сохранения пакетов
-        pl_id: Репозиторий для сохранения пакетов
-        bpl: Платформа
-        bpl_id: Платформа
+        save_to_platform: Репозиторий для сохранения пакетов
+        build_for_platform: Платформа
         update_type: Критичность обновления
         build_requires: Пересборка с зависимостями
         auto_publish: Автоматическая публикация
@@ -37,6 +35,12 @@ ru:
         version: Версия
         build_list: Сборочный лист
 
+      build_list/package:
+        name: Название
+        fullname: Полное имя
+        release: Релиз
+        version: Версия
+
   layout:
     build_lists:
       filter_header: Фильтр
@@ -49,6 +53,7 @@ ru:
       project_name_search: Поиск по названию проекта
       bs_id_not_set: Id еще не присвоен
       items_header: Элементы сборки
+      packages_header: Данные о контейнере
       no_items_data: Данных нет
       show: Просмотр
       cancel_success: 'Сборка отменена.'
@@ -64,6 +69,9 @@ ru:
 
       human_current_duration: Сборка длится уже %{hours} ч. %{minutes} мин.
       human_duration: Собрано за %{hours} ч. %{minutes} мин.
+
+      attached_advisory: Связанный бюллетень
+      create_advisory: Создать новый бюллетень
 
       ownership:
         header: Принадлежность заданий
@@ -107,8 +115,8 @@ ru:
 
   flash:
     build_list:
-      saved: Билд лист для версии '%{project_version}', платформы '%{bpl}' и архитектуры '%{arch}' создан успешно
-      save_error: Не удалось сохранить билд лист для версии '%{project_version}', платформы '%{bpl}' и архитектуры '%{arch}'
+      saved: Билд лист для версии '%{project_version}', платформы '%{build_for_platform}' и архитектуры '%{arch}' создан успешно
+      save_error: Не удалось сохранить билд лист для версии '%{project_version}', платформы '%{build_for_platform}' и архитектуры '%{arch}'
       no_project_version_selected: Выберите какую-нибудь версию
       no_project_version_found: Выбранная версия '%{project_version}' не найдена
       no_arch_or_platform_selected: Выберите хотя бы одну архитектуру и платформу

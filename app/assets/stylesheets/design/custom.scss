@@ -456,6 +456,18 @@ table.tablesorter.platforms .th2 {
     width: 280px;
 }
 
+table.tablesorter.advisories .th1 {
+    width: 120px;
+}
+
+table.tablesorter.advisories .th2 {
+    width: 250px;
+}
+
+table.tablesorter.advisories .th3 {
+    width: auto;
+}
+
 table.tablesorter tr td.buttons {
     text-align: center;
 }
@@ -922,6 +934,16 @@ div#git_help_data p {
     background: none repeat scroll 0 0;
 }
 
-.font14 {
-  font-size: 14px;
+.rightlist p {
+    padding-bottom: 1em;
+}
+
+.leftlist span.hint {
+    padding-top: 1em;
+    display: block;
+    font-size: 0.9em;
+}
+
+.atom_icon {
+  vertical-align: top;
 }

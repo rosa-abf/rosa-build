@@ -21,7 +21,8 @@ class ApplicationController < ActionController::Base
   protected
 
   def set_locale
-    I18n.locale = check_locale( get_user_locale || request.env['HTTP_ACCEPT_LANGUAGE'] )
+    I18n.locale = check_locale( get_user_locale ||
+      (request.env['HTTP_ACCEPT_LANGUAGE'] ? request.env['HTTP_ACCEPT_LANGUAGE'][0,2].downcase : nil ))
   end
 
   def get_user_locale
