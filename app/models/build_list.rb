@@ -190,7 +190,7 @@ class BuildList < ActiveRecord::Base
 
   def build_package(pkg_hash, package_type)
     packages.create(pkg_hash) do |p|
-      p.project = Project.joins(:repositories => :platform).where('platforms.id = ?', save_to_platform.id).find_by_name!(pkg_hash['name'])
+      p.project = project # Project.joins(:repositories => :platform).where('platforms.id = ?', save_to_platform.id).find_by_name!(pkg_hash['name'])
       p.platform = save_to_platform
       p.package_type = package_type
       yield p
