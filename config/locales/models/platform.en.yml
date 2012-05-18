@@ -43,6 +43,9 @@ en:
       project: Project
       arch: Architecture
       build_task: Build Task
+      mass_rebuild: Mass Rebuild
+      arch: Architecture
+      build_task: Build Task
 
   flash:
     platform:

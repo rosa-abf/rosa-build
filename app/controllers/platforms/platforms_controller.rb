@@ -10,7 +10,9 @@ class Platforms::PlatformsController < Platforms::BaseController
     @build_lists = BuildList.for_platform(@platform)
 
     if request.post?
-      @platform.delay.build_all(
+      mass_build = @platform.mass_builds.new
+      #@platform.delay.build_all(
+      mass_build.build_all(
         :user => current_user,
         :repositories => params[:repositories],
         :arches => params[:arches],

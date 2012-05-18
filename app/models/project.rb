@@ -55,6 +55,10 @@ class Project < ActiveRecord::Base
 
   include Modules::Models::Owner
 
+  def is_rpm
+    is_package
+  end
+
   def to_param
     name
   end
@@ -70,7 +74,7 @@ class Project < ActiveRecord::Base
     find_by_owner_and_name(owner_name, project_name) or raise ActiveRecord::RecordNotFound
   end
 
-  def build_for(platform, user, arch = 'i586', auto_publish = false, priority = 0)
+  def build_for(platform, user, arch = 'i586', auto_publish = false, mass_build_id = nil, priority = 0)
     # Select main and project platform repository(contrib, non-free and etc)
     # If main does not exist, will connect only project platform repository
     # If project platform repository is main, only main will be connect
@@ -80,7 +84,7 @@ class Project < ActiveRecord::Base
     arch = Arch.find_by_name(arch) if arch.acts_like?(:string)
     build_lists.create do |bl|
       bl.save_to_platform = platform
-      bl.build_to_platform = platform
+      bl.build_for_platform = platform
       bl.update_type = 'newpackage'
       bl.arch = arch
       bl.project_version = "latest_#{platform.name}"
@@ -89,6 +93,7 @@ class Project < ActiveRecord::Base
       bl.auto_publish = true # already  set as db default
       bl.include_repos = build_ids
       bl.priority = priority
+      bl.mass_build_id = mass_build_id
     end
   end
 
