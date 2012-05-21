@@ -20,7 +20,7 @@
       .table
         %h3= t("activerecord.attributes.build_list.preferences")
         .lefter
-          = check_box_tag :auto_publish, true, params[:auto_publish].present?, :id => 'auto_publish'
+          = check_box_tag :auto_publish, true, params[:auto_publish].present? ? params[:auto_publish].present? : true, :id => 'auto_publish'
           = label_tag :auto_publish
         .both
       .both

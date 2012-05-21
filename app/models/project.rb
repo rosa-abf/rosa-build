@@ -55,10 +55,6 @@ class Project < ActiveRecord::Base
 
   include Modules::Models::Owner
 
-  def is_rpm
-    is_package
-  end
-
   def to_param
     name
   end
