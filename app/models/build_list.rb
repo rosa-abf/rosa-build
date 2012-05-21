@@ -6,6 +6,7 @@ class BuildList < ActiveRecord::Base
   belongs_to :build_for_platform, :class_name => 'Platform'
   belongs_to :user
   belongs_to :advisory
+  belongs_to :mass_build
   has_many :items, :class_name => "BuildList::Item", :dependent => :destroy
   has_many :packages, :class_name => "BuildList::Package", :dependent => :destroy
 
@@ -73,6 +74,7 @@ class BuildList < ActiveRecord::Base
   scope :for_status, lambda {|status| where(:status => status) }
   scope :for_user, lambda { |user| where(:user_id => user.id)  }
   scope :for_platform, lambda { |platform| where(:build_for_platform_id => platform.id)  }
+  scope :by_mass_build, lambda { |mass_build| where(:mass_build_id => mass_build.id)  }
   scope :scoped_to_arch, lambda {|arch| where(:arch_id => arch) }
   scope :scoped_to_project_version, lambda {|project_version| where(:project_version => project_version) }
   scope :scoped_to_is_circle, lambda {|is_circle| where(:is_circle => is_circle) }

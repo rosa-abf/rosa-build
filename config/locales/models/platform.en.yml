@@ -42,10 +42,9 @@ en:
       members: Members
       project: Project
       arch: Architecture
+      mass_build: Mass Build
       build_task: Build Task
-      mass_rebuild: Mass Rebuild
-      arch: Architecture
-      build_task: Build Task
+      refresh_button: Refresh
 
   flash:
     platform:

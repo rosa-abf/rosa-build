@@ -3,6 +3,8 @@ class MassBuild < ActiveRecord::Base
 
   before_save :set_name
 
+  scope :by_platform, lambda { |platform| where(:platform_id => platform.id) }
+
   def build_all(opts={})
     platform.build_all opts.merge({:mass_build_id => self.id})
   end
@@ -10,6 +12,6 @@ class MassBuild < ActiveRecord::Base
   protected
 
   def set_name
-    self.name = "#{created_at.to_date.to_s}-#{platform.name}"
+    self.name = "#{Date.today.to_s}-#{platform.name}"
   end
 end

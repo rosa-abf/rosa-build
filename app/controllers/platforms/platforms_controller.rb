@@ -8,11 +8,11 @@ class Platforms::PlatformsController < Platforms::BaseController
 
   def build_all
     @build_lists = BuildList.for_platform(@platform)
+    @build_lists = @build_lists.by_mass_build(MassBuild.find(params[:mass_build_id])) unless params[:mass_build_id].blank?
 
     if request.post?
-      mass_build = @platform.mass_builds.new
-      #@platform.delay.build_all(
-      mass_build.build_all(
+      mass_build = MassBuild.create(:platform => @platform)
+      mass_build.delay.build_all(
         :user => current_user,
         :repositories => params[:repositories],
         :arches => params[:arches],

@@ -173,7 +173,7 @@ class Platform < ActiveRecord::Base
             begin
               p.build_for(self, user, arch, auto_publish, mass_build_id)
             rescue RuntimeError, Exception
-              p.build_for(self, user, arch, auto_publish, mass_build_id)
+              p.delay.build_for(self, user, arch, auto_publish, mass_build_id)
             end
           end
         end
