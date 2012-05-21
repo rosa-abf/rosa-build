@@ -5,7 +5,8 @@ class MassBuild < ActiveRecord::Base
 
   def build_all(opts={})
     set_name opts[:repositories]
-    platform.build_all opts.merge({:mass_build_id => self.id})
+    opts.merge!({:mass_build_id => self.id})
+    platform.build_all opts
   end
 
   private

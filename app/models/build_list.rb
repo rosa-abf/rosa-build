@@ -18,7 +18,7 @@ class BuildList < ActiveRecord::Base
   validates :update_type, :inclusion => UPDATE_TYPES,
             :unless => Proc.new { |b| b.save_to_platform.released }
   validates :update_type, :inclusion => RELEASE_UPDATE_TYPES,
-            :if => Proc.new { |b| b.save_to_platform.released }
+            :if => Proc.new { |b| b.save_to_platform.released && b.mass_build_id.nil?}
   validate lambda {  
     errors.add(:build_for_platform, I18n.t('flash.build_list.wrong_platform')) if save_to_platform.platform_type == 'main' && save_to_platform_id != build_for_platform_id
   }
