@@ -2,6 +2,10 @@
 class Projects::ProjectsController < Projects::BaseController
   before_filter :authenticate_user!
   load_and_authorize_resource
+  # TODO WTF ? fork, update, sections not authorize
+  before_filter do |controller|
+    authorize! params[:action].to_sym, @project if params[:action] != 'index'
+  end
 
   def index
     @projects = Project.accessible_by(current_ability, :membered)
@@ -57,7 +61,6 @@ class Projects::ProjectsController < Projects::BaseController
   end
 
   def fork
-    authorize! :fork, @project # TODO WTF ?
     owner = (Group.find params[:group] if params[:group].present?) || current_user
     authorize! :update, owner if owner.class == Group
     if forked = @project.fork(owner) and forked.valid?

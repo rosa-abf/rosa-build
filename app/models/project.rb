@@ -29,7 +29,7 @@ class Project < ActiveRecord::Base
   validates_attachment_size :srpm, :less_than => 500.megabytes
   validates_attachment_content_type :srpm, :content_type => ['application/octet-stream', "application/x-rpm", "application/x-redhat-package-manager"], :message => I18n.t('layout.invalid_content_type')
 
-  attr_accessible :name, :description, :visibility, :srpm, :is_rpm, :default_branch, :has_issues, :has_wiki
+  attr_accessible :name, :description, :visibility, :srpm, :is_package, :default_branch, :has_issues, :has_wiki
   attr_readonly :name
 
   scope :recent, order("name ASC")
