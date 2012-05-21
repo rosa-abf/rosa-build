@@ -10,7 +10,6 @@ class Projects::PullRequestsController < Projects::BaseController
 
   def new
     @pull = PullRequest.default_base_project(@project).pull_requests.new
-    FileUtils.rm_rf @pull.path
     #@pull.build_issue
     @pull.issue = @project.issues.new
     @pull.head_project = @project

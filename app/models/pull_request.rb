@@ -8,7 +8,10 @@ class PullRequest < ActiveRecord::Base
   delegate :user, :title, :body, :serial_id, :assignee, :state, :to => :issue, :allow_nil => true
   accepts_nested_attributes_for :issue
   #attr_accessible #FIXME disable for development
-  scope :needed_checking, where(:state => ['open', 'blocked', 'ready'])
+  #validate :uniq_merge
+  before_create :clean_dir
+
+  scope :needed_checking, includes(:issue).where(:issues => {:state => ['open', 'blocked', 'ready', 'already']})
 
   state_machine :initial => :open do
     #after_transition [:ready, :blocked] => [:merged, :closed] do |pull, transition|
@@ -79,19 +82,6 @@ class PullRequest < ActiveRecord::Base
     project.is_root? ? project : project.root
   end
 
-  def clean #FIXME move to protected
-    Dir.chdir(path) do
-      base_project.branches.each {|branch| system 'git', 'checkout', branch.name}
-      system 'git', 'checkout', base_ref
-
-      base_project.branches.each do |branch|
-        system 'git', 'branch', '-D', branch.name unless [base_ref, head_branch].include? branch.name
-      end
-      base_project.tags.each do |tag|
-        system 'git', 'tag', '-d', tag.name unless [base_ref, head_branch].include? tag.name
-      end
-    end
-  end
 
   def path
     filename = [id, base_ref, head_project.owner.uname, head_project.name, head_ref].compact.join('-')
@@ -142,5 +132,29 @@ class PullRequest < ActiveRecord::Base
       end
     end
     # TODO catch errors
+  end
+
+  def clean
+    Dir.chdir(path) do
+      base_project.branches.each {|branch| system 'git', 'checkout', branch.name}
+      system 'git', 'checkout', base_ref
+
+      base_project.branches.each do |branch|
+        system 'git', 'branch', '-D', branch.name unless [base_ref, head_branch].include? branch.name
+      end
+      base_project.tags.each do |tag|
+        system 'git', 'tag', '-d', tag.name unless [base_ref, head_branch].include? tag.name
+      end
+    end
+  end
+
+  def uniq_merge
+    if base_project.pull_requests.needed_checking.where('pull_requests.id != ?', id).count >= 1
+      errors.add(:head_ref, t('projects.pull_requests.duplicate', :head_ref => head_ref))
+    end
+  end
+
+  def clean_dir
+    FileUtils.rm_rf path
   end
 end

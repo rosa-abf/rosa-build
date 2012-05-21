@@ -23,7 +23,7 @@ describe PullRequest do
 
   context 'for owner user' do
     before (:all) do
-      stub_rsync_methods
+      stub_symlink_methods
       @user = FactoryGirl.create(:user)
       set_data_for_pull
       @pull = @project.pull_requests.new(:issue_attributes => {:title => 'test', :body => 'testing'})
@@ -74,10 +74,20 @@ describe PullRequest do
         @other_pull.state.should == 'already'
       end
     end
+
+    it "should not be created same pull" do
+      @same_pull = @project.pull_requests.new(:issue_attributes => {:title => 'same', :body => 'testing'})
+      @same_pull.issue.user, @same_pull.issue.project = @user, @same_pull.base_project
+      @same_pull.base_ref = 'master'
+      @same_pull.head_project, @same_pull.head_ref = @project, 'non_conflicts'
+      @same_pull.save
+      @project.pull_requests.includes(:issue).where(:issues => {:title => @same_pull.title}).count.should == 0
+    end
+
   end
 
   before(:all) do
-    stub_rsync_methods
+    stub_symlink_methods
     Platform.delete_all
     User.delete_all
     Repository.delete_all
