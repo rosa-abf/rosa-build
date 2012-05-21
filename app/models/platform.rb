@@ -17,6 +17,8 @@ class Platform < ActiveRecord::Base
 
   has_many :packages, :class_name => "BuildList::Package", :dependent => :destroy
 
+  has_many :mass_builds
+
   validates :description, :presence => true
   validates :visibility, :presence => true, :inclusion => {:in => VISIBILITIES}
   validates :name, :uniqueness => {:case_sensitive => false}, :presence => true, :format => { :with => /^[a-zA-Z0-9_\-]+$/ }
@@ -155,16 +157,23 @@ class Platform < ActiveRecord::Base
     end
   end
 
-  def build_all(user)
+  def build_all(opts={})
+    # Set options to build all need
+    repositories = opts[:repositories] ? self.repositories.where(:id => opts[:repositories]) : self.repositories
+    arches = opts[:arches] ? Arch.where(:id => opts[:arches]) : Arch.all
+    auto_publish = opts[:auto_publish] || true
+    user = opts[:user]
+    mass_build_id = opts[:mass_build_id]
+
     repositories.each do |rep|
       rep.projects.find_in_batches(:batch_size => 2) do |group|
         sleep 1
         group.each do |p|
-          Arch.all.map(&:name).each do |arch|
+          arches.map(&:name).each do |arch|
             begin
-              p.build_for(self, user, arch)
+              p.build_for(self, user, arch, auto_publish, mass_build_id)
             rescue RuntimeError, Exception
-              p.delay.build_for(self, user, arch)
+              p.delay.build_for(self, user, arch, auto_publish, mass_build_id)
             end
           end
         end

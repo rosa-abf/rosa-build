@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120515095324) do
+ActiveRecord::Schema.define(:version => 20120518105225) do
 
   create_table "activity_feeds", :force => true do |t|
     t.integer  "user_id",    :null => false
@@ -118,6 +118,7 @@ ActiveRecord::Schema.define(:version => 20120515095324) do
     t.datetime "started_at"
     t.integer  "duration"
     t.integer  "advisory_id"
+    t.integer  "mass_build_id"
   end
 
   add_index "build_lists", ["advisory_id"], :name => "index_build_lists_on_advisory_id"
@@ -210,6 +211,13 @@ ActiveRecord::Schema.define(:version => 20120515095324) do
   end
 
   add_index "labels", ["project_id"], :name => "index_labels_on_project_id"
+
+  create_table "mass_builds", :force => true do |t|
+    t.integer  "platform_id"
+    t.string   "name"
+    t.datetime "created_at",  :null => false
+    t.datetime "updated_at",  :null => false
+  end
 
   create_table "platforms", :force => true do |t|
     t.string   "description"
@@ -304,8 +312,6 @@ ActiveRecord::Schema.define(:version => 20120515095324) do
     t.integer  "build_count",        :default => 0,        :null => false
   end
 
-  add_index "projects", ["owner_id"], :name => "index_projects_on_name_and_owner_id_and_owner_type", :unique => true
-
   create_table "register_requests", :force => true do |t|
     t.string   "name"
     t.string   "email"
@@ -369,11 +375,9 @@ ActiveRecord::Schema.define(:version => 20120515095324) do
     t.string   "encrypted_password",      :limit => 128, :default => "",   :null => false
     t.string   "password_salt",                          :default => "",   :null => false
     t.string   "reset_password_token"
-    t.datetime "reset_password_sent_at"
     t.datetime "remember_created_at"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.text     "ssh_key"
     t.string   "uname"
     t.string   "role"
     t.string   "language",                               :default => "en"

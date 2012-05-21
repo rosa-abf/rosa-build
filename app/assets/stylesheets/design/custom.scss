@@ -947,3 +947,9 @@ div#git_help_data p {
 .atom_icon {
   vertical-align: top;
 }
+
+/* Mass build forms */
+form.mass_build input[type="checkbox"] {
+  width: 10px;
+  height: 11px;
+}

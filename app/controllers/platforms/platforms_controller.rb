@@ -1,15 +1,25 @@
 # -*- encoding : utf-8 -*-
 class Platforms::PlatformsController < Platforms::BaseController
-  
+
   before_filter :authenticate_user!
   load_and_authorize_resource
-  
+
   autocomplete :user, :uname
 
   def build_all
-    @platform.delay.build_all(current_user)
+    @build_lists = BuildList.for_platform(@platform)
+    @build_lists = @build_lists.by_mass_build(MassBuild.find(params[:mass_build_id])) unless params[:mass_build_id].blank?
 
-    redirect_to(platform_path(@platform), :notice => t("flash.platform.build_all_success"))
+    if request.post?
+      mass_build = MassBuild.create(:platform => @platform)
+      mass_build.delay.build_all(
+        :user => current_user,
+        :repositories => params[:repositories],
+        :arches => params[:arches],
+        :auto_publish => params[:auto_publish]
+      )
+      redirect_to(build_all_platform_path(@platform), :notice => t("flash.platform.build_all_success"))
+    end
   end
 
   def index

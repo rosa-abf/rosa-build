@@ -40,7 +40,11 @@ en:
       target_platform: Target platform
       target_architecture: Target architecture
       members: Members
-        
+      project: Project
+      arch: Architecture
+      mass_build: Mass Build
+      build_task: Build Task
+      refresh_button: Refresh
 
   flash:
     platform:

@@ -40,6 +40,11 @@ ru:
       target_platform: Целевая платформа
       target_architecture: Целевая архитектура
       members: Участники
+      arch: Архитектура
+      mass_build: Массовая сборка
+      build_task: Сборочное задание
+      refresh_button: Обновить
+      project: Проект
 
   flash:
     platform:
