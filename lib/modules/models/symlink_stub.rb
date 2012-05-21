@@ -1,7 +1,7 @@
 # -*- encoding : utf-8 -*-
 module Modules
   module Models
-    module RsyncStub
+    module SymlinkStub
       extend ActiveSupport::Concern
 
       included do
@@ -9,11 +9,11 @@ module Modules
           true
         end
 
-        def mount_directory_for_rsync
+        def symlink_directory
           true
         end
 
-        def umount_directory_for_rsync
+        def remove_symlink_directory
           true
         end
       end

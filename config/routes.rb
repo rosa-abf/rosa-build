@@ -81,7 +81,7 @@ Rosa::Application.routes.draw do
     resources :users, :controller => 'profile', :only => [] do
       get :autocomplete_user_uname, :on => :collection
     end
-    resources :register_requests, :only => [:new, :create]
+    resources :register_requests, :only => [:new, :create], :format => /ru|en/ #view support only two languages
   end
 
   scope :module => 'groups' do

@@ -241,3 +241,40 @@ footer ul li a {
 footer ul li a:hover {
 	text-decoration: underline;
 }
+
+/*language*/
+
+div.langlist {
+	width: 760px;
+	margin: 0 auto;
+	text-align: center;
+}
+
+div.lang {
+	float: right;
+	margin: 2px 0px 2px 7px;
+	cursor: pointer;
+}
+
+nav {
+	width: 96px;
+	height: 47px;
+	background: url("../pics/registration.png") no-repeat;
+	float: right;
+	cursor: pointer;
+}
+
+nav p {
+	font-size: 14px;
+	color: #FFF;
+	margin: 0;
+	padding: 0;
+	padding-top: 0px;
+	font-weight: 700;
+}
+
+/* custom */
+
+nav a {
+    text-decoration: none;
+}
