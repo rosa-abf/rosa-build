@@ -1,63 +1,20 @@
-- content_for(:sidebar) do
-  = form_for :build, :url => build_all_platform_path(@platform), :html => { :class => 'form mass_build', :method => :post } do |f|
-    .bordered.nopadding
-      .table
-        %h3= t("activerecord.attributes.build_list.build_for_platform")
-        - @platform.repositories.each do |rep|
-          .lefter
-            = check_box_tag "repositories[]", rep.id, (params[:repositories]||[]).include?(rep.id.to_s), :id => "repositories_#{rep.id}"
-            = label_tag "repositories_#{rep.id}", rep.name
-          .both
+= form_for :build, :url => build_all_platform_path(@platform), :html => { :class => 'form mass_build', :method => :post } do |f|
+  %section.left
+    %h3= t("activerecord.attributes.build_list.build_for_platform")
+    - @platform.repositories.each do |rep|
+      = check_box_tag "repositories[]", rep.id, (params[:repositories]||[]).include?(rep.id.to_s), :id => "repositories_#{rep.id}"
+      = label_tag "repositories_#{rep.id}", rep.name
       .both
-      .table
-        %h3= t("activerecord.attributes.build_list.arch")
-        - Arch.recent.each do |arch|
-          .lefter
-            = check_box_tag "arches[]", arch.id, (params[:arches]||[]).include?(arch.id.to_s), :id => "arches_#{arch.id}"
-            = label_tag "arches_#{arch.id}", arch.name
-          .both
+  %section.right
+    %h3= t("activerecord.attributes.build_list.arch")
+    - Arch.recent.each do |arch|
+      .lefter
+        = check_box_tag "arches[]", arch.id, (params[:arches]||[]).include?(arch.id.to_s), :id => "arches_#{arch.id}"
+        = label_tag "arches_#{arch.id}", arch.name
       .both
-      .table
-        %h3= t("activerecord.attributes.build_list.preferences")
-        .lefter
-          = check_box_tag :auto_publish, true, params[:auto_publish].present? ? params[:auto_publish].present? : true, :id => 'auto_publish'
-          = label_tag :auto_publish
-        .both
-      .both
-      %br
-      = f.submit t("layout.projects.build_button")
-
-      %br
-      %br
-      .bordered.nopadding
-        .table
-          - ['BuildList::BUILD_PUBLISHED', 'BuildServer::SUCCESS', 'BuildServer::BUILD_STARTED', 'BuildList::BUILD_PENDING', 'BuildServer::BUILD_ERROR'].each do |state|
-            .lefter
-              = t("layout.build_lists.statuses.#{state.demodulize.downcase}")
-            .righter
-              = BuildList.for_status(state.constantize).for_user(current_user).for_platform(@platform).count
-            .both
-        %br
-        = link_to t("layout.activity_feed.all_my_builds"), build_lists_path
-
-%h3.fix= t("layout.platforms.mass_build")
-
-- if MassBuild.exists? :platform_id => @platform.id
-  %br
-  = form_for :build, :url => build_all_platform_path(@platform), :html => { :class => :form, :method => :get } do |f|
-    = select_tag "mass_build_id", options_from_collection_for_select( MassBuild.by_platform(@platform), :id, :name ), :include_blank => true
-    = f.submit t("layout.platforms.refresh_button")
-
-%table.tablesorter.unbordered
-  %thead
-    %tr
-      %th.lpadding16= t('layout.platforms.mass_build')
-      %th.lpadding16= t('layout.platforms.project')
-      %th.lpadding16= t('layout.platforms.arch')
-      %th.lpadding16= t('layout.platforms.build_task')
-  - @build_lists.each do |build_list|
-    %tr{:class => "#{build_list_status_color(build_list.status)}"}
-      %td= build_list.mass_build_id ? build_list.mass_build.name : ""
-      %td= link_to build_list.project.name, project_path(build_list.project)
-      %td= build_list.arch.name
-      %td= link_to (build_list.bs_id.present? ? build_list.bs_id : t("layout.build_lists.bs_id_not_set")), build_list
+    %h3= t("activerecord.attributes.build_list.preferences")
+    .both
+      = check_box_tag :auto_publish, true, params[:auto_publish].present? ? params[:auto_publish].present? : true, :id => 'auto_publish'
+      = label_tag :auto_publish
+    %br
+    = f.submit t("layout.projects.build_button")

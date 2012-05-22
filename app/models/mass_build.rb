@@ -1,5 +1,6 @@
 class MassBuild < ActiveRecord::Base
   belongs_to :platform
+  has_many :build_lists
 
   scope :by_platform, lambda { |platform| where(:platform_id => platform.id) }
 

@@ -8,7 +8,7 @@ class Platforms::PlatformsController < Platforms::BaseController
 
   def build_all
     @build_lists = BuildList.for_platform(@platform)
-    @build_lists = @build_lists.by_mass_build(MassBuild.find(params[:mass_build_id])) unless params[:mass_build_id].blank?
+    @build_lists = @build_lists.by_mass_build(params[:mass_build_id]) unless params[:mass_build_id].blank?
 
     if request.post?
       mass_build = MassBuild.create(:platform => @platform)
@@ -18,7 +18,7 @@ class Platforms::PlatformsController < Platforms::BaseController
         :arches => params[:arches],
         :auto_publish => params[:auto_publish]
       )
-      redirect_to(build_all_platform_path(@platform), :notice => t("flash.platform.build_all_success"))
+      redirect_to(build_lists_path, :notice => t("flash.platform.build_all_success"))
     end
   end
 
