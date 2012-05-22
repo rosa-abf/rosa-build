@@ -8,7 +8,8 @@ class PullRequest < ActiveRecord::Base
   delegate :user, :title, :body, :serial_id, :assignee, :state, :to => :issue, :allow_nil => true
   accepts_nested_attributes_for :issue
   #attr_accessible #FIXME disable for development
-  #validate :uniq_merge
+  validate :uniq_merge#, :not_up_to_date
+
   before_create :clean_dir
 
   scope :needed_checking, includes(:issue).where(:issues => {:state => ['open', 'blocked', 'ready', 'already']})
@@ -149,9 +150,13 @@ class PullRequest < ActiveRecord::Base
   end
 
   def uniq_merge
-    if base_project.pull_requests.needed_checking.where('pull_requests.id != ?', id).count >= 1
-      errors.add(:head_ref, t('projects.pull_requests.duplicate', :head_ref => head_ref))
+    if base_project.pull_requests.needed_checking.where(:head_project_id => head_project, :base_ref => base_ref, :head_ref => head_ref).where('pull_requests.id <> :id or :id is null', :id => id).count > 0
+      errors.add(:head_ref, I18n.t('projects.pull_requests.duplicate', :head_ref => head_ref))
     end
+  end
+
+  def not_up_to_date
+    errors.add(:head_ref, I18n.t('projects.pull_requests.up_to_date', :base_ref => base_ref, :head_ref => head_ref)) if state == 'already'
   end
 
   def clean_dir

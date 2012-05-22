@@ -5,13 +5,13 @@ def set_data_for_pull
   @ability = Ability.new(@user)
 
   @project = FactoryGirl.create(:project, :owner => @user)
-  %x(cp -Rf #{Rails.root}/spec/tests.git/* #{@project.path}) # maybe FIXME ?
+  %x(cp -Rf #{Rails.root}/spec/tests.git/* #{@project.path})
 
   @clone_path = File.join(APP_CONFIG['root_path'], 'repo_clone', @project.id.to_s)
   FileUtils.mkdir_p(@clone_path)
 
   @other_project = FactoryGirl.create(:project, :owner => @user)
-  %x(cp -Rf #{Rails.root}/spec/tests.git/* #{@other_project.path}) # maybe FIXME ?
+  %x(cp -Rf #{Rails.root}/spec/tests.git/* #{@other_project.path})
 
   any_instance_of(Project, :versions => ['v1.0', 'v2.0'])
 end
@@ -81,9 +81,16 @@ describe PullRequest do
       @same_pull.base_ref = 'master'
       @same_pull.head_project, @same_pull.head_ref = @project, 'non_conflicts'
       @same_pull.save
-      @project.pull_requests.includes(:issue).where(:issues => {:title => @same_pull.title}).count.should == 0
+      @project.pull_requests.joins(:issue).where(:issues => {:title => @same_pull.title}).count.should == 0
     end
 
+    it "should not be created already up-to-date pull" do
+      @wrong_pull = @project.pull_requests.new(:issue_attributes => {:title => 'wrong', :body => 'testing'})
+      @wrong_pull.issue.user, @wrong_pull.issue.project = @user, @wrong_pull.base_project
+      @wrong_pull.base_ref = 'master'
+      @wrong_pull.head_project, @wrong_pull.head_ref = @project, 'master'
+      @wrong_pull.save.should be_false
+    end
   end
 
   before(:all) do

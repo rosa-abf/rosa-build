@@ -10,7 +10,8 @@ en:
         head_project: Head project
         submit: Send pull request
       merge: Merge
-      duplicate: There's already a pull request for %{head_ref}
+      duplicate: 'There is already a pull request for %{head_ref}'
+      up_to_date: 'The %{base_ref} branch is already up-to-date with %{head_ref}'
 
   pull_requests:
     tabs:

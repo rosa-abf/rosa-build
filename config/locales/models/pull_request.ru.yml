@@ -10,7 +10,8 @@ ru:
         head_project: Проект-источник
         submit: Создать запрос на слияние
       merge: Слияние
-      duplicate: Уже существует запрос на слияние %{head_ref}
+      duplicate: 'Уже существует запрос на слияние %{head_ref}'
+      up_to_date: 'Ветка %{base_ref} на данный момент уже содержит последние изменения %{head_ref}'
 
   pull_requests:
     tabs:
