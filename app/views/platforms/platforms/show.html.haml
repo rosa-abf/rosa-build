@@ -30,8 +30,8 @@
     %td= @platform.distrib_type
 
 .buttons_block
-  - if can? :build_all, @platform
-    = link_to t("layout.platforms.build_all"), build_all_platform_path(@platform), :confirm => I18n.t("layout.confirm"), :method => :post, :class => "button left_floated"
+  - if can? :mass_builds, @platform
+    = link_to t("layout.platforms.mass_build"), mass_builds_platform_path(@platform), :class => "button left_floated"
   = link_to I18n.t("layout.platforms.clone"), clone_platform_path(@platform), :class => "button left_floated" if can? :clone, @platform
 
 = render 'connection_info' if @platform.platform_type == 'personal' and @platform.visibility == 'open'
