@@ -76,7 +76,7 @@ class Project < ActiveRecord::Base
     # If project platform repository is main, only main will be connect
     build_reps = [platform.repositories.find_by_name('main')]
     build_reps += platform.repositories.select {|rep| self.repository_ids.include? rep.id}
-    build_ids = build_reps.compact.map(&:id).uniq
+    build_reps_ids = build_reps.compact.map(&:id).uniq
     arch = Arch.find_by_name(arch) if arch.acts_like?(:string)
     build_lists.create do |bl|
       bl.save_to_platform = platform
@@ -86,8 +86,8 @@ class Project < ActiveRecord::Base
       bl.project_version = "latest_#{platform.name}"
       bl.build_requires = false # already set as db default
       bl.user = user
-      bl.auto_publish = auto_publish # already  set as db default
-      bl.include_repos = build_ids
+      bl.auto_publish = auto_publish
+      bl.include_repos = build_reps_ids
       bl.priority = priority
       bl.mass_build_id = mass_build_id
     end
