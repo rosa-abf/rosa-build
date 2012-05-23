@@ -29,7 +29,6 @@ en:
         started_at: Build started at
         duration: Build duration in seconds
         mass_build_id: Mass Build
-        mass_build: Mass Build
 
       build_list/item:
         name: Name

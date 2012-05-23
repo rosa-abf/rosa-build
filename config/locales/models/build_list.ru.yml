@@ -28,7 +28,6 @@ ru:
         preferences: Настройки
         duration: Длительность билда в секундах
         mass_build_id: Массовая Сборка
-        mass_build: Массовая Сборка
 
       build_list/item:
         name: Название
