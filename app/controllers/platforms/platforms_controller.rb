@@ -9,7 +9,6 @@ class Platforms::PlatformsController < Platforms::BaseController
   def build_all
     mass_build = MassBuild.create!(:platform => @platform, :user => current_user)
     mass_build.delay.build_all(
-    #mass_build.build_all(
       :user => current_user,
       :repositories => params[:repositories],
       :arches => params[:arches],
