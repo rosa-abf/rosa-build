@@ -98,6 +98,7 @@ class BuildList < ActiveRecord::Base
 
   before_create :set_default_status
   after_create :place_build
+  after_destroy :delete_container
 
   def self.human_status(status)
     I18n.t("layout.build_lists.statuses.#{HUMAN_STATUSES[status]}")
@@ -190,6 +191,15 @@ class BuildList < ActiveRecord::Base
     self.status = BuildServer.add_build_list project.name, project_version, save_to_platform.name, arch.name, (save_to_platform_id == build_for_platform_id ? '' : build_for_platform.name), update_type, build_requires, id, include_repos, priority
     self.status = BUILD_PENDING if self.status == 0
     save
+  end
+
+   
+  def delete_container
+    if can_cancel?
+      BuildServer.delete_build_list bs_id
+    else
+      BuildServer.delete_container bs_id if bs_id # prevent error if bs_id does not set
+    end
   end
 
   def build_package(pkg_hash, package_type, prj)
