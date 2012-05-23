@@ -12,9 +12,16 @@ en:
       merge: Merge
       duplicate: 'There is already a pull request for %{head_ref}'
       up_to_date: 'The %{base_ref} branch is already up-to-date with %{head_ref}'
+      wrong_ref: Wrong tree-ish
 
   pull_requests:
     tabs:
       discussion: Discussion
       diff: Diff
       Commits: Commits
+
+  flash:
+    pull_request:
+      new_error: Unable to create pull request
+      saved: Pull request saved
+      save_error: Unable to save pull request

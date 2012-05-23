@@ -12,9 +12,16 @@ ru:
       merge: Слияние
       duplicate: 'Уже существует запрос на слияние %{head_ref}'
       up_to_date: 'Ветка %{base_ref} на данный момент уже содержит последние изменения %{head_ref}'
+      wrong_ref: Неправильный tree-ish
 
   pull_requests:
     tabs:
       discussion: Дискуссия
       diff: Diff
       Commits: Коммиты
+
+  flash:
+    pull_request:
+      new_error: Не удалось создать запрос на слияние
+      saved: Запрос на слияние успешно сохранен
+      save_error: Не удалось сохранить запрос на слияние

@@ -32,7 +32,7 @@ describe Projects::PullRequestsController do
       response.should redirect_to(new_user_session_path)
     end
 
-    it 'should not be able to perform update title and body' do
+    it 'should not update title and body' do
       post :update, @update_params
       PullRequest.joins(:issue).where(:id => @pull.id, :issues => {:title => 'update', :body => 'updating'}).count.should == 0
     end
@@ -49,13 +49,23 @@ describe Projects::PullRequestsController do
     end
 
     it 'should be able to perform update action' do
-      post :update, @update_params
+      put :update, @update_params
       response.should redirect_to(project_pull_request_path(@project, @project.pull_requests.last))
     end
 
-    it 'should be able to perform update title and body' do
-      post :update, @update_params
+    it 'should update title and body' do
+      put :update, @update_params
       PullRequest.joins(:issue).where(:id => @pull.id, :issues => {:title => 'update', :body => 'updating'}).count.should == 1
+    end
+
+    it "should not create same pull" do
+      post :create, @create_params.merge({:pull_request => {:issue_attributes => {:title => 'same', :body => 'creating'}, :head_ref => 'non_conflicts', :base_ref => 'master'}})
+      PullRequest.joins(:issue).where(:issues => {:title => 'same', :body => 'creating'}).count.should == 0
+    end
+
+    it "should not create already up-to-date pull" do
+      post :create, @create_params.merge({:pull_request => {:issue_attributes => {:title => 'already', :body => 'creating'}, :base_ref => 'master', :head_ref => 'master'}})
+      PullRequest.joins(:issue).where(:issues => {:title => 'already', :body => 'creating'}).count.should == 0
     end
   end
 end

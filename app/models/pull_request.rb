@@ -8,9 +8,16 @@ class PullRequest < ActiveRecord::Base
   delegate :user, :title, :body, :serial_id, :assignee, :state, :to => :issue, :allow_nil => true
   accepts_nested_attributes_for :issue
   #attr_accessible #FIXME disable for development
-  validate :uniq_merge#, :not_up_to_date
+  validate :uniq_merge
+  validates_each :head_ref, :base_ref do |record, attr, value|
+    project = attr == :head_ref ? record.head_project : record.base_project
+    if !((project.branches + project.tags).map(&:name).include?(value) || project.git_repository.commits.map(&:id).include?(value))
+      record.errors.add attr, I18n.t('projects.pull_requests.wrong_ref')
+    end
+  end
 
   before_create :clean_dir
+  after_destroy :clean_dir
 
   scope :needed_checking, includes(:issue).where(:issues => {:state => ['open', 'blocked', 'ready', 'already']})
 
@@ -20,11 +27,11 @@ class PullRequest < ActiveRecord::Base
     #end
 
     event :ready do
-      transition [:open, :blocked] => :ready
+      transition [:ready, :open, :blocked] => :ready
     end
 
     event :block do
-      transition [:open, :ready] => :blocked
+      transition [:blocked, :open, :ready] => :blocked
     end
 
     event :already do
@@ -151,12 +158,8 @@ class PullRequest < ActiveRecord::Base
 
   def uniq_merge
     if base_project.pull_requests.needed_checking.where(:head_project_id => head_project, :base_ref => base_ref, :head_ref => head_ref).where('pull_requests.id <> :id or :id is null', :id => id).count > 0
-      errors.add(:head_ref, I18n.t('projects.pull_requests.duplicate', :head_ref => head_ref))
+      errors.add(:base_branch, I18n.t('projects.pull_requests.duplicate', :head_ref => head_ref))
     end
-  end
-
-  def not_up_to_date
-    errors.add(:head_ref, I18n.t('projects.pull_requests.up_to_date', :base_ref => base_ref, :head_ref => head_ref)) if state == 'already'
   end
 
   def clean_dir

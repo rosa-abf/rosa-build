@@ -39,43 +39,43 @@ describe PullRequest do
       @other_pull.save
     end
 
-    it 'master should can be merged with non_conflicts branch' do
+    it 'master should merge with non_conflicts branch' do
       @pull.check
       @pull.state.should == 'ready'
     end
 
-    it 'master should not be merged with conflicts branch' do
+    it 'master should not merge with conflicts branch' do
       @pull.head_ref = 'conflicts'
       @pull.check
       @pull.state.should == 'blocked'
     end
 
-    it 'should not be merged when already up-to-date branches' do
+    it 'should not merge when already up-to-date branches' do
       @pull.head_ref = 'master'
       @pull.check
       @pull.state.should == 'already'
     end
 
     context 'for other head project' do
-      it 'master should can be merged with non_conflicts branch' do
+      it 'master should merge with non_conflicts branch' do
         @other_pull.check
         @other_pull.state.should == 'ready'
       end
 
-      it 'master should not be merged with conflicts branch' do
+      it 'master should not merge with conflicts branch' do
         @other_pull.head_ref = 'conflicts'
         @other_pull.check
         @other_pull.state.should == 'blocked'
       end
 
-      it 'should not be merged when already up-to-date branches' do
+      it 'should not merge when already up-to-date branches' do
         @other_pull.head_ref = 'master'
         @other_pull.check
         @other_pull.state.should == 'already'
       end
     end
 
-    it "should not be created same pull" do
+    it "should not create same pull" do
       @same_pull = @project.pull_requests.new(:issue_attributes => {:title => 'same', :body => 'testing'})
       @same_pull.issue.user, @same_pull.issue.project = @user, @same_pull.base_project
       @same_pull.base_ref = 'master'
@@ -84,12 +84,22 @@ describe PullRequest do
       @project.pull_requests.joins(:issue).where(:issues => {:title => @same_pull.title}).count.should == 0
     end
 
-    it "should not be created already up-to-date pull" do
-      @wrong_pull = @project.pull_requests.new(:issue_attributes => {:title => 'wrong', :body => 'testing'})
+    it "should not create pull with wrong base ref" do
+      @wrong_pull = @project.pull_requests.new(:issue_attributes => {:title => 'wrong base', :body => 'testing'})
+      @wrong_pull.issue.user, @wrong_pull.issue.project = @user, @wrong_pull.base_project
+      @wrong_pull.base_ref = 'wrong'
+      @wrong_pull.head_project, @wrong_pull.head_ref = @project, 'non_conflicts'
+      @wrong_pull.save
+      @project.pull_requests.joins(:issue).where(:issues => {:title => @wrong_pull.title}).count.should == 0
+    end
+
+    it "should not create pull with wrong head ref" do
+      @wrong_pull = @project.pull_requests.new(:issue_attributes => {:title => 'wrong head', :body => 'testing'})
       @wrong_pull.issue.user, @wrong_pull.issue.project = @user, @wrong_pull.base_project
       @wrong_pull.base_ref = 'master'
-      @wrong_pull.head_project, @wrong_pull.head_ref = @project, 'master'
-      @wrong_pull.save.should be_false
+      @wrong_pull.head_project, @wrong_pull.head_ref = @project, 'wrong'
+      @wrong_pull.save
+      @project.pull_requests.joins(:issue).where(:issues => {:title => @wrong_pull.title}).count.should == 0
     end
   end
 

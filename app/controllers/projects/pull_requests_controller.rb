@@ -16,13 +16,21 @@ class Projects::PullRequestsController < Projects::BaseController
 
     @pull.base_ref = @pull.base_project.default_branch
     @pull.head_ref = params[:treeish].presence || @pull.head_project.default_branch
-    @pull.check
-
-    repo = Git::Repository.new(@pull.path)
-    @base_commit = repo.commits(@pull.base_ref).first
-    @head_commit = repo.commits(@pull.head_branch).first
-
-    @diff = Grit::Repo.new(@pull.path).diff @base_commit, @head_commit
+    if @pull.save
+      @pull.check
+      if @pull.state == 'already'
+        record.errors.add(:head_ref, I18n.t('projects.pull_requests.up_to_date', :base_ref => record.base_ref, :head_ref => record.head_ref))
+        flash[:error] = t('flash.pull_request.create_error')
+        flash[:warning] = @pull.errors.full_messages.join('. ')
+      end
+      repo = Git::Repository.new(@pull.path)
+      @base_commit = repo.commits(@pull.base_ref).first
+      @head_commit = repo.commits(@pull.head_branch).first
+      @diff = Grit::Repo.new(@pull.path).diff @base_commit, @head_commit
+    else
+      flash[:error] = t('flash.pull_request.create_error')
+      flash[:warning] = @pull.errors.full_messages.join('. ')
+    end
   end
 
   def create
@@ -33,8 +41,22 @@ class Projects::PullRequestsController < Projects::BaseController
     #@pull.head_ref = params[:head_ref] # FIXME need validation!
 
     if @pull.save
-      render :index #FIXME redirect to show
+      @pull.check
+      puts "!!!!!!!!!!!!!!!!!!!!!!!!"
+      puts "pull state is #{@pull.state}"
+      if @pull.state == 'already'
+        @pull.destroy
+
+        @pull.errors.add(:head_ref, I18n.t('projects.pull_requests.up_to_date', :base_ref => @pull.base_ref, :head_ref => @pull.head_ref))
+        flash[:notice] = t('flash.pull_request.saved')
+        flash[:warning] = @pull.errors.full_messages.join('. ')
+        render :new
+      else
+        redirect_to project_pull_request_path(@project, @pull)
+      end
     else
+      flash[:error] = t('flash.pull_request.save_error')
+      flash[:warning] = @pull.errors.full_messages.join('. ')
       render :new
     end
   end
