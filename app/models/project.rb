@@ -86,7 +86,7 @@ class Project < ActiveRecord::Base
       bl.project_version = "latest_#{platform.name}"
       bl.build_requires = false # already set as db default
       bl.user = user
-      bl.auto_publish = true # already  set as db default
+      bl.auto_publish = auto_publish # already  set as db default
       bl.include_repos = build_ids
       bl.priority = priority
       bl.mass_build_id = mass_build_id

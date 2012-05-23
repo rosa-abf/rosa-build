@@ -1,0 +1,12 @@
+ru:
+  activerecord:
+    models:
+      mass_build: Массовая Сборка
+    attributes:
+      mass_build:
+        name: Название
+        created_at: Создан
+        updated_at: Обновлен
+        arch_names: Архитектуры
+        user: Пользователь
+        auto_publish: Авто Публикация

@@ -48,7 +48,7 @@ Rosa::Application.routes.draw do
         post   :add_member
         post   :make_clone
         post   :build_all
-        get    :build_all
+        get    :mass_builds
       end
       get :autocomplete_user_uname, :on => :collection
       resources :repositories do

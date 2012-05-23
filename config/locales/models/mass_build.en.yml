@@ -1,0 +1,12 @@
+en:
+  activerecord:
+    models:
+      mass_build: Mass Build
+    attributes:
+      mass_build:
+        name: Name
+        created_at: Created
+        updated_at: Updated
+        arch_names: Architectures
+        user: User
+        auto_publish: Auto Publish

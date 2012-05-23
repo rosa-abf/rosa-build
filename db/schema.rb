@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120518105225) do
+ActiveRecord::Schema.define(:version => 20120523113925) do
 
   create_table "activity_feeds", :force => true do |t|
     t.integer  "user_id",    :null => false
@@ -215,8 +215,11 @@ ActiveRecord::Schema.define(:version => 20120518105225) do
   create_table "mass_builds", :force => true do |t|
     t.integer  "platform_id"
     t.string   "name"
-    t.datetime "created_at",  :null => false
-    t.datetime "updated_at",  :null => false
+    t.datetime "created_at",   :null => false
+    t.datetime "updated_at",   :null => false
+    t.string   "arch_names"
+    t.integer  "user_id"
+    t.boolean  "auto_publish"
   end
 
   create_table "platforms", :force => true do |t|
@@ -230,7 +233,7 @@ ActiveRecord::Schema.define(:version => 20120518105225) do
     t.string   "owner_type"
     t.string   "visibility",         :default => "open", :null => false
     t.string   "platform_type",      :default => "main", :null => false
-    t.string   "distrib_type",                           :null => false
+    t.string   "distrib_type"
   end
 
   add_index "platforms", ["name"], :name => "index_platforms_on_name", :unique => true, :case_sensitive => false
