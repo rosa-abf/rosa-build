@@ -233,7 +233,7 @@ ActiveRecord::Schema.define(:version => 20120523113925) do
     t.string   "owner_type"
     t.string   "visibility",         :default => "open", :null => false
     t.string   "platform_type",      :default => "main", :null => false
-    t.string   "distrib_type"
+    t.string   "distrib_type",                           :null => false
   end
 
   add_index "platforms", ["name"], :name => "index_platforms_on_name", :unique => true, :case_sensitive => false

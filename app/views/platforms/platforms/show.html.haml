@@ -30,8 +30,6 @@
     %td= @platform.distrib_type
 
 .buttons_block
-  - if can? :mass_builds, @platform
-    = link_to t("layout.platforms.mass_build"), mass_builds_platform_path(@platform), :class => "button left_floated"
   = link_to I18n.t("layout.platforms.clone"), clone_platform_path(@platform), :class => "button left_floated" if can? :clone, @platform
 
 = render 'connection_info' if @platform.platform_type == 'personal' and @platform.visibility == 'open'

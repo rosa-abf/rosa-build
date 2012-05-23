@@ -42,7 +42,7 @@ en:
       members: Members
       project: Project
       arch: Architecture
-      mass_build: Mass Build
+      mass_build: Mass build
       build_task: Build Task
       refresh_button: Refresh
 
