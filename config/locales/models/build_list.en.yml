@@ -124,3 +124,4 @@ en:
       no_arch_or_platform_selected: At least one of architecture of platform must selected
       wrong_platform: Only the primary platform can be selected for the main repository!
       can_not_published: Build can only be published with status "Build complete"
+      frozen_platform: In case of a repository for package storage with frozen platform allowed only bugfix and security updates
