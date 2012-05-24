@@ -8,7 +8,7 @@
             = check_box_tag "repositories[]", rep.id, (params[:repositories]||[]).include?(rep.id.to_s), :id => "repositories_#{rep.id}"
             = label_tag "repositories_#{rep.id}", rep.name
           .both
-      .both
+        .both
       .table
         %h3= t("activerecord.attributes.build_list.arch")
         - Arch.recent.each do |arch|
@@ -16,12 +16,12 @@
             = check_box_tag "arches[]", arch.id, (params[:arches]||[]).include?(arch.id.to_s), :id => "arches_#{arch.id}"
             = label_tag "arches_#{arch.id}", arch.name
           .both
-      .both
+        .both
       .table
         %h3= t("activerecord.attributes.build_list.preferences")
         .lefter
           = check_box_tag :auto_publish, true, params[:auto_publish].present? ? params[:auto_publish].present? : true, :id => 'auto_publish'
-          = label_tag :auto_publish
+          = label_tag t('activerecord.attributes.mass_build.auto_publish')
         .both
       .both
       %br
@@ -42,22 +42,19 @@
 
 %h3.fix= t("layout.platforms.mass_build")
 
-- if MassBuild.exists? :platform_id => @platform.id
-  %br
-  = form_for :build, :url => build_all_platform_path(@platform), :html => { :class => :form, :method => :get } do |f|
-    = select_tag "mass_build_id", options_from_collection_for_select( MassBuild.by_platform(@platform), :id, :name ), :include_blank => true
-    = f.submit t("layout.platforms.refresh_button")
-
 %table.tablesorter.unbordered
   %thead
     %tr
-      %th.lpadding16= t('layout.platforms.mass_build')
-      %th.lpadding16= t('layout.platforms.project')
-      %th.lpadding16= t('layout.platforms.arch')
-      %th.lpadding16= t('layout.platforms.build_task')
-  - @build_lists.each do |build_list|
-    %tr{:class => "#{build_list_status_color(build_list.status)}"}
-      %td= build_list.mass_build_id ? build_list.mass_build.name : ""
-      %td= link_to build_list.project.name, project_path(build_list.project)
-      %td= build_list.arch.name
-      %td= link_to (build_list.bs_id.present? ? build_list.bs_id : t("layout.build_lists.bs_id_not_set")), build_list
+      %th.lpadding16= t('activerecord.attributes.mass_build.name')
+      %th.lpadding16= t('activerecord.attributes.mass_build.arch_names')
+      %th.lpadding16= t('activerecord.attributes.mass_build.user')
+      %th.lpadding16= t('activerecord.attributes.mass_build.auto_publish')
+      %th.lpadding16= t('activerecord.attributes.mass_build.created_at')
+  - @mass_builds.each do |mass_build|
+    %tr
+      %td= link_to mass_build.name, build_lists_path(:filter => {:mass_build_id => mass_build.id})
+      %td= mass_build.arch_names
+      %td= mass_build.user.name
+      %td= mass_build.auto_publish
+      %td= mass_build.created_at
+= will_paginate @mass_builds
