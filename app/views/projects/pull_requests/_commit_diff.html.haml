@@ -1,4 +1,4 @@
-- commit_id = commit_diff.deleted_file ? @head_commit.parents.try(:first).try(:id) : @head_commit.id
+- commit_id = commit_diff.deleted_file ? @base_commit.id : @head_commit.id
 .file
   %a{:name => h(commit_diff.a_path)}
   .top

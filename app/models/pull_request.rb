@@ -74,6 +74,21 @@ class PullRequest < ActiveRecord::Base
     end
   end
 
+  def soft_check
+    ret = merge
+    if ret =~ /Already up-to-date/
+      'already'
+    elsif ret =~ /Merge made by the 'recursive' strategy/
+      system("cd #{path} && git reset --hard HEAD^") # remove merge commit
+      'ready'
+    elsif ret =~ /Automatic merge failed/
+      system("cd #{path} && git reset --hard HEAD")
+      'block'
+    else
+      raise ret
+    end
+  end
+
   def merge!(who)
     return false unless can_merge?
     Dir.chdir(path) do

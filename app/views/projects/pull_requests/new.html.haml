@@ -5,9 +5,9 @@
   -t('pull_requests.tabs').each do |base, title|
     %li
       %a{"data-toggle" => "tab", :href => "##{base}"}=title
-.tab-content
+.tab-content.pull_diff_fix
   #discussion.tab-pane.active
-    =form_for @pull, :url => project_pull_requests_path, :html => {:class => 'well well-large'} do |f|
+    =form_for @pull, :url => (@pull.state != 'already' ? project_pull_requests_path : new_project_pull_requests_path), :html => {:class => 'well well-large'} do |f|
       .leftlist=f.label :base_project, t('.base_project'), :class => :label
       .rightlist
         = @pull.base_project.full_name
@@ -37,11 +37,10 @@
       .leftlist for debug
       .rightlist=@pull.state
       .both
-
       .leftlist
-        \ 
-      .rightlist=f.submit t('.submit'), :class => 'btn btn-primary disabled', 'data-loading-text' => t('layout.processing'), :id => 'create_pull'
+      .rightlist=f.submit t(@pull.state != 'already' ? '.submit' : '.update'), :class => 'btn btn-primary disabled', 'data-loading-text' => t('layout.processing')#, :id => 'create_pull'
       .both
+
   #diff.tab-pane
     -begin
       =# render_commit_stats(stats)

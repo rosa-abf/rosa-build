@@ -10,26 +10,22 @@ class Projects::PullRequestsController < Projects::BaseController
 
   def new
     @pull = PullRequest.default_base_project(@project).pull_requests.new
-    #@pull.build_issue
     @pull.issue = @project.issues.new
+    if params[:pull_request] && params[:pull_request][:issue_attributes]
+      @pull.issue.title = params[:pull_request][:issue_attributes][:title].presence
+      @pull.issue.body = params[:pull_request][:issue_attributes][:body].presence
+    end
     @pull.head_project = @project
-
-    @pull.base_ref = @pull.base_project.default_branch
-    @pull.head_ref = params[:treeish].presence || @pull.head_project.default_branch
-    if @pull.save
-      @pull.check
-      if @pull.state == 'already'
-        record.errors.add(:head_ref, I18n.t('projects.pull_requests.up_to_date', :base_ref => record.base_ref, :head_ref => record.head_ref))
-        flash[:error] = t('flash.pull_request.create_error')
-        flash[:warning] = @pull.errors.full_messages.join('. ')
-      end
+    @pull.base_ref = (params[:pull_request][:base_ref].presence if params[:pull_request]) || @pull.base_project.default_branch
+    @pull.head_ref = params[:treeish].presence || (params[:pull_request][:head_ref].presence if params[:pull_request]) || @pull.head_project.default_branch
+    @pull.state = @pull.soft_check
+    if @pull.state == 'already'
+      flash[:warning] = I18n.t('projects.pull_requests.up_to_date', :base_ref => @pull.base_ref, :head_ref => @pull.head_ref)
+    else
       repo = Git::Repository.new(@pull.path)
       @base_commit = repo.commits(@pull.base_ref).first
       @head_commit = repo.commits(@pull.head_branch).first
       @diff = Grit::Repo.new(@pull.path).diff @base_commit, @head_commit
-    else
-      flash[:error] = t('flash.pull_request.create_error')
-      flash[:warning] = @pull.errors.full_messages.join('. ')
     end
   end
 
@@ -37,13 +33,9 @@ class Projects::PullRequestsController < Projects::BaseController
     @pull = @project.pull_requests.new(params[:pull_request]) # FIXME need validation!
     @pull.issue.user, @pull.issue.project = current_user, @pull.base_project
     @pull.base_project, @pull.head_project = PullRequest.default_base_project(@project), @project
-    #@pull.base_ref = params[:base_ref] # FIXME need validation!
-    #@pull.head_ref = params[:head_ref] # FIXME need validation!
 
     if @pull.save
       @pull.check
-      puts "!!!!!!!!!!!!!!!!!!!!!!!!"
-      puts "pull state is #{@pull.state}"
       if @pull.state == 'already'
         @pull.destroy
 
