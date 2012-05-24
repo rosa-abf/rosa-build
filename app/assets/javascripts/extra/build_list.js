@@ -46,21 +46,19 @@ $(document).ready(function() {
     return false;
   });
 
-  $("select#build_list_update_type").change(function() {
-    if ( $(this).val() == "bugfix" || $(this).val() == "security" ) {
-      $("select#build_list_save_to_platform_id option").each(function(i,el) {
-        $(el).removeAttr("disabled");
-      });
-    } else {
-      $("select#build_list_save_to_platform_id option").each(function(i,el) {
-        if ( $.inArray(parseInt($(el).attr("value")), FROZEN_PLS) == 0 ) {
+  $("select#build_list_save_to_platform_id").change(function() {
+    if ( $.inArray(parseInt($("select#build_list_save_to_platform_id").val()), FROZEN_PLS) == 0 ) {
+      $("select#build_list_update_type option").each(function(i,el) {
+        if ( $.inArray($(el).attr("value"), ["security", "bugfix"]) == -1 ) {
           $(el).attr("disabled", "disabled");
-          // If disabled option is selected - select blank repository (it is always first):
+          // If disabled option is selected - select 'bugfix':
           if ( $(el).attr("selected") ) {
-            $( $("select#build_list_save_to_platform_id option")[0] ).attr("selected", "selected");
+            $( $('select#build_list_update_type option[value="bugfix"]') ).attr("selected", "selected");
           }
         }
       });
+    } else {
+      $("select#build_list_update_type option").removeAttr("disabled");
     }
   });
   $("select#build_list_update_type").trigger('change');
