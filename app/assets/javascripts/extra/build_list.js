@@ -45,6 +45,26 @@ $(document).ready(function() {
   $('.build_bpl_ids').click(function() {
     return false;
   });
+
+  $("select#build_list_update_type").change(function() {
+    if ( $(this).val() == "bugfix" || $(this).val() == "security" ) {
+      $("select#build_list_save_to_platform_id option").each(function(i,el) {
+        $(el).removeAttr("disabled");
+      });
+    } else {
+      $("select#build_list_save_to_platform_id option").each(function(i,el) {
+        if ( $.inArray(parseInt($(el).attr("value")), FROZEN_PLS) == 0 ) {
+          $(el).attr("disabled", "disabled");
+          // If disabled option is selected - select blank repository (it is always first):
+          if ( $(el).attr("selected") ) {
+            $( $("select#build_list_save_to_platform_id option")[0] ).attr("selected", "selected");
+          }
+        }
+      });
+    }
+  });
+  $("select#build_list_update_type").trigger('change');
+
 });
 
 function setPlChecked(pointer, checked) {

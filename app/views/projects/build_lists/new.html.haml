@@ -11,7 +11,7 @@
             .offset25{:style => 'padding-left: 25px'}= render 'include_repos', :platform => pl
   %section.right
     %h3= t("activerecord.attributes.build_list.save_to_platform")
-    .lineForm= f.select :save_to_platform_id, @project.repositories.collect{|r| ["#{r.platform.name}/#{r.name}", r.platform.id]}
+    .lineForm= f.select :save_to_platform_id, @project.repositories.collect{|r| ["#{r.platform.name}/#{r.name}", r.platform.id]}, :include_blank => true
     %h3= t("activerecord.attributes.build_list.project_version")
     - if controller.action_name == 'new'
       .lineForm= f.select :project_version, @project.versions_for_group_select, :selected => "latest_" + @project.default_branch
@@ -33,5 +33,8 @@
       = f.label :build_requires
     %br
     = f.submit t("layout.projects.build_button")
+
+:javascript
+  var FROZEN_PLS = [#{ @project.repositories.map { |r| r.id if r.platform.released }.delete_if { |i| i.nil? }.join(", ") }];
 
 = render 'projects/base/submenu'
