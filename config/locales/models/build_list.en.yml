@@ -100,7 +100,7 @@ en:
         build_error: Build error
         build_published: Build has been published
         rejected_publish: Publishing rejected
-        build_publish: Build is being publishing
+        build_publish: Build is being published
         failed_publish: Publishing error
         dependencies_fail: Dependences not found
         waiting_for_response: Waiting for response
