@@ -77,4 +77,17 @@ module GitHelper
 
     grouped_options_for_select(res, current)
   end
+
+  def split_commits_by_date(commits)
+    res = commits.sort{|x, y| y.authored_date <=> x.authored_date}.inject({}) do |h, commit|
+      dt = commit.authored_date
+      h[dt.year] ||= {}
+      h[dt.year][dt.month] ||= {}
+      h[dt.year][dt.month][dt.day] ||= []
+      h[dt.year][dt.month][dt.day] << commit
+      h
+    end
+    return res
+  end
+
 end

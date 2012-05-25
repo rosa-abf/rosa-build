@@ -19,7 +19,7 @@ en:
     tabs:
       discussion: Discussion
       diff: Diff
-      Commits: Commits
+      commits: Commits
 
   flash:
     pull_request:

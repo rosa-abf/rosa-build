@@ -48,7 +48,8 @@
       = render :partial => 'commit_diff', :collection => @diff
     - rescue Grit::Git::GitTimeout
       %p= t 'layout.git.repositories.commit_diff_too_big'
-  #commits.tab-pane ...
+  #commits.tab-pane
+    = render :partial => 'projects/git/commits/commits', :object => @commits
 
 :javascript
   $(function () {

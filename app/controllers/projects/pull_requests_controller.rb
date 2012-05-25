@@ -25,7 +25,10 @@ class Projects::PullRequestsController < Projects::BaseController
       repo = Git::Repository.new(@pull.path)
       @base_commit = repo.commits(@pull.base_ref).first
       @head_commit = repo.commits(@pull.head_branch).first
-      @diff = Grit::Repo.new(@pull.path).diff @base_commit, @head_commit
+      repo = Grit::Repo.new(@pull.path)
+      @diff = repo.diff @base_commit, @head_commit
+
+      @commits = repo.commits_between @base_commit, @head_commit
     end
   end
 
@@ -68,7 +71,9 @@ class Projects::PullRequestsController < Projects::BaseController
     @base_commit = repo.commits(@pull.base_ref).first
     @head_commit = repo.commits(@pull.head_branch).first
 
-    @diff = Grit::Repo.new(@pull.path).diff @base_commit, @head_commit
+    repo = Grit::Repo.new(@pull.path)
+    @diff = repo.diff @base_commit, @head_commit
+    @commits = repo.commits_between @base_commit, @head_commit
   end
 
   def autocomplete_base_project_name
