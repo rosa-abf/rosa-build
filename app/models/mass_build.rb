@@ -5,29 +5,30 @@ class MassBuild < ActiveRecord::Base
 
   scope :by_platform, lambda { |platform| where(:platform_id => platform.id) }
 
-  attr_accessor :repositories_ids
+  attr_accessor :repositories, :arches
 
-  validates :platform_id, :auto_publish, :arch_names, :name, :user_id, :repositories_ids, :presence => true
+  validates :platform_id, :auto_publish, :arch_names, :name, :user_id, :repositories, :presence => true
 
+  after_create :build_all
 
-  def build_all(opts={})
-    auto_publish = opts[:auto_publish] || false
-    if set_data(opts[:repositories], opts[:arches], auto_publish)
-      platform.delay.build_all opts.merge({:mass_build_id => self.id, :user => self.user})
-      true
-    else
-      false
+  def initialize(args = nil)
+    super
+
+    if new_record?
+      rep_names = Repository.where(:id => self.repositories).map(&:name).join(", ")
+      self.name = "#{Date.today.strftime("%d.%b")}-#{platform.name}(#{rep_names})"
+      self.arch_names = Arch.where(:id => self.arches).map(&:name).join(", ")
     end
   end
 
-  private
-
-  def set_data(repositories_ids, arches, auto_publish=false)
-    rep_names = Repository.where(:id => repositories_ids).map(&:name).join(", ")
-    self.name = "#{Date.today.strftime("%d.%b")}-#{platform.name}(#{rep_names})"
-    self.arch_names = Arch.where(:id => arches).map(&:name).join(", ")
-    self.auto_publish = auto_publish
-    self.repositories_ids = repositories_ids
-    self.save
+  # ATTENTION: repositories and arches must be set before calling this method!
+  def build_all
+    platform.delay.build_all(
+      :mass_build_id => self.id,
+      :user => self.user,
+      :repositories => self.repositories,
+      :arches => self.arches,
+      :auto_publish => self.auto_publish
+    )
   end
 end

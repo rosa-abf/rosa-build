@@ -7,12 +7,14 @@ class Platforms::PlatformsController < Platforms::BaseController
   autocomplete :user, :uname
 
   def build_all
-    mass_build = MassBuild.new(:platform => @platform, :user => current_user)
-    if mass_build.build_all(
-         :repositories => params[:repositories],
-         :arches => params[:arches],
-         :auto_publish => params[:auto_publish]
-       )
+    mass_build = MassBuild.new(
+      :platform => @platform,
+      :user => current_user,
+      :repositories => params[:repositories],
+      :arches => params[:arches],
+      :auto_publish => params[:auto_publish]
+    )
+    if mass_build.save
       redirect_to(mass_builds_platform_path(@platform), :notice => t("flash.platform.build_all_success"))
     else
       @mass_builds = MassBuild.paginate(:page => params[:page], :per_page => 20)

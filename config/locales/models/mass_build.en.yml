@@ -13,4 +13,4 @@ en:
         arch_names: Architectures
         user: User
         auto_publish: Auto Publish
-        repositories_ids: Repositories
+        repositories: Repositories
