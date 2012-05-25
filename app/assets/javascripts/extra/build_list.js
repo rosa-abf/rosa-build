@@ -42,6 +42,12 @@ $(document).ready(function() {
       }
     });
 
+    if ($.inArray(platform_id, base_platforms.map(function(){ return $(this).val() }).get()) == -1) {
+      // For personal platforms update types always enebaled:
+      enableUpdateTypes();
+    }
+
+
     setBranchSelected();
   });
   $('#build_list_save_to_platform_id').trigger('change');
