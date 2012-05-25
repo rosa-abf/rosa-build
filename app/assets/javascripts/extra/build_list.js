@@ -1,4 +1,5 @@
 $(document).ready(function() {
+  // TODO: Refactor this handler!! It's too complicated.
   $('#build_list_save_to_platform_id').change(function() {
     var platform_id = $(this).val();
     var base_platforms = $('.all_platforms input[type=checkbox].build_bpl_ids');
@@ -24,7 +25,17 @@ $(document).ready(function() {
           $(this).removeAttr('checked').attr('disabled', 'disabled').trigger('change');
           $(this).parent().find('.offset25 input[type="checkbox"]').attr('disabled', 'disabled').removeAttr('checked');
         }
+
+        // Disabe update types for frozen (released) platforms:
+        if ($(this).attr('data-released') === '1') {
+          disableUpdateTypes();
+        } else {
+          enableUpdateTypes();
+        }
       } else {
+        // For personal platforms update types always enebaled:
+        enableUpdateTypes();
+
         $(this).removeAttr('disabled').removeAttr('checked').trigger('change');
         $(this).parent().find('.offset25 input[type="checkbox"]').removeAttr('disabled').removeAttr('checked');
         $('#build_list_auto_publish').removeAttr('disabled').attr('checked', 'checked');
@@ -45,23 +56,6 @@ $(document).ready(function() {
   $('.build_bpl_ids').click(function() {
     return false;
   });
-
-  $("select#build_list_save_to_platform_id").change(function() {
-    if ( $.inArray(parseInt($("select#build_list_save_to_platform_id").val()), FROZEN_PLS) == 0 ) {
-      $("select#build_list_update_type option").each(function(i,el) {
-        if ( $.inArray($(el).attr("value"), ["security", "bugfix"]) == -1 ) {
-          $(el).attr("disabled", "disabled");
-          // If disabled option is selected - select 'bugfix':
-          if ( $(el).attr("selected") ) {
-            $( $('select#build_list_update_type option[value="bugfix"]') ).attr("selected", "selected");
-          }
-        }
-      });
-    } else {
-      $("select#build_list_update_type option").removeAttr("disabled");
-    }
-  });
-  $("select#build_list_update_type").trigger('change');
 
 });
 
@@ -89,15 +83,18 @@ function setBranchSelected() {
   }
 }
 
-function platformChange() {
-    var rel = !!$('input[type="checkbox"].build_bpl_ids').filter(function(index) {
-        var $this = $(this);
-        return !!$this.attr('checked') && ($this.attr('data-released') === '1');
-    }).length;
-
-    if (rel) {
-        $('#build_list_auto_publish').removeAttr('checked').attr('disabled', 'disabled');
-    } else {
-        $('#build_list_auto_publish').removeAttr('disabled').attr('checked', 'checked');
+function disableUpdateTypes() {
+  $("select#build_list_update_type option").each(function(i,el) {
+    if ( $.inArray($(el).attr("value"), ["security", "bugfix"]) == -1 ) {
+      $(el).attr("disabled", "disabled");
+      // If disabled option is selected - select 'bugfix':
+      if ( $(el).attr("selected") ) {
+        $( $('select#build_list_update_type option[value="bugfix"]') ).attr("selected", "selected");
+      }
     }
+  });
+}
+
+function enableUpdateTypes() {
+  $("select#build_list_update_type option").removeAttr("disabled");
 }
