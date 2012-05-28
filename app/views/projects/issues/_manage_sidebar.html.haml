@@ -19,13 +19,13 @@
             - if @issue.assignee
               #user-0.people.nopointer
                 .avatar=image_tag avatar_url(@issue.assignee), :alt => 'avatar'
-                .name="#{@issue.assignee.uname} (#{@issue.assignee.name})"
+                .name=@issue.assignee.fullname
                 =hidden_field_tag "user-0", @issue.assignee.id, :name => 'issue[assignee_id]'
                 .both
       - elsif @issue.assignee
         .people.nopointer
           .avatar=image_tag avatar_url(@issue.assignee), :alt => 'avatar'
-          .name="#{@issue.assignee.uname} (#{@issue.assignee.name})"
+          .name=@issue.assignee.fullname
           .both
       =link_to(t('layout.issues.label_manage'), '#', :class => "button tmargin10 manage_assignee") if can_manage
     - if can_manage
