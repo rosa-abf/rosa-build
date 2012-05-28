@@ -13,7 +13,7 @@
               = image_tag avatar_url_by_email(v.author.email), :alt => "avatar: #{v.author.name}", :class => 'mini-gravatar'
           .name
             = link_to user_path_by_user(user) do
-              %span.username= user.present? ? "#{user.uname} (#{user.name})" : v.author.name
+              %span.username= user.present? ? user.fullname : v.author.name
           .both
         %td.td3
           %span.wiki-gray= "#{l v.committed_date.to_date, :format => :long}:"

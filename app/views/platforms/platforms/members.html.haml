@@ -24,7 +24,7 @@
           %td
             .img
               = image_tag avatar_url(user)
-            .forimg= link_to "#{user.uname} (#{user.name})", user_path(user)
+            .forimg= link_to user.fullname, user_path(user)
           - if can? :remove_member, @platform
             %td.buttons
               = link_to remove_member_platform_path(@platform, :member_id => user.id), :method => :delete, :confirm => t("layout.confirm") do
