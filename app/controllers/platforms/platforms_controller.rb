@@ -17,14 +17,14 @@ class Platforms::PlatformsController < Platforms::BaseController
     if mass_build.save
       redirect_to(mass_builds_platform_path(@platform), :notice => t("flash.platform.build_all_success"))
     else
-      @mass_builds = MassBuild.paginate(:page => params[:page], :per_page => 20)
+      @mass_builds = MassBuild.by_platform(@platform).order('created_at DESC').paginate(:page => params[:page], :per_page => 20)
       flash[:warning] = mass_build.errors.full_messages.join('. ')
       flash[:error] = t("flash.platform.build_all_error")
     end
   end
 
   def mass_builds
-    @mass_builds = MassBuild.paginate(:page => params[:page], :per_page => 20)
+    @mass_builds = MassBuild.by_platform(@platform).order('created_at DESC').paginate(:page => params[:page], :per_page => 20)
     render :action => :build_all
   end
 
