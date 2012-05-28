@@ -28,6 +28,7 @@
 %table.tablesorter.unbordered
   %thead
     %tr
+      %th.lpadding16= t('activerecord.attributes.mass_build.id')
       %th.lpadding16= t('activerecord.attributes.mass_build.name')
       %th.lpadding16= t('activerecord.attributes.mass_build.arch_names')
       %th.lpadding16= t('activerecord.attributes.mass_build.user')
@@ -35,6 +36,7 @@
       %th.lpadding16= t('activerecord.attributes.mass_build.created_at')
   - @mass_builds.each do |mass_build|
     %tr
+      %td= mass_build.id
       %td= link_to mass_build.name, build_lists_path(:filter => {:mass_build_id => mass_build.id})
       %td= mass_build.arch_names
       %td= link_to mass_build.user.fullname, mass_build.user
