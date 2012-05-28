@@ -9,7 +9,7 @@ module ApplicationHelper
     when controller_name == 'build_lists' && ['new', 'create'].include?(action_name)
       nil
     when controller_name == 'platforms' && ['build_all', 'mass_builds'].include?(action_name)
-      nil
+      'right slim'
     when controller_name == 'platforms' && action_name == 'show'
       'right bigpadding'
     when controller_name == 'platforms' && action_name == 'clone'

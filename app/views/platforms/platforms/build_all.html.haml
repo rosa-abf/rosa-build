@@ -1,3 +1,6 @@
+= render 'submenu'
+= render 'sidebar'
+
 = form_for :build, :url => build_all_platform_path(@platform), :html => { :class => 'form mass_build', :method => :post } do |f|
   %section.left
     %h3= t("layout.mass_builds.repositories")
