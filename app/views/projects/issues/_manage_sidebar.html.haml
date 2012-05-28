@@ -19,7 +19,7 @@
             - if @issue.assignee
               #user-0.people.nopointer
                 .avatar=image_tag avatar_url(@issue.assignee), :alt => 'avatar'
-                .name="#{@issue.user.uname} (#{@issue.assignee.name})"
+                .name="#{@issue.assignee.uname} (#{@issue.assignee.name})"
                 =hidden_field_tag "user-0", @issue.assignee.id, :name => 'issue[assignee_id]'
                 .both
       - elsif @issue.assignee
