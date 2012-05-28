@@ -100,6 +100,79 @@ class BuildList < ActiveRecord::Base
   after_create :place_build
   after_destroy :delete_container
 
+  state_machine :status, :initial => :waiting_for_response do
+
+    event :wait_assembly do
+      transition :waiting_for_response => :build_pending
+    end
+
+    event :wait_platform do
+      transition :waiting_for_response => :platform_pending
+    end
+
+    event :lose_platform do
+      transition :waiting_for_response => :platform_not_found
+    end
+
+    event :lose_project do
+      transition :waiting_for_response => :project_not_found
+    end
+
+    event :lose_project_version do
+      transition :waiting_for_response => :project_version_not_found
+    end
+
+    event :start do
+      transition [
+        :build_pending,
+        :platform_pending
+      ] => :build_started
+    end
+
+    event :cancel do
+      transition [
+        :build_pending,
+        :platform_pending
+      ] => :build_canceled, :if => lambda { |build_list| build_list.can_cancel? }
+    end
+
+    event :finish_build do
+      transition [
+        :build_started,
+        :build_canceled
+      ] => :success
+    end
+
+    event :fail_build do
+      transition :build_started => :build_error
+    end
+
+    event :publish do
+      transition [
+        :success,
+        :failed_publish
+      ] => :build_publish, :if => lambda { |build_list| build_list.can_publish? } # TODO: Remove can_publish?
+                                                                                  # we do not need this after state machine
+    end
+
+    event :reject_publish do
+      transition :success => :rejected_publish, :if => lambda { |build_list| build_list.can_reject_publish? }
+    end
+
+    event :finish_publish do
+      transition :build_publish => :build_published
+    end
+
+    event :fail_publish do
+      transition :build_publish => :failed_publish
+    end
+
+    HUMAN_STATUSES.each do |code,name|
+      state name, :value => code
+    end
+
+  end
+
   def self.human_status(status)
     I18n.t("layout.build_lists.statuses.#{HUMAN_STATUSES[status]}")
   end

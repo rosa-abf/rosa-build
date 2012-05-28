@@ -17,6 +17,7 @@ gem 'paperclip', '~> 3.0.2'
 gem 'delayed_job_active_record', '~> 0.3.2'
 gem 'russian', '~> 0.6.0'
 gem 'highline', '~> 1.6.11'
+gem 'state_machine'
 
 gem 'jbuilder'
 
