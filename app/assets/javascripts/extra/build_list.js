@@ -9,8 +9,10 @@ $(document).ready(function() {
         if ($(this).val() == platform_id) {
           if ($(this).attr('data-released') === '1') {
             $('#build_list_auto_publish').removeAttr('checked').attr('disabled', 'disabled');
+            disableUpdateTypes();
           } else {
             $('#build_list_auto_publish').removeAttr('disabled').attr('checked', 'checked');
+            enableUpdateTypes();
           }
 
           $(this).attr('checked', 'checked').removeAttr('disabled').trigger('change');
@@ -25,17 +27,7 @@ $(document).ready(function() {
           $(this).removeAttr('checked').attr('disabled', 'disabled').trigger('change');
           $(this).parent().find('.offset25 input[type="checkbox"]').attr('disabled', 'disabled').removeAttr('checked');
         }
-
-        // Disabe update types for frozen (released) platforms:
-        if ($(this).attr('data-released') === '1') {
-          disableUpdateTypes();
-        } else {
-          enableUpdateTypes();
-        }
       } else {
-        // For personal platforms update types always enebaled:
-        enableUpdateTypes();
-
         $(this).removeAttr('disabled').removeAttr('checked').trigger('change');
         $(this).parent().find('.offset25 input[type="checkbox"]').removeAttr('disabled').removeAttr('checked');
         $('#build_list_auto_publish').removeAttr('disabled').attr('checked', 'checked');
