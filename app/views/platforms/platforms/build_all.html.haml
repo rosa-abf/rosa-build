@@ -34,7 +34,7 @@
     %tr
       %td= link_to mass_build.name, build_lists_path(:filter => {:mass_build_id => mass_build.id})
       %td= mass_build.arch_names
-      %td= mass_build.user.uname
+      %td= link_to mass_build.user.fullname, mass_build.user
       %td= mass_build.auto_publish
       %td= mass_build.created_at
 = will_paginate @mass_builds
