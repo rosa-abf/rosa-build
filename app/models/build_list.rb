@@ -133,7 +133,7 @@ class BuildList < ActiveRecord::Base
       transition [
         :build_pending,
         :platform_pending
-      ] => :build_canceled, :if => lambda { |build_list| build_list.can_cancel? }
+      ] => :build_canceled, :if => :can_cancel?
     end
 
     event :finish_build do
@@ -151,12 +151,15 @@ class BuildList < ActiveRecord::Base
       transition [
         :success,
         :failed_publish
-      ] => :build_publish, :if => lambda { |build_list| build_list.can_publish? } # TODO: Remove can_publish?
-                                                                                  # we do not need this after state machine
+      ] => :build_publish, :if => :can_publish?
+      transition [
+        :success,
+        :failed_publish
+      ] => :build_publish, :if => :can_fail_publish?
     end
 
     event :reject_publish do
-      transition :success => :rejected_publish, :if => lambda { |build_list| build_list.can_reject_publish? }
+      transition :success => :rejected_publish, :if => :can_reject_publish?
     end
 
     event :finish_publish do
@@ -172,6 +175,26 @@ class BuildList < ActiveRecord::Base
     end
 
   end
+
+  #TODO: Share this checking on product owner.
+  def can_cancel?
+    has_canceled = BuildServer.delete_build_list bs_id
+    status == BUILD_PENDING && bs_id && has_canceled == 0
+  end
+
+  def can_publish?
+    status == BuildServer::SUCCESS or status == FAILED_PUBLISH
+  end
+
+  def can_fail_publish?
+    has_published = BuildServer.publish_container bs_id
+    can_publish? && has_published != 0
+  end
+
+  def can_reject_publish?
+    can_publish? and save_to_platform.released
+  end
+
 
   def self.human_status(status)
     I18n.t("layout.build_lists.statuses.#{HUMAN_STATUSES[status]}")
@@ -199,37 +222,24 @@ class BuildList < ActiveRecord::Base
     end
   end
 
-  def publish
-    return false unless can_publish?
-    has_published = BuildServer.publish_container bs_id
-    update_attribute(:status, has_published == 0 ? BUILD_PUBLISH : FAILED_PUBLISH)
-    return has_published == 0
-  end
+  #def publish
+  #  return false unless can_publish?
+  #  has_published = BuildServer.publish_container bs_id
+  #  update_attribute(:status, has_published == 0 ? BUILD_PUBLISH : FAILED_PUBLISH)
+  #  return has_published == 0
+  #end
 
-  def can_publish?
-    status == BuildServer::SUCCESS or status == FAILED_PUBLISH
-  end
+  #def reject_publish
+  #  return false unless can_reject_publish?
+  #  update_attribute(:status, REJECTED_PUBLISH)
+  #end
 
-  def reject_publish
-    return false unless can_reject_publish?
-    update_attribute(:status, REJECTED_PUBLISH)
-  end
-
-  def can_reject_publish?
-    can_publish? and save_to_platform.released
-  end
-
-  def cancel
-    return false unless can_cancel?
-    has_canceled = BuildServer.delete_build_list bs_id
-    update_attribute(:status, BUILD_CANCELED) if has_canceled == 0
-    return has_canceled == 0
-  end
-
-  #TODO: Share this checking on product owner.
-  def can_cancel?
-    status == BUILD_PENDING && bs_id
-  end
+  #def cancel
+  #  return false unless can_cancel?
+  #  has_canceled = BuildServer.delete_build_list bs_id
+  #  update_attribute(:status, BUILD_CANCELED) if has_canceled == 0
+  #  return has_canceled == 0
+  #end
 
   def event_log_message
     {:project => project.name, :version => project_version, :arch => arch.name}.inspect
@@ -266,7 +276,6 @@ class BuildList < ActiveRecord::Base
     save
   end
 
-   
   def delete_container
     if can_cancel?
       BuildServer.delete_build_list bs_id
