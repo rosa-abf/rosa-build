@@ -120,6 +120,24 @@ class PullRequest < ActiveRecord::Base
     end
   end
 
+  def diff_stats
+    stats = []
+    Dir.chdir(path) do
+      lines = %x(git diff --numstat #{base_ref} #{head_ref}).split("\n")
+      while !lines.empty?
+        files = []
+        while lines.first =~ /^([-\d]+)\s+([-\d]+)\s+(.+)/
+          additions, deletions, filename = lines.shift.split
+          additions, deletions = additions.to_i, deletions.to_i
+          total = additions + deletions
+          stat = Grit::DiffStat.new filename, additions, deletions, total
+          stats << stat
+        end
+      end
+      stats
+    end
+  end
+
   protected
 
   def merge

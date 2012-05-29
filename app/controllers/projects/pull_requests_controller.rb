@@ -27,6 +27,7 @@ class Projects::PullRequestsController < Projects::BaseController
       @head_commit = repo.commits(@pull.head_branch).first
       repo = Grit::Repo.new(@pull.path)
       @diff = repo.diff @base_commit, @head_commit
+      @stats = @pull.diff_stats
 
       @commits = repo.commits_between @base_commit, @head_commit
     end
@@ -73,6 +74,7 @@ class Projects::PullRequestsController < Projects::BaseController
 
     repo = Grit::Repo.new(@pull.path)
     @diff = repo.diff @base_commit, @head_commit
+    @stats = @pull.diff_stats
     @commits = repo.commits_between @base_commit, @head_commit
   end
 

@@ -15,4 +15,23 @@ module DiffHelper
     res.html_safe
   end
 
+  def render_diff_stats(stats)
+    res = ["<table class='commit_stats'>"]
+    stats.each do |stat|
+      res << "<tr>"
+      res << "<td><a href='##{h(stat.filename)}'>#{h(stat.filename)}</a></td>"
+      res << "<td class='diffstat'>"
+      res << I18n.t("layout.projects.inline_changes_count", :count => stat.additions + stat.deletions).strip +
+             " (" +
+             I18n.t("layout.projects.inline_additions_count", :count => stat.additions).strip +
+             ", " +
+             I18n.t("layout.projects.inline_deletions_count", :count => stat.deletions).strip +
+             ")"
+      res << "</td>"
+    end
+    res << "</table>"
+
+    res.join("\n").html_safe.default_encoding!
+  end
+
 end
