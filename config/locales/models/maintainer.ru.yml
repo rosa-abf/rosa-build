@@ -1,0 +1,24 @@
+ru:
+  layout:
+    maintainers:
+      list_header: Мэйнтэйнеры
+
+  flash:
+    maintainer:
+      saved: Мэйнтэйнер успешно сохранен
+      created: Мэйнтэйнер успешно добавлен
+      save_error: Не удалось сохранить мэйнтэйнера
+      create_error: Не удалось создать мэйнтэйнера
+      destroyed: Мэйнтэйнер успешно удален
+
+  activerecord:
+    models:
+      maintainer: Мэйнтэйнер
+    attributes:
+      maintainer:
+        package_name: Пакет
+        package_type: Тип
+        created_at: Создан
+        updated_at: Обновлен
+        version: Vers.-rel.
+

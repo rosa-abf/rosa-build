@@ -1,0 +1,22 @@
+%table#myTable.tablesorter.platform-maintainers{:cellspacing => "0", :cellpadding => "0"}
+  %thead
+    %tr
+      %th.th1= t("activerecord.attributes.maintainer.package_name")
+      %th.th1= t("activerecord.attributes.maintainer.package_type")
+      %th.th1= t("activerecord.attributes.maintainer.version")
+      %th.th1= t("activerecord.models.maintainer")
+      %th.th1= t("activerecord.attributes.maintainer.updated_at")
+  %tbody
+    - @maintainers.each do |maintainer|
+      %tr{:class => cycle("odd", "even")}
+        %td
+          = link_to maintainer.name, maintainer.project
+        %td
+          = maintainer.package_type
+        %td
+          = "#{maintainer.version}-#{maintainer.release}"
+        %td
+          = link_to maintainer.assignee.email, maintainer.assignee
+        %td
+          = maintainer.updated_at
+

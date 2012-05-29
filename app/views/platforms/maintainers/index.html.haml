@@ -1,0 +1,7 @@
+-set_meta_tags :title => [title_object(@platform), t('layout.maintainers.list_header')]
+-# FIXME: no these 'base' links!
+= render 'platforms/base/submenu' if params[:platform_id]
+= render 'platforms/base/sidebar' if params[:platform_id]
+= render :partial => 'list', :object => @maintainers
+= will_paginate @maintainers
+

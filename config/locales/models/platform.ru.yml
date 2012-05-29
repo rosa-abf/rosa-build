@@ -40,6 +40,7 @@ ru:
       target_platform: Целевая платформа
       target_architecture: Целевая архитектура
       members: Участники
+      maintainers: Мэйнтэйнеры
       arch: Архитектура
       mass_build: Массовая сборка
       build_task: Сборочное задание

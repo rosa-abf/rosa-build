@@ -81,7 +81,7 @@ Rosa::Application.routes.draw do
       resources :products do
         resources :product_build_lists, :only => [:create, :destroy]
       end
-
+      resources :maintainers, :only => [:index]
     end
     match '/private/:platform_name/*file_path' => 'privates#show'
 
