@@ -17,7 +17,7 @@ class MassBuild < ActiveRecord::Base
 
     if new_record?
       rep_names = Repository.where(:id => self.repositories).map(&:name).join(", ")
-      self.name = "#{Date.today.strftime("%d.%b")}-#{platform.name}(#{rep_names})"
+      self.name = "#{Time.now.utc.to_date.strftime("%d.%b")}-#{platform.name}(#{rep_names})"
       self.arch_names = Arch.where(:id => self.arches).map(&:name).join(", ")
     end
   end
