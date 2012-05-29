@@ -7,7 +7,8 @@ class MassBuild < ActiveRecord::Base
 
   attr_accessor :repositories, :arches
 
-  validates :platform_id, :auto_publish, :arch_names, :name, :user_id, :repositories, :presence => true
+  validates :platform_id, :arch_names, :name, :user_id, :repositories, :presence => true
+  validates_inclusion_of :auto_publish, :in => [true, false]
 
   after_create :build_all
 

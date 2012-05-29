@@ -12,7 +12,7 @@ class Platforms::PlatformsController < Platforms::BaseController
       :user => current_user,
       :repositories => params[:repositories],
       :arches => params[:arches],
-      :auto_publish => params[:auto_publish]
+      :auto_publish => params[:auto_publish] || false
     )
     if mass_build.save
       redirect_to(mass_builds_platform_path(@platform), :notice => t("flash.platform.build_all_success"))
