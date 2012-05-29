@@ -25,8 +25,8 @@
     .leftlist=t('activerecord.attributes.issue.body')
     .rightlist=@pull.issue.body
     .both
-    .leftlist=t('activerecord.attributes.issue.state')
-    .rightlist=@pull.issue.state
+    .leftlist=t('activerecord.attributes.issue.status')
+    .rightlist=@pull.issue.status
     .both
     - if can? :merge, @pull
       =form_for PullRequest.new, :url => merge_project_pull_request_path(@project, @pull), :html => { :method => :put, :class => :form } do |f|

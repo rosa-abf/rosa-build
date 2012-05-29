@@ -90,7 +90,7 @@ $(document).ready(function() {
     var filter_form = $('#filter_issues');
     url = url || filter_form.attr("action");
     var label_form = $('#filter_labels');
-    var status = 'state=' + $('#issues_status').attr('value');
+    var status = 'status=' + $('#issues_status').attr('value');
     $.ajax({
       type: type_request,
       url: url,

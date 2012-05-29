@@ -6,6 +6,6 @@ FactoryGirl.define do
     association :project, :factory => :project
     association :user, :factory => :user
     association :assignee, :factory => :user
-    state "open"
+    status "open"
   end
 end

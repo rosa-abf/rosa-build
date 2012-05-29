@@ -1,7 +1,5 @@
 class CreatePullRequests < ActiveRecord::Migration
   def change
-    rename_column :issues, :status, :state
-
     create_table :pull_requests do |t|
       t.integer :issue_id, :null => false
       t.integer :base_project_id, :null => false

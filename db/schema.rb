@@ -17,8 +17,8 @@ ActiveRecord::Schema.define(:version => 20120515095324) do
     t.integer  "user_id",    :null => false
     t.string   "kind"
     t.text     "data"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
   end
 
   create_table "advisories", :force => true do |t|
@@ -182,7 +182,7 @@ ActiveRecord::Schema.define(:version => 20120515095324) do
     t.integer  "assignee_id"
     t.string   "title"
     t.text     "body"
-    t.string   "state",       :default => "open"
+    t.string   "status",      :default => "open"
     t.datetime "created_at",                      :null => false
     t.datetime "updated_at",                      :null => false
     t.integer  "user_id"
@@ -373,9 +373,8 @@ ActiveRecord::Schema.define(:version => 20120515095324) do
 
   create_table "users", :force => true do |t|
     t.string   "name"
-    t.string   "email",                                  :default => "",   :null => false
-    t.string   "encrypted_password",      :limit => 128, :default => "",   :null => false
-    t.string   "password_salt",                          :default => "",   :null => false
+    t.string   "email",                   :default => "",   :null => false
+    t.string   "encrypted_password",      :default => "",   :null => false
     t.string   "reset_password_token"
     t.datetime "reset_password_sent_at"
     t.datetime "remember_created_at"
@@ -384,12 +383,11 @@ ActiveRecord::Schema.define(:version => 20120515095324) do
     t.text     "ssh_key"
     t.string   "uname"
     t.string   "role"
-    t.string   "language",                               :default => "en"
+    t.string   "language",                :default => "en"
+    t.integer  "own_projects_count",      :default => 0,    :null => false
     t.string   "confirmation_token"
     t.datetime "confirmed_at"
     t.datetime "confirmation_sent_at"
-    t.integer  "own_projects_count",                     :default => 0,    :null => false
-    t.datetime "reset_password_sent_at"
     t.text     "professional_experience"
     t.string   "site"
     t.string   "company"

@@ -11,7 +11,7 @@ class Projects::IssuesController < Projects::BaseController
 
   def index(status = 200)
     @is_assigned_to_me = params[:filter] == 'to_me'
-    @state = params[:state] == 'closed' ? 'closed' : 'open'
+    @status = params[:status] == 'closed' ? 'closed' : 'open'
     @labels = params[:labels] || []
     @issues = @project.issues
     @issues = @issues.where(:assignee_id => current_user.id) if @is_assigned_to_me
@@ -22,7 +22,7 @@ class Projects::IssuesController < Projects::BaseController
     end
     @opened_issues = @issues.opened.count
     @closed_issues = @issues.closed.count
-    @issues = @issues.where(:state => @state)
+    @issues = @issues.where(:status => @status)
 
 
     @issues = @issues.includes(:assignee, :user).order('serial_id desc').uniq.paginate :per_page => 10, :page => params[:page]

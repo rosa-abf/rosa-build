@@ -7,7 +7,7 @@ ru:
         assignee: Назначена
         assignee_id: Назначена
         project: Проект
-        state: Статус
+        status: Статус
 
   layout:
     issues:
@@ -27,7 +27,7 @@ ru:
         open: Открытые
         closed: Закрытые
         any: Все
-      state:
+      status:
         open: Открыто
         closed: Закрыто
       subscribe: Подписка на уведомления

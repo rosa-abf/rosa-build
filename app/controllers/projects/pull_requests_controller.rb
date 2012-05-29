@@ -18,8 +18,8 @@ class Projects::PullRequestsController < Projects::BaseController
     @pull.head_project = @project
     @pull.base_ref = (params[:pull_request][:base_ref].presence if params[:pull_request]) || @pull.base_project.default_branch
     @pull.head_ref = params[:treeish].presence || (params[:pull_request][:head_ref].presence if params[:pull_request]) || @pull.head_project.default_branch
-    @pull.state = @pull.soft_check
-    if @pull.state == 'already'
+    @pull.status = @pull.soft_check
+    if @pull.status == 'already'
       flash[:warning] = I18n.t('projects.pull_requests.up_to_date', :base_ref => @pull.base_ref, :head_ref => @pull.head_ref)
     else
       repo = Git::Repository.new(@pull.path)
@@ -39,7 +39,7 @@ class Projects::PullRequestsController < Projects::BaseController
 
     if @pull.save
       @pull.check
-      if @pull.state == 'already'
+      if @pull.status == 'already'
         @pull.destroy
 
         @pull.errors.add(:head_ref, I18n.t('projects.pull_requests.up_to_date', :base_ref => @pull.base_ref, :head_ref => @pull.head_ref))

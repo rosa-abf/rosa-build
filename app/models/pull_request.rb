@@ -2,7 +2,7 @@ class PullRequest < ActiveRecord::Base
   belongs_to :issue, :autosave => true, :dependent => :destroy, :touch => true, :validate => true
   belongs_to :base_project, :class_name => 'Project', :foreign_key => 'base_project_id'
   belongs_to :head_project, :class_name => 'Project', :foreign_key => 'head_project_id'
-  delegate :user, :title, :body, :serial_id, :assignee, :state, :to => :issue, :allow_nil => true
+  delegate :user, :title, :body, :serial_id, :assignee, :status, :to => :issue, :allow_nil => true
   accepts_nested_attributes_for :issue
   #attr_accessible #FIXME disable for development
   validate :uniq_merge
@@ -16,9 +16,9 @@ class PullRequest < ActiveRecord::Base
   before_create :clean_dir
   after_destroy :clean_dir
 
-  scope :needed_checking, includes(:issue).where(:issues => {:state => ['open', 'blocked', 'ready', 'already']})
+  scope :needed_checking, includes(:issue).where(:issues => {:status => ['open', 'blocked', 'ready', 'already']})
 
-  state_machine :initial => :open do
+  state_machine :status, :initial => :open do
     #after_transition [:ready, :blocked] => [:merged, :closed] do |pull, transition|
     #  FileUtils.rm_rf(pull.path) # What about diff?
     #end
@@ -48,12 +48,12 @@ class PullRequest < ActiveRecord::Base
     end
   end
 
-  def state=(value)
-    issue.state = value
+  def status=(value)
+    issue.status = value
   end
 
   def can_merge?
-    state == 'ready'
+    status == 'ready'
   end
 
   def check
