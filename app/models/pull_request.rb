@@ -1,7 +1,4 @@
 class PullRequest < ActiveRecord::Base
-  extend StateMachine::MacroMethods # no method state_machine WTF?!
-  #TODO add validates to serialized data
-
   belongs_to :issue, :autosave => true, :dependent => :destroy, :touch => true, :validate => true
   belongs_to :base_project, :class_name => 'Project', :foreign_key => 'base_project_id'
   belongs_to :head_project, :class_name => 'Project', :foreign_key => 'head_project_id'
