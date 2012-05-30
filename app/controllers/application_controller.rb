@@ -15,7 +15,8 @@ class ApplicationController < ActionController::Base
   helper_method :get_owner
 
   rescue_from CanCan::AccessDenied do |exception|
-    redirect_to forbidden_url, :alert => t("flash.exception_message")
+    Rails.logger.debug "Access denied on #{exception.action} #{exception.subject.inspect}"
+    #redirect_to forbidden_url, :alert => t("flash.exception_message")
   end
 
   protected

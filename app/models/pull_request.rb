@@ -2,7 +2,7 @@ class PullRequest < ActiveRecord::Base
   belongs_to :issue, :autosave => true, :dependent => :destroy, :touch => true, :validate => true
   belongs_to :base_project, :class_name => 'Project', :foreign_key => 'base_project_id'
   belongs_to :head_project, :class_name => 'Project', :foreign_key => 'head_project_id'
-  delegate :user, :title, :body, :serial_id, :assignee, :status, :to => :issue, :allow_nil => true
+  delegate :user, :title, :body, :serial_id, :assignee, :status, :to_param, :to => :issue, :allow_nil => true
   accepts_nested_attributes_for :issue
   #attr_accessible #FIXME disable for development
   validate :uniq_merge
@@ -102,7 +102,6 @@ class PullRequest < ActiveRecord::Base
     project.is_root? ? project : project.root
   end
 
-
   def path
     filename = [id, base_ref, head_project.owner.uname, head_project.name, head_ref].compact.join('-')
     if Rails.env == "production"
@@ -129,8 +128,7 @@ class PullRequest < ActiveRecord::Base
         while lines.first =~ /^([-\d]+)\s+([-\d]+)\s+(.+)/
           additions, deletions, filename = lines.shift.split
           additions, deletions = additions.to_i, deletions.to_i
-          total = additions + deletions
-          stat = Grit::DiffStat.new filename, additions, deletions, total
+          stat = Grit::DiffStat.new filename, additions, deletions
           stats << stat
         end
       end

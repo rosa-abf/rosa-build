@@ -1,9 +1,11 @@
 # -*- encoding : utf-8 -*-
 class Projects::PullRequestsController < Projects::BaseController
   before_filter :authenticate_user!
+  skip_before_filter :authenticate_user!, :only => [:index, :show] if APP_CONFIG['anonymous_access']
   load_resource :project
-  #load_and_authorize_resource :pull_request, :through => :project, :find_by => :serial_id #FIXME Disable for development
-  load_resource :pull_request
+
+  load_and_authorize_resource :issue, :through => :project, :find_by => :serial_id, :parent => false
+  before_filter :load_pull
 
   def index
   end
@@ -58,16 +60,16 @@ class Projects::PullRequestsController < Projects::BaseController
   end
 
   def update
+    redirect_to(project_pull_request_path(@project, @pull)) # dummy
   end
 
   def merge
-    @pull_request.check
-    @pull_request.merge! current_user
+    @pull.check
+    @pull.merge! current_user
     redirect_to :show
   end
 
   def show
-    @pull = @pull_request
     repo = Git::Repository.new(@pull.path)
     @base_commit = repo.commits(@pull.base_ref).first
     @head_commit = repo.commits(@pull.head_branch).first
@@ -106,6 +108,14 @@ class Projects::PullRequestsController < Projects::BaseController
   def json_for_autocomplete_ref(items)
     items.collect do |item|
       {"id" => item.name, "label" => item.name, "value" => item.name}
+    end
+  end
+
+  def load_pull
+    if params[:action].to_sym != :index
+      @pull = @project.pull_requests.joins(:issue).where(:issues => {:id => @issue.id}).first
+    else
+      @pull_requests = @project.pull_requests
     end
   end
 end

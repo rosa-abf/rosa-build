@@ -16,6 +16,7 @@ class Ability
     can :show, Project, :visibility => 'open'
     can :archive, Project, :visibility => 'open'
     can :read, Issue, :project => {:visibility => 'open'}
+    can :read, PullRequest, :project => {:visibility => 'open'}
     can :search, BuildList
     can :read, BuildList, :project => {:visibility => 'open'}
     can :read, ProductBuildList, :product => {:platform => {:visibility => 'open'}}
@@ -116,7 +117,7 @@ class Ability
         can(:update, Comment) {|comment| comment.user_id == user.id or local_admin?(comment.project || comment.commentable.project)}
         cannot :manage, Comment, :commentable_type => 'Issue', :commentable => {:project => {:has_issues => false}} # switch off issues
 
-        can [:merge], PullRequest, :status => 'ready'
+        can :merge, PullRequest, :status => 'ready'
       end
 
       # Shared cannot rights for all users (registered, admin)
