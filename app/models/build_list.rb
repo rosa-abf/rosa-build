@@ -123,24 +123,18 @@ class BuildList < ActiveRecord::Base
     end
 
     event :start do
-      transition [
-        :build_pending,
-        :platform_pending
-      ] => :build_started
+      transition [:build_pending, :platform_pending] => :build_started
     end
 
     event :cancel do
-      transition [
-        :build_pending,
-        :platform_pending
-      ] => :build_canceled, :if => :can_cancel?
+      transition [:build_pending, :platform_pending] => :build_canceled, :if => lambda { |build_list|
+        has_canceled = BuildServer.delete_build_list build_list.bs_id
+        build_list.can_cancel? && has_canceled == 0
+      }
     end
 
     event :finish_build do
-      transition [
-        :build_started,
-        :build_canceled
-      ] => :success
+      transition [:build_started, :build_canceled] => :success
     end
 
     event :fail_build do
@@ -148,14 +142,14 @@ class BuildList < ActiveRecord::Base
     end
 
     event :publish do
-      transition [
-        :success,
-        :failed_publish
-      ] => :build_publish, :if => :can_publish?
-      transition [
-        :success,
-        :failed_publish
-      ] => :build_publish, :if => :can_fail_publish?
+      transition [:success, :failed_publish] => :build_publish, :if => lambda { |build_list|
+        has_published = BuildServer.publish_container build_list.bs_id
+        build_list.can_publish? && has_published == 0
+      }
+      transition [:success, :failed_publish] => :failed_publish, :if => lambda { |build_list|
+        has_published = BuildServer.publish_container build_list.bs_id
+        build_list.can_publish? && has_published != 0
+      }
     end
 
     event :reject_publish do
@@ -167,7 +161,10 @@ class BuildList < ActiveRecord::Base
     end
 
     event :fail_publish do
-      transition :build_publish => :failed_publish
+      transition :build_publish => :failed_publish, :if => lambda { |build_list|
+        has_published = BuildServer.publish_container build_list.bs_id
+        build_list.can_publish? && has_published != 0
+      }
     end
 
     HUMAN_STATUSES.each do |code,name|
@@ -178,17 +175,11 @@ class BuildList < ActiveRecord::Base
 
   #TODO: Share this checking on product owner.
   def can_cancel?
-    has_canceled = BuildServer.delete_build_list bs_id
-    status == BUILD_PENDING && bs_id && has_canceled == 0
+    status == BUILD_PENDING && bs_id
   end
 
   def can_publish?
     status == BuildServer::SUCCESS or status == FAILED_PUBLISH
-  end
-
-  def can_fail_publish?
-    has_published = BuildServer.publish_container bs_id
-    can_publish? && has_published != 0
   end
 
   def can_reject_publish?
