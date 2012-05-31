@@ -11,6 +11,12 @@ shared_examples_for 'issue user with project reader rights' do
     get :show, :owner_name => @project.owner.uname, :project_name => @project.name, :id => @issue.serial_id
     response.should render_template(:show)
   end
+
+  it 'should be able to perform index action on hidden project' do
+    @project.update_attribute :visibility, 'hidden'
+    get :index, :owner_name => @project.owner.uname, :project_name => @project.name
+    response.should render_template(:index)
+  end
 end
 
 shared_examples_for 'issue user with project writer rights' do
@@ -187,7 +193,22 @@ describe Projects::IssuesController do
 
   context 'for guest' do
     if APP_CONFIG['anonymous_access']
-      it_should_behave_like 'issue user with project reader rights'
+      # it_should_behave_like 'issue user with project reader rights'
+      it 'should be able to perform index action' do
+        get :index, :owner_name => @project.owner.uname, :project_name => @project.name
+        response.should render_template(:index)
+      end
+
+      it 'should be able to perform show action' do
+        get :show, :owner_name => @project.owner.uname, :project_name => @project.name, :id => @issue.serial_id
+        response.should render_template(:show)
+      end
+
+      it 'should not be able to perform index action on hidden project' do
+        @project.update_attribute :visibility, 'hidden'
+        get :index, :owner_name => @project.owner.uname, :project_name => @project.name
+        response.should redirect_to(forbidden_path)
+      end
     else
       it 'should not be able to perform index action' do
         get :index, :owner_name => @project.owner.uname, :project_name => @project.name
@@ -196,6 +217,12 @@ describe Projects::IssuesController do
 
       it 'should not be able to perform show action' do
         get :show, :owner_name => @project.owner.uname, :project_name => @project.name, :id => @issue.serial_id
+        response.should redirect_to(new_user_session_path)
+      end
+
+      it 'should not be able to perform index action on hidden project' do
+        @project.update_attribute :visibility, 'hidden'
+        get :index, :owner_name => @project.owner.uname, :project_name => @project.name
         response.should redirect_to(new_user_session_path)
       end
     end
