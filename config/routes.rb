@@ -1,5 +1,12 @@
 # -*- encoding : utf-8 -*-
 Rosa::Application.routes.draw do
+  require 'resque/server'
+  namespace :admin do
+    constraints CanAccessResque do
+      mount Resque::Server, at: 'resque'
+    end
+  end
+
   devise_scope :users do
     get '/users/auth/:provider' => 'users/omniauth_callbacks#passthru'
   end
