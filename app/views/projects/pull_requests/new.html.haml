@@ -41,26 +41,4 @@
       .rightlist=f.submit t(@pull.status != 'already' ? '.submit' : '.update'), :class => 'btn btn-primary disabled', 'data-loading-text' => t('layout.processing')#, :id => 'create_pull'
       .both
 
-  -if @pull.status != 'already'
-    #diff.tab-pane
-      .leftside
-        -total_additions = @stats.inject {|sum, n| sum.additions + n.additions}
-        -total_deletions = @stats.inject {|sum, n| sum.deletions + n.deletions}
-        %h5= t("layout.projects.diff_show_header",
-          :files         => t("layout.projects.commit_files_count",        :count => @stats.count),
-          :additions => t("layout.projects.commit_additions_count", :count => total_additions),
-          :deletions => t("layout.projects.commit_deletions_count", :count => total_deletions))
-      .both
-      -begin
-        = render_diff_stats(@stats)
-
-        = render :partial => 'commit_diff', :collection => @diff
-      - rescue Grit::Git::GitTimeout
-        %p= t 'layout.git.repositories.commit_diff_too_big'
-    #commits.tab-pane
-      = render :partial => 'projects/git/commits/commits', :object => @commits
-
-:javascript
-  $(function () {
-    $('.nav.nav-tabs a:first').tab('show');
-  });
+  =render 'diff_commits_tabs' if @pull.status != 'already'
