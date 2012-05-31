@@ -3,5 +3,11 @@
 
 require File.expand_path('../config/application', __FILE__)
 require 'rake'
+require 'resque/tasks'
+
+# This fixes connection fail with Postgres server on new fork:
+task "resque:setup" => :environment do
+  Resque.before_fork = Proc.new { ActiveRecord::Base.establish_connection }
+end
 
 Rosa::Application.load_tasks
