@@ -11,6 +11,7 @@ class Issue < ActiveRecord::Base
   has_many :subscribes, :as => :subscribeable, :dependent => :destroy
   has_many :labelings, :dependent => :destroy
   has_many :labels, :through => :labelings, :uniq => true
+  has_one :pull_request
 
   validates :title, :body, :project_id, :presence => true
 

@@ -3,8 +3,7 @@ class PullRequest < ActiveRecord::Base
   belongs_to :base_project, :class_name => 'Project', :foreign_key => 'base_project_id'
   belongs_to :head_project, :class_name => 'Project', :foreign_key => 'head_project_id'
   delegate :user, :title, :body, :serial_id, :assignee, :status, :to_param, :to => :issue, :allow_nil => true
-  accepts_nested_attributes_for :issue
-  #attr_accessible #FIXME disable for development
+
   validate :uniq_merge
   validates_each :head_ref, :base_ref do |record, attr, value|
     project = attr == :head_ref ? record.head_project : record.base_project
@@ -15,6 +14,9 @@ class PullRequest < ActiveRecord::Base
 
   before_create :clean_dir
   after_destroy :clean_dir
+
+  accepts_nested_attributes_for :issue
+  attr_accessible :issue_attributes
 
   scope :needed_checking, includes(:issue).where(:issues => {:status => ['open', 'blocked', 'ready', 'already']})
 

@@ -34,7 +34,7 @@
         .rightlist=issue.text_area :body
         .both
 
-      .leftlist for debug
+      .leftlist=f.label :title, t('activerecord.attributes.issue.status'), :class => :label
       .rightlist=@pull.status
       .both
       .leftlist

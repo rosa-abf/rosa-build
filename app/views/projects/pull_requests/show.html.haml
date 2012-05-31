@@ -20,11 +20,24 @@
     .rightlist=@pull.head_ref
     .both
     .leftlist=t('activerecord.attributes.issue.title')
-    .rightlist=@pull.issue.title
+    .rightlist.pull_title=@pull.issue.title
     .both
     .leftlist=t('activerecord.attributes.issue.body')
-    .rightlist=@pull.issue.body
+    .rightlist.pull_body=@pull.issue.body
     .both
+    - if can? :update, @pull.issue
+      %br
+      =link_to t('layout.edit'), '#', :id => 'edit_pull_content', :class => 'button'
+      =form_for @pull, :url => [@project, @pull], :method => :put, :html => { :class => 'edit_form pull', :style => 'display:none;' } do |f|
+        = f.fields_for :issue do |issue|
+          .leftlist= t('activerecord.attributes.issue.title') + ':'
+          .rightlist= issue.text_field :title, :id => 'pull_title'
+          .both
+          .leftlist= t('activerecord.attributes.issue.body') + ':'
+          .rightlist= issue.text_area :body, :id => 'pull_body'
+          .both
+        =f.submit t('layout.update'), :id => 'update_pull_content'
+        =link_to t('layout.issues.cancel_button'), '#', :id => 'cancel_edit_pull_content', :class => 'button'
     .leftlist=t('activerecord.attributes.issue.status')
     .rightlist=@pull.issue.status
     .both

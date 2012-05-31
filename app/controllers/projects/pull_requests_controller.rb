@@ -53,7 +53,7 @@ class Projects::PullRequestsController < Projects::BaseController
   end
 
   def update
-    redirect_to(project_pull_request_path(@project, @pull)) # dummy
+    render :nothing => true, :status => (@pull.update_attributes(params[:pull_request]) ? 200 : 500), :layout => false
   end
 
   def merge
@@ -99,7 +99,7 @@ class Projects::PullRequestsController < Projects::BaseController
 
   def load_pull
     if params[:action].to_sym != :index
-      @pull = @project.pull_requests.joins(:issue).where(:issues => {:id => @issue.id}).first
+      @pull = @project.pull_requests.joins(:issue).where(:issues => {:id => @issue.id}).readonly(false).first
     else
       @pull_requests = @project.pull_requests
     end
