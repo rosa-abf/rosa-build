@@ -24,14 +24,7 @@ class Projects::PullRequestsController < Projects::BaseController
     if @pull.status == 'already'
       flash[:warning] = I18n.t('projects.pull_requests.up_to_date', :base_ref => @pull.base_ref, :head_ref => @pull.head_ref)
     else
-      repo = Git::Repository.new(@pull.path)
-      @base_commit = repo.commits(@pull.base_ref).first
-      @head_commit = repo.commits(@pull.head_branch).first
-      repo = Grit::Repo.new(@pull.path)
-      @diff = repo.diff @base_commit, @head_commit
-      @stats = @pull.diff_stats
-
-      @commits = repo.commits_between @base_commit, @head_commit
+      load_diff_commits_data
     end
   end
 
@@ -70,14 +63,7 @@ class Projects::PullRequestsController < Projects::BaseController
   end
 
   def show
-    repo = Git::Repository.new(@pull.path)
-    @base_commit = repo.commits(@pull.base_ref).first
-    @head_commit = repo.commits(@pull.head_branch).first
-
-    repo = Grit::Repo.new(@pull.path)
-    @diff = repo.diff @base_commit, @head_commit
-    @stats = @pull.diff_stats
-    @commits = repo.commits_between @base_commit, @head_commit
+    load_diff_commits_data
   end
 
   def autocomplete_base_project_name
@@ -117,5 +103,15 @@ class Projects::PullRequestsController < Projects::BaseController
     else
       @pull_requests = @project.pull_requests
     end
+  end
+
+  def load_diff_commits_data
+    repo = Grit::Repo.new(@pull.path)
+    @base_commit = repo.commits(@pull.base_ref).first
+    @head_commit = repo.commits(@pull.head_branch).first
+
+    @diff = repo.diff @base_commit, @head_commit
+    @stats = @pull.diff_stats
+    @commits = repo.commits_between @base_commit, @head_commit
   end
 end
