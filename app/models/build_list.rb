@@ -144,12 +144,9 @@ class BuildList < ActiveRecord::Base
     event :publish do
       transition [:success, :failed_publish] => :build_publish, :if => lambda { |build_list|
         has_published = BuildServer.publish_container build_list.bs_id
-        build_list.can_publish? && has_published == 0
+        has_published == 0
       }
-      transition [:success, :failed_publish] => :failed_publish, :if => lambda { |build_list|
-        has_published = BuildServer.publish_container build_list.bs_id
-        build_list.can_publish? && has_published != 0
-      }
+      transition [:success, :failed_publish] => :failed_publish
     end
 
     event :reject_publish do
@@ -163,7 +160,7 @@ class BuildList < ActiveRecord::Base
     event :fail_publish do
       transition :build_publish => :failed_publish, :if => lambda { |build_list|
         has_published = BuildServer.publish_container build_list.bs_id
-        build_list.can_publish? && has_published != 0
+        has_published != 0
       }
     end
 
@@ -176,10 +173,6 @@ class BuildList < ActiveRecord::Base
   #TODO: Share this checking on product owner.
   def can_cancel?
     status == BUILD_PENDING && bs_id
-  end
-
-  def can_publish?
-    status == BuildServer::SUCCESS or status == FAILED_PUBLISH
   end
 
   def can_reject_publish?
@@ -212,25 +205,6 @@ class BuildList < ActiveRecord::Base
       build_package(rpm_hash, 'binary', prj) {|p| p.save!}
     end
   end
-
-  #def publish
-  #  return false unless can_publish?
-  #  has_published = BuildServer.publish_container bs_id
-  #  update_attribute(:status, has_published == 0 ? BUILD_PUBLISH : FAILED_PUBLISH)
-  #  return has_published == 0
-  #end
-
-  #def reject_publish
-  #  return false unless can_reject_publish?
-  #  update_attribute(:status, REJECTED_PUBLISH)
-  #end
-
-  #def cancel
-  #  return false unless can_cancel?
-  #  has_canceled = BuildServer.delete_build_list bs_id
-  #  update_attribute(:status, BUILD_CANCELED) if has_canceled == 0
-  #  return has_canceled == 0
-  #end
 
   def event_log_message
     {:project => project.name, :version => project_version, :arch => arch.name}.inspect
