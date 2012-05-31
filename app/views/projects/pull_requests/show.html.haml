@@ -25,6 +25,9 @@
     .leftlist=t('activerecord.attributes.issue.body')
     .rightlist.pull_body=@pull.issue.body
     .both
+    .leftlist=t('activerecord.attributes.issue.status')
+    .rightlist=@pull.issue.status
+    .both
     - if can? :update, @pull.issue
       %br
       =link_to t('layout.edit'), '#', :id => 'edit_pull_content', :class => 'button'
@@ -38,10 +41,8 @@
           .both
         =f.submit t('layout.update'), :id => 'update_pull_content'
         =link_to t('layout.issues.cancel_button'), '#', :id => 'cancel_edit_pull_content', :class => 'button'
-    .leftlist=t('activerecord.attributes.issue.status')
-    .rightlist=@pull.issue.status
-    .both
     - if can? :merge, @pull
+      %br
       =form_for PullRequest.new, :url => merge_project_pull_request_path(@project, @pull), :html => { :method => :put, :class => :form } do |f|
         =f.submit t 'projects.pull_requests.merge'
 
