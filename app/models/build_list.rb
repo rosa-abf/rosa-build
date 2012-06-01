@@ -109,7 +109,6 @@ class BuildList < ActiveRecord::Base
         BuildServer::PLATFORM_PENDING,
         BuildServer::PLATFORM_NOT_FOUND,
         BuildServer::PROJECT_NOT_FOUND,
-        BuildServer::PROJECT_VERSION_NOT_FOUND,
         BuildServer::PROJECT_VERSION_NOT_FOUND
       ].each do |code|
         transition :waiting_for_response => HUMAN_STATUSES[code], :if => lambda { |build_list|
