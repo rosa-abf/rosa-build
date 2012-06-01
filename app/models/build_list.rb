@@ -117,26 +117,6 @@ class BuildList < ActiveRecord::Base
       end
     end
 
-    event :wait_assembly do
-      transition :waiting_for_response => :build_pending
-    end
-
-    event :wait_platform do
-      transition :waiting_for_response => :platform_pending
-    end
-
-    event :lose_platform do
-      transition :waiting_for_response => :platform_not_found
-    end
-
-    event :lose_project do
-      transition :waiting_for_response => :project_not_found
-    end
-
-    event :lose_project_version do
-      transition :waiting_for_response => :project_version_not_found
-    end
-
     event :start do
       transition [:build_pending, :platform_pending] => :build_started
     end
