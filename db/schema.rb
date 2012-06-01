@@ -96,6 +96,7 @@ ActiveRecord::Schema.define(:version => 20120730214052) do
   end
 
   add_index "build_list_packages", ["build_list_id"], :name => "index_build_list_packages_on_build_list_id"
+  add_index "build_list_packages", ["name", "project_id"], :name => "index_build_list_packages_on_name_and_project_id"
   add_index "build_list_packages", ["platform_id"], :name => "index_build_list_packages_on_platform_id"
   add_index "build_list_packages", ["project_id"], :name => "index_build_list_packages_on_project_id"
 
