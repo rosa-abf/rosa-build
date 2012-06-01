@@ -40,7 +40,10 @@ class Platforms::MaintainersController < ApplicationController
         ret[:error] = 'Not found'
       end
     end
-    render :json => ret
+    respond_to do |format|
+      format.json {render :json => ret}
+      format.js {@ret = ret}
+    end
   end
 
   protected

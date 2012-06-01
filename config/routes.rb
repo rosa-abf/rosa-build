@@ -51,6 +51,7 @@ Rosa::Application.routes.draw do
   # Maintainer Database API
   # (package name may contain dots, numbers, and all kinds of weird symbols, hence the :constraints relaxation)
   match 'api/json/maintdb/assignee/:platform_id/:package' => 'platforms/maintainers#assignee', :format => :json, :constraints => { :package => /.*/ }
+  match 'api/js/maintdb/assignee/:platform_id/:package' => 'platforms/maintainers#assignee', :format => :js, :constraints => { :package => /.*/ }
 
   scope :module => 'platforms' do
     resources :platforms do
