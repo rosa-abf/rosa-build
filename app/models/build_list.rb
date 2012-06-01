@@ -96,7 +96,6 @@ class BuildList < ActiveRecord::Base
   serialize :additional_repos
   serialize :include_repos
 
-  before_create :set_default_status
   after_create :place_build
   after_destroy :delete_container
 
@@ -250,11 +249,6 @@ class BuildList < ActiveRecord::Base
   end
 
   protected
-
-  def set_default_status
-    self.status = WAITING_FOR_RESPONSE unless self.status.present?
-    return true
-  end
 
   def delete_container
     if can_cancel?
