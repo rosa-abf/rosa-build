@@ -4,7 +4,7 @@ app_name = ENV['APP_NAME'] || 'rosa_build'
 Bluepill.application(app_name) do |app|
   app.uid = app.gid = 'rosa'
   app.working_dir = "/srv/#{app_name}/current"
-  %w(fork import hook default).each do |queue|
+  %w(hook default).each do |queue|
     app.process("delayed_job_#{queue}_queue") do |process|
       process.start_grace_time    = 10.seconds
       process.stop_grace_time     = 10.seconds
