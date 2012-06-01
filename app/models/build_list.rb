@@ -102,6 +102,23 @@ class BuildList < ActiveRecord::Base
 
   state_machine :status, :initial => :waiting_for_response do
 
+    event :place_build do
+      transition :waiting_for_response => :build_pending, :if => lambda { |build_list|
+        build_list.add_to_queue == BUILD_PENDING
+      }
+      [
+        BuildServer::PLATFORM_PENDING,
+        BuildServer::PLATFORM_NOT_FOUND,
+        BuildServer::PROJECT_NOT_FOUND,
+        BuildServer::PROJECT_VERSION_NOT_FOUND,
+        BuildServer::PROJECT_VERSION_NOT_FOUND
+      ].each do |code|
+        transition :waiting_for_response => HUMAN_STATUSES[code], :if => lambda { |build_list|
+          build_list.add_to_queue == code
+        }
+      end
+    end
+
     event :wait_assembly do
       transition :waiting_for_response => :build_pending
     end
@@ -180,6 +197,11 @@ class BuildList < ActiveRecord::Base
   end
 
 
+  def add_to_queue
+    #XML-RPC params: project_name, project_version, plname, arch, bplname, update_type, build_requires, id_web, include_repos, priority
+    @status ||= BuildServer.add_build_list project.name, project_version, save_to_platform.name, arch.name, (save_to_platform_id == build_for_platform_id ? '' : build_for_platform.name), update_type, build_requires, id, include_repos, priority
+  end
+
   def self.human_status(status)
     I18n.t("layout.build_lists.statuses.#{HUMAN_STATUSES[status]}")
   end
@@ -232,13 +254,6 @@ class BuildList < ActiveRecord::Base
   def set_default_status
     self.status = WAITING_FOR_RESPONSE unless self.status.present?
     return true
-  end
-
-  def place_build
-    #XML-RPC params: project_name, project_version, plname, arch, bplname, update_type, build_requires, id_web, include_repos, priority
-    self.status = BuildServer.add_build_list project.name, project_version, save_to_platform.name, arch.name, (save_to_platform_id == build_for_platform_id ? '' : build_for_platform.name), update_type, build_requires, id, include_repos, priority
-    self.status = BUILD_PENDING if self.status == 0
-    save
   end
 
   def delete_container
