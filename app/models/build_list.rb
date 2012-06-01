@@ -158,8 +158,7 @@ class BuildList < ActiveRecord::Base
 
     event :publish do
       transition [:success, :failed_publish] => :build_publish, :if => lambda { |build_list|
-        has_published = BuildServer.publish_container build_list.bs_id
-        has_published == 0
+        BuildServer.publish_container(build_list.bs_id) == 0
       }
       transition [:success, :failed_publish] => :failed_publish
     end
@@ -174,8 +173,7 @@ class BuildList < ActiveRecord::Base
 
     event :fail_publish do
       transition :build_publish => :failed_publish, :if => lambda { |build_list|
-        has_published = BuildServer.publish_container build_list.bs_id
-        has_published != 0
+        BuildServer.publish_container(build_list.bs_id) != 0
       }
     end
 
