@@ -15,6 +15,9 @@
           - if can? :read, @platform.products.build
             %li{:class => (contr == :products) ? 'active' : ''}
               = link_to t("layout.products.list_header"), platform_products_path(@platform)
+          - if can? :read_advisories, @platform
+            %li{:class => (contr == :platforms and act == :advisories) ? 'active' : ''}
+              = link_to t("layout.advisories.list_header"), advisories_platform_path(@platform)
           - if can? :update, @platform
             %li{:class => (act == :edit && contr == :platforms) ? 'active' : nil}
               = link_to t("platform_menu.settings"), edit_platform_path(@platform)

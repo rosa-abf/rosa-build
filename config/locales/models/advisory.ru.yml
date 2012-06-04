@@ -6,6 +6,8 @@ ru:
       project_name: Проект
       affected_versions: Применен в версиях
       ref_comment: Вставляйте ссылки по одной на строку
+      no_: Нет
+      new: Новый
 
   flash:
     advisories:

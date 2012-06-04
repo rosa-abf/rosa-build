@@ -953,3 +953,117 @@ form.mass_build input[type="checkbox"] {
   width: 10px;
   height: 11px;
 }
+
+div#new_advisory_form, div#advisory_preview {
+    display: none;
+}
+
+/*=============== popovers ===============*/
+
+.popover {
+    display: none;
+    left: 0;
+    padding: 5px;
+    position: absolute;
+    top: 0;
+    z-index: 1010;
+}
+
+.popover.top {
+    margin-top: -5px;
+}
+
+.popover.right {
+    margin-left: 5px;
+}
+
+.popover.bottom {
+    margin-top: 5px;
+}
+
+.popover.left {
+    margin-left: -5px;
+}
+
+.popover.top .arrow {
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+    border-top: 5px solid #000000;
+    bottom: 0;
+    left: 50%;
+    margin-left: -5px;
+}
+
+.popover.right .arrow {
+    border-bottom: 5px solid transparent;
+    border-right: 5px solid #000000;
+    border-top: 5px solid transparent;
+    left: 0;
+    margin-top: -5px;
+    top: 50%;
+}
+
+.popover.bottom .arrow {
+    border-bottom: 5px solid #000000;
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+    left: 50%;
+    margin-left: -5px;
+    top: 0;
+}
+
+.popover.left .arrow {
+    border-bottom: 5px solid transparent;
+    border-left: 5px solid #000000;
+    border-top: 5px solid transparent;
+    margin-top: -5px;
+    right: 0;
+    top: 50%;
+}
+
+.popover .arrow {
+    height: 0;
+    position: absolute;
+    width: 0;
+}
+
+.popover-inner {
+    background: none repeat scroll 0 0 rgba(0, 0, 0, 0.8);
+    border-radius: 6px 6px 6px 6px;
+    box-shadow: 0 3px 7px rgba(0, 0, 0, 0.3);
+    overflow: hidden;
+    padding: 3px;
+    width: 280px;
+    text-align: justify;
+}
+
+.popover-title {
+    background-color: #F5F5F5;
+    border-bottom: 1px solid #EEEEEE;
+    border-radius: 3px 3px 0 0;
+    line-height: 1;
+    padding: 9px 15px;
+    margin: 0;
+}
+
+.popover-content {
+    background-clip: padding-box;
+    background-color: #FFFFFF;
+    border-radius: 0 0 3px 3px;
+    padding: 14px;
+    font-size: 13px;
+}
+
+.popover-content p, .popover-content ul, .popover-content ol {
+    margin-bottom: 0;
+    margin: 0;
+}
+
+.fade {
+    -moz-transition: opacity 0.15s linear 0s;
+    opacity: 0;
+}
+
+.fade.in {
+    opacity: 1;
+}
