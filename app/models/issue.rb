@@ -25,6 +25,10 @@ class Issue < ActiveRecord::Base
   scope :opened, where(:status => 'open')
   scope :closed, where(:status => 'closed')
 
+  scope :needed_checking, where(:issues => {:status => ['open', 'blocked', 'ready', 'already']})
+  scope :not_closed_or_merged, needed_checking
+  scope :closed_or_merged, where(:issues => {:status => ['closed', 'merged']})
+
   def assign_uname
     assignee.uname if assignee
   end

@@ -14,6 +14,10 @@
         .label.selected.tracker.left
           .labeltext.selected{:style => "background: ##{label.color};"}=label.name
   %td.td3
+    -if issue.pull_request
+      %a{:href => project_pull_request_path(@project, issue.pull_request)}
+        .code
+          \#
     .avatar
       =link_to image_tag(avatar_url(issue.assignee), :alt => 'avatar'), user_path(issue.assignee) if issue.assignee
     %a{:href => "#{project_issue_path @project, issue}#block-list"}

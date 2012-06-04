@@ -10,22 +10,24 @@ class Projects::IssuesController < Projects::BaseController
   layout 'application'
 
   def index(status = 200)
-    @is_assigned_to_me = params[:filter] == 'to_me'
-    @status = params[:status] == 'closed' ? 'closed' : 'open'
     @labels = params[:labels] || []
-    @issues = @project.issues
-    @issues = @issues.where(:assignee_id => current_user.id) if @is_assigned_to_me
+    @issues = @project.issues.includes(:pull_request).includes(:assignee, :user)
+    @issues = @issues.where(:assignee_id => current_user.id) if @is_assigned_to_me = params[:filter] == 'to_me'
     @issues = @issues.joins(:labels).where(:labels => {:name => @labels}) unless @labels == []
 
-    if params[:search_issue]
-      @issues = @issues.where('issues.title ILIKE ?', "%#{params[:search_issue].mb_chars.downcase}%")
+    @issues = @issues.where('issues.title ILIKE ?', "%#{params[:search_issue].mb_chars.downcase}%") if params[:search_issue]
+    @opened_issues = @issues.not_closed_or_merged.count
+    @closed_issues = @issues.closed_or_merged.count
+    @issues = @issues
+    if params[:status] == 'closed'
+      @issues = @issues.closed_or_merged
+      @status = params[:status]
+    else
+      @issues = @issues.not_closed_or_merged
+      @status = 'open'
     end
-    @opened_issues = @issues.opened.count
-    @closed_issues = @issues.closed.count
-    @issues = @issues.where(:status => @status)
 
-
-    @issues = @issues.includes(:assignee, :user).order('serial_id desc').uniq.paginate :per_page => 10, :page => params[:page]
+    @issues = @issues.order('issues.serial_id desc').uniq.paginate :per_page => 10, :page => params[:page]
     if status == 200
       render 'index', :layout => request.xhr? ? 'issues' : 'application'
     else
