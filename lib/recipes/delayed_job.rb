@@ -2,7 +2,7 @@
 Capistrano::Configuration.instance(:must_exist).load do
   namespace :delayed_job do
     def dj_queues
-      %w(fork import hook default)
+      %w(hook default)
     end
 
     def rails_env
