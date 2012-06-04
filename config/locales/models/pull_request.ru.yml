@@ -2,16 +2,16 @@ ru:
   projects:
     pull_requests:
       new:
-        new: 'Создать запрос на слияние в <span class="label label-info font14">%{base}</span> из <span class="label label-info font14">%{head}</span>'
+        new: 'Создать пул реквест в <span class="label label-info font14">%{base}</span> из <span class="label label-info font14">%{head}</span>'
         base_ref: База
         head_ref: Источник
         refs: 'branch · tag · commit'
         base_project: Базовый проект
         head_project: Проект-источник
-        submit: Создать запрос на слияние
+        submit: Создать пул реквест
         update: Обновить коммиты
-      merge: Слияние
-      duplicate: 'Уже существует запрос на слияние %{head_ref}'
+      merge: Merge
+      duplicate: 'Уже существует пул реквест %{head_ref}'
       up_to_date: 'Ветка %{base_ref} на данный момент уже содержит последние изменения %{head_ref}'
       wrong_ref: Неправильный tree-ish
 
@@ -23,6 +23,6 @@ ru:
 
   flash:
     pull_request:
-      new_error: Не удалось создать запрос на слияние
-      saved: Запрос на слияние успешно сохранен
-      save_error: Не удалось сохранить запрос на слияние
+      new_error: Не удалось создать пул реквест
+      saved: Пул реквест успешно сохранен
+      save_error: Не удалось сохранить пул реквест
