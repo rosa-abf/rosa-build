@@ -160,7 +160,7 @@ Rosa::Application.routes.draw do
         resources :collaborators do
           get :find, :on => :collection
         end
-        resources :pull_requests, :except => [:destroy, :new] do
+        resources :pull_requests, :except => [:destroy, :new, :index] do
           collection do
             post '/new' => 'pull_requests#new'
             get :autocomplete_base_project_name
