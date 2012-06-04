@@ -18,7 +18,7 @@ Capistrano::Configuration.instance(:must_exist).load do
       fetch(:rails_env, false) ? "RAILS_ENV=#{fetch(:rails_env)}" : ''
     end
 
-    def start_workers
+    def stop_workers
       pids = Array.new
 
       Resque.workers.each do |worker|
@@ -30,7 +30,7 @@ Capistrano::Configuration.instance(:must_exist).load do
       end
     end
 
-    def stop_workers
+    def start_workers
       run "cd #{fetch :release_path} && QUEUE=* bundle exec rake resque:work"
     end
   end
