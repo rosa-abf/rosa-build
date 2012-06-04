@@ -34,7 +34,4 @@
     %br
     = f.submit t("layout.projects.build_button")
 
-:javascript
-  var FROZEN_PLS = [#{ @project.repositories.map { |r| r.id if r.platform.released }.delete_if { |i| i.nil? }.join(", ") }];
-
 = render 'projects/base/submenu'

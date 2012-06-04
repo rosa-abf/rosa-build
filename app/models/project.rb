@@ -41,12 +41,12 @@ class Project < ActiveRecord::Base
 
   after_create :attach_to_personal_repository
   after_create :create_git_repo
-  after_create {|p| p.delay(:queue => 'fork', :priority => 20).fork_git_repo unless is_root?}
+  after_create {|p| p.async(:fork_git_repo) unless is_root?}
   after_save :create_wiki
 
   after_destroy :destroy_git_repo
   after_destroy :destroy_wiki
-  after_save {|p| p.delay(:queue => 'import', :priority => 10).import_attached_srpm if p.srpm?} # should be after create_git_repo
+  after_save {|p| p.async(:import_attached_srpm) if p.srpm?} # should be after create_git_repo
   # after_rollback lambda { destroy_git_repo rescue true if new_record? }
 
   has_ancestry
@@ -54,6 +54,20 @@ class Project < ActiveRecord::Base
   has_attached_file :srpm
 
   include Modules::Models::Owner
+
+  @queue = :fork_and_import
+
+  # This will be called by a worker when a job needs to be processed
+  def self.perform(id, method, *args)
+    find(id).send(method, *args)
+  end
+
+  # We can pass this any Repository instance method that we want to
+  # run later.
+  def async(method, *args)
+    Resque.enqueue(Project, id, method, *args)
+  end
+
 
   def to_param
     name
@@ -252,7 +266,7 @@ class Project < ActiveRecord::Base
   def create_git_repo
     if is_root?
       Grit::Repo.init_bare(path)
-      write_hook.delay(:queue => 'fork', :priority => 15)
+      async(:write_hook)
     end
   end
 

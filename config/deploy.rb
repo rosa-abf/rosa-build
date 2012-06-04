@@ -37,6 +37,7 @@ require './lib/recipes/nginx'
 require './lib/recipes/unicorn'
 require './lib/recipes/bluepill'
 require './lib/recipes/delayed_job'
+require './lib/recipes/resque'
 
 namespace :deploy do
   task :stub_xml_rpc do
@@ -88,6 +89,11 @@ after "deploy:setup", "deploy:symlink_pids"
 after "deploy:stop",    "delayed_job:stop"
 after "deploy:start",   "delayed_job:start"
 after "deploy:restart", "delayed_job:restart"
+
+# Resque
+after "deploy:stop",    "resque:stop"
+after "deploy:start",   "resque:start"
+after "deploy:restart", "resque:restart"
 
 after "deploy:restart", "deploy:cleanup"
 

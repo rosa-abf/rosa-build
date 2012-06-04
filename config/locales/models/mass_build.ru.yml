@@ -1,12 +1,17 @@
 ru:
+  layout:
+    mass_builds:
+      repositories: Репозитории
   activerecord:
     models:
       mass_build: Массовая Сборка
     attributes:
       mass_build:
+        id: Id
         name: Название
         created_at: Создан
         updated_at: Обновлен
         arch_names: Архитектуры
         user: Пользователь
         auto_publish: Авто Публикация
+        repositories: Репозитории

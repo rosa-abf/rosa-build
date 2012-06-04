@@ -12,7 +12,7 @@ production:
   action_mailer_host: "school.rosalab.ru"
   root_path: /share
   nginx_log: /srv/rosa_build/shared/log/nginx.access.log
-  do-not-reply-email: do-not-reply@rosalab.ru
+  do-not-reply-email: do-not-reply@school.rosalab.ru
   build_server_ip: 127.0.0.1
   build_server_port: 12555
   build_server_path: /xmlrpc

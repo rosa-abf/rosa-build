@@ -2,7 +2,7 @@ production:
   action_mailer_host: "dev-abf.rosalinux.ru"
   root_path: /share
   nginx_log: /srv/rosa_build/shared/log/nginx.access.log
-  do-not-reply-email: do-not-reply@rosalab.ru
+  do-not-reply-email: do-not-reply@dev-abf.rosalinux.ru
   project_name: ABF
   repo_project_name: ABF
   build_server_ip: 127.0.0.1

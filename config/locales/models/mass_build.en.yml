@@ -1,12 +1,17 @@
 en:
+  layout:
+    mass_builds:
+      repositories: Repositories
   activerecord:
     models:
       mass_build: Mass Build
     attributes:
       mass_build:
+        id: Id
         name: Name
         created_at: Created
         updated_at: Updated
         arch_names: Architectures
         user: User
         auto_publish: Auto Publish
+        repositories: Repositories

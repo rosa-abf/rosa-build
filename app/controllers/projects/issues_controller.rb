@@ -4,7 +4,7 @@ class Projects::IssuesController < Projects::BaseController
   before_filter :authenticate_user!
   skip_before_filter :authenticate_user!, :only => [:index, :show] if APP_CONFIG['anonymous_access']
   load_resource :project
-  load_and_authorize_resource :issue, :through => :project, :find_by => :serial_id, :only => [:show, :edit, :update, :destroy, :new, :create]
+  load_and_authorize_resource :issue, :through => :project, :find_by => :serial_id, :only => [:show, :edit, :update, :destroy, :new, :create, :index]
   before_filter :load_and_authorize_label, :only => NON_RESTFUL_ACTION
 
   layout 'application'
