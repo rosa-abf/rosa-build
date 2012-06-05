@@ -2,6 +2,7 @@
 class Platforms::PlatformsController < Platforms::BaseController
 
   before_filter :authenticate_user!
+  skip_before_filter :authenticate_user!, :only => [:advisories] if APP_CONFIG['anonymous_access']
   load_and_authorize_resource
 
   autocomplete :user, :uname
@@ -140,4 +141,7 @@ class Platforms::PlatformsController < Platforms::BaseController
     redirect_to members_platform_url(@platform)
   end
 
+  def advisories
+    @advisories = @platform.advisories.paginate(:page => params[:page])
+  end
 end
