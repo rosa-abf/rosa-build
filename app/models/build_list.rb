@@ -106,13 +106,14 @@ class BuildList < ActiveRecord::Base
         build_list.add_to_queue == BUILD_PENDING
       }
       [
-        BuildServer::PLATFORM_PENDING,
-        BuildServer::PLATFORM_NOT_FOUND,
-        BuildServer::PROJECT_NOT_FOUND,
-        BuildServer::PROJECT_VERSION_NOT_FOUND
+        'BuildList::BUILD_PENDING',
+        'BuildServer::PLATFORM_PENDING',
+        'BuildServer::PLATFORM_NOT_FOUND',
+        'BuildServer::PROJECT_NOT_FOUND',
+        'BuildServer::PROJECT_VERSION_NOT_FOUND'
       ].each do |code|
-        transition :waiting_for_response => HUMAN_STATUSES[code], :if => lambda { |build_list|
-          build_list.add_to_queue == code
+        transition :waiting_for_response => code.demodulize.downcase.to_sym, :if => lambda { |build_list|
+          build_list.add_to_queue == code.constantize
         }
       end
     end
