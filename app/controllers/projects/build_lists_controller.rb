@@ -74,7 +74,6 @@ class Projects::BuildListsController < Projects::BaseController
   end
 
   def update
-#    raise params.inspect
     if params[:publish].present? and can?(:publish, @build_list)
       publish
     elsif params[:reject_publish].present? and can?(:reject_publish, @build_list)
@@ -193,7 +192,7 @@ class Projects::BuildListsController < Projects::BaseController
         end
         a.platforms  << @build_list.save_to_platform unless a.platforms.include? @build_list.save_to_platform
         @build_list.advisory = a
-        if !a.save
+        unless a.save
           redirect_to :back, :notice => t('layout.build_lists.publish_fail') and return
         end
       end
