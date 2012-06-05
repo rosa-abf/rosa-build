@@ -7,9 +7,6 @@ class Projects::PullRequestsController < Projects::BaseController
   load_and_authorize_resource :issue, :through => :project, :find_by => :serial_id, :parent => false
   before_filter :load_pull
 
-  def index
-  end
-
   def new
     @pull = PullRequest.default_base_project(@project).pull_requests.new
     @pull.issue = @project.issues.new
