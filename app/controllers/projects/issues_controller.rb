@@ -55,6 +55,10 @@ class Projects::IssuesController < Projects::BaseController
     end
   end
 
+  def show
+    redirect_to project_pull_request_path(@project, @issue.pull_request) if @issue.pull_request
+  end
+
   def update
     if params[:issue] && status = params[:issue][:status]
       action = 'status'
