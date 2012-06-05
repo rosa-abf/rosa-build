@@ -1,5 +1,8 @@
 # -*- encoding : utf-8 -*-
 Capistrano::Configuration.instance(:must_exist).load do
+
+  require 'resque/server'
+
   namespace :resque do
     task :start do
       start_workers
@@ -22,7 +25,7 @@ Capistrano::Configuration.instance(:must_exist).load do
       pids = Array.new
 
       Resque.workers.each do |worker|
-        pids << worker.to_s.split(/:/).second
+        pids << worker.to_s.split(/:/)[1]
       end
 
       if pids.size > 0
