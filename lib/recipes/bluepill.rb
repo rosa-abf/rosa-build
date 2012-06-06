@@ -24,12 +24,12 @@ Capistrano::Configuration.instance(:must_exist).load do
         run "cd #{fetch :current_path} && #{try_sudo} #{bluepill_binary} #{fetch :application} status"
       end
 
-      desc "Restart DJ processes"
-      task :restart_dj, :roles => [:app] do
-        %w(fork import hook default).each do |queue|
-          run "cd #{fetch :current_path} && #{try_sudo} #{bluepill_binary} #{fetch :application} restart delayed_job_#{queue}_queue"
-        end
-      end
+      #desc "Restart DJ processes"
+      #task :restart_dj, :roles => [:app] do
+      #  %w(fork import hook default).each do |queue|
+      #    run "cd #{fetch :current_path} && #{try_sudo} #{bluepill_binary} #{fetch :application} restart delayed_job_#{queue}_queue"
+      #  end
+      #end
     end
 
     desc "Start a bluepill process and load a config"
