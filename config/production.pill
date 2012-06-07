@@ -22,7 +22,7 @@ Bluepill.application(app_name, :log_file => "/srv/rosa_build/shared/log/bluepill
     process.start_command = "bundle exec rake resque:work QUEUE=fork_and_import PIDFILE=#{ pid_path } BACKGROUND=yes"
     process.pid_file = pid_path
     process.stop_command = "kill -QUIT {{PID}}"
-    process.daemonize = true
+    #process.daemonize = true
 
     #process.monitor_children do |c|
     #  c.stop_command = "kill -USR1 {{PID}}" # TODO: Are we really need this?
