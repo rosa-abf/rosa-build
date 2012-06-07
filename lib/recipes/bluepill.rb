@@ -47,5 +47,10 @@ Capistrano::Configuration.instance(:must_exist).load do
     task :restart, :roles => [:app] do
       processes.stop; stop; start
     end
+
+    desc "Stop bluepill and monitored services"
+    task :stop, :roles => [:app] do
+      processes.stop
+    end
   end
 end

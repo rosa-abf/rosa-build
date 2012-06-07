@@ -83,7 +83,11 @@ end
 after "deploy:finalize_update", "deploy:symlink_all"
 after "deploy:update_code", "deploy:migrate"
 after "deploy:setup", "deploy:symlink_pids"
-after "deploy:restart", "bluepill:start" # "bluepill:processes:restart_dj" # "bluepill:restart"
+
+# Bluepill
+after "deploy:restart", "bluepill:restart" # "bluepill:processes:restart_dj" # "bluepill:restart"
+after "deploy:start", "bluepill:start"
+after "deploy:stop", "bluepill:stop"
 
 # DJ
 after "deploy:stop",    "delayed_job:stop"
