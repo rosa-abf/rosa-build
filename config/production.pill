@@ -23,6 +23,9 @@ Bluepill.application(app_name, :log_file => "/srv/rosa_build/shared/log/bluepill
     process.pid_file = pid_path
     process.stop_command = "kill -QUIT {{PID}}"
     process.daemonize = true
+    process.start_grace_time = 5.seconds
+    process.stop_grace_time = 5.seconds
+    process.restart_grace_time = 5.seconds
 
     #process.monitor_children do |c|
     #  c.stop_command = "kill -USR1 {{PID}}" # TODO: Are we really need this?
