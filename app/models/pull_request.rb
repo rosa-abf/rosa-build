@@ -134,11 +134,11 @@ class PullRequest < ActiveRecord::Base
   def diff_stats(repo, a,b)
     stats = []
     Dir.chdir(path) do
-      lines = repo.git.native(:diff, {:numstat => true}, "#{a.id}...#{b.id}").split("\n")
+      lines = repo.git.native(:diff, {:numstat => true, :M => true}, "#{a.id}...#{b.id}").split("\n")
       while !lines.empty?
         files = []
         while lines.first =~ /^([-\d]+)\s+([-\d]+)\s+(.+)/
-          additions, deletions, filename = lines.shift.split
+          additions, deletions, filename = lines.shift.gsub(' => ', '=>').split
           additions, deletions = additions.to_i, deletions.to_i
           stat = Grit::DiffStat.new filename, additions, deletions
           stats << stat
@@ -150,7 +150,7 @@ class PullRequest < ActiveRecord::Base
 
   # FIXME копипизд from grit (maybe move to warpc/gri?)
   def diff(repo, a, b)
-    diff = repo.git.native('diff', {}, "#{a}...#{b}")
+    diff = repo.git.native('diff', {:M => true}, "#{a}...#{b}")
 
     if diff =~ /diff --git a/
       diff = diff.sub(/.*?(diff --git a)/m, '\1')
