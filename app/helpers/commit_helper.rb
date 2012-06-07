@@ -3,9 +3,10 @@ module CommitHelper
 
   def render_commit_stats(stats)
     res = ["<table class='commit_stats'>"]
+    ind=0
     stats.files.each do |filename, adds, deletes, total|
       res << "<tr>"
-      res << "<td><a href='##{h(filename)}'>#{h(filename)}</a></td>"
+      res << "<td><a href='#diff-#{ind}'>#{h(filename)}</a></td>"
       res << "<td class='diffstat'>"
       res << I18n.t("layout.projects.inline_changes_count", :count => total).strip +
              " (" +
@@ -14,6 +15,7 @@ module CommitHelper
              I18n.t("layout.projects.inline_deletions_count", :count => deletes).strip +
              ")"
       res << "</td>"
+      ind +=1
     end
     res << "</table>"
 

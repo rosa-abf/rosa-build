@@ -1,6 +1,6 @@
 - commit_id = commit_diff.deleted_file ? @commit.parents.first.id : @commit.id
 .file
-  %a{:name => h(commit_diff.a_path)}
+  %a{:name => "diff-#{commit_diff_counter}"}
   .top
     .l= h(commit_diff.a_path.reverse.truncate(120, :separator => '/').reverse)
     - if commit_diff.b_path.present?

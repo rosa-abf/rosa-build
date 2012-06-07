@@ -1,6 +1,6 @@
 - commit_id = pull_diff.deleted_file ? @base_commit.id : @head_commit.id
 .file
-  %a{:name => h(pull_diff.a_path)}
+  %a{:name => "diff-#{pull_diff_counter}"}
   .top
     .l= h(pull_diff.renamed_file ? "#{pull_diff.a_path.reverse.truncate(60, :separator => '/').reverse} -> #{pull_diff.b_path.reverse.truncate(60, :separator => '/').reverse}" : pull_diff.a_path.reverse.truncate(120, :separator => '/').reverse)
     - if pull_diff.b_path.present?
