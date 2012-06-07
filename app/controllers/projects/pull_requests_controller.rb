@@ -104,11 +104,12 @@ class Projects::PullRequestsController < Projects::BaseController
 
   def load_diff_commits_data
     repo = Grit::Repo.new(@pull.path)
-    @base_commit = repo.commits(@pull.base_ref).first
+    @base_commit = @pull.common_ancestor
     @head_commit = repo.commits(@pull.head_branch).first
 
-    @diff = repo.diff @base_commit, @head_commit
-    @stats = @pull.diff_stats
-    @commits = repo.commits_between @base_commit, @head_commit
+    @commits = repo.commits_between repo.commits(@pull.base_ref).first, @head_commit
+
+    @diff = @pull.diff repo, @base_commit, @head_commit
+    @stats = @pull.diff_stats repo, @base_commit, @head_commit
   end
 end

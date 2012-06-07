@@ -18,7 +18,7 @@ ru:
   pull_requests:
     tabs:
       discussion: Дискуссия
-      diff: Diff
+      diff: Изменения
       commits: Коммиты
 
   flash:

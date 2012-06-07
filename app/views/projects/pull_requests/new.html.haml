@@ -2,9 +2,12 @@
 = render :partial => 'submenu'
 %h3.bpadding10= raw t '.new', {:base => @pull.base_ref, :head => @pull.head_ref}
 %ul.nav.nav-tabs
-  -t('pull_requests.tabs').each do |base, title|
-    %li
-      %a{"data-toggle" => "tab", :href => "##{base}"}=title
+  %li
+    %a{"data-toggle" => "tab", :href => "#discussion"}=t 'pull_requests.tabs.discussion'
+  %li
+    %a{"data-toggle" => "tab", :href => "#diff"}="#{t'pull_requests.tabs.diff'} (#{@stats.count})"
+  %li
+    %a{"data-toggle" => "tab", :href => "#commits"}="#{t'pull_requests.tabs.commits'} (#{@commits.count})"
 .tab-content.pull_diff_fix
   #discussion.tab-pane.active
     =form_for @pull, :url => (@pull.status != 'already' ? project_pull_requests_path : new_project_pull_requests_path), :html => {:class => 'well well-large'} do |f|

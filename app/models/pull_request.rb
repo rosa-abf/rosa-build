@@ -18,7 +18,7 @@ class PullRequest < ActiveRecord::Base
   after_destroy :clean_dir
 
   accepts_nested_attributes_for :issue
-  attr_accessible :issue_attributes
+  attr_accessible :issue_attributes, :base_ref, :head_ref
 
   scope :needed_checking, includes(:issue).where(:issues => {:status => ['open', 'blocked', 'ready', 'already']})
 
@@ -123,10 +123,18 @@ class PullRequest < ActiveRecord::Base
     end
   end
 
-  def diff_stats
+  def common_ancestor
+    return @common_ancestor if @common_ancestor
+    repo = Grit::Repo.new(path)
+    base_commit = repo.commits(base_ref).first
+    head_commit = repo.commits(head_branch).first
+    @common_ancestor = repo.commit(repo.git.merge_base({}, base_commit, head_commit))
+  end
+
+  def diff_stats(repo, a,b)
     stats = []
     Dir.chdir(path) do
-      lines = %x(git diff --numstat #{base_ref} #{head_ref}).split("\n")
+      lines = repo.git.native(:diff, {:numstat => true}, "#{a.id}...#{b.id}").split("\n")
       while !lines.empty?
         files = []
         while lines.first =~ /^([-\d]+)\s+([-\d]+)\s+(.+)/
@@ -138,6 +146,18 @@ class PullRequest < ActiveRecord::Base
       end
       stats
     end
+  end
+
+  # FIXME копипизд from grit (maybe move to warpc/gri?)
+  def diff(repo, a, b)
+    diff = repo.git.native('diff', {}, "#{a}...#{b}")
+
+    if diff =~ /diff --git a/
+      diff = diff.sub(/.*?(diff --git a)/m, '\1')
+    else
+      diff = ''
+    end
+    Grit::Diff.list_from_string(repo, diff)
   end
 
   protected
