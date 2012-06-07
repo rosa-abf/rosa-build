@@ -24,11 +24,11 @@ Bluepill.application(app_name, :log_file => "/srv/rosa_build/shared/log/bluepill
     process.stop_command = "kill -QUIT {{PID}}"
     process.daemonize = true
 
-    process.monitor_children do |c|
-      c.stop_command = "kill -USR1 {{PID}}" # TODO: Are we really need this?
-      c.checks :mem_usage, :every => 30.seconds, :below => 80.megabytes, :fires => :stop
-      c.checks :running_time, :every => 30.seconds, :below => 10.minutes, :fires => :stop
-    end
+    #process.monitor_children do |c|
+    #  c.stop_command = "kill -USR1 {{PID}}" # TODO: Are we really need this?
+    #  c.checks :mem_usage, :every => 30.seconds, :below => 80.megabytes, :fires => :stop
+    #  c.checks :running_time, :every => 30.seconds, :below => 10.minutes, :fires => :stop
+    #end
   end
 
   #app.process("newrelic") do |process|
