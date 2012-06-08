@@ -20,11 +20,11 @@ Capistrano::Configuration.instance(:must_exist).load do
     end
 
     def stop_workers
-      run "kill -QUIT `cat #{ fetch(:current_path) }/tmp/pids/resque.pid`"
+      run "kill -QUIT `ps aux | grep resque | grep -v grep | awk '{ print $2 }'`"
     end
 
     def start_workers
-      run "cd #{fetch :current_path} && COUNT=2 QUEUE=fork_and_import #{ rails_env } BACKGROUND=yes PIDFILE=#{ fetch(:current_path) }/tmp/pids/resque.pid bundle exec rake resque:workers"
+      run "cd #{fetch :current_path} && COUNT=#{ workers_count } QUEUE=fork_and_import #{ rails_env } BACKGROUND=yes bundle exec rake resque:workers"
     end
   end
 end

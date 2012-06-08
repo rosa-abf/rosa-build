@@ -38,6 +38,8 @@ require './lib/recipes/unicorn'
 #require './lib/recipes/bluepill'
 require './lib/recipes/delayed_job'
 
+set :workers_count, 2
+
 require './lib/recipes/resque'
 
 namespace :deploy do
