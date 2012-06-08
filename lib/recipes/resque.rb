@@ -24,7 +24,7 @@ Capistrano::Configuration.instance(:must_exist).load do
     end
 
     def start_workers
-      run "cd #{fetch :current_path} && QUEUE=fork_and_import #{ rails_env } BACKGROUND=yes PIDFILE=#{ fetch(:current_path) }/tmp/pids/resque.pid bundle exec rake resque:work"
+      run "cd #{fetch :current_path} && COUNT=2 QUEUE=fork_and_import #{ rails_env } BACKGROUND=yes PIDFILE=#{ fetch(:current_path) }/tmp/pids/resque.pid bundle exec rake resque:workers"
     end
   end
 end
