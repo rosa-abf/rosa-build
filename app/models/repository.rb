@@ -17,10 +17,10 @@ class Repository < ActiveRecord::Base
   attr_readonly :name, :platform_id
 
   def base_clone(attrs = {})
-    clone.tap do |c| # dup
+    dup.tap do |c|
       c.platform_id = nil
       attrs.each {|k,v| c.send("#{k}=", v)}
-      c.updated_at = nil; c.created_at = nil # :id = nil
+      c.updated_at = nil; c.created_at = nil
     end
   end
 
