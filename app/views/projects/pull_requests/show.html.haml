@@ -1,57 +1,57 @@
 -set_meta_tags :title => [title_object(@project), t('.title')]
 = render :partial => 'submenu'
 %h3.bpadding10= raw t '.new', {:base => @pull.base_ref, :head => @pull.head_ref}
-%ul.nav.nav-tabs
-  %li
-    %a{"data-toggle" => "tab", :href => "#discussion"}=t 'pull_requests.tabs.discussion'
-  %li
-    %a{"data-toggle" => "tab", :href => "#diff"}="#{t'pull_requests.tabs.diff'} (#{@stats.count})"
-  %li
-    %a{"data-toggle" => "tab", :href => "#commits"}="#{t'pull_requests.tabs.commits'} (#{@commits.count})"
+#repo-wrapper
+  %ul.nav.nav-tabs
+    %li
+      %a{"data-toggle" => "tab", :href => "#discussion"}=t 'pull_requests.tabs.discussion'
+    %li
+      %a{"data-toggle" => "tab", :href => "#diff"}="#{t'pull_requests.tabs.diff'} (#{@stats.count})"
+    %li
+      %a{"data-toggle" => "tab", :href => "#commits"}="#{t'pull_requests.tabs.commits'} (#{@commits.count})"
 
-.tab-content.pull_diff_fix
-  #discussion.tab-pane.active
-    .leftlist=t('projects.pull_requests.new.base_project')
-    .rightlist= @pull.base_project.full_name
-    .both
-    .leftlist="#{t 'projects.pull_requests.new.base_ref'} #{t 'projects.pull_requests.new.refs'}"
-    .rightlist=@pull.base_ref
-    .both
-    .leftlist=t('projects.pull_requests.new.head_project')
-    .rightlist= @pull.head_project.full_name
-    .both
-    .leftlist="#{t 'projects.pull_requests.new.head_ref'} #{t 'projects.pull_requests.new.refs'}"
-    .rightlist=@pull.head_ref
-    .both
-    .leftlist=t('activerecord.attributes.issue.title')
-    .rightlist.pull_title=@pull.issue.title
-    .both
-    .leftlist=t('activerecord.attributes.issue.body')
-    .rightlist.pull_body=@pull.issue.body
-    .both
-    .leftlist=t('activerecord.attributes.issue.status')
-    .rightlist=@pull.issue.status
-    .both
-    - if can? :update, @pull.issue
+  .tab-content.pull_diff_fix
+    #discussion.tab-pane.active
+      .leftlist=t('projects.pull_requests.new.base_project')
+      .rightlist= @pull.base_project.full_name
+      .both
+      .leftlist="#{t 'projects.pull_requests.new.base_ref'} #{t 'projects.pull_requests.new.refs'}"
+      .rightlist=@pull.base_ref
+      .both
+      .leftlist=t('projects.pull_requests.new.head_project')
+      .rightlist= @pull.head_project.full_name
+      .both
+      .leftlist="#{t 'projects.pull_requests.new.head_ref'} #{t 'projects.pull_requests.new.refs'}"
+      .rightlist=@pull.head_ref
+      .both
+      .leftlist=t('activerecord.attributes.issue.title')
+      .rightlist.pull_title=@pull.issue.title
+      .both
+      .leftlist=t('activerecord.attributes.issue.body')
+      .rightlist.pull_body=@pull.issue.body
+      .both
+      .leftlist=t('activerecord.attributes.issue.status')
+      .rightlist=@pull.issue.status
+      .both
+      - if can? :update, @pull.issue
+        %br
+        =link_to t('layout.edit'), '#', :id => 'edit_pull_content', :class => 'button'
+        =form_for @pull, :url => [@project, @pull], :method => :put, :html => { :class => 'edit_form pull', :style => 'display:none;' } do |f|
+          = f.fields_for :issue do |issue|
+            .leftlist= t('activerecord.attributes.issue.title') + ':'
+            .rightlist= issue.text_field :title, :id => 'pull_title'
+            .both
+            .leftlist= t('activerecord.attributes.issue.body') + ':'
+            .rightlist= issue.text_area :body, :id => 'pull_body'
+            .both
+          =f.submit t('layout.update'), :id => 'update_pull_content'
+          =link_to t('layout.issues.cancel_button'), '#', :id => 'cancel_edit_pull_content', :class => 'button'
+      = render "projects/comments/list", :list => @issue.comments, :project => @project, :commentable => @issue
       %br
-      =link_to t('layout.edit'), '#', :id => 'edit_pull_content', :class => 'button'
-      =form_for @pull, :url => [@project, @pull], :method => :put, :html => { :class => 'edit_form pull', :style => 'display:none;' } do |f|
-        = f.fields_for :issue do |issue|
-          .leftlist= t('activerecord.attributes.issue.title') + ':'
-          .rightlist= issue.text_field :title, :id => 'pull_title'
-          .both
-          .leftlist= t('activerecord.attributes.issue.body') + ':'
-          .rightlist= issue.text_area :body, :id => 'pull_body'
-          .both
-        =f.submit t('layout.update'), :id => 'update_pull_content'
-        =link_to t('layout.issues.cancel_button'), '#', :id => 'cancel_edit_pull_content', :class => 'button'
-    = render "projects/comments/list", :list => @issue.comments, :project => @project, :commentable => @issue
-    %br
-    = render "projects/comments/add", :project => @project, :commentable => @issue if current_user
-    - if can? :merge, @pull
-      %br
-      =form_for PullRequest.new, :url => merge_project_pull_request_path(@project, @pull), :html => { :method => :put, :class => :form } do |f|
-        =f.submit t 'projects.pull_requests.merge'
+      = render "projects/comments/add", :project => @project, :commentable => @issue if current_user
+      - if can? :merge, @pull
+        %br
+        =form_for PullRequest.new, :url => merge_project_pull_request_path(@project, @pull), :html => { :method => :put, :class => :form } do |f|
+          =f.submit t 'projects.pull_requests.merge'
 
-  =render 'diff_commits_tabs' if @pull.status != 'already'
-
+    =render 'diff_commits_tabs' if @pull.status != 'already'
