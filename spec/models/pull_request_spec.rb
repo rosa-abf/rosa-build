@@ -41,37 +41,37 @@ describe PullRequest do
 
     it 'master should merge with non_conflicts branch' do
       @pull.check
-      @pull.state.should == 'ready'
+      @pull.status.should == 'ready'
     end
 
     it 'master should not merge with conflicts branch' do
       @pull.head_ref = 'conflicts'
       @pull.check
-      @pull.state.should == 'blocked'
+      @pull.status.should == 'blocked'
     end
 
     it 'should not merge when already up-to-date branches' do
       @pull.head_ref = 'master'
       @pull.check
-      @pull.state.should == 'already'
+      @pull.status.should == 'already'
     end
 
     context 'for other head project' do
       it 'master should merge with non_conflicts branch' do
         @other_pull.check
-        @other_pull.state.should == 'ready'
+        @other_pull.status.should == 'ready'
       end
 
       it 'master should not merge with conflicts branch' do
         @other_pull.head_ref = 'conflicts'
         @other_pull.check
-        @other_pull.state.should == 'blocked'
+        @other_pull.status.should == 'blocked'
       end
 
       it 'should not merge when already up-to-date branches' do
         @other_pull.head_ref = 'master'
         @other_pull.check
-        @other_pull.state.should == 'already'
+        @other_pull.status.should == 'already'
       end
     end
 

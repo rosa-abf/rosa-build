@@ -18,7 +18,7 @@ describe Projects::PullRequestsController do
     @another_user = FactoryGirl.create(:user)
     @create_params = {:pull_request => {:issue_attributes => {:title => 'create', :body => 'creating'}, :base_ref => 'non_conflicts', :head_ref => 'master'},
                                      :owner_name => @project.owner.uname, :project_name => @project.name}
-    @update_params = @create_params.merge(:pull_request => {:issue => {:title => 'update', :body => 'updating'}}, :id => @pull.serial_id)
+    @update_params = @create_params.merge(:pull_request => {:issue_attributes => {:title => 'update', :body => 'updating', :id => @pull.issue.id}}, :id => @pull.serial_id)
   end
 
   context 'for guest' do
@@ -50,7 +50,7 @@ describe Projects::PullRequestsController do
 
     it 'should be able to perform update action' do
       put :update, @update_params
-      response.should redirect_to(project_pull_request_path(@project, @project.pull_requests.last))
+      response.code.should eq('200')
     end
 
     it 'should update title and body' do
