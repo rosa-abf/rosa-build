@@ -1,9 +1,11 @@
+-path = polymorphic_path [@project, issue.pull_request ? issue.pull_request : @issue]
+
 %tr#row1{:name => "row", :class => issue.labels.map(&:name).compact}
   %td.td0
     %span{:style => "display: none;"}=issue.serial_id
   %td.td1=issue.serial_id
   %td
-    %a{:href => project_issue_path(@project, issue)}
+    %a{:href => path}
       %div.issue_title=issue.title
     .smalltext
       =issue.created_at.to_s(:long)
@@ -15,12 +17,11 @@
           .labeltext.selected{:style => "background: ##{label.color};"}=label.name
   %td.td3
     -if issue.pull_request
-      %a{:href => project_pull_request_path(@project, issue.pull_request)}
-        .code
-          \#
+      %a{:href => path}
+        .code #
     .avatar
       =link_to image_tag(avatar_url(issue.assignee), :alt => 'avatar'), user_path(issue.assignee) if issue.assignee
-    %a{:href => "#{project_issue_path @project, issue}#block-list"}
+    %a{:href => "#{path}#block-list"}
       .answers
         .pic= image_tag 'answers.png'
         .count=issue.comments.count
