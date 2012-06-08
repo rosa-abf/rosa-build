@@ -27,6 +27,31 @@ namespace :import do
     say 'DONE'
   end
 
+  desc 'Import SRPMs as projects'
+  task :srpm => :environment do
+    base = ENV['BASE'] || '/share/alt_repos/rsync'
+    list = ENV['LIST'] #|| 'https://dl.dropbox.com/u/984976/alt_import.txt'
+    mask = ENV['MASK'] || '*.src.rpm'
+    owner = User.find_by_uname(ENV['OWNER']) || Group.find_by_uname!(ENV['OWNER'] || 'altlinux')
+    platform = Platform.find_by_name!(ENV['PLATFORM'] || 'altlinux5')
+    repo = platform.repositories.find_by_name!(ENV['REPO'] || 'main')
+    say "START import projects from '#{base}' using '#{list || mask}' for '#{owner.uname}' to repo '#{platform.name}/#{repo.name}'."
+    repo.project_to_repositories.clear if agree "Clear destination repo #{platform.name}/#{repo.name}?"
+    (list ? open(list).readlines.map{|n| File.join base, n.chomp.strip} : Dir[File.join base, mask]).each do |path|
+      print "Processing '#{path}'..."
+      if name = `rpm -q --qf '[%{Name}]' -p #{path}` and $?.success? and name.present?
+        p = Project.find_or_create_by_name_and_owner_type_and_owner_id(name, owner.class.to_s, owner.id)
+        p.import_srpm(path, platform.name)
+        repo.projects << p
+        print "Ok! - #{p.name}"
+      else
+        print 'Fail!'
+      end
+      puts
+    end
+    say 'DONE'
+  end
+
   namespace :sync do
     desc "Sync all repos"
     task :all do
