@@ -104,11 +104,10 @@ class Platform < ActiveRecord::Base
   end
 
   def base_clone(attrs = {}) # :description, :name, :owner
-    clone.tap do |c|
-      # c.attributes = attrs #
-      attrs.each {|k,v| c.send("#{k}=", v)}
-      c.updated_at = nil; c.created_at = nil # :id = nil
-      c.parent = self
+    dup.tap do |c|
+      attrs.each {|k,v| c.send("#{k}=", v)} # c.attributes = attrs
+      c.updated_at = nil; c.created_at = nil
+      c.parent = self; c.released = false
     end
   end
 
