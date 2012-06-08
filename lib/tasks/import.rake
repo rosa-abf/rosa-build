@@ -27,6 +27,7 @@ namespace :import do
     say 'DONE'
   end
 
+  # bundle exec rake import:srpm RAILS_ENV=production BASE=/share/platforms/naulinux5x_personal/tmp/SRPMS LIST=https://dl.dropbox.com/u/984976/nauschool5x.srpms.txt OWNER=naulinux PLATFORM=naulinux REPO=main > log/srpm_naulinux.log
   desc 'Import SRPMs as projects'
   task :srpm => :environment do
     base = ENV['BASE'] || '/share/alt_repos/rsync'
