@@ -2,7 +2,7 @@
 .file
   %a{:name => "diff-#{pull_diff_counter}"}
   .top
-    .l= h(pull_diff.renamed_file ? "#{pull_diff.a_path.reverse.truncate(60, :separator => '/').reverse} -> #{pull_diff.b_path.reverse.truncate(60, :separator => '/').reverse}" : pull_diff.a_path.reverse.truncate(120, :separator => '/').reverse)
+    .l= h(pull_diff.renamed_file ? "#{pull_diff.a_path.rtruncate 60} -> #{pull_diff.b_path.rtruncate 60}" : pull_diff.a_path.rtruncate(120))
     - if pull_diff.b_path.present?
       .r= link_to "view file @ #{short_hash_id(commit_id)}", blob_path(@project, commit_id, pull_diff.b_path)
     .clear

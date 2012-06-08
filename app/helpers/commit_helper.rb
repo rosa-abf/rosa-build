@@ -6,7 +6,7 @@ module CommitHelper
     ind=0
     stats.files.each do |filename, adds, deletes, total|
       res << "<tr>"
-      res << "<td><a href='#diff-#{ind}'>#{h(filename)}</a></td>"
+      res << "<td><a href='#diff-#{ind}'>#{h(filename.rtruncate 120)}</a></td>"
       res << "<td class='diffstat'>"
       res << I18n.t("layout.projects.inline_changes_count", :count => total).strip +
              " (" +

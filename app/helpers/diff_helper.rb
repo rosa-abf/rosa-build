@@ -19,7 +19,7 @@ module DiffHelper
     res = ["<table class='commit_stats'>"]
     stats.each_with_index do |stat, ind|
       res << "<tr>"
-      res << "<td><a href='#diff-#{ind}'>#{h(stat.filename)}</a></td>"
+      res << "<td><a href='#diff-#{ind}'>#{h(stat.filename.rtruncate 120)}</a></td>"
       res << "<td class='diffstat'>"
       res << I18n.t("layout.projects.inline_changes_count", :count => stat.additions + stat.deletions).strip +
              " (" +
