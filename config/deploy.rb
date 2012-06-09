@@ -37,7 +37,7 @@ require './lib/recipes/nginx'
 require './lib/recipes/unicorn'
 #require './lib/recipes/bluepill'
 
-set :workers_count, 2
+set :workers_count, 4
 
 require './lib/recipes/resque'
 
