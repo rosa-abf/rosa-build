@@ -36,7 +36,6 @@ set :deploy_via,  :remote_cache
 require './lib/recipes/nginx'
 require './lib/recipes/unicorn'
 #require './lib/recipes/bluepill'
-require './lib/recipes/delayed_job'
 
 set :workers_count, 2
 
@@ -91,11 +90,6 @@ after "deploy:setup", "deploy:symlink_pids"
 #after "deploy:restart", "bluepill:restart" # "bluepill:processes:restart_dj" # "bluepill:restart"
 #after "deploy:start", "bluepill:start"
 #after "deploy:stop", "bluepill:stop"
-
-# DJ
-after "deploy:stop",    "delayed_job:stop"
-after "deploy:start",   "delayed_job:start"
-after "deploy:restart", "delayed_job:restart"
 
 # Resque
 after "deploy:stop",    "resque:stop"

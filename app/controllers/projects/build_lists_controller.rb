@@ -132,7 +132,7 @@ class Projects::BuildListsController < Projects::BaseController
 
     render :nothing => true, :status => 200
 
-    @build_list.delay.publish if @build_list.auto_publish # && @build_list.can_publish?
+    @build_list.async(:publish) if @build_list.auto_publish # && @build_list.can_publish?
   end
 
   def circle_build

@@ -258,7 +258,7 @@ class Projects::WikiController < Projects::BaseController
       # @committer.after_commit do |committer, sha1|
       #   here goes callback for notification
       # end
-        ActivityFeedObserver.instance.after_create(@committer).delay
+        ActivityFeedObserver.instance.async(:after_create, @committer)
       end
       @committer
     end

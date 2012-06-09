@@ -12,6 +12,10 @@ class MassBuild < ActiveRecord::Base
 
   after_create :build_all
 
+  include Modules::Models::ResqueAsyncMethods
+
+  @queue = :clone_and_build
+
   def initialize(args = nil)
     super
 
@@ -24,7 +28,7 @@ class MassBuild < ActiveRecord::Base
 
   # ATTENTION: repositories and arches must be set before calling this method!
   def build_all
-    platform.delay.build_all(
+    platform.async(:build_all,
       :mass_build_id => self.id,
       :user => self.user,
       :repositories => self.repositories,
