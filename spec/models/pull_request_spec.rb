@@ -50,10 +50,10 @@ describe PullRequest do
       @pull.status.should == 'blocked'
     end
 
-    it 'should not merge when already up-to-date branches' do
+    it 'should already merged when already up-to-date branches' do
       @pull.head_ref = 'master'
       @pull.check
-      @pull.status.should == 'already'
+      @pull.status.should == 'merged'
     end
 
     context 'for other head project' do
@@ -68,10 +68,10 @@ describe PullRequest do
         @other_pull.status.should == 'blocked'
       end
 
-      it 'should not merge when already up-to-date branches' do
+      it 'should already merged when already up-to-date branches' do
         @other_pull.head_ref = 'master'
         @other_pull.check
-        @other_pull.status.should == 'already'
+        @other_pull.status.should == 'merged'
       end
     end
 

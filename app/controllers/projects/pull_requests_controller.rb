@@ -19,6 +19,7 @@ class Projects::PullRequestsController < Projects::BaseController
     @pull.head_ref = params[:treeish].presence || (params[:pull_request][:head_ref].presence if params[:pull_request]) || @pull.head_project.default_branch
     @pull.status = @pull.soft_check
     if @pull.status == 'already'
+      @pull.destroy
       flash[:warning] = I18n.t('projects.pull_requests.up_to_date', :base_ref => @pull.base_ref, :head_ref => @pull.head_ref)
     else
       load_diff_commits_data
@@ -31,13 +32,10 @@ class Projects::PullRequestsController < Projects::BaseController
     @pull.base_project, @pull.head_project = PullRequest.default_base_project(@project), @project
 
     if @pull.save
-      @pull.check
+      @pull.status = @pull.soft_check
       if @pull.status == 'already'
         @pull.destroy
-
-        @pull.errors.add(:head_ref, I18n.t('projects.pull_requests.up_to_date', :base_ref => @pull.base_ref, :head_ref => @pull.head_ref))
-        flash[:notice] = t('flash.pull_request.saved')
-        flash[:warning] = @pull.errors.full_messages.join('. ')
+        flash[:error] = I18n.t('projects.pull_requests.up_to_date', :base_ref => @pull.base_ref, :head_ref => @pull.head_ref)
         render :new
       else
         redirect_to project_pull_request_path(@project, @pull)

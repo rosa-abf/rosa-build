@@ -20,7 +20,7 @@ class PullRequest < ActiveRecord::Base
   accepts_nested_attributes_for :issue
   attr_accessible :issue_attributes, :base_ref, :head_ref
 
-  scope :needed_checking, includes(:issue).where(:issues => {:status => ['open', 'blocked', 'ready', 'already']})
+  scope :needed_checking, includes(:issue).where(:issues => {:status => ['open', 'blocked', 'ready']})
 
   state_machine :status, :initial => :open do
     #after_transition [:ready, :blocked] => [:merged, :closed] do |pull, transition|
@@ -33,10 +33,6 @@ class PullRequest < ActiveRecord::Base
 
     event :block do
       transition [:blocked, :open, :ready] => :blocked
-    end
-
-    event :already do
-      transition [:open, :blocked, :ready] => :already
     end
 
     event :merging do
@@ -63,7 +59,8 @@ class PullRequest < ActiveRecord::Base
   def check
     ret = merge
     if ret =~ /Already up-to-date/
-      already
+      ready
+      merging
     elsif ret =~ /Merge made by the 'recursive' strategy/
       system("cd #{path} && git reset --hard HEAD^") # remove merge commit
       ready
