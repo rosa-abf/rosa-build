@@ -98,7 +98,7 @@ class Platforms::PlatformsController < Platforms::BaseController
   end
 
   def destroy
-    @platform.delay.destroy if @platform
+    @platform.async(:destroy) if @platform
 
     flash[:notice] = t("flash.platform.destroyed")
     redirect_to platforms_path
