@@ -21,7 +21,7 @@ class Platform < ActiveRecord::Base
 
   validates :description, :presence => true
   validates :visibility, :presence => true, :inclusion => {:in => VISIBILITIES}
-  validates :name, :uniqueness => {:case_sensitive => false}, :presence => true, :format => { :with => /^[a-zA-Z0-9_\-]+$/ }
+  validates :name, :uniqueness => {:case_sensitive => false}, :presence => true, :format => { :with => /^[a-zA-Z0-9_\-\.]+$/ }
   validates :distrib_type, :presence => true, :inclusion => {:in => APP_CONFIG['distr_types']}
 
   before_create :create_directory, :if => lambda {Thread.current[:skip]} # TODO remove this when core will be ready
@@ -47,6 +47,9 @@ class Platform < ActiveRecord::Base
   attr_readonly   :name, :distrib_type, :parent_platform_id, :platform_type
 
   include Modules::Models::Owner
+  include Modules::Models::ResqueAsyncMethods
+
+  @queue = :clone_and_build
 
   def urpmi_list(host, pair = nil)
     blank_pair = {:login => 'login', :pass => 'password'}
@@ -118,7 +121,7 @@ class Platform < ActiveRecord::Base
 
   def full_clone(attrs = {})
     base_clone(attrs).tap do |c|
-      with_skip {c.save} and c.clone_relations(self) and c.delay.xml_rpc_clone
+      with_skip {c.save} and c.clone_relations(self) and c.async(:xml_rpc_clone)
     end
   end
 
@@ -172,7 +175,7 @@ class Platform < ActiveRecord::Base
             begin
               p.build_for(self, user, arch, auto_publish, mass_build_id)
             rescue RuntimeError, Exception
-              p.delay.build_for(self, user, arch, auto_publish, mass_build_id)
+              p.async(:build_for, self, user, arch, auto_publish, mass_build_id)
             end
           end
         end

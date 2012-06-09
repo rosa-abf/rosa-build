@@ -3,6 +3,10 @@
 class UserMailer < ActionMailer::Base
   default :from => APP_CONFIG['do-not-reply-email']
 
+  include Modules::Models::ResqueAsyncMethods
+
+  @queue = :notifications
+
   def new_user_notification(user)
     @user = user
     mail(:to => user.email, :subject => I18n.t("notifications.subjects.new_user_notification", :project_name => APP_CONFIG['project_name'])) do |format|
