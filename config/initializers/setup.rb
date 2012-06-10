@@ -12,3 +12,6 @@ Rosa::Application.config.middleware.insert_after ::Rails::Rack::Logger, ::Grack:
 Rosa::Application.config.middleware.insert_before ::Grack::Handler, ::Grack::Auth
 
 Rosa::Application.config.action_mailer.default_url_options = { :host => APP_CONFIG['action_mailer_host'] } if APP_CONFIG['action_mailer_host']
+
+require 'resque/server'
+::ResqueServer = ::Resque::Server # need for CanCan

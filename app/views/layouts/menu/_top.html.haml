@@ -5,5 +5,3 @@
       %li= link_to title, send(:"#{namespace}#{base}_path"), :class => top_menu_class(base)
   - if current_user.try(:admin?) and which_menu == 'top_menu'
     %li= link_to t('admins_menu_header'), admin_users_path, :class => top_menu_class('admin')
-  - if current_user.try(:admin?) and which_menu == 'admins_menu'
-    %li= link_to t('resque_server'), admin_resque_server_path
