@@ -93,11 +93,11 @@ class Projects::BuildListsController < Projects::BaseController
 
   def publish_build
     if params[:status].to_i == 0 # ok
-      @build_list.status = BuildList::BUILD_PUBLISHED
+      @build_list.published
       @build_list.package_version = "#{params[:version]}-#{params[:release]}"
       system("cd #{@build_list.project.git_repository.path} && git tag #{@build_list.package_version} #{@build_list.commit_hash}") # TODO REDO through grit
     else
-      @build_list.status = BuildList::FAILED_PUBLISH
+      @build_list.failed_publish
     end
     @build_list.save
 
@@ -118,14 +118,14 @@ class Projects::BuildListsController < Projects::BaseController
   end
 
   def pre_build
-    @build_list.status = BuildServer::BUILD_STARTED
+    @build_list.start
     @build_list.save
 
     render :nothing => true, :status => 200
   end
 
   def post_build
-    @build_list.status = params[:status]
+    params[:status] == BuildServer::SUCCESS ? @build_list.success : @build_list.error
     @build_list.container_path = params[:container_path]
     @build_list.save
 

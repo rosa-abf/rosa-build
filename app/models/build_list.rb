@@ -118,11 +118,27 @@ class BuildList < ActiveRecord::Base
       end
     end
 
+    event :start do
+      transition [ :build_pending,
+                   :platform_pending,
+                   :platform_not_found,
+                   :project_not_found,
+                   :project_version_not_found ] => :build_started
+    end
+
     event :cancel do
       transition [:build_pending, :platform_pending] => :build_canceled, :if => lambda { |build_list|
         has_canceled = BuildServer.delete_build_list build_list.bs_id
         build_list.can_cancel? && has_canceled == 0
       }
+    end
+
+    event :published do
+      transition [:build_publish, :rejected_publish] => :build_published
+    end
+
+    event :fail_publish do
+      transition [:build_publish, :rejected_publish] => :failed_publish
     end
 
     event :publish do
@@ -134,6 +150,14 @@ class BuildList < ActiveRecord::Base
 
     event :reject_publish do
       transition :success => :rejected_publish, :if => :can_reject_publish?
+    end
+
+    event :success do
+      transition [:build_started, :build_canceled] => :success
+    end
+
+    event :error do
+      transition [:build_started, :build_canceled] => :build_error
     end
 
     HUMAN_STATUSES.each do |code,name|
