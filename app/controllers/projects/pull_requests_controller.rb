@@ -27,7 +27,7 @@ class Projects::PullRequestsController < Projects::BaseController
   end
 
   def create
-    @pull = @project.pull_requests.new(params[:pull_request]) # FIXME need validation!
+    @pull = @project.pull_requests.new(params[:pull_request])
     @pull.issue.user, @pull.issue.project = current_user, @pull.base_project
     @pull.base_project, @pull.head_project = PullRequest.default_base_project(@project), @project
 

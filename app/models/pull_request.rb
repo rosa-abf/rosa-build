@@ -95,6 +95,7 @@ class PullRequest < ActiveRecord::Base
         merging
         system("git push origin HEAD")
         system("git reset --hard HEAD") # for diff maybe FIXME
+        issue.set_close who, 'merged'
       end
     end
   end

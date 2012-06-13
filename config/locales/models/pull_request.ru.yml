@@ -10,10 +10,13 @@ ru:
         head_project: Проект-источник
         submit: Создать пул реквест
         update: Обновить коммиты
-      merge: Merge
+      merge: Мерж
       duplicate: 'Уже существует пул реквест %{head_ref}'
       up_to_date: 'Ветка %{base_ref} на данный момент уже содержит последние изменения %{head_ref}'
       wrong_ref: Неправильный tree-ish
+      block: Невозможно автоматически смержить данный пул реквест.
+      ready: Смержить данный пул реквест.
+      merged: '%{user} смержил %{base_ref} с %{head_ref} в %{time}'
 
   pull_requests:
     tabs:

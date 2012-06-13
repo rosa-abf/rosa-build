@@ -30,9 +30,6 @@
       .leftlist=t('activerecord.attributes.issue.body')
       .rightlist.pull_body=@pull.issue.body
       .both
-      .leftlist=t('activerecord.attributes.issue.status')
-      .rightlist=@pull.issue.status
-      .both
       - if can? :update, @pull.issue
         %br
         =link_to t('layout.edit'), '#', :id => 'edit_pull_content', :class => 'button'
@@ -49,9 +46,14 @@
       = render "projects/comments/list", :list => @issue.comments, :project => @project, :commentable => @issue
       %br
       = render "projects/comments/add", :project => @project, :commentable => @issue if current_user
-      - if can? :merge, @pull
-        %br
-        =form_for PullRequest.new, :url => merge_project_pull_request_path(@project, @pull), :html => { :method => :put, :class => :form } do |f|
-          =f.submit t 'projects.pull_requests.merge'
+      -if can? :update, @issue
+        - if can? :merge, @pull
+          %br
+          =form_for PullRequest.new, :url => merge_project_pull_request_path(@project, @pull), :html => { :method => :put, :class => :form } do |f|
+            =f.submit t 'projects.pull_requests.merge'
+        -else
+          .flash
+            -message = t("projects.pull_requests.#{@pull.status}", :user => @issue.closer.uname, :base_ref => @pull.base_ref, :head_ref => @pull.head_ref, :time => @issue.closed_at)
+            .alert="#{t 'activerecord.attributes.issue.status'}: #{raw message}"
 
     =render 'diff_commits_tabs' if @pull.status != 'already'
