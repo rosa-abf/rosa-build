@@ -118,7 +118,7 @@ class BuildList < ActiveRecord::Base
       end
     end
 
-    event :start do
+    event :start_build do
       transition [ :build_pending,
                    :platform_pending,
                    :platform_not_found,
@@ -179,6 +179,12 @@ class BuildList < ActiveRecord::Base
   def add_to_queue
     #XML-RPC params: project_name, project_version, plname, arch, bplname, update_type, build_requires, id_web, include_repos, priority
     @status ||= BuildServer.add_build_list project.name, project_version, save_to_platform.name, arch.name, (save_to_platform_id == build_for_platform_id ? '' : build_for_platform.name), update_type, build_requires, id, include_repos, priority
+  end
+
+  def set_version_and_tag(version, release)
+    self.package_version = "#{version}-#{release}"
+    system("cd #{self.project.git_repository.path} && git tag #{self.package_version} #{self.commit_hash}") # TODO REDO through grit
+    save
   end
 
   def self.human_status(status)
