@@ -3,13 +3,13 @@ require 'spec_helper'
 
 shared_examples_for 'guest user' do
   before(:each) do
-    if APP_CONFIG['anonymous_access']
-    else
+    unless APP_CONFIG['anonymous_access']
       @user = FactoryGirl.create(:user)
       set_session_for(@user)
     end
   end
 
+  # Only one action for now here
   [:index].each do |action|
     it "should be able to perform #{ action } action" do
       get action, :platform_id => @platform.id
@@ -33,7 +33,6 @@ describe Platforms::MaintainersController do
 
     it 'should not be able to get api' do
       get :assignee, @assignee_rq
-      puts response.headers.inspect
       response.response_code.should equal(403)
     end
   end
