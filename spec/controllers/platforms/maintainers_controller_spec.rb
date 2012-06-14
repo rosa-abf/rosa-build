@@ -25,7 +25,8 @@ describe Platforms::MaintainersController do
     @platform = FactoryGirl.create(:platform)
     @platform.visibility = 'open'
 
-    @assignee_rq = { :platform_id => @platform.id, :package => 'test' }
+    # JS format is the primary target for this callback
+    @assignee_rq = { :platform_id => @platform.id, :package => 'test', :format => 'js' }
   end
 
   context 'for guest' do
@@ -33,7 +34,7 @@ describe Platforms::MaintainersController do
 
     it 'should not be able to get api' do
       get :assignee, @assignee_rq
-      response.response_code.should equal(403)
+      response.response_code.should == 403
     end
   end
 
@@ -46,7 +47,7 @@ describe Platforms::MaintainersController do
 
     it 'should be able to get api' do
       get :assignee, @assignee_rq
-      response.response_code.should equal(200)
+      response.response_code.should == 200
     end
   end
 end
