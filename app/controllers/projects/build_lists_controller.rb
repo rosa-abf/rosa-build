@@ -95,7 +95,6 @@ class Projects::BuildListsController < Projects::BaseController
   def publish_build
     if params[:status].to_i == 0 # ok
       @build_list.published
-      @build_list.set_version_and_tag params[:version], params[:release]
     else
       @build_list.failed_publish
     end
@@ -123,7 +122,7 @@ class Projects::BuildListsController < Projects::BaseController
   end
 
   def post_build
-    params[:status] == BuildServer::SUCCESS ? @build_list.success : @build_list.error
+    params[:status] == BuildServer::SUCCESS ? @build_list.build_success : @build_list.build_error
     @build_list.container_path = params[:container_path]
     @build_list.save
 

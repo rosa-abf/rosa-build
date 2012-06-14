@@ -105,6 +105,8 @@ class BuildList < ActiveRecord::Base
 
   state_machine :status, :initial => :waiting_for_response do
 
+    after_transition :on => :published, :do => :set_version_and_tag
+
     event :place_build do
       transition :waiting_for_response => :build_pending, :if => lambda { |build_list|
         build_list.add_to_queue == BUILD_PENDING
@@ -156,11 +158,11 @@ class BuildList < ActiveRecord::Base
       transition :success => :rejected_publish, :if => :can_reject_publish?
     end
 
-    event :success do
+    event :build_success do
       transition [:build_started, :build_canceled] => :success
     end
 
-    event :error do
+    event :build_error do
       transition [:build_started, :build_canceled] => :build_error
     end
 
@@ -185,8 +187,9 @@ class BuildList < ActiveRecord::Base
     @status ||= BuildServer.add_build_list project.name, project_version, save_to_platform.name, arch.name, (save_to_platform_id == build_for_platform_id ? '' : build_for_platform.name), update_type, build_requires, id, include_repos, priority
   end
 
-  def set_version_and_tag(version, release)
-    self.package_version = "#{version}-#{release}"
+  def set_version_and_tag
+    pkg = self.packages.where(:package_type => 'source', :project_id => self.project_id).first
+    self.package_version = "#{pkg.platform.name}-#{pkg.version}-#{pkg.release}"
     system("cd #{self.project.git_repository.path} && git tag #{self.package_version} #{self.commit_hash}") # TODO REDO through grit
     save
   end
