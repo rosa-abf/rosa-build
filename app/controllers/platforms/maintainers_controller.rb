@@ -17,7 +17,7 @@ class Platforms::MaintainersController < ApplicationController
   def assignee
     ret = {}
     # NOTE that platform is looked up here to handle the error of platform being not found
-    @platform = Platform.find(params[:platform_id]) rescue ''
+    @platform = Platform.where(:id => params[:platform_id])[0]
     @package = params[:package]
     if @platform.blank?
       ret[:error] = "ABF platform ##{params[:platform_id]} not found!"
@@ -31,9 +31,9 @@ class Platforms::MaintainersController < ApplicationController
       # Package is not found; look for a project for this platform
       elsif proj_id = @platform.repositories.joins(:projects).where(["projects.name = ?",@package]).select('projects.id').map(&:id).first
         # Try to find a project?
-        begin
-          ret[:assignee] = Project.find(proj_id).assignee.email
-        rescue
+        if proj = Project.where(:id => proj_id)[0]
+          ret[:assignee] = proj.assignee.email
+        else
           ret[:error] = 'Not found'
         end
       else
