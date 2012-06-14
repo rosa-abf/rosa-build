@@ -7,6 +7,7 @@ ru:
       mass_build: Массовая Сборка
     attributes:
       mass_build:
+        id: Id
         name: Название
         created_at: Создан
         updated_at: Обновлен

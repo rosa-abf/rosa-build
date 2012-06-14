@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120523113925) do
+ActiveRecord::Schema.define(:version => 20120529130537) do
 
   create_table "activity_feeds", :force => true do |t|
     t.integer  "user_id",    :null => false
@@ -215,11 +215,11 @@ ActiveRecord::Schema.define(:version => 20120523113925) do
   create_table "mass_builds", :force => true do |t|
     t.integer  "platform_id"
     t.string   "name"
-    t.datetime "created_at",   :null => false
-    t.datetime "updated_at",   :null => false
+    t.datetime "created_at",                      :null => false
+    t.datetime "updated_at",                      :null => false
     t.string   "arch_names"
     t.integer  "user_id"
-    t.boolean  "auto_publish"
+    t.boolean  "auto_publish", :default => false, :null => false
   end
 
   create_table "platforms", :force => true do |t|

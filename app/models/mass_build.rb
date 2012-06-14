@@ -7,23 +7,28 @@ class MassBuild < ActiveRecord::Base
 
   attr_accessor :repositories, :arches
 
-  validates :platform_id, :auto_publish, :arch_names, :name, :user_id, :repositories, :presence => true
+  validates :platform_id, :arch_names, :name, :user_id, :repositories, :presence => true
+  validates_inclusion_of :auto_publish, :in => [true, false]
 
   after_create :build_all
+
+  include Modules::Models::ResqueAsyncMethods
+
+  @queue = :clone_and_build
 
   def initialize(args = nil)
     super
 
     if new_record?
       rep_names = Repository.where(:id => self.repositories).map(&:name).join(", ")
-      self.name = "#{Date.today.strftime("%d.%b")}-#{platform.name}(#{rep_names})"
+      self.name = "#{Time.now.utc.to_date.strftime("%d.%b")}-#{platform.name}(#{rep_names})"
       self.arch_names = Arch.where(:id => self.arches).map(&:name).join(", ")
     end
   end
 
   # ATTENTION: repositories and arches must be set before calling this method!
   def build_all
-    platform.delay.build_all(
+    platform.async(:build_all,
       :mass_build_id => self.id,
       :user => self.user,
       :repositories => self.repositories,

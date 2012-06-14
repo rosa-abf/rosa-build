@@ -38,3 +38,4 @@ ru:
     users: Пользователи
     register_requests: Инвайты
     event_logs: Лог событий
+    resque_server: Resque

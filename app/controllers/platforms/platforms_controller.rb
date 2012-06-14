@@ -2,6 +2,7 @@
 class Platforms::PlatformsController < Platforms::BaseController
 
   before_filter :authenticate_user!
+  skip_before_filter :authenticate_user!, :only => [:advisories] if APP_CONFIG['anonymous_access']
   load_and_authorize_resource
 
   autocomplete :user, :uname
@@ -12,7 +13,7 @@ class Platforms::PlatformsController < Platforms::BaseController
       :user => current_user,
       :repositories => params[:repositories],
       :arches => params[:arches],
-      :auto_publish => params[:auto_publish]
+      :auto_publish => params[:auto_publish] || false
     )
     if mass_build.save
       redirect_to(mass_builds_platform_path(@platform), :notice => t("flash.platform.build_all_success"))
@@ -97,7 +98,7 @@ class Platforms::PlatformsController < Platforms::BaseController
   end
 
   def destroy
-    @platform.delay.destroy if @platform
+    @platform.async(:destroy) if @platform
 
     flash[:notice] = t("flash.platform.destroyed")
     redirect_to platforms_path
@@ -140,4 +141,7 @@ class Platforms::PlatformsController < Platforms::BaseController
     redirect_to members_platform_url(@platform)
   end
 
+  def advisories
+    @advisories = @platform.advisories.paginate(:page => params[:page])
+  end
 end

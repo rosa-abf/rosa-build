@@ -19,15 +19,16 @@
       .both
     %h3= t("activerecord.attributes.build_list.preferences")
     .both.bottom_20
-      = check_box_tag :auto_publish, true, params[:auto_publish].present? ? params[:auto_publish].present? : true, :id => 'auto_publish'
+      = check_box_tag :auto_publish, true, params[:auto_publish].present? ? params[:auto_publish].present? : false, :id => 'auto_publish'
       = label_tag :auto_publish
 
 %br
 %br
 
-%table.tablesorter.unbordered
+%table.tablesorter.unbordered{:cellpadding => "0", :cellspacing => "0"}
   %thead
     %tr
+      %th.lpadding16= t('activerecord.attributes.mass_build.id')
       %th.lpadding16= t('activerecord.attributes.mass_build.name')
       %th.lpadding16= t('activerecord.attributes.mass_build.arch_names')
       %th.lpadding16= t('activerecord.attributes.mass_build.user')
@@ -35,6 +36,7 @@
       %th.lpadding16= t('activerecord.attributes.mass_build.created_at')
   - @mass_builds.each do |mass_build|
     %tr
+      %td= mass_build.id
       %td= link_to mass_build.name, build_lists_path(:filter => {:mass_build_id => mass_build.id})
       %td= mass_build.arch_names
       %td= link_to mass_build.user.fullname, mass_build.user
