@@ -96,7 +96,7 @@ class Projects::BuildListsController < Projects::BaseController
     if params[:status].to_i == 0 # ok
       @build_list.published
     else
-      @build_list.failed_publish
+      @build_list.fail_publish
     end
 
     render :nothing => true, :status => 200

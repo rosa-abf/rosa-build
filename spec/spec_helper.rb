@@ -43,7 +43,7 @@ def test_git_commit(project)
   project.git_repository.repo.index.commit('Test commit')
 end
 
-Delayed::Worker.delay_jobs = false # Execute all jobs realtime
+#Delayed::Worker.delay_jobs = false # Execute all jobs realtime
 
 # Add testing root_path
 %x(rm -Rf #{Rails.root}/tmp/test_root)
