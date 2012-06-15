@@ -3,6 +3,10 @@ require 'spec_helper'
 
 describe Projects::BuildListsController do
 
+  before(:each) do
+    any_instance_of(BuildList, :set_version_and_tag => true)
+  end
+
   shared_examples_for 'show build list' do
     it 'should be able to perform show action' do
       get :show, @show_params
@@ -323,14 +327,18 @@ describe Projects::BuildListsController do
     end
 
     describe 'publish_build' do
-      before { test_git_commit(build_list.project); build_list.update_attribute :commit_hash, build_list.project.git_repository.commits('master').last.id }
+      before { test_git_commit(build_list.project); build_list.update_attribute :commit_hash, build_list.project.git_repository.commits('master').last.id; build_list.update_attribute(:status, BuildList::BUILD_PUBLISH); }
 
       def do_get(status)
         get :publish_build, :id => build_list.bs_id, :status => status, :version => '4.7.5.3', :release => '1'
         build_list.reload
       end
 
-      it { do_get(BuildServer::SUCCESS); response.should be_ok }
+      it do
+        build_list.update_attribute(:status, BuildServer::BUILD_STARTED)
+        do_get(BuildServer::SUCCESS)
+        response.should be_ok
+      end
       it 'should create correct git tag for correct commit' do
         do_get(BuildServer::SUCCESS)
         build_list.project.git_repository.tags.last.name.should == build_list.package_version
@@ -390,6 +398,10 @@ describe Projects::BuildListsController do
     end
 
     describe 'pre_build' do
+      before do
+        build_list.update_attribute :status, BuildList::BUILD_PENDING
+      end
+
       def do_get
         get :pre_build, :id => build_list.bs_id
         build_list.reload
@@ -413,8 +425,20 @@ describe Projects::BuildListsController do
       it { lambda{ do_get(BuildServer::SUCCESS) }.should change(build_list, :updated_at) }
 
       context 'with auto_publish' do
-        it { lambda{ do_get(BuildServer::SUCCESS) }.should change(build_list, :status).to(BuildList::BUILD_PUBLISH) }
-        it { lambda{ do_get(BuildServer::ERROR) }.should change(build_list, :status).to(BuildServer::ERROR) }
+        it do
+          # TODO Comment or remove me:
+          build_list.update_attribute(:status, BuildServer::SUCCESS)
+          #build_list.status = BuildServer::SUCCESS
+          #build_list.save
+          lambda{ do_get(BuildServer::SUCCESS) }.should change(build_list, :status).to(BuildList::BUILD_PUBLISH)
+        end
+        it do
+          # TODO Comment or remove me:
+          build_list.update_attribute(:status, BuildServer::BUILD_STARTED)
+          #build_list.status = BuildServer::BUILD_STARTED
+          #build_list.save
+          lambda{ do_get(BuildServer::ERROR) }.should change(build_list, :status).to(BuildServer::ERROR)
+        end
       end
 
       context 'without auto_publish' do
