@@ -3,9 +3,9 @@ require 'spec_helper'
 
 describe Projects::BuildListsController do
 
-  before(:each) do
-    any_instance_of(BuildList, :set_version_and_tag => true)
-  end
+  #before(:each) do
+  #  any_instance_of(BuildList, :set_version_and_tag => true)
+  #end
 
   shared_examples_for 'show build list' do
     it 'should be able to perform show action' do

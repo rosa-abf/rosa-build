@@ -105,7 +105,9 @@ class BuildList < ActiveRecord::Base
 
   state_machine :status, :initial => :waiting_for_response do
 
-    after_transition :on => :published, :do => :set_version_and_tag
+    #after_transition :on => :published do |build_list, transition|#, :do => :set_version_and_tag
+    #  11
+    #end
 
     event :place_build do
       transition :waiting_for_response => :build_pending, :if => lambda { |build_list|
@@ -170,6 +172,13 @@ class BuildList < ActiveRecord::Base
       state name, :value => code
     end
 
+    #def set_version_and_tag
+    #  #pkg = self.packages.where(:package_type => 'source', :project_id => self.project_id).first
+    #  #self.package_version = "#{pkg.platform.name}-#{pkg.version}-#{pkg.release}"
+    #  #system("cd #{self.project.git_repository.path} && git tag #{self.package_version} #{self.commit_hash}") # TODO REDO through grit
+    #  #save
+    #  #2 + 1
+    #end
   end
 
   #TODO: Share this checking on product owner.
@@ -187,12 +196,13 @@ class BuildList < ActiveRecord::Base
     @status ||= BuildServer.add_build_list project.name, project_version, save_to_platform.name, arch.name, (save_to_platform_id == build_for_platform_id ? '' : build_for_platform.name), update_type, build_requires, id, include_repos, priority
   end
 
-  def set_version_and_tag
-    pkg = self.packages.where(:package_type => 'source', :project_id => self.project_id).first
-    self.package_version = "#{pkg.platform.name}-#{pkg.version}-#{pkg.release}"
-    system("cd #{self.project.git_repository.path} && git tag #{self.package_version} #{self.commit_hash}") # TODO REDO through grit
-    save
-  end
+  #def set_version_and_tag
+  #  #pkg = self.packages.where(:package_type => 'source', :project_id => self.project_id).first
+  #  #self.package_version = "#{pkg.platform.name}-#{pkg.version}-#{pkg.release}"
+  #  #system("cd #{self.project.git_repository.path} && git tag #{self.package_version} #{self.commit_hash}") # TODO REDO through grit
+  #  #save
+  #  2 + 1
+  #end
 
   def self.human_status(status)
     I18n.t("layout.build_lists.statuses.#{HUMAN_STATUSES[status]}")
