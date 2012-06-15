@@ -105,9 +105,7 @@ class BuildList < ActiveRecord::Base
 
   state_machine :status, :initial => :waiting_for_response do
 
-    #after_transition :on => :published do |build_list, transition|#, :do => :set_version_and_tag
-    #  11
-    #end
+    after_transition :on => :published, :do => :set_version_and_tag
 
     event :place_build do
       transition :waiting_for_response => :build_pending, :if => lambda { |build_list|
@@ -172,13 +170,12 @@ class BuildList < ActiveRecord::Base
       state name, :value => code
     end
 
-    #def set_version_and_tag
-    #  #pkg = self.packages.where(:package_type => 'source', :project_id => self.project_id).first
-    #  #self.package_version = "#{pkg.platform.name}-#{pkg.version}-#{pkg.release}"
-    #  #system("cd #{self.project.git_repository.path} && git tag #{self.package_version} #{self.commit_hash}") # TODO REDO through grit
-    #  #save
-    #  #2 + 1
-    #end
+    def set_version_and_tag
+      pkg = self.packages.where(:package_type => 'source', :project_id => self.project_id).first
+      self.package_version = "#{pkg.platform.name}-#{pkg.version}-#{pkg.release}"
+      system("cd #{self.project.git_repository.path} && git tag #{self.package_version} #{self.commit_hash}") # TODO REDO through grit
+      save
+    end
   end
 
   #TODO: Share this checking on product owner.

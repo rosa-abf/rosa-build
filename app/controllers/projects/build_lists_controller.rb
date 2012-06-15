@@ -122,7 +122,7 @@ class Projects::BuildListsController < Projects::BaseController
   end
 
   def post_build
-    params[:status] == BuildServer::SUCCESS ? @build_list.build_success : @build_list.build_error
+    params[:status].to_i == BuildServer::SUCCESS ? @build_list.build_success : @build_list.build_error
     @build_list.container_path = params[:container_path]
     @build_list.save
 
