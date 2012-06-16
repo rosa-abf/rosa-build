@@ -98,7 +98,7 @@ class Platforms::PlatformsController < Platforms::BaseController
   end
 
   def destroy
-    @platform.destroy
+    @platform.destroy # later with resque
     flash[:notice] = t("flash.platform.destroyed")
     redirect_to platforms_path
   end

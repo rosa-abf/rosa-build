@@ -3,7 +3,7 @@
 class UserMailer < ActionMailer::Base
   default :from => APP_CONFIG['do-not-reply-email']
 
-  include Resque::Mailer
+  include Resque::Mailer # send email async
 
   def new_user_notification(user)
     @user = user

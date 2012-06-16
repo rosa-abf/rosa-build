@@ -41,12 +41,12 @@ class Project < ActiveRecord::Base
 
   after_create :attach_to_personal_repository
   after_create :create_git_repo
-  after_create {|p| p.fork_git_repo unless is_root?}
+  after_create {|p| p.fork_git_repo unless is_root?} # later with resque
   after_save :create_wiki
 
   after_destroy :destroy_git_repo
   after_destroy :destroy_wiki
-  after_save {|p| p.import_attached_srpm if p.srpm?} # should be after create_git_repo
+  after_save {|p| p.import_attached_srpm if p.srpm?} # later with resque # should be after create_git_repo
   # after_rollback lambda { destroy_git_repo rescue true if new_record? }
 
   has_ancestry
@@ -247,7 +247,7 @@ class Project < ActiveRecord::Base
   def create_git_repo
     if is_root?
       Grit::Repo.init_bare(path)
-      write_hook
+      write_hook # later with resque
     end
   end
 

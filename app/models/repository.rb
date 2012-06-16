@@ -33,7 +33,7 @@ class Repository < ActiveRecord::Base
 
   def full_clone(attrs = {})
     base_clone(attrs).tap do |c|
-      with_skip {c.save} and c.clone_relations(self)
+      with_skip {c.save} and c.clone_relations(self) # later with resque
     end
   end
 

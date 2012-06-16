@@ -30,6 +30,6 @@ class MassBuild < ActiveRecord::Base
       :repositories => self.repositories,
       :arches => self.arches,
       :auto_publish => self.auto_publish
-    )
+    ) # later with resque
   end
 end

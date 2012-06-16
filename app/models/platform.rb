@@ -118,7 +118,7 @@ class Platform < ActiveRecord::Base
 
   def full_clone(attrs = {})
     base_clone(attrs).tap do |c|
-      with_skip {c.save} and c.clone_relations(self) and c.xml_rpc_clone
+      with_skip {c.save} and c.clone_relations(self) and c.xml_rpc_clone # later with resque
     end
   end
 
