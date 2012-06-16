@@ -132,7 +132,7 @@ class Projects::BuildListsController < Projects::BaseController
 
     render :nothing => true, :status => 200
 
-    @build_list.async(:publish) if @build_list.auto_publish # && @build_list.can_publish?
+    @build_list.publish if @build_list.auto_publish # && @build_list.can_publish?
   end
 
   def circle_build
@@ -197,7 +197,7 @@ class Projects::BuildListsController < Projects::BaseController
         end
       end
     end
-    if @build_list.save and @build_list.publish
+    if @build_list.save and @build_list.now_publish
       redirect_to :back, :notice => t('layout.build_lists.publish_success')
     else
       redirect_to :back, :notice => t('layout.build_lists.publish_fail')

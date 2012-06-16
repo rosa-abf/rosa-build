@@ -16,10 +16,6 @@ class Repository < ActiveRecord::Base
   attr_accessible :name, :description
   attr_readonly :name, :platform_id
 
-  include Modules::Models::ResqueAsyncMethods
-
-  @queue = :clone_and_build
-
   def base_clone(attrs = {})
     dup.tap do |c|
       c.platform_id = nil
@@ -33,10 +29,11 @@ class Repository < ActiveRecord::Base
       from.projects.find_each {|p| self.projects << p}
     end
   end
+  later :clone_relations, :loner => true, :queue => :clone_and_build
 
   def full_clone(attrs = {})
     base_clone(attrs).tap do |c|
-      with_skip {c.save} and c.async(:clone_relations, self)
+      with_skip {c.save} and c.clone_relations(self)
     end
   end
 

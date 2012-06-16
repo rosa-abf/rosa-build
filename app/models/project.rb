@@ -41,12 +41,12 @@ class Project < ActiveRecord::Base
 
   after_create :attach_to_personal_repository
   after_create :create_git_repo
-  after_create {|p| p.async(:fork_git_repo) unless is_root?}
+  after_create {|p| p.fork_git_repo unless is_root?}
   after_save :create_wiki
 
   after_destroy :destroy_git_repo
   after_destroy :destroy_wiki
-  after_save {|p| p.async(:import_attached_srpm) if p.srpm?} # should be after create_git_repo
+  after_save {|p| p.import_attached_srpm if p.srpm?} # should be after create_git_repo
   # after_rollback lambda { destroy_git_repo rescue true if new_record? }
 
   has_ancestry
@@ -54,9 +54,6 @@ class Project < ActiveRecord::Base
   has_attached_file :srpm
 
   include Modules::Models::Owner
-  include Modules::Models::ResqueAsyncMethods
-
-  @queue = :fork_import_hook
 
   def to_param
     name
@@ -222,11 +219,6 @@ class Project < ActiveRecord::Base
     owner == user
   end
 
-  def self.process_hook(owner_uname, repo, newrev, oldrev, ref, newrev_type, oldrev_type)
-    rec = GitHook.new(owner_uname, repo, newrev, oldrev, ref, newrev_type, oldrev_type)
-    ActivityFeedObserver.instance.after_create rec
-  end
-
   def owner_and_admin_ids
     recipients = self.relations.by_role('admin').where(:actor_type => 'User').map { |rel| rel.read_attribute(:actor_id) }
     recipients = recipients | [self.owner_id] if self.owner_type == 'User'
@@ -255,14 +247,15 @@ class Project < ActiveRecord::Base
   def create_git_repo
     if is_root?
       Grit::Repo.init_bare(path)
-      async(:write_hook)
+      write_hook
     end
   end
 
   def fork_git_repo
     dummy = Grit::Repo.new(path) rescue parent.git_repository.repo.fork_bare(path)
-    write_hook
+    now_write_hook
   end
+  later :fork_git_repo, :loner => true, :queue => :fork_import_hook
 
   def destroy_git_repo
     FileUtils.rm_rf path
@@ -274,7 +267,7 @@ class Project < ActiveRecord::Base
       self.srpm = nil; save # clear srpm
     end
   end
-
+  later :import_attached_srpm, :loner => true, :queue => :fork_import_hook
 
   def create_wiki
     if has_wiki && !FileTest.exist?(wiki_path)
@@ -294,7 +287,7 @@ class Project < ActiveRecord::Base
     hook = File.join(::Rails.root.to_s, 'tmp', "post-receive-hook")
     FileUtils.cp(File.join(::Rails.root.to_s, 'bin', "post-receive-hook.partial"), hook)
     File.open(hook, 'a') do |f|
-      s = "\n  /bin/bash -l -c \"cd #{is_production ? '/srv/rosa_build/current' : Rails.root.to_s} && #{is_production ? 'RAILS_ENV=production' : ''} bundle exec rails runner 'Project.async(:process_hook, \\\"$owner\\\", \\\"$reponame\\\", \\\"$newrev\\\", \\\"$oldrev\\\", \\\"$ref\\\", \\\"$newrev_type\\\", \\\"$oldrev_type\\\")'\""
+      s = "\n  /bin/bash -l -c \"cd #{is_production ? '/srv/rosa_build/current' : Rails.root.to_s} && #{is_production ? 'RAILS_ENV=production' : ''} bundle exec rake hook:enqueue[$owner,$reponame,$newrev,$oldrev,$ref,$newrev_type,$oldrev_type]\""
       s << " > /dev/null 2>&1" if is_production
       s << "\ndone\n"
       f.write(s)
@@ -307,4 +300,5 @@ class Project < ActiveRecord::Base
 
   rescue Exception # FIXME
   end
+  later :write_hook, :loner => true, :queue => :fork_import_hook
 end
