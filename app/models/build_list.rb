@@ -100,10 +100,6 @@ class BuildList < ActiveRecord::Base
   after_create :place_build
   after_destroy :delete_container
 
-  include Modules::Models::ResqueAsyncMethods
-
-  @queue = :clone_and_build
-
   def self.human_status(status)
     I18n.t("layout.build_lists.statuses.#{HUMAN_STATUSES[status]}")
   end
