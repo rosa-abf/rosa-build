@@ -47,9 +47,6 @@ class Platform < ActiveRecord::Base
   attr_readonly   :name, :distrib_type, :parent_platform_id, :platform_type
 
   include Modules::Models::Owner
-  include Modules::Models::ResqueAsyncMethods
-
-  @queue = :clone_and_build
 
   def urpmi_list(host, pair = nil)
     blank_pair = {:login => 'login', :pass => 'password'}
@@ -121,7 +118,7 @@ class Platform < ActiveRecord::Base
 
   def full_clone(attrs = {})
     base_clone(attrs).tap do |c|
-      with_skip {c.save} and c.clone_relations(self) and c.async(:xml_rpc_clone)
+      with_skip {c.save} and c.clone_relations(self) and c.xml_rpc_clone # later with resque
     end
   end
 
@@ -175,17 +172,19 @@ class Platform < ActiveRecord::Base
             begin
               p.build_for(self, user, arch, auto_publish, mass_build_id)
             rescue RuntimeError, Exception
-              p.async(:build_for, self, user, arch, auto_publish, mass_build_id)
+              # p.async(:build_for, self, user, arch, auto_publish, mass_build_id) # TODO need this?
             end
           end
         end
       end
     end
   end
+  later :build_all, :loner => true, :queue => :clone_and_build
 
   def destroy
     with_skip {super} # avoid cascade XML RPC requests
   end
+  later :destroy, :loner => true, :queue => :clone_and_build
 
   protected
 
@@ -219,6 +218,7 @@ class Platform < ActiveRecord::Base
         raise "Failed to clone platform #{old_name} with code #{result}. Path: #{build_path(old_name)} to platform #{new_name}"
       end
     end
+    later :xml_rpc_clone, :loner => true, :queue => :clone_and_build
 
     def freeze_platform
       if released_changed? && released == true
