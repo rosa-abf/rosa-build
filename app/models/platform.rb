@@ -179,12 +179,12 @@ class Platform < ActiveRecord::Base
       end
     end
   end
-  later :build_all, :loner => true, :queue => :clone_and_build
+  later :build_all, :loner => true, :queue => :clone_build
 
   def destroy
     with_skip {super} # avoid cascade XML RPC requests
   end
-  later :destroy, :loner => true, :queue => :clone_and_build
+  later :destroy, :loner => true, :queue => :clone_build
 
   protected
 
@@ -218,7 +218,7 @@ class Platform < ActiveRecord::Base
         raise "Failed to clone platform #{old_name} with code #{result}. Path: #{build_path(old_name)} to platform #{new_name}"
       end
     end
-    later :xml_rpc_clone, :loner => true, :queue => :clone_and_build
+    later :xml_rpc_clone, :loner => true, :queue => :clone_build
 
     def freeze_platform
       if released_changed? && released == true

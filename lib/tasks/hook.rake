@@ -37,7 +37,7 @@ namespace :hook do
     # require 'resque'
     require './app/models/git_hook'
     PerformLater.config.enabled = true unless Rails.env.test?
-    GitHook.perform_later!(:fork_import_hook, :process, *args.to_hash.values)
+    GitHook.perform_later!(:hook, :process, *args.to_hash.values)
   end
 
   desc "remove git hook from all repos"

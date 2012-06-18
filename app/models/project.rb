@@ -255,7 +255,7 @@ class Project < ActiveRecord::Base
     dummy = Grit::Repo.new(path) rescue parent.git_repository.repo.fork_bare(path)
     now_write_hook
   end
-  later :fork_git_repo, :loner => true, :queue => :fork_import_hook
+  later :fork_git_repo, :loner => true, :queue => :fork_import
 
   def destroy_git_repo
     FileUtils.rm_rf path
@@ -267,7 +267,7 @@ class Project < ActiveRecord::Base
       self.srpm = nil; save # clear srpm
     end
   end
-  later :import_attached_srpm, :loner => true, :queue => :fork_import_hook
+  later :import_attached_srpm, :loner => true, :queue => :fork_import
 
   def create_wiki
     if has_wiki && !FileTest.exist?(wiki_path)
@@ -300,5 +300,5 @@ class Project < ActiveRecord::Base
 
   rescue Exception # FIXME
   end
-  later :write_hook, :loner => true, :queue => :fork_import_hook
+  later :write_hook, :loner => true, :queue => :hook
 end

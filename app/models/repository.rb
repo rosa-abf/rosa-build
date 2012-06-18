@@ -29,7 +29,7 @@ class Repository < ActiveRecord::Base
       from.projects.find_each {|p| self.projects << p}
     end
   end
-  later :clone_relations, :loner => true, :queue => :clone_and_build
+  later :clone_relations, :loner => true, :queue => :clone_build
 
   def full_clone(attrs = {})
     base_clone(attrs).tap do |c|

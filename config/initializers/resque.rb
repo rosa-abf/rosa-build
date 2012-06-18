@@ -3,7 +3,7 @@ require 'resque/status_server'
 
 ::ResqueServer = ::Resque::Server # need for CanCan
 
-Resque::Mailer.default_queue_name = 'notifications'
+Resque::Mailer.default_queue_name = :notification
 Resque::Mailer.excluded_environments = [:test]
 
 unless Rails.env.test?

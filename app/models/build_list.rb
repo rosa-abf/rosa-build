@@ -132,7 +132,7 @@ class BuildList < ActiveRecord::Base
     update_attribute(:status, has_published == 0 ? BUILD_PUBLISH : FAILED_PUBLISH)
     return has_published == 0
   end
-  later :publish, :loner => true, :queue => :clone_and_build
+  later :publish, :loner => true, :queue => :clone_build
 
   def can_publish?
     status == BuildServer::SUCCESS or status == FAILED_PUBLISH
