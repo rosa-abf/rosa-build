@@ -29,8 +29,6 @@ class Ability
     else # Registered user rights
       if user.admin?
         can :manage, :all
-        # Resque authorize
-        can :manage, Resque
         # Protection
         cannot :approve, RegisterRequest, :approved => true
         cannot :reject, RegisterRequest, :rejected => true

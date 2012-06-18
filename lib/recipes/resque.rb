@@ -1,5 +1,6 @@
 # -*- encoding : utf-8 -*-
 Capistrano::Configuration.instance(:must_exist).load do
+
   namespace :resque do
     task :start do
       start_workers
@@ -19,19 +20,12 @@ Capistrano::Configuration.instance(:must_exist).load do
     end
 
     def stop_workers
-      pids = Array.new
-
-      Resque.workers.each do |worker|
-        pids << worker.to_s.split(/:/).second
-      end
-
-      if pids.size > 0
-        system("kill -QUIT #{pids.join(' ')}")
-      end
+      #run "kill -QUIT `ps aux | grep resque | grep -v grep | awk '{ print $2 }'`"
+      run "kill -QUIT `ps aux | grep resque | grep -v grep | awk '{ print $2 }'` > /dev/null 2>&1 &"
     end
 
     def start_workers
-      run "cd #{fetch :release_path} && QUEUE=* bundle exec rake resque:work"
+      run "cd #{fetch :current_path} && COUNT=#{ workers_count } QUEUE=fork_import,hook,clone_build,notification #{ rails_env } BACKGROUND=yes bundle exec rake resque:workers"
     end
   end
 end

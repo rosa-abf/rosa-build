@@ -24,12 +24,12 @@ class MassBuild < ActiveRecord::Base
 
   # ATTENTION: repositories and arches must be set before calling this method!
   def build_all
-    platform.delay.build_all(
+    platform.build_all(
       :mass_build_id => self.id,
       :user => self.user,
       :repositories => self.repositories,
       :arches => self.arches,
       :auto_publish => self.auto_publish
-    )
+    ) # later with resque
   end
 end
