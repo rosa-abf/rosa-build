@@ -1,20 +1,23 @@
 # -*- encoding : utf-8 -*-
+require 'pp'
 class AdvisoriesController < ApplicationController
   before_filter :authenticate_user!
-  before_filter :find_advisory, :only => [:show]
   skip_before_filter :authenticate_user! if APP_CONFIG['anonymous_access']
-  load_and_authorize_resource
+  load_resource :find_by => :advisory_id
+  authorize_resource
 
   def index
-    @advisories = @advisories.paginate(:page => params[:page])
+    @advisories = @advisories.scoped(:include => :projects).paginate(:page => params[:page])
   end
 
   def show
+    @packages_info = Hash.new { |h, k| h[k] = {} }
+    @advisory.build_lists.find_in_batches(:include => [:save_to_platform, :packages, :project]) do |batch|
+      batch.each do |build_list|
+        h = { build_list.project => build_list.packages }
+        @packages_info[build_list.save_to_platform].merge!(h) { |pr, old, new| (old + new).compact!.uniq! }
+      end
+    end
   end
 
-  protected
-
-  def find_advisory
-    @advisory = Advisory.where(:advisory_id => params[:id]).limit(1).first if params[:id].present?
-  end
 end

@@ -1,7 +1,7 @@
 class Advisory < ActiveRecord::Base
   has_and_belongs_to_many :platforms
+  has_and_belongs_to_many :projects
   has_many :build_lists
-  belongs_to :project
 
   validates :description, :update_type, :presence => true
 

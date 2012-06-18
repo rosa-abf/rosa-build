@@ -1080,3 +1080,17 @@ form.mass_build section.left {
 form.mass_build section.right {
   margin-right: 50px;
 }
+
+.chzn-select {
+    width: 350px;
+}
+
+.packages_info_container ul {
+    list-style-type: none;
+    padding-left: 25px;
+    margin: 5px 0;
+}
+
+.packages_info_container ul.platforms {
+    padding: 0;
+}

@@ -70,7 +70,7 @@ class Projects::BuildListsController < Projects::BaseController
 
   def show
     @item_groups = @build_list.items.group_by_level
-    @advisories = @build_list.project.advisories
+    @advisories = Advisories.all
   end
 
   def update
@@ -177,7 +177,7 @@ class Projects::BuildListsController < Projects::BaseController
     if params[:attach_advisory].present? and params[:attach_advisory] != 'no' and !@build_list.advisory
       if params[:attach_advisory] == 'new'
         # create new advisory
-        if !@build_list.build_advisory(params[:build_list][:advisory]) do |a|
+        unless @build_list.build_advisory(params[:build_list][:advisory]) do |a|
               a.update_type = @build_list.update_type
               a.project     = @build_list.project
               a.platforms  << @build_list.save_to_platform unless a.platforms.include? @build_list.save_to_platform

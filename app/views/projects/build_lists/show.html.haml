@@ -32,7 +32,7 @@
   .leftlist= t("activerecord.attributes.build_list.update_type")
   .rightlist
     - if @build_list.can_publish? and can?(:publish, @build_list)
-      = f.select :update_type, options_for_select(BuildList::RELEASE_UPDATE_TYPES, @build_list.update_type)
+      = f.select :update_type, options_for_select(BuildList::RELEASE_UPDATE_TYPES, @build_list.update_type), {}, :class => 'chzn-select'
     - else
       = @build_list.update_type
   .both
@@ -74,7 +74,8 @@
   - if @build_list.can_publish? and @build_list.save_to_platform.released and @build_list.advisory.nil?
     #advisory_block
       .leftlist= label_tag :attach_advisory, t("layout.build_lists.attached_advisory")
-      .rightlist= select_tag :attach_advisory, advisories_select_options(@advisories)
+      .rightlist
+        = select_tag :attach_advisory, advisories_select_options(@advisories), :class => 'chzn-select'
       .both
 
       #new_advisory_form

@@ -4,9 +4,9 @@
 //= require autocomplete-rails
 //= require vendor
 //= require jquery.dataTables_ext
-//= require lib/lib
 //= require_tree ./design
 //= require_tree ./extra
+//= require_tree ./lib
 
 //= require underscore
 //= require backbone

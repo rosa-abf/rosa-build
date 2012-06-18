@@ -2,28 +2,32 @@ Rosa.Views.BuildListAdvisoriesView = Backbone.View.extend({
     initialize: function() {
         _.bindAll(this, 'popoverTitle', 'popoverDesc', 'showAdvisory',
                         'changeAdvisoryList', 'showPreview', 'showForm', 'hideAll');
+        $('.chzn-select').chosen();
         this.$el = $('#advisory_block'); 
         this._$form = this.$('#new_advisory_form');
         this._$preview = this.$('#advisory_preview');
         this._$type_select = $('#build_list_update_type');
         this._$selector = this.$('#attach_advisory');
+        this._header_text = this._$preview.children('h3').html();
 
         this._$selector.on('change', this.showAdvisory);
         this._$type_select.on('change', this.changeAdvisoryList);
     },
 
     changeAdvisoryList: function() {
-        this._$selector.children('.popoverable').hide();
-        this._$selector.children('.popoverable.' + this._$type_select.val()).show();
-        this._$selector.val('no').trigger('change');
+        this.$('.popoverable').hide();
+        this.$('.popoverable.' + this._$type_select.val()).show();
+        this._$selector.val('no').trigger("liszd:updated").trigger('change');
     },
 
     popoverTitle: function(el) {
-        return el.val();
+        console.log(el);
+        console.log(el.html());
+        return el.html();
     },
 
     popoverDesc: function(el) {
-        return this.collection.get(el.val()).get('popover_desc');
+        return this.collection.get(el.html()).get('popover_desc');
     },
 
     showAdvisory: function(el) {
@@ -46,7 +50,7 @@ Rosa.Views.BuildListAdvisoriesView = Backbone.View.extend({
         }
         var adv = this.collection.get(id);
         var prev = this._$preview;
-        prev.children('h3').html(prev.children('h3').html() + ' ' + adv.get('advisory_id'));
+        prev.children('h3').html(this._header_text + ' ' + adv.get('advisory_id'));
         prev.children('.descr').html(adv.get('description'));
         prev.children('.refs').html(adv.get('references'));
         if (!this._$preview.is(':visible')) {
@@ -76,7 +80,7 @@ Rosa.Views.BuildListAdvisoriesView = Backbone.View.extend({
         var title = this.popoverTitle;
         var description = this.popoverDesc;
         this.changeAdvisoryList();
-        this.$('#attach_advisory > .popoverable').popover({
+        this.$('.popoverable').popover({
             title: function() { return title($(this)); },
             content: function() { return description($(this)); }
         });
