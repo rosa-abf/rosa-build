@@ -255,7 +255,7 @@ class Projects::WikiController < Projects::BaseController
       unless @committer
         p = commit_message.merge({:name => current_user.uname, :email => current_user.email})
         @committer = Gollum::Committer.new(@wiki, p)
-        GitHook.perform_later!(:notifcations, :process, {:project_id => @project.id, :actor_name => @committer.actor.name, :commit_sha => @committer.commit})
+        GitHook.perform_later!(:notifications, :process, {:project_id => @project.id, :actor_name => @committer.actor.name, :commit_sha => @committer.commit})
       end
       @committer
     end
