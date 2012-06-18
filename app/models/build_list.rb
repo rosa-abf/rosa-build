@@ -169,13 +169,13 @@ class BuildList < ActiveRecord::Base
     HUMAN_STATUSES.each do |code,name|
       state name, :value => code
     end
+  end
 
-    def set_version_and_tag
-      pkg = self.packages.where(:package_type => 'source', :project_id => self.project_id).first
-      self.package_version = "#{pkg.platform.name}-#{pkg.version}-#{pkg.release}"
-      system("cd #{self.project.git_repository.path} && git tag #{self.package_version} #{self.commit_hash}") # TODO REDO through grit
-      save
-    end
+  def set_version_and_tag
+    pkg = self.packages.where(:package_type => 'source', :project_id => self.project_id).first
+    self.package_version = "#{pkg.platform.name}-#{pkg.version}-#{pkg.release}"
+    system("cd #{self.project.git_repository.path} && git tag #{self.package_version} #{self.commit_hash}") # TODO REDO through grit
+    save
   end
 
   #TODO: Share this checking on product owner.
@@ -192,14 +192,6 @@ class BuildList < ActiveRecord::Base
     #XML-RPC params: project_name, project_version, plname, arch, bplname, update_type, build_requires, id_web, include_repos, priority
     @status ||= BuildServer.add_build_list project.name, project_version, save_to_platform.name, arch.name, (save_to_platform_id == build_for_platform_id ? '' : build_for_platform.name), update_type, build_requires, id, include_repos, priority
   end
-
-  #def set_version_and_tag
-  #  #pkg = self.packages.where(:package_type => 'source', :project_id => self.project_id).first
-  #  #self.package_version = "#{pkg.platform.name}-#{pkg.version}-#{pkg.release}"
-  #  #system("cd #{self.project.git_repository.path} && git tag #{self.package_version} #{self.commit_hash}") # TODO REDO through grit
-  #  #save
-  #  2 + 1
-  #end
 
   def self.human_status(status)
     I18n.t("layout.build_lists.statuses.#{HUMAN_STATUSES[status]}")

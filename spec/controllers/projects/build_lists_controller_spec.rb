@@ -3,10 +3,6 @@ require 'spec_helper'
 
 describe Projects::BuildListsController do
 
-  before(:each) do
-    any_instance_of(BuildList, :set_version_and_tag => true)
-  end
-
   shared_examples_for 'show build list' do
     it 'should be able to perform show action' do
       get :show, @show_params
@@ -321,13 +317,19 @@ describe Projects::BuildListsController do
 
   context 'callbacks' do
     let(:build_list) { FactoryGirl.create(:build_list_core) }
+    let(:build_list_package) { FactoryGirl.create(:build_list_package, :build_list_id => build_list.id, :platform_id => build_list.project.repositories.first.platform_id, :project_id => build_list.project_id, :version => "4.7.5.3", :release => 1) }
 
     before(:each) do
       mock(controller).authenticate_build_service! {true}
     end
 
     describe 'publish_build' do
-      before { test_git_commit(build_list.project); build_list.update_attribute :commit_hash, build_list.project.git_repository.commits('master').last.id; build_list.update_attribute(:status, BuildList::BUILD_PUBLISH); }
+      before {
+        test_git_commit(build_list.project)
+        build_list.update_attribute :commit_hash, build_list.project.git_repository.commits('master').last.id
+        build_list.update_attribute(:status, BuildList::BUILD_PUBLISH)
+        build_list_package
+      }
 
       def do_get(status)
         get :publish_build, :id => build_list.bs_id, :status => status, :version => '4.7.5.3', :release => '1'
@@ -340,13 +342,13 @@ describe Projects::BuildListsController do
         response.should be_ok
       }
       # TODO: Remove pending after set_version_and_tag unstub:
-      pending 'should create correct git tag for correct commit' do
+      it 'should create correct git tag for correct commit' do
         do_get(BuildServer::SUCCESS)
         build_list.project.git_repository.tags.last.name.should == build_list.package_version
         build_list.project.git_repository.commits(build_list.package_version).last.id.should == build_list.commit_hash
       end
-      pending { lambda{ do_get(BuildServer::SUCCESS) }.should change(build_list, :status).to(BuildList::BUILD_PUBLISHED) }
-      it { lambda{ do_get(BuildServer::SUCCESS) }.should change(build_list, :package_version).to('4.7.5.3-1') }
+      it(:passes) { lambda{ do_get(BuildServer::SUCCESS) }.should change(build_list, :status).to(BuildList::BUILD_PUBLISHED) }
+      it(:passes) { lambda{ do_get(BuildServer::SUCCESS) }.should change(build_list, :package_version).to("#{ build_list_package.platform.name }-4.7.5.3-1") }
       it { lambda{ do_get(BuildServer::ERROR) }.should change(build_list, :status).to(BuildList::FAILED_PUBLISH) }
       it { lambda{ do_get(BuildServer::ERROR) }.should_not change(build_list, :package_version) }
       it { lambda{ do_get(BuildServer::ERROR) }.should change(build_list, :updated_at) }
