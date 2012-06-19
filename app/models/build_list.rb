@@ -107,7 +107,7 @@ class BuildList < ActiveRecord::Base
 
     event :place_build do
       transition :waiting_for_response => :build_pending, :if => lambda { |build_list|
-        build_list.add_to_queue == BUILD_PENDING
+        build_list.add_to_queue == BuildServer::SUCCESS
       }
       [
         'BuildList::BUILD_PENDING',
@@ -132,8 +132,7 @@ class BuildList < ActiveRecord::Base
 
     event :cancel do
       transition [:build_pending, :platform_pending] => :build_canceled, :if => lambda { |build_list|
-        has_canceled = BuildServer.delete_build_list build_list.bs_id
-        build_list.can_cancel? && has_canceled == 0
+        build_list.can_cancel? && BuildServer.delete_build_list(build_list.bs_id) == BuildServer::SUCCESS
       }
     end
 
@@ -147,7 +146,7 @@ class BuildList < ActiveRecord::Base
 
     event :publish do
       transition [:success, :failed_publish] => :build_publish, :if => lambda { |build_list|
-        BuildServer.publish_container(build_list.bs_id) == 0
+        BuildServer.publish_container(build_list.bs_id) == BuildServer::SUCCESS
       }
       transition [:success, :failed_publish] => :failed_publish
     end
@@ -180,7 +179,7 @@ class BuildList < ActiveRecord::Base
 
   #TODO: Share this checking on product owner.
   def can_cancel?
-    status == BUILD_PENDING && bs_id
+    [BUILD_PENDING, BuildServer::PLATFORM_PENDING].include? status && bs_id
   end
 
   def can_reject_publish?
