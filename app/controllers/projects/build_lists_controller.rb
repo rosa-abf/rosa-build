@@ -70,7 +70,7 @@ class Projects::BuildListsController < Projects::BaseController
 
   def show
     @item_groups = @build_list.items.group_by_level
-    @advisories = Advisories.all
+    @advisories = Advisory.all
   end
 
   def update
