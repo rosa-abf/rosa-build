@@ -184,7 +184,7 @@ class Platform < ActiveRecord::Base
   def destroy
     with_skip {super} # avoid cascade XML RPC requests
   end
-  later :destroy, :loner => true, :queue => :clone_build
+  later :destroy, :queue => :clone_build
 
   protected
 
