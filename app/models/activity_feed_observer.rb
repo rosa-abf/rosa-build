@@ -2,10 +2,6 @@
 class ActivityFeedObserver < ActiveRecord::Observer
   observe :issue, :comment, :user, :build_list
 
-  include Modules::Models::ResqueAsyncMethods
-
-  @queue = :notifications
-
   def after_create(record)
     case record.class.to_s
     when 'User'
@@ -19,7 +15,7 @@ class ActivityFeedObserver < ActiveRecord::Observer
       recipients = record.collect_recipient_ids
       recipients.each do |recipient_id|
         recipient = User.find(recipient_id)
-        UserMailer.async(:new_issue_notification, record, recipient) if User.find(recipient).notifier.can_notify && User.find(recipient).notifier.new_issue
+        UserMailer.new_issue_notification(record, recipient).deliver if User.find(recipient).notifier.can_notify && User.find(recipient).notifier.new_issue
         ActivityFeed.create(
           :user => recipient,
           :kind => 'new_issue_notification',
@@ -29,7 +25,7 @@ class ActivityFeedObserver < ActiveRecord::Observer
       end
 
       if record.assignee_id_changed?
-        UserMailer.async(:new_issue_notification, record, record.assignee) if record.assignee.notifier.issue_assign && record.assignee.notifier.can_notify
+        UserMailer.new_issue_notification(record, record.assignee).deliver if record.assignee.notifier.issue_assign && record.assignee.notifier.can_notify
         ActivityFeed.create(
           :user => record.user,
           :kind => 'issue_assign_notification',
@@ -43,7 +39,7 @@ class ActivityFeedObserver < ActiveRecord::Observer
         subscribes = record.commentable.subscribes
         subscribes.each do |subscribe|
           if record.user_id != subscribe.user_id
-            UserMailer.async(:new_comment_notification, record, subscribe.user) if record.can_notify_on_new_comment?(subscribe)
+            UserMailer.new_comment_notification(record, subscribe.user).deliver if record.can_notify_on_new_comment?(subscribe)
             ActivityFeed.create(
               :user => subscribe.user,
               :kind => 'new_comment_notification',
@@ -61,7 +57,7 @@ class ActivityFeedObserver < ActiveRecord::Observer
               ( (subscribe.project.owner?(subscribe.user) && subscribe.user.notifier.new_comment_commit_repo_owner) or
                 (subscribe.user.commentor?(record.commentable) && subscribe.user.notifier.new_comment_commit_commentor) or
                 (subscribe.user.committer?(record.commentable) && subscribe.user.notifier.new_comment_commit_owner) )
-            UserMailer.async(:new_comment_notification, record, subscribe.user)
+            UserMailer.new_comment_notification(record, subscribe.user).deliver
           end
             ActivityFeed.create(
               :user => subscribe.user,
@@ -97,26 +93,23 @@ class ActivityFeedObserver < ActiveRecord::Observer
       end
 
       record.project.owner_and_admin_ids.each do |recipient|
-        ActivityFeed.create(
+        ActivityFeed.create!(
           :user => User.find(recipient),
           :kind => kind,
           :data => options
         )
       end
 
-    when 'Gollum::Committer'
-      actor = User.find_by_uname(record.actor.name)
-      project_name = record.wiki.path.match(/\/(\w+)\.wiki\.git$/)[1]
-      project = Project.find_by_name(project_name)
-      commit_sha = record.commit
-      #wiki_name = record.wiki.name
+    when 'Hash' # 'Gollum::Committer'
+      actor = User.find_by_uname! record[:actor_name]
+      project = Project.find record[:project_id]
 
       project.owner_and_admin_ids.each do |recipient|
-        ActivityFeed.create(
+        ActivityFeed.create!(
           :user => User.find(recipient),#record.user,
           :kind => 'wiki_new_commit_notification',
           :data => {:user_id => actor.id, :user_name => actor.name, :user_email => actor.email, :project_id => project.id,
-                           :project_name => project_name, :commit_sha => commit_sha, :project_owner => project.owner.uname}
+                    :project_name => project.name, :commit_sha => record[:commit_sha], :project_owner => project.owner.uname}
         )
       end
     end
@@ -126,7 +119,7 @@ class ActivityFeedObserver < ActiveRecord::Observer
     case record.class.to_s
     when 'Issue'
       if record.assignee_id && record.assignee_id_changed?
-        UserMailer.async(:issue_assign_notification, record, record.assignee) if record.assignee.notifier.issue_assign && record.assignee.notifier.can_notify
+        UserMailer.issue_assign_notification(record, record.assignee).deliver if record.assignee.notifier.issue_assign && record.assignee.notifier.can_notify
         ActivityFeed.create(
           :user => record.assignee,
           :kind => 'issue_assign_notification',

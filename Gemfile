@@ -1,6 +1,6 @@
 source 'http://rubygems.org'
 
-gem 'rails', '3.2.3' #, :git => 'git://github.com/rails/rails.git'
+gem 'rails', '3.2.6' #, :git => 'git://github.com/rails/rails.git'
 
 gem 'pg', '~> 0.13.2'
 # gem 'silent-postgres', :git => 'git://github.com/dolzenko/silent-postgres.git' #'~> 0.1.1'
@@ -12,15 +12,15 @@ gem 'omniauth', '~> 1.0.3'
 gem 'omniauth-openid', '~> 1.0.1'
 gem 'cancan', '~> 1.6.7'
 
-gem 'ancestry', '~> 1.2.5'
-gem 'paperclip', '~> 3.0.2'
-#gem 'delayed_job_active_record', '~> 0.3.2'
-gem 'resque'
+gem 'ancestry', '~> 1.3.0'
+gem 'paperclip', '~> 3.0.4'
+gem 'resque', '~> 1.20.0'
+gem 'resque-status', '~> 0.3.3'
+gem 'resque_mailer', '~> 2.1.0'
+gem 'perform_later', '~> 1.3.0' # should be after resque_mailer
 gem 'russian', '~> 0.6.0'
 gem 'highline', '~> 1.6.11'
 gem 'state_machine'
-
-gem 'jbuilder'
 
 # gem 'rugged', '~> 0.16.0'
 gem 'grack', :git => 'git://github.com/rdblue/grack.git', :require => 'git_http'
@@ -37,11 +37,12 @@ gem 'rdiscount'
 gem 'RedCloth'
 gem 'wikicloth'
 
-gem 'unicorn', '~> 4.2.1', :platforms => [:mri, :rbx]
+gem 'unicorn', '~> 4.3.1', :platforms => [:mri, :rbx]
 gem 'trinidad', '~> 1.0.2', :platforms => :jruby
-gem 'newrelic_rpm', '~> 3.3.3', :platforms => [:mri, :rbx]
+gem 'newrelic_rpm', '~> 3.3.5', :platforms => [:mri, :rbx]
 gem 'whenever', '~> 0.7.3', :require => false
 
+gem 'jbuilder', '~> 0.4.0'
 gem 'rails3-jquery-autocomplete', '~> 1.0.7'
 gem 'will_paginate', '~> 3.0.3'
 gem 'meta-tags', '~> 1.2.5', :require => 'meta_tags'
@@ -53,16 +54,15 @@ gem 'rails-backbone', '~> 0.7.2'
 group :assets do
   gem 'sass-rails', '~> 3.2.5'
   gem 'coffee-rails', '~> 3.2.2'
-  gem 'compass-rails', '~> 1.0.1'
+  gem 'compass-rails', '~> 1.0.2'
   gem 'uglifier', '~> 1.2.4'
   gem 'therubyracer', '~> 0.10.1', :platforms => [:mri, :rbx]
   gem 'therubyrhino', '~> 1.73.1', :platforms => :jruby
 end
 
 group :production do
-  gem "airbrake", '~> 3.0.9'
+  gem "airbrake", '~> 3.1.1'
   gem 'bluepill', '~> 0.0.60', :require => false
-  gem 'daemons', '1.1.6' # Try to upgrade 1.1.8 to avoid tons DJ bugs?
 end
 
 group :development do
@@ -78,8 +78,8 @@ group :development do
 end
 
 group :test do
-  gem 'rspec-rails',        '~> 2.9.0', :group => 'development'
-  gem 'factory_girl_rails', '~> 3.1.0'
+  gem 'rspec-rails',        '~> 2.10.1', :group => 'development'
+  gem 'factory_girl_rails', '~> 3.4.0'
   gem 'rr',                 '~> 1.0.4'
   gem 'shoulda'
 end

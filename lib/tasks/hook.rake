@@ -5,8 +5,8 @@ namespace :hook do
     say "Generate temporary file..."
     hook = File.join(::Rails.root.to_s, 'tmp', "post-receive-hook")
     FileUtils.cp(File.join(::Rails.root.to_s, 'bin', "post-receive-hook.partial"), hook)
-    File.open(hook, 'a') do |f|
-      s = "\n  /bin/bash -l -c \"cd #{is_production ? '/srv/rosa_build/current' : Rails.root.to_s} && #{is_production ? 'RAILS_ENV=production' : ''} bundle exec rails runner 'Project.async(:process_hook, \\\"$owner\\\", \\\"$reponame\\\", \\\"$newrev\\\", \\\"$oldrev\\\", \\\"$ref\\\", \\\"$newrev_type\\\", \\\"$oldrev_type\\\")'\""
+    File.open(hook, 'a') do |f|      
+      s = "\n  /bin/bash -l -c \"cd #{is_production ? '/srv/rosa_build/current' : Rails.root.to_s} && #{is_production ? 'RAILS_ENV=production' : ''} bundle exec rake hook:enqueue[$owner,$reponame,$newrev,$oldrev,$ref,$newrev_type,$oldrev_type]\""
       s << " > /dev/null 2>&1" if is_production
       s << "\ndone\n"
       f.write(s)
@@ -30,6 +30,14 @@ namespace :hook do
     say "Writing to #{count.to_s} repo(s)"
     say "Removing temporary file"
     FileUtils.rm_rf(hook)
+  end
+
+  desc 'Enqueue hook process'
+  task :enqueue, :owner, :reponame, :newrev, :oldrev, :ref, :newrev_type, :oldrev_type do |t, args|
+    # require 'resque'
+    require './app/models/git_hook'
+    PerformLater.config.enabled = true unless Rails.env.test?
+    GitHook.perform_later!(:hook, :process, *args.to_hash.values)
   end
 
   desc "remove git hook from all repos"

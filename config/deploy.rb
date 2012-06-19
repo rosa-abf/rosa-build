@@ -36,9 +36,7 @@ set :deploy_via,  :remote_cache
 require './lib/recipes/nginx'
 require './lib/recipes/unicorn'
 #require './lib/recipes/bluepill'
-
 set :workers_count, 4
-
 require './lib/recipes/resque'
 
 namespace :deploy do
