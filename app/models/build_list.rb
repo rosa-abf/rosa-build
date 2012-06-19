@@ -169,6 +169,8 @@ class BuildList < ActiveRecord::Base
     end
   end
 
+  later :publish, :loner => true, :queue => :clone_build
+
   def set_version_and_tag
     pkg = self.packages.where(:package_type => 'source', :project_id => self.project_id).first
     self.package_version = "#{pkg.platform.name}-#{pkg.version}-#{pkg.release}"

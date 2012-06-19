@@ -341,7 +341,6 @@ describe Projects::BuildListsController do
         do_get(BuildServer::SUCCESS)
         response.should be_ok
       }
-      # TODO: Remove pending after set_version_and_tag unstub:
       it 'should create correct git tag for correct commit' do
         do_get(BuildServer::SUCCESS)
         build_list.project.git_repository.tags.last.name.should == build_list.package_version
