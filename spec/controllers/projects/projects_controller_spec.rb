@@ -79,6 +79,7 @@ describe Projects::ProjectsController do
     end
 
     it_should_behave_like 'projects user with reader rights'
+    it_should_behave_like 'user without update rights'
   end
 
   context 'for writer user' do
@@ -136,20 +137,115 @@ describe Projects::ProjectsController do
       response.should redirect_to(forbidden_path)
     end
 
-    it 'should not be able to edit project' do
-      description = @project.description
-      put :update, :project=>{:description =>"hack"}, :owner_name => @project.owner.uname, :project_name => @project.name
-      response.should redirect_to(forbidden_path)
-      Project.find(@project.id).description.should == description
+    it_should_behave_like 'user without update rights'
+  end
+
+  context 'for group' do
+    before(:each) do
+      @group = FactoryGirl.create(:group)
+      @group_user = FactoryGirl.create(:user)
+      @project.relations.destroy_all
+      set_session_for(@group_user)
     end
 
-    it 'should not be able to edit project sections' do
-      has_wiki, has_issues = @project.has_wiki, @project.has_issues
-      post :sections, :project =>{:has_wiki => !has_wiki, :has_issues => !has_issues}, :owner_name => @project.owner.uname, :project_name => @project.name
-      response.should redirect_to(forbidden_path)
-      project = Project.find(@project.id)
-      project.has_wiki.should == has_wiki
-      project.has_issues.should == has_issues
+    context 'owner of the project' do
+      before(:each) do
+        @project.update_attribute :owner, @group
+        @project.relations.create :actor_id => @project.owner.id, :actor_type => @project.owner.class.to_s, :role => 'admin'
+      end
+
+      context 'reader user' do
+        before(:each) do
+          @group.actors.create(:actor_id => @group_user.id, :actor_type => 'User', :role => 'reader')
+        end
+
+        it_should_behave_like 'projects user with reader rights'
+        it_should_behave_like 'user without update rights'
+
+        it 'should has reader role to group project' do
+          @group_user.best_role(@project).should eql('reader') # Need this?
+        end
+
+        context 'user should has best role' do
+          before(:each) do
+            @project.relations.create :actor_id => @group_user.id, :actor_type => @group_user.class.to_s, :role => 'admin'
+          end
+          it_should_behave_like 'projects user with admin rights'
+        end
+      end
+
+      context 'admin user' do
+        before(:each) do
+          @group.actors.create(:actor_id => @group_user.id, :actor_type => 'User', :role => 'admin')
+        end
+
+        it_should_behave_like 'projects user with admin rights'
+        it_should_behave_like 'projects user with reader rights'
+      end
+    end
+
+    context 'member of the project' do
+      context 'with admin rights' do
+        before(:each) do
+          @project.relations.create :actor_id => @group.id, :actor_type => @group.class.to_s, :role => 'admin'
+        end
+
+        context 'reader user' do
+          before(:each) do
+            @group.actors.create(:actor_id => @group_user.id, :actor_type => 'User', :role => 'reader')
+          end
+
+          it_should_behave_like 'projects user with reader rights'
+          it_should_behave_like 'projects user with admin rights'
+
+          context 'user should has best role' do
+            before(:each) do
+              @project.relations.create :actor_id => @group_user.id, :actor_type => @group_user.class.to_s, :role => 'reader'
+            end
+            it_should_behave_like 'projects user with admin rights'
+          end
+        end
+
+        context 'admin user' do
+          before(:each) do
+            @group.actors.create(:actor_id => @group_user.id, :actor_type => 'User', :role => 'admin')
+          end
+
+          it_should_behave_like 'projects user with admin rights'
+          it_should_behave_like 'projects user with reader rights'
+        end
+      end
+
+      context 'with reader rights' do
+        before(:each) do
+          @project.relations.create :actor_id => @group.id, :actor_type => @group.class.to_s, :role => 'reader'
+        end
+
+        context 'reader user' do
+          before(:each) do
+            @group.actors.create(:actor_id => @group_user.id, :actor_type => 'User', :role => 'reader')
+          end
+
+          it_should_behave_like 'projects user with reader rights'
+          it_should_behave_like 'user without update rights'
+
+          context 'user should has best role' do
+            before(:each) do
+              @project.relations.create :actor_id => @group_user.id, :actor_type => @group_user.class.to_s, :role => 'admin'
+            end
+            it_should_behave_like 'projects user with admin rights'
+          end
+        end
+
+        context 'admin user' do
+          before(:each) do
+            @group.actors.create(:actor_id => @group_user.id, :actor_type => 'User', :role => 'admin')
+          end
+
+          it_should_behave_like 'projects user with reader rights'
+          it_should_behave_like 'user without update rights'
+        end
+      end
     end
   end
 end
