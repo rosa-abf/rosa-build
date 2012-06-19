@@ -26,7 +26,7 @@ describe Projects::BuildListsController do
       response.should redirect_to(forbidden_url)
     end
   end
-  
+
   shared_examples_for 'create build list' do
     before {test_git_commit(@project)}
 
@@ -431,7 +431,8 @@ describe Projects::BuildListsController do
         it(:passes) {
           build_list.update_attribute(:started_at, (Time.now - 1.day))
           build_list.update_attribute(:status, BuildServer::BUILD_STARTED)
-          lambda{ do_get(BuildServer::SUCCESS) }.should change(build_list, :status).to(BuildServer::SUCCESS)
+          build_list.reload
+          lambda{ do_get(BuildServer::SUCCESS) }.should change(build_list, :status).to(BuildList::BUILD_PUBLISH)
         }
         it(:passes) {
           build_list.update_attribute(:started_at, (Time.now - 1.day))
