@@ -41,7 +41,7 @@ class Project < ActiveRecord::Base
 
   after_create :attach_to_personal_repository
   after_create :create_git_repo
-  after_create {|p| p.fork_git_repo unless is_root?} # later with resque
+  after_create {|p| p.fork_git_repo unless p.is_root?}
   after_save :create_wiki
 
   after_destroy :destroy_git_repo
@@ -247,15 +247,15 @@ class Project < ActiveRecord::Base
   def create_git_repo
     if is_root?
       Grit::Repo.init_bare(path)
-      write_hook # later with resque
+      write_hook
     end
   end
 
   def fork_git_repo
     dummy = Grit::Repo.new(path) rescue parent.git_repository.repo.fork_bare(path)
-    now_write_hook
+    write_hook
   end
-  later :fork_git_repo, :loner => true, :queue => :fork_import
+  later :fork_git_repo, :queue => :fork_import
 
   def destroy_git_repo
     FileUtils.rm_rf path
@@ -267,7 +267,7 @@ class Project < ActiveRecord::Base
       self.srpm = nil; save # clear srpm
     end
   end
-  later :import_attached_srpm, :loner => true, :queue => :fork_import
+  later :import_attached_srpm, :queue => :fork_import
 
   def create_wiki
     if has_wiki && !FileTest.exist?(wiki_path)
@@ -300,5 +300,4 @@ class Project < ActiveRecord::Base
 
   rescue Exception # FIXME
   end
-  later :write_hook, :loner => true, :queue => :hook
 end
