@@ -1,10 +1,12 @@
 ru:
   layout:
     advisories:
+      atom_title: Бюллетени
       list_header: Бюллетени
       form_header: Новый бюллетень
       project_name: Проект
       affected_versions: Применен в версиях
+      affected_in: Применен в
       ref_comment: Вставляйте ссылки по одной на строку
       no_: Нет
       new: Новый

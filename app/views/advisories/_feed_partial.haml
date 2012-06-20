@@ -1,0 +1,8 @@
+%h3= t("activerecord.attributes.advisory.description")
+%p= simple_format advisory.description
+
+%h3= t("activerecord.attributes.advisory.references")
+%p
+  - advisory.references.gsub(/\r| /, '').split("\n").each do |ref|
+    = construct_ref_link(ref)
+    %br

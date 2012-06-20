@@ -12,6 +12,7 @@ class Advisory < ActiveRecord::Base
   TYPES = {'security' => 'SA', 'bugfix' => 'A'}
 
   scope :by_project, lambda {|p| where('project_id' => p.try(:id) || p)}
+  default_scope order('created_at DESC')
 
   def to_param
     advisory_id

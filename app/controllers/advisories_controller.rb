@@ -6,7 +6,11 @@ class AdvisoriesController < ApplicationController
   authorize_resource
 
   def index
-    @advisories = @advisories.scoped(:include => :projects).paginate(:page => params[:page])
+    @advisories = @advisories.scoped(:include => :platforms).paginate(:page => params[:page])
+    respond_to do |format|
+      format.html
+      format.atom
+    end
   end
 
   def show

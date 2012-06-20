@@ -1,10 +1,12 @@
 en:
   layout:
     advisories:
+      atom_header: Advisories
       list_header: Advisories
       form_header: New advisory
       project_name: Project
       affected_versions: Affected versions
+      affected_in: Affected in
       ref_comment: Add links one by row
       no_: No
       new: New
