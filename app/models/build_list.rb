@@ -96,7 +96,7 @@ class BuildList < ActiveRecord::Base
   serialize :additional_repos
   serialize :include_repos
 
-  after_create :place_build
+  after_commit :place_build
   after_destroy :delete_container
 
   @queue = :clone_and_build
