@@ -16,6 +16,10 @@ class Repository < ActiveRecord::Base
   attr_accessible :name, :description
   attr_readonly :name, :platform_id
 
+  def erase
+    system("rm -Rf #{ APP_CONFIG['root_path'] }/platforms/#{ self.platform.name }/repository/*")
+  end
+
   def base_clone(attrs = {})
     dup.tap do |c|
       c.platform_id = nil
