@@ -12,6 +12,7 @@ class Advisory < ActiveRecord::Base
   TYPES = {'security' => 'SA', 'bugfix' => 'A'}
 
   scope :by_project, lambda {|p| where('project_id' => p.try(:id) || p)}
+  scope :search_by_id, lambda { |aid| where('advisory_id ILIKE ?', "%#{aid.to_s.strip}%") }
   default_scope order('created_at DESC')
 
   def to_param

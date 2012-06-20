@@ -10,6 +10,7 @@ en:
       ref_comment: Add links one by row
       no_: No
       new: New
+      search_by_id: Search advisory by it's ID
 
   flash:
     advisories:

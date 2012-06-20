@@ -10,6 +10,7 @@ ru:
       ref_comment: Вставляйте ссылки по одной на строку
       no_: Нет
       new: Новый
+      search_by_id: Искать бюллетень по его ID
 
   flash:
     advisories:

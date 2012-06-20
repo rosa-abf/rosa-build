@@ -4,5 +4,29 @@
       %th.th1= t("activerecord.attributes.advisory.advisory_id")
       %th.th2= t("layout.advisories.affected_versions")
       %th.th3= t("activerecord.attributes.advisory.description")
+    %tr.search
+      -# TODO: change filter to Backbone.js
+      %th{:colspan => 3, :rowspan => 1}
+        = form_tag advisories_path, :method => :get do |f|
+          = text_field_tag('q', params[:q], :placeholder => t("layout.advisories.search_by_id"), :class => params[:q].present? ? 'black' : 'gray')
+          %input{:type => 'submit', :value => t("layout.search.header")}
+          =# link_to t('layout.back'), advisories_path, :class => 'button'
+        = button_to t('layout.clear'), {:action => :index} , :method => :get
+
   %tbody
-    = render :partial => 'list_item', :collection => list, :as => :advisory
+    - if list.size > 0
+      = render :partial => 'list_item', :collection => list, :as => :advisory
+    - else
+      %tr.odd
+        %td.no_results{:colspan => 3}
+          = t("layout.search.no_results", :query => params[:q])
+
+:javascript
+  $(function() {
+    var $search = $('tr.search > th input[type="text"]');
+    $search.on('blur focus', function() {
+        if ($search.val() === '') {
+          $search.toggleClass('gray black');
+        }
+    });
+  });

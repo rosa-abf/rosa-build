@@ -4,6 +4,7 @@ en:
       header: Search
       advanced: Advanced search
       all: Show All
+      no_results: Nothing found for "%{query}".
       types:
         all: All
         projects: Projects

@@ -6,7 +6,9 @@ class AdvisoriesController < ApplicationController
   authorize_resource
 
   def index
-    @advisories = @advisories.scoped(:include => :platforms).paginate(:page => params[:page])
+    @advisories = @advisories.scoped(:include => :platforms)
+    @advisories = @advisories.search_by_id(params[:q]) if params[:q]
+    @advisories = @advisories.paginate(:page => params[:page])
     respond_to do |format|
       format.html
       format.atom

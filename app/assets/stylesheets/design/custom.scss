@@ -1094,3 +1094,25 @@ form.mass_build section.right {
 .packages_info_container ul.platforms {
     padding: 0;
 }
+
+/* remove this lines after change to backbone */
+table.tablesorter.advisories thead tr.search th {
+    padding: 0 5px;
+}
+
+table.tablesorter.advisories thead tr.search th input[type='text'] {
+    width: 640px;
+}
+
+table.tablesorter.advisories thead tr.search th form {
+    float: left;
+}
+
+table.tablesorter.advisories thead tr.search th form.button_to {
+    padding: 3px 0 0 7px;
+}
+
+table.tablesorter tr td.no_results {
+    text-align: center;
+}
+/* end */
