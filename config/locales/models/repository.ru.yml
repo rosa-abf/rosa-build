@@ -16,6 +16,7 @@ ru:
       current_repository_header: Текущий репозиторий
       erase: Очистить
       erase_confirm: Уверены, что хотите очистить репозиторий?
+      erase_warning: Внимание! Очищенные пакеты не могут быть восстановлены!
 
     personal_repositories:
       settings_header: Настройки
