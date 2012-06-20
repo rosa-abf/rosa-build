@@ -11,5 +11,7 @@
 %h3.fix= t("layout.projects.list_header")
 - if can? :add_project, @repository
   = link_to t("layout.projects.add"), add_project_platform_repository_path(@platform, @repository), :class => 'button'
+- if can? :erase, @repository
+  = link_to t("layout.repositories.erase"), erase_platform_repository_path(@platform, @repository), :class => 'button', :confirm => t('layout.repositories.erase_confirm')
 
 = render 'proj_list'
