@@ -147,10 +147,9 @@ class Ability
   end
 
   def relation_exists_for(target, roles)
-    rel = target.relations
-    is_owner_group = target.owner.class == Group
-    groups = @user.groups
-    groups = groups.where('groups.id != ?', target.owner.id) if is_owner_group
+    rel, groups, = target.relations, groups = @user.groups
+    groups = groups.where('groups.id != ?', target.owner.id) if is_owner_group = target.owner.class == Group
+
     rel.exists?(:actor_id => @user.id, :actor_type => 'User', :role => roles) or # user is member
     (@user.groups.exists?(:id => target.owner.id, :relations =>{:role => roles}) and is_owner_group) or # user group is owner
     rel.exists?(:actor_id => groups, :actor_type => 'Group', :role => roles) # user group is member
