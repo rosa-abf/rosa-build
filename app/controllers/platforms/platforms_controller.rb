@@ -143,4 +143,11 @@ class Platforms::PlatformsController < Platforms::BaseController
   def advisories
     @advisories = @platform.advisories.paginate(:page => params[:page])
   end
+
+  def erase
+    @platform.erase
+    flash[:success] = t('flash.repository.erase')
+    redirect_to edit_platform_path(@platform)
+  end
+
 end

@@ -16,6 +16,7 @@ en:
       current_repository_header: Current repository
       erase: Erase
       erase_confirm: Are you sure you want to erase this repository?
+      erase_warning: Warning! Erased repository can not be restored!
 
     personal_repositories:
       settings_header: Settings
