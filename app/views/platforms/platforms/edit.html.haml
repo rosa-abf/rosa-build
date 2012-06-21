@@ -9,8 +9,8 @@
   .hr
   .leftside= t("layout.platforms.delete_warning")
   .rightside= link_to t("layout.delete"), platform_path(@platform), :method => :delete, :confirm => t("layout.platforms.confirm_delete"), :class => 'button'
-- if can? :erase, @platform
+- if can? :clear, @platform
   .hr
-  .leftside= t("layout.repositories.erase_warning")
-  .rightside= link_to t("layout.repositories.erase"), erase_platform_path(@platform), :class => 'button', :confirm => t('layout.repositories.erase_confirm'), :method => :post
+  .leftside= t("layout.repositories.clear_warning")
+  .rightside= link_to t("layout.repositories.clear"), clear_platform_path(@platform), :class => 'button', :confirm => t('layout.repositories.clear_confirm'), :method => :post
   .both

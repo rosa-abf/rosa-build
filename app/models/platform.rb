@@ -48,7 +48,7 @@ class Platform < ActiveRecord::Base
 
   include Modules::Models::Owner
 
-  def erase
+  def clear
     system("rm -Rf #{ APP_CONFIG['root_path'] }/platforms/#{ self.name }/repository/*")
   end
 
