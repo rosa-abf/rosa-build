@@ -143,12 +143,12 @@ class User < ActiveRecord::Base
 
   def target_roles target
     rel, gr, roles = target.relations, self.groups, []
-    is_group_owner = target.owner.class == Group
 
-    if is_group_owner
-      gr = gr.where('groups.id != ?', target.owner.id)
+    if target.owner.class == Group
       owner_group = self.groups.where(:id => target.owner.id).first
       roles += owner_group.actors.where(:actor_id => self) if owner_group# user group is owner
+
+      gr = gr.where('groups.id != ?', target.owner.id) # exclude target owner group from users group list
     end
     roles += rel.where(:actor_id => self.id, :actor_type => 'User') # user is member
     roles += rel.where(:actor_id => gr, :actor_type => 'Group') # user group is member
