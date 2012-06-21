@@ -19,7 +19,7 @@
       .both
     %h3= t("activerecord.attributes.build_list.preferences")
     .both.bottom_20
-      = check_box_tag :auto_publish, true, params[:auto_publish].present? ? params[:auto_publish].present? : false, :id => 'auto_publish'
+      = check_box_tag :auto_publish, true, @auto_publish_selected, :id => 'auto_publish'
       = label_tag :auto_publish
 
 %br
