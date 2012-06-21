@@ -130,6 +130,17 @@ class User < ActiveRecord::Base
     end
   end
 
+  def best_role target
+    roles = target_roles(target)
+    return 'admin' if roles.include? 'admin'
+    return 'writer' if roles.include? 'writer'
+    return 'reader' if roles.include? 'reader'
+    return nil if roles.count == 0
+    raise "unknown user #{self.uname} roles #{roles}"
+  end
+
+  protected
+
   def target_roles target
     rel, gr, roles = target.relations, self.groups, []
     is_group_owner = target.owner.class == Group
@@ -144,12 +155,4 @@ class User < ActiveRecord::Base
     roles.map(&:role).uniq
   end
 
-  def best_role target
-    roles = target_roles(target)
-    return 'admin' if roles.include? 'admin'
-    return 'writer' if roles.include? 'writer'
-    return 'reader' if roles.include? 'reader'
-    return nil if roles.count == 0
-    raise "unknown user #{self.uname} roles #{roles}"
-  end
 end
