@@ -182,6 +182,10 @@ class BuildList < ActiveRecord::Base
     [BUILD_PENDING, BuildServer::PLATFORM_PENDING].include? status && bs_id
   end
 
+  def can_publish?
+    [BuildServer::SUCCESS, FAILED_PUBLISH].include? status
+  end
+
   def can_reject_publish?
     can_publish? and save_to_platform.released
   end
