@@ -26,7 +26,7 @@ describe Projects::BuildListsController do
       response.should redirect_to(forbidden_url)
     end
   end
-  
+
   shared_examples_for 'create build list' do
     before {test_git_commit(@project)}
 
@@ -317,27 +317,37 @@ describe Projects::BuildListsController do
 
   context 'callbacks' do
     let(:build_list) { FactoryGirl.create(:build_list_core) }
+    let(:build_list_package) { FactoryGirl.create(:build_list_package, :build_list_id => build_list.id, :platform_id => build_list.project.repositories.first.platform_id, :project_id => build_list.project_id, :version => "4.7.5.3", :release => 1) }
 
     before(:each) do
       mock(controller).authenticate_build_service! {true}
     end
 
     describe 'publish_build' do
-      before { test_git_commit(build_list.project); build_list.update_attribute :commit_hash, build_list.project.git_repository.commits('master').last.id }
+      before {
+        test_git_commit(build_list.project)
+        build_list.update_attribute :commit_hash, build_list.project.git_repository.commits('master').last.id
+        build_list.update_attribute(:status, BuildList::BUILD_PUBLISH)
+        build_list_package
+      }
 
       def do_get(status)
         get :publish_build, :id => build_list.bs_id, :status => status, :version => '4.7.5.3', :release => '1'
         build_list.reload
       end
 
-      it { do_get(BuildServer::SUCCESS); response.should be_ok }
+      it(:passes) {
+        build_list.update_attribute(:status, BuildServer::BUILD_STARTED)
+        do_get(BuildServer::SUCCESS)
+        response.should be_ok
+      }
       it 'should create correct git tag for correct commit' do
         do_get(BuildServer::SUCCESS)
         build_list.project.git_repository.tags.last.name.should == build_list.package_version
         build_list.project.git_repository.commits(build_list.package_version).last.id.should == build_list.commit_hash
       end
-      it { lambda{ do_get(BuildServer::SUCCESS) }.should change(build_list, :status).to(BuildList::BUILD_PUBLISHED) }
-      it { lambda{ do_get(BuildServer::SUCCESS) }.should change(build_list, :package_version).to('4.7.5.3-1') }
+      it(:passes) { lambda{ do_get(BuildServer::SUCCESS) }.should change(build_list, :status).to(BuildList::BUILD_PUBLISHED) }
+      it(:passes) { lambda{ do_get(BuildServer::SUCCESS) }.should change(build_list, :package_version).to("#{ build_list_package.platform.name }-4.7.5.3-1") }
       it { lambda{ do_get(BuildServer::ERROR) }.should change(build_list, :status).to(BuildList::FAILED_PUBLISH) }
       it { lambda{ do_get(BuildServer::ERROR) }.should_not change(build_list, :package_version) }
       it { lambda{ do_get(BuildServer::ERROR) }.should change(build_list, :updated_at) }
@@ -390,6 +400,10 @@ describe Projects::BuildListsController do
     end
 
     describe 'pre_build' do
+      before do
+        build_list.update_attribute :status, BuildList::BUILD_PENDING
+      end
+
       def do_get
         get :pre_build, :id => build_list.bs_id
         build_list.reload
@@ -413,15 +427,32 @@ describe Projects::BuildListsController do
       it { lambda{ do_get(BuildServer::SUCCESS) }.should change(build_list, :updated_at) }
 
       context 'with auto_publish' do
-        it { lambda{ do_get(BuildServer::SUCCESS) }.should change(build_list, :status).to(BuildList::BUILD_PUBLISH) }
-        it { lambda{ do_get(BuildServer::ERROR) }.should change(build_list, :status).to(BuildServer::ERROR) }
+        it(:passes) {
+          build_list.update_attribute(:started_at, (Time.now - 1.day))
+          build_list.update_attribute(:status, BuildServer::BUILD_STARTED)
+          build_list.reload
+          lambda{ do_get(BuildServer::SUCCESS) }.should change(build_list, :status).to(BuildList::BUILD_PUBLISH)
+        }
+        it(:passes) {
+          build_list.update_attribute(:started_at, (Time.now - 1.day))
+          build_list.update_attribute(:status, BuildServer::BUILD_STARTED)
+          lambda{ do_get(BuildServer::BUILD_ERROR) }.should change(build_list, :status).to(BuildServer::BUILD_ERROR)
+        }
       end
 
       context 'without auto_publish' do
         before { build_list.update_attribute(:auto_publish, false) }
 
-        it { lambda{ do_get(BuildServer::SUCCESS) }.should change(build_list, :status).to(BuildServer::SUCCESS) }
-        it { lambda{ do_get(BuildServer::ERROR) }.should change(build_list, :status).to(BuildServer::ERROR) }
+        it(:passes) {
+          build_list.update_attribute(:started_at, (Time.now - 1.day))
+          build_list.update_attribute(:status, BuildServer::BUILD_STARTED)
+          lambda{ do_get(BuildServer::SUCCESS) }.should change(build_list, :status).to(BuildServer::SUCCESS)
+        }
+        it(:passes) {
+          build_list.update_attribute(:started_at, (Time.now - 1.day))
+          build_list.update_attribute(:status, BuildServer::BUILD_STARTED)
+          lambda{ do_get(BuildServer::BUILD_ERROR) }.should change(build_list, :status).to(BuildServer::BUILD_ERROR)
+        }
       end
     end
 

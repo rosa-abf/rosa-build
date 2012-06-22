@@ -33,6 +33,9 @@ Rosa::Application.routes.draw do
       end
     end
     resources :event_logs, :only => :index
+    constraints AdminAccess do
+      mount Resque::Server => 'resque'
+    end
   end
 
   resources :advisories, :only => [:index, :show]
@@ -49,11 +52,13 @@ Rosa::Application.routes.draw do
         post   :make_clone
         post   :build_all
         get    :mass_builds
+        get    :advisories
       end
       get :autocomplete_user_uname, :on => :collection
       resources :repositories do
         member do
           get :add_project
+          post :erase
           delete :remove_project
           get :projects_list
         end
@@ -61,6 +66,7 @@ Rosa::Application.routes.draw do
       resources :products do
         resources :product_build_lists, :only => [:create, :destroy]
       end
+
     end
     match '/private/:platform_name/*file_path' => 'privates#show'
 

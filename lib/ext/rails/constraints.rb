@@ -10,3 +10,9 @@ class OwnerConstraint
     @class_name.send(@finder, request.params[:uname]).present?
   end
 end
+
+class AdminAccess
+  def self.matches?(request)
+    !!request.env['warden'].user.try(:admin?)
+  end
+end

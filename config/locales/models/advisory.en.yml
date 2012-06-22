@@ -6,6 +6,8 @@ en:
       project_name: Project
       affected_versions: Affected versions
       ref_comment: Add links one by row
+      no_: No
+      new: New
 
   flash:
     advisories:

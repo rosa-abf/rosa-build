@@ -16,11 +16,15 @@ class Repository < ActiveRecord::Base
   attr_accessible :name, :description
   attr_readonly :name, :platform_id
 
+  def erase
+    system("rm -Rf #{ APP_CONFIG['root_path'] }/platforms/#{ self.platform.name }/repository/*")
+  end
+
   def base_clone(attrs = {})
-    clone.tap do |c| # dup
+    dup.tap do |c|
       c.platform_id = nil
       attrs.each {|k,v| c.send("#{k}=", v)}
-      c.updated_at = nil; c.created_at = nil # :id = nil
+      c.updated_at = nil; c.created_at = nil
     end
   end
 
@@ -29,10 +33,11 @@ class Repository < ActiveRecord::Base
       from.projects.find_each {|p| self.projects << p}
     end
   end
+  later :clone_relations, :loner => true, :queue => :clone_build
 
   def full_clone(attrs = {})
     base_clone(attrs).tap do |c|
-      with_skip {c.save} and c.delay.clone_relations(self)
+      with_skip {c.save} and c.clone_relations(self) # later with resque
     end
   end
 

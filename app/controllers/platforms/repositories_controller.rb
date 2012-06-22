@@ -54,6 +54,12 @@ class Platforms::RepositoriesController < Platforms::BaseController
     end
   end
 
+  def erase
+    @repository.erase
+    flash[:success] = t('flash.repository.erase')
+    redirect_to platform_repository_path(@platform, @repository)
+  end
+
   def projects_list
 
     owner_subquery = "

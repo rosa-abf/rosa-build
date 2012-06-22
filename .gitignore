@@ -14,3 +14,4 @@ public/downloads/*
 *.swp
 *.tmproj
 .sass-cache/
+dump.rdb

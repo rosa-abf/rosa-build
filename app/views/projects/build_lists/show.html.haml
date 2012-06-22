@@ -72,11 +72,32 @@
     .both
 
   - if @build_list.can_publish? and @build_list.save_to_platform.released and @build_list.advisory.nil?
-    .leftlist= label_tag :create_advisory, t("layout.build_lists.create_advisory")
-    .rightlist= check_box_tag :create_advisory, 1, false
-    .both
-    = f.fields_for @build_list.build_advisory do |f|
-      = render :partial => 'advisories/form', :locals => {:f => f}
+    #advisory_block
+      .leftlist= label_tag :attach_advisory, t("layout.build_lists.attached_advisory")
+      .rightlist= select_tag :attach_advisory, advisories_select_options(@advisories)
+      .both
+
+      #new_advisory_form
+        = f.fields_for @build_list.build_advisory do |f|
+          = render :partial => 'advisories/form', :locals => {:f => f}
+
+      #advisory_preview
+        %h3= t("activerecord.models.advisory") << ' '
+
+        .leftlist= t("activerecord.attributes.advisory.description")
+        .rightlist.descr &nbsp;
+        .both
+
+        .leftlist= t("activerecord.attributes.advisory.references")
+        .rightlist.refs &nbsp;
+        .both
+
+    :javascript
+      $(function() {
+        Rosa.bootstrapedData.advisories = #{ render 'advisories/advisories.json.jbuilder',
+                                                    :advisories => @advisories };
+        var r = new Rosa.Routers.BuildListsAdvisoriesRouter();
+      });
 
   = submit_tag t("layout.publish"), :confirm => t("layout.confirm"), :name => 'publish' if @build_list.can_publish? and can?(:publish, @build_list)
   = submit_tag t("layout.reject_publish"), :confirm => t("layout.confirm"), :name => 'reject_publish' if @build_list.can_reject_publish? and can?(:reject_publish, @build_list)
