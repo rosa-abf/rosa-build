@@ -44,7 +44,7 @@ Rosa::Application.routes.draw do
     resources :platforms do
       resources :private_users, :except => [:show, :destroy, :update]
       member do
-        post   :erase
+        post   :clear
         get    :clone
         get    :members
         post   :remove_members
