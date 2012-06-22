@@ -31,6 +31,11 @@ class Platforms::PlatformsController < Platforms::BaseController
     render :action => :build_all
   end
 
+  def get_failed_builds_list
+    @mass_build = MassBuild.find params[:mass_build_id]
+    send_file @mass_build.generate_failed_builds_list, :filename => "mass_build_#{@mass_build.id}"
+  end
+
   def index
     @platforms = @platforms.accessible_by(current_ability, :related).paginate(:page => params[:page], :per_page => 20)
   end

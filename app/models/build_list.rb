@@ -6,7 +6,7 @@ class BuildList < ActiveRecord::Base
   belongs_to :build_for_platform, :class_name => 'Platform'
   belongs_to :user
   belongs_to :advisory
-  belongs_to :mass_build
+  belongs_to :mass_build, :counter_cache => true
   has_many :items, :class_name => "BuildList::Item", :dependent => :destroy
   has_many :packages, :class_name => "BuildList::Package", :dependent => :destroy
 
@@ -102,6 +102,14 @@ class BuildList < ActiveRecord::Base
   @queue = :clone_and_build
 
   state_machine :status, :initial => :waiting_for_response do
+
+    around_transition do |build_list, transition, block|
+      if build_list.mass_build
+        MassBuild.decrement_counter "#{BuildList::HUMAN_STATUSES[build_list.status].to_s}_count", build_list.mass_build_id
+        block.call
+        MassBuild.increment_counter "#{BuildList::HUMAN_STATUSES[build_list.status].to_s}_count", build_list.mass_build_id
+      end
+    end
 
     after_transition :on => :published, :do => :set_version_and_tag
 
