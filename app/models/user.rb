@@ -132,10 +132,8 @@ class User < ActiveRecord::Base
 
   def best_role target
     roles = target_roles(target)
-    return 'admin' if roles.include? 'admin'
-    return 'writer' if roles.include? 'writer'
-    return 'reader' if roles.include? 'reader'
     return nil if roles.count == 0
+    %w(admin writer reader).each {|role| return role if roles.include?(role)}
     raise "unknown user #{self.uname} roles #{roles}"
   end
 
