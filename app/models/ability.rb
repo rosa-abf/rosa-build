@@ -112,6 +112,7 @@ class Ability
         can(:create, Issue) {|issue| can? :write, issue.project}
         can([:update, :destroy], Issue) {|issue| issue.user_id == user.id or local_admin?(issue.project)}
         cannot :manage, Issue, :project => {:has_issues => false} # switch off issues
+        can([:autocomplete_base_ref, :autocomplete_head_ref], Issue, read_relations_for('issues', 'projects')) {|issue| can? :read, issue.project rescue nil}
 
         can(:create, Comment) {|comment| can? :read, comment.project}
         can(:update, Comment) {|comment| comment.user_id == user.id or local_admin?(comment.project || comment.commentable.project)}

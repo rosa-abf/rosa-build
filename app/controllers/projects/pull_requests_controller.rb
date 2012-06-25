@@ -93,6 +93,7 @@ class Projects::PullRequestsController < Projects::BaseController
   end
 
   def load_pull
+    @issue ||= @issues.first #FIXME!
     if params[:action].to_sym != :index
       @pull = @project.pull_requests.joins(:issue).where(:issues => {:id => @issue.id}).readonly(false).first
     else

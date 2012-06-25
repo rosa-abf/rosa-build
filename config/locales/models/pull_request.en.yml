@@ -14,9 +14,10 @@ en:
       duplicate: 'There is already a pull request for %{head_ref}'
       up_to_date: 'The %{base_ref} branch is already up-to-date with %{head_ref}'
       wrong_ref: Wrong tree-ish
-      block: This pull request cannot be automatically merged.
+      blocked: This pull request cannot be automatically merged.
       ready: This pull request can be automatically merged.
       merged: '%{user} merged into %{base_ref} from %{head_ref} at %{time}'
+      closed: '%{user} closed this pull request at %{time}'
 
   pull_requests:
     tabs:

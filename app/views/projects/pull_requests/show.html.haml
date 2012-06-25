@@ -5,10 +5,12 @@
   %ul.nav.nav-tabs
     %li
       %a{"data-toggle" => "tab", :href => "#discussion"}=t 'pull_requests.tabs.discussion'
-    %li
-      %a{"data-toggle" => "tab", :href => "#diff"}="#{t'pull_requests.tabs.diff'} (#{@stats.count})"
-    %li
-      %a{"data-toggle" => "tab", :href => "#commits"}="#{t'pull_requests.tabs.commits'} (#{@commits.count})"
+    -if @stats
+      %li
+        %a{"data-toggle" => "tab", :href => "#diff"}="#{t'pull_requests.tabs.diff'} (#{@stats.count})"
+    -if @commits
+      %li
+        %a{"data-toggle" => "tab", :href => "#commits"}="#{t'pull_requests.tabs.commits'} (#{@commits.count})"
 
   .tab-content.pull_diff_fix
     #discussion.tab-pane.active
@@ -50,10 +52,9 @@
         - if can? :merge, @pull
           %br
           =form_for PullRequest.new, :url => merge_project_pull_request_path(@project, @pull), :html => { :method => :put, :class => :form } do |f|
-            =f.submit t 'projects.pull_requests.merge'
+            =f.submit t 'projects.pull_requests.ready'
         -else
           .flash
-            -message = t("projects.pull_requests.#{@pull.status}", :user => @issue.closer.uname, :base_ref => @pull.base_ref, :head_ref => @pull.head_ref, :time => @issue.closed_at)
-            .alert="#{t 'activerecord.attributes.issue.status'}: #{raw message}"
+            .alert=pull_status @pull
 
     =render 'diff_commits_tabs' if @pull.status != 'already'
