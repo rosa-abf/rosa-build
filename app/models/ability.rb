@@ -91,7 +91,7 @@ class Ability
         can [:read, :projects_list], Repository, :platform => {:owner_type => 'Group', :owner_id => user.group_ids}
         can([:read, :projects_list], Repository, read_relations_for('repositories', 'platforms')) {|repository| local_reader? repository.platform}
         can([:create, :update, :projects_list, :add_project, :remove_project], Repository) {|repository| local_admin? repository.platform}
-        can(:erase, Platform) {|platform| local_admin?(platform) && platform.platform_type == 'personal'}
+        can(:clear, Platform) {|platform| local_admin?(platform) && platform.platform_type == 'personal'}
         can([:change_visibility, :settings, :destroy], Repository) {|repository| owner? repository.platform}
 
         can :read, Product, :platform => {:visibility => 'open'}
@@ -121,7 +121,7 @@ class Ability
       # Shared cannot rights for all users (registered, admin)
       cannot :destroy, Platform, :platform_type => 'personal'
       cannot [:create, :destroy, :add_project, :remove_project], Repository, :platform => {:platform_type => 'personal'}
-      cannot :erase, Platform, :platform_type => 'main'
+      cannot :clear, Platform, :platform_type => 'main'
       cannot :destroy, Issue
 
       cannot [:members, :add_member, :remove_member, :remove_members], Platform, :platform_type => 'personal'
