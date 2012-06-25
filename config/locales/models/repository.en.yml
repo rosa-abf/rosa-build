@@ -14,8 +14,9 @@ en:
       back_to_the_list: ⇐ List of repositories
       confirm_delete: Are you sure you want to delete this repository?
       current_repository_header: Current repository
-      erase: Erase
-      erase_confirm: Are you sure you want to erase this repository?
+      clear: Clear
+      clear_confirm: Are you sure you want to clear this platform?
+      clear_warning: Attention! Cleared packages cannot be restored!
 
     personal_repositories:
       settings_header: Settings
@@ -34,7 +35,7 @@ en:
       project_not_added: Project adding error. A project with such name already exists in this repository. Remove the old project first
       project_removed: Project deleted
       project_not_removed: Unable to delete project from repository
-      erase: Repository successfully erased!
+      clear: Platform successfully cleared!
 
   activerecord:
     models:

@@ -150,4 +150,11 @@ class Platforms::PlatformsController < Platforms::BaseController
   def advisories
     @advisories = @platform.advisories.paginate(:page => params[:page])
   end
+
+  def clear
+    @platform.clear
+    flash[:notice] = t('flash.repository.clear')
+    redirect_to edit_platform_path(@platform)
+  end
+
 end
