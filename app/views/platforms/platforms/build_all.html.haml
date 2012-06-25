@@ -30,16 +30,39 @@
     %tr
       %th.lpadding16= t('activerecord.attributes.mass_build.id')
       %th.lpadding16= t('activerecord.attributes.mass_build.name')
-      %th.lpadding16= t('activerecord.attributes.mass_build.arch_names')
-      %th.lpadding16= t('activerecord.attributes.mass_build.user')
-      %th.lpadding16= t('activerecord.attributes.mass_build.auto_publish')
-      %th.lpadding16= t('activerecord.attributes.mass_build.created_at')
+      %th.lpadding16= t("layout.build_lists.all").camelize
+      %th.lpadding16= t("layout.build_lists.statuses.build_published").camelize
+      %th.lpadding16= t("layout.build_lists.statuses.build_pending").camelize
+      %th.lpadding16= t("layout.build_lists.statuses.build_started").camelize
+      %th.lpadding16= t("layout.build_lists.statuses.build_publish").camelize
+      %th.lpadding16= t("layout.mass_builds.extended_data")
   - @mass_builds.each do |mass_build|
     %tr
       %td= mass_build.id
       %td= link_to mass_build.name, build_lists_path(:filter => {:mass_build_id => mass_build.id})
-      %td= mass_build.arch_names
-      %td= link_to mass_build.user.fullname, mass_build.user
-      %td= mass_build.auto_publish
-      %td= mass_build.created_at
+      %td= mass_build.build_lists_count
+      %td= mass_build.build_published_count
+      %td= mass_build.build_pending_count
+      %td= mass_build.build_started_count
+      %td= mass_build.build_publish_count
+      %td
+        %a{:href => '#', :'data-toggle' => "collapse", :'data-target' => "#collapse_#{ mass_build.id }"}= t("layout.mass_builds.extended_data")
+        .in.collapse{:id => "collapse_#{ mass_build.id }"}
+          = t('activerecord.attributes.mass_build.arch_names') + ": "
+          = mass_build.arch_names
+          .both
+          = t('activerecord.attributes.mass_build.user') + ": "
+          = link_to mass_build.user.fullname, mass_build.user
+          .both
+          = t('activerecord.attributes.mass_build.auto_publish') + ": "
+          = mass_build.auto_publish
+          .both
+          = t('activerecord.attributes.mass_build.created_at') + ": "
+          = mass_build.created_at
+          .both
 = will_paginate @mass_builds
+
+= javascript_include_tag "lib/bootstrap-collapse"
+
+:javascript
+  $(".collapse").collapse();

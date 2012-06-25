@@ -45,6 +45,7 @@ en:
 
   layout:
     build_lists:
+      all: All
       filter_header: Filter
       current: Curent
       created_at_start: "Build to start on:"

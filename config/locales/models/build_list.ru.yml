@@ -44,6 +44,7 @@ ru:
 
   layout:
     build_lists:
+      all: Все
       filter_header: Фильтр
       current: Текущие
       created_at_start: "Время постановки на сборку с:"
