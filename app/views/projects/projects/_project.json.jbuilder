@@ -5,7 +5,7 @@ json.project do |proj|
   proj.description project.description
   proj.link        project_path(project)
 
-  proj.role        t("layout.collaborators.role_names.#{project.relations.by_user_through_groups(current_user).first.role}").force_encoding(Encoding::UTF_8)
+  proj.role        t("layout.collaborators.role_names.#{current_user.best_role project}").force_encoding(Encoding::UTF_8)
 
   proj.leave_link  remove_user_project_path(project) unless project.owner == current_user or !alone_member? project
   proj.rights_class participant_class(alone_member?(project), project)

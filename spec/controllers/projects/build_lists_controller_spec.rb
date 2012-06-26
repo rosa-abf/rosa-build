@@ -177,7 +177,7 @@ describe Projects::BuildListsController do
       before(:each) do
         @owner_group = FactoryGirl.create(:group)
         @owner_user = FactoryGirl.create(:user)
-        @owner_group.actors.create :role => 'reader', :actor_id => @owner_user.id, :actor_type => 'User'
+        @owner_group.actors.create :role => 'admin', :actor_id => @owner_user.id, :actor_type => 'User'
         @member_group = FactoryGirl.create(:group)
         @member_user = FactoryGirl.create(:user)
         @member_group.actors.create :role => 'reader', :actor_id => @member_user.id, :actor_type => 'User'

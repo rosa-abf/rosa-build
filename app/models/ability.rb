@@ -148,21 +148,16 @@ class Ability
        relations.actor_type = 'Group' AND relations.actor_id IN (?)))", parent.classify, @user, @user.group_ids]
   end
 
-  def relation_exists_for(target, roles)
-    target.relations.exists?(:actor_id => @user.id, :actor_type => 'User', :role => roles) or
-    target.relations.exists?(:actor_id => @user.group_ids, :actor_type => 'Group', :role => roles)
-  end
-
   def local_reader?(target)
-    relation_exists_for(target, %w{reader writer admin}) or owner?(target)
+    %w{reader writer admin}.include? @user.best_role(target)
   end
 
   def local_writer?(target)
-    relation_exists_for(target, %w{writer admin}) or owner?(target)
+    %w{writer admin}.include? @user.best_role(target)
   end
 
   def local_admin?(target)
-    relation_exists_for(target, 'admin') or owner?(target)
+    @user.best_role(target) == 'admin'
   end
 
   def owner?(target)
