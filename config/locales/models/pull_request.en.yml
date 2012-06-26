@@ -2,7 +2,7 @@ en:
   projects:
     pull_requests:
       new:
-        new: 'Create a pull request into <span class="label label-info font14">%{base}</span> from <span class="label label-info font14">%{head}</span>'
+        header: 'Create a pull request into <span class="label-bootstrap label-info font14">%{base}</span> from <span class="label-bootstrap label-info font14">%{head}</span>'
         base_ref: Base
         head_ref: Head
         refs: 'branch · tag · commit'
@@ -10,6 +10,8 @@ en:
         head_project: Head project
         submit: Send pull request
         update: Update commits
+      show:
+        header: 'Pull Request into <span class="label-bootstrap label-info font14">%{base}</span> from <span class="label-bootstrap label-info font14">%{head}</span> by %{user}'
       merge: Merge
       duplicate: 'There is already a pull request for %{head_ref}'
       up_to_date: 'The %{base_ref} branch is already up-to-date with %{head_ref}'

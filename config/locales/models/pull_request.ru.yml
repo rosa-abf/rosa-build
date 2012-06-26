@@ -2,7 +2,7 @@ ru:
   projects:
     pull_requests:
       new:
-        new: 'Создать пул реквест в <span class="label label-info font14">%{base}</span> из <span class="label label-info font14">%{head}</span>'
+        header:  'Создать пул реквест в <span class="label-bootstrap label-info font14">%{base}</span> из <span class="label-bootstrap label-info font14">%{head}</span>'
         base_ref: База
         head_ref: Источник
         refs: 'branch · tag · commit'
@@ -10,6 +10,8 @@ ru:
         head_project: Проект-источник
         submit: Создать пул реквест
         update: Обновить коммиты
+      show:
+         header: 'Пул реквест в <span class="label-bootstrap label-info font14">%{base}</span> из <span class="label-bootstrap label-info font14">%{head}</span> от %{user}'
       merge: Мерж
       duplicate: 'Уже существует пул реквест %{head_ref}'
       up_to_date: 'Ветка %{base_ref} на данный момент уже содержит последние изменения %{head_ref}'

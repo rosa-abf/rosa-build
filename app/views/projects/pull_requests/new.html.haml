@@ -1,6 +1,6 @@
 -set_meta_tags :title => [title_object(@project), t('.title')]
 = render :partial => 'submenu'
-%h3.bpadding10= raw t '.new', {:base => @pull.base_ref, :head => @pull.head_ref}
+%h3.bpadding10= raw t '.header', {:base => @pull.base_ref, :head => @pull.head_ref}
 #repo-wrapper
   %ul.nav.nav-tabs
     %li

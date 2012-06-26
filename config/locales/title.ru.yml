@@ -25,9 +25,11 @@ ru:
     pull_requests:
       index:
         title: 'Пул реквесты'
+      new:
+        title: 'Создать пул реквест'
+      show:
+        title: 'Пул реквест %{name} от %{user}'
   platforms:
     product_build_lists:
       index:
         title: 'Мониторинг продуктов'
-    new:
-      title: 'Создать пул реквест'

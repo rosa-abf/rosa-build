@@ -22,12 +22,14 @@ en:
         title: 'Compare Revisions'
       searching:
         title: 'Search in Wiki'
+    pull_requests:
+      index:
+        title: 'Pull Requests'
+      new:
+        title: 'Create a Pull Request'
+      show:
+        title: 'Pull Request: %{name} by %{user}'
   platforms:
     product_build_lists:
       index:
         title: 'Products Monitoring'
-  pull_requests:
-    index:
-      title: 'Pull Requests'
-    new:
-      title: 'Create a Pull Request'
