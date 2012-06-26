@@ -1,4 +1,4 @@
--path = polymorphic_path [@project, issue.pull_request ? issue.pull_request : @issue]
+-path = polymorphic_path [@project, issue.pull_request ? issue.pull_request : issue]
 
 %tr#row1{:name => "row", :class => issue.labels.map(&:name).compact}
   %td.td0
