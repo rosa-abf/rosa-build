@@ -172,6 +172,8 @@ class BuildList < ActiveRecord::Base
 
   def set_version_and_tag
     pkg = self.packages.where(:package_type => 'source', :project_id => self.project_id).first
+    # TODO: remove 'return' after deployment ABF kernel 2.0
+    return if pkg.nil? # For old client that does not sends data about packages 
     self.package_version = "#{pkg.platform.name}-#{pkg.version}-#{pkg.release}"
     system("cd #{self.project.git_repository.path} && git tag #{self.package_version} #{self.commit_hash}") # TODO REDO through grit
     save
