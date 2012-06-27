@@ -20,8 +20,8 @@ Capistrano::Configuration.instance(:must_exist).load do
     end
 
     def stop_workers
-      run "kill -QUIT `ps aux | grep resque | grep -v grep | awk '{ print $2 }'`"
-      # run "kill -QUIT `ps aux | grep resque | grep -v grep | awk '{ print $2 }'` > /dev/null 2>&1 &"
+      ps = 'ps aux | grep resque | grep -v grep'
+      run "#{ps} && kill -QUIT `#{ps} | awk '{ print $2 }'` || echo 'Workers already stopped!'"
     end
 
     def start_workers
