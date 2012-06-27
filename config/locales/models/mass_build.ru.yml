@@ -3,6 +3,8 @@ ru:
     mass_builds:
       repositories: Репозитории
       extended_data: Параметры задания
+      failed_builds_list: Список ошибок сборок
+      statuses: Статусы
   activerecord:
     models:
       mass_build: Массовая Сборка

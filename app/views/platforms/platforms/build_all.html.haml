@@ -30,25 +30,35 @@
     %tr
       %th.lpadding16= t('activerecord.attributes.mass_build.id')
       %th.lpadding16= t('activerecord.attributes.mass_build.name')
-      %th.lpadding16= t("layout.build_lists.all").camelize
-      %th.lpadding16= t("layout.build_lists.statuses.build_published").camelize
-      %th.lpadding16= t("layout.build_lists.statuses.build_pending").camelize
-      %th.lpadding16= t("layout.build_lists.statuses.build_started").camelize
-      %th.lpadding16= t("layout.build_lists.statuses.build_publish").camelize
-      %th.lpadding16= t("layout.build_lists.statuses.build_error").camelize
+      %th.lpadding16= t("layout.mass_builds.statuses")
+      %th.lpadding16= t("layout.mass_builds.failed_builds_list")
       %th.lpadding16= t("layout.mass_builds.extended_data")
   - @mass_builds.each do |mass_build|
     %tr
       %td= mass_build.id
       %td= link_to mass_build.name, build_lists_path(:filter => {:mass_build_id => mass_build.id})
-      %td= mass_build.build_lists_count
-      %td= mass_build.build_published_count
-      %td= mass_build.build_pending_count
-      %td= mass_build.build_started_count
-      %td= mass_build.build_publish_count
-      %td= mass_build.build_error_count
+      %td.min_width_120
+        = t("layout.build_lists.all") + ": "
+        = mass_build.build_lists_count
+        .both
+        = t("layout.build_lists.statuses.build_published") + ": "
+        = mass_build.build_published_count
+        .both
+        = t("layout.build_lists.statuses.build_pending") + ": "
+        = mass_build.build_pending_count
+        .both
+        = t("layout.build_lists.statuses.build_started") + ": "
+        = mass_build.build_started_count
+        .both
+        = t("layout.build_lists.statuses.build_publish") + ": "
+        = mass_build.build_publish_count
+        .both
+        = t("layout.build_lists.statuses.build_error") + ": "
+        = mass_build.build_error_count
+        .both
+      %td= link_to t("layout.mass_builds.failed_builds_list"), failed_builds_list_platforms_path(:mass_build_id => mass_build.id), :target => "_blank"
       %td
-        %a{:href => '#', :'data-toggle' => "collapse", :'data-target' => "#collapse_#{ mass_build.id }"}= t("layout.mass_builds.extended_data")
+        %a{:href => "collapse_#{ mass_build.id }", :'data-toggle' => "collapse", :'data-target' => "#collapse_#{ mass_build.id }"}= t("layout.mass_builds.extended_data")
         .in.collapse{:id => "collapse_#{ mass_build.id }"}
           = t('activerecord.attributes.mass_build.arch_names') + ": "
           = mass_build.arch_names

@@ -209,6 +209,7 @@ ActiveRecord::Schema.define(:version => 20120622092725) do
     t.integer  "build_pending_count",   :default => 0
     t.integer  "build_started_count",   :default => 0
     t.integer  "build_publish_count",   :default => 0
+    t.integer  "build_error_count",     :default => 0
   end
 
   create_table "platforms", :force => true do |t|

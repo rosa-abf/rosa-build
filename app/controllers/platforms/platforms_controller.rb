@@ -31,9 +31,9 @@ class Platforms::PlatformsController < Platforms::BaseController
     render :action => :build_all
   end
 
-  def get_failed_builds_list
+  def failed_builds_list
     @mass_build = MassBuild.find params[:mass_build_id]
-    send_file @mass_build.generate_failed_builds_list, :filename => "mass_build_#{@mass_build.id}"
+    render :text => @mass_build.generate_failed_builds_list
   end
 
   def index
