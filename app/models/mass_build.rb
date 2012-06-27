@@ -12,6 +12,15 @@ class MassBuild < ActiveRecord::Base
 
   after_create :build_all
 
+  COUNT_STATUSES = [
+    :build_lists,
+    :build_published,
+    :build_pending,
+    :build_started,
+    :build_publish,
+    :build_error
+  ]
+
   def initialize(args = nil)
     super
 

@@ -2,7 +2,7 @@ ru:
   layout:
     mass_builds:
       repositories: Репозитории
-      extended_data: Дополнительные данные
+      extended_data: Параметры задания
   activerecord:
     models:
       mass_build: Массовая Сборка

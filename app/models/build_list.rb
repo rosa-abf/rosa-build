@@ -105,9 +105,9 @@ class BuildList < ActiveRecord::Base
 
     around_transition do |build_list, transition, block|
       if build_list.mass_build
-        MassBuild.decrement_counter "#{BuildList::HUMAN_STATUSES[build_list.status].to_s}_count", build_list.mass_build_id
+        MassBuild.decrement_counter "#{BuildList::HUMAN_STATUSES[build_list.status].to_s}_count", build_list.mass_build_id if MassBuild::COUNT_STATUSES.include?(build_list.status)
         block.call
-        MassBuild.increment_counter "#{BuildList::HUMAN_STATUSES[build_list.status].to_s}_count", build_list.mass_build_id
+        MassBuild.increment_counter "#{BuildList::HUMAN_STATUSES[build_list.status].to_s}_count", build_list.mass_build_id if MassBuild::COUNT_STATUSES.include?(build_list.status)
       end
     end
 

@@ -35,6 +35,7 @@
       %th.lpadding16= t("layout.build_lists.statuses.build_pending").camelize
       %th.lpadding16= t("layout.build_lists.statuses.build_started").camelize
       %th.lpadding16= t("layout.build_lists.statuses.build_publish").camelize
+      %th.lpadding16= t("layout.build_lists.statuses.build_error").camelize
       %th.lpadding16= t("layout.mass_builds.extended_data")
   - @mass_builds.each do |mass_build|
     %tr
@@ -45,6 +46,7 @@
       %td= mass_build.build_pending_count
       %td= mass_build.build_started_count
       %td= mass_build.build_publish_count
+      %td= mass_build.build_error_count
       %td
         %a{:href => '#', :'data-toggle' => "collapse", :'data-target' => "#collapse_#{ mass_build.id }"}= t("layout.mass_builds.extended_data")
         .in.collapse{:id => "collapse_#{ mass_build.id }"}
