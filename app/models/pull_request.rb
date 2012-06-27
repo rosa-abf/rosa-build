@@ -81,7 +81,7 @@ class PullRequest < ActiveRecord::Base
       'ready'
     elsif ret =~ /Automatic merge failed/
       system("cd #{path} && git reset --hard HEAD")
-      'block'
+      'blocked'
     else
       raise ret
     end

@@ -38,6 +38,7 @@ class Projects::PullRequestsController < Projects::BaseController
         flash[:error] = I18n.t('projects.pull_requests.up_to_date', :base_ref => @pull.base_ref, :head_ref => @pull.head_ref)
         render :new
       else
+        @pull.save
         redirect_to project_pull_request_path(@project, @pull)
       end
     else
@@ -53,8 +54,12 @@ class Projects::PullRequestsController < Projects::BaseController
 
   def merge
     @pull.check
-    @pull.merge! current_user
-    redirect_to :show
+    load_diff_commits_data
+    unless @pull.merge!(current_user)
+      flash[:error] = t('flash.pull_request.save_error')
+      flash[:warning] = @pull.errors.full_messages.join('. ')
+    end
+    render :show
   end
 
   def show
