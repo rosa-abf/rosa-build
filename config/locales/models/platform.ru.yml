@@ -40,6 +40,11 @@ ru:
       target_platform: Целевая платформа
       target_architecture: Целевая архитектура
       members: Участники
+      arch: Архитектура
+      mass_build: Массовая сборка
+      build_task: Сборочное задание
+      refresh_button: Обновить
+      project: Проект
 
   flash:
     platform:
@@ -53,6 +58,7 @@ ru:
       unfreeze_error: Не удалось разморозить платформу, попробуйте еще раз
       destroyed: Платформа успешно удалена
       build_all_success: Все проекты успешно отправлены на сборку
+      build_all_error: Сборка не удалась!
       clone_success: Клонирование успешно
       members:
         already_added: "%{name} уже является участником платформы"

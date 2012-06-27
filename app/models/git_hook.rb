@@ -3,10 +3,12 @@ class GitHook
   attr_reader :repo, :newrev, :oldrev, :newrev_type, :oldrev_type, :refname,
                       :change_type, :rev, :rev_type, :refname_type, :owner, :project
 
-  def initialize(owner_uname, repo, newrev, oldrev, ref, newrev_type, oldrev_type)
+  include Resque::Plugins::Status
+
+  def initialize(owner_uname, repo, newrev, oldrev, ref, newrev_type, oldrev_type = nil)
     @repo, @newrev, @oldrev, @refname, @newrev_type, @oldrev_type = repo, newrev, oldrev, ref, newrev_type, oldrev_type
-    if @owner = User.where(:uname => owner_uname).first || Group.where(:uname => owner_uname).first
-      @project = @owner.projects.where(:name => repo).first
+    if @owner = User.where(:uname => owner_uname).first || Group.where(:uname => owner_uname).first!
+      @project = @owner.own_projects.where(:name => repo).first!
     end
     @change_type = git_change_type
     git_revision_types
@@ -54,5 +56,9 @@ class GitHook
         # Anything else (is there anything else?)
         @refname_type= "*** Unknown type of update to $refname (#{rev_type})"
     end
+  end
+
+  def self.process(*args)
+    ActivityFeedObserver.instance.after_create(args.size > 1 ? GitHook.new(*args) : args.first)
   end
 end

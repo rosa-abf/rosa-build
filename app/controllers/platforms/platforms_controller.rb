@@ -1,15 +1,32 @@
 # -*- encoding : utf-8 -*-
 class Platforms::PlatformsController < Platforms::BaseController
-  
+
   before_filter :authenticate_user!
+  skip_before_filter :authenticate_user!, :only => [:advisories] if APP_CONFIG['anonymous_access']
   load_and_authorize_resource
-  
+
   autocomplete :user, :uname
 
   def build_all
-    @platform.delay.build_all(current_user)
+    mass_build = MassBuild.new(
+      :platform => @platform,
+      :user => current_user,
+      :repositories => params[:repositories],
+      :arches => params[:arches],
+      :auto_publish => params[:auto_publish] || false
+    )
+    if mass_build.save
+      redirect_to(mass_builds_platform_path(@platform), :notice => t("flash.platform.build_all_success"))
+    else
+      @mass_builds = MassBuild.by_platform(@platform).order('created_at DESC').paginate(:page => params[:page], :per_page => 20)
+      flash[:warning] = mass_build.errors.full_messages.join('. ')
+      flash[:error] = t("flash.platform.build_all_error")
+    end
+  end
 
-    redirect_to(platform_path(@platform), :notice => t("flash.platform.build_all_success"))
+  def mass_builds
+    @mass_builds = MassBuild.by_platform(@platform).order('created_at DESC').paginate(:page => params[:page], :per_page => 20)
+    render :action => :build_all
   end
 
   def index
@@ -81,8 +98,7 @@ class Platforms::PlatformsController < Platforms::BaseController
   end
 
   def destroy
-    @platform.delay.destroy if @platform
-
+    @platform.destroy # later with resque
     flash[:notice] = t("flash.platform.destroyed")
     redirect_to platforms_path
   end
@@ -122,6 +138,16 @@ class Platforms::PlatformsController < Platforms::BaseController
       end
     end
     redirect_to members_platform_url(@platform)
+  end
+
+  def advisories
+    @advisories = @platform.advisories.paginate(:page => params[:page])
+  end
+
+  def clear
+    @platform.clear
+    flash[:notice] = t('flash.repository.clear')
+    redirect_to edit_platform_path(@platform)
   end
 
 end

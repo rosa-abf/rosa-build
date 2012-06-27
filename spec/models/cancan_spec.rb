@@ -208,6 +208,7 @@ describe CanCan do
       context 'with owner rights' do
         before(:each) do
           @project.update_attribute(:owner, @user)
+          @project.relations.create!(:actor_id => @user.id, :actor_type => 'User', :role => 'admin')
           @issue.project.reload
         end
 

@@ -17,9 +17,11 @@ class Platform < ActiveRecord::Base
 
   has_many :packages, :class_name => "BuildList::Package", :dependent => :destroy
 
+  has_many :mass_builds
+
   validates :description, :presence => true
   validates :visibility, :presence => true, :inclusion => {:in => VISIBILITIES}
-  validates :name, :uniqueness => {:case_sensitive => false}, :presence => true, :format => { :with => /^[a-zA-Z0-9_\-]+$/ }
+  validates :name, :uniqueness => {:case_sensitive => false}, :presence => true, :format => { :with => /^[a-zA-Z0-9_\-\.]+$/ }
   validates :distrib_type, :presence => true, :inclusion => {:in => APP_CONFIG['distr_types']}
 
   before_create :create_directory, :if => lambda {Thread.current[:skip]} # TODO remove this when core will be ready
@@ -45,6 +47,10 @@ class Platform < ActiveRecord::Base
   attr_readonly   :name, :distrib_type, :parent_platform_id, :platform_type
 
   include Modules::Models::Owner
+
+  def clear
+    system("rm -Rf #{ APP_CONFIG['root_path'] }/platforms/#{ self.name }/repository/*")
+  end
 
   def urpmi_list(host, pair = nil)
     blank_pair = {:login => 'login', :pass => 'password'}
@@ -102,11 +108,10 @@ class Platform < ActiveRecord::Base
   end
 
   def base_clone(attrs = {}) # :description, :name, :owner
-    clone.tap do |c|
-      # c.attributes = attrs #
-      attrs.each {|k,v| c.send("#{k}=", v)}
-      c.updated_at = nil; c.created_at = nil # :id = nil
-      c.parent = self
+    dup.tap do |c|
+      attrs.each {|k,v| c.send("#{k}=", v)} # c.attributes = attrs
+      c.updated_at = nil; c.created_at = nil
+      c.parent = self; c.released = false
     end
   end
 
@@ -117,7 +122,7 @@ class Platform < ActiveRecord::Base
 
   def full_clone(attrs = {})
     base_clone(attrs).tap do |c|
-      with_skip {c.save} and c.clone_relations(self) and c.delay.xml_rpc_clone
+      with_skip {c.save} and c.clone_relations(self) and c.xml_rpc_clone # later with resque
     end
   end
 
@@ -155,26 +160,35 @@ class Platform < ActiveRecord::Base
     end
   end
 
-  def build_all(user)
+  def build_all(opts={})
+    # Set options to build all need
+    repositories = opts[:repositories] ? self.repositories.where(:id => opts[:repositories]) : self.repositories
+    arches = opts[:arches] ? Arch.where(:id => opts[:arches]) : Arch.all
+    auto_publish = opts[:auto_publish] || false
+    user = opts[:user]
+    mass_build_id = opts[:mass_build_id]
+
     repositories.each do |rep|
       rep.projects.find_in_batches(:batch_size => 2) do |group|
         sleep 1
         group.each do |p|
-          Arch.all.map(&:name).each do |arch|
+          arches.map(&:name).each do |arch|
             begin
-              p.build_for(self, user, arch)
+              p.build_for(self, user, arch, auto_publish, mass_build_id)
             rescue RuntimeError, Exception
-              p.delay.build_for(self, user, arch)
+              # p.async(:build_for, self, user, arch, auto_publish, mass_build_id) # TODO need this?
             end
           end
         end
       end
     end
   end
+  later :build_all, :loner => true, :queue => :clone_build
 
   def destroy
     with_skip {super} # avoid cascade XML RPC requests
   end
+  later :destroy, :queue => :clone_build
 
   protected
 
@@ -208,6 +222,7 @@ class Platform < ActiveRecord::Base
         raise "Failed to clone platform #{old_name} with code #{result}. Path: #{build_path(old_name)} to platform #{new_name}"
       end
     end
+    later :xml_rpc_clone, :loner => true, :queue => :clone_build
 
     def freeze_platform
       if released_changed? && released == true

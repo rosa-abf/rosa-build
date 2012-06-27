@@ -42,12 +42,12 @@ class Project < ActiveRecord::Base
 
   after_create :attach_to_personal_repository
   after_create :create_git_repo
-  after_create {|p| p.delay(:queue => 'fork', :priority => 20).fork_git_repo unless is_root?}
+  after_create {|p| p.fork_git_repo unless p.is_root?}
   after_save :create_wiki
 
   after_destroy :destroy_git_repo
   after_destroy :destroy_wiki
-  after_save {|p| p.delay(:queue => 'import', :priority => 10).import_attached_srpm if p.srpm?} # should be after create_git_repo
+  after_save {|p| p.import_attached_srpm if p.srpm?} # later with resque # should be after create_git_repo
   # after_rollback lambda { destroy_git_repo rescue true if new_record? }
 
   has_ancestry
@@ -71,26 +71,26 @@ class Project < ActiveRecord::Base
     find_by_owner_and_name(owner_name, project_name) or raise ActiveRecord::RecordNotFound
   end
 
-  def build_for(platform, user, arch = 'i586', priority = 0)
+  def build_for(platform, user, arch = 'i586', auto_publish = false, mass_build_id = nil, priority = 0)
     # Select main and project platform repository(contrib, non-free and etc)
     # If main does not exist, will connect only project platform repository
     # If project platform repository is main, only main will be connect
     build_reps = [platform.repositories.find_by_name('main')]
     build_reps += platform.repositories.select {|rep| self.repository_ids.include? rep.id}
-    build_ids = build_reps.compact.map(&:id).uniq
-
+    build_reps_ids = build_reps.compact.map(&:id).uniq
     arch = Arch.find_by_name(arch) if arch.acts_like?(:string)
     build_lists.create do |bl|
       bl.save_to_platform = platform
-      bl.build_to_platform = platform
+      bl.build_for_platform = platform
       bl.update_type = 'newpackage'
       bl.arch = arch
       bl.project_version = "latest_#{platform.name}"
       bl.build_requires = false # already set as db default
       bl.user = user
-      bl.auto_publish = true # already  set as db default
-      bl.include_repos = build_ids
+      bl.auto_publish = auto_publish
+      bl.include_repos = build_reps_ids
       bl.priority = priority
+      bl.mass_build_id = mass_build_id
     end
   end
 
@@ -220,11 +220,6 @@ class Project < ActiveRecord::Base
     owner == user
   end
 
-  def self.process_hook(owner_uname, repo, newrev, oldrev, ref, newrev_type, oldrev_type)
-    rec = GitHook.new(owner_uname, repo, newrev, oldrev, ref, newrev_type, oldrev_type)
-    ActivityFeedObserver.instance.after_create rec
-  end
-
   def owner_and_admin_ids
     recipients = self.relations.by_role('admin').where(:actor_type => 'User').map { |rel| rel.read_attribute(:actor_id) }
     recipients = recipients | [self.owner_id] if self.owner_type == 'User'
@@ -257,7 +252,7 @@ class Project < ActiveRecord::Base
   def create_git_repo
     if is_root?
       Grit::Repo.init_bare(path)
-      write_hook.delay(:queue => 'fork', :priority => 15)
+      write_hook
     end
   end
 
@@ -265,6 +260,7 @@ class Project < ActiveRecord::Base
     dummy = Grit::Repo.new(path) rescue parent.git_repository.repo.fork_bare(path)
     write_hook
   end
+  later :fork_git_repo, :queue => :fork_import
 
   def destroy_git_repo
     FileUtils.rm_rf path
@@ -276,7 +272,7 @@ class Project < ActiveRecord::Base
       self.srpm = nil; save # clear srpm
     end
   end
-
+  later :import_attached_srpm, :queue => :fork_import
 
   def create_wiki
     if has_wiki && !FileTest.exist?(wiki_path)
@@ -296,7 +292,7 @@ class Project < ActiveRecord::Base
     hook = File.join(::Rails.root.to_s, 'tmp', "post-receive-hook")
     FileUtils.cp(File.join(::Rails.root.to_s, 'bin', "post-receive-hook.partial"), hook)
     File.open(hook, 'a') do |f|
-      s = "\n  /bin/bash -l -c \"cd #{is_production ? '/srv/rosa_build/current' : Rails.root.to_s} && #{is_production ? 'RAILS_ENV=production' : ''} bundle exec rails runner 'Project.delay(:queue => \\\"hook\\\").process_hook(\\\"$owner\\\", \\\"$reponame\\\", \\\"$newrev\\\", \\\"$oldrev\\\", \\\"$ref\\\", \\\"$newrev_type\\\", \\\"$oldrev_type\\\")'\""
+      s = "\n  /bin/bash -l -c \"cd #{is_production ? '/srv/rosa_build/current' : Rails.root.to_s} && #{is_production ? 'RAILS_ENV=production' : ''} bundle exec rake hook:enqueue[$owner,$reponame,$newrev,$oldrev,$ref,$newrev_type,$oldrev_type]\""
       s << " > /dev/null 2>&1" if is_production
       s << "\ndone\n"
       f.write(s)

@@ -1,0 +1,45 @@
+= render 'submenu'
+= render 'sidebar'
+
+= form_for :build, :url => build_all_platform_path(@platform), :html => { :class => 'form mass_build', :method => :post } do |f|
+  %section.left
+    %h3= t("layout.mass_builds.repositories")
+    - @platform.repositories.each do |rep|
+      .both
+        = check_box_tag "repositories[]", rep.id, (params[:repositories]||[]).include?(rep.id.to_s), :id => "repositories_#{rep.id}"
+        = label_tag "repositories_#{rep.id}", rep.name
+    %br
+    = f.submit t("layout.projects.build_button")
+  %section.right
+    %h3= t("activerecord.attributes.build_list.arch")
+    - Arch.recent.each do |arch|
+      .lefter
+        = check_box_tag "arches[]", arch.id, (params[:arches]||[]).include?(arch.id.to_s), :id => "arches_#{arch.id}"
+        = label_tag "arches_#{arch.id}", arch.name
+      .both
+    %h3= t("activerecord.attributes.build_list.preferences")
+    .both.bottom_20
+      = check_box_tag :auto_publish, true, params[:auto_publish].present? ? params[:auto_publish].present? : false, :id => 'auto_publish'
+      = label_tag :auto_publish
+
+%br
+%br
+
+%table.tablesorter.unbordered{:cellpadding => "0", :cellspacing => "0"}
+  %thead
+    %tr
+      %th.lpadding16= t('activerecord.attributes.mass_build.id')
+      %th.lpadding16= t('activerecord.attributes.mass_build.name')
+      %th.lpadding16= t('activerecord.attributes.mass_build.arch_names')
+      %th.lpadding16= t('activerecord.attributes.mass_build.user')
+      %th.lpadding16= t('activerecord.attributes.mass_build.auto_publish')
+      %th.lpadding16= t('activerecord.attributes.mass_build.created_at')
+  - @mass_builds.each do |mass_build|
+    %tr
+      %td= mass_build.id
+      %td= link_to mass_build.name, build_lists_path(:filter => {:mass_build_id => mass_build.id})
+      %td= mass_build.arch_names
+      %td= link_to mass_build.user.fullname, mass_build.user
+      %td= mass_build.auto_publish
+      %td= mass_build.created_at
+= will_paginate @mass_builds

@@ -40,7 +40,11 @@ en:
       target_platform: Target platform
       target_architecture: Target architecture
       members: Members
-        
+      project: Project
+      arch: Architecture
+      mass_build: Mass build
+      build_task: Build Task
+      refresh_button: Refresh
 
   flash:
     platform:
@@ -54,6 +58,7 @@ en:
       unfreeze_error: Platform unfreezing error, try again
       destroyed: Platform deleted
       build_all_success: All project build in progress
+      build_all_error: Mass build failed
       clone_success: Cloned successfully
       members:
         already_added: "%{name} is already a member of platform"

@@ -129,4 +129,28 @@ class User < ActiveRecord::Base
       false
     end
   end
+
+  def best_role target
+    roles = target_roles(target)
+    return nil if roles.count == 0
+    %w(admin writer reader).each {|role| return role if roles.include?(role)}
+    raise "unknown user #{self.uname} roles #{roles}"
+  end
+
+  protected
+
+  def target_roles target
+    rel, gr, roles = target.relations, self.groups, []
+
+    if target.owner.class == Group
+      owner_group = self.groups.where(:id => target.owner.id).first
+      roles += owner_group.actors.where(:actor_id => self) if owner_group# user group is owner
+
+      gr = gr.where('groups.id != ?', target.owner.id) # exclude target owner group from users group list
+    end
+    roles += rel.where(:actor_id => self.id, :actor_type => 'User') # user is member
+    roles += rel.where(:actor_id => gr, :actor_type => 'Group') # user group is member
+    roles.map(&:role).uniq
+  end
+
 end

@@ -9,7 +9,7 @@
     .image
       =image_tag(avatar_url(@issue.user, :medium), :alt => 'avatar') if @issue.user
     .text
-      %span.name=link_to("#{@issue.user.uname} (#{@issue.user.name})", user_path(@issue.user)) if @issue.user
+      %span.name=link_to(@issue.user.fullname, user_path(@issue.user)) if @issue.user
       %br/
       %span.date=@issue.created_at.to_s(:long)
       %br/

@@ -28,6 +28,7 @@ en:
         preferences: Preferences
         started_at: Build started at
         duration: Build duration in seconds
+        mass_build_id: Mass build
 
       build_list/item:
         name: Name
@@ -99,7 +100,7 @@ en:
         build_error: Build error
         build_published: Build has been published
         rejected_publish: Publishing rejected
-        build_publish: Build is being publishing
+        build_publish: Build is being published
         failed_publish: Publishing error
         dependencies_fail: Dependences not found
         waiting_for_response: Waiting for response
@@ -123,3 +124,4 @@ en:
       no_arch_or_platform_selected: At least one of architecture of platform must selected
       wrong_platform: Only the primary platform can be selected for the main repository!
       can_not_published: Build can only be published with status "Build complete"
+      frozen_platform: In case of a repository for package storage with frozen platform allowed only bugfix and security updates

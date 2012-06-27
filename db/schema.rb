@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120515095324) do
+ActiveRecord::Schema.define(:version => 20120627101821) do
 
   create_table "activity_feeds", :force => true do |t|
     t.integer  "user_id",    :null => false
@@ -118,6 +118,7 @@ ActiveRecord::Schema.define(:version => 20120515095324) do
     t.datetime "started_at"
     t.integer  "duration"
     t.integer  "advisory_id"
+    t.integer  "mass_build_id"
   end
 
   add_index "build_lists", ["advisory_id"], :name => "index_build_lists_on_advisory_id"
@@ -134,22 +135,6 @@ ActiveRecord::Schema.define(:version => 20120515095324) do
     t.decimal  "commentable_id",   :precision => 50, :scale => 0
     t.integer  "project_id"
   end
-
-  create_table "delayed_jobs", :force => true do |t|
-    t.integer  "priority",   :default => 0
-    t.integer  "attempts",   :default => 0
-    t.text     "handler"
-    t.text     "last_error"
-    t.datetime "run_at"
-    t.datetime "locked_at"
-    t.datetime "failed_at"
-    t.string   "locked_by"
-    t.datetime "created_at",                        :null => false
-    t.datetime "updated_at",                        :null => false
-    t.string   "queue",      :default => "default"
-  end
-
-  add_index "delayed_jobs", ["priority", "run_at"], :name => "delayed_jobs_priority"
 
   create_table "event_logs", :force => true do |t|
     t.integer  "user_id"
@@ -210,6 +195,16 @@ ActiveRecord::Schema.define(:version => 20120515095324) do
   end
 
   add_index "labels", ["project_id"], :name => "index_labels_on_project_id"
+
+  create_table "mass_builds", :force => true do |t|
+    t.integer  "platform_id"
+    t.string   "name"
+    t.datetime "created_at",                      :null => false
+    t.datetime "updated_at",                      :null => false
+    t.string   "arch_names"
+    t.integer  "user_id"
+    t.boolean  "auto_publish", :default => false, :null => false
+  end
 
   create_table "platforms", :force => true do |t|
     t.string   "description"
@@ -313,6 +308,10 @@ ActiveRecord::Schema.define(:version => 20120515095324) do
     t.string  "base_ref",        :null => false
     t.string  "head_ref",        :null => false
   end
+
+  add_index "pull_requests", ["base_project_id"], :name => "index_pull_requests_on_base_project_id"
+  add_index "pull_requests", ["head_project_id"], :name => "index_pull_requests_on_head_project_id"
+  add_index "pull_requests", ["issue_id"], :name => "index_pull_requests_on_issue_id"
 
   create_table "register_requests", :force => true do |t|
     t.string   "name"

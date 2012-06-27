@@ -1,4 +1,5 @@
 $(document).ready(function() {
+  // TODO: Refactor this handler!! It's too complicated.
   $('#build_list_save_to_platform_id').change(function() {
     var platform_id = $(this).val();
     var base_platforms = $('.all_platforms input[type=checkbox].build_bpl_ids');
@@ -8,8 +9,10 @@ $(document).ready(function() {
         if ($(this).val() == platform_id) {
           if ($(this).attr('data-released') === '1') {
             $('#build_list_auto_publish').removeAttr('checked').attr('disabled', 'disabled');
+            disableUpdateTypes();
           } else {
             $('#build_list_auto_publish').removeAttr('disabled').attr('checked', 'checked');
+            enableUpdateTypes();
           }
 
           $(this).attr('checked', 'checked').removeAttr('disabled').trigger('change');
@@ -31,6 +34,12 @@ $(document).ready(function() {
       }
     });
 
+    if ($.inArray(platform_id, base_platforms.map(function(){ return $(this).val() }).get()) == -1) {
+      // For personal platforms update types always enebaled:
+      enableUpdateTypes();
+    }
+
+
     setBranchSelected();
   });
   $('#build_list_save_to_platform_id').trigger('change');
@@ -45,6 +54,7 @@ $(document).ready(function() {
   $('.build_bpl_ids').click(function() {
     return false;
   });
+
 });
 
 function setPlChecked(pointer, checked) {
@@ -61,7 +71,7 @@ function setBranchSelected() {
   var pl_id = $('#build_list_save_to_platform_id').val();
   // Checks if selected platform is main or not:
   if ( $('.all_platforms').find('input[type="checkbox"][value=' + pl_id + '].build_bpl_ids').size() > 0 ) {
-    var pl_name = $('#build_list_save_to_platform_id option[value="' + pl_id + '"]').text().match(/([\w-]+)\/[\w-]+/)[1];
+    var pl_name = $('#build_list_save_to_platform_id option[value="' + pl_id + '"]').text().match(/([\w-.]+)\/[\w-.]+/)[1];
     var branch_pl_opt = $('#build_list_project_version option[value="latest_' + pl_name + '"]');
     // If there is branch we need - set it selected:
     if ( branch_pl_opt.size() > 0 ) {
@@ -71,15 +81,18 @@ function setBranchSelected() {
   }
 }
 
-function platformChange() {
-    var rel = !!$('input[type="checkbox"].build_bpl_ids').filter(function(index) {
-        var $this = $(this);
-        return !!$this.attr('checked') && ($this.attr('data-released') === '1');
-    }).length;
-
-    if (rel) {
-        $('#build_list_auto_publish').removeAttr('checked').attr('disabled', 'disabled');
-    } else {
-        $('#build_list_auto_publish').removeAttr('disabled').attr('checked', 'checked');
+function disableUpdateTypes() {
+  $("select#build_list_update_type option").each(function(i,el) {
+    if ( $.inArray($(el).attr("value"), ["security", "bugfix"]) == -1 ) {
+      $(el).attr("disabled", "disabled");
+      // If disabled option is selected - select 'bugfix':
+      if ( $(el).attr("selected") ) {
+        $( $('select#build_list_update_type option[value="bugfix"]') ).attr("selected", "selected");
+      }
     }
+  });
+}
+
+function enableUpdateTypes() {
+  $("select#build_list_update_type option").removeAttr("disabled");
 }
