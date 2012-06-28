@@ -56,34 +56,28 @@ class PullRequest < ActiveRecord::Base
     status == 'ready'
   end
 
-  def check
-    ret = merge
-    if ret =~ /Already up-to-date/
-      ready
-      merging
-    elsif ret =~ /Merge made by the 'recursive' strategy/
-      system("cd #{path} && git reset --hard HEAD^") # remove merge commit
-      ready
-    elsif ret =~ /Automatic merge failed/
-      system("cd #{path} && git reset --hard HEAD")
-      block
-    else
-      raise ret
-    end
-  end
+  def check(do_transaction = true)
+    new_status = case merge
+                 when /Already up-to-date/
+                   'already'
+                 when /Merge made by the 'recursive' strategy/
+                   system("cd #{path} && git reset --hard HEAD^") # remove merge commit
+                   'ready'
+                 when /Automatic merge failed/
+                   system("cd #{path} && git reset --hard HEAD") # clean git index
+                   'block'
+                 else
+                   raise ret
+                 end
 
-  def soft_check
-    ret = merge
-    if ret =~ /Already up-to-date/
-      'already'
-    elsif ret =~ /Merge made by the 'recursive' strategy/
-      system("cd #{path} && git reset --hard HEAD^") # remove merge commit
-      'ready'
-    elsif ret =~ /Automatic merge failed/
-      system("cd #{path} && git reset --hard HEAD")
-      'blocked'
+    if do_transaction
+      if new_status == 'already'
+        ready; merging
+      else
+        send(new_status)
+      end
     else
-      raise ret
+      self.status = new_status == 'block' ? 'blocked' : new_status
     end
   end
 

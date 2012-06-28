@@ -17,7 +17,7 @@ class Projects::PullRequestsController < Projects::BaseController
     @pull.head_project = @project
     @pull.base_ref = (params[:pull_request][:base_ref].presence if params[:pull_request]) || @pull.base_project.default_branch
     @pull.head_ref = params[:treeish].presence || (params[:pull_request][:head_ref].presence if params[:pull_request]) || @pull.head_project.default_branch
-    @pull.status = @pull.soft_check
+    @pull.check(false) # don't make event transaction
     if @pull.status == 'already'
       @pull.destroy
       flash[:warning] = I18n.t('projects.pull_requests.up_to_date', :base_ref => @pull.base_ref, :head_ref => @pull.head_ref)
@@ -32,7 +32,7 @@ class Projects::PullRequestsController < Projects::BaseController
     @pull.base_project, @pull.head_project = PullRequest.default_base_project(@project), @project
 
     if @pull.save
-      @pull.status = @pull.soft_check
+      @pull.check(false) # don't make event transaction
       if @pull.status == 'already'
         @pull.destroy
         flash[:error] = I18n.t('projects.pull_requests.up_to_date', :base_ref => @pull.base_ref, :head_ref => @pull.head_ref)
