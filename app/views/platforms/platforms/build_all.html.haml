@@ -38,28 +38,14 @@
       %td= mass_build.id
       %td= link_to mass_build.name, build_lists_path(:filter => {:mass_build_id => mass_build.id})
       %td.min_width_120
-        = link_to t("layout.build_lists.all") + ": ", build_lists_path
-        = mass_build.build_lists_count
-        .both
-        = link_to t("layout.build_lists.statuses.build_published") + ": ", build_lists_path(:filter => {:status => BuildList::BUILD_PUBLISHED, :mass_build_id => mass_build.id})
-        = mass_build.build_published_count
-        .both
-        = link_to t("layout.build_lists.statuses.build_pending") + ": ", build_lists_path(:filter => {:status => BuildList::BUILD_PENDING, :mass_build_id => mass_build.id})
-        = mass_build.build_pending_count
-        .both
-        = link_to t("layout.build_lists.statuses.build_started") + ": ", build_lists_path(:filter => {:status => BuildServer::BUILD_STARTED, :mass_build_id => mass_build.id})
-        = mass_build.build_started_count
-        .both
-        = link_to t("layout.build_lists.statuses.build_publish") + ": ", build_lists_path(:filter => {:status => BuildList::BUILD_PUBLISH, :mass_build_id => mass_build.id})
-        = mass_build.build_publish_count
-        .both
-        = link_to t("layout.build_lists.statuses.build_error") + ": ", build_lists_path(:filter => {:status => BuildServer::BUILD_ERROR, :mass_build_id => mass_build.id})
-        = mass_build.build_error_count
-        .both
+        - MassBuild::COUNT_STATUSES.each do |status|
+          = link_to t("layout.build_lists.statuses.#{status}") + ": ", build_lists_path(:filter => {:status => status, :mass_build_id => mass_build.id})
+          = mass_build.read_attribute "#{status}_count"
+          .both
       %td= link_to t("layout.mass_builds.failed_builds_list"), failed_builds_list_platforms_path(:mass_build_id => mass_build.id), :target => "_blank"
       %td
-        %a{:href => "collapse_#{ mass_build.id }", :'data-toggle' => "collapse", :'data-target' => "#collapse_#{ mass_build.id }"}= t("layout.mass_builds.extended_data")
-        .in.collapse{:id => "collapse_#{ mass_build.id }"}
+        %a.toggle_btn{:href => "#toggle_#{ mass_build.id }", :'data-target' => "#toggle_#{ mass_build.id }"}= t("layout.mass_builds.extended_data")
+        .toggle{:id => "toggle_#{ mass_build.id }"}
           = t('activerecord.attributes.mass_build.arch_names') + ": "
           = mass_build.arch_names
           .both
@@ -71,10 +57,4 @@
           .both
           = t('activerecord.attributes.mass_build.created_at') + ": "
           = mass_build.created_at
-          .both
 = will_paginate @mass_builds
-
-= javascript_include_tag "lib/bootstrap-collapse"
-
-:javascript
-  $(".collapse").collapse();

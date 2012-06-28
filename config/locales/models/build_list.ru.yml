@@ -44,7 +44,6 @@ ru:
 
   layout:
     build_lists:
-      all: Все
       filter_header: Фильтр
       current: Текущие
       created_at_start: "Время постановки на сборку с:"
@@ -97,6 +96,7 @@ ru:
           git_error: проблема с гит
 
       statuses:
+        build_lists: Всего
         build_error: ошибка сборки
         build_published: опубликован
         rejected_publish: публикация отклонена
