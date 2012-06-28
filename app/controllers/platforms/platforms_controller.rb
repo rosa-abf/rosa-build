@@ -18,6 +18,7 @@ class Platforms::PlatformsController < Platforms::BaseController
     if mass_build.save
       redirect_to(mass_builds_platform_path(@platform), :notice => t("flash.platform.build_all_success"))
     else
+      @auto_publish_selected = params[:auto_publish].present?
       @mass_builds = MassBuild.by_platform(@platform).order('created_at DESC').paginate(:page => params[:page], :per_page => 20)
       flash[:warning] = mass_build.errors.full_messages.join('. ')
       flash[:error] = t("flash.platform.build_all_error")
@@ -26,7 +27,13 @@ class Platforms::PlatformsController < Platforms::BaseController
 
   def mass_builds
     @mass_builds = MassBuild.by_platform(@platform).order('created_at DESC').paginate(:page => params[:page], :per_page => 20)
+    @auto_publish_selected = true
     render :action => :build_all
+  end
+
+  def failed_builds_list
+    @mass_build = MassBuild.find params[:mass_build_id]
+    render :text => @mass_build.generate_failed_builds_list
   end
 
   def index

@@ -12,6 +12,15 @@ class MassBuild < ActiveRecord::Base
 
   after_create :build_all
 
+  COUNT_STATUSES = [
+    :build_lists,
+    :build_published,
+    :build_pending,
+    :build_started,
+    :build_publish,
+    :build_error
+  ]
+
   def initialize(args = nil)
     super
 
@@ -31,5 +40,14 @@ class MassBuild < ActiveRecord::Base
       :arches => self.arches,
       :auto_publish => self.auto_publish
     ) # later with resque
+  end
+
+  def generate_failed_builds_list
+    report = ""
+    BuildList.where(:status => BuildServer::BUILD_ERROR, :mass_build_id => self.id).each do |build_list|
+      report << "ID: #{build_list.id}; "
+      report << "PROJECT_NAME: #{build_list.project.name}\n"
+    end
+    report
   end
 end

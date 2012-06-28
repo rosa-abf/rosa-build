@@ -55,6 +55,9 @@ Rosa::Application.routes.draw do
         get    :mass_builds
         get    :advisories
       end
+      collection do
+        get    :failed_builds_list
+      end
       get :autocomplete_user_uname, :on => :collection
       resources :repositories do
         member do
