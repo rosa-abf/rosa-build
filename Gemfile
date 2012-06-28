@@ -75,6 +75,7 @@ group :development do
   gem 'rvm-capistrano', :require => false
   gem 'cape', :require => false
   gem 'capistrano_colors', :require => false
+  gem 'quiet_assets'
 end
 
 group :test do
