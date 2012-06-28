@@ -47,10 +47,10 @@ class Issue < ActiveRecord::Base
     closed_by && closed_at && status == 'closed'
   end
 
-  def set_close(closed_by, status = 'closed')
+  def set_close(closed_by)
     self.closed_at = Time.now.utc
     self.closer = closed_by
-    self.status = status
+    self.status = 'closed'
   end
 
   def set_open

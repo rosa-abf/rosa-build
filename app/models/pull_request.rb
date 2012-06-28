@@ -92,10 +92,10 @@ class PullRequest < ActiveRecord::Base
     Dir.chdir(path) do
       system "git config user.name \"#{who.uname}\" && git config user.email \"#{who.email}\""
       if merge
-        merging
         system("git push origin HEAD")
         system("git reset --hard HEAD^") # for diff maybe FIXME
-        issue.set_close who, 'merged'
+        set_user_and_time who
+        merging
       end
     end
   end
@@ -214,5 +214,10 @@ class PullRequest < ActiveRecord::Base
 
   def clean_dir
     FileUtils.rm_rf path
+  end
+
+  def set_user_and_time user
+    issue.closed_at = Time.now.utc
+    issue.closer = user
   end
 end
