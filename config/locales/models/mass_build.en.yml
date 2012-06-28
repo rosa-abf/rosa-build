@@ -5,6 +5,8 @@ en:
       extended_data: Extended data
       failed_builds_list: Failed Builds List
       statuses: Statuses
+      cancel_mass_build: Cancel
+      cancel_confirm: Are you sure you want to cancel all builds?
   activerecord:
     models:
       mass_build: Mass Build
@@ -18,3 +20,4 @@ en:
         user: User
         auto_publish: Auto Publish
         repositories: Repositories
+        rep_names: Repository names

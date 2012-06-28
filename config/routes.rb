@@ -57,6 +57,7 @@ Rosa::Application.routes.draw do
       end
       collection do
         get    :failed_builds_list
+        post   :cancel_mass_build
       end
       get :autocomplete_user_uname, :on => :collection
       resources :repositories do

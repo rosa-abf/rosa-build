@@ -59,6 +59,7 @@ ru:
       destroyed: Платформа успешно удалена
       build_all_success: Все проекты успешно отправлены на сборку
       build_all_error: Сборка не удалась!
+      cancel_mass_build: Массовая сборка отменена
       clone_success: Клонирование успешно
       members:
         already_added: "%{name} уже является участником платформы"

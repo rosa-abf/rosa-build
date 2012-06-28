@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120622092725) do
+ActiveRecord::Schema.define(:version => 20120628142723) do
 
   create_table "activity_feeds", :force => true do |t|
     t.integer  "user_id",    :null => false
@@ -210,6 +210,7 @@ ActiveRecord::Schema.define(:version => 20120622092725) do
     t.integer  "build_started_count",   :default => 0
     t.integer  "build_publish_count",   :default => 0
     t.integer  "build_error_count",     :default => 0
+    t.string   "rep_names"
   end
 
   create_table "platforms", :force => true do |t|
