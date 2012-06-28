@@ -46,7 +46,8 @@ class Platforms::ProductBuildListsController < Platforms::BaseController
   end
 
   def authenticate_product_builder!
-    unless APP_CONFIG['product_builder_ip'].values.include?(request.remote_ip)
+    # FIXME: Rails(?) interpret the internal IP as 127.0.0.1
+    unless (APP_CONFIG['product_builder_ip'].values + ["127.0.0.1"]).include?(request.remote_ip)
       render :nothing => true, :status => 403
     end
   end
