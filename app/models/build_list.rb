@@ -194,7 +194,7 @@ class BuildList < ActiveRecord::Base
 
   #TODO: Share this checking on product owner.
   def can_cancel?
-    [BUILD_PENDING, BuildServer::PLATFORM_PENDING].include? status && bs_id
+    [BUILD_PENDING, BuildServer::PLATFORM_PENDING].include?(status) && bs_id
   end
 
   def can_publish?
