@@ -21,7 +21,6 @@ describe ProductBuildList do
   it { should_not allow_mass_assignment_of(:product_id) }
 
   it { should allow_mass_assignment_of(:status) }
-  it { should allow_mass_assignment_of(:notified_at) }
   it { should allow_mass_assignment_of(:base_url) }
   
 end

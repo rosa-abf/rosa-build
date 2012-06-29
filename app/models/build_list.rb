@@ -103,11 +103,16 @@ class BuildList < ActiveRecord::Base
 
   state_machine :status, :initial => :waiting_for_response do
 
-    around_transition do |build_list, transition, block|
-      if build_list.mass_build
-        MassBuild.decrement_counter "#{BuildList::HUMAN_STATUSES[build_list.status].to_s}_count", build_list.mass_build_id if MassBuild::COUNT_STATUSES.include?(build_list.status)
-        block.call
-        MassBuild.increment_counter "#{BuildList::HUMAN_STATUSES[build_list.status].to_s}_count", build_list.mass_build_id if MassBuild::COUNT_STATUSES.include?(build_list.status)
+    # WTF? around_transition -> infinite loop
+    before_transition do |build_list, transition|
+      if build_list.mass_build && MassBuild::COUNT_STATUSES.include?(build_list.status)
+        MassBuild.decrement_counter "#{BuildList::HUMAN_STATUSES[build_list.status].to_s}_count", build_list.mass_build_id
+      end
+    end
+
+    after_transition do |build_list, transition|
+      if build_list.mass_build && MassBuild::COUNT_STATUSES.include?(build_list.status)
+        MassBuild.increment_counter "#{BuildList::HUMAN_STATUSES[build_list.status].to_s}_count", build_list.mass_build_id
       end
     end
 
@@ -180,6 +185,8 @@ class BuildList < ActiveRecord::Base
 
   def set_version_and_tag
     pkg = self.packages.where(:package_type => 'source', :project_id => self.project_id).first
+    # TODO: remove 'return' after deployment ABF kernel 2.0
+    return if pkg.nil? # For old client that does not sends data about packages 
     self.package_version = "#{pkg.platform.name}-#{pkg.version}-#{pkg.release}"
     system("cd #{self.project.git_repository.path} && git tag #{self.package_version} #{self.commit_hash}") # TODO REDO through grit
     save
@@ -187,7 +194,7 @@ class BuildList < ActiveRecord::Base
 
   #TODO: Share this checking on product owner.
   def can_cancel?
-    [BUILD_PENDING, BuildServer::PLATFORM_PENDING].include? status && bs_id
+    [BUILD_PENDING, BuildServer::PLATFORM_PENDING].include?(status) && bs_id
   end
 
   def can_publish?

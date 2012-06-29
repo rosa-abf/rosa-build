@@ -75,6 +75,7 @@ Rosa::Application.routes.draw do
     match '/private/:platform_name/*file_path' => 'privates#show'
 
     resources :product_build_lists, :only => [:index]
+    match 'product_status', :to => 'product_build_lists#status_build'
   end
 
   scope :module => 'users' do
@@ -118,7 +119,6 @@ Rosa::Application.routes.draw do
     match 'build_lists/pre_build', :to => "build_lists#pre_build"
     match 'build_lists/circle_build', :to => "build_lists#circle_build"
     match 'build_lists/new_bbdt', :to => "build_lists#new_bbdt"
-    match 'product_status', :to => 'product_build_lists#status_build'
 
     resources :build_lists, :only => [:index, :show, :update] do
       member do
