@@ -103,10 +103,15 @@ class BuildList < ActiveRecord::Base
 
   state_machine :status, :initial => :waiting_for_response do
 
-    around_transition do |build_list, transition, block|
+    # WTF? around_transition -> infinite loop
+    before_transition do |build_list, transition|
       if build_list.mass_build
         MassBuild.decrement_counter "#{BuildList::HUMAN_STATUSES[build_list.status].to_s}_count", build_list.mass_build_id if MassBuild::COUNT_STATUSES.include?(build_list.status)
-        block.call
+      end
+    end
+
+    after_transition do |build_list, transition|
+      if build_list.mass_build
         MassBuild.increment_counter "#{BuildList::HUMAN_STATUSES[build_list.status].to_s}_count", build_list.mass_build_id if MassBuild::COUNT_STATUSES.include?(build_list.status)
       end
     end
