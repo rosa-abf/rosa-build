@@ -20,12 +20,15 @@ Capistrano::Configuration.instance(:must_exist).load do
     end
 
     def stop_workers
-      ps = 'ps aux | grep resque | grep -v grep'
-      run "#{ps} && kill -QUIT `#{ps} | awk '{ print $2 }'` || echo 'Workers already stopped!'"
+      # ps = 'ps aux | grep resque | grep -v grep'
+      # run "#{ps} && kill -QUIT `#{ps} | awk '{ print $2 }'` || echo 'Workers already stopped!'"
+      # run "kill -QUIT `ps aux | grep resque | grep -v grep | awk '{ print $2 }'`"
+      # run "kill -QUIT `ps aux | grep resque | grep -v grep | awk '{ print $2 }'` > /dev/null 2>&1 &"
+      run "cd #{fetch :current_path} && #{rails_env} bundle exec rake resque:stop_workers"
     end
 
     def start_workers
-      run "cd #{fetch :current_path} && COUNT=#{ workers_count } QUEUE=fork_import,hook,clone_build,notification #{ rails_env } BACKGROUND=yes bundle exec rake resque:workers"
+      run "cd #{fetch :current_path} && COUNT=#{workers_count} QUEUE=fork_import,hook,clone_build,notification #{rails_env} BACKGROUND=yes bundle exec rake resque:workers"
     end
   end
 end
