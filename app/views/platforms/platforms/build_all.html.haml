@@ -40,7 +40,7 @@
       %td= link_to mass_build.name, build_lists_path(:filter => {:mass_build_id => mass_build.id})
       %td.min_width_120
         - MassBuild::COUNT_STATUSES.each do |status|
-          = link_to t("layout.build_lists.statuses.#{status}") + ": ", build_lists_path(:filter => {:status => status, :mass_build_id => mass_build.id})
+          = link_to t("layout.build_lists.statuses.#{status}") + ": ", build_lists_path(:filter => {:mass_build_id => mass_build.id, :ownership => 'index'}.merge(status != :build_lists ? {:status => status} : {}))
           = mass_build.read_attribute "#{status}_count"
           .both
       %td= link_to t("layout.mass_builds.failed_builds_list"), failed_builds_list_platforms_path(:mass_build_id => mass_build.id), :target => "_blank"
