@@ -219,6 +219,10 @@ class BuildList < ActiveRecord::Base
     self.class.human_status(status)
   end
 
+  def self.status_by_human(human)
+    BuildList::HUMAN_STATUSES.each { |k,v| return k if v == human }
+  end
+
   def set_items(items_hash)
     self.items = []
 
