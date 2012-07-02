@@ -57,5 +57,5 @@ class MassBuild < ActiveRecord::Base
       bl.cancel
     end
   end
-  later :cancel_all, :loner => true, :queue => :clone_build
+  later :cancel_all, :queue => :clone_build
 end

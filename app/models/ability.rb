@@ -83,7 +83,9 @@ class Ability
         can [:read, :related, :members], Platform, :owner_type => 'Group', :owner_id => user.group_ids
         can([:read, :related, :members], Platform, read_relations_for('platforms')) {|platform| local_reader? platform}
         can([:update, :members], Platform) {|platform| local_admin? platform}
-        can([:destroy, :members, :add_member, :remove_member, :remove_members, :build_all, :mass_builds, :cancel_mass_build, :failed_builds_list] , Platform) {|platform| owner? platform}
+        can([:destroy, :members, :add_member, :remove_member, :remove_members, :build_all, :mass_builds] , Platform) {|platform| owner?(platform) || local_admin?(platform) }
+        can(:failed_builds_list, MassBuild) {|mass_build| owner?(mass_build.platform) || local_admin?(mass_build.platform) }
+        can(:cancel_mass_build, MassBuild) {|mass_build| (owner?(mass_build.platform) || local_admin?(mass_build.platform)) && !mass_build.stop_build }
         can [:autocomplete_user_uname, :read_advisories, :advisories], Platform
 
         can [:read, :projects_list], Repository, :platform => {:visibility => 'open'}
@@ -127,7 +129,9 @@ class Ability
       cannot [:members, :add_member, :remove_member, :remove_members], Platform, :platform_type => 'personal'
 
       cannot [:create, :update, :destroy, :clone], Product, :platform => {:platform_type => 'personal'}
-      cannot [:clone, :build_all, :mass_builds, :cancel_mass_build, :failed_builds_list], Platform, :platform_type => 'personal'
+      cannot [:clone, :build_all, :mass_builds], Platform, :platform_type => 'personal'
+      cannot(:failed_builds_list, MassBuild) {|mass_build| mass_build.platform.platform_type == 'personal'}
+      cannot(:cancel_mass_build, MassBuild) { |mass_build| mass_build.platform.platform_type == 'personal' && mass_build.stop_build }
 
       can :create, Subscribe do |subscribe|
         !subscribe.subscribeable.subscribes.exists?(:user_id => user.id)

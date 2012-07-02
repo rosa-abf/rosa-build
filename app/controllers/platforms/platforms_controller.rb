@@ -31,18 +31,6 @@ class Platforms::PlatformsController < Platforms::BaseController
     render :action => :build_all
   end
 
-  def cancel_mass_build
-    @mass_build = MassBuild.find params[:mass_build_id]
-    @mass_build.cancel_all
-    flash[:notice] = t("flash.platform.cancel_mass_build")
-    redirect_to mass_builds_platform_path(@mass_build.platform)
-  end
-
-  def failed_builds_list
-    @mass_build = MassBuild.find params[:mass_build_id]
-    render :text => @mass_build.generate_failed_builds_list
-  end
-
   def index
     @platforms = @platforms.accessible_by(current_ability, :related).paginate(:page => params[:page], :per_page => 20)
   end
