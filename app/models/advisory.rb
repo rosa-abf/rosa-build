@@ -8,11 +8,12 @@ class Advisory < ActiveRecord::Base
   after_create :generate_advisory_id
   before_save  :normalize_references, :if => :references_changed?
 
-  ID_TEMPLATE = 'ROSA-%<type>s-%<year>d:%<id>04d'
+  ID_TEMPLATE        = 'ROSA-%<type>s-%<year>d:%<id>04d'
+  ID_STRING_TEMPLATE = 'ROSA-%<type>s-%<year>04s:%<id>04s'
   TYPES = {'security' => 'SA', 'bugfix' => 'A'}
 
-  scope :by_project, lambda {|p| where('project_id' => p.try(:id) || p)}
   scope :search_by_id, lambda { |aid| where('advisory_id ILIKE ?', "%#{aid.to_s.strip}%") }
+  scope :by_update_type, lambda { |ut| where(:update_type => ut) }
   default_scope order('created_at DESC')
 
   def to_param

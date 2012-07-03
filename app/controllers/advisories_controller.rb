@@ -25,4 +25,13 @@ class AdvisoriesController < ApplicationController
     end
   end
 
+  def search
+    puts params[:bl_type]
+    @advisory = Advisory.by_update_type(params[:bl_type]).search_by_id(params[:query]).limit(1).first
+    raise ActionController::RoutingError.new('Not Found') if @advisory.nil?
+    respond_to do |format|
+      format.json { render :json => @advisory }
+    end
+  end
+
 end
