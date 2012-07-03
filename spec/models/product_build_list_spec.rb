@@ -22,5 +22,13 @@ describe ProductBuildList do
 
   it { should allow_mass_assignment_of(:status) }
   it { should allow_mass_assignment_of(:base_url) }
-  
+
+  # see app/ability.rb
+  # can :read, ProductBuildList#, :product => {:platform => {:visibility => 'open'}} # double nested hash don't work
+  it 'should generate correct sql to get product build lists' do
+    stub_symlink_methods
+    user = FactoryGirl.create(:user)
+    ability = Ability.new user
+    ProductBuildList.accessible_by(ability).count.should == 0
+  end
 end
