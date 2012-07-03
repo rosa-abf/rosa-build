@@ -6,7 +6,7 @@ ru:
       failed_builds_list: Список ошибок сборок
       statuses: Статусы
       cancel_mass_build: Отмена
-      cancel_confirm: Вы уверены, что хотите отменить все сборки?
+      cancel_confirm: Вы уверены, что хотите отменить массовую сборку?
   activerecord:
     models:
       mass_build: Массовая Сборка
@@ -20,4 +20,4 @@ ru:
         user: Пользователь
         auto_publish: Авто Публикация
         repositories: Репозитории
-        rep_names: Названия репозиториев
+        rep_names: Репозитории
