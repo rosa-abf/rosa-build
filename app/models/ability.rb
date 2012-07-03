@@ -18,7 +18,7 @@ class Ability
     can :read, Issue, :project => {:visibility => 'open'}
     can :search, BuildList
     can :read, BuildList, :project => {:visibility => 'open'}
-    can :read, ProductBuildList, :product => {:platform => {:visibility => 'open'}}
+    can :read, ProductBuildList#, :product => {:platform => {:visibility => 'open'}} # double nested hash don't work
     can :read, Advisory
     can(:advisories, Platform) {APP_CONFIG['anonymous_access']}
     # Core callbacks
@@ -91,6 +91,7 @@ class Ability
         can [:read, :projects_list], Repository, :platform => {:owner_type => 'Group', :owner_id => user.group_ids}
         can([:read, :projects_list], Repository, read_relations_for('repositories', 'platforms')) {|repository| local_reader? repository.platform}
         can([:create, :update, :projects_list, :add_project, :remove_project], Repository) {|repository| local_admin? repository.platform}
+        can(:clear, Platform) {|platform| local_admin?(platform) && platform.platform_type == 'personal'}
         can([:change_visibility, :settings, :destroy], Repository) {|repository| owner? repository.platform}
 
         can :read, Product, :platform => {:visibility => 'open'}
@@ -120,6 +121,7 @@ class Ability
       # Shared cannot rights for all users (registered, admin)
       cannot :destroy, Platform, :platform_type => 'personal'
       cannot [:create, :destroy, :add_project, :remove_project], Repository, :platform => {:platform_type => 'personal'}
+      cannot :clear, Platform, :platform_type => 'main'
       cannot :destroy, Issue
 
       cannot [:members, :add_member, :remove_member, :remove_members], Platform, :platform_type => 'personal'
@@ -146,21 +148,16 @@ class Ability
        relations.actor_type = 'Group' AND relations.actor_id IN (?)))", parent.classify, @user, @user.group_ids]
   end
 
-  def relation_exists_for(target, roles)
-    target.relations.exists?(:actor_id => @user.id, :actor_type => 'User', :role => roles) or
-    target.relations.exists?(:actor_id => @user.group_ids, :actor_type => 'Group', :role => roles)
-  end
-
   def local_reader?(target)
-    relation_exists_for(target, %w{reader writer admin}) or owner?(target)
+    %w{reader writer admin}.include? @user.best_role(target)
   end
 
   def local_writer?(target)
-    relation_exists_for(target, %w{writer admin}) or owner?(target)
+    %w{writer admin}.include? @user.best_role(target)
   end
 
   def local_admin?(target)
-    relation_exists_for(target, 'admin') or owner?(target)
+    @user.best_role(target) == 'admin'
   end
 
   def owner?(target)

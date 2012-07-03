@@ -102,6 +102,8 @@ describe Projects::CommentsController do
   context 'for project owner user' do
     before(:each) do
       @project.update_attribute(:owner, @user)
+      @project.relations.destroy_all
+      @project.relations.create :actor_id => @project.owner.id, :actor_type => @project.owner.class.to_s, :role => 'admin'
       @create_params[:owner_name] = @user.uname; @update_params[:owner_name] = @user.uname
     end
 

@@ -71,7 +71,7 @@ function setBranchSelected() {
   var pl_id = $('#build_list_save_to_platform_id').val();
   // Checks if selected platform is main or not:
   if ( $('.all_platforms').find('input[type="checkbox"][value=' + pl_id + '].build_bpl_ids').size() > 0 ) {
-    var pl_name = $('#build_list_save_to_platform_id option[value="' + pl_id + '"]').text().match(/([\w-]+)\/[\w-]+/)[1];
+    var pl_name = $('#build_list_save_to_platform_id option[value="' + pl_id + '"]').text().match(/([\w-.]+)\/[\w-.]+/)[1];
     var branch_pl_opt = $('#build_list_project_version option[value="latest_' + pl_name + '"]');
     // If there is branch we need - set it selected:
     if ( branch_pl_opt.size() > 0 ) {

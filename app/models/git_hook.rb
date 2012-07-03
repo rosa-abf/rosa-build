@@ -5,7 +5,7 @@ class GitHook
 
   include Resque::Plugins::Status
 
-  def initialize(owner_uname, repo, newrev, oldrev, ref, newrev_type, oldrev_type)
+  def initialize(owner_uname, repo, newrev, oldrev, ref, newrev_type, oldrev_type = nil)
     @repo, @newrev, @oldrev, @refname, @newrev_type, @oldrev_type = repo, newrev, oldrev, ref, newrev_type, oldrev_type
     if @owner = User.where(:uname => owner_uname).first || Group.where(:uname => owner_uname).first!
       @project = @owner.own_projects.where(:name => repo).first!

@@ -20,6 +20,7 @@ gem 'resque_mailer', '~> 2.1.0'
 gem 'perform_later', '~> 1.3.0' # should be after resque_mailer
 gem 'russian', '~> 0.6.0'
 gem 'highline', '~> 1.6.11'
+gem 'state_machine'
 
 # gem 'rugged', '~> 0.16.0'
 gem 'grack', :git => 'git://github.com/rdblue/grack.git', :require => 'git_http'

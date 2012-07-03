@@ -14,6 +14,9 @@ ru:
       back_to_the_list: ⇐ К списку репозиториев
       confirm_delete: Вы уверены, что хотите удалить этот репозиторий?
       current_repository_header: Текущий репозиторий
+      clear: Очистить
+      clear_confirm: Уверены, что хотите очистить платформу?
+      clear_warning: Внимание! Очищенные пакеты не могут быть восстановлены!
 
     personal_repositories:
       settings_header: Настройки
@@ -32,6 +35,7 @@ ru:
       project_not_added: Не удалось добавить проект. В этом репозитории уже есть проект с таким именем. Сначала нужно удалить старый проект
       project_removed: Проект удален из репозитория
       project_not_removed: Не удалось удалить проект из репозитория
+      clear: Платформа успешно очищена!
 
   activerecord:
     models:

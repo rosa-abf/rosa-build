@@ -6,7 +6,7 @@ class BuildList < ActiveRecord::Base
   belongs_to :build_for_platform, :class_name => 'Platform'
   belongs_to :user
   belongs_to :advisory
-  belongs_to :mass_build
+  belongs_to :mass_build, :counter_cache => true
   has_many :items, :class_name => "BuildList::Item", :dependent => :destroy
   has_many :packages, :class_name => "BuildList::Package", :dependent => :destroy
 
@@ -96,9 +96,120 @@ class BuildList < ActiveRecord::Base
   serialize :additional_repos
   serialize :include_repos
 
-  before_create :set_default_status
-  after_create :place_build
+  after_commit :place_build
   after_destroy :delete_container
+
+  @queue = :clone_and_build
+
+  state_machine :status, :initial => :waiting_for_response do
+
+    # WTF? around_transition -> infinite loop
+    before_transition do |build_list, transition|
+      if build_list.mass_build && MassBuild::COUNT_STATUSES.include?(build_list.status)
+        MassBuild.decrement_counter "#{BuildList::HUMAN_STATUSES[build_list.status].to_s}_count", build_list.mass_build_id
+      end
+    end
+
+    after_transition do |build_list, transition|
+      if build_list.mass_build && MassBuild::COUNT_STATUSES.include?(build_list.status)
+        MassBuild.increment_counter "#{BuildList::HUMAN_STATUSES[build_list.status].to_s}_count", build_list.mass_build_id
+      end
+    end
+
+    after_transition :on => :published, :do => :set_version_and_tag
+
+    event :place_build do
+      transition :waiting_for_response => :build_pending, :if => lambda { |build_list|
+        build_list.add_to_queue == BuildServer::SUCCESS
+      }
+      [
+        'BuildList::BUILD_PENDING',
+        'BuildServer::PLATFORM_PENDING',
+        'BuildServer::PLATFORM_NOT_FOUND',
+        'BuildServer::PROJECT_NOT_FOUND',
+        'BuildServer::PROJECT_VERSION_NOT_FOUND'
+      ].each do |code|
+        transition :waiting_for_response => code.demodulize.downcase.to_sym, :if => lambda { |build_list|
+          build_list.add_to_queue == code.constantize
+        }
+      end
+    end
+
+    event :start_build do
+      transition [ :build_pending,
+                   :platform_pending,
+                   :platform_not_found,
+                   :project_not_found,
+                   :project_version_not_found ] => :build_started
+    end
+
+    event :cancel do
+      transition [:build_pending, :platform_pending] => :build_canceled, :if => lambda { |build_list|
+        build_list.can_cancel? && BuildServer.delete_build_list(build_list.bs_id) == BuildServer::SUCCESS
+      }
+    end
+
+    event :published do
+      transition [:build_publish, :rejected_publish] => :build_published
+    end
+
+    event :fail_publish do
+      transition [:build_publish, :rejected_publish] => :failed_publish
+    end
+
+    event :publish do
+      transition [:success, :failed_publish] => :build_publish, :if => lambda { |build_list|
+        BuildServer.publish_container(build_list.bs_id) == BuildServer::SUCCESS
+      }
+      transition [:success, :failed_publish] => :failed_publish
+    end
+
+    event :reject_publish do
+      transition :success => :rejected_publish, :if => :can_reject_publish?
+    end
+
+    event :build_success do
+      transition [:build_started, :build_canceled] => :success
+    end
+
+    event :build_error do
+      transition [:build_started, :build_canceled] => :build_error
+    end
+
+    HUMAN_STATUSES.each do |code,name|
+      state name, :value => code
+    end
+  end
+
+  later :publish, :queue => :clone_build
+
+  def set_version_and_tag
+    pkg = self.packages.where(:package_type => 'source', :project_id => self.project_id).first
+    # TODO: remove 'return' after deployment ABF kernel 2.0
+    return if pkg.nil? # For old client that does not sends data about packages 
+    self.package_version = "#{pkg.platform.name}-#{pkg.version}-#{pkg.release}"
+    system("cd #{self.project.git_repository.path} && git tag #{self.package_version} #{self.commit_hash}") # TODO REDO through grit
+    save
+  end
+
+  #TODO: Share this checking on product owner.
+  def can_cancel?
+    [BUILD_PENDING, BuildServer::PLATFORM_PENDING].include?(status) && bs_id
+  end
+
+  def can_publish?
+    [BuildServer::SUCCESS, FAILED_PUBLISH].include? status
+  end
+
+  def can_reject_publish?
+    can_publish? and save_to_platform.released
+  end
+
+
+  def add_to_queue
+    #XML-RPC params: project_name, project_version, plname, arch, bplname, update_type, build_requires, id_web, include_repos, priority
+    @status ||= BuildServer.add_build_list project.name, project_version, save_to_platform.name, arch.name, (save_to_platform_id == build_for_platform_id ? '' : build_for_platform.name), update_type, build_requires, id, include_repos, priority
+  end
 
   def self.human_status(status)
     I18n.t("layout.build_lists.statuses.#{HUMAN_STATUSES[status]}")
@@ -126,39 +237,6 @@ class BuildList < ActiveRecord::Base
     end
   end
 
-  def publish
-    return false unless can_publish?
-    has_published = BuildServer.publish_container bs_id
-    update_attribute(:status, has_published == 0 ? BUILD_PUBLISH : FAILED_PUBLISH)
-    return has_published == 0
-  end
-  later :publish, :loner => true, :queue => :clone_build
-
-  def can_publish?
-    status == BuildServer::SUCCESS or status == FAILED_PUBLISH
-  end
-
-  def reject_publish
-    return false unless can_reject_publish?
-    update_attribute(:status, REJECTED_PUBLISH)
-  end
-
-  def can_reject_publish?
-    can_publish? and save_to_platform.released
-  end
-
-  def cancel
-    return false unless can_cancel?
-    has_canceled = BuildServer.delete_build_list bs_id
-    update_attribute(:status, BUILD_CANCELED) if has_canceled == 0
-    return has_canceled == 0
-  end
-
-  #TODO: Share this checking on product owner.
-  def can_cancel?
-    status == BUILD_PENDING && bs_id
-  end
-
   def event_log_message
     {:project => project.name, :version => project_version, :arch => arch.name}.inspect
   end
@@ -182,19 +260,6 @@ class BuildList < ActiveRecord::Base
 
   protected
 
-  def set_default_status
-    self.status = WAITING_FOR_RESPONSE unless self.status.present?
-    return true
-  end
-
-  def place_build
-    #XML-RPC params: project_name, project_version, plname, arch, bplname, update_type, build_requires, id_web, include_repos, priority
-    self.status = BuildServer.add_build_list project.name, project_version, save_to_platform.name, arch.name, (save_to_platform_id == build_for_platform_id ? '' : build_for_platform.name), update_type, build_requires, id, include_repos, priority
-    self.status = BUILD_PENDING if self.status == 0
-    save
-  end
-
-   
   def delete_container
     if can_cancel?
       BuildServer.delete_build_list bs_id

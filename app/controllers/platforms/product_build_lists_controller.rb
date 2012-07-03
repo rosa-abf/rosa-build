@@ -11,14 +11,13 @@ class Platforms::ProductBuildListsController < Platforms::BaseController
   before_filter :find_product_build_list, :only => [:status_build]
 
   def create
-    @product.product_build_lists.create! :base_url => "http://#{request.host_with_port}", :notified_at => Time.current
+    @product.product_build_lists.create! :base_url => "http://#{request.host_with_port}"
     flash[:notice] = t('flash.product.build_started')
     redirect_to [@platform, @product]
   end
 
   def status_build
     @product_build_list.status = params[:status].to_i # ProductBuildList::BUILD_COMPLETED : ProductBuildList::BUILD_FAILED)
-    @product_build_list.notified_at = Time.current
     @product_build_list.save!
     render :nothing => true
   end
@@ -46,7 +45,8 @@ class Platforms::ProductBuildListsController < Platforms::BaseController
   end
 
   def authenticate_product_builder!
-    unless APP_CONFIG['product_builder_ip'].values.include?(request.remote_ip)
+    # FIXME: Rails(?) interpret the internal IP as 127.0.0.1
+    unless (APP_CONFIG['product_builder_ip'].values + ["127.0.0.1"]).include?(request.remote_ip)
       render :nothing => true, :status => 403
     end
   end

@@ -71,4 +71,14 @@ $(document).ready(function() {
     }
   });
 
+  $(".toggle_btn").click(function() {
+    var target = $( $(this).attr('data-target') );
+    //target.toggle();
+    if ( target.css('visibility') == 'hidden' ) {
+      target.css('visibility', 'visible');
+    } else {
+      target.css('visibility', 'hidden');
+    }
+    return false;
+  });
 });
