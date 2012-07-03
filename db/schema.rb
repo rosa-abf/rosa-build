@@ -306,6 +306,8 @@ ActiveRecord::Schema.define(:version => 20120703101719) do
     t.integer  "build_count",        :default => 0,        :null => false
   end
 
+  add_index "projects", ["owner_id"], :name => "index_projects_on_name_and_owner_id_and_owner_type", :unique => true, :case_sensitive => false
+
   create_table "register_requests", :force => true do |t|
     t.string   "name"
     t.string   "email"
