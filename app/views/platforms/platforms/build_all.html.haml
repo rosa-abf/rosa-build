@@ -19,7 +19,7 @@
       .both
     %h3= t("activerecord.attributes.build_list.preferences")
     .both.bottom_20
-      = check_box_tag :auto_publish, true, params[:auto_publish].present? ? params[:auto_publish].present? : false, :id => 'auto_publish'
+      = check_box_tag :auto_publish, true, @auto_publish_selected, :id => 'auto_publish'
       = label_tag :auto_publish
 
 %br
@@ -30,16 +30,31 @@
     %tr
       %th.lpadding16= t('activerecord.attributes.mass_build.id')
       %th.lpadding16= t('activerecord.attributes.mass_build.name')
-      %th.lpadding16= t('activerecord.attributes.mass_build.arch_names')
-      %th.lpadding16= t('activerecord.attributes.mass_build.user')
-      %th.lpadding16= t('activerecord.attributes.mass_build.auto_publish')
-      %th.lpadding16= t('activerecord.attributes.mass_build.created_at')
+      %th.lpadding16= t("layout.mass_builds.statuses")
+      %th.lpadding16= t("layout.mass_builds.failed_builds_list")
+      %th.lpadding16= t("layout.mass_builds.extended_data")
   - @mass_builds.each do |mass_build|
     %tr
       %td= mass_build.id
       %td= link_to mass_build.name, build_lists_path(:filter => {:mass_build_id => mass_build.id})
-      %td= mass_build.arch_names
-      %td= link_to mass_build.user.fullname, mass_build.user
-      %td= mass_build.auto_publish
-      %td= mass_build.created_at
+      %td.min_width_120
+        - MassBuild::COUNT_STATUSES.each do |status|
+          = link_to t("layout.build_lists.statuses.#{status}") + ": ", build_lists_path(:filter => {:status => status, :mass_build_id => mass_build.id})
+          = mass_build.read_attribute "#{status}_count"
+          .both
+      %td= link_to t("layout.mass_builds.failed_builds_list"), failed_builds_list_platforms_path(:mass_build_id => mass_build.id), :target => "_blank"
+      %td
+        %a.toggle_btn{:href => "#toggle_#{ mass_build.id }", :'data-target' => "#toggle_#{ mass_build.id }"}= t("layout.mass_builds.extended_data")
+        .toggle{:id => "toggle_#{ mass_build.id }"}
+          = t('activerecord.attributes.mass_build.arch_names') + ": "
+          = mass_build.arch_names
+          .both
+          = t('activerecord.attributes.mass_build.user') + ": "
+          = link_to mass_build.user.fullname, mass_build.user
+          .both
+          = t('activerecord.attributes.mass_build.auto_publish') + ": "
+          = mass_build.auto_publish
+          .both
+          = t('activerecord.attributes.mass_build.created_at') + ": "
+          = mass_build.created_at
 = will_paginate @mass_builds

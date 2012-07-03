@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120627101821) do
+ActiveRecord::Schema.define(:version => 20120628165702) do
 
   create_table "activity_feeds", :force => true do |t|
     t.integer  "user_id",    :null => false
@@ -199,11 +199,17 @@ ActiveRecord::Schema.define(:version => 20120627101821) do
   create_table "mass_builds", :force => true do |t|
     t.integer  "platform_id"
     t.string   "name"
-    t.datetime "created_at",                      :null => false
-    t.datetime "updated_at",                      :null => false
+    t.datetime "created_at",                               :null => false
+    t.datetime "updated_at",                               :null => false
     t.string   "arch_names"
     t.integer  "user_id"
-    t.boolean  "auto_publish", :default => false, :null => false
+    t.boolean  "auto_publish",          :default => false, :null => false
+    t.integer  "build_lists_count",     :default => 0
+    t.integer  "build_published_count", :default => 0
+    t.integer  "build_pending_count",   :default => 0
+    t.integer  "build_started_count",   :default => 0
+    t.integer  "build_publish_count",   :default => 0
+    t.integer  "build_error_count",     :default => 0
   end
 
   create_table "platforms", :force => true do |t|
@@ -233,10 +239,9 @@ ActiveRecord::Schema.define(:version => 20120627101821) do
 
   create_table "product_build_lists", :force => true do |t|
     t.integer  "product_id"
-    t.integer  "status",      :default => 2, :null => false
-    t.datetime "notified_at"
-    t.datetime "created_at",                 :null => false
-    t.datetime "updated_at",                 :null => false
+    t.integer  "status",     :default => 2, :null => false
+    t.datetime "created_at",                :null => false
+    t.datetime "updated_at",                :null => false
   end
 
   add_index "product_build_lists", ["product_id"], :name => "index_product_build_lists_on_product_id"

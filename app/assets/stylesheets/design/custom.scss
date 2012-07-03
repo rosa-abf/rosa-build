@@ -1088,3 +1088,14 @@ form.mass_build section.left {
 form.mass_build section.right {
   margin-right: 50px;
 }
+
+.toggle {
+  overflow: hidden;
+  padding-top: 10px;
+  display: block;
+  visibility: hidden;
+}
+
+.min_width_120 {
+  min-width: 120px;
+}

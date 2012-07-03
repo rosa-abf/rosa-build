@@ -19,7 +19,7 @@ class Ability
     can :read, PullRequest, :project => {:visibility => 'open'}
     can :search, BuildList
     can :read, BuildList, :project => {:visibility => 'open'}
-    can :read, ProductBuildList, :product => {:platform => {:visibility => 'open'}}
+    can :read, ProductBuildList#, :product => {:platform => {:visibility => 'open'}} # double nested hash don't work
     can :read, Advisory
     can(:advisories, Platform) {APP_CONFIG['anonymous_access']}
     # Core callbacks
