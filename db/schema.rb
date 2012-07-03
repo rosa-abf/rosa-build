@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120629134216) do
+ActiveRecord::Schema.define(:version => 20120703101719) do
 
   create_table "activity_feeds", :force => true do |t|
     t.integer  "user_id",    :null => false
@@ -204,12 +204,12 @@ ActiveRecord::Schema.define(:version => 20120629134216) do
     t.string   "arch_names"
     t.integer  "user_id"
     t.boolean  "auto_publish",          :default => false, :null => false
-    t.integer  "build_lists_count",     :default => 0
-    t.integer  "build_published_count", :default => 0
-    t.integer  "build_pending_count",   :default => 0
-    t.integer  "build_started_count",   :default => 0
-    t.integer  "build_publish_count",   :default => 0
-    t.integer  "build_error_count",     :default => 0
+    t.integer  "build_lists_count",     :default => 0,     :null => false
+    t.integer  "build_published_count", :default => 0,     :null => false
+    t.integer  "build_pending_count",   :default => 0,     :null => false
+    t.integer  "build_started_count",   :default => 0,     :null => false
+    t.integer  "build_publish_count",   :default => 0,     :null => false
+    t.integer  "build_error_count",     :default => 0,     :null => false
     t.string   "rep_names"
     t.boolean  "stop_build",            :default => false, :null => false
   end
