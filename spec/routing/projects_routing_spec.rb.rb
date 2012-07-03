@@ -36,8 +36,9 @@ describe Projects::Git::TreesController do
 
     it "routes to #show" do
       get("/import/glib2.0-mib").should route_to("projects/git/trees#show", :owner_name => 'import', :project_name => 'glib2.0-mib')
-      get("/import/glib2.0-mib/tree/branch").should route_to("projects/git/trees#show", :owner_name => 'import', :project_name => 'glib2.0-mib', :treeish => 'branch')
-      get("/import/glib2.0-mib/tree/branch/some/path.to").should route_to("projects/git/trees#show", :owner_name => 'import', :project_name => 'glib2.0-mib', :treeish => 'branch', :path => 'some/path.to')
+      get("/import/glib2.0-mib/tree/lib2safe-0.03").should route_to("projects/git/trees#show", :owner_name => 'import', :project_name => 'glib2.0-mib', :treeish => 'lib2safe-0.03')
+      get("/import/glib2.0-mib/tree/branch-with.dot/folder_with.dot/path-with.dot").should route_to("projects/git/trees#show", :owner_name => 'import', :project_name => 'glib2.0-mib', :treeish => 'branch-with.dot', :path => 'folder_with.dot/path-with.dot')
+      # get("/import/glib2.0-mib/tree/ветка-с.точкой/папка_с.точкой/путь-с.точкой").should route_to("projects/git/trees#show", :owner_name => 'import', :project_name => 'glib2.0-mib', :treeish => 'ветка-с.точкой', :path => 'папка_с.точкой/путь-с.точкой')
     end
 
     # TODO write more specs also with slash in branch name!
