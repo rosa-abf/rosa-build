@@ -179,31 +179,33 @@ Rosa::Application.routes.draw do
       get '/sections' => 'projects#sections', :as => :sections_project
       post '/sections' => 'projects#sections'
       delete '/remove_user' => 'projects#remove_user', :as => :remove_user_project
-      # Tree
-      get '/' => "git/trees#show", :as => :project
-      get '/tree/:treeish(/*path)' => "git/trees#show", :defaults => {:treeish => :master}, :as => :tree, :format => false
-      # Commits
-      get '/commits/:treeish(/*path)' => "git/commits#index", :defaults => {:treeish => :master}, :as => :commits, :format => false
-      get '/commit/:id(.:format)' => "git/commits#show", :as => :commit
-      # Commit comments
-      post '/commit/:commit_id/comments(.:format)' => "comments#create", :as => :project_commit_comments
-      get '/commit/:commit_id/comments/:id(.:format)' => "comments#edit", :as => :edit_project_commit_comment
-      put '/commit/:commit_id/comments/:id(.:format)' => "comments#update", :as => :project_commit_comment
-      delete '/commit/:commit_id/comments/:id(.:format)' => "comments#destroy"
-      # Commit subscribes
-      post '/commit/:commit_id/subscribe' => "commit_subscribes#create", :as => :subscribe_commit
-      delete '/commit/:commit_id/unsubscribe' => "commit_subscribes#destroy", :as => :unsubscribe_commit
-      # Editing files
-      get '/blob/:treeish/*path/edit' => "git/blobs#edit", :defaults => {:treeish => :master}, :as => :edit_blob
-      put '/blob/:treeish/*path' => "git/blobs#update", :defaults => {:treeish => :master}, :format => false
-      # Blobs
-      get '/blob/:treeish/*path' => "git/blobs#show", :defaults => {:treeish => :master}, :as => :blob, :format => false
-      # Blame
-      get '/blame/:treeish/*path' => "git/blobs#blame", :defaults => {:treeish => :master}, :as => :blame, :format => false
-      # Raw
-      get '/raw/:treeish/*path' => "git/blobs#raw", :defaults => {:treeish => :master}, :as => :raw, :format => false
-      # Archive
-      get '/archive/:format/tree/:treeish' => "git/trees#archive", :defaults => {:treeish => :master}, :as => :archive, :format => /zip|tar/
+      constraints :treeish => /[^\/]+/ do
+        # Tree
+        get '/' => "git/trees#show", :as => :project
+        get '/tree/:treeish(/*path)' => "git/trees#show", :defaults => {:treeish => :master}, :as => :tree, :format => false
+        # Commits
+        get '/commits/:treeish(/*path)' => "git/commits#index", :defaults => {:treeish => :master}, :as => :commits, :format => false
+        get '/commit/:id(.:format)' => "git/commits#show", :as => :commit
+        # Commit comments
+        post '/commit/:commit_id/comments(.:format)' => "comments#create", :as => :project_commit_comments
+        get '/commit/:commit_id/comments/:id(.:format)' => "comments#edit", :as => :edit_project_commit_comment
+        put '/commit/:commit_id/comments/:id(.:format)' => "comments#update", :as => :project_commit_comment
+        delete '/commit/:commit_id/comments/:id(.:format)' => "comments#destroy"
+        # Commit subscribes
+        post '/commit/:commit_id/subscribe' => "commit_subscribes#create", :as => :subscribe_commit
+        delete '/commit/:commit_id/unsubscribe' => "commit_subscribes#destroy", :as => :unsubscribe_commit
+        # Editing files
+        get '/blob/:treeish/*path/edit' => "git/blobs#edit", :defaults => {:treeish => :master}, :as => :edit_blob
+        put '/blob/:treeish/*path' => "git/blobs#update", :defaults => {:treeish => :master}, :format => false
+        # Blobs
+        get '/blob/:treeish/*path' => "git/blobs#show", :defaults => {:treeish => :master}, :as => :blob, :format => false
+        # Blame
+        get '/blame/:treeish/*path' => "git/blobs#blame", :defaults => {:treeish => :master}, :as => :blame, :format => false
+        # Raw
+        get '/raw/:treeish/*path' => "git/blobs#raw", :defaults => {:treeish => :master}, :as => :raw, :format => false
+        # Archive
+        get '/archive/:format/tree/:treeish' => "git/trees#archive", :defaults => {:treeish => :master}, :as => :archive, :format => /zip|tar/
+      end
     end
   end
 
