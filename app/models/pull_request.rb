@@ -100,11 +100,7 @@ class PullRequest < ActiveRecord::Base
 
   def path
     filename = [id, base_ref, head_project.owner.uname, head_project.name, head_ref].compact.join('-')
-    if Rails.env == "production"
-      File.join('/srv/rosa_build/shared/tmp', "pull_requests", base_project.owner.uname, base_project.name, filename)
-    else
-      File.join(Rails.root, "tmp", Rails.env, "pull_requests", base_project.owner.uname, base_project.name, filename)
-    end
+    File.join(APP_CONFIG['root_path'], 'pull_requests', base_project.owner.uname, base_project.name, filename)
   end
 
   def head_branch
