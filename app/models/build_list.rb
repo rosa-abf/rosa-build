@@ -220,7 +220,7 @@ class BuildList < ActiveRecord::Base
   end
 
   def self.status_by_human(human)
-    BuildList::HUMAN_STATUSES.each { |k,v| return k if v == human }
+    BuildList::HUMAN_STATUSES.key human
   end
 
   def set_items(items_hash)

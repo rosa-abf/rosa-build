@@ -25,7 +25,7 @@ class MassBuildsController < ApplicationController
       @mass_builds = MassBuild.by_platform(@platform).order('created_at DESC').paginate(:page => params[:page], :per_page => 20)
       flash[:warning] = mass_build.errors.full_messages.join('. ')
       flash[:error] = t("flash.platform.build_all_error")
-      render :action => :index
+      render :index
     end
   end
 
