@@ -20,7 +20,7 @@ class AdvisoriesController < ApplicationController
     @advisory.build_lists.find_in_batches(:include => [:save_to_platform, :packages, :project]) do |batch|
       batch.each do |build_list|
         tmp = build_list.packages.inject({:srpm => nil, :rpm => []}) do |h, p|
-          p.package_type == 'binary' ? h[:rpm] << p : h[:srpm] = p
+          p.package_type == 'binary' ? h[:rpm] << p.fullname : h[:srpm] = p.fullname
           h
         end
         h = { build_list.project => tmp }

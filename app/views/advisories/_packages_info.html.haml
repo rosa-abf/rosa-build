@@ -12,9 +12,9 @@
                 %li
                   %p= "SRPM:"
                   %ul
-                    %li= packages[:srpm].fullname
+                    %li= packages[:srpm]
                 %li
                   %p= "RPM:"
                   %ul
                     - packages[:rpm].each do |package|
-                      %li= package.fullname
+                      %li= package
