@@ -5,6 +5,7 @@ en:
       list_header: Advisories
       form_header: New advisory
       project_name: Project
+      project_names: Projects
       affected_versions: Affected versions
       affected_in: Affected in
       ref_comment: Add links one by row

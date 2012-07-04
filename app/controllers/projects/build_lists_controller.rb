@@ -186,6 +186,7 @@ class Projects::BuildListsController < Projects::BaseController
           redirect_to :back, :notice => t('layout.build_lists.publish_fail') and return
         end
         a.platforms  << @build_list.save_to_platform unless a.platforms.include? @build_list.save_to_platform
+        a.projects   << @build_list.project unless a.projects.include? @build_list.project
         @build_list.advisory = a
         unless a.save
           redirect_to :back, :notice => t('layout.build_lists.publish_fail') and return
