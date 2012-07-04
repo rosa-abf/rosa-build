@@ -7,7 +7,7 @@ class MassBuild < ActiveRecord::Base
 
   attr_accessor :repositories, :arches
 
-  validates :platform_id, :arch_names, :name, :user_id, :repositories, :presence => true
+  validates :platform_id, :arch_names, :name, :user_id, :repositories, :rep_names, :presence => true
   validates_inclusion_of :auto_publish, :in => [true, false]
 
   after_create :build_all
@@ -25,8 +25,8 @@ class MassBuild < ActiveRecord::Base
     super
 
     if new_record?
-      rep_names = Repository.where(:id => self.repositories).map(&:name).join(", ")
-      self.name = "#{Time.now.utc.to_date.strftime("%d.%b")}-#{platform.name}(#{rep_names})"
+      self.rep_names = Repository.where(:id => self.repositories).map(&:name).join(", ")
+      self.name = "#{Time.now.utc.to_date.strftime("%d.%b")}-#{platform.name}"
       self.arch_names = Arch.where(:id => self.arches).map(&:name).join(", ")
     end
   end
@@ -50,4 +50,12 @@ class MassBuild < ActiveRecord::Base
     end
     report
   end
+
+  def cancel_all
+    self.update_attribute(:stop_build, true)
+    self.build_lists.find_each(:batch_size => 100) do |bl|
+      bl.cancel
+    end
+  end
+  later :cancel_all, :queue => :clone_build
 end

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120628165702) do
+ActiveRecord::Schema.define(:version => 20120703101719) do
 
   create_table "activity_feeds", :force => true do |t|
     t.integer  "user_id",    :null => false
@@ -107,8 +107,8 @@ ActiveRecord::Schema.define(:version => 20120628165702) do
     t.integer  "project_id"
     t.integer  "arch_id"
     t.datetime "notified_at"
-    t.datetime "created_at",                               :null => false
-    t.datetime "updated_at",                               :null => false
+    t.datetime "created_at",            :null => false
+    t.datetime "updated_at",            :null => false
     t.boolean  "is_circle",             :default => false
     t.text     "additional_repos"
     t.string   "name"
@@ -137,8 +137,8 @@ ActiveRecord::Schema.define(:version => 20120628165702) do
     t.string   "commentable_type"
     t.integer  "user_id"
     t.text     "body"
-    t.datetime "created_at",                                      :null => false
-    t.datetime "updated_at",                                      :null => false
+    t.datetime "created_at",       :null => false
+    t.datetime "updated_at",       :null => false
     t.decimal  "commentable_id",   :precision => 50, :scale => 0
     t.integer  "project_id"
   end
@@ -161,8 +161,8 @@ ActiveRecord::Schema.define(:version => 20120628165702) do
 
   create_table "groups", :force => true do |t|
     t.integer  "owner_id"
-    t.datetime "created_at",                        :null => false
-    t.datetime "updated_at",                        :null => false
+    t.datetime "created_at",       :null => false
+    t.datetime "updated_at",       :null => false
     t.string   "uname"
     t.integer  "own_projects_count", :default => 0, :null => false
     t.text     "description"
@@ -175,8 +175,8 @@ ActiveRecord::Schema.define(:version => 20120628165702) do
     t.string   "title"
     t.text     "body"
     t.string   "status",      :default => "open"
-    t.datetime "created_at",                      :null => false
-    t.datetime "updated_at",                      :null => false
+    t.datetime "created_at",     :null => false
+    t.datetime "updated_at",     :null => false
     t.integer  "user_id"
     t.datetime "closed_at"
     t.integer  "closed_by"
@@ -211,12 +211,14 @@ ActiveRecord::Schema.define(:version => 20120628165702) do
     t.string   "arch_names"
     t.integer  "user_id"
     t.boolean  "auto_publish",          :default => false, :null => false
-    t.integer  "build_lists_count",     :default => 0
-    t.integer  "build_published_count", :default => 0
-    t.integer  "build_pending_count",   :default => 0
-    t.integer  "build_started_count",   :default => 0
-    t.integer  "build_publish_count",   :default => 0
-    t.integer  "build_error_count",     :default => 0
+    t.integer  "build_lists_count",     :default => 0,     :null => false
+    t.integer  "build_published_count", :default => 0,     :null => false
+    t.integer  "build_pending_count",   :default => 0,     :null => false
+    t.integer  "build_started_count",   :default => 0,     :null => false
+    t.integer  "build_publish_count",   :default => 0,     :null => false
+    t.integer  "build_error_count",     :default => 0,     :null => false
+    t.string   "rep_names"
+    t.boolean  "stop_build",            :default => false, :null => false
   end
 
   create_table "platforms", :force => true do |t|
@@ -372,8 +374,9 @@ ActiveRecord::Schema.define(:version => 20120628165702) do
 
   create_table "users", :force => true do |t|
     t.string   "name"
-    t.string   "email",                   :default => "",   :null => false
-    t.string   "encrypted_password",      :default => "",   :null => false
+    t.string   "email",                                  :default => "",   :null => false
+    t.string   "encrypted_password",      :limit => 128, :default => "",   :null => false
+    t.string   "password_salt",                          :default => "",   :null => false
     t.string   "reset_password_token"
     t.datetime "reset_password_sent_at"
     t.datetime "remember_created_at"
@@ -382,11 +385,12 @@ ActiveRecord::Schema.define(:version => 20120628165702) do
     t.text     "ssh_key"
     t.string   "uname"
     t.string   "role"
-    t.string   "language",                :default => "en"
-    t.integer  "own_projects_count",      :default => 0,    :null => false
+    t.string   "language",                               :default => "en"
     t.string   "confirmation_token"
     t.datetime "confirmed_at"
     t.datetime "confirmation_sent_at"
+    t.integer  "own_projects_count",                     :default => 0,    :null => false
+    t.datetime "reset_password_sent_at"
     t.text     "professional_experience"
     t.string   "site"
     t.string   "company"

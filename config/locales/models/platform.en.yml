@@ -59,6 +59,7 @@ en:
       destroyed: Platform deleted
       build_all_success: All project build in progress
       build_all_error: Mass build failed
+      cancel_mass_build: Mass build canceled
       clone_success: Cloned successfully
       members:
         already_added: "%{name} is already a member of platform"
