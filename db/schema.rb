@@ -17,8 +17,8 @@ ActiveRecord::Schema.define(:version => 20120703101719) do
     t.integer  "user_id",    :null => false
     t.string   "kind"
     t.text     "data"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
   end
 
   create_table "advisories", :force => true do |t|
@@ -225,7 +225,7 @@ ActiveRecord::Schema.define(:version => 20120703101719) do
     t.string   "owner_type"
     t.string   "visibility",         :default => "open", :null => false
     t.string   "platform_type",      :default => "main", :null => false
-    t.string   "distrib_type"
+    t.string   "distrib_type",                           :null => false
   end
 
   add_index "platforms", ["name"], :name => "index_platforms_on_name", :unique => true, :case_sensitive => false
