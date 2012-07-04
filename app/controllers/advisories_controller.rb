@@ -19,9 +19,18 @@ class AdvisoriesController < ApplicationController
     @packages_info = Hash.new { |h, k| h[k] = {} }
     @advisory.build_lists.find_in_batches(:include => [:save_to_platform, :packages, :project]) do |batch|
       batch.each do |build_list|
-        h = { build_list.project => build_list.packages }
-        # FIXME Maybe memory leak...
-        @packages_info[build_list.save_to_platform].merge!(h) { |pr, old, new| (old + new).compact.uniq }
+        tmp = build_list.packages.inject({:srpm => nil, :rpm => []}) do |h, p|
+          p.package_type == 'binary' ? h[:rpm] << p : h[:srpm] = p
+          h
+        end
+        h = { build_list.project => tmp }
+        @packages_info[build_list.save_to_platform].merge!(h) do |pr, old, new|
+          {:srpm => new[:srpm], :rpm => old[:rpm].concat(new[:rpm]).uniq}
+        end
+
+#        h = { build_list.project => build_list.packages }
+#        # FIXME Maybe memory leak...
+#        @packages_info[build_list.save_to_platform].merge!(h) { |pr, old, new| (old + new).compact.uniq }
       end
     end
   end
