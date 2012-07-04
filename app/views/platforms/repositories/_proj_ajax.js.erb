@@ -6,7 +6,7 @@
   <% @projects.each do |project| %>
     [
       "<%=j link_to("#{project.owner.respond_to?(:uname) ? project.owner.uname : project.owner.name} / #{project.name}", project) %>",
-      "<%= truncate(project.description || '', :length => 60).gsub("\n", ' ').gsub("\r", ' ') %>",
+      "<%= truncate(project.description || '', :length => 60).gsub(/\n|\r|\t/, ' ') %>",
       "<%=j link_to t("layout.add"), url_for(:controller => :repositories, :action => :add_project, :project_id => project.id) %>"
     ]<%= project == @projects.last ? '' : ',' %>
   <% end %>
