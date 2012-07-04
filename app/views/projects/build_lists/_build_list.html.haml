@@ -1,6 +1,6 @@
 %tr{:id => "row#{build_list_counter}", :class => "#{build_list_status_color(build_list.status)}"}
   %td= link_to (build_list.bs_id.present? ? build_list.bs_id : t("layout.build_lists.bs_id_not_set")), build_list
-  %td= build_list.mass_build_id ? link_to(build_list.mass_build.name, mass_builds_platform_path(build_list.save_to_platform)) : ""
+  %td= build_list.mass_build_id ? link_to(build_list.mass_build.name, platform_mass_builds_path(build_list.save_to_platform)) : ""
   %td= build_list.human_status
   %td= link_to build_list.project.name, build_list.project
   %td= link_to build_list.project_version, "#"
