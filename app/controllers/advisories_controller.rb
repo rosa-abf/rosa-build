@@ -20,7 +20,8 @@ class AdvisoriesController < ApplicationController
     @advisory.build_lists.find_in_batches(:include => [:save_to_platform, :packages, :project]) do |batch|
       batch.each do |build_list|
         h = { build_list.project => build_list.packages }
-        @packages_info[build_list.save_to_platform].merge!(h) { |pr, old, new| (old + new).compact!.uniq! }
+        # FIXME Maybe memory leak...
+        @packages_info[build_list.save_to_platform].merge!(h) { |pr, old, new| (old + new).compact.uniq }
       end
     end
   end
