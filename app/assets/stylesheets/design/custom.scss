@@ -954,8 +954,53 @@ form.mass_build input[type="checkbox"] {
   height: 11px;
 }
 
-div#new_advisory_form, div#advisory_preview {
+div#new_advisory_form,
+div#advisory_preview,
+div#advisory_search_block,
+div#advisory_search_block div.info {
     display: none;
+}
+
+div#advisory_search_block {
+    padding-bottom: 15px;
+}
+
+p.hint_text {
+    color: #666666;
+    font-size: 0.9em;
+    padding: 0;
+}
+
+div#advisory_search_block p.hint_text {
+    display: block;
+    width: 350px;
+}
+
+div#advisory_search_block div.info {
+    width: 565px;
+    border: solid 1px;
+    border-radius: 5px;
+}
+
+div#advisory_search_block div.info p {
+    text-align: center;
+    margin: 0.5em 2em 0.7em;
+}
+
+div#advisory_search_block div.advisory_not_found {
+    background-color: #B7CFFF;
+    border-color: #6666FF;
+}
+
+div#advisory_search_block div.server_error {
+    background-color: #FACFCF;
+    border-color: #FF7777;
+}
+
+div#advisory_search_block div.continue_input {
+    background-color: #CFFACF;
+    border-color: #00CF00;
+    display: block;
 }
 
 /*=============== popovers ===============*/
@@ -1091,3 +1136,39 @@ form.mass_build section.right {
 .min_width_120 {
   min-width: 120px;
 }
+
+.chzn-select {
+    width: 350px;
+}
+
+.packages_info_container ul {
+    list-style-type: none;
+    padding-left: 25px;
+    margin: 5px 0;
+}
+
+.packages_info_container ul.platforms {
+    padding: 0;
+}
+
+/* remove this lines after change to backbone */
+table.tablesorter.advisories thead tr.search th {
+    padding: 0 5px;
+}
+
+table.tablesorter.advisories thead tr.search th input[type='text'] {
+    width: 640px;
+}
+
+table.tablesorter.advisories thead tr.search th form {
+    float: left;
+}
+
+table.tablesorter.advisories thead tr.search th form.button_to {
+    padding: 3px 0 0 7px;
+}
+
+table.tablesorter tr td.no_results {
+    text-align: center;
+}
+/* end */

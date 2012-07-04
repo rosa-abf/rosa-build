@@ -4,7 +4,10 @@
 %h3= "#{t("activerecord.models.advisory")} #{@advisory.advisory_id}".html_safe
 
 .leftlist= "#{t("layout.advisories.project_name")}:".html_safe
-.rightlist= link_to @advisory.project.name, project_path(@advisory.project)
+.rightlist
+  - @advisory.projects.each do |project|
+    = link_to project.name, project_path(project)
+    %br
 .both
 
 .leftlist= "#{t("activerecord.attributes.advisory.created_at")}:".html_safe
@@ -32,6 +35,8 @@
     = construct_ref_link(ref)
     %br
 .both
+
+= render :partial => 'packages_info'
 
 :javascript
   $('article .all').addClass('bigpadding');

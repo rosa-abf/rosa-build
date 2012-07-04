@@ -74,8 +74,27 @@
   - if @build_list.can_publish? and @build_list.save_to_platform.released and @build_list.advisory.nil?
     #advisory_block
       .leftlist= label_tag :attach_advisory, t("layout.build_lists.attached_advisory")
-      .rightlist= select_tag :attach_advisory, advisories_select_options(@advisories)
+      .rightlist
+        = select_tag :attach_advisory, advisories_select_options(@advisories)
       .both
+
+      #advisory_search_block
+        %h3= t("layout.advisories.search_by_id")
+        .leftlist= label_tag :advisory_search, t("layout.advisories.search_hint")
+        .rightlist
+          %input#advisory_search{:type => 'text'}
+          %p.hint_text= t("layout.advisories.advisory_id_info", :advisory_format => advisory_id_for_hint)
+        .both
+        - %w(advisory_not_found server_error continue_input).each do |el|
+          .info{:class => el}
+            %p= t("layout.advisories.banners.#{el}")
+
+        -#.info.advisory_not_found
+          %p= t("layout.advisories.banners.advisory_not_found")
+        -#.info.server_error
+          %p= t("layout.advisories.banners.server_error")
+        -#.info.continue_input
+          %p= t("layout.advisories.banners.continue_input")
 
       #new_advisory_form
         = f.fields_for @build_list.build_advisory do |f|
@@ -91,11 +110,8 @@
         .leftlist= t("activerecord.attributes.advisory.references")
         .rightlist.refs &nbsp;
         .both
-
     :javascript
       $(function() {
-        Rosa.bootstrapedData.advisories = #{ render 'advisories/advisories.json.jbuilder',
-                                                    :advisories => @advisories };
         var r = new Rosa.Routers.BuildListsAdvisoriesRouter();
       });
 
@@ -107,7 +123,6 @@
 - if @item_groups.blank?
   %h4.nomargin= t("layout.build_lists.no_items_data")
 - @item_groups.each_with_index do |group, level|
-  -#%h4.nomargin= "#{group} ##{level}"
   - group.each do |item|
     %h4.nomargin= "#{item.name} ##{level}"
     %table.tablesorter.width565{:cellpadding => "0", :cellspacing => "0"}

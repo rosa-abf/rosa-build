@@ -1,13 +1,24 @@
 ru:
   layout:
     advisories:
+      atom_title: Бюллетени
       list_header: Бюллетени
       form_header: Новый бюллетень
       project_name: Проект
       affected_versions: Применен в версиях
+      affected_in: Применен в
       ref_comment: Вставляйте ссылки по одной на строку
       no_: Нет
       new: Новый
+      existing: Существующий
+      search_by_id: Искать бюллетень по его ID
+      search_hint: Скопируйте в поле ввода полный AdvisoryID или введите его уникальную часть
+      advisory_id_info: AdvisoryID имеет формат %{advisory_format}, где 'XXXX' (минимум 4 символа) - это уникальная часть.
+
+      banners:
+        advisory_not_found: Не удалось найти запрашиваемый бюллетень для сборочного листа этого типа.
+        server_error: Произошла ошибка сервера. Попробуйте позже.
+        continue_input: Продолжайте вводить ID до тех пор, пока не найдется нужный бюллетень.
 
   flash:
     advisories:

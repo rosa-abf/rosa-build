@@ -4,6 +4,7 @@ ru:
       header: Поиск
       advanced: Расширенный поиск
       all: Показать все
+      no_results: По запросу "%{query}" ничего не найдено.
       types:
         all: Все
         projects: Проекты

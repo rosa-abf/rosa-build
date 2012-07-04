@@ -38,7 +38,9 @@ Rosa::Application.routes.draw do
     end
   end
 
-  resources :advisories, :only => [:index, :show]
+  resources :advisories, :only => [:index, :show, :search] do
+    get :search, :on => :collection
+  end
 
   scope :module => 'platforms' do
     resources :platforms do
