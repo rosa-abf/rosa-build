@@ -1,11 +1,12 @@
 # -*- encoding : utf-8 -*-
 class Projects::PullRequestsController < Projects::BaseController
+  SKIP = [:autocomplete_base_project_name, :autocomplete_head_project_name, :autocomplete_base_ref, :autocomplete_head_ref]
   before_filter :authenticate_user!
   skip_before_filter :authenticate_user!, :only => [:index, :show] if APP_CONFIG['anonymous_access']
   load_resource :project
 
-  load_and_authorize_resource :issue, :through => :project, :find_by => :serial_id, :parent => false
-  before_filter :load_pull
+  load_and_authorize_resource :issue, :through => :project, :find_by => :serial_id, :parent => false, :except => SKIP
+  before_filter :load_pull, :except => SKIP
 
   def new
     @pull = PullRequest.default_base_project(@project).pull_requests.new
