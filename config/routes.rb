@@ -51,13 +51,16 @@ Rosa::Application.routes.draw do
         delete :remove_member
         post   :add_member
         post   :make_clone
-        post   :build_all
-        get    :mass_builds
         get    :advisories
       end
-      collection do
-        get    :failed_builds_list
+
+      resources :mass_builds, :only => [:create, :index] do
+        member do
+          get    :failed_builds_list
+          post   :cancel
+        end
       end
+
       get :autocomplete_user_uname, :on => :collection
       resources :repositories do
         member do

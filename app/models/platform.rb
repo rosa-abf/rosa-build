@@ -167,6 +167,7 @@ class Platform < ActiveRecord::Base
     auto_publish = opts[:auto_publish] || false
     user = opts[:user]
     mass_build_id = opts[:mass_build_id]
+    mass_build = MassBuild.find mass_build_id
 
     repositories.each do |rep|
       rep.projects.find_in_batches(:batch_size => 2) do |group|
@@ -174,6 +175,7 @@ class Platform < ActiveRecord::Base
         group.each do |p|
           arches.map(&:name).each do |arch|
             begin
+              return if mass_build.reload.stop_build
               p.build_for(self, user, arch, auto_publish, mass_build_id)
             rescue RuntimeError, Exception
               # p.async(:build_for, self, user, arch, auto_publish, mass_build_id) # TODO need this?
