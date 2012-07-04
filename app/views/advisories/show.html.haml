@@ -5,7 +5,7 @@
 
 .leftlist= "#{t("layout.advisories.project_names")}:".html_safe
 .rightlist
-  = raw @advisory.projects.map{ |p| link_to p.name, project_path(p) }.join(', ')
+  = raw @advisory.projects.map{ |p| link_to p.name_with_owner, project_path(p) }.join(', ')
 .both
 
 .leftlist= "#{t("activerecord.attributes.advisory.created_at")}:".html_safe
