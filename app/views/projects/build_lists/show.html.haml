@@ -85,11 +85,15 @@
           %input#advisory_search{:type => 'text'}
           %p.hint_text= t("layout.advisories.advisory_id_info", :advisory_format => advisory_id_for_hint)
         .both
-        .info.advisory_not_found
+        - %w(advisory_not_found server_error continue_input).each do |el|
+          .info{:class => el}
+            %p= t("layout.advisories.banners.#{el}")
+
+        -#.info.advisory_not_found
           %p= t("layout.advisories.banners.advisory_not_found")
-        .info.server_error
+        -#.info.server_error
           %p= t("layout.advisories.banners.server_error")
-        .info.continue_input
+        -#.info.continue_input
           %p= t("layout.advisories.banners.continue_input")
 
       #new_advisory_form
