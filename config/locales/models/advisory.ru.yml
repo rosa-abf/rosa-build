@@ -6,6 +6,7 @@ ru:
       form_header: Новый бюллетень
       project_name: Проект
       project_names: Проекты
+      build_lists: Сборочные листы
       affected_versions: Применен в версиях
       affected_in: Применен в
       ref_comment: Вставляйте ссылки по одной на строку
