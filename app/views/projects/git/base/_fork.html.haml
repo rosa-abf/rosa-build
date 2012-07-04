@@ -1,4 +1,4 @@
-- if can? :pull, @project
+- if can? :write, @project
   .r{:style => "display: block"}=link_to t("project_menu.pull_request"), '#', :class => 'button', :id => 'send_pull_request'
   =form_for PullRequest.new, :url => new_project_pull_requests_path, :html => { :method => :post, :class => :form } do |f|
     =hidden_field_tag :treeish, @treeish
