@@ -23,4 +23,15 @@ module BuildListsHelper
 
     ''
   end
+
+  def build_list_classified_update_types
+    advisoriable    = BuildList::RELEASE_UPDATE_TYPES.map do |el|
+      [el, {:class => 'advisoriable'}]
+    end
+    nonadvisoriable = (BuildList::UPDATE_TYPES - BuildList::RELEASE_UPDATE_TYPES).map do |el|
+      [el, {:class => 'nonadvisoriable'}]
+    end
+
+    return advisoriable + nonadvisoriable
+  end
 end

@@ -1,7 +1,9 @@
 Rosa.Views.BuildListAdvisoriesView = Backbone.View.extend({
     initialize: function() {
         _.bindAll(this, 'showAdvisory', 'showPreview', 'showForm',
-            'showSearch', 'hideAll', 'displayStatus', 'processSearch');
+            'showSearch', 'hideAll', 'displayStatus', 'processSearch',
+            'showInTypeSelect', 'typeSelectChange');
+
         this.$el              = $('#advisory_block'); 
         this._$type_select    = $('#build_list_update_type');
         this._$publish_button = $('input[type="submit"][name="publish"]');
@@ -18,14 +20,16 @@ Rosa.Views.BuildListAdvisoriesView = Backbone.View.extend({
 
         this._$selector       = this.$('#attach_advisory');
 
-        this._header_text = this._$preview.children('h3').html();
+        this._state_vars = {};
+        this._state_vars = _.extend({
+            checked_update_type: this._$type_select.val(),
+            header_text:         this._$preview.children('h3').html()
+        }, this.state_vars);
 
         this._$selector.on('change', this.showAdvisory);
         this._$search_field.on('input keyup', this.processSearch);
-        var self = this;
-        this._$type_select.on('change', function() { 
-            self._$search_field.trigger('input');
-        });
+
+        this._$type_select.on('change', this.typeSelectChange);
 
         this.model.on('search:start', function() {
             this._$publish_button.prop({disabled: true});
@@ -35,18 +39,50 @@ Rosa.Views.BuildListAdvisoriesView = Backbone.View.extend({
     },
 
     showAdvisory: function(ev) {
-        var adv_id = this._$selector.val();
         this._$publish_button.prop({disabled: false});
-        switch (adv_id) {
+        switch (this._$selector.val()) {
             case 'no': 
                 this.hideAll();
+                this.showInTypeSelect('all');
                 break
             case 'new':
                 this.showForm();
+                this.showInTypeSelect('advisoriable');
                 break
             default:
                 this.showSearch();
+                this.showInTypeSelect('advisoriable');
                 this._$publish_button.prop({disabled: true});
+        }
+    },
+
+    typeSelectChange: function(ev) {
+        switch (this._$selector.val()) {
+            case 'no':
+                this._state_vars.checked_update_type = this._$selector.val();
+                break
+            case 'new':
+                break
+            default:
+                this._$search_field.trigger('input');
+        }
+    },
+
+    showInTypeSelect: function(type) {
+        var children = this._$type_select.children('option');
+        if (type != 'all') {
+            var visible_ch = children.filter('.' + type);
+            var sel = children.filter(':selected');
+
+            children.prop('disabled', true);
+            visible_ch.prop('disabled', false);
+            if (sel.prop('disabled')) {
+                sel.prop('selected', false);
+                visible_ch.first().prop('selected', true);
+            }
+        } else {
+            children.prop('disabled', false).prop('selected', false);
+            children.filter('option[value="' + this._state_vars.checked_update_type + '"]').prop('selected', true);
         }
     },
 
@@ -95,7 +131,7 @@ Rosa.Views.BuildListAdvisoriesView = Backbone.View.extend({
         if (adv.get('found')) {
             this._$selector.children('option.advisory_id').val(adv.get('advisory_id'));
 
-            prev.children('h3').html(this._header_text + ' ' + adv.get('advisory_id'));
+            prev.children('h3').html(this._state_vars.header_text + ' ' + adv.get('advisory_id'));
             prev.children('.descr').html(adv.get('description'));
             prev.children('.refs').html(adv.get('references'));
             if (!this._$preview.is(':visible')) {

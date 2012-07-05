@@ -170,11 +170,16 @@ class Projects::BuildListsController < Projects::BaseController
     @build_list.update_type = params[:build_list][:update_type] if params[:build_list][:update_type].present?
 
     if params[:attach_advisory].present? and params[:attach_advisory] != 'no' and !@build_list.advisory
+
+      unless @build_list.update_type.in? BuildList::RELEASE_UPDATE_TYPES
+        redirect_to :back, :notice => t('lyout.build_lists.publish_fail') and return
+      end
+
       if params[:attach_advisory] == 'new'
         # create new advisory
         unless @build_list.build_advisory(params[:build_list][:advisory]) do |a|
               a.update_type = @build_list.update_type
-              a.project     = @build_list.project
+              a.projects   << @build_list.project
               a.platforms  << @build_list.save_to_platform unless a.platforms.include? @build_list.save_to_platform
             end.save
           redirect_to :back, :notice => t('layout.build_lists.publish_fail') and return
@@ -192,7 +197,9 @@ class Projects::BuildListsController < Projects::BaseController
           redirect_to :back, :notice => t('layout.build_lists.publish_fail') and return
         end
       end
+
     end
+
     if @build_list.save and @build_list.now_publish
       redirect_to :back, :notice => t('layout.build_lists.publish_success')
     else

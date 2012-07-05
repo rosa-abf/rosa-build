@@ -4,6 +4,7 @@ class Advisory < ActiveRecord::Base
   has_many :build_lists
 
   validates :description, :update_type, :presence => true
+  validates :update_type, :inclusion => BuildList::RELEASE_UPDATE_TYPES
 
   after_create :generate_advisory_id
   before_save  :normalize_references, :if => :references_changed?
