@@ -27,10 +27,6 @@ class AdvisoriesController < ApplicationController
         @packages_info[build_list.save_to_platform].merge!(h) do |pr, old, new|
           {:srpm => new[:srpm], :rpm => old[:rpm].concat(new[:rpm]).uniq}
         end
-
-#        h = { build_list.project => build_list.packages }
-#        # FIXME Maybe memory leak...
-#        @packages_info[build_list.save_to_platform].merge!(h) { |pr, old, new| (old + new).compact.uniq }
       end
     end
   end
