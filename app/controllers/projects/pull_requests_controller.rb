@@ -1,23 +1,26 @@
 # -*- encoding : utf-8 -*-
 class Projects::PullRequestsController < Projects::BaseController
-  SKIP = [:autocomplete_base_project_name, :autocomplete_head_project_name, :autocomplete_base_ref, :autocomplete_head_ref]
   before_filter :authenticate_user!
   skip_before_filter :authenticate_user!, :only => [:index, :show] if APP_CONFIG['anonymous_access']
   load_resource :project
 
-  load_and_authorize_resource :issue, :through => :project, :find_by => :serial_id, :parent => false, :except => SKIP
-  before_filter :load_pull, :except => SKIP
+  load_and_authorize_resource :issue, :through => :project, :find_by => :serial_id, :parent => false, :except => :autocomplete_base_project
+  before_filter :load_pull, :except => :autocomplete_base_project
 
   def new
-    @pull = PullRequest.default_base_project(@project).pull_requests.new
-    @pull.issue = @project.issues.new
-    if params[:pull_request] && params[:pull_request][:issue_attributes]
-      @pull.issue.title = params[:pull_request][:issue_attributes][:title].presence
-      @pull.issue.body = params[:pull_request][:issue_attributes][:body].presence
+    base_project = (Project.find(params[:base_project_id]) if params[:base_project_id]) || PullRequest.default_base_project(@project)
+    authorize! :read, base_project
+
+    @pull = base_project.pull_requests.new
+    @pull.issue = base_project.issues.new
+    if pull_params && pull_params[:issue_attributes]
+      @pull.issue.title = pull_params[:issue_attributes][:title].presence
+      @pull.issue.body = pull_params[:issue_attributes][:body].presence
     end
     @pull.head_project = @project
-    @pull.base_ref = (params[:pull_request][:base_ref].presence if params[:pull_request]) || @pull.base_project.default_branch
-    @pull.head_ref = params[:treeish].presence || (params[:pull_request][:head_ref].presence if params[:pull_request]) || @pull.head_project.default_branch
+    @pull.base_ref = (pull_params[:base_ref].presence if pull_params) || @pull.base_project.default_branch
+    @pull.head_ref = params[:treeish].presence || (pull_params[:head_ref].presence if pull_params) || @pull.head_project.default_branch
+
     @pull.check(false) # don't make event transaction
     if @pull.status == 'already'
       @pull.destroy
@@ -28,9 +31,15 @@ class Projects::PullRequestsController < Projects::BaseController
   end
 
   def create
-    @pull = @project.pull_requests.new(params[:pull_request])
-    @pull.issue.user, @pull.issue.project = current_user, @pull.base_project
-    @pull.base_project, @pull.head_project = PullRequest.default_base_project(@project), @project
+    unless pull_params
+      raise 'expect pull_request params' # for debug
+      redirect :back
+    end
+    base_project = Project.find(params[:base_project_id])
+    authorize! :read, base_project
+
+    @pull = base_project.pull_requests.new pull_params
+    @pull.issue.user, @pull.issue.project, @pull.head_project = current_user, base_project, @project
 
     if @pull.save
       @pull.check(false) # don't make event transaction
@@ -45,6 +54,7 @@ class Projects::PullRequestsController < Projects::BaseController
     else
       flash[:error] = t('flash.pull_request.save_error')
       flash[:warning] = @pull.errors.full_messages.join('. ')
+      @commits = @diff = @stats = nil
       render :new
     end
   end
@@ -67,39 +77,33 @@ class Projects::PullRequestsController < Projects::BaseController
     load_diff_commits_data
   end
 
-  def autocomplete_base_project_name
+  def autocomplete_base_project
+    #Maybe slow? ILIKE?
     items = Project.accessible_by(current_ability, :membered)
     items << PullRequest.default_base_project(@project)
+    logger.debug "items.count is #{items.count}"
+    items.select! {|e| Regexp.new(params[:term].downcase).match e.name.downcase}
     items.uniq!
-    render :json => json_for_autocomplete(items, 'full_name')
-  end
+    render :json => json_for_autocomplete_base(items)#, :full_name, [:branches])
 
-  def autocomplete_head_project_name
-    items = Project.accessible_by(current_ability, :membered)
-    render :json => json_for_autocomplete(items, 'full_name')
-  end
-
-  def autocomplete_base_ref
-    project = PullRequest.default_base_project(@project)
-    items = (project.branches + project.tags).select {|e| Regexp.new(params[:term].downcase).match e.name.downcase}
-    render :json => json_for_autocomplete_ref(items)
-  end
-
-  def autocomplete_head_ref
-    items = (@project.branches + @project.tags).select {|e| Regexp.new(params[:term].downcase).match e.name.downcase}
-    render :json => json_for_autocomplete_ref(items)
   end
 
   protected
 
-  def json_for_autocomplete_ref(items)
-    items.collect do |item|
-      {"id" => item.name, "label" => item.name, "value" => item.name}
+  def pull_params
+    @pull_params ||= params[:pull_request].presence
+  end
+
+  def json_for_autocomplete_base items
+    items.collect do |project|
+      hash = {"id" => project.id.to_s, "label" => project.full_name, "value" => project.full_name}
+      hash[:refs] = project.branches_and_tags.map &:name
+      hash
     end
   end
 
   def load_pull
-    @issue ||= @issues.first #FIXME!
+    @issue ||= @issues.first #FIXME! merge action create @issues?
     if params[:action].to_sym != :index
       @pull = @project.pull_requests.joins(:issue).where(:issues => {:id => @issue.id}).readonly(false).first
     else

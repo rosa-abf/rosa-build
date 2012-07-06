@@ -102,6 +102,10 @@ class Project < ActiveRecord::Base
     self.git_repository.branches
   end
 
+  def branches_and_tags
+    branches + tags
+  end
+
   def last_active_branch
     @last_active_branch ||= branches.inject do |r, c|
       r_last = r.commit.committed_date || r.commit.authored_date unless r.nil?
@@ -232,7 +236,7 @@ class Project < ActiveRecord::Base
   end
 
   def full_name
-    "#{owner.uname}/#{name}"
+    @full_name ||= "#{owner.uname}/#{name}"
   end
 
   protected

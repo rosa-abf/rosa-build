@@ -17,7 +17,7 @@ describe Projects::PullRequestsController do
 
     @another_user = FactoryGirl.create(:user)
     @create_params = {:pull_request => {:issue_attributes => {:title => 'create', :body => 'creating'}, :base_ref => 'non_conflicts', :head_ref => 'master'},
-                                     :owner_name => @project.owner.uname, :project_name => @project.name}
+                                   :base_project_id => @project.id, :owner_name => @project.owner.uname, :project_name => @project.name}
     @update_params = @create_params.merge(:pull_request => {:issue_attributes => {:title => 'update', :body => 'updating', :id => @pull.issue.id}}, :id => @pull.serial_id)
   end
 
@@ -59,12 +59,12 @@ describe Projects::PullRequestsController do
     end
 
     it "should not create same pull" do
-      post :create, @create_params.merge({:pull_request => {:issue_attributes => {:title => 'same', :body => 'creating'}, :head_ref => 'non_conflicts', :base_ref => 'master'}})
+      post :create, @create_params.merge({:pull_request => {:issue_attributes => {:title => 'same', :body => 'creating'}, :head_ref => 'non_conflicts', :base_ref => 'master'}, :base_project_id => @project.id})
       PullRequest.joins(:issue).where(:issues => {:title => 'same', :body => 'creating'}).count.should == 0
     end
 
     it "should not create already up-to-date pull" do
-      post :create, @create_params.merge({:pull_request => {:issue_attributes => {:title => 'already', :body => 'creating'}, :base_ref => 'master', :head_ref => 'master'}})
+      post :create, @create_params.merge({:pull_request => {:issue_attributes => {:title => 'already', :body => 'creating'}, :base_ref => 'master', :head_ref => 'master'}, :base_project_id => @project.id})
       PullRequest.joins(:issue).where(:issues => {:title => 'already', :body => 'creating'}).count.should == 0
     end
   end
