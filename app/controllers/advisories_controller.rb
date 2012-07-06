@@ -5,6 +5,8 @@ class AdvisoriesController < ApplicationController
   load_resource :find_by => :advisory_id
   authorize_resource
 
+  before_filter :fetch_packages_info
+
   def index
     @advisories = @advisories.scoped(:include => :platforms)
     @advisories = @advisories.search_by_id(params[:q]) if params[:q]
@@ -16,7 +18,21 @@ class AdvisoriesController < ApplicationController
   end
 
   def show
-    @packages_info = Hash.new { |h, k| h[k] = {} }
+  end
+
+  def search
+    @advisory = Advisory.by_update_type(params[:bl_type]).search_by_id(params[:query]).first
+    raise ActionController::RoutingError.new('Not Found') if @advisory.nil?
+    respond_to do |format|
+      format.json { render @advisory }
+    end
+  end
+
+  protected
+
+  # this method fetches and structurize packages attached to current advisory.
+  def fetch_packages_info
+    @packages_info = Hash.new { |h, k| h[k] = {} } # maaagic, it's maaagic ;)
     @advisory.build_lists.find_in_batches(:include => [:save_to_platform, :packages, :project]) do |batch|
       batch.each do |build_list|
         tmp = build_list.packages.inject({:srpm => nil, :rpm => []}) do |h, p|
@@ -28,14 +44,6 @@ class AdvisoriesController < ApplicationController
           {:srpm => new[:srpm], :rpm => old[:rpm].concat(new[:rpm]).uniq}
         end
       end
-    end
-  end
-
-  def search
-    @advisory = Advisory.by_update_type(params[:bl_type]).search_by_id(params[:query]).first
-    raise ActionController::RoutingError.new('Not Found') if @advisory.nil?
-    respond_to do |format|
-      format.json { render @advisory }
     end
   end
 
