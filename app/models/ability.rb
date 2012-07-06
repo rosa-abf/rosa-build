@@ -86,6 +86,9 @@ class Ability
         can([:destroy, :members, :add_member, :remove_member, :remove_members] , Platform) {|platform| owner?(platform) || local_admin?(platform) }
         can [:autocomplete_user_uname, :read_advisories, :advisories], Platform
 
+        can([:failed_builds_list, :create], MassBuild) {|mass_build| (owner?(mass_build.platform) || local_admin?(mass_build.platform)) && (mass_build.platform.platform_type == 'main') }
+        can(:cancel, MassBuild) {|mass_build| (owner?(mass_build.platform) || local_admin?(mass_build.platform)) && !mass_build.stop_build && (mass_build.platform.platform_type == 'main')}
+
         can [:read, :projects_list], Repository, :platform => {:visibility => 'open'}
         can [:read, :projects_list], Repository, :platform => {:owner_type => 'User', :owner_id => user.id}
         can [:read, :projects_list], Repository, :platform => {:owner_type => 'Group', :owner_id => user.group_ids}
@@ -128,8 +131,9 @@ class Ability
 
       cannot [:create, :update, :destroy, :clone], Product, :platform => {:platform_type => 'personal'}
       cannot [:clone], Platform, :platform_type => 'personal'
-      can([:failed_builds_list, :create], MassBuild) {|mass_build| (owner?(mass_build.platform) || local_admin?(mass_build.platform)) && (mass_build.platform.platform_type == 'main') }
-      can(:cancel, MassBuild) {|mass_build| (owner?(mass_build.platform) || local_admin?(mass_build.platform)) && !mass_build.stop_build && (mass_build.platform.platform_type == 'main')}
+
+      cannot([:failed_builds_list, :create], MassBuild) {|mass_build| mass_build.platform.platform_type == 'personal'}
+      cannot(:cancel, MassBuild) {|mass_build| mass_build.platform.platform_type == 'personal' || mass_build.stop_build}
 
       can :create, Subscribe do |subscribe|
         !subscribe.subscribeable.subscribes.exists?(:user_id => user.id)

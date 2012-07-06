@@ -6,6 +6,7 @@ class MassBuild < ActiveRecord::Base
   scope :by_platform, lambda { |platform| where(:platform_id => platform.id) }
 
   attr_accessor :repositories, :arches
+  attr_accessible :platform, :platform_id, :user, :user_id, :repositories, :arches, :auto_publish
 
   validates :platform_id, :arch_names, :name, :user_id, :repositories, :rep_names, :presence => true
   validates_inclusion_of :auto_publish, :in => [true, false]
