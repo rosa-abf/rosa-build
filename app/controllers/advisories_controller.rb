@@ -5,7 +5,7 @@ class AdvisoriesController < ApplicationController
   load_resource :find_by => :advisory_id
   authorize_resource
 
-  before_filter :fetch_packages_info
+  before_filter :fetch_packages_info, :only => [:show]
 
   def index
     @advisories = @advisories.scoped(:include => :platforms)
