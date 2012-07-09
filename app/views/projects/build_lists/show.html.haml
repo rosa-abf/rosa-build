@@ -61,7 +61,7 @@
 
   - if @build_list.mass_build_id.present?
     .leftlist= t("activerecord.attributes.mass_build_id")
-    .rightlist= link_to build_list.mass_build.name, platform_mass_builds_path(build_list.save_to_platform)
+    .rightlist= link_to @build_list.mass_build.name, platform_mass_builds_path(@build_list.save_to_platform)
     .both
 
 
