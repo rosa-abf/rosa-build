@@ -3,6 +3,6 @@
   %td= build_list.human_status
   %td= link_to build_list.project.name_with_owner, build_list.project
   %td= build_list_version_link(build_list)
-  %td= build_list.arch.name
   %td= link_to build_list.save_to_platform.name, build_list.save_to_platform
+  %td= build_list.arch.name
   %td= link_to build_list.user.try(:fullname), build_list.user

@@ -37,20 +37,19 @@
         %br
         = f.submit t("layout.search.header")
     .block
-      %h3.small= t("activerecord.attributes.build_list.mass_build")
-      .lineForm.aside= f.select :mass_build_id, options_from_collection_for_select( MassBuild.all, :id, :name, @filter.mass_build_id ), {:include_blank => true}
       %h3.small= t("activerecord.attributes.build_list.status")
       .lineForm.aside= f.select :status, BuildList::STATUSES.collect{|status| [BuildList.human_status(status), status]}, {:include_blank => true, :selected => @filter.status}, {:class => 'sel80 aside', :id => 'status', :tabindex => 2}
-      %h3.small= t("activerecord.attributes.build_list.is_circle")
-      .lineForm.aside= f.select :is_circle, [[t("layout.yes_"), 1], [t("layout.no_"), 0]], {:include_blank => true, :selected => @filter.is_circle.present? ? (@filter.is_circle ? "1" : "0") : nil}, {:class => 'sel80 aside', :id => 'recurrent', :tabindex => 2}
-      %h3.small= t("activerecord.attributes.build_list.arch")
-      .lineForm.aside= f.select :arch_id, Arch.recent.collect{|arch| [arch.name, arch.id]}, {:include_blank => true, :selected => @filter.arch_id}, {:class => 'sel80 aside', :id => 'architecture', :tabindex => 2}
       %h3.small= t("activerecord.models.platform")
       .lineForm.aside= f.select :platform_id, Platform.main.collect{|pl| [pl.name, pl.id]}, {:include_blank => true, :selected => @filter.platform_id}, {:class => 'sel80 aside', :id => 'platform', :tabindex => 2}
-      %h3.small= t("layout.build_lists.created_at_start")
-      .date_select= f.date_select(:created_at_start, :include_blank => true, :selected => @filter.created_at_start)
-      %h3.small= t("layout.build_lists.created_at_end")
-      .date_select= f.date_select(:created_at_end, :include_blank => true, :selected => @filter.created_at_end)
+      %h3.small= t("activerecord.attributes.build_list.mass_build")
+      .lineForm.aside= f.select :mass_build_id, options_from_collection_for_select( MassBuild.all, :id, :name, @filter.mass_build_id ), {:include_blank => true}
+      %h3.small= t("activerecord.attributes.build_list.arch")
+      .lineForm.aside= f.select :arch_id, Arch.recent.collect{|arch| [arch.name, arch.id]}, {:include_blank => true, :selected => @filter.arch_id}, {:class => 'sel80 aside', :id => 'architecture', :tabindex => 2}
+      -# TODO [BuildList#created_at filters] Uncomment here and in BuildList::Filter to return filters
+        %h3.small= t("layout.build_lists.created_at_start")
+        .date_select= f.date_select(:created_at_start, :include_blank => true, :selected => @filter.created_at_start)
+        %h3.small= t("layout.build_lists.created_at_end")
+        .date_select= f.date_select(:created_at_end, :include_blank => true, :selected => @filter.created_at_end)
       %h3.small= t("layout.build_lists.updated_at_start")
       .date_select= f.date_select(:updated_at_start, :include_blank => true, :selected => @filter.updated_at_start)
       %h3.small= t("layout.build_lists.updated_at_end")
