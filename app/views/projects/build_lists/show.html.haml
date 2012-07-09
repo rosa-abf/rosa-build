@@ -14,6 +14,10 @@
       - container_url = "http://#{request.host_with_port}/downloads#{@build_list.container_path}"
       = link_to container_url, container_url
   .both
+
+  .leftlist= t("activerecord.attributes.build_list.bs_id")
+  .rightlist= @build_list.bs_id.present? ? @build_list.bs_id : t("layout.build_lists.bs_id_not_set")
+  .both
   .leftlist= t("activerecord.attributes.build_list.user")
   .rightlist
     = link_to @build_list.user.try(:fullname), @build_list.user
