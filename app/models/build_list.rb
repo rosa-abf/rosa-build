@@ -16,9 +16,9 @@ class BuildList < ActiveRecord::Base
   validates :project_id, :project_version, :arch, :include_repos, :presence => true
   validates_numericality_of :priority, :greater_than_or_equal_to => 0
   validates :update_type, :inclusion => UPDATE_TYPES,
-            :unless => Proc.new { |b| b.save_to_platform.released }
+            :unless => Proc.new { |b| b.advisory.present? }
   validates :update_type, :inclusion => {:in => RELEASE_UPDATE_TYPES, :message => I18n.t('flash.build_list.frozen_platform')},
-            :if => Proc.new { |b| b.save_to_platform.released && b.mass_build_id.nil?}
+            :if => Proc.new { |b| b.advisory.present? }
   validate lambda {
     errors.add(:build_for_platform, I18n.t('flash.build_list.wrong_platform')) if save_to_platform.platform_type == 'main' && save_to_platform_id != build_for_platform_id
   }

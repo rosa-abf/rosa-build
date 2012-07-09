@@ -10,6 +10,14 @@ module Modules
 
       module ClassMethods
       end
+
+      module InstanceMethods
+
+        def name_with_owner
+          "#{owner.respond_to?(:uname) ? owner.uname : owner.name}/#{self.name}"
+        end
+
+      end
     end
   end
 end

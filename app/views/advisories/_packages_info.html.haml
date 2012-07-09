@@ -12,9 +12,9 @@
                 %li
                   %p= "SRPM:"
                   %ul
-                    %li= project.srpm_file_name
+                    %li= packages[:srpm]
                 %li
                   %p= "RPM:"
                   %ul
-                    - packages.each do |package|
-                      %li= package.fullname
+                    - packages[:rpm].each do |package|
+                      %li= package

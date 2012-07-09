@@ -2,10 +2,7 @@
   %td
     = link_to project do
       .table-sort-left= image_tag visibility_icon(project.visibility)
-      .table-sort-right 
-        = link_to project.owner.uname, project.owner.class == User ? user_path(project.owner) : group_path(project.owner) #{project.owner.uname} / #{project.name}
-        #{ ' / ' }
-        = link_to project.name, project_path(project)
+      .table-sort-right= link_to project.name_with_owner, project_path(project)
   %td.td2= project.description
   - alone_member = alone_member? project
   %td
