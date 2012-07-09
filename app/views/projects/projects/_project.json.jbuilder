@@ -1,7 +1,7 @@
 json.project do |proj|
   proj.visibility  project.visibility.to_s
 
-  proj.name        project.name
+  proj.name        project.name_with_owner
   proj.description project.description
   proj.link        project_path(project)
 

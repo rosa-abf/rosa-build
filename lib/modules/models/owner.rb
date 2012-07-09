@@ -14,7 +14,7 @@ module Modules
       module InstanceMethods
 
         def name_with_owner
-          "#{owner.uname}/#{self.name}"
+          "#{owner.respond_to?(:uname) ? owner.uname : owner.name}/#{self.name}"
         end
 
       end
