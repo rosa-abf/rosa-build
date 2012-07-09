@@ -34,4 +34,13 @@ module BuildListsHelper
 
     return advisoriable + nonadvisoriable
   end
+
+  def build_list_version_link(build_list, str_version = false)
+    if build_list.commit_hash.present?
+      link_to str_version ? "#{shortest_hash_id @build_list.commit_hash} ( #{@build_list.project_version} )" : shortest_hash_id(build_list.commit_hash),
+        commit_path(build_list.project.owner, build_list.project, build_list.commit_hash)
+    else
+      build_list.project_version
+    end
+  end
 end

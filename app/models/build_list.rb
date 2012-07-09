@@ -76,6 +76,7 @@ class BuildList < ActiveRecord::Base
   scope :for_platform, lambda { |platform| where(:build_for_platform_id => platform.id)  }
   scope :by_mass_build, lambda { |mass_build| where(:mass_build_id => mass_build)  }
   scope :scoped_to_arch, lambda {|arch| where(:arch_id => arch) }
+  scope :scoped_to_save_platform, lambda {|pl_id| where(:save_to_platform_id => pl_id) }
   scope :scoped_to_project_version, lambda {|project_version| where(:project_version => project_version) }
   scope :scoped_to_is_circle, lambda {|is_circle| where(:is_circle => is_circle) }
   scope :for_creation_date_period, lambda{|start_date, end_date|

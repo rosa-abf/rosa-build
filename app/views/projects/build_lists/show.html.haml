@@ -43,7 +43,7 @@
   .rightlist= t("layout.#{@build_list.auto_publish}_")
   .both
   .leftlist= t("activerecord.attributes.build_list.project_version")
-  .rightlist= @build_list.project_version
+  .rightlist= build_list_version_link(@build_list, true)
   .both
   .leftlist= t("activerecord.attributes.build_list.arch")
   .rightlist= @build_list.arch.name
@@ -54,6 +54,12 @@
   .leftlist= t("activerecord.attributes.build_list.is_circle")
   .rightlist= t("layout.#{@build_list.is_circle?}_")
   .both
+
+  - if @build_list.mass_build_id.present?
+    .leftlist= t("activerecord.attributes.mass_build_id")
+    .rightlist= link_to build_list.mass_build.name, platform_mass_builds_path(build_list.save_to_platform)
+    .both
+
 
   - if @build_list.advisory.present?
     .leftlist= t("layout.build_lists.attached_advisory")
@@ -70,6 +76,10 @@
     .rightlist
       = "#{@build_list.human_current_duration} / #{@build_list.project.human_average_build_time}"
     .both
+
+  - if @build_list.can_cancel? and can?(:cancel, @build_list)
+    = link_to t("layout.build_lists.cancel"), cancel_build_list_path(@build_list),
+              :method => :put, :confirm => t("layout.confirm"), :class => 'button'
 
   - if @build_list.can_publish? and @build_list.save_to_platform.released and @build_list.advisory.nil?
     #advisory_block
@@ -89,13 +99,6 @@
         - %w(advisory_not_found server_error continue_input).each do |el|
           .info{:class => el}
             %p= t("layout.advisories.banners.#{el}")
-
-        -#.info.advisory_not_found
-          %p= t("layout.advisories.banners.advisory_not_found")
-        -#.info.server_error
-          %p= t("layout.advisories.banners.server_error")
-        -#.info.continue_input
-          %p= t("layout.advisories.banners.continue_input")
 
       #new_advisory_form
         = f.fields_for @build_list.build_advisory do |f|
