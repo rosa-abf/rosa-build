@@ -21,9 +21,11 @@ class BuildList::Filter
       build_lists = build_lists.scoped_to_project_name(@options[:project_name]) if @options[:project_name]
       build_lists = build_lists.by_mass_build(@options[:mass_build_id]) if @options[:mass_build_id]
 
-      if @options[:created_at_start] || @options[:created_at_end]
-        build_lists = build_lists.for_creation_date_period(@options[:created_at_start], @options[:created_at_end])
-      end
+# TODO [BuildList#created_at filters] Uncomment here and in build_lists/_filter.html.haml to return filters
+#
+#      if @options[:created_at_start] || @options[:created_at_end]
+#        build_lists = build_lists.for_creation_date_period(@options[:created_at_start], @options[:created_at_end])
+#      end
       if @options[:updated_at_start] || @options[:updated_at_end]
         build_lists = build_lists.for_notified_date_period(@options[:updated_at_start], @options[:updated_at_end])
       end
