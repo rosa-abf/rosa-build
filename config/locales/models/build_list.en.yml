@@ -58,6 +58,7 @@ en:
       packages_header: Container data
       no_items_data: No data
       show: Show
+      cancel: Cancel build
       cancel_success: 'Build canceled'
       cancel_fail: 'Errors during build cancelation!'
       publish_success: 'Build is queued for publishing'

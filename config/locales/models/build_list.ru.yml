@@ -57,6 +57,7 @@ ru:
       packages_header: Данные о контейнере
       no_items_data: Данных нет
       show: Просмотр
+      cancel: Отменить сборку
       cancel_success: 'Сборка отменена.'
       cancel_fail: 'При отмене сборки произошла ошибка!'
       publish_success: 'Сборка поставлена в очередь на публикацию.'
