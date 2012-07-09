@@ -11,8 +11,8 @@ class Platforms::MassBuildsController < Platforms::BaseController
 
   def create
     mass_build = MassBuild.new(
-      :platform => @platform,
-      :user => current_user,
+      :platform_id => @platform.id,
+      :user_id => current_user.id,
       :repositories => params[:repositories],
       :arches => params[:arches],
       :auto_publish => params[:auto_publish] || false
