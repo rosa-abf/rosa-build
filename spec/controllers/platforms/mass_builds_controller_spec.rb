@@ -87,15 +87,7 @@ describe Platforms::MassBuildsController do
       :auto_publish => true
     }
 
-    #@mass_build = FactoryGirl.build(:mass_build, :platform => @platform, :user => @user, :name => "fuck")
-    @mass_build = MassBuild.new(
-      :platform => @platform,
-      :user => @user,
-      :repositories => [@repository.id],
-      :arches => [Arch.first.id],
-      :auto_publish => false
-    )
-    @mass_build.save
+    @mass_build = FactoryGirl.create(:mass_build, :platform => @platform, :user => @user)
   end
 
   context 'for guest' do
@@ -123,8 +115,6 @@ describe Platforms::MassBuildsController do
       set_session_for(@admin)
     end
 
-    # Can global create and view??
-    #it_should_behave_like 'mass_build platform owner'
     it_should_behave_like 'mass_build platform owner'
   end
 
@@ -133,7 +123,6 @@ describe Platforms::MassBuildsController do
       @user = FactoryGirl.create(:user)
       set_session_for(@user)
       @platform.update_attribute(:owner, @user)
-      #@platform.relations.create!(:actor_type => 'User', :actor_id => @user.id, :role => 'admin')
     end
 
     it_should_behave_like 'mass_build platform owner'
@@ -143,7 +132,6 @@ describe Platforms::MassBuildsController do
     before(:each) do
       @user = FactoryGirl.create(:user)
       set_session_for(@user)
-      #@platform.update_attribute(:owner, @user)
       @platform.relations.create!(:actor_type => 'User', :actor_id => @user.id, :role => 'admin')
     end
 

@@ -7,6 +7,7 @@ FactoryGirl.define do
     repositories { |mb| [ mb.platform.repositories.first.id ] }
     arches { [ Arch.first.id ] }
     auto_publish true
+    stop_build false
   end
 end
 
