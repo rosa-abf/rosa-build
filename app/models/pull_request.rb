@@ -31,8 +31,12 @@ class PullRequest < ActiveRecord::Base
       transition [:ready, :open, :blocked] => :ready
     end
 
+    event :already do
+      transition [:ready, :open, :blocked] => :already
+    end
+
     event :block do
-      transition [:blocked, :open, :ready] => :blocked
+      transition [:ready, :open, :blocked] => :blocked
     end
 
     event :merging do
@@ -40,7 +44,7 @@ class PullRequest < ActiveRecord::Base
     end
 
     event :close do
-      transition [:open, :ready, :blocked] => :closed
+      transition [:ready, :open, :blocked] => :closed
     end
 
     event :reopen do

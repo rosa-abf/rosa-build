@@ -14,6 +14,7 @@
   .tab-content.pull_diff_fix
     #discussion.tab-pane.active
       =form_for @pull, :url => (@pull.status != 'already' ? project_pull_requests_path : new_project_pull_requests_path), :html => {:class => 'well well-large'} do |f|
+        =hidden_field_tag :update_action, new_project_pull_requests_path
         .leftlist=f.label :base_project, t('.base_project'), :class => :label
         .rightlist
           =f.autocomplete_field :base_project, autocomplete_base_project_project_pull_requests_path, :value => @pull.base_project.full_name, :id_element => '#pull_request_base_project_id', :name => 'base_project'
@@ -32,7 +33,7 @@
           %input{:id => 'head_refs', :value => @pull.head_ref, :name => 'pull_request[head_ref]'}
         .both
         .leftlist
-        .rightlist=f.submit t('.update'), :class => 'btn btn-primary disabled', 'data-loading-text' => t('layout.processing')#, :id => 'create_pull'
+        .rightlist=f.submit t('.update'), :class => 'btn btn-primary disabled', 'data-loading-text' => t('layout.processing'), :style => @pull.already? ? '' : 'display: none;', :id => 'update_pull'
         .both
         =f.fields_for :issue do |issue|
           .leftlist=issue.label :title, t('activerecord.attributes.issue.title'), :class => :label
@@ -46,7 +47,8 @@
         .rightlist=@pull.status
         .both
         .leftlist
-        .rightlist=f.submit t(@pull.status != 'already' ? '.submit' : '.update'), :class => 'btn btn-primary disabled', 'data-loading-text' => t('layout.processing')#, :id => 'create_pull'
+        .rightlist
+          =f.submit t('.submit'), :class => 'btn btn-primary disabled', 'data-loading-text' => t('layout.processing'), :id => 'create_pull' unless @pull.already?
         .both
 
     =render 'diff_commits_tabs' if @pull.status != 'already' && @stats != nil
@@ -59,12 +61,6 @@
 
     $('input#head_refs').autocomplete({
       source: #{@project.branches_and_tags.map &:name}
-    });
-
-    $('#pull_request_base_project').on('autocompleteselect', function(event, data){
-      /* Do something here */
-      $('input#base_refs').autocomplete('option', 'source', data.item.refs);
-      alert('work?');
     });
   });
 

@@ -103,6 +103,7 @@ class Project < ActiveRecord::Base
   end
 
   def branches_and_tags
+    #@branches_and_tags ||= branches + tags # ???
     branches + tags
   end
 
