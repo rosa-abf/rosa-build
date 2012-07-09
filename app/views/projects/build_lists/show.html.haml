@@ -55,6 +55,12 @@
   .rightlist= t("layout.#{@build_list.is_circle?}_")
   .both
 
+  - if @build_list.mass_build_id.present?
+    .leftlist= t("activerecord.attributes.mass_build_id")
+    .rightlist= link_to build_list.mass_build.name, platform_mass_builds_path(build_list.save_to_platform)
+    .both
+
+
   - if @build_list.advisory.present?
     .leftlist= t("layout.build_lists.attached_advisory")
     .rightlist= link_to @build_list.advisory.advisory_id, advisory_path(@build_list.advisory)
