@@ -36,6 +36,7 @@ $(document).ready(function() {
     var tmp = $('#update_action').val();
     $('#new_pull_request').attr('action', $('#update_action').val());
     $('#update_pull').fadeIn('fast');
+    $('#create_pull').fadeOut('fast');
   });
 
 });
