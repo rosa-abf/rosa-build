@@ -54,7 +54,11 @@ class Projects::PullRequestsController < Projects::BaseController
     else
       flash[:error] = t('flash.pull_request.save_error')
       flash[:warning] = @pull.errors.full_messages.join('. ')
-      @commits = @diff = @stats = nil
+
+      #@commits = @diff = @stats = nil
+      # FIXME wrong project or refs generate exception
+      @pull.check(false) # don't make event transaction
+      load_diff_commits_data
       render :new
     end
   end
