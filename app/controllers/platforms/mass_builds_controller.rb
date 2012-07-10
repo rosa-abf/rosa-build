@@ -10,13 +10,10 @@ class Platforms::MassBuildsController < Platforms::BaseController
   skip_authorize_resource :platform, :only => [:create, :index]
 
   def create
-    mass_build = MassBuild.new(
-      :platform => @platform,
-      :user => current_user,
-      :repositories => params[:repositories],
+    mass_build = @platform.mass_builds.new(:repositories => params[:repositories],
       :arches => params[:arches],
-      :auto_publish => params[:auto_publish] || false
-    )
+      :auto_publish => params[:auto_publish] || false)
+    mass_build.user = current_user
     authorize! :create, mass_build
 
     if mass_build.save
