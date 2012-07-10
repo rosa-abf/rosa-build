@@ -82,7 +82,7 @@ class Projects::PullRequestsController < Projects::BaseController
     items = Project.accessible_by(current_ability, :membered)
     items << PullRequest.default_base_project(@project)
     logger.debug "items.count is #{items.count}"
-    items.select! {|e| Regexp.new(params[:term].downcase).match e.name.downcase}
+    items.select! {|e| Regexp.new(params[:term].downcase).match(e.name.downcase) && e.branches.count > 0}
     items.uniq!
     render :json => json_for_autocomplete_base(items)#, :full_name, [:branches])
 
