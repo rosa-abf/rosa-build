@@ -69,12 +69,11 @@ class Projects::PullRequestsController < Projects::BaseController
 
   def merge
     @pull.check
-    load_diff_commits_data
     unless @pull.merge!(current_user)
       flash[:error] = t('flash.pull_request.save_error')
       flash[:warning] = @pull.errors.full_messages.join('. ')
     end
-    render :show
+    redirect_to project_pull_request_path(@pull.base_project, @pull)
   end
 
   def show

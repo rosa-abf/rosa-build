@@ -119,6 +119,8 @@ class Ability
         cannot :manage, Issue, :project => {:has_issues => false} # switch off issues
         can(:autocomplete_base_project, Issue, read_relations_for('issues', 'projects')) {|issue| can? :read, issue.project rescue nil}
 
+        can(:merge, PullRequest) {|pull| local_writer?(pull.base_project)}
+
         can(:create, Comment) {|comment| can? :read, comment.project}
         can(:update, Comment) {|comment| comment.user_id == user.id or local_admin?(comment.project || comment.commentable.project)}
         cannot :manage, Comment, :commentable_type => 'Issue', :commentable => {:project => {:has_issues => false}} # switch off issues
@@ -146,7 +148,7 @@ class Ability
         subscribe.subscribeable.subscribes.exists?(:user_id => user.id) && user.id == subscribe.user_id
       end
 
-      can :merge, PullRequest, :status => 'ready'
+      cannot(:merge, PullRequest) {|pull| !pull.ready?}
     end
   end
 

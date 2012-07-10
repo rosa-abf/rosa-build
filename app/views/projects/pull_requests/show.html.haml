@@ -48,13 +48,13 @@
       = render "projects/comments/list", :list => @issue.comments, :project => @project, :commentable => @issue
       %br
       = render "projects/comments/add", :project => @project, :commentable => @issue if current_user
-      -if can? :update, @issue
-        - if can? :merge, @pull
-          %br
-          =form_for PullRequest.new, :url => merge_project_pull_request_path(@project, @pull), :html => { :method => :put, :class => :form } do |f|
-            =f.submit t 'projects.pull_requests.ready'
-        -else
-          .flash
-            .alert=pull_status @pull
+      - if can? :merge, @pull
+        %br
+        =form_for PullRequest.new, :url => merge_project_pull_request_path(@project, @pull), :html => { :method => :put, :class => :form } do |f|
+          =f.submit t 'projects.pull_requests.ready'
+      -else
+        .flash
+          %div{:class => @pull.ready? ? 'notice' : 'alert'}
+            =pull_status @pull
 
     =render 'diff_commits_tabs' if @pull.status != 'already'

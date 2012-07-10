@@ -3,7 +3,7 @@ class PullRequest < ActiveRecord::Base
   belongs_to :issue, :autosave => true, :dependent => :destroy, :touch => true, :validate => true
   belongs_to :base_project, :class_name => 'Project', :foreign_key => 'base_project_id'
   belongs_to :head_project, :class_name => 'Project', :foreign_key => 'head_project_id'
-  delegate :user, :title, :body, :serial_id, :assignee, :status, :to_param,
+  delegate :user, :user_id, :title, :body, :serial_id, :assignee, :status, :to_param,
     :created_at, :updated_at, :comments, :to => :issue, :allow_nil => true
 
   validate :uniq_merge
