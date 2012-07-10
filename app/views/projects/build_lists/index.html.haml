@@ -4,14 +4,12 @@
   %thead
     %tr
       %th.lpadding16= t("activerecord.attributes.build_list.bs_id")
-      %th.lpadding16= t('activerecord.attributes.build_list.mass_build_id')
       %th.lpadding16= t("activerecord.attributes.build_list.status")
       %th.lpadding16= t("activerecord.attributes.build_list.project")
       %th.lpadding16= t("activerecord.attributes.build_list.project_version")
+      %th.lpadding16= t("activerecord.attributes.build_list.save_to_platform")
       %th.lpadding16= t("activerecord.attributes.build_list.arch")
       %th.lpadding16= t("activerecord.attributes.build_list.user")
-      %th= t("layout.build_lists.action")
-      %th.lpadding16= t("activerecord.attributes.build_list.updated_at")
   %tbody= render :partial => 'projects/build_lists/build_list', :collection => @build_lists
 .both
 

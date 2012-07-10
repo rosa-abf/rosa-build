@@ -11,5 +11,8 @@
 //= require bootstrap-button
 //= require bootstrap-dropdown
 //= require bootstrap-tab
+// require bootstrap-tooltip
+// require bootstrap-popover
+//= require chosen.jquery
 // require html5shiv
 // require_tree .

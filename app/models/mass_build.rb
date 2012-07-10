@@ -6,11 +6,13 @@ class MassBuild < ActiveRecord::Base
   scope :by_platform, lambda { |platform| where(:platform_id => platform.id) }
 
   attr_accessor :repositories, :arches
+  attr_accessible :repositories, :arches, :auto_publish
 
-  validates :platform_id, :arch_names, :name, :user_id, :repositories, :presence => true
+  validates :platform_id, :arch_names, :name, :user_id, :repositories, :rep_names, :presence => true
   validates_inclusion_of :auto_publish, :in => [true, false]
 
   after_create :build_all
+  before_validation :set_data
 
   COUNT_STATUSES = [
     :build_lists,
@@ -20,16 +22,6 @@ class MassBuild < ActiveRecord::Base
     :build_publish,
     :build_error
   ]
-
-  def initialize(args = nil)
-    super
-
-    if new_record?
-      rep_names = Repository.where(:id => self.repositories).map(&:name).join(", ")
-      self.name = "#{Time.now.utc.to_date.strftime("%d.%b")}-#{platform.name}(#{rep_names})"
-      self.arch_names = Arch.where(:id => self.arches).map(&:name).join(", ")
-    end
-  end
 
   # ATTENTION: repositories and arches must be set before calling this method!
   def build_all
@@ -50,4 +42,23 @@ class MassBuild < ActiveRecord::Base
     end
     report
   end
+
+  def cancel_all
+    self.update_attribute(:stop_build, true)
+    self.build_lists.find_each(:batch_size => 100) do |bl|
+      bl.cancel
+    end
+  end
+  later :cancel_all, :queue => :clone_build
+
+  private
+
+  def set_data
+    if new_record?
+      self.rep_names = Repository.where(:id => self.repositories).map(&:name).join(", ")
+      self.name = "#{Time.now.utc.to_date.strftime("%d.%b")}-#{platform.name}"
+      self.arch_names = Arch.where(:id => self.arches).map(&:name).join(", ")
+    end
+  end
+
 end

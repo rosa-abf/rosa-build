@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120628165702) do
+ActiveRecord::Schema.define(:version => 20120703101719) do
 
   create_table "activity_feeds", :force => true do |t|
     t.integer  "user_id",    :null => false
@@ -23,7 +23,6 @@ ActiveRecord::Schema.define(:version => 20120628165702) do
 
   create_table "advisories", :force => true do |t|
     t.string   "advisory_id"
-    t.integer  "project_id"
     t.text     "description", :default => ""
     t.text     "references",  :default => ""
     t.text     "update_type", :default => ""
@@ -32,7 +31,6 @@ ActiveRecord::Schema.define(:version => 20120628165702) do
   end
 
   add_index "advisories", ["advisory_id"], :name => "index_advisories_on_advisory_id", :unique => true
-  add_index "advisories", ["project_id"], :name => "index_advisories_on_project_id"
   add_index "advisories", ["update_type"], :name => "index_advisories_on_update_type"
 
   create_table "advisories_platforms", :id => false, :force => true do |t|
@@ -43,6 +41,15 @@ ActiveRecord::Schema.define(:version => 20120628165702) do
   add_index "advisories_platforms", ["advisory_id"], :name => "index_advisories_platforms_on_advisory_id"
   add_index "advisories_platforms", ["advisory_id", "platform_id"], :name => "advisory_platform_index", :unique => true
   add_index "advisories_platforms", ["platform_id"], :name => "index_advisories_platforms_on_platform_id"
+
+  create_table "advisories_projects", :id => false, :force => true do |t|
+    t.integer "advisory_id"
+    t.integer "project_id"
+  end
+
+  add_index "advisories_projects", ["advisory_id"], :name => "index_advisories_projects_on_advisory_id"
+  add_index "advisories_projects", ["advisory_id", "project_id"], :name => "advisory_project_index", :unique => true
+  add_index "advisories_projects", ["project_id"], :name => "index_advisories_projects_on_project_id"
 
   create_table "arches", :force => true do |t|
     t.string   "name",       :null => false
@@ -204,12 +211,14 @@ ActiveRecord::Schema.define(:version => 20120628165702) do
     t.string   "arch_names"
     t.integer  "user_id"
     t.boolean  "auto_publish",          :default => false, :null => false
-    t.integer  "build_lists_count",     :default => 0
-    t.integer  "build_published_count", :default => 0
-    t.integer  "build_pending_count",   :default => 0
-    t.integer  "build_started_count",   :default => 0
-    t.integer  "build_publish_count",   :default => 0
-    t.integer  "build_error_count",     :default => 0
+    t.integer  "build_lists_count",     :default => 0,     :null => false
+    t.integer  "build_published_count", :default => 0,     :null => false
+    t.integer  "build_pending_count",   :default => 0,     :null => false
+    t.integer  "build_started_count",   :default => 0,     :null => false
+    t.integer  "build_publish_count",   :default => 0,     :null => false
+    t.integer  "build_error_count",     :default => 0,     :null => false
+    t.string   "rep_names"
+    t.boolean  "stop_build",            :default => false, :null => false
   end
 
   create_table "platforms", :force => true do |t|

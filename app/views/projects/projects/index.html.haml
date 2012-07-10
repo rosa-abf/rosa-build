@@ -45,11 +45,10 @@
 
         var image   = '<img alt="' + project.visibility + '" src="' + icons.visibilities[project.visibility] + '" />';
 
-        var owner   = '<a href="' +  project.owner.link + '">' + project.owner.name + '</a>';
         var project = '<a href="' +  project.link + '">' + project.name + '</a>';
 
         return '<div class="table-sort-left">' + image + "</div>\n" +
-               '<div class="table-sort-right">' + owner + ' / ' + project + '<div>';
+               '<div class="table-sort-right">' + project + '<div>';
       }
 
       var thirdColumn = function(row) {

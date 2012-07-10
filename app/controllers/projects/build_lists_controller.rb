@@ -25,7 +25,8 @@ class Projects::BuildListsController < Projects::BaseController
   def index
     @action_url = @project ? search_project_build_lists_path(@project) : search_build_lists_path
     @filter = BuildList::Filter.new(@project, current_user, params[:filter] || {})
-    @build_lists = @filter.find.recent.paginate :page => params[:page]
+    @build_lists = @filter.find.scoped(:include => [:save_to_platform, :project, :user, :arch])
+    @build_lists = @build_lists.recent.paginate :page => params[:page]
 
     @build_server_status = begin
       BuildServer.get_status
@@ -70,7 +71,6 @@ class Projects::BuildListsController < Projects::BaseController
 
   def show
     @item_groups = @build_list.items.group_by_level
-    @advisories = @build_list.project.advisories
   end
 
   def update
@@ -171,11 +171,16 @@ class Projects::BuildListsController < Projects::BaseController
     @build_list.update_type = params[:build_list][:update_type] if params[:build_list][:update_type].present?
 
     if params[:attach_advisory].present? and params[:attach_advisory] != 'no' and !@build_list.advisory
+
+      unless @build_list.update_type.in? BuildList::RELEASE_UPDATE_TYPES
+        redirect_to :back, :notice => t('lyout.build_lists.publish_fail') and return
+      end
+
       if params[:attach_advisory] == 'new'
         # create new advisory
-        if !@build_list.build_advisory(params[:build_list][:advisory]) do |a|
+        unless @build_list.build_advisory(params[:build_list][:advisory]) do |a|
               a.update_type = @build_list.update_type
-              a.project     = @build_list.project
+              a.projects   << @build_list.project
               a.platforms  << @build_list.save_to_platform unless a.platforms.include? @build_list.save_to_platform
             end.save
           redirect_to :back, :notice => t('layout.build_lists.publish_fail') and return
@@ -187,12 +192,15 @@ class Projects::BuildListsController < Projects::BaseController
           redirect_to :back, :notice => t('layout.build_lists.publish_fail') and return
         end
         a.platforms  << @build_list.save_to_platform unless a.platforms.include? @build_list.save_to_platform
+        a.projects   << @build_list.project unless a.projects.include? @build_list.project
         @build_list.advisory = a
         unless a.save
           redirect_to :back, :notice => t('layout.build_lists.publish_fail') and return
         end
       end
+
     end
+
     if @build_list.save and @build_list.now_publish
       redirect_to :back, :notice => t('layout.build_lists.publish_success')
     else

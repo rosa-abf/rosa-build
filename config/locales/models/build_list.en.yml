@@ -18,8 +18,8 @@ en:
         additional_repos: Additional repositories
         include_repos: Included repositories
         created_at: Created on
-        save_to_platform: Repository for package storage
-        build_for_platform: Platform
+        save_to_platform: Platform
+        build_for_platform: Build for platform
         update_type: Update type
         build_requires: Build with all the required packages
         auto_publish: Automated publising
@@ -58,6 +58,7 @@ en:
       packages_header: Container data
       no_items_data: No data
       show: Show
+      cancel: Cancel build
       cancel_success: 'Build canceled'
       cancel_fail: 'Errors during build cancelation!'
       publish_success: 'Build is queued for publishing'

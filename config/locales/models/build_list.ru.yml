@@ -18,8 +18,8 @@ ru:
         additional_repos: Дополнительные репозитории
         include_repos: Подключаемые репозитории
         created_at: Создан
-        save_to_platform: Репозиторий для сохранения пакетов
-        build_for_platform: Платформа
+        save_to_platform: Платформа
+        build_for_platform: Собрано для платформы
         update_type: Критичность обновления
         build_requires: Пересборка с зависимостями
         auto_publish: Автоматическая публикация
@@ -57,6 +57,7 @@ ru:
       packages_header: Данные о контейнере
       no_items_data: Данных нет
       show: Просмотр
+      cancel: Отменить сборку
       cancel_success: 'Сборка отменена.'
       cancel_fail: 'При отмене сборки произошла ошибка!'
       publish_success: 'Сборка поставлена в очередь на публикацию.'

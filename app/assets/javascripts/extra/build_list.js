@@ -9,10 +9,10 @@ $(document).ready(function() {
         if ($(this).val() == platform_id) {
           if ($(this).attr('data-released') === '1') {
             $('#build_list_auto_publish').removeAttr('checked').attr('disabled', 'disabled');
-            disableUpdateTypes();
+            //disableUpdateTypes();
           } else {
             $('#build_list_auto_publish').removeAttr('disabled').attr('checked', 'checked');
-            enableUpdateTypes();
+            //enableUpdateTypes();
           }
 
           $(this).attr('checked', 'checked').removeAttr('disabled').trigger('change');

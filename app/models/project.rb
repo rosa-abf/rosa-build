@@ -19,8 +19,8 @@ class Project < ActiveRecord::Base
   has_many :collaborators, :through => :relations, :source => :actor, :source_type => 'User'
   has_many :groups,        :through => :relations, :source => :actor, :source_type => 'Group'
 
-  has_many :advisories # should be without :dependent => :destroy
   has_many :packages, :class_name => "BuildList::Package", :dependent => :destroy
+  has_and_belongs_to_many :advisories # should be without :dependent => :destroy
 
   validates :name, :uniqueness => {:scope => [:owner_id, :owner_type], :case_sensitive => false}, :presence => true, :format => {:with => /^#{NAME_REGEXP}$/, :message => I18n.t("activerecord.errors.project.uname")}
   validates :owner, :presence => true

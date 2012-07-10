@@ -16,9 +16,9 @@ class BuildList < ActiveRecord::Base
   validates :project_id, :project_version, :arch, :include_repos, :presence => true
   validates_numericality_of :priority, :greater_than_or_equal_to => 0
   validates :update_type, :inclusion => UPDATE_TYPES,
-            :unless => Proc.new { |b| b.save_to_platform.released }
+            :unless => Proc.new { |b| b.advisory.present? }
   validates :update_type, :inclusion => {:in => RELEASE_UPDATE_TYPES, :message => I18n.t('flash.build_list.frozen_platform')},
-            :if => Proc.new { |b| b.save_to_platform.released && b.mass_build_id.nil?}
+            :if => Proc.new { |b| b.advisory.present? }
   validate lambda {
     errors.add(:build_for_platform, I18n.t('flash.build_list.wrong_platform')) if save_to_platform.platform_type == 'main' && save_to_platform_id != build_for_platform_id
   }
@@ -76,6 +76,7 @@ class BuildList < ActiveRecord::Base
   scope :for_platform, lambda { |platform| where(:build_for_platform_id => platform.id)  }
   scope :by_mass_build, lambda { |mass_build| where(:mass_build_id => mass_build)  }
   scope :scoped_to_arch, lambda {|arch| where(:arch_id => arch) }
+  scope :scoped_to_save_platform, lambda {|pl_id| where(:save_to_platform_id => pl_id) }
   scope :scoped_to_project_version, lambda {|project_version| where(:project_version => project_version) }
   scope :scoped_to_is_circle, lambda {|is_circle| where(:is_circle => is_circle) }
   scope :for_creation_date_period, lambda{|start_date, end_date|
@@ -217,6 +218,10 @@ class BuildList < ActiveRecord::Base
 
   def human_status
     self.class.human_status(status)
+  end
+
+  def self.status_by_human(human)
+    BuildList::HUMAN_STATUSES.key human
   end
 
   def set_items(items_hash)

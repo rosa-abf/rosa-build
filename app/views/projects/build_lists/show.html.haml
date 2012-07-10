@@ -14,6 +14,10 @@
       - container_url = "http://#{request.host_with_port}/downloads#{@build_list.container_path}"
       = link_to container_url, container_url
   .both
+
+  .leftlist= t("activerecord.attributes.build_list.bs_id")
+  .rightlist= @build_list.bs_id.present? ? @build_list.bs_id : t("layout.build_lists.bs_id_not_set")
+  .both
   .leftlist= t("activerecord.attributes.build_list.user")
   .rightlist
     = link_to @build_list.user.try(:fullname), @build_list.user
@@ -32,7 +36,7 @@
   .leftlist= t("activerecord.attributes.build_list.update_type")
   .rightlist
     - if @build_list.can_publish? and can?(:publish, @build_list)
-      = f.select :update_type, options_for_select(BuildList::RELEASE_UPDATE_TYPES, @build_list.update_type)
+      = f.select :update_type, options_for_select(build_list_classified_update_types, @build_list.update_type)
     - else
       = @build_list.update_type
   .both
@@ -43,7 +47,7 @@
   .rightlist= t("layout.#{@build_list.auto_publish}_")
   .both
   .leftlist= t("activerecord.attributes.build_list.project_version")
-  .rightlist= @build_list.project_version
+  .rightlist= build_list_version_link(@build_list, true)
   .both
   .leftlist= t("activerecord.attributes.build_list.arch")
   .rightlist= @build_list.arch.name
@@ -54,6 +58,12 @@
   .leftlist= t("activerecord.attributes.build_list.is_circle")
   .rightlist= t("layout.#{@build_list.is_circle?}_")
   .both
+
+  - if @build_list.mass_build_id.present?
+    .leftlist= t("activerecord.attributes.mass_build_id")
+    .rightlist= link_to @build_list.mass_build.name, platform_mass_builds_path(@build_list.save_to_platform)
+    .both
+
 
   - if @build_list.advisory.present?
     .leftlist= t("layout.build_lists.attached_advisory")
@@ -71,11 +81,28 @@
       = "#{@build_list.human_current_duration} / #{@build_list.project.human_average_build_time}"
     .both
 
+  - if @build_list.can_cancel? and can?(:cancel, @build_list)
+    = link_to t("layout.build_lists.cancel"), cancel_build_list_path(@build_list),
+              :method => :put, :confirm => t("layout.confirm"), :class => 'button'
+
   - if @build_list.can_publish? and @build_list.save_to_platform.released and @build_list.advisory.nil?
     #advisory_block
       .leftlist= label_tag :attach_advisory, t("layout.build_lists.attached_advisory")
-      .rightlist= select_tag :attach_advisory, advisories_select_options(@advisories)
+      .rightlist
+        = select_tag :attach_advisory, advisories_select_options(@advisories)
+        %p.hint_text= t("layout.advisories.publication_info", :update_types => BuildList::RELEASE_UPDATE_TYPES.join(', '))
       .both
+
+      #advisory_search_block
+        %h3= t("layout.advisories.search_by_id")
+        .leftlist= label_tag :advisory_search, t("layout.advisories.search_hint")
+        .rightlist
+          %input#advisory_search{:type => 'text'}
+          %p.hint_text= t("layout.advisories.advisory_id_info", :advisory_format => advisory_id_for_hint)
+        .both
+        - %w(advisory_not_found server_error continue_input).each do |el|
+          .info{:class => el}
+            %p= t("layout.advisories.banners.#{el}")
 
       #new_advisory_form
         = f.fields_for @build_list.build_advisory do |f|
@@ -91,11 +118,8 @@
         .leftlist= t("activerecord.attributes.advisory.references")
         .rightlist.refs &nbsp;
         .both
-
     :javascript
       $(function() {
-        Rosa.bootstrapedData.advisories = #{ render 'advisories/advisories.json.jbuilder',
-                                                    :advisories => @advisories };
         var r = new Rosa.Routers.BuildListsAdvisoriesRouter();
       });
 
@@ -107,7 +131,6 @@
 - if @item_groups.blank?
   %h4.nomargin= t("layout.build_lists.no_items_data")
 - @item_groups.each_with_index do |group, level|
-  -#%h4.nomargin= "#{group} ##{level}"
   - group.each do |item|
     %h4.nomargin= "#{item.name} ##{level}"
     %table.tablesorter.width565{:cellpadding => "0", :cellspacing => "0"}

@@ -85,22 +85,25 @@ class Ability
         can [:read, :related, :members], Platform, :owner_type => 'Group', :owner_id => user.group_ids
         can([:read, :related, :members], Platform, read_relations_for('platforms')) {|platform| local_reader? platform}
         can([:update, :members], Platform) {|platform| local_admin? platform}
-        can([:destroy, :members, :add_member, :remove_member, :remove_members, :build_all, :mass_builds] , Platform) {|platform| owner? platform}
+        can([:destroy, :members, :add_member, :remove_member, :remove_members] , Platform) {|platform| owner?(platform) || local_admin?(platform) }
         can [:autocomplete_user_uname, :read_advisories, :advisories], Platform
+
+        can([:failed_builds_list, :create], MassBuild) {|mass_build| (owner?(mass_build.platform) || local_admin?(mass_build.platform)) && mass_build.platform.main? }
+        can(:cancel, MassBuild) {|mass_build| (owner?(mass_build.platform) || local_admin?(mass_build.platform)) && !mass_build.stop_build && mass_build.platform.main?}
 
         can [:read, :projects_list], Repository, :platform => {:visibility => 'open'}
         can [:read, :projects_list], Repository, :platform => {:owner_type => 'User', :owner_id => user.id}
         can [:read, :projects_list], Repository, :platform => {:owner_type => 'Group', :owner_id => user.group_ids}
         can([:read, :projects_list], Repository, read_relations_for('repositories', 'platforms')) {|repository| local_reader? repository.platform}
         can([:create, :update, :projects_list, :add_project, :remove_project], Repository) {|repository| local_admin? repository.platform}
-        can(:clear, Platform) {|platform| local_admin?(platform) && platform.platform_type == 'personal'}
+        can(:clear, Platform) {|platform| local_admin?(platform) && platform.personal?}
         can([:change_visibility, :settings, :destroy], Repository) {|repository| owner? repository.platform}
 
         can :read, Product, :platform => {:visibility => 'open'}
         can :read, Product, :platform => {:owner_type => 'User', :owner_id => user.id, :platform_type => 'main'}
         can :read, Product, :platform => {:owner_type => 'Group', :owner_id => user.group_ids, :platform_type => 'main'}
-        can(:read, Product, read_relations_for('products', 'platforms')) {|product| product.platform.platform_type == 'main'}
-        can([:create, :update, :destroy, :clone], Product) {|product| local_admin? product.platform and product.platform.platform_type == 'main'}
+        can(:read, Product, read_relations_for('products', 'platforms')) {|product| product.platform.main?}
+        can([:create, :update, :destroy, :clone], Product) {|product| local_admin? product.platform and product.platform.main?}
 
         can(:create, ProductBuildList) {|pbl| can?(:update, pbl.product)}
         can(:destroy, ProductBuildList) {|pbl| can?(:destroy, pbl.product)}
@@ -131,7 +134,10 @@ class Ability
       cannot [:members, :add_member, :remove_member, :remove_members], Platform, :platform_type => 'personal'
 
       cannot [:create, :update, :destroy, :clone], Product, :platform => {:platform_type => 'personal'}
-      cannot [:clone, :build_all, :mass_builds], Platform, :platform_type => 'personal'
+      cannot [:clone], Platform, :platform_type => 'personal'
+
+      cannot([:failed_builds_list, :create], MassBuild) {|mass_build| mass_build.platform.personal?}
+      cannot(:cancel, MassBuild) {|mass_build| mass_build.platform.personal? || mass_build.stop_build}
 
       can :create, Subscribe do |subscribe|
         !subscribe.subscribeable.subscribes.exists?(:user_id => user.id)

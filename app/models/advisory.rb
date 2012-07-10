@@ -1,17 +1,21 @@
 class Advisory < ActiveRecord::Base
   has_and_belongs_to_many :platforms
+  has_and_belongs_to_many :projects
   has_many :build_lists
-  belongs_to :project
 
   validates :description, :update_type, :presence => true
+  validates :update_type, :inclusion => BuildList::RELEASE_UPDATE_TYPES
 
   after_create :generate_advisory_id
   before_save  :normalize_references, :if => :references_changed?
 
-  ID_TEMPLATE = 'ROSA-%<type>s-%<year>d:%<id>04d'
+  ID_TEMPLATE        = 'ROSA-%<type>s-%<year>d:%<id>04d'
+  ID_STRING_TEMPLATE = 'ROSA-%<type>s-%<year>04s:%<id>04s'
   TYPES = {'security' => 'SA', 'bugfix' => 'A'}
 
-  scope :by_project, lambda {|p| where('project_id' => p.try(:id) || p)}
+  scope :search_by_id, lambda { |aid| where('advisory_id ILIKE ?', "%#{aid.to_s.strip}%") }
+  scope :by_update_type, lambda { |ut| where(:update_type => ut) }
+  default_scope order('created_at DESC')
 
   def to_param
     advisory_id

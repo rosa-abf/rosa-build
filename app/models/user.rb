@@ -73,7 +73,7 @@ class User < ActiveRecord::Base
   end
 
   def fullname
-    return "#{uname} (#{name})"
+    return name.present? && name.length > 0 ? "#{uname} (#{name})" : uname
   end
 
   def user_appeal
