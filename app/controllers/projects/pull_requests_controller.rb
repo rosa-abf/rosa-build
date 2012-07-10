@@ -49,7 +49,7 @@ class Projects::PullRequestsController < Projects::BaseController
         render :new
       else
         @pull.save
-        redirect_to project_pull_request_path(@project, @pull)
+        redirect_to project_pull_request_path(@pull.base_project, @pull)
       end
     else
       flash[:error] = t('flash.pull_request.save_error')
