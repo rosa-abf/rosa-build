@@ -42,11 +42,11 @@ class Project < ActiveRecord::Base
   after_create :attach_to_personal_repository
   after_create :create_git_repo
   after_save :create_wiki
-  after_commit {|p| p.fork_git_repo unless p.is_root?} # later with resque
+  after_commit {|p| p.fork_git_repo unless p.is_root?}, :on => :create # later with resque
 
   after_destroy :destroy_git_repo
   after_destroy :destroy_wiki
-  after_commit {|p| p.import_attached_srpm if p.srpm?} # later with resque # should be after create_git_repo
+  after_commit {|p| p.import_attached_srpm if p.srpm?}, :on => :create # later with resque # should be after create_git_repo
   # after_rollback lambda { destroy_git_repo rescue true if new_record? }
 
   has_ancestry
