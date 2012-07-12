@@ -64,7 +64,16 @@ class Projects::PullRequestsController < Projects::BaseController
   end
 
   def update
-    render :nothing => true, :status => (@pull.update_attributes(params[:pull_request]) ? 200 : 500), :layout => false
+    if (action = params[:pull_request_action]) && %w(close reopen).include?(params[:pull_request_action])
+      if @pull.send("can_#{action}?")
+        @pull.set_user_and_time current_user
+        @pull.send(action)
+        @pull.check if @pull.open?
+      end
+      redirect_to project_pull_request_path(@pull.base_project, @pull)
+    else
+      render :nothing => true, :status => (@pull.update_attributes(params[:pull_request]) ? 200 : 500), :layout => false
+    end
   end
 
   def merge

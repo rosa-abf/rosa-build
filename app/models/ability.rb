@@ -114,7 +114,7 @@ class Ability
         can :read, Issue, :project => {:owner_type => 'User', :owner_id => user.id}
         can :read, Issue, :project => {:owner_type => 'Group', :owner_id => user.group_ids}
         can(:read, Issue, read_relations_for('issues', 'projects')) {|issue| can? :read, issue.project rescue nil}
-        can([:create, :merge], Issue) {|issue| can? :write, issue.project}
+        can(:create, Issue) {|issue| can? :write, issue.project}
         can([:update, :destroy], Issue) {|issue| issue.user_id == user.id or local_admin?(issue.project)}
         cannot :manage, Issue, :project => {:has_issues => false} # switch off issues
         can(:autocomplete_base_project, Issue, read_relations_for('issues', 'projects')) {|issue| can? :read, issue.project rescue nil}
@@ -148,7 +148,9 @@ class Ability
         subscribe.subscribeable.subscribes.exists?(:user_id => user.id) && user.id == subscribe.user_id
       end
 
-      cannot(:merge, PullRequest) {|pull| !pull.ready?}
+      cannot(:merge, PullRequest) {|pull| !pull.can_merging?}
+      cannot(:close, PullRequest) {|pull| !pull.can_close? && can?(pull.issue, :update)}
+      cannot(:reopen, PullRequest) {|pull| !pull.can_reopen? && can?(pull.issue, :update)}
     end
   end
 

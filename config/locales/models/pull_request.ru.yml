@@ -12,6 +12,9 @@ ru:
         update: Обновить коммиты
       show:
          header: 'Пул реквест в <span class="label-bootstrap label-info font14">%{base}</span> из <span class="label-bootstrap label-info font14">%{head}</span> от %{user}'
+      status:
+        close: Закрыть пул реквест
+        reopen: Переоткрыть пул реквест
       merge: Мерж
       duplicate: 'Уже существует пул реквест %{head_ref}'
       up_to_date: 'Ветка %{base_ref} на данный момент уже содержит последние изменения %{head_ref}'

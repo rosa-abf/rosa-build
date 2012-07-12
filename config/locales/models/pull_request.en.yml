@@ -12,6 +12,9 @@ en:
         update: Update commits
       show:
         header: 'Pull Request into <span class="label-bootstrap label-info font14">%{base}</span> from <span class="label-bootstrap label-info font14">%{head}</span> by %{user}'
+      status:
+        close: Close Pull Request
+        reopen: Reopen Pull Request
       merge: Merge
       duplicate: 'There is already a pull request for %{head_ref}'
       up_to_date: 'The %{base_ref} branch is already up-to-date with %{head_ref}'

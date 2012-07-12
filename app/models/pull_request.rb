@@ -152,6 +152,11 @@ class PullRequest < ActiveRecord::Base
     Grit::Diff.list_from_string(repo, diff)
   end
 
+  def set_user_and_time user
+    issue.closed_at = Time.now.utc
+    issue.closer = user
+  end
+
   protected
 
   def merge
@@ -209,10 +214,5 @@ class PullRequest < ActiveRecord::Base
 
   def clean_dir
     FileUtils.rm_rf path
-  end
-
-  def set_user_and_time user
-    issue.closed_at = Time.now.utc
-    issue.closer = user
   end
 end
