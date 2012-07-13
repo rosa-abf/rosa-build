@@ -14,6 +14,7 @@ class Platforms::KeyPairsController < ApplicationController
       flash[:notice] = t('flash.key_pairs.saved')
     else
       flash[:error] = t('flash.key_pairs.save_error')
+      flash[:warning] = @key_pair.errors.full_messages.join('. ') unless @key_pair.errors.blank?
     end
 
     redirect_to platform_key_pairs_path(@platform)

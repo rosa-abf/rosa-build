@@ -8,6 +8,11 @@ class KeyPair < ActiveRecord::Base
   after_create :key_create_call
 
   def key_create_call
+    if KeyPair.exists? :repository_id => self.repository_id
+      errors.add(:repository_id, I18n.t('flash.key_pairs.key_exists'))
+      return false
+    end
+
     code, self.key_id = BuildServer.import_gpg_key_pair(public, secret)
     if code.zero?
       set_code = BuildServer.set_repository_key(repository_id, repository.platform_id, key_id)
