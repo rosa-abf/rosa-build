@@ -184,6 +184,15 @@ ActiveRecord::Schema.define(:version => 20120703101719) do
 
   add_index "issues", ["project_id", "serial_id"], :name => "index_issues_on_project_id_and_serial_id", :unique => true
 
+  create_table "key_pairs", :force => true do |t|
+    t.integer  "repository_id"
+    t.integer  "user_id"
+    t.integer  "key_id"
+    t.string   "public"
+    t.datetime "created_at",    :null => false
+    t.datetime "updated_at",    :null => false
+  end
+
   create_table "labelings", :force => true do |t|
     t.integer  "label_id",   :null => false
     t.integer  "issue_id"

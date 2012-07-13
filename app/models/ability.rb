@@ -97,6 +97,8 @@ class Ability
         can(:clear, Platform) {|platform| local_admin?(platform) && platform.personal?}
         can([:change_visibility, :settings, :destroy], Repository) {|repository| owner? repository.platform}
 
+        can([:create, :destroy], KeyPair) {|key_pair| owner?(key_pair.repository.platform) || local_admin?(key_pair.repository.platform)}
+
         can :read, Product, :platform => {:visibility => 'open'}
         can :read, Product, :platform => {:owner_type => 'User', :owner_id => user.id, :platform_type => 'main'}
         can :read, Product, :platform => {:owner_type => 'Group', :owner_id => user.group_ids, :platform_type => 'main'}

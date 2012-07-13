@@ -1,0 +1,27 @@
+en:
+  layout:
+    key_pairs:
+      repository_id: Repository
+      user_id: User
+      public: Public key
+      secret: Secret key
+      confirm_delete: Are you sure you want to delete this key pair?
+      header: Key Pairs
+  flash:
+    key_pairs:
+      saved: Key pair succefully created
+      save_error: Key pair save error
+      destroyed: Key pair succefully destroyed
+      destroy_error: Key pair destroy error
+  activerecord:
+    models:
+      key_pair: Key Pair
+    attributes:
+      key_pair:
+        id: Id
+        created_at: Created
+        updated_at: Updated
+        user_id: User
+        repository_id: Repository
+        public: Public key
+        secret: Secret key

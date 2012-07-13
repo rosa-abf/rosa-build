@@ -1,0 +1,27 @@
+en:
+  layout:
+    key_pairs:
+      repository_id: Репозиторий
+      user_id: Пользователь
+      public: Публичный ключ
+      secret: Секретный ключ
+      confirm_delete: Вы уверены, что хотите удалить эту ключевую пару?
+      header: Ключевые Пары
+  flash:
+    key_pairs:
+      saved: Ключевая пара сохранена успешно
+      save_error: Ошибка создания ключевой пары
+      destroyed: Ключевая пара удалена успешно
+      destroy_error: Ошибка удаления ключевой пары
+  activerecord:
+    models:
+      key_pair: Ключевая пара
+    attributes:
+      key_pair:
+        id: Id
+        created_at: Создано
+        updated_at: Обновлено
+        user_id: Пользователь
+        repository_id: Репозиторий
+        public: Публичный ключ
+        secret: Секретный ключ

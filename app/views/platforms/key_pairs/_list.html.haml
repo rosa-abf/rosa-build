@@ -1,0 +1,21 @@
+%table#myTable.tablesorter.platform-repos{:cellspacing => "0", :cellpadding => "0"}
+  %thead
+    %tr
+      %th.th1= t("activerecord.attributes.key_pair.repository")
+      %th.th2= t("activerecord.attributes.key_pair.public")
+      %th.th3= t("activerecord.attributes.key_pair.user_id")
+      %th= t("layout.delete")
+  %tbody
+    - @platform.repositories.each do |repository|
+      - repository.key_pairs.each do |key_pair|
+        %tr{:class => cycle("odd", "even")}
+          %td
+            = key_pair.repository.name
+          %td
+            = key_pair.public
+          %td
+            = key_pair.user.name
+          %td.buttons
+            - if can? :destroy, key_pair
+              = link_to platform_key_pair_path(@platform, key_pair), :method => :delete, :confirm => t("layout.key_pairs.confirm_delete") do
+                %span.delete &nbsp;
