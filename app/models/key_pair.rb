@@ -16,11 +16,7 @@ class KeyPair < ActiveRecord::Base
     code, self.key_id = BuildServer.import_gpg_key_pair(public, secret)
     if code.zero?
       set_code = BuildServer.set_repository_key(repository_id, repository.platform_id, key_id)
-      if set_code.zero?
-        self.save
-      else
-        set_code
-      end
+      set_code.zero? ? self.save : set_code
     else
       code
     end

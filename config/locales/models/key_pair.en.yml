@@ -13,7 +13,7 @@ en:
       save_error: Key pair save error
       destroyed: Key pair succefully destroyed
       destroy_error: Key pair destroy error
-      key_exists: Key pair already exists for this repository
+      key_exists: has one key pair already!
   activerecord:
     models:
       key_pair: Key Pair
