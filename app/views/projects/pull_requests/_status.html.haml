@@ -6,10 +6,9 @@
   .flash
     %div{:class => @pull.ready? ? 'notice' : 'alert'}
       =pull_status @pull
-
 -if can? :update, @pull.issue
-  -if action = @pull.can_close? ? 'close' : (@pull.can_reopen? ? 'reopen' : nil)
+  -if action = @pull.can_close? ? 'close' : ('reopen' if @pull.can_reopen?)
     %br
     =form_for :pull, :url => [@project, @pull], :html => { :id => 'do_pull_action',:method => :put, :class => :form } do |f|
-      =hidden_field_tag "pull_request_action", @pull.closed? ? 'reopen' : 'close'#, :name => "[status]"
+      =hidden_field_tag "pull_request_action", action
       =f.submit t ".#{action}"

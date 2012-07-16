@@ -14,18 +14,13 @@
 
   .tab-content.pull_diff_fix
     #discussion.tab-pane.active
-      .leftlist=t('projects.pull_requests.new.base_project')
-      .rightlist= @pull.base_project.full_name
-      .both
-      .leftlist="#{t 'projects.pull_requests.new.base_ref'} #{t 'projects.pull_requests.new.refs'}"
-      .rightlist=@pull.base_ref
-      .both
-      .leftlist=t('projects.pull_requests.new.head_project')
-      .rightlist= @pull.head_project.full_name
-      .both
-      .leftlist="#{t 'projects.pull_requests.new.head_ref'} #{t 'projects.pull_requests.new.refs'}"
-      .rightlist=@pull.head_ref
-      .both
+      -%w(base head).each do |item|
+        .leftlist=t("projects.pull_requests.new.#{item}_project")
+        .rightlist= @pull.send("#{item}_project").full_name
+        .both
+        .leftlist="#{t "projects.pull_requests.new.#{item}_ref"} #{t 'projects.pull_requests.new.refs'}"
+        .rightlist=@pull.send("#{item}_ref")
+        .both
       .leftlist=t('activerecord.attributes.issue.title')
       .rightlist.pull_title=@pull.issue.title
       .both
