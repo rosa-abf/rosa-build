@@ -1,24 +1,20 @@
+-ar = 'activerecord.attributes.pull_requests'
 -set_meta_tags :title => [title_object(@project), t('.title', :name => @pull.title.truncate(40), :user => @pull.user.uname)]
 = render :partial => 'submenu'
-%h3.bpadding10= raw t '.header', {:base => @pull.base_ref, :head => @pull.head_ref, :user => @pull.user.uname}
+%h3.bpadding10
+  =pull_status_label @pull
+  =# raw t '.header', {:base => @pull.base_ref, :head => @pull.head_ref, :user => @pull.user.uname}
+  =pull_header @pull
 #repo-wrapper
-  %ul.nav.nav-tabs
-    %li
-      %a{"data-toggle" => "tab", :href => "#discussion"}=t 'pull_requests.tabs.discussion'
-    -if @stats
-      %li
-        %a{"data-toggle" => "tab", :href => "#diff"}="#{t'pull_requests.tabs.diff'} (#{@stats.count})"
-    -if @commits
-      %li
-        %a{"data-toggle" => "tab", :href => "#commits"}="#{t'pull_requests.tabs.commits'} (#{@commits.count})"
+  =render 'nav_tabs'
 
   .tab-content.pull_diff_fix
     #discussion.tab-pane.active
       -%w(base head).each do |item|
-        .leftlist=t("projects.pull_requests.new.#{item}_project")
+        .leftlist=t("#{ar}.#{item}_project")
         .rightlist= @pull.send("#{item}_project").full_name
         .both
-        .leftlist="#{t "projects.pull_requests.new.#{item}_ref"} #{t 'projects.pull_requests.new.refs'}"
+        .leftlist="#{t "#{ar}.#{item}_ref"} #{t "#{ar}.refs"}"
         .rightlist=@pull.send("#{item}_ref")
         .both
       .leftlist=t('activerecord.attributes.issue.title')

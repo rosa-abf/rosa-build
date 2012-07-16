@@ -2,16 +2,14 @@ ru:
   projects:
     pull_requests:
       new:
-        header:  'Создать пул реквест в <span class="label-bootstrap label-info font14">%{base}</span> из <span class="label-bootstrap label-info font14">%{head}</span>'
-        base_ref: База
-        head_ref: Источник
-        refs: 'branch · tag · commit'
-        base_project: Базовый проект
-        head_project: Проект-источник
+        header:  'Создать пул реквест'
         submit: Создать пул реквест
         update: Обновить коммиты
       show:
-         header: 'Пул реквест в <span class="label-bootstrap label-info font14">%{base}</span> из <span class="label-bootstrap label-info font14">%{head}</span> от %{user}'
+        pull: Пул реквест
+        into: из
+        from: в
+        header: Пул реквест
       status:
         close: Закрыть пул реквест
         reopen: Переоткрыть пул реквест
@@ -23,6 +21,11 @@ ru:
       ready: Данный пул реквест можно смержить автоматически.
       merged: '%{user} смержил %{base_ref} с %{head_ref} в %{time}'
       closed: '%{user} закрыл пул реквест в %{time}'
+      statuses:
+        blocked: Заблокирован
+        ready: Готов к мержу
+        merged: Смержен
+        closed: Закрыт
 
   pull_requests:
     tabs:
@@ -35,3 +38,12 @@ ru:
       new_error: Не удалось создать пул реквест
       saved: Пул реквест успешно сохранен
       save_error: Не удалось сохранить пул реквест
+
+  activerecord:
+    attributes:
+      pull_requests:
+        base_ref: База
+        head_ref: Источник
+        refs: 'branch · tag · commit'
+        base_project: Базовый проект
+        head_project: Проект-источник

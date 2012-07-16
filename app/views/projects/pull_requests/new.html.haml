@@ -1,34 +1,26 @@
+-ar = 'activerecord.attributes.pull_requests'
 -set_meta_tags :title => [title_object(@project), t('.title')]
 = render :partial => 'submenu'
-%h3.bpadding10= raw t '.header', {:base => @pull.base_ref, :head => @pull.head_ref}
+%h3.bpadding10=pull_header @pull # raw t '.header', {:base => @pull.base_ref, :head => @pull.head_ref}
 #repo-wrapper
-  %ul.nav.nav-tabs
-    %li
-      %a{"data-toggle" => "tab", :href => "#discussion"}=t 'pull_requests.tabs.discussion'
-    -if @stats
-      %li
-        %a{"data-toggle" => "tab", :href => "#diff"}="#{t'pull_requests.tabs.diff'} (#{@stats.count})"
-    -if @commits
-      %li
-        %a{"data-toggle" => "tab", :href => "#commits"}="#{t'pull_requests.tabs.commits'} (#{@commits.count})"
+  =render 'nav_tabs'
   .tab-content.pull_diff_fix
     #discussion.tab-pane.active
       =form_for @pull, :url => (@pull.status != 'already' ? project_pull_requests_path : new_project_pull_requests_path), :html => {:class => 'well well-large'} do |f|
         =hidden_field_tag :update_action, new_project_pull_requests_path
-        .leftlist=f.label :base_project, t('.base_project'), :class => :label
+        .leftlist=f.label :base_project, t("#{ar}.base_project"), :class => :label
         .rightlist
           =f.autocomplete_field :base_project, autocomplete_base_project_project_pull_requests_path, :value => @pull.base_project.full_name, :id_element => '#pull_request_base_project_id', :name => 'base_project'
           =f.hidden_field :base_project_id, :name => 'base_project_id'
         .both
-        .leftlist=f.label :base_ref, "#{t '.base_ref'} #{t '.refs'}", :class => :label
+        .leftlist=f.label :base_ref, "#{t "#{ar}.base_ref"} #{t "#{ar}.refs"}", :class => :label
         .rightlist
           %input{:id => 'base_refs', :value => @pull.base_ref, :name => 'pull_request[base_ref]'}
         .both
-        .leftlist=f.label :head_project, t('.head_project'), :class => :label
-        .rightlist
-          =@pull.head_project.full_name
+        .leftlist=f.label :head_project, t("#{ar}.head_project"), :class => :label
+        .rightlist=@pull.head_project.full_name
         .both
-        .leftlist=f.label :head_ref, "#{t '.head_ref'} #{t '.refs'}", :class => :label
+        .leftlist=f.label :head_ref, "#{t "#{ar}.head_ref"} #{t "#{ar}.refs"}", :class => :label
         .rightlist
           %input{:id => 'head_refs', :value => @pull.head_ref, :name => 'pull_request[head_ref]'}
         .both
@@ -50,7 +42,6 @@
         .rightlist
           =f.submit t('.submit'), :class => 'btn btn-primary disabled', 'data-loading-text' => t('layout.processing'), :id => 'create_pull' unless @pull.already?
         .both
-
     =render 'diff_commits_tabs' if @pull.status != 'already' && @stats != nil
 
 :javascript
@@ -63,4 +54,3 @@
       source: #{@project.branches_and_tags.map &:name}
     });
   });
-

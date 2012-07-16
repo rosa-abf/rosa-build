@@ -2,16 +2,12 @@ en:
   projects:
     pull_requests:
       new:
-        header: 'Create a pull request into <span class="label-bootstrap label-info font14">%{base}</span> from <span class="label-bootstrap label-info font14">%{head}</span>'
-        base_ref: Base
-        head_ref: Head
-        refs: 'branch · tag · commit'
-        base_project: Base project
-        head_project: Head project
+        header: 'Create a pull request'
         submit: Send pull request
         update: Update commits
       show:
-        header: 'Pull Request into <span class="label-bootstrap label-info font14">%{base}</span> from <span class="label-bootstrap label-info font14">%{head}</span> by %{user}'
+        pull: Pull Request
+        header: 'Pull Request'
       status:
         close: Close Pull Request
         reopen: Reopen Pull Request
@@ -23,6 +19,11 @@ en:
       ready: This pull request can be automatically merged.
       merged: '%{user} merged into %{base_ref} from %{head_ref} at %{time}'
       closed: '%{user} closed this pull request at %{time}'
+      statuses:
+        blocked: Blocked
+        ready: Ready
+        merged: Merged
+        closed: Closed
 
   pull_requests:
     tabs:
@@ -35,3 +36,12 @@ en:
       new_error: Unable to create pull request
       saved: Pull request saved
       save_error: Unable to save pull request
+
+  activerecord:
+    attributes:
+      pull_requests:
+        base_ref: Base
+        head_ref: Head
+        refs: 'branch · tag · commit'
+        base_project: Base project
+        head_project: Head project

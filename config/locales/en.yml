@@ -188,3 +188,6 @@ en:
         created_at: Created
         updated_at: Updated
 
+  into: into
+  from: from
+  by: by

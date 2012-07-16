@@ -1,0 +1,9 @@
+%ul.nav.nav-tabs
+  %li
+    %a{"data-toggle" => "tab", :href => "#discussion"}=t 'pull_requests.tabs.discussion'
+  -if @stats
+    %li
+      %a{"data-toggle" => "tab", :href => "#diff"}="#{t'pull_requests.tabs.diff'} (#{@stats.count})"
+  -if @commits
+    %li
+      %a{"data-toggle" => "tab", :href => "#commits"}="#{t'pull_requests.tabs.commits'} (#{@commits.count})"
