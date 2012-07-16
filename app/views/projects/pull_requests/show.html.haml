@@ -8,13 +8,6 @@
   =render 'nav_tabs'
   .tab-content.pull_diff_fix
     #discussion.tab-pane.active
-      -%w(base head).each do |item|
-        .leftlist=t("#{ar}.#{item}_project")
-        .rightlist= @pull.send("#{item}_project").full_name
-        .both
-        .leftlist="#{t "#{ar}.#{item}_ref"} #{t "#{ar}.refs"}"
-        .rightlist=@pull.send("#{item}_ref")
-        .both
       .leftlist=t('activerecord.attributes.issue.title')
       .rightlist.pull_title=@pull.issue.title
       .both
