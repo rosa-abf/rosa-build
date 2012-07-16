@@ -17,7 +17,9 @@ en:
       wrong_ref: Wrong tree-ish
       blocked: This pull request cannot be automatically merged.
       ready: This pull request can be automatically merged.
-      merged: '%{user} merged into %{base_ref} from %{head_ref} at %{time}'
+      merged: |
+        %{user} merged into <span class="label-bootstrap label-info font14">%{base_ref}</span>
+        from <span class="label-bootstrap label-info font14">%{head_ref}</span> at %{time}
       closed: '%{user} closed this pull request at %{time}'
       statuses:
         blocked: Blocked

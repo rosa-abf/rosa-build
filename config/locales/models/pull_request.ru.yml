@@ -19,7 +19,9 @@ ru:
       wrong_ref: Неправильный tree-ish
       blocked: Невозможно автоматически смержить данный пул реквест.
       ready: Данный пул реквест можно смержить автоматически.
-      merged: '%{user} смержил %{base_ref} с %{head_ref} в %{time}'
+      merged: |
+        %{user} смержил <span class="label-bootstrap label-info font14">%{base_ref}</span>
+        с <span class="label-bootstrap label-info font14">%{head_ref}</span> в %{time}'
       closed: '%{user} закрыл пул реквест в %{time}'
       statuses:
         blocked: Заблокирован

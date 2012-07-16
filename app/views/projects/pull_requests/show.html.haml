@@ -3,11 +3,9 @@
 = render :partial => 'submenu'
 %h3.bpadding10
   =pull_status_label @pull
-  =# raw t '.header', {:base => @pull.base_ref, :head => @pull.head_ref, :user => @pull.user.uname}
   =pull_header @pull
 #repo-wrapper
   =render 'nav_tabs'
-
   .tab-content.pull_diff_fix
     #discussion.tab-pane.active
       -%w(base head).each do |item|

@@ -1,7 +1,7 @@
 -ar = 'activerecord.attributes.pull_requests'
 -set_meta_tags :title => [title_object(@project), t('.title')]
 = render :partial => 'submenu'
-%h3.bpadding10=pull_header @pull # raw t '.header', {:base => @pull.base_ref, :head => @pull.head_ref}
+%h3.bpadding10=pull_header @pull
 #repo-wrapper
   =render 'nav_tabs'
   .tab-content.pull_diff_fix
@@ -35,9 +35,13 @@
           .rightlist=issue.text_area :body
           .both
 
-        .leftlist=f.label :title, t('activerecord.attributes.issue.status'), :class => :label
-        .rightlist=@pull.status
-        .both
+        -unless @pull.already?
+          .leftlist=f.label :title, t('activerecord.attributes.issue.status'), :class => :label
+          .rightlist
+            .flash
+              %div{:class => @pull.ready? ? 'notice' : 'alert'}
+                =pull_status @pull
+          .both
         .leftlist
         .rightlist
           =f.submit t('.submit'), :class => 'btn btn-primary disabled', 'data-loading-text' => t('layout.processing'), :id => 'create_pull' unless @pull.already?
