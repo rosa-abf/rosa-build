@@ -32,6 +32,15 @@ module PullRequestHelper
 
   #helper for helpers
   def show_ref pull, which, limit = 30
-    "#{pull.send("#{which}_project").owner.uname.truncate limit}: #{pull.send("#{which}_ref").truncate limit}"
+    project, ref = pull.send("#{which}_project"), pull.send("#{which}_ref")
+    name = "#{project.owner.uname.truncate limit}: #{ref.truncate limit}"
+    link_to name, ref_path(project, ref)
+
+  end
+
+  def ref_path project, ref
+    return tree_path(project, ref) if project.branches_and_tags.include? ref
+    return commit_path(project, ref) if project.git_repository.commit ref
+    '#'
   end
 end
