@@ -15,7 +15,7 @@ class Comment < ActiveRecord::Base
   attr_accessible :body
 
   def commentable
-    commit_comment? ? project.git_repository.commit(commentable_id.to_s(16)) : super
+    commit_comment? ? project.repo.commit(commentable_id.to_s(16)) : super
   end
 
   def commentable=(c)

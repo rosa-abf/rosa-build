@@ -16,7 +16,7 @@ describe Users::ProfileController do
 
   context 'for guest' do
     it 'should not be able to view profile' do
-      get :show, :owner_name => @simple_user.uname
+      get :show, :uname => @simple_user.uname
       response.should redirect_to(new_user_session_path)
     end
   end

@@ -21,4 +21,8 @@ Add to /etc/rc.d/rc.sysinit
 sudo urpmi lib64icu-devel # mandriva
 gem install charlock_holmes -- --with-icu-dir=/opt/local # macports
 
+sudo urpmi lib64magic-devel # mandriva
+brew install libmagic; brew link libmagic # brew
+gem install ruby-filemagic
+
 git config --global core.quotepath false

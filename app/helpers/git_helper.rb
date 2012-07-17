@@ -4,7 +4,7 @@ module GitHelper
   def render_path
     # TODO: Looks ugly, rewrite with clear mind.
     if @path.present?
-      if @treeish == "master"
+      if @treeish == @project.default_branch
         res = "#{link_to @project.name, tree_path(@project)} / "
       else
         res = "#{link_to @project.name, tree_path(@project, @treeish)} / "
@@ -36,22 +36,6 @@ module GitHelper
     res.html_safe
   end
 
-  def render_blob(blob)
-    blob.data.split("\n").collect do |line|
-      content_tag :div, line.present? ? h(line) : tag(:br)
-    end.join.html_safe
-  end
-
-  def choose_render_way(blob)
-    case
-    when blob.mime_type.match(/image/); :image
-    when blob.binary?; :binary
-    else
-      @text = @blob.data.split("\n")
-      :text
-    end
-  end
-
   def iterate_path(path, &block)
     path.split(File::SEPARATOR).inject('') do |a, e|
       if e != '.' and e != '..'
@@ -71,10 +55,29 @@ module GitHelper
     current = url_for(p).split('?', 2).first
 
     res = []
-    res << [I18n.t('layout.git.repositories.commits'), [truncate(params[:treeish], :length => 20)]] unless (project.branches + project.tags).map(&:name).include?(params[:treeish] || project.default_branch)
-    res << [I18n.t('layout.git.repositories.branches'), project.branches.map{|b| [truncate(b.name, :length => 20), url_for(p.merge :treeish => b.name).split('?', 2).first]}]
-    res << [I18n.t('layout.git.repositories.tags'), project.tags.map{|t| [truncate(t.name, :length => 20), url_for(p.merge :treeish => t.name).split('?', 2).first]}]
+    res << [I18n.t('layout.git.repositories.commits'), [truncate(params[:treeish], :length => 20)]] unless (project.repo.branches + project.repo.tags).map(&:name).include?(params[:treeish] || project.default_branch)
+    res << [I18n.t('layout.git.repositories.branches'), project.repo.branches.map{|b| [truncate(b.name, :length => 20), url_for(p.merge :treeish => b.name).split('?', 2).first]}]
+    res << [I18n.t('layout.git.repositories.tags'), project.repo.tags.map{|t| [truncate(t.name, :length => 20), url_for(p.merge :treeish => t.name).split('?', 2).first]}]
 
     grouped_options_for_select(res, current)
   end
+
+  def versions_for_group_select(project)
+    [
+      ['Branches', project.repo.branches.map{|b| "latest_#{b.name}"}],
+      ['Tags', project.repo.tags.map(&:name)]
+    ]
+  end
+  
+  def split_commits_by_date(commits)
+    commits.sort{|x, y| y.authored_date <=> x.authored_date}.inject({}) do |h, commit|
+      dt = commit.authored_date
+      h[dt.year] ||= {}
+      h[dt.year][dt.month] ||= {}
+      h[dt.year][dt.month][dt.day] ||= []
+      h[dt.year][dt.month][dt.day] << commit
+      h
+    end
+  end
 end
+

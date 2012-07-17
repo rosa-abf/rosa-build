@@ -1,0 +1,8 @@
+%table.table.blob
+  %tr
+    %td.lines
+    %td.blob
+      :plain
+        <br/>
+        <pre>#{link_to @blob.basename, raw_path(@project, @treeish, @path)}</pre>
+        <br/>
