@@ -1,2 +1,0 @@
-module Platforms::KeyPairsHelper
-end

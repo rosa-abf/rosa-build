@@ -23,11 +23,7 @@ class KeyPair < ActiveRecord::Base
   end
 
   def rm_key_call
-    if BuildServer.rm_repository_key(repository.platform_id, repository_id) == 0
-      self.destroy
-      return true
-    end
-
+    return self.destroy if BuildServer.rm_repository_key(repository.platform_id, repository_id) == 0
     false
   end
 end
