@@ -37,13 +37,13 @@
   - @mass_builds.each do |mass_build|
     %tr
       %td= mass_build.id
-      %td= link_to mass_build.name, build_lists_path(:filter => {:mass_build_id => mass_build.id})
+      %td= link_to mass_build.name, build_lists_path(:filter => {:mass_build_id => mass_build.id, :ownership => 'index'})
       %td.min_width_120
         - MassBuild::COUNT_STATUSES.each do |status|
           = link_to t("layout.build_lists.statuses.#{status}") + ": ", build_lists_path(:filter => {:mass_build_id => mass_build.id, :ownership => 'index'}.merge(status != :build_lists ? {:status => BuildList.status_by_human(status)} : {}))
           = mass_build.read_attribute "#{status}_count"
           .both
-      %td= link_to t("layout.mass_builds.failed_builds_list"), failed_builds_list_platform_mass_build_path(@platform, mass_build.id), :target => "_blank" if can?(:failed_builds_list, mass_build)
+      %td= link_to t("layout.mass_builds.failed_builds_list"), failed_builds_list_platform_mass_build_path(@platform, mass_build.id, :format => :txt), :target => "_blank" if can?(:failed_builds_list, mass_build)
       %td= link_to image_tag('x.png'), cancel_platform_mass_build_path(@platform, mass_build.id), :method => :post, :confirm => t("layout.mass_builds.cancel_confirm") if can?(:cancel, mass_build)
       %td
         %a.toggle_btn{:href => "#toggle_#{ mass_build.id }", :'data-target' => "#toggle_#{ mass_build.id }"}= t("layout.mass_builds.extended_data")
