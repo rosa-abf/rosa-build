@@ -9,5 +9,4 @@ $(document).ready(function() {
     $('#update_pull').fadeIn('fast');
     $('#create_pull').fadeOut('fast');
   });
-
 });

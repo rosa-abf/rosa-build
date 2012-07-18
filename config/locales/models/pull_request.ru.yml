@@ -23,6 +23,7 @@ ru:
         %{user} смержил <span class="label-bootstrap label-info font14">%{base_ref}</span>
         с <span class="label-bootstrap label-info font14">%{head_ref}</span> в %{time}'
       closed: '%{user} закрыл пул реквест в %{time}'
+      open: ''
       statuses:
         blocked: Заблокирован
         ready: Готов к мержу

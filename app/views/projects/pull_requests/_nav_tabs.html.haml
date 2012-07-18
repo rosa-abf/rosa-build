@@ -1,4 +1,4 @@
-%ul.nav.nav-tabs
+%ul.nav.nav-tabs#pull_tabs
   %li
     %a{"data-toggle" => "tab", :href => "#discussion"}=t 'pull_requests.tabs.discussion'
   -if @stats
@@ -7,3 +7,8 @@
   -if @commits
     %li
       %a{"data-toggle" => "tab", :href => "#commits"}="#{t'pull_requests.tabs.commits'} (#{@commits.count})"
+
+:javascript
+  $(document).ready(function() {
+    $('#pull_tabs a[href="##{params[:tab]}"]').tab('show');
+  });

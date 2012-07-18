@@ -13,7 +13,7 @@ module PullRequestHelper
   end
 
   def pull_status pull
-    if %w(blocked merged closed ready).include? pull.status
+    if %w(blocked merged closed ready open).include? pull.status
       t("projects.pull_requests.#{pull.status}", :user => pull.issue.closer.try(:uname), :base_ref => show_ref(pull, 'base'),
         :head_ref => show_ref(pull, 'head'), :time => pull.issue.closed_at).html_safe
     else
@@ -33,9 +33,7 @@ module PullRequestHelper
   #helper for helpers
   def show_ref pull, which, limit = 30
     project, ref = pull.send("#{which}_project"), pull.send("#{which}_ref")
-    name = "#{project.owner.uname.truncate limit}: #{ref.truncate limit}"
-    link_to name, ref_path(project, ref)
-
+    link_to "#{project.owner.uname.truncate limit}: #{ref.truncate limit}", ref_path(project, ref)
   end
 
   def ref_path project, ref

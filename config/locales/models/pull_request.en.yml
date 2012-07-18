@@ -21,6 +21,7 @@ en:
         %{user} merged into <span class="label-bootstrap label-info font14">%{base_ref}</span>
         from <span class="label-bootstrap label-info font14">%{head_ref}</span> at %{time}
       closed: '%{user} closed this pull request at %{time}'
+      open: ''
       statuses:
         blocked: Blocked
         ready: Ready

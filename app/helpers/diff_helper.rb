@@ -16,10 +16,11 @@ module DiffHelper
   end
 
   def render_diff_stats(stats)
+    path = "#{polymorphic_path [@project, @pull]}/diff"
     res = ["<table class='commit_stats'>"]
     stats.each_with_index do |stat, ind|
       res << "<tr>"
-      res << "<td><a href='#diff-#{ind}'>#{h(stat.filename.rtruncate 120)}</a></td>"
+      res << "<td>#{link_to stat.filename.rtruncate(120), "#{path}#diff-#{ind}"}</td>"
       res << "<td class='diffstat'>"
       res << I18n.t("layout.projects.inline_changes_count", :count => stat.additions + stat.deletions).strip +
              " (" +
