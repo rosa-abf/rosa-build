@@ -1,14 +1,18 @@
 # -*- encoding : utf-8 -*-
 module DiffHelper
 
-  def render_diff(diff)
+  def render_diff(diff, diff_counter)
     diff_display ||= Diff::Display::Unified.new(diff.diff)
-
+    path = if @pull
+                  "#{polymorphic_path [@project, @pull]}/diff"
+                elsif @commit
+                  "#{commit_path @project, @commit}"
+                end
     #res = "<a name='#{h(diff.a_path)}'></a>"
 
     res = "<table class='diff inline' cellspacing='0' cellpadding='0'>"
     res += "<tbody>"
-    res += diff_display.render(Git::Diff::InlineCallback.new)
+    res += diff_display.render(Git::Diff::InlineCallback.new(diff_counter, path))
     res += "</tbody>"
     res += "</table>"
 
