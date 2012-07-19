@@ -22,39 +22,33 @@ module Git
       end
 
       def addline(line)
-        id = "F#{@diff_counter}R#{line.new_number}"
         "<tr class='changes'>
           <td class='line_numbers'></td>
-          <td class='line_numbers' id='#{id}'><a href='#{@path}##{id}'>#{line.new_number}</a></td>
+          #{td_line_link "F#{@diff_counter}R#{line.new_number}", line.new_number}
           <td class='code ins'><pre>#{render_line(line)}</pre></td>
         </tr>"
       end
       
       def remline(line)
-        id = "F#{@diff_counter}L#{line.old_number}"
         "<tr class='changes'>
-          <td class='line_numbers' id='#{id}'><a href='#{@path}##{id}'>#{line.old_number}</a></td>
+          #{td_line_link "F#{@diff_counter}L#{line.old_number}", line.old_number}
           <td class='line_numbers'></td>
           <td class='code del'><pre>#{render_line(line)}</pre></td>
         </tr>"
       end
 
       def modline(line)
-        rid = "F#{@diff_counter}R#{line.new_number}"
-        lid = "F#{@diff_counter}L#{line.old_number}"
         "<tr clas='chanes line'>
-          <td class='line_numbers' id='#{lid}'><a href='#{@path}##{lid}'>#{line.old_number}</a></td>
-          <td class='line_numbers' id='#{rid}'><a href='#{@path}##{rid}'>#{line.new_number}</a></td>
+          #{td_line_link "F#{@diff_counter}L#{line.old_number}", line.old_number}
+          #{td_line_link "F#{@diff_counter}R#{line.new_number}", line.new_number}
           <td class='code unchanged modline'><pre>#{render_line(line)}</pre></td>
         </tr>"
       end
       
       def unmodline(line)
-        rid = "F#{@diff_counter}R#{line.new_number}"
-        lid = "F#{@diff_counter}L#{line.old_number}"
         "<tr class='changes unmodline'>
-          <td class='line_numbers' id='#{lid}'><a href='#{@path}##{lid}'>#{line.old_number}</a></td>
-          <td class='line_numbers' id='#{rid}'><a href='#{@path}##{rid}'>#{line.new_number}</a></td>
+          #{td_line_link "F#{@diff_counter}L#{line.old_number}", line.old_number}
+          #{td_line_link "F#{@diff_counter}R#{line.new_number}", line.new_number}
           <td class='code unchanged unmodline'><pre>#{render_line(line)}</pre></td>
         </tr>"
       end
@@ -68,11 +62,9 @@ module Git
       end
       
       def nonewlineline(line)
-        rid = "F#{@diff_counter}R#{line.new_number}"
-        lid = "F#{@diff_counter}L#{line.old_number}"
         "<tr class='changes'>
-          <td class='line_numbers' id='#{lid}'><a href='#{@path}##{lid}'>#{line.old_number}</a></td>
-          <td class='line_numbers' id='#{rid}'><a href='#{@path}##{rid}'>#{line.new_number}</a></td>
+          #{td_line_link "F#{@diff_counter}L#{line.old_number}", line.old_number}
+          #{td_line_link "F#{@diff_counter}R#{line.new_number}", line.new_number}
           <td class='code modline unmodline'><pre>#{render_line(line)}</pre></td>
         </tr>"
       end
@@ -93,6 +85,10 @@ module Git
         res += '</span>'
         
         res
+      end
+
+      def td_line_link id, num
+        "<td class='line_numbers' id='#{id}'><a href='#{@path}##{id}'>#{num}</a></td>"
       end
     end
   end
