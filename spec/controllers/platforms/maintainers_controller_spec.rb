@@ -2,18 +2,23 @@
 require 'spec_helper'
 
 shared_examples_for 'guest user' do
-  before(:each) do
-    unless APP_CONFIG['anonymous_access']
-      @user = FactoryGirl.create(:user)
-      set_session_for(@user)
-    end
-  end
-
+ 
   # Only one action for now here
-  [:index].each do |action|
-    it "should be able to perform #{ action } action" do
-      get action, :platform_id => @platform.id
-      response.should be_success
+  guest_actions = [:index]
+
+  if APP_CONFIG['anonymous_access']
+    guest_actions.each do |action|
+      it "should be able to perform #{ action } action" do
+        get action, :platform_id => @platform.id
+        response.should be_success
+      end
+    end
+  else  # non-anonymous access
+    guest_actions.each do |action|
+      it "should not be able to perform #{ action } action" do
+        get action, :platform_id => @platform.id
+        response.should redirect_to(new_user_session_path)
+      end
     end
   end
 end

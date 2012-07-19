@@ -2,7 +2,9 @@
 class Platforms::MaintainersController < ApplicationController
   # External callbacks from bugzilla
   ET_CALLBACKS = [:assignee]
+
   before_filter :authenticate_user!, :except => ET_CALLBACKS
+  skip_before_filter :authenticate_user!, :only => [:index] if APP_CONFIG['anonymous_access']
   load_and_authorize_resource :platform, :except => ET_CALLBACKS
 
   # external callbacks are authorized with a lightweight scheme: they should only come from a specified IP addresses
