@@ -1172,3 +1172,141 @@ table.tablesorter tr td.no_results {
     text-align: center;
 }
 /* end */
+
+article div.all {
+    width: 860px;
+}
+
+div.inner-columns {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+div.inner-columns:after {
+    clear: both;
+    content: ".";
+    display: block;
+    height: 0;
+    visibility: hidden;
+}
+
+div.inner-columns.equal section {
+    width: 430px;
+    float: left;
+}
+
+section.first div {
+    width: 415px;
+}
+
+form.inline_errors span.error {
+    display: inline-block;
+    color: #FF5050;
+}
+
+div.form-actions {
+    text-align: right;
+    padding-bottom: 5px;
+}
+
+div.form-actions .button {
+    margin-right: 50px;
+}
+
+dl.form, div.form-actions {
+    margin: 15px 0;
+}
+
+dl.form > dt {
+    margin: 0 0 6px;
+}
+
+dl.form > dt label {
+    color: #333333;
+    font-size: 14px;
+    font-weight: bold;
+    position: relative;
+}
+
+dl.form > dd {
+    margin: 0;
+    padding: 0;
+    border: 0, none;
+}
+
+dl.form > dd > input[type="text"],
+dl.form > dd > input[type="password"],
+dl.form > dd > textarea {
+  width: 350px;
+  border: 1px solid #A0A0A0;
+  border-radius: 4px;
+  padding: 5px;
+  font-family: Tahoma, Geneva, Helvetica, sans-serif;
+  font-size: 12px;
+}
+
+dl.form > dd > input.error[type="text"],
+dl.form > dd > input.error[type="password"],
+dl.form > dd > textarea.error {
+    border-color: #FF8080;
+}
+
+dl.form > dd > input[type="text"],
+dl.form > dd > input[type="password"] {
+  height: 16px;
+}
+
+dl.form > dd > textarea {
+  height: 110px;
+}
+
+ul.checklist {
+    font-size: 12px;
+    font-weight: bold;
+    margin: 20px 0;
+    padding: 0;
+}
+
+ul.checklist li {
+    background: image-url("check.png") no-repeat scroll 0 2px transparent;
+    list-style-type: none;
+    margin: 15px 0;
+    padding-left: 25px;
+}
+
+div.all.feedback_sended {
+    background: image-url("feedback.png") no-repeat scroll 49% 0 transparent;
+    height: 500px;
+    text-align: center;
+}
+
+article div.all.feedback_sended h1 {
+    font-size: 48px;
+    font-weight: normal;
+    margin: 165px 0 0;
+    padding: 0;
+}
+
+article div.all.feedback_sended h2 {
+    font-size: 18px;
+    font-weight: normal;
+    margin: 5px 0 0;
+    padding: 0;
+}
+article div.all.feedback_sended p.pages {
+    margin-top: 70px;
+    width: 280px;
+}
+
+article div.all.feedback_sended p.search {
+    margin-top: 80px;
+    width: 230px;
+}
+
+article div.all.feedback_sended p {
+    font-size: 14px;
+    margin: 0 auto;
+    padding: 0;
+    text-align: center;
+}
