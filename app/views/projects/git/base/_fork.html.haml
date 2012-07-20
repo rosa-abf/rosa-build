@@ -12,12 +12,15 @@
 
 - if can? :fork, @project
   .r#fork-and-edit= link_to t('layout.projects.fork_and_edit'), '#forkModal', :class => 'button', 'data-toggle' => 'modal'
-  #forkModal.modal{:style => 'display: none;'}
+  #forkModal.modal.fork-modal{:style => 'display: none;'}
     .modal-header
       %a.close{"data-dismiss" => "modal"} ×
       %h3=t 'layout.projects.fork_modal_header'
-    .modal-footer=render 'choose_fork', :owner => current_user
-    - Group.can_own_project(current_user).each do |group|
-      .modal-footer=render 'choose_fork', :owner => group
+    .modal-body.modal-body-fork
+      =render 'choose_fork', :owner => current_user
+      %hr.bootstrap
+      - Group.can_own_project(current_user).each do |group|
+        =render 'choose_fork', :owner => group
+        %hr.bootstrap
 - if can? :create, @project.build_lists.new
   .r{:style => "display: block"}= link_to t('layout.projects.new_build_list'), new_project_build_list_path(@project), :class => 'button'
