@@ -24,7 +24,7 @@ class FeedbackMailer < ActionMailer::Base
     res << subject
     res << affix(FBM_CONFIG['subject_postfixes'])
     # WOODOO magic. Change all space sequences to one space than remove trailing spaces.
-    res.gsub(/\s+/, ' ').gsub(/^\s|\s$/, '')
+    res = res.gsub(/\s+/, ' ').strip!
     res
   end
 
