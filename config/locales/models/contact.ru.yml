@@ -1,6 +1,7 @@
 ru:
   layout:
     contact:
+      page_header: Обратная связь
       header: Свяжитесь с нами
       subheader: Мы готовы помочь вам с любыми вопросами и комментариями.
       send_request: Отправить запрос

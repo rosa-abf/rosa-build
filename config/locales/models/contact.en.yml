@@ -1,6 +1,7 @@
 en:
   layout:
     contact:
+      page_header: Contact us
       header: Contact us
       subheader: We’re here to help with any questions or comments.
       send_request: Send Request
