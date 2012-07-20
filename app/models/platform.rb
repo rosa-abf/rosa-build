@@ -107,6 +107,10 @@ class Platform < ActiveRecord::Base
     platform_type == 'personal'
   end
 
+  def main?
+    platform_type == 'main'
+  end
+
   def base_clone(attrs = {}) # :description, :name, :owner
     dup.tap do |c|
       attrs.each {|k,v| c.send("#{k}=", v)} # c.attributes = attrs

@@ -1310,3 +1310,17 @@ article div.all.feedback_sended p {
     padding: 0;
     text-align: center;
 }
+
+hr.bootstrap {
+  border: 0;
+  border-top: 1px solid #eeeeee;
+  border-bottom: 1px solid #ffffff;
+}
+
+.fork-modal {
+  top: 45%;
+}
+
+.modal-body-fork {
+  max-height: 280px;
+}
