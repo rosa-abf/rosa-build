@@ -12,11 +12,10 @@ class Feedback
 
   attr_accessible :name, :email, :subject, :message
 
-  validates :name,    :presence => true
+  validates :name, :subject, :message, :presence => true
   validates :email,   :presence => true,
-                      :format => { :with => /\A[^@]+@([^@\.]+\.)+[^@\.]+\z/, :allow_blank => false }
-  validates :subject, :presence => true
-  validates :message, :presence => true
+                      :format => { :with => /\A[^@]+@([^@\.]+\.)+[^@\.]+\z/,
+                                   :allow_blank => false }
 
   def initialize(args = {}, options = {})
     return args.dup if args.is_a? Feedback
