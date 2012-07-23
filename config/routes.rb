@@ -21,6 +21,8 @@ Rosa::Application.routes.draw do
     root :to => 'activity_feeds#index'
   end
 
+  resources :flash_notifies
+
   namespace :admin do
     resources :users do
       get :list, :on => :collection

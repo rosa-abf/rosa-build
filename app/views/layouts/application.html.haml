@@ -47,6 +47,7 @@
         = yield :feed_tabs
       .both
       = render "layouts/flashes"
+      = render "layouts/notifies"
       %article
         - if content_for?(:sidebar)
           %aside= yield :sidebar
