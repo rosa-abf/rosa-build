@@ -19,6 +19,6 @@ class FlashNotify < ActiveRecord::Base
   end
 
   def should_show?(cookie_id, cookie_hash_id)
-    cookie_id.to_i == id && cookie_hash_id == hash_id ? false : true
+    !(cookie_id.to_i == id && cookie_hash_id == hash_id)
   end
 end

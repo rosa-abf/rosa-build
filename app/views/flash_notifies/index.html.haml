@@ -10,8 +10,8 @@
   %tbody
     - @flash_notifies.each do |flash_notify|
       %tr{:class => cycle("odd", "even")}
-        %td= flash_notify.body_en.slice(0..15) + "..."
-        %td= flash_notify.body_ru.slice(0..15) + "..."
+        %td= flash_notify.body_en.truncate 18
+        %td= flash_notify.body_ru.truncate 18
         %td= flash_notify.published
         %td
           = link_to t("layout.flash_notifies.edit"), edit_flash_notify_path(flash_notify)

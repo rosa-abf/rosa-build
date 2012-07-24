@@ -1,4 +1,4 @@
 %h3= t("layout.flash_notifies.edit_header")
 
-= form_for @flash_notify, :url => flash_notifies_path(@flash_notify), :html => { :class => :form } do |f|
+= form_for @flash_notify, :url => flash_notify_path(@flash_notify), :html => { :class => :form } do |f|
   = render "form", :f => f

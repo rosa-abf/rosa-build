@@ -54,24 +54,16 @@ describe FlashNotifiesController do
       set_session_for(@admin)
     end
 
-    it 'should be able to perform index action' do
-      get :index
-      response.should render_template(:index)
-    end
-
     it 'should load 2 flash notifies objects on index' do
       get :index
       assigns[:flash_notifies].count.should == 2
     end
 
-    it 'should be able to perform new action' do
-      get :new
-      response.should render_template(:new)
-    end
-
-    it 'should be able to perform edit action' do
-      get :edit
-      response.should render_template(:edit)
+    [:index, :new, :edit].each do |action|
+      it "should be able to perform #{action} action" do
+        get action, :id => @flash_notify
+        response.should render_template(action)
+      end
     end
 
     it 'should be able to perform create action' do
