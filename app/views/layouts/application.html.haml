@@ -55,4 +55,4 @@
         .both
 
     %footer= render "layouts/menu/bottom"
-    = render 'layouts/counters' unless current_user.try(:admin?)
+    = render 'layouts/counters' if !current_user.try(:admin?) && Rails.env.production?
