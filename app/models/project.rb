@@ -49,7 +49,7 @@ class Project < ActiveRecord::Base
   after_commit(:on => :create) {|p| p.import_attached_srpm if p.srpm?}# later with resque # should be after create_git_repo
   # after_rollback lambda { destroy_git_repo rescue true if new_record? }
 
-  has_ancestry
+  has_ancestry :orphan_strategy => :rootify #:adopt not available yet
 
   has_attached_file :srpm
 
