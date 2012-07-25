@@ -1186,3 +1186,21 @@ hr.bootstrap {
 .modal-body-fork {
   max-height: 280px;
 }
+
+#repo-wrapper .add_line-comment {
+  position: absolute;
+  width: 25px;
+  height: 18px;
+  margin-left: -103px;
+  margin-top: 0;
+  cursor: pointer;
+  opacity: 0;
+  filter: alpha(Opacity=0);
+  -moz-opacity:0;
+}
+
+#repo-wrapper tr:hover .add_line-comment {
+  opacity: 1;
+  filter: alpha(Opacity=100);
+  -moz-opacity:1;
+}
