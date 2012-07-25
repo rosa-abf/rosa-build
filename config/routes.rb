@@ -21,8 +21,6 @@ Rosa::Application.routes.draw do
     root :to => 'activity_feeds#index'
   end
 
-  resources :flash_notifies
-
   namespace :admin do
     resources :users do
       get :list, :on => :collection
@@ -34,6 +32,7 @@ Rosa::Application.routes.draw do
         get :reject
       end
     end
+    resources :flash_notifies
     resources :event_logs, :only => :index
     constraints AdminAccess do
       mount Resque::Server => 'resque'

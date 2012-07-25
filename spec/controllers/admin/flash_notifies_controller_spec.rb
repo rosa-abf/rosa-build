@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe FlashNotifiesController do
+describe Admin::FlashNotifiesController do
   before(:each) do
     stub_symlink_methods
 
@@ -68,7 +68,7 @@ describe FlashNotifiesController do
 
     it 'should be able to perform create action' do
       post :create, @create_params
-      response.should redirect_to(flash_notifies_path)
+      response.should redirect_to(admin_flash_notifies_path)
     end
 
     it 'should change objects count on create' do
@@ -77,7 +77,7 @@ describe FlashNotifiesController do
 
     it 'should be able to perform destroy action' do
       delete :destroy, :id => @flash_notify
-      response.should redirect_to(flash_notifies_path)
+      response.should redirect_to(admin_flash_notifies_path)
     end
 
     it 'should change objects count on destroy' do
@@ -86,7 +86,7 @@ describe FlashNotifiesController do
 
     it 'should be able to perform update action' do
       put :update, @update_params
-      response.should redirect_to(flash_notifies_path)
+      response.should redirect_to(admin_flash_notifies_path)
     end
 
     it 'should change flash notify body on update' do

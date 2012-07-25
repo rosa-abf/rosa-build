@@ -1,11 +1,10 @@
 - if current_user || APP_CONFIG['anonymous_access']
   .flash_notify
-    - flash_notify = FlashNotify.published.first
-    - if flash_notify && flash_notify.should_show?(cookies[:flash_notify_hash])
+    - if (flash_notify = FlashNotify.published.first) && flash_notify.should_show?(cookies[:flash_notify_hash])
       .alert{:class => "alert-#{flash_notify.status}"}
         = flash_notify.body current_user.language
-        %a{:class=>"close", :'data-dismiss'=>"alert", :href=>"#", :id => 'close-alert'} &times;
+        %a.close#close-alert{:'data-dismiss'=>"alert", :href=>"#"} &times;
 
-    :javascript
-      var FLASH_HASH_ID = "#{flash_notify.hash_id}";
-      var FLASH_EXPIRES_AT = "#{Date.today + 1.year}";
+      :javascript
+        var FLASH_HASH_ID = "#{flash_notify.hash_id}";
+        var FLASH_EXPIRES_AT = "#{Date.today + 1.year}";
