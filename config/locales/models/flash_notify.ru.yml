@@ -1,0 +1,28 @@
+ru:
+  layout:
+    flash_notifies:
+      list_header: Оповещения
+      new: Новое оповещение
+      new_header: Новое оповещение
+      actions: Действия
+      edit: Редактирование
+      edit_header: Редактировать оповещение
+      delete: Удалить
+
+  flash:
+    flash_notify:
+      saved: Оповещение сохранено
+      save_error: Не получилось сохранить оповещение
+      destroyed: Оповещение удалено
+
+  activerecord:
+    models:
+      flash_notify: Оповещение
+    attributes:
+      flash_notify:
+        body_ru: Текст Ru
+        body_en: Текст En
+        published: Опубликовано
+        status: Статус
+        created_at: Создано
+        updated_at: Обновлено
