@@ -18,7 +18,7 @@ class FlashNotify < ActiveRecord::Base
     read_attribute("body_#{language}")
   end
 
-  def should_show?(cookie_id, cookie_hash_id)
-    !(cookie_id.to_i == id && cookie_hash_id == hash_id)
+  def should_show?(cookie_hash_id)
+    cookie_hash_id != hash_id && published
   end
 end

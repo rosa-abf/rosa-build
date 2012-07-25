@@ -12,7 +12,6 @@ $(document).ready(function() {
   }
 
   $('#close-alert').click(function () {
-    setCookie("flash_notify_id", FLASH_NOTIFY_ID, FLASH_EXPIRES_AT);
     setCookie("flash_notify_hash", FLASH_HASH_ID, FLASH_EXPIRES_AT);
   });
 });
