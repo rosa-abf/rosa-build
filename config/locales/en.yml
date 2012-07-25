@@ -26,6 +26,7 @@ en:
     delete: Erase
     delete_selected: Remove selected
     save: Save
+    saving: Saving
     clone: Clone
     search_by_name: Filter by name
     are_you_sure: "Sure?"
