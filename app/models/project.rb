@@ -38,7 +38,7 @@ class Project < ActiveRecord::Base
 
   after_create :attach_to_personal_repository
 
-  has_ancestry
+  has_ancestry :orphan_strategy => :rootify #:adopt not available yet
 
   include Modules::Models::Owner
   include Modules::Models::Git
