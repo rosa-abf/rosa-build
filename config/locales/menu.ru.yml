@@ -37,5 +37,6 @@ ru:
   admins_menu:
     users: Пользователи
     register_requests: Инвайты
+    flash_notifies: Оповещения
     event_logs: Лог событий
     resque_server: Resque
