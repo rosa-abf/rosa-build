@@ -13,7 +13,7 @@ gem 'omniauth-openid', '~> 1.0.1'
 gem 'cancan', '1.6.7' # 1.6.8 fail specs with strange error
 
 gem 'ancestry', '~> 1.3.0'
-gem 'paperclip', '~> 3.1.3'
+gem 'paperclip', '~> 3.1.4'
 gem 'resque', '~> 1.21.0'
 gem 'resque-status', '~> 0.3.3'
 gem 'resque_mailer', '~> 2.1.0'
@@ -27,7 +27,7 @@ gem 'grack', :git => 'git://github.com/rdblue/grack.git', :require => 'git_http'
 gem "grit", :git => 'git://github.com/warpc/grit.git' #, :path => '~/Sites/code/grit'
 gem 'charlock_holmes', '~> 0.6.8' #, :git => 'git://github.com/brianmario/charlock_holmes.git', :branch => 'bundle-icu'
 # gem 'ruby-filemagic', '~> 0.4.2', :require => 'filemagic/ext'
-gem 'github-linguist', '~> 2.0.1', :require => 'linguist'
+gem 'github-linguist', '~> 2.1.2', :require => 'linguist'
 gem 'diff-display', '~> 0.0.1'
 
 # Wiki

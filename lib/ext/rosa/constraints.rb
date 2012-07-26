@@ -21,13 +21,11 @@ module Rosa
 
     class Treeish
       def self.matches?(request)
-        # raise request.params.inspect
-        # params = request.env['action_dispatch.request.path_parameters'] || request.params
         params = request.path_parameters
         if params[:treeish] # parse existing branch (tag) and path
           branch_or_tag = begin
             (p = Project.find_by_owner_and_name params[:owner_name], params[:project_name]) &&
-            (p.repo.branches + p.repo.tags).detect{|t| params[:treeish].start_with?(t.name)}.try(:name) ||
+            p.repo.branches_and_tags.detect{|t| params[:treeish].start_with?(t.name)}.try(:name) ||
             params[:treeish].split('/').first
           end
           if path = params[:treeish].sub(branch_or_tag, '')[1..-1] and path.present?

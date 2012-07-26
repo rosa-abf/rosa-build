@@ -104,6 +104,11 @@ describe Platforms::MassBuildsController do
       response.should redirect_to(new_user_session_path)
     end
 
+    it "should not be able to perform cancel action" do
+      post :cancel, :platform_id => @platform, :id => @mass_build
+      response.should redirect_to(new_user_session_path)
+    end
+
     it 'should not change objects count on create success' do
       lambda { post :create, @create_params }.should change{ MassBuild.count }.by(0)
     end

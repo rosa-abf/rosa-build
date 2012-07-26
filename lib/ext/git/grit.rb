@@ -62,7 +62,7 @@ module Grit
     end
 
     protected
-    
+
     # store all associated MIME::Types inside class
     def set_associated_mimes
       @associated_mimes ||= []

@@ -6,15 +6,15 @@
     \|
   = number_to_human_size @blob.size
 .r
-  - if @blob.render_as == :text and can? :write, @project and @branch.present?
+  - if @blob.render_as == :text && can?(:write, @project) && @branch.present?
     = link_to "Edit", edit_blob_path(@project, @treeish, @path)
     \|
-  - if @blob.render_as == :text and params[:action] != 'show'
+  - if @blob.render_as == :text && params[:action] != 'show'
     = link_to "Normal", blob_path(@project, @treeish, @path)
     \|
   = link_to "Raw", raw_path(@project, @treeish, @path)
   \|
-  - if @blob.render_as == :text and params[:action] != 'blame'
+  - if @blob.render_as == :text && params[:action] != 'blame'
     = link_to "Blame", blame_path(@project, @treeish, @path)
     \|
   = link_to "History", commits_path(@project, @treeish, @path)

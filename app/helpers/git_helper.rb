@@ -47,7 +47,6 @@ module GitHelper
     end
   end
 
-  # TODO This is very dirty hack. Maybe need to be changed.
   def branch_selector_options(project)
     p = params.dup
     p.delete(:path) if p[:path].present? # to root path
@@ -55,18 +54,17 @@ module GitHelper
     current = url_for(p).split('?', 2).first
 
     res = []
-    res << [I18n.t('layout.git.repositories.commits'), [truncate(params[:treeish], :length => 20)]] unless (project.repo.branches + project.repo.tags).map(&:name).include?(params[:treeish] || project.default_branch)
-    res << [I18n.t('layout.git.repositories.branches'), project.repo.branches.map{|b| [truncate(b.name, :length => 20), url_for(p.merge :treeish => b.name).split('?', 2).first]}]
-    res << [I18n.t('layout.git.repositories.tags'), project.repo.tags.map{|t| [truncate(t.name, :length => 20), url_for(p.merge :treeish => t.name).split('?', 2).first]}]
+    res << [I18n.t('layout.git.repositories.commits'), [params[:treeish].truncate(20)]] unless project.repo.branches_and_tags.map(&:name).include?(params[:treeish] || project.default_branch)
+    linking = Proc.new {|t| [t.name.truncate(20), url_for(p.merge :treeish => t.name).split('?', 2).first]}
+    res << [I18n.t('layout.git.repositories.branches'), project.repo.branches.map(&linking)]
+    res << [I18n.t('layout.git.repositories.tags'), project.repo.tags.map(&linking)]
 
     grouped_options_for_select(res, current)
   end
 
   def versions_for_group_select(project)
-    [
-      ['Branches', project.repo.branches.map{|b| "latest_#{b.name}"}],
-      ['Tags', project.repo.tags.map(&:name)]
-    ]
+    [ ['Branches', project.repo.branches.map{|b| "latest_#{b.name}"}],
+      ['Tags', project.repo.tags.map(&:name)] ]
   end
   
   def split_commits_by_date(commits)

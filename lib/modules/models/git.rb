@@ -60,11 +60,8 @@ module Modules
       end
 
       def paginate_commits(treeish, options = {})
-        options[:page] = 1 unless options[:page].present?
-        options[:page] = options[:page].to_i
-
-        options[:per_page] = 20 unless options[:per_page].present?
-        options[:per_page] = options[:per_page].to_i
+        options[:page] = options[:page].try(:to_i) || 1
+        options[:per_page] = options[:per_page].try(:to_i) || 20
 
         skip = options[:per_page] * (options[:page] - 1)
         last_page = (skip + options[:per_page]) >= repo.commit_count(treeish)
@@ -72,26 +69,13 @@ module Modules
         [repo.commits(treeish, options[:per_page], skip), options[:page], last_page]
       end
 
-      def last_active_branch
-        @last_active_branch ||= repo.branches.inject do |r, c|
-          r_last = r.commit.committed_date || r.commit.authored_date unless r.nil?
-          c_last = c.commit.committed_date || c.commit.authored_date
-          if r.nil? or r_last < c_last
-            r = c
-          end
-          r
-        end
-        @last_active_branch
-      end
-
       def tree_info(tree, treeish = nil, path = nil)
-        treeish = tree.id unless treeish.present?
+        treeish ||= tree.id
         # initialize result as hash of <tree_entry> => nil
         res = (tree.trees.sort + tree.blobs.sort).inject({}){|h, e| h.merge!({e => nil})}
         # fills result vith commits that describes this file
         res = res.inject(res) do |h, (entry, commit)|
-          # only if commit == nil ...
-          if commit.nil? and entry.respond_to? :name
+          if commit.nil? and entry.respond_to?(:name) # only if commit == nil
             # ... find last commit corresponds to this file ...
             c = repo.log(treeish, File.join([path, entry.name].compact), :max_count => 1).first
             # ... and add it to result.
