@@ -32,6 +32,7 @@ Rosa::Application.routes.draw do
         get :reject
       end
     end
+    resources :flash_notifies
     resources :event_logs, :only => :index
     constraints Rosa::Constraints::AdminAccess do
       mount Resque::Server => 'resque'
