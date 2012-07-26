@@ -82,6 +82,12 @@ module Grit
       return 1
     end
   end
+
+  class Repo
+    def branches_and_tags
+      branches + tags # @branches_and_tags ||= # ???
+    end
+  end
 end
 
 Grit::Git.git_timeout = 60
