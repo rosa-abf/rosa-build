@@ -15,8 +15,30 @@ class ApplicationController < ActionController::Base
   helper_method :get_owner
 
   rescue_from CanCan::AccessDenied do |exception|
-    redirect_to forbidden_url, :alert => t("flash.exception_message")
+    respond_to do |format|
+      format.json { render :json => {:message => t("flash.exception_message")}.to_json }
+      format.html { redirect_to forbidden_url, :alert => t("flash.exception_message") }
+    end
   end
+
+  rescue_from Exception do |exception|
+    respond_to do |format|
+      format.json { render :json => {:message => t("flash.500_message")}.to_json }
+      format.html { redirect_to '/500.html', :alert => t("flash.500_message") }
+    end
+  end
+
+  [ActiveRecord::RecordNotFound,
+   ActionController::RoutingError,
+   ActionController::UnknownController,
+   ActionController::UnknownAction].each do |ext|
+    rescue_from ext do |exception|
+      respond_to do |format|
+        format.json { render :json => {:message => t("flash.404_message")}.to_json }
+        format.html { redirect_to '/404.html', :alert => t("flash.404_message") }
+      end
+    end
+   end
 
   protected
 

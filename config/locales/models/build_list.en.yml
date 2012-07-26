@@ -60,7 +60,9 @@ en:
       show: Show
       cancel: Cancel build
       cancel_success: 'Build canceled'
+      publish_success: 'Build published'
       cancel_fail: 'Errors during build cancelation!'
+      publish_fail: 'Errors during build publishing!'
       publish_success: 'Build is queued for publishing'
       reject_publish_success: 'Publishing rejected'
       publish_fail: 'Errors during build publishing!'

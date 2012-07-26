@@ -1,0 +1,38 @@
+<%# TODO: May be will be better use .to_json(:only => ...) method for @build_list object %>
+{
+  "id": <%=@build_list.id%>,
+  "bs_id": <%=@build_list.bs_id.to_json%>,
+  "name": "<%=@build_list.name%>",
+  "container_path": "<%=@build_list.container_path.to_json%>",
+  "status": <%=@build_list.status%>,
+  "project_version": "<%=@build_list.project_version%>",
+  "project_name": "<%=@build_list.project.name%>",
+  "project_id": <%=@build_list.project_id%>,
+  "build_for_platform_id": <%=@build_list.build_for_platform_id%>,
+  "build_for_platform_name": "<%=@build_list.build_for_platform.name%>",
+  "save_to_platform_id": <%=@build_list.save_to_platform_id%>,
+  "save_to_platform_name": "<%=@build_list.save_to_platform.name%>",
+  "arch_name": "<%=@build_list.arch.name%>",
+  "notified_at": "<%=@build_list.notified_at.to_json%>",
+  "is_circle": <%=@build_list.is_circle%>,
+  "update_type": "<%=@build_list.update_type%>",
+  "build_requires": <%=@build_list.build_requires%>,
+  "auto_publish": <%=@build_list.auto_publish%>,
+  "package_version": <%=@build_list.package_version%>,
+  "commit_hash": <%=@build_list.commit_hash.to_json%>,
+  "duration": <%=@build_list.duration.to_json%>,
+  "mass_build_id": <%=@build_list.mass_build_id.to_json%>,
+  "advisory_id": <%=@build_list.advisory_id.to_json%>,
+  "user": {
+    "id": <%=@build_list.user_id%>,
+    "name": "<%=@build_list.user.name%>"
+  },
+  "additional_repos": [
+    <% @build_list.additional_repos.each do |repo| %>
+      {
+        "id": <%=repo.id%>,
+        "name": "<%=repo.name%>"
+      }
+    <% end if @build_list.additional_repos %>
+  ]
+}

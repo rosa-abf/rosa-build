@@ -41,8 +41,10 @@ class Projects::BuildListsController < Projects::BaseController
 
   def create
     notices, errors = [], []
+    json_report = {:build_lists => []}
     @platform = Platform.find params[:build_list][:save_to_platform_id]
     params[:build_list][:auto_publish] = false if @platform.released
+
     Arch.where(:id => params[:arches]).each do |arch|
       Platform.main.where(:id => params[:build_for_platforms]).each do |build_for_platform|
         @build_list = @project.build_lists.build(params[:build_list])
@@ -52,20 +54,29 @@ class Projects::BuildListsController < Projects::BaseController
         @build_list.priority = current_user.build_priority # User builds more priority than mass rebuild with zero priority
         flash_options = {:project_version => @build_list.project_version, :arch => arch.name, :build_for_platform => build_for_platform.name}
         if @build_list.save
-          notices << t("flash.build_list.saved", flash_options)
+          msg = t("flash.build_list.saved", flash_options)
+          notices << msg
         else
-          errors << t("flash.build_list.save_error", flash_options)
+          msg = t("flash.build_list.save_error", flash_options)
+          errors << msg
         end
+        json_report[:build_lists] << {"id" => @build_list.id, "message" => msg}
       end
     end
+
     errors << t("flash.build_list.no_arch_or_platform_selected") if errors.blank? and notices.blank?
-    if errors.present?
-      @build_list ||= BuildList.new
-      flash[:error] = errors.join('<br>').html_safe
-      render :action => :new
-    else
-      flash[:notice] = notices.join('<br>').html_safe
-      redirect_to project_build_lists_path(@project)
+    respond_to do |format|
+      format.html {
+        if errors.present?
+          @build_list ||= BuildList.new
+          flash[:error] = errors.join('<br>').html_safe
+          render :action => :new
+        else
+          flash[:notice] = notices.join('<br>').html_safe
+          redirect_to project_build_lists_path(@project)
+        end
+      }
+      format.json { render :json => json_report.to_json }
     end
   end
 
@@ -85,21 +96,29 @@ class Projects::BuildListsController < Projects::BaseController
   end
 
   def cancel
-    if @build_list.cancel
-      redirect_to :back, :notice => t('layout.build_lists.cancel_success')
-    else
-      redirect_to :back, :notice => t('layout.build_lists.cancel_fail')
+    respond_to do |format|
+      if @build_list.cancel
+        format.html { redirect_to :back, :notice => t('layout.build_lists.cancel_success') }
+        format.json { render :json => {:is_canceled => true, :message => t('layout.build_lists.cancel_success')} }
+      else
+        format.html { redirect_to :back, :notice => t('layout.build_lists.cancel_fail') }
+        format.json { render :json => {:is_canceled => false, :message => t('layout.build_lists.cancel_fail')} }
+      end
     end
   end
 
   def publish_build
-    if params[:status].to_i == 0 # ok
-      @build_list.published
-    else
-      @build_list.fail_publish
-    end
+    respond_to do |format|
+      if params[:status].to_i == 0 # ok
+        @build_list.published
+        format.json { render :json => {:is_published => true, :message => t('layout.build_lists.publish_success')} }
+      else
+        @build_list.fail_publish
+        format.json { render :json => {:is_published => false, :message => t('layout.build_lists.publish_fail')} }
+      end
 
-    render :nothing => true, :status => 200
+      format.html { render :nothing => true, :status => 200 }
+    end
   end
 
   def status_build
