@@ -85,7 +85,7 @@
     = link_to t("layout.build_lists.cancel"), cancel_build_list_path(@build_list),
               :method => :put, :confirm => t("layout.confirm"), :class => 'button'
 
-  - if @build_list.can_publish? and @build_list.save_to_platform.released and @build_list.advisory.nil?
+  - if @build_list.can_publish? and @build_list.save_to_platform.released and @build_list.advisory.nil? and can?(:publish, @build_list)
     #advisory_block
       .leftlist= label_tag :attach_advisory, t("layout.build_lists.attached_advisory")
       .rightlist
