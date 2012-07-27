@@ -60,7 +60,6 @@ class Admin::UsersController < Admin::BaseController
     end
     @filter = params[:filter] || 'all'
     @users = @users.send(@filter) if ['real', 'admin', 'banned'].include? @filter
-    @total_user = @users.count
     @users = @users.order(order)
 
     render :partial => 'users_ajax', :layout => false

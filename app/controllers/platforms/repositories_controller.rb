@@ -81,9 +81,8 @@ class Platforms::RepositoriesController < Platforms::BaseController
       :per_page => params[:iDisplayLength].present? ? params[:iDisplayLength] : 25
     )
 
-    @total_projects = @projects.count
+    @total_projects_count = @projects.count
     @projects = @projects.search(params[:sSearch]).search_order if params[:sSearch].present?
-    @total_project = @projects.count
     @projects = @projects.order(order)
 
     render :partial => (params[:added] == "true") ? 'project' : 'proj_ajax', :layout => false

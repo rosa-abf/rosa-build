@@ -8,5 +8,5 @@ end
 
 json.sEcho                params[:sEcho] || -1
 json.iTotalRecords        @total_projects
-json.iTotalDisplayRecords @total_project
+json.iTotalDisplayRecords @projects.count
 json.aaData               projs 

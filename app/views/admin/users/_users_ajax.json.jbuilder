@@ -17,5 +17,5 @@ end
 
 json.sEcho                params[:sEcho].to_i || -1
 json.iTotalRecords        @total_users
-json.iTotalDisplayRecords @total_user
+json.iTotalDisplayRecords @users.count
 json.aaData               users
