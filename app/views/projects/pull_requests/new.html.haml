@@ -51,10 +51,10 @@
 :javascript
   $(function() {
     $('input#base_refs').autocomplete({
-      source: #{@pull.base_project.branches_and_tags.map &:name}
+      source: #{@pull.base_project.repo.branches_and_tags.map &:name}
     });
 
     $('input#head_refs').autocomplete({
-      source: #{@project.branches_and_tags.map &:name}
+      source: #{@project.repo.branches_and_tags.map &:name}
     });
   });

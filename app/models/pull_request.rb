@@ -9,7 +9,7 @@ class PullRequest < ActiveRecord::Base
   validate :uniq_merge
   validates_each :head_ref, :base_ref do |record, attr, value|
     project = attr == :head_ref ? record.head_project : record.base_project
-    if !((project.branches + project.tags).map(&:name).include?(value) || project.git_repository.commits.map(&:id).include?(value))
+    if !((project.repo.branches_and_tags).map(&:name).include?(value) || project.git_repository.commits.map(&:id).include?(value))
       record.errors.add attr, I18n.t('projects.pull_requests.wrong_ref')
     end
   end
@@ -194,13 +194,13 @@ class PullRequest < ActiveRecord::Base
 
   def clean
     Dir.chdir(path) do
-      base_project.branches.each {|branch| system 'git', 'checkout', branch.name}
+      base_project.repo.branches.each {|branch| system 'git', 'checkout', branch.name}
       system 'git', 'checkout', base_ref
 
-      base_project.branches.each do |branch|
+      base_project.repo.branches.each do |branch|
         system 'git', 'branch', '-D', branch.name unless [base_ref, head_branch].include? branch.name
       end
-      base_project.tags.each do |tag|
+      base_project.repo.tags.each do |tag|
         system 'git', 'tag', '-d', tag.name unless [base_ref, head_branch].include? tag.name
       end
     end

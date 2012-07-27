@@ -1,0 +1,6 @@
+.gutter= render_line_numbers(@blob.loc)
+#output.formatted.cm-s-default
+  %pre#code
+    :preserve
+      #{h(@blob.data).html_safe}
+.both

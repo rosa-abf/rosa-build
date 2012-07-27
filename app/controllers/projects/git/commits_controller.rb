@@ -1,23 +1,15 @@
 # -*- encoding : utf-8 -*-
 class Projects::Git::CommitsController < Projects::Git::BaseController
-
   def index
-    @branch_name = params[:treeish] || @project.default_branch
-    @branch = @project.branch(@branch_name)
-    @path = params[:path]
-
     if @path.present?
-      @commits = @git_repository.repo.log(@branch_name, @path)
-      @render_paginate = false
+      @commits = @project.repo.log(@treeish, @path)
     else
-      @commits, @page, @last_page = @git_repository.paginate_commits(@branch_name, :page => params[:page])
-      @render_paginate = true
+      @commits, @page, @last_page = @project.paginate_commits(@treeish, :page => params[:page])
     end
   end
 
   def show
-    @commit = @git_repository.commit(params[:id]) # @git_repository.commits(params[:id]).first
-
+    @commit = @project.repo.commit(params[:id])
     respond_to do |format|
       format.html
       format.diff  { render :text => (@commit.diffs.map(&:diff).join("\n") rescue ''), :content_type => "text/plain" }

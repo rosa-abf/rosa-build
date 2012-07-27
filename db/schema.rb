@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120703101719) do
+ActiveRecord::Schema.define(:version => 20120719045806) do
 
   create_table "activity_feeds", :force => true do |t|
     t.integer  "user_id",    :null => false
@@ -157,6 +157,15 @@ ActiveRecord::Schema.define(:version => 20120703101719) do
     t.text     "message"
     t.datetime "created_at",     :null => false
     t.datetime "updated_at",     :null => false
+  end
+
+  create_table "flash_notifies", :force => true do |t|
+    t.text     "body_ru",                      :null => false
+    t.text     "body_en",                      :null => false
+    t.string   "status",                       :null => false
+    t.boolean  "published",  :default => true, :null => false
+    t.datetime "created_at",                   :null => false
+    t.datetime "updated_at",                   :null => false
   end
 
   create_table "groups", :force => true do |t|

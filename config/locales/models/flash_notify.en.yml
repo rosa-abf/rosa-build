@@ -1,0 +1,28 @@
+en:
+  layout:
+    flash_notifies:
+      list_header: Notifies
+      new: New notify
+      new_header: New notify
+      actions: Actions
+      edit: Edit
+      edit_header: Edit notify
+      delete: Delete
+
+  flash:
+    flash_notify:
+      saved: Notify added
+      save_error: Unable to add notify
+      destroyed: Notify deleted
+
+  activerecord:
+    models:
+      flash_notify: Notify
+    attributes:
+      flash_notify:
+        body_ru: Body Ru
+        body_en: Body En
+        published: Published
+        status: Status
+        created_at: Created
+        updated_at: Updated

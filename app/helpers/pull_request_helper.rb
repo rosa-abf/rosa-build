@@ -37,7 +37,7 @@ module PullRequestHelper
   end
 
   def ref_path project, ref
-    return tree_path(project, ref) if project.branches_and_tags.map(&:name).include? ref
+    return tree_path(project, ref) if project.repo.branches_and_tags.map(&:name).include? ref
     return commit_path(project, ref) if project.git_repository.commit ref
     '#'
   end

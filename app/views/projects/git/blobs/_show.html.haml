@@ -4,37 +4,10 @@
   = render 'fork'
 .both
 
-- render_way = choose_render_way(@blob)
 .file
-  .top= render 'top', :render_way => render_way
-  .data
-    - case render_way
-    - when :image
-      %table.table.blob
-        %tr
-          %td.lines
-          %td.blob
-            :plain
-              <br/>
-              <center> <img src='?raw=true'/></center>
-              <br/>
-    - when :text
-      .gutter= render_line_numbers(@text.length)
-      #output.formatted.cm-s-default
-        %pre#code
-          =#{render_blob(@blob)}
-          :preserve
-            #{h(@blob.data).html_safe}
-      .both
-    - when :binary
-      %table.table.blob
-        %tr
-          %td.lines
-          %td.blob
-            :plain
-              <br/>
-              <pre>#{ link_to @blob.basename, raw_path(@project, @treeish, @path) }</pre>
-              <br/>
+  .top= render 'top'
+  .data= render "render_as_#{@blob.render_as}"
+
 :javascript
   $(document).ready(function() {
     var text = $('#code').text().replace(/&amp;/gi, '&');

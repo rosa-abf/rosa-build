@@ -94,8 +94,7 @@ class Projects::PullRequestsController < Projects::BaseController
     #Maybe slow? ILIKE?
     items = Project.accessible_by(current_ability, :membered)
     items << PullRequest.default_base_project(@project)
-    logger.debug "items.count is #{items.count}"
-    items.select! {|e| Regexp.new(params[:term].downcase).match(e.name.downcase) && e.branches.count > 0}
+    items.select! {|e| Regexp.new(params[:term].downcase).match(e.name.downcase) && e.repo.branches.count > 0}
     items.uniq!
     render :json => json_for_autocomplete_base(items)#, :full_name, [:branches])
 
@@ -110,7 +109,7 @@ class Projects::PullRequestsController < Projects::BaseController
   def json_for_autocomplete_base items
     items.collect do |project|
       hash = {"id" => project.id.to_s, "label" => project.full_name, "value" => project.full_name}
-      hash[:refs] = project.branches_and_tags.map &:name
+      hash[:refs] = project.repo.branches_and_tags.map &:name
       hash
     end
   end
