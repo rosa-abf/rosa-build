@@ -4,36 +4,19 @@ class Projects::Git::BaseController < Projects::BaseController
   skip_before_filter :authenticate_user!, :only => [:show, :index, :blame, :raw, :archive] if APP_CONFIG['anonymous_access']
   load_and_authorize_resource :project
 
-  before_filter :find_git_repository
-  before_filter :find_tags
-  before_filter :find_branches
-  before_filter :set_treeish
-  before_filter :set_current_tag
-  before_filter :set_current_branch
+  before_filter :set_treeish_and_path
+  before_filter :set_branch_and_tree
 
   protected
 
-  def find_git_repository
-    @git_repository = @project.git_repository
-  end
-
-  def find_tags
-    @tags = @git_repository.tags
-  end
-
-  def find_branches
-    @branches = @git_repository.branches
-  end
-
-  def set_treeish
+  def set_treeish_and_path
     @treeish = params[:treeish].presence || @project.default_branch
+    @path = params[:path]
   end
 
-  def set_current_tag
-    @current_tag = @tags.select{|t| t.name == @treeish }.first
-  end
-
-  def set_current_branch
-    @current_branch = @branches.select{|b| b.name == @treeish }.first
+  def set_branch_and_tree
+    @branch = @project.repo.branches.detect{|b| b.name == @treeish}
+    @tree = @project.repo.tree(@treeish)
+    # raise Grit::NoSuchPathError if @tree.blobs.blank?
   end
 end

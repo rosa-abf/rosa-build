@@ -78,8 +78,8 @@ describe Projects::CommentsController do
   before(:each) do
     stub_symlink_methods
     @project = FactoryGirl.create(:project)
-    %x(cp -Rf #{Rails.root}/spec/tests.git/* #{@project.git_repository.path}) # maybe FIXME ?
-    @commit = @project.git_repository.commits.first
+    %x(cp -Rf #{Rails.root}/spec/tests.git/* #{@project.repo.path}) # maybe FIXME ?
+    @commit = @project.repo.commits.first
 
     @create_params = {:comment => {:body => 'I am a comment!'}, :owner_name => @project.owner.uname, :project_name => @project.name, :commit_id => @commit.id}
     @update_params = {:comment => {:body => 'updated'}, :owner_name => @project.owner.uname, :project_name => @project.name, :commit_id => @commit.id}

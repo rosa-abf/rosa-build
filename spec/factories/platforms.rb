@@ -8,7 +8,7 @@ FactoryGirl.define do
     association :owner, :factory => :user
 
     factory :platform_with_repos do
-      after_create {|p| FactoryGirl.create_list(:repository, 1, platform: p)}
+      after(:create) {|p| FactoryGirl.create_list(:repository, 1, platform: p)}
     end
 
     factory :personal_platform do

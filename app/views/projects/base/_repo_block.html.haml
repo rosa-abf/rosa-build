@@ -6,8 +6,8 @@
           =image_tag 'zip.png', :alt => 'ZIP'
           %b.caret
         %ul.dropdown-menu
-          %li=link_to "tar.gz", archive_path(project, 'tar', @treeish)
-          %li=link_to "zip", archive_path(project, 'zip', @treeish)
+          %li=link_to "tar.gz", archive_path(project, @treeish, 'tar')
+          %li=link_to "zip", archive_path(project, @treeish, 'zip')
 
   = text_field_tag :url, git_repo_url(project.git_repo_name), :class => 'name', :spellcheck => 'false', :readonly => true
   .git_help ?
