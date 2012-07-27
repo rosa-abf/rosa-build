@@ -110,14 +110,20 @@ class BuildList < ActiveRecord::Base
     # WTF? around_transition -> infinite loop
     before_transition do |build_list, transition|
       if build_list.mass_build && MassBuild::COUNT_STATUSES.include?(BuildList::HUMAN_STATUSES[build_list.status])
-        MassBuild.decrement_counter "#{BuildList::HUMAN_STATUSES[build_list.status].to_s}_count", build_list.mass_build_id
+        #MassBuild.decrement_counter "#{BuildList::HUMAN_STATUSES[build_list.status].to_s}_count", build_list.mass_build_id
+        MassBuild.transaction do
+          MassBuild.lock(true).decrement_counter "#{BuildList::HUMAN_STATUSES[build_list.status].to_s}_count", build_list.mass_build_id
+        end
         build_list.counters_logs.create(:status => build_list.status, :event => "decrement", :mass_build_id => build_list.mass_build_id)
       end
     end
 
     after_transition do |build_list, transition|
       if build_list.mass_build && MassBuild::COUNT_STATUSES.include?(BuildList::HUMAN_STATUSES[build_list.status])
-        MassBuild.increment_counter "#{BuildList::HUMAN_STATUSES[build_list.status].to_s}_count", build_list.mass_build_id
+        #MassBuild.increment_counter "#{BuildList::HUMAN_STATUSES[build_list.status].to_s}_count", build_list.mass_build_id
+        MassBuild.transaction do
+          MassBuild.lock(true).increment_counter "#{BuildList::HUMAN_STATUSES[build_list.status].to_s}_count", build_list.mass_build_id
+        end
         build_list.counters_logs.create(:status => build_list.status, :event => "increment", :mass_build_id => build_list.mass_build_id)
       end
     end
