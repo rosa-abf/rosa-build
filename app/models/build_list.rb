@@ -9,7 +9,6 @@ class BuildList < ActiveRecord::Base
   belongs_to :mass_build, :counter_cache => true
   has_many :items, :class_name => "BuildList::Item", :dependent => :destroy
   has_many :packages, :class_name => "BuildList::Package", :dependent => :destroy
-  has_many :counters_logs, :dependent => :destroy
 
   UPDATE_TYPES = %w[security bugfix enhancement recommended newpackage]
   RELEASE_UPDATE_TYPES = %w[security bugfix]
@@ -101,8 +100,6 @@ class BuildList < ActiveRecord::Base
   after_commit :place_build
   after_destroy :delete_container
 
-  after_create lambda { |build_list| build_list.counters_logs.create(:status => build_list.status, :event => "create", :mass_build_id => build_list.mass_build_id) }
-
   @queue = :clone_and_build
 
   state_machine :status, :initial => :waiting_for_response do
@@ -110,21 +107,13 @@ class BuildList < ActiveRecord::Base
     # WTF? around_transition -> infinite loop
     before_transition do |build_list, transition|
       if build_list.mass_build && MassBuild::COUNT_STATUSES.include?(BuildList::HUMAN_STATUSES[build_list.status])
-        #MassBuild.decrement_counter "#{BuildList::HUMAN_STATUSES[build_list.status].to_s}_count", build_list.mass_build_id
-        MassBuild.transaction do
-          MassBuild.lock(true).decrement_counter "#{BuildList::HUMAN_STATUSES[build_list.status].to_s}_count", build_list.mass_build_id
-        end
-        build_list.counters_logs.create(:status => build_list.status, :event => "decrement", :mass_build_id => build_list.mass_build_id)
+        MassBuild.decrement_counter "#{BuildList::HUMAN_STATUSES[build_list.status].to_s}_count", build_list.mass_build_id
       end
     end
 
     after_transition do |build_list, transition|
       if build_list.mass_build && MassBuild::COUNT_STATUSES.include?(BuildList::HUMAN_STATUSES[build_list.status])
-        #MassBuild.increment_counter "#{BuildList::HUMAN_STATUSES[build_list.status].to_s}_count", build_list.mass_build_id
-        MassBuild.transaction do
-          MassBuild.lock(true).increment_counter "#{BuildList::HUMAN_STATUSES[build_list.status].to_s}_count", build_list.mass_build_id
-        end
-        build_list.counters_logs.create(:status => build_list.status, :event => "increment", :mass_build_id => build_list.mass_build_id)
+        MassBuild.increment_counter "#{BuildList::HUMAN_STATUSES[build_list.status].to_s}_count", build_list.mass_build_id
       end
     end
 

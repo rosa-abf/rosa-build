@@ -2,7 +2,6 @@ class MassBuild < ActiveRecord::Base
   belongs_to :platform
   belongs_to :user
   has_many :build_lists, :dependent => :destroy
-  has_many :counters_logs, :dependent => :destroy
 
   scope :by_platform, lambda { |platform| where(:platform_id => platform.id) }
 
