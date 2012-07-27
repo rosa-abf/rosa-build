@@ -41,11 +41,10 @@ class Projects::BuildListsController < Projects::BaseController
 
   def create
     notices, errors = [], []
-    save_to_platform_id, save_to_repository_id = params[:build_list][:save_to_platform_id].split('-').map{|i| i.to_i}
-    params[:build_list].merge!({:save_to_platform_id => save_to_platform_id, :save_to_repository_id => save_to_repository_id})
 
-    @platform = Platform.find save_to_platform_id
-    @repository = Repository.find save_to_repository_id
+    @repository = Repository.find params[:build_list][:save_to_repository_id]
+    @platform = @repository.platform
+    params[:build_list][:save_to_platform_id] = @platform.id
     params[:build_list][:auto_publish] = false if @platform.released
 
     Arch.where(:id => params[:arches]).each do |arch|
