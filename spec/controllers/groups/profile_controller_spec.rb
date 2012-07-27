@@ -145,12 +145,12 @@ describe Groups::ProfileController do
     end
 
     it "should remove user from groups" do
-      get :remove_user, :id => @group
+      delete :remove_user, :id => @group
       response.should redirect_to(groups_path)
     end
 
     it "should change relations count" do
-      lambda { get :remove_user, :id => @group }.should change{ Relation.count }.by(-1)
+      lambda { delete :remove_user, :id => @group }.should change{ Relation.count }.by(-1)
     end
 
     it_should_behave_like 'no group user'
