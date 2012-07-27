@@ -11,7 +11,7 @@
             - else
               = image_tag("lock.png")
           %td
-            = link_to "#{project.owner.uname}/#{project.name}", project_path(project)
+            = link_to project.fullname, project_path(project)
       %tr
         %td
           \ 

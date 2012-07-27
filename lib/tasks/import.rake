@@ -99,20 +99,20 @@ namespace :import do
           if version != project_import.version.to_s and File.mtime(srpm_file) > project_import.file_mtime
             unless project = project_import.project
               if project = repository.projects.find_by_name(name) || repository.projects.by_name(name).first # fallback to speedup
-                say "Found project '#{project.owner.uname}/#{project.name}'"
+                say "Found project '#{project.fullname}'"
               elsif scoped = Project.where(:owner_id => owner.id, :owner_type => owner.class) and
                     project = scoped.find_by_name(name) || scoped.by_name(name).first
                 repository.projects << project
-                say "Add project '#{project.owner.uname}/#{project.name}' to '#{platform.name}/#{repository.name}'"
+                say "Add project '#{project.fullname}' to '#{platform.name}/#{repository.name}'"
               else
                 description = ::Iconv.conv('UTF-8//IGNORE', 'UTF-8', `rpm -q --qf '[%{Description}]' -p #{srpm_file}`)
                 project = Project.create!(:name => name, :description => description) {|p| p.owner = owner}
                 repository.projects << project
-                say "Create project #{project.owner.uname}/#{project.name} in #{platform.name}/#{repository.name}"
+                say "Create project #{project.fullname} in #{platform.name}/#{repository.name}"
               end
             end
             project.import_srpm(srpm_file, branch)
-            say "New version (#{version}) for '#{project.owner.uname}/#{project.name}' successfully imported to branch '#{branch}'!"
+            say "New version (#{version}) for '#{project.fullname}' successfully imported to branch '#{branch}'!"
 
             project_import.project = project
             # project_import.platform = platform

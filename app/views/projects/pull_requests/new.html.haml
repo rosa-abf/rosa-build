@@ -10,7 +10,7 @@
         =hidden_field_tag :update_action, new_project_pull_requests_path
         .leftlist=f.label :base_project, t("#{ar}.base_project"), :class => :label
         .rightlist
-          =f.autocomplete_field :base_project, autocomplete_base_project_project_pull_requests_path, :value => @pull.base_project.full_name, :id_element => '#pull_request_base_project_id', :name => 'base_project'
+          =f.autocomplete_field :base_project, autocomplete_base_project_project_pull_requests_path, :value => @pull.base_project.fullname, :id_element => '#pull_request_base_project_id', :name => 'base_project'
           =f.hidden_field :base_project_id, :name => 'base_project_id'
         .both
         .leftlist=f.label :base_ref, "#{t "#{ar}.base_ref"} #{t "#{ar}.refs"}", :class => :label
@@ -18,7 +18,7 @@
           %input{:id => 'base_refs', :value => @pull.base_ref, :name => 'pull_request[base_ref]'}
         .both
         .leftlist=f.label :head_project, t("#{ar}.head_project"), :class => :label
-        .rightlist=@pull.head_project.full_name
+        .rightlist=@pull.head_project.fullname
         .both
         .leftlist=f.label :head_ref, "#{t "#{ar}.head_ref"} #{t "#{ar}.refs"}", :class => :label
         .rightlist
