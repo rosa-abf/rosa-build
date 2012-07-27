@@ -49,7 +49,7 @@ class Groups::ProfileController < Groups::BaseController
   end
 
   def remove_user
-    Relation.by_object(current_user).by_target(@group).destroy_all
+    Relation.by_actor(current_user).by_target(@group).destroy_all
     redirect_to groups_path
   end
 end
