@@ -7,13 +7,12 @@ class String
     if ascii_only? # no need to encode if ascii
       force_encoding(default_encoding)
     else # should encode
+      options = {:invalid => :replace, :undef => :replace, :replace => ''}
       if (detected = detect_encoding) && detected[:encoding]
-        force_encoding(detected[:encoding])
-        encode!(default_encoding, detected[:encoding], :invalid => :replace, :undef => :replace, :replace => '')
+        force_encoding(detected[:encoding]).encode!(default_encoding, detected[:encoding], options)
       end
       # re-encode through UTF-16 to filter incorrect symbols
-      encode!(Encoding::UTF_16, default_encoding, :invalid => :replace, :undef => :replace, :replace => '')
-      encode!(default_encoding, Encoding::UTF_16)
+      encode!(Encoding::UTF_16, default_encoding, options).encode!(default_encoding, Encoding::UTF_16)
       raise unless valid_encoding? # check result
     end
   rescue
