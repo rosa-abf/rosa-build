@@ -85,7 +85,7 @@ class Projects::ProjectsController < Projects::BaseController
   end
 
   def remove_user
-    @project.relations.by_object(current_user).destroy_all
+    @project.relations.by_actor(current_user).destroy_all
     flash[:notice] = t("flash.project.user_removed")
     redirect_to projects_path
   end
