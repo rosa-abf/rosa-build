@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120719045806) do
+ActiveRecord::Schema.define(:version => 20120727141521) do
 
   create_table "activity_feeds", :force => true do |t|
     t.integer  "user_id",    :null => false
@@ -126,6 +126,7 @@ ActiveRecord::Schema.define(:version => 20120719045806) do
     t.integer  "duration"
     t.integer  "advisory_id"
     t.integer  "mass_build_id"
+    t.integer  "save_to_repository_id"
   end
 
   add_index "build_lists", ["advisory_id"], :name => "index_build_lists_on_advisory_id"
@@ -311,11 +312,11 @@ ActiveRecord::Schema.define(:version => 20120719045806) do
     t.text     "description"
     t.string   "ancestry"
     t.boolean  "has_issues",         :default => true
+    t.boolean  "has_wiki",           :default => false
     t.string   "srpm_file_name"
     t.string   "srpm_content_type"
     t.integer  "srpm_file_size"
     t.datetime "srpm_updated_at"
-    t.boolean  "has_wiki",           :default => false
     t.string   "default_branch",     :default => "master"
     t.boolean  "is_package",         :default => true,     :null => false
     t.integer  "average_build_time", :default => 0,        :null => false
@@ -386,13 +387,13 @@ ActiveRecord::Schema.define(:version => 20120719045806) do
     t.string   "email",                                  :default => "",   :null => false
     t.string   "encrypted_password",      :limit => 128, :default => "",   :null => false
     t.string   "reset_password_token"
+    t.datetime "reset_password_sent_at"
     t.datetime "remember_created_at"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "uname"
     t.string   "role"
     t.string   "language",                               :default => "en"
-    t.datetime "reset_password_sent_at"
     t.integer  "own_projects_count",                     :default => 0,    :null => false
     t.text     "professional_experience"
     t.string   "site"
