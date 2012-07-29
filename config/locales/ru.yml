@@ -26,6 +26,7 @@ ru:
     delete: Удалить
     delete_selected: Удалить выбранное
     save: Сохранить
+    saving: Сохранение...
     clone: Клонировать
     search_by_name: Фильтр по имени
     are_you_sure: "Вы уверены?"

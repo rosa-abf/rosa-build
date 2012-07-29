@@ -12,7 +12,7 @@ class Admin::UsersController < Admin::BaseController
   def create
     @user.role = params[:role]
     @user.confirmed_at = Time.now.utc
-    if @user.save
+    if (@user.save rescue false)
       flash[:notice] = t('flash.user.saved')
       redirect_to admin_users_path
     else
@@ -60,7 +60,6 @@ class Admin::UsersController < Admin::BaseController
     end
     @filter = params[:filter] || 'all'
     @users = @users.send(@filter) if ['real', 'admin', 'banned'].include? @filter
-    @total_user = @users.count
     @users = @users.order(order)
 
     render :partial => 'users_ajax', :layout => false
