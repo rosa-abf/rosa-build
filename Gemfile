@@ -1,6 +1,6 @@
 source 'http://rubygems.org'
 
-gem 'rails', '3.2.6' #, :git => 'git://github.com/rails/rails.git'
+gem 'rails', '3.2.7' #, :git => 'git://github.com/rails/rails.git'
 
 gem 'pg', '~> 0.14.0'
 # gem 'silent-postgres', :git => 'git://github.com/dolzenko/silent-postgres.git' #'~> 0.1.1'
@@ -31,7 +31,7 @@ gem 'github-linguist', '~> 2.1.2', :require => 'linguist'
 gem 'diff-display', '~> 0.0.1'
 
 # Wiki
-gem "gollum", "1.3.1"
+gem "gollum", :git => 'git://github.com/github/gollum.git'
 gem "redcarpet", "1.17.2"
 gem 'creole'
 gem 'rdiscount'
@@ -41,7 +41,7 @@ gem 'wikicloth'
 
 gem 'unicorn', '~> 4.3.1', :platforms => [:mri, :rbx]
 gem 'trinidad', '~> 1.0.2', :platforms => :jruby
-gem 'newrelic_rpm', '~> 3.4.0.1', :platforms => [:mri, :rbx]
+gem 'newrelic_rpm', '~> 3.4.1', :platforms => [:mri, :rbx]
 gem 'whenever', '~> 0.7.3', :require => false
 
 gem 'jbuilder', '~> 0.4.0'
