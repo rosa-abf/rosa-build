@@ -39,8 +39,8 @@ def stub_symlink_methods
 end
 
 def test_git_commit(project)
-  project.git_repository.repo.index.add('test', 'TEST')
-  project.git_repository.repo.index.commit('Test commit')
+  project.repo.index.add('test', 'TEST')
+  project.repo.index.commit('Test commit')
 end
 
 Resque.inline = true

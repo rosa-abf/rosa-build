@@ -144,6 +144,15 @@ describe Groups::ProfileController do
       @group.actors.create(:actor_type => 'User', :actor_id => @user.id, :role => 'reader')
     end
 
+    it "should remove user from groups" do
+      delete :remove_user, :id => @group
+      response.should redirect_to(groups_path)
+    end
+
+    it "should change relations count" do
+      lambda { delete :remove_user, :id => @group }.should change{ Relation.count }.by(-1)
+    end
+
     it_should_behave_like 'no group user'
     it_should_behave_like 'group user without destroy rights'
     it_should_behave_like 'group user without update rights'

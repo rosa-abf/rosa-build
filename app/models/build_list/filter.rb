@@ -20,15 +20,7 @@ class BuildList::Filter
       build_lists = build_lists.scoped_to_is_circle(@options[:is_circle]) if @options[:is_circle].present?
       build_lists = build_lists.scoped_to_project_name(@options[:project_name]) if @options[:project_name]
       build_lists = build_lists.by_mass_build(@options[:mass_build_id]) if @options[:mass_build_id]
-
-# TODO [BuildList#created_at filters] Uncomment here and in build_lists/_filter.html.haml to return filters
-#
-#      if @options[:created_at_start] || @options[:created_at_end]
-#        build_lists = build_lists.for_creation_date_period(@options[:created_at_start], @options[:created_at_end])
-#      end
-      if @options[:updated_at_start] || @options[:updated_at_end]
-        build_lists = build_lists.for_notified_date_period(@options[:updated_at_start], @options[:updated_at_end])
-      end
+      build_lists = build_lists.for_notified_date_period(@options[:updated_at_start], @options[:updated_at_end]) if @options[:updated_at_start] || @options[:updated_at_end]
     end
 
     build_lists
@@ -49,8 +41,6 @@ class BuildList::Filter
     @options = HashWithIndifferentAccess.new(options.reverse_merge({
         :ownership => nil,
         :status => nil,
-        :created_at_start => nil,
-        :created_at_end => nil,
         :updated_at_start => nil,
         :updated_at_end => nil,
         :arch_id => nil,
@@ -63,14 +53,12 @@ class BuildList::Filter
     }))
 
     @options[:ownership] = @options[:ownership].presence || (@project || !@user ? 'index' : 'owned')
-    @options[:status] = @options[:status].present? ? @options[:status].to_i : nil
-    @options[:created_at_start] = build_date_from_params(:created_at_start, @options)
-    @options[:created_at_end] = build_date_from_params(:created_at_end, @options)
+    @options[:status] = @options[:status].try(:to_i)
     @options[:updated_at_start] = build_date_from_params(:updated_at_start, @options)
     @options[:updated_at_end] = build_date_from_params(:updated_at_end, @options)
     @options[:project_version] = @options[:project_version].presence
-    @options[:arch_id] = @options[:arch_id].present? ? @options[:arch_id].to_i : nil
-    @options[:platform_id] = @options[:platform_id].present? ? @options[:platform_id].to_i : nil
+    @options[:arch_id] = @options[:arch_id].try(:to_i)
+    @options[:platform_id] = @options[:platform_id].try(:to_i)
     @options[:is_circle] = @options[:is_circle].present? ? @options[:is_circle] == "1" : nil
     @options[:bs_id] = @options[:bs_id].presence
     @options[:project_name] = @options[:project_name].presence

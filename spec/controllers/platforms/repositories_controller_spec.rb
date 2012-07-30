@@ -32,7 +32,7 @@ end
 
 shared_examples_for 'registered user' do
   it 'should be able to perform index action' do
-    get :index
+    get :index, :platform_id => @platform.id
     response.should render_template(:index)
   end
 
@@ -80,7 +80,7 @@ describe Platforms::RepositoriesController do
   context 'for guest' do
     [:index, :create].each do |action|
       it "should not be able to perform #{ action } action" do
-        get action
+        get action, :platform_id => @platform
         response.should redirect_to(new_user_session_path)
       end
     end

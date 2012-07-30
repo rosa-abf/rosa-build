@@ -20,7 +20,6 @@
     .l= render 'whereami'
   .both
 
-  - render_way = choose_render_way(@blob)
   .file
-    .top= render 'top', :render_way => render_way
+    .top= render 'top'
     .blame_data= render 'blame_table' if @blame.first.first.present?

@@ -1,20 +1,20 @@
 .l
   = @blob.mode
   \|
-  - if render_way == :text
-    #{@text.length} lines (#{@text.select{|s| s.strip.length > 0}.length} sloc)
+  - if @blob.render_as == :text
+    #{@blob.loc} lines (#{@blob.sloc} sloc)
     \|
   = number_to_human_size @blob.size
 .r
-  - if render_way == :text and can? :write, @project and @treeish.in? @project.branches.map(&:name)
+  - if @blob.render_as == :text && can?(:write, @project) && @branch.present?
     = link_to "Edit", edit_blob_path(@project, @treeish, @path)
     \|
-  - if render_way == :text and params[:action] != 'show'
+  - if @blob.render_as == :text && params[:action] != 'show'
     = link_to "Normal", blob_path(@project, @treeish, @path)
     \|
   = link_to "Raw", raw_path(@project, @treeish, @path)
   \|
-  - if render_way == :text and params[:action] != 'blame'
+  - if @blob.render_as == :text && params[:action] != 'blame'
     = link_to "Blame", blame_path(@project, @treeish, @path)
     \|
   = link_to "History", commits_path(@project, @treeish, @path)
