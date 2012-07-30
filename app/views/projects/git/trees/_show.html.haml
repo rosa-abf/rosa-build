@@ -31,7 +31,7 @@
             .pic= image_tag 'folder.png'
             .name= link_to(entry.name, tree_path(@project, @treeish, entry_path), :class => 'files-see')
         %td
-          %span{:style => "display: none;"}= commit.committed_date || commit.authored_date
-          = l(commit.committed_date || commit.authored_date, :format => :short)
+          %span{:style => "display: none;"}= date = commit.committed_date || commit.authored_date
+          = l(date, :format => :short)
         %td= commit.short_message
         %td= (commit.committer || commit.author).name

@@ -41,7 +41,7 @@ class Projects::CommentsController < Projects::BaseController
 
   def find_commentable
     @commentable = params[:issue_id].present? && @project.issues.find_by_serial_id(params[:issue_id]) ||
-                   params[:commit_id].present? && @project.git_repository.commit(params[:commit_id])
+                   params[:commit_id].present? && @project.repo.commit(params[:commit_id])
   end
 
   def find_or_build_comment

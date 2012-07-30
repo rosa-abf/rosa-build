@@ -35,7 +35,7 @@ module Grack
     def project
       @project ||= begin
         uname, name = @env['PATH_INFO'].split('/')[1,2]
-        name.gsub!(/\.git$/, '').gsub!(/\.wiki$/, '')
+        name.gsub!(/(\.wiki)?\.git$/, '')
         Project.find_by_owner_and_name uname, name
       end
     end

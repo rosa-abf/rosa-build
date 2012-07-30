@@ -76,11 +76,13 @@ class Platforms::RepositoriesController < Platforms::BaseController
       @projects = Project.joins(owner_subquery).addable_to_repository(@repository.id)
       @projects = @projects.by_visibilities('open') if @repository.platform.platform_type == 'main'
     end
-    @projects = @projects.paginate(:page => (params[:iDisplayStart].to_i/params[:iDisplayLength].to_i).to_i + 1, :per_page => params[:iDisplayLength])
+    @projects = @projects.paginate(
+      :page => (params[:iDisplayStart].to_i/(params[:iDisplayLength].present? ? params[:iDisplayLength] : 25).to_i).to_i + 1,
+      :per_page => params[:iDisplayLength].present? ? params[:iDisplayLength] : 25
+    )
 
-    @total_projects = @projects.count
+    @total_projects_count = @projects.count
     @projects = @projects.search(params[:sSearch]).search_order if params[:sSearch].present?
-    @total_project = @projects.count
     @projects = @projects.order(order)
 
     render :partial => (params[:added] == "true") ? 'project' : 'proj_ajax', :layout => false

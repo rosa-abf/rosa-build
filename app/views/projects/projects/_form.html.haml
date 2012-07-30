@@ -35,7 +35,7 @@
 .both
 - if [:edit, :update].include? act
   .leftlist= t("activerecord.attributes.project.default_branch")
-  .rightlist= f.select :default_branch, options_from_collection_for_select(@project.branches, :name, :name, @project.default_branch), :class => 'sel80', :id => 'branch_selector'
+  .rightlist= f.select :default_branch, options_from_collection_for_select(@project.repo.branches, :name, :name, @project.default_branch), :class => 'sel80', :id => 'branch_selector'
   .both
 - if [:edit, :update].include? act
   .leftlist

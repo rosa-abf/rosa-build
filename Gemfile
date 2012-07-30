@@ -2,19 +2,19 @@ source 'http://rubygems.org'
 
 gem 'rails', '3.2.6' #, :git => 'git://github.com/rails/rails.git'
 
-gem 'pg', '~> 0.13.2'
+gem 'pg', '~> 0.14.0'
 # gem 'silent-postgres', :git => 'git://github.com/dolzenko/silent-postgres.git' #'~> 0.1.1'
 gem 'redhillonrails_core', :git => 'git://github.com/chipiga/redhillonrails_core.git', :branch => 'rails31' # '~> 2.0.0.pre' # deprecated
 # gem 'schema_plus', '~> 0.2.1' # buggy shit!
 
-gem 'devise', '~> 2.0.4'
-gem 'omniauth', '~> 1.0.3'
+gem 'devise', '~> 2.1.2'
+gem 'omniauth', '~> 1.1.0'
 gem 'omniauth-openid', '~> 1.0.1'
-gem 'cancan', '~> 1.6.7'
+gem 'cancan', '1.6.7' # 1.6.8 fail specs with strange error
 
 gem 'ancestry', '~> 1.3.0'
-gem 'paperclip', '~> 3.0.4'
-gem 'resque', '~> 1.20.0'
+gem 'paperclip', '~> 3.1.4'
+gem 'resque', '~> 1.21.0'
 gem 'resque-status', '~> 0.3.3'
 gem 'resque_mailer', '~> 2.1.0'
 gem 'perform_later', '~> 1.3.0' # should be after resque_mailer
@@ -26,6 +26,8 @@ gem 'state_machine'
 gem 'grack', :git => 'git://github.com/rdblue/grack.git', :require => 'git_http'
 gem "grit", :git => 'git://github.com/warpc/grit.git' #, :path => '~/Sites/code/grit'
 gem 'charlock_holmes', '~> 0.6.8' #, :git => 'git://github.com/brianmario/charlock_holmes.git', :branch => 'bundle-icu'
+# gem 'ruby-filemagic', '~> 0.4.2', :require => 'filemagic/ext'
+gem 'github-linguist', '~> 2.1.2', :require => 'linguist'
 gem 'diff-display', '~> 0.0.1'
 
 # Wiki
@@ -39,7 +41,7 @@ gem 'wikicloth'
 
 gem 'unicorn', '~> 4.3.1', :platforms => [:mri, :rbx]
 gem 'trinidad', '~> 1.0.2', :platforms => :jruby
-gem 'newrelic_rpm', '~> 3.3.5', :platforms => [:mri, :rbx]
+gem 'newrelic_rpm', '~> 3.4.0.1', :platforms => [:mri, :rbx]
 gem 'whenever', '~> 0.7.3', :require => false
 
 gem 'jbuilder', '~> 0.4.0'
@@ -54,14 +56,14 @@ gem 'rails-backbone', '~> 0.7.2'
 group :assets do
   gem 'sass-rails', '~> 3.2.5'
   gem 'coffee-rails', '~> 3.2.2'
-  gem 'compass-rails', '~> 1.0.2'
+  gem 'compass-rails', '~> 1.0.3'
   gem 'uglifier', '~> 1.2.4'
   gem 'therubyracer', '~> 0.10.1', :platforms => [:mri, :rbx]
   gem 'therubyrhino', '~> 1.73.1', :platforms => :jruby
 end
 
 group :production do
-  gem "airbrake", '~> 3.1.1'
+  gem "airbrake", '~> 3.1.2'
   gem 'bluepill', '~> 0.0.60', :require => false
 end
 
@@ -78,8 +80,8 @@ group :development do
 end
 
 group :test do
-  gem 'rspec-rails',        '~> 2.10.1', :group => 'development'
-  gem 'factory_girl_rails', '~> 3.4.0'
+  gem 'rspec-rails',        '~> 2.11.0', :group => 'development'
+  gem 'factory_girl_rails', '~> 3.5.0'
   gem 'rr',                 '~> 1.0.4'
   gem 'shoulda'
 end

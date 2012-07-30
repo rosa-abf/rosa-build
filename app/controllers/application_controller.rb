@@ -27,6 +27,7 @@ class ApplicationController < ActionController::Base
       format.html { redirect_to '/500.html', :alert => t("flash.500_message") }
     end
   end
+  rescue_from Grit::NoSuchPathError, :with => :not_found
 
   [ActiveRecord::RecordNotFound,
    ActionController::RoutingError,
@@ -74,5 +75,9 @@ class ApplicationController < ActionController::Base
     else
       "application"
     end
+  end
+
+  def not_found
+    raise ActionController::RoutingError.new('Not Found')
   end
 end
