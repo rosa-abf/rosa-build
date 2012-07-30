@@ -25,7 +25,10 @@ class BuildList < ActiveRecord::Base
     errors.add(:build_for_platform, I18n.t('flash.build_list.wrong_platform')) if save_to_platform.platform_type == 'main' && save_to_platform_id != build_for_platform_id
   }
   validate lambda {
-    errors.add(:save_to_platform, I18n.t('flash.build_list.wrong_repository')) unless save_to_repository_id.in? save_to_platform.repositories.map(&:id)
+    errors.add(:save_to_repository, I18n.t('flash.build_list.wrong_repository')) unless save_to_repository_id.in? save_to_platform.repositories.map(&:id)
+  }
+  validate lambda {
+    errors.add(:save_to_repository, I18n.t('flash.build_list.cannot_write')) unless current_user.can?(:write, save_to_repository)
   }
 
   LIVE_TIME = 3.week
