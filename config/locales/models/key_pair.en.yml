@@ -5,16 +5,21 @@ en:
       user_id: User
       public: Public key
       secret: Secret key
-      confirm_delete: Are you sure you want to delete this key pair?
-      header: Key Pairs
+      confirm_delete: Are you sure you want to delete this signature?
+      header: Signatures
   flash:
     key_pairs:
-      saved: Key pair succefully created
-      save_error: Key pair save error
-      destroyed: Key pair succefully destroyed
-      destroy_error: Key pair destroy error
-      key_exists: has one key pair already!
+      saved: Repository successfully signed
+      save_error: Signature save error
+      destroyed: Signature succefully destroyed
+      destroy_error: Signature destroy error
   activerecord:
+    errors:
+      key_pair:
+        repo_key_exists: Repository has been signed already! Please remove old signature and try again
+        1: could not import public key
+        2: could not import secret key
+        3: keys are imported, but it is not a key pair (ids differ)
     models:
       key_pair: Key Pair
     attributes:

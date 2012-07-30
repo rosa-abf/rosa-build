@@ -10,7 +10,7 @@ class Platforms::KeyPairsController < ApplicationController
   def create
     @key_pair.user_id = current_user.id
 
-    if @key_pair.key_create_call == true
+    if @key_pair.save
       flash[:notice] = t('flash.key_pairs.saved')
     else
       flash[:error] = t('flash.key_pairs.save_error')
@@ -21,7 +21,7 @@ class Platforms::KeyPairsController < ApplicationController
   end
 
   def destroy
-    if @key_pair.rm_key_call
+    if @key_pair.destroy
       flash[:notice] = t('flash.key_pairs.destroyed')
     else
       flash[:error] = t('flash.key_pairs.destroy_error')
