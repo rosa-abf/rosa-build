@@ -58,34 +58,31 @@ class Feedback
   end
 
   def to_s
-    str = "#<#{self.class} "
-    str += %w{ name email subject message }.inject('') do |s, e|
-      s << "#{e}: #{ send(e).inspect }, "; s
-    end
-    str[-2] = '>'
-    str[0..-1]
+    str = %w{ name email subject message }.map do |e|
+      "#{e}: #{ send(e).inspect }"
+    end.join(', ')
+    return "#<#{self.class} #{str}>"
   end
 
   class << self
 
     def create(attributes = nil, options = {}, &block)
-      if attributes.is_a?(Array)
-        attributes.collect { |attr| create!(attr, options, &block) }
-      else
-        object = new(attributes, options)
-        yield(object) if block_given?
-        object.perform_send
-        object
-      end
+      do_create(attributes, options, false, &block)
     end
 
     def create!(attributes = nil, options = {}, &block)
+      do_create(attributes, options, true, &block)
+    end
+
+    protected
+
+    def do_create(attributes = nil, options = {}, bang = false, &block)
       if attributes.is_a?(Array)
-        attributes.collect { |attr| create!(attr, options, &block) }
+        attributes.collect { |attr| do_create(attr, options, bang, &block) }
       else
         object = new(attributes, options)
         yield(object) if block_given?
-        object.perform_send!
+        bang ? object.perform_send! : object.perform_send
         object
       end
     end
