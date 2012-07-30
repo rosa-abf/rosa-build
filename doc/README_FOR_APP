@@ -25,4 +25,6 @@ sudo urpmi lib64magic-devel # mandriva
 brew install libmagic; brew link libmagic # brew
 gem install ruby-filemagic
 
+sudo urpmi python-devel
+
 git config --global core.quotepath false
