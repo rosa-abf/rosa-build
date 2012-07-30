@@ -11,7 +11,7 @@ ru:
     key_pairs:
       saved: Репозиторий успешно подписан
       save_error: Ошибка создания подписи
-      destroyed: Подпись удалена успешно
+      destroyed: Подпись успешно удалена
       destroy_error: Ошибка удаления подписи
   activerecord:
     errors:
@@ -31,3 +31,4 @@ ru:
         repository_id: Репозиторий
         public: Публичный ключ
         secret: Секретный ключ
+        key_id: Подпись

@@ -8,7 +8,7 @@ class KeyPair < ActiveRecord::Base
   validates :repository_id, :public, :user_id, :presence => true
   validates :secret, :presence => true, :on => :create
 
-  validates :repository_id, :uniqueness => {:message => I18n.t("activerecord.errors.key_pairs.repo_key_exists")}
+  validates :repository_id, :uniqueness => {:message => I18n.t("activerecord.errors.key_pair.repo_key_exists")}
 
   before_create   :key_create_call
   before_destroy  :rm_key_call
@@ -17,17 +17,19 @@ class KeyPair < ActiveRecord::Base
 
     def key_create_call
       result, self.key_id = BuildServer.import_gpg_key_pair(public, secret)
-      raise "Failed to create key_pairs for repository #{repository_id} with code #{result}." unless result == 4
+      raise "Failed to create key_pairs for repository #{repository_id} with code #{result}." if result == 4
       if result != 0 || key_id.nil?
-        errors.add(:public, I18n.t("activerecord.errors.key_pairs.#{result}"))
+        errors.add(:public, I18n.t("activerecord.errors.key_pair.#{result}"))
         return false
       end
-      result = BuildServer.set_repository_key(repository_id, repository.platform_id, key_id)
-      raise "Failed to sign repository key #{repository_id} with code #{set_code}." unless result.zero?
+      result = BuildServer.set_repository_key(repository.platform.name, repository.name, key_id)
+      raise "Failed to sign repository #{repository.name} in platform #{repository.platform.name}
+             using key_id #{key_id} with code #{result}." unless result.zero?
     end
 
     def rm_key_call
-      result = BuildServer.rm_repository_key(repository.platform_id, repository_id)
-      raise "Failed to desroy repository key #{repository_id} with code #{result}." unless result.zero?
+      result = BuildServer.rm_repository_key(repository.platform.name, repository.name)
+      raise "Failed to desroy repository key #{repository.name} in platform 
+             #{repository.platform.name} with code #{result}." unless result.zero?
     end
 end

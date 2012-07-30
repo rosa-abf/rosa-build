@@ -31,3 +31,4 @@ en:
         repository_id: Repository
         public: Public key
         secret: Secret key
+        key_id: Signature
