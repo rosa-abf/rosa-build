@@ -10,8 +10,8 @@ def set_comments_data_for_commit
   @ability = Ability.new(@user)
 
   @project = FactoryGirl.create(:project, :owner => @user)
-  %x(cp -Rf #{Rails.root}/spec/tests.git/* #{@project.git_repository.path}) # maybe FIXME ?
-  @commit = @project.git_repository.commits.first
+  %x(cp -Rf #{Rails.root}/spec/tests.git/* #{@project.repo.path}) # maybe FIXME ?
+  @commit = @project.repo.commits.first
 
   @comment = create_comment(@user)
   @stranger_comment = create_comment(@stranger)

@@ -191,7 +191,7 @@ class BuildList < ActiveRecord::Base
     # TODO: remove 'return' after deployment ABF kernel 2.0
     return if pkg.nil? # For old client that does not sends data about packages 
     self.package_version = "#{pkg.platform.name}-#{pkg.version}-#{pkg.release}"
-    system("cd #{self.project.git_repository.path} && git tag #{self.package_version} #{self.commit_hash}") # TODO REDO through grit
+    system("cd #{self.project.repo.path} && git tag #{self.package_version} #{self.commit_hash}") # TODO REDO through grit
     save
   end
 

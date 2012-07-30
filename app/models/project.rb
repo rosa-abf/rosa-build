@@ -25,9 +25,6 @@ class Project < ActiveRecord::Base
   validates :owner, :presence => true
   validate { errors.add(:base, :can_have_less_or_equal, :count => MAX_OWN_PROJECTS) if owner.projects.size >= MAX_OWN_PROJECTS }
 
-  validates_attachment_size :srpm, :less_than => 500.megabytes
-  validates_attachment_content_type :srpm, :content_type => ['application/octet-stream', "application/x-rpm", "application/x-redhat-package-manager"], :message => I18n.t('layout.invalid_content_type')
-
   attr_accessible :name, :description, :visibility, :srpm, :is_package, :default_branch, :has_issues, :has_wiki
   attr_readonly :name
 
@@ -40,34 +37,50 @@ class Project < ActiveRecord::Base
   scope :addable_to_repository, lambda { |repository_id| where("projects.id NOT IN (SELECT project_to_repositories.project_id FROM project_to_repositories WHERE (project_to_repositories.repository_id = #{ repository_id }))") }
 
   after_create :attach_to_personal_repository
-  after_create :create_git_repo
-  after_save :create_wiki
-  after_commit(:on => :create) {|p| p.fork_git_repo unless p.is_root?} # later with resque
-
-  after_destroy :destroy_git_repo
-  after_destroy :destroy_wiki
-  after_commit(:on => :create) {|p| p.import_attached_srpm if p.srpm?}# later with resque # should be after create_git_repo
-  # after_rollback lambda { destroy_git_repo rescue true if new_record? }
 
   has_ancestry :orphan_strategy => :rootify #:adopt not available yet
 
-  has_attached_file :srpm
-
   include Modules::Models::Owner
+  include Modules::Models::Git
+  include Modules::Models::Wiki
+
+  class << self
+    def find_by_owner_and_name(owner_name, project_name)
+      owner = User.find_by_uname(owner_name) || Group.find_by_uname(owner_name) || User.by_uname(owner_name).first || Group.by_uname(owner_name).first and
+      scoped = where(:owner_id => owner.id, :owner_type => owner.class) and
+      scoped.find_by_name(project_name) || scoped.by_name(project_name).first
+      # owner.projects.find_by_name(project_name) || owner.projects.by_name(project_name).first # TODO force this work?
+    end
+
+    def find_by_owner_and_name!(owner_name, project_name)
+      find_by_owner_and_name(owner_name, project_name) or raise ActiveRecord::RecordNotFound
+    end
+  end
 
   def to_param
     name
   end
 
-  def self.find_by_owner_and_name(owner_name, project_name)
-    owner = User.find_by_uname(owner_name) || Group.find_by_uname(owner_name) || User.by_uname(owner_name).first || Group.by_uname(owner_name).first and
-    scoped = where(:owner_id => owner.id, :owner_type => owner.class) and
-    scoped.find_by_name(project_name) || scoped.by_name(project_name).first
-    # owner.projects.find_by_name(project_name) || owner.projects.by_name(project_name).first # TODO force this work?
+  def members
+    collaborators + groups.map(&:members).flatten
   end
 
-  def self.find_by_owner_and_name!(owner_name, project_name)
-    find_by_owner_and_name(owner_name, project_name) or raise ActiveRecord::RecordNotFound
+  def platforms
+    @platforms ||= repositories.map(&:platform).uniq
+  end
+
+  def owner_and_admin_ids
+    recipients = self.relations.by_role('admin').where(:actor_type => 'User').map { |rel| rel.read_attribute(:actor_id) }
+    recipients = recipients | [self.owner_id] if self.owner_type == 'User'
+    recipients
+  end
+
+  def public?
+    visibility == 'open'
+  end
+
+  def owner?(user)
+    owner == user
   end
 
   def build_for(platform, user, arch = 'i586', auto_publish = false, mass_build_id = nil, priority = 0)
@@ -93,85 +106,6 @@ class Project < ActiveRecord::Base
     end
   end
 
-  def tags
-    self.git_repository.tags #.sort_by{|t| t.name.gsub(/[a-zA-Z.]+/, '').to_i}
-  end
-
-  def branches
-    self.git_repository.branches
-  end
-
-  def last_active_branch
-    @last_active_branch ||= branches.inject do |r, c|
-      r_last = r.commit.committed_date || r.commit.authored_date unless r.nil?
-      c_last = c.commit.committed_date || c.commit.authored_date
-      if r.nil? or r_last < c_last
-        r = c
-      end
-      r
-    end
-    @last_active_branch
-  end
-
-  def branch(name = nil)
-    name = default_branch if name.blank?
-    branches.select{|b| b.name == name}.first
-  end
-
-  def tree_info(tree, treeish = nil, path = nil)
-    treeish = tree.id unless treeish.present?
-    # initialize result as hash of <tree_entry> => nil
-    res = (tree.trees.sort + tree.blobs.sort).inject({}){|h, e| h.merge!({e => nil})}
-    # fills result vith commits that describes this file
-    res = res.inject(res) do |h, (entry, commit)|
-      # only if commit == nil ...
-      if commit.nil? and entry.respond_to? :name
-        # ... find last commit corresponds to this file ...
-        c = git_repository.log(treeish, File.join([path, entry.name].compact), :max_count => 1).first
-        # ... and add it to result.
-        h[entry] = c
-        # find another files, that linked to this commit and set them their commit
-        # c.diffs.map{|diff| diff.b_path.split(File::SEPARATOR, 2).first}.each do |name|
-        #   h.each_pair do |k, v|
-        #     h[k] = c if k.name == name and v.nil?
-        #   end
-        # end
-      end
-      h
-    end
-  end
-
-  def versions
-    tags.map(&:name) + branches.map{|b| "latest_#{b.name}"}
-  end
-
-  def versions_for_group_select
-    [
-      ['Branches', branches.map{|b| "latest_#{b.name}"}],
-      ['Tags', tags.map(&:name)]
-    ]
-  end
-
-  def members
-    collaborators + groups.map(&:members).flatten
-  end
-
-  def git_repository
-    @git_repository ||= Git::Repository.new(path)
-  end
-
-  def git_repo_name
-    File.join owner.uname, name
-  end
-
-  def wiki_repo_name
-    File.join owner.uname, "#{name}.wiki"
-  end
-
-  def public?
-    visibility == 'open'
-  end
-
   def fork(new_owner)
     dup.tap do |c|
       c.parent_id = id
@@ -181,12 +115,8 @@ class Project < ActiveRecord::Base
     end
   end
 
-  def path
-    build_path(git_repo_name)
-  end
-
-  def wiki_path
-    build_wiki_path(git_repo_name)
+  def human_average_build_time
+    I18n.t("layout.projects.human_average_build_time", {:hours => (average_build_time/3600).to_i, :minutes => (average_build_time%3600/60).to_i})
   end
 
   def xml_rpc_create(repository)
@@ -207,97 +137,9 @@ class Project < ActiveRecord::Base
     end
   end
 
-  def platforms
-    @platforms ||= repositories.map(&:platform).uniq
-  end
-
-  def import_srpm(srpm_path = srpm.path, branch_name = 'import')
-    system("#{Rails.root.join('bin', 'import_srpm.sh')} #{srpm_path} #{path} #{branch_name} >> /dev/null 2>&1")
-  end
-
-  def owner?(user)
-    owner == user
-  end
-
-  def owner_and_admin_ids
-    recipients = self.relations.by_role('admin').where(:actor_type => 'User').map { |rel| rel.read_attribute(:actor_id) }
-    recipients = recipients | [self.owner_id] if self.owner_type == 'User'
-    recipients
-  end
-
-  def human_average_build_time
-    time = average_build_time
-    I18n.t("layout.projects.human_average_build_time", {:hours => (time/3600).to_i, :minutes => (time%3600/60).to_i})
-  end
-
   protected
-
-  def build_path(dir)
-    File.join(APP_CONFIG['root_path'], 'git_projects', "#{dir}.git")
-  end
-
-  def build_wiki_path(dir)
-    File.join(APP_CONFIG['root_path'], 'git_projects', "#{dir}.wiki.git")
-  end
 
   def attach_to_personal_repository
     repositories << self.owner.personal_repository if !repositories.exists?(:id => self.owner.personal_repository)
-  end
-
-  def create_git_repo
-    if is_root?
-      Grit::Repo.init_bare(path)
-      write_hook
-    end
-  end
-
-  def fork_git_repo
-    dummy = Grit::Repo.new(path) rescue parent.git_repository.repo.fork_bare(path)
-    write_hook
-  end
-  later :fork_git_repo, :queue => :fork_import
-
-  def destroy_git_repo
-    FileUtils.rm_rf path
-  end
-
-  def import_attached_srpm
-    if srpm?
-      import_srpm # srpm.path
-      self.srpm = nil; save # clear srpm
-    end
-  end
-  later :import_attached_srpm, :queue => :fork_import
-
-  def create_wiki
-    if has_wiki && !FileTest.exist?(wiki_path)
-      Grit::Repo.init_bare(wiki_path)
-      wiki = Gollum::Wiki.new(wiki_path, {:base_path => Rails.application.routes.url_helpers.project_wiki_index_path(owner, self)})
-      wiki.write_page('Home', :markdown, I18n.t("wiki.seed.welcome_content"),
-                      {:name => owner.name, :email => owner.email, :message => 'Initial commit'})
-    end
-  end
-
-  def destroy_wiki
-    FileUtils.rm_rf wiki_path
-  end
-
-  def write_hook
-    is_production = Rails.env == "production"
-    hook = File.join(::Rails.root.to_s, 'tmp', "post-receive-hook")
-    FileUtils.cp(File.join(::Rails.root.to_s, 'bin', "post-receive-hook.partial"), hook)
-    File.open(hook, 'a') do |f|
-      s = "\n  /bin/bash -l -c \"cd #{is_production ? '/srv/rosa_build/current' : Rails.root.to_s} && #{is_production ? 'RAILS_ENV=production' : ''} bundle exec rake hook:enqueue[$owner,$reponame,$newrev,$oldrev,$ref,$newrev_type,$oldrev_type]\""
-      s << " > /dev/null 2>&1" if is_production
-      s << "\ndone\n"
-      f.write(s)
-      f.chmod(0755)
-    end
-
-    hook_file = File.join(path, 'hooks', 'post-receive')
-    FileUtils.cp(hook, hook_file)
-    FileUtils.rm_rf(hook)
-
-  rescue Exception # FIXME
   end
 end

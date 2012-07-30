@@ -9,7 +9,7 @@ task :add_branch => :environment do
   Platform.find_by_name(dst_branch).repositories.each do |r|
     say "=== Process #{r.name} repo"
     r.projects.find_each do |p|
-      next if p.branches.map(&:name).include?(dst_branch)
+      next if p.repo.branches.map(&:name).include?(dst_branch)
       say "===== Process #{p.name} project"
       tmp_path = Rails.root.join('tmp', p.name)
       system("git clone #{p.path} #{tmp_path}")

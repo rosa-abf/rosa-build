@@ -17,6 +17,7 @@ class ApplicationController < ActionController::Base
   rescue_from CanCan::AccessDenied do |exception|
     redirect_to forbidden_url, :alert => t("flash.exception_message")
   end
+  rescue_from Grit::NoSuchPathError, :with => :not_found
 
   protected
 
@@ -52,5 +53,9 @@ class ApplicationController < ActionController::Base
     else
       "application"
     end
+  end
+
+  def not_found
+    raise ActionController::RoutingError.new('Not Found')
   end
 end
