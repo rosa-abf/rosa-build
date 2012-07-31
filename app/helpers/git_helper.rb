@@ -54,7 +54,9 @@ module GitHelper
     current = url_for(p).split('?', 2).first
 
     res = []
-    res << [I18n.t('layout.git.repositories.commits'), [params[:treeish].truncate(20)]] unless project.repo.branches_and_tags.map(&:name).include?(params[:treeish] || project.default_branch)
+    if params[:treeish].present? && !project.repo.branches_and_tags.map(&:name).include?(params[:treeish])
+      res << [I18n.t('layout.git.repositories.commits'), [params[:treeish].truncate(20)]]
+    end
     linking = Proc.new {|t| [t.name.truncate(20), url_for(p.merge :treeish => t.name).split('?', 2).first]}
     res << [I18n.t('layout.git.repositories.branches'), project.repo.branches.map(&linking)]
     res << [I18n.t('layout.git.repositories.tags'), project.repo.tags.map(&linking)]
