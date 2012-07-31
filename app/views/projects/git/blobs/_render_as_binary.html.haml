@@ -4,5 +4,5 @@
     %td.blob
       :plain
         <br/>
-        <pre>#{link_to @blob.basename, raw_path(@project, @treeish, @path)}</pre>
+        <pre>#{link_to_unless @blob.huge?, @blob.basename, raw_path(@project, @treeish, @path)}</pre>
         <br/>
