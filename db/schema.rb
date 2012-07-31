@@ -163,7 +163,7 @@ ActiveRecord::Schema.define(:version => 20120719045806) do
     t.text     "body_ru"
     t.text     "body_en"
     t.string   "status"
-    t.boolean  "published"
+    t.boolean  "published", :default => true
     t.datetime "created_at", :null => false
     t.datetime "updated_at", :null => false
   end
