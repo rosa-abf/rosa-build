@@ -69,6 +69,7 @@ end
 describe Platforms::KeyPairsController do
   before(:each) do
     stub_symlink_methods
+    stub_key_pairs_calls
 
     @platform = FactoryGirl.create(:platform)
     @repository = FactoryGirl.create(:repository, :platform => @platform)
@@ -84,9 +85,9 @@ describe Platforms::KeyPairsController do
   end
 
   context 'for guest' do
-    [:index, :create, :destroy].each do |action|
+    [:index, :create].each do |action|
       it "should not be able to perform #{ action } action" do
-        get action, :platform_id => @platform, :id => @key_pair
+        get action, :platform_id => @platform
         response.should redirect_to(new_user_session_path)
       end
     end
@@ -95,8 +96,19 @@ describe Platforms::KeyPairsController do
       lambda { post :create, @create_params }.should change{ KeyPair.count }.by(0)
     end
 
-    it 'should not change objects count on destroy success' do
-      lambda { delete :destroy, :platform_id => @platform, :id => @key_pair }.should change{KeyPair.count}.by(0)
+    context 'on destroy' do
+      before(:each) do
+        create_key_pair @repository, @user
+      end
+
+      it 'should not change objects count on destroy success' do
+        lambda { delete :destroy, :platform_id => @platform, :id => @key_pair }.should change{KeyPair.count}.by(0)
+      end
+
+      it "should not be able to perform destroy action" do
+        delete :destroy, :platform_id => @platform, :id => @key_pair
+        response.should redirect_to(new_user_session_path)
+      end
     end
   end
 

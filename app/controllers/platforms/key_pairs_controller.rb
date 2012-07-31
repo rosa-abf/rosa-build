@@ -1,11 +1,8 @@
 class Platforms::KeyPairsController < ApplicationController
   before_filter :authenticate_user!
 
-  load_and_authorize_resource :platform
-  load_and_authorize_resource
-
-  skip_load_and_authorize_resource :only => [:index]
-  skip_authorize_resource :platform, :only => [:create, :destroy]
+  load_and_authorize_resource :platform, :only => [:index]
+  load_and_authorize_resource :only => [:create, :destroy]
 
   def create
     @key_pair.user_id = current_user.id
@@ -17,7 +14,7 @@ class Platforms::KeyPairsController < ApplicationController
       flash[:warning] = @key_pair.errors.full_messages.join('. ') unless @key_pair.errors.blank?
     end
 
-    redirect_to platform_key_pairs_path(@platform)
+    redirect_to platform_key_pairs_path(@key_pair.repository.platform)
   end
 
   def destroy
@@ -27,6 +24,6 @@ class Platforms::KeyPairsController < ApplicationController
       flash[:error] = t('flash.key_pairs.destroy_error')
     end
 
-    redirect_to platform_key_pairs_path(@platform)
+    redirect_to platform_key_pairs_path(@key_pair.repository.platform)
   end
 end

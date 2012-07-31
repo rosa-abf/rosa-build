@@ -18,8 +18,8 @@ class KeyPair < ActiveRecord::Base
     def key_create_call
       result, self.key_id = BuildServer.import_gpg_key_pair(public, secret)
       raise "Failed to create key_pairs for repository #{repository_id} with code #{result}." if result == 4
-      if result != 0 || key_id.nil?
-        errors.add(:public, I18n.t("activerecord.errors.key_pair.#{result}"))
+      if result != 0 || self.key_id.nil?
+        errors.add(:public, I18n.t("activerecord.errors.key_pair.rpc_error_#{result}"))
         return false
       end
       result = BuildServer.set_repository_key(repository.platform.name, repository.name, key_id)
