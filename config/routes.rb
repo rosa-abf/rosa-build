@@ -5,6 +5,18 @@ Rosa::Application.routes.draw do
   end
   devise_for :users, :controllers => {:omniauth_callbacks => 'users/omniauth_callbacks'}
 
+  namespace :api do
+    namespace :v1 do
+      resources :build_lists, :only => [:index, :create, :show] do
+        member {
+          get :publish
+          get :reject_publish
+          get :cancel
+        }
+      end
+    end
+  end
+
   resources :search, :only => [:index]
 
   get '/forbidden' => 'pages#forbidden', :as => 'forbidden'

@@ -5,8 +5,10 @@
         "id": <%=build_list.id%>,
         "bs_id": <%=build_list.bs_id.to_json%>,
         "name": <%=build_list.name%>,
-        "status": <%=build_list.status%>
+        "status": <%=build_list.status%>,
+        "url": <%=api_v1_build_list_path(build_list, :format => :json)%>
       }
     <% end %>
-  ]
+  ],
+  "url": <%=api_v1_build_lists_path(:format => :json)%>
 }

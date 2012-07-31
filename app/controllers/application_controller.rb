@@ -21,25 +21,25 @@ class ApplicationController < ActionController::Base
     end
   end
 
-  rescue_from Exception do |exception|
-    respond_to do |format|
-      format.json { render :json => {:message => t("flash.500_message")}.to_json }
-      format.html { redirect_to '/500.html', :alert => t("flash.500_message") }
-    end
-  end
+  #rescue_from Exception do |exception|
+  #  respond_to do |format|
+  #    format.json { render :json => {:message => t("flash.500_message")}.to_json }
+  #    format.html { redirect_to '/500.html', :alert => t("flash.500_message") }
+  #  end
+  #end
   rescue_from Grit::NoSuchPathError, :with => :not_found
 
-  [ActiveRecord::RecordNotFound,
-   ActionController::RoutingError,
-   ActionController::UnknownController,
-   ActionController::UnknownAction].each do |ext|
-    rescue_from ext do |exception|
-      respond_to do |format|
-        format.json { render :json => {:message => t("flash.404_message")}.to_json }
-        format.html { redirect_to '/404.html', :alert => t("flash.404_message") }
-      end
-    end
-   end
+  #[ActiveRecord::RecordNotFound,
+  # ActionController::RoutingError,
+  # ActionController::UnknownController,
+  # ActionController::UnknownAction].each do |ext|
+  #  rescue_from ext do |exception|
+  #    respond_to do |format|
+  #      format.json { render :json => {:message => t("flash.404_message")}.to_json }
+  #      format.html { redirect_to '/404.html', :alert => t("flash.404_message") }
+  #    end
+  #  end
+  # end
 
   protected
 
