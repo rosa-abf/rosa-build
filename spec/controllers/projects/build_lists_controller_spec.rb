@@ -125,7 +125,7 @@ describe Projects::BuildListsController do
         end
 
         it 'should show only accessible build_lists' do
-          get :index, :filter => {:ownership => 'index'}
+          get :index, :filter => {:ownership => 'everything'}
           assigns(:build_lists).should include(@build_list1)
           assigns(:build_lists).should_not include(@build_list2)
           assigns(:build_lists).should include(@build_list3)
@@ -210,7 +210,7 @@ describe Projects::BuildListsController do
         end
 
         it 'should show only accessible build_lists' do
-          get :index, :filter => {:ownership => 'index'}
+          get :index, :filter => {:ownership => 'everything'}
           assigns(:build_lists).should include(@build_list1)
           assigns(:build_lists).should_not include(@build_list2)
           assigns(:build_lists).should include(@build_list3)
@@ -297,17 +297,17 @@ describe Projects::BuildListsController do
 
     it 'should filter by project_name' do
       # Project.where(:id => build_list2.project.id).update_all(:name => 'project_name')
-      get :index, :filter => {:project_name => @build_list2.project.name, :ownership => 'index'}
+      get :index, :filter => {:project_name => @build_list2.project.name, :ownership => 'everything'}
       assigns[:build_lists].should_not include(@build_list1)
       assigns[:build_lists].should include(@build_list2)
       assigns[:build_lists].should_not include(@build_list3)
     end
 
     it 'should filter by project_name and start_date' do
-      get :index, :filter => {:project_name => @build_list3.project.name, :ownership => 'index',
-                            :"updated_at_start(1i)" => @build_list3.updated_at.year.to_s,
-                            :"updated_at_start(2i)" => @build_list3.updated_at.month.to_s,
-                            :"updated_at_start(3i)" => @build_list3.updated_at.day.to_s}
+      get :index, :filter => {:project_name => @build_list3.project.name, :ownership => 'everything',
+                            "created_at_start(1i)" => @build_list3.created_at.year.to_s,
+                            "created_at_start(2i)" => @build_list3.created_at.month.to_s,
+                            "created_at_start(3i)" => @build_list3.created_at.day.to_s}
       assigns[:build_lists].should_not include(@build_list1)
       assigns[:build_lists].should_not include(@build_list2)
       assigns[:build_lists].should include(@build_list3)
