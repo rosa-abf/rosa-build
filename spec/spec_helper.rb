@@ -39,7 +39,7 @@ def stub_symlink_methods
 end
 
 def stub_key_pairs_calls
-  stub(BuildServer).import_gpg_key_pair { [0,0] }
+  stub(BuildServer).import_gpg_key_pair { [0,"1a2b3c"] }
   stub(BuildServer).set_repository_key { 0 }
   stub(BuildServer).rm_repository_key { 0 }
 end

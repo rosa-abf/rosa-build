@@ -22,9 +22,9 @@ class KeyPair < ActiveRecord::Base
         errors.add(:public, I18n.t("activerecord.errors.key_pair.rpc_error_#{result}"))
         return false
       end
-      result = BuildServer.set_repository_key(repository.platform.name, repository.name, key_id)
+      result = BuildServer.set_repository_key(repository.platform.name, repository.name, self.key_id)
       raise "Failed to sign repository #{repository.name} in platform #{repository.platform.name}
-             using key_id #{key_id} with code #{result}." unless result.zero?
+             using key_id #{self.key_id} with code #{result}." unless result.zero?
     end
 
     def rm_key_call
