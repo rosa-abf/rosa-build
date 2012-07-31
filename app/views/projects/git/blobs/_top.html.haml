@@ -12,8 +12,9 @@
   - if @blob.render_as == :text && params[:action] != 'show'
     = link_to "Normal", blob_path(@project, @treeish, @path)
     \|
-  = link_to "Raw", raw_path(@project, @treeish, @path)
-  \|
+  - unless @blob.huge?
+    = link_to "Raw", raw_path(@project, @treeish, @path)
+    \|
   - if @blob.render_as == :text && params[:action] != 'blame'
     = link_to "Blame", blame_path(@project, @treeish, @path)
     \|
