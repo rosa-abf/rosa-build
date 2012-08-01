@@ -18,7 +18,7 @@ class Ability
     can :read, Issue, :project => {:visibility => 'open'}
     can :read, PullRequest, :project => {:visibility => 'open'}
     can :search, BuildList
-    can :read, BuildList, :project => {:visibility => 'open'}
+    can [:read, :everything], BuildList, :project => {:visibility => 'open'}
     can :read, ProductBuildList#, :product => {:platform => {:visibility => 'open'}} # double nested hash don't work
     can :read, Advisory
     can(:advisories, Platform) {APP_CONFIG['anonymous_access']}
@@ -64,10 +64,10 @@ class Ability
         can :remove_user, Project
         can [:autocomplete_base_project_name, :autocomplete_head_project_name], Project
 
-        can [:read, :owned], BuildList, :user_id => user.id
-        can [:read, :related], BuildList, :project => {:owner_type => 'User', :owner_id => user.id}
-        can [:read, :related], BuildList, :project => {:owner_type => 'Group', :owner_id => user.group_ids}
-        can(:read, BuildList, read_relations_for('build_lists', 'projects')) {|build_list| can? :read, build_list.project}
+        can [:read, :owned, :everything], BuildList, :user_id => user.id
+        can [:read, :related, :everything], BuildList, :project => {:owner_type => 'User', :owner_id => user.id}
+        can [:read, :related, :everything], BuildList, :project => {:owner_type => 'Group', :owner_id => user.group_ids}
+        can([:read, :everything], BuildList, read_relations_for('build_lists', 'projects')) {|build_list| can? :read, build_list.project}
         can([:create, :update], BuildList) {|build_list| build_list.project.is_package && can?(:write, build_list.project)}
 
         can(:publish, BuildList) do |build_list|
@@ -98,6 +98,8 @@ class Ability
         can([:create, :update, :projects_list, :add_project, :remove_project], Repository) {|repository| local_admin? repository.platform}
         can(:clear, Platform) {|platform| local_admin?(platform) && platform.personal?}
         can([:change_visibility, :settings, :destroy], Repository) {|repository| owner? repository.platform}
+
+        can([:create, :destroy], KeyPair) {|key_pair| owner?(key_pair.repository.platform) || local_admin?(key_pair.repository.platform)}
 
         can :read, Product, :platform => {:visibility => 'open'}
         can :read, Product, :platform => {:owner_type => 'User', :owner_id => user.id, :platform_type => 'main'}

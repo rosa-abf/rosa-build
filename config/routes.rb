@@ -72,6 +72,7 @@ Rosa::Application.routes.draw do
           get :projects_list
         end
       end
+      resources :key_pairs, :only => [:create, :index, :destroy]
       resources :products do
         resources :product_build_lists, :only => [:create, :destroy]
       end

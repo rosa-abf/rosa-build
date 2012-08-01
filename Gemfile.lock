@@ -8,7 +8,7 @@ GIT
 
 GIT
   remote: git://github.com/github/gollum.git
-  revision: c9bc2a89f655760c0a21da6d3ab37c5f6267e96c
+  revision: 8422b712048656c8ea391c2d7ef27fb29f66746b
   specs:
     gollum (2.1.0)
       github-markdown
@@ -125,10 +125,10 @@ GEM
     execjs (1.4.0)
       multi_json (~> 1.0)
     expression_parser (0.9.0)
-    factory_girl (3.5.0)
+    factory_girl (3.6.0)
       activesupport (>= 3.0.0)
-    factory_girl_rails (3.5.0)
-      factory_girl (~> 3.5.0)
+    factory_girl_rails (3.6.0)
+      factory_girl (~> 3.6.0)
       railties (>= 3.0.0)
     ffi (1.0.11)
     fssm (0.2.9)
@@ -376,7 +376,7 @@ DEPENDENCIES
   creole
   devise (~> 2.1.2)
   diff-display (~> 0.0.1)
-  factory_girl_rails (~> 3.5.0)
+  factory_girl_rails (~> 3.6.0)
   github-linguist (~> 2.1.2)
   gollum!
   grack!

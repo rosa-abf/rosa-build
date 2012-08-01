@@ -81,7 +81,7 @@ end
 
 group :test do
   gem 'rspec-rails',        '~> 2.11.0', :group => 'development'
-  gem 'factory_girl_rails', '~> 3.5.0'
+  gem 'factory_girl_rails', '~> 3.6.0'
   gem 'rr',                 '~> 1.0.4'
   gem 'shoulda'
 end
