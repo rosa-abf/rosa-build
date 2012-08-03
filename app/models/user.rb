@@ -35,6 +35,8 @@ class User < ActiveRecord::Base
   has_many :own_groups,   :foreign_key => :owner_id, :class_name => 'Group', :dependent => :destroy
   has_many :own_platforms, :as => :owner, :class_name => 'Platform', :dependent => :destroy
 
+  has_many :key_pairs
+
   validates :uname, :presence => true, :uniqueness => {:case_sensitive => false}, :format => {:with => /^[a-z0-9_]+$/}, :reserved_name => true
   validate { errors.add(:uname, :taken) if Group.by_uname(uname).present? }
   validates :role, :inclusion => {:in => ROLES}, :allow_blank => true

@@ -76,6 +76,7 @@ describe Platforms::MassBuildsController do
   before(:each) do
     stub_symlink_methods
 
+    FactoryGirl.create(:arch)
     @platform = FactoryGirl.create(:platform)
     @repository = FactoryGirl.create(:repository, :platform => @platform)
     @personal_platform = FactoryGirl.create(:platform, :platform_type => 'personal')
@@ -91,11 +92,21 @@ describe Platforms::MassBuildsController do
   end
 
   context 'for guest' do
-    [:index, :create, :cancel, :failed_builds_list].each do |action|
+    [:index, :create].each do |action|
       it "should not be able to perform #{ action } action" do
         get action, :platform_id => @platform
         response.should redirect_to(new_user_session_path)
       end
+    end
+
+    it "should not be able to perform failed_builds_list action" do
+      get :failed_builds_list, :platform_id => @platform, :id => @mass_build
+      response.should redirect_to(new_user_session_path)
+    end
+
+    it "should not be able to perform cancel action" do
+      post :cancel, :platform_id => @platform, :id => @mass_build
+      response.should redirect_to(new_user_session_path)
     end
 
     it 'should not change objects count on create success' do

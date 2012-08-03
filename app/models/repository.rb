@@ -4,6 +4,7 @@ class Repository < ActiveRecord::Base
 
   has_many :project_to_repositories, :dependent => :destroy, :validate => true
   has_many :projects, :through => :project_to_repositories
+  has_one  :key_pair, :dependent => :destroy
 
   validates :description, :presence => true
   validates :name, :uniqueness => {:scope => :platform_id, :case_sensitive => false}, :presence => true, :format => {:with => /^[a-z0-9_\-]+$/}

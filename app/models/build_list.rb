@@ -3,6 +3,7 @@ class BuildList < ActiveRecord::Base
   belongs_to :project
   belongs_to :arch
   belongs_to :save_to_platform, :class_name => 'Platform'
+  belongs_to :save_to_repository, :class_name => 'Repository'
   belongs_to :build_for_platform, :class_name => 'Platform'
   belongs_to :user
   belongs_to :advisory
@@ -13,7 +14,8 @@ class BuildList < ActiveRecord::Base
   UPDATE_TYPES = %w[security bugfix enhancement recommended newpackage]
   RELEASE_UPDATE_TYPES = %w[security bugfix]
 
-  validates :project_id, :project_version, :arch, :include_repos, :presence => true
+  validates :project_id, :project_version, :arch, :include_repos,
+            :build_for_platform_id, :save_to_platform_id, :save_to_repository_id, :presence => true
   validates_numericality_of :priority, :greater_than_or_equal_to => 0
   validates :update_type, :inclusion => UPDATE_TYPES,
             :unless => Proc.new { |b| b.advisory.present? }
@@ -21,6 +23,12 @@ class BuildList < ActiveRecord::Base
             :if => Proc.new { |b| b.advisory.present? }
   validate lambda {
     errors.add(:build_for_platform, I18n.t('flash.build_list.wrong_platform')) if save_to_platform.platform_type == 'main' && save_to_platform_id != build_for_platform_id
+  }
+  validate lambda {
+    errors.add(:save_to_repository, I18n.t('flash.build_list.wrong_repository')) unless save_to_repository_id.in? save_to_platform.repositories.map(&:id)
+  }
+  validate lambda {
+    errors.add(:save_to_repository, I18n.t('flash.build_list.cannot_write')) unless current_user.can?(:write, save_to_repository)
   }
 
   LIVE_TIME = 3.week
@@ -106,14 +114,16 @@ class BuildList < ActiveRecord::Base
 
     # WTF? around_transition -> infinite loop
     before_transition do |build_list, transition|
-      if build_list.mass_build && MassBuild::COUNT_STATUSES.include?(build_list.status)
-        MassBuild.decrement_counter "#{BuildList::HUMAN_STATUSES[build_list.status].to_s}_count", build_list.mass_build_id
+      status = BuildList::HUMAN_STATUSES[build_list.status]
+      if build_list.mass_build && MassBuild::COUNT_STATUSES.include?(status)
+        MassBuild.decrement_counter "#{status.to_s}_count", build_list.mass_build_id
       end
     end
 
     after_transition do |build_list, transition|
-      if build_list.mass_build && MassBuild::COUNT_STATUSES.include?(build_list.status)
-        MassBuild.increment_counter "#{BuildList::HUMAN_STATUSES[build_list.status].to_s}_count", build_list.mass_build_id
+      status = BuildList::HUMAN_STATUSES[build_list.status]
+      if build_list.mass_build && MassBuild::COUNT_STATUSES.include?(status)
+        MassBuild.increment_counter "#{status.to_s}_count", build_list.mass_build_id
       end
     end
 
@@ -189,7 +199,7 @@ class BuildList < ActiveRecord::Base
     # TODO: remove 'return' after deployment ABF kernel 2.0
     return if pkg.nil? # For old client that does not sends data about packages 
     self.package_version = "#{pkg.platform.name}-#{pkg.version}-#{pkg.release}"
-    system("cd #{self.project.git_repository.path} && git tag #{self.package_version} #{self.commit_hash}") # TODO REDO through grit
+    system("cd #{self.project.repo.path} && git tag #{self.package_version} #{self.commit_hash}") # TODO REDO through grit
     save
   end
 

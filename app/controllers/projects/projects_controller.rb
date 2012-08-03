@@ -1,11 +1,7 @@
 # -*- encoding : utf-8 -*-
 class Projects::ProjectsController < Projects::BaseController
   before_filter :authenticate_user!
-  load_and_authorize_resource
-  # TODO WTF ? fork, update, sections not authorize
-  before_filter do |controller|
-    authorize! params[:action].to_sym, @project if params[:action] != 'index'
-  end
+  load_and_authorize_resource :id_param => :project_name # to force member actions load
 
   def index
     @projects = Project.accessible_by(current_ability, :membered)
@@ -85,7 +81,7 @@ class Projects::ProjectsController < Projects::BaseController
   end
 
   def remove_user
-    @project.relations.by_object(current_user).destroy_all
+    @project.relations.by_actor(current_user).destroy_all
     flash[:notice] = t("flash.project.user_removed")
     redirect_to projects_path
   end

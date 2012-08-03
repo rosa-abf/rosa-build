@@ -41,12 +41,17 @@ class Projects::BuildListsController < Projects::BaseController
 
   def create
     notices, errors = [], []
-    @platform = Platform.find params[:build_list][:save_to_platform_id]
+
+    @repository = Repository.find params[:build_list][:save_to_repository_id]
+    @platform = @repository.platform
+    params[:build_list][:save_to_platform_id] = @platform.id
     params[:build_list][:auto_publish] = false if @platform.released
+
     Arch.where(:id => params[:arches]).each do |arch|
       Platform.main.where(:id => params[:build_for_platforms]).each do |build_for_platform|
         @build_list = @project.build_lists.build(params[:build_list])
-        @build_list.commit_hash = @project.git_repository.commits(@build_list.project_version.match(/^latest_(.+)/).to_a.last || @build_list.project_version).first.id if @build_list.project_version
+        @build_list.commit_hash = @project.repo.commits(@build_list.project_version.match(/^latest_(.+)/).to_a.last ||
+                                  @build_list.project_version).first.id if @build_list.project_version
         @build_list.build_for_platform = build_for_platform; @build_list.arch = arch; @build_list.user = current_user
         @build_list.include_repos = @build_list.include_repos.select {|ir| @build_list.build_for_platform.repository_ids.include? ir.to_i}
         @build_list.priority = current_user.build_priority # User builds more priority than mass rebuild with zero priority
@@ -98,7 +103,6 @@ class Projects::BuildListsController < Projects::BaseController
     else
       @build_list.fail_publish
     end
-
     render :nothing => true, :status => 200
   end
 

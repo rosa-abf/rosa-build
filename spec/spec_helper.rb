@@ -38,9 +38,15 @@ def stub_symlink_methods
   any_instance_of(Platform, :remove_symlink_directory => true)
 end
 
+def stub_key_pairs_calls
+  stub(BuildServer).import_gpg_key_pair { [0,"1a2b3c"] }
+  stub(BuildServer).set_repository_key { 0 }
+  stub(BuildServer).rm_repository_key { 0 }
+end
+
 def test_git_commit(project)
-  project.git_repository.repo.index.add('test', 'TEST')
-  project.git_repository.repo.index.commit('Test commit')
+  project.repo.index.add('test', 'TEST')
+  project.repo.index.commit('Test commit')
 end
 
 Resque.inline = true
