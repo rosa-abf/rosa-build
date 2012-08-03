@@ -3,6 +3,7 @@ class BuildList < ActiveRecord::Base
   belongs_to :project
   belongs_to :arch
   belongs_to :save_to_platform, :class_name => 'Platform'
+  belongs_to :save_to_repository, :class_name => 'Repository'
   belongs_to :build_for_platform, :class_name => 'Platform'
   belongs_to :user
   belongs_to :advisory
@@ -13,7 +14,8 @@ class BuildList < ActiveRecord::Base
   UPDATE_TYPES = %w[security bugfix enhancement recommended newpackage]
   RELEASE_UPDATE_TYPES = %w[security bugfix]
 
-  validates :project_id, :project_version, :arch, :include_repos, :presence => true
+  validates :project_id, :project_version, :arch, :include_repos,
+            :build_for_platform_id, :save_to_platform_id, :save_to_repository_id, :presence => true
   validates_numericality_of :priority, :greater_than_or_equal_to => 0
   validates :update_type, :inclusion => UPDATE_TYPES,
             :unless => Proc.new { |b| b.advisory.present? }
@@ -21,6 +23,12 @@ class BuildList < ActiveRecord::Base
             :if => Proc.new { |b| b.advisory.present? }
   validate lambda {
     errors.add(:build_for_platform, I18n.t('flash.build_list.wrong_platform')) if save_to_platform.platform_type == 'main' && save_to_platform_id != build_for_platform_id
+  }
+  validate lambda {
+    errors.add(:save_to_repository, I18n.t('flash.build_list.wrong_repository')) unless save_to_repository_id.in? save_to_platform.repositories.map(&:id)
+  }
+  validate lambda {
+    errors.add(:save_to_repository, I18n.t('flash.build_list.cannot_write')) unless current_user.can?(:write, save_to_repository)
   }
 
   LIVE_TIME = 3.week
