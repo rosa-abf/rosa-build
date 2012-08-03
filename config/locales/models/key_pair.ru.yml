@@ -1,0 +1,35 @@
+ru:
+  layout:
+    key_pairs:
+      repository_id: Репозиторий
+      user_id: Пользователь
+      public: Публичный ключ
+      secret: Секретный ключ
+      confirm_delete: Вы уверены, что хотите удалить подпись?
+      header: Подписи
+  flash:
+    key_pairs:
+      saved: Репозиторий успешно подписан
+      save_error: Ошибка создания подписи
+      destroyed: Подпись успешно удалена
+      destroy_error: Ошибка удаления подписи
+  activerecord:
+    errors:
+      key_pair:
+        repo_key_exists: Репозиторий уже подписан! Пожалуйста, удалите старую подпись и попробуйте снова
+        rpc_error_0: Неизвестная ошибка
+        rpc_error_1: Проблемы с импортром публичного ключа
+        rpc_error_2: Проблемы с импортром секретного ключа
+        rpc_error_3: Ключи импортированы, но не являются парой (идентификаторы не совпадают)
+    models:
+      key_pair: Подпись
+    attributes:
+      key_pair:
+        id: Id
+        created_at: Создано
+        updated_at: Обновлено
+        user_id: Пользователь
+        repository_id: Репозиторий
+        public: Публичный ключ
+        secret: Секретный ключ
+        key_id: Подпись

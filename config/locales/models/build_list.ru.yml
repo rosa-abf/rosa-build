@@ -79,7 +79,7 @@ ru:
         header: Принадлежность заданий
         owned: Мне
         related: Связанные со мной
-        index: Все
+        everything: Все
 
       build_server_status:
         header: Статус сборочного сервера

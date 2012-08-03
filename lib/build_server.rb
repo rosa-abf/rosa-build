@@ -87,16 +87,29 @@ class BuildServer
     # raise include_repos_hash.inspect
     self.client.call('add_build_list', project_name, project_version, plname, arch, bplname, update_type, build_requires, id_web, include_repos_hash, priority)
   end
-  
+
   def self.delete_build_list idlist
     self.client.call('delete_build_list', idlist)
   end
-  
+
   def self.get_status
     self.client.call('get_status')
   end
 
   def self.freeze platform_name
     self.client.call('freeze_platform', platform_name)
+  end
+
+  # Repository key pair calls
+  def self.import_gpg_key_pair key_pub, key_secret
+    self.client.call('import_gpg_key_pair', key_pub, key_secret)
+  end
+
+  def self.set_repository_key platform, repository, key_id
+    self.client.call('set_repository_key', platform, repository, key_id)
+  end
+
+  def self.rm_repository_key platform, repository
+    self.client.call('rm_repository_key', platform, repository)
   end
 end

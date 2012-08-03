@@ -52,8 +52,10 @@ class BuildList::Filter
         :mass_build_id => nil
     }))
 
-    @options[:ownership] = @options[:ownership].presence || (@project || !@user ? 'index' : 'owned')
-    @options[:status] = @options[:status].try(:to_i)
+    @options[:ownership] = @options[:ownership].presence || (@project || !@user ? 'everything' : 'owned')
+    @options[:status] = @options[:status].present? ? @options[:status].to_i : nil
+    @options[:created_at_start] = build_date_from_params(:created_at_start, @options)
+    @options[:created_at_end] = build_date_from_params(:created_at_end, @options)
     @options[:updated_at_start] = build_date_from_params(:updated_at_start, @options)
     @options[:updated_at_end] = build_date_from_params(:updated_at_end, @options)
     @options[:project_version] = @options[:project_version].presence

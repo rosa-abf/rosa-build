@@ -114,14 +114,16 @@ class BuildList < ActiveRecord::Base
 
     # WTF? around_transition -> infinite loop
     before_transition do |build_list, transition|
-      if build_list.mass_build && MassBuild::COUNT_STATUSES.include?(build_list.status)
-        MassBuild.decrement_counter "#{BuildList::HUMAN_STATUSES[build_list.status].to_s}_count", build_list.mass_build_id
+      status = BuildList::HUMAN_STATUSES[build_list.status]
+      if build_list.mass_build && MassBuild::COUNT_STATUSES.include?(status)
+        MassBuild.decrement_counter "#{status.to_s}_count", build_list.mass_build_id
       end
     end
 
     after_transition do |build_list, transition|
-      if build_list.mass_build && MassBuild::COUNT_STATUSES.include?(build_list.status)
-        MassBuild.increment_counter "#{BuildList::HUMAN_STATUSES[build_list.status].to_s}_count", build_list.mass_build_id
+      status = BuildList::HUMAN_STATUSES[build_list.status]
+      if build_list.mass_build && MassBuild::COUNT_STATUSES.include?(status)
+        MassBuild.increment_counter "#{status.to_s}_count", build_list.mass_build_id
       end
     end
 

@@ -80,7 +80,7 @@ en:
         header: Build list ownership
         owned: My
         related: Related
-        index: All
+        everything: All
 
       build_server_status:
         header: Build server status

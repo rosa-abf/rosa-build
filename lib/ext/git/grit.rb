@@ -7,12 +7,16 @@ module Grit
     MAX_DATA_SIZE = 50.megabytes
 
     def data_with_limit
-      size <= MAX_DATA_SIZE ? data_without_limit : nil # 'Error: blob is too big'
+      !huge? ? data_without_limit : nil # 'Error: blob is too big'
     end
     alias_method_chain :data, :limit
 
     def large?
       size.to_i > MAX_VIEW_SIZE
+    end
+
+    def huge?
+      size.to_i > MAX_DATA_SIZE
     end
 
     def render_as
