@@ -21,6 +21,7 @@ en:
       subject: Subject
       message: Message
 
+      questions_info: If you need help with a project hosted on ABF, please contact the project's owner. 
       info:
         header: What's in a great support request?
         items:
