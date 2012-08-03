@@ -27,7 +27,7 @@ namespace :import do
     say 'DONE'
   end
 
-  # bundle exec rake import:srpm RAILS_ENV=production BASE=/share/platforms/naulinux5x_personal/tmp/SRPMS LIST=https://dl.dropbox.com/u/984976/nauschool5x.srpms.txt OWNER=naulinux PLATFORM=naulinux REPO=main > log/srpm_naulinux.log
+  # bundle exec rake import:srpm RAILS_ENV=production BASE=/share/platforms/naulinux5x_personal/tmp/SRPMS LIST=https://dl.dropbox.com/u/984976/nauschool5x.srpms.txt OWNER=naulinux PLATFORM=naulinux REPO=main CLEAR=true > log/srpm_naulinux.log &
   desc 'Import SRPMs as projects'
   task :srpm => :environment do
     base = ENV['BASE'] || '/share/alt_repos/rsync'
@@ -36,17 +36,39 @@ namespace :import do
     owner = User.find_by_uname(ENV['OWNER']) || Group.find_by_uname!(ENV['OWNER'] || 'altlinux')
     platform = Platform.find_by_name!(ENV['PLATFORM'] || 'altlinux5')
     repo = platform.repositories.find_by_name!(ENV['REPO'] || 'main')
+    clear = ENV['CLEAR'] == 'true' ? true : false
+
     say "START import projects from '#{base}' using '#{list || mask}' for '#{owner.uname}' to repo '#{platform.name}/#{repo.name}'."
-    repo.project_to_repositories.clear if agree "Clear destination repo #{platform.name}/#{repo.name}?"
-    (list ? open(list).readlines.map{|n| File.join base, n.chomp.strip} : Dir[File.join base, mask]).each do |path|
-      print "Processing '#{path}'..."
-      if name = `rpm -q --qf '[%{Name}]' -p #{path}` and $?.success? and name.present?
-        p = Project.find_or_create_by_name_and_owner_type_and_owner_id(name, owner.class.to_s, owner.id)
-        p.import_srpm(path, platform.name)
-        repo.projects << p
-        print "Ok! - #{p.name}"
+    repo.project_to_repositories.clear if clear
+    (list ? open(list).readlines.map{|n| File.join base, n.chomp.strip} : Dir[File.join base, mask]).each do |srpm_file|
+      print "Processing '#{srpm_file}'... "
+      if name = `rpm -q --qf '[%{Name}]' -p #{srpm_file}` and $?.success? and name.present?
+        if clear # simply add
+          project = Project.find_or_create_by_name_and_owner_type_and_owner_id(name, owner.class.to_s, owner.id)
+          repo.projects << project
+        else # check if project already added
+          if project = repo.projects.find_by_name(name) || repo.projects.by_name(name).first # fallback to speedup
+            print "Found project '#{project.owner.uname}/#{project.name}' in '#{platform.name}/#{repo.name}'."
+          elsif scoped = Project.where(:owner_id => owner.id, :owner_type => owner.class) and
+                project = scoped.find_by_name(name) || scoped.by_name(name).first
+            begin
+              repo.projects << project
+            rescue Exception => e
+              print "Add project '#{project.owner.uname}/#{project.name}' to '#{platform.name}/#{repo.name}' FAILED: #{e.message}."
+            else
+              print "Add project '#{project.owner.uname}/#{project.name}' to '#{platform.name}/#{repo.name}' OK."
+            end
+          else
+            description = ::Iconv.conv('UTF-8//IGNORE', 'UTF-8', `rpm -q --qf '[%{Description}]' -p #{srpm_file}`)
+            project = Project.create!(:name => name, :description => description) {|p| p.owner = owner}
+            repo.projects << project
+            print "Create project #{project.owner.uname}/#{project.name} in #{platform.name}/#{repo.name} OK."
+          end
+        end
+        project.import_srpm(srpm_file, platform.name)
+        print " Code import complete!"
       else
-        print 'Fail!'
+        print 'RPM Error!'
       end
       puts
     end
