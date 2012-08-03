@@ -1,0 +1,33 @@
+en:
+  layout:
+    contact:
+      page_header: Contact us
+      header: Contact us
+      subheader: We’re here to help with any questions or comments.
+      send_request: Send Request
+
+      thanks: Thanks for feedback!
+      thanks_2: Your request in progress.
+
+      open_pages: Please, continue your work
+      use_search: Try to find something cool?
+
+      placeholders:
+        name: Your name
+        email: user@example.com
+        subject: I want to say about ...
+        message: Problem description
+
+      subject: Subject
+      message: Message
+
+      info:
+        header: What's in a great support request?
+        items:
+          - "Be succinct, we'll ask if we need more info"
+          - "The name of the user, repository, build list etc you’re having troubles with"
+
+  flash:
+    contact:
+      success: Request successfully sended
+      error: Sending request failed

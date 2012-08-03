@@ -14,6 +14,8 @@ module ApplicationHelper
       'right bigpadding'
     when controller_name == 'platforms' && action_name == 'clone'
       'right middlepadding'
+    when controller_name == 'contacts' && action_name == 'sended'
+      'all feedback_sended'
     else
       content_for?(:sidebar) ? 'right' : 'all'
     end
