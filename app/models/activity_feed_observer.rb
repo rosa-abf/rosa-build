@@ -71,6 +71,8 @@ class ActivityFeedObserver < ActiveRecord::Observer
 
     when 'GitHook'
       return unless record.project
+      record.project.pull_requests.needed_checking.each {|pull| pull.check}
+
       change_type = record.change_type
       branch_name = record.refname.split('/').last
 
@@ -91,8 +93,6 @@ class ActivityFeedObserver < ActiveRecord::Observer
                           :project_owner => record.project.owner.uname}
         options.merge!({:user_id => first_commiter.id, :user_name => first_commiter.name}) if first_commiter
       end
-
-      record.project.pull_requests.needed_checking.each {|pull| pull.check}
 
       record.project.owner_and_admin_ids.each do |recipient|
         ActivityFeed.create!(
