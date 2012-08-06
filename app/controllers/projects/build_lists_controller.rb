@@ -25,7 +25,7 @@ class Projects::BuildListsController < Projects::BaseController
   def index
     @action_url = @project ? search_project_build_lists_path(@project) : search_build_lists_path
     @filter = BuildList::Filter.new(@project, current_user, params[:filter] || {})
-    @build_lists = @filter.find.scoped(:include => [:save_to_platform, :project, :user, :arch])
+    @build_lists = @filter.find.includes [:save_to_platform, :save_to_repository, :arch, :user => [:groups], :project => [:owner]]
     @build_lists = @build_lists.recent.paginate :page => params[:page]
 
     @build_server_status = begin
