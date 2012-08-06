@@ -63,7 +63,7 @@ class Api::V1::BuildListsController < Api::V1::BaseController
     if @build_list.reject_publish
       render :json => {:is_reject_published => true, :url => api_v1_build_list_path(@build_list, :format => :json), :message => t('layout.build_lists.reject_publish_success')}
     else
-      render :json => {:is_reject_published => true, :url => api_v1_build_list_path(@build_list, :format => :json), :message => t('layout.build_lists.reject_publish_fail')}
+      render :json => {:is_reject_published => false, :url => api_v1_build_list_path(@build_list, :format => :json), :message => t('layout.build_lists.reject_publish_fail')}
     end
   end
 
