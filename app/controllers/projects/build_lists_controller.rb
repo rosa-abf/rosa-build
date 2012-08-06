@@ -42,9 +42,11 @@ class Projects::BuildListsController < Projects::BaseController
   def create
     notices, errors = [], []
 
-    @repository = Repository.find params[:build_list][:save_to_repository_id]
-    @platform = @repository.platform
-    params[:build_list][:save_to_platform_id] = @platform.id
+    @platform = Platform.includes(:repositories).find params[:build_list][:save_to_platform_id]
+
+    @repository = @project.repositories.where(:id => @platform.repository_ids).first
+
+    params[:build_list][:save_to_repository_id] = @repository.id
     params[:build_list][:auto_publish] = false if @platform.released
 
     Arch.where(:id => params[:arches]).each do |arch|

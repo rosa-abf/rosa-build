@@ -27,9 +27,6 @@ class BuildList < ActiveRecord::Base
   validate lambda {
     errors.add(:save_to_repository, I18n.t('flash.build_list.wrong_repository')) unless save_to_repository_id.in? save_to_platform.repositories.map(&:id)
   }
-  validate lambda {
-    errors.add(:save_to_repository, I18n.t('flash.build_list.cannot_write')) unless current_user.can?(:write, save_to_repository)
-  }
 
   LIVE_TIME = 3.week
 
