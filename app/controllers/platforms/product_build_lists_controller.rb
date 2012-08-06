@@ -26,7 +26,7 @@ class Platforms::ProductBuildListsController < Platforms::BaseController
     if @product_build_list.destroy  
       flash[:notice] = t('flash.product_build_list.delete')
      else
-      flash[:notice] = t('flash.product_build_list.delete_error')
+      flash[:error] = t('flash.product_build_list.delete_error')
      end 
     redirect_to [@platform, @product]
   end
