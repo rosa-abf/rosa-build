@@ -33,7 +33,6 @@ en:
       save_error: Unable to save product
       build_started: Product build started
       destroyed: Product deleted
-      build_list_delete: Product build list deleted
 
   activerecord:
     models:
