@@ -126,6 +126,7 @@ ActiveRecord::Schema.define(:version => 20120730214052) do
     t.integer  "duration"
     t.integer  "advisory_id"
     t.integer  "mass_build_id"
+    t.integer  "save_to_repository_id"
   end
 
   add_index "build_lists", ["advisory_id"], :name => "index_build_lists_on_advisory_id"

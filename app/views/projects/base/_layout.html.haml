@@ -1,11 +1,6 @@
 = render 'submenu'
 = render 'repo_block', :project => @project
-
-.description
-  %h3= t("layout.projects.about_subheader")
-  %p
-    = @project.description
-    = link_to t('layout.read_more'), '#'
+= render 'about_block', :project => @project
 
 %h3= t("layout.projects.last_commit")
 - GitPresenters::CommitAsMessagePresenter.present(@commit, :branch => @branch, :project => @project) do |presenter|
