@@ -180,7 +180,7 @@ class Platform < ActiveRecord::Base
           arches.map(&:name).each do |arch|
             begin
               return if mass_build.reload.stop_build
-              p.build_for(self, user, arch, auto_publish, mass_build_id)
+              p.build_for(self, rep.id, user, arch, auto_publish, mass_build_id)
             rescue RuntimeError, Exception
               # p.async(:build_for, self, user, arch, auto_publish, mass_build_id) # TODO need this?
             end
