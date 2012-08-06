@@ -9,7 +9,7 @@ class PullRequest < ActiveRecord::Base
   validate :uniq_merge
   validates_each :head_ref, :base_ref do |record, attr, value|
     project = attr == :head_ref ? record.head_project : record.base_project
-    if !((project.repo.branches_and_tags).map(&:name).include?(value) || project.git_repository.commits.map(&:id).include?(value))
+    if !((project.repo.branches_and_tags).map(&:name).include?(value) || project.repo.commits.map(&:id).include?(value))
       record.errors.add attr, I18n.t('projects.pull_requests.wrong_ref')
     end
   end
