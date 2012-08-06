@@ -4,8 +4,7 @@ class Projects::PullRequestsController < Projects::BaseController
   skip_before_filter :authenticate_user!, :only => [:index, :show] if APP_CONFIG['anonymous_access']
   load_resource :project
 
-  load_and_authorize_resource :issue, :through => :project, :find_by => :serial_id, :parent => false, :except => [:merge, :autocomplete_base_project]
-  load_resource :issue, :through => :project, :find_by => :serial_id, :parent => false, :only => :merge
+  load_and_authorize_resource :issue, :through => :project, :find_by => :serial_id, :parent => false, :except => :autocomplete_base_project
   before_filter :load_pull, :except => :autocomplete_base_project
 
   def new
@@ -115,11 +114,8 @@ class Projects::PullRequestsController < Projects::BaseController
   end
 
   def load_pull
-    @issue ||= @issues.first #FIXME! merge action create @issues?
     if params[:action].to_sym != :index
-      @pull = @project.pull_requests.joins(:issue).where(:issues => {:id => @issue.id}).readonly(false).first
-    else
-      @pull_requests = @project.pull_requests
+      @pull = @project.pull_requests.where(:issue_id => @issue.id).first
     end
   end
 

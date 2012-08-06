@@ -116,12 +116,10 @@ class Ability
         can :read, Issue, :project => {:owner_type => 'User', :owner_id => user.id}
         can :read, Issue, :project => {:owner_type => 'Group', :owner_id => user.group_ids}
         can(:read, Issue, read_relations_for('issues', 'projects')) {|issue| can? :read, issue.project rescue nil}
-        can(:create, Issue) {|issue| can? :write, issue.project}
+        can([:merge, :create], Issue) {|issue| can? :write, issue.project}
         can([:update, :destroy], Issue) {|issue| issue.user_id == user.id or local_admin?(issue.project)}
         cannot :manage, Issue, :project => {:has_issues => false} # switch off issues
         can(:autocomplete_base_project, Issue, read_relations_for('issues', 'projects')) {|issue| can? :read, issue.project rescue nil}
-
-        can(:merge, PullRequest) {|pull| local_writer?(pull.base_project)}
 
         can(:create, Comment) {|comment| can? :read, comment.project}
         can(:update, Comment) {|comment| comment.user_id == user.id or local_admin?(comment.project || comment.commentable.project)}

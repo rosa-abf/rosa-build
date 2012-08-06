@@ -1,4 +1,4 @@
-- if can? :merge, @pull
+- if can? :merge, @issue
   %br
   =form_for PullRequest.new, :url => merge_project_pull_request_path(@project, @pull), :html => { :method => :put, :class => :form } do |f|
     =f.submit t 'projects.pull_requests.ready'
