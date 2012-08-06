@@ -99,6 +99,9 @@ describe Api::V1::BuildListsController do
     context 'for user' do
       before(:each) do
         @owner_user = @project.owner
+        # Sets admin rights for owner
+        @project.relations.create :role => 'admin', :actor_id => @owner_user.id, :actor_type => 'User'
+
         @member_user = FactoryGirl.create(:user)
         rel = @project.relations.build(:role => 'reader')
         rel.actor = @member_user
@@ -233,16 +236,17 @@ describe Api::V1::BuildListsController do
             set_session_for(@owner_user)
             @build_list.update_attribute(:status, BuildServer::SUCCESS)
             @build_list.save_to_platform.update_attribute(:released, true)
+            @build_list.save_to_platform.relations.create :role => 'admin', :actor_id => @owner_user.id, :actor_type => 'User'
             do_reject_publish
           end
 
-          context "if it has :failed_publish status" do
+          context "if it has :success status" do
             it "should return correct json message" do
               response.body.should == {:is_reject_published => true, :url => api_v1_build_list_path(@build_list, :format => :json), :message => I18n.t('layout.build_lists.reject_publish_success')}.to_json
             end
 
-            it "should cancel build list" do
-              @build_list.reload.status.should == BuildList::BUILD_PUBLISH
+            it "should reject publish build list" do
+              @build_list.reload.status.should == BuildList::REJECTED_PUBLISH
             end
           end
 
@@ -333,6 +337,7 @@ describe Api::V1::BuildListsController do
 
         context 'if user is project owner' do
           before(:each) {set_session_for(@owner_user)}
+
           it_should_behave_like 'show build list'
           it_should_behave_like 'create build list'
         end
@@ -347,9 +352,9 @@ describe Api::V1::BuildListsController do
 
     context 'for group' do
       before(:each) do
-        @owner_group = FactoryGirl.create(:group)
-        @owner_user = FactoryGirl.create(:user)
-        @owner_group.actors.create :role => 'admin', :actor_id => @owner_user.id, :actor_type => 'User'
+        @owner_user = @project.owner
+        @owner_group = FactoryGirl.create(:group, :owner => @owner_user)
+        #@owner_group.actors.create :role => 'admin', :actor_id => @owner_user.id, :actor_type => 'User'
         @member_group = FactoryGirl.create(:group)
         @member_user = FactoryGirl.create(:user)
         @member_group.actors.create :role => 'reader', :actor_id => @member_user.id, :actor_type => 'User'
@@ -395,7 +400,10 @@ describe Api::V1::BuildListsController do
         it_should_behave_like 'not create build list'
 
         context 'if user is group owner' do
-          before(:each) {set_session_for(@owner_user)}
+          before(:each) {
+            set_session_for(@owner_user)
+          }
+
           it_should_behave_like 'show build list'
           it_should_behave_like 'create build list'
         end
@@ -409,8 +417,6 @@ describe Api::V1::BuildListsController do
 
       context 'for hidden project' do
         before(:each) do
-          #@project.visibility = 'hidden'
-          #@project.save
           @build_list.project.update_attribute(:visibility, 'hidden')
         end
 
