@@ -140,7 +140,7 @@ class PullRequest < ActiveRecord::Base
     end
   end
 
-  # FIXME копипизд from grit (maybe move to warpc/gri?)
+  # FIXME maybe move to warpc/grit?
   def diff(repo, a, b)
     diff = repo.git.native('diff', {:M => true}, "#{a}...#{b}")
 
