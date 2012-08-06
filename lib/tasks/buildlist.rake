@@ -9,7 +9,7 @@ namespace :buildlist do
       say "There are #{outdated.count} outdated BuildLists at #{Time.now}"
       BuildList.outdated.destroy_all
 
-      say "Removing outdated BuildLists"
+      say "Removing outdated MassBuilds"
       outdated = MassBuild.outdated
       say "There are #{outdated.count} outdated MassBuilds at #{Time.now}"
       MassBuild.outdated.destroy_all
