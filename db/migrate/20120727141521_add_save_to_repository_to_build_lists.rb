@@ -13,6 +13,7 @@ class AddSaveToRepositoryToBuildLists < ActiveRecord::Migration
           bl.save_to_repository_id = rep
           bl.save!
         rescue Exception => e
+          puts e.inspect
           false
         end
       end
