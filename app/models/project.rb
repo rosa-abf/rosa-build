@@ -24,7 +24,7 @@ class Project < ActiveRecord::Base
   validates :name, :uniqueness => {:scope => [:owner_id, :owner_type], :case_sensitive => false}, :presence => true, :format => {:with => /^#{NAME_REGEXP}$/, :message => I18n.t("activerecord.errors.project.uname")}
   validates :owner, :presence => true
   validates :visibility, :presence => true, :inclusion => {:in => VISIBILITIES}
-  #validate { errors.add(:base, :can_have_less_or_equal, :count => MAX_OWN_PROJECTS) if owner.projects.size >= MAX_OWN_PROJECTS }
+  validate { errors.add(:base, :can_have_less_or_equal, :count => MAX_OWN_PROJECTS) if owner.projects.size >= MAX_OWN_PROJECTS }
 
   attr_accessible :name, :description, :visibility, :srpm, :is_package, :default_branch, :has_issues, :has_wiki
   attr_readonly :name, :owner_id, :owner_type
@@ -88,8 +88,8 @@ class Project < ActiveRecord::Base
     # Select main and project platform repository(contrib, non-free and etc)
     # If main does not exist, will connect only project platform repository
     # If project platform repository is main, only main will be connect
-    build_reps = [platform.repositories.find_by_name('main')]
-    build_reps_ids = (build_reps + [repository_id]).compact.map(&:id).uniq
+    main_rep_id = platform.repositories.find_by_name('main').id
+    build_reps_ids = ([main_rep_id]  + [repository_id]).compact.uniq
     arch = Arch.find_by_name(arch) if arch.acts_like?(:string)
     build_lists.create do |bl|
       bl.save_to_platform = platform
