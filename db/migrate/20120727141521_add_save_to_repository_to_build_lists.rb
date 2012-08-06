@@ -10,13 +10,9 @@ class AddSaveToRepositoryToBuildLists < ActiveRecord::Migration
 
           rep = (project.repositories.map(&:id) & platform.repositories.map(&:id)).first
 
-          puts rep
-
           bl.save_to_repository_id = rep
           bl.save!
-          puts bl.inspect
         rescue Exception => e
-          puts e.inspect
           false
         end
       end
