@@ -19,6 +19,7 @@ en:
         include_repos: Included repositories
         created_at: Created on
         save_to_platform: Platform
+        save_to_repository: Repository
         build_for_platform: Build for platform
         update_type: Update type
         build_requires: Build with all the required packages
