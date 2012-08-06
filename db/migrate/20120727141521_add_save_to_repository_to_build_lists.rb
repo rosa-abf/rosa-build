@@ -9,9 +9,13 @@ class AddSaveToRepositoryToBuildLists < ActiveRecord::Migration
           platform = bl.save_to_platform
 
           rep = (project.repositories.map(&:id) & platform.repositories.map(&:id)).first
+
+          puts rep
+
           bl.save_to_repository_id = rep
-          bl.save
-        rescue
+          bl.save!
+        rescue Exception => e
+          puts e.inspect
           false
         end
       end
