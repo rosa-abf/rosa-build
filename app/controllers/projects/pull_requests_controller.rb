@@ -21,12 +21,16 @@ class Projects::PullRequestsController < Projects::BaseController
     @pull.base_ref = (pull_params[:base_ref].presence if pull_params) || @pull.base_project.default_branch
     @pull.head_ref = params[:treeish].presence || (pull_params[:head_ref].presence if pull_params) || @pull.head_project.default_branch
 
-    @pull.check(false) # don't make event transaction
-    if @pull.status == 'already'
-      @pull.destroy
-      flash[:warning] = I18n.t('projects.pull_requests.up_to_date', :base_ref => @pull.base_ref, :head_ref => @pull.head_ref)
+    if PullRequest.check_ref(@pull, 'base', @pull.base_ref) && PullRequest.check_ref(@pull, 'head', @pull.head_ref)
+      flash[:warning] = @pull.errors.full_messages.join('. ')
     else
-      load_diff_commits_data
+      @pull.check(false) # don't make event transaction
+      if @pull.already?
+        @pull.destroy
+        flash[:warning] = I18n.t('projects.pull_requests.up_to_date', :base_ref => @pull.base_ref, :head_ref => @pull.head_ref)
+      else
+        load_diff_commits_data
+      end
     end
   end
 
@@ -41,7 +45,7 @@ class Projects::PullRequestsController < Projects::BaseController
     @pull = base_project.pull_requests.new pull_params
     @pull.issue.user, @pull.issue.project, @pull.head_project = current_user, base_project, @project
 
-    if @pull.save
+    if @pull.valid?
       @pull.check(false) # don't make event transaction
       if @pull.status == 'already'
         @pull.destroy
@@ -55,10 +59,10 @@ class Projects::PullRequestsController < Projects::BaseController
       flash[:error] = t('flash.pull_request.save_error')
       flash[:warning] = @pull.errors.full_messages.join('. ')
 
-      #@commits = @diff = @stats = nil
-      # FIXME wrong project or refs generate exception
-      @pull.check(false) # don't make event transaction
-      load_diff_commits_data
+      if @pull.errors.try(:messages) && @pull.errors.messages[:base_ref].nil? && @pull.errors.messages[:head_ref].nil?
+        @pull.check(false) # don't make event transaction
+        load_diff_commits_data
+      end
       render :new
     end
   end

@@ -6,12 +6,9 @@ class PullRequest < ActiveRecord::Base
   delegate :user, :user_id, :title, :body, :serial_id, :assignee, :status, :to_param,
     :created_at, :updated_at, :comments, :to => :issue, :allow_nil => true
 
-  validate :uniq_merge
+  validate :uniq_merge, :on => :save
   validates_each :head_ref, :base_ref do |record, attr, value|
-    project = attr == :head_ref ? record.head_project : record.base_project
-    if !((project.repo.branches_and_tags).map(&:name).include?(value) || project.repo.commits.map(&:id).include?(value))
-      record.errors.add attr, I18n.t('projects.pull_requests.wrong_ref')
-    end
+    check_ref record, attr, value
   end
 
   before_create :clean_dir
@@ -151,6 +148,13 @@ class PullRequest < ActiveRecord::Base
   def set_user_and_time user
     issue.closed_at = Time.now.utc
     issue.closer = user
+  end
+
+  def self.check_ref(record, attr, value)
+    project = attr == :head_ref ? record.head_project : record.base_project
+    if !((project.repo.branches_and_tags).map(&:name).include?(value) || project.repo.commits.map(&:id).include?(value))
+      record.errors.add attr, I18n.t('projects.pull_requests.wrong_ref')
+    end
   end
 
   protected
