@@ -15,7 +15,7 @@ class Projects::PullRequestsController < Projects::BaseController
     @pull.issue = base_project.issues.new
     set_attrs
 
-    if PullRequest.check_ref(@pull, 'base', @pull.base_ref) && PullRequest.check_ref(@pull, 'head', @pull.head_ref)
+    if PullRequest.check_ref(@pull, 'base', @pull.base_ref) && PullRequest.check_ref(@pull, 'head', @pull.head_ref) || @pull.uniq_merge
       flash[:warning] = @pull.errors.full_messages.join('. ')
     else
       @pull.check(false) # don't make event transaction

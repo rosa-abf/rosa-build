@@ -6,7 +6,7 @@ class PullRequest < ActiveRecord::Base
   delegate :user, :user_id, :title, :body, :serial_id, :assignee, :status, :to_param,
     :created_at, :updated_at, :comments, :to => :issue, :allow_nil => true
 
-  validate :uniq_merge, :on => :save
+  validate :uniq_merge
   validates_each :head_ref, :base_ref do |record, attr, value|
     check_ref record, attr, value
   end
@@ -157,6 +157,12 @@ class PullRequest < ActiveRecord::Base
     end
   end
 
+  def uniq_merge
+    if base_project.pull_requests.needed_checking.where(:head_project_id => head_project, :base_ref => base_ref, :head_ref => head_ref).where('pull_requests.id <> :id or :id is null', :id => id).count > 0
+      errors.add(:base_branch, I18n.t('projects.pull_requests.duplicate', :head_ref => head_ref))
+    end
+  end
+
   protected
 
   def merge
@@ -203,12 +209,6 @@ class PullRequest < ActiveRecord::Base
       base_project.repo.tags.each do |tag|
         system 'git', 'tag', '-d', tag.name unless [base_ref, head_branch].include? tag.name
       end
-    end
-  end
-
-  def uniq_merge
-    if base_project.pull_requests.needed_checking.where(:head_project_id => head_project, :base_ref => base_ref, :head_ref => head_ref).where('pull_requests.id <> :id or :id is null', :id => id).count > 0
-      errors.add(:base_branch, I18n.t('projects.pull_requests.duplicate', :head_ref => head_ref))
     end
   end
 
