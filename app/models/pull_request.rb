@@ -144,8 +144,7 @@ class PullRequest < ActiveRecord::Base
 
   def self.check_ref(record, attr, value)
     project = attr == :head_ref ? record.head_project : record.base_project
-    if !((project.repo.branches_and_tags).map(&:name).include?(value) || project.repo.commits.map(&:id).include?(value))
-      record.errors.add attr, I18n.t('projects.pull_requests.wrong_ref')
+      record.errors.add attr, I18n.t('projects.pull_requests.wrong_ref') unless project.repo.branches_and_tags.map(&:name).include?(value)
     end
   end
 
