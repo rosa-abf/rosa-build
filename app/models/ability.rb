@@ -147,10 +147,6 @@ class Ability
       can :destroy, Subscribe do |subscribe|
         subscribe.subscribeable.subscribes.exists?(:user_id => user.id) && user.id == subscribe.user_id
       end
-
-      cannot(:merge, PullRequest) {|pull| !pull.can_merging?}
-      cannot(:close, PullRequest) {|pull| !pull.can_close? && can?(pull.issue, :update)}
-      cannot(:reopen, PullRequest) {|pull| !pull.can_reopen? && can?(pull.issue, :update)}
     end
   end
 
