@@ -4,6 +4,7 @@ class MassBuild < ActiveRecord::Base
   has_many :build_lists, :dependent => :destroy
 
   scope :by_platform, lambda { |platform| where(:platform_id => platform.id) }
+  scope :outdated, where('created_at < ?', Time.now + 1.day - BuildList::MAX_LIVE_TIME)
 
   attr_accessor :repositories, :arches
   attr_accessible :repositories, :arches, :auto_publish

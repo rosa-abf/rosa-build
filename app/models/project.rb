@@ -24,10 +24,11 @@ class Project < ActiveRecord::Base
 
   validates :name, :uniqueness => {:scope => [:owner_id, :owner_type], :case_sensitive => false}, :presence => true, :format => {:with => /^#{NAME_REGEXP}$/, :message => I18n.t("activerecord.errors.project.uname")}
   validates :owner, :presence => true
+  validates :visibility, :presence => true, :inclusion => {:in => VISIBILITIES}
   validate { errors.add(:base, :can_have_less_or_equal, :count => MAX_OWN_PROJECTS) if owner.projects.size >= MAX_OWN_PROJECTS }
 
   attr_accessible :name, :description, :visibility, :srpm, :is_package, :default_branch, :has_issues, :has_wiki
-  attr_readonly :name
+  attr_readonly :name, :owner_id, :owner_type
 
   scope :recent, order("name ASC")
   scope :search_order, order("CHAR_LENGTH(name) ASC")
@@ -84,13 +85,13 @@ class Project < ActiveRecord::Base
     owner == user
   end
 
-  def build_for(platform, user, arch = 'i586', auto_publish = false, mass_build_id = nil, priority = 0)
+  def build_for(platform, repository_id, user, arch = 'i586', auto_publish = false, mass_build_id = nil, priority = 0)
     # Select main and project platform repository(contrib, non-free and etc)
     # If main does not exist, will connect only project platform repository
     # If project platform repository is main, only main will be connect
-    build_reps = [platform.repositories.find_by_name('main')]
-    build_reps += platform.repositories.select {|rep| self.repository_ids.include? rep.id}
-    build_reps_ids = build_reps.compact.map(&:id).uniq
+    main_rep_id = platform.repositories.find_by_name('main').id
+    build_reps_ids = [main_rep_id, repository_id].compact.uniq
+
     arch = Arch.find_by_name(arch) if arch.acts_like?(:string)
     build_lists.create do |bl|
       bl.save_to_platform = platform
@@ -104,6 +105,7 @@ class Project < ActiveRecord::Base
       bl.include_repos = build_reps_ids
       bl.priority = priority
       bl.mass_build_id = mass_build_id
+      bl.save_to_repository_id = repository_id
     end
   end
 
