@@ -56,10 +56,6 @@ class PullRequest < ActiveRecord::Base
     issue.status = value
   end
 
-  def can_merge?
-    status == 'ready'
-  end
-
   def check(do_transaction = true)
     new_status = case merge
                  when /Already up-to-date/
@@ -86,7 +82,7 @@ class PullRequest < ActiveRecord::Base
   end
 
   def merge!(who)
-    return false unless can_merge?
+    return false unless can_merging?
     Dir.chdir(path) do
       system "git config user.name \"#{who.uname}\" && git config user.email \"#{who.email}\""
       if merge
