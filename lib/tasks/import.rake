@@ -94,13 +94,13 @@ namespace :import do
       repository = ENV['REPOSITORY'] || 'main'
       source = "rsync://mirror.yandex.ru/mandriva/#{release}/SRPMS/#{repository}/"
       destination = ENV['DESTINATION'] || File.join(APP_CONFIG['root_path'], 'mirror.yandex.ru', 'mandriva', release, 'SRPMS', repository)
-      say "START rsync projects (*.src.rpm) from '#{source}' to '#{destination}'"
-      if system "rsync -rtv --exclude='backports/*' --exclude='testing/*' #{source} #{destination}" # --delete --include='*.src.rpm'
+      say "START rsync projects (*.src.rpm) from '#{source}' to '#{destination}' (#{Time.now.utc})"
+      if system "rsync -rtv --delete --exclude='backports/*' --exclude='testing/*' #{source} #{destination}" # --include='*.src.rpm'
         say 'Rsync ok!'
       else
         say 'Rsync failed!'
       end
-      say 'DONE'
+      say "DONE (#{Time.now.utc})"
     end
 
     desc "Parse repository for changes"
@@ -112,29 +112,29 @@ namespace :import do
       owner = Group.find_or_create_by_uname(ENV['OWNER'] || 'import') {|g| g.name = g.uname; g.owner = User.first}
       branch = "import_#{platform.name}"
 
-      say 'START'
+      say "START (#{Time.now.utc})"
       Dir[File.join source, '{release,updates}', '*.src.rpm'].each do |srpm_file|
-        say "=== Processing '#{srpm_file}'..."
+        print "Processing '#{srpm_file}'... "
         if name = `rpm -q --qf '[%{Name}]' -p #{srpm_file}` and $?.success? and name.present? and
-           version = `rpm -q --qf '[%{Version}]' -p #{srpm_file}` and $?.success? and version.present?
+           version = `rpm -q --qf '[%{Version}-%{Release}]' -p #{srpm_file}` and $?.success? and version.present?
           project_import = ProjectImport.find_by_name_and_platform_id(name, platform.id) || ProjectImport.by_name(name).where(:platform_id => platform.id).first || ProjectImport.new(:name => name, :platform_id => platform.id)
           if version != project_import.version.to_s and File.mtime(srpm_file) > project_import.file_mtime
             unless project = project_import.project
               if project = repository.projects.find_by_name(name) || repository.projects.by_name(name).first # fallback to speedup
-                say "Found project '#{project.owner.uname}/#{project.name}'"
+                print "Found project #{project.owner.uname}/#{project.name} in #{platform.name}/#{repository.name}. "
               elsif scoped = Project.where(:owner_id => owner.id, :owner_type => owner.class) and
                     project = scoped.find_by_name(name) || scoped.by_name(name).first
                 repository.projects << project
-                say "Add project '#{project.owner.uname}/#{project.name}' to '#{platform.name}/#{repository.name}'"
+                print "Add project #{project.owner.uname}/#{project.name} to #{platform.name}/#{repository.name}. "
               else
                 description = ::Iconv.conv('UTF-8//IGNORE', 'UTF-8', `rpm -q --qf '[%{Description}]' -p #{srpm_file}`)
                 project = Project.create!(:name => name, :description => description) {|p| p.owner = owner}
                 repository.projects << project
-                say "Create project #{project.owner.uname}/#{project.name} in #{platform.name}/#{repository.name}"
+                print "Create project #{project.owner.uname}/#{project.name} at #{platform.name}/#{repository.name}. "
               end
             end
             project.import_srpm(srpm_file, branch)
-            say "New version (#{version}) for '#{project.owner.uname}/#{project.name}' successfully imported to branch '#{branch}'!"
+            print "New version (#{version}) for #{project.owner.uname}/#{project.name} successfully imported to branch #{branch}! "
 
             project_import.project = project
             # project_import.platform = platform
@@ -144,15 +144,16 @@ namespace :import do
 
             # TODO notify import.members
 
-            say '=== Success!'
+            print 'Ok!'
           else
-            say '=== Not changed!'
+            print 'Not updated!'
           end
         else
-          say '=== Fail!'
+          print 'RPM Error!'
         end
+        puts
       end
-      say 'DONE'
+      say "DONE (#{Time.now.utc})"
     end
   end
 end
