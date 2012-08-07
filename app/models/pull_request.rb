@@ -4,7 +4,7 @@ class PullRequest < ActiveRecord::Base
   belongs_to :base_project, :class_name => 'Project', :foreign_key => 'base_project_id'
   belongs_to :head_project, :class_name => 'Project', :foreign_key => 'head_project_id'
   delegate :user, :user_id, :title, :body, :serial_id, :assignee, :status, :to_param,
-    :created_at, :updated_at, :comments, :to => :issue, :allow_nil => true
+    :created_at, :updated_at, :comments, :status=, :to => :issue, :allow_nil => true
 
   validate :uniq_merge
   validates_each :head_ref, :base_ref do |record, attr, value|
@@ -47,10 +47,6 @@ class PullRequest < ActiveRecord::Base
     event :reopen do
       transition :closed => :open
     end
-  end
-
-  def status=(value)
-    issue.status = value
   end
 
   def check(do_transaction = true)
