@@ -28,7 +28,8 @@ class BuildList < ActiveRecord::Base
     errors.add(:save_to_repository, I18n.t('flash.build_list.wrong_repository')) unless save_to_repository_id.in? save_to_platform.repositories.map(&:id)
   }
 
-  LIVE_TIME = 3.week
+  LIVE_TIME = 4.week # for unpublished 
+  MAX_LIVE_TIME = 3.month # for published
 
   # The kernel does not send these statuses directly
   BUILD_CANCELED = 5000
@@ -97,7 +98,7 @@ class BuildList < ActiveRecord::Base
     s
   }
   scope :scoped_to_project_name, lambda {|project_name| joins(:project).where('projects.name LIKE ?', "%#{project_name}%")}
-  scope :outdated, where('updated_at < ? AND status <> ?', Time.now - LIVE_TIME, BUILD_PUBLISHED)
+  scope :outdated, where('created_at < ? AND status <> ? OR created_at < ?', Time.now - LIVE_TIME, BUILD_PUBLISHED, Time.now - MAX_LIVE_TIME)
 
   serialize :additional_repos
   serialize :include_repos

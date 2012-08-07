@@ -89,7 +89,8 @@ class Project < ActiveRecord::Base
     # If main does not exist, will connect only project platform repository
     # If project platform repository is main, only main will be connect
     main_rep_id = platform.repositories.find_by_name('main').id
-    build_reps_ids = ([main_rep_id]  + [repository_id]).compact.uniq
+    build_reps_ids = [main_rep_id, repository_id].compact.uniq
+
     arch = Arch.find_by_name(arch) if arch.acts_like?(:string)
     build_lists.create do |bl|
       bl.save_to_platform = platform
