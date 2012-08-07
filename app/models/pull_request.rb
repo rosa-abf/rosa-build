@@ -87,10 +87,6 @@ class PullRequest < ActiveRecord::Base
     end
   end
 
-  def self.default_base_project(project)
-    project.is_root? ? project : project.root
-  end
-
   def path
     filename = [id, head_project.owner.uname, head_project.name].compact.join('-')
     File.join(APP_CONFIG['root_path'], 'pull_requests', base_project.owner.uname, base_project.name, filename)

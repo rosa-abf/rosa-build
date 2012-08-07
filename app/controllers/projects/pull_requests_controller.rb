@@ -8,7 +8,7 @@ class Projects::PullRequestsController < Projects::BaseController
   before_filter :load_pull, :except => :autocomplete_base_project
 
   def new
-    base_project = (Project.find(params[:base_project_id]) if params[:base_project_id]) || PullRequest.default_base_project(@project)
+    base_project = (Project.find(params[:base_project_id]) if params[:base_project_id]) || @project.root
     authorize! :read, base_project
 
     @pull = base_project.pull_requests.new
@@ -91,7 +91,7 @@ class Projects::PullRequestsController < Projects::BaseController
   def autocomplete_base_project
     #Maybe slow? ILIKE?
     items = Project.accessible_by(current_ability, :membered)
-    items << PullRequest.default_base_project(@project)
+    items << @project.root
     items.select! {|e| Regexp.new(params[:term].downcase).match(e.name.downcase) && e.repo.branches.count > 0}
     items.uniq!
     render :json => json_for_autocomplete_base(items)#, :fullname, [:branches])
