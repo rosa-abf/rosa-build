@@ -39,7 +39,8 @@ class Projects::PullRequestsController < Projects::BaseController
     @pull = base_project.pull_requests.new pull_params
     @pull.issue.user, @pull.issue.project, @pull.head_project = current_user, base_project, @project
 
-    if @pull.valid?
+    if @pull.valid? # FIXME more clean/clever logics
+      @pull.save
       @pull.check(false) # don't make event transaction
       if @pull.already?
         @pull.destroy
