@@ -13,13 +13,7 @@ class Projects::PullRequestsController < Projects::BaseController
 
     @pull = base_project.pull_requests.new
     @pull.issue = base_project.issues.new
-    if pull_params && pull_params[:issue_attributes]
-      @pull.issue.title = pull_params[:issue_attributes][:title].presence
-      @pull.issue.body = pull_params[:issue_attributes][:body].presence
-    end
-    @pull.head_project = @project
-    @pull.base_ref = (pull_params[:base_ref].presence if pull_params) || @pull.base_project.default_branch
-    @pull.head_ref = params[:treeish].presence || (pull_params[:head_ref].presence if pull_params) || @pull.head_project.default_branch
+    set_attrs
 
     if PullRequest.check_ref(@pull, 'base', @pull.base_ref) && PullRequest.check_ref(@pull, 'head', @pull.head_ref)
       flash[:warning] = @pull.errors.full_messages.join('. ')
@@ -47,7 +41,7 @@ class Projects::PullRequestsController < Projects::BaseController
 
     if @pull.valid?
       @pull.check(false) # don't make event transaction
-      if @pull.status == 'already'
+      if @pull.already?
         @pull.destroy
         flash[:error] = I18n.t('projects.pull_requests.up_to_date', :base_ref => @pull.base_ref, :head_ref => @pull.head_ref)
         render :new
@@ -100,7 +94,6 @@ class Projects::PullRequestsController < Projects::BaseController
     items.select! {|e| Regexp.new(params[:term].downcase).match(e.name.downcase) && e.repo.branches.count > 0}
     items.uniq!
     render :json => json_for_autocomplete_base(items)#, :fullname, [:branches])
-
   end
 
   protected
@@ -132,5 +125,15 @@ class Projects::PullRequestsController < Projects::BaseController
 
     @diff = @pull.diff repo, @base_commit, @head_commit
     @stats = @pull.diff_stats repo, @base_commit, @head_commit
+  end
+
+  def set_attrs
+    if pull_params && pull_params[:issue_attributes]
+      @pull.issue.title = pull_params[:issue_attributes][:title].presence
+      @pull.issue.body = pull_params[:issue_attributes][:body].presence
+    end
+    @pull.head_project = @project
+    @pull.base_ref = (pull_params[:base_ref].presence if pull_params) || @pull.base_project.default_branch
+    @pull.head_ref = params[:treeish].presence || (pull_params[:head_ref].presence if pull_params) || @pull.head_project.default_branch
   end
 end
