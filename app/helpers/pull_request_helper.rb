@@ -1,15 +1,8 @@
 # -*- encoding : utf-8 -*-
 module PullRequestHelper
   def pull_status_label pull
-    label = case pull.status
-                when 'ready'
-                  'success'
-                when 'closed', 'merged'
-                  'important'
-                when 'blocked'
-                  'warning'
-                end
-    "<span class='label-bootstrap label-#{label}'>#{t "projects.pull_requests.statuses.#{pull.status}"}</span>".html_safe
+    statuses = {'ready' => 'success', 'closed' => 'important', 'merged' => 'important', 'blocked' => 'warning'}
+    content_tag :span, t("projects.pull_requests.statuses.#{pull.status}"), :class => "label-bootstrap label-#{statuses[pull.status]}"
   end
 
   def pull_status pull
