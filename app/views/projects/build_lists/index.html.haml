@@ -13,6 +13,33 @@
   %tbody= render :partial => 'projects/build_lists/build_list', :collection => @build_lists
 .both
 
+:javascript
+  $(function(){
+    // from jQuery.timeago
+    var parseIso8601 = function(iso8601) {
+      var s = $.trim(iso8601);
+      s = s.replace(/\.\d+/,""); // remove milliseconds
+      s = s.replace(/-/,"/").replace(/-/,"/");
+      s = s.replace(/T/," ").replace(/Z/," UTC");
+      s = s.replace(/([\+\-]\d\d)\:?(\d\d)/," $1$2"); // -04:00 -> -0400
+      return new Date(s);
+    }
+    // TODO Very, very ugly method.
+    $("time.js-relative-date").each(function() {
+      $(this).countdown({
+        layout: '{hnn}{sep}{mnn}',
+        format: 'HM',
+        since: parseIso8601($(this).attr('datetime')),
+        compact: true
+      });
+    });
+
+    //reload page every 5 minutes
+    setTimeout(function() {
+      window.location = window.location;
+    }, 300000);
+  });
+
 = will_paginate @build_lists
 
 = render 'filter'
