@@ -14,7 +14,7 @@ en:
       merge: Merge
       duplicate: 'There is already a pull request for %{head_ref}'
       up_to_date: 'The %{base_ref} branch is already up-to-date with %{head_ref}'
-      wrong_ref: Wrong tree-ish
+      wrong_ref: Wrong branch or tag
       blocked: This pull request cannot be automatically merged.
       ready: This pull request can be automatically merged.
       merged: |
@@ -45,6 +45,6 @@ en:
       pull_requests:
         base_ref: Base
         head_ref: Head
-        refs: 'branch · tag · commit'
+        refs: 'branch · tag'
         base_project: Base project
         head_project: Head project

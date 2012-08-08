@@ -16,7 +16,7 @@ ru:
       merge: Мерж
       duplicate: 'Уже существует пул реквест %{head_ref}'
       up_to_date: 'Ветка %{base_ref} на данный момент уже содержит последние изменения %{head_ref}'
-      wrong_ref: Неправильный tree-ish
+      wrong_ref: Неправильная ветка или тег
       blocked: Невозможно автоматически смержить данный пул реквест.
       ready: Данный пул реквест можно смержить автоматически.
       merged: |
@@ -47,6 +47,6 @@ ru:
       pull_requests:
         base_ref: База
         head_ref: Источник
-        refs: 'branch · tag · commit'
+        refs: 'ветка · тег'
         base_project: Базовый проект
         head_project: Проект-источник
