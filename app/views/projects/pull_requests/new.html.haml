@@ -6,8 +6,8 @@
   =render 'nav_tabs'
   .tab-content.pull_diff_fix
     #discussion.tab-pane.active
+      =hidden_field_tag :update_action, new_project_pull_request_path
       =form_for @pull, :url => (@pull.already? ? new_project_pull_request_path : project_pull_requests_path), :html => {:class => 'well well-large', :method => (@pull.already? ? :get : :post)} do |f|
-        =hidden_field_tag :update_action, new_project_pull_requests_path
         .leftlist=f.label :base_project, t("#{ar}.base_project"), :class => :label
         .rightlist
           =f.autocomplete_field :base_project, autocomplete_base_project_project_pull_requests_path, :value => @pull.base_project.fullname, :id_element => '#pull_request_base_project_id', :name => 'base_project'
