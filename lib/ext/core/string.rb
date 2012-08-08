@@ -15,9 +15,10 @@ class String
       encode!(Encoding::UTF_16, default_encoding, options).encode!(default_encoding, Encoding::UTF_16)
       raise unless valid_encoding? # check result
     end
+    self
   rescue
     replace "--broken encoding: #{detect_encoding[:encoding] || 'unknown'}"
-  ensure
-    self
+  # ensure
+  #   return self
   end
 end

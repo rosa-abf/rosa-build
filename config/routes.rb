@@ -1,5 +1,10 @@
 # -*- encoding : utf-8 -*-
 Rosa::Application.routes.draw do
+  resource :contact, :only => [:new, :create, :sended] do
+    get '/' => 'contacts#new'
+    get :sended
+  end
+
   devise_scope :users do
     get '/users/auth/:provider' => 'users/omniauth_callbacks#passthru'
   end
@@ -19,9 +24,9 @@ Rosa::Application.routes.draw do
 
   resources :search, :only => [:index]
 
-  get '/forbidden' => 'pages#forbidden', :as => 'forbidden'
-  get '/terms-of-service' => 'pages#tos', :as => 'tos'
-  get '/tour/:id' => 'pages#tour_inside', :as => 'tour_inside', :id => /projects|sources|builds/
+  get  '/forbidden'        => 'pages#forbidden',      :as => 'forbidden'
+  get  '/terms-of-service' => 'pages#tos',            :as => 'tos'
+  get  '/tour/:id'         => 'pages#tour_inside',    :as => 'tour_inside', :id => /projects|sources|builds/
 
   get '/activity_feeds.:format' => 'activity_feeds#index', :as => 'atom_activity_feeds', :format => /atom/
   if APP_CONFIG['anonymous_access']
@@ -84,6 +89,7 @@ Rosa::Application.routes.draw do
           get :projects_list
         end
       end
+      resources :key_pairs, :only => [:create, :index, :destroy]
       resources :products do
         resources :product_build_lists, :only => [:create, :destroy]
       end

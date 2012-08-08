@@ -5,7 +5,7 @@ module Modules
       extend ActiveSupport::Concern
 
       included do
-        after_create :create_wiki
+        after_save :create_wiki
         after_destroy :destroy_wiki
       end
 

@@ -28,3 +28,8 @@ ru:
         user: Пользователь
         notified_at: Информация получена
 
+  flash:
+    product_build_list:
+      delete: Сборочный лист продукта удален
+      delete_error: Не удалось удалить cборочный лист продукта  
+
