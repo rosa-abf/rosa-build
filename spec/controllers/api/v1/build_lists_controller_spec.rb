@@ -7,7 +7,7 @@ shared_examples_for 'show build list' do
     response.should render_template("api/v1/build_lists/show")
   end
 
-  it 'should be able to perform index action in project scope' do
+  it 'should be able to perform index action' do
     get :index, :format => :json
     response.should render_template("api/v1/build_lists/index")
   end
@@ -19,7 +19,7 @@ shared_examples_for 'not show build list' do
     response.body.should == {"message" => "Access violation to this page!"}.to_json
   end
 
-  it 'should not be able to perform index action in project scope' do
+  pending 'should not be able to perform index action' do
     get :index, :format => :json
     response.body.should == {"message" => "Access violation to this page!"}.to_json
   end
@@ -45,6 +45,8 @@ shared_examples_for 'create build list' do
 end
 
 shared_examples_for 'not create build list' do
+  before {test_git_commit(@project)}
+
   it 'should not be able to perform create action' do
     post :create, @create_params
     response.body.should == {"message" => "Access violation to this page!"}.to_json
@@ -354,7 +356,6 @@ describe Api::V1::BuildListsController do
       before(:each) do
         @owner_user = @project.owner
         @owner_group = FactoryGirl.create(:group, :owner => @owner_user)
-        #@owner_group.actors.create :role => 'admin', :actor_id => @owner_user.id, :actor_type => 'User'
         @member_group = FactoryGirl.create(:group)
         @member_user = FactoryGirl.create(:user)
         @member_group.actors.create :role => 'reader', :actor_id => @member_user.id, :actor_type => 'User'
@@ -363,10 +364,7 @@ describe Api::V1::BuildListsController do
         @user = FactoryGirl.create(:user)
         @group.actors.create :role => 'reader', :actor_id => @user.id, :actor_type => 'User'
 
-        @project = FactoryGirl.create(:project, :owner => @owner_group)
         @project.relations.create :role => 'reader', :actor_id => @member_group.id, :actor_type => 'Group'
-
-        @build_list = FactoryGirl.create(:build_list_core, :project => @project)
 
         set_session_for(@user)
         @show_params = {:id => @build_list.id, :format => :json}
