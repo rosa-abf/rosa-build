@@ -44,26 +44,24 @@ class Api::V1::BuildListsController < Api::V1::BaseController
   end
 
   def cancel
-    if @build_list.cancel
-      render :json => {:is_canceled => true, :url => api_v1_build_list_path(@build_list, :format => :json), :message => t('layout.build_lists.cancel_success')}
-    else
-      render :json => {:is_canceled => false, :url => api_v1_build_list_path(@build_list, :format => :json), :message => t('layout.build_lists.cancel_fail')}
-    end
+    render_json :cancel
   end
 
   def publish
-    if @build_list.publish
-      render :json => {:is_published => true, :url => api_v1_build_list_path(@build_list, :format => :json), :message => t('layout.build_lists.publish_success')}
-    else
-      render :json => {:is_published => false, :url => api_v1_build_list_path(@build_list, :format => :json), :message => t('layout.build_lists.publish_fail')}
-    end
+    render_json :publish
   end
 
   def reject_publish
-    if @build_list.reject_publish
-      render :json => {:is_reject_published => true, :url => api_v1_build_list_path(@build_list, :format => :json), :message => t('layout.build_lists.reject_publish_success')}
+    render_json :reject_publish
+  end
+
+  private
+
+  def render_json(action_name)
+    if @build_list.send(action_name)
+      render :json => {:"is_#{action_name}ed" => true, :url => api_v1_build_list_path(@build_list, :format => :json), :message => t("layout.build_lists.#{action_name}_success")}
     else
-      render :json => {:is_reject_published => false, :url => api_v1_build_list_path(@build_list, :format => :json), :message => t('layout.build_lists.reject_publish_fail')}
+      render :json => {:"is_#{action_name}ed" => false, :url => api_v1_build_list_path(@build_list, :format => :json), :message => t("layout.build_lists.#{action_name}_fail")}
     end
   end
 
