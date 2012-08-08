@@ -181,15 +181,9 @@ Rosa::Application.routes.draw do
         resources :collaborators do
           get :find, :on => :collection
         end
-        resources :pull_requests, :except => [:destroy, :new, :index, :show] do
-          collection do
-            post '/new' => 'pull_requests#new'
-            get :autocomplete_base_project
-          end
-          member do
-            put :merge
-            get '(/:tab)(.:format)', :action => :show, :tab => /discussion|commits|diff/, :defaults => {:tab => :discussion}
-          end
+        resources :pull_requests, :except => [:destroy, :index] do
+          get :autocomplete_base_project, :on => :collection
+          put :merge, :on => :member
         end
       end
 

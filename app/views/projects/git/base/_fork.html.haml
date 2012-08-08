@@ -1,14 +1,6 @@
 - if can? :write, @project
-  .r{:style => "display: block"}=link_to t("projects.pull_requests.show.pull"), '#', :class => 'button', :id => 'send_pull_request'
-  =form_for PullRequest.new, :url => new_project_pull_requests_path, :html => { :method => :post, :class => :form } do |f|
-    =hidden_field_tag :treeish, @treeish
-  :javascript
-    $(function () {
-      $('#send_pull_request').click(function(){
-        $('#new_pull_request').submit();
-        return false;
-      });
-    });
+  .r{:style => "display: block"}
+    =link_to t("projects.pull_requests.show.pull"), new_project_pull_request_path(@project, :treeish => @treeish), :id => 'send_pull_request', :class => 'button'
 
 - if can? :fork, @project
   .r#fork-and-edit= link_to t('layout.projects.fork_and_edit'), '#forkModal', :class => 'button', 'data-toggle' => 'modal'
