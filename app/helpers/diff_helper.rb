@@ -4,11 +4,10 @@ module DiffHelper
   def render_diff(diff, diff_counter)
     diff_display ||= Diff::Display::Unified.new(diff.diff)
     path = if @pull
-                  "#{polymorphic_path [@project, @pull]}/diff"
+                   @pull.id ? polymorphic_path([@project, @pull]) : ''
                 elsif @commit
-                  "#{commit_path @project, @commit}"
+                  commit_path @project, @commit
                 end
-    #res = "<a name='#{h(diff.a_path)}'></a>"
 
     res = "<table class='diff inline' cellspacing='0' cellpadding='0'>"
     res += "<tbody>"
@@ -20,7 +19,7 @@ module DiffHelper
   end
 
   def render_diff_stats(stats)
-    path = "#{polymorphic_path [@project, @pull]}/diff"
+    path = @pull.id ? polymorphic_path([@project, @pull]) : ''
     res = ["<table class='commit_stats'>"]
     stats.each_with_index do |stat, ind|
       res << "<tr>"

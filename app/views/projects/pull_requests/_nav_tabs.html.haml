@@ -10,5 +10,11 @@
 
 :javascript
   $(document).ready(function() {
-    $('#pull_tabs a[href="##{params[:tab]}"]').tab('show');
+    var tab = 'discussion';
+    if(document.location.href.match(/(.*)#diff(.*)/)) {
+      tab = 'diff';
+    } else if(document.location.href.match(/(.*)#commits(.*)/)) {
+      tab = 'commits';
+    };
+    $('#pull_tabs a[href="#'+tab+'"]').tab('show');
   });

@@ -9,4 +9,15 @@ $(document).ready(function() {
     $('#update_pull').fadeIn('fast');
     $('#create_pull').fadeOut('fast');
   });
+
+  $('#pull_tabs a').live('click', function (e) {
+    var href = $(this).attr("href");
+
+    if ( window.history && history.pushState ) {
+      history.pushState("", "", href);
+      history.replaceState("", "", href);
+    } else {
+      location.hash = href;
+    }
+  });
 });

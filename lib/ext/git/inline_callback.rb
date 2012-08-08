@@ -24,14 +24,14 @@ module Git
       def addline(line)
         "<tr class='changes'>
           <td class='line_numbers'></td>
-          #{td_line_link "F#{@diff_counter}R#{line.new_number}", line.new_number}
+          #{td_line_link "diff-F#{@diff_counter}R#{line.new_number}", line.new_number}
           <td class='code ins'><pre>#{render_line(line)}</pre></td>
         </tr>"
       end
       
       def remline(line)
         "<tr class='changes'>
-          #{td_line_link "F#{@diff_counter}L#{line.old_number}", line.old_number}
+          #{td_line_link "diff-F#{@diff_counter}L#{line.old_number}", line.old_number}
           <td class='line_numbers'></td>
           <td class='code del'><pre>#{render_line(line)}</pre></td>
         </tr>"
@@ -39,16 +39,16 @@ module Git
 
       def modline(line)
         "<tr clas='chanes line'>
-          #{td_line_link "F#{@diff_counter}L#{line.old_number}", line.old_number}
-          #{td_line_link "F#{@diff_counter}R#{line.new_number}", line.new_number}
+          #{td_line_link "diff-F#{@diff_counter}L#{line.old_number}", line.old_number}
+          #{td_line_link "diff-F#{@diff_counter}R#{line.new_number}", line.new_number}
           <td class='code unchanged modline'><pre>#{render_line(line)}</pre></td>
         </tr>"
       end
       
       def unmodline(line)
         "<tr class='changes unmodline'>
-          #{td_line_link "F#{@diff_counter}L#{line.old_number}", line.old_number}
-          #{td_line_link "F#{@diff_counter}R#{line.new_number}", line.new_number}
+          #{td_line_link "diff-F#{@diff_counter}L#{line.old_number}", line.old_number}
+          #{td_line_link "diff-F#{@diff_counter}R#{line.new_number}", line.new_number}
           <td class='code unchanged unmodline'><pre>#{render_line(line)}</pre></td>
         </tr>"
       end
@@ -63,8 +63,8 @@ module Git
       
       def nonewlineline(line)
         "<tr class='changes'>
-          #{td_line_link "F#{@diff_counter}L#{line.old_number}", line.old_number}
-          #{td_line_link "F#{@diff_counter}R#{line.new_number}", line.new_number}
+          #{td_line_link "diff-F#{@diff_counter}L#{line.old_number}", line.old_number}
+          #{td_line_link "diff-F#{@diff_counter}R#{line.new_number}", line.new_number}
           <td class='code modline unmodline'><pre>#{render_line(line)}</pre></td>
         </tr>"
       end
