@@ -144,8 +144,7 @@ class PullRequest < ActiveRecord::Base
 
   def self.check_ref(record, attr, value)
     project = attr == :head_ref ? record.head_project : record.base_project
-      record.errors.add attr, I18n.t('projects.pull_requests.wrong_ref') unless project.repo.branches_and_tags.map(&:name).include?(value)
-    end
+    record.errors.add attr, I18n.t('projects.pull_requests.wrong_ref') unless project.repo.branches_and_tags.map(&:name).include?(value)
   end
 
   def uniq_merge
