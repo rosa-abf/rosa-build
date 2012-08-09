@@ -14,6 +14,5 @@
 // require bootstrap-popover
 //= require bootstrap-alert
 //= require chosen.jquery
-//= require jquery.countdown/countdown
 // require html5shiv
 // require_tree .

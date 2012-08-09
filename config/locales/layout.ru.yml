@@ -1,5 +1,6 @@
 ru:
   layout:
+    autoreload_page: Автоматически перезагружать страницу
     read_more: Читать дальше
     turned_on: включены
     turned_off: выключены
