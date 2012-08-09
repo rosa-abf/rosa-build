@@ -28,7 +28,10 @@ describe Projects::BuildListsController do
   end
 
   shared_examples_for 'create build list' do
-    before {test_git_commit(@project)}
+    before {
+      @project.update_attribute(:repositories, @platform.repositories)
+      test_git_commit(@project)
+    }
 
     it 'should be able to perform new action' do
       get :new, :owner_name => @project.owner.uname, :project_name => @project.name
@@ -53,6 +56,11 @@ describe Projects::BuildListsController do
   end
 
   shared_examples_for 'not create build list' do
+    before {
+      @project.update_attribute(:repositories, @platform.repositories)
+      test_git_commit(@project)
+    }
+
     it 'should not be able to perform new action' do
       get :new, :owner_name => @project.owner.uname, :project_name => @project.name
       response.should redirect_to(forbidden_url)
@@ -68,16 +76,16 @@ describe Projects::BuildListsController do
 
   context 'crud' do
     before(:each) do
-      platform = FactoryGirl.create(:platform_with_repos)
+      @platform = FactoryGirl.create(:platform_with_repos)
       @create_params = {
         :build_list => { 
           :project_version => 'latest_master',
-          :save_to_platform_id => platform.id,
+          :save_to_platform_id => @platform.id,
           :update_type => 'security',
-          :include_repos => [platform.repositories.first.id]
+          :include_repos => [@platform.repositories.first.id]
         },
         :arches => [FactoryGirl.create(:arch).id],
-        :build_for_platforms => [platform.id]
+        :build_for_platforms => [@platform.id]
       }
       any_instance_of(Project, :versions => ['v1.0', 'v2.0'])
     end
@@ -113,9 +121,12 @@ describe Projects::BuildListsController do
       context 'for all build lists' do
         before(:each) do
           @build_list1 = FactoryGirl.create(:build_list_core)
-          @build_list2 = FactoryGirl.create(:build_list_core, :project => FactoryGirl.create(:project, :visibility => 'hidden'))
-          @build_list3 = FactoryGirl.create(:build_list_core, :project => FactoryGirl.create(:project, :owner => @user, :visibility => 'hidden'))
-          @build_list4 = FactoryGirl.create(:build_list_core, :project => FactoryGirl.create(:project, :visibility => 'hidden'))
+          @build_list2 = FactoryGirl.create(:build_list_core)
+          @build_list2.project.update_attribute(:visibility, 'hidden')
+          @build_list3 = FactoryGirl.create(:build_list_core)
+          @build_list3.project.update_attributes({:owner => @user, :visibility => 'hidden'})
+          @build_list4 = FactoryGirl.create(:build_list_core)
+          @build_list4.project.update_attribute(:visibility, 'hidden')
           @build_list4.project.relations.create :role => 'reader', :actor_id => @user.id, :actor_type => 'User'
         end
 
@@ -186,10 +197,11 @@ describe Projects::BuildListsController do
         @user = FactoryGirl.create(:user)
         @group.actors.create :role => 'reader', :actor_id => @user.id, :actor_type => 'User'
 
-        @project = FactoryGirl.create(:project, :owner => @owner_group)
-        @project.relations.create :role => 'reader', :actor_id => @member_group.id, :actor_type => 'Group'
 
-        @build_list = FactoryGirl.create(:build_list_core, :project => @project)
+        @build_list = FactoryGirl.create(:build_list_core)
+        @project = @build_list.project
+        @project.update_attribute(:owner, @owner_group)
+        @project.relations.create :role => 'reader', :actor_id => @member_group.id, :actor_type => 'Group'
 
         set_session_for(@user)
         @show_params = {:owner_name => @project.owner.uname, :project_name => @project.name, :id => @build_list.id}
@@ -198,9 +210,12 @@ describe Projects::BuildListsController do
       context 'for all build lists' do
         before(:each) do
           @build_list1 = FactoryGirl.create(:build_list_core)
-          @build_list2 = FactoryGirl.create(:build_list_core, :project => FactoryGirl.create(:project, :visibility => 'hidden'))
-          @build_list3 = FactoryGirl.create(:build_list_core, :project => FactoryGirl.create(:project, :owner => @group, :visibility => 'hidden'))
-          @build_list4 = FactoryGirl.create(:build_list_core, :project => FactoryGirl.create(:project, :visibility => 'hidden'))
+          @build_list2 = FactoryGirl.create(:build_list_core)
+          @build_list2.project.update_attribute(:visibility, 'hidden')
+          @build_list3 = FactoryGirl.create(:build_list_core)
+          @build_list3.project.update_attributes({:owner => @user, :visibility => 'hidden'})
+          @build_list4 = FactoryGirl.create(:build_list_core)
+          @build_list4.project.update_attribute(:visibility, 'hidden')
           @build_list4.project.relations.create :role => 'reader', :actor_id => @group.id, :actor_type => 'Group'
         end
 

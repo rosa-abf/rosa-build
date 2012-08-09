@@ -26,7 +26,10 @@ shared_examples_for 'not show build list' do
 end
 
 shared_examples_for 'create build list' do
-  before {test_git_commit(@project)}
+  before {
+    @project.update_attribute(:repositories, @platform.repositories)
+    test_git_commit(@project)
+  }
 
   it 'should create one more build list' do
     lambda { post :create, @create_params.deep_merge(:build_list => {:project_version => "latest_master"}) }.should change{ BuildList.count }.by(1)
@@ -45,7 +48,10 @@ shared_examples_for 'create build list' do
 end
 
 shared_examples_for 'not create build list' do
-  before {test_git_commit(@project)}
+  before {
+    @project.update_attribute(:repositories, @platform.repositories)
+    test_git_commit(@project)
+  }
 
   it 'should not be able to perform create action' do
     post :create, @create_params
@@ -68,16 +74,16 @@ describe Api::V1::BuildListsController do
 
   context 'crud' do
     before(:each) do
-      platform = FactoryGirl.create(:platform_with_repos)
+      @platform = FactoryGirl.create(:platform_with_repos)
       @create_params = {
         :build_list => {
           :project_id => @project.id,
-          :save_to_platform_id => platform.id,
+          :save_to_platform_id => @platform.id,
           :update_type => 'security',
-          :include_repos => [platform.repositories.first.id]
+          :include_repos => [@platform.repositories.first.id]
         },
         :arches => [FactoryGirl.create(:arch).id],
-        :build_for_platforms => [platform.id],
+        :build_for_platforms => [@platform.id],
         :project_id => @project.id,
         :format => :json
       }
@@ -291,9 +297,12 @@ describe Api::V1::BuildListsController do
       context 'for all build lists' do
         before(:each) do
           @build_list1 = FactoryGirl.create(:build_list_core)
-          @build_list2 = FactoryGirl.create(:build_list_core, :project => FactoryGirl.create(:project, :visibility => 'hidden'))
-          @build_list3 = FactoryGirl.create(:build_list_core, :project => FactoryGirl.create(:project, :owner => @user, :visibility => 'hidden'))
-          @build_list4 = FactoryGirl.create(:build_list_core, :project => FactoryGirl.create(:project, :visibility => 'hidden'))
+          @build_list2 = FactoryGirl.create(:build_list_core)
+          @build_list2.project.update_attribute(:visibility, 'hidden')
+          @build_list3 = FactoryGirl.create(:build_list_core)
+          @build_list3.project.update_attributes({:owner => @user, :visibility => 'hidden'})
+          @build_list4 = FactoryGirl.create(:build_list_core)
+          @build_list4.project.update_attribute(:visibility, 'hidden')
           @build_list4.project.relations.create :role => 'reader', :actor_id => @user.id, :actor_type => 'User'
         end
 
@@ -373,9 +382,12 @@ describe Api::V1::BuildListsController do
       context 'for all build lists' do
         before(:each) do
           @build_list1 = FactoryGirl.create(:build_list_core)
-          @build_list2 = FactoryGirl.create(:build_list_core, :project => FactoryGirl.create(:project, :visibility => 'hidden'))
-          @build_list3 = FactoryGirl.create(:build_list_core, :project => FactoryGirl.create(:project, :owner => @group, :visibility => 'hidden'))
-          @build_list4 = FactoryGirl.create(:build_list_core, :project => FactoryGirl.create(:project, :visibility => 'hidden'))
+          @build_list2 = FactoryGirl.create(:build_list_core)
+          @build_list2.project.update_attribute(:visibility, 'hidden')
+          @build_list3 = FactoryGirl.create(:build_list_core)
+          @build_list3.project.update_attributes({:owner => @user, :visibility => 'hidden'})
+          @build_list4 = FactoryGirl.create(:build_list_core)
+          @build_list4.project.update_attribute(:visibility, 'hidden')
           @build_list4.project.relations.create :role => 'reader', :actor_id => @group.id, :actor_type => 'Group'
         end
 

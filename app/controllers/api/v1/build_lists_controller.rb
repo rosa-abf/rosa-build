@@ -16,7 +16,10 @@ class Api::V1::BuildListsController < Api::V1::BaseController
     notices, errors = [], []
     json_report = {:build_lists => []}
     project = Project.find(params[:build_list][:project_id])
-    platform = Platform.find params[:build_list][:save_to_platform_id]
+    platform = Platform.includes(:repositories).find params[:build_list][:save_to_platform_id]
+    repository = project.repositories.where(:id => platform.repository_ids).first
+
+    params[:build_list][:save_to_repository_id] = repository.id
     params[:build_list][:auto_publish] = false if platform.released
 
     Arch.where(:id => params[:arches]).each do |arch|
