@@ -86,7 +86,8 @@ class Project < ActiveRecord::Base
 
   def git_project_address
     host ||= EventLog.current_controller.request.host_with_port rescue ::Rosa::Application.config.action_mailer.default_url_options[:host]
-    Rails.application.routes.url_helpers.project_url(self.owner.uname, self.name, :host => host) + ".git"
+    protocol ||= EventLog.current_controller.request.protocol rescue "http"
+    Rails.application.routes.url_helpers.project_url(self.owner.uname, self.name, :host => host, :protocol => protocol) + ".git"
   end
 
   def build_for(platform, repository_id, user, arch = 'i586', auto_publish = false, mass_build_id = nil, priority = 0)
