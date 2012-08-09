@@ -47,7 +47,7 @@ class Projects::PullRequestsController < Projects::BaseController
         flash[:error] = I18n.t('projects.pull_requests.up_to_date', :base_ref => @pull.base_ref, :head_ref => @pull.head_ref)
         render :new
       else
-        @pull.save
+        @pull.check
         redirect_to project_pull_request_path(@pull.base_project, @pull)
       end
     else

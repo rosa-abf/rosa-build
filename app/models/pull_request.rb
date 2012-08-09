@@ -60,7 +60,7 @@ class PullRequest < ActiveRecord::Base
                    system("cd #{path} && git reset --hard HEAD") # clean git index
                    'block'
                  else
-                   raise ret
+                   raise
                  end
 
     if do_transaction
