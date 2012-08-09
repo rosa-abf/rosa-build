@@ -1,6 +1,6 @@
 en:
   layout:
-    autoreload_page: Reload page automatically
+    autoreload_page: Update page automatically
     read_more: Read more
     turned_on: on
     turned_off: off
