@@ -174,9 +174,9 @@ class PullRequest < ActiveRecord::Base
           system 'git', 'remote', 'add', 'head', head_project.path
         end
       end
+      clean
     end
 
-    clean
     Dir.chdir(path) do
       system 'git', 'checkout', base_ref
       system 'git', 'pull',  'origin', base_ref
