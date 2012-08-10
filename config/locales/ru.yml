@@ -164,7 +164,6 @@ ru:
               can_have_less_or_equal: Нельзя иметь больше, чем %{count} проектов.
 
     models:
-      arch: Arch
       private_user: Приватный пользователь
       product_build_list: Сборочный лист продукта
       auto_build_list: Автоматическая пересборка пакетов
@@ -184,9 +183,3 @@ ru:
       private_user:
         login: Логин
         password: Пароль
-
-      arch:
-        name: Название
-        created_at: Создана
-        updated_at: Обновлена
-

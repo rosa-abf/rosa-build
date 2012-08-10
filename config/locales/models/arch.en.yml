@@ -1,0 +1,16 @@
+en:
+  layout:
+    arches:
+      unexisted_arch: Unexisted arch
+
+  flash:
+    arches:
+
+  activerecord:
+    models:
+      arch: Arch
+    attributes:
+      arch:
+        name: Name
+        created_at: Created
+        updated_at: Updated

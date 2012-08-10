@@ -1,0 +1,16 @@
+ru:
+  layout:
+    arches:
+      unexisted_arch: Несуществующая архитектура
+
+  flash:
+    arches:
+
+  activerecord:
+    models:
+      arch: Архитектура
+    attributes:
+      arch:
+        name: Название
+        created_at: Создана
+        updated_at: Обновлена

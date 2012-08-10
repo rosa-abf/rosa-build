@@ -164,7 +164,6 @@ en:
               can_have_less_or_equal: You cannot have more than %{count} projects.
 
     models:
-      arch: Arch
       private_user: Private user
       product_build_list: Product build list
 
@@ -183,9 +182,3 @@ en:
       private_user:
         login: Login
         password: Password
-
-      arch:
-        name: Name
-        created_at: Created
-        updated_at: Updated
-
