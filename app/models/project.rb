@@ -140,10 +140,6 @@ class Project < ActiveRecord::Base
     end
   end
 
-  def fullname
-    @fullname ||= "#{owner.uname}/#{name}"
-  end
-
   protected
 
   def attach_to_personal_repository
