@@ -40,7 +40,7 @@
       var minutes = seconds / 60;
       var hours = minutes / 60;
       minutes = Math.round(minutes % 60);
-      hours = Math.round(hours);
+      hours = Math.floor(hours);
 
       return "%d:%d".replace("%d", formatNumber(hours))
                     .replace("%d", formatNumber(minutes));
