@@ -118,6 +118,18 @@ en:
         project_not_found: Project not found
         project_version_not_found: Project version not found
 
+      log:
+        build_log: Build Log
+        not_available: Log not available yet.
+
+        reload_times:
+          10000:  "10 s"
+          30000:  "30 s"
+          60000:  "1 m"
+          300000: "5 m"
+          600000: "10 m"
+          900000: "15 m"
+
   flash:
     build_list:
       saved: Build list for project version '%{project_version}', platform '%{build_for_platform}' and architecture '%{arch}' has been created successfully

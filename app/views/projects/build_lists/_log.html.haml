@@ -1,0 +1,116 @@
+.hr
+%a{:name => 'log'}
+.log-wrapper
+  .log-header
+    .text-wrap
+      = link_to({:anchor => :log}, {:id => 'log_anchor'}) do
+        %h3= t("layout.build_lists.log.build_log")
+    %span
+    .both
+  .log-body.hidden
+    .reloader
+      = label_tag :word_wrap do
+        = check_box_tag :word_wrap
+        = t("layout.word_wrap")
+      &nbsp;
+      = label_tag :autoreload do
+        = check_box_tag :autoreload, true, true
+        = t("layout.autoreload_log")
+      = select_tag :reload_interval, log_reload_time_options
+    .both
+    -#%pre.log
+    %textarea.log{ :readonly => :readonly,
+                   :wrap => 'off',
+                   :data => {:url => build_list_log_url(:build)}}
+      = t("layout.build_lists.log.not_available")
+
+:javascript
+  $(function() {
+    (function() {
+      var $wrapper = $('div.log-wrapper');
+      var $logBody = $wrapper.children('div.log-body').first();
+      var $logCont = $logBody.children('.log').first();
+      var logUrl = $logCont.data('url');
+      var $logHead = $wrapper.children('div.log-header').first();
+      var $trigger = $logHead.children('span').first();
+      var $autoload = $('#autoreload');
+
+      var state = $logBody.is(':visible');
+      var t = null; // timer
+      var tspan = document.createElement("span");
+
+      if (state) {
+        $trigger.removeClass('closed');
+        $wrapper.removeClass('inactive')
+                .addClass('active');
+      } else {
+        $trigger.addClass('closed');
+        $logBody.addClass('hidden');
+        $wrapper.removeClass('active')
+                .addClass('inactive');
+      }
+
+      var getTextHeight = function() {
+        tspan.innerHTML = $logCont.text();
+        return tspan.offsetHeight;
+      }
+
+      var loadLog = function() {
+          $.ajax({
+            url: logUrl,
+            type: "GET",
+            success: function(data, textStatus, jqXHR) {
+              var vScroll = $logCont.scrollTop();
+              var hScroll = $logCont.scrollLeft();
+              var oldHeight = getTextHeight();
+              $logCont.text(data);
+              $logCont.scrollLeft(hScroll);
+              $logCont.scrollTop((oldHeight == vScroll) ? getTextHeight() : vScroll);
+            }
+          });
+      }
+
+      var reloadChange = function() {
+        if ($(this).is(':checked')) {
+          loadLog();
+          t = setInterval(function() {
+            loadLog();
+          }, $('#reload_interval').val());
+        } else {
+          clearInterval(t);
+        }
+      }
+
+      var toggleHandler = function() {
+        state = !state;
+        // if log opened
+        if (state) {
+          if ($autoload.is(':checked')) {
+            $autoload.trigger('change');
+          }
+        } else {
+          clearInterval(t);
+        }
+        $logBody.slideToggle('slow')
+                .toggleClass('hidden');
+        $logHead.toggleClass('active inactive');
+        $trigger.toggleClass('closed');
+
+        window.location.href = $('a#log_anchor').attr('href');
+      }
+
+      loadLog();
+      $wrapper.on('click', '.log-header > span', toggleHandler);
+      $autoload.on('change', reloadChange);
+      $('#word_wrap').on('change', function() {
+        $logCont.attr({'wrap': ($(this).is(':checked')) ? 'soft' : 'off'});
+      });
+      $('#reload_interval').on('change', function() {
+        clearInterval(t);
+        if ($autoload.is(':checked')) {
+          t = setInterval($(this).val());
+        }
+      });
+
+    })();
+  });

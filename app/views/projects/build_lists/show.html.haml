@@ -13,7 +13,6 @@
         link_to("#{@build_list.save_to_platform.name}/#{@build_list.save_to_repository.name}",
           [@build_list.save_to_platform, @build_list.save_to_repository])]
     - elsif @build_list.container_path.present?
-      - container_url = "http://#{request.host_with_port}/downloads#{@build_list.container_path}"
       = link_to container_url, container_url
   .both
 
@@ -82,6 +81,9 @@
     .rightlist
       = "#{@build_list.human_current_duration} / #{@build_list.project.human_average_build_time}"
     .both
+
+  - if BuildList::HUMAN_STATUSES[@build_list.status].in? [:build_started, :build_error, :success]
+    = render :partial => 'projects/build_lists/log'
 
   - if @build_list.can_cancel? && can?(:cancel, @build_list)
     = link_to t("layout.build_lists.cancel"), cancel_build_list_path(@build_list),

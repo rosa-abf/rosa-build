@@ -1250,3 +1250,65 @@ hr.bootstrap {
 div.reloader {
     float: right;
 }
+
+div.log-wrapper {
+    width: 565px;
+
+    div.log-header {
+        margin-bottom: 10px;
+
+        div.text-wrap, span {
+            height: 16px;
+            margin: 0;
+            padding: 0;
+        }
+        div.text-wrap {
+            width: 545px;
+            float: left;
+
+            h3 {
+                margin: 0;
+            }
+        }
+
+        span {
+            background: image-url("trigger.gif") no-repeat scroll left bottom transparent;
+            margin: 1px;
+            cursor: pointer;
+            display: block;
+            font-size: 0;
+            height: 14px;
+            width: 14px;
+            float: right;
+        }
+        span.closed {
+            background-position: left top;
+        }
+    }
+
+    div.log-body {
+
+        div.reloader, .log {
+            border: 1px solid #ccc;
+        }
+
+        div.reloader {
+            padding: 5px 10px;
+            border-bottom: none;
+            border-radius: 5px 5px 0 0;
+        }
+
+        .log {
+            background: #f8f8f8;
+            height: 500px;
+            width: 543px;
+            min-width: 543px;
+            border-radius: 5px 0 5px 5px;
+            overflow: auto;
+            padding: 10px;
+            margin: 0;
+            font-family: monospace;
+            font-size: 13px;
+        }
+    }
+}
