@@ -21,7 +21,7 @@ class ApplicationController < ActionController::Base
     end
   end
 
-  if Rails.env.production?
+  if !Rails.env.development?
     rescue_from Exception do |exception|
       respond_to do |format|
         format.json { render :json => {:message => t("flash.500_message")}.to_json }

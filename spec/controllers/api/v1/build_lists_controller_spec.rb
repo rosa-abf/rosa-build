@@ -27,7 +27,7 @@ end
 
 shared_examples_for 'create build list' do
   before {
-    @project.update_attribute(:repositories, @platform.repositories)
+    @project.update_attributes({:repositories => @platform.repositories})
     test_git_commit(@project)
   }
 
@@ -49,7 +49,7 @@ end
 
 shared_examples_for 'not create build list' do
   before {
-    @project.update_attribute(:repositories, @platform.repositories)
+    @project.update_attributes({:repositories => @platform.repositories})
     test_git_commit(@project)
   }
 
@@ -66,30 +66,61 @@ end
 describe Api::V1::BuildListsController do
   before(:each) do
     stub_symlink_methods
-    # TODO: What a fuck?! Arches doesn't clear after tests finish O_o
+  end
+  before(:all) do
     Arch.destroy_all
+    User.destroy_all
+
     @build_list = FactoryGirl.create(:build_list_core)
+    @params = @build_list.attributes.symbolize_keys
     @project = @build_list.project
+    @platform = @build_list.save_to_platform
+    #@platform = FactoryGirl.create(:platform_with_repos)
+
+    stub_symlink_methods
+    @user = FactoryGirl.create(:user)
+    @owner_user = @project.owner
+    @member_user = FactoryGirl.create(:user)
+    @project.relations.create(:role => 'reader', :actor => @member_user)
+    @build_list.save_to_platform.relations.create(:role => 'admin', :actor => @owner_user) # Why it's really need it??
+
+    # Create and show params:
+    @create_params = {:build_list => @build_list.attributes.symbolize_keys.except(:bs_id)}
+    @create_params = @create_params.merge(:arches => [@params[:arch_id]], :build_for_platforms => [@params[:build_for_platform_id]], :format => :json)
+    any_instance_of(Project, :versions => ['v1.0', 'v2.0'])
+    @show_params = {:id => @build_list.id, :format => :json}
+
+    # Build Lists:
+    @build_list1 = FactoryGirl.create(:build_list_core)
+    @build_list2 = FactoryGirl.create(:build_list_core)
+    @build_list2.project.update_column(:visibility, 'hidden')
+    @build_list3 = FactoryGirl.create(:build_list_core)
+    @build_list3.project.update_attributes({:owner => @user, :visibility => 'hidden'})
+    @build_list4 = FactoryGirl.create(:build_list_core)
+    @build_list4.project.update_column(:visibility, 'hidden')
+    @build_list4.project.relations.create :role => 'reader', :actor_id => @user.id, :actor_type => 'User'
+
+    @filter_build_list1 = FactoryGirl.create(:build_list_core)
+    @filter_build_list2 = FactoryGirl.create(:build_list_core)
+    @filter_build_list3 = FactoryGirl.create(:build_list_core)
+    @filter_build_list4 = FactoryGirl.create(:build_list_core, :updated_at => (Time.now - 1.day),
+                           :project => @build_list3.project, :save_to_platform => @build_list3.save_to_platform,
+                           :arch => @build_list3.arch)
+
+    # Groups:
+    @owner_group = FactoryGirl.create(:group, :owner => @owner_user)
+    @member_group = FactoryGirl.create(:group)
+    @member_group.actors.create :role => 'reader', :actor_id => @member_user.id, :actor_type => 'User'
+
+    @group = FactoryGirl.create(:group)
+    @user = FactoryGirl.create(:user)
+    @group.actors.create :role => 'reader', :actor_id => @user.id, :actor_type => 'User'
+
+    @project.relations.create :role => 'reader', :actor_id => @member_group.id, :actor_type => 'Group'
+    @build_list.save_to_platform.relations.create(:role => 'admin', :actor => @owner_group) # Why it's really need it??
   end
 
   context 'crud' do
-    before(:each) do
-      @platform = FactoryGirl.create(:platform_with_repos)
-      @create_params = {
-        :build_list => {
-          :project_id => @project.id,
-          :save_to_platform_id => @platform.id,
-          :update_type => 'security',
-          :include_repos => [@platform.repositories.first.id]
-        },
-        :arches => [FactoryGirl.create(:arch).id],
-        :build_for_platforms => [@platform.id],
-        :project_id => @project.id,
-        :format => :json
-      }
-      any_instance_of(Project, :versions => ['v1.0', 'v2.0'])
-    end
-
     context 'for guest' do
       if APP_CONFIG['anonymous_access']
         it 'should be able to perform index action' do
@@ -106,17 +137,7 @@ describe Api::V1::BuildListsController do
 
     context 'for user' do
       before(:each) do
-        @owner_user = @project.owner
-        # Sets admin rights for owner
-        @project.relations.create :role => 'admin', :actor_id => @owner_user.id, :actor_type => 'User'
-
-        @member_user = FactoryGirl.create(:user)
-        rel = @project.relations.build(:role => 'reader')
-        rel.actor = @member_user
-        rel.save
-        @user = FactoryGirl.create(:user)
         set_session_for(@user)
-        @show_params = {:id => @build_list.id, :format => :json}
       end
 
       context "do cancel" do
@@ -129,13 +150,13 @@ describe Api::V1::BuildListsController do
 
           context "if it has :build_pending status" do
             it "should return correct json message" do
-              @build_list.update_attribute(:status, BuildList::BUILD_PENDING)
+              @build_list.update_column(:status, BuildList::BUILD_PENDING)
               do_cancel
               response.body.should == {:is_canceled => true, :url => api_v1_build_list_path(@build_list, :format => :json), :message => I18n.t('layout.build_lists.cancel_success')}.to_json
             end
 
             it "should cancel build list" do
-              @build_list.update_attribute(:status, BuildList::BUILD_PENDING)
+              @build_list.update_column(:status, BuildList::BUILD_PENDING)
               do_cancel
               @build_list.reload.status.should == BuildList::BUILD_CANCELED
             end
@@ -143,15 +164,13 @@ describe Api::V1::BuildListsController do
 
           context "if it has another status" do
             it "should return correct json error message" do
-              @build_list.update_attribute(:status, BuildServer::PROJECT_NOT_FOUND)
+              @build_list.update_column(:status, BuildServer::PROJECT_NOT_FOUND)
               do_cancel
-              # TODO: May be it sends access violation msg!!!
-              #       If we not remove can_cancel? from ability.rb it will be only access violation!
               response.body.should == {:is_canceled => false, :url => api_v1_build_list_path(@build_list, :format => :json), :message => I18n.t('layout.build_lists.cancel_fail')}.to_json
             end
 
             it "should not cancel build list" do
-              @build_list.update_attribute(:status, BuildServer::PROJECT_NOT_FOUND)
+              @build_list.update_column(:status, BuildServer::PROJECT_NOT_FOUND)
               do_cancel
               @build_list.reload.status.should == BuildServer::PROJECT_NOT_FOUND
             end
@@ -160,7 +179,7 @@ describe Api::V1::BuildListsController do
 
         context 'if user is not project owner' do
           before(:each) do
-            @build_list.update_attribute(:status, BuildList::BUILD_PENDING)
+            @build_list.update_column(:status, BuildList::BUILD_PENDING)
             do_cancel
           end
 
@@ -182,7 +201,7 @@ describe Api::V1::BuildListsController do
         context 'if user is project owner' do
           before(:each) do
             set_session_for(@owner_user)
-            @build_list.update_attribute(:status, BuildList::FAILED_PUBLISH)
+            @build_list.update_column(:status, BuildList::FAILED_PUBLISH)
             do_publish
           end
 
@@ -198,13 +217,11 @@ describe Api::V1::BuildListsController do
 
           context "if it has another status" do
             before(:each) do
-              @build_list.update_attribute(:status, BuildServer::PROJECT_NOT_FOUND)
+              @build_list.update_column(:status, BuildServer::PROJECT_NOT_FOUND)
               do_publish
             end
 
             it "should return correct json error message" do
-              # TODO: May be it sends access violation msg!!!
-              #       If we not remove can_cancel? from ability.rb it will be only access violation!
               response.body.should == {:is_published => false, :url => api_v1_build_list_path(@build_list, :format => :json), :message => I18n.t('layout.build_lists.publish_fail')}.to_json
             end
 
@@ -216,7 +233,7 @@ describe Api::V1::BuildListsController do
 
         context 'if user is not project owner' do
           before(:each) do
-            @build_list.update_attribute(:status, BuildList::FAILED_PUBLISH)
+            @build_list.update_column(:status, BuildList::FAILED_PUBLISH)
             do_publish
           end
 
@@ -242,9 +259,8 @@ describe Api::V1::BuildListsController do
         context 'if user is project owner' do
           before(:each) do
             set_session_for(@owner_user)
-            @build_list.update_attribute(:status, BuildServer::SUCCESS)
-            @build_list.save_to_platform.update_attribute(:released, true)
-            @build_list.save_to_platform.relations.create :role => 'admin', :actor_id => @owner_user.id, :actor_type => 'User'
+            @build_list.update_column(:status, BuildServer::SUCCESS)
+            @build_list.save_to_platform.update_column(:released, true)
             do_reject_publish
           end
 
@@ -260,13 +276,11 @@ describe Api::V1::BuildListsController do
 
           context "if it has another status" do
             before(:each) do
-              @build_list.update_attribute(:status, BuildServer::PROJECT_NOT_FOUND)
+              @build_list.update_column(:status, BuildServer::PROJECT_NOT_FOUND)
               do_reject_publish
             end
 
             it "should return correct json error message" do
-              # TODO: May be it sends access violation msg!!!
-              #       If we not remove can_cancel? from ability.rb it will be only access violation!
               response.body.should == {:is_reject_published => false, :url => api_v1_build_list_path(@build_list, :format => :json), :message => I18n.t('layout.build_lists.reject_publish_fail')}.to_json
             end
 
@@ -278,8 +292,8 @@ describe Api::V1::BuildListsController do
 
         context 'if user is not project owner' do
           before(:each) do
-            @build_list.update_attribute(:status, BuildServer::SUCCESS)
-            @build_list.save_to_platform.update_attribute(:released, true)
+            @build_list.update_column(:status, BuildServer::SUCCESS)
+            @build_list.save_to_platform.update_column(:released, true)
             do_reject_publish
           end
 
@@ -295,17 +309,6 @@ describe Api::V1::BuildListsController do
       end
 
       context 'for all build lists' do
-        before(:each) do
-          @build_list1 = FactoryGirl.create(:build_list_core)
-          @build_list2 = FactoryGirl.create(:build_list_core)
-          @build_list2.project.update_attribute(:visibility, 'hidden')
-          @build_list3 = FactoryGirl.create(:build_list_core)
-          @build_list3.project.update_attributes({:owner => @user, :visibility => 'hidden'})
-          @build_list4 = FactoryGirl.create(:build_list_core)
-          @build_list4.project.update_attribute(:visibility, 'hidden')
-          @build_list4.project.relations.create :role => 'reader', :actor_id => @user.id, :actor_type => 'User'
-        end
-
         it 'should be able to perform index action' do
           get :index, :format => :json
           response.should be_success
@@ -339,8 +342,7 @@ describe Api::V1::BuildListsController do
 
       context 'for hidden project' do
         before(:each) do
-          @project.visibility = 'hidden'
-          @project.save!
+          @project.update_column(:visibility, 'hidden')
         end
 
         it_should_behave_like 'not show build list'
@@ -362,35 +364,11 @@ describe Api::V1::BuildListsController do
     end
 
     context 'for group' do
-      before(:each) do
-        @owner_user = @project.owner
-        @owner_group = FactoryGirl.create(:group, :owner => @owner_user)
-        @member_group = FactoryGirl.create(:group)
-        @member_user = FactoryGirl.create(:user)
-        @member_group.actors.create :role => 'reader', :actor_id => @member_user.id, :actor_type => 'User'
-
-        @group = FactoryGirl.create(:group)
-        @user = FactoryGirl.create(:user)
-        @group.actors.create :role => 'reader', :actor_id => @user.id, :actor_type => 'User'
-
-        @project.relations.create :role => 'reader', :actor_id => @member_group.id, :actor_type => 'Group'
-
-        set_session_for(@user)
-        @show_params = {:id => @build_list.id, :format => :json}
-      end
+      before(:each) {
+        set_session_for(@owner_user)
+      }
 
       context 'for all build lists' do
-        before(:each) do
-          @build_list1 = FactoryGirl.create(:build_list_core)
-          @build_list2 = FactoryGirl.create(:build_list_core)
-          @build_list2.project.update_attribute(:visibility, 'hidden')
-          @build_list3 = FactoryGirl.create(:build_list_core)
-          @build_list3.project.update_attributes({:owner => @user, :visibility => 'hidden'})
-          @build_list4 = FactoryGirl.create(:build_list_core)
-          @build_list4.project.update_attribute(:visibility, 'hidden')
-          @build_list4.project.relations.create :role => 'reader', :actor_id => @group.id, :actor_type => 'Group'
-        end
-
         it 'should be able to perform index action' do
           get :index, :format => :json
           response.should be_success
@@ -410,10 +388,6 @@ describe Api::V1::BuildListsController do
         it_should_behave_like 'not create build list'
 
         context 'if user is group owner' do
-          before(:each) {
-            set_session_for(@owner_user)
-          }
-
           it_should_behave_like 'show build list'
           it_should_behave_like 'create build list'
         end
@@ -427,7 +401,7 @@ describe Api::V1::BuildListsController do
 
       context 'for hidden project' do
         before(:each) do
-          @build_list.project.update_attribute(:visibility, 'hidden')
+          @build_list.project.update_column(:visibility, 'hidden')
         end
 
         it_should_behave_like 'not show build list'
@@ -453,38 +427,31 @@ describe Api::V1::BuildListsController do
 
     before(:each) do
       set_session_for FactoryGirl.create(:admin)
-
-      @build_list1 = FactoryGirl.create(:build_list_core)
-      @build_list2 = FactoryGirl.create(:build_list_core)
-      @build_list3 = FactoryGirl.create(:build_list_core)
-      @build_list4 = FactoryGirl.create(:build_list_core, :updated_at => (Time.now - 1.day),
-                             :project => @build_list3.project, :save_to_platform => @build_list3.save_to_platform,
-                             :arch => @build_list3.arch)
     end
 
     it 'should filter by bs_id' do
-      get :index, :filter => {:bs_id => @build_list1.bs_id, :project_name => 'fdsfdf', :any_other_field => 'do not matter'}, :format => :json
-      assigns[:build_lists].should include(@build_list1)
-      assigns[:build_lists].should_not include(@build_list2)
-      assigns[:build_lists].should_not include(@build_list3)
+      get :index, :filter => {:bs_id => @filter_build_list1.bs_id, :project_name => 'fdsfdf', :any_other_field => 'do not matter'}, :format => :json
+      assigns[:build_lists].should include(@filter_build_list1)
+      assigns[:build_lists].should_not include(@filter_build_list2)
+      assigns[:build_lists].should_not include(@filter_build_list3)
     end
 
     it 'should filter by project_name' do
-      get :index, :filter => {:project_name => @build_list2.project.name, :ownership => 'index'}, :format => :json
-      assigns[:build_lists].should_not include(@build_list1)
-      assigns[:build_lists].should include(@build_list2)
-      assigns[:build_lists].should_not include(@build_list3)
+      get :index, :filter => {:project_name => @filter_build_list2.project.name, :ownership => 'index'}, :format => :json
+      assigns[:build_lists].should_not include(@filter_build_list1)
+      assigns[:build_lists].should include(@filter_build_list2)
+      assigns[:build_lists].should_not include(@filter_build_list3)
     end
 
     it 'should filter by project_name and start_date' do
-      get :index, :filter => {:project_name => @build_list3.project.name, :ownership => 'index',
-                            :"updated_at_start(1i)" => @build_list3.updated_at.year.to_s,
-                            :"updated_at_start(2i)" => @build_list3.updated_at.month.to_s,
-                            :"updated_at_start(3i)" => @build_list3.updated_at.day.to_s}, :format => :json
-      assigns[:build_lists].should_not include(@build_list1)
-      assigns[:build_lists].should_not include(@build_list2)
-      assigns[:build_lists].should include(@build_list3)
-      assigns[:build_lists].should_not include(@build_list4)
+      get :index, :filter => {:project_name => @filter_build_list3.project.name, :ownership => 'index',
+                            :"updated_at_start(1i)" => @filter_build_list3.updated_at.year.to_s,
+                            :"updated_at_start(2i)" => @filter_build_list3.updated_at.month.to_s,
+                            :"updated_at_start(3i)" => @filter_build_list3.updated_at.day.to_s}, :format => :json
+      assigns[:build_lists].should_not include(@filter_build_list1)
+      assigns[:build_lists].should_not include(@filter_build_list2)
+      assigns[:build_lists].should include(@filter_build_list3)
+      assigns[:build_lists].should_not include(@filter_build_list4)
     end
   end
 end
