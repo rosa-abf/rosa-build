@@ -85,6 +85,13 @@ class Project < ActiveRecord::Base
     owner == user
   end
 
+  def git_project_address
+    #host ||= EventLog.current_controller.request.host_with_port rescue ::Rosa::Application.config.action_mailer.default_url_options[:host]
+    #protocol ||= EventLog.current_controller.request.protocol rescue "http"
+    #Rails.application.routes.url_helpers.project_url(self.owner.uname, self.name, :host => host, :protocol => protocol) + ".git"
+    path
+  end
+
   def build_for(platform, repository_id, user, arch = 'i586', auto_publish = false, mass_build_id = nil, priority = 0)
     # Select main and project platform repository(contrib, non-free and etc)
     # If main does not exist, will connect only project platform repository
