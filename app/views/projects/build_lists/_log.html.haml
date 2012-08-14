@@ -13,12 +13,12 @@
         = check_box_tag :word_wrap
         = t("layout.word_wrap")
       &nbsp;
-      = label_tag :autoreload do
-        = check_box_tag :autoreload, true, true
-        = t("layout.autoreload_log")
-      = select_tag :reload_interval, log_reload_time_options
+      %span{ :class => @build_list.build_started? ? nil : :hidden }
+        = label_tag :autoreload do
+          = check_box_tag :autoreload, true, @build_list.build_started?
+          = t("layout.autoreload_log")
+        = select_tag :reload_interval, log_reload_time_options
     .both
-    -#%pre.log
     %textarea.log{ :readonly => :readonly,
                    :wrap => 'off',
                    :data => {:url => build_list_log_url(:build)}}
