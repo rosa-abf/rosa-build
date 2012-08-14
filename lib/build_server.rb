@@ -77,7 +77,7 @@ class BuildServer
     self.client.call('add_to_repo', name, repo_name)
   end
 
-  def self.add_build_list project_name, project_version, plname, arch, bplname, update_type, build_requires, id_web, include_repos, priority
+  def self.add_build_list project_name, project_version, plname, arch, bplname, update_type, build_requires, id_web, include_repos, priority, git_project_path
     include_repos_hash = {}.tap do |h|
       include_repos.each do |r|
         repo = Repository.find r
@@ -85,7 +85,7 @@ class BuildServer
       end
     end
     # raise include_repos_hash.inspect
-    self.client.call('add_build_list', project_name, project_version, plname, arch, bplname, update_type, build_requires, id_web, include_repos_hash, priority)
+    self.client.call('add_build_list', project_name, project_version, plname, arch, bplname, update_type, build_requires, id_web, include_repos_hash, priority, git_project_path)
   end
 
   def self.delete_build_list idlist

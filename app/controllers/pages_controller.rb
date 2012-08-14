@@ -24,4 +24,5 @@ class PagesController < ApplicationController
 
   def tos
   end
+
 end

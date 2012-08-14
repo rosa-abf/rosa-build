@@ -1,0 +1,6 @@
+- if project.description.present?
+  .description
+    %h3= t("layout.projects.about_subheader")
+    %p
+      = project.description
+      -# link_to t('layout.read_more'), '#'
