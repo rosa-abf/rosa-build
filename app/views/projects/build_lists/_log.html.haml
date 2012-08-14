@@ -37,7 +37,7 @@
 
       var state = $logBody.is(':visible');
       var t = null; // timer
-      var tspan = document.createElement("span");
+      var first_open = true;
 
       if (state) {
         $trigger.removeClass('closed');
@@ -50,29 +50,30 @@
                 .addClass('inactive');
       }
 
-      var getTextHeight = function() {
-        tspan.innerHTML = $logCont.text();
-        return tspan.offsetHeight;
-      }
-
       var loadLog = function() {
           $.ajax({
             url: logUrl,
             type: "GET",
             success: function(data, textStatus, jqXHR) {
-              var vScroll = $logCont.scrollTop();
-              var hScroll = $logCont.scrollLeft();
-              var oldHeight = getTextHeight();
+              var l = $logCont[0];
+              var vScroll = l.scrollTop;
+              var hScroll = l.scrollLeft;
+              var onBottom = Math.abs((l.clientHeight + vScroll - l.scrollHeight)) < parseFloat($logCont.css('line-height'));
+
               $logCont.text(data);
+
               $logCont.scrollLeft(hScroll);
-              $logCont.scrollTop((oldHeight == vScroll) ? getTextHeight() : vScroll);
+              $logCont.scrollTop((onBottom || first_open) ? l.scrollHeight - l.clientHeight : vScroll);
+              first_open = false;
             }
           });
       }
 
       var reloadChange = function() {
         if ($(this).is(':checked')) {
+          first_open = true;
           loadLog();
+          $logCont.scrollTop($logCont[0].scrollHeight - $logCont[0].clientHeight);
           t = setInterval(function() {
             loadLog();
           }, $('#reload_interval').val());
