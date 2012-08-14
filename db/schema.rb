@@ -107,8 +107,8 @@ ActiveRecord::Schema.define(:version => 20120730214052) do
     t.integer  "project_id"
     t.integer  "arch_id"
     t.datetime "notified_at"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at",                               :null => false
+    t.datetime "updated_at",                               :null => false
     t.boolean  "is_circle",             :default => false
     t.text     "additional_repos"
     t.string   "name"
@@ -138,8 +138,8 @@ ActiveRecord::Schema.define(:version => 20120730214052) do
     t.string   "commentable_type"
     t.integer  "user_id"
     t.text     "body"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at",                                      :null => false
+    t.datetime "updated_at",                                      :null => false
     t.decimal  "commentable_id",   :precision => 50, :scale => 0
     t.integer  "project_id"
   end
@@ -156,8 +156,8 @@ ActiveRecord::Schema.define(:version => 20120730214052) do
     t.string   "controller"
     t.string   "action"
     t.text     "message"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at",     :null => false
+    t.datetime "updated_at",     :null => false
   end
 
   create_table "flash_notifies", :force => true do |t|
@@ -187,8 +187,8 @@ ActiveRecord::Schema.define(:version => 20120730214052) do
     t.string   "title"
     t.text     "body"
     t.string   "status",      :default => "open"
-    t.datetime "created_at",                   :null => false
-    t.datetime "updated_at",                   :null => false
+    t.datetime "created_at",                      :null => false
+    t.datetime "updated_at",                      :null => false
     t.integer  "user_id"
     t.datetime "closed_at"
     t.integer  "closed_by"
@@ -248,8 +248,8 @@ ActiveRecord::Schema.define(:version => 20120730214052) do
     t.string   "description"
     t.string   "name",                                   :null => false
     t.integer  "parent_platform_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at",                             :null => false
+    t.datetime "updated_at",                             :null => false
     t.boolean  "released",           :default => false,  :null => false
     t.integer  "owner_id"
     t.string   "owner_type"
@@ -317,8 +317,8 @@ ActiveRecord::Schema.define(:version => 20120730214052) do
 
   create_table "projects", :force => true do |t|
     t.string   "name"
-    t.datetime "created_at",                   :null => false
-    t.datetime "updated_at",                   :null => false
+    t.datetime "created_at",                               :null => false
+    t.datetime "updated_at",                               :null => false
     t.integer  "owner_id"
     t.string   "owner_type"
     t.string   "visibility",         :default => "open"
@@ -397,14 +397,13 @@ ActiveRecord::Schema.define(:version => 20120730214052) do
 
   create_table "users", :force => true do |t|
     t.string   "name"
-    t.string   "email",                                  :default => "",   :null => false
-    t.string   "encrypted_password",      :limit => 128, :default => "",   :null => false
-    t.string   "password_salt",                          :default => "",   :null => false
+    t.string   "email",                   :default => "",   :null => false
+    t.string   "encrypted_password",      :default => "",   :null => false
     t.string   "reset_password_token"
     t.datetime "reset_password_sent_at"
     t.datetime "remember_created_at"
-    t.datetime "created_at",                   :null => false
-    t.datetime "updated_at",                   :null => false
+    t.datetime "created_at",                                :null => false
+    t.datetime "updated_at",                                :null => false
     t.string   "uname"
     t.string   "role"
     t.string   "language",                               :default => "en"
@@ -417,14 +416,14 @@ ActiveRecord::Schema.define(:version => 20120730214052) do
     t.string   "avatar_content_type"
     t.integer  "avatar_file_size"
     t.datetime "avatar_updated_at"
-    t.integer  "failed_attempts",                        :default => 0
+    t.integer  "failed_attempts",         :default => 0
     t.string   "unlock_token"
     t.datetime "locked_at"
     t.string   "confirmation_token"
     t.datetime "confirmed_at"
     t.datetime "confirmation_sent_at"
     t.string   "authentication_token"
-    t.integer  "build_priority",                         :default => 50
+    t.integer  "build_priority",          :default => 50
   end
 
   add_index "users", ["authentication_token"], :name => "index_users_on_authentication_token"

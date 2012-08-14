@@ -33,7 +33,6 @@ ru:
       save_error: Не удалось сохранить изменения
       build_started: Запущена сборка продукта
       destroyed: Продукт удален
-      build_list_delete: Сборочный лист продукта удален
 
   activerecord:
     models:
