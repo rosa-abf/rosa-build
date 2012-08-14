@@ -6,7 +6,7 @@
     - if BuildList::HUMAN_STATUSES[build_list.status].in? [:build_pending, :build_started, :build_publish]
       %time.js-relative-date{:datetime => build_list.updated_at.strftime("%FT%T%:z"), :title => build_list.updated_at.strftime("%F %T")}
         = build_list.updated_at.strftime "%F %T"
-      - if (BuildList::HUMAN_STATUSES[build_list.status] == :build_started) && ((build_list.project.average_build_time || 0) > 0)
+      - if build_list.build_started? && ((build_list.project.average_build_time || 0) > 0)
         \/
         %time
           = build_list.project.formatted_average_build_time
