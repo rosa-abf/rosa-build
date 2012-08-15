@@ -22,12 +22,12 @@ class ApplicationController < ActionController::Base
   end
 
   if !Rails.env.development?
-    rescue_from Exception do |exception|
-      respond_to do |format|
-        format.json { render :json => {:message => t("flash.500_message")}.to_json }
-        format.html { redirect_to '/500.html', :alert => t("flash.500_message") }
-      end
-    end
+    #rescue_from Exception do |exception|
+    #  respond_to do |format|
+    #    format.json { render :json => {:message => t("flash.500_message")}.to_json }
+    #    format.html { redirect_to '/500.html', :alert => t("flash.500_message") }
+    #  end
+    #end
 
     rescue_from ActiveRecord::RecordNotFound,
                 ActionController::RoutingError,

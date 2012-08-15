@@ -386,7 +386,9 @@ describe Api::V1::BuildListsController do
       @build_list2 = FactoryGirl.create(:build_list_core)
       @build_list2.project.update_column(:visibility, 'hidden')
       @build_list3 = FactoryGirl.create(:build_list_core)
-      @build_list3.project.update_attributes({:owner => @user, :visibility => 'hidden'})
+      #@build_list3.project.update_attributes({:owner => @user, :visibility => 'hidden'})
+      @build_list3.project.update_column(:visibility, 'hidden')
+      project = @build_list3.project; project.owner = @user; project.save
       @build_list4 = FactoryGirl.create(:build_list_core)
       @build_list4.project.update_column(:visibility, 'hidden')
       @build_list4.project.relations.create :role => 'reader', :actor_id => @user.id, :actor_type => 'User'
@@ -410,6 +412,25 @@ describe Api::V1::BuildListsController do
           get :index, :format => :json
           response.status.should == 401
         end
+      end
+    end
+
+    context 'for all build lists' do
+      before(:each) {
+        set_session_for(@user)
+      }
+
+      it 'should be able to perform index action' do
+        get :index, :format => :json
+        response.should be_success
+      end
+
+      it 'should show only accessible build_lists' do
+        get :index, :filter => {:ownership => 'index'}, :format => :json
+        assigns(:build_lists).should include(@build_list1)
+        assigns(:build_lists).should_not include(@build_list2)
+        assigns(:build_lists).should include(@build_list3)
+        assigns(:build_lists).should include(@build_list4)
       end
     end
 
@@ -452,7 +473,6 @@ describe Api::V1::BuildListsController do
         @project = @build_list.project
 
         stub_symlink_methods
-        @user = FactoryGirl.create(:user)
         @owner_user = @project.owner
         @member_user = FactoryGirl.create(:user)
         @project.relations.create(:role => 'reader', :actor => @member_user)
@@ -460,23 +480,6 @@ describe Api::V1::BuildListsController do
 
         # Show params:
         @show_params = {:id => @build_list.id, :format => :json}
-      end
-
-      context 'for all build lists' do
-        before(:each) {set_session_for(@user)}
-
-        it 'should be able to perform index action' do
-          get :index, :format => :json
-          response.should be_success
-        end
-
-        it 'should show only accessible build_lists' do
-          get :index, :filter => {:ownership => 'index'}, :format => :json
-          assigns(:build_lists).should include(@build_list1)
-          assigns(:build_lists).should_not include(@build_list2)
-          assigns(:build_lists).should include(@build_list3)
-          assigns(:build_lists).should include(@build_list4)
-        end
       end
 
       context 'for open project' do
@@ -522,11 +525,11 @@ describe Api::V1::BuildListsController do
       before(:each) do
         @platform = FactoryGirl.create(:platform_with_repos)
         @build_list = FactoryGirl.create(:build_list_core, :save_to_platform => @platform)
+        @project = @build_list.project
         @params = @build_list.attributes.symbolize_keys
 
         stub_symlink_methods
-        @user = FactoryGirl.create(:user)
-        @owner_user = FactoryGirl.create(:user)
+        @owner_user = @project.owner#FactoryGirl.create(:user)
         @member_user = FactoryGirl.create(:user)
         #@project.relations.create(:role => 'reader', :actor => @member_user)
 
@@ -540,31 +543,13 @@ describe Api::V1::BuildListsController do
         @group = FactoryGirl.create(:group)
         @group.actors.create :role => 'reader', :actor_id => @user.id, :actor_type => 'User'
 
-        @project = FactoryGirl.create(:project, :owner => @owner_group, :repositories => @platform.repositories)
+        #@project = FactoryGirl.create(:project, :owner => @owner_group, :repositories => @platform.repositories)
 
         #@project.owner = @owner_group
         #@project.save
-        #@project.relations.create :role => 'reader', :actor_id => @member_group.id, :actor_type => 'Group'
-        @build_list.save_to_platform.relations.create(:role => 'reader', :actor => @member_group) # Why it's really need it??
-        @build_list.save_to_platform.relations.create(:role => 'admin', :actor => @owner_group) # Why it's really need it??
-      end
-
-
-      context 'for all build lists' do
-        before(:each) {set_session_for(@user)}
-
-        it 'should be able to perform index action' do
-          get :index, :format => :json
-          response.should be_success
-        end
-
-        it 'should show only accessible build_lists' do
-          get :index, :filter => {:ownership => 'index'}, :format => :json
-          assigns(:build_lists).should include(@build_list1)
-          assigns(:build_lists).should_not include(@build_list2)
-          assigns(:build_lists).should include(@build_list3)
-          assigns(:build_lists).should include(@build_list4)
-        end
+        @project.relations.create :role => 'reader', :actor_id => @member_group.id, :actor_type => 'Group'
+        #@build_list.save_to_platform.relations.create(:role => 'reader', :actor => @member_group) # Why it's really need it??
+        #@build_list.save_to_platform.relations.create(:role => 'admin', :actor => @owner_group) # Why it's really need it??
       end
 
       context 'for open project' do
@@ -595,7 +580,7 @@ describe Api::V1::BuildListsController do
         end
 
         context 'if user is group owner' do
-          before(:each) {set_session_for(@owner_user)}
+          before(:each) { set_session_for(@owner_user) }
           it_should_behave_like 'show build list'
         end
 
