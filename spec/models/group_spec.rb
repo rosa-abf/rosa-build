@@ -62,7 +62,7 @@ describe Group do
   context 'for group owner' do
     before(:each) do
       @user = FactoryGirl.create(:user)
-      @group.update_attribute(:owner, @user)
+      @group.owner = @user; @group.save
       @group.actors.create(:actor_type => 'User', :actor_id => @user.id, :role => 'admin')
       @ability = Ability.new(@user)
     end

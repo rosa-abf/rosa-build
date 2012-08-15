@@ -84,7 +84,7 @@ describe Comment do
 
       set_commentable_data
 
-      @project.update_attribute(:owner, @user)
+      @project.owner = @user; @project.save
       @project.relations.create!(:actor_type => 'User', :actor_id => @user.id, :role => 'admin')
     end
 

@@ -47,7 +47,7 @@ describe Projects::ProjectsController do
     before(:each) do
       @user = FactoryGirl.create(:user)
       set_session_for(@user)
-      @project.update_attribute(:owner, @user)
+      @project.owner = @user; @project.save!; @project.reload
       @project.relations.create!(:actor_type => 'User', :actor_id => @user.id, :role => 'admin')
     end
 
@@ -132,7 +132,7 @@ describe Projects::ProjectsController do
     end
 
     it 'should not be able to fork hidden project' do
-      @project.update_attribute(:visibility, 'hidden')
+      @project.update_attributes(:visibility => 'hidden')
       post :fork, :owner_name => @project.owner.uname, :project_name => @project.name
       response.should redirect_to(forbidden_path)
     end
@@ -150,7 +150,7 @@ describe Projects::ProjectsController do
 
     context 'owner of the project' do
       before(:each) do
-        @project.update_attribute :owner, @group
+        @project.owner = @group; @project.save!; @project.reload
         @project.relations.create :actor_id => @project.owner.id, :actor_type => @project.owner.class.to_s, :role => 'admin'
       end
 

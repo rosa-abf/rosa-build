@@ -1,6 +1,40 @@
 # -*- encoding : utf-8 -*-
 require 'spec_helper'
 
+shared_context "issues controller" do
+  before(:each) do
+    stub_symlink_methods
+
+    @project = FactoryGirl.create(:project)
+    @issue_user = FactoryGirl.create(:user)
+
+    any_instance_of(Project, :versions => ['v1.0', 'v2.0'])
+
+    @issue = FactoryGirl.create(:issue, :project_id => @project.id, :assignee_id => @issue_user.id)
+
+    @project_with_turned_off_issues = FactoryGirl.create(:project, :has_issues => false)
+    @turned_of_issue = FactoryGirl.create(:issue, :project_id => @project_with_turned_off_issues.id, :assignee_id => @issue_user.id)
+  end
+
+  def set_params
+    @create_params = {
+      :owner_name => @project.owner.uname, :project_name => @project.name,
+      :issue => {
+        :title => "issue1",
+        :body => "issue body"
+      },
+      :assignee_id => @issue_user.id,
+      :assignee_uname => @issue_user.uname
+    }
+    @update_params = {
+      :owner_name => @project.owner.uname, :project_name => @project.name,
+      :issue => {
+        :title => "issue2"
+      }
+    }
+  end
+end
+
 shared_examples_for 'issue user with project reader rights' do
   it 'should be able to perform index action' do
     get :index, :owner_name => @project.owner.uname, :project_name => @project.name
@@ -13,7 +47,7 @@ shared_examples_for 'issue user with project reader rights' do
   end
 
   it 'should be able to perform index action on hidden project' do
-    @project.update_attribute :visibility, 'hidden'
+    @project.update_attributes :visibility => 'hidden'
     get :index, :owner_name => @project.owner.uname, :project_name => @project.name
     response.should render_template(:index)
   end
@@ -78,39 +112,13 @@ shared_examples_for 'project with issues turned off' do
 end
 
 describe Projects::IssuesController do
-  before(:each) do
-    stub_symlink_methods
-
-    @project = FactoryGirl.create(:project)
-    @issue_user = FactoryGirl.create(:user)
-
-    any_instance_of(Project, :versions => ['v1.0', 'v2.0'])
-
-    @issue = FactoryGirl.create(:issue, :project_id => @project.id, :assignee_id => @issue_user.id)
-    @create_params = {
-      :owner_name => @project.owner.uname, :project_name => @project.name,
-      :issue => {
-        :title => "issue1",
-        :body => "issue body"
-      },
-      :assignee_id => @issue_user.id,
-      :assignee_uname => @issue_user.uname
-    }
-    @update_params = {
-      :owner_name => @project.owner.uname, :project_name => @project.name,
-      :issue => {
-        :title => "issue2"
-      }
-    }
-
-    @project_with_turned_off_issues = FactoryGirl.create(:project, :has_issues => false)
-    @turned_of_issue = FactoryGirl.create(:issue, :project_id => @project_with_turned_off_issues.id, :assignee_id => @issue_user.id)
-  end
+  include_context "issues controller"
 
   context 'for global admin user' do
     before(:each) do
       @admin = FactoryGirl.create(:admin)
       set_session_for(@admin)
+      set_params
     end
 
     it_should_behave_like 'user without issue destroy rights'
@@ -121,6 +129,7 @@ describe Projects::IssuesController do
       @user = FactoryGirl.create(:user)
       set_session_for(@user)
       @project.relations.create!(:actor_type => 'User', :actor_id => @user.id, :role => 'admin')
+      set_params
     end
 
     it_should_behave_like 'issue user with project reader rights'
@@ -134,8 +143,9 @@ describe Projects::IssuesController do
     before(:each) do
       @user = FactoryGirl.create(:user)
       set_session_for(@user)
-      @project.update_attribute(:owner, @user); @create_params[:owner_name] = @user.uname; @update_params[:owner_name] = @user.uname
+      @project.owner = @user; @project.save!; @project.reload
       @project.relations.create!(:actor_type => 'User', :actor_id => @user.id, :role => 'admin')
+      set_params
     end
 
     it_should_behave_like 'issue user with project reader rights'
@@ -150,6 +160,7 @@ describe Projects::IssuesController do
       @user = FactoryGirl.create(:user)
       set_session_for(@user)
       @project.relations.create!(:actor_type => 'User', :actor_id => @user.id, :role => 'reader')
+      set_params
     end
 
     it_should_behave_like 'issue user with project reader rights'
@@ -172,6 +183,7 @@ describe Projects::IssuesController do
       @user = FactoryGirl.create(:user)
       set_session_for(@user)
       @project.relations.create!(:actor_type => 'User', :actor_id => @user.id, :role => 'writer')
+      set_params
     end
 
     it_should_behave_like 'issue user with project reader rights'
@@ -184,6 +196,7 @@ describe Projects::IssuesController do
   context 'for issue assign user' do
     before(:each) do
       set_session_for(@issue_user)
+      set_params
     end
 
     it_should_behave_like 'user without issue update rights'
@@ -192,6 +205,8 @@ describe Projects::IssuesController do
   end
 
   context 'for guest' do
+    before {set_params}
+
     if APP_CONFIG['anonymous_access']
       # it_should_behave_like 'issue user with project reader rights'
       it 'should be able to perform index action' do
@@ -205,7 +220,7 @@ describe Projects::IssuesController do
       end
 
       it 'should not be able to perform index action on hidden project' do
-        @project.update_attribute :visibility, 'hidden'
+        @project.update_attributes :visibility => 'hidden'
         get :index, :owner_name => @project.owner.uname, :project_name => @project.name
         response.should redirect_to(forbidden_path)
       end
@@ -221,7 +236,7 @@ describe Projects::IssuesController do
       end
 
       it 'should not be able to perform index action on hidden project' do
-        @project.update_attribute :visibility, 'hidden'
+        @project.update_attributes :visibility => 'hidden'
         get :index, :owner_name => @project.owner.uname, :project_name => @project.name
         response.should redirect_to(new_user_session_path)
       end

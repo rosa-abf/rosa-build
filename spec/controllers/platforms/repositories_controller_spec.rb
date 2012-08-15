@@ -107,7 +107,7 @@ describe Platforms::RepositoriesController do
     before(:each) do
       @user = FactoryGirl.create(:user)
       set_session_for(@user)
-      @repository.platform.update_attribute(:owner, @user)
+      @repository.platform.owner = @user; @repository.platform.save
       @repository.platform.relations.create!(:actor_type => 'User', :actor_id => @user.id, :role => 'admin')
     end
 
