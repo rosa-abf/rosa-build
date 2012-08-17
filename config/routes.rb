@@ -134,6 +134,7 @@ Rosa::Application.routes.draw do
     resources :build_lists, :only => [:index, :show, :update] do
       member do
         put :cancel
+        get :log
       end
       collection { post :search }
     end

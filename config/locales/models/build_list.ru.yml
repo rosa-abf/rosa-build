@@ -120,6 +120,9 @@ ru:
       log:
         build_log: Лог сборки
         not_available: В настоящий момент лог недоступен.
+        download: Загрузить лог
+        autoreload: Обновлять лог каждые 
+        load_lines: Загружать последние %{count} строк
         
         reload_times:
           10000:  "10 сек"

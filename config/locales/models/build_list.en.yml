@@ -121,6 +121,9 @@ en:
       log:
         build_log: Build Log
         not_available: Log not available yet.
+        download: Download log
+        autoreload: Update log every 
+        load_lines: Load last %{count} lines
 
         reload_times:
           10000:  "10 s"
