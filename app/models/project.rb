@@ -128,6 +128,10 @@ class Project < ActiveRecord::Base
     I18n.t("layout.projects.human_average_build_time", {:hours => (average_build_time/3600).to_i, :minutes => (average_build_time%3600/60).to_i})
   end
 
+  def formatted_average_build_time
+    "%02d:%02d" % [average_build_time / 3600, average_build_time % 3600 / 60]
+  end
+
   def xml_rpc_create(repository)
     result = BuildServer.create_project name, repository.platform.name, repository.name, path
     if result == BuildServer::SUCCESS

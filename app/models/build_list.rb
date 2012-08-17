@@ -266,6 +266,10 @@ class BuildList < ActiveRecord::Base
     I18n.t("layout.build_lists.human_duration", {:hours => (duration/3600).to_i, :minutes => (duration%3600/60).to_i})
   end
 
+  def fs_log_path(log_type = :build)
+    container_path? ? "downloads/#{container_path}/log/#{project.name}/#{log_type.to_s}.log" : nil
+  end
+
   def in_work?
     status == BuildServer::BUILD_STARTED 
     #[WAITING_FOR_RESPONSE, BuildServer::BUILD_PENDING, BuildServer::BUILD_STARTED].include?(status)
