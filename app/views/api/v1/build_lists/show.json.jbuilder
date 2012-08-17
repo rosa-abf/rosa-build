@@ -1,17 +1,51 @@
 json.build_list do |json|
-  json.(@build_list, :id, :bs_id, :name, :container_path, :status, :project_version, :project_id)
-  json.project_name @build_list.project.name
-  json.(@build_list, :build_for_platform_id, :save_to_platform_id)
-  json.build_for_platform_name @build_list.build_for_platform.name
-  json.save_to_platform_name @build_list.save_to_platform.name
-  json.(@build_list, :notified_at, :is_circle, :update_type, :build_requires, :auto_publish, :package_version, :commit_hash, :duration, :mass_build_id, :advisory_id)
+  json.(@build_list, :id, :name, :container_path, :status, :duration)
+  json.(@build_list, :is_circle, :update_type, :build_requires)
+  json.(@build_list, :auto_publish, :package_version, :commit_hash)
+
   json.arch_name @build_list.arch.name
+  json.created_at @build_list.created_at.to_i
+  json.updated_at @build_list.updated_at.to_i
+
+  json.project do |json_project|
+    json_project.(@build_list.project, :id, :name)
+    json_project.fullname @build_list.project.name_with_owner
+  end
+
+  json.save_to_repository do |json_save_to_repository|
+    json_save_to_repository.(@build_list.save_to_repository, :id, :name)
+
+    json_save_to_repository.platform do |json_str_platform|
+      json_str_platform.(@build_list.save_to_repository.platform, :id, :name)
+    end
+  end
+
+  json.build_for_platform do |json_build_for_platform|
+    json_build_for_platform.(@build_list.build_for_platform, :id, :name)
+  end
+
   json.user do |json_user|
     json_user.(@build_list.user, :id, :name)
     json_user.url user_path(@build_list.user)
   end
+
+  inc_repos = Repository.includes(:platform).where(:id => @build_list.include_repos)
+  json.include_repos inc_repos do |json_include_repos, repo|
+    json_include_repos.(repo, :id, :name)
+  end
+
   json.additional_repos @build_list.additional_repos do |json_repos, repo|
     json_repos.(repo, :id, :name)
   end if @build_list.additional_repos
+
+  json.advisory do |json_advisory|
+    json_advisory.name @build_list.advisory.advisory_id
+    json_advisory.(@build_list.advisory, :description)
+  end if @build_list.advisory
+
+  json.mass_build do |json_mass_build|
+    json_mass_build.(@build_list.mass_build, :id, :name)
+  end if @build_list.mass_build
+
   json.url api_v1_build_list_path(@build_list, :format => :json)
 end
