@@ -60,39 +60,39 @@
       }
 
       function getLineHeight(element){
-         var temp = document.createElement(element.nodeName);
-         temp.setAttribute("style","margin:0px;padding:0px;font-family:"+element.style.fontFamily+";font-size:"+element.style.fontSize);
-         temp.innerHTML = "test";
-         temp = element.parentNode.appendChild(temp);
-         var ret = temp.clientHeight;
-         temp.parentNode.removeChild(temp);
-         return ret;
+        var temp = document.createElement(element.nodeName);
+        temp.setAttribute("style","margin:0px;padding:0px;font-family:"+element.style.fontFamily+";font-size:"+element.style.fontSize);
+        temp.innerHTML = "test";
+        temp = element.parentNode.appendChild(temp);
+        var ret = temp.clientHeight;
+        temp.parentNode.removeChild(temp);
+        return ret;
       }
 
       var loadLog = function() {
-          $.ajax({
-            url: logUrl,
-            type: "GET",
-            dataType: 'json',
-            data: $logCont.data(),
-            beforeSend: function( xhr ) {
-              var token = $('meta[name="csrf-token"]').attr('content');
-              if (token) xhr.setRequestHeader('X-CSRF-Token', token);
-            },
-            success: function(data, textStatus, jqXHR) {
-              var l = $logCont[0];
-              var vScroll = l.scrollTop;
-              var hScroll = l.scrollLeft;
-              var onBottom = Math.abs((l.clientHeight + vScroll - l.scrollHeight)) < getLineHeight(l);
+        $.ajax({
+          url: logUrl,
+          type: "GET",
+          dataType: 'json',
+          data: $logCont.data(),
+          beforeSend: function( xhr ) {
+            var token = $('meta[name="csrf-token"]').attr('content');
+            if (token) xhr.setRequestHeader('X-CSRF-Token', token);
+          },
+          success: function(data, textStatus, jqXHR) {
+            var l = $logCont[0];
+            var vScroll = l.scrollTop;
+            var hScroll = l.scrollLeft;
+            var onBottom = Math.abs((l.clientHeight + vScroll - l.scrollHeight)) < getLineHeight(l);
 
-              $logCont.text(data.log);
+            $logCont.text(data.log);
 
-              $logCont.scrollLeft(hScroll);
-              $logCont.scrollTop((onBottom || first_open) ? l.scrollHeight - l.clientHeight : vScroll);
-              first_open = false;
-              if (!data.building) $autoload.attr({'checked': false}).trigger('change');
-            }
-          });
+            $logCont.scrollLeft(hScroll);
+            $logCont.scrollTop((onBottom || first_open) ? l.scrollHeight - l.clientHeight : vScroll);
+            first_open = false;
+            if (!data.building) $autoload.attr({'checked': false}).trigger('change');
+          }
+        });
       }
 
       var reloadChange = function() {

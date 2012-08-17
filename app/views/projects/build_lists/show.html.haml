@@ -128,10 +128,10 @@
     = render :partial => 'projects/build_lists/log'
 
 
-  - if @build_list.can_publish? && can?(:publish, @build_list) || @build_list.can_reject_publish? && can?(:reject_publish, @build_list)
+  - if (can_publish = @build_list.can_publish? && can?(:publish, @build_list)) || (can_reject = @build_list.can_reject_publish? && can?(:reject_publish, @build_list))
     .hr
-    = submit_tag t("layout.publish"), :confirm => t("layout.confirm"), :name => 'publish' if @build_list.can_publish? && can?(:publish, @build_list)
-    = submit_tag t("layout.reject_publish"), :confirm => t("layout.confirm"), :name => 'reject_publish' if @build_list.can_reject_publish? && can?(:reject_publish, @build_list)
+    = submit_tag t("layout.publish"), :confirm => t("layout.confirm"), :name => 'publish' if can_publish
+    = submit_tag t("layout.reject_publish"), :confirm => t("layout.confirm"), :name => 'reject_publish' if can_reject
 
 .hr
 %h3= t("layout.build_lists.items_header")
