@@ -1,6 +1,6 @@
 # -*- encoding : utf-8 -*-
 class Projects::IssuesController < Projects::BaseController
-  NON_RESTFUL_ACTION = [:create_label, :update_label, :destroy_label, :search_collaborators]
+  NON_RESTFUL_ACTION = [:create_label, :update_label, :destroy_label]
   before_filter :authenticate_user!
   skip_before_filter :authenticate_user!, :only => [:index, :show] if APP_CONFIG['anonymous_access']
   load_resource :project
@@ -34,7 +34,6 @@ class Projects::IssuesController < Projects::BaseController
   end
 
   def new
-    @issue = @project.issues.new
   end
 
   def create
