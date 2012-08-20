@@ -27,7 +27,7 @@
           .avatar=image_tag avatar_url(@issue.assignee), :alt => 'avatar'
           .name=@issue.assignee.fullname
           .both
-      =link_to(t('layout.issues.label_manage'), '#', :class => "button tmargin10 manage_assignee") if can_manage
+      =link_to(t('layout.issues.assignee_manage'), '#', :class => "button tmargin10 manage_assignee") if can_manage
     - if can_manage
       =form_tag search_collaborators_project_issues_path(@project), :id => 'search_user', :method => :get, :style => @issue.persisted? ? 'display:none' : '' do
         =tracker_search_field(:search_user, t('layout.issues.search_user'))
