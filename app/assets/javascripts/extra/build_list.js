@@ -5,7 +5,7 @@ $(document).ready(function() {
     var base_platforms = $('.all_platforms input[type=checkbox].build_bpl_ids');
 
     base_platforms.each(function(){
-      if ($.inArray(platform_id, base_platforms.map(function(){ return $(this).val() }).get()) >= 0) {
+      if ($.inArray(platform_id, base_platforms.map(function(){ return $(this).val(); }).get()) >= 0) {
         if ($(this).val() == platform_id) {
           if ($(this).attr('data-released') === '1') {
             $('#build_list_auto_publish').removeAttr('checked').attr('disabled', 'disabled');
@@ -34,7 +34,7 @@ $(document).ready(function() {
       }
     });
 
-    if ($.inArray(platform_id, base_platforms.map(function(){ return $(this).val() }).get()) == -1) {
+    if ($.inArray(platform_id, base_platforms.map(function(){ return $(this).val(); }).get()) === -1) {
       // For personal platforms update types always enebaled:
       enableUpdateTypes();
     }
@@ -62,7 +62,7 @@ function setPlChecked(pointer, checked) {
   var pl_id = pl_cbx.val();
   if (checked && !$(pointer).attr('disabled')) {
     pl_cbx.attr('checked', 'checked').trigger('change');
-  } else if ($('input[pl_id=' + pl_id + '][checked="checked"]').size() == 0) {
+  } else if ($('input[pl_id=' + pl_id + '][checked="checked"]').size() === 0) {
     pl_cbx.removeAttr('checked').trigger('change');
   }
 }
@@ -77,6 +77,10 @@ function setBranchSelected() {
     if ( branch_pl_opt.size() > 0 ) {
       $('#build_list_project_version option[selected]').removeAttr('selected');
       branch_pl_opt.attr('selected', 'selected');
+      var bl_version_sel = $('#build_list_project_version');
+      bl_version_sel.val(branch_pl_opt);
+      // hack for FF to force render of select box.
+      bl_version_sel[0].innerHTML = bl_version_sel[0].innerHTML;
     }
   }
 }
