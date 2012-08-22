@@ -1,7 +1,7 @@
 # -*- encoding : utf-8 -*-
 require 'spec_helper'
 
-shared_examples_for 'api repositories view rights' do
+shared_examples_for 'api repository user with reader rights' do
   it 'should be able to perform index action' do
     get :index, :platform_id => @platform.id, :format => :json
     response.should render_template(:index)
@@ -10,6 +10,36 @@ shared_examples_for 'api repositories view rights' do
   it 'should be able to perform show action' do
     get :show, :id => @repository.id, :format => :json
     response.should render_template(:show)
+  end
+end
+
+shared_examples_for 'api repository user with reader rights for hidden platform' do
+  before(:each) do
+    @platform.update_column(:visibility, 'hidden')
+  end
+
+  it_should_behave_like 'api repository user with show rights'
+end
+
+shared_examples_for 'api repository user without reader rights for hidden platform' do
+  before(:each) do
+    @platform.update_column(:visibility, 'hidden')
+  end
+
+  it_should_behave_like 'api repository user without show rights'
+end
+
+shared_examples_for "api repository user with show rights" do
+  it 'should be able to perform show action' do
+    get :show, :id => @repository.id, :format => :json
+    response.should render_template(:show)
+  end
+end
+
+shared_examples_for "api repository user without show rights" do
+  it 'should not be able to perform show action' do
+    get :show, :id => @repository.id, :format => :json
+    response.body.should == {"message" => "Access violation to this page!"}.to_json
   end
 end
 
@@ -27,12 +57,12 @@ describe Api::V1::RepositoriesController do
   context 'for guest' do
     it "should not be able to perform index action" do
       get :index, :platform_id => @platform, :format => :json
-      response.should redirect_to(new_user_session_path)
+      response.status.should == 401
     end
 
     it "should not be able to perform show action" do
       get :show, :id => @repository.id, :format => :json
-      response.should redirect_to(new_user_session_path)
+      response.status.should == 401
     end
   end
 
@@ -42,7 +72,8 @@ describe Api::V1::RepositoriesController do
       set_session_for(@admin)
     end
 
-    it_should_behave_like 'api repositories view rights'
+    it_should_behave_like 'api repository user with reader rights'
+    it_should_behave_like 'api repository user with reader rights for hidden platform'
   end
 
   context 'for platform owner user' do
@@ -54,7 +85,8 @@ describe Api::V1::RepositoriesController do
       @repository.platform.relations.create!(:actor_type => 'User', :actor_id => @user.id, :role => 'admin')
     end
 
-    it_should_behave_like 'api repositories view rights'
+    it_should_behave_like 'api repository user with reader rights'
+    it_should_behave_like 'api repository user with reader rights for hidden platform'
   end
 
   context 'for user' do
@@ -63,6 +95,8 @@ describe Api::V1::RepositoriesController do
       set_session_for(@user)
     end
 
-    it_should_behave_like 'api repositories view rights'
+    it_should_behave_like 'api repository user with reader rights'
+    it_should_behave_like 'api repository user without reader rights for hidden platform'
+    it_should_behave_like 'api repository user with show rights'
   end
 end

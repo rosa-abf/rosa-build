@@ -2,13 +2,40 @@
 require 'spec_helper'
 
 shared_examples_for "api projects user with reader rights" do
+  include_examples "api projects user with show rights"
+
   it "should render index template" do
     get :index, :format => :json
     render_template(:index)
   end
+end
 
-  it "should render show template" do
-    get :show, :id => @project, :format => :json
+shared_examples_for "api projects user with reader rights for hidden project" do
+  before(:each) do
+    @project.update_column(:visibility, 'hidden')
+  end
+
+  it_should_behave_like 'api projects user with show rights'
+end
+
+shared_examples_for "api projects user without reader rights for hidden project" do
+  before(:each) do
+    @project.update_column(:visibility, 'hidden')
+  end
+
+  it_should_behave_like 'api projects user without show rights'
+end
+
+shared_examples_for "api projects user without show rights" do
+  it "should not show project data" do
+    get :show, :id => @project.id, :format => :json
+    response.body.should == {"message" => "Access violation to this page!"}.to_json
+  end
+end
+
+shared_examples_for "api projects user with show rights" do
+  it "should show project data" do
+    get :show, :id => @project.id, :format => :json
     render_template(:show)
   end
 end
@@ -19,15 +46,31 @@ describe Api::V1::ProjectsController do
     stub_symlink_methods
 
     @project = FactoryGirl.create(:project)
+    @hidden_project = FactoryGirl.create(:project)
     @another_user = FactoryGirl.create(:user)
   end
 
+  #TODO: Find out how it works (why it only sets 401 status without redirect on .json)
   context 'for guest' do
     it 'should not be able to perform index action' do
       get :index, :format => :json
-      #response.should redirect_to(new_user_session_path)
-      response.body.should == {"message" => "Access violation to this page!"}.to_json
+      response.status.should == 401
     end
+
+    it 'should not be able to perform show action' do
+      get :show, :id => @project.id, :format => :json
+      response.status.should == 401
+    end
+  end
+
+  context 'for simple user' do
+    before(:each) do
+      @user = FactoryGirl.create(:user)
+      set_session_for(@user)
+    end
+
+    it_should_behave_like 'api projects user with reader rights'
+    it_should_behave_like 'api projects user without reader rights for hidden project'
   end
 
   context 'for admin' do
@@ -37,6 +80,7 @@ describe Api::V1::ProjectsController do
     end
 
     it_should_behave_like 'api projects user with reader rights'
+    it_should_behave_like 'api projects user with reader rights for hidden project'
   end
 
   context 'for owner user' do
@@ -48,6 +92,7 @@ describe Api::V1::ProjectsController do
     end
 
     it_should_behave_like 'api projects user with reader rights'
+    it_should_behave_like 'api projects user with reader rights for hidden project'
   end
 
   context 'for reader user' do
@@ -58,6 +103,7 @@ describe Api::V1::ProjectsController do
     end
 
     it_should_behave_like 'api projects user with reader rights'
+    it_should_behave_like 'api projects user with reader rights for hidden project'
   end
 
   context 'for writer user' do
@@ -68,7 +114,7 @@ describe Api::V1::ProjectsController do
     end
 
     it_should_behave_like 'api projects user with reader rights'
-
+    it_should_behave_like 'api projects user with reader rights for hidden project'
   end
 
   context 'for group' do
@@ -77,6 +123,11 @@ describe Api::V1::ProjectsController do
       @group_user = FactoryGirl.create(:user)
       @project.relations.destroy_all
       set_session_for(@group_user)
+    end
+
+    context 'with no relations to project' do
+      it_should_behave_like 'api projects user with reader rights'
+      it_should_behave_like 'api projects user without reader rights for hidden project'
     end
 
     context 'owner of the project' do
@@ -91,6 +142,7 @@ describe Api::V1::ProjectsController do
         end
 
         it_should_behave_like 'api projects user with reader rights'
+        it_should_behave_like 'api projects user with reader rights for hidden project'
       end
 
       context 'admin user' do
@@ -99,6 +151,7 @@ describe Api::V1::ProjectsController do
         end
 
         it_should_behave_like 'api projects user with reader rights'
+        it_should_behave_like 'api projects user with reader rights for hidden project'
       end
     end
 
@@ -114,6 +167,7 @@ describe Api::V1::ProjectsController do
           end
 
           it_should_behave_like 'api projects user with reader rights'
+          it_should_behave_like 'api projects user with reader rights for hidden project'
         end
 
         context 'admin user' do
@@ -122,6 +176,7 @@ describe Api::V1::ProjectsController do
           end
 
           it_should_behave_like 'api projects user with reader rights'
+          it_should_behave_like 'api projects user with reader rights for hidden project'
         end
       end
 
@@ -136,6 +191,7 @@ describe Api::V1::ProjectsController do
           end
 
           it_should_behave_like 'api projects user with reader rights'
+          it_should_behave_like 'api projects user with reader rights for hidden project'
 
           context 'user should has best role' do
             before(:each) do
@@ -151,6 +207,7 @@ describe Api::V1::ProjectsController do
           end
 
           it_should_behave_like 'api projects user with reader rights'
+          it_should_behave_like 'api projects user with reader rights for hidden project'
         end
       end
     end
