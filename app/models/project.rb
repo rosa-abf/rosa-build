@@ -5,6 +5,7 @@ class Project < ActiveRecord::Base
   NAME_REGEXP = /[a-zA-Z0-9_\-\+\.]+/
 
   belongs_to :owner, :polymorphic => true, :counter_cache => :own_projects_count
+  belongs_to :maintainer, :class_name => "User"
 
   has_many :issues, :dependent => :destroy
   has_many :labels, :dependent => :destroy
@@ -26,7 +27,7 @@ class Project < ActiveRecord::Base
   validates :visibility, :presence => true, :inclusion => {:in => VISIBILITIES}
   validate { errors.add(:base, :can_have_less_or_equal, :count => MAX_OWN_PROJECTS) if owner.projects.size >= MAX_OWN_PROJECTS }
 
-  attr_accessible :name, :description, :visibility, :srpm, :is_package, :default_branch, :has_issues, :has_wiki
+  attr_accessible :name, :description, :visibility, :srpm, :is_package, :default_branch, :has_issues, :has_wiki, :maintainer_id
   attr_readonly :name, :owner_id, :owner_type
 
   scope :recent, order("name ASC")
@@ -37,6 +38,7 @@ class Project < ActiveRecord::Base
   scope :opened, where(:visibility => 'open')
   scope :addable_to_repository, lambda { |repository_id| where("projects.id NOT IN (SELECT project_to_repositories.project_id FROM project_to_repositories WHERE (project_to_repositories.repository_id = #{ repository_id }))") }
 
+  before_validation :set_maintainer
   after_create :attach_to_personal_repository
 
   has_ancestry :orphan_strategy => :rootify #:adopt not available yet
@@ -64,6 +66,19 @@ class Project < ActiveRecord::Base
 
   def members
     collaborators + groups.map(&:members).flatten
+  end
+
+  def maintainer_id
+    self[:maintainer_id] || owner.assignee.id
+  end
+
+  alias_method :maintainer_original, :maintainer
+  def maintainer
+    maintainer_original || owner.assignee
+  end
+
+  def maintainer_name
+    maintainer.fullname
   end
 
   def platforms
@@ -155,4 +170,9 @@ class Project < ActiveRecord::Base
   def attach_to_personal_repository
     repositories << self.owner.personal_repository if !repositories.exists?(:id => self.owner.personal_repository)
   end
+
+  def set_maintainer
+    maintainer ||= owner.assignee
+  end
+
 end

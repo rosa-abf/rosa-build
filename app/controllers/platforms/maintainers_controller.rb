@@ -11,8 +11,8 @@ class Platforms::MaintainersController < ApplicationController
   before_filter :authenticate_external_tracker!, :only => ET_CALLBACKS
 
   def index
-    # Let's build a relation to query maintainers via 'build_list_packages' table
-    @maintainers = BuildList::Package.maintainers.where(:platform_id => @platform).order('lower(name) ASC').includes(:project).paginate(:page => params[:page])
+    @maintainers = BuildList::Package.actual.by_platform(@platform).order('lower(name) ASC')
+                                     .includes(:project).paginate(:page => params[:page])
   end
 
   # Given platform_id, and the string that contains source or binary package name, or project name, find the email of the assignee of the project that contains the given package under the platform specified.

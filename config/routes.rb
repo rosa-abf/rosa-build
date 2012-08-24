@@ -188,6 +188,7 @@ Rosa::Application.routes.draw do
         end
       end
       # Resource
+      get '/autocomplete_maintainers' => 'projects#autocomplete_maintainers', :as => :autocomplete_maintainers
       get '/modify' => 'projects#edit', :as => :edit_project
       put '/' => 'projects#update'
       delete '/' => 'projects#destroy'

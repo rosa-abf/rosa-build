@@ -52,6 +52,10 @@ class User < ActiveRecord::Base
   scope :admin, where(:role => 'admin')
   scope :real, where(:role => ['', nil])
 
+  scope :member_of_project, lambda {|item|
+    where "#{table_name}.id IN (?)", item.members.map(&:id).uniq
+  }
+
   after_create lambda { self.create_notifier }
   before_create :ensure_authentication_token
 

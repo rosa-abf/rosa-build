@@ -86,6 +86,15 @@ class Projects::ProjectsController < Projects::BaseController
     redirect_to projects_path
   end
 
+  def autocomplete_maintainers
+    term = params[:term]
+    limit = 10
+    items = User.member_of_project(@project)
+                .where("users.name ILIKE ? OR users.uname ILIKE ?", "%#{term}%", "%#{term}%")
+                .limit(limit).map { |u| {:value => u.fullname, :label => u.fullname, :id => u.id} }
+    render :json => items
+  end
+
   protected
 
   def prepare_list(projects)

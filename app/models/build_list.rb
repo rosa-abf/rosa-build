@@ -125,7 +125,7 @@ class BuildList < ActiveRecord::Base
       end
     end
 
-    after_transition :on => :published, :do => :set_version_and_tag
+    after_transition :on => :published, :do => [:set_version_and_tag, :actualize_packages]
 
     event :place_build do
       transition :waiting_for_response => :build_pending, :if => lambda { |build_list|
@@ -199,6 +199,12 @@ class BuildList < ActiveRecord::Base
     self.package_version = "#{pkg.platform.name}-#{pkg.version}-#{pkg.release}"
     system("cd #{self.project.repo.path} && git tag #{self.package_version} #{self.commit_hash}") # TODO REDO through grit
     save
+  end
+
+  def actualize_packages
+    ActiveRecord::Base.transaction do
+      self.packages.each(&:actualize)
+    end
   end
 
   #TODO: Share this checking on product owner.
