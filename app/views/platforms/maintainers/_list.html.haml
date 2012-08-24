@@ -1,4 +1,4 @@
-%table#myTable.tablesorter.platform-maintainers{:cellspacing => "0", :cellpadding => "0"}
+%table#myTable.tablesorter.platform-maintainers.static-search{:cellspacing => "0", :cellpadding => "0"}
   %thead
     %tr
       %th.centered= t("activerecord.attributes.maintainer.package_name")
@@ -6,6 +6,14 @@
       %th.centered= t("activerecord.attributes.maintainer.version")
       %th.centered{:colspan => 2}= t("activerecord.models.maintainer")
       %th.centered= t("activerecord.attributes.maintainer.updated_at")
+    %tr.search
+      -# TODO: change filter to Backbone.js
+      %th{:colspan => 6, :rowspan => 1}
+        = form_tag platform_maintainers_path(@platform), :method => :get do |f|
+          = text_field_tag('q', params[:q], :placeholder => t("layout.maintainers.search_by_package"), :class => params[:q].present? ? 'black' : 'gray')
+          %input{:type => 'submit', :value => t("layout.search.header")}
+        = button_to t('layout.clear'), {:action => :index} , :method => :get
+
   %tbody
     - MaintainerPresenter.present_collection(@maintainers) do |pr|
       %tr{:class => cycle("odd", "even")}

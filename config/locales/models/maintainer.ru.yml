@@ -2,6 +2,7 @@ ru:
   layout:
     maintainers:
       list_header: Мэйнтэйнеры
+      search_by_package: Искать по имени пакета
 
   flash:
     maintainer:

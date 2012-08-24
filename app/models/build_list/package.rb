@@ -16,6 +16,7 @@ class BuildList::Package < ActiveRecord::Base
   scope :actual,          where(:actual => true)
   scope :by_platform,     lambda {|platform| where(:platform_id => platform) }
   scope :by_name,         lambda {|name| where(:name => name) }
+  scope :find_by_name,    lambda {|name| where('name ILIKE ?', "%#{name}%") }
   scope :by_package_type, lambda {|type| where(:package_type => type) }
 
   def assignee

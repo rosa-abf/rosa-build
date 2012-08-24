@@ -2,6 +2,7 @@ en:
   layout:
     maintainers:
       list_header: Maintainers
+      search_by_package: Search by package name
 
   flash:
     maintainer:

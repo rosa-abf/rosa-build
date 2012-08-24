@@ -12,9 +12,12 @@ class Platforms::MaintainersController < ApplicationController
 
   def index
     @maintainers = BuildList::Package.actual.by_platform(@platform).order('lower(name) ASC')
-                                     .includes(:project).paginate(:page => params[:page])
+                                     .includes(:project)
+    @maintainers = @maintainers.find_by_name(params[:q]) if params[:q].present?
+    @maintainers = @maintainers.paginate(:page => params[:page])
   end
 
+  # TODO. Move this method to API.
   # Given platform_id, and the string that contains source or binary package name, or project name, find the email of the assignee of the project that contains the given package under the platform specified.
   def assignee
     ret = {}
