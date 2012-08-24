@@ -203,7 +203,14 @@ class BuildList < ActiveRecord::Base
 
   def actualize_packages
     ActiveRecord::Base.transaction do
-      self.packages.each(&:actualize)
+      old_pkgs = self.class.where(:project_id => self.project_id)
+                           .where(:save_to_repository_id => self.save_to_repository_id)
+                           .for_platform(self.build_for_platform_id)
+                           .scoped_to_arch(self.arch_id)
+                           .for_status(BUILD_PUBLISHED)
+                           .recent.first.packages
+      old_pkgs.update_all(:actual => false)
+      self.packages.update_all(:actual => true)
     end
   end
 

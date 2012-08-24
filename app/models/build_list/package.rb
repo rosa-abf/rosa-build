@@ -22,15 +22,4 @@ class BuildList::Package < ActiveRecord::Base
   def assignee
     project.maintainer
   end
-
-  def actualize
-    ActiveRecord::Base.transaction do
-      old_pkg = self.class.by_platform(self.platform_id).actual
-                          .by_name(self.name).by_package_type(self.package_type)
-
-      old_pkg.update_all(:actual => false) if old_pkg
-      self.actual = true
-      self.save
-    end
-  end
 end
