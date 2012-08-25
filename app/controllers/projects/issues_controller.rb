@@ -52,7 +52,8 @@ class Projects::IssuesController < Projects::BaseController
       @issue.set_open if status == 'open'
       render :partial => 'status', :status => (@issue.save ? 200 : 500)
     elsif params[:issue]
-      render :nothing => true, :status => (@issue.update_attributes(params[:issue]) ? 200 : 500)
+      status = @issue.update_attributes(params[:issue]) ? 200 : 500
+      render :inline => ActionController::Base.helpers.simple_format(params[:issue][:body]), :status => status
     else
       render :nothing => true, :status => 200
     end
