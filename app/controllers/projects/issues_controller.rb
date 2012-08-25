@@ -53,6 +53,7 @@ class Projects::IssuesController < Projects::BaseController
   end
 
   def update
+    @issue.labelings.destroy_all if params[:update_labels]
     if params[:issue] && status = params[:issue][:status]
       action = 'status'
       @issue.set_close(current_user) if status == 'closed'
@@ -60,7 +61,6 @@ class Projects::IssuesController < Projects::BaseController
       status = 200 if @issue.save
       render :partial => action, :status => (status || 500), :layout => false
     elsif params[:issue]
-      @issue.labelings.destroy_all if params[:issue][:labelings_attributes] # FIXME
       status = 200 if @issue.update_attributes(params[:issue])
       render :nothing => true, :status => (status || 500), :layout => false
     else

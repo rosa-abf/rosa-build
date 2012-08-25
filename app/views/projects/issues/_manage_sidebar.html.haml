@@ -47,6 +47,7 @@
             .both=hidden_field_tag "flag#{label.id}", label.id, :name => "issue[labelings_attributes][#{label.id}][label_id]"
       =form_for :issue, :url => [@project, @issue], :method => :put, :html => { :class => 'edit_labels issue'} do |f|
         .manage_labels
+          =hidden_field_tag "update_labels", true
           - @issue.labels.each do |label|
             =hidden_field_tag "flag#{label.id}", label.id, :name => "issue[labelings_attributes][#{label.id}][label_id]"
     - else
