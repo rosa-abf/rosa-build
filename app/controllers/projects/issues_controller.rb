@@ -16,6 +16,7 @@ class Projects::IssuesController < Projects::BaseController
     @issues = @project.issues
     @issues = @issues.where(:assignee_id => current_user.id) if @is_assigned_to_me
     @issues = @issues.joins(:labels).where(:labels => {:name => @labels}) unless @labels == []
+    # Using mb_chars for correct transform to lowercase ('Русский Текст'.downcase => "Русский Текст")
     @issues = @issues.where('issues.title ILIKE ?', "%#{params[:search_issue].mb_chars.downcase}%") if params[:search_issue]
 
     @opened_issues, @closed_issues = @issues.opened.count, @issues.closed.count
