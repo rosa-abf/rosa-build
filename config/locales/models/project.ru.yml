@@ -93,6 +93,7 @@ ru:
           group: Группа
         default_branch: Ветка по умолчанию
         is_package: Проект является пакетом
+        maintainer_id: Майнтейнер проекта
         maintainer: Майнтейнер проекта
     errors:
       project:

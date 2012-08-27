@@ -24,6 +24,7 @@ class Project < ActiveRecord::Base
 
   validates :name, :uniqueness => {:scope => [:owner_id, :owner_type], :case_sensitive => false}, :presence => true, :format => {:with => /^#{NAME_REGEXP}$/, :message => I18n.t("activerecord.errors.project.uname")}
   validates :owner, :presence => true
+  validates :maintainer_id, :presence => true
   validates :visibility, :presence => true, :inclusion => {:in => VISIBILITIES}
   validate { errors.add(:base, :can_have_less_or_equal, :count => MAX_OWN_PROJECTS) if owner.projects.size >= MAX_OWN_PROJECTS }
 
@@ -36,9 +37,9 @@ class Project < ActiveRecord::Base
   scope :by_name, lambda {|name| where('projects.name ILIKE ?', name)}
   scope :by_visibilities, lambda {|v| where(:visibility => v)}
   scope :opened, where(:visibility => 'open')
+  scope :package, where(:is_package => true)
   scope :addable_to_repository, lambda { |repository_id| where("projects.id NOT IN (SELECT project_to_repositories.project_id FROM project_to_repositories WHERE (project_to_repositories.repository_id = #{ repository_id }))") }
 
-  before_validation :set_maintainer
   after_create :attach_to_personal_repository
 
   has_ancestry :orphan_strategy => :rootify #:adopt not available yet
@@ -60,25 +61,16 @@ class Project < ActiveRecord::Base
     end
   end
 
+  def project_maintainer
+    maintainer || owner.assignee
+  end
+
   def to_param
     name
   end
 
   def members
     collaborators + groups.map(&:members).flatten
-  end
-
-  def maintainer_id
-    self[:maintainer_id] || owner.assignee.id
-  end
-
-  alias_method :maintainer_original, :maintainer
-  def maintainer
-    maintainer_original || owner.assignee
-  end
-
-  def maintainer_name
-    maintainer.fullname
   end
 
   def platforms
@@ -169,10 +161,6 @@ class Project < ActiveRecord::Base
 
   def attach_to_personal_repository
     repositories << self.owner.personal_repository if !repositories.exists?(:id => self.owner.personal_repository)
-  end
-
-  def set_maintainer
-    maintainer ||= owner.assignee
   end
 
 end

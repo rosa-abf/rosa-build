@@ -17,8 +17,8 @@ ActiveRecord::Schema.define(:version => 20120822210712) do
     t.integer  "user_id",    :null => false
     t.string   "kind"
     t.text     "data"
-    t.datetime "created_at", :null => false
-    t.datetime "updated_at", :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "advisories", :force => true do |t|
@@ -134,6 +134,7 @@ ActiveRecord::Schema.define(:version => 20120822210712) do
 
   add_index "build_lists", ["advisory_id"], :name => "index_build_lists_on_advisory_id"
   add_index "build_lists", ["arch_id"], :name => "index_build_lists_on_arch_id"
+  add_index "build_lists", ["project_id", "save_to_repository_id", "build_for_platform_id", "arch_id"], :name => "maintainer_search_index"
   add_index "build_lists", ["bs_id"], :name => "index_build_lists_on_bs_id", :unique => true
   add_index "build_lists", ["project_id"], :name => "index_build_lists_on_project_id"
 
@@ -326,11 +327,11 @@ ActiveRecord::Schema.define(:version => 20120822210712) do
     t.text     "description"
     t.string   "ancestry"
     t.boolean  "has_issues",         :default => true
-    t.boolean  "has_wiki",           :default => false
     t.string   "srpm_file_name"
-    t.string   "srpm_content_type"
     t.integer  "srpm_file_size"
     t.datetime "srpm_updated_at"
+    t.string   "srpm_content_type"
+    t.boolean  "has_wiki",           :default => false
     t.string   "default_branch",     :default => "master"
     t.boolean  "is_package",         :default => true,     :null => false
     t.integer  "average_build_time", :default => 0,        :null => false
@@ -406,6 +407,7 @@ ActiveRecord::Schema.define(:version => 20120822210712) do
     t.datetime "remember_created_at"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.text     "ssh_key"
     t.string   "uname"
     t.string   "role"
     t.string   "language",                               :default => "en"
