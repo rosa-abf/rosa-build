@@ -17,8 +17,8 @@ ActiveRecord::Schema.define(:version => 20120730214052) do
     t.integer  "user_id",    :null => false
     t.string   "kind"
     t.text     "data"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
   end
 
   create_table "advisories", :force => true do |t|
@@ -161,12 +161,12 @@ ActiveRecord::Schema.define(:version => 20120730214052) do
   end
 
   create_table "flash_notifies", :force => true do |t|
-    t.text     "body_ru",                      :null => false
-    t.text     "body_en",                      :null => false
-    t.string   "status",                       :null => false
-    t.boolean  "published",  :default => true, :null => false
-    t.datetime "created_at",                   :null => false
-    t.datetime "updated_at",                   :null => false
+    t.text     "body_ru"
+    t.text     "body_en"
+    t.string   "status"
+    t.boolean  "published"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
   end
 
   create_table "groups", :force => true do |t|

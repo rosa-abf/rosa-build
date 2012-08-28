@@ -3,11 +3,6 @@ require 'spec_helper'
 
 shared_examples_for "api projects user with reader rights" do
   include_examples "api projects user with show rights"
-
-  it "should render index template" do
-    get :index, :format => :json
-    render_template(:index)
-  end
 end
 
 shared_examples_for "api projects user with reader rights for hidden project" do
@@ -27,8 +22,13 @@ shared_examples_for "api projects user without reader rights for hidden project"
 end
 
 shared_examples_for "api projects user without show rights" do
-  it "should not show project data" do
+  it "should show access violation instead of project data" do
     get :show, :id => @project.id, :format => :json
+    response.body.should == {"message" => "Access violation to this page!"}.to_json
+  end
+
+  it "should access violation instead of project data by get_id" do
+    get :get_id, :name => @project.name, :owner => @project.owner.uname, :format => :json
     response.body.should == {"message" => "Access violation to this page!"}.to_json
   end
 end
@@ -37,6 +37,24 @@ shared_examples_for "api projects user with show rights" do
   it "should show project data" do
     get :show, :id => @project.id, :format => :json
     render_template(:show)
+  end
+
+  context 'project find by get_id' do
+    it "should find project by name and owner name" do
+      @project.reload
+      get :get_id, :name => @project.name, :owner => @project.owner.uname, :format => :json
+      assigns[:project].id.should == @project.id
+    end
+
+    it "should not find project by non existing name and owner name" do
+      get :get_id, :name => 'NONE_EXISTING_NAME', :owner => @project.owner.uname, :format => :json
+      assigns[:project].should be_blank
+    end
+
+    it "should render 404 for non existing name and owner name" do
+      get :get_id, :name => 'NONE_EXISTING_NAME', :owner => @project.owner.uname, :format => :json
+      response.body.should == {:message => I18n.t("flash.404_message")}.to_json
+    end
   end
 end
 
@@ -52,8 +70,8 @@ describe Api::V1::ProjectsController do
 
   #TODO: Find out how it works (why it only sets 401 status without redirect on .json)
   context 'for guest' do
-    it 'should not be able to perform index action' do
-      get :index, :format => :json
+    it 'should not be able to perform get_id action' do
+      get :get_id, :format => :json
       response.status.should == 401
     end
 

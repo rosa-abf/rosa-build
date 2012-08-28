@@ -14,6 +14,7 @@ class Ability
 
     # Shared rights between guests and registered users
     can :show, Project, :visibility => 'open'
+    can :get_id, Project
     can :archive, Project, :visibility => 'open'
     can :read, Issue, :project => {:visibility => 'open'}
     can :search, BuildList

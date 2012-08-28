@@ -10,6 +10,7 @@ json.build_list do |json|
   json.project do |json_project|
     json_project.(@build_list.project, :id, :name)
     json_project.fullname @build_list.project.name_with_owner
+    json_project.url api_v1_project_path(@build_list.project, :format => :json)
   end
 
   json.save_to_repository do |json_save_to_repository|
@@ -17,16 +18,20 @@ json.build_list do |json|
 
     json_save_to_repository.platform do |json_str_platform|
       json_str_platform.(@build_list.save_to_repository.platform, :id, :name)
+      json_str_platform.url api_v1_platform_path(@build_list.save_to_repository.platform, :format => :json)
     end
+
+    json_save_to_repository.url api_v1_repository_path(@build_list.save_to_repository, :format => :json)
   end
 
   json.build_for_platform do |json_build_for_platform|
     json_build_for_platform.(@build_list.build_for_platform, :id, :name)
+    json_build_for_platform.url api_v1_platform_path(@build_list.build_for_platform, :format => :json)
   end
 
-  json.user do |json_user|
-    json_user.(@build_list.user, :id, :name)
-    json_user.url user_path(@build_list.user)
+  json.owner do |json_owner|
+    json_owner.(@build_list.user, :id, :name)
+    json_owner.url @build_list.project.owner_type == 'User' ? user_path(@build_list.project.owner.uname) : group_path(@build_list.project.owner.uname)
   end
 
   inc_repos = Repository.includes(:platform).where(:id => @build_list.include_repos)

@@ -2,15 +2,7 @@
 require 'spec_helper'
 
 shared_examples_for 'api repository user with reader rights' do
-  it 'should be able to perform index action' do
-    get :index, :platform_id => @platform.id, :format => :json
-    response.should render_template(:index)
-  end
-
-  it 'should be able to perform show action' do
-    get :show, :id => @repository.id, :format => :json
-    response.should render_template(:show)
-  end
+  it_should_behave_like 'api repository user with show rights'
 end
 
 shared_examples_for 'api repository user with reader rights for hidden platform' do
@@ -55,11 +47,6 @@ describe Api::V1::RepositoriesController do
   end
 
   context 'for guest' do
-    it "should not be able to perform index action" do
-      get :index, :platform_id => @platform, :format => :json
-      response.status.should == 401
-    end
-
     it "should not be able to perform show action" do
       get :show, :id => @repository.id, :format => :json
       response.status.should == 401
