@@ -42,19 +42,6 @@ describe Platforms::MaintainersController do
       response.response_code.should == 403
     end
   end
-
-  context 'for bugzilla' do
-    before(:each) do
-      request.remote_addr = APP_CONFIG['external_tracker_ip']
-    end
-
-    it_should_behave_like 'guest user'
-
-    it 'should be able to get api' do
-      get :assignee, @assignee_rq
-      response.response_code.should == 200
-    end
-  end
 end
 
 

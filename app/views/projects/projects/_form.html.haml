@@ -51,16 +51,16 @@
     .both
   .both
   #maintainer_form{:class => @project.is_package ? '' : 'hidden'}
-    = f.hidden_field :maintainer_id, :value => @project.project_maintainer.id
+    = f.hidden_field :maintainer_id, :value => @project.maintainer_id
     .leftlist
       = t("activerecord.attributes.project.maintainer")
     .rightlist
       -# TODO: Maybe use something like Chosen with filter and prepopulated
       -#       list of potential maintainers?
-      = autocomplete_field_tag :maintainer_name, @project.project_maintainer.fullname,
+      = autocomplete_field_tag :maintainer_name, @project.maintainer.fullname,
           autocomplete_maintainers_path(@project.owner, @project),
           :id_element => '#project_maintainer_id',
-          :placeholder => @project.project_maintainer.fullname
+          :placeholder => @project.maintainer.fullname
 - if [:new, :create].include? act
   .leftlist= f.label :srpm, t("activerecord.attributes.project.srpm"), :class => :label
   .rightlist= f.file_field :srpm, :class => 'file_field'

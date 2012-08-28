@@ -39,11 +39,6 @@ class Group < ActiveRecord::Base
     uname
   end
 
-  # A user to assign bugs to projects owned by the group.  For now it's just self, could be changed later.
-  def assignee
-    owner
-  end
-
   protected
 
   def add_owner_to_members

@@ -39,6 +39,7 @@ class Projects::ProjectsController < Projects::BaseController
   end
 
   def update
+    params[:project].delete(:maintainer_id) unless params[:project][:maintainer_id].present?
     if @project.update_attributes(params[:project])
       flash[:notice] = t('flash.project.saved')
       redirect_to @project

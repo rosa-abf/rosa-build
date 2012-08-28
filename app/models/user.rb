@@ -136,11 +136,6 @@ class User < ActiveRecord::Base
     end
   end
 
-  # A user to assign bugs to projects owned by the user.  For now it's just self, could be changed later.
-  def assignee
-    self
-  end
-
   def best_role target
     roles = target_roles(target)
     return nil if roles.count == 0

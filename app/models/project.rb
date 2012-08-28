@@ -61,10 +61,6 @@ class Project < ActiveRecord::Base
     end
   end
 
-  def project_maintainer
-    maintainer || owner.assignee
-  end
-
   def to_param
     name
   end
