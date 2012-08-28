@@ -22,9 +22,11 @@ class Project < ActiveRecord::Base
   has_many :packages, :class_name => "BuildList::Package", :dependent => :destroy
   has_and_belongs_to_many :advisories # should be without :dependent => :destroy
 
-  validates :name, :uniqueness => {:scope => [:owner_id, :owner_type], :case_sensitive => false}, :presence => true, :format => {:with => /^#{NAME_REGEXP}$/, :message => I18n.t("activerecord.errors.project.uname")}
+  validates :name, :uniqueness => {:scope => [:owner_id, :owner_type], :case_sensitive => false},
+                   :presence => true,
+                   :format => {:with => /^#{NAME_REGEXP}$/, :message => I18n.t("activerecord.errors.project.uname")}
   validates :owner, :presence => true
-  validates :maintainer_id, :presence => true
+  validates :maintainer_id, :presence => true, :unless => :new_record?
   validates :visibility, :presence => true, :inclusion => {:in => VISIBILITIES}
   validate { errors.add(:base, :can_have_less_or_equal, :count => MAX_OWN_PROJECTS) if owner.projects.size >= MAX_OWN_PROJECTS }
 
@@ -38,8 +40,17 @@ class Project < ActiveRecord::Base
   scope :by_visibilities, lambda {|v| where(:visibility => v)}
   scope :opened, where(:visibility => 'open')
   scope :package, where(:is_package => true)
-  scope :addable_to_repository, lambda { |repository_id| where("projects.id NOT IN (SELECT project_to_repositories.project_id FROM project_to_repositories WHERE (project_to_repositories.repository_id = #{ repository_id }))") }
+  scope :addable_to_repository, lambda { |repository_id| where %Q(
+    projects.id NOT IN (
+      SELECT
+        project_to_repositories.project_id
+      FROM
+        project_to_repositories
+      WHERE (project_to_repositories.repository_id = #{ repository_id })
+    )
+  ) }
 
+  before_create :set_maintainer
   after_create :attach_to_personal_repository
 
   has_ancestry :orphan_strategy => :rootify #:adopt not available yet
@@ -123,6 +134,8 @@ class Project < ActiveRecord::Base
       c.parent_id = id
       c.owner = new_owner
       c.updated_at = nil; c.created_at = nil # :id = nil
+      # Hack to call protected method :)
+      c.send :set_maintainer
       c.save
     end
   end
@@ -157,6 +170,10 @@ class Project < ActiveRecord::Base
 
   def attach_to_personal_repository
     repositories << self.owner.personal_repository if !repositories.exists?(:id => self.owner.personal_repository)
+  end
+
+  def set_maintainer
+    self.maintainer_id = (owner_type == 'User') ? self.owner_id : self.owner.owner_id
   end
 
 end
