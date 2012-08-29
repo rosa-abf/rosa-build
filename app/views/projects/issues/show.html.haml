@@ -14,7 +14,7 @@
       %span.date=@issue.created_at.to_s(:long)
       %br/
   .both
-  .fulltext.view.issue_body=simple_format @issue.body
+  .fulltext.view.issue_body.formatted.cm-s-default.md_and_cm=markdown @issue.body
 .both
 %br
 - if can? :update, @issue
@@ -33,3 +33,4 @@
 = render "projects/comments/list", :list => @issue.comments, :project => @project, :commentable => @issue
 %br
 = render "projects/comments/add", :project => @project, :commentable => @issue if current_user
+

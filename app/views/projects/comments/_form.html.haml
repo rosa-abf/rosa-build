@@ -1,2 +1,2 @@
-.wrapper= f.text_area :body, :cols => 80
+.wrapper=render 'projects/comments/body', :f => f, :id => id
 .comment-right= submit_tag t("layout.save")

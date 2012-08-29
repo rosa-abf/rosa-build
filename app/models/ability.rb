@@ -53,7 +53,7 @@ class Ability
         can :read, Project, :visibility => 'open'
         can [:read, :archive], Project, :owner_type => 'User', :owner_id => user.id
         can [:read, :archive], Project, :owner_type => 'Group', :owner_id => user.group_ids
-        can([:read, :membered], Project, read_relations_for('projects')) {|project| local_reader? project}
+        can([:read, :membered, :preview], Project, read_relations_for('projects')) {|project| local_reader? project}
         can(:write, Project) {|project| local_writer? project} # for grack
         can([:update, :sections, :manage_collaborators], Project) {|project| local_admin? project}
         can(:fork, Project) {|project| can? :read, project}

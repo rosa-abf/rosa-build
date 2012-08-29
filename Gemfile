@@ -32,7 +32,7 @@ gem 'diff-display', '~> 0.0.1'
 
 # Wiki
 gem "gollum", :git => 'git://github.com/github/gollum.git'
-gem "redcarpet", "1.17.2"
+gem "redcarpet", "~> 2.1.1"
 gem 'creole'
 gem 'rdiscount'
 # gem 'org-ruby'

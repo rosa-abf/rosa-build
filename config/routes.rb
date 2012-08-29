@@ -181,6 +181,7 @@ Rosa::Application.routes.draw do
         resources :collaborators do
           get :find, :on => :collection
         end
+        post '/preview' => 'projects#preview', :as => 'md_preview'
       end
       # Resource
       get '/modify' => 'projects#edit', :as => :edit_project

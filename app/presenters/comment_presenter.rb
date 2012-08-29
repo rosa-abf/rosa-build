@@ -9,7 +9,7 @@ class CommentPresenter < ApplicationPresenter
     @user = comment.user
     @options = opts
 
-    @content = simple_format(@comment.body, {}, :sanitize => true).html_safe
+    @content = @comment.body
   end
 
   def expandable?

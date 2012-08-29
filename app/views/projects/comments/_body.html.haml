@@ -1,0 +1,40 @@
+%ul.nav.nav-tabs#md_tabs
+  %li
+    %a{"data-toggle" => "tab", :href => "##{id}_edit"} edit
+  %li
+    %a{"data-toggle" => "tab", :href => "##{id}_preview"} preview
+
+.tab-content
+  .tab-pane.active{:id => "#{id}_edit"}
+    .wrapper= f.text_area :body, :cols => 80, :id => "#{id}_edit_input"
+    =hidden_field_tag :body_dup, nil, :name => 'text', :id => "#{id}_edit_input_dup"
+  .tab-pane{:id => "#{id}_preview"}
+    .formatted.cm-s-default.md_and_cm{:style => 'background: #FFF'}
+
+:javascript
+  $(document).ready(function() {
+    $('#md_tabs a:first').tab('show');
+
+    $('#md_tabs a[data-toggle="tab"]').on('shown', function (e) {
+      var hash = e.relatedTarget.hash;
+      var el = $(hash+'_input');
+      var el_dup = $(hash+'_input_dup');
+     if(el.val() != el_dup.val()) {
+       el_dup.val(el.val());
+       $.ajax({
+         type: 'POST',
+         url: '#{project_md_preview_path @project}',
+         data: el_dup.serialize(),
+         success: function(data){
+                         $(e.target.hash+' > .formatted.cm-s-default').html(data)
+                           .find('code').each(function (code) {
+                             CodeMirror.runMode(this.innerHTML.replace(/&amp;/gi, '&'), this.className, this);
+                           });
+                  },
+         error: function(data){
+                      alert('error'); // TODO remove
+                }
+        });
+      };
+    });
+  });

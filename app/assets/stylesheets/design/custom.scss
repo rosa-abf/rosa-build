@@ -1481,3 +1481,29 @@ div.log-wrapper {
         }
     }
 }
+
+.md_and_cm {
+  overflow: auto;
+
+  pre {
+    background-color: #F8F8F8;
+    border: 1px solid #D6D6D6;
+    border-radius: 5px 5px 5px 5px;
+    color: #333333;
+    padding: 6px 10px;
+    overflow: auto;
+
+    code {
+      background-color: transparent;
+      border: none;
+    }
+  }
+
+  code {
+    background-color: #F8F8F8;
+    border: 1px solid #D6D6D6;
+    border-radius: 5px 5px 5px 5px;
+    margin: 0 2px;
+    padding: 0px 5px;
+  }
+}

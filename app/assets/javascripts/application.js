@@ -34,7 +34,7 @@ $(document).ready(function() {
       var current = $(this);
       current.parent().find('input.user_role_chbx').each(function(i,el) {
           if ($(el).attr('id') != current.attr('id')) {
-              $(el).removeAttr('checked');  
+              $(el).removeAttr('checked');
           }
       });
   });
@@ -80,5 +80,9 @@ $(document).ready(function() {
       target.css('visibility', 'hidden');
     }
     return false;
+  });
+
+  $('.md_and_cm code').each(function (code) {
+    CodeMirror.runMode(this.innerHTML.replace(/&amp;/gi, '&'), this.className, this);
   });
 });
