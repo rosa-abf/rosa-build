@@ -1,0 +1,6 @@
+#!/bin/bash
+pwd=`pwd`
+command="$(pwd)/calc_sha_help $2"
+cd $1
+git filter-branch --tree-filter "$pwd/bin/calc_sha_help $2" --prune-empty --tag-name-filter cat -- --all
+cd ..
