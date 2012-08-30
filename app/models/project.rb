@@ -43,10 +43,10 @@ class Project < ActiveRecord::Base
   scope :addable_to_repository, lambda { |repository_id| where %Q(
     projects.id NOT IN (
       SELECT
-        project_to_repositories.project_id
+        ptr.project_id
       FROM
-        project_to_repositories
-      WHERE (project_to_repositories.repository_id = #{ repository_id })
+        project_to_repositories AS ptr
+      WHERE (ptr.repository_id = #{ repository_id })
     )
   ) }
 

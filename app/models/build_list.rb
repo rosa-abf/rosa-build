@@ -208,8 +208,8 @@ class BuildList < ActiveRecord::Base
                            .for_platform(self.build_for_platform_id)
                            .scoped_to_arch(self.arch_id)
                            .for_status(BUILD_PUBLISHED)
-                           .recent.first.packages
-      old_pkgs.update_all(:actual => false)
+                           .recent[-2].try(:packages) # packages from previous build_list
+      old_pkgs.update_all(:actual => false) if old_pkgs
       self.packages.update_all(:actual => true)
     end
   end
