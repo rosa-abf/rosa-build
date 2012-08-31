@@ -1484,6 +1484,9 @@ div.log-wrapper {
 
 .md_and_cm {
   overflow: auto;
+  min-height: 112px;
+  margin: 10px 0 10px;
+  border-radius: 4px 4px 4px 4px;
 
   pre {
     background-color: #F8F8F8;
@@ -1506,4 +1509,30 @@ div.log-wrapper {
     margin: 0 2px;
     padding: 0px 5px;
   }
+}
+
+#md_tabs {
+  margin: 0;
+}
+
+#md_tabs.nav-tabs > li > a {
+  line-height: 5px;
+}
+
+#open-comment textarea {
+    background: none repeat scroll 0 0 #FFFFFF;
+    border: 1px solid #DEDEDE;
+    border-radius: 4px 4px 4px 4px;
+    color: #575756;
+    font-size: 12px;
+    height: 110px;
+    padding: 5px;
+    width: 98%;
+    max-width: 98%;
+    margin: 10px 0 10px;
+    resize: both;
+}
+
+#open-comment > h3.tmargin0 {
+  margin-bottom: 0;
 }
