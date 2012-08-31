@@ -2,6 +2,7 @@ namespace :project do
   desc "Truncate blobs from git repo"
   task :remove_archives => :environment do
     raise 'Need set GIT_PROJECTS_DIR' if ENV['GIT_PROJECTS_DIR'].blank?
+    raise 'Need set CLONE_PATH' if ENV['CLONE_PATH'].blank?
     abf_existing_log = File.open "#{ENV['CLONE_PATH']}/projects_with_abf_yml.log", 'w'
     projects = if uname = ENV['OWNER']
                  owner = User.find_by_uname(uname) || Group.find_by_uname(uname)
