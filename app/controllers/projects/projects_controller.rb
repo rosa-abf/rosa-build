@@ -39,6 +39,7 @@ class Projects::ProjectsController < Projects::BaseController
   end
 
   def update
+    params[:project].delete(:maintainer_id) if params[:project][:maintainer_id].blank?
     if @project.update_attributes(params[:project])
       flash[:notice] = t('flash.project.saved')
       redirect_to @project
@@ -84,6 +85,14 @@ class Projects::ProjectsController < Projects::BaseController
     @project.relations.by_actor(current_user).destroy_all
     flash[:notice] = t("flash.project.user_removed")
     redirect_to projects_path
+  end
+
+  def autocomplete_maintainers
+    term, limit = params[:term], params[:limit] || 10
+    items = User.member_of_project(@project)
+                .where("users.name ILIKE ? OR users.uname ILIKE ?", "%#{term}%", "%#{term}%")
+                .limit(limit).map { |u| {:value => u.fullname, :label => u.fullname, :id => u.id} }
+    render :json => items
   end
 
   protected

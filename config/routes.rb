@@ -82,7 +82,7 @@ Rosa::Application.routes.draw do
       resources :products do
         resources :product_build_lists, :only => [:create, :destroy]
       end
-
+      resources :maintainers, :only => [:index]
     end
     match '/private/:platform_name/*file_path' => 'privates#show'
 
@@ -184,6 +184,7 @@ Rosa::Application.routes.draw do
         end
       end
       # Resource
+      get '/autocomplete_maintainers' => 'projects#autocomplete_maintainers', :as => :autocomplete_maintainers
       get '/modify' => 'projects#edit', :as => :edit_project
       put '/' => 'projects#update'
       delete '/' => 'projects#destroy'
