@@ -7,7 +7,7 @@ namespace :project do
                  owner = User.find_by_uname(uname) || Group.find_by_uname(uname)
                  owner.projects
                else
-                 Project
+                 Project.scoped
                end
 
     projects = projects.where :id => eval(ENV['PROJECT_ID']) if ENV['PROJECT_ID']
@@ -15,7 +15,7 @@ namespace :project do
     FileUtils.mkdir_p "#{ENV['CLONE_PATH']}/archives" if total_count > 0
     begin_time = Time.now
     pr_count = 0
-    projects.where('1=1').each_with_index do |project, ind|
+    projects.each_with_index do |project, ind|
       project_stats = "#{project.name_with_owner}: #{ind+1}/#{total_count}"
       if project.repo.commits.count == 0
         say "Skipping empty project #{project_stats}"
