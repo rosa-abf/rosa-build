@@ -2,7 +2,7 @@
 require 'spec_helper'
 
 shared_examples_for 'guest user' do
- 
+
   # Only one action for now here
   guest_actions = [:index]
 
@@ -36,11 +36,6 @@ describe Platforms::MaintainersController do
 
   context 'for guest' do
     it_should_behave_like 'guest user'
-
-    it 'should not be able to get api' do
-      get :assignee, @assignee_rq
-      response.response_code.should == 403
-    end
   end
 end
 

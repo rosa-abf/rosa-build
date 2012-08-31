@@ -19,13 +19,13 @@ shared_examples_for 'user with change projects in repository rights' do
   it 'should be able to add project to repository' do
     get :add_project, :id => @repository.id, :platform_id => @platform.id, :project_id => @project.id
     response.should redirect_to(platform_repository_path(@repository.platform, @repository))
-    @repository.projects.should include (@project)
+    @repository.projects.should include(@project)
   end
   
   it 'should be able to remove project from repository' do
     get :remove_project, :id => @repository.id, :platform_id => @platform.id, :project_id => @project.id
     response.should redirect_to(platform_repository_path(@repository.platform, @repository))
-    @repository.projects.should_not include (@project)
+    @repository.projects.should_not include(@project)
   end
   
 end
@@ -91,6 +91,18 @@ describe Platforms::RepositoriesController do
         response.should redirect_to(new_user_session_path)
       end
     end
+
+    if APP_CONFIG[:anonymous_access]
+      it "should be able to perform show action" do
+        get :show, :id => @repository
+        response.should render_template(:show)
+      end
+    else
+      it "should not be able to perform show action" do
+        get :show, :id => @repository
+        response.should redirect_to(new_user_session_path)
+      end
+    end
   end
 
   context 'for admin' do
@@ -102,7 +114,7 @@ describe Platforms::RepositoriesController do
     it_should_behave_like 'platform admin user'
     
   end
-  
+
   context 'for platform owner user' do
     before(:each) do
       @user = FactoryGirl.create(:user)
@@ -119,7 +131,7 @@ describe Platforms::RepositoriesController do
       @user = FactoryGirl.create(:user)
       set_session_for(@user)
     end
-    
+
     it_should_behave_like 'registered user'
 
     it 'should not be able to perform new action' do
@@ -132,7 +144,7 @@ describe Platforms::RepositoriesController do
       lambda { post :create, @create_params }.should change{ Repository.count }.by(0)
       response.should redirect_to(forbidden_path)
     end
-    
+
     it 'should not be able to destroy repository in main platform' do
       delete :destroy, :id => @repository.id
       response.should redirect_to(forbidden_path)
@@ -142,13 +154,13 @@ describe Platforms::RepositoriesController do
     it 'should not be able to add project to repository' do
       get :add_project, :id => @repository.id, :platform_id => @platform.id, :project_id => @project.id
       response.should redirect_to(forbidden_path)
-      @repository.projects.should_not include (@project)
+      @repository.projects.should_not include(@project)
     end
 
     it 'should not be able to remove project from repository' do
       get :remove_project, :id => @repository.id, :platform_id => @platform.id, :project_id => @project.id
       response.should redirect_to(forbidden_path)
-      @repository.projects.should_not include (@project)
+      @repository.projects.should_not include(@project)
     end
 
     it_should_behave_like 'not destroy personal repository'

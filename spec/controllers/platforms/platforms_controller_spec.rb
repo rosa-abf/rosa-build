@@ -49,7 +49,6 @@ describe Platforms::PlatformsController do
   end
 
   context 'for guest' do
-
     [:index, :create].each do |action|
       it "should not be able to perform #{ action } action" do
         get action
@@ -57,9 +56,21 @@ describe Platforms::PlatformsController do
       end
     end
 
-    [:show, :new, :edit, :clone, :destroy].each do |action|
+    [:new, :edit, :clone, :destroy].each do |action|
       it "should not be able to perform #{ action } action" do
         get action, :id => @platform
+        response.should redirect_to(new_user_session_path)
+      end
+    end
+
+    if APP_CONFIG[:anonymous_access]
+      it "should be able to perform show action" do
+        get :show, :id => @platform
+        response.should render_template(:show)
+      end
+    else
+      it "should not be able to perform show action" do
+        get :show, :id => @platform
         response.should redirect_to(new_user_session_path)
       end
     end

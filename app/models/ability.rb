@@ -26,6 +26,13 @@ class Ability
 
     if user.guest? # Guest rights
       # can [:new, :create], RegisterRequest
+      if APP_CONFIG['anonymous_access']
+        can [:read, :members, :read_advisories], Platform, :visibility == 'open'
+        can [:read, :projects_list], Repository, :platform => {:visibility => 'open'}
+        can :read, Product, :platform => {:visibility => 'open'}
+        can :read, Project, :visibility => 'open'
+        #can :read, Repository, :platform => {:visibility => 'open'}
+      end
     else # Registered user rights
       if user.admin?
         can :manage, :all
