@@ -27,6 +27,11 @@ class BuildList < ActiveRecord::Base
   validate lambda {
     errors.add(:save_to_repository, I18n.t('flash.build_list.wrong_repository')) unless save_to_repository_id.in? save_to_platform.repositories.map(&:id)
   }
+  validate lambda {
+    include_repos.each {|ir|
+      errors.add(:save_to_repository, I18n.t('flash.build_list.wrong_include_repos')) unless build_for_platform.repository_ids.include? ir.to_i
+    }
+  }
 
   LIVE_TIME = 4.week # for unpublished 
   MAX_LIVE_TIME = 3.month # for published

@@ -13,11 +13,7 @@ class Api::V1::BuildListsController < Api::V1::BaseController
   end
 
   def create
-    notices, errors = [], []
-    json_report = {:build_list => []}
-
     project = Project.find(params[:build_list][:project_id])
-    arch = Arch.find(params[:build_list][:arch_id])
     save_to_repository = Repository.find params[:build_list][:save_to_repository_id]
     params[:build_list][:save_to_platform_id] = save_to_repository.platform_id
 
@@ -25,21 +21,14 @@ class Api::V1::BuildListsController < Api::V1::BaseController
     build_list.project_version = build_list.commit_hash
 
     build_list.user = current_user
-    build_list.include_repos = build_list.include_repos.select {|ir| build_list.build_for_platform.repository_ids.include? ir.to_i}
     build_list.priority = current_user.build_priority # User builds more priority than mass rebuild with zero priority
-    flash_options = {:project_version => build_list.project_version, :arch => arch.name, :build_for_platform => build_list.build_for_platform.name}
 
     if build_list.save
-      msg = t("flash.build_list.saved", flash_options)
-      notices << msg
+      @build_list = build_list
+      render :action => 'show'
     else
-      msg = t("flash.build_list.save_error", flash_options)
-      errors << msg
+      render :json => {:message => "Validation Failed", :errors => build_list.errors.messages}.to_json, :status => 422
     end
-    msg << t("flash.build_list.no_arch_or_platform_selected") if errors.blank? and notices.blank?
-    json_report[:build_list] = {"id" => build_list.id, "message" => msg}
-
-    render :json => json_report.to_json
   end
 
   def cancel
