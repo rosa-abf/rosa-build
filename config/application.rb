@@ -2,6 +2,7 @@
 require File.expand_path('../boot', __FILE__)
 
 require 'rails/all'
+require 'rack/throttle'
 
 # If you have a Gemfile, require the gems listed there, including any gems
 # you've limited to :test, :development, or :production.
@@ -14,7 +15,11 @@ end
 
 module Rosa
   class Application < Rails::Application
-  
+    # Rate limit
+    config.middleware.use Rack::Throttle::Interval, :cache => Redis.new, :key_prefix => :throttle, :min => 3.0
+    config.middleware.use Rack::Throttle::Hourly,   :max => 100
+    config.middleware.use Rack::Throttle::Daily,    :max => 5000
+
     config.action_view.javascript_expansions[:defaults] = %w(jquery rails)
     config.autoload_paths += %W(#{config.root}/lib)
 

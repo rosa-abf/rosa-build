@@ -53,6 +53,8 @@ gem 'jquery-rails', '~> 2.0.2'
 gem 'ruby-haml-js', '~> 0.0.3'
 gem 'rails-backbone', '~> 0.7.2'
 
+gem 'rack-throttle'
+
 group :assets do
   gem 'sass-rails', '~> 3.2.5'
   gem 'coffee-rails', '~> 3.2.2'
