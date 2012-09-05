@@ -14,7 +14,7 @@ class Api::V1::BuildListsController < Api::V1::BaseController
 
   def create
     project = Project.find(params[:build_list][:project_id])
-    save_to_repository = Repository.find params[:build_list][:save_to_repository_id]
+    save_to_repository = Repository.find params[:build_list][:save_to_repository_id] #FIXME
     params[:build_list][:save_to_platform_id] = save_to_repository.platform_id
 
     build_list = project.build_lists.build(params[:build_list])

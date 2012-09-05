@@ -34,7 +34,7 @@ class ApplicationController < ActionController::Base
                 ActionController::UnknownController,
                 ActionController::UnknownAction do |exception|
       respond_to do |format|
-        format.json { render :json => {:message => t("flash.404_message")}.to_json }
+        format.json { render :json => {:message => t("flash.404_message")}.to_json, :status => 404 }
         format.html { redirect_to '/404.html', :alert => t("flash.404_message") }
       end
     end
