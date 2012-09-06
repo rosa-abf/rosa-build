@@ -372,7 +372,7 @@ ActiveRecord::Schema.define(:version => 20120906115648) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "name",                                 :null => false
-    t.boolean  "publish_wtihout_qa", :default => true
+    t.boolean  "publish_without_qa", :default => true
   end
 
   create_table "settings_notifiers", :force => true do |t|

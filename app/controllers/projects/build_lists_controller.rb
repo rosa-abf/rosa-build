@@ -49,7 +49,7 @@ class Projects::BuildListsController < Projects::BaseController
     @repository = @project.repositories.where(:id => @platform.repository_ids).first
 
     params[:build_list][:save_to_repository_id] = @repository.id
-    params[:build_list][:auto_publish] = false unless @repository.publish_wtihout_qa?
+    params[:build_list][:auto_publish] = false unless @repository.publish_without_qa?
 
     Arch.where(:id => params[:arches]).each do |arch|
       Platform.main.where(:id => params[:build_for_platforms]).each do |build_for_platform|

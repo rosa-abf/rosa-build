@@ -46,7 +46,7 @@ en:
       repository:
         name: Name
         description: Description
-        publish_wtihout_qa: Publication after release
+        publish_without_qa: Publication after release
         platform_id: Platform
         platform: Platform
         created_at: Created

@@ -55,7 +55,7 @@ $(document).ready(function() {
 });
 
 function checkAccessToAutomatedPublising() {
-  if ($('.all_platforms .offset25 input:checked[publish_wtihout_qa="1"]').length > 0) {
+  if ($('.all_platforms .offset25 input:checked[publish_without_qa="1"]').length > 0) {
     $('#build_list_auto_publish').removeAttr('disabled').attr('checked', 'checked');
     //enableUpdateTypes();
   } else {
