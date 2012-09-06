@@ -1,0 +1,25 @@
+ru:
+  layout:
+    maintainers:
+      list_header: Майнтейнеры
+      search_by_package: Искать по имени пакета
+
+  flash:
+    maintainer:
+      saved: Майнтейнер успешно сохранен
+      created: Майнтейнер успешно добавлен
+      save_error: Не удалось сохранить майнтейнера
+      create_error: Не удалось создать майнтейнера
+      destroyed: Майнтейнер успешно удален
+
+  activerecord:
+    models:
+      maintainer: Майнтейнер
+    attributes:
+      maintainer:
+        package_name: Пакет
+        package_type: Тип
+        created_at: Создан
+        updated_at: Обновлен
+        version: Версия-Релиз
+

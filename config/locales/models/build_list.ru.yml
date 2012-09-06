@@ -117,6 +117,21 @@ ru:
         project_not_found: проект не найден
         project_version_not_found: версия не найдена
 
+      log:
+        build_log: Лог сборки
+        not_available: В настоящий момент лог недоступен.
+        download: Загрузить лог
+        autoreload: Обновлять лог каждые 
+        load_lines: Загружать последние %{count} строк
+        
+        reload_times:
+          10000:  "10 сек"
+          30000:  "30 сек"
+          60000:  "1 мин"
+          300000: "5 мин"
+          600000: "10 мин"
+          900000: "15 мин"
+
   flash:
     build_list:
       saved: Билд лист для версии '%{project_version}', платформы '%{build_for_platform}' и архитектуры '%{arch}' создан успешно

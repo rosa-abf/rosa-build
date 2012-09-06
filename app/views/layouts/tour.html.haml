@@ -34,6 +34,7 @@
                   .a= link_to t('layout.logout'), destroy_user_session_path, :method => :delete
             - else
               .user
+                .profile= link_to t("layout.devise.shared_links.sign_up"), new_register_request_path
                 .profile= link_to t("layout.devise.shared_links.sign_in"), new_user_session_path
         .right
         .both

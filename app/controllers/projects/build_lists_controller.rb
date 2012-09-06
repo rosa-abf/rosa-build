@@ -5,9 +5,9 @@ class Projects::BuildListsController < Projects::BaseController
 
   before_filter :authenticate_user!, :except => CALLBACK_ACTIONS
   before_filter :authenticate_build_service!, :only => CALLBACK_ACTIONS
-  skip_before_filter :authenticate_user!, :only => [:show, :index, :search] if APP_CONFIG['anonymous_access']
+  skip_before_filter :authenticate_user!, :only => [:show, :index, :search, :log] if APP_CONFIG['anonymous_access']
 
-  before_filter :find_build_list, :only => [:show, :publish, :cancel, :update]
+  before_filter :find_build_list, :only => [:show, :publish, :cancel, :update, :log]
   before_filter :find_build_list_by_bs, :only => [:publish_build, :status_build, :pre_build, :post_build, :circle_build]
 
   load_and_authorize_resource :project, :only => NESTED_ACTIONS
@@ -98,6 +98,15 @@ class Projects::BuildListsController < Projects::BaseController
       redirect_to :back, :notice => t('layout.build_lists.cancel_success')
     else
       redirect_to :back, :notice => t('layout.build_lists.cancel_fail')
+    end
+  end
+
+  def log
+    @log = `tail -n #{params[:load_lines].to_i} #{Rails.root + 'public' + @build_list.fs_log_path}`
+    @log = t("layout.build_lists.log.not_available") unless $?.success?
+
+    respond_to do |format|
+      format.json { render :json => { :log => @log, :building => @build_list.build_started? } }
     end
   end
 

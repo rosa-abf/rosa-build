@@ -1152,19 +1152,19 @@ form.mass_build section.right {
 }
 
 /* remove this lines after change to backbone */
-table.tablesorter.advisories thead tr.search th {
+table.tablesorter.static-search thead tr.search th {
     padding: 0 5px;
 }
 
-table.tablesorter.advisories thead tr.search th input[type='text'] {
+table.tablesorter.static-search thead tr.search th input[type='text'] {
     width: 640px;
 }
 
-table.tablesorter.advisories thead tr.search th form {
+table.tablesorter.static-search thead tr.search th form {
     float: left;
 }
 
-table.tablesorter.advisories thead tr.search th form.button_to {
+table.tablesorter.static-search thead tr.search th form.button_to {
     padding: 3px 0 0 7px;
 }
 
@@ -1385,10 +1385,103 @@ hr.bootstrap {
   }
 }
 
-time.js-relative-date {
-    display: block;
-}
-
 div.reloader {
     float: right;
+}
+
+div.log-wrapper {
+    width: 565px;
+
+    div.log-header {
+        margin-bottom: 10px;
+
+        div.text-wrap, span {
+            height: 16px;
+            margin: 0;
+            padding: 0;
+        }
+        div.text-wrap {
+            width: 545px;
+            float: left;
+
+            h3 {
+                margin: 0;
+            }
+        }
+
+        span {
+            background: image-url("trigger.gif") no-repeat scroll left bottom transparent;
+            margin: 1px;
+            cursor: pointer;
+            display: block;
+            font-size: 0;
+            height: 14px;
+            width: 14px;
+            float: right;
+        }
+        span.closed {
+            background-position: left top;
+        }
+    }
+
+    div.log-body {
+
+        div.reloader, .log {
+            border: 1px solid #ccc;
+        }
+
+        div.reloader {
+            padding: 5px 10px;
+            border-bottom: none;
+            border-radius: 5px 5px 0 0;
+
+            table.options {
+                border-spacing: 5px 0;
+
+                tr {
+
+                    td a {
+                        display: inline-block;
+                        height: 13px;
+                        padding-left: 16px;
+                        background: image-url('code.png') no-repeat;
+                        padding-bottom: 2px;
+                        margin: 2px 0 0 1px;
+                    }
+                    td.first {
+                        padding-right: 5px;
+                    }
+                    td.last {
+                        border-left: 1px solid #ccc;
+                    }
+                }
+
+                tr.bottom {
+                    td {
+                        padding-left: 5px;
+                    }
+                    td.first {
+                        border-top: 1px solid #ccc;
+                    }
+                }
+            }
+        }
+
+        .log {
+            background: #f8f8f8;
+            height: 500px;
+            width: 543px;
+            min-width: 543px;
+            border-radius: 5px 0 5px 5px;
+            overflow: auto;
+            padding: 10px;
+            margin: 0;
+            font-family: monospace;
+            font-size: 13px;
+        }
+    }
+}
+
+table.tablesorter.platform-maintainers.static-search thead tr.search th input[type="text"] {
+    width: 430px;
 }

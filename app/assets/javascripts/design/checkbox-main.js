@@ -1,5 +1,5 @@
 function changeCheck(el) {
-  var el = el, input = el.find('input[type="checkbox"]');
+  var input = el.find('input[type="checkbox"]');
 
   if(input.attr("checked")) {
     el.css('backgroundPosition', '0 0');
@@ -13,7 +13,7 @@ function changeCheck(el) {
 }
 
 function startChangeCheck(el) {
-  var el = el, input = el.find('input[type="checkbox"]');
+  var input = el.find('input[type="checkbox"]');
 
   if(input.attr('checked')) {
     el.css('backgroundPosition', '0 -18px');

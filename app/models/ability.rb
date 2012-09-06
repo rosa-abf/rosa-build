@@ -17,7 +17,7 @@ class Ability
     can :archive, Project, :visibility => 'open'
     can :read, Issue, :project => {:visibility => 'open'}
     can :search, BuildList
-    can [:read, :everything], BuildList, :project => {:visibility => 'open'}
+    can [:read, :log, :everything], BuildList, :project => {:visibility => 'open'}
     can :read, ProductBuildList#, :product => {:platform => {:visibility => 'open'}} # double nested hash don't work
     can :read, Advisory
     can(:advisories, Platform) {APP_CONFIG['anonymous_access']}
@@ -62,10 +62,10 @@ class Ability
         can(:destroy, Project) {|project| project.owner_type == 'Group' and project.owner.actors.exists?(:actor_type => 'User', :actor_id => user.id, :role => 'admin')}
         can :remove_user, Project
 
-        can [:read, :owned, :everything], BuildList, :user_id => user.id
-        can [:read, :related, :everything], BuildList, :project => {:owner_type => 'User', :owner_id => user.id}
-        can [:read, :related, :everything], BuildList, :project => {:owner_type => 'Group', :owner_id => user.group_ids}
-        can([:read, :everything], BuildList, read_relations_for('build_lists', 'projects')) {|build_list| can? :read, build_list.project}
+        can [:read, :log, :owned, :everything], BuildList, :user_id => user.id
+        can [:read, :log, :related, :everything], BuildList, :project => {:owner_type => 'User', :owner_id => user.id}
+        can [:read, :log, :related, :everything], BuildList, :project => {:owner_type => 'Group', :owner_id => user.group_ids}
+        can([:read, :log, :everything], BuildList, read_relations_for('build_lists', 'projects')) {|build_list| can? :read, build_list.project}
         can([:create, :update], BuildList) {|build_list| build_list.project.is_package && can?(:write, build_list.project)}
 
         can(:publish, BuildList) do |build_list|
@@ -114,7 +114,7 @@ class Ability
         can :read, Issue, :project => {:owner_type => 'User', :owner_id => user.id}
         can :read, Issue, :project => {:owner_type => 'Group', :owner_id => user.group_ids}
         can(:read, Issue, read_relations_for('issues', 'projects')) {|issue| can? :read, issue.project rescue nil}
-        can(:create, Issue) {|issue| can? :write, issue.project}
+        can(:create, Issue) {|issue| can? :read, issue.project}
         can([:update, :destroy], Issue) {|issue| issue.user_id == user.id or local_admin?(issue.project)}
         cannot :manage, Issue, :project => {:has_issues => false} # switch off issues
 

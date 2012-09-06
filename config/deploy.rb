@@ -113,7 +113,8 @@ namespace :update do
     get("#{current_path}/config/database.yml", "tmp/database.yml")
 
     remote_settings = YAML::load_file("tmp/database.yml")[rails_env]
-    local_settings  = YAML::load_file("config/database.yml")["development"]
+    local_settings = YAML::load_file("config/database.yml")["development"]
+
 
     run "export PGPASSWORD=#{remote_settings["password"]} && pg_dump --host=#{remote_settings["host"]} --port=#{remote_settings["port"]} --username #{remote_settings["username"]} --file #{current_path}/tmp/#{remote_settings["database"]}_dump -Fc #{remote_settings["database"]}"
 

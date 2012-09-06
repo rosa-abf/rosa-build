@@ -46,7 +46,7 @@ describe Platforms::PlatformsController do
       :platform_type => 'main',
       :distrib_type => APP_CONFIG['distr_types'].first
     }}
-	end
+  end
 
   context 'for guest' do
 

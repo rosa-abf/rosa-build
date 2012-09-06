@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120730214052) do
+ActiveRecord::Schema.define(:version => 20120822210712) do
 
   create_table "activity_feeds", :force => true do |t|
     t.integer  "user_id",    :null => false
@@ -91,11 +91,14 @@ ActiveRecord::Schema.define(:version => 20120730214052) do
     t.string   "version"
     t.string   "release"
     t.string   "package_type"
-    t.datetime "created_at",    :null => false
-    t.datetime "updated_at",    :null => false
+    t.datetime "created_at",                       :null => false
+    t.datetime "updated_at",                       :null => false
+    t.boolean  "actual",        :default => false
   end
 
+  add_index "build_list_packages", ["actual", "platform_id"], :name => "index_build_list_packages_on_actual_and_platform_id"
   add_index "build_list_packages", ["build_list_id"], :name => "index_build_list_packages_on_build_list_id"
+  add_index "build_list_packages", ["name", "project_id"], :name => "index_build_list_packages_on_name_and_project_id"
   add_index "build_list_packages", ["platform_id"], :name => "index_build_list_packages_on_platform_id"
   add_index "build_list_packages", ["project_id"], :name => "index_build_list_packages_on_project_id"
 
@@ -131,6 +134,7 @@ ActiveRecord::Schema.define(:version => 20120730214052) do
 
   add_index "build_lists", ["advisory_id"], :name => "index_build_lists_on_advisory_id"
   add_index "build_lists", ["arch_id"], :name => "index_build_lists_on_arch_id"
+  add_index "build_lists", ["project_id", "save_to_repository_id", "build_for_platform_id", "arch_id"], :name => "maintainer_search_index"
   add_index "build_lists", ["bs_id"], :name => "index_build_lists_on_bs_id", :unique => true
   add_index "build_lists", ["project_id"], :name => "index_build_lists_on_project_id"
 
@@ -168,8 +172,6 @@ ActiveRecord::Schema.define(:version => 20120730214052) do
     t.datetime "created_at",                   :null => false
     t.datetime "updated_at",                   :null => false
   end
-
-  add_index "projects", ["owner_id"], :name => "index_projects_on_name_and_owner_id_and_owner_type", :unique => true, :case_sensitive => false
 
   create_table "groups", :force => true do |t|
     t.integer  "owner_id"
@@ -325,15 +327,16 @@ ActiveRecord::Schema.define(:version => 20120730214052) do
     t.text     "description"
     t.string   "ancestry"
     t.boolean  "has_issues",         :default => true
-    t.boolean  "has_wiki",           :default => false
     t.string   "srpm_file_name"
-    t.string   "srpm_content_type"
     t.integer  "srpm_file_size"
     t.datetime "srpm_updated_at"
+    t.string   "srpm_content_type"
+    t.boolean  "has_wiki",           :default => false
     t.string   "default_branch",     :default => "master"
     t.boolean  "is_package",         :default => true,     :null => false
     t.integer  "average_build_time", :default => 0,        :null => false
     t.integer  "build_count",        :default => 0,        :null => false
+    t.integer  "maintainer_id"
   end
 
   add_index "projects", ["owner_id"], :name => "index_projects_on_name_and_owner_id_and_owner_type", :unique => true, :case_sensitive => false
@@ -397,13 +400,13 @@ ActiveRecord::Schema.define(:version => 20120730214052) do
 
   create_table "users", :force => true do |t|
     t.string   "name"
-    t.string   "email",                   :default => "",   :null => false
-    t.string   "encrypted_password",      :default => "",   :null => false
+    t.string   "email",                                  :default => "",   :null => false
+    t.string   "encrypted_password",      :limit => 128, :default => "",   :null => false
     t.string   "reset_password_token"
     t.datetime "reset_password_sent_at"
     t.datetime "remember_created_at"
-    t.datetime "created_at",                                :null => false
-    t.datetime "updated_at",                                :null => false
+    t.datetime "created_at",                                               :null => false
+    t.datetime "updated_at",                                               :null => false
     t.text     "ssh_key"
     t.string   "uname"
     t.string   "role"
@@ -420,11 +423,11 @@ ActiveRecord::Schema.define(:version => 20120730214052) do
     t.string   "avatar_content_type"
     t.integer  "avatar_file_size"
     t.datetime "avatar_updated_at"
-    t.integer  "failed_attempts",         :default => 0
+    t.integer  "failed_attempts",                        :default => 0
     t.string   "unlock_token"
     t.datetime "locked_at"
     t.string   "authentication_token"
-    t.integer  "build_priority",          :default => 50
+    t.integer  "build_priority",                         :default => 50
   end
 
   add_index "users", ["authentication_token"], :name => "index_users_on_authentication_token"
