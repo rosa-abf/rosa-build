@@ -12,9 +12,10 @@ shared_context "issues controller" do
 
     @project_with_turned_off_issues = FactoryGirl.create(:project, :has_issues => false)
     @turned_of_issue = FactoryGirl.create(:issue, :project_id => @project_with_turned_off_issues.id, :assignee_id => @issue_user.id)
-  end
+  
+    @user = FactoryGirl.create(:user)
+    set_session_for(@user)
 
-  def set_params
     @create_params = {
       :owner_name => @project.owner.uname, :project_name => @project.name,
       :issue => {
@@ -24,16 +25,19 @@ shared_context "issues controller" do
       :assignee_id => @issue_user.id,
       :assignee_uname => @issue_user.uname
     }
+
     @update_params = {
       :owner_name => @project.owner.uname, :project_name => @project.name,
       :issue => {
         :title => "issue2"
       }
     }
+
   end
+
 end
 
-shared_examples_for 'issue user with project reader rights' do
+shared_examples_for 'issue user with project guest rights' do
   it 'should be able to perform index action' do
     get :index, :owner_name => @project.owner.uname, :project_name => @project.name
     response.should render_template(:index)
@@ -43,6 +47,9 @@ shared_examples_for 'issue user with project reader rights' do
     get :show, :owner_name => @project.owner.uname, :project_name => @project.name, :id => @issue.serial_id
     response.should render_template(:show)
   end
+end
+
+shared_examples_for 'issue user with project reader rights' do
 
   it 'should be able to perform index action on hidden project' do
     @project.update_attributes(:visibility => 'hidden')
@@ -98,9 +105,9 @@ shared_examples_for 'user without issue destroy rights' do
 end
 
 shared_examples_for 'project with issues turned off' do
-  pending 'should not be able to perform index action' do
+  it 'should not be able to perform index action' do
     get :index, :project_id => @project_with_turned_off_issues.id
-    response.should render_template(:index)
+    response.should redirect_to(forbidden_path)
   end
 
   it 'should not be able to perform show action' do
@@ -114,116 +121,106 @@ describe Projects::IssuesController do
 
   context 'for global admin user' do
     before(:each) do
-      @admin = FactoryGirl.create(:admin)
-      set_session_for(@admin)
-      set_params
+      @user.role = "admin"
+      @user.save
     end
 
+    it_should_behave_like 'issue user with project guest rights'
+    it_should_behave_like 'issue user with project reader rights'
+    it_should_behave_like 'issue user with project writer rights'
+    it_should_behave_like 'user with issue update rights'
+    it_should_behave_like 'project with issues turned off'
     it_should_behave_like 'user without issue destroy rights'
   end
 
   context 'for project admin user' do
     before(:each) do
-      @user = FactoryGirl.create(:user)
-      set_session_for(@user)
       @project.relations.create!(:actor_type => 'User', :actor_id => @user.id, :role => 'admin')
-      set_params
     end
 
+    it_should_behave_like 'issue user with project guest rights'
     it_should_behave_like 'issue user with project reader rights'
     it_should_behave_like 'issue user with project writer rights'
     it_should_behave_like 'user with issue update rights'
-    it_should_behave_like 'user without issue destroy rights'
     it_should_behave_like 'project with issues turned off'
+    it_should_behave_like 'user without issue destroy rights'
   end
 
   context 'for project owner user' do
     before(:each) do
-      @user = FactoryGirl.create(:user)
+      @user = @project.owner
       set_session_for(@user)
-      @project.owner = @user
-      @project.save! 
-      @project.reload
-      @project.relations.create!(:actor_type => 'User', :actor_id => @user.id, :role => 'admin')
-      set_params
     end
 
+    it_should_behave_like 'issue user with project guest rights'
     it_should_behave_like 'issue user with project reader rights'
     it_should_behave_like 'issue user with project writer rights'
     it_should_behave_like 'user with issue update rights'
-    it_should_behave_like 'user without issue destroy rights'
     it_should_behave_like 'project with issues turned off'
+    it_should_behave_like 'user without issue destroy rights'
   end
 
   context 'for project reader user' do
     before(:each) do
-      @user = FactoryGirl.create(:user)
-      set_session_for(@user)
       @project.relations.create!(:actor_type => 'User', :actor_id => @user.id, :role => 'reader')
-      set_params
     end
 
+    it_should_behave_like 'issue user with project guest rights'
     it_should_behave_like 'issue user with project reader rights'
+    it_should_behave_like 'issue user with project writer rights'
     it_should_behave_like 'user without issue update rights'
-    it_should_behave_like 'user without issue destroy rights'
     it_should_behave_like 'project with issues turned off'
+    it_should_behave_like 'user without issue destroy rights'
 
-    it 'should not be able to perform create action' do
-      post :create, @create_params
-      response.should redirect_to(forbidden_path)
-    end
+    # it 'should not be able to perform create action on project' do
+    #   post :create, @create_params
+    #   response.should redirect_to(forbidden_path)
+    # end
 
-    it 'should not create issue object into db' do
-      lambda{ post :create, @create_params }.should change{ Issue.count }.by(0)
-    end
+    # it 'should not create issue object into db' do
+    #   lambda{ post :create, @create_params }.should change{ Issue.count }.by(0)
+    # end
   end
 
   context 'for project writer user' do
     before(:each) do
-      @user = FactoryGirl.create(:user)
-      set_session_for(@user)
       @project.relations.create!(:actor_type => 'User', :actor_id => @user.id, :role => 'writer')
-      set_params
     end
 
+    it_should_behave_like 'issue user with project guest rights'
     it_should_behave_like 'issue user with project reader rights'
     it_should_behave_like 'issue user with project writer rights'
     it_should_behave_like 'user without issue update rights'
-    it_should_behave_like 'user without issue destroy rights'
     it_should_behave_like 'project with issues turned off'
+    it_should_behave_like 'user without issue destroy rights'
   end
 
   context 'for issue assign user' do
     before(:each) do
       set_session_for(@issue_user)
-      set_params
     end
 
     it_should_behave_like 'user without issue update rights'
-    it_should_behave_like 'user without issue destroy rights'
     it_should_behave_like 'project with issues turned off'
+    it_should_behave_like 'user without issue destroy rights'
   end
 
   context 'for guest' do
-    before {set_params}
+
+    before(:each) do
+      set_session_for(User.new)
+    end
 
     if APP_CONFIG['anonymous_access']
-      # it_should_behave_like 'issue user with project reader rights'
-      it 'should be able to perform index action' do
-        get :index, :owner_name => @project.owner.uname, :project_name => @project.name
-        response.should render_template(:index)
-      end
-
-      it 'should be able to perform show action' do
-        get :show, :owner_name => @project.owner.uname, :project_name => @project.name, :id => @issue.serial_id
-        response.should render_template(:show)
-      end
-
+      
+      it_should_behave_like 'issue user with project guest rights'
+      
       it 'should not be able to perform index action on hidden project' do
         @project.update_attributes(:visibility => 'hidden')
         get :index, :owner_name => @project.owner.uname, :project_name => @project.name
         response.should redirect_to(forbidden_path)
       end
+
     else
       it 'should not be able to perform index action' do
         get :index, :owner_name => @project.owner.uname, :project_name => @project.name
