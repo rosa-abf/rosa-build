@@ -46,7 +46,7 @@ ru:
       repository:
         name: Название
         description: Описание
-        publish_without_qa: Публикация после релиза
+        publish_without_qa: Публикация без участия QA
         platform_id: Платформа
         platform: Платформа
         created_at: Создан
