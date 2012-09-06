@@ -131,11 +131,11 @@ class Platform < ActiveRecord::Base
   end
 
   def change_visibility
-    if !self.hidden?
-      self.update_attribute(:visibility, 'hidden')
+    if !hidden?
+      update_attributes(:visibility => 'hidden')
       remove_symlink_directory
     else
-      self.update_attribute(:visibility, 'open')
+      update_attributes(:visibility => 'open')
       symlink_directory
     end
   end

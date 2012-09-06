@@ -23,7 +23,7 @@ class Platforms::ProductBuildListsController < Platforms::BaseController
   end
 
   def destroy
-    if @product_build_list.destroy  
+    if @product_build_list.destroy
       flash[:notice] = t('flash.product_build_list.delete')
      else
       flash[:error] = t('flash.product_build_list.delete_error')

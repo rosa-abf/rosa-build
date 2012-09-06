@@ -118,7 +118,7 @@ class Ability
         cannot :manage, Issue, :project => {:has_issues => false} # switch off issues
 
         can(:create, Comment) {|comment| can? :read, comment.project}
-        can(:update, Comment) {|comment| comment.user_id == user.id or local_admin?(comment.project || comment.commentable.project)}
+        can(:update, Comment) {|comment| comment.user == user or comment.project.owner == user or local_admin?(comment.project)}
         cannot :manage, Comment, :commentable_type => 'Issue', :commentable => {:project => {:has_issues => false}} # switch off issues
       end
 

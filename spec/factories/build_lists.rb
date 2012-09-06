@@ -6,7 +6,7 @@ FactoryGirl.define do
     association :save_to_platform, :factory => :platform_with_repos
     association :arch
     build_for_platform {|bl| bl.save_to_platform}
-    save_to_repository {|bl| bl.save_to_platform.repositories.first }
+    save_to_repository {|bl| bl.save_to_platform.repositories.first}
     project_version "1.0"
     build_requires true
     update_type 'security'
