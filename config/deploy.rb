@@ -115,6 +115,7 @@ namespace :update do
     remote_settings = YAML::load_file("tmp/database.yml")[rails_env]
     local_settings = YAML::load_file("config/database.yml")["development"]
 
+
     run "export PGPASSWORD=#{remote_settings["password"]} && pg_dump --host=#{remote_settings["host"]} --port=#{remote_settings["port"]} --username #{remote_settings["username"]} --file #{current_path}/tmp/#{remote_settings["database"]}_dump -Fc #{remote_settings["database"]}"
 
     run_locally "rsync --recursive --times --rsh=ssh --compress --human-readable --progress #{user}@#{domain}:#{current_path}/tmp/#{remote_settings["database"]}_dump tmp/"
