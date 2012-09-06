@@ -1,4 +1,4 @@
-class AddPublishWtihoutQaToRepositories < ActiveRecord::Migration
+class AddPublishWithoutQaToRepositories < ActiveRecord::Migration
 
   class Platform < ActiveRecord::Base
   end
