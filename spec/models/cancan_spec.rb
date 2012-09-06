@@ -274,7 +274,8 @@ describe CanCan do
 
       context 'with owner rights' do
         before(:each) do
-          @repository.platform.owner = @user; @repository.platform.save
+          @repository.platform.owner = @user
+          @repository.platform.save
         end
 
         [:read, :create, :update, :destroy, :add_project, :remove_project, :change_visibility, :settings].each do |action|
