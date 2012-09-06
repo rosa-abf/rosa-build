@@ -367,12 +367,12 @@ ActiveRecord::Schema.define(:version => 20120906115648) do
   end
 
   create_table "repositories", :force => true do |t|
-    t.string   "description",                           :null => false
-    t.integer  "platform_id",                           :null => false
+    t.string   "description",                          :null => false
+    t.integer  "platform_id",                          :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "name",                                  :null => false
-    t.boolean  "publish_wtihout_qa", :default => false
+    t.string   "name",                                 :null => false
+    t.boolean  "publish_wtihout_qa", :default => true
   end
 
   create_table "settings_notifiers", :force => true do |t|
