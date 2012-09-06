@@ -326,7 +326,7 @@ describe Projects::BuildListsController do
     describe 'publish_build' do
       before {
         test_git_commit(build_list.project)
-        build_list.update_column :commit_hash, build_list.project.repo.commits('master').last.id
+        build_list.update_column(:commit_hash, build_list.project.repo.commits('master').last.id)
         build_list.update_column(:status, BuildList::BUILD_PUBLISH)
         build_list_package
       }

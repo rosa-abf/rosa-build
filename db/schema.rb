@@ -169,6 +169,8 @@ ActiveRecord::Schema.define(:version => 20120730214052) do
     t.datetime "updated_at",                   :null => false
   end
 
+  add_index "projects", ["owner_id"], :name => "index_projects_on_name_and_owner_id_and_owner_type", :unique => true, :case_sensitive => false
+
   create_table "groups", :force => true do |t|
     t.integer  "owner_id"
     t.datetime "created_at",                        :null => false
@@ -253,7 +255,7 @@ ActiveRecord::Schema.define(:version => 20120730214052) do
     t.string   "owner_type"
     t.string   "visibility",         :default => "open", :null => false
     t.string   "platform_type",      :default => "main", :null => false
-    t.string   "distrib_type"
+    t.string   "distrib_type",                           :null => false
   end
 
   add_index "platforms", ["name"], :name => "index_platforms_on_name", :unique => true, :case_sensitive => false

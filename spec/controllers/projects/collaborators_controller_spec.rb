@@ -6,12 +6,14 @@ shared_context "collaborators controller" do
     stub_symlink_methods
     @project = FactoryGirl.create(:project)
     @another_user = FactoryGirl.create(:user)
+    @group = FactoryGirl.create(:group)
     @member_user = FactoryGirl.create(:user)
     # Create relation with 'writer' rights
     @collaborator = Collaborator.create(:actor => @member_user, :project => @project, :role => 'writer')
-  end
 
-  def set_params
+    @user = FactoryGirl.create(:user)
+    set_session_for(@user)
+    
     @user_params = {
         :actor_id => @another_user.id.to_s,
         :actor_type => 'user',
@@ -26,11 +28,7 @@ shared_context "collaborators controller" do
       :owner_name => @project.owner.uname, :project_name => @project.name,
       :format => :json
     }
-    @update_params = {
-      :owner_name => @project.owner.uname, :project_name => @project.name,
-      :collaborator => {:role => 'reader'},
-      :format => :json
-    }
+    @update_params = @create_params.merge(:collaborator => {:role => 'reader'})
   end
 end
 
@@ -82,7 +80,9 @@ describe Projects::CollaboratorsController do
   include_context "collaborators controller"
 
   context 'for guest' do
-    before {set_params}
+    before(:each) do
+      set_session_for(User.new)
+    end
     it 'should not be able to perform index action' do
       get :index, :owner_name => @project.owner.uname, :project_name => @project.name
       response.should redirect_to(new_user_session_path)
@@ -96,10 +96,8 @@ describe Projects::CollaboratorsController do
 
   context 'for global admin' do
     before(:each) do
-      @admin = FactoryGirl.create(:admin)
-      set_session_for(@admin)
-      @group = FactoryGirl.create(:group)
-      set_params
+      @user.role = "admin"
+      @user.save
     end
 
     it_should_behave_like 'project admin user'
@@ -107,11 +105,7 @@ describe Projects::CollaboratorsController do
 
   context 'for admin user' do
     before(:each) do
-      @user = FactoryGirl.create(:user)
-      set_session_for(@user)
-      @group = FactoryGirl.create(:group)
       @project.relations.create!(:actor_type => 'User', :actor_id => @user.id, :role => 'admin')
-      set_params
     end
 
     it_should_behave_like 'project admin user'
@@ -119,13 +113,8 @@ describe Projects::CollaboratorsController do
 
   context 'for owner user' do
     before(:each) do
-      @user = FactoryGirl.create(:user)
+      @user = @project.owner # owner should be user
       set_session_for(@user)
-      @group = FactoryGirl.create(:group)
-
-      @project.owner = @user; @project.save!; @project.reload
-      @project.relations.create!(:actor_type => 'User', :actor_id => @user.id, :role => 'admin')
-      set_params
     end
 
     it_should_behave_like 'project admin user'
@@ -133,10 +122,7 @@ describe Projects::CollaboratorsController do
 
   context 'for reader user' do
     before(:each) do
-      @user = FactoryGirl.create(:user)
-      set_session_for(@user)
       @project.relations.create!(:actor_type => 'User', :actor_id => @user.id, :role => 'reader')
-      set_params
     end
 
     it_should_behave_like 'user with no rights for this project'
@@ -144,10 +130,7 @@ describe Projects::CollaboratorsController do
 
   context 'for writer user' do
     before(:each) do
-      @user = FactoryGirl.create(:user)
-      set_session_for(@user)
       @project.relations.create!(:actor_type => 'User', :actor_id => @user.id, :role => 'writer')
-      set_params
     end
 
     it_should_behave_like 'user with no rights for this project'

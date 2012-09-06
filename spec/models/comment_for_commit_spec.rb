@@ -148,7 +148,10 @@ describe Comment do
       @user = FactoryGirl.create(:user)
       @stranger = FactoryGirl.create(:user)
       set_comments_data_for_commit
-      @project.owner = @user; @project.save
+      
+      @project.owner = @user
+      @project.save
+      
       ActionMailer::Base.deliveries = []
     end
 

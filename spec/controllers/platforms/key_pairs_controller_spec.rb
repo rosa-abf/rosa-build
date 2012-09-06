@@ -126,7 +126,9 @@ describe Platforms::KeyPairsController do
     before(:each) do
       @user = FactoryGirl.create(:user)
       set_session_for(@user)
-      @platform.owner = @user; @platform.save
+      
+      @platform.owner = @user
+      @platform.save
     end
 
     it_should_behave_like 'key_pair platform owner'

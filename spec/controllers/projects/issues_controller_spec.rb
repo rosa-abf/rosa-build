@@ -8,8 +8,6 @@ shared_context "issues controller" do
     @project = FactoryGirl.create(:project)
     @issue_user = FactoryGirl.create(:user)
 
-    any_instance_of(Project, :versions => ['v1.0', 'v2.0'])
-
     @issue = FactoryGirl.create(:issue, :project_id => @project.id, :assignee_id => @issue_user.id)
 
     @project_with_turned_off_issues = FactoryGirl.create(:project, :has_issues => false)
@@ -47,7 +45,7 @@ shared_examples_for 'issue user with project reader rights' do
   end
 
   it 'should be able to perform index action on hidden project' do
-    @project.update_attributes :visibility => 'hidden'
+    @project.update_attributes(:visibility => 'hidden')
     get :index, :owner_name => @project.owner.uname, :project_name => @project.name
     response.should render_template(:index)
   end
@@ -143,7 +141,9 @@ describe Projects::IssuesController do
     before(:each) do
       @user = FactoryGirl.create(:user)
       set_session_for(@user)
-      @project.owner = @user; @project.save!; @project.reload
+      @project.owner = @user
+      @project.save! 
+      @project.reload
       @project.relations.create!(:actor_type => 'User', :actor_id => @user.id, :role => 'admin')
       set_params
     end
@@ -220,7 +220,7 @@ describe Projects::IssuesController do
       end
 
       it 'should not be able to perform index action on hidden project' do
-        @project.update_attributes :visibility => 'hidden'
+        @project.update_attributes(:visibility => 'hidden')
         get :index, :owner_name => @project.owner.uname, :project_name => @project.name
         response.should redirect_to(forbidden_path)
       end
@@ -236,7 +236,7 @@ describe Projects::IssuesController do
       end
 
       it 'should not be able to perform index action on hidden project' do
-        @project.update_attributes :visibility => 'hidden'
+        @project.update_attributes(:visibility => 'hidden')
         get :index, :owner_name => @project.owner.uname, :project_name => @project.name
         response.should redirect_to(new_user_session_path)
       end

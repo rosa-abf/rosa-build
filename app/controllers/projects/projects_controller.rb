@@ -5,9 +5,7 @@ class Projects::ProjectsController < Projects::BaseController
 
   def index
     @projects = Project.accessible_by(current_ability, :membered)
-    # @projects = @projects.search(params[:query]).search_order if params[:query].present?
 
-    #puts prepare_list(@projects).inspect
     respond_to do |format|
       format.html { @projects = @projects.recent.paginate(:page => params[:page], :per_page => 25) }
       format.json { @projects = prepare_list(@projects) }

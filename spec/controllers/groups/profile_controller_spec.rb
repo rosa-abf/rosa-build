@@ -129,7 +129,8 @@ describe Groups::ProfileController do
     before(:each) do
       @user = FactoryGirl.create(:user)
       set_session_for(@user)
-      @group.owner = @user; @group.save
+      @group.owner = @user
+      @group.save
       @group.actors.create(:actor_type => 'User', :actor_id => @user.id, :role => 'admin')
     end
 
