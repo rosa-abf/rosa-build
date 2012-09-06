@@ -29,7 +29,9 @@ en:
   flash:
     repository:
       saved: Repository added
+      updated: Repository updated
       save_error: Unable to add repository
+      update_error: Unable to update repository
       destroyed: Repository deleted
       project_added: Project added to repository
       project_not_added: Project adding error. A project with such name already exists in this repository. Remove the old project first
@@ -44,6 +46,7 @@ en:
       repository:
         name: Name
         description: Description
+        publish_wtihout_qa: Publication after release
         platform_id: Platform
         platform: Platform
         created_at: Created

@@ -2,7 +2,12 @@
 = render 'submenu'
 = render 'sidebar'
 
-%h3.fix= "#{t("layout.repositories.about")}: #{@repository.name}"
+%h3.fix
+  = "#{t("layout.repositories.about")}: "
+  - if can? :edit, @repository
+    = link_to @repository.name, edit_platform_repository_path(@platform, @repository)
+  - else
+    = @repository.name
 
 %p= @repository.description
 

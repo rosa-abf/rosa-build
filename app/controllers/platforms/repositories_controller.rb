@@ -14,6 +14,23 @@ class Platforms::RepositoriesController < Platforms::BaseController
     @projects = @projects.search(params[:query]).search_order if params[:query].present?
   end
 
+  def edit
+  end
+
+  def update
+    if @repository.update_attributes(
+      :description => params[:repository][:description],
+      :publish_wtihout_qa => (params[:repository][:publish_wtihout_qa] || @repository.publish_wtihout_qa)
+    )
+      flash[:notice] = I18n.t("flash.repository.updated")
+      redirect_to platform_repository_path(@platform, @repository)
+    else
+      flash[:error] = I18n.t("flash.repository.update_error")
+      flash[:warning] = @repository.errors.full_messages.join('. ')
+      render :action => :edit
+    end
+  end
+
   def new
     @repository = Repository.new
     @platform_id = params[:platform_id]
