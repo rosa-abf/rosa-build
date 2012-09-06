@@ -6,6 +6,7 @@ module RosaPresenter
     include ActionDispatch::Routing::UrlFor
     include ActionView::Helpers::UrlHelper
     include ActionView::Helpers::TextHelper
+    include ActionView::Helpers::JavaScriptHelper
     include Rails.application.routes.url_helpers
 
     def initialize(item, opts)
