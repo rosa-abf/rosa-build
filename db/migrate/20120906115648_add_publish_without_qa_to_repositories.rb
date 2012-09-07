@@ -1,6 +1,7 @@
 class AddPublishWithoutQaToRepositories < ActiveRecord::Migration
 
   class Platform < ActiveRecord::Base
+    has_many :repositories, :dependent => :destroy
   end
 
   class Repository < ActiveRecord::Base
@@ -9,8 +10,8 @@ class AddPublishWithoutQaToRepositories < ActiveRecord::Migration
 
   def up
     add_column :repositories, :publish_without_qa, :boolean, :default => true
-    Repository.where('platforms.released is true').joins(:platform).
-      update_all(:publish_without_qa => false)
+    Platform.where(:released => true).each{|p| p.repositories.update_all(:publish_without_qa => false)}
+    Platform.where(:released => false).each{|p| p.repositories.update_all(:publish_without_qa => true)}
   end
 
   def down
