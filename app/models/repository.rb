@@ -14,7 +14,7 @@ class Repository < ActiveRecord::Base
   before_create :xml_rpc_create, :unless => lambda {Thread.current[:skip]}
   before_destroy :xml_rpc_destroy, :unless => lambda {Thread.current[:skip]}
 
-  attr_accessible :name, :description
+  attr_accessible :name, :description, :publish_without_qa
   attr_readonly :name, :platform_id
 
   def base_clone(attrs = {})

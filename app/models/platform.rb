@@ -28,12 +28,11 @@ class Platform < ActiveRecord::Base
   before_create :xml_rpc_create, :unless => lambda {Thread.current[:skip]}
   before_destroy :xml_rpc_destroy
 
-  after_update :freeze_platform
+  after_update :freeze_platform_and_update_repos
+  after_update :update_owner_relation
 
   after_create lambda { symlink_directory unless hidden? }
   after_destroy lambda { remove_symlink_directory unless hidden? }
-
-  after_update :update_owner_relation
 
   scope :search_order, order("CHAR_LENGTH(name) ASC")
   scope :search, lambda {|q| where("name ILIKE ?", "%#{q.to_s.strip}%")}
@@ -230,10 +229,11 @@ class Platform < ActiveRecord::Base
     end
     later :xml_rpc_clone, :loner => true, :queue => :clone_build
 
-    def freeze_platform
+    def freeze_platform_and_update_repos
       if released_changed? && released == true
-        result = BuildServer.freeze(name) 
+        result = BuildServer.freeze(name)
         raise "Failed freeze platform #{name} with code #{result}" if result != BuildServer::SUCCESS
+        repositories.update_all(:publish_without_qa => false)
       end
     end
 end

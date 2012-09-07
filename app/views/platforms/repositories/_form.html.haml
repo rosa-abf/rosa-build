@@ -1,8 +1,12 @@
-.leftlist= f.label :name, t("activerecord.attributes.repository.name"), :class => :label
-.rightlist= f.text_field :name, :class => 'text_field'
+- unless ['edit', 'update'].include? controller.action_name
+  .leftlist= f.label :name, t("activerecord.attributes.repository.name"), :class => :label
+  .rightlist= f.text_field :name, :class => 'text_field'
 
 .leftlist= f.label :description, t("activerecord.attributes.repository.description"), :class => :label
 .rightlist= f.text_field :description, :class => 'text_field'
+
+.leftlist= f.label :publish_without_qa, t("activerecord.attributes.repository.publish_without_qa"), :class => :label
+.rightlist= f.check_box :publish_without_qa, :class => 'check_box'
 
 .both
 

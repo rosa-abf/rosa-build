@@ -7,14 +7,6 @@ $(document).ready(function() {
     base_platforms.each(function(){
       if ($.inArray(platform_id, base_platforms.map(function(){ return $(this).val(); }).get()) >= 0) {
         if ($(this).val() == platform_id) {
-          if ($(this).attr('data-released') === '1') {
-            $('#build_list_auto_publish').removeAttr('checked').attr('disabled', 'disabled');
-            //disableUpdateTypes();
-          } else {
-            $('#build_list_auto_publish').removeAttr('disabled').attr('checked', 'checked');
-            //enableUpdateTypes();
-          }
-
           $(this).attr('checked', 'checked').removeAttr('disabled').trigger('change');
           $(this).parent().find('.offset25 input[type="checkbox"]').removeAttr('disabled');
 
@@ -30,7 +22,6 @@ $(document).ready(function() {
       } else {
         $(this).removeAttr('disabled').removeAttr('checked').trigger('change');
         $(this).parent().find('.offset25 input[type="checkbox"]').removeAttr('disabled').removeAttr('checked');
-        $('#build_list_auto_publish').removeAttr('disabled').attr('checked', 'checked');
       }
     });
 
@@ -41,7 +32,13 @@ $(document).ready(function() {
 
 
     setBranchSelected();
+    checkAccessToAutomatedPublising();
   });
+
+  $('.all_platforms .offset25 input').change(function() {
+    checkAccessToAutomatedPublising();
+  });
+
   $('#build_list_save_to_platform_id').trigger('change');
 
   $('.offset25 label').click(function() {
@@ -56,6 +53,16 @@ $(document).ready(function() {
   });
 
 });
+
+function checkAccessToAutomatedPublising() {
+  if ($('.all_platforms .offset25 input:checked[publish_without_qa="1"]').length > 0) {
+    $('#build_list_auto_publish').removeAttr('disabled').attr('checked', 'checked');
+    //enableUpdateTypes();
+  } else {
+    $('#build_list_auto_publish').removeAttr('checked').attr('disabled', 'disabled');
+    //disableUpdateTypes();
+  }
+}
 
 function setPlChecked(pointer, checked) {
   var pl_cbx = $(pointer).parent().parent().parent().find('input[type="checkbox"].build_bpl_ids');
