@@ -1,7 +1,8 @@
 # -*- encoding : utf-8 -*-
 class Platforms::ProductsController < Platforms::BaseController
   before_filter :authenticate_user!
- 
+  skip_before_filter :authenticate_user!, :only => [:index, :show] if APP_CONFIG['anonymous_access']
+
   load_and_authorize_resource :platform
   load_and_authorize_resource :product, :through => :platform
 

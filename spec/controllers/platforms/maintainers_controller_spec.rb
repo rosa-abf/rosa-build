@@ -2,24 +2,10 @@
 require 'spec_helper'
 
 shared_examples_for 'guest user' do
- 
-  # Only one action for now here
-  guest_actions = [:index]
 
-  if APP_CONFIG['anonymous_access']
-    guest_actions.each do |action|
-      it "should be able to perform #{ action } action" do
-        get action, :platform_id => @platform.id
-        response.should be_success
-      end
-    end
-  else  # non-anonymous access
-    guest_actions.each do |action|
-      it "should not be able to perform #{ action } action" do
-        get action, :platform_id => @platform.id
-        response.should redirect_to(new_user_session_path)
-      end
-    end
+  it "should be able to view maintainers list(index)" do
+    get :index, :platform_id => @platform.id
+    response.should be_success
   end
 end
 
@@ -28,20 +14,56 @@ describe Platforms::MaintainersController do
     stub_symlink_methods
 
     @platform = FactoryGirl.create(:platform)
-    @platform.visibility = 'open'
-
-    # JS format is the primary target for this callback
-    @assignee_rq = { :platform_id => @platform.id, :package => 'test', :format => 'js' }
+    @user = FactoryGirl.create(:user)
+    set_session_for(@user)
   end
 
   context 'for guest' do
-    it_should_behave_like 'guest user'
+    before {set_session_for(User.new)}
 
-    it 'should not be able to get api' do
-      get :assignee, @assignee_rq
-      response.response_code.should == 403
+    it "should be able to view maintainers list(index)", :anonymous_access => true do
+      get :index, :platform_id => @platform.id
+      response.should be_success
+    end
+
+    it "should not be able to view maintainers list(index)", :anonymous_access => false do
+      get :index, :platform_id => @platform.id
+      response.should redirect_to(new_user_session_path)
     end
   end
+
+  context 'for global admin' do
+    before(:each) do
+      @user.role = "admin"
+      @user.save
+    end
+
+    it_should_behave_like 'guest user'
+  end
+
+  context 'for registrated user' do
+
+    it_should_behave_like 'guest user'
+  end
+
+
+  context 'for platform owner' do
+    before(:each) do
+      @user = @platform.owner
+      set_session_for(@user)
+    end
+
+    it_should_behave_like 'guest user'
+  end
+
+  context 'for platform member' do
+    before(:each) do
+      @platform.relations.create!(:actor_type => 'User', :actor_id => @user.id, :role => 'admin')
+    end
+
+    it_should_behave_like 'guest user'
+  end
+
 end
 
 

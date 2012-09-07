@@ -103,13 +103,13 @@ describe CanCan do
       @ability.should be_able_to(:read, @admin)
     end
 
-    pending "shoud be able to read index AutoBuildList" do
-      @ability.should be_able_to(:index, AutoBuildList)
-    end
-
     it "shoud be able to read open projects" do
       @project = FactoryGirl.create(:project, :visibility => 'open')
       @ability.should be_able_to(:read, @project)
+    end
+
+    it 'should be able to see open platform' do
+      @ability.should be_able_to(:show, open_platform)
     end
 
     it "shoud be able to create project" do
@@ -123,7 +123,9 @@ describe CanCan do
     context "private users relations" do
       before(:each) do
         @private_user = FactoryGirl.create(:private_user)
-        @private_user.platform.update_attribute(:owner, @user)
+        
+        @private_user.platform.owner = @user
+        @private_user.platform.save
       end
 
       [:read, :create].each do |action|
@@ -146,10 +148,6 @@ describe CanCan do
 
         it 'should be able to read project' do
           @ability.should be_able_to(:read, @project)
-        end
-
-        it 'should be able to read open platform' do
-          @ability.should be_able_to(:read, open_platform)
         end
 
         it 'should be able to read issue' do
@@ -207,7 +205,9 @@ describe CanCan do
 
       context 'with owner rights' do
         before(:each) do
-          @project.update_attribute(:owner, @user)
+          @project.owner = @user
+          @project.save
+          
           @project.relations.create!(:actor_id => @user.id, :actor_type => 'User', :role => 'admin')
           @issue.project.reload
         end
@@ -241,7 +241,8 @@ describe CanCan do
 
       context 'with owner rights' do
         before(:each) do
-          @platform.update_attribute(:owner, @user)
+          @platform.owner = @user
+          @platform.save
         end
 
         [:read, :update, :destroy].each do |action|
@@ -269,7 +270,8 @@ describe CanCan do
 
       context 'with owner rights' do
         before(:each) do
-          @repository.platform.update_attribute(:owner, @user)
+          @repository.platform.owner = @user
+          @repository.platform.save
         end
 
         [:read, :create, :update, :destroy, :add_project, :remove_project, :change_visibility, :settings].each do |action|

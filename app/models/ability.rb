@@ -13,16 +13,20 @@ class Ability
     @user = user
 
     # Shared rights between guests and registered users
-    can :show, Project, :visibility => 'open'
-    can :archive, Project, :visibility => 'open'
+    can [:show, :archive], Project, :visibility => 'open'
     can :read, Issue, :project => {:visibility => 'open'}
     can :search, BuildList
     can [:read, :log, :everything], BuildList, :project => {:visibility => 'open'}
     can :read, ProductBuildList#, :product => {:platform => {:visibility => 'open'}} # double nested hash don't work
     can :read, Advisory
-    can(:advisories, Platform) {APP_CONFIG['anonymous_access']}
+    
     # Core callbacks
     can [:publish_build, :status_build, :pre_build, :post_build, :circle_build, :new_bbdt], BuildList
+
+    # Platforms block
+    can [:show, :members, :advisories], Platform, :visibility == 'open'
+    can [:read, :projects_list], Repository, :platform => {:visibility => 'open'}
+    can :read, Product, :platform => {:visibility => 'open'}
 
     if user.guest? # Guest rights
       # can [:new, :create], RegisterRequest
@@ -55,7 +59,7 @@ class Ability
         can [:read, :archive], Project, :owner_type => 'Group', :owner_id => user.group_ids
         can([:read, :membered], Project, read_relations_for('projects')) {|project| local_reader? project}
         can(:write, Project) {|project| local_writer? project} # for grack
-        can([:update, :sections, :manage_collaborators], Project) {|project| local_admin? project}
+        can([:update, :sections, :manage_collaborators, :autocomplete_maintainers], Project) {|project| local_admin? project}
         can(:fork, Project) {|project| can? :read, project}
         can(:fork, Project) {|project| project.owner_type == 'Group' and can? :update, project.owner}
         can(:destroy, Project) {|project| owner? project}
@@ -76,30 +80,25 @@ class Ability
         end
         can(:cancel, BuildList) {|build_list| build_list.can_cancel? && can?(:write, build_list.project)}
 
-        can [:read], Advisory
-
-        can [:read, :members], Platform, :visibility => 'open'
         can [:read, :owned, :related, :members], Platform, :owner_type => 'User', :owner_id => user.id
         can [:read, :related, :members], Platform, :owner_type => 'Group', :owner_id => user.group_ids
         can([:read, :related, :members], Platform, read_relations_for('platforms')) {|platform| local_reader? platform}
         can([:update, :members], Platform) {|platform| local_admin? platform}
         can([:destroy, :members, :add_member, :remove_member, :remove_members] , Platform) {|platform| owner?(platform) || local_admin?(platform) }
-        can [:autocomplete_user_uname, :read_advisories, :advisories], Platform
+        can [:autocomplete_user_uname], Platform
 
         can([:failed_builds_list, :create], MassBuild) {|mass_build| (owner?(mass_build.platform) || local_admin?(mass_build.platform)) && mass_build.platform.main? }
         can(:cancel, MassBuild) {|mass_build| (owner?(mass_build.platform) || local_admin?(mass_build.platform)) && !mass_build.stop_build && mass_build.platform.main?}
 
-        can [:read, :projects_list], Repository, :platform => {:visibility => 'open'}
         can [:read, :projects_list], Repository, :platform => {:owner_type => 'User', :owner_id => user.id}
         can [:read, :projects_list], Repository, :platform => {:owner_type => 'Group', :owner_id => user.group_ids}
         can([:read, :projects_list], Repository, read_relations_for('repositories', 'platforms')) {|repository| local_reader? repository.platform}
-        can([:create, :edit, :update, :projects_list, :add_project, :remove_project], Repository) {|repository| local_admin? repository.platform}
+        can([:create, :edit, :update, :destroy, :projects_list, :add_project, :remove_project], Repository) {|repository| local_admin? repository.platform}
         can(:clear, Platform) {|platform| local_admin?(platform) && platform.personal?}
         can([:change_visibility, :settings, :destroy, :edit, :update], Repository) {|repository| owner? repository.platform}
 
         can([:create, :destroy], KeyPair) {|key_pair| owner?(key_pair.repository.platform) || local_admin?(key_pair.repository.platform)}
 
-        can :read, Product, :platform => {:visibility => 'open'}
         can :read, Product, :platform => {:owner_type => 'User', :owner_id => user.id, :platform_type => 'main'}
         can :read, Product, :platform => {:owner_type => 'Group', :owner_id => user.group_ids, :platform_type => 'main'}
         can(:read, Product, read_relations_for('products', 'platforms')) {|product| product.platform.main?}
@@ -119,7 +118,7 @@ class Ability
         cannot :manage, Issue, :project => {:has_issues => false} # switch off issues
 
         can(:create, Comment) {|comment| can? :read, comment.project}
-        can(:update, Comment) {|comment| comment.user_id == user.id or local_admin?(comment.project || comment.commentable.project)}
+        can(:update, Comment) {|comment| comment.user == user or comment.project.owner == user or local_admin?(comment.project)}
         cannot :manage, Comment, :commentable_type => 'Issue', :commentable => {:project => {:has_issues => false}} # switch off issues
       end
 

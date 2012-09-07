@@ -411,8 +411,11 @@ ActiveRecord::Schema.define(:version => 20120906115648) do
     t.text     "ssh_key"
     t.string   "uname"
     t.string   "role"
-    t.string   "language",                               :default => "en"
-    t.integer  "own_projects_count",                     :default => 0,    :null => false
+    t.string   "language",                :default => "en"
+    t.integer  "own_projects_count",      :default => 0,    :null => false
+    t.string   "confirmation_token"
+    t.datetime "confirmed_at"
+    t.datetime "confirmation_sent_at"
     t.text     "professional_experience"
     t.string   "site"
     t.string   "company"
@@ -424,9 +427,6 @@ ActiveRecord::Schema.define(:version => 20120906115648) do
     t.integer  "failed_attempts",                        :default => 0
     t.string   "unlock_token"
     t.datetime "locked_at"
-    t.string   "confirmation_token"
-    t.datetime "confirmed_at"
-    t.datetime "confirmation_sent_at"
     t.string   "authentication_token"
     t.integer  "build_priority",                         :default => 50
   end
