@@ -6,7 +6,7 @@
 .leftlist= f.label :description, t("activerecord.attributes.project.description"), :class => :label
 .rightlist= f.text_area :description, :class => 'text_field', :cols => 80
 .both
-- if [:new, :create].include? controller.action_name
+- if [:new, :create].include? act
   .leftlist= f.label :owner_id, t("activerecord.attributes.project.owner"), :class => :label
   .rightlist
     = label_tag t("activerecord.attributes.project.who_owns.me")
