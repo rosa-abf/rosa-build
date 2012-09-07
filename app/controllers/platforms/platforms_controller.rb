@@ -2,7 +2,7 @@
 class Platforms::PlatformsController < Platforms::BaseController
 
   before_filter :authenticate_user!
-  skip_before_filter :authenticate_user!, :only => [:advisories] if APP_CONFIG['anonymous_access']
+  skip_before_filter :authenticate_user!, :only => [:advisories, :members, :show] if APP_CONFIG['anonymous_access']
   load_and_authorize_resource
 
   autocomplete :user, :uname

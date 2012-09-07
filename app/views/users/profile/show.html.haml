@@ -6,7 +6,7 @@
   %h3= title @user.uname
   = @user.name
   %br
-    = link_to @user.email, "mailto:#{@user.email}"
+    = mail_to @user.email, @user.email, :encode => "javascript"
     %br
       %h4= t("activerecord.attributes.user.professional_experience") + ":"
       %p= @user.professional_experience

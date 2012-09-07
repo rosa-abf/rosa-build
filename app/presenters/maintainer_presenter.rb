@@ -37,7 +37,7 @@ class MaintainerPresenter < ApplicationPresenter
   end
 
   def maintainer_email_link
-    mail_to @maintainer.email, @maintainer.email
+    mail_to @maintainer.email, @maintainer.email, :encode => "javascript"
   end
 
 end
