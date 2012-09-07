@@ -1,0 +1,179 @@
+Crashlog created at 2012-09-06 16:43:36 +0400
+
+=== MESSAGE:
+
+LoadError: cannot load such file -- yajl/json_gem
+
+=== COMPILATION STACK:
+
+  (empty)
+
+=== BACKTRACE:
+
+  0. lib/resources.rb:2:in `require'
+  1. lib/resources.rb:2:in `<main>'
+  2. /Users/santaux/.rvm/gems/ruby-1.9.3-p0@abf/gems/nanoc-3.4.0/lib/nanoc/base/source_data/code_snippet.rb:36:in `eval'
+  3. /Users/santaux/.rvm/gems/ruby-1.9.3-p0@abf/gems/nanoc-3.4.0/lib/nanoc/base/source_data/code_snippet.rb:36:in `load'
+  4. /Users/santaux/.rvm/gems/ruby-1.9.3-p0@abf/gems/nanoc-3.4.0/lib/nanoc/base/source_data/site.rb:300:in `block in load_code_snippets'
+  5. /Users/santaux/.rvm/gems/ruby-1.9.3-p0@abf/gems/nanoc-3.4.0/lib/nanoc/base/source_data/site.rb:300:in `each'
+  6. /Users/santaux/.rvm/gems/ruby-1.9.3-p0@abf/gems/nanoc-3.4.0/lib/nanoc/base/source_data/site.rb:300:in `load_code_snippets'
+  7. /Users/santaux/.rvm/gems/ruby-1.9.3-p0@abf/gems/nanoc-3.4.0/lib/nanoc/base/source_data/site.rb:244:in `load'
+  8. /Users/santaux/.rvm/gems/ruby-1.9.3-p0@abf/gems/nanoc-3.4.0/lib/nanoc/base/compilation/compiler.rb:112:in `load'
+  9. /Users/santaux/.rvm/gems/ruby-1.9.3-p0@abf/gems/nanoc-3.4.0/lib/nanoc/base/compilation/compiler.rb:82:in `run'
+  10. /Users/santaux/.rvm/gems/ruby-1.9.3-p0@abf/gems/nanoc-3.4.0/lib/nanoc/base/source_data/site.rb:57:in `compile'
+  11. /Users/santaux/.rvm/gems/ruby-1.9.3-p0@abf/gems/nanoc-3.4.0/lib/nanoc/cli/commands/compile.rb:57:in `run'
+  12. /Users/santaux/.rvm/gems/ruby-1.9.3-p0@abf/gems/nanoc-3.4.0/lib/nanoc/cli/command_runner.rb:14:in `block in call'
+  13. /Users/santaux/.rvm/gems/ruby-1.9.3-p0@abf/gems/nanoc-3.4.0/lib/nanoc/cli/error_handler.rb:63:in `handle_while'
+  14. /Users/santaux/.rvm/gems/ruby-1.9.3-p0@abf/gems/nanoc-3.4.0/lib/nanoc/cli/error_handler.rb:26:in `handle_while'
+  15. /Users/santaux/.rvm/gems/ruby-1.9.3-p0@abf/gems/nanoc-3.4.0/lib/nanoc/cli/command_runner.rb:13:in `call'
+  16. /Users/santaux/.rvm/gems/ruby-1.9.3-p0@abf/gems/cri-2.3.0/lib/cri/command_dsl.rb:185:in `block in runner'
+  17. /Users/santaux/.rvm/gems/ruby-1.9.3-p0@abf/gems/cri-2.3.0/lib/cri/command.rb:296:in `call'
+  18. /Users/santaux/.rvm/gems/ruby-1.9.3-p0@abf/gems/cri-2.3.0/lib/cri/command.rb:296:in `run_this'
+  19. /Users/santaux/.rvm/gems/ruby-1.9.3-p0@abf/gems/cri-2.3.0/lib/cri/command.rb:249:in `run'
+  20. /Users/santaux/.rvm/gems/ruby-1.9.3-p0@abf/gems/cri-2.3.0/lib/cri/command.rb:262:in `run'
+  21. /Users/santaux/.rvm/gems/ruby-1.9.3-p0@abf/gems/nanoc-3.4.0/lib/nanoc/cli.rb:47:in `block in run'
+  22. /Users/santaux/.rvm/gems/ruby-1.9.3-p0@abf/gems/nanoc-3.4.0/lib/nanoc/cli/error_handler.rb:63:in `handle_while'
+  23. /Users/santaux/.rvm/gems/ruby-1.9.3-p0@abf/gems/nanoc-3.4.0/lib/nanoc/cli/error_handler.rb:26:in `handle_while'
+  24. /Users/santaux/.rvm/gems/ruby-1.9.3-p0@abf/gems/nanoc-3.4.0/lib/nanoc/cli.rb:44:in `run'
+  25. /Users/santaux/.rvm/gems/ruby-1.9.3-p0@abf/gems/nanoc-3.4.0/bin/nanoc:19:in `<top (required)>'
+  26. /Users/santaux/.rvm/gems/ruby-1.9.3-p0@abf/bin/nanoc:19:in `load'
+  27. /Users/santaux/.rvm/gems/ruby-1.9.3-p0@abf/bin/nanoc:19:in `<main>'
+
+=== VERSION INFORMATION:
+
+nanoc 3.4.0 © 2007-2012 Denis Defreyne.
+Running ruby 1.9.3 (2011-10-30) on x86_64-darwin11.3.0 with RubyGems 1.8.15.
+
+=== INSTALLED GEMS:
+
+  adsf 1.1.1
+  blankslate 2.1.2.4
+  builder 3.0.0
+  bundler 1.0.21
+  coderay 1.0.6
+  colored 1.2
+  cri 2.3.0
+  ffi 1.0.11
+  fssm 0.2.9
+  kramdown 0.13.7
+  mime-types 1.18
+  nanoc 3.3.7
+  nokogiri 1.4.7
+  pygments.rb 0.2.12
+  rack 1.4.1
+  rake 0.9.2.2
+  rubypython 0.5.3
+  yajl-ruby 0.8.3
+
+=== ENVIRONMENT:
+
+Apple_PubSub_Socket_Render => "/tmp/launch-B4d6SC/Render"
+Apple_Ubiquity_Message => "/tmp/launch-AJa40D/Apple_Ubiquity_Message"
+BUNDLE_BIN_PATH => "/Users/santaux/.rvm/gems/ruby-1.9.3-p0@abf/gems/bundler-1.0.21/bin/bundle"
+BUNDLE_GEMFILE => "/Users/santaux/Projects/ABF/rosa-build/developer.github.com/Gemfile"
+COMMAND_MODE => "unix2003"
+DISPLAY => "/tmp/launch-sOdemU/org.x:0"
+GEM_HOME => "/Users/santaux/.rvm/gems/ruby-1.9.3-p0@abf"
+GEM_PATH => "/Users/santaux/.rvm/gems/ruby-1.9.3-p0@abf:/Users/santaux/.rvm/gems/ruby-1.9.3-p0@global"
+HOME => "/Users/santaux"
+IRBRC => "/Users/santaux/.rvm/rubies/ruby-1.9.3-p0/.irbrc"
+LANG => "ru_RU.UTF-8"
+LOGNAME => "santaux"
+MY_RUBY_HOME => "/Users/santaux/.rvm/rubies/ruby-1.9.3-p0"
+OLDPWD => "/Users/santaux/Projects/ABF/rosa-build"
+PATH => "/Users/santaux/.rvm/gems/ruby-1.9.3-p0@abf/bin:/Users/santaux/.rvm/gems/ruby-1.9.3-p0@global/bin:/Users/santaux/.rvm/rubies/ruby-1.9.3-p0/bin:/Users/santaux/.rvm/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin:/usr/X11/bin"
+PWD => "/Users/santaux/Projects/ABF/rosa-build/developer.github.com"
+RUBYOPT => "-I/Users/santaux/.rvm/gems/ruby-1.9.3-p0@abf/gems/bundler-1.0.21/lib -rbundler/setup"
+RUBY_VERSION => "ruby-1.9.3-p0"
+SECURITYSESSIONID => "186a5"
+SHELL => "/bin/bash"
+SHLVL => "1"
+SSH_AUTH_SOCK => "/tmp/launch-MbrIi7/Listeners"
+TERM => "xterm-color"
+TERM_PROGRAM => "Apple_Terminal"
+TERM_PROGRAM_VERSION => "303.2"
+TERM_SESSION_ID => "94F76547-3228-4372-9CB3-3241FF0C3DF3"
+TMPDIR => "/var/folders/j8/crjskgf16hd9hsdqr40r36br0000gn/T/"
+USER => "santaux"
+_ => "/Users/santaux/.rvm/gems/ruby-1.9.3-p0@abf/bin/nanoc"
+__CF_USER_TEXT_ENCODING => "0x1F5:7:32"
+__array_start => "0"
+_first => "0"
+_second => "1"
+escape_flag => "1"
+rvm_bin_path => "/Users/santaux/.rvm/bin"
+rvm_path => "/Users/santaux/.rvm"
+rvm_prefix => "/Users/santaux"
+rvm_reload_flag => "0"
+rvm_version => "1.10.2"
+
+=== GEMFILE.LOCK:
+
+GEM
+  remote: http://rubygems.org/
+  specs:
+    adsf (1.1.1)
+      rack (>= 1.0.0)
+    blankslate (2.1.2.4)
+    builder (3.0.0)
+    coderay (1.0.6)
+    colored (1.2)
+    cri (2.3.0)
+      colored (>= 1.2)
+    ffi (1.0.11)
+    fssm (0.2.9)
+    kramdown (0.13.7)
+    mime-types (1.18)
+    nanoc (3.3.7)
+      cri (~> 2.2)
+    nokogiri (1.4.7)
+    pygments.rb (0.2.12)
+      rubypython (~> 0.5.3)
+    rack (1.4.1)
+    rake (0.9.2.2)
+    rubypython (0.5.3)
+      blankslate (>= 2.1.2.3)
+      ffi (~> 1.0.7)
+    yajl-ruby (0.8.3)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  adsf
+  builder
+  coderay
+  fssm
+  kramdown (~> 0.13.2)
+  mime-types (~> 1.16)
+  nanoc (~> 3.3.7)
+  nokogiri (~> 1.4.4)
+  pygments.rb
+  rake (~> 0.9.2)
+  yajl-ruby (~> 0.8.2)
+
+=== $LOAD_PATH:
+
+  0. /Users/santaux/.rvm/gems/ruby-1.9.3-p0@abf/gems/nanoc-3.4.0/lib
+  1. /Users/santaux/.rvm/gems/ruby-1.9.3-p0@abf/gems/mime-types-1.18/lib
+  2. /Users/santaux/.rvm/gems/ruby-1.9.3-p0@abf/gems/kramdown-0.13.7/lib
+  3. /Users/santaux/.rvm/gems/ruby-1.9.3-p0@abf/gems/fssm-0.2.9/lib
+  4. /Users/santaux/.rvm/gems/ruby-1.9.3-p0@abf/gems/ffi-1.0.11/lib
+  5. /Users/santaux/.rvm/gems/ruby-1.9.3-p0@abf/gems/ffi-1.0.11/ext
+  6. /Users/santaux/.rvm/gems/ruby-1.9.3-p0@abf/gems/cri-2.3.0/lib
+  7. /Users/santaux/.rvm/gems/ruby-1.9.3-p0@abf/gems/colored-1.2/lib
+  8. /Users/santaux/.rvm/gems/ruby-1.9.3-p0@abf/gems/coderay-1.0.6/lib
+  9. /Users/santaux/.rvm/gems/ruby-1.9.3-p0@abf/gems/builder-3.0.0/lib
+  10. /Users/santaux/.rvm/gems/ruby-1.9.3-p0@abf/gems/blankslate-2.1.2.4/lib
+  11. /Users/santaux/.rvm/gems/ruby-1.9.3-p0@abf/gems/adsf-1.1.1/lib
+  12. /Users/santaux/.rvm/gems/ruby-1.9.3-p0@abf/gems/rack-1.4.1/lib
+  13. /Users/santaux/.rvm/gems/ruby-1.9.3-p0@abf/gems/rake-0.9.2.2/lib
+  14. /Users/santaux/.rvm/gems/ruby-1.9.3-p0@abf/gems/bundler-1.0.21/lib
+  15. /Users/santaux/.rvm/rubies/ruby-1.9.3-p0/lib/ruby/site_ruby/1.9.1
+  16. /Users/santaux/.rvm/rubies/ruby-1.9.3-p0/lib/ruby/site_ruby/1.9.1/x86_64-darwin11.3.0
+  17. /Users/santaux/.rvm/rubies/ruby-1.9.3-p0/lib/ruby/site_ruby
+  18. /Users/santaux/.rvm/rubies/ruby-1.9.3-p0/lib/ruby/vendor_ruby/1.9.1
+  19. /Users/santaux/.rvm/rubies/ruby-1.9.3-p0/lib/ruby/vendor_ruby/1.9.1/x86_64-darwin11.3.0
+  20. /Users/santaux/.rvm/rubies/ruby-1.9.3-p0/lib/ruby/vendor_ruby
+  21. /Users/santaux/.rvm/rubies/ruby-1.9.3-p0/lib/ruby/1.9.1
+  22. /Users/santaux/.rvm/rubies/ruby-1.9.3-p0/lib/ruby/1.9.1/x86_64-darwin11.3.0

@@ -1,0 +1,193 @@
+---
+title: Project Build | GitHub API
+---
+
+## 1. Show build data
+
+This request will return you all needed data of requested build task into JSON format.
+
+URL: /buils_lists/:id.json
+
+TYPE: GET
+
+PARAMS:
+: * :id - identifier of current build task
+
+RESPONSE:
+
+<%= json(:build_list_show_parameters) %>
+
+EXAMPLE:
+
+<%= json(:build_list_show_example) %>
+
+## 2. Create build task
+
+By this request you can create build task for project.
+
+Create parameters:
+
+<%= json(:build_list_create_parameters) %>
+
+**Note: Request creates build list for each architecture and base platform.**
+
+POSIBLE UPDATE TYPES:
+
+    security
+    bugfix 
+    enhancement 
+    recommended 
+    newpackage
+
+URL: /api/v1/build_lists.json
+
+TYPE: POST
+
+REQUEST EXAMPLE:
+
+<%= json(:build_list_create_example) %>
+
+RESPONSE:
+
+<%= json(:build_list_create_response) %>
+
+RESPONSE EXAMPLE:
+
+<%= json(:build_list_create_response_example) %>
+
+## 3. Cancel build task
+
+By this request you can cancel build task.
+
+URL: /buils_lists/:id/cancel.json
+
+TYPE: PUT
+
+RESPONSE:
+
+<%= json(:build_list_cancel_response) %>
+
+EXAMPLE:
+
+<%= json(:build_list_cancel_response_example) %>
+
+
+<%= json(:build_list_cancel_response_example2) %>
+
+## 4. Publish build task
+
+By this request you can publish build task.
+
+URL: /buils_lists/:id/publish.json
+
+TYPE: PUT
+
+RESPONSE:
+
+<%= json(:build_list_publish_response) %>
+
+EXAMPLE:
+
+<%= json(:build_list_publish_response_example) %>
+
+
+<%= json(:build_list_publish_response_example2) %>
+
+## 5. Reject publish build task
+
+By this request you can reject publish build task.
+
+URL: /buils_lists/:id/reject_publish.json
+
+TYPE: PUT
+
+RESPONSE:
+
+<%= json(:build_list_reject_response) %>
+
+EXAMPLE:
+
+<%= json(:build_list_reject_response_example) %>
+
+
+<%= json(:build_list_reject_response_example2) %>
+
+## 6. Search
+
+By this way you can search build list you need.
+
+Search params:
+
+* page - page number of build lists results list
+* per_page - amount of build list per one page (default 30, maximum 100)
+* filter[status] - integer code of the build status
+* filter[arch_id] - identifier of the architecture
+* filter[is_circle] - recurrent build (true or false)
+* filter[project_name] - project name
+* filter[created_at_start / created_at_end] - start and end of the build list creation date diapason(unixtime)
+* filter[updated_at_start / updated_at_end] - start and end of the build list last change date diapason(unixtime)
+* filter[ownership] - ownership type (owned/related/index)
+* filter[mass_build_id] - mass build identifier
+* filter[save_to_platform_id] - platform id for build save
+
+
+BUILD LIST POSIBLE STATUSES
+
+        Build error: 666
+        Build has been published: 6000
+        Publishing rejected: 9000
+        Build is being published: 7000
+        Publishing error: 8000
+        Dependences not found: ?
+        Waiting for response: 4000
+        Build pending: 2000
+        Dependency test failed: ?
+        Binary test failed: ?
+        Build canceled: 5000
+        Build complete: 0
+        Build started: 3000
+        Platform not found: 1
+        Platform pending: 2
+        Project not found: 3
+        Project version not found: 4
+
+URL: /build_lists.json?<search params>
+
+TYPE: GET
+
+RESPONSE:
+
+<%= json(:build_list_search_response) %>
+
+EXAMPLE OF REQUEST URL:
+
+> /build_lists.json?filter[project_name]=rails
+
+> /build_lists.json?filter[ownership]=owned&filter[status]=6000&filter[arch_id]=2
+
+EXAMPLES OF RESPONSES:
+
+<%= json(:build_list_search_response_example) %>
+
+## 7. Destroy build task
+
+You can't destroy build list. Only cancel it. :)
+
+## 8. 404, 500, 503 and 401 errors.
+
+Some requests can cause cancer of 404, 500 and 503 errors. In these situatins you will receive such data:
+
+<%= json(:error_404) %>
+
+<%= json(:error_500) %>
+
+<%= json(:error_503) %>
+
+<%= json(:error_401) %>
+
+If you don't have enough rights for requested action, you will receive
+error response such this:
+
+<%= json(:error_403) %>
+
+and http status code will be 403.
