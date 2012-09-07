@@ -224,7 +224,7 @@ class BuildList < ActiveRecord::Base
   end
 
   def can_reject_publish?
-    can_publish? and save_to_platform.released
+    can_publish? and not save_to_repository.publish_without_qa
   end
 
 
