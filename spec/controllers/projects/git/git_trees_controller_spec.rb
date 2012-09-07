@@ -16,18 +16,16 @@ describe Projects::Git::TreesController do
   end
 
   context 'for guest' do
-    if APP_CONFIG['anonymous_access']
-      it 'should be able to perform archive action with anonymous acccess' do
-        fill_project
-        get :archive, @params.merge(:format => 'tar')
-        response.should be_success
-      end
-    else
-      it 'should not be able to perform archive action without anonymous acccess' do
-        fill_project
-        get :archive, @params.merge(:format => 'tar')
-        response.code.should == '401'
-      end
+    it 'should be able to perform archive action with anonymous acccess', :anonymous_access => true do
+      fill_project
+      get :archive, @params.merge(:format => 'tar')
+      response.should be_success
+    end
+  
+    it 'should not be able to perform archive action without anonymous acccess', :anonymous_access => false do
+      fill_project
+      get :archive, @params.merge(:format => 'tar')
+      response.code.should == '401'
     end
   end
 

@@ -2,7 +2,6 @@
 require 'spec_helper'
 
 shared_examples_for 'platform owner' do
-  it_should_behave_like 'platform index viewer'
 
   it 'should not be able to destroy personal platform' do
     delete :destroy, :id => @personal_platform.id
@@ -19,14 +18,39 @@ shared_examples_for 'platform owner' do
   end
 end
 
-shared_examples_for 'platform index viewer' do
+shared_examples_for 'system registered user' do
   it 'should be able to perform index action' do
     get :index
     response.should render_template(:index)
   end
-end
 
+  it 'should be able to perform show action' do
+    get :show, :id => @platform.id
+    response.should render_template(:show)
+    assigns(:platform).should eq @platform
+  end
+
+  it 'should be able to perform members action' do
+    get :members, :id => @platform.id
+    response.should render_template(:members)
+    response.should be_success
+  end
+
+  it 'should be able to perform advisories action' do
+    get :advisories, :id => @platform.id
+    response.should render_template(:advisories)
+    response.should be_success
+  end
+
+end
+ 
 shared_examples_for 'user without create rights' do
+
+  it 'should not be able to perform new action' do
+    get :new
+    response.should redirect_to(forbidden_path)
+  end
+
   it 'should not be able to create platform' do
     post :create, @create_params
     response.should redirect_to(forbidden_path)
@@ -39,7 +63,10 @@ describe Platforms::PlatformsController do
 
     @platform = FactoryGirl.create(:platform)
     @personal_platform = FactoryGirl.create(:platform, :platform_type => 'personal')
+    
     @user = FactoryGirl.create(:user)
+    set_session_for(@user)
+
     @create_params = {:platform => {
       :name => 'pl1',
       :description => 'pl1',
@@ -49,6 +76,10 @@ describe Platforms::PlatformsController do
   end
 
   context 'for guest' do
+    before(:each) do
+      set_session_for(User.new)
+    end
+
     [:index, :create].each do |action|
       it "should not be able to perform #{ action } action" do
         get action
@@ -63,25 +94,31 @@ describe Platforms::PlatformsController do
       end
     end
 
-    if APP_CONFIG[:anonymous_access]
-      it "should be able to perform show action" do
-        get :show, :id => @platform
-        response.should render_template(:show)
-      end
-    else
-      it "should not be able to perform show action" do
-        get :show, :id => @platform
+    [:show, :members, :advisories].each do |action|
+      it "should not be able to perform #{ action } action", :anonymous_access => false do
+        get action, :id => @platform
         response.should redirect_to(new_user_session_path)
       end
     end
+
+    [:show, :members, :advisories].each do |action|
+      it "should be able to perform #{ action } action", :anonymous_access => true do
+        get action, :id => @platform
+        response.should render_template(action)
+        response.should be_success
+      end
+    end
+
   end
 
   context 'for global admin' do
     before(:each) do
-      @admin = FactoryGirl.create(:admin)
-      @user = FactoryGirl.create(:user)
-      set_session_for(@admin)
+      @user.role = "admin"
+      @user.save
     end
+
+    it_should_behave_like 'system registered user'
+    it_should_behave_like 'platform owner'
 
     it 'should be able to perform new action' do
       get :new
@@ -97,54 +134,37 @@ describe Platforms::PlatformsController do
       lambda { post :create, @create_params }.should change{ Platform.count }.by(1)
     end
 
-    it_should_behave_like 'platform owner'
-
     it 'should create platform with mentioned owner if owner id present' do
-      post :create, @create_params.merge({:admin_id => @user.id, :admin_uname => @user.uname})
-      Platform.last.owner.id.should eql(@user.id)
+      owner = FactoryGirl.create(:user)
+      post :create, @create_params.merge({:admin_id => owner.id, :admin_uname => owner.uname})
+      Platform.last.owner.id.should eql(owner.id)
     end
       
     it 'should create platform with current user as owner if owner id not present' do
       post :create, @create_params
-      Platform.last.owner.id.should eql(@admin.id)
+      Platform.last.owner.id.should eql(@user.id)
     end
 
   end
 
   context 'for owner user' do
     before(:each) do
-      @user = FactoryGirl.create(:user)
+      @user = @platform.owner
       set_session_for(@user)
-      
-      @platform.owner = @user
-      @platform.save
-      
-      @platform.relations.create!(:actor_type => 'User', :actor_id => @user.id, :role => 'admin')
     end
 
+    it_should_behave_like 'system registered user'
     it_should_behave_like 'user without create rights'
     it_should_behave_like 'platform owner'
-
-    it 'should be able to perform new action' do
-      get :new
-      response.should redirect_to(forbidden_path)
-    end
-
-    it 'should be able to perform create action' do
-      post :create, @create_params
-      response.should redirect_to(forbidden_path)
-    end
 
   end
 
   context 'for reader user' do
     before(:each) do
-      @user = FactoryGirl.create(:user)
-      set_session_for(@user)
       @platform.relations.create!(:actor_type => 'User', :actor_id => @user.id, :role => 'reader')
     end
 
-    it_should_behave_like 'platform index viewer'
+    it_should_behave_like 'system registered user'
     it_should_behave_like 'user without create rights'
 
     it 'should not be able to perform destroy action' do

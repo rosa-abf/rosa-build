@@ -21,15 +21,14 @@ describe Platforms::MaintainersController do
   context 'for guest' do
     before {set_session_for(User.new)}
 
-    # it_should_behave_like 'guest user'
-    # it "should be able to view maintainers list(index)", :anonymous_access => true do
-    #   get :index, :platform_id => @platform.id
-    #   response.should be_success
-    # end
-
-    it "should not be able to view maintainers list(index)" do
+    it "should be able to view maintainers list(index)", :anonymous_access => true do
       get :index, :platform_id => @platform.id
-      response.should redirect_to(forbidden_path)
+      response.should be_success
+    end
+
+    it "should not be able to view maintainers list(index)", :anonymous_access => false do
+      get :index, :platform_id => @platform.id
+      response.should redirect_to(new_user_session_path)
     end
   end
 

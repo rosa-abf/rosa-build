@@ -103,13 +103,13 @@ describe CanCan do
       @ability.should be_able_to(:read, @admin)
     end
 
-    pending "shoud be able to read index AutoBuildList" do
-      @ability.should be_able_to(:index, AutoBuildList)
-    end
-
     it "shoud be able to read open projects" do
       @project = FactoryGirl.create(:project, :visibility => 'open')
       @ability.should be_able_to(:read, @project)
+    end
+
+    it 'should be able to see open platform' do
+      @ability.should be_able_to(:show, open_platform)
     end
 
     it "shoud be able to create project" do
@@ -148,10 +148,6 @@ describe CanCan do
 
         it 'should be able to read project' do
           @ability.should be_able_to(:read, @project)
-        end
-
-        it 'should be able to read open platform' do
-          @ability.should be_able_to(:read, open_platform)
         end
 
         it 'should be able to read issue' do

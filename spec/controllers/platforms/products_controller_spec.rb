@@ -31,9 +31,16 @@ describe Platforms::ProductsController do
     @product = FactoryGirl.create(:product, :platform => @platform)
     @create_params = {:product => {:name => 'pro'}, :platform_id => @platform.id}
     @update_params = {:product => {:name => 'pro2'}, :platform_id => @platform.id}
+
+    @user = FactoryGirl.create(:user)
+    set_session_for(@user)
 	end
 
   context 'for guest' do
+    before(:each) do
+      set_session_for(User.new)
+    end
+
     [:create].each do |action|
       it "should not be able to perform #{ action } action" do
         get action, :platform_id => @platform.id
@@ -48,34 +55,42 @@ describe Platforms::ProductsController do
       end
     end
 
-    if APP_CONFIG['anonymous_access']
-      it "should be able to perform show action" do
-        get :show, :id => @product.id, :platform_id => @platform.id
-        response.should render_template(:show)
-      end
-    else
-      it "should not be able to perform show action" do
-        get :show, :id => @product.id, :platform_id => @platform.id
+    [:show, :index].each do |action|
+      it "should not be able to perform #{ action } action", :anonymous_access => false do
+        get action, :id => @product.id, :platform_id => @platform.id
         response.should redirect_to(new_user_session_path)
+      end
+    end
+
+    [:show, :index].each do |action|
+      it "should be able to perform #{ action } action", :anonymous_access => true do
+        get action, :id => @product.id, :platform_id => @platform.id
+        response.should render_template(action)
+        response.should be_success
       end
     end
   end
 
   context 'for global admin' do
     before(:each) do
-      @admin = FactoryGirl.create(:admin)
-      set_session_for(@admin)
+      @user.role = "admin"
+      @user.save
     end
 
     it_should_behave_like 'admin user'
   end
 
+  context 'for platform owner' do
+    before(:each) do
+      @user = @platform.owner
+      set_session_for(@user)
+    end
 
+    it_should_behave_like 'admin user'
+  end
 
   context 'for admin relation user' do
     before(:each) do
-      @user = FactoryGirl.create(:user)
-      set_session_for(@user)
       @platform.relations.create!(:actor_type => 'User', :actor_id => @user.id, :role => 'admin')
     end
 
@@ -83,10 +98,6 @@ describe Platforms::ProductsController do
   end
 
   context 'for no relation user' do
-    before(:each) do
-      @user = FactoryGirl.create(:user)
-      set_session_for(@user)
-    end
 
     it 'should not be able to create product' do
       lambda { post :create, @create_params }.should change{ Product.count }.by(0)
