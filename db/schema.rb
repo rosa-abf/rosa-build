@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120906115648) do
+ActiveRecord::Schema.define(:version => 20120910094748) do
 
   create_table "activity_feeds", :force => true do |t|
     t.integer  "user_id",    :null => false
@@ -351,6 +351,7 @@ ActiveRecord::Schema.define(:version => 20120906115648) do
     t.datetime "updated_at"
     t.string   "interest"
     t.text     "more"
+    t.string   "language"
   end
 
   add_index "register_requests", ["email"], :name => "index_register_requests_on_email", :unique => true, :case_sensitive => false

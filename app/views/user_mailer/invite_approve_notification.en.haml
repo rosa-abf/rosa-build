@@ -1,0 +1,7 @@
+%p== Hello, #{@register_request.name || @register_request.email}.
+
+%p
+  You have been invited to project «ROSA Build System». Please click on the following link for registration:
+  = link_to 'link', new_user_registration_url(:invitation_token => @register_request.token)
+
+%p== Support team «ROSA Build System»
