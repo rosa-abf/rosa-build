@@ -43,9 +43,7 @@ class RegisterRequest < ActiveRecord::Base
   end # generate_token
 
   def invite_approve_notification
-    puts "!!!!!!!!!!========="
     if approved_changed? && approved?
-      puts "!!!!!!!!!!"
       generate_token
       UserMailer.invite_approve_notification(self).deliver
     end
