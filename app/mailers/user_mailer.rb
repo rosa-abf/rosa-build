@@ -37,7 +37,10 @@ class UserMailer < ActionMailer::Base
   end
 
   def invite_approve_notification(register_request)
+    I18n.locale = register_request.language if register_request.language
     @register_request = register_request
-    mail :to => register_request.email, :subject => I18n.t("notifications.subjects.invite_approve_notification")
+    mail :to => register_request.email, :subject => I18n.t("notifications.subjects.invite_approve_notification") do |format|
+      format.html
+    end
   end
 end

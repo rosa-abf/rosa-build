@@ -8,6 +8,7 @@ class Users::RegisterRequestsController < ApplicationController
   end
 
   def create
+    params[:register_request][:language] = I18n.locale if params[:register_request]
     RegisterRequest.create(params[:register_request])
     render :thanks
   end
