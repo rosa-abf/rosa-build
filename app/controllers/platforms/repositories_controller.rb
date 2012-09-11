@@ -16,6 +16,7 @@ class Platforms::RepositoriesController < Platforms::BaseController
   end
 
   def edit
+    @members = @repository.members.order('name')
   end
 
   def update
@@ -30,6 +31,39 @@ class Platforms::RepositoriesController < Platforms::BaseController
       flash[:warning] = @repository.errors.full_messages.join('. ')
       render :action => :edit
     end
+  end
+
+  def remove_members
+    all_user_ids = params['user_remove'].inject([]) {|a, (k, v)| a << k if v.first == '1'; a}
+    all_user_ids.each do |uid|
+      Relation.by_target(@repository).where(:actor_id => uid, :actor_type => 'User').each{|r| r.destroy}
+    end
+    redirect_to edit_platform_repository_path(@platform, @repository)
+  end
+
+  def remove_member
+    u = User.find(params[:member_id])
+    Relation.by_actor(u).by_target(@repository).each{|r| r.destroy}
+
+    redirect_to edit_platform_repository_path(@platform, @repository)
+  end
+
+  def add_member
+    if params[:member_id].present?
+      member = User.find(params[:member_id])
+      if @repository.relations.exists?(:actor_id => member.id, :actor_type => member.class.to_s)
+        flash[:warning] = t('flash.repository.members.already_added', :name => member.uname)
+      else
+        rel = @repository.relations.build(:role => 'admin')
+        rel.actor = member
+        if rel.save
+          flash[:notice] = t('flash.repository.members.successfully_added', :name => member.uname)
+        else
+          flash[:error] = t('flash.repository.members.error_in_adding', :name => member.uname)
+        end
+      end
+    end
+    redirect_to edit_platform_repository_path(@platform, @repository)
   end
 
   def new

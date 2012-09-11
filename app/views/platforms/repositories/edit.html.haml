@@ -1,4 +1,4 @@
--set_meta_tags :title => title_object(@repository)
+-set_meta_tags :title => [title_object(@repository), t('layout.repositories.edit')]
 = render 'submenu'
 = render 'sidebar'
 
@@ -6,3 +6,44 @@
 
 = form_for @repository, :url => platform_repository_path(@platform, @repository), :html => { :class => :form } do |f|
   = render "form", :f => f
+%br
+
+= form_tag remove_members_platform_repository_path(@platform, @repository), :id => 'members_form', :method => :post do
+  %table.tablesorter{:cellpadding => "0", :cellspacing => "0"}
+    %thead
+      %tr
+        - if can? :remove_members, @repository
+          %th
+            \ 
+        %th
+          = t("layout.collaborators.members")
+        - if can? :remove_member, @repository
+          %th.buttons
+            = t("layout.remove")
+    %tbody
+      - @members.each_with_index do |user, num|
+        %tr{:id => "admin-table-members-row#{num}", :class => cycle(:odd, :even)}
+          - if can? :remove_members, @repository
+            %td
+              %span.niceCheck-main{:id => "niceCheckbox#{num}", :style => "background-position: 0px 0px; "}
+                = check_box_tag "user_remove[#{user.id}][]"
+          %td
+            .img
+              = image_tag avatar_url(user)
+            .forimg= link_to user.fullname, user_path(user)
+          - if can? :remove_member, @repository
+            %td.buttons
+              = link_to remove_member_platform_repository_path(@platform, @repository, :member_id => user.id), :method => :delete, :confirm => t("layout.confirm") do
+                %span.delete &nbsp;
+  - if can? :remove_memvers, @repository
+    = submit_tag t("layout.delete"), :class => 'button'
+  .both
+
+- if can? :add_member, @repository
+  .hr.top
+  = form_tag add_member_platform_repository_path(@platform, @repository) do
+    .admin-search
+      = autocomplete_field_tag 'member_id', params[:member_id], autocomplete_user_uname_users_path, :id_element => '#member_id_field'
+    = hidden_field_tag 'member_id', nil, :id => 'member_id_field'
+    = submit_tag t("layout.add"), :class => 'button'
+    .both

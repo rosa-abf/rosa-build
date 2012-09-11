@@ -2,6 +2,11 @@
 class Repository < ActiveRecord::Base
   belongs_to :platform
 
+
+  has_many :relations, :as => :target, :dependent => :destroy
+  has_many :actors, :as => :target, :class_name => 'Relation', :dependent => :destroy
+  has_many :members, :through => :actors, :source => :actor, :source_type => 'User'
+
   has_many :project_to_repositories, :dependent => :destroy, :validate => true
   has_many :projects, :through => :project_to_repositories
   has_one  :key_pair, :dependent => :destroy

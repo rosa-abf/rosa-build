@@ -76,6 +76,9 @@ Rosa::Application.routes.draw do
           get :add_project
           delete :remove_project
           get :projects_list
+          post   :remove_members
+          delete :remove_member
+          post   :add_member
         end
       end
       resources :key_pairs, :only => [:create, :index, :destroy]
