@@ -86,17 +86,12 @@ class Platforms::PlatformsController < Platforms::BaseController
   end
 
   def remove_members
-    all_user_ids = params['user_remove'].inject([]) {|a, (k, v)| a << k if v.first == '1'; a}
-    all_user_ids.each do |uid|
-      Relation.by_target(@platform).where(:actor_id => uid, :actor_type => 'User').each{|r| r.destroy}
-    end
+    Relation.remove_members(params[:user_remove], @platform)
     redirect_to members_platform_path(@platform)
   end
 
   def remove_member
-    u = User.find(params[:member_id])
-    Relation.by_actor(u).by_target(@platform).each{|r| r.destroy}
-
+    Relation.remove_member(params[:member_id], @platform)
     redirect_to members_platform_path(@platform)
   end
 

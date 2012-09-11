@@ -34,17 +34,12 @@ class Platforms::RepositoriesController < Platforms::BaseController
   end
 
   def remove_members
-    all_user_ids = params['user_remove'].inject([]) {|a, (k, v)| a << k if v.first == '1'; a}
-    all_user_ids.each do |uid|
-      Relation.by_target(@repository).where(:actor_id => uid, :actor_type => 'User').each{|r| r.destroy}
-    end
+    Relation.remove_members(params[:user_remove], @repository)
     redirect_to edit_platform_repository_path(@platform, @repository)
   end
 
   def remove_member
-    u = User.find(params[:member_id])
-    Relation.by_actor(u).by_target(@repository).each{|r| r.destroy}
-
+    Relation.remove_member(params[:member_id], @repository)
     redirect_to edit_platform_repository_path(@platform, @repository)
   end
 
