@@ -12,7 +12,7 @@
       %p= @user.professional_experience
       %h4= t("layout.users.public_projects_list") + ":"
       %p
-        - @user.projects.by_visibilities(['open']).each do |project|
+        - @projects.each do |project|
           = link_to project.name, project
           %br
 
