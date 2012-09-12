@@ -2,6 +2,7 @@ ru:
   layout:
     repositories:
       add_project_to: Добавить проект к репозиторию
+      edit: Настройки
       list: Список
       about: О репозитории
       list_header: Репозитории
@@ -38,6 +39,9 @@ ru:
       project_removed: Проект удален из репозитория
       project_not_removed: Не удалось удалить проект из репозитория
       clear: Платформа успешно очищена!
+      members:
+        successfully_added: "Участник %{name} успешно добавлен к репозиторию"
+        error_in_adding: "Не удалось добавить участника %{name}"
 
   activerecord:
     models:

@@ -2,6 +2,7 @@ en:
   layout:
     repositories:
       add_project_to: Add project to repository
+      edit: Settings
       list: List
       about: About repository
       list_header: Repositories
@@ -38,6 +39,9 @@ en:
       project_removed: Project deleted
       project_not_removed: Unable to delete project from repository
       clear: Platform successfully cleared!
+      members:
+        successfully_added: "%{name} successfully added to the repository"
+        error_in_adding: "Unable to add %{name} as member"
 
   activerecord:
     models:

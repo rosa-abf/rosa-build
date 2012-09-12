@@ -73,6 +73,14 @@ class Platform < ActiveRecord::Base
     build_path(name)
   end
 
+  def add_member(member, role = 'admin')
+    Relation.add_member(member, self, role)
+  end
+
+  def remove_member(member)
+    Relation.remove_member(member, self)
+  end
+
   def symlink_path
     Rails.root.join("public", "downloads", name)
   end

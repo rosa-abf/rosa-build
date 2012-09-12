@@ -5,6 +5,7 @@ class Platforms::RepositoriesController < Platforms::BaseController
 
   load_and_authorize_resource :platform
   load_and_authorize_resource :repository, :through => :platform, :shallow => true
+  before_filter :set_members, :only => [:edit, :update]
 
   def index
     @repositories = @repositories.paginate(:page => params[:page])
@@ -30,6 +31,29 @@ class Platforms::RepositoriesController < Platforms::BaseController
       flash[:warning] = @repository.errors.full_messages.join('. ')
       render :action => :edit
     end
+  end
+
+  def remove_members
+    user_ids = params[:user_remove] ?
+      params[:user_remove].map{ |k, v| k if v.first == '1' }.compact : []
+    User.where(:id => user_ids).each{ |user| @repository.remove_member(user) }
+    redirect_to edit_platform_repository_path(@platform, @repository)
+  end
+
+  def remove_member
+    User.where(:id => params[:member_id]).each{ |user| @repository.remove_member(user) }
+    redirect_to edit_platform_repository_path(@platform, @repository)
+  end
+
+  def add_member
+    if member = User.where(:id => params[:member_id]).first
+      if @repository.add_member(member)
+        flash[:notice] = t('flash.repository.members.successfully_added', :name => member.uname)
+      else
+        flash[:error] = t('flash.repository.members.error_in_adding', :name => member.uname)
+      end
+    end
+    redirect_to edit_platform_repository_path(@platform, @repository)
   end
 
   def new
@@ -110,6 +134,12 @@ class Platforms::RepositoriesController < Platforms::BaseController
     @project = Project.find(params[:project_id])
     ProjectToRepository.where(:project_id => @project.id, :repository_id => @repository.id).destroy_all
     redirect_to platform_repository_path(@platform, @repository), :notice => t('flash.repository.project_removed')
+  end
+
+  protected
+
+  def set_members
+    @members = @repository.members.order('name')
   end
 
 end
