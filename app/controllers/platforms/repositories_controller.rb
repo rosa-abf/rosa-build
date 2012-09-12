@@ -34,18 +34,20 @@ class Platforms::RepositoriesController < Platforms::BaseController
   end
 
   def remove_members
-    Relation.remove_members(params[:user_remove], @repository)
+    user_ids = params[:user_remove] ?
+      params[:user_remove].map{ |k, v| k if v.first == '1' }.compact : []
+    User.where(:id => user_ids).each{ |user| @repository.remove_member(user) }
     redirect_to edit_platform_repository_path(@platform, @repository)
   end
 
   def remove_member
-    Relation.remove_members(params[:member_id], @repository)
+    User.where(:id => params[:member_id]).each{ |user| @repository.remove_member(user) }
     redirect_to edit_platform_repository_path(@platform, @repository)
   end
 
   def add_member
     if member = User.where(:id => params[:member_id]).first
-      if Relation.add_member(member, @repository)
+      if @repository.add_member(member)
         flash[:notice] = t('flash.repository.members.successfully_added', :name => member.uname)
       else
         flash[:error] = t('flash.repository.members.error_in_adding', :name => member.uname)

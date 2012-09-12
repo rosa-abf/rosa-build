@@ -86,18 +86,20 @@ class Platforms::PlatformsController < Platforms::BaseController
   end
 
   def remove_members
-    Relation.remove_members(params[:user_remove], @platform)
+    user_ids = params[:user_remove] ?
+      params[:user_remove].map{ |k, v| k if v.first == '1' }.compact : []
+    User.where(:id => user_ids).each{ |user| @platform.remove_member(user) }
     redirect_to members_platform_path(@platform)
   end
 
   def remove_member
-    Relation.remove_members(params[:member_id], @platform)
+    User.where(:id => params[:member_id]).each{ |user| @platform.remove_member(user) }
     redirect_to members_platform_path(@platform)
   end
 
   def add_member
     if member = User.where(:id => params[:member_id]).first
-      if Relation.add_member(member, @platform)
+      if @platform.add_member(member)
         flash[:notice] = t('flash.platform.members.successfully_added', :name => member.uname)
       else
         flash[:error] = t('flash.platform.members.error_in_adding', :name => member.uname)

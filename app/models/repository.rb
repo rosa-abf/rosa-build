@@ -43,6 +43,14 @@ class Repository < ActiveRecord::Base
     end
   end
 
+  def add_member(member, role = 'admin')
+    Relation.add_member(member, self, role)
+  end
+
+  def remove_member(member)
+    Relation.remove_member(member, self)
+  end
+
   class << self
     def build_stub(platform)
       rep = Repository.new

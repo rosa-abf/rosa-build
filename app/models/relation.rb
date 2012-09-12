@@ -22,22 +22,18 @@ class Relation < ActiveRecord::Base
     r.save
   end
 
-  def self.add_member(member, target)
+  def self.add_member(member, target, role)
     if target.relations.exists?(:actor_id => member.id, :actor_type => member.class.to_s) || @platform.try(:owner) == member
       true
     else
-      rel = target.relations.build(:role => 'admin')
+      rel = target.relations.build(:role => role)
       rel.actor = member
       rel.save
     end
   end
 
-  # @param [String, Hash] user_remove
-  # Hash looks like {"9"=>["1"], "32"=>["1"]}
-  def self.remove_members(user_remove, target)
-    member_ids = user_remove.is_a?(Hash) ?
-      user_remove.map{ |k, v| k if v.first == '1' }.compact : user_remove
-    Relation.by_target(target).where(:actor_id => member_ids, :actor_type => 'User').each{|r| r.destroy}
+  def self.remove_member(member, target)
+    Relation.by_actor(member).by_target(target).each{|r| r.destroy}
   end
 
   protected
