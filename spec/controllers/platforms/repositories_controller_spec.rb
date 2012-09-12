@@ -44,7 +44,7 @@ shared_examples_for 'user without change projects in repository rights' do
   end
 end
 
-shared_examples_for 'registered user and guest' do
+shared_examples_for 'registered user or guest' do
   it 'should not be able to perform new action' do
     get :new, :platform_id => @platform.id
     response.should redirect_to(redirect_path)
@@ -147,7 +147,7 @@ describe Platforms::RepositoriesController do
     it_should_behave_like 'registered user' if APP_CONFIG['anonymous_access']
 
     let(:redirect_path) { new_user_session_path }
-    it_should_behave_like 'registered user and guest'
+    it_should_behave_like 'registered user or guest'
     it_should_behave_like 'user without change projects in repository rights'
     
     it "should not be able to perform show action", :anonymous_access => false do
@@ -171,7 +171,7 @@ describe Platforms::RepositoriesController do
     it_should_behave_like 'registered user'
 
     let(:redirect_path) { forbidden_path }
-    it_should_behave_like 'registered user and guest'
+    it_should_behave_like 'registered user or guest'
     it_should_behave_like 'user without change projects in repository rights'
   end
 
@@ -210,7 +210,7 @@ describe Platforms::RepositoriesController do
     it_should_behave_like 'registered user'
 
     let(:redirect_path) { forbidden_path }
-    it_should_behave_like 'registered user and guest'
+    it_should_behave_like 'registered user or guest'
     it_should_behave_like 'user with change projects in repository rights'
   end
 
