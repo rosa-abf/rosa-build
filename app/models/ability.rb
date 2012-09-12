@@ -94,6 +94,7 @@ class Ability
         can [:read, :projects_list], Repository, :platform => {:owner_type => 'Group', :owner_id => user.group_ids}
         can([:read, :projects_list], Repository, read_relations_for('repositories', 'platforms')) {|repository| local_reader? repository.platform}
         can([:create, :edit, :update, :destroy, :projects_list, :add_project, :remove_project], Repository) {|repository| local_admin? repository.platform}
+        can([:remove_members, :remove_member, :add_member], Repository) {|repository| owner?(repository.platform) || local_admin?(repository.platform)}
         can([:add_project, :remove_project], Repository) {|repository| repository.members.exists?(:id => user.id)}
         can(:clear, Platform) {|platform| local_admin?(platform) && platform.personal?}
         can([:change_visibility, :settings, :destroy, :edit, :update], Repository) {|repository| owner? repository.platform}

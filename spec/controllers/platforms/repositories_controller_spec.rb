@@ -117,6 +117,19 @@ shared_examples_for 'platform admin user' do
     response.should render_template(:edit)
   end
 
+  it 'should be able to add new member to repository' do
+    post :add_member, :id => @repository.id, :platform_id => @platform.id, :member_id => @another_user.id
+    response.should redirect_to(edit_platform_repository_path(@repository.platform, @repository))
+    @repository.members.should include(@another_user)
+  end
+
+  it 'should be able to remove member from repository' do
+    @repository.relations.create(:role => 'admin', :actor => @another_user)
+    delete :remove_member, :id => @repository.id, :platform_id => @platform.id, :member_id => @another_user.id
+    response.should redirect_to(edit_platform_repository_path(@repository.platform, @repository))
+    @repository.members.should_not include(@another_user)
+  end
+
   it_should_behave_like 'user with change projects in repository rights'
   it_should_behave_like 'not destroy personal repository' do
     let(:redirect_path) { forbidden_path }
