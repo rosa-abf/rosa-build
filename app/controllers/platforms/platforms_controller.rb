@@ -91,7 +91,7 @@ class Platforms::PlatformsController < Platforms::BaseController
   end
 
   def remove_member
-    Relation.remove_member(params[:member_id], @platform)
+    Relation.remove_members(params[:member_id], @platform)
     redirect_to members_platform_path(@platform)
   end
 

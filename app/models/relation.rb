@@ -32,16 +32,12 @@ class Relation < ActiveRecord::Base
     end
   end
 
-  def self.remove_member(member_id, target)
-    user = User.find(member_id)
-    Relation.by_actor(user).by_target(target).each{|r| r.destroy}
-  end
-
-  # @param user_remove looks like {"9"=>["1"], "32"=>["1"]}
+  # @param [String, Hash] user_remove
+  # Hash looks like {"9"=>["1"], "32"=>["1"]}
   def self.remove_members(user_remove, target)
-    user_ids = user_remove ? user_remove.map{ |k, v| k if v.first == '1' }.compact : []
-    Relation.by_target(target).where(:actor_id => user_ids, :actor_type => 'User').
-      each{|r| r.destroy}
+    member_ids = user_remove.is_a?(Hash) ?
+      user_remove.map{ |k, v| k if v.first == '1' }.compact : user_remove
+    Relation.by_target(target).where(:actor_id => member_ids, :actor_type => 'User').each{|r| r.destroy}
   end
 
   protected

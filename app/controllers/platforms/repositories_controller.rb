@@ -39,7 +39,7 @@ class Platforms::RepositoriesController < Platforms::BaseController
   end
 
   def remove_member
-    Relation.remove_member(params[:member_id], @repository)
+    Relation.remove_members(params[:member_id], @repository)
     redirect_to edit_platform_repository_path(@platform, @repository)
   end
 
