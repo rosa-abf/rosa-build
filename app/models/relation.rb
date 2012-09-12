@@ -22,6 +22,16 @@ class Relation < ActiveRecord::Base
     r.save
   end
 
+  def self.add_member(member, target)
+    if target.relations.exists?(:actor_id => member.id, :actor_type => member.class.to_s) || @platform.try(:owner) == member
+      true
+    else
+      rel = target.relations.build(:role => 'admin')
+      rel.actor = member
+      rel.save
+    end
+  end
+
   def self.remove_member(member_id, target)
     user = User.find(member_id)
     Relation.by_actor(user).by_target(target).each{|r| r.destroy}

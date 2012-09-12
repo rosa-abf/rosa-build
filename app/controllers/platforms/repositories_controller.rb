@@ -44,19 +44,11 @@ class Platforms::RepositoriesController < Platforms::BaseController
   end
 
   def add_member
-    if params[:member_id].present?
-      member = User.find(params[:member_id])
-      if @repository.relations.exists?(:actor_id => member.id, :actor_type => member.class.to_s)
-        flash[:warning] = t('flash.repository.members.already_added', :name => member.uname)
-      else
-        rel = @repository.relations.build(:role => 'admin')
-        rel.actor = member
-        if rel.save
-          flash[:notice] = t('flash.repository.members.successfully_added', :name => member.uname)
-        else
-          flash[:error] = t('flash.repository.members.error_in_adding', :name => member.uname)
-        end
-      end
+    member = User.where(:id => params[:member_id]).first
+    if member && Relation.add_member(member, @repository)
+      flash[:notice] = t('flash.repository.members.successfully_added', :name => member.uname)
+    else
+      flash[:error] = t('flash.repository.members.error_in_adding', :name => member.uname)
     end
     redirect_to edit_platform_repository_path(@platform, @repository)
   end

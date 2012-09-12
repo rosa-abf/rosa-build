@@ -96,19 +96,11 @@ class Platforms::PlatformsController < Platforms::BaseController
   end
 
   def add_member
-    if params[:member_id].present?
-      member = User.find(params[:member_id])
-      if @platform.relations.exists?(:actor_id => member.id, :actor_type => member.class.to_s) or @platform.owner == member
-        flash[:warning] = t('flash.platform.members.already_added', :name => member.uname)
-      else
-        rel = @platform.relations.build(:role => 'admin')
-        rel.actor = member
-        if rel.save
-          flash[:notice] = t('flash.platform.members.successfully_added', :name => member.uname)
-        else
-          flash[:error] = t('flash.platform.members.error_in_adding', :name => member.uname)
-        end
-      end
+    member = User.where(:id => params[:member_id]).first
+    if member && Relation.add_member(member, @platform)
+      flash[:notice] = t('flash.platform.members.successfully_added', :name => member.uname)
+    else
+      flash[:error] = t('flash.platform.members.error_in_adding', :name => member.uname)
     end
     redirect_to members_platform_url(@platform)
   end

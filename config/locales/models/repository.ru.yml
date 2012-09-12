@@ -40,7 +40,6 @@ ru:
       project_not_removed: Не удалось удалить проект из репозитория
       clear: Платформа успешно очищена!
       members:
-        already_added: "%{name} уже является участником репозитория"
         successfully_added: "Участник %{name} успешно добавлен к репозиторию"
         error_in_adding: "Не удалось добавить участника %{name}"
 

@@ -63,7 +63,6 @@ ru:
       cancel_mass_build: Массовая сборка отменена
       clone_success: Клонирование успешно
       members:
-        already_added: "%{name} уже является участником платформы"
         successfully_added: "Участник %{name} успешно добавлен к платформе"
         error_in_adding: "Не удалось добавить участника %{name}"
 
