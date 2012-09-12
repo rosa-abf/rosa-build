@@ -12,8 +12,6 @@
     = label_tag t("activerecord.attributes.project.who_owns.me")
     - if Group.can_own_project(current_user).count > 0
       = radio_button_tag :who_owns, 'me', @who_owns == :me #{}.merge( (@who_owns == :me) ? {:checked => 'checked'} : {} )
-      - puts @who_owns.inspect
-      - puts @who_owns == :group
       = label_tag t("activerecord.attributes.project.who_owns.group")
       = radio_button_tag :who_owns, 'group', @who_owns == :group #{}.merge( (@who_owns == :group) ? {:checked => 'checked'} : {} )
       -# TODO: Make our own select_box helper with new design, blackjack and bitches!
@@ -33,22 +31,21 @@
       = image_tag("lock.png")
     = t("activerecord.attributes.project.visibilities.#{visibility}")
 .both
+.leftlist
+  \ 
+.rightlist
+  .check
+    %span#niceCheckbox1.niceCheck-main= f.check_box :is_package#, :class => 'niceCheckbox1'
+  .forcheck= t("activerecord.attributes.project.is_package")
+  .both
+.both
 - if [:edit, :update].include? act
   .leftlist= t("activerecord.attributes.project.default_branch")
   .rightlist
     = f.select :default_branch,
-          options_from_collection_for_select(@project.repo.branches,
-                                             :name, :name, @project.default_branch),
+          options_from_collection_for_select( @project.repo.branches,
+                                              :name, :name, @project.default_branch),
           :class => 'sel80', :id => 'branch_selector'
-  .both
-- if [:edit, :update].include? act
-  .leftlist
-    \ 
-  .rightlist
-    .check
-      %span#niceCheckbox1.niceCheck-main= f.check_box :is_package#, :class => 'niceCheckbox1'
-    .forcheck= t("activerecord.attributes.project.is_package")
-    .both
   .both
   #maintainer_form{:class => @project.is_package ? '' : 'hidden'}
     = f.hidden_field :maintainer_id, :value => @project.maintainer_id

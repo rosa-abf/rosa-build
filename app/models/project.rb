@@ -51,7 +51,7 @@ class Project < ActiveRecord::Base
   ) }
 
   before_create :set_maintainer
-  after_create :attach_to_personal_repository
+  after_save :attach_to_personal_repository
 
   has_ancestry :orphan_strategy => :rootify #:adopt not available yet
 
@@ -169,7 +169,12 @@ class Project < ActiveRecord::Base
   protected
 
   def attach_to_personal_repository
-    repositories << self.owner.personal_repository if !repositories.exists?(:id => self.owner.personal_repository)
+    owner_rep = self.owner.personal_repository
+    if is_package
+      repositories << owner_rep unless repositories.exists?(:id => owner_rep)
+    else
+      repositories.delete owner_rep
+    end
   end
 
   def set_maintainer
