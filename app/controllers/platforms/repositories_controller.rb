@@ -5,6 +5,7 @@ class Platforms::RepositoriesController < Platforms::BaseController
 
   load_and_authorize_resource :platform
   load_and_authorize_resource :repository, :through => :platform, :shallow => true
+  before_filter :set_members, :only => [:edit, :update]
 
   def index
     @repositories = @repositories.paginate(:page => params[:page])
@@ -16,7 +17,6 @@ class Platforms::RepositoriesController < Platforms::BaseController
   end
 
   def edit
-    @members = @repository.members.order('name')
   end
 
   def update
@@ -132,6 +132,12 @@ class Platforms::RepositoriesController < Platforms::BaseController
     @project = Project.find(params[:project_id])
     ProjectToRepository.where(:project_id => @project.id, :repository_id => @repository.id).destroy_all
     redirect_to platform_repository_path(@platform, @repository), :notice => t('flash.repository.project_removed')
+  end
+
+  protected
+
+  def set_members
+    @members = @repository.members.order('name')
   end
 
 end
