@@ -66,6 +66,29 @@ shared_examples_for 'registered user or guest' do
     response.should redirect_to(redirect_path)
   end
 
+  it 'should not be able to add new member to repository' do
+    post :add_member, :id => @repository.id, :platform_id => @platform.id, :member_id => @another_user.id
+    response.should redirect_to(redirect_path)
+    @repository.members.should_not include(@another_user)
+  end
+
+  it 'should not be able to remove member from repository' do
+    @repository.relations.create(:role => 'admin', :actor => @another_user)
+    delete :remove_member, :id => @repository.id, :platform_id => @platform.id, :member_id => @another_user.id
+    response.should redirect_to(redirect_path)
+    @repository.members.should include(@another_user)
+  end
+
+  it 'should not be able to remove members from repository' do
+    another_user2 = FactoryGirl.create(:user)
+    @repository.relations.create(:role => 'admin', :actor => @another_user)
+    @repository.relations.create(:role => 'admin', :actor => another_user2)
+    post :remove_members, :id => @repository.id, :platform_id => @platform.id,
+      :user_remove => {@another_user.id => [1], another_user2.id => [1]}
+    response.should redirect_to(redirect_path)
+    @repository.members.should include(@another_user, another_user2)
+  end
+
   it 'should not be able to destroy repository in main platform' do
     delete :destroy, :id => @repository.id
     response.should redirect_to(redirect_path)
@@ -128,6 +151,16 @@ shared_examples_for 'platform admin user' do
     delete :remove_member, :id => @repository.id, :platform_id => @platform.id, :member_id => @another_user.id
     response.should redirect_to(edit_platform_repository_path(@repository.platform, @repository))
     @repository.members.should_not include(@another_user)
+  end
+
+  it 'should be able to remove members from repository' do
+    another_user2 = FactoryGirl.create(:user)
+    @repository.relations.create(:role => 'admin', :actor => @another_user)
+    @repository.relations.create(:role => 'admin', :actor => another_user2)
+    post :remove_members, :id => @repository.id, :platform_id => @platform.id,
+      :user_remove => {@another_user.id => [1], another_user2.id => [1]}
+    response.should redirect_to(edit_platform_repository_path(@repository.platform, @repository))
+    @repository.members.should_not include(@another_user, another_user2)
   end
 
   it_should_behave_like 'user with change projects in repository rights'
