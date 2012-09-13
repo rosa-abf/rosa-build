@@ -44,15 +44,18 @@ class Projects::BuildListsController < Projects::BaseController
   def create
     notices, errors = [], []
 
-    @platform = Platform.includes(:repositories).find params[:build_list][:save_to_platform_id]
+    @repository = Repository.find params[:build_list][:save_to_repository_id]
+    @platform = @repository.platform
 
-    @repository = @project.repositories.where(:id => @platform.repository_ids).first
-
-    params[:build_list][:save_to_repository_id] = @repository.id
+    params[:build_list][:save_to_platform_id] = @platform.id
     params[:build_list][:auto_publish] = false unless @repository.publish_without_qa?
 
+
+    build_for_platforms = Repository.select(:platform_id).
+      where(:id => params[:build_list][:include_repos]).group(:platform_id)
+
     Arch.where(:id => params[:arches]).each do |arch|
-      Platform.main.where(:id => params[:build_for_platforms]).each do |build_for_platform|
+      Platform.main.where(:id => build_for_platforms).each do |build_for_platform|
         @build_list = @project.build_lists.build(params[:build_list])
         @build_list.commit_hash = @project.repo.commits(@build_list.project_version.match(/^latest_(.+)/).to_a.last ||
                                   @build_list.project_version).first.id if @build_list.project_version
