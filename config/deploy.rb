@@ -55,7 +55,7 @@ namespace :deploy do
     run "ln -nfs #{fetch :shared_path}/config/database.yml #{fetch :release_path}/config/database.yml"
 
     # Setup application
-    run "cp -n #{fetch :release_path}/config/deploy/application.#{fetch :stage}.yml #{fetch :shared_path}/config/application.yml"
+    run "cp -n #{fetch :release_path}/config/application.yml.sample #{fetch :shared_path}/config/application.yml"
     run "ln -nfs #{fetch :shared_path}/config/application.yml #{fetch :release_path}/config/application.yml"
 
     # It will survive downloads folder between deployments

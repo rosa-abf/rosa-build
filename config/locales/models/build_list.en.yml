@@ -72,7 +72,7 @@ en:
       main_data: Main data
 
       human_current_duration: Build currently takes %{hours} h. %{minutes} min.
-      human_duration: Builded in %{hours} h. %{minutes} min.
+      human_duration: Built in %{hours} h. %{minutes} min.
 
       attached_advisory: Attached advisory
       create_advisory: Create new advisory
