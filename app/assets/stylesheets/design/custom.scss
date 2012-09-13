@@ -1485,3 +1485,9 @@ div.log-wrapper {
 table.tablesorter.platform-maintainers.static-search thead tr.search th input[type="text"] {
     width: 430px;
 }
+
+.all_platforms {
+    > .both { margin: 0 0 5px; }
+    .build_for_pl { font-weight: bold; }
+    .offset25 { padding-left: 10px }
+}
