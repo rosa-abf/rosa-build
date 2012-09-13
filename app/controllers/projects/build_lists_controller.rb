@@ -52,7 +52,7 @@ class Projects::BuildListsController < Projects::BaseController
 
 
     build_for_platforms = Repository.select(:platform_id).
-      where(:id => params[:build_list][:include_repos]).group(:platform_id)
+      where(:id => params[:build_list][:include_repos]).group(:platform_id).map(&:platform_id)
 
     Arch.where(:id => params[:arches]).each do |arch|
       Platform.main.where(:id => build_for_platforms).each do |build_for_platform|
