@@ -35,7 +35,12 @@ $(document).ready(function() {
 
 
     setBranchSelected();
-    checkAccessToAutomatedPublising();
+    var build_list_auto_publish = $('#build_list_auto_publish');
+    if (selected_option.attr('publish_without_qa') == '1') {
+      build_list_auto_publish.removeAttr('disabled').attr('checked', 'checked');
+    } else {
+      build_list_auto_publish.removeAttr('checked').attr('disabled', 'disabled');
+    }
   });
 
   $('#build_list_save_to_repository_id').trigger('change');
@@ -53,18 +58,6 @@ $(document).ready(function() {
 
 });
 
-function getSaveToRepositoryOption() {
-  return $('#build_list_save_to_repository_id option:selected');
-}
-
-function checkAccessToAutomatedPublising() {
-  if (getSaveToRepositoryOption().attr('publish_without_qa') == '1') {
-    $('#build_list_auto_publish').removeAttr('disabled').attr('checked', 'checked');
-  } else {
-    $('#build_list_auto_publish').removeAttr('checked').attr('disabled', 'disabled');
-  }
-}
-
 function setPlChecked(pointer, checked) {
   var pl_cbx = $(pointer).parent().parent().parent().find('input[type="checkbox"].build_bpl_ids');
   var pl_id = pl_cbx.val();
@@ -76,7 +69,7 @@ function setPlChecked(pointer, checked) {
 }
 
 function setBranchSelected() {
-  var selected_option = getSaveToRepositoryOption();
+  var selected_option = $('#build_list_save_to_repository_id option:selected');
   var pl_id = selected_option.attr('platform_id');
   // Checks if selected platform is main or not:
   if ( $('.all_platforms').find('input[type="checkbox"][value=' + pl_id + '].build_bpl_ids').size() > 0 ) {
