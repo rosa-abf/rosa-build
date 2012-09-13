@@ -18,7 +18,7 @@ ru:
         additional_repos: Дополнительные репозитории
         include_repos: Подключаемые репозитории
         created_at: Создан
-        save_to_repository: Сохранено в репозиторий
+        save_to_repository: Сохранить в репозиторий
         build_for_platform: Собрано для платформы
         update_type: Критичность обновления
         build_requires: Пересборка с зависимостями
