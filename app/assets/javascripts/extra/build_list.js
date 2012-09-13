@@ -5,7 +5,6 @@ $(document).ready(function() {
 
     var platform_id = selected_option.attr('platform_id');
     var rep_name = selected_option.text().match(/[\w-]+\/([\w-]+)/)[1];
-    var base_platforms = $('.all_platforms .build_bpl_ids');
 
     var build_platform = $('#build_for_pl_' + platform_id);
     var all_repositories = $('.all_platforms input');
