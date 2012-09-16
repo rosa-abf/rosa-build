@@ -132,6 +132,18 @@ class ActivityFeedObserver < ActiveRecord::Observer
       if [BuildList::BUILD_PUBLISHED, BuildServer::SUCCESS, BuildServer::BUILD_ERROR, BuildServer::PLATFORM_NOT_FOUND,
            BuildServer::PROJECT_NOT_FOUND, BuildServer::PROJECT_VERSION_NOT_FOUND, BuildList::FAILED_PUBLISH].include? record.status or
          (record.status == BuildList::BUILD_PENDING && record.bs_id_changed?)
+
+        
+=begin
+        unless record.mass_build
+          if (record.auto_publish? &&
+              [BuildList::BUILD_PUBLISHED, BuildList::FAILED_PUBLISH].include? record.status) ||
+              (!record.auto_publish? && )
+            users = 
+            UserMailer.build_list_notification(record, record.user) if record.user.
+          end
+        end
+=end
         record.project.owner_and_admin_ids.each do |recipient|
           ActivityFeed.create(
             :user => User.find(recipient),
