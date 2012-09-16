@@ -18,7 +18,6 @@ ru:
       new_user_notification: Регистрация на проекте «%{ project_name }»
       issue_assign_notification: Вам назначили задачу
       invite_approve_notification: Приглашение в ABF
-      build_task: Сборочное задание
 
     bodies:
       new_comment_notification:
