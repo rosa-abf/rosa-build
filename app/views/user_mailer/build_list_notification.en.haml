@@ -1,16 +1,13 @@
 %p
   Build task 
   - if @build_list.project
-    = link_to "«#{@build_list.project.name_with_owner}»", @build_list.project
+    = link_to @build_list.project.name_with_owner, @build_list.project
   - else
-    = "«#{t("layout.projects.unexisted_project")}»"
-  ,
-  = @user.name
+    = t("layout.projects.unexisted_project")
   finished with status
-  = "«#{@build_list.human_status}»."
-
+  = "#{@build_list.human_status}."
 %p
-  More detailed information You can get by link:
-  = link_to "task [№ #{(@build_list.bs_id ? @build_list.bs_id : t("layout.build_lists.bs_id_not_set"))}]", @build_list
+  More detailed information you can get by link:
+  = link_to "task [№ #{@build_list.bs_id ? @build_list.bs_id : t("layout.build_lists.bs_id_not_set")}]", @build_list
 
 %p== Support team «ROSA Build System»
