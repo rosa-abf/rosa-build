@@ -25,25 +25,20 @@ class BuildListObserver < ActiveRecord::Observer
   private
 
   def self.notify_users(build_list)
-    unless build_list.mass_build_id
+    if !build_list.mass_build_id &&
+       ( (build_list.auto_publish? && PUBLICATION_STATUSES.include?(build_list.status)) ||
+         (!build_list.auto_publish? && STATUSES.include?(build_list.status)) )
+
       users = []
       if build_list.project # find associated users
-        associated_users = build_list.project.members
-        associated_users << (build_list.project.owner.is_a?(User) ?
-          build_list.project.owner : build_list.project.owner.members)
-        users = associated_users.flatten.uniq.
+        users = build_list.project.all_members.
           select{ |user| user.notifier.can_notify? && user.notifier.new_associated_build? }
       end
       if build_list.user.notifier.can_notify? && build_list.user.notifier.new_build?
-        users << build_list.user unless users.include?(build_list.user)
+        users | [build_list.user]
       end
       users.each do |user|
-        if (( build_list.auto_publish? &&
-              PUBLICATION_STATUSES.include?(build_list.status) ) ||
-            ( !build_list.auto_publish? && STATUSES.include?(build_list.status) ))
-
-            UserMailer.build_list_notification(build_list, user).deliver
-        end
+        UserMailer.build_list_notification(build_list, user).deliver
       end
     end
   end # notify_users
