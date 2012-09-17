@@ -35,7 +35,7 @@ class BuildListObserver < ActiveRecord::Observer
           select{ |user| user.notifier.can_notify? && user.notifier.new_associated_build? }
       end
       if build_list.user.notifier.can_notify? && build_list.user.notifier.new_build?
-        users | [build_list.user]
+        users = users | [build_list.user]
       end
       users.each do |user|
         UserMailer.build_list_notification(build_list, user).deliver
