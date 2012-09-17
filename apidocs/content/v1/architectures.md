@@ -8,30 +8,9 @@ TYPE: GET
 
 RESPONSE:
 
-```json
-{
-  "architectures": [
-    {
-      "id": <architecture identifier>,
-      "name": <architecture name>
-    },
-    ...
-  ]
-```
+<%= json(:architecture_list_response) %>
 
 RESPONSE EXAMPLE:
 
-```json
-{
-  "architectures": [
-    {
-      "id": 1,
-      "name": "x86_64"
-    },
-    {
-      "id": 2,
-      "name": "i586"
-    },
-    ...
-  ]
-```
+<%= json(:architecture_list_response_example) %>
+

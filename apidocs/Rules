@@ -13,27 +13,6 @@
 compile '/static/*' do
 end
 
-compile '/CNAME/' do
-end
-
-compile '/feed/' do
-  filter :erb
-  filter :kramdown
-  filter :colorize_syntax,
-    :colorizers => {:javascript => :pygmentsrb}
-end
-
-%w(v3 */).each do |version|
-  compile "/changes/#{version}" do
-    filter :erb
-    filter :kramdown
-    filter :colorize_syntax,
-      :colorizers => {:javascript => :pygmentsrb}
-    layout 'changes' if version[0] == '*'
-    layout 'default'
-  end
-end
-
 compile '*' do
   filter :erb
   filter :kramdown
@@ -44,14 +23,6 @@ end
 
 route '/static/*' do
   item.identifier[7..-2]
-end
-
-route '/CNAME/' do
-  '/CNAME'
-end
-
-route '/feed' do
-  '/changes.atom'
 end
 
 route '*' do
