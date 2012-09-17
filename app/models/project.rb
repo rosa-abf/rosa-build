@@ -77,7 +77,7 @@ class Project < ActiveRecord::Base
   end
 
   def all_members
-    (members | (owner_type == 'User' ? [owner] : owner.members)).uniq
+    members | (owner_type == 'User' ? [owner] : owner.members)
   end
 
   def members
