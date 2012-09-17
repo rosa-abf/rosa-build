@@ -9,7 +9,7 @@ $(document).ready(function() {
     var build_platform = $('#build_for_pl_' + platform_id);
     var all_repositories = $('.all_platforms input');
     all_repositories.removeAttr('checked');
-    if (build_platform.length == 0) {
+    if (build_platform.size() == 0) {
       all_repositories.removeAttr('disabled');
     } else {
       all_repositories.attr('disabled', 'disabled');
@@ -19,6 +19,7 @@ $(document).ready(function() {
       if (rep_name != 'main') {
         parent.find('input[rep_name="' + rep_name + '"]').attr('checked', 'checked');
       }
+      setBranchSelected(selected_option);
     }
     var build_list_auto_publish = $('#build_list_auto_publish');
     if (selected_option.attr('publish_without_qa') == '1') {
@@ -30,3 +31,17 @@ $(document).ready(function() {
 
   $('#build_list_save_to_repository_id').trigger('change');
 });
+
+function setBranchSelected(selected_option) {
+  var pl_name = selected_option.text().match(/([\w-.]+)\/[\w-.]+/)[1];
+  var bl_version_sel = $('#build_list_project_version');
+  var branch_pl_opt = bl_version_sel.find('option[value="latest_' + pl_name + '"]');
+  // If there is branch we need - set it selected:
+  if (branch_pl_opt.size() > 0) {
+    bl_version_sel.find('option[selected]').removeAttr('selected');
+    branch_pl_opt.attr('selected', 'selected');
+    bl_version_sel.val(branch_pl_opt);
+    // hack for FF to force render of select box.
+    bl_version_sel[0].innerHTML = bl_version_sel[0].innerHTML;
+  }
+}
