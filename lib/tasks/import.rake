@@ -84,8 +84,8 @@ namespace :import do
       system("bundle exec rake import:sync:run RELEASE=devel/cooker PLATFORM=cooker REPOSITORY=main")
       system("bundle exec rake import:sync:run RELEASE=devel/cooker PLATFORM=cooker REPOSITORY=contrib")
       system("bundle exec rake import:sync:run RELEASE=devel/cooker PLATFORM=cooker REPOSITORY=non-free")
-      system("bundle exec rake import:sync:run SOURCE=rsync://mirror.yandex.ru/fedora-epel/6/SRPMS/ DESTINATION=#{File.join(APP_CONFIG['root_path'], 'mirror.yandex.ru', 'fedora-epel', '6', 'SRPMS')} PLATFORM=testhat_personal REPOSITORY=main OWNER=testhat BRANCH=import")
-      system("bundle exec rake import:sync:run SOURCE=rsync://rh-mirror.redhat.com/redhat/linux/enterprise/6Server/en/os/SRPMS/ DESTINATION=#{File.join(APP_CONFIG['root_path'], 'rh-mirror.redhat.com', 'redhat', 'linux', 'enterprise', '6Server', 'en', 'os', 'SRPMS')} PLATFORM=testhat_personal REPOSITORY=main OWNER=testhat BRANCH=import")
+      system("bundle exec rake import:sync:run SOURCE=rsync://mirror.yandex.ru/fedora-epel/6/SRPMS/ DESTINATION=#{File.join(APP_CONFIG['root_path'], 'mirror.yandex.ru', 'fedora-epel', '6', 'SRPMS')} PLATFORM=server_personal REPOSITORY=main OWNER=server BRANCH=import")
+      system("bundle exec rake import:sync:run SOURCE=rsync://rh-mirror.redhat.com/redhat/linux/enterprise/6Server/en/os/SRPMS/ DESTINATION=#{File.join(APP_CONFIG['root_path'], 'rh-mirror.redhat.com', 'redhat', 'linux', 'enterprise', '6Server', 'en', 'os', 'SRPMS')} PLATFORM=server_personal REPOSITORY=main OWNER=server BRANCH=import")
     end
 
     task :run => [:rsync, :parse]

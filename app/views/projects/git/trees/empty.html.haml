@@ -30,7 +30,7 @@
     %h3= t("layout.projects.git_global_setup")
     %p
       %code
-        = "git config --global user.name  #{current_user.fullname}"
+        = "git config --global user.name  '#{current_user.fullname}'"
         %br/
         = "git config --global user.email #{current_user.email}"
         %br/

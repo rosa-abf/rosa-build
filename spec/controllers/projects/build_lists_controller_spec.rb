@@ -109,7 +109,7 @@ describe Projects::BuildListsController do
         set_session_for(@user)
         @show_params = {:owner_name => @project.owner.uname, :project_name => @project.name, :id => @build_list.id}
       end
-  
+
       context 'for all build lists' do
         before(:each) do
           @build_list1 = FactoryGirl.create(:build_list_core)
@@ -326,8 +326,8 @@ describe Projects::BuildListsController do
     describe 'publish_build' do
       before {
         test_git_commit(build_list.project)
-        build_list.update_attribute :commit_hash, build_list.project.repo.commits('master').last.id
-        build_list.update_attribute(:status, BuildList::BUILD_PUBLISH)
+        build_list.update_column(:commit_hash, build_list.project.repo.commits('master').last.id)
+        build_list.update_column(:status, BuildList::BUILD_PUBLISH)
         build_list_package
       }
 
@@ -337,7 +337,7 @@ describe Projects::BuildListsController do
       end
 
       it(:passes) {
-        build_list.update_attribute(:status, BuildServer::BUILD_STARTED)
+        build_list.update_column(:status, BuildServer::BUILD_STARTED)
         do_get(BuildServer::SUCCESS)
         response.should be_ok
       }
@@ -401,7 +401,7 @@ describe Projects::BuildListsController do
 
     describe 'pre_build' do
       before do
-        build_list.update_attribute :status, BuildList::BUILD_PENDING
+        build_list.update_column :status, BuildList::BUILD_PENDING
       end
 
       def do_get
@@ -428,29 +428,29 @@ describe Projects::BuildListsController do
 
       context 'with auto_publish' do
         it(:passes) {
-          build_list.update_attribute(:started_at, (Time.now - 1.day))
-          build_list.update_attribute(:status, BuildServer::BUILD_STARTED)
+          build_list.update_column(:started_at, (Time.now - 1.day))
+          build_list.update_column(:status, BuildServer::BUILD_STARTED)
           build_list.reload
           lambda{ do_get(BuildServer::SUCCESS) }.should change(build_list, :status).to(BuildList::BUILD_PUBLISH)
         }
         it(:passes) {
-          build_list.update_attribute(:started_at, (Time.now - 1.day))
-          build_list.update_attribute(:status, BuildServer::BUILD_STARTED)
+          build_list.update_column(:started_at, (Time.now - 1.day))
+          build_list.update_column(:status, BuildServer::BUILD_STARTED)
           lambda{ do_get(BuildServer::BUILD_ERROR) }.should change(build_list, :status).to(BuildServer::BUILD_ERROR)
         }
       end
 
       context 'without auto_publish' do
-        before { build_list.update_attribute(:auto_publish, false) }
+        before { build_list.update_column(:auto_publish, false) }
 
         it(:passes) {
-          build_list.update_attribute(:started_at, (Time.now - 1.day))
-          build_list.update_attribute(:status, BuildServer::BUILD_STARTED)
+          build_list.update_column(:started_at, (Time.now - 1.day))
+          build_list.update_column(:status, BuildServer::BUILD_STARTED)
           lambda{ do_get(BuildServer::SUCCESS) }.should change(build_list, :status).to(BuildServer::SUCCESS)
         }
         it(:passes) {
-          build_list.update_attribute(:started_at, (Time.now - 1.day))
-          build_list.update_attribute(:status, BuildServer::BUILD_STARTED)
+          build_list.update_column(:started_at, (Time.now - 1.day))
+          build_list.update_column(:status, BuildServer::BUILD_STARTED)
           lambda{ do_get(BuildServer::BUILD_ERROR) }.should change(build_list, :status).to(BuildServer::BUILD_ERROR)
         }
       end

@@ -5,6 +5,7 @@ class Project < ActiveRecord::Base
   NAME_REGEXP = /[a-zA-Z0-9_\-\+\.]+/
 
   belongs_to :owner, :polymorphic => true, :counter_cache => :own_projects_count
+  belongs_to :maintainer, :class_name => "User"
 
   has_many :issues, :dependent => :destroy
   has_many :labels, :dependent => :destroy
@@ -21,12 +22,15 @@ class Project < ActiveRecord::Base
   has_many :packages, :class_name => "BuildList::Package", :dependent => :destroy
   has_and_belongs_to_many :advisories # should be without :dependent => :destroy
 
-  validates :name, :uniqueness => {:scope => [:owner_id, :owner_type], :case_sensitive => false}, :presence => true, :format => {:with => /^#{NAME_REGEXP}$/, :message => I18n.t("activerecord.errors.project.uname")}
+  validates :name, :uniqueness => {:scope => [:owner_id, :owner_type], :case_sensitive => false},
+                   :presence => true,
+                   :format => {:with => /^#{NAME_REGEXP}$/, :message => I18n.t("activerecord.errors.project.uname")}
   validates :owner, :presence => true
+  validates :maintainer_id, :presence => true, :unless => :new_record?
   validates :visibility, :presence => true, :inclusion => {:in => VISIBILITIES}
   validate { errors.add(:base, :can_have_less_or_equal, :count => MAX_OWN_PROJECTS) if owner.projects.size >= MAX_OWN_PROJECTS }
 
-  attr_accessible :name, :description, :visibility, :srpm, :is_package, :default_branch, :has_issues, :has_wiki
+  attr_accessible :name, :description, :visibility, :srpm, :is_package, :default_branch, :has_issues, :has_wiki, :maintainer_id
   attr_readonly :name, :owner_id, :owner_type
 
   scope :recent, order("name ASC")
@@ -35,9 +39,19 @@ class Project < ActiveRecord::Base
   scope :by_name, lambda {|name| where('projects.name ILIKE ?', name)}
   scope :by_visibilities, lambda {|v| where(:visibility => v)}
   scope :opened, where(:visibility => 'open')
-  scope :addable_to_repository, lambda { |repository_id| where("projects.id NOT IN (SELECT project_to_repositories.project_id FROM project_to_repositories WHERE (project_to_repositories.repository_id = #{ repository_id }))") }
+  scope :package, where(:is_package => true)
+  scope :addable_to_repository, lambda { |repository_id| where %Q(
+    projects.id NOT IN (
+      SELECT
+        ptr.project_id
+      FROM
+        project_to_repositories AS ptr
+      WHERE (ptr.repository_id = #{ repository_id })
+    )
+  ) }
 
-  after_create :attach_to_personal_repository
+  before_create :set_maintainer
+  after_save :attach_to_personal_repository
 
   has_ancestry :orphan_strategy => :rootify #:adopt not available yet
 
@@ -120,6 +134,8 @@ class Project < ActiveRecord::Base
       c.parent_id = id
       c.owner = new_owner
       c.updated_at = nil; c.created_at = nil # :id = nil
+      # Hack to call protected method :)
+      c.send :set_maintainer
       c.save
     end
   end
@@ -153,6 +169,16 @@ class Project < ActiveRecord::Base
   protected
 
   def attach_to_personal_repository
-    repositories << self.owner.personal_repository if !repositories.exists?(:id => self.owner.personal_repository)
+    owner_rep = self.owner.personal_repository
+    if is_package
+      repositories << owner_rep unless repositories.exists?(:id => owner_rep)
+    else
+      repositories.delete owner_rep
+    end
   end
+
+  def set_maintainer
+    self.maintainer_id = (owner_type == 'User') ? self.owner_id : self.owner.owner_id
+  end
+
 end

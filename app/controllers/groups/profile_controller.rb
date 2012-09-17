@@ -10,7 +10,7 @@ class Groups::ProfileController < Groups::BaseController
   end
 
   def show
-    @projects = @group.projects #.paginate(:page => params[:project_page], :per_page => 10)
+    @projects = @group.projects.by_visibilities(['open'])
   end
 
   def new

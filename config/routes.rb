@@ -15,6 +15,7 @@ Rosa::Application.routes.draw do
   get  '/forbidden'        => 'pages#forbidden',      :as => 'forbidden'
   get  '/terms-of-service' => 'pages#tos',            :as => 'tos'
   get  '/tour/:id'         => 'pages#tour_inside',    :as => 'tour_inside', :id => /projects|sources|builds/
+  match '/invite.html'     => redirect('/register_requests/new')
 
   get '/activity_feeds.:format' => 'activity_feeds#index', :as => 'atom_activity_feeds', :format => /atom/
   if APP_CONFIG['anonymous_access']
@@ -55,7 +56,7 @@ Rosa::Application.routes.draw do
         post   :clear
         get    :clone
         get    :members
-        post   :remove_members
+        post   :remove_members # fixme: change post to delete
         delete :remove_member
         post   :add_member
         post   :make_clone
@@ -75,13 +76,16 @@ Rosa::Application.routes.draw do
           get :add_project
           delete :remove_project
           get :projects_list
+          post   :remove_members # fixme: change post to delete
+          delete :remove_member
+          post   :add_member
         end
       end
       resources :key_pairs, :only => [:create, :index, :destroy]
       resources :products do
         resources :product_build_lists, :only => [:create, :destroy]
       end
-
+      resources :maintainers, :only => [:index]
     end
     match '/private/:platform_name/*file_path' => 'privates#show'
 
@@ -184,6 +188,7 @@ Rosa::Application.routes.draw do
         post '/preview' => 'projects#preview', :as => 'md_preview'
       end
       # Resource
+      get '/autocomplete_maintainers' => 'projects#autocomplete_maintainers', :as => :autocomplete_maintainers
       get '/modify' => 'projects#edit', :as => :edit_project
       put '/' => 'projects#update'
       delete '/' => 'projects#destroy'
