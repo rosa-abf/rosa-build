@@ -6,6 +6,7 @@ describe BuildListObserver do
     let!(:user) { FactoryGirl.create(:user) }
     let!(:build_list) { FactoryGirl.create(:build_list, :user => user, :auto_publish => false) }
 
+    before(:all) { ActionMailer::Base.deliveries = [] }
     before { build_list.update_attribute(:status, BuildServer::BUILD_STARTED) }
     after { ActionMailer::Base.deliveries = [] }
 
