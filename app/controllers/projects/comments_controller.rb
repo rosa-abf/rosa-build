@@ -22,13 +22,8 @@ class Projects::CommentsController < Projects::BaseController
   end
 
   def update
-    if @comment.update_attributes(params[:comment])
-      flash[:notice] = I18n.t("flash.comment.saved")
-      redirect_to project_commentable_path(@project, @commentable)
-    else
-      flash[:error] = I18n.t("flash.comment.save_error")
-      render :action => 'new'
-    end
+    status = @comment.update_attributes(params[:comment]) ? 200 : 500
+    render :inline => view_context.markdown(@comment.body), :status => status
   end
 
   def destroy
