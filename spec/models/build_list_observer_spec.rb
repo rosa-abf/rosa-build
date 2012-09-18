@@ -20,14 +20,19 @@ describe BuildListObserver do
         should have(1).item
       end
 
-      it "gets notification by email when mass build and status - Build published" do
+      it "gets notification by email when auto_publish and status - Build published" do
         build_list.update_attributes(:auto_publish => true, :status => BuildList::BUILD_PUBLISHED)
         should have(1).item
       end
 
-      it "doesn't get notification by email when mass build and status - Build complete" do
+      it "doesn't get notification by email when auto_publish and status - Build complete" do
         build_list.update_attributes(:auto_publish => true, :status => BuildServer::SUCCESS)
         should have(:no).items
+      end
+
+      it "doesn't get notification by email when mass build" do
+        build_list.update_attributes(:mass_build_id => 1, :status => BuildList::BUILD_PUBLISHED)
+        should have(:no).item
       end
 
       it "doesn't get notification by email when notification by email has been disabled" do
@@ -38,6 +43,7 @@ describe BuildListObserver do
     end
 
     subject { ActionMailer::Base.deliveries }
+
     context "user created build task" do
       let!(:notifier) { user.notifier }
       before do
