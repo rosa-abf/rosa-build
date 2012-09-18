@@ -7,6 +7,7 @@ This request will return you all needed data about repositories list into JSON f
 URL: /api/v1/repositories/:id.json
 
 PARAMS:
+
 * :id - identifier of current project
 
 TYPE: GET

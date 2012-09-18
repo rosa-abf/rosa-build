@@ -9,6 +9,7 @@ URL: /api/v1/projects/:id.json
 TYPE: GET
 
 PARAMS:
+
 * :id - identifier of current project
 
 RESPONSE:

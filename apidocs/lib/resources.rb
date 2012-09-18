@@ -21,10 +21,6 @@ module GitHub
         500 => '500 Server Error'
       }
 
-      AUTHORS = {
-        :technoweenie => '821395fe70906c8290df7f18ac4ac6cf'
-      }
-
       DefaultTimeFormat = "%B %-d, %Y".freeze
 
       def post_date(item)
