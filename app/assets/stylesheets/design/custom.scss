@@ -1494,8 +1494,8 @@ table.tablesorter.platform-maintainers.static-search thead tr.search th input[ty
 
 .md_and_cm {
   overflow: auto;
-  min-height: 112px;
   margin: 10px 0 10px;
+  padding: 5px;
   border-radius: 4px 4px 4px 4px;
 
   pre {
@@ -1529,7 +1529,8 @@ table.tablesorter.platform-maintainers.static-search thead tr.search th input[ty
   line-height: 5px;
 }
 
-#open-comment textarea {
+#open-comment {
+  textarea {
     background: none repeat scroll 0 0 #FFFFFF;
     border: 1px solid #DEDEDE;
     border-radius: 4px 4px 4px 4px;
@@ -1540,7 +1541,12 @@ table.tablesorter.platform-maintainers.static-search thead tr.search th input[ty
     width: 98%;
     max-width: 98%;
     margin: 10px 0 10px;
-    resize: both;
+    resize: vertical;
+  }
+
+  .tab-pane textarea {
+    min-height: 112px;
+  }
 }
 
 #open-comment > h3.tmargin0 {

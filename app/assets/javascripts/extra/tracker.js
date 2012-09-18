@@ -232,7 +232,9 @@ $(document).ready(function() {
                   form.fadeOut('slow');
                   $('#edit_issue_content').fadeIn('slow');
                   $('h3.issue_title').html(form.find('#issue_title').attr('value'));
-                  $('.fulltext.view.issue_body').html(data);
+                  $('.fulltext.view.issue_body').html(data).find('code').each(function (code) {
+                         CodeMirror.runMode(this.innerHTML.replace(/&amp;/gi, '&'), this.className, this);
+                       });
                 },
       error: function(data){
                alert('error'); // TODO remove

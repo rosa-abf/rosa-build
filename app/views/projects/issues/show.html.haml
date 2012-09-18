@@ -20,10 +20,12 @@
 - if can? :update, @issue
   =link_to t('layout.edit'), '#', :id => 'edit_issue_content', :class => 'button'
   =form_for :issue, :url => [@project, @issue], :method => :put, :html => { :class => 'edit_form issue', :style => 'display:none;' } do |f|
-    .leftlist= t('activerecord.attributes.issue.title') + ':'
-    .rightlist= f.text_field :title
-    .leftlist= t('activerecord.attributes.issue.body') + ':'
-    .rightlist= f.text_area :body
+    #open-comment.comment.view
+      %h3.tmargin0{:style => 'margin-bottom: 0;'}= t 'activerecord.attributes.issue.title'
+      .wrapper= f.text_area :title, :cols => 80, :rows => 1, :style => 'height: 16px; margin: 0 0 10px;'
+    #open-comment.comment.view
+      %h3.tmargin0= t 'activerecord.attributes.issue.body'
+      =render 'projects/comments/body', :f => f, :id => 'update'
     .both
     =f.submit t('layout.update'), :id => 'update_issue_content'
     =link_to t('layout.issues.cancel_button'), '#', :id => 'cancel_edit_issue_content', :class => 'button'
@@ -33,4 +35,6 @@
 = render "projects/comments/list", :list => @issue.comments, :project => @project, :commentable => @issue
 %br
 = render "projects/comments/add", :project => @project, :commentable => @issue if current_user
+
+=hidden_field_tag :preview_url, project_md_preview_path(@project)
 
