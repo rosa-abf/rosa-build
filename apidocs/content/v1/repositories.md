@@ -1,6 +1,10 @@
-## 2. Repository
+---
+title: Platforms | GitHub API
+---
 
-### 2.1. Repository data
+## 1. Repositories
+
+### 1.1. Repository data
 
 This request will return you all needed data about repositories list into JSON format.
 

@@ -2,14 +2,24 @@
 title: Project Build | GitHub API
 ---
 
+* <a href="#show-build-data">Show build data</a>
+* <a href="#create-build-task">Create build task</a>
+* <a href="#cancel-build-task">Cancel build task</a>
+* <a href="#publish-build-task">Publish build task</a>
+* <a href="#reject-publish-build-task">Reject publish build task</a>
+* <a href="#search">Search</a>
+* <a href="#destroy-build-task">Destroy build task</a>
+* <a href="#and-401-errors">404, 500, 503 and 401 errors</a>
+
 ## 1. Show build data
 
 This request will return you all needed data of requested build task into JSON format.
 
-URL: /buils_lists/:id.json
+URL:
 
-TYPE: GET
+    GET /buils_lists/:id.json
 
+&nbsp;
 PARAMS:
 : * :id - identifier of current build task
 
@@ -34,14 +44,14 @@ Create parameters:
 POSIBLE UPDATE TYPES:
 
     security
-    bugfix 
-    enhancement 
-    recommended 
+    bugfix
+    enhancement
+    recommended
     newpackage
 
-URL: /api/v1/build_lists.json
+URL:
 
-TYPE: POST
+    POST /api/v1/build_lists.json
 
 REQUEST EXAMPLE:
 
@@ -59,9 +69,9 @@ RESPONSE EXAMPLE:
 
 By this request you can cancel build task.
 
-URL: /buils_lists/:id/cancel.json
+URL:
 
-TYPE: PUT
+    PUT /buils_lists/:id/cancel.json
 
 RESPONSE:
 
@@ -78,9 +88,9 @@ EXAMPLE:
 
 By this request you can publish build task.
 
-URL: /buils_lists/:id/publish.json
+URL:
 
-TYPE: PUT
+    PUT /buils_lists/:id/publish.json
 
 RESPONSE:
 
@@ -97,9 +107,9 @@ EXAMPLE:
 
 By this request you can reject publish build task.
 
-URL: /buils_lists/:id/reject_publish.json
+URL:
 
-TYPE: PUT
+    PUT /buils_lists/:id/reject_publish.json
 
 RESPONSE:
 
@@ -151,9 +161,9 @@ BUILD LIST POSIBLE STATUSES
         Project not found: 3
         Project version not found: 4
 
-URL: /build_lists.json?<search params>
+URL:
 
-TYPE: GET
+    GET /build_lists.json?<search params>
 
 RESPONSE:
 

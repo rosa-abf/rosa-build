@@ -1,6 +1,13 @@
-## 3. Platform
+---
+title: Platforms | GitHub API
+---
 
-### 3.1. Platform data
+* <a href="#platform-data">Platform data</a>
+* <a href="#platform-list">Platform list</a>
+
+## 1. Platforms
+
+### 1.1. Platform data
 
 This request will return you all needed data about platforms list into JSON format.
 
@@ -20,7 +27,7 @@ EXAMPLE:
 
 <%= json(:platform_data_response_example) %>
 
-### 3.2. Platform list
+### 1.2. Platform list
 
 This request will return you all needed data about platform into JSON format.
 
