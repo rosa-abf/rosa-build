@@ -12,31 +12,32 @@ describe BuildListObserver do
     shared_examples_for 'build list notifications by email' do
       it "gets notification by email when status - Build complete" do
         build_list.update_attribute(:status, BuildServer::SUCCESS)
-        ActionMailer::Base.deliveries.should have(1).item
+        should have(1).item
       end
 
       it "gets notification by email when status - Build published" do
         build_list.update_attribute(:status, BuildList::BUILD_PUBLISHED)
-        ActionMailer::Base.deliveries.should have(1).item
+        should have(1).item
       end
 
       it "gets notification by email when mass build and status - Build published" do
         build_list.update_attributes(:auto_publish => true, :status => BuildList::BUILD_PUBLISHED)
-        ActionMailer::Base.deliveries.should have(1).item
+        should have(1).item
       end
 
       it "doesn't get notification by email when mass build and status - Build complete" do
         build_list.update_attributes(:auto_publish => true, :status => BuildServer::SUCCESS)
-        ActionMailer::Base.deliveries.should have(0).item
+        should have(:no).items
       end
 
       it "doesn't get notification by email when notification by email has been disabled" do
         notifier.update_attribute(:can_notify, false)
         build_list.update_attribute(:status, BuildServer::SUCCESS)
-        ActionMailer::Base.deliveries.should have(0).item
+        should have(:no).items
       end
     end
 
+    subject { ActionMailer::Base.deliveries }
     context "user created build task" do
       let!(:notifier) { user.notifier }
       before do
@@ -49,13 +50,13 @@ describe BuildListObserver do
       it "doesn't get notification by email when 'build list' notifications has been disabled" do
         notifier.update_attribute(:new_build, false)
         build_list.update_attribute(:status, BuildServer::SUCCESS)
-        ActionMailer::Base.deliveries.should have(0).item
+        should have(:no).items
       end
 
       it "doesn't get notification by email when 'build list' notifications - enabled, email notifications - disabled" do
         notifier.update_attributes(:can_notify => false, :new_build => true)
         build_list.update_attribute(:status, BuildServer::SUCCESS)
-        ActionMailer::Base.deliveries.should have(0).item
+        should have(:no).items
       end
     end
 
@@ -71,13 +72,13 @@ describe BuildListObserver do
       it "doesn't get notification by email when 'associated build list' notifications has been disabled" do
         notifier.update_attribute(:new_associated_build, false)
         build_list.update_attribute(:status, BuildServer::SUCCESS)
-        ActionMailer::Base.deliveries.should have(0).item
+        should have(:no).items
       end
 
       it "doesn't get notification by email when 'associated build list' notifications - enabled, email notifications - disabled" do
         notifier.update_attributes(:can_notify => false, :new_associated_build => true)
         build_list.update_attribute(:status, BuildServer::SUCCESS)
-        ActionMailer::Base.deliveries.should have(0).item
+        should have(:no).items
       end
     end
 
