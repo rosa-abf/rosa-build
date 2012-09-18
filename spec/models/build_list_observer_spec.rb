@@ -32,7 +32,7 @@ describe BuildListObserver do
 
       it "doesn't get notification by email when mass build" do
         build_list.update_attributes(:mass_build_id => 1, :status => BuildList::BUILD_PUBLISHED)
-        should have(:no).item
+        should have(:no).items
       end
 
       it "doesn't get notification by email when notification by email has been disabled" do
