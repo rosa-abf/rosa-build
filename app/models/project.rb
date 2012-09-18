@@ -76,8 +76,12 @@ class Project < ActiveRecord::Base
     name
   end
 
+  def all_members
+    members | (owner_type == 'User' ? [owner] : owner.members)
+  end
+
   def members
-    collaborators + groups.map(&:members).flatten
+    collaborators | groups.map(&:members).flatten
   end
 
   def platforms

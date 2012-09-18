@@ -1,0 +1,15 @@
+%p
+  Сборка проекта 
+  - if @build_list.project
+    = link_to @build_list.project.name_with_owner, @build_list.project
+  - else
+    = t("layout.projects.unexisted_project")
+  завершена со статусом
+  = @build_list.human_status
+  для архитектуры
+  = "#{@build_list.arch.name}."
+%p
+  Более подробную информацию можно получить по ссылке:
+  = link_to "задание [№ #{@build_list.bs_id ? @build_list.bs_id : t("layout.build_lists.bs_id_not_set")}]", @build_list
+
+%p== Команда поддержки «ROSA Build System»

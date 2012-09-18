@@ -7,32 +7,16 @@
   %br
 
 = form_for @user.notifier, :url => notifiers_settings_path, :html => {:class => :form} do |f|
-  .leftside.w25= f.check_box :can_notify
-  .leftside= f.label :can_notify, t('activerecord.attributes.settings.notifier.can_notify')
-  .both
+  = render 'notifier', :f => f, :field => :can_notify
   %h3= t("layout.settings.notifiers.code_header")
-  .leftside.w25= f.check_box :new_comment_commit_owner, :class => 'notify_cbx'
-  .leftside= f.label :new_comment_commit_owner, t('activerecord.attributes.settings.notifier.new_comment_commit_owner')
-  .both
-  .leftside.w25= f.check_box :new_comment_commit_repo_owner, :class => 'notify_cbx'
-  .leftside= f.label :new_comment_commit_repo_owner, t('activerecord.attributes.settings.notifier.new_comment_commit_repo_owner')
-  .both
-  .leftside.w25= f.check_box :new_comment_commit_commentor, :class => 'notify_cbx'
-  .leftside= f.label :new_comment_commit_commentor, t('activerecord.attributes.settings.notifier.new_comment_commit_commentor')
-  .both
+  - [:new_comment_commit_owner, :new_comment_commit_repo_owner, :new_comment_commit_commentor].each do |field|
+    = render 'notifier', :f => f, :field => field
   %h3= t("layout.settings.notifiers.tracker_header")
-  .leftside.w25= f.check_box :new_comment, :class => 'notify_cbx'
-  .leftside= f.label :new_comment, t('activerecord.attributes.settings.notifier.new_comment')
-  .both
-  .leftside.w25= f.check_box :new_comment_reply, :class => 'notify_cbx'
-  .leftside= f.label :new_comment_reply, t('activerecord.attributes.settings.notifier.new_comment_reply')
-  .both
-  .leftside.w25= f.check_box :new_issue, :class => 'notify_cbx'
-  .leftside= f.label :new_issue, t('activerecord.attributes.settings.notifier.new_issue')
-  .both
-  .leftside.w25= f.check_box :issue_assign, :class => 'notify_cbx'
-  .leftside= f.label :issue_assign, t('activerecord.attributes.settings.notifier.issue_assign')
-  .both
+  - [:new_comment, :new_comment_reply, :new_issue, :issue_assign].each do |field|
+    = render 'notifier', :f => f, :field => field
+  %h3= t("layout.settings.notifiers.build_list_header")
+  - [:new_build, :new_associated_build].each do |field|
+    = render 'notifier', :f => f, :field => field
 
   %br
   .leftside.w25
