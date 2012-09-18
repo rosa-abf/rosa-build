@@ -4,7 +4,7 @@ class Projects::CommentsController < Projects::BaseController
   load_and_authorize_resource :project
   before_filter :find_commentable
   before_filter :find_or_build_comment
-  load_and_authorize_resource
+  load_and_authorize_resource #:through => :commentable
 
   include CommentsHelper
 

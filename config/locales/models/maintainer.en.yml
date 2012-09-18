@@ -1,0 +1,25 @@
+en:
+  layout:
+    maintainers:
+      list_header: Maintainers
+      search_by_package: Search by package name
+
+  flash:
+    maintainer:
+      saved: Maintainer saved
+      created: Maintainer created
+      save_error: Maintainer saves error
+      create_error: Maintainer create error
+      destroyed: Maintainer deleted
+
+  activerecord:
+    models:
+      maintainer: Maintainer
+    attributes:
+      maintainer:
+        package_name: Package
+        package_type: Type
+        created_at: First Update
+        updated_at: Last Update
+        version: Version-Release
+

@@ -57,6 +57,7 @@ ru:
         change_email_link: Изменить адрес электронной почты
         code_header: Код
         tracker_header: Трекер задач
+        build_list_header: Сборочные задания
 
     devise:
       shared_links:
@@ -179,6 +180,8 @@ ru:
           new_comment_commit_owner: Оповещать о комментариях к моему коммиту
           new_comment_commit_repo_owner: Оповещать о комментариях к коммитам в моем репозитории
           new_comment_commit_commentor: Оповещать о комментариях к коммиту после моего
+          new_build: Оповещать о моих сборочных заданиях
+          new_associated_build: Оповещать о связанных со мной сборочных заданиях
 
       private_user:
         login: Логин

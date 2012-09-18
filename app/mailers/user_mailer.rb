@@ -36,8 +36,24 @@ class UserMailer < ActionMailer::Base
     end
   end
 
+  def build_list_notification(build_list, user)
+    I18n.locale = user.language if user.language
+    @user, @build_list = user, build_list
+
+    subject = "[№ #{build_list.bs_id.present? ? build_list.bs_id : t("layout.build_lists.bs_id_not_set")}] "
+    subject << (build_list.project ? build_list.project.name_with_owner : t("layout.projects.unexisted_project"))
+    subject << " - #{build_list.human_status} "
+    subject << I18n.t("notifications.subjects.for_arch", :arch => @build_list.arch.name)
+    mail(:to => user.email, :subject => subject) do |format|
+      format.html
+    end
+  end
+
   def invite_approve_notification(register_request)
+    I18n.locale = register_request.language if register_request.language
     @register_request = register_request
-    mail :to => register_request.email, :subject => I18n.t("notifications.subjects.invite_approve_notification")
+    mail :to => register_request.email, :subject => I18n.t("notifications.subjects.invite_approve_notification") do |format|
+      format.html
+    end
   end
 end

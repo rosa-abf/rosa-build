@@ -16,6 +16,7 @@ ru:
       description: Описание
       leave_group: Покинуть группу
       projects_list: Список проектов
+      public_projects_list: Список публичных проектов
       public_profile: Публичный профиль
       delete_warning: Внимание! Удаленная группа восстановлению не подлежит.
 

@@ -6,6 +6,7 @@ namespace :add_branch do
   task :fork_branch, :path, :src_branch, :dst_branch do |t, args|
     tmp_path = File.join Dir.tmpdir, "#{Time.now.to_i}#{rand(1000)}"
     system("git clone #{args[:path]} #{tmp_path}")
+    system("cd #{tmp_path} && git push origin :#{args[:dst_branch]}")
     system("cd #{tmp_path} && git checkout remotes/origin/#{args[:src_branch]} || git checkout master")
     system("cd #{tmp_path} && git checkout -b #{args[:dst_branch]} && git push origin HEAD")
     FileUtils.rm_rf tmp_path

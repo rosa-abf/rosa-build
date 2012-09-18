@@ -6,13 +6,13 @@
   %h3= title @user.uname
   = @user.name
   %br
-    = link_to @user.email, "mailto:#{@user.email}"
+    = mail_to @user.email, @user.email, :encode => "javascript"
     %br
       %h4= t("activerecord.attributes.user.professional_experience") + ":"
       %p= @user.professional_experience
       %h4= t("layout.users.public_projects_list") + ":"
       %p
-        - @user.projects.by_visibilities(['open']).each do |project|
+        - @projects.each do |project|
           = link_to project.name, project
           %br
 

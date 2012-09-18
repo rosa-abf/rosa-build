@@ -1152,19 +1152,19 @@ form.mass_build section.right {
 }
 
 /* remove this lines after change to backbone */
-table.tablesorter.advisories thead tr.search th {
+table.tablesorter.static-search thead tr.search th {
     padding: 0 5px;
 }
 
-table.tablesorter.advisories thead tr.search th input[type='text'] {
+table.tablesorter.static-search thead tr.search th input[type='text'] {
     width: 640px;
 }
 
-table.tablesorter.advisories thead tr.search th form {
+table.tablesorter.static-search thead tr.search th form {
     float: left;
 }
 
-table.tablesorter.advisories thead tr.search th form.button_to {
+table.tablesorter.static-search thead tr.search th form.button_to {
     padding: 3px 0 0 7px;
 }
 
@@ -1480,4 +1480,14 @@ div.log-wrapper {
             font-size: 13px;
         }
     }
+}
+
+table.tablesorter.platform-maintainers.static-search thead tr.search th input[type="text"] {
+    width: 430px;
+}
+
+.all_platforms {
+    > .both { margin: 0 0 5px; }
+    .build_for_pl { font-weight: bold; }
+    .offset25 { padding-left: 10px }
 }
