@@ -40,9 +40,10 @@ class UserMailer < ActionMailer::Base
     I18n.locale = user.language if user.language
     @user, @build_list = user, build_list
 
-    subject = "[#{build_list.bs_id.present? ? build_list.bs_id : t("layout.build_lists.bs_id_not_set")}] "
+    subject = "[№ #{build_list.bs_id.present? ? build_list.bs_id : t("layout.build_lists.bs_id_not_set")}] "
     subject << (build_list.project ? build_list.project.name_with_owner : t("layout.projects.unexisted_project"))
-    subject << " - #{build_list.human_status}"
+    subject << " - #{build_list.human_status} "
+    subject << I18n.t("notifications.subjects.for_arch", :arch => @build_list.arch.name)
     mail(:to => user.email, :subject => subject) do |format|
       format.html
     end
