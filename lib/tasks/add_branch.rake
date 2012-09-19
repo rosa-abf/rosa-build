@@ -40,7 +40,7 @@ namespace :add_branch do
     open(source).readlines.each do |name|
       name.chomp!; name.strip!
       print "Fork branch for '#{name}'... "
-      if p = Project.find_by_name_and_owner_type_and_owner_id(name, owner.class.to_s, owner.id)
+      if p = Project.find_by_owner_and_name(owner.uname, name)
         # Rake::Task['add_branch:fork_branch'].execute(:path => p.path, :src_branch => src_branch, :dst_branch => dst_branch)
         system "bundle exec rake add_branch:fork_branch[#{p.path},#{src_branch},#{dst_branch}] -s RAILS_ENV=#{Rails.env} > /dev/null 2>&1"
         print 'Ok!'
