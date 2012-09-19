@@ -15,7 +15,11 @@ describe BuildList do
 
 
     before(:all) { ActionMailer::Base.deliveries = [] }
-    before { build_list.update_attribute(:status, BuildServer::BUILD_STARTED) }
+    before do
+      test_git_commit(build_list.project)
+      build_list.update_attributes(:commit_hash => build_list.project.repo.commits('master').last.id,
+        :status => BuildServer::BUILD_STARTED,)
+    end
     after { ActionMailer::Base.deliveries = [] }
 
     shared_examples_for 'build list notifications by email' do
@@ -107,7 +111,9 @@ describe BuildList do
         :auto_publish => true,
         :project => FactoryGirl.create(:project, :owner => user))
       FactoryGirl.create(:build_list_package, :build_list => bl, :project => bl.project)
-      bl.update_attributes(:status => BuildList::BUILD_PUBLISH)
+      test_git_commit(bl.project)
+      bl.update_attributes(:commit_hash => bl.project.repo.commits('master').last.id,
+        :status => BuildList::BUILD_PUBLISH)
       bl.published
       should have(1).item
     end
