@@ -127,10 +127,9 @@ class BuildList < ActiveRecord::Base
 
     after_transition :on => :published, :do => [:set_version_and_tag, :actualize_packages]
 
-    after_transition :on => [:published, :fail_publish],
-      :do => :notify_users, :if => lambda { |build_list| build_list.auto_publish? }
-    after_transition :on => [:published, :fail_publish, :build_success, :build_error],
-      :do => :notify_users, :if => lambda { |build_list| !build_list.auto_publish? }
+    after_transition :on => [:published, :fail_publish, :build_error], :do => :notify_users
+    after_transition :on => :build_success, :do => :notify_users,
+      :if => lambda { |build_list| !build_list.auto_publish? }
 
     event :place_build do
       transition :waiting_for_response => :build_pending, :if => lambda { |build_list|

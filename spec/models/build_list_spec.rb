@@ -28,6 +28,29 @@ describe BuildList do
         should have(1).item
       end
 
+      it "gets notification by email when status - Build error" do
+        build_list.build_error
+        should have(1).item
+      end
+
+      it "gets notification by email when auto_publish and status - Build error" do
+        build_list.update_attributes(:auto_publish => true)
+        build_list.build_error
+        should have(1).item
+      end
+
+      it "gets notification by email when status - Failed publish" do
+        build_list.update_attributes(:status => BuildList::BUILD_PUBLISH)
+        build_list.fail_publish
+        should have(1).item
+      end
+
+      it "gets notification by email when auto_publish and status - Failed publish" do
+        build_list.update_attributes(:auto_publish => true, :status => BuildList::BUILD_PUBLISH)
+        build_list.fail_publish
+        should have(1).item
+      end
+
       it "gets notification by email when status - Build published" do
         build_list.update_attributes(:status => BuildList::BUILD_PUBLISH)
         build_list.published
