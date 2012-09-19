@@ -8,7 +8,22 @@ en:
       notifications_are: Notifications for new comments are
       comments_header: Comments
       back: Back
-      markdown_cheatsheet: Markdown Cheat Sheet
+      md_cheatsheet_header: Markdown Cheat Sheet
+      md_cheatsheet:
+        format_text: Format Text
+        headers: Headers
+        text_styles: Text styles
+        lists: Lists
+        unordered: Unordered
+        ordered: Ordered
+        miscellaneous: Miscellaneous
+        images: Images
+        links: Links
+        blockquotes: Blockquotes
+        code_examples: Code Examples in Markdown
+        syntax_hightlighting: Syntax highlighting
+        indent_code: indent your code 4 spaces
+        inline_code: Inline code for comments
 
   flash:
     comment:

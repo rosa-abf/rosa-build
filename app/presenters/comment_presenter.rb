@@ -40,7 +40,7 @@ class CommentPresenter < ApplicationPresenter
 
     res = []
     if controller.can? :update, @comment
-      res << link_to(t('layout.comments.markdown_cheatsheet'), '#md_help', 'data-toggle' => 'modal')
+      res << link_to(t('layout.comments.md_cheatsheet_header'), '#md_help', 'data-toggle' => 'modal')
       res << link_to(t("layout.edit"), ep, :id => "comment-#{comment.id}", :class => "edit_comment").html_safe
     end
     if controller.can? :delete, @comment
