@@ -9,7 +9,6 @@ title: Project Build | GitHub API
 * <a href="#reject-publish-build-task">Reject publish build task</a>
 * <a href="#search">Search</a>
 * <a href="#destroy-build-task">Destroy build task</a>
-* <a href="#and-401-errors">404, 500, 503 and 401 errors</a>
 
 ## 1. Show build data
 
@@ -183,21 +182,3 @@ EXAMPLES OF RESPONSES:
 
 You can't destroy build list. Only cancel it. :)
 
-## 8. 404, 500, 503 and 401 errors.
-
-Some requests can cause cancer of 404, 500 and 503 errors. In these situatins you will receive such data:
-
-<%= json(:error_404) %>
-
-<%= json(:error_500) %>
-
-<%= json(:error_503) %>
-
-<%= json(:error_401) %>
-
-If you don't have enough rights for requested action, you will receive
-error response such this:
-
-<%= json(:error_403) %>
-
-and http status code will be 403.
