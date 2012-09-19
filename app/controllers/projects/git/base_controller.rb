@@ -10,7 +10,11 @@ class Projects::Git::BaseController < Projects::BaseController
   protected
 
   def set_treeish_and_path
-    @treeish = params[:treeish].presence || @project.default_branch
+    @treeish = params[:treeish].presence
+    unless @treeish
+      commit = @project.repo.commits(@project.default_branch).first
+      @treeish = commit ? commit.id : @project.default_branch
+    end
     @path = params[:path]
   end
 
