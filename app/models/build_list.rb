@@ -127,6 +127,11 @@ class BuildList < ActiveRecord::Base
 
     after_transition :on => :published, :do => [:set_version_and_tag, :actualize_packages]
 
+    after_transition :on => [:published, :fail_publish],
+      :do => :notify_users, :if => lambda { |build_list| build_list.auto_publish? }
+    after_transition :on => [:published, :fail_publish, :build_success, :build_error],
+      :do => :notify_users, :if => lambda { |build_list| !build_list.auto_publish? }
+
     event :place_build do
       transition :waiting_for_response => :build_pending, :if => lambda { |build_list|
         build_list.add_to_queue == BuildServer::SUCCESS
@@ -289,6 +294,22 @@ class BuildList < ActiveRecord::Base
   end
 
   protected
+
+  def notify_users
+    unless mass_build_id
+      users = []
+      if project # find associated users
+        users = project.all_members.
+          select{ |user| user.notifier.can_notify? && user.notifier.new_associated_build? }
+      end
+      if user.notifier.can_notify? && user.notifier.new_build?
+        users = users | [user]
+      end
+      users.each do |user|
+        UserMailer.build_list_notification(self, user).deliver
+      end
+    end
+  end # notify_users
 
   def delete_container
     if can_cancel?
