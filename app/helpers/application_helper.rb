@@ -41,9 +41,11 @@ module ApplicationHelper
   end
 
   def markdown(text)
-    html_options = {filter_html: true, hard_wrap: true, with_toc_data: true}
-    options = {no_intraemphasis: true, tables: true, fenced_code_blocks: true, autolink: true, strikethrough: true, lax_html_blocks: true}
-    @redcarpet ||= Redcarpet::Markdown.new(Redcarpet::Render::HTML.new(html_options), options)
+    unless @redcarpet
+      html_options = {filter_html: true, hard_wrap: true, with_toc_data: true}
+      options = {no_intraemphasis: true, tables: true, fenced_code_blocks: true, autolink: true, strikethrough: true, lax_html_blocks: true}
+      @redcarpet = Redcarpet::Markdown.new(Redcarpet::Render::HTML.new(html_options), options)
+    end
     @redcarpet.render(text).html_safe
   end
 end

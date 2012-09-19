@@ -1519,6 +1519,11 @@ table.tablesorter.platform-maintainers.static-search thead tr.search th input[ty
     margin: 0 2px;
     padding: 0px 5px;
   }
+
+  blockquote {
+    border-left: 4px solid #EDEDED;
+    padding: 0 15px;
+  }
 }
 
 #md_tabs {
@@ -1551,5 +1556,38 @@ table.tablesorter.platform-maintainers.static-search thead tr.search th input[ty
 
 #open-comment > h3.tmargin0 {
   margin-bottom: 0;
+}
+
+#md_help {
+  width: 800px;
+  top: 30%;
+  left: 42%;
+
+  .modal-body {
+    max-height: 560px;
+    padding-top: 0;
+  }
+
+  .modal-header {
+    padding-bottom: 0;
+  }
+
+  .col {
+    width: 245px;
+    float: left;
+    padding: 0;
+    margin-right: 10px;
+
+    h3 {
+      margin: 6px 0 0 0;
+    }
+    pre {
+      background: none repeat scroll 0 0 #EDEDED;
+      box-shadow: 0 3px 3px -1px rgba(18, 86, 135, 0.2);
+      border: 1px solid #EDEDED;
+      padding: 5px;
+      margin-top: 3px;
+    }
+  }
 }
 

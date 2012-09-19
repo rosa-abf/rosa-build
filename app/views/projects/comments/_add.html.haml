@@ -1,4 +1,5 @@
 #open-comment.comment.view
+  =link_to t('layout.comments.markdown_cheatsheet'), '#md_help', 'data-toggle' => 'modal', :style => 'float:right;'
   %h3.tmargin0= t("layout.comments.new_header")
   - if Comment.issue_comment?(commentable.class)
     - new_path = project_issue_comments_path(project, commentable)

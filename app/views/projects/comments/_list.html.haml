@@ -11,3 +11,4 @@
       .comment-left{:style => 'margin-top: 0;'}
         =link_to t('layout.cancel'), '#', :id => "comment-#{comment.id}", :class => 'cancel_edit_comment button'
       .both
+= render "projects/comments/markdown_help"

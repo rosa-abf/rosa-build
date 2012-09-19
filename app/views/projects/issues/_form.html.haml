@@ -2,6 +2,7 @@
   %h3.tmargin0{:style => 'margin-bottom: 0;'}= t 'activerecord.attributes.issue.title'
   .wrapper= f.text_area :title, :cols => 80, :rows => 1, :style => 'height: 16px; margin: 0 0 10px;'
 #open-comment.comment.view
+  =link_to t('layout.comments.markdown_cheatsheet'), '#md_help', 'data-toggle' => 'modal', :style => 'float:right;'
   %h3.tmargin0= t 'activerecord.attributes.issue.body'
   =render 'projects/comments/body', :f => f, :id => 'new'
 
