@@ -14,7 +14,7 @@ class Projects::Git::TreesController < Projects::Git::BaseController
     format = params[:format]
     if (@treeish =~ /^#{@project.owner.uname}-#{@project.name}-/) && !(@treeish =~ /[\s]+/) && (format =~ /^[\w]+$/)
       @treeish = @treeish.gsub(/^#{@project.owner.uname}-#{@project.name}-/, '')
-      @commit = @project.repo.log(@treeish, nil, :max_count => 1).first
+      @commit = @project.repo.commits(@treeish, 1).first
     end
     raise Grit::NoSuchPathError unless @commit
     name = "#{@project.owner.uname}-#{@project.name}-#{@treeish}"
