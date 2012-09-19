@@ -1,8 +1,8 @@
 %ul.nav.nav-tabs#md_tabs
   %li
-    %a{"data-toggle" => "tab", :href => "##{id}_edit"} edit
+    %a{"data-toggle" => "tab", :href => "##{id}_edit"}=t 'layout.edit'
   %li
-    %a{"data-toggle" => "tab", :href => "##{id}_preview"} preview
+    %a{"data-toggle" => "tab", :href => "##{id}_preview"}=t 'layout.preview'
 
 .tab-content
   .tab-pane.active{:id => "#{id}_edit"}
