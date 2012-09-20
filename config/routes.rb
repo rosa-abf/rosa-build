@@ -222,7 +222,7 @@ Rosa::Application.routes.draw do
           # Raw
           get '/raw/:treeish/*path' => "git/blobs#raw", :as => :raw, :format => false
           # Archive
-          get '/archive/:treeish.:format' => "git/trees#archive", :as => :archive, :format => /zip|tar/
+          get '/archive/:treeish.:format' => "git/trees#archive", :as => :archive, :format => /zip|tar\.gz/
         end
       end
     end
