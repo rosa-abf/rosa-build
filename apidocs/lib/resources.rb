@@ -621,6 +621,13 @@ module GitHub
             "type" => "owner type",
             "url" => "path to owner data"
           },
+          "repositories" => [
+            {
+              "id" => "repository for package storage id",
+              "name" => "repository for package storage name",
+              "url" => "path to repository data page"
+            }
+          ],
           "url" => "path to platform data"
         }
       ]
@@ -639,6 +646,18 @@ module GitHub
             "type" => "User",
             "url" => "/users/5.json"
           },
+          "repositories" => [
+            {
+              "id" => 26,
+              "name" => "main",
+              "url" => "/api/v1/repositories/26.json"
+            },
+            {
+              "id" => 27, 
+              "name" => "release",
+              "url" => "/api/v1/repositories/27.json"
+            }
+          ],
           "url" => "/api/v1/platforms/26.json"
         },
         {
@@ -652,6 +671,18 @@ module GitHub
             "type" => "User",
             "url" => "/timothy_bobrov.json"
           },
+          "repositories" => [
+            {
+              "id" => 28,
+              "name" => "main",
+              "url" => "/api/v1/repositories/28.json"
+            },
+            {
+              "id" => 29, 
+              "name" => "release",
+              "url" => "/api/v1/repositories/29.json"
+            }
+          ],
           "url" => "/api/v1/platforms/17.json"
         },
         {
@@ -665,6 +696,18 @@ module GitHub
             "type" => "User",
             "url" => "/users/4.json"
           },
+          "repositories" => [
+            {
+              "id" => 30,
+              "name" => "main",
+              "url" => "/api/v1/repositories/30.json"
+            },
+            {
+              "id" => 31, 
+              "name" => "release",
+              "url" => "/api/v1/repositories/31.json"
+            }
+          ],
         "url" => "/api/v1/platforms/18.json"
         },
       ],"url" => "/api/v1/platforms.json"
