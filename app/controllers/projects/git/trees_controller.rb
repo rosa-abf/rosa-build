@@ -11,17 +11,17 @@ class Projects::Git::TreesController < Projects::Git::BaseController
 
   def archive
     format = params[:format]
-    if (@treeish =~ /^#{@project.owner.uname}-#{@project.name}-/) && !(@treeish =~ /[\s]+/) && (format =~ /^[\w]+$/)
+    if (@treeish =~ /^#{@project.owner.uname}-#{@project.name}-/) && !(@treeish =~ /[\s]+/) && (format =~ /^(zip|tar\.gz)$/)
       @treeish = @treeish.gsub(/^#{@project.owner.uname}-#{@project.name}-/, '')
       @commit = @project.repo.commits(@treeish, 1).first
     end
     raise Grit::NoSuchPathError unless @commit
     name = "#{@project.owner.uname}-#{@project.name}-#{@treeish}"
-    fullname = "#{name}.#{format == 'tar' ? 'tar.gz' : 'zip'}"
+    fullname = "#{name}.#{format == 'zip' ? 'zip' : 'tar.gz'}"
     file = Tempfile.new fullname, 'tmp'
-    system("cd #{@project.path}; git archive --format=#{format} --prefix=#{name}/ #{@treeish} #{format == 'tar' ? ' | gzip -9' : ''} > #{file.path}")
+    system("cd #{@project.path}; git archive --format=#{format} --prefix=#{name}/ #{@treeish} #{format == 'zip' ? '' : ' | gzip -9'} > #{file.path}")
     file.close
-    send_file file.path, :disposition => 'attachment', :type => "application/#{format == 'tar' ? 'x-tar-gz' : 'zip'}", :filename => fullname
+    send_file file.path, :disposition => 'attachment', :type => "application/#{format == 'zip' ? 'zip' : 'x-tar-gz'}", :filename => fullname
   end
 
 end
