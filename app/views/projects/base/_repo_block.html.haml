@@ -6,7 +6,7 @@
           =image_tag 'zip.png', :alt => 'ZIP'
           %b.caret
         %ul.dropdown-menu
-          - file_name = "#{@project.owner.uname}-#{@project.name}-#{@sha}"
+          - file_name = "#{@project.owner.uname}-#{@project.name}-#{@commit.id}"
           %li=link_to "tar.gz", archive_path(project, file_name, 'tar')
           %li=link_to "zip", archive_path(project, file_name, 'zip')
 
