@@ -16,7 +16,7 @@ $(document).ready(function() {
        data: el_dup.serialize(),
        success: function(data){
                        preview.html(data).find('code').each(function (code) {
-                         CodeMirror.runMode(this.innerHTML.replace(/&amp;/gi, '&'), this.className, this);
+                         CodeMirror.runMode(this.innerHTML.replace(/&amp;/gi, '&').replace(/&lt;/gi, '<').replace(/&gt;/gi, '>'), this.className, this);
                        });
                 },
        error: function(data){
