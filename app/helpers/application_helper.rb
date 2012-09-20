@@ -42,7 +42,7 @@ module ApplicationHelper
 
   def markdown(text)
     unless @redcarpet
-      html_options = {filter_html: true, hard_wrap: true, with_toc_data: true}
+      html_options = {filter_html: false, hard_wrap: true, with_toc_data: true}
       options = {no_intraemphasis: true, tables: true, fenced_code_blocks: true, autolink: true, strikethrough: true, lax_html_blocks: true}
       @redcarpet = Redcarpet::Markdown.new(Redcarpet::Render::HTML.new(html_options), options)
     end
