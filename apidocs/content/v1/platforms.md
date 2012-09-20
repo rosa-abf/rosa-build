@@ -1,20 +1,20 @@
 ---
-title: Platforms | GitHub API
+title: Platforms | ABF API
 ---
-* <a href="#platform-data">Platform data</a>
-* <a href="#platform-list">Platform list</a>
 
-## Platform data
+# Platforms API
 
-This request will return you all needed data about platforms list into JSON format.
+* <a href="#get-a-single-platform">Get a single platform</a>
+* <a href="#list-platforms">List platforms</a>
 
-URL:
+## Get a single platform
 
     GET /api/v1/platforms/:id.json
 
-### Params:
+### Parameters:
 
-* `id`: identifier of current project
+id
+: _Integer_ identifier of current platform
 
 ### Response:
 
@@ -24,17 +24,14 @@ URL:
 
 <%= json(:platform_data_response_example) %>
 
-## Platform list
-
-This request will return you all needed data about platform into JSON format.
-
-### Url:
+## List platforms
 
     GET /api/v1/platforms.json
 
 ### Parameters:
 
-* `type`: filter platforms by type (main/personal). Also you can don't set the type to get all of the platforms
+type
+: _Optional_ filter platforms by type: `main` or `personal`. Also you can don't set the type to get all of the platforms
 
 ### Request examples:
 

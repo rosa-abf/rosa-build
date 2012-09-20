@@ -1,21 +1,20 @@
 ---
-title: Projects | GitHub API
+title: Projects | ABF API
 ---
 
-* <a href="#project-data">Project data</a>
-* <a href="#project-id-get-by-name-and-owner">Project id get by name and owner</a>
+# Projects API
 
-## Project data
+* <a href="#get-a-single-project">Get a single project</a>
+* <a href="#get-project-id">Get project id</a>
 
-This request will return you all needed data of requested project into JSON format.
-
-### Url:
+## Get a single project
 
     GET /api/v1/projects/:id.json
 
-### Params:
+### Parameters:
 
-* `id`: identifier of current project
+id
+: _Integer_ identifier of current project
 
 ### Response:
 
@@ -25,18 +24,17 @@ This request will return you all needed data of requested project into JSON form
 
 <%= json(:project_data_response_example) %>
 
-## Project id get by name and owner
-
-This request will return you all needed data about projects list into JSON format and also you can filter them by name.
-
-### Url:
+## Get project id
 
     GET /api/v1/projects/get_id.json?name=:project_name&owner=:owner_name
 
 ### Parameters:
 
-* `project_name`: project name
-* `owner_name`: project owner name
+project_name
+: _String_ project name
+
+owner_name: 
+: _String_ project owner name
 
 ### Request examples:
 

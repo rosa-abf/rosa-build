@@ -54,8 +54,8 @@ module GitHub
           end
         end
 
-        lines << "X-RateLimit-Limit: 5000"
-        lines << "X-RateLimit-Remaining: 4999"
+        lines << "X-RateLimit-Limit: 500"
+        lines << "X-RateLimit-Remaining: 499"
 
         %(<pre class="#{css_class}"><code>#{lines * "\n"}</code></pre>\n)
       end
@@ -122,7 +122,7 @@ module GitHub
             "id" => 1,
             "name" => "x84_64" 
           },
-          "notifed_at" => "Tue, 03 Apr 2012 14 =>06 =>10 UTC +00 =>00",
+          "notifed_at" => 1348168905,
           "is_circle" => false,
           "update_type" => "bugfix",
           "build_requires" => false,
@@ -444,8 +444,8 @@ module GitHub
       {
         "id" => 4661,
         "name" => "hwinfo",
-        "created_at" => "2011-09-05T14 =>33 =>25Z",
-        "updated_at" => "2012-02-29T18 =>16 =>02Z",
+        "created_at" => 1348168705,
+        "updated_at" => 1348168905,
         "visibility" => "open",
         "description" => "asfsafafsfasf fas fasfsa fas  fasfa s",
         "ancestry" => nil,
