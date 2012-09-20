@@ -12,7 +12,9 @@ describe Projects::Git::TreesController do
 
     @project = FactoryGirl.create(:project)
     @another_user = FactoryGirl.create(:user)
-    @params = {:owner_name => @project.owner.uname, :project_name => @project.name, :treeish => 'master'}
+    @params = { :owner_name => @project.owner.uname,
+                :project_name => @project.name,
+                :treeish => "#{@project.owner.uname}-#{@project.name}-master"}
   end
 
   context 'for guest' do
