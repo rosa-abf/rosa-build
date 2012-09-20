@@ -21,7 +21,7 @@ en:
         links: Links
         blockquotes: Blockquotes
         code_examples: Code Examples in Markdown
-        syntax_hightlighting: Syntax highlighting
+        syntax_highlighting: Syntax highlighting
         indent_code: indent your code 4 spaces
         inline_code: Inline code for comments
 

@@ -21,7 +21,7 @@ ru:
         links: Ссылки
         blockquotes: Цитирование
         code_examples: Примеры кода в Markdown
-        syntax_hightlighting: Подсветка синтаксиса
+        syntax_highlighting: Подсветка синтаксиса
         indent_code: Отступ кода на 4 пробела
         inline_code: Встроенный код в строке
 
