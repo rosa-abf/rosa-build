@@ -10,21 +10,13 @@ class Projects::Git::BaseController < Projects::BaseController
   protected
 
   def set_treeish_and_path
-    @treeish = params[:treeish].presence
-    unless @treeish
-      commit = @project.repo.commits(@project.default_branch, 1).first
-      @treeish = commit ? commit.id : @project.default_branch
-    end
+    @treeish = params[:treeish].presence || @project.default_branch
     @path = params[:path]
   end
 
   def set_branch_and_tree
     @branch = @project.repo.branches.detect{|b| b.name == @treeish}
     @tree = @project.repo.tree(@treeish)
-    if @branch
-      commit = @project.repo.commits(@treeish, 1).first
-      @treeish = commit.id if commit 
-    end
     # raise Grit::NoSuchPathError if @tree.blobs.blank?
   end
 end
