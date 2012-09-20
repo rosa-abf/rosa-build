@@ -47,23 +47,31 @@ All timestamps are returned in unixtime format:
 ## Client Errors
 
 There are three possible types of client errors on API calls that
-receive request bodies:
+receive request bodies.
 
-1. Request without authorization will return error message:
+Request without authorization will return error message:
 
-  {"error":"You need to sign in or sign up before continuing."}
+<%= json(:error_auth) %>
+<br/>
 
-2. Rate limit exceed will return this:
+Rate limit exceed will return this:
 
-  {"message":"403 Forbidden | Rate Limit Exceeded"}
+<%= json(:error_rate_limit) %>
+<br/>
 
-3. Some requests can cause cancer of 404, 500 and 503 errors. In these situatins you will receive such data:
+Some requests can cause cancer of 404, 500 and 503 errors. In these situatins you will receive such data:
 
 <%= json(:error_404) %>
 
+&nbsp;
+
 <%= json(:error_500) %>
 
+&nbsp;
+
 <%= json(:error_503) %>
+
+&nbsp;
 
 <%= json(:error_401) %>
 

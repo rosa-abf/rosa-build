@@ -395,6 +395,14 @@ module GitHub
       "message"=> "Forbidden. Sorry, you don't have enough rights for this action!"
     }
 
+    ERROR_AUTH = {
+      "error" => "You need to sign in or sign up before continuing."
+    }
+
+    ERROR_RATE_LIMIT = {
+      "message" => "403 Forbidden | Rate Limit Exceeded"
+    }
+
     PROJECT_DATA_RESPONSE = {
       "project"=>
         {

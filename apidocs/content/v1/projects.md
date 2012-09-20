@@ -5,50 +5,48 @@ title: Projects | GitHub API
 * <a href="#project-data">Project data</a>
 * <a href="#project-id-get-by-name-and-owner">Project id get by name and owner</a>
 
-## 1. Projects
-
-### 1.1. Project data
+## Project data
 
 This request will return you all needed data of requested project into JSON format.
 
-URL: /api/v1/projects/:id.json
+### Url:
 
-TYPE: GET
+    GET /api/v1/projects/:id.json
 
-PARAMS:
+### Params:
 
-* :id - identifier of current project
+* `id`: identifier of current project
 
-RESPONSE:
+### Response:
 
 <%= json(:project_data_response) %>
 
-EXAMPLE:
+### Example:
 
 <%= json(:project_data_response_example) %>
 
-### 1.2. Project id get by name and owner
+## Project id get by name and owner
 
 This request will return you all needed data about projects list into JSON format and also you can filter them by name.
 
-URL: /api/v1/projects/get_id.json?name=:project_name&owner=:owner_name
+### Url:
 
-TYPE: GET
+    GET /api/v1/projects/get_id.json?name=:project_name&owner=:owner_name
 
-PARAMETERS:
+### Parameters:
 
-* project_name - project name
-* owner_name - project owner name
+* `project_name`: project name
+* `owner_name`: project owner name
 
-REQUEST EXAMPLES:
+### Request examples:
 
     /api/v1/projects/get_id.json?name=rails&owner=warpc
 
-RESPONSE:
+### Response:
 
 <%= json(:project_get_id_response) %>
 
-EXAMPLE:
+### Example:
 
 <%= json(:project_get_id_response_example) %>
 

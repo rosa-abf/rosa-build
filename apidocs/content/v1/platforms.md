@@ -1,56 +1,52 @@
 ---
 title: Platforms | GitHub API
 ---
-
 * <a href="#platform-data">Platform data</a>
 * <a href="#platform-list">Platform list</a>
 
-## 1. Platforms
-
-### 1.1. Platform data
+## Platform data
 
 This request will return you all needed data about platforms list into JSON format.
 
-URL: /api/v1/platforms/:id.json
+URL:
 
-PARAMS:
+    GET /api/v1/platforms/:id.json
 
-* :id - identifier of current project
+### Params:
 
-TYPE: GET
+* `id`: identifier of current project
 
-RESPONSE:
+### Response:
 
 <%= json(:platform_data_response) %>
 
-EXAMPLE:
+### Example:
 
 <%= json(:platform_data_response_example) %>
 
-### 1.2. Platform list
+## Platform list
 
 This request will return you all needed data about platform into JSON format.
 
-URL: /api/v1/platforms.json
+### Url:
 
-TYPE: GET
+    GET /api/v1/platforms.json
 
-PARAMETERS:
+### Parameters:
 
-* type - filter platforms by type (main/personal). Also you can don't set the type to get all of the platforms
+* `type`: filter platforms by type (main/personal). Also you can don't set the type to get all of the platforms
 
-REQUEST EXAMPLES:
+### Request examples:
 
     /api/v1/platforms.json?type=main
     /api/v1/platforms.json?type=personal
     /api/v1/platforms.json
 
-RESPONSE:
+### Response:
 
 <%= json(:platform_list_response) %>
 
-
-EXAMPLE:
+### Example:
 
 <%= json(:platform_list_response_example) %>
 

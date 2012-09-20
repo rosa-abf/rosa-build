@@ -10,37 +10,36 @@ title: Project Build | GitHub API
 * <a href="#search">Search</a>
 * <a href="#destroy-build-task">Destroy build task</a>
 
-## 1. Show build data
+## Show build data
 
 This request will return you all needed data of requested build task into JSON format.
 
-URL:
+### Url:
 
-    GET /buils_lists/:id.json
+    GET /api/v1/buils_lists/:id.json
 
-&nbsp;
-PARAMS:
-: * :id - identifier of current build task
+### Params:
+* `id`: identifier of current build task
 
-RESPONSE:
+### Response:
 
 <%= json(:build_list_show_parameters) %>
 
-EXAMPLE:
+### Example:
 
 <%= json(:build_list_show_example) %>
 
-## 2. Create build task
+## Create build task
 
 By this request you can create build task for project.
 
-Create parameters:
+### Create parameters:
 
 <%= json(:build_list_create_parameters) %>
 
 **Note: Request creates build list for each architecture and base platform.**
 
-POSIBLE UPDATE TYPES:
+### Posible update types:
 
     security
     bugfix
@@ -48,99 +47,102 @@ POSIBLE UPDATE TYPES:
     recommended
     newpackage
 
-URL:
+### Url:
 
-    POST /api/v1/build_lists.json
+    POST /api/v1/api/v1/build_lists.json
 
-REQUEST EXAMPLE:
+### Request example:
 
 <%= json(:build_list_create_example) %>
 
-RESPONSE:
+### Response:
 
 <%= json(:build_list_create_response) %>
 
-RESPONSE EXAMPLE:
+### Response example:
 
 <%= json(:build_list_create_response_example) %>
 
-## 3. Cancel build task
+## Cancel build task
 
 By this request you can cancel build task.
 
-URL:
+### Url:
 
-    PUT /buils_lists/:id/cancel.json
+    PUT /api/v1/buils_lists/:id/cancel.json
 
-RESPONSE:
+### Response:
 
 <%= json(:build_list_cancel_response) %>
 
-EXAMPLE:
+### Example:
 
 <%= json(:build_list_cancel_response_example) %>
 
+&nbsp;
 
 <%= json(:build_list_cancel_response_example2) %>
 
-## 4. Publish build task
+## Publish build task
 
 By this request you can publish build task.
 
-URL:
+### Url:
 
-    PUT /buils_lists/:id/publish.json
+    PUT /api/v1/buils_lists/:id/publish.json
 
-RESPONSE:
+### Response:
 
 <%= json(:build_list_publish_response) %>
 
-EXAMPLE:
+### Example:
 
 <%= json(:build_list_publish_response_example) %>
 
+&nbsp;
 
 <%= json(:build_list_publish_response_example2) %>
 
-## 5. Reject publish build task
+## Reject publish build task
 
 By this request you can reject publish build task.
 
-URL:
+### Url:
 
-    PUT /buils_lists/:id/reject_publish.json
+    PUT /api/v1/buils_lists/:id/reject_publish.json
 
-RESPONSE:
+### Response:
 
 <%= json(:build_list_reject_response) %>
 
-EXAMPLE:
+### Example:
 
 <%= json(:build_list_reject_response_example) %>
 
+&nbsp;
 
 <%= json(:build_list_reject_response_example2) %>
 
-## 6. Search
+## Search
 
 By this way you can search build list you need.
 
-Search params:
+### Search params:
 
-* page - page number of build lists results list
-* per_page - amount of build list per one page (default 30, maximum 100)
-* filter[status] - integer code of the build status
-* filter[arch_id] - identifier of the architecture
-* filter[is_circle] - recurrent build (true or false)
-* filter[project_name] - project name
-* filter[created_at_start / created_at_end] - start and end of the build list creation date diapason(unixtime)
-* filter[updated_at_start / updated_at_end] - start and end of the build list last change date diapason(unixtime)
-* filter[ownership] - ownership type (owned/related/index)
-* filter[mass_build_id] - mass build identifier
-* filter[save_to_platform_id] - platform id for build save
+* `page` - page number of build lists results list
+* `per_page` - amount of build list per one page (default 30, maximum 100)
+* `filter[status]` - integer code of the build status
+* `filter[arch_id]` - identifier of the architecture
+* `filter[is_circle]` - recurrent build (true or false)
+* `filter[project_name]` - project name
+* `filter[created_at_start / created_at_end]` - start and end of the build list creation date diapason(unixtime)
+* `filter[updated_at_start / updated_at_end]` - start and end of the build list last change date diapason(unixtime)
+* `filter[ownership]` - ownership type (owned/related/index)
+* `filter[mass_build_id]` - mass build identifier
+* `filter[save_to_platform_id]` - platform id for build save
 
 
-BUILD LIST POSIBLE STATUSES
+### Build list posible statuses
 
         Build error: 666
         Build has been published: 6000
@@ -160,25 +162,25 @@ BUILD LIST POSIBLE STATUSES
         Project not found: 3
         Project version not found: 4
 
-URL:
+### Url:
 
-    GET /build_lists.json?<search params>
+    GET /api/v1/build_lists.json?<search params>
 
-RESPONSE:
+### Response:
 
 <%= json(:build_list_search_response) %>
 
-EXAMPLE OF REQUEST URL:
+### Example of request url:
 
-> /build_lists.json?filter[project_name]=rails
+> /api/v1/build_lists.json?filter[project_name]=rails
 
-> /build_lists.json?filter[ownership]=owned&filter[status]=6000&filter[arch_id]=2
+> /api/v1/build_lists.json?filter[ownership]=owned&filter[status]=6000&filter[arch_id]=2
 
-EXAMPLES OF RESPONSES:
+### Examples of responses:
 
 <%= json(:build_list_search_response_example) %>
 
-## 7. Destroy build task
+## Destroy build task
 
 You can't destroy build list. Only cancel it. :)
 

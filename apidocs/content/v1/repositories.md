@@ -1,26 +1,24 @@
 ---
-title: Platforms | GitHub API
+title: Repositories | GitHub API
 ---
 
-## 1. Repositories
-
-### 1.1. Repository data
+## Repository data
 
 This request will return you all needed data about repositories list into JSON format.
 
-URL: /api/v1/repositories/:id.json
+### Url:
 
-PARAMS:
+    GET /api/v1/repositories/:id.json
 
-* :id - identifier of current project
+### Params:
 
-TYPE: GET
+* `id`: identifier of current project
 
-RESPONSE:
+### Response:
 
 <%= json(:repository_data_response) %>
 
-EXAMPLE:
+### Example:
 
 <%= json(:repository_data_response_example) %>
 
