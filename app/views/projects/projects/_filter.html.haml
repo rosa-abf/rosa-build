@@ -1,0 +1,27 @@
+-content_for :sidebar do
+  - if current_user
+    =form_tag projects_path, :id => 'filter_projects', :method => :get do
+      .bordered.bpadding20
+        =tracker_search_field(:search, t('layout.find_project'))
+
+      .bordered.bpadding20
+        =render 'projects/shared/filter_label',
+          :id => 'user-owner',
+          :selected => @user_owner,
+          :color => '00a651',
+          :check_box_name => 'user_owner',
+          :check_box_value => 'true',
+          :name => t("layout.relations.my"),
+          :count => current_user.own_projects.count
+
+      .bordered.bpadding20
+        %h3=t('layout.groups.list_header')
+        - current_user.groups.each do |group|
+          =render 'projects/shared/filter_label',
+            :id => "group-#{group.id}",
+            :selected => @groups.include?(group.id.to_s),
+            :color => '00a651',
+            :check_box_name => 'groups',
+            :check_box_value => group.id,
+            :name => group.uname,
+            :count => group.projects.count

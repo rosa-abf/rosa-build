@@ -30,19 +30,6 @@ $(document).ready(function() {
   });
 
   $("div.div-tracker-labels").live('click', function() {
-    var flag = this.id;
-    flag = flag.replace("label-","flag-");
-    var bg = $("#"+flag).css("background-color");
-    var checkbox = $(this).find(':checkbox');
-    if ($(this).css("background-color") != bg) {
-      $(this).css("background-color",bg);
-      $(this).css("color","#FFFFFF");
-      checkbox.attr('checked', 'checked');
-    } else {
-      $(this).css("background-color","rgb(247, 247, 247)");
-      $(this).css("color","#565657");
-      checkbox.removeAttr('checked');
-    }
     return send_index_tracker_request('GET');
   });
 
@@ -89,7 +76,7 @@ $(document).ready(function() {
     data = data || '';
     var filter_form = $('#filter_issues');
     url = url || filter_form.attr("action");
-    var label_form = $('#filter_labels');
+    var label_form = $('#filter_labels, #filter_projects');
     var status = 'status=' + $('#issues_status').attr('value');
     $.ajax({
       type: type_request,

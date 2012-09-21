@@ -4,11 +4,13 @@ class Projects::ProjectsController < Projects::BaseController
   load_and_authorize_resource :id_param => :project_name # to force member actions load
 
   def index
+    @groups = params[:groups] || []
+    @user_owner = params[:user_owner] == ['true'] ? true : false
     @projects = Project.accessible_by(current_ability, :membered)
 
     respond_to do |format|
       format.html { @projects = @projects.recent.paginate(:page => params[:page], :per_page => 25) }
-      format.json { @projects = prepare_list(@projects) }
+      format.json { @projects = prepare_list(@projects, @groups, @user_owner) }
     end
   end
 
@@ -95,7 +97,7 @@ class Projects::ProjectsController < Projects::BaseController
 
   protected
 
-  def prepare_list(projects)
+  def prepare_list(projects, groups, user_owner)
     res = {}
 
     colName = ['name']
@@ -104,7 +106,21 @@ class Projects::ProjectsController < Projects::BaseController
     order = "#{colName[sort_col.to_i]} #{sort_dir}"
 
     res[:total_count] = projects.count
+
+    if user_owner
+      project_ids = current_user.own_projects.map(&:id)
+      if groups.present?
+        projects = projects.where("groups.id in (?) OR projects.id in (?)", groups, project_ids).
+          joins(:relations).
+          joins('RIGHT OUTER JOIN "groups" ON "groups"."id" = "relations"."actor_id"')
+      else
+        projects = projects.where(:id => project_ids)
+      end
+    else
+      projects = projects.where(:groups => {:id => groups}).joins(:groups) if groups.present?
+    end
     projects = projects.search(params[:sSearch]).search_order if params[:sSearch].present?
+
     res[:filtered_count] = projects.count
 
     projects = projects.order(order)
