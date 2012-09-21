@@ -76,7 +76,7 @@ $(document).ready(function() {
     data = data || '';
     var filter_form = $('#filter_issues');
     url = url || filter_form.attr("action");
-    var label_form = $('#filter_labels, #filter_projects');
+    var label_form = $('#filter_labels');
     var status = 'status=' + $('#issues_status').attr('value');
     $.ajax({
       type: type_request,
