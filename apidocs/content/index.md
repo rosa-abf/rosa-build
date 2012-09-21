@@ -54,6 +54,11 @@ Request without authorization will return error message:
 <%= json(:error_auth) %>
 <br/>
 
+But if you set wrong pass or email you will receive this:
+
+<%= json(:error_wrong_pass) %>
+<br/>
+
 Rate limit exceed will return this:
 
 <%= json(:error_rate_limit) %>
@@ -103,7 +108,11 @@ DELETE
 
 ## Authentication
 
-Sory, where is no authentication at the moment :(
+We use *http auth basic* for authentification:
+
+<pre class="terminal">
+$ curl --user myuser@gmail.com:mypass -i https://abf.rosalinux.ru/api/v1
+</pre>
 
 ## Pagination
 

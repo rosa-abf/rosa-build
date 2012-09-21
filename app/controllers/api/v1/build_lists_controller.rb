@@ -16,6 +16,7 @@ class Api::V1::BuildListsController < Api::V1::BaseController
     project = Project.find(params[:build_list][:project_id])
     save_to_repository = Repository.find params[:build_list][:save_to_repository_id] #FIXME
     params[:build_list][:save_to_platform_id] = save_to_repository.platform_id
+    params[:build_list][:auto_publish] = false unless save_to_repository.publish_without_qa?
 
     build_list = project.build_lists.build(params[:build_list])
     build_list.project_version = build_list.commit_hash

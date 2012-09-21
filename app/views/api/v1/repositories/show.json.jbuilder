@@ -1,5 +1,5 @@
 json.repository do |json|
-  json.(@repository, :id, :name, :description)
+  json.(@repository, :id, :name, :description, :publish_without_qa)
   json.created_at @repository.created_at.to_i
   json.updated_at @repository.updated_at.to_i
   json.platform do |json_platform|

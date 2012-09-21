@@ -399,6 +399,10 @@ module GitHub
       "error" => "You need to sign in or sign up before continuing."
     }
 
+    ERROR_WRONG_PASS = {
+      "error" => "Invalid email or password."
+    }
+
     ERROR_RATE_LIMIT = {
       "message" => "403 Forbidden | Rate Limit Exceeded"
     }
@@ -525,6 +529,7 @@ module GitHub
           "created_at" => "created at date and time",
           "updated_at" => "updated at date and time",
           "description" => "description",
+          "publish_without_qa" => "publication without QA",
           "platform" => {
             "id" => "platform id",
             "name" => "platform name",
@@ -540,6 +545,7 @@ module GitHub
         {
           "id" => 30,
           "name" => "main",
+          "publish_without_qa" => true,
           "platform" => {
             "id" => 41,
             "name" => "my_personal",
