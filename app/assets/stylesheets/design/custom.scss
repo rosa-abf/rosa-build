@@ -1524,6 +1524,26 @@ table.tablesorter.platform-maintainers.static-search thead tr.search th input[ty
     border-left: 4px solid #EDEDED;
     padding: 0 15px;
   }
+
+  table {
+    margin: 0;
+    padding: 0;
+    border-collapse: collapse;
+
+    tr {
+      //border-top: 1px solid #EDEDED;
+      background-color: white;
+    }
+
+    th, td {
+      border: 1px solid #EDEDED;
+      padding: 5px 10px;
+    }
+
+    tr:nth-child(2n) {
+      background-color: #F8F8F8;
+    }
+  }
 }
 
 #md_tabs {
