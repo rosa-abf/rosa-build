@@ -1497,6 +1497,7 @@ table.tablesorter.platform-maintainers.static-search thead tr.search th input[ty
   margin: 10px 0 10px;
   padding: 5px;
   border-radius: 4px 4px 4px 4px;
+  background: #FFF;
 
   pre {
     background-color: #F8F8F8;
@@ -1569,8 +1570,17 @@ table.tablesorter.platform-maintainers.static-search thead tr.search th input[ty
     resize: vertical;
   }
 
+  textarea#issue_title {
+    height: 16px;
+    margin: 0 0 10px;
+  }
+
   .tab-pane textarea {
     min-height: 112px;
+  }
+
+  .edit_comment .comment-left {
+    margin-top: 0;
   }
 }
 
