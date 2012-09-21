@@ -57,6 +57,7 @@ en:
         change_email_link: Change email address
         code_header: Code
         tracker_header: Tracker
+        build_list_header: Build List
 
     devise:
       shared_links:
@@ -167,7 +168,6 @@ en:
               can_have_less_or_equal: You cannot have more than %{count} projects.
 
     models:
-      arch: Arch
       private_user: Private user
       product_build_list: Product build list
 
@@ -182,13 +182,9 @@ en:
           new_comment_commit_owner: Notify about comments to my commit
           new_comment_commit_repo_owner: Notify about comments to my repository commits
           new_comment_commit_commentor: Notify about comments after my commit
+          new_build: Notify about my build tasks
+          new_associated_build: Notify about associated with me build tasks
 
       private_user:
         login: Login
         password: Password
-
-      arch:
-        name: Name
-        created_at: Created
-        updated_at: Updated
-

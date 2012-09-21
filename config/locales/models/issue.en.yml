@@ -41,6 +41,7 @@ en:
       update_label: Update label
       label_custom_color: Custom color
       label_manage: Manage labels
+      assignee_manage: Manage assignee
       assignee: Assignee
       search_user: Find user...
       search_labels: Find labels...

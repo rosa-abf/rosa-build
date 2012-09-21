@@ -14,7 +14,7 @@
       %span.date=@issue.created_at.to_s(:long)
       %br/
   .both
-  .fulltext.view.issue_body=@issue.body
+  .fulltext.view.issue_body=simple_format @issue.body
 .both
 %br
 - if can? :update, @issue

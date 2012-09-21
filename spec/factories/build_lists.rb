@@ -8,6 +8,7 @@ FactoryGirl.define do
     save_to_repository { |bl| bl.project.repositories.where(:id => bl.save_to_platform.repository_ids).first }
     association :arch
     build_for_platform {|bl| bl.save_to_platform}
+    save_to_repository {|bl| bl.save_to_platform.repositories.first}
     project_version "1.0"
     build_requires true
     update_type 'security'

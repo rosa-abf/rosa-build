@@ -3,7 +3,7 @@
   %h3= @group.name
   %h4= t("activerecord.attributes.group.description") + ":"
   %p= @group.description
-  %h4= t("layout.groups.projects_list") + ":"
+  %h4= t("layout.groups.public_projects_list") + ":"
   %p
     - @projects.each do |project|
       = link_to project.name, project

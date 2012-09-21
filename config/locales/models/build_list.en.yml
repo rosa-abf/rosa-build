@@ -18,8 +18,7 @@ en:
         additional_repos: Additional repositories
         include_repos: Included repositories
         created_at: Created on
-        save_to_platform: Platform
-        save_to_repository: Repository
+        save_to_repository: Save to repository
         build_for_platform: Build for platform
         update_type: Update type
         build_requires: Build with all the required packages
@@ -74,7 +73,7 @@ en:
       main_data: Main data
 
       human_current_duration: Build currently takes %{hours} h. %{minutes} min.
-      human_duration: Builded in %{hours} h. %{minutes} min.
+      human_duration: Built in %{hours} h. %{minutes} min.
 
       attached_advisory: Attached advisory
       create_advisory: Create new advisory
@@ -119,6 +118,21 @@ en:
         platform_pending: Platform pending
         project_not_found: Project not found
         project_version_not_found: Project version not found
+
+      log:
+        build_log: Build Log
+        not_available: Log not available yet.
+        download: Download log
+        autoreload: Update log every 
+        load_lines: Load last %{count} lines
+
+        reload_times:
+          10000:  "10 s"
+          30000:  "30 s"
+          60000:  "1 m"
+          300000: "5 m"
+          600000: "10 m"
+          900000: "15 m"
 
   flash:
     build_list:

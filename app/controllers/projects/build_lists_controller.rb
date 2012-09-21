@@ -5,9 +5,9 @@ class Projects::BuildListsController < Projects::BaseController
 
   before_filter :authenticate_user!, :except => CALLBACK_ACTIONS
   before_filter :authenticate_build_service!, :only => CALLBACK_ACTIONS
-  skip_before_filter :authenticate_user!, :only => [:show, :index, :search] if APP_CONFIG['anonymous_access']
+  skip_before_filter :authenticate_user!, :only => [:show, :index, :search, :log] if APP_CONFIG['anonymous_access']
 
-  before_filter :find_build_list, :only => [:show, :publish, :cancel, :update]
+  before_filter :find_build_list, :only => [:show, :publish, :cancel, :update, :log]
   before_filter :find_build_list_by_bs, :only => [:publish_build, :status_build, :pre_build, :post_build, :circle_build]
 
   load_and_authorize_resource :project, :only => NESTED_ACTIONS
@@ -25,8 +25,10 @@ class Projects::BuildListsController < Projects::BaseController
   def index
     @action_url = @project ? search_project_build_lists_path(@project) : search_build_lists_path
     @filter = BuildList::Filter.new(@project, current_user, params[:filter] || {})
-    @build_lists = @filter.find.scoped(:include => [:save_to_platform, :project, :user, :arch])
-    @build_lists = @build_lists.recent.paginate :page => params[:page]
+
+    @bls = @filter.find.recent.paginate :page => params[:page]
+    @build_lists = BuildList.where(:id => @bls.pluck("#{BuildList.table_name}.id")).recent
+    @build_lists = @build_lists.includes [:save_to_platform, :save_to_repository, :arch, :user, :project => [:owner]]
 
     @build_server_status = begin
       BuildServer.get_status
@@ -42,15 +44,18 @@ class Projects::BuildListsController < Projects::BaseController
   def create
     notices, errors = [], []
 
-    @platform = Platform.includes(:repositories).find params[:build_list][:save_to_platform_id]
+    @repository = Repository.find params[:build_list][:save_to_repository_id]
+    @platform = @repository.platform
 
-    @repository = @project.repositories.where(:id => @platform.repository_ids).first
+    params[:build_list][:save_to_platform_id] = @platform.id
+    params[:build_list][:auto_publish] = false unless @repository.publish_without_qa?
 
-    params[:build_list][:save_to_repository_id] = @repository.id
-    params[:build_list][:auto_publish] = false if @platform.released
+
+    build_for_platforms = Repository.select(:platform_id).
+      where(:id => params[:build_list][:include_repos]).group(:platform_id).map(&:platform_id)
 
     Arch.where(:id => params[:arches]).each do |arch|
-      Platform.main.where(:id => params[:build_for_platforms]).each do |build_for_platform|
+      Platform.main.where(:id => build_for_platforms).each do |build_for_platform|
         @build_list = @project.build_lists.build(params[:build_list])
         @build_list.commit_hash = @project.repo.commits(@build_list.project_version.match(/^latest_(.+)/).to_a.last ||
                                   @build_list.project_version).first.id if @build_list.project_version
@@ -96,6 +101,15 @@ class Projects::BuildListsController < Projects::BaseController
       redirect_to :back, :notice => t('layout.build_lists.cancel_success')
     else
       redirect_to :back, :notice => t('layout.build_lists.cancel_fail')
+    end
+  end
+
+  def log
+    @log = `tail -n #{params[:load_lines].to_i} #{Rails.root + 'public' + @build_list.fs_log_path}`
+    @log = t("layout.build_lists.log.not_available") unless $?.success?
+
+    respond_to do |format|
+      format.json { render :json => { :log => @log, :building => @build_list.build_started? } }
     end
   end
 

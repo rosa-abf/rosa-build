@@ -9,11 +9,11 @@ class PagesController < ApplicationController
 
   def tour_inside
     @entries = case params[:id]
-                      when 'projects'
+                      when 'builds'
                         %w(repo builds monitoring)
                       when 'sources'
                         %w(source history annotation edit)
-                      when 'builds'
+                      when 'projects'
                         %w(control git tracker)
                       end
     render "pages/tour/tour-inside", :layout => 'tour'

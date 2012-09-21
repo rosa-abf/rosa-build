@@ -18,6 +18,7 @@ en:
       new_user_notification: Registered on project «%{ project_name }»
       issue_assign_notification: New task assigned
       invite_approve_notification: Invitation to ABF
+      for_arch: for arch %{arch}.
 
     bodies:
       new_comment_notification: 

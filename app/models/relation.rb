@@ -10,9 +10,9 @@ class Relation < ActiveRecord::Base
   before_validation :add_default_role
 
   scope :by_user_through_groups, lambda {|u| where("actor_type = 'User' AND actor_id = ? OR actor_type = 'Group' AND actor_id IN (?)", u.id, u.group_ids)}
-  scope :by_actor, lambda {|obj| {:conditions => ['actor_id = ? AND actor_type = ?', obj.id, obj.class.to_s]}}
-  scope :by_target, lambda {|tar| {:conditions => ['target_id = ? AND target_type = ?', tar.id, tar.class.to_s]}}
-  scope :by_role, lambda {|role| {:conditions => ['role = ?', role]}}
+  scope :by_actor, lambda {|obj| where(:actor_id => obj.id, :actor_type => obj.class.to_s)}
+  scope :by_target, lambda {|tar| where(:target_id => tar.id, :target_type => tar.class.to_s)}
+  scope :by_role, lambda {|role| where(:role => role)}
 
   def self.create_with_role(actor, target, role)
     r = self.new
@@ -20,6 +20,20 @@ class Relation < ActiveRecord::Base
     r.target = target
     r.role = role
     r.save
+  end
+
+  def self.add_member(member, target, role)
+    if target.relations.exists?(:actor_id => member.id, :actor_type => member.class.to_s) || @platform.try(:owner) == member
+      true
+    else
+      rel = target.relations.build(:role => role)
+      rel.actor = member
+      rel.save
+    end
+  end
+
+  def self.remove_member(member, target)
+    Relation.by_actor(member).by_target(target).each{|r| r.destroy}
   end
 
   protected
