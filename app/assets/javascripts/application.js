@@ -82,7 +82,9 @@ $(document).ready(function() {
     return false;
   });
 
-  $('.md_and_cm code').each(function (code) {
-    CodeMirror.runMode(this.innerHTML.replace(/&amp;/gi, '&').replace(/&lt;/gi, '<').replace(/&gt;/gi, '>'), this.className, this);
-  });
+  window.CodeMirrorRun = function(code) {
+    CodeMirror.runMode(code.innerHTML.replace(/&amp;/gi, '&').replace(/&lt;/gi, '<').replace(/&gt;/gi, '>'), code.className, code);
+  }
+
+  $('.md_and_cm code').each(function (code) { CodeMirrorRun(this); });
 });

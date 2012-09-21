@@ -15,9 +15,7 @@ $(document).ready(function() {
        url: preview_url,
        data: el_dup.serialize(),
        success: function(data){
-                       preview.html(data).find('code').each(function (code) {
-                         CodeMirror.runMode(this.innerHTML.replace(/&amp;/gi, '&').replace(/&lt;/gi, '<').replace(/&gt;/gi, '>'), this.className, this);
-                       });
+                       preview.html(data).find('code').each(function (code) { CodeMirrorRun(this); })
                 },
        error: function(data){
                     alert('error'); // TODO remove
