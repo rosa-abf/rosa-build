@@ -1,7 +1,7 @@
 # -*- encoding : utf-8 -*-
 class Api::V1::BuildListsController < Api::V1::BaseController
-  before_filter :authenticate_user!
-  skip_before_filter :authenticate_user!, :only => [:show, :index] if APP_CONFIG['anonymous_access']
+  #before_filter :authenticate_user!
+  #skip_before_filter :authenticate_user!, :only => [:show, :index] if APP_CONFIG['anonymous_access']
 
   load_and_authorize_resource :project, :only => :index
   load_and_authorize_resource :build_list, :only => [:show, :create, :cancel, :publish, :reject_publish]#, :shallow => true

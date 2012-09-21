@@ -396,11 +396,11 @@ module GitHub
     }
 
     ERROR_AUTH = {
-      "error" => "You need to sign in or sign up before continuing."
+      "message" => "You need to sign in or sign up before continuing."
     }
 
     ERROR_WRONG_PASS = {
-      "error" => "Invalid email or password."
+      "message" => "Invalid email or password."
     }
 
     ERROR_RATE_LIMIT = {

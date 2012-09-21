@@ -40,6 +40,13 @@ class ApplicationController < ActionController::Base
     end
   end
 
+  rescue_from HttpBasicAuthError do |exception|
+    render :json => {:message => t("flash.http_basic_error_msg")}.to_json, :status => 401
+  end
+  rescue_from HttpBasicWrongPassError do |exception|
+    render :json => {:message => t("flash.http_basic_wrong_pass_error_message")}.to_json, :status => 401
+  end
+
   rescue_from Grit::NoSuchPathError, :with => :not_found
 
   protected
