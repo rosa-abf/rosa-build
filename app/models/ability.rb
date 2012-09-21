@@ -21,7 +21,7 @@ class Ability
     can [:read, :log, :everything], BuildList, :project => {:visibility => 'open'}
     can :read, ProductBuildList#, :product => {:platform => {:visibility => 'open'}} # double nested hash don't work
     can :read, Advisory
-    
+
     # Core callbacks
     can [:publish_build, :status_build, :pre_build, :post_build, :circle_build, :new_bbdt], BuildList
 
@@ -75,10 +75,10 @@ class Ability
         can([:create, :update], BuildList) {|build_list| build_list.project.is_package && can?(:write, build_list.project)}
 
         can(:publish, BuildList) do |build_list|
-          build_list.can_publish? and build_list.save_to_repository.publish_without_qa ? can?(:write, build_list.project) : local_admin?(build_list.save_to_platform)
+          can?(:write, build_list.project) || local_admin?(build_list.save_to_platform)
         end
         can(:reject_publish, BuildList) do |build_list|
-          build_list.can_reject_publish? and not build_list.save_to_repository.publish_without_qa and local_admin?(build_list.save_to_platform)
+          local_admin?(build_list.save_to_platform)
         end
         can(:cancel, BuildList) {|build_list| can?(:write, build_list.project)}
 

@@ -84,7 +84,7 @@ describe Api::V1::ProjectsController do
   context 'for simple user' do
     before(:each) do
       @user = FactoryGirl.create(:user)
-      set_session_for(@user)
+      http_login(@user)
     end
 
     it_should_behave_like 'api projects user with reader rights'
@@ -94,7 +94,7 @@ describe Api::V1::ProjectsController do
   context 'for admin' do
     before(:each) do
       @admin = FactoryGirl.create(:admin)
-      set_session_for(@admin)
+      http_login(@admin)
     end
 
     it_should_behave_like 'api projects user with reader rights'
@@ -104,7 +104,7 @@ describe Api::V1::ProjectsController do
   context 'for owner user' do
     before(:each) do
       @user = FactoryGirl.create(:user)
-      set_session_for(@user)
+      http_login(@user)
       @project.owner = @user; @project.save
       @project.relations.create!(:actor_type => 'User', :actor_id => @user.id, :role => 'admin')
     end
@@ -116,7 +116,7 @@ describe Api::V1::ProjectsController do
   context 'for reader user' do
     before(:each) do
       @user = FactoryGirl.create(:user)
-      set_session_for(@user)
+      http_login(@user)
       @project.relations.create!(:actor_type => 'User', :actor_id => @user.id, :role => 'reader')
     end
 
@@ -127,7 +127,7 @@ describe Api::V1::ProjectsController do
   context 'for writer user' do
     before(:each) do
       @user = FactoryGirl.create(:user)
-      set_session_for(@user)
+      http_login(@user)
       @project.relations.create!(:actor_type => 'User', :actor_id => @user.id, :role => 'writer')
     end
 
@@ -140,7 +140,7 @@ describe Api::V1::ProjectsController do
       @group = FactoryGirl.create(:group)
       @group_user = FactoryGirl.create(:user)
       @project.relations.destroy_all
-      set_session_for(@group_user)
+      http_login(@group_user)
     end
 
     context 'with no relations to project' do

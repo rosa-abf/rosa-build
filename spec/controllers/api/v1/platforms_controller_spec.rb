@@ -65,7 +65,7 @@ describe Api::V1::PlatformsController do
     before(:each) do
       @admin = FactoryGirl.create(:admin)
       @user = FactoryGirl.create(:user)
-      set_session_for(@admin)
+      http_login(@admin)
     end
 
     it_should_behave_like 'api platform user with reader rights'
@@ -75,7 +75,7 @@ describe Api::V1::PlatformsController do
   context 'for owner user' do
     before(:each) do
       @user = FactoryGirl.create(:user)
-      set_session_for(@user)
+      http_login(@user)
       @platform.owner = @user; @platform.save
       @platform.relations.create!(:actor_type => 'User', :actor_id => @user.id, :role => 'admin')
     end
@@ -87,7 +87,7 @@ describe Api::V1::PlatformsController do
   context 'for reader user' do
     before(:each) do
       @user = FactoryGirl.create(:user)
-      set_session_for(@user)
+      http_login(@user)
       @platform.relations.create!(:actor_type => 'User', :actor_id => @user.id, :role => 'reader')
     end
 
@@ -98,7 +98,7 @@ describe Api::V1::PlatformsController do
   context 'for simple user' do
     before(:each) do
       @user = FactoryGirl.create(:user)
-      set_session_for(@user)
+      http_login(@user)
     end
 
     it_should_behave_like 'api platform user with reader rights'

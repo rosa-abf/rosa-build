@@ -94,7 +94,7 @@ describe Api::V1::BuildListsController do
         @create_params = @create_params.merge(:arches => [@params[:arch_id]], :build_for_platforms => [@params[:build_for_platform_id]], :format => :json)
         any_instance_of(Project, :versions => ['v1.0', 'v2.0'])
 
-        set_session_for(@user)
+        http_login(@user)
       end
 
       context "do cancel" do
@@ -103,7 +103,7 @@ describe Api::V1::BuildListsController do
         end
 
         context 'if user is project owner' do
-          before(:each) {set_session_for(@owner_user)}
+          before(:each) {http_login(@owner_user)}
 
           context "if it has :build_pending status" do
             it "should return correct json message" do
@@ -157,7 +157,7 @@ describe Api::V1::BuildListsController do
 
         context 'if user is project owner' do
           before(:each) do
-            set_session_for(@owner_user)
+            http_login(@owner_user)
             @build_list.update_column(:status, BuildList::FAILED_PUBLISH)
             do_publish
           end
@@ -207,6 +207,7 @@ describe Api::V1::BuildListsController do
       context "do reject_publish" do
         before(:each) do
           any_instance_of(BuildList, :current_duration => 100)
+          @build_list.save_to_repository.update_column(:publish_without_qa, false)
         end
 
         def do_reject_publish
@@ -215,7 +216,7 @@ describe Api::V1::BuildListsController do
 
         context 'if user is project owner' do
           before(:each) do
-            set_session_for(@owner_user)
+            http_login(@owner_user)
             @build_list.update_column(:status, BuildServer::SUCCESS)
             @build_list.save_to_platform.update_column(:released, true)
             do_reject_publish
@@ -269,12 +270,12 @@ describe Api::V1::BuildListsController do
         it_should_behave_like 'not create build list'
 
         context 'if user is project owner' do
-          before(:each) {set_session_for(@owner_user)}
+          before(:each) {http_login(@owner_user)}
           it_should_behave_like 'create build list'
         end
 
         context 'if user is project read member' do
-          before(:each) {set_session_for(@member_user)}
+          before(:each) {http_login(@member_user)}
           it_should_behave_like 'not create build list'
         end
       end
@@ -287,13 +288,13 @@ describe Api::V1::BuildListsController do
         it_should_behave_like 'not create build list'
 
         context 'if user is project owner' do
-          before(:each) {set_session_for(@owner_user)}
+          before(:each) {http_login(@owner_user)}
 
           it_should_behave_like 'create build list'
         end
 
         context 'if user is project read member' do
-          before(:each) {set_session_for(@member_user)}
+          before(:each) {http_login(@member_user)}
           it_should_behave_like 'not create build list'
         end
       end
@@ -336,19 +337,19 @@ describe Api::V1::BuildListsController do
         @build_list.save_to_platform.relations.create(:role => 'admin', :actor => @owner_group) # Why it's really need it??
         @build_list.save_to_platform.relations.create(:role => 'reader', :actor => @member_group) # Why it's really need it??
 
-        set_session_for(@user)
+        http_login(@user)
       end
 
       context 'for open project' do
         it_should_behave_like 'not create build list'
 
         context 'if user is group owner' do
-          before(:each) {set_session_for(@owner_user)}
+          before(:each) {http_login(@owner_user)}
           it_should_behave_like 'create build list'
         end
 
         context 'if user is group read member' do
-          before(:each) {set_session_for(@member_user)}
+          before(:each) {http_login(@member_user)}
           it_should_behave_like 'not create build list'
         end
       end
@@ -361,12 +362,12 @@ describe Api::V1::BuildListsController do
         it_should_behave_like 'not create build list'
 
         context 'if user is group owner' do
-          before(:each) {set_session_for(@owner_user)}
+          before(:each) {http_login(@owner_user)}
           it_should_behave_like 'create build list'
         end
 
         context 'if user is group read member' do
-          before(:each) {set_session_for(@member_user)}
+          before(:each) {http_login(@member_user)}
           it_should_behave_like 'not create build list'
         end
       end
@@ -417,7 +418,7 @@ describe Api::V1::BuildListsController do
 
     context 'for all build lists' do
       before(:each) {
-        set_session_for(@user)
+        http_login(@user)
       }
 
       it 'should be able to perform index action' do
@@ -436,7 +437,7 @@ describe Api::V1::BuildListsController do
 
     context 'filter' do
       before(:each) do
-        set_session_for FactoryGirl.create(:admin)
+        http_login FactoryGirl.create(:admin)
       end
 
       it 'should filter by bs_id' do
@@ -484,17 +485,17 @@ describe Api::V1::BuildListsController do
 
       context 'for open project' do
         context 'for simple user' do
-          before(:each) {set_session_for(@user)}
+          before(:each) {http_login(@user)}
           it_should_behave_like 'show build list'
         end
 
         context 'if user is project owner' do
-          before(:each) {set_session_for(@owner_user)}
+          before(:each) {http_login(@owner_user)}
           it_should_behave_like 'show build list'
         end
 
         context 'if user is project read member' do
-          before(:each) {set_session_for(@member_user)}
+          before(:each) {http_login(@member_user)}
           it_should_behave_like 'show build list'
         end
       end
@@ -505,17 +506,17 @@ describe Api::V1::BuildListsController do
         end
 
         context 'for simple user' do
-          before(:each) {set_session_for(@user)}
+          before(:each) {http_login(@user)}
           it_should_behave_like 'not show build list'
         end
 
         context 'if user is project owner' do
-          before(:each) {set_session_for(@owner_user)}
+          before(:each) {http_login(@owner_user)}
           it_should_behave_like 'show build list'
         end
 
         context 'if user is project read member' do
-          before(:each) {set_session_for(@member_user)}
+          before(:each) {http_login(@member_user)}
           it_should_behave_like 'show build list'
         end
       end
@@ -554,17 +555,17 @@ describe Api::V1::BuildListsController do
 
       context 'for open project' do
         context 'for simple user' do
-          before(:each) {set_session_for(@user)}
+          before(:each) {http_login(@user)}
           it_should_behave_like 'show build list'
         end
 
         context 'if user is group owner' do
-          before(:each) {set_session_for(@owner_user)}
+          before(:each) {http_login(@owner_user)}
           it_should_behave_like 'show build list'
         end
 
         context 'if user is group read member' do
-          before(:each) {set_session_for(@member_user)}
+          before(:each) {http_login(@member_user)}
           it_should_behave_like 'show build list'
         end
       end
@@ -575,17 +576,17 @@ describe Api::V1::BuildListsController do
         end
 
         context 'for simple user' do
-          before(:each) {set_session_for(@user)}
+          before(:each) {http_login(@user)}
           it_should_behave_like 'not show build list'
         end
 
         context 'if user is group owner' do
-          before(:each) { set_session_for(@owner_user) }
+          before(:each) { http_login(@owner_user) }
           it_should_behave_like 'show build list'
         end
 
         context 'if user is group read member' do
-          before(:each) {set_session_for(@member_user)}
+          before(:each) {http_login(@member_user)}
           it_should_behave_like 'show build list'
         end
       end

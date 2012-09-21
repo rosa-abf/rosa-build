@@ -56,7 +56,7 @@ describe Api::V1::RepositoriesController do
   context 'for admin' do
     before(:each) do
       @admin = FactoryGirl.create(:admin)
-      set_session_for(@admin)
+      http_login(@admin)
     end
 
     it_should_behave_like 'api repository user with reader rights'
@@ -66,7 +66,7 @@ describe Api::V1::RepositoriesController do
   context 'for platform owner user' do
     before(:each) do
       @user = FactoryGirl.create(:user)
-      set_session_for(@user)
+      http_login(@user)
       platform = @repository.platform
       platform.owner = @user; platform.save
       @repository.platform.relations.create!(:actor_type => 'User', :actor_id => @user.id, :role => 'admin')
@@ -79,7 +79,7 @@ describe Api::V1::RepositoriesController do
   context 'for user' do
     before(:each) do
       @user = FactoryGirl.create(:user)
-      set_session_for(@user)
+      http_login(@user)
     end
 
     it_should_behave_like 'api repository user with reader rights'

@@ -177,7 +177,7 @@ class BuildList < ActiveRecord::Base
 
     event :publish do
       transition [:success, :failed_publish] => :build_publish, :if => lambda { |build_list|
-        BuildServer.publish_container(build_list.bs_id) == BuildServer::SUCCESS
+        BuildServer.publish_container(build_list.bs_id) == BuildServer::SUCCESS && build_list.save_to_repository.publish_without_qa
       }
       transition [:success, :failed_publish] => :failed_publish
     end
