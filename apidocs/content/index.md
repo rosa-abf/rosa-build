@@ -23,7 +23,7 @@ All API access is over HTTPS and all data is
 sent and received as JSON.
 
 <pre class="terminal">
-$ curl -i https://abf.rosalinux.ru
+$ curl -i https://abf.rosalinux.ru/api/v1
 
 HTTP/1.1 302 Found
 Server: nginx/1.0.12

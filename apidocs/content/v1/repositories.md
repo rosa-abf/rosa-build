@@ -1,18 +1,17 @@
 ---
-title: Repositories | GitHub API
+title: Repositories | ABF API
 ---
 
-## Repository data
+# Repositories API
 
-This request will return you all needed data about repositories list into JSON format.
-
-### Url:
+## Get a single repository
 
     GET /api/v1/repositories/:id.json
 
-### Params:
+### Parameters:
 
-* `id`: identifier of current project
+id
+: _Integer_ identifier of current repository
 
 ### Response:
 

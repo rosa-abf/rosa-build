@@ -1,12 +1,10 @@
 ---
-title: Architectures | GitHub API
+title: Architectures | ABF API
 ---
 
-##  Architectures list
+# Architectures API
 
-This request will return you all needed data about posible architectures into JSON format.
-
-### Url:
+##  List architectures
 
     GET /api/v1/arches.json
 
