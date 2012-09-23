@@ -5,7 +5,7 @@ class Projects::ProjectsController < Projects::BaseController
 
   def index
     @groups = params[:groups] || []
-    @user_owner = params[:user_owner] == ['true'] ? true : false
+    @user_owner = params[:user_owner] ? true : false
     @projects = Project.accessible_by(current_ability, :membered)
 
     respond_to do |format|
@@ -107,18 +107,14 @@ class Projects::ProjectsController < Projects::BaseController
 
     res[:total_count] = projects.count
 
-    if user_owner
-      project_ids = current_user.own_projects.map(&:id)
-      if groups.present?
-        projects = projects.where("groups.id in (?) OR projects.id in (?)", groups, project_ids).
-          joins(:relations).
-          joins('RIGHT OUTER JOIN "groups" ON "groups"."id" = "relations"."actor_id"')
-      else
-        projects = projects.where(:id => project_ids)
-      end
-    else
-      projects = projects.where(:groups => {:id => groups}).joins(:groups) if groups.present?
+    if user_owner && groups.present?
+      projects = projects.by_groups_or_owner(groups, current_user)
+    elsif groups.present?
+      projects = projects.where(:groups => {:id => groups}).joins(:groups)
+    elsif user_owner
+      projects = projects.where(:owner_id => current_user, :owner_type => 'User')
     end
+    
     projects = projects.search(params[:sSearch]).search_order if params[:sSearch].present?
 
     res[:filtered_count] = projects.count

@@ -49,6 +49,11 @@ class Project < ActiveRecord::Base
       WHERE (ptr.repository_id = #{ repository_id })
     )
   ) }
+  scope :by_groups_or_owner, lambda { |group_ids, owner_id|
+    where("(relations.actor_id IN (?) AND relations.actor_type = 'Group') OR (projects.owner_id = ? AND projects.owner_type = 'User')", group_ids, owner_id).
+    joins(:relations)
+  }
+
 
   before_create :set_maintainer
   after_save :attach_to_personal_repository

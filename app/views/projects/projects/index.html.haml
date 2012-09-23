@@ -1,5 +1,5 @@
 -set_meta_tags :title => t('layout.projects.list_header')
--render 'filter'
+-render 'filters'
 .toolbar
   = link_to t('layout.projects.new'), new_project_path, :class => 'button' if can?(:create, Project)
 

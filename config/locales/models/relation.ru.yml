@@ -1,6 +1,7 @@
 ru:
   layout:
     relations:
+      my: Мои
       user_owner: Я - владелец
       group_owner: Я состою в группе-владельцев
       user: Я - участник
