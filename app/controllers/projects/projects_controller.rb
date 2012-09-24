@@ -16,7 +16,7 @@ class Projects::ProjectsController < Projects::BaseController
       }
       format.json {
         selected_groups = params[:groups] || []
-        selected_owners = params[:owners] || []
+        selected_owners = params[:users] || []
         @projects = prepare_list(@projects, selected_groups, selected_owners)
       }
     end
