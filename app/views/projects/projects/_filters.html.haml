@@ -3,8 +3,9 @@
     =form_tag projects_path, :id => 'filter_projects', :method => :get do
       .bordered.bpadding20
         =tracker_search_field(:search, t('layout.find_project'))
-        = link_to t('layout.projects.new'), new_project_path, :class => 'button' if can?(:create, Project)
-
+      - if can?(:create, Project)
+        .bordered.bpadding20
+          = link_to t('layout.projects.new'), new_project_path, :class => 'button'
       .bordered.bpadding20
         %h3=t('layout.relations.filters')
         - options_for_filters(@all_projects, @groups, @owners).each do |options|
