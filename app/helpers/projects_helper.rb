@@ -5,7 +5,7 @@ module ProjectsHelper
       class_name = o.class.name
       {
         :id => "#{class_name.downcase}-#{o.id}",
-        :color => '464646',
+        :color => '0054a6',
         :selected => false,
         :check_box_name => class_name.downcase.pluralize,
         :check_box_value => o.id,
