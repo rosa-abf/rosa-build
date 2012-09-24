@@ -13,6 +13,7 @@ $(document).ready(function() {
 
   $('form.edit_comment').live('submit', function() {
     var form = $(this);
+    form.parent().find('.flash').remove();
     $.ajax({
       type: 'POST',
       url: form.attr("action"),
@@ -23,7 +24,7 @@ $(document).ready(function() {
                   $('.buttons a.edit_comment#'+cancel_button.attr('id')).parent().parent().find('.cm-s-default.md_and_cm').html(data).find('code').each(function (code) { CodeMirrorRun(this); })
                 },
       error: function(data){
-               alert('error'); // TODO remove
+               form.before(data.responseText);
              }
      });
     return false;

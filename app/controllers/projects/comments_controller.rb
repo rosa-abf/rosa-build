@@ -23,8 +23,12 @@ class Projects::CommentsController < Projects::BaseController
   end
 
   def update
-    status = @comment.update_attributes(params[:comment]) ? 200 : 500
-    render :inline => view_context.markdown(@comment.body), :status => status
+    status, message = if @comment.update_attributes(params[:comment])
+      [200, view_context.markdown(@comment.body)]
+    else
+      [400, view_context.local_alert(@comment.errors.full_messages.join('. '))]
+    end
+    render :inline => message, :status => status
   end
 
   def destroy

@@ -224,6 +224,7 @@ $(document).ready(function() {
 
   $('.edit_form.issue').live('submit', function() {
     var form = $(this);
+    form.parent().find('.flash').remove();
     $.ajax({
       type: 'POST',
       url: form.attr("action"),
@@ -235,7 +236,7 @@ $(document).ready(function() {
                   $('.fulltext.view.issue_body').html(data).find('code').each(function (code) { CodeMirrorRun(this); })
                 },
       error: function(data){
-               alert('error'); // TODO remove
+               form.before(data.responseText);
              }
      });
     return false;

@@ -48,4 +48,10 @@ module ApplicationHelper
     end
     @redcarpet.render(text).html_safe
   end
+
+  def local_alert(text, type = 'error')
+    html = "<div class='flash'><div class='alert #{type}'> #{text}"
+    html << link_to('×', '#', :class => 'close close-alert', 'data-dismiss' => 'alert')
+    html << '</div></div>'
+  end
 end
