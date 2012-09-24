@@ -14,7 +14,8 @@ class Projects::CommentsController < Projects::BaseController
       redirect_to project_commentable_path(@project, @commentable)
     else
       flash[:error] = I18n.t("flash.comment.save_error")
-      render :action => 'new'
+      flash[:warning] = @comment.errors.full_messages.join('. ')
+      redirect_to project_commentable_path(@project, @commentable)
     end
   end
 
