@@ -707,6 +707,12 @@ div.toolbar, table.dataTable {
     .group { background: image-url('group16.png') no-repeat 0 0 transparent; }
 }
 
+.div-filter-labels {
+    .group { background: image-url('group16b.png') no-repeat 0 0 transparent; }
+    .user { background: image-url('user16b.png') no-repeat 0 0 transparent; }
+    .user, .group { padding-left: 20px; }
+}
+
 .root {
   width: 100%;
   text-align: center;

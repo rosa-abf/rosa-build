@@ -9,10 +9,11 @@ module ProjectsHelper
         :selected => false,
         :check_box_name => class_name.downcase.pluralize,
         :check_box_value => o.id,
-        :name => o.uname,
+        :name => content_tag(:div, content_tag(:span, o.uname, :class => class_name.downcase)),
+        :uname => o.uname, # only for sorting
         :count => all_projects.where(:owner_id => o, :owner_type => class_name).count
       }
-    end.sort_by{ |f| f[:name] }
+    end.sort_by{ |f| f[:uname] }
   end
 
   def git_repo_url(name)
