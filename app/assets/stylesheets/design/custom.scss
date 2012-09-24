@@ -1525,6 +1525,15 @@ table.tablesorter.platform-maintainers.static-search thead tr.search th input[ty
     border-left: 4px solid #EDEDED;
     padding: 0 15px;
   }
+
+  p {
+    margin-top: 10px;
+
+  }
+}
+
+.md_and_cm > :first-child {
+  margin-top: 0 !important;
 }
 
 #md_tabs {
@@ -1591,6 +1600,7 @@ table.tablesorter.platform-maintainers.static-search thead tr.search th input[ty
     h3 {
       margin: 6px 0 0 0;
     }
+
     pre {
       background: none repeat scroll 0 0 #EDEDED;
       box-shadow: 0 3px 3px -1px rgba(18, 86, 135, 0.2);
