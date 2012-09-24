@@ -1,5 +1,20 @@
 # -*- encoding : utf-8 -*-
 module ProjectsHelper
+  def options_for_filters(all_projects, groups, owners)
+    (groups + owners).map do |o|
+      class_name = o.class.name
+      {
+        :id => "#{class_name.downcase}-#{o.id}",
+        :color => '464646',
+        :selected => false,
+        :check_box_name => class_name.downcase.pluralize,
+        :check_box_value => o.id,
+        :name => o.uname,
+        :count => all_projects.where(:owner_id => o, :owner_type => class_name).count
+      }
+    end.sort_by{ |f| f[:name] }
+  end
+
   def git_repo_url(name)
     if current_user
       "#{request.protocol}#{current_user.uname}@#{request.host_with_port}/#{name}.git"

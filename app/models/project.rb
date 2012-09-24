@@ -49,9 +49,8 @@ class Project < ActiveRecord::Base
       WHERE (ptr.repository_id = #{ repository_id })
     )
   ) }
-  scope :by_groups_or_owner, lambda { |group_ids, owner_id|
-    where("(relations.actor_id IN (?) AND relations.actor_type = 'Group') OR (projects.owner_id = ? AND projects.owner_type = 'User')", group_ids, owner_id).
-    joins(:relations)
+  scope :by_owners, lambda { |group_owner_ids, user_owner_ids|
+    where("(projects.owner_id in (?) AND projects.owner_type = 'Group') OR (projects.owner_id in (?) AND projects.owner_type = 'User')", group_owner_ids, user_owner_ids)
   }
 
 

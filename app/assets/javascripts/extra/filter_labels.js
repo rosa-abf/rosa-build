@@ -6,12 +6,10 @@ $(document).ready(function() {
     var bg = $("#"+flag).css("background-color");
     var checkbox = $(this).find(':checkbox');
     if ($(this).css("background-color") != bg) {
-      $(this).css("background-color",bg);
-      $(this).css("color","#FFFFFF");
+      $(this).css("background-color",bg).css("color","#FFFFFF");
       checkbox.attr('checked', 'checked');
     } else {
-      $(this).css("background-color","rgb(247, 247, 247)");
-      $(this).css("color","#565657");
+      $(this).css("background-color","rgb(247, 247, 247)").css("color","#565657");
       checkbox.removeAttr('checked');
     }
   });

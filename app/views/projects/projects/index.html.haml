@@ -1,15 +1,10 @@
 -set_meta_tags :title => t('layout.projects.list_header')
 -render 'filters'
 .toolbar
-  = link_to t('layout.projects.new'), new_project_path, :class => 'button' if can?(:create, Project)
-
-  .legend.rights
-    %div
-      %span.user_owner= t("layout.relations.user_owner")
-      %span.group_owner= t("layout.relations.group_owner")
-    %div
-      %span.user= t("layout.relations.user")
-      %span.group= t("layout.relations.group")
+  %span.user_owner= t("layout.relations.user_owner")
+  %span.group_owner= t("layout.relations.group_owner")
+  %span.user= t("layout.relations.user")
+  %span.group= t("layout.relations.group")
   .both
 - columns = [{:type => 'html'},
              {:type => 'html', :sortable => false, :searchable => false},

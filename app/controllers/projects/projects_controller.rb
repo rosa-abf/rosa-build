@@ -1,16 +1,24 @@
 # -*- encoding : utf-8 -*-
 class Projects::ProjectsController < Projects::BaseController
+  include ProjectsHelper
   before_filter :authenticate_user!
   load_and_authorize_resource :id_param => :project_name # to force member actions load
 
   def index
-    @groups = params[:groups] || []
-    @user_owner = params[:user_owner] ? true : false
     @projects = Project.accessible_by(current_ability, :membered)
 
     respond_to do |format|
-      format.html { @projects = @projects.recent.paginate(:page => params[:page], :per_page => 25) }
-      format.json { @projects = prepare_list(@projects, @groups, @user_owner) }
+      format.html {
+        @all_projects = @projects
+        @groups = current_user.groups
+        @owners = User.where(:id => @projects.select(:owner_id).where(:owner_type => 'User').group(:owner_id).map(&:owner_id))
+        @projects = @projects.recent.paginate(:page => params[:page], :per_page => 25)
+      }
+      format.json {
+        selected_groups = params[:groups] || []
+        selected_owners = params[:owners] || []
+        @projects = prepare_list(@projects, selected_groups, selected_owners)
+      }
     end
   end
 
@@ -97,7 +105,7 @@ class Projects::ProjectsController < Projects::BaseController
 
   protected
 
-  def prepare_list(projects, groups, user_owner)
+  def prepare_list(projects, groups, owners)
     res = {}
 
     colName = ['name']
@@ -107,12 +115,8 @@ class Projects::ProjectsController < Projects::BaseController
 
     res[:total_count] = projects.count
 
-    if user_owner && groups.present?
-      projects = projects.by_groups_or_owner(groups, current_user)
-    elsif groups.present?
-      projects = projects.where(:groups => {:id => groups}).joins(:groups)
-    elsif user_owner
-      projects = projects.where(:owner_id => current_user, :owner_type => 'User')
+    if groups.present? || owners.present?
+      projects = projects.by_owners(groups, owners)
     end
     
     projects = projects.search(params[:sSearch]).search_order if params[:sSearch].present?

@@ -1,7 +1,7 @@
 en:
   layout:
     relations:
-      my: My
+      filters: Filters
       user_owner: I'm owner
       group_owner: I'm member of owner group
       user: I'm collaborator
