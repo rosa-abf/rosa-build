@@ -16,11 +16,8 @@ $(document).ready(function() {
        data: el_dup.serialize(),
        success: function(data){
                        preview.html(data).find('code').each(function (code) { CodeMirrorRun(this); })
-                },
-       error: function(data){
-                    alert('error'); // TODO remove
-              }
-      });
+                }
+     });
     };
   });
 });
