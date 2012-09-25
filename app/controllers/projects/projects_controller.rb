@@ -11,7 +11,7 @@ class Projects::ProjectsController < Projects::BaseController
       format.html {
         @all_projects = @projects
         @groups = current_user.groups
-        @owners = User.where(:id => @projects.select(:owner_id).where(:owner_type => 'User').group(:owner_id).map(&:owner_id))
+        @owners = User.where(:id => @projects.where(:owner_type => 'User').uniq.pluck(:owner_id))
         @projects = @projects.recent.paginate(:page => params[:page], :per_page => 25)
       }
       format.json {
