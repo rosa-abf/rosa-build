@@ -19,7 +19,7 @@ class Ability
     can [:read, :log, :everything], BuildList, :project => {:visibility => 'open'}
     can :read, ProductBuildList#, :product => {:platform => {:visibility => 'open'}} # double nested hash don't work
     can :read, Advisory
-    
+
     # Core callbacks
     can [:publish_build, :status_build, :pre_build, :post_build, :circle_build, :new_bbdt], BuildList
 
@@ -65,6 +65,7 @@ class Ability
         can(:destroy, Project) {|project| owner? project}
         can(:destroy, Project) {|project| project.owner_type == 'Group' and project.owner.actors.exists?(:actor_type => 'User', :actor_id => user.id, :role => 'admin')}
         can :remove_user, Project
+        can :preview, Project
 
         can [:read, :log, :owned, :everything], BuildList, :user_id => user.id
         can [:read, :log, :related, :everything], BuildList, :project => {:owner_type => 'User', :owner_id => user.id}

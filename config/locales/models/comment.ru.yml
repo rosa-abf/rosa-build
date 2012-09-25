@@ -4,17 +4,33 @@ ru:
       confirm_delete: Вы уверены, что хотите удалить комментарий?
       new_header: Новый комментарий
       edit_header: Редактирование комментария
-      has_commented: "оставил комментарий"
-      notifications_are: "Уведомления о последующих комментариях"
-      comments_header: "Комментарии"
-      back: 'Назад'
+      has_commented: оставил комментарий
+      notifications_are: Уведомления о последующих комментариях
+      comments_header: Комментарии
+      back: Назад
+      md_cheatsheet_header: Шпаргалка по Markdown
+      md_cheatsheet:
+        format_text: Формат текста
+        headers: Заголовки
+        text_styles: Стиль текста
+        lists: Списки
+        unordered: Маркированный
+        ordered: Нумерованный
+        miscellaneous: Разное
+        images: Изображения
+        links: Ссылки
+        blockquotes: Цитирование
+        code_examples: Примеры кода в Markdown
+        syntax_highlighting: Подсветка синтаксиса
+        indent_code: Отступ кода на 4 пробела
+        inline_code: Встроенный код в строке
 
   flash:
     comment:
       saved: Комментарий успешно сохранен
       save_error: Ошибка сохранения комментария
       destroyed: Комментарий удален
-  
+
   activerecord:
     attributes:
       comment:

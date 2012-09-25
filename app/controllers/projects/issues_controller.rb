@@ -51,10 +51,14 @@ class Projects::IssuesController < Projects::BaseController
     if params[:issue] && status = params[:issue][:status]
       @issue.set_close(current_user) if status == 'closed'
       @issue.set_open if status == 'open'
-      render :partial => 'status', :status => (@issue.save ? 200 : 500)
+      render :partial => 'status', :status => (@issue.save ? 200 : 400)
     elsif params[:issue]
-      status = @issue.update_attributes(params[:issue]) ? 200 : 500
-      render :inline => ActionController::Base.helpers.simple_format(params[:issue][:body]), :status => status
+      status, message = if @issue.update_attributes(params[:issue])
+        [200, view_context.markdown(@issue.body)]
+      else
+        [400, view_context.local_alert(@issue.errors.full_messages.join('. '))]
+      end
+      render :inline => message, :status => status
     else
       render :nothing => true, :status => 200
     end

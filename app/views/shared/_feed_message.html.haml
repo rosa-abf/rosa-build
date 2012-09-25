@@ -19,5 +19,5 @@
     - if presenter.content?
       .fulltext{:class => "#{presenter.expandable? ? "hidden" : ''} #{presenter.caption? ? "" : "alone"}",
                 :id    => presenter.expandable? ? "content-expand#{item_no}" : ''}
-        = presenter.content
+        .cm-s-default.md_and_cm=markdown presenter.content
       .both

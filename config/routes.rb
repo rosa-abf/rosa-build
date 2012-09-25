@@ -185,6 +185,7 @@ Rosa::Application.routes.draw do
         resources :collaborators do
           get :find, :on => :collection
         end
+        post '/preview' => 'projects#preview', :as => 'md_preview'
       end
       # Resource
       get '/autocomplete_maintainers' => 'projects#autocomplete_maintainers', :as => :autocomplete_maintainers

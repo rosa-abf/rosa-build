@@ -34,7 +34,7 @@ $(document).ready(function() {
       var current = $(this);
       current.parent().find('input.user_role_chbx').each(function(i,el) {
           if ($(el).attr('id') != current.attr('id')) {
-              $(el).removeAttr('checked');  
+              $(el).removeAttr('checked');
           }
       });
   });
@@ -81,4 +81,10 @@ $(document).ready(function() {
     }
     return false;
   });
+
+  window.CodeMirrorRun = function(code) {
+    CodeMirror.runMode(code.innerHTML.replace(/&amp;/gi, '&').replace(/&lt;/gi, '<').replace(/&gt;/gi, '>'), code.className, code);
+  }
+
+  $('.md_and_cm code').each(function (code) { CodeMirrorRun(this); });
 });

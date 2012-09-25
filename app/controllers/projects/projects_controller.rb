@@ -93,6 +93,10 @@ class Projects::ProjectsController < Projects::BaseController
     render :json => items
   end
 
+  def preview
+    render :inline => view_context.markdown(params[:text]), :layout => false
+  end
+
   protected
 
   def prepare_list(projects)

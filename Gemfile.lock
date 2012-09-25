@@ -246,7 +246,7 @@ GEM
     rdiscount (1.6.8)
     rdoc (3.12)
       json (~> 1.4)
-    redcarpet (1.17.2)
+    redcarpet (2.1.1)
     redis (3.0.1)
     redis-namespace (1.2.1)
       redis (~> 3.0.0)
@@ -394,7 +394,7 @@ DEPENDENCIES
   rails3-generators
   rails3-jquery-autocomplete (~> 1.0.7)
   rdiscount
-  redcarpet (= 1.17.2)
+  redcarpet (~> 2.1.1)
   redhillonrails_core!
   resque (~> 1.21.0)
   resque-status (~> 0.3.3)

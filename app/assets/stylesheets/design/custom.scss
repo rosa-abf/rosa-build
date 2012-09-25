@@ -760,7 +760,7 @@ div.tos ol li {
 }
 
 div.tos_sidebar ul {
-    list-style: none outside none; 
+    list-style: none outside none;
     margin: 20px 0 0;
     padding: 0;
     text-align: left;
@@ -1491,3 +1491,123 @@ table.tablesorter.platform-maintainers.static-search thead tr.search th input[ty
     .build_for_pl { font-weight: bold; }
     .offset25 { padding-left: 10px }
 }
+
+.md_and_cm {
+  overflow: auto;
+  margin: 10px 0 10px;
+  padding: 5px;
+  border-radius: 4px 4px 4px 4px;
+  background: #FFF;
+
+  pre {
+    background-color: #F8F8F8;
+    border: 1px solid #D6D6D6;
+    border-radius: 5px 5px 5px 5px;
+    color: #333333;
+    padding: 6px 10px;
+    overflow: auto;
+
+    code {
+      background-color: transparent;
+      border: none;
+    }
+  }
+
+  code {
+    background-color: #F8F8F8;
+    border: 1px solid #D6D6D6;
+    border-radius: 5px 5px 5px 5px;
+    margin: 0 2px;
+    padding: 0px 5px;
+  }
+
+  blockquote {
+    border-left: 4px solid #EDEDED;
+    padding: 0 15px;
+  }
+
+  p {
+    margin-top: 10px;
+
+  }
+}
+
+.md_and_cm > :first-child {
+  margin-top: 0 !important;
+}
+
+#md_tabs {
+  margin: 0;
+}
+
+#md_tabs.nav-tabs > li > a {
+  line-height: 5px;
+}
+
+#open-comment {
+  textarea {
+    background: none repeat scroll 0 0 #FFFFFF;
+    border: 1px solid #DEDEDE;
+    border-radius: 4px 4px 4px 4px;
+    color: #575756;
+    font-size: 12px;
+    height: 110px;
+    padding: 5px;
+    width: 98%;
+    max-width: 98%;
+    margin: 10px 0 10px;
+    resize: vertical;
+  }
+
+  textarea#issue_title {
+    height: 16px;
+    margin: 0 0 10px;
+  }
+
+  .tab-pane textarea {
+    min-height: 112px;
+  }
+
+  .edit_comment .comment-left {
+    margin-top: 0;
+  }
+}
+
+#open-comment > h3.tmargin0 {
+  margin-bottom: 0;
+}
+
+#md_help {
+  width: 800px;
+  top: 30%;
+  left: 42%;
+
+  .modal-body {
+    max-height: 560px;
+    padding-top: 0;
+  }
+
+  .modal-header {
+    padding-bottom: 0;
+  }
+
+  .col {
+    width: 245px;
+    float: left;
+    padding: 0;
+    margin-right: 10px;
+
+    h3 {
+      margin: 6px 0 0 0;
+    }
+
+    pre {
+      background: none repeat scroll 0 0 #EDEDED;
+      box-shadow: 0 3px 3px -1px rgba(18, 86, 135, 0.2);
+      border: 1px solid #EDEDED;
+      padding: 5px;
+      margin-top: 3px;
+    }
+  }
+}
+
