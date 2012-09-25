@@ -1,6 +1,10 @@
 # -*- encoding : utf-8 -*-
 module ProjectsHelper
   def options_for_filters(all_projects, groups, owners)
+    projects_count_by_groups = all_projects.where(:owner_id => groups, :owner_type => 'Group').
+      group(:owner_id).count
+    projects_count_by_owners = all_projects.where(:owner_id => owners, :owner_type => 'User').
+      group(:owner_id).count
     (groups + owners).map do |o|
       class_name = o.class.name
       {
@@ -11,7 +15,7 @@ module ProjectsHelper
         :check_box_value => o.id,
         :name => content_tag(:div, content_tag(:span, o.uname, :class => class_name.downcase)),
         :uname => o.uname, # only for sorting
-        :count => all_projects.where(:owner_id => o, :owner_type => class_name).count
+        :count => o.is_a?(User) ? projects_count_by_owners[o.id] : projects_count_by_groups[o.id]
       }
     end.sort_by{ |f| f[:uname] }
   end
