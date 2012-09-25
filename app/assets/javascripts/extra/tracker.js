@@ -224,6 +224,7 @@ $(document).ready(function() {
 
   $('.edit_form.issue').live('submit', function() {
     var form = $(this);
+    form.parent().find('.flash').remove();
     $.ajax({
       type: 'POST',
       url: form.attr("action"),
@@ -232,10 +233,10 @@ $(document).ready(function() {
                   form.fadeOut('slow');
                   $('#edit_issue_content').fadeIn('slow');
                   $('h3.issue_title').html(form.find('#issue_title').attr('value'));
-                  $('.fulltext.view.issue_body').html(form.find('#issue_body').attr('value'));
+                  $('.fulltext.view.issue_body').html(data).find('code').each(function (code) { CodeMirrorRun(this); })
                 },
       error: function(data){
-               alert('error'); // TODO remove
+               form.before(data.responseText);
              }
      });
     return false;

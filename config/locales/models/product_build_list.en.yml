@@ -10,7 +10,7 @@ en:
         '2': 'build in progress'
         build_failed: Build failed
         build_started: Build in progress
-        build_completed: Builded
+        build_completed: Built
 
       ownership:
         header: Build list ownership

@@ -45,8 +45,8 @@ class MassBuild < ActiveRecord::Base
   end
 
   def cancel_all
-    self.update_attribute(:stop_build, true)
-    self.build_lists.find_each(:batch_size => 100) do |bl|
+    update_column(:stop_build, true)
+    build_lists.find_each(:batch_size => 100) do |bl|
       bl.cancel
     end
   end

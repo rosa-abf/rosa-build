@@ -16,5 +16,6 @@ class BuildListObserver < ActiveRecord::Observer
         end
       end
     end
-  end
+  end # before_update
+
 end

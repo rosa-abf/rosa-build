@@ -40,6 +40,7 @@ en:
       target_platform: Target platform
       target_architecture: Target architecture
       members: Members
+      maintainers: Maintainers
       project: Project
       arch: Architecture
       mass_build: Mass build
@@ -62,7 +63,6 @@ en:
       cancel_mass_build: Mass build canceled
       clone_success: Cloned successfully
       members:
-        already_added: "%{name} is already a member of platform"
         successfully_added: "%{name} successfully added to the platform"
         error_in_adding: "Unable to add %{name} as member"
 

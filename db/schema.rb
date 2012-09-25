@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120730214052) do
+ActiveRecord::Schema.define(:version => 20120914160741) do
 
   create_table "activity_feeds", :force => true do |t|
     t.integer  "user_id",    :null => false
@@ -91,11 +91,14 @@ ActiveRecord::Schema.define(:version => 20120730214052) do
     t.string   "version"
     t.string   "release"
     t.string   "package_type"
-    t.datetime "created_at",    :null => false
-    t.datetime "updated_at",    :null => false
+    t.datetime "created_at",                       :null => false
+    t.datetime "updated_at",                       :null => false
+    t.boolean  "actual",        :default => false
   end
 
+  add_index "build_list_packages", ["actual", "platform_id"], :name => "index_build_list_packages_on_actual_and_platform_id"
   add_index "build_list_packages", ["build_list_id"], :name => "index_build_list_packages_on_build_list_id"
+  add_index "build_list_packages", ["name", "project_id"], :name => "index_build_list_packages_on_name_and_project_id"
   add_index "build_list_packages", ["platform_id"], :name => "index_build_list_packages_on_platform_id"
   add_index "build_list_packages", ["project_id"], :name => "index_build_list_packages_on_project_id"
 
@@ -131,6 +134,7 @@ ActiveRecord::Schema.define(:version => 20120730214052) do
 
   add_index "build_lists", ["advisory_id"], :name => "index_build_lists_on_advisory_id"
   add_index "build_lists", ["arch_id"], :name => "index_build_lists_on_arch_id"
+  add_index "build_lists", ["project_id", "save_to_repository_id", "build_for_platform_id", "arch_id"], :name => "maintainer_search_index"
   add_index "build_lists", ["bs_id"], :name => "index_build_lists_on_bs_id", :unique => true
   add_index "build_lists", ["project_id"], :name => "index_build_lists_on_project_id"
 
@@ -332,6 +336,7 @@ ActiveRecord::Schema.define(:version => 20120730214052) do
     t.boolean  "is_package",         :default => true,     :null => false
     t.integer  "average_build_time", :default => 0,        :null => false
     t.integer  "build_count",        :default => 0,        :null => false
+    t.integer  "maintainer_id"
   end
 
   add_index "projects", ["owner_id"], :name => "index_projects_on_name_and_owner_id_and_owner_type", :unique => true, :case_sensitive => false
@@ -358,6 +363,7 @@ ActiveRecord::Schema.define(:version => 20120730214052) do
     t.datetime "updated_at",                    :null => false
     t.string   "interest"
     t.text     "more"
+    t.string   "language"
   end
 
   add_index "register_requests", ["email"], :name => "index_register_requests_on_email", :unique => true, :case_sensitive => false
@@ -374,11 +380,12 @@ ActiveRecord::Schema.define(:version => 20120730214052) do
   end
 
   create_table "repositories", :force => true do |t|
-    t.string   "description", :null => false
-    t.integer  "platform_id", :null => false
-    t.datetime "created_at",  :null => false
-    t.datetime "updated_at",  :null => false
-    t.string   "name",        :null => false
+    t.string   "description",                          :null => false
+    t.integer  "platform_id",                          :null => false
+    t.datetime "created_at",                           :null => false
+    t.datetime "updated_at",                           :null => false
+    t.string   "name",                                 :null => false
+    t.boolean  "publish_without_qa", :default => true
   end
 
   create_table "settings_notifiers", :force => true do |t|
@@ -393,6 +400,8 @@ ActiveRecord::Schema.define(:version => 20120730214052) do
     t.boolean  "new_comment_commit_owner",      :default => true
     t.boolean  "new_comment_commit_repo_owner", :default => true
     t.boolean  "new_comment_commit_commentor",  :default => true
+    t.boolean  "new_build",                     :default => true
+    t.boolean  "new_associated_build",          :default => true
   end
 
   create_table "subscribes", :force => true do |t|

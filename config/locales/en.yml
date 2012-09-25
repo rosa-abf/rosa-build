@@ -47,6 +47,7 @@ en:
     processing: working ...
     invalid_content_type: incorrect type
     atom_link_tag_title: Private feed for %{nickname} | %{app_name}
+    preview: Preview
 
     settings:
       label: Settings
@@ -57,6 +58,7 @@ en:
         change_email_link: Change email address
         code_header: Code
         tracker_header: Tracker
+        build_list_header: Build List
 
     devise:
       shared_links:
@@ -178,6 +180,8 @@ en:
           new_comment_commit_owner: Notify about comments to my commit
           new_comment_commit_repo_owner: Notify about comments to my repository commits
           new_comment_commit_commentor: Notify about comments after my commit
+          new_build: Notify about my build tasks
+          new_associated_build: Notify about associated with me build tasks
 
       private_user:
         login: Login

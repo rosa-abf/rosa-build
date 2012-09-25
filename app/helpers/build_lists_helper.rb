@@ -43,4 +43,22 @@ module BuildListsHelper
       build_list.project_version
     end
   end
+
+  def container_url
+    "http://#{request.host_with_port}/downloads#{@build_list.container_path}".html_safe
+  end
+
+  def build_list_log_url(log_type)
+    "http://#{request.host_with_port}/#{@build_list.fs_log_path(log_type)}".html_safe
+  end
+
+  def log_reload_time_options
+    t = I18n.t("layout.build_lists.log.reload_times").map { |i| i.reverse }
+
+    options_for_select(t, t.first).html_safe
+  end
+
+  def log_reload_lines_options
+    options_for_select([100, 200, 500, 1000, 1500, 2000], 1000).html_safe
+  end
 end

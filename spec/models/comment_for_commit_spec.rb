@@ -91,7 +91,7 @@ describe Comment do
 
     context 'for disabled notify setting new_comment_commit_repo_owner' do
       it 'should not send an e-mail' do
-        @user.notifier.update_attribute :new_comment_commit_repo_owner, false
+        @user.notifier.update_column :new_comment_commit_repo_owner, false
         comment = create_comment(@stranger)
         ActionMailer::Base.deliveries.count.should == 1
       end
@@ -99,7 +99,7 @@ describe Comment do
 
     context 'for disabled notify setting new_comment_commit_owner' do
       it 'should send an e-mail' do
-        @user.notifier.update_attribute :new_comment_commit_owner, false
+        @user.notifier.update_column :new_comment_commit_owner, false
         comment = create_comment(@stranger)
         ActionMailer::Base.deliveries.count.should == 1
         ActionMailer::Base.deliveries.last.to.include?(@user.email).should == true
@@ -108,7 +108,7 @@ describe Comment do
 
     context 'for disabled notify setting new_comment_commit_commentor' do
       it 'should send an e-mail' do
-        @user.notifier.update_attribute :new_comment_commit_commentor, false
+        @user.notifier.update_column :new_comment_commit_commentor, false
         comment = create_comment(@stranger)
         ActionMailer::Base.deliveries.count.should == 1
         ActionMailer::Base.deliveries.last.to.include?(@user.email).should == true
@@ -117,9 +117,9 @@ describe Comment do
 
     context 'for disabled all notify setting expect global' do
       it 'should not send an e-mail' do
-        @user.notifier.update_attribute :new_comment_commit_repo_owner, false
-        @user.notifier.update_attribute :new_comment_commit_owner, false
-        @user.notifier.update_attribute :new_comment_commit_commentor, false
+        @user.notifier.update_column :new_comment_commit_repo_owner, false
+        @user.notifier.update_column :new_comment_commit_owner, false
+        @user.notifier.update_column :new_comment_commit_commentor, false
         comment = create_comment(@stranger)
         ActionMailer::Base.deliveries.count.should == 0
       end
@@ -135,7 +135,7 @@ describe Comment do
 
     context 'for disabled global notify setting' do
       it 'should not send an e-mail' do
-        @user.notifier.update_attribute :can_notify, false
+        @user.notifier.update_column :can_notify, false
         comment = create_comment(@stranger)
         ActionMailer::Base.deliveries.count.should == 0
       end
@@ -148,7 +148,10 @@ describe Comment do
       @user = FactoryGirl.create(:user)
       @stranger = FactoryGirl.create(:user)
       set_comments_data_for_commit
-      @project.update_attribute(:owner, @user)
+
+      @project.owner = @user
+      @project.save
+
       ActionMailer::Base.deliveries = []
     end
 
@@ -178,7 +181,7 @@ describe Comment do
 
     context 'for disabled notify setting new_comment_commit_repo_owner' do
       it 'should not send an e-mail' do
-        @user.notifier.update_attribute :new_comment_commit_repo_owner, false
+        @user.notifier.update_column :new_comment_commit_repo_owner, false
         Comment.destroy_all
         comment = create_comment(@stranger)
         ActionMailer::Base.deliveries.count.should == 0
@@ -187,7 +190,7 @@ describe Comment do
 
     context 'for disabled notify setting new_comment_commit_owner' do
       it 'should send an e-mail' do
-        @user.notifier.update_attribute :new_comment_commit_owner, false
+        @user.notifier.update_column :new_comment_commit_owner, false
         comment = create_comment(@stranger)
         ActionMailer::Base.deliveries.count.should == 1
         ActionMailer::Base.deliveries.last.to.include?(@user.email).should == true
@@ -196,7 +199,7 @@ describe Comment do
 
     context 'for disabled notify setting new_comment_commit_commentor' do
       it 'should send an e-mail' do
-        @user.notifier.update_attribute :new_comment_commit_commentor, false
+        @user.notifier.update_column :new_comment_commit_commentor, false
         comment = create_comment(@stranger)
         ActionMailer::Base.deliveries.count.should == 1
         ActionMailer::Base.deliveries.last.to.include?(@user.email).should == true
@@ -205,9 +208,9 @@ describe Comment do
 
     context 'for disabled all notify setting expect global' do
       it 'should not send an e-mail' do
-        @user.notifier.update_attribute :new_comment_commit_repo_owner, false
-        @user.notifier.update_attribute :new_comment_commit_owner, false
-        @user.notifier.update_attribute :new_comment_commit_commentor, false
+        @user.notifier.update_column :new_comment_commit_repo_owner, false
+        @user.notifier.update_column :new_comment_commit_owner, false
+        @user.notifier.update_column :new_comment_commit_commentor, false
         comment = create_comment(@stranger)
         ActionMailer::Base.deliveries.count.should == 0
       end
@@ -223,7 +226,7 @@ describe Comment do
 
     context 'for disabled global notify setting' do
       it 'should not send an e-mail' do
-        @user.notifier.update_attribute :can_notify, false
+        @user.notifier.update_column :can_notify, false
         comment = create_comment(@stranger)
         ActionMailer::Base.deliveries.count.should == 0
       end
@@ -231,7 +234,7 @@ describe Comment do
 
     context 'for own commit' do
       it 'should send a one e-mail' do
-        @project.owner.update_attribute :email, 'code@tpope.net'
+        @project.owner.update_column :email, 'code@tpope.net'
         comment = create_comment(@stranger)
         ActionMailer::Base.deliveries.count.should == 1
         ActionMailer::Base.deliveries.last.to.include?(@project.owner.email).should == true
@@ -298,8 +301,7 @@ describe Comment do
 
     context 'for committer' do
       it 'should send an e-mail' do
-        @simple.subscribes.destroy_all
-        @simple.update_attribute :email, 'test@test.test'
+        @simple.update_column :email, 'test@test.test'
         comment = create_comment(@user)
         ActionMailer::Base.deliveries.count.should == 1
         ActionMailer::Base.deliveries.last.to.include?(@simple.email).should == true
@@ -307,31 +309,30 @@ describe Comment do
 
       it 'should send a one e-mail when subscribed to commit' do
         Subscribe.subscribe_to_commit @subscribe_params.merge(:user_id => @simple.id)
-        @simple.update_attribute :email, 'test@test.test'
+        @simple.update_column :email, 'test@test.test'
         comment = create_comment(@user)
         ActionMailer::Base.deliveries.count.should == 1
         ActionMailer::Base.deliveries.last.to.include?(@simple.email).should == true
       end
 
       it 'should not send an e-mail for own comment' do
-        @simple.subscribes.destroy_all
-        @simple.update_attribute :email, 'test@test.test'
+        @simple.update_column :email, 'test@test.test'
         comment = create_comment(@simple)
         ActionMailer::Base.deliveries.count.should == 0
       end
 
       it 'should not send an e-mail if global notify off' do
-        @project.owner.notifier.update_attribute :can_notify, false
-        @simple.update_attribute :email, 'test@test.test'
-        @simple.notifier.update_attribute :can_notify, false
+        @project.owner.notifier.update_column :can_notify, false
+        @simple.update_column :email, 'test@test.test'
+        @simple.notifier.update_column :can_notify, false
         comment = create_comment(@user)
         ActionMailer::Base.deliveries.count.should == 0
       end
 
       it 'should not send an e-mail if notify for my commits off' do
         Comment.destroy_all
-        @simple.notifier.update_attribute :new_comment_commit_owner, false
-        @simple.update_attribute :email, 'test@test.test'
+        @simple.notifier.update_column :new_comment_commit_owner, false
+        @simple.update_column :email, 'test@test.test'
         comment = create_comment(@user)
         ActionMailer::Base.deliveries.count.should == 0
       end

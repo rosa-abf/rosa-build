@@ -1,6 +1,6 @@
 source 'http://rubygems.org'
 
-gem 'rails', '3.2.7' #, :git => 'git://github.com/rails/rails.git'
+gem 'rails', '3.2.8' #, :git => 'git://github.com/rails/rails.git'
 
 gem 'pg', '~> 0.14.0'
 # gem 'silent-postgres', :git => 'git://github.com/dolzenko/silent-postgres.git' #'~> 0.1.1'
@@ -25,14 +25,14 @@ gem 'state_machine'
 # gem 'rugged', '~> 0.16.0'
 gem 'grack', :git => 'git://github.com/rdblue/grack.git', :require => 'git_http'
 gem "grit", :git => 'git://github.com/warpc/grit.git' #, :path => '~/Sites/code/grit'
-gem 'charlock_holmes', '~> 0.6.8' #, :git => 'git://github.com/brianmario/charlock_holmes.git', :branch => 'bundle-icu'
+gem 'charlock_holmes', '~> 0.6.9' #, :git => 'git://github.com/brianmario/charlock_holmes.git', :branch => 'bundle-icu'
 # gem 'ruby-filemagic', '~> 0.4.2', :require => 'filemagic/ext'
-gem 'github-linguist', '~> 2.1.2', :require => 'linguist'
+gem 'github-linguist', '~> 2.2.1', :require => 'linguist'
 gem 'diff-display', '~> 0.0.1'
 
 # Wiki
-gem "gollum", :git => 'git://github.com/github/gollum.git'
-gem "redcarpet", "1.17.2"
+gem "gollum", '~> 2.1.3'
+gem "redcarpet", "~> 2.1.1"
 gem 'creole'
 gem 'rdiscount'
 # gem 'org-ruby'
@@ -58,7 +58,7 @@ group :assets do
   gem 'coffee-rails', '~> 3.2.2'
   gem 'compass-rails', '~> 1.0.3'
   gem 'uglifier', '~> 1.2.4'
-  gem 'therubyracer', '~> 0.10.1', :platforms => [:mri, :rbx]
+  gem 'therubyracer', '~> 0.10.2', :platforms => [:mri, :rbx]
   gem 'therubyrhino', '~> 1.73.1', :platforms => :jruby
 end
 
@@ -81,7 +81,7 @@ end
 
 group :test do
   gem 'rspec-rails',        '~> 2.11.0', :group => 'development'
-  gem 'factory_girl_rails', '~> 3.6.0'
+  gem 'factory_girl_rails', '~> 4.0.0'
   gem 'rr',                 '~> 1.0.4'
   gem 'shoulda'
 end

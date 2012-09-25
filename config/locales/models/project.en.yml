@@ -93,6 +93,8 @@ en:
           group: Group
         default_branch: Default branch
         is_package: Project is a package
+        maintainer: Maintainer of project
+        maintainer_id: Maintainer of project
     errors:
       project:
         uname: The name can only use lower case Latin letters (a-z), numbers (0-9) and underscore (_)

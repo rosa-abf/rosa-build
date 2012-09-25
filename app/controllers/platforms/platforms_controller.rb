@@ -2,7 +2,7 @@
 class Platforms::PlatformsController < Platforms::BaseController
 
   before_filter :authenticate_user!
-  skip_before_filter :authenticate_user!, :only => [:advisories] if APP_CONFIG['anonymous_access']
+  skip_before_filter :authenticate_user!, :only => [:advisories, :members, :show] if APP_CONFIG['anonymous_access']
   load_and_authorize_resource
 
   autocomplete :user, :uname
@@ -86,33 +86,23 @@ class Platforms::PlatformsController < Platforms::BaseController
   end
 
   def remove_members
-    all_user_ids = params['user_remove'].inject([]) {|a, (k, v)| a << k if v.first == '1'; a}
-    all_user_ids.each do |uid|
-      Relation.by_target(@platform).where(:actor_id => uid, :actor_type => 'User').each{|r| r.destroy}
-    end
+    user_ids = params[:user_remove] ?
+      params[:user_remove].map{ |k, v| k if v.first == '1' }.compact : []
+    User.where(:id => user_ids).each{ |user| @platform.remove_member(user) }
     redirect_to members_platform_path(@platform)
   end
 
   def remove_member
-    u = User.find(params[:member_id])
-    Relation.by_actor(u).by_target(@platform).each{|r| r.destroy}
-
+    User.where(:id => params[:member_id]).each{ |user| @platform.remove_member(user) }
     redirect_to members_platform_path(@platform)
   end
 
   def add_member
-    if params[:member_id].present?
-      member = User.find(params[:member_id])
-      if @platform.relations.exists?(:actor_id => member.id, :actor_type => member.class.to_s) or @platform.owner == member
-        flash[:warning] = t('flash.platform.members.already_added', :name => member.uname)
+    if member = User.where(:id => params[:member_id]).first
+      if @platform.add_member(member)
+        flash[:notice] = t('flash.platform.members.successfully_added', :name => member.uname)
       else
-        rel = @platform.relations.build(:role => 'admin')
-        rel.actor = member
-        if rel.save
-          flash[:notice] = t('flash.platform.members.successfully_added', :name => member.uname)
-        else
-          flash[:error] = t('flash.platform.members.error_in_adding', :name => member.uname)
-        end
+        flash[:error] = t('flash.platform.members.error_in_adding', :name => member.uname)
       end
     end
     redirect_to members_platform_url(@platform)

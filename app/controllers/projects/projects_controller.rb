@@ -5,9 +5,7 @@ class Projects::ProjectsController < Projects::BaseController
 
   def index
     @projects = Project.accessible_by(current_ability, :membered)
-    # @projects = @projects.search(params[:query]).search_order if params[:query].present?
 
-    #puts prepare_list(@projects).inspect
     respond_to do |format|
       format.html { @projects = @projects.recent.paginate(:page => params[:page], :per_page => 25) }
       format.json { @projects = prepare_list(@projects) }
@@ -39,6 +37,7 @@ class Projects::ProjectsController < Projects::BaseController
   end
 
   def update
+    params[:project].delete(:maintainer_id) if params[:project][:maintainer_id].blank?
     if @project.update_attributes(params[:project])
       flash[:notice] = t('flash.project.saved')
       redirect_to @project
@@ -84,6 +83,18 @@ class Projects::ProjectsController < Projects::BaseController
     @project.relations.by_actor(current_user).destroy_all
     flash[:notice] = t("flash.project.user_removed")
     redirect_to projects_path
+  end
+
+  def autocomplete_maintainers
+    term, limit = params[:term], params[:limit] || 10
+    items = User.member_of_project(@project)
+                .where("users.name ILIKE ? OR users.uname ILIKE ?", "%#{term}%", "%#{term}%")
+                .limit(limit).map { |u| {:value => u.fullname, :label => u.fullname, :id => u.id} }
+    render :json => items
+  end
+
+  def preview
+    render :inline => view_context.markdown(params[:text]), :layout => false
   end
 
   protected

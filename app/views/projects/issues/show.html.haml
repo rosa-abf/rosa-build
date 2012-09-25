@@ -9,3 +9,6 @@
 = render "projects/comments/list", :list => @issue.comments, :project => @project, :commentable => @issue
 %br
 = render "projects/comments/add", :project => @project, :commentable => @issue if current_user
+
+=hidden_field_tag :preview_url, project_md_preview_path(@project)
+

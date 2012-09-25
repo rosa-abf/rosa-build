@@ -79,7 +79,7 @@ class BuildList < ActiveRecord::Base
   scope :recent, order("#{table_name}.updated_at DESC")
   scope :for_status, lambda {|status| where(:status => status) }
   scope :for_user, lambda { |user| where(:user_id => user.id)  }
-  scope :for_platform, lambda { |platform| where(:build_for_platform_id => platform.id)  }
+  scope :for_platform, lambda { |platform| where(:build_for_platform_id => platform)  }
   scope :by_mass_build, lambda { |mass_build| where(:mass_build_id => mass_build)  }
   scope :scoped_to_arch, lambda {|arch| where(:arch_id => arch) }
   scope :scoped_to_save_platform, lambda {|pl_id| where(:save_to_platform_id => pl_id) }
@@ -125,7 +125,11 @@ class BuildList < ActiveRecord::Base
       end
     end
 
-    after_transition :on => :published, :do => :set_version_and_tag
+    after_transition :on => :published, :do => [:set_version_and_tag, :actualize_packages]
+
+    after_transition :on => [:published, :fail_publish, :build_error], :do => :notify_users
+    after_transition :on => :build_success, :do => :notify_users,
+      :unless => lambda { |build_list| build_list.auto_publish? }
 
     event :place_build do
       transition :waiting_for_response => :build_pending, :if => lambda { |build_list|
@@ -201,6 +205,19 @@ class BuildList < ActiveRecord::Base
     save
   end
 
+  def actualize_packages
+    ActiveRecord::Base.transaction do
+      old_pkgs = self.class.where(:project_id => self.project_id)
+                           .where(:save_to_repository_id => self.save_to_repository_id)
+                           .for_platform(self.build_for_platform_id)
+                           .scoped_to_arch(self.arch_id)
+                           .for_status(BUILD_PUBLISHED)
+                           .recent.limit(2).last.packages # packages from previous build_list
+      old_pkgs.update_all(:actual => false)
+      self.packages.update_all(:actual => true)
+    end
+  end
+
   #TODO: Share this checking on product owner.
   def can_cancel?
     [BUILD_PENDING, BuildServer::PLATFORM_PENDING].include?(status) && bs_id
@@ -211,7 +228,7 @@ class BuildList < ActiveRecord::Base
   end
 
   def can_reject_publish?
-    can_publish? and save_to_platform.released
+    can_publish? and not save_to_repository.publish_without_qa
   end
 
 
@@ -266,12 +283,32 @@ class BuildList < ActiveRecord::Base
     I18n.t("layout.build_lists.human_duration", {:hours => (duration/3600).to_i, :minutes => (duration%3600/60).to_i})
   end
 
+  def fs_log_path(log_type = :build)
+    container_path? ? "downloads/#{container_path}/log/#{project.name}/#{log_type.to_s}.log" : nil
+  end
+
   def in_work?
     status == BuildServer::BUILD_STARTED 
     #[WAITING_FOR_RESPONSE, BuildServer::BUILD_PENDING, BuildServer::BUILD_STARTED].include?(status)
   end
 
   protected
+
+  def notify_users
+    unless mass_build_id
+      users = []
+      if project # find associated users
+        users = project.all_members.
+          select{ |user| user.notifier.can_notify? && user.notifier.new_associated_build? }
+      end
+      if user.notifier.can_notify? && user.notifier.new_build?
+        users = users | [user]
+      end
+      users.each do |user|
+        UserMailer.build_list_notification(self, user).deliver
+      end
+    end
+  end # notify_users
 
   def delete_container
     if can_cancel?

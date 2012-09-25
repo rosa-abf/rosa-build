@@ -15,3 +15,5 @@
       .pull_status
         =render 'status'
     =render 'diff_commits_tabs' if @pull.status != 'already'
+=hidden_field_tag :preview_url, project_md_preview_path(@project)
+

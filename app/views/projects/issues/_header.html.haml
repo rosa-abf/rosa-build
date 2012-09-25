@@ -9,19 +9,13 @@
       %span.date=@issue.created_at.to_s(:long)
       %br/
   .both
-  .fulltext.view.issue_body=@issue.body
+  .fulltext.view.issue_body.formatted.cm-s-default.md_and_cm=markdown @issue.body
 .both
 %br
 - if can? :update, @issue
   =link_to t('layout.edit'), '#', :id => 'edit_issue_content', :class => 'button'
   =form_for :issue, :url => [@project, @issue], :method => :put, :html => { :class => 'edit_form issue', :style => 'display:none;' } do |f|
-    .leftlist= t('activerecord.attributes.issue.title') + ':'
-    .rightlist{:style => @issue.pull_request ? 'width: 500px;' : ''}
-      = f.text_field :title
-    .leftlist= t('activerecord.attributes.issue.body') + ':'
-    .rightlist{:style => @issue.pull_request ? 'width: 500px;' : ''}
-      = f.text_area :body
-    .both
+    =render 'projects/issues/title_body', :f => f, :id => 'update'
     =f.submit t('layout.update'), :id => 'update_issue_content'
     =link_to t('layout.issues.cancel_button'), '#', :id => 'cancel_edit_issue_content', :class => 'button'
 %br

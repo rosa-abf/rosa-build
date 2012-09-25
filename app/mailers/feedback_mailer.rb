@@ -4,6 +4,7 @@ class FeedbackMailer < ActionMailer::Base
   default :to  => FBM_CONFIG['email'],
           :cc  => FBM_CONFIG['cc'],
           :bcc => FBM_CONFIG['bcc']
+  default_url_options.merge!(:protocol => 'https') if APP_CONFIG['mailer_https_url']
 
   include Resque::Mailer # send email async
 
