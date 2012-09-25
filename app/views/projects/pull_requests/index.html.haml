@@ -1,3 +1,4 @@
+-ar = 'activerecord.attributes.pull_requests'
 -set_meta_tags :title => [title_object(@project), t('.title')]
 -render 'submenu'
 -render 'index_sidebar'
@@ -18,5 +19,5 @@
         %th.th1{:colspan => "2"}=t('layout.issues.number')
         %th{:colspan => "2"}=t('layout.issues.description')
     %tbody
-      = render :partial => 'issue', :collection => @issues
-  = will_paginate @issues
+      = render :partial => 'projects/issues/issue', :collection => @pull_requests
+  = will_paginate @pull_requests

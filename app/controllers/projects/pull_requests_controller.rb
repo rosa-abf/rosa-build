@@ -88,6 +88,28 @@ class Projects::PullRequestsController < Projects::BaseController
     load_diff_commits_data
   end
 
+  def index(status = 200)
+    @pull_requests = @project.issues.joins(:pull_request).includes(:pull_request).includes(:assignee, :user)
+    @pull_requests = @pull_requests.where(:assignee_id => current_user.id) if @is_assigned_to_me = params[:filter] == 'to_me'
+    # Using mb_chars for correct transform to lowercase ('Русский Текст'.downcase => "Русский Текст")
+    @pull_requests = @pull_requests.where('issues.title ILIKE ?', "%#{params[:search_issue].mb_chars.downcase}%") if params[:search_issue]
+
+    @opened_issues, @closed_issues = @pull_requests.not_closed_or_merged.count, @pull_requests.closed_or_merged.count
+    if params[:status] == 'closed'
+      @pull_requests, @status = @pull_requests.closed_or_merged, params[:status]
+    else
+      @pull_requests, @status = @pull_requests.not_closed_or_merged, 'open'
+    end
+
+    @pull_requests = @pull_requests.includes(:assignee, :user).order('issues.serial_id desc').uniq
+                     .paginate :per_page => 10, :page => params[:page]
+    if status == 200
+      render 'index', :layout => request.xhr? ? 'issues' : 'application'
+    else
+      render :status => status, :nothing => true
+    end
+  end
+
   def autocomplete_base_project
     #Maybe slow? ILIKE?
     items = Project.accessible_by(current_ability, :membered).search(params[:term])
