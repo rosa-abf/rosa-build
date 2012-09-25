@@ -90,10 +90,9 @@ class Projects::PullRequestsController < Projects::BaseController
 
   def autocomplete_base_project
     #Maybe slow? ILIKE?
-    items = Project.accessible_by(current_ability, :membered)
-    items << @project.root
+    items = Project.accessible_by(current_ability, :membered).search(params[:term])
+    items = items | [@project.root]
     items.select! {|e| Regexp.new(params[:term].downcase).match(e.name.downcase) && e.repo.branches.count > 0}
-    items.uniq!
     render :json => json_for_autocomplete_base(items)
   end
 
