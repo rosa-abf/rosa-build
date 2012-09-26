@@ -3,4 +3,4 @@
 = render 'repo_block', :project => @project
 
 = render :partial => 'commits', :object => @commits
-= render 'paginate' if @render_paginate
+= render 'paginate' if @path.blank?

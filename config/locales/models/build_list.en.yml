@@ -18,7 +18,7 @@ en:
         additional_repos: Additional repositories
         include_repos: Included repositories
         created_at: Created on
-        save_to_platform: Platform
+        save_to_repository: Save to repository
         build_for_platform: Build for platform
         update_type: Update type
         build_requires: Build with all the required packages
@@ -71,7 +71,7 @@ en:
       main_data: Main data
 
       human_current_duration: Build currently takes %{hours} h. %{minutes} min.
-      human_duration: Builded in %{hours} h. %{minutes} min.
+      human_duration: Built in %{hours} h. %{minutes} min.
 
       attached_advisory: Attached advisory
       create_advisory: Create new advisory
@@ -80,7 +80,7 @@ en:
         header: Build list ownership
         owned: My
         related: Related
-        index: All
+        everything: All
 
       build_server_status:
         header: Build server status
@@ -117,6 +117,21 @@ en:
         project_not_found: Project not found
         project_version_not_found: Project version not found
 
+      log:
+        build_log: Build Log
+        not_available: Log not available yet.
+        download: Download log
+        autoreload: Update log every 
+        load_lines: Load last %{count} lines
+
+        reload_times:
+          10000:  "10 s"
+          30000:  "30 s"
+          60000:  "1 m"
+          300000: "5 m"
+          600000: "10 m"
+          900000: "15 m"
+
   flash:
     build_list:
       saved: Build list for project version '%{project_version}', platform '%{build_for_platform}' and architecture '%{arch}' has been created successfully
@@ -125,5 +140,7 @@ en:
       no_project_version_found: Project version '%{project_version}' not found
       no_arch_or_platform_selected: At least one of architecture of platform must selected
       wrong_platform: Only the primary platform can be selected for the main repository!
+      wrong_repository: Repository to save package to must belongs to platform.
+      cannot_write: You can't build project to this repository.
       can_not_published: Build can only be published with status "Build complete"
       frozen_platform: In case of a repository for package storage with frozen platform allowed only bugfix and security updates

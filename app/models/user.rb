@@ -35,6 +35,8 @@ class User < ActiveRecord::Base
   has_many :own_groups,   :foreign_key => :owner_id, :class_name => 'Group', :dependent => :destroy
   has_many :own_platforms, :as => :owner, :class_name => 'Platform', :dependent => :destroy
 
+  has_many :key_pairs
+
   validates :uname, :presence => true, :uniqueness => {:case_sensitive => false}, :format => {:with => /^[a-z0-9_]+$/}, :reserved_name => true
   validate { errors.add(:uname, :taken) if Group.by_uname(uname).present? }
   validates :role, :inclusion => {:in => ROLES}, :allow_blank => true
@@ -49,6 +51,10 @@ class User < ActiveRecord::Base
   scope :banned, where(:role => 'banned')
   scope :admin, where(:role => 'admin')
   scope :real, where(:role => ['', nil])
+
+  scope :member_of_project, lambda {|item|
+    where "#{table_name}.id IN (?)", item.members.map(&:id).uniq
+  }
 
   after_create lambda { self.create_notifier }
   before_create :ensure_authentication_token

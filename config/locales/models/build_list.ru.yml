@@ -18,7 +18,7 @@ ru:
         additional_repos: Дополнительные репозитории
         include_repos: Подключаемые репозитории
         created_at: Создан
-        save_to_platform: Платформа
+        save_to_repository: Сохранить в репозиторий
         build_for_platform: Собрано для платформы
         update_type: Критичность обновления
         build_requires: Пересборка с зависимостями
@@ -79,7 +79,7 @@ ru:
         header: Принадлежность заданий
         owned: Мне
         related: Связанные со мной
-        index: Все
+        everything: Все
 
       build_server_status:
         header: Статус сборочного сервера
@@ -116,6 +116,21 @@ ru:
         project_not_found: проект не найден
         project_version_not_found: версия не найдена
 
+      log:
+        build_log: Лог сборки
+        not_available: В настоящий момент лог недоступен.
+        download: Загрузить лог
+        autoreload: Обновлять лог каждые 
+        load_lines: Загружать последние %{count} строк
+        
+        reload_times:
+          10000:  "10 сек"
+          30000:  "30 сек"
+          60000:  "1 мин"
+          300000: "5 мин"
+          600000: "10 мин"
+          900000: "15 мин"
+
   flash:
     build_list:
       saved: Билд лист для версии '%{project_version}', платформы '%{build_for_platform}' и архитектуры '%{arch}' создан успешно
@@ -124,5 +139,7 @@ ru:
       no_project_version_found: Выбранная версия '%{project_version}' не найдена
       no_arch_or_platform_selected: Выберите хотя бы одну архитектуру и платформу
       wrong_platform: Для основного репозитория (main) может быть выбран только его же основная платформа!
+      wrong_repository: Репозиторий для сохранения должен принадлежать платформе.
+      cannot_write: Вы не можете собирать пакет в этот репозиторий.
       can_not_published: Опубликовать сборку можно только со статусом "Собран"
       frozen_platform: В случае выбора репозитория для сохранения пакетов из замороженнной платформы разрешены только bugfix и security обновления

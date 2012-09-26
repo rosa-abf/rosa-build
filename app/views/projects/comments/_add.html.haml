@@ -1,4 +1,5 @@
 #open-comment.comment.view
+  =link_to t('layout.comments.md_cheatsheet_header'), '#md_help', 'data-toggle' => 'modal', :style => 'float:right;'
   %h3.tmargin0= t("layout.comments.new_header")
   - if Comment.issue_comment?(commentable.class)
     - new_path = project_issue_comments_path(project, commentable)
@@ -10,7 +11,7 @@
     - subscribe_path = is_subscribed ? unsubscribe_commit_path(project, commentable) : subscribe_commit_path(project, commentable)
 
   = form_for :comment, :url => new_path, :method => :post, :html => { :class => :form } do |f|
-    = render "projects/comments/form", :f => f
+    = render "projects/comments/form", :f => f, :id => 'new'
     .comment-left
       = t("layout.comments.notifications_are")
       %span.bold

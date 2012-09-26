@@ -1,5 +1,10 @@
 # -*- encoding : utf-8 -*-
 Rosa::Application.routes.draw do
+  resource :contact, :only => [:new, :create, :sended] do
+    get '/' => 'contacts#new'
+    get :sended
+  end
+
   devise_scope :users do
     get '/users/auth/:provider' => 'users/omniauth_callbacks#passthru'
   end
@@ -7,9 +12,10 @@ Rosa::Application.routes.draw do
 
   resources :search, :only => [:index]
 
-  get '/forbidden' => 'pages#forbidden', :as => 'forbidden'
-  get '/terms-of-service' => 'pages#tos', :as => 'tos'
-  get '/tour/:id' => 'pages#tour_inside', :as => 'tour_inside', :id => /projects|sources|builds/
+  get  '/forbidden'        => 'pages#forbidden',      :as => 'forbidden'
+  get  '/terms-of-service' => 'pages#tos',            :as => 'tos'
+  get  '/tour/:id'         => 'pages#tour_inside',    :as => 'tour_inside', :id => /projects|sources|builds/
+  match '/invite.html'     => redirect('/register_requests/new')
 
   get '/activity_feeds.:format' => 'activity_feeds#index', :as => 'atom_activity_feeds', :format => /atom/
   if APP_CONFIG['anonymous_access']
@@ -32,8 +38,9 @@ Rosa::Application.routes.draw do
         get :reject
       end
     end
+    resources :flash_notifies
     resources :event_logs, :only => :index
-    constraints AdminAccess do
+    constraints Rosa::Constraints::AdminAccess do
       mount Resque::Server => 'resque'
     end
   end
@@ -49,7 +56,7 @@ Rosa::Application.routes.draw do
         post   :clear
         get    :clone
         get    :members
-        post   :remove_members
+        post   :remove_members # fixme: change post to delete
         delete :remove_member
         post   :add_member
         post   :make_clone
@@ -69,12 +76,16 @@ Rosa::Application.routes.draw do
           get :add_project
           delete :remove_project
           get :projects_list
+          post   :remove_members # fixme: change post to delete
+          delete :remove_member
+          post   :add_member
         end
       end
+      resources :key_pairs, :only => [:create, :index, :destroy]
       resources :products do
         resources :product_build_lists, :only => [:create, :destroy]
       end
-
+      resources :maintainers, :only => [:index]
     end
     match '/private/:platform_name/*file_path' => 'privates#show'
 
@@ -127,12 +138,12 @@ Rosa::Application.routes.draw do
     resources :build_lists, :only => [:index, :show, :update] do
       member do
         put :cancel
+        get :log
       end
       collection { post :search }
     end
 
     resources :projects, :only => [:index, :new, :create]
-
     scope ':owner_name/:project_name', :constraints => {:project_name => Project::NAME_REGEXP} do # project
       scope :as => 'project' do
         resources :wiki do
@@ -174,9 +185,11 @@ Rosa::Application.routes.draw do
         resources :collaborators do
           get :find, :on => :collection
         end
+        post '/preview' => 'projects#preview', :as => 'md_preview'
       end
       # Resource
-      get '/edit' => 'projects#edit', :as => :edit_project
+      get '/autocomplete_maintainers' => 'projects#autocomplete_maintainers', :as => :autocomplete_maintainers
+      get '/modify' => 'projects#edit', :as => :edit_project
       put '/' => 'projects#update'
       delete '/' => 'projects#destroy'
       # Member
@@ -184,41 +197,43 @@ Rosa::Application.routes.draw do
       get '/sections' => 'projects#sections', :as => :sections_project
       post '/sections' => 'projects#sections'
       delete '/remove_user' => 'projects#remove_user', :as => :remove_user_project
-      constraints :treeish => /[^\/]+/ do
-        # Tree
-        get '/' => "git/trees#show", :as => :project
-        get '/tree/:treeish(/*path)' => "git/trees#show", :defaults => {:treeish => :master}, :as => :tree, :format => false
-        # Commits
-        get '/commits/:treeish(/*path)' => "git/commits#index", :defaults => {:treeish => :master}, :as => :commits, :format => false
-        get '/commit/:id(.:format)' => "git/commits#show", :as => :commit
-        # Commit comments
-        post '/commit/:commit_id/comments(.:format)' => "comments#create", :as => :project_commit_comments
-        get '/commit/:commit_id/comments/:id(.:format)' => "comments#edit", :as => :edit_project_commit_comment
-        put '/commit/:commit_id/comments/:id(.:format)' => "comments#update", :as => :project_commit_comment
-        delete '/commit/:commit_id/comments/:id(.:format)' => "comments#destroy"
-        # Commit subscribes
-        post '/commit/:commit_id/subscribe' => "commit_subscribes#create", :as => :subscribe_commit
-        delete '/commit/:commit_id/unsubscribe' => "commit_subscribes#destroy", :as => :unsubscribe_commit
-        # Editing files
-        get '/blob/:treeish/*path/edit' => "git/blobs#edit", :defaults => {:treeish => :master}, :as => :edit_blob
-        put '/blob/:treeish/*path' => "git/blobs#update", :defaults => {:treeish => :master}, :format => false
-        # Blobs
-        get '/blob/:treeish/*path' => "git/blobs#show", :defaults => {:treeish => :master}, :as => :blob, :format => false
-        # Blame
-        get '/blame/:treeish/*path' => "git/blobs#blame", :defaults => {:treeish => :master}, :as => :blame, :format => false
-        # Raw
-        get '/raw/:treeish/*path' => "git/blobs#raw", :defaults => {:treeish => :master}, :as => :raw, :format => false
-        # Archive
-        get '/archive/:format/tree/:treeish' => "git/trees#archive", :defaults => {:treeish => :master}, :as => :archive, :format => /zip|tar/
+      constraints :treeish => /.+/ do
+        constraints Rosa::Constraints::Treeish do
+          # Tree
+          get '/' => "git/trees#show", :as => :project
+          get '/tree/:treeish(/*path)' => "git/trees#show", :as => :tree, :format => false
+          # Commits
+          get '/commits/:treeish(/*path)' => "git/commits#index", :as => :commits, :format => false
+          get '/commit/:id(.:format)' => "git/commits#show", :as => :commit
+          # Commit comments
+          post '/commit/:commit_id/comments(.:format)' => "comments#create", :as => :project_commit_comments
+          get '/commit/:commit_id/comments/:id(.:format)' => "comments#edit", :as => :edit_project_commit_comment
+          put '/commit/:commit_id/comments/:id(.:format)' => "comments#update", :as => :project_commit_comment
+          delete '/commit/:commit_id/comments/:id(.:format)' => "comments#destroy"
+          # Commit subscribes
+          post '/commit/:commit_id/subscribe' => "commit_subscribes#create", :as => :subscribe_commit
+          delete '/commit/:commit_id/unsubscribe' => "commit_subscribes#destroy", :as => :unsubscribe_commit
+          # Editing files
+          get '/edit/:treeish/*path' => "git/blobs#edit", :as => :edit_blob, :format => false
+          put '/edit/:treeish/*path' => "git/blobs#update", :format => false
+          # Blobs
+          get '/blob/:treeish/*path' => "git/blobs#show", :as => :blob, :format => false
+          # Blame
+          get '/blame/:treeish/*path' => "git/blobs#blame", :as => :blame, :format => false
+          # Raw
+          get '/raw/:treeish/*path' => "git/blobs#raw", :as => :raw, :format => false
+          # Archive
+          get '/archive/:treeish.:format' => "git/trees#archive", :as => :archive, :format => /zip|tar\.gz/
+        end
       end
     end
   end
 
   scope ':uname' do # project owner profile
-    constraints OwnerConstraint.new(User) do
+    constraints Rosa::Constraints::Owner.new(User) do
       get '/' => 'users/profile#show', :as => :user
     end
-    constraints OwnerConstraint.new(Group, true) do
+    constraints Rosa::Constraints::Owner.new(Group, true) do
       get '/' => 'groups/profile#show', :as => :group
     end
   end

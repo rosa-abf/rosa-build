@@ -1,12 +1,8 @@
 -set_meta_tags :title => t('layout.projects.list_header')
+-render 'filters'
 .toolbar
-  = link_to t('layout.projects.new'), new_project_path, :class => 'button' if can?(:create, Project)
-
-  .legend.rights
-    %span.user_owner= t("layout.relations.user_owner")
-    %span.group_owner= t("layout.relations.group_owner")
-    %span.user= t("layout.relations.user")
-    %span.group= t("layout.relations.group")
+  -%w(user_owner group_owner user group).each do |el|
+    %span{:class => el}=t "layout.relations.#{el}"
   .both
 - columns = [{:type => 'html'},
              {:type => 'html', :sortable => false, :searchable => false},
@@ -29,15 +25,11 @@
       %th.th2= t("activerecord.attributes.project.description")
       %th.th3= t("layout.projects.role")
       %th.th4= t("layout.projects.remove_user")
-    %tr.search
-      %th{:colspan => 4}
-        <input class="gray" type="text" value="#{ t('layout.find_project') }">
-
   %tbody= render :partial => 'projects/projects/project', :collection => @projects
 
 :javascript
   $(document).ready(function() {
-
+    var isUpdateDataTable = null;
     var JsonParser = function (json) {
 
       var firstColumn = function(row) {
@@ -99,16 +91,17 @@
         #{ format_columns_for_datatable(columns) }
       ],
       "fnServerData": function ( sSource, aoData, fnCallback ) {
-        $.getJSON( sSource, aoData, function (json) {
+        if (isUpdateDataTable != null) { isUpdateDataTable.abort(); }
+        _.each($('#filter_projects').serializeArray(), function(dv) { aoData.push(dv); });
+        isUpdateDataTable = $.getJSON( sSource, aoData, function (json) {
           json.aaData = JsonParser(json);
           fnCallback(json);
         } );
       }
 
     });
-    $('#datatable_wrapper').append("<div class='both'></div>");
 
-    var $search = $('tr.search input[type="text"]');
+    var $search = $('#search');
     $search.live('blur', function() {
       $this = $(this);
       if ($this.val() == '') {
@@ -127,6 +120,9 @@
     });
     $search.live('keyup', function() {
       oTable.fnFilter(this.value);
+    });
+    $(".div-filter-labels").live('click', function() {
+      oTable.dataTable().fnDraw();
     });
   });
 

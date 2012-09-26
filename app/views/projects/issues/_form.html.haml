@@ -1,8 +1,4 @@
-.leftlist= t('activerecord.attributes.issue.title') + ':'
-.rightlist= f.text_field :title
-.leftlist= t('activerecord.attributes.issue.body') + ':'
-.rightlist= f.text_area :body
-.both
+=render 'title_body', :f => f, :id => 'new'
 .leftlist= t('activerecord.attributes.issue.assignee') + ':'
 .rightlist
   %span#people-span.small-text= t('layout.issues.choose_user_on_left')

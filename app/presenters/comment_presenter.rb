@@ -9,7 +9,7 @@ class CommentPresenter < ApplicationPresenter
     @user = comment.user
     @options = opts
 
-    @content = simple_format(@comment.body, {}, :sanitize => true).html_safe
+    @content = @comment.body
   end
 
   def expandable?
@@ -40,7 +40,8 @@ class CommentPresenter < ApplicationPresenter
 
     res = []
     if controller.can? :update, @comment
-      res << link_to(t("layout.edit"), ep).html_safe
+      res << link_to(t('layout.comments.md_cheatsheet_header'), '#md_help', 'data-toggle' => 'modal')
+      res << link_to(t("layout.edit"), ep, :id => "comment-#{comment.id}", :class => "edit_comment").html_safe
     end
     if controller.can? :delete, @comment
       res << link_to(t("layout.delete"), dp, :method => "delete",

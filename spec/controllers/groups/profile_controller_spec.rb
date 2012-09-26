@@ -129,7 +129,8 @@ describe Groups::ProfileController do
     before(:each) do
       @user = FactoryGirl.create(:user)
       set_session_for(@user)
-      @group.update_attribute(:owner, @user)
+      @group.owner = @user
+      @group.save
       @group.actors.create(:actor_type => 'User', :actor_id => @user.id, :role => 'admin')
     end
 
@@ -142,6 +143,15 @@ describe Groups::ProfileController do
       @user = FactoryGirl.create(:user)
       set_session_for(@user)
       @group.actors.create(:actor_type => 'User', :actor_id => @user.id, :role => 'reader')
+    end
+
+    it "should remove user from groups" do
+      delete :remove_user, :id => @group
+      response.should redirect_to(groups_path)
+    end
+
+    it "should change relations count" do
+      lambda { delete :remove_user, :id => @group }.should change{ Relation.count }.by(-1)
     end
 
     it_should_behave_like 'no group user'

@@ -10,7 +10,7 @@ en:
         '2': 'build in progress'
         build_failed: Build failed
         build_started: Build in progress
-        build_completed: Builded
+        build_completed: Built
 
       ownership:
         header: Build list ownership
@@ -25,6 +25,10 @@ en:
         product: Product
         container_path: Container
         status: Status
-        notified_at: Notified at
         user: User
         notified_at: Notified at
+
+  flash:
+    product_build_list:
+      delete: Product build list deleted
+      delete_error: Unable to delete product build list

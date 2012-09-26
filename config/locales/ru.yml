@@ -26,6 +26,7 @@ ru:
     delete: Удалить
     delete_selected: Удалить выбранное
     save: Сохранить
+    saving: Сохранение...
     clone: Клонировать
     search_by_name: Фильтр по имени
     are_you_sure: "Вы уверены?"
@@ -46,6 +47,7 @@ ru:
     processing: Обрабатывается...
     invalid_content_type: имеет неверный тип
     atom_link_tag_title: Приватная лента для %{nickname} | %{app_name}
+    preview: Предосмотр
 
     settings:
       label: 'Настройки'
@@ -56,6 +58,7 @@ ru:
         change_email_link: Изменить адрес электронной почты
         code_header: Код
         tracker_header: Трекер задач
+        build_list_header: Сборочные задания
 
     devise:
       shared_links:
@@ -163,7 +166,6 @@ ru:
               can_have_less_or_equal: Нельзя иметь больше, чем %{count} проектов.
 
     models:
-      arch: Arch
       private_user: Приватный пользователь
       product_build_list: Сборочный лист продукта
       auto_build_list: Автоматическая пересборка пакетов
@@ -179,13 +181,9 @@ ru:
           new_comment_commit_owner: Оповещать о комментариях к моему коммиту
           new_comment_commit_repo_owner: Оповещать о комментариях к коммитам в моем репозитории
           new_comment_commit_commentor: Оповещать о комментариях к коммиту после моего
+          new_build: Оповещать о моих сборочных заданиях
+          new_associated_build: Оповещать о связанных со мной сборочных заданиях
 
       private_user:
         login: Логин
         password: Пароль
-
-      arch:
-        name: Название
-        created_at: Создана
-        updated_at: Обновлена
-

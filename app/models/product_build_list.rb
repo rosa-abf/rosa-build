@@ -31,6 +31,7 @@ class ProductBuildList < ActiveRecord::Base
   scope :recent, order("#{table_name}.updated_at DESC")
 
   after_create :xml_rpc_create
+  before_destroy :can_destroy?
   after_destroy :xml_delete_iso_container
 
   def container_path
@@ -47,6 +48,10 @@ class ProductBuildList < ActiveRecord::Base
 
   def human_status
     self.class.human_status(status)
+  end
+
+  def can_destroy?
+    [BUILD_COMPLETED, BUILD_FAILED].include? status
   end
 
   protected

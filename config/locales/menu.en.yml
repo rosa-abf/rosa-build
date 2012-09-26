@@ -17,6 +17,7 @@ en:
     contacts_url: http://www.rosalab.com/about/contacts
     tos: Terms Of Service
     tos_url: http://www.rosalab.com/about
+    support: Support
   project_menu:
     project: Project
     commits: Commits
@@ -37,5 +38,6 @@ en:
   admins_menu:
     users: Users
     register_requests: Invites
+    flash_notifies: Notifies
     event_logs: Event log
     resque_server: Resque

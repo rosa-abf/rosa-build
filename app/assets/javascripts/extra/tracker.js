@@ -30,19 +30,6 @@ $(document).ready(function() {
   });
 
   $("div.div-tracker-labels").live('click', function() {
-    var flag = this.id;
-    flag = flag.replace("label-","flag-");
-    var bg = $("#"+flag).css("background-color");
-    var checkbox = $(this).find(':checkbox');
-    if ($(this).css("background-color") != bg) {
-      $(this).css("background-color",bg);
-      $(this).css("color","#FFFFFF");
-      checkbox.attr('checked', 'checked');
-    } else {
-      $(this).css("background-color","rgb(247, 247, 247)");
-      $(this).css("color","#565657");
-      checkbox.removeAttr('checked');
-    }
     return send_index_tracker_request('GET');
   });
 
@@ -224,6 +211,7 @@ $(document).ready(function() {
 
   $('.edit_form.issue').live('submit', function() {
     var form = $(this);
+    form.parent().find('.flash').remove();
     $.ajax({
       type: 'POST',
       url: form.attr("action"),
@@ -232,10 +220,10 @@ $(document).ready(function() {
                   form.fadeOut('slow');
                   $('#edit_issue_content').fadeIn('slow');
                   $('h3.issue_title').html(form.find('#issue_title').attr('value'));
-                  $('.fulltext.view.issue_body').html(form.find('#issue_body').attr('value'));
+                  $('.fulltext.view.issue_body').html(data).find('code').each(function (code) { CodeMirrorRun(this); })
                 },
       error: function(data){
-               alert('error'); // TODO remove
+               form.before(data.responseText);
              }
      });
     return false;

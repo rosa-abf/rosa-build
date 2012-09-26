@@ -4,7 +4,7 @@
   = render 'fork'
 .both
 
-= form_tag blob_path(@project, @treeish, @path), :name => 'blob-editor', :method => :put do
+= form_tag edit_blob_path(@project, @treeish, @path), :name => 'blob-editor', :method => :put do
   .file= text_area_tag :content, @blob.data, :id => 'code'
 
   .both

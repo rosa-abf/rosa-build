@@ -42,13 +42,13 @@ describe Projects::BuildListsController do
 
     it 'should save correct commit_hash for branch based build' do
       post :create, {:owner_name => @project.owner.uname, :project_name => @project.name}.merge(@create_params).deep_merge(:build_list => {:project_version => "latest_master"})
-      @project.build_lists.last.commit_hash.should == @project.git_repository.commits('master').last.id
+      @project.build_lists.last.commit_hash.should == @project.repo.commits('master').last.id
     end
 
     it 'should save correct commit_hash for tag based build' do
-      system("cd #{@project.git_repository.path} && git tag 4.7.5.3") # TODO REDO through grit
+      system("cd #{@project.repo.path} && git tag 4.7.5.3") # TODO REDO through grit
       post :create, {:owner_name => @project.owner.uname, :project_name => @project.name}.merge(@create_params).deep_merge(:build_list => {:project_version => "4.7.5.3"})
-      @project.build_lists.last.commit_hash.should == @project.git_repository.commits('4.7.5.3').last.id
+      @project.build_lists.last.commit_hash.should == @project.repo.commits('4.7.5.3').last.id
     end
   end
 
@@ -109,7 +109,7 @@ describe Projects::BuildListsController do
         set_session_for(@user)
         @show_params = {:owner_name => @project.owner.uname, :project_name => @project.name, :id => @build_list.id}
       end
-  
+
       context 'for all build lists' do
         before(:each) do
           @build_list1 = FactoryGirl.create(:build_list_core)
@@ -125,7 +125,7 @@ describe Projects::BuildListsController do
         end
 
         it 'should show only accessible build_lists' do
-          get :index, :filter => {:ownership => 'index'}
+          get :index, :filter => {:ownership => 'everything'}
           assigns(:build_lists).should include(@build_list1)
           assigns(:build_lists).should_not include(@build_list2)
           assigns(:build_lists).should include(@build_list3)
@@ -210,7 +210,7 @@ describe Projects::BuildListsController do
         end
 
         it 'should show only accessible build_lists' do
-          get :index, :filter => {:ownership => 'index'}
+          get :index, :filter => {:ownership => 'everything'}
           assigns(:build_lists).should include(@build_list1)
           assigns(:build_lists).should_not include(@build_list2)
           assigns(:build_lists).should include(@build_list3)
@@ -283,7 +283,7 @@ describe Projects::BuildListsController do
       @build_list1 = FactoryGirl.create(:build_list_core)
       @build_list2 = FactoryGirl.create(:build_list_core)
       @build_list3 = FactoryGirl.create(:build_list_core)
-      @build_list4 = FactoryGirl.create(:build_list_core, :created_at => (Time.now - 1.day),
+      @build_list4 = FactoryGirl.create(:build_list_core, :updated_at => (Time.now - 1.day),
                              :project => @build_list3.project, :save_to_platform => @build_list3.save_to_platform,
                              :arch => @build_list3.arch)
     end
@@ -297,17 +297,17 @@ describe Projects::BuildListsController do
 
     it 'should filter by project_name' do
       # Project.where(:id => build_list2.project.id).update_all(:name => 'project_name')
-      get :index, :filter => {:project_name => @build_list2.project.name, :ownership => 'index'}
+      get :index, :filter => {:project_name => @build_list2.project.name, :ownership => 'everything'}
       assigns[:build_lists].should_not include(@build_list1)
       assigns[:build_lists].should include(@build_list2)
       assigns[:build_lists].should_not include(@build_list3)
     end
 
-    it 'should filter by project_name and start_date' do
-      get :index, :filter => {:project_name => @build_list3.project.name, :ownership => 'index',
-                            "created_at_start(1i)" => @build_list3.created_at.year.to_s,
-                            "created_at_start(2i)" => @build_list3.created_at.month.to_s,
-                            "created_at_start(3i)" => @build_list3.created_at.day.to_s}
+    it 'should filter by project_name and update_date' do
+      get :index, :filter => {:project_name => @build_list3.project.name, :ownership => 'everything',
+                            "updated_at_start(1i)" => @build_list3.updated_at.year.to_s,
+                            "updated_at_start(2i)" => @build_list3.updated_at.month.to_s,
+                            "updated_at_start(3i)" => @build_list3.updated_at.day.to_s}
       assigns[:build_lists].should_not include(@build_list1)
       assigns[:build_lists].should_not include(@build_list2)
       assigns[:build_lists].should include(@build_list3)
@@ -326,8 +326,8 @@ describe Projects::BuildListsController do
     describe 'publish_build' do
       before {
         test_git_commit(build_list.project)
-        build_list.update_attribute :commit_hash, build_list.project.git_repository.commits('master').last.id
-        build_list.update_attribute(:status, BuildList::BUILD_PUBLISH)
+        build_list.update_column(:commit_hash, build_list.project.repo.commits('master').last.id)
+        build_list.update_column(:status, BuildList::BUILD_PUBLISH)
         build_list_package
       }
 
@@ -337,14 +337,14 @@ describe Projects::BuildListsController do
       end
 
       it(:passes) {
-        build_list.update_attribute(:status, BuildServer::BUILD_STARTED)
+        build_list.update_column(:status, BuildServer::BUILD_STARTED)
         do_get(BuildServer::SUCCESS)
         response.should be_ok
       }
       it 'should create correct git tag for correct commit' do
         do_get(BuildServer::SUCCESS)
-        build_list.project.git_repository.tags.last.name.should == build_list.package_version
-        build_list.project.git_repository.commits(build_list.package_version).last.id.should == build_list.commit_hash
+        build_list.project.repo.tags.last.name.should == build_list.package_version
+        build_list.project.repo.commits(build_list.package_version).last.id.should == build_list.commit_hash
       end
       it(:passes) { lambda{ do_get(BuildServer::SUCCESS) }.should change(build_list, :status).to(BuildList::BUILD_PUBLISHED) }
       it(:passes) { lambda{ do_get(BuildServer::SUCCESS) }.should change(build_list, :package_version).to("#{ build_list_package.platform.name }-4.7.5.3-1") }
@@ -401,7 +401,7 @@ describe Projects::BuildListsController do
 
     describe 'pre_build' do
       before do
-        build_list.update_attribute :status, BuildList::BUILD_PENDING
+        build_list.update_column :status, BuildList::BUILD_PENDING
       end
 
       def do_get
@@ -428,29 +428,29 @@ describe Projects::BuildListsController do
 
       context 'with auto_publish' do
         it(:passes) {
-          build_list.update_attribute(:started_at, (Time.now - 1.day))
-          build_list.update_attribute(:status, BuildServer::BUILD_STARTED)
+          build_list.update_column(:started_at, (Time.now - 1.day))
+          build_list.update_column(:status, BuildServer::BUILD_STARTED)
           build_list.reload
           lambda{ do_get(BuildServer::SUCCESS) }.should change(build_list, :status).to(BuildList::BUILD_PUBLISH)
         }
         it(:passes) {
-          build_list.update_attribute(:started_at, (Time.now - 1.day))
-          build_list.update_attribute(:status, BuildServer::BUILD_STARTED)
+          build_list.update_column(:started_at, (Time.now - 1.day))
+          build_list.update_column(:status, BuildServer::BUILD_STARTED)
           lambda{ do_get(BuildServer::BUILD_ERROR) }.should change(build_list, :status).to(BuildServer::BUILD_ERROR)
         }
       end
 
       context 'without auto_publish' do
-        before { build_list.update_attribute(:auto_publish, false) }
+        before { build_list.update_column(:auto_publish, false) }
 
         it(:passes) {
-          build_list.update_attribute(:started_at, (Time.now - 1.day))
-          build_list.update_attribute(:status, BuildServer::BUILD_STARTED)
+          build_list.update_column(:started_at, (Time.now - 1.day))
+          build_list.update_column(:status, BuildServer::BUILD_STARTED)
           lambda{ do_get(BuildServer::SUCCESS) }.should change(build_list, :status).to(BuildServer::SUCCESS)
         }
         it(:passes) {
-          build_list.update_attribute(:started_at, (Time.now - 1.day))
-          build_list.update_attribute(:status, BuildServer::BUILD_STARTED)
+          build_list.update_column(:started_at, (Time.now - 1.day))
+          build_list.update_column(:status, BuildServer::BUILD_STARTED)
           lambda{ do_get(BuildServer::BUILD_ERROR) }.should change(build_list, :status).to(BuildServer::BUILD_ERROR)
         }
       end

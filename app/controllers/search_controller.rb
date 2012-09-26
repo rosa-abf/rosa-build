@@ -5,7 +5,6 @@ class SearchController < ApplicationController
 
   def index
     params[:type] ||= 'all'
-    params[:type] = 'projects' unless current_user
     case params[:type]
     when 'all'
       find_collection('projects')

@@ -1,5 +1,11 @@
 -set_meta_tags :title => t('.title')
-/ #myTable
+
+%div.reloader
+  = label_tag :autoreload do
+    = check_box_tag :autoreload, true, true
+    = t("layout.autoreload_page")
+.both
+
 %table.tablesorter{:cellpadding => "0", :cellspacing => "0"}
   %thead
     %tr
@@ -7,13 +13,64 @@
       %th.lpadding16= t("activerecord.attributes.build_list.status")
       %th.lpadding16= t("activerecord.attributes.build_list.project")
       %th.lpadding16= t("activerecord.attributes.build_list.project_version")
-      %th.lpadding16= t("activerecord.attributes.build_list.save_to_platform")
+      %th.lpadding16= t("activerecord.attributes.build_list.save_to_repository")
       %th.lpadding16= t("activerecord.attributes.build_list.arch")
       %th.lpadding16= t("activerecord.attributes.build_list.user")
   %tbody= render :partial => 'projects/build_lists/build_list', :collection => @build_lists
 .both
 
-= will_paginate @build_lists
+:javascript
+  $(function(){
+    // from jQuery.timeago
+    var parseIso8601 = function(iso8601) {
+      var s = $.trim(iso8601);
+      s = s.replace(/\.\d+/,""); // remove milliseconds
+      s = s.replace(/-/,"/").replace(/-/,"/");
+      s = s.replace(/T/," ").replace(/Z/," UTC");
+      s = s.replace(/([\+\-]\d\d)\:?(\d\d)/," $1$2"); // -04:00 -> -0400
+      return new Date(s);
+    }
+    var strTimeBetween = function(dt, dt1) {
+
+      var formatNumber = function(num) {
+          return (num < 10) ? "0%d".replace("%d", num) : num
+      }
+
+      var seconds = Math.abs(dt1 - dt) / 1000;
+      var minutes = seconds / 60;
+      var hours = minutes / 60;
+      minutes = Math.round(minutes % 60);
+      hours = Math.floor(hours);
+
+      return "%d:%d".replace("%d", formatNumber(hours))
+                    .replace("%d", formatNumber(minutes));
+    }
+    // TODO Very, very ugly method.
+    var now = (new Date).getTime();
+    $("time.js-relative-date").each(function() {
+      var time = parseIso8601($(this).attr('datetime')).getTime();
+      $(this).text(strTimeBetween(time, now));
+    });
+
+    var t = null;
+
+    var reloadChange = function() {
+      if ($(this).is(':checked')) {
+        //reload page every 1 minute
+        t = setTimeout(function() {
+          window.location.reload();
+        }, 60000);
+      } else {
+        clearTimeout(t);
+      }
+    }
+
+    $('#autoreload').on('change', reloadChange)
+                    .trigger('change');
+
+  });
+
+= will_paginate @bls
 
 = render 'filter'
 = render @project ? 'projects/base/submenu' : 'projects/build_lists/submenu'

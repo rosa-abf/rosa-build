@@ -1,11 +1,7 @@
 -set_meta_tags :title => [title_object(@project), shortest_hash_id(@commit.id), @commit.message]
 = render 'submenu'
+= render 'about_block', :project => @project
 
-.description
-  %h3= t("layout.projects.about_subheader")
-  %p
-    = @project.description
-    = link_to t('layout.read_more'), '#'
 
 %h3= t("layout.projects.last_commit")
 - GitPresenters::CommitAsMessagePresenter.present(@commit, :branch => @branch, :project => @project) do |presenter|
@@ -18,3 +14,6 @@
 
   = render "projects/comments/list", :list => Comment.for_commit(@commit), :project => @project, :commentable => @commit
   = render "projects/comments/add", :project => @project, :commentable => @commit if current_user
+
+=hidden_field_tag :preview_url, project_md_preview_path(@project)
+

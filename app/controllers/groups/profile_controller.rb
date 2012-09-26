@@ -10,7 +10,7 @@ class Groups::ProfileController < Groups::BaseController
   end
 
   def show
-    @projects = @group.projects #.paginate(:page => params[:project_page], :per_page => 10)
+    @projects = @group.projects.by_visibilities(['open'])
   end
 
   def new
@@ -49,7 +49,7 @@ class Groups::ProfileController < Groups::BaseController
   end
 
   def remove_user
-    Relation.by_object(current_user).by_target(@group).destroy_all
+    Relation.by_actor(current_user).by_target(@group).destroy_all
     redirect_to groups_path
   end
 end

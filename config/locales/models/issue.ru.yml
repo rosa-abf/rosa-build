@@ -40,7 +40,8 @@ ru:
       new_label: Название новой метки
       update_label: Обновить метку
       label_custom_color: Свой цвет
-      label_manage: Управление
+      label_manage: Управление метками
+      assignee_manage: Назначить исполнителя
       assignee: Исполнитель
       search_user: Найти пользователя...
       search_labels: Найти метки...

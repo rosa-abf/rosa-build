@@ -4,7 +4,7 @@ class Projects::CommentsController < Projects::BaseController
   load_and_authorize_resource :project
   before_filter :find_commentable
   before_filter :find_or_build_comment
-  load_and_authorize_resource
+  load_and_authorize_resource #:through => :commentable
 
   include CommentsHelper
 
@@ -14,7 +14,8 @@ class Projects::CommentsController < Projects::BaseController
       redirect_to project_commentable_path(@project, @commentable)
     else
       flash[:error] = I18n.t("flash.comment.save_error")
-      render :action => 'new'
+      flash[:warning] = @comment.errors.full_messages.join('. ')
+      redirect_to project_commentable_path(@project, @commentable)
     end
   end
 
@@ -22,13 +23,12 @@ class Projects::CommentsController < Projects::BaseController
   end
 
   def update
-    if @comment.update_attributes(params[:comment])
-      flash[:notice] = I18n.t("flash.comment.saved")
-      redirect_to project_commentable_path(@project, @commentable)
+    status, message = if @comment.update_attributes(params[:comment])
+      [200, view_context.markdown(@comment.body)]
     else
-      flash[:error] = I18n.t("flash.comment.save_error")
-      render :action => 'new'
+      [400, view_context.local_alert(@comment.errors.full_messages.join('. '))]
     end
+    render :inline => message, :status => status
   end
 
   def destroy
@@ -41,7 +41,7 @@ class Projects::CommentsController < Projects::BaseController
 
   def find_commentable
     @commentable = params[:issue_id].present? && @project.issues.find_by_serial_id(params[:issue_id]) ||
-                   params[:commit_id].present? && @project.git_repository.commit(params[:commit_id])
+                   params[:commit_id].present? && @project.repo.commit(params[:commit_id])
   end
 
   def find_or_build_comment

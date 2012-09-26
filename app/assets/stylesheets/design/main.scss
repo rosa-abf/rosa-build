@@ -828,11 +828,11 @@ article div.activity div.fulltext.view  {
   margin: 0px 0px 10px 0px;
 }
 
-.right div.rightlist div.check {
+div.rightlist div.check {
   float: left;
 }
 
-.right div.rightlist div.forcheck {
+div.rightlist div.forcheck {
   float: left;
   margin: 1px 0px 0px 5px;
 }  
@@ -1931,7 +1931,7 @@ a.button.width100 {
   width: 100px;
 }
 
-.div-tracker-labels {
+.div-filter-labels {
   margin: 2px 13px 2px 0px;
   cursor: pointer;
   border-radius: 4px;

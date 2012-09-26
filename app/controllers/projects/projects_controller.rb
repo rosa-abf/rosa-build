@@ -1,20 +1,24 @@
 # -*- encoding : utf-8 -*-
 class Projects::ProjectsController < Projects::BaseController
+  include ProjectsHelper
   before_filter :authenticate_user!
-  load_and_authorize_resource
-  # TODO WTF ? fork, update, sections not authorize
-  before_filter do |controller|
-    authorize! params[:action].to_sym, @project if params[:action] != 'index'
-  end
+  load_and_authorize_resource :id_param => :project_name # to force member actions load
 
   def index
     @projects = Project.accessible_by(current_ability, :membered)
-    # @projects = @projects.search(params[:query]).search_order if params[:query].present?
 
-    #puts prepare_list(@projects).inspect
     respond_to do |format|
-      format.html { @projects = @projects.recent.paginate(:page => params[:page], :per_page => 25) }
-      format.json { @projects = prepare_list(@projects) }
+      format.html {
+        @all_projects = @projects
+        @groups = current_user.groups
+        @owners = User.where(:id => @projects.where(:owner_type => 'User').uniq.pluck(:owner_id))
+        @projects = @projects.recent.paginate(:page => params[:page], :per_page => 25)
+      }
+      format.json {
+        selected_groups = params[:groups] || []
+        selected_owners = params[:users] || []
+        @projects = prepare_list(@projects, selected_groups, selected_owners)
+      }
     end
   end
 
@@ -43,6 +47,7 @@ class Projects::ProjectsController < Projects::BaseController
   end
 
   def update
+    params[:project].delete(:maintainer_id) if params[:project][:maintainer_id].blank?
     if @project.update_attributes(params[:project])
       flash[:notice] = t('flash.project.saved')
       redirect_to @project
@@ -85,14 +90,26 @@ class Projects::ProjectsController < Projects::BaseController
   end
 
   def remove_user
-    @project.relations.by_object(current_user).destroy_all
+    @project.relations.by_actor(current_user).destroy_all
     flash[:notice] = t("flash.project.user_removed")
     redirect_to projects_path
   end
 
+  def autocomplete_maintainers
+    term, limit = params[:term], params[:limit] || 10
+    items = User.member_of_project(@project)
+                .where("users.name ILIKE ? OR users.uname ILIKE ?", "%#{term}%", "%#{term}%")
+                .limit(limit).map { |u| {:value => u.fullname, :label => u.fullname, :id => u.id} }
+    render :json => items
+  end
+
+  def preview
+    render :inline => view_context.markdown(params[:text]), :layout => false
+  end
+
   protected
 
-  def prepare_list(projects)
+  def prepare_list(projects, groups, owners)
     res = {}
 
     colName = ['name']
@@ -101,7 +118,13 @@ class Projects::ProjectsController < Projects::BaseController
     order = "#{colName[sort_col.to_i]} #{sort_dir}"
 
     res[:total_count] = projects.count
+
+    if groups.present? || owners.present?
+      projects = projects.by_owners(groups, owners)
+    end
+    
     projects = projects.search(params[:sSearch]).search_order if params[:sSearch].present?
+
     res[:filtered_count] = projects.count
 
     projects = projects.order(order)

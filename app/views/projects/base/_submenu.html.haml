@@ -1,18 +1,18 @@
 - content_for :submenu do
-  - act = action_name.to_sym; contr = controller_name.to_sym
+  - act = action_name.to_sym; contr = controller_name.to_sym; treeish = params[:treeish].presence || @project.default_branch
   .left
     .table-sort-left=image_tag visibility_icon(@project.visibility)
     .table-sort-right=@project.name
   %nav
     %ul
-      %li= link_to t("project_menu.project"), project_path(@project), :class => (act.in?([:show, :edit]) && contr.in?([:trees, :blobs]) ? 'active' : nil)
-      %li= link_to t("project_menu.commits"), commits_path(@project), :class => (act.in?([:index, :show]) && contr == :commits ? 'active' : nil)
+      %li= link_to t("project_menu.project"), tree_path(@project, treeish), :class => (act.in?([:show, :edit]) && contr.in?([:trees, :blobs]) ? 'active' : nil)
+      %li= link_to t("project_menu.commits"), commits_path(@project, treeish), :class => (act.in?([:index, :show]) && contr == :commits ? 'active' : nil)
       - if @project.is_package and can?(:read, @project => BuildList)
         %li= link_to t("project_menu.builds"), project_build_lists_path(@project), :class => (contr == :build_lists ? 'active' : nil)
       - if @project.has_issues
         %li= link_to t("project_menu.tracker"), project_issues_path(@project), :class => (contr == :issues ? 'active' : nil)
       - if @project.has_wiki
         %li= link_to t("project_menu.wiki"), project_wiki_index_path(@project), :class => (contr == :wiki ? 'active' : nil)
-      %li= link_to t("project_menu.readme"), "#" #pending
+      %li=# link_to t("project_menu.readme"), "#" #pending
       - if can? :update, @project
         %li= link_to t("project_menu.settings"), edit_project_path(@project), :class => (act == :edit && contr == :projects ? 'active' : nil)

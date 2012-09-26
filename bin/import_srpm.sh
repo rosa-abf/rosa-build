@@ -6,7 +6,7 @@ srpm_path=$1
 git_path=$2
 git_branch=$3
 name=$(rpm -q --qf '[%{Name}]' -p $srpm_path)
-version=$(rpm -q --qf '[%{Version}]' -p $srpm_path)
+version=$(rpm -q --qf '[%{Version}-%{Release}]' -p $srpm_path)
 tmp_dir=/tmp/$name-$version-$RANDOM
 
 # Clone destination repo

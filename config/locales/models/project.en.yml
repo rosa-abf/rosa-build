@@ -7,6 +7,7 @@ en:
       fork_to: Fork to %{to}
       fork_modal_header: Where do you want to fork this project?
       already_exists: Project already exists
+      unexisted_project: Project not exists
       list: List
       list_header: Projects
       edit_header: Edit project
@@ -34,6 +35,10 @@ en:
       has_issue_description: Tracker adds a lightweight issue management system tightly integrated with your repository.
       has_wiki_description: Wikis are the simplest way to allow other users to contribute content. Any user can create and edit pages for documentation, examples, support or anything you wish.
       human_average_build_time: Expected time is %{hours} h. %{minutes} min.
+      git_global_setup: Git global setup
+      create_repository: Create Repository
+      move_files_to_folder: Move files you need to the project or create them.
+      existing_git_repo: Git repo already exist?
 
       git_help:
         cloning: Cloning the repository
@@ -88,6 +93,8 @@ en:
           group: Group
         default_branch: Default branch
         is_package: Project is a package
+        maintainer: Maintainer of project
+        maintainer_id: Maintainer of project
     errors:
       project:
         uname: The name can only use lower case Latin letters (a-z), numbers (0-9) and underscore (_)

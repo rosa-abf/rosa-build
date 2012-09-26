@@ -1,12 +1,8 @@
 -set_meta_tags :title => "#{title_object @project} #{t('at') if @branch} #{@branch.try :name}"
 = render 'submenu'
 = render 'repo_block', :project => @project
+= render 'about_block', :project => @project
 
-.description
-  %h3= t("layout.projects.about_subheader")
-  %p
-    = @project.description
-    = link_to t('layout.read_more'), '#'
 
 %h3= t("layout.projects.last_commit")
 - GitPresenters::CommitAsMessagePresenter.present(@commit, :branch => @branch, :project => @project) do |presenter|
@@ -20,7 +16,6 @@
     .l= render 'whereami'
   .both
 
-  - render_way = choose_render_way(@blob)
   .file
-    .top= render 'top', :render_way => render_way
+    .top= render 'top'
     .blame_data= render 'blame_table' if @blame.first.first.present?

@@ -6,14 +6,12 @@
 .leftlist= f.label :description, t("activerecord.attributes.project.description"), :class => :label
 .rightlist= f.text_area :description, :class => 'text_field', :cols => 80
 .both
-- if ['new', 'create'].include? controller.action_name
+- if [:new, :create].include? act
   .leftlist= f.label :owner_id, t("activerecord.attributes.project.owner"), :class => :label
   .rightlist
     = label_tag t("activerecord.attributes.project.who_owns.me")
     - if Group.can_own_project(current_user).count > 0
       = radio_button_tag :who_owns, 'me', @who_owns == :me #{}.merge( (@who_owns == :me) ? {:checked => 'checked'} : {} )
-      - puts @who_owns.inspect
-      - puts @who_owns == :group
       = label_tag t("activerecord.attributes.project.who_owns.group")
       = radio_button_tag :who_owns, 'group', @who_owns == :group #{}.merge( (@who_owns == :group) ? {:checked => 'checked'} : {} )
       -# TODO: Make our own select_box helper with new design, blackjack and bitches!
@@ -33,19 +31,33 @@
       = image_tag("lock.png")
     = t("activerecord.attributes.project.visibilities.#{visibility}")
 .both
+.leftlist
+  \ 
+.rightlist
+  .check
+    %span#niceCheckbox1.niceCheck-main= f.check_box :is_package#, :class => 'niceCheckbox1'
+  .forcheck= t("activerecord.attributes.project.is_package")
+  .both
+.both
 - if [:edit, :update].include? act
   .leftlist= t("activerecord.attributes.project.default_branch")
-  .rightlist= f.select :default_branch, options_from_collection_for_select(@project.branches, :name, :name, @project.default_branch), :class => 'sel80', :id => 'branch_selector'
-  .both
-- if [:edit, :update].include? act
-  .leftlist
-    \ 
   .rightlist
-    .check
-      %span#niceCheckbox1.niceCheck-main= f.check_box :is_package#, :class => 'niceCheckbox1'
-    .forcheck= t("activerecord.attributes.project.is_package")
-    .both
-.both
+    = f.select :default_branch,
+          options_from_collection_for_select( @project.repo.branches,
+                                              :name, :name, @project.default_branch),
+          :class => 'sel80', :id => 'branch_selector'
+  .both
+  #maintainer_form{:class => @project.is_package ? '' : 'hidden'}
+    = f.hidden_field :maintainer_id, :value => @project.maintainer_id
+    .leftlist
+      = t("activerecord.attributes.project.maintainer")
+    .rightlist
+      -# TODO: Maybe use something like Chosen with filter and prepopulated
+      -#       list of potential maintainers?
+      = autocomplete_field_tag :maintainer_name, @project.maintainer.fullname,
+          autocomplete_maintainers_path(@project.owner, @project),
+          :id_element => '#project_maintainer_id',
+          :placeholder => @project.maintainer.fullname
 - if [:new, :create].include? act
   .leftlist= f.label :srpm, t("activerecord.attributes.project.srpm"), :class => :label
   .rightlist= f.file_field :srpm, :class => 'file_field'
@@ -54,3 +66,7 @@
   \ 
 .rightlist= submit_tag t("layout.save"), :class => 'button'
 .both
+:javascript
+  $(function() {
+    ( new Rosa.Views.ProjectModifyView ).render();
+  });

@@ -9,9 +9,10 @@
   .leftlist= t("activerecord.attributes.build_list.container_path")
   .rightlist
     - if @build_list.status == BuildList::BUILD_PUBLISHED
-      = t("layout.build_lists.container_published")
+      = raw "%s %s" % [t("layout.build_lists.container_published"),
+        link_to("#{@build_list.save_to_platform.name}/#{@build_list.save_to_repository.name}",
+          [@build_list.save_to_platform, @build_list.save_to_repository])]
     - elsif @build_list.container_path.present?
-      - container_url = "http://#{request.host_with_port}/downloads#{@build_list.container_path}"
       = link_to container_url, container_url
   .both
 
@@ -26,16 +27,16 @@
   .rightlist
     = link_to @build_list.build_for_platform.name, @build_list.build_for_platform
   .both
-  .leftlist= t("activerecord.attributes.build_list.save_to_platform")
+  .leftlist= t("activerecord.attributes.build_list.save_to_repository")
   .rightlist
-    = link_to @build_list.save_to_platform.name, @build_list.save_to_platform
+    = link_to "#{@build_list.save_to_platform.name}/#{@build_list.save_to_repository.name}", [@build_list.save_to_platform, @build_list.save_to_repository]
   .both
   .leftlist= t("activerecord.attributes.build_list.include_repos")
   .rightlist= (@build_list.include_repos||[]).map{|r| Repository.find(r).name}.join(', ')
   .both
   .leftlist= t("activerecord.attributes.build_list.update_type")
   .rightlist
-    - if @build_list.can_publish? and can?(:publish, @build_list)
+    - if @build_list.can_publish? && can?(:publish, @build_list)
       = f.select :update_type, options_for_select(build_list_classified_update_types, @build_list.update_type)
     - else
       = @build_list.update_type
@@ -81,11 +82,11 @@
       = "#{@build_list.human_current_duration} / #{@build_list.project.human_average_build_time}"
     .both
 
-  - if @build_list.can_cancel? and can?(:cancel, @build_list)
+  - if @build_list.can_cancel? && can?(:cancel, @build_list)
     = link_to t("layout.build_lists.cancel"), cancel_build_list_path(@build_list),
               :method => :put, :confirm => t("layout.confirm"), :class => 'button'
 
-  - if @build_list.can_publish? and @build_list.save_to_platform.released and @build_list.advisory.nil?
+  - if @build_list.can_publish? && @build_list.save_to_platform.released && @build_list.advisory.nil? && can?(:publish, @build_list)
     #advisory_block
       .leftlist= label_tag :attach_advisory, t("layout.build_lists.attached_advisory")
       .rightlist
@@ -123,8 +124,15 @@
         var r = new Rosa.Routers.BuildListsAdvisoriesRouter();
       });
 
-  = submit_tag t("layout.publish"), :confirm => t("layout.confirm"), :name => 'publish' if @build_list.can_publish? and can?(:publish, @build_list)
-  = submit_tag t("layout.reject_publish"), :confirm => t("layout.confirm"), :name => 'reject_publish' if @build_list.can_reject_publish? and can?(:reject_publish, @build_list)
+  - if BuildList::HUMAN_STATUSES[@build_list.status].in? [:build_started, :build_error, :success]
+    = render :partial => 'projects/build_lists/log'
+
+
+  - if (can_publish = @build_list.can_publish? && can?(:publish, @build_list))
+    .hr
+    = submit_tag t("layout.publish"), :confirm => t("layout.confirm"), :name => 'publish' if can_publish
+    - if @build_list.can_reject_publish? && can?(:reject_publish, @build_list)
+      = submit_tag t("layout.reject_publish"), :confirm => t("layout.confirm"), :name => 'reject_publish'
 
 .hr
 %h3= t("layout.build_lists.items_header")

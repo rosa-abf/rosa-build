@@ -26,6 +26,7 @@ en:
     delete: Erase
     delete_selected: Remove selected
     save: Save
+    saving: Saving
     clone: Clone
     search_by_name: Filter by name
     are_you_sure: "Sure?"
@@ -46,6 +47,7 @@ en:
     processing: working ...
     invalid_content_type: incorrect type
     atom_link_tag_title: Private feed for %{nickname} | %{app_name}
+    preview: Preview
 
     settings:
       label: Settings
@@ -56,6 +58,7 @@ en:
         change_email_link: Change email address
         code_header: Code
         tracker_header: Tracker
+        build_list_header: Build List
 
     devise:
       shared_links:
@@ -163,7 +166,6 @@ en:
               can_have_less_or_equal: You cannot have more than %{count} projects.
 
     models:
-      arch: Arch
       private_user: Private user
       product_build_list: Product build list
 
@@ -178,13 +180,9 @@ en:
           new_comment_commit_owner: Notify about comments to my commit
           new_comment_commit_repo_owner: Notify about comments to my repository commits
           new_comment_commit_commentor: Notify about comments after my commit
+          new_build: Notify about my build tasks
+          new_associated_build: Notify about associated with me build tasks
 
       private_user:
         login: Login
         password: Password
-
-      arch:
-        name: Name
-        created_at: Created
-        updated_at: Updated
-

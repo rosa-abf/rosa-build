@@ -2,6 +2,7 @@ ru:
   layout:
     repositories:
       add_project_to: Добавить проект к репозиторию
+      edit: Настройки
       list: Список
       about: О репозитории
       list_header: Репозитории
@@ -29,13 +30,18 @@ ru:
   flash:
     repository:
       saved: Репозиторий успешно добавлен
+      updated: Репозиторий успешно обновлен
       save_error: Не удалось добавить репозиторий
+      update_error: Не удалось обновить репозиторий
       destroyed: Репозиторий успешно удален
       project_added: Проект добавлен к репозиторию
       project_not_added: Не удалось добавить проект. В этом репозитории уже есть проект с таким именем. Сначала нужно удалить старый проект
       project_removed: Проект удален из репозитория
       project_not_removed: Не удалось удалить проект из репозитория
       clear: Платформа успешно очищена!
+      members:
+        successfully_added: "Участник %{name} успешно добавлен к репозиторию"
+        error_in_adding: "Не удалось добавить участника %{name}"
 
   activerecord:
     models:
@@ -44,6 +50,7 @@ ru:
       repository:
         name: Название
         description: Описание
+        publish_without_qa: Публикация без участия QA
         platform_id: Платформа
         platform: Платформа
         created_at: Создан

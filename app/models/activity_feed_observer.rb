@@ -74,7 +74,7 @@ class ActivityFeedObserver < ActiveRecord::Observer
       change_type = record.change_type
       branch_name = record.refname.split('/').last
 
-      last_commits = record.project.git_repository.repo.log(branch_name, nil).first(3)
+      last_commits = record.project.repo.log(branch_name, nil).first(3)
       first_commiter = User.find_by_email(last_commits[0].author.email) unless last_commits.blank?
       last_commits = last_commits.collect do |commit| #:author => 'author'
         [commit.sha, commit.message]
@@ -87,7 +87,7 @@ class ActivityFeedObserver < ActiveRecord::Observer
       else
         kind = 'git_new_push_notification'
         options = {:project_id => record.project.id, :project_name => record.project.name, :last_commits => last_commits, :branch_name => branch_name,
-                          :change_type => change_type, :user_email => record.project.git_repository.repo.log(branch_name, nil).first.author.email,
+                          :change_type => change_type, :user_email => record.project.repo.log(branch_name, nil).first.author.email,
                           :project_owner => record.project.owner.uname}
         options.merge!({:user_id => first_commiter.id, :user_name => first_commiter.name}) if first_commiter
       end
