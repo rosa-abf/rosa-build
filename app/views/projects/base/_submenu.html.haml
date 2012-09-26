@@ -15,6 +15,5 @@
         %li= link_to t("project_menu.wiki"), project_wiki_index_path(@project), :class => (contr == :wiki ? 'active' : nil)
       %li=# link_to t("project_menu.readme"), "#" #pending
       - if can? :update, @project
-        %li= link_to t("project_menu.settings"), edit_project_path(@project), :class => (act == :edit && contr == :projects ? 'active' : nil)
-      /
         %li=link_to t("project_menu.pull_requests"), project_pull_requests_path(@project), :class => (contr == :pull_requests ? 'active' : nil)
+        %li= link_to t("project_menu.settings"), edit_project_path(@project), :class => (act == :edit && contr == :projects ? 'active' : nil)

@@ -4,8 +4,8 @@ class Projects::PullRequestsController < Projects::BaseController
   skip_before_filter :authenticate_user!, :only => [:index, :show] if APP_CONFIG['anonymous_access']
   load_resource :project
 
-  load_and_authorize_resource :issue, :through => :project, :find_by => :serial_id, :parent => false, :except => :autocomplete_base_project
-  load_resource :instance_name => :pull, :through => :issue, :singleton => true
+  load_and_authorize_resource :issue, :through => :project, :find_by => :serial_id, :parent => false, :except => [:autocomplete_base_project, :index]
+  load_resource :instance_name => :pull, :through => :issue, :singleton => true, :except => [:index]
 
   def new
     base_project = (Project.find(params[:base_project_id]) if params[:base_project_id]) || @project.root
@@ -86,6 +86,27 @@ class Projects::PullRequestsController < Projects::BaseController
 
   def show
     load_diff_commits_data
+  end
+
+  def index(status = 200)
+    @issues_with_pull_request = @project.issues.joins(:pull_request)
+    @issues_with_pull_request = @issues_with_pull_request.search(params[:search_pull_request])
+
+    @opened_issues, @closed_issues = @issues_with_pull_request.not_closed_or_merged.count, @issues_with_pull_request.closed_or_merged.count
+    if params[:status] == 'closed'
+      @issues_with_pull_request, @status = @issues_with_pull_request.closed_or_merged, params[:status]
+    else
+      @issues_with_pull_request, @status = @issues_with_pull_request.not_closed_or_merged, 'open'
+    end
+
+    @issues_with_pull_request = @issues_with_pull_request.
+      includes(:assignee, :user, :pull_request).def_order.uniq.
+      paginate :per_page => 10, :page => params[:page]
+    if status == 200
+      render 'index', :layout => request.xhr? ? 'with_sidebar' : 'application'
+    else
+      render :status => status, :nothing => true
+    end
   end
 
   def autocomplete_base_project
