@@ -1333,10 +1333,11 @@ hr.bootstrap {
   max-height: 280px;
 }
 
-.label-bootstrap.label-info.font14 a {
-  color: #FFFFFF;
+.label-bootstrap.label-info.font14 {
+  padding: 4px;
+  line-height: 1.8;
+  a { color: #FFFFFF; }
 }
-
 .line_numbers a {
   color: #999999;
 }

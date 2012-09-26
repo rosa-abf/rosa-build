@@ -26,7 +26,7 @@ module PullRequestHelper
   #helper for helpers
   def show_ref pull, which, limit = 30
     project, ref = pull.send("#{which}_project"), pull.send("#{which}_ref")
-    link_to "#{project.owner.uname.truncate limit}: #{ref.truncate limit}", ref_path(project, ref)
+    link_to "#{project.owner.uname.truncate limit}/#{project.name.truncate limit}: #{ref.truncate limit}", ref_path(project, ref)
   end
 
   def ref_path project, ref
