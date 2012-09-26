@@ -22,12 +22,6 @@ class ApplicationController < ActionController::Base
   end
 
   if !Rails.env.development?
-    #rescue_from Exception do |exception|
-    #  respond_to do |format|
-    #    format.json { render :json => {:message => t("flash.500_message")}.to_json }
-    #    format.html { redirect_to '/500.html', :alert => t("flash.500_message") }
-    #  end
-    #end
 
     rescue_from ActiveRecord::RecordNotFound,
                 ActionController::RoutingError,
@@ -38,13 +32,6 @@ class ApplicationController < ActionController::Base
         format.html { redirect_to '/404.html', :alert => t("flash.404_message") }
       end
     end
-  end
-
-  rescue_from HttpBasicAuthError do |exception|
-    render :json => {:message => t("flash.http_basic_error_msg")}.to_json, :status => 401
-  end
-  rescue_from HttpBasicWrongPassError do |exception|
-    render :json => {:message => t("flash.http_basic_wrong_pass_error_message")}.to_json, :status => 401
   end
 
   rescue_from Grit::NoSuchPathError, :with => :not_found

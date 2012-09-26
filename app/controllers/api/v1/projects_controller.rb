@@ -10,7 +10,7 @@ class Api::V1::ProjectsController < Api::V1::BaseController
     if @project = Project.find_by_owner_and_name(params[:owner], params[:name])
       authorize! :show, @project
     else
-      render :json => {:message => t("flash.404_message")}.to_json
+      raise ActiveRecord::RecordNotFound
     end
   end
 
