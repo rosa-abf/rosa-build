@@ -30,19 +30,6 @@ $(document).ready(function() {
   });
 
   $("div.div-tracker-labels").live('click', function() {
-    var flag = this.id;
-    flag = flag.replace("label-","flag-");
-    var bg = $("#"+flag).css("background-color");
-    var checkbox = $(this).find(':checkbox');
-    if ($(this).css("background-color") != bg) {
-      $(this).css("background-color",bg);
-      $(this).css("color","#FFFFFF");
-      checkbox.attr('checked', 'checked');
-    } else {
-      $(this).css("background-color","rgb(247, 247, 247)");
-      $(this).css("color","#565657");
-      checkbox.removeAttr('checked');
-    }
     return send_index_tracker_request('GET');
   });
 

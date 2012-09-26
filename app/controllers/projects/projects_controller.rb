@@ -1,5 +1,6 @@
 # -*- encoding : utf-8 -*-
 class Projects::ProjectsController < Projects::BaseController
+  include ProjectsHelper
   before_filter :authenticate_user!
   load_and_authorize_resource :id_param => :project_name # to force member actions load
 
@@ -7,8 +8,17 @@ class Projects::ProjectsController < Projects::BaseController
     @projects = Project.accessible_by(current_ability, :membered)
 
     respond_to do |format|
-      format.html { @projects = @projects.recent.paginate(:page => params[:page], :per_page => 25) }
-      format.json { @projects = prepare_list(@projects) }
+      format.html {
+        @all_projects = @projects
+        @groups = current_user.groups
+        @owners = User.where(:id => @projects.where(:owner_type => 'User').uniq.pluck(:owner_id))
+        @projects = @projects.recent.paginate(:page => params[:page], :per_page => 25)
+      }
+      format.json {
+        selected_groups = params[:groups] || []
+        selected_owners = params[:users] || []
+        @projects = prepare_list(@projects, selected_groups, selected_owners)
+      }
     end
   end
 
@@ -99,7 +109,7 @@ class Projects::ProjectsController < Projects::BaseController
 
   protected
 
-  def prepare_list(projects)
+  def prepare_list(projects, groups, owners)
     res = {}
 
     colName = ['name']
@@ -108,7 +118,13 @@ class Projects::ProjectsController < Projects::BaseController
     order = "#{colName[sort_col.to_i]} #{sort_dir}"
 
     res[:total_count] = projects.count
+
+    if groups.present? || owners.present?
+      projects = projects.by_owners(groups, owners)
+    end
+    
     projects = projects.search(params[:sSearch]).search_order if params[:sSearch].present?
+
     res[:filtered_count] = projects.count
 
     projects = projects.order(order)
