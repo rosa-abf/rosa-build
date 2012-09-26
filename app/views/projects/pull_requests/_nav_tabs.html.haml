@@ -6,7 +6,9 @@
       %a{"data-toggle" => "tab", :href => "#diff"}="#{t'pull_requests.tabs.diff'} (#{@stats.count})"
   -if @commits
     %li
-      %a{"data-toggle" => "tab", :href => "#commits"}="#{t'pull_requests.tabs.commits'} (#{@commits.count})"
+      - commits_message = @commits.count.to_s
+      - commits_message << '+' if @total_commits > @commits.count
+      %a{"data-toggle" => "tab", :href => "#commits"}="#{t'pull_requests.tabs.commits'} (#{commits_message})"
 
 :javascript
   $(document).ready(function() {

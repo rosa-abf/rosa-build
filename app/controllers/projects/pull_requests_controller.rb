@@ -115,7 +115,9 @@ class Projects::PullRequestsController < Projects::BaseController
     @base_commit = @pull.common_ancestor
     @head_commit = repo.commits(@pull.head_branch).first
 
-    @commits = repo.commits_between repo.commits(@pull.base_ref).first, @head_commit
+    @commits = repo.commits_between(repo.commits(@pull.base_ref).first, @head_commit)
+    @total_commits = @commits.count
+    @commits = @commits.last(100)
 
     @diff = @pull.diff repo, @base_commit, @head_commit
     @stats = @pull.diff_stats repo, @base_commit, @head_commit

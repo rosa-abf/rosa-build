@@ -14,4 +14,6 @@
     %p= t 'layout.git.repositories.commit_diff_too_big'
 
 #commits.tab-pane
+  - if @total_commits > @commits.count
+    %div= t("projects.pull_requests.is_big", :count => @commits.count)
   = render :partial => 'projects/git/commits/commits', :object => @commits
