@@ -14,6 +14,6 @@
       =render "projects/comments/add", :project => @project, :commentable => @issue if current_user
       .pull_status
         =render 'status'
-    =render 'diff_commits_tabs' if @pull.status != 'already'
+    =render 'diff_commits_tabs' unless @pull.already?
 =hidden_field_tag :preview_url, project_md_preview_path(@project)
 
