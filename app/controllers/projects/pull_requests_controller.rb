@@ -5,7 +5,7 @@ class Projects::PullRequestsController < Projects::BaseController
   load_resource :project
 
   load_and_authorize_resource :issue, :through => :project, :find_by => :serial_id, :parent => false, :except => :autocomplete_base_project
-  before_filter :load_pull, :except => :autocomplete_base_project
+  load_resource :instance_name => :pull, :through => :issue, :singleton => true
 
   def new
     base_project = (Project.find(params[:base_project_id]) if params[:base_project_id]) || @project.root
@@ -108,12 +108,6 @@ class Projects::PullRequestsController < Projects::BaseController
       hash = {"id" => project.id.to_s, "label" => project.name_with_owner, "value" => project.name_with_owner}
       hash[:refs] = project.repo.branches_and_tags.map &:name
       hash
-    end
-  end
-
-  def load_pull
-    if params[:action].to_sym != :index
-      @pull = @project.pull_requests.where(:issue_id => @issue.id).first
     end
   end
 

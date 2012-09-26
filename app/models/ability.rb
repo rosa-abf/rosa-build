@@ -116,17 +116,17 @@ class Ability
 
         can :read, Issue, :project => {:owner_type => 'User', :owner_id => user.id}
         can :read, Issue, :project => {:owner_type => 'Group', :owner_id => user.group_ids}
-        can(:read, Issue, read_relations_for('issues', 'projects')) {|issue| can? :read, issue.project rescue nil}
+        can([:read, :autocomplete_base_project], Issue, read_relations_for('issues', 'projects')) {|issue| can? :read, issue.project rescue nil}
         can(:merge, Issue) {|issue| can? :write, issue.project}
         can(:create, Issue) {|issue| can? :read, issue.project}
         can([:update, :destroy], Issue) {|issue| issue.user_id == user.id or local_admin?(issue.project)}
-        cannot :manage, Issue, :project => {:has_issues => false} # switch off issues
-        can(:autocomplete_base_project, Issue, read_relations_for('issues', 'projects')) {|issue| can? :read, issue.project rescue nil}
+        cannot(:manage, Issue) {|issue| !issue.pull_request && !issue.project.has_issues? } # switch off issues
 
         can(:create, Comment) {|comment| can? :read, comment.project}
         can(:update, Comment) {|comment| comment.user == user or comment.project.owner == user or local_admin?(comment.project)}
-        cannot :manage, Comment, :commentable_type => 'Issue', :commentable => {:project => {:has_issues => false}} # switch off issues
-
+        cannot :manage, Comment do |c|
+          c.commentable_type == 'Issue' && !c.project.has_issues && !c.commentable.pull_request # when switch off issues
+        end
       end
 
       # Shared cannot rights for all users (registered, admin)
