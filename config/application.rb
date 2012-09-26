@@ -17,8 +17,8 @@ module Rosa
   class Application < Rails::Application
     # Rate limit
     config.middleware.use Rack::Throttle::Interval, :cache => Redis.new, :key_prefix => :throttle, :min => 0.1
-    config.middleware.use Rack::Throttle::Hourly,   :max => 100
-    config.middleware.use Rack::Throttle::Daily,    :max => 500
+    config.middleware.use Rack::Throttle::Hourly,   :max => 500
+    #config.middleware.use Rack::Throttle::Daily,    :max => 500
 
     config.action_view.javascript_expansions[:defaults] = %w(jquery rails)
     config.autoload_paths += %W(#{config.root}/lib)
