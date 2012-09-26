@@ -4,8 +4,8 @@ class Projects::PullRequestsController < Projects::BaseController
   skip_before_filter :authenticate_user!, :only => [:index, :show] if APP_CONFIG['anonymous_access']
   load_resource :project
 
-  load_and_authorize_resource :issue, :through => :project, :find_by => :serial_id, :parent => false, :except => [:autocomplete_base_project, :index]
-  load_resource :instance_name => :pull, :through => :issue, :singleton => true, :except => [:index]
+  load_resource :issue, :through => :project, :find_by => :serial_id, :parent => false, :except => [:index, :autocomplete_base_project]
+  load_and_authorize_resource :instance_name => :pull, :through => :issue, :singleton => true, :except => [:index, :autocomplete_base_project]
 
   def new
     base_project = (Project.find(params[:base_project_id]) if params[:base_project_id]) || @project.root
@@ -110,7 +110,6 @@ class Projects::PullRequestsController < Projects::BaseController
   end
 
   def autocomplete_base_project
-    #Maybe slow? ILIKE?
     items = Project.accessible_by(current_ability, :membered).search(params[:term])
     items = items | [@project.root]
     items.select! {|e| Regexp.new(params[:term].downcase).match(e.name.downcase) && e.repo.branches.count > 0}

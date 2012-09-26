@@ -116,11 +116,17 @@ class Ability
 
         can :read, Issue, :project => {:owner_type => 'User', :owner_id => user.id}
         can :read, Issue, :project => {:owner_type => 'Group', :owner_id => user.group_ids}
-        can([:read, :autocomplete_base_project], Issue, read_relations_for('issues', 'projects')) {|issue| can? :read, issue.project rescue nil}
-        can(:merge, Issue) {|issue| can? :write, issue.project}
+        can(:read, Issue, read_relations_for('issues', 'projects')) {|issue| can? :read, issue.project rescue nil}
         can(:create, Issue) {|issue| can? :read, issue.project}
         can([:update, :destroy], Issue) {|issue| issue.user_id == user.id or local_admin?(issue.project)}
-        cannot(:manage, Issue) {|issue| !issue.pull_request && !issue.project.has_issues? } # switch off issues
+        cannot :manage, Issue, :project => {:has_issues => false} # switch off issues
+
+        can :read, PullRequest, :project => {:owner_type => 'User', :owner_id => user.id}
+        can :read, PullRequest, :project => {:owner_type => 'Group', :owner_id => user.group_ids}
+        can(:read, PullRequest, read_relations_for('pull_requests', 'base_projects')) {|pull| can? :read, pull.base_project rescue nil}
+        can(:merge, PullRequest) {|pull| can? :write, pull.base_project}
+        can :create, PullRequest
+        can([:update, :destroy], PullRequest) {|pull| pull.user_id == user.id or local_admin?(pull.base_project)}
 
         can(:create, Comment) {|comment| can? :read, comment.project}
         can(:update, Comment) {|comment| comment.user == user or comment.project.owner == user or local_admin?(comment.project)}
