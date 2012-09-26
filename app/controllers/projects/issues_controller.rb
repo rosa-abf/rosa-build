@@ -11,11 +11,11 @@ class Projects::IssuesController < Projects::BaseController
 
   def index(status = 200)
     @labels = params[:labels] || []
-    @issues = @project.issues.includes(:pull_request).includes(:assignee, :user)
+    @issues = @project.issues.without_pull_requests
     @issues = @issues.where(:assignee_id => current_user.id) if @is_assigned_to_me = params[:filter] == 'to_me'
     @issues = @issues.joins(:labels).where(:labels => {:name => @labels}) unless @labels == []
     # Using mb_chars for correct transform to lowercase ('Русский Текст'.downcase => "Русский Текст")
-    @issues = @issues.where('issues.title ILIKE ?', "%#{params[:search_issue].mb_chars.downcase}%") if params[:search_issue]
+    @issues = @issues.search(params[:search_issue])
 
     @opened_issues, @closed_issues = @issues.not_closed_or_merged.count, @issues.closed_or_merged.count
     if params[:status] == 'closed'
@@ -24,10 +24,10 @@ class Projects::IssuesController < Projects::BaseController
       @issues, @status = @issues.not_closed_or_merged, 'open'
     end
 
-    @issues = @issues.includes(:assignee, :user).order('issues.serial_id desc').uniq
+    @issues = @issues.includes(:assignee, :user, :pull_request).def_order.uniq
                      .paginate :per_page => 10, :page => params[:page]
     if status == 200
-      render 'index', :layout => request.xhr? ? 'issues' : 'application'
+      render 'index', :layout => request.xhr? ? 'with_sidebar' : 'application'
     else
       render :status => status, :nothing => true
     end

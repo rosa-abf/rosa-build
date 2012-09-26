@@ -50,3 +50,7 @@ ru:
         refs: 'ветка · тег'
         base_project: Базовый проект
         head_project: Проект-источник
+
+  layout:
+    pull_requests:
+      search: Найти пул реквест...

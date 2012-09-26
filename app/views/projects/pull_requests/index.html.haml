@@ -19,5 +19,5 @@
         %th.th1{:colspan => "2"}=t('layout.issues.number')
         %th{:colspan => "2"}=t('layout.issues.description')
     %tbody
-      = render :partial => 'projects/issues/issue', :collection => @pull_requests
-  = will_paginate @pull_requests
+      = render :partial => 'projects/issues/issue', :collection => @issues_with_pull_request
+  = will_paginate @issues_with_pull_request

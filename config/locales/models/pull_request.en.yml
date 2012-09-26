@@ -48,3 +48,7 @@ en:
         refs: 'branch · tag'
         base_project: Base project
         head_project: Head project
+
+  layout:
+    pull_requests:
+      search: Find pull request...

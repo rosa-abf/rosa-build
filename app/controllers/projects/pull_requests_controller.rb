@@ -89,22 +89,21 @@ class Projects::PullRequestsController < Projects::BaseController
   end
 
   def index(status = 200)
-    @pull_requests = @project.issues.joins(:pull_request).includes(:pull_request).includes(:assignee, :user)
-    @pull_requests = @pull_requests.where(:assignee_id => current_user.id) if @is_assigned_to_me = params[:filter] == 'to_me'
-    # Using mb_chars for correct transform to lowercase ('Русский Текст'.downcase => "Русский Текст")
-    @pull_requests = @pull_requests.where('issues.title ILIKE ?', "%#{params[:search_issue].mb_chars.downcase}%") if params[:search_issue]
+    @issues_with_pull_request = @project.issues.joins(:pull_request)
+    @issues_with_pull_request = @issues_with_pull_request.search(params[:search_pull_request])
 
-    @opened_issues, @closed_issues = @pull_requests.not_closed_or_merged.count, @pull_requests.closed_or_merged.count
+    @opened_issues, @closed_issues = @issues_with_pull_request.not_closed_or_merged.count, @issues_with_pull_request.closed_or_merged.count
     if params[:status] == 'closed'
-      @pull_requests, @status = @pull_requests.closed_or_merged, params[:status]
+      @issues_with_pull_request, @status = @issues_with_pull_request.closed_or_merged, params[:status]
     else
-      @pull_requests, @status = @pull_requests.not_closed_or_merged, 'open'
+      @issues_with_pull_request, @status = @issues_with_pull_request.not_closed_or_merged, 'open'
     end
 
-    @pull_requests = @pull_requests.includes(:assignee, :user).order('issues.serial_id desc').uniq
-                     .paginate :per_page => 10, :page => params[:page]
+    @issues_with_pull_request = @issues_with_pull_request.
+      includes(:assignee, :user, :pull_request).def_order.uniq.
+      paginate :per_page => 10, :page => params[:page]
     if status == 200
-      render 'index', :layout => request.xhr? ? 'issues' : 'application'
+      render 'index', :layout => request.xhr? ? 'with_sidebar' : 'application'
     else
       render :status => status, :nothing => true
     end
