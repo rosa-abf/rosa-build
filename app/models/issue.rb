@@ -32,8 +32,7 @@ class Issue < ActiveRecord::Base
   scope :search, lambda {|q| where('issues.title ILIKE ?', "%#{q.mb_chars.downcase}%") if q.present?}
   scope :def_order, order('issues.serial_id desc')
   scope :without_pull_requests,
-    joins("LEFT OUTER JOIN pull_requests ON issues.id = pull_requests.issue_id").
-    where(:pull_requests => { :issue_id => nil } )
+    where('NOT EXISTS (select null from pull_requests as pr where pr.issue_id = issues.id)')
 
   def assign_uname
     assignee.uname if assignee
