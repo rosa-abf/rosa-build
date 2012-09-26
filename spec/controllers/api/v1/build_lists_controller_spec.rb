@@ -1,7 +1,7 @@
 # -*- encoding : utf-8 -*-
 require 'spec_helper'
 
-shared_examples_for 'show build list' do
+shared_examples_for 'show build list via api' do
   it 'should be able to perform show action' do
     get :show, @show_params
     response.should render_template("api/v1/build_lists/show")
@@ -13,7 +13,7 @@ shared_examples_for 'show build list' do
   end
 end
 
-shared_examples_for 'not show build list' do
+shared_examples_for 'not show build list via api' do
   it 'should not be able to perform show action' do
     get :show, @show_params
     response.body.should == {"message" => "Access violation to this page!"}.to_json
@@ -25,7 +25,7 @@ shared_examples_for 'not show build list' do
   end
 end
 
-shared_examples_for 'create build list' do
+shared_examples_for 'create build list via api' do
   before {
     #@project.update_attributes({:repositories => @platform.repositories})
     #test_git_commit(@project)
@@ -49,7 +49,7 @@ shared_examples_for 'create build list' do
   end
 end
 
-shared_examples_for 'not create build list' do
+shared_examples_for 'not create build list via api' do
   before {
     #@project.update_attributes({:repositories => @platform.repositories})
     #test_git_commit(@project)
@@ -267,16 +267,15 @@ describe Api::V1::BuildListsController do
       end
 
       context 'for open project' do
-        it_should_behave_like 'not create build list'
+        it_should_behave_like 'not create build list via api'
 
         context 'if user is project owner' do
           before(:each) {http_login(@owner_user)}
-          it_should_behave_like 'create build list'
+          it_should_behave_like 'create build list via api'
         end
 
         context 'if user is project read member' do
           before(:each) {http_login(@member_user)}
-          it_should_behave_like 'not create build list'
         end
       end
 
@@ -285,17 +284,17 @@ describe Api::V1::BuildListsController do
           @project.update_column(:visibility, 'hidden')
         end
 
-        it_should_behave_like 'not create build list'
+        it_should_behave_like 'not create build list via api'
 
         context 'if user is project owner' do
           before(:each) {http_login(@owner_user)}
 
-          it_should_behave_like 'create build list'
+          it_should_behave_like 'create build list via api'
         end
 
         context 'if user is project read member' do
           before(:each) {http_login(@member_user)}
-          it_should_behave_like 'not create build list'
+          it_should_behave_like 'not create build list via api'
         end
       end
     end
@@ -341,16 +340,16 @@ describe Api::V1::BuildListsController do
       end
 
       context 'for open project' do
-        it_should_behave_like 'not create build list'
+        it_should_behave_like 'not create build list via api'
 
         context 'if user is group owner' do
           before(:each) {http_login(@owner_user)}
-          it_should_behave_like 'create build list'
+          it_should_behave_like 'create build list via api'
         end
 
         context 'if user is group read member' do
           before(:each) {http_login(@member_user)}
-          it_should_behave_like 'not create build list'
+          it_should_behave_like 'not create build list via api'
         end
       end
 
@@ -359,16 +358,16 @@ describe Api::V1::BuildListsController do
           @build_list.project.update_column(:visibility, 'hidden')
         end
 
-        it_should_behave_like 'not create build list'
+        it_should_behave_like 'not create build list via api'
 
         context 'if user is group owner' do
           before(:each) {http_login(@owner_user)}
-          it_should_behave_like 'create build list'
+          it_should_behave_like 'create build list via api'
         end
 
         context 'if user is group read member' do
           before(:each) {http_login(@member_user)}
-          it_should_behave_like 'not create build list'
+          it_should_behave_like 'not create build list via api'
         end
       end
 
@@ -384,15 +383,16 @@ describe Api::V1::BuildListsController do
 
       # Build Lists:
       @build_list1 = FactoryGirl.create(:build_list_core)
+      
       @build_list2 = FactoryGirl.create(:build_list_core)
       @build_list2.project.update_column(:visibility, 'hidden')
-      @build_list3 = FactoryGirl.create(:build_list_core)
-      #@build_list3.project.update_attributes({:owner => @user, :visibility => 'hidden'})
-      @build_list3.project.update_column(:visibility, 'hidden')
-      project = @build_list3.project; project.owner = @user; project.save
+      
+      project = FactoryGirl.create(:project, :visibility => 'hidden', :owner => @user)
+      @build_list3 = FactoryGirl.create(:build_list_core, :project => project)
+      
       @build_list4 = FactoryGirl.create(:build_list_core)
       @build_list4.project.update_column(:visibility, 'hidden')
-      @build_list4.project.relations.create :role => 'reader', :actor_id => @user.id, :actor_type => 'User'
+      @build_list4.project.relations.create! :role => 'reader', :actor_id => @user.id, :actor_type => 'User'
 
       @filter_build_list1 = FactoryGirl.create(:build_list_core)
       @filter_build_list2 = FactoryGirl.create(:build_list_core)
@@ -403,16 +403,14 @@ describe Api::V1::BuildListsController do
     end
 
     context 'for guest' do
-      if APP_CONFIG['anonymous_access']
-        it 'should be able to perform index action' do
-          get :index, :format => :json
-          response.should be_success
-        end
-      else
-        it 'should not be able to perform index action' do
-          get :index, :format => :json
-          response.status.should == 401
-        end
+      it 'should be able to perform index action', :anonymous_access => true do
+        get :index, :format => :json
+        response.should be_success
+      end
+
+      it 'should not be able to perform index action', :anonymous_access => false do
+        get :index, :format => :json
+        response.status.should == 401
       end
     end
 
@@ -432,6 +430,7 @@ describe Api::V1::BuildListsController do
         assigns(:build_lists).should_not include(@build_list2)
         assigns(:build_lists).should include(@build_list3)
         assigns(:build_lists).should include(@build_list4)
+        assigns(:build_lists).count.should eq 7
       end
     end
 
@@ -486,17 +485,17 @@ describe Api::V1::BuildListsController do
       context 'for open project' do
         context 'for simple user' do
           before(:each) {http_login(@user)}
-          it_should_behave_like 'show build list'
+          it_should_behave_like 'show build list via api'
         end
 
         context 'if user is project owner' do
           before(:each) {http_login(@owner_user)}
-          it_should_behave_like 'show build list'
+          it_should_behave_like 'show build list via api'
         end
 
         context 'if user is project read member' do
           before(:each) {http_login(@member_user)}
-          it_should_behave_like 'show build list'
+          it_should_behave_like 'show build list via api'
         end
       end
 
@@ -507,17 +506,17 @@ describe Api::V1::BuildListsController do
 
         context 'for simple user' do
           before(:each) {http_login(@user)}
-          it_should_behave_like 'not show build list'
+          it_should_behave_like 'not show build list via api'
         end
 
         context 'if user is project owner' do
           before(:each) {http_login(@owner_user)}
-          it_should_behave_like 'show build list'
+          it_should_behave_like 'show build list via api'
         end
 
         context 'if user is project read member' do
           before(:each) {http_login(@member_user)}
-          it_should_behave_like 'show build list'
+          it_should_behave_like 'show build list via api'
         end
       end
     end
@@ -556,17 +555,17 @@ describe Api::V1::BuildListsController do
       context 'for open project' do
         context 'for simple user' do
           before(:each) {http_login(@user)}
-          it_should_behave_like 'show build list'
+          it_should_behave_like 'show build list via api'
         end
 
         context 'if user is group owner' do
           before(:each) {http_login(@owner_user)}
-          it_should_behave_like 'show build list'
+          it_should_behave_like 'show build list via api'
         end
 
         context 'if user is group read member' do
           before(:each) {http_login(@member_user)}
-          it_should_behave_like 'show build list'
+          it_should_behave_like 'show build list via api'
         end
       end
 
@@ -577,17 +576,17 @@ describe Api::V1::BuildListsController do
 
         context 'for simple user' do
           before(:each) {http_login(@user)}
-          it_should_behave_like 'not show build list'
+          it_should_behave_like 'not show build list via api'
         end
 
         context 'if user is group owner' do
           before(:each) { http_login(@owner_user) }
-          it_should_behave_like 'show build list'
+          it_should_behave_like 'show build list via api'
         end
 
         context 'if user is group read member' do
           before(:each) {http_login(@member_user)}
-          it_should_behave_like 'show build list'
+          it_should_behave_like 'show build list via api'
         end
       end
     end

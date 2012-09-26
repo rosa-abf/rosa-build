@@ -16,7 +16,7 @@ class ApplicationController < ActionController::Base
 
   rescue_from CanCan::AccessDenied do |exception|
     respond_to do |format|
-      format.json { render :json => {:message => t("flash.exception_message")}.to_json }
+      format.json { render :json => {:message => t("flash.exception_message")}.to_json, :status => 403 }
       format.html { redirect_to forbidden_url, :alert => t("flash.exception_message") }
     end
   end
@@ -32,7 +32,7 @@ class ApplicationController < ActionController::Base
     rescue_from ActiveRecord::RecordNotFound,
                 ActionController::RoutingError,
                 ActionController::UnknownController,
-                ActionController::UnknownAction do |exception|
+                ::AbstractController::ActionNotFound do |exception|
       respond_to do |format|
         format.json { render :json => {:message => t("flash.404_message")}.to_json, :status => 404 }
         format.html { redirect_to '/404.html', :alert => t("flash.404_message") }

@@ -50,15 +50,20 @@ describe Api::V1::PlatformsController do
   end
 
   context 'for guest' do
+    
     it "should not be able to perform index action" do
       get :index, :format => :json
       response.status.should == 401
     end
 
-    it "should not be able to perform show action" do
+    it "should not be able to perform show action", :anonymous_access  => false do
       get :show, :id => @platform.id, :format => :json
       response.status.should == 401
     end
+
+    it_should_behave_like 'api platform user with show rights' if APP_CONFIG['anonymous_access']
+    it_should_behave_like 'api platform user without reader rights for hidden platform' if APP_CONFIG['anonymous_access']
+
   end
 
   context 'for global admin' do

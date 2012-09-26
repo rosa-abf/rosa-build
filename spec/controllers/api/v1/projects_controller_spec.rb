@@ -68,17 +68,21 @@ describe Api::V1::ProjectsController do
     @another_user = FactoryGirl.create(:user)
   end
 
-  #TODO: Find out how it works (why it only sets 401 status without redirect on .json)
   context 'for guest' do
-    it 'should not be able to perform get_id action' do
+    
+    it 'should be able to perform get_id action', :anonymous_access  => false do
       get :get_id, :format => :json
       response.status.should == 401
     end
 
-    it 'should not be able to perform show action' do
+    it 'should be able to perform show action', :anonymous_access  => false do
       get :show, :id => @project.id, :format => :json
       response.status.should == 401
     end
+
+    it_should_behave_like 'api projects user with reader rights' if APP_CONFIG['anonymous_access']
+    it_should_behave_like 'api projects user without reader rights for hidden project' if APP_CONFIG['anonymous_access']
+
   end
 
   context 'for simple user' do

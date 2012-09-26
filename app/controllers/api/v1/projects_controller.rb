@@ -1,6 +1,9 @@
 # -*- encoding : utf-8 -*-
 class Api::V1::ProjectsController < Api::V1::BaseController
-  #before_filter :authenticate_user!
+  
+  before_filter :authenticate_user!
+  skip_before_filter :authenticate_user!, :only => [:get_id, :show] if APP_CONFIG['anonymous_access']
+  
   load_and_authorize_resource
 
   def get_id
@@ -9,5 +12,9 @@ class Api::V1::ProjectsController < Api::V1::BaseController
     else
       render :json => {:message => t("flash.404_message")}.to_json
     end
+  end
+
+  def show
+
   end
 end

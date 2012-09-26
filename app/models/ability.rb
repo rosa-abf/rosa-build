@@ -14,7 +14,7 @@ class Ability
 
     # Shared rights between guests and registered users
     can [:show, :archive], Project, :visibility => 'open'
-    can :get_id, Project
+    can :get_id,  Project, :visibility => 'open' # api
     can :archive, Project, :visibility => 'open'
     can :read, Issue, :project => {:visibility => 'open'}
     can :search, BuildList
@@ -26,7 +26,7 @@ class Ability
     can [:publish_build, :status_build, :pre_build, :post_build, :circle_build, :new_bbdt], BuildList
 
     # Platforms block
-    can [:show, :members, :advisories], Platform, :visibility == 'open'
+    can [:show, :members, :advisories], Platform, :visibility => 'open'
     can [:read, :projects_list], Repository, :platform => {:visibility => 'open'}
     can :read, Product, :platform => {:visibility => 'open'}
 
@@ -59,7 +59,7 @@ class Ability
         can :read, Project, :visibility => 'open'
         can [:read, :archive], Project, :owner_type => 'User', :owner_id => user.id
         can [:read, :archive], Project, :owner_type => 'Group', :owner_id => user.group_ids
-        can([:read, :membered], Project, read_relations_for('projects')) {|project| local_reader? project}
+        can([:read, :membered, :get_id], Project, read_relations_for('projects')) {|project| local_reader? project}
         can(:write, Project) {|project| local_writer? project} # for grack
         can([:update, :sections, :manage_collaborators, :autocomplete_maintainers], Project) {|project| local_admin? project}
         can(:fork, Project) {|project| can? :read, project}
@@ -75,7 +75,7 @@ class Ability
         can([:create, :update], BuildList) {|build_list| build_list.project.is_package && can?(:write, build_list.project)}
 
         can(:publish, BuildList) do |build_list|
-          can?(:write, build_list.project) || local_admin?(build_list.save_to_platform)
+          build_list.save_to_repository.publish_without_qa ? can?(:write, build_list.project) : local_admin?(build_list.save_to_platform)
         end
         can(:reject_publish, BuildList) do |build_list|
           local_admin?(build_list.save_to_platform)
