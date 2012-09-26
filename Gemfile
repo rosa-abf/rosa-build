@@ -55,11 +55,6 @@ gem 'rails-backbone', '~> 0.7.2'
 
 gem 'rack-throttle'
 
-# Abf API:
-gem 'nanoc'
-gem 'kramdown'
-gem 'adsf'
-
 group :assets do
   gem 'sass-rails', '~> 3.2.5'
   gem 'coffee-rails', '~> 3.2.2'
