@@ -2,8 +2,7 @@
 require File.expand_path('../boot', __FILE__)
 
 require 'rails/all'
-require 'rack/throttle'
-require 'redis'
+require './lib/api_defender'
 
 # If you have a Gemfile, require the gems listed there, including any gems
 # you've limited to :test, :development, or :production.
@@ -17,9 +16,7 @@ end
 module Rosa
   class Application < Rails::Application
     # Rate limit
-    config.middleware.use Rack::Throttle::Interval, :cache => Redis.new, :key_prefix => :throttle, :min => 0.1
-    config.middleware.use Rack::Throttle::Hourly,   :max => 500
-    #config.middleware.use Rack::Throttle::Daily,    :max => 500
+    config.middleware.insert_after Rack::Lock, ApiDefender
 
     config.action_view.javascript_expansions[:defaults] = %w(jquery rails)
     config.autoload_paths += %W(#{config.root}/lib)
