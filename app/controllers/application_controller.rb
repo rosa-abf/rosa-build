@@ -15,10 +15,7 @@ class ApplicationController < ActionController::Base
   helper_method :get_owner
 
   rescue_from CanCan::AccessDenied do |exception|
-    respond_to do |format|
-      format.json { render :json => {:message => t("flash.exception_message")}.to_json, :status => 403 }
-      format.html { redirect_to forbidden_url, :alert => t("flash.exception_message") }
-    end
+    redirect_to forbidden_url, :alert => t("flash.exception_message")
   end
 
   if !Rails.env.development?

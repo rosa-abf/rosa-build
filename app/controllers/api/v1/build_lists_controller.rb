@@ -19,17 +19,16 @@ class Api::V1::BuildListsController < Api::V1::BaseController
     params[:build_list][:save_to_platform_id] = save_to_repository.platform_id
     params[:build_list][:auto_publish] = false unless save_to_repository.publish_without_qa?
 
-    build_list = project.build_lists.build(params[:build_list])
-    build_list.project_version = build_list.commit_hash
+    @build_list = project.build_lists.build(params[:build_list])
+    @build_list.project_version = @build_list.commit_hash
 
-    build_list.user = current_user
-    build_list.priority = current_user.build_priority # User builds more priority than mass rebuild with zero priority
+    @build_list.user = current_user
+    @build_list.priority = current_user.build_priority # User builds more priority than mass rebuild with zero priority
 
-    if build_list.save
-      @build_list = build_list
+    if @build_list.save
       render :action => 'show'
     else
-      render :json => {:message => "Validation Failed", :errors => build_list.errors.messages}.to_json, :status => 422
+      render :json => {:message => "Validation Failed", :errors => @build_list.errors.messages}.to_json, :status => 422
     end
   end
 

@@ -1,5 +1,5 @@
 # -*- encoding : utf-8 -*-
-class Api::V1::PlatformsController < Platforms::BaseController
+class Api::V1::PlatformsController < Api::V1::BaseController
 
   before_filter :authenticate_user!
   skip_before_filter :authenticate_user!, :only => [:show] if APP_CONFIG['anonymous_access']
