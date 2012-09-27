@@ -11,7 +11,7 @@ shared_context "comments controller" do
 
     @user = FactoryGirl.create(:user)
     @own_comment = FactoryGirl.create(:comment, :commentable => @issue, :user => @user, :project_id => @project.id)
-    
+
     set_session_for(@user)
 
     @address = {:owner_name => @project.owner.uname, :project_name => @project.name, :issue_id => @issue.serial_id}
@@ -35,7 +35,7 @@ end
 shared_examples_for 'user with update own comment rights' do
   it 'should be able to perform update action' do
     put :update, {:id => @own_comment.id}.merge(@update_params)
-    response.should redirect_to([@project, @issue])
+    response.status.should == 200
   end
 
   it 'should update comment body' do
@@ -47,7 +47,7 @@ end
 shared_examples_for 'user with update stranger comment rights' do
   it 'should be able to perform update action' do
     put :update, {:id => @comment.id}.merge(@update_params)
-    response.should redirect_to([@project, @issue])
+    response.status.should == 200
   end
 
   it 'should update comment body' do

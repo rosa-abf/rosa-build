@@ -5,4 +5,8 @@ FactoryGirl.define do
     name { FactoryGirl.generate(:unixname) }
     association :owner, :factory => :user
   end
+
+  factory :group_project, :parent => :project do
+    association :owner, :factory => :group
+  end
 end
