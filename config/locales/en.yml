@@ -137,6 +137,9 @@ en:
 
     exception_message: Access violation to this page!
 
+    500_message: Error 500. Something went wrong.  We've been notified about this issue and we'll take a look at it shortly.
+    404_message: Error 404. Resource not found!
+
     collaborators:
       successfully_changed: Collaborators list successfully changed
       error_in_changing: Collaborators list changing error
