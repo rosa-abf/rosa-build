@@ -31,7 +31,7 @@ json.build_list do |json|
 
   json.owner do |json_owner|
     json_owner.(@build_list.user, :id, :name)
-    json_owner.url @build_list.project.owner_type == 'User' ? user_path(@build_list.project.owner.uname) : group_path(@build_list.project.owner.uname)
+    json_owner.url url_for(@build_list.project.owner)
   end
 
   inc_repos = Repository.includes(:platform).where(:id => @build_list.include_repos)
