@@ -19,7 +19,7 @@ end
 shared_examples_for 'user with update own comment rights for commits' do
   it 'should be able to perform update action' do
     put :update, {:id => @own_comment.id}.merge(@update_params)
-    response.should redirect_to(commit_path(@project, @commit.id))
+    response.status.should == 200
   end
 
   it 'should update subscribe body' do
@@ -31,7 +31,7 @@ end
 shared_examples_for 'user with update stranger comment rights for commits' do
   it 'should be able to perform update action' do
     put :update, {:id => @stranger_comment.id}.merge(@update_params)
-    response.should redirect_to(commit_path(@project, @commit.id))
+    response.status.should == 200
   end
 
   it 'should update comment title' do
