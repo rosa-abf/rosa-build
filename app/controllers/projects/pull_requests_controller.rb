@@ -5,7 +5,8 @@ class Projects::PullRequestsController < Projects::BaseController
   load_and_authorize_resource :project
 
   load_resource :issue, :through => :project, :find_by => :serial_id, :parent => false, :except => [:index, :autocomplete_base_project]
-  load_and_authorize_resource :instance_name => :pull, :through => :issue, :singleton => true, :except => [:index, :autocomplete_base_project]
+  load_and_authorize_resource :instance_name => :pull, :through => :issue, :singleton => true, :except => [:index, :autocomplete_base_project, :show]
+  load_resource :instance_name => :pull, :through => :issue, :singleton => true, :only => :show
 
   def new
     base_project = (Project.find(params[:base_project_id]) if params[:base_project_id]) || @project.root
