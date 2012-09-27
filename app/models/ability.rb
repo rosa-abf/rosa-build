@@ -15,7 +15,7 @@ class Ability
     # Shared rights between guests and registered users
     can [:show, :archive], Project, :visibility => 'open'
     can :read, Issue, :project => {:visibility => 'open'}
-    can :read, PullRequest, :project => {:visibility => 'open'}
+    can :read, PullRequest, :base_project => {:visibility => 'open'}
     can :search, BuildList
     can [:read, :log, :everything], BuildList, :project => {:visibility => 'open'}
     can :read, ProductBuildList#, :product => {:platform => {:visibility => 'open'}} # double nested hash don't work
@@ -121,8 +121,8 @@ class Ability
         can([:update, :destroy], Issue) {|issue| issue.user_id == user.id or local_admin?(issue.project)}
         cannot :manage, Issue, :project => {:has_issues => false} # switch off issues
 
-        can :read, PullRequest, :project => {:owner_type => 'User', :owner_id => user.id}
-        can :read, PullRequest, :project => {:owner_type => 'Group', :owner_id => user.group_ids}
+        can :read, PullRequest, :base_project => {:owner_type => 'User', :owner_id => user.id}
+        can :read, PullRequest, :base_project => {:owner_type => 'Group', :owner_id => user.group_ids}
         can(:read, PullRequest, read_relations_for('pull_requests', 'base_projects')) {|pull| can? :read, pull.base_project rescue nil}
         can(:merge, PullRequest) {|pull| can? :write, pull.base_project}
         can :create, PullRequest
