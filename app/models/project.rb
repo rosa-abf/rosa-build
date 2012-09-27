@@ -8,6 +8,7 @@ class Project < ActiveRecord::Base
   belongs_to :maintainer, :class_name => "User"
 
   has_many :issues, :dependent => :destroy
+  has_many :pull_requests, :dependent => :destroy, :foreign_key => 'base_project_id'
   has_many :labels, :dependent => :destroy
   has_many :build_lists, :dependent => :destroy
 

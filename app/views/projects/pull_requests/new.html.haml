@@ -1,0 +1,60 @@
+-ar = 'activerecord.attributes.pull_requests'
+-set_meta_tags :title => [title_object(@project), t('.title')]
+= render :partial => 'submenu'
+%h3.bpadding10=pull_header @pull
+#repo-wrapper
+  =render 'nav_tabs'
+  .tab-content.pull_diff_fix
+    #discussion.tab-pane.active
+      =hidden_field_tag :update_action, new_project_pull_request_path
+      =form_for @pull, :url => (@pull.already? ? new_project_pull_request_path : project_pull_requests_path), :html => {:class => 'well well-large', :method => (@pull.already? ? :get : :post)} do |f|
+        .leftlist=f.label :base_project, t("#{ar}.base_project"), :class => :label
+        .rightlist
+          =f.autocomplete_field :base_project, autocomplete_base_project_project_pull_requests_path, :value => @pull.base_project.name_with_owner, :id_element => '#pull_request_base_project_id', :name => 'base_project'
+          =f.hidden_field :base_project_id, :name => 'base_project_id'
+        .both
+        .leftlist=f.label :base_ref, "#{t "#{ar}.base_ref"} #{t "#{ar}.refs"}", :class => :label
+        .rightlist
+          %input{:id => 'base_refs', :value => @pull.base_ref, :name => 'pull_request[base_ref]'}
+        .both
+        .leftlist=f.label :head_project, t("#{ar}.head_project"), :class => :label
+        .rightlist=@pull.head_project.name_with_owner
+        .both
+        .leftlist=f.label :head_ref, "#{t "#{ar}.head_ref"} #{t "#{ar}.refs"}", :class => :label
+        .rightlist
+          %input{:id => 'head_refs', :value => @pull.head_ref, :name => 'pull_request[head_ref]'}
+        .both
+        .leftlist
+        .rightlist=f.submit t('.update'), :class => 'btn btn-primary disabled', 'data-loading-text' => t('layout.processing'), :style => @pull.already? ? '' : 'display: none;', :id => 'update_pull'
+        .both
+        -unless @pull.already?
+          =f.fields_for :issue do |issue|
+            .leftlist=issue.label :title, t('activerecord.attributes.issue.title'), :class => :label
+            .rightlist=issue.text_field :title
+            .both
+            .leftlist=issue.label :title, t('activerecord.attributes.issue.body'), :class => :label
+            .rightlist=issue.text_area :body
+            .both
+
+          .leftlist=f.label :title, t('activerecord.attributes.issue.status'), :class => :label
+          .rightlist
+            .flash
+              %div{:class => @pull.ready? ? 'notice' : 'alert'}
+                =pull_status @pull
+          .both
+          .leftlist
+          .rightlist
+            =f.submit t('.submit'), :class => 'btn btn-primary disabled', 'data-loading-text' => t('layout.processing'), :id => 'create_pull' unless @pull.already?
+          .both
+    =render 'diff_commits_tabs' if !@pull.already? && @stats != nil
+
+:javascript
+  $(function() {
+    $('input#base_refs').autocomplete({
+      source: #{@pull.base_project.repo.branches_and_tags.map &:name}
+    });
+
+    $('input#head_refs').autocomplete({
+      source: #{@project.repo.branches_and_tags.map &:name}
+    });
+  });

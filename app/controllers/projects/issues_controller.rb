@@ -10,20 +10,24 @@ class Projects::IssuesController < Projects::BaseController
   layout false, :only => [:update, :search_collaborators]
 
   def index(status = 200)
-    @is_assigned_to_me = params[:filter] == 'to_me'
-    @status = params[:status] == 'closed' ? 'closed' : 'open'
     @labels = params[:labels] || []
-    @issues = @project.issues
-    @issues = @issues.where(:assignee_id => current_user.id) if @is_assigned_to_me
+    @issues = @project.issues.without_pull_requests
+    @issues = @issues.where(:assignee_id => current_user.id) if @is_assigned_to_me = params[:filter] == 'to_me'
     @issues = @issues.joins(:labels).where(:labels => {:name => @labels}) unless @labels == []
     # Using mb_chars for correct transform to lowercase ('Русский Текст'.downcase => "Русский Текст")
-    @issues = @issues.where('issues.title ILIKE ?', "%#{params[:search_issue].mb_chars.downcase}%") if params[:search_issue]
+    @issues = @issues.search(params[:search_issue])
 
-    @opened_issues, @closed_issues = @issues.opened.count, @issues.closed.count
-    @issues = @issues.where(:status => @status)
-                      .includes(:assignee, :user).order('serial_id desc').uniq.paginate :per_page => 10, :page => params[:page]
+    @opened_issues, @closed_issues = @issues.not_closed_or_merged.count, @issues.closed_or_merged.count
+    if params[:status] == 'closed'
+      @issues, @status = @issues.closed_or_merged, params[:status]
+    else
+      @issues, @status = @issues.not_closed_or_merged, 'open'
+    end
+
+    @issues = @issues.includes(:assignee, :user, :pull_request).def_order.uniq
+                     .paginate :per_page => 10, :page => params[:page]
     if status == 200
-      render 'index', :layout => request.xhr? ? 'issues' : 'application'
+      render 'index', :layout => request.xhr? ? 'with_sidebar' : 'application'
     else
       render :status => status, :nothing => true
     end
@@ -44,6 +48,10 @@ class Projects::IssuesController < Projects::BaseController
       flash[:error] = I18n.t("flash.issue.save_error")
       render :action => :new
     end
+  end
+
+  def show
+    redirect_to project_pull_request_path(@project, @issue.pull_request) if @issue.pull_request
   end
 
   def update

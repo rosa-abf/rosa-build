@@ -28,6 +28,7 @@ en:
     wiki: Wiki
     readme: Readme
     settings: Settings
+    pull_requests: Pull Requests
   feed_menu:
     all: All
     code: Code

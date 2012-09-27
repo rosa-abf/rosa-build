@@ -37,7 +37,7 @@ $(document).ready(function() {
     return send_index_tracker_request('GET');
   });
 
-  $('#search_issue').live('submit', function() {
+  $('.ajax_search_form').live('submit', function() {
     return send_index_tracker_request('GET', $(this).attr("action"), $(this).serialize());
   });
 

@@ -7,12 +7,12 @@
           %tr
             %td.width18=radio_button_tag :myradio, 'all', !@is_assigned_to_me, {:id => 'myradio1', :class => 'niceRadio', :name => 'filter'}
             %td.width135=t("layout.issues.all")
-            %td.width30.right=@project.issues.count
+            %td.width30.right=@project.issues.without_pull_requests.count
           %tr
             %td=radio_button_tag :myradio, 'to_me', @is_assigned_to_me, {:id => 'myradio1', :class => 'niceRadio', :name => 'filter'}
             %td=t("layout.issues.to_me")
-            %td.width30.right=@project.issues.where(:assignee_id => current_user.id).count
-  =form_tag project_issues_path(@project), :id => 'search_issue', :method => :get do
+            %td.width30.right=@project.issues.without_pull_requests.where(:assignee_id => current_user.id).count
+  =form_tag project_issues_path(@project), :id => 'search_issue', :class => 'ajax_search_form', :method => :get do
     .bordered.bpadding20
       =tracker_search_field(:search_issue, t('layout.issues.search'))
   - if can? :new, @project.issues.new

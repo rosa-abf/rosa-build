@@ -1,0 +1,55 @@
+en:
+  projects:
+    pull_requests:
+      new:
+        header: 'Create a pull request'
+        submit: Send pull request
+        update: Update commits
+      show:
+        pull: Pull Request
+        header: 'Pull Request'
+      status:
+        close: Close Pull Request
+        reopen: Reopen Pull Request
+      merge: Merge
+      duplicate: 'There is already a pull request for %{head_ref}'
+      up_to_date: 'The %{base_ref} branch is already up-to-date with %{head_ref}'
+      wrong_ref: Wrong branch or tag
+      blocked: This pull request cannot be automatically merged.
+      ready: This pull request can be automatically merged.
+      merged: |
+        %{user} merged into <span class="label-bootstrap label-info font14">%{base_ref}</span>
+        from <span class="label-bootstrap label-info font14">%{head_ref}</span> at %{time}
+      closed: '%{user} closed this pull request at %{time}'
+      is_big: This pull request is big! We're only showing the most recent %{count} commits.
+      open: ''
+      statuses:
+        blocked: Blocked
+        ready: Ready
+        merged: Merged
+        closed: Closed
+
+  pull_requests:
+    tabs:
+      discussion: Discussion
+      diff: Diff
+      commits: Commits
+
+  flash:
+    pull_request:
+      new_error: Unable to create pull request
+      saved: Pull request saved
+      save_error: Unable to save pull request
+
+  activerecord:
+    attributes:
+      pull_requests:
+        base_ref: Base
+        head_ref: Head
+        refs: 'branch · tag'
+        base_project: Base project
+        head_project: Head project
+
+  layout:
+    pull_requests:
+      search: Find pull request...

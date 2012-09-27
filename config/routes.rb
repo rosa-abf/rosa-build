@@ -121,6 +121,7 @@ Rosa::Application.routes.draw do
         put :notifiers
       end
     end
+
     resources :users, :controller => 'profile', :only => [] do
       get :autocomplete_user_uname, :on => :collection
     end
@@ -202,8 +203,13 @@ Rosa::Application.routes.draw do
         resources :collaborators do
           get :find, :on => :collection
         end
+        resources :pull_requests, :except => :destroy do
+          get :autocomplete_base_project, :on => :collection
+          put :merge, :on => :member
+        end
         post '/preview' => 'projects#preview', :as => 'md_preview'
       end
+
       # Resource
       get '/autocomplete_maintainers' => 'projects#autocomplete_maintainers', :as => :autocomplete_maintainers
       get '/modify' => 'projects#edit', :as => :edit_project

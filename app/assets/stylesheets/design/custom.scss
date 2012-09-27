@@ -919,6 +919,14 @@ div#git_help_data p {
   vertical-align: top;
 }
 
+.tab-content.pull_diff_fix {
+  display: block;
+}
+
+table.diff {
+  font-size: 12px;
+}
+
 /* Mass build forms */
 form.mass_build input[type="checkbox"] {
   width: 10px;
@@ -1296,6 +1304,15 @@ hr.bootstrap {
   max-height: 280px;
 }
 
+.label-bootstrap.label-info.font14 {
+  padding: 4px;
+  line-height: 1.8;
+  a { color: #FFFFFF; }
+}
+.line_numbers a {
+  color: #999999;
+}
+
 /* Flash Notifies */
 
 .flash_notify {
@@ -1580,5 +1597,14 @@ table.tablesorter.platform-maintainers.static-search thead tr.search th input[ty
       margin-top: 3px;
     }
   }
+}
+
+#repo-wrapper .edit_form.issue div.comment div.wrapper {
+  background: 0;
+  border: 0;
+  border-radius: 0;
+  height: 30px;
+  margin: 0;
+  padding: 0;
 }
 

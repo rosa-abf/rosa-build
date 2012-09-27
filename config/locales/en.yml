@@ -189,3 +189,12 @@ en:
       private_user:
         login: Login
         password: Password
+
+      arch:
+        name: Name
+        created_at: Created
+        updated_at: Updated
+
+  into: into
+  from: from
+  by: by

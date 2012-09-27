@@ -71,6 +71,8 @@ class ActivityFeedObserver < ActiveRecord::Observer
 
     when 'GitHook'
       return unless record.project
+      record.project.pull_requests.needed_checking.each {|pull| pull.check}
+
       change_type = record.change_type
       branch_name = record.refname.split('/').last
 

@@ -148,10 +148,10 @@ describe Comment do
       @user = FactoryGirl.create(:user)
       @stranger = FactoryGirl.create(:user)
       set_comments_data_for_commit
-      
+
       @project.owner = @user
       @project.save
-      
+
       ActionMailer::Base.deliveries = []
     end
 
@@ -301,7 +301,7 @@ describe Comment do
 
     context 'for committer' do
       it 'should send an e-mail' do
-        @simple.update_column :email, 'code@tpope.net'
+        @simple.update_column :email, 'test@test.test'
         comment = create_comment(@user)
         ActionMailer::Base.deliveries.count.should == 1
         ActionMailer::Base.deliveries.last.to.include?(@simple.email).should == true
@@ -309,21 +309,21 @@ describe Comment do
 
       it 'should send a one e-mail when subscribed to commit' do
         Subscribe.subscribe_to_commit @subscribe_params.merge(:user_id => @simple.id)
-        @simple.update_column :email, 'code@tpope.net'
+        @simple.update_column :email, 'test@test.test'
         comment = create_comment(@user)
         ActionMailer::Base.deliveries.count.should == 1
         ActionMailer::Base.deliveries.last.to.include?(@simple.email).should == true
       end
 
       it 'should not send an e-mail for own comment' do
-        @simple.update_column :email, 'code@tpope.net'
+        @simple.update_column :email, 'test@test.test'
         comment = create_comment(@simple)
         ActionMailer::Base.deliveries.count.should == 0
       end
 
       it 'should not send an e-mail if global notify off' do
         @project.owner.notifier.update_column :can_notify, false
-        @simple.update_column :email, 'code@tpope.net'
+        @simple.update_column :email, 'test@test.test'
         @simple.notifier.update_column :can_notify, false
         comment = create_comment(@user)
         ActionMailer::Base.deliveries.count.should == 0
@@ -332,7 +332,7 @@ describe Comment do
       it 'should not send an e-mail if notify for my commits off' do
         Comment.destroy_all
         @simple.notifier.update_column :new_comment_commit_owner, false
-        @simple.update_column :email, 'code@tpope.net'
+        @simple.update_column :email, 'test@test.test'
         comment = create_comment(@user)
         ActionMailer::Base.deliveries.count.should == 0
       end

@@ -1,10 +1,10 @@
 - commit_id = commit_diff.deleted_file ? @commit.parents.first.id : @commit.id
 .file
-  %a{:name => h(commit_diff.a_path)}
+  %a{:name => "diff-#{commit_diff_counter}"}
   .top
-    .l= h(commit_diff.a_path)
+    .l= h(commit_diff.a_path.rtruncate 120)
     - if commit_diff.b_path.present?
       .r= link_to "view file @ #{short_hash_id(commit_id)}", blob_path(@project, commit_id, commit_diff.b_path)
     .clear
 
-  .diff_data= render_diff(commit_diff) unless (@project.repo.tree(commit_id) / commit_diff.b_path).binary?
+  .diff_data= render_diff(commit_diff, commit_diff_counter) unless (@project.repo.tree(commit_id) / commit_diff.b_path).binary?

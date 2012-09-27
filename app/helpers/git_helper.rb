@@ -68,7 +68,7 @@ module GitHelper
     [ ['Branches', project.repo.branches.map{|b| "latest_#{b.name}"}],
       ['Tags', project.repo.tags.map(&:name)] ]
   end
-  
+
   def split_commits_by_date(commits)
     commits.sort{|x, y| y.authored_date <=> x.authored_date}.inject({}) do |h, commit|
       dt = commit.authored_date
@@ -80,4 +80,3 @@ module GitHelper
     end
   end
 end
-

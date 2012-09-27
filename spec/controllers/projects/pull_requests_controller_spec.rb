@@ -1,0 +1,71 @@
+# -*- encoding : utf-8 -*-
+require 'spec_helper'
+
+describe Projects::PullRequestsController do
+
+  before(:each) do
+    stub_symlink_methods
+
+    @project = FactoryGirl.create(:project)
+    %x(cp -Rf #{Rails.root}/spec/tests.git/* #{@project.path})
+
+    @pull = @project.pull_requests.new :issue_attributes => {:title => 'test', :body => 'testing'}
+    @pull.issue.user, @pull.issue.project = @project.owner, @pull.base_project
+    @pull.base_ref = 'master'
+    @pull.head_project, @pull.head_ref = @project, 'non_conflicts'
+    @pull.save
+
+    @another_user = FactoryGirl.create(:user)
+    @create_params = {:pull_request => {:issue_attributes => {:title => 'create', :body => 'creating'}, :base_ref => 'non_conflicts', :head_ref => 'master'},
+                                   :base_project_id => @project.id, :owner_name => @project.owner.uname, :project_name => @project.name}
+    @update_params = @create_params.merge(:pull_request => {:issue_attributes => {:title => 'update', :body => 'updating', :id => @pull.issue.id}}, :id => @pull.serial_id)
+  end
+
+  context 'for guest' do
+    it 'should not be able to perform create action' do
+      post :create, @create_params
+      response.should redirect_to(new_user_session_path)
+    end
+
+    it 'should not be able to perform update action' do
+      post :update, @update_params
+      response.should redirect_to(new_user_session_path)
+    end
+
+    it 'should not update title and body' do
+      post :update, @update_params
+      PullRequest.joins(:issue).where(:id => @pull.id, :issues => {:title => 'update', :body => 'updating'}).count.should == 0
+    end
+  end
+
+  context 'for owner user' do
+    before(:each) do
+      set_session_for(@project.owner)
+    end
+
+    it 'should be able to perform create action' do
+      post :create, @create_params
+      PullRequest.joins(:issue).where(:issues => {:title => 'create', :body => 'creating'}).count.should == 1
+    end
+
+    it 'should be able to perform update action' do
+      put :update, @update_params
+      response.code.should eq('200')
+    end
+
+    it 'should update title and body' do
+      put :update, @update_params
+      PullRequest.joins(:issue).where(:id => @pull.id, :issues => {:title => 'update', :body => 'updating'}).count.should == 1
+    end
+
+    it "should not create same pull" do
+      post :create, @create_params.merge({:pull_request => {:issue_attributes => {:title => 'same', :body => 'creating'}, :head_ref => 'non_conflicts', :base_ref => 'master'}, :base_project_id => @project.id})
+      PullRequest.joins(:issue).where(:issues => {:title => 'same', :body => 'creating'}).count.should == 0
+    end
+
+    it "should not create already up-to-date pull" do
+      post :create, @create_params.merge({:pull_request => {:issue_attributes => {:title => 'already', :body => 'creating'}, :base_ref => 'master', :head_ref => 'master'}, :base_project_id => @project.id})
+      PullRequest.joins(:issue).where(:issues => {:title => 'already', :body => 'creating'}).count.should == 0
+    end
+  end
+end
