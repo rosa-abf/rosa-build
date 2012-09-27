@@ -17,6 +17,20 @@ class ApplicationController < ActionController::Base
   rescue_from CanCan::AccessDenied do |exception|
     redirect_to forbidden_url, :alert => t("flash.exception_message")
   end
+
+  if !Rails.env.development?
+
+    rescue_from ActiveRecord::RecordNotFound,
+                ActionController::RoutingError,
+                ActionController::UnknownController,
+                ::AbstractController::ActionNotFound do |exception|
+      respond_to do |format|
+        format.json { render :json => {:message => t("flash.404_message")}.to_json, :status => 404 }
+        format.html { redirect_to '/404.html', :alert => t("flash.404_message") }
+      end
+    end
+  end
+
   rescue_from Grit::NoSuchPathError, :with => :not_found
 
   protected

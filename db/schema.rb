@@ -17,8 +17,8 @@ ActiveRecord::Schema.define(:version => 20120914160741) do
     t.integer  "user_id",    :null => false
     t.string   "kind"
     t.text     "data"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
   end
 
   create_table "advisories", :force => true do |t|
@@ -165,12 +165,12 @@ ActiveRecord::Schema.define(:version => 20120914160741) do
   end
 
   create_table "flash_notifies", :force => true do |t|
-    t.text     "body_ru",                      :null => false
-    t.text     "body_en",                      :null => false
-    t.string   "status",                       :null => false
-    t.boolean  "published",  :default => true, :null => false
-    t.datetime "created_at",                   :null => false
-    t.datetime "updated_at",                   :null => false
+    t.text     "body_ru"
+    t.text     "body_en"
+    t.string   "status"
+    t.boolean  "published"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
   end
 
   create_table "groups", :force => true do |t|
@@ -327,11 +327,11 @@ ActiveRecord::Schema.define(:version => 20120914160741) do
     t.text     "description"
     t.string   "ancestry"
     t.boolean  "has_issues",         :default => true
+    t.boolean  "has_wiki",           :default => false
     t.string   "srpm_file_name"
+    t.string   "srpm_content_type"
     t.integer  "srpm_file_size"
     t.datetime "srpm_updated_at"
-    t.string   "srpm_content_type"
-    t.boolean  "has_wiki",           :default => false
     t.string   "default_branch",     :default => "master"
     t.boolean  "is_package",         :default => true,     :null => false
     t.integer  "average_build_time", :default => 0,        :null => false
@@ -339,16 +339,14 @@ ActiveRecord::Schema.define(:version => 20120914160741) do
     t.integer  "maintainer_id"
   end
 
-  add_index "projects", ["owner_id"], :name => "index_projects_on_name_and_owner_id_and_owner_type", :unique => true, :case_sensitive => false
-
   create_table "register_requests", :force => true do |t|
     t.string   "name"
     t.string   "email"
     t.string   "token"
     t.boolean  "approved",   :default => false
     t.boolean  "rejected",   :default => false
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at",                    :null => false
+    t.datetime "updated_at",                    :null => false
     t.string   "interest"
     t.text     "more"
     t.string   "language"
@@ -406,16 +404,19 @@ ActiveRecord::Schema.define(:version => 20120914160741) do
     t.string   "name"
     t.string   "email",                                  :default => "",   :null => false
     t.string   "encrypted_password",      :limit => 128, :default => "",   :null => false
+    t.string   "password_salt",                          :default => "",   :null => false
     t.string   "reset_password_token"
-    t.datetime "reset_password_sent_at"
     t.datetime "remember_created_at"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.text     "ssh_key"
     t.string   "uname"
     t.string   "role"
     t.string   "language",                               :default => "en"
+    t.string   "confirmation_token"
+    t.datetime "confirmed_at"
+    t.datetime "confirmation_sent_at"
     t.integer  "own_projects_count",                     :default => 0,    :null => false
+    t.datetime "reset_password_sent_at"
     t.text     "professional_experience"
     t.string   "site"
     t.string   "company"
@@ -427,9 +428,6 @@ ActiveRecord::Schema.define(:version => 20120914160741) do
     t.integer  "failed_attempts",                        :default => 0
     t.string   "unlock_token"
     t.datetime "locked_at"
-    t.string   "confirmation_token"
-    t.datetime "confirmed_at"
-    t.datetime "confirmation_sent_at"
     t.string   "authentication_token"
     t.integer  "build_priority",                         :default => 50
   end
