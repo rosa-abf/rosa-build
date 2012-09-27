@@ -1,21 +1,22 @@
-%table.commits_activity
-  %tbody
-    - commits.each do |commit|
-      - item_no = commit.id
-      - GitPresenters::CommitAsMessagePresenter.present(commit, :branch => @branch, :project => @project) do |presenter|
-        %tr
-          %td
-            %img{:height => 16, :alt => "avatar", :src => presenter.image}
-          %td.date
-            = presenter.date
-          %td.name
-            = presenter.header
-          %td.subject
-            - if presenter.caption?
-              = presenter.caption
-              - if presenter.expandable? and presenter.content?
-                %span.data-expander.collapsed{:id => "expand#{item_no}"} &nbsp;
-            - if presenter.content?
-              .fulltext{:class => "#{presenter.expandable? ? "hidden" : ''} #{presenter.caption? ? "" : "alone"}",
-                        :id    => presenter.expandable? ? "content-expand#{item_no}" : ''}
-                .cm-s-default.md_and_cm=markdown presenter.content
+%div.commits_activity
+  %table
+    %tbody
+      - commits.each do |commit|
+        - item_no = commit.id
+        - GitPresenters::CommitAsMessagePresenter.present(commit, :branch => @branch, :project => @project) do |presenter|
+          %tr
+            %td
+              %img{:height => 16, :alt => "avatar", :src => presenter.image}
+            %td.date
+              = presenter.date
+            %td.name
+              = presenter.header
+            %td.subject
+              - if presenter.caption?
+                = presenter.caption
+                - if presenter.expandable? and presenter.content?
+                  %span.data-expander.collapsed{:id => "expand#{item_no}"} &nbsp;
+              - if presenter.content?
+                .fulltext{:class => "#{presenter.expandable? ? "hidden" : ''} #{presenter.caption? ? "" : "alone"}",
+                          :id    => presenter.expandable? ? "content-expand#{item_no}" : ''}
+                  .cm-s-default.md_and_cm=markdown presenter.content

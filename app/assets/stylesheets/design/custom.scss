@@ -46,11 +46,16 @@ article div.activity, .commits_activity {
     padding: 6px;
 }
 
-.commits_activity {
-    display: block;
-    img { width: 16px; }
+.commits_activity table {
+    border-collapse: collapse;
+    width: 100%;
+    img { margin: 2px 0 0 2px; }
     .date { width: 140px; }
     .name { width: 250px; }
+    tr:nth-child(2n) {
+        .md_and_cm, .data-expander { background-color: #E2E4FF; }
+        background-color: #E2E4FF;
+    }
 }
 
 article div.messages div.activity {
