@@ -10,9 +10,9 @@
             = presenter.date
           %td.name
             = presenter.header
-          %td
+          %td.subject
             - if presenter.caption?
-              %span.subject= presenter.caption
+              = presenter.caption
               - if presenter.expandable? and presenter.content?
                 %span.data-expander.collapsed{:id => "expand#{item_no}"} &nbsp;
             - if presenter.content?

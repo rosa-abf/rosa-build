@@ -9,7 +9,7 @@
   .tab-content.pull_diff_fix
     #discussion.tab-pane.active
       =render 'projects/issues/header'
-      =render "comments", :list => @issue.comments, :project => @project, :commentable => @issue
+      =render 'activity'
       %br
       =render "projects/comments/add", :project => @project, :commentable => @issue if current_user
       .pull_status
