@@ -1,9 +1,10 @@
 - commits = split_commits_by_date(commits)
 - cur_year = Date.today.year
 - counter = 1
+- hide_year_div ||= false
 
 - commits.each_pair do |year, by_month|
-  - if year != cur_year
+  - if year != cur_year && !hide_year_div
     .year= "#{year} #{t("layout.year")}"
 
   - by_month.each_pair do |month, by_day|

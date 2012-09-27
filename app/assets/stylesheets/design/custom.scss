@@ -38,12 +38,19 @@ div.description-top div.name input {
     height: 100%;
 }
 
-article div.activity {
+article div.activity, .commits_activity {
     border: 1px solid #D6D6D6;
     border-radius: 5px 5px 5px 5px;
     color: #333333;
     margin-top: 15px;
     padding: 6px;
+}
+
+.commits_activity {
+    display: block;
+    img { width: 16px; }
+    .date { width: 140px; }
+    .name { width: 250px; }
 }
 
 article div.messages div.activity {
@@ -101,20 +108,20 @@ article div.activity .fulltext.hidden {
     display: none;
 }
 
-div.activity .data-expander {
-    margin-left: 10px;
-    display: inline-block;
-    width: 12px;
-}
-
-div.activity .data-expander.collapsed {
-    background: #FFF image-url('expand-gray.png') no-repeat;
-    background-position: 0 2px;
-}
-
-div.activity .data-expander.expanded {
-    background: #FFF image-url('expand-gray2.png') no-repeat;
-    background-position: 0 2px;
+div.activity, .commits_activity {
+    .data-expander {
+        margin-left: 10px;
+        display: inline-block;
+        width: 12px;
+    }
+    .data-expander.collapsed {
+        background: #FFF image-url('expand-gray.png') no-repeat;
+        background-position: 0 2px;
+    }
+    .data-expander.expanded {
+        background: #FFF image-url('expand-gray2.png') no-repeat;
+        background-position: 0 2px;
+    }
 }
 
 div.activity .fulltext p {

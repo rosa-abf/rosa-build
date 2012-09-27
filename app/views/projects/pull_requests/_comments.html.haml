@@ -1,0 +1,29 @@
+%a{ :name => "comments" }
+.hr
+%h3#block-list= t("layout.comments.comments_header")
+
+- issue_comments = @issue.comments.map{ |c| [c.created_at, c] }
+- commits = @commits.map{ |c| [(c.committed_date || c.authored_date), c] }
+- activity = (issue_comments + commits).sort_by{ |c| c[0].to_datetime }
+
+- commits_queue = []
+- activity.each do |a|
+  - item = a[1]
+  - if item.is_a?(Comment)
+    - if commits_queue.present?
+      = render :partial => 'commits', :object => commits_queue, :hide_year_div => true
+      - commits_queue = []
+    = render 'projects/comments/comment', :comment => item, :project => project, :commentable => commentable
+  - else
+    - comments_for_commit = Comment.for_commit(item)
+    - commits_queue << item
+    - if comments_for_commit.present?
+      = render :partial => 'commits', :object => commits_queue, :hide_year_div => true
+      - comments_for_commit.each do |c|
+        = render 'projects/comments/comment', :comment => c, :project => project, :commentable => item
+      - commits_queue = []
+- if commits_queue.present?
+  = render :partial => 'commits', :object => commits_queue, :hide_year_div => true
+
+
+= render "projects/comments/markdown_help"
