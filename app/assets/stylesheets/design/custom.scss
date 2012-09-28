@@ -1620,3 +1620,27 @@ table.tablesorter.platform-maintainers.static-search thead tr.search th input[ty
   padding: 0;
 }
 
+form#new_pull_request {
+  .leftlist {
+    width: 50px;
+    margin: 5px 0 20px 0;
+  }
+  .leftlist.big-list {
+    margin-top: 0;
+    width: 150px;
+  }
+
+  .l {
+    float: left;
+    margin-right: 10px;
+
+    input {
+      height: 21px;
+      width: 380px;
+    }
+
+    select {
+      width: 380px;
+    }
+  }
+}

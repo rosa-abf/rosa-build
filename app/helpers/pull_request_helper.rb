@@ -40,4 +40,13 @@ module PullRequestHelper
     return commit_path(project, ref) if project.repo.commit ref
     '#'
   end
+
+  def ref_selector_options(project, current)
+    res = []
+    value = Proc.new {|t| [t.name.truncate(40)]}
+    res << [I18n.t('layout.git.repositories.branches'), project.repo.branches.map(&value)]
+    res << [I18n.t('layout.git.repositories.tags'), project.repo.tags.map(&value)]
+
+    grouped_options_for_select(res, current)
+  end
 end

@@ -8,41 +8,37 @@
     #discussion.tab-pane.active
       =hidden_field_tag :update_action, new_project_pull_request_path
       =form_for @pull, :url => (@pull.already? ? new_project_pull_request_path : project_pull_requests_path), :html => {:class => 'well well-large', :method => (@pull.already? ? :get : :post)} do |f|
-        .leftlist=f.label :base_project, t("#{ar}.base_project"), :class => :label
-        .rightlist
-          =f.autocomplete_field :base_project, autocomplete_base_project_project_pull_requests_path, :value => @pull.base_project.name_with_owner, :id_element => '#pull_request_base_project_id', :name => 'base_project'
-          =f.hidden_field :base_project_id, :name => 'base_project_id'
-        .both
-        .leftlist=f.label :base_ref, "#{t "#{ar}.base_ref"} #{t "#{ar}.refs"}", :class => :label
-        .rightlist
-          %input{:id => 'base_refs', :value => @pull.base_ref, :name => 'pull_request[base_ref]'}
-        .both
+
         .leftlist=f.label :head_project, t("#{ar}.head_project"), :class => :label
-        .rightlist=@pull.head_project.name_with_owner
+        %div
+          .l=text_field_tag :head_project, @pull.head_project.name_with_owner, :readonly => :readonly, :style => 'background-color: #DDD;'
+          .l=select_tag :head_ref, ref_selector_options(@pull.head_project, @pull.head_ref), :id => 'head_refs', :class => 'sel80', :name => 'pull_request[head_ref]'
         .both
-        .leftlist=f.label :head_ref, "#{t "#{ar}.head_ref"} #{t "#{ar}.refs"}", :class => :label
-        .rightlist
-          %input{:id => 'head_refs', :value => @pull.head_ref, :name => 'pull_request[head_ref]'}
+        .leftlist=f.label :base_project, t("#{ar}.base_project"), :class => :label
+        %div
+          .l=f.autocomplete_field :base_project, autocomplete_base_project_project_pull_requests_path, :value => @pull.base_project.name_with_owner, :id_element => '#pull_request_base_project_id', :name => 'base_project'
+          =f.hidden_field :base_project_id, :name => 'base_project_id'
+          .l=select_tag :base_ref, ref_selector_options(@pull.base_project, @pull.base_ref), :id => 'base_refs', :class => 'sel80', :name => 'pull_request[base_ref]'
         .both
-        .leftlist
+        .leftlist.big-list
         .rightlist=f.submit t('.update'), :class => 'btn btn-primary disabled', 'data-loading-text' => t('layout.processing'), :style => @pull.already? ? '' : 'display: none;', :id => 'update_pull'
         .both
         -unless @pull.already?
           =f.fields_for :issue do |issue|
-            .leftlist=issue.label :title, t('activerecord.attributes.issue.title'), :class => :label
+            .leftlist.big-list=issue.label :title, t('activerecord.attributes.issue.title'), :class => :label
             .rightlist=issue.text_field :title
             .both
-            .leftlist=issue.label :title, t('activerecord.attributes.issue.body'), :class => :label
+            .leftlist.big-list=issue.label :title, t('activerecord.attributes.issue.body'), :class => :label
             .rightlist=issue.text_area :body
             .both
 
-          .leftlist=f.label :title, t('activerecord.attributes.issue.status'), :class => :label
+          .leftlist.big-list=f.label :title, t('activerecord.attributes.issue.status'), :class => :label
           .rightlist
             .flash
               %div{:class => @pull.ready? ? 'notice' : 'alert'}
                 =pull_status @pull
           .both
-          .leftlist
+          .leftlist.big-list
           .rightlist
             =f.submit t('.submit'), :class => 'btn btn-primary disabled', 'data-loading-text' => t('layout.processing'), :id => 'create_pull' unless @pull.already?
           .both
