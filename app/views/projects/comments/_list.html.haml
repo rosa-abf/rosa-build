@@ -2,13 +2,5 @@
 .hr
 %h3#block-list= t("layout.comments.comments_header")
 - list.each do |comment|
-  - CommentPresenter.present(comment, :project => project, :commentable => commentable) do |presenter|
-    = render 'shared/feed_message', :presenter => presenter
-  #open-comment.comment.hidden{:class => "comment-#{comment.id}"}
-    %h3.tmargin0= t("layout.comments.edit_header")
-    = form_for comment, :url => project_commentable_comment_path(project, commentable, comment), :html => { :class => 'form edit_comment' } do |f|
-      = render "projects/comments/form", :f => f, :id => "edit_#{comment.id}"
-      .comment-left
-        =link_to t('layout.cancel'), '#', :id => "comment-#{comment.id}", :class => 'cancel_edit_comment button'
-      .both
+  = render 'projects/comments/comment', :comment => comment, :project => project, :commentable => commentable
 = render "projects/comments/markdown_help"

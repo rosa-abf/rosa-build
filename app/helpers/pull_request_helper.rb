@@ -1,5 +1,11 @@
 # -*- encoding : utf-8 -*-
 module PullRequestHelper
+  def merge_activity comments, commits
+    issue_comments = @issue.comments.map{ |c| [c.created_at, c] }
+    commits = @commits.map{ |c| [(c.committed_date || c.authored_date), c] }
+    (issue_comments + commits).sort_by{ |c| c[0] }.map{ |c| c[1] }
+  end
+
   def pull_status_label pull
     statuses = {'ready' => 'success', 'closed' => 'important', 'merged' => 'important', 'blocked' => 'warning'}
     content_tag :span, t("projects.pull_requests.statuses.#{pull.status}"), :class => "label-bootstrap label-#{statuses[pull.status]}"
