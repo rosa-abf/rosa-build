@@ -47,8 +47,8 @@ en:
         base_ref: Base
         head_ref: Head
         refs: 'branch · tag'
-        base_project: Base project
-        head_project: Head project
+        base_project: Into
+        head_project: From
 
   layout:
     pull_requests:

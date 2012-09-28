@@ -49,8 +49,8 @@ ru:
         base_ref: База
         head_ref: Источник
         refs: 'ветка · тег'
-        base_project: Базовый проект
-        head_project: Проект-источник
+        base_project: Куда
+        head_project: Откуда
 
   layout:
     pull_requests:
