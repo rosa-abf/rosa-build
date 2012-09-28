@@ -16,12 +16,12 @@ class Projects::PullRequestsController < Projects::BaseController
     set_attrs
 
     if PullRequest.check_ref(@pull, 'base', @pull.base_ref) && PullRequest.check_ref(@pull, 'head', @pull.head_ref) || @pull.uniq_merge
-      flash[:warning] = @pull.errors.full_messages.join('. ')
+      flash.now[:warning] = @pull.errors.full_messages.join('. ')
     else
       @pull.check(false) # don't make event transaction
       if @pull.already?
         @pull.destroy
-        flash[:warning] = I18n.t('projects.pull_requests.up_to_date', :base_ref => @pull.base_ref, :head_ref => @pull.head_ref)
+        flash.now[:warning] = I18n.t('projects.pull_requests.up_to_date', :base_ref => @pull.base_ref, :head_ref => @pull.head_ref)
       else
         load_diff_commits_data
       end
@@ -44,15 +44,15 @@ class Projects::PullRequestsController < Projects::BaseController
       @pull.check(false) # don't make event transaction
       if @pull.already?
         @pull.destroy
-        flash[:error] = I18n.t('projects.pull_requests.up_to_date', :base_ref => @pull.base_ref, :head_ref => @pull.head_ref)
+        flash.now[:error] = I18n.t('projects.pull_requests.up_to_date', :base_ref => @pull.base_ref, :head_ref => @pull.head_ref)
         render :new
       else
         @pull.check
         redirect_to project_pull_request_path(@pull.base_project, @pull)
       end
     else
-      flash[:error] = t('flash.pull_request.save_error')
-      flash[:warning] = @pull.errors.full_messages.join('. ')
+      flash.now[:error] = t('flash.pull_request.save_error')
+      flash.now[:warning] = @pull.errors.full_messages.join('. ')
 
       if @pull.errors.try(:messages) && @pull.errors.messages[:base_ref].nil? && @pull.errors.messages[:head_ref].nil?
         @pull.check(false) # don't make event transaction
@@ -78,8 +78,8 @@ class Projects::PullRequestsController < Projects::BaseController
   def merge
     @pull.check
     unless @pull.merge!(current_user)
-      flash[:error] = t('flash.pull_request.save_error')
-      flash[:warning] = @pull.errors.full_messages.join('. ')
+      flash.now[:error] = t('flash.pull_request.save_error')
+      flash.now[:warning] = @pull.errors.full_messages.join('. ')
     end
     redirect_to project_pull_request_path(@pull.base_project, @pull)
   end
