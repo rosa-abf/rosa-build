@@ -21,10 +21,10 @@ module PullRequestHelper
   end
 
   def pull_header pull
-    str = "#{t '.header'} #{t 'into'} <span class='label-bootstrap label-info font14'> \
-   #{show_ref pull, 'base'}</span> \
-   #{t 'from'} <span class='label-bootstrap label-info font14'> \
-   #{show_ref pull, 'head'}</span>"
+    str = "#{t '.header'} #{t 'from'} <span class='label-bootstrap label-info font14'> \
+   #{show_ref pull, 'head'}</span> \
+   #{t 'into'} <span class='label-bootstrap label-info font14'> \
+   #{show_ref pull, 'base'}</span>"
     str << " #{t 'by'} #{link_to pull.user.uname, user_path(pull.user)}" if pull.persisted?
     str.html_safe
   end
