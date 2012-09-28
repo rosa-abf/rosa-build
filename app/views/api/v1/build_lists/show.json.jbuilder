@@ -39,10 +39,6 @@ json.build_list do |json|
     json_include_repos.(repo, :id, :name)
   end
 
-  json.additional_repos @build_list.additional_repos do |json_repos, repo|
-    json_repos.(repo, :id, :name)
-  end if @build_list.additional_repos
-
   json.advisory do |json_advisory|
     json_advisory.name @build_list.advisory.advisory_id
     json_advisory.(@build_list.advisory, :description)
