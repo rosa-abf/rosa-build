@@ -50,7 +50,8 @@ class PullRequest < ActiveRecord::Base
   end
 
   def check(do_transaction = true)
-    new_status = case merge
+    res = merge
+    new_status = case res
                  when /Already up-to-date/
                    'already'
                  when /Merge made by the 'recursive' strategy/
@@ -60,7 +61,7 @@ class PullRequest < ActiveRecord::Base
                    system("cd #{path} && git reset --hard HEAD") # clean git index
                    'block'
                  else
-                   raise
+                   raise res
                  end
 
     if do_transaction
