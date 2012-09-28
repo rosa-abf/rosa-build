@@ -110,9 +110,8 @@ class Projects::PullRequestsController < Projects::BaseController
   end
 
   def autocomplete_base_project
-    items = Project.accessible_by(current_ability, :membered).search(params[:term])
-    items = items | [@project.root]
-    items.select! {|e| Regexp.new(params[:term].downcase).match(e.name.downcase) && e.repo.branches.count > 0}
+    items = Project.accessible_by(current_ability, :membered) | [@project.root]
+    items.select! {|e| Regexp.new(params[:term].downcase).match(e.name_with_owner.downcase) && e.repo.branches.count > 0}
     render :json => json_for_autocomplete_base(items)
   end
 
