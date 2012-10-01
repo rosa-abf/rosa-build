@@ -107,6 +107,12 @@ class Projects::ProjectsController < Projects::BaseController
     render :inline => view_context.markdown(params[:text]), :layout => false
   end
 
+  def refs_list
+    refs = @project.repo.branches_and_tags.map(&:name)
+    @selected = (refs.include? params[:selected]) ? params[:selected] : @project.default_branch
+    render :layout => false
+  end
+
   protected
 
   def prepare_list(projects, groups, owners)
@@ -122,7 +128,7 @@ class Projects::ProjectsController < Projects::BaseController
     if groups.present? || owners.present?
       projects = projects.by_owners(groups, owners)
     end
-    
+
     projects = projects.search(params[:sSearch]).search_order if params[:sSearch].present?
 
     res[:filtered_count] = projects.count
