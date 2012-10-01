@@ -54,7 +54,7 @@ class PullRequest < ActiveRecord::Base
     new_status = case res
                  when /Already up-to-date/
                    'already'
-                 when /Merge made by the 'recursive' strategy/
+                 when /Merge made by/
                    system("cd #{path} && git reset --hard HEAD^") # remove merge commit
                    'ready'
                  when /Automatic merge failed/
