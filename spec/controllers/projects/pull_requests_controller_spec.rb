@@ -110,7 +110,7 @@ shared_examples_for 'user without pull request update rights' do
   end
 end
 
-shared_examples_for 'project with issues turned off' do
+shared_examples_for 'pull request when project with issues turned off' do
   before { @project.update_attributes(:has_issues => false) }
   it 'should be able to perform index action' do
     get :index, :project_id => @project.id
@@ -136,7 +136,7 @@ describe Projects::PullRequestsController do
     it_should_behave_like 'pull request user with project guest rights'
     it_should_behave_like 'pull request user with project reader rights'
     it_should_behave_like 'user with pull request update rights'
-    it_should_behave_like 'project with issues turned off'
+    it_should_behave_like 'pull request when project with issues turned off'
   end
 
   context 'for project admin user' do
@@ -147,7 +147,7 @@ describe Projects::PullRequestsController do
     it_should_behave_like 'pull request user with project guest rights'
     it_should_behave_like 'pull request user with project reader rights'
     it_should_behave_like 'user with pull request update rights'
-    it_should_behave_like 'project with issues turned off'
+    it_should_behave_like 'pull request when project with issues turned off'
   end
 
   context 'for project owner user' do
@@ -159,7 +159,7 @@ describe Projects::PullRequestsController do
     it_should_behave_like 'pull request user with project guest rights'
     it_should_behave_like 'pull request user with project reader rights'
     it_should_behave_like 'user with pull request update rights'
-    it_should_behave_like 'project with issues turned off'
+    it_should_behave_like 'pull request when project with issues turned off'
   end
 
   context 'for project reader user' do
@@ -170,7 +170,7 @@ describe Projects::PullRequestsController do
     it_should_behave_like 'pull request user with project guest rights'
     it_should_behave_like 'pull request user with project reader rights'
     it_should_behave_like 'user without pull request update rights'
-    it_should_behave_like 'project with issues turned off'
+    it_should_behave_like 'pull request when project with issues turned off'
   end
 
   context 'for project writer user' do
@@ -181,7 +181,7 @@ describe Projects::PullRequestsController do
     it_should_behave_like 'pull request user with project guest rights'
     it_should_behave_like 'pull request user with project reader rights'
     it_should_behave_like 'user without pull request update rights'
-    it_should_behave_like 'project with issues turned off'
+    it_should_behave_like 'pull request when project with issues turned off'
   end
 
 =begin
@@ -191,7 +191,7 @@ describe Projects::PullRequestsController do
     end
 
     it_should_behave_like 'user without pull request update rights'
-    it_should_behave_like 'project with issues turned off'
+    it_should_behave_like 'pull request when project with issues turned off'
   end
 =end
 
@@ -204,7 +204,7 @@ describe Projects::PullRequestsController do
     if APP_CONFIG['anonymous_access']
       
       it_should_behave_like 'pull request user with project guest rights'
-      it_should_behave_like 'project with issues turned off'
+      it_should_behave_like 'pull request when project with issues turned off'
       
     else
       it 'should not be able to perform index action' do
