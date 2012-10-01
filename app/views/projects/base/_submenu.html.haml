@@ -11,7 +11,7 @@
         %li= link_to t("project_menu.builds"), project_build_lists_path(@project), :class => (contr == :build_lists ? 'active' : nil)
       - if @project.has_issues
         %li= link_to t("project_menu.tracker"), project_issues_path(@project), :class => (contr == :issues ? 'active' : nil)
-        %li=link_to t("project_menu.pull_requests"), project_pull_requests_path(@project), :class => (contr == :pull_requests ? 'active' : nil)
+      %li=link_to t("project_menu.pull_requests"), project_pull_requests_path(@project), :class => (contr == :pull_requests ? 'active' : nil)
       - if @project.has_wiki
         %li= link_to t("project_menu.wiki"), project_wiki_index_path(@project), :class => (contr == :wiki ? 'active' : nil)
       %li=# link_to t("project_menu.readme"), "#" #pending
