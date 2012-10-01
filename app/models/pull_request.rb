@@ -106,7 +106,7 @@ class PullRequest < ActiveRecord::Base
     repo = Grit::Repo.new(path)
     base_commit = repo.commits(base_ref).first
     head_commit = repo.commits(head_branch).first
-    @common_ancestor = repo.commit(repo.git.merge_base({}, base_commit, head_commit))
+    @common_ancestor = repo.commit(repo.git.merge_base({}, base_commit, head_commit)) || base_commit
   end
 
   def diff_stats(repo, a,b)
