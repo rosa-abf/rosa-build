@@ -25,13 +25,7 @@
         .both
         -unless @pull.already?
           =f.fields_for :issue do |issue|
-            .leftlist.big-list=issue.label :title, t('activerecord.attributes.issue.title'), :class => :label
-            .rightlist=issue.text_field :title
-            .both
-            .leftlist.big-list=issue.label :title, t('activerecord.attributes.issue.body'), :class => :label
-            .rightlist=issue.text_area :body
-            .both
-
+            =render 'projects/issues/title_body', :f => issue, :id => 'new'
           .leftlist.big-list=f.label :title, t('activerecord.attributes.issue.status'), :class => :label
           .rightlist
             .flash
@@ -43,4 +37,7 @@
             =f.submit t('.submit'), :class => 'btn btn-primary disabled', 'data-loading-text' => t('layout.processing'), :id => 'create_pull' unless @pull.already?
           .both
     =render 'diff_commits_tabs' if !@pull.already? && @stats != nil
+
+=hidden_field_tag :preview_url, project_md_preview_path(@project)
+= render "projects/comments/markdown_help"
 
