@@ -339,7 +339,7 @@ ActiveRecord::Schema.define(:version => 20120914160741) do
     t.integer  "maintainer_id"
   end
 
-  add_index "projects", ["owner_id"], :name => "index_projects_on_name_and_owner_id_and_owner_type", :unique => true, :case_sensitive => false
+  add_index "projects", ["owner_id", "name", "owner_type"], :name => "index_projects_on_name_and_owner_id_and_owner_type", :unique => true, :case_sensitive => false
 
   create_table "pull_requests", :force => true do |t|
     t.integer "issue_id",        :null => false
