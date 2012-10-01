@@ -8,7 +8,7 @@ class Projects::PullRequestsController < Projects::BaseController
   load_and_authorize_resource :instance_name => :pull, :through => :issue, :singleton => true, :except => [:index, :autocomplete_base_project]
 
   def new
-    base_project = (Project.find(params[:base_project_id]) if params[:base_project_id]) || @project.root
+    base_project = set_base_project(false)
     authorize! :read, base_project
 
     @pull = base_project.pull_requests.new
@@ -33,7 +33,7 @@ class Projects::PullRequestsController < Projects::BaseController
       raise 'expect pull_request params' # for debug
       redirect :back
     end
-    base_project = Project.find(params[:base_project_id])
+    base_project = set_base_project
     authorize! :read, base_project
 
     @pull = base_project.pull_requests.new pull_params
@@ -140,6 +140,17 @@ class Projects::PullRequestsController < Projects::BaseController
 
     @diff = @pull.diff repo, @base_commit, @head_commit
     @stats = @pull.diff_stats repo, @base_commit, @head_commit
+  end
+
+  def set_base_project bang=true
+    args = params[:base_project].try(:split, '/') || []
+    if bang
+      raise ActiveRecord::RecordNotFound if args.length != 2
+      Project.find_by_owner_and_name! *args
+    else
+      return @project.root if args.length != 2
+      Project.find_by_owner_and_name(*args) || @project.root
+    end
   end
 
   def set_attrs

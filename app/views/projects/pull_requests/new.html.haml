@@ -17,7 +17,6 @@
         .leftlist=f.label :base_project, t("#{ar}.base_project"), :class => :label
         %div
           .l=f.autocomplete_field :base_project, autocomplete_base_project_project_pull_requests_path, :value => @pull.base_project.name_with_owner, :id_element => 'pull_request_base_project_id', :name => 'base_project'
-          =f.hidden_field :base_project_id, :name => 'base_project_id'
           =render 'ref_select', :kind => 'base', :project => @pull.base_project, :current => @pull.base_ref
         .both
         .leftlist.big-list
