@@ -17,12 +17,9 @@ def set_data_for_pull
 end
 
 describe PullRequest do
-  after (:each) do
-    FileUtils.rm_rf File.join(Rails.root, "tmp", Rails.env, "pull_requests")
-  end
 
   context 'for owner user' do
-    before (:all) do
+    before do
       stub_symlink_methods
       @user = FactoryGirl.create(:user)
       set_data_for_pull
@@ -103,11 +100,7 @@ describe PullRequest do
     end
   end
 
-  before(:all) do
-    stub_symlink_methods
-    Platform.delete_all
-    User.delete_all
-    Repository.delete_all
+  before do
     FileUtils.rm_rf(APP_CONFIG['root_path'])
   end
 
@@ -115,10 +108,8 @@ describe PullRequest do
   it { should belong_to(:base_project) }
   it { should belong_to(:head_project) }
 
-  after(:all) do
-    Platform.delete_all
-    User.delete_all
-    Repository.delete_all
+  after do
     FileUtils.rm_rf(APP_CONFIG['root_path'])
+    FileUtils.rm_rf File.join(Rails.root, "tmp", Rails.env, "pull_requests")
   end
 end
