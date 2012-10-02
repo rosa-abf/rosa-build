@@ -15,17 +15,13 @@ describe Users::ProfileController do
   end
 
   context 'for guest' do
-
-    if APP_CONFIG['anonymous_access']
-      it 'should be able to view profile' do
-        get :show, :uname => @simple_user.uname
-        response.code.should eq('200')
-      end
-    else
-      it 'should not be able to perform show action' do
-        get :show, :uname => @simple_user.uname
-        response.should redirect_to(new_user_session_path)
-      end
+    it 'should be able to view profile', :anonymous_access => true do
+      get :show, :uname => @simple_user.uname
+      response.code.should eq('200')
+    end
+    it 'should not be able to perform show action', :anonymous_access => false do
+      get :show, :uname => @simple_user.uname
+      response.should redirect_to(new_user_session_path)
     end
   end
 
