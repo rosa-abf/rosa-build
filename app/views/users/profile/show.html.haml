@@ -1,20 +1,4 @@
-.left
-  = image_tag avatar_url(@user, :big)
-  %br
-  = link_to t("layout.users.settings"), current_user == @user ? profile_settings_path : edit_admin_user_path(@user), :class => 'button width81' if can? :edit, @user
-.left
-  %h3= title @user.uname
-  = @user.name
-  %br
-    = mail_to @user.email, @user.email, :encode => "javascript"
-    %br
-      %h4= t("activerecord.attributes.user.professional_experience") + ":"
-      %p= @user.professional_experience
-      %h4= t("layout.users.public_projects_list") + ":"
-      %p
-        - @projects.each do |project|
-          = link_to project.name, project
-          %br
+-set_meta_tags :title => title_object(@user)
 
-:javascript
-  $('article .all').addClass('verybigpadding');
+- edit_link = can?(:edit, @user) ? link_to(t("layout.users.settings"), current_user == @user ? profile_settings_path : edit_admin_user_path(@user), :class => 'button width81') : nil
+= render 'shared/profile', :uname => @user.uname, :name => @user.name, :user => @user, :search_path => user_path, :projects => @projects, :edit_link => edit_link, :avatar_url => avatar_url(@user, :big)

@@ -1,7 +1,6 @@
 # -*- encoding : utf-8 -*-
 class Groups::ProfileController < Groups::BaseController
-  load_and_authorize_resource :class => Group, :instance_name => 'group', :except => :show
-  load_resource :class => Group, :instance_name => 'group', :only => :show
+  load_and_authorize_resource :class => Group, :instance_name => 'group'
   skip_before_filter :authenticate_user!, :only => :show if APP_CONFIG['anonymous_access']
 
   autocomplete :group, :uname
@@ -12,7 +11,9 @@ class Groups::ProfileController < Groups::BaseController
   end
 
   def show
-    @projects = @group.projects.by_visibilities(['open'])
+    @projects = @group.projects.by_visibilities(['open']).
+      search(params[:search]).search_order.
+      paginate(:page => params[:page], :per_page => 25)
   end
 
   def new

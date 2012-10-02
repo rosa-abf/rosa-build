@@ -31,6 +31,9 @@ class Ability
     can [:read, :projects_list], Repository, :platform => {:visibility => 'open'}
     can :read, Product, :platform => {:visibility => 'open'}
 
+    can :show, Group
+    can :show, User
+
     if user.guest? # Guest rights
       # can [:new, :create], RegisterRequest
     else # Registered user rights
