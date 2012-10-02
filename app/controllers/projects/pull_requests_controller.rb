@@ -71,7 +71,7 @@ class Projects::PullRequestsController < Projects::BaseController
       end
       redirect_to project_pull_request_path(@pull.base_project, @pull)
     else
-      render :nothing => true, :status => (@pull.update_attributes(params[:pull_request]) ? 200 : 500), :layout => false
+      head :bad_request
     end
   end
 
