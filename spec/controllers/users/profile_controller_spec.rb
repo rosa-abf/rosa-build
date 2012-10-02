@@ -15,9 +15,9 @@ describe Users::ProfileController do
   end
 
   context 'for guest' do
-    it 'should not be able to view profile' do
+    it 'should be able to view profile' do
       get :show, :uname => @simple_user.uname
-      response.should redirect_to(new_user_session_path)
+      response.code.should eq('200')
     end
   end
 
