@@ -50,7 +50,6 @@ class Ability
       end
 
       if user.user?
-        can :show, User
         can [:read, :create], Group
         can [:update, :manage_members], Group do |group|
           group.actors.exists?(:actor_type => 'User', :actor_id => user.id, :role => 'admin') # or group.owner_id = user.id
