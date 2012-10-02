@@ -1,6 +1,13 @@
 # -*- encoding : utf-8 -*-
 require 'spec_helper'
 
+shared_examples_for 'group user with project guest rights' do
+  it 'should be able to perform show action' do
+    get :show, :id => @group
+    response.should render_template(:show)
+  end
+end
+
 shared_examples_for 'group user without update rights' do
   it 'should be not able to perform update action' do
     put :update, {:id => @group}.merge(@update_params)
@@ -77,6 +84,7 @@ describe Groups::ProfileController do
   end
 
   context 'for guest' do
+    it_should_behave_like 'group user with project guest rights'
     it 'should not be able to perform index action' do
       get :index
       response.should redirect_to(new_user_session_path)
@@ -99,6 +107,7 @@ describe Groups::ProfileController do
       set_session_for(@admin)
     end
 
+    it_should_behave_like 'group user with project guest rights'
     it_should_behave_like 'update_member_relation'
     it_should_behave_like 'group owner'
 
@@ -120,6 +129,7 @@ describe Groups::ProfileController do
       @group.actors.create(:actor_type => 'User', :actor_id => @user.id, :role => 'admin')
     end
 
+    it_should_behave_like 'group user with project guest rights'
     it_should_behave_like 'update_member_relation'
     it_should_behave_like 'group admin'
     it_should_behave_like 'group user without destroy rights'
@@ -134,6 +144,7 @@ describe Groups::ProfileController do
       @group.actors.create(:actor_type => 'User', :actor_id => @user.id, :role => 'admin')
     end
 
+    it_should_behave_like 'group user with project guest rights'
     it_should_behave_like 'update_member_relation'
     it_should_behave_like 'group owner'
   end
@@ -154,6 +165,7 @@ describe Groups::ProfileController do
       lambda { delete :remove_user, :id => @group }.should change{ Relation.count }.by(-1)
     end
 
+    it_should_behave_like 'group user with project guest rights'
     it_should_behave_like 'no group user'
     it_should_behave_like 'group user without destroy rights'
     it_should_behave_like 'group user without update rights'
