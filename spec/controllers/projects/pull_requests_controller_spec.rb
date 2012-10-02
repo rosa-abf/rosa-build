@@ -17,7 +17,7 @@ describe Projects::PullRequestsController do
 
     @another_user = FactoryGirl.create(:user)
     @create_params = {:pull_request => {:issue_attributes => {:title => 'create', :body => 'creating'}, :base_ref => 'non_conflicts', :head_ref => 'master'},
-                                   :base_project_id => @project.id, :owner_name => @project.owner.uname, :project_name => @project.name}
+                      :base_project => @project.name_with_owner, :owner_name => @project.owner.uname, :project_name => @project.name}
     @update_params = @create_params.merge(:pull_request => {:issue_attributes => {:title => 'update', :body => 'updating', :id => @pull.issue.id}}, :id => @pull.serial_id)
   end
 
