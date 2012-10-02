@@ -1,6 +1,8 @@
 # -*- encoding : utf-8 -*-
 class Groups::ProfileController < Groups::BaseController
-  load_and_authorize_resource :class => Group, :instance_name => 'group'
+  load_and_authorize_resource :class => Group, :instance_name => 'group', :except => :show
+  load_resource :class => Group, :instance_name => 'group', :only => :show
+  skip_before_filter :authenticate_user!, :only => :show if APP_CONFIG['anonymous_access']
 
   autocomplete :group, :uname
 
