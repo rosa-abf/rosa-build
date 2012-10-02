@@ -1,12 +1,4 @@
 -set_meta_tags :title => title_object(@group)
-.all.verybigpadding
-  %h3= @group.name
-  %h4= t("activerecord.attributes.group.description") + ":"
-  %p= @group.description
-  %h4= t("layout.groups.public_projects_list") + ":"
-  %p
-    - @projects.each do |project|
-      = link_to project.name, project
-      %br
-  %br
-  = link_to t("layout.edit"), edit_group_path(@group), :class => 'button' if can? :edit, @group
+
+- edit_link = can?(:edit, @group) ? link_to(t("layout.edit"), edit_group_path(@group), :class => 'button') : nil
+= render 'shared/profile', :uname => @group.name, :group => @group, :search_path => group_path, :projects => @projects, :edit_link => edit_link

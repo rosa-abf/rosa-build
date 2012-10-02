@@ -2,6 +2,7 @@ ru:
   layout:
     projects:
       add: Добавить
+      public_projects_list: Список публичных проектов
       edit: Настройки
       fork_and_edit: Клонировать
       fork_to: Клонировать в %{to}

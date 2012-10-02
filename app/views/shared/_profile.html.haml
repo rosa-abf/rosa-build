@@ -1,0 +1,39 @@
+- avatar_url ||= 'ava-big.png'
+- edit_link ||= nil
+- user ||= nil
+- group ||= nil
+- name ||= uname
+.avatar
+  = image_tag avatar_url
+  - if edit_link
+    %br
+    = edit_link
+.info
+  %h3= title uname
+  = name
+  - if user
+    %br
+    = mail_to user.email, user.email, :encode => "javascript"
+  %br
+    - if user
+      %h4= t("activerecord.attributes.user.professional_experience") + ":"
+      %p= user.professional_experience
+    - else
+      %h4= t("activerecord.attributes.group.description") + ":"
+      %p= group.description
+.content
+  %h4= t("layout.projects.public_projects_list") + ":"
+  %p
+    =form_tag search_path, :id => 'filter_projects', :method => :get do
+      =tracker_search_field(:search, t('layout.find_project'))
+  %br
+  %p
+    - projects.each do |project|
+      = link_to project.name, project
+      %br
+  %br
+  = will_paginate projects
+  %br
+
+:javascript
+  $('article .all').addClass('verybigpadding');

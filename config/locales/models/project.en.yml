@@ -2,6 +2,7 @@ en:
   layout:
     projects:
       add: Add
+      public_projects_list: Public projects list
       edit: Settings
       fork_and_edit: Fork
       fork_to: Fork to %{to}

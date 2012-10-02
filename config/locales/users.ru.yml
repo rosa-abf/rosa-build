@@ -15,7 +15,6 @@ ru:
       own_projects: Мои проекты
       part_projects: Участвую в проектах
       filter_header: Фильтр
-      public_projects_list: Список публичных проектов
       public_data_edit_warning: Данные доступны для публичного профиля. Если вы не хотите показывать какие-либо данные, просто не заполняйте их.
       user_private_settings: Настройки
       settings_notifier: Центр подписки
