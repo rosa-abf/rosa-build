@@ -110,7 +110,7 @@ class Projects::PullRequestsController < Projects::BaseController
   end
 
   def autocomplete_base_project
-    items = Project.accessible_by(current_ability, :membered) | [@project.root]
+    items = Project.accessible_by(current_ability, :membered) | @project.ancestors
     items.select! {|e| Regexp.new(params[:term].downcase).match(e.name_with_owner.downcase) && e.repo.branches.count > 0}
     render :json => json_for_autocomplete_base(items)
   end
@@ -148,8 +148,8 @@ class Projects::PullRequestsController < Projects::BaseController
       raise ActiveRecord::RecordNotFound if args.length != 2
       Project.find_by_owner_and_name! *args
     else
-      return @project.root if args.length != 2
-      Project.find_by_owner_and_name(*args) || @project.root
+      return @project.parent if args.length != 2
+      Project.find_by_owner_and_name(*args) || @project.parent
     end
   end
 
