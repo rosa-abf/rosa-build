@@ -8,7 +8,7 @@ class Projects::PullRequestsController < Projects::BaseController
   load_and_authorize_resource :instance_name => :pull, :through => :issue, :singleton => true, :except => [:index, :autocomplete_base_project]
 
   def new
-    base_project = (Project.find(params[:base_project_id]) if params[:base_project_id]) || @project.root
+    base_project = set_base_project(false)
     authorize! :read, base_project
 
     @pull = base_project.pull_requests.new
@@ -16,12 +16,12 @@ class Projects::PullRequestsController < Projects::BaseController
     set_attrs
 
     if PullRequest.check_ref(@pull, 'base', @pull.base_ref) && PullRequest.check_ref(@pull, 'head', @pull.head_ref) || @pull.uniq_merge
-      flash[:warning] = @pull.errors.full_messages.join('. ')
+      flash.now[:warning] = @pull.errors.full_messages.join('. ')
     else
       @pull.check(false) # don't make event transaction
       if @pull.already?
         @pull.destroy
-        flash[:warning] = I18n.t('projects.pull_requests.up_to_date', :base_ref => @pull.base_ref, :head_ref => @pull.head_ref)
+        flash.now[:warning] = I18n.t('projects.pull_requests.up_to_date', :base_ref => @pull.base_ref, :head_ref => @pull.head_ref)
       else
         load_diff_commits_data
       end
@@ -33,26 +33,26 @@ class Projects::PullRequestsController < Projects::BaseController
       raise 'expect pull_request params' # for debug
       redirect :back
     end
-    base_project = Project.find(params[:base_project_id])
+    base_project = set_base_project
     authorize! :read, base_project
 
     @pull = base_project.pull_requests.new pull_params
     @pull.issue.user, @pull.issue.project, @pull.head_project = current_user, base_project, @project
 
     if @pull.valid? # FIXME more clean/clever logics
-      @pull.save
+      @pull.save # set pull id
       @pull.check(false) # don't make event transaction
       if @pull.already?
         @pull.destroy
-        flash[:error] = I18n.t('projects.pull_requests.up_to_date', :base_ref => @pull.base_ref, :head_ref => @pull.head_ref)
+        flash.now[:error] = I18n.t('projects.pull_requests.up_to_date', :base_ref => @pull.base_ref, :head_ref => @pull.head_ref)
         render :new
       else
-        @pull.check
+        @pull.send(@pull.status)
         redirect_to project_pull_request_path(@pull.base_project, @pull)
       end
     else
-      flash[:error] = t('flash.pull_request.save_error')
-      flash[:warning] = @pull.errors.full_messages.join('. ')
+      flash.now[:error] = t('flash.pull_request.save_error')
+      flash.now[:warning] = @pull.errors.full_messages.join('. ')
 
       if @pull.errors.try(:messages) && @pull.errors.messages[:base_ref].nil? && @pull.errors.messages[:head_ref].nil?
         @pull.check(false) # don't make event transaction
@@ -69,17 +69,15 @@ class Projects::PullRequestsController < Projects::BaseController
         @pull.send(action)
         @pull.check if @pull.open?
       end
-      redirect_to project_pull_request_path(@pull.base_project, @pull)
-    else
-      render :nothing => true, :status => (@pull.update_attributes(params[:pull_request]) ? 200 : 500), :layout => false
     end
+    redirect_to project_pull_request_path(@pull.base_project, @pull)
   end
 
   def merge
     @pull.check
     unless @pull.merge!(current_user)
-      flash[:error] = t('flash.pull_request.save_error')
-      flash[:warning] = @pull.errors.full_messages.join('. ')
+      flash.now[:error] = t('flash.pull_request.save_error')
+      flash.now[:warning] = @pull.errors.full_messages.join('. ')
     end
     redirect_to project_pull_request_path(@pull.base_project, @pull)
   end
@@ -110,9 +108,8 @@ class Projects::PullRequestsController < Projects::BaseController
   end
 
   def autocomplete_base_project
-    items = Project.accessible_by(current_ability, :membered).search(params[:term])
-    items = items | [@project.root]
-    items.select! {|e| Regexp.new(params[:term].downcase).match(e.name.downcase) && e.repo.branches.count > 0}
+    items = Project.accessible_by(current_ability, :membered) | @project.ancestors
+    items.select! {|e| Regexp.new(params[:term].downcase).match(e.name_with_owner.downcase) && e.repo.branches.count > 0}
     render :json => json_for_autocomplete_base(items)
   end
 
@@ -125,7 +122,7 @@ class Projects::PullRequestsController < Projects::BaseController
   def json_for_autocomplete_base items
     items.collect do |project|
       hash = {"id" => project.id.to_s, "label" => project.name_with_owner, "value" => project.name_with_owner}
-      hash[:refs] = project.repo.branches_and_tags.map &:name
+      hash[:get_refs_url] = project_refs_list_path(project)
       hash
     end
   end
@@ -141,6 +138,17 @@ class Projects::PullRequestsController < Projects::BaseController
 
     @diff = @pull.diff repo, @base_commit, @head_commit
     @stats = @pull.diff_stats repo, @base_commit, @head_commit
+  end
+
+  def set_base_project bang=true
+    args = params[:base_project].try(:split, '/') || []
+    if bang
+      raise ActiveRecord::RecordNotFound if args.length != 2
+      Project.find_by_owner_and_name! *args
+    else
+      return @project.parent if args.length != 2
+      Project.find_by_owner_and_name(*args) || @project.parent
+    end
   end
 
   def set_attrs

@@ -1559,7 +1559,7 @@ table.tablesorter.platform-maintainers.static-search thead tr.search th input[ty
     resize: vertical;
   }
 
-  textarea#issue_title {
+  textarea#issue_title, textarea#pull_request_issue_attributes_title {
     height: 16px;
     margin: 0 0 10px;
   }
@@ -1571,6 +1571,8 @@ table.tablesorter.platform-maintainers.static-search thead tr.search th input[ty
   .edit_comment .comment-left {
     margin-top: 0;
   }
+
+
 }
 
 #open-comment > h3.tmargin0 {
@@ -1620,3 +1622,35 @@ table.tablesorter.platform-maintainers.static-search thead tr.search th input[ty
   padding: 0;
 }
 
+form#new_pull_request {
+  .leftlist {
+    width: 50px;
+    margin: 5px 0 20px 0;
+  }
+  .leftlist.big-list {
+    margin-top: 0;
+    width: 150px;
+  }
+
+  .l {
+    float: left;
+    margin-right: 10px;
+
+    input {
+      height: 21px;
+      width: 380px;
+    }
+
+    select {
+      width: 380px;
+    }
+  }
+}
+
+#repo-wrapper form#new_pull_request  .wrapper {
+  background: none;
+  border: none;
+  height: 36px;
+  margin: 0;
+  padding: 0;
+}

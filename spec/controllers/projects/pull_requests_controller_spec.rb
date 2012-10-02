@@ -20,17 +20,19 @@ shared_context "pull request controller" do
       :pull_request => {:issue_attributes => {:title => 'create', :body => 'creating'},
                         :base_ref => 'non_conflicts',
                         :head_ref => 'master'},
-      :base_project_id => @project.id,
+      :base_project => @project.name_with_owner,
       :owner_name => @project.owner.uname,
       :project_name => @project.name }
     @update_params = @create_params.merge(
+      :pull_request_action => 'close',
+      :id => @pull.serial_id)
+    @wrong_update_params = @create_params.merge(
       :pull_request => {:issue_attributes => {:title => 'update', :body => 'updating', :id => @pull.issue.id}},
       :id => @pull.serial_id)
 
     @user = FactoryGirl.create(:user)
     set_session_for(@user)
   end
-
 end
 
 shared_examples_for 'pull request user with project guest rights' do
@@ -77,18 +79,38 @@ end
 shared_examples_for 'user with pull request update rights' do
   it 'should be able to perform update action' do
     put :update, @update_params
-    response.code.should eq('200')
+    response.should redirect_to(project_pull_request_path(@pull.base_project, @pull))
   end
 
-  let(:issue) { @project.pull_requests.find(@pull).issue }
-  it 'should update pull request title and body' do
-    put :update, @update_params
-    issue.title.should =='update'
+  it 'should be able to perform merge action' do
+    put :merge, @update_params
+    response.should redirect_to(project_pull_request_path(@pull.base_project, @pull))
   end
 
-  it 'should update pull request body' do
+  let(:pull) { @project.pull_requests.find(@pull) }
+  it 'should update pull request status' do
     put :update, @update_params
-    issue.body.should =='updating'
+    pull.status.should =='closed'
+  end
+
+  it 'should not update pull request title' do
+    put :update, @wrong_update_params
+    pull.issue.title.should =='test'
+  end
+
+  it 'should not update pull request body' do
+    put :update, @wrong_update_params
+    pull.issue.body.should =='testing'
+  end
+
+  it 'should not update pull request title direct' do
+    put :update, @wrong_update_params
+    pull.issue.title.should_not =='update'
+  end
+
+  it 'should not update pull request body direct' do
+    put :update, @wrong_update_params
+    pull.issue.body.should_not =='updating'
   end
 end
 
@@ -98,15 +120,24 @@ shared_examples_for 'user without pull request update rights' do
     response.should redirect_to(controller.current_user ? forbidden_path : new_user_session_path)
   end
 
-  let(:issue) { @project.pull_requests.find(@pull).issue }
-  it 'should not update pull request title and body' do
+  it 'should not be able to perform merge action' do
+    put :merge, @update_params
+    response.should redirect_to(controller.current_user ? forbidden_path : new_user_session_path)
+  end
+
+  let(:pull) { @project.pull_requests.find(@pull) }
+  it 'should not update pull request status' do
     put :update, @update_params
-    issue.title.should_not =='update'
+    pull.status.should_not =='closed'
+  end
+  it 'should not update pull request title' do
+    put :update, @wrong_update_params
+    pull.issue.title.should_not =='update'
   end
 
   it 'should not update pull request body' do
-    put :update, @update_params
-    issue.body.should_not =='updating'
+    put :update, @wrong_update_params
+    pull.issue.body.should_not =='updating'
   end
 end
 
@@ -202,10 +233,10 @@ describe Projects::PullRequestsController do
     end
 
     if APP_CONFIG['anonymous_access']
-      
+
       it_should_behave_like 'pull request user with project guest rights'
       it_should_behave_like 'pull request when project with issues turned off'
-      
+
     else
       it 'should not be able to perform index action' do
         get :index, :owner_name => @project.owner.uname, :project_name => @project.name

@@ -210,6 +210,7 @@ Rosa::Application.routes.draw do
           put :merge, :on => :member
         end
         post '/preview' => 'projects#preview', :as => 'md_preview'
+        post 'refs_list' => 'projects#refs_list', :as => 'refs_list'
       end
 
       # Resource

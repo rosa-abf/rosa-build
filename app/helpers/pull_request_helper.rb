@@ -21,10 +21,10 @@ module PullRequestHelper
   end
 
   def pull_header pull
-    str = "#{t '.header'} #{t 'into'} <span class='label-bootstrap label-info font14'> \
-   #{show_ref pull, 'base'}</span> \
-   #{t 'from'} <span class='label-bootstrap label-info font14'> \
-   #{show_ref pull, 'head'}</span>"
+    str = "#{t '.header'} #{t 'from'} <span class='label-bootstrap label-info font14'> \
+   #{show_ref pull, 'head'}</span> \
+   #{t 'into'} <span class='label-bootstrap label-info font14'> \
+   #{show_ref pull, 'base'}</span>"
     str << " #{t 'by'} #{link_to pull.user.uname, user_path(pull.user)}" if pull.persisted?
     str.html_safe
   end
@@ -39,5 +39,14 @@ module PullRequestHelper
     return tree_path(project, ref) if project.repo.branches_and_tags.map(&:name).include? ref
     return commit_path(project, ref) if project.repo.commit ref
     '#'
+  end
+
+  def ref_selector_options(project, current)
+    res = []
+    value = Proc.new {|t| [t.name.truncate(40)]}
+    res << [I18n.t('layout.git.repositories.branches'), project.repo.branches.map(&value)]
+    res << [I18n.t('layout.git.repositories.tags'), project.repo.tags.map(&value)]
+
+    grouped_options_for_select(res, current)
   end
 end

@@ -69,7 +69,8 @@ class Ability
         can(:destroy, Project) {|project| owner? project}
         can(:destroy, Project) {|project| project.owner_type == 'Group' and project.owner.actors.exists?(:actor_type => 'User', :actor_id => user.id, :role => 'admin')}
         can :remove_user, Project
-        can [:preview, :autocomplete_base_project_name, :autocomplete_head_project_name], Project
+        can :preview, Project
+        can(:refs_list, Project) {|project| can? :read, project}
 
         can [:read, :log, :owned, :everything], BuildList, :user_id => user.id
         can [:read, :log, :related, :everything], BuildList, :project => {:owner_type => 'User', :owner_id => user.id}
@@ -120,15 +121,14 @@ class Ability
         can :read, Issue, :project => {:owner_type => 'Group', :owner_id => user.group_ids}
         can(:read, Issue, read_relations_for('issues', 'projects')) {|issue| can? :read, issue.project rescue nil}
         can(:create, Issue) {|issue| can? :read, issue.project}
-        can([:update, :destroy], Issue) {|issue| issue.user_id == user.id or local_admin?(issue.project)}
+        can(:update, Issue) {|issue| issue.user_id == user.id or local_admin?(issue.project)}
         cannot :manage, Issue, :project => {:has_issues => false} # switch off issues
 
         can :read, PullRequest, :base_project => {:owner_type => 'User', :owner_id => user.id}
         can :read, PullRequest, :base_project => {:owner_type => 'Group', :owner_id => user.group_ids}
         can(:read, PullRequest, read_relations_for('pull_requests', 'base_projects')) {|pull| can? :read, pull.base_project rescue nil}
-        can(:merge, PullRequest) {|pull| can? :write, pull.base_project}
         can :create, PullRequest
-        can([:update, :destroy], PullRequest) {|pull| pull.user_id == user.id or local_admin?(pull.base_project)}
+        can([:update, :merge], PullRequest) {|pull| pull.user_id == user.id or local_admin?(pull.base_project)}
 
         can(:create, Comment) {|comment| can? :read, comment.project}
         can(:update, Comment) {|comment| comment.user == user or comment.project.owner == user or local_admin?(comment.project)}
