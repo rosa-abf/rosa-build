@@ -40,14 +40,14 @@ class Projects::PullRequestsController < Projects::BaseController
     @pull.issue.user, @pull.issue.project, @pull.head_project = current_user, base_project, @project
 
     if @pull.valid? # FIXME more clean/clever logics
-      @pull.save
+      @pull.save # set pull id
       @pull.check(false) # don't make event transaction
       if @pull.already?
         @pull.destroy
         flash.now[:error] = I18n.t('projects.pull_requests.up_to_date', :base_ref => @pull.base_ref, :head_ref => @pull.head_ref)
         render :new
       else
-        @pull.check
+        @pull.send(@pull.status)
         redirect_to project_pull_request_path(@pull.base_project, @pull)
       end
     else
