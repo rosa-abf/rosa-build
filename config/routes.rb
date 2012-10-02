@@ -87,7 +87,6 @@ Rosa::Application.routes.draw do
         end
       end
 
-      get :autocomplete_user_uname, :on => :collection
       resources :repositories do
         member do
           get :add_project
@@ -110,6 +109,13 @@ Rosa::Application.routes.draw do
     match 'product_status', :to => 'product_build_lists#status_build'
   end
 
+  resources :autocompletes, :only => [] do
+    collection do
+      get :autocomplete_user_uname
+      get :autocomplete_group_uname
+    end
+  end
+
   scope :module => 'users' do
     resources :settings, :only => [] do
       collection do
@@ -122,9 +128,6 @@ Rosa::Application.routes.draw do
       end
     end
 
-    resources :users, :controller => 'profile', :only => [] do
-      get :autocomplete_user_uname, :on => :collection
-    end
     resources :register_requests, :only => [:new, :create], :format => /ru|en/ #view support only two languages
   end
 
@@ -132,7 +135,6 @@ Rosa::Application.routes.draw do
     get '/groups/new' => 'profile#new' # need to force next route exclude :id => 'new'
     get '/groups/:id' => redirect("/%{id}"), :as => :profile_group # override default group show route
     resources :groups, :controller => 'profile' do
-      get :autocomplete_group_uname, :on => :collection
       delete :remove_user, :on => :member
       resources :members, :only => [:index] do
         collection do

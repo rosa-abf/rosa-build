@@ -54,11 +54,6 @@ shared_examples_for 'no group user' do
   it 'should change objects count on create' do
     lambda { post :create, @create_params }.should change{ Group.count }.by(1)
   end
-
-  it 'should be able to perform autocomplete_group_uname action' do
-    get :autocomplete_group_uname
-    response.should be_success
-  end
 end
 
 shared_examples_for 'group owner' do

@@ -3,8 +3,6 @@ class Groups::ProfileController < Groups::BaseController
   load_and_authorize_resource :class => Group, :instance_name => 'group'
   skip_before_filter :authenticate_user!, :only => :show if APP_CONFIG['anonymous_access']
 
-  autocomplete :group, :uname
-
   def index
     @groups = current_user.groups.paginate(:page => params[:group_page]) # accessible_by(current_ability)
     @groups = @groups.search(params[:query]) if params[:query].present?

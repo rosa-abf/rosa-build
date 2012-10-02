@@ -50,9 +50,8 @@ class Ability
       end
 
       if user.user?
-        can [:show, :autocomplete_user_uname], User
-
-        can [:read, :create, :autocomplete_group_uname], Group
+        can :show, User
+        can [:read, :create], Group
         can [:update, :manage_members], Group do |group|
           group.actors.exists?(:actor_type => 'User', :actor_id => user.id, :role => 'admin') # or group.owner_id = user.id
         end
@@ -92,7 +91,6 @@ class Ability
         can([:read, :related, :members], Platform, read_relations_for('platforms')) {|platform| local_reader? platform}
         can([:update, :members], Platform) {|platform| local_admin? platform}
         can([:destroy, :members, :add_member, :remove_member, :remove_members] , Platform) {|platform| owner?(platform) || local_admin?(platform) }
-        can [:autocomplete_user_uname], Platform
 
         can([:failed_builds_list, :create], MassBuild) {|mass_build| (owner?(mass_build.platform) || local_admin?(mass_build.platform)) && mass_build.platform.main? }
         can(:cancel, MassBuild) {|mass_build| (owner?(mass_build.platform) || local_admin?(mass_build.platform)) && !mass_build.stop_build && mass_build.platform.main?}
