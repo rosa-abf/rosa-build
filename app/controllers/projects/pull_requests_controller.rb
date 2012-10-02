@@ -69,10 +69,8 @@ class Projects::PullRequestsController < Projects::BaseController
         @pull.send(action)
         @pull.check if @pull.open?
       end
-      redirect_to project_pull_request_path(@pull.base_project, @pull)
-    else
-      head :bad_request
     end
+    redirect_to project_pull_request_path(@pull.base_project, @pull)
   end
 
   def merge
