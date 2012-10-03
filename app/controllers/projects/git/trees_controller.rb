@@ -19,7 +19,7 @@ class Projects::Git::TreesController < Projects::Git::BaseController
     name = "#{@project.owner.uname}-#{@project.name}-#{@treeish}"
     fullname = "#{name}.#{format == 'zip' ? 'zip' : 'tar.gz'}"
     file = Tempfile.new fullname, 'tmp'
-    system("cd #{@project.path}; git archive --format=#{format} --prefix=#{name}/ #{@treeish} #{format == 'zip' ? '' : ' | gzip -9'} > #{file.path}")
+    system("cd #{@project.path}; git archive --format=#{format == 'zip' ? 'zip' : 'tar'} --prefix=#{name}/ #{@treeish} #{format == 'zip' ? '' : ' | gzip -9'} > #{file.path}")
     file.close
     send_file file.path, :disposition => 'attachment', :type => "application/#{format == 'zip' ? 'zip' : 'x-tar-gz'}", :filename => fullname
   end
