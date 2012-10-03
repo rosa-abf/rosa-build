@@ -146,8 +146,8 @@ class Projects::PullRequestsController < Projects::BaseController
       raise ActiveRecord::RecordNotFound if args.length != 2
       Project.find_by_owner_and_name! *args
     else
-      return @project.parent if args.length != 2
-      Project.find_by_owner_and_name(*args) || @project.parent
+      return @project.parent || @project.root if args.length != 2
+      Project.find_by_owner_and_name(*args) || @project.parent || @project.root
     end
   end
 
