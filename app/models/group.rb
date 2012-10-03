@@ -1,5 +1,5 @@
 # -*- encoding : utf-8 -*-
-class Group < ActiveRecord::Base
+class Group < Avatar
   belongs_to :owner, :class_name => 'User'
 
   has_many :relations, :as => :actor, :dependent => :destroy, :dependent => :destroy

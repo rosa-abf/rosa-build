@@ -1,10 +1,9 @@
-- avatar_url ||= 'ava-big.png'
 - edit_link ||= nil
 - user ||= nil
 - group ||= nil
 - name ||= uname
 .avatar
-  = image_tag avatar_url
+  = image_tag avatar_url(user || group, :big)
   - if edit_link
     %br
     = edit_link
