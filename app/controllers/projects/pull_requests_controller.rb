@@ -8,14 +8,14 @@ class Projects::PullRequestsController < Projects::BaseController
   load_and_authorize_resource :instance_name => :pull, :through => :issue, :singleton => true, :except => [:index, :autocomplete_to_project]
 
   def new
-    to_project = set_to_project(false)
+    to_project = find_destination_project(false)
     authorize! :read, to_project
 
     @pull = to_project.pull_requests.new
     @pull.issue = to_project.issues.new
     set_attrs
 
-    if PullRequest.check_ref(@pull, 'base', @pull.to_ref) && PullRequest.check_ref(@pull, 'head', @pull.from_ref) || @pull.uniq_merge
+    if PullRequest.check_ref(@pull, 'to', @pull.to_ref) && PullRequest.check_ref(@pull, 'from', @pull.from_ref) || @pull.uniq_merge
       flash.now[:warning] = @pull.errors.full_messages.join('. ')
     else
       @pull.check(false) # don't make event transaction
@@ -33,7 +33,7 @@ class Projects::PullRequestsController < Projects::BaseController
       raise 'expect pull_request params' # for debug
       redirect :back
     end
-    to_project = set_to_project
+    to_project = find_destination_project
     authorize! :read, to_project
 
     @pull = to_project.pull_requests.new pull_params
@@ -140,15 +140,11 @@ class Projects::PullRequestsController < Projects::BaseController
     @stats = @pull.diff_stats repo, @base_commit, @head_commit
   end
 
-  def set_to_project bang=true
+  def find_destination_project bang=true
     args = params[:to_project].try(:split, '/') || []
-    if bang
-      raise ActiveRecord::RecordNotFound if args.length != 2
-      Project.find_by_owner_and_name! *args
-    else
-      return @project.parent || @project.root if args.length != 2
-      Project.find_by_owner_and_name(*args) || @project.parent || @project.root
-    end
+    project = (args.length == 2) ? Project.find_by_owner_and_name(*args) : nil
+    raise ActiveRecord::RecordNotFound if bang && !project
+    project.try(:parent) || @project
   end
 
   def set_attrs
