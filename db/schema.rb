@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120914160741) do
+ActiveRecord::Schema.define(:version => 20121003081546) do
 
   create_table "activity_feeds", :force => true do |t|
     t.integer  "user_id",    :null => false
@@ -343,15 +343,15 @@ ActiveRecord::Schema.define(:version => 20120914160741) do
 
   create_table "pull_requests", :force => true do |t|
     t.integer "issue_id",        :null => false
-    t.integer "base_project_id", :null => false
-    t.integer "head_project_id", :null => false
-    t.string  "base_ref",        :null => false
-    t.string  "head_ref",        :null => false
+    t.integer "to_project_id",   :null => false
+    t.integer "from_project_id", :null => false
+    t.string  "to_ref",          :null => false
+    t.string  "from_ref",        :null => false
   end
 
-  add_index "pull_requests", ["base_project_id"], :name => "index_pull_requests_on_base_project_id"
-  add_index "pull_requests", ["head_project_id"], :name => "index_pull_requests_on_head_project_id"
+  add_index "pull_requests", ["from_project_id"], :name => "index_pull_requests_on_head_project_id"
   add_index "pull_requests", ["issue_id"], :name => "index_pull_requests_on_issue_id"
+  add_index "pull_requests", ["to_project_id"], :name => "index_pull_requests_on_base_project_id"
 
   create_table "register_requests", :force => true do |t|
     t.string   "name"

@@ -17,7 +17,7 @@ class Ability
     can :get_id,  Project, :visibility => 'open' # api
     can :archive, Project, :visibility => 'open'
     can :read, Issue, :project => {:visibility => 'open'}
-    can :read, PullRequest, :base_project => {:visibility => 'open'}
+    can :read, PullRequest, :to_project => {:visibility => 'open'}
     can :search, BuildList
     can [:read, :log, :everything], BuildList, :project => {:visibility => 'open'}
     can :read, ProductBuildList#, :product => {:platform => {:visibility => 'open'}} # double nested hash don't work
@@ -124,11 +124,11 @@ class Ability
         can(:update, Issue) {|issue| issue.user_id == user.id or local_admin?(issue.project)}
         cannot :manage, Issue, :project => {:has_issues => false} # switch off issues
 
-        can :read, PullRequest, :base_project => {:owner_type => 'User', :owner_id => user.id}
-        can :read, PullRequest, :base_project => {:owner_type => 'Group', :owner_id => user.group_ids}
-        can(:read, PullRequest, read_relations_for('pull_requests', 'base_projects')) {|pull| can? :read, pull.base_project rescue nil}
+        can :read, PullRequest, :to_project => {:owner_type => 'User', :owner_id => user.id}
+        can :read, PullRequest, :to_project => {:owner_type => 'Group', :owner_id => user.group_ids}
+        can(:read, PullRequest, read_relations_for('pull_requests', 'to_projects')) {|pull| can? :read, pull.to_project rescue nil}
         can :create, PullRequest
-        can([:update, :merge], PullRequest) {|pull| pull.user_id == user.id or local_admin?(pull.base_project)}
+        can([:update, :merge], PullRequest) {|pull| pull.user_id == user.id or local_admin?(pull.to_project)}
 
         can(:create, Comment) {|comment| can? :read, comment.project}
         can(:update, Comment) {|comment| comment.user == user or comment.project.owner == user or local_admin?(comment.project)}

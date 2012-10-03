@@ -14,14 +14,14 @@ ru:
         close: Закрыть пул реквест
         reopen: Переоткрыть пул реквест
       merge: Мерж
-      duplicate: 'Уже существует пул реквест %{head_ref}'
-      up_to_date: 'Ветка %{base_ref} на данный момент уже содержит последние изменения %{head_ref}'
+      duplicate: 'Уже существует пул реквест %{from_ref}'
+      up_to_date: 'Ветка %{to_ref} на данный момент уже содержит последние изменения %{from_ref}'
       wrong_ref: Неправильная ветка или тег
       blocked: Невозможно автоматически смержить данный пул реквест.
       ready: Данный пул реквест можно смержить автоматически.
       merged: |
-        %{user} смержил <span class="label-bootstrap label-info font14">%{base_ref}</span>
-        с <span class="label-bootstrap label-info font14">%{head_ref}</span> в %{time}'
+        %{user} смержил <span class="label-bootstrap label-info font14">%{to_ref}</span>
+        с <span class="label-bootstrap label-info font14">%{from_ref}</span> в %{time}'
       closed: '%{user} закрыл пул реквест в %{time}'
       is_big: Этот пул реквест слишком большой! Мы показываем только последние %{count} комитов.
       open: ''
@@ -46,11 +46,11 @@ ru:
   activerecord:
     attributes:
       pull_requests:
-        base_ref: База
-        head_ref: Источник
+        to_ref: Приемник
+        from_ref: Источник
         refs: 'ветка · тег'
-        base_project: Куда
-        head_project: Откуда
+        to_project: Куда
+        from_project: Откуда
 
   layout:
     pull_requests:

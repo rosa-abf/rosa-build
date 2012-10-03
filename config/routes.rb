@@ -206,7 +206,7 @@ Rosa::Application.routes.draw do
           get :find, :on => :collection
         end
         resources :pull_requests, :except => :destroy do
-          get :autocomplete_base_project, :on => :collection
+          get :autocomplete_to_project, :on => :collection
           put :merge, :on => :member
         end
         post '/preview' => 'projects#preview', :as => 'md_preview'

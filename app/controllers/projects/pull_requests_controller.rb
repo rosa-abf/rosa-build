@@ -4,24 +4,24 @@ class Projects::PullRequestsController < Projects::BaseController
   skip_before_filter :authenticate_user!, :only => [:index, :show] if APP_CONFIG['anonymous_access']
   load_and_authorize_resource :project
 
-  load_resource :issue, :through => :project, :find_by => :serial_id, :parent => false, :except => [:index, :autocomplete_base_project]
-  load_and_authorize_resource :instance_name => :pull, :through => :issue, :singleton => true, :except => [:index, :autocomplete_base_project]
+  load_resource :issue, :through => :project, :find_by => :serial_id, :parent => false, :except => [:index, :autocomplete_to_project]
+  load_and_authorize_resource :instance_name => :pull, :through => :issue, :singleton => true, :except => [:index, :autocomplete_to_project]
 
   def new
-    base_project = set_base_project(false)
-    authorize! :read, base_project
+    to_project = set_to_project(false)
+    authorize! :read, to_project
 
-    @pull = base_project.pull_requests.new
-    @pull.issue = base_project.issues.new
+    @pull = to_project.pull_requests.new
+    @pull.issue = to_project.issues.new
     set_attrs
 
-    if PullRequest.check_ref(@pull, 'base', @pull.base_ref) && PullRequest.check_ref(@pull, 'head', @pull.head_ref) || @pull.uniq_merge
+    if PullRequest.check_ref(@pull, 'base', @pull.to_ref) && PullRequest.check_ref(@pull, 'head', @pull.from_ref) || @pull.uniq_merge
       flash.now[:warning] = @pull.errors.full_messages.join('. ')
     else
       @pull.check(false) # don't make event transaction
       if @pull.already?
         @pull.destroy
-        flash.now[:warning] = I18n.t('projects.pull_requests.up_to_date', :base_ref => @pull.base_ref, :head_ref => @pull.head_ref)
+        flash.now[:warning] = I18n.t('projects.pull_requests.up_to_date', :to_ref => @pull.to_ref, :from_ref => @pull.from_ref)
       else
         load_diff_commits_data
       end
@@ -33,28 +33,28 @@ class Projects::PullRequestsController < Projects::BaseController
       raise 'expect pull_request params' # for debug
       redirect :back
     end
-    base_project = set_base_project
-    authorize! :read, base_project
+    to_project = set_to_project
+    authorize! :read, to_project
 
-    @pull = base_project.pull_requests.new pull_params
-    @pull.issue.user, @pull.issue.project, @pull.head_project = current_user, base_project, @project
+    @pull = to_project.pull_requests.new pull_params
+    @pull.issue.user, @pull.issue.project, @pull.from_project = current_user, to_project, @project
 
     if @pull.valid? # FIXME more clean/clever logics
       @pull.save # set pull id
       @pull.check(false) # don't make event transaction
       if @pull.already?
         @pull.destroy
-        flash.now[:error] = I18n.t('projects.pull_requests.up_to_date', :base_ref => @pull.base_ref, :head_ref => @pull.head_ref)
+        flash.now[:error] = I18n.t('projects.pull_requests.up_to_date', :to_ref => @pull.to_ref, :from_ref => @pull.from_ref)
         render :new
       else
         @pull.send(@pull.status)
-        redirect_to project_pull_request_path(@pull.base_project, @pull)
+        redirect_to project_pull_request_path(@pull.to_project, @pull)
       end
     else
       flash.now[:error] = t('flash.pull_request.save_error')
       flash.now[:warning] = @pull.errors.full_messages.join('. ')
 
-      if @pull.errors.try(:messages) && @pull.errors.messages[:base_ref].nil? && @pull.errors.messages[:head_ref].nil?
+      if @pull.errors.try(:messages) && @pull.errors.messages[:to_ref].nil? && @pull.errors.messages[:from_ref].nil?
         @pull.check(false) # don't make event transaction
         load_diff_commits_data
       end
@@ -70,7 +70,7 @@ class Projects::PullRequestsController < Projects::BaseController
         @pull.check if @pull.open?
       end
     end
-    redirect_to project_pull_request_path(@pull.base_project, @pull)
+    redirect_to project_pull_request_path(@pull.to_project, @pull)
   end
 
   def merge
@@ -79,7 +79,7 @@ class Projects::PullRequestsController < Projects::BaseController
       flash.now[:error] = t('flash.pull_request.save_error')
       flash.now[:warning] = @pull.errors.full_messages.join('. ')
     end
-    redirect_to project_pull_request_path(@pull.base_project, @pull)
+    redirect_to project_pull_request_path(@pull.to_project, @pull)
   end
 
   def show
@@ -107,7 +107,7 @@ class Projects::PullRequestsController < Projects::BaseController
     end
   end
 
-  def autocomplete_base_project
+  def autocomplete_to_project
     items = Project.accessible_by(current_ability, :membered) | @project.ancestors
     items.select! {|e| Regexp.new(params[:term].downcase).match(e.name_with_owner.downcase) && e.repo.branches.count > 0}
     render :json => json_for_autocomplete_base(items)
@@ -132,7 +132,7 @@ class Projects::PullRequestsController < Projects::BaseController
     @base_commit = @pull.common_ancestor
     @head_commit = repo.commits(@pull.head_branch).first
 
-    @commits = repo.commits_between(repo.commits(@pull.base_ref).first, @head_commit)
+    @commits = repo.commits_between(repo.commits(@pull.to_ref).first, @head_commit)
     @total_commits = @commits.count
     @commits = @commits.last(100)
 
@@ -140,8 +140,8 @@ class Projects::PullRequestsController < Projects::BaseController
     @stats = @pull.diff_stats repo, @base_commit, @head_commit
   end
 
-  def set_base_project bang=true
-    args = params[:base_project].try(:split, '/') || []
+  def set_to_project bang=true
+    args = params[:to_project].try(:split, '/') || []
     if bang
       raise ActiveRecord::RecordNotFound if args.length != 2
       Project.find_by_owner_and_name! *args
@@ -156,8 +156,8 @@ class Projects::PullRequestsController < Projects::BaseController
       @pull.issue.title = pull_params[:issue_attributes][:title].presence
       @pull.issue.body = pull_params[:issue_attributes][:body].presence
     end
-    @pull.head_project = @project
-    @pull.base_ref = (pull_params[:base_ref].presence if pull_params) || @pull.base_project.default_branch
-    @pull.head_ref = params[:treeish].presence || (pull_params[:head_ref].presence if pull_params) || @pull.head_project.default_branch
+    @pull.from_project = @project
+    @pull.to_ref = (pull_params[:to_ref].presence if pull_params) || @pull.to_project.default_branch
+    @pull.from_ref = params[:treeish].presence || (pull_params[:from_ref].presence if pull_params) || @pull.from_project.default_branch
   end
 end
