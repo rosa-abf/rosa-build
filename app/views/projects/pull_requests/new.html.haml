@@ -9,15 +9,15 @@
       =hidden_field_tag :update_action, new_project_pull_request_path
       =form_for @pull, :url => (@pull.already? ? new_project_pull_request_path : project_pull_requests_path), :html => {:class => 'well well-large', :method => (@pull.already? ? :get : :post)} do |f|
 
-        .leftlist=f.label :head_project, t("#{ar}.head_project"), :class => :label
+        .leftlist=f.label :from_project, t("#{ar}.from_project"), :class => :label
         %div
-          .l=text_field_tag :head_project, @pull.head_project.name_with_owner, :readonly => :readonly, :style => 'background-color: #DDD;'
-          =render 'ref_select', :kind => 'head', :project => @pull.head_project, :current => @pull.head_ref
+          .l=text_field_tag :from_project, @pull.from_project.name_with_owner, :readonly => :readonly, :style => 'background-color: #DDD;'
+          =render 'ref_select', :kind => 'from', :project => @pull.from_project, :current => @pull.from_ref
         .both
-        .leftlist=f.label :base_project, t("#{ar}.base_project"), :class => :label
+        .leftlist=f.label :to_project, t("#{ar}.to_project"), :class => :label
         %div
-          .l=f.autocomplete_field :base_project, autocomplete_base_project_project_pull_requests_path, :value => @pull.base_project.name_with_owner, :id_element => 'pull_request_base_project_id', :name => 'base_project'
-          =render 'ref_select', :kind => 'base', :project => @pull.base_project, :current => @pull.base_ref
+          .l=f.autocomplete_field :to_project, autocomplete_to_project_project_pull_requests_path, :value => @pull.to_project.name_with_owner, :id_element => 'pull_request_to_project_id', :name => 'to_project'
+          =render 'ref_select', :kind => 'to', :project => @pull.to_project, :current => @pull.to_ref
         .both
         .leftlist.big-list
         .rightlist=f.submit t('.update'), :class => 'btn btn-primary disabled', 'data-loading-text' => t('layout.processing'), :style => @pull.already? ? '' : 'display: none;', :id => 'update_pull'

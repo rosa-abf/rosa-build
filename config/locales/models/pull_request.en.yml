@@ -12,14 +12,14 @@ en:
         close: Close Pull Request
         reopen: Reopen Pull Request
       merge: Merge
-      duplicate: 'There is already a pull request for %{head_ref}'
-      up_to_date: 'The %{base_ref} branch is already up-to-date with %{head_ref}'
+      duplicate: 'There is already a pull request for %{from_ref}'
+      up_to_date: 'The %{to_ref} branch is already up-to-date with %{from_ref}'
       wrong_ref: Wrong branch or tag
       blocked: This pull request cannot be automatically merged.
       ready: This pull request can be automatically merged.
       merged: |
-        %{user} merged into <span class="label-bootstrap label-info font14">%{base_ref}</span>
-        from <span class="label-bootstrap label-info font14">%{head_ref}</span> at %{time}
+        %{user} merged into <span class="label-bootstrap label-info font14">%{to_ref}</span>
+        from <span class="label-bootstrap label-info font14">%{from_ref}</span> at %{time}
       closed: '%{user} closed this pull request at %{time}'
       is_big: This pull request is big! We're only showing the most recent %{count} commits.
       open: ''
@@ -44,11 +44,11 @@ en:
   activerecord:
     attributes:
       pull_requests:
-        base_ref: Base
-        head_ref: Head
+        to_ref: Source
+        from_ref: Receiver
         refs: 'branch · tag'
-        base_project: Into
-        head_project: From
+        to_project: Into
+        from_project: From
 
   layout:
     pull_requests:

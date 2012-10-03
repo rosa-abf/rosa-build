@@ -11,16 +11,16 @@ shared_context "pull request controller" do
     %x(cp -Rf #{Rails.root}/spec/tests.git/* #{@project.path})
 
     @pull = @project.pull_requests.new :issue_attributes => {:title => 'test', :body => 'testing'}
-    @pull.issue.user, @pull.issue.project = @project.owner, @pull.base_project
-    @pull.base_ref = 'master'
-    @pull.head_project, @pull.head_ref = @project, 'non_conflicts'
+    @pull.issue.user, @pull.issue.project = @project.owner, @pull.to_project
+    @pull.to_ref = 'master'
+    @pull.from_project, @pull.from_ref = @project, 'non_conflicts'
     @pull.save
 
     @create_params = {
       :pull_request => {:issue_attributes => {:title => 'create', :body => 'creating'},
-                        :base_ref => 'non_conflicts',
-                        :head_ref => 'master'},
-      :base_project => @project.name_with_owner,
+                        :to_ref => 'non_conflicts',
+                        :from_ref => 'master'},
+      :to_project => @project.name_with_owner,
       :owner_name => @project.owner.uname,
       :project_name => @project.name }
     @update_params = @create_params.merge(
@@ -66,12 +66,12 @@ shared_examples_for 'pull request user with project reader rights' do
   end
 
   it "should not create same pull" do
-    post :create, @create_params.merge({:pull_request => {:issue_attributes => {:title => 'same', :body => 'creating'}, :head_ref => 'non_conflicts', :base_ref => 'master'}, :base_project_id => @project.id})
+    post :create, @create_params.merge({:pull_request => {:issue_attributes => {:title => 'same', :body => 'creating'}, :from_ref => 'non_conflicts', :to_ref => 'master'}, :to_project_id => @project.id})
     PullRequest.joins(:issue).where(:issues => {:title => 'same', :body => 'creating'}).count.should == 0
   end
 
   it "should not create already up-to-date pull" do
-    post :create, @create_params.merge({:pull_request => {:issue_attributes => {:title => 'already', :body => 'creating'}, :base_ref => 'master', :head_ref => 'master'}, :base_project_id => @project.id})
+    post :create, @create_params.merge({:pull_request => {:issue_attributes => {:title => 'already', :body => 'creating'}, :to_ref => 'master', :from_ref => 'master'}, :to_project_id => @project.id})
     PullRequest.joins(:issue).where(:issues => {:title => 'already', :body => 'creating'}).count.should == 0
   end
 end
@@ -79,12 +79,12 @@ end
 shared_examples_for 'user with pull request update rights' do
   it 'should be able to perform update action' do
     put :update, @update_params
-    response.should redirect_to(project_pull_request_path(@pull.base_project, @pull))
+    response.should redirect_to(project_pull_request_path(@pull.to_project, @pull))
   end
 
   it 'should be able to perform merge action' do
     put :merge, @update_params
-    response.should redirect_to(project_pull_request_path(@pull.base_project, @pull))
+    response.should redirect_to(project_pull_request_path(@pull.to_project, @pull))
   end
 
   let(:pull) { @project.pull_requests.find(@pull) }

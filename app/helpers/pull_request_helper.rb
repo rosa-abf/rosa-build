@@ -13,8 +13,8 @@ module PullRequestHelper
 
   def pull_status pull
     if %w(blocked merged closed ready open).include? pull.status
-      t("projects.pull_requests.#{pull.status}", :user => pull.issue.closer.try(:uname), :base_ref => show_ref(pull, 'base'),
-        :head_ref => show_ref(pull, 'head'), :time => pull.issue.closed_at).html_safe
+      t("projects.pull_requests.#{pull.status}", :user => pull.issue.closer.try(:uname), :to_ref => show_ref(pull, 'to'),
+        :from_ref => show_ref(pull, 'from'), :time => pull.issue.closed_at).html_safe
     else
         raise "pull id (#{pull.id}) wrong status #{pull.status} "
     end
@@ -22,9 +22,9 @@ module PullRequestHelper
 
   def pull_header pull
     str = "#{t '.header'} #{t 'from'} <span class='label-bootstrap label-info font14'> \
-   #{show_ref pull, 'head'}</span> \
+   #{show_ref pull, 'from'}</span> \
    #{t 'into'} <span class='label-bootstrap label-info font14'> \
-   #{show_ref pull, 'base'}</span>"
+   #{show_ref pull, 'to'}</span>"
     str << " #{t 'by'} #{link_to pull.user.uname, user_path(pull.user)}" if pull.persisted?
     str.html_safe
   end

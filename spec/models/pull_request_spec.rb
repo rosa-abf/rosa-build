@@ -24,15 +24,15 @@ describe PullRequest do
       @user = FactoryGirl.create(:user)
       set_data_for_pull
       @pull = @project.pull_requests.new(:issue_attributes => {:title => 'test', :body => 'testing'})
-      @pull.issue.user, @pull.issue.project = @user, @pull.base_project
-      @pull.base_ref = 'master'
-      @pull.head_project, @pull.head_ref = @project, 'non_conflicts'
+      @pull.issue.user, @pull.issue.project = @user, @pull.to_project
+      @pull.to_ref = 'master'
+      @pull.from_project, @pull.from_ref = @project, 'non_conflicts'
       @pull.save
 
       @other_pull = @project.pull_requests.new(:issue_attributes => {:title => 'test_other', :body => 'testing_other'})
-      @other_pull.issue.user, @other_pull.issue.project = @user, @other_pull.base_project
-      @other_pull.base_ref = 'master'
-      @other_pull.head_project, @other_pull.head_ref = @other_project, 'non_conflicts'
+      @other_pull.issue.user, @other_pull.issue.project = @user, @other_pull.to_project
+      @other_pull.to_ref = 'master'
+      @other_pull.from_project, @other_pull.from_ref = @other_project, 'non_conflicts'
       @other_pull.save
     end
 
@@ -42,13 +42,13 @@ describe PullRequest do
     end
 
     it 'master should not merge with conflicts branch' do
-      @pull.head_ref = 'conflicts'
+      @pull.from_ref = 'conflicts'
       @pull.check
       @pull.status.should == 'blocked'
     end
 
     it 'should already merged when already up-to-date branches' do
-      @pull.head_ref = 'master'
+      @pull.from_ref = 'master'
       @pull.check
       @pull.status.should == 'merged'
     end
@@ -60,13 +60,13 @@ describe PullRequest do
       end
 
       it 'master should not merge with conflicts branch' do
-        @other_pull.head_ref = 'conflicts'
+        @other_pull.from_ref = 'conflicts'
         @other_pull.check
         @other_pull.status.should == 'blocked'
       end
 
       it 'should already merged when already up-to-date branches' do
-        @other_pull.head_ref = 'master'
+        @other_pull.from_ref = 'master'
         @other_pull.check
         @other_pull.status.should == 'merged'
       end
@@ -74,27 +74,27 @@ describe PullRequest do
 
     it "should not create same pull" do
       @same_pull = @project.pull_requests.new(:issue_attributes => {:title => 'same', :body => 'testing'})
-      @same_pull.issue.user, @same_pull.issue.project = @user, @same_pull.base_project
-      @same_pull.base_ref = 'master'
-      @same_pull.head_project, @same_pull.head_ref = @project, 'non_conflicts'
+      @same_pull.issue.user, @same_pull.issue.project = @user, @same_pull.to_project
+      @same_pull.to_ref = 'master'
+      @same_pull.from_project, @same_pull.from_ref = @project, 'non_conflicts'
       @same_pull.save
       @project.pull_requests.joins(:issue).where(:issues => {:title => @same_pull.title}).count.should == 0
     end
 
     it "should not create pull with wrong base ref" do
       @wrong_pull = @project.pull_requests.new(:issue_attributes => {:title => 'wrong base', :body => 'testing'})
-      @wrong_pull.issue.user, @wrong_pull.issue.project = @user, @wrong_pull.base_project
-      @wrong_pull.base_ref = 'wrong'
-      @wrong_pull.head_project, @wrong_pull.head_ref = @project, 'non_conflicts'
+      @wrong_pull.issue.user, @wrong_pull.issue.project = @user, @wrong_pull.to_project
+      @wrong_pull.to_ref = 'wrong'
+      @wrong_pull.from_project, @wrong_pull.from_ref = @project, 'non_conflicts'
       @wrong_pull.save
       @project.pull_requests.joins(:issue).where(:issues => {:title => @wrong_pull.title}).count.should == 0
     end
 
     it "should not create pull with wrong head ref" do
       @wrong_pull = @project.pull_requests.new(:issue_attributes => {:title => 'wrong head', :body => 'testing'})
-      @wrong_pull.issue.user, @wrong_pull.issue.project = @user, @wrong_pull.base_project
-      @wrong_pull.base_ref = 'master'
-      @wrong_pull.head_project, @wrong_pull.head_ref = @project, 'wrong'
+      @wrong_pull.issue.user, @wrong_pull.issue.project = @user, @wrong_pull.to_project
+      @wrong_pull.to_ref = 'master'
+      @wrong_pull.from_project, @wrong_pull.from_ref = @project, 'wrong'
       @wrong_pull.save
       @project.pull_requests.joins(:issue).where(:issues => {:title => @wrong_pull.title}).count.should == 0
     end
@@ -105,8 +105,8 @@ describe PullRequest do
   end
 
   it { should belong_to(:issue) }
-  it { should belong_to(:base_project) }
-  it { should belong_to(:head_project) }
+  it { should belong_to(:to_project) }
+  it { should belong_to(:from_project) }
 
   after do
     FileUtils.rm_rf(APP_CONFIG['root_path'])
