@@ -1,5 +1,6 @@
 # -*- encoding : utf-8 -*-
 class Groups::ProfileController < Groups::BaseController
+  include AvatarHelper
   load_and_authorize_resource :class => Group, :instance_name => 'group'
   skip_before_filter :authenticate_user!, :only => :show if APP_CONFIG['anonymous_access']
 
@@ -35,6 +36,7 @@ class Groups::ProfileController < Groups::BaseController
 
   def update
     if @group.update_attributes(params[:group])
+      update_avatar(@group, params)
       flash[:notice] = t('flash.group.saved')
       redirect_to group_path(@group)
     else

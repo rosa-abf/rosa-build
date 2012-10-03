@@ -8,6 +8,8 @@
 .rightlist.nomargin= f.text_area :description
 .both
 %br
+= render 'shared/avatar_form', :subject => @group, :f => f
+%br
 .leftlist
   \ 
 .rightlist= submit_tag t("layout.save")
