@@ -3,7 +3,9 @@ json.build_list do |json|
   json.(@build_list, :is_circle, :update_type, :build_requires)
   json.(@build_list, :auto_publish, :package_version, :commit_hash)
 
-  json.arch_name @build_list.arch.name
+  json.arch do |json_arch|
+    json_arch.(@build_list.arch, :id, :name)
+  end
   json.created_at @build_list.created_at.to_i
   json.updated_at @build_list.updated_at.to_i
 
