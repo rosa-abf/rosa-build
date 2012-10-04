@@ -98,7 +98,7 @@ describe Api::V1::PlatformsController do
       @personal_platform.relations.create!(:actor_type => 'User', :actor_id => @user.id, :role => 'reader')
     end
 
-    context 'perforf index action with type param' do
+    context 'perform index action with type param' do
       render_views
       %w(main personal).each do |type|
         it "ensures that filter by type = #{type} returns true result" do
