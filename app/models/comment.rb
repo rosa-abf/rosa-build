@@ -3,6 +3,7 @@ class Comment < ActiveRecord::Base
   belongs_to :commentable, :polymorphic => true
   belongs_to :user
   belongs_to :project
+  serialize :data
 
   validates :body, :user_id, :commentable_id, :commentable_type, :project_id, :presence => true
 
@@ -12,7 +13,7 @@ class Comment < ActiveRecord::Base
   after_create :subscribe_on_reply, :unless => lambda {|c| c.commit_comment?}
   after_create :subscribe_users
 
-  attr_accessible :body
+  attr_accessible :body, :data
 
   def commentable
     # raise commentable_id.inspect

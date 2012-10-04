@@ -9,6 +9,7 @@ class Projects::CommentsController < Projects::BaseController
   include CommentsHelper
 
   def create
+    @comment.data = {:path => params[:path], :line => params[:line]} if params[:path].present? && params[:line].present?
     if @comment.save
       flash[:notice] = I18n.t("flash.comment.saved")
       redirect_to project_commentable_path(@project, @commentable)
@@ -35,6 +36,10 @@ class Projects::CommentsController < Projects::BaseController
     @comment.destroy
     flash[:notice] = t("flash.comment.destroyed")
     redirect_to project_commentable_path(@project, @commentable)
+  end
+
+  def new_line
+    render :layout => false
   end
 
   protected

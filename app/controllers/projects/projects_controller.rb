@@ -104,7 +104,7 @@ class Projects::ProjectsController < Projects::BaseController
   end
 
   def preview
-    render :inline => view_context.markdown(params[:text]), :layout => false
+    render :inline => view_context.markdown(params[:text] || ''), :layout => false
   end
 
   protected
@@ -122,7 +122,7 @@ class Projects::ProjectsController < Projects::BaseController
     if groups.present? || owners.present?
       projects = projects.by_owners(groups, owners)
     end
-    
+
     projects = projects.search(params[:sSearch]).search_order if params[:sSearch].present?
 
     res[:filtered_count] = projects.count

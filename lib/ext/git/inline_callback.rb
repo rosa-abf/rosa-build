@@ -1,11 +1,9 @@
 # -*- encoding : utf-8 -*-
 module Git
   module Diff
-    class InlineCallback < ::Diff::Renderer::Base
-      def before_headerblock(block)
-      end
-
-      def after_headerblock(block)
+    module InlineCallback
+      def prepare(comments)
+        @num_line, @line_comments = -1, comments
       end
 
       def headerline(line)
@@ -26,7 +24,8 @@ module Git
             #{line_comment}
             <pre>#{render_line(line)}</pre>
           </td>
-        </tr>"
+         </tr>
+         #{render_line_comments @num_line}"
       end
 
       def remline(line)
@@ -85,7 +84,68 @@ module Git
         </tr>"
       end
 
+      def before_headerblock(block)
+      end
+
+      def after_headerblock(block)
+      end
+
+      def before_unmodblock(block)
+      end
+
+      def before_modblock(block)
+      end
+
+      def before_remblock(block)
+      end
+
+      def before_addblock(block)
+      end
+
+      def before_sepblock(block)
+      end
+
+      def before_nonewlineblock(block)
+      end
+
+      def after_unmodblock(block)
+      end
+
+      def after_modblock(block)
+      end
+
+      def after_remblock(block)
+      end
+
+      def after_addblock(block)
+      end
+
+      def after_sepblock(block)
+      end
+
+      def after_nonewlineblock(block)
+      end
+
+      def new_line
+        ""
+      end
+
+      def renderer(data)
+        result = []
+        data.each do |block|
+          result << send("before_" + classify(block), block)
+          result << block.map { |line| send(classify(line), line) }
+          result << send("after_" + classify(block), block)
+        end
+        result.compact.join(new_line)
+      end
+
       protected
+
+      def classify(object)
+        object.class.name[/\w+$/].downcase
+      end
+
       def escape(str)
         str.to_s.gsub('&', '&amp;').gsub('<', '&lt;').gsub('>', '&gt;').gsub('"', '&#34;')
       end
@@ -104,11 +164,20 @@ module Git
       end
 
       def set_line_number
-        @num_line = (@num_line || -1).succ
+        @num_line = @num_line.succ
       end
 
       def line_comment
         "<a href='#' class='add_line-comment'><img src='/assets/line_comment.png' alt='Add Comment'></a>"
+      end
+
+      def render_line_comments line_number
+        comments = @line_comments.select{|c| c.data.try('[]', :line_number) == line_number}
+
+        "<tr>
+          <td class='line_numbers line_comments' colspan='2'></td>
+          <td>#{render("projects/comments/line_list", :list => comments, :project => @project, :commentable => @commit)}</td>
+         </tr>" if comments.count
       end
     end
   end

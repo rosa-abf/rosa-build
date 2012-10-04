@@ -38,14 +38,6 @@ div.description-top div.name input {
     height: 100%;
 }
 
-article div.activity {
-    border: 1px solid #D6D6D6;
-    border-radius: 5px 5px 5px 5px;
-    color: #333333;
-    margin-top: 15px;
-    padding: 6px;
-}
-
 article div.messages div.activity {
     margin-top: 0;
     margin-bottom: 10px;
@@ -1600,3 +1592,27 @@ table.tablesorter.platform-maintainers.static-search thead tr.search th input[ty
   -moz-opacity:1;
 }
 
+div.file .inline-comments {
+  margin: 5px;
+
+  .top {
+    height:auto;
+    background: none;
+    box-shadow: none;
+  }
+
+  .activity {
+    border-radius: 0;
+    max-width: 764px;
+  }
+}
+
+td.line_comments {
+  border: solid #DDD;
+  border-width: 1px 0;
+}
+
+#open-comment.comment.new_line_comment {
+  max-width: 750px;
+  margin-left: 10px;
+}
