@@ -8,6 +8,7 @@ shared_examples_for 'api platform user with reader rights' do
     get :index, :format => :json
     response.should render_template(:index)
   end
+
 end
 
 shared_examples_for 'api platform user with reader rights for hidden platform' do
@@ -41,7 +42,7 @@ shared_examples_for "api platform user without show rights" do
 end
 
 describe Api::V1::PlatformsController do
-  before(:each) do
+  before do
     stub_symlink_methods
 
     @platform = FactoryGirl.create(:platform)
@@ -67,7 +68,7 @@ describe Api::V1::PlatformsController do
   end
 
   context 'for global admin' do
-    before(:each) do
+    before do
       @admin = FactoryGirl.create(:admin)
       @user = FactoryGirl.create(:user)
       http_login(@admin)
@@ -78,7 +79,7 @@ describe Api::V1::PlatformsController do
   end
 
   context 'for owner user' do
-    before(:each) do
+    before do
       @user = FactoryGirl.create(:user)
       http_login(@user)
       @platform.owner = @user; @platform.save
@@ -90,10 +91,22 @@ describe Api::V1::PlatformsController do
   end
 
   context 'for reader user' do
-    before(:each) do
+    before do
       @user = FactoryGirl.create(:user)
       http_login(@user)
       @platform.relations.create!(:actor_type => 'User', :actor_id => @user.id, :role => 'reader')
+      @personal_platform.relations.create!(:actor_type => 'User', :actor_id => @user.id, :role => 'reader')
+    end
+
+    context 'perforf index action with type param' do
+      render_views
+      %w(main personal).each do |type|
+        it "ensures that filter by type = #{type} returns true result" do
+          get :index, :format => :json, :type => "#{type}"
+          JSON.parse(response.body)['platforms'].map{ |p| p['platform_type'] }.
+            uniq.should == ["#{type}"]
+        end
+      end
     end
 
     it_should_behave_like 'api platform user with reader rights'
@@ -101,7 +114,7 @@ describe Api::V1::PlatformsController do
   end
 
   context 'for simple user' do
-    before(:each) do
+    before do
       @user = FactoryGirl.create(:user)
       http_login(@user)
     end
