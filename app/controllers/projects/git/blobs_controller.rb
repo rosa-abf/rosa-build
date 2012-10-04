@@ -24,7 +24,9 @@ class Projects::Git::BlobsController < Projects::Git::BaseController
   end
 
   def raw
-    send_data @blob.data, :type => @blob.content_type, :disposition => @blob.disposition
+    repo = Grit::GitRuby::Repository.new(@project.repo.path)
+    raw = repo.get_raw_object_by_sha1(@blob.id)
+    send_data raw.content, :type => @blob.content_type, :disposition => @blob.disposition
   end
 
   protected
