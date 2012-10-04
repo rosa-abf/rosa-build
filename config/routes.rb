@@ -19,6 +19,7 @@ Rosa::Application.routes.draw do
           get :cancel
         }
       end
+      resources :arches, :only => [:index]
       resources :platforms, :only => [:index, :show]
       resources :repositories, :only => [:show]
       resources :projects, :only => [:show] do
