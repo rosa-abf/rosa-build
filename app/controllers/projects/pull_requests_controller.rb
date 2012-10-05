@@ -47,7 +47,7 @@ class Projects::PullRequestsController < Projects::BaseController
         flash.now[:error] = I18n.t('projects.pull_requests.up_to_date', :to_ref => @pull.to_ref, :from_ref => @pull.from_ref)
         render :new
       else
-        @pull.send(@pull.status)
+        @pull.send(@pull.status == 'blocked' ? 'block' : @pull.status)
         redirect_to project_pull_request_path(@pull.to_project, @pull)
       end
     else
