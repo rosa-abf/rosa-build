@@ -1,5 +1,5 @@
 #open-comment.comment.view.new_line_comment
-  =link_to t('layout.comments.md_cheatsheet_header'), '#md_help', 'data-toggle' => 'modal', :style => 'float:right;'
+  =render 'projects/comments/button_md_help'
   %h3.tmargin0= t("layout.comments.new_header")
   = form_for :comment, :url => project_commit_comments_path(@project, @commentable), :method => :post, :html => { :class => :form } do |f|
     = render "projects/comments/form", :f => f, :id => 'new_line'

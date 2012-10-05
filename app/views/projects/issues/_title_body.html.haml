@@ -2,7 +2,7 @@
   %h3.tmargin0= t 'activerecord.attributes.issue.title'
   .wrapper= f.text_area :title, :cols => 80, :rows => 1
 #open-comment.comment.view
-  =link_to t('layout.comments.md_cheatsheet_header'), '#md_help', 'data-toggle' => 'modal', :style => 'float:right;'
+  =render 'projects/comments/button_md_help'
   %h3.tmargin0= t 'activerecord.attributes.issue.body'
   =render 'projects/comments/body', :f => f, :id => id
 .both
