@@ -23,12 +23,12 @@ module DiffHelper
   #include Git::Diff::InlineCallback
   def render_diff(diff, diff_counter)
     diff_display ||= Diff::Display::Unified.new(diff.diff)
-    path = if @pull
+    url = if @pull
              @pull.id ? polymorphic_path([@project, @pull]) : ''
            elsif @commit
              commit_path @project, @commit
            end
-    prepare(diff, path)
+    prepare(diff, url, diff_counter)
 
     res = "<table class='diff inline' cellspacing='0' cellpadding='0'>"
     res += "<tbody>"
@@ -41,9 +41,9 @@ module DiffHelper
   ########################################################
   # FIXME: Just to dev, remove to lib
   ########################################################
-  def prepare(diff, comments, url, diff_counter)
-    @num_line, @url, @diff_counter = -1, url, diff_counter
-    @line_comments = @comments.select{|c| c.data.try('[]', :path) == @path}
+  def prepare(diff, url, diff_counter)
+    @num_line, @filepath, @url, @diff_counter = -1, diff.a_path, url, diff_counter
+    @line_comments = @comments.select{|c| c.data.try('[]', :path) == @filepath}
   end
 
   def headerline(line)
@@ -212,7 +212,7 @@ module DiffHelper
   end
 
   def line_comment
-    link_to image_tag('line_comment.png', :alt => t('layout.comments.new_header')), new_line_commit_comment_path(@project, @commit, :path => @diff.a_path, :line => @num_line), :class => 'add_line-comment'
+    link_to image_tag('line_comment.png', :alt => t('layout.comments.new_header')), new_line_commit_comment_path(@project, @commit, :path => @filepath, :line => @num_line), :class => 'add_line-comment'
   end
 
   def render_line_comments

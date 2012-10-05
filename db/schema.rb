@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20121003154246) do
+ActiveRecord::Schema.define(:version => 20121005100158) do
 
   create_table "activity_feeds", :force => true do |t|
     t.integer  "user_id",    :null => false
@@ -146,6 +146,7 @@ ActiveRecord::Schema.define(:version => 20121003154246) do
     t.datetime "updated_at",                                      :null => false
     t.decimal  "commentable_id",   :precision => 50, :scale => 0
     t.integer  "project_id"
+    t.text     "data"
   end
 
   create_table "event_logs", :force => true do |t|

@@ -132,9 +132,7 @@ class Ability
 
         can([:create, :new_line], Comment) {|comment| can? :read, comment.project}
         can([:update, :destroy], Comment) {|comment| comment.user == user or comment.project.owner == user or local_admin?(comment.project)}
-        cannot :manage, Comment do |c|
-          c.commentable_type == 'Issue' && !c.project.has_issues && !c.commentable.pull_request # when switch off issues
-        end
+        cannot :manage, Comment, :commentable_type => 'Issue', :project => {:has_issues => false}
       end
 
       # Shared cannot rights for all users (registered, admin)
