@@ -42,7 +42,7 @@ module DiffHelper
   # FIXME: Just to dev, remove to lib
   ########################################################
   def prepare(diff, url, diff_counter)
-    @num_line, @filepath, @url, @diff_counter = -1, diff.a_path, url, diff_counter
+    @diff, @num_line, @filepath, @url, @diff_counter = diff, -1, diff.a_path, url, diff_counter
     @line_comments = @comments.select{|c| c.data.try('[]', :path) == @filepath}
   end
 
@@ -212,14 +212,29 @@ module DiffHelper
   end
 
   def line_comment
-    link_to image_tag('line_comment.png', :alt => t('layout.comments.new_header')), new_line_commit_comment_path(@project, @commit, :path => @filepath, :line => @num_line), :class => 'add_line-comment'
+    path = if @commentable.class == Issue
+             project_new_line_pull_comment_path(@project, @commentable, :path => @filepath, :line => @num_line)
+           elsif @commentable.class == Grit::Commit
+             new_line_commit_comment_path(@project, @commentable, :path => @filepath, :line => @num_line)
+           end
+    link_to image_tag('line_comment.png', :alt => t('layout.comments.new_header')), path, :class => 'add_line-comment'
   end
 
   def render_line_comments
-    comments = @line_comments.select{|c| c.data.try('[]', :line) == @num_line.to_s}
+    comments = @line_comments.select do |c|
+      next false if c.data.try('[]', :line) != @num_line.to_s
+      next true if c.commentable_type == 'Grit::Commit'
+      #diff = Diff::Display::Unified.new(@diff.diff)
+      res, ind = true, 0
+      @diff.diff.each_line do |line|
+        res = false if (@num_line-2..@num_line+2).include?(ind) && c.data.try('[]', "line#{ind-@num_line}") != line.chomp
+        ind = ind + 1
+      end
+      res
+    end
     "<tr>
       <td class='line_numbers line_comments' colspan='2'>#{comments.count}</td>
-      <td>#{render("projects/comments/line_list", :list => comments, :project => @project, :commentable => @commit)}</td>
+      <td>#{render("projects/comments/line_list", :list => comments, :project => @project, :commentable => @commentable)}</td>
      </tr>" if comments.count > 0
   end
 

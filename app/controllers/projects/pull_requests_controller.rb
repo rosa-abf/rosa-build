@@ -47,7 +47,7 @@ class Projects::PullRequestsController < Projects::BaseController
         flash.now[:error] = I18n.t('projects.pull_requests.up_to_date', :to_ref => @pull.to_ref, :from_ref => @pull.from_ref)
         render :new
       else
-        @pull.send(@pull.status)
+        @pull.send(@pull.status == 'blocked' ? 'block' : @pull.status)
         redirect_to project_pull_request_path(@pull.to_project, @pull)
       end
     else
@@ -138,6 +138,8 @@ class Projects::PullRequestsController < Projects::BaseController
 
     @diff = @pull.diff repo, @base_commit, @head_commit
     @stats = @pull.diff_stats repo, @base_commit, @head_commit
+    @comments = @issue.comments
+    @commentable = @issue
   end
 
   def find_destination_project bang=true

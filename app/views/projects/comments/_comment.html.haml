@@ -4,7 +4,7 @@
   =render 'projects/comments/button_md_help'
   %h3.tmargin0= t("layout.comments.edit_header")
   = form_for comment, :url => project_commentable_comment_path(project, commentable, comment), :html => { :class => 'form edit_comment' } do |f|
-    = render "projects/comments/form", :f => f, :id => "edit_#{comment.id}"
+    = render "projects/comments/form", :f => f, :id => "#{add_id.presence}edit_#{comment.id}"
     .comment-left
       =link_to t('layout.cancel'), '#', :id => "comment-#{comment.id}", :class => 'cancel_edit_comment button'
     .both
