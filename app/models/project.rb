@@ -8,6 +8,7 @@ class Project < ActiveRecord::Base
   belongs_to :maintainer, :class_name => "User"
 
   has_many :issues, :dependent => :destroy
+  has_many :pull_requests, :dependent => :destroy, :foreign_key => 'to_project_id'
   has_many :labels, :dependent => :destroy
   has_many :build_lists, :dependent => :destroy
 
@@ -36,7 +37,7 @@ class Project < ActiveRecord::Base
   scope :recent, order("name ASC")
   scope :search_order, order("CHAR_LENGTH(name) ASC")
   scope :search, lambda {|q| by_name("%#{q.to_s.strip}%")}
-  scope :by_name, lambda {|name| where('projects.name ILIKE ?', name)}
+  scope :by_name, lambda {|name| where('projects.name ILIKE ?', name) if name.present?}
   scope :by_visibilities, lambda {|v| where(:visibility => v)}
   scope :opened, where(:visibility => 'open')
   scope :package, where(:is_package => true)

@@ -1,19 +1,11 @@
 # -*- encoding : utf-8 -*-
-class User < ActiveRecord::Base
+class User < Avatar
   ROLES = ['', 'admin', 'banned']
   LANGUAGES_FOR_SELECT = [['Russian', 'ru'], ['English', 'en']]
   LANGUAGES = LANGUAGES_FOR_SELECT.map(&:last)
-  MAX_AVATAR_SIZE = 5.megabyte
 
   devise :database_authenticatable, :registerable, :omniauthable, :token_authenticatable,# :encryptable, :timeoutable
          :recoverable, :rememberable, :validatable, :lockable, :confirmable#, :reconfirmable, :trackable
-  has_attached_file :avatar, :styles =>
-    { :micro => { :geometry => "16x16#",  :format => :jpg, :convert_options => '-strip -background white -flatten -quality 70'},
-       :small => { :geometry => "30x30#",  :format => :jpg, :convert_options => '-strip -background white -flatten -quality 70'},
-       :medium => { :geometry => "40x40#",  :format => :jpg, :convert_options => '-strip -background white -flatten -quality 70'},
-       :big => { :geometry => "81x81#",  :format => :jpg, :convert_options => '-strip -background white -flatten -quality 70'}
-    }
-  validates_inclusion_of :avatar_file_size, :in => (0..MAX_AVATAR_SIZE), :allow_nil => true
 
   has_one :notifier, :class_name => 'SettingsNotifier', :dependent => :destroy #:notifier
 
@@ -43,7 +35,7 @@ class User < ActiveRecord::Base
   validates :language, :inclusion => {:in => LANGUAGES}, :allow_blank => true
 
   attr_accessible :email, :password, :password_confirmation, :current_password, :remember_me, :login, :name, :uname, :language,
-                  :site, :company, :professional_experience, :location, :avatar
+                  :site, :company, :professional_experience, :location
   attr_readonly :uname
   attr_accessor :login
 

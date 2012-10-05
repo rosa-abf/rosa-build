@@ -60,7 +60,9 @@ en:
       show: Show
       cancel: Cancel build
       cancel_success: 'Build canceled'
+      publish_success: 'Build published'
       cancel_fail: 'Errors during build cancelation!'
+      publish_fail: 'Errors during build publishing!'
       publish_success: 'Build is queued for publishing'
       reject_publish_success: 'Publishing rejected'
       publish_fail: 'Errors during build publishing!'
@@ -144,3 +146,4 @@ en:
       cannot_write: You can't build project to this repository.
       can_not_published: Build can only be published with status "Build complete"
       frozen_platform: In case of a repository for package storage with frozen platform allowed only bugfix and security updates
+      wrong_include_repos: Include repos have to belongs to build for platform

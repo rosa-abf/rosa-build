@@ -15,16 +15,12 @@ ru:
       own_projects: Мои проекты
       part_projects: Участвую в проектах
       filter_header: Фильтр
-      public_projects_list: Список публичных проектов
       public_data_edit_warning: Данные доступны для публичного профиля. Если вы не хотите показывать какие-либо данные, просто не заполняйте их.
       user_private_settings: Настройки
       settings_notifier: Центр подписки
       delete_header: Удалить аккаунт
       delete_warning: Внимание! Удаленный аккаунт восстановлению не подлежит.
       private_settings_header: Изменение пароля
-      avatar_notice: При отсутствии загруженного аватара будет использован Ваш аватар на сервисе gravatar.
-      delete_avatar: Удалить аватар
-      avatar_with_size: Аватар (менее %{max})
       users_filter:
         all: Все
         admin: Админы

@@ -14,7 +14,10 @@ class Ability
 
     # Shared rights between guests and registered users
     can [:show, :archive], Project, :visibility => 'open'
+    can :get_id,  Project, :visibility => 'open' # api
+    can :archive, Project, :visibility => 'open'
     can :read, Issue, :project => {:visibility => 'open'}
+    can :read, PullRequest, :to_project => {:visibility => 'open'}
     can :search, BuildList
     can [:read, :log, :everything], BuildList, :project => {:visibility => 'open'}
     can :read, ProductBuildList#, :product => {:platform => {:visibility => 'open'}} # double nested hash don't work
@@ -24,9 +27,12 @@ class Ability
     can [:publish_build, :status_build, :pre_build, :post_build, :circle_build, :new_bbdt], BuildList
 
     # Platforms block
-    can [:show, :members, :advisories], Platform, :visibility == 'open'
+    can [:show, :members, :advisories], Platform, :visibility => 'open'
     can [:read, :projects_list], Repository, :platform => {:visibility => 'open'}
     can :read, Product, :platform => {:visibility => 'open'}
+
+    can :show, Group
+    can :show, User
 
     if user.guest? # Guest rights
       # can [:new, :create], RegisterRequest
@@ -44,9 +50,7 @@ class Ability
       end
 
       if user.user?
-        can [:show, :autocomplete_user_uname], User
-
-        can [:read, :create, :autocomplete_group_uname], Group
+        can [:read, :create], Group
         can [:update, :manage_members], Group do |group|
           group.actors.exists?(:actor_type => 'User', :actor_id => user.id, :role => 'admin') # or group.owner_id = user.id
         end
@@ -57,7 +61,7 @@ class Ability
         can :read, Project, :visibility => 'open'
         can [:read, :archive], Project, :owner_type => 'User', :owner_id => user.id
         can [:read, :archive], Project, :owner_type => 'Group', :owner_id => user.group_ids
-        can([:read, :membered], Project, read_relations_for('projects')) {|project| local_reader? project}
+        can([:read, :membered, :get_id], Project, read_relations_for('projects')) {|project| local_reader? project}
         can(:write, Project) {|project| local_writer? project} # for grack
         can([:update, :sections, :manage_collaborators, :autocomplete_maintainers], Project) {|project| local_admin? project}
         can(:fork, Project) {|project| can? :read, project}
@@ -66,6 +70,7 @@ class Ability
         can(:destroy, Project) {|project| project.owner_type == 'Group' and project.owner.actors.exists?(:actor_type => 'User', :actor_id => user.id, :role => 'admin')}
         can :remove_user, Project
         can :preview, Project
+        can(:refs_list, Project) {|project| can? :read, project}
 
         can [:read, :log, :owned, :everything], BuildList, :user_id => user.id
         can [:read, :log, :related, :everything], BuildList, :project => {:owner_type => 'User', :owner_id => user.id}
@@ -74,19 +79,18 @@ class Ability
         can([:create, :update], BuildList) {|build_list| build_list.project.is_package && can?(:write, build_list.project)}
 
         can(:publish, BuildList) do |build_list|
-          build_list.can_publish? and build_list.save_to_repository.publish_without_qa ? can?(:write, build_list.project) : local_admin?(build_list.save_to_platform)
+          build_list.save_to_repository.publish_without_qa ? can?(:write, build_list.project) : local_admin?(build_list.save_to_platform)
         end
         can(:reject_publish, BuildList) do |build_list|
-          build_list.can_reject_publish? and not build_list.save_to_repository.publish_without_qa and local_admin?(build_list.save_to_platform)
+          local_admin?(build_list.save_to_platform)
         end
-        can(:cancel, BuildList) {|build_list| build_list.can_cancel? && can?(:write, build_list.project)}
+        can(:cancel, BuildList) {|build_list| can?(:write, build_list.project)}
 
         can [:read, :owned, :related, :members], Platform, :owner_type => 'User', :owner_id => user.id
         can [:read, :related, :members], Platform, :owner_type => 'Group', :owner_id => user.group_ids
         can([:read, :related, :members], Platform, read_relations_for('platforms')) {|platform| local_reader? platform}
         can([:update, :members], Platform) {|platform| local_admin? platform}
         can([:destroy, :members, :add_member, :remove_member, :remove_members] , Platform) {|platform| owner?(platform) || local_admin?(platform) }
-        can [:autocomplete_user_uname], Platform
 
         can([:failed_builds_list, :create], MassBuild) {|mass_build| (owner?(mass_build.platform) || local_admin?(mass_build.platform)) && mass_build.platform.main? }
         can(:cancel, MassBuild) {|mass_build| (owner?(mass_build.platform) || local_admin?(mass_build.platform)) && !mass_build.stop_build && mass_build.platform.main?}
@@ -117,12 +121,20 @@ class Ability
         can :read, Issue, :project => {:owner_type => 'Group', :owner_id => user.group_ids}
         can(:read, Issue, read_relations_for('issues', 'projects')) {|issue| can? :read, issue.project rescue nil}
         can(:create, Issue) {|issue| can? :read, issue.project}
-        can([:update, :destroy], Issue) {|issue| issue.user_id == user.id or local_admin?(issue.project)}
+        can(:update, Issue) {|issue| issue.user_id == user.id or local_admin?(issue.project)}
         cannot :manage, Issue, :project => {:has_issues => false} # switch off issues
+
+        can :read, PullRequest, :to_project => {:owner_type => 'User', :owner_id => user.id}
+        can :read, PullRequest, :to_project => {:owner_type => 'Group', :owner_id => user.group_ids}
+        can(:read, PullRequest, read_relations_for('pull_requests', 'to_projects')) {|pull| can? :read, pull.to_project rescue nil}
+        can :create, PullRequest
+        can([:update, :merge], PullRequest) {|pull| pull.user_id == user.id or local_admin?(pull.to_project)}
 
         can([:create, :new_line], Comment) {|comment| can? :read, comment.project}
         can([:update, :destroy], Comment) {|comment| comment.user == user or comment.project.owner == user or local_admin?(comment.project)}
-        cannot :manage, Comment, :commentable_type => 'Issue', :commentable => {:project => {:has_issues => false}} # switch off issues
+        cannot :manage, Comment do |c|
+          c.commentable_type == 'Issue' && !c.project.has_issues && !c.commentable.pull_request # when switch off issues
+        end
       end
 
       # Shared cannot rights for all users (registered, admin)

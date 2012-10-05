@@ -1,0 +1,57 @@
+ru:
+  projects:
+    pull_requests:
+      new:
+        header:  'Создать пул реквест'
+        submit: Создать пул реквест
+        update: Обновить коммиты
+      show:
+        pull: Пул реквест
+        into: из
+        from: в
+        header: Пул реквест
+      status:
+        close: Закрыть пул реквест
+        reopen: Переоткрыть пул реквест
+      merge: Мерж
+      duplicate: 'Уже существует пул реквест %{from_ref}'
+      up_to_date: 'Ветка %{to_ref} на данный момент уже содержит последние изменения %{from_ref}'
+      wrong_ref: Неправильная ветка или тег
+      blocked: Невозможно автоматически смержить данный пул реквест.
+      ready: Данный пул реквест можно смержить автоматически.
+      merged: |
+        %{user} смержил <span class="label-bootstrap label-info font14">%{to_ref}</span>
+        с <span class="label-bootstrap label-info font14">%{from_ref}</span> в %{time}'
+      closed: '%{user} закрыл пул реквест в %{time}'
+      is_big: Этот пул реквест слишком большой! Мы показываем только последние %{count} комитов.
+      open: ''
+      statuses:
+        blocked: Заблокирован
+        ready: Готов к мержу
+        merged: Смержен
+        closed: Закрыт
+
+  pull_requests:
+    tabs:
+      discussion: Дискуссия
+      diff: Изменения
+      commits: Коммиты
+
+  flash:
+    pull_request:
+      new_error: Не удалось создать пул реквест
+      saved: Пул реквест успешно сохранен
+      save_error: Не удалось сохранить пул реквест
+
+  activerecord:
+    attributes:
+      pull_requests:
+        to_ref: Приемник
+        from_ref: Источник
+        refs: 'ветка · тег'
+        to_project: Куда
+        from_project: Откуда
+
+  layout:
+    pull_requests:
+      search: Найти пул реквест...

@@ -16,3 +16,4 @@ public/downloads/*
 *.tmproj
 .sass-cache/
 dump.rdb
+crash.log

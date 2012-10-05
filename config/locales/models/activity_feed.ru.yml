@@ -45,3 +45,8 @@ ru:
         success: успешно собрано
         failed: завершилось с ошибкой "%{error}"
         pending: ожидает сборки
+
+    footers:
+      support_team: Команда поддержки «ROSA Build System».
+      notifiers: Вы можете настроить уведомления в
+      notification_center: Центре уведомлений.

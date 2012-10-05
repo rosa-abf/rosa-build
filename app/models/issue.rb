@@ -11,6 +11,7 @@ class Issue < ActiveRecord::Base
   has_many :subscribes, :as => :subscribeable, :dependent => :destroy
   has_many :labelings, :dependent => :destroy
   has_many :labels, :through => :labelings, :uniq => true
+  has_one :pull_request, :dependent => :destroy
 
   validates :title, :body, :project_id, :presence => true
 
@@ -21,8 +22,16 @@ class Issue < ActiveRecord::Base
   attr_accessible :labelings_attributes, :title, :body, :assignee_id
   accepts_nested_attributes_for :labelings, :allow_destroy => true
 
-  scope :opened, where(:status => 'open', :closed_by => nil, :closed_at => nil)
-  scope :closed, where(:status => 'closed').where("closed_by is not null and closed_at is not null")
+  scope :opened, where(:status => 'open')
+  scope :closed, where(:status => 'closed')
+
+  scope :needed_checking, where(:issues => {:status => ['open', 'blocked', 'ready', 'already']})
+  scope :not_closed_or_merged, needed_checking
+  scope :closed_or_merged, where(:issues => {:status => ['closed', 'merged']})
+  # Using mb_chars for correct transform to lowercase ('Русский Текст'.downcase => "Русский Текст")
+  scope :search, lambda {|q| where('issues.title ILIKE ?', "%#{q.mb_chars.downcase}%") if q.present?}
+  scope :def_order, order('issues.serial_id desc')
+  scope :without_pull_requests, where('NOT EXISTS (select null from pull_requests as pr where pr.issue_id = issues.id)')
 
   def assign_uname
     assignee.uname if assignee
@@ -43,7 +52,7 @@ class Issue < ActiveRecord::Base
   end
 
   def set_close(closed_by)
-    self.closed_at = Time.now
+    self.closed_at = Time.now.utc
     self.closer = closed_by
     self.status = 'closed'
   end

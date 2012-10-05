@@ -1,0 +1,125 @@
+# -*- encoding : utf-8 -*-
+require 'spec_helper'
+
+shared_examples_for 'api platform user with reader rights' do
+  include_examples "api platform user with show rights"
+
+  it 'should be able to perform index action' do
+    get :index, :format => :json
+    response.should render_template(:index)
+  end
+
+end
+
+shared_examples_for 'api platform user with reader rights for hidden platform' do
+  before(:each) do
+    @platform.update_column(:visibility, 'hidden')
+  end
+
+  it_should_behave_like 'api platform user with show rights'
+end
+
+shared_examples_for 'api platform user without reader rights for hidden platform' do
+  before(:each) do
+    @platform.update_column(:visibility, 'hidden')
+  end
+
+  it_should_behave_like 'api platform user without show rights'
+end
+
+shared_examples_for "api platform user with show rights" do
+  it 'should be able to perform show action' do
+    get :show, :id => @platform.id, :format => :json
+    response.should render_template(:show)
+  end
+end
+
+shared_examples_for "api platform user without show rights" do
+  it 'should not be able to perform show action' do
+    get :show, :id => @platform.id, :format => :json
+    response.body.should == {"message" => "Access violation to this page!"}.to_json
+  end
+end
+
+describe Api::V1::PlatformsController do
+  before do
+    stub_symlink_methods
+
+    @platform = FactoryGirl.create(:platform)
+    @personal_platform = FactoryGirl.create(:platform, :platform_type => 'personal')
+    @user = FactoryGirl.create(:user)
+  end
+
+  context 'for guest' do
+    
+    it "should not be able to perform index action" do
+      get :index, :format => :json
+      response.status.should == 401
+    end
+
+    it "should not be able to perform show action", :anonymous_access  => false do
+      get :show, :id => @platform.id, :format => :json
+      response.status.should == 401
+    end
+
+    it_should_behave_like 'api platform user with show rights' if APP_CONFIG['anonymous_access']
+    it_should_behave_like 'api platform user without reader rights for hidden platform' if APP_CONFIG['anonymous_access']
+
+  end
+
+  context 'for global admin' do
+    before do
+      @admin = FactoryGirl.create(:admin)
+      @user = FactoryGirl.create(:user)
+      http_login(@admin)
+    end
+
+    it_should_behave_like 'api platform user with reader rights'
+    it_should_behave_like 'api platform user with reader rights for hidden platform'
+  end
+
+  context 'for owner user' do
+    before do
+      @user = FactoryGirl.create(:user)
+      http_login(@user)
+      @platform.owner = @user; @platform.save
+      @platform.relations.create!(:actor_type => 'User', :actor_id => @user.id, :role => 'admin')
+    end
+
+    it_should_behave_like 'api platform user with reader rights'
+    it_should_behave_like 'api platform user with reader rights for hidden platform'
+  end
+
+  context 'for reader user' do
+    before do
+      @user = FactoryGirl.create(:user)
+      http_login(@user)
+      @platform.relations.create!(:actor_type => 'User', :actor_id => @user.id, :role => 'reader')
+      @personal_platform.relations.create!(:actor_type => 'User', :actor_id => @user.id, :role => 'reader')
+    end
+
+    context 'perform index action with type param' do
+      render_views
+      %w(main personal).each do |type|
+        it "ensures that filter by type = #{type} returns true result" do
+          get :index, :format => :json, :type => "#{type}"
+          JSON.parse(response.body)['platforms'].map{ |p| p['platform_type'] }.
+            uniq.should == ["#{type}"]
+        end
+      end
+    end
+
+    it_should_behave_like 'api platform user with reader rights'
+    it_should_behave_like 'api platform user with reader rights for hidden platform'
+  end
+
+  context 'for simple user' do
+    before do
+      @user = FactoryGirl.create(:user)
+      http_login(@user)
+    end
+
+    it_should_behave_like 'api platform user with reader rights'
+    it_should_behave_like 'api platform user without reader rights for hidden platform'
+  end
+end

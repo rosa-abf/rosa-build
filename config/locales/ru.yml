@@ -137,6 +137,9 @@ ru:
 
     exception_message: У Вас нет доступа к этой странице!
 
+    500_message: Ошибка 500. Что-то пошло не так. Мы уже в курсе данной проблемы и постараемся поскорее ее решить.
+    404_message: Ошибка 404. Страница не найдена!
+
     collaborators:
       successfully_changed: Список коллабораторов успешно изменен
       error_in_changing: Ошибка изменения списка коллабораторов
@@ -187,3 +190,12 @@ ru:
       private_user:
         login: Логин
         password: Пароль
+
+      arch:
+        name: Название
+        created_at: Создана
+        updated_at: Обновлена
+
+  into: в
+  from: из
+  by: от

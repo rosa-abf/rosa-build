@@ -2,21 +2,4 @@
 -render 'submenu'
 -render 'index_sidebar'
 
-#closed-switcher.blue-switcher
-  =hidden_field_tag :issues_status, @status, :id => 'issues_status'
-  .open
-    ="#{t('layout.issues.statuses.open')} (#{@opened_issues})"
-  #closed-tasks.closed
-    ="#{t('layout.issues.statuses.closed')} (#{@closed_issues})"
-  #blue-switch-select.selected{:style => "margin-left: #{@status == 'open' ? '0' : '130'}px;"}
-  .both
-.both
-#table1
-  %table#myTable.tablesorter.tracker{:cellpadding => "0", :cellspacing => "0"}
-    %thead
-      %tr
-        %th.th1{:colspan => "2"}=t('layout.issues.number')
-        %th{:colspan => "2"}=t('layout.issues.description')
-    %tbody
-      = render :partial => 'issue', :collection => @issues
-  = will_paginate @issues
+= render 'issues_table', :issues => @issues

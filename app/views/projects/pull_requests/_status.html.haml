@@ -1,0 +1,14 @@
+- if can?(:merge, @pull) && @pull.can_merging?
+  %br
+  =form_for PullRequest.new, :url => merge_project_pull_request_path(@project, @pull), :html => { :method => :put, :class => :form } do |f|
+    =f.submit t 'projects.pull_requests.ready'
+-else
+  .flash
+    %div{:class => @pull.ready? ? 'notice' : 'alert'}
+      =pull_status @pull
+-if can? :update, @pull
+  -if action = @pull.can_close? ? 'close' : ('reopen' if @pull.can_reopen?)
+    %br
+    =form_for :pull, :url => [@project, @pull], :html => { :id => 'do_pull_action',:method => :put, :class => :form } do |f|
+      =hidden_field_tag "pull_request_action", action
+      =f.submit t ".#{action}"

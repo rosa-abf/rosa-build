@@ -39,8 +39,9 @@ class Platform < ActiveRecord::Base
   scope :by_visibilities, lambda {|v| where(:visibility => v)}
   scope :opened, where(:visibility => 'open')
   scope :hidden, where(:visibility => 'hidden')
-  scope :main, where(:platform_type => 'main')
-  scope :personal, where(:platform_type => 'personal')
+  scope :by_type, lambda {|type| where(:platform_type => type) if type.present?}
+  scope :main, by_type('main')
+  scope :personal, by_type('personal')
 
   attr_accessible :name, :distrib_type, :parent_platform_id, :platform_type, :owner, :visibility, :description, :released
   attr_readonly   :name, :distrib_type, :parent_platform_id, :platform_type

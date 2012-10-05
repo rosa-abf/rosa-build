@@ -1,0 +1,23 @@
+%a{ :name => "comments" }
+.hr
+%h3#block-list= t("layout.comments.comments_header")
+
+- commits_queue = []
+- merge_activity(@issue.comments, @commits).each do |item| # 
+  - if item.is_a?(Comment)
+    - if commits_queue.present?
+      = render 'projects/git/commits/commits_small', :commits => commits_queue
+      - commits_queue = []
+    = render 'projects/comments/comment', :comment => item, :project => @project, :commentable => @issue
+  - else
+    - commits_queue << item
+    - comments_for_commit = Comment.for_commit(item)
+    - if comments_for_commit.present?
+      = render 'projects/git/commits/commits_small', :commits => commits_queue
+      - comments_for_commit.each do |comment|
+        = render 'projects/comments/comment', :comment => comment, :project => @project, :commentable => item
+      - commits_queue = []
+- if commits_queue.present?
+  = render 'projects/git/commits/commits_small', :commits => commits_queue
+
+= render "projects/comments/markdown_help"

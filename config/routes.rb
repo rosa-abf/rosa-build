@@ -10,6 +10,24 @@ Rosa::Application.routes.draw do
   end
   devise_for :users, :controllers => {:omniauth_callbacks => 'users/omniauth_callbacks'}
 
+  namespace :api do
+    namespace :v1 do
+      resources :build_lists, :only => [:index, :create, :show] do
+        member {
+          get :publish
+          get :reject_publish
+          get :cancel
+        }
+      end
+      resources :arches, :only => [:index]
+      resources :platforms, :only => [:index, :show]
+      resources :repositories, :only => [:show]
+      resources :projects, :only => [:show] do
+        collection { get :get_id }
+      end
+    end
+  end
+
   resources :search, :only => [:index]
 
   get  '/forbidden'        => 'pages#forbidden',      :as => 'forbidden'
@@ -70,7 +88,6 @@ Rosa::Application.routes.draw do
         end
       end
 
-      get :autocomplete_user_uname, :on => :collection
       resources :repositories do
         member do
           get :add_project
@@ -93,6 +110,13 @@ Rosa::Application.routes.draw do
     match 'product_status', :to => 'product_build_lists#status_build'
   end
 
+  resources :autocompletes, :only => [] do
+    collection do
+      get :autocomplete_user_uname
+      get :autocomplete_group_uname
+    end
+  end
+
   scope :module => 'users' do
     resources :settings, :only => [] do
       collection do
@@ -104,9 +128,7 @@ Rosa::Application.routes.draw do
         put :notifiers
       end
     end
-    resources :users, :controller => 'profile', :only => [] do
-      get :autocomplete_user_uname, :on => :collection
-    end
+
     resources :register_requests, :only => [:new, :create], :format => /ru|en/ #view support only two languages
   end
 
@@ -114,7 +136,6 @@ Rosa::Application.routes.draw do
     get '/groups/new' => 'profile#new' # need to force next route exclude :id => 'new'
     get '/groups/:id' => redirect("/%{id}"), :as => :profile_group # override default group show route
     resources :groups, :controller => 'profile' do
-      get :autocomplete_group_uname, :on => :collection
       delete :remove_user, :on => :member
       resources :members, :only => [:index] do
         collection do
@@ -185,8 +206,14 @@ Rosa::Application.routes.draw do
         resources :collaborators do
           get :find, :on => :collection
         end
+        resources :pull_requests, :except => :destroy do
+          get :autocomplete_to_project, :on => :collection
+          put :merge, :on => :member
+        end
         post '/preview' => 'projects#preview', :as => 'md_preview'
+        post 'refs_list' => 'projects#refs_list', :as => 'refs_list'
       end
+
       # Resource
       get '/autocomplete_maintainers' => 'projects#autocomplete_maintainers', :as => :autocomplete_maintainers
       get '/modify' => 'projects#edit', :as => :edit_project

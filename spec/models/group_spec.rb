@@ -10,7 +10,7 @@ describe Group do
   end
 
   context 'for guest' do
-    [:read, :update, :destroy, :manage_members, :autocomplete_group_uname].each do |action|
+    [:read, :update, :destroy, :manage_members].each do |action|
       it "should not be able to #{action} group" do
         @ability.should_not be_able_to(action, @group)
       end
@@ -23,7 +23,7 @@ describe Group do
       @ability = Ability.new(@admin)
     end
 
-    [:read, :update, :destroy, :manage_members, :autocomplete_group_uname].each do |action|
+    [:read, :update, :destroy, :manage_members].each do |action|
       it "should be able to #{action} group" do
         @ability.should be_able_to(action, @group)
       end
@@ -38,7 +38,7 @@ describe Group do
       @ability = Ability.new(@user)
     end
 
-    [:read, :update, :manage_members, :autocomplete_group_uname].each do |action|
+    [:read, :update, :manage_members].each do |action|
       it "should be able to #{action} group" do
         @ability.should be_able_to(action, @group)
       end
@@ -70,7 +70,7 @@ describe Group do
       @ability = Ability.new(@user)
     end
 
-    [:read, :update, :destroy, :manage_members, :autocomplete_group_uname].each do |action|
+    [:read, :update, :destroy, :manage_members].each do |action|
       it "should be able to #{action} group" do
         @ability.should be_able_to(action, @group)
       end
@@ -84,7 +84,7 @@ describe Group do
       @ability = Ability.new(@user)
     end
 
-    [:read, :autocomplete_group_uname].each do |action|
+    [:read].each do |action|
       it "should be able to #{action} group" do
         @ability.should be_able_to(action, @group)
       end

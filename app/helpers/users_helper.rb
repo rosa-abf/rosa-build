@@ -5,12 +5,13 @@ module UsersHelper
     avatar_url(User.where(:email => email).first || User.new(:email => email), size)
   end
 
-  def avatar_url(user, size = :small)
-    return image_path('group32.png') if user.kind_of? Group
-    if user.try('avatar?')
-      user.avatar.url(size)
+  def avatar_url(subject, size = :small)
+    if subject.try('avatar?')
+      subject.avatar.url(size)
+    elsif subject.kind_of? Group
+      image_path('ava-big.png')
     else
-      gravatar_url(user.email, user.avatar.styles[size].geometry.split('x').first)
+      gravatar_url(subject.email, subject.avatar.styles[size].geometry.split('x').first)
     end
   end
 

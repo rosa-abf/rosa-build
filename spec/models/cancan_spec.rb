@@ -290,26 +290,6 @@ describe CanCan do
           @ability.should be_able_to(:read, @repository)
         end
       end
-    end
-
-    context 'build list relations' do
-      before(:each) do
-        @project = FactoryGirl.create(:project)
-        @project.relations.create!(:actor_id => @user.id, :actor_type => 'User', :role => 'writer')
-        @build_list = FactoryGirl.create(:build_list, :project => @project)
-      end
-
-      it 'should be able to publish build list with SUCCESS status' do
-        @build_list.status = BuildServer::SUCCESS
-        @ability.should be_able_to(:publish, @build_list)
-      end
-
-      it 'should not be able to publish build list with another status' do
-        @build_list.status = BuildServer::BUILD_ERROR
-        @ability.should_not be_able_to(:publish, @build_list)
-      end
-    end
-  end
-
-
+    end # 'repository relations'
+  end # 'Site user'
 end

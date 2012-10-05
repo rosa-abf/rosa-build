@@ -1,12 +1,4 @@
 GIT
-  remote: git://github.com/chipiga/redhillonrails_core.git
-  revision: 5f58167c41882890c223168b0a5521d99e8d92aa
-  branch: rails31
-  specs:
-    redhillonrails_core (2.0.0.pre)
-      activerecord (>= 3.1.0.rc)
-
-GIT
   remote: git://github.com/rdblue/grack.git
   revision: 020be3fef3fb308b9d214252522aa5945bf6584a
   specs:
@@ -20,6 +12,14 @@ GIT
       diff-lcs (~> 1.1)
       mime-types (~> 1.15)
       posix-spawn (~> 0.3.6)
+
+GIT
+  remote: git://github.com/warpc/redhillonrails_core.git
+  revision: c0945a4c6ad4bae4ca2750b105efcff162408b15
+  branch: rails31
+  specs:
+    redhillonrails_core (2.0.0.pre)
+      activerecord (>= 3.1.0.rc)
 
 GEM
   remote: http://rubygems.org/
@@ -218,6 +218,8 @@ GEM
       rack
     rack-test (0.6.1)
       rack (>= 1.0)
+    rack-throttle (0.3.0)
+      rack (>= 1.0.0)
     rails (3.2.8)
       actionmailer (= 3.2.8)
       actionpack (= 3.2.8)
@@ -389,6 +391,7 @@ DEPENDENCIES
   paperclip (~> 3.1.4)
   perform_later (~> 1.3.0)
   pg (~> 0.14.0)
+  rack-throttle
   rails (= 3.2.8)
   rails-backbone (~> 0.7.2)
   rails3-generators

@@ -38,6 +38,26 @@ div.description-top div.name input {
     height: 100%;
 }
 
+article div.activity, .commits_activity {
+    border: 1px solid #D6D6D6;
+    border-radius: 5px 5px 5px 5px;
+    color: #333333;
+    margin-top: 15px;
+    padding: 6px;
+}
+
+.commits_activity table {
+    border-collapse: collapse;
+    width: 100%;
+    img { margin: 2px 0 0 2px; }
+    .date { width: 140px; }
+    .name { width: 250px; }
+    tr:nth-child(2n) {
+        .md_and_cm, .data-expander { background-color: #E2E4FF; }
+        background-color: #E2E4FF;
+    }
+}
+
 article div.messages div.activity {
     margin-top: 0;
     margin-bottom: 10px;
@@ -93,20 +113,20 @@ article div.activity .fulltext.hidden {
     display: none;
 }
 
-div.activity .data-expander {
-    margin-left: 10px;
-    display: inline-block;
-    width: 12px;
-}
-
-div.activity .data-expander.collapsed {
-    background: #FFF image-url('expand-gray.png') no-repeat;
-    background-position: 0 2px;
-}
-
-div.activity .data-expander.expanded {
-    background: #FFF image-url('expand-gray2.png') no-repeat;
-    background-position: 0 2px;
+div.activity, .commits_activity {
+    .data-expander {
+        margin-left: 10px;
+        display: inline-block;
+        width: 12px;
+    }
+    .data-expander.collapsed {
+        background: #FFF image-url('expand-gray.png') no-repeat;
+        background-position: 0 2px;
+    }
+    .data-expander.expanded {
+        background: #FFF image-url('expand-gray2.png') no-repeat;
+        background-position: 0 2px;
+    }
 }
 
 div.activity .fulltext p {
@@ -911,6 +931,14 @@ div#git_help_data p {
   vertical-align: top;
 }
 
+.tab-content.pull_diff_fix {
+  display: block;
+}
+
+table.diff {
+  font-size: 12px;
+}
+
 /* Mass build forms */
 form.mass_build input[type="checkbox"] {
   width: 10px;
@@ -1288,6 +1316,15 @@ hr.bootstrap {
   max-height: 280px;
 }
 
+.label-bootstrap.label-info.font14 {
+  padding: 4px;
+  line-height: 1.8;
+  a { color: #FFFFFF; }
+}
+.line_numbers a {
+  color: #999999;
+}
+
 /* Flash Notifies */
 
 .flash_notify {
@@ -1522,7 +1559,7 @@ table.tablesorter.platform-maintainers.static-search thead tr.search th input[ty
     resize: vertical;
   }
 
-  textarea#issue_title {
+  textarea#issue_title, textarea#pull_request_issue_attributes_title {
     height: 16px;
     margin: 0 0 10px;
   }
@@ -1615,4 +1652,45 @@ td.line_comments {
 #open-comment.comment.new_line_comment {
   max-width: 750px;
   margin-left: 10px;
+
+#repo-wrapper .edit_form.issue div.comment div.wrapper {
+  background: 0;
+  border: 0;
+  border-radius: 0;
+  height: 30px;
+  margin: 0;
+  padding: 0;
+}
+
+form#new_pull_request {
+  .leftlist {
+    width: 50px;
+    margin: 5px 0 20px 0;
+  }
+  .leftlist.big-list {
+    margin-top: 0;
+    width: 150px;
+  }
+
+  .l {
+    float: left;
+    margin-right: 10px;
+
+    input {
+      height: 21px;
+      width: 380px;
+    }
+
+    select {
+      width: 380px;
+    }
+  }
+}
+
+#repo-wrapper form#new_pull_request .wrapper {
+  background: none;
+  border: none;
+  height: 36px;
+  margin: 0;
+  padding: 0;
 }

@@ -48,21 +48,21 @@ namespace :import do
           repo.projects << project
         else # check if project already added
           if project = repo.projects.find_by_name(name) || repo.projects.by_name(name).first # fallback to speedup
-            print "Found project '#{project.owner.uname}/#{project.name}' in '#{platform.name}/#{repo.name}'."
+            print "Found project '#{project.name_with_owner}' in '#{platform.name}/#{repo.name}'."
           elsif scoped = Project.where(:owner_id => owner.id, :owner_type => owner.class) and
                 project = scoped.find_by_name(name) || scoped.by_name(name).first
             begin
               repo.projects << project
             rescue Exception => e
-              print "Add project '#{project.owner.uname}/#{project.name}' to '#{platform.name}/#{repo.name}' FAILED: #{e.message}."
+              print "Add project '#{project.name_with_owner}' to '#{platform.name}/#{repo.name}' FAILED: #{e.message}."
             else
-              print "Add project '#{project.owner.uname}/#{project.name}' to '#{platform.name}/#{repo.name}' OK."
+              print "Add project '#{project.name_with_owner}' to '#{platform.name}/#{repo.name}' OK."
             end
           else
             description = ::Iconv.conv('UTF-8//IGNORE', 'UTF-8', `rpm -q --qf '[%{Description}]' -p #{srpm_file}`)
             project = Project.create!(:name => name, :description => description) {|p| p.owner = owner}
             repo.projects << project
-            print "Create project #{project.owner.uname}/#{project.name} in #{platform.name}/#{repo.name} OK."
+            print "Create project #{project.name_with_owner} in #{platform.name}/#{repo.name} OK."
           end
         end
         project.import_srpm(srpm_file, platform.name)
@@ -124,24 +124,24 @@ namespace :import do
             unless project = project_import.project
               if platform.personal? # search project through owner # used for testhat
                 project = Project.find_or_create_by_name_and_owner_type_and_owner_id(name, owner.class.to_s, owner.id)
-                print "Use project #{project.owner.uname}/#{project.name}. "
+                print "Use project #{project.name_with_owner}. "
               else # search project through repository
                 if project = repository.projects.find_by_name(name) || repository.projects.by_name(name).first # fallback to speedup
-                  print "Found project #{project.owner.uname}/#{project.name} in #{platform.name}/#{repository.name}. "
+                  print "Found project #{project.name_with_owner} in #{platform.name}/#{repository.name}. "
                 elsif scoped = Project.where(:owner_id => owner.id, :owner_type => owner.class) and
                       project = scoped.find_by_name(name) || scoped.by_name(name).first
                   repository.projects << project
-                  print "Add project #{project.owner.uname}/#{project.name} to #{platform.name}/#{repository.name}. "
+                  print "Add project #{project.name_with_owner} to #{platform.name}/#{repository.name}. "
                 else
                   description = ::Iconv.conv('UTF-8//IGNORE', 'UTF-8', `rpm -q --qf '[%{Description}]' -p #{srpm_file}`)
                   project = Project.create!(:name => name, :description => description) {|p| p.owner = owner}
                   repository.projects << project
-                  print "Create project #{project.owner.uname}/#{project.name} at #{platform.name}/#{repository.name}. "
+                  print "Create project #{project.name_with_owner} at #{platform.name}/#{repository.name}. "
                 end
               end
             end
             project.import_srpm(srpm_file, branch)
-            print "New version (#{version}) for #{project.owner.uname}/#{project.name} successfully imported to branch #{branch}! "
+            print "New version (#{version}) for #{project.name_with_owner} successfully imported to branch #{branch}! "
 
             project_import.project = project
             # project_import.platform = platform
