@@ -60,7 +60,7 @@ class Projects::CommentsController < Projects::BaseController
   end
 
   def set_additional_data
-    return true unless params[:path].present? && params[:line].present?
+    return true if params[:path].blank? && params[:line].blank? # not inline comment
     @comment.data = {:path => params[:path], :line => params[:line]}
     if @commentable.class == Issue && pull = @commentable.pull_request
       repo = Grit::Repo.new(pull.path)
