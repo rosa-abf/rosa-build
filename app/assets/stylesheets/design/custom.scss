@@ -1630,8 +1630,6 @@ table.tablesorter.platform-maintainers.static-search thead tr.search th input[ty
 }
 
 div.file .inline-comments {
-  margin: 5px;
-
   .top {
     height:auto;
     background: none;
@@ -1640,18 +1638,19 @@ div.file .inline-comments {
 
   .activity {
     border-radius: 0;
-    max-width: 764px;
+    max-width: 752px;
+    margin-left: 10px;
   }
 }
 
-td.line_comments {
+tr.inline-comments td {
   border: solid #DDD;
   border-width: 1px 0;
 }
 
-#open-comment.comment.new_line_comment {
-  max-width: 750px;
-  margin-left: 10px;
+.inline-comments #open-comment {
+  max-width: 754px;
+  margin: 10px;
 }
 
 #repo-wrapper .edit_form.issue div.comment div.wrapper {
@@ -1694,4 +1693,8 @@ form#new_pull_request {
   height: 36px;
   margin: 0;
   padding: 0;
+}
+
+.new_inline_comment.button {
+  margin: 10px 0 10px 10px;
 }

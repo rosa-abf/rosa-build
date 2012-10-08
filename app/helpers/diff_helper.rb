@@ -212,12 +212,7 @@ module DiffHelper
   end
 
   def line_comment
-    path = if @commentable.class == Issue
-             project_new_line_pull_comment_path(@project, @commentable, :path => @filepath, :line => @num_line)
-           elsif @commentable.class == Grit::Commit
-             new_line_commit_comment_path(@project, @commentable, :path => @filepath, :line => @num_line)
-           end
-    link_to image_tag('line_comment.png', :alt => t('layout.comments.new_header')), path, :class => 'add_line-comment'
+    link_to image_tag('line_comment.png', :alt => t('layout.comments.new_header')), new_comment_path, :class => 'add_line-comment'
   end
 
   def render_line_comments
@@ -232,13 +227,25 @@ module DiffHelper
       end
       res
     end
-    "<tr>
-      <td class='line_numbers line_comments' colspan='2'>#{comments.count}</td>
-      <td>#{render("projects/comments/line_list", :list => comments, :project => @project, :commentable => @commentable)}</td>
+    "<tr class='inline-comments'>
+      <td class='line_numbers' colspan='2'>#{comments.count}</td>
+      <td>
+        #{render("projects/comments/line_list", :list => comments, :project => @project, :commentable => @commentable)}
+        #{link_to t('layout.comments.new_inline'), new_comment_path, :class => 'new_inline_comment button'}
+      </td>
+
      </tr>" if comments.count > 0
   end
 
   def td_line_link id, num
     "<td class='line_numbers' id='#{id}'><a href='#{@url}##{id}'>#{num}</a></td>"
+  end
+
+  def new_comment_path
+    if @commentable.class == Issue
+      project_new_line_pull_comment_path(@project, @commentable, :path => @filepath, :line => @num_line)
+    elsif @commentable.class == Grit::Commit
+      new_line_commit_comment_path(@project, @commentable, :path => @filepath, :line => @num_line)
+    end
   end
 end

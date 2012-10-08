@@ -3,6 +3,7 @@ en:
     comments:
       confirm_delete: Are you sure you want to delete the comment?
       new_header: New comment
+      new_inline: Add a line comment
       edit_header: Editing a comment
       has_commented: added a note
       notifications_are: Notifications for new comments are
