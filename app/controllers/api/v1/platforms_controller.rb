@@ -2,7 +2,7 @@
 class Api::V1::PlatformsController < Api::V1::BaseController
 
   before_filter :authenticate_user!
-  skip_before_filter :authenticate_user!, :only => [:show] if APP_CONFIG['anonymous_access']
+  skip_before_filter :authenticate_user!, :only => [:show, :platforms_for_build] if APP_CONFIG['anonymous_access']
 
   load_and_authorize_resource
 
@@ -12,6 +12,10 @@ class Api::V1::PlatformsController < Api::V1::BaseController
   end
 
   def show
+  end
 
+  def platforms_for_build
+  	@platforms = Platform.main.opened.paginate(:page => params[:page], :per_page => 20)
+  	render :index
   end
 end
