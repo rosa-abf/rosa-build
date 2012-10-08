@@ -16,7 +16,7 @@ class Projects::CommentsController < Projects::BaseController
       flash[:error] = I18n.t("flash.comment.save_error")
       flash[:warning] = @comment.errors.full_messages.join('. ')
     end
-    redirect_to project_commentable_path(@project, @commentable)
+    redirect_to project_commentable_path(@project, @commentable) + "#comment#{@comment.id}"
   end
 
   def edit
