@@ -9,8 +9,9 @@ class Projects::CommentsController < Projects::BaseController
   include CommentsHelper
 
   def create
-    res = set_additional_data
-    if @comment.save
+    if !set_additional_data
+      flash[:error] = I18n.t("flash.comment.save_error")
+    elsif @comment.save
       flash[:notice] = I18n.t("flash.comment.saved")
     else
       flash[:error] = I18n.t("flash.comment.save_error")
