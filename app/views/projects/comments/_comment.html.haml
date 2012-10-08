@@ -1,4 +1,4 @@
-- CommentPresenter.present(comment, :project => project, :commentable => commentable) do |presenter|
+- CommentPresenter.present(comment, :project => project, :commentable => commentable, :add_anchor => add_id.presence) do |presenter|
   = render 'shared/feed_message', :presenter => presenter
 #open-comment.comment.hidden{:class => "comment-#{comment.id}"}
   =render 'projects/comments/button_md_help'

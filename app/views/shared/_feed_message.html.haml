@@ -1,4 +1,4 @@
-.activity{:id => presenter.comment_id? ? "comment##{presenter.comment_id}" : ''}
+.activity{:id => presenter.comment_id? ? presenter.comment_anchor : ''}
   .top
     - if presenter.buttons?
       %span.buttons= raw presenter.buttons.join(' | ').html_safe
