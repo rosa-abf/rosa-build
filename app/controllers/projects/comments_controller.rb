@@ -63,8 +63,9 @@ class Projects::CommentsController < Projects::BaseController
     @comment.data = {:path => params[:path], :line => params[:line]}
     if @commentable.class == Issue && pull = @commentable.pull_request
       repo = Grit::Repo.new(pull.path)
-      base_commit = pull.common_ancestor
-      head_commit = repo.commits(pull.head_branch).first
+      base_commit, head_commit = pull.common_ancestor, repo.commits(pull.head_branch).first
+      @comment.data[:base_commit], @comment.data[:head_commit] = base_commit, head_commit
+
       diff = pull.diff repo, base_commit, head_commit
       return false unless diff_path = diff.select {|d| d.a_path == params[:path]}
       comment_line = params[:line].to_i
