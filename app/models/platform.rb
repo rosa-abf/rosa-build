@@ -20,6 +20,7 @@ class Platform < ActiveRecord::Base
   has_many :mass_builds
 
   validates :description, :presence => true
+  validates :owner, :presence => true
   validates :visibility, :presence => true, :inclusion => {:in => VISIBILITIES}
   validates :name, :uniqueness => {:case_sensitive => false}, :presence => true, :format => { :with => /^[a-zA-Z0-9_\-\.]+$/ }
   validates :distrib_type, :presence => true, :inclusion => {:in => APP_CONFIG['distr_types']}
@@ -167,7 +168,7 @@ class Platform < ActiveRecord::Base
 
   def update_owner_relation
     if owner_id_was != owner_id
-      r = relations.where(:actor_id => owner_id_was, :actor_type => owner_type_was)[0]
+      r = relations.where(:actor_id => owner_id_was, :actor_type => owner_type_was).first
       r.update_attributes(:actor_id => owner_id, :actor_type => owner_type)
     end
   end

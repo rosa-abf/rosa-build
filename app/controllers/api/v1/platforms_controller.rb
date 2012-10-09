@@ -18,4 +18,22 @@ class Api::V1::PlatformsController < Api::V1::BaseController
   	@platforms = Platform.main.opened.paginate(:page => params[:page], :per_page => 20)
   	render :index
   end
+
+  def update
+    p = params[:platform] || {}
+    owner = User.where(:id => p[:owner_id]).first
+    platform_params = {}
+    platform_params[:owner]       = owner if owner
+    platform_params[:released]    = p[:released] if p[:released]
+    platform_params[:description] = p[:description] if p[:description]
+    if @platform.update_attributes(p)
+      render :json => {
+        :platform => {:id => @platform.id,
+                      :message => 'Platform has been updated successfully'}
+      }.to_json
+    else
+      render :json => {:message => "Validation Failed", :errors => @platform.errors.messages}.to_json, :status => 422
+    end
+  end
+
 end
