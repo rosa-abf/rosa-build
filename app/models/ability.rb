@@ -28,7 +28,7 @@ class Ability
 
     # Platforms block
     can [:show, :members, :advisories], Platform, :visibility => 'open'
-    can :platforms_for_build, Platform, :visibility => 'open', :name => 'main'
+    can :platforms_for_build, Platform, :visibility => 'open', :platform_type => 'main'
     can [:read, :projects_list], Repository, :platform => {:visibility => 'open'}
     can :read, Product, :platform => {:visibility => 'open'}
 
