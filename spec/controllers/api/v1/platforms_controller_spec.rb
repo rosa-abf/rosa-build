@@ -37,11 +37,26 @@ shared_examples_for 'api platform user with writer rights' do
       put :add_member, {:member_id => member.id, :type => 'User', :id => @platform.id}, :format => :json
     end
 
-    it 'should be able to perform update action' do
+    it 'should be able to perform add_member action' do
       response.should be_success
     end
     it 'ensures that new member has been added to platform' do
       @platform.members.should include(member)
+    end
+  end
+
+  context 'api platform user with remove_member rights' do
+    let(:member) { FactoryGirl.create(:user) }
+    before do
+      @platform.add_member(member)
+      delete :remove_member, {:member_id => member.id, :type => 'User', :id => @platform.id}, :format => :json
+    end
+
+    it 'should be able to perform update action' do
+      response.should be_success
+    end
+    it 'ensures that member has been removed from platform' do
+      @platform.members.should_not include(member)
     end
   end
 
@@ -69,13 +84,29 @@ shared_examples_for 'api platform user without writer rights' do
       put :add_member, {:member_id => member.id, :type => 'User', :id => @platform.id}, :format => :json
     end
 
-    it 'should not be able to perform update action' do
+    it 'should not be able to perform add_member action' do
       response.should_not be_success
     end
     it 'ensures that new member has not been added to platform' do
       @platform.members.should_not include(member)
     end
   end
+
+  context 'api platform user without remove_member rights' do
+    let(:member) { FactoryGirl.create(:user) }
+    before do
+      @platform.add_member(member)
+      delete :remove_member, {:member_id => member.id, :type => 'User', :id => @platform.id}, :format => :json
+    end
+
+    it 'should be able to perform update action' do
+      response.should_not be_success
+    end
+    it 'ensures that member has not been removed from platform' do
+      @platform.members.should include(member)
+    end
+  end
+
 end
 
 shared_examples_for 'api platform user with reader rights for hidden platform' do

@@ -43,13 +43,7 @@ class Api::V1::PlatformsController < Api::V1::BaseController
   end
 
   def add_member
-    if params[:type] == 'User'
-      member = User
-    elsif params[:type] == 'Group'
-      member = Group
-    end
-    member = member.where(:id => params[:member_id]).first if member
-    if member && @platform.add_member(member)
+    if member.present? && @platform.add_member(member)
       render :json => {
         :platform => {
           :id => @platform.id,
@@ -59,6 +53,32 @@ class Api::V1::PlatformsController < Api::V1::BaseController
     else
       render :json => validation_failed(@platform), :status => 422
     end
+  end
+
+  def remove_member
+    if member.present? && @platform.remove_member(member)
+      render :json => {
+        :platform => {
+          :id => @platform.id,
+          :message => "#{member.class.to_s} '#{member.id}' has been removed from platform successfully"
+        }
+      }.to_json
+    else
+      render :json => validation_failed(@platform), :status => 422
+    end
+  end
+
+  private
+
+  def member
+    return @member if @member
+    if params[:type] == 'User'
+      member = User
+    elsif params[:type] == 'Group'
+      member = Group
+    end
+    @member = member.where(:id => params[:member_id]).first if member
+    @member ||= ''
   end
 
 end
