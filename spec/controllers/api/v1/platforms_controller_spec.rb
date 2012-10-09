@@ -8,33 +8,73 @@ shared_examples_for 'api platform user with reader rights' do
     get :index, :format => :json
     response.should render_template(:index)
   end
-end
 
-shared_examples_for 'api platform user with update rights' do
-  before do
-    put :update, {:platform => {:description => 'new description'}, :id => @platform.id}, :format => :json
-  end
-
-  it 'should be able to perform update action' do
-    response.should be_success
-  end
-  it 'ensures that platform has been updated' do
-    @platform.reload
-    @platform.description.should == 'new description'
+  it 'should be able to perform members action' do
+    get :members, :id => @platform.id, :format => :json
+    response.should render_template(:members)
   end
 end
 
-shared_examples_for 'api platform user without update rights' do
-  before do
-    put :update, {:platform => {:description => 'new description'}, :id => @platform.id}, :format => :json
+shared_examples_for 'api platform user with writer rights' do
+
+  context 'api platform user with update rights' do
+    before do
+      put :update, {:platform => {:description => 'new description'}, :id => @platform.id}, :format => :json
+    end
+
+    it 'should be able to perform update action' do
+      response.should be_success
+    end
+    it 'ensures that platform has been updated' do
+      @platform.reload
+      @platform.description.should == 'new description'
+    end
   end
 
-  it 'should not be able to perform update action' do
-    response.should_not be_success
+  context 'api platform user with add_member rights' do
+    let(:member) { FactoryGirl.create(:user) }
+    before do
+      put :add_member, {:member_id => member.id, :type => 'User', :id => @platform.id}, :format => :json
+    end
+
+    it 'should be able to perform update action' do
+      response.should be_success
+    end
+    it 'ensures that new member has been added to platform' do
+      @platform.members.should include(member)
+    end
   end
-  it 'ensures that platform has not been updated' do
-    @platform.reload
-    @platform.description.should_not == 'new description'
+
+end
+
+shared_examples_for 'api platform user without writer rights' do
+
+  context 'api platform user without update rights' do
+    before do
+      put :update, {:platform => {:description => 'new description'}, :id => @platform.id}, :format => :json
+    end
+
+    it 'should not be able to perform update action' do
+      response.should_not be_success
+    end
+    it 'ensures that platform has not been updated' do
+      @platform.reload
+      @platform.description.should_not == 'new description'
+    end
+  end
+
+  context 'api platform user without add_member rights' do
+    let(:member) { FactoryGirl.create(:user) }
+    before do
+      put :add_member, {:member_id => member.id, :type => 'User', :id => @platform.id}, :format => :json
+    end
+
+    it 'should not be able to perform update action' do
+      response.should_not be_success
+    end
+    it 'ensures that new member has not been added to platform' do
+      @platform.members.should_not include(member)
+    end
   end
 end
 
@@ -98,14 +138,14 @@ describe Api::V1::PlatformsController do
       end
     end
 
-    it 'should be able to perform members action', :anonymous_access  => true do
+    it 'should be able to perform members action' do
       get :members, :id => @platform.id, :format => :json
       response.should render_template(:members)
     end
 
     it_should_behave_like 'api platform user with show rights' if APP_CONFIG['anonymous_access']
     it_should_behave_like 'api platform user without reader rights for hidden platform' if APP_CONFIG['anonymous_access']
-    it_should_behave_like 'api platform user without update rights'
+    it_should_behave_like 'api platform user without writer rights'
   end
 
   context 'for global admin' do
@@ -117,7 +157,7 @@ describe Api::V1::PlatformsController do
 
     it_should_behave_like 'api platform user with reader rights'
     it_should_behave_like 'api platform user with reader rights for hidden platform'
-    it_should_behave_like 'api platform user with update rights'
+    it_should_behave_like 'api platform user with writer rights'
   end
 
   context 'for owner user' do
@@ -130,7 +170,7 @@ describe Api::V1::PlatformsController do
 
     it_should_behave_like 'api platform user with reader rights'
     it_should_behave_like 'api platform user with reader rights for hidden platform'
-    it_should_behave_like 'api platform user with update rights'
+    it_should_behave_like 'api platform user with writer rights'
   end
 
   context 'for reader user' do
@@ -154,7 +194,7 @@ describe Api::V1::PlatformsController do
 
     it_should_behave_like 'api platform user with reader rights'
     it_should_behave_like 'api platform user with reader rights for hidden platform'
-    it_should_behave_like 'api platform user without update rights'
+    it_should_behave_like 'api platform user without writer rights'
   end
 
   context 'for simple user' do
@@ -165,6 +205,6 @@ describe Api::V1::PlatformsController do
 
     it_should_behave_like 'api platform user with reader rights'
     it_should_behave_like 'api platform user without reader rights for hidden platform'
-    it_should_behave_like 'api platform user without update rights'
+    it_should_behave_like 'api platform user without writer rights'
   end
 end
