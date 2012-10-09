@@ -65,7 +65,6 @@ class Projects::CommentsController < Projects::BaseController
     if @commentable.class == Issue && pull = @commentable.pull_request
       repo = Grit::Repo.new(pull.path)
       to_commit, from_commit = pull.common_ancestor, repo.commits(pull.head_branch).first
-      @comment.data[:to_commit], @comment.data[:from_commit] = to_commit, from_commit
 
       diff = pull.diff repo, to_commit, from_commit
       diff_path = diff.select {|d| d.a_path == params[:path]}
