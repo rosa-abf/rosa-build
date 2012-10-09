@@ -2,7 +2,7 @@
 class Api::V1::PlatformsController < Api::V1::BaseController
 
   before_filter :authenticate_user!
-  skip_before_filter :authenticate_user!, :only => [:show, :platforms_for_build] if APP_CONFIG['anonymous_access']
+  skip_before_filter :authenticate_user!, :only => [:show, :platforms_for_build, :members] if APP_CONFIG['anonymous_access']
 
   load_and_authorize_resource
 
@@ -28,16 +28,37 @@ class Api::V1::PlatformsController < Api::V1::BaseController
     platform_params[:description] = p[:description] if p[:description]
     if @platform.update_attributes(p)
       render :json => {
-        :platform => {:id => @platform.id,
-                      :message => 'Platform has been updated successfully'}
+        :platform => {
+          :id => @platform.id,
+          :message => 'Platform has been updated successfully'
+        }
       }.to_json
     else
-      render :json => {:message => "Validation Failed", :errors => @platform.errors.messages}.to_json, :status => 422
+      render :json => validation_failed(@platform), :status => 422
     end
   end
 
   def members
     @members = @platform.members.order('name').paginate(paginate_params)
+  end
+
+  def add_member
+    if params[:type] == 'User'
+      member = User
+    elsif params[:type] == 'Group'
+      member = Group
+    end
+    member = member.where(:id => params[:member_id]).first if member
+    if member && @platform.add_member(member)
+      render :json => {
+        :platform => {
+          :id => @platform.id,
+          :message => "#{member.class.to_s} '#{member.id}' has been added to platform successfully"
+        }
+      }.to_json
+    else
+      render :json => validation_failed(@platform), :status => 422
+    end
   end
 
 end

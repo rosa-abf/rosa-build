@@ -26,6 +26,7 @@ Rosa::Application.routes.draw do
         }
         member {
           get :members
+          put :add_member
         }
       end
       resources :repositories, :only => [:show]

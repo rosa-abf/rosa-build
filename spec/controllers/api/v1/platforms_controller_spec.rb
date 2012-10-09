@@ -8,7 +8,34 @@ shared_examples_for 'api platform user with reader rights' do
     get :index, :format => :json
     response.should render_template(:index)
   end
+end
 
+shared_examples_for 'api platform user with update rights' do
+  before do
+    put :update, {:platform => {:description => 'new description'}, :id => @platform.id}, :format => :json
+  end
+
+  it 'should be able to perform update action' do
+    response.should be_success
+  end
+  it 'ensures that platform has been updated' do
+    @platform.reload
+    @platform.description.should == 'new description'
+  end
+end
+
+shared_examples_for 'api platform user without update rights' do
+  before do
+    put :update, {:platform => {:description => 'new description'}, :id => @platform.id}, :format => :json
+  end
+
+  it 'should not be able to perform update action' do
+    response.should_not be_success
+  end
+  it 'ensures that platform has not been updated' do
+    @platform.reload
+    @platform.description.should_not == 'new description'
+  end
 end
 
 shared_examples_for 'api platform user with reader rights for hidden platform' do
@@ -32,12 +59,19 @@ shared_examples_for "api platform user with show rights" do
     get :show, :id => @platform.id, :format => :json
     response.should render_template(:show)
   end
+
+  it 'should be able to perform platforms_for_build action' do
+    get :platforms_for_build, :format => :json
+    response.should render_template(:index)
+  end
 end
 
 shared_examples_for "api platform user without show rights" do
-  it 'should not be able to perform show action' do
-    get :show, :id => @platform.id, :format => :json
-    response.body.should == {"message" => "Access violation to this page!"}.to_json
+  [:show, :members].each do |action|
+    it "should not be able to perform #{ action } action" do
+      get action, :id => @platform.id, :format => :json
+      response.body.should == {"message" => "Access violation to this page!"}.to_json
+    end
   end
 end
 
@@ -45,7 +79,7 @@ describe Api::V1::PlatformsController do
   before do
     stub_symlink_methods
 
-    @platform = FactoryGirl.create(:platform)
+    @platform = FactoryGirl.create(:platform, :visibility => 'open')
     @personal_platform = FactoryGirl.create(:platform, :platform_type => 'personal')
     @user = FactoryGirl.create(:user)
   end
@@ -57,14 +91,21 @@ describe Api::V1::PlatformsController do
       response.status.should == 401
     end
 
-    it "should not be able to perform show action", :anonymous_access  => false do
-      get :show, :id => @platform.id, :format => :json
-      response.status.should == 401
+    [:show, :platforms_for_build].each do |action|
+      it "should not be able to perform #{ action } action", :anonymous_access  => false do
+        get action, :format => :json
+        response.status.should == 401
+      end
+    end
+
+    it 'should be able to perform members action', :anonymous_access  => true do
+      get :members, :id => @platform.id, :format => :json
+      response.should render_template(:members)
     end
 
     it_should_behave_like 'api platform user with show rights' if APP_CONFIG['anonymous_access']
     it_should_behave_like 'api platform user without reader rights for hidden platform' if APP_CONFIG['anonymous_access']
-
+    it_should_behave_like 'api platform user without update rights'
   end
 
   context 'for global admin' do
@@ -76,6 +117,7 @@ describe Api::V1::PlatformsController do
 
     it_should_behave_like 'api platform user with reader rights'
     it_should_behave_like 'api platform user with reader rights for hidden platform'
+    it_should_behave_like 'api platform user with update rights'
   end
 
   context 'for owner user' do
@@ -88,6 +130,7 @@ describe Api::V1::PlatformsController do
 
     it_should_behave_like 'api platform user with reader rights'
     it_should_behave_like 'api platform user with reader rights for hidden platform'
+    it_should_behave_like 'api platform user with update rights'
   end
 
   context 'for reader user' do
@@ -111,6 +154,7 @@ describe Api::V1::PlatformsController do
 
     it_should_behave_like 'api platform user with reader rights'
     it_should_behave_like 'api platform user with reader rights for hidden platform'
+    it_should_behave_like 'api platform user without update rights'
   end
 
   context 'for simple user' do
@@ -121,5 +165,6 @@ describe Api::V1::PlatformsController do
 
     it_should_behave_like 'api platform user with reader rights'
     it_should_behave_like 'api platform user without reader rights for hidden platform'
+    it_should_behave_like 'api platform user without update rights'
   end
 end

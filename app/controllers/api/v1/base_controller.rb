@@ -21,4 +21,8 @@ class Api::V1::BaseController < ApplicationController
     {:page => params[:page], :per_page => 20}
   end
 
+  def validation_failed(subject)
+    {:message => "Validation Failed", :errors => subject.errors.messages}.to_json
+  end
+
 end
