@@ -17,4 +17,8 @@ class Api::V1::BaseController < ApplicationController
     params[:per_page] = 100 if params[:per_page].to_i >100
   end
 
+  def paginate_params
+    {:page => params[:page], :per_page => 20}
+  end
+
 end

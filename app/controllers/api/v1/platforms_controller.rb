@@ -8,14 +8,14 @@ class Api::V1::PlatformsController < Api::V1::BaseController
 
   def index
     @platforms = @platforms.accessible_by(current_ability, :related).
-      by_type(params[:type]).paginate(:page => params[:page], :per_page => 20)
+      by_type(params[:type]).paginate(paginate_params)
   end
 
   def show
   end
 
   def platforms_for_build
-  	@platforms = Platform.main.opened.paginate(:page => params[:page], :per_page => 20)
+  	@platforms = Platform.main.opened.paginate(paginate_params)
   	render :index
   end
 
@@ -34,6 +34,10 @@ class Api::V1::PlatformsController < Api::V1::BaseController
     else
       render :json => {:message => "Validation Failed", :errors => @platform.errors.messages}.to_json, :status => 422
     end
+  end
+
+  def members
+    @members = @platform.members.order('name').paginate(paginate_params)
   end
 
 end
