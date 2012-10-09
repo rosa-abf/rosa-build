@@ -27,7 +27,7 @@ class Ability
     can [:publish_build, :status_build, :pre_build, :post_build, :circle_build, :new_bbdt], BuildList
 
     # Platforms block
-    can [:show, :members, :advisories], Platform, :visibility => 'open'
+    can [:show, :members, :advisories, :platforms_for_build], Platform, :visibility => 'open'
     can [:read, :projects_list], Repository, :platform => {:visibility => 'open'}
     can :read, Product, :platform => {:visibility => 'open'}
 
