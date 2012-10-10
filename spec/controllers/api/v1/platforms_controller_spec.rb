@@ -106,18 +106,29 @@ shared_examples_for 'api platform user without writer rights' do
     end
   end
 
+  context 'should not be able to perform clear action' do
+    it 'for personal platform' do
+      put :clear, :id => @personal_platform.id, :format => :json
+      response.should_not be_success
+    end
+    it 'for main platform' do
+      put :clear, :id => @platform.id, :format => :json
+      response.should_not be_success
+    end
+  end
+
   it_should_behave_like 'api platform user without clone rights'
+  it_should_behave_like 'api platform user without clear rights'
 end
 
-shared_examples_for 'api platform user with clone rights' do
-  before { any_instance_of(Platform, :create_directory => true) }
-  let(:params) { {:id => @platform.id, :platform => {:description => 'new description', :name => 'new_name'}} }
-  it 'should be able to perform clone action' do
-    post :clone, params, :format => :json
-    response.should be_success
+shared_examples_for 'api platform user without clear rights' do
+  it 'for personal platform' do
+    put :clear, :id => @personal_platform.id, :format => :json
+    response.should_not be_success
   end
-  it 'ensures that platform has been cloned' do
-    lambda { post :clone, params, :format => :json }.should change{ Platform.count }.by(1)
+  it 'for main platform' do
+    put :clear, :id => @platform.id, :format => :json
+    response.should_not be_success
   end
 end
 
@@ -213,7 +224,29 @@ describe Api::V1::PlatformsController do
     it_should_behave_like 'api platform user with reader rights'
     it_should_behave_like 'api platform user with reader rights for hidden platform'
     it_should_behave_like 'api platform user with writer rights'
-    it_should_behave_like 'api platform user with clone rights'
+
+    context 'with clone rights' do
+      before { any_instance_of(Platform, :create_directory => true) }
+      let(:params) { {:id => @platform.id, :platform => {:description => 'new description', :name => 'new_name'}} }
+      it 'should be able to perform clone action' do
+        post :clone, params, :format => :json
+        response.should be_success
+      end
+      it 'ensures that platform has been cloned' do
+        lambda { post :clone, params, :format => :json }.should change{ Platform.count }.by(1)
+      end
+    end
+
+    context 'with clear rights for personal platform' do
+      it 'personal platform should be cleared successfully' do
+        put :clear, :id => @personal_platform.id, :format => :json
+        response.should be_success
+      end
+      it 'main platform should not be cleared' do
+        put :clear, :id => @platform.id, :format => :json
+        response.should_not be_success
+      end
+    end
   end
 
   context 'for owner user' do
@@ -228,6 +261,7 @@ describe Api::V1::PlatformsController do
     it_should_behave_like 'api platform user with reader rights for hidden platform'
     it_should_behave_like 'api platform user with writer rights'
     it_should_behave_like 'api platform user without clone rights'
+    it_should_behave_like 'api platform user without clear rights'
   end
 
   context 'for reader user' do
