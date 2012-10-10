@@ -74,6 +74,23 @@ shared_examples_for 'pull request user with project reader rights' do
     post :create, @create_params.merge({:pull_request => {:issue_attributes => {:title => 'already', :body => 'creating'}, :to_ref => 'master', :from_ref => 'master'}, :to_project_id => @project.id})
     PullRequest.joins(:issue).where(:issues => {:title => 'already', :body => 'creating'}).count.should == 0
   end
+
+  it "should create pull request to the same project" do
+    @parent = FactoryGirl.create(:project)
+    @project.update_attributes({:parent_id => @parent}, :without_protection => true)
+
+    lambda{ post :create, @create_params }.should change{ PullRequest.joins(:issue).
+      where(:issues => {:user_id => @user}, :to_project_id => @project, :from_project_id => @project).count }.by(1)
+  end
+
+  it "should create pull request to the parent project" do
+    @parent = FactoryGirl.create(:project)
+    %x(cp -Rf #{Rails.root}/spec/tests.git/* #{@parent.path})
+    @project.update_attributes({:parent_id => @parent}, :without_protection => true)
+
+    lambda{ post :create, @create_params.merge({:to_project => @parent.name_with_owner}) }.should change{ PullRequest.joins(:issue).
+      where(:issues => {:user_id => @user}, :to_project_id => @parent, :from_project_id => @project).count }.by(1)
+  end
 end
 
 shared_examples_for 'user with pull request update rights' do
