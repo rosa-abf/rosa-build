@@ -20,7 +20,7 @@ Rosa::Application.routes.draw do
         }
       end
       resources :arches, :only => [:index]
-      resources :platforms, :only => [:index, :show, :update] do
+      resources :platforms, :only => [:index, :show, :update, :destroy] do
         collection {
           get :platforms_for_build
         }

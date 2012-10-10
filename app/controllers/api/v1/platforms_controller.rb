@@ -72,6 +72,11 @@ class Api::V1::PlatformsController < Api::V1::BaseController
     render :json => json_response('Platform has been cleared successfully')
   end
 
+  def destroy
+    @platform.destroy # later with resque
+    render :json => json_response('Platform has been destroyed successfully')
+  end
+
   private
 
   def json_response(message, nullify_id = false)

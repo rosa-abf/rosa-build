@@ -59,6 +59,23 @@ shared_examples_for 'api platform user with writer rights' do
       @platform.members.should_not include(member)
     end
   end
+
+  context 'api platform user with destroy rights for main platforms only' do
+    it 'should be able to perform destroy action for main platform' do
+      delete :destroy, :id => @platform.id, :format => :json
+      response.should be_success
+    end
+    it 'ensures that main platform has been destroyed' do
+      lambda { delete :destroy, :id => @platform.id, :format => :json }.should change{ Platform.count }.by(-1)
+    end
+    it 'should not be able to perform destroy action for personal platform' do
+      delete :destroy, :id => @personal_platform.id, :format => :json
+      response.should_not be_success
+    end
+    it 'ensures that personal platform has not been destroyed' do
+      lambda { delete :destroy, :id => @personal_platform.id, :format => :json }.should_not change{ Platform.count }
+    end
+  end
 end
 
 shared_examples_for 'api platform user without writer rights' do
@@ -114,6 +131,23 @@ shared_examples_for 'api platform user without writer rights' do
     it 'for main platform' do
       put :clear, :id => @platform.id, :format => :json
       response.should_not be_success
+    end
+  end
+
+  context 'api platform user without destroy rights' do
+    it 'should not be able to perform destroy action for main platform' do
+      delete :destroy, :id => @platform.id, :format => :json
+      response.should_not be_success
+    end
+    it 'ensures that main platform has not been destroyed' do
+      lambda { delete :destroy, :id => @platform.id, :format => :json }.should_not change{ Platform.count }
+    end
+    it 'should not be able to perform destroy action for personal platform' do
+      delete :destroy, :id => @personal_platform.id, :format => :json
+      response.should_not be_success
+    end
+    it 'ensures that personal platform has not been destroyed' do
+      lambda { delete :destroy, :id => @personal_platform.id, :format => :json }.should_not change{ Platform.count }
     end
   end
 
