@@ -19,6 +19,17 @@ class Api::V1::PlatformsController < Api::V1::BaseController
   	render :index
   end
 
+  def create
+    platform_params = params[:platform] || {}
+    owner = User.where(:id => platform_params[:owner_id]).first
+    @platform.owner = owner || get_owner
+    if @platform.save
+      render :json => json_response('Platform has been created successfully')
+    else
+      render :json => json_response('Platform has not been created', true), :status => 422
+    end
+  end
+
   def update
     platform_params = params[:platform] || {}
     owner = User.where(:id => platform_params[:owner_id]).first

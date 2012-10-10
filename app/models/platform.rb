@@ -24,6 +24,11 @@ class Platform < ActiveRecord::Base
   validates :visibility, :presence => true, :inclusion => {:in => VISIBILITIES}
   validates :name, :uniqueness => {:case_sensitive => false}, :presence => true, :format => { :with => /^[a-zA-Z0-9_\-\.]+$/ }
   validates :distrib_type, :presence => true, :inclusion => {:in => APP_CONFIG['distr_types']}
+  validate lambda {
+    if released_was && !released
+      errors.add(:released, I18n.t('flash.platform.released_status_can_not_be_changed'))
+    end
+  }
 
   before_create :create_directory, :if => lambda {Thread.current[:skip]} # TODO remove this when core will be ready
   before_create :xml_rpc_create, :unless => lambda {Thread.current[:skip]}

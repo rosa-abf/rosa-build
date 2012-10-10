@@ -151,30 +151,32 @@ shared_examples_for 'api platform user without writer rights' do
     end
   end
 
-  it_should_behave_like 'api platform user without clone rights'
-  it_should_behave_like 'api platform user without clear rights'
+  it_should_behave_like 'api platform user without global admin rights'
 end
 
-shared_examples_for 'api platform user without clear rights' do
-  it 'for personal platform' do
-    put :clear, :id => @personal_platform.id, :format => :json
-    response.should_not be_success
+shared_examples_for 'api platform user without global admin rights' do
+  context 'should not be able to perform clear action' do
+    it 'for personal platform' do
+      put :clear, :id => @personal_platform.id, :format => :json
+      response.should_not be_success
+    end
+    it 'for main platform' do
+      put :clear, :id => @platform.id, :format => :json
+      response.should_not be_success
+    end
   end
-  it 'for main platform' do
-    put :clear, :id => @platform.id, :format => :json
-    response.should_not be_success
-  end
-end
 
-shared_examples_for 'api platform user without clone rights' do
-  before { any_instance_of(Platform, :create_directory => true) }
-  let(:params) { {:id => @platform.id, :platform => {:description => 'new description', :name => 'new_name'}} }
-  it 'should not be able to perform clone action' do
-    post :clone, params, :format => :json
-    response.should_not be_success
-  end
-  it 'ensures that platform has not been cloned' do
-    lambda { post :clone, params, :format => :json }.should_not change{ Platform.count }
+  [:create, :clone].each do |action|
+    context "api platform user without #{action} rights" do
+      before { any_instance_of(Platform, :create_directory => true) }
+      it "should not be able to perform #{action} action" do
+        post action, clone_or_create_params, :format => :json
+        response.should_not be_success
+      end
+      it "ensures that platform has not been #{action}d" do
+        lambda { post action, clone_or_create_params, :format => :json }.should_not change{ Platform.count }
+      end
+    end
   end
 end
 
@@ -216,6 +218,7 @@ shared_examples_for "api platform user without show rights" do
 end
 
 describe Api::V1::PlatformsController do
+  let(:clone_or_create_params) { {:id => @platform.id, :platform => {:description => 'new description', :name => 'new_name', :owner_id => @user.id, :distrib_type => APP_CONFIG['distr_types'].first}} }
   before do
     stub_symlink_methods
 
@@ -251,7 +254,6 @@ describe Api::V1::PlatformsController do
   context 'for global admin' do
     before do
       @admin = FactoryGirl.create(:admin)
-      @user = FactoryGirl.create(:user)
       http_login(@admin)
     end
 
@@ -259,33 +261,26 @@ describe Api::V1::PlatformsController do
     it_should_behave_like 'api platform user with reader rights for hidden platform'
     it_should_behave_like 'api platform user with writer rights'
 
-    context 'with clone rights' do
-      before { any_instance_of(Platform, :create_directory => true) }
-      let(:params) { {:id => @platform.id, :platform => {:description => 'new description', :name => 'new_name'}} }
-      it 'should be able to perform clone action' do
-        post :clone, params, :format => :json
-        response.should be_success
-      end
-      it 'ensures that platform has been cloned' do
-        lambda { post :clone, params, :format => :json }.should change{ Platform.count }.by(1)
+    [:clone, :create].each do |action|
+      context "with #{action} rights" do
+        before do
+          any_instance_of(Platform, :create_directory => true)
+          clone_or_create_params[:platform][:owner_id] = @admin.id
+        end
+        it "should be able to perform #{action} action" do
+          post action, clone_or_create_params, :format => :json
+          response.should be_success
+        end
+        it "ensures that platform has been #{action}d" do
+          lambda { post action, clone_or_create_params, :format => :json }.should change{ Platform.count }.by(1)
+        end
       end
     end
 
-    context 'with clear rights for personal platform' do
-      it 'personal platform should be cleared successfully' do
-        put :clear, :id => @personal_platform.id, :format => :json
-        response.should be_success
-      end
-      it 'main platform should not be cleared' do
-        put :clear, :id => @platform.id, :format => :json
-        response.should_not be_success
-      end
-    end
   end
 
   context 'for owner user' do
     before do
-      @user = FactoryGirl.create(:user)
       http_login(@user)
       @platform.owner = @user; @platform.save
       @platform.relations.create!(:actor_type => 'User', :actor_id => @user.id, :role => 'admin')
@@ -294,13 +289,11 @@ describe Api::V1::PlatformsController do
     it_should_behave_like 'api platform user with reader rights'
     it_should_behave_like 'api platform user with reader rights for hidden platform'
     it_should_behave_like 'api platform user with writer rights'
-    it_should_behave_like 'api platform user without clone rights'
-    it_should_behave_like 'api platform user without clear rights'
+    it_should_behave_like 'api platform user without global admin rights'
   end
 
   context 'for reader user' do
     before do
-      @user = FactoryGirl.create(:user)
       http_login(@user)
       @platform.relations.create!(:actor_type => 'User', :actor_id => @user.id, :role => 'reader')
       @personal_platform.relations.create!(:actor_type => 'User', :actor_id => @user.id, :role => 'reader')
@@ -324,7 +317,6 @@ describe Api::V1::PlatformsController do
 
   context 'for simple user' do
     before do
-      @user = FactoryGirl.create(:user)
       http_login(@user)
     end
 
