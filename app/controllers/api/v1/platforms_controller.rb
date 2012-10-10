@@ -85,7 +85,15 @@ class Api::V1::PlatformsController < Api::V1::BaseController
   private
 
   def json_response(message, nullify_id = false)
-    id = nullify_id ? nil : @platform.id
+    if nullify_id
+      errors = @platform.errors.full_messages.join('. ')
+      if errors.present?
+        message << '. ' << errors
+      end
+      id = nil
+    else
+      id = @platform.id
+    end
     { :platform => {:id => id, :message => message} }.to_json
   end
 
