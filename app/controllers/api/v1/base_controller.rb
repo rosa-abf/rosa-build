@@ -1,7 +1,6 @@
 # -*- encoding : utf-8 -*-
 class Api::V1::BaseController < ApplicationController
   
-  before_filter :restrict_paginate, :only => :index
   #respond_to :json
 
   rescue_from CanCan::AccessDenied do |exception|
@@ -12,13 +11,11 @@ class Api::V1::BaseController < ApplicationController
 
   protected
 
-  def restrict_paginate
-    params[:per_page] = 30  if params[:per_page].to_i < 1
-    params[:per_page] = 100 if params[:per_page].to_i >100
-  end
-
   def paginate_params
-    {:page => params[:page], :per_page => 20}
+    per_page = params[:per_page].to_i
+    per_page = 20 if per_page < 1
+    per_page = 100 if per_page >100
+    {:page => params[:page], :per_page => per_page}
   end
 
   def validation_failed(subject)
