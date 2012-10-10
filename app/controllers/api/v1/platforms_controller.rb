@@ -20,13 +20,10 @@ class Api::V1::PlatformsController < Api::V1::BaseController
   end
 
   def update
-    p = params[:platform] || {}
-    owner = User.where(:id => p[:owner_id]).first
-    platform_params = {}
-    platform_params[:owner]       = owner if owner
-    platform_params[:released]    = p[:released] if p[:released]
-    platform_params[:description] = p[:description] if p[:description]
-    if @platform.update_attributes(p)
+    platform_params = params[:platform] || {}
+    owner = User.where(:id => platform_params[:owner_id]).first
+    platform_params[:owner] = owner if owner
+    if @platform.update_attributes(platform_params)
       render :json => json_response('Platform has been updated successfully')
     else
       render :json => json_response('Platform has not been updated', true), :status => 422
@@ -54,11 +51,8 @@ class Api::V1::PlatformsController < Api::V1::BaseController
   end
 
   def clone
-    p = params[:platform] || {}
-    platform_params = {}
-    platform_params[:description] = p[:description] if p[:description]
-    platform_params[:name]        = p[:name] if p[:name]
-    platform_params[:owner]       = current_user
+    platform_params = params[:platform] || {}
+    platform_params[:owner] = current_user
     @cloned = @platform.full_clone(platform_params)
     if @cloned.persisted?
       render :json => json_response('Platform has been cloned successfully')
