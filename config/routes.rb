@@ -28,6 +28,8 @@ Rosa::Application.routes.draw do
           get :members
           put :add_member
           delete :remove_member
+          post :clone
+          put :clear
         }
       end
       resources :repositories, :only => [:show]

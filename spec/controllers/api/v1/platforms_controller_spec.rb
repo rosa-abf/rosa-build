@@ -59,7 +59,6 @@ shared_examples_for 'api platform user with writer rights' do
       @platform.members.should_not include(member)
     end
   end
-
 end
 
 shared_examples_for 'api platform user without writer rights' do
@@ -107,6 +106,31 @@ shared_examples_for 'api platform user without writer rights' do
     end
   end
 
+  it_should_behave_like 'api platform user without clone rights'
+end
+
+shared_examples_for 'api platform user with clone rights' do
+  before { any_instance_of(Platform, :create_directory => true) }
+  let(:params) { {:id => @platform.id, :platform => {:description => 'new description', :name => 'new_name'}} }
+  it 'should be able to perform clone action' do
+    post :clone, params, :format => :json
+    response.should be_success
+  end
+  it 'ensures that platform has been cloned' do
+    lambda { post :clone, params, :format => :json }.should change{ Platform.count }.by(1)
+  end
+end
+
+shared_examples_for 'api platform user without clone rights' do
+  before { any_instance_of(Platform, :create_directory => true) }
+  let(:params) { {:id => @platform.id, :platform => {:description => 'new description', :name => 'new_name'}} }
+  it 'should not be able to perform clone action' do
+    post :clone, params, :format => :json
+    response.should_not be_success
+  end
+  it 'ensures that platform has not been cloned' do
+    lambda { post :clone, params, :format => :json }.should_not change{ Platform.count }
+  end
 end
 
 shared_examples_for 'api platform user with reader rights for hidden platform' do
@@ -189,6 +213,7 @@ describe Api::V1::PlatformsController do
     it_should_behave_like 'api platform user with reader rights'
     it_should_behave_like 'api platform user with reader rights for hidden platform'
     it_should_behave_like 'api platform user with writer rights'
+    it_should_behave_like 'api platform user with clone rights'
   end
 
   context 'for owner user' do
@@ -202,6 +227,7 @@ describe Api::V1::PlatformsController do
     it_should_behave_like 'api platform user with reader rights'
     it_should_behave_like 'api platform user with reader rights for hidden platform'
     it_should_behave_like 'api platform user with writer rights'
+    it_should_behave_like 'api platform user without clone rights'
   end
 
   context 'for reader user' do
