@@ -47,6 +47,10 @@ shared_examples_for 'create build list via api' do
     #@project.build_lists.last.commit_hash.should == @project.repo.commits('4.7.5.3').last.id
     @project.build_lists.last.commit_hash.should == @params[:commit_hash]
   end
+
+  it 'should not create without existing commit hash in project' do
+    lambda{ post :create, @create_params.deep_merge(:build_list => {:commit_hash => 'wrong'})}.should change{@project.build_lists.count}.by(0)
+  end
 end
 
 shared_examples_for 'not create build list via api' do
@@ -383,13 +387,13 @@ describe Api::V1::BuildListsController do
 
       # Build Lists:
       @build_list1 = FactoryGirl.create(:build_list_core)
-      
+
       @build_list2 = FactoryGirl.create(:build_list_core)
       @build_list2.project.update_column(:visibility, 'hidden')
-      
+
       project = FactoryGirl.create(:project, :visibility => 'hidden', :owner => @user)
       @build_list3 = FactoryGirl.create(:build_list_core, :project => project)
-      
+
       @build_list4 = FactoryGirl.create(:build_list_core)
       @build_list4.project.update_column(:visibility, 'hidden')
       @build_list4.project.relations.create! :role => 'reader', :actor_id => @user.id, :actor_type => 'User'

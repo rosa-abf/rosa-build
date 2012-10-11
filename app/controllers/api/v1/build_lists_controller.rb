@@ -1,12 +1,12 @@
 # -*- encoding : utf-8 -*-
 class Api::V1::BuildListsController < Api::V1::BaseController
-  
+
   before_filter :authenticate_user!
   skip_before_filter :authenticate_user!, :only => [:show, :index] if APP_CONFIG['anonymous_access']
-  
+
   load_and_authorize_resource :project, :only => :index
   load_and_authorize_resource :build_list, :only => [:show, :create, :cancel, :publish, :reject_publish]
-  
+
   def index
     filter = BuildList::Filter.new(nil, current_user, params[:filter] || {})
     @build_lists = filter.find.scoped(:include => [:save_to_platform, :project, :user, :arch])
@@ -23,7 +23,6 @@ class Api::V1::BuildListsController < Api::V1::BaseController
       bl_params[:auto_publish] = false unless save_to_repository.publish_without_qa?
 
       @build_list = project.build_lists.build(bl_params)
-      @build_list.project_version = @build_list.commit_hash
 
       @build_list.user = current_user
       @build_list.priority = current_user.build_priority # User builds more priority than mass rebuild with zero priority

@@ -30,7 +30,6 @@ describe Projects::BuildListsController do
   shared_examples_for 'create build list' do
     before {
       @project.update_attribute(:repositories, @platform.repositories)
-      test_git_commit(@project)
     }
 
     it 'should be able to perform new action' do
@@ -53,12 +52,19 @@ describe Projects::BuildListsController do
       post :create, {:owner_name => @project.owner.uname, :project_name => @project.name}.merge(@create_params).deep_merge(:build_list => {:project_version => "4.7.5.3"})
       @project.build_lists.last.commit_hash.should == @project.repo.commits('4.7.5.3').last.id
     end
+
+    it 'should not be able to create with wrong project version' do
+      lambda{ post :create, {:owner_name => @project.owner.uname, :project_name => @project.name}.merge(@create_params).deep_merge(:build_list => {:project_version => "latest_wrong", :commit_hash => nil})}.should change{@project.build_lists.count}.by(0)
+    end
+
+    it 'should not be able to create with wrong git hash' do
+      lambda{ post :create, {:owner_name => @project.owner.uname, :project_name => @project.name}.merge(@create_params).deep_merge(:build_list => {:commit_hash => 'wrong'})}.should change{@project.build_lists.count}.by(0)
+    end
   end
 
   shared_examples_for 'not create build list' do
     before {
       @project.update_attribute(:repositories, @platform.repositories)
-      test_git_commit(@project)
     }
 
     it 'should not be able to perform new action' do
@@ -78,7 +84,7 @@ describe Projects::BuildListsController do
     before(:each) do
       @platform = FactoryGirl.create(:platform_with_repos)
       @create_params = {
-        :build_list => { 
+        :build_list => {
           :project_version => 'latest_master',
           :save_to_repository_id => @platform.repositories.first.id,
           :update_type => 'security',
@@ -119,13 +125,13 @@ describe Projects::BuildListsController do
       context 'for all build lists' do
         before(:each) do
           @build_list1 = FactoryGirl.create(:build_list_core)
-          
+
           @build_list2 = FactoryGirl.create(:build_list_core)
           @build_list2.project.update_column(:visibility, 'hidden')
-          
+
           project = FactoryGirl.create(:project, :visibility => 'hidden', :owner => @user)
           @build_list3 = FactoryGirl.create(:build_list_core, :project => project)
-          
+
           @build_list4 = FactoryGirl.create(:build_list_core)
           @build_list4.project.update_column(:visibility, 'hidden')
           @build_list4.project.relations.create! :role => 'reader', :actor_id => @user.id, :actor_type => 'User'
@@ -203,17 +209,17 @@ describe Projects::BuildListsController do
 
         @show_params = {:owner_name => @project.owner.uname, :project_name => @project.name, :id => @build_list.id}
       end
-  
+
       context 'for all build lists' do
         before(:each) do
           @build_list1 = FactoryGirl.create(:build_list_core)
-          
+
           @build_list2 = FactoryGirl.create(:build_list_core)
           @build_list2.project.update_column(:visibility, 'hidden')
-          
+
           project = FactoryGirl.create(:project, :visibility => 'hidden', :owner => @user)
           @build_list3 = FactoryGirl.create(:build_list_core, :project => project)
-          
+
           @build_list4 = FactoryGirl.create(:build_list_core)
           @build_list4.project.update_column(:visibility, 'hidden')
           @build_list4.project.relations.create! :role => 'reader', :actor_id => @user.id, :actor_type => 'User'
@@ -286,13 +292,13 @@ describe Projects::BuildListsController do
         get :index
         assigns[:build_server_status].should == {}
         response.should be_success
-      end    
+      end
     end
   end
 
   context 'filter' do
-    
-    before(:each) do 
+
+    before(:each) do
       set_session_for FactoryGirl.create(:admin)
 
       @build_list1 = FactoryGirl.create(:build_list_core)
