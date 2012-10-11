@@ -1,0 +1,13 @@
+-if item[0].blank?
+  -item[1].each do |comment|
+    = render 'projects/comments/comment', :comment => comment, :project => @project, :commentable => @issue, :add_id => nil
+-else
+  -comment = item[1].first
+  .file
+    %a{:name => "#"}
+    .top
+      .l=comment.data[:view_path]
+      .r=link_to "view full changes", '#'
+      .clear
+    .diff_data=render_diff(comment.inline_diff(@repo), 0, item[1], comment.data[:path])
+

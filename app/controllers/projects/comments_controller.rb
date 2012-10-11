@@ -68,21 +68,30 @@ class Projects::CommentsController < Projects::BaseController
 
       diff = pull.diff repo, to_commit, from_commit
       diff_path = diff.select {|d| d.a_path == params[:path]}
-      return false if diff_path.blank?
-      comment_line = params[:line].to_i
-      return false if comment_line == 0 # NB! also dont want create comment to the diff header
+      return false unless @comment.actual_inline_comment?(diff, true)
 
-      line_number, line_presence = -1, false
+      comment_line, line_number, strings = params[:line].to_i, -1, []
       diff_path[0].diff.each_line do |line|
         line_number = line_number.succ
         # Save 2 lines above and bottom of the diff comment line
         break if line_number > comment_line + 2
         if (comment_line-2..comment_line+2).include? line_number
           @comment.data["line#{line_number-comment_line}"] = line.chomp
-          line_presence = true
+        end
+
+        # Save lines from the closest header for rendering in the discussion
+        if line_number < comment_line - 2
+          # Header is the line like "@@ -47,9 +50,8 @@ def initialize(user)"
+          if line =~ /^@@ [+-]([0-9]+)(?:,([0-9]+))? [+-]([0-9]+)(?:,([0-9]+))? @@/
+            strings = line
+          else
+            strings << line
+          end
         end
       end
-      return line_presence
+      @comment.data[:strings] = strings
+      @comment.data[:view_path] = h(diff_path[0].renamed_file ? "#{diff_path[0].a_path.rtruncate 60} -> #{diff_path[0].b_path.rtruncate 60}" : diff_path[0].a_path.rtruncate(120))
+      return true
     end
   end
 end

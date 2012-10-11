@@ -21,18 +21,29 @@ module DiffHelper
   end
 
   #include Git::Diff::InlineCallback
-  def render_diff(diff, diff_counter)
-    diff_display ||= Diff::Display::Unified.new(diff.diff)
+  def render_diff(diff, diff_counter, comments, diffpath = nil)
+    if diff.respond_to?(:diff)
+      filepath = diff.a_path
+      diff = diff.diff
+      in_discussion = false
+      comments = comments.select{|c| c.data.try('[]', :path) == filepath}
+    else
+      filepath = diffpath
+      in_discussion = true
+    end
+
+    diff_display ||= Diff::Display::Unified.new(diff)
     url = if @pull
              @pull.id ? polymorphic_path([@project, @pull]) : ''
            elsif @commit
              commit_path @project, @commit
            end
-    prepare(diff, url, diff_counter)
+    prepare(url, diff_counter, filepath, comments, in_discussion)
 
     res = "<table class='diff inline' cellspacing='0' cellpadding='0'>"
     res += "<tbody>"
     res += renderer diff_display.data #diff_display.render(Git::Diff::InlineCallback.new comments, path)
+    res += tr_line_comments(comments) if in_discussion
     res += "</tbody>"
     res += "</table>"
     res.html_safe
@@ -41,9 +52,9 @@ module DiffHelper
   ########################################################
   # FIXME: Just to dev, remove to lib
   ########################################################
-  def prepare(diff, url, diff_counter)
-    @diff, @num_line, @filepath, @url, @diff_counter = diff, -1, diff.a_path, url, diff_counter
-    @line_comments = @comments.select{|c| c.data.try('[]', :path) == @filepath}
+  def prepare(url, diff_counter, filepath, comments, in_discussion)
+    @num_line, @url, @diff_counter, @in_discussion = -1, url, diff_counter, in_discussion
+    @filepath, @line_comments = filepath, comments
   end
 
   def headerline(line)
@@ -216,29 +227,26 @@ module DiffHelper
   end
 
   def render_line_comments
-    comments = @line_comments.select do |c|
-      next false if c.data.try('[]', :line) != @num_line.to_s
-      next true if c.commentable_type == 'Grit::Commit'
-      #diff = Diff::Display::Unified.new(@diff.diff)
-      res, ind = true, 0
-      @diff.diff.each_line do |line|
-        res = false if (@num_line-2..@num_line+2).include?(ind) && c.data.try('[]', "line#{ind-@num_line}") != line.chomp
-        ind = ind + 1
+    unless @in_discussion
+      comments = @line_comments.select do |c|
+        c.data.try('[]', :line) == @num_line.to_s && c.actual_inline_comment?(@diff)
       end
-      res
+      tr_line_comments(comments) if comments.count > 0
     end
+  end
+
+  def td_line_link id, num
+    "<td class='line_numbers' id='#{id}'><a href='#{@url}##{id}'>#{num}</a></td>"
+  end
+
+  def tr_line_comments comments
     "<tr class='inline-comments'>
       <td class='line_numbers' colspan='2'>#{comments.count}</td>
       <td>
         #{render("projects/comments/line_list", :list => comments, :project => @project, :commentable => @commentable)}
         #{link_to t('layout.comments.new_inline'), new_comment_path, :class => 'new_inline_comment button'}
       </td>
-
-     </tr>" if comments.count > 0
-  end
-
-  def td_line_link id, num
-    "<td class='line_numbers' id='#{id}'><a href='#{@url}##{id}'>#{num}</a></td>"
+     </tr>"
   end
 
   def new_comment_path

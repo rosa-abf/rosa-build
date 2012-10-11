@@ -70,6 +70,7 @@ class PullRequest < ActiveRecord::Base
       else
         send(new_status)
       end
+      self.comments.each {|c| c.data[:actual]=nil; c.save} # maybe need add new column 'actual'?
     else
       self.status = new_status == 'block' ? 'blocked' : new_status
     end

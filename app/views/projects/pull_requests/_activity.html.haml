@@ -4,19 +4,8 @@
 
 - commits_queue = []
 - merge_activity(@comments, @commits).each do |item| #
-  - if item.is_a?(Comment)
-    - if commits_queue.present?
-      = render 'projects/git/commits/commits_small', :commits => commits_queue
-      - commits_queue = []
-    = render 'projects/comments/comment', :comment => item, :project => @project, :commentable => @issue, :add_id => nil
-  - else
-    - commits_queue << item
-    - comments_for_commit = Comment.for_commit(item)
-    - if comments_for_commit.present?
-      = render 'projects/git/commits/commits_small', :commits => commits_queue
-      - comments_for_commit.each do |comment|
-        = render 'projects/comments/comment', :comment => comment, :project => @project, :commentable => item, :add_id => nil
-      - commits_queue = []
-- if commits_queue.present?
-  = render 'projects/git/commits/commits_small', :commits => commits_queue
+  - if item.is_a? Grit::Commit
+    = render 'projects/git/commits/commits_small', :commits => [item]
+  - elsif item.is_a? Array
+    = render 'projects/pull_requests/discussion_comments', :item => item, :project => @project, :commentable => @issue, :add_id => nil
 
