@@ -241,7 +241,7 @@ describe Api::V1::PlatformsController do
       end
     end
 
-    it 'should be able to perform members action' do
+    it 'should be able to perform members action', :anonymous_access  => true do
       get :members, :id => @platform.id, :format => :json
       response.should render_template(:members)
     end
