@@ -35,6 +35,9 @@ Rosa::Application.routes.draw do
       resources :repositories, :only => [:show]
       resources :projects, :only => [:show] do
         collection { get :get_id }
+        member {
+          get :refs_list
+        }
       end
     end
   end
