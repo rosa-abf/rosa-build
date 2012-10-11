@@ -32,8 +32,13 @@ class BuildList < ActiveRecord::Base
       errors.add(:save_to_repository, I18n.t('flash.build_list.wrong_include_repos')) unless build_for_platform.repository_ids.include? ir.to_i
     }
   }
+  validate lambda {
+    if commit_hash.blank? || project.repo.commit(commit_hash).blank?
+      errors.add :commit_hash, I18n.t('flash.build_list.wrong_commit_hash', :commit_hash => commit_hash)
+    end
+  }
 
-  LIVE_TIME = 4.week # for unpublished 
+  LIVE_TIME = 4.week # for unpublished
   MAX_LIVE_TIME = 3.month # for published
 
   # The kernel does not send these statuses directly
@@ -110,6 +115,7 @@ class BuildList < ActiveRecord::Base
 
   after_commit :place_build
   after_destroy :delete_container
+  before_validation :set_commit_and_version
 
   @queue = :clone_and_build
 
@@ -204,7 +210,7 @@ class BuildList < ActiveRecord::Base
   def set_version_and_tag
     pkg = self.packages.where(:package_type => 'source', :project_id => self.project_id).first
     # TODO: remove 'return' after deployment ABF kernel 2.0
-    return if pkg.nil? # For old client that does not sends data about packages 
+    return if pkg.nil? # For old client that does not sends data about packages
     self.package_version = "#{pkg.platform.name}-#{pkg.version}-#{pkg.release}"
     system("cd #{self.project.repo.path} && git tag #{self.package_version} #{self.commit_hash}") # TODO REDO through grit
     save
@@ -293,7 +299,7 @@ class BuildList < ActiveRecord::Base
   end
 
   def in_work?
-    status == BuildServer::BUILD_STARTED 
+    status == BuildServer::BUILD_STARTED
     #[WAITING_FOR_RESPONSE, BuildServer::BUILD_PENDING, BuildServer::BUILD_STARTED].include?(status)
   end
 
@@ -329,6 +335,15 @@ class BuildList < ActiveRecord::Base
       p.platform = save_to_platform
       p.package_type = package_type
       yield p
+    end
+  end
+
+  def set_commit_and_version
+    if project_version.present? && commit_hash.blank?
+      self.commit_hash = project.repo.commits(project_version.match(/^latest_(.+)/).to_a.last ||
+                    project_version).try(:first).try(:id)
+    elsif project_version.blank? && commit_hash.present?
+      self.project_version = commit_hash
     end
   end
 end

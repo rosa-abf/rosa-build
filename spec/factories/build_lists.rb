@@ -8,11 +8,11 @@ FactoryGirl.define do
     association :arch
     build_for_platform {|bl| bl.save_to_platform}
     save_to_repository {|bl| bl.save_to_platform.repositories.first}
-    project_version "1.0"
     build_requires true
     update_type 'security'
     include_repos {|bl| bl.save_to_platform.repositories.map(&:id)}
-    commit_hash '1234567890abcdef1234567890abcdef12345678'
+    project_version 'latest_master'
+    after(:build) {|bl| test_git_commit bl.project }
   end
 
   factory :build_list_core, :parent => :build_list do
