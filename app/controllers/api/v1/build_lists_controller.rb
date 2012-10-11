@@ -10,7 +10,7 @@ class Api::V1::BuildListsController < Api::V1::BaseController
   def index
     filter = BuildList::Filter.new(nil, current_user, params[:filter] || {})
     @build_lists = filter.find.scoped(:include => [:save_to_platform, :project, :user, :arch])
-    @build_lists = @build_lists.recent.paginate :page => params[:page], :per_page => params[:per_page]
+    @build_lists = @build_lists.recent.paginate(paginate_params)
   end
 
   def create

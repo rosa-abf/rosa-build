@@ -9,7 +9,7 @@ json.platform do |json|
   end
   json.repositories @platform.repositories do |json_repos, repo|
     json_repos.(repo, :id, :name)
-    json_repos.url api_v1_repository_path(repo.name, :format => :json)
+    json_repos.url api_v1_repository_path(repo.id, :format => :json)
   end
 end
 json.url api_v1_platform_path(@platform, :format => :json)

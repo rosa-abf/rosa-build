@@ -24,12 +24,17 @@ end
 shared_examples_for "api projects user without show rights" do
   it "should show access violation instead of project data" do
     get :show, :id => @project.id, :format => :json
-    response.body.should == {"message" => "Access violation to this page!"}.to_json
+    response.should_not be_success
+  end
+
+  it "should show access violation instead of project refs_list" do
+    get :refs_list, :id => @project.id, :format => :json
+    response.should_not be_success
   end
 
   it "should access violation instead of project data by get_id" do
     get :get_id, :name => @project.name, :owner => @project.owner.uname, :format => :json
-    response.body.should == {"message" => "Access violation to this page!"}.to_json
+    response.should_not be_success
   end
 end
 
@@ -37,6 +42,11 @@ shared_examples_for "api projects user with show rights" do
   it "should show project data" do
     get :show, :id => @project.id, :format => :json
     render_template(:show)
+  end
+
+  it "should show refs_list of project" do
+    get :refs_list, :id => @project.id, :format => :json
+    render_template(:refs_list)
   end
 
   context 'project find by get_id' do
@@ -70,18 +80,12 @@ describe Api::V1::ProjectsController do
 
   context 'for guest' do
     
-    it 'should be able to perform get_id action', :anonymous_access  => false do
-      get :get_id, :format => :json
-      response.status.should == 401
+    if APP_CONFIG['anonymous_access']
+      it_should_behave_like 'api projects user with reader rights'
+      it_should_behave_like 'api projects user without reader rights for hidden project'
+    else
+      it_should_behave_like 'api projects user without show rights'
     end
-
-    it 'should be able to perform show action', :anonymous_access  => false do
-      get :show, :id => @project.id, :format => :json
-      response.status.should == 401
-    end
-
-    it_should_behave_like 'api projects user with reader rights' if APP_CONFIG['anonymous_access']
-    it_should_behave_like 'api projects user without reader rights for hidden project' if APP_CONFIG['anonymous_access']
 
   end
 

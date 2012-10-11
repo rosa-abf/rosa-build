@@ -2,7 +2,7 @@
 class Api::V1::ProjectsController < Api::V1::BaseController
   
   before_filter :authenticate_user!
-  skip_before_filter :authenticate_user!, :only => [:get_id, :show] if APP_CONFIG['anonymous_access']
+  skip_before_filter :authenticate_user!, :only => [:get_id, :show, :refs] if APP_CONFIG['anonymous_access']
   
   load_and_authorize_resource
 
@@ -15,6 +15,9 @@ class Api::V1::ProjectsController < Api::V1::BaseController
   end
 
   def show
-
   end
+
+  def refs_list
+  end
+
 end

@@ -49,6 +49,7 @@ ru:
 
   flash:
     platform:
+      released_status_can_not_be_changed: Released статус платформы не может быть изменен, если платформа уже выпущена
       saved: Платформа успешно сохранена
       created: Платформа успешно добавлена
       save_error: Не удалось сохранить платформу
