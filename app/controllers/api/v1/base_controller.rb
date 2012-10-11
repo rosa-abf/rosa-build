@@ -17,23 +17,23 @@ class Api::V1::BaseController < ApplicationController
     {:page => params[:page], :per_page => per_page}
   end
 
-  def render_json_response(message, status = 200)
-    id = status != 200 ? nil : @subject.id
+  def render_json_response(subject, message, status = 200)
+    id = status != 200 ? nil : subject.id
 
     render :json => {
-      @subject.class.name.downcase.to_sym => {
+      subject.class.name.downcase.to_sym => {
         :id => id,
         :message => message
       }
     }.to_json, :status => status
   end
 
-  def render_validation_error(message)
-    errors = @subject.errors.full_messages.join('. ')
+  def render_validation_error(subject, message)
+    errors = subject.errors.full_messages.join('. ')
     if errors.present?
       message << '. ' << errors
     end
-    render_json_response(message, 422)
+    render_json_response(subject, message, 422)
   end
 
 end

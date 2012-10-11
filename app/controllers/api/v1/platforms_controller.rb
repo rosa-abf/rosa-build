@@ -4,7 +4,6 @@ class Api::V1::PlatformsController < Api::V1::BaseController
   skip_before_filter :authenticate_user!, :only => [:show, :platforms_for_build, :members] if APP_CONFIG['anonymous_access']
 
   load_and_authorize_resource
-  before_filter :set_subject, :except => [:index, :platforms_for_build, :show, :members]
 
   def index
     @platforms = @platforms.accessible_by(current_ability, :related).
@@ -24,9 +23,9 @@ class Api::V1::PlatformsController < Api::V1::BaseController
     owner = User.where(:id => platform_params[:owner_id]).first
     @platform.owner = owner || get_owner
     if @platform.save
-      render_json_response 'Platform has been created successfully'
+      render_json_response @platform, 'Platform has been created successfully'
     else
-      render_validation_error 'Platform has not been created'
+      render_validation_error @platform, 'Platform has not been created'
     end
   end
 
@@ -35,9 +34,9 @@ class Api::V1::PlatformsController < Api::V1::BaseController
     owner = User.where(:id => platform_params[:owner_id]).first
     platform_params[:owner] = owner if owner
     if @platform.update_attributes(platform_params)
-      render_json_response 'Platform has been updated successfully'
+      render_json_response @platform, 'Platform has been updated successfully'
     else
-      render_validation_error 'Platform has not been updated'
+      render_validation_error @platform, 'Platform has not been updated'
     end
   end
 
@@ -47,17 +46,17 @@ class Api::V1::PlatformsController < Api::V1::BaseController
 
   def add_member
     if member.present? && @platform.add_member(member)
-      render_json_response "#{member.class.to_s} '#{member.id}' has been added to platform successfully"
+      render_json_response @platform, "#{member.class.to_s} '#{member.id}' has been added to platform successfully"
     else
-      render_validation_error 'Member has not been added to platform'
+      render_validation_error @platform, 'Member has not been added to platform'
     end
   end
 
   def remove_member
     if member.present? && @platform.remove_member(member)
-      render_json_response "#{member.class.to_s} '#{member.id}' has been removed from platform successfully"
+      render_json_response @platform, "#{member.class.to_s} '#{member.id}' has been removed from platform successfully"
     else
-      render_validation_error 'Member has not been removed from platform'
+      render_validation_error @platform, 'Member has not been removed from platform'
     end
   end
 
@@ -66,20 +65,20 @@ class Api::V1::PlatformsController < Api::V1::BaseController
     platform_params[:owner] = current_user
     @cloned = @platform.full_clone(platform_params)
     if @cloned.persisted?
-      render_json_response 'Platform has been cloned successfully'
+      render_json_response @platform, 'Platform has been cloned successfully'
     else
-      render_validation_error 'Platform has not been cloned'
+      render_validation_error @platform, 'Platform has not been cloned'
     end
   end
 
   def clear
     @platform.clear
-    render_json_response 'Platform has been cleared successfully'
+    render_json_response @platform, 'Platform has been cleared successfully'
   end
 
   def destroy
     @platform.destroy # later with resque
-    render_json_response 'Platform has been destroyed successfully'
+    render_json_response @platform, 'Platform has been destroyed successfully'
   end
 
   private
@@ -93,10 +92,6 @@ class Api::V1::PlatformsController < Api::V1::BaseController
     end
     @member = member.where(:id => params[:member_id]).first if member
     @member ||= ''
-  end
-
-  def set_subject
-    @subject = @platform
   end
 
 end
