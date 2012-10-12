@@ -9,7 +9,7 @@ class Projects::Git::CommitsController < Projects::Git::BaseController
   end
 
   def show
-    @commit = @commentable = @project.repo.commit(params[:id])
+    @commit = @commentable = @project.repo.commit(params[:id]) || raise(ActiveRecord::RecordNotFound)
     @comments, @diff = Comment.for_commit(@commit), @commit.diffs
 
     respond_to do |format|
