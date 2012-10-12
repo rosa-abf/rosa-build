@@ -9,15 +9,17 @@ class Projects::CommentsController < Projects::BaseController
   include CommentsHelper
 
   def create
+    anchor = ''
     if !set_additional_data
       flash[:error] = I18n.t("flash.comment.save_error")
     elsif @comment.save
       flash[:notice] = I18n.t("flash.comment.saved")
+      anchor = view_context.comment_anchor(@comment)
     else
       flash[:error] = I18n.t("flash.comment.save_error")
       flash[:warning] = @comment.errors.full_messages.join('. ')
     end
-    redirect_to project_commentable_path(@project, @commentable) + "#comment#{@comment.id}"
+    redirect_to "#{project_commentable_path(@project, @commentable)}##{anchor}"
   end
 
   def edit
@@ -91,7 +93,7 @@ class Projects::CommentsController < Projects::BaseController
       end
       @comment.data[:strings] = strings
       @comment.data[:view_path] = h(diff_path[0].renamed_file ? "#{diff_path[0].a_path.rtruncate 60} -> #{diff_path[0].b_path.rtruncate 60}" : diff_path[0].a_path.rtruncate(120))
-      return true
     end
+    return true
   end
 end

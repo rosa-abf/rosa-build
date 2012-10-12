@@ -55,9 +55,13 @@ class Comment < ActiveRecord::Base
   end
 
   def actual_inline_comment?(diff, force = false)
-    return data[:actual] if data[:actual].present? && !force
+    unless force
+      return true if
+      raise "This is not inline comment!" if data.blank? # for debug
+      return data[:actual] if data[:actual].present?
+    end
     filepath, line_number = data[:path], data[:line]
-    diff_path = diff.select {|d| d.a_path == data[:path]}
+    diff_path = (diff || commentable.diffs ).select {|d| d.a_path == data[:path]}
     comment_line = data[:line].to_i
     # NB! also dont create a comment to the diff header
     return data[:actual] = false if diff_path.blank? || comment_line == 0
@@ -77,11 +81,13 @@ class Comment < ActiveRecord::Base
   end
 
   def inline_diff(repo)
-    text = data[:strings]
-    Rails.logger.debug "Comment id is #{id}; text class is #{text.class.name}; text is #{text}"
-    closest = []
+    text, closest = data[:strings], []
     (-2..0).each {|shift| closest << data["line#{shift}"]}
     text << closest.join("\n")
+  end
+
+  def pull_comment?
+    return true if commentable.class == Issue && commentable.pull_request.present?
   end
 
   protected

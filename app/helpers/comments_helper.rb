@@ -17,4 +17,8 @@ module CommentsHelper
       commit_path project, commentable.id
     end
   end
+
+  def comment_anchor c
+    "#{(c.data.present? && c.actual_inline_comment?(@diff)) ? 'diff-' : ''}comment#{c.id}"
+  end
 end
