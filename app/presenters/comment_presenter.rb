@@ -32,7 +32,7 @@ class CommentPresenter < ApplicationPresenter
     project, commentable = options[:project], options[:commentable]
     path = helpers.project_commentable_comment_path(project, commentable, comment)
 
-    res = [link_to(t("layout.link"), "#{helpers.project_commentable_path(project, commentable)}##{comment_anchor}", :class => "link_to_comment").html_safe]
+    res = [link_to(t("layout.link"), "#{helpers.project_commentable_path(project, commentable)}##{comment_anchor}", :class => "#{@options[:in_discussion].present? ? 'in_discussion_' : ''}link_to_comment").html_safe]
     if controller.can? :update, @comment
       res << link_to(t("layout.edit"), path, :id => "comment-#{comment.id}", :class => "edit_comment").html_safe
     end
@@ -66,7 +66,11 @@ class CommentPresenter < ApplicationPresenter
 
   def comment_anchor
     # check for pull diff inline comment
-    before = (@options[:add_anchor].present? && @comment.commentable_type == 'Issue') ? 'diff-' : ''
+    before = if @options[:add_anchor].present? && !@options[:in_discussion]
+               'diff-'
+             else
+               ''
+             end
     "#{before}comment#{@comment.id}"
   end
 

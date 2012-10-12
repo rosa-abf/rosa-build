@@ -53,3 +53,4 @@ en:
   layout:
     pull_requests:
       search: Find pull request...
+      view_full_changes: View full changes

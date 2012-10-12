@@ -50,7 +50,7 @@ module DiffHelper
   end
 
   ########################################################
-  # FIXME: Just to dev, remove to lib
+  # FIXME: Just to dev, remove to lib. Really need it?
   ########################################################
   def prepare(url, diff_counter, filepath, comments, in_discussion)
     @num_line, @url, @diff_counter, @in_discussion = -1, url, diff_counter, in_discussion
@@ -240,13 +240,16 @@ module DiffHelper
   end
 
   def tr_line_comments comments
-    "<tr class='inline-comments'>
+    res="<tr class='inline-comments'>
       <td class='line_numbers' colspan='2'>#{comments.count}</td>
-      <td>
-        #{render("projects/comments/line_list", :list => comments, :project => @project, :commentable => @commentable)}
-        #{link_to t('layout.comments.new_inline'), new_comment_path, :class => 'new_inline_comment button'}
-      </td>
-     </tr>"
+      <td>"
+      comments.each do |comment|
+        res << "<div class='line-comments'>
+          #{render 'projects/comments/comment', :comment => comment, :data => {:project => @project, :commentable => @commentable, :add_anchor => 'inline', :in_discussion => @in_discussion}}
+         </div>"
+      end
+    res << link_to(t('layout.comments.new_inline'), new_comment_path, :class => 'new_inline_comment button')
+    res << "</td></tr>"
   end
 
   def new_comment_path
