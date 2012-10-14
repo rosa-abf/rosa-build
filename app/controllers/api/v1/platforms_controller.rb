@@ -33,11 +33,7 @@ class Api::V1::PlatformsController < Api::V1::BaseController
     platform_params = params[:platform] || {}
     owner = User.where(:id => platform_params[:owner_id]).first
     platform_params[:owner] = owner if owner
-    if @platform.update_attributes(platform_params)
-      render_json_response @platform, 'Platform has been updated successfully'
-    else
-      render_validation_error @platform, 'Platform has not been updated'
-    end
+    update_subject @platform
   end
 
   def members
@@ -45,19 +41,11 @@ class Api::V1::PlatformsController < Api::V1::BaseController
   end
 
   def add_member
-    if member.present? && @platform.add_member(member)
-      render_json_response @platform, "#{member.class.to_s} '#{member.id}' has been added to platform successfully"
-    else
-      render_validation_error @platform, 'Member has not been added to platform'
-    end
+    add_member_to_subject @platform
   end
 
   def remove_member
-    if member.present? && @platform.remove_member(member)
-      render_json_response @platform, "#{member.class.to_s} '#{member.id}' has been removed from platform successfully"
-    else
-      render_validation_error @platform, 'Member has not been removed from platform'
-    end
+    remove_member_from_subject @platform
   end
 
   def clone
@@ -77,8 +65,7 @@ class Api::V1::PlatformsController < Api::V1::BaseController
   end
 
   def destroy
-    @platform.destroy # later with resque
-    render_json_response @platform, 'Platform has been destroyed successfully'
+    destroy_subject @platform
   end
 
 end
