@@ -96,6 +96,30 @@ shared_examples_for 'api repository user with writer rights' do
       lambda { delete :destroy, :id => @personal_repository.id, :format => :json }.should_not change{ Repository.count }
     end
   end
+
+  context 'api repository user with add_project rights' do
+    before { put :add_project, :id => @repository.id, :project_id => @project.id, :format => :json }
+    it 'should be able to perform add_project action' do
+      response.should be_success
+    end
+    it 'ensures that project has been added to repository' do
+      @repository.projects.should include(@project)
+    end
+  end
+
+  context 'api repository user with remove_project rights' do
+    before do
+      @repository.projects << @project
+      delete :remove_project, :id => @repository.id, :project_id => @project.id, :format => :json
+    end
+    it 'should be able to perform remove_project action' do
+      response.should be_success
+    end
+    it 'ensures that project has been removed from repository' do
+      @repository.reload
+      @repository.projects.should_not include(@project)
+    end
+  end
 end
 
 shared_examples_for 'api repository user without writer rights' do
@@ -159,6 +183,31 @@ shared_examples_for 'api repository user without writer rights' do
       lambda { delete :destroy, :id => @personal_repository.id, :format => :json }.should_not change{ Repository.count }
     end
   end
+
+  context 'api repository user without add_project rights' do
+    before { put :add_project, :id => @repository.id, :project_id => @project.id, :format => :json }
+    it 'should not be able to perform add_project action' do
+      response.should_not be_success
+    end
+    it 'ensures that project has not been added to repository' do
+      @repository.projects.should_not include(@project)
+    end
+  end
+
+  context 'api repository user without remove_project rights' do
+    before do
+      @repository.projects << @project
+      delete :remove_project, :id => @repository.id, :project_id => @project.id, :format => :json
+    end
+    it 'should not be able to perform remove_project action' do
+      response.should_not be_success
+    end
+    it 'ensures that project has not been removed from repository' do
+      @repository.reload
+      @repository.projects.should include(@project)
+    end
+  end
+
 end
 
 

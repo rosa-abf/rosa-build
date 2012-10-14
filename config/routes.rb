@@ -36,6 +36,9 @@ Rosa::Application.routes.draw do
         member {
           put :add_member
           delete :remove_member
+          put :add_project
+          delete :remove_project
+          put :signatures
         }
       end
       resources :projects, :only => [:show] do
