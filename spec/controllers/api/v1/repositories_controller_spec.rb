@@ -120,6 +120,20 @@ shared_examples_for 'api repository user with writer rights' do
       @repository.projects.should_not include(@project)
     end
   end
+
+  context 'api repository user with update signatures rights' do
+    before do
+      stub_key_pairs_calls
+      put :signatures, :id => @repository.id, :repository => {:public => 'iampublic', :secret => 'iamsecret'}, :format => :json
+    end
+    it 'should be able to perform signatures action' do
+      response.should be_success
+    end
+    it 'ensures that signatures has been updated' do
+      @repository.key_pair.should_not be_nil
+    end
+  end
+
 end
 
 shared_examples_for 'api repository user without writer rights' do
@@ -205,6 +219,19 @@ shared_examples_for 'api repository user without writer rights' do
     it 'ensures that project has not been removed from repository' do
       @repository.reload
       @repository.projects.should include(@project)
+    end
+  end
+
+  context 'api repository user without update signatures rights' do
+    before do
+      stub_key_pairs_calls
+      put :signatures, :id => @repository.id, :repository => {:public => 'iampublic', :secret => 'iamsecret'}, :format => :json
+    end
+    it 'should not be able to perform signatures action' do
+      response.should_not be_success
+    end
+    it 'ensures that signatures has not been updated' do
+      @repository.key_pair.should be_nil
     end
   end
 

@@ -48,12 +48,15 @@ class Api::V1::RepositoriesController < Api::V1::BaseController
   def signatures
     key_pair = @repository.key_pair
     key_pair.destroy if key_pair
-    key_pair = @repository.key_pair.build(params[:repository])
+    key_pair = @repository.build_key_pair(params[:repository])
     key_pair.user_id = current_user.id
     if key_pair.save
       render_json_response @repository, 'Signatures have been updated for repository successfully'
     else
-      render_validation_error @repository, 'Signatures have not been updated for repository'
+      message = 'Signatures have not been updated for repository'
+      errors = key_pair.errors.full_messages.join('. ')
+      (message << '. ' << errors) if errors.present?
+      render_json_response @repository, message, 422
     end
   end
 
