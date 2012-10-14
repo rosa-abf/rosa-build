@@ -32,7 +32,12 @@ Rosa::Application.routes.draw do
           put :clear
         }
       end
-      resources :repositories, :only => [:show]
+      resources :repositories, :only => [:show, :update, :destroy] do
+        member {
+          put :add_member
+          delete :remove_member
+        }
+      end
       resources :projects, :only => [:show] do
         collection { get :get_id }
         member {

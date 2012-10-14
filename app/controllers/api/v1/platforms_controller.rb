@@ -81,17 +81,4 @@ class Api::V1::PlatformsController < Api::V1::BaseController
     render_json_response @platform, 'Platform has been destroyed successfully'
   end
 
-  private
-
-  def member
-    return @member if @member
-    if params[:type] == 'User'
-      member = User
-    elsif params[:type] == 'Group'
-      member = Group
-    end
-    @member = member.where(:id => params[:member_id]).first if member
-    @member ||= ''
-  end
-
 end
