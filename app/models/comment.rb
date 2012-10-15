@@ -56,7 +56,6 @@ class Comment < ActiveRecord::Base
 
   def actual_inline_comment?(diff, force = false)
     unless force
-      return true if
       raise "This is not inline comment!" if data.blank? # for debug
       return data[:actual] if data[:actual].present?
     end
