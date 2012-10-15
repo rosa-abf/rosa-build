@@ -11,7 +11,7 @@ class Api::V1::UsersController < Api::V1::BaseController
     if @user
       render :show
     else
-      render_json_response User.new, 'User does not exist', 422
+      render_403
     end
   end
 

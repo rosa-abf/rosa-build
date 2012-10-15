@@ -4,11 +4,15 @@ class Api::V1::BaseController < ApplicationController
 
   rescue_from CanCan::AccessDenied do |exception|
     respond_to do |format|
-      format.json { render :json => {:message => t("flash.exception_message")}.to_json, :status => 403 }
+      format.json { render_403 }
     end
   end
 
   protected
+
+  def render_403
+    render :json => {:message => t("flash.exception_message")}.to_json, :status => 403
+  end
 
   def error_message(subject, message)
     errors = subject.errors.full_messages.join('. ')
