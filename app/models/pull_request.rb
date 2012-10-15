@@ -62,7 +62,7 @@ class PullRequest < ActiveRecord::Base
 
     if do_transaction
       new_status == 'already' ? (ready; merging) : send(new_status)
-      self.comments.each {|c| c.data[:actual]=nil; c.save} # maybe need add new column 'actual'?
+      self.update_inline_comments
     else
       self.status = new_status == 'block' ? 'blocked' : new_status
     end
@@ -200,5 +200,18 @@ class PullRequest < ActiveRecord::Base
 
   def clean_dir
     FileUtils.rm_rf path
+  end
+
+  def update_inline_comments
+    if self.comments.count > 0
+      repo = Grit::Repo.new self.path
+      diff = self.diff repo, self.common_ancestor, repo.commits(self.head_branch).first
+    end
+    self.comments.each do |c|
+      if c.data.present? # maybe need add new column 'actual'?
+        c.actual_inline_comment? diff, true
+        c.save
+      end
+    end
   end
 end
