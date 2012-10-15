@@ -20,10 +20,6 @@ class PullRequest < ActiveRecord::Base
   scope :needed_checking, includes(:issue).where(:issues => {:status => ['open', 'blocked', 'ready']})
 
   state_machine :status, :initial => :open do
-    #after_transition [:ready, :blocked] => [:merged, :closed] do |pull, transition|
-    #  FileUtils.rm_rf(pull.path) # What about diff?
-    #end
-
     event :ready do
       transition [:ready, :open, :blocked] => :ready
     end
@@ -65,11 +61,7 @@ class PullRequest < ActiveRecord::Base
                  end
 
     if do_transaction
-      if new_status == 'already'
-        ready; merging
-      else
-        send(new_status)
-      end
+      new_status == 'already' ? (ready; merging) : send(new_status)
       self.comments.each {|c| c.data[:actual]=nil; c.save} # maybe need add new column 'actual'?
     else
       self.status = new_status == 'block' ? 'blocked' : new_status
