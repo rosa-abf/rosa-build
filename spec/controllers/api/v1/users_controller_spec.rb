@@ -10,7 +10,7 @@ describe Api::V1::UsersController do
 
   context 'for guest' do
     
-    [:show, :notifiers].each do |action|
+    [:show_current_user, :notifiers].each do |action|
       it "should not be able to perform #{ action } action for a current user" do
         get action, :format => :json
         response.should_not be_success
@@ -56,10 +56,10 @@ describe Api::V1::UsersController do
       http_login(@user)
     end
 
-    [:show, :notifiers].each do |action|
+    [:show_current_user, :notifiers].each do |action|
       it "should be able to perform #{ action } action for a current user" do
         get action, :format => :json
-        response.should render_template(action)
+        response.should be_success
       end
     end
 

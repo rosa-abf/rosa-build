@@ -48,7 +48,8 @@ Rosa::Application.routes.draw do
         }
       end
       resources :users, :only => [:show]
-      resource :user, :only => [:show, :update] do
+      get 'user' => 'users#show_current_user'
+      resource :user, :only => [:update] do
         member {
           get :notifiers
           put :notifiers

@@ -7,12 +7,10 @@ class Api::V1::UsersController < Api::V1::BaseController
   before_filter :set_current_user, :except => :show
 
   def show
-    @user = current_user if params[:id].nil?
-    if @user
-      render :show
-    else
-      render_403
-    end
+  end
+
+  def show_current_user
+    render :show
   end
 
   def update
