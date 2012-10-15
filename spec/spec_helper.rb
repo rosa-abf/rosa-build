@@ -27,7 +27,7 @@ RSpec.configure do |config|
   config.use_transactional_fixtures = true
 
   config.filter_run_excluding :anonymous_access => !(APP_CONFIG['anonymous_access'])
-  
+
 end
 
 def set_session_for(user=nil)

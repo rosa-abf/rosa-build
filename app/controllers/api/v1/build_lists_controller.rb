@@ -1,34 +1,39 @@
 # -*- encoding : utf-8 -*-
 class Api::V1::BuildListsController < Api::V1::BaseController
-  
+
   before_filter :authenticate_user!
   skip_before_filter :authenticate_user!, :only => [:show, :index] if APP_CONFIG['anonymous_access']
-  
+
   load_and_authorize_resource :project, :only => :index
   load_and_authorize_resource :build_list, :only => [:show, :create, :cancel, :publish, :reject_publish]
-  
+
   def index
     filter = BuildList::Filter.new(nil, current_user, params[:filter] || {})
     @build_lists = filter.find.scoped(:include => [:save_to_platform, :project, :user, :arch])
-    @build_lists = @build_lists.recent.paginate :page => params[:page], :per_page => params[:per_page]
+    @build_lists = @build_lists.recent.paginate(paginate_params)
   end
 
   def create
-    project = Project.find(params[:build_list][:project_id])
-    save_to_repository = Repository.find params[:build_list][:save_to_repository_id] #FIXME
-    params[:build_list][:save_to_platform_id] = save_to_repository.platform_id
-    params[:build_list][:auto_publish] = false unless save_to_repository.publish_without_qa?
+    bl_params = params[:build_list] || {}
+    project = Project.where(:id => bl_params[:project_id]).first
+    save_to_repository = Repository.where(:id => bl_params[:save_to_repository_id]).first
 
-    @build_list = project.build_lists.build(params[:build_list])
-    @build_list.project_version = @build_list.commit_hash
+    if project && save_to_repository
+      bl_params[:save_to_platform_id] = save_to_repository.platform_id
+      bl_params[:auto_publish] = false unless save_to_repository.publish_without_qa?
 
-    @build_list.user = current_user
-    @build_list.priority = current_user.build_priority # User builds more priority than mass rebuild with zero priority
+      @build_list = project.build_lists.build(bl_params)
 
-    if @build_list.save
-      render :action => 'show'
+      @build_list.user = current_user
+      @build_list.priority = current_user.build_priority # User builds more priority than mass rebuild with zero priority
+
+      if @build_list.save
+        render :action => 'show'
+      else
+        render :json => {:message => "Validation Failed", :errors => @build_list.errors.messages}.to_json, :status => 422
+      end
     else
-      render :json => {:message => "Validation Failed", :errors => @build_list.errors.messages}.to_json, :status => 422
+      render :json => {:message => "Bad Request"}.to_json, :status => 400
     end
   end
 

@@ -54,7 +54,7 @@ class Project < ActiveRecord::Base
     where("(projects.owner_id in (?) AND projects.owner_type = 'Group') OR (projects.owner_id in (?) AND projects.owner_type = 'User')", group_owner_ids, user_owner_ids)
   }
 
-
+  before_validation :truncate_name, :on => :create
   before_create :set_maintainer
   after_save :attach_to_personal_repository
 
@@ -176,6 +176,10 @@ class Project < ActiveRecord::Base
   end
 
   protected
+
+  def truncate_name
+    self.name = name.strip if name
+  end
 
   def attach_to_personal_repository
     owner_rep = self.owner.personal_repository

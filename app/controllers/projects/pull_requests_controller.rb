@@ -146,7 +146,7 @@ class Projects::PullRequestsController < Projects::BaseController
     args = params[:to_project].try(:split, '/') || []
     project = (args.length == 2) ? Project.find_by_owner_and_name(*args) : nil
     raise ActiveRecord::RecordNotFound if bang && !project
-    project.try(:parent) || @project
+    project || @project
   end
 
   def set_attrs

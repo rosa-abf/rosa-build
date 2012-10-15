@@ -124,6 +124,9 @@
     $(".div-filter-labels").live('click', function() {
       oTable.dataTable().fnDraw();
     });
+    $('#filter_projects').live('submit', function() {
+      return false;
+    });
   });
 
 =# will_paginate

@@ -20,10 +20,32 @@ Rosa::Application.routes.draw do
         }
       end
       resources :arches, :only => [:index]
-      resources :platforms, :only => [:index, :show]
-      resources :repositories, :only => [:show]
+      resources :platforms, :only => [:index, :show, :update, :destroy, :create] do
+        collection {
+          get :platforms_for_build
+        }
+        member {
+          get :members
+          put :add_member
+          delete :remove_member
+          post :clone
+          put :clear
+        }
+      end
+      resources :repositories, :only => [:show, :update, :destroy] do
+        member {
+          put :add_member
+          delete :remove_member
+          put :add_project
+          delete :remove_project
+          put :signatures
+        }
+      end
       resources :projects, :only => [:show] do
         collection { get :get_id }
+        member {
+          get :refs_list
+        }
       end
     end
   end

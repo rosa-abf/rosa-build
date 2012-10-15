@@ -131,8 +131,7 @@ class Platforms::RepositoriesController < Platforms::BaseController
   end
 
   def remove_project
-    @project = Project.find(params[:project_id])
-    ProjectToRepository.where(:project_id => @project.id, :repository_id => @repository.id).destroy_all
+    ProjectToRepository.where(:project_id => params[:project_id], :repository_id => @repository.id).destroy_all
     redirect_to platform_repository_path(@platform, @repository), :notice => t('flash.repository.project_removed')
   end
 
