@@ -10,6 +10,10 @@ class Api::V1::BaseController < ApplicationController
 
   protected
 
+  def error_message(subject, message)
+    [message, subject.errors.full_messages].flatten.join('. ')
+  end
+
   def add_member_to_subject(subject)
     class_name = subject.class.name.downcase
     if member.present? && subject.add_member(member)
@@ -61,11 +65,7 @@ class Api::V1::BaseController < ApplicationController
   end
 
   def render_validation_error(subject, message)
-    errors = subject.errors.full_messages.join('. ')
-    if errors.present?
-      message << '. ' << errors
-    end
-    render_json_response(subject, message, 422)
+    render_json_response(subject, error_message(subject, message), 422)
   end
 
   private
