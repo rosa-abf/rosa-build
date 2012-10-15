@@ -5,7 +5,10 @@
 - commits_queue = []
 - merge_activity(@comments, @commits).each do |item| #
   - if item.is_a? Grit::Commit
-    = render 'projects/git/commits/commits_small', :commits => [item]
+    -commits_queue << item
   - elsif item.is_a? Array
+    = render 'projects/git/commits/commits_small', :commits => commits_queue if commits_queue.present?
+    -commits_queue.clear
     = render 'projects/pull_requests/discussion_comments', :item => item, :project => @project, :commentable => @issue, :add_id => nil
+= render 'projects/git/commits/commits_small', :commits => commits_queue if commits_queue.present?
 
