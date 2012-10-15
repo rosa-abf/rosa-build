@@ -9,17 +9,35 @@ describe Project do
     @child_child_project = @child_project.fork(FactoryGirl.create(:user))
   end
 
-  context 'for destroy root' do
-    before do
-      @root_project.destroy
+  context 'for destroy' do
+    let!(:root_project) { FactoryGirl.create(:project) }
+    let!(:child_project) { root_project.fork(FactoryGirl.create(:user)) }
+    let!(:child_child_project) { child_project.fork(FactoryGirl.create(:user)) }
+
+    context 'root project' do
+      before { root_project.destroy }
+
+      it "should not be delete child" do
+        Project.where(:id => child_project).count.should == 1
+      end
+
+      it "should not be delete child of the child" do
+        Project.where(:id => child_child_project).count.should == 1
+      end
     end
 
-    it "should not be delete child" do
-      Project.where(:id => @child_project).count.should == 1
-    end
+    pending 'when will be available :orphan_strategy => :adopt' do
+      context 'middle node' do
+        before{ child_project.destroy }
 
-    it "should not be delete child of the child" do
-      Project.where(:id => @child_child_project).count.should == 1
+        it "should set root project as a parent for orphan child" do
+          Project.find(child_child_project).ancestry == root_project
+        end
+
+        it "should not be delete child of the child" do
+          Project.where(:id => child_child_project).count.should == 1
+        end
+      end
     end
   end
 
@@ -48,19 +66,17 @@ describe Project do
     end
   end
 
-  # uncommit when will be available :orphan_strategy => :adopt
+  context 'truncates project name before validation' do
+    let!(:project) { FactoryGirl.build(:project, :name => '  test_name  ') }
 
-  #context 'for destroy middle node' do
-  #  before(:each) do
-  #    @child_project.destroy
-  #  end
+    it 'ensures that validation passed' do
+      project.valid?.should be_true
+    end
+    
+    it 'ensures that name has been truncated' do
+      project.valid?
+      project.name.should == 'test_name'
+    end
+  end
 
-  #  it "should set root project as a parent for orphan child" do
-  #    Project.find(@child_child_project).ancestry == @root_project
-  #  end
-
-  #  it "should not be delete child of the child" do
-  #    Project.where(:id => @child_child_project).count.should == 1
-  #  end
-  #end
 end
