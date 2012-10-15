@@ -48,6 +48,12 @@ Rosa::Application.routes.draw do
         }
       end
       resources :users, :only => [:show]
+      resource :user, :only => [:show, :update] do
+        member {
+          get :notifiers
+          put :notifiers
+        }
+      end
     end
   end
 
