@@ -118,6 +118,7 @@ div.activity, .commits_activity {
         margin-left: 10px;
         display: inline-block;
         width: 12px;
+        cursor: pointer;
     }
     .data-expander.collapsed {
         background: #FFF image-url('expand-gray.png') no-repeat;
