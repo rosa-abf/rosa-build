@@ -39,6 +39,7 @@ Rosa::Application.routes.draw do
           get :refs_list
         }
       end
+      resources :users, :only => [:show]
     end
   end
 
