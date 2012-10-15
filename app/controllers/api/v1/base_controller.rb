@@ -11,9 +11,7 @@ class Api::V1::BaseController < ApplicationController
   protected
 
   def error_message(subject, message)
-    errors = subject.errors.full_messages.join('. ')
-    (message << '. ' << errors) if errors.present?
-    message
+    [message, subject.errors.full_messages].flatten.join('. ')
   end
 
   def add_member_to_subject(subject)
