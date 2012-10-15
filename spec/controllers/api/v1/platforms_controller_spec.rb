@@ -52,7 +52,7 @@ shared_examples_for 'api platform user with writer rights' do
       delete :remove_member, {:member_id => member.id, :type => 'User', :id => @platform.id}, :format => :json
     end
 
-    it 'should be able to perform update action' do
+    it 'should be able to perform remove_member action' do
       response.should be_success
     end
     it 'ensures that member has been removed from platform' do
