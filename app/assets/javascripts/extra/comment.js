@@ -2,14 +2,14 @@ $(document).ready(function() {
   var new_comment = $('#open-comment.comment.hidden.new_line_comment');
 
   $(document).on('click', '.buttons a.edit_comment', function() {
-    $(this).parent().parent().parent().hide();
-    $('#open-comment'+'.comment.'+$(this).attr('id')).show();
+    $(this).parents('div.activity').hide()
+                                   .next().show();
     return false;
   });
 
   $(document).on('click', '.cancel_edit_comment.button', function() {
-    $(this).parent().parent().parent().hide();
-    $('.buttons a.edit_comment#'+$(this).attr('id')).parent().parent().parent().show();
+    $(this).parents('#open-comment.comment').hide()
+                                            .prev().show();
     return false;
   });
 
@@ -22,8 +22,9 @@ $(document).ready(function() {
       data: form.serialize(),
       success: function(data){
                   var cancel_button = form.find('.cancel_edit_comment.button');
+                  var id = cancel_button.attr('id').match(/\d+$/)[0];
                   cancel_button.click();
-                  $('.buttons a.edit_comment#'+cancel_button.attr('id')).parent().parent().find('.cm-s-default.md_and_cm').html(data).find('code').each(function (code) { CodeMirrorRun(this); })
+                  $('#comment'+id+', #diff-comment'+id).parent().find('.cm-s-default.md_and_cm').html(data).find('code').each(function (code) { CodeMirrorRun(this); })
                 },
       error: function(data){
                form.before(data.responseText);
