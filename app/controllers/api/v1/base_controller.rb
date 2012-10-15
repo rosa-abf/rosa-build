@@ -71,14 +71,10 @@ class Api::V1::BaseController < ApplicationController
   private
 
   def member
-    return @member if @member
-    if params[:type] == 'User'
-      member = User
-    elsif params[:type] == 'Group'
-      member = Group
+    if @member.blank? && %w(User Group).include?(params[:type])
+      @member = params[:type].constantize.where(:id => params[:member_id]).first
     end
-    @member = member.where(:id => params[:member_id]).first if member
-    @member ||= ''
-  end 
+    @member
+  end
 
 end
