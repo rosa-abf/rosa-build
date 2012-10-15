@@ -6,4 +6,5 @@
     - if pull_diff.b_path.present?
       .r= link_to "view file @ #{short_hash_id(commit_id)}", blob_path(@project, commit_id, pull_diff.b_path)
     .clear
-  .diff_data= render_diff(pull_diff, pull_diff_counter) unless (Grit::Repo.new(@pull.path).tree(commit_id) / pull_diff.b_path).binary?
+  -if pull_diff.diff.present? && !(Grit::Repo.new(@pull.path).tree(commit_id) / pull_diff.b_path).binary?
+    .diff_data= render_diff(pull_diff, pull_diff_counter)
