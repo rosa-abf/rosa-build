@@ -8,6 +8,11 @@ class Api::V1::UsersController < Api::V1::BaseController
 
   def show
     @user = current_user if params[:id].nil?
+    if @user
+      render :show
+    else
+      render_json_response User.new, 'User does not exist', 422
+    end
   end
 
   def update
