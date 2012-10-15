@@ -10,6 +10,14 @@
   -elsif item.is_a? Array
     =render 'projects/git/commits/commits_small', :commits => commits_queue if commits_queue.present?
     -commits_queue.clear
-    =render 'projects/pull_requests/discussion_comments', :item => item, :add_id => nil
+    -unless item[1].first.data[:actual]
+      -exp_id = "expand-comment#{item[1].first.id}"
+      .activity
+        =t '.show_outdated_diff'
+        %span.data-expander.collapsed{:id => exp_id} &nbsp;
+        .hidden{:id => "content-#{exp_id}"}
+          =render 'projects/pull_requests/discussion_comments', :item => item, :add_id => nil
+    -else
+      =render 'projects/pull_requests/discussion_comments', :item => item, :add_id => nil
 =render 'projects/git/commits/commits_small', :commits => commits_queue if commits_queue.present?
 

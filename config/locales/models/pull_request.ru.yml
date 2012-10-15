@@ -30,7 +30,8 @@ ru:
         ready: Готов к мержу
         merged: Смержен
         closed: Закрыт
-
+      activity:
+        show_outdated_diff: Отобразить устаревшие изменения
   pull_requests:
     tabs:
       discussion: Дискуссия
