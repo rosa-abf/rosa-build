@@ -41,11 +41,7 @@ class Projects::CommentsController < Projects::BaseController
   end
 
   def new_line
-    @path = if @commentable.class == Issue
-              project_issue_comments_path(@project, @commentable)
-            elsif @commentable.class == Grit::Commit
-              project_commit_comments_path(@project, @commentable)
-            end
+    @path = view_context.project_commentable_comments_path(@project, @commentable)
     render :layout => false
   end
 
