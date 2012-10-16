@@ -111,13 +111,13 @@ class Comment < ActiveRecord::Base
         if line_number < comment_line - 2
           # Header is the line like "@@ -47,9 +50,8 @@ def initialize(user)"
           if line =~ /^@@ [+-]([0-9]+)(?:,([0-9]+))? [+-]([0-9]+)(?:,([0-9]+))? @@/
-            strings = line
+            strings = [line]
           else
             strings << line
           end
         end
       end
-      data[:strings] = strings
+      data[:strings] = strings.join ''
       data[:view_path] = h(diff_path[0].renamed_file ? "#{diff_path[0].a_path.rtruncate 60} -> #{diff_path[0].b_path.rtruncate 60}" : diff_path[0].a_path.rtruncate(120))
     end
     return true
