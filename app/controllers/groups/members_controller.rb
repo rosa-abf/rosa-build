@@ -29,27 +29,21 @@ class Groups::MembersController < Groups::BaseController
   def remove
     all_user_ids = []
     params['user_remove'].each do |user_id, remove|
-      all_user_ids << user_id if remove == ["1"] && parent.owner.id.to_s != user_id
+      all_user_ids << user_id if remove == ["1"]
     end if params['user_remove']
-    all_user_ids.each do |user_id|
-      u = User.find(user_id)
-      Relation.by_actor(u).by_target(parent).each {|r| r.destroy}
+    User.where(:id => all_user_ids).each do |user|
+      parent.remove_member(user)
     end
     redirect_to group_members_path(parent)
   end
 
   def add
-    if params['user_id'] and !params['user_id'].empty?
+    if params['user_id'].present?
       @user = User.find_by_uname(params['user_id'])
-      unless parent.actors.exists? :actor_id => @user.id, :actor_type => 'User'
-        relation = parent.actors.build(:actor_id => @user.id, :actor_type => 'User', :role => params[:role])
-        if relation.save
-          flash[:notice] = t("flash.members.successfully_added")
-        else
-          flash[:error] = t("flash.members.error_in_adding")
-        end
+      if parent.add_member(@user, params[:role])
+        flash[:notice] = t("flash.members.successfully_added")
       else
-        flash[:error] = t("flash.members.already_added")
+        flash[:error] = t("flash.members.error_in_adding")
       end
     end
     redirect_to group_members_path(parent)

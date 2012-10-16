@@ -23,7 +23,7 @@ class Relation < ActiveRecord::Base
   end
 
   def self.add_member(member, target, role)
-    if target.relations.exists?(:actor_id => member.id, :actor_type => member.class.to_s) || @platform.try(:owner) == member
+    if target.relations.exists?(:actor_id => member.id, :actor_type => member.class.to_s) || target.try(:owner) == member
       true
     else
       rel = target.relations.build(:role => role)
@@ -33,6 +33,7 @@ class Relation < ActiveRecord::Base
   end
 
   def self.remove_member(member, target)
+    return false if target.try(:owner) == member
     Relation.by_actor(member).by_target(target).each{|r| r.destroy}
   end
 

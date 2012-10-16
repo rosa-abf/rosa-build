@@ -39,6 +39,20 @@ class Group < Avatar
     uname
   end
 
+  def add_member(member, role = 'admin')
+    if actors.exists?(:actor_id => member.id, :actor_type => member.class.to_s) || owner == member
+      true
+    else
+      rel = actors.build(:role => role)
+      rel.actor = member
+      rel.save
+    end
+  end
+
+  def remove_member(member)
+    Relation.remove_member(member, self)
+  end
+
   protected
 
   def add_owner_to_members

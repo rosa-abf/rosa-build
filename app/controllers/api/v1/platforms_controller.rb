@@ -22,11 +22,7 @@ class Api::V1::PlatformsController < Api::V1::BaseController
     platform_params = params[:platform] || {}
     owner = User.where(:id => platform_params[:owner_id]).first
     @platform.owner = owner || get_owner
-    if @platform.save
-      render_json_response @platform, 'Platform has been created successfully'
-    else
-      render_validation_error @platform, 'Platform has not been created'
-    end
+    create_subject @platform
   end
 
   def update

@@ -22,8 +22,7 @@ class Groups::ProfileController < Groups::BaseController
   end
 
   def create
-    @group = Group.new params[:group]
-    @group.owner = current_user
+    @group = current_user.own_groups.new params[:group]
     if @group.save
       flash[:notice] = t('flash.group.saved')
       redirect_to group_path(@group)
