@@ -28,8 +28,7 @@ class Api::V1::GroupsController < Api::V1::BaseController
   end
 
   def create
-    @group = Group.new params[:group]
-    @group.owner = current_user
+    @group = current_user.own_groups.new params[:group]
     create_subject @group
   end
 

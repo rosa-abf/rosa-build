@@ -33,11 +33,8 @@ class Relation < ActiveRecord::Base
   end
 
   def self.remove_member(member, target)
-    if target.try(:owner) == member
-      false
-    else
-      Relation.by_actor(member).by_target(target).each{|r| r.destroy}
-    end
+    return false if target.try(:owner) == member
+    Relation.by_actor(member).by_target(target).each{|r| r.destroy}
   end
 
   protected
