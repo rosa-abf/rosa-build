@@ -96,7 +96,6 @@ class PullRequest < ActiveRecord::Base
 
   def common_ancestor
     return @common_ancestor if @common_ancestor
-    repo = Grit::Repo.new(path)
     base_commit = repo.commits(to_ref).first
     head_commit = repo.commits(head_branch).first
     @common_ancestor = repo.commit(repo.git.merge_base({}, base_commit, head_commit)) || base_commit
@@ -147,6 +146,10 @@ class PullRequest < ActiveRecord::Base
     end
   end
 
+  def repo
+    return @repo if @repo.present? #&& !id_changed?
+    @repo = Grit::Repo.new path
+  end
   protected
 
   def merge
@@ -204,8 +207,7 @@ class PullRequest < ActiveRecord::Base
 
   def update_inline_comments
     if self.comments.count > 0
-      repo = Grit::Repo.new self.path
-      diff = self.diff repo, self.common_ancestor, repo.commits(self.head_branch).first
+      diff = self.diff self.repo, self.common_ancestor, repo.commits(self.head_branch).first
     end
     self.comments.each do |c|
       if c.data.present? # maybe need add new column 'actual'?

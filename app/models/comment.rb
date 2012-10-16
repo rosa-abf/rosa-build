@@ -93,10 +93,8 @@ class Comment < ActiveRecord::Base
     return true if params[:path].blank? && params[:line].blank? # not inline comment
     self.data = {:path => params[:path], :line => params[:line]}
     if commentable.class == Issue && pull = commentable.pull_request
-      repo = Grit::Repo.new(pull.path)
-      to_commit, from_commit = pull.common_ancestor, repo.commits(pull.head_branch).first
-
-      diff = pull.diff repo, to_commit, from_commit
+      to_commit, from_commit = pull.common_ancestor, pull.repo.commits(pull.head_branch).first
+      diff = pull.diff pull.repo, to_commit, from_commit
       diff_path = diff.select {|d| d.a_path == params[:path]}
       return false unless actual_inline_comment?(diff, true)
 
