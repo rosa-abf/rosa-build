@@ -5,11 +5,11 @@ json.platform do |json|
   json.owner do |json_owner|
     json_owner.(@platform.owner, :id, :name)
     json_owner.type @platform.owner_type
-    json_owner.url url_for(@platform.owner)
+    json_owner.url member_path(@platform.owner)
   end
   json.repositories @platform.repositories do |json_repos, repo|
     json_repos.(repo, :id, :name)
     json_repos.url api_v1_repository_path(repo.id, :format => :json)
   end
 end
-json.url api_v1_platform_path(@platform, :format => :json)
+json.url api_v1_platform_path(@platform.id, :format => :json)

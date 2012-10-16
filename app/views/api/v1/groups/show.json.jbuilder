@@ -5,7 +5,7 @@ json.group do |json|
   json.owner do |json_owner|
     json_owner.(@group.owner, :id, :name)
     json_owner.type 'User'
-    json_owner.url api_v1_user_path(@group.owner.id, :format => :json)
+    json_owner.url api_v1_user_path(@group.owner_id, :format => :json)
   end
   json.avatar_url avatar_url(@group, :big)
   json.url api_v1_group_path(@group.id, :format => :json)

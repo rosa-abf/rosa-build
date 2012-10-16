@@ -2,6 +2,8 @@
 class Api::V1::BaseController < ApplicationController
   #respond_to :json
 
+  helper_method :member_path
+
   rescue_from CanCan::AccessDenied do |exception|
     respond_to do |format|
       format.json { render :json => {:message => t("flash.exception_message")}.to_json, :status => 403 }
@@ -12,6 +14,15 @@ class Api::V1::BaseController < ApplicationController
 
   def error_message(subject, message)
     [message, subject.errors.full_messages].flatten.join('. ')
+  end
+
+  def create_subject(subject)
+    class_name = subject.class.name
+    if subject.save
+      render_json_response subject, "#{class_name} has been created successfully"
+    else
+      render_validation_error subject, "#{class_name} has not been created"
+    end
   end
 
   def add_member_to_subject(subject)
@@ -66,6 +77,14 @@ class Api::V1::BaseController < ApplicationController
 
   def render_validation_error(subject, message)
     render_json_response(subject, error_message(subject, message), 422)
+  end
+
+  def member_path(subject)
+    if subject.is_a?(User)
+      api_v1_user_path(subject.id, :format => :json)
+    else
+      api_v1_group_path(subject.id, :format => :json)
+    end
   end
 
   private
