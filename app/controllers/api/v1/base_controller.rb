@@ -36,7 +36,7 @@ class Api::V1::BaseController < ApplicationController
 
   def remove_member_from_subject(subject)
     class_name = subject.class.name.downcase
-    if member.present? && member != subject.owner && subject.remove_member(member)
+    if member.present? && subject.remove_member(member)
       render_json_response subject, "#{member.class.to_s} '#{member.id}' has been removed from #{class_name} successfully"
     else
       render_validation_error subject, "Member has not been removed from #{class_name}"
