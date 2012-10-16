@@ -10,7 +10,7 @@ class Projects::CommentsController < Projects::BaseController
 
   def create
     anchor = ''
-    if !set_additional_data
+    if !@comment.set_additional_data params
       flash[:error] = I18n.t("flash.comment.save_error")
     elsif @comment.save
       flash[:notice] = I18n.t("flash.comment.saved")
@@ -59,41 +59,5 @@ class Projects::CommentsController < Projects::BaseController
   def find_or_build_comment
     @comment = params[:id].present? && Comment.find(params[:id]) ||
                current_user.comments.build(params[:comment]) {|c| c.commentable = @commentable; c.project = @project}
-  end
-
-  def set_additional_data
-    return true if params[:path].blank? && params[:line].blank? # not inline comment
-    @comment.data = {:path => params[:path], :line => params[:line]}
-    if @commentable.class == Issue && pull = @commentable.pull_request
-      repo = Grit::Repo.new(pull.path)
-      to_commit, from_commit = pull.common_ancestor, repo.commits(pull.head_branch).first
-
-      diff = pull.diff repo, to_commit, from_commit
-      diff_path = diff.select {|d| d.a_path == params[:path]}
-      return false unless @comment.actual_inline_comment?(diff, true)
-
-      comment_line, line_number, strings = params[:line].to_i, -1, []
-      diff_path[0].diff.each_line do |line|
-        line_number = line_number.succ
-        # Save 2 lines above and bottom of the diff comment line
-        break if line_number > comment_line + 2
-        if (comment_line-2..comment_line+2).include? line_number
-          @comment.data["line#{line_number-comment_line}"] = line.chomp
-        end
-
-        # Save lines from the closest header for rendering in the discussion
-        if line_number < comment_line - 2
-          # Header is the line like "@@ -47,9 +50,8 @@ def initialize(user)"
-          if line =~ /^@@ [+-]([0-9]+)(?:,([0-9]+))? [+-]([0-9]+)(?:,([0-9]+))? @@/
-            strings = line
-          else
-            strings << line
-          end
-        end
-      end
-      @comment.data[:strings] = strings
-      @comment.data[:view_path] = h(diff_path[0].renamed_file ? "#{diff_path[0].a_path.rtruncate 60} -> #{diff_path[0].b_path.rtruncate 60}" : diff_path[0].a_path.rtruncate(120))
-    end
-    return true
   end
 end
