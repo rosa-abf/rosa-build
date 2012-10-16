@@ -6,5 +6,5 @@
       "#{project_commentable_path(@project, @commentable)}##{comment_anchor(comment)}",
       :class => 'link_to_full_changes'
     .clear
-  .diff_data=render_diff(comment.inline_diff(@repo), 0, item[1], comment.data[:path])
+  .diff_data=render_diff(comment.inline_diff(@pull.repo), 0, item[1], comment.data[:path])
 

@@ -150,6 +150,7 @@ class PullRequest < ActiveRecord::Base
     return @repo if @repo.present? #&& !id_changed?
     @repo = Grit::Repo.new path
   end
+
   protected
 
   def merge
