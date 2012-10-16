@@ -34,9 +34,6 @@ $(document).ready(function() {
   });
 
   $('.new_inline_comment.button').on('click', function() {
-    var tmp = $(this).parents('tr').prev('tr')
-    tmp = tmp.find("a[href='"+$(this).attr('href')+"']");
-    var tmp = $(this).parents('tr').prev('tr').find("a[href='"+$(this).attr('href')+"']");
     $(this).parents('tr').prev('tr').find("a[href='"+$(this).attr('href')+"']").click();
     return false;
   });
