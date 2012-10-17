@@ -30,9 +30,9 @@ class Api::V1::BaseController < ApplicationController
     class_name = subject.class.name.downcase
     if member.present? && role.present? && subject.respond_to?(:owner) && subject.owner != member &&
       subject.send(relation).by_actor(member).update_all(:role => role)
-      render_json_response @group, "Role for #{member.class.name.downcase} '#{member.id} has been updated in #{class_name} successfully"
+      render_json_response subject, "Role for #{member.class.name.downcase} '#{member.id} has been updated in #{class_name} successfully"
     else
-      render_validation_error @group, "Role for member has not been updated in #{class_name}"
+      render_validation_error subject, "Role for member has not been updated in #{class_name}"
     end
   end
 

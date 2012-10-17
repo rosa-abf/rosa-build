@@ -4,7 +4,7 @@ class Api::V1::ProjectsController < Api::V1::BaseController
   before_filter :authenticate_user!
   skip_before_filter :authenticate_user!, :only => [:get_id, :show, :refs] if APP_CONFIG['anonymous_access']
   
-  load_and_authorize_resource
+  load_and_authorize_resource :project
 
   def index
     @projects = Project.accessible_by(current_ability, :membered).
@@ -42,7 +42,7 @@ class Api::V1::ProjectsController < Api::V1::BaseController
     else
       @project.owner = nil
     end
-    authorize! :update, @project.owner
+    authorize! :update, @project.owner if @project.owner != current_user
     create_subject @project
   end
 

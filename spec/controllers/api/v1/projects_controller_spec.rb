@@ -104,6 +104,165 @@ shared_examples_for "api projects user with show rights" do
   end
 end
 
+shared_examples_for 'api projects user with admin rights' do
+
+  it "should be able to perform members action" do
+    get :members, :id => @project.id, :format => :json
+    response.should be_success
+  end
+
+  context 'api project user with update rights' do
+    before do
+      put :update, {:project => {:description => 'new description'}, :id => @project.id}, :format => :json
+    end
+
+    it 'should be able to perform update action' do
+      response.should be_success
+    end
+    it 'ensures that group has been updated' do
+      @project.reload
+      @project.description.should == 'new description'
+    end
+  end
+
+  context 'api project user with add_member rights' do
+    let(:member) { FactoryGirl.create(:user) }
+    before do
+      put :add_member, {:member_id => member.id, :type => 'User', :role => 'admin', :id => @project.id}, :format => :json
+    end
+
+    it 'should be able to perform add_member action' do
+      response.should be_success
+    end
+    it 'ensures that new member has been added to project' do
+      @project.members.should include(member)
+    end
+  end
+
+  context 'api project user with remove_member rights' do
+    let(:member) { FactoryGirl.create(:user) }
+    before do
+      @project.add_member(member)
+      delete :remove_member, {:member_id => member.id, :type => 'User', :id => @project.id}, :format => :json
+    end
+
+    it 'should be able to perform remove_member action' do
+      response.should be_success
+    end
+    it 'ensures that member has been removed from project' do
+      @project.members.should_not include(member)
+    end
+  end
+
+  context 'api group user with update_member rights' do
+    let(:member) { FactoryGirl.create(:user) }
+    before do
+      @project.add_member(member)
+      put :update_member, {:member_id => member.id, :type => 'User', :role => 'reader', :id => @project.id}, :format => :json
+    end
+
+    it 'should be able to perform update_member action' do
+      response.should be_success
+    end
+    it 'ensures that member role has been updated in project' do
+      @project.relations.by_actor(member).first.
+        role.should == 'reader'
+    end
+  end
+end
+
+shared_examples_for 'api projects user without admin rights' do
+
+  it "should not be able to perform members action" do
+    get :members, :id => @project.id, :format => :json
+    response.should_not be_success
+  end
+
+  context 'api project user without update_member rights' do
+    let(:member) { FactoryGirl.create(:user) }
+    before do
+      @project.add_member(member)
+      put :update_member, {:member_id => member.id, :type => 'User', :role => 'reader', :id => @project.id}, :format => :json
+    end
+
+    it 'should not be able to perform update_member action' do
+      response.should_not be_success
+    end
+    it 'ensures that member role has not been updated in project' do
+      @project.relations.by_actor(member).first.
+        role.should_not == 'reader'
+    end
+  end
+
+  context 'api project user without update rights' do
+    before do
+      put :update, {:project => {:description => 'new description'}, :id => @project.id}, :format => :json
+    end
+
+    it 'should not be able to perform update action' do
+      response.should_not be_success
+    end
+    it 'ensures that project has not been updated' do
+      @project.reload
+      @project.description.should_not == 'new description'
+    end
+  end
+
+  context 'api project user without add_member rights' do
+    let(:member) { FactoryGirl.create(:user) }
+    before do
+      put :add_member, {:member_id => member.id, :type => 'User', :role => 'admin', :id => @project.id}, :format => :json
+    end
+
+    it 'should not be able to perform add_member action' do
+      response.should_not be_success
+    end
+    it 'ensures that new member has not been added to project' do
+      @project.members.should_not include(member)
+    end
+  end
+
+  context 'api project user without remove_member rights' do
+    let(:member) { FactoryGirl.create(:user) }
+    before do
+      @project.add_member(member)
+      delete :remove_member, {:member_id => member.id, :type => 'User', :id => @project.id}, :format => :json
+    end
+
+    it 'should be able to perform update action' do
+      response.should_not be_success
+    end
+    it 'ensures that member has not been removed from project' do
+      @project.members.should include(member)
+    end
+  end
+
+end
+
+shared_examples_for 'api projects user with owner rights' do
+  context 'api project user with destroy rights' do
+    it 'should be able to perform destroy action' do
+      delete :destroy, :id => @project.id, :format => :json
+      response.should be_success
+    end
+    it 'ensures that project has been destroyed' do
+      lambda { delete :destroy, :id => @project.id, :format => :json }.should change{ Project.count }.by(-1)
+    end
+  end
+end
+
+shared_examples_for 'api projects user without owner rights' do
+  context 'api project user with destroy rights' do
+    it 'should not be able to perform destroy action' do
+      delete :destroy, :id => @project.id, :format => :json
+      response.should_not be_success
+    end
+    it 'ensures that project has not been destroyed' do
+      lambda { delete :destroy, :id => @project.id, :format => :json }.should_not change{ Project.count }
+    end
+  end
+end
+
 describe Api::V1::ProjectsController do
 
   before(:each) do
@@ -115,15 +274,24 @@ describe Api::V1::ProjectsController do
   end
 
   context 'for guest' do
-    
+
+    [:index, :members].each do |action|
+      it "should not be able to perform #{action} action" do
+        get action, :id => @project.id, :format => :json
+        response.should_not be_success
+      end
+    end
+
     if APP_CONFIG['anonymous_access']
-      it_should_behave_like 'api projects user with reader rights'
+      it_should_behave_like 'api projects user with show rights'
       it_should_behave_like 'api projects user without reader rights for hidden project'
     else
       it_should_behave_like 'api projects user without show rights'
     end
     it_should_behave_like 'api projects user without fork rights'
     it_should_behave_like 'api projects user without fork rights for hidden project'
+    it_should_behave_like 'api projects user without admin rights'
+    it_should_behave_like 'api projects user without owner rights'
   end
 
   context 'for simple user' do
@@ -132,10 +300,28 @@ describe Api::V1::ProjectsController do
       http_login(@user)
     end
 
+    it 'should be able to perform index action' do
+      get :index, :format => :json
+      response.should be_success
+    end
+
+    context 'api project user with create rights' do
+      let(:params) { {:project => {:name => 'test_name', :owner_id => @user.id, :owner_type => 'User', :visibility => 'open'}} }
+      it 'should be able to perform create action' do
+        post :create, params, :format => :json
+        response.should be_success
+      end
+      it 'ensures that project has been created' do
+        lambda { post :create, params, :format => :json }.should change{ Project.count }.by(1)
+      end
+    end
+
     it_should_behave_like 'api projects user with reader rights'
     it_should_behave_like 'api projects user without reader rights for hidden project'
     it_should_behave_like 'api projects user with fork rights'
     it_should_behave_like 'api projects user without fork rights for hidden project'
+    it_should_behave_like 'api projects user without admin rights'
+    it_should_behave_like 'api projects user without owner rights'
   end
 
   context 'for admin' do
@@ -148,20 +334,23 @@ describe Api::V1::ProjectsController do
     it_should_behave_like 'api projects user with reader rights for hidden project'
     it_should_behave_like 'api projects user with fork rights'
     it_should_behave_like 'api projects user with fork rights for hidden project'
+    it_should_behave_like 'api projects user with admin rights'
+    it_should_behave_like 'api projects user with owner rights'
   end
 
   context 'for owner user' do
     before(:each) do
       @user = FactoryGirl.create(:user)
       http_login(@user)
-      @project.owner = @user; @project.save
-      @project.relations.create!(:actor_type => 'User', :actor_id => @user.id, :role => 'admin')
+      @project = FactoryGirl.create(:project, :owner => @user)
     end
 
     it_should_behave_like 'api projects user with reader rights'
     it_should_behave_like 'api projects user with reader rights for hidden project'
     it_should_behave_like 'api projects user without fork rights'
     it_should_behave_like 'api projects user without fork rights for hidden project'
+    it_should_behave_like 'api projects user with admin rights'
+    it_should_behave_like 'api projects user with owner rights'
   end
 
   context 'for reader user' do
@@ -175,6 +364,8 @@ describe Api::V1::ProjectsController do
     it_should_behave_like 'api projects user with reader rights for hidden project'
     it_should_behave_like 'api projects user with fork rights'
     it_should_behave_like 'api projects user with fork rights for hidden project'
+    it_should_behave_like 'api projects user without admin rights'
+    it_should_behave_like 'api projects user without owner rights'
   end
 
   context 'for writer user' do
@@ -188,13 +379,15 @@ describe Api::V1::ProjectsController do
     it_should_behave_like 'api projects user with reader rights for hidden project'
     it_should_behave_like 'api projects user with fork rights'
     it_should_behave_like 'api projects user with fork rights for hidden project'
+    it_should_behave_like 'api projects user without admin rights'
+    it_should_behave_like 'api projects user without owner rights'
   end
 
   context 'for group' do
     before(:each) do
       @group = FactoryGirl.create(:group)
       @group_user = FactoryGirl.create(:user)
-      @project.relations.destroy_all
+#      @project.relations.destroy_all
       http_login(@group_user)
     end
 
@@ -203,12 +396,13 @@ describe Api::V1::ProjectsController do
       it_should_behave_like 'api projects user without reader rights for hidden project'
       it_should_behave_like 'api projects user with fork rights'
       it_should_behave_like 'api projects user without fork rights for hidden project'
+      it_should_behave_like 'api projects user without admin rights'
+      it_should_behave_like 'api projects user without owner rights'
     end
 
     context 'owner of the project' do
       before(:each) do
-        @project.owner = @group; @project.save
-        @project.relations.create :actor_id => @project.owner.id, :actor_type => @project.owner.class.to_s, :role => 'admin'
+        @project = FactoryGirl.create(:project, :owner => @group)
       end
 
       context 'reader user' do
@@ -220,6 +414,8 @@ describe Api::V1::ProjectsController do
         it_should_behave_like 'api projects user with reader rights for hidden project'
         it_should_behave_like 'api projects user with fork rights'
         it_should_behave_like 'api projects user with fork rights for hidden project'
+        it_should_behave_like 'api projects user without admin rights'
+        it_should_behave_like 'api projects user without owner rights'
       end
 
       context 'admin user' do
@@ -231,6 +427,8 @@ describe Api::V1::ProjectsController do
         it_should_behave_like 'api projects user with reader rights for hidden project'
         it_should_behave_like 'api projects user with fork rights'
         it_should_behave_like 'api projects user with fork rights for hidden project'
+        it_should_behave_like 'api projects user with admin rights'
+        it_should_behave_like 'api projects user with owner rights'
       end
     end
 
@@ -249,6 +447,8 @@ describe Api::V1::ProjectsController do
           it_should_behave_like 'api projects user with reader rights for hidden project'
           it_should_behave_like 'api projects user with fork rights'
           it_should_behave_like 'api projects user with fork rights for hidden project'
+          it_should_behave_like 'api projects user with admin rights'
+          it_should_behave_like 'api projects user without owner rights'
         end
 
         context 'admin user' do
@@ -260,6 +460,8 @@ describe Api::V1::ProjectsController do
           it_should_behave_like 'api projects user with reader rights for hidden project'
           it_should_behave_like 'api projects user with fork rights'
           it_should_behave_like 'api projects user with fork rights for hidden project'
+          it_should_behave_like 'api projects user with admin rights'
+          it_should_behave_like 'api projects user without owner rights'
         end
       end
 
@@ -277,6 +479,8 @@ describe Api::V1::ProjectsController do
           it_should_behave_like 'api projects user with reader rights for hidden project'
           it_should_behave_like 'api projects user with fork rights'
           it_should_behave_like 'api projects user with fork rights for hidden project'
+          it_should_behave_like 'api projects user without admin rights'
+          it_should_behave_like 'api projects user without owner rights'
 
           context 'user should has best role' do
             before(:each) do
@@ -285,6 +489,8 @@ describe Api::V1::ProjectsController do
             it_should_behave_like 'api projects user with reader rights'
             it_should_behave_like 'api projects user with fork rights'
             it_should_behave_like 'api projects user with fork rights for hidden project'
+            it_should_behave_like 'api projects user with admin rights'
+            it_should_behave_like 'api projects user without owner rights'
           end
         end
 
@@ -297,6 +503,8 @@ describe Api::V1::ProjectsController do
           it_should_behave_like 'api projects user with reader rights for hidden project'
           it_should_behave_like 'api projects user with fork rights'
           it_should_behave_like 'api projects user with fork rights for hidden project'
+          it_should_behave_like 'api projects user without admin rights'
+          it_should_behave_like 'api projects user without owner rights'
         end
       end
     end
