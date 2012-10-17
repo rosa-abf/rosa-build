@@ -4,9 +4,7 @@ json.project do |json|
   json.updated_at @project.updated_at.to_i
   json.partial! 'api/v1/shared/owner', :owner => @project.owner
   json.maintainer do |json_maintainer|
-    json_maintainer.(@project.maintainer, :id, :name)
-    json_maintainer.type 'User'
-    json_maintainer.url api_v1_user_path(@project.maintainer_id, :format => :json)
+    json.partial! 'api/v1/shared/member', :member => @project.maintainer, :tag => json_maintainer
   end
   json.repositories @project.repositories do |json_repos, repo|
     json_repos.(repo, :id, :name)
