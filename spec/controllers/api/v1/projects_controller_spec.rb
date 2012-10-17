@@ -36,6 +36,42 @@ shared_examples_for "api projects user without show rights" do
     get :get_id, :name => @project.name, :owner => @project.owner.uname, :format => :json
     response.should_not be_success
   end
+
+  it "should show access violation instead of project members data" do
+    get :members, :id => @project.id, :format => :json
+    response.should_not be_success
+  end
+
+end
+
+shared_examples_for 'api projects user without fork rights' do
+  it 'should not be able to perform fork action' do
+    post :fork, :id => @project.id, :format => :json
+    response.should_not be_success
+  end
+  it 'ensures that project has not been forked' do
+    lambda { post :fork, :id => @project.id, :format => :json }.should_not change{ Project.count }
+  end
+end
+
+shared_examples_for 'api projects user with fork rights' do
+  it 'should be able to perform fork action' do
+    post :fork, :id => @project.id, :format => :json
+    response.should be_success
+  end
+  it 'ensures that project has been forked' do
+    lambda { post :fork, :id => @project.id, :format => :json }.should change{ Project.count }.by(1)
+  end
+end
+
+shared_examples_for 'api projects user with fork rights for hidden project' do
+  before { @project.update_column(:visibility, 'hidden') }
+  it_should_behave_like 'api projects user with fork rights'
+end
+
+shared_examples_for 'api projects user without fork rights for hidden project' do
+  before { @project.update_column(:visibility, 'hidden') }
+  it_should_behave_like 'api projects user without fork rights'
 end
 
 shared_examples_for "api projects user with show rights" do
@@ -86,7 +122,8 @@ describe Api::V1::ProjectsController do
     else
       it_should_behave_like 'api projects user without show rights'
     end
-
+    it_should_behave_like 'api projects user without fork rights'
+    it_should_behave_like 'api projects user without fork rights for hidden project'
   end
 
   context 'for simple user' do
@@ -97,6 +134,8 @@ describe Api::V1::ProjectsController do
 
     it_should_behave_like 'api projects user with reader rights'
     it_should_behave_like 'api projects user without reader rights for hidden project'
+    it_should_behave_like 'api projects user with fork rights'
+    it_should_behave_like 'api projects user without fork rights for hidden project'
   end
 
   context 'for admin' do
@@ -107,6 +146,8 @@ describe Api::V1::ProjectsController do
 
     it_should_behave_like 'api projects user with reader rights'
     it_should_behave_like 'api projects user with reader rights for hidden project'
+    it_should_behave_like 'api projects user with fork rights'
+    it_should_behave_like 'api projects user with fork rights for hidden project'
   end
 
   context 'for owner user' do
@@ -119,6 +160,8 @@ describe Api::V1::ProjectsController do
 
     it_should_behave_like 'api projects user with reader rights'
     it_should_behave_like 'api projects user with reader rights for hidden project'
+    it_should_behave_like 'api projects user without fork rights'
+    it_should_behave_like 'api projects user without fork rights for hidden project'
   end
 
   context 'for reader user' do
@@ -130,6 +173,8 @@ describe Api::V1::ProjectsController do
 
     it_should_behave_like 'api projects user with reader rights'
     it_should_behave_like 'api projects user with reader rights for hidden project'
+    it_should_behave_like 'api projects user with fork rights'
+    it_should_behave_like 'api projects user with fork rights for hidden project'
   end
 
   context 'for writer user' do
@@ -141,6 +186,8 @@ describe Api::V1::ProjectsController do
 
     it_should_behave_like 'api projects user with reader rights'
     it_should_behave_like 'api projects user with reader rights for hidden project'
+    it_should_behave_like 'api projects user with fork rights'
+    it_should_behave_like 'api projects user with fork rights for hidden project'
   end
 
   context 'for group' do
@@ -154,6 +201,8 @@ describe Api::V1::ProjectsController do
     context 'with no relations to project' do
       it_should_behave_like 'api projects user with reader rights'
       it_should_behave_like 'api projects user without reader rights for hidden project'
+      it_should_behave_like 'api projects user with fork rights'
+      it_should_behave_like 'api projects user without fork rights for hidden project'
     end
 
     context 'owner of the project' do
@@ -169,6 +218,8 @@ describe Api::V1::ProjectsController do
 
         it_should_behave_like 'api projects user with reader rights'
         it_should_behave_like 'api projects user with reader rights for hidden project'
+        it_should_behave_like 'api projects user with fork rights'
+        it_should_behave_like 'api projects user with fork rights for hidden project'
       end
 
       context 'admin user' do
@@ -178,6 +229,8 @@ describe Api::V1::ProjectsController do
 
         it_should_behave_like 'api projects user with reader rights'
         it_should_behave_like 'api projects user with reader rights for hidden project'
+        it_should_behave_like 'api projects user with fork rights'
+        it_should_behave_like 'api projects user with fork rights for hidden project'
       end
     end
 
@@ -194,6 +247,8 @@ describe Api::V1::ProjectsController do
 
           it_should_behave_like 'api projects user with reader rights'
           it_should_behave_like 'api projects user with reader rights for hidden project'
+          it_should_behave_like 'api projects user with fork rights'
+          it_should_behave_like 'api projects user with fork rights for hidden project'
         end
 
         context 'admin user' do
@@ -203,6 +258,8 @@ describe Api::V1::ProjectsController do
 
           it_should_behave_like 'api projects user with reader rights'
           it_should_behave_like 'api projects user with reader rights for hidden project'
+          it_should_behave_like 'api projects user with fork rights'
+          it_should_behave_like 'api projects user with fork rights for hidden project'
         end
       end
 
@@ -218,12 +275,16 @@ describe Api::V1::ProjectsController do
 
           it_should_behave_like 'api projects user with reader rights'
           it_should_behave_like 'api projects user with reader rights for hidden project'
+          it_should_behave_like 'api projects user with fork rights'
+          it_should_behave_like 'api projects user with fork rights for hidden project'
 
           context 'user should has best role' do
             before(:each) do
               @project.relations.create :actor_id => @group_user.id, :actor_type => @group_user.class.to_s, :role => 'admin'
             end
-          it_should_behave_like 'api projects user with reader rights'
+            it_should_behave_like 'api projects user with reader rights'
+            it_should_behave_like 'api projects user with fork rights'
+            it_should_behave_like 'api projects user with fork rights for hidden project'
           end
         end
 
@@ -234,6 +295,8 @@ describe Api::V1::ProjectsController do
 
           it_should_behave_like 'api projects user with reader rights'
           it_should_behave_like 'api projects user with reader rights for hidden project'
+          it_should_behave_like 'api projects user with fork rights'
+          it_should_behave_like 'api projects user with fork rights for hidden project'
         end
       end
     end
