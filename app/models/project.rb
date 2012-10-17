@@ -191,7 +191,9 @@ class Project < ActiveRecord::Base
   end
 
   def set_maintainer
-    self.maintainer_id = (owner_type == 'User') ? self.owner_id : self.owner.owner_id
+    if maintainer_id.blank?
+      self.maintainer_id = (owner_type == 'User') ? self.owner_id : self.owner.owner_id
+    end
   end
 
 end
