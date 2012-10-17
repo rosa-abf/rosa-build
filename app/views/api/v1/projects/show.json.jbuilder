@@ -2,11 +2,7 @@ json.project do |json|
   json.(@project, :id, :name, :visibility, :description, :ancestry, :has_issues, :has_wiki, :default_branch, :is_package, :average_build_time)
   json.created_at @project.created_at.to_i
   json.updated_at @project.updated_at.to_i
-  json.owner do |json_owner|
-    json_owner.(@project.owner, :id, :name)
-    json_owner.type @project.owner_type
-    json_owner.url member_path(@project.owner)
-  end
+  json.partial! 'api/v1/shared/owner', :owner => @project.owner
   json.maintainer do |json_maintainer|
     json_maintainer.(@project.maintainer, :id, :name)
     json_maintainer.type 'User'
