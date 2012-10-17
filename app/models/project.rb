@@ -89,6 +89,14 @@ class Project < ActiveRecord::Base
     collaborators | groups.map(&:members).flatten
   end
 
+  def add_member(member, role = 'admin')
+    Relation.add_member(member, self, role)
+  end
+
+  def remove_member(member)
+    Relation.remove_member(member, self)
+  end
+
   def platforms
     @platforms ||= repositories.map(&:platform).uniq
   end

@@ -50,4 +50,26 @@ class Api::V1::ProjectsController < Api::V1::BaseController
     @members = @project.collaborators.order('uname').paginate(paginate_params)
   end
 
+  def add_member
+    add_member_to_subject @project, params[:role]
+  end
+
+  def remove_member
+    remove_member_from_subject @project
+  end
+
+  def update_member
+    update_member_in_subject @project
+  end
+
+  def fork
+    owner = (Group.find params[:group_id] if params[:group].present?) || current_user
+    authorize! :update, owner if owner.class == Group
+    if forked = @project.fork(owner) and forked.valid?
+      render_json_response forked, 'Project has been forked successfully'
+    else
+      render_validation_error forked, 'Project has not been forked'
+    end
+  end
+
 end

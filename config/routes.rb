@@ -44,6 +44,7 @@ Rosa::Application.routes.draw do
       resources :projects, :only => [:index, :show, :update, :create, :destroy] do
         collection { get :get_id }
         member {
+          post :fork
           get :refs_list
           get :members
           put :add_member
