@@ -28,6 +28,7 @@ en:
         ready: Ready
         merged: Merged
         closed: Closed
+      outdated_diff: Outdated diff
       activity:
         show_outdated_diff: Show outdated_diff
   pull_requests:

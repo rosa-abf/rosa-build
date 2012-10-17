@@ -57,7 +57,7 @@ class Comment < ActiveRecord::Base
   def actual_inline_comment?(diff, force = false)
     unless force
       raise "This is not inline comment!" if data.blank? # for debug
-      return data[:actual] if data[:actual].present?
+      return data[:actual] unless data[:actual].nil?
     end
     filepath, line_number = data[:path], data[:line]
     diff_path = (diff || commentable.diffs ).select {|d| d.a_path == data[:path]}
@@ -79,10 +79,8 @@ class Comment < ActiveRecord::Base
     end
   end
 
-  def inline_diff(repo)
-    text, closest = data[:strings], []
-    (-2..0).each {|shift| closest << data["line#{shift}"]}
-    text << closest.join("\n")
+  def inline_diff
+    data[:strings] + data['line0']
   end
 
   def pull_comment?
@@ -91,6 +89,10 @@ class Comment < ActiveRecord::Base
 
   def set_additional_data params
     return true if params[:path].blank? && params[:line].blank? # not inline comment
+    if params[:in_reply].present? && reply = Comment.where(:id => params[:in_reply]).first
+      self.data = reply.data
+      return true
+    end
     self.data = {:path => params[:path], :line => params[:line]}
     if commentable.class == Issue && pull = commentable.pull_request
       to_commit, from_commit = pull.common_ancestor, pull.repo.commits(pull.head_branch).first
@@ -108,16 +110,20 @@ class Comment < ActiveRecord::Base
         end
 
         # Save lines from the closest header for rendering in the discussion
-        if line_number < comment_line - 2
+        if line_number < comment_line
           # Header is the line like "@@ -47,9 +50,8 @@ def initialize(user)"
-          if line =~ /^@@ [+-]([0-9]+)(?:,([0-9]+))? [+-]([0-9]+)(?:,([0-9]+))? @@/
+          if line =~ Diff::Display::Unified::Generator::LINE_NUM_RE
             strings = [line]
           else
             strings << line
           end
         end
       end
-      data[:strings] = strings.join ''
+      ## Bug with numbers of diff lines, now store all diff
+      data[:strings] = strings.join
+      # Limit stored diff to 10 lines (see inline_diff)
+      #data[:strings] = ((strings.count) <= 9 ? strings : [strings[0]] + strings.last(8)).join
+      ##
       data[:view_path] = h(diff_path[0].renamed_file ? "#{diff_path[0].a_path.rtruncate 60} -> #{diff_path[0].b_path.rtruncate 60}" : diff_path[0].a_path.rtruncate(120))
     end
     return true

@@ -53,8 +53,13 @@ module DiffHelper
   # FIXME: Just to dev, remove to lib. Really need it?
   ########################################################
   def prepare(url, diff_counter, filepath, comments, in_discussion)
-    @num_line, @url, @diff_counter, @in_discussion = -1, url, diff_counter, in_discussion
+    @url, @diff_counter, @in_discussion = url, diff_counter, in_discussion
     @filepath, @line_comments = filepath, comments
+    @add_reply_id, @num_line = if @in_discussion
+      [@line_comments[0].id, @line_comments[0].data[:line].to_i - @line_comments[0].data[:strings].lines.count.to_i-1]
+    else
+      [nil, -1]
+    end
   end
 
   def headerline(line)
@@ -223,6 +228,7 @@ module DiffHelper
   end
 
   def line_comment
+    return if @in_discussion && @add_reply_id && @line_comments[0].data[:line].to_i != @num_line
     link_to image_tag('line_comment.png', :alt => t('layout.comments.new_header')), new_comment_path, :class => 'add_line-comment'
   end
 
@@ -253,10 +259,11 @@ module DiffHelper
   end
 
   def new_comment_path
+    hash = {:path => @filepath, :line => @num_line}
     if @commentable.class == Issue
-      project_new_line_pull_comment_path(@project, @commentable, :path => @filepath, :line => @num_line)
+      project_new_line_pull_comment_path(@project, @commentable, hash.merge({:in_reply => @add_reply_id}))
     elsif @commentable.class == Grit::Commit
-      new_line_commit_comment_path(@project, @commentable, :path => @filepath, :line => @num_line)
+      new_line_commit_comment_path(@project, @commentable, hash)
     end
   end
 end
