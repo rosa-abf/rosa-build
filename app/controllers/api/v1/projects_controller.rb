@@ -6,6 +6,11 @@ class Api::V1::ProjectsController < Api::V1::BaseController
   
   load_and_authorize_resource
 
+  def index
+    @projects = Project.accessible_by(current_ability, :membered).
+      paginate(paginate_params)
+  end
+
   def get_id
     if @project = Project.find_by_owner_and_name(params[:owner], params[:name])
       authorize! :show, @project
