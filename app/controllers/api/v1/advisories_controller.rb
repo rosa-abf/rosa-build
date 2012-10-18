@@ -2,8 +2,7 @@
 class Api::V1::AdvisoriesController < Api::V1::BaseController
   before_filter :authenticate_user!
   skip_before_filter :authenticate_user!, :only => [:index, :show] if APP_CONFIG['anonymous_access']
-  load_and_authorize_resource :advisory,
-    :find_by => :advisory_id, :only => [:show, :update]
+  load_and_authorize_resource :advisory, :find_by => :advisory_id
   load_and_authorize_resource :build_list,
     :find_by => :build_list_id, :only => [:create, :update]
 
