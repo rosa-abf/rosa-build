@@ -88,6 +88,8 @@ describe Api::V1::AdvisoriesController do
 
     @advisory = FactoryGirl.create(:advisory)
     @build_list = FactoryGirl.create(:build_list_core)
+    @build_list.save_to_platform.update_column(:released, true)
+    @build_list.save_to_repository.update_column(:publish_without_qa, false)
     @build_list.update_column(:status, BuildList::BUILD_PUBLISHED)
   end
 
@@ -131,7 +133,6 @@ describe Api::V1::AdvisoriesController do
   context 'for user who has access to update build_list' do
     before do
       @user = FactoryGirl.create(:user)
-      @build_list.project.relations.create(:role => 'admin', :actor => @user)
       @build_list.save_to_platform.relations.create(:role => 'admin', :actor => @user)
       http_login(@user)
     end
