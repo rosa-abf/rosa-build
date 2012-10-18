@@ -22,18 +22,18 @@ class Relation < ActiveRecord::Base
     r.save
   end
 
-  def self.add_member(member, target, role)
-    if target.relations.exists?(:actor_id => member.id, :actor_type => member.class.to_s) || target.try(:owner) == member
+  def self.add_member(member, target, role, relation = :relations)
+    if target.send(relation).exists?(:actor_id => member.id, :actor_type => member.class.to_s) || (target.respond_to?(:owner) && target.owner == member)
       true
     else
-      rel = target.relations.build(:role => role)
+      rel = target.send(relation).build(:role => role)
       rel.actor = member
       rel.save
     end
   end
 
   def self.remove_member(member, target)
-    return false if target.try(:owner) == member
+    return false if target.respond_to?(:owner) && target.owner == member
     Relation.by_actor(member).by_target(target).each{|r| r.destroy}
   end
 

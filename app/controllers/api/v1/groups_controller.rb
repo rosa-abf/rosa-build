@@ -43,14 +43,8 @@ class Api::V1::GroupsController < Api::V1::BaseController
   end
 
   def update_member
-    member_id, role = params[:member_id], params[:role]
-    if member_id.present? && role.present? && @group.owner_id != member_id.to_i &&
-      @group.actors.where(:actor_id => member_id, :actor_type => 'User').
-        update_all(:role => role)
-      render_json_response @group, "Role for user #{member_id} has been updated in group successfully"
-    else
-      render_validation_error @group, 'Role for user has not been updated in group'
-    end
+    params[:type] = 'User'
+    update_member_in_subject @group, :actors
   end
 
 end

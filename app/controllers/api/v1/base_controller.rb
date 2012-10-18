@@ -25,6 +25,17 @@ class Api::V1::BaseController < ApplicationController
     end
   end
 
+  def update_member_in_subject(subject, relation = :relations)
+    role = params[:role]
+    class_name = subject.class.name.downcase
+    if member.present? && role.present? && subject.respond_to?(:owner) && subject.owner != member &&
+      subject.send(relation).by_actor(member).update_all(:role => role)
+      render_json_response subject, "Role for #{member.class.name.downcase} '#{member.id} has been updated in #{class_name} successfully"
+    else
+      render_validation_error subject, "Role for member has not been updated in #{class_name}"
+    end
+  end
+
   def add_member_to_subject(subject, role = 'admin')
     class_name = subject.class.name.downcase
     if member.present? && subject.add_member(member, role)

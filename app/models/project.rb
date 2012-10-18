@@ -89,6 +89,14 @@ class Project < ActiveRecord::Base
     collaborators | groups.map(&:members).flatten
   end
 
+  def add_member(member, role = 'admin')
+    Relation.add_member(member, self, role)
+  end
+
+  def remove_member(member)
+    Relation.remove_member(member, self)
+  end
+
   def platforms
     @platforms ||= repositories.map(&:platform).uniq
   end
@@ -191,7 +199,9 @@ class Project < ActiveRecord::Base
   end
 
   def set_maintainer
-    self.maintainer_id = (owner_type == 'User') ? self.owner_id : self.owner.owner_id
+    if maintainer_id.blank?
+      self.maintainer_id = (owner_type == 'User') ? self.owner_id : self.owner.owner_id
+    end
   end
 
 end

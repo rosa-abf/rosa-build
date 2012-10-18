@@ -40,13 +40,7 @@ class Group < Avatar
   end
 
   def add_member(member, role = 'admin')
-    if actors.exists?(:actor_id => member.id, :actor_type => member.class.to_s) || owner == member
-      true
-    else
-      rel = actors.build(:role => role)
-      rel.actor = member
-      rel.save
-    end
+    Relation.add_member(member, self, role, :actors)
   end
 
   def remove_member(member)
