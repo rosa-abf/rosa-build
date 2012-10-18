@@ -196,23 +196,14 @@ class Projects::BuildListsController < Projects::BaseController
 
       if params[:attach_advisory] == 'new'
         # create new advisory
-        unless @build_list.build_advisory(params[:build_list][:advisory]) do |a|
-              a.update_type = @build_list.update_type
-              a.projects   << @build_list.project
-              a.platforms  << @build_list.save_to_platform unless a.platforms.include? @build_list.save_to_platform
-            end.save
+        advisory = @build_list.build_and_associate_advisory(params[:build_list][:advisory])
+        unless advisory.save
           redirect_to :back, :notice => t('layout.build_lists.publish_fail') and return
         end
       else
         # attach existing advisory
         a = Advisory.where(:advisory_id => params[:attach_advisory]).limit(1).first
-        if a.update_type != @build_list.update_type
-          redirect_to :back, :notice => t('layout.build_lists.publish_fail') and return
-        end
-        a.platforms  << @build_list.save_to_platform unless a.platforms.include? @build_list.save_to_platform
-        a.projects   << @build_list.project unless a.projects.include? @build_list.project
-        @build_list.advisory = a
-        unless a.save
+        if !(a && a.attach_build_list(@build_list) && a.save)
           redirect_to :back, :notice => t('layout.build_lists.publish_fail') and return
         end
       end

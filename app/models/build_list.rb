@@ -303,6 +303,14 @@ class BuildList < ActiveRecord::Base
     #[WAITING_FOR_RESPONSE, BuildServer::BUILD_PENDING, BuildServer::BUILD_STARTED].include?(status)
   end
 
+  def build_and_associate_advisory(params)
+    build_advisory(params) do |a|
+      a.update_type = update_type
+      a.projects   << project
+      a.platforms  << save_to_platform unless a.platforms.include? save_to_platform
+    end
+  end
+
   protected
 
   def notify_users

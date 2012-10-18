@@ -1,9 +1,11 @@
 # -*- encoding : utf-8 -*-
 class Api::V1::AdvisoriesController < Api::V1::BaseController
   before_filter :authenticate_user!
-  skip_before_filter :authenticate_user! if APP_CONFIG['anonymous_access']
-  load_resource :find_by => :advisory_id
-  authorize_resource
+  skip_before_filter :authenticate_user!, :only => [:index, :show] if APP_CONFIG['anonymous_access']
+  load_and_authorize_resource :advisory,
+    :find_by => :advisory_id, :only => [:show, :update]
+  load_and_authorize_resource :build_list,
+    :find_by => :build_list_id, :only => [:create, :update]
 
   def index
     @advisories = @advisories.scoped(:include => :platforms).
@@ -11,25 +13,26 @@ class Api::V1::AdvisoriesController < Api::V1::BaseController
   end
 
   def show
-    fetch_packages_info
+    @packages_info = @advisory.fetch_packages_info
   end
 
-  protected
+  def create
+    @advisory = @build_list.build_and_associate_advisory(params[:advisory])
+    if @build_list.status == BuildList::BUILD_PUBLISHED &&
+        @advisory.save && @build_list.save
+      render_json_response @advisory, 'Advisory has been created successfully'
+    else
+      render_validation_error @advisory, error_message(@build_list, 'Advisory has not been created')
+    end
+  end
 
-  # this method fetches and structurize packages attached to current advisory.
-  def fetch_packages_info
-    @packages_info = Hash.new { |h, k| h[k] = {} } # maaagic, it's maaagic ;)
-    @advisory.build_lists.find_in_batches(:include => [:save_to_platform, :packages, :project]) do |batch|
-      batch.each do |build_list|
-        tmp = build_list.packages.inject({:srpm => nil, :rpm => []}) do |h, p|
-          p.package_type == 'binary' ? h[:rpm] << p.fullname : h[:srpm] = p.fullname
-          h
-        end
-        h = { build_list.project => tmp }
-        @packages_info[build_list.save_to_platform].merge!(h) do |pr, old, new|
-          {:srpm => new[:srpm], :rpm => old[:rpm].concat(new[:rpm]).uniq}
-        end
-      end
+  def update
+    if @build_list.status == BuildList::BUILD_PUBLISHED &&
+        @advisory.attach_build_list(@build_list) &&
+        @advisory.save && @build_list.save
+      render_json_response @advisory, "Build list '#{@build_list.id}' has been attached to advisory successfully"
+    else
+      render_validation_error @advisory, error_message(@build_list, 'Build list has not been attached to advisory')
     end
   end
 
