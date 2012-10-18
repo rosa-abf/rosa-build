@@ -64,7 +64,9 @@ class Ability
         can [:read, :archive], Project, :owner_type => 'Group', :owner_id => user.group_ids
         can([:read, :membered, :get_id], Project, read_relations_for('projects')) {|project| local_reader? project}
         can(:write, Project) {|project| local_writer? project} # for grack
-        can([:update, :sections, :manage_collaborators, :autocomplete_maintainers], Project) {|project| local_admin? project}
+        can [:update, :sections, :manage_collaborators, :autocomplete_maintainers, :add_member, :remove_member, :update_member, :members], Project do |project|
+            local_admin? project
+          end
         can(:fork, Project) {|project| can? :read, project}
         can(:fork, Project) {|project| project.owner_type == 'Group' and can? :update, project.owner}
         can(:destroy, Project) {|project| owner? project}
