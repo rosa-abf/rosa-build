@@ -95,10 +95,8 @@ class Comment < ActiveRecord::Base
     end
     self.data = {:path => params[:path], :line => params[:line]}
     if commentable.class == Issue && pull = commentable.pull_request
-      to_commit, from_commit = pull.common_ancestor, pull.repo.commits(pull.head_branch).first
-      diff = pull.diff pull.repo, to_commit, from_commit
-      diff_path = diff.select {|d| d.a_path == params[:path]}
-      return false unless actual_inline_comment?(diff, true)
+      diff_path = pull.diff.select {|d| d.a_path == params[:path]}
+      return false unless actual_inline_comment?(pull.diff, true)
 
       comment_line, line_number, strings = params[:line].to_i, -1, []
       diff_path[0].diff.each_line do |line|

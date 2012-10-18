@@ -128,17 +128,12 @@ class Projects::PullRequestsController < Projects::BaseController
   end
 
   def load_diff_commits_data
-    @base_commit = @pull.common_ancestor
-    @head_commit = @pull.repo.commits(@pull.from_branch).first
-
-    @commits = @pull.repo.commits_between(@pull.repo.commits(@pull.to_ref).first, @head_commit)
+    @commits = @pull.repo.commits_between(@pull.from_commit, @pull.to_commit)
     @total_commits = @commits.count
     @commits = @commits.last(100)
 
-    @diff = @pull.diff @pull.repo, @base_commit, @head_commit
-    @stats = @pull.diff_stats @pull.repo, @base_commit, @head_commit
-    @comments = @issue.comments
-    @commentable = @issue
+    @diff, @stats = @pull.diff, @pull.diff_stats
+    @comments, @commentable = @issue.comments, @issue
   end
 
   def find_destination_project bang=true
