@@ -13,6 +13,74 @@ shared_examples_for 'api advisories user with show rights' do
   end
 end
 
+shared_examples_for 'api advisories user with admin rights' do
+  context 'api advisories user with create rights' do
+    let(:params) { {:build_list_id => @build_list.id, :advisory => {:description => 'test'}} }
+    it 'should be able to perform create action' do
+      post :create, params, :format => :json
+      response.should be_success
+    end
+    it 'ensures that advisory has been created' do
+      lambda { post :create, params, :format => :json }.should change{ Advisory.count }.by(1)
+    end
+    it 'ensures that build_list has been associated with advisory' do
+      post :create, params, :format => :json
+      @build_list.reload
+      @build_list.advisory.should_not be_nil
+    end
+  end
+
+  context 'api advisories user with update rights' do
+    let(:params) { {:id => @advisory.advisory_id, :build_list_id => @build_list.id} }
+    it 'should be able to perform update action' do
+      put :update, params, :format => :json
+      response.should be_success
+    end
+    it 'ensures that advisory has not been created' do
+      lambda { put :update, params, :format => :json }.should_not change{ Advisory.count }
+    end
+    it 'ensures that build_list has been associated with advisory' do
+      put :update, params, :format => :json
+      @build_list.reload
+      @build_list.advisory.should_not be_nil
+    end
+  end
+end
+
+shared_examples_for 'api advisories user without admin rights' do
+  context 'api advisories user without create rights' do
+    let(:params) { {:build_list_id => @build_list.id, :advisory => {:description => 'test'}} }
+    it 'should not be able to perform create action' do
+      post :create, params, :format => :json
+      response.should_not be_success
+    end
+    it 'ensures that advisory has not been created' do
+      lambda { post :create, params, :format => :json }.should_not change{ Advisory.count }
+    end
+    it 'ensures that build_list has not been associated with advisory' do
+      post :create, params, :format => :json
+      @build_list.reload
+      @build_list.advisory.should be_nil
+    end
+  end
+
+  context 'api advisories user without update rights' do
+    let(:params) { {:id => @advisory.advisory_id, :build_list_id => @build_list.id} }
+    it 'should not be able to perform update action' do
+      put :update, params, :format => :json
+      response.should_not be_success
+    end
+    it 'ensures that advisory has not been created' do
+      lambda { put :update, params, :format => :json }.should_not change{ Advisory.count }
+    end
+    it 'ensures that build_list has not been associated with advisory' do
+      put :update, params, :format => :json
+      @build_list.reload
+      @build_list.advisory.should be_nil
+    end
+  end
+end
+
 describe Api::V1::AdvisoriesController do
 
   before do
@@ -20,7 +88,7 @@ describe Api::V1::AdvisoriesController do
 
     @advisory = FactoryGirl.create(:advisory)
     @build_list = FactoryGirl.create(:build_list_core)
-    @another_user = FactoryGirl.create(:user)
+    @build_list.update_column(:status, BuildList::BUILD_PUBLISHED)
   end
 
   context 'for guest' do
@@ -38,7 +106,7 @@ describe Api::V1::AdvisoriesController do
       get :index, :format => :json
       response.should_not be_success
     end
-
+    it_should_behave_like 'api advisories user without admin rights'
   end
 
   context 'for simple user' do
@@ -47,7 +115,7 @@ describe Api::V1::AdvisoriesController do
       http_login(@user)
     end
     it_should_behave_like 'api advisories user with show rights'
-
+    it_should_behave_like 'api advisories user without admin rights'
   end
 
   context 'for admin' do
@@ -57,16 +125,19 @@ describe Api::V1::AdvisoriesController do
     end
 
     it_should_behave_like 'api advisories user with show rights'
+    it_should_behave_like 'api advisories user with admin rights'
   end
 
   context 'for user who has access to update build_list' do
     before do
       @user = FactoryGirl.create(:user)
-      @build_list.project.relations.create(:role => 'фвьшт', :actor => @user)
+      @build_list.project.relations.create(:role => 'admin', :actor => @user)
+      @build_list.save_to_platform.relations.create(:role => 'admin', :actor => @user)
       http_login(@user)
     end
 
     it_should_behave_like 'api advisories user with show rights'
+    it_should_behave_like 'api advisories user with admin rights'
   end
 
 end

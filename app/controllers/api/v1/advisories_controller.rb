@@ -2,9 +2,9 @@
 class Api::V1::AdvisoriesController < Api::V1::BaseController
   before_filter :authenticate_user!
   skip_before_filter :authenticate_user!, :only => [:index, :show] if APP_CONFIG['anonymous_access']
-  load_and_authorize_resource :advisory, :find_by => :advisory_id
-  load_and_authorize_resource :build_list,
-    :find_by => :build_list_id, :only => [:create, :update]
+  load_resource :advisory, :find_by => :advisory_id
+  before_filter :find_build_list, :only => [:create, :update]
+  authorize_resource :build_list, :only => [:create, :update]
 
   def index
     @advisories = @advisories.scoped(:include => :platforms).
@@ -26,13 +26,20 @@ class Api::V1::AdvisoriesController < Api::V1::BaseController
   end
 
   def update
-    if @build_list.status == BuildList::BUILD_PUBLISHED &&
+    if @advisory && @build_list.status == BuildList::BUILD_PUBLISHED &&
         @advisory.attach_build_list(@build_list) &&
         @advisory.save && @build_list.save
       render_json_response @advisory, "Build list '#{@build_list.id}' has been attached to advisory successfully"
     else
       render_validation_error @advisory, error_message(@build_list, 'Build list has not been attached to advisory')
     end
+  end
+
+  protected
+
+  def find_build_list
+    @build_list = BuildList.find params[:build_list_id]
+    authorize! :publish, @build_list
   end
 
 end
