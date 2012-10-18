@@ -129,7 +129,7 @@ class Projects::PullRequestsController < Projects::BaseController
 
   def load_diff_commits_data
     @base_commit = @pull.common_ancestor
-    @head_commit = @pull.repo.commits(@pull.head_branch).first
+    @head_commit = @pull.repo.commits(@pull.from_branch).first
 
     @commits = @pull.repo.commits_between(@pull.repo.commits(@pull.to_ref).first, @head_commit)
     @total_commits = @commits.count

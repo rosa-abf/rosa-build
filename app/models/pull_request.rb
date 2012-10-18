@@ -86,7 +86,7 @@ class PullRequest < ActiveRecord::Base
     File.join(APP_CONFIG['root_path'], 'pull_requests', to_project.owner.uname, to_project.name, filename)
   end
 
-  def head_branch
+  def from_branch
     if to_project != from_project
       "head_#{from_ref}"
     else
@@ -97,7 +97,7 @@ class PullRequest < ActiveRecord::Base
   def common_ancestor
     return @common_ancestor if @common_ancestor
     base_commit = repo.commits(to_ref).first
-    head_commit = repo.commits(head_branch).first
+    head_commit = repo.commits(from_branch).first
     @common_ancestor = repo.commit(repo.git.merge_base({}, base_commit, head_commit)) || base_commit
   end
 
@@ -156,7 +156,7 @@ class PullRequest < ActiveRecord::Base
   def merge
     clone
     message = "Merge pull request ##{serial_id} from #{from_project.name_with_owner}:#{from_ref}\r\n #{title}"
-    %x(cd #{path} && git checkout #{to_ref} && git merge --no-ff #{head_branch} -m '#{message}')
+    %x(cd #{path} && git checkout #{to_ref} && git merge --no-ff #{from_branch} -m '#{message}')
   end
 
   def clone
@@ -182,7 +182,7 @@ class PullRequest < ActiveRecord::Base
         system 'git', 'checkout', from_ref
         system 'git', 'pull', 'origin', from_ref
       else
-        system 'git', 'fetch', 'head', "+#{from_ref}:#{head_branch}"
+        system 'git', 'fetch', 'head', "+#{from_ref}:#{from_branch}"
       end
     end
     # TODO catch errors
@@ -194,10 +194,10 @@ class PullRequest < ActiveRecord::Base
       system 'git', 'checkout', to_ref
 
       to_project.repo.branches.each do |branch|
-        system 'git', 'branch', '-D', branch.name unless [to_ref, head_branch].include? branch.name
+        system 'git', 'branch', '-D', branch.name unless [to_ref, from_branch].include? branch.name
       end
       to_project.repo.tags.each do |tag|
-        system 'git', 'tag', '-d', tag.name unless [to_ref, head_branch].include? tag.name
+        system 'git', 'tag', '-d', tag.name unless [to_ref, from_branch].include? tag.name
       end
     end
   end
@@ -208,7 +208,7 @@ class PullRequest < ActiveRecord::Base
 
   def update_inline_comments
     if self.comments.count > 0
-      diff = self.diff self.repo, self.common_ancestor, repo.commits(self.head_branch).first
+      diff = self.diff self.repo, self.common_ancestor, repo.commits(self.from_branch).first
     end
     self.comments.each do |c|
       if c.data.present? # maybe need add new column 'actual'?
