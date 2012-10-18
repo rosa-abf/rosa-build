@@ -120,6 +120,7 @@ class PullRequest < ActiveRecord::Base
 
   # FIXME maybe move to warpc/grit?
   def diff
+    return @diff if @diff.present?
     diff = repo.git.native('diff', {:M => true}, "#{to_commit.id}...#{from_commit.id}")
 
     if diff =~ /diff --git a/
@@ -127,7 +128,7 @@ class PullRequest < ActiveRecord::Base
     else
       diff = ''
     end
-    Grit::Diff.list_from_string(repo, diff)
+    @diff = Grit::Diff.list_from_string(repo, diff)
   end
 
   def set_user_and_time user
@@ -211,9 +212,6 @@ class PullRequest < ActiveRecord::Base
   end
 
   def update_inline_comments
-    if self.comments.count > 0
-      diff = self.diff self.repo, self.common_ancestor, repo.commits(self.from_branch).first
-    end
     self.comments.each do |c|
       if c.data.present? # maybe need add new column 'actual'?
         c.actual_inline_comment? diff, true
