@@ -128,7 +128,7 @@ class Projects::PullRequestsController < Projects::BaseController
   end
 
   def load_diff_commits_data
-    @commits = @pull.repo.commits_between(@pull.from_commit, @pull.to_commit)
+    @commits = @pull.repo.commits_between(@pull.to_commit, @pull.from_commit)
     @total_commits = @commits.count
     @commits = @commits.last(100)
 

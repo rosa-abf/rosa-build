@@ -1,4 +1,4 @@
-- commit_id = pull_diff.deleted_file ? @base_commit.id : @head_commit.id
+- commit_id = pull_diff.deleted_file ? @pull.to_commit.id : @pull.from_commit.id
 .file
   %a{:name => "diff-#{pull_diff_counter}"}
   .top
