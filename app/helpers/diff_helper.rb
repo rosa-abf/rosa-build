@@ -21,15 +21,12 @@ module DiffHelper
   end
 
   #include Git::Diff::InlineCallback
-  def render_diff(diff, diff_counter, comments, diffpath = nil)
+  def render_diff(diff, args = {})#diff_counter, comments, opts = nil diffpath = nil)
     if diff.respond_to?(:diff)
-      filepath = diff.a_path
-      diff = diff.diff
-      in_discussion = false
-      comments = comments.select{|c| c.data.try('[]', :path) == filepath}
+      diff, filepath, in_discussion = diff.diff, diff.a_path, false
+      comments = (args[:comments] || []).select{|c| c.data.try('[]', :path) == filepath}
     else
-      filepath = diffpath
-      in_discussion = true
+      filepath, in_discussion, comments = args[:diffpath], true, args[:comments]
     end
 
     diff_display ||= Diff::Display::Unified.new(diff)
@@ -38,7 +35,7 @@ module DiffHelper
            elsif @commit
              commit_path @project, @commit
            end
-    prepare(url, diff_counter, filepath, comments, in_discussion)
+    prepare(args.merge({:filepath => filepath, :comments => comments, :in_discussion => in_discussion}))
 
     res = "<table class='diff inline' cellspacing='0' cellpadding='0'>"
     res += "<tbody>"
@@ -52,14 +49,14 @@ module DiffHelper
   ########################################################
   # FIXME: Just to dev, remove to lib. Really need it?
   ########################################################
-  def prepare(url, diff_counter, filepath, comments, in_discussion)
-    @url, @diff_counter, @in_discussion = url, diff_counter, in_discussion
-    @filepath, @line_comments = filepath, comments
+  def prepare(args)
+    @url, @diff_counter, @in_discussion = args[:url], args[:diff_counter], args[:in_discussion]
+    @filepath, @line_comments, @in_wiki = args[:filepath], args[:comments], args[:in_wiki]
     @add_reply_id, @num_line = if @in_discussion
-      [@line_comments[0].id, @line_comments[0].data[:line].to_i - @line_comments[0].data[:strings].lines.count.to_i-1]
-    else
-      [nil, -1]
-    end
+        [@line_comments[0].id, @line_comments[0].data[:line].to_i - @line_comments[0].data[:strings].lines.count.to_i-1]
+      else
+        [nil, -1]
+      end
   end
 
   def headerline(line)
@@ -228,12 +225,12 @@ module DiffHelper
   end
 
   def line_comment
-    return if @in_discussion && @add_reply_id && @line_comments[0].data[:line].to_i != @num_line
+    return if @in_wiki || (@in_discussion && @add_reply_id && @line_comments[0].data[:line].to_i != @num_line)
     link_to image_tag('line_comment.png', :alt => t('layout.comments.new_header')), new_comment_path, :class => 'add_line-comment'
   end
 
   def render_line_comments
-    unless @in_discussion
+    unless @in_wiki || @in_discussion
       comments = @line_comments.select do |c|
         c.data.try('[]', :line) == @num_line.to_s && c.actual_inline_comment?(@diff)
       end
@@ -246,6 +243,7 @@ module DiffHelper
   end
 
   def tr_line_comments comments
+    return if @in_wiki
     res="<tr class='inline-comments'>
       <td class='line_numbers' colspan='2'>#{comments.count}</td>
       <td>"
