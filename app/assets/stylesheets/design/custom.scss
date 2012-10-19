@@ -76,12 +76,13 @@ article div.activity .top .buttons {
     display: block;
     position: relative;
     float: right;
-}
+ }
 
 article div.activity .top div.text {
     float: left;
     font-size: 12px;
     padding-left: 10px;
+    max-width: 579px;
 }
 
 article div.activity .top .imaged {
@@ -1651,4 +1652,12 @@ form#new_pull_request {
   height: 36px;
   margin: 0;
   padding: 0;
+}
+
+.niceRadio input {
+  display:none;
+}
+
+table#myTable thead tr.search th form.button_to div input {
+  margin-top: 2px;
 }

@@ -1,5 +1,8 @@
 # -*- encoding : utf-8 -*-
 class ApplicationController < ActionController::Base
+  AIRBRAKE_IGNORE = [ActionController::InvalidAuthenticityToken,
+                     AbstractController::ActionNotFound]
+
   protect_from_forgery
 
   layout :layout_by_resource
@@ -18,22 +21,37 @@ class ApplicationController < ActionController::Base
     redirect_to forbidden_url, :alert => t("flash.exception_message")
   end
 
-  if !Rails.env.development?
+  unless Rails.application.config.consider_all_requests_local
 
+    rescue_from Exception, :with => :render_500
     rescue_from ActiveRecord::RecordNotFound,
                 ActionController::RoutingError,
                 ActionController::UnknownController,
-                ::AbstractController::ActionNotFound do |exception|
-      respond_to do |format|
-        format.json { render :json => {:message => t("flash.404_message")}.to_json, :status => 404 }
-        format.html { redirect_to '/404.html', :alert => t("flash.404_message") }
-      end
-    end
+                AbstractController::ActionNotFound, :with => :render_404
   end
 
   rescue_from Grit::NoSuchPathError, :with => :not_found
 
   protected
+
+  def render_404
+    render_error 404
+  end
+
+  def render_500(e)
+    #check for exceptions Airbrake ignores by default and exclude them from manual Airbrake notification
+    unless AIRBRAKE_IGNORE.include? e.class
+      notify_airbrake(e)
+    end
+    render_error 500
+  end
+
+  def render_error(status)
+    respond_to do |format|
+      format.json { render :json => {:status => status, :message => t("flash.#{status}_message")}.to_json, :status => status }
+      format.html { redirect_to "/#{status}.html", :alert => t("flash.#{status}_message") }
+    end
+  end
 
   def set_locale
     I18n.locale = check_locale( get_user_locale ||

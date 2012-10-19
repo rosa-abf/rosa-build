@@ -12,6 +12,10 @@ class Api::V1::BaseController < ApplicationController
 
   protected
 
+  def set_locale
+    I18n.locale = :en
+  end
+
   def error_message(subject, message)
     [message, subject.errors.full_messages].flatten.join('. ')
   end
