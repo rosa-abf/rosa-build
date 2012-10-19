@@ -303,12 +303,15 @@ class BuildList < ActiveRecord::Base
     #[WAITING_FOR_RESPONSE, BuildServer::BUILD_PENDING, BuildServer::BUILD_STARTED].include?(status)
   end
 
-  def build_and_associate_advisory(params)
-    build_advisory(params) do |a|
-      a.update_type = update_type
-      a.projects   << project
-      a.platforms  << save_to_platform unless a.platforms.include? save_to_platform
-    end
+  def associate_and_create_advisory(params)
+    build_advisory(params){ |a| a.update_type = update_type }
+    advisory.attach_build_list(self)
+  end
+
+  def can_attach?
+    !save_to_repository.publish_without_qa &&
+      save_to_platform.released &&
+      status == BUILD_PUBLISHED
   end
 
   protected
