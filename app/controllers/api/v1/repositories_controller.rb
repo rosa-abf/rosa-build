@@ -9,6 +9,12 @@ class Api::V1::RepositoriesController < Api::V1::BaseController
   def show
   end
 
+  def projects
+    @projects = @repository.projects.
+      accessible_by(current_ability, :membered).
+      recent.paginate(paginate_params)
+  end
+
   def update
     update_subject @repository
   end
