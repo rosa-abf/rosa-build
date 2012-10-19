@@ -99,7 +99,7 @@ shared_examples_for "api projects user with show rights" do
 
     it "should render 404 for non existing name and owner name" do
       get :get_id, :name => 'NONE_EXISTING_NAME', :owner => @project.owner.uname, :format => :json
-      response.body.should == {:message => I18n.t("flash.404_message")}.to_json
+      response.body.should == {:status => 404, :message => I18n.t("flash.404_message")}.to_json
     end
   end
 end
