@@ -12,32 +12,41 @@ json.build_list do |json|
   json.updated_at @build_list.updated_at.to_i
 
   json.project do |json_project|
-    json_project.(@build_list.project, :id, :name)
-    json_project.fullname @build_list.project.name_with_owner
-    json_project.url api_v1_project_path(@build_list.project, :format => :json)
+    json.partial! 'api/v1/projects/project',
+      :project => @build_list.project, :json => json_project
   end
 
   json.save_to_repository do |json_save_to_repository|
-    json_save_to_repository.(@build_list.save_to_repository, :id, :name)
+    json.partial! 'api/v1/repositories/repository',
+        :repository => @build_list.save_to_repository,
+        :json => json_save_to_repository
 
     json_save_to_repository.platform do |json_str_platform|
-      json_str_platform.(@build_list.save_to_repository.platform, :id, :name)
-      json_str_platform.url api_v1_platform_path(@build_list.save_to_repository.platform, :format => :json)
+      json.partial! 'api/v1/platforms/platform',
+          :platform => @build_list.save_to_repository.platform,
+          :json => json_str_platform
     end
-
-    json_save_to_repository.url api_v1_repository_path(@build_list.save_to_repository, :format => :json)
   end
 
   json.build_for_platform do |json_build_for_platform|
-    json_build_for_platform.(@build_list.build_for_platform, :id, :name)
-    json_build_for_platform.url api_v1_platform_path(@build_list.build_for_platform, :format => :json)
+    json.partial! 'api/v1/platforms/platform',
+        :platform => @build_list.build_for_platform,
+        :json => json_build_for_platform
   end
 
   json.partial! 'api/v1/shared/owner', :owner => @build_list.project.owner
 
   inc_repos = Repository.includes(:platform).where(:id => @build_list.include_repos)
   json.include_repos inc_repos do |json_include_repos, repo|
-    json_include_repos.(repo, :id, :name)
+    json.partial! 'api/v1/repositories/repository',
+        :repository => repo,
+        :json => json_include_repos
+
+    json_include_repos.platform do |json_str_platform|
+      json.partial! 'api/v1/platforms/platform',
+          :platform => repo.platform,
+          :json => json_str_platform
+    end
   end
 
   json.advisory do |json_advisory|

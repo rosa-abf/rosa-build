@@ -29,7 +29,7 @@ class Ability
     # Platforms block
     can [:show, :members, :advisories], Platform, :visibility => 'open'
     can :platforms_for_build, Platform, :visibility => 'open', :platform_type => 'main'
-    can [:read, :projects_list], Repository, :platform => {:visibility => 'open'}
+    can [:read, :projects_list, :projects], Repository, :platform => {:visibility => 'open'}
     can :read, Product, :platform => {:visibility => 'open'}
 
     can :show, Group
@@ -98,10 +98,10 @@ class Ability
         can([:failed_builds_list, :create], MassBuild) {|mass_build| (owner?(mass_build.platform) || local_admin?(mass_build.platform)) && mass_build.platform.main? }
         can(:cancel, MassBuild) {|mass_build| (owner?(mass_build.platform) || local_admin?(mass_build.platform)) && !mass_build.stop_build && mass_build.platform.main?}
 
-        can [:read, :projects_list], Repository, :platform => {:owner_type => 'User', :owner_id => user.id}
-        can [:read, :projects_list], Repository, :platform => {:owner_type => 'Group', :owner_id => user.group_ids}
-        can([:read, :projects_list], Repository, read_relations_for('repositories', 'platforms')) {|repository| local_reader? repository.platform}
-        can([:create, :edit, :update, :destroy, :projects_list, :add_project, :remove_project], Repository) {|repository| local_admin? repository.platform}
+        can [:read, :projects_list, :projects], Repository, :platform => {:owner_type => 'User', :owner_id => user.id}
+        can [:read, :projects_list, :projects], Repository, :platform => {:owner_type => 'Group', :owner_id => user.group_ids}
+        can([:read, :projects_list, :projects], Repository, read_relations_for('repositories', 'platforms')) {|repository| local_reader? repository.platform}
+        can([:create, :edit, :update, :destroy, :projects_list, :projects, :add_project, :remove_project], Repository) {|repository| local_admin? repository.platform}
         can([:remove_members, :remove_member, :add_member, :signatures], Repository) {|repository| owner?(repository.platform) || local_admin?(repository.platform)}
         can([:add_project, :remove_project], Repository) {|repository| repository.members.exists?(:id => user.id)}
         can(:clear, Platform) {|platform| local_admin?(platform) && platform.personal?}
