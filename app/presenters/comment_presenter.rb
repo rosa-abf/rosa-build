@@ -27,24 +27,17 @@ class CommentPresenter < ApplicationPresenter
   def caption?
     false
   end
-  def buttons
-    project = options[:project]
-    commentable = options[:commentable]
-    (ep, dp) = if Comment.issue_comment?(commentable.class)
-      [edit_project_issue_comment_path(project, commentable, comment),
-       project_issue_comment_path(project, commentable, comment)]
-    elsif Comment.commit_comment?(commentable.class)
-      [edit_project_commit_comment_path(project, commentable, comment),
-       project_commit_comment_path(project, commentable, comment)]
-    end
 
-    res = []
+  def buttons
+    project, commentable = options[:project], options[:commentable]
+    path = helpers.project_commentable_comment_path(project, commentable, comment)
+
+    res = [link_to(t("layout.link"), "#{helpers.project_commentable_path(project, commentable)}##{comment_anchor}", :class => "#{@options[:in_discussion].present? ? 'in_discussion_' : ''}link_to_comment").html_safe]
     if controller.can? :update, @comment
-      res << link_to(t('layout.comments.md_cheatsheet_header'), '#md_help', 'data-toggle' => 'modal')
-      res << link_to(t("layout.edit"), ep, :id => "comment-#{comment.id}", :class => "edit_comment").html_safe
+      res << link_to(t("layout.edit"), path, :id => "comment-#{comment.id}", :class => "edit_comment").html_safe
     end
-    if controller.can? :delete, @comment
-      res << link_to(t("layout.delete"), dp, :method => "delete",
+    if controller.can? :destroy, @comment
+      res << link_to(t("layout.delete"), path, :method => "delete",
                      :confirm => t("layout.comments.confirm_delete")).html_safe
     end
     res
@@ -70,4 +63,15 @@ class CommentPresenter < ApplicationPresenter
   def comment_id
     @comment.id
   end
+
+  def comment_anchor
+    # check for pull diff inline comment
+    before = if @options[:add_anchor].present? && !@options[:in_discussion]
+               'diff-'
+             else
+               ''
+             end
+    "#{before}comment#{@comment.id}"
+  end
+
 end

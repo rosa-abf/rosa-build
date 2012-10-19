@@ -20,10 +20,6 @@ class PullRequest < ActiveRecord::Base
   scope :needed_checking, includes(:issue).where(:issues => {:status => ['open', 'blocked', 'ready']})
 
   state_machine :status, :initial => :open do
-    #after_transition [:ready, :blocked] => [:merged, :closed] do |pull, transition|
-    #  FileUtils.rm_rf(pull.path) # What about diff?
-    #end
-
     event :ready do
       transition [:ready, :open, :blocked] => :ready
     end
@@ -65,11 +61,8 @@ class PullRequest < ActiveRecord::Base
                  end
 
     if do_transaction
-      if new_status == 'already'
-        ready; merging
-      else
-        send(new_status)
-      end
+      new_status == 'already' ? (ready; merging) : send(new_status)
+      self.update_inline_comments
     else
       self.status = new_status == 'block' ? 'blocked' : new_status
     end
@@ -93,7 +86,7 @@ class PullRequest < ActiveRecord::Base
     File.join(APP_CONFIG['root_path'], 'pull_requests', to_project.owner.uname, to_project.name, filename)
   end
 
-  def head_branch
+  def from_branch
     if to_project != from_project
       "head_#{from_ref}"
     else
@@ -103,16 +96,15 @@ class PullRequest < ActiveRecord::Base
 
   def common_ancestor
     return @common_ancestor if @common_ancestor
-    repo = Grit::Repo.new(path)
     base_commit = repo.commits(to_ref).first
-    head_commit = repo.commits(head_branch).first
-    @common_ancestor = repo.commit(repo.git.merge_base({}, base_commit, head_commit)) || base_commit
+    @common_ancestor = repo.commit(repo.git.merge_base({}, base_commit, from_commit)) || base_commit
   end
+  alias_method :to_commit, :common_ancestor
 
-  def diff_stats(repo, a,b)
+  def diff_stats
     stats = []
     Dir.chdir(path) do
-      lines = repo.git.native(:diff, {:numstat => true, :M => true}, "#{a.id}...#{b.id}").split("\n")
+      lines = repo.git.native(:diff, {:numstat => true, :M => true}, "#{to_commit.id}...#{from_commit.id}").split("\n")
       while !lines.empty?
         files = []
         while lines.first =~ /^([-\d]+)\s+([-\d]+)\s+(.+)/
@@ -127,15 +119,16 @@ class PullRequest < ActiveRecord::Base
   end
 
   # FIXME maybe move to warpc/grit?
-  def diff(repo, a, b)
-    diff = repo.git.native('diff', {:M => true}, "#{a}...#{b}")
+  def diff
+    return @diff if @diff.present?
+    diff = repo.git.native('diff', {:M => true}, "#{to_commit.id}...#{from_commit.id}")
 
     if diff =~ /diff --git a/
       diff = diff.sub(/.*?(diff --git a)/m, '\1')
     else
       diff = ''
     end
-    Grit::Diff.list_from_string(repo, diff)
+    @diff = Grit::Diff.list_from_string(repo, diff)
   end
 
   def set_user_and_time user
@@ -154,12 +147,21 @@ class PullRequest < ActiveRecord::Base
     end
   end
 
+  def repo
+    return @repo if @repo.present? #&& !id_changed?
+    @repo = Grit::Repo.new path
+  end
+
+  def from_commit
+    repo.commits(from_branch).first
+  end
+
   protected
 
   def merge
     clone
     message = "Merge pull request ##{serial_id} from #{from_project.name_with_owner}:#{from_ref}\r\n #{title}"
-    %x(cd #{path} && git checkout #{to_ref} && git merge --no-ff #{head_branch} -m '#{message}')
+    %x(cd #{path} && git checkout #{to_ref} && git merge --no-ff #{from_branch} -m '#{message}')
   end
 
   def clone
@@ -175,7 +177,7 @@ class PullRequest < ActiveRecord::Base
           system 'git', 'remote', 'add', 'head', from_project.path
         end
       end
-      clean
+      clean # Need testing
     end
 
     Dir.chdir(path) do
@@ -185,7 +187,7 @@ class PullRequest < ActiveRecord::Base
         system 'git', 'checkout', from_ref
         system 'git', 'pull', 'origin', from_ref
       else
-        system 'git', 'fetch', 'head', "+#{from_ref}:#{head_branch}"
+        system 'git', 'fetch', 'head', "+#{from_ref}:#{from_branch}"
       end
     end
     # TODO catch errors
@@ -197,15 +199,24 @@ class PullRequest < ActiveRecord::Base
       system 'git', 'checkout', to_ref
 
       to_project.repo.branches.each do |branch|
-        system 'git', 'branch', '-D', branch.name unless [to_ref, head_branch].include? branch.name
+        system 'git', 'branch', '-D', branch.name unless [to_ref, from_branch].include? branch.name
       end
       to_project.repo.tags.each do |tag|
-        system 'git', 'tag', '-d', tag.name unless [to_ref, head_branch].include? tag.name
+        system 'git', 'tag', '-d', tag.name unless [to_ref, from_branch].include? tag.name
       end
     end
   end
 
   def clean_dir
     FileUtils.rm_rf path
+  end
+
+  def update_inline_comments
+    self.comments.each do |c|
+      if c.data.present? # maybe need add new column 'actual'?
+        c.actual_inline_comment? diff, true
+        c.save
+      end
+    end
   end
 end

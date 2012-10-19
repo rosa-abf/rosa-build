@@ -2,13 +2,11 @@ ru:
   projects:
     pull_requests:
       new:
-        header:  'Создать пул реквест'
+        header: Создать пул реквест
         submit: Создать пул реквест
         update: Обновить коммиты
       show:
         pull: Пул реквест
-        into: из
-        from: в
         header: Пул реквест
       status:
         close: Закрыть пул реквест
@@ -23,14 +21,16 @@ ru:
         %{user} смержил <span class="label-bootstrap label-info font14">%{to_ref}</span>
         с <span class="label-bootstrap label-info font14">%{from_ref}</span> в %{time}'
       closed: '%{user} закрыл пул реквест в %{time}'
-      is_big: Этот пул реквест слишком большой! Мы показываем только последние %{count} комитов.
+      is_big: Этот пул реквест слишком большой! Мы показываем только последние %{count} коммитов.
       open: ''
       statuses:
         blocked: Заблокирован
         ready: Готов к мержу
         merged: Смержен
         closed: Закрыт
-
+      outdated_diff: Устаревшие изменения
+      activity:
+        show_outdated_diff: Отобразить устаревшие изменения
   pull_requests:
     tabs:
       discussion: Дискуссия
@@ -55,3 +55,4 @@ ru:
   layout:
     pull_requests:
       search: Найти пул реквест...
+      view_full_changes: Посмотреть все изменения

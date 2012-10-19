@@ -13,6 +13,6 @@
 
 -begin
   = render_commit_stats(stats)
-  = render :partial => 'commit_diff', :collection => @commit.diffs
+  = render :partial => 'commit_diff', :collection => @diff
 - rescue Grit::Git::GitTimeout
   %p= t 'layout.git.repositories.commit_diff_too_big'

@@ -133,8 +133,8 @@ class Ability
         can :create, PullRequest
         can([:update, :merge], PullRequest) {|pull| pull.user_id == user.id or local_admin?(pull.to_project)}
 
-        can(:create, Comment) {|comment| can? :read, comment.project}
-        can(:update, Comment) {|comment| comment.user == user or comment.project.owner == user or local_admin?(comment.project)}
+        can([:create, :new_line], Comment) {|comment| can? :read, comment.project}
+        can([:update, :destroy], Comment) {|comment| comment.user == user or comment.project.owner == user or local_admin?(comment.project)}
         cannot :manage, Comment do |c|
           c.commentable_type == 'Issue' && !c.project.has_issues && !c.commentable.pull_request # when switch off issues
         end
