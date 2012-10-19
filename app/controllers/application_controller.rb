@@ -21,7 +21,7 @@ class ApplicationController < ActionController::Base
     redirect_to forbidden_url, :alert => t("flash.exception_message")
   end
 
-  unless Rails.application.config.consider_all_requests_local
+  unless Rails.env.development?
 
     rescue_from Exception, :with => :render_500
     rescue_from ActiveRecord::RecordNotFound,
@@ -40,7 +40,7 @@ class ApplicationController < ActionController::Base
 
   def render_500(e)
     #check for exceptions Airbrake ignores by default and exclude them from manual Airbrake notification
-    unless AIRBRAKE_IGNORE.include? e.class
+    if Rails.env.production? && !AIRBRAKE_IGNORE.include?(e.class)
       notify_airbrake(e)
     end
     render_error 500
