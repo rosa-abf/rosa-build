@@ -21,6 +21,32 @@ class Advisory < ActiveRecord::Base
     advisory_id
   end
 
+  def attach_build_list(build_list)
+    return false if update_type != build_list.update_type
+    self.platforms  << build_list.save_to_platform unless platforms.include? build_list.save_to_platform
+    self.projects   << build_list.project unless projects.include? build_list.project
+    build_list.advisory = self
+    save
+  end
+
+  # this method fetches and structurize packages attached to current advisory.
+  def fetch_packages_info
+    packages_info = Hash.new { |h, k| h[k] = {} } # maaagic, it's maaagic ;)
+    build_lists.find_in_batches(:include => [:save_to_platform, :packages, :project]) do |batch|
+      batch.each do |build_list|
+        tmp = build_list.packages.inject({:srpm => nil, :rpm => []}) do |h, p|
+          p.package_type == 'binary' ? h[:rpm] << p.fullname : h[:srpm] = p.fullname
+          h
+        end
+        h = { build_list.project => tmp }
+        packages_info[build_list.save_to_platform].merge!(h) do |pr, old, new|
+          {:srpm => new[:srpm], :rpm => old[:rpm].concat(new[:rpm]).uniq}
+        end
+      end
+    end
+    packages_info
+  end
+
   protected
 
   def generate_advisory_id

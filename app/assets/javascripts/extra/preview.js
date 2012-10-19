@@ -2,7 +2,7 @@ $(document).ready(function() {
   var preview_url = $('#preview_url').val();
   $('#md_tabs.nav.nav-tabs').each(function(i) { $(this).find('a:first').tab('show') });
 
-  $('#md_tabs a[data-toggle="tab"]').on('shown', function (e) {
+  $(document).on('shown','#md_tabs a[data-toggle="tab"]', function (e) {
     if(e.relatedTarget) { var hash = e.relatedTarget.hash; }
     else { var hash = e.currentTarget.hash; }
     var el = $(hash+'_input');

@@ -3,6 +3,7 @@ class Comment < ActiveRecord::Base
   belongs_to :commentable, :polymorphic => true
   belongs_to :user
   belongs_to :project
+  serialize :data
 
   validates :body, :user_id, :commentable_id, :commentable_type, :project_id, :presence => true
 
@@ -12,7 +13,7 @@ class Comment < ActiveRecord::Base
   after_create :subscribe_on_reply, :unless => lambda {|c| c.commit_comment?}
   after_create :subscribe_users
 
-  attr_accessible :body
+  attr_accessible :body, :data
 
   def commentable
     # raise commentable_id.inspect
@@ -51,6 +52,79 @@ class Comment < ActiveRecord::Base
 
   def can_notify_on_new_comment?(subscribe)
     User.find(subscribe.user).notifier.new_comment && User.find(subscribe.user).notifier.can_notify
+  end
+
+  def actual_inline_comment?(diff, force = false)
+    unless force
+      raise "This is not inline comment!" if data.blank? # for debug
+      return data[:actual] unless data[:actual].nil?
+    end
+    filepath, line_number = data[:path], data[:line]
+    diff_path = (diff || commentable.diffs ).select {|d| d.a_path == data[:path]}
+    comment_line = data[:line].to_i
+    # NB! also dont create a comment to the diff header
+    return data[:actual] = false if diff_path.blank? || comment_line == 0
+    return data[:actual] = true if commentable_type == 'Grit::Commit'
+    res, ind = true, 0
+    diff_path[0].diff.each_line do |line|
+      if self.persisted? && (comment_line-2..comment_line+2).include?(ind) && data.try('[]', "line#{ind-comment_line}") != line.chomp
+        break res = false
+      end
+      ind = ind + 1
+    end
+    if ind < comment_line
+      return data[:actual] = false
+    else
+      return data[:actual] = res
+    end
+  end
+
+  def inline_diff
+    data[:strings] + data['line0']
+  end
+
+  def pull_comment?
+    return true if commentable.is_a?(Issue) && commentable.pull_request.present?
+  end
+
+  def set_additional_data params
+    return true if params[:path].blank? && params[:line].blank? # not inline comment
+    if params[:in_reply].present? && reply = Comment.where(:id => params[:in_reply]).first
+      self.data = reply.data
+      return true
+    end
+    self.data = {:path => params[:path], :line => params[:line]}
+    if commentable.is_a?(Issue) && pull = commentable.pull_request
+      diff_path = pull.diff.select {|d| d.a_path == params[:path]}
+      return false unless actual_inline_comment?(pull.diff, true)
+
+      comment_line, line_number, strings = params[:line].to_i, -1, []
+      diff_path[0].diff.each_line do |line|
+        line_number = line_number.succ
+        # Save 2 lines above and bottom of the diff comment line
+        break if line_number > comment_line + 2
+        if (comment_line-2..comment_line+2).include? line_number
+          data["line#{line_number-comment_line}"] = line.chomp
+        end
+
+        # Save lines from the closest header for rendering in the discussion
+        if line_number < comment_line
+          # Header is the line like "@@ -47,9 +50,8 @@ def initialize(user)"
+          if line =~ Diff::Display::Unified::Generator::LINE_NUM_RE
+            strings = [line]
+          else
+            strings << line
+          end
+        end
+      end
+      ## Bug with numbers of diff lines, now store all diff
+      data[:strings] = strings.join
+      # Limit stored diff to 10 lines (see inline_diff)
+      #data[:strings] = ((strings.count) <= 9 ? strings : [strings[0]] + strings.last(8)).join
+      ##
+      data[:view_path] = h(diff_path[0].renamed_file ? "#{diff_path[0].a_path.rtruncate 60} -> #{diff_path[0].b_path.rtruncate 60}" : diff_path[0].a_path.rtruncate(120))
+    end
+    return true
   end
 
   protected

@@ -83,7 +83,7 @@ class Api::V1::BaseController < ApplicationController
     id = status != 200 ? nil : subject.id
 
     render :json => {
-      subject.class.name.downcase.to_sym => {
+      subject.class.name.underscore.to_sym => {
         :id => id,
         :message => message
       }

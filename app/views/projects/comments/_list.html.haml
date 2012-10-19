@@ -2,5 +2,5 @@
 .hr
 %h3#block-list= t("layout.comments.comments_header")
 - list.each do |comment|
-  = render 'projects/comments/comment', :comment => comment, :project => project, :commentable => commentable
+  = render 'projects/comments/comment', :comment => comment, :data => {:project => project, :commentable => commentable}
 = render "projects/comments/markdown_help"

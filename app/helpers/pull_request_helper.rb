@@ -1,9 +1,11 @@
 # -*- encoding : utf-8 -*-
 module PullRequestHelper
   def merge_activity comments, commits
-    issue_comments = @issue.comments.map{ |c| [c.created_at, c] }
-    commits = @commits.map{ |c| [(c.committed_date || c.authored_date), c] }
-    (issue_comments + commits).sort_by{ |c| c[0] }.map{ |c| c[1] }
+    common_comments, pull_comments = comments.partition {|c| c.data.blank?}
+    common_comments = common_comments.map{ |c| [c.created_at, c] }
+    pull_comments = pull_comments.group_by(&:data).map{|data, c| [c.first.created_at, [data || {}, [c].flatten]]}
+    commits = commits.map{ |c| [(c.committed_date || c.authored_date), c] }
+    (common_comments + pull_comments + commits).sort_by{ |c| c[0] }.map{ |c| c[1] }
   end
 
   def pull_status_label pull

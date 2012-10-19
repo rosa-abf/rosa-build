@@ -119,6 +119,7 @@ div.activity, .commits_activity {
         margin-left: 10px;
         display: inline-block;
         width: 12px;
+        cursor: pointer;
     }
     .data-expander.collapsed {
         background: #FFF image-url('expand-gray.png') no-repeat;
@@ -1612,6 +1613,48 @@ table.tablesorter.platform-maintainers.static-search thead tr.search th input[ty
   }
 }
 
+#repo-wrapper .add_line-comment {
+  position: absolute;
+  width: 25px;
+  height: 18px;
+  margin-left: -103px;
+  margin-top: 0;
+  cursor: pointer;
+  opacity: 0;
+  filter: alpha(Opacity=0);
+  -moz-opacity:0;
+}
+
+#repo-wrapper tr:hover .add_line-comment {
+  opacity: 1;
+  filter: alpha(Opacity=100);
+  -moz-opacity:1;
+}
+
+div.file .inline-comments {
+  .top {
+    height:auto;
+    background: none;
+    box-shadow: none;
+  }
+
+  .activity {
+    border-radius: 0;
+    max-width: 752px;
+    margin-left: 10px;
+  }
+}
+
+tr.inline-comments td {
+  border: solid #DDD;
+  border-width: 1px 0;
+}
+
+.inline-comments #open-comment {
+  max-width: 754px;
+  margin: 10px;
+}
+
 #repo-wrapper .edit_form.issue div.comment div.wrapper {
   background: 0;
   border: 0;
@@ -1654,6 +1697,10 @@ form#new_pull_request {
   padding: 0;
 }
 
+.new_inline_comment.button {
+  margin: 10px 0 10px 10px;
+}
+
 .niceRadio input {
   display:none;
 }
@@ -1661,3 +1708,4 @@ form#new_pull_request {
 table#myTable thead tr.search th form.button_to div input {
   margin-top: 2px;
 }
+

@@ -303,6 +303,18 @@ class BuildList < ActiveRecord::Base
     #[WAITING_FOR_RESPONSE, BuildServer::BUILD_PENDING, BuildServer::BUILD_STARTED].include?(status)
   end
 
+  def associate_and_create_advisory(params)
+    build_advisory(params){ |a| a.update_type = update_type }
+    advisory.attach_build_list(self)
+  end
+
+  def can_attach_to_advisory?
+    !save_to_repository.publish_without_qa &&
+      save_to_platform.main? &&
+      save_to_platform.released &&
+      status == BUILD_PUBLISHED
+  end
+
   protected
 
   def notify_users

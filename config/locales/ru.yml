@@ -48,6 +48,7 @@ ru:
     invalid_content_type: имеет неверный тип
     atom_link_tag_title: Приватная лента для %{nickname} | %{app_name}
     preview: Предосмотр
+    link: Ссылка
 
     settings:
       label: 'Настройки'
