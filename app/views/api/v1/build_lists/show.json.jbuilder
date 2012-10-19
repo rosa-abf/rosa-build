@@ -33,10 +33,7 @@ json.build_list do |json|
     json_build_for_platform.url api_v1_platform_path(@build_list.build_for_platform, :format => :json)
   end
 
-  json.owner do |json_owner|
-    json_owner.(@build_list.user, :id, :name)
-    json_owner.url url_for(@build_list.project.owner)
-  end
+  json.partial! 'api/v1/shared/owner', :owner => @build_list.project.owner
 
   inc_repos = Repository.includes(:platform).where(:id => @build_list.include_repos)
   json.include_repos inc_repos do |json_include_repos, repo|

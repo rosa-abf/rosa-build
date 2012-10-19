@@ -39,6 +39,14 @@ class Group < Avatar
     uname
   end
 
+  def add_member(member, role = 'admin')
+    Relation.add_member(member, self, role, :actors)
+  end
+
+  def remove_member(member)
+    Relation.remove_member(member, self)
+  end
+
   protected
 
   def add_owner_to_members

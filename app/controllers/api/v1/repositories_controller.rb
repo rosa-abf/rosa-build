@@ -53,10 +53,7 @@ class Api::V1::RepositoriesController < Api::V1::BaseController
     if key_pair.save
       render_json_response @repository, 'Signatures have been updated for repository successfully'
     else
-      message = 'Signatures have not been updated for repository'
-      errors = key_pair.errors.full_messages.join('. ')
-      (message << '. ' << errors) if errors.present?
-      render_json_response @repository, message, 422
+      render_json_response @repository, error_message(key_pair, 'Signatures have not been updated for repository'), 422
     end
   end
 

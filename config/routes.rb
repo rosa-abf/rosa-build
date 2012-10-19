@@ -41,10 +41,31 @@ Rosa::Application.routes.draw do
           put :signatures
         }
       end
-      resources :projects, :only => [:show] do
+      resources :projects, :only => [:index, :show, :update, :create, :destroy] do
         collection { get :get_id }
         member {
+          post :fork
           get :refs_list
+          get :members
+          put :add_member
+          delete :remove_member
+          put :update_member
+        }
+      end
+      resources :users, :only => [:show]
+      get 'user' => 'users#show_current_user'
+      resource :user, :only => [:update] do
+        member {
+          get :notifiers
+          put :notifiers
+        }
+      end
+      resources :groups, :only => [:index, :show, :update, :create, :destroy] do
+        member {
+          get :members
+          put :add_member
+          delete :remove_member
+          put :update_member
         }
       end
     end

@@ -2,6 +2,8 @@
 class Api::V1::BaseController < ApplicationController
   #respond_to :json
 
+  helper_method :member_path
+
   rescue_from CanCan::AccessDenied do |exception|
     respond_to do |format|
       format.json { render :json => {:message => t("flash.exception_message")}.to_json, :status => 403 }
@@ -10,9 +12,37 @@ class Api::V1::BaseController < ApplicationController
 
   protected
 
-  def add_member_to_subject(subject)
+  def set_locale
+    I18n.locale = :en
+  end
+
+  def error_message(subject, message)
+    [message, subject.errors.full_messages].flatten.join('. ')
+  end
+
+  def create_subject(subject)
+    class_name = subject.class.name
+    if subject.save
+      render_json_response subject, "#{class_name} has been created successfully"
+    else
+      render_validation_error subject, "#{class_name} has not been created"
+    end
+  end
+
+  def update_member_in_subject(subject, relation = :relations)
+    role = params[:role]
     class_name = subject.class.name.downcase
-    if member.present? && subject.add_member(member)
+    if member.present? && role.present? && subject.respond_to?(:owner) && subject.owner != member &&
+      subject.send(relation).by_actor(member).update_all(:role => role)
+      render_json_response subject, "Role for #{member.class.name.downcase} '#{member.id} has been updated in #{class_name} successfully"
+    else
+      render_validation_error subject, "Role for member has not been updated in #{class_name}"
+    end
+  end
+
+  def add_member_to_subject(subject, role = 'admin')
+    class_name = subject.class.name.downcase
+    if member.present? && subject.add_member(member, role)
       render_json_response subject, "#{member.class.to_s} '#{member.id}' has been added to #{class_name} successfully"
     else
       render_validation_error subject, "Member has not been added to #{class_name}"
@@ -61,11 +91,15 @@ class Api::V1::BaseController < ApplicationController
   end
 
   def render_validation_error(subject, message)
-    errors = subject.errors.full_messages.join('. ')
-    if errors.present?
-      message << '. ' << errors
+    render_json_response(subject, error_message(subject, message), 422)
+  end
+
+  def member_path(subject)
+    if subject.is_a?(User)
+      api_v1_user_path(subject.id, :format => :json)
+    else
+      api_v1_group_path(subject.id, :format => :json)
     end
-    render_json_response(subject, message, 422)
   end
 
   private
