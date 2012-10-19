@@ -26,6 +26,10 @@ shared_examples_for "api repository user with show rights" do
     get :show, :id => @repository.id, :format => :json
     response.should render_template(:show)
   end
+  it 'should be able to perform projects action' do
+    get :projects, :id => @repository.id, :format => :json
+    response.should render_template(:projects)
+  end
 end
 
 shared_examples_for "api repository user without show rights" do
@@ -260,6 +264,11 @@ describe Api::V1::RepositoriesController do
       it_should_behave_like 'api repository user with show rights'
     end
     it_should_behave_like 'api repository user without writer rights'
+
+    it 'should not be able to perform projects action', :anonymous_access => false do
+      get :projects, :id => @repository.id, :format => :json
+      response.should_not be_success
+    end
   end
 
   context 'for admin' do
