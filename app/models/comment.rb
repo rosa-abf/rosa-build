@@ -84,7 +84,7 @@ class Comment < ActiveRecord::Base
   end
 
   def pull_comment?
-    return true if commentable.class == Issue && commentable.pull_request.present?
+    return true if commentable.is_a?(Issue) && commentable.pull_request.present?
   end
 
   def set_additional_data params
@@ -94,7 +94,7 @@ class Comment < ActiveRecord::Base
       return true
     end
     self.data = {:path => params[:path], :line => params[:line]}
-    if commentable.class == Issue && pull = commentable.pull_request
+    if commentable.is_a?(Issue) && pull = commentable.pull_request
       diff_path = pull.diff.select {|d| d.a_path == params[:path]}
       return false unless actual_inline_comment?(pull.diff, true)
 

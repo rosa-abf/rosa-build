@@ -17,9 +17,9 @@ module CommentsHelper
   end
 
   def project_commentable_comments_path(project, commentable)
-    if commentable.class == Issue
+    if commentable.is_a? Issue
       project_issue_comments_path(@project, @commentable)
-    elsif commentable.class == Grit::Commit
+    elsif commentable.is_a? Grit::Commit
       project_commit_comments_path(@project, @commentable)
     end
   end

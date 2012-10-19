@@ -258,9 +258,9 @@ module DiffHelper
 
   def new_comment_path
     hash = {:path => @filepath, :line => @num_line}
-    if @commentable.class == Issue
+    if @commentable.is_a? Issue
       project_new_line_pull_comment_path(@project, @commentable, hash.merge({:in_reply => @add_reply_id}))
-    elsif @commentable.class == Grit::Commit
+    elsif @commentable.is_a? Grit::Commit
       new_line_commit_comment_path(@project, @commentable, hash)
     end
   end
