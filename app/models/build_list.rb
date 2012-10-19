@@ -308,8 +308,9 @@ class BuildList < ActiveRecord::Base
     advisory.attach_build_list(self)
   end
 
-  def can_attach?
+  def can_attach_to_advisory?
     !save_to_repository.publish_without_qa &&
+      save_to_platform.main? &&
       save_to_platform.released &&
       status == BUILD_PUBLISHED
   end

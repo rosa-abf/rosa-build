@@ -16,7 +16,7 @@ class Api::V1::AdvisoriesController < Api::V1::BaseController
   end
 
   def create
-    if @build_list.can_attach? &&
+    if @build_list.can_attach_to_advisory? &&
         @build_list.associate_and_create_advisory(params[:advisory]) &&
         @build_list.save
       render_json_response @advisory, 'Advisory has been created successfully'
@@ -26,7 +26,7 @@ class Api::V1::AdvisoriesController < Api::V1::BaseController
   end
 
   def update
-    if @advisory && @build_list.can_attach? &&
+    if @advisory && @build_list.can_attach_to_advisory? &&
         @advisory.attach_build_list(@build_list) && @build_list.save
       render_json_response @advisory, "Build list '#{@build_list.id}' has been attached to advisory successfully"
     else
