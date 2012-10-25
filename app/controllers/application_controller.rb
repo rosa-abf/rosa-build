@@ -17,10 +17,6 @@ class ApplicationController < ActionController::Base
 
   helper_method :get_owner
 
-  rescue_from CanCan::AccessDenied do |exception|
-    redirect_to forbidden_url, :alert => t("flash.exception_message")
-  end
-
   unless Rails.env.development?
 
     rescue_from Exception, :with => :render_500
@@ -28,6 +24,10 @@ class ApplicationController < ActionController::Base
                 ActionController::RoutingError,
                 ActionController::UnknownController,
                 AbstractController::ActionNotFound, :with => :render_404
+  end
+
+  rescue_from CanCan::AccessDenied do |exception|
+    redirect_to forbidden_url, :alert => t("flash.exception_message")
   end
 
   rescue_from Grit::NoSuchPathError, :with => :not_found
