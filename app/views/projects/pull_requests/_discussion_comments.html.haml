@@ -2,7 +2,7 @@
 .file
   .top
     .l=comment.data[:view_path]
-    -if comment.actual_inline_comment? @diff
+    -if comment.actual_inline_comment? @pull.diff
       .r=link_to t("layout.pull_requests.view_full_changes"),
         "#{project_commentable_path(@project, @commentable)}##{comment_anchor(comment)}",
         :class => 'link_to_full_changes'

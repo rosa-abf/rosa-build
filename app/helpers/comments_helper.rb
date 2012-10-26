@@ -25,6 +25,6 @@ module CommentsHelper
   end
 
   def comment_anchor c
-    "#{(c.data.present? && c.actual_inline_comment?(@diff)) ? 'diff-' : ''}comment#{c.id}"
+    "#{(c.data.present? && c.actual_inline_comment?) ? 'diff-' : ''}comment#{c.id}"
   end
 end

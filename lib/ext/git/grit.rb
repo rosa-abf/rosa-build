@@ -32,16 +32,16 @@ module Grit
     # def file_mime_type
     #   @file_mime_type ||= data.file_type(:mime_type)
     # end
-    # 
+    #
     # def text?
     #   file_mime_type =~ /^text\// # not binary?
     # end
-    # 
+    #
     # def binary?
     #   not text? # file_mime_type !~ /^text\//
     #   # s = data.split(//); ((s.size - s.grep(" ".."~").size) / s.size.to_f) > 0.30 # works only for latin chars
     # end
-    # 
+    #
     # def image?
     #   mime_type.match(/image/)
     # end
