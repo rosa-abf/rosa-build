@@ -132,7 +132,7 @@ class Projects::PullRequestsController < Projects::BaseController
     @total_commits = @commits.count
     @commits = @commits.last(100)
 
-    @diff, @stats = @pull.diff, @pull.diff_stats
+    @stats = @pull.diff_stats
     @comments, @commentable = @issue.comments, @issue
   end
 
