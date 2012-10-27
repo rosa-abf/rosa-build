@@ -34,7 +34,7 @@ module PullRequestHelper
   #helper for helpers
   def show_ref pull, which, limit = 30
     project, ref = pull.send("#{which}_project"), pull.send("#{which}_ref")
-    fullname = if which == 'into'
+    fullname = if which == 'to'
                  "#{project.owner.uname.truncate limit}/#{project.name.truncate limit}"
                elsif which == 'from'
                  "#{pull.from_project_owner_uname.truncate limit}/#{pull.from_project_name.truncate limit}"
