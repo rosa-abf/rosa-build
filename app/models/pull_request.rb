@@ -12,6 +12,7 @@ class PullRequest < ActiveRecord::Base
   end
 
   before_create :clean_dir
+  before_create :set_add_data
   after_destroy :clean_dir
 
   accepts_nested_attributes_for :issue
@@ -218,5 +219,10 @@ class PullRequest < ActiveRecord::Base
         c.save
       end
     end
+  end
+
+  def set_add_data
+    self.from_project_owner_uname = from_project.owner.uname
+    self.from_project_name = from_project.name
   end
 end
