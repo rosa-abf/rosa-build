@@ -27,20 +27,27 @@ module PullRequestHelper
    #{show_ref pull, 'from'}</span> \
    #{t 'into'} <span class='label-bootstrap label-info font14'> \
    #{show_ref pull, 'to'}</span>"
-    str << " #{t 'by'} #{link_to pull.user.uname, user_path(pull.user)}" if pull.persisted?
+    str << " #{t 'by'} #{link_to pull.user.uname, user_path(pull.user)}" if pull.user# pull.persisted?
     str.html_safe
   end
 
   #helper for helpers
   def show_ref pull, which, limit = 30
     project, ref = pull.send("#{which}_project"), pull.send("#{which}_ref")
-    link_to "#{project.owner.uname.truncate limit}/#{project.name.truncate limit}: #{ref.truncate limit}", ref_path(project, ref)
+    fullname = if which == 'into'
+                 "#{project.owner.uname.truncate limit}/#{project.name.truncate limit}"
+               elsif which == 'from'
+                 "#{pull.from_project_owner_uname.truncate limit}/#{pull.from_project_name.truncate limit}"
+               end
+    link_to "#{fullname}: #{ref.truncate limit}", ref_path(project, ref)
   end
 
   def ref_path project, ref
-    return tree_path(project, ref) if project.repo.branches_and_tags.map(&:name).include? ref
-    return commit_path(project, ref) if project.repo.commit ref
-    '#'
+    if project && project.repo.branches_and_tags.map(&:name).include?(ref)
+      tree_path(project, ref)
+    else
+      '#'
+    end
   end
 
   def ref_selector_options(project, current)

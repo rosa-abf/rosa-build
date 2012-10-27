@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20121005100158) do
+ActiveRecord::Schema.define(:version => 20121027084602) do
 
   create_table "activity_feeds", :force => true do |t|
     t.integer  "user_id",    :null => false
@@ -347,11 +347,13 @@ ActiveRecord::Schema.define(:version => 20121005100158) do
   add_index "projects", ["owner_id", "name", "owner_type"], :name => "index_projects_on_name_and_owner_id_and_owner_type", :unique => true, :case_sensitive => false
 
   create_table "pull_requests", :force => true do |t|
-    t.integer "issue_id",        :null => false
-    t.integer "to_project_id",   :null => false
-    t.integer "from_project_id", :null => false
-    t.string  "to_ref",          :null => false
-    t.string  "from_ref",        :null => false
+    t.integer "issue_id",                 :null => false
+    t.integer "to_project_id",            :null => false
+    t.integer "from_project_id",          :null => false
+    t.string  "to_ref",                   :null => false
+    t.string  "from_ref",                 :null => false
+    t.string  "from_project_owner_uname"
+    t.string  "from_project_name"
   end
 
   add_index "pull_requests", ["from_project_id"], :name => "index_pull_requests_on_head_project_id"
