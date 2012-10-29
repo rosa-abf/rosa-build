@@ -6,7 +6,8 @@ class PullRequest < ActiveRecord::Base
   delegate :user, :user_id, :title, :body, :serial_id, :assignee, :status, :to_param,
     :created_at, :updated_at, :comments, :status=, :to => :issue, :allow_nil => true
 
-  validate :uniq_merge
+  validates :from_project, :to_project, :presence => true
+  validate :uniq_merge, :if => Proc.new { |pull| pull.to_project.present? }
   validates_each :from_ref, :to_ref do |record, attr, value|
     check_ref record, attr, value
   end
@@ -139,11 +140,19 @@ class PullRequest < ActiveRecord::Base
 
   def self.check_ref(record, attr, value)
     project = attr == :from_ref ? record.from_project : record.to_project
-    record.errors.add attr, I18n.t('projects.pull_requests.wrong_ref') unless project.repo.branches_and_tags.map(&:name).include?(value)
+    return if project.blank?
+    if record.to_project.repo.commits.count > 0
+      record.errors.add attr, I18n.t('projects.pull_requests.wrong_ref') unless project.repo.branches_and_tags.map(&:name).include?(value)
+    else
+      record.errors.add attr, I18n.t('projects.pull_requests.empty_repo')
+    end
   end
 
   def uniq_merge
-    if to_project.pull_requests.needed_checking.where(:from_project_id => from_project_id, :to_ref => to_ref, :from_ref => from_ref).where('pull_requests.id <> :id or :id is null', :id => id).count > 0
+    if to_project && to_project.pull_requests.needed_checking
+         .where(:from_project_id => from_project_id,
+                :to_ref => to_ref, :from_ref => from_ref)
+         .where('pull_requests.id <> :id or :id is null', :id => id).count > 0
       errors.add(:base_branch, I18n.t('projects.pull_requests.duplicate', :from_ref => from_ref))
     end
   end
