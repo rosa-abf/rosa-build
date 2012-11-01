@@ -1,0 +1,16 @@
+-set_meta_tags :title => [title_object(@repository), t('layout.repositories.edit')]
+= render 'submenu'
+= render 'sidebar'
+
+%h3.fix= "#{t("layout.repositories.about")}: #{@repository.name}"
+
+= form_for @repository, :url => platform_repository_path(@platform, @repository), :html => { :class => :form } do |f|
+  = render "form", :f => f
+%br
+
+= render "shared/members_table",
+  :remove_members_path => remove_members_platform_repository_path(@platform, @repository),
+  :remove_member_path => remove_member_platform_repository_path(@platform, @repository),
+  :add_member_path => add_member_platform_repository_path(@platform, @repository),
+  :members => @members,
+  :editable_object => @repository

@@ -79,7 +79,7 @@ class BuildList < ActiveRecord::Base
   scope :recent, order("#{table_name}.updated_at DESC")
   scope :for_status, lambda {|status| where(:status => status) }
   scope :for_user, lambda { |user| where(:user_id => user.id)  }
-  scope :for_platform, lambda { |platform| where(:build_for_platform_id => platform.id)  }
+  scope :for_platform, lambda { |platform| where(:build_for_platform_id => platform)  }
   scope :by_mass_build, lambda { |mass_build| where(:mass_build_id => mass_build)  }
   scope :scoped_to_arch, lambda {|arch| where(:arch_id => arch) }
   scope :scoped_to_save_platform, lambda {|pl_id| where(:save_to_platform_id => pl_id) }
@@ -125,7 +125,7 @@ class BuildList < ActiveRecord::Base
       end
     end
 
-    after_transition :on => :published, :do => :set_version_and_tag
+    after_transition :on => :published, :do => [:set_version_and_tag, :actualize_packages]
 
     event :place_build do
       transition :waiting_for_response => :build_pending, :if => lambda { |build_list|
@@ -201,6 +201,19 @@ class BuildList < ActiveRecord::Base
     save
   end
 
+  def actualize_packages
+    ActiveRecord::Base.transaction do
+      old_pkgs = self.class.where(:project_id => self.project_id)
+                           .where(:save_to_repository_id => self.save_to_repository_id)
+                           .for_platform(self.build_for_platform_id)
+                           .scoped_to_arch(self.arch_id)
+                           .for_status(BUILD_PUBLISHED)
+                           .recent.limit(2).last.packages # packages from previous build_list
+      old_pkgs.update_all(:actual => false)
+      self.packages.update_all(:actual => true)
+    end
+  end
+
   #TODO: Share this checking on product owner.
   def can_cancel?
     [BUILD_PENDING, BuildServer::PLATFORM_PENDING].include?(status) && bs_id
@@ -211,7 +224,7 @@ class BuildList < ActiveRecord::Base
   end
 
   def can_reject_publish?
-    can_publish? and save_to_platform.released
+    can_publish? and not save_to_repository.publish_without_qa
   end
 
 

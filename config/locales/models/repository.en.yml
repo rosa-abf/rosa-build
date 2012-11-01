@@ -2,6 +2,7 @@ en:
   layout:
     repositories:
       add_project_to: Add project to repository
+      edit: Settings
       list: List
       about: About repository
       list_header: Repositories
@@ -29,13 +30,18 @@ en:
   flash:
     repository:
       saved: Repository added
+      updated: Repository updated
       save_error: Unable to add repository
+      update_error: Unable to update repository
       destroyed: Repository deleted
       project_added: Project added to repository
       project_not_added: Project adding error. A project with such name already exists in this repository. Remove the old project first
       project_removed: Project deleted
       project_not_removed: Unable to delete project from repository
       clear: Platform successfully cleared!
+      members:
+        successfully_added: "%{name} successfully added to the repository"
+        error_in_adding: "Unable to add %{name} as member"
 
   activerecord:
     models:
@@ -44,6 +50,7 @@ en:
       repository:
         name: Name
         description: Description
+        publish_without_qa: Publication without QA
         platform_id: Platform
         platform: Platform
         created_at: Created
