@@ -4,7 +4,7 @@ gem 'rails', '3.2.8' #, :git => 'git://github.com/rails/rails.git'
 
 gem 'pg', '~> 0.14.0'
 # gem 'silent-postgres', :git => 'git://github.com/dolzenko/silent-postgres.git' #'~> 0.1.1'
-gem 'redhillonrails_core', :git => 'git://github.com/chipiga/redhillonrails_core.git', :branch => 'rails31' # '~> 2.0.0.pre' # deprecated
+gem 'redhillonrails_core', :git => 'git://github.com/warpc/redhillonrails_core.git', :branch => 'rails31' # '~> 2.0.0.pre' # deprecated
 # gem 'schema_plus', '~> 0.2.1' # buggy shit!
 
 gem 'devise', '~> 2.1.2'
@@ -32,7 +32,7 @@ gem 'diff-display', '~> 0.0.1'
 
 # Wiki
 gem "gollum", '~> 2.1.3'
-gem "redcarpet", "1.17.2"
+gem "redcarpet", "~> 2.1.1"
 gem 'creole'
 gem 'rdiscount'
 # gem 'org-ruby'
@@ -44,7 +44,7 @@ gem 'trinidad', '~> 1.0.2', :platforms => :jruby
 gem 'newrelic_rpm', '~> 3.4.1', :platforms => [:mri, :rbx]
 gem 'whenever', '~> 0.7.3', :require => false
 
-gem 'jbuilder', '~> 0.4.0'
+gem 'jbuilder', '~> 0.8.2'
 gem 'rails3-jquery-autocomplete', '~> 1.0.7'
 gem 'will_paginate', '~> 3.0.3'
 gem 'meta-tags', '~> 1.2.5', :require => 'meta_tags'
@@ -53,6 +53,7 @@ gem 'jquery-rails', '~> 2.0.2'
 gem 'ruby-haml-js', '~> 0.0.3'
 gem 'rails-backbone', '~> 0.7.2'
 
+gem 'rack-throttle'
 gem 'rest-client', '~> 1.6.6'
 
 group :assets do

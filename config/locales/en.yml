@@ -47,6 +47,8 @@ en:
     processing: working ...
     invalid_content_type: incorrect type
     atom_link_tag_title: Private feed for %{nickname} | %{app_name}
+    preview: Preview
+    link: Link
 
     settings:
       label: Settings
@@ -114,7 +116,7 @@ en:
         empty: "Repository is empty. You need to wait some time if you have forked project or imported package"
         source: Source
         commits: Commits
-        commit_diff_too_big: Sorry, commit too big!
+        commit_diff_too_big: Sorry, diff too big!
         tags: Tags
         branches: Branches
         project_versions: Versions
@@ -135,6 +137,9 @@ en:
         destroyed: Subscription on notifications for this commit is cleaned
 
     exception_message: Access violation to this page!
+
+    500_message: Error 500. Something went wrong.  We've been notified about this issue and we'll take a look at it shortly.
+    404_message: Error 404. Resource not found!
 
     collaborators:
       successfully_changed: Collaborators list successfully changed
@@ -185,3 +190,12 @@ en:
       private_user:
         login: Login
         password: Password
+
+      arch:
+        name: Name
+        created_at: Created
+        updated_at: Updated
+
+  into: into
+  from: from
+  by: by

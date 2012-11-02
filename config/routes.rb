@@ -10,6 +10,69 @@ Rosa::Application.routes.draw do
   end
   devise_for :users, :controllers => {:omniauth_callbacks => 'users/omniauth_callbacks'}
 
+  namespace :api do
+    namespace :v1 do
+      resources :advisories, :only => [:index, :show, :create, :update]
+      resources :build_lists, :only => [:index, :create, :show] do
+        member {
+          get :publish
+          get :reject_publish
+          get :cancel
+        }
+      end
+      resources :arches, :only => [:index]
+      resources :platforms, :only => [:index, :show, :update, :destroy, :create] do
+        collection {
+          get :platforms_for_build
+        }
+        member {
+          get :members
+          put :add_member
+          delete :remove_member
+          post :clone
+          put :clear
+        }
+      end
+      resources :repositories, :only => [:show, :update, :destroy] do
+        member {
+          get :projects
+          put :add_member
+          delete :remove_member
+          put :add_project
+          delete :remove_project
+          put :signatures
+        }
+      end
+      resources :projects, :only => [:index, :show, :update, :create, :destroy] do
+        collection { get :get_id }
+        member {
+          post :fork
+          get :refs_list
+          get :members
+          put :add_member
+          delete :remove_member
+          put :update_member
+        }
+      end
+      resources :users, :only => [:show]
+      get 'user' => 'users#show_current_user'
+      resource :user, :only => [:update] do
+        member {
+          get :notifiers
+          put :notifiers
+        }
+      end
+      resources :groups, :only => [:index, :show, :update, :create, :destroy] do
+        member {
+          get :members
+          put :add_member
+          delete :remove_member
+          put :update_member
+        }
+      end
+    end
+  end
+
   resources :search, :only => [:index]
 
   get  '/forbidden'        => 'pages#forbidden',      :as => 'forbidden'
@@ -70,7 +133,6 @@ Rosa::Application.routes.draw do
         end
       end
 
-      get :autocomplete_user_uname, :on => :collection
       resources :repositories do
         member do
           get :add_project
@@ -93,6 +155,13 @@ Rosa::Application.routes.draw do
     match 'product_status', :to => 'product_build_lists#status_build'
   end
 
+  resources :autocompletes, :only => [] do
+    collection do
+      get :autocomplete_user_uname
+      get :autocomplete_group_uname
+    end
+  end
+
   scope :module => 'users' do
     resources :settings, :only => [] do
       collection do
@@ -104,9 +173,7 @@ Rosa::Application.routes.draw do
         put :notifiers
       end
     end
-    resources :users, :controller => 'profile', :only => [] do
-      get :autocomplete_user_uname, :on => :collection
-    end
+
     resources :register_requests, :only => [:new, :create], :format => /ru|en/ #view support only two languages
   end
 
@@ -114,7 +181,6 @@ Rosa::Application.routes.draw do
     get '/groups/new' => 'profile#new' # need to force next route exclude :id => 'new'
     get '/groups/:id' => redirect("/%{id}"), :as => :profile_group # override default group show route
     resources :groups, :controller => 'profile' do
-      get :autocomplete_group_uname, :on => :collection
       delete :remove_user, :on => :member
       resources :members, :only => [:index] do
         collection do
@@ -185,7 +251,15 @@ Rosa::Application.routes.draw do
         resources :collaborators do
           get :find, :on => :collection
         end
+        resources :pull_requests, :except => :destroy do
+          get :autocomplete_to_project, :on => :collection
+          put :merge, :on => :member
+        end
+        post '/preview' => 'projects#preview', :as => 'md_preview'
+        post 'refs_list' => 'projects#refs_list', :as => 'refs_list'
+        get '/pull_requests/:issue_id/add_line_comments(.:format)' => "comments#new_line", :as => :new_line_pull_comment
       end
+
       # Resource
       get '/autocomplete_maintainers' => 'projects#autocomplete_maintainers', :as => :autocomplete_maintainers
       get '/modify' => 'projects#edit', :as => :edit_project
@@ -209,6 +283,7 @@ Rosa::Application.routes.draw do
           get '/commit/:commit_id/comments/:id(.:format)' => "comments#edit", :as => :edit_project_commit_comment
           put '/commit/:commit_id/comments/:id(.:format)' => "comments#update", :as => :project_commit_comment
           delete '/commit/:commit_id/comments/:id(.:format)' => "comments#destroy"
+          get '/commit/:commit_id/add_line_comments(.:format)' => "comments#new_line", :as => :new_line_commit_comment
           # Commit subscribes
           post '/commit/:commit_id/subscribe' => "commit_subscribes#create", :as => :subscribe_commit
           delete '/commit/:commit_id/unsubscribe' => "commit_subscribes#destroy", :as => :unsubscribe_commit
@@ -222,7 +297,7 @@ Rosa::Application.routes.draw do
           # Raw
           get '/raw/:treeish/*path' => "git/blobs#raw", :as => :raw, :format => false
           # Archive
-          get '/archive/:treeish.:format' => "git/trees#archive", :as => :archive, :format => /zip|tar/
+          get '/archive/:treeish.:format' => "git/trees#archive", :as => :archive, :format => /zip|tar\.gz/
         end
       end
     end

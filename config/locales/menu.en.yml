@@ -18,6 +18,8 @@ en:
     tos: Terms Of Service
     tos_url: http://www.rosalab.com/about
     support: Support
+    developer_api: Developer API
+    developer_api_url: http://abf-doc.rosalinux.ru
   project_menu:
     project: Project
     commits: Commits
@@ -26,6 +28,7 @@ en:
     wiki: Wiki
     readme: Readme
     settings: Settings
+    pull_requests: Pull Requests
   feed_menu:
     all: All
     code: Code

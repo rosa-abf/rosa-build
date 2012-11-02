@@ -123,16 +123,19 @@ class Platforms::RepositoriesController < Platforms::BaseController
       :per_page => params[:iDisplayLength].present? ? params[:iDisplayLength] : 25
     )
 
-    @total_projects_count = @projects.count
+    @total_projects = @projects.count
     @projects = @projects.search(params[:sSearch]).search_order if params[:sSearch].present?
     @projects = @projects.order(order)
 
-    render :partial => (params[:added] == "true") ? 'project' : 'proj_ajax', :layout => false
+    respond_to do |format|
+      format.json {
+        render :partial => (params[:added] == "true") ? 'project' : 'proj_ajax', :layout => false
+      }
+    end
   end
 
   def remove_project
-    @project = Project.find(params[:project_id])
-    ProjectToRepository.where(:project_id => @project.id, :repository_id => @repository.id).destroy_all
+    ProjectToRepository.where(:project_id => params[:project_id], :repository_id => @repository.id).destroy_all
     redirect_to platform_repository_path(@platform, @repository), :notice => t('flash.repository.project_removed')
   end
 

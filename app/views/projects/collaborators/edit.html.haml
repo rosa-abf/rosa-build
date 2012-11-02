@@ -7,7 +7,7 @@
 
 = form_tag add_project_collaborators_path(@project) do
   .admin-search
-    = autocomplete_field_tag 'member_id', params[:member_id], autocomplete_user_uname_users_path, :id_element => '#member_id_field'
+    = autocomplete_field_tag 'member_id', params[:member_id], autocomplete_user_uname_autocompletes_path, :id_element => '#member_id_field'
   .admin-role
     .lineForm
       = select_tag 'role', options_for_collaborators_roles_select
@@ -54,7 +54,7 @@
 
 = form_tag add_project_collaborators_path(@project) do
   .admin-search
-    = autocomplete_field_tag 'group_id', params[:group_id], autocomplete_group_uname_groups_path, :id_element => '#group_id_field'
+    = autocomplete_field_tag 'group_id', params[:group_id], autocomplete_group_uname_autocompletes_path, :id_element => '#group_id_field'
   .admin-role
     .lineForm
       = select_tag 'role', options_for_collaborators_roles_select, :id => 'group_role'

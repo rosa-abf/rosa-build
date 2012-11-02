@@ -20,9 +20,15 @@ class Platform < ActiveRecord::Base
   has_many :mass_builds
 
   validates :description, :presence => true
+  validates :owner, :presence => true
   validates :visibility, :presence => true, :inclusion => {:in => VISIBILITIES}
   validates :name, :uniqueness => {:case_sensitive => false}, :presence => true, :format => { :with => /^[a-zA-Z0-9_\-\.]+$/ }
   validates :distrib_type, :presence => true, :inclusion => {:in => APP_CONFIG['distr_types']}
+  validate lambda {
+    if released_was && !released
+      errors.add(:released, I18n.t('flash.platform.released_status_can_not_be_changed'))
+    end
+  }
 
   before_create :create_directory, :if => lambda {Thread.current[:skip]} # TODO remove this when core will be ready
   before_create :xml_rpc_create, :unless => lambda {Thread.current[:skip]}
@@ -39,8 +45,9 @@ class Platform < ActiveRecord::Base
   scope :by_visibilities, lambda {|v| where(:visibility => v)}
   scope :opened, where(:visibility => 'open')
   scope :hidden, where(:visibility => 'hidden')
-  scope :main, where(:platform_type => 'main')
-  scope :personal, where(:platform_type => 'personal')
+  scope :by_type, lambda {|type| where(:platform_type => type) if type.present?}
+  scope :main, by_type('main')
+  scope :personal, by_type('personal')
 
   attr_accessible :name, :distrib_type, :parent_platform_id, :platform_type, :owner, :visibility, :description, :released
   attr_readonly   :name, :distrib_type, :parent_platform_id, :platform_type
@@ -166,7 +173,7 @@ class Platform < ActiveRecord::Base
 
   def update_owner_relation
     if owner_id_was != owner_id
-      r = relations.where(:actor_id => owner_id_was, :actor_type => owner_type_was)[0]
+      r = relations.where(:actor_id => owner_id_was, :actor_type => owner_type_was).first
       r.update_attributes(:actor_id => owner_id, :actor_type => owner_type)
     end
   end

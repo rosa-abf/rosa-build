@@ -27,8 +27,18 @@ class BuildList < ActiveRecord::Base
   validate lambda {
     errors.add(:save_to_repository, I18n.t('flash.build_list.wrong_repository')) unless save_to_repository_id.in? save_to_platform.repositories.map(&:id)
   }
+  validate lambda {
+    include_repos.each {|ir|
+      errors.add(:save_to_repository, I18n.t('flash.build_list.wrong_include_repos')) unless build_for_platform.repository_ids.include? ir.to_i
+    }
+  }
+  validate lambda {
+    if commit_hash.blank? || project.repo.commit(commit_hash).blank?
+      errors.add :commit_hash, I18n.t('flash.build_list.wrong_commit_hash', :commit_hash => commit_hash)
+    end
+  }
 
-  LIVE_TIME = 4.week # for unpublished 
+  LIVE_TIME = 4.week # for unpublished
   MAX_LIVE_TIME = 3.month # for published
 
   # The kernel does not send these statuses directly
@@ -105,6 +115,7 @@ class BuildList < ActiveRecord::Base
 
   after_commit :place_build
   after_destroy :delete_container
+  before_validation :set_commit_and_version
 
   @queue = :clone_and_build
 
@@ -126,6 +137,10 @@ class BuildList < ActiveRecord::Base
     end
 
     after_transition :on => :published, :do => [:set_version_and_tag, :actualize_packages]
+
+    after_transition :on => [:published, :fail_publish, :build_error], :do => :notify_users
+    after_transition :on => :build_success, :do => :notify_users,
+      :unless => lambda { |build_list| build_list.auto_publish? }
 
     event :place_build do
       transition :waiting_for_response => :build_pending, :if => lambda { |build_list|
@@ -195,7 +210,7 @@ class BuildList < ActiveRecord::Base
   def set_version_and_tag
     pkg = self.packages.where(:package_type => 'source', :project_id => self.project_id).first
     # TODO: remove 'return' after deployment ABF kernel 2.0
-    return if pkg.nil? # For old client that does not sends data about packages 
+    return if pkg.nil? # For old client that does not sends data about packages
     self.package_version = "#{pkg.platform.name}-#{pkg.version}-#{pkg.release}"
     system("cd #{self.project.repo.path} && git tag #{self.package_version} #{self.commit_hash}") # TODO REDO through grit
     save
@@ -284,11 +299,39 @@ class BuildList < ActiveRecord::Base
   end
 
   def in_work?
-    status == BuildServer::BUILD_STARTED 
+    status == BuildServer::BUILD_STARTED
     #[WAITING_FOR_RESPONSE, BuildServer::BUILD_PENDING, BuildServer::BUILD_STARTED].include?(status)
   end
 
+  def associate_and_create_advisory(params)
+    build_advisory(params){ |a| a.update_type = update_type }
+    advisory.attach_build_list(self)
+  end
+
+  def can_attach_to_advisory?
+    !save_to_repository.publish_without_qa &&
+      save_to_platform.main? &&
+      save_to_platform.released &&
+      status == BUILD_PUBLISHED
+  end
+
   protected
+
+  def notify_users
+    unless mass_build_id
+      users = []
+      if project # find associated users
+        users = project.all_members.
+          select{ |user| user.notifier.can_notify? && user.notifier.new_associated_build? }
+      end
+      if user.notifier.can_notify? && user.notifier.new_build?
+        users = users | [user]
+      end
+      users.each do |user|
+        UserMailer.build_list_notification(self, user).deliver
+      end
+    end
+  end # notify_users
 
   def delete_container
     if can_cancel?
@@ -304,6 +347,15 @@ class BuildList < ActiveRecord::Base
       p.platform = save_to_platform
       p.package_type = package_type
       yield p
+    end
+  end
+
+  def set_commit_and_version
+    if project_version.present? && commit_hash.blank?
+      self.commit_hash = project.repo.commits(project_version.match(/^latest_(.+)/).to_a.last ||
+                    project_version).try(:first).try(:id)
+    elsif project_version.blank? && commit_hash.present?
+      self.project_version = commit_hash
     end
   end
 end

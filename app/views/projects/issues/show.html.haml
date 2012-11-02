@@ -3,33 +3,12 @@
 -render 'manage_sidebar'
 -content_for :right_nopadding do
   dummy
-%h3.issue_title=@issue.title
-.activity
-  .top
-    .image
-      =image_tag(avatar_url(@issue.user, :medium), :alt => 'avatar') if @issue.user
-    .text
-      %span.name=link_to(@issue.user.fullname, user_path(@issue.user)) if @issue.user
-      %br/
-      %span.date=@issue.created_at.to_s(:long)
-      %br/
-  .both
-  .fulltext.view.issue_body=simple_format @issue.body
-.both
-%br
-- if can? :update, @issue
-  =link_to t('layout.edit'), '#', :id => 'edit_issue_content', :class => 'button'
-  =form_for :issue, :url => [@project, @issue], :method => :put, :html => { :class => 'edit_form issue', :style => 'display:none;' } do |f|
-    .leftlist= t('activerecord.attributes.issue.title') + ':'
-    .rightlist= f.text_field :title
-    .leftlist= t('activerecord.attributes.issue.body') + ':'
-    .rightlist= f.text_area :body
-    .both
-    =f.submit t('layout.update'), :id => 'update_issue_content'
-    =link_to t('layout.issues.cancel_button'), '#', :id => 'cancel_edit_issue_content', :class => 'button'
-%br
+=render 'header'
 =render 'status'
 
 = render "projects/comments/list", :list => @issue.comments, :project => @project, :commentable => @issue
 %br
 = render "projects/comments/add", :project => @project, :commentable => @issue if current_user
+
+=hidden_field_tag :preview_url, project_md_preview_path(@project)
+

@@ -24,9 +24,14 @@
         %td= request.more
         %td= request.created_at
         %td
-          = link_to t("layout.approve"), approve_admin_register_request_path(request) if can? :approve, request
-          |
-          = link_to t("layout.reject"), reject_admin_register_request_path(request) if can? :reject, request
+          - links = []
+          - if can? :approve, request
+            - links << link_to(t("layout.approve"), approve_admin_register_request_path(request))
+          - if can? :reject, request
+            - links << link_to(t("layout.reject"), reject_admin_register_request_path(request))
+          - if request.token
+            - links << link_to('Link', new_user_registration_url(:invitation_token => request.token))
+          = raw links.join('|')
 
   .actions
     %input#approve_registration{:type => 'button', :value => "Approve Selected"}

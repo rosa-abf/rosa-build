@@ -116,7 +116,7 @@ module Modules
       end
 
       def fork_git_repo
-        dummy = Grit::Repo.new(path) rescue parent.repo.fork_bare(path)
+        dummy = Grit::Repo.new(path) rescue parent.repo.fork_bare(path, :shared => false)
         write_hook
       end
 

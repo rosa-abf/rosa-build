@@ -3,16 +3,15 @@
   #labels-stock
     =form_tag project_issues_path(@project), :id => 'filter_labels', :method => :get do
       - @project.labels.each_with_index do |label, index|
-        .div-tracker-labels{:id => "label-#{label.name}", :style => @labels.include?(label.name) ? "background-color:##{label.color};color:#FFF" : ''}
-          .div-label-left
-            .label
-              .flag{:id => "flag-#{label.name}", :style => "background-color: ##{label.color};"}
-              .labeltext=label.name
-              =check_box_tag 'labels[]', label.name, @labels.include?(label.name), :style => 'display:none'
-              .both
-          .div-label-right=Labeling.joins(:label).where(:labels => {:name => label.name, :project_id => @project.id}).count
-          .both
-        .both
+        =render 'projects/shared/filter_label',
+          :id => label.name.parameterize,
+          :selected => @labels.include?(label.name),
+          :extra_classes => 'div-tracker-labels',
+          :color => label.color,
+          :check_box_name => 'labels',
+          :check_box_value => label.name,
+          :name => label.name,
+          :count => Labeling.joins(:label).where(:labels => {:name => label.name, :project_id => @project.id}).count
   - if can? :write, @project
     %a#manage-labels.button.tmargin10{:href => "#labels-stock"}=t('layout.issues.label_manage')
     #labels-edit{:style => "display: none;"}

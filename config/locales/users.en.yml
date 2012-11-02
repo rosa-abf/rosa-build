@@ -15,16 +15,12 @@ en:
       own_projects: My projects
       part_projects: Participate projects
       filter_header: Filter
-      public_projects_list: Public projects list
       public_data_edit_warning: This data is able for public profile. If you don't want to show some data, just don't fill them.
       user_private_settings: Settings
       settings_notifier: Notification center
       delete_header: Delete aacount
       delete_warning: Warning! Deleted account can not be recovered.
       private_settings_header: Password change
-      avatar_notice: Without uploaded avatar will be used avatar from gravar web service.
-      delete_avatar: Delete avatar
-      avatar_with_size: Avatar (less than %{max})
       users_filter:
         all: All
         admin: Admins

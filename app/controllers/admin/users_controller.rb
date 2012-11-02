@@ -1,5 +1,6 @@
 # -*- encoding : utf-8 -*-
 class Admin::UsersController < Admin::BaseController
+  include AvatarHelper
   prepend_before_filter :find_user
 
   def index
@@ -28,10 +29,7 @@ class Admin::UsersController < Admin::BaseController
   def update
     @user.role = params[:role]
     if @user.update_without_password(params[:user])
-      if @user.avatar && params[:delete_avatar] == '1'
-        @user.avatar = nil
-        @user.save
-      end
+      update_avatar(@user, params)
       flash[:notice] = t('flash.user.saved')
       redirect_to admin_users_path
     else

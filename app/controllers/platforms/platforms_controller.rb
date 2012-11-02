@@ -5,8 +5,6 @@ class Platforms::PlatformsController < Platforms::BaseController
   skip_before_filter :authenticate_user!, :only => [:advisories, :members, :show] if APP_CONFIG['anonymous_access']
   load_and_authorize_resource
 
-  autocomplete :user, :uname
-
   def index
     @platforms = @platforms.accessible_by(current_ability, :related).paginate(:page => params[:page], :per_page => 20)
   end

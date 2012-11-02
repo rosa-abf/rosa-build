@@ -38,12 +38,24 @@ div.description-top div.name input {
     height: 100%;
 }
 
-article div.activity {
+article div.activity, .commits_activity {
     border: 1px solid #D6D6D6;
     border-radius: 5px 5px 5px 5px;
     color: #333333;
     margin-top: 15px;
     padding: 6px;
+}
+
+.commits_activity table {
+    border-collapse: collapse;
+    width: 100%;
+    img { margin: 2px 0 0 2px; }
+    .date { width: 140px; }
+    .name { width: 250px; }
+    tr:nth-child(2n) {
+        .md_and_cm, .data-expander { background-color: #E2E4FF; }
+        background-color: #E2E4FF;
+    }
 }
 
 article div.messages div.activity {
@@ -64,12 +76,13 @@ article div.activity .top .buttons {
     display: block;
     position: relative;
     float: right;
-}
+ }
 
 article div.activity .top div.text {
     float: left;
     font-size: 12px;
     padding-left: 10px;
+    max-width: 579px;
 }
 
 article div.activity .top .imaged {
@@ -101,20 +114,21 @@ article div.activity .fulltext.hidden {
     display: none;
 }
 
-div.activity .data-expander {
-    margin-left: 10px;
-    display: inline-block;
-    width: 12px;
-}
-
-div.activity .data-expander.collapsed {
-    background: #FFF image-url('expand-gray.png') no-repeat;
-    background-position: 0 2px;
-}
-
-div.activity .data-expander.expanded {
-    background: #FFF image-url('expand-gray2.png') no-repeat;
-    background-position: 0 2px;
+div.activity, .commits_activity {
+    .data-expander {
+        margin-left: 10px;
+        display: inline-block;
+        width: 12px;
+        cursor: pointer;
+    }
+    .data-expander.collapsed {
+        background: #FFF image-url('expand-gray.png') no-repeat;
+        background-position: 0 2px;
+    }
+    .data-expander.expanded {
+        background: #FFF image-url('expand-gray2.png') no-repeat;
+        background-position: 0 2px;
+    }
 }
 
 div.activity .fulltext p {
@@ -698,48 +712,19 @@ div.toolbar a.button {
     float: left;
 }
 
-div.toolbar div.legend {
-    float: left;
-    margin-left: 50px;
-    padding: 4px 0 6px;
+div.toolbar, table.dataTable {
+    > .group_owner, > .user_owner, > .group, > .user { margin-right: 15px; }
+    .group_owner, .user_owner, .group, .user { padding-left: 20px; }
+    .user_owner { background: image-url('user16g.png') no-repeat 0 0 transparent; }
+    .group_owner { background: image-url('group16g.png') no-repeat 0 0 transparent; }
+    .user { background: image-url('user16.png') no-repeat 0 0 transparent; }
+    .group { background: image-url('group16.png') no-repeat 0 0 transparent; }
 }
 
-table.dataTable tr td.rights span.group,
-div.toolbar div.legend.rights span.group {
-    background: image-url('group16.png') no-repeat 0 0 transparent;
-}
-
-table.dataTable tr td.rights span.user,
-div.toolbar div.legend.rights span.user {
-    background: image-url('user16.png') no-repeat 0 0 transparent;
-}
-
-table.dataTable tr td.rights span.group_owner,
-div.toolbar div.legend.rights span.group_owner {
-    background: image-url('group16g.png') no-repeat 0 0 transparent;
-}
-
-table.dataTable tr td.rights span.user_owner,
-div.toolbar div.legend.rights span.user_owner {
-    background: image-url('user16g.png') no-repeat 0 0 transparent;
-}
-
-table.dataTable tr td.rights span.group_owner,
-div.toolbar div.legend.rights span.group_owner,
-table.dataTable tr td.rights span.user_owner,
-div.toolbar div.legend.rights span.user_owner,
-table.dataTable tr td.rights span.group,
-div.toolbar div.legend.rights span.group,
-table.dataTable tr td.rights span.user,
-div.toolbar div.legend.rights span.user {
-    padding-left: 20px;
-}
-
-div.toolbar div.legend.rights span.group_owner,
-div.toolbar div.legend.rights span.user_owner,
-div.toolbar div.legend.rights span.group,
-div.toolbar div.legend.rights span.user {
-    margin: 0 10px;
+.div-filter-labels {
+    .group { background: image-url('group16b.png') no-repeat 0 0 transparent; }
+    .user { background: image-url('user16b.png') no-repeat 0 0 transparent; }
+    .user, .group { padding-left: 20px; }
 }
 
 .root {
@@ -760,7 +745,7 @@ div.tos ol li {
 }
 
 div.tos_sidebar ul {
-    list-style: none outside none; 
+    list-style: none outside none;
     margin: 20px 0 0;
     padding: 0;
     text-align: left;
@@ -946,6 +931,14 @@ div#git_help_data p {
 
 .atom_icon {
   vertical-align: top;
+}
+
+.tab-content.pull_diff_fix {
+  display: block;
+}
+
+table.diff {
+  font-size: 12px;
 }
 
 /* Mass build forms */
@@ -1325,6 +1318,15 @@ hr.bootstrap {
   max-height: 280px;
 }
 
+.label-bootstrap.label-info.font14 {
+  padding: 4px;
+  line-height: 1.8;
+  a { color: #FFFFFF; }
+}
+.line_numbers a {
+  color: #999999;
+}
+
 /* Flash Notifies */
 
 .flash_notify {
@@ -1491,3 +1493,219 @@ table.tablesorter.platform-maintainers.static-search thead tr.search th input[ty
     .build_for_pl { font-weight: bold; }
     .offset25 { padding-left: 10px }
 }
+
+.md_and_cm {
+  overflow: auto;
+  margin: 10px 0 10px;
+  padding: 5px;
+  border-radius: 4px 4px 4px 4px;
+  background: #FFF;
+
+  pre {
+    background-color: #F8F8F8;
+    border: 1px solid #D6D6D6;
+    border-radius: 5px 5px 5px 5px;
+    color: #333333;
+    padding: 6px 10px;
+    overflow: auto;
+
+    code {
+      background-color: transparent;
+      border: none;
+    }
+  }
+
+  code {
+    background-color: #F8F8F8;
+    border: 1px solid #D6D6D6;
+    border-radius: 5px 5px 5px 5px;
+    margin: 0 2px;
+    padding: 0px 5px;
+  }
+
+  blockquote {
+    border-left: 4px solid #EDEDED;
+    padding: 0 15px;
+  }
+
+  p {
+    margin-top: 10px;
+
+  }
+}
+
+.md_and_cm > :first-child {
+  margin-top: 0 !important;
+}
+
+#md_tabs {
+  margin: 0;
+}
+
+#md_tabs.nav-tabs > li > a {
+  line-height: 5px;
+}
+
+#open-comment {
+  textarea {
+    background: none repeat scroll 0 0 #FFFFFF;
+    border: 1px solid #DEDEDE;
+    border-radius: 4px 4px 4px 4px;
+    color: #575756;
+    font-size: 12px;
+    height: 110px;
+    padding: 5px;
+    width: 98%;
+    max-width: 98%;
+    margin: 10px 0 10px;
+    resize: vertical;
+  }
+
+  textarea#issue_title, textarea#pull_request_issue_attributes_title {
+    height: 16px;
+    margin: 0 0 10px;
+  }
+
+  .tab-pane textarea {
+    min-height: 112px;
+  }
+
+  .edit_comment .comment-left {
+    margin-top: 0;
+  }
+}
+
+#open-comment > h3.tmargin0 {
+  margin-bottom: 0;
+}
+
+#md_help {
+  width: 800px;
+  top: 30%;
+  left: 42%;
+
+  .modal-body {
+    max-height: 560px;
+    padding-top: 0;
+  }
+
+  .modal-header {
+    padding-bottom: 0;
+  }
+
+  .col {
+    width: 245px;
+    float: left;
+    padding: 0;
+    margin-right: 10px;
+
+    h3 {
+      margin: 6px 0 0 0;
+    }
+
+    pre {
+      background: none repeat scroll 0 0 #EDEDED;
+      box-shadow: 0 3px 3px -1px rgba(18, 86, 135, 0.2);
+      border: 1px solid #EDEDED;
+      padding: 5px;
+      margin-top: 3px;
+    }
+  }
+}
+
+#repo-wrapper .add_line-comment {
+  position: absolute;
+  width: 25px;
+  height: 18px;
+  margin-left: -103px;
+  margin-top: 0;
+  cursor: pointer;
+  opacity: 0;
+  filter: alpha(Opacity=0);
+  -moz-opacity:0;
+}
+
+#repo-wrapper tr:hover .add_line-comment {
+  opacity: 1;
+  filter: alpha(Opacity=100);
+  -moz-opacity:1;
+}
+
+div.file .inline-comments {
+  .top {
+    height:auto;
+    background: none;
+    box-shadow: none;
+  }
+
+  .activity {
+    border-radius: 0;
+    max-width: 752px;
+    margin-left: 10px;
+  }
+}
+
+tr.inline-comments td {
+  border: solid #DDD;
+  border-width: 1px 0;
+}
+
+.inline-comments #open-comment {
+  max-width: 754px;
+  margin: 10px;
+}
+
+#repo-wrapper .edit_form.issue div.comment div.wrapper {
+  background: 0;
+  border: 0;
+  border-radius: 0;
+  height: 30px;
+  margin: 0;
+  padding: 0;
+}
+
+form#new_pull_request {
+  .leftlist {
+    width: 50px;
+    margin: 5px 0 20px 0;
+  }
+  .leftlist.big-list {
+    margin-top: 0;
+    width: 150px;
+  }
+
+  .l {
+    float: left;
+    margin-right: 10px;
+
+    input {
+      height: 21px;
+      width: 380px;
+    }
+
+    select {
+      width: 380px;
+    }
+  }
+}
+
+#repo-wrapper form#new_pull_request .wrapper {
+  background: none;
+  border: none;
+  height: 36px;
+  margin: 0;
+  padding: 0;
+}
+
+.new_inline_comment.button {
+  margin: 10px 0 10px 10px;
+}
+
+.niceRadio input {
+  display:none;
+}
+
+table#myTable thead tr.search th form.button_to div input {
+  margin-top: 2px;
+}
+

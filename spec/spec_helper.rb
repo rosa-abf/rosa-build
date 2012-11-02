@@ -27,13 +27,18 @@ RSpec.configure do |config|
   config.use_transactional_fixtures = true
 
   config.filter_run_excluding :anonymous_access => !(APP_CONFIG['anonymous_access'])
-  
+
 end
 
 def set_session_for(user=nil)
   current_user = user.is_a?(Symbol) ? FactoryGirl.create(user) : user
   @request.env["devise.mapping"] = :user
   sign_in current_user
+end
+
+def http_login(user=nil)
+  # FIXME: password constant is a bad choice...
+  request.env['HTTP_AUTHORIZATION'] = ActionController::HttpAuthentication::Basic.encode_credentials(user.email,'123456')
 end
 
 def stub_symlink_methods

@@ -1,6 +1,7 @@
 ru:
   layout:
     relations:
+      filters: Фильтры
       user_owner: Я - владелец
       group_owner: Я состою в группе-владельце
       user: Я - участник

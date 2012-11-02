@@ -21,4 +21,18 @@ class String
   # ensure
   #   return self
   end
+
+  # same as reverse.truncate.reverse
+  def rtruncate(length, options = {})
+    text = self.dup
+    options[:omission] ||= "..."
+    options[:separator] ||= '/'
+
+    length_with_room_for_omission = length - options[:omission].mb_chars.length
+    chars = text.mb_chars
+    stop = options[:separator] ?
+      (chars.index(options[:separator].mb_chars, length_with_room_for_omission) || length_with_room_for_omission) : length_with_room_for_omission
+
+    (chars.length > length ? "#{options[:omission]}#{chars[-(stop+1)...-1]}" : text).to_s
+  end
 end

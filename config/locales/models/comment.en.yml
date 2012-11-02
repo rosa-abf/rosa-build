@@ -3,11 +3,28 @@ en:
     comments:
       confirm_delete: Are you sure you want to delete the comment?
       new_header: New comment
+      new_inline: Add a line comment
       edit_header: Editing a comment
-      has_commented:     "added a note"
-      notifications_are: "Notifications for new comments are"
-      comments_header:   "Comments"
-      back: 'Back'
+      has_commented: added a note
+      notifications_are: Notifications for new comments are
+      comments_header: Comments
+      back: Back
+      md_cheatsheet_header: Markdown Cheat Sheet
+      md_cheatsheet:
+        format_text: Format Text
+        headers: Headers
+        text_styles: Text styles
+        lists: Lists
+        unordered: Unordered
+        ordered: Ordered
+        miscellaneous: Miscellaneous
+        images: Images
+        links: Links
+        blockquotes: Blockquotes
+        code_examples: Code Examples in Markdown
+        syntax_highlighting: Syntax highlighting
+        indent_code: indent your code 4 spaces
+        inline_code: Inline code for comments
 
   flash:
     comment:

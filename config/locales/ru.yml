@@ -47,6 +47,8 @@ ru:
     processing: Обрабатывается...
     invalid_content_type: имеет неверный тип
     atom_link_tag_title: Приватная лента для %{nickname} | %{app_name}
+    preview: Предосмотр
+    link: Ссылка
 
     settings:
       label: 'Настройки'
@@ -114,7 +116,7 @@ ru:
         empty: "Репозиторий пуст. Если вы клонировали(Fork) проект или импортировали пакет, данные скоро появятся"
         source: Source
         commits: Коммиты
-        commit_diff_too_big: Извините, коммит слишком большой!
+        commit_diff_too_big: Извините, изменений слишком много!
         tags: Теги
         branches: Ветки
         project_versions: Версии
@@ -135,6 +137,9 @@ ru:
         destroyed: Подписка на оповещения для этого коммита убрана
 
     exception_message: У Вас нет доступа к этой странице!
+
+    500_message: Ошибка 500. Что-то пошло не так. Мы уже в курсе данной проблемы и постараемся поскорее ее решить.
+    404_message: Ошибка 404. Страница не найдена!
 
     collaborators:
       successfully_changed: Список коллабораторов успешно изменен
@@ -186,3 +191,12 @@ ru:
       private_user:
         login: Логин
         password: Пароль
+
+      arch:
+        name: Название
+        created_at: Создана
+        updated_at: Обновлена
+
+  into: в
+  from: из
+  by: от

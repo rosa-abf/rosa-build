@@ -7,7 +7,7 @@
                           :filtered_label   => t("datatables.filtered_label"),
                           :table_dom_id     => 'datatable',
                           :auto_width       => 'false',
-                          :ajax_source => "#{url_for :controller => :repositories, :action => :projects_list, :id => @repository.id, :added => "#{controller.action_name.to_sym == :show}"}" })
+                          :ajax_source => "#{url_for :controller => :repositories, :action => :projects_list, :id => @repository.id, :added => "#{controller.action_name.to_sym == :show}", :format => :json}" })
 
 %table#datatable.tablesorter.repo-projects{:cellspacing => 0, :cellpadding => 0}
   %thead

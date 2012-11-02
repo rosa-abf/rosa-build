@@ -28,7 +28,9 @@ describe Projects::BuildListsController do
   end
 
   shared_examples_for 'create build list' do
-    before {test_git_commit(@project)}
+    before {
+      @project.update_attribute(:repositories, @platform.repositories)
+    }
 
     it 'should be able to perform new action' do
       get :new, :owner_name => @project.owner.uname, :project_name => @project.name
@@ -50,9 +52,21 @@ describe Projects::BuildListsController do
       post :create, {:owner_name => @project.owner.uname, :project_name => @project.name}.merge(@create_params).deep_merge(:build_list => {:project_version => "4.7.5.3"})
       @project.build_lists.last.commit_hash.should == @project.repo.commits('4.7.5.3').last.id
     end
+
+    it 'should not be able to create with wrong project version' do
+      lambda{ post :create, {:owner_name => @project.owner.uname, :project_name => @project.name}.merge(@create_params).deep_merge(:build_list => {:project_version => "latest_wrong", :commit_hash => nil})}.should change{@project.build_lists.count}.by(0)
+    end
+
+    it 'should not be able to create with wrong git hash' do
+      lambda{ post :create, {:owner_name => @project.owner.uname, :project_name => @project.name}.merge(@create_params).deep_merge(:build_list => {:commit_hash => 'wrong'})}.should change{@project.build_lists.count}.by(0)
+    end
   end
 
   shared_examples_for 'not create build list' do
+    before {
+      @project.update_attribute(:repositories, @platform.repositories)
+    }
+
     it 'should not be able to perform new action' do
       get :new, :owner_name => @project.owner.uname, :project_name => @project.name
       response.should redirect_to(forbidden_url)
@@ -68,31 +82,29 @@ describe Projects::BuildListsController do
 
   context 'crud' do
     before(:each) do
-      platform = FactoryGirl.create(:platform_with_repos)
+      @platform = FactoryGirl.create(:platform_with_repos)
       @create_params = {
-        :build_list => { 
+        :build_list => {
           :project_version => 'latest_master',
-          :save_to_platform_id => platform.id,
+          :save_to_repository_id => @platform.repositories.first.id,
           :update_type => 'security',
-          :include_repos => [platform.repositories.first.id]
+          :include_repos => [@platform.repositories.first.id]
         },
         :arches => [FactoryGirl.create(:arch).id],
-        :build_for_platforms => [platform.id]
+        :build_for_platforms => [@platform.id]
       }
       any_instance_of(Project, :versions => ['v1.0', 'v2.0'])
     end
 
     context 'for guest' do
-      if APP_CONFIG['anonymous_access']
-        it 'should be able to perform index action' do
-          get :index
-          response.should be_success
-        end
-      else
-        it 'should not be able to perform index action' do
-          get :index
-          response.should redirect_to(new_user_session_path)
-        end
+      it 'should be able to perform index action', :anonymous_access => true do
+        get :index
+        response.should be_success
+      end
+
+      it 'should not be able to perform index action', :anonymous_access => false do
+        get :index
+        response.should redirect_to(new_user_session_path)
       end
     end
 
@@ -113,10 +125,16 @@ describe Projects::BuildListsController do
       context 'for all build lists' do
         before(:each) do
           @build_list1 = FactoryGirl.create(:build_list_core)
-          @build_list2 = FactoryGirl.create(:build_list_core, :project => FactoryGirl.create(:project, :visibility => 'hidden'))
-          @build_list3 = FactoryGirl.create(:build_list_core, :project => FactoryGirl.create(:project, :owner => @user, :visibility => 'hidden'))
-          @build_list4 = FactoryGirl.create(:build_list_core, :project => FactoryGirl.create(:project, :visibility => 'hidden'))
-          @build_list4.project.relations.create :role => 'reader', :actor_id => @user.id, :actor_type => 'User'
+
+          @build_list2 = FactoryGirl.create(:build_list_core)
+          @build_list2.project.update_column(:visibility, 'hidden')
+
+          project = FactoryGirl.create(:project, :visibility => 'hidden', :owner => @user)
+          @build_list3 = FactoryGirl.create(:build_list_core, :project => project)
+
+          @build_list4 = FactoryGirl.create(:build_list_core)
+          @build_list4.project.update_column(:visibility, 'hidden')
+          @build_list4.project.relations.create! :role => 'reader', :actor_id => @user.id, :actor_type => 'User'
         end
 
         it 'should be able to perform index action' do
@@ -175,33 +193,36 @@ describe Projects::BuildListsController do
 
     context 'for group' do
       before(:each) do
-        @owner_group = FactoryGirl.create(:group)
-        @owner_user = FactoryGirl.create(:user)
-        @owner_group.actors.create :role => 'admin', :actor_id => @owner_user.id, :actor_type => 'User'
+
+        @user = FactoryGirl.create(:user)
+        set_session_for(@user)
+
+        @build_list = FactoryGirl.create(:build_list_by_group_project)
+        @project = @build_list.project
+        @owner_group = @build_list.project.owner
+        @owner_user =  @owner_group.owner
+
         @member_group = FactoryGirl.create(:group)
         @member_user = FactoryGirl.create(:user)
         @member_group.actors.create :role => 'reader', :actor_id => @member_user.id, :actor_type => 'User'
-
-        @group = FactoryGirl.create(:group)
-        @user = FactoryGirl.create(:user)
-        @group.actors.create :role => 'reader', :actor_id => @user.id, :actor_type => 'User'
-
-        @project = FactoryGirl.create(:project, :owner => @owner_group)
         @project.relations.create :role => 'reader', :actor_id => @member_group.id, :actor_type => 'Group'
 
-        @build_list = FactoryGirl.create(:build_list_core, :project => @project)
-
-        set_session_for(@user)
         @show_params = {:owner_name => @project.owner.uname, :project_name => @project.name, :id => @build_list.id}
       end
-  
+
       context 'for all build lists' do
         before(:each) do
           @build_list1 = FactoryGirl.create(:build_list_core)
-          @build_list2 = FactoryGirl.create(:build_list_core, :project => FactoryGirl.create(:project, :visibility => 'hidden'))
-          @build_list3 = FactoryGirl.create(:build_list_core, :project => FactoryGirl.create(:project, :owner => @group, :visibility => 'hidden'))
-          @build_list4 = FactoryGirl.create(:build_list_core, :project => FactoryGirl.create(:project, :visibility => 'hidden'))
-          @build_list4.project.relations.create :role => 'reader', :actor_id => @group.id, :actor_type => 'Group'
+
+          @build_list2 = FactoryGirl.create(:build_list_core)
+          @build_list2.project.update_column(:visibility, 'hidden')
+
+          project = FactoryGirl.create(:project, :visibility => 'hidden', :owner => @user)
+          @build_list3 = FactoryGirl.create(:build_list_core, :project => project)
+
+          @build_list4 = FactoryGirl.create(:build_list_core)
+          @build_list4.project.update_column(:visibility, 'hidden')
+          @build_list4.project.relations.create! :role => 'reader', :actor_id => @user.id, :actor_type => 'User'
         end
 
         it 'should be able to perform index action' do
@@ -271,13 +292,13 @@ describe Projects::BuildListsController do
         get :index
         assigns[:build_server_status].should == {}
         response.should be_success
-      end    
+      end
     end
   end
 
   context 'filter' do
-    
-    before(:each) do 
+
+    before(:each) do
       set_session_for FactoryGirl.create(:admin)
 
       @build_list1 = FactoryGirl.create(:build_list_core)
@@ -317,7 +338,7 @@ describe Projects::BuildListsController do
 
   context 'callbacks' do
     let(:build_list) { FactoryGirl.create(:build_list_core) }
-    let(:build_list_package) { FactoryGirl.create(:build_list_package, :build_list_id => build_list.id, :platform_id => build_list.project.repositories.first.platform_id, :project_id => build_list.project_id, :version => "4.7.5.3", :release => 1) }
+    let(:build_list_package) { FactoryGirl.create(:build_list_package, :build_list_id => build_list.id, :platform_id => build_list.save_to_platform_id, :project_id => build_list.project_id, :version => "4.7.5.3", :release => 1) }
 
     before(:each) do
       mock(controller).authenticate_build_service! {true}
@@ -357,7 +378,6 @@ describe Projects::BuildListsController do
       before do
         @item = build_list.items.create(:name => build_list.project.name, :version => build_list.project_version, :level => 0)
         repo = build_list.save_to_platform.repositories.first
-        repo.projects << build_list.project
         @project2 = FactoryGirl.create(:project)
         repo.projects << @project2
       end

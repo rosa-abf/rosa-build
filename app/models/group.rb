@@ -1,5 +1,5 @@
 # -*- encoding : utf-8 -*-
-class Group < ActiveRecord::Base
+class Group < Avatar
   belongs_to :owner, :class_name => 'User'
 
   has_many :relations, :as => :actor, :dependent => :destroy, :dependent => :destroy
@@ -37,6 +37,14 @@ class Group < ActiveRecord::Base
 
   def name
     uname
+  end
+
+  def add_member(member, role = 'admin')
+    Relation.add_member(member, self, role, :actors)
+  end
+
+  def remove_member(member)
+    Relation.remove_member(member, self)
   end
 
   protected

@@ -362,26 +362,29 @@ article div.all.verybigpadding {
   width: 545px;
   padding: 0px 40px 20px 200px;
   text-align: left;
-}
 
-article div.all.verybigpadding div.left {
-  float: left;
+  .info, .avatar {
+    display: inline-block;
+  }
+  .avatar { margin: 0 20px 20px 0; }
+  .info {
+    width: 380px;
+  }
+  .content {
+    width: 550px;
+    display: inline-block;
+    .pagination { position: absolute; }
+  }
+  img {
+    padding-right: 40px;
+    margin-top: 20px;
+  }
+  h3, h4, p { width: 420px; }
+  tmargin5 {
+    padding-top: 5px;
+    position: relative;
+  }
 }
-
-article div.all.verybigpadding div.left img{
-  padding-right: 40px;
-  margin-top: 20px;
-}
-
-article div.all.verybigpadding div.left h3, article div.all.verybigpadding div.left h4, article div.all.verybigpadding div.left p{
-  width: 420px;
-}
-
-article div.all.verybigpadding div.left .tmargin5 {
-  padding-top: 5px;
-  position: relative;
-}
-
 
 /* Left part of page markup */
 
@@ -1931,7 +1934,7 @@ a.button.width100 {
   width: 100px;
 }
 
-.div-tracker-labels {
+.div-filter-labels {
   margin: 2px 13px 2px 0px;
   cursor: pointer;
   border-radius: 4px;

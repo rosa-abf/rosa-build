@@ -1,8 +1,8 @@
 # -*- encoding : utf-8 -*-
 class Groups::ProfileController < Groups::BaseController
+  include AvatarHelper
   load_and_authorize_resource :class => Group, :instance_name => 'group'
-
-  autocomplete :group, :uname
+  skip_before_filter :authenticate_user!, :only => :show if APP_CONFIG['anonymous_access']
 
   def index
     @groups = current_user.groups.paginate(:page => params[:group_page]) # accessible_by(current_ability)
@@ -10,7 +10,9 @@ class Groups::ProfileController < Groups::BaseController
   end
 
   def show
-    @projects = @group.projects.by_visibilities(['open'])
+    @projects = @group.projects.by_visibilities(['open']).
+      search(params[:search]).search_order.
+      paginate(:page => params[:page], :per_page => 25)
   end
 
   def new
@@ -20,8 +22,7 @@ class Groups::ProfileController < Groups::BaseController
   end
 
   def create
-    @group = Group.new params[:group]
-    @group.owner = current_user
+    @group = current_user.own_groups.new params[:group]
     if @group.save
       flash[:notice] = t('flash.group.saved')
       redirect_to group_path(@group)
@@ -34,6 +35,7 @@ class Groups::ProfileController < Groups::BaseController
 
   def update
     if @group.update_attributes(params[:group])
+      update_avatar(@group, params)
       flash[:notice] = t('flash.group.saved')
       redirect_to group_path(@group)
     else

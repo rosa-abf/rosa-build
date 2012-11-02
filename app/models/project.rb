@@ -8,6 +8,7 @@ class Project < ActiveRecord::Base
   belongs_to :maintainer, :class_name => "User"
 
   has_many :issues, :dependent => :destroy
+  has_many :pull_requests, :dependent => :destroy, :foreign_key => 'to_project_id'
   has_many :labels, :dependent => :destroy
   has_many :build_lists, :dependent => :destroy
 
@@ -36,7 +37,7 @@ class Project < ActiveRecord::Base
   scope :recent, order("name ASC")
   scope :search_order, order("CHAR_LENGTH(name) ASC")
   scope :search, lambda {|q| by_name("%#{q.to_s.strip}%")}
-  scope :by_name, lambda {|name| where('projects.name ILIKE ?', name)}
+  scope :by_name, lambda {|name| where('projects.name ILIKE ?', name) if name.present?}
   scope :by_visibilities, lambda {|v| where(:visibility => v)}
   scope :opened, where(:visibility => 'open')
   scope :package, where(:is_package => true)
@@ -49,7 +50,11 @@ class Project < ActiveRecord::Base
       WHERE (ptr.repository_id = #{ repository_id })
     )
   ) }
+  scope :by_owners, lambda { |group_owner_ids, user_owner_ids|
+    where("(projects.owner_id in (?) AND projects.owner_type = 'Group') OR (projects.owner_id in (?) AND projects.owner_type = 'User')", group_owner_ids, user_owner_ids)
+  }
 
+  before_validation :truncate_name, :on => :create
   before_create :set_maintainer
   after_save :attach_to_personal_repository
 
@@ -82,6 +87,14 @@ class Project < ActiveRecord::Base
 
   def members
     collaborators | groups.map(&:members).flatten
+  end
+
+  def add_member(member, role = 'admin')
+    Relation.add_member(member, self, role)
+  end
+
+  def remove_member(member)
+    Relation.remove_member(member, self)
   end
 
   def platforms
@@ -172,6 +185,10 @@ class Project < ActiveRecord::Base
 
   protected
 
+  def truncate_name
+    self.name = name.strip if name
+  end
+
   def attach_to_personal_repository
     owner_rep = self.owner.personal_repository
     if is_package
@@ -182,7 +199,9 @@ class Project < ActiveRecord::Base
   end
 
   def set_maintainer
-    self.maintainer_id = (owner_type == 'User') ? self.owner_id : self.owner.owner_id
+    if maintainer_id.blank?
+      self.maintainer_id = (owner_type == 'User') ? self.owner_id : self.owner.owner_id
+    end
   end
 
 end

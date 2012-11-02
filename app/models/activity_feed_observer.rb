@@ -71,6 +71,8 @@ class ActivityFeedObserver < ActiveRecord::Observer
 
     when 'GitHook'
       return unless record.project
+      PullRequest.where("from_project_id = ? OR to_project_id = ?", record.project, record.project).needed_checking.each {|pull| pull.check}
+
       change_type = record.change_type
       branch_name = record.refname.split('/').last
 

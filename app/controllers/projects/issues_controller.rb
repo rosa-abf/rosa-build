@@ -10,20 +10,24 @@ class Projects::IssuesController < Projects::BaseController
   layout false, :only => [:update, :search_collaborators]
 
   def index(status = 200)
-    @is_assigned_to_me = params[:filter] == 'to_me'
-    @status = params[:status] == 'closed' ? 'closed' : 'open'
     @labels = params[:labels] || []
-    @issues = @project.issues
-    @issues = @issues.where(:assignee_id => current_user.id) if @is_assigned_to_me
+    @issues = @project.issues.without_pull_requests
+    @issues = @issues.where(:assignee_id => current_user.id) if @is_assigned_to_me = params[:filter] == 'to_me'
     @issues = @issues.joins(:labels).where(:labels => {:name => @labels}) unless @labels == []
     # Using mb_chars for correct transform to lowercase ('Русский Текст'.downcase => "Русский Текст")
-    @issues = @issues.where('issues.title ILIKE ?', "%#{params[:search_issue].mb_chars.downcase}%") if params[:search_issue]
+    @issues = @issues.search(params[:search_issue])
 
-    @opened_issues, @closed_issues = @issues.opened.count, @issues.closed.count
-    @issues = @issues.where(:status => @status)
-                      .includes(:assignee, :user).order('serial_id desc').uniq.paginate :per_page => 10, :page => params[:page]
+    @opened_issues, @closed_issues = @issues.not_closed_or_merged.count, @issues.closed_or_merged.count
+    if params[:status] == 'closed'
+      @issues, @status = @issues.closed_or_merged, params[:status]
+    else
+      @issues, @status = @issues.not_closed_or_merged, 'open'
+    end
+
+    @issues = @issues.includes(:assignee, :user, :pull_request).def_order.uniq
+                     .paginate :per_page => 10, :page => params[:page]
     if status == 200
-      render 'index', :layout => request.xhr? ? 'issues' : 'application'
+      render 'index', :layout => request.xhr? ? 'with_sidebar' : 'application'
     else
       render :status => status, :nothing => true
     end
@@ -46,15 +50,23 @@ class Projects::IssuesController < Projects::BaseController
     end
   end
 
+  def show
+    redirect_to project_pull_request_path(@project, @issue.pull_request) if @issue.pull_request
+  end
+
   def update
     @issue.labelings.destroy_all if params[:update_labels]
     if params[:issue] && status = params[:issue][:status]
       @issue.set_close(current_user) if status == 'closed'
       @issue.set_open if status == 'open'
-      render :partial => 'status', :status => (@issue.save ? 200 : 500)
+      render :partial => 'status', :status => (@issue.save ? 200 : 400)
     elsif params[:issue]
-      status = @issue.update_attributes(params[:issue]) ? 200 : 500
-      render :inline => ActionController::Base.helpers.simple_format(params[:issue][:body]), :status => status
+      status, message = if @issue.update_attributes(params[:issue])
+        [200, view_context.markdown(@issue.body)]
+      else
+        [400, view_context.local_alert(@issue.errors.full_messages.join('. '))]
+      end
+      render :inline => message, :status => status
     else
       render :nothing => true, :status => 200
     end

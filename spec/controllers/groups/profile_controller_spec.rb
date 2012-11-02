@@ -1,6 +1,13 @@
 # -*- encoding : utf-8 -*-
 require 'spec_helper'
 
+shared_examples_for 'group user with project show rights' do
+  it 'should be able to perform show action' do
+    get :show, :id => @group
+    response.should render_template(:show)
+  end
+end
+
 shared_examples_for 'group user without update rights' do
   it 'should be not able to perform update action' do
     put :update, {:id => @group}.merge(@update_params)
@@ -47,11 +54,6 @@ shared_examples_for 'no group user' do
   it 'should change objects count on create' do
     lambda { post :create, @create_params }.should change{ Group.count }.by(1)
   end
-
-  it 'should be able to perform autocomplete_group_uname action' do
-    get :autocomplete_group_uname
-    response.should be_success
-  end
 end
 
 shared_examples_for 'group owner' do
@@ -77,6 +79,16 @@ describe Groups::ProfileController do
   end
 
   context 'for guest' do
+
+    if APP_CONFIG['anonymous_access']
+      it_should_behave_like 'group user with project show rights'
+    else
+      it 'should not be able to perform show action' do
+        get :show, :id => @group
+        response.should redirect_to(new_user_session_path)
+      end
+    end
+
     it 'should not be able to perform index action' do
       get :index
       response.should redirect_to(new_user_session_path)
@@ -99,6 +111,7 @@ describe Groups::ProfileController do
       set_session_for(@admin)
     end
 
+    it_should_behave_like 'group user with project show rights'
     it_should_behave_like 'update_member_relation'
     it_should_behave_like 'group owner'
 
@@ -120,6 +133,7 @@ describe Groups::ProfileController do
       @group.actors.create(:actor_type => 'User', :actor_id => @user.id, :role => 'admin')
     end
 
+    it_should_behave_like 'group user with project show rights'
     it_should_behave_like 'update_member_relation'
     it_should_behave_like 'group admin'
     it_should_behave_like 'group user without destroy rights'
@@ -134,6 +148,7 @@ describe Groups::ProfileController do
       @group.actors.create(:actor_type => 'User', :actor_id => @user.id, :role => 'admin')
     end
 
+    it_should_behave_like 'group user with project show rights'
     it_should_behave_like 'update_member_relation'
     it_should_behave_like 'group owner'
   end
@@ -154,6 +169,7 @@ describe Groups::ProfileController do
       lambda { delete :remove_user, :id => @group }.should change{ Relation.count }.by(-1)
     end
 
+    it_should_behave_like 'group user with project show rights'
     it_should_behave_like 'no group user'
     it_should_behave_like 'group user without destroy rights'
     it_should_behave_like 'group user without update rights'

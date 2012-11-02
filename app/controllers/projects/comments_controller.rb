@@ -4,37 +4,45 @@ class Projects::CommentsController < Projects::BaseController
   load_and_authorize_resource :project
   before_filter :find_commentable
   before_filter :find_or_build_comment
-  load_and_authorize_resource #:through => :commentable
+  load_and_authorize_resource :new => :new_line
 
   include CommentsHelper
 
   def create
-    if @comment.save
+    anchor = ''
+    if !@comment.set_additional_data params
+      flash[:error] = I18n.t("flash.comment.save_error")
+    elsif @comment.save
       flash[:notice] = I18n.t("flash.comment.saved")
-      redirect_to project_commentable_path(@project, @commentable)
+      anchor = view_context.comment_anchor(@comment)
     else
       flash[:error] = I18n.t("flash.comment.save_error")
-      render :action => 'new'
+      flash[:warning] = @comment.errors.full_messages.join('. ')
     end
+    redirect_to "#{project_commentable_path(@project, @commentable)}##{anchor}"
   end
 
   def edit
   end
 
   def update
-    if @comment.update_attributes(params[:comment])
-      flash[:notice] = I18n.t("flash.comment.saved")
-      redirect_to project_commentable_path(@project, @commentable)
+    status, message = if @comment.update_attributes(params[:comment])
+      [200, view_context.markdown(@comment.body)]
     else
-      flash[:error] = I18n.t("flash.comment.save_error")
-      render :action => 'new'
+      [400, view_context.local_alert(@comment.errors.full_messages.join('. '))]
     end
+    render :inline => message, :status => status
   end
 
   def destroy
     @comment.destroy
     flash[:notice] = t("flash.comment.destroyed")
     redirect_to project_commentable_path(@project, @commentable)
+  end
+
+  def new_line
+    @path = view_context.project_commentable_comments_path(@project, @commentable)
+    render :layout => false
   end
 
   protected

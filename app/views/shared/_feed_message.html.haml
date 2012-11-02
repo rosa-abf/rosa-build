@@ -1,4 +1,4 @@
-.activity{:id => presenter.comment_id? ? "comment##{presenter.comment_id}" : ''}
+.activity{:id => presenter.comment_id? ? presenter.comment_anchor : ''}
   .top
     - if presenter.buttons?
       %span.buttons= raw presenter.buttons.join(' | ').html_safe
@@ -19,5 +19,5 @@
     - if presenter.content?
       .fulltext{:class => "#{presenter.expandable? ? "hidden" : ''} #{presenter.caption? ? "" : "alone"}",
                 :id    => presenter.expandable? ? "content-expand#{item_no}" : ''}
-        = presenter.content
+        .cm-s-default.md_and_cm=markdown presenter.content
       .both

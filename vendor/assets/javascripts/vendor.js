@@ -10,9 +10,11 @@
 //= require bootstrap-modal
 //= require bootstrap-button
 //= require bootstrap-dropdown
+//= require bootstrap-tab
 // require bootstrap-tooltip
 // require bootstrap-popover
 //= require bootstrap-alert
+//= require bootstrap-tab
 //= require chosen.jquery
 // require html5shiv
 // require_tree .
