@@ -2,7 +2,9 @@ namespace :project do
   desc "Truncate blobs from git repo"
   task :remove_archives => :environment do
     raise 'Need set GIT_PROJECTS_DIR' if ENV['GIT_PROJECTS_DIR'].blank?
-    raise 'Need set CLONE_PATH' if ENV['CLONE_PATH'].blank?
+    raise 'Need special "rosa_system" user'
+    token = User.find_by_uname('rosa_system').authentication_token
+
     abf_existing_log = File.open "#{ENV['CLONE_PATH']}/projects_with_abf_yml.log", 'w'
     projects = if uname = ENV['OWNER']
                  owner = User.find_by_uname(uname) || Group.find_by_uname(uname)
@@ -40,7 +42,7 @@ namespace :project do
           abf_existing_log.puts message
           `rm -rf #{path}`
         elsif archives_exists.present?
-          system "bin/calc_sha #{path} #{ENV['CLONE_PATH']}/archives" # FIXME change filename
+          system "bin/calc_sha #{path} #{token}" # FIXME change filename
 
           #####
           # This is dangerous !!!

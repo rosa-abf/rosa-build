@@ -11,8 +11,7 @@ old_sources = if File.exist? abf_yml
 MAX_SIZE = 2 * 1024 * 1024 # 2.megabytes
 url = 'http://file-store.rosalinux.ru/api/v1/file_stores.json'
 #url = 'http://localhost:3001/api/v1/file_stores.json'
-user, pass = ARGF.argv[0] || 'CENSORED', ARGF.argv[1] || 'CENSORED' # FIXME
-rclient = RestClient::Resource.new(url, user, pass)
+rclient = RestClient::Resource.new(url, :user => ARGF.argv[0]) # user auth token
 
 Dir.glob("*.{tar\.bz2,tar\.gz,bz2,rar,gz,tar,tbz2,tgz,zip,Z,7z}").uniq.sort.each do |file|
   begin
