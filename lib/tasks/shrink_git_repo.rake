@@ -16,7 +16,7 @@ namespace :project do
 
     projects = projects.where :id => eval(ENV['PROJECT_ID']) if ENV['PROJECT_ID']
     total_count = projects.count
-    FileUtils.mkdir_p "#{ENV['CLONE_PATH']}/archives" if total_count > 0
+    #FileUtils.mkdir_p "#{ENV['CLONE_PATH']}/archives" if total_count > 0
     begin_time = Time.now
     pr_count = 0
     projects.each_with_index do |project, ind|
@@ -47,7 +47,7 @@ namespace :project do
 
           #####
           # This is dangerous !!!
-          #system "rm -rf #{project_path} && git clone --bare #{path} #{project_path} && rm -rf #{path}"
+          system "rm -rf #{project_path} && git clone --bare #{path} #{project_path} && rm -rf #{path}"
           #####
 
           say "Worked with #{project.name_with_owner}: #{(Time.now - time).truncate} sec."
