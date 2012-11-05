@@ -54,6 +54,7 @@ gem 'ruby-haml-js', '~> 0.0.3'
 gem 'rails-backbone', '~> 0.7.2'
 
 gem 'rack-throttle'
+gem 'rest-client', '~> 1.6.6'
 
 group :assets do
   gem 'sass-rails', '~> 3.2.5'
