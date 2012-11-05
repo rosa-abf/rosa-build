@@ -1,8 +1,9 @@
 namespace :project do
   desc "Truncate blobs from git repo"
   task :remove_archives => :environment do
-    raise 'Need set GIT_PROJECTS_DIR' if ENV['GIT_PROJECTS_DIR'].blank?
-    raise 'Need special "rosa_system" user'
+    #raise 'Need set GIT_PROJECTS_DIR' if ENV['GIT_PROJECTS_DIR'].blank?
+    raise 'Need set CLONE_PATH' if ENV['CLONE_PATH'].blank?
+    raise 'Need special "rosa_system" user' unless User.where(:uname => 'rosa_system').exists?
     token = User.find_by_uname('rosa_system').authentication_token
 
     abf_existing_log = File.open "#{ENV['CLONE_PATH']}/projects_with_abf_yml.log", 'w'
@@ -27,7 +28,7 @@ namespace :project do
         time = Time.now
         path = "#{ENV['CLONE_PATH'].chomp('/')}/repos/#{project.name_with_owner}"
         FileUtils.rm_rf path
-        project_path = "#{ENV['GIT_PROJECTS_DIR']}/#{project.name_with_owner}/.git"
+        project_path = project.path#"#{ENV['GIT_PROJECTS_DIR']}/#{project.name_with_owner}/.git"
         system "git clone --mirror #{project_path} #{path}/.git"
         archives_exists = false
         Dir.chdir(path) do
