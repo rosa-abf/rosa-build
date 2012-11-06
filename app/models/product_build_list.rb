@@ -1,5 +1,7 @@
 # -*- encoding : utf-8 -*-
 class ProductBuildList < ActiveRecord::Base
+  include Modules::Models::CommitAndVersion
+
   BUILD_STARTED = 2
   BUILD_COMPLETED = 0
   BUILD_FAILED = 1
@@ -15,12 +17,15 @@ class ProductBuildList < ActiveRecord::Base
                     }
 
   belongs_to :product
+  belongs_to :project
+  belongs_to :arch
+
 
   validates :product_id, :status, :presence => true
   validates :status, :inclusion => { :in => [BUILD_STARTED, BUILD_COMPLETED, BUILD_FAILED] }
 
   attr_accessor :base_url
-  attr_accessible :status, :base_url
+  attr_accessible :status, :base_url, :branch, :arch_id, :project_id
   attr_readonly :product_id
 
 

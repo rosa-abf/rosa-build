@@ -3,6 +3,7 @@ class Product < ActiveRecord::Base
   ATTRS_TO_CLONE = [ 'build_path', 'build_script', 'counter', 'ks', 'menu', 'tar', 'use_cron', 'cron_tab' ]
 
   belongs_to :platform
+  belongs_to :project
   has_many :product_build_lists, :dependent => :destroy
 
   after_validation :merge_tar_errors
@@ -15,7 +16,9 @@ class Product < ActiveRecord::Base
 
   scope :recent, order("name ASC")
 
-  attr_accessible :name, :counter, :ks, :menu, :tar, :cron_tab, :use_cron, :description, :build_script, :delete_tar
+  attr_accessible :name, :counter, :ks, :menu, :tar,
+    :cron_tab, :use_cron, :description, :build_script,
+    :delete_tar, :lst, :repos, :project_id
   attr_readonly :platform_id
 
   def delete_tar

@@ -1,6 +1,7 @@
 en:
   layout:
     products:
+      new_iso_builder: Params for new ISO builder (betta version)
       list: List
       about: About product
       build_lists_monitoring: Build lists monitoring
@@ -55,3 +56,5 @@ en:
         system_wide: System-wide
         cron_tab: Cron tab
         use_cron: Use cron
+        repos: Repositories
+        project: Project

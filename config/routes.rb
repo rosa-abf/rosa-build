@@ -146,6 +146,7 @@ Rosa::Application.routes.draw do
       resources :key_pairs, :only => [:create, :index, :destroy]
       resources :products do
         resources :product_build_lists, :only => [:create, :destroy]
+        collection { get :autocomplete_project }
       end
       resources :maintainers, :only => [:index]
     end

@@ -23,6 +23,7 @@ class Platforms::ProductsController < Platforms::BaseController
   end
 
   def create
+    @product.project = find_project
     if @product.save
       flash[:notice] = t('flash.product.saved') 
       redirect_to platform_product_path(@platform, @product)
@@ -34,6 +35,7 @@ class Platforms::ProductsController < Platforms::BaseController
   end
 
   def update
+    @product.project = find_project
     if @product.update_attributes(params[:product])
       flash[:notice] = t('flash.product.saved')
       redirect_to platform_product_path(@platform, @product)
@@ -53,4 +55,19 @@ class Platforms::ProductsController < Platforms::BaseController
     redirect_to platform_products_path(@platform)
   end
 
+  def autocomplete_project
+    items = Project.accessible_by(current_ability, :membered).
+      search(params[:term]).search_order
+    items.select! {|e| e.repo.branches.count > 0}
+    render :json => items.map{ |p|
+      {:id => p.id, :label => p.name_with_owner, :value => p.name_with_owner}
+    }
+  end
+
+  protected
+
+  def find_project
+    args = params[:src_project].try(:split, '/') || []
+    (args.length == 2) ? Project.find_by_owner_and_name(*args) : nil
+  end
 end

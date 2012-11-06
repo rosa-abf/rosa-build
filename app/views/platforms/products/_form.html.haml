@@ -37,6 +37,15 @@
 
 = render "crontab", :form => f
 
+
+%b
+  = t('layout.products.new_iso_builder')
+%br
+%br
+= render 'iso_build_form', :f => f
+
+.both
+
 .both
 .button_block
   = submit_tag t("layout.save")

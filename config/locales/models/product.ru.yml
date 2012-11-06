@@ -1,6 +1,7 @@
 ru:
   layout:
     products:
+      new_iso_builder: Параметры для нового сборщика ISO образов (бетта версия)
       list: Список
       about: О продукте
       build_lists_monitoring: Мониторинг сборочных заданий
@@ -55,3 +56,5 @@ ru:
         system_wide: Общесистемный
         cron_tab: Cron tab
         use_cron: Использовать крон
+        repos: Репозитории
+        project: Проект

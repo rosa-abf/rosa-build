@@ -1,5 +1,7 @@
 # -*- encoding : utf-8 -*-
 class BuildList < ActiveRecord::Base
+  include Modules::Models::CommitAndVersion
+
   belongs_to :project
   belongs_to :arch
   belongs_to :save_to_platform, :class_name => 'Platform'
@@ -31,11 +33,6 @@ class BuildList < ActiveRecord::Base
     include_repos.each {|ir|
       errors.add(:save_to_repository, I18n.t('flash.build_list.wrong_include_repos')) unless build_for_platform.repository_ids.include? ir.to_i
     }
-  }
-  validate lambda {
-    if commit_hash.blank? || project.repo.commit(commit_hash).blank?
-      errors.add :commit_hash, I18n.t('flash.build_list.wrong_commit_hash', :commit_hash => commit_hash)
-    end
   }
 
   LIVE_TIME = 4.week # for unpublished
@@ -115,7 +112,6 @@ class BuildList < ActiveRecord::Base
 
   after_commit :place_build
   after_destroy :delete_container
-  before_validation :set_commit_and_version
 
   @queue = :clone_and_build
 
@@ -347,15 +343,6 @@ class BuildList < ActiveRecord::Base
       p.platform = save_to_platform
       p.package_type = package_type
       yield p
-    end
-  end
-
-  def set_commit_and_version
-    if project_version.present? && commit_hash.blank?
-      self.commit_hash = project.repo.commits(project_version.match(/^latest_(.+)/).to_a.last ||
-                    project_version).try(:first).try(:id)
-    elsif project_version.blank? && commit_hash.present?
-      self.project_version = commit_hash
     end
   end
 end
