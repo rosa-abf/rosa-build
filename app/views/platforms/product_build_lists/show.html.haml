@@ -1,0 +1,31 @@
+-set_meta_tags :title => [title_object(@product_build_list.product), t('layout.product_build_lists.show')]
+= render 'submenu'
+= render 'sidebar'
+
+.leftlist= t("activerecord.attributes.product_build_lists.lst")
+.rightlist= @product_build_list.product.try(:lst)
+.both
+
+.leftlist= t("activerecord.attributes.product_build_lists.project")
+.rightlist= @product_build_list.project.try(:name_with_owner)
+.both
+
+.leftlist= t("activerecord.attributes.product_build_lists.project_version")
+.rightlist= @product_build_list.project ? build_list_version_link(@product_build_list, true) : ''
+.both
+
+.leftlist= t("activerecord.attributes.product_build_lists.arch")
+.rightlist= @product_build_list.arch.try(:name)
+.both
+
+.leftlist= t("activerecord.attributes.product_build_lists.main_script")
+.rightlist= @product_build_list.main_script
+.both
+
+.leftlist= t("activerecord.attributes.product_build_lists.params")
+.rightlist= @product_build_list.params
+.both
+
+.leftlist= t("activerecord.attributes.product_build_lists.iso_folder")
+.rightlist= @product_build_list.iso_folder
+.both

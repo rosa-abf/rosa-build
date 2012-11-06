@@ -2,9 +2,9 @@
 class Platforms::ProductBuildListsController < Platforms::BaseController
   before_filter :authenticate_user!, :except => [:status_build]
   skip_before_filter :authenticate_user!, :only => [:index] if APP_CONFIG['anonymous_access']
-  load_and_authorize_resource :platform, :only => [:create, :destroy, :new]
-  load_and_authorize_resource :product, :through => :platform, :only => [:create, :destroy, :new]
-  load_and_authorize_resource :product_build_list, :through => :product, :only => [:create, :destroy, :new]
+  load_and_authorize_resource :platform, :only => [:create, :destroy, :new, :show]
+  load_and_authorize_resource :product, :through => :platform, :only => [:create, :destroy, :new, :show]
+  load_and_authorize_resource :product_build_list, :through => :product, :only => [:create, :destroy, :new, :show]
   load_and_authorize_resource :only => [:index]
 
   before_filter :authenticate_product_builder!, :only => [:status_build]
@@ -16,8 +16,14 @@ class Platforms::ProductBuildListsController < Platforms::BaseController
     @arches = Arch.recent.map{ |a| [a.name, a.id] }
   end
 
+  def show
+  end
+
   def create
-    @product.product_build_lists.create! :base_url => "http://#{request.host_with_port}"
+    pbl = @product.product_build_lists.new params[:product_build_list]
+    pbl.project = @product.project
+    pbl.base_url = "http://#{request.host_with_port}"
+    pbl.save!
     flash[:notice] = t('flash.product.build_started')
     redirect_to [@platform, @product]
   end
