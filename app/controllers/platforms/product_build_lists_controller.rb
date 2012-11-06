@@ -12,6 +12,7 @@ class Platforms::ProductBuildListsController < Platforms::BaseController
 
   def new
     @project = @product_build_list.product.project
+    raise ActiveRecord::RecordNotFound unless @project
     @arches = Arch.recent.map{ |a| [a.name, a.id] }
   end
 
