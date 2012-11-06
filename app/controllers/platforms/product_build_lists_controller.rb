@@ -2,13 +2,16 @@
 class Platforms::ProductBuildListsController < Platforms::BaseController
   before_filter :authenticate_user!, :except => [:status_build]
   skip_before_filter :authenticate_user!, :only => [:index] if APP_CONFIG['anonymous_access']
-  load_and_authorize_resource :platform, :only => [:create, :destroy]
-  load_and_authorize_resource :product, :through => :platform, :only => [:create, :destroy]
-  load_and_authorize_resource :product_build_list, :through => :product, :only => [:create, :destroy]
+  load_and_authorize_resource :platform, :only => [:create, :destroy, :new]
+  load_and_authorize_resource :product, :through => :platform, :only => [:create, :destroy, :new]
+  load_and_authorize_resource :product_build_list, :through => :product, :only => [:create, :destroy, :new]
   load_and_authorize_resource :only => [:index]
 
   before_filter :authenticate_product_builder!, :only => [:status_build]
   before_filter :find_product_build_list, :only => [:status_build]
+
+  def new
+  end
 
   def create
     @product.product_build_lists.create! :base_url => "http://#{request.host_with_port}"

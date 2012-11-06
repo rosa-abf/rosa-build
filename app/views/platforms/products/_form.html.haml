@@ -42,8 +42,9 @@
   = t('layout.products.new_iso_builder')
 %br
 %br
-= render 'iso_build_form', :f => f
-
+= render 'platforms/product_build_lists/form', :f => f
+.leftlist= f.label :repos, t("activerecord.attributes.product.repos"), :class => :label
+.rightlist= f.text_area :repos, :class => 'text_field resizable'
 .both
 
 .both

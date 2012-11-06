@@ -13,6 +13,7 @@
     = link_to image_tag("x.png", :alt => t("layout.delete")) + " " + t("layout.delete"), platform_product_path(@platform, @product), :method => "delete", :class => "button", :confirm => t("layout.products.confirm_delete")
   - if can?(:create, @product.product_build_lists.build)
     = link_to t("layout.products.build"), platform_product_product_build_lists_path(@platform, @product), :class => "button", :method => 'post', :confirm => t("layout.confirm")
+    = link_to (t("layout.products.build") << ' (betta version)'), new_platform_product_product_build_list_path(@platform, @product), :class => "button"    
 
 %h3= t("layout.products.build_lists_monitoring")
 
