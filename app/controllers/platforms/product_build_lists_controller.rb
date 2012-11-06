@@ -11,6 +11,8 @@ class Platforms::ProductBuildListsController < Platforms::BaseController
   before_filter :find_product_build_list, :only => [:status_build]
 
   def new
+    @project = @product_build_list.product.project
+    @arches = Arch.recent.map{ |a| [a.name, a.id] }
   end
 
   def create

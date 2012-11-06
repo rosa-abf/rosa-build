@@ -13,5 +13,8 @@ class IntegrateNewIsoBuilderWithProducts < ActiveRecord::Migration
     add_column :product_build_lists, :repo, :string
 
     add_column :product_build_lists, :arch_id, :integer
+    add_column :product_build_lists, :params, :string
+    add_column :product_build_lists, :main_script, :string
+    add_column :product_build_lists, :iso_folder, :string
   end
 end

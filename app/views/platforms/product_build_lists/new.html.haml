@@ -3,4 +3,20 @@
 = render 'sidebar'
 
 = form_for @product_build_list, :html => {:class => :form} do |f|
-  = render 'form', :f => f
+  .leftlist= f.label :lst, t("activerecord.attributes.product_build_lists.lst"), :class => :label
+  .rightlist= @product_build_list.product.try(:lst)
+  .both
+
+  .leftlist= f.label :project, t("activerecord.attributes.product_build_lists.project"), :class => :label
+  .rightlist= @product_build_list.product.project.try(:name_with_owner)
+  .both
+
+  .leftlist= f.label :project_version, t("activerecord.attributes.product_build_lists.project_version"), :class => :label
+  .rightlist= f.select :project_version, versions_for_group_select(@project), :selected => params[:product_build_lists].try(:fetch, :project_version) || "latest_" + @project.default_branch
+  .both
+
+  .leftlist= f.label :arch, t("activerecord.attributes.product_build_lists.arch"), :class => :label
+  .rightlist= f.select :arch, @arches
+  .both
+
+

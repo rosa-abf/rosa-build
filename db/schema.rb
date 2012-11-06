@@ -287,6 +287,9 @@ ActiveRecord::Schema.define(:version => 20121106113338) do
     t.string   "lst"
     t.string   "repo"
     t.integer  "arch_id"
+    t.string   "params"
+    t.string   "main_script"
+    t.string   "iso_folder"
   end
 
   add_index "product_build_lists", ["product_id"], :name => "index_product_build_lists_on_product_id"

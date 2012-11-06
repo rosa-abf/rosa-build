@@ -25,7 +25,7 @@ class ProductBuildList < ActiveRecord::Base
   validates :status, :inclusion => { :in => [BUILD_STARTED, BUILD_COMPLETED, BUILD_FAILED] }
 
   attr_accessor :base_url
-  attr_accessible :status, :base_url, :branch, :arch_id, :project_id
+  attr_accessible :status, :base_url, :branch, :arch_id, :project_id, :main_script, :iso_folder, :params
   attr_readonly :product_id
 
 

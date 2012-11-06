@@ -42,7 +42,14 @@
   = t('layout.products.new_iso_builder')
 %br
 %br
-= render 'platforms/product_build_lists/form', :f => f
+.leftlist= f.label :project, t("activerecord.attributes.product.project"), :class => :label
+.rightlist= f.autocomplete_field :project, autocomplete_project_platform_products_path(@platform), :id_element => 'src_project_id', :name => 'src_project', :value => @product.project.try(:name_with_owner)
+.both
+
+.leftlist= f.label :lst, t("activerecord.attributes.product.lst"), :class => :label
+.rightlist= f.text_field :lst, :class => 'text_field'
+.both
+
 .leftlist= f.label :repos, t("activerecord.attributes.product.repos"), :class => :label
 .rightlist= f.text_area :repos, :class => 'text_field resizable'
 .both
