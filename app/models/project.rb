@@ -25,7 +25,7 @@ class Project < ActiveRecord::Base
 
   validates :name, :uniqueness => {:scope => [:owner_id, :owner_type], :case_sensitive => false},
                    :presence => true,
-                   :format => {:with => /^#{NAME_REGEXP}$/, :message => I18n.t("activerecord.errors.project.uname")}
+                   :format => {:with => /\A#{NAME_REGEXP}\z/, :message => I18n.t("activerecord.errors.project.uname")}
   validates :owner, :presence => true
   validates :maintainer_id, :presence => true, :unless => :new_record?
   validates :visibility, :presence => true, :inclusion => {:in => VISIBILITIES}
