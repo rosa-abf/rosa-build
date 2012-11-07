@@ -1,10 +1,11 @@
 -set_meta_tags :title => [title_object(@product_build_list.product), t('layout.product_build_lists.show')]
 = render 'submenu'
-= render 'sidebar'
 
 - pbl = @product_build_list
 - product = pbl.product
 - platform = product.platform
+
+%h3= t("layout.product_build_lists.main_data")
 
 .leftlist= t("activerecord.attributes.product_build_list.id")
 .rightlist= pbl.id
@@ -45,3 +46,6 @@
 .leftlist= t("activerecord.attributes.product_build_list.notified_at")
 .rightlist= l(pbl.updated_at, :format => :long)
 .both
+
+:javascript
+  $('article .all').addClass('bigpadding');

@@ -1,6 +1,7 @@
 -set_meta_tags :title => [title_object(@product), t('layout.product_build_lists.new')]
 = render 'submenu'
-= render 'sidebar'
+
+%h3= t("layout.product_build_lists.main_data")
 
 = form_for @product_build_list, :url => platform_product_product_build_lists_path(@platform, @product), :html => {:class => :form} do |f|
   .leftlist= f.label :project, t("activerecord.attributes.product_build_lists.project"), :class => :label
@@ -20,3 +21,6 @@
   .both
 
   = f.submit t("layout.projects.build_button")
+
+:javascript
+  $('article .all').addClass('bigpadding');

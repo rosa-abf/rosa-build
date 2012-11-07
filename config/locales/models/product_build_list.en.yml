@@ -4,6 +4,9 @@ en:
       delete: Delete
       action: Action
       id_search: 'Id search'
+      new: New build
+      main_data: Main data
+      show: Show
       statuses:
         '0': 'build'
         '1': 'build error'
