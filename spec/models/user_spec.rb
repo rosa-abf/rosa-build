@@ -45,7 +45,7 @@ describe User do
   context 'for group project' do
     before(:each) do
       @project.relations.destroy_all
-      
+
       @project.owner = @group
       @project.save
       @project.relations.create :actor_id => @project.owner.id, :actor_type => @project.owner.class.to_s, :role => 'admin'
@@ -92,4 +92,10 @@ describe User do
     end
   end
 
+  context "User creating" do
+    it "'hacked' uname should not pass" do
+      lambda {User.create! :uname => "new_user\nhacked!", :email => 'new_user@hacker.mm',
+                           :password => '123456'}.should raise_error(ActiveRecord::RecordInvalid)
+    end
+  end
 end
