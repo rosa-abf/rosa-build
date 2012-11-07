@@ -284,35 +284,19 @@ ActiveRecord::Schema.define(:version => 20121106113338) do
     t.integer  "project_id"
     t.string   "project_version"
     t.string   "commit_hash"
-    t.string   "lst"
-    t.string   "repo"
-    t.integer  "arch_id"
     t.string   "params"
     t.string   "main_script"
-    t.string   "iso_folder"
   end
 
   add_index "product_build_lists", ["product_id"], :name => "index_product_build_lists_on_product_id"
 
   create_table "products", :force => true do |t|
-    t.string   "name",                                :null => false
-    t.integer  "platform_id",                         :null => false
+    t.string   "name",        :null => false
+    t.integer  "platform_id", :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.text     "build_script"
-    t.text     "counter"
-    t.text     "ks"
-    t.text     "menu"
-    t.string   "tar_file_name"
-    t.string   "tar_content_type"
-    t.integer  "tar_file_size"
-    t.datetime "tar_updated_at"
-    t.text     "cron_tab"
-    t.boolean  "use_cron",         :default => false
     t.text     "description"
     t.integer  "project_id"
-    t.string   "lst"
-    t.text     "repos"
   end
 
   create_table "project_imports", :force => true do |t|
