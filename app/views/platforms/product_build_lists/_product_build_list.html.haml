@@ -6,7 +6,7 @@
     %td= link_to pbl.id, platform_product_product_build_list_path(platform, product, pbl)
   - else
     %td= pbl.id
-  %td= product_build_list.human_status
+  %td= pbl.human_status
   %td= link_to nil, pbl.container_path
   %td= link_to pbl.product.name, platform_product_path(platform, product)
   %td= link_to image_tag('x.png'), platform_product_product_build_list_path(platform, product, pbl), :method => :delete, :confirm => t("layout.confirm") if can?(:destroy, pbl) && pbl.can_destroy?

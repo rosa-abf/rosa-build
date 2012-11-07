@@ -3,10 +3,6 @@
 = render 'sidebar'
 
 = form_for @product_build_list, :url => platform_product_product_build_lists_path(@platform, @product), :html => {:class => :form} do |f|
-  .leftlist= f.label :lst, t("activerecord.attributes.product_build_lists.lst"), :class => :label
-  .rightlist= @product_build_list.product.try(:lst)
-  .both
-
   .leftlist= f.label :project, t("activerecord.attributes.product_build_lists.project"), :class => :label
   .rightlist= @product_build_list.product.project.try(:name_with_owner)
   .both
@@ -15,20 +11,12 @@
   .rightlist= f.select :project_version, versions_for_group_select(@project), :selected => params[:product_build_lists].try(:fetch, :project_version) || "latest_" + @project.default_branch
   .both
 
-  .leftlist= f.label :arch_id, t("activerecord.attributes.product_build_lists.arch"), :class => :label
-  .rightlist= f.select :arch_id, @arches
-  .both
-
   .leftlist= f.label :main_script, t("activerecord.attributes.product_build_lists.main_script"), :class => :label
   .rightlist= f.text_field :main_script
   .both
 
   .leftlist= f.label :params, t("activerecord.attributes.product_build_lists.params"), :class => :label
   .rightlist= f.text_field :params
-  .both
-
-  .leftlist= f.label :iso_folder, t("activerecord.attributes.product_build_lists.iso_folder"), :class => :label
-  .rightlist= f.text_field :iso_folder
   .both
 
   = f.submit t("layout.projects.build_button")

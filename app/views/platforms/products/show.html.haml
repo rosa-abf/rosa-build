@@ -12,8 +12,7 @@
   - if can? :destroy, @product
     = link_to image_tag("x.png", :alt => t("layout.delete")) + " " + t("layout.delete"), platform_product_path(@platform, @product), :method => "delete", :class => "button", :confirm => t("layout.products.confirm_delete")
   - if can?(:create, @product.product_build_lists.build)
-    = link_to t("layout.products.build"), platform_product_product_build_lists_path(@platform, @product), :class => "button", :method => 'post', :confirm => t("layout.confirm")
-    = link_to (t("layout.products.build") << ' (betta version)'), new_platform_product_product_build_list_path(@platform, @product), :class => "button"    
+    = link_to t("layout.products.build"), new_platform_product_product_build_list_path(@platform, @product), :class => "button"    
 
 %h3= t("layout.products.build_lists_monitoring")
 
@@ -23,7 +22,7 @@
       %th= t("activerecord.attributes.product_build_list.id")
       %th= t("activerecord.attributes.product_build_list.status")
       %th= t("activerecord.attributes.product_build_list.container_path")
-      %th= t("layout.product_build_lists.product")
+      %th= t("activerecord.attributes.product_build_list.product")
       %th= t("layout.product_build_lists.action")
       %th= t("activerecord.attributes.product_build_list.notified_at")  
   %tbody= render :partial => 'platforms/product_build_lists/product_build_list', :collection => @product.product_build_lists.default_order

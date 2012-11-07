@@ -27,6 +27,10 @@ ru:
         status: Статус
         user: Пользователь
         notified_at: Информация получена
+        project: Проект
+        project_version: Версия
+        main_script: Основной скрипт
+        params: Параметры для запуска скрипта
 
   flash:
     product_build_list:

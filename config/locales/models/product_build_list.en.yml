@@ -27,6 +27,10 @@ en:
         status: Status
         user: User
         notified_at: Notified at
+        project: Project
+        project_version: Version
+        main_script: Main script
+        params: Params for running script
 
   flash:
     product_build_list:

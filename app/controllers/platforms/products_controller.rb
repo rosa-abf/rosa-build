@@ -12,10 +12,6 @@ class Platforms::ProductsController < Platforms::BaseController
 
   def new
     @product = @platform.products.new
-    @product.ks = DEFAULT_KS
-    @product.menu = DEFAULT_MENU
-    @product.counter = DEFAULT_COUNTER
-    @product.build_script = DEFAULT_BUILD
   end
 
 

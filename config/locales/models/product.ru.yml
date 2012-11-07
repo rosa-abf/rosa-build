@@ -1,7 +1,6 @@
 ru:
   layout:
     products:
-      new_iso_builder: Параметры для нового сборщика ISO образов (бетта версия)
       list: Список
       about: О продукте
       build_lists_monitoring: Мониторинг сборочных заданий
@@ -12,21 +11,6 @@ ru:
       new_header: Новый продукт
       edit_header: Редактирование продукта
       confirm_delete: Вы уверены, что хотите удалить этот продукт?
-
-      cron_tab_generator:
-        show: Показать cron tab генератор
-        hide: Спрятать cron tab генератор
-        choose: Выберите
-        every_minute: Каждую минуту
-        every_hour: Каждый час
-        every_day: Каждый день
-        every_month: Каждый месяц
-        every_weekday: Каждый день недели
-        minutes: Минуты
-        hours: Часы
-        days: Дни
-        months: Месяцы
-        weekdays: Дни недели
 
   flash:
     product:
@@ -44,17 +28,6 @@ ru:
         description: Описание
         platform_id: Платформа
         build_status: Статус последней сборки
-        build_path: Путь к iso
         created_at: Создан
         updated_at: Обновлен
-        ks: Содержимое .ks.template
-        counter: Содержимое .counter
-        build_script: Содержимое build
-        menu: Содержимое .menu.xml
-        tar: Tar.bz2 файл
-        is_template: Шаблон
-        system_wide: Общесистемный
-        cron_tab: Cron tab
-        use_cron: Использовать крон
-        repos: Репозитории
         project: Проект

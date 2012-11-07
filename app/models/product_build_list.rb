@@ -18,14 +18,13 @@ class ProductBuildList < ActiveRecord::Base
 
   belongs_to :product
   belongs_to :project
-  belongs_to :arch
 
 
-  validates :product_id, :status, :presence => true
+  validates :product_id, :status, :project_id, :main_script, :presence => true
   validates :status, :inclusion => { :in => [BUILD_STARTED, BUILD_COMPLETED, BUILD_FAILED] }
 
   attr_accessor :base_url
-  attr_accessible :status, :base_url, :branch, :arch_id, :project_id, :main_script, :iso_folder, :params, :project_version, :commit_hash
+  attr_accessible :status, :base_url, :branch, :project_id, :main_script, :params, :project_version, :commit_hash
   attr_readonly :product_id
 
 
@@ -62,7 +61,9 @@ class ProductBuildList < ActiveRecord::Base
   protected
 
   def xml_rpc_create
-    result = ProductBuilder.create_product self
+    # TODO: run ISO worker
+    # result = ProductBuilder.create_product self
+    result = ProductBuilder::SUCCESS
     if result == ProductBuilder::SUCCESS
       return true
     else
@@ -71,7 +72,9 @@ class ProductBuildList < ActiveRecord::Base
   end  
 
   def xml_delete_iso_container
-    result = ProductBuilder.delete_iso_container self
+    # TODO: write new worker for delete
+    # result = ProductBuilder.delete_iso_container self
+    result = ProductBuilder::SUCCESS
     if result == ProductBuilder::SUCCESS
       return true
     else

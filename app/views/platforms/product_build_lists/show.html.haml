@@ -2,30 +2,46 @@
 = render 'submenu'
 = render 'sidebar'
 
-.leftlist= t("activerecord.attributes.product_build_lists.lst")
-.rightlist= @product_build_list.product.try(:lst)
+- pbl = @product_build_list
+- product = pbl.product
+- platform = product.platform
+
+.leftlist= t("activerecord.attributes.product_build_list.id")
+.rightlist= pbl.id
 .both
 
-.leftlist= t("activerecord.attributes.product_build_lists.project")
-.rightlist= @product_build_list.project.try(:name_with_owner)
+.leftlist= t("activerecord.attributes.product_build_list.status")
+.rightlist= pbl.human_status
 .both
 
-.leftlist= t("activerecord.attributes.product_build_lists.project_version")
-.rightlist= @product_build_list.project ? build_list_version_link(@product_build_list, true) : ''
+.leftlist= t("activerecord.attributes.product_build_list.container_path")
+.rightlist= link_to nil, pbl.container_path
 .both
 
-.leftlist= t("activerecord.attributes.product_build_lists.arch")
-.rightlist= @product_build_list.arch.try(:name)
+.leftlist= t("activerecord.attributes.product_build_list.product")
+.rightlist= link_to pbl.product.name, platform_product_path(platform, product)
 .both
 
-.leftlist= t("activerecord.attributes.product_build_lists.main_script")
-.rightlist= @product_build_list.main_script
+.leftlist= t("activerecord.attributes.product_build_list.project")
+.rightlist= pbl.project.name_with_owner
 .both
 
-.leftlist= t("activerecord.attributes.product_build_lists.params")
-.rightlist= @product_build_list.params
+.leftlist= t("activerecord.attributes.product_build_list.project_version")
+.rightlist= build_list_version_link(pbl, true)
 .both
 
-.leftlist= t("activerecord.attributes.product_build_lists.iso_folder")
-.rightlist= @product_build_list.iso_folder
+.leftlist= t("activerecord.attributes.product_build_list.main_script")
+.rightlist= pbl.main_script
+.both
+
+.leftlist= t("activerecord.attributes.product_build_list.params")
+.rightlist= pbl.params
+.both
+
+.leftlist= t("layout.product_build_lists.action")
+.rightlist= link_to image_tag('x.png'), platform_product_product_build_list_path(platform, product, pbl), :method => :delete, :confirm => t("layout.confirm") if can?(:destroy, pbl) && pbl.can_destroy?
+.both
+
+.leftlist= t("activerecord.attributes.product_build_list.notified_at")
+.rightlist= l(pbl.updated_at, :format => :long)
 .both
