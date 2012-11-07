@@ -72,11 +72,18 @@ describe Project do
     it 'ensures that validation passed' do
       project.valid?.should be_true
     end
-    
+
     it 'ensures that name has been truncated' do
       project.valid?
       project.name.should == 'test_name'
     end
   end
 
+  context 'Validate project name' do
+    let!(:project) { FactoryGirl.build(:project, :name => '  test_name  ') }
+
+    it "'hacked' uname should not pass" do
+      lambda {FactoryGirl.create(:project, :name => "...\nbeatiful_name\n for project")}.should raise_error(ActiveRecord::RecordInvalid)
+    end
+  end
 end

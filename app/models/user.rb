@@ -29,7 +29,7 @@ class User < Avatar
 
   has_many :key_pairs
 
-  validates :uname, :presence => true, :uniqueness => {:case_sensitive => false}, :format => {:with => /\A[a-z0-9_]+\Z/}, :reserved_name => true
+  validates :uname, :presence => true, :uniqueness => {:case_sensitive => false}, :format => {:with => /\A[a-z0-9_]+\z/}, :reserved_name => true
   validate { errors.add(:uname, :taken) if Group.by_uname(uname).present? }
   validates :role, :inclusion => {:in => ROLES}, :allow_blank => true
   validates :language, :inclusion => {:in => LANGUAGES}, :allow_blank => true

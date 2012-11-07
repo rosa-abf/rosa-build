@@ -92,10 +92,5 @@ describe User do
     end
   end
 
-  context "User creating" do
-    it "'hacked' uname should not pass" do
-      lambda {User.create! :uname => "new_user\nhacked!", :email => 'new_user@hacker.mm',
-                           :password => '123456'}.should raise_error(ActiveRecord::RecordInvalid)
-    end
-  end
+  it {should_not allow_value("new_user\nHello World!").for(:uname)}
 end
