@@ -1,6 +1,8 @@
 # -*- encoding : utf-8 -*-
 class ProductBuildList < ActiveRecord::Base
   include Modules::Models::CommitAndVersion
+  delegate :url_helpers, to: 'Rails.application.routes'
+  # include Rails.application.routes.url_helpers
 
   BUILD_STARTED = 2
   BUILD_COMPLETED = 0
@@ -63,11 +65,23 @@ class ProductBuildList < ActiveRecord::Base
   def xml_rpc_create
     # TODO: run ISO worker
     # result = ProductBuilder.create_product self
-    result = ProductBuilder::SUCCESS
-    if result == ProductBuilder::SUCCESS
+    file_name = "#{project.owner.uname}-#{project.name}-#{commit_hash}"
+    options = {
+      :id => id,
+      :srcpath => url_helpers.archive_url(
+        project.owner,
+        project.name,
+        file_name,
+        'tar.gz',
+        :host => ActionMailer::Base.default_url_options[:host]),
+      :params => params,
+      :main_script => main_script
+    }
+    # if result == ProductBuilder::SUCCESS
+    if Resque.enqueue(AbfWorker::IsoWorker, options)
       return true
     else
-      raise "Failed to create product_build_list #{id} inside platform #{product.platform.name} tar url #{tar_url} with code #{result}."
+      raise "Failed to create product_build_list #{id} inside platform #{product.platform.name} with params: #{options.inspect}"
     end
   end  
 
