@@ -22,7 +22,7 @@ class Platform < ActiveRecord::Base
   validates :description, :presence => true
   validates :owner, :presence => true
   validates :visibility, :presence => true, :inclusion => {:in => VISIBILITIES}
-  validates :name, :uniqueness => {:case_sensitive => false}, :presence => true, :format => { :with => /^[a-zA-Z0-9_\-\.]+$/ }
+  validates :name, :uniqueness => {:case_sensitive => false}, :presence => true, :format => { :with => /\A[a-zA-Z0-9_\-\.]+\z/ }
   validates :distrib_type, :presence => true, :inclusion => {:in => APP_CONFIG['distr_types']}
   validate lambda {
     if released_was && !released

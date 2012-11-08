@@ -25,7 +25,7 @@ class Project < ActiveRecord::Base
 
   validates :name, :uniqueness => {:scope => [:owner_id, :owner_type], :case_sensitive => false},
                    :presence => true,
-                   :format => {:with => /^#{NAME_REGEXP}$/, :message => I18n.t("activerecord.errors.project.uname")}
+                   :format => {:with => /\A#{NAME_REGEXP}\z/, :message => I18n.t("activerecord.errors.project.uname")}
   validates :owner, :presence => true
   validates :maintainer_id, :presence => true, :unless => :new_record?
   validates :visibility, :presence => true, :inclusion => {:in => VISIBILITIES}
@@ -116,10 +116,10 @@ class Project < ActiveRecord::Base
   end
 
   def git_project_address
-    #host ||= EventLog.current_controller.request.host_with_port rescue ::Rosa::Application.config.action_mailer.default_url_options[:host]
-    #protocol ||= EventLog.current_controller.request.protocol rescue "http"
-    #Rails.application.routes.url_helpers.project_url(self.owner.uname, self.name, :host => host, :protocol => protocol) + ".git"
-    path
+    host ||= EventLog.current_controller.request.host_with_port rescue ::Rosa::Application.config.action_mailer.default_url_options[:host]
+    protocol = APP_CONFIG['mailer_https_url'] ? "https" : "http" rescue "http"
+    Rails.application.routes.url_helpers.project_url(self.owner.uname, self.name, :host => host, :protocol => protocol) + ".git"
+    #path #share by NFS
   end
 
   def build_for(platform, repository_id, user, arch = 'i586', auto_publish = false, mass_build_id = nil, priority = 0)

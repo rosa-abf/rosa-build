@@ -29,25 +29,29 @@ namespace :project do
         path = "#{ENV['CLONE_PATH'].chomp('/')}/repos/#{project.name_with_owner}"
         FileUtils.rm_rf path
         project_path = project.path#"#{ENV['GIT_PROJECTS_DIR']}/#{project.name_with_owner}/.git"
-        system "git clone --mirror #{project_path} #{path}/.git"
         archives_exists = false
-        Dir.chdir(path) do
-          system 'git config --bool core.bare false && git checkout -f HEAD' # hack for refs/heads
+        Dir.chdir(project_path) do
           %w(tar.bz2 tar.gz bz2 rar gz tar tbz2 tgz zip Z 7z).each do |ext|
             archives_exists=true and break if `git log --all --format='%H' -- *.#{ext}`.present?
           end
         end
-        if `cd #{path} && git log --all -- abf.yml`.present? # already have abf.yml in repo?
-          message="Skipping project with abf.yml file #{project_stats}"
-          say message
-          abf_existing_log.puts message
-          `rm -rf #{path}`
-        elsif archives_exists.present?
+        #if `cd #{project_path} && git log --all -- abf.yml`.present? # already have abf.yml in repo?
+        #  message="Skipping project with abf.yml file #{project_stats}"
+        #  say message
+        #  abf_existing_log.puts message
+        #  `rm -rf #{path}`
+        #elsif archives_exists.present?
+        if archives_exists.present?
+          #-- hack for refs/heads (else git branch return only master)
+          system "git clone --mirror #{project_path} #{path}/.git"
+          system "cd #{path} && git config --bool core.bare false && git checkout -f HEAD"
           system "bin/calc_sha #{path} #{token}" # FIXME change filename
+          #--
 
           #####
           # This is dangerous !!!
-          system "rm -rf #{project_path} && git clone --bare #{path} #{project_path} && rm -rf #{path}"
+          #system "rm -rf #{project_path} && git clone --bare #{path} #{project_path} && rm -rf #{path}"
+          system "rm -rf #{path}"
           #####
 
           say "Worked with #{project.name_with_owner}: #{(Time.now - time).truncate} sec."

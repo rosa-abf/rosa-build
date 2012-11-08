@@ -12,7 +12,7 @@ class Repository < ActiveRecord::Base
   has_one  :key_pair, :dependent => :destroy
 
   validates :description, :presence => true
-  validates :name, :uniqueness => {:scope => :platform_id, :case_sensitive => false}, :presence => true, :format => {:with => /^[a-z0-9_\-]+$/}
+  validates :name, :uniqueness => {:scope => :platform_id, :case_sensitive => false}, :presence => true, :format => {:with => /\A[a-z0-9_\-]+\z/}
 
   scope :recent, order("name ASC")
 

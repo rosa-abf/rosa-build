@@ -15,7 +15,7 @@ rclient = RestClient::Resource.new(url, :user => ARGF.argv[0]) # user auth token
 
 Dir.glob("*.{tar\.bz2,tar\.gz,bz2,rar,gz,tar,tbz2,tgz,zip,Z,7z}").uniq.sort.each do |file|
   begin
-    puts "Work with file \"#{file}\""
+    puts " work with file \"#{file}\""
     next if File.size(file) < MAX_SIZE
 
     sha1 = Digest::SHA1.file(file).hexdigest
