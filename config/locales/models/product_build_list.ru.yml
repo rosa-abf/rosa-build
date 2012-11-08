@@ -1,6 +1,10 @@
 ru:
   layout:
     product_build_lists:
+      work_env: Рабочее пространство
+      iso_builder_folder: папка с содержимым GIT проекта
+      results_folder: все файлы из этой папки будут загружены на file-store
+      archives_folder: эта папка будет заархивирована и загружена на file-store
       delete: Удалить
       action: Действие
       id_search: 'Поиск по Id'
