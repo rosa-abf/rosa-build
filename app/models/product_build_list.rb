@@ -66,14 +66,16 @@ class ProductBuildList < ActiveRecord::Base
     # TODO: run ISO worker
     # result = ProductBuilder.create_product self
     file_name = "#{project.owner.uname}-#{project.name}-#{commit_hash}"
+    srcpath = url_helpers.archive_url(
+      project.owner,
+      project.name,
+      file_name,
+      'tar.gz',
+      :host => ActionMailer::Base.default_url_options[:host]
+    )
     options = {
       :id => id,
-      :srcpath => url_helpers.archive_url(
-        project.owner,
-        project.name,
-        file_name,
-        'tar.gz',
-        :host => ActionMailer::Base.default_url_options[:host]),
+      :srcpath => 'http://dl.dropbox.com/u/945501/avokhmin-test-iso-script-f94caef701bf234505ef107a02e309037a9a57a4.tar.gz',
       :params => params,
       :main_script => main_script
     }
