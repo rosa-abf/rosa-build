@@ -1,6 +1,7 @@
 en:
   layout:
     product_build_lists:
+      results: Results
       work_env: Work environment
       iso_builder_folder: folder with contents of the GIT project
       results_folder: all files from this folder will be uploaded into the file-store
@@ -38,6 +39,10 @@ en:
         project_version: Version
         main_script: Main script
         params: Params for running script
+      product_build_list/results:
+        file_name: File name
+        sha1: SHA1
+        link: Link
 
   flash:
     product_build_list:

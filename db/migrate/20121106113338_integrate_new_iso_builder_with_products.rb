@@ -19,6 +19,7 @@ class IntegrateNewIsoBuilderWithProducts < ActiveRecord::Migration
 
     add_column :product_build_lists, :params, :string
     add_column :product_build_lists, :main_script, :string
+    add_column :product_build_lists, :results, :text
   end
 
   def down
@@ -41,5 +42,6 @@ class IntegrateNewIsoBuilderWithProducts < ActiveRecord::Migration
 
     remove_column :product_build_lists, :params
     remove_column :product_build_lists, :main_script
+    remove_column :product_build_lists, :results
   end
 end

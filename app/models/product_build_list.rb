@@ -2,7 +2,6 @@
 class ProductBuildList < ActiveRecord::Base
   include Modules::Models::CommitAndVersion
   delegate :url_helpers, to: 'Rails.application.routes'
-  # include Rails.application.routes.url_helpers
 
   BUILD_STARTED = 2
   BUILD_COMPLETED = 0
@@ -28,6 +27,7 @@ class ProductBuildList < ActiveRecord::Base
   attr_accessor :base_url
   attr_accessible :status, :base_url, :branch, :project_id, :main_script, :params, :project_version, :commit_hash
   attr_readonly :product_id
+  serialize :results, Array
 
 
   scope :default_order, order('updated_at DESC')
@@ -80,11 +80,18 @@ class ProductBuildList < ActiveRecord::Base
       :main_script => main_script
     }
     # if result == ProductBuilder::SUCCESS
-    if Resque.enqueue(AbfWorker::IsoWorker, options)
-      return true
-    else
-      raise "Failed to create product_build_list #{id} inside platform #{product.platform.name} with params: #{options.inspect}"
-    end
+
+    Resque.push(
+      'iso_worker',
+      'class' => 'AbfWorker::IsoWorker',
+      'args' => [options]
+    )
+    return true
+    # if Resque.enqueue(AbfWorker::IsoWorker, options)
+    #   return true
+    # else
+    #   raise "Failed to create product_build_list #{id} inside platform #{product.platform.name} with params: #{options.inspect}"
+    # end
   end  
 
   def xml_delete_iso_container

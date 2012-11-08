@@ -286,6 +286,7 @@ ActiveRecord::Schema.define(:version => 20121106113338) do
     t.string   "commit_hash"
     t.string   "params"
     t.string   "main_script"
+    t.text     "results"
   end
 
   add_index "product_build_lists", ["product_id"], :name => "index_product_build_lists_on_product_id"
