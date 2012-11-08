@@ -98,7 +98,7 @@ module Modules
       protected
 
       def build_path(dir)
-        File.join(APP_CONFIG['root_path'], 'git_projects', "#{dir}.git")
+        File.join(APP_CONFIG['git_path'], 'git_projects', "#{dir}.git")
       end
 
       def import_attached_srpm
