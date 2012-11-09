@@ -54,10 +54,11 @@ class Comment < ActiveRecord::Base
     User.find(subscribe.user).notifier.new_comment && User.find(subscribe.user).notifier.can_notify
   end
 
-  def actual_inline_comment?(diff, force = false)
+  def actual_inline_comment?(diff = nil, force = false)
     unless force
       raise "This is not inline comment!" if data.blank? # for debug
       return data[:actual] unless data[:actual].nil?
+      return false if diff.nil?
     end
     filepath, line_number = data[:path], data[:line]
     diff_path = (diff || commentable.diffs ).select {|d| d.a_path == data[:path]}

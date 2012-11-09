@@ -232,7 +232,7 @@ module DiffHelper
   def render_line_comments
     unless @in_wiki || @in_discussion
       comments = @line_comments.select do |c|
-        c.data.try('[]', :line) == @num_line.to_s && c.actual_inline_comment?(@diff)
+        c.data.try('[]', :line) == @num_line.to_s && c.actual_inline_comment?
       end
       tr_line_comments(comments) if comments.count > 0
     end

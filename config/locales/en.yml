@@ -116,7 +116,7 @@ en:
         empty: "Repository is empty. You need to wait some time if you have forked project or imported package"
         source: Source
         commits: Commits
-        commit_diff_too_big: Sorry, commit too big!
+        commit_diff_too_big: Sorry, diff too big!
         tags: Tags
         branches: Branches
         project_versions: Versions

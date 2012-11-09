@@ -9,10 +9,12 @@
   .both
   -begin
     = render_diff_stats(@stats)
-    = render :partial => 'pull_diff', :collection => @diff
-  - rescue Grit::Git::GitTimeout
-    %p= t 'layout.git.repositories.commit_diff_too_big'
-
+    = render :partial => 'pull_diff', :collection => @pull.diff
+  - rescue => ex
+    -if ex.try(:message) == 'Grit::Git::GitTimeout'
+      %p= t 'layout.git.repositories.commit_diff_too_big'
+    -else
+      -raise ex
 #commits.tab-pane
   - if @total_commits > @commits.count
     %div= t("projects.pull_requests.is_big", :count => @commits.count)

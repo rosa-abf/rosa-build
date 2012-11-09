@@ -116,7 +116,7 @@ ru:
         empty: "Репозиторий пуст. Если вы клонировали(Fork) проект или импортировали пакет, данные скоро появятся"
         source: Source
         commits: Коммиты
-        commit_diff_too_big: Извините, коммит слишком большой!
+        commit_diff_too_big: Извините, изменений слишком много!
         tags: Теги
         branches: Ветки
         project_versions: Версии

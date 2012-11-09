@@ -45,7 +45,7 @@ describe User do
   context 'for group project' do
     before(:each) do
       @project.relations.destroy_all
-      
+
       @project.owner = @group
       @project.save
       @project.relations.create :actor_id => @project.owner.id, :actor_type => @project.owner.class.to_s, :role => 'admin'
@@ -92,4 +92,5 @@ describe User do
     end
   end
 
+  it {should_not allow_value("new_user\nHello World!").for(:uname)}
 end

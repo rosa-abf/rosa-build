@@ -61,11 +61,11 @@ describe Group do
 
   context 'for group owner' do
     before(:each) do
-      @user = FactoryGirl.create(:user) 
-      
+      @user = FactoryGirl.create(:user)
+
       @group.owner = @user
       @group.save
-      
+
       @group.actors.create(:actor_type => 'User', :actor_id => @user.id, :role => 'admin')
       @ability = Ability.new(@user)
     end
@@ -96,4 +96,6 @@ describe Group do
       end
     end
   end
+
+  it {should_not allow_value("How do you do...\nmy_group").for(:uname)}
 end
