@@ -92,7 +92,8 @@ module Modules
       end
 
       def import_srpm(srpm_path = srpm.path, branch_name = 'import')
-        system("#{Rails.root.join('bin', 'import_srpm.sh')} #{srpm_path} #{path} #{branch_name} >> /dev/null 2>&1")
+        token = User.find_by_uname('rosa_system').token_authenticatable
+        system("#{Rails.root.join('bin', 'import_srpm.sh')} #{srpm_path} #{path} #{branch_name} #{token} >> /dev/null 2>&1")
       end
 
       protected
