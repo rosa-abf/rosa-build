@@ -619,16 +619,6 @@ div.rightlist textarea {
     resize: none;
 }
 
-div#crontab_generator .leftlist,
-div#crontab_generator .rightlist {
-    width: 50%;
-}
-
-div#crontab_generator .leftlist select,
-div#crontab_generator .rightlist select {
-    margin-top: 10px;
-}
-
 table.dataTable tr.odd td.sorting_1 {
     background-color: #F0F0F6;
 }
