@@ -2,14 +2,14 @@
 = render 'submenu'
 
 %h3= t("layout.product_build_lists.main_data")
-
-= form_for @product_build_list, :url => platform_product_product_build_lists_path(@platform, @product), :html => {:class => :form} do |f|
+- pbl = @product_build_list
+= form_for pbl, :url => platform_product_product_build_lists_path(@platform, @product), :html => {:class => :form} do |f|
   .leftlist= f.label :project, t("activerecord.attributes.product_build_list.project"), :class => :label
-  .rightlist= @product_build_list.product.project.try(:name_with_owner)
+  .rightlist= pbl.project.name_with_owner
   .both
 
   .leftlist= f.label :project_version, t("activerecord.attributes.product_build_list.project_version"), :class => :label
-  .rightlist= f.select :project_version, versions_for_group_select(@project), :selected => params[:product_build_lists].try(:fetch, :project_version) || "latest_" + @project.default_branch
+  .rightlist= f.select :project_version, versions_for_group_select(pbl.project), :selected => params[:product_build_lists].try(:fetch, :project_version) || "latest_" + pbl.project.default_branch
   .both
 
   .leftlist= f.label :main_script, t("activerecord.attributes.product_build_list.main_script"), :class => :label

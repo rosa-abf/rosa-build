@@ -63,8 +63,6 @@ class ProductBuildList < ActiveRecord::Base
   protected
 
   def xml_rpc_create
-    # TODO: run ISO worker
-    # result = ProductBuilder.create_product self
     file_name = "#{project.owner.uname}-#{project.name}-#{commit_hash}"
     srcpath = url_helpers.archive_url(
       project.owner,
@@ -75,33 +73,30 @@ class ProductBuildList < ActiveRecord::Base
     )
     options = {
       :id => id,
-      :srcpath => 'http://dl.dropbox.com/u/945501/avokhmin-test-iso-script-f94caef701bf234505ef107a02e309037a9a57a4.tar.gz',
+      # TODO: revert changes
+      :srcpath => 'http://dl.dropbox.com/u/945501/avokhmin-test-iso-script-5d9b463d4e9c06ea8e7c89e1b7ff5cb37e99e27f.tar.gz',
       :params => params,
       :main_script => main_script
     }
-    # if result == ProductBuilder::SUCCESS
-
     Resque.push(
       'iso_worker',
       'class' => 'AbfWorker::IsoWorker',
       'args' => [options]
     )
     return true
-    # if Resque.enqueue(AbfWorker::IsoWorker, options)
-    #   return true
-    # else
-    #   raise "Failed to create product_build_list #{id} inside platform #{product.platform.name} with params: #{options.inspect}"
-    # end
   end  
 
   def xml_delete_iso_container
     # TODO: write new worker for delete
-    # result = ProductBuilder.delete_iso_container self
-    result = ProductBuilder::SUCCESS
-    if result == ProductBuilder::SUCCESS
-      return true
+    if project
+      raise "Failed to destroy product_build_list #{id} inside platform #{product.platform.name} (Not Implemented)."
     else
-      raise "Failed to destroy product_build_list #{id} inside platform #{product.platform.name} with code #{result}."
+      result = ProductBuilder.delete_iso_container self
+      if result == ProductBuilder::SUCCESS
+        return true
+      else
+        raise "Failed to destroy product_build_list #{id} inside platform #{product.platform.name} with code #{result}."
+      end
     end
   end
 end

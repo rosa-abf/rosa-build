@@ -1,6 +1,7 @@
 en:
   layout:
     product_build_lists:
+      logs: Logs
       results: Results
       work_env: Work environment
       iso_builder_folder: folder with contents of the GIT project
@@ -42,9 +43,9 @@ en:
       product_build_list/results:
         file_name: File name
         sha1: SHA1
-        link: Link
 
   flash:
     product_build_list:
+      no_project: Project for build should be exist
       delete: Product build list deleted
       delete_error: Unable to delete product build list

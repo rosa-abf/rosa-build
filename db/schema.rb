@@ -298,6 +298,8 @@ ActiveRecord::Schema.define(:version => 20121106113338) do
     t.datetime "updated_at"
     t.text     "description"
     t.integer  "project_id"
+    t.string   "params"
+    t.string   "main_script"
   end
 
   create_table "project_imports", :force => true do |t|

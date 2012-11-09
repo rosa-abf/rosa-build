@@ -15,16 +15,12 @@
 .rightlist= pbl.human_status
 .both
 
-.leftlist= t("activerecord.attributes.product_build_list.container_path")
-.rightlist= link_to nil, pbl.container_path
-.both
-
 .leftlist= t("activerecord.attributes.product_build_list.product")
 .rightlist= link_to pbl.product.name, platform_product_path(platform, product)
 .both
 
 .leftlist= t("activerecord.attributes.product_build_list.project")
-.rightlist= pbl.project.name_with_owner
+.rightlist= link_to pbl.project.name_with_owner, project_path(pbl.project)
 .both
 
 .leftlist= t("activerecord.attributes.product_build_list.project_version")
@@ -39,13 +35,24 @@
 .rightlist= pbl.params
 .both
 
-.leftlist= t("layout.product_build_lists.action")
-.rightlist= link_to image_tag('x.png'), platform_product_product_build_list_path(platform, product, pbl), :method => :delete, :confirm => t("layout.confirm") if can?(:destroy, pbl) && pbl.can_destroy?
-.both
-
 .leftlist= t("activerecord.attributes.product_build_list.notified_at")
 .rightlist= l(pbl.updated_at, :format => :long)
 .both
+
+- if @logs.present?
+  %h3= t("layout.product_build_lists.logs")
+  %table.tablesorter.width565{:cellpadding => "0", :cellspacing => "0"}
+    %thead
+      %tr
+        %th= '#'
+        %th
+    %tbody
+      - @logs.each do |item|
+        %tr
+          %td= item[0]
+          %td= item[1]
+
+  .both
 
 %h3= t("layout.product_build_lists.results")
 - unless pbl.results.present?
@@ -56,14 +63,12 @@
       %tr
         %th= t("activerecord.attributes.product_build_list/results.file_name")
         %th= t("activerecord.attributes.product_build_list/results.sha1")
-        %th= t("activerecord.attributes.product_build_list/results.link")
     %tbody
       - pbl.results.each do |item|
         %tr
-          %td= item['file_name']
           - sha1 = item['sha1']
+          %td= link_to item['file_name'], "http://file-store.rosalinux.ru/api/v1/file_stores/#{sha1}"
           %td= sha1
-          %td= link_to t("activerecord.attributes.product_build_list/results.link"), "http://file-store.rosalinux.ru/api/v1/file_stores/#{sha1}"
 .both
 
 

@@ -11,12 +11,18 @@ class Platforms::ProductBuildListsController < Platforms::BaseController
   before_filter :find_product_build_list, :only => [:status_build]
 
   def new
-    @project = @product_build_list.product.project
-    raise ActiveRecord::RecordNotFound unless @project
-    @arches = Arch.recent.map{ |a| [a.name, a.id] }
+    product = @product_build_list.product
+    @product_build_list.params = product.params
+    @product_build_list.main_script = product.main_script
+    @product_build_list.project = product.project
+    unless @product_build_list.project
+      flash[:error] = t('flash.product_build_list.no_project')
+      redirect_to edit_platform_product_path(@platform, @product)
+    end
   end
 
   def show
+    @logs = JSON.parse(Resque.redis.get("abfworker::iso-worker-#{@product_build_list.id}") || '[]')
   end
 
   def create

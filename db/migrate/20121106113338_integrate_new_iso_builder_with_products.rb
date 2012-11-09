@@ -18,7 +18,11 @@ class IntegrateNewIsoBuilderWithProducts < ActiveRecord::Migration
     add_column :product_build_lists, :commit_hash, :string
 
     add_column :product_build_lists, :params, :string
+    add_column :products, :params, :string
+
     add_column :product_build_lists, :main_script, :string
+    add_column :products, :main_script, :string
+
     add_column :product_build_lists, :results, :text
   end
 
@@ -41,7 +45,11 @@ class IntegrateNewIsoBuilderWithProducts < ActiveRecord::Migration
     remove_column :product_build_lists, :commit_hash
 
     remove_column :product_build_lists, :params
+    remove_column :products, :params
+    
     remove_column :product_build_lists, :main_script
+    remove_column :products, :main_script
+
     remove_column :product_build_lists, :results
   end
 end
