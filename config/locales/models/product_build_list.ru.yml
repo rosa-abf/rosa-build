@@ -1,7 +1,7 @@
 ru:
   layout:
     product_build_lists:
-      logs: Логи
+      logs: Логи (последнии 100 строк)
       results: Результаты
       work_env: Рабочее пространство
       iso_builder_folder: папка с содержимым GIT проекта

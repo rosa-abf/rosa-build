@@ -1,7 +1,7 @@
 en:
   layout:
     product_build_lists:
-      logs: Logs
+      logs: Logs (last 100 lines)
       results: Results
       work_env: Work environment
       iso_builder_folder: folder with contents of the GIT project
