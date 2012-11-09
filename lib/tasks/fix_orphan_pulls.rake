@@ -7,7 +7,7 @@ namespace :project do
       say "Check pull with id:#{pull.id} (#{ind+1}/#{PullRequest.count})"
       unless pull.from_project.present?
         print '  its orphan! updating...'
-        parent_path = File.join(APP_CONFIG['root_path'], 'pull_requests', pull.to_project.owner.uname, pull.to_project.name)
+        parent_path = File.join(APP_CONFIG['git_path'], 'pull_requests', pull.to_project.owner.uname, pull.to_project.name)
         Dir.chdir(parent_path) do
           # Get an owner and project name from the pull dir
           elements = Dir["#{pull.id}-*"].first.split '-' rescue []
