@@ -40,6 +40,10 @@ class ProductBuildList < ActiveRecord::Base
   before_destroy :can_destroy?
   after_destroy :xml_delete_iso_container
 
+  def build_started?
+    status == BUILD_STARTED
+  end
+
   def container_path
     "/downloads/#{product.platform.name}/product/#{id}/"
   end

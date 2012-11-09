@@ -8,12 +8,6 @@
 %h3= t("layout.product_build_lists.main_data")
 .both
 
-%div.reloader
-  = label_tag :autoreload do
-    = check_box_tag :autoreload, true, true
-    = t("layout.autoreload_page")
-.both
-
 .leftlist= t("activerecord.attributes.product_build_list.id")
 .rightlist= pbl.id
 .both
@@ -46,20 +40,8 @@
 .rightlist= l(pbl.updated_at, :format => :long)
 .both
 
-- if @logs.present?
-  %h3= t("layout.product_build_lists.logs")
-  %table#logs.tablesorter.width565{:cellpadding => "0", :cellspacing => "0"}
-    %thead
-      %tr
-        %th.lpadding16= '#'
-        %th
-    %tbody
-      - @logs.each do |item|
-        %tr
-          %td= item[0]
-          %td= item[1]
-
-  .both
+- if pbl.build_started?
+  = render 'shared/log', { :build_started => true, :get_log_path => log_platform_product_product_build_list_path(pbl.product.platform, pbl.product, pbl) }
 
 %h3= t("layout.product_build_lists.results")
 - unless pbl.results.present?
@@ -82,18 +64,4 @@
 :javascript
   $(function(){
     $('article .all').addClass('bigpadding');
-
-    var reloadChange = function() {
-      if ($(this).is(':checked')) {
-        //reload page every 1 minute
-        t = setTimeout(function() {
-          window.location.reload();
-        }, 10000);
-      } else {
-        clearTimeout(t);
-      }
-    }
-
-    $('#autoreload').on('change', reloadChange)
-                    .trigger('change');
   });

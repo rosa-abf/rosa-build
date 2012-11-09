@@ -2,9 +2,9 @@
 class Platforms::ProductBuildListsController < Platforms::BaseController
   before_filter :authenticate_user!, :except => [:status_build]
   skip_before_filter :authenticate_user!, :only => [:index] if APP_CONFIG['anonymous_access']
-  load_and_authorize_resource :platform, :only => [:create, :destroy, :new, :show]
-  load_and_authorize_resource :product, :through => :platform, :only => [:create, :destroy, :new, :show]
-  load_and_authorize_resource :product_build_list, :through => :product, :only => [:create, :destroy, :new, :show]
+  load_and_authorize_resource :platform, :except => [:index, :status_build]
+  load_and_authorize_resource :product, :through => :platform, :except => [:index, :status_build]
+  load_and_authorize_resource :product_build_list, :through => :product, :except => [:index, :status_build]
   load_and_authorize_resource :only => [:index]
 
   before_filter :authenticate_product_builder!, :only => [:status_build]
@@ -22,7 +22,17 @@ class Platforms::ProductBuildListsController < Platforms::BaseController
   end
 
   def show
-    @logs = JSON.parse(Resque.redis.get("abfworker::iso-worker-#{@product_build_list.id}") || '[]')
+  end
+
+  def log
+    @log = Resque.redis.get("abfworker::iso-worker-#{@product_build_list.id}") || ''
+    respond_to do |format|
+      format.json {
+        render :json => {
+          :log => @log,
+          :building => @product_build_list.build_started? }
+      }
+    end
   end
 
   def create
