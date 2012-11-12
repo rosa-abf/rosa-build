@@ -13,7 +13,7 @@ url = 'http://file-store.rosalinux.ru/api/v1/file_stores.json'
 #url = 'http://localhost:3001/api/v1/file_stores.json'
 rclient = RestClient::Resource.new(url, :user => ARGF.argv[0]) # user auth token
 
-Dir.glob("*.{tar\.bz2,tar\.gz,bz2,rar,gz,tar,tbz2,tgz,zip,Z,7z, tar\.xz}").uniq.sort.each do |file|
+Dir.glob("*.{tar\.bz2,tar\.gz,bz2,rar,gz,tar,tbz2,tgz,zip,Z,7z,tar\.xz}").uniq.sort.each do |file|
   begin
     #next if File.size(file) < MAX_SIZE
 
