@@ -15,6 +15,7 @@ en:
       duplicate: 'There is already a pull request for %{from_ref}'
       up_to_date: 'The %{to_ref} branch is already up-to-date with %{from_ref}'
       wrong_ref: Wrong branch or tag
+      empty_repo: Empty git repository
       blocked: This pull request cannot be automatically merged.
       ready: This pull request can be automatically merged.
       merged: |

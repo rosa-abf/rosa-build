@@ -6,12 +6,14 @@ class PullRequest < ActiveRecord::Base
   delegate :user, :user_id, :title, :body, :serial_id, :assignee, :status, :to_param,
     :created_at, :updated_at, :comments, :status=, :to => :issue, :allow_nil => true
 
-  validate :uniq_merge
+  validates :from_project, :to_project, :presence => true
+  validate :uniq_merge, :if => Proc.new { |pull| pull.to_project.present? }
   validates_each :from_ref, :to_ref do |record, attr, value|
     check_ref record, attr, value
   end
 
   before_create :clean_dir
+  before_create :set_add_data
   after_destroy :clean_dir
 
   accepts_nested_attributes_for :issue
@@ -82,12 +84,12 @@ class PullRequest < ActiveRecord::Base
   end
 
   def path
-    filename = [id, from_project.owner.uname, from_project.name].compact.join('-')
+    filename = [id, from_project_owner_uname, from_project_name].compact.join('-')
     File.join(APP_CONFIG['git_path'], 'pull_requests', to_project.owner.uname, to_project.name, filename)
   end
 
   def from_branch
-    if to_project != from_project
+    if to_project_id != from_project_id
       "head_#{from_ref}"
     else
       from_ref
@@ -138,11 +140,19 @@ class PullRequest < ActiveRecord::Base
 
   def self.check_ref(record, attr, value)
     project = attr == :from_ref ? record.from_project : record.to_project
-    record.errors.add attr, I18n.t('projects.pull_requests.wrong_ref') unless project.repo.branches_and_tags.map(&:name).include?(value)
+    return if project.blank?
+    if record.to_project.repo.commits.count > 0
+      record.errors.add attr, I18n.t('projects.pull_requests.wrong_ref') unless project.repo.branches_and_tags.map(&:name).include?(value)
+    else
+      record.errors.add attr, I18n.t('projects.pull_requests.empty_repo')
+    end
   end
 
   def uniq_merge
-    if to_project.pull_requests.needed_checking.where(:from_project_id => from_project, :to_ref => to_ref, :from_ref => from_ref).where('pull_requests.id <> :id or :id is null', :id => id).count > 0
+    if to_project && to_project.pull_requests.needed_checking
+         .where(:from_project_id => from_project_id,
+                :to_ref => to_ref, :from_ref => from_ref)
+         .where('pull_requests.id <> :id or :id is null', :id => id).count > 0
       errors.add(:base_branch, I18n.t('projects.pull_requests.duplicate', :from_ref => from_ref))
     end
   end
@@ -160,7 +170,7 @@ class PullRequest < ActiveRecord::Base
 
   def merge
     clone
-    message = "Merge pull request ##{serial_id} from #{from_project.name_with_owner}:#{from_ref}\r\n #{title}"
+    message = "Merge pull request ##{serial_id} from #{from_project_owner_uname}/#{from_project_name}:#{from_ref}\r\n #{title}"
     %x(cd #{path} && git checkout #{to_ref} && git merge --no-ff #{from_branch} -m '#{message}')
   end
 
@@ -183,7 +193,7 @@ class PullRequest < ActiveRecord::Base
     Dir.chdir(path) do
       system 'git', 'checkout', to_ref
       system 'git', 'pull',  'origin', to_ref
-      if to_project == from_project
+      if to_project_id == from_project_id
         system 'git', 'checkout', from_ref
         system 'git', 'pull', 'origin', from_ref
       else
@@ -218,5 +228,10 @@ class PullRequest < ActiveRecord::Base
         c.save
       end
     end
+  end
+
+  def set_add_data
+    self.from_project_owner_uname = from_project.owner.uname
+    self.from_project_name = from_project.name
   end
 end
