@@ -36,11 +36,18 @@
 .rightlist= pbl.params
 .both
 
+.leftlist= t("activerecord.attributes.product_build_list.time_living")
+.rightlist= pbl.time_living
+.both
+
 .leftlist= t("activerecord.attributes.product_build_list.notified_at")
 .rightlist= l(pbl.updated_at, :format => :long)
 .both
 
 - if pbl.build_started?
+  .leftlist= t("layout.product_build_lists.action")
+  .rightlist= link_to t("layout.product_build_lists.stop"), stop_platform_product_product_build_list_path(pbl.product.platform, pbl.product, pbl)
+  .both
   = render 'shared/log', { :build_started => true, :get_log_path => log_platform_product_product_build_list_path(pbl.product.platform, pbl.product, pbl) }
 
 %h3= t("layout.product_build_lists.results")

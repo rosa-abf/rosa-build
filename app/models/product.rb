@@ -8,7 +8,7 @@ class Product < ActiveRecord::Base
 
   scope :recent, order("name ASC")
 
-  attr_accessible :name, :description, :project_id, :main_script, :params
+  attr_accessible :name, :description, :project_id, :main_script, :params, :time_living
   attr_readonly :platform_id
 
   def full_clone(attrs = {})

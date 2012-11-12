@@ -18,6 +18,10 @@
 .rightlist= f.text_field :params
 .both
 
+.leftlist= f.label :time_living, t("activerecord.attributes.product_build_list.time_living"), :class => :label
+.rightlist= f.text_field :time_living
+.both
+
 .button_block
   = submit_tag t("layout.save")
   %span.text_button_padding= t("layout.or")

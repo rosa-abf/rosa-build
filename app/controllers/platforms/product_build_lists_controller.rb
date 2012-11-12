@@ -14,6 +14,7 @@ class Platforms::ProductBuildListsController < Platforms::BaseController
     product = @product_build_list.product
     @product_build_list.params = product.params
     @product_build_list.main_script = product.main_script
+    @product_build_list.time_living = product.time_living
     @product_build_list.project = product.project
     unless @product_build_list.project
       flash[:error] = t('flash.product_build_list.no_project')
@@ -24,13 +25,19 @@ class Platforms::ProductBuildListsController < Platforms::BaseController
   def show
   end
 
+  def stop
+    @product_build_list.stop
+    flash[:notice] = t('flash.product_build_list.will_be_stopped')
+    redirect_to platform_product_product_build_list_path(@platform, @product, @product_build_list)
+  end
+
   def log
-    @log = Resque.redis.get("abfworker::iso-worker-#{@product_build_list.id}") || ''
     respond_to do |format|
       format.json {
         render :json => {
-          :log => @log,
-          :building => @product_build_list.build_started? }
+          :log => @product_build_list.log,
+          :building => @product_build_list.build_started?
+        }
       }
     end
   end

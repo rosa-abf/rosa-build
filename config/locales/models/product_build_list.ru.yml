@@ -8,6 +8,7 @@ ru:
       results_folder: все файлы из этой папки будут загружены на file-store
       archives_folder: эта папка будет заархивирована и загружена на file-store
       delete: Удалить
+      stop: Остановить
       action: Действие
       id_search: 'Поиск по Id'
       new: Новая сборка
@@ -40,6 +41,7 @@ ru:
         project_version: Версия
         main_script: Основной скрипт
         params: Параметры для запуска скрипта
+        time_living: Максимальное время сборки (в минутах)
       product_build_list/results:
         file_name: Имя файла
         sha1: SHA1
@@ -49,4 +51,4 @@ ru:
       no_project: Проект для сборки должен присутствовать
       delete: Сборочный лист продукта удален
       delete_error: Не удалось удалить cборочный лист продукта  
-
+      will_be_stopped: Сборка будет остановлена

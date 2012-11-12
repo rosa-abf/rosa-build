@@ -24,6 +24,9 @@ class IntegrateNewIsoBuilderWithProducts < ActiveRecord::Migration
     add_column :products, :main_script, :string
 
     add_column :product_build_lists, :results, :text
+
+    add_column :products, :time_living, :integer
+    add_column :product_build_lists, :time_living, :integer
   end
 
   def down
@@ -51,5 +54,8 @@ class IntegrateNewIsoBuilderWithProducts < ActiveRecord::Migration
     remove_column :products, :main_script
 
     remove_column :product_build_lists, :results
+    
+    remove_column :product_build_lists, :time_living
+    remove_column :products, :time_living
   end
 end

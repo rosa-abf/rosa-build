@@ -287,6 +287,7 @@ ActiveRecord::Schema.define(:version => 20121106113338) do
     t.string   "params"
     t.string   "main_script"
     t.text     "results"
+    t.integer  "time_living"
   end
 
   add_index "product_build_lists", ["product_id"], :name => "index_product_build_lists_on_product_id"
@@ -300,6 +301,7 @@ ActiveRecord::Schema.define(:version => 20121106113338) do
     t.integer  "project_id"
     t.string   "params"
     t.string   "main_script"
+    t.integer  "time_living"
   end
 
   create_table "project_imports", :force => true do |t|

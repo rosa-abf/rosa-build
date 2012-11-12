@@ -21,11 +21,15 @@ class ProductBuildList < ActiveRecord::Base
   belongs_to :project
 
 
-  validates :product_id, :status, :project_id, :main_script, :presence => true
+  validates :product_id,
+            :status,
+            :project_id,
+            :main_script,
+            :time_living, :presence => true
   validates :status, :inclusion => { :in => [BUILD_STARTED, BUILD_COMPLETED, BUILD_FAILED] }
 
   attr_accessor :base_url
-  attr_accessible :status, :base_url, :branch, :project_id, :main_script, :params, :project_version, :commit_hash
+  attr_accessible :status, :base_url, :branch, :project_id, :main_script, :params, :project_version, :commit_hash, :time_living
   attr_readonly :product_id
   serialize :results, Array
 
@@ -64,6 +68,18 @@ class ProductBuildList < ActiveRecord::Base
     [BUILD_COMPLETED, BUILD_FAILED].include? status
   end
 
+  def log
+    Resque.redis.get("abfworker::iso-worker-#{id}") || ''
+  end
+
+  def stop
+    Resque.redis.setex(
+      "abfworker::iso-worker-#{id}::live-inspector",
+      60,
+      'USR1' # Immediately kill child but don't exit
+    )
+  end
+
   protected
 
   def xml_rpc_create
@@ -81,6 +97,7 @@ class ProductBuildList < ActiveRecord::Base
       # :srcpath => 'http://dl.dropbox.com/u/945501/avokhmin-test-iso-script-5d9b463d4e9c06ea8e7c89e1b7ff5cb37e99e27f.tar.gz',
       :srcpath => srcpath,
       :params => params,
+      :time_living => time_living,
       :main_script => main_script
     }
     Resque.push(
