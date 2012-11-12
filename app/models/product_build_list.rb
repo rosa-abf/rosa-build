@@ -75,8 +75,8 @@ class ProductBuildList < ActiveRecord::Base
   def stop
     Resque.redis.setex(
       "abfworker::iso-worker-#{id}::live-inspector",
-      60,
-      'USR1' # Immediately kill child but don't exit
+      120,    # Data will be removed from Redis after 120 sec.
+      'USR1'  # Immediately kill child but don't exit
     )
   end
 
