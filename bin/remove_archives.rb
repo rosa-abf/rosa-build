@@ -1,13 +1,13 @@
 #!/usr/bin/env ruby
-# git_dir_projects[0] clone_path[1] owner[2] project_name[3]
+# git_dir_projects[0] dest_git_path[1] clone_path[2] owner[3] project_name[4]
 
 require 'fileutils'
 require 'digest'
 
 token = '[CENSORED]'
 
-owners = ARGF.argv[2] || '[a-z0-9_]*'
-project_names = ARGF.argv[3] || '[a-zA-Z0-9_\-\+\.]*'
+owners = ARGF.argv[3] || '[a-z0-9_]*'
+project_names = ARGF.argv[4] || '[a-zA-Z0-9_\-\+\.]*'
 
 begin_time = Time.now
 pr_count = total_count = 0
@@ -18,6 +18,7 @@ Dir.glob(owners).each do |owner|
   Dir.glob(project_names).each do |project|
     name_with_owner = "#{owner}/#{project.chomp('.git')}"
     project_path = "#{ARGF.argv[0]}/#{name_with_owner}.git"
+    dest_project_path = "#{ARGF.argv[1]}/#{name_with_owner}.git"
     time, total_count = Time.now, total_count + 1
     Dir.chdir project_path
     project_stats = "#{name_with_owner}: #{total_count}"
@@ -25,7 +26,7 @@ Dir.glob(owners).each do |owner|
       p "Skipping empty project #{project_stats}"
     else
       p "Start working with #{project_stats}"
-      path = "#{ARGF.argv[1].chomp('/')}/repos/#{name_with_owner}"
+      path = "#{ARGF.argv[2].chomp('/')}/repos/#{name_with_owner}"
       FileUtils.rm_rf path
       #-- hack for refs/heads (else git branch return only master)
       system "git clone --mirror #{project_path} #{path}/.git"
@@ -33,7 +34,7 @@ Dir.glob(owners).each do |owner|
       #--
       Dir.chdir(path)
       archives_exists = false
-      %w(tar.bz2 tar.gz bz2 rar gz tar tbz2 tgz zip Z 7z).each do |ext|
+      %w(tar.bz2 tar.gz bz2 rar gz tar tbz2 tgz zip Z 7z tar.xz).each do |ext|
         archives_exists=true and break unless `git log --all --format='%H' -- *.#{ext}`.empty?
       end
 
@@ -41,7 +42,7 @@ Dir.glob(owners).each do |owner|
         system "git filter-branch -d /dev/shm/git_task --tree-filter \"/home/rosa/git_task/file-store.rb #{token} #{path}\" --prune-empty --tag-name-filter cat -- --all"
         #####
         # This is dangerous !!!
-        system "rm -rf #{project_path} && git clone --bare #{path} #{project_path}"
+        system "rm -rf #{dest_project_path} && git clone --bare #{path} #{dest_project_path}"
         #####
 
         p "Worked with #{name_with_owner}: #{(Time.now - time).truncate} sec."
@@ -49,7 +50,7 @@ Dir.glob(owners).each do |owner|
       else
         p "Skipping project with no archives #{project_stats}"
       end
-      `rm -rf #{path}`
+      `rm -rf #{path} && cd #{dest_project_path} && git gc --prune=now`
     end
     p '-------------'
   end

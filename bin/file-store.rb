@@ -8,15 +8,14 @@ old_sources = if File.exist? abf_yml
               else
                 []
               end
-MAX_SIZE = 2 * 1024 * 1024 # 2.megabytes
+#MAX_SIZE = 2 * 1024 * 1024 # 2.megabytes
 url = 'http://file-store.rosalinux.ru/api/v1/file_stores.json'
 #url = 'http://localhost:3001/api/v1/file_stores.json'
 rclient = RestClient::Resource.new(url, :user => ARGF.argv[0]) # user auth token
 
-Dir.glob("*.{tar\.bz2,tar\.gz,bz2,rar,gz,tar,tbz2,tgz,zip,Z,7z}").uniq.sort.each do |file|
+Dir.glob("*.{tar\.bz2,tar\.gz,bz2,rar,gz,tar,tbz2,tgz,zip,Z,7z, tar\.xz}").uniq.sort.each do |file|
   begin
-    #puts " work with file \"#{file}\""
-    next if File.size(file) < MAX_SIZE
+    #next if File.size(file) < MAX_SIZE
 
     sha1 = Digest::SHA1.file(file).hexdigest
     resp = JSON(RestClient.get url, :params => {:hash => sha1})
@@ -31,7 +30,9 @@ Dir.glob("*.{tar\.bz2,tar\.gz,bz2,rar,gz,tar,tbz2,tgz,zip,Z,7z}").uniq.sort.each
       unless resp['sha1_hash'].nil?
         new_sources << "  \"#{file}\": #{sha1}"
         FileUtils.rm_rf file
-         puts " upload file \"#{file}\" to the file-store"
+         p " upload file \"#{file}\" to the file-store"
+      else
+        p " !Failed to upload file \"#{file}\" to the file-store!"
       end
     else
       raise "Response unknown!\n #{resp}"
@@ -43,10 +44,8 @@ Dir.glob("*.{tar\.bz2,tar\.gz,bz2,rar,gz,tar,tbz2,tgz,zip,Z,7z}").uniq.sort.each
 end
 sources = (old_sources | new_sources)
 unless sources.empty?
-  Dir.chdir(ARGF.argv[1]) do # Need if in filter-branch
-    File.open(abf_yml, 'w') do |abf|
-      abf.puts 'sources:'
-      (old_sources | new_sources).sort.each {|line| abf.puts line}
-    end
+  File.open(abf_yml, 'w') do |abf|
+    abf.puts 'sources:'
+    (old_sources | new_sources).sort.each {|line| abf.puts line}
   end
 end
