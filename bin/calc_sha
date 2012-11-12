@@ -1,5 +1,0 @@
-#!/bin/bash
-pwd=`pwd`
-cd $1
-git filter-branch --tree-filter "$pwd/bin/file-store.rb $2" --prune-empty --tag-name-filter cat -- --all
-cd ..

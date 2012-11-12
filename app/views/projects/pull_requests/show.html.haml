@@ -1,5 +1,5 @@
 -ar = 'activerecord.attributes.pull_requests'
--set_meta_tags :title => [title_object(@project), t('.title', :name => @pull.title.truncate(40), :user => @pull.user.uname)]
+-set_meta_tags :title => [title_object(@project), t('.title', :name => @pull.title.truncate(40), :user => @pull.user.try(:uname))]
 = render :partial => 'submenu'
 %h3.bpadding10
   =pull_status_label @pull
