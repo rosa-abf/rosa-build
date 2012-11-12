@@ -10,17 +10,7 @@
 .rightlist= f.autocomplete_field :project, autocomplete_project_platform_products_path(@platform), :id_element => 'src_project_id', :name => 'src_project', :value => @product.project.try(:name_with_owner)
 .both
 
-.leftlist= f.label :main_script, t("activerecord.attributes.product_build_list.main_script"), :class => :label
-.rightlist= f.text_field :main_script
-.both
-
-.leftlist= f.label :params, t("activerecord.attributes.product_build_list.params"), :class => :label
-.rightlist= f.text_field :params
-.both
-
-.leftlist= f.label :time_living, t("activerecord.attributes.product_build_list.time_living"), :class => :label
-.rightlist= f.text_field :time_living
-.both
+= render 'def_fields', :f => f
 
 .button_block
   = submit_tag t("layout.save")

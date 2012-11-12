@@ -12,17 +12,7 @@
   .rightlist= f.select :project_version, versions_for_group_select(pbl.project), :selected => params[:product_build_lists].try(:fetch, :project_version) || "latest_" + pbl.project.default_branch
   .both
 
-  .leftlist= f.label :main_script, t("activerecord.attributes.product_build_list.main_script"), :class => :label
-  .rightlist= f.text_field :main_script
-  .both
-
-  .leftlist= f.label :params, t("activerecord.attributes.product_build_list.params"), :class => :label
-  .rightlist= f.text_field :params
-  .both
-
-  .leftlist= f.label :time_living, t("activerecord.attributes.product_build_list.time_living"), :class => :label
-  .rightlist= f.text_field :time_living
-  .both
+  = render 'platforms/products/def_fields', :f => f
 
   = f.submit t("layout.projects.build_button")
 

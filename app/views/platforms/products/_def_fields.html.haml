@@ -1,0 +1,4 @@
+- [:main_script, :params, :time_living].each do |el|
+  .leftlist= f.label el, t("activerecord.attributes.product_build_list.#{el}"), :class => :label
+  .rightlist= f.text_field el
+  .both
