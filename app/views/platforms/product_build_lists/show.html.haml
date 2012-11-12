@@ -8,41 +8,19 @@
 %h3= t("layout.product_build_lists.main_data")
 .both
 
-.leftlist= t("activerecord.attributes.product_build_list.id")
-.rightlist= pbl.id
-.both
+= render 'show_field', :key => :id, :value => pbl.id
+= render 'show_field', :key => :status, :value => pbl.human_status
 
-.leftlist= t("activerecord.attributes.product_build_list.status")
-.rightlist= pbl.human_status
-.both
+= render 'show_field', :key => :product, :value => link_to(pbl.product.name, platform_product_path(platform, product))
 
-.leftlist= t("activerecord.attributes.product_build_list.product")
-.rightlist= link_to pbl.product.name, platform_product_path(platform, product)
-.both
+= render 'show_field', :key => :project, :value => link_to(pbl.project.name_with_owner, project_path(pbl.project))
 
-.leftlist= t("activerecord.attributes.product_build_list.project")
-.rightlist= link_to pbl.project.name_with_owner, project_path(pbl.project)
-.both
+= render 'show_field', :key => :project_version, :value => build_list_version_link(pbl, true)
 
-.leftlist= t("activerecord.attributes.product_build_list.project_version")
-.rightlist= build_list_version_link(pbl, true)
-.both
+- [:main_script, :params, :time_living].each do |el|
+  = render 'show_field', :key => el, :value => pbl.send(el)
 
-.leftlist= t("activerecord.attributes.product_build_list.main_script")
-.rightlist= pbl.main_script
-.both
-
-.leftlist= t("activerecord.attributes.product_build_list.params")
-.rightlist= pbl.params
-.both
-
-.leftlist= t("activerecord.attributes.product_build_list.time_living")
-.rightlist= pbl.time_living
-.both
-
-.leftlist= t("activerecord.attributes.product_build_list.notified_at")
-.rightlist= l(pbl.updated_at, :format => :long)
-.both
+= render 'show_field', :key => :notified_at, :value => l(pbl.updated_at, :format => :long)
 
 - if pbl.build_started?
   .leftlist= t("layout.product_build_lists.action")
