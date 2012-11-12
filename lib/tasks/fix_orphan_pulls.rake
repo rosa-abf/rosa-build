@@ -5,7 +5,12 @@ namespace :project do
     say "Pull requests total count is #{PullRequest.count}"
     PullRequest.all.each_with_index do |pull, ind|
       say "Check pull with id:#{pull.id} (#{ind+1}/#{PullRequest.count})"
-      unless pull.from_project.present?
+      if pull.from_project.present?
+        print ' updating...'
+        pull.from_project_name = pull.from_project.name
+        pull.from_project_owner_uname = pull.from_project.owner.uname
+        say pull.save(:validate => false) ? 'success' : 'fail!'
+      else
         print '  its orphan! updating...'
         parent_path = File.join(APP_CONFIG['git_path'], 'pull_requests', pull.to_project.owner.uname, pull.to_project.name)
         Dir.chdir(parent_path) do
