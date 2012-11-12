@@ -46,9 +46,15 @@ class Platforms::ProductBuildListsController < Platforms::BaseController
     pbl = @product.product_build_lists.new params[:product_build_list]
     pbl.project = @product.project
     pbl.base_url = "http://#{request.host_with_port}"
-    pbl.save!
-    flash[:notice] = t('flash.product.build_started')
-    redirect_to [@platform, @product]
+
+    if pbl.save
+      flash[:notice] = t('flash.product.build_started')
+      redirect_to [@platform, @product]
+    else
+      flash[:error] = t('flash.product.build_error')
+      flash[:warning] = pbl.errors.full_messages.join('. ')
+      render :action => :new
+    end
   end
 
   def status_build

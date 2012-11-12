@@ -17,6 +17,7 @@ en:
       saved: Product saved
       save_error: Unable to save product
       build_started: Product build started
+      build_error: Unable to run build of product
       destroyed: Product deleted
 
   activerecord:

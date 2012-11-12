@@ -5,6 +5,7 @@ class Platforms::ProductsController < Platforms::BaseController
 
   load_and_authorize_resource :platform
   load_and_authorize_resource :product, :through => :platform
+  before_filter :set_project, :only => [:create, :update]
 
   def index
     @products = @products.paginate(:page => params[:page])
@@ -19,7 +20,6 @@ class Platforms::ProductsController < Platforms::BaseController
   end
 
   def create
-    @product.project = find_project
     if @product.save
       flash[:notice] = t('flash.product.saved') 
       redirect_to platform_product_path(@platform, @product)
@@ -31,7 +31,6 @@ class Platforms::ProductsController < Platforms::BaseController
   end
 
   def update
-    @product.project = find_project
     if @product.update_attributes(params[:product])
       flash[:notice] = t('flash.product.saved')
       redirect_to platform_product_path(@platform, @product)
@@ -62,8 +61,9 @@ class Platforms::ProductsController < Platforms::BaseController
 
   protected
 
-  def find_project
+  def set_project
     args = params[:src_project].try(:split, '/') || []
-    (args.length == 2) ? Project.find_by_owner_and_name(*args) : nil
+    @product.project = (args.length == 2) ?
+      Project.find_by_owner_and_name(*args) : nil
   end
 end
