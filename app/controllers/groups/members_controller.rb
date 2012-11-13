@@ -38,13 +38,13 @@ class Groups::MembersController < Groups::BaseController
   end
 
   def add
-    if params['user_id'].present?
-      @user = User.find_by_uname(params['user_id'])
-      if parent.add_member(@user, params[:role])
-        flash[:notice] = t("flash.members.successfully_added")
-      else
-        flash[:error] = t("flash.members.error_in_adding")
-      end
+    @user = User.find_by_uname(params[:user_id])
+    if !@user
+      flash[:error] = t("flash.collaborators.wrong_user", :uname => params[:user_id])
+    elsif parent.add_member(@user, params[:role])
+      flash[:notice] = t("flash.members.successfully_added")
+    else
+      flash[:error] = t("flash.members.error_in_adding")
     end
     redirect_to group_members_path(parent)
   end

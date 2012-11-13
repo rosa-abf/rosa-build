@@ -96,12 +96,13 @@ class Platforms::PlatformsController < Platforms::BaseController
   end
 
   def add_member
-    if member = User.where(:id => params[:member_id]).first
-      if @platform.add_member(member)
-        flash[:notice] = t('flash.platform.members.successfully_added', :name => member.uname)
-      else
-        flash[:error] = t('flash.platform.members.error_in_adding', :name => member.uname)
-      end
+    member = User.where(:id => params[:member_id]).first
+    if !member
+      flash[:error] = t("flash.collaborators.wrong_user", :uname => params[:member_id])
+    elsif @platform.add_member(member)
+      flash[:notice] = t('flash.platform.members.successfully_added', :name => member.uname)
+    else
+      flash[:error] = t('flash.platform.members.error_in_adding', :name => member.uname)
     end
     redirect_to members_platform_url(@platform)
   end
