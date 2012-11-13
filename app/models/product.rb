@@ -5,10 +5,16 @@ class Product < ActiveRecord::Base
   has_many :product_build_lists, :dependent => :destroy
 
   validates :name, :presence => true, :uniqueness => {:scope => :platform_id}
+  validates :project_id, :presence => true
 
   scope :recent, order("name ASC")
 
-  attr_accessible :name, :description, :project_id, :main_script, :params, :time_living
+  attr_accessible :name,
+                  :description,
+                  :project_id,
+                  :main_script,
+                  :params,
+                  :time_living
   attr_readonly :platform_id
 
   def full_clone(attrs = {})

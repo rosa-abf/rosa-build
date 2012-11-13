@@ -2,7 +2,7 @@
 FactoryGirl.define do
   factory :product_build_list do
     association :product, :factory => :product
-    association :project, :factory => :project
+    project { |pbl| pbl.product.project }
     status 0 # BUILD_COMPLETED
     main_script 'build.sh'
     params 'ENV=i586'

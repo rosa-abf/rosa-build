@@ -11,6 +11,7 @@ shared_examples_for 'admin' do
   end
 
   it "should be able to destroy ProductBuildList" do
+    @pbl.update_column(:project_id, nil)
     expect {
       delete :destroy, valid_attributes_for_destroy
     }.to change(ProductBuildList, :count).by(-1)
@@ -32,12 +33,12 @@ describe Platforms::ProductBuildListsController do
   context 'crud' do
 
     before(:each) do
-       @product = FactoryGirl.create(:product)
-       @pbl = FactoryGirl.create(:product_build_list, :product => @product)
+      @product = FactoryGirl.create(:product)
+      @pbl = FactoryGirl.create(:product_build_list, :product => @product)
     end
 
     def valid_attributes
-      {:product_id => @product.id, :platform_id => @product.platform_id}
+      {:product_id => @product.id, :platform_id => @product.platform_id, :product_build_list => {:main_script => 'build.sh', :time_living => 60, :project_version => 'latest_master'}}
     end
 
     def valid_attributes_for_destroy
@@ -51,6 +52,7 @@ describe Platforms::ProductBuildListsController do
       end
 
       it 'should not be able to destroy ProductBuildList' do
+        @pbl.update_column(:project_id, nil)
         delete :destroy, valid_attributes_for_destroy
         response.should redirect_to(new_user_session_path)
       end
@@ -77,6 +79,7 @@ describe Platforms::ProductBuildListsController do
       end
 
       it 'should not be able to perform create action' do
+        @pbl.update_column(:project_id, nil)
         delete :destroy, valid_attributes_for_destroy
         response.should redirect_to(forbidden_url)
       end
