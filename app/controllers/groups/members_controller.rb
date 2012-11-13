@@ -38,9 +38,9 @@ class Groups::MembersController < Groups::BaseController
   end
 
   def add
-    @user = User.find_by_uname(params[:user_id])
+    @user = User.find_by_uname(params[:user_uname])
     if !@user
-      flash[:error] = t("flash.collaborators.wrong_user", :uname => params[:user_id])
+      flash[:error] = t("flash.collaborators.wrong_user", :uname => params[:user_uname])
     elsif parent.add_member(@user, params[:role])
       flash[:notice] = t("flash.members.successfully_added")
     else
