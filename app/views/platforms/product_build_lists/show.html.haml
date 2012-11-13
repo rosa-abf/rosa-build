@@ -23,9 +23,10 @@
 = render 'show_field', :key => :notified_at, :value => l(pbl.updated_at, :format => :long)
 
 - if pbl.build_started?
-  .leftlist= t("layout.product_build_lists.action")
-  .rightlist= link_to t("layout.product_build_lists.stop"), stop_platform_product_product_build_list_path(pbl.product.platform, pbl.product, pbl)
-  .both
+  - if can? :stop, pbl
+    .leftlist= t("layout.product_build_lists.action")
+    .rightlist= link_to t("layout.product_build_lists.stop"), stop_platform_product_product_build_list_path(pbl.product.platform, pbl.product, pbl)
+    .both
   = render 'shared/log', { :build_started => true, :get_log_path => log_platform_product_product_build_list_path(pbl.product.platform, pbl.product, pbl) }
 
 %h3= t("layout.product_build_lists.results")

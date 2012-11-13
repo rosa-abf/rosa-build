@@ -20,7 +20,7 @@ class Ability
     can :read, PullRequest, :to_project => {:visibility => 'open'}
     can :search, BuildList
     can [:read, :log, :everything], BuildList, :project => {:visibility => 'open'}
-    can :read, ProductBuildList#, :product => {:platform => {:visibility => 'open'}} # double nested hash don't work
+    can [:read, :log], ProductBuildList#, :product => {:platform => {:visibility => 'open'}} # double nested hash don't work
     can :read, Advisory
 
     # Core callbacks
@@ -114,7 +114,7 @@ class Ability
         can(:read, Product, read_relations_for('products', 'platforms')) {|product| product.platform.main?}
         can([:create, :update, :destroy, :clone], Product) {|product| local_admin? product.platform and product.platform.main?}
 
-        can(:create, ProductBuildList) {|pbl| can?(:update, pbl.product)}
+        can([:create, :stop], ProductBuildList) {|pbl| can?(:update, pbl.product)}
         can(:destroy, ProductBuildList) {|pbl| can?(:destroy, pbl.product)}
 
         can [:read, :create], PrivateUser, :platform => {:owner_type => 'User', :owner_id => user.id}

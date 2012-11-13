@@ -1,11 +1,11 @@
 # -*- encoding : utf-8 -*-
 class Platforms::ProductBuildListsController < Platforms::BaseController
   before_filter :authenticate_user!, :except => [:status_build]
-  skip_before_filter :authenticate_user!, :only => [:index] if APP_CONFIG['anonymous_access']
+  skip_before_filter :authenticate_user!, :only => [:index, :show, :log] if APP_CONFIG['anonymous_access']
   load_and_authorize_resource :platform, :except => [:index, :status_build]
   load_and_authorize_resource :product, :through => :platform, :except => [:index, :status_build]
   load_and_authorize_resource :product_build_list, :through => :product, :except => [:index, :status_build]
-  load_and_authorize_resource :only => [:index]
+  load_and_authorize_resource :only => [:index, :show, :log, :stop]
 
   before_filter :authenticate_product_builder!, :only => [:status_build]
   before_filter :find_product_build_list, :only => [:status_build]
@@ -32,14 +32,10 @@ class Platforms::ProductBuildListsController < Platforms::BaseController
   end
 
   def log
-    respond_to do |format|
-      format.json {
-        render :json => {
-          :log => @product_build_list.log,
-          :building => @product_build_list.build_started?
-        }
-      }
-    end
+    render :json => {
+      :log => @product_build_list.log,
+      :building => @product_build_list.build_started?
+    }
   end
 
   def create
