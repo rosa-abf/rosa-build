@@ -39,7 +39,7 @@ Dir.glob(owners).each do |owner|
       end
 
       if archives_exists
-        system "git filter-branch -d /dev/shm/git_task --tree-filter \"/home/rosa/git_task/file-store.rb #{token} #{path}\" --prune-empty --tag-name-filter cat -- --all"
+        system "git filter-branch -d /dev/shm/git_task --tree-filter \"/home/rosa/git_task/file-store.rb #{token}\" --prune-empty --tag-name-filter cat -- --all"
         #####
         # This is dangerous !!!
         system "rm -rf #{dest_project_path} && git clone --bare #{path} #{dest_project_path}"

@@ -43,7 +43,7 @@ Dir.glob("*.{tar\.bz2,tar\.gz,bz2,rar,gz,tar,tbz2,tgz,zip,Z,7z,tar\.xz}").uniq.s
   end
 end
 sources = (old_sources | new_sources)
-unless sources.empty?
+unless new_sources.empty?
   File.open(abf_yml, 'w') do |abf|
     abf.puts 'sources:'
     (old_sources | new_sources).sort.each {|line| abf.puts line}
