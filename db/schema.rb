@@ -287,6 +287,7 @@ ActiveRecord::Schema.define(:version => 20121106113338) do
     t.string   "params"
     t.string   "main_script"
     t.text     "results"
+    t.integer  "arch_id"
     t.integer  "time_living"
   end
 

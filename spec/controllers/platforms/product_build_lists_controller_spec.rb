@@ -88,11 +88,12 @@ describe Platforms::ProductBuildListsController do
 
     before(:each) do
       @product = FactoryGirl.create(:product)
+      @arch = FactoryGirl.create(:arch)
       @pbl = FactoryGirl.create(:product_build_list, :product => @product)
     end
 
     def valid_attributes
-      {:product_id => @product.id, :platform_id => @product.platform_id, :product_build_list => {:main_script => 'build.sh', :time_living => 60, :project_version => 'latest_master'}}
+      {:product_id => @product.id, :platform_id => @product.platform_id, :product_build_list => {:main_script => 'build.sh', :time_living => 60, :project_version => 'latest_master', :arch_id => @arch.id}}
     end
 
     def valid_attributes_for_destroy

@@ -42,6 +42,7 @@ en:
         main_script: Main script
         params: Params for running script
         time_living: Max time for building (in minutes)
+        arch: Arch
       product_build_list/results:
         file_name: File name
         sha1: SHA1

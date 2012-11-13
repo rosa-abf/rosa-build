@@ -17,7 +17,7 @@
 
 = render 'show_field', :key => :project_version, :value => build_list_version_link(pbl, true)
 
-- [:main_script, :params, :time_living].each do |el|
+- [:arch, :main_script, :params, :time_living].each do |el|
   = render 'show_field', :key => el, :value => pbl.send(el)
 
 = render 'show_field', :key => :notified_at, :value => l(pbl.updated_at, :format => :long)

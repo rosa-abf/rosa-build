@@ -19,13 +19,15 @@ class ProductBuildList < ActiveRecord::Base
 
   belongs_to :product
   belongs_to :project
+  belongs_to :arch
 
 
   validates :product_id,
             :status,
             :project_id,
             :main_script,
-            :time_living, :presence => true
+            :time_living,
+            :arch_id, :presence => true
   validates :status, :inclusion => { :in => [BUILD_STARTED, BUILD_COMPLETED, BUILD_FAILED] }
 
   attr_accessor :base_url
@@ -37,7 +39,8 @@ class ProductBuildList < ActiveRecord::Base
                   :params,
                   :project_version,
                   :commit_hash,
-                  :time_living
+                  :time_living,
+                  :arch_id
   attr_readonly :product_id
   serialize :results, Array
 
@@ -106,7 +109,9 @@ class ProductBuildList < ActiveRecord::Base
       :srcpath => srcpath,
       :params => params,
       :time_living => time_living,
-      :main_script => main_script
+      :main_script => main_script,
+      :arch => arch.name,
+      :distrib_type => product.platform.distrib_type
     }
     Resque.push(
       'iso_worker',

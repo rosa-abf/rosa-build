@@ -42,6 +42,7 @@ ru:
         main_script: Основной скрипт
         params: Параметры для запуска скрипта
         time_living: Максимальное время сборки (в минутах)
+        arch: Архитектура
       product_build_list/results:
         file_name: Имя файла
         sha1: SHA1
