@@ -8,8 +8,8 @@ namespace :pull_requests do
       `find -mindepth 2 -maxdepth 2 -type d -mtime +0 | xargs rm -rf`
       say '-----'
       say "Removing empty dir:"
-      say `find -mindepth 2 -maxdepth 2 -type d -empty`
-      `find -mindepth 2 -maxdepth 2 -type d -empty -delete`
+      say `find -maxdepth 2 -type d -empty`
+      `find -maxdepth 2 -type d -empty -delete`
       say 'done!'
     end
   end
