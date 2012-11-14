@@ -10,6 +10,7 @@ class ActivityFeed < ActiveRecord::Base
   serialize :data
 
   default_scope order('created_at DESC')
+  scope :outdated, offset(100)
 
   self.per_page = 10
 
