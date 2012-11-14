@@ -85,7 +85,7 @@ class PullRequest < ActiveRecord::Base
 
   def path
     filename = [id, from_project_owner_uname, from_project_name].compact.join('-')
-    File.join(APP_CONFIG['git_path'], 'pull_requests', to_project.owner.uname, to_project.name, filename)
+    File.join(APP_CONFIG['git_path'], 'pull_requests', new_record? ? 'tmp' : '', to_project.owner.uname, to_project.name, filename)
   end
 
   def from_branch
