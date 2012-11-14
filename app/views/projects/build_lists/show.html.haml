@@ -125,7 +125,7 @@
       });
 
   - if BuildList::HUMAN_STATUSES[@build_list.status].in? [:build_started, :build_error, :success]
-    = render :partial => 'projects/build_lists/log'
+    = render 'shared/log', { :build_started => @build_list.build_started?, :download_log_url => build_list_log_url(:build), :get_log_path => log_build_list_path(@build_list) }
 
 
   - if (can_publish = @build_list.can_publish? && can?(:publish, @build_list))

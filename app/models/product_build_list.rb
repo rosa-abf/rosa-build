@@ -1,5 +1,8 @@
 # -*- encoding : utf-8 -*-
 class ProductBuildList < ActiveRecord::Base
+  include Modules::Models::CommitAndVersion
+  delegate :url_helpers, to: 'Rails.application.routes'
+
   BUILD_STARTED = 2
   BUILD_COMPLETED = 0
   BUILD_FAILED = 1
@@ -15,13 +18,31 @@ class ProductBuildList < ActiveRecord::Base
                     }
 
   belongs_to :product
+  belongs_to :project
+  belongs_to :arch
 
-  validates :product_id, :status, :presence => true
+
+  validates :product_id,
+            :status,
+            :project_id,
+            :main_script,
+            :time_living,
+            :arch_id, :presence => true
   validates :status, :inclusion => { :in => [BUILD_STARTED, BUILD_COMPLETED, BUILD_FAILED] }
 
   attr_accessor :base_url
-  attr_accessible :status, :base_url
+  attr_accessible :status,
+                  :base_url,
+                  :branch,
+                  :project_id,
+                  :main_script,
+                  :params,
+                  :project_version,
+                  :commit_hash,
+                  :time_living,
+                  :arch_id
   attr_readonly :product_id
+  serialize :results, Array
 
 
   scope :default_order, order('updated_at DESC')
@@ -33,6 +54,10 @@ class ProductBuildList < ActiveRecord::Base
   after_create :xml_rpc_create
   before_destroy :can_destroy?
   after_destroy :xml_delete_iso_container
+
+  def build_started?
+    status == BUILD_STARTED
+  end
 
   def container_path
     "/downloads/#{product.platform.name}/product/#{id}/"
@@ -54,23 +79,59 @@ class ProductBuildList < ActiveRecord::Base
     [BUILD_COMPLETED, BUILD_FAILED].include? status
   end
 
+  def log
+    Resque.redis.get("abfworker::iso-worker-#{id}") || ''
+  end
+
+  def stop
+    Resque.redis.setex(
+      "abfworker::iso-worker-#{id}::live-inspector",
+      120,    # Data will be removed from Redis after 120 sec.
+      'USR1'  # Immediately kill child but don't exit
+    )
+  end
+
   protected
 
   def xml_rpc_create
-    result = ProductBuilder.create_product self
-    if result == ProductBuilder::SUCCESS
-      return true
-    else
-      raise "Failed to create product_build_list #{id} inside platform #{product.platform.name} tar url #{tar_url} with code #{result}."
-    end
+    file_name = "#{project.owner.uname}-#{project.name}-#{commit_hash}"
+    srcpath = url_helpers.archive_url(
+      project.owner,
+      project.name,
+      file_name,
+      'tar.gz',
+      :host => ActionMailer::Base.default_url_options[:host]
+    )
+    options = {
+      :id => id,
+      # TODO: remove comment
+      # :srcpath => 'http://dl.dropbox.com/u/945501/avokhmin-test-iso-script-5d9b463d4e9c06ea8e7c89e1b7ff5cb37e99e27f.tar.gz',
+      :srcpath => srcpath,
+      :params => params,
+      :time_living => time_living,
+      :main_script => main_script,
+      :arch => arch.name,
+      :distrib_type => product.platform.distrib_type
+    }
+    Resque.push(
+      'iso_worker',
+      'class' => 'AbfWorker::IsoWorker',
+      'args' => [options]
+    )
+    return true
   end  
 
   def xml_delete_iso_container
-    result = ProductBuilder.delete_iso_container self
-    if result == ProductBuilder::SUCCESS
-      return true
+    # TODO: write new worker for delete
+    if project
+      raise "Failed to destroy product_build_list #{id} inside platform #{product.platform.name} (Not Implemented)."
     else
-      raise "Failed to destroy product_build_list #{id} inside platform #{product.platform.name} with code #{result}."
+      result = ProductBuilder.delete_iso_container self
+      if result == ProductBuilder::SUCCESS
+        return true
+      else
+        raise "Failed to destroy product_build_list #{id} inside platform #{product.platform.name} with code #{result}."
+      end
     end
   end
 end

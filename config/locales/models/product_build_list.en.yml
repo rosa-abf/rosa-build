@@ -1,9 +1,19 @@
 en:
   layout:
     product_build_lists:
+      logs: Logs (last 100 lines)
+      results: Results
+      work_env: Work environment
+      iso_builder_folder: folder with contents of the GIT project
+      results_folder: all files from this folder will be uploaded into the file-store
+      archives_folder: this folder will be archived and uploaded into the file-store
       delete: Delete
+      stop: Stop
       action: Action
       id_search: 'Id search'
+      new: New build
+      main_data: Main data
+      show: Show
       statuses:
         '0': 'build'
         '1': 'build error'
@@ -27,8 +37,19 @@ en:
         status: Status
         user: User
         notified_at: Notified at
+        project: Project
+        project_version: Version
+        main_script: Main script
+        params: Params for running script
+        time_living: Max time for building (in minutes)
+        arch: Arch
+      product_build_list/results:
+        file_name: File name
+        sha1: SHA1
 
   flash:
     product_build_list:
+      no_project: Project for build should be exist
       delete: Product build list deleted
       delete_error: Unable to delete product build list
+      will_be_stopped: Build will be stopped

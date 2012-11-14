@@ -1,19 +1,56 @@
 # -*- encoding : utf-8 -*-
 class Platforms::ProductBuildListsController < Platforms::BaseController
   before_filter :authenticate_user!, :except => [:status_build]
-  skip_before_filter :authenticate_user!, :only => [:index] if APP_CONFIG['anonymous_access']
-  load_and_authorize_resource :platform, :only => [:create, :destroy]
-  load_and_authorize_resource :product, :through => :platform, :only => [:create, :destroy]
-  load_and_authorize_resource :product_build_list, :through => :product, :only => [:create, :destroy]
-  load_and_authorize_resource :only => [:index]
+  skip_before_filter :authenticate_user!, :only => [:index, :show, :log] if APP_CONFIG['anonymous_access']
+  load_and_authorize_resource :platform, :except => [:index, :status_build]
+  load_and_authorize_resource :product, :through => :platform, :except => [:index, :status_build]
+  load_and_authorize_resource :product_build_list, :through => :product, :except => [:index, :status_build]
+  load_and_authorize_resource :only => [:index, :show, :log, :stop]
 
   before_filter :authenticate_product_builder!, :only => [:status_build]
   before_filter :find_product_build_list, :only => [:status_build]
 
+  def new
+    product = @product_build_list.product
+    @product_build_list.params = product.params
+    @product_build_list.main_script = product.main_script
+    @product_build_list.time_living = product.time_living
+    @product_build_list.project = product.project
+    unless @product_build_list.project
+      flash[:error] = t('flash.product_build_list.no_project')
+      redirect_to edit_platform_product_path(@platform, @product)
+    end
+  end
+
+  def show
+  end
+
+  def stop
+    @product_build_list.stop
+    flash[:notice] = t('flash.product_build_list.will_be_stopped')
+    redirect_to platform_product_product_build_list_path(@platform, @product, @product_build_list)
+  end
+
+  def log
+    render :json => {
+      :log => @product_build_list.log,
+      :building => @product_build_list.build_started?
+    }
+  end
+
   def create
-    @product.product_build_lists.create! :base_url => "http://#{request.host_with_port}"
-    flash[:notice] = t('flash.product.build_started')
-    redirect_to [@platform, @product]
+    pbl = @product.product_build_lists.new params[:product_build_list]
+    pbl.project = @product.project
+    pbl.base_url = "http://#{request.host_with_port}"
+
+    if pbl.save
+      flash[:notice] = t('flash.product.build_started')
+      redirect_to [@platform, @product]
+    else
+      flash[:error] = t('flash.product.build_error')
+      flash[:warning] = pbl.errors.full_messages.join('. ')
+      render :action => :new
+    end
   end
 
   def status_build

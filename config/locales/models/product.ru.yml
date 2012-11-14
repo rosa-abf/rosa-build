@@ -12,26 +12,12 @@ ru:
       edit_header: Редактирование продукта
       confirm_delete: Вы уверены, что хотите удалить этот продукт?
 
-      cron_tab_generator:
-        show: Показать cron tab генератор
-        hide: Спрятать cron tab генератор
-        choose: Выберите
-        every_minute: Каждую минуту
-        every_hour: Каждый час
-        every_day: Каждый день
-        every_month: Каждый месяц
-        every_weekday: Каждый день недели
-        minutes: Минуты
-        hours: Часы
-        days: Дни
-        months: Месяцы
-        weekdays: Дни недели
-
   flash:
     product:
       saved: Продукт успешно сохранен
       save_error: Не удалось сохранить изменения
       build_started: Запущена сборка продукта
+      build_error: Не удалось запустить сборку продукта
       destroyed: Продукт удален
 
   activerecord:
@@ -43,15 +29,6 @@ ru:
         description: Описание
         platform_id: Платформа
         build_status: Статус последней сборки
-        build_path: Путь к iso
         created_at: Создан
         updated_at: Обновлен
-        ks: Содержимое .ks.template
-        counter: Содержимое .counter
-        build_script: Содержимое build
-        menu: Содержимое .menu.xml
-        tar: Tar.bz2 файл
-        is_template: Шаблон
-        system_wide: Общесистемный
-        cron_tab: Cron tab
-        use_cron: Использовать крон
+        project: Проект

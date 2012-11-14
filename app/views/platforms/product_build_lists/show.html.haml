@@ -1,0 +1,54 @@
+-set_meta_tags :title => [title_object(@product_build_list.product), t('layout.product_build_lists.show')]
+= render 'submenu'
+
+- pbl = @product_build_list
+- product = pbl.product
+- platform = product.platform
+
+%h3= t("layout.product_build_lists.main_data")
+.both
+
+= render 'show_field', :key => :id, :value => pbl.id
+= render 'show_field', :key => :status, :value => pbl.human_status
+
+= render 'show_field', :key => :product, :value => link_to(pbl.product.name, platform_product_path(platform, product))
+
+= render 'show_field', :key => :project, :value => link_to(pbl.project.name_with_owner, project_path(pbl.project))
+
+= render 'show_field', :key => :project_version, :value => build_list_version_link(pbl, true)
+
+= render 'show_field', :key => :arch, :value => pbl.arch.name
+- [:main_script, :params, :time_living].each do |el|
+  = render 'show_field', :key => el, :value => pbl.send(el)
+
+= render 'show_field', :key => :notified_at, :value => l(pbl.updated_at, :format => :long)
+
+- if pbl.build_started?
+  - if can? :stop, pbl
+    .leftlist= t("layout.product_build_lists.action")
+    .rightlist= link_to t("layout.product_build_lists.stop"), stop_platform_product_product_build_list_path(pbl.product.platform, pbl.product, pbl)
+    .both
+  = render 'shared/log', { :build_started => true, :get_log_path => log_platform_product_product_build_list_path(pbl.product.platform, pbl.product, pbl) }
+
+%h3= t("layout.product_build_lists.results")
+- unless pbl.results.present?
+  %h4.nomargin= t("layout.product_build_lists.no_results")
+- else
+  %table.tablesorter.width565{:cellpadding => "0", :cellspacing => "0"}
+    %thead
+      %tr
+        %th= t("activerecord.attributes.product_build_list/results.file_name")
+        %th= t("activerecord.attributes.product_build_list/results.sha1")
+    %tbody
+      - pbl.results.each do |item|
+        %tr
+          - sha1 = item['sha1']
+          %td= link_to item['file_name'], "http://file-store.rosalinux.ru/api/v1/file_stores/#{sha1}"
+          %td= sha1
+.both
+
+
+:javascript
+  $(function(){
+    $('article .all').addClass('bigpadding');
+  });

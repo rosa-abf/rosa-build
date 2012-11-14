@@ -29,8 +29,11 @@ describe Platforms::ProductsController do
     @another_user = FactoryGirl.create(:user)
     @platform = FactoryGirl.create(:platform)
     @product = FactoryGirl.create(:product, :platform => @platform)
-    @create_params = {:product => {:name => 'pro'}, :platform_id => @platform.id}
-    @update_params = {:product => {:name => 'pro2'}, :platform_id => @platform.id}
+    @project = FactoryGirl.create(:project)
+
+    params = {:platform_id => @platform.id, :src_project => @project.name_with_owner}
+    @create_params = params.merge({:product => {:name => 'pro'}})
+    @update_params = params.merge({:product => {:name => 'pro2'}})
 
     @user = FactoryGirl.create(:user)
     set_session_for(@user)

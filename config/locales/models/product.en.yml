@@ -12,26 +12,12 @@ en:
       edit_header: Product editing
       confirm_delete: Are you sure you want to delete this product?
 
-      cron_tab_generator:
-        show: Show cron tab generator
-        hide: Hide cron tab generator
-        choose: Choose
-        every_minute: Every minute
-        every_hour: Every hour
-        every_day: Every day
-        every_month: Every month
-        every_weekday: Every week day
-        minutes: Minutes
-        hours: Hours
-        days: Days
-        months: Months
-        weekdays: weekdays
-
   flash:
     product:
       saved: Product saved
       save_error: Unable to save product
       build_started: Product build started
+      build_error: Unable to run build of product
       destroyed: Product deleted
 
   activerecord:
@@ -43,15 +29,6 @@ en:
         description: Description
         platform_id: Platform
         build_status: Build status
-        build_path: ISO path
         created_at: Created
         updated_at: Updated
-        ks: Contents of .ks.template
-        counter: Contents of .counter
-        build_script: Contents of build
-        menu: Contents of .menu.xml
-        tar: Tar.bz2 file
-        is_template: Template
-        system_wide: System-wide
-        cron_tab: Cron tab
-        use_cron: Use cron
+        project: Project

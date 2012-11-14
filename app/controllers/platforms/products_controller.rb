@@ -5,6 +5,7 @@ class Platforms::ProductsController < Platforms::BaseController
 
   load_and_authorize_resource :platform
   load_and_authorize_resource :product, :through => :platform
+  before_filter :set_project, :only => [:create, :update]
 
   def index
     @products = @products.paginate(:page => params[:page])
@@ -12,10 +13,6 @@ class Platforms::ProductsController < Platforms::BaseController
 
   def new
     @product = @platform.products.new
-    @product.ks = DEFAULT_KS
-    @product.menu = DEFAULT_MENU
-    @product.counter = DEFAULT_COUNTER
-    @product.build_script = DEFAULT_BUILD
   end
 
 
@@ -53,4 +50,20 @@ class Platforms::ProductsController < Platforms::BaseController
     redirect_to platform_products_path(@platform)
   end
 
+  def autocomplete_project
+    items = Project.accessible_by(current_ability, :membered).
+      search(params[:term]).search_order
+    items.select! {|e| e.repo.branches.count > 0}
+    render :json => items.map{ |p|
+      {:id => p.id, :label => p.name_with_owner, :value => p.name_with_owner}
+    }
+  end
+
+  protected
+
+  def set_project
+    args = params[:src_project].try(:split, '/') || []
+    @product.project = (args.length == 2) ?
+      Project.find_by_owner_and_name(*args) : nil
+  end
 end
