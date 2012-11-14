@@ -148,6 +148,7 @@ en:
       group_already_added: Group already added
       successfully_added: Member %s successfully added
       error_in_adding: Member %s adding error
+      wrong_user: User with nickname '%{uname}' not found!
 
     blob:
       successfully_updated: File '%{name}' successfully updated

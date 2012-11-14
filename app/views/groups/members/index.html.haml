@@ -25,7 +25,7 @@
 .hr.top
 
 = form_tag add_group_members_path(parent) do
-  .admin-search= autocomplete_field_tag 'user_id', params[:user_id], autocomplete_user_uname_autocompletes_path#, :id_element => '#member_id_field'
+  .admin-search= autocomplete_field_tag 'user_uname', params[:user_uname], autocomplete_user_uname_autocompletes_path
   .admin-role
     .lineForm= select_tag 'role', options_for_collaborators_roles_select
   .both
