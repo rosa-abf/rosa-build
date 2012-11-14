@@ -4,8 +4,8 @@ namespace :pull_requests do
   task :clear => :environment do
     Dir.chdir(File.join(APP_CONFIG['git_path'], 'temp_pull_requests')) do
       say "Removing repos older one day:"
-      say `find -mindepth 2 -maxdepth 2 -type d -mtime +0`
-      `find -mindepth 2 -maxdepth 2 -type d -mtime +0 | xargs rm -rf`
+      say `find -mindepth 3 -maxdepth 3 -type d -mtime +0`
+      `find -mindepth 3 -maxdepth 3 -type d -mtime +0 | xargs rm -rf`
       say '-----'
       say "Removing empty dir:"
       say `find -maxdepth 2 -type d -empty`
