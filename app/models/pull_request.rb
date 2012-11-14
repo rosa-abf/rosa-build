@@ -84,8 +84,8 @@ class PullRequest < ActiveRecord::Base
   end
 
   def path
-    filename = [id, from_project_owner_uname, from_project_name].compact.join('-')
-    File.join(APP_CONFIG['git_path'], 'pull_requests', to_project.owner.uname, to_project.name, filename)
+    last_part = [id, from_project_owner_uname, from_project_name].compact.join('-')
+    File.join(APP_CONFIG['git_path'], "#{new_record? ? 'temp_' : ''}pull_requests", to_project.owner.uname, to_project.name, last_part)
   end
 
   def from_branch
@@ -176,10 +176,11 @@ class PullRequest < ActiveRecord::Base
 
   def clone
     git = Grit::Git.new(path)
-    unless git.exist?
+    if new_record? || !git.exist?
       #~ FileUtils.mkdir_p(path)
       #~ system("git clone --local --no-hardlinks #{to_project.path} #{path}")
       options = {:bare => false, :shared => false, :branch => to_ref} # shared?
+      `rm -rf #{path}`
       git.fs_mkdir('..')
       git.clone(options, to_project.path, path)
       if to_project != from_project

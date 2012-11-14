@@ -26,7 +26,8 @@ class Projects::BuildListsController < Projects::BaseController
     @action_url = @project ? search_project_build_lists_path(@project) : search_build_lists_path
     @filter = BuildList::Filter.new(@project, current_user, params[:filter] || {})
 
-    @bls = @filter.find.recent.paginate :page => params[:page]
+    page = params[:page].to_i == 0 ? nil : params[:page]
+    @bls = @filter.find.recent.paginate :page => page
     @build_lists = BuildList.where(:id => @bls.pluck("#{BuildList.table_name}.id")).recent
     @build_lists = @build_lists.includes [:save_to_platform, :save_to_repository, :arch, :user, :project => [:owner]]
 
