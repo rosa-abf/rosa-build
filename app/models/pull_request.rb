@@ -176,10 +176,11 @@ class PullRequest < ActiveRecord::Base
 
   def clone
     git = Grit::Git.new(path)
-    unless git.exist?
+    if new_record? || !git.exist?
       #~ FileUtils.mkdir_p(path)
       #~ system("git clone --local --no-hardlinks #{to_project.path} #{path}")
       options = {:bare => false, :shared => false, :branch => to_ref} # shared?
+      `rm -rf #{path}`
       git.fs_mkdir('..')
       git.clone(options, to_project.path, path)
       if to_project != from_project
