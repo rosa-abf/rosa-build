@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 # import_srpm.sh: Import SRPM packages to git repo
-pwd=$PWD
 # Input data
 srpm_path=$1
 git_path=$2
 git_branch=$3
-token=$4
+script=$4
+token=$5
 name=$(rpm -q --qf '[%{Name}]' -p $srpm_path)
 version=$(rpm -q --qf '[%{Version}-%{Release}]' -p $srpm_path)
 tmp_dir=/tmp/$name-$version-$RANDOM
@@ -32,7 +32,7 @@ cpio -idv < srpm.cpio
 rm -f srpm.cpio
 
 # Remove archives
-$pwd/file-store.rb $token $PWD
+$script $token
 
 # Commit and push changes
 git add -A .
