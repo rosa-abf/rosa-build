@@ -33,12 +33,8 @@ Dir.glob(owners).each do |owner|
       system "cd #{path} && git config --bool core.bare false && git checkout -f HEAD"
       #--
       Dir.chdir(path)
-      archives_exists = false
-      %w(tar.bz2 tar.gz bz2 rar gz tar tbz2 tgz zip Z 7z tar.xz).each do |ext|
-        archives_exists=true and break unless `git log --all --format='%H' -- *.#{ext}`.empty?
-      end
 
-      if archives_exists
+      unless `git log --all --format='%H' -- *.{tar\.bz2,tar\.gz,bz2,rar,gz,tar,tbz2,tgz,zip,Z,7z,tar\.xz}`.empty?
         system "git filter-branch -d /dev/shm/git_task --tree-filter \"/home/rosa/git_task/file-store.rb #{token}\" --prune-empty --tag-name-filter cat -- --all"
         #####
         # This is dangerous !!!
