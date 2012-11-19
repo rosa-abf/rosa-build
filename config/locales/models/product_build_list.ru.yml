@@ -17,10 +17,14 @@ ru:
       statuses:
         '0': 'собран'
         '1': 'ошибка сборки'
-        '2': 'собирается'
+        '2': 'в очереди'
+        '3': 'собирается'
+        '4': 'отменен'
         build_failed: Ошибка сборки
         build_started: Собирается
         build_completed: Собран
+        build_canceled: Отменен
+        in_queue: В очереди
 
       ownership:
         header: Принадлежность заданий
@@ -46,6 +50,7 @@ ru:
       product_build_list/results:
         file_name: Имя файла
         sha1: SHA1
+        size: Размер (МБ)
 
   flash:
     product_build_list:

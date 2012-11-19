@@ -3,18 +3,24 @@ class ProductBuildList < ActiveRecord::Base
   include Modules::Models::CommitAndVersion
   delegate :url_helpers, to: 'Rails.application.routes'
 
-  BUILD_STARTED = 2
   BUILD_COMPLETED = 0
-  BUILD_FAILED = 1
+  BUILD_FAILED    = 1
+  BUILD_IN_QUEUE  = 2
+  BUILD_STARTED   = 3
+  BUILD_CANCELED  = 4
 
   STATUSES = [  BUILD_STARTED,
                 BUILD_COMPLETED,
-                BUILD_FAILED
+                BUILD_FAILED,
+                BUILD_IN_QUEUE,
+                BUILD_CANCELED
               ]
 
   HUMAN_STATUSES = { BUILD_STARTED => :build_started,
                      BUILD_COMPLETED => :build_completed,
-                     BUILD_FAILED => :build_failed
+                     BUILD_FAILED => :build_failed,
+                     BUILD_IN_QUEUE => :in_queue,
+                     BUILD_CANCELED => :build_canceled
                     }
 
   belongs_to :product
@@ -28,7 +34,7 @@ class ProductBuildList < ActiveRecord::Base
             :main_script,
             :time_living,
             :arch_id, :presence => true
-  validates :status, :inclusion => { :in => [BUILD_STARTED, BUILD_COMPLETED, BUILD_FAILED] }
+  validates :status, :inclusion => { :in => STATUSES }
 
   attr_accessor :base_url
   attr_accessible :status,
@@ -84,6 +90,7 @@ class ProductBuildList < ActiveRecord::Base
   end
 
   def stop
+    update_attributes({:status => BUILD_CANCELED})
     Resque.redis.setex(
       "abfworker::iso-worker-#{id}::live-inspector",
       120,    # Data will be removed from Redis after 120 sec.
@@ -105,8 +112,8 @@ class ProductBuildList < ActiveRecord::Base
     options = {
       :id => id,
       # TODO: remove comment
-      # :srcpath => 'http://dl.dropbox.com/u/945501/avokhmin-test-iso-script-5d9b463d4e9c06ea8e7c89e1b7ff5cb37e99e27f.tar.gz',
-      :srcpath => srcpath,
+      :srcpath => 'http://dl.dropbox.com/u/945501/avokhmin-test-iso-script-5d9b463d4e9c06ea8e7c89e1b7ff5cb37e99e27f.tar.gz',
+      # :srcpath => srcpath,
       :params => params,
       :time_living => time_living,
       :main_script => main_script,

@@ -17,10 +17,14 @@ en:
       statuses:
         '0': 'build'
         '1': 'build error'
-        '2': 'build in progress'
+        '2': 'in queue'
+        '3': 'build in progress'
+        '4': 'build canceled'
         build_failed: Build failed
         build_started: Build in progress
         build_completed: Built
+        build_canceled: Build canceled
+        in_queue: In queue
 
       ownership:
         header: Build list ownership
@@ -46,6 +50,7 @@ en:
       product_build_list/results:
         file_name: File name
         sha1: SHA1
+        size: Size (MB)
 
   flash:
     product_build_list:
