@@ -63,7 +63,6 @@ class ProductBuildList < ActiveRecord::Base
   after_create :xml_rpc_create
   before_destroy :can_destroy?
   after_destroy :xml_delete_iso_container
-  before_validation :check_status
 
   def build_started?
     status == BUILD_STARTED
@@ -107,12 +106,6 @@ class ProductBuildList < ActiveRecord::Base
   end
 
   protected
-
-  def check_status
-    if status_was == BUILD_CANCELING && [BUILD_COMPLETED, BUILD_FAILED].include?(status)
-      self.status = BUILD_CANCELED
-    end
-  end
 
   def xml_rpc_create
     file_name = "#{project.owner.uname}-#{project.name}-#{commit_hash}"
