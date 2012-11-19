@@ -23,7 +23,7 @@ class ProductBuildList < ActiveRecord::Base
                      BUILD_FAILED => :build_failed,
                      BUILD_PENDING => :build_pending,
                      BUILD_CANCELED => :build_canceled,
-                     BUILD_CANCELING => :canceling
+                     BUILD_CANCELING => :build_canceling
                     }
 
   belongs_to :product
