@@ -23,7 +23,7 @@
 
 = render 'show_field', :key => :notified_at, :value => l(pbl.updated_at, :format => :long)
 
-- if pbl.build_started?
+- if pbl.build_started? || pbl.build_canceling?
   - if can? :stop, pbl
     .leftlist= t("layout.product_build_lists.action")
     .rightlist= link_to t("layout.product_build_lists.stop"), stop_platform_product_product_build_list_path(pbl.product.platform, pbl.product, pbl)

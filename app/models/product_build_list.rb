@@ -8,19 +8,22 @@ class ProductBuildList < ActiveRecord::Base
   BUILD_IN_QUEUE  = 2
   BUILD_STARTED   = 3
   BUILD_CANCELED  = 4
+  BUILD_CANCELING = 5
 
   STATUSES = [  BUILD_STARTED,
                 BUILD_COMPLETED,
                 BUILD_FAILED,
                 BUILD_IN_QUEUE,
-                BUILD_CANCELED
+                BUILD_CANCELED,
+                BUILD_CANCELING
               ]
 
   HUMAN_STATUSES = { BUILD_STARTED => :build_started,
                      BUILD_COMPLETED => :build_completed,
                      BUILD_FAILED => :build_failed,
                      BUILD_IN_QUEUE => :in_queue,
-                     BUILD_CANCELED => :build_canceled
+                     BUILD_CANCELED => :build_canceled,
+                     BUILD_CANCELING => :canceling
                     }
 
   belongs_to :product
@@ -65,6 +68,10 @@ class ProductBuildList < ActiveRecord::Base
     status == BUILD_STARTED
   end
 
+  def build_canceling?
+    status == BUILD_CANCELING
+  end
+
   def container_path
     "/downloads/#{product.platform.name}/product/#{id}/"
   end
@@ -90,7 +97,7 @@ class ProductBuildList < ActiveRecord::Base
   end
 
   def stop
-    update_attributes({:status => BUILD_CANCELED})
+    update_attributes({:status => BUILD_CANCELING})
     Resque.redis.setex(
       "abfworker::iso-worker-#{id}::live-inspector",
       120,    # Data will be removed from Redis after 120 sec.
@@ -112,8 +119,8 @@ class ProductBuildList < ActiveRecord::Base
     options = {
       :id => id,
       # TODO: remove comment
-      # :srcpath => 'http://dl.dropbox.com/u/945501/avokhmin-test-iso-script-5d9b463d4e9c06ea8e7c89e1b7ff5cb37e99e27f.tar.gz',
-      :srcpath => srcpath,
+      :srcpath => 'http://dl.dropbox.com/u/945501/avokhmin-test-iso-script-5d9b463d4e9c06ea8e7c89e1b7ff5cb37e99e27f.tar.gz',
+      # :srcpath => srcpath,
       :params => params,
       :time_living => time_living,
       :main_script => main_script,

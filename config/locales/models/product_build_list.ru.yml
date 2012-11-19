@@ -20,11 +20,13 @@ ru:
         '2': 'в очереди'
         '3': 'собирается'
         '4': 'отменен'
+        '5': 'отменется'
         build_failed: Ошибка сборки
         build_started: Собирается
         build_completed: Собран
         build_canceled: Отменен
         in_queue: В очереди
+        canceling: Отменяется
 
       ownership:
         header: Принадлежность заданий

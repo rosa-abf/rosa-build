@@ -20,11 +20,13 @@ en:
         '2': 'in queue'
         '3': 'build in progress'
         '4': 'build canceled'
+        '5': 'canceling'
         build_failed: Build failed
         build_started: Build in progress
         build_completed: Built
         build_canceled: Build canceled
         in_queue: In queue
+        canceling: Canceling
 
       ownership:
         header: Build list ownership

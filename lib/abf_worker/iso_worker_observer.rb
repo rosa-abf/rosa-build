@@ -5,7 +5,8 @@ module AbfWorker
     def self.perform(options)
       status = options['status'].to_i
       pbl = ProductBuildList.find options['id']
-      pbl.status = status if pbl.status != ProductBuildList::BUILD_CANCELED
+      pbl.status = pbl.status == ProductBuildList::BUILD_CANCELING ?
+        ProductBuildList::BUILD_CANCELED : status
       pbl.results = options['results'] if status != ProductBuildList::BUILD_STARTED
       pbl.save!
     end
