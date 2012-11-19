@@ -1,7 +1,7 @@
 # -*- encoding : utf-8 -*-
 class Projects::Git::BaseController < Projects::BaseController
   before_filter :authenticate_user!
-  skip_before_filter :authenticate_user!, :only => [:show, :index, :blame, :raw, :archive] if APP_CONFIG['anonymous_access']
+  skip_before_filter :authenticate_user!, :only => [:show, :index, :blame, :raw, :archive, :diff] if APP_CONFIG['anonymous_access']
   load_and_authorize_resource :project
 
   before_filter :set_treeish_and_path

@@ -304,6 +304,8 @@ Rosa::Application.routes.draw do
           get '/raw/:treeish/*path' => "git/blobs#raw", :as => :raw, :format => false
           # Archive
           get '/archive/:treeish.:format' => "git/trees#archive", :as => :archive, :format => /zip|tar\.gz/
+          # Git diff
+          get '/diff/:commit1(...:commit2)' => "git/commits#diff", :as => :diff
         end
       end
     end

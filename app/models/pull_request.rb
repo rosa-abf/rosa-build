@@ -104,33 +104,12 @@ class PullRequest < ActiveRecord::Base
   alias_method :to_commit, :common_ancestor
 
   def diff_stats
-    stats = []
-    Dir.chdir(path) do
-      lines = repo.git.native(:diff, {:numstat => true, :M => true}, "#{to_commit.id}...#{from_commit.id}").split("\n")
-      while !lines.empty?
-        files = []
-        while lines.first =~ /^([-\d]+)\s+([-\d]+)\s+(.+)/
-          additions, deletions, filename = lines.shift.gsub(' => ', '=>').split
-          additions, deletions = additions.to_i, deletions.to_i
-          stat = Grit::DiffStat.new filename, additions, deletions
-          stats << stat
-        end
-      end
-      stats
-    end
+    @diff_stats ||= repo.diff_stats(to_commit.id, from_commit.id)
   end
 
   # FIXME maybe move to warpc/grit?
   def diff
-    return @diff if @diff.present?
-    diff = repo.git.native('diff', {:M => true}, "#{to_commit.id}...#{from_commit.id}")
-
-    if diff =~ /diff --git a/
-      diff = diff.sub(/.*?(diff --git a)/m, '\1')
-    else
-      diff = ''
-    end
-    @diff = Grit::Diff.list_from_string(repo, diff)
+    @diff ||= repo.diff(to_commit.id, from_commit.id)
   end
 
   def set_user_and_time user

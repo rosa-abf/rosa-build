@@ -18,4 +18,30 @@ class Projects::Git::CommitsController < Projects::Git::BaseController
       format.patch { render :text => (@commit.to_patch rescue ''), :content_type => "text/plain" }
     end
   end
+
+  def diff
+    if params[:commit2].present?
+      params1 = params[:commit1]
+      params2 = params[:commit2] == 'HEAD' ? @project.default_branch : params[:commit2]
+    else # get only one parameter
+      params1 = @project.default_branch
+      params2 = params[:commit1]
+    end
+    params1.sub! 'HEAD', @project.default_branch
+    params2.sub! 'HEAD', @project.default_branch
+
+    ref1 = if @project.repo.branches_and_tags.include? params1
+             @project.repo.commits(params1).first
+           else
+             params1 #FIXME git has other ref?
+           end
+    @commit1 = @project.repo.commit(ref1) || raise(ActiveRecord::RecordNotFound)
+
+    ref = if @project.repo.branches_and_tags.include? params2
+            @project.repo.commits(params2).first
+          else
+            params2 #FIXME git has other ref?
+          end
+    @commit = @project.repo.commit(ref) || raise(ActiveRecord::RecordNotFound)
+  end
 end

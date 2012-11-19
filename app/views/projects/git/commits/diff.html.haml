@@ -1,0 +1,6 @@
+-begin
+  =render_diff_stats(@project.repo.diff_stats @commit1.id, @commit.id)
+  = "#{@commit1}...#{@commit}"
+  =render :partial => 'commit_diff', :collection => @project.repo.diff(@commit1.id, @commit.id)
+- rescue Grit::Git::GitTimeout
+  %p= t 'layout.git.repositories.commit_diff_too_big'
