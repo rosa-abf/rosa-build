@@ -112,8 +112,8 @@ class ProductBuildList < ActiveRecord::Base
     options = {
       :id => id,
       # TODO: remove comment
-      :srcpath => 'http://dl.dropbox.com/u/945501/avokhmin-test-iso-script-5d9b463d4e9c06ea8e7c89e1b7ff5cb37e99e27f.tar.gz',
-      # :srcpath => srcpath,
+      # :srcpath => 'http://dl.dropbox.com/u/945501/avokhmin-test-iso-script-5d9b463d4e9c06ea8e7c89e1b7ff5cb37e99e27f.tar.gz',
+      :srcpath => srcpath,
       :params => params,
       :time_living => time_living,
       :main_script => main_script,
