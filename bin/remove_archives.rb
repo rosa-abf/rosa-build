@@ -34,7 +34,7 @@ Dir.glob(owners).each do |owner|
       #--
       Dir.chdir(path)
 
-      unless `git log --all --format='%H' -- *.{tar\.bz2,tar\.gz,bz2,rar,gz,tar,tbz2,tgz,zip,Z,7z,tar\.xz,tar\.lzma}`.empty?
+      unless `git log --all --format='%H' -- *.{bz2,rar,gz,tar,tbz2,tgz,zip,Z,7z,xz,lzma}`.empty?
         system "git filter-branch -d /dev/shm/git_task --tree-filter \"/home/rosa/git_task/file-store.rb #{token}\" --prune-empty --tag-name-filter cat -- --all"
         #####
         # This is dangerous !!!
