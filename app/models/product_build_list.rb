@@ -5,7 +5,7 @@ class ProductBuildList < ActiveRecord::Base
 
   BUILD_COMPLETED = 0
   BUILD_FAILED    = 1
-  BUILD_IN_QUEUE  = 2
+  BUILD_PENDING   = 2
   BUILD_STARTED   = 3
   BUILD_CANCELED  = 4
   BUILD_CANCELING = 5
@@ -13,7 +13,7 @@ class ProductBuildList < ActiveRecord::Base
   STATUSES = [  BUILD_STARTED,
                 BUILD_COMPLETED,
                 BUILD_FAILED,
-                BUILD_IN_QUEUE,
+                BUILD_PENDING,
                 BUILD_CANCELED,
                 BUILD_CANCELING
               ]
@@ -21,7 +21,7 @@ class ProductBuildList < ActiveRecord::Base
   HUMAN_STATUSES = { BUILD_STARTED => :build_started,
                      BUILD_COMPLETED => :build_completed,
                      BUILD_FAILED => :build_failed,
-                     BUILD_IN_QUEUE => :in_queue,
+                     BUILD_PENDING => :build_pending,
                      BUILD_CANCELED => :build_canceled,
                      BUILD_CANCELING => :canceling
                     }
@@ -63,6 +63,7 @@ class ProductBuildList < ActiveRecord::Base
   after_create :xml_rpc_create
   before_destroy :can_destroy?
   after_destroy :xml_delete_iso_container
+  before_validation :check_status
 
   def build_started?
     status == BUILD_STARTED
@@ -89,7 +90,7 @@ class ProductBuildList < ActiveRecord::Base
   end
 
   def can_destroy?
-    [BUILD_COMPLETED, BUILD_FAILED].include? status
+    [BUILD_COMPLETED, BUILD_FAILED, BUILD_CANCELED].include? status
   end
 
   def log
@@ -106,6 +107,12 @@ class ProductBuildList < ActiveRecord::Base
   end
 
   protected
+
+  def check_status
+    if status_was == BUILD_CANCELING && [BUILD_COMPLETED, BUILD_FAILED].include?(status)
+      self.status = BUILD_CANCELED
+    end
+  end
 
   def xml_rpc_create
     file_name = "#{project.owner.uname}-#{project.name}-#{commit_hash}"

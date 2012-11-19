@@ -17,16 +17,16 @@ en:
       statuses:
         '0': 'build complete'
         '1': 'build error'
-        '2': 'build is waiting'
+        '2': 'build pending'
         '3': 'build started'
         '4': 'build canceled'
         '5': 'build is canceling'
         build_completed: Build complete
         build_failed: Build failed
-        in_queue: Build is waiting
+        build_pending: Build pending
         build_started: Build started
         build_canceled: Build canceled
-        canceling: Build is canceling
+        build_canceling: Build is canceling
 
       ownership:
         header: Build list ownership
