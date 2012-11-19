@@ -26,7 +26,7 @@ ru:
         build_pending: Ожидает сборку
         build_started: Собирается
         build_canceled: Сборка отменена
-        canceling: Сборка отменяется
+        build_canceling: Сборка отменяется
 
       ownership:
         header: Принадлежность заданий
