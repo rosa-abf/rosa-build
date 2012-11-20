@@ -15,12 +15,6 @@ en:
       main_data: Main data
       show: Show
       statuses:
-        '0': 'build complete'
-        '1': 'build error'
-        '2': 'build pending'
-        '3': 'build started'
-        '4': 'build canceled'
-        '5': 'build is canceling'
         build_completed: Build complete
         build_failed: Build failed
         build_pending: Build pending
