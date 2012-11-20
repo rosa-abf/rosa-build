@@ -15,12 +15,12 @@ en:
       main_data: Main data
       show: Show
       statuses:
-        '0': 'build'
-        '1': 'build error'
-        '2': 'build in progress'
+        build_completed: Build complete
         build_failed: Build failed
-        build_started: Build in progress
-        build_completed: Built
+        build_pending: Build pending
+        build_started: Build started
+        build_canceled: Build canceled
+        build_canceling: Build is canceling
 
       ownership:
         header: Build list ownership
@@ -46,6 +46,7 @@ en:
       product_build_list/results:
         file_name: File name
         sha1: SHA1
+        size: Size (MB)
 
   flash:
     product_build_list:

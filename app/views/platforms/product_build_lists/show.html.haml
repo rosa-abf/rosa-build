@@ -23,7 +23,7 @@
 
 = render 'show_field', :key => :notified_at, :value => l(pbl.updated_at, :format => :long)
 
-- if pbl.build_started?
+- if pbl.build_started? || pbl.build_canceling?
   - if can? :stop, pbl
     .leftlist= t("layout.product_build_lists.action")
     .rightlist= link_to t("layout.product_build_lists.stop"), stop_platform_product_product_build_list_path(pbl.product.platform, pbl.product, pbl)
@@ -39,12 +39,14 @@
       %tr
         %th= t("activerecord.attributes.product_build_list/results.file_name")
         %th= t("activerecord.attributes.product_build_list/results.sha1")
+        %th= t("activerecord.attributes.product_build_list/results.size")
     %tbody
       - pbl.results.each do |item|
         %tr
           - sha1 = item['sha1']
           %td= link_to item['file_name'], "http://file-store.rosalinux.ru/api/v1/file_stores/#{sha1}"
           %td= sha1
+          %td= item['size']
 .both
 
 
