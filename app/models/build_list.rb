@@ -27,6 +27,9 @@ class BuildList < ActiveRecord::Base
     errors.add(:build_for_platform, I18n.t('flash.build_list.wrong_platform')) if save_to_platform.platform_type == 'main' && save_to_platform_id != build_for_platform_id
   }
   validate lambda {
+    errors.add(:build_for_platform, I18n.t('flash.build_list.wrong_build_for_platform')) unless build_for_platform.platform_type == 'main'
+  }
+  validate lambda {
     errors.add(:save_to_repository, I18n.t('flash.build_list.wrong_repository')) unless save_to_repository_id.in? save_to_platform.repositories.map(&:id)
   }
   validate lambda {
