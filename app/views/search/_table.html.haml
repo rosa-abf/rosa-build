@@ -7,4 +7,4 @@
     - collection.each do |c|
       %tr
         %td= render type.singularize, type.singularize.to_sym => c
-= link_to t('layout.search.all'), search_index_path(:query => params[:query], :type => type) if collection.present?
+= link_to t('layout.search.all'), search_index_path(:query => @query, :type => type) if collection.present?
