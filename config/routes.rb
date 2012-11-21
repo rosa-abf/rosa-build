@@ -13,6 +13,7 @@ Rosa::Application.routes.draw do
   namespace :api do
     namespace :v1 do
       resources :advisories, :only => [:index, :show, :create, :update]
+      resources :search, :only => [:index]
       resources :build_lists, :only => [:index, :create, :show] do
         member {
           get :publish
