@@ -1,6 +1,6 @@
 # -*- encoding : utf-8 -*-
 class SearchController < ApplicationController
-  TAGS = ['projects', 'users', 'groups', 'platforms']
+  TYPES = ['projects', 'users', 'groups', 'platforms']
 
   before_filter :authenticate_user! unless APP_CONFIG['anonymous_access']
   # load_and_authorize_resource
@@ -10,8 +10,8 @@ class SearchController < ApplicationController
     @query = params[:query]
     case @type
     when 'all'
-      TAGS.each{ |t| find_collection(t) }
-    when *TAGS
+      TYPES.each{ |t| find_collection(t) }
+    when *TYPES
       find_collection(@type)
     end
   end
