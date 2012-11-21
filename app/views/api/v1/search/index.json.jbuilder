@@ -3,4 +3,4 @@ json.results do |json|
     json.partial! tag.dup, :results => results, :json => json
   end
 end
-json.url api_v1_search_index_path(params)
+json.url api_v1_search_index_path(:format => :json)
