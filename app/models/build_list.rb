@@ -345,6 +345,10 @@ class BuildList < ActiveRecord::Base
       status == BUILD_PUBLISHED
   end
 
+  def log
+    Resque.redis.get("abfworker::rpm-worker-#{id}") || ''
+  end
+
   protected
 
   def notify_users
