@@ -243,8 +243,39 @@ class BuildList < ActiveRecord::Base
 
 
   def add_to_queue
+    include_repos_hash = {}.tap do |h|
+      include_repos.each do |r|
+        repo = Repository.find r
+        h[repo.name] = repo.platform.public_downloads_url(nil, arch, repo.name)
+      end
+    end
+    options = {
+      :id => id,
+      :arch => arch.name,
+      :time_living => 2880, # 2 days
+      :distrib_type => build_for_platform.distrib_type,
+      :git_project_address => 'https://abf.rosalinux.ru/import/qtiplot.git',
+      # :git_project_address => project.git_project_address,
+      :commit_hash => '9272c173c517178b5c039c4b196c719b472147a7',
+      # :commit_hash => commit_hash,
+      :build_requires => build_requires,
+      :include_repos => include_repos_hash
+      
+
+      # :project_version => project_version,
+      # :plname => save_to_platform.name,
+      # :bplname => (save_to_platform_id == build_for_platform_id ? '' : build_for_platform.name),
+      # :update_type => update_type,
+      # :priority => priority,
+    }
+    Resque.push(
+      'rpm_worker',
+      'class' => 'AbfWorker::RpmWorker',
+      'args' => [options]
+    )
+    @status ||= BUILD_PENDING
     #XML-RPC params: project_name, project_version, plname, arch, bplname, update_type, build_requires, id_web, include_repos, priority, git_project_address
-    @status ||= BuildServer.add_build_list project.name, project_version, save_to_platform.name, arch.name, (save_to_platform_id == build_for_platform_id ? '' : build_for_platform.name), update_type, build_requires, id, include_repos, priority, project.git_project_address
+    # @status ||= BuildServer.add_build_list project.name, project_version, save_to_platform.name, arch.name, (save_to_platform_id == build_for_platform_id ? '' : build_for_platform.name), update_type, build_requires, id, include_repos, priority, project.git_project_address
   end
 
   def self.human_status(status)
