@@ -268,11 +268,13 @@ class BuildList < ActiveRecord::Base
       # :update_type => update_type,
       # :priority => priority,
     }
-    Resque.push(
-      'rpm_worker',
-      'class' => 'AbfWorker::RpmWorker',
-      'args' => [options]
-    )
+    unless @status
+      Resque.push(
+        'rpm_worker',
+        'class' => 'AbfWorker::RpmWorker',
+        'args' => [options]
+      )
+    end
     @status ||= BUILD_PENDING
     #XML-RPC params: project_name, project_version, plname, arch, bplname, update_type, build_requires, id_web, include_repos, priority, git_project_address
     # @status ||= BuildServer.add_build_list project.name, project_version, save_to_platform.name, arch.name, (save_to_platform_id == build_for_platform_id ? '' : build_for_platform.name), update_type, build_requires, id, include_repos, priority, project.git_project_address
