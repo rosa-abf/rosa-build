@@ -43,5 +43,6 @@ class Projects::Git::CommitsController < Projects::Git::BaseController
             params2 #FIXME git has other ref?
           end
     @commit = @project.repo.commit(ref) || raise(ActiveRecord::RecordNotFound)
+    @common_ancestor = @project.repo.commit(@project.repo.git.merge_base({}, @commit1, @commit)) || @commit1
   end
 end
