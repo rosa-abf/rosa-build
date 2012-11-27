@@ -124,8 +124,8 @@
         var r = new Rosa.Routers.BuildListsAdvisoriesRouter();
       });
 
-  - if BuildList::HUMAN_STATUSES[@build_list.status].in? [:build_started, :build_error, :success]
-    = render 'shared/log', { :build_started => @build_list.build_started?, :download_log_url => build_list_log_url(:build), :get_log_path => log_build_list_path(@build_list) }
+  - if BuildList::HUMAN_STATUSES[@build_list.status].in? [:build_started, :build_error]
+    = render 'shared/log', { :build_started => @build_list.build_started?, :get_log_path => log_build_list_path(@build_list) }
 
 
   - if (can_publish = @build_list.can_publish? && can?(:publish, @build_list))
@@ -172,6 +172,8 @@
           %td= package.version
           %td= package.release
   .both
+
+= render 'platforms/product_build_lists/results', :pbl => @build_list
 
 :javascript
   $('article .all').addClass('bigpadding');

@@ -112,6 +112,7 @@ class BuildList < ActiveRecord::Base
 
   serialize :additional_repos
   serialize :include_repos
+  serialize :results, Array
 
   after_commit :place_build
   after_destroy :delete_container
@@ -246,7 +247,7 @@ class BuildList < ActiveRecord::Base
     include_repos_hash = {}.tap do |h|
       include_repos.each do |r|
         repo = Repository.find r
-        h[repo.name] = repo.platform.public_downloads_url(nil, arch, repo.name)
+        h[repo.name] = repo.platform.public_downloads_url(nil, arch.name, repo.name)
       end
     end
     options = {
