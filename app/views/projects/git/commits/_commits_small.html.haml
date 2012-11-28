@@ -3,7 +3,7 @@
     %tbody
       - commits.each do |commit|
         - item_no = commit.id
-        - GitPresenters::CommitAsMessagePresenter.present(commit, :branch => @branch, :project => @project) do |presenter|
+        - GitPresenters::CommitAsMessagePresenter.present(commit, :project => @project) do |presenter|
           %tr
             %td
               %img{:height => 16, :alt => "avatar", :src => presenter.image}

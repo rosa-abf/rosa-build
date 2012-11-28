@@ -7,15 +7,12 @@ class GitPresenters::CommitAsMessagePresenter < ApplicationPresenter
 
   def initialize(commit, opts = {})
     @commit = commit
-    @options = opts#[:branch] if opts[:branch]
+    @options = opts
     prepare_message
   end
 
   def header
-    @header ||= if options[:branch].present?
-                  I18n.t("layout.messages.commits.header_with_branch",
-                   :committer => committer_link, :commit => commit_link, :branch => options[:branch].name)
-                elsif options[:project].present?
+    @header ||= if options[:project].present?
                   I18n.t("layout.messages.commits.header",
                    :committer => committer_link, :commit => commit_link, :project => options[:project].name)
                 end.html_safe
