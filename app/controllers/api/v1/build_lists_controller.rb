@@ -53,7 +53,7 @@ class Api::V1::BuildListsController < Api::V1::BaseController
 
   def render_json(action_name)
     res, message = if !@build_list.send "can_#{action_name}?"
-                     [false, "Incorrect action for current status"]
+                     [false, "Incorrect action for current build list"]
                    elsif @build_list.send(action_name)
                      [true, t("layout.build_lists.#{action_name}_success")]
                    else
