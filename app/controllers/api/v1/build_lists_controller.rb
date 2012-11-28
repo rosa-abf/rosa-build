@@ -52,13 +52,14 @@ class Api::V1::BuildListsController < Api::V1::BaseController
   private
 
   def render_json(action_name)
-    if !@build_list.send "can_#{action_name}?"
-      render :json => {:"is_#{action_name}ed" => false, :url => api_v1_build_list_path(@build_list, :format => :json), :message => "Incorrect action for current status"}
-    elsif @build_list.send(action_name)
-      render :json => {:"is_#{action_name}ed" => true, :url => api_v1_build_list_path(@build_list, :format => :json), :message => t("layout.build_lists.#{action_name}_success")}
-    else
-      render :json => {:"is_#{action_name}ed" => false, :url => api_v1_build_list_path(@build_list, :format => :json), :message => t("layout.build_lists.#{action_name}_fail")}
-    end
-  end
+    res, message = if !@build_list.send "can_#{action_name}?"
+                     [false, "Incorrect action for current status"]
+                   elsif @build_list.send(action_name)
+                     [true, t("layout.build_lists.#{action_name}_success")]
+                   else
+                     [false, t("layout.build_lists.#{action_name}_fail")]
+                   end
 
+   render :json => {:"is_#{action_name}ed" => res, :url => api_v1_build_list_path(@build_list, :format => :json), :message => message}
+  end
 end
