@@ -3,7 +3,7 @@
 = render 'about_block', :project => @project
 
 %h3= t("layout.projects.last_commit")
-- GitPresenters::CommitAsMessagePresenter.present(@commit, :branch => @branch, :project => @project) do |presenter|
+- GitPresenters::CommitAsMessagePresenter.present(@commit, :project => @project) do |presenter|
   = render :partial => 'shared/feed_message', :locals => {:presenter => presenter, :item_no => 1}
 
 .both
