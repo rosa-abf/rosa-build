@@ -12,6 +12,8 @@ class BuildList::Package < ActiveRecord::Base
             :presence => true
   validates :package_type, :inclusion => PACKAGE_TYPES
 
+  default_scope order('lower(name) ASC, length(name) ASC')
+
   # Fetches only actual (last publised) packages.
   scope :actual,          where(:actual => true)
   scope :by_platform,     lambda {|platform| where(:platform_id => platform) }
