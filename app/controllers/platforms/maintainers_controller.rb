@@ -7,7 +7,7 @@ class Platforms::MaintainersController < ApplicationController
   def index
     @maintainers = BuildList::Package.actual.by_platform(@platform)
                                      .includes(:project)
-    @maintainers = @maintainers.where('name ILIKE ?', "%#{params[:q]}%") if params[:q].present?
+    @maintainers = @maintainers.like_name(params[:q]) if params[:q].present?
     @maintainers = @maintainers.paginate(:page => params[:page])
   end
 

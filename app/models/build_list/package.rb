@@ -19,6 +19,7 @@ class BuildList::Package < ActiveRecord::Base
   scope :by_platform,     lambda {|platform| where(:platform_id => platform) }
   scope :by_name,         lambda {|name| where(:name => name) }
   scope :by_package_type, lambda {|type| where(:package_type => type) }
+  scope :like_name,       lambda {|name| where('name ILIKE ?', "%#{name}%")}
 
   def assignee
     project.maintainer
