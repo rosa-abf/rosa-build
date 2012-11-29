@@ -378,9 +378,11 @@ class BuildList < ActiveRecord::Base
 
   def log(load_lines)
     log = Resque.redis.get("abfworker::rpm-worker-#{id}")
-    log ||= `tail -n #{load_lines.to_i} #{Rails.root + 'public' + fs_log_path}`
-    log = t("layout.build_lists.log.not_available") unless $?.success?
-    log
+    unless log
+      log = `tail -n #{load_lines.to_i} #{Rails.root + 'public' + fs_log_path}`
+      log = nil unless $?.success?
+    end
+    log || t("layout.build_lists.log.not_available")
   end
 
   protected
