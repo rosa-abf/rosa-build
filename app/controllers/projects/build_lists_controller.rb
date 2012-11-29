@@ -55,13 +55,14 @@ class Projects::BuildListsController < Projects::BaseController
     build_for_platforms = Repository.select(:platform_id).
       where(:id => params[:build_list][:include_repos]).group(:platform_id).map(&:platform_id)
 
+    new_core = current_user.admin? && params[:build_list][:new_core] == '1'
     Arch.where(:id => params[:arches]).each do |arch|
       Platform.main.where(:id => build_for_platforms).each do |build_for_platform|
         @build_list = @project.build_lists.build(params[:build_list])
         @build_list.build_for_platform = build_for_platform; @build_list.arch = arch; @build_list.user = current_user
         @build_list.include_repos = @build_list.include_repos.select {|ir| @build_list.build_for_platform.repository_ids.include? ir.to_i}
         @build_list.priority = current_user.build_priority # User builds more priority than mass rebuild with zero priority
-        @build_list.new_core = current_user.admin? && params[:build_list][:new_core] == '1'
+        @build_list.new_core = new_core
 
         flash_options = {:project_version => @build_list.project_version, :arch => arch.name, :build_for_platform => build_for_platform.name}
         if @build_list.save
@@ -107,7 +108,7 @@ class Projects::BuildListsController < Projects::BaseController
 
   def log
     render :json => {
-      :log => @build_list.log,
+      :log => @build_list.log(params[:load_lines]),
       :building => @build_list.build_started?
     }
     # @log = `tail -n #{params[:load_lines].to_i} #{Rails.root + 'public' + @build_list.fs_log_path}`
