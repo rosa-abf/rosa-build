@@ -117,6 +117,8 @@ class BuildList < ActiveRecord::Base
   after_commit :place_build
   after_destroy :delete_container
 
+  attr_accessor :new_core
+
   @queue = :clone_and_build
 
   state_machine :status, :initial => :waiting_for_response do
@@ -242,8 +244,7 @@ class BuildList < ActiveRecord::Base
     can_publish? and not save_to_repository.publish_without_qa
   end
 
-
-  def add_to_queue
+  def add_to_abf_worker_queue
     include_repos_hash = {}.tap do |h|
       include_repos.each do |r|
         repo = Repository.find r
@@ -260,7 +261,9 @@ class BuildList < ActiveRecord::Base
       :commit_hash => '9272c173c517178b5c039c4b196c719b472147a7',
       # :commit_hash => commit_hash,
       :build_requires => build_requires,
-      :include_repos => include_repos_hash
+      :include_repos => include_repos_hash,
+      :bplname => build_for_platform.name
+
       
 
       # :project_version => project_version,
@@ -277,8 +280,16 @@ class BuildList < ActiveRecord::Base
       )
     end
     @status ||= BUILD_PENDING
-    #XML-RPC params: project_name, project_version, plname, arch, bplname, update_type, build_requires, id_web, include_repos, priority, git_project_address
-    # @status ||= BuildServer.add_build_list project.name, project_version, save_to_platform.name, arch.name, (save_to_platform_id == build_for_platform_id ? '' : build_for_platform.name), update_type, build_requires, id, include_repos, priority, project.git_project_address
+  end
+
+  def add_to_queue
+    if new_core?
+      add_to_abf_worker_queue
+    else
+      #XML-RPC params: project_name, project_version, plname, arch, bplname, update_type, build_requires, id_web, include_repos, priority, git_project_address
+      @status ||= BuildServer.add_build_list project.name, project_version, save_to_platform.name, arch.name, (save_to_platform_id == build_for_platform_id ? '' : build_for_platform.name), update_type, build_requires, id, include_repos, priority, project.git_project_address
+    end
+    @status
   end
 
   def self.human_status(status)
