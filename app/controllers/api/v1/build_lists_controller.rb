@@ -8,7 +8,7 @@ class Api::V1::BuildListsController < Api::V1::BaseController
   load_and_authorize_resource :build_list, :only => [:show, :create, :cancel, :publish, :reject_publish]
 
   def index
-    filter = BuildList::Filter.new(nil, current_user, params[:filter] || {})
+    filter = BuildList::Filter.new(@project, current_user, params[:filter] || {})
     @build_lists = filter.find.scoped(:include => [:save_to_platform, :project, :user, :arch])
     @build_lists = @build_lists.recent.paginate(paginate_params)
   end
