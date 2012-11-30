@@ -117,8 +117,6 @@ class BuildList < ActiveRecord::Base
   after_commit :place_build
   after_destroy :delete_container
 
-  attr_accessor :new_core
-
   @queue = :clone_and_build
 
   state_machine :status, :initial => :waiting_for_response do
@@ -300,7 +298,7 @@ class BuildList < ActiveRecord::Base
   end
 
   def add_to_queue
-    if @new_core
+    if new_core?
       add_to_abf_worker_queue
     else
       #XML-RPC params: project_name, project_version, plname, arch, bplname, update_type, build_requires, id_web, include_repos, priority, git_project_address
@@ -377,8 +375,9 @@ class BuildList < ActiveRecord::Base
   end
 
   def log(load_lines)
-    log = Resque.redis.get("abfworker::rpm-worker-#{id}")
-    unless log
+    if new_core?
+      log = Resque.redis.get("abfworker::rpm-worker-#{id}")
+    else
       log = `tail -n #{load_lines.to_i} #{Rails.root + 'public' + fs_log_path}`
       log = nil unless $?.success?
     end

@@ -59,6 +59,9 @@
   .leftlist= t("activerecord.attributes.build_list.is_circle")
   .rightlist= t("layout.#{@build_list.is_circle?}_")
   .both
+  .leftlist= t("activerecord.attributes.build_list.new_core")
+  .rightlist= t("layout.#{@build_list.new_core?}_")
+  .both
 
   - if @build_list.mass_build_id.present?
     .leftlist= t("activerecord.attributes.mass_build_id")
@@ -124,9 +127,9 @@
         var r = new Rosa.Routers.BuildListsAdvisoriesRouter();
       });
 
-  - if BuildList::HUMAN_STATUSES[@build_list.status].in? [:build_started, :build_error]
-    = render 'shared/log', { :build_started => @build_list.build_started?, :get_log_path => log_build_list_path(@build_list) }
-
+  - if BuildList::HUMAN_STATUSES[@build_list.status].in? [:build_started, :build_error, :success]
+    - log_params = { :build_started => @build_list.build_started?, :get_log_path => log_build_list_path(@build_list) }
+    = render 'shared/log', ( @build_list.new_core? ? log_params : log_params.merge({:download_log_url => build_list_log_url(:build)}) )
 
   - if (can_publish = @build_list.can_publish? && can?(:publish, @build_list))
     .hr

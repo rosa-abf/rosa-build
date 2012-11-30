@@ -13,6 +13,7 @@ en:
         project: Project
         arch_id: Architecture
         arch: Architecture
+        new_core: New core
         is_circle: Recurrent build
         updated_at: Notified at
         additional_repos: Additional repositories

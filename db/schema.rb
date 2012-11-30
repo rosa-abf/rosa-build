@@ -131,6 +131,7 @@ ActiveRecord::Schema.define(:version => 20121127122032) do
     t.integer  "mass_build_id"
     t.integer  "save_to_repository_id"
     t.text     "results"
+    t.boolean  "new_core"
   end
 
   add_index "build_lists", ["advisory_id"], :name => "index_build_lists_on_advisory_id"

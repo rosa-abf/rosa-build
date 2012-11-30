@@ -111,12 +111,6 @@ class Projects::BuildListsController < Projects::BaseController
       :log => @build_list.log(params[:load_lines]),
       :building => @build_list.build_started?
     }
-    # @log = `tail -n #{params[:load_lines].to_i} #{Rails.root + 'public' + @build_list.fs_log_path}`
-    # @log = t("layout.build_lists.log.not_available") unless $?.success?
-
-    # respond_to do |format|
-    #   format.json { render :json => { :log => @log, :building => @build_list.build_started? } }
-    # end
   end
 
   def publish_build
