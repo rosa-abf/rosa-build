@@ -1,6 +1,10 @@
 require 'spec_helper'
 
 describe Api::V1::MaintainersController do
+  before do
+    stub_symlink_methods
+  end
+
   let(:package) { FactoryGirl.create(:build_list_package) }
 
   context 'for guest' do
