@@ -249,34 +249,27 @@ class BuildList < ActiveRecord::Base
         # /release
         # /updates
         path = repo.platform.public_downloads_url(nil, arch.name, repo.name)
+        # path = path.gsub(/^http:\/\/0\.0\.0\.0\:3000/, 'https://abf.rosalinux.ru')
         h["#{repo.name}_release"] = path + 'release'
         h["#{repo.name}_updates"] = path + 'updates'
       end
     end
-    # include_repos_hash = {
-    #   'main_release' => 'http://mirror.rosalinux.com/rosa/rosa2012lts/repository/x86_64/main/release',
-    #   'main_updates' => 'http://mirror.rosalinux.com/rosa/rosa2012lts/repository/x86_64/main/updates'
-    #   # 'main_release' => 'http://mirror.rosalinux.com/rosa/rosa2012.1/repository/x86_64/main',
-    #   # 'main_updates' => 'http://mirror.rosalinux.com/rosa/rosa2012.1/repository/x86_64/main'
-    #   # 'base' => 'http://mirrorlist.centos.org/?release=6&arch=x86_64&repo=os'
-    # }
+    # mdv example:
+    # https://abf.rosalinux.ru/import/plasma-applet-stackfolder.git
+    # bfe6d68cc607238011a6108014bdcfe86c69456a
+
+    # rhel example:
+    # https://abf.rosalinux.ru/server/gnome-settings-daemon.git
+    # fbb2549e44d97226fea6748a4f95d1d82ffb8726
+
     options = {
       :id => id,
       :arch => arch.name,
       :time_living => 2880, # 2 days
       :distrib_type => build_for_platform.distrib_type,
-
-      # mdv example:
-      # https://abf.rosalinux.ru/import/plasma-applet-stackfolder.git
-      # bfe6d68cc607238011a6108014bdcfe86c69456a
-
-      # rhel example:
-      # https://abf.rosalinux.ru/server/gnome-settings-daemon.git
-      # fbb2549e44d97226fea6748a4f95d1d82ffb8726
-
-      # :git_project_address => 'https://abf.rosalinux.ru/import/plasma-applet-stackfolder.git',
+      # :git_project_address => 'https://abf.rosalinux.ru/server/gnome-settings-daemon.git',
       :git_project_address => project.git_project_address,
-      # :commit_hash => 'bfe6d68cc607238011a6108014bdcfe86c69456a',
+      # :commit_hash => 'fbb2549e44d97226fea6748a4f95d1d82ffb8726',
       :commit_hash => commit_hash,
       :build_requires => build_requires,
       :include_repos => include_repos_hash,
