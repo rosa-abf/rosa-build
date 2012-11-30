@@ -33,6 +33,7 @@ Rosa::Application.routes.draw do
           post :clone
           put :clear
         }
+        resources :maintainers, :only => [ :index ]
       end
       resources :repositories, :only => [:show, :update, :destroy] do
         member {

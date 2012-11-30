@@ -12,11 +12,14 @@ class BuildList::Package < ActiveRecord::Base
             :presence => true
   validates :package_type, :inclusion => PACKAGE_TYPES
 
+  default_scope order('lower(name) ASC, length(name) ASC')
+
   # Fetches only actual (last publised) packages.
   scope :actual,          where(:actual => true)
   scope :by_platform,     lambda {|platform| where(:platform_id => platform) }
   scope :by_name,         lambda {|name| where(:name => name) }
   scope :by_package_type, lambda {|type| where(:package_type => type) }
+  scope :like_name,       lambda {|name| where('name ILIKE ?', "%#{name}%") if name.present?}
 
   def assignee
     project.maintainer
