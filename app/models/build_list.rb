@@ -374,7 +374,7 @@ class BuildList < ActiveRecord::Base
       log = `tail -n #{load_lines.to_i} #{Rails.root + 'public' + fs_log_path}`
       log = nil unless $?.success?
     end
-    log || t("layout.build_lists.log.not_available")
+    log || I18n.t('layout.build_lists.log.not_available')
   end
 
   protected
