@@ -21,7 +21,6 @@ describe Api::V1::MaintainersController do
 
   context 'for simple user' do
     before do
-      stub_symlink_methods
       http_login(FactoryGirl.create(:user))
     end
 
