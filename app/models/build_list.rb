@@ -246,10 +246,13 @@ class BuildList < ActiveRecord::Base
     include_repos_hash = {}.tap do |h|
       include_repos.each do |r|
         repo = Repository.find r
-        # /release
-        # /updates
         path = repo.platform.public_downloads_url(nil, arch.name, repo.name)
         # path = path.gsub(/^http:\/\/0\.0\.0\.0\:3000/, 'https://abf.rosalinux.ru')
+        # Path looks like:
+        # http://abf.rosalinux.ru/downloads/rosa-server2012/repository/x86_64/base/
+        # so, we should append:
+        # /release
+        # /updates
         h["#{repo.name}_release"] = path + 'release'
         h["#{repo.name}_updates"] = path + 'updates'
       end
@@ -294,8 +297,31 @@ class BuildList < ActiveRecord::Base
     if new_core?
       add_to_abf_worker_queue
     else
-      #XML-RPC params: project_name, project_version, plname, arch, bplname, update_type, build_requires, id_web, include_repos, priority, git_project_address
-      @status ||= BuildServer.add_build_list project.name, project_version, save_to_platform.name, arch.name, (save_to_platform_id == build_for_platform_id ? '' : build_for_platform.name), update_type, build_requires, id, include_repos, priority, project.git_project_address
+      # XML-RPC params:
+      # - project_name
+      # - project_version
+      # - plname
+      # - arch
+      # - bplname
+      # - update_type
+      # - build_requires
+      # - id_web
+      # - include_repos
+      # - priority
+      # - git_project_address
+      @status ||= BuildServer.add_build_list(
+        project.name,
+        project_version,
+        save_to_platform.name,
+        arch.name,
+        (save_to_platform_id == build_for_platform_id ? '' : build_for_platform.name),
+        update_type,
+        build_requires,
+        id,
+        include_repos,
+        priority,
+        project.git_project_address
+      )
     end
     @status
   end
@@ -364,7 +390,7 @@ class BuildList < ActiveRecord::Base
     !save_to_repository.publish_without_qa &&
       save_to_platform.main? &&
       save_to_platform.released &&
-      status == BUILD_PUBLISHED
+      build_published?
   end
 
   def log(load_lines)
