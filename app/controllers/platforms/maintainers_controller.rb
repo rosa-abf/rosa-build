@@ -5,10 +5,9 @@ class Platforms::MaintainersController < ApplicationController
   load_and_authorize_resource :platform
 
   def index
-    @maintainers = BuildList::Package.actual.by_platform(@platform)
-                                     .includes(:project)
-    @maintainers = @maintainers.like_name(params[:q]) if params[:q].present?
-    @maintainers = @maintainers.paginate(:page => params[:page])
+    @maintainers = BuildList::Package.includes(:project)
+                                     .actual.by_platform(@platform)
+                                     .like_name(params[:q])
+                                     .paginate(:page => params[:page])
   end
-
 end
