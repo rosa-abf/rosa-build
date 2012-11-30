@@ -176,7 +176,8 @@
           %td= package.release
   .both
 
-= render 'platforms/product_build_lists/results', :pbl => @build_list
+- if @build_list.new_core?
+  = render 'platforms/product_build_lists/results', :pbl => @build_list
 
 :javascript
   $('article .all').addClass('bigpadding');
