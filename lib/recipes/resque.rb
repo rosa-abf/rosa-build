@@ -26,7 +26,7 @@ Capistrano::Configuration.instance(:must_exist).load do
     end
 
     def start_workers
-      run "cd #{fetch :current_path} && COUNT=#{workers_count} QUEUE=fork_import,hook,clone_build,notification,iso_worker_observer #{rails_env} BACKGROUND=yes bundle exec rake resque:workers"
+      run "cd #{fetch :current_path} && COUNT=#{workers_count} QUEUE=fork_import,hook,clone_build,notification,iso_worker_observer,rpm_worker_observer #{rails_env} BACKGROUND=yes bundle exec rake resque:workers"
     end
   end
 end
