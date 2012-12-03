@@ -214,14 +214,9 @@ class BuildList < ActiveRecord::Base
 
   def actualize_packages
     ActiveRecord::Base.transaction do
-      old_pkgs = self.class.where(:project_id => self.project_id)
-                           .where(:save_to_repository_id => self.save_to_repository_id)
-                           .for_platform(self.build_for_platform_id)
-                           .scoped_to_arch(self.arch_id)
-                           .for_status(BUILD_PUBLISHED)
-                           .recent.limit(2).last.packages # packages from previous build_list
-      old_pkgs.update_all(:actual => false)
-      self.packages.update_all(:actual => true)
+      # packages from previous build_list
+      self.last_published.packages.update_all :actual => false
+      self.packages.update_all :actual => true
     end
   end
 
@@ -344,5 +339,14 @@ class BuildList < ActiveRecord::Base
       p.package_type = package_type
       yield p
     end
+  end
+
+  def last_published
+    BuildList.where(:project_id => self.project_id,
+                    :save_to_repository_id => self.save_to_repository_id)
+             .for_platform(self.build_for_platform_id)
+             .scoped_to_arch(self.arch_id)
+             .for_status(BUILD_PUBLISHED)
+             .recent.limit(2).last
   end
 end
