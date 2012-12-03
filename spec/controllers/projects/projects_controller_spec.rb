@@ -94,6 +94,11 @@ describe Projects::ProjectsController do
         put :update, {:owner_name => @project.owner.uname, :project_name => @project.name}.merge(@update_params)
         response.should redirect_to(new_user_session_path)
       end
+
+      it 'should not be able to perform create action' do
+        post :create, @create_params
+        response.should redirect_to(new_user_session_path)
+      end
     end
 
     context 'registered user' do

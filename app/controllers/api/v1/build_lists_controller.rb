@@ -8,7 +8,7 @@ class Api::V1::BuildListsController < Api::V1::BaseController
   load_and_authorize_resource :build_list, :only => [:show, :create, :cancel, :publish, :reject_publish]
 
   def index
-    filter = BuildList::Filter.new(nil, current_user, params[:filter] || {})
+    filter = BuildList::Filter.new(@project, current_user, params[:filter] || {})
     @build_lists = filter.find.scoped(:include => [:save_to_platform, :project, :user, :arch])
     @build_lists = @build_lists.recent.paginate(paginate_params)
   end
@@ -52,11 +52,14 @@ class Api::V1::BuildListsController < Api::V1::BaseController
   private
 
   def render_json(action_name)
-    if @build_list.send(action_name)
-      render :json => {:"is_#{action_name}ed" => true, :url => api_v1_build_list_path(@build_list, :format => :json), :message => t("layout.build_lists.#{action_name}_success")}
-    else
-      render :json => {:"is_#{action_name}ed" => false, :url => api_v1_build_list_path(@build_list, :format => :json), :message => t("layout.build_lists.#{action_name}_fail")}
-    end
-  end
+    res, message = if !@build_list.send "can_#{action_name}?"
+                     [false, "Incorrect action for current build list"]
+                   elsif @build_list.send(action_name)
+                     [true, t("layout.build_lists.#{action_name}_success")]
+                   else
+                     [false, t("layout.build_lists.#{action_name}_fail")]
+                   end
 
+   render :json => {:"is_#{action_name}ed" => res, :url => api_v1_build_list_path(@build_list, :format => :json), :message => message}
+  end
 end

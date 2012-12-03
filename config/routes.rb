@@ -33,6 +33,7 @@ Rosa::Application.routes.draw do
           post :clone
           put :clear
         }
+        resources :maintainers, :only => [ :index ]
       end
       resources :repositories, :only => [:show, :update, :destroy] do
         member {
@@ -54,6 +55,7 @@ Rosa::Application.routes.draw do
           delete :remove_member
           put :update_member
         }
+        resources :build_lists, :only => :index
       end
       resources :users, :only => [:show]
       get 'user' => 'users#show_current_user'
