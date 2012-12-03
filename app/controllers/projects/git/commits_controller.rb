@@ -44,5 +44,6 @@ class Projects::Git::CommitsController < Projects::Git::BaseController
           end
     @commit = @project.repo.commit(ref) || raise(ActiveRecord::RecordNotFound)
     @common_ancestor = @project.repo.commit(@project.repo.git.merge_base({}, @commit1, @commit)) || @commit1
+    @stats = @project.repo.diff_stats @commit1.id, @commit.id
   end
 end
