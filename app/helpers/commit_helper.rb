@@ -34,8 +34,8 @@ module CommitHelper
     id[0..19]
   end
 
-  def shortest_hash_id(id)
-    id[0..9]
+  def shortest_hash_id(id, size=10)
+    id[0..size-1]
   end
 
   def short_commit_message(message)

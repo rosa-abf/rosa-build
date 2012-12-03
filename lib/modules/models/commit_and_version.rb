@@ -5,7 +5,7 @@ module Modules
       extend ActiveSupport::Concern
 
       included do
-        
+
         validate lambda {
           if project && (commit_hash.blank? || project.repo.commit(commit_hash).blank?)
             errors.add :commit_hash, I18n.t('flash.build_list.wrong_commit_hash', :commit_hash => commit_hash)
@@ -13,6 +13,7 @@ module Modules
         }
 
         before_validation :set_commit_and_version
+        before_create :set_last_published_commit
       end
 
       protected
@@ -24,6 +25,10 @@ module Modules
         elsif project_version.blank? && commit_hash.present?
           self.project_version = commit_hash
         end
+      end
+
+      def set_last_published_commit
+        self.last_published_commit_hash = self.last_published.try :commit_hash
       end
     end
   end

@@ -6,5 +6,6 @@
     - if commit_diff.b_path.present?
       .r= link_to "view file @ #{short_hash_id(commit_id)}", blob_path(@project, commit_id, commit_diff.b_path)
     .clear
-  -unless (@project.repo.tree(commit_id) / commit_diff.b_path).binary?
+  -if commit_diff.diff.present? && !(@project.repo.tree(commit_id) / commit_diff.a_path).binary?
+    ="a_path=#{commit_diff.a_path}; b_path=#{commit_diff.b_path}" if (@project.repo.tree(commit_id) / commit_diff.b_path).nil?
     .diff_data=render_diff(commit_diff, :diff_counter => commit_diff_counter, :comments => @comments)

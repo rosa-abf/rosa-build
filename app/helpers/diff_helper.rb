@@ -1,7 +1,7 @@
 # -*- encoding : utf-8 -*-
 module DiffHelper
   def render_diff_stats(stats)
-    path = @pull.id ? polymorphic_path([@project, @pull]) : ''
+    path = @pull.try(:id) ? polymorphic_path([@project, @pull]) : ''
     res = ["<table class='commit_stats'>"]
     stats.each_with_index do |stat, ind|
       res << "<tr>"
@@ -51,12 +51,14 @@ module DiffHelper
   ########################################################
   def prepare(args)
     @url, @diff_counter, @in_discussion = args[:url], args[:diff_counter], args[:in_discussion]
-    @filepath, @line_comments, @in_wiki = args[:filepath], args[:comments], args[:in_wiki]
+    @filepath, @line_comments = args[:filepath], args[:comments]
     @add_reply_id, @num_line = if @in_discussion
         [@line_comments[0].id, @line_comments[0].data[:line].to_i - @line_comments[0].data[:strings].lines.count.to_i-1]
       else
         [nil, -1]
       end
+
+    @no_commit_comment = true if params[:controller] == 'projects/wiki' || (params[:action] == 'diff')
   end
 
   def headerline(line)
@@ -225,12 +227,12 @@ module DiffHelper
   end
 
   def line_comment
-    return if @in_wiki || (@in_discussion && @add_reply_id && @line_comments[0].data[:line].to_i != @num_line)
+    return if @no_commit_comment || (@in_discussion && @add_reply_id && @line_comments[0].data[:line].to_i != @num_line)
     link_to image_tag('line_comment.png', :alt => t('layout.comments.new_header')), new_comment_path, :class => 'add_line-comment'
   end
 
   def render_line_comments
-    unless @in_wiki || @in_discussion
+    unless @no_commit_comment || @in_discussion
       comments = @line_comments.select do |c|
         c.data.try('[]', :line) == @num_line.to_s && c.actual_inline_comment?
       end
@@ -243,7 +245,7 @@ module DiffHelper
   end
 
   def tr_line_comments comments
-    return if @in_wiki
+    return if @no_commit_comment
     res="<tr class='inline-comments'>
       <td class='line_numbers' colspan='2'>#{comments.count}</td>
       <td>"

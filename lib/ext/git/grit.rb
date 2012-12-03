@@ -91,6 +91,41 @@ module Grit
     def branches_and_tags
       branches + tags # @branches_and_tags ||= # ???
     end
+
+    def diff(a, b, *paths)
+      diff = self.git.native('diff', {:M => true}, "#{a}...#{b}", '--', *paths)
+
+      if diff =~ /diff --git a/
+        diff = diff.sub(/.*?(diff --git a)/m, '\1')
+      else
+        diff = ''
+      end
+      Diff.list_from_string(self, diff)
+    end
+
+    # The diff stats for the given treeish
+    #   git diff --numstat -M a...b
+    #
+    #   +a+ is the base treeish
+    #   +b+ is the head treeish
+    #
+    # Returns Grit::DiffStat[]
+    def diff_stats(a,b)
+      stats = []
+      Dir.chdir(path) do
+        lines = self.git.native(:diff, {:numstat => true, :M => true}, "#{a}...#{b}").split("\n")
+        while !lines.empty?
+          files = []
+          while lines.first =~ /^([-\d]+)\s+([-\d]+)\s+(.+)/
+            additions, deletions, filename = lines.shift.gsub(' => ', '=>').split
+            additions, deletions = additions.to_i, deletions.to_i
+            stat = DiffStat.new filename, additions, deletions
+            stats << stat
+          end
+        end
+        stats
+      end
+    end
   end
 end
 
