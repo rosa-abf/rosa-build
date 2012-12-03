@@ -33,14 +33,14 @@ class Projects::Git::CommitsController < Projects::Git::BaseController
     ref1 = if @project.repo.branches_and_tags.include? params1
              @project.repo.commits(params1).first
            else
-             params1 #FIXME git has other ref?
+             params1 # possible commit hash
            end
     @commit1 = @project.repo.commit(ref1) || raise(ActiveRecord::RecordNotFound)
 
     ref = if @project.repo.branches_and_tags.include? params2
             @project.repo.commits(params2).first
           else
-            params2 #FIXME git has other ref?
+            params2 # possible commit hash
           end
     @commit = @project.repo.commit(ref) || raise(ActiveRecord::RecordNotFound)
     @common_ancestor = @project.repo.commit(@project.repo.git.merge_base({}, @commit1, @commit)) || @commit1
