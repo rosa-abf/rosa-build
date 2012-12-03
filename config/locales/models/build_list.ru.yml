@@ -13,6 +13,7 @@ ru:
         project: Проект
         arch_id: Архитектура
         arch: Архитектура
+        new_core: Новое ядро
         is_circle: Циклическая сборка
         updated_at: Информация получена
         additional_repos: Дополнительные репозитории
@@ -140,6 +141,7 @@ ru:
       no_project_version_found: Выбранная версия '%{project_version}' не найдена
       no_arch_or_platform_selected: Выберите хотя бы одну архитектуру и платформу
       wrong_platform: Для основного репозитория (main) может быть выбран только его же основная платформа!
+      wrong_build_for_platform: Тип платформы "build_for_platform" должен быть "main"
       wrong_repository: Репозиторий для сохранения должен принадлежать платформе.
       cannot_write: Вы не можете собирать пакет в этот репозиторий.
       can_not_published: Опубликовать сборку можно только со статусом "Собран"

@@ -29,6 +29,10 @@
     .both
       = f.check_box :build_requires
       = f.label :build_requires
+    - if current_user.admin?
+      .both
+        = f.check_box :new_core
+        = f.label :new_core
     %br
     = f.submit t("layout.projects.build_button")
 

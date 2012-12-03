@@ -3,18 +3,27 @@ class ProductBuildList < ActiveRecord::Base
   include Modules::Models::CommitAndVersion
   delegate :url_helpers, to: 'Rails.application.routes'
 
-  BUILD_STARTED = 2
   BUILD_COMPLETED = 0
-  BUILD_FAILED = 1
+  BUILD_FAILED    = 1
+  BUILD_PENDING   = 2
+  BUILD_STARTED   = 3
+  BUILD_CANCELED  = 4
+  BUILD_CANCELING = 5
 
   STATUSES = [  BUILD_STARTED,
                 BUILD_COMPLETED,
-                BUILD_FAILED
+                BUILD_FAILED,
+                BUILD_PENDING,
+                BUILD_CANCELED,
+                BUILD_CANCELING
               ]
 
   HUMAN_STATUSES = { BUILD_STARTED => :build_started,
                      BUILD_COMPLETED => :build_completed,
-                     BUILD_FAILED => :build_failed
+                     BUILD_FAILED => :build_failed,
+                     BUILD_PENDING => :build_pending,
+                     BUILD_CANCELED => :build_canceled,
+                     BUILD_CANCELING => :build_canceling
                     }
 
   belongs_to :product
@@ -28,7 +37,7 @@ class ProductBuildList < ActiveRecord::Base
             :main_script,
             :time_living,
             :arch_id, :presence => true
-  validates :status, :inclusion => { :in => [BUILD_STARTED, BUILD_COMPLETED, BUILD_FAILED] }
+  validates :status, :inclusion => { :in => STATUSES }
 
   attr_accessor :base_url
   attr_accessible :status,
@@ -59,6 +68,10 @@ class ProductBuildList < ActiveRecord::Base
     status == BUILD_STARTED
   end
 
+  def build_canceling?
+    status == BUILD_CANCELING
+  end
+
   def container_path
     "/downloads/#{product.platform.name}/product/#{id}/"
   end
@@ -76,7 +89,7 @@ class ProductBuildList < ActiveRecord::Base
   end
 
   def can_destroy?
-    [BUILD_COMPLETED, BUILD_FAILED].include? status
+    [BUILD_COMPLETED, BUILD_FAILED, BUILD_CANCELED].include? status
   end
 
   def log
@@ -84,6 +97,7 @@ class ProductBuildList < ActiveRecord::Base
   end
 
   def stop
+    update_attributes({:status => BUILD_CANCELING})
     Resque.redis.setex(
       "abfworker::iso-worker-#{id}::live-inspector",
       120,    # Data will be removed from Redis after 120 sec.

@@ -5,7 +5,7 @@
 
 
 %h3= t("layout.projects.last_commit")
-- GitPresenters::CommitAsMessagePresenter.present(@commit, :branch => @branch, :project => @project) do |presenter|
+- GitPresenters::CommitAsMessagePresenter.present(@commit, :project => @project) do |presenter|
   = render 'shared/feed_message', :presenter => presenter, :item_no => 1
 
 .both

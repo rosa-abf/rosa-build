@@ -13,6 +13,7 @@ Rosa::Application.routes.draw do
   namespace :api do
     namespace :v1 do
       resources :advisories, :only => [:index, :show, :create, :update]
+      resources :search, :only => [:index]
       resources :build_lists, :only => [:index, :create, :show] do
         member {
           get :publish
@@ -32,6 +33,7 @@ Rosa::Application.routes.draw do
           post :clone
           put :clear
         }
+        resources :maintainers, :only => [ :index ]
       end
       resources :repositories, :only => [:show, :update, :destroy] do
         member {
@@ -53,6 +55,7 @@ Rosa::Application.routes.draw do
           delete :remove_member
           put :update_member
         }
+        resources :build_lists, :only => :index
       end
       resources :users, :only => [:show]
       get 'user' => 'users#show_current_user'

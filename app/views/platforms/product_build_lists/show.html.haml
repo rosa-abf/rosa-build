@@ -23,30 +23,14 @@
 
 = render 'show_field', :key => :notified_at, :value => l(pbl.updated_at, :format => :long)
 
-- if pbl.build_started?
+- if pbl.build_started? || pbl.build_canceling?
   - if can? :stop, pbl
     .leftlist= t("layout.product_build_lists.action")
     .rightlist= link_to t("layout.product_build_lists.stop"), stop_platform_product_product_build_list_path(pbl.product.platform, pbl.product, pbl)
     .both
   = render 'shared/log', { :build_started => true, :get_log_path => log_platform_product_product_build_list_path(pbl.product.platform, pbl.product, pbl) }
 
-%h3= t("layout.product_build_lists.results")
-- unless pbl.results.present?
-  %h4.nomargin= t("layout.product_build_lists.no_results")
-- else
-  %table.tablesorter.width565{:cellpadding => "0", :cellspacing => "0"}
-    %thead
-      %tr
-        %th= t("activerecord.attributes.product_build_list/results.file_name")
-        %th= t("activerecord.attributes.product_build_list/results.sha1")
-    %tbody
-      - pbl.results.each do |item|
-        %tr
-          - sha1 = item['sha1']
-          %td= link_to item['file_name'], "http://file-store.rosalinux.ru/api/v1/file_stores/#{sha1}"
-          %td= sha1
-.both
-
+= render 'results', :pbl => pbl
 
 :javascript
   $(function(){
