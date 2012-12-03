@@ -131,53 +131,53 @@
     - log_params = { :build_started => @build_list.build_started?, :get_log_path => log_build_list_path(@build_list) }
     = render 'shared/log', ( @build_list.new_core? ? log_params : log_params.merge({:download_log_url => build_list_log_url(:build)}) )
 
-  - if (can_publish = @build_list.can_publish? && can?(:publish, @build_list))
+  - if (can_publish = @build_list.can_publish? && can?(:publish, @build_list) && !@build_list.new_core?)
     .hr
     = submit_tag t("layout.publish"), :confirm => t("layout.confirm"), :name => 'publish' if can_publish
     - if @build_list.can_reject_publish? && can?(:reject_publish, @build_list)
       = submit_tag t("layout.reject_publish"), :confirm => t("layout.confirm"), :name => 'reject_publish'
 
 .hr
-%h3= t("layout.build_lists.items_header")
-- if @item_groups.blank?
-  %h4.nomargin= t("layout.build_lists.no_items_data")
-- @item_groups.each_with_index do |group, level|
-  - group.each do |item|
-    %h4.nomargin= "#{item.name} ##{level}"
+- if @build_list.new_core?
+  = render 'platforms/product_build_lists/results', :pbl => @build_list
+- else
+  %h3= t("layout.build_lists.items_header")
+  - if @item_groups.blank?
+    %h4.nomargin= t("layout.build_lists.no_items_data")
+  - @item_groups.each_with_index do |group, level|
+    - group.each do |item|
+      %h4.nomargin= "#{item.name} ##{level}"
+      %table.tablesorter.width565{:cellpadding => "0", :cellspacing => "0"}
+        %thead
+          %tr
+            %th= t("activerecord.attributes.build_list/item.name")
+            %th= t("activerecord.attributes.build_list/item.version")
+            %th= t("activerecord.attributes.build_list/item.status")
+        %tbody
+          %tr{:class => build_list_item_status_color(item.status)}
+            %td= item.name
+            %td= item.version
+            %td= item.human_status
+  .both
+
+  - if @build_list.packages.present?
+    .hr
+    %h3= t("layout.build_lists.packages_header")
     %table.tablesorter.width565{:cellpadding => "0", :cellspacing => "0"}
       %thead
         %tr
-          %th= t("activerecord.attributes.build_list/item.name")
-          %th= t("activerecord.attributes.build_list/item.version")
-          %th= t("activerecord.attributes.build_list/item.status")
+          %th= t("activerecord.attributes.build_list/package.fullname")
+          %th= t("activerecord.attributes.build_list/package.name")
+          %th= t("activerecord.attributes.build_list/package.version")
+          %th= t("activerecord.attributes.build_list/package.release")
       %tbody
-        %tr{:class => build_list_item_status_color(item.status)}
-          %td= item.name
-          %td= item.version
-          %td= item.human_status
-.both
-
-- if @build_list.packages.present?
-  .hr
-  %h3= t("layout.build_lists.packages_header")
-  %table.tablesorter.width565{:cellpadding => "0", :cellspacing => "0"}
-    %thead
-      %tr
-        %th= t("activerecord.attributes.build_list/package.fullname")
-        %th= t("activerecord.attributes.build_list/package.name")
-        %th= t("activerecord.attributes.build_list/package.version")
-        %th= t("activerecord.attributes.build_list/package.release")
-    %tbody
-      - @build_list.packages.each do |package|
-        %tr
-          %td= package.fullname
-          %td= package.name
-          %td= package.version
-          %td= package.release
-  .both
-
-- if @build_list.new_core?
-  = render 'platforms/product_build_lists/results', :pbl => @build_list
+        - @build_list.packages.each do |package|
+          %tr
+            %td= package.fullname
+            %td= package.name
+            %td= package.version
+            %td= package.release
+    .both
 
 :javascript
   $('article .all').addClass('bigpadding');
