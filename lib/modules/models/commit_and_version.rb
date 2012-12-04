@@ -28,7 +28,9 @@ module Modules
       end
 
       def set_last_published_commit
-        self.last_published_commit_hash = self.last_published.try :commit_hash
+        if self.respond_to? :last_published_commit_hash
+          self.last_published_commit_hash = self.last_published.try :commit_hash
+        end
       end
     end
   end

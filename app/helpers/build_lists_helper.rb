@@ -50,6 +50,15 @@ module BuildListsHelper
     end
   end
 
+  def product_build_list_version_link(bl, str_version = false)
+    if bl.commit_hash.present?
+      link_to str_version ? "#{shortest_hash_id bl.commit_hash} ( #{bl.project_version} )" : shortest_hash_id(bl.commit_hash),
+        commit_path(bl.project.owner, bl.project, bl.commit_hash)
+    else
+      bl.project_version
+    end
+  end
+
   def container_url
     "http://#{request.host_with_port}/downloads#{@build_list.container_path}".html_safe
   end
