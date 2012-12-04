@@ -28,8 +28,10 @@ module Modules
       end
 
       def set_last_published_commit
-        if self.respond_to? :last_published_commit_hash
-          self.last_published_commit_hash = self.last_published.try :commit_hash
+        return unless self.respond_to? :last_published_commit_hash # product?
+        last_commit = self.last_published.first.try :commit_hash
+        if last_commit && self.project.repo.commit(last_commit).present? # commit(nil) is not nil!
+          self.last_published_commit_hash = last_commit
         end
       end
     end

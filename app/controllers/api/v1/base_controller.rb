@@ -76,7 +76,9 @@ class Api::V1::BaseController < ApplicationController
     per_page = params[:per_page].to_i
     per_page = 20 if per_page < 1
     per_page = 100 if per_page >100
-    {:page => params[:page], :per_page => per_page}
+    page = params[:page].to_i
+    page = nil if page == 0
+    {:page => page, :per_page => per_page}
   end
 
   def render_json_response(subject, message, status = 200)
