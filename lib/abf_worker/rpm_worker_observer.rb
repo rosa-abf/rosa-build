@@ -28,7 +28,7 @@ module AbfWorker
 
       def find_or_create_item(bl)
         bl.items.first || bl.items.create({
-          :version => bl.project_version,
+          :version => bl.commit_hash,
           :name => bl.project.name,
           :status => BuildServer::BUILD_STARTED,
           :level => 0

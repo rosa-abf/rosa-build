@@ -153,7 +153,8 @@
       %tbody
         %tr{:class => build_list_item_status_color(item.status)}
           %td= item.name
-          %td= item.version
+          - version = item.name == @build_list.project.name ? build_list_version_link(@build_list, true) : ''
+          %td= version
           %td= item.human_status
 .both
 
