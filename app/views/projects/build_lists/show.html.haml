@@ -127,7 +127,7 @@
         var r = new Rosa.Routers.BuildListsAdvisoriesRouter();
       });
 
-  - if BuildList::HUMAN_STATUSES[@build_list.status].in? [:build_started, :build_error, :success]
+  - if BuildList::HUMAN_STATUSES[@build_list.status].in?([:build_started, :build_error, :success]) && (!@build_list.new_core? || @build_list.build_started?)
     - log_params = { :build_started => @build_list.build_started?, :get_log_path => log_build_list_path(@build_list) }
     = render 'shared/log', ( @build_list.new_core? ? log_params : log_params.merge({:download_log_url => build_list_log_url(:build)}) )
 
