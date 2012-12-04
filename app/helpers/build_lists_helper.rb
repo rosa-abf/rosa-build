@@ -60,7 +60,11 @@ module BuildListsHelper
   end
 
   def container_url
-    "http://#{request.host_with_port}/downloads#{@build_list.container_path}".html_safe
+    if @build_list.new_core?
+      @build_list.container_path
+    else
+      "http://#{request.host_with_port}/downloads#{@build_list.container_path}".html_safe
+    end
   end
 
   def build_list_log_url(log_type)
