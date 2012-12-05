@@ -49,7 +49,7 @@ module AbfWorker
           select{ |r| r['file_name'] !~ /.*\.log$/ }.first
         sha1 = container ? container['sha1'] : nil
         bl.results = options['results']
-        bl.container_path = "http://file-store.rosalinux.ru/api/v1/file_stores/#{sha1}" if sha1
+        bl.container_path = "#{APP_CONFIG['file_store_url']}/#{sha1}" if sha1
         bl.save!
       end
     end
