@@ -1,6 +1,7 @@
 # -*- encoding : utf-8 -*-
 class ProductBuildList < ActiveRecord::Base
   include Modules::Models::CommitAndVersion
+  include AbfWorker::ModelHelper
   delegate :url_helpers, to: 'Rails.application.routes'
 
   BUILD_COMPLETED = 0
@@ -72,6 +73,10 @@ class ProductBuildList < ActiveRecord::Base
     status == BUILD_CANCELING
   end
 
+  def can_cancel?
+    [BUILD_STARTED, BUILD_PENDING].include? status
+  end
+
   def container_path
     "/downloads/#{product.platform.name}/product/#{id}/"
   end
@@ -92,22 +97,14 @@ class ProductBuildList < ActiveRecord::Base
     [BUILD_COMPLETED, BUILD_FAILED, BUILD_CANCELED].include? status
   end
 
-  def log
-    Resque.redis.get("abfworker::iso-worker-#{id}") || ''
-  end
-
-  def stop
-    update_attributes({:status => BUILD_CANCELING})
-    Resque.redis.setex(
-      "abfworker::iso-worker-#{id}::live-inspector",
-      120,    # Data will be removed from Redis after 120 sec.
-      'USR1'  # Immediately kill child but don't exit
-    )
-  end
-
   protected
 
   def xml_rpc_create
+    add_job_to_abf_worker_queue
+    return true
+  end  
+
+  def abf_worker_args
     file_name = "#{project.owner.uname}-#{project.name}-#{commit_hash}"
     srcpath = url_helpers.archive_url(
       project.owner,
@@ -116,7 +113,7 @@ class ProductBuildList < ActiveRecord::Base
       'tar.gz',
       :host => ActionMailer::Base.default_url_options[:host]
     )
-    options = {
+    {
       :id => id,
       # TODO: remove comment
       # :srcpath => 'http://dl.dropbox.com/u/945501/avokhmin-test-iso-script-5d9b463d4e9c06ea8e7c89e1b7ff5cb37e99e27f.tar.gz',
@@ -127,13 +124,7 @@ class ProductBuildList < ActiveRecord::Base
       :arch => arch.name,
       :distrib_type => product.platform.distrib_type
     }
-    Resque.push(
-      'iso_worker',
-      'class' => 'AbfWorker::IsoWorker',
-      'args' => [options]
-    )
-    return true
-  end  
+  end
 
   def xml_delete_iso_container
     # TODO: write new worker for delete

@@ -100,11 +100,17 @@ class Projects::BuildListsController < Projects::BaseController
   end
 
   def cancel
-    if @build_list.cancel
-      redirect_to :back, :notice => t('layout.build_lists.cancel_success')
+    if @build_list.new_core? && @build_list.can_cancel?
+      @build_list.cancel_job
+      notice = t('layout.build_lists.will_be_canceled')
     else
-      redirect_to :back, :notice => t('layout.build_lists.cancel_fail')
+      if @build_list.cancel
+        notice = t('layout.build_lists.cancel_success')
+      else
+        notice = t('layout.build_lists.cancel_fail')
+      end
     end
+    redirect_to :back, :notice => notice
   end
 
   def log
