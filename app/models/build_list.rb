@@ -290,6 +290,10 @@ class BuildList < ActiveRecord::Base
     @status
   end
 
+  def self.has_access_to_new_core?(user)
+    user && (user.admin? || user.tester?)
+  end
+
   def self.human_status(status)
     I18n.t("layout.build_lists.statuses.#{HUMAN_STATUSES[status]}")
   end
