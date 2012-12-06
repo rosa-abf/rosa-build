@@ -30,6 +30,7 @@ class Project < ActiveRecord::Base
   validates :maintainer_id, :presence => true, :unless => :new_record?
   validates :visibility, :presence => true, :inclusion => {:in => VISIBILITIES}
   validate { errors.add(:base, :can_have_less_or_equal, :count => MAX_OWN_PROJECTS) if owner.projects.size >= MAX_OWN_PROJECTS }
+  validate { errors.add(:default_branch, I18n.t('activerecord.errors.project.default_branch')) unless self.repo.branches.map(&:name).include?(self.default_branch) }
 
   attr_accessible :name, :description, :visibility, :srpm, :is_package, :default_branch, :has_issues, :has_wiki, :maintainer_id
   attr_readonly :name, :owner_id, :owner_type
