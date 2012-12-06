@@ -7,6 +7,8 @@ ru:
       statuses: Статусы
       cancel_mass_build: Отмена
       cancel_confirm: Вы уверены, что хотите отменить массовую сборку?
+      projects_list: Список проектов
+      missed_projects_list: Список несуществующих проектов
   activerecord:
     models:
       mass_build: Массовая Сборка

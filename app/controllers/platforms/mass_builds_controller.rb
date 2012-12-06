@@ -12,7 +12,8 @@ class Platforms::MassBuildsController < Platforms::BaseController
   def create
     mass_build = @platform.mass_builds.new(:repositories => params[:repositories],
       :arches => params[:arches],
-      :auto_publish => params[:auto_publish] || false)
+      :auto_publish => params[:auto_publish] || false,
+      :projects_list => params[:projects_list])
     mass_build.user = current_user
     authorize! :create, mass_build
 
@@ -40,7 +41,12 @@ class Platforms::MassBuildsController < Platforms::BaseController
     redirect_to platform_mass_builds_path(@mass_build.platform)
   end
 
-  def failed_builds_list
-    render :text => @mass_build.generate_failed_builds_list
+  def get_list
+    text = if params[:kind] == 'failed_builds_list'
+                @mass_build.generate_failed_builds_list
+              elsif ['projects_list', 'missed_projects_list'].include? params[:kind]
+                 @mass_build.send params[:kind]
+              end
+    render :text => text
   end
 end
