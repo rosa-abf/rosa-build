@@ -128,7 +128,7 @@ class Project < ActiveRecord::Base
     # Select main and project platform repository(contrib, non-free and etc)
     # If main does not exist, will connect only project platform repository
     # If project platform repository is main, only main will be connect
-    main_rep_id = platform.repositories.find_by_name('main').id
+    main_rep_id = platform.repositories.find_by_name('main').try(:id)
     build_reps_ids = [main_rep_id, repository_id].compact.uniq
 
     arch = Arch.find_by_name(arch) if arch.acts_like?(:string)

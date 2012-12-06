@@ -210,13 +210,15 @@ class Platform < ActiveRecord::Base
     arches = mass_build.arches ? Arch.where(:id => mass_build.arches) : Arch.all
     auto_publish = opts[:auto_publish] || false
     user = opts[:user]
-
     mass_build.projects_list.lines.each do |name|
       name.chomp!; name.strip!
       if p = Project.joins(:repositories).where('repositories.id IN (?)', repositories).find_by_name(name)
         begin
           return if mass_build.reload.stop_build
-          p.build_for(self, rep.id, user, arch, auto_publish, mass_build_id)
+          arches.map(&:name).each do |arch|
+            rep = (p.repositories | repositories).first
+            p.build_for(self, rep.id, user, arch, auto_publish, mass_build.id)
+          end
         rescue RuntimeError, Exception
         end
       else
