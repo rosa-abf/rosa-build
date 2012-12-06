@@ -61,7 +61,7 @@ class ProductBuildList < ActiveRecord::Base
   scope :scoped_to_product_name, lambda {|product_name| joins(:product).where('products.name LIKE ?', "%#{product_name}%")}
   scope :recent, order("#{table_name}.updated_at DESC")
 
-  after_create :xml_rpc_create
+  after_create :add_job_to_abf_worker_queue
   before_destroy :can_destroy?
   after_destroy :xml_delete_iso_container
 
@@ -98,11 +98,6 @@ class ProductBuildList < ActiveRecord::Base
   end
 
   protected
-
-  def xml_rpc_create
-    add_job_to_abf_worker_queue
-    return true
-  end  
 
   def abf_worker_args
     file_name = "#{project.owner.uname}-#{project.name}-#{commit_hash}"
