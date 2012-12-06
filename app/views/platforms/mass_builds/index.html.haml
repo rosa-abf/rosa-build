@@ -8,6 +8,8 @@
       .both
         = check_box_tag "repositories[]", rep.id, (params[:repositories]||[]).include?(rep.id.to_s), :id => "repositories_#{rep.id}"
         = label_tag "repositories_#{rep.id}", rep.name
+    %h3= t("layout.mass_builds.projects_list")
+    = text_area_tag :projects_list, nil
     %br
     = f.submit t("layout.projects.build_button")
   %section.right
@@ -43,11 +45,18 @@
           = link_to t("layout.build_lists.statuses.#{status}") + ": ", build_lists_path(:filter => {:mass_build_id => mass_build.id, :ownership => 'everything'}.merge(status != :build_lists ? {:status => BuildList.status_by_human(status)} : {}))
           = mass_build.read_attribute "#{status}_count"
           .both
-      %td= link_to t("layout.mass_builds.failed_builds_list"), failed_builds_list_platform_mass_build_path(@platform, mass_build.id, :format => :txt), :target => "_blank" if can?(:failed_builds_list, mass_build)
+      %td
+        =link_to_list @platform, mass_build, 'failed_builds_list'
+        -if mass_build.projects_list.present?
+          %br
+          =link_to_list @platform, mass_build, 'missed_projects_list'
       %td= link_to image_tag('x.png'), cancel_platform_mass_build_path(@platform, mass_build.id), :method => :post, :confirm => t("layout.mass_builds.cancel_confirm") if can?(:cancel, mass_build)
       %td
         %a.toggle_btn{:href => "#toggle_#{ mass_build.id }", :'data-target' => "#toggle_#{ mass_build.id }"}= t("layout.mass_builds.extended_data")
         .toggle{:id => "toggle_#{ mass_build.id }"}
+          -if mass_build.projects_list.present?
+            = link_to_list @platform, mass_build, 'projects_list'
+            .both
           = t('activerecord.attributes.mass_build.arch_names') + ": "
           = mass_build.arch_names
           .both
