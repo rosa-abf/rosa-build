@@ -1,5 +1,11 @@
 module AbfWorker
   class RpmWorkerObserver
+    BUILD_COMPLETED = 0
+    BUILD_FAILED    = 1
+    BUILD_PENDING   = 2
+    BUILD_STARTED   = 3
+    BUILD_CANCELED  = 4
+
     @queue = :rpm_worker_observer
 
     def self.perform(options)
@@ -7,18 +13,20 @@ module AbfWorker
       status = options['status'].to_i
       item = find_or_create_item(bl)
       case status
-      when 0
+      when BUILD_COMPLETED
         bl.build_success
         item.update_attributes({:status => BuildServer::SUCCESS})
-      when 1
+      when BUILD_FAILED
         bl.build_error
         item.update_attributes({:status => BuildServer::BUILD_ERROR})
-      when 3
+      when BUILD_STARTED
         bl.bs_id = bl.id
         bl.save!
         bl.start_build
+      when BUILD_CANCELED
+        bl.update_attributes({:status => BuildList::BUILD_CANCELED})
       end
-      if status != 3
+      if status != BUILD_STARTED
         fill_container_data bl, options
       end
     end
@@ -55,4 +63,4 @@ module AbfWorker
     end
 
   end
-end
+endх
