@@ -30,7 +30,7 @@ class Project < ActiveRecord::Base
   validates :maintainer_id, :presence => true, :unless => :new_record?
   validates :visibility, :presence => true, :inclusion => {:in => VISIBILITIES}
   validate { errors.add(:base, :can_have_less_or_equal, :count => MAX_OWN_PROJECTS) if owner.projects.size >= MAX_OWN_PROJECTS }
-  validate { errors.add(:default_branch, I18n.t('activerecord.errors.project.default_branch')) unless self.repo.branches.map(&:name).include?(self.default_branch) }
+  validate :check_default_branch
 
   attr_accessible :name, :description, :visibility, :srpm, :is_package, :default_branch, :has_issues, :has_wiki, :maintainer_id
   attr_readonly :name, :owner_id, :owner_type
@@ -208,5 +208,11 @@ class Project < ActiveRecord::Base
 
   def set_new_git_head
     `cd #{path} && git symbolic-ref HEAD refs/heads/#{self.default_branch}` if self.default_branch_changed? && self.repo.branches.map(&:name).include?(self.default_branch)
+  end
+
+  def check_default_branch
+    if self.repo.branches.count > 0 && self.repo.branches.map(&:name).exclude?(self.default_branch)
+      errors.add :default_branch, I18n.t('activerecord.errors.project.default_branch')
+    end
   end
 end
