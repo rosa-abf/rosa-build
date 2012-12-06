@@ -7,7 +7,7 @@ module AbfWorker
 
     def abf_worker_log
       q = 'abfworker::'
-      q << worker_queue
+      q << worker_queue('-')
       q << '-'
       q << id.to_s
       Resque.redis.get(q) || I18n.t('layout.build_lists.log.not_available')
@@ -49,15 +49,18 @@ module AbfWorker
 
     def live_inspector_queue
       q = 'abfworker::'
-      q << worker_queue
+      q << worker_queue('-')
       q << '-'
       q << id.to_s
       q << '::live-inspector'
       q
     end
 
-    def worker_queue
-      is_a?(BuildList) ? 'rpm_worker' : 'iso_worker'
+    def worker_queue(delimiter = '_')
+      a = []
+      a << (is_a?(BuildList) ? 'rpm' : 'iso')
+      a << 'worker'
+      a.join(delimiter)
     end
 
     def worker_queue_class

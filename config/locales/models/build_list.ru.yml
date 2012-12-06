@@ -98,6 +98,7 @@ ru:
           success: собран
           unknown: ожидает сборки
           git_error: проблема с гит
+          build_canceled: сборка отменена
 
       statuses:
         build_lists: Всего

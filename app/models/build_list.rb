@@ -201,7 +201,7 @@ class BuildList < ActiveRecord::Base
     end
 
     event :build_error do
-      transition [:build_started, :build_canceled] => :build_error
+      transition [:build_started, :build_canceled, :build_canceling] => :build_error
     end
 
     HUMAN_STATUSES.each do |code,name|

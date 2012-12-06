@@ -101,6 +101,7 @@ en:
           success: Build complete
           unknown: Build is waiting
           git_error: Git error
+          build_canceled: Build canceled
 
       statuses:
         build_lists: All
