@@ -207,17 +207,24 @@ class Platform < ActiveRecord::Base
 
   def build_from_list(opts={})
     mass_build = MassBuild.find opts[:mass_build_id]
-    arches = mass_build.arches ? Arch.where(:id => mass_build.arches) : Arch.all
+    arches = opts[:arches] ? Arch.where(:id => opts[:arches]) : Arch.all
     auto_publish = opts[:auto_publish] || false
     user = opts[:user]
+
     mass_build.projects_list.lines.each do |name|
       name.chomp!; name.strip!
-      if p = Project.joins(:repositories).where('repositories.id IN (?)', repositories).find_by_name(name)
+
+      project = ""
+      Project.where(:name => name).each do |pr| 
+        project = pr if (pr.repository_ids & self.repository_ids).present?
+      end
+
+      if project
         begin
           return if mass_build.reload.stop_build
           arches.map(&:name).each do |arch|
-            rep = (p.repositories | repositories).first
-            p.build_for(self, rep.id, user, arch, auto_publish, mass_build.id)
+            rep = (project.repositories & self.repositories).first
+            project.build_for(self, rep.id, user, arch, auto_publish, mass_build.id)
           end
         rescue RuntimeError, Exception
         end
