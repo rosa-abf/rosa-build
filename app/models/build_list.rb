@@ -141,6 +141,8 @@ class BuildList < ActiveRecord::Base
     end
 
     after_transition :on => :published, :do => [:set_version_and_tag, :actualize_packages]
+    after_transition :on => :cancel, :do => [:cancel_job],
+      :if => lambda { |build_list| build_list.build_canceling? }
 
     after_transition :on => [:published, :fail_publish, :build_error], :do => :notify_users
     after_transition :on => :build_success, :do => :notify_users,
@@ -174,6 +176,15 @@ class BuildList < ActiveRecord::Base
     event :cancel do
       transition [:build_pending, :platform_pending] => :build_canceled, :if => lambda { |build_list|
         !build_list.new_core? && build_list.can_cancel? && BuildServer.delete_build_list(build_list.bs_id) == BuildServer::SUCCESS
+      }
+      transition [:build_pending, :build_started] => :build_canceling, :if => lambda { |build_list|
+        build_list.new_core? && build_list.can_cancel?
+      }
+    end
+
+    event :build_canceled do
+      transition [:build_canceling] => :build_canceled, :if => lambda { |build_list|
+        build_list.new_core?
       }
     end
 

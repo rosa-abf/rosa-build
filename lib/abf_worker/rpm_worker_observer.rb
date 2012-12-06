@@ -24,7 +24,7 @@ module AbfWorker
         bl.save!
         bl.start_build
       when BUILD_CANCELED
-        bl.update_attributes({:status => BuildList::BUILD_CANCELED})
+        bl.build_canceled
         item.update_attributes({:status => BuildList::BUILD_CANCELED})
       end
       if status != BUILD_STARTED
