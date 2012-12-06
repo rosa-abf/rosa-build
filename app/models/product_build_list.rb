@@ -151,7 +151,7 @@ class ProductBuildList < ActiveRecord::Base
       # :srcpath => 'http://dl.dropbox.com/u/945501/avokhmin-test-iso-script-5d9b463d4e9c06ea8e7c89e1b7ff5cb37e99e27f.tar.gz',
       :srcpath => srcpath,
       :params => params,
-      :time_living => time_living,
+      :time_living => (time_living * 60),
       :main_script => main_script,
       :arch => arch.name,
       :distrib_type => product.platform.distrib_type

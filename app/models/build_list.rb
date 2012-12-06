@@ -400,7 +400,7 @@ class BuildList < ActiveRecord::Base
     {
       :id => id,
       :arch => arch.name,
-      :time_living => 2880, # 2 days
+      :time_living => 43200, # 12 hours
       :distrib_type => build_for_platform.distrib_type,
       # :git_project_address => 'https://abf.rosalinux.ru/server/gnome-settings-daemon.git',
       :git_project_address => project.git_project_address,
