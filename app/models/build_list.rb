@@ -288,6 +288,16 @@ class BuildList < ActiveRecord::Base
     @status ||= BUILD_PENDING
   end
 
+  def publish_container
+    type = save_to_platform.distrib_type
+    Resque.push(
+      "publish_build_list_container_#{type}",
+      'class' => "AbfWorker::PublishBuildListContainer#{type.capitalize}",
+      'args' => [{:id => id}]
+    )
+    true
+  end
+
   def add_to_queue
     if new_core?
       add_to_abf_worker_queue
