@@ -58,6 +58,7 @@ class Project < ActiveRecord::Base
   before_validation :truncate_name, :on => :create
   before_create :set_maintainer
   after_save :attach_to_personal_repository
+  after_update :set_new_git_head
 
   has_ancestry :orphan_strategy => :rootify #:adopt not available yet
 
@@ -205,4 +206,7 @@ class Project < ActiveRecord::Base
     end
   end
 
+  def set_new_git_head
+    `cd #{path} && git symbolic-ref HEAD refs/heads/#{self.default_branch}` if self.default_branch_changed? && self.repo.branches.map(&:name).include?(self.default_branch)
+  end
 end
