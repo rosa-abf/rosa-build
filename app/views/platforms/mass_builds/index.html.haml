@@ -55,7 +55,6 @@
         %a.toggle_btn{:href => "#toggle_#{ mass_build.id }", :'data-target' => "#toggle_#{ mass_build.id }"}= t("layout.mass_builds.extended_data")
         .toggle{:id => "toggle_#{ mass_build.id }"}
           -if mass_build.projects_list.present?
-            = t('activerecord.attributes.mass_build.projects_list') + ": "
             = link_to_list @platform, mass_build, 'projects_list'
             .both
           = t('activerecord.attributes.mass_build.arch_names') + ": "
