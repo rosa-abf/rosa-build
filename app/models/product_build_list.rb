@@ -4,19 +4,21 @@ class ProductBuildList < ActiveRecord::Base
   include AbfWorker::ModelHelper
   delegate :url_helpers, to: 'Rails.application.routes'
 
-  BUILD_COMPLETED = 0
-  BUILD_FAILED    = 1
-  BUILD_PENDING   = 2
-  BUILD_STARTED   = 3
-  BUILD_CANCELED  = 4
-  BUILD_CANCELING = 5
+  BUILD_COMPLETED       = 0
+  BUILD_FAILED          = 1
+  BUILD_PENDING         = 2
+  BUILD_STARTED         = 3
+  BUILD_CANCELED        = 4
+  BUILD_CANCELING       = 5
+  WAITING_FOR_RESPONSE  = 4000
 
   STATUSES = [  BUILD_STARTED,
                 BUILD_COMPLETED,
                 BUILD_FAILED,
                 BUILD_PENDING,
                 BUILD_CANCELED,
-                BUILD_CANCELING
+                BUILD_CANCELING,
+                WAITING_FOR_RESPONSE
               ]
 
   HUMAN_STATUSES = { BUILD_STARTED => :build_started,
@@ -24,7 +26,8 @@ class ProductBuildList < ActiveRecord::Base
                      BUILD_FAILED => :build_failed,
                      BUILD_PENDING => :build_pending,
                      BUILD_CANCELED => :build_canceled,
-                     BUILD_CANCELING => :build_canceling
+                     BUILD_CANCELING => :build_canceling,
+                     WAITING_FOR_RESPONSE => :waiting_for_response
                     }
 
   belongs_to :product
@@ -61,9 +64,43 @@ class ProductBuildList < ActiveRecord::Base
   scope :scoped_to_product_name, lambda {|product_name| joins(:product).where('products.name LIKE ?', "%#{product_name}%")}
   scope :recent, order("#{table_name}.updated_at DESC")
 
-  after_create :add_job_to_abf_worker_queue
+  after_create :place_build
   before_destroy :can_destroy?
   after_destroy :xml_delete_iso_container
+
+  state_machine :status, :initial => :waiting_for_response do
+
+    event :place_build do
+      transition :waiting_for_response => :build_pending, :if => lambda { |pbl|
+        pbl.add_job_to_abf_worker_queue
+      }
+    end
+
+    event :start_build do
+      transition :build_pending => :build_started
+    end
+
+    event :cancel do
+      transition [:build_pending, :build_started] => :build_canceling
+    end
+    after_transition :on => :cancel, :do => [:cancel_job]
+
+    event :build_canceled do
+      transition :build_canceling => :build_canceled
+    end
+
+    event :build_success do
+      transition :build_started => :build_completed
+    end
+
+    event :build_error do
+      transition [:build_started, :build_canceled, :build_canceling] => :build_failed
+    end
+
+    HUMAN_STATUSES.each do |code,name|
+      state name, :value => code
+    end
+  end
 
   def build_started?
     status == BUILD_STARTED

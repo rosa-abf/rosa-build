@@ -26,9 +26,12 @@ class Platforms::ProductBuildListsController < Platforms::BaseController
   end
 
   def cancel
-    @product_build_list.cancel_job
-    flash[:notice] = t('layout.build_lists.will_be_canceled')
-    redirect_to platform_product_product_build_list_path(@platform, @product, @product_build_list)
+    if @product_build_list.cancel
+      notice = t('layout.build_lists.will_be_canceled')
+    else
+      notice = t('layout.build_lists.cancel_fail')
+    end
+    redirect_to :back, :notice => notice
   end
 
   def log

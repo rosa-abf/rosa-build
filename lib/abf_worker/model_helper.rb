@@ -1,9 +1,8 @@
 module AbfWorker
   module ModelHelper
     # In model which contains this helper should be:
-    # - BUILD_CANCELING
-    # - BUILD_CANCELED
     # - #abf_worker_args
+    # - #build_canceled
 
     def abf_worker_log
       q = 'abfworker::'
@@ -22,15 +21,13 @@ module AbfWorker
     end
 
     def cancel_job
-      update_attributes({:status => self.class::BUILD_CANCELING})
-
       deleted = Resque::Job.destroy(
         worker_queue,
         worker_queue_class,
         abf_worker_args
       )
       if deleted == 1
-        update_attributes({:status => self.class::BUILD_CANCELED})
+        build_canceled
       else
         send_stop_signal
       end
