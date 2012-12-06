@@ -29,7 +29,7 @@ module AbfWorker
         worker_queue_class,
         abf_worker_args
       )
-      if deleted
+      if deleted == 1
         update_attributes({:status => self.class::BUILD_CANCELED})
       else
         send_stop_signal

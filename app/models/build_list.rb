@@ -322,6 +322,7 @@ class BuildList < ActiveRecord::Base
   end
 
   def human_duration
+    duration ||= current_duration
     I18n.t("layout.build_lists.human_duration", {:hours => (duration/3600).to_i, :minutes => (duration%3600/60).to_i})
   end
 
@@ -391,7 +392,8 @@ class BuildList < ActiveRecord::Base
       :commit_hash => commit_hash,
       :build_requires => build_requires,
       :include_repos => include_repos_hash,
-      :bplname => build_for_platform.name
+      :bplname => build_for_platform.name,
+      :user => {:uname => user.uname, :email => user.email}
     }
   end
 
