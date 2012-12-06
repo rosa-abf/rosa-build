@@ -223,12 +223,10 @@ class Platform < ActiveRecord::Base
         end
       else
         MassBuild.increment_counter :missed_projects_count, mass_build.id
-        #mass_build.missed_projects_list = '' if mass_build.missed_projects_list.nil?
-        #mass_build.missed_projects_list << "#{name}\n"
         list = (mass_build.missed_projects_list || '') << "#{name}\n"
         mass_build.update_column :missed_projects_list, list
       end
-      sleep 0.2
+      sleep 1
     end
   end
   later :build_from_list, :loner => true, :queue => :clone_build

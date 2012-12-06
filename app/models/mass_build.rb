@@ -29,7 +29,12 @@ class MassBuild < ActiveRecord::Base
   def build_all
     # later with resque
     if projects_list.present?
-      platform.build_from_list :mass_build_id => self.id
+      platform.build_from_list(
+        :mass_build_id => self.id,
+        :user => self.user,
+        :arches => self.arches,
+        :auto_publish => self.auto_publish
+      )
     else
       platform.build_all(
         :mass_build_id => self.id,
