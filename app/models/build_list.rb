@@ -183,7 +183,7 @@ class BuildList < ActiveRecord::Base
     end
 
     event :build_canceled do
-      transition :build_canceling => :build_canceled, :if => lambda { |build_list|
+      transition [:build_canceling, :build_started] => :build_canceled, :if => lambda { |build_list|
         build_list.new_core?
       }
     end

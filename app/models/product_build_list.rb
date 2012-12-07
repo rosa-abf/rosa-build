@@ -86,7 +86,7 @@ class ProductBuildList < ActiveRecord::Base
     after_transition :on => :cancel, :do => [:cancel_job]
 
     event :build_canceled do
-      transition :build_canceling => :build_canceled
+      transition [:build_canceling, :build_started] => :build_canceled
     end
 
     event :build_success do
