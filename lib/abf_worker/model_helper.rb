@@ -39,7 +39,7 @@ module AbfWorker
     def send_stop_signal
       Resque.redis.setex(
         live_inspector_queue,
-        90,    # Data will be removed from Redis after 90 sec.
+        240,    # Data will be removed from Redis after 240 sec.
         'USR1'  # Immediately kill child but don't exit
       )
     end
