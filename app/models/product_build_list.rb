@@ -75,6 +75,8 @@ class ProductBuildList < ActiveRecord::Base
     end
     after_transition :on => :cancel, :do => [:cancel_job]
 
+    # :build_canceling => :build_canceled - canceling from UI
+    # :build_started => :build_canceled - canceling from worker by time-out (time_living has been expired)
     event :build_canceled do
       transition [:build_canceling, :build_started] => :build_canceled
     end

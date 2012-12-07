@@ -182,6 +182,8 @@ class BuildList < ActiveRecord::Base
       }
     end
 
+    # :build_canceling => :build_canceled - canceling from UI
+    # :build_started => :build_canceled - canceling from worker by time-out (time_living has been expired)
     event :build_canceled do
       transition [:build_canceling, :build_started] => :build_canceled, :if => lambda { |build_list|
         build_list.new_core?
@@ -338,7 +340,6 @@ class BuildList < ActiveRecord::Base
   end
 
   def human_duration
-    duration ||= current_duration
     I18n.t("layout.build_lists.human_duration", {:hours => (duration/3600).to_i, :minutes => (duration%3600/60).to_i})
   end
 
