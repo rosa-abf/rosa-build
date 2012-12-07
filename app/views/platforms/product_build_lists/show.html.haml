@@ -18,8 +18,10 @@
 = render 'show_field', :key => :project_version, :value => product_build_list_version_link(pbl, true)
 
 = render 'show_field', :key => :arch, :value => pbl.arch.name
-- [:main_script, :params, :time_living].each do |el|
+- [:main_script, :params].each do |el|
   = render 'show_field', :key => el, :value => pbl.send(el)
+
+= render 'show_field', :key => :time_living, :value => (pbl.time_living / 60)
 
 = render 'show_field', :key => :notified_at, :value => l(pbl.updated_at, :format => :long)
 

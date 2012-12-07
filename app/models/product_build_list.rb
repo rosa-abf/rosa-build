@@ -1,6 +1,7 @@
 # -*- encoding : utf-8 -*-
 class ProductBuildList < ActiveRecord::Base
   include Modules::Models::CommitAndVersion
+  include Modules::Models::TimeLiving
   include AbfWorker::ModelHelper
   delegate :url_helpers, to: 'Rails.application.routes'
 
@@ -10,15 +11,13 @@ class ProductBuildList < ActiveRecord::Base
   BUILD_STARTED         = 3
   BUILD_CANCELED        = 4
   BUILD_CANCELING       = 5
-  WAITING_FOR_RESPONSE  = 4000
 
   STATUSES = [  BUILD_STARTED,
                 BUILD_COMPLETED,
                 BUILD_FAILED,
                 BUILD_PENDING,
                 BUILD_CANCELED,
-                BUILD_CANCELING,
-                WAITING_FOR_RESPONSE
+                BUILD_CANCELING
               ]
 
   HUMAN_STATUSES = { BUILD_STARTED => :build_started,
@@ -26,8 +25,7 @@ class ProductBuildList < ActiveRecord::Base
                      BUILD_FAILED => :build_failed,
                      BUILD_PENDING => :build_pending,
                      BUILD_CANCELED => :build_canceled,
-                     BUILD_CANCELING => :build_canceling,
-                     WAITING_FOR_RESPONSE => :waiting_for_response
+                     BUILD_CANCELING => :build_canceling
                     }
 
   belongs_to :product
@@ -39,7 +37,6 @@ class ProductBuildList < ActiveRecord::Base
             :status,
             :project_id,
             :main_script,
-            :time_living,
             :arch_id, :presence => true
   validates :status, :inclusion => { :in => STATUSES }
 
@@ -52,7 +49,6 @@ class ProductBuildList < ActiveRecord::Base
                   :params,
                   :project_version,
                   :commit_hash,
-                  :time_living,
                   :arch_id
   attr_readonly :product_id
   serialize :results, Array
@@ -64,17 +60,11 @@ class ProductBuildList < ActiveRecord::Base
   scope :scoped_to_product_name, lambda {|product_name| joins(:product).where('products.name LIKE ?', "%#{product_name}%")}
   scope :recent, order("#{table_name}.updated_at DESC")
 
-  after_create :place_build
+  after_create :add_job_to_abf_worker_queue
   before_destroy :can_destroy?
   after_destroy :xml_delete_iso_container
 
-  state_machine :status, :initial => :waiting_for_response do
-
-    event :place_build do
-      transition :waiting_for_response => :build_pending, :if => lambda { |pbl|
-        pbl.add_job_to_abf_worker_queue
-      }
-    end
+  state_machine :status, :initial => :build_pending do
 
     event :start_build do
       transition :build_pending => :build_started
@@ -151,7 +141,7 @@ class ProductBuildList < ActiveRecord::Base
       # :srcpath => 'http://dl.dropbox.com/u/945501/avokhmin-test-iso-script-5d9b463d4e9c06ea8e7c89e1b7ff5cb37e99e27f.tar.gz',
       :srcpath => srcpath,
       :params => params,
-      :time_living => (time_living * 60),
+      :time_living => time_living,
       :main_script => main_script,
       :arch => arch.name,
       :distrib_type => product.platform.distrib_type
