@@ -5,7 +5,7 @@ class Platforms::ProductBuildListsController < Platforms::BaseController
   load_and_authorize_resource :platform, :except => [:index, :status_build]
   load_and_authorize_resource :product, :through => :platform, :except => [:index, :status_build]
   load_and_authorize_resource :product_build_list, :through => :product, :except => [:index, :status_build]
-  load_and_authorize_resource :only => [:index, :show, :log, :stop]
+  load_and_authorize_resource :only => [:index, :show, :log, :cancel]
 
   before_filter :authenticate_product_builder!, :only => [:status_build]
   before_filter :find_product_build_list, :only => [:status_build]
@@ -25,15 +25,18 @@ class Platforms::ProductBuildListsController < Platforms::BaseController
   def show
   end
 
-  def stop
-    @product_build_list.stop
-    flash[:notice] = t('flash.product_build_list.will_be_stopped')
-    redirect_to platform_product_product_build_list_path(@platform, @product, @product_build_list)
+  def cancel
+    if @product_build_list.cancel
+      notice = t('layout.build_lists.will_be_canceled')
+    else
+      notice = t('layout.build_lists.cancel_fail')
+    end
+    redirect_to :back, :notice => notice
   end
 
   def log
     render :json => {
-      :log => @product_build_list.log,
+      :log => @product_build_list.abf_worker_log,
       :building => @product_build_list.build_started?
     }
   end

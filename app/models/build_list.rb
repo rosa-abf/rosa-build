@@ -1,6 +1,7 @@
 # -*- encoding : utf-8 -*-
 class BuildList < ActiveRecord::Base
   include Modules::Models::CommitAndVersion
+  include AbfWorker::ModelHelper
 
   belongs_to :project
   belongs_to :arch
@@ -49,11 +50,13 @@ class BuildList < ActiveRecord::Base
   BUILD_PUBLISH = 7000
   FAILED_PUBLISH = 8000
   REJECTED_PUBLISH = 9000
+  BUILD_CANCELING = 10000
 
   STATUSES = [  WAITING_FOR_RESPONSE,
                 BUILD_CANCELED,
                 BUILD_PENDING,
                 BUILD_PUBLISHED,
+                BUILD_CANCELING,
                 BUILD_PUBLISH,
                 FAILED_PUBLISH,
                 REJECTED_PUBLISH,
@@ -70,6 +73,7 @@ class BuildList < ActiveRecord::Base
 
   HUMAN_STATUSES = { WAITING_FOR_RESPONSE => :waiting_for_response,
                      BUILD_CANCELED => :build_canceled,
+                     BUILD_CANCELING => :build_canceling,
                      BUILD_PENDING => :build_pending,
                      BUILD_PUBLISHED => :build_published,
                      BUILD_PUBLISH => :build_publish,
@@ -137,6 +141,8 @@ class BuildList < ActiveRecord::Base
     end
 
     after_transition :on => :published, :do => [:set_version_and_tag, :actualize_packages]
+    after_transition :on => :cancel, :do => [:cancel_job],
+      :if => lambda { |build_list| build_list.new_core? }
 
     after_transition :on => [:published, :fail_publish, :build_error], :do => :notify_users
     after_transition :on => :build_success, :do => :notify_users,
@@ -169,7 +175,18 @@ class BuildList < ActiveRecord::Base
 
     event :cancel do
       transition [:build_pending, :platform_pending] => :build_canceled, :if => lambda { |build_list|
-        build_list.can_cancel? && BuildServer.delete_build_list(build_list.bs_id) == BuildServer::SUCCESS
+        !build_list.new_core? && build_list.can_cancel? && BuildServer.delete_build_list(build_list.bs_id) == BuildServer::SUCCESS
+      }
+      transition [:build_pending, :build_started] => :build_canceling, :if => lambda { |build_list|
+        build_list.new_core?
+      }
+    end
+
+    # :build_canceling => :build_canceled - canceling from UI
+    # :build_started => :build_canceled - canceling from worker by time-out (time_living has been expired)
+    event :build_canceled do
+      transition [:build_canceling, :build_started] => :build_canceled, :if => lambda { |build_list|
+        build_list.new_core?
       }
     end
 
@@ -197,7 +214,7 @@ class BuildList < ActiveRecord::Base
     end
 
     event :build_error do
-      transition [:build_started, :build_canceled] => :build_error
+      transition [:build_started, :build_canceled, :build_canceling] => :build_error
     end
 
     HUMAN_STATUSES.each do |code,name|
@@ -226,7 +243,11 @@ class BuildList < ActiveRecord::Base
 
   #TODO: Share this checking on product owner.
   def can_cancel?
-    [BUILD_PENDING, BuildServer::PLATFORM_PENDING].include?(status) && bs_id
+    if new_core?
+      build_started? || build_pending?
+    else
+      [BUILD_PENDING, BuildServer::PLATFORM_PENDING].include?(status) && bs_id
+    end
   end
 
   def can_publish?
@@ -237,60 +258,11 @@ class BuildList < ActiveRecord::Base
     can_publish? and not save_to_repository.publish_without_qa
   end
 
-  def add_to_abf_worker_queue
-    include_repos_hash = {}.tap do |h|
-      include_repos.each do |r|
-        repo = Repository.find r
-        path = repo.platform.public_downloads_url(nil, arch.name, repo.name)
-        # path = path.gsub(/^http:\/\/0\.0\.0\.0\:3000/, 'https://abf.rosalinux.ru')
-        # Path looks like:
-        # http://abf.rosalinux.ru/downloads/rosa-server2012/repository/x86_64/base/
-        # so, we should append:
-        # /release
-        # /updates
-        h["#{repo.name}_release"] = path + 'release'
-        h["#{repo.name}_updates"] = path + 'updates'
-      end
-    end
-    # mdv example:
-    # https://abf.rosalinux.ru/import/plasma-applet-stackfolder.git
-    # bfe6d68cc607238011a6108014bdcfe86c69456a
-
-    # rhel example:
-    # https://abf.rosalinux.ru/server/gnome-settings-daemon.git
-    # fbb2549e44d97226fea6748a4f95d1d82ffb8726
-
-    options = {
-      :id => id,
-      :arch => arch.name,
-      :time_living => 2880, # 2 days
-      :distrib_type => build_for_platform.distrib_type,
-      # :git_project_address => 'https://abf.rosalinux.ru/server/gnome-settings-daemon.git',
-      :git_project_address => project.git_project_address,
-      # :commit_hash => 'fbb2549e44d97226fea6748a4f95d1d82ffb8726',
-      :commit_hash => commit_hash,
-      :build_requires => build_requires,
-      :include_repos => include_repos_hash,
-      :bplname => build_for_platform.name
-      # :project_version => project_version,
-      # :plname => save_to_platform.name,
-      # :bplname => (save_to_platform_id == build_for_platform_id ? '' : build_for_platform.name),
-      # :update_type => update_type,
-      # :priority => priority,
-    }
-    unless @status
-      Resque.push(
-        'rpm_worker',
-        'class' => 'AbfWorker::RpmWorker',
-        'args' => [options]
-      )
-    end
-    @status ||= BUILD_PENDING
-  end
-
   def add_to_queue
     if new_core?
-      add_to_abf_worker_queue
+      # TODO: Investigate: why 2 tasks will be created without checking @state
+      add_job_to_abf_worker_queue unless @status
+      @status ||= BUILD_PENDING
     else
       # XML-RPC params:
       # - project_name
@@ -319,6 +291,10 @@ class BuildList < ActiveRecord::Base
       )
     end
     @status
+  end
+
+  def self.has_access_to_new_core?(user)
+    user && (user.admin? || user.tester?)
   end
 
   def self.human_status(status)
@@ -390,15 +366,53 @@ class BuildList < ActiveRecord::Base
 
   def log(load_lines)
     if new_core?
-      log = Resque.redis.get("abfworker::rpm-worker-#{id}")
+      abf_worker_log
     else
       log = `tail -n #{load_lines.to_i} #{Rails.root + 'public' + fs_log_path}`
-      log = nil unless $?.success?
+      $?.success? ? log : I18n.t('layout.build_lists.log.not_available')
     end
-    log || I18n.t('layout.build_lists.log.not_available')
   end
 
   protected
+
+  def abf_worker_args
+    include_repos_hash = {}.tap do |h|
+      include_repos.each do |r|
+        repo = Repository.find r
+        path = repo.platform.public_downloads_url(nil, arch.name, repo.name)
+        # path = path.gsub(/^http:\/\/0\.0\.0\.0\:3000/, 'https://abf.rosalinux.ru')
+        # Path looks like:
+        # http://abf.rosalinux.ru/downloads/rosa-server2012/repository/x86_64/base/
+        # so, we should append:
+        # /release
+        # /updates
+        h["#{repo.name}_release"] = path + 'release'
+        h["#{repo.name}_updates"] = path + 'updates'
+      end
+    end
+    # mdv example:
+    # https://abf.rosalinux.ru/import/plasma-applet-stackfolder.git
+    # bfe6d68cc607238011a6108014bdcfe86c69456a
+
+    # rhel example:
+    # https://abf.rosalinux.ru/server/gnome-settings-daemon.git
+    # fbb2549e44d97226fea6748a4f95d1d82ffb8726
+
+    {
+      :id => id,
+      :arch => arch.name,
+      :time_living => 43200, # 12 hours
+      :distrib_type => build_for_platform.distrib_type,
+      # :git_project_address => 'https://abf.rosalinux.ru/server/gnome-settings-daemon.git',
+      :git_project_address => project.git_project_address,
+      # :commit_hash => 'fbb2549e44d97226fea6748a4f95d1d82ffb8726',
+      :commit_hash => commit_hash,
+      :build_requires => build_requires,
+      :include_repos => include_repos_hash,
+      :bplname => build_for_platform.name,
+      :user => {:uname => user.uname, :email => user.email}
+    }
+  end
 
   def notify_users
     unless mass_build_id

@@ -151,7 +151,7 @@ Rosa::Application.routes.draw do
         resources :product_build_lists, :only => [:create, :destroy, :new, :show] do
           member {
             get :log
-            get :stop
+            put :cancel
           }
         end
         collection { get :autocomplete_project }

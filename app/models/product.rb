@@ -1,5 +1,7 @@
 # -*- encoding : utf-8 -*-
 class Product < ActiveRecord::Base
+  include Modules::Models::TimeLiving
+
   belongs_to :platform
   belongs_to :project
   has_many :product_build_lists, :dependent => :destroy
@@ -13,8 +15,7 @@ class Product < ActiveRecord::Base
                   :description,
                   :project_id,
                   :main_script,
-                  :params,
-                  :time_living
+                  :params
   attr_readonly :platform_id
 
   def full_clone(attrs = {})

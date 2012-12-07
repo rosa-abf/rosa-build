@@ -1,6 +1,6 @@
 # -*- encoding : utf-8 -*-
 class User < Avatar
-  ROLES = ['', 'admin', 'banned']
+  ROLES = ['', 'admin', 'banned', 'tester']
   LANGUAGES_FOR_SELECT = [['Russian', 'ru'], ['English', 'en']]
   LANGUAGES = LANGUAGES_FOR_SELECT.map(&:last)
 
@@ -42,6 +42,7 @@ class User < Avatar
   scope :opened, where('1=1')
   scope :banned, where(:role => 'banned')
   scope :admin, where(:role => 'admin')
+  scope :tester, where(:role => 'tester')
   scope :real, where(:role => ['', nil])
 
   scope :member_of_project, lambda {|item|
@@ -64,6 +65,10 @@ class User < Avatar
 
   def guest?
     new_record?
+  end
+
+  def tester?
+    role == 'tester'
   end
 
   def access_locked?

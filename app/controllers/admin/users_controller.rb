@@ -57,7 +57,7 @@ class Admin::UsersController < Admin::BaseController
       @users = @users.where('users.name ILIKE ? or users.uname ILIKE ? or users.email ILIKE ?', search, search, search)
     end
     @filter = params[:filter] || 'all'
-    @users = @users.send(@filter) if ['real', 'admin', 'banned'].include? @filter
+    @users = @users.send(@filter) if ['real', 'admin', 'banned', 'tester'].include? @filter
     @users = @users.order(order)
 
     render :partial => 'users_ajax', :layout => false

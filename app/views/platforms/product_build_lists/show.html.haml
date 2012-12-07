@@ -18,16 +18,19 @@
 = render 'show_field', :key => :project_version, :value => product_build_list_version_link(pbl, true)
 
 = render 'show_field', :key => :arch, :value => pbl.arch.name
-- [:main_script, :params, :time_living].each do |el|
+- [:main_script, :params].each do |el|
   = render 'show_field', :key => el, :value => pbl.send(el)
+
+= render 'show_field', :key => :time_living, :value => (pbl.time_living / 60)
 
 = render 'show_field', :key => :notified_at, :value => l(pbl.updated_at, :format => :long)
 
+- if pbl.can_cancel? && can?(:cancel, pbl)
+  = link_to t("layout.build_lists.cancel"), cancel_platform_product_product_build_list_path(pbl.product.platform, pbl.product, pbl),
+            :method => :put, :confirm => t("layout.confirm"), :class => 'button'
+  .both
+
 - if pbl.build_started? || pbl.build_canceling?
-  - if can? :stop, pbl
-    .leftlist= t("layout.product_build_lists.action")
-    .rightlist= link_to t("layout.product_build_lists.stop"), stop_platform_product_product_build_list_path(pbl.product.platform, pbl.product, pbl)
-    .both
   = render 'shared/log', { :build_started => true, :get_log_path => log_platform_product_product_build_list_path(pbl.product.platform, pbl.product, pbl) }
 
 = render 'results', :pbl => pbl

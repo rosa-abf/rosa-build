@@ -60,6 +60,7 @@ ru:
       no_items_data: Данных нет
       show: Просмотр
       cancel: Отменить сборку
+      will_be_canceled: 'Сборка будет отменена...'
       cancel_success: 'Сборка отменена.'
       cancel_fail: 'При отмене сборки произошла ошибка!'
       publish_success: 'Сборка поставлена в очередь на публикацию.'
@@ -97,6 +98,7 @@ ru:
           success: собран
           unknown: ожидает сборки
           git_error: проблема с гит
+          build_canceled: сборка отменена
 
       statuses:
         build_lists: Всего
@@ -111,6 +113,7 @@ ru:
         dependency_test_failed: тестирование зависимостей не пройдено
         binary_test_failed: тестирование бинарной совместимости не пройдено
         build_canceled: сборка отменена
+        build_canceling: сборка отменяется
         success: собран
         build_started: собирается
         platform_not_found: платформа не найдена

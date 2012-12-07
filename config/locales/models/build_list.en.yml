@@ -62,6 +62,7 @@ en:
       show: Show
       cancel: Cancel build
       cancel_success: 'Build canceled'
+      will_be_canceled: 'Build will be canceled...'
       publish_success: 'Build published'
       cancel_fail: 'Errors during build cancelation!'
       publish_fail: 'Errors during build publishing!'
@@ -100,6 +101,7 @@ en:
           success: Build complete
           unknown: Build is waiting
           git_error: Git error
+          build_canceled: Build canceled
 
       statuses:
         build_lists: All
@@ -111,6 +113,7 @@ en:
         dependencies_fail: Dependences not found
         waiting_for_response: Waiting for response
         build_pending: Build pending
+        build_canceling: Build is canceling
         dependency_test_failed: Dependency test failed
         binary_test_failed: Binary test failed
         build_canceled: Build canceled
