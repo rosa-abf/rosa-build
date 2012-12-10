@@ -1,9 +1,0 @@
-module AbfWorker
-  class PublishBuildListContainerMdv
-    extend AbfWorker::Helpers::PublishBuildListContainerHelper
-    @queue = :publish_build_list_container_mdv
-
-    # see: PublishBuildListContainerHelper#perform
-
-  end
-end
