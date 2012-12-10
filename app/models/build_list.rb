@@ -144,6 +144,8 @@ class BuildList < ActiveRecord::Base
     after_transition :on => :published, :do => [:set_version_and_tag, :actualize_packages]
     after_transition :on => :cancel, :do => [:cancel_job],
       :if => lambda { |build_list| build_list.new_core? }
+    after_transition :on => :publish, :do => [:publish_container],
+      :if => lambda { |build_list| build_list.new_core? }
 
     after_transition :on => [:published, :fail_publish, :build_error], :do => :notify_users
     after_transition :on => :build_success, :do => :notify_users,
@@ -201,7 +203,10 @@ class BuildList < ActiveRecord::Base
 
     event :publish do
       transition [:success, :failed_publish] => :build_publish, :if => lambda { |build_list|
-        BuildServer.publish_container(build_list.bs_id) == BuildServer::SUCCESS
+        !build_list.new_core? && BuildServer.publish_container(build_list.bs_id) == BuildServer::SUCCESS
+      }
+      transition [:success, :failed_publish] => :build_publish, :if => lambda { |build_list|
+        build_list.new_core?
       }
       transition [:success, :failed_publish] => :failed_publish
     end
@@ -261,12 +266,20 @@ class BuildList < ActiveRecord::Base
 
   def publish_container
     type = save_to_platform.distrib_type
+    archive = results.select{ |r| r['file_name'] =~ /.*\.tar\.gz$/}[0]
     Resque.push(
-      "publish_build_list_container_#{type}",
-      'class' => "AbfWorker::PublishBuildListContainer#{type.capitalize}",
-      'args' => [{:id => id}]
+      "publish_build_list_container_#{type}_worker",
+      'class' => "AbfWorker::PublishBuildListContainer#{type.capitalize}Worker",
+      'args' => [{
+        :id => id,
+        :released => save_to_platform.released,
+        :arch => arch.name,
+        :distrib_type => type,
+        :container_sha1 => archive['sha1'],
+        :platform_path => "#{APP_CONFIG[root]}/platforms/#{save_to_platform.name}/",
+        :time_living => 1800 # 30 min
+      }]
     )
-    true
   end
 
   def add_to_queue
