@@ -6,11 +6,10 @@ class MassBuild < ActiveRecord::Base
   scope :by_platform, lambda { |platform| where(:platform_id => platform.id) }
   scope :outdated, where('created_at < ?', Time.now + 1.day - BuildList::MAX_LIVE_TIME)
 
-  attr_accessor :repositories, :arches
-  attr_accessible :repositories, :arches, :auto_publish, :projects_list
+  attr_accessor :arches
+  attr_accessible :arches, :auto_publish, :projects_list
 
-  validates :platform_id, :arch_names, :name, :user_id, :presence => true
-  validate :rep_names, :repositories, :presence => true, :if => Proc.new {|mb| mb.projects_list.blank?}
+  validates :platform_id, :arch_names, :name, :user_id, :projects_list, :presence => true
   validates_inclusion_of :auto_publish, :in => [true, false]
 
   after_create :build_all
@@ -28,23 +27,32 @@ class MassBuild < ActiveRecord::Base
   # ATTENTION: repositories and arches must be set before calling this method!
   def build_all
     # later with resque
-    if projects_list.present?
-      platform.build_from_list(
-        :mass_build_id => self.id,
-        :user => self.user,
-        :arches => self.arches,
-        :auto_publish => self.auto_publish
-      )
-    else
-      platform.build_all(
-        :mass_build_id => self.id,
-        :user => self.user,
-        :repositories => self.repositories,
-        :arches => self.arches,
-        :auto_publish => self.auto_publish
-      )
+    arches_list = arches ? Arch.where(:id => arches) : Arch.all
+    auto_publish ||= false
+
+    projects_list.lines.each do |name|
+      next if name.blank?
+      name.chomp!; name.strip!
+
+      if project = Project.joins(:repositories).where(:name => name)
+                          .where('repositories.id in (?)', platform.repository_ids).first
+        begin
+          return if self.reload.stop_build
+          arches_list.each do |arch|
+            rep = (project.repositories & platform.repositories).first
+            project.build_for(platform, rep.id, user, arch, auto_publish, self.id)
+          end
+        rescue RuntimeError, Exception
+        end
+      else
+        MassBuild.increment_counter :missed_projects_count, id
+        list = (missed_projects_list || '') << "#{name}\n"
+        update_column :missed_projects_list, list
+      end
+      sleep 1
     end
   end
+  later :build_all, :loner => true, :queue => :clone_build
 
   def generate_failed_builds_list
     report = ""
@@ -67,10 +75,8 @@ class MassBuild < ActiveRecord::Base
 
   def set_data
     if new_record?
-      self.rep_names = Repository.where(:id => self.repositories).map(&:name).join(", ")
       self.name = "#{Time.now.utc.to_date.strftime("%d.%b")}-#{platform.name}"
       self.arch_names = Arch.where(:id => self.arches).map(&:name).join(", ")
     end
   end
-
 end
