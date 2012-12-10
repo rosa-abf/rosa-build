@@ -7,9 +7,10 @@ class MassBuild < ActiveRecord::Base
   scope :outdated, where('created_at < ?', Time.now + 1.day - BuildList::MAX_LIVE_TIME)
 
   attr_accessor :repositories, :arches
-  attr_accessible :repositories, :arches, :auto_publish
+  attr_accessible :repositories, :arches, :auto_publish, :projects_list
 
-  validates :platform_id, :arch_names, :name, :user_id, :repositories, :rep_names, :presence => true
+  validates :platform_id, :arch_names, :name, :user_id, :presence => true
+  validate :rep_names, :repositories, :presence => true, :if => Proc.new {|mb| mb.projects_list.blank?}
   validates_inclusion_of :auto_publish, :in => [true, false]
 
   after_create :build_all
@@ -26,13 +27,23 @@ class MassBuild < ActiveRecord::Base
 
   # ATTENTION: repositories and arches must be set before calling this method!
   def build_all
-    platform.build_all(
-      :mass_build_id => self.id,
-      :user => self.user,
-      :repositories => self.repositories,
-      :arches => self.arches,
-      :auto_publish => self.auto_publish
-    ) # later with resque
+    # later with resque
+    if projects_list.present?
+      platform.build_from_list(
+        :mass_build_id => self.id,
+        :user => self.user,
+        :arches => self.arches,
+        :auto_publish => self.auto_publish
+      )
+    else
+      platform.build_all(
+        :mass_build_id => self.id,
+        :user => self.user,
+        :repositories => self.repositories,
+        :arches => self.arches,
+        :auto_publish => self.auto_publish
+      )
+    end
   end
 
   def generate_failed_builds_list

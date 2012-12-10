@@ -4,9 +4,12 @@ class BuildListObserver < ActiveRecord::Observer
   def before_update(record)
     if record.status_changed?
       record.started_at = Time.now if record.status == BuildServer::BUILD_STARTED
-      if [BuildServer::BUILD_ERROR, BuildServer::SUCCESS].include? record.status
+      if [BuildServer::BUILD_ERROR,
+          BuildServer::SUCCESS,
+          BuildList::BUILD_CANCELING,
+          BuildList::BUILD_CANCELED].include? record.status
         # stores time interval beetwin build start and finish in seconds
-        record.duration = record.current_duration
+        record.duration = record.current_duration if record.started_at
 
         if record.status == BuildServer::SUCCESS
           # Update project average build time

@@ -23,8 +23,8 @@ shared_examples_for 'product build list admin' do
     response.should render_template(:index)
   end
 
-  it 'should be able to perform stop action' do
-    get :stop, valid_attributes_for_show
+  it 'should be able to perform cancel action' do
+    put :cancel, valid_attributes_for_show
     response.should redirect_to(platform_product_product_build_list_path(@product.platform, @product, @pbl))
   end
 
@@ -56,8 +56,8 @@ shared_examples_for 'product build list user without admin rights' do
     response.should_not be_success
   end
 
-  it 'should not be able to perform stop action' do
-    get :stop, valid_attributes_for_show
+  it 'should not be able to perform cancel action' do
+    put :cancel, valid_attributes_for_show
     response.should_not redirect_to(platform_product_product_build_list_path(@product.platform, @product, @pbl))
   end
 end

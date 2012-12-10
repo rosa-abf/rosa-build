@@ -13,6 +13,13 @@ module BuildListsHelper
     'nocolor'
   end
 
+  def build_list_options_for_new_core
+    [
+      [I18n.t("layout.true_"), 1],
+      [I18n.t("layout.false_"), 0]
+    ]
+  end
+
   def build_list_item_status_color(status)
     if BuildServer::SUCCESS == status
       return 'success'

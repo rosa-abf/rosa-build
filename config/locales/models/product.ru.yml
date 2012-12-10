@@ -32,3 +32,4 @@ ru:
         created_at: Создан
         updated_at: Обновлен
         project: Проект
+        time_living: Максимальное время сборки (в минутах)

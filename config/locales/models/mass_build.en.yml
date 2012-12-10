@@ -7,6 +7,8 @@ en:
       statuses: Statuses
       cancel_mass_build: Cancel
       cancel_confirm: Are you sure you want to cancel mass build?
+      projects_list: Projects list
+      missed_projects_list: Missed projects list
   activerecord:
     models:
       mass_build: Mass Build

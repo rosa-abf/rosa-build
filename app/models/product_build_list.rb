@@ -1,14 +1,16 @@
 # -*- encoding : utf-8 -*-
 class ProductBuildList < ActiveRecord::Base
   include Modules::Models::CommitAndVersion
+  include Modules::Models::TimeLiving
+  include AbfWorker::ModelHelper
   delegate :url_helpers, to: 'Rails.application.routes'
 
-  BUILD_COMPLETED = 0
-  BUILD_FAILED    = 1
-  BUILD_PENDING   = 2
-  BUILD_STARTED   = 3
-  BUILD_CANCELED  = 4
-  BUILD_CANCELING = 5
+  BUILD_COMPLETED       = 0
+  BUILD_FAILED          = 1
+  BUILD_PENDING         = 2
+  BUILD_STARTED         = 3
+  BUILD_CANCELED        = 4
+  BUILD_CANCELING       = 5
 
   STATUSES = [  BUILD_STARTED,
                 BUILD_COMPLETED,
@@ -35,7 +37,6 @@ class ProductBuildList < ActiveRecord::Base
             :status,
             :project_id,
             :main_script,
-            :time_living,
             :arch_id, :presence => true
   validates :status, :inclusion => { :in => STATUSES }
 
@@ -48,7 +49,6 @@ class ProductBuildList < ActiveRecord::Base
                   :params,
                   :project_version,
                   :commit_hash,
-                  :time_living,
                   :arch_id
   attr_readonly :product_id
   serialize :results, Array
@@ -60,9 +60,39 @@ class ProductBuildList < ActiveRecord::Base
   scope :scoped_to_product_name, lambda {|product_name| joins(:product).where('products.name LIKE ?', "%#{product_name}%")}
   scope :recent, order("#{table_name}.updated_at DESC")
 
-  after_create :xml_rpc_create
+  after_create :add_job_to_abf_worker_queue
   before_destroy :can_destroy?
   after_destroy :xml_delete_iso_container
+
+  state_machine :status, :initial => :build_pending do
+
+    event :start_build do
+      transition :build_pending => :build_started
+    end
+
+    event :cancel do
+      transition [:build_pending, :build_started] => :build_canceling
+    end
+    after_transition :on => :cancel, :do => [:cancel_job]
+
+    # :build_canceling => :build_canceled - canceling from UI
+    # :build_started => :build_canceled - canceling from worker by time-out (time_living has been expired)
+    event :build_canceled do
+      transition [:build_canceling, :build_started] => :build_canceled
+    end
+
+    event :build_success do
+      transition :build_started => :build_completed
+    end
+
+    event :build_error do
+      transition [:build_started, :build_canceled, :build_canceling] => :build_failed
+    end
+
+    HUMAN_STATUSES.each do |code,name|
+      state name, :value => code
+    end
+  end
 
   def build_started?
     status == BUILD_STARTED
@@ -70,6 +100,10 @@ class ProductBuildList < ActiveRecord::Base
 
   def build_canceling?
     status == BUILD_CANCELING
+  end
+
+  def can_cancel?
+    [BUILD_STARTED, BUILD_PENDING].include? status
   end
 
   def container_path
@@ -92,22 +126,9 @@ class ProductBuildList < ActiveRecord::Base
     [BUILD_COMPLETED, BUILD_FAILED, BUILD_CANCELED].include? status
   end
 
-  def log
-    Resque.redis.get("abfworker::iso-worker-#{id}") || ''
-  end
-
-  def stop
-    update_attributes({:status => BUILD_CANCELING})
-    Resque.redis.setex(
-      "abfworker::iso-worker-#{id}::live-inspector",
-      120,    # Data will be removed from Redis after 120 sec.
-      'USR1'  # Immediately kill child but don't exit
-    )
-  end
-
   protected
 
-  def xml_rpc_create
+  def abf_worker_args
     file_name = "#{project.owner.uname}-#{project.name}-#{commit_hash}"
     srcpath = url_helpers.archive_url(
       project.owner,
@@ -116,7 +137,7 @@ class ProductBuildList < ActiveRecord::Base
       'tar.gz',
       :host => ActionMailer::Base.default_url_options[:host]
     )
-    options = {
+    {
       :id => id,
       # TODO: remove comment
       # :srcpath => 'http://dl.dropbox.com/u/945501/avokhmin-test-iso-script-5d9b463d4e9c06ea8e7c89e1b7ff5cb37e99e27f.tar.gz',
@@ -127,13 +148,7 @@ class ProductBuildList < ActiveRecord::Base
       :arch => arch.name,
       :distrib_type => product.platform.distrib_type
     }
-    Resque.push(
-      'iso_worker',
-      'class' => 'AbfWorker::IsoWorker',
-      'args' => [options]
-    )
-    return true
-  end  
+  end
 
   def xml_delete_iso_container
     # TODO: write new worker for delete

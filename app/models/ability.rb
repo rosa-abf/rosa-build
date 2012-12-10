@@ -95,7 +95,7 @@ class Ability
         can([:update, :members], Platform) {|platform| local_admin? platform}
         can([:destroy, :members, :add_member, :remove_member, :remove_members] , Platform) {|platform| owner?(platform) || local_admin?(platform) }
 
-        can([:failed_builds_list, :create], MassBuild) {|mass_build| (owner?(mass_build.platform) || local_admin?(mass_build.platform)) && mass_build.platform.main? }
+        can([:get_list, :create], MassBuild) {|mass_build| (owner?(mass_build.platform) || local_admin?(mass_build.platform)) && mass_build.platform.main?}
         can(:cancel, MassBuild) {|mass_build| (owner?(mass_build.platform) || local_admin?(mass_build.platform)) && !mass_build.stop_build && mass_build.platform.main?}
 
         can [:read, :projects_list, :projects], Repository, :platform => {:owner_type => 'User', :owner_id => user.id}
@@ -114,7 +114,7 @@ class Ability
         can(:read, Product, read_relations_for('products', 'platforms')) {|product| product.platform.main?}
         can([:create, :update, :destroy, :clone], Product) {|product| local_admin? product.platform and product.platform.main?}
 
-        can([:create, :stop], ProductBuildList) {|pbl| can?(:update, pbl.product)}
+        can([:create, :cancel], ProductBuildList) {|pbl| can?(:update, pbl.product)}
         can(:destroy, ProductBuildList) {|pbl| can?(:destroy, pbl.product)}
 
         can [:read, :create], PrivateUser, :platform => {:owner_type => 'User', :owner_id => user.id}
@@ -151,7 +151,7 @@ class Ability
       cannot [:create, :update, :destroy, :clone], Product, :platform => {:platform_type => 'personal'}
       cannot [:clone], Platform, :platform_type => 'personal'
 
-      cannot([:failed_builds_list, :create], MassBuild) {|mass_build| mass_build.platform.personal?}
+      cannot([:get_list, :create], MassBuild) {|mass_build| mass_build.platform.personal?}
       cannot(:cancel, MassBuild) {|mass_build| mass_build.platform.personal? || mass_build.stop_build}
 
       can :create, Subscribe do |subscribe|

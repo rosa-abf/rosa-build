@@ -55,7 +55,7 @@ class Projects::BuildListsController < Projects::BaseController
     build_for_platforms = Repository.select(:platform_id).
       where(:id => params[:build_list][:include_repos]).group(:platform_id).map(&:platform_id)
 
-    new_core = current_user.admin? && params[:build_list][:new_core] == '1'
+    new_core = BuildList.has_access_to_new_core?(current_user) && params[:build_list][:new_core] == '1'
     params[:build_list][:auto_publish] = false if new_core
     Arch.where(:id => params[:arches]).each do |arch|
       Platform.main.where(:id => build_for_platforms).each do |build_for_platform|
@@ -101,10 +101,13 @@ class Projects::BuildListsController < Projects::BaseController
 
   def cancel
     if @build_list.cancel
-      redirect_to :back, :notice => t('layout.build_lists.cancel_success')
+      notice = @build_list.new_core? ?
+       t('layout.build_lists.will_be_canceled') :
+       t('layout.build_lists.cancel_success')
     else
-      redirect_to :back, :notice => t('layout.build_lists.cancel_fail')
+      notice = t('layout.build_lists.cancel_fail')
     end
+    redirect_to :back, :notice => notice
   end
 
   def log

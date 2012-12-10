@@ -205,6 +205,39 @@ class Platform < ActiveRecord::Base
   end
   later :build_all, :loner => true, :queue => :clone_build
 
+  def build_from_list(opts={})
+    mass_build = MassBuild.find opts[:mass_build_id]
+    arches = opts[:arches] ? Arch.where(:id => opts[:arches]) : Arch.all
+    auto_publish = opts[:auto_publish] || false
+    user = opts[:user]
+
+    mass_build.projects_list.lines.each do |name|
+      name.chomp!; name.strip!
+
+      project = ""
+      Project.where(:name => name).each do |pr| 
+        project = pr if (pr.repository_ids & self.repository_ids).present?
+      end
+
+      if project
+        begin
+          return if mass_build.reload.stop_build
+          arches.map(&:name).each do |arch|
+            rep = (project.repositories & self.repositories).first
+            project.build_for(self, rep.id, user, arch, auto_publish, mass_build.id)
+          end
+        rescue RuntimeError, Exception
+        end
+      else
+        MassBuild.increment_counter :missed_projects_count, mass_build.id
+        list = (mass_build.missed_projects_list || '') << "#{name}\n"
+        mass_build.update_column :missed_projects_list, list
+      end
+      sleep 1
+    end
+  end
+  later :build_from_list, :loner => true, :queue => :clone_build
+
   def destroy
     with_skip {super} # avoid cascade XML RPC requests
   end

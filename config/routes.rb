@@ -131,8 +131,8 @@ Rosa::Application.routes.draw do
 
       resources :mass_builds, :only => [:create, :index] do
         member do
-          get    :failed_builds_list
           post   :cancel
+          get '/:kind.:format' => "mass_builds#get_list", :as => :get_list, :kind => /failed_builds_list|missed_projects_list|projects_list/
         end
       end
 
@@ -151,7 +151,7 @@ Rosa::Application.routes.draw do
         resources :product_build_lists, :only => [:create, :destroy, :new, :show] do
           member {
             get :log
-            get :stop
+            put :cancel
           }
         end
         collection { get :autocomplete_project }
