@@ -37,6 +37,8 @@
         %br
         = f.submit t("layout.search.header")
     .block
+      %h3.small= t("activerecord.attributes.build_list.new_core")
+      .lineForm.aside= f.select :new_core, build_list_options_for_new_core, {:include_blank => true, :selected => @filter.new_core}, {:class => 'sel80 aside', :id => 'new_core', :tabindex => 2}
       %h3.small= t("activerecord.attributes.build_list.status")
       .lineForm.aside= f.select :status, BuildList::STATUSES.collect{|status| [BuildList.human_status(status), status]}, {:include_blank => true, :selected => @filter.status}, {:class => 'sel80 aside', :id => 'status', :tabindex => 2}
       %h3.small= t("activerecord.models.platform")

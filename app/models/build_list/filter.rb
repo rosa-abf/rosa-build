@@ -13,6 +13,7 @@ class BuildList::Filter
       build_lists = build_lists.where(:bs_id => @options[:bs_id])
     else
       build_lists = build_lists.accessible_by(::Ability.new(@user), @options[:ownership].to_sym) if @options[:ownership]
+      build_lists = build_lists.scoped_to_new_core(@options[:new_core] == '0' ? nil : true) if @options[:new_core].present?
       build_lists = build_lists.for_status(@options[:status]) if @options[:status]
       build_lists = build_lists.scoped_to_arch(@options[:arch_id]) if @options[:arch_id]
       build_lists = build_lists.scoped_to_save_platform(@options[:platform_id]) if @options[:platform_id]
@@ -49,7 +50,8 @@ class BuildList::Filter
         :project_version => nil,
         :bs_id => nil,
         :project_name => nil,
-        :mass_build_id => nil
+        :mass_build_id => nil,
+        :new_core => nil
     }))
 
     @options[:ownership] = @options[:ownership].presence || (@project || !@user ? 'everything' : 'owned')
@@ -65,6 +67,7 @@ class BuildList::Filter
     @options[:bs_id] = @options[:bs_id].presence
     @options[:project_name] = @options[:project_name].presence
     @options[:mass_build_id] = @options[:mass_build_id].presence
+    @options[:new_core] = @options[:new_core].presence
   end
 
   def build_date_from_params(field_name, params)
