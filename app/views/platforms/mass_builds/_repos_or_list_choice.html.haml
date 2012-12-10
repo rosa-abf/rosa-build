@@ -1,0 +1,48 @@
+#repos_or_list.accordion
+  .accordion-group
+    .accordion-heading
+      %a.accordion-toggle{"data-parent" => "#repos_or_list", "data-toggle" => "collapse", :href => "#collapseRepos"}
+        =t("layout.mass_builds.repositories")
+    #collapseRepos.accordion-body.collapse.in
+      .accordion-inner
+        -@platform.repositories.each do |rep|
+          .both
+            =check_box_tag "repositories[]", rep.id, (params[:repositories]||[]).include?(rep.id.to_s), :id => "repositories_#{rep.id}", :href => "#{projects_list_platform_repository_path(@platform, rep)}?text=true"
+            =label_tag "repositories_#{rep.id}", rep.name
+  .accordion-group
+    .accordion-heading
+      %a.accordion-toggle{"data-parent" => "#repos_or_list", "data-toggle" => "collapse", :href => "#collapseList"}
+        =t("layout.mass_builds.projects_list")
+    #collapseList.accordion-body.collapse
+      .accordion-inner
+        =text_area_tag :projects_list, nil, :style => 'min-width:315px;'
+:javascript
+  $(document).ready(function() {
+    var projects_list = $('.form.mass_build #projects_list');
+    var repositories = $(".form.mass_build #collapseRepos input:checkbox");
+    repositories.click(function(){
+      if (this.checked){
+        $(this).attr('disabled',true);
+        $.ajax({
+          type: 'GET',
+          url: $(this).attr('href'),
+          success: function(data){
+                     var text = projects_list.val();
+                     if(text.length > 0 && text.slice(-1) != '\n') {text = text + "\n"}
+                     projects_list.val(text+data);
+                   },
+          error: function(data){
+                   alert('Error :(') // TODO remove
+                 }
+        });
+      }
+      return true;
+    });
+
+    projects_list.keyup(function(){
+      if($(this).val().length == 0) {
+        repositories.attr('disabled',false)
+                    .attr('checked', false);
+      }
+    });
+  });

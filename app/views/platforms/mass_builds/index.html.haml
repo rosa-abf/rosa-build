@@ -3,13 +3,7 @@
 
 = form_for :build, :url => platform_mass_builds_path(@platform), :html => { :class => 'form mass_build', :method => :post } do |f|
   %section.left
-    %h3= t("layout.mass_builds.repositories")
-    - @platform.repositories.each do |rep|
-      .both
-        = check_box_tag "repositories[]", rep.id, (params[:repositories]||[]).include?(rep.id.to_s), :id => "repositories_#{rep.id}"
-        = label_tag "repositories_#{rep.id}", rep.name
-    %h3= t("layout.mass_builds.projects_list")
-    = text_area_tag :projects_list, nil
+    =render 'repos_or_list_choice'
     %br
     = f.submit t("layout.projects.build_button")
   %section.right
