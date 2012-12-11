@@ -1101,14 +1101,21 @@ div#advisory_search_block div.continue_input {
   margin-bottom: 20px;
 }
 
-form.mass_build section.left {
-  margin-left: 10px;
-  width: 350px;
-  margin-top: 15px;
-}
+form.mass_build {
+  section.left {
+    margin-left: 10px;
+    width: 350px;
+  }
 
-form.mass_build section.right {
-  margin-right: 50px;
+  section.right {
+    margin-right: 50px;
+  }
+  input[type="submit"] {
+    margin: 10px 0 10px 0;
+  }
+  #projects_list {
+    min-width:315px;
+  }
 }
 
 .toggle {

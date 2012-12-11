@@ -1,25 +1,14 @@
-#repos_or_list.accordion
-  .accordion-group
-    .accordion-heading
-      %a.accordion-toggle{"data-parent" => "#repos_or_list", "data-toggle" => "collapse", :href => "#collapseRepos"}
-        =t("layout.mass_builds.repositories")
-    #collapseRepos.accordion-body.collapse.in
-      .accordion-inner
-        -@platform.repositories.each do |rep|
-          .both
-            =check_box_tag "repositories[]", rep.id, (params[:repositories]||[]).include?(rep.id.to_s), :id => "repositories_#{rep.id}", :href => "#{projects_list_platform_repository_path(@platform, rep)}?text=true"
-            =label_tag "repositories_#{rep.id}", rep.name
-  .accordion-group
-    .accordion-heading
-      %a.accordion-toggle{"data-parent" => "#repos_or_list", "data-toggle" => "collapse", :href => "#collapseList"}
-        =t("layout.mass_builds.projects_list")
-    #collapseList.accordion-body.collapse
-      .accordion-inner
-        =text_area_tag :projects_list, nil, :style => 'min-width:315px;'
+%h3=t("layout.mass_builds.repositories")
+-@platform.repositories.each do |rep|
+  .both
+    =check_box_tag "repositories[]", rep.id, (params[:repositories]||[]).include?(rep.id.to_s), :id => "repositories_#{rep.id}", :href => "#{projects_list_platform_repository_path(@platform, rep)}?text=true"
+    =label_tag "repositories_#{rep.id}", rep.name
+%h3=t("layout.mass_builds.projects_list")
+=text_area_tag :projects_list, nil
 :javascript
   $(document).ready(function() {
     var projects_list = $('.form.mass_build #projects_list');
-    var repositories = $(".form.mass_build #collapseRepos input:checkbox");
+    var repositories = $(".form.mass_build input:checkbox");
     repositories.click(function(){
       if (this.checked){
         $(this).attr('disabled',true);

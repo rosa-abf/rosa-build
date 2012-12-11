@@ -15,7 +15,6 @@
 // require bootstrap-popover
 //= require bootstrap-alert
 //= require bootstrap-tab
-//= require bootstrap-collapse
 //= require chosen.jquery
 // require html5shiv
 // require_tree .
