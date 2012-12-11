@@ -97,6 +97,7 @@ class Platforms::RepositoriesController < Platforms::BaseController
   end
 
   def projects_list
+    render(:text => @repository.projects.map(&:name).join("\n")) && return if params[:text] == 'true'
 
     owner_subquery = "
       INNER JOIN (
@@ -111,8 +112,6 @@ class Platforms::RepositoriesController < Platforms::BaseController
     sort_col = params[:iSortCol_0] || 0
     sort_dir = params[:sSortDir_0]=="asc" ? 'asc' : 'desc'
     order = "#{colName[sort_col.to_i]} #{sort_dir}"
-
-    render(:text => @repository.projects.map(&:name).join("\n")) && return if params[:text] == 'true'
 
     if params[:added] == "true"
       @projects = @repository.projects
