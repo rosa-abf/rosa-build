@@ -81,3 +81,4 @@ CodeMirror.defineMode("htmlmixed", function(config, parserConfig) {
 });
 
 CodeMirror.defineMIME("text/html", "htmlmixed");
+CodeMirror.defineMIME("application/html", "htmlmixed");

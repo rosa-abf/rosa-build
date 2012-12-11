@@ -170,3 +170,4 @@ CodeMirror.defineMode("go", function(config, parserConfig) {
 });
 
 CodeMirror.defineMIME("text/x-go", "go");
+CodeMirror.defineMIME("application/x-go", "go");

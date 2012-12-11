@@ -137,3 +137,4 @@ CodeMirror.defineMode('smalltalk', function(config, modeConfig) {
 });
 
 CodeMirror.defineMIME('text/x-stsrc', {name: 'smalltalk'});
+CodeMirror.defineMIME('application/x-stsrc', {name: 'smalltalk'});

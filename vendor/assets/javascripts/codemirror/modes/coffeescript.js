@@ -339,3 +339,4 @@ CodeMirror.defineMode('coffeescript', function(conf) {
 });
 
 CodeMirror.defineMIME('text/x-coffeescript', 'coffeescript');
+CodeMirror.defineMIME('application/x-coffeescript', 'coffeescript');

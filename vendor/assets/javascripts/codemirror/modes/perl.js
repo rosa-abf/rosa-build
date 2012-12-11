@@ -778,6 +778,7 @@ CodeMirror.defineMode("perl",function(config,parserConfig){
 		electricChars:"{}"}});
 
 CodeMirror.defineMIME("text/x-perl", "perl");
+CodeMirror.defineMIME("application/x-perl", "perl");
 
 // it's like "peek", but need for look-ahead or look-behind if index < 0
 CodeMirror.StringStream.prototype.look=function(c){

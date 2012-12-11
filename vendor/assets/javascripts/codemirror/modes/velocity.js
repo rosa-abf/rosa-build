@@ -144,3 +144,4 @@ CodeMirror.defineMode("velocity", function(config) {
 });
 
 CodeMirror.defineMIME("text/velocity", "velocity");
+CodeMirror.defineMIME("application/velocity", "velocity");

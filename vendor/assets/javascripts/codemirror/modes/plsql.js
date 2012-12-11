@@ -207,7 +207,7 @@ CodeMirror.defineMode("plsql", function(config, parserConfig) {
         "verify version " +
         "wrap";
 
-  CodeMirror.defineMIME("text/x-plsql", {
+  CodeMirror.defineMIME("application/x-plsql", {
     name: "plsql",
     keywords: keywords(cKeywords),
     functions: keywords(cFunctions),
