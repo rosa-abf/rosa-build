@@ -37,7 +37,7 @@ shared_examples_for 'mass_build platform owner' do
       Platform.update_all("platform_type = 'personal'")
     end
 
-    [:cancel, :failed_builds_list, :create].each do |action|
+    [:cancel, :get_list, :create].each do |action|
       it "should not be able to perform #{ action } action" do
         get action, :platform_id => @platform, :id => @mass_build.id
         response.should redirect_to(forbidden_path)
@@ -54,7 +54,7 @@ shared_examples_for 'mass_build platform reader' do
     end
   end
 
-  [:cancel, :failed_builds_list].each do |action|
+  [:cancel, :get_list].each do |action|
     it "should not be able to perform #{ action } action" do
       get action, :platform_id => @platform, :id => @mass_build.id
       response.should redirect_to(forbidden_path)
@@ -81,14 +81,17 @@ describe Platforms::MassBuildsController do
     @repository = FactoryGirl.create(:repository, :platform => @platform)
     @personal_platform = FactoryGirl.create(:platform, :platform_type => 'personal')
     @user = FactoryGirl.create(:user)
+    project = FactoryGirl.create(:project, :owner => @user)
+    @repository.projects << project
+
     @create_params = {
       :platform_id => @platform,
-      :repositories => [@platform.repositories.first.id],
+      :projects_list => @repository.projects.map(&:name).join("\n"),
       :arches => [Arch.first.id],
       :auto_publish => true
     }
 
-    @mass_build = FactoryGirl.create(:mass_build, :platform => @platform, :user => @user)
+    @mass_build = FactoryGirl.create(:mass_build, :platform => @platform, :user => @user, :projects_list => project.name)
   end
 
   context 'for guest' do
@@ -99,8 +102,8 @@ describe Platforms::MassBuildsController do
       end
     end
 
-    it "should not be able to perform failed_builds_list action" do
-      get :failed_builds_list, :platform_id => @platform, :id => @mass_build
+    it "should not be able to get failed builds list" do
+      get :get_list, :platform_id => @platform, :id => @mass_build, :kind => 'failed_builds_list'
       response.should redirect_to(new_user_session_path)
     end
 
@@ -161,4 +164,3 @@ describe Platforms::MassBuildsController do
     it_should_behave_like 'mass_build platform reader'
   end
 end
-
