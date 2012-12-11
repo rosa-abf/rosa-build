@@ -24,7 +24,6 @@ class MassBuild < ActiveRecord::Base
     :build_error
   ]
 
-  # ATTENTION: repositories and arches must be set before calling this method!
   def build_all
     # later with resque
     arches_list = arches ? Arch.where(:id => arches) : Arch.all
@@ -34,8 +33,7 @@ class MassBuild < ActiveRecord::Base
       next if name.blank?
       name.chomp!; name.strip!
 
-      if project = Project.joins(:repositories).where(:name => name)
-                          .where('repositories.id in (?)', platform.repository_ids).first
+      if project = Project.joins(:repositories).where('repositories.id in (?)', platform.repository_ids).find_by_name(name)
         begin
           return if self.reload.stop_build
           arches_list.each do |arch|

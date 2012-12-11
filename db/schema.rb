@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20121206143724) do
+ActiveRecord::Schema.define(:version => 20121211132948) do
 
   create_table "activity_feeds", :force => true do |t|
     t.integer  "user_id",    :null => false
@@ -250,7 +250,6 @@ ActiveRecord::Schema.define(:version => 20121206143724) do
     t.integer  "build_started_count",   :default => 0,     :null => false
     t.integer  "build_publish_count",   :default => 0,     :null => false
     t.integer  "build_error_count",     :default => 0,     :null => false
-    t.string   "rep_names"
     t.boolean  "stop_build",            :default => false, :null => false
     t.text     "projects_list"
     t.integer  "missed_projects_count", :default => 0,     :null => false
@@ -330,6 +329,8 @@ ActiveRecord::Schema.define(:version => 20121206143724) do
     t.datetime "updated_at",    :null => false
   end
 
+  add_index "project_to_repositories", ["repository_id", "project_id"], :name => "index_project_to_repositories_on_repository_id_and_project_id", :unique => true
+
   create_table "projects", :force => true do |t|
     t.string   "name"
     t.datetime "created_at",                               :null => false
@@ -402,6 +403,8 @@ ActiveRecord::Schema.define(:version => 20121206143724) do
     t.string   "name",                                 :null => false
     t.boolean  "publish_without_qa", :default => true
   end
+
+  add_index "repositories", ["platform_id"], :name => "index_repositories_on_platform_id"
 
   create_table "settings_notifiers", :force => true do |t|
     t.integer  "user_id",                                         :null => false
