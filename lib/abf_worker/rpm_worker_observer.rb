@@ -1,6 +1,5 @@
 module AbfWorker
-  class RpmWorkerObserver
-    extend AbfWorker::ObserverHelper
+  class RpmWorkerObserver < AbfWorker::BaseObserver
     @queue = :rpm_worker_observer
 
     def self.perform(options)

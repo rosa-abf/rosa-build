@@ -1,6 +1,5 @@
 module AbfWorker
-  class IsoWorkerObserver
-    extend AbfWorker::ObserverHelper
+  class IsoWorkerObserver < AbfWorker::BaseObserver
     @queue = :iso_worker_observer
 
     def self.perform(options)

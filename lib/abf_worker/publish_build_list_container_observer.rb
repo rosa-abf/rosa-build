@@ -1,6 +1,5 @@
 module AbfWorker
-  class PublishBuildListContainerObserver
-    extend AbfWorker::ObserverHelper
+  class PublishBuildListContainerObserver < AbfWorker::BaseObserver
     @queue = :publish_build_list_container_observer
 
     def self.perform(options)
