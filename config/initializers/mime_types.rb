@@ -7,7 +7,6 @@
 
 Mime::Type.register "text/plain", 'diff'
 Mime::Type.register "text/plain", 'patch'
-#Mime::Type.register "text/x-markdown", 'md'
 
 # add rpm spec as mime type for *.spec files
 [["text/x-python",   ['py'],     '8bit'],
