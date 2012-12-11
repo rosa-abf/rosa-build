@@ -124,14 +124,13 @@ class Project < ActiveRecord::Base
     #path #share by NFS
   end
 
-  def build_for(platform, repository_id, user, arch = 'i586', auto_publish = false, mass_build_id = nil, priority = 0)
+  def build_for(platform, repository_id, user, arch =  Arch.find_by_name('i586'), auto_publish = false, mass_build_id = nil, priority = 0)
     # Select main and project platform repository(contrib, non-free and etc)
     # If main does not exist, will connect only project platform repository
     # If project platform repository is main, only main will be connect
     main_rep_id = platform.repositories.find_by_name('main').try(:id)
     build_reps_ids = [main_rep_id, repository_id].compact.uniq
 
-    arch = Arch.find_by_name(arch) if arch.acts_like?(:string)
     build_lists.create do |bl|
       bl.save_to_platform = platform
       bl.build_for_platform = platform
