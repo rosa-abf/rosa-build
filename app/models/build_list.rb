@@ -267,16 +267,27 @@ class BuildList < ActiveRecord::Base
   def publish_container
     type = save_to_platform.distrib_type
     archive = results.select{ |r| r['file_name'] =~ /.*\.tar\.gz$/}[0]
+
+    platform_path = "#{APP_CONFIG[root]}/platforms/#{save_to_platform.name}"
+    if save_to_platform.personal?
+      platform_path << '/'
+      platform_path << build_for_platform.name
+      Dir.mkdir(platform_path) unless File.exists?(platform_path)
+    end
+
     Resque.push(
       "publish_build_list_container_#{type}_worker",
       'class' => "AbfWorker::PublishBuildListContainer#{type.capitalize}Worker",
       'args' => [{
         :id => id,
-        :released => save_to_platform.released,
         :arch => arch.name,
         :distrib_type => type,
         :container_sha1 => archive['sha1'],
-        :platform_path => "#{APP_CONFIG[root]}/platforms/#{save_to_platform.name}/",
+        :platform => {
+          :platform_path => platform_path,
+          :released => save_to_platform.released
+        },
+        :repository_name => save_to_repository.name,
         :time_living => 1800 # 30 min
       }]
     )

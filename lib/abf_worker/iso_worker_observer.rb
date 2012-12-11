@@ -17,8 +17,7 @@ module AbfWorker
         pbl.build_canceled
       end
       if status != BUILD_STARTED
-        pbl.results = options['results']
-        pbl.save!
+        update_results(pbl, options)
       end
     end
 

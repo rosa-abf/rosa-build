@@ -19,16 +19,5 @@ module AbfWorker
       end
     end
 
-    class << self
-      protected
-
-      def update_results(bl, options)
-        results = bl.results + options['results']
-        bl.results = results.sort_by{ |r| r['file_name'] }
-        bl.save!
-      end
-
-    end
-
   end
 end

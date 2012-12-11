@@ -52,9 +52,11 @@ module AbfWorker
         container = (options['results'] || []).
           select{ |r| r['file_name'] !~ /.*\.log$/ }.first
         sha1 = container ? container['sha1'] : nil
-        bl.results = options['results']
-        bl.container_path = "#{APP_CONFIG['file_store_url']}/#{sha1}" if sha1
-        bl.save!
+        if sha1
+          bl.container_path = "#{APP_CONFIG['file_store_url']}/#{sha1}"
+          bl.save!
+        end
+        update_results(bl, options)
       end
     end
 
