@@ -122,3 +122,4 @@ CodeMirror.defineMode("css", function(config) {
 });
 
 CodeMirror.defineMIME("text/css", "css");
+CodeMirror.defineMIME('application/x-coffeescript', 'css');

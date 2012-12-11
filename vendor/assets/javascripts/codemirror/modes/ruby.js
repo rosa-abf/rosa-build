@@ -197,4 +197,5 @@ CodeMirror.defineMode("ruby", function(config, parserConfig) {
 });
 
 CodeMirror.defineMIME("text/x-ruby", "ruby");
+CodeMirror.defineMIME("application/x-ruby", "ruby");
 

@@ -13,7 +13,8 @@ Mime::Type.register "text/plain", 'patch'
  ["text/x-rpm-spec", ['spec'],   '8bit'],
  ["text/x-csrc",     ['h', 'c'], '8bit'],
  ["text/x-c++src",   ['cpp'],    '8bit'],
- ["text/x-diff",   ['diff'],    '8bit']
+ ["text/x-diff",   ['diff'],    '8bit'],
+ ["text/x-markdown",   ['md'],    '8bit']
 ].each do |type|
   MIME::Types.add MIME::Type.from_array(type)
 end

@@ -176,14 +176,14 @@ CodeMirror.defineMode("clike", function(config, parserConfig) {
     return "string";
   }
 
-  CodeMirror.defineMIME("text/x-csrc", {
+  CodeMirror.defineMIME("application/x-csrc", {
     name: "clike",
     keywords: words(cKeywords),
     blockKeywords: words("case do else for if switch while struct"),
     atoms: words("null"),
     hooks: {"#": cppHook}
   });
-  CodeMirror.defineMIME("text/x-c++src", {
+  CodeMirror.defineMIME("application/x-c++src", {
     name: "clike",
     keywords: words(cKeywords + " asm dynamic_cast namespace reinterpret_cast try bool explicit new " +
                     "static_cast typeid catch operator template typename class friend private " +
@@ -193,7 +193,7 @@ CodeMirror.defineMode("clike", function(config, parserConfig) {
     atoms: words("true false null"),
     hooks: {"#": cppHook}
   });
-  CodeMirror.defineMIME("text/x-java", {
+  CodeMirror.defineMIME("application/x-java", {
     name: "clike",
     keywords: words("abstract assert boolean break byte case catch char class const continue default " + 
                     "do double else enum extends final finally float for goto if implements import " +
@@ -209,7 +209,7 @@ CodeMirror.defineMode("clike", function(config, parserConfig) {
       }
     }
   });
-  CodeMirror.defineMIME("text/x-csharp", {
+  CodeMirror.defineMIME("application/x-csharp", {
     name: "clike",
     keywords: words("abstract as base bool break byte case catch char checked class const continue decimal" + 
                     " default delegate do double else enum event explicit extern finally fixed float for" + 

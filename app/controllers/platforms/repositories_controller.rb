@@ -97,6 +97,7 @@ class Platforms::RepositoriesController < Platforms::BaseController
   end
 
   def projects_list
+    render(:text => @repository.projects.map(&:name).join("\n")) && return if params[:text] == 'true'
 
     owner_subquery = "
       INNER JOIN (

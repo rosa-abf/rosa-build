@@ -139,3 +139,4 @@ CodeMirror.defineMode("r", function(config) {
 });
 
 CodeMirror.defineMIME("text/x-rsrc", "r");
+CodeMirror.defineMIME("application/x-rsrc", "r");

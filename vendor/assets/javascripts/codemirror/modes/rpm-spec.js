@@ -64,3 +64,4 @@ CodeMirror.defineMode("spec", function(config, modeConfig) {
 });
 
 CodeMirror.defineMIME("text/x-rpm-spec", "spec");
+CodeMirror.defineMIME("application/x-rpm-spec", "spec");

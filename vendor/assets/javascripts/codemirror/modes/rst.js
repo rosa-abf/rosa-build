@@ -324,3 +324,4 @@ CodeMirror.defineMode('rst', function(config, options) {
 });
 
 CodeMirror.defineMIME("text/x-rst", "rst");
+CodeMirror.defineMIME("application/x-rst", "rst");
