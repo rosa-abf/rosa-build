@@ -18,5 +18,13 @@ module AbfWorker
       end
     end
 
+    def self.update_results(subject, options)
+      results = (subject.results || []).
+        map{ |r| r if r['file_name'] !~ /^abfworker\:\:publish\-build\-list\-container\-worker.*\.log$/ }.
+        compact
+      results += options['results']
+      sort_results_and_save(subject, results)
+    end
+
   end
 end
