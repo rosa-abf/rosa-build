@@ -186,3 +186,4 @@ CodeMirror.defineMode("mysql", function(config) {
 });
 
 CodeMirror.defineMIME("text/x-mysql", "mysql");
+CodeMirror.defineMIME("application/x-mysql", "mysql");

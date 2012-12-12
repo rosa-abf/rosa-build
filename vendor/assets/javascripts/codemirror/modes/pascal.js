@@ -136,3 +136,4 @@ CodeMirror.defineMode("pascal", function(config) {
 });
 
 CodeMirror.defineMIME("text/x-pascal", "pascal");
+CodeMirror.defineMIME("application/x-pascal", "pascal");

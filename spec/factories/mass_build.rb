@@ -4,7 +4,7 @@ FactoryGirl.define do
     association :platform
     #name FactoryGirl.generate(:name)
     association :user
-    repositories { |mb| [ mb.platform.repositories.first.id ] }
+    projects_list "first"
     arches { [ Arch.first.id ] }
     auto_publish true
     stop_build false

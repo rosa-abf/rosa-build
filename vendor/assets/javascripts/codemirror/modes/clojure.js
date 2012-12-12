@@ -205,3 +205,4 @@ CodeMirror.defineMode("clojure", function (config, mode) {
 });
 
 CodeMirror.defineMIME("text/x-clojure", "clojure");
+CodeMirror.defineMIME("application/x-clojure", "clojure");

@@ -184,7 +184,7 @@ CodeMirror.defineMode("verilog", function(config, parserConfig) {
     return "string";
   }
 
-  CodeMirror.defineMIME("text/x-verilog", {
+  CodeMirror.defineMIME("application/x-verilog", {
     name: "verilog",
     keywords: words(verilogKeywords),
     blockKeywords: words(verilogBlockKeywords),

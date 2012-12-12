@@ -11,3 +11,4 @@ CodeMirror.defineMode("diff", function() {
 });
 
 CodeMirror.defineMIME("text/x-diff", "diff");
+CodeMirror.defineMIME("application/x-diff", "diff");

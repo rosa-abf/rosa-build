@@ -8,7 +8,7 @@ ru:
       cancel_mass_build: Отмена
       cancel_confirm: Вы уверены, что хотите отменить массовую сборку?
       projects_list: Список проектов
-      missed_projects_list: Список несуществующих проектов
+      missed_projects_list: 'Несуществующие проекты: '
   activerecord:
     models:
       mass_build: Массовая Сборка
@@ -22,4 +22,4 @@ ru:
         user: Пользователь
         auto_publish: Авто Публикация
         repositories: Репозитории
-        rep_names: Репозитории
+        projects_list: Список проектов

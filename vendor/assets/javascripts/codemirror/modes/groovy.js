@@ -208,3 +208,4 @@ CodeMirror.defineMode("groovy", function(config, parserConfig) {
 });
 
 CodeMirror.defineMIME("text/x-groovy", "groovy");
+CodeMirror.defineMIME("application/x-groovy", "groovy");

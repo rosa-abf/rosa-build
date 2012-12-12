@@ -430,3 +430,4 @@ CodeMirror.defineMode("rust", function() {
 });
 
 CodeMirror.defineMIME("text/x-rustsrc", "rust");
+CodeMirror.defineMIME("application/x-rustsrc", "rust");
