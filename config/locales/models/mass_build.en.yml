@@ -8,7 +8,7 @@ en:
       cancel_mass_build: Cancel
       cancel_confirm: Are you sure you want to cancel mass build?
       projects_list: Projects list
-      missed_projects_list: Missed projects list
+      missed_projects_list: 'Missed projects: '
   activerecord:
     models:
       mass_build: Mass Build
@@ -22,3 +22,4 @@ en:
         user: User
         auto_publish: Auto Publish
         repositories: Repositories
+        projects_list: Projects list
