@@ -1,6 +1,6 @@
 $(document).ready(function() {
   var projects_list = $('.form.mass_build #projects_list');
-  var repositories = $(".form.mass_build input:checkbox");
+  var repositories = $(".form.mass_build .left input:checkbox");
   repositories.click(function(){
     if (this.checked){
       $(this).attr('disabled',true);
