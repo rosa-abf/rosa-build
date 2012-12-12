@@ -4,5 +4,5 @@
   .both
 
 .leftlist= f.label :time_living, t("activerecord.attributes.product_build_list.time_living"), :class => :label
-.rightlist= f.text_field :time_living, :value => (@product.time_living / 60)
+.rightlist= f.text_field :time_living, :value => (@product.time_living.to_i / 60)
 .both
