@@ -288,7 +288,7 @@ class BuildList < ActiveRecord::Base
           :released => save_to_platform.released
         },
         :repository_name => save_to_repository.name,
-        :time_living => 1800 # 30 min
+        :time_living => 2400 # 40 min
       }]
     )
   end
