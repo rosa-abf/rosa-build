@@ -6,13 +6,13 @@ module AbfWorker
       bl = BuildList.find options['id']
       status = options['status'].to_i
       case status
-      when BUILD_COMPLETED
+      when COMPLETED
         bl.published
         update_results(bl, options)
-      when BUILD_FAILED
+      when FAILED
         bl.fail_publish
         update_results(bl, options)
-      when BUILD_CANCELED
+      when CANCELED
         bl.fail_publish
         update_results(bl, options)
       end

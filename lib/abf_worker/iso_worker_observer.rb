@@ -6,16 +6,16 @@ module AbfWorker
       status = options['status'].to_i
       pbl = ProductBuildList.find options['id']
       case status
-      when BUILD_COMPLETED
+      when COMPLETED
         pbl.build_success
-      when BUILD_FAILED
+      when FAILED
         pbl.build_error
-      when BUILD_STARTED
+      when STARTED
         pbl.start_build
-      when BUILD_CANCELED
+      when CANCELED
         pbl.build_canceled
       end
-      if status != BUILD_STARTED
+      if status != STARTED
         update_results(pbl, options)
       end
     end

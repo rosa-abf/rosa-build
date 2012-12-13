@@ -58,7 +58,7 @@ class Platform < ActiveRecord::Base
     system("rm -Rf #{ APP_CONFIG['root_path'] }/platforms/#{ self.name }/repository/*")
   end
 
-  def urpmi_list(host = nil, pair = nil, add_commands = true)
+  def urpmi_list(host = nil, pair = nil, add_commands = true, repository_name = 'main')
     host ||= default_host
     blank_pair = {:login => 'login', :pass => 'password'}
     pair = blank_pair if pair.blank?
@@ -69,7 +69,7 @@ class Platform < ActiveRecord::Base
       local_pair = pl.id != self.id ? blank_pair : pair
       head = hidden? ? "http://#{local_pair[:login]}@#{local_pair[:pass]}:#{host}/private/" : "http://#{host}/downloads/"
       Arch.all.each do |arch|
-        tail = "/#{arch.name}/main/release"
+        tail = "/#{arch.name}/#{repository_name}/release"
         command = add_commands ? "urpmi.addmedia #{name} " : ''
         command << "#{head}#{name}/repository/#{pl.name}#{tail}"
         urpmi_commands[pl.name][arch.name] = command

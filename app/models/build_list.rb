@@ -427,7 +427,7 @@ class BuildList < ActiveRecord::Base
     end
     if save_to_platform.personal?
       include_repos_hash["#{save_to_platform.name}_release"] = save_to_platform.
-        urpmi_list(nil, nil, false)["#{build_for_platform.name}"]["#{arch.name}"]
+        urpmi_list(nil, nil, false, save_to_repository.name)["#{build_for_platform.name}"]["#{arch.name}"]
     end
     # mdv example:
     # https://abf.rosalinux.ru/import/plasma-applet-stackfolder.git

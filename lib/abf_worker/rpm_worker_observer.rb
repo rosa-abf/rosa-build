@@ -7,21 +7,21 @@ module AbfWorker
       status = options['status'].to_i
       item = find_or_create_item(bl)
 
-      fill_container_data(bl, options) if status != BUILD_STARTED
+      fill_container_data(bl, options) if status != STARTED
 
       case status
-      when BUILD_COMPLETED
+      when COMPLETED
         bl.build_success
         item.update_attributes({:status => BuildServer::SUCCESS})
         bl.now_publish if bl.auto_publish?
-      when BUILD_FAILED
+      when FAILED
         bl.build_error
         item.update_attributes({:status => BuildServer::BUILD_ERROR})
-      when BUILD_STARTED
+      when STARTED
         bl.bs_id = bl.id
         bl.save!
         bl.start_build
-      when BUILD_CANCELED
+      when CANCELED
         bl.build_canceled
         item.update_attributes({:status => BuildList::BUILD_CANCELED})
       end

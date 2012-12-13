@@ -1,10 +1,10 @@
 module AbfWorker
   class BaseObserver
-    BUILD_COMPLETED = 0
-    BUILD_FAILED    = 1
-    BUILD_PENDING   = 2
-    BUILD_STARTED   = 3
-    BUILD_CANCELED  = 4
+    COMPLETED = 0
+    FAILED    = 1
+    PENDING   = 2
+    STARTED   = 3
+    CANCELED  = 4
 
     def self.update_results(subject, options)
       results = (subject.results || []) + options['results']
