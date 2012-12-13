@@ -24,7 +24,7 @@ end
 shared_examples_for 'user with create comment rights' do
   it 'should be able to perform create action' do
     post :create, @create_params
-    response.should redirect_to(project_issue_path(@project, @issue))
+    response.should redirect_to(project_issue_path(@project, @issue)+"#comment#{Comment.last.id}")
   end
 
   it 'should create comment in the database' do
@@ -113,7 +113,7 @@ describe Projects::CommentsController do
     it_should_behave_like 'user with create comment rights'
     it_should_behave_like 'user with update stranger comment rights'
     it_should_behave_like 'user with update own comment rights'
-    it_should_behave_like 'user without destroy comment rights'
+    it_should_behave_like 'user with destroy comment rights'
   end
 
   context 'for project owner user' do
@@ -124,7 +124,7 @@ describe Projects::CommentsController do
    it_should_behave_like 'user with create comment rights'
    it_should_behave_like 'user with update stranger comment rights'
    it_should_behave_like 'user with update own comment rights'
-   it_should_behave_like 'user without destroy comment rights'
+   it_should_behave_like 'user with destroy comment rights'
   end
 
   context 'for project reader user' do

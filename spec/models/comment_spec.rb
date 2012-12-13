@@ -24,29 +24,11 @@ describe Comment do
       set_commentable_data
     end
 
-    it 'should create comment' do
-      @ability.should be_able_to(:create, @comment)
-    end
-
-    pending "sends an e-mail" do
-      ActionMailer::Base.deliveries.last.to.include?(@stranger.email).should == true
-    end
-
-    it 'should update comment' do
-      @ability.should be_able_to(:update, @comment)
-    end
-
-    it 'should update stranger comment' do
-      @ability.should be_able_to(:update, @stranger_comment)
-    end
-
-    it 'should destroy own comment' do
-      @ability.should be_able_to(:destroy, @comment)
-    end
-
-    it 'should destroy stranger comment' do
-      @ability.should be_able_to(:destroy, @stranger_comment)
-    end
+    it_should_behave_like 'user with create comment ability (for model)'
+    it_should_behave_like 'user with update own comment ability (for model)'
+    it_should_behave_like 'user with update stranger comment ability (for model)'
+    it_should_behave_like 'user with destroy comment ability (for model)'
+    it_should_behave_like 'user with destroy stranger comment ability (for model)'
   end
 
   context 'for project admin user' do
@@ -59,21 +41,14 @@ describe Comment do
       @project.relations.create!(:actor_type => 'User', :actor_id => @user.id, :role => 'admin')
     end
 
-    it 'should create comment' do
-      @comment.user = @user
-      @ability.should be_able_to(:create, @comment)
-    end
+    it_should_behave_like 'user with create comment ability (for model)'
+    it_should_behave_like 'user with update own comment ability (for model)'
+    it_should_behave_like 'user with update stranger comment ability (for model)'
+    it_should_behave_like 'user with destroy comment ability (for model)'
+    it_should_behave_like 'user with destroy stranger comment ability (for model)'
 
-    it 'should update comment' do
-      @ability.should be_able_to(:update, @comment)
-    end
-
-    it 'should update stranger comment' do
-      @ability.should be_able_to(:update, @stranger_comment)
-    end
-
-    it 'should not destroy comment' do
-      @ability.should_not be_able_to(:destroy, @comment)
+    pending "sends an e-mail" do
+      ActionMailer::Base.deliveries.last.to.include?(@stranger.email).should == true
     end
   end
 
@@ -89,21 +64,11 @@ describe Comment do
       @project.relations.create!(:actor_type => 'User', :actor_id => @user.id, :role => 'admin')
     end
 
-    it 'should create comment' do
-      @ability.should be_able_to(:create, @comment)
-    end
-
-    it 'should update comment' do
-      @ability.should be_able_to(:update, @comment)
-    end
-
-    it 'should update stranger comment' do
-      @ability.should be_able_to(:update, @stranger_comment)
-    end
-
-    it 'should not destroy comment' do
-      @ability.should_not be_able_to(:destroy, @comment)
-    end
+    it_should_behave_like 'user with create comment ability (for model)'
+    it_should_behave_like 'user with update own comment ability (for model)'
+    it_should_behave_like 'user with update stranger comment ability (for model)'
+    it_should_behave_like 'user with destroy comment ability (for model)'
+    it_should_behave_like 'user with destroy stranger comment ability (for model)'
   end
 
   context 'for simple user' do
@@ -114,21 +79,11 @@ describe Comment do
       set_commentable_data
     end
 
-    it 'should create comment' do
-      @ability.should be_able_to(:create, @comment)
-    end
-
-    it 'should update comment' do
-      @ability.should be_able_to(:update, @comment)
-    end
-
-    it 'should not update stranger comment' do
-      @ability.should_not be_able_to(:update, @stranger_comment)
-    end
-
-    it 'should not destroy comment' do
-      @ability.should_not be_able_to(:destroy, @comment)
-    end
+    it_should_behave_like 'user with create comment ability (for model)'
+    it_should_behave_like 'user with update own comment ability (for model)'
+    it_should_behave_like 'user without update stranger comment ability (for model)'
+    it_should_behave_like 'user with destroy comment ability (for model)'
+    it_should_behave_like 'user without destroy stranger comment ability (for model)'
 
     context 'with mass assignment' do
       it 'should not be able to update commentable' do
@@ -145,6 +100,5 @@ describe Comment do
         @comment.should_not allow_mass_assignment_of :project_id
       end
     end
-
   end
 end

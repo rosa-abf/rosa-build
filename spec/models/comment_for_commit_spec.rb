@@ -22,6 +22,17 @@ def set_comments_data_for_commit
   any_instance_of(Project, :versions => ['v1.0', 'v2.0'])
 end
 
+def should_send_email(args={})
+  create_comment args[:commentor]
+  ActionMailer::Base.deliveries.count.should == 1
+  ActionMailer::Base.deliveries.last.to.include?(args[:receiver].email).should == true
+end
+
+def should_not_send_email(args={})
+  create_comment args[:commentor]
+  ActionMailer::Base.deliveries.count.should == 0
+end
+
 describe Comment do
   before { stub_symlink_methods }
   context 'for global admin user' do
@@ -32,25 +43,11 @@ describe Comment do
       set_comments_data_for_commit
     end
 
-    it 'should create comment' do
-      @ability.should be_able_to(:create, @comment)
-    end
-
-    it 'should update comment' do
-      @ability.should be_able_to(:update, @comment)
-    end
-
-    it 'should update stranger comment' do
-      @ability.should be_able_to(:update, @stranger_comment)
-    end
-
-    it 'should destroy own comment' do
-      @ability.should be_able_to(:destroy, @comment)
-    end
-
-    it 'should destroy stranger comment' do
-      @ability.should be_able_to(:destroy, @stranger_comment)
-    end
+    it_should_behave_like 'user with create comment ability (for model)'
+    it_should_behave_like 'user with update own comment ability (for model)'
+    it_should_behave_like 'user with update stranger comment ability (for model)'
+    it_should_behave_like 'user with destroy comment ability (for model)'
+    it_should_behave_like 'user with destroy stranger comment ability (for model)'
   end
 
   context 'for project admin user' do
@@ -65,53 +62,34 @@ describe Comment do
       ActionMailer::Base.deliveries = []
     end
 
-    it 'should create comment' do
-      @ability.should be_able_to(:create, @comment)
-    end
+    it_should_behave_like 'user with create comment ability (for model)'
+    it_should_behave_like 'user with update own comment ability (for model)'
+    it_should_behave_like 'user with update stranger comment ability (for model)'
+    it_should_behave_like 'user with destroy comment ability (for model)'
+    it_should_behave_like 'user with destroy stranger comment ability (for model)'
 
-    it 'should update comment' do
-      @ability.should be_able_to(:update, @comment)
-    end
-
-    it 'should update stranger comment' do
-      @ability.should be_able_to(:update, @stranger_comment)
-    end
-
-    it 'should not destroy comment' do
-      @ability.should_not be_able_to(:destroy, @comment)
-    end
-
-    context 'for default settings' do
-      it 'should not send an e-mail' do
-        comment = create_comment(@stranger)
-        ActionMailer::Base.deliveries.count.should == 1
-        ActionMailer::Base.deliveries.last.to.include?(@user.email).should == true
-      end
+    it 'should send an e-mail by default settings' do
+      should_send_email(commentor: @stranger, receiver: @user)
     end
 
     context 'for disabled notify setting new_comment_commit_repo_owner' do
-      it 'should not send an e-mail' do
+      it 'should send an e-mail' do
         @user.notifier.update_column :new_comment_commit_repo_owner, false
-        comment = create_comment(@stranger)
-        ActionMailer::Base.deliveries.count.should == 1
+        should_send_email(commentor: @stranger, receiver: @user)
       end
     end
 
     context 'for disabled notify setting new_comment_commit_owner' do
       it 'should send an e-mail' do
         @user.notifier.update_column :new_comment_commit_owner, false
-        comment = create_comment(@stranger)
-        ActionMailer::Base.deliveries.count.should == 1
-        ActionMailer::Base.deliveries.last.to.include?(@user.email).should == true
+        should_send_email(commentor: @stranger, receiver: @user)
       end
     end
 
     context 'for disabled notify setting new_comment_commit_commentor' do
       it 'should send an e-mail' do
         @user.notifier.update_column :new_comment_commit_commentor, false
-        comment = create_comment(@stranger)
-        ActionMailer::Base.deliveries.count.should == 1
-        ActionMailer::Base.deliveries.last.to.include?(@user.email).should == true
+        should_send_email(commentor: @stranger, receiver: @user)
       end
     end
 
@@ -120,27 +98,23 @@ describe Comment do
         @user.notifier.update_column :new_comment_commit_repo_owner, false
         @user.notifier.update_column :new_comment_commit_owner, false
         @user.notifier.update_column :new_comment_commit_commentor, false
-        comment = create_comment(@stranger)
-        ActionMailer::Base.deliveries.count.should == 0
+        should_not_send_email(commentor: @stranger)
       end
     end
 
     context 'for unsubscribe commit' do
       it 'should not send an e-mail' do
         Subscribe.unsubscribe_from_commit @subscribe_params.merge(:user_id => @user.id)
-        comment = create_comment(@stranger)
-        ActionMailer::Base.deliveries.count.should == 0
+        should_not_send_email(commentor: @stranger)
       end
     end
 
     context 'for disabled global notify setting' do
       it 'should not send an e-mail' do
         @user.notifier.update_column :can_notify, false
-        comment = create_comment(@stranger)
-        ActionMailer::Base.deliveries.count.should == 0
+        should_not_send_email(commentor: @stranger)
       end
     end
-
   end
 
   context 'for project owner user' do
@@ -155,27 +129,15 @@ describe Comment do
       ActionMailer::Base.deliveries = []
     end
 
-    it 'should create comment' do
-      @ability.should be_able_to(:create, @comment)
-    end
-
-    it 'should update comment' do
-      @ability.should be_able_to(:update, @comment)
-    end
-
-    it 'should update stranger comment' do
-      @ability.should be_able_to(:update, @stranger_comment)
-    end
-
-    it 'should not destroy comment' do
-      @ability.should_not be_able_to(:destroy, @comment)
-    end
+    it_should_behave_like 'user with create comment ability (for model)'
+    it_should_behave_like 'user with update own comment ability (for model)'
+    it_should_behave_like 'user with update stranger comment ability (for model)'
+    it_should_behave_like 'user with destroy comment ability (for model)'
+    it_should_behave_like 'user with destroy stranger comment ability (for model)'
 
     context 'for default enabled settings' do
       it 'should send an e-mail by default settings' do
-        comment = create_comment(@stranger)
-        ActionMailer::Base.deliveries.count.should == 1
-        ActionMailer::Base.deliveries.last.to.include?(@project.owner.email).should == true
+        should_send_email(commentor: @stranger, receiver: @project.owner)
       end
     end
 
@@ -183,26 +145,21 @@ describe Comment do
       it 'should not send an e-mail' do
         @user.notifier.update_column :new_comment_commit_repo_owner, false
         Comment.destroy_all
-        comment = create_comment(@stranger)
-        ActionMailer::Base.deliveries.count.should == 0
+        should_not_send_email(commentor: @stranger)
       end
     end
 
     context 'for disabled notify setting new_comment_commit_owner' do
       it 'should send an e-mail' do
         @user.notifier.update_column :new_comment_commit_owner, false
-        comment = create_comment(@stranger)
-        ActionMailer::Base.deliveries.count.should == 1
-        ActionMailer::Base.deliveries.last.to.include?(@user.email).should == true
+        should_send_email(commentor: @stranger, receiver: @user)
       end
     end
 
     context 'for disabled notify setting new_comment_commit_commentor' do
       it 'should send an e-mail' do
         @user.notifier.update_column :new_comment_commit_commentor, false
-        comment = create_comment(@stranger)
-        ActionMailer::Base.deliveries.count.should == 1
-        ActionMailer::Base.deliveries.last.to.include?(@user.email).should == true
+        should_send_email(commentor: @stranger, receiver: @user)
       end
     end
 
@@ -211,36 +168,30 @@ describe Comment do
         @user.notifier.update_column :new_comment_commit_repo_owner, false
         @user.notifier.update_column :new_comment_commit_owner, false
         @user.notifier.update_column :new_comment_commit_commentor, false
-        comment = create_comment(@stranger)
-        ActionMailer::Base.deliveries.count.should == 0
+        should_not_send_email(commentor: @stranger)
       end
     end
 
     context 'for unsubscribe project' do
       it 'should not send an e-mail' do
         Subscribe.unsubscribe_from_commit @subscribe_params.merge(:user_id => @user.id)
-        comment = create_comment(@stranger)
-        ActionMailer::Base.deliveries.count.should == 0
+        should_not_send_email(commentor: @stranger)
       end
     end
 
     context 'for disabled global notify setting' do
       it 'should not send an e-mail' do
         @user.notifier.update_column :can_notify, false
-        comment = create_comment(@stranger)
-        ActionMailer::Base.deliveries.count.should == 0
+        should_not_send_email(commentor: @stranger)
       end
     end
 
     context 'for own commit' do
       it 'should send a one e-mail' do
         @project.owner.update_column :email, 'code@tpope.net'
-        comment = create_comment(@stranger)
-        ActionMailer::Base.deliveries.count.should == 1
-        ActionMailer::Base.deliveries.last.to.include?(@project.owner.email).should == true
+        should_send_email(commentor: @stranger, receiver: @project.owner)
       end
     end
-
   end
 
   context 'for simple user' do
@@ -255,86 +206,62 @@ describe Comment do
       Subscribe.unsubscribe_from_commit @subscribe_params.merge(:user_id => [@stranger.id, @project.owner.id])
     end
 
-    it 'should create comment' do
-      @ability.should be_able_to(:create, @comment)
-    end
-
-    it 'should update comment' do
-      @ability.should be_able_to(:update, @comment)
-    end
-
-    it 'should not update stranger comment' do
-      @ability.should_not be_able_to(:update, @stranger_comment)
-    end
-
-    it 'should not destroy comment' do
-      @ability.should_not be_able_to(:destroy, @comment)
-    end
+    it_should_behave_like 'user with create comment ability (for model)'
+    it_should_behave_like 'user with update own comment ability (for model)'
+    it_should_behave_like 'user without update stranger comment ability (for model)'
+    it_should_behave_like 'user with destroy comment ability (for model)'
+    it_should_behave_like 'user without destroy stranger comment ability (for model)'
 
     context 'for default enabled settings' do
       it 'should send an e-mail' do
-        comment = create_comment(@stranger)
-        ActionMailer::Base.deliveries.count.should == 1
-        ActionMailer::Base.deliveries.last.to.include?(@simple.email).should == true
+        should_send_email(commentor: @stranger, receiver: @simple)
       end
 
       it 'should send an e-mail for comments after his comment' do
         comment = create_comment(@simple)
         ActionMailer::Base.deliveries = []
-        comment = create_comment(@user)
-        ActionMailer::Base.deliveries.count.should == 1
-        ActionMailer::Base.deliveries.last.to.include?(@simple.email).should == true
+        should_send_email(commentor: @stranger, receiver: @simple)
       end
 
       it 'should send an e-mail when subscribed to project' do
         Subscribe.subscribe_to_commit @subscribe_params.merge(:user_id => @simple.id)
-        comment = create_comment(@project.owner)
-        ActionMailer::Base.deliveries.count.should == 1
-        ActionMailer::Base.deliveries.last.to.include?(@simple.email).should == true
+        should_send_email(commentor: @project.owner, receiver: @simple)
       end
 
       it 'should not send an e-mail for own comment' do
-        comment = create_comment(@simple)
-        ActionMailer::Base.deliveries.count.should == 0
+        should_not_send_email(commentor: @simple)
       end
     end
 
     context 'for committer' do
       it 'should send an e-mail' do
         @simple.update_column :email, 'test@test.test'
-        comment = create_comment(@user)
-        ActionMailer::Base.deliveries.count.should == 1
-        ActionMailer::Base.deliveries.last.to.include?(@simple.email).should == true
+        should_send_email commentor: @stranger, receiver: @simple
       end
 
       it 'should send a one e-mail when subscribed to commit' do
         Subscribe.subscribe_to_commit @subscribe_params.merge(:user_id => @simple.id)
         @simple.update_column :email, 'test@test.test'
-        comment = create_comment(@user)
-        ActionMailer::Base.deliveries.count.should == 1
-        ActionMailer::Base.deliveries.last.to.include?(@simple.email).should == true
+        should_send_email(commentor: @stranger, receiver: @simple)
       end
 
       it 'should not send an e-mail for own comment' do
         @simple.update_column :email, 'test@test.test'
-        comment = create_comment(@simple)
-        ActionMailer::Base.deliveries.count.should == 0
+        should_not_send_email(commentor: @simple)
       end
 
       it 'should not send an e-mail if global notify off' do
         @project.owner.notifier.update_column :can_notify, false
         @simple.update_column :email, 'test@test.test'
         @simple.notifier.update_column :can_notify, false
-        comment = create_comment(@user)
-        ActionMailer::Base.deliveries.count.should == 0
+        should_not_send_email(commentor: @user)
       end
 
       it 'should not send an e-mail if notify for my commits off' do
         Comment.destroy_all
         @simple.notifier.update_column :new_comment_commit_owner, false
         @simple.update_column :email, 'test@test.test'
-        comment = create_comment(@user)
-        ActionMailer::Base.deliveries.count.should == 0
+        should_not_send_email(commentor: @user)
       end
     end
   end

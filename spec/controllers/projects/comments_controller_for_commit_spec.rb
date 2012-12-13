@@ -8,7 +8,7 @@ end
 shared_examples_for 'user with create comment rights for commits' do
   it 'should be able to perform create action' do
     post :create, @create_params
-    response.should redirect_to(commit_path(@project, @commit.id))
+    response.should redirect_to(commit_path(@project, @commit.id)+"#comment#{Comment.last.id}")
   end
 
   it 'should create subscribe object into db' do
@@ -63,16 +63,16 @@ shared_examples_for 'user without destroy comment rights for commits' do
   end
 end
 
-#shared_examples_for 'user with destroy rights' do
-#  it 'should be able to perform destroy action' do
-#    delete :destroy, :id => @stranger_comment.id, :owner_name => @project.owner.uname, :project_name => @project.name
-#    response.should redirect_to(commit_path(@project, @commit.id))
-#  end
-#
-#  it 'should reduce comments count' do
-#    lambda{ delete :destroy, :id => @stranger_comment.id, :issue_id => @issue.serial_id, :owner_name => @project.owner.uname, :project_name => @project.name }.should change{ Comment.count }.by(-1)
-#  end
-#end
+shared_examples_for 'user with destroy comment rights for commits' do
+  it 'should be able to perform destroy action' do
+    delete :destroy, :id => @stranger_comment.id, :commit_id => @commit.id, :owner_name => @project.owner.uname, :project_name => @project.name
+    response.should redirect_to(commit_path(@project, @commit.id))
+  end
+
+  it 'should reduce comments count' do
+    lambda{ delete :destroy, :id => @stranger_comment.id, :commit_id => @commit.id, :owner_name => @project.owner.uname, :project_name => @project.name }.should change{ Comment.count }.by(-1)
+  end
+end
 
 describe Projects::CommentsController do
   before(:each) do
@@ -99,7 +99,7 @@ describe Projects::CommentsController do
     it_should_behave_like 'user with create comment rights for commits'
     it_should_behave_like 'user with update stranger comment rights for commits'
     it_should_behave_like 'user with update own comment rights for commits'
-    it_should_behave_like 'user without destroy comment rights for commits'
+    it_should_behave_like 'user with destroy comment rights for commits'
     #it_should_behave_like 'user with destroy rights'
   end
 
@@ -114,7 +114,7 @@ describe Projects::CommentsController do
    it_should_behave_like 'user with create comment rights for commits'
    it_should_behave_like 'user with update stranger comment rights for commits'
    it_should_behave_like 'user with update own comment rights for commits'
-   it_should_behave_like 'user without destroy comment rights for commits'
+   it_should_behave_like 'user with destroy comment rights for commits'
   end
 
   context 'for project reader user' do
