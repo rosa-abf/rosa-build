@@ -268,7 +268,7 @@ class BuildList < ActiveRecord::Base
     type = save_to_platform.distrib_type
     archive = results.select{ |r| r['file_name'] =~ /.*\.tar\.gz$/}[0]
 
-    platform_path = "#{APP_CONFIG['root_path']}/platforms/#{save_to_platform.name}/repository"
+    platform_path = "#{save_to_platform.path}/repository"
     if save_to_platform.personal?
       platform_path << '/'
       platform_path << build_for_platform.name
