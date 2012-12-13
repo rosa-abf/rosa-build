@@ -8,7 +8,7 @@ describe Groups::MembersController do
     @user = @group.owner
     set_session_for @user
     @another_user = FactoryGirl.create(:user)
-    @add_params = {:group_id => @group, :user_id => @another_user.uname}
+    @add_params = {:group_id => @group, :user_uname => @another_user.uname}
     @remove_params = {:group_id => @group, :user_remove => {"#{@group.owner.id}"=>["1"]}}
     @update_params = {:group_id => @group, :user => {"#{@group.owner.id}"=>'reader'}}
   end
