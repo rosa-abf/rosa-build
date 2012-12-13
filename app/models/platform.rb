@@ -58,7 +58,8 @@ class Platform < ActiveRecord::Base
     system("rm -Rf #{ APP_CONFIG['root_path'] }/platforms/#{ self.name }/repository/*")
   end
 
-  def urpmi_list(host, pair = nil)
+  def urpmi_list(host = nil, pair = nil, add_commands = true)
+    host ||= default_host
     blank_pair = {:login => 'login', :pass => 'password'}
     pair = blank_pair if pair.blank?
     urpmi_commands = ActiveSupport::OrderedHash.new
@@ -69,7 +70,9 @@ class Platform < ActiveRecord::Base
       head = hidden? ? "http://#{local_pair[:login]}@#{local_pair[:pass]}:#{host}/private/" : "http://#{host}/downloads/"
       Arch.all.each do |arch|
         tail = "/#{arch.name}/main/release"
-        urpmi_commands[pl.name][arch.name] = "urpmi.addmedia #{name} #{head}#{name}/repository/#{pl.name}#{tail}"
+        command = add_commands ? "urpmi.addmedia #{name} " : ''
+        command << "#{head}#{name}/repository/#{pl.name}#{tail}"
+        urpmi_commands[pl.name][arch.name] = command
       end
     end
 
@@ -93,7 +96,7 @@ class Platform < ActiveRecord::Base
   end
 
   def prefix_url(pub, options = {})
-    options[:host] ||= EventLog.current_controller.request.host_with_port rescue ::Rosa::Application.config.action_mailer.default_url_options[:host]
+    options[:host] ||= default_host
     pub ? "http://#{options[:host]}/downloads" : "http://#{options[:login]}:#{options[:password]}@#{options[:host]}/private"
   end
 
@@ -184,6 +187,10 @@ class Platform < ActiveRecord::Base
   later :destroy, :queue => :clone_build
 
   protected
+
+    def default_host
+      EventLog.current_controller.request.host_with_port rescue ::Rosa::Application.config.action_mailer.default_url_options[:host]
+    end
 
     def build_path(dir)
       File.join(APP_CONFIG['root_path'], 'platforms', dir)

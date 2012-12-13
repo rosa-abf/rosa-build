@@ -425,6 +425,10 @@ class BuildList < ActiveRecord::Base
         h["#{repo.name}_updates"] = path + 'updates'
       end
     end
+    if save_to_platform.personal?
+      include_repos_hash["#{save_to_platform.name}_release"] = save_to_platform.
+        urpmi_list(nil, nil, false)["#{build_for_platform.name}"]["#{arch.name}"]
+    end
     # mdv example:
     # https://abf.rosalinux.ru/import/plasma-applet-stackfolder.git
     # bfe6d68cc607238011a6108014bdcfe86c69456a
