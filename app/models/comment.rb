@@ -138,9 +138,8 @@ class Comment < ActiveRecord::Base
     if issue_comment?
       commentable.subscribes.create(:user => user) if !commentable.subscribes.exists?(:user_id => user.id)
     elsif commit_comment?
-      recipients = project.relations.by_role('admin').where(:actor_type => 'User').map &:actor # admins
-      recipients << user << User.where(:email => commentable.committer.email).first # commentor and committer
-      recipients << project.owner if project.owner_type == 'User' # project owner
+      recipients = project.admins
+      recipients << user << User.where(:email => commentable.try(:committer).try(:email)).first # commentor and committer
       recipients.compact.uniq.each do |user|
         options = {:project_id => project.id, :subscribeable_id => commentable_id, :subscribeable_type => commentable.class.name, :user_id => user.id}
         Subscribe.subscribe_to_commit(options) if Subscribe.subscribed_to_commit?(project, user, commentable)
