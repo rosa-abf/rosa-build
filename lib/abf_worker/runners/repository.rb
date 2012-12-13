@@ -15,7 +15,7 @@ module AbfWorker
         repository_path = platform.path
         repository_path << '/repository'
         if platform.personal?
-          Platform.main.pluck.each do |main_platform_name|
+          Platform.main.pluck(:name).each do |main_platform_name|
             create_file_tree "#{repository_path}/#{main_platform_name}", true
           end
         else
@@ -28,7 +28,7 @@ module AbfWorker
         repository_path = platform.path
         repository_path << '/repository'
         if platform.personal?
-          Platform.main.pluck.each do |main_platform_name|
+          Platform.main.pluck(:name).each do |main_platform_name|
             destroy_repositories "#{repository_path}/#{main_platform_name}"
           end
         else
