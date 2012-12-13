@@ -11,7 +11,7 @@ module AbfWorker
         send @action
       end
 
-      def self.mk_dir(path)
+      def mk_dir(path)
         Dir.mkdir(path) unless File.exists?(path)
       end
 

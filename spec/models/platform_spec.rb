@@ -6,7 +6,7 @@ describe Platform do
     stub_symlink_methods
     Platform.delete_all
     User.delete_all
-    FileUtils.rm_rf(APP_CONFIG['root_path'])
+    init_test_root
     # Need for validate_uniqueness_of check
     FactoryGirl.create(:platform)
   end
@@ -44,6 +44,6 @@ describe Platform do
   after(:all) do
     Platform.delete_all
     User.delete_all
-    FileUtils.rm_rf(APP_CONFIG['root_path'])
+    clear_test_root
   end
 end

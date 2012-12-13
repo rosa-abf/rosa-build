@@ -59,7 +59,15 @@ end
 
 Resque.inline = true
 
-# Add testing root_path
-%x(rm -Rf #{Rails.root}/tmp/test_root)
-%x(mkdir -p #{Rails.root}/tmp/test_root)
+def init_test_root
+  clear_test_root
+  %x(mkdir -p #{Rails.root}/tmp/test_root)
+  %x(mkdir -p #{Rails.root}/tmp/test_root/platforms)
+end
+
+def clear_test_root
+  %x(rm -Rf #{Rails.root}/tmp/test_root)
+end
+
+init_test_root
 APP_CONFIG['root_path'] = "#{Rails.root}/tmp/test_root"

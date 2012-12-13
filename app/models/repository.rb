@@ -17,7 +17,7 @@ class Repository < ActiveRecord::Base
   scope :recent, order("name ASC")
 
   before_create :xml_rpc_create, :unless => lambda {Thread.current[:skip]}
-  before_destroy :xml_rpc_destroy, :unless => lambda {Thread.current[:skip]}
+  before_destroy :destroy_directory
 
   attr_accessible :name, :description, :publish_without_qa
   attr_readonly :name, :platform_id
@@ -71,7 +71,7 @@ class Repository < ActiveRecord::Base
     end
   end
 
-  def xml_rpc_destroy
+  def destroy_directory
     Resque.enqueue(AbfWorker::FileSystemWorker,
         {:id => id, :action => 'destroy', :type => 'repository'})
     return true

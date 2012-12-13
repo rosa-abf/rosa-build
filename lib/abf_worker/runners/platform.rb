@@ -5,7 +5,7 @@ module AbfWorker
       # @param [String] id The id of platform
       def initialize(id, action)
         super action
-        @platform = Platform.find id
+        @platform = ::Platform.find id
       end
 
       protected

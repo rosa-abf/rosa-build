@@ -30,9 +30,8 @@ class Platform < ActiveRecord::Base
     end
   }
 
-  before_create :create_directory, :if => lambda {Thread.current[:skip]} # TODO remove this when core will be ready
-  before_create :xml_rpc_create, :unless => lambda {Thread.current[:skip]}
-  before_destroy :xml_rpc_destroy
+  after_create :create_directory
+  before_destroy :destroy_directory
 
   after_update :freeze_platform_and_update_repos
   after_update :update_owner_relation
@@ -157,10 +156,6 @@ class Platform < ActiveRecord::Base
     end
   end
 
-  def create_directory
-    system("sudo mkdir -p -m 0777 #{path}")
-  end
-
   def symlink_directory
     # umount_directory_for_rsync # TODO ignore errors
     system("ln -s #{path} #{symlink_path}")
@@ -196,13 +191,13 @@ class Platform < ActiveRecord::Base
       File.join(APP_CONFIG['root_path'], 'platforms', dir)
     end
 
-    def xml_rpc_create
+    def create_directory
       Resque.enqueue(AbfWorker::FileSystemWorker,
         {:id => id, :action => 'create', :type => 'platform'})
       return true
     end
 
-    def xml_rpc_destroy
+    def destroy_directory
       Resque.enqueue(AbfWorker::FileSystemWorker,
         {:id => id, :action => 'destroy', :type => 'platform'})
       return true

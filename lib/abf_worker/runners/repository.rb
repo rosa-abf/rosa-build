@@ -5,7 +5,7 @@ module AbfWorker
       # @param [String] id The id of repository
       def initialize(id, action)
         super action
-        @repository = Repository.find id
+        @repository = ::Repository.find id
       end
 
       protected
@@ -15,7 +15,7 @@ module AbfWorker
         repository_path = platform.path
         repository_path << '/repository'
         if platform.personal?
-          Platform.main.pluck(:name).each do |main_platform_name|
+          ::Platform.main.pluck(:name).each do |main_platform_name|
             destroy_repositories "#{repository_path}/#{main_platform_name}"
           end
         else
@@ -24,7 +24,7 @@ module AbfWorker
       end
 
       def destroy_repositories(repository_path)
-        Arch.pluck(:name).each do |arch|
+        ::Arch.pluck(:name).each do |arch|
           system("rm -rf #{repository_path}/#{arch}/#{@repository.name}")
         end
         system("rm -rf #{repository_path}/SRPMS/#{@repository.name}")
