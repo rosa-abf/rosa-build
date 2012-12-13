@@ -1,28 +1,22 @@
 module AbfWorker
-  class IsoWorkerObserver
-    BUILD_COMPLETED = 0
-    BUILD_FAILED    = 1
-    BUILD_PENDING   = 2
-    BUILD_STARTED   = 3
-    BUILD_CANCELED  = 4
+  class IsoWorkerObserver < AbfWorker::BaseObserver
     @queue = :iso_worker_observer
 
     def self.perform(options)
       status = options['status'].to_i
       pbl = ProductBuildList.find options['id']
       case status
-      when BUILD_COMPLETED
+      when COMPLETED
         pbl.build_success
-      when BUILD_FAILED
+      when FAILED
         pbl.build_error
-      when BUILD_STARTED
+      when STARTED
         pbl.start_build
-      when BUILD_CANCELED
+      when CANCELED
         pbl.build_canceled
       end
-      if status != BUILD_STARTED
-        pbl.results = options['results']
-        pbl.save!
+      if status != STARTED
+        update_results(pbl, options)
       end
     end
 

@@ -1,34 +1,29 @@
 module AbfWorker
-  class RpmWorkerObserver
-    BUILD_COMPLETED = 0
-    BUILD_FAILED    = 1
-    BUILD_PENDING   = 2
-    BUILD_STARTED   = 3
-    BUILD_CANCELED  = 4
-
+  class RpmWorkerObserver < AbfWorker::BaseObserver
     @queue = :rpm_worker_observer
 
     def self.perform(options)
       bl = BuildList.find options['id']
       status = options['status'].to_i
       item = find_or_create_item(bl)
+
+      fill_container_data(bl, options) if status != STARTED
+
       case status
-      when BUILD_COMPLETED
+      when COMPLETED
         bl.build_success
         item.update_attributes({:status => BuildServer::SUCCESS})
-      when BUILD_FAILED
+        bl.now_publish if bl.auto_publish?
+      when FAILED
         bl.build_error
         item.update_attributes({:status => BuildServer::BUILD_ERROR})
-      when BUILD_STARTED
+      when STARTED
         bl.bs_id = bl.id
         bl.save!
         bl.start_build
-      when BUILD_CANCELED
+      when CANCELED
         bl.build_canceled
         item.update_attributes({:status => BuildList::BUILD_CANCELED})
-      end
-      if status != BUILD_STARTED
-        fill_container_data bl, options
       end
     end
 
@@ -57,9 +52,11 @@ module AbfWorker
         container = (options['results'] || []).
           select{ |r| r['file_name'] !~ /.*\.log$/ }.first
         sha1 = container ? container['sha1'] : nil
-        bl.results = options['results']
-        bl.container_path = "#{APP_CONFIG['file_store_url']}/#{sha1}" if sha1
-        bl.save!
+        if sha1
+          bl.container_path = "#{APP_CONFIG['file_store_url']}/#{sha1}"
+          bl.save!
+        end
+        update_results(bl, options)
       end
     end
 

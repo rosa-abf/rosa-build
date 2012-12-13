@@ -144,6 +144,8 @@ class BuildList < ActiveRecord::Base
     after_transition :on => :published, :do => [:set_version_and_tag, :actualize_packages]
     after_transition :on => :cancel, :do => [:cancel_job],
       :if => lambda { |build_list| build_list.new_core? }
+    after_transition :on => :publish, :do => [:publish_container],
+      :if => lambda { |build_list| build_list.new_core? }
 
     after_transition :on => [:published, :fail_publish, :build_error], :do => :notify_users
     after_transition :on => :build_success, :do => :notify_users,
@@ -201,7 +203,10 @@ class BuildList < ActiveRecord::Base
 
     event :publish do
       transition [:success, :failed_publish] => :build_publish, :if => lambda { |build_list|
-        BuildServer.publish_container(build_list.bs_id) == BuildServer::SUCCESS
+        !build_list.new_core? && BuildServer.publish_container(build_list.bs_id) == BuildServer::SUCCESS
+      }
+      transition [:success, :failed_publish] => :build_publish, :if => lambda { |build_list|
+        build_list.new_core?
       }
       transition [:success, :failed_publish] => :failed_publish
     end
@@ -257,6 +262,35 @@ class BuildList < ActiveRecord::Base
 
   def can_reject_publish?
     can_publish? and not save_to_repository.publish_without_qa
+  end
+
+  def publish_container
+    type = save_to_platform.distrib_type
+    archive = results.select{ |r| r['file_name'] =~ /.*\.tar\.gz$/}[0]
+
+    platform_path = "#{APP_CONFIG['root_path']}/platforms/#{save_to_platform.name}/repository"
+    if save_to_platform.personal?
+      platform_path << '/'
+      platform_path << build_for_platform.name
+      Dir.mkdir(platform_path) unless File.exists?(platform_path)
+    end
+
+    Resque.push(
+      "publish_build_list_container_#{type}_worker",
+      'class' => "AbfWorker::PublishBuildListContainer#{type.capitalize}Worker",
+      'args' => [{
+        :id => id,
+        :arch => arch.name,
+        :distrib_type => type,
+        :container_sha1 => archive['sha1'],
+        :platform => {
+          :platform_path => platform_path,
+          :released => save_to_platform.released
+        },
+        :repository_name => save_to_repository.name,
+        :time_living => 2400 # 40 min
+      }]
+    )
   end
 
   def add_to_queue
@@ -390,6 +424,10 @@ class BuildList < ActiveRecord::Base
         h["#{repo.name}_release"] = path + 'release'
         h["#{repo.name}_updates"] = path + 'updates'
       end
+    end
+    if save_to_platform.personal?
+      include_repos_hash["#{save_to_platform.name}_release"] = save_to_platform.
+        urpmi_list(nil, nil, false, save_to_repository.name)["#{build_for_platform.name}"]["#{arch.name}"]
     end
     # mdv example:
     # https://abf.rosalinux.ru/import/plasma-applet-stackfolder.git

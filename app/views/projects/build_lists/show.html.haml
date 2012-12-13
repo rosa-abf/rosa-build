@@ -131,7 +131,7 @@
     - log_params = { :build_started => @build_list.build_started?, :get_log_path => log_build_list_path(@build_list) }
     = render 'shared/log', ( @build_list.new_core? ? log_params : log_params.merge({:download_log_url => build_list_log_url(:build)}) )
 
-  - if (can_publish = @build_list.can_publish? && can?(:publish, @build_list) && !@build_list.new_core?)
+  - if (can_publish = @build_list.can_publish? && can?(:publish, @build_list))
     .hr
     = submit_tag t("layout.publish"), :confirm => t("layout.confirm"), :name => 'publish' if can_publish
     - if @build_list.can_reject_publish? && can?(:reject_publish, @build_list)

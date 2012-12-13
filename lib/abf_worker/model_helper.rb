@@ -5,11 +5,7 @@ module AbfWorker
     # - #build_canceled
 
     def abf_worker_log
-      q = 'abfworker::'
-      q << worker_queue('-')
-      q << '-'
-      q << id.to_s
-      Resque.redis.get(q) || I18n.t('layout.build_lists.log.not_available')
+      Resque.redis.get("abfworker::#{worker_queue('-')}-#{id}") || I18n.t('layout.build_lists.log.not_available')
     end
 
     def add_job_to_abf_worker_queue
