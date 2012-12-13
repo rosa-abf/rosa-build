@@ -61,6 +61,7 @@ class Repository < ActiveRecord::Base
 
   protected
 
+  # TODO: remove it, when will be used new_core only.
   def xml_rpc_create
     result = BuildServer.create_repo name, platform.name
     if result == BuildServer::SUCCESS
@@ -71,11 +72,8 @@ class Repository < ActiveRecord::Base
   end
 
   def xml_rpc_destroy
-    result = BuildServer.delete_repo name, platform.name
-    if result == BuildServer::SUCCESS
-      return true
-    else
-      raise "Failed to delete repository #{name} inside platform #{platform.name} with code #{result}."
-    end
+    Resque.enqueue(AbfWorker::FileSystemWorker,
+        {:id => id, :action => 'destroy', :type => 'repository'})
+    return true
   end
 end

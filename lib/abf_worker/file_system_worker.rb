@@ -9,8 +9,6 @@ module AbfWorker
         @runner = AbfWorker::Runners::Platform.new id, action
       when 'repository'
         @runner = AbfWorker::Runners::Repository.new id, action
-      when 'project'
-        @runner = AbfWorker::Runners::Project.new id, action
       end
       @runner.run
     end

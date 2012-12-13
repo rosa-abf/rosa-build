@@ -197,21 +197,15 @@ class Platform < ActiveRecord::Base
     end
 
     def xml_rpc_create
-      result = BuildServer.add_platform name, APP_CONFIG['root_path'] + '/platforms' , distrib_type
-      if result == BuildServer::SUCCESS
-        return true
-      else
-        raise "Failed to create platform #{name} with code #{result}. Path: #{build_path(name)}"
-      end
+      Resque.enqueue(AbfWorker::FileSystemWorker,
+        {:id => id, :action => 'create', :type => 'platform'})
+      return true
     end
 
     def xml_rpc_destroy
-      result = BuildServer.delete_platform name
-      if result == BuildServer::SUCCESS
-        return true
-      else
-        raise "Failed to delete platform #{name} with code #{result}."
-      end
+      Resque.enqueue(AbfWorker::FileSystemWorker,
+        {:id => id, :action => 'destroy', :type => 'platform'})
+      return true
     end
 
     def xml_rpc_clone(old_name = parent.name, new_name = name)
