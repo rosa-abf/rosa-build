@@ -8,5 +8,6 @@ FactoryGirl.define do
       p.project.repo.index.add('test', 'TEST')
       p.project.repo.index.commit('Test commit')
     }
+    time_living 150
   end
 end
