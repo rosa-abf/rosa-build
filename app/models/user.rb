@@ -87,7 +87,10 @@ class User < Avatar
     def find_for_database_authentication(warden_conditions)
       conditions = warden_conditions.dup
       login = conditions.delete(:login)
-      where(conditions).where(["lower(uname) = :value OR lower(email) = :value", { :value => login.downcase }]).first
+      user = User.where(conditions).where(:authentication_token => login).first ||
+             User.where(conditions).where(["lower(uname) = :value OR lower(email) = :value", { :value => login.downcase}]).first
+      return user if !user.access_locked? and (user.authentication_token == login or user.valid_password?(p))
+      nil
     end
 
     def new_with_session(params, session)
