@@ -131,12 +131,14 @@ class ProductBuildList < ActiveRecord::Base
 
   def abf_worker_args
     file_name = "#{project.owner.uname}-#{project.name}-#{commit_hash}"
+    opts = {:host => ActionMailer::Base.default_url_options[:host]}
+    opts.merge!({:user => user.authentication_token, :password => ''}) if user.present?
     srcpath = url_helpers.archive_url(
       project.owner,
       project.name,
       file_name,
       'tar.gz',
-      :host => ActionMailer::Base.default_url_options[:host]
+      opts
     )
     {
       :id => id,
@@ -148,7 +150,7 @@ class ProductBuildList < ActiveRecord::Base
       :main_script => main_script,
       :arch => arch.name,
       :distrib_type => product.platform.distrib_type,
-      :user => {:uname => user.uname, :email => user.email}
+      :user => {:uname => user.try(:uname), :email => user.try(:email)}
     }
   end
 
