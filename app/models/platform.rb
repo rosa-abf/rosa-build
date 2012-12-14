@@ -31,7 +31,7 @@ class Platform < ActiveRecord::Base
   }
 
   before_create :create_directory
-  before_destroy :delete_destroy
+  before_destroy :detele_directory
 
   after_update :freeze_platform_and_update_repos
   after_update :update_owner_relation
