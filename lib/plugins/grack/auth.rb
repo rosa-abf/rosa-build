@@ -12,7 +12,7 @@ module Grack
         return render_not_found if project.blank?
 
         return ::Rack::Auth::Basic.new(@app) do |u, p|
-          user = User.find_for_database_authentication(:login => u) and !user.access_locked? and user.valid_password?(p) and
+          user = User.find_for_database_authentication({:login => u, :pass => p}) and
           ability = ::Ability.new(user) and ability.can?(action, project) # project.members.include?(user)
         end.call(env) unless project.public? and read? # need auth
       end
