@@ -31,6 +31,7 @@ en:
     attributes:
       product_build_list:
         id: Id
+        user: User
         product: Product
         container_path: Container
         status: Status

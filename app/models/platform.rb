@@ -30,8 +30,8 @@ class Platform < ActiveRecord::Base
     end
   }
 
-  after_create :create_directory
-  before_destroy :destroy_directory
+  before_create :create_directory
+  before_destroy :delete_destroy
 
   after_update :freeze_platform_and_update_repos
   after_update :update_owner_relation
@@ -57,8 +57,7 @@ class Platform < ActiveRecord::Base
     system("rm -Rf #{ APP_CONFIG['root_path'] }/platforms/#{ self.name }/repository/*")
   end
 
-  def urpmi_list(host = nil, pair = nil, add_commands = true, repository_name = 'main')
-    host ||= default_host
+  def urpmi_list(host, pair = nil)
     blank_pair = {:login => 'login', :pass => 'password'}
     pair = blank_pair if pair.blank?
     urpmi_commands = ActiveSupport::OrderedHash.new
@@ -68,10 +67,8 @@ class Platform < ActiveRecord::Base
       local_pair = pl.id != self.id ? blank_pair : pair
       head = hidden? ? "http://#{local_pair[:login]}@#{local_pair[:pass]}:#{host}/private/" : "http://#{host}/downloads/"
       Arch.all.each do |arch|
-        tail = "/#{arch.name}/#{repository_name}/release"
-        command = add_commands ? "urpmi.addmedia #{name} " : ''
-        command << "#{head}#{name}/repository/#{pl.name}#{tail}"
-        urpmi_commands[pl.name][arch.name] = command
+        tail = "/#{arch.name}/main/release"
+        urpmi_commands[pl.name][arch.name] = "urpmi.addmedia #{name} #{head}#{name}/repository/#{pl.name}#{tail}"
       end
     end
 
@@ -95,7 +92,7 @@ class Platform < ActiveRecord::Base
   end
 
   def prefix_url(pub, options = {})
-    options[:host] ||= default_host
+    options[:host] ||= EventLog.current_controller.request.host_with_port rescue ::Rosa::Application.config.action_mailer.default_url_options[:host]
     pub ? "http://#{options[:host]}/downloads" : "http://#{options[:login]}:#{options[:password]}@#{options[:host]}/private"
   end
 
@@ -142,7 +139,7 @@ class Platform < ActiveRecord::Base
 
   def full_clone(attrs = {})
     base_clone(attrs).tap do |c|
-      with_skip {c.save} and c.clone_relations(self) and c.xml_rpc_clone # later with resque
+      with_skip {c.save} and c.clone_relations(self) and c.fs_clone # later with resque
     end
   end
 
@@ -154,6 +151,10 @@ class Platform < ActiveRecord::Base
       update_attributes(:visibility => 'open')
       symlink_directory
     end
+  end
+
+  def create_directory
+    system("sudo mkdir -p -m 0777 #{build_path [name, 'repositories']}")
   end
 
   def symlink_directory
@@ -176,6 +177,33 @@ class Platform < ActiveRecord::Base
     end
   end
 
+  def build_all(opts={})
+    # Set options to build all need
+    repositories = opts[:repositories] ? self.repositories.where(:id => opts[:repositories]) : self.repositories
+    arches = opts[:arches] ? Arch.where(:id => opts[:arches]) : Arch.all
+    auto_publish = opts[:auto_publish] || false
+    user = opts[:user]
+    mass_build_id = opts[:mass_build_id]
+    mass_build = MassBuild.find mass_build_id
+
+    repositories.each do |rep|
+      rep.projects.find_in_batches(:batch_size => 2) do |group|
+        sleep 1
+        group.each do |p|
+          arches.map(&:name).each do |arch|
+            begin
+              return if mass_build.reload.stop_build
+              p.build_for(self, rep.id, user, arch, auto_publish, mass_build_id)
+            rescue RuntimeError, Exception
+              # p.async(:build_for, self, user, arch, auto_publish, mass_build_id) # TODO need this?
+            end
+          end
+        end
+      end
+    end
+  end
+  later :build_all, :loner => true, :queue => :clone_build
+
   def destroy
     with_skip {super} # avoid cascade XML RPC requests
   end
@@ -183,40 +211,21 @@ class Platform < ActiveRecord::Base
 
   protected
 
-    def default_host
-      EventLog.current_controller.request.host_with_port rescue ::Rosa::Application.config.action_mailer.default_url_options[:host]
-    end
-
     def build_path(dir)
       File.join(APP_CONFIG['root_path'], 'platforms', dir)
     end
 
-    def create_directory
-      Resque.enqueue(AbfWorker::FileSystemWorker,
-        {:id => id, :action => 'create', :type => 'platform'})
-      return true
+    def detele_directory
+      FileUtils.rm_rf path
     end
 
-    def destroy_directory
-      Resque.enqueue(AbfWorker::FileSystemWorker,
-        {:id => id, :action => 'destroy', :type => 'platform'})
-      return true
+    def fs_clone(old_name = parent.name, new_name = name)
+      FileUtils.cp_r "#{parent.path}/repository", path
     end
-
-    def xml_rpc_clone(old_name = parent.name, new_name = name)
-      result = BuildServer.clone_platform new_name, old_name, APP_CONFIG['root_path'] + '/platforms'
-      if result == BuildServer::SUCCESS
-        return true
-      else
-        raise "Failed to clone platform #{old_name} with code #{result}. Path: #{build_path(old_name)} to platform #{new_name}"
-      end
-    end
-    later :xml_rpc_clone, :loner => true, :queue => :clone_build
+    later :fs_clone, :loner => true, :queue => :clone_build
 
     def freeze_platform_and_update_repos
       if released_changed? && released == true
-        result = BuildServer.freeze(name)
-        raise "Failed freeze platform #{name} with code #{result}" if result != BuildServer::SUCCESS
         repositories.update_all(:publish_without_qa => false)
       end
     end

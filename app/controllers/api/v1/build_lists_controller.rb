@@ -26,6 +26,7 @@ class Api::V1::BuildListsController < Api::V1::BaseController
 
       @build_list.user = current_user
       @build_list.priority = current_user.build_priority # User builds more priority than mass rebuild with zero priority
+      @build_list.new_core = BuildList.has_access_to_new_core?(current_user) && bl_params[:new_core] == '1'
 
       if @build_list.save
         render :action => 'show'
