@@ -12,7 +12,6 @@ FactoryGirl.define do
     update_type 'security'
     include_repos {|bl| bl.save_to_platform.repositories.map(&:id)}
     project_version 'latest_master'
-    time_living 150
     after(:build) {|bl| test_git_commit bl.project }
   end
 
