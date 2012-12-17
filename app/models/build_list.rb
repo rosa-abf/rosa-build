@@ -322,7 +322,7 @@ class BuildList < ActiveRecord::Base
         id,
         include_repos,
         priority,
-        project.git_project_address
+        project.git_project_address(user)
       )
     end
     @status
@@ -443,7 +443,7 @@ class BuildList < ActiveRecord::Base
       :time_living => 43200, # 12 hours
       :distrib_type => build_for_platform.distrib_type,
       # :git_project_address => 'https://abf.rosalinux.ru/server/gnome-settings-daemon.git',
-      :git_project_address => project.git_project_address,
+      :git_project_address => project.git_project_address(user),
       # :commit_hash => 'fbb2549e44d97226fea6748a4f95d1d82ffb8726',
       :commit_hash => commit_hash,
       :build_requires => build_requires,
