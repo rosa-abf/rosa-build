@@ -156,10 +156,6 @@ class Platform < ActiveRecord::Base
     end
   end
 
-  def create_directory
-    system("sudo mkdir -p -m 0777 #{build_path [name, 'repositories']}")
-  end
-
   def symlink_directory
     # umount_directory_for_rsync # TODO ignore errors
     system("ln -s #{path} #{symlink_path}")
@@ -212,7 +208,12 @@ class Platform < ActiveRecord::Base
   end
   later :destroy, :queue => :clone_build
 
+
   protected
+
+    def create_directory
+      system("mkdir -p -m 0777 #{build_path([name, 'repository'])}")
+    end
 
     def default_host
       EventLog.current_controller.request.host_with_port rescue ::Rosa::Application.config.action_mailer.default_url_options[:host]

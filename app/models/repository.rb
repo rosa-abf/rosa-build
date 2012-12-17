@@ -16,8 +16,7 @@ class Repository < ActiveRecord::Base
 
   scope :recent, order("name ASC")
 
-  before_create :xml_rpc_create, :unless => lambda {Thread.current[:skip]}
-  before_destroy :destroy_directory
+  before_destroy :detele_directory
 
   attr_accessible :name, :description, :publish_without_qa
   attr_readonly :name, :platform_id
@@ -59,21 +58,30 @@ class Repository < ActiveRecord::Base
     end
   end
 
+  def destroy
+    with_skip {super} # avoid cascade XML RPC requests
+  end
+  later :destroy, :queue => :clone_build
+
   protected
 
-  # TODO: remove it, when will be used new_core only.
-  def xml_rpc_create
-    result = BuildServer.create_repo name, platform.name
-    if result == BuildServer::SUCCESS
-      return true
+  def detele_directory
+    repository_path = platform.path
+    repository_path << '/repository'
+    if platform.personal?
+      Platform.main.pluck(:name).each do |main_platform_name|
+        detele_repositories_directory "#{repository_path}/#{main_platform_name}"
+      end
     else
-      raise "Failed to create repository #{name} inside platform #{platform.name} with code #{result}."
+      detele_repositories_directory repository_path
     end
   end
 
-  def destroy_directory
-    Resque.enqueue(AbfWorker::FileSystemWorker,
-        {:id => id, :action => 'destroy', :type => 'repository'})
-    return true
+  def detele_repositories_directory(repository_path)
+    Arch.pluck(:name).each do |arch|
+      system("rm -rf #{repository_path}/#{arch}/#{name}")
+    end
+    system("rm -rf #{repository_path}/SRPMS/#{name}")
   end
+
 end

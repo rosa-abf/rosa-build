@@ -45,5 +45,5 @@ end
 require 'stub_xml_rpc'
 
 Rails.application.config.to_prepare {
-  Platform.send :include, Modules::Models::SymlinkStub
+  # Platform.send :include, Modules::Models::SymlinkStub
 }

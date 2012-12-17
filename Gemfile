@@ -1,6 +1,6 @@
 source 'http://rubygems.org'
 
-gem 'rails', '3.2.8' #, :git => 'git://github.com/rails/rails.git'
+gem 'rails', '3.2.9' #, :git => 'git://github.com/rails/rails.git'
 
 gem 'pg', '~> 0.14.0'
 # gem 'silent-postgres', :git => 'git://github.com/dolzenko/silent-postgres.git' #'~> 0.1.1'
