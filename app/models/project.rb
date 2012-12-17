@@ -218,8 +218,10 @@ class Project < ActiveRecord::Base
       packages = packages.for_platform(main_platform.id) if main_platform
       packages = packages.scoped_to_arch(arch.id).
         includes(:packages).last(10).
-        map{ |bl| bl.packages.pluck(:fullname) }.flatten
-      next if packages.empty?
+        map{ |bl| bl.packages }.flatten
+      sources   = packages.map{ |p| p.fullname if p.package_type == 'source' }.compact
+      binaries  = packages.map{ |p| p.fullname if p.package_type == 'binary' }.compact
+      next if sources.empty? && binaries.empty?
       Resque.push(
         "publish_build_list_container_#{type}_worker",
         'class' => "AbfWorker::PublishBuildListContainer#{type.capitalize}Worker",
@@ -227,7 +229,7 @@ class Project < ActiveRecord::Base
           :id => repository.id,
           :arch => arch.name,
           :distrib_type => type,
-          :packages => packages,
+          :packages => { :sources => sources, :binaries => binaries },
           :platform => {
             :platform_path => platform_path
           },
