@@ -193,16 +193,15 @@ class Project < ActiveRecord::Base
       Platform.main.each do |main_platform|
         add_job_to_abf_worker_queue(
           repository,
-          main_platform.distrib_type,
-          published_packages.for_platform(main_platform.id),
-          "#{platform.path}/repository/#{main_platform.name}"
+          platform,
+          "#{platform.path}/repository/#{main_platform.name}",
+          main_platform
         )
       end
     else
       add_job_to_abf_worker_queue(
         repository,
-        platform.distrib_type,
-        published_packages,
+        platform,
         "#{platform.path}/repository"
       )
     end
@@ -211,8 +210,12 @@ class Project < ActiveRecord::Base
 
   protected
 
-  def add_job_to_abf_worker_queue(repository, type, packages, platform_path)
+  def add_job_to_abf_worker_queue(repository, platform, platform_path, main_platform = nil)
+    type = main_platform ? main_platform.distrib_type : platform.distrib_type
     Arch.all.each do |arch|
+      packages = build_lists.for_status(BuildList::BUILD_PUBLISHED).
+        scoped_to_save_platform(platform.id)
+      packages = packages.for_platform(main_platform.id) if main_platform
       packages = packages.scoped_to_arch(arch.id).
         includes(:packages).last(10).
         map{ |bl| bl.packages.pluck(:fullname) }.flatten
