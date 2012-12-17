@@ -12,7 +12,7 @@ module Modules
 
         validate lambda {
           # 2 min <= time_living <= 12 hours
-          if 120 > time_living || time_living > 43200
+          if 120 > time_living.to_i || time_living.to_i > 43200
             errors.add(:time_living, I18n.t('flash.time_living.numericality_error'))
           end
         }

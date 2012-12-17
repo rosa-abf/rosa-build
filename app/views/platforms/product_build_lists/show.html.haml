@@ -10,6 +10,8 @@
 
 = render 'show_field', :key => :id, :value => pbl.id
 = render 'show_field', :key => :status, :value => pbl.human_status
+- if pbl.user
+  = render 'show_field', :key => :user, :value => link_to(pbl.user.try(:fullname), pbl.user)
 
 = render 'show_field', :key => :product, :value => link_to(pbl.product.name, platform_product_path(platform, product))
 

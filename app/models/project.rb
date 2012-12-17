@@ -121,10 +121,11 @@ class Project < ActiveRecord::Base
     owner == user
   end
 
-  def git_project_address
+  def git_project_address auth_user
     host ||= EventLog.current_controller.request.host_with_port rescue ::Rosa::Application.config.action_mailer.default_url_options[:host]
     protocol = APP_CONFIG['mailer_https_url'] ? "https" : "http" rescue "http"
-    Rails.application.routes.url_helpers.project_url(self.owner.uname, self.name, :host => host, :protocol => protocol) + ".git"
+    opts = {:host => host, :protocol => protocol, :user => auth_user.authentication_token, :password => ''}
+    Rails.application.routes.url_helpers.project_url(self.owner.uname, self.name, opts) + ".git"
     #path #share by NFS
   end
 

@@ -44,6 +44,7 @@ class Platforms::ProductBuildListsController < Platforms::BaseController
   def create
     pbl = @product.product_build_lists.new params[:product_build_list]
     pbl.project = @product.project
+    pbl.user = current_user
     pbl.base_url = "http://#{request.host_with_port}"
 
     if pbl.save
