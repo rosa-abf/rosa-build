@@ -1,6 +1,10 @@
 # -*- encoding : utf-8 -*-
 require 'spec_helper'
 
+def incorrect_action_message
+  'Incorrect action for current build list'
+end
+
 shared_examples_for 'show build list via api' do
   it 'should be able to perform show action' do
     get :show, @show_params
@@ -127,7 +131,7 @@ describe Api::V1::BuildListsController do
             it "should return correct json error message" do
               @build_list.update_column(:status, BuildServer::PROJECT_NOT_FOUND)
               do_cancel
-              response.body.should == {:is_canceled => false, :url => api_v1_build_list_path(@build_list, :format => :json), :message => I18n.t('layout.build_lists.cancel_fail')}.to_json
+              response.body.should == {:is_canceled => false, :url => api_v1_build_list_path(@build_list, :format => :json), :message => incorrect_action_message}.to_json
             end
 
             it "should not cancel build list" do
@@ -183,7 +187,7 @@ describe Api::V1::BuildListsController do
             end
 
             it "should return correct json error message" do
-              response.body.should == {:is_published => false, :url => api_v1_build_list_path(@build_list, :format => :json), :message => I18n.t('layout.build_lists.publish_fail')}.to_json
+              response.body.should == {:is_published => false, :url => api_v1_build_list_path(@build_list, :format => :json), :message => incorrect_action_message}.to_json
             end
 
             it "should not cancel build list" do
@@ -243,7 +247,7 @@ describe Api::V1::BuildListsController do
             end
 
             it "should return correct json error message" do
-              response.body.should == {:is_reject_published => false, :url => api_v1_build_list_path(@build_list, :format => :json), :message => I18n.t('layout.build_lists.reject_publish_fail')}.to_json
+              response.body.should == {:is_reject_published => false, :url => api_v1_build_list_path(@build_list, :format => :json), :message => incorrect_action_message}.to_json
             end
 
             it "should not cancel build list" do
