@@ -231,7 +231,8 @@ class Project < ActiveRecord::Base
           :distrib_type => type,
           :packages => { :sources => sources, :binaries => binaries },
           :platform => {
-            :platform_path => platform_path
+            :platform_path => platform_path,
+            :released => platform.released
           },
           :repository_name => repository.name,
           :save_results => false,
