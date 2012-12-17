@@ -5,10 +5,7 @@ class ProjectToRepository < ActiveRecord::Base
   
   delegate :path, :to => :project
 
-  after_create lambda { project.xml_rpc_create(repository) }, :unless => lambda {Thread.current[:skip]}
   after_destroy lambda { project.destroy_project_from_repository(repository) }
-  # after_destroy lambda { project.xml_rpc_destroy(repository) }, :unless => lambda {Thread.current[:skip]}
-  # after_rollback lambda { project.xml_rpc_destroy(repository) rescue true if new_record? }
 
   validate :one_project_in_platform_repositories
 
