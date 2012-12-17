@@ -185,7 +185,54 @@ class Project < ActiveRecord::Base
     end
   end
 
+  def destroy_project_from_repository(repository)
+    platform = repository.platform
+    published_packages = build_lists.for_status(BuildList::BUILD_PUBLISHED).
+      scoped_to_save_platform(platform.id)
+    if platform.personal?
+      Platform.main.each do |main_platform|
+        add_job_to_abf_worker_queue(
+          repository,
+          main_platform.distrib_type,
+          published_packages.for_platform(main_platform.id),
+          "#{platform.path}/repository/#{main_platform.name}"
+        )
+      end
+    else
+      add_job_to_abf_worker_queue(
+        repository,
+        platform.distrib_type,
+        published_packages,
+        "#{platform.path}/repository"
+      )
+    end
+  end
+  later :destroy_project_from_repository, :queue => :clone_build
+
   protected
+
+  def add_job_to_abf_worker_queue(repository, type, packages, platform_path)
+    Arch.all.each do |arch|
+      packages = packages.scoped_to_arch(arch.id).
+        includes(:packages).last(10).
+        map{ |bl| bl.packages.pluck(:fullname) }.flatten
+      Resque.push(
+        "publish_build_list_container_#{type}_worker",
+        'class' => "AbfWorker::PublishBuildListContainer#{type.capitalize}Worker",
+        'args' => [{
+          :id => repository.id,
+          :arch => arch.name,
+          :distrib_type => type,
+          :packages => packages,
+          :platform => {
+            :platform_path => platform_path
+          },
+          :repository_name => repository.name,
+          :time_living => 2400 # 40 min
+        }]
+      )
+    end
+  end
 
   def truncate_name
     self.name = name.strip if name
