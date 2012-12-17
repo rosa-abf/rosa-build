@@ -234,6 +234,7 @@ class Project < ActiveRecord::Base
             :platform_path => platform_path
           },
           :repository_name => repository.name,
+          :save_results => false,
           :time_living => 2400 # 40 min
         }]
       )
