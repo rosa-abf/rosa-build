@@ -20,7 +20,7 @@ FactoryGirl.define do
   end
 
   factory :build_list_by_group_project, :parent => :build_list_core do
-    project { |bl| FactoryGirl.create(:group_project, :repositories => [bl.save_to_platform.repositories.first]) }
+    project { |bl| FactoryGirl.create(:group_project_with_commit, :repositories => [bl.save_to_platform.repositories.first]) }
   end
 
   factory :build_list_package, :class => BuildList::Package do

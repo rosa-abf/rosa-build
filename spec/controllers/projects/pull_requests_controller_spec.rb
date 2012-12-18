@@ -7,8 +7,7 @@ shared_context "pull request controller" do
     FileUtils.rm_rf(APP_CONFIG['root_path'])
     stub_symlink_methods
 
-    @project = FactoryGirl.create(:project)
-    %x(cp -Rf #{Rails.root}/spec/tests.git/* #{@project.path})
+    @project = FactoryGirl.create(:project_with_commit)
 
     @pull = @project.pull_requests.new :issue_attributes => {:title => 'test', :body => 'testing'}
     @pull.issue.user, @pull.issue.project = @project.owner, @pull.to_project
@@ -84,8 +83,7 @@ shared_examples_for 'pull request user with project reader rights' do
   end
 
   it "should create pull request to the parent project" do
-    @parent = FactoryGirl.create(:project)
-    %x(cp -Rf #{Rails.root}/spec/tests.git/* #{@parent.path})
+    @parent = FactoryGirl.create(:project_with_commit)
     @project.update_attributes({:parent_id => @parent}, :without_protection => true)
 
     lambda{ post :create, @create_params.merge({:to_project => @parent.name_with_owner}) }.should change{ PullRequest.joins(:issue).
