@@ -235,6 +235,7 @@ class Project < ActiveRecord::Base
             :released => platform.released
           },
           :repository_name => repository.name,
+          :cleanup => true,
           :save_results => false,
           :time_living => 2400 # 40 min
         }]
