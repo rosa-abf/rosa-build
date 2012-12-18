@@ -5,7 +5,7 @@ class ProjectToRepository < ActiveRecord::Base
   
   delegate :path, :to => :project
 
-  after_destroy lambda { project.destroy_project_from_repository(repository) }
+  after_destroy lambda { project.destroy_project_from_repository(repository) }, :unless => lambda {Thread.current[:skip]}
 
   validate :one_project_in_platform_repositories
 

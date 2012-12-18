@@ -176,33 +176,6 @@ class Platform < ActiveRecord::Base
     end
   end
 
-  def build_all(opts={})
-    # Set options to build all need
-    repositories = opts[:repositories] ? self.repositories.where(:id => opts[:repositories]) : self.repositories
-    arches = opts[:arches] ? Arch.where(:id => opts[:arches]) : Arch.all
-    auto_publish = opts[:auto_publish] || false
-    user = opts[:user]
-    mass_build_id = opts[:mass_build_id]
-    mass_build = MassBuild.find mass_build_id
-
-    repositories.each do |rep|
-      rep.projects.find_in_batches(:batch_size => 2) do |group|
-        sleep 1
-        group.each do |p|
-          arches.map(&:name).each do |arch|
-            begin
-              return if mass_build.reload.stop_build
-              p.build_for(self, rep.id, user, arch, auto_publish, mass_build_id)
-            rescue RuntimeError, Exception
-              # p.async(:build_for, self, user, arch, auto_publish, mass_build_id) # TODO need this?
-            end
-          end
-        end
-      end
-    end
-  end
-  later :build_all, :loner => true, :queue => :clone_build
-
   def destroy
     with_skip {super} # avoid cascade XML RPC requests
   end

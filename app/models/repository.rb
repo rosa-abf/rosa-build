@@ -16,7 +16,7 @@ class Repository < ActiveRecord::Base
 
   scope :recent, order("name ASC")
 
-  before_destroy :detele_directory
+  before_destroy :detele_directory, :unless => lambda {Thread.current[:skip]}
 
   attr_accessible :name, :description, :publish_without_qa
   attr_readonly :name, :platform_id
