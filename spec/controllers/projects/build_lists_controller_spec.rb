@@ -508,4 +508,5 @@ describe Projects::BuildListsController do
       it { lambda{ do_get }.should change(build_list, :updated_at) }
     end
   end
+  after(:all) {clean_projects_dir}
 end

@@ -4,14 +4,12 @@ require 'spec_helper'
 def set_data_for_pull
   @ability = Ability.new(@user)
 
-  @project = FactoryGirl.create(:project, :owner => @user)
-  %x(cp -Rf #{Rails.root}/spec/tests.git/* #{@project.path})
+  @project = FactoryGirl.create(:project_with_commit, :owner => @user)
 
   @clone_path = File.join(APP_CONFIG['root_path'], 'repo_clone', @project.id.to_s)
   FileUtils.mkdir_p(@clone_path)
 
-  @other_project = FactoryGirl.create(:project, :owner => @user)
-  %x(cp -Rf #{Rails.root}/spec/tests.git/* #{@other_project.path})
+  @other_project = FactoryGirl.create(:project_with_commit, :owner => @user)
 
   any_instance_of(Project, :versions => ['v1.0', 'v2.0'])
 end

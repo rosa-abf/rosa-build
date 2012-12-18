@@ -32,7 +32,7 @@ describe CanCan do
 		before(:each) do
 			admin_create
 		end
-		
+
 		it 'should manage all' do
 			#(@ability.can? :manage, :all).should be_true
 			@ability.should be_able_to(:manage, :all)
@@ -93,7 +93,7 @@ describe CanCan do
         @ability.should be_able_to(:read, model_name)
       end
     end
-    
+
     it "shoud be able to show user profile" do
       @ability.should be_able_to(:show, User)
     end
@@ -123,21 +123,21 @@ describe CanCan do
     context "private users relations" do
       before(:each) do
         @private_user = FactoryGirl.create(:private_user)
-        
+
         @private_user.platform.owner = @user
         @private_user.platform.save
       end
 
       [:read, :create].each do |action|
         it "should be able to #{ action } PrivateUser" do
-          @ability.should be_able_to(action, @private_user) 
+          @ability.should be_able_to(action, @private_user)
         end
       end
     end
 
     context 'as project collaborator' do
       before(:each) do
-        @project = FactoryGirl.create(:project)
+        @project = FactoryGirl.create(:project_with_commit)
         @issue = FactoryGirl.create(:issue, :project_id => @project.id)
       end
 
@@ -205,11 +205,8 @@ describe CanCan do
 
       context 'with owner rights' do
         before(:each) do
-          @project.owner = @user
-          @project.save
-          
-          @project.relations.create!(:actor_id => @user.id, :actor_type => 'User', :role => 'admin')
-          @issue.project.reload
+          @project = FactoryGirl.create(:project_with_commit, :owner => @user)
+          @issue = FactoryGirl.create(:issue, :project_id => @project.id)
         end
 
         [:read, :update, :destroy].each do |action|
