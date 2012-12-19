@@ -11,7 +11,7 @@ end
 shared_examples_for 'not able search with api' do
   it 'should not be able to search' do
     get :index, :format => :json
-    response.should redirect_to(controller.current_user ? forbidden_path : new_user_session_path)
+    response.code.should eq('401')
   end
 end
 
