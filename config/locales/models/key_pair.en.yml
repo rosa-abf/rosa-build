@@ -21,6 +21,9 @@ en:
         rpc_error_1: could not import public key
         rpc_error_2: could not import secret key
         rpc_error_3: keys are imported, but it is not a key pair (ids differ)
+        wrong_key: wrong
+        contains_public_key: contains secret key
+        contains_secret_key: contains public key
     models:
       key_pair: Key Pair
     attributes:

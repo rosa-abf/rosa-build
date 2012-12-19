@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20121214145009) do
+ActiveRecord::Schema.define(:version => 20121219122905) do
 
   create_table "activity_feeds", :force => true do |t|
     t.integer  "user_id",    :null => false
@@ -207,6 +207,18 @@ ActiveRecord::Schema.define(:version => 20121214145009) do
   add_index "issues", ["project_id", "serial_id"], :name => "index_issues_on_project_id_and_serial_id", :unique => true
 
   create_table "key_pairs", :force => true do |t|
+    t.text     "public",           :null => false
+    t.text     "encrypted_secret", :null => false
+    t.string   "key_id",           :null => false
+    t.integer  "user_id",          :null => false
+    t.integer  "repository_id",    :null => false
+    t.datetime "created_at",       :null => false
+    t.datetime "updated_at",       :null => false
+  end
+
+  add_index "key_pairs", ["repository_id"], :name => "index_key_pairs_on_repository_id", :unique => true
+
+  create_table "key_pairs_backup", :force => true do |t|
     t.integer  "repository_id", :null => false
     t.integer  "user_id",       :null => false
     t.string   "key_id",        :null => false
@@ -215,7 +227,7 @@ ActiveRecord::Schema.define(:version => 20121214145009) do
     t.datetime "updated_at",    :null => false
   end
 
-  add_index "key_pairs", ["repository_id"], :name => "index_key_pairs_on_repository_id", :unique => true
+  add_index "key_pairs_backup", ["repository_id"], :name => "index_key_pairs_backup_on_repository_id", :unique => true
 
   create_table "labelings", :force => true do |t|
     t.integer  "label_id",   :null => false
