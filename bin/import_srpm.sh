@@ -6,6 +6,7 @@ git_path=$2
 git_branch=$3
 script=$4
 token=$5
+file_store_url=$6
 name=$(rpm -q --qf '[%{Name}]' -p $srpm_path)
 version=$(rpm -q --qf '[%{Version}-%{Release}]' -p $srpm_path)
 tmp_dir=/tmp/$name-$version-$RANDOM
@@ -32,7 +33,7 @@ cpio -idv < srpm.cpio
 rm -f srpm.cpio
 
 # Remove archives
-$script $token
+$script $token $file_store_url
 
 # Commit and push changes
 git add -A .
