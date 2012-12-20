@@ -9,6 +9,9 @@ describe KeyPair do
 
   it { should belong_to(:repository) }
   it { should belong_to(:user)}
+  it { should ensure_length_of(:public).is_at_most(10000) }
+  it { should ensure_length_of(:secret).is_at_most(10000) }
+
 
   it { should_not allow_mass_assignment_of(:user) }
   it { should_not allow_mass_assignment_of(:key_id) }
