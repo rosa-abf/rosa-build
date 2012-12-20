@@ -3,10 +3,6 @@ require 'spec_helper'
 
 describe Projects::Git::TreesController do
 
-  def fill_project
-    %x(cp -Rf #{Rails.root}/spec/tests.git/* #{@project.repo.path}) # maybe FIXME ?
-  end
-
   before(:each) do
     stub_symlink_methods
 
@@ -19,13 +15,13 @@ describe Projects::Git::TreesController do
 
   context 'for guest' do
     it 'should be able to perform archive action with anonymous acccess', :anonymous_access => true do
-      fill_project
+      fill_project @project
       get :archive, @params.merge(:format => 'tar.gz')
       response.should be_success
     end
-  
+
     it 'should not be able to perform archive action without anonymous acccess', :anonymous_access => false do
-      fill_project
+      fill_project @project
       get :archive, @params.merge(:format => 'tar.gz')
       response.code.should == '401'
     end
@@ -39,25 +35,27 @@ describe Projects::Git::TreesController do
     end
 
     it 'should not be able to injection code with format' do
+      fill_project @project
       @user = FactoryGirl.create(:user)
       set_session_for(@user)
-      fill_project
       expect { get :archive, @params.merge(:format => "tar.gz master > /dev/null; echo 'I am hacker!';\#") }.to raise_error(ActionController::RoutingError)
     end
 
     it 'should not be able to injection code with treeish' do
+      fill_project @project
       @user = FactoryGirl.create(:user)
       set_session_for(@user)
-      fill_project
       expect { get :archive, @params.merge(:treeish => "master > /dev/null; echo 'I am hacker!';\#") }.to raise_error(ActionController::RoutingError)
     end
 
     it 'should be able to perform archive action' do
+      fill_project @project
       @user = FactoryGirl.create(:user)
       set_session_for(@user)
-      fill_project
       get :archive, @params.merge(:format => 'tar.gz')
       response.should be_success
     end
   end
+
+  after(:all) {clean_projects_dir}
 end

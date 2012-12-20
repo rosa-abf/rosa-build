@@ -24,8 +24,10 @@ shared_examples_for 'product build list admin' do
   end
 
   it 'should be able to perform cancel action' do
+    url = platform_product_product_build_list_path(@product.platform, @product, @pbl)
+    @request.env['HTTP_REFERER'] = url
     put :cancel, valid_attributes_for_show
-    response.should redirect_to(platform_product_product_build_list_path(@product.platform, @product, @pbl))
+    response.should redirect_to(url)
   end
 
   it 'should be able to perform show action' do
@@ -99,7 +101,7 @@ describe Platforms::ProductBuildListsController do
     def valid_attributes_for_destroy
       {:id => @pbl.id, :product_id => @pbl.product.id, :platform_id => @pbl.product.platform.id }
     end
-    
+
     def valid_attributes_for_show
       valid_attributes_for_destroy
     end
@@ -121,7 +123,7 @@ describe Platforms::ProductBuildListsController do
 
     context 'for user' do
       before(:each) { set_session_for FactoryGirl.create(:user) }
-  
+
       it_should_behave_like 'product build list user'
       it_should_behave_like 'product build list user without admin rights'
 
@@ -131,7 +133,7 @@ describe Platforms::ProductBuildListsController do
       before(:each) do
         @user = FactoryGirl.create(:user)
         set_session_for(@user)
-        @pbl.product.platform.relations.create!(:actor_type => 'User', :actor_id => @user.id, :role => 'admin')
+        @product.platform.relations.create!(:actor_type => 'User', :actor_id => @user.id, :role => 'admin')
       end
 
       it_should_behave_like 'product build list admin'
@@ -143,14 +145,14 @@ describe Platforms::ProductBuildListsController do
 
       it_should_behave_like 'product build list admin'
       it_should_behave_like 'product build list user'
-      
+
     end
   end
 
   context 'callbacks' do
 
     let(:pbl) { FactoryGirl.create(:product_build_list) }
-  
+
     before(:each) do
       mock(controller).authenticate_product_builder! {true}
     end
