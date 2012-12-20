@@ -39,6 +39,13 @@ shared_examples_for "api repository user without show rights" do
   end
 end
 
+shared_examples_for "api repository user without key_pair rights" do
+  it 'should not be able to perform key_pair action' do
+    get :key_pair, :id => @repository.id, :format => :json
+    response.should_not be_success
+  end
+end
+
 shared_examples_for 'api repository user with writer rights' do
 
   context 'api repository user with update rights' do
@@ -264,6 +271,7 @@ describe Api::V1::RepositoriesController do
       it_should_behave_like 'api repository user with show rights'
     end
     it_should_behave_like 'api repository user without writer rights'
+    it_should_behave_like 'api repository user without key_pair rights'
 
     it 'should not be able to perform projects action', :anonymous_access => false do
       get :projects, :id => @repository.id, :format => :json
@@ -280,6 +288,7 @@ describe Api::V1::RepositoriesController do
     it_should_behave_like 'api repository user with reader rights'
     it_should_behave_like 'api repository user with reader rights for hidden platform'
     it_should_behave_like 'api repository user with writer rights'
+    it_should_behave_like 'api repository user without key_pair rights'
   end
 
   context 'for platform owner user' do
@@ -294,6 +303,7 @@ describe Api::V1::RepositoriesController do
     it_should_behave_like 'api repository user with reader rights'
     it_should_behave_like 'api repository user with reader rights for hidden platform'
     it_should_behave_like 'api repository user with writer rights'
+    it_should_behave_like 'api repository user without key_pair rights'
   end
 
   context 'for user' do
@@ -306,5 +316,26 @@ describe Api::V1::RepositoriesController do
     it_should_behave_like 'api repository user without reader rights for hidden platform'
     it_should_behave_like 'api repository user with show rights'
     it_should_behave_like 'api repository user without writer rights'
+    it_should_behave_like 'api repository user without key_pair rights'
   end
+
+  context 'for system user' do
+    before(:each) do
+      @user = FactoryGirl.create(:user, :uname => 'iso_worker_1')
+      http_login(@user)
+    end
+
+    it 'should be able to perform key_pair action when repository has not keys' do
+      get :key_pair, :id => @repository.id, :format => :json
+      response.should be_success
+    end
+
+    it 'should be able to perform key_pair action when repository has keys' do
+      FactoryGirl.create(:key_pair, :repository => @repository)
+      get :key_pair, :id => @repository.id, :format => :json
+      response.should be_success
+    end
+
+  end
+
 end

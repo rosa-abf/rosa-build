@@ -38,6 +38,7 @@ Rosa::Application.routes.draw do
       resources :repositories, :only => [:show, :update, :destroy] do
         member {
           get :projects
+          get :key_pair
           put :add_member
           delete :remove_member
           put :add_project

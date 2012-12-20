@@ -30,6 +30,9 @@ class Api::V1::RepositoriesController < Api::V1::BaseController
     destroy_subject @repository
   end
 
+  def key_pair
+  end
+
   def add_project
     project = Project.where(:id => params[:project_id]).first
     if project
