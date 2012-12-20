@@ -13,7 +13,7 @@
         %tr
           - sha1 = item['sha1']
           - filename = item['file_name']
-          - url = "#{APP_CONFIG['file_store_url']}/#{sha1}"
+          - url = "#{APP_CONFIG['file_store_url']}/api/v1/file_stores/#{sha1}"
           - url << '.log?show=true' if filename =~ /.*\.(log|txt)$/
           %td= link_to filename, url
           %td= sha1

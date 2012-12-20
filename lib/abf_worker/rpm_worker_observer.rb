@@ -53,7 +53,7 @@ module AbfWorker
           select{ |r| r['file_name'] !~ /.*\.log$/ }.first
         sha1 = container ? container['sha1'] : nil
         if sha1
-          bl.container_path = "#{APP_CONFIG['file_store_url']}/#{sha1}"
+          bl.container_path = "#{APP_CONFIG['file_store_url']}/api/v1/file_stores/#{sha1}"
           bl.save!
         end
         update_results(bl, options)
