@@ -9,7 +9,7 @@ old_sources = if File.exist? abf_yml
                 []
               end
 #MAX_SIZE = 2 * 1024 * 1024 # 2.megabytes
-url = "#{APP_CONFIG['file_store_url']}.json"
+url = 'http://file-store.rosalinux.ru/api/v1/file_stores.json'
 #url = 'http://localhost:3001/api/v1/file_stores.json'
 rclient = RestClient::Resource.new(url, :user => ARGF.argv[0]) # user auth token
 
