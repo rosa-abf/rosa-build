@@ -127,8 +127,8 @@ shared_examples_for 'api repository user with writer rights' do
 
   context 'api repository user with update signatures rights' do
     before do
-      stub_key_pairs_calls
-      put :signatures, :id => @repository.id, :repository => {:public => 'iampublic', :secret => 'iamsecret'}, :format => :json
+      kp = FactoryGirl.build(:key_pair)
+      put :signatures, :id => @repository.id, :repository => {:public => kp.public, :secret => kp.secret}, :format => :json
     end
     it 'should be able to perform signatures action' do
       response.should be_success
@@ -228,8 +228,8 @@ shared_examples_for 'api repository user without writer rights' do
 
   context 'api repository user without update signatures rights' do
     before do
-      stub_key_pairs_calls
-      put :signatures, :id => @repository.id, :repository => {:public => 'iampublic', :secret => 'iamsecret'}, :format => :json
+      kp = FactoryGirl.build(:key_pair)
+      put :signatures, :id => @repository.id, :repository => {:public => kp.public, :secret => kp.secret}, :format => :json
     end
     it 'should not be able to perform signatures action' do
       response.should_not be_success

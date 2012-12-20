@@ -175,6 +175,7 @@ GEM
     meta-tags (1.2.6)
       actionpack
     mime-types (1.19)
+    mock_redis (0.6.2)
     multi_json (1.5.0)
     mustache (0.99.4)
     net-scp (1.0.4)
@@ -391,6 +392,7 @@ DEPENDENCIES
   jquery-rails (~> 2.0.2)
   mailcatcher
   meta-tags (~> 1.2.5)
+  mock_redis (= 0.6.2)
   newrelic_rpm (~> 3.4.1)
   omniauth (~> 1.1.0)
   omniauth-openid (~> 1.0.1)
