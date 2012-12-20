@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 class KeyPair < ActiveRecord::Base
   belongs_to :repository
   belongs_to :user
@@ -21,40 +22,63 @@ class KeyPair < ActiveRecord::Base
     end
 
     def check_keys
-      p_key_fingerprint = fingerprint_of_key(:public)
-      s_key_fingerprint = fingerprint_of_key(:secret)
-      if p_key_fingerprint && s_key_fingerprint
-        if p_key_fingerprint != s_key_fingerprint
-          errors.add :secret, I18n.t('activerecord.errors.key_pair.rpc_error_3')
-        else
-          @fingerprint = p_key_fingerprint
+      dir = Dir.mktmpdir
+      begin
+        open("#{dir}/pubring.txt", "w") { |f| f.write self.public }
+        system "gpg --homedir #{dir} --dearmor < #{dir}/pubring.txt > #{dir}/pubring.gpg"
+        open("#{dir}/secring.txt", "w") { |f| f.write self.secret }
+        system "gpg --homedir #{dir} --dearmor < #{dir}/secring.txt > #{dir}/secring.gpg"
+
+        public_key = get_info_of_key "#{dir}/pubring.gpg"
+        secret_key = get_info_of_key "#{dir}/secring.gpg"
+
+        if correct_key?(public_key, :public) & correct_key?(secret_key, :secret)
+          if public_key[:fingerprint] != secret_key[:fingerprint]
+            errors.add :secret, I18n.t('activerecord.errors.key_pair.wrong_keys')
+          else
+            stdin, stdout, stderr = Open3.popen3("echo '\n\n\n\n\nsave' | gpg --command-fd 0 --homedir #{dir} --edit-key #{secret_key[:keyid]} passwd")
+            output = stderr.read
+            if output =~ /Неверный\sпароль/
+              errors.add :secret, I18n.t('activerecord.errors.key_pair.key_has_passphrase')
+            else
+              @fingerprint = secret_key[:fingerprint]
+            end
+          end
         end
+      ensure
+        # remove the directory.
+        FileUtils.remove_entry_secure dir
       end
     end
 
-    def fingerprint_of_key(field)
-      key = self.send(field)
-      tmp_file = "key-#{repository_id}-#{user_id}"
-      file = Tempfile.new tmp_file
-      file.write key
-      file.close
-      str = %x[ gpg --with-fingerprint #{file.path} | sed -n 1,2p]
-      info = str.strip.split("\n")
-      if info.size != 2 || (fingerprint = info[1].gsub(/.*\=/, '').strip.gsub(/\s/, ':') && fingerprint.present?)
+    def correct_key?(info, field)
+      if info.empty? || info[:type].blank? || info[:fingerprint].blank? || info[:keyid].blank?
         errors.add field, I18n.t('activerecord.errors.key_pair.wrong_key')
-        return nil
+        return false
+      else
+        if info[:type] != field
+          errors.add field, I18n.t("activerecord.errors.key_pair.contains_#{field}_key")
+          return false
+        end
       end
-      prefix = field == :public ? 'pub' : 'sec'
-      if info[0] !~ /^#{prefix}/
-        errors.add field, I18n.t("activerecord.errors.key_pair.contains_#{field}_key")
-        return nil
+      return true
+    end
+
+    def get_info_of_key(file_path)
+      results = {}
+      str = %x[ gpg --with-fingerprint #{file_path} | sed -n 1,2p]
+      info = str.strip.split("\n")
+      if info.size == 2
+        results[:fingerprint] = info[1].gsub(/.*\=/, '').strip.gsub(/\s/, ':')
+
+        results[:type] = info[0] =~ /^pub\s/ ? :public : nil
+        results[:type] ||= info[0] =~ /^sec\s/ ? :secret : nil
+
+        if keyid = info[0].match(/\/[\w]+\s/)
+          results[:keyid] = keyid[0].strip[1..-1]
+        end
       end
-      return fingerprint
-    ensure
-      if file
-        file.close
-        file.unlink   # deletes the temp file
-      end
+      return results
     end
 
 end
