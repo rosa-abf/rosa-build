@@ -62,11 +62,9 @@ class Issue < ActiveRecord::Base
     self.status = 'open'
   end
 
-  def collect_recipient_ids
-    recipients = self.project.relations.by_role('admin').where(:actor_type => 'User').map { |rel| rel.read_attribute(:actor_id) }
-    recipients = recipients | [self.assignee_id] if self.assignee_id
-    recipients = recipients | [self.project.owner_id] if self.project.owner_type == 'User'
-
+  def collect_recipients
+    recipients = self.project.admins
+    recipients = recipients | [self.assignee] if self.assignee
     recipients
   end
 
@@ -78,10 +76,9 @@ class Issue < ActiveRecord::Base
   end
 
   def subscribe_users
-    recipients = collect_recipient_ids
-    recipients.each do |recipient_id|
-      if User.find(recipient_id).notifier.new_comment && !self.subscribes.exists?(:user_id => recipient_id)
-        ss = self.subscribes.create(:user_id => recipient_id)
+    collect_recipients.each do |recipient|
+      if recipient.notifier.new_comment && !self.subscribes.exists?(:user_id => recipient.id)
+        ss = self.subscribes.create(:user_id => recipient.id)
       end
     end
   end
@@ -94,5 +91,4 @@ class Issue < ActiveRecord::Base
       end
     end
   end
-
 end

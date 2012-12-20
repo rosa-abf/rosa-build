@@ -52,14 +52,16 @@ def stub_key_pairs_calls
   stub(BuildServer).rm_repository_key { 0 }
 end
 
-def test_git_commit(project)
-  project.repo.index.add('test', 'TEST')
-  project.repo.index.commit('Test commit')
-end
-
 Resque.inline = true
 
 # Add testing root_path
-%x(rm -Rf #{Rails.root}/tmp/test_root)
-%x(mkdir -p #{Rails.root}/tmp/test_root)
-APP_CONFIG['root_path'] = "#{Rails.root}/tmp/test_root"
+%x(rm -Rf #{APP_CONFIG['git_path']})
+%x(mkdir -p #{APP_CONFIG['git_path']})
+
+def fill_project project
+  %x(mkdir -p #{project.path} && cp -Rf #{Rails.root}/spec/tests.git/* #{project.path}) # maybe FIXME ?
+end
+
+def clean_projects_dir
+  FileUtils.rm_rf "#{APP_CONFIG['git_path']}"
+end

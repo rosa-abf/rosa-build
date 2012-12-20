@@ -4,7 +4,7 @@ FactoryGirl.define do
     association :user
     #association :project
     association :save_to_platform, :factory => :platform_with_repos
-    project { |bl| FactoryGirl.create(:project, :repositories => [bl.save_to_platform.repositories.first]) }
+    project { |bl| FactoryGirl.create(:project_with_commit, :repositories => [bl.save_to_platform.repositories.first]) }
     association :arch
     build_for_platform {|bl| bl.save_to_platform}
     save_to_repository {|bl| bl.save_to_platform.repositories.first}
@@ -12,8 +12,7 @@ FactoryGirl.define do
     update_type 'security'
     include_repos {|bl| bl.save_to_platform.repositories.map(&:id)}
     project_version 'latest_master'
-    time_living 150
-    after(:build) {|bl| test_git_commit bl.project }
+    commit_hash {|bl| Grit::Repo.new(bl.project.path).commits.first.id}
   end
 
   factory :build_list_core, :parent => :build_list do
@@ -21,7 +20,7 @@ FactoryGirl.define do
   end
 
   factory :build_list_by_group_project, :parent => :build_list_core do
-    project { |bl| FactoryGirl.create(:group_project, :repositories => [bl.save_to_platform.repositories.first]) }
+    project { |bl| FactoryGirl.create(:group_project_with_commit, :repositories => [bl.save_to_platform.repositories.first]) }
   end
 
   factory :build_list_package, :class => BuildList::Package do

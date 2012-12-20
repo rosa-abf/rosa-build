@@ -23,21 +23,21 @@ shared_examples_for 'admin user' do
 end
 
 describe Platforms::ProductsController do
-	before(:each) do
-    stub_symlink_methods
+    before(:each) do
+      stub_symlink_methods
 
-    @another_user = FactoryGirl.create(:user)
-    @platform = FactoryGirl.create(:platform)
-    @product = FactoryGirl.create(:product, :platform => @platform)
-    @project = FactoryGirl.create(:project)
+      @another_user = FactoryGirl.create(:user)
+      @platform = FactoryGirl.create(:platform)
+      @product = FactoryGirl.create(:product, :platform => @platform)
+      @project = FactoryGirl.create(:project)
 
-    params = {:platform_id => @platform.id, :src_project => @project.name_with_owner}
-    @create_params = params.merge({:product => {:name => 'pro'}})
-    @update_params = params.merge({:product => {:name => 'pro2'}})
+      params = {:platform_id => @platform.id, :src_project => @project.name_with_owner}
+      @create_params = params.merge({:product => {:name => 'pro', :time_living => 150}})
+      @update_params = params.merge({:product => {:name => 'pro2'}})
 
-    @user = FactoryGirl.create(:user)
-    set_session_for(@user)
-	end
+      @user = FactoryGirl.create(:user)
+      set_session_for(@user)
+    end
 
   context 'for guest' do
     before(:each) do

@@ -44,13 +44,13 @@ describe Projects::BuildListsController do
 
     it 'should save correct commit_hash for branch based build' do
       post :create, {:owner_name => @project.owner.uname, :project_name => @project.name}.merge(@create_params).deep_merge(:build_list => {:project_version => "latest_master"})
-      @project.build_lists.last.commit_hash.should == @project.repo.commits('master').last.id
+      @project.build_lists.last.commit_hash.should == @project.repo.commits('master').first.id
     end
 
     it 'should save correct commit_hash for tag based build' do
       system("cd #{@project.repo.path} && git tag 4.7.5.3") # TODO REDO through grit
       post :create, {:owner_name => @project.owner.uname, :project_name => @project.name}.merge(@create_params).deep_merge(:build_list => {:project_version => "4.7.5.3"})
-      @project.build_lists.last.commit_hash.should == @project.repo.commits('4.7.5.3').last.id
+      @project.build_lists.last.commit_hash.should == @project.repo.commits('4.7.5.3').first.id
     end
 
     it 'should not be able to create with wrong project version' do
@@ -129,7 +129,7 @@ describe Projects::BuildListsController do
           @build_list2 = FactoryGirl.create(:build_list_core)
           @build_list2.project.update_column(:visibility, 'hidden')
 
-          project = FactoryGirl.create(:project, :visibility => 'hidden', :owner => @user)
+          project = FactoryGirl.create(:project_with_commit, :visibility => 'hidden', :owner => @user)
           @build_list3 = FactoryGirl.create(:build_list_core, :project => project)
 
           @build_list4 = FactoryGirl.create(:build_list_core)
@@ -217,7 +217,7 @@ describe Projects::BuildListsController do
           @build_list2 = FactoryGirl.create(:build_list_core)
           @build_list2.project.update_column(:visibility, 'hidden')
 
-          project = FactoryGirl.create(:project, :visibility => 'hidden', :owner => @user)
+          project = FactoryGirl.create(:project_with_commit, :visibility => 'hidden', :owner => @user)
           @build_list3 = FactoryGirl.create(:build_list_core, :project => project)
 
           @build_list4 = FactoryGirl.create(:build_list_core)
@@ -346,7 +346,6 @@ describe Projects::BuildListsController do
 
     describe 'publish_build' do
       before {
-        test_git_commit(build_list.project)
         build_list.update_column(:commit_hash, build_list.project.repo.commits('master').last.id)
         build_list.update_column(:status, BuildList::BUILD_PUBLISH)
         build_list_package
@@ -508,4 +507,5 @@ describe Projects::BuildListsController do
       it { lambda{ do_get }.should change(build_list, :updated_at) }
     end
   end
+  after(:all) {clean_projects_dir}
 end

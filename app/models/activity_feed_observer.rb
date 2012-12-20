@@ -12,10 +12,8 @@ class ActivityFeedObserver < ActiveRecord::Observer
       )
 
     when 'Issue'
-      recipients = record.collect_recipient_ids
-      recipients.each do |recipient_id|
-        recipient = User.find(recipient_id)
-        UserMailer.new_issue_notification(record, recipient).deliver if User.find(recipient).notifier.can_notify && User.find(recipient).notifier.new_issue
+      record.collect_recipients.each do |recipient|
+        UserMailer.new_issue_notification(record, recipient).deliver if recipient.notifier.can_notify && recipient.notifier.new_issue
         ActivityFeed.create(
           :user => recipient,
           :kind => 'new_issue_notification',
@@ -94,9 +92,9 @@ class ActivityFeedObserver < ActiveRecord::Observer
         options.merge!({:user_id => first_commiter.id, :user_name => first_commiter.name}) if first_commiter
       end
 
-      record.project.owner_and_admin_ids.each do |recipient|
+      record.project.admins.each do |recipient|
         ActivityFeed.create!(
-          :user => User.find(recipient),
+          :user => recipient,
           :kind => kind,
           :data => options
         )
@@ -106,9 +104,9 @@ class ActivityFeedObserver < ActiveRecord::Observer
       actor = User.find_by_uname! record[:actor_name]
       project = Project.find record[:project_id]
 
-      project.owner_and_admin_ids.each do |recipient|
+      project.admins.each do |recipient|
         ActivityFeed.create!(
-          :user => User.find(recipient),#record.user,
+          :user => recipient,
           :kind => 'wiki_new_commit_notification',
           :data => {:user_id => actor.id, :user_name => actor.name, :user_email => actor.email, :project_id => project.id,
                     :project_name => project.name, :commit_sha => record[:commit_sha], :project_owner => project.owner.uname}
@@ -134,9 +132,9 @@ class ActivityFeedObserver < ActiveRecord::Observer
       if [BuildList::BUILD_PUBLISHED, BuildServer::SUCCESS, BuildServer::BUILD_ERROR, BuildServer::PLATFORM_NOT_FOUND,
            BuildServer::PROJECT_NOT_FOUND, BuildServer::PROJECT_VERSION_NOT_FOUND, BuildList::FAILED_PUBLISH].include? record.status or
          (record.status == BuildList::BUILD_PENDING && record.bs_id_changed?)
-        record.project.owner_and_admin_ids.each do |recipient|
+        record.project.admins.each do |recipient|
           ActivityFeed.create(
-            :user => User.find(recipient),
+            :user => recipient,
             :kind => 'build_list_notification',
             :data => {:task_num => record.bs_id, :build_list_id => record.id, :status => record.status, :updated_at => record.updated_at,
                              :project_id => record.project_id, :project_name => record.project.name, :project_owner => record.project.owner.uname,

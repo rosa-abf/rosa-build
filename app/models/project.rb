@@ -103,10 +103,14 @@ class Project < ActiveRecord::Base
     @platforms ||= repositories.map(&:platform).uniq
   end
 
-  def owner_and_admin_ids
-    recipients = self.relations.by_role('admin').where(:actor_type => 'User').map { |rel| rel.read_attribute(:actor_id) }
-    recipients = recipients | [self.owner_id] if self.owner_type == 'User'
-    recipients
+  def admins
+    admins = self.collaborators.where("relations.role = 'admin'")
+    grs = self.groups.where("relations.role = 'admin'")
+    if self.owner.is_a? Group
+      grs = grs.where("relations.actor_id != ?", self.owner.id)
+      admins = admins | owner.members.where("relations.role = 'admin'")
+    end
+    admins = admins | grs.map(&:members).flatten # member of the admin group is admin
   end
 
   def public?
