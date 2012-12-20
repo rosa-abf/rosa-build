@@ -4,7 +4,11 @@ FactoryGirl.define do
     association :user
     #association :project
     association :save_to_platform, :factory => :platform_with_repos
-    project { |bl| FactoryGirl.create(:project_with_commit, :repositories => [bl.save_to_platform.repositories.first]) }
+    project { |bl|
+      pr = FactoryGirl.create(:project_with_commit)
+      bl.save_to_platform.repositories.first.projects << pr
+      pr
+    }
     association :arch
     build_for_platform {|bl| bl.save_to_platform}
     save_to_repository {|bl| bl.save_to_platform.repositories.first}
@@ -20,7 +24,11 @@ FactoryGirl.define do
   end
 
   factory :build_list_by_group_project, :parent => :build_list_core do
-    project { |bl| FactoryGirl.create(:group_project_with_commit, :repositories => [bl.save_to_platform.repositories.first]) }
+    project { |bl|
+      pr = FactoryGirl.create(:group_project_with_commit)
+      bl.save_to_platform.repositories.first.projects << pr
+      pr
+    }
   end
 
   factory :build_list_package, :class => BuildList::Package do
