@@ -239,7 +239,7 @@ class Project < ActiveRecord::Base
             :platform_path => platform_path,
             :released => platform.released
           },
-          :repository_name => repository.name,
+          :repository => { :name => repository.name, :id => repository.id },
           :cleanup => true,
           :save_results => false,
           :time_living => 2400 # 40 min

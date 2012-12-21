@@ -292,7 +292,10 @@ class BuildList < ActiveRecord::Base
           :platform_path => platform_path,
           :released => save_to_platform.released
         },
-        :repository_name => save_to_repository.name,
+        :repository => {
+          :name => save_to_repository.name,
+          :id => save_to_repository.id
+        },
         :time_living => 2400 # 40 min
       }]
     )
