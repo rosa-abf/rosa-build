@@ -296,6 +296,7 @@ class BuildList < ActiveRecord::Base
           :name => save_to_repository.name,
           :id => save_to_repository.id
         },
+        :type => :publish,
         :time_living => 2400 # 40 min
       }]
     )

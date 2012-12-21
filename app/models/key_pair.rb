@@ -20,6 +20,32 @@ class KeyPair < ActiveRecord::Base
 
     def set_key_id
       self.key_id = @fingerprint
+      resign_rpms unless repository.platform.personal?
+    end
+
+    def resign_rpms
+      platform = repository.platform
+      type = platform.distrib_type
+      Resque.push(
+        "publish_build_list_container_#{type}_worker",
+        'class' => "AbfWorker::PublishBuildListContainer#{type.capitalize}Worker",
+        'args' => [{
+          :id => id,
+          :arch => 'x86_64',
+          :distrib_type => type,
+          :platform => {
+            :platform_path => "#{platform.path}/repository",
+            :released => platform.released
+          },
+          :repository => {
+            :name => repository.name,
+            :id => repository.id
+          },
+          :type => :resign,
+          :save_results => false,
+          :time_living => 2400 # 40 min
+        }]
+      )
     end
 
     def check_keys
