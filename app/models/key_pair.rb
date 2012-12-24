@@ -64,9 +64,9 @@ class KeyPair < ActiveRecord::Base
           if public_key[:fingerprint] != secret_key[:fingerprint]
             errors.add :secret, I18n.t('activerecord.errors.key_pair.wrong_keys')
           else
-            stdin, stdout, stderr = Open3.popen3("echo '\n\n\n\n\nsave' | gpg --command-fd 0 --homedir #{dir} --edit-key #{secret_key[:keyid]} passwd")
+            stdin, stdout, stderr = Open3.popen3("echo '\n\n\n\n\nsave' | LC_ALL=en gpg --command-fd 0 --homedir #{dir} --edit-key #{secret_key[:keyid]} passwd")
             output = stderr.read
-            if output =~ /Неверный\sпароль/
+            if output =~ /Invalid\spassphrase/
               errors.add :secret, I18n.t('activerecord.errors.key_pair.key_has_passphrase')
             else
               @fingerprint = secret_key[:fingerprint]
