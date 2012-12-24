@@ -35,13 +35,13 @@ describe KeyPair do
     it 'checks error when public key contains secret key' do
       subject.public = subject.secret
       subject.valid?
-      subject.errors[:public].should =~ [I18n.t('activerecord.errors.key_pair.contains_public_key')]
+      subject.errors[:public].should =~ [I18n.t('activerecord.errors.key_pair.wrong_public_key')]
     end
 
     it 'checks error when secret key contains public key' do
       subject.secret = subject.public
       subject.valid?
-      subject.errors[:secret].should =~ [I18n.t('activerecord.errors.key_pair.contains_secret_key')]
+      subject.errors[:secret].should =~ [I18n.t('activerecord.errors.key_pair.wrong_secret_key')]
     end
 
     it 'checks error when different fingerprint of keys' do

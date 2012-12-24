@@ -19,8 +19,8 @@ en:
         repo_key_exists: Repository has been signed already! Please remove old signature and try again
         wrong_keys: keys are imported, but it is not a key pair (ids differ)
         wrong_key: wrong
-        contains_public_key: contains secret key
-        contains_secret_key: contains public key
+        wrong_public_key: contains secret key
+        wrong_secret_key: contains public key
         key_has_passphrase: contains passphrase
     models:
       key_pair: Key Pair

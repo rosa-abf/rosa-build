@@ -85,7 +85,7 @@ class KeyPair < ActiveRecord::Base
         return false
       else
         if info[:type] != field
-          errors.add field, I18n.t("activerecord.errors.key_pair.contains_#{field}_key")
+          errors.add field, I18n.t("activerecord.errors.key_pair.wrong_#{field}_key")
           return false
         end
       end
