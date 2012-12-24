@@ -1,6 +1,6 @@
 json.build_list do |json|
   json.(@build_list, :id, :name, :container_path, :status, :duration)
-  json.(@build_list, :is_circle, :update_type, :build_requires, :priority)
+  json.(@build_list, :is_circle, :update_type, :priority)
   json.(@build_list, :advisory, :mass_build)
   json.(@build_list, :auto_publish, :package_version, :commit_hash, :last_published_commit_hash)
   json.build_log_url log_build_list_path(@build_list)

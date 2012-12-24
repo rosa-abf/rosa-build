@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20121219122905) do
+ActiveRecord::Schema.define(:version => 20121224125838) do
 
   create_table "activity_feeds", :force => true do |t|
     t.integer  "user_id",    :null => false
@@ -115,7 +115,6 @@ ActiveRecord::Schema.define(:version => 20121219122905) do
     t.boolean  "is_circle",                  :default => false
     t.text     "additional_repos"
     t.string   "name"
-    t.boolean  "build_requires",             :default => false
     t.string   "update_type"
     t.integer  "build_for_platform_id"
     t.integer  "save_to_platform_id"

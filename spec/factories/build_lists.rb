@@ -12,7 +12,6 @@ FactoryGirl.define do
     association :arch
     build_for_platform {|bl| bl.save_to_platform}
     save_to_repository {|bl| bl.save_to_platform.repositories.first}
-    build_requires true
     update_type 'security'
     include_repos {|bl| bl.save_to_platform.repositories.map(&:id)}
     project_version 'latest_master'
