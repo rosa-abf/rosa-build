@@ -84,8 +84,7 @@ end
 describe Platforms::ProductBuildListsController do
   before(:each) do
     stub_symlink_methods
-    redis_instance = MockRedis.new
-    stub(Redis).new { redis_instance }
+    stub_redis
   end
 
   context 'crud' do

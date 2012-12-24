@@ -69,6 +69,7 @@ end
 describe Platforms::KeyPairsController do
   before(:each) do
     stub_symlink_methods
+    stub_redis
 
     @platform = FactoryGirl.create(:platform)
     @repository = FactoryGirl.create(:repository, :platform => @platform)

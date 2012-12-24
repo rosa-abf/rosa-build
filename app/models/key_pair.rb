@@ -16,7 +16,7 @@ class KeyPair < ActiveRecord::Base
 
   before_create :set_key_id
   after_create :resign_rpms,
-    :unless => Proc.new { |repository| repository.platform.personal? }
+    :unless => Proc.new { |key_pair| key_pair.repository.platform.personal? }
 
   protected
 

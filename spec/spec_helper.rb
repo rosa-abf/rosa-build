@@ -58,6 +58,11 @@ def clear_test_root
   %x(rm -Rf #{Rails.root}/tmp/test_root)
 end
 
+def stub_redis
+  redis_instance = MockRedis.new
+  stub(Redis).new { redis_instance }
+end
+
 init_test_root
 APP_CONFIG['root_path'] = "#{Rails.root}/tmp/test_root"
 APP_CONFIG['git_path'] = "#{Rails.root}/tmp/test_root"
