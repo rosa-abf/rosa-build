@@ -15,12 +15,13 @@ class KeyPair < ActiveRecord::Base
   validate :check_keys
 
   before_create :set_key_id
+  after_create :resign_rpms,
+    :unless => Proc.new { |repository| repository.platform.personal? }
 
   protected
 
     def set_key_id
       self.key_id = @fingerprint
-      resign_rpms unless repository.platform.personal?
     end
 
     def resign_rpms
