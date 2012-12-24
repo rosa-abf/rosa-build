@@ -30,7 +30,7 @@ class ApiDefender < Rack::Throttle::Hourly
       heders['X-RateLimit-Limit']     = max_per_window.to_s
       heders['X-RateLimit-Remaining'] = ([0, max_per_window - (cache_get(choice_key(request)).to_i rescue 1)].max).to_s
     end
-    @authorized = nil
+    @authorized = @user = nil
     [status, heders, body]
   end
 
@@ -51,7 +51,7 @@ class ApiDefender < Rack::Throttle::Hourly
 
   # only API calls should be throttled
   def need_defense?(request)
-    request.env['PATH_INFO'] =~ /^\/api\/v1\//
+    request.env['PATH_INFO'] =~ /^\/api\/v1\// && !system_user?(request)
   end
 
   def authorized?(request)
@@ -72,5 +72,9 @@ class ApiDefender < Rack::Throttle::Hourly
     raise 'user not authorized for key' if opts[:only_user] && !authorized?(request) # Debug
     return cache_key(request) if opts[:only_ip] || !authorized?(request)
     [@options[:key_prefix], @user.uname, Time.now.strftime('%Y-%m-%dT%H')].join(':')
+  end
+
+  def system_user? request
+    authorized?(request) && %w(rosa_system iso_worker_1).include?(@user.try :uname)
   end
 end
