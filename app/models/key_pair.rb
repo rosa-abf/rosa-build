@@ -50,7 +50,7 @@ class KeyPair < ActiveRecord::Base
     end
 
     def check_keys
-      dir = Dir.mktmpdir
+      dir = Dir.mktmpdir('keys-', "#{APP_CONFIG['root_path']}/tmp")
       begin
         open("#{dir}/pubring.txt", "w") { |f| f.write self.public }
         system "gpg --homedir #{dir} --dearmor < #{dir}/pubring.txt > #{dir}/pubring.gpg"
