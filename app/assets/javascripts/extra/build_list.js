@@ -9,9 +9,13 @@ $(document).ready(function() {
     var build_platform = $('#build_for_pl_' + platform_id);
     var all_repositories = $('.all_platforms input');
     all_repositories.removeAttr('checked');
+
+    var new_core = $('#build_list_new_core');
     if (build_platform.size() == 0) {
       all_repositories.removeAttr('disabled');
+      new_core.removeAttr('disabled').attr('checked', 'checked');
     } else {
+      new_core.removeAttr('checked').attr('disabled', 'disabled');
       all_repositories.attr('disabled', 'disabled');
       var parent = build_platform.parent();
       parent.find('input').removeAttr('disabled');
