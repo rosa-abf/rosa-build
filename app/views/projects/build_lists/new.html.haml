@@ -29,10 +29,9 @@
     .both
       = f.check_box :build_requires
       = f.label :build_requires
-    - if BuildList.has_access_to_new_core?(current_user)
-      .both
-        = f.check_box :new_core
-        = f.label :new_core
+    .both
+      = f.check_box :new_core
+      = f.label :new_core
     %br
     = f.submit t("layout.projects.build_button")
 

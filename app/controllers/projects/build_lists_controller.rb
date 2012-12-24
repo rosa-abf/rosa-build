@@ -55,8 +55,7 @@ class Projects::BuildListsController < Projects::BaseController
     build_for_platforms = Repository.select(:platform_id).
       where(:id => params[:build_list][:include_repos]).group(:platform_id).map(&:platform_id)
 
-    new_core = BuildList.has_access_to_new_core?(current_user) && params[:build_list][:new_core] == '1'
-    params[:build_list][:auto_publish] = false if new_core
+    new_core = @platform.personal? && params[:build_list][:new_core] == '1'
     Arch.where(:id => params[:arches]).each do |arch|
       Platform.main.where(:id => build_for_platforms).each do |build_for_platform|
         @build_list = @project.build_lists.build(params[:build_list])
