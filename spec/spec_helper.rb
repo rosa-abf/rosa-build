@@ -50,7 +50,6 @@ Resque.inline = true
 
 def init_test_root
   clear_test_root
-  %x(mkdir -p #{Rails.root}/tmp/test_root)
   %x(mkdir -p #{Rails.root}/tmp/test_root/platforms)
 end
 
