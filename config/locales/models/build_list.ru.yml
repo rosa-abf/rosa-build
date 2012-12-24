@@ -22,7 +22,6 @@ ru:
         save_to_repository: Сохранить в репозиторий
         build_for_platform: Собрано для платформы
         update_type: Критичность обновления
-        build_requires: Пересборка с зависимостями
         auto_publish: Автоматическая публикация
         project_version: Версия
         user: Пользователь
