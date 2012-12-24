@@ -22,7 +22,6 @@ en:
         save_to_repository: Save to repository
         build_for_platform: Build for platform
         update_type: Update type
-        build_requires: Build with all the required packages
         auto_publish: Automated publising
         project_version: Version
         user: User

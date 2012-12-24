@@ -318,7 +318,7 @@ class BuildList < ActiveRecord::Base
         arch.name,
         (save_to_platform_id == build_for_platform_id ? '' : build_for_platform.name),
         update_type,
-        build_requires,
+        false,
         id,
         include_repos,
         priority,
@@ -446,7 +446,7 @@ class BuildList < ActiveRecord::Base
       :git_project_address => project.git_project_address(user),
       # :commit_hash => 'fbb2549e44d97226fea6748a4f95d1d82ffb8726',
       :commit_hash => commit_hash,
-      :build_requires => build_requires,
+      :build_requires => false,
       :include_repos => include_repos_hash,
       :bplname => build_for_platform.name,
       :user => {:uname => user.uname, :email => user.email}

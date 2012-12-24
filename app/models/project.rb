@@ -143,7 +143,6 @@ class Project < ActiveRecord::Base
       bl.update_type = 'newpackage'
       bl.arch = arch
       bl.project_version = "latest_#{platform.name}"
-      bl.build_requires = false # already set as db default
       bl.user = user
       bl.auto_publish = auto_publish
       bl.include_repos = build_reps_ids
