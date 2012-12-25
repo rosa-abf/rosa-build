@@ -16,8 +16,8 @@ describe BuildList do
 
     before(:all) { ActionMailer::Base.deliveries = [] }
     before do
-      build_list.update_attributes(:commit_hash => build_list.project.repo.commits('master').last.id,
-        :status => BuildServer::BUILD_STARTED,)
+      build_list.update_attributes({:commit_hash => build_list.project.repo.commits('master').last.id,
+        :status => BuildServer::BUILD_STARTED}, :without_protection => true)
     end
     after { ActionMailer::Base.deliveries = [] }
 
@@ -39,25 +39,25 @@ describe BuildList do
       end
 
       it "gets notification by email when status - Failed publish" do
-        build_list.update_attributes(:status => BuildList::BUILD_PUBLISH)
+        build_list.update_attributes({:status => BuildList::BUILD_PUBLISH}, :without_protection => true)
         build_list.fail_publish
         should have(1).item
       end
 
       it "gets notification by email when auto_publish and status - Failed publish" do
-        build_list.update_attributes(:auto_publish => true, :status => BuildList::BUILD_PUBLISH)
+        build_list.update_attributes({:auto_publish => true, :status => BuildList::BUILD_PUBLISH}, :without_protection => true)
         build_list.fail_publish
         should have(1).item
       end
 
       it "gets notification by email when status - Build published" do
-        build_list.update_attributes(:status => BuildList::BUILD_PUBLISH)
+        build_list.update_attributes({:status => BuildList::BUILD_PUBLISH}, :without_protection => true)
         build_list.published
         should have(1).item
       end
 
       it "gets notification by email when auto_publish and status - Build published" do
-        build_list.update_attributes(:auto_publish => true, :status => BuildList::BUILD_PUBLISH)
+        build_list.update_attributes({:auto_publish => true, :status => BuildList::BUILD_PUBLISH}, :without_protection => true)
         build_list.published
         should have(1).item
       end
@@ -69,7 +69,7 @@ describe BuildList do
       end
 
       it "doesn't get notification by email when mass build" do
-        build_list.update_attributes(:mass_build_id => 1, :status => BuildList::BUILD_PUBLISH)
+        build_list.update_attributes({:mass_build_id => 1, :status => BuildList::BUILD_PUBLISH}, :without_protection => true)
         build_list.published
         should have(:no).items
       end
@@ -133,8 +133,8 @@ describe BuildList do
         :auto_publish => true,
         :project => FactoryGirl.create(:project_with_commit, :owner => user))
       FactoryGirl.create(:build_list_package, :build_list => bl, :project => bl.project)
-      bl.update_attributes(:commit_hash => bl.project.repo.commits('master').last.id,
-        :status => BuildList::BUILD_PUBLISH)
+      bl.update_attributes({:commit_hash => bl.project.repo.commits('master').last.id,
+        :status => BuildList::BUILD_PUBLISH}, :without_protection => true)
       bl.published
       should have(1).item
     end
