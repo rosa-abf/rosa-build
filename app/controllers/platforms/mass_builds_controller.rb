@@ -12,7 +12,8 @@ class Platforms::MassBuildsController < Platforms::BaseController
   def create
     mass_build = @platform.mass_builds.new(:arches => params[:arches],
       :auto_publish => params[:auto_publish] || false,
-      :projects_list => params[:projects_list])
+      :projects_list => params[:projects_list],
+      :new_core => params[:new_core])
     mass_build.user = current_user
     authorize! :create, mass_build
 
