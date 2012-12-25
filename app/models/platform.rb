@@ -63,7 +63,9 @@ class Platform < ActiveRecord::Base
     pair = blank_pair if pair.blank?
     urpmi_commands = ActiveSupport::OrderedHash.new
 
-    Platform.main.opened.where(:distrib_type => APP_CONFIG['distr_types'].first).each do |pl|
+    # TODO: rename method or create separate methods for mdv and rhel
+    # Platform.main.opened.where(:distrib_type => APP_CONFIG['distr_types'].first).each do |pl|
+    Platform.main.opened.each do |pl|
       urpmi_commands[pl.name] = {}
       local_pair = pl.id != self.id ? blank_pair : pair
       head = hidden? ? "http://#{local_pair[:login]}@#{local_pair[:pass]}:#{host}/private/" : "http://#{host}/downloads/"

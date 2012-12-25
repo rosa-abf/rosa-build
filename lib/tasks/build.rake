@@ -13,7 +13,7 @@ namespace :build do
     open(source).readlines.each do |name|
       name.chomp!; name.strip! #; name.downcase!
       if p = Project.joins(:repositories).where('repositories.id IN (?)', platform.repositories).find_by_name(name)
-        p.build_for(platform, owner, arch)
+        # Old code p.build_for(platform, owner, arch)
         say "== Build #{p.name} =="
       else
         say "== Not found #{name} =="
