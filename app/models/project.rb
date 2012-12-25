@@ -137,6 +137,8 @@ class Project < ActiveRecord::Base
     main_rep_id = platform.repositories.find_by_name('main').try(:id)
     build_reps_ids = [main_rep_id, repository_id].compact.uniq
 
+    project_version = repo.commits("#{platform.name}").try(:first).try(:id) ? 
+      "latest_#{platform.name}" : "latest_master"
     build_list = build_lists.build do |bl|
       bl.save_to_platform = platform
       bl.build_for_platform = platform

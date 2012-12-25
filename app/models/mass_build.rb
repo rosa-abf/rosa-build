@@ -47,7 +47,7 @@ class MassBuild < ActiveRecord::Base
         list = (missed_projects_list || '') << "#{name}\n"
         update_column :missed_projects_list, list
       end
-      sleep 1
+      sleep 1 unless new_core
     end
   end
   later :build_all, :queue => :clone_build
