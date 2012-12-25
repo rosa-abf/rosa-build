@@ -144,7 +144,7 @@ class Project < ActiveRecord::Base
       bl.build_for_platform = platform
       bl.update_type = 'newpackage'
       bl.arch = arch
-      bl.project_version = "latest_#{platform.name}"
+      bl.project_version = project_version
       bl.user = user
       bl.auto_publish = auto_publish
       bl.include_repos = build_reps_ids
