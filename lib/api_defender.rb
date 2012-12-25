@@ -58,11 +58,7 @@ class ApiDefender < Rack::Throttle::Hourly
     return @authorized unless @authorized.nil?
     auth = Rack::Auth::Basic::Request.new(request.env)
     if auth.provided? and auth.basic?
-      u,pass = auth.credentials
-      @authorized = (@user = (User.where(:authentication_token => u).first ||
-                     User.find_for_database_authentication(:login => u)) and
-                    !@user.access_locked? and
-                    (@user.authentication_token == u or @user.valid_password?(pass)))
+      @authorized = (@user = User.auth_by_token_or_login_pass(*auth.credentials))
     end
     @user = nil unless @authorized
     @authorized
