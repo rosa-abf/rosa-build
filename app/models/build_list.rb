@@ -276,6 +276,7 @@ class BuildList < ActiveRecord::Base
       platform_path << '/'
       platform_path << build_for_platform.name
       Dir.mkdir(platform_path) unless File.exists?(platform_path)
+      type = build_for_platform.distrib_type
     end
 
     Resque.push(
