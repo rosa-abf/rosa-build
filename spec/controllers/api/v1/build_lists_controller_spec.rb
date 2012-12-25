@@ -98,7 +98,8 @@ describe Api::V1::BuildListsController do
         @build_list.save_to_platform.relations.create(:role => 'admin', :actor => @owner_user) # Why it's really need it??
 
         # Create and show params:
-        @create_params = {:build_list => @build_list.attributes.symbolize_keys.except(:bs_id)}
+        @create_params = {:build_list => @build_list.attributes.symbolize_keys.except(:bs_id)
+                           .merge(:qwerty=>'!')} # wrong parameter
         @create_params = @create_params.merge(:arches => [@params[:arch_id]], :build_for_platforms => [@params[:build_for_platform_id]], :format => :json)
         any_instance_of(Project, :versions => ['v1.0', 'v2.0'])
 

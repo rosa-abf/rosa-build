@@ -15,7 +15,6 @@ class Api::V1::BuildListsController < Api::V1::BaseController
 
   def create
     bl_params = params[:build_list] || {}
-    bl_params.select! {|k,v| %w(include_repos auto_publish build_for_platform_id commit_hash arch_id project_id save_to_repository_id update_type).include? k}
     project = Project.where(:id => bl_params[:project_id]).first
     save_to_repository = Repository.where(:id => bl_params[:save_to_repository_id]).first
 
