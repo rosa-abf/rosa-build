@@ -137,7 +137,7 @@ class Project < ActiveRecord::Base
     main_rep_id = platform.repositories.find_by_name('main').try(:id)
     build_reps_ids = [main_rep_id, repository_id].compact.uniq
 
-    build_lists.create do |bl|
+    build_list = build_lists.build do |bl|
       bl.save_to_platform = platform
       bl.build_for_platform = platform
       bl.update_type = 'newpackage'
@@ -151,6 +151,7 @@ class Project < ActiveRecord::Base
       bl.save_to_repository_id = repository_id
       bl.new_core = new_core
     end
+    build_list.save
   end
 
   def fork(new_owner)
