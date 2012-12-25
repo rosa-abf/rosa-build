@@ -50,7 +50,7 @@ class MassBuild < ActiveRecord::Base
       sleep 1
     end
   end
-  later :build_all, :loner => true, :queue => :clone_build
+  later :build_all, :queue => :clone_build
 
   def generate_failed_builds_list
     report = ""
