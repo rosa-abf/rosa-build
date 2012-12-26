@@ -140,14 +140,11 @@ describe BuildList do
     end
 
     it "doesn't get 2 notification by email when user associated to project and created task" do
-      save_to_platform = FactoryGirl.create(:platform_with_repos)
       project = FactoryGirl.create(:project_with_commit, :owner => user)
-      project.repositories << save_to_platform.repositories.first
-      bl = FactoryGirl.create(:build_list_core,
+      bl = create_build_list_with_project(:build_list_core, {
         :user => user,
-        :save_to_platform => save_to_platform,
         :auto_publish => true,
-        :project => project)
+      }, project)
       FactoryGirl.create(:build_list_package, :build_list => bl, :project => bl.project)
       bl.update_attributes({:commit_hash => bl.project.repo.commits('master').last.id,
         :status => BuildList::BUILD_PUBLISH}, :without_protection => true)
