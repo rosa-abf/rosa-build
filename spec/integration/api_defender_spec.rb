@@ -27,9 +27,6 @@ describe ApiDefender do
   end
 
   before(:each) do
-    keys = @redis.keys.select {|k| k =~ /\Athrottle:/}
-    @redis.del(keys) if keys.present?
-
     @user = FactoryGirl.create :user, :password => @password
     @system_user = FactoryGirl.create :user, :uname => 'rosa_system'
   end
