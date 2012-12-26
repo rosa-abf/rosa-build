@@ -3,6 +3,18 @@ require 'spec_helper'
 
 describe BuildList do
 
+  context 'validates that repository contains project' do
+    it 'when repository contains project' do
+      bl = FactoryGirl.build(:build_list)
+      bl.valid?.should be_true
+    end
+    it 'when repository does not contain project' do
+      bl = FactoryGirl.build(:build_list)
+      bl.project.repositories = []
+      bl.valid?.should be_false
+    end
+  end
+
   context "#notify_users" do
     before { stub_symlink_methods }
     let!(:user) { FactoryGirl.create(:user) }
@@ -128,10 +140,14 @@ describe BuildList do
     end
 
     it "doesn't get 2 notification by email when user associated to project and created task" do
+      save_to_platform = FactoryGirl.create(:platform_with_repos)
+      project = FactoryGirl.create(:project_with_commit, :owner => user)
+      project.repositories << save_to_platform.repositories.first
       bl = FactoryGirl.create(:build_list_core,
         :user => user,
+        :save_to_platform => save_to_platform,
         :auto_publish => true,
-        :project => FactoryGirl.create(:project_with_commit, :owner => user))
+        :project => project)
       FactoryGirl.create(:build_list_package, :build_list => bl, :project => bl.project)
       bl.update_attributes({:commit_hash => bl.project.repo.commits('master').last.id,
         :status => BuildList::BUILD_PUBLISH}, :without_protection => true)
