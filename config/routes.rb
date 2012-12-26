@@ -16,9 +16,9 @@ Rosa::Application.routes.draw do
       resources :search, :only => [:index]
       resources :build_lists, :only => [:index, :create, :show] do
         member {
-          get :publish
-          get :reject_publish
-          get :cancel
+          put :publish
+          put :reject_publish
+          put :cancel
         }
       end
       resources :arches, :only => [:index]
