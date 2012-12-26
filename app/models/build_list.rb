@@ -299,7 +299,10 @@ class BuildList < ActiveRecord::Base
   def add_to_queue
     if new_core?
       # TODO: Investigate: why 2 tasks will be created without checking @state
-      add_job_to_abf_worker_queue unless @status
+      unless @status
+        add_job_to_abf_worker_queue
+        update_column(:bs_id, id)
+      end
       @status ||= BUILD_PENDING
     else
       # XML-RPC params:

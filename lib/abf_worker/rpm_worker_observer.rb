@@ -18,8 +18,6 @@ module AbfWorker
         bl.build_error
         item.update_attributes({:status => BuildServer::BUILD_ERROR})
       when STARTED
-        bl.bs_id = bl.id
-        bl.save!
         bl.start_build
       when CANCELED
         bl.build_canceled
