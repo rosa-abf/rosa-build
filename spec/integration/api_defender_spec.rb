@@ -17,6 +17,11 @@ describe ApiDefender do
     get "/api/v1/users/#{@user.id}.json", {}, auth
   end
 
+  def get_request2 auth_user = nil, by_token = false, by_email = false
+    auth_user = FactoryGirl.create(:user) if !auth_user && APP_CONFIG['anonymous_access'] == false
+    get_request auth_user, by_token, by_email
+  end
+
   before do
     stub_symlink_methods && stub_redis
     @redis = Redis.new
@@ -31,26 +36,33 @@ describe ApiDefender do
     @system_user = FactoryGirl.create :user, :uname => 'rosa_system'
   end
 
-  context 'for anonymous user' do
-    it "should return the total limit" do
-      get_request
-      response.headers['X-RateLimit-Limit'].should == @rate_limit.to_s
-    end
+  if APP_CONFIG['anonymous_access'] == true
+    context 'for anonymous user' do
+      it "should return the total limit" do
+        get_request
+        response.headers['X-RateLimit-Limit'].should == @rate_limit.to_s
+      end
 
-    it "should return the correct limit usage for anonymous user" do
-      get_request
-      response.headers['X-RateLimit-Remaining'].should == (@rate_limit-1).to_s
-    end
+      it "should return the correct limit usage for anonymous user" do
+        get_request
+        response.headers['X-RateLimit-Remaining'].should == (@rate_limit-1).to_s
+      end
 
-    it "should return the correct limit usage for anonymous user after authenticated access" do
-      get_request @user
-      get_request
-      response.headers['X-RateLimit-Remaining'].should == (@rate_limit-2).to_s
-    end
+      it "should return the correct limit usage for anonymous user after authenticated access" do
+        get_request @user
+        get_request
+        response.headers['X-RateLimit-Remaining'].should == (@rate_limit-2).to_s
+      end
 
-    it "should forbidden anonymous user after exceeding limit rate" do
-      (@rate_limit+1).times {get_request}
-      response.status.should == 403
+      it "should forbidden anonymous user after exceeding limit rate" do
+        (@rate_limit+1).times {get_request}
+        response.status.should == 403
+      end
+    end
+  else
+    it "should forbidden anonymous access" do
+      get_request
+      response.status.should == 401
     end
   end
 
@@ -61,25 +73,25 @@ describe ApiDefender do
     end
 
     it "should allow auth by uname and password" do
-      (@rate_limit+1).times {get_request}
+      (@rate_limit+1).times {get_request2}
       get_request @user
       response.headers['X-RateLimit-Remaining'].should == (@rate_limit-1).to_s
     end
 
     it "should allow auth by email and password" do
-      (@rate_limit+1).times {get_request}
+      (@rate_limit+1).times {get_request2}
       get_request @user, false, true
       response.headers['X-RateLimit-Remaining'].should == (@rate_limit-1).to_s
     end
 
     it "should allow auth by token" do
-      (@rate_limit+1).times {get_request}
+      (@rate_limit+1).times {get_request2}
       get_request @user, true
       response.headers['X-RateLimit-Remaining'].should == (@rate_limit-1).to_s
     end
 
-    it "should return the correct limit usage for auth user after anonymous access" do
-      get_request
+    it "should return the correct limit usage for auth user after other user" do
+      get_request2
       get_request @user
       response.headers['X-RateLimit-Remaining'].should == (@rate_limit-1).to_s
     end
@@ -89,8 +101,8 @@ describe ApiDefender do
       response.status.should == 403
     end
 
-    it "should not forbidden user after exceeding limit rate of the anonymous" do
-      (@rate_limit+1).times {get_request}
+    it "should not forbidden user after exceeding limit rate of the other user" do
+      (@rate_limit+1).times {get_request2}
       get_request @user
       response.status.should == 200
     end
