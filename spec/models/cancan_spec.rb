@@ -168,7 +168,7 @@ describe CanCan do
 
         [:new, :create].each do |action|
           it "should be able to #{action} build_list" do
-            @build_list = FactoryGirl.create(:build_list, :project => @project)
+            @build_list = FactoryGirl.create(:build_list_with_attaching_project, :project => @project)
             @ability.should be_able_to(action, @build_list)
           end
         end
@@ -187,7 +187,7 @@ describe CanCan do
 
         [:new, :create].each do |action|
           it "should be able to #{action} build_list" do
-            @build_list = FactoryGirl.create(:build_list, :project => @project)
+            @build_list = FactoryGirl.create(:build_list_with_attaching_project, :project => @project)
             @ability.should be_able_to(action, @build_list)
           end
         end
@@ -217,7 +217,7 @@ describe CanCan do
 
         [:new, :create].each do |action|
           it "should be able to #{action} build_list" do
-            @build_list = FactoryGirl.create(:build_list, :project => @project)
+            @build_list = FactoryGirl.create(:build_list_with_attaching_project, :project => @project)
             @ability.should be_able_to(action, @build_list)
           end
         end

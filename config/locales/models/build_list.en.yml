@@ -148,6 +148,7 @@ en:
       wrong_platform: Only the primary platform can be selected for the main repository!
       wrong_build_for_platform: Type of platform in "build_for_platform" should be "main"
       wrong_repository: Repository to save package to must belongs to platform.
+      wrong_project: Repository does not contain project.
       cannot_write: You can't build project to this repository.
       can_not_published: Build can only be published with status "Build complete"
       frozen_platform: In case of a repository for package storage with frozen platform allowed only bugfix and security updates

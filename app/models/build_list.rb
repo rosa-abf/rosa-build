@@ -39,6 +39,10 @@ class BuildList < ActiveRecord::Base
     }
   }
 
+  validate lambda {
+    errors.add(:save_to_repository, I18n.t('flash.build_list.wrong_project')) unless save_to_repository.projects.exists?(project_id)
+  }
+
   attr_accessible :include_repos, :auto_publish, :build_for_platform_id, :commit_hash,
                   :arch_id, :project_id, :save_to_repository_id, :update_type,
                   :save_to_platform_id, :new_core, :project_version
