@@ -397,7 +397,7 @@ describe Api::V1::BuildListsController do
       @build_list2.project.update_column(:visibility, 'hidden')
 
       project = FactoryGirl.create(:project_with_commit, :visibility => 'hidden', :owner => @user)
-      @build_list3 = create_build_list_with_project(:build_list_core, nil, project)
+      @build_list3 = FactoryGirl.create(:build_list_core_with_attaching_project, :project => project)
 
       @build_list4 = FactoryGirl.create(:build_list_core)
       @build_list4.project.update_column(:visibility, 'hidden')
