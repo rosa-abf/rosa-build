@@ -40,8 +40,8 @@ class ApiDefender < Rack::Throttle::Hourly
     count = cache.incr(key)
     cache.expire(key, 1.day) if count == 1
 
-    if authorized? request
-      count = cache.incr(choice_key(request, :only_user => true))
+    if @user
+      count = cache.incr(choice_key(request))
       cache.expire(key, 1.day) if count == 1
     end
     count
@@ -55,18 +55,16 @@ class ApiDefender < Rack::Throttle::Hourly
   end
 
   def authorized?(request)
-    return @authorized unless @authorized.nil?
+    return @authorized if @authorized
     auth = Rack::Auth::Basic::Request.new(request.env)
     if auth.provided? and auth.basic?
-      @authorized = (@user = User.auth_by_token_or_login_pass(*auth.credentials))
+      @user = User.auth_by_token_or_login_pass(*auth.credentials)
     end
-    @user = nil unless @authorized
-    @authorized
+    @authorized = true # cache
   end
 
-  def choice_key request, opts = {}
-    raise 'user not authorized for key' if opts[:only_user] && !authorized?(request) # Debug
-    return cache_key(request) if opts[:only_ip] || !authorized?(request)
+  def choice_key request
+    return cache_key(request) unless @user
     [@options[:key_prefix], @user.uname, Time.now.strftime('%Y-%m-%dT%H')].join(':')
   end
 
