@@ -58,6 +58,11 @@ Resque.inline = true
 %x(rm -Rf #{APP_CONFIG['git_path']})
 %x(mkdir -p #{APP_CONFIG['git_path']})
 
+def stub_redis
+  redis_instance = MockRedis.new
+  stub(Redis).new { redis_instance }
+end
+
 def fill_project project
   %x(mkdir -p #{project.path} && cp -Rf #{Rails.root}/spec/tests.git/* #{project.path}) # maybe FIXME ?
 end

@@ -87,4 +87,5 @@ group :test do
   gem 'factory_girl_rails', '~> 4.0.0'
   gem 'rr',                 '~> 1.0.4'
   gem 'shoulda'
+  gem 'mock_redis',         '0.6.2'
 end

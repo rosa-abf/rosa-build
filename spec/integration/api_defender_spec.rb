@@ -1,7 +1,6 @@
 require 'spec_helper'
 
 describe ApiDefender do
-
   def get_basic_auth user = @user, by_token = false
     u,pass = if by_token
                [user.authenticate_token, '']
@@ -12,9 +11,11 @@ describe ApiDefender do
   end
 
   before do
-    stub_symlink_methods
-    @redis = Redis.new(:thread_safe => true)
+    stub_symlink_methods && stub_redis
+    @redis = Redis.new
     @password = '123456'
+
+    ApiDefender.class_eval { def cache; Redis.new; end }
   end
 
   before(:each) do
