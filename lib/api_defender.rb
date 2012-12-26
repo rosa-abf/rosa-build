@@ -30,7 +30,7 @@ class ApiDefender < Rack::Throttle::Hourly
       heders['X-RateLimit-Limit']     = max_per_window.to_s
       heders['X-RateLimit-Remaining'] = ([0, max_per_window - (cache_get(choice_key(request)).to_i rescue 1)].max).to_s
     end
-    @authorized = @user = nil
+    @is_authorized = @user = nil
     [status, heders, body]
   end
 
@@ -55,10 +55,10 @@ class ApiDefender < Rack::Throttle::Hourly
   end
 
   def authorized?(request)
-    return @authorized if @authorized
+    return @is_authorized if @is_authorized
     auth = Rack::Auth::Basic::Request.new(request.env)
     @user = User.auth_by_token_or_login_pass(*auth.credentials) if auth.provided? and auth.basic?
-    @authorized = true # cache
+    @is_authorized = true # cache
   end
 
   def choice_key request
