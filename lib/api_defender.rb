@@ -57,9 +57,7 @@ class ApiDefender < Rack::Throttle::Hourly
   def authorized?(request)
     return @authorized if @authorized
     auth = Rack::Auth::Basic::Request.new(request.env)
-    if auth.provided? and auth.basic?
-      @user = User.auth_by_token_or_login_pass(*auth.credentials)
-    end
+    @user = User.auth_by_token_or_login_pass(*auth.credentials) if auth.provided? and auth.basic?
     @authorized = true # cache
   end
 

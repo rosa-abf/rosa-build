@@ -1,17 +1,19 @@
 require 'spec_helper'
 
 describe ApiDefender do
-  def get_basic_auth user = @user, by_token = false
+  def get_basic_auth user = @user, by_token = false, by_email = false
     u,pass = if by_token
                [user.authentication_token, '']
+             elsif by_email
+               [user.email, @password]
              else
-               [user.uname, '123456']
+               [user.uname, @password]
              end
     ActionController::HttpAuthentication::Basic.encode_credentials u, pass
   end
 
-  def get_request auth_user = nil, by_token = false
-    auth = auth_user ? {'HTTP_AUTHORIZATION' => get_basic_auth(auth_user, by_token)} : {}
+  def get_request auth_user = nil, by_token = false, by_email = false
+    auth = auth_user ? {'HTTP_AUTHORIZATION' => get_basic_auth(auth_user, by_token, by_email)} : {}
     get "/api/v1/users/#{@user.id}.json", {}, auth
   end
 
@@ -58,6 +60,24 @@ describe ApiDefender do
   context 'for user' do
     it "should return the correct limit usage for auth user" do
       get_request @user
+      response.headers['X-RateLimit-Remaining'].should == (@rate_limit-1).to_s
+    end
+
+    it "should allow auth by uname and password" do
+      (@rate_limit+1).times {get_request}
+      get_request @user
+      response.headers['X-RateLimit-Remaining'].should == (@rate_limit-1).to_s
+    end
+
+    it "should allow auth by email and password" do
+      (@rate_limit+1).times {get_request}
+      get_request @user, false, true
+      response.headers['X-RateLimit-Remaining'].should == (@rate_limit-1).to_s
+    end
+
+    it "should allow auth by token" do
+      (@rate_limit+1).times {get_request}
+      get_request @user, true
       response.headers['X-RateLimit-Remaining'].should == (@rate_limit-1).to_s
     end
 
