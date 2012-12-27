@@ -1,6 +1,7 @@
 # -*- encoding : utf-8 -*-
 class User < Avatar
   ROLES = ['', 'admin', 'banned', 'tester']
+  EXTENDED_ROLES = ROLES | ['system']
   LANGUAGES_FOR_SELECT = [['Russian', 'ru'], ['English', 'en']]
   LANGUAGES = LANGUAGES_FOR_SELECT.map(&:last)
 
@@ -31,7 +32,7 @@ class User < Avatar
 
   validates :uname, :presence => true, :uniqueness => {:case_sensitive => false}, :format => {:with => /\A[a-z0-9_]+\z/}, :reserved_name => true
   validate { errors.add(:uname, :taken) if Group.by_uname(uname).present? }
-  validates :role, :inclusion => {:in => ROLES}, :allow_blank => true
+  validates :role, :inclusion => {:in => EXTENDED_ROLES}, :allow_blank => true
   validates :language, :inclusion => {:in => LANGUAGES}, :allow_blank => true
 
   attr_accessible :email, :password, :password_confirmation, :current_password, :remember_me, :login, :name, :uname, :language,
@@ -39,7 +40,7 @@ class User < Avatar
   attr_readonly :uname
   attr_accessor :login
 
-  scope :opened, where('1=1')
+  scope :opened, where('users.role != \'system\'')
   scope :banned, where(:role => 'banned')
   scope :admin, where(:role => 'admin')
   scope :tester, where(:role => 'tester')
@@ -49,7 +50,7 @@ class User < Avatar
     where "#{table_name}.id IN (?)", item.members.map(&:id).uniq
   }
 
-  after_create lambda { self.create_notifier }
+  after_create lambda { self.create_notifier unless self.system? }
   before_create :ensure_authentication_token
 
   include Modules::Models::PersonalRepository
@@ -69,6 +70,10 @@ class User < Avatar
 
   def tester?
     role == 'tester'
+  end
+
+  def system?
+    role == 'system'
   end
 
   def access_locked?

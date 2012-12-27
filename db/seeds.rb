@@ -5,7 +5,7 @@ ARCHES.each do |arch|
 end
 
 user = User.new uname: 'rosa_system', email: 'rosa_system@rosalinux.ru', password: SecureRandom.base64
-user.confirmed_at = Time.now.utc; user.save
+user.confirmed_at, user.role = Time.now.utc, 'system'; user.save
 
 user = User.new uname: 'iso_worker_1', email: 'iso_worker_1@rosalinux.ru', password: SecureRandom.base64
-user.confirmed_at = Time.now.utc; user.save
+user.confirmed_at, user.role = Time.now.utc, 'system'; user.save

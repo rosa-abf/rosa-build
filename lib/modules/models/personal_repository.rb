@@ -5,7 +5,7 @@ module Modules
       extend ActiveSupport::Concern
 
       included do
-        after_create :create_personal_repository
+        after_create :create_personal_repository, :unless => :system?
       end
 
       def create_personal_repository

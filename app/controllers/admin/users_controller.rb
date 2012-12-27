@@ -51,7 +51,7 @@ class Admin::UsersController < Admin::BaseController
     sort_dir = params[:sSortDir_0]=="asc" ? 'asc' : 'desc'
     order = "#{colName[sort_col.to_i]} #{sort_dir}"
 
-    @users = @users.paginate(:page => (params[:iDisplayStart].to_i/params[:iDisplayLength].to_i).to_i + 1, :per_page => params[:iDisplayLength])
+    @users = @users.opened.paginate(:page => (params[:iDisplayStart].to_i/params[:iDisplayLength].to_i).to_i + 1, :per_page => params[:iDisplayLength])
     @total_users = @users.count
     if !params[:sSearch].blank? && search = "%#{params[:sSearch]}%"
       @users = @users.where('users.name ILIKE ? or users.uname ILIKE ? or users.email ILIKE ?', search, search, search)
