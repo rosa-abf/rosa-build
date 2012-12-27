@@ -275,12 +275,16 @@ class BuildList < ActiveRecord::Base
     type = build_for_platform.distrib_type
     archive = results.select{ |r| r['file_name'] =~ /.*\.tar\.gz$/}[0]
 
-    platform_path = "#{APP_CONFIG['root_path']}/platforms/#{save_to_platform.name}/repository"
+    platform_path = "#{save_to_platform.path}/repository"
     if save_to_platform.personal?
       platform_path << '/'
       platform_path << build_for_platform.name
       Dir.mkdir(platform_path) unless File.exists?(platform_path)
     end
+
+    packages = last_published.includes(:packages).limit(5).map{ |bl| bl.packages }.flatten
+    sources   = packages.map{ |p| p.fullname if p.package_type == 'source' }.compact
+    binaries  = packages.map{ |p| p.fullname if p.package_type == 'binary' }.compact
 
     Resque.push(
       "publish_build_list_container_#{type}_worker",
@@ -290,11 +294,16 @@ class BuildList < ActiveRecord::Base
         :arch => arch.name,
         :distrib_type => type,
         :container_sha1 => archive['sha1'],
+        :packages => { :sources => sources, :binaries => binaries },
         :platform => {
           :platform_path => platform_path,
           :released => save_to_platform.released
         },
-        :repository_name => save_to_repository.name,
+        :repository => {
+          :name => save_to_repository.name,
+          :id => save_to_repository.id
+        },
+        :type => :publish,
         :time_living => 2400 # 40 min
       }]
     )
