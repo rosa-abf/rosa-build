@@ -1,7 +1,6 @@
 -set_meta_tags :title => t('.title')
 
-%div.servertime
-  %input{:type => 'text', :id => 'servertime', :name => 'servertime', :value => "#{Time.now.utc.to_i}"}
+= hidden_field_tag :servertime, Time.now.utc.to_i
 %div.reloader
   = label_tag :autoreload do
     = check_box_tag :autoreload, true, true
