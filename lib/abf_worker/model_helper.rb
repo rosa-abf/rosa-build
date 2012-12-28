@@ -39,7 +39,7 @@ module AbfWorker
     end
 
     def worker_queue_class(queue_class = nil)
-      queue_class ||= abf_worker_base_class
+      queue_class ||= "AbfWorker::#{abf_worker_base_queue.classify}"
       queue_class << abf_worker_priority.capitalize
     end
 

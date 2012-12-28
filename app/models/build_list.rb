@@ -433,10 +433,6 @@ class BuildList < ActiveRecord::Base
     'rpm_worker'
   end
 
-  def abf_worker_base_class
-    'AbfWorker::RpmWorker'
-  end
-
   def abf_worker_args
     include_repos_hash = {}.tap do |h|
       include_repos.each do |r|

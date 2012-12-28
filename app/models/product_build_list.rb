@@ -137,10 +137,6 @@ class ProductBuildList < ActiveRecord::Base
     'iso_worker'
   end
 
-  def abf_worker_base_class
-    'AbfWorker::IsoWorker'
-  end
-
   def abf_worker_args
     file_name = "#{project.owner.uname}-#{project.name}-#{commit_hash}"
     opts = {:host => ActionMailer::Base.default_url_options[:host]}
