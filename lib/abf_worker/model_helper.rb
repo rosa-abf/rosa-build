@@ -5,12 +5,12 @@ module AbfWorker
     # - #build_canceled
 
     def abf_worker_log
-      Resque.redis.get("abfworker::#{worker_queue('-')}-#{id}") || I18n.t('layout.build_lists.log.not_available')
+      Resque.redis.get(service_queue) || I18n.t('layout.build_lists.log.not_available')
     end
 
     def add_job_to_abf_worker_queue
       Resque.push(
-        worker_queue,
+        worker_queue_with_priority,
         'class' => worker_queue_class,
         'args' => [abf_worker_args]
       )
@@ -18,7 +18,7 @@ module AbfWorker
 
     def cancel_job
       deleted = Resque::Job.destroy(
-        worker_queue,
+        worker_queue_with_priority,
         worker_queue_class,
         abf_worker_args
       )
@@ -30,34 +30,31 @@ module AbfWorker
       true
     end
 
+    protected
+
+    def worker_queue_with_priority(queue = nil)
+      queue ||= abf_worker_base_queue
+      queue << '_' << abf_worker_priority if abf_worker_priority.present?
+      queue
+    end
+
+    def worker_queue_class(queue_class = nil)
+      queue_class ||= abf_worker_base_class
+      queue_class << abf_worker_priority.capitalize
+    end
+
     private
 
     def send_stop_signal
       Resque.redis.setex(
-        live_inspector_queue,
+        "#{service_queue}::live-inspector",
         240,    # Data will be removed from Redis after 240 sec.
         'USR1'  # Immediately kill child but don't exit
       )
     end
 
-    def live_inspector_queue
-      q = 'abfworker::'
-      q << worker_queue('-')
-      q << '-'
-      q << id.to_s
-      q << '::live-inspector'
-      q
-    end
-
-    def worker_queue(delimiter = '_')
-      a = []
-      a << (is_a?(BuildList) ? 'rpm' : 'iso')
-      a << 'worker'
-      a.join(delimiter)
-    end
-
-    def worker_queue_class
-      is_a?(BuildList) ? 'AbfWorker::RpmWorker' : 'AbfWorker::IsoWorker'
+    def service_queue
+      "abfworker::#{abf_worker_base_queue.gsub(/\_/, '-')}-#{id}"
     end
 
   end
