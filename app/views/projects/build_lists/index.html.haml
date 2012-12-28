@@ -1,5 +1,6 @@
 -set_meta_tags :title => t('.title')
 
+= hidden_field_tag :servertime, Time.now.utc.to_i
 %div.reloader
   = label_tag :autoreload do
     = check_box_tag :autoreload, true, true
@@ -46,7 +47,7 @@
                     .replace("%d", formatNumber(minutes));
     }
     // TODO Very, very ugly method.
-    var now = (new Date).getTime();
+    var now = $('#servertime').val() * 1000;
     $("time.js-relative-date").each(function() {
       var time = parseIso8601($(this).attr('datetime')).getTime();
       $(this).text(strTimeBetween(time, now));
