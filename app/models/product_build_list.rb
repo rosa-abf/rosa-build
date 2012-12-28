@@ -130,7 +130,7 @@ class ProductBuildList < ActiveRecord::Base
   protected
 
   def abf_worker_priority
-    'default'
+    ''
   end
 
   def abf_worker_base_queue
