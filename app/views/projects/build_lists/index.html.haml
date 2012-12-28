@@ -47,7 +47,7 @@
                     .replace("%d", formatNumber(minutes));
     }
     // TODO Very, very ugly method.
-    var now = document.getElementById('servertime').value*1000;
+    var now = $('#servertime').val() * 1000;
     $("time.js-relative-date").each(function() {
       var time = parseIso8601($(this).attr('datetime')).getTime();
       $(this).text(strTimeBetween(time, now));
