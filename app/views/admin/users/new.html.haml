@@ -3,8 +3,16 @@
     %h2.title= title t("layout.users.new_header")
     .inner
       = form_for @user, :url => admin_users_path, :html => {:class => :form} do |f|
-        = render "users/base/form", :f => f
-
+        -if @user.system?
+          =hidden_field_tag :role, 'system'
+          .leftlist= f.label :uname, t("activerecord.attributes.user.uname")
+          .rightlist= f.text_field :uname
+          .leftlist
+            \ 
+          .rightlist= submit_tag t("layout.save"), :data => {:"disable-with" => t("layout.saving")}
+          .both
+        -else
+          = render "users/base/form", :f => f
 - content_for :sidebar do
   .bordered.nopadding
 = render 'submenu'

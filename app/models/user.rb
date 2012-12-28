@@ -41,10 +41,10 @@ class User < Avatar
   attr_accessor :login
 
   scope :opened, where('users.role != \'system\'')
-  scope :banned, where(:role => 'banned')
-  scope :admin, where(:role => 'admin')
-  scope :tester, where(:role => 'tester')
   scope :real, where(:role => ['', nil])
+  EXTENDED_ROLES.select {|type| type.present?}.each do |type|
+    scope type.to_sym, where(:role => type)
+  end
 
   scope :member_of_project, lambda {|item|
     where "#{table_name}.id IN (?)", item.members.map(&:id).uniq
