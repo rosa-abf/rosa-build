@@ -1,8 +1,7 @@
 -set_meta_tags :title => t('.title')
 
 %div.servertime
-  %input{:type => 'text', :id => 'servertime', :name => 'servertime'}
-    = Time.now.utc.to_i
+  %input{:type => 'text', :id => 'servertime', :name => 'servertime', :value => "#{Time.now.utc.to_i}"}
 %div.reloader
   = label_tag :autoreload do
     = check_box_tag :autoreload, true, true
@@ -49,8 +48,7 @@
                     .replace("%d", formatNumber(minutes));
     }
     // TODO Very, very ugly method.
-    var now = (new Date);
-    now = document.getElementById('servertime').value;
+    var now = document.getElementById('servertime').value*1000;
     $("time.js-relative-date").each(function() {
       var time = parseIso8601($(this).attr('datetime')).getTime();
       $(this).text(strTimeBetween(time, now));
