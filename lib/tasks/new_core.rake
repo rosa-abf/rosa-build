@@ -15,13 +15,13 @@ namespace :new_core do
     say "[#{Time.zone.now}] done"
   end
 
-  desc 'Publish mass-build 317'
-  task :publish_mass_build_317 => :environment do
+  desc 'Publish mass-build 73'
+  task :publish_mass_build_73 => :environment do
     say "[#{Time.zone.now}] Starting to publish mass-build 317..."
 
-    bl = BuildList.where(:mass_build_id => 317).first
+    bl = BuildList.where(:mass_build_id => 73).first
     repository_path = "#{bl.save_to_platform.path}/repository"
-    BuildList.where(:mass_build_id => 317).
+    BuildList.where(:mass_build_id => 73).
       where("status != #{BuildServer::BUILD_ERROR}").
       order(:id).
       find_in_batches(:batch_size => 1) do | bls |
