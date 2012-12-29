@@ -287,8 +287,8 @@ class BuildList < ActiveRecord::Base
     binaries  = packages.map{ |p| p.fullname if p.package_type == 'binary' }.compact
 
     Resque.push(
-      "publish_build_list_container_#{type}_worker",
-      'class' => "AbfWorker::PublishBuildListContainer#{type.capitalize}Worker",
+      worker_queue_with_priority("publish_#{type}_worker"),
+      'class' => worker_queue_class("AbfWorker::Publish#{type.capitalize}Worker"),
       'args' => [{
         :id => id,
         :arch => arch.name,
@@ -424,6 +424,14 @@ class BuildList < ActiveRecord::Base
   end
 
   protected
+
+  def abf_worker_priority
+    mass_build_id ? '' : 'default'
+  end
+
+  def abf_worker_base_queue
+    'rpm_worker'
+  end
 
   def abf_worker_args
     include_repos_hash = {}.tap do |h|
