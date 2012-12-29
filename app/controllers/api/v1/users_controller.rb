@@ -7,7 +7,7 @@ class Api::V1::UsersController < Api::V1::BaseController
   before_filter :set_current_user, :except => :show
 
   def show
-    @user = User.opened.find! params[:id] # dont show system users
+    @user = User.opened.find params[:id] # dont show system users
   end
 
   def show_current_user
