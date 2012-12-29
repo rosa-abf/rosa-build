@@ -273,7 +273,7 @@ class BuildList < ActiveRecord::Base
 
   def publish_container
     type = build_for_platform.distrib_type
-    archive = results.select{ |r| r['file_name'] =~ /.*\.tar\.gz$/}[0]
+    archive = results.find{ |r| r['file_name'] =~ /.*\.tar\.gz$/ }
 
     platform_path = "#{save_to_platform.path}/repository"
     if save_to_platform.personal?
