@@ -1,4 +1,4 @@
-%h3.fix= title t("layout.users.system_header")
+%h3.fix= title t("layout.users.system")
 
 - columns = [{:type => 'html'}, {:type => nil, :sortable => false, :searchable => false, :class => 'buttons'}]
 = raw datatable(columns, {:sort_by => "[0, 'asc']", :processing => t("layout.processing"), :search_label => t("layout.search.header"),

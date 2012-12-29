@@ -14,3 +14,6 @@
           %td.width18=radio_button_tag :myradio, 'system', true, {:id => 'users_filter', :class => 'niceRadio', :name => 'filter'}
           %td.width135=t("layout.users.system")
     .both
+  -if params[:action] != 'system'
+    .bordered
+      = link_to t("layout.users.system"), system_admin_users_path, :class => 'button'

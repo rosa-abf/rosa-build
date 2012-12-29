@@ -11,15 +11,19 @@ ru:
       show: Пользователь
       back_to_the_list: ⇐ К списку пользователей
       confirm_delete: Вы уверены, что хотите удалить этого пользователя?
+      confirm_reset_token: Вы уверены, что хотите сбросить токен этого пользователя?
       own_projects: Мои проекты
       part_projects: Участвую в проектах
       filter_header: Фильтр
+      system: Служебные учетки
+      reset_token: Сбросить токен
 
   flash:
     user:
       saved: Пользователь успешно сохранен
       save_error: Не удалось сохранить данные о пользователе
       destroyed: Учетная запись успешно удалена
+      reset_auth_token: Для учетной записи изменен токен
 
   activerecord:
     models:

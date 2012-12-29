@@ -100,7 +100,7 @@ Rosa::Application.routes.draw do
         get :system
         get :system_list
       end
-      get :reset_auth_token, :on => :member
+      put :reset_auth_token, :on => :member
     end
     resources :register_requests, :only => [:index] do
       put :update, :on => :collection

@@ -23,7 +23,7 @@ class Admin::UsersController < Admin::BaseController
     @user.confirmed_at = Time.now.utc
     if (@user.save rescue false)
       flash[:notice] = t('flash.user.saved')
-      flash[:warning] = "Token=#{@user.reload.authentication_token}"
+      flash[:warning] = @user.authentication_token
       redirect_to(@user.system? ? system_admin_users_path : admin_users_path)
     else
       flash[:error] = t('flash.user.save_error')
@@ -53,7 +53,7 @@ class Admin::UsersController < Admin::BaseController
   def destroy
     @user.destroy
     flash[:notice] = t("flash.user.destroyed")
-    redirect_to admin_users_path
+    redirect_to(@user.system? ? system_admin_users_path : admin_users_path)
   end
 
   def list
@@ -93,7 +93,8 @@ class Admin::UsersController < Admin::BaseController
   def reset_auth_token
     @user.reset_authentication_token!
     flash[:notice] = t("flash.user.reset_auth_token")
-    redirect_to 'system_index'
+    flash[:warning] = @user.authentication_token
+    redirect_to system_admin_users_path
   end
 
   protected
