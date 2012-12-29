@@ -22,7 +22,12 @@ namespace :new_core do
     bl = BuildList.where(:mass_build_id => 73).first
     platform_repository_folder = "#{bl.save_to_platform.path}/repository"
     BuildList.where(:mass_build_id => 73).
-      where("status != #{BuildServer::BUILD_ERROR}").
+      where(:status => [
+        BuildServer::SUCCESS,
+        BuildList::BUILD_PUBLISHED,
+        BuildList::BUILD_PUBLISH,
+        BuildList::FAILED_PUBLISH
+      ]).
       order(:id).
       find_in_batches(:batch_size => 1) do | bls |
 
