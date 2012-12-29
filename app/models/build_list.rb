@@ -287,8 +287,8 @@ class BuildList < ActiveRecord::Base
     binaries  = packages.map{ |p| p.fullname if p.package_type == 'binary' }.compact
 
     Resque.push(
-      worker_queue_with_priority("publish_build_list_container_#{type}_worker"),
-      'class' => worker_queue_class("AbfWorker::PublishBuildListContainer#{type.capitalize}Worker"),
+      worker_queue_with_priority("publish_#{type}_worker"),
+      'class' => worker_queue_class("AbfWorker::Publish#{type.capitalize}Worker"),
       'args' => [{
         :id => id,
         :arch => arch.name,
