@@ -19,6 +19,8 @@ namespace :new_core do
   task :publish_mass_build_317 => :environment do
     say "[#{Time.zone.now}] Starting to publish mass-build 317..."
 
+    bl = BuildList.where(:mass_build_id => 317).first
+    platform_path = "#{bl.save_to_platform.path}/repository"
     BuildList.where(:mass_build_id => 317).
       where("status != #{BuildServer::BUILD_ERROR}").
       order(:id).
@@ -29,7 +31,7 @@ namespace :new_core do
 
       sha1 = bl.results.find{ |r| r['file_name'] =~ /.*\.tar\.gz$/ }['sha1']
 
-      root_folder = "#{bl.save_to_platform.path}/repository/#{bl.arch.name}/main"
+      root_folder = "#{platform_path}/#{bl.arch.name}/main"
       system "cd #{root_folder} && curl -L -O http://file-store.rosalinux.ru/api/v1/file_stores/#{sha1}"
       system "cd #{root_folder} && tar -xzf #{sha1}"
       system "rm -f #{root_folder}/#{sha1}"
