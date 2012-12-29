@@ -20,7 +20,7 @@ en:
 
   flash:
     user:
-      saved: User saved successtully
+      saved: User saved successfully
       save_error: Unable to save user data
       destroyed: User account deleted
       reset_auth_token: User token reseted successfully
