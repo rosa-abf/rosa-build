@@ -24,8 +24,6 @@ namespace :new_core do
     BuildList.where(:mass_build_id => 73).
       where(:status => [
         BuildServer::SUCCESS,
-        BuildList::BUILD_PUBLISHED,
-        BuildList::BUILD_PUBLISH,
         BuildList::FAILED_PUBLISH
       ]).
       order(:id).
