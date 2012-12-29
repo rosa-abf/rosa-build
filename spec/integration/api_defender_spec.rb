@@ -33,7 +33,7 @@ describe ApiDefender do
 
   before(:each) do
     @user = FactoryGirl.create :user, :password => @password
-    @system_user = FactoryGirl.create :user, :uname => 'rosa_system'
+    @system_user = FactoryGirl.create :user, :role => 'system'
   end
 
   if APP_CONFIG['anonymous_access'] == true

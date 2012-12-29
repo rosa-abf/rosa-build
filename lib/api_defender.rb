@@ -67,6 +67,6 @@ class ApiDefender < Rack::Throttle::Hourly
   end
 
   def system_user? request
-    authorized?(request) && @user.system?
+    authorized?(request) && @user.try(:system?)
   end
 end

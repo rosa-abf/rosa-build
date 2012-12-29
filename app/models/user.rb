@@ -40,7 +40,7 @@ class User < Avatar
   attr_readonly :uname
   attr_accessor :login
 
-  scope :opened, where('users.role != \'system\'')
+  scope :opened, where('users.role != \'system\' OR users.role IS NULL')
   scope :real, where(:role => ['', nil])
   EXTENDED_ROLES.select {|type| type.present?}.each do |type|
     scope type.to_sym, where(:role => type)
