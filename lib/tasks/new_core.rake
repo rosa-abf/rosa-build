@@ -27,8 +27,7 @@ namespace :new_core do
       bl = bls.first
       puts "[#{Time.zone.now}] - where build_lists.id #{bl.id}"
 
-      archive = bl.results.find{ |r| r['file_name'] =~ /.*\.tar\.gz$/ }
-      sha1 = archive['sha1']
+      sha1 = bl.results.find{ |r| r['file_name'] =~ /.*\.tar\.gz$/ }['sha1']
 
       root_folder = "#{bl.save_to_platform.path}/repository/#{bl.arch.name}/main"
       system "cd #{root_folder} && curl -L -O http://file-store.rosalinux.ru/api/v1/file_stores/#{sha1}"
