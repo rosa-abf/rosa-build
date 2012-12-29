@@ -31,19 +31,18 @@ namespace :new_core do
 
       sha1 = bl.results.find{ |r| r['file_name'] =~ /.*\.tar\.gz$/ }['sha1']
 
-      root_folder = "#{repository_path}/#{bl.arch.name}/main"
-      system "cd #{root_folder} && curl -L -O http://file-store.rosalinux.ru/api/v1/file_stores/#{sha1}"
-      system "cd #{root_folder} && tar -xzf #{sha1}"
-      system "rm -f #{root_folder}/#{sha1}"
+      system "cd #{repository_path} && curl -L -O http://file-store.rosalinux.ru/api/v1/file_stores/#{sha1}"
+      system "cd #{repository_path} && tar -xzf #{sha1}"
+      system "rm -f #{repository_path}/#{sha1}"
 
-      archive_folder = "#{root_folder}/archives"
+      archive_folder = "#{repository_path}/archives"
       system "sudo chown root:root  #{archive_folder}/SRC_RPM/*"
       system "sudo chmod 0666       #{archive_folder}/SRC_RPM/*"
       system "sudo chown root:root  #{archive_folder}/RPM/*"
       system "sudo chmod 0666       #{archive_folder}/RPM/*"
 
       system "sudo mv #{archive_folder}/SRC_RPM/* #{repository_path}/SRPMS/main/release/"
-      system "sudo mv #{archive_folder}/RPM/*     #{root_folder}/release/"
+      system "sudo mv #{archive_folder}/RPM/*     #{repository_path}/#{bl.arch.name}/main/release/"
 
       system "sudo rm -rf #{archive_folder}"
       bl.update_column(:status, BuildList::BUILD_PUBLISH)
