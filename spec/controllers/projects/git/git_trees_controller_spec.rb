@@ -15,6 +15,7 @@ describe Projects::Git::TreesController do
 
   context 'for guest' do
     it 'should be able to perform archive action with anonymous acccess', :anonymous_access => true do
+      stub(controller).render
       fill_project @project
       get :archive, @params.merge(:format => 'tar.gz')
       response.should be_success
@@ -49,6 +50,7 @@ describe Projects::Git::TreesController do
     end
 
     it 'should be able to perform archive action' do
+      stub(controller).render
       fill_project @project
       @user = FactoryGirl.create(:user)
       set_session_for(@user)
