@@ -76,7 +76,7 @@ class Admin::UsersController < Admin::BaseController
     @users = @users.send(@filter) if ['real', 'admin', 'banned', 'tester'].include? @filter
     @users = @users.order(order)
 
-    render :partial => "#{action_name == 'system_list' ? 'system_' : ''}users_ajax", :layout => false
+    render :partial => 'users_ajax', :layout => false
   end
 
   def system_list
