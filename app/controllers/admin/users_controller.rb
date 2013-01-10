@@ -57,12 +57,16 @@ class Admin::UsersController < Admin::BaseController
   end
 
   def list
-    colName = ['users.name', 'users.uname', 'users.email']
+    if action_name == 'list'
+      colName, @users = ['users.name', 'users.uname', 'users.email'], @users.opened
+    else # system_list
+      colName, @users = ['users.uname'], @users.system
+    end
     sort_col = params[:iSortCol_0] || 0
     sort_dir = params[:sSortDir_0]=="asc" ? 'asc' : 'desc'
     order = "#{colName[sort_col.to_i]} #{sort_dir}"
 
-    @users = @users.opened.paginate(:page => (params[:iDisplayStart].to_i/params[:iDisplayLength].to_i).to_i + 1, :per_page => params[:iDisplayLength])
+    @users = @users.paginate(:page => (params[:iDisplayStart].to_i/params[:iDisplayLength].to_i).to_i + 1, :per_page => params[:iDisplayLength])
     @total_users = @users.count
     if !params[:sSearch].blank? && search = "%#{params[:sSearch]}%"
       @users = @users.where('users.name ILIKE ? or users.uname ILIKE ? or users.email ILIKE ?', search, search, search)
@@ -71,23 +75,11 @@ class Admin::UsersController < Admin::BaseController
     @users = @users.send(@filter) if ['real', 'admin', 'banned', 'tester'].include? @filter
     @users = @users.order(order)
 
-    render :partial => 'users_ajax', :layout => false
+    render :partial => "#{action_name == 'system_list' ? 'system_' : ''}users_ajax", :layout => false
   end
 
   def system_list
-    colName = ['users.uname']
-    sort_col = 0
-    sort_dir = params[:sSortDir_0]=="asc" ? 'asc' : 'desc'
-    order = "#{colName[sort_col.to_i]} #{sort_dir}"
-
-    @users = @users.system.paginate(:page => (params[:iDisplayStart].to_i/params[:iDisplayLength].to_i).to_i + 1, :per_page => params[:iDisplayLength])
-    @total_users = @users.count
-    if !params[:sSearch].blank? && search = "%#{params[:sSearch]}%"
-      @users = @users.where('users.uname ILIKE ?', search)
-    end
-    @users = @users.order(order)
-
-    render :partial => 'system_users_ajax', :layout => false
+    list
   end
 
   def reset_auth_token
