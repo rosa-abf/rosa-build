@@ -72,7 +72,7 @@ namespace :new_core do
       bl = bls.first
       puts "[#{Time.zone.now}] - where build_lists.id #{bl.id}"
 
-      sha1 = bl.results.find{ |r| r['file_name'] =~ /.*\.tar\.gz$/ }['sha1']
+      sha1 = (bl.results.find{ |r| r['file_name'] =~ /.*\.tar\.gz$/ } || {})['sha1']
       next unless sha1
       dir = Dir.mktmpdir('update-packages-', "#{APP_CONFIG['root_path']}")
       begin
@@ -99,7 +99,7 @@ namespace :new_core do
       next unless package
       
       package.sha1 = Digest::SHA1.file(rpm_file).hexdigest
-      if %x[ curl #{APP_CONFIG['file_store_url']}/api/v1/file_stores.json?hash=#{sha1} ] == '[]'
+      if %x[ curl #{APP_CONFIG['file_store_url']}/api/v1/file_stores.json?hash=#{package.sha1} ] == '[]'
         system "curl --user #{token}: -POST -F 'file_store[file]=@#{rpm_file}' #{APP_CONFIG['file_store_url']}/api/v1/upload"
       end
       package.save!
