@@ -11,6 +11,7 @@ class Admin::UsersController < Admin::BaseController
   def system
     @users = @users.system
     @filter = 'system'
+    render :index
   end
 
   def new
