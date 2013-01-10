@@ -282,7 +282,7 @@ class BuildList < ActiveRecord::Base
       Dir.mkdir(platform_path) unless File.exists?(platform_path)
     end
 
-    packages = last_published.includes(:packages).limit(5).map{ |bl| bl.packages }.flatten
+    packages  = last_published.includes(:packages).limit(5).map{ |bl| bl.packages }.flatten
     sources   = packages.map{ |p| p.fullname if p.package_type == 'source' }.compact
     binaries  = packages.map{ |p| p.fullname if p.package_type == 'binary' }.compact
 
@@ -293,8 +293,11 @@ class BuildList < ActiveRecord::Base
         :id => id,
         :arch => arch.name,
         :distrib_type => type,
-        :container_sha1 => archive['sha1'],
-        :packages => { :sources => sources, :binaries => binaries },
+        :packages => {
+          :sources  => packages.by_package_type('source').pluck(:sha1),
+          :binaries => packages.by_package_type('binary').pluck(:sha1)
+        },
+        :old_packages => { :sources => sources, :binaries => binaries },
         :platform => {
           :platform_path => platform_path,
           :released => save_to_platform.released

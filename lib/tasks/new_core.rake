@@ -80,8 +80,8 @@ namespace :new_core do
         system "cd #{dir} && tar -xzf #{sha1}"
         system "rm -f #{dir}/#{sha1}"
 
-        extract_rpms_and_update_package("#{dir}/archives/SRC_RPM", bl, 'source', token)
-        extract_rpms_and_update_package("#{dir}/archives/RPM", bl, 'binary', token)
+        extract_rpms_and_update_packages("#{dir}/archives/SRC_RPM", bl, 'source', token)
+        extract_rpms_and_update_packages("#{dir}/archives/RPM", bl, 'binary', token)
       ensure
         # remove the directory.
         FileUtils.remove_entry_secure dir
@@ -91,7 +91,7 @@ namespace :new_core do
     say "[#{Time.zone.now}] done"
   end
 
-  def extract_rpms_and_update_package(dir, bl, package_type, token)
+  def extract_rpms_and_update_packages(dir, bl, package_type, token)
     Dir.glob("#{dir}/*.rpm") do |rpm_file|
       fullname = File.basename rpm_file
       package = bl.packages.by_package_type(package_type).
