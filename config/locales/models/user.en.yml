@@ -5,6 +5,7 @@ en:
       new: Create
       edit: Edit
       new_header: New user
+      new_system_header: New system user
       edit_header: Edit
       list_header: Users
       groups: Groups

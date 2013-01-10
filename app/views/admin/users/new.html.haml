@@ -1,6 +1,6 @@
 .block
   .content
-    %h2.title= title t("layout.users.new_header")
+    %h2.title= title t("layout.users.new_#{@user.system? ? 'system_' : ''}header")
     .inner
       = form_for @user, :url => admin_users_path, :html => {:class => :form} do |f|
         -if @user.system?

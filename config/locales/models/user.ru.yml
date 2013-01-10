@@ -5,6 +5,7 @@ ru:
       new: Создать
       edit: Редактировать
       new_header: Новый пользователь
+      new_system_header: Новый служебный пользователь
       edit_header: Редактировать
       list_header: Пользователи
       groups: Группы
