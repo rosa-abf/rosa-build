@@ -84,6 +84,7 @@ end
 describe Platforms::ProductBuildListsController do
   before(:each) do
     stub_symlink_methods
+    stub_redis
   end
 
   context 'crud' do

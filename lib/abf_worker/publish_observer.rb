@@ -1,6 +1,6 @@
 module AbfWorker
-  class PublishBuildListContainerObserver < AbfWorker::BaseObserver
-    @queue = :publish_build_list_container_observer
+  class PublishObserver < AbfWorker::BaseObserver
+    @queue = :publish_observer
 
     def self.perform(options)
       bl = BuildList.find options['id']
@@ -20,7 +20,7 @@ module AbfWorker
 
     def self.update_results(subject, options)
       results = (subject.results || []).
-        map{ |r| r if r['file_name'] !~ /^abfworker\:\:publish\-build\-list\-container\-worker.*\.log$/ }.
+        map{ |r| r if r['file_name'] !~ /^abfworker\:\:publish\-worker.*\.log$/ }.
         compact
       results += options['results']
       sort_results_and_save(subject, results)
