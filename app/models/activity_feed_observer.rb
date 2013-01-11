@@ -13,6 +13,7 @@ class ActivityFeedObserver < ActiveRecord::Observer
 
     when 'Issue'
       record.collect_recipients.each do |recipient|
+        next if record.user_id == recipient.id
         UserMailer.new_issue_notification(record, recipient).deliver if recipient.notifier.can_notify && recipient.notifier.new_issue
         ActivityFeed.create(
           :user => recipient,
