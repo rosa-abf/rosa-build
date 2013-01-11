@@ -76,8 +76,7 @@ namespace :new_core do
       next unless sha1
       dir = Dir.mktmpdir('update-packages-', "#{APP_CONFIG['root_path']}")
       begin
-        system "cd #{dir} && curl -L -O #{APP_CONFIG['file_store_url']}/api/v1/file_stores/#{sha1}"
-        system "cd #{dir} && tar -xzf #{sha1}"
+        system "cd #{dir} && curl -L -O #{APP_CONFIG['file_store_url']}/api/v1/file_stores/#{sha1}; tar -xzf #{sha1}"
         system "rm -f #{dir}/#{sha1}"
 
         extract_rpms_and_update_packages("#{dir}/archives/SRC_RPM", bl, 'source', token)
@@ -94,8 +93,7 @@ namespace :new_core do
   def extract_rpms_and_update_packages(dir, bl, package_type, token)
     Dir.glob("#{dir}/*.rpm") do |rpm_file|
       fullname = File.basename rpm_file
-      package = bl.packages.by_package_type(package_type).
-        find{ |p| p.fullname == fullname }
+      package = bl.packages.by_package_type(package_type).find{ |p| p.fullname == fullname }
       next unless package
       
       package.sha1 = Digest::SHA1.file(rpm_file).hexdigest
