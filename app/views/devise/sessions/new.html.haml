@@ -22,8 +22,8 @@
       .registration
         .remember
           .check
-            %span#niceCheckbox1.niceCheck
-              = f.check_box :remember_me
+            %span#niceCheckbox1.niceCheck{:style => 'background-position: 0px -18px;'}
+              = f.check_box :remember_me, :checked => true
           .text=t('devise.sessions.remember_me')
         .in=f.submit t('layout.devise.shared_links.sign_in'), :class => 'button', :id => 'btnLogin'
       %div{:style => "clear: both;"}
