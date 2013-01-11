@@ -1,12 +1,12 @@
 users = @users.map do |user|
   link_block = [
-    (link_to t('layout.show'), user if can?(:read, user) && action_name == 'list'),
-    (link_to t('layout.edit'), edit_admin_user_path(user) if can?(:edit, user) && action_name == 'list'),
-    (link_to t('layout.users.reset_token'), reset_auth_token_admin_user_path(user), :method => :put, :confirm => t('layout.users.confirm_reset_token') if can?(:edit, user) && action_name == 'system_list'),
+    (link_to t('layout.show'), user if can?(:read, user) && !@system_list),
+    (link_to t('layout.edit'), edit_admin_user_path(user) if can?(:edit, user) && !@system_list),
+    (link_to t('layout.users.reset_token'), reset_auth_token_admin_user_path(user), :method => :put, :confirm => t('layout.users.confirm_reset_token') if can?(:edit, user) && @system_list),
     (link_to t('layout.delete'), admin_user_path(user), :method => :delete, :confirm => t('layout.users.confirm_delete') if can? :destroy, user)
   ].compact.join('&nbsp;|&nbsp;').html_safe
 
-  if action_name == 'list'
+  if !@system_list
     [
       user.name,
       user.uname,

@@ -11,7 +11,7 @@
                           :filtered_label   => t("datatables.filtered_label"),
                           :table_dom_id     => 'datatable',
                           :auto_width       => 'false',
-                          :ajax_source => "#{url_for :controller => 'admin/users', :action => @filter == 'system' ? :system_list : :list}",
+                          :ajax_source => "#{url_for :controller => 'admin/users', :action => :list, :system => (@filter == 'system')}",
                           :additional_data => {:filter => "' + $('#users_filter[type=\"radio\"]:checked').val() + '"} })
 
 %table#datatable.tablesorter.list-users{:cellspacing => 0, :cellpadding => 0}

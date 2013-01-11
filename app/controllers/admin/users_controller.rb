@@ -9,8 +9,7 @@ class Admin::UsersController < Admin::BaseController
   end
 
   def system
-    @users = @users.system
-    @filter = 'system'
+    @users, @filter = @users.system, 'system'
     render :index
   end
 
@@ -58,10 +57,10 @@ class Admin::UsersController < Admin::BaseController
   end
 
   def list
-    if action_name == 'list'
+    if params[:system] != 'true'
       colName, @users = ['users.name', 'users.uname', 'users.email'], @users.opened
-    else # system_list
-      colName, @users = ['users.uname'], @users.system
+    else
+      colName, @users, @system_list = ['users.uname'], @users.system, true
     end
     sort_col = params[:iSortCol_0] || 0
     sort_dir = params[:sSortDir_0]=="asc" ? 'asc' : 'desc'
@@ -77,10 +76,6 @@ class Admin::UsersController < Admin::BaseController
     @users = @users.order(order)
 
     render :partial => 'users_ajax', :layout => false
-  end
-
-  def system_list
-    list
   end
 
   def reset_auth_token
