@@ -21,12 +21,17 @@ describe Issue do
     before(:each) do
       set_data
       @project = FactoryGirl.create(:project, :owner => @user)
-      create_issue(@stranger)
     end
 
     it 'should send an e-mail' do
+      create_issue(@stranger)
       ActionMailer::Base.deliveries.count.should == 1
       ActionMailer::Base.deliveries.last.to.include?(@user.email).should == true
+    end
+
+    it 'should not send an e-mail to creator' do
+      create_issue(@user)
+      ActionMailer::Base.deliveries.count.should == 0
     end
   end
 
@@ -45,6 +50,13 @@ describe Issue do
 
       create_issue(@stranger)
       ActionMailer::Base.deliveries.count.should == 3 # 1 owner + 2 group member. enough?
+    end
+
+    it 'should send an e-mail to all members of the admin group except creator' do
+      @project.relations.create!(:actor_type => 'Group', :actor_id => @group.id, :role => 'admin')
+
+      create_issue(@group.owner)
+      ActionMailer::Base.deliveries.count.should == 2 # 1 owner + 1 group member. enough?
     end
 
     it 'should not send an e-mail to members of the reader group' do
@@ -67,6 +79,11 @@ describe Issue do
         create_issue(@stranger)
         ActionMailer::Base.deliveries.count.should == 1
         ActionMailer::Base.deliveries.last.to.include?(@user.email).should == true
+      end
+
+      it 'should not send an e-mail to creator' do
+        create_issue(@user)
+        ActionMailer::Base.deliveries.count.should == 0
       end
     end
 
