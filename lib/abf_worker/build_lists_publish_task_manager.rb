@@ -45,7 +45,6 @@ module AbfWorker
       bl = build_lists.first
       return false unless bl
 
-      type = bl.build_for_platform.distrib_type
       platform_path = "#{bl.save_to_platform.path}/repository"
       if bl.save_to_platform.personal?
         platform_path << '/' << bl.build_for_platform.name
