@@ -3,26 +3,27 @@ module AbfWorker
     @queue = :publish_observer
 
     def self.perform(options)
-      bl = BuildList.find options['id']
+      build_lists = BuildList.where(:id => options['build_list_ids'])
       status = options['status'].to_i
-      case status
-      when COMPLETED
-        bl.published
+      build_lists.each do |bl| 
         update_results(bl, options)
-      when FAILED
-        bl.fail_publish
-        update_results(bl, options)
-      when CANCELED
-        bl.fail_publish
-        update_results(bl, options)
+        case status
+        when COMPLETED
+          bl.published
+        when FAILED
+          bl.fail_publish
+        when CANCELED
+          bl.fail_publish
+        end
+        AbfWorker::BuildListsPublishTaskManager.unlock_build_list bl
       end
+      AbfWorker::BuildListsPublishTaskManager.unlock_rep_and_platform build_lists.first
     end
 
     def self.update_results(subject, options)
       results = (subject.results || []).
-        map{ |r| r if r['file_name'] !~ /^abfworker\:\:publish\-worker.*\.log$/ }.
-        compact
-      results += options['results']
+        select{ |r| r['file_name'] !~ /^abfworker\:\:publish\-worker.*\.log$/ }
+      results |= options['results']
       sort_results_and_save(subject, results)
     end
 

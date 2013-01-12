@@ -33,6 +33,15 @@ module AbfWorker
       end
     end
 
+    def self.unlock_build_list(build_list)
+      Resque.redis.lrem(LOCKED_BUILD_LISTS, 0, build_list.id)
+    end
+
+    def self.unlock_rep_and_platform(build_list)
+      key = "#{build_list.save_to_repository_id}-#{build_list.build_for_platform_id}"
+      Resque.redis.lrem(LOCKED_REP_AND_PLATFORMS, 0, key)
+    end
+
     private
 
     def create_task(save_to_repository_id, build_for_platform_id)
@@ -71,20 +80,25 @@ module AbfWorker
 
       packages      = {:sources => [], :binaries => {:x86_64 => [], :i586 => []}}
       old_packages  = packages.clone
+      build_list_ids = []
 
       build_lists.each do |bl|
         fill_packages(bl, packages)
         bl.last_published.includes(:packages).limit(5).each{ |old_bl|
           fill_packages(old_bl, old_packages)
         }
+        build_list_ids << bl.id
         @redis.lpush(LOCKED_BUILD_LISTS, bl.id)
       end
-      options.merge!({:packages => packages, :old_packages => old_packages})
 
       Resque.push(
         worker_queue,
         'class' => worker_class,
-        'args' => [options]
+        'args' => [options.merge({
+          :packages => packages,
+          :old_packages => old_packages,
+          :build_list_ids => build_list_ids
+        })]
       )
       return true
     end
