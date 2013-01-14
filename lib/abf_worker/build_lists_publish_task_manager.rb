@@ -85,7 +85,7 @@ module AbfWorker
       build_lists.each do |bl|
         fill_packages(bl, packages)
         bl.last_published.includes(:packages).limit(5).each{ |old_bl|
-          fill_packages(old_bl, old_packages)
+          fill_packages(old_bl, old_packages, :fullname)
         }
         build_list_ids << bl.id
         @redis.lpush(LOCKED_BUILD_LISTS, bl.id)
@@ -103,10 +103,10 @@ module AbfWorker
       return true
     end
 
-    def fill_packages(bl, results_map)
+    def fill_packages(bl, results_map, field = :sha1)
       # TODO: remove duplicates of sources for different arches
-      results_map[:sources] |= bl.packages.by_package_type('source').pluck(:sha1)
-      results_map[:binaries][bl.arch.name.to_sym] |= bl.packages.by_package_type('binary').pluck(:sha1)      
+      results_map[:sources] |= bl.packages.by_package_type('source').pluck(field)
+      results_map[:binaries][bl.arch.name.to_sym] |= bl.packages.by_package_type('binary').pluck(field)      
     end
 
   end
