@@ -69,24 +69,24 @@ namespace :new_core do
       order(:id).
       find_in_batches(:batch_size => 100) do | build_lists |
 
-      build_lists.each do | bl |
-        puts "[#{Time.zone.now}] - where build_lists.id #{bl.id}"
+        build_lists.each do | bl |
+          puts "[#{Time.zone.now}] - where build_lists.id #{bl.id}"
 
-        sha1 = (bl.results.find{ |r| r['file_name'] =~ /.*\.tar\.gz$/ } || {})['sha1']
-        next unless sha1
-        dir = Dir.mktmpdir('update-packages-', "#{APP_CONFIG['root_path']}")
-        begin
-          system "cd #{dir} && curl -L -O #{APP_CONFIG['file_store_url']}/api/v1/file_stores/#{sha1}; tar -xzf #{sha1}"
-          system "rm -f #{dir}/#{sha1}"
+          sha1 = (bl.results.find{ |r| r['file_name'] =~ /.*\.tar\.gz$/ } || {})['sha1']
+          next unless sha1
+          dir = Dir.mktmpdir('update-packages-', "#{APP_CONFIG['root_path']}")
+          begin
+            system "cd #{dir} && curl -L -O #{APP_CONFIG['file_store_url']}/api/v1/file_stores/#{sha1}; tar -xzf #{sha1}"
+            system "rm -f #{dir}/#{sha1}"
 
-          extract_rpms_and_update_packages("#{dir}/archives/SRC_RPM", bl, 'source', token)
-          extract_rpms_and_update_packages("#{dir}/archives/RPM", bl, 'binary', token)
-        ensure
-          # remove the directory.
-          FileUtils.remove_entry_secure dir
+            extract_rpms_and_update_packages("#{dir}/archives/SRC_RPM", bl, 'source', token)
+            extract_rpms_and_update_packages("#{dir}/archives/RPM", bl, 'binary', token)
+          ensure
+            # remove the directory.
+            FileUtils.remove_entry_secure dir
+          end
         end
-      end # build_lists.each
-    end # find_in_batches
+    end
 
     say "[#{Time.zone.now}] done"
   end

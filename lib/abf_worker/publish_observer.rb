@@ -10,9 +10,7 @@ module AbfWorker
         case status
         when COMPLETED
           bl.published
-        when FAILED
-          bl.fail_publish
-        when CANCELED
+        when FAILED, CANCELED
           bl.fail_publish
         end
         AbfWorker::BuildListsPublishTaskManager.unlock_build_list bl
