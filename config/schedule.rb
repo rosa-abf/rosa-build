@@ -22,3 +22,7 @@ end
 every 1.day, :at => '3:00 am' do
   rake "activity_feeds:clear", :output => 'log/activity_feeds.log'
 end
+
+every 3.minute do
+  runner 'AbfWorker::BuildListsPublishTaskManager.new.run', :output => 'log/task_manager.log'
+end

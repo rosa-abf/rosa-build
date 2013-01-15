@@ -30,8 +30,6 @@ module AbfWorker
       true
     end
 
-    protected
-
     def worker_queue_with_priority(queue = nil)
       queue ||= abf_worker_base_queue
       queue << '_' << abf_worker_priority if abf_worker_priority.present?

@@ -151,8 +151,6 @@ class BuildList < ActiveRecord::Base
     after_transition :on => :published, :do => [:set_version_and_tag, :actualize_packages]
     after_transition :on => :cancel, :do => [:cancel_job],
       :if => lambda { |build_list| build_list.new_core? }
-    after_transition :on => :publish, :do => [:publish_container],
-      :if => lambda { |build_list| build_list.new_core? }
 
     after_transition :on => [:published, :fail_publish, :build_error], :do => :notify_users
     after_transition :on => :build_success, :do => :notify_users,
@@ -271,44 +269,6 @@ class BuildList < ActiveRecord::Base
     can_publish? and not save_to_repository.publish_without_qa
   end
 
-  def publish_container
-    type = build_for_platform.distrib_type
-    archive = results.find{ |r| r['file_name'] =~ /.*\.tar\.gz$/ }
-
-    platform_path = "#{save_to_platform.path}/repository"
-    if save_to_platform.personal?
-      platform_path << '/'
-      platform_path << build_for_platform.name
-      Dir.mkdir(platform_path) unless File.exists?(platform_path)
-    end
-
-    packages = last_published.includes(:packages).limit(5).map{ |bl| bl.packages }.flatten
-    sources   = packages.map{ |p| p.fullname if p.package_type == 'source' }.compact
-    binaries  = packages.map{ |p| p.fullname if p.package_type == 'binary' }.compact
-
-    Resque.push(
-      worker_queue_with_priority("publish_#{type}_worker"),
-      'class' => worker_queue_class("AbfWorker::Publish#{type.capitalize}Worker"),
-      'args' => [{
-        :id => id,
-        :arch => arch.name,
-        :distrib_type => type,
-        :container_sha1 => archive['sha1'],
-        :packages => { :sources => sources, :binaries => binaries },
-        :platform => {
-          :platform_path => platform_path,
-          :released => save_to_platform.released
-        },
-        :repository => {
-          :name => save_to_repository.name,
-          :id => save_to_repository.id
-        },
-        :type => :publish,
-        :time_living => 2400 # 40 min
-      }]
-    )
-  end
-
   def add_to_queue
     if new_core?
       # TODO: Investigate: why 2 tasks will be created without checking @state
@@ -423,6 +383,15 @@ class BuildList < ActiveRecord::Base
     end
   end
 
+  def last_published
+    BuildList.where(:project_id => self.project_id,
+                    :save_to_repository_id => self.save_to_repository_id)
+             .for_platform(self.build_for_platform_id)
+             .scoped_to_arch(self.arch_id)
+             .for_status(BUILD_PUBLISHED)
+             .recent
+  end
+
   protected
 
   def abf_worker_priority
@@ -508,12 +477,4 @@ class BuildList < ActiveRecord::Base
     end
   end
 
-  def last_published
-    BuildList.where(:project_id => self.project_id,
-                    :save_to_repository_id => self.save_to_repository_id)
-             .for_platform(self.build_for_platform_id)
-             .scoped_to_arch(self.arch_id)
-             .for_status(BUILD_PUBLISHED)
-             .recent
-  end
 end

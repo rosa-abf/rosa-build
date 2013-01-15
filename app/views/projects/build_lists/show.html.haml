@@ -167,7 +167,10 @@
     %tbody
       - @build_list.packages.each do |package|
         %tr
-          %td= package.fullname
+          - if package.sha1.present?
+            %td= link_to package.fullname, "#{APP_CONFIG['file_store_url']}/api/v1/file_stores/#{package.sha1}"
+          - else
+            %td= package.fullname
           %td= package.name
           %td= package.version
           %td= package.release
