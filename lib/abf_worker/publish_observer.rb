@@ -3,8 +3,9 @@ module AbfWorker
     @queue = :publish_observer
 
     def self.perform(options)
-      build_lists = BuildList.where(:id => options['build_list_ids'])
       status = options['status'].to_i
+      return if status == STARTED # do nothing when publication started
+      build_lists = BuildList.where(:id => options['build_list_ids'])
       build_lists.each do |bl| 
         update_results(bl, options)
         case status
