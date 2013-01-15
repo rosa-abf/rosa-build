@@ -24,5 +24,5 @@ every 1.day, :at => '3:00 am' do
 end
 
 every 1.minute do
-  runner 'AbfWorker::BuildListsPublishTaskManager.new.run'
+  runner 'AbfWorker::BuildListsPublishTaskManager.new.run', :output => 'log/task_manager.log'
 end
