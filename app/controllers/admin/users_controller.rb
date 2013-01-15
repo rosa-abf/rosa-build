@@ -2,7 +2,7 @@
 class Admin::UsersController < Admin::BaseController
   include AvatarHelper
   prepend_before_filter :find_user
-  load_and_authorize_resource :collection => :system
+  load_and_authorize_resource :collection => [:system, :list]
 
   def index
     @filter = params[:filter] || 'all'
