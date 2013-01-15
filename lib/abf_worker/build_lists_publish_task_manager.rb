@@ -50,8 +50,9 @@ module AbfWorker
         where(:new_core => true, :status => BuildList::BUILD_PUBLISH).
         where(:save_to_repository_id => save_to_repository_id).
         where(:build_for_platform_id => build_for_platform_id).
-        where('id NOT IN (?)', @redis.lrange(LOCKED_BUILD_LISTS, 0, -1)).
         order(:updated_at)
+      locked_ids = @redis.lrange(LOCKED_BUILD_LISTS, 0, -1)
+      build_lists = build_lists.where('build_lists.id NOT IN (?)', locked_ids) unless locked_ids.empty?
 
       bl = build_lists.first
       return false unless bl
@@ -59,7 +60,7 @@ module AbfWorker
       platform_path = "#{bl.save_to_platform.path}/repository"
       if bl.save_to_platform.personal?
         platform_path << '/' << bl.build_for_platform.name
-        Dir.mkdir(platform_path) unless File.exists?(platform_path)
+        system "mkdir -p #{platform_path}"
       end
       worker_queue = bl.worker_queue_with_priority("publish_worker")
       worker_class = bl.worker_queue_class("AbfWorker::PublishWorker")
@@ -81,7 +82,7 @@ module AbfWorker
       }
 
       packages      = {:sources => [], :binaries => {:x86_64 => [], :i586 => []}}
-      old_packages  = packages.clone
+      old_packages  = {:sources => [], :binaries => {:x86_64 => [], :i586 => []}}
       build_list_ids = []
 
       new_sources = {}
