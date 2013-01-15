@@ -5,7 +5,7 @@ class BuildList::Package < ActiveRecord::Base
   belongs_to :project
   belongs_to :platform
 
-  attr_accessible :fullname, :name, :release, :version
+  attr_accessible :fullname, :name, :release, :version, :sha1
 
   validates :build_list_id, :project_id, :platform_id, :fullname,
             :package_type, :name, :release, :version,
