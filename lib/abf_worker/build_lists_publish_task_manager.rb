@@ -49,7 +49,8 @@ module AbfWorker
         where(:new_core => true, :status => BuildList::BUILD_PUBLISH).
         where(:save_to_repository_id => save_to_repository_id).
         where(:build_for_platform_id => build_for_platform_id).
-        where('id NOT IN (?)', @redis.lrange(LOCKED_BUILD_LISTS, 0, -1))
+        where('id NOT IN (?)', @redis.lrange(LOCKED_BUILD_LISTS, 0, -1)).
+        order(:updated_at)
 
       bl = build_lists.first
       return false unless bl
@@ -82,7 +83,10 @@ module AbfWorker
       old_packages  = packages.clone
       build_list_ids = []
 
+      new_sources = {}
       build_lists.each do |bl|
+        # remove duplicates of sources for different arches
+        bl.packages.by_package_type('source').each{ |s| new_sources["#{s.fullname}"] = s.sha1 }
         fill_packages(bl, packages)
         bl.last_published.includes(:packages).limit(5).each{ |old_bl|
           fill_packages(old_bl, old_packages, :fullname)
@@ -91,6 +95,7 @@ module AbfWorker
         @redis.lpush(LOCKED_BUILD_LISTS, bl.id)
       end
 
+      packages[:sources] = new_sources.values
       Resque.push(
         worker_queue,
         'class' => worker_class,
@@ -104,8 +109,7 @@ module AbfWorker
     end
 
     def fill_packages(bl, results_map, field = :sha1)
-      # TODO: remove duplicates of sources for different arches
-      results_map[:sources] |= bl.packages.by_package_type('source').pluck(field)
+      results_map[:sources] |= bl.packages.by_package_type('source').pluck(field) if field != :sha1
       results_map[:binaries][bl.arch.name.to_sym] |= bl.packages.by_package_type('binary').pluck(field)      
     end
 
