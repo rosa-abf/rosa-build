@@ -67,6 +67,6 @@ class ApiDefender < Rack::Throttle::Hourly
   end
 
   def system_user? request
-    authorized?(request) && %w(rosa_system iso_worker_1).include?(@user.try :uname)
+    authorized?(request) && @user.try(:system?)
   end
 end

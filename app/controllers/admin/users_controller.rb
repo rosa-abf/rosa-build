@@ -2,23 +2,34 @@
 class Admin::UsersController < Admin::BaseController
   include AvatarHelper
   prepend_before_filter :find_user
+  load_and_authorize_resource :collection => [:system, :list]
 
   def index
     @filter = params[:filter] || 'all'
   end
 
+  def system
+    @users, @filter = @users.system, 'system'
+    render :index
+  end
+
   def new
+    @user.role = 'system' if params[:system] == 'true'
   end
 
   def create
     @user.role = params[:role]
+    @user.email, @user.password = "#{@user.uname}@rosalinux.ru", SecureRandom.base64 if @user.system?
     @user.confirmed_at = Time.now.utc
     if (@user.save rescue false)
       flash[:notice] = t('flash.user.saved')
-      redirect_to admin_users_path
+      flash[:warning] = @user.authentication_token
+      redirect_to(@user.system? ? system_admin_users_path : admin_users_path)
     else
       flash[:error] = t('flash.user.save_error')
       flash[:warning] = @user.errors.full_messages.join('. ')
+      @system = @user.system?
+
       render :action => :new
     end
   end
@@ -42,11 +53,15 @@ class Admin::UsersController < Admin::BaseController
   def destroy
     @user.destroy
     flash[:notice] = t("flash.user.destroyed")
-    redirect_to admin_users_path
+    redirect_to(@user.system? ? system_admin_users_path : admin_users_path)
   end
 
   def list
-    colName = ['users.name', 'users.uname', 'users.email']
+    if params[:system] != 'true'
+      colName, @users = ['users.name', 'users.uname', 'users.email'], @users.opened
+    else
+      colName, @users, @system_list = ['users.uname'], @users.system, true
+    end
     sort_col = params[:iSortCol_0] || 0
     sort_dir = params[:sSortDir_0]=="asc" ? 'asc' : 'desc'
     order = "#{colName[sort_col.to_i]} #{sort_dir}"
@@ -61,6 +76,13 @@ class Admin::UsersController < Admin::BaseController
     @users = @users.order(order)
 
     render :partial => 'users_ajax', :layout => false
+  end
+
+  def reset_auth_token
+    @user.reset_authentication_token!
+    flash[:notice] = t("flash.user.reset_auth_token")
+    flash[:warning] = @user.authentication_token
+    redirect_to system_admin_users_path
   end
 
   protected

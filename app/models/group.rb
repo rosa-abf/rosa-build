@@ -47,6 +47,10 @@ class Group < Avatar
     Relation.remove_member(member, self)
   end
 
+  def system?
+    false
+  end
+
   protected
 
   def add_owner_to_members

@@ -95,7 +95,11 @@ Rosa::Application.routes.draw do
 
   namespace :admin do
     resources :users do
-      get :list, :on => :collection
+      collection do
+        get :list
+        get :system
+      end
+      put :reset_auth_token, :on => :member
     end
     resources :register_requests, :only => [:index] do
       put :update, :on => :collection
