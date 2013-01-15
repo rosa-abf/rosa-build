@@ -83,7 +83,7 @@ namespace :new_core do
             extract_rpms_and_update_packages("#{dir}/archives/RPM", bl, 'binary', token)
           ensure
             # remove the directory.
-            FileUtils.remove_entry_secure dir
+            `sudo rm -rf #{dir}`
           end
         end
     end
