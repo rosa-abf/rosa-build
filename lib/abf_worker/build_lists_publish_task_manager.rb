@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 module AbfWorker
   class BuildListsPublishTaskManager
     REDIS_MAIN_KEY = 'abf-worker::build-lists-publish-task-manager::'
