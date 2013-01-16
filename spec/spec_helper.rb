@@ -52,8 +52,7 @@ APP_CONFIG['git_path']  = "#{Rails.root}/tmp/test_root"
 
 def init_test_root
   clear_test_root
-  %x(mkdir -p #{APP_CONFIG['root_path']}/platforms)
-  %x(mkdir -p #{APP_CONFIG['root_path']}/tmp)
+  %x(mkdir -p #{APP_CONFIG['root_path']}/{platforms,tmp})
 end
 
 def clear_test_root

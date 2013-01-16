@@ -14,15 +14,11 @@ class KeyPair < ActiveRecord::Base
   validates :repository_id, :uniqueness => {:message => I18n.t("activerecord.errors.key_pair.repo_key_exists")}
   validate :check_keys
 
-  before_create :set_key_id
+  before_create { |record| record.key_id = @fingerprint }
   after_create :resign_rpms,
     :unless => Proc.new { |key_pair| key_pair.repository.platform.personal? }
 
   protected
-
-    def set_key_id
-      self.key_id = @fingerprint
-    end
 
     def resign_rpms
       platform = repository.platform

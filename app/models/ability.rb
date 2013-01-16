@@ -154,7 +154,7 @@ class Ability
       cannot([:get_list, :create], MassBuild) {|mass_build| mass_build.platform.personal?}
       cannot(:cancel, MassBuild) {|mass_build| mass_build.platform.personal? || mass_build.stop_build}
 
-      if @user.uname == 'iso_worker_1'
+      if @user.system?
         can :key_pair, Repository
       else
         cannot :key_pair, Repository
