@@ -22,14 +22,13 @@ class KeyPair < ActiveRecord::Base
 
     def resign_rpms
       platform = repository.platform
-      type = platform.distrib_type
       Resque.push(
-        "publish_build_list_container_#{type}_worker",
-        'class' => "AbfWorker::PublishBuildListContainer#{type.capitalize}Worker",
+        'publish_worker_default',
+        'class' => "AbfWorker::PublishWorkerDefault",
         'args' => [{
           :id => id,
           :arch => 'x86_64',
-          :distrib_type => type,
+          :distrib_type => platform.distrib_type,
           :platform => {
             :platform_path => "#{platform.path}/repository",
             :released => platform.released
