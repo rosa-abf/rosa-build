@@ -1,6 +1,7 @@
 # -*- encoding : utf-8 -*-
 class User < Avatar
   ROLES = ['', 'admin', 'banned', 'tester']
+  EXTENDED_ROLES = ROLES | ['system']
   LANGUAGES_FOR_SELECT = [['Russian', 'ru'], ['English', 'en']]
   LANGUAGES = LANGUAGES_FOR_SELECT.map(&:last)
 
@@ -31,7 +32,7 @@ class User < Avatar
 
   validates :uname, :presence => true, :uniqueness => {:case_sensitive => false}, :format => {:with => /\A[a-z0-9_]+\z/}, :reserved_name => true
   validate { errors.add(:uname, :taken) if Group.by_uname(uname).present? }
-  validates :role, :inclusion => {:in => ROLES}, :allow_blank => true
+  validates :role, :inclusion => {:in => EXTENDED_ROLES}, :allow_blank => true
   validates :language, :inclusion => {:in => LANGUAGES}, :allow_blank => true
 
   attr_accessible :email, :password, :password_confirmation, :current_password, :remember_me, :login, :name, :uname, :language,
@@ -39,17 +40,17 @@ class User < Avatar
   attr_readonly :uname
   attr_accessor :login
 
-  scope :opened, where('1=1')
-  scope :banned, where(:role => 'banned')
-  scope :admin, where(:role => 'admin')
-  scope :tester, where(:role => 'tester')
+  scope :opened, where('users.role != \'system\' OR users.role IS NULL')
   scope :real, where(:role => ['', nil])
+  EXTENDED_ROLES.select {|type| type.present?}.each do |type|
+    scope type.to_sym, where(:role => type)
+  end
 
   scope :member_of_project, lambda {|item|
     where "#{table_name}.id IN (?)", item.members.map(&:id).uniq
   }
 
-  after_create lambda { self.create_notifier }
+  after_create lambda { self.create_notifier unless self.system? }
   before_create :ensure_authentication_token
 
   include Modules::Models::PersonalRepository
@@ -71,6 +72,10 @@ class User < Avatar
     role == 'tester'
   end
 
+  def system?
+    role == 'system'
+  end
+
   def access_locked?
     role == 'banned'
   end
@@ -87,7 +92,9 @@ class User < Avatar
     def find_for_database_authentication(warden_conditions)
       conditions = warden_conditions.dup
       login = conditions.delete(:login)
-      where(conditions).where(["lower(uname) = :value OR lower(email) = :value", { :value => login.downcase }]).first
+      where(conditions)
+      .where(["lower(uname) = :value OR lower(email) = :value OR authentication_token = :orig_value",
+             { :value => login.downcase, :orig_value => login }]).first
     end
 
     def new_with_session(params, session)
@@ -102,6 +109,11 @@ class User < Avatar
           user.authentications.build :uid => data['uid'], :provider => data['provider']
         end
       end
+    end
+
+    def auth_by_token_or_login_pass(user, pass)
+      u = User.find_for_database_authentication(:login => user)
+      u if u && !u.access_locked? && (u.authentication_token == user || u.valid_password?(pass))
     end
   end
 

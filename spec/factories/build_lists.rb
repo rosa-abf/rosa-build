@@ -18,8 +18,16 @@ FactoryGirl.define do
     commit_hash {|bl| Grit::Repo.new(bl.project.path).commits.first.id}
   end
 
+  factory :build_list_with_attaching_project, :parent => :build_list do
+    before(:create) { |bl| attach_project_to_build_list bl }
+  end
+
   factory :build_list_core, :parent => :build_list do
     bs_id { FactoryGirl.generate(:integer) }
+  end
+
+  factory :build_list_core_with_attaching_project, :parent => :build_list_core do
+    before(:create) { |bl| attach_project_to_build_list bl }
   end
 
   factory :build_list_by_group_project, :parent => :build_list_core do
@@ -40,4 +48,9 @@ FactoryGirl.define do
     release 6
     package_type "source"
   end
+end
+
+def attach_project_to_build_list(bl)
+  bl.save_to_platform ||= FactoryGirl.create(:platform_with_repos)
+  bl.project.repositories << bl.save_to_platform.repositories.first
 end

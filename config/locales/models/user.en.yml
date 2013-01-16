@@ -5,21 +5,26 @@ en:
       new: Create
       edit: Edit
       new_header: New user
+      new_system_header: New system user
       edit_header: Edit
       list_header: Users
       groups: Groups
       show: User
       back_to_the_list: ⇐ List of users
       confirm_delete: Are you sure you want to remove this user?
+      confirm_reset_token: Are you sure you want to reset token for this user?
       own_projects: My projects
       part_projects: Projects participation
       filter_header: Filter
+      system: System accounts
+      reset_token: Reset token
 
   flash:
     user:
-      saved: User saved successtully
+      saved: User saved successfully
       save_error: Unable to save user data
       destroyed: User account deleted
+      reset_auth_token: User token reseted successfully
 
   activerecord:
     models:

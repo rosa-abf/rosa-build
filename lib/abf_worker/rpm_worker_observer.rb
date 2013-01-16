@@ -18,8 +18,6 @@ module AbfWorker
         bl.build_error
         item.update_attributes({:status => BuildServer::BUILD_ERROR})
       when STARTED
-        bl.bs_id = bl.id
-        bl.save!
         bl.start_build
       when CANCELED
         bl.build_canceled
@@ -47,14 +45,6 @@ module AbfWorker
           package.project_id = bl.project_id
           package.platform_id = bl.save_to_platform_id
           package.save!
-        end
-
-        container = (options['results'] || []).
-          select{ |r| r['file_name'] !~ /.*\.log$/ }.first
-        sha1 = container ? container['sha1'] : nil
-        if sha1
-          bl.container_path = "#{APP_CONFIG['file_store_url']}/api/v1/file_stores/#{sha1}"
-          bl.save!
         end
         update_results(bl, options)
       end

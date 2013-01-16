@@ -108,7 +108,7 @@ describe Api::V1::BuildListsController do
 
       context "do cancel" do
         def do_cancel
-          get :cancel, :id => @build_list, :format => :json
+          put :cancel, :id => @build_list, :format => :json
         end
 
         context 'if user is project owner' do
@@ -161,7 +161,7 @@ describe Api::V1::BuildListsController do
 
       context "do publish" do
         def do_publish
-          get :publish, :id => @build_list, :format => :json
+          put :publish, :id => @build_list, :format => :json
         end
 
         context 'if user is project owner' do
@@ -220,7 +220,7 @@ describe Api::V1::BuildListsController do
         end
 
         def do_reject_publish
-          get :reject_publish, :id => @build_list, :format => :json
+          put :reject_publish, :id => @build_list, :format => :json
         end
 
         context 'if user is project owner' do
@@ -397,7 +397,7 @@ describe Api::V1::BuildListsController do
       @build_list2.project.update_column(:visibility, 'hidden')
 
       project = FactoryGirl.create(:project_with_commit, :visibility => 'hidden', :owner => @user)
-      @build_list3 = FactoryGirl.create(:build_list_core, :project => project)
+      @build_list3 = FactoryGirl.create(:build_list_core_with_attaching_project, :project => project)
 
       @build_list4 = FactoryGirl.create(:build_list_core)
       @build_list4.project.update_column(:visibility, 'hidden')

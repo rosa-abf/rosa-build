@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20121225103309) do
+ActiveRecord::Schema.define(:version => 20130110104600) do
 
   create_table "activity_feeds", :force => true do |t|
     t.integer  "user_id",    :null => false
@@ -94,6 +94,7 @@ ActiveRecord::Schema.define(:version => 20121225103309) do
     t.datetime "created_at",                       :null => false
     t.datetime "updated_at",                       :null => false
     t.boolean  "actual",        :default => false
+    t.string   "sha1"
   end
 
   add_index "build_list_packages", ["actual", "platform_id"], :name => "index_build_list_packages_on_actual_and_platform_id"

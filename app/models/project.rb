@@ -137,12 +137,14 @@ class Project < ActiveRecord::Base
     main_rep_id = platform.repositories.find_by_name('main').try(:id)
     build_reps_ids = [main_rep_id, repository_id].compact.uniq
 
-    build_lists.create do |bl|
+    project_version = repo.commits("#{platform.name}").try(:first).try(:id) ? 
+      "latest_#{platform.name}" : "latest_master"
+    build_list = build_lists.build do |bl|
       bl.save_to_platform = platform
       bl.build_for_platform = platform
       bl.update_type = 'newpackage'
       bl.arch = arch
-      bl.project_version = "latest_#{platform.name}"
+      bl.project_version = project_version
       bl.user = user
       bl.auto_publish = auto_publish
       bl.include_repos = build_reps_ids
@@ -151,6 +153,7 @@ class Project < ActiveRecord::Base
       bl.save_to_repository_id = repository_id
       bl.new_core = new_core
     end
+    build_list.save
   end
 
   def fork(new_owner)

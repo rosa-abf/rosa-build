@@ -16,9 +16,9 @@ Rosa::Application.routes.draw do
       resources :search, :only => [:index]
       resources :build_lists, :only => [:index, :create, :show] do
         member {
-          get :publish
-          get :reject_publish
-          get :cancel
+          put :publish
+          put :reject_publish
+          put :cancel
         }
       end
       resources :arches, :only => [:index]
@@ -96,7 +96,11 @@ Rosa::Application.routes.draw do
 
   namespace :admin do
     resources :users do
-      get :list, :on => :collection
+      collection do
+        get :list
+        get :system
+      end
+      put :reset_auth_token, :on => :member
     end
     resources :register_requests, :only => [:index] do
       put :update, :on => :collection
