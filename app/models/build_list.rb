@@ -392,6 +392,25 @@ class BuildList < ActiveRecord::Base
              .recent
   end
 
+  def destroy
+    files, url = [], "#{APP_CONFIG['file_store_url']}/api/v1/file_stores"
+    self.results.each {|r| files << r['sha1'] if r['sha1'].present?}
+    self.packages.each {|pk| files << pk.sha1 if pk.sha1.present?}
+
+    files.each do |sha1|
+      begin
+        resp = JSON.parse `curl #{url}.json?hash=#{sha1}`
+        next if resp.count != 1
+        next unless uid = resp[0]['user'].try(:[], 'id')
+        u = User.where('role != \'banned\'').find(uid) rescue User.admin.first # if origin user banned/deleted
+        `curl --user #{u.authentication_token}: -X DELETE #{url}/#{sha1}.json`
+      rescue # FIXME
+      end
+    end
+    super
+  end
+  later :destroy, :queue => @queue # <--- Right queue?
+
   protected
 
   def abf_worker_priority
