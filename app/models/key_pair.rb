@@ -8,8 +8,7 @@ class KeyPair < ActiveRecord::Base
   attr_encrypted :secret, :key => APP_CONFIG['secret_key']
 
   validates :repository_id, :user_id, :presence => true
-  validates :secret, :presence => true, :length => { :maximum => 10000 }, :on => :create
-  validates :public, :presence => true, :length => { :maximum => 10000 }, :on => :create
+  validates :secret, :public, :presence => true, :length => { :maximum => 10000 }, :on => :create
 
   validates :repository_id, :uniqueness => {:message => I18n.t("activerecord.errors.key_pair.repo_key_exists")}
   validate :check_keys
@@ -23,10 +22,11 @@ class KeyPair < ActiveRecord::Base
     def check_keys
       dir = Dir.mktmpdir('keys-', "#{APP_CONFIG['root_path']}/tmp")
       begin
-        open("#{dir}/pubring.txt", "w") { |f| f.write self.public }
-        system "gpg --homedir #{dir} --dearmor < #{dir}/pubring.txt > #{dir}/pubring.gpg"
-        open("#{dir}/secring.txt", "w") { |f| f.write self.secret }
-        system "gpg --homedir #{dir} --dearmor < #{dir}/secring.txt > #{dir}/secring.gpg"
+        %w(pubring secring).each do |kind|
+          filename = "#{dir}/#{kind}"
+          open("#{filename}.txt", "w") { |f| f.write self.send(kind == 'pubring' ? :public : :secret) }
+          system "gpg --homedir #{dir} --dearmor < #{filename}.txt > #{filename}.gpg"
+        end
 
         public_key = get_info_of_key "#{dir}/pubring.gpg"
         secret_key = get_info_of_key "#{dir}/secring.gpg"

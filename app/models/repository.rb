@@ -66,8 +66,7 @@ class Repository < ActiveRecord::Base
   protected
 
   def detele_directory
-    repository_path = platform.path
-    repository_path << '/repository'
+    repository_path = platform.path << '/repository'
     if platform.personal?
       Platform.main.pluck(:name).each do |main_platform_name|
         detele_repositories_directory "#{repository_path}/#{main_platform_name}"
