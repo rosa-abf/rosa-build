@@ -13,7 +13,7 @@ module AbfWorker
     end
 
     def initialize
-      @redis          = self.redis
+      @redis          = Resque.redis
       @workers_count  = APP_CONFIG['abf_worker']['publish_workers_count']
     end
 
@@ -150,11 +150,16 @@ module AbfWorker
 
       build_lists_for_cleanup = projects_for_cleanup.map do |key|
         pr, rep, pl = *key.split('-')
-        BuildList.where(:project_id => pr).
+        bl = BuildList.where(:project_id => pr).
           where(:new_core => true, :status => BuildList::BUILD_PUBLISHED).
           where(:save_to_repository_id => save_to_repository_id).
           where(:build_for_platform_id => build_for_platform_id).
           order(:updated_at).first
+        unless bl
+          # No packages for removing
+          @redis.lrem PROJECTS_FOR_CLEANUP, 0, key
+        end
+        bl
       end.compact
 
 
@@ -200,7 +205,7 @@ module AbfWorker
         build_list_ids << bl.id
         @redis.lpush(LOCKED_BUILD_LISTS, bl.id)
       end
-      packages[:sources] = new_sources.values
+      packages[:sources] = new_sources.values.compact
 
       build_lists_for_cleanup.each do |bl|
         bl.last_published.includes(:packages).limit(5).each{ |old_bl|
@@ -220,8 +225,8 @@ module AbfWorker
       )
 
       projects_for_cleanup.each do |key|
-        redis.lrem PROJECTS_FOR_CLEANUP, 0, key
-        redis.lpush LOCKED_PROJECTS_FOR_CLEANUP, key
+        @redis.lrem PROJECTS_FOR_CLEANUP, 0, key
+        @redis.lpush LOCKED_PROJECTS_FOR_CLEANUP, key
       end
 
       @redis.lpush(LOCKED_REP_AND_PLATFORMS, "#{save_to_repository_id}-#{build_for_platform_id}")
@@ -229,8 +234,8 @@ module AbfWorker
     end
 
     def fill_packages(bl, results_map, field = :sha1)
-      results_map[:sources] |= bl.packages.by_package_type('source').pluck(field) if field != :sha1
-      results_map[:binaries][bl.arch.name.to_sym] |= bl.packages.by_package_type('binary').pluck(field)      
+      results_map[:sources] |= bl.packages.by_package_type('source').pluck(field).compact if field != :sha1
+      results_map[:binaries][bl.arch.name.to_sym] |= bl.packages.by_package_type('binary').pluck(field).compact      
     end
 
   end
