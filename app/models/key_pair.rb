@@ -14,8 +14,9 @@ class KeyPair < ActiveRecord::Base
   validate :check_keys
 
   before_create { |record| record.key_id = @fingerprint }
-  after_create  { |record| AbfWorker::BuildListsPublishTaskManager.resign_repository record },
-    :unless => Proc.new { |key_pair| key_pair.repository.platform.personal? }
+  after_create  { |record|
+    AbfWorker::BuildListsPublishTaskManager.resign_repository(record) unless record.repository.platform.personal?
+  }
 
   protected
 
