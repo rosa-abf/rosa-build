@@ -2,11 +2,13 @@
 module AbfWorker
   class BuildListsPublishTaskManager
     REDIS_MAIN_KEY = 'abf-worker::build-lists-publish-task-manager::'
+    RESIGN_REPOSITORIES = "#{REDIS_MAIN_KEY}resign-repositories"
+    LOCKED_REPOSITORIES = "#{REDIS_MAIN_KEY}locked-repositories"
     LOCKED_REP_AND_PLATFORMS = "#{REDIS_MAIN_KEY}locked-repositories-and-platforms"
     LOCKED_BUILD_LISTS = "#{REDIS_MAIN_KEY}locked-build-lists"
 
     def initialize
-      @redis          = Resque.redis
+      @redis          = self.redis
       @workers_count  = APP_CONFIG['abf_worker']['publish_workers_count']
     end
 
@@ -17,6 +19,11 @@ module AbfWorker
         group(:save_to_repository_id, :build_for_platform_id).
         order(:min_updated_at).
         limit(@workers_count * 2) # because some repos may be locked
+
+      create_tasks_for_resign_repositories
+
+      locked_rep = @redis.lrange(LOCKED_REPOSITORIES, 0, -1)
+      available_repos = available_repos.where('save_to_repository_id NOT IN (?)', locked_rep) unless locked_rep.empty?
 
       counter = 1
 
@@ -34,16 +41,60 @@ module AbfWorker
       end
     end
 
-    def self.unlock_build_list(build_list)
-      Resque.redis.lrem(LOCKED_BUILD_LISTS, 0, build_list.id)
-    end
+    class << self
+      def resign_repository(key_pair)
+        redis.lpush RESIGN_REPOSITORIES, key_pair.repository_id
+      end
 
-    def self.unlock_rep_and_platform(build_list)
-      key = "#{build_list.save_to_repository_id}-#{build_list.build_for_platform_id}"
-      Resque.redis.lrem(LOCKED_REP_AND_PLATFORMS, 0, key)
+      def unlock_repository(repository_id)
+        redis.lrem LOCKED_REPOSITORIES, 0, repository_id
+      end
+
+      def unlock_build_list(build_list)
+        redis.lrem LOCKED_BUILD_LISTS, 0, build_list.id
+      end
+
+      def unlock_rep_and_platform(build_list)
+        key = "#{build_list.save_to_repository_id}-#{build_list.build_for_platform_id}"
+        redis.lrem LOCKED_REP_AND_PLATFORMS, 0, key
+      end
+
+      def redis
+        Resque.redis
+      end
     end
 
     private
+
+    def create_tasks_for_resign_repositories
+      resign_repos = @redis.lrange RESIGN_REPOSITORIES, 0, -1
+      locked_repos = @redis.lrange LOCKED_REPOSITORIES, 0, -1
+
+      Repository.where(:id => (resign_repos - locked_repos)).each do |r|
+        @redis.lrem   RESIGN_REPOSITORIES, 0, r.id
+        @redis.lpush  LOCKED_REPOSITORIES, r.id
+        Resque.push(
+          'publish_worker_default',
+          'class' => "AbfWorker::PublishWorkerDefault",
+          'args' => [{
+            :id => r.id,
+            :arch => 'x86_64',
+            :distrib_type => r.platform.distrib_type,
+            :platform => {
+              :platform_path => "#{r.platform.path}/repository",
+              :released => r.platform.released
+            },
+            :repository => {
+              :name => r.name,
+              :id => r.id
+            },
+            :type => :resign,
+            :skip_feedback => true,
+            :time_living => 2400 # 40 min
+          }]
+        )
+      end
+    end
 
     def create_task(save_to_repository_id, build_for_platform_id)
       build_lists = BuildList.

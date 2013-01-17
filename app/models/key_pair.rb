@@ -15,34 +15,10 @@ class KeyPair < ActiveRecord::Base
   validate :check_keys
 
   before_create { |record| record.key_id = @fingerprint }
-  after_create :resign_rpms,
+  after_create  { |record| AbfWorker::BuildListsPublishTaskManager.resign_repository record },
     :unless => Proc.new { |key_pair| key_pair.repository.platform.personal? }
 
   protected
-
-    def resign_rpms
-      platform = repository.platform
-      Resque.push(
-        'publish_worker_default',
-        'class' => "AbfWorker::PublishWorkerDefault",
-        'args' => [{
-          :id => id,
-          :arch => 'x86_64',
-          :distrib_type => platform.distrib_type,
-          :platform => {
-            :platform_path => "#{platform.path}/repository",
-            :released => platform.released
-          },
-          :repository => {
-            :name => repository.name,
-            :id => repository.id
-          },
-          :type => :resign,
-          :save_results => false,
-          :time_living => 2400 # 40 min
-        }]
-      )
-    end
 
     def check_keys
       dir = Dir.mktmpdir('keys-', "#{APP_CONFIG['root_path']}/tmp")
