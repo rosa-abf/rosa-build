@@ -74,15 +74,6 @@ module AbfWorker
       @redis.lrange LOCKED_REPOSITORIES, 0, -1
     end
 
-    # def create_tasks_for_cleanup
-    #   reps_to_projects = {}
-    #   @redis.lrange(PROJECTS_AND_REPOS_FOR_CLEANUP, 0, -1).each do |key|
-    #     project_id, repository_id = *key.split('-')
-    #     locked_rep = locked_repositories
-    #     next if locked_repositories
-    #   end
-    # end
-
     def create_tasks_for_resign_repositories
       resign_repos = @redis.lrange RESIGN_REPOSITORIES, 0, -1
 
