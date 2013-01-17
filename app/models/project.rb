@@ -194,62 +194,10 @@ class Project < ActiveRecord::Base
   end
 
   def destroy_project_from_repository(repository)
-    platform = repository.platform
-    published_packages = build_lists.for_status(BuildList::BUILD_PUBLISHED).
-      scoped_to_save_platform(platform.id)
-    if platform.personal?
-      Platform.main.each do |main_platform|
-        add_job_to_abf_worker_queue(
-          repository,
-          platform,
-          "#{platform.path}/repository/#{main_platform.name}",
-          main_platform
-        )
-      end
-    else
-      add_job_to_abf_worker_queue(
-        repository,
-        platform,
-        "#{platform.path}/repository"
-      )
-    end
+    AbfWorker::BuildListsPublishTaskManager.destroy_project_from_repository self, repository
   end
-  later :destroy_project_from_repository, :queue => :clone_build
 
   protected
-
-  def add_job_to_abf_worker_queue(repository, platform, platform_path, main_platform = nil)
-    type = main_platform ? main_platform.distrib_type : platform.distrib_type
-    Arch.all.each do |arch|
-      packages = build_lists.for_status(BuildList::BUILD_PUBLISHED).
-        scoped_to_save_platform(platform.id)
-      packages = packages.for_platform(main_platform.id) if main_platform
-      packages = packages.scoped_to_arch(arch.id).
-        includes(:packages).last(10).
-        map{ |bl| bl.packages }.flatten
-      sources   = packages.map{ |p| p.fullname if p.package_type == 'source' }.compact
-      binaries  = packages.map{ |p| p.fullname if p.package_type == 'binary' }.compact
-      next if sources.empty? && binaries.empty?
-      Resque.push(
-        "publish_build_list_container_#{type}_worker",
-        'class' => "AbfWorker::PublishBuildListContainer#{type.capitalize}Worker",
-        'args' => [{
-          :id => repository.id,
-          :arch => arch.name,
-          :distrib_type => type,
-          :packages => { :sources => sources, :binaries => binaries },
-          :platform => {
-            :platform_path => platform_path,
-            :released => platform.released
-          },
-          :repository => { :name => repository.name, :id => repository.id },
-          :type => :cleanup,
-          :save_results => false,
-          :time_living => 2400 # 40 min
-        }]
-      )
-    end
-  end
 
   def truncate_name
     self.name = name.strip if name

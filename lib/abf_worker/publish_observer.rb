@@ -7,10 +7,8 @@ module AbfWorker
       def perform(options)
         status = options['status'].to_i
         return if status == STARTED # do nothing when publication started
-        case options['type']
-        when 'resign'
+        if options['type'] == 'resign'
           AbfWorker::BuildListsPublishTaskManager.unlock_repository options['id']
-        when 'cleanup'
         else
           update_rpm_builds options
         end
@@ -25,12 +23,15 @@ module AbfWorker
           case status
           when COMPLETED
             bl.published
+            AbfWorker::BuildListsPublishTaskManager.cleanup_completed options['projects_for_cleanup']
           when FAILED, CANCELED
             bl.fail_publish
+            AbfWorker::BuildListsPublishTaskManager.cleanup_failed options['projects_for_cleanup']
           end
           AbfWorker::BuildListsPublishTaskManager.unlock_build_list bl
         end
-        AbfWorker::BuildListsPublishTaskManager.unlock_rep_and_platform build_lists.first
+        bl = build_lists.first || BuildList.find(options['id'])
+        AbfWorker::BuildListsPublishTaskManager.unlock_rep_and_platform bl
       end
 
       def update_results(subject, options)
