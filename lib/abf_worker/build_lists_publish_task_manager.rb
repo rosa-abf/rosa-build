@@ -3,15 +3,14 @@ module AbfWorker
   class BuildListsPublishTaskManager
     REDIS_MAIN_KEY = 'abf-worker::build-lists-publish-task-manager::'
 
-    RESIGN_REPOSITORIES = "#{REDIS_MAIN_KEY}resign-repositories"
-
-    PROJECTS_FOR_CLEANUP = "#{REDIS_MAIN_KEY}projects-for-cleanup"
-    LOCKED_PROJECTS_FOR_CLEANUP = "#{REDIS_MAIN_KEY}locked-projects-for-cleanup"
-
-
-    LOCKED_REPOSITORIES = "#{REDIS_MAIN_KEY}locked-repositories"
-    LOCKED_REP_AND_PLATFORMS = "#{REDIS_MAIN_KEY}locked-repositories-and-platforms"
-    LOCKED_BUILD_LISTS = "#{REDIS_MAIN_KEY}locked-build-lists"
+    %w(RESIGN_REPOSITORIES 
+       PROJECTS_FOR_CLEANUP
+       LOCKED_PROJECTS_FOR_CLEANUP
+       LOCKED_REPOSITORIES
+       LOCKED_REP_AND_PLATFORMS
+       LOCKED_BUILD_LISTS).each do |kind|
+      const_set kind, "#{REDIS_MAIN_KEY}#{kind.downcase.gsub('_', '-')}"
+    end
 
     def initialize
       @redis          = self.redis
