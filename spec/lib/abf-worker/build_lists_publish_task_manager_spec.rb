@@ -2,7 +2,13 @@ require 'spec_helper'
 
 describe AbfWorker::BuildListsPublishTaskManager do
   before(:all) do
+    @publish_workers_count = APP_CONFIG['abf_worker']['publish_workers_count']
+    APP_CONFIG['abf_worker']['publish_workers_count'] = 2
+  end
+
+  before do
     init_test_root
+    stub_symlink_methods
   end
 
   subject { AbfWorker::BuildListsPublishTaskManager }
@@ -37,8 +43,8 @@ describe AbfWorker::BuildListsPublishTaskManager do
 
   describe 'when one build_list for publishing' do
     before do
-      build_list.update_column(:status, BuildList::BUILD_PUBLISH)
       stub_redis
+      build_list.update_column(:status, BuildList::BUILD_PUBLISH)
       2.times{ subject.new.run }
     end
     %w(RESIGN_REPOSITORIES 
@@ -63,10 +69,46 @@ describe AbfWorker::BuildListsPublishTaskManager do
       queue.should include(build_list.id.to_s)
     end
 
+    it "ensure that new task for publishing has been created" do
+      @redis_instance.lrange('queue:publish_worker_default', 0, -1).should have(1).item
+    end
+
+  end
+
+  describe 'resign packages in repository' do
+    before do
+      stub_redis
+      build_list.update_column(:status, BuildList::BUILD_PUBLISH)
+      FactoryGirl.create(:key_pair, :repository => build_list.save_to_repository)
+      2.times{ subject.new.run }
+    end
+
+    %w(RESIGN_REPOSITORIES 
+       PROJECTS_FOR_CLEANUP
+       LOCKED_PROJECTS_FOR_CLEANUP
+       LOCKED_REP_AND_PLATFORMS
+       LOCKED_BUILD_LISTS).each do |kind|
+
+      it "ensure that no '#{kind.downcase.gsub('_', ' ')}'" do
+        @redis_instance.lrange(subject.const_get(kind), 0, -1).should be_empty
+      end
+    end
+
+    it "ensure that 'locked repositories' has only one item" do
+      queue = @redis_instance.lrange(subject::LOCKED_REPOSITORIES, 0, -1)
+      queue.should have(1).item
+      queue.should include(build_list.save_to_repository_id.to_s)
+    end
+
+    it "ensure that new task for resign has been created" do
+      @redis_instance.lrange('queue:publish_worker_default', 0, -1).should have(1).item
+    end
+
   end
 
 
   after(:all) do
+    APP_CONFIG['abf_worker']['publish_workers_count'] = @publish_workers_count
     FileUtils.rm_rf(APP_CONFIG['root_path'])
   end
 end
