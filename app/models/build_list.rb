@@ -409,7 +409,7 @@ class BuildList < ActiveRecord::Base
     end
     super
   end
-  later :destroy, :queue => @queue # <--- Right queue?
+  later :destroy, :queue => :clone_build
 
   protected
 
