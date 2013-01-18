@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe KeyPair do
   before(:all) do
-    stub_symlink_methods
+    init_test_root
     stub_redis
     FactoryGirl.create(:key_pair)
   end

@@ -322,7 +322,7 @@ describe Api::V1::RepositoriesController do
 
   context 'for system user' do
     before(:each) do
-      @user = FactoryGirl.create(:user, :uname => 'iso_worker_1')
+      @user = FactoryGirl.create(:user, :role => 'system')
       http_login(@user)
     end
 
