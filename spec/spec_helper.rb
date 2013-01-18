@@ -60,16 +60,11 @@ def clear_test_root
 end
 
 def stub_redis
-  redis_instance = MockRedis.new
-  stub(Redis).new { redis_instance }
+  @redis_instance = MockRedis.new
+  stub(Redis).new { @redis_instance }
 end
 
 init_test_root
-
-def stub_redis
-  redis_instance = MockRedis.new
-  stub(Redis).new { redis_instance }
-end
 
 def fill_project project
   %x(mkdir -p #{project.path} && cp -Rf #{Rails.root}/spec/tests.git/* #{project.path}) # maybe FIXME ?
