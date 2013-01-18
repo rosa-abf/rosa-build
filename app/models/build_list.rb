@@ -397,11 +397,8 @@ class BuildList < ActiveRecord::Base
 
     files.each do |sha1|
       begin
-        resp = JSON.parse `curl #{url}.json?hash=#{sha1}`
-        next if resp.count != 1
-        next unless uid = resp[0]['user'].try(:[], 'id')
-        u = User.where('role != \'banned\'').find(uid) rescue User.admin.first # if origin user banned/deleted
-        `curl --user #{u.authentication_token}: -X DELETE #{url}/#{sha1}.json`
+        token = User.system.find_by_uname('file_store').authentication_token
+        `curl --user #{token}: -X DELETE #{url}/#{sha1}.json`
       rescue # FIXME
       end
     end
