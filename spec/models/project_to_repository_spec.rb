@@ -16,4 +16,12 @@ describe ProjectToRepository do
     p2r = @second_repo.project_to_repositories.build :project_id => @project.id
     p2r.should_not be_valid
   end
+
+  it 'creates task for removing project from repository on destroy' do
+    stub_redis
+    @first_repo.project_to_repositories.destroy_all
+    queue = @redis_instance.lrange(AbfWorker::BuildListsPublishTaskManager::PROJECTS_FOR_CLEANUP, 0, -1)
+    queue.should have(1).item
+    queue.should include("#{@project.id}-#{@first_repo.id}-#{@platform.id}")
+  end
 end
