@@ -77,10 +77,8 @@ class Repository < ActiveRecord::Base
   end
 
   def detele_repositories_directory(repository_path)
-    Arch.pluck(:name).each do |arch|
-      system("rm -rf #{repository_path}/#{arch}/#{name}")
-    end
-    system("rm -rf #{repository_path}/SRPMS/#{name}")
+    srpm_and_arches = (['SRPM'] << Arch.pluck(:name)).join(',')
+    `bash -c 'rm -rf #{repository_path}/{#{srpm_and_arches}}/#{name}'`
   end
 
 end
