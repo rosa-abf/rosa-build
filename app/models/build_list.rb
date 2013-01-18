@@ -129,8 +129,6 @@ class BuildList < ActiveRecord::Base
   after_commit :place_build
   after_destroy :delete_container
 
-  @queue = :clone_and_build
-
   state_machine :status, :initial => :waiting_for_response do
 
     # WTF? around_transition -> infinite loop
