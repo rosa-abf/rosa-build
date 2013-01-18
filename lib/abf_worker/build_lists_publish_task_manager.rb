@@ -162,7 +162,6 @@ module AbfWorker
         bl
       end.compact
 
-
       bl = build_lists.first || build_lists_for_cleanup.first
       return false unless bl
 

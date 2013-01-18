@@ -62,6 +62,7 @@ end
 def stub_redis
   @redis_instance = MockRedis.new
   stub(Redis).new { @redis_instance }
+  stub(Resque).redis { @redis_instance }
 end
 
 init_test_root
