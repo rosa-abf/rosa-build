@@ -102,7 +102,7 @@ describe PullRequest do
     FileUtils.rm_rf(APP_CONFIG['root_path'])
   end
 
-  it { should belong_to(:issue) }
+  it { should belong_to(:issue).validate(true) }
   it { should belong_to(:to_project) }
   it { should belong_to(:from_project) }
 

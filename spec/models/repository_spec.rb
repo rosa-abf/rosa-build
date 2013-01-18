@@ -27,10 +27,10 @@ describe Repository do
   end
 
   it { should belong_to(:platform) }
-  it { should have_many(:project_to_repositories)}
-  it { should have_many(:projects).through(:project_to_repositories)}
+  it { should have_many(:project_to_repositories).validate(true) }
+  it { should have_many(:projects).through(:project_to_repositories) }
 
-  it { should validate_presence_of(:name)}
+  it { should validate_presence_of(:name) }
   it { should validate_uniqueness_of(:name).case_insensitive.scoped_to(:platform_id) }
   it { should validate_format_of(:name).with('basic_repository-name-1234') }
   it { should validate_format_of(:name).not_with('.!') }
