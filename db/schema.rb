@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130110104600) do
+ActiveRecord::Schema.define(:version => 20130119125710) do
 
   create_table "activity_feeds", :force => true do |t|
     t.integer  "user_id",    :null => false
@@ -131,7 +131,7 @@ ActiveRecord::Schema.define(:version => 20130110104600) do
     t.integer  "mass_build_id"
     t.integer  "save_to_repository_id"
     t.text     "results"
-    t.boolean  "new_core"
+    t.boolean  "new_core",                   :default => true
     t.string   "last_published_commit_hash"
   end
 

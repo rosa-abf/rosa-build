@@ -10,6 +10,7 @@ FactoryGirl.define do
       pr
     }
     association :arch
+    new_core false
     build_for_platform {|bl| bl.save_to_platform}
     save_to_repository {|bl| bl.save_to_platform.repositories.first}
     update_type 'security'
