@@ -279,6 +279,7 @@ describe Projects::BuildListsController do
       end
 
     end
+  end
 
   context 'filter' do
 
