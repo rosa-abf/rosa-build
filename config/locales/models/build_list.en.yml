@@ -88,9 +88,11 @@ en:
 
       build_server_status:
         header: Build server status
-        client_count: Number of clients
-        count_new_task: Number of tasks in queue
-        count_build_task: Number of tasks in execution
+        count: '- count'
+        tasks: '- tasks in queue'
+        build_tasks: '- tasks in execution'
+        rpm_workers: Workers for building
+        publish_workers: Workers for publishing
 
       items:
         statuses:

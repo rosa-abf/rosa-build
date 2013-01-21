@@ -85,9 +85,11 @@ ru:
 
       build_server_status:
         header: Статус сборочного сервера
-        client_count: Число клиентов
-        count_new_task: Число заданий в очереди
-        count_build_task: Число выполняемых заданий
+        count: '- число'
+        tasks: '- заданий в очереди'
+        build_tasks: '- заданий выполняется'
+        rpm_workers: Воркеров для сборки
+        publish_workers: Воркеров для публикации
 
       items:
         statuses:

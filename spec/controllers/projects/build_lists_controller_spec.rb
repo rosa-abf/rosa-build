@@ -280,22 +280,6 @@ describe Projects::BuildListsController do
 
     end
 
-    context 'for admin' do
-      before(:each) { set_session_for FactoryGirl.create(:admin) }
-
-      it "should be able to perform index action without exception" do
-        any_instance_of(XMLRPC::Client) do |xml_rpc|
-          stub(xml_rpc).call do |args|
-            raise Timeout::Error
-          end
-        end
-        get :index
-        assigns[:build_server_status].should == {}
-        response.should be_success
-      end
-    end
-  end
-
   context 'filter' do
 
     before(:each) do
