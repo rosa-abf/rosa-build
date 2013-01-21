@@ -129,8 +129,6 @@ class BuildList < ActiveRecord::Base
   after_commit :place_build
   after_destroy :delete_container
 
-  @queue = :clone_and_build
-
   state_machine :status, :initial => :waiting_for_response do
 
     # WTF? around_transition -> infinite loop
@@ -391,6 +389,22 @@ class BuildList < ActiveRecord::Base
              .for_status(BUILD_PUBLISHED)
              .recent
   end
+
+  def destroy
+    files, url = [], "#{APP_CONFIG['file_store_url']}/api/v1/file_stores"
+    self.results.each {|r| files << r['sha1'] if r['sha1'].present?}
+    self.packages.each {|pk| files << pk.sha1 if pk.sha1.present?}
+
+    files.each do |sha1|
+      begin
+        token = User.system.find_by_uname('file_store').authentication_token
+        `curl --user #{token}: -X DELETE #{url}/#{sha1}.json`
+      rescue # FIXME
+      end
+    end
+    super
+  end
+  later :destroy, :queue => :clone_build
 
   protected
 
