@@ -8,6 +8,6 @@ FactoryGirl.define do
     main_script 'build.sh'
     params 'ENV=i586'
     time_living 150
-    project_version 'latest_master'
+    project_version 'master'
   end
 end

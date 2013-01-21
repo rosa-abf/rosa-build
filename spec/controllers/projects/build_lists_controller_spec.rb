@@ -43,7 +43,7 @@ describe Projects::BuildListsController do
     end
 
     it 'should save correct commit_hash for branch based build' do
-      post :create, {:owner_name => @project.owner.uname, :project_name => @project.name}.merge(@create_params).deep_merge(:build_list => {:project_version => "latest_master"})
+      post :create, {:owner_name => @project.owner.uname, :project_name => @project.name}.merge(@create_params).deep_merge(:build_list => {:project_version => "master"})
       @project.build_lists.last.commit_hash.should == @project.repo.commits('master').first.id
     end
 
@@ -54,7 +54,7 @@ describe Projects::BuildListsController do
     end
 
     it 'should not be able to create with wrong project version' do
-      lambda{ post :create, {:owner_name => @project.owner.uname, :project_name => @project.name}.merge(@create_params).deep_merge(:build_list => {:project_version => "latest_wrong", :commit_hash => nil})}.should change{@project.build_lists.count}.by(0)
+      lambda{ post :create, {:owner_name => @project.owner.uname, :project_name => @project.name}.merge(@create_params).deep_merge(:build_list => {:project_version => "wrong", :commit_hash => nil})}.should change{@project.build_lists.count}.by(0)
     end
 
     it 'should not be able to create with wrong git hash' do
@@ -85,7 +85,7 @@ describe Projects::BuildListsController do
       @platform = FactoryGirl.create(:platform_with_repos)
       @create_params = {
         :build_list => {
-          :project_version => 'latest_master',
+          :project_version => 'master',
           :save_to_repository_id => @platform.repositories.first.id,
           :update_type => 'security',
           :include_repos => [@platform.repositories.first.id]

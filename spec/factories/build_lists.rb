@@ -15,7 +15,7 @@ FactoryGirl.define do
     save_to_repository {|bl| bl.save_to_platform.repositories.first}
     update_type 'security'
     include_repos {|bl| bl.save_to_platform.repositories.map(&:id)}
-    project_version 'latest_master'
+    project_version 'master'
     commit_hash {|bl| Grit::Repo.new(bl.project.path).commits.first.id}
   end
 

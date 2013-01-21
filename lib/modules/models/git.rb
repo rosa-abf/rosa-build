@@ -34,7 +34,7 @@ module Modules
       end
 
       def versions
-        repo.tags.map(&:name) + repo.branches.map{|b| "latest_#{b.name}"}
+        repo.tags.map(&:name) + repo.branches.map(&:name)
       end
 
       def update_file(path, data, options = {})
