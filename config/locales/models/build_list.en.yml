@@ -30,6 +30,7 @@ en:
         duration: Build duration in seconds
         mass_build_id: Mass build
         commit_hash: Commit hash
+        logs: Logs
 
       build_list/item:
         name: Name

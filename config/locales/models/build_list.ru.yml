@@ -29,6 +29,7 @@ ru:
         duration: Длительность билда в секундах
         mass_build_id: Массовая сборка
         commit_hash: Хэш коммита
+        logs: Логи
 
       build_list/item:
         name: Название

@@ -58,5 +58,15 @@ json.build_list do |json|
     json_mass_build.(@build_list.mass_build, :id, :name)
   end if @build_list.mass_build
 
+  json.logs (@build_list.results || []) do |json_logs, result|
+    json_logs.file_name result['file_name']
+    json_logs.size result['size']
+    json_logs.url "#{APP_CONFIG['file_store_url']}/api/v1/file_stores/#{result['sha1']}"
+  end if @build_list.new_core?
+
+  json.packages @build_list.packages do |json_packages, package|
+    json_packages.partial! 'api/v1/maintainers/package', :package => package, :json => json_packages
+  end
+
   json.url api_v1_build_list_path(@build_list, :format => :json)
 end
