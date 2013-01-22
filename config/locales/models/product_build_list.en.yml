@@ -2,8 +2,6 @@ en:
   layout:
     product_build_lists:
       logs: Logs (last 100 lines)
-      results: Results
-      no_results: No results
       work_env: Work environment
       iso_builder_folder: folder with contents of the GIT project
       results_folder: all files from this folder will be uploaded into the file-store
@@ -44,6 +42,7 @@ en:
         params: Params for running script
         time_living: Max time for building (in minutes)
         arch: Arch
+        results: Results
       product_build_list/results:
         file_name: File name
         sha1: SHA1

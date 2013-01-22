@@ -29,6 +29,7 @@ ru:
         duration: Длительность билда в секундах
         mass_build_id: Массовая сборка
         commit_hash: Хэш коммита
+        logs: Логи
 
       build_list/item:
         name: Название
@@ -45,8 +46,6 @@ ru:
 
   layout:
     build_lists:
-      logs: Логи
-      no_logs: Нет логов
       filter_header: Фильтр
       current: Текущие
       created_at_start: "Время постановки на сборку с:"

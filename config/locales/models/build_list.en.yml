@@ -30,6 +30,7 @@ en:
         duration: Build duration in seconds
         mass_build_id: Mass build
         commit_hash: Commit hash
+        logs: Logs
 
       build_list/item:
         name: Name
@@ -46,8 +47,6 @@ en:
 
   layout:
     build_lists:
-      logs: Logs
-      no_logs: No logs
       filter_header: Filter
       current: Curent
       created_at_start: "Build to start on:"

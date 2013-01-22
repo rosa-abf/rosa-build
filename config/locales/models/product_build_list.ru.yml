@@ -2,8 +2,6 @@ ru:
   layout:
     product_build_lists:
       logs: Логи (последнии 100 строк)
-      results: Результаты
-      no_results: Нет результатов
       work_env: Рабочее пространство
       iso_builder_folder: папка с содержимым GIT проекта
       results_folder: все файлы из этой папки будут загружены на file-store
@@ -44,6 +42,7 @@ ru:
         params: Параметры для запуска скрипта
         time_living: Максимальное время сборки (в минутах)
         arch: Архитектура
+        results: Результаты
       product_build_list/results:
         file_name: Имя файла
         sha1: SHA1
