@@ -46,6 +46,8 @@ en:
 
   layout:
     build_lists:
+      logs: Logs
+      no_logs: No logs
       filter_header: Filter
       current: Curent
       created_at_start: "Build to start on:"

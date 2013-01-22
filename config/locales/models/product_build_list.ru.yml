@@ -3,6 +3,7 @@ ru:
     product_build_lists:
       logs: Логи (последнии 100 строк)
       results: Результаты
+      no_results: Нет результатов
       work_env: Рабочее пространство
       iso_builder_folder: папка с содержимым GIT проекта
       results_folder: все файлы из этой папки будут загружены на file-store

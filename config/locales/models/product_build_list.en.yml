@@ -3,6 +3,7 @@ en:
     product_build_lists:
       logs: Logs (last 100 lines)
       results: Results
+      no_results: No results
       work_env: Work environment
       iso_builder_folder: folder with contents of the GIT project
       results_folder: all files from this folder will be uploaded into the file-store

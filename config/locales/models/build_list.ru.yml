@@ -45,6 +45,8 @@ ru:
 
   layout:
     build_lists:
+      logs: Логи
+      no_logs: Нет логов
       filter_header: Фильтр
       current: Текущие
       created_at_start: "Время постановки на сборку с:"
