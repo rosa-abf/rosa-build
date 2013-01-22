@@ -64,5 +64,9 @@ json.build_list do |json|
     json_logs.url "#{APP_CONFIG['file_store_url']}/api/v1/file_stores/#{result['sha1']}"
   end if @build_list.new_core?
 
+  json.packages @build_list.packages do |json_packages, package|
+    json_packages.partial! 'api/v1/maintainers/package', :package => package, :json => json_packages
+  end
+
   json.url api_v1_build_list_path(@build_list, :format => :json)
 end
