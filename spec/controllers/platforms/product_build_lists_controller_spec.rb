@@ -96,7 +96,7 @@ describe Platforms::ProductBuildListsController do
     end
 
     def valid_attributes
-      {:product_id => @product.id, :platform_id => @product.platform_id, :product_build_list => {:main_script => 'build.sh', :time_living => 60, :project_version => 'latest_master', :arch_id => @arch.id}}
+      {:product_id => @product.id, :platform_id => @product.platform_id, :product_build_list => {:main_script => 'build.sh', :time_living => 60, :project_version => 'master', :arch_id => @arch.id}}
     end
 
     def valid_attributes_for_destroy

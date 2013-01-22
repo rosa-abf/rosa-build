@@ -14,7 +14,7 @@
     %h3= t("activerecord.attributes.build_list.save_to_repository")
     .lineForm= f.select :save_to_repository_id, @project.repositories.collect{|r| ["#{r.platform.name}/#{r.name}", r.id, {:publish_without_qa => r.publish_without_qa? ? 1 : 0, :platform_id => r.platform.id}]}
     %h3= t("activerecord.attributes.build_list.project_version")
-    .lineForm= f.select :project_version, versions_for_group_select(@project), :selected => params[:build_list].try(:fetch, :project_version) || "latest_" + @project.default_branch
+    .lineForm= f.select :project_version, versions_for_group_select(@project), :selected => params[:build_list].try(:fetch, :project_version) || @project.default_branch
     %h3= t("activerecord.attributes.build_list.arch")
     - Arch.recent.each do |arch|
       .both
@@ -26,9 +26,6 @@
     .both
       = f.check_box :auto_publish
       = f.label :auto_publish
-    .both
-      = f.check_box :new_core
-      = f.label :new_core
     %br
     = f.submit t("layout.projects.build_button")
 

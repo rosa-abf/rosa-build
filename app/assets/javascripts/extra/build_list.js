@@ -36,7 +36,7 @@ $(document).ready(function() {
 function setBranchSelected(selected_option) {
   var pl_name = selected_option.text().match(/([\w-.]+)\/[\w-.]+/)[1];
   var bl_version_sel = $('#build_list_project_version');
-  var branch_pl_opt = bl_version_sel.find('option[value="latest_' + pl_name + '"]');
+  var branch_pl_opt = bl_version_sel.find('option[value="' + pl_name + '"]');
   // If there is branch we need - set it selected:
   if (branch_pl_opt.size() > 0) {
     bl_version_sel.find('option[selected]').removeAttr('selected');

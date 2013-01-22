@@ -65,7 +65,7 @@ module GitHelper
   end
 
   def versions_for_group_select(project)
-    [ ['Branches', project.repo.branches.map{|b| "latest_#{b.name}"}],
+    [ ['Branches', project.repo.branches.map(&:name)],
       ['Tags', project.repo.tags.map(&:name)] ]
   end
 
