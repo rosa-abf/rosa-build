@@ -6,7 +6,7 @@ module Modules
 
       included do
         def destroy
-          files, url = [], "#{APP_CONFIG['file_store_url']}/api/v1/file_stores"
+          files = []
           self.results.each {|r| files << r['sha1'] if r['sha1'].present?}
           if self.respond_to? :packages
             self.packages.each {|pk| files << pk.sha1 if pk.sha1.present?}
