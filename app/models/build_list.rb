@@ -1,6 +1,7 @@
 # -*- encoding : utf-8 -*-
 class BuildList < ActiveRecord::Base
   include Modules::Models::CommitAndVersion
+  include Modules::Models::FileStoreClean
   include AbfWorker::ModelHelper
 
   belongs_to :project
@@ -389,22 +390,6 @@ class BuildList < ActiveRecord::Base
              .for_status(BUILD_PUBLISHED)
              .recent
   end
-
-  def destroy
-    files, url = [], "#{APP_CONFIG['file_store_url']}/api/v1/file_stores"
-    self.results.each {|r| files << r['sha1'] if r['sha1'].present?}
-    self.packages.each {|pk| files << pk.sha1 if pk.sha1.present?}
-
-    files.each do |sha1|
-      begin
-        token = User.system.find_by_uname('file_store').authentication_token
-        `curl --user #{token}: -X DELETE #{url}/#{sha1}.json`
-      rescue # FIXME
-      end
-    end
-    super
-  end
-  later :destroy, :queue => :clone_build
 
   protected
 
