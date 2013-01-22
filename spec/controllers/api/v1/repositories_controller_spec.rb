@@ -39,6 +39,13 @@ shared_examples_for "api repository user without show rights" do
   end
 end
 
+shared_examples_for "api repository user without key_pair rights" do
+  it 'should not be able to perform key_pair action' do
+    get :key_pair, :id => @repository.id, :format => :json
+    response.should_not be_success
+  end
+end
+
 shared_examples_for 'api repository user with writer rights' do
 
   context 'api repository user with update rights' do
@@ -127,8 +134,8 @@ shared_examples_for 'api repository user with writer rights' do
 
   context 'api repository user with update signatures rights' do
     before do
-      stub_key_pairs_calls
-      put :signatures, :id => @repository.id, :repository => {:public => 'iampublic', :secret => 'iamsecret'}, :format => :json
+      kp = FactoryGirl.build(:key_pair)
+      put :signatures, :id => @repository.id, :repository => {:public => kp.public, :secret => kp.secret}, :format => :json
     end
     it 'should be able to perform signatures action' do
       response.should be_success
@@ -228,8 +235,8 @@ shared_examples_for 'api repository user without writer rights' do
 
   context 'api repository user without update signatures rights' do
     before do
-      stub_key_pairs_calls
-      put :signatures, :id => @repository.id, :repository => {:public => 'iampublic', :secret => 'iamsecret'}, :format => :json
+      kp = FactoryGirl.build(:key_pair)
+      put :signatures, :id => @repository.id, :repository => {:public => kp.public, :secret => kp.secret}, :format => :json
     end
     it 'should not be able to perform signatures action' do
       response.should_not be_success
@@ -245,6 +252,7 @@ end
 describe Api::V1::RepositoriesController do
   before(:each) do
     stub_symlink_methods
+    stub_redis
 
     @platform = FactoryGirl.create(:platform)
     @repository = FactoryGirl.create(:repository, :platform =>  @platform)
@@ -264,6 +272,7 @@ describe Api::V1::RepositoriesController do
       it_should_behave_like 'api repository user with show rights'
     end
     it_should_behave_like 'api repository user without writer rights'
+    it_should_behave_like 'api repository user without key_pair rights'
 
     it 'should not be able to perform projects action', :anonymous_access => false do
       get :projects, :id => @repository.id, :format => :json
@@ -280,6 +289,7 @@ describe Api::V1::RepositoriesController do
     it_should_behave_like 'api repository user with reader rights'
     it_should_behave_like 'api repository user with reader rights for hidden platform'
     it_should_behave_like 'api repository user with writer rights'
+    it_should_behave_like 'api repository user without key_pair rights'
   end
 
   context 'for platform owner user' do
@@ -294,6 +304,7 @@ describe Api::V1::RepositoriesController do
     it_should_behave_like 'api repository user with reader rights'
     it_should_behave_like 'api repository user with reader rights for hidden platform'
     it_should_behave_like 'api repository user with writer rights'
+    it_should_behave_like 'api repository user without key_pair rights'
   end
 
   context 'for user' do
@@ -306,5 +317,26 @@ describe Api::V1::RepositoriesController do
     it_should_behave_like 'api repository user without reader rights for hidden platform'
     it_should_behave_like 'api repository user with show rights'
     it_should_behave_like 'api repository user without writer rights'
+    it_should_behave_like 'api repository user without key_pair rights'
   end
+
+  context 'for system user' do
+    before(:each) do
+      @user = FactoryGirl.create(:user, :role => 'system')
+      http_login(@user)
+    end
+
+    it 'should be able to perform key_pair action when repository has not keys' do
+      get :key_pair, :id => @repository.id, :format => :json
+      response.should be_success
+    end
+
+    it 'should be able to perform key_pair action when repository has keys' do
+      FactoryGirl.create(:key_pair, :repository => @repository)
+      get :key_pair, :id => @repository.id, :format => :json
+      response.should be_success
+    end
+
+  end
+
 end

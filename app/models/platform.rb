@@ -30,9 +30,8 @@ class Platform < ActiveRecord::Base
     end
   }
 
-  before_create :create_directory, :if => lambda {Thread.current[:skip]} # TODO remove this when core will be ready
-  before_create :xml_rpc_create, :unless => lambda {Thread.current[:skip]}
-  before_destroy :xml_rpc_destroy
+  before_create :create_directory
+  before_destroy :detele_directory
 
   after_update :freeze_platform_and_update_repos
   after_update :update_owner_relation
@@ -145,7 +144,7 @@ class Platform < ActiveRecord::Base
 
   def full_clone(attrs = {})
     base_clone(attrs).tap do |c|
-      with_skip {c.save} and c.clone_relations(self) and c.xml_rpc_clone # later with resque
+      with_skip {c.save} and c.clone_relations(self) and c.fs_clone # later with resque
     end
   end
 
@@ -157,10 +156,6 @@ class Platform < ActiveRecord::Base
       update_attributes(:visibility => 'open')
       symlink_directory
     end
-  end
-
-  def create_directory
-    system("sudo mkdir -p -m 0777 #{path}")
   end
 
   def symlink_directory
@@ -188,7 +183,12 @@ class Platform < ActiveRecord::Base
   end
   later :destroy, :queue => :clone_build
 
+
   protected
+
+    def create_directory
+      system("mkdir -p -m 0777 #{build_path([name, 'repository'])}")
+    end
 
     def default_host
       EventLog.current_controller.request.host_with_port rescue ::Rosa::Application.config.action_mailer.default_url_options[:host]
@@ -198,38 +198,17 @@ class Platform < ActiveRecord::Base
       File.join(APP_CONFIG['root_path'], 'platforms', dir)
     end
 
-    def xml_rpc_create
-      result = BuildServer.add_platform name, APP_CONFIG['root_path'] + '/platforms' , distrib_type
-      if result == BuildServer::SUCCESS
-        return true
-      else
-        raise "Failed to create platform #{name} with code #{result}. Path: #{build_path(name)}"
-      end
+    def detele_directory
+      FileUtils.rm_rf path
     end
 
-    def xml_rpc_destroy
-      result = BuildServer.delete_platform name
-      if result == BuildServer::SUCCESS
-        return true
-      else
-        raise "Failed to delete platform #{name} with code #{result}."
-      end
+    def fs_clone(old_name = parent.name, new_name = name)
+      FileUtils.cp_r "#{parent.path}/repository", path
     end
-
-    def xml_rpc_clone(old_name = parent.name, new_name = name)
-      result = BuildServer.clone_platform new_name, old_name, APP_CONFIG['root_path'] + '/platforms'
-      if result == BuildServer::SUCCESS
-        return true
-      else
-        raise "Failed to clone platform #{old_name} with code #{result}. Path: #{build_path(old_name)} to platform #{new_name}"
-      end
-    end
-    later :xml_rpc_clone, :loner => true, :queue => :clone_build
+    later :fs_clone, :loner => true, :queue => :clone_build
 
     def freeze_platform_and_update_repos
       if released_changed? && released == true
-        result = BuildServer.freeze(name)
-        raise "Failed freeze platform #{name} with code #{result}" if result != BuildServer::SUCCESS
         repositories.update_all(:publish_without_qa => false)
       end
     end

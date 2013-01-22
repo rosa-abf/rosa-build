@@ -16,8 +16,7 @@ class Repository < ActiveRecord::Base
 
   scope :recent, order("name ASC")
 
-  before_create :xml_rpc_create, :unless => lambda {Thread.current[:skip]}
-  before_destroy :xml_rpc_destroy, :unless => lambda {Thread.current[:skip]}
+  before_destroy :detele_directory, :unless => lambda {Thread.current[:skip]}
 
   attr_accessible :name, :description, :publish_without_qa
   attr_readonly :name, :platform_id
@@ -59,23 +58,27 @@ class Repository < ActiveRecord::Base
     end
   end
 
+  def destroy
+    with_skip {super} # avoid cascade XML RPC requests
+  end
+  later :destroy, :queue => :clone_build
+
   protected
 
-  def xml_rpc_create
-    result = BuildServer.create_repo name, platform.name
-    if result == BuildServer::SUCCESS
-      return true
+  def detele_directory
+    repository_path = platform.path << '/repository'
+    if platform.personal?
+      Platform.main.pluck(:name).each do |main_platform_name|
+        detele_repositories_directory "#{repository_path}/#{main_platform_name}"
+      end
     else
-      raise "Failed to create repository #{name} inside platform #{platform.name} with code #{result}."
+      detele_repositories_directory repository_path
     end
   end
 
-  def xml_rpc_destroy
-    result = BuildServer.delete_repo name, platform.name
-    if result == BuildServer::SUCCESS
-      return true
-    else
-      raise "Failed to delete repository #{name} inside platform #{platform.name} with code #{result}."
-    end
+  def detele_repositories_directory(repository_path)
+    srpm_and_arches = (['SRPM'] << Arch.pluck(:name)).join(',')
+    `bash -c 'rm -rf #{repository_path}/{#{srpm_and_arches}}/#{name}'`
   end
+
 end

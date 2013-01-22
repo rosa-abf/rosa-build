@@ -1,35 +1,84 @@
+# -*- encoding : utf-8 -*-
 class KeyPair < ActiveRecord::Base
   belongs_to :repository
   belongs_to :user
 
-  attr_accessor :secret
+  attr_accessor :fingerprint
   attr_accessible :public, :secret, :repository_id
+  attr_encrypted :secret, :key => APP_CONFIG['secret_key']
 
-  validates :repository_id, :public, :user_id, :presence => true
-  validates :secret, :presence => true, :on => :create
+  validates :repository_id, :user_id, :presence => true
+  validates :secret, :public, :presence => true, :length => { :maximum => 10000 }, :on => :create
 
   validates :repository_id, :uniqueness => {:message => I18n.t("activerecord.errors.key_pair.repo_key_exists")}
+  validate :check_keys
 
-  before_create   :key_create_call
-  before_destroy  :rm_key_call
+  before_create { |record| record.key_id = @fingerprint }
+  after_create  { |record|
+    AbfWorker::BuildListsPublishTaskManager.resign_repository(record) unless record.repository.platform.personal?
+  }
 
   protected
 
-    def key_create_call
-      result, self.key_id = BuildServer.import_gpg_key_pair(public, secret)
-      raise "Failed to create key_pairs for repository #{repository_id} with code #{result}." if result == 4
-      if result != 0 || self.key_id.nil?
-        errors.add(:public, I18n.t("activerecord.errors.key_pair.rpc_error_#{result}"))
-        return false
+    def check_keys
+      dir = Dir.mktmpdir('keys-', "#{APP_CONFIG['root_path']}/tmp")
+      begin
+        %w(pubring secring).each do |kind|
+          filename = "#{dir}/#{kind}"
+          open("#{filename}.txt", "w") { |f| f.write self.send(kind == 'pubring' ? :public : :secret) }
+          system "gpg --homedir #{dir} --dearmor < #{filename}.txt > #{filename}.gpg"
+        end
+
+        public_key = get_info_of_key "#{dir}/pubring.gpg"
+        secret_key = get_info_of_key "#{dir}/secring.gpg"
+
+        if correct_key?(public_key, :public) & correct_key?(secret_key, :secret)
+          if public_key[:fingerprint] != secret_key[:fingerprint]
+            errors.add :secret, I18n.t('activerecord.errors.key_pair.wrong_keys')
+          else
+            stdin, stdout, stderr = Open3.popen3("echo '\n\n\n\n\nsave' | LC_ALL=en gpg --command-fd 0 --homedir #{dir} --edit-key #{secret_key[:keyid]} passwd")
+            output = stderr.read
+            if output =~ /Invalid\spassphrase/
+              errors.add :secret, I18n.t('activerecord.errors.key_pair.key_has_passphrase')
+            else
+              @fingerprint = secret_key[:fingerprint]
+            end
+          end
+        end
+      ensure
+        # remove the directory.
+        FileUtils.remove_entry_secure dir
       end
-      result = BuildServer.set_repository_key(repository.platform.name, repository.name, self.key_id)
-      raise "Failed to sign repository #{repository.name} in platform #{repository.platform.name}
-             using key_id #{self.key_id} with code #{result}." unless result.zero?
     end
 
-    def rm_key_call
-      result = BuildServer.rm_repository_key(repository.platform.name, repository.name)
-      raise "Failed to desroy repository key #{repository.name} in platform 
-             #{repository.platform.name} with code #{result}." unless result.zero?
+    def correct_key?(info, field)
+      if info.empty? || info[:type].blank? || info[:fingerprint].blank? || info[:keyid].blank?
+        errors.add field, I18n.t('activerecord.errors.key_pair.wrong_key')
+        return false
+      else
+        if info[:type] != field
+          errors.add field, I18n.t("activerecord.errors.key_pair.wrong_#{field}_key")
+          return false
+        end
+      end
+      return true
     end
+
+    def get_info_of_key(file_path)
+      results = {}
+      str = %x[ gpg --with-fingerprint #{file_path} | sed -n 1,2p]
+      info = str.strip.split("\n")
+      if info.size == 2
+        results[:fingerprint] = info[1].gsub(/.*\=/, '').strip.gsub(/\s/, ':')
+
+        results[:type] = info[0] =~ /^pub\s/ ? :public : nil
+        results[:type] ||= info[0] =~ /^sec\s/ ? :secret : nil
+
+        if keyid = info[0].match(/\/[\w]+\s/)
+          results[:keyid] = keyid[0].strip[1..-1]
+        end
+      end
+      return results
+    end
+
 end

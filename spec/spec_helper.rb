@@ -46,22 +46,26 @@ def stub_symlink_methods
   any_instance_of(Platform, :remove_symlink_directory => true)
 end
 
-def stub_key_pairs_calls
-  stub(BuildServer).import_gpg_key_pair { [0,"1a2b3c"] }
-  stub(BuildServer).set_repository_key { 0 }
-  stub(BuildServer).rm_repository_key { 0 }
+Resque.inline = true
+APP_CONFIG['root_path'] = "#{Rails.root}/tmp/test_root"
+APP_CONFIG['git_path']  = "#{Rails.root}/tmp/test_root"
+
+def init_test_root
+  clear_test_root
+  %x(mkdir -p #{APP_CONFIG['root_path']}/{platforms,tmp})
 end
 
-Resque.inline = true
-
-# Add testing root_path
-%x(rm -Rf #{APP_CONFIG['git_path']})
-%x(mkdir -p #{APP_CONFIG['git_path']})
+def clear_test_root
+  %x(rm -Rf #{APP_CONFIG['root_path']})
+end
 
 def stub_redis
-  redis_instance = MockRedis.new
-  stub(Redis).new { redis_instance }
+  @redis_instance = MockRedis.new
+  stub(Redis).new { @redis_instance }
+  stub(Resque).redis { @redis_instance }
 end
+
+init_test_root
 
 def fill_project project
   %x(mkdir -p #{project.path} && cp -Rf #{Rails.root}/spec/tests.git/* #{project.path}) # maybe FIXME ?

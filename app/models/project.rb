@@ -193,6 +193,10 @@ class Project < ActiveRecord::Base
     end
   end
 
+  def destroy_project_from_repository(repository)
+    AbfWorker::BuildListsPublishTaskManager.destroy_project_from_repository self, repository
+  end
+
   protected
 
   def truncate_name

@@ -7,7 +7,7 @@ describe Product do
     Platform.delete_all
     User.delete_all
     Product.delete_all
-    FileUtils.rm_rf(APP_CONFIG['root_path'])
+    init_test_root
     # Need for validate_uniqueness_of check
     FactoryGirl.create(:product)
   end
@@ -28,7 +28,7 @@ describe Product do
     Platform.delete_all
     User.delete_all
     Product.delete_all
-    FileUtils.rm_rf(APP_CONFIG['root_path'])
+    clear_test_root
   end
 
 end

@@ -69,17 +69,18 @@ end
 describe Platforms::KeyPairsController do
   before(:each) do
     stub_symlink_methods
-    stub_key_pairs_calls
+    stub_redis
 
     @platform = FactoryGirl.create(:platform)
     @repository = FactoryGirl.create(:repository, :platform => @platform)
     @user = FactoryGirl.create(:user)
+    kp = FactoryGirl.build(:key_pair)
     @create_params = {
       :platform_id => @platform,
       :key_pair => {
         :repository_id => @repository,
-        :public => "iampublic",
-        :secret => "iamsecret"
+        :public => kp.public,
+        :secret => kp.secret
       }
     }
   end
