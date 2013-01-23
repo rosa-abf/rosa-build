@@ -96,7 +96,7 @@ module AbfWorker
             },
             :type => :resign,
             :skip_feedback => true,
-            :time_living => 2400 # 40 min
+            :time_living => 9600 # 160 min
           }]
         )
       end
@@ -186,7 +186,7 @@ module AbfWorker
           :id => bl.save_to_repository.id
         },
         :type => :publish,
-        :time_living => 2400 # 40 min
+        :time_living => 9600 # 160 min
       }
 
       packages      = {:sources => [], :binaries => {:x86_64 => [], :i586 => []}}
