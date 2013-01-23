@@ -9,11 +9,11 @@ module AbfWorker
       if options['type'] == 'resign'
         AbfWorker::BuildListsPublishTaskManager.unlock_repository options['id']
       else
-        update_rpm_builds options
+        update_rpm_builds options, status
       end
     end
 
-    def self.update_rpm_builds(options)
+    def self.update_rpm_builds(options, status)
       build_lists = BuildList.where(:id => options['build_list_ids'])
       build_lists.each do |bl| 
         update_results(bl, options)
