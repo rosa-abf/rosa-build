@@ -11,6 +11,8 @@ class Repository < ActiveRecord::Base
   has_many :projects, :through => :project_to_repositories
   has_one  :key_pair, :dependent => :destroy
 
+  has_many :build_lists, :foreign_key => :save_to_repository_id, :dependent => :destroy
+
   validates :description, :presence => true
   validates :name, :uniqueness => {:scope => :platform_id, :case_sensitive => false}, :presence => true, :format => {:with => /\A[a-z0-9_\-]+\z/}
 
