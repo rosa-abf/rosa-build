@@ -1,18 +1,15 @@
 # -*- encoding : utf-8 -*-
 class Projects::BuildListsController < Projects::BaseController
-  CALLBACK_ACTIONS = [:publish_build, :status_build, :pre_build, :post_build, :circle_build, :new_bbdt]
   NESTED_ACTIONS = [:search, :index, :new, :create]
 
-  before_filter :authenticate_user!, :except => CALLBACK_ACTIONS
-  before_filter :authenticate_build_service!, :only => CALLBACK_ACTIONS
+  before_filter :authenticate_user!
   skip_before_filter :authenticate_user!, :only => [:show, :index, :search, :log] if APP_CONFIG['anonymous_access']
 
   before_filter :find_build_list, :only => [:show, :publish, :cancel, :update, :log]
-  before_filter :find_build_list_by_bs, :only => [:publish_build, :status_build, :pre_build, :post_build, :circle_build]
 
   load_and_authorize_resource :project, :only => NESTED_ACTIONS
   load_and_authorize_resource :build_list, :through => :project, :only => NESTED_ACTIONS, :shallow => true
-  load_and_authorize_resource :except => CALLBACK_ACTIONS.concat(NESTED_ACTIONS)
+  load_and_authorize_resource :except => NESTED_ACTIONS
 
   def search
     new_params = {:filter => {}}
@@ -108,80 +105,11 @@ class Projects::BuildListsController < Projects::BaseController
     }
   end
 
-  def publish_build
-    if params[:status].to_i == 0 # ok
-      @build_list.published
-    else
-      @build_list.fail_publish
-    end
-    render :nothing => true, :status => 200
-  end
-
-  def status_build
-    @item = @build_list.items.find_by_name!(params[:package_name])
-    @item.status = params[:status]
-    @item.save
-
-    @build_list.container_path = params[:container_path]
-    @build_list.save
-
-    @build_list.set_packages(ActiveSupport::JSON.decode(params[:pkg_info]), params[:package_name]) if params[:status].to_i == BuildServer::SUCCESS and params[:pkg_info].present?
-
-    render :nothing => true, :status => 200
-  end
-
-  def pre_build
-    @build_list.start_build
-
-    render :nothing => true, :status => 200
-  end
-
-  def post_build
-    params[:status].to_i == BuildServer::SUCCESS ? @build_list.build_success : @build_list.build_error
-    @build_list.container_path = params[:container_path]
-    @build_list.save
-
-    render :nothing => true, :status => 200
-
-    @build_list.publish if @build_list.auto_publish # && @build_list.can_publish? # later with resque
-  end
-
-  def circle_build
-    @build_list.is_circle = true
-    @build_list.container_path = params[:container_path]
-    @build_list.save
-
-    render :nothing => true, :status => 200
-  end
-
-  def new_bbdt
-    @build_list = BuildList.find_by_id!(params[:web_id])
-    @build_list.name = params[:name]
-    @build_list.additional_repos = ActiveSupport::JSON.decode(params[:additional_repos])
-    @build_list.set_items(ActiveSupport::JSON.decode(params[:items]))
-    @build_list.is_circle = (params[:is_circular].to_i != 0)
-    @build_list.bs_id = params[:id]
-    @build_list.save
-
-    render :nothing => true, :status => 200
-  end
-
   protected
 
   def find_build_list
     @build_list = BuildList.find(params[:id])
   end
-
-  def find_build_list_by_bs
-    @build_list = BuildList.find_by_bs_id!(params[:id])
-  end
-
-  # What is it?
-  #def authenticate_build_service!
-  #  if request.remote_ip != APP_CONFIG['build_server_ip']
-  #    render :nothing => true, :status => 403
-  #  end
-  #end
 
   def publish
     @build_list.update_type = params[:build_list][:update_type] if params[:build_list][:update_type].present?
@@ -189,7 +117,7 @@ class Projects::BuildListsController < Projects::BaseController
     if params[:attach_advisory].present? and params[:attach_advisory] != 'no' and !@build_list.advisory
 
       unless @build_list.update_type.in? BuildList::RELEASE_UPDATE_TYPES
-        redirect_to :back, :notice => t('lyout.build_lists.publish_fail') and return
+        redirect_to :back, :notice => t('layout.build_lists.publish_fail') and return
       end
 
       if params[:attach_advisory] == 'new'
