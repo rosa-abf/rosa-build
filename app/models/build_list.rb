@@ -39,7 +39,6 @@ class BuildList < ActiveRecord::Base
       errors.add(:save_to_repository, I18n.t('flash.build_list.wrong_include_repos')) unless build_for_platform.repository_ids.include? ir.to_i
     }
   }
-
   validate lambda {
     errors.add(:save_to_repository, I18n.t('flash.build_list.wrong_project')) unless save_to_repository.projects.exists?(project_id)
   }
@@ -128,7 +127,6 @@ class BuildList < ActiveRecord::Base
   serialize :results, Array
 
   after_commit :place_build
-  after_destroy :delete_container
 
   state_machine :status, :initial => :waiting_for_response do
 
@@ -148,8 +146,7 @@ class BuildList < ActiveRecord::Base
     end
 
     after_transition :on => :published, :do => [:set_version_and_tag, :actualize_packages]
-    after_transition :on => :cancel, :do => [:cancel_job],
-      :if => lambda { |build_list| build_list.new_core? }
+    after_transition :on => :cancel, :do => :cancel_job
 
     after_transition :on => [:published, :fail_publish, :build_error], :do => :notify_users
     after_transition :on => :build_success, :do => :notify_users,
@@ -181,20 +178,13 @@ class BuildList < ActiveRecord::Base
     end
 
     event :cancel do
-      transition [:build_pending, :platform_pending] => :build_canceled, :if => lambda { |build_list|
-        !build_list.new_core? && build_list.can_cancel? && BuildServer.delete_build_list(build_list.bs_id) == BuildServer::SUCCESS
-      }
-      transition [:build_pending, :build_started] => :build_canceling, :if => lambda { |build_list|
-        build_list.new_core?
-      }
+      transition [:build_pending, :build_started] => :build_canceling
     end
 
     # :build_canceling => :build_canceled - canceling from UI
     # :build_started => :build_canceled - canceling from worker by time-out (time_living has been expired)
     event :build_canceled do
-      transition [:build_canceling, :build_started] => :build_canceled, :if => lambda { |build_list|
-        build_list.new_core?
-      }
+      transition [:build_canceling, :build_started] => :build_canceled
     end
 
     event :published do
@@ -206,12 +196,7 @@ class BuildList < ActiveRecord::Base
     end
 
     event :publish do
-      transition [:success, :failed_publish] => :build_publish, :if => lambda { |build_list|
-        !build_list.new_core? && BuildServer.publish_container(build_list.bs_id) == BuildServer::SUCCESS
-      }
-      transition [:success, :failed_publish] => :build_publish, :if => lambda { |build_list|
-        build_list.new_core?
-      }
+      transition [:success, :failed_publish] => :build_publish
       transition [:success, :failed_publish] => :failed_publish
     end
 
@@ -253,11 +238,7 @@ class BuildList < ActiveRecord::Base
 
   #TODO: Share this checking on product owner.
   def can_cancel?
-    if new_core?
-      build_started? || build_pending?
-    else
-      [BUILD_PENDING, BuildServer::PLATFORM_PENDING].include?(status) && bs_id
-    end
+    build_started? || build_pending?
   end
 
   def can_publish?
@@ -269,41 +250,12 @@ class BuildList < ActiveRecord::Base
   end
 
   def add_to_queue
-    if new_core?
-      # TODO: Investigate: why 2 tasks will be created without checking @state
-      unless @status
-        add_job_to_abf_worker_queue
-        update_column(:bs_id, id)
-      end
-      @status ||= BUILD_PENDING
-    else
-      # XML-RPC params:
-      # - project_name
-      # - project_version
-      # - plname
-      # - arch
-      # - bplname
-      # - update_type
-      # - build_requires
-      # - id_web
-      # - include_repos
-      # - priority
-      # - git_project_address
-      @status ||= BuildServer.add_build_list(
-        project.name,
-        project_version,
-        save_to_platform.name,
-        arch.name,
-        (save_to_platform_id == build_for_platform_id ? '' : build_for_platform.name),
-        update_type,
-        false,
-        id,
-        include_repos,
-        priority,
-        project.git_project_address(user)
-      )
+    # TODO: Investigate: why 2 tasks will be created without checking @state
+    unless @status
+      add_job_to_abf_worker_queue
+      update_column(:bs_id, id)
     end
-    @status
+    @status ||= BUILD_PENDING
   end
 
   def self.human_status(status)
@@ -459,14 +411,6 @@ class BuildList < ActiveRecord::Base
     end
   end # notify_users
 
-  def delete_container
-    if can_cancel?
-      BuildServer.delete_build_list bs_id
-    else
-      BuildServer.delete_container bs_id if bs_id # prevent error if bs_id does not set
-    end
-  end
-
   def build_package(pkg_hash, package_type, prj)
     packages.create(pkg_hash) do |p|
       p.project = prj
@@ -475,5 +419,4 @@ class BuildList < ActiveRecord::Base
       yield p
     end
   end
-
 end

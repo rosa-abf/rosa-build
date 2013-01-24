@@ -65,5 +65,3 @@ Rosa::Application.configure do
   # Precompile additional assets (application.js, application.css, and all non-JS/CSS are already added)
   config.assets.precompile += %w(login.css login.js reg_session.css tour.css tour.js gollum/editor/langs/*.js)
 end
-
-# require 'stub_xml_rpc'

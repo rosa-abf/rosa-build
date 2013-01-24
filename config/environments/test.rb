@@ -42,5 +42,3 @@ Rosa::Application.configure do
   # Allow pass debug_assets=true as a query parameter to load pages with unpackaged assets
   config.assets.allow_debugging = true
 end
-
-require 'stub_xml_rpc' # TODO stub XML calls through stubbers

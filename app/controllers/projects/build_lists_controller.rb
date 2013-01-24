@@ -93,13 +93,11 @@ class Projects::BuildListsController < Projects::BaseController
   end
 
   def cancel
-    if @build_list.cancel
-      notice = @build_list.new_core? ?
-       t('layout.build_lists.will_be_canceled') :
-       t('layout.build_lists.cancel_success')
-    else
-      notice = t('layout.build_lists.cancel_fail')
-    end
+    notice = if @build_list.cancel
+                    t('layout.build_lists.will_be_canceled')
+                  else
+                    t('layout.build_lists.cancel_fail')
+                  end
     redirect_to :back, :notice => notice
   end
 
@@ -178,11 +176,12 @@ class Projects::BuildListsController < Projects::BaseController
     @build_list = BuildList.find_by_bs_id!(params[:id])
   end
 
-  def authenticate_build_service!
-    if request.remote_ip != APP_CONFIG['build_server_ip']
-      render :nothing => true, :status => 403
-    end
-  end
+  # What is it?
+  #def authenticate_build_service!
+  #  if request.remote_ip != APP_CONFIG['build_server_ip']
+  #    render :nothing => true, :status => 403
+  #  end
+  #end
 
   def publish
     @build_list.update_type = params[:build_list][:update_type] if params[:build_list][:update_type].present?
@@ -222,5 +221,4 @@ class Projects::BuildListsController < Projects::BaseController
       redirect_to :back, :notice => t('layout.build_lists.reject_publish_fail')
     end
   end
-
 end
