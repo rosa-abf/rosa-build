@@ -5,7 +5,7 @@ module BuildListsHelper
       return 'success'
     end
     if [BuildList::BUILD_ERROR, BuildList::PLATFORM_NOT_FOUND,
-        BuildList::PROJECT_NOT_FOUND, BuildList::PROJECT_VERSION_NOT_FOUND,
+        BuildList::PROJECT_VERSION_NOT_FOUND,
         BuildList::FAILED_PUBLISH, BuildList::REJECTED_PUBLISH].include? status
       return 'error'
     end

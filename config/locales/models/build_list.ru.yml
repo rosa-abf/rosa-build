@@ -118,7 +118,6 @@ ru:
         build_started: собирается
         platform_not_found: платформа не найдена
         platform_pending: платформа в процессе создания
-        project_not_found: проект не найден
         project_version_not_found: версия не найдена
 
       log:

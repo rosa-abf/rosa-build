@@ -53,8 +53,6 @@ class BuildList < ActiveRecord::Base
   ERROR   = 1
 
   PLATFORM_NOT_FOUND        = 1
-  PLATFORM_PENDING          = 2
-  PROJECT_NOT_FOUND         = 3
   PROJECT_VERSION_NOT_FOUND = 4
   PROJECT_SOURCE_ERROR      = 6
   DEPENDENCIES_ERROR        = 555
@@ -81,8 +79,6 @@ class BuildList < ActiveRecord::Base
                 BUILD_STARTED,
                 BUILD_ERROR,
                 PLATFORM_NOT_FOUND,
-                PLATFORM_PENDING,
-                PROJECT_NOT_FOUND,
                 PROJECT_VERSION_NOT_FOUND
               ]
 
@@ -98,8 +94,6 @@ class BuildList < ActiveRecord::Base
                      BUILD_STARTED => :build_started,
                      SUCCESS => :success,
                      PLATFORM_NOT_FOUND => :platform_not_found,
-                     PLATFORM_PENDING => :platform_pending,
-                     PROJECT_NOT_FOUND => :project_not_found,
                      PROJECT_VERSION_NOT_FOUND => :project_version_not_found,
                     }
 
@@ -163,9 +157,7 @@ class BuildList < ActiveRecord::Base
         build_list.add_to_queue == BuildList::SUCCESS
       }
       %w[BUILD_PENDING
-         PLATFORM_PENDING
          PLATFORM_NOT_FOUND
-         PROJECT_NOT_FOUND
          PROJECT_VERSION_NOT_FOUND
       ].each do |code|
         transition :waiting_for_response => code.demodulize.downcase.to_sym, :if => lambda { |build_list|
@@ -176,9 +168,7 @@ class BuildList < ActiveRecord::Base
 
     event :start_build do
       transition [ :build_pending,
-                   :platform_pending,
                    :platform_not_found,
-                   :project_not_found,
                    :project_version_not_found ] => :build_started
     end
 
