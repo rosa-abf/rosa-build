@@ -124,7 +124,7 @@ describe Api::V1::BuildListsController do
             it "should cancel build list" do
               @build_list.update_column(:status, BuildList::BUILD_PENDING)
               do_cancel
-              @build_list.reload.status.should == BuildList::BUILD_CANCELED
+              @build_list.reload.status.should == BuildList::BUILD_CANCELING
             end
           end
 
