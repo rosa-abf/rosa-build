@@ -31,7 +31,7 @@ class Projects::BuildListsController < Projects::BaseController
     @build_lists = BuildList.where(:id => @bls.pluck("#{BuildList.table_name}.id")).recent
     @build_lists = @build_lists.includes [:save_to_platform, :save_to_repository, :arch, :user, :project => [:owner]]
 
-    @build_server_status = AbfWorker::StatusInspector.get_status
+    @build_server_status = AbfWorker::StatusInspector.projects_status
   end
 
   def new

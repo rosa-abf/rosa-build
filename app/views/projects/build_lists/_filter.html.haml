@@ -1,18 +1,5 @@
 - content_for :sidebar do
-  .bordered.nopadding
-    %h3= t('layout.build_lists.build_server_status.header')
-
-    - [:rpm, :publish].each do |queue|
-      .table
-        .lefter= t("layout.build_lists.build_server_status.#{queue}_workers")
-      .both
-      - [:count, :tasks, :build_tasks].each do |metric|
-        .table
-          .lefter= t("layout.build_lists.build_server_status.#{metric}")
-          .righter= @build_server_status[queue][metric]
-        .both
-      %br
-    = link_to t('layout.build_lists.new_header'), new_project_build_list_path(@project), :class => 'button' if @project and can?(:create, @project.build_lists.build)
+  = render 'server_status'
 
   = form_for :filter, :url => @action_url, :html => { :method => :post, :class => :form } do |f|
     - if current_user

@@ -80,6 +80,7 @@ class Platforms::ProductBuildListsController < Platforms::BaseController
       @product_build_lists = @product_build_lists.for_status(params[:status]) if params[:status].present?
     end
     @product_build_lists = @product_build_lists.recent.paginate :page => params[:page]
+    @build_server_status = AbfWorker::StatusInspector.products_status
   end
 
   protected

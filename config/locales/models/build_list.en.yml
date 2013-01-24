@@ -93,6 +93,7 @@ en:
         tasks: '- tasks in queue'
         build_tasks: '- tasks in execution'
         rpm_workers: Workers for building
+        iso_workers: Workers for building
         publish_workers: Workers for publishing
 
       items:
