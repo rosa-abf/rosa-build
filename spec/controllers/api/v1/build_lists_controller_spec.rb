@@ -130,15 +130,15 @@ describe Api::V1::BuildListsController do
 
           context "if it has another status" do
             it "should return correct json error message" do
-              @build_list.update_column(:status, BuildServer::PROJECT_NOT_FOUND)
+              @build_list.update_column(:status, BuildList::PROJECT_NOT_FOUND)
               do_cancel
               response.body.should == {:is_canceled => false, :url => api_v1_build_list_path(@build_list, :format => :json), :message => incorrect_action_message}.to_json
             end
 
             it "should not cancel build list" do
-              @build_list.update_column(:status, BuildServer::PROJECT_NOT_FOUND)
+              @build_list.update_column(:status, BuildList::PROJECT_NOT_FOUND)
               do_cancel
-              @build_list.reload.status.should == BuildServer::PROJECT_NOT_FOUND
+              @build_list.reload.status.should == BuildList::PROJECT_NOT_FOUND
             end
           end
         end
@@ -183,7 +183,7 @@ describe Api::V1::BuildListsController do
 
           context "if it has another status" do
             before(:each) do
-              @build_list.update_column(:status, BuildServer::PROJECT_NOT_FOUND)
+              @build_list.update_column(:status, BuildList::PROJECT_NOT_FOUND)
               do_publish
             end
 
@@ -192,7 +192,7 @@ describe Api::V1::BuildListsController do
             end
 
             it "should not cancel build list" do
-              @build_list.reload.status.should == BuildServer::PROJECT_NOT_FOUND
+              @build_list.reload.status.should == BuildList::PROJECT_NOT_FOUND
             end
           end
         end
@@ -226,7 +226,7 @@ describe Api::V1::BuildListsController do
         context 'if user is project owner' do
           before(:each) do
             http_login(@owner_user)
-            @build_list.update_column(:status, BuildServer::SUCCESS)
+            @build_list.update_column(:status, BuildList::SUCCESS)
             @build_list.save_to_platform.update_column(:released, true)
             do_reject_publish
           end
@@ -243,7 +243,7 @@ describe Api::V1::BuildListsController do
 
           context "if it has another status" do
             before(:each) do
-              @build_list.update_column(:status, BuildServer::PROJECT_NOT_FOUND)
+              @build_list.update_column(:status, BuildList::PROJECT_NOT_FOUND)
               do_reject_publish
             end
 
@@ -252,14 +252,14 @@ describe Api::V1::BuildListsController do
             end
 
             it "should not cancel build list" do
-              @build_list.reload.status.should == BuildServer::PROJECT_NOT_FOUND
+              @build_list.reload.status.should == BuildList::PROJECT_NOT_FOUND
             end
           end
         end
 
         context 'if user is not project owner' do
           before(:each) do
-            @build_list.update_column(:status, BuildServer::SUCCESS)
+            @build_list.update_column(:status, BuildList::SUCCESS)
             @build_list.save_to_platform.update_column(:released, true)
             do_reject_publish
           end
@@ -270,7 +270,7 @@ describe Api::V1::BuildListsController do
 
           it "should not cancel build list" do
             do_reject_publish
-            @build_list.reload.status.should == BuildServer::SUCCESS
+            @build_list.reload.status.should == BuildList::SUCCESS
           end
         end
       end

@@ -49,15 +49,25 @@ class BuildList < ActiveRecord::Base
   LIVE_TIME = 4.week # for unpublished
   MAX_LIVE_TIME = 3.month # for published
 
-  # The kernel does not send these statuses directly
-  BUILD_CANCELED = 5000
-  WAITING_FOR_RESPONSE = 4000
-  BUILD_PENDING = 2000
-  BUILD_PUBLISHED = 6000
-  BUILD_PUBLISH = 7000
-  FAILED_PUBLISH = 8000
-  REJECTED_PUBLISH = 9000
-  BUILD_CANCELING = 10000
+  SUCCESS = 0
+  ERROR   = 1
+
+  PLATFORM_NOT_FOUND        = 1
+  PLATFORM_PENDING          = 2
+  PROJECT_NOT_FOUND         = 3
+  PROJECT_VERSION_NOT_FOUND = 4
+  PROJECT_SOURCE_ERROR      = 6
+  DEPENDENCIES_ERROR        = 555
+  BUILD_ERROR               = 666
+  BUILD_STARTED             = 3000
+  BUILD_CANCELED            = 5000
+  WAITING_FOR_RESPONSE      = 4000
+  BUILD_PENDING             = 2000
+  BUILD_PUBLISHED           = 6000
+  BUILD_PUBLISH             = 7000
+  FAILED_PUBLISH            = 8000
+  REJECTED_PUBLISH          = 9000
+  BUILD_CANCELING           = 10000
 
   STATUSES = [  WAITING_FOR_RESPONSE,
                 BUILD_CANCELED,
@@ -67,15 +77,13 @@ class BuildList < ActiveRecord::Base
                 BUILD_PUBLISH,
                 FAILED_PUBLISH,
                 REJECTED_PUBLISH,
-                BuildServer::SUCCESS,
-                BuildServer::BUILD_STARTED,
-                BuildServer::BUILD_ERROR,
-                BuildServer::PLATFORM_NOT_FOUND,
-                BuildServer::PLATFORM_PENDING,
-                BuildServer::PROJECT_NOT_FOUND,
-                BuildServer::PROJECT_VERSION_NOT_FOUND,
-                # BuildServer::BINARY_TEST_FAILED,
-                # BuildServer::DEPENDENCY_TEST_FAILED
+                SUCCESS,
+                BUILD_STARTED,
+                BUILD_ERROR,
+                PLATFORM_NOT_FOUND,
+                PLATFORM_PENDING,
+                PROJECT_NOT_FOUND,
+                PROJECT_VERSION_NOT_FOUND
               ]
 
   HUMAN_STATUSES = { WAITING_FOR_RESPONSE => :waiting_for_response,
@@ -86,15 +94,13 @@ class BuildList < ActiveRecord::Base
                      BUILD_PUBLISH => :build_publish,
                      FAILED_PUBLISH => :failed_publish,
                      REJECTED_PUBLISH => :rejected_publish,
-                     BuildServer::BUILD_ERROR => :build_error,
-                     BuildServer::BUILD_STARTED => :build_started,
-                     BuildServer::SUCCESS => :success,
-                     BuildServer::PLATFORM_NOT_FOUND => :platform_not_found,
-                     BuildServer::PLATFORM_PENDING => :platform_pending,
-                     BuildServer::PROJECT_NOT_FOUND => :project_not_found,
-                     BuildServer::PROJECT_VERSION_NOT_FOUND => :project_version_not_found,
-                     # BuildServer::DEPENDENCY_TEST_FAILED => :dependency_test_failed,
-                     # BuildServer::BINARY_TEST_FAILED => :binary_test_failed
+                     BUILD_ERROR => :build_error,
+                     BUILD_STARTED => :build_started,
+                     SUCCESS => :success,
+                     PLATFORM_NOT_FOUND => :platform_not_found,
+                     PLATFORM_PENDING => :platform_pending,
+                     PROJECT_NOT_FOUND => :project_not_found,
+                     PROJECT_VERSION_NOT_FOUND => :project_version_not_found,
                     }
 
   scope :recent, order("#{table_name}.updated_at DESC")
@@ -132,14 +138,14 @@ class BuildList < ActiveRecord::Base
 
     # WTF? around_transition -> infinite loop
     before_transition do |build_list, transition|
-      status = BuildList::HUMAN_STATUSES[build_list.status]
+      status = HUMAN_STATUSES[build_list.status]
       if build_list.mass_build && MassBuild::COUNT_STATUSES.include?(status)
         MassBuild.decrement_counter "#{status.to_s}_count", build_list.mass_build_id
       end
     end
 
     after_transition do |build_list, transition|
-      status = BuildList::HUMAN_STATUSES[build_list.status]
+      status = HUMAN_STATUSES[build_list.status]
       if build_list.mass_build && MassBuild::COUNT_STATUSES.include?(status)
         MassBuild.increment_counter "#{status.to_s}_count", build_list.mass_build_id
       end
@@ -154,14 +160,13 @@ class BuildList < ActiveRecord::Base
 
     event :place_build do
       transition :waiting_for_response => :build_pending, :if => lambda { |build_list|
-        build_list.add_to_queue == BuildServer::SUCCESS
+        build_list.add_to_queue == BuildList::SUCCESS
       }
-      [
-        'BuildList::BUILD_PENDING',
-        'BuildServer::PLATFORM_PENDING',
-        'BuildServer::PLATFORM_NOT_FOUND',
-        'BuildServer::PROJECT_NOT_FOUND',
-        'BuildServer::PROJECT_VERSION_NOT_FOUND'
+      %w[BUILD_PENDING
+         PLATFORM_PENDING
+         PLATFORM_NOT_FOUND
+         PROJECT_NOT_FOUND
+         PROJECT_VERSION_NOT_FOUND
       ].each do |code|
         transition :waiting_for_response => code.demodulize.downcase.to_sym, :if => lambda { |build_list|
           build_list.add_to_queue == code.constantize
@@ -242,7 +247,7 @@ class BuildList < ActiveRecord::Base
   end
 
   def can_publish?
-    [BuildServer::SUCCESS, FAILED_PUBLISH].include? status
+    [SUCCESS, FAILED_PUBLISH].include? status
   end
 
   def can_reject_publish?
@@ -267,7 +272,7 @@ class BuildList < ActiveRecord::Base
   end
 
   def self.status_by_human(human)
-    BuildList::HUMAN_STATUSES.key human
+    HUMAN_STATUSES.key human
   end
 
   def set_items(items_hash)
@@ -309,8 +314,8 @@ class BuildList < ActiveRecord::Base
   end
 
   def in_work?
-    status == BuildServer::BUILD_STARTED
-    #[WAITING_FOR_RESPONSE, BuildServer::BUILD_PENDING, BuildServer::BUILD_STARTED].include?(status)
+    status == BUILD_STARTED
+    #[WAITING_FOR_RESPONSE, BUILD_PENDING, BUILD_STARTED].include?(status)
   end
 
   def associate_and_create_advisory(params)

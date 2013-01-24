@@ -12,11 +12,11 @@ module AbfWorker
       case status
       when COMPLETED
         bl.build_success
-        item.update_attributes({:status => BuildServer::SUCCESS})
+        item.update_attributes({:status => BuildList::SUCCESS})
         bl.now_publish if bl.auto_publish?
       when FAILED
         bl.build_error
-        item.update_attributes({:status => BuildServer::BUILD_ERROR})
+        item.update_attributes({:status => BuildList::BUILD_ERROR})
       when STARTED
         bl.start_build
       when CANCELED
@@ -32,7 +32,7 @@ module AbfWorker
         bl.items.first || bl.items.create({
           :version => bl.commit_hash,
           :name => bl.project.name,
-          :status => BuildServer::BUILD_STARTED,
+          :status => BuildList::BUILD_STARTED,
           :level => 0
         })
       end

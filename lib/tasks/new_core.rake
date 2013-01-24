@@ -23,7 +23,7 @@ namespace :new_core do
     platform_repository_folder = "#{bl.save_to_platform.path}/repository"
     BuildList.where(:mass_build_id => 73).
       where(:status => [
-        BuildServer::SUCCESS,
+        BuildList::SUCCESS,
         BuildList::FAILED_PUBLISH
       ]).
       order(:id).
@@ -61,7 +61,7 @@ namespace :new_core do
     token = User.find_by_uname('rosa_system').authentication_token
     BuildList.where(:new_core => true).
       where(:status => [
-        BuildServer::SUCCESS,
+        BuildList::SUCCESS,
         BuildList::FAILED_PUBLISH,
         BuildList::BUILD_PUBLISHED,
         BuildList::BUILD_PUBLISH

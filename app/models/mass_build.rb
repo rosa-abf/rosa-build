@@ -54,7 +54,7 @@ class MassBuild < ActiveRecord::Base
 
   def generate_failed_builds_list
     report = ""
-    BuildList.where(:status => BuildServer::BUILD_ERROR, :mass_build_id => self.id).each do |build_list|
+    BuildList.where(:status => BuildList::BUILD_ERROR, :mass_build_id => self.id).each do |build_list|
       report << "ID: #{build_list.id}; "
       report << "PROJECT_NAME: #{build_list.project.name}\n"
     end
