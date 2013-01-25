@@ -14,6 +14,8 @@
           [@build_list.save_to_platform, @build_list.save_to_repository])]
     - elsif @build_list.container_path.present?
       = link_to container_url, container_url
+    - elsif @build_list.container_path == ''
+      = t("layout.build_lists.creating")
   .both
 
   .leftlist= t("activerecord.attributes.build_list.bs_id")
@@ -89,6 +91,9 @@
   - if @build_list.can_cancel? && can?(:cancel, @build_list)
     = link_to t("layout.build_lists.cancel"), cancel_build_list_path(@build_list),
               :method => :put, :confirm => t("layout.confirm"), :class => 'button'
+  - if @build_list.success? && can?(:create_container, @build_list)
+    = link_to t("layout.build_lists.create_container"), create_container_build_list_path(@build_list),
+              :method => :put, :confirm => t("layout.confirm"), :class => 'button'     
 
   - if @build_list.can_publish? && @build_list.save_to_platform.released && @build_list.advisory.nil? && can?(:publish, @build_list)
     #advisory_block

@@ -5,7 +5,7 @@ class Projects::BuildListsController < Projects::BaseController
   before_filter :authenticate_user!
   skip_before_filter :authenticate_user!, :only => [:show, :index, :search, :log] if APP_CONFIG['anonymous_access']
 
-  before_filter :find_build_list, :only => [:show, :publish, :cancel, :update, :log]
+  before_filter :find_build_list, :only => [:show, :publish, :cancel, :update, :log, :create_container]
 
   load_and_authorize_resource :project, :only => NESTED_ACTIONS
   load_and_authorize_resource :build_list, :through => :project, :only => NESTED_ACTIONS, :shallow => true
@@ -87,6 +87,11 @@ class Projects::BuildListsController < Projects::BaseController
       # King Arthur, we are under attack!
       redirect_to :forbidden and return
     end
+  end
+
+  def create_container
+    AbfWorker::BuildListsPublishTaskManager.create_container_for @build_list
+    redirect_to :back, :notice => t('layout.build_lists.container_will_be_created')    
   end
 
   def cancel
