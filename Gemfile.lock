@@ -354,6 +354,9 @@ GEM
     treetop (1.4.12)
       polyglot
       polyglot (>= 0.3.1)
+    turbo-sprockets-rails3 (0.3.6)
+      railties (> 3.2.8, < 4.0.0)
+      sprockets (>= 2.0.0)
     tzinfo (0.3.35)
     uglifier (1.2.7)
       execjs (>= 0.3.0)
@@ -439,6 +442,7 @@ DEPENDENCIES
   therubyracer (~> 0.10.2)
   therubyrhino (~> 1.73.1)
   trinidad (~> 1.0.2)
+  turbo-sprockets-rails3
   uglifier (~> 1.2.4)
   unicorn (~> 4.3.1)
   whenever (~> 0.7.3)
