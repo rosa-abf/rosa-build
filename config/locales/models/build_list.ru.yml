@@ -116,7 +116,6 @@ ru:
         build_canceling: сборка отменяется
         success: собран
         build_started: собирается
-        platform_not_found: платформа не найдена
         platform_pending: платформа в процессе создания
         project_version_not_found: версия не найдена
 

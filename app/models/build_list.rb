@@ -52,7 +52,6 @@ class BuildList < ActiveRecord::Base
   SUCCESS = 0
   ERROR   = 1
 
-  PLATFORM_NOT_FOUND        = 1
   PROJECT_VERSION_NOT_FOUND = 4
   PROJECT_SOURCE_ERROR      = 6
   DEPENDENCIES_ERROR        = 555
@@ -78,7 +77,6 @@ class BuildList < ActiveRecord::Base
                 SUCCESS,
                 BUILD_STARTED,
                 BUILD_ERROR,
-                PLATFORM_NOT_FOUND,
                 PROJECT_VERSION_NOT_FOUND
               ]
 
@@ -93,7 +91,6 @@ class BuildList < ActiveRecord::Base
                      BUILD_ERROR => :build_error,
                      BUILD_STARTED => :build_started,
                      SUCCESS => :success,
-                     PLATFORM_NOT_FOUND => :platform_not_found,
                      PROJECT_VERSION_NOT_FOUND => :project_version_not_found,
                     }
 
@@ -156,10 +153,7 @@ class BuildList < ActiveRecord::Base
       transition :waiting_for_response => :build_pending, :if => lambda { |build_list|
         build_list.add_to_queue == BuildList::SUCCESS
       }
-      %w[BUILD_PENDING
-         PLATFORM_NOT_FOUND
-         PROJECT_VERSION_NOT_FOUND
-      ].each do |code|
+      %w[BUILD_PENDING PROJECT_VERSION_NOT_FOUND].each do |code|
         transition :waiting_for_response => code.demodulize.downcase.to_sym, :if => lambda { |build_list|
           build_list.add_to_queue == code.constantize
         }
@@ -167,9 +161,7 @@ class BuildList < ActiveRecord::Base
     end
 
     event :start_build do
-      transition [ :build_pending,
-                   :platform_not_found,
-                   :project_version_not_found ] => :build_started
+      transition [ :build_pending, :project_version_not_found ] => :build_started
     end
 
     event :cancel do

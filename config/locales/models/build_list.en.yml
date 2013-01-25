@@ -119,7 +119,6 @@ en:
         build_canceled: Build canceled
         success: Build complete
         build_started: Build started
-        platform_not_found: Platform not found
         platform_pending: Platform pending
         project_version_not_found: Project version not found
 

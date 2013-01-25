@@ -130,7 +130,7 @@ class ActivityFeedObserver < ActiveRecord::Observer
       end
 
     when 'BuildList'
-      if [BuildList::BUILD_PUBLISHED, BuildList::SUCCESS, BuildList::BUILD_ERROR, BuildList::PLATFORM_NOT_FOUND,
+      if [BuildList::BUILD_PUBLISHED, BuildList::SUCCESS, BuildList::BUILD_ERROR,
            BuildList::PROJECT_VERSION_NOT_FOUND, BuildList::FAILED_PUBLISH].include? record.status or
          (record.status == BuildList::BUILD_PENDING && record.bs_id_changed?)
         record.project.admins.each do |recipient|
