@@ -70,7 +70,7 @@ module AbfWorker
         platform_path = "#{build_list.save_to_platform.path}/container/#{build_list.id}"
         return if File.directory?(platform_path)
         system "mkdir -p #{platform_path}"
-        build_list.update_attributes(:container_path => '')
+        build_list.update_column(:container_path, '')
 
 
         packages = {:sources => [], :binaries => {:x86_64 => [], :i586 => []}}
@@ -92,13 +92,13 @@ module AbfWorker
               :id => build_list.save_to_repository.id
             },
             :type => :publish,
-            :time_living => 9600 # 160 min
+            :time_living => 9600, # 160 min
             :packages => packages,
             :old_packages => {:sources => [], :binaries => {:x86_64 => [], :i586 => []}},
             :build_list_ids => [build_list.id],
             :projects_for_cleanup => [],
             :extra => {:create_container => true}
-          })]
+          }]
         )
       end
     end
