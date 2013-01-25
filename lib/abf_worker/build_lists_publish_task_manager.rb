@@ -85,7 +85,7 @@ module AbfWorker
             :distrib_type => build_list.build_for_platform.distrib_type,
             :platform => {
               :platform_path => platform_path,
-              :released => build_list.save_to_platform.released
+              :released => false
             },
             :repository => {
               :name => build_list.save_to_repository.name,
