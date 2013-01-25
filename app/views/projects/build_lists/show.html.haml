@@ -25,7 +25,11 @@
   .both
   .leftlist= t("activerecord.attributes.build_list.build_for_platform")
   .rightlist
-    = link_to @build_list.build_for_platform.name, @build_list.build_for_platform
+    - bfp = @build_list.build_for_platform
+    - if bfp.present?
+      = link_to(bfp.name, bfp.build_for_platform)
+    - else
+      = t("layout.build_lists.platform_not_exist")
   .both
   .leftlist= t("activerecord.attributes.build_list.save_to_repository")
   .rightlist
