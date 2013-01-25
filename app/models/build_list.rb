@@ -154,8 +154,8 @@ class BuildList < ActiveRecord::Base
         build_list.add_to_queue == BuildList::SUCCESS
       }
       %w[BUILD_PENDING PROJECT_VERSION_NOT_FOUND].each do |code|
-        transition :waiting_for_response => code.demodulize.downcase.to_sym, :if => lambda { |build_list|
-          build_list.add_to_queue == code.constantize
+        transition :waiting_for_response => code.downcase.to_sym, :if => lambda { |build_list|
+          build_list.add_to_queue == BuildList.const_get(code)
         }
       end
     end
