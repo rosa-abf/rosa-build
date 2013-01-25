@@ -47,7 +47,7 @@ en:
 
   layout:
     build_lists:
-      platform_not_exist: platform does not exist
+      platform_deleted: platform has been deleted
       filter_header: Filter
       current: Curent
       created_at_start: "Build to start on:"

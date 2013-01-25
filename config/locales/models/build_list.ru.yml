@@ -46,7 +46,7 @@ ru:
 
   layout:
     build_lists:
-      platform_not_exist: платформа не существует
+      platform_deleted: платформа была удалена
       filter_header: Фильтр
       current: Текущие
       created_at_start: "Время постановки на сборку с:"
