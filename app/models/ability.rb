@@ -84,10 +84,10 @@ class Ability
         can(:publish, BuildList) do |build_list|
           build_list.save_to_repository.publish_without_qa ? can?(:write, build_list.project) : local_admin?(build_list.save_to_platform)
         end
-        can([:reject_publish, :create_container], BuildList) do |build_list|
+        can(:reject_publish, BuildList) do |build_list|
           local_admin?(build_list.save_to_platform)
         end
-        can(:cancel, BuildList) {|build_list| can?(:write, build_list.project)}
+        can([:cancel. :create_container], BuildList) {|build_list| can?(:write, build_list.project)}
 
         can [:read, :owned, :related, :members], Platform, :owner_type => 'User', :owner_id => user.id
         can [:read, :related, :members], Platform, :owner_type => 'Group', :owner_id => user.group_ids
