@@ -27,7 +27,7 @@
   .rightlist
     - bfp = @build_list.build_for_platform
     - if bfp.present?
-      = link_to(bfp.name, bfp.build_for_platform)
+      = link_to(bfp.name, bfp)
     - else
       = t("layout.build_lists.platform_deleted")
   .both
