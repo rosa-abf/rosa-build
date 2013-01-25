@@ -1,0 +1,15 @@
+- queues ||= [:rpm, :publish]
+.bordered.nopadding
+  %h3= t('layout.build_lists.build_server_status.header')
+
+  - queues.each do |queue|
+    .table
+      .lefter= t("layout.build_lists.build_server_status.#{queue}_workers")
+    .both
+    - [:count, :tasks, :build_tasks].each do |metric|
+      .table
+        .lefter= t("layout.build_lists.build_server_status.#{metric}")
+        .righter= @build_server_status[queue][metric]
+      .both
+    %br
+  = link_to t('layout.build_lists.new_header'), new_project_build_list_path(@project), :class => 'button' if @project and can?(:create, @project.build_lists.build)
