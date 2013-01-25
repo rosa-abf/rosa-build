@@ -175,24 +175,6 @@ class Project < ActiveRecord::Base
     "%02d:%02d" % [average_build_time / 3600, average_build_time % 3600 / 60]
   end
 
-  def xml_rpc_create(repository)
-    result = BuildServer.create_project name, repository.platform.name, repository.name, path
-    if result == BuildServer::SUCCESS
-      return true
-    else
-      raise "Failed to create project #{name} (repo #{repository.name}) inside platform #{repository.platform.name} in path #{path} with code #{result}."
-    end
-  end
-
-  def xml_rpc_destroy(repository)
-    result = BuildServer.delete_project name, repository.platform.name
-    if result == BuildServer::SUCCESS
-      return true
-    else
-      raise "Failed to delete repository #{name} (repo main) inside platform #{owner.uname}_personal with code #{result}."
-    end
-  end
-
   def destroy_project_from_repository(repository)
     AbfWorker::BuildListsPublishTaskManager.destroy_project_from_repository self, repository
   end

@@ -29,7 +29,7 @@ describe BuildList do
     before(:all) { ActionMailer::Base.deliveries = [] }
     before do
       build_list.update_attributes({:commit_hash => build_list.project.repo.commits('master').last.id,
-        :status => BuildServer::BUILD_STARTED}, :without_protection => true)
+        :status => BuildList::BUILD_STARTED}, :without_protection => true)
     end
     after { ActionMailer::Base.deliveries = [] }
 

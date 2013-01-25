@@ -1,11 +1,10 @@
 # -*- encoding : utf-8 -*-
 module BuildListsHelper
   def build_list_status_color(status)
-    if [BuildList::BUILD_PUBLISHED, BuildServer::SUCCESS].include? status
+    if [BuildList::BUILD_PUBLISHED, BuildList::SUCCESS].include? status
       return 'success'
     end
-    if [BuildServer::BUILD_ERROR, BuildServer::PLATFORM_NOT_FOUND,
-        BuildServer::PROJECT_NOT_FOUND, BuildServer::PROJECT_VERSION_NOT_FOUND,
+    if [BuildList::BUILD_ERROR, BuildList::PROJECT_VERSION_NOT_FOUND,
         BuildList::FAILED_PUBLISH, BuildList::REJECTED_PUBLISH].include? status
       return 'error'
     end
@@ -21,10 +20,10 @@ module BuildListsHelper
   end
 
   def build_list_item_status_color(status)
-    if BuildServer::SUCCESS == status
+    if BuildList::SUCCESS == status
       return 'success'
     end
-    if [BuildServer::DEPENDENCIES_ERROR, BuildServer::BUILD_ERROR, BuildList::Item::GIT_ERROR].include? status
+    if [BuildList::DEPENDENCIES_ERROR, BuildList::BUILD_ERROR, BuildList::Item::GIT_ERROR].include? status
       return 'error'
     end
 

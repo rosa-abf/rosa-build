@@ -39,7 +39,6 @@ class BuildList < ActiveRecord::Base
       errors.add(:save_to_repository, I18n.t('flash.build_list.wrong_include_repos')) unless build_for_platform.repository_ids.include? ir.to_i
     }
   }
-
   validate lambda {
     errors.add(:save_to_repository, I18n.t('flash.build_list.wrong_project')) unless save_to_repository.projects.exists?(project_id)
   }
@@ -50,15 +49,22 @@ class BuildList < ActiveRecord::Base
   LIVE_TIME = 4.week # for unpublished
   MAX_LIVE_TIME = 3.month # for published
 
-  # The kernel does not send these statuses directly
-  BUILD_CANCELED = 5000
-  WAITING_FOR_RESPONSE = 4000
-  BUILD_PENDING = 2000
-  BUILD_PUBLISHED = 6000
-  BUILD_PUBLISH = 7000
-  FAILED_PUBLISH = 8000
-  REJECTED_PUBLISH = 9000
-  BUILD_CANCELING = 10000
+  SUCCESS = 0
+  ERROR   = 1
+
+  PROJECT_VERSION_NOT_FOUND = 4
+  PROJECT_SOURCE_ERROR      = 6
+  DEPENDENCIES_ERROR        = 555
+  BUILD_ERROR               = 666
+  BUILD_STARTED             = 3000
+  BUILD_CANCELED            = 5000
+  WAITING_FOR_RESPONSE      = 4000
+  BUILD_PENDING             = 2000
+  BUILD_PUBLISHED           = 6000
+  BUILD_PUBLISH             = 7000
+  FAILED_PUBLISH            = 8000
+  REJECTED_PUBLISH          = 9000
+  BUILD_CANCELING           = 10000
 
   STATUSES = [  WAITING_FOR_RESPONSE,
                 BUILD_CANCELED,
@@ -68,15 +74,10 @@ class BuildList < ActiveRecord::Base
                 BUILD_PUBLISH,
                 FAILED_PUBLISH,
                 REJECTED_PUBLISH,
-                BuildServer::SUCCESS,
-                BuildServer::BUILD_STARTED,
-                BuildServer::BUILD_ERROR,
-                BuildServer::PLATFORM_NOT_FOUND,
-                BuildServer::PLATFORM_PENDING,
-                BuildServer::PROJECT_NOT_FOUND,
-                BuildServer::PROJECT_VERSION_NOT_FOUND,
-                # BuildServer::BINARY_TEST_FAILED,
-                # BuildServer::DEPENDENCY_TEST_FAILED
+                SUCCESS,
+                BUILD_STARTED,
+                BUILD_ERROR,
+                PROJECT_VERSION_NOT_FOUND
               ]
 
   HUMAN_STATUSES = { WAITING_FOR_RESPONSE => :waiting_for_response,
@@ -87,15 +88,10 @@ class BuildList < ActiveRecord::Base
                      BUILD_PUBLISH => :build_publish,
                      FAILED_PUBLISH => :failed_publish,
                      REJECTED_PUBLISH => :rejected_publish,
-                     BuildServer::BUILD_ERROR => :build_error,
-                     BuildServer::BUILD_STARTED => :build_started,
-                     BuildServer::SUCCESS => :success,
-                     BuildServer::PLATFORM_NOT_FOUND => :platform_not_found,
-                     BuildServer::PLATFORM_PENDING => :platform_pending,
-                     BuildServer::PROJECT_NOT_FOUND => :project_not_found,
-                     BuildServer::PROJECT_VERSION_NOT_FOUND => :project_version_not_found,
-                     # BuildServer::DEPENDENCY_TEST_FAILED => :dependency_test_failed,
-                     # BuildServer::BINARY_TEST_FAILED => :binary_test_failed
+                     BUILD_ERROR => :build_error,
+                     BUILD_STARTED => :build_started,
+                     SUCCESS => :success,
+                     PROJECT_VERSION_NOT_FOUND => :project_version_not_found,
                     }
 
   scope :recent, order("#{table_name}.updated_at DESC")
@@ -128,28 +124,26 @@ class BuildList < ActiveRecord::Base
   serialize :results, Array
 
   after_commit :place_build
-  after_destroy :delete_container
 
   state_machine :status, :initial => :waiting_for_response do
 
     # WTF? around_transition -> infinite loop
     before_transition do |build_list, transition|
-      status = BuildList::HUMAN_STATUSES[build_list.status]
+      status = HUMAN_STATUSES[build_list.status]
       if build_list.mass_build && MassBuild::COUNT_STATUSES.include?(status)
         MassBuild.decrement_counter "#{status.to_s}_count", build_list.mass_build_id
       end
     end
 
     after_transition do |build_list, transition|
-      status = BuildList::HUMAN_STATUSES[build_list.status]
+      status = HUMAN_STATUSES[build_list.status]
       if build_list.mass_build && MassBuild::COUNT_STATUSES.include?(status)
         MassBuild.increment_counter "#{status.to_s}_count", build_list.mass_build_id
       end
     end
 
     after_transition :on => :published, :do => [:set_version_and_tag, :actualize_packages]
-    after_transition :on => :cancel, :do => [:cancel_job],
-      :if => lambda { |build_list| build_list.new_core? }
+    after_transition :on => :cancel, :do => :cancel_job
 
     after_transition :on => [:published, :fail_publish, :build_error], :do => :notify_users
     after_transition :on => :build_success, :do => :notify_users,
@@ -157,15 +151,9 @@ class BuildList < ActiveRecord::Base
 
     event :place_build do
       transition :waiting_for_response => :build_pending, :if => lambda { |build_list|
-        build_list.add_to_queue == BuildServer::SUCCESS
+        build_list.add_to_queue == BuildList::SUCCESS
       }
-      [
-        'BuildList::BUILD_PENDING',
-        'BuildServer::PLATFORM_PENDING',
-        'BuildServer::PLATFORM_NOT_FOUND',
-        'BuildServer::PROJECT_NOT_FOUND',
-        'BuildServer::PROJECT_VERSION_NOT_FOUND'
-      ].each do |code|
+      %w[BUILD_PENDING PROJECT_VERSION_NOT_FOUND].each do |code|
         transition :waiting_for_response => code.demodulize.downcase.to_sym, :if => lambda { |build_list|
           build_list.add_to_queue == code.constantize
         }
@@ -173,28 +161,17 @@ class BuildList < ActiveRecord::Base
     end
 
     event :start_build do
-      transition [ :build_pending,
-                   :platform_pending,
-                   :platform_not_found,
-                   :project_not_found,
-                   :project_version_not_found ] => :build_started
+      transition [ :build_pending, :project_version_not_found ] => :build_started
     end
 
     event :cancel do
-      transition [:build_pending, :platform_pending] => :build_canceled, :if => lambda { |build_list|
-        !build_list.new_core? && build_list.can_cancel? && BuildServer.delete_build_list(build_list.bs_id) == BuildServer::SUCCESS
-      }
-      transition [:build_pending, :build_started] => :build_canceling, :if => lambda { |build_list|
-        build_list.new_core?
-      }
+      transition [:build_pending, :build_started] => :build_canceling
     end
 
     # :build_canceling => :build_canceled - canceling from UI
     # :build_started => :build_canceled - canceling from worker by time-out (time_living has been expired)
     event :build_canceled do
-      transition [:build_canceling, :build_started] => :build_canceled, :if => lambda { |build_list|
-        build_list.new_core?
-      }
+      transition [:build_canceling, :build_started] => :build_canceled
     end
 
     event :published do
@@ -206,12 +183,7 @@ class BuildList < ActiveRecord::Base
     end
 
     event :publish do
-      transition [:success, :failed_publish] => :build_publish, :if => lambda { |build_list|
-        !build_list.new_core? && BuildServer.publish_container(build_list.bs_id) == BuildServer::SUCCESS
-      }
-      transition [:success, :failed_publish] => :build_publish, :if => lambda { |build_list|
-        build_list.new_core?
-      }
+      transition [:success, :failed_publish] => :build_publish
       transition [:success, :failed_publish] => :failed_publish
     end
 
@@ -253,15 +225,11 @@ class BuildList < ActiveRecord::Base
 
   #TODO: Share this checking on product owner.
   def can_cancel?
-    if new_core?
-      build_started? || build_pending?
-    else
-      [BUILD_PENDING, BuildServer::PLATFORM_PENDING].include?(status) && bs_id
-    end
+    build_started? || build_pending?
   end
 
   def can_publish?
-    [BuildServer::SUCCESS, FAILED_PUBLISH].include? status
+    [SUCCESS, FAILED_PUBLISH].include? status
   end
 
   def can_reject_publish?
@@ -269,41 +237,12 @@ class BuildList < ActiveRecord::Base
   end
 
   def add_to_queue
-    if new_core?
-      # TODO: Investigate: why 2 tasks will be created without checking @state
-      unless @status
-        add_job_to_abf_worker_queue
-        update_column(:bs_id, id)
-      end
-      @status ||= BUILD_PENDING
-    else
-      # XML-RPC params:
-      # - project_name
-      # - project_version
-      # - plname
-      # - arch
-      # - bplname
-      # - update_type
-      # - build_requires
-      # - id_web
-      # - include_repos
-      # - priority
-      # - git_project_address
-      @status ||= BuildServer.add_build_list(
-        project.name,
-        project_version,
-        save_to_platform.name,
-        arch.name,
-        (save_to_platform_id == build_for_platform_id ? '' : build_for_platform.name),
-        update_type,
-        false,
-        id,
-        include_repos,
-        priority,
-        project.git_project_address(user)
-      )
+    # TODO: Investigate: why 2 tasks will be created without checking @state
+    unless @status
+      add_job_to_abf_worker_queue
+      update_column(:bs_id, id)
     end
-    @status
+    @status ||= BUILD_PENDING
   end
 
   def self.human_status(status)
@@ -315,7 +254,7 @@ class BuildList < ActiveRecord::Base
   end
 
   def self.status_by_human(human)
-    BuildList::HUMAN_STATUSES.key human
+    HUMAN_STATUSES.key human
   end
 
   def set_items(items_hash)
@@ -357,8 +296,8 @@ class BuildList < ActiveRecord::Base
   end
 
   def in_work?
-    status == BuildServer::BUILD_STARTED
-    #[WAITING_FOR_RESPONSE, BuildServer::BUILD_PENDING, BuildServer::BUILD_STARTED].include?(status)
+    status == BUILD_STARTED
+    #[WAITING_FOR_RESPONSE, BUILD_PENDING, BUILD_STARTED].include?(status)
   end
 
   def associate_and_create_advisory(params)
@@ -459,14 +398,6 @@ class BuildList < ActiveRecord::Base
     end
   end # notify_users
 
-  def delete_container
-    if can_cancel?
-      BuildServer.delete_build_list bs_id
-    else
-      BuildServer.delete_container bs_id if bs_id # prevent error if bs_id does not set
-    end
-  end
-
   def build_package(pkg_hash, package_type, prj)
     packages.create(pkg_hash) do |p|
       p.project = prj
@@ -475,5 +406,4 @@ class BuildList < ActiveRecord::Base
       yield p
     end
   end
-
 end

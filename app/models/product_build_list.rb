@@ -64,7 +64,6 @@ class ProductBuildList < ActiveRecord::Base
 
   after_create :add_job_to_abf_worker_queue
   before_destroy :can_destroy?
-  after_destroy :xml_delete_iso_container
 
   state_machine :status, :initial => :build_pending do
 
@@ -75,7 +74,7 @@ class ProductBuildList < ActiveRecord::Base
     event :cancel do
       transition [:build_pending, :build_started] => :build_canceling
     end
-    after_transition :on => :cancel, :do => [:cancel_job]
+    after_transition :on => :cancel, :do => :cancel_job
 
     # :build_canceling => :build_canceled - canceling from UI
     # :build_started => :build_canceled - canceling from worker by time-out (time_living has been expired)
@@ -161,19 +160,5 @@ class ProductBuildList < ActiveRecord::Base
       :distrib_type => product.platform.distrib_type,
       :user => {:uname => user.try(:uname), :email => user.try(:email)}
     }
-  end
-
-  def xml_delete_iso_container
-    # TODO: write new worker for delete
-    if project
-      raise "Failed to destroy product_build_list #{id} inside platform #{product.platform.name} (Not Implemented)."
-    else
-      result = ProductBuilder.delete_iso_container self
-      if result == ProductBuilder::SUCCESS
-        return true
-      else
-        raise "Failed to destroy product_build_list #{id} inside platform #{product.platform.name} with code #{result}."
-      end
-    end
   end
 end

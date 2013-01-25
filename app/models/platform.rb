@@ -1,5 +1,4 @@
 # -*- encoding : utf-8 -*-
-#require 'lib/build_server.rb'
 class Platform < ActiveRecord::Base
   VISIBILITIES = ['open', 'hidden']
 

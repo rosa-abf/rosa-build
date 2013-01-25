@@ -7,14 +7,14 @@ class BuildList::Item < ActiveRecord::Base
 
   GIT_ERROR = 5
   
-  STATUSES = [BuildServer::SUCCESS, BuildServer::DEPENDENCIES_ERROR, BuildServer::BUILD_ERROR, BuildServer::BUILD_STARTED, GIT_ERROR, BuildList::BUILD_CANCELED]
+  STATUSES = [BuildList::SUCCESS, BuildList::DEPENDENCIES_ERROR, BuildList::BUILD_ERROR, BuildList::BUILD_STARTED, GIT_ERROR, BuildList::BUILD_CANCELED]
   HUMAN_STATUSES = {
                      nil => :unknown,
                      GIT_ERROR => :git_error,
-                     BuildServer::DEPENDENCIES_ERROR => :dependencies_error,
-                     BuildServer::SUCCESS => :success,
-                     BuildServer::BUILD_STARTED => :build_started,
-                     BuildServer::BUILD_ERROR => :build_error,
+                     BuildList::DEPENDENCIES_ERROR => :dependencies_error,
+                     BuildList::SUCCESS => :success,
+                     BuildList::BUILD_STARTED => :build_started,
+                     BuildList::BUILD_ERROR => :build_error,
                      BuildList::BUILD_CANCELED => :build_canceled
                     }
 

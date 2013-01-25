@@ -207,14 +207,6 @@ Rosa::Application.routes.draw do
   end
 
   scope :module => 'projects' do
-    # Core callbacks
-    match 'build_lists/publish_build', :to => "build_lists#publish_build"
-    match 'build_lists/status_build', :to => "build_lists#status_build"
-    match 'build_lists/post_build', :to => "build_lists#post_build"
-    match 'build_lists/pre_build', :to => "build_lists#pre_build"
-    match 'build_lists/circle_build', :to => "build_lists#circle_build"
-    match 'build_lists/new_bbdt', :to => "build_lists#new_bbdt"
-
     resources :build_lists, :only => [:index, :show, :update] do
       member do
         put :cancel

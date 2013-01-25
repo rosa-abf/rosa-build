@@ -10,7 +10,7 @@
           - ['pending', nil]
         - when BuildList::BUILD_PUBLISHED
           - ['published', nil]
-        - when BuildServer::SUCCESS
+        - when BuildList::SUCCESS
           - ['success', nil]
         - else ['failed', t("layout.build_lists.statuses.#{BuildList::HUMAN_STATUSES[status]}")]
       = raw t("notifications.bodies.build_status.#{message}", :error => error)

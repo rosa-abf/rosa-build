@@ -40,13 +40,6 @@ set :workers_count, 4
 require './lib/recipes/resque'
 
 namespace :deploy do
-  task :stub_xml_rpc do
-    path = File.join(release_path, 'config', 'environment.rb')
-    code = %Q{\nrequire 'stub_xml_rpc'\n}
-    puts "Stub XML RPC"
-    run %Q{echo "#{code}" >> #{path}}
-  end
-
   task :symlink_all, :roles => :app do
     run "mkdir -p #{fetch :shared_path}/config"
 
