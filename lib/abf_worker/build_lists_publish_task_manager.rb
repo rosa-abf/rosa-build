@@ -65,6 +65,42 @@ module AbfWorker
       def redis
         Resque.redis
       end
+
+      def create_container_for(build_list)
+        platform_path = "#{build_list.save_to_platform.path}/container/#{build_list.id}"
+        return if File.directory?(platform_path)
+        system "mkdir -p #{platform_path}"
+        build_list.update_attributes(:container_path => '')
+
+
+        packages = {:sources => [], :binaries => {:x86_64 => [], :i586 => []}}
+        packages[:sources] = build_list.packages.by_package_type('source').pluck(:sha1).compact
+        packages[:binaries][build_list.arch.name.to_sym] = build_list.packages.by_package_type('binary').pluck(:sha1).compact 
+        Resque.push(
+          'publish_worker_default',
+          'class' => 'AbfWorker::PublishWorkerDefault',
+          'args' => [{
+            :id => build_list.id,
+            :arch => build_list.arch.name,
+            :distrib_type => build_list.build_for_platform.distrib_type,
+            :platform => {
+              :platform_path => platform_path,
+              :released => build_list.save_to_platform.released
+            },
+            :repository => {
+              :name => build_list.save_to_repository.name,
+              :id => build_list.save_to_repository.id
+            },
+            :type => :publish,
+            :time_living => 9600 # 160 min
+            :packages => packages,
+            :old_packages => {:sources => [], :binaries => {:x86_64 => [], :i586 => []}},
+            :build_list_ids => [build_list.id],
+            :projects_for_cleanup => [],
+            :extra => {:create_container => true}
+          })]
+        )
+      end
     end
 
     private

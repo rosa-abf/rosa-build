@@ -9,7 +9,12 @@ module AbfWorker
       if options['type'] == 'resign'
         AbfWorker::BuildListsPublishTaskManager.unlock_repository options['id']
       else
-        update_rpm_builds options, status
+        if options['extra']['create_container'] # Container has been created
+          bl = BuildList.find(options['id'])
+          bl.update_attributes(:container_path => "/#{bl.save_to_platform.name}/container/#{bl.id}")
+        else
+          update_rpm_builds options, status
+        end
       end
     end
 

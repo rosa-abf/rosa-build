@@ -124,6 +124,11 @@ class BuildList < ActiveRecord::Base
   serialize :results, Array
 
   after_commit :place_build
+  after_destroy lambda {
+    if save_to_platform
+      system "rm -rf #{save_to_platform.path}/container/#{id}"
+    end
+  }
 
   state_machine :status, :initial => :waiting_for_response do
 

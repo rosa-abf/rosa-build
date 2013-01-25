@@ -47,6 +47,7 @@ en:
 
   layout:
     build_lists:
+      create_container: Create container
       platform_deleted: platform has been deleted
       filter_header: Filter
       current: Curent
@@ -64,6 +65,8 @@ en:
       cancel: Cancel build
       cancel_success: 'Build canceled'
       will_be_canceled: 'Build will be canceled...'
+      container_will_be_created: 'Container will be created...'
+      creating: 'creating...'
       publish_success: 'Build published'
       cancel_fail: 'Errors during build cancelation!'
       publish_fail: 'Errors during build publishing!'

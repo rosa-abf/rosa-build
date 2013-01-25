@@ -46,6 +46,7 @@ ru:
 
   layout:
     build_lists:
+      create_container: Создать контейнер
       platform_deleted: платформа была удалена
       filter_header: Фильтр
       current: Текущие
@@ -62,6 +63,8 @@ ru:
       show: Просмотр
       cancel: Отменить сборку
       will_be_canceled: 'Сборка будет отменена...'
+      container_will_be_created: 'Контейнер будет создан...'
+      creating: 'создается...'
       cancel_success: 'Сборка отменена.'
       cancel_fail: 'При отмене сборки произошла ошибка!'
       publish_success: 'Сборка поставлена в очередь на публикацию.'
