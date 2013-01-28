@@ -176,16 +176,18 @@ class PullRequest < ActiveRecord::Base
     end
 
     Dir.chdir(path) do
-      system 'git', 'checkout', to_ref
-      system 'git', 'pull',  'origin', to_ref
-      if to_project_id == from_project_id
-        system 'git', 'checkout', from_ref
-        system 'git', 'pull', 'origin', from_ref
-      else
-        system 'git', 'fetch', 'head', "+#{from_ref}:#{from_branch}"
+      system 'git', 'tag', '-d', from_ref, to_ref
+      system 'git fetch --tags'
+      tags, head = repo.tags.map(&:name), to_project == from_project ? 'origin' : 'head'
+      unless tags.include? to_ref
+        system 'git', 'checkout', to_ref
+        system 'git', 'reset', '--hard', "origin/#{to_ref}"
+      end
+      unless tags.include? from_ref
+        system 'git', 'branch', '-D', from_branch
+        system 'git', 'fetch', head, "+#{from_ref}:#{from_branch}"
       end
     end
-    # TODO catch errors
   end
 
   def clean
