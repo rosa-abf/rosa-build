@@ -27,13 +27,13 @@ Capistrano::Configuration.instance(:must_exist).load do
 
     def start_workers
       queue = [
+        :publish_observer,
+        :rpm_worker_observer,
+        :iso_worker_observer,
         :fork_import,
         :hook,
         :clone_build,
-        :notification,
-        :iso_worker_observer,
-        :rpm_worker_observer,
-        :publish_observer
+        :notification
       ].join(',')
       run "cd #{fetch :current_path} && COUNT=#{workers_count} QUEUE=#{queue} #{rails_env} BACKGROUND=yes bundle exec rake resque:workers"
     end
