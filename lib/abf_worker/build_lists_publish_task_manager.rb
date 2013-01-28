@@ -68,8 +68,7 @@ module AbfWorker
 
       def create_container_for(build_list)
         platform_path = "#{build_list.save_to_platform.path}/container/#{build_list.id}"
-        system "rm -rf #{platform_path}"
-        system "mkdir -p #{platform_path}"
+        system "rm -rf #{platform_path} && mkdir -p #{platform_path}"
 
         packages = {:sources => [], :binaries => {:x86_64 => [], :i586 => []}}
         packages[:sources] = build_list.packages.by_package_type('source').pluck(:sha1).compact

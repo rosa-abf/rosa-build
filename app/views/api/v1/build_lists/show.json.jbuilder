@@ -6,7 +6,7 @@ json.build_list do |json|
   json.build_log_url log_build_list_path(@build_list)
 
   if @build_list.container_published?
-    json.container_path container_url
+    json.container_path container_url(false)
   else
     json.container_path ''
   end

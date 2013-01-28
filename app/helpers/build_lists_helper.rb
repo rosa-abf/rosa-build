@@ -76,8 +76,11 @@ module BuildListsHelper
     end
   end
 
-  def container_url
-    "http://#{request.host_with_port}/downloads/#{@build_list.save_to_platform.name}/container/#{@build_list.id}".html_safe
+  def container_url(full_path = true)
+    p = ''
+    p << "http://#{request.host_with_port}" if full_path
+    p << "/downloads/#{@build_list.save_to_platform.name}/container/#{@build_list.id}"
+    p.html_safe
   end
 
   def log_reload_time_options
