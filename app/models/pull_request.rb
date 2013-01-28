@@ -48,6 +48,11 @@ class PullRequest < ActiveRecord::Base
   end
 
   def check(do_transaction = true)
+    if do_transaction && !valid?
+      issue.set_close nil
+      issue.save(:validate => false) # FIXME remove this hack
+      return false
+    end
     res = merge
     new_status = case res
                  when /Already up-to-date/
