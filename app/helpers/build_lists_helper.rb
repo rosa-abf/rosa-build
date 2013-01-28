@@ -77,11 +77,7 @@ module BuildListsHelper
   end
 
   def container_url
-    "http://#{request.host_with_port}/downloads#{@build_list.container_path}".html_safe
-  end
-
-  def build_list_log_url(log_type)
-    "http://#{request.host_with_port}/#{@build_list.fs_log_path(log_type)}".html_safe
+    "http://#{request.host_with_port}/downloads/#{@build_list.save_to_platform.name}/container/#{@build_list.id}".html_safe
   end
 
   def log_reload_time_options

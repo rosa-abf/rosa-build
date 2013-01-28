@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130119125710) do
+ActiveRecord::Schema.define(:version => 20130128123151) do
 
   create_table "activity_feeds", :force => true do |t|
     t.integer  "user_id",    :null => false
@@ -105,7 +105,6 @@ ActiveRecord::Schema.define(:version => 20130119125710) do
 
   create_table "build_lists", :force => true do |t|
     t.integer  "bs_id"
-    t.string   "container_path"
     t.integer  "status"
     t.string   "project_version"
     t.integer  "project_id"
@@ -133,6 +132,7 @@ ActiveRecord::Schema.define(:version => 20130119125710) do
     t.text     "results"
     t.boolean  "new_core",                   :default => true
     t.string   "last_published_commit_hash"
+    t.integer  "container_status"
   end
 
   add_index "build_lists", ["advisory_id"], :name => "index_build_lists_on_advisory_id"
