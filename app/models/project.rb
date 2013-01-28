@@ -130,7 +130,7 @@ class Project < ActiveRecord::Base
     #path #share by NFS
   end
 
-  def build_for(platform, repository_id, user, arch =  Arch.find_by_name('i586'), auto_publish = false, mass_build_id = nil, priority = 0, new_core = false)
+  def build_for(platform, repository_id, user, arch =  Arch.find_by_name('i586'), auto_publish = false, mass_build_id = nil, priority = 0)
     # Select main and project platform repository(contrib, non-free and etc)
     # If main does not exist, will connect only project platform repository
     # If project platform repository is main, only main will be connect
@@ -151,7 +151,6 @@ class Project < ActiveRecord::Base
       bl.priority = priority
       bl.mass_build_id = mass_build_id
       bl.save_to_repository_id = repository_id
-      bl.new_core = new_core
     end
     build_list.save
   end
