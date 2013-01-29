@@ -21,7 +21,9 @@ class MassBuild < ActiveRecord::Base
     :build_pending,
     :build_started,
     :build_publish,
-    :build_error
+    :build_error,
+    :success,
+    :build_canceled
   ]
 
   def build_all
