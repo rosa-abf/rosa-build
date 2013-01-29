@@ -26,12 +26,12 @@ describe BuildList do
                                                    :project => build_list.project) }
 
 
-    before { ActionMailer::Base.deliveries = [] }
+    before(:all) { ActionMailer::Base.deliveries = [] }
     before do
       build_list.update_attributes({:commit_hash => build_list.project.repo.commits('master').last.id,
         :status => BuildList::BUILD_STARTED}, :without_protection => true)
     end
-    after(:all) { ActionMailer::Base.deliveries = [] }
+    after { ActionMailer::Base.deliveries = [] }
 
     shared_examples_for 'build list notifications by email' do
       it "gets notification by email when status - Build complete" do
