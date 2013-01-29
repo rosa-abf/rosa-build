@@ -5,7 +5,7 @@
 .both
 
 = form_tag edit_blob_path(@project, @treeish, @path), :name => 'blob-editor', :method => :put do
-  .file= text_area_tag :content, @blob.data, :id => 'code'
+  .file-editor= text_area_tag :content, @blob.data, :id => 'code'
 
   .both
   = t("layout.enter_commit_message")
@@ -22,5 +22,13 @@
     var editor = CodeMirror.fromTextArea(document.getElementById('code'), {
       lineNumbers: true,
       mode: '#{@blob.raw_mime_type.content_type}'
+    });
+    $(".CodeMirror").resizable({
+      stop: function() { editor.refresh(); },
+      resize: function() {
+        $(".CodeMirror-scroll").height($(this).height());
+        $(".CodeMirror-scroll").width($(this).width());
+        editor.refresh();
+      }
     });
   });

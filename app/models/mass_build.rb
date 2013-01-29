@@ -7,7 +7,7 @@ class MassBuild < ActiveRecord::Base
   scope :outdated, where('created_at < ?', Time.now + 1.day - BuildList::MAX_LIVE_TIME)
 
   attr_accessor :arches
-  attr_accessible :arches, :auto_publish, :projects_list, :new_core
+  attr_accessible :arches, :auto_publish, :projects_list
 
   validates :platform_id, :arch_names, :name, :user_id, :projects_list, :presence => true
   validates_inclusion_of :auto_publish, :in => [true, false]
@@ -21,7 +21,9 @@ class MassBuild < ActiveRecord::Base
     :build_pending,
     :build_started,
     :build_publish,
-    :build_error
+    :build_error,
+    :success,
+    :build_canceled
   ]
 
   def build_all
@@ -38,7 +40,7 @@ class MassBuild < ActiveRecord::Base
           return if self.reload.stop_build
           arches_list.each do |arch|
             rep = (project.repositories & platform.repositories).first
-            project.build_for(platform, rep.id, user, arch, auto_publish, self.id, 0, new_core)
+            project.build_for(platform, rep.id, user, arch, auto_publish, self.id, 0)
           end
         rescue RuntimeError, Exception
         end
@@ -47,7 +49,6 @@ class MassBuild < ActiveRecord::Base
         list = (missed_projects_list || '') << "#{name}\n"
         update_column :missed_projects_list, list
       end
-      sleep 1 unless new_core
     end
   end
   later :build_all, :queue => :clone_build

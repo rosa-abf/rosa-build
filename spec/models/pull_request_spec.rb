@@ -96,6 +96,22 @@ describe PullRequest do
       @wrong_pull.save
       @project.pull_requests.joins(:issue).where(:issues => {:title => @wrong_pull.title}).count.should == 0
     end
+
+    it "should create pull with tag" do
+      system("cd #{@project.path} && git tag 4.7.5.3 $(git rev-parse #{@pull.from_ref})") # TODO REDO through grit
+      @pull = @project.pull_requests.new(:issue_attributes => {:title => 'tag', :body => 'testing'})
+      @pull.issue.user, @pull.issue.project = @user, @pull.to_project
+      @pull.to_ref = 'master'
+      @pull.from_project, @pull.from_ref = @project, '4.7.5.3'
+      @pull.save
+      @project.pull_requests.joins(:issue).where(:issues => {:title => @pull.title}).count.should == 1
+    end
+
+    it "should close pull when deleting from branch" do
+      system("cd #{@project.path} && git branch -D #{@pull.from_branch}")
+      @pull.check
+      @project.pull_requests.joins(:issue).where(:issues => {:title => @pull.title, :status => 'closed'}).count.should == 1
+    end
   end
 
   before do
