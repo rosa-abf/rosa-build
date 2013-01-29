@@ -235,7 +235,7 @@ class BuildList < ActiveRecord::Base
     end
 
     event :destroy_container do
-      transition [:container_failed_publish, :container_published] => :waiting_for_publish
+      transition [:container_failed_publish, :container_published, :waiting_for_publish] => :waiting_for_publish
     end
 
     HUMAN_CONTAINER_STATUSES.each do |code,name|
