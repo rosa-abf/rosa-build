@@ -266,7 +266,7 @@ ActiveRecord::Schema.define(:version => 20130129145833) do
     t.text     "projects_list"
     t.integer  "missed_projects_count", :default => 0,     :null => false
     t.text     "missed_projects_list"
-    t.boolean  "new_core",              :default => false
+    t.boolean  "new_core",              :default => true
     t.integer  "success_count",         :default => 0,     :null => false
     t.integer  "build_canceled_count",  :default => 0,     :null => false
   end
