@@ -76,6 +76,7 @@ end
 describe Api::V1::BuildListsController do
   before(:each) do
     stub_symlink_methods
+    stub_redis
   end
 
   context 'create and update abilities' do

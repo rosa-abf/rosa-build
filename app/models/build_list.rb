@@ -123,12 +123,8 @@ class BuildList < ActiveRecord::Base
   serialize :include_repos
   serialize :results, Array
 
-  after_commit :place_build
-  after_destroy lambda {
-    if save_to_platform
-      system "rm -rf #{save_to_platform.path}/container/#{id}"
-    end
-  }
+  after_commit  :place_build
+  after_destroy :remove_container
 
   state_machine :status, :initial => :waiting_for_response do
 
@@ -147,7 +143,9 @@ class BuildList < ActiveRecord::Base
       end
     end
 
-    after_transition :on => :published, :do => [:set_version_and_tag, :actualize_packages]
+    after_transition :on => :published,
+      :do => [:set_version_and_tag, :actualize_packages, :destroy_container]
+    after_transition :on => :reject_publish, :do => :destroy_container
     after_transition :on => :cancel, :do => :cancel_job
 
     after_transition :on => [:published, :fail_publish, :build_error], :do => :notify_users
@@ -211,6 +209,40 @@ class BuildList < ActiveRecord::Base
 
   later :publish, :queue => :clone_build
 
+
+  HUMAN_CONTAINER_STATUSES = { WAITING_FOR_RESPONSE => :waiting_for_publish,
+                               BUILD_PUBLISHED => :container_published,
+                               BUILD_PUBLISH => :container_publish,
+                               FAILED_PUBLISH => :container_failed_publish
+                              }
+
+  state_machine :container_status, :initial => :waiting_for_publish do
+
+    after_transition :on => :publish_container, :do => :create_container
+    after_transition :on => [:fail_publish_container, :destroy_container],
+      :do => :remove_container
+
+    event :publish_container do
+      transition [:waiting_for_publish, :container_failed_publish] => :container_publish
+    end
+
+    event :published_container do
+      transition :container_publish => :container_published
+    end
+
+    event :fail_publish_container do
+      transition :container_publish => :container_failed_publish
+    end
+
+    event :destroy_container do
+      transition [:container_failed_publish, :container_published, :waiting_for_publish] => :waiting_for_publish
+    end
+
+    HUMAN_CONTAINER_STATUSES.each do |code,name|
+      state name, :value => code
+    end
+  end
+
   def set_version_and_tag
     pkg = self.packages.where(:package_type => 'source', :project_id => self.project_id).first
     # TODO: remove 'return' after deployment ABF kernel 2.0
@@ -226,6 +258,10 @@ class BuildList < ActiveRecord::Base
       self.last_published.limit(2).last.packages.update_all :actual => false
       self.packages.update_all :actual => true
     end
+  end
+
+  def can_create_container?
+    success? && [WAITING_FOR_RESPONSE, FAILED_PUBLISH].include?(container_status)
   end
 
   #TODO: Share this checking on product owner.
@@ -296,10 +332,6 @@ class BuildList < ActiveRecord::Base
     I18n.t("layout.build_lists.human_duration", {:hours => (duration/3600).to_i, :minutes => (duration%3600/60).to_i})
   end
 
-  def fs_log_path(log_type = :build)
-    container_path? ? "downloads/#{container_path}/log/#{project.name}/#{log_type.to_s}.log" : nil
-  end
-
   def in_work?
     status == BUILD_STARTED
     #[WAITING_FOR_RESPONSE, BUILD_PENDING, BUILD_STARTED].include?(status)
@@ -318,12 +350,7 @@ class BuildList < ActiveRecord::Base
   end
 
   def log(load_lines)
-    if new_core?
-      abf_worker_log
-    else
-      log = `tail -n #{load_lines.to_i} #{Rails.root + 'public' + fs_log_path}`
-      $?.success? ? log : I18n.t('layout.build_lists.log.not_available')
-    end
+    new_core? ? abf_worker_log : I18n.t('layout.build_lists.log.not_available')
   end
 
   def last_published
@@ -336,6 +363,14 @@ class BuildList < ActiveRecord::Base
   end
 
   protected
+
+  def create_container
+    AbfWorker::BuildListsPublishTaskManager.create_container_for self
+  end
+
+  def remove_container
+    system "rm -rf #{save_to_platform.path}/container/#{id}" if save_to_platform
+  end
 
   def abf_worker_priority
     mass_build_id ? '' : 'default'

@@ -10,7 +10,6 @@ FactoryGirl.define do
       pr
     }
     association :arch
-    new_core false
     build_for_platform {|bl| bl.save_to_platform}
     save_to_repository {|bl| bl.save_to_platform.repositories.first}
     update_type 'security'
@@ -47,6 +46,7 @@ FactoryGirl.define do
     name "test_package"
     version "3.1.12"
     release 6
+    sha1 '4faae977e8b12baa267b566d2bec6e6182754ec4'
     package_type "source"
   end
 end

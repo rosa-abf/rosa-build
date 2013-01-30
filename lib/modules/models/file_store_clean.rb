@@ -6,6 +6,12 @@ module Modules
 
       included do
         def destroy
+          destroy_files_from_file_store if Rails.env.production?
+          super
+        end
+        later :destroy, :queue => :clone_build
+
+        def destroy_files_from_file_store
           files = []
           self.results.each {|r| files << r['sha1'] if r['sha1'].present?}
           if self.respond_to? :packages
@@ -25,10 +31,7 @@ module Modules
               end
             end
           end
-
-          super
         end
-        later :destroy, :queue => :clone_build
       end
     end
   end

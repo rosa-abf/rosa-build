@@ -90,7 +90,7 @@ class Projects::BuildListsController < Projects::BaseController
   end
 
   def create_container
-    AbfWorker::BuildListsPublishTaskManager.create_container_for @build_list
+    @build_list.publish_container
     redirect_to :back, :notice => t('layout.build_lists.container_will_be_created')    
   end
 

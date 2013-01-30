@@ -11,7 +11,12 @@ module AbfWorker
       else
         if options['extra']['create_container'] # Container has been created
           bl = BuildList.find(options['id'])
-          bl.update_column(:container_path, "/#{bl.save_to_platform.name}/container/#{bl.id}")
+          case status
+          when COMPLETED
+            bl.published_container
+          when FAILED, CANCELED
+            bl.fail_publish_container
+          end
           update_results(bl, options)
         else
           update_rpm_builds options, status

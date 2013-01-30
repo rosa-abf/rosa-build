@@ -1,9 +1,15 @@
 json.build_list do |json|
-  json.(@build_list, :id, :name, :container_path, :status, :duration)
+  json.(@build_list, :id, :name, :container_status, :status, :duration)
   json.(@build_list, :is_circle, :update_type, :priority, :new_core)
   json.(@build_list, :advisory, :mass_build)
   json.(@build_list, :auto_publish, :package_version, :commit_hash, :last_published_commit_hash)
   json.build_log_url log_build_list_path(@build_list)
+
+  if @build_list.container_published?
+    json.container_path container_url(false)
+  else
+    json.container_path ''
+  end
 
   json.arch do |json_arch|
     json_arch.(@build_list.arch, :id, :name)
