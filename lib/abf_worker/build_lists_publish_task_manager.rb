@@ -177,6 +177,7 @@ module AbfWorker
         order(:updated_at)
       locked_ids = @redis.lrange(LOCKED_BUILD_LISTS, 0, -1)
       build_lists = build_lists.where('build_lists.id NOT IN (?)', locked_ids) unless locked_ids.empty?
+      build_lists = build_lists.limit(1000)
 
       projects_for_cleanup = @redis.lrange(PROJECTS_FOR_CLEANUP, 0, -1).
         select{ |k| k =~ /#{save_to_repository_id}\-#{build_for_platform_id}$/ }
