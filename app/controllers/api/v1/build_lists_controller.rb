@@ -42,17 +42,13 @@ class Api::V1::BuildListsController < Api::V1::BaseController
   end
 
   def create_container
-    if @build_list.can_create_container? && @build_list.publish_container
-      render_json_response @build_list, t('layout.build_lists.create_container_success')
-    else
-      render_validation_error @build_list, t('layout.build_lists.create_container_fail')
-    end
+    render_json :create_container, :publish_container
   end
 
   private
 
-  def render_json(action_name)
-    if @build_list.try("can_#{action_name}?") && @build_list.send(action_name)
+  def render_json(action_name, action_method = nil)
+    if @build_list.try("can_#{action_name}?") && @build_list.send(action_method || action_name)
       render_json_response @build_list, t("layout.build_lists.#{action_name}_success")
     else
       render_validation_error @build_list, t("layout.build_lists.#{action_name}_fail")
