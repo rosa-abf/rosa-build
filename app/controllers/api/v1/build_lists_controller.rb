@@ -5,7 +5,7 @@ class Api::V1::BuildListsController < Api::V1::BaseController
   skip_before_filter :authenticate_user!, :only => [:show, :index] if APP_CONFIG['anonymous_access']
 
   load_and_authorize_resource :project, :only => :index
-  load_and_authorize_resource :build_list, :only => [:show, :create, :cancel, :publish, :reject_publish]
+  load_and_authorize_resource :build_list, :only => [:show, :create, :cancel, :publish, :reject_publish, :create_container]
 
   def index
     filter = BuildList::Filter.new(@project, current_user, params[:filter] || {})
@@ -42,15 +42,17 @@ class Api::V1::BuildListsController < Api::V1::BaseController
   end
 
   def create_container
-    render_json :create_container
+    if @build_list.publish_container
+      render_json_response @build_list, t('layout.build_lists.create_container_success')
+    else
+      render_validation_error @build_list, t('layout.build_lists.create_container_fail')
+    end
   end
 
   private
 
   def render_json(action_name)
-    if !@build_list.send "can_#{action_name}?"
-      render_validation_error @build_list, "Incorrect action for current build list")
-    elsif @build_list.send(action_name)
+    if @build_list.try("can_#{action_name}?") && @build_list.send(action_name)
       render_json_response @build_list, t("layout.build_lists.#{action_name}_success")
     else
       render_validation_error @build_list, t("layout.build_lists.#{action_name}_fail")

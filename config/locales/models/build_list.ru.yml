@@ -63,13 +63,14 @@ ru:
       show: Просмотр
       cancel: Отменить сборку
       will_be_canceled: 'Сборка будет отменена...'
-      container_will_be_created: 'Контейнер будет создан...'
       creating: 'создается...'
+      create_container_success: 'Контейнер поставлен в очередь на создание'
+      create_container_fail: 'При создании контейнера произошла ошибка!'
       cancel_success: 'Сборка отменена.'
       cancel_fail: 'При отмене сборки произошла ошибка!'
       publish_success: 'Сборка поставлена в очередь на публикацию.'
-      reject_publish_success: 'Публикация отклонена'
       publish_fail: 'При публикации сборки произошла ошибка!'
+      reject_publish_success: 'Публикация отклонена'
       reject_publish_fail: 'Не удалось отклонить публикацию сборки'
       container_published: 'Контейнер размещен в репозитории'
       action: Действие
