@@ -42,7 +42,7 @@ class Api::V1::BuildListsController < Api::V1::BaseController
   end
 
   def create_container
-    if @build_list.publish_container
+    if @build_list.can_create_container? && @build_list.publish_container
       render_json_response @build_list, t('layout.build_lists.create_container_success')
     else
       render_validation_error @build_list, t('layout.build_lists.create_container_fail')

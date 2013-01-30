@@ -176,6 +176,71 @@ describe Api::V1::BuildListsController do
         end
       end
 
+      context "do create_container" do
+        def do_create_container
+          put :create_container, :id => @build_list, :format => :json
+        end
+
+        before { stub_redis }
+        context 'if user is project owner' do
+          before do
+            http_login(@owner_user)
+          end
+
+          context "if it has :success status" do
+            before do
+              @build_list.update_column(:status, BuildList::SUCCESS)
+              do_create_container
+            end
+            it "should return correct json message" do
+              response.body.should == { :build_list => {:id => @build_list.id, :message => I18n.t('layout.build_lists.create_container_success')} }.to_json
+            end
+
+            it 'should return 200 response code' do
+              response.should be_success
+            end
+
+            it "should create container" do
+              @build_list.reload.container_status.should == BuildList::BUILD_PUBLISH
+            end
+          end
+
+          context "if it has another status" do
+            before(:each) do
+              @build_list.update_column(:status, BuildList::BUILD_ERROR)
+              do_create_container
+            end
+
+            it "should return correct json error message" do
+              response.body.should == { :build_list => {:id => nil, :message => I18n.t('layout.build_lists.create_container_fail')} }.to_json
+            end
+
+            it 'should return 422 response code' do
+              response.should_not be_success
+            end
+
+            it "should not create container" do
+              @build_list.reload.container_status.should == BuildList::WAITING_FOR_RESPONSE
+            end
+          end
+        end
+
+        context 'if user is not project owner' do
+          before(:each) do
+            @build_list.update_column(:status, BuildList::SUCCESS)
+            do_create_container
+          end
+
+          it "should return access violation message" do
+            response.body.should == {"message" => "Access violation to this page!"}.to_json
+          end
+
+          it "should not create container" do
+            @build_list.reload.container_status.should == BuildList::WAITING_FOR_RESPONSE
+          end
+        end
+      end
+
       context "do publish" do
         def do_publish
           put :publish, :id => @build_list, :format => :json
