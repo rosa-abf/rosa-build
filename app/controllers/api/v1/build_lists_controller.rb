@@ -22,8 +22,7 @@ class Api::V1::BuildListsController < Api::V1::BaseController
       bl_params[:auto_publish] = false unless save_to_repository.publish_without_qa?
     end
 
-    @build_list = BuildList.new(bl_params)
-    @build_list.user = current_user
+    @build_list = current_user.build_lists.new(bl_params)
     @build_list.priority = current_user.build_priority # User builds more priority than mass rebuild with zero priority
 
     create_subject @build_list

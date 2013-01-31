@@ -73,9 +73,19 @@ shared_examples_for 'not create build list via api' do
     lambda { post :create, @create_params }.should change{ BuildList.count }.by(0)
   end
 
-  it 'should return 422 response code' do
+  it 'should return 403 response code' do
     post :create, @create_params
-    response.should_not be_success
+    response.status.should == 403
+  end
+end
+
+shared_examples_for 'validation error via build list api' do |message|
+  it 'should return 422 response code' do
+    response.status.should == 422
+  end
+
+  it "should return correct json error message" do
+    response.body.should == { :build_list => {:id => nil, :message => message} }.to_json
   end
 end
 
@@ -146,13 +156,7 @@ describe Api::V1::BuildListsController do
               do_cancel
             end
 
-            it "should return correct json error message" do
-              response.body.should == { :build_list => {:id => nil, :message => I18n.t('layout.build_lists.cancel_fail')} }.to_json
-            end
-
-            it 'should return 422 response code' do
-              response.should_not be_success
-            end
+            it_should_behave_like 'validation error via build list api', I18n.t('layout.build_lists.cancel_fail')
 
             it "should not cancel build list" do
               @build_list.reload.status.should == BuildList::PROJECT_VERSION_NOT_FOUND
@@ -211,13 +215,7 @@ describe Api::V1::BuildListsController do
               do_create_container
             end
 
-            it "should return correct json error message" do
-              response.body.should == { :build_list => {:id => nil, :message => I18n.t('layout.build_lists.create_container_fail')} }.to_json
-            end
-
-            it 'should return 422 response code' do
-              response.should_not be_success
-            end
+            it_should_behave_like 'validation error via build list api', I18n.t('layout.build_lists.create_container_fail')
 
             it "should not create container" do
               @build_list.reload.container_status.should == BuildList::WAITING_FOR_RESPONSE
@@ -273,13 +271,7 @@ describe Api::V1::BuildListsController do
               do_publish
             end
 
-            it "should return correct json error message" do
-              response.body.should == { :build_list => {:id => nil, :message => I18n.t('layout.build_lists.publish_fail')} }.to_json
-            end
-
-            it 'should return 422 response code' do
-              response.should_not be_success
-            end
+            it_should_behave_like 'validation error via build list api', I18n.t('layout.build_lists.publish_fail')
 
             it "should not cancel build list" do
               @build_list.reload.status.should == BuildList::PROJECT_VERSION_NOT_FOUND
@@ -341,13 +333,7 @@ describe Api::V1::BuildListsController do
               do_reject_publish
             end
 
-            it "should return correct json error message" do
-              response.body.should == { :build_list => {:id => nil, :message => I18n.t('layout.build_lists.reject_publish_fail')} }.to_json
-            end
-
-            it 'should return 422 response code' do
-              response.should_not be_success
-            end
+            it_should_behave_like 'validation error via build list api', I18n.t('layout.build_lists.reject_publish_fail')
 
             it "should not cancel build list" do
               @build_list.reload.status.should == BuildList::PROJECT_VERSION_NOT_FOUND
