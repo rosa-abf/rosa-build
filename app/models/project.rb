@@ -180,7 +180,7 @@ class Project < ActiveRecord::Base
 
   def default_head treeish = nil # maybe need change 'head'?
     if repo.branches_and_tags.map(&:name).include?(treeish || default_branch)
-      treeish
+      treeish || default_branch
     else
       repo.branches_and_tags[0].try(:name) || 'master'
     end
