@@ -178,6 +178,14 @@ class Project < ActiveRecord::Base
     AbfWorker::BuildListsPublishTaskManager.destroy_project_from_repository self, repository
   end
 
+  def default_head treeish = nil # maybe need change 'head'?
+    if repo.branches_and_tags.map(&:name).include?(treeish || default_branch)
+      treeish
+    else
+      repo.branches_and_tags[0].try(:name) || 'master'
+    end
+  end
+
   protected
 
   def truncate_name
