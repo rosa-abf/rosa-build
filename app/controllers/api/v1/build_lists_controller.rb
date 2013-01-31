@@ -5,7 +5,7 @@ class Api::V1::BuildListsController < Api::V1::BaseController
   skip_before_filter :authenticate_user!, :only => [:show, :index] if APP_CONFIG['anonymous_access']
 
   load_and_authorize_resource :project, :only => :index
-  load_and_authorize_resource :build_list, :only => [:show, :create, :cancel, :publish, :reject_publish]
+  load_and_authorize_resource :build_list, :only => [:show, :create, :cancel, :publish, :reject_publish, :create_container]
 
   def index
     filter = BuildList::Filter.new(@project, current_user, params[:filter] || {})
@@ -15,26 +15,17 @@ class Api::V1::BuildListsController < Api::V1::BaseController
 
   def create
     bl_params = params[:build_list] || {}
-    project = Project.where(:id => bl_params[:project_id]).first
     save_to_repository = Repository.where(:id => bl_params[:save_to_repository_id]).first
 
-    if project && save_to_repository
+    if save_to_repository
       bl_params[:save_to_platform_id] = save_to_repository.platform_id
       bl_params[:auto_publish] = false unless save_to_repository.publish_without_qa?
-
-      @build_list = project.build_lists.build(bl_params)
-
-      @build_list.user = current_user
-      @build_list.priority = current_user.build_priority # User builds more priority than mass rebuild with zero priority
-
-      if @build_list.save
-        render :action => 'show'
-      else
-        render :json => {:message => "Validation Failed", :errors => @build_list.errors.messages}.to_json, :status => 422
-      end
-    else
-      render :json => {:message => "Bad Request"}.to_json, :status => 400
     end
+
+    @build_list = current_user.build_lists.new(bl_params)
+    @build_list.priority = current_user.build_priority # User builds more priority than mass rebuild with zero priority
+
+    create_subject @build_list
   end
 
   def cancel
@@ -49,17 +40,17 @@ class Api::V1::BuildListsController < Api::V1::BaseController
     render_json :reject_publish
   end
 
+  def create_container
+    render_json :create_container, :publish_container
+  end
+
   private
 
-  def render_json(action_name)
-    res, message = if !@build_list.send "can_#{action_name}?"
-                     [false, "Incorrect action for current build list"]
-                   elsif @build_list.send(action_name)
-                     [true, t("layout.build_lists.#{action_name}_success")]
-                   else
-                     [false, t("layout.build_lists.#{action_name}_fail")]
-                   end
-
-   render :json => {:"is_#{action_name}ed" => res, :url => api_v1_build_list_path(@build_list, :format => :json), :message => message}
+  def render_json(action_name, action_method = nil)
+    if @build_list.try("can_#{action_name}?") && @build_list.send(action_method || action_name)
+      render_json_response @build_list, t("layout.build_lists.#{action_name}_success")
+    else
+      render_validation_error @build_list, t("layout.build_lists.#{action_name}_fail")
+    end
   end
 end

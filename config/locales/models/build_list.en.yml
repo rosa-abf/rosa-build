@@ -63,16 +63,15 @@ en:
       no_items_data: No data
       show: Show
       cancel: Cancel build
-      cancel_success: 'Build canceled'
       will_be_canceled: 'Build will be canceled...'
-      container_will_be_created: 'Container will be created...'
       creating: 'creating...'
-      publish_success: 'Build published'
-      cancel_fail: 'Errors during build cancelation!'
-      publish_fail: 'Errors during build publishing!'
+      create_container_success: 'Container is queued for creating'
+      create_container_fail: 'Errors during container creating!'
       publish_success: 'Build is queued for publishing'
-      reject_publish_success: 'Publishing rejected'
       publish_fail: 'Errors during build publishing!'
+      cancel_success: 'Build canceled'
+      cancel_fail: 'Errors during build cancelation!'
+      reject_publish_success: 'Publishing rejected'
       reject_publish_fail: 'Rejecting publishing failed'
       container_published: 'Container published in a repository'
       action: Action

@@ -1,10 +1,6 @@
 # -*- encoding : utf-8 -*-
 require 'spec_helper'
 
-def incorrect_action_message
-  'Incorrect action for current build list'
-end
-
 shared_examples_for 'show build list via api' do
   it 'should be able to perform show action' do
     get :show, @show_params
@@ -39,6 +35,11 @@ shared_examples_for 'create build list via api' do
     lambda { post :create, @create_params }.should change{ BuildList.count }.by(1)
   end
 
+  it 'should return 200 response code' do
+    post :create, @create_params
+    response.should be_success
+  end
+
   it 'should save correct commit_hash for branch based build' do
     post :create, @create_params
     #@project.build_lists.last.commit_hash.should == @project.repo.commits('master').last.id
@@ -70,6 +71,21 @@ shared_examples_for 'not create build list via api' do
 
   it 'should not create one more build list' do
     lambda { post :create, @create_params }.should change{ BuildList.count }.by(0)
+  end
+
+  it 'should return 403 response code' do
+    post :create, @create_params
+    response.status.should == 403
+  end
+end
+
+shared_examples_for 'validation error via build list api' do |message|
+  it 'should return 422 response code' do
+    response.status.should == 422
+  end
+
+  it "should return correct json error message" do
+    response.body.should == { :build_list => {:id => nil, :message => message} }.to_json
   end
 end
 
@@ -116,29 +132,33 @@ describe Api::V1::BuildListsController do
           before(:each) {http_login(@owner_user)}
 
           context "if it has :build_pending status" do
-            it "should return correct json message" do
+            before do
               @build_list.update_column(:status, BuildList::BUILD_PENDING)
               do_cancel
-              response.body.should == {:is_canceled => true, :url => api_v1_build_list_path(@build_list, :format => :json), :message => I18n.t('layout.build_lists.cancel_success')}.to_json
+            end
+
+            it "should return correct json message" do
+              response.body.should == { :build_list => {:id => @build_list.id, :message => I18n.t('layout.build_lists.cancel_success')} }.to_json
+            end
+
+            it 'should return 200 response code' do
+              response.should be_success
             end
 
             it "should cancel build list" do
-              @build_list.update_column(:status, BuildList::BUILD_PENDING)
-              do_cancel
               @build_list.reload.status.should == BuildList::BUILD_CANCELING
             end
           end
 
           context "if it has another status" do
-            it "should return correct json error message" do
+            before do
               @build_list.update_column(:status, BuildList::PROJECT_VERSION_NOT_FOUND)
               do_cancel
-              response.body.should == {:is_canceled => false, :url => api_v1_build_list_path(@build_list, :format => :json), :message => incorrect_action_message}.to_json
             end
 
+            it_should_behave_like 'validation error via build list api', I18n.t('layout.build_lists.cancel_fail')
+
             it "should not cancel build list" do
-              @build_list.update_column(:status, BuildList::PROJECT_VERSION_NOT_FOUND)
-              do_cancel
               @build_list.reload.status.should == BuildList::PROJECT_VERSION_NOT_FOUND
             end
           end
@@ -160,6 +180,65 @@ describe Api::V1::BuildListsController do
         end
       end
 
+      context "do create_container" do
+        def do_create_container
+          put :create_container, :id => @build_list, :format => :json
+        end
+
+        before { stub_redis }
+        context 'if user is project owner' do
+          before do
+            http_login(@owner_user)
+          end
+
+          context "if it has :success status" do
+            before do
+              @build_list.update_column(:status, BuildList::SUCCESS)
+              do_create_container
+            end
+            it "should return correct json message" do
+              response.body.should == { :build_list => {:id => @build_list.id, :message => I18n.t('layout.build_lists.create_container_success')} }.to_json
+            end
+
+            it 'should return 200 response code' do
+              response.should be_success
+            end
+
+            it "should create container" do
+              @build_list.reload.container_status.should == BuildList::BUILD_PUBLISH
+            end
+          end
+
+          context "if it has another status" do
+            before(:each) do
+              @build_list.update_column(:status, BuildList::BUILD_ERROR)
+              do_create_container
+            end
+
+            it_should_behave_like 'validation error via build list api', I18n.t('layout.build_lists.create_container_fail')
+
+            it "should not create container" do
+              @build_list.reload.container_status.should == BuildList::WAITING_FOR_RESPONSE
+            end
+          end
+        end
+
+        context 'if user is not project owner' do
+          before(:each) do
+            @build_list.update_column(:status, BuildList::SUCCESS)
+            do_create_container
+          end
+
+          it "should return access violation message" do
+            response.body.should == {"message" => "Access violation to this page!"}.to_json
+          end
+
+          it "should not create container" do
+            @build_list.reload.container_status.should == BuildList::WAITING_FOR_RESPONSE
+          end
+        end
+      end
+
       context "do publish" do
         def do_publish
           put :publish, :id => @build_list, :format => :json
@@ -174,7 +253,11 @@ describe Api::V1::BuildListsController do
 
           context "if it has :failed_publish status" do
             it "should return correct json message" do
-              response.body.should == {:is_published => true, :url => api_v1_build_list_path(@build_list, :format => :json), :message => I18n.t('layout.build_lists.publish_success')}.to_json
+              response.body.should == { :build_list => {:id => @build_list.id, :message => I18n.t('layout.build_lists.publish_success')} }.to_json
+            end
+
+            it 'should return 200 response code' do
+              response.should be_success
             end
 
             it "should cancel build list" do
@@ -188,9 +271,7 @@ describe Api::V1::BuildListsController do
               do_publish
             end
 
-            it "should return correct json error message" do
-              response.body.should == {:is_published => false, :url => api_v1_build_list_path(@build_list, :format => :json), :message => incorrect_action_message}.to_json
-            end
+            it_should_behave_like 'validation error via build list api', I18n.t('layout.build_lists.publish_fail')
 
             it "should not cancel build list" do
               @build_list.reload.status.should == BuildList::PROJECT_VERSION_NOT_FOUND
@@ -234,7 +315,11 @@ describe Api::V1::BuildListsController do
 
           context "if it has :success status" do
             it "should return correct json message" do
-              response.body.should == {:is_reject_published => true, :url => api_v1_build_list_path(@build_list, :format => :json), :message => I18n.t('layout.build_lists.reject_publish_success')}.to_json
+              response.body.should == { :build_list => {:id => @build_list.id, :message => I18n.t('layout.build_lists.reject_publish_success')} }.to_json
+            end
+
+            it 'should return 200 response code' do
+              response.should be_success
             end
 
             it "should reject publish build list" do
@@ -248,9 +333,7 @@ describe Api::V1::BuildListsController do
               do_reject_publish
             end
 
-            it "should return correct json error message" do
-              response.body.should == {:is_reject_published => false, :url => api_v1_build_list_path(@build_list, :format => :json), :message => incorrect_action_message}.to_json
-            end
+            it_should_behave_like 'validation error via build list api', I18n.t('layout.build_lists.reject_publish_fail')
 
             it "should not cancel build list" do
               @build_list.reload.status.should == BuildList::PROJECT_VERSION_NOT_FOUND

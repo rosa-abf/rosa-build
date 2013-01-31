@@ -223,7 +223,7 @@ class BuildList < ActiveRecord::Base
       :do => :remove_container
 
     event :publish_container do
-      transition [:waiting_for_publish, :container_failed_publish] => :container_publish
+      transition [:waiting_for_publish, :container_failed_publish] => :container_publish, :if => :success?
     end
 
     event :published_container do
