@@ -182,7 +182,7 @@ class Project < ActiveRecord::Base
     if repo.branches_and_tags.map(&:name).include?(treeish || default_branch)
       treeish || default_branch
     else
-      repo.branches_and_tags[0].try(:name) || 'master'
+      repo.branches_and_tags[0].try(:name) || default_branch
     end
   end
 
