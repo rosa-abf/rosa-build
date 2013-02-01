@@ -8,4 +8,7 @@ json.platform do |json|
     json_repos.(repo, :id, :name)
     json_repos.url api_v1_repository_path(repo.id, :format => :json)
   end
+  json.products @platform.products do |json_products, product|
+    json.partial! 'api/v1/products/product', :product => product, :json => json_products
+  end
 end
