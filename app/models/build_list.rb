@@ -188,6 +188,7 @@ class BuildList < ActiveRecord::Base
     event :publish do
       transition [:success, :failed_publish] => :build_publish
       transition [:success, :failed_publish] => :failed_publish
+      transition :published => :build_publish
     end
 
     event :reject_publish do

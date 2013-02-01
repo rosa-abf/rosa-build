@@ -133,14 +133,16 @@
   - if @build_list.build_started?
     = render 'shared/log', { :build_started => true, :get_log_path => log_build_list_path(@build_list) }
 
-  - if (can_publish = @build_list.can_publish? && can?(:publish, @build_list))
-    .hr
-    = submit_tag t("layout.publish"), :confirm => t("layout.confirm"), :name => 'publish' if can_publish
-    - if @build_list.can_reject_publish? && can?(:reject_publish, @build_list)
-      = submit_tag t("layout.reject_publish"), :confirm => t("layout.confirm"), :name => 'reject_publish'
-    - if @build_list.can_create_container? && can?(:create_container, @build_list)
-      = link_to t("layout.build_lists.create_container"), create_container_build_list_path(@build_list),
-                :method => :put, :confirm => t("layout.confirm"), :class => 'button' 
+  - if can?(:publish, @build_list)
+    - if @build_list.build_published?
+      = submit_tag t("layout.publish_again"), :confirm => t("layout.publish_again_warning"), :name => 'publish'
+    - elsif @build_list.can_publish?
+      = submit_tag t("layout.publish"), :confirm => t("layout.confirm"), :name => 'publish'
+      - if @build_list.can_reject_publish? && can?(:reject_publish, @build_list)
+        = submit_tag t("layout.reject_publish"), :confirm => t("layout.confirm"), :name => 'reject_publish'
+      - if @build_list.can_create_container? && can?(:create_container, @build_list)
+        = link_to t("layout.build_lists.create_container"), create_container_build_list_path(@build_list),
+                  :method => :put, :confirm => t("layout.confirm"), :class => 'button' 
 
 .hr
 %h3= t("layout.build_lists.items_header")

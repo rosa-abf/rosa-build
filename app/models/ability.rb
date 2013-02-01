@@ -82,7 +82,12 @@ class Ability
         can([:create, :update], BuildList) {|build_list| build_list.project.is_package && can?(:write, build_list.project)}
 
         can(:publish, BuildList) do |build_list|
-          build_list.save_to_repository.publish_without_qa ? can?(:write, build_list.project) : local_admin?(build_list.save_to_platform)
+          if build_list.build_published?
+            local_admin?(build_list.save_to_platform)
+          else
+            build_list.save_to_repository.publish_without_qa ?
+              can?(:write, build_list.project) : local_admin?(build_list.save_to_platform)
+          end
         end
         can([:reject_publish, :create_container], BuildList) do |build_list|
           local_admin?(build_list.save_to_platform)
