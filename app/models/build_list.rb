@@ -395,7 +395,7 @@ class BuildList < ActiveRecord::Base
         h["#{repo.name}_updates"] = path + 'updates'
       end
     end
-    if save_to_platform.personal?
+    if save_to_platform.personal? && use_save_to_repository
       include_repos_hash["#{save_to_platform.name}_release"] = save_to_platform.
         urpmi_list(nil, nil, false, save_to_repository.name)["#{build_for_platform.name}"]["#{arch.name}"]
     end
