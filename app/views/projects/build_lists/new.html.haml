@@ -13,6 +13,9 @@
   %section.right
     %h3= t("activerecord.attributes.build_list.save_to_repository")
     .lineForm= f.select :save_to_repository_id, @project.repositories.collect{|r| ["#{r.platform.name}/#{r.name}", r.id, {:publish_without_qa => r.publish_without_qa? ? 1 : 0, :platform_id => r.platform.id}]}
+    .both
+      = f.check_box :use_save_to_repository
+      = f.label :use_save_to_repository
     %h3= t("activerecord.attributes.build_list.project_version")
     .lineForm= f.select :project_version, versions_for_group_select(@project), :selected => params[:build_list].try(:fetch, :project_version) || @project.default_branch
     %h3= t("activerecord.attributes.build_list.arch")
