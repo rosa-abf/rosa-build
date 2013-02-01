@@ -80,7 +80,7 @@ class Ability
 
         can(:publish, BuildList) do |build_list|
           if build_list.build_published?
-            local_admin?(build_list.save_to_platform) || local_admin?(build_list.save_to_repository)
+            local_admin?(build_list.save_to_platform) || build_list.save_to_repository.members.exists?(:id => user.id)
           else
             build_list.save_to_repository.publish_without_qa ?
               can?(:write, build_list.project) : local_admin?(build_list.save_to_platform)

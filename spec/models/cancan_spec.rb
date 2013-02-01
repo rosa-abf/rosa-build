@@ -66,7 +66,6 @@ describe CanCan do
       end
     end
 
-
     it 'should not be able to update register request' do
       @ability.should_not be_able_to(:update, register_request)
     end
