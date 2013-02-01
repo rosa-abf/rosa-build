@@ -35,6 +35,7 @@ Rosa::Application.routes.draw do
           put :clear
         }
         resources :maintainers, :only => [ :index ]
+        resources :products, :only => :index
       end
       resources :repositories, :only => [:show, :update, :destroy] do
         member {
@@ -75,6 +76,7 @@ Rosa::Application.routes.draw do
           put :update_member
         }
       end
+      resources :products, :only => [:show, :update, :create, :destroy]
     end
   end
 
