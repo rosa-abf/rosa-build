@@ -1,14 +1,11 @@
 # -*- encoding : utf-8 -*-
 class Platforms::ProductBuildListsController < Platforms::BaseController
-  before_filter :authenticate_user!, :except => [:status_build]
+  before_filter :authenticate_user!
   skip_before_filter :authenticate_user!, :only => [:index, :show, :log] if APP_CONFIG['anonymous_access']
-  load_and_authorize_resource :platform, :except => [:index, :status_build]
-  load_and_authorize_resource :product, :through => :platform, :except => [:index, :status_build]
-  load_and_authorize_resource :product_build_list, :through => :product, :except => [:index, :status_build]
+  load_and_authorize_resource :platform, :except => :index
+  load_and_authorize_resource :product, :through => :platform, :except => :index
+  load_and_authorize_resource :product_build_list, :through => :product, :except => :index
   load_and_authorize_resource :only => [:index, :show, :log, :cancel]
-
-  before_filter :authenticate_product_builder!, :only => [:status_build]
-  before_filter :find_product_build_list, :only => [:status_build]
 
   def new
     product = @product_build_list.product
@@ -55,12 +52,6 @@ class Platforms::ProductBuildListsController < Platforms::BaseController
       flash[:warning] = pbl.errors.full_messages.join('. ')
       render :action => :new
     end
-  end
-
-  def status_build
-    @product_build_list.status = params[:status].to_i # ProductBuildList::BUILD_COMPLETED : ProductBuildList::BUILD_FAILED)
-    @product_build_list.save!
-    render :nothing => true
   end
 
   def destroy

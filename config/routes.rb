@@ -167,7 +167,6 @@ Rosa::Application.routes.draw do
     match '/private/:platform_name/*file_path' => 'privates#show'
 
     resources :product_build_lists, :only => [:index]
-    match 'product_status', :to => 'product_build_lists#status_build'
   end
 
   resources :autocompletes, :only => [] do
