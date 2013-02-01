@@ -42,6 +42,11 @@ class BuildList < ActiveRecord::Base
   validate lambda {
     errors.add(:save_to_repository, I18n.t('flash.build_list.wrong_project')) unless save_to_repository.projects.exists?(project_id)
   }
+  validate lambda {
+    if save_to_platform.main? && use_save_to_repository
+      errors.add(:use_save_to_repository, I18n.t('flash.build_list.wrong_disable_repository'))
+    end
+  }
 
   attr_accessible :include_repos, :auto_publish, :build_for_platform_id, :commit_hash,
                   :arch_id, :project_id, :save_to_repository_id, :update_type,
