@@ -10,8 +10,7 @@ class Projects::Git::BaseController < Projects::BaseController
   protected
 
   def set_treeish_and_path
-    @treeish = params[:treeish].presence || @project.default_branch
-    @path = params[:path]
+    @treeish, @path = @project.default_head(params[:treeish]), params[:path]
   end
 
   def set_branch_and_tree
