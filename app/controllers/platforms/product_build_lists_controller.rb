@@ -74,16 +74,4 @@ class Platforms::ProductBuildListsController < Platforms::BaseController
     @build_server_status = AbfWorker::StatusInspector.products_status
   end
 
-  protected
-
-  def find_product_build_list
-     @product_build_list = ProductBuildList.find params[:id]
-  end
-
-  def authenticate_product_builder!
-    # FIXME: Rails(?) interpret the internal IP as 127.0.0.1
-    unless (APP_CONFIG['product_builder_ip'].values + ["127.0.0.1"]).include?(request.remote_ip)
-      render :nothing => true, :status => 403
-    end
-  end
 end
