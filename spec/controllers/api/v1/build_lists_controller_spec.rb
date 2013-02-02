@@ -281,7 +281,7 @@ describe Api::V1::BuildListsController do
               response.should be_success
             end
 
-            it "should not change status of build list" do
+            it "should change status of build list" do
               @build_list.reload.status.should == BuildList::BUILD_PUBLISH
             end
           end
