@@ -10,7 +10,7 @@ ru:
     groups: Группы
     advisories: Бюллетени
   bottom_menu:
-    copyright: ROSA Лаб. © 2012
+    copyright: ROSA Лаб. © %{year}
     about: О компании
     about_url: http://www.rosalab.ru/about
     contacts: Контакты

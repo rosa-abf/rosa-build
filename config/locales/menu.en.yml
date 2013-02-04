@@ -10,7 +10,7 @@ en:
     groups: Groups
     advisories: Advisories
   bottom_menu:
-    copyright: ROSA Lab © 2012
+    copyright: ROSA Lab © %{year}
     about: About the company
     about_url: http://www.rosalab.com/about
     contacts: Contacts

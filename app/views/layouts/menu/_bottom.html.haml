@@ -1,7 +1,7 @@
 %ul
   %li
     = image_tag 'square.png'
-    = t('bottom_menu.copyright')
+    = t('bottom_menu.copyright', :year => Date.today.year)
   %li
     = image_tag 'square.png'
     = image_tag 'flag.png', :alt => 'flag'
