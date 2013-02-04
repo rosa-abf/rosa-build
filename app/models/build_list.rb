@@ -26,10 +26,10 @@ class BuildList < ActiveRecord::Base
   validates :update_type, :inclusion => {:in => RELEASE_UPDATE_TYPES, :message => I18n.t('flash.build_list.frozen_platform')},
             :if => Proc.new { |b| b.advisory.present? }
   validate lambda {
-    errors.add(:build_for_platform, I18n.t('flash.build_list.wrong_platform')) if save_to_platform.platform_type == 'main' && save_to_platform_id != build_for_platform_id
+    errors.add(:build_for_platform, I18n.t('flash.build_list.wrong_platform')) if save_to_platform.main? && save_to_platform_id != build_for_platform_id
   }
   validate lambda {
-    errors.add(:build_for_platform, I18n.t('flash.build_list.wrong_build_for_platform')) unless build_for_platform.platform_type == 'main'
+    errors.add(:build_for_platform, I18n.t('flash.build_list.wrong_build_for_platform')) unless build_for_platform.main?
   }
   validate lambda {
     errors.add(:save_to_repository, I18n.t('flash.build_list.wrong_repository')) unless save_to_repository_id.in? save_to_platform.repositories.map(&:id)
@@ -43,9 +43,11 @@ class BuildList < ActiveRecord::Base
     errors.add(:save_to_repository, I18n.t('flash.build_list.wrong_project')) unless save_to_repository.projects.exists?(project_id)
   }
 
+  before_create :use_save_to_repository_for_main_platforms
+
   attr_accessible :include_repos, :auto_publish, :build_for_platform_id, :commit_hash,
                   :arch_id, :project_id, :save_to_repository_id, :update_type,
-                  :save_to_platform_id, :project_version
+                  :save_to_platform_id, :project_version, :use_save_to_repository
   LIVE_TIME = 4.week # for unpublished
   MAX_LIVE_TIME = 3.month # for published
 
@@ -395,7 +397,7 @@ class BuildList < ActiveRecord::Base
         h["#{repo.name}_updates"] = path + 'updates'
       end
     end
-    if save_to_platform.personal?
+    if save_to_platform.personal? && use_save_to_repository
       include_repos_hash["#{save_to_platform.name}_release"] = save_to_platform.
         urpmi_list(nil, nil, false, save_to_repository.name)["#{build_for_platform.name}"]["#{arch.name}"]
     end
@@ -445,5 +447,9 @@ class BuildList < ActiveRecord::Base
       p.package_type = package_type
       yield p
     end
+  end
+
+  def use_save_to_repository_for_main_platforms
+    self.use_save_to_repository = true if save_to_platform.main?
   end
 end

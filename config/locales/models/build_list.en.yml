@@ -20,6 +20,7 @@ en:
         include_repos: Included repositories
         created_at: Created on
         save_to_repository: Save to repository
+        use_save_to_repository: Use 'save to repository' for assembly
         build_for_platform: Build for platform
         update_type: Update type
         auto_publish: Automated publising
