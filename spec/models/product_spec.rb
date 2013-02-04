@@ -21,7 +21,7 @@ describe Product do
   it { should have_readonly_attribute(:platform_id) }
 
   it { should_not allow_mass_assignment_of(:platform) }
-  it { should_not allow_mass_assignment_of(:platform_id) }
+  #it { should_not allow_mass_assignment_of(:platform_id) }
   it { should_not allow_mass_assignment_of(:product_build_lists) }
 
   after(:all) do
