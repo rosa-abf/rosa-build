@@ -60,11 +60,11 @@ describe CanCan do
     	@ability.should_not be_able_to(:read, hidden_platform)
     end
 
-		[:publish_build, :status_build, :pre_build, :post_build, :circle_build, :new_bbdt].each do |action|
-			it "should be able to #{ action } build list" do
-				@ability.should be_able_to(action, BuildList)
-			end
-		end
+    [:publish, :cancel, :reject_publish, :create_container].each do |action|
+      it "should not be able to #{ action } build list" do
+        @ability.should_not be_able_to(action, BuildList)
+      end
+    end
 
     it 'should not be able to update register request' do
       @ability.should_not be_able_to(:update, register_request)

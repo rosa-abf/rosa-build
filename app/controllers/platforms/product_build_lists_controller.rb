@@ -1,14 +1,11 @@
 # -*- encoding : utf-8 -*-
 class Platforms::ProductBuildListsController < Platforms::BaseController
-  before_filter :authenticate_user!, :except => [:status_build]
+  before_filter :authenticate_user!
   skip_before_filter :authenticate_user!, :only => [:index, :show, :log] if APP_CONFIG['anonymous_access']
-  load_and_authorize_resource :platform, :except => [:index, :status_build]
-  load_and_authorize_resource :product, :through => :platform, :except => [:index, :status_build]
-  load_and_authorize_resource :product_build_list, :through => :product, :except => [:index, :status_build]
+  load_and_authorize_resource :platform, :except => :index
+  load_and_authorize_resource :product, :through => :platform, :except => :index
+  load_and_authorize_resource :product_build_list, :through => :product, :except => :index
   load_and_authorize_resource :only => [:index, :show, :log, :cancel]
-
-  before_filter :authenticate_product_builder!, :only => [:status_build]
-  before_filter :find_product_build_list, :only => [:status_build]
 
   def new
     product = @product_build_list.product
@@ -57,12 +54,6 @@ class Platforms::ProductBuildListsController < Platforms::BaseController
     end
   end
 
-  def status_build
-    @product_build_list.status = params[:status].to_i # ProductBuildList::BUILD_COMPLETED : ProductBuildList::BUILD_FAILED)
-    @product_build_list.save!
-    render :nothing => true
-  end
-
   def destroy
     if @product_build_list.destroy
       flash[:notice] = t('flash.product_build_list.delete')
@@ -83,16 +74,4 @@ class Platforms::ProductBuildListsController < Platforms::BaseController
     @build_server_status = AbfWorker::StatusInspector.products_status
   end
 
-  protected
-
-  def find_product_build_list
-     @product_build_list = ProductBuildList.find params[:id]
-  end
-
-  def authenticate_product_builder!
-    # FIXME: Rails(?) interpret the internal IP as 127.0.0.1
-    unless (APP_CONFIG['product_builder_ip'].values + ["127.0.0.1"]).include?(request.remote_ip)
-      render :nothing => true, :status => 403
-    end
-  end
 end

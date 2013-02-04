@@ -188,7 +188,7 @@ class BuildList < ActiveRecord::Base
     end
 
     event :publish do
-      transition [:success, :failed_publish] => :build_publish
+      transition [:success, :failed_publish, :build_published] => :build_publish
       transition [:success, :failed_publish] => :failed_publish
     end
 
@@ -272,11 +272,11 @@ class BuildList < ActiveRecord::Base
   end
 
   def can_publish?
-    [SUCCESS, FAILED_PUBLISH].include? status
+    [SUCCESS, FAILED_PUBLISH, BUILD_PUBLISHED].include? status
   end
 
   def can_reject_publish?
-    can_publish? and not save_to_repository.publish_without_qa
+    can_publish? && !save_to_repository.publish_without_qa && !build_published?
   end
 
   def add_to_queue

@@ -37,6 +37,8 @@ en:
     true_: True
     false_: False
     publish: Publish
+    publish_again: Publish again
+    publish_again_warning: Secondary publication will be able to break relationships in the repository. Be careful!
     reject_publish: Reject
     add: Add
     upload: Upload

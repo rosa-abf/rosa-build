@@ -150,23 +150,4 @@ describe Platforms::ProductBuildListsController do
     end
   end
 
-  context 'callbacks' do
-
-    let(:pbl) { FactoryGirl.create(:product_build_list) }
-
-    before(:each) do
-      mock(controller).authenticate_product_builder! {true}
-    end
-
-    def do_get
-      get :status_build, :id => pbl.id, :status => ProductBuildList::BUILD_FAILED
-      pbl.reload
-    end
-
-    it "should update ProductBuildList status" do
-      expect { do_get }.to change(pbl, :status).to(ProductBuildList::BUILD_FAILED)
-      response.should be_success
-      response.body.should be_blank
-    end
-  end
 end
