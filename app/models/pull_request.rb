@@ -125,7 +125,7 @@ class PullRequest < ActiveRecord::Base
   def self.check_ref(record, attr, value)
     project = attr == :from_ref ? record.from_project : record.to_project
     return if project.blank?
-    if record.to_project.repo.commits.count > 0
+    if record.to_project.repo.branches.count > 0
       record.errors.add attr, I18n.t('projects.pull_requests.wrong_ref') unless project.repo.branches_and_tags.map(&:name).include?(value)
     else
       record.errors.add attr, I18n.t('projects.pull_requests.empty_repo')
@@ -179,8 +179,8 @@ class PullRequest < ActiveRecord::Base
       system 'git', 'tag', '-d', from_ref, to_ref
       system 'git fetch --tags'
       tags, head = repo.tags.map(&:name), to_project == from_project ? 'origin' : 'head'
+      system 'git', 'checkout', to_ref
       unless tags.include? to_ref
-        system 'git', 'checkout', to_ref
         system 'git', 'reset', '--hard', "origin/#{to_ref}"
       end
       unless tags.include? from_ref

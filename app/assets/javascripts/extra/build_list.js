@@ -9,10 +9,13 @@ $(document).ready(function() {
     var build_platform = $('#build_for_pl_' + platform_id);
     var all_repositories = $('.all_platforms input');
     all_repositories.removeAttr('checked');
+    var use_save_to_repository = $('#build_list_use_save_to_repository');
 
     if (build_platform.size() == 0) {
       all_repositories.removeAttr('disabled');
+      use_save_to_repository.removeAttr('disabled');
     } else {
+      use_save_to_repository.attr('disabled', 'disabled').attr('checked', 'checked');
       all_repositories.attr('disabled', 'disabled');
       var parent = build_platform.parent();
       parent.find('input').removeAttr('disabled');

@@ -1,5 +1,5 @@
 - content_for :submenu do
-  - act = action_name.to_sym; contr = controller_name.to_sym; treeish = params[:treeish].presence || @project.default_branch
+  - act = action_name.to_sym; contr = controller_name.to_sym; treeish = @project.default_head(params[:treeish])
   .left
     .table-sort-left=image_tag visibility_icon(@project.visibility)
     .table-sort-right=@project.name

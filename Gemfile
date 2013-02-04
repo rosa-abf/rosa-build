@@ -13,7 +13,7 @@ gem 'omniauth-openid', '~> 1.0.1'
 gem 'cancan', '1.6.7' # 1.6.8 fail specs with strange error
 
 gem 'ancestry', '~> 1.3.0'
-gem 'paperclip', '~> 3.1.4'
+gem 'paperclip', '~> 3.3.1'
 gem 'resque', '~> 1.21.0'
 gem 'resque-status', '~> 0.3.3'
 gem 'resque_mailer', '~> 2.1.0'
