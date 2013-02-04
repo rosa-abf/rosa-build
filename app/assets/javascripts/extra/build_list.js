@@ -15,7 +15,7 @@ $(document).ready(function() {
       all_repositories.removeAttr('disabled');
       use_save_to_repository.removeAttr('disabled');
     } else {
-      use_save_to_repository.attr('disabled', 'disabled');
+      use_save_to_repository.attr('disabled', 'disabled').attr('checked', 'checked');
       all_repositories.attr('disabled', 'disabled');
       var parent = build_platform.parent();
       parent.find('input').removeAttr('disabled');
