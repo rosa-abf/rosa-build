@@ -26,10 +26,10 @@ class BuildList < ActiveRecord::Base
   validates :update_type, :inclusion => {:in => RELEASE_UPDATE_TYPES, :message => I18n.t('flash.build_list.frozen_platform')},
             :if => Proc.new { |b| b.advisory.present? }
   validate lambda {
-    errors.add(:build_for_platform, I18n.t('flash.build_list.wrong_platform')) if save_to_platform.platform_type == 'main' && save_to_platform_id != build_for_platform_id
+    errors.add(:build_for_platform, I18n.t('flash.build_list.wrong_platform')) if save_to_platform.main? && save_to_platform_id != build_for_platform_id
   }
   validate lambda {
-    errors.add(:build_for_platform, I18n.t('flash.build_list.wrong_build_for_platform')) unless build_for_platform.platform_type == 'main'
+    errors.add(:build_for_platform, I18n.t('flash.build_list.wrong_build_for_platform')) unless build_for_platform.main?
   }
   validate lambda {
     errors.add(:save_to_repository, I18n.t('flash.build_list.wrong_repository')) unless save_to_repository_id.in? save_to_platform.repositories.map(&:id)
@@ -42,11 +42,11 @@ class BuildList < ActiveRecord::Base
   validate lambda {
     errors.add(:save_to_repository, I18n.t('flash.build_list.wrong_project')) unless save_to_repository.projects.exists?(project_id)
   }
-  validate lambda {
-    if save_to_platform.main? && use_save_to_repository
-      errors.add(:use_save_to_repository, I18n.t('flash.build_list.wrong_disable_repository'))
-    end
-  }
+
+  before_create do |build_list|
+    build_list.use_save_to_repository = false if save_to_platform.main?
+    nil
+  end
 
   attr_accessible :include_repos, :auto_publish, :build_for_platform_id, :commit_hash,
                   :arch_id, :project_id, :save_to_repository_id, :update_type,

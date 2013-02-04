@@ -144,7 +144,6 @@ en:
 
   flash:
     build_list:
-      wrong_disable_repository: Repository to save package may be disabled only for personal platform.
       saved: Build list for project version '%{project_version}', platform '%{build_for_platform}' and architecture '%{arch}' has been created successfully
       save_error: Build list for project version '%{project_version}', platform '%{build_for_platform}' and architecture '%{arch}' could not been created
       no_project_version_selected: Select any version of the project

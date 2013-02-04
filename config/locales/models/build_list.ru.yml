@@ -143,7 +143,6 @@ ru:
 
   flash:
     build_list:
-      wrong_disable_repository: Репозиторий для сохранения может быть отключен только для персональной платформы.
       saved: Билд лист для версии '%{project_version}', платформы '%{build_for_platform}' и архитектуры '%{arch}' создан успешно
       save_error: Не удалось сохранить билд лист для версии '%{project_version}', платформы '%{build_for_platform}' и архитектуры '%{arch}'
       no_project_version_selected: Выберите какую-нибудь версию
