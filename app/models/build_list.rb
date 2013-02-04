@@ -43,10 +43,7 @@ class BuildList < ActiveRecord::Base
     errors.add(:save_to_repository, I18n.t('flash.build_list.wrong_project')) unless save_to_repository.projects.exists?(project_id)
   }
 
-  before_create do |build_list|
-    build_list.use_save_to_repository = false if save_to_platform.main?
-    nil
-  end
+  before_create :use_save_to_repository_for_main_platforms
 
   attr_accessible :include_repos, :auto_publish, :build_for_platform_id, :commit_hash,
                   :arch_id, :project_id, :save_to_repository_id, :update_type,
@@ -450,5 +447,9 @@ class BuildList < ActiveRecord::Base
       p.package_type = package_type
       yield p
     end
+  end
+
+  def use_save_to_repository_for_main_platforms
+    self.use_save_to_repository = true if save_to_platform.main?
   end
 end
