@@ -114,6 +114,7 @@ en:
         build_lists: All
         build_error: Build error
         build_published: Build has been published
+        tests_failed: Tests failed
         rejected_publish: Publishing rejected
         build_publish: Build is being published
         failed_publish: Publishing error

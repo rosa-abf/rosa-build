@@ -3,21 +3,23 @@ module AbfWorker
     @queue = :iso_worker_observer
 
     def self.perform(options)
-      status = options['status'].to_i
-      pbl = ProductBuildList.find options['id']
+      new(options, ProductBuildList).perform
+    end
+
+    protected
+
+    def perform
       case status
       when COMPLETED
-        pbl.build_success
+        subject.build_success
       when FAILED
-        pbl.build_error
+        subject.build_error
       when STARTED
-        pbl.start_build
+        subject.start_build
       when CANCELED
-        pbl.build_canceled
+        subject.build_canceled
       end
-      if status != STARTED
-        update_results(pbl, options)
-      end
+      update_results if status != STARTED
     end
 
   end

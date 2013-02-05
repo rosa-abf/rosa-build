@@ -67,6 +67,7 @@ class BuildList < ActiveRecord::Base
   FAILED_PUBLISH            = 8000
   REJECTED_PUBLISH          = 9000
   BUILD_CANCELING           = 10000
+  TESTS_FAILED              = 11000
 
   STATUSES = [  WAITING_FOR_RESPONSE,
                 BUILD_CANCELED,
@@ -79,7 +80,8 @@ class BuildList < ActiveRecord::Base
                 SUCCESS,
                 BUILD_STARTED,
                 BUILD_ERROR,
-                PROJECT_VERSION_NOT_FOUND
+                PROJECT_VERSION_NOT_FOUND,
+                TESTS_FAILED
               ]
 
   HUMAN_STATUSES = { WAITING_FOR_RESPONSE => :waiting_for_response,
@@ -94,6 +96,7 @@ class BuildList < ActiveRecord::Base
                      BUILD_STARTED => :build_started,
                      SUCCESS => :success,
                      PROJECT_VERSION_NOT_FOUND => :project_version_not_found,
+                     TESTS_FAILED => :tests_failed
                     }
 
   scope :recent, order("#{table_name}.updated_at DESC")
@@ -202,6 +205,10 @@ class BuildList < ActiveRecord::Base
 
     event :build_error do
       transition [:build_started, :build_canceled, :build_canceling] => :build_error
+    end
+
+    event :tests_failed do
+      transition [:build_started, :build_canceled, :build_canceling] => :tests_failed
     end
 
     HUMAN_STATUSES.each do |code,name|

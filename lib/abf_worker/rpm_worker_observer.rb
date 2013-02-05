@@ -1,53 +1,58 @@
 module AbfWorker
   class RpmWorkerObserver < AbfWorker::BaseObserver
+    TESTS_FAILED  = 5
+
     @queue = :rpm_worker_observer
 
     def self.perform(options)
-      bl = BuildList.find options['id']
-      status = options['status'].to_i
-      item = find_or_create_item(bl)
+      new(options, BuildList).perform
+    end
 
-      fill_container_data(bl, options) if status != STARTED
+    protected
+
+    def perform
+      item = find_or_create_item
+
+      fill_container_data if status != STARTED
 
       case status
       when COMPLETED
-        bl.build_success
-        item.update_attributes({:status => BuildList::SUCCESS})
-        bl.now_publish if bl.auto_publish?
+        subject.build_success
+        subject.now_publish if subject.auto_publish?
       when FAILED
-        bl.build_error
+        subject.build_error
         item.update_attributes({:status => BuildList::BUILD_ERROR})
       when STARTED
-        bl.start_build
+        subject.start_build
       when CANCELED
-        bl.build_canceled
+        subject.build_canceled
         item.update_attributes({:status => BuildList::BUILD_CANCELED})
+      when TESTS_FAILED
+        subject.tests_failed
       end
+
+      item.update_attributes({:status => BuildList::SUCCESS}) if [TESTS_FAILED, COMPLETED].include?(status)
     end
 
-    class << self
-      protected
+    def find_or_create_item
+      subject.items.first || subject.items.create({
+        :version => subject.commit_hash,
+        :name => subject.project.name,
+        :status => BuildList::BUILD_STARTED,
+        :level => 0
+      })
+    end
 
-      def find_or_create_item(bl)
-        bl.items.first || bl.items.create({
-          :version => bl.commit_hash,
-          :name => bl.project.name,
-          :status => BuildList::BUILD_STARTED,
-          :level => 0
-        })
+    def fill_container_data
+      packages = options['packages'] || []
+      packages.each do |package|
+        package = subject.packages.build(package)
+        package.package_type = package['fullname'] =~ /.*\.src\.rpm$/ ? 'source' : 'binary'
+        package.project_id = subject.project_id
+        package.platform_id = subject.save_to_platform_id
+        package.save!
       end
-
-      def fill_container_data(bl, options)
-        packages = options['packages'] || []
-        packages.each do |package|
-          package = bl.packages.build(package)
-          package.package_type = package['fullname'] =~ /.*\.src\.rpm$/ ? 'source' : 'binary'
-          package.project_id = bl.project_id
-          package.platform_id = bl.save_to_platform_id
-          package.save!
-        end
-        update_results(bl, options)
-      end
+      update_results
     end
 
   end

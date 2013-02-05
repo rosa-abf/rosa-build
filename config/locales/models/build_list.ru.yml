@@ -113,6 +113,7 @@ ru:
         build_lists: Всего
         build_error: ошибка сборки
         build_published: опубликован
+        tests_failed: тесты не прошли
         rejected_publish: публикация отклонена
         build_publish: публикуется
         failed_publish: ошибка публикации
