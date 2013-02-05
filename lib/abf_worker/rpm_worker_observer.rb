@@ -7,24 +7,24 @@ module AbfWorker
       bl = BuildList.find options['id']
       status = options['status'].to_i
 
-      unless restart_task(bl, status, options)
-        item = find_or_create_item(bl)
-        fill_container_data(bl, options) if status != STARTED
+      return if restart_task(bl, status, options)
+      
+      item = find_or_create_item(bl)
+      fill_container_data(bl, options) if status != STARTED
 
-        case status
-        when COMPLETED
-          bl.build_success
-          item.update_attributes({:status => BuildList::SUCCESS})
-          bl.now_publish if bl.auto_publish?
-        when FAILED
-          bl.build_error
-          item.update_attributes({:status => BuildList::BUILD_ERROR})
-        when STARTED
-          bl.start_build
-        when CANCELED
-          bl.build_canceled
-          item.update_attributes({:status => BuildList::BUILD_CANCELED})
-        end
+      case status
+      when COMPLETED
+        bl.build_success
+        item.update_attributes({:status => BuildList::SUCCESS})
+        bl.now_publish if bl.auto_publish?
+      when FAILED
+        bl.build_error
+        item.update_attributes({:status => BuildList::BUILD_ERROR})
+      when STARTED
+        bl.start_build
+      when CANCELED
+        bl.build_canceled
+        item.update_attributes({:status => BuildList::BUILD_CANCELED})
       end
     end
 
