@@ -42,7 +42,7 @@ module AbfWorker
         end
         AbfWorker::BuildListsPublishTaskManager.unlock_build_list build_list
       end
-      build_list = build_lists.first || BuildList.find(options['id'])
+      build_list = build_lists.first || subject
       AbfWorker::BuildListsPublishTaskManager.unlock_rep_and_platform build_list
     end
 
