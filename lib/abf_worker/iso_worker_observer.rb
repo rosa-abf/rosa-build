@@ -15,6 +15,7 @@ module AbfWorker
       when CANCELED
         pbl.build_canceled
       end
+      pbl.build_canceled if pbl.build_canceling?
       if status != STARTED
         update_results(pbl, options)
       end
