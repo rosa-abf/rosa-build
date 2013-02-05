@@ -82,12 +82,14 @@ class ProductBuildList < ActiveRecord::Base
       transition [:build_canceling, :build_started] => :build_canceled
     end
 
+    # :build_canceling => :build_completed - Worker hasn't time to cancel building because build had been already completed
     event :build_success do
-      transition :build_started => :build_completed
+      transition [:build_started, :build_canceling] => :build_completed
     end
 
+    # :build_canceling => :build_failed - Worker hasn't time to cancel building because build had been already failed
     event :build_error do
-      transition [:build_started, :build_canceled, :build_canceling] => :build_failed
+      transition [:build_started, :build_canceling] => :build_failed
     end
 
     HUMAN_STATUSES.each do |code,name|
