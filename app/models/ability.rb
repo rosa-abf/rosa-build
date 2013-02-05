@@ -153,6 +153,8 @@ class Ability
       cannot [:create, :update, :destroy, :clone], Product, :platform => {:platform_type => 'personal'}
       cannot [:clone], Platform, :platform_type => 'personal'
 
+      cannot :publish, BuildList, :new_core => false
+
       cannot([:get_list, :create], MassBuild) {|mass_build| mass_build.platform.personal?}
       cannot(:cancel, MassBuild) {|mass_build| mass_build.platform.personal? || mass_build.stop_build}
 

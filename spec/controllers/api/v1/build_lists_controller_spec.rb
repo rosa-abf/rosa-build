@@ -298,8 +298,22 @@ describe Api::V1::BuildListsController do
               @build_list.reload.status.should == BuildList::PROJECT_VERSION_NOT_FOUND
             end
           end
-        end
 
+          context "if it has been builded on old core" do
+            before do
+              @build_list.update_column(:status, BuildList::FAILED_PUBLISH)
+              @build_list.update_column(:new_core, false)
+              do_publish
+            end
+            it "should return access violation message" do
+              response.body.should == {"message" => "Access violation to this page!"}.to_json
+            end
+
+            it "should not cancel build list" do
+              @build_list.reload.status.should == BuildList::FAILED_PUBLISH
+            end
+          end
+        end
 
         context 'if user is not project owner' do
 
