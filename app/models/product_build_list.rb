@@ -83,7 +83,7 @@ class ProductBuildList < ActiveRecord::Base
     end
 
     event :build_success do
-      transition :build_started => :build_completed
+      transition [:build_started, :build_canceling] => :build_completed
     end
 
     event :build_error do
