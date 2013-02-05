@@ -15,7 +15,8 @@ class Product < ActiveRecord::Base
                   :description,
                   :project_id,
                   :main_script,
-                  :params
+                  :params,
+                  :platform_id
   attr_readonly :platform_id
 
   def full_clone(attrs = {})

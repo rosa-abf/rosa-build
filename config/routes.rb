@@ -75,6 +75,7 @@ Rosa::Application.routes.draw do
           put :update_member
         }
       end
+      resources :products, :only => [:show, :update, :create, :destroy]
     end
   end
 

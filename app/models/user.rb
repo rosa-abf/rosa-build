@@ -146,6 +146,7 @@ class User < Avatar
   end
 
   def best_role target
+    return nil if target.nil?
     roles = target_roles(target)
     return nil if roles.count == 0
     %w(admin writer reader).each {|role| return role if roles.include?(role)}
