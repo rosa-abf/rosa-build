@@ -1,10 +1,11 @@
 module AbfWorker
   class BaseObserver
-    COMPLETED = 0
-    FAILED    = 1
-    PENDING   = 2
-    STARTED   = 3
-    CANCELED  = 4
+    COMPLETED     = 0
+    FAILED        = 1
+    PENDING       = 2
+    STARTED       = 3
+    CANCELED      = 4
+    TESTS_FAILED  = 5
 
     attr_accessor :status, :options
 

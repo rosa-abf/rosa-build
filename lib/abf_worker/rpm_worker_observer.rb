@@ -1,7 +1,6 @@
 module AbfWorker
   class RpmWorkerObserver < AbfWorker::BaseObserver
     RESTARTED_BUILD_LISTS = 'abf-worker::rpm-worker-observer::restarted-build-lists'
-    TESTS_FAILED  = 5
 
     @queue = :rpm_worker_observer
 
