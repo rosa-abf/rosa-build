@@ -191,7 +191,7 @@ class BuildList < ActiveRecord::Base
     end
 
     event :publish do
-      transition [:success, :failed_publish, :build_published] => :build_publish
+      transition [:success, :failed_publish, :build_published, :tests_failed] => :build_publish
       transition [:success, :failed_publish] => :failed_publish
     end
 
@@ -270,7 +270,7 @@ class BuildList < ActiveRecord::Base
   end
 
   def can_create_container?
-    success? && [WAITING_FOR_RESPONSE, FAILED_PUBLISH].include?(container_status)
+    (success? || tests_failed?) && [WAITING_FOR_RESPONSE, FAILED_PUBLISH].include?(container_status)
   end
 
   #TODO: Share this checking on product owner.
@@ -279,7 +279,7 @@ class BuildList < ActiveRecord::Base
   end
 
   def can_publish?
-    [SUCCESS, FAILED_PUBLISH, BUILD_PUBLISHED].include? status
+    [SUCCESS, FAILED_PUBLISH, BUILD_PUBLISHED, TESTS_FAILED].include? status
   end
 
   def can_reject_publish?

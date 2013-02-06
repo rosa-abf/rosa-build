@@ -1990,13 +1990,10 @@ div.right.slim {
 img.delete-row {
   cursor: pointer;
 }
-
-table tbody tr.error td {
-  background: #fedede;
-}
-
-table tbody tr.success td {
-  background: #e3edb7;
+table tbody {
+  .error   td { background: #fedede; }
+  .success td { background: #e3edb7; }
+  .warning td { background: #FCF8E3; }
 }
 
 /* Create group */

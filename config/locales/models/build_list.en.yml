@@ -78,6 +78,7 @@ en:
       action: Action
       new_header: New build
       main_data: Main data
+      tests_failed: Some tests failed. Be careful!
 
       human_current_duration: Build currently takes %{hours} h. %{minutes} min.
       human_duration: Built in %{hours} h. %{minutes} min.
