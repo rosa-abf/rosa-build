@@ -203,12 +203,10 @@ class BuildList < ActiveRecord::Base
       transition [:build_started, :build_canceled] => :success
     end
 
-    event :build_error do
-      transition [:build_started, :build_canceling] => :build_error
-    end
-
-    event :tests_failed do
-      transition [:build_started, :build_canceling] => :tests_failed
+    [:build_error, :tests_failed].each do |kind|
+      event kind do
+        transition [:build_started, :build_canceling] => kind
+      end
     end
 
     HUMAN_STATUSES.each do |code,name|
