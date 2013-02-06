@@ -30,8 +30,7 @@ module AbfWorker
       sort_results_and_save results
     end
 
-    def sort_results_and_save(results, item = nil)
-      item ||= subject
+    def sort_results_and_save(results, item = subject)
       item.results = results.sort_by{ |r| r['file_name'] }
       item.save!
     end
