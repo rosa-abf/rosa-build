@@ -57,8 +57,7 @@ module AbfWorker
     end
 
     def fill_container_data
-      packages = options['packages'] || []
-      packages.each do |package|
+      (options['packages'] || []).each do |package|
         package = subject.packages.build(package)
         package.package_type = package['fullname'] =~ /.*\.src\.rpm$/ ? 'source' : 'binary'
         package.project_id = subject.project_id
