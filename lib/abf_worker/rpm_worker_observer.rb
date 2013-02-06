@@ -1,5 +1,6 @@
 module AbfWorker
   class RpmWorkerObserver < AbfWorker::BaseObserver
+    RESTARTED_BUILD_LISTS = 'abf-worker::rpm-worker-observer::restarted-build-lists'
     TESTS_FAILED  = 5
 
     @queue = :rpm_worker_observer
@@ -9,8 +10,9 @@ module AbfWorker
     end
 
     def perform
-      item = find_or_create_item
+      return if restart_task
 
+      item = find_or_create_item
       fill_container_data if status != STARTED
 
       case status
@@ -41,6 +43,18 @@ module AbfWorker
         :status => BuildList::BUILD_STARTED,
         :level => 0
       })
+    end
+
+    def restart_task
+      redis = Resque.redis
+      if redis.lrem(RESTARTED_BUILD_LISTS, 0, subject.id) > 0 || status != FAILED || (options['results'] || []).size > 1
+        return false
+      else
+        redis.lpush RESTARTED_BUILD_LISTS, subject.id
+        subject.update_column(:status, BuildList::BUILD_PENDING)
+        subject.add_job_to_abf_worker_queue
+        return true
+      end
     end
 
     def fill_container_data
