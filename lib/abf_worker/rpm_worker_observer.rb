@@ -1,12 +1,15 @@
 module AbfWorker
   class RpmWorkerObserver < AbfWorker::BaseObserver
+    RESTARTED_BUILD_LISTS = 'abf-worker::rpm-worker-observer::restarted-build-lists'
     @queue = :rpm_worker_observer
 
     def self.perform(options)
       bl = BuildList.find options['id']
       status = options['status'].to_i
-      item = find_or_create_item(bl)
 
+      return if restart_task(bl, status, options)
+      
+      item = find_or_create_item(bl)
       fill_container_data(bl, options) if status != STARTED
 
       case status
@@ -27,6 +30,18 @@ module AbfWorker
 
     class << self
       protected
+
+      def restart_task(bl, status, options)
+        redis = Resque.redis
+        if redis.lrem(RESTARTED_BUILD_LISTS, 0, bl.id) > 0 || status != FAILED || (options['results'] || []).size > 1
+          return false
+        else
+          redis.lpush RESTARTED_BUILD_LISTS, bl.id
+          bl.update_column(:status, BuildList::BUILD_PENDING)
+          bl.add_job_to_abf_worker_queue
+          return true
+        end
+      end
 
       def find_or_create_item(bl)
         bl.items.first || bl.items.create({
