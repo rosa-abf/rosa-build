@@ -408,26 +408,19 @@ class BuildList < ActiveRecord::Base
       include_repos_hash["#{save_to_platform.name}_release"] = save_to_platform.
         urpmi_list(nil, nil, false, save_to_repository.name)["#{build_for_platform.name}"]["#{arch.name}"]
     end
-    # mdv example:
-    # https://abf.rosalinux.ru/import/plasma-applet-stackfolder.git
-    # bfe6d68cc607238011a6108014bdcfe86c69456a
 
-    # rhel example:
-    # https://abf.rosalinux.ru/server/gnome-settings-daemon.git
-    # fbb2549e44d97226fea6748a4f95d1d82ffb8726
-
+    git_project_address = project.git_project_address(user)
+    git_project_address.gsub!(/^http:\/\/0\.0\.0\.0\:[\d]+/, 'https://abf.rosalinux.ru') unless Rails.env.production?
     {
-      :id => id,
-      :arch => arch.name,
-      :time_living => 43200, # 12 hours
-      :distrib_type => build_for_platform.distrib_type,
-      # :git_project_address => 'https://abf.rosalinux.ru/server/gnome-settings-daemon.git',
-      :git_project_address => project.git_project_address(user),
-      # :commit_hash => 'fbb2549e44d97226fea6748a4f95d1d82ffb8726',
-      :commit_hash => commit_hash,
-      :include_repos => include_repos_hash,
-      :bplname => build_for_platform.name,
-      :user => {:uname => user.uname, :email => user.email}
+      :id                   => id,
+      :arch                 => arch.name,
+      :time_living          => 43200, # 12 hours
+      :distrib_type         => build_for_platform.distrib_type,
+      :git_project_address  => git_project_address,
+      :commit_hash          => commit_hash,
+      :include_repos        => include_repos_hash,
+      :bplname              => build_for_platform.name,
+      :user                 => {:uname => user.uname, :email => user.email}
     }
   end
 
