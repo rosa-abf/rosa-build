@@ -8,8 +8,6 @@ module AbfWorker
       new(options, BuildList).perform
     end
 
-    protected
-
     def perform
       item = find_or_create_item
 
@@ -33,6 +31,8 @@ module AbfWorker
 
       item.update_attributes({:status => BuildList::SUCCESS}) if [TESTS_FAILED, COMPLETED].include?(status)
     end
+
+    protected
 
     def find_or_create_item
       subject.items.first || subject.items.create({

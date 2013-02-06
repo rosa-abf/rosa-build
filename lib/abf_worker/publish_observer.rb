@@ -7,8 +7,6 @@ module AbfWorker
       new(options, BuildList).perform
     end
 
-    protected
-
     def perform
       return if status == STARTED # do nothing when publication started
       if options['type'] == 'resign'
@@ -27,6 +25,8 @@ module AbfWorker
         end
       end
     end
+
+    protected
 
     def update_rpm_builds
       build_lists = BuildList.where(:id => options['build_list_ids'])

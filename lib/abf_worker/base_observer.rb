@@ -8,20 +8,20 @@ module AbfWorker
 
     attr_accessor :status, :options
 
-    protected
-
     def initialize(options, subject_class)
       @status   = options['status'].to_i
       @options  = options
       @subject_class = subject_class
     end
 
-    def subject
-      @subject ||= @subject_class.find options['id']
-    end
-
     def perform
       raise NotImplementedError, "You should implement this method"
+    end
+
+    protected
+
+    def subject
+      @subject ||= @subject_class.find options['id']
     end
 
     def update_results

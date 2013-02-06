@@ -6,8 +6,6 @@ module AbfWorker
       new(options, ProductBuildList).perform
     end
 
-    protected
-
     def perform
       case status
       when COMPLETED
