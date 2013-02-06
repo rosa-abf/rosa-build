@@ -394,7 +394,7 @@ class BuildList < ActiveRecord::Base
       include_repos.each do |r|
         repo = Repository.find r
         path = repo.platform.public_downloads_url(nil, arch.name, repo.name)
-        path.gsub!(/^http:\/\/0\.0\.0\.0\:[\d]+/, 'https://abf.rosalinux.ru') unless Rails.env.production?
+        # path.gsub!(/^http:\/\/0\.0\.0\.0\:[\d]+/, 'https://abf.rosalinux.ru') unless Rails.env.production?
         # Path looks like:
         # http://abf.rosalinux.ru/downloads/rosa-server2012/repository/x86_64/base/
         # so, we should append:
@@ -410,7 +410,7 @@ class BuildList < ActiveRecord::Base
     end
 
     git_project_address = project.git_project_address(user)
-    git_project_address.gsub!(/^http:\/\/0\.0\.0\.0\:[\d]+/, 'https://abf.rosalinux.ru') unless Rails.env.production?
+    # git_project_address.gsub!(/^http:\/\/0\.0\.0\.0\:[\d]+/, 'https://abf.rosalinux.ru') unless Rails.env.production?
     {
       :id                   => id,
       :arch                 => arch.name,
