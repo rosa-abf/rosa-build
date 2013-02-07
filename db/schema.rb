@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130201094007) do
+ActiveRecord::Schema.define(:version => 20130207101148) do
 
   create_table "activity_feeds", :force => true do |t|
     t.integer  "user_id",    :null => false
@@ -354,20 +354,21 @@ ActiveRecord::Schema.define(:version => 20130201094007) do
     t.datetime "updated_at"
     t.integer  "owner_id"
     t.string   "owner_type"
-    t.string   "visibility",         :default => "open"
+    t.string   "visibility",               :default => "open"
     t.text     "description"
     t.string   "ancestry"
-    t.boolean  "has_issues",         :default => true
+    t.boolean  "has_issues",               :default => true
     t.string   "srpm_file_name"
     t.integer  "srpm_file_size"
     t.datetime "srpm_updated_at"
     t.string   "srpm_content_type"
-    t.boolean  "has_wiki",           :default => false
-    t.string   "default_branch",     :default => "master"
-    t.boolean  "is_package",         :default => true,     :null => false
-    t.integer  "average_build_time", :default => 0,        :null => false
-    t.integer  "build_count",        :default => 0,        :null => false
+    t.boolean  "has_wiki",                 :default => false
+    t.string   "default_branch",           :default => "master"
+    t.boolean  "is_package",               :default => true,     :null => false
+    t.integer  "average_build_time",       :default => 0,        :null => false
+    t.integer  "build_count",              :default => 0,        :null => false
     t.integer  "maintainer_id"
+    t.boolean  "publish_i686_into_x86_64", :default => false
   end
 
   add_index "projects", ["owner_id", "name", "owner_type"], :name => "index_projects_on_name_and_owner_id_and_owner_type", :unique => true, :case_sensitive => false

@@ -2,7 +2,7 @@ json.build_list do |json|
   json.(@build_list, :id, :name, :container_status, :status, :duration)
   json.(@build_list, :is_circle, :update_type, :priority, :new_core)
   json.(@build_list, :advisory, :mass_build, :use_save_to_repository)
-  json.(@build_list, :auto_publish, :package_version, :commit_hash, :last_published_commit_hash)
+  json.(@build_list, :auto_publish, :package_version, :commit_hash, :last_published_commit_hash, :publish_i686_into_x86_64)
   json.build_log_url log_build_list_path(@build_list)
 
   if @build_list.container_published?
