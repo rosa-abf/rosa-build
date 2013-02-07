@@ -24,10 +24,6 @@ class Api::V1::ProductBuildListsController < Api::V1::BaseController
     create_subject @product_build_list
   end
 
-  def update
-    update_subject @product_build_list
-  end
-
   def show
   end
 
