@@ -12,10 +12,10 @@ shared_examples_for 'api user without reader rights' do
     response.should be_success
   end
 
-  it 'should not be able to perform show action for the personal platform' do
+  it 'should be able to perform show action for the personal platform' do
     @product_build_list.product.platform.update_column :visibility, 'hidden'
     get :show, :id => @product_build_list.id, :format => :json
-    response.status.should == 403
+    response.should be_success
   end
 
   it 'should not be able to perform create action' do
@@ -80,7 +80,7 @@ shared_examples_for 'api user with admin rights' do
 
   it 'should be able to perform create action' do
     post :create, @create_params, :format => :json
-    response.status.should == 200 #be_success
+    response.should be_success
   end
 
   it 'ensures that product has been created' do
