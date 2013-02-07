@@ -46,7 +46,7 @@ module AbfWorker
       AbfWorker::BuildListsPublishTaskManager.unlock_rep_and_platform build_list
     end
 
-    def update_results(build_list)
+    def update_results(build_list = subject)
       results = (build_list.results || []).
         select{ |r| r['file_name'] !~ /^abfworker\:\:publish\-worker.*\.log$/ }
       results |= options['results']
