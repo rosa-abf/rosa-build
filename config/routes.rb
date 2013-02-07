@@ -78,7 +78,7 @@ Rosa::Application.routes.draw do
       resources :products, :only => [:show, :update, :create, :destroy] do
         resources :product_build_lists, :only => :index
       end
-      resources :product_build_lists do
+      resources :product_build_lists, :only => [:index, :show, :destroy, :create] do
         put :cancel, :on => :member
       end
     end
