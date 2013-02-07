@@ -32,7 +32,7 @@ class Project < ActiveRecord::Base
   validate { errors.add(:base, :can_have_less_or_equal, :count => MAX_OWN_PROJECTS) if owner.projects.size >= MAX_OWN_PROJECTS }
   validate :check_default_branch
 
-  attr_accessible :name, :description, :visibility, :srpm, :is_package, :default_branch, :has_issues, :has_wiki, :maintainer_id
+  attr_accessible :name, :description, :visibility, :srpm, :is_package, :default_branch, :has_issues, :has_wiki, :maintainer_id, :publish_i686_into_x86_64
   attr_readonly :name, :owner_id, :owner_type
 
   scope :recent, order("name ASC")

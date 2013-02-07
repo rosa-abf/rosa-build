@@ -94,6 +94,7 @@ ru:
           group: Группа
         default_branch: Ветка по умолчанию
         is_package: Проект является пакетом
+        publish_i686_into_x86_64: Публиковать i686 пакеты в x86_64 репозиторий (только для rhel)
         maintainer_id: Майнтейнер проекта
         maintainer: Майнтейнер проекта
     errors:

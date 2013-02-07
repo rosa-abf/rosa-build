@@ -268,7 +268,14 @@ module AbfWorker
 
     def fill_packages(bl, results_map, field = :sha1)
       results_map[:sources] |= bl.packages.by_package_type('source').pluck(field).compact if field != :sha1
-      results_map[:binaries][bl.arch.name.to_sym] |= bl.packages.by_package_type('binary').pluck(field).compact      
+      
+      binaries  = bl.packages.by_package_type('binary').pluck(field).compact
+      arch      = bl.arch.name.to_sym
+      results_map[:binaries][arch] |= binaries
+      # Publish/remove i686 RHEL packages into/from x86_64
+      if arch == :i586 && bl.build_for_platform.distrib_type == 'rhel' && bl.project.publish_i686_into_x86_64?
+        results_map[:binaries][:x86_64] |= binaries
+      end
     end
 
   end

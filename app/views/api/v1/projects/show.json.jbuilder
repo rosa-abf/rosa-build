@@ -1,6 +1,6 @@
 json.project do |json|
   json.partial! 'project', :project => @project, :json => json
-  json.(@project, :visibility, :description, :ancestry, :has_issues, :has_wiki, :default_branch, :is_package, :average_build_time)
+  json.(@project, :visibility, :description, :ancestry, :has_issues, :has_wiki, :default_branch, :is_package, :average_build_time, :publish_i686_into_x86_64)
   json.created_at @project.created_at.to_i
   json.updated_at @project.updated_at.to_i
   json.partial! 'api/v1/shared/owner', :owner => @project.owner
