@@ -1,15 +1,16 @@
 # -*- encoding : utf-8 -*-
 module BuildListsHelper
   def build_list_status_color(status)
-    if [BuildList::BUILD_PUBLISHED, BuildList::SUCCESS].include? status
-      return 'success'
+    case status
+    when BuildList::BUILD_PUBLISHED, BuildList::SUCCESS
+      'success'
+    when BuildList::BUILD_ERROR, BuildList::PROJECT_VERSION_NOT_FOUND, BuildList::FAILED_PUBLISH, BuildList::REJECTED_PUBLISH
+      'error'
+    when BuildList::TESTS_FAILED
+      'warning'
+    else
+      'nocolor'
     end
-    if [BuildList::BUILD_ERROR, BuildList::PROJECT_VERSION_NOT_FOUND,
-        BuildList::FAILED_PUBLISH, BuildList::REJECTED_PUBLISH].include? status
-      return 'error'
-    end
-
-    'nocolor'
   end
 
   def build_list_options_for_new_core
@@ -20,14 +21,14 @@ module BuildListsHelper
   end
 
   def build_list_item_status_color(status)
-    if BuildList::SUCCESS == status
-      return 'success'
+    case status
+    when BuildList::SUCCESS
+      'success'
+    when BuildList::DEPENDENCIES_ERROR, BuildList::BUILD_ERROR, BuildList::Item::GIT_ERROR
+      'error'
+    else
+      ''
     end
-    if [BuildList::DEPENDENCIES_ERROR, BuildList::BUILD_ERROR, BuildList::Item::GIT_ERROR].include? status
-      return 'error'
-    end
-
-    ''
   end
 
   def build_list_classified_update_types

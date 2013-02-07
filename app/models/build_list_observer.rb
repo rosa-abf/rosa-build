@@ -7,6 +7,7 @@ class BuildListObserver < ActiveRecord::Observer
       if [BuildList::BUILD_ERROR,
           BuildList::SUCCESS,
           BuildList::BUILD_CANCELING,
+          BuildList::TESTS_FAILED,
           BuildList::BUILD_CANCELED].include? record.status
         # stores time interval beetwin build start and finish in seconds
         record.duration = record.current_duration if record.started_at

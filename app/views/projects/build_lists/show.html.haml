@@ -140,7 +140,8 @@
     - if @build_list.build_published?
       = submit_tag t("layout.publish_again"), :confirm => t("layout.publish_again_warning"), :name => 'publish'
     - elsif @build_list.can_publish?
-      = submit_tag t("layout.publish"), :confirm => t("layout.confirm"), :name => 'publish'
+      - confirm = @build_list.tests_failed? ? t('layout.build_lists.tests_failed') : t('layout.confirm')
+      = submit_tag t("layout.publish"), :confirm => confirm, :name => 'publish'
       - if @build_list.can_reject_publish? && can?(:reject_publish, @build_list)
         = submit_tag t("layout.reject_publish"), :confirm => t("layout.confirm"), :name => 'reject_publish'
   - if @build_list.can_create_container? && can?(:create_container, @build_list)

@@ -496,29 +496,22 @@ span.delete {
 
 #fork-and-edit {display:block;}
 
-.notify.blue div.success {
-  border: 1px solid #bad099;
-  background: #d7e599;
-  float: left;
-}
-
-div.notify.blue div.error {
-  float: left;
-  border: 1px solid #ddd;
-  background-color: #FBE3E4;
-  border-color: #FBC2C4;
-}
-
-div.notify.blue div.nocolor {
-  float: left;
-  border: 1px solid #a9c6dd;
-}
-
-div.notify.blue div.red {
-  float: left;
-  border: 1px solid #ddd;
-  background-color: #FBE3E4;
-  border-color: #FBC2C4;
+.notify.blue {
+    .error, .red, .nocolor, .warning, .success { float: left; }
+    .error, .red {
+        border: 1px solid #ddd;
+        background-color: #FBE3E4;
+        border-color: #FBC2C4;
+    }
+    .success {
+        border: 1px solid #bad099;
+        background: #d7e599;
+    }
+    .nocolor { border: 1px solid #a9c6dd; }
+    .warning {
+        border: 1px solid #FBEED5;
+        background-color: #FCF8E3;
+    }
 }
 
 a.button.left_floated {

@@ -67,6 +67,7 @@ class BuildList < ActiveRecord::Base
   FAILED_PUBLISH            = 8000
   REJECTED_PUBLISH          = 9000
   BUILD_CANCELING           = 10000
+  TESTS_FAILED              = 11000
 
   STATUSES = [  WAITING_FOR_RESPONSE,
                 BUILD_CANCELED,
@@ -79,7 +80,8 @@ class BuildList < ActiveRecord::Base
                 SUCCESS,
                 BUILD_STARTED,
                 BUILD_ERROR,
-                PROJECT_VERSION_NOT_FOUND
+                PROJECT_VERSION_NOT_FOUND,
+                TESTS_FAILED
               ]
 
   HUMAN_STATUSES = { WAITING_FOR_RESPONSE => :waiting_for_response,
@@ -94,6 +96,7 @@ class BuildList < ActiveRecord::Base
                      BUILD_STARTED => :build_started,
                      SUCCESS => :success,
                      PROJECT_VERSION_NOT_FOUND => :project_version_not_found,
+                     TESTS_FAILED => :tests_failed
                     }
 
   scope :recent, order("#{table_name}.updated_at DESC")
@@ -188,7 +191,7 @@ class BuildList < ActiveRecord::Base
     end
 
     event :publish do
-      transition [:success, :failed_publish, :build_published] => :build_publish
+      transition [:success, :failed_publish, :build_published, :tests_failed] => :build_publish
       transition [:success, :failed_publish] => :failed_publish
     end
 
@@ -200,8 +203,10 @@ class BuildList < ActiveRecord::Base
       transition [:build_started, :build_canceled] => :success
     end
 
-    event :build_error do
-      transition [:build_started, :build_canceled, :build_canceling] => :build_error
+    [:build_error, :tests_failed].each do |kind|
+      event kind do
+        transition [:build_started, :build_canceling] => kind
+      end
     end
 
     HUMAN_STATUSES.each do |code,name|
@@ -225,7 +230,8 @@ class BuildList < ActiveRecord::Base
       :do => :remove_container
 
     event :publish_container do
-      transition [:waiting_for_publish, :container_failed_publish] => :container_publish, :if => :success?
+      transition [:waiting_for_publish, :container_failed_publish] => :container_publish,
+        :if => :can_create_container?
     end
 
     event :published_container do
@@ -263,7 +269,7 @@ class BuildList < ActiveRecord::Base
   end
 
   def can_create_container?
-    success? && [WAITING_FOR_RESPONSE, FAILED_PUBLISH].include?(container_status)
+    (success? || tests_failed?) && [WAITING_FOR_RESPONSE, FAILED_PUBLISH].include?(container_status)
   end
 
   #TODO: Share this checking on product owner.
@@ -272,7 +278,7 @@ class BuildList < ActiveRecord::Base
   end
 
   def can_publish?
-    [SUCCESS, FAILED_PUBLISH, BUILD_PUBLISHED].include? status
+    [SUCCESS, FAILED_PUBLISH, BUILD_PUBLISHED, TESTS_FAILED].include? status
   end
 
   def can_reject_publish?
@@ -387,7 +393,7 @@ class BuildList < ActiveRecord::Base
       include_repos.each do |r|
         repo = Repository.find r
         path = repo.platform.public_downloads_url(nil, arch.name, repo.name)
-        # path = path.gsub(/^http:\/\/0\.0\.0\.0\:3000/, 'https://abf.rosalinux.ru')
+        # path.gsub!(/^http:\/\/(0\.0\.0\.0|localhost)\:[\d]+/, 'https://abf.rosalinux.ru') unless Rails.env.production?
         # Path looks like:
         # http://abf.rosalinux.ru/downloads/rosa-server2012/repository/x86_64/base/
         # so, we should append:
@@ -401,26 +407,19 @@ class BuildList < ActiveRecord::Base
       include_repos_hash["#{save_to_platform.name}_release"] = save_to_platform.
         urpmi_list(nil, nil, false, save_to_repository.name)["#{build_for_platform.name}"]["#{arch.name}"]
     end
-    # mdv example:
-    # https://abf.rosalinux.ru/import/plasma-applet-stackfolder.git
-    # bfe6d68cc607238011a6108014bdcfe86c69456a
 
-    # rhel example:
-    # https://abf.rosalinux.ru/server/gnome-settings-daemon.git
-    # fbb2549e44d97226fea6748a4f95d1d82ffb8726
-
+    git_project_address = project.git_project_address(user)
+    # git_project_address.gsub!(/^http:\/\/(0\.0\.0\.0|localhost)\:[\d]+/, 'https://abf.rosalinux.ru') unless Rails.env.production?
     {
-      :id => id,
-      :arch => arch.name,
-      :time_living => 43200, # 12 hours
-      :distrib_type => build_for_platform.distrib_type,
-      # :git_project_address => 'https://abf.rosalinux.ru/server/gnome-settings-daemon.git',
-      :git_project_address => project.git_project_address(user),
-      # :commit_hash => 'fbb2549e44d97226fea6748a4f95d1d82ffb8726',
-      :commit_hash => commit_hash,
-      :include_repos => include_repos_hash,
-      :bplname => build_for_platform.name,
-      :user => {:uname => user.uname, :email => user.email}
+      :id                   => id,
+      :arch                 => arch.name,
+      :time_living          => 43200, # 12 hours
+      :distrib_type         => build_for_platform.distrib_type,
+      :git_project_address  => git_project_address,
+      :commit_hash          => commit_hash,
+      :include_repos        => include_repos_hash,
+      :bplname              => build_for_platform.name,
+      :user                 => {:uname => user.uname, :email => user.email}
     }
   end
 

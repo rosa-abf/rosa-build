@@ -77,6 +77,7 @@ ru:
       action: Действие
       new_header: Новая сборка
       main_data: Основные данные
+      tests_failed: Некоторые тесты провалились. Будьте осторожны!
 
       human_current_duration: Сборка длится уже %{hours} ч. %{minutes} мин.
       human_duration: Собрано за %{hours} ч. %{minutes} мин.
@@ -113,6 +114,7 @@ ru:
         build_lists: Всего
         build_error: ошибка сборки
         build_published: опубликован
+        tests_failed: тесты не прошли
         rejected_publish: публикация отклонена
         build_publish: публикуется
         failed_publish: ошибка публикации
