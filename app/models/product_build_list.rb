@@ -51,7 +51,8 @@ class ProductBuildList < ActiveRecord::Base
                   :params,
                   :project_version,
                   :commit_hash,
-                  :arch_id
+                  :arch_id,
+                  :product_id
   attr_readonly :product_id
   serialize :results, Array
 
