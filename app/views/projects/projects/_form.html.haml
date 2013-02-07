@@ -38,11 +38,12 @@
     %span#niceCheckbox1.niceCheck-main= f.check_box :is_package
   .forcheck= f.label :is_package
   .both
-  #publish_form{:class => @project.publish_i686_into_x86_64 ? '' : 'hidden'}
-    .check
-      %span.niceCheck-main= f.check_box :publish_i686_into_x86_64
-    .forcheck= f.label :publish_i686_into_x86_64
-    .both
+  - unless [:new, :create].include? act
+    #publish_form{:class => @project.publish_i686_into_x86_64 ? '' : 'hidden'}
+      .check
+        %span.niceCheck-main= f.check_box :publish_i686_into_x86_64
+      .forcheck= f.label :publish_i686_into_x86_64
+      .both
 
 .both
 - if [:edit, :update].include? act
