@@ -31,7 +31,7 @@ module GitHelper
 
   def render_line_numbers(n)
     res = ""
-    1.upto(n) {|i| res += "<span>#{i}</span><br/>" }
+    1.upto(n) {|i| res += "<span id='L#{i}'><a href='#L#{i}'>#{i}</a></span><br/>" }
 
     res.html_safe
   end
