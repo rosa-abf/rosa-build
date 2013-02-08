@@ -196,7 +196,7 @@ class BuildList < ActiveRecord::Base
     end
 
     event :reject_publish do
-      transition :success => :rejected_publish, :if => :can_reject_publish?
+      transition [:success, :failed_publish, :tests_failed] => :rejected_publish, :if => :can_reject_publish?
     end
 
     event :build_success do
