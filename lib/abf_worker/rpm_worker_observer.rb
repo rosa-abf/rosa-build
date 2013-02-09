@@ -45,8 +45,9 @@ module AbfWorker
     end
 
     def restart_task
+      return false if status != FAILED
       redis = Resque.redis
-      if redis.lrem(RESTARTED_BUILD_LISTS, 0, subject.id) > 0 || status != FAILED || (options['results'] || []).size > 1
+      if redis.lrem(RESTARTED_BUILD_LISTS, 0, subject.id) > 0 || (options['results'] || []).size > 1
         return false
       else
         redis.lpush RESTARTED_BUILD_LISTS, subject.id
