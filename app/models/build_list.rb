@@ -153,7 +153,7 @@ class BuildList < ActiveRecord::Base
     after_transition :on => :reject_publish, :do => :destroy_container
     after_transition :on => :cancel, :do => :cancel_job
 
-    after_transition :on => [:published, :fail_publish, :build_error], :do => :notify_users
+    after_transition :on => [:published, :fail_publish, :build_error, :tests_failed], :do => :notify_users
     after_transition :on => :build_success, :do => :notify_users,
       :unless => lambda { |build_list| build_list.auto_publish? }
 
