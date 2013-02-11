@@ -103,7 +103,7 @@ class Ability
         can [:read, :projects_list, :projects], Repository, :platform => {:owner_type => 'User', :owner_id => user.id}
         can [:read, :projects_list, :projects], Repository, :platform => {:owner_type => 'Group', :owner_id => user.group_ids}
         can([:read, :projects_list, :projects], Repository, read_relations_for('repositories', 'platforms')) {|repository| local_reader? repository.platform}
-        can([:create, :edit, :update, :destroy, :projects_list, :projects, :add_project, :remove_project], Repository) {|repository| local_admin? repository.platform}
+        can([:create, :edit, :update, :destroy, :projects_list, :projects, :add_project, :remove_project, :regenerate_metadata], Repository) {|repository| local_admin? repository.platform}
         can([:remove_members, :remove_member, :add_member, :signatures], Repository) {|repository| owner?(repository.platform) || local_admin?(repository.platform)}
         can([:add_project, :remove_project], Repository) {|repository| repository.members.exists?(:id => user.id)}
         can(:clear, Platform) {|platform| local_admin?(platform) && platform.personal?}
@@ -158,6 +158,8 @@ class Ability
 
       cannot([:get_list, :create], MassBuild) {|mass_build| mass_build.platform.personal?}
       cannot(:cancel, MassBuild) {|mass_build| mass_build.platform.personal? || mass_build.stop_build}
+
+      cannot(:regenerate_metadata, Repository) {|repository| !repository.platform.main?}
 
       if @user.system?
         can :key_pair, Repository

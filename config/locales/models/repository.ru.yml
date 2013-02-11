@@ -18,6 +18,7 @@ ru:
       clear: Очистить
       clear_confirm: Уверены, что хотите очистить платформу?
       clear_warning: Внимание! Очищенные пакеты не могут быть восстановлены!
+      regenerate_metadata: Регенерировать метаданные
 
     personal_repositories:
       settings_header: Настройки

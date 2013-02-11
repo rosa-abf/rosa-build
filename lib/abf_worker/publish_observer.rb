@@ -9,8 +9,11 @@ module AbfWorker
 
     def perform
       return if status == STARTED # do nothing when publication started
-      if options['type'] == 'resign'
-        AbfWorker::BuildListsPublishTaskManager.unlock_repository options['id']
+      case options['type']
+        when 'resign'
+          AbfWorker::BuildListsPublishTaskManager.unlock_repository options['id']
+        when 'regenerate'
+          AbfWorker::BuildListsPublishTaskManager.unlock_rep_and_platform nil, options['lock_str']
       else
         if options['extra']['create_container'] # Container has been created
           case status

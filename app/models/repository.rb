@@ -2,7 +2,6 @@
 class Repository < ActiveRecord::Base
   belongs_to :platform
 
-
   has_many :relations, :as => :target, :dependent => :destroy
   has_many :actors, :as => :target, :class_name => 'Relation', :dependent => :destroy
   has_many :members, :through => :actors, :source => :actor, :source_type => 'User'

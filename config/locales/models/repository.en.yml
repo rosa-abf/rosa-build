@@ -18,6 +18,7 @@ en:
       clear: Clear
       clear_confirm: Are you sure you want to clear this platform?
       clear_warning: Attention! Cleared packages cannot be restored!
+      regenerate_metadata: Regenerate metadata
 
     personal_repositories:
       settings_header: Settings

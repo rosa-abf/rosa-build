@@ -140,6 +140,10 @@ class Platforms::RepositoriesController < Platforms::BaseController
     redirect_to platform_repository_path(@platform, @repository), :notice => t('flash.repository.project_removed')
   end
 
+  def regenerate_metadata
+    AbfWorker::BuildListsPublishTaskManager.repository_regenerate_metadata @repository
+  end
+
   protected
 
   def set_members

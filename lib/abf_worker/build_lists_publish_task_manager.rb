@@ -8,7 +8,8 @@ module AbfWorker
        LOCKED_PROJECTS_FOR_CLEANUP
        LOCKED_REPOSITORIES
        LOCKED_REP_AND_PLATFORMS
-       LOCKED_BUILD_LISTS).each do |kind|
+       LOCKED_BUILD_LISTS
+       REGENERATE_METADATA).each do |kind|
       const_set kind, "#{REDIS_MAIN_KEY}#{kind.downcase.gsub('_', '-')}"
     end
 
@@ -20,6 +21,7 @@ module AbfWorker
     def run
       create_tasks_for_resign_repositories
       create_tasks_for_build_rpms
+      create_tasks_for_repository_regenerate_metadata
     end
 
     class << self
@@ -50,6 +52,10 @@ module AbfWorker
         redis.lpush RESIGN_REPOSITORIES, key_pair.repository_id
       end
 
+      def repository_regenerate_metadata(repository_id)
+        redis.lpush REGENERATE_METADATA, repository_id
+      end
+
       def unlock_repository(repository_id)
         redis.lrem LOCKED_REPOSITORIES, 0, repository_id
       end
@@ -58,8 +64,8 @@ module AbfWorker
         redis.lrem LOCKED_BUILD_LISTS, 0, build_list.id
       end
 
-      def unlock_rep_and_platform(build_list)
-        redis.lrem LOCKED_REP_AND_PLATFORMS, 0, "#{build_list.save_to_repository_id}-#{build_list.build_for_platform_id}"
+      def unlock_rep_and_platform(build_list, str = nil)
+        redis.lrem LOCKED_REP_AND_PLATFORMS, 0, str || "#{build_list.save_to_repository_id}-#{build_list.build_for_platform_id}"
       end
 
       def redis
@@ -291,5 +297,48 @@ module AbfWorker
       end
     end
 
+    def create_tasks_for_repository_regenerate_metadata
+      worker_queue = 'publish_worker_default'
+      worker_class   = 'AbfWorker::PublishWorkerDefault'
+      lock_str = "#{rep.id}-#{rep.platform_id}"
+      regen_repos   = @redis.lrange REGENERATE_METADATA, 0, -1
+      locked_rep_and_pl = @redis.lrange(LOCKED_REP_AND_PLATFORMS, 0, -1)
+
+      Repository.where(:id => regen_repos).each do |rep|
+        next if locked_rep_and_pl.include?("#{rep.id}-#{rep.platform_id}")
+        @redis.lrem REGENERATE_METADATA, 0, rep.id
+
+        platform_path = "#{rep.platform.path}/repository"
+        distrib_type  = rep.platform.distrib_type
+        cmd_params    = {
+          'RELEASED'        => rep.platform.released,
+          'REPOSITORY_NAME' => rep.name,
+          'TYPE'            => distrib_type,
+          'REGENERATE_METADATA' => true
+        }.map{ |k, v| "#{k}=#{v}" }.join(' ')
+
+        options = {
+          :id           => Time.now.to_i,
+          #:arch         => nil,
+          :distrib_type => distrib_type,
+          :cmd_params   => cmd_params,
+          :platform     => {:platform_path => platform_path},
+          :repository   => {:id => rep.id},
+          :type         => :regenerate,
+          :time_living  => 9600, # 160 min
+          :lock_str => lock_str
+        }
+
+        Resque.push(
+          worker_queue,
+          'class' => worker_class,
+          'args' => [options.merge({
+          })]
+        )
+
+        @redis.lpush(LOCKED_REP_AND_PLATFORMS, lock_str)
+      end
+      return true
+    end
   end
 end
