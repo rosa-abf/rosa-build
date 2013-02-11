@@ -72,29 +72,36 @@ module AbfWorker
 
         packages = {:sources => [], :binaries => {:x86_64 => [], :i586 => []}}
         packages[:sources] = build_list.packages.by_package_type('source').pluck(:sha1).compact
-        packages[:binaries][build_list.arch.name.to_sym] = build_list.packages.by_package_type('binary').pluck(:sha1).compact 
+        packages[:binaries][build_list.arch.name.to_sym] = build_list.packages.by_package_type('binary').pluck(:sha1).compact
+
+        distrib_type  = build_list.build_for_platform.distrib_type
+        cmd_params    = {
+          'RELEASED'        => false,
+          'REPOSITORY_NAME' => build_list.save_to_repository.name,
+          'TYPE'            => distrib_type,
+          'IS_CONTAINER'    => true,
+          'ID'              => build_list.id,
+          'PLATFORM_NAME'   => build_list.save_to_platform.name
+        }.map{ |k, v| "#{k}=#{v}" }.join(' ')
+
+
         Resque.push(
           'publish_worker_default',
           'class' => 'AbfWorker::PublishWorkerDefault',
           'args' => [{
-            :id => build_list.id,
-            :arch => build_list.arch.name,
-            :distrib_type => build_list.build_for_platform.distrib_type,
-            :platform => {
-              :platform_path => platform_path,
-              :released => false
-            },
-            :repository => {
-              :name => build_list.save_to_repository.name,
-              :id => build_list.save_to_repository.id
-            },
-            :type => :publish,
-            :time_living => 9600, # 160 min
-            :packages => packages,
-            :old_packages => {:sources => [], :binaries => {:x86_64 => [], :i586 => []}},
-            :build_list_ids => [build_list.id],
+            :id                   => build_list.id,
+            :arch                 => build_list.arch.name,
+            :distrib_type         => distrib_type,
+            :cmd_params           => cmd_params,
+            :platform             => {:platform_path => platform_path},
+            :repository           => {:id => build_list.save_to_repository_id},
+            :type                 => :publish,
+            :time_living          => 9600, # 160 min
+            :packages             => packages,
+            :old_packages         => {:sources => [], :binaries => {:x86_64 => [], :i586 => []}},
+            :build_list_ids       => [build_list.id],
             :projects_for_cleanup => [],
-            :extra => {:create_container => true}
+            :extra                => {:create_container => true}
           }]
         )
       end
@@ -112,24 +119,28 @@ module AbfWorker
       Repository.where(:id => (resign_repos - locked_repositories)).each do |r|
         @redis.lrem   RESIGN_REPOSITORIES, 0, r.id
         @redis.lpush  LOCKED_REPOSITORIES, r.id
+
+
+        distrib_type  = r.platform.distrib_type
+        cmd_params    = {
+          'RELEASED'        => r.platform.released,
+          'REPOSITORY_NAME' => r.name,
+          'TYPE'            => distrib_type
+        }.map{ |k, v| "#{k}=#{v}" }.join(' ')
+
         Resque.push(
           'publish_worker_default',
           'class' => "AbfWorker::PublishWorkerDefault",
           'args' => [{
-            :id => r.id,
-            :arch => 'x86_64',
-            :distrib_type => r.platform.distrib_type,
-            :platform => {
-              :platform_path => "#{r.platform.path}/repository",
-              :released => r.platform.released
-            },
-            :repository => {
-              :name => r.name,
-              :id => r.id
-            },
-            :type => :resign,
-            :skip_feedback => true,
-            :time_living => 9600 # 160 min
+            :id             => r.id,
+            :arch           => 'x86_64',
+            :distrib_type   => distrib_type,
+            :cmd_params     => cmd_params,
+            :platform       => {:platform_path => "#{r.platform.path}/repository"},
+            :repository     => {:id => r.id},
+            :type           => :resign,
+            :skip_feedback  => true,
+            :time_living    => 9600 # 160 min
           }]
         )
       end
@@ -207,20 +218,22 @@ module AbfWorker
       worker_queue = bl.worker_queue_with_priority("publish_worker")
       worker_class = bl.worker_queue_class("AbfWorker::PublishWorker")
 
+      distrib_type  = bl.build_for_platform.distrib_type
+      cmd_params    = {
+        'RELEASED'        => bl.save_to_platform.released,
+        'REPOSITORY_NAME' => bl.save_to_repository.name,
+        'TYPE'            => distrib_type
+      }.map{ |k, v| "#{k}=#{v}" }.join(' ')
+
       options = {
-        :id => bl.id,
-        :arch => bl.arch.name,
-        :distrib_type => bl.build_for_platform.distrib_type,
-        :platform => {
-          :platform_path => platform_path,
-          :released => bl.save_to_platform.released
-        },
-        :repository => {
-          :name => bl.save_to_repository.name,
-          :id => bl.save_to_repository.id
-        },
-        :type => :publish,
-        :time_living => 9600 # 160 min
+        :id           => bl.id,
+        :arch         => bl.arch.name,
+        :distrib_type => distrib_type,
+        :cmd_params   => cmd_params,
+        :platform     => {:platform_path => platform_path},
+        :repository   => {:id => bl.save_to_repository.id},
+        :type         => :publish,
+        :time_living  => 9600 # 160 min
       }
 
       packages      = {:sources => [], :binaries => {:x86_64 => [], :i586 => []}}
