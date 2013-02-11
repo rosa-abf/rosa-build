@@ -142,6 +142,7 @@ class Platforms::RepositoriesController < Platforms::BaseController
 
   def regenerate_metadata
     AbfWorker::BuildListsPublishTaskManager.repository_regenerate_metadata @repository
+    redirect_to platform_repository_path(@platform, @repository)
   end
 
   protected
