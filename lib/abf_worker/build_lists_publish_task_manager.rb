@@ -193,19 +193,25 @@ module AbfWorker
       projects_for_cleanup = @redis.lrange(PROJECTS_FOR_CLEANUP, 0, -1).
         select{ |k| k =~ /#{save_to_repository_id}\-#{build_for_platform_id}$/ }
 
-      build_lists_for_cleanup = projects_for_cleanup.map do |key|
+      build_lists_for_cleanup = []
+      projects_for_cleanup.each do |key|
         pr, rep, pl = *key.split('-')
-        bl = BuildList.where(:project_id => pr).
-          where(:new_core => true, :status => BuildList::BUILD_PUBLISHED).
-          where(:save_to_repository_id => save_to_repository_id).
-          where(:build_for_platform_id => build_for_platform_id).
-          order(:updated_at).first
-        unless bl
-          # No packages for removing
-          @redis.lrem PROJECTS_FOR_CLEANUP, 0, key
+        added = false
+        Arch.pluck(:id).each do |arch_id|
+          bl = BuildList.where(:project_id => pr).
+            where(:new_core => true, :status => BuildList::BUILD_PUBLISHED).
+            where(:save_to_repository_id => save_to_repository_id).
+            where(:build_for_platform_id => build_for_platform_id).
+            where(:arch_id => arch_id).
+            order(:updated_at).first
+          if bl
+            build_lists_for_cleanup << bl 
+            added = true
+          end
         end
-        bl
-      end.compact
+        # No packages for removing
+        @redis.lrem(PROJECTS_FOR_CLEANUP, 0, key) unless added
+      end
 
       bl = build_lists.first || build_lists_for_cleanup.first
       return false unless bl
