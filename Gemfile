@@ -1,6 +1,6 @@
 source 'http://rubygems.org'
 
-gem 'rails', '3.2.11' #, :git => 'git://github.com/rails/rails.git'
+gem 'rails', '3.2.12' #, :git => 'git://github.com/rails/rails.git'
 
 gem 'pg', '~> 0.14.0'
 # gem 'silent-postgres', :git => 'git://github.com/dolzenko/silent-postgres.git' #'~> 0.1.1'
@@ -57,6 +57,7 @@ gem 'rack-throttle'
 gem 'rest-client', '~> 1.6.6'
 
 gem 'attr_encrypted', '1.2.1'
+gem 'json', '~> 1.7.7'
 
 group :assets do
   gem 'sass-rails', '~> 3.2.5'
