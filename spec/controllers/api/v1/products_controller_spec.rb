@@ -7,12 +7,12 @@ shared_examples_for 'api user without reader rights' do
     response.status.should == 401
   end
 
-  it 'should be able to perform show action' do
+  it 'should be able to perform show action', :anonymous_access  => true do
     get :show, :id => @product.id, :format => :json
     response.should be_success
   end
 
-  it 'should not be able to perform show action for the hidden platform' do
+  it 'should not be able to perform show action for the hidden platform', :anonymous_access  => true do
     @product.platform.update_column :visibility, 'hidden'
     get :show, :id => @product.id, :format => :json
     response.status.should == 403
