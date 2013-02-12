@@ -319,14 +319,15 @@ module AbfWorker
 
         options = {
           :id           => Time.now.to_i,
-          #:arch         => nil,
+          :arch         => 'x86_64',
           :distrib_type => distrib_type,
           :cmd_params   => cmd_params,
           :platform     => {:platform_path => platform_path},
           :repository   => {:id => rep.id},
-          :type         => :regenerate,
+          :type         => :publish,
           :time_living  => 9600, # 160 min
-          :lock_str => lock_str
+          :skip_feedback => true,
+          :extra                => {:lock_str => lock_str, :regenerate => true}
         }
 
         Resque.push(

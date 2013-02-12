@@ -4,8 +4,9 @@
 - else
   .leftlist
   .rightlist
-    = link_to t("layout.repositories.regenerate_metadata"), regenerate_metadata_platform_repository_path(@platform, @repository),
-      :method => :put, :confirm => t('layout.confirm'), :class => :button
+    -if can? :regenerate_metadata, @repository
+      = link_to t("layout.repositories.regenerate_metadata"), regenerate_metadata_platform_repository_path(@platform, @repository),
+        :method => :put, :confirm => t('layout.confirm'), :class => :button
 
 .leftlist= f.label :description, t("activerecord.attributes.repository.description"), :class => :label
 .rightlist= f.text_field :description, :class => 'text_field'
