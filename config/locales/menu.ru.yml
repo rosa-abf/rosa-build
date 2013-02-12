@@ -24,7 +24,7 @@ ru:
   project_menu:
     code: Код
     files: Файлы
-    commits: Коммиты
+    commits: Коммиты (%{count})
     branches: Ветки (%{count})
     tags: Теги (%{count})
     builds: Сборки
