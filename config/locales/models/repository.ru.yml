@@ -43,6 +43,8 @@ ru:
       members:
         successfully_added: "Участник %{name} успешно добавлен к репозиторию"
         error_in_adding: "Не удалось добавить участника %{name}"
+      regenerate_in_queue: Репозиторий поставлен в очередь на регенерацию метаданных
+      regenerate_already_in_queue: Репозиторий уже в очереди на регенерацию метаданных
 
   activerecord:
     models:

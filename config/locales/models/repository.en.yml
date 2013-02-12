@@ -43,6 +43,8 @@ en:
       members:
         successfully_added: "%{name} successfully added to the repository"
         error_in_adding: "Unable to add %{name} as member"
+      regenerate_in_queue: Repository is queued for regenerate metadata
+      regenerate_already_in_queue: Repository is already queued for regenerate metadata
 
   activerecord:
     models:
