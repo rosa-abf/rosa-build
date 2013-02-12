@@ -60,14 +60,14 @@ $(document).ready(function() {
     return false;
   });
 
-  $('.description-top .git_help').click(function() {
+  $('#description-top .git_help').click(function() {
     $('#git_help_data').toggle();
-    var desc = $('.description-top');
+    var desc = $('#description-top');
 
     if ($('#git_help_data').css('display') == 'none') {
-      desc.css('height', '38px');
+      desc.css('height', '85px');
     } else {
-      desc.css('height', '196px');
+      desc.css('height', '233px');
     }
   });
 

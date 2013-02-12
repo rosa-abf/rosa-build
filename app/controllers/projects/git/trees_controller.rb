@@ -24,4 +24,10 @@ class Projects::Git::TreesController < Projects::Git::BaseController
     send_file file.path, :disposition => 'attachment', :type => "application/#{format == 'zip' ? 'zip' : 'x-tar-gz'}", :filename => fullname
   end
 
+  def tags
+  end
+
+  def branches
+  end
+
 end

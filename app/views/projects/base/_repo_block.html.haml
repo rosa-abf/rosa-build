@@ -1,4 +1,4 @@
-.description-top
+#description-top
   -if @commit
     %ul.nav.zip
       %li#menu-archive.dropdown
@@ -25,6 +25,17 @@
     %p~ "git remote add #{project.name} #{git_repo_url(project.git_repo_name)}"
     %p~ "git fetch #{project.name}"
     %p~ "git checkout -b my-local-tracking-branch #{project.name}/master_or_other_branch"
+  .project-tabnav
+    - act = action_name.to_sym; contr = controller_name.to_sym; treeish = project.default_head(params[:treeish])
+    %ul.tabnav-tabs
+      %li{:class => ('selected' if act == :show && contr == :trees )}
+        = link_to t('project_menu.files'), tree_path(project, treeish)
+      %li{:class => ('selected' if act == :index && contr == :commits )}
+        = link_to t('project_menu.commits'), commits_path(project, treeish)
+      %li{:class => ('selected' if act == :branches && contr == :trees )}
+        = link_to t('project_menu.branches', :count => project.repo.branches.count), branches_path(project)
+      %li.tags{:class => ('selected' if act == :tags && contr == :trees )}
+        = link_to t('project_menu.tags', :count => project.repo.tags.count), tags_path(project)
 .both
 :javascript
   $(document).ready(function() {

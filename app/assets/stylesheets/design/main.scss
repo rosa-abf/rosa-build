@@ -1428,7 +1428,7 @@ h3.bmargin10 {
   padding-top: 9px;
 }
 
-div.description-top {
+#description-top {
   background: #dcecfa;
   font-size: 12px;
   color: #292929;
@@ -1436,47 +1436,48 @@ div.description-top {
   height: 38px;
   width: 100%;
   margin-bottom: 20px;
+
+  div.img {
+    float: left;
+    padding-left: 10px;
+    margin-top: 14px;
+  }
+
+  input.name {
+    float: left;
+    margin-top: 5px;
+    margin-left: 10px;
+    background: #FFF;
+    border: 1px solid #d1deeb;
+    height: 21px;
+    width: auto;
+    color: #292929;
+    font-size: 11px;
+    width: 415px;
+    padding: 2px 5px 3px;
+  }
+
+  div.role {
+    float: left;
+    margin-top: 11px;
+    margin-left: 10px;
+    font-size: 11px;
+  }
+
+  div.fork {
+    margin-right: 10px;
+  }
+
 }
 
-div.description-top div.img {
-  float: left;
-  padding-left: 10px;
-  margin-top: 14px;
-}
-
-div.description-top input.name {
-  float: left;
-  margin-top: 5px;
-  margin-left: 10px;
-  background: #FFF;
-  border: 1px solid #d1deeb;
-  height: 21px;
-  width: auto;
-  color: #292929;
-  font-size: 11px;
-  width: 415px;
-  padding: 2px 5px 3px;
-}
-
-div.description-top div.role {
-  float: left;
-  margin-top: 11px;
-  margin-left: 10px;
-  font-size: 11px;
-}
-
- div.fork {
+div.fork {
   float: right;
   margin-top: 5px;
 }  
- div.fork p {
+div.fork p {
   float: right;
   margin-top: 5px;
   margin-right: 2px;
-}
-
-div.description-top div.fork {
-  margin-right: 10px;
 }
 
 .all div.description {
