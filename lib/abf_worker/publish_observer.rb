@@ -35,15 +35,20 @@ module AbfWorker
         case status
         when COMPLETED
           build_list.published
-          AbfWorker::BuildListsPublishTaskManager.cleanup_completed options['projects_for_cleanup']
         when FAILED, CANCELED
           build_list.fail_publish
-          AbfWorker::BuildListsPublishTaskManager.cleanup_failed options['projects_for_cleanup']
         end
         AbfWorker::BuildListsPublishTaskManager.unlock_build_list build_list
       end
-      build_list = build_lists.first || subject
-      AbfWorker::BuildListsPublishTaskManager.unlock_rep_and_platform build_list
+
+      case status
+      when COMPLETED
+        AbfWorker::BuildListsPublishTaskManager.cleanup_completed options['projects_for_cleanup']
+      when FAILED, CANCELED
+        AbfWorker::BuildListsPublishTaskManager.cleanup_failed options['projects_for_cleanup']
+      end
+
+      AbfWorker::BuildListsPublishTaskManager.unlock_rep_and_platform(build_lists.first || subject)
     end
 
     def update_results(build_list = subject)
