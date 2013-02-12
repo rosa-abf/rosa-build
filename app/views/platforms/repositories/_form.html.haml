@@ -1,12 +1,11 @@
-- unless ['edit', 'update'].include? controller.action_name
+- if ['edit', 'update'].exclude? controller.action_name
   .leftlist= f.label :name, t("activerecord.attributes.repository.name"), :class => :label
   .rightlist= f.text_field :name, :class => 'text_field'
-- else
+- elsif can? :regenerate_metadata, @repository
   .leftlist
   .rightlist
-    -if can? :regenerate_metadata, @repository
-      = link_to t("layout.repositories.regenerate_metadata"), regenerate_metadata_platform_repository_path(@platform, @repository),
-        :method => :put, :confirm => t('layout.confirm'), :class => :button
+    = link_to t("layout.repositories.regenerate_metadata"), regenerate_metadata_platform_repository_path(@platform, @repository),
+      :method => :put, :confirm => t('layout.confirm'), :class => :button
 
 .leftlist= f.label :description, t("activerecord.attributes.repository.description"), :class => :label
 .rightlist= f.text_field :description, :class => 'text_field'
