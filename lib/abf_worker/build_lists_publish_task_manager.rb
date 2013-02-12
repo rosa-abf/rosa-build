@@ -20,8 +20,8 @@ module AbfWorker
 
     def run
       create_tasks_for_resign_repositories
-      create_tasks_for_build_rpms
       create_tasks_for_repository_regenerate_metadata
+      create_tasks_for_build_rpms
     end
 
     class << self
