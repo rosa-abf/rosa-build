@@ -13,7 +13,7 @@ module AbfWorker
         AbfWorker::BuildListsPublishTaskManager.unlock_repository options['id']
       else
         if options['extra']['regenerate'] # Regenerate metadata
-          AbfWorker::BuildListsPublishTaskManager.unlock_rep_and_platform nil, options['lock_str']
+          AbfWorker::BuildListsPublishTaskManager.unlock_rep_and_platform nil, options['extra']['lock_str']
         elsif options['extra']['create_container'] # Container has been created
           case status
           when COMPLETED
