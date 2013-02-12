@@ -291,7 +291,7 @@ Rosa::Application.routes.draw do
           # Tags
           get '/tags' => "git/trees#tags", :as => :tags
           # Branches
-          get '/branches' => "git/trees#branches", :as => :branches
+          get '/branches/:treeish' => "git/trees#branches", :as => :branches
           # Commits
           get '/commits/:treeish(/*path)' => "git/commits#index", :as => :commits, :format => false
           get '/commit/:id(.:format)' => "git/commits#show", :as => :commit
