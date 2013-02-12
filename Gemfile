@@ -57,7 +57,6 @@ gem 'rack-throttle'
 gem 'rest-client', '~> 1.6.6'
 
 gem 'attr_encrypted', '1.2.1'
-gem 'json', '~> 1.7.7'
 
 group :assets do
   gem 'sass-rails', '~> 3.2.5'

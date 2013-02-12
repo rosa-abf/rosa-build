@@ -400,7 +400,6 @@ DEPENDENCIES
   hirb
   jbuilder (~> 0.8.2)
   jquery-rails (~> 2.0.2)
-  json (~> 1.7.7)
   mailcatcher
   meta-tags (~> 1.2.5)
   mock_redis (= 0.6.2)
