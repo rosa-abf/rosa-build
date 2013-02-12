@@ -10,7 +10,7 @@ module AbfWorker
     def perform
       return if status == STARTED # do nothing when publication started
       if options['type'] == 'resign'
-          AbfWorker::BuildListsPublishTaskManager.unlock_repository options['id']
+        AbfWorker::BuildListsPublishTaskManager.unlock_repository options['id']
       else
         if options['extra']['regenerate'] # Regenerate metadata
           AbfWorker::BuildListsPublishTaskManager.unlock_rep_and_platform nil, options['lock_str']
