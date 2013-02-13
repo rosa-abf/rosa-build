@@ -1,6 +1,15 @@
 en:
   layout:
     projects:
+      branches: Branches
+      showing_branches: Showing %{count} branches
+      showing_branch: Showing 1 branch
+      no_branches: No branches
+      base_branch: Base branch
+      tags: Tags
+      showing_tags: Showing %{count} tags
+      showing_tag: Showing 1 tag
+      no_tags: No tags
       add: Add
       public_projects_list: Public projects list
       edit: Settings

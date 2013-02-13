@@ -1,0 +1,10 @@
+- subjects_name = action_name.to_s
+
+%h3= t("layout.projects.#{subjects_name}")
+- if subject.empty?
+  %p= t("layout.projects.no_#{subjects_name}")
+- elsif subject.count == 1
+  %p= t("layout.projects.showing_#{subjects_name.gsub /[e]*s$/, ''}")
+- else
+  %p= t("layout.projects.showing_#{subjects_name}", :count => subject.count)
+.both

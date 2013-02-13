@@ -25,9 +25,11 @@ class Projects::Git::TreesController < Projects::Git::BaseController
   end
 
   def tags
+    @tags = @project.repo.tags
   end
 
   def branches
+    @branches = @project.repo.branches
   end
 
 end
