@@ -23,7 +23,7 @@ describe Projects::Git::TreesController do
 
       it "should not be able to perform #{action} action without anonymous acccess", :anonymous_access => false do
         get action, @params.merge(:treeish => 'master')
-        response.code.should == '401'
+        response.should_not be_success
       end
     end
 
