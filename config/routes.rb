@@ -156,6 +156,7 @@ Rosa::Application.routes.draw do
           post   :remove_members # fixme: change post to delete
           delete :remove_member
           post   :add_member
+          put :regenerate_metadata
         end
       end
       resources :key_pairs, :only => [:create, :index, :destroy]

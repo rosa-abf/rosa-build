@@ -18,6 +18,7 @@ ru:
       clear: Очистить
       clear_confirm: Уверены, что хотите очистить платформу?
       clear_warning: Внимание! Очищенные пакеты не могут быть восстановлены!
+      regenerate_metadata: Регенерировать метаданные
 
     personal_repositories:
       settings_header: Настройки
@@ -42,6 +43,8 @@ ru:
       members:
         successfully_added: "Участник %{name} успешно добавлен к репозиторию"
         error_in_adding: "Не удалось добавить участника %{name}"
+      regenerate_in_queue: Репозиторий поставлен в очередь на регенерацию метаданных
+      regenerate_already_in_queue: Репозиторий уже в очереди на регенерацию метаданных
 
   activerecord:
     models:

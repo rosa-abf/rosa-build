@@ -140,6 +140,15 @@ class Platforms::RepositoriesController < Platforms::BaseController
     redirect_to platform_repository_path(@platform, @repository), :notice => t('flash.repository.project_removed')
   end
 
+  def regenerate_metadata
+    if AbfWorker::BuildListsPublishTaskManager.repository_regenerate_metadata @repository.id
+      flash[:notice] = t('flash.repository.regenerate_in_queue')
+    else
+      flash[:error] = t('flash.repository.regenerate_already_in_queue')
+    end
+    redirect_to platform_repository_path(@platform, @repository)
+  end
+
   protected
 
   def set_members

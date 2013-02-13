@@ -179,6 +179,7 @@ class Project < ActiveRecord::Base
   end
 
   def default_head treeish = nil # maybe need change 'head'?
+    return treeish if repo.commit(treeish).present?
     if repo.branches_and_tags.map(&:name).include?(treeish || default_branch)
       treeish || default_branch
     else
