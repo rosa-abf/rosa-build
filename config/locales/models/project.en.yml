@@ -2,6 +2,7 @@ en:
   layout:
     projects:
       branches: Branches
+      tag_created: Created
       showing_branches: Showing %{count} branches
       showing_branch: Showing 1 branch
       no_branches: No branches
