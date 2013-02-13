@@ -25,11 +25,11 @@ class Projects::Git::TreesController < Projects::Git::BaseController
   end
 
   def tags
-    @tags = @project.repo.tags
+    @tags = @project.repo.tags.sort_by(&:name)
   end
 
   def branches
-    @branches = @project.repo.branches
+    @branches = @project.repo.branches.sort_by(&:name).select{ |b| b.name != @branch.name }.unshift(@branch)
   end
 
 end

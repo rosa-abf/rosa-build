@@ -7,4 +7,4 @@
 - if @branches.present?
   %table#project-branches
     %tbody
-      = render :partial => 'branch', :collection => @branches.select{ |b| b.name != @branch.name }.unshift(@branch)
+      = render :partial => 'branch', :collection => @branches

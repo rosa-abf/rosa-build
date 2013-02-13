@@ -7,6 +7,8 @@ ru:
       no_branch: Нет веток
       base_branch: Текущая ветка
       compare: Сравнить
+      browse_code: Просмотреть код
+      source_code: Исходный код (%{type})
       tags: Теги
       showing_tags: Показано %{count} тегов
       showing_tag: Показан 1 тег

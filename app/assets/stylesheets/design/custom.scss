@@ -77,6 +77,24 @@ header menu ul li a {
         border-bottom: 1px solid #a9c6dd;
         padding: 0 20px;
     }
+    .name {
+        font-weight: bold;
+    }
+}
+#project-tags {
+    .release-list {
+        padding: 0;
+        li {
+            list-style-type: none;
+            border-bottom: 1px solid #a9c6dd;
+            padding: 10px 20px;
+        }
+    }
+    .name { font-weight: bold; }
+    .detail-link {
+        margin: 0 5px;
+        float: right;
+    }
 }
 article div.activity, .commits_activity {
     border: 1px solid #D6D6D6;

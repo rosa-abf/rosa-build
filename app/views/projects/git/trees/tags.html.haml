@@ -3,3 +3,8 @@
 = render 'submenu'
 = render 'repo_block', :project => @project
 = render 'header', :subject => @tags
+
+- if @tags.present?
+  %div#project-tags
+    %ol.release-list
+      = render :partial => 'tag', :collection => @tags
