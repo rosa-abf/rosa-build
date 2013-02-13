@@ -179,7 +179,10 @@ class Project < ActiveRecord::Base
   end
 
   def default_head treeish = nil # maybe need change 'head'?
-    return treeish if repo.commit(treeish).present?
+    # Attention!
+    # repo.commit(nil) => <Grit::Commit "b6c0f81deb17590d22fc07ba0bbd4aa700256f61">
+    # repo.commit(nil.to_s) => nil
+    return treeish if treeish.present? && repo.commit(treeish).present?
     if repo.branches_and_tags.map(&:name).include?(treeish || default_branch)
       treeish || default_branch
     else
