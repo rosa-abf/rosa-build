@@ -40,32 +40,28 @@ describe Projects::Git::TreesController do
   end
 
   context 'for other user' do
+    before { set_session_for FactoryGirl.create(:user) }
     it 'should not be able to archive empty project' do
       %x(rm -rf #{@project.path})
-      set_session_for FactoryGirl.create(:user)
       expect { get :archive, @params.merge(:format => 'tar.gz') }.to raise_error(ActionController::RoutingError)
     end
 
     it 'should not be able to injection code with format' do
-      set_session_for FactoryGirl.create(:user)
       expect { get :archive, @params.merge(:format => "tar.gz master > /dev/null; echo 'I am hacker!';\#") }.to raise_error(ActionController::RoutingError)
     end
 
     it 'should not be able to injection code with treeish' do
-      set_session_for FactoryGirl.create(:user)
       expect { get :archive, @params.merge(:treeish => "master > /dev/null; echo 'I am hacker!';\#") }.to raise_error(ActionController::RoutingError)
     end
 
     it 'should be able to perform archive action' do
       stub(controller).render
-      set_session_for FactoryGirl.create(:user)
       get :archive, @params.merge(:format => 'tar.gz')
       response.should be_success
     end
 
     [:tags, :branches].each do |action|
       it "should be able to perform #{action} action" do
-        set_session_for FactoryGirl.create(:user)
         get action, @params.merge(:treeish => 'master')
         response.should be_success
       end
