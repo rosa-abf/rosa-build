@@ -1,6 +1,18 @@
 ru:
   layout:
     projects:
+      branches: Ветки
+      showing_branches: Показано %{count} веток
+      showing_branch: Показана 1 ветка
+      no_branch: Нет веток
+      base_branch: Текущая ветка
+      compare: Сравнить
+      browse_code: Просмотреть код
+      source_code: Исходный код (%{type})
+      tags: Теги
+      showing_tags: Показано %{count} тегов
+      showing_tag: Показан 1 тег
+      no_tags: Нет тегов
       add: Добавить
       public_projects_list: Список публичных проектов
       edit: Настройки

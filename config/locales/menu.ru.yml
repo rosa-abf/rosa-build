@@ -22,8 +22,11 @@ ru:
     developer_api_url: http://abf-doc.rosalinux.ru
     abf-ideas: Идеи для ABF
   project_menu:
-    project: Проект
+    code: Код
+    files: Файлы
     commits: Коммиты
+    branches: Ветки (%{count})
+    tags: Теги (%{count})
     builds: Сборки
     tracker: Трекер
     wiki: Wiki
