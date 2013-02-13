@@ -53,6 +53,7 @@ module AbfWorker
       end
 
       def repository_regenerate_metadata(repository_id)
+        return false if Resque.redis.lrange(REGENERATE_METADATA, 0, -1).include? repository_id.to_s
         redis.lpush REGENERATE_METADATA, repository_id
       end
 

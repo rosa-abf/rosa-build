@@ -141,11 +141,10 @@ class Platforms::RepositoriesController < Platforms::BaseController
   end
 
   def regenerate_metadata
-    if Resque.redis.lrange(AbfWorker::BuildListsPublishTaskManager::REGENERATE_METADATA, 0, -1).include? @repository.id.to_s
-      flash[:error] = t('flash.repository.regenerate_already_in_queue')
-    else
-      AbfWorker::BuildListsPublishTaskManager.repository_regenerate_metadata @repository.id
+    if AbfWorker::BuildListsPublishTaskManager.repository_regenerate_metadata @repository.id
       flash[:notice] = t('flash.repository.regenerate_in_queue')
+    else
+      flash[:error] = t('flash.repository.regenerate_already_in_queue')
     end
     redirect_to platform_repository_path(@platform, @repository)
   end
