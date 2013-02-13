@@ -2,7 +2,6 @@ ru:
   layout:
     projects:
       branches: Ветки
-      tag_created: Создан
       showing_branches: Показано %{count} веток
       showing_branch: Показана 1 ветка
       no_branch: Нет веток

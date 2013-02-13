@@ -3,7 +3,6 @@
   - file_name = "#{@project.owner.uname}-#{@project.name}-#{tag.name}"
   - %w(zip tar.gz).each do |type|
     = link_to t('layout.projects.source_code', :type => type), archive_path(@project, file_name, type), :class => 'detail-link'
-  %p.name= tag.name
-  %p.date
-    = t('layout.projects.tag_created')
-    = tag.commit.authored_date.strftime('%d.%m.%Y')
+  %p.name
+    %b= tag.name
+    .date~ "(#{tag.commit.authored_date.strftime('%d.%m.%Y')})"
