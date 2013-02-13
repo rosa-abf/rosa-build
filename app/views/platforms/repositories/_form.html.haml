@@ -11,8 +11,8 @@
 
 .hr
 - if ['edit', 'update'].include?(controller.action_name) && can?(:regenerate_metadata, @repository)
-  .leftlist= t('layout.repositories.regenerate_metadata')
-  .rightlist
+  .leftside= t('layout.repositories.regenerate_metadata')
+  .rightside
     = link_to t('layout.repositories.regenerate_metadata').split.first, regenerate_metadata_platform_repository_path(@platform, @repository),
       :method => :put, :confirm => t('layout.confirm'), :class => :button
 .hr{:style => 'padding-bottom:20px;'}
