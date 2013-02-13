@@ -24,7 +24,7 @@ en:
   project_menu:
     code: Code
     files: Files
-    commits: Commits (%{count})
+    commits: Commits
     branches: Branches (%{count})
     tags: Tags (%{count})
     builds: Builds

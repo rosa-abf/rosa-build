@@ -31,10 +31,8 @@
     %ul.tabnav-tabs
       %li{:class => ('selected' if act == :show && contr == :trees )}
         = link_to t('project_menu.files'), tree_path(project, treeish)
-      - commit_count = project.repo.commit_count(treeish)
-      - commit_count = '1000+' if commit_count > 1000
       %li{:class => ('selected' if act == :index && contr == :commits )}
-        = link_to t('project_menu.commits', :count => commit_count), commits_path(project, treeish)
+        = link_to t('project_menu.commits'), commits_path(project, treeish)
       %li{:class => ('selected' if act == :branches && contr == :trees )}
         = link_to t('project_menu.branches', :count => project.repo.branches.count), branches_path(project, treeish)
       %li.tags{:class => ('selected' if act == :tags && contr == :trees )}
