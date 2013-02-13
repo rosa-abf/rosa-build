@@ -6,6 +6,7 @@ en:
       showing_branch: Showing 1 branch
       no_branches: No branches
       base_branch: Base branch
+      compare: Compare
       tags: Tags
       showing_tags: Showing %{count} tags
       showing_tag: Showing 1 tag
