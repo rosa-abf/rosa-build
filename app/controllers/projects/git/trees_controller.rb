@@ -25,7 +25,7 @@ class Projects::Git::TreesController < Projects::Git::BaseController
   end
 
   def tags
-    @tags = @project.repo.tags.sort_by(&:name)
+    @tags = @project.repo.tags.select{ |t| t.commit }.sort_by(&:name)
   end
 
   def branches
