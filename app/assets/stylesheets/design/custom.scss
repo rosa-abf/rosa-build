@@ -52,16 +52,15 @@ header menu ul li a {
         margin: 0;
         li {
             display: inline-block;
-            padding: 10px;
+            padding: 10px 10px 0;
+            height: 26px;
             margin: 0 5px;
             border: 1px solid #a9c6dd;
             border-bottom: none;
             float: left;
         }
         li.selected {
-            height: 15px;
             background-color: #FFF;
-            border-bottom: 2px solid #FFF;
         }
         .tags { float: right; }
     }
