@@ -20,12 +20,13 @@ class Projects::Git::CommitsController < Projects::Git::BaseController
   end
 
   def diff
-    if params[:commit2].present?
-      params1 = params[:commit1]
-      params2 = params[:commit2] == 'HEAD' ? @project.default_branch : params[:commit2]
+    res = params[:diff].split(/\A(.*)\.\.\.(.*)\z/).select {|e| e.present?}
+    if res[1].present?
+      params1 = res[0]
+      params2 = res[1] == 'HEAD' ? @project.default_branch : res.last
     else # get only one parameter
       params1 = @project.default_branch
-      params2 = params[:commit1]
+      params2 = res.first
     end
     params1.sub! 'HEAD', @project.default_branch
     params2.sub! 'HEAD', @project.default_branch

@@ -391,9 +391,10 @@ class BuildList < ActiveRecord::Base
   def abf_worker_args
     # TODO: remove when this will be not necessary
     # "rosa2012.1/main" repository should be used in "conectiva" platform
-    include_repos << 146 if build_for_platform_id == 376
+    repos = include_repos
+    repos |= ['146'] if build_for_platform_id == 376
     include_repos_hash = {}.tap do |h|
-      include_repos.each do |r|
+      repos.each do |r|
         repo = Repository.find r
         path = repo.platform.public_downloads_url(nil, arch.name, repo.name)
         # path.gsub!(/^http:\/\/(0\.0\.0\.0|localhost)\:[\d]+/, 'https://abf.rosalinux.ru') unless Rails.env.production?
