@@ -51,7 +51,7 @@ module BuildListsHelper
     else
       ''
     end
-  end 
+  end
 
   def build_list_version_link(bl, str_version = false)
     hash_size=5
@@ -93,5 +93,10 @@ module BuildListsHelper
 
   def log_reload_lines_options
     options_for_select([100, 200, 500, 1000, 1500, 2000], 1000).html_safe
+  end
+
+  def get_version_release build_list
+    pkg = build_list.packages.where(:package_type => 'source', :project_id => build_list.project_id).first
+    "#{pkg.version}-#{pkg.release}" if pkg.present?
   end
 end

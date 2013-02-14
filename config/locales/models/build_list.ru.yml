@@ -13,6 +13,7 @@ ru:
         project: Проект
         arch_id: Архитектура
         arch: Архитектура
+        arch_short: Архит-ра
         new_core: Новое ядро
         is_circle: Циклическая сборка
         updated_at: Информация получена

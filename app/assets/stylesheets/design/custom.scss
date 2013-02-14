@@ -1766,3 +1766,16 @@ table#myTable thead tr.search th form.button_to div input {
 .CodeMirror {
   border: 1px solid #DDDDDD;
 }
+
+table.tablesorter th.lpadding6 {
+  padding-left: 6px;
+}
+
+div.right.slim {
+  padding-right: 5px;
+  width: 705px;
+
+  table.tablesorter {
+    font-size: 10px;
+  }
+}

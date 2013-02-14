@@ -15,6 +15,8 @@
     %td= build_list_version_link(build_list)
   - else
     %td.centered{:colspan => 2}= t("layout.projects.unexisted_project")
-  %td= link_to "#{build_list.save_to_platform.name}/#{build_list.save_to_repository.name}", [build_list.save_to_platform, build_list.save_to_repository]
+  %td= get_version_release build_list
+  -build_for=" (#{build_list.build_for_platform.name})" if build_list.build_for_platform.personal?
+  %td= link_to "#{build_list.save_to_platform.name}/#{build_list.save_to_repository.name}#{build_for}", [build_list.save_to_platform, build_list.save_to_repository]
   %td= build_list.arch.try(:name) || t("layout.arches.unexisted_arch")
   %td= link_to build_list.user.try(:fullname), build_list.user
