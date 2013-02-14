@@ -317,7 +317,7 @@ Rosa::Application.routes.draw do
           # Archive
           get '/archive/:treeish.:format' => "git/trees#archive", :as => :archive, :format => /zip|tar\.gz/
           # Git diff
-          get '/diff/:commit1(...:commit2)' => "git/commits#diff", :as => :diff
+          get '/diff/:diff' => "git/commits#diff", :as => :diff, :format => false, :diff => /.*/
         end
       end
     end
