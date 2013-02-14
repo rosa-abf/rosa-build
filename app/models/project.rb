@@ -213,7 +213,7 @@ class Project < ActiveRecord::Base
     sha1    = Digest::SHA1.file(archive[:path]).hexdigest
     token   = User.find_by_uname('rosa_system').authentication_token
     if %x[ curl #{APP_CONFIG['file_store_url']}/api/v1/file_stores.json?hash=#{sha1} ] == '[]'
-      system "curl --user #{token}: -POST -F 'file_store[file]=@#{archive[:path]}' #{APP_CONFIG['file_store_url']}/api/v1/upload?file['name']=#{name}-#{tag.name}.#{tag_file_format(format)}"
+      system "curl --user #{token}: -POST -F 'file_store[file]=@#{archive[:path]};filename=#{name}-#{tag.name}.#{tag_file_format(format)}' #{APP_CONFIG['file_store_url']}/api/v1/upload"
     end
     if project_tag
       old_sha1 = project_tag.sha1
