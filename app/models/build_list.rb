@@ -402,9 +402,8 @@ class BuildList < ActiveRecord::Base
         # so, we should append:
         # - release
         # - updates
-        %w(release updates).each do |kind|
-          h["#{repo.platform.name}_#{repo.name}_#{kind}"] = path + kind
-        end
+        h["#{repo.platform.name}_#{repo.name}_release"] = path + 'release'
+        h["#{repo.platform.name}_#{repo.name}_updates"] = path + 'updates'
       end
     end
     if save_to_platform.personal? && use_save_to_repository
