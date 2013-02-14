@@ -400,10 +400,11 @@ class BuildList < ActiveRecord::Base
         # Path looks like:
         # http://abf.rosalinux.ru/downloads/rosa-server2012/repository/x86_64/base/
         # so, we should append:
-        # /release
-        # /updates
-        h["#{repo.name}_release"] = path + 'release'
-        h["#{repo.name}_updates"] = path + 'updates'
+        # - release
+        # - updates
+        %w(release updates).each do |kind|
+          h["#{repo.platform.name}_#{repo.name}_#{kind}"] = path + kind
+        end
       end
     end
     if save_to_platform.personal? && use_save_to_repository
