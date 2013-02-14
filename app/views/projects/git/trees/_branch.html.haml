@@ -7,4 +7,4 @@
         %li.text= t('layout.projects.base_branch')
       - else
         %li
-          = link_to t('layout.projects.compare'), diff_path(@project, "#{CGI.escape(@branch.name)}...#{CGI.escape(branch.name)}")
+          = link_to t('layout.projects.compare'), diff_path(@project, "#{@branch.name}...#{branch.name}")
