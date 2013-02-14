@@ -216,9 +216,8 @@ class Project < ActiveRecord::Base
       system "curl --user #{token}: -POST -F 'file_store[file]=@#{archive[:path]};filename=#{name}-#{tag.name}.#{tag_file_format(format)}' #{APP_CONFIG['file_store_url']}/api/v1/upload"
     end
     if project_tag
-      old_sha1 = project_tag.sha1
+      project_tag.remove_archive_from_file_store(project_tag.sha1)
       project_tag.update_attributes(:sha1 => sha1)
-      system "curl --user #{token}: -X DELETE #{APP_CONFIG['file_store_url']}/api/v1/file_stores/#{old_sha1}.json"
     else
       project_tags.create(
         :tag_name   => tag.name,
