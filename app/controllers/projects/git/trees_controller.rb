@@ -11,17 +11,18 @@ class Projects::Git::TreesController < Projects::Git::BaseController
 
   def archive
     format, @treeish = params[:format], params[:treeish]
-    if (@treeish =~ /^#{@project.owner.uname}-#{@project.name}-/) && !(@treeish =~ /[\s]+/) && (format =~ /^(zip|tar\.gz)$/)
-      @treeish = @treeish.gsub(/^#{@project.owner.uname}-#{@project.name}-/, '')
+    if (@treeish =~ /^#{@project.name}-/) && !(@treeish =~ /[\s]+/) && (format =~ /^(zip|tar\.gz)$/)
+      @treeish = @treeish.gsub(/^#{@project.name}-/, '')
       @commit = @project.repo.commits(@treeish, 1).first
     end
     raise Grit::NoSuchPathError unless @commit
-    name = "#{@project.owner.uname}-#{@project.name}-#{@treeish}"
-    fullname = "#{name}.#{format == 'zip' ? 'zip' : 'tar.gz'}"
-    file = Tempfile.new fullname, 'tmp'
-    system("cd #{@project.path}; git archive --format=#{format == 'zip' ? 'zip' : 'tar'} --prefix=#{name}/ #{@treeish} #{format == 'zip' ? '' : ' | gzip -9'} > #{file.path}")
-    file.close
-    send_file file.path, :disposition => 'attachment', :type => "application/#{format == 'zip' ? 'zip' : 'x-tar-gz'}", :filename => fullname
+    tag = @project.repo.tags.find{ |t| t.name == @treeish }
+    if tag
+      redirect_to "#{APP_CONFIG['file_store_url']}/api/v1/file_stores/#{@project.get_project_tag_sha1(tag, format)}"
+    else
+      archive = @project.create_archive @treeish, format
+      send_file archive[:path], :disposition => 'attachment', :type => "application/#{format == 'zip' ? 'zip' : 'x-tar-gz'}", :filename => archive[:fullname]
+    end
   end
 
   def tags

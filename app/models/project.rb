@@ -15,6 +15,7 @@ class Project < ActiveRecord::Base
   has_many :project_imports, :dependent => :destroy
   has_many :project_to_repositories, :dependent => :destroy
   has_many :repositories, :through => :project_to_repositories
+  has_many :project_tags, :dependent => :destroy
 
   has_many :relations, :as => :target, :dependent => :destroy
   has_many :collaborators, :through => :relations, :source => :actor, :source_type => 'User'
@@ -190,7 +191,50 @@ class Project < ActiveRecord::Base
     end
   end
 
+  def create_archive(treeish, format)
+    file_name = "#{name}-#{treeish}"
+    fullname  = "#{file_name}.#{tag_file_format(format)}"
+    file = Tempfile.new fullname, 'tmp'
+    system("cd #{path}; git archive --format=#{format == 'zip' ? 'zip' : 'tar'} --prefix=#{file_name}/ #{treeish} #{format == 'zip' ? '' : ' | gzip -9'} > #{file.path}")
+    file.close
+    {
+      :path     => file.path,
+      :fullname => fullname
+    }
+  end
+
+  def get_project_tag_sha1(tag, format)
+    format_id = ProjectTag::Formats["#{tag_file_format(format)}"]
+    project_tag = project_tags.where(:tag_name => tag.name, :format_id => format_id).first
+
+    return project_tag.sha1 if project_tag && project_tag.commit_id == tag.commit.id
+
+    archive = create_archive(tag.name, format)
+    sha1    = Digest::SHA1.file(archive[:path]).hexdigest
+    token   = User.find_by_uname('rosa_system').authentication_token
+    if %x[ curl #{APP_CONFIG['file_store_url']}/api/v1/file_stores.json?hash=#{sha1} ] == '[]'
+      system "curl --user #{token}: -POST -F 'file_store[file]=@#{archive[:path]}' #{APP_CONFIG['file_store_url']}/api/v1/upload?file['name']=#{name}-#{tag.name}.#{tag_file_format(format)}"
+    end
+    if project_tag
+      old_sha1 = project_tag.sha1
+      project_tag.update_attributes(:sha1 => sha1)
+      system "curl --user #{token}: -X DELETE #{APP_CONFIG['file_store_url']}/api/v1/file_stores/#{old_sha1}.json"
+    else
+      project_tags.create(
+        :tag_name   => tag.name,
+        :format_id  => format_id,
+        :commit_id  => tag.commit.id,
+        :sha1       => sha1
+      )
+    end
+    return sha1
+  end
+
   protected
+
+  def tag_file_format(format)
+    format == 'zip' ? 'zip' : 'tar.gz'
+  end
 
   def truncate_name
     self.name = name.strip if name
