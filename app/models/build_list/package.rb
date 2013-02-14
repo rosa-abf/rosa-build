@@ -13,14 +13,14 @@ class BuildList::Package < ActiveRecord::Base
   validates :package_type, :inclusion => PACKAGE_TYPES
   validates :sha1, :presence => true, :if => Proc.new { |p| p.build_list.new_core? }
 
-  default_scope order('lower(name) ASC, length(name) ASC')
+  default_scope order('lower(build_list_packages.name) ASC, length(build_list_packages.name) ASC')
 
   # Fetches only actual (last publised) packages.
   scope :actual,          where(:actual => true)
   scope :by_platform,     lambda {|platform| where(:platform_id => platform) }
   scope :by_name,         lambda {|name| where(:name => name) }
   scope :by_package_type, lambda {|type| where(:package_type => type) }
-  scope :like_name,       lambda {|name| where('name ILIKE ?', "%#{name}%") if name.present?}
+  scope :like_name,       lambda {|name| where('build_list_packages.name ILIKE ?', "%#{name}%") if name.present?}
 
   def assignee
     project.maintainer
