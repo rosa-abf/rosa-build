@@ -389,6 +389,9 @@ class BuildList < ActiveRecord::Base
   end
 
   def abf_worker_args
+    # TODO: remove when this will be not necessary
+    # "rosa2012.1/main" repository should be used in "conectiva" platform
+    include_repos << 146 if build_for_platform_id == 376
     include_repos_hash = {}.tap do |h|
       include_repos.each do |r|
         repo = Repository.find r
@@ -397,10 +400,10 @@ class BuildList < ActiveRecord::Base
         # Path looks like:
         # http://abf.rosalinux.ru/downloads/rosa-server2012/repository/x86_64/base/
         # so, we should append:
-        # /release
-        # /updates
-        h["#{repo.name}_release"] = path + 'release'
-        h["#{repo.name}_updates"] = path + 'updates'
+        # - release
+        # - updates
+        h["#{repo.platform.name}_#{repo.name}_release"] = path + 'release'
+        h["#{repo.platform.name}_#{repo.name}_updates"] = path + 'updates'
       end
     end
     if save_to_platform.personal? && use_save_to_repository
