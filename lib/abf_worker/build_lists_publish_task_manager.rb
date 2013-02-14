@@ -307,11 +307,11 @@ module AbfWorker
     def create_tasks_for_repository_regenerate_metadata
       worker_queue = 'publish_worker_default'
       worker_class   = 'AbfWorker::PublishWorkerDefault'
-      lock_str = "#{rep.id}-#{rep.platform_id}"
       regen_repos   = @redis.lrange REGENERATE_METADATA, 0, -1
       locked_rep_and_pl = @redis.lrange(LOCKED_REP_AND_PLATFORMS, 0, -1)
 
       Repository.where(:id => regen_repos).each do |rep|
+        lock_str = "#{rep.id}-#{rep.platform_id}"
         next if locked_rep_and_pl.include?("#{rep.id}-#{rep.platform_id}")
         @redis.lrem REGENERATE_METADATA, 0, rep.id
 
