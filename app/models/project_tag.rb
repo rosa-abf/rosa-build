@@ -1,5 +1,7 @@
 # -*- encoding : utf-8 -*-
 class ProjectTag < ActiveRecord::Base
+  include Modules::Models::FileStoreClean
+
   FORMATS = {
     'zip'     => 0,
     'tar.gz'  => 1
@@ -16,12 +18,8 @@ class ProjectTag < ActiveRecord::Base
                   :tag_name,
                   :format_id
 
-  after_destroy :remove_archive_from_file_store
-
-  def remove_archive_from_file_store(sha = sha1)
-    token   = User.find_by_uname('file_store').authentication_token
-    system "curl --user #{token}: -X DELETE #{APP_CONFIG['file_store_url']}/api/v1/file_stores/#{sha}.json"
+  def sha1_of_file_store_files
+    [sha1]
   end
-  later :remove_archive_from_file_store, :queue => :clone_build
 
 end

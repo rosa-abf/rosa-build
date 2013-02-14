@@ -370,6 +370,10 @@ class BuildList < ActiveRecord::Base
              .recent
   end
 
+  def sha1_of_file_store_files
+    packages.pluck(:sha1).compact | (results || []).map{ |r| r['sha1'] }.compact
+  end
+
   protected
 
   def create_container
