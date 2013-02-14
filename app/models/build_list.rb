@@ -389,6 +389,9 @@ class BuildList < ActiveRecord::Base
   end
 
   def abf_worker_args
+    # TODO: remove when this will be not necessary
+    # "rosa2012.1/main" repository should be used in "conectiva" platform
+    include_repos << 146 if build_for_platform_id == 376
     include_repos_hash = {}.tap do |h|
       include_repos.each do |r|
         repo = Repository.find r
