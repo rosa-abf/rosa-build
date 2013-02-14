@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130207101148) do
+ActiveRecord::Schema.define(:version => 20130214101404) do
 
   create_table "activity_feeds", :force => true do |t|
     t.integer  "user_id",    :null => false
@@ -338,6 +338,16 @@ ActiveRecord::Schema.define(:version => 20130207101148) do
   end
 
   add_index "project_imports", ["platform_id", "name"], :name => "index_project_imports_on_name_and_platform_id", :unique => true, :case_sensitive => false
+
+  create_table "project_tags", :force => true do |t|
+    t.integer  "project_id"
+    t.string   "commit_id"
+    t.string   "sha1"
+    t.string   "tag_name"
+    t.integer  "format_id"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+  end
 
   create_table "project_to_repositories", :force => true do |t|
     t.integer  "project_id"

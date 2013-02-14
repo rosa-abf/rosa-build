@@ -204,7 +204,7 @@ class Project < ActiveRecord::Base
   end
 
   def get_project_tag_sha1(tag, format)
-    format_id = ProjectTag::Formats["#{tag_file_format(format)}"]
+    format_id = ProjectTag::FORMATS["#{tag_file_format(format)}"]
     project_tag = project_tags.where(:tag_name => tag.name, :format_id => format_id).first
 
     return project_tag.sha1 if project_tag && project_tag.commit_id == tag.commit.id
