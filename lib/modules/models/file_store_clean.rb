@@ -11,28 +11,40 @@ module Modules
         end
         later :destroy, :queue => :clone_build
 
-        def destroy_files_from_file_store
-          files = []
-          self.results.each {|r| files << r['sha1'] if r['sha1'].present?}
-          if self.respond_to? :packages
-            self.packages.each {|pk| files << pk.sha1 if pk.sha1.present?}
-          end
-          if files.count > 0
-            token = User.system.find_by_uname('file_store').authentication_token
-            uri = URI APP_CONFIG['file_store_url']
-            Net::HTTP.start(uri.host, uri.port) do |http|
-              files.each do |sha1|
-                begin
-                  req = Net::HTTP::Delete.new("/api/v1/file_stores/#{sha1}.json")
-                  req.basic_auth token, ''
-                  http.request(req)
-                rescue # Dont care about it
-                end
+        def sha1_of_file_store_files
+          raise NotImplementedError, "You should implement this method"
+        end
+
+        def destroy_files_from_file_store(args = sha1_of_file_store_files)
+          files = *args
+          token = User.find_by_uname('file_store').authentication_token
+          uri   = URI APP_CONFIG['file_store_url']
+          Net::HTTP.start(uri.host, uri.port) do |http|
+            files.each do |sha1|
+              begin
+                req = Net::HTTP::Delete.new("/api/v1/file_stores/#{sha1}.json")
+                req.basic_auth token, ''
+                http.request(req)
+              rescue # Dont care about it
               end
             end
           end
         end
       end
+
+      def self.file_exist_on_file_store?(sha1)
+        begin
+          resp = JSON(RestClient.get "#{APP_CONFIG['file_store_url']}/api/v1/file_stores.json", :params => {:hash => sha1})
+        rescue # Dont care about it
+          resp = []
+        end
+        if resp[0].respond_to?('[]') && resp[0]['file_name'] && resp[0]['sha1_hash']
+          true
+        else
+          false
+        end
+      end
+
     end
   end
 end

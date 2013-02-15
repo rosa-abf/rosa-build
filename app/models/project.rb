@@ -15,6 +15,7 @@ class Project < ActiveRecord::Base
   has_many :project_imports, :dependent => :destroy
   has_many :project_to_repositories, :dependent => :destroy
   has_many :repositories, :through => :project_to_repositories
+  has_many :project_tags, :dependent => :destroy
 
   has_many :relations, :as => :target, :dependent => :destroy
   has_many :collaborators, :through => :relations, :source => :actor, :source_type => 'User'
@@ -190,7 +191,58 @@ class Project < ActiveRecord::Base
     end
   end
 
+  def get_project_tag_sha1(tag, format)
+    format_id = ProjectTag::FORMATS["#{tag_file_format(format)}"]
+    project_tag = project_tags.where(:tag_name => tag.name, :format_id => format_id).first
+
+    return project_tag.sha1 if project_tag && project_tag.commit_id == tag.commit.id && Modules::Models::FileStoreClean.file_exist_on_file_store?(project_tag.sha1)
+
+    archive = archive_by_treeish_and_format tag.name, format
+    sha1    = Digest::SHA1.file(archive[:path]).hexdigest
+    unless Modules::Models::FileStoreClean.file_exist_on_file_store? sha1
+      token = User.find_by_uname('rosa_system').authentication_token
+      begin
+        resp = JSON `curl --user #{token}: -POST -F 'file_store[file]=@#{archive[:path]};filename=#{name}-#{tag.name}.#{tag_file_format(format)}' #{APP_CONFIG['file_store_url']}/api/v1/upload`
+      rescue # Dont care about it
+        resp = {}
+      end
+      return nil if resp['sha1_hash'].nil?
+    end
+    if project_tag
+      project_tag.destroy_files_from_file_store(project_tag.sha1)
+      project_tag.update_attributes(:sha1 => sha1)
+    else
+      project_tags.create(
+        :tag_name   => tag.name,
+        :format_id  => format_id,
+        :commit_id  => tag.commit.id,
+        :sha1       => sha1
+      )
+    end
+    return sha1
+  end
+
+  def archive_by_treeish_and_format(treeish, format)
+    @archive ||= create_archive treeish, format
+  end
+
   protected
+
+  def create_archive(treeish, format)
+    file_name = "#{name}-#{treeish}"
+    fullname  = "#{file_name}.#{tag_file_format(format)}"
+    file = Tempfile.new fullname, 'tmp'
+    system("cd #{path}; git archive --format=#{format == 'zip' ? 'zip' : 'tar'} --prefix=#{file_name}/ #{treeish} #{format == 'zip' ? '' : ' | gzip -9'} > #{file.path}")
+    file.close
+    {
+      :path     => file.path,
+      :fullname => fullname
+    }
+  end
+
+  def tag_file_format(format)
+    format == 'zip' ? 'zip' : 'tar.gz'
+  end
 
   def truncate_name
     self.name = name.strip if name

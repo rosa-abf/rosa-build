@@ -130,6 +130,10 @@ class ProductBuildList < ActiveRecord::Base
     [BUILD_COMPLETED, BUILD_FAILED, BUILD_CANCELED].include? status
   end
 
+  def sha1_of_file_store_files
+    (results || []).map{ |r| r['sha1'] }.compact
+  end
+
   protected
 
   def abf_worker_priority
