@@ -41,6 +41,7 @@ class ProductBuildList < ActiveRecord::Base
             :main_script,
             :arch_id, :presence => true
   validates :status, :inclusion => { :in => STATUSES }
+  validates :main_script, :params, :length => { :maximum => 255 }
 
   attr_accessor :base_url
   attr_accessible :status,
