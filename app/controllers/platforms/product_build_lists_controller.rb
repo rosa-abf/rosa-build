@@ -2,7 +2,7 @@
 class Platforms::ProductBuildListsController < Platforms::BaseController
   before_filter :authenticate_user!
   skip_before_filter :authenticate_user!, :only => [:index, :show, :log] if APP_CONFIG['anonymous_access']
-  before_filter :check_path_to_show, :only => :show
+  before_filter :redirect_to_full_path_if_short_url, :only => :show
   load_and_authorize_resource :platform, :except => :index
   load_and_authorize_resource :product, :through => :platform, :except => :index
   load_and_authorize_resource :product_build_list, :through => :product, :except => :index
@@ -77,7 +77,7 @@ class Platforms::ProductBuildListsController < Platforms::BaseController
 
   protected
 
-  def check_path_to_show
+  def redirect_to_full_path_if_short_url
     if params[:platform_id].blank? || params[:product_id].blank?
       pbl               = ProductBuildList.find params[:id]
       product, platform = pbl.product, pbl.product.platform
