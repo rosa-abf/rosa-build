@@ -10,7 +10,7 @@ class Projects::BaseController < ApplicationController
   end
 
   def init_statistics
-    @opened_issues_count        = @project.has_issues ? @project.issues.without_pull_requests.opened.count : 0
-    @opened_pull_requests_count = @project.issues.joins(:pull_request).opened.count
+    @opened_issues_count        = @project.issues.without_pull_requests.not_closed_or_merged.count
+    @opened_pull_requests_count = @project.issues.joins(:pull_request).not_closed_or_merged.count
   end
 end
