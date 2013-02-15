@@ -209,7 +209,7 @@ class Project < ActiveRecord::Base
       return nil if resp['sha1_hash'].nil?
     end
     if project_tag
-      project_tag.destroy_file_from_file_store(project_tag.sha1)
+      project_tag.destroy_files_from_file_store(project_tag.sha1)
       project_tag.update_attributes(:sha1 => sha1)
     else
       project_tags.create(
