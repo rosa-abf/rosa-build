@@ -23,4 +23,7 @@
   -if Project.find_by_owner_and_name 'abf', 'abf-ideas'
     %li
       = image_tag 'square.png'
-      = link_to t('bottom_menu.abf-ideas'), project_issues_url('abf', 'abf-ideas')
+      = link_to t('bottom_menu.abf_ideas'), project_issues_url('abf', 'abf-ideas')
+  %li
+    = image_tag 'square.png'
+    = link_to t('bottom_menu.abf_blog'), t('bottom_menu.abf_blog_url')

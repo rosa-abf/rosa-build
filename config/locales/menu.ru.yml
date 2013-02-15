@@ -20,7 +20,9 @@ ru:
     support: Служба поддержки
     developer_api: API для разработчиков
     developer_api_url: http://abf-doc.rosalinux.ru
-    abf-ideas: Идеи для ABF
+    abf_blog: ABF Блог
+    abf_blog_url: http://abf-blog.rosalinux.ru
+    abf_ideas: Идеи для ABF
   project_menu:
     code: Код
     files: Файлы
