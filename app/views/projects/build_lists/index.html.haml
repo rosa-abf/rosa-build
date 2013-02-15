@@ -14,8 +14,9 @@
       %th.lpadding16= t("activerecord.attributes.build_list.status")
       %th.lpadding16= t("activerecord.attributes.build_list.project")
       %th.lpadding16= t("diff")
+      %th.lpadding16= t("activerecord.attributes.build_list.project_version")
       %th.lpadding16= t("activerecord.attributes.build_list.save_to_repository")
-      %th.lpadding16= t("activerecord.attributes.build_list.arch")
+      %th.lpadding6= t("activerecord.attributes.build_list.arch_short")
       %th.lpadding16= t("activerecord.attributes.build_list.user")
   %tbody= render :partial => 'projects/build_lists/build_list', :collection => @build_lists
 .both

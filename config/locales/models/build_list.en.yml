@@ -12,6 +12,7 @@ en:
         project_id: Project
         project: Project
         arch_id: Architecture
+        arch_short: Arch
         arch: Architecture
         new_core: New core
         is_circle: Recurrent build
