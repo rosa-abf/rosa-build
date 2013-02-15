@@ -1767,8 +1767,14 @@ table#myTable thead tr.search th form.button_to div input {
   border: 1px solid #DDDDDD;
 }
 
-table.tablesorter th.lpadding6 {
-  padding-left: 6px;
+table.tablesorter {
+  th.lpadding6 {
+    padding-left: 6px;
+  }
+
+  td a {
+    font-size: 10px;
+  }
 }
 
 div.right.slim {
