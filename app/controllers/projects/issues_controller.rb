@@ -17,7 +17,7 @@ class Projects::IssuesController < Projects::BaseController
     # Using mb_chars for correct transform to lowercase ('Русский Текст'.downcase => "Русский Текст")
     @issues = @issues.search(params[:search_issue])
 
-    @opened_issues, @closed_issues = @issues.not_closed_or_merged.count, @issues.closed_or_merged.count
+    @opened_issues, @closed_issues = @opened_issues_count, @issues.closed_or_merged.count
     if params[:status] == 'closed'
       @issues, @status = @issues.closed_or_merged, params[:status]
     else

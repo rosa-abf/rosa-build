@@ -28,11 +28,11 @@ ru:
     branches: Ветки (%{count})
     tags: Теги (%{count})
     builds: Сборки
-    tracker: Трекер
+    tracker: Трекер (%{count})
     wiki: Wiki
     readme: Readme
     settings: Настройки
-    pull_requests: Пул реквесты
+    pull_requests: Пул реквесты (%{count})
   feed_menu:
     all: Все
     code: Код

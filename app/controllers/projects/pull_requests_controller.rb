@@ -92,7 +92,7 @@ class Projects::PullRequestsController < Projects::BaseController
     @issues_with_pull_request = @project.issues.joins(:pull_request)
     @issues_with_pull_request = @issues_with_pull_request.search(params[:search_pull_request])
 
-    @opened_issues, @closed_issues = @issues_with_pull_request.not_closed_or_merged.count, @issues_with_pull_request.closed_or_merged.count
+    @opened_issues, @closed_issues = @opened_pull_requests_count, @issues_with_pull_request.closed_or_merged.count
     if params[:status] == 'closed'
       @issues_with_pull_request, @status = @issues_with_pull_request.closed_or_merged, params[:status]
     else
