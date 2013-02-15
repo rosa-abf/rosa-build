@@ -2,6 +2,14 @@
 class Platforms::ProductBuildListsController < Platforms::BaseController
   before_filter :authenticate_user!
   skip_before_filter :authenticate_user!, :only => [:index, :show, :log] if APP_CONFIG['anonymous_access']
+  before_filter lambda{
+    if params[:platform_id].blank? || params[:product_id].blank?
+      pbl       = ProductBuildList.find params[:id]
+      product   = pbl.product
+      platform  = product.platform
+      redirect_to platform_product_product_build_list_path(platform, product, pbl)
+    end
+  }, :only => :show
   load_and_authorize_resource :platform, :except => :index
   load_and_authorize_resource :product, :through => :platform, :except => :index
   load_and_authorize_resource :product_build_list, :through => :product, :except => :index
