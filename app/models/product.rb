@@ -8,6 +8,7 @@ class Product < ActiveRecord::Base
 
   validates :name, :presence => true, :uniqueness => {:scope => :platform_id}
   validates :project_id, :presence => true
+  validates :main_script, :params, :length => { :maximum => 255 }
 
   scope :recent, order("name ASC")
 

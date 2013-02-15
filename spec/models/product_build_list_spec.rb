@@ -8,6 +8,9 @@ describe ProductBuildList do
 
   it { should belong_to(:product) }
 
+  it { should ensure_length_of(:main_script).is_at_most(255) }
+  it { should ensure_length_of(:params).is_at_most(255) }
+
   it { should validate_presence_of(:product_id)}
   it { should validate_presence_of(:status)}
 
