@@ -117,7 +117,7 @@ class Projects::BuildListsController < Projects::BaseController
     results = []
     platforms.each{ |p| p.repositories.each{ |r| results << {id: r.id, label: "#{p.name}/#{r.name}", value: "#{p.name}/#{r.name}"} } }
 
-    bl = BuildList.where(id: params[:term]).first
+    bl = BuildList.where(id: params[:term], container_status: BuildList::BUILD_PUBLISHED).first
     results << {id: "#{bl.id}-build-list", value: bl.id, label: "#{bl.id} (#{bl.project.name} - #{bl.arch.name})"} if bl
     render json: results.to_json
   end
