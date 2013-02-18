@@ -12,9 +12,11 @@ $(document).ready(function() {
     var use_save_to_repository = $('#build_list_use_save_to_repository');
 
     if (build_platform.size() == 0) {
+      $('#extra-repos-and-containers').slideDown();
       all_repositories.removeAttr('disabled');
       use_save_to_repository.removeAttr('disabled');
     } else {
+      $('#extra-repos-and-containers').slideUp();
       use_save_to_repository.attr('disabled', 'disabled').attr('checked', 'checked');
       all_repositories.attr('disabled', 'disabled');
       var parent = build_platform.parent();
@@ -44,6 +46,10 @@ $(document).ready(function() {
       });
     }
     return false;
+  });
+
+  $(document).on('click', '#extra-repos-and-containers .delete', function() {
+    $(this)[0].parentElement.parentElement.remove();
   });
 
 });

@@ -8,6 +8,7 @@ en:
         bs_id: Id
         name: Name
         extra_repos: Extra repositories and containers
+        auto_create_container: Automated creating container
         container_path: Container path
         status: Status
         project_id: Project

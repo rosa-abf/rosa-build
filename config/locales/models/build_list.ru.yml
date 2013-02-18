@@ -8,6 +8,7 @@ ru:
         bs_id: Id
         name: Название
         extra_repos: Дополнительные репозитории и контейнеры
+        auto_create_container: Автоматическое создание контейнера
         container_path: Путь до контейнера
         status: Статус
         project_id: Проект
