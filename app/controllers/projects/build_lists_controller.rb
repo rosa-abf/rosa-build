@@ -112,6 +112,25 @@ class Projects::BuildListsController < Projects::BaseController
     }
   end
 
+  def autocomplete_to_extra
+    platforms = Platform.includes(:repositories).search(params[:term]).search_order.limit(5)
+    results = []
+    platforms.each{ |p| p.repositories.each{ |r| results << {id: r.id, label: "#{p.name}/#{r.name}", value: "#{p.name}/#{r.name}"} } }
+
+    bl = BuildList.where(id: params[:term]).first
+    results << {id: "#{bl.id}-build-list", value: bl.id, label: 'Build list'} if bl
+    render json: results.to_json
+  end
+
+  def add_extra
+    if params[:extra_id] =~ /-build-list$/
+      subject = BuildList.find(params[:extra_id].gsub(/-build-list$/, ''))
+    else
+      subject = Repository.find params[:extra_id]
+    end
+    render partial: 'extra', locals: {subject: subject}
+  end
+
   protected
 
   def find_build_list

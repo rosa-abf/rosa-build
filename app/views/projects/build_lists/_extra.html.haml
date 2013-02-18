@@ -1,0 +1,7 @@
+%tr
+  - if subject.is_a?(BuildList)
+    %td= link_to subject.id, subject
+  - else
+    %td= link_to "#{subject.platform.name}/#{subject.name}", [subject.platform, subject]
+  %td.actions
+    %span.delete &nbsp;

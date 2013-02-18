@@ -7,6 +7,7 @@ en:
       build_list:
         bs_id: Id
         name: Name
+        extra_repos: Extra repositories and containers
         container_path: Container path
         status: Status
         project_id: Project

@@ -47,7 +47,8 @@ class BuildList < ActiveRecord::Base
 
   attr_accessible :include_repos, :auto_publish, :build_for_platform_id, :commit_hash,
                   :arch_id, :project_id, :save_to_repository_id, :update_type,
-                  :save_to_platform_id, :project_version, :use_save_to_repository
+                  :save_to_platform_id, :project_version, :use_save_to_repository,
+                  :auto_create_container, :extra_repositories, :extra_containers
   LIVE_TIME = 4.week # for unpublished
   MAX_LIVE_TIME = 3.month # for published
 

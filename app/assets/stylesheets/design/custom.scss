@@ -1785,3 +1785,8 @@ div.right.slim {
     font-size: 10px;
   }
 }
+
+#extra-repos-and-containers {
+    width: 330px;
+    .actions { width: 50px; }
+}

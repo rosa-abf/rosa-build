@@ -220,7 +220,11 @@ Rosa::Application.routes.draw do
         put :create_container
         get :log
       end
-      collection { post :search }
+      collection {
+        get :autocomplete_to_extra
+        get :add_extra
+        post :search
+      }
     end
 
     resources :projects, :only => [:index, :new, :create]

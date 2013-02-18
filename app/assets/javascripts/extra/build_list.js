@@ -34,6 +34,18 @@ $(document).ready(function() {
   });
 
   $('#build_list_save_to_repository_id').trigger('change');
+
+  $('#extra-repos-and-containers #add').click(function() {
+    var id = $('#extra_repo_field').val();
+    if (id.length > 0) {
+      $.get("/build_lists/add_extra", { extra_id: id })
+      .done(function(data) {
+        $("#extra-repos-and-containers table tbody").append(data);
+      });
+    }
+    return false;
+  });
+
 });
 
 function setBranchSelected(selected_option) {
