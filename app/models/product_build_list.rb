@@ -146,7 +146,7 @@ class ProductBuildList < ActiveRecord::Base
   end
 
   def abf_worker_args
-    file_name = "#{project.owner.uname}-#{project.name}-#{commit_hash}"
+    file_name = "#{project.name}-#{commit_hash}"
     opts = {:host => ActionMailer::Base.default_url_options[:host]}
     opts.merge!({:user => user.authentication_token, :password => ''}) if user.present?
     srcpath = url_helpers.archive_url(
