@@ -43,7 +43,7 @@ class BuildList < ActiveRecord::Base
     errors.add(:save_to_repository, I18n.t('flash.build_list.wrong_project')) unless save_to_repository.projects.exists?(project_id)
   }
   before_validation(:on => :create) do
-    if build_for_platform && build_for_platform.main?
+    if save_to_repository && save_to_repository.platform.main?
       self.extra_repositories = nil
       self.extra_containers   = nil
     end
