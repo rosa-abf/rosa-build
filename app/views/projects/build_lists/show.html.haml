@@ -69,6 +69,15 @@
   .rightlist= t("layout.#{@build_list.new_core?}_")
   .both
 
+  - if @build_list.extra_containers.present? || @build_list.extra_repositories.present?
+    .leftlist= t("activerecord.attributes.build_list.extra_repos")
+    .rightlist
+      - Repository.where(id: @build_list.extra_repositories).each do |repo|
+        %p= link_to "#{repo.platform.name}/#{repo.name}", [repo.platform, repo]
+      - BuildList.where(id: @build_list.extra_containers).each do |bl|
+        %p= link_to "#{bl.id} (#{bl.project.name} - #{bl.arch.name})", bl
+    .both
+
   - if @build_list.mass_build_id.present?
     .leftlist= t("activerecord.attributes.mass_build_id")
     .rightlist= link_to @build_list.mass_build.name, platform_mass_builds_path(@build_list.save_to_platform)

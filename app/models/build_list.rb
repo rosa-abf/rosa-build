@@ -128,6 +128,8 @@ class BuildList < ActiveRecord::Base
   serialize :additional_repos
   serialize :include_repos
   serialize :results, Array
+  serialize :extra_repositories, Array
+  serialize :extra_containers, Array
 
   after_commit  :place_build
   after_destroy :remove_container
