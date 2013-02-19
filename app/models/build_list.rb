@@ -127,6 +127,7 @@ class BuildList < ActiveRecord::Base
   scope :scoped_to_project_name, lambda {|project_name| joins(:project).where('projects.name LIKE ?', "%#{project_name}%")}
   scope :scoped_to_new_core, lambda {|new_core| where(:new_core => new_core)}
   scope :outdated, where('created_at < ? AND status <> ? OR created_at < ?', Time.now - LIVE_TIME, BUILD_PUBLISHED, Time.now - MAX_LIVE_TIME)
+  scope :published_container, where(:container_status => BUILD_PUBLISHED)
 
   serialize :additional_repos
   serialize :include_repos
@@ -477,7 +478,7 @@ class BuildList < ActiveRecord::Base
   end
 
   def check_extra_containers
-    if extra_containers.present? && BuildList.where(:id => extra_containers, :container_status => BUILD_PUBLISHED).count != extra_containers.count
+    if extra_containers.present? && BuildList.where(:id => extra_containers).published_container.count != extra_containers.count
       errors.add(:extra_containers, I18n.t('flash.build_list.wrong_extra_containers'))
     end
   end

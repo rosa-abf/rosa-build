@@ -117,7 +117,7 @@ class Projects::BuildListsController < Projects::BaseController
     results = []
     platforms.each{ |p| p.repositories.each{ |r| results << {:id => r.id, :label => "#{p.name}/#{r.name}", :value => "#{p.name}/#{r.name}"} } }
 
-    bl = BuildList.where(:id => params[:term], :container_status => BuildList::BUILD_PUBLISHED).first
+    bl = BuildList.where(:id => params[:term]).published_container.first
     results << {:id => "#{bl.id}-build-list", :value => bl.id, :label => "#{bl.id} (#{bl.project.name} - #{bl.arch.name})"} if bl
     render json: results.to_json
   end
@@ -125,7 +125,7 @@ class Projects::BuildListsController < Projects::BaseController
   def add_extra
     if params[:extra_id] =~ /-build-list$/
       id = params[:extra_id].gsub(/-build-list$/, '')
-      subject = BuildList.where(:id => id, :container_status => BuildList::BUILD_PUBLISHED).first
+      subject = BuildList.where(:id => id).published_container.first
     else
       subject = Repository.find params[:extra_id]
     end
