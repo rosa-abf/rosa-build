@@ -1,8 +1,8 @@
 json.build_list do |json|
-  json.(@build_list, :id, :name, :container_status, :status, :duration)
-  json.(@build_list, :is_circle, :update_type, :priority, :new_core)
+  json.(@build_list, :id, :container_status, :status, :duration)
+  json.(@build_list, :update_type, :priority, :new_core)
   json.(@build_list, :advisory, :mass_build, :use_save_to_repository)
-  json.(@build_list, :auto_publish, :package_version, :commit_hash, :last_published_commit_hash)
+  json.(@build_list, :auto_publish, :package_version, :commit_hash, :last_published_commit_hash, :auto_create_container)
   json.build_log_url log_build_list_path(@build_list)
 
   if @build_list.container_published?
@@ -44,16 +44,25 @@ json.build_list do |json|
 
   inc_repos = Repository.includes(:platform).where(:id => @build_list.include_repos)
   json.include_repos inc_repos do |json_include_repos, repo|
-    json.partial! 'api/v1/repositories/repository',
-        :repository => repo,
-        :json => json_include_repos
-
-    json_include_repos.platform do |json_str_platform|
-      json.partial! 'api/v1/platforms/platform',
-          :platform => repo.platform,
-          :json => json_str_platform
-    end
+    json.partial! 'repositories',
+      :repository => repo,
+      :json => json_include_repos
   end
+
+  extra_repos = Repository.includes(:platform).where(:id => @build_list.extra_repositories)
+  json.extra_repos extra_repos do |json_extra_repos, repo|
+    json.partial! 'repositories',
+      :repository => repo,
+      :json => json_extra_repos
+  end
+
+  extra_containers = BuildList.where(:id => @build_list.extra_containers)
+  json.extra_containers extra_containers do |json_extra_containers, bl|
+    json_extra_containers.(bl, :id, :status)
+    json_extra_containers.container_path container_url(false, bl)
+    json_extra_containers.url api_v1_build_list_path(bl, :format => :json)
+  end
+
 
   json.advisory do |json_advisory|
     json_advisory.name @build_list.advisory.advisory_id

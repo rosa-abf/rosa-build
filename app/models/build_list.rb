@@ -42,12 +42,16 @@ class BuildList < ActiveRecord::Base
   validate lambda {
     errors.add(:save_to_repository, I18n.t('flash.build_list.wrong_project')) unless save_to_repository.projects.exists?(project_id)
   }
+  validate :check_extra_repositories, :on => :create
+  validate :check_extra_containers,   :on => :create
+  before_validation :prepare_extra_repositories_and_containers, :on => :create
 
   before_create :use_save_to_repository_for_main_platforms
 
   attr_accessible :include_repos, :auto_publish, :build_for_platform_id, :commit_hash,
                   :arch_id, :project_id, :save_to_repository_id, :update_type,
-                  :save_to_platform_id, :project_version, :use_save_to_repository
+                  :save_to_platform_id, :project_version, :use_save_to_repository,
+                  :auto_create_container, :extra_repositories, :extra_containers
   LIVE_TIME = 4.week # for unpublished
   MAX_LIVE_TIME = 3.month # for published
 
@@ -123,10 +127,13 @@ class BuildList < ActiveRecord::Base
   scope :scoped_to_project_name, lambda {|project_name| joins(:project).where('projects.name LIKE ?', "%#{project_name}%")}
   scope :scoped_to_new_core, lambda {|new_core| where(:new_core => new_core)}
   scope :outdated, where('created_at < ? AND status <> ? OR created_at < ?', Time.now - LIVE_TIME, BUILD_PUBLISHED, Time.now - MAX_LIVE_TIME)
+  scope :published_container, where(:container_status => BUILD_PUBLISHED)
 
   serialize :additional_repos
   serialize :include_repos
   serialize :results, Array
+  serialize :extra_repositories, Array
+  serialize :extra_containers, Array
 
   after_commit  :place_build
   after_destroy :remove_container
@@ -149,8 +156,7 @@ class BuildList < ActiveRecord::Base
     end
 
     after_transition :on => :published,
-      :do => [:set_version_and_tag, :actualize_packages, :destroy_container]
-    after_transition :on => :reject_publish, :do => :destroy_container
+      :do => [:set_version_and_tag, :actualize_packages]
     after_transition :on => :cancel, :do => :cancel_job
 
     after_transition :on => [:published, :fail_publish, :build_error, :tests_failed], :do => :notify_users
@@ -269,7 +275,7 @@ class BuildList < ActiveRecord::Base
   end
 
   def can_create_container?
-    (success? || tests_failed?) && [WAITING_FOR_RESPONSE, FAILED_PUBLISH].include?(container_status)
+    (can_publish? || build_publish?) && [WAITING_FOR_RESPONSE, FAILED_PUBLISH].include?(container_status)
   end
 
   #TODO: Share this checking on product owner.
@@ -398,8 +404,7 @@ class BuildList < ActiveRecord::Base
     repos = include_repos
     repos |= ['146'] if build_for_platform_id == 376
     include_repos_hash = {}.tap do |h|
-      repos.each do |r|
-        repo = Repository.find r
+      Repository.where(:id => (repos | (extra_repositories || [])) ).each do |repo|
         path = repo.platform.public_downloads_url(nil, arch.name, repo.name)
         # path.gsub!(/^http:\/\/(0\.0\.0\.0|localhost)\:[\d]+/, 'https://abf.rosalinux.ru') unless Rails.env.production?
         # Path looks like:
@@ -408,8 +413,14 @@ class BuildList < ActiveRecord::Base
         # - release
         # - updates
         h["#{repo.platform.name}_#{repo.name}_release"] = path + 'release'
-        h["#{repo.platform.name}_#{repo.name}_updates"] = path + 'updates'
+        h["#{repo.platform.name}_#{repo.name}_updates"] = path + 'updates' if repo.platform.main?
       end
+    end
+    host = EventLog.current_controller.request.host_with_port rescue ::Rosa::Application.config.action_mailer.default_url_options[:host]
+    BuildList.where(:id => extra_containers).each do |bl|
+      path  = "http://#{host}/downloads/#{bl.save_to_platform.name}/container/"
+      path << "#{bl.id}/#{bl.arch.name}/#{bl.save_to_repository.name}/release"
+      include_repos_hash["container_#{bl.id}"] = path
     end
     if save_to_platform.personal? && use_save_to_repository
       include_repos_hash["#{save_to_platform.name}_release"] = save_to_platform.
@@ -459,4 +470,33 @@ class BuildList < ActiveRecord::Base
   def use_save_to_repository_for_main_platforms
     self.use_save_to_repository = true if save_to_platform.main?
   end
+
+  def current_ability
+    @current_ability ||= Ability.new(user)
+  end
+
+  def check_extra_repositories
+    if extra_repositories.present? && user
+      repos_count = Repository.where(:id => extra_repositories).
+        accessible_by(current_ability, :read).count
+      errors.add(:extra_repositories, I18n.t('flash.build_list.wrong_extra_repositories')) if repos_count != extra_repositories.count
+    end
+  end
+
+  def check_extra_containers
+    if extra_containers.present? && user
+      bls_count = BuildList.where(:id => extra_containers).
+        published_container.accessible_by(current_ability, :read).count
+      errors.add(:extra_containers, I18n.t('flash.build_list.wrong_extra_containers')) if bls_count != extra_containers.count
+    end
+  end
+
+  def prepare_extra_repositories_and_containers
+    if save_to_repository && save_to_repository.platform.main?
+      self.extra_repositories = self.extra_containers = nil
+    end
+    self.extra_repositories = extra_repositories.uniq if extra_repositories.present?
+    self.extra_containers   = extra_containers.uniq   if extra_containers.present?
+  end
+
 end

@@ -7,6 +7,8 @@ ru:
       build_list:
         bs_id: Id
         name: Название
+        extra_repos: Дополнительные репозитории и контейнеры
+        auto_create_container: Создать контейнер автоматически
         container_path: Путь до контейнера
         status: Статус
         project_id: Проект
@@ -160,3 +162,5 @@ ru:
       frozen_platform: В случае выбора репозитория для сохранения пакетов из замороженнной платформы разрешены только bugfix и security обновления
       wrong_include_repos: Включаемые репозитории должны принадлежать платформе для сборки
       wrong_commit_hash: Невозможно найти коммит '%{commit_hash}' в проекте
+      wrong_extra_repositories: Некоторые репозитории не существуют
+      wrong_extra_containers: Некоторые контейнеры не существуют

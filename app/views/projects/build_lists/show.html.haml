@@ -12,7 +12,7 @@
       = raw "%s %s" % [t("layout.build_lists.container_published"),
         link_to("#{@build_list.save_to_platform.name}/#{@build_list.save_to_repository.name}",
           [@build_list.save_to_platform, @build_list.save_to_repository])]
-    - elsif @build_list.container_published?
+    - if @build_list.container_published?
       = link_to container_url, container_url
     - elsif @build_list.container_publish?
       = t("layout.build_lists.creating")
@@ -53,6 +53,9 @@
   .leftlist= t("activerecord.attributes.build_list.auto_publish")
   .rightlist= t("layout.#{@build_list.auto_publish}_")
   .both
+  .leftlist= t("activerecord.attributes.build_list.auto_create_container")
+  .rightlist= t("layout.#{@build_list.auto_create_container?}_")
+  .both
   .leftlist= t("diff")
   .rightlist= build_list_version_link(@build_list, true)
   .both
@@ -68,6 +71,15 @@
   .leftlist= t("activerecord.attributes.build_list.new_core")
   .rightlist= t("layout.#{@build_list.new_core?}_")
   .both
+
+  - if @build_list.extra_containers.present? || @build_list.extra_repositories.present?
+    .leftlist= t("activerecord.attributes.build_list.extra_repos")
+    .rightlist
+      - Repository.where(:id => @build_list.extra_repositories).each do |repo|
+        %p= link_to "#{repo.platform.name}/#{repo.name}", [repo.platform, repo]
+      - BuildList.where(:id => @build_list.extra_containers).each do |bl|
+        %p= link_to "#{bl.id} (#{bl.project.name} - #{bl.arch.name})", bl
+    .both
 
   - if @build_list.mass_build_id.present?
     .leftlist= t("activerecord.attributes.mass_build_id")
