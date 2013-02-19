@@ -414,8 +414,7 @@ class BuildList < ActiveRecord::Base
     repos = include_repos
     repos |= ['146'] if build_for_platform_id == 376
     include_repos_hash = {}.tap do |h|
-      repos.each do |r|
-        repo = Repository.find r
+      Repository.where(:id => (repos | (extra_repositories || [])) ).each do |repo|
         path = repo.platform.public_downloads_url(nil, arch.name, repo.name)
         # path.gsub!(/^http:\/\/(0\.0\.0\.0|localhost)\:[\d]+/, 'https://abf.rosalinux.ru') unless Rails.env.production?
         # Path looks like:
@@ -424,8 +423,14 @@ class BuildList < ActiveRecord::Base
         # - release
         # - updates
         h["#{repo.platform.name}_#{repo.name}_release"] = path + 'release'
-        h["#{repo.platform.name}_#{repo.name}_updates"] = path + 'updates'
+        h["#{repo.platform.name}_#{repo.name}_updates"] = path + 'updates' if repo.platform.main?
       end
+    end
+    host = EventLog.current_controller.request.host_with_port rescue ::Rosa::Application.config.action_mailer.default_url_options[:host]
+    BuildList.where(:id => extra_containers).each do |bl|
+      path  = "http://#{host}/downloads/#{bl.save_to_platform.name}/container/"
+      path << "#{bl.id}/#{bl.arch.name}/#{bl.save_to_repository.name}/release"
+      include_repos_hash["container_#{bl.id}"] = path
     end
     if save_to_platform.personal? && use_save_to_repository
       include_repos_hash["#{save_to_platform.name}_release"] = save_to_platform.
