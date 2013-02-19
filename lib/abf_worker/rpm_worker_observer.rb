@@ -18,7 +18,6 @@ module AbfWorker
       when COMPLETED
         subject.build_success
         subject.now_publish if subject.auto_publish?
-        subject.publish_container if subject.auto_create_container?
       when FAILED
         subject.build_error
         item.update_attributes({:status => BuildList::BUILD_ERROR})
@@ -31,7 +30,10 @@ module AbfWorker
         subject.tests_failed
       end
 
-      item.update_attributes({:status => BuildList::SUCCESS}) if [TESTS_FAILED, COMPLETED].include?(status)
+      if [TESTS_FAILED, COMPLETED].include?(status)
+        item.update_attributes({:status => BuildList::SUCCESS}) 
+        subject.publish_container if subject.auto_create_container?
+      end
     end
 
     protected
