@@ -134,7 +134,7 @@ ActiveRecord::Schema.define(:version => 20130218135847) do
     t.string   "last_published_commit_hash"
     t.integer  "container_status"
     t.boolean  "use_save_to_repository",     :default => true
-    t.boolean  "auto_create_container"
+    t.boolean  "auto_create_container",      :default => false
     t.text     "extra_repositories"
     t.text     "extra_containers"
   end
