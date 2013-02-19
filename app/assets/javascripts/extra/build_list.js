@@ -40,7 +40,7 @@ $(document).ready(function() {
   $('#extra-repos-and-containers #add').click(function() {
     var id = $('#extra_repo_field').val();
     if (id.length > 0) {
-      $.get("/build_lists/add_extra", { extra_id: id })
+      $.get("/build_lists/add_extra_repos_and_containers", { extra_id: id })
       .done(function(data) {
         $("#extra-repos-and-containers table tbody").append(data);
       });

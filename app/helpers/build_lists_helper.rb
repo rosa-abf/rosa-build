@@ -77,11 +77,12 @@ module BuildListsHelper
     end
   end
 
-  def container_url(full_path = true)
+  def container_url(full_path = true, build_list = nil)
+    build_list ||= @build_list
     p = ''
     p << "http://#{request.host_with_port}" if full_path
-    p << "/downloads/#{@build_list.save_to_platform.name}/container/#{@build_list.id}"
-    p << "/#{@build_list.arch.name}/#{@build_list.save_to_repository.name}/release" if full_path && @build_list.build_for_platform.distrib_type == 'mdv'
+    p << "/downloads/#{build_list.save_to_platform.name}/container/#{build_list.id}"
+    p << "/#{build_list.arch.name}/#{build_list.save_to_repository.name}/release" if full_path && build_list.build_for_platform.distrib_type == 'mdv'
     p.html_safe
   end
 

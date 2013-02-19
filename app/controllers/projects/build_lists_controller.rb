@@ -112,7 +112,7 @@ class Projects::BuildListsController < Projects::BaseController
     }
   end
 
-  def autocomplete_to_extra
+  def autocomplete_to_extra_repos_and_containers
     platforms = Platform.includes(:repositories).search(params[:term]).
       accessible_by(current_ability, :read).search_order.limit(5)
     results = []
@@ -124,7 +124,7 @@ class Projects::BuildListsController < Projects::BaseController
     render json: results.to_json
   end
 
-  def add_extra
+  def add_extra_repos_and_containers
     if params[:extra_id] =~ /-build-list$/
       id = params[:extra_id].gsub(/-build-list$/, '')
       subject = BuildList.where(:id => id).published_container
