@@ -166,8 +166,7 @@ class BuildList < ActiveRecord::Base
     end
 
     after_transition :on => :published,
-      :do => [:set_version_and_tag, :actualize_packages, :destroy_container]
-    after_transition :on => :reject_publish, :do => :destroy_container
+      :do => [:set_version_and_tag, :actualize_packages]
     after_transition :on => :cancel, :do => :cancel_job
 
     after_transition :on => [:published, :fail_publish, :build_error, :tests_failed], :do => :notify_users
@@ -286,7 +285,7 @@ class BuildList < ActiveRecord::Base
   end
 
   def can_create_container?
-    (success? || tests_failed?) && [WAITING_FOR_RESPONSE, FAILED_PUBLISH].include?(container_status)
+    (can_publish? || build_publish?) && [WAITING_FOR_RESPONSE, FAILED_PUBLISH].include?(container_status)
   end
 
   #TODO: Share this checking on product owner.
