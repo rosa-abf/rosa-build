@@ -12,7 +12,7 @@
       = raw "%s %s" % [t("layout.build_lists.container_published"),
         link_to("#{@build_list.save_to_platform.name}/#{@build_list.save_to_repository.name}",
           [@build_list.save_to_platform, @build_list.save_to_repository])]
-    - elsif @build_list.container_published?
+    - if @build_list.container_published?
       = link_to container_url, container_url
     - elsif @build_list.container_publish?
       = t("layout.build_lists.creating")
