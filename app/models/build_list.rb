@@ -493,8 +493,7 @@ class BuildList < ActiveRecord::Base
 
   def prepare_extra_repositories_and_containers
     if save_to_repository && save_to_repository.platform.main?
-      self.extra_repositories = nil
-      self.extra_containers   = nil
+      self.extra_repositories = self.extra_containers = nil
     end
     self.extra_repositories = extra_repositories.uniq if extra_repositories.present?
     self.extra_containers   = extra_containers.uniq   if extra_containers.present?
