@@ -42,20 +42,9 @@ class BuildList < ActiveRecord::Base
   validate lambda {
     errors.add(:save_to_repository, I18n.t('flash.build_list.wrong_project')) unless save_to_repository.projects.exists?(project_id)
   }
-  validate lambda {
-    errors.add(:extra_repositories, I18n.t('flash.build_list.wrong_extra_repositories')) if extra_repositories.present? && Repository.where(:id => extra_repositories).count != extra_repositories.count
-  }, :on => :create
-  validate lambda {
-    errors.add(:extra_containers, I18n.t('flash.build_list.wrong_extra_containers')) if extra_containers.present? && BuildList.where(:id => extra_containers, :container_status => BUILD_PUBLISHED).count != extra_containers.count
-  }, :on => :create
-  before_validation(:on => :create) do
-    if save_to_repository && save_to_repository.platform.main?
-      self.extra_repositories = nil
-      self.extra_containers   = nil
-    end
-    self.extra_repositories = extra_repositories.uniq if extra_repositories.present?
-    self.extra_containers   = extra_containers.uniq   if extra_containers.present?
-  end
+  validate :check_extra_repositories, :on => :create
+  validate :check_extra_containers,   :on => :create
+  before_validation :prepare_extra_repositories_and_containers, :on => :create
 
   before_create :use_save_to_repository_for_main_platforms
 
@@ -480,4 +469,26 @@ class BuildList < ActiveRecord::Base
   def use_save_to_repository_for_main_platforms
     self.use_save_to_repository = true if save_to_platform.main?
   end
+
+  def check_extra_repositories
+    if extra_repositories.present? && Repository.where(:id => extra_repositories).count != extra_repositories.count
+      errors.add(:extra_repositories, I18n.t('flash.build_list.wrong_extra_repositories'))
+    end
+  end
+
+  def check_extra_containers
+    if extra_containers.present? && BuildList.where(:id => extra_containers, :container_status => BUILD_PUBLISHED).count != extra_containers.count
+      errors.add(:extra_containers, I18n.t('flash.build_list.wrong_extra_containers'))
+    end
+  end
+
+  def prepare_extra_repositories_and_containers
+    if save_to_repository && save_to_repository.platform.main?
+      self.extra_repositories = nil
+      self.extra_containers   = nil
+    end
+    self.extra_repositories = extra_repositories.uniq if extra_repositories.present?
+    self.extra_containers   = extra_containers.uniq   if extra_containers.present?
+  end
+
 end
