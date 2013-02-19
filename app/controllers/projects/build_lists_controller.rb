@@ -113,11 +113,13 @@ class Projects::BuildListsController < Projects::BaseController
   end
 
   def autocomplete_to_extra
-    platforms = Platform.includes(:repositories).search(params[:term]).search_order.limit(5)
+    platforms = Platform.includes(:repositories).search(params[:term]).
+      accessible_by(current_ability, :read).search_order.limit(5)
     results = []
     platforms.each{ |p| p.repositories.each{ |r| results << {:id => r.id, :label => "#{p.name}/#{r.name}", :value => "#{p.name}/#{r.name}"} } }
 
-    bl = BuildList.where(:id => params[:term]).published_container.first
+    bl = BuildList.where(:id => params[:term]).published_container.
+      accessible_by(current_ability, :read).first
     results << {:id => "#{bl.id}-build-list", :value => bl.id, :label => "#{bl.id} (#{bl.project.name} - #{bl.arch.name})"} if bl
     render json: results.to_json
   end
@@ -125,11 +127,16 @@ class Projects::BuildListsController < Projects::BaseController
   def add_extra
     if params[:extra_id] =~ /-build-list$/
       id = params[:extra_id].gsub(/-build-list$/, '')
-      subject = BuildList.where(:id => id).published_container.first
+      subject = BuildList.where(:id => id).published_container
     else
-      subject = Repository.find params[:extra_id]
+      subject = Repository.where(:id => params[:extra_id])
     end
-    render :partial => 'extra', :locals => {:subject => subject}
+    subject = subject.accessible_by(current_ability, :read).first
+    if subject
+      render :partial => 'extra', :locals => {:subject => subject}
+    else
+      render :nothing => true
+    end
   end
 
   protected

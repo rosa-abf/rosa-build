@@ -471,15 +471,23 @@ class BuildList < ActiveRecord::Base
     self.use_save_to_repository = true if save_to_platform.main?
   end
 
+  def current_ability
+    @current_ability ||= Ability.new(user)
+  end
+
   def check_extra_repositories
-    if extra_repositories.present? && Repository.where(:id => extra_repositories).count != extra_repositories.count
-      errors.add(:extra_repositories, I18n.t('flash.build_list.wrong_extra_repositories'))
+    if extra_repositories.present? && user
+      repos_count = Repository.where(:id => extra_repositories).
+        accessible_by(current_ability, :read).count
+      errors.add(:extra_repositories, I18n.t('flash.build_list.wrong_extra_repositories')) if repos_count != extra_repositories.count
     end
   end
 
   def check_extra_containers
-    if extra_containers.present? && BuildList.where(:id => extra_containers).published_container.count != extra_containers.count
-      errors.add(:extra_containers, I18n.t('flash.build_list.wrong_extra_containers'))
+    if extra_containers.present? && user
+      bls_count = BuildList.where(:id => extra_containers).
+        published_container.accessible_by(current_ability, :read).count
+      errors.add(:extra_containers, I18n.t('flash.build_list.wrong_extra_containers')) if bls_count != extra_containers.count
     end
   end
 
