@@ -44,28 +44,16 @@ json.build_list do |json|
 
   inc_repos = Repository.includes(:platform).where(:id => @build_list.include_repos)
   json.include_repos inc_repos do |json_include_repos, repo|
-    json.partial! 'api/v1/repositories/repository',
-        :repository => repo,
-        :json => json_include_repos
-
-    json_include_repos.platform do |json_str_platform|
-      json.partial! 'api/v1/platforms/platform',
-          :platform => repo.platform,
-          :json => json_str_platform
-    end
+    json.partial! 'repositories',
+      :repository => repo,
+      :json => json_include_repos
   end
 
   extra_repos = Repository.includes(:platform).where(:id => @build_list.extra_repositories)
   json.extra_repos extra_repos do |json_extra_repos, repo|
-    json.partial! 'api/v1/repositories/repository',
-        :repository => repo,
-        :json => json_extra_repos
-
-    json_extra_repos.platform do |json_str_platform|
-      json.partial! 'api/v1/platforms/platform',
-          :platform => repo.platform,
-          :json => json_str_platform
-    end
+    json.partial! 'repositories',
+      :repository => repo,
+      :json => json_extra_repos
   end
 
   extra_containers = BuildList.where(:id => @build_list.extra_containers)
