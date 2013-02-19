@@ -23,8 +23,6 @@
     %h3= t("activerecord.attributes.build_list.update_type")
     .lineForm= f.select :update_type, BuildList::UPDATE_TYPES
 
-
-
     #extra-repos-and-containers
       %h3= t("activerecord.attributes.build_list.extra_repos")
       = autocomplete_field_tag 'extra_repos', nil, autocomplete_to_extra_repos_and_containers_build_lists_path, :id_element => '#extra_repo_field'
