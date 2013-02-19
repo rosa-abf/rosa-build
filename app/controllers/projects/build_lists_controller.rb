@@ -115,21 +115,21 @@ class Projects::BuildListsController < Projects::BaseController
   def autocomplete_to_extra
     platforms = Platform.includes(:repositories).search(params[:term]).search_order.limit(5)
     results = []
-    platforms.each{ |p| p.repositories.each{ |r| results << {id: r.id, label: "#{p.name}/#{r.name}", value: "#{p.name}/#{r.name}"} } }
+    platforms.each{ |p| p.repositories.each{ |r| results << {:id => r.id, :label => "#{p.name}/#{r.name}", :value => "#{p.name}/#{r.name}"} } }
 
-    bl = BuildList.where(id: params[:term], container_status: BuildList::BUILD_PUBLISHED).first
-    results << {id: "#{bl.id}-build-list", value: bl.id, label: "#{bl.id} (#{bl.project.name} - #{bl.arch.name})"} if bl
+    bl = BuildList.where(:id => params[:term], :container_status => BuildList::BUILD_PUBLISHED).first
+    results << {:id => "#{bl.id}-build-list", :value => bl.id, :label => "#{bl.id} (#{bl.project.name} - #{bl.arch.name})"} if bl
     render json: results.to_json
   end
 
   def add_extra
     if params[:extra_id] =~ /-build-list$/
       id = params[:extra_id].gsub(/-build-list$/, '')
-      subject = BuildList.where(id: id, container_status: BuildList::BUILD_PUBLISHED).first
+      subject = BuildList.where(:id => id, :container_status => BuildList::BUILD_PUBLISHED).first
     else
       subject = Repository.find params[:extra_id]
     end
-    render partial: 'extra', locals: {subject: subject}
+    render :partial => 'extra', :locals => {:subject => subject}
   end
 
   protected

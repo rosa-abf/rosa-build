@@ -163,3 +163,5 @@ en:
       frozen_platform: In case of a repository for package storage with frozen platform allowed only bugfix and security updates
       wrong_include_repos: Include repos have to belongs to build for platform
       wrong_commit_hash: Unable find commit '%{commit_hash}' in project
+      wrong_extra_repositories: Some repositories does not exist
+      wrong_extra_containers: Some containers does not exist

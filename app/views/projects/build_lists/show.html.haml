@@ -75,9 +75,9 @@
   - if @build_list.extra_containers.present? || @build_list.extra_repositories.present?
     .leftlist= t("activerecord.attributes.build_list.extra_repos")
     .rightlist
-      - Repository.where(id: @build_list.extra_repositories).each do |repo|
+      - Repository.where(:id => @build_list.extra_repositories).each do |repo|
         %p= link_to "#{repo.platform.name}/#{repo.name}", [repo.platform, repo]
-      - BuildList.where(id: @build_list.extra_containers).each do |bl|
+      - BuildList.where(:id => @build_list.extra_containers).each do |bl|
         %p= link_to "#{bl.id} (#{bl.project.name} - #{bl.arch.name})", bl
     .both
 
