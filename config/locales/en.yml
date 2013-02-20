@@ -20,6 +20,7 @@ en:
     user_list: User list
     edit: Edit
     show: View
+    hide: Hide
     cancel: Cancel
     create: Create
     update: Update
@@ -203,3 +204,7 @@ en:
   from: from
   by: by
   diff: Diff
+  number_rows: Number rows
+  reset: Reset
+  _on: 'On'
+  until: Until

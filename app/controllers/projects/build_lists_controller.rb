@@ -16,6 +16,7 @@ class Projects::BuildListsController < Projects::BaseController
     params[:filter].each do |k,v|
       new_params[:filter][k] = v unless v.empty?
     end
+    new_params[:per_page] = params[:per_page] if params[:per_page].present?
     redirect_to @project ? project_build_lists_path(@project, new_params) : build_lists_path(new_params)
   end
 
@@ -24,7 +25,8 @@ class Projects::BuildListsController < Projects::BaseController
     @filter = BuildList::Filter.new(@project, current_user, params[:filter] || {})
 
     page = params[:page].to_i == 0 ? nil : params[:page]
-    @bls = @filter.find.recent.paginate :page => page
+    @per_page = [25, 50, 100].include?(params[:per_page].to_i) ? params[:per_page].to_i : 25
+    @bls = @filter.find.recent.paginate :page => page, :per_page => @per_page
     @build_lists = BuildList.where(:id => @bls.pluck("#{BuildList.table_name}.id")).recent
     @build_lists = @build_lists.includes [:save_to_platform, :save_to_repository, :arch, :user, :project => [:owner]]
 

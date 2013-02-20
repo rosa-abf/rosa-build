@@ -34,18 +34,49 @@ $(document).ready(function() {
   });
 
   $('#build_list_save_to_repository_id').trigger('change');
-});
 
-function setBranchSelected(selected_option) {
-  var pl_name = selected_option.text().match(/([\w-.]+)\/[\w-.]+/)[1];
-  var bl_version_sel = $('#build_list_project_version');
-  var branch_pl_opt = bl_version_sel.find('option[value="' + pl_name + '"]');
-  // If there is branch we need - set it selected:
-  if (branch_pl_opt.size() > 0) {
-    bl_version_sel.find('option[selected]').removeAttr('selected');
-    branch_pl_opt.attr('selected', 'selected');
-    bl_version_sel.val(branch_pl_opt);
-    // hack for FF to force render of select box.
-    bl_version_sel[0].innerHTML = bl_version_sel[0].innerHTML;
+  function setBranchSelected(selected_option) {
+    var pl_name = selected_option.text().match(/([\w-.]+)\/[\w-.]+/)[1];
+    var bl_version_sel = $('#build_list_project_version');
+    var branch_pl_opt = bl_version_sel.find('option[value="' + pl_name + '"]');
+    // If there is branch we need - set it selected:
+    if (branch_pl_opt.size() > 0) {
+      bl_version_sel.find('option[selected]').removeAttr('selected');
+      branch_pl_opt.attr('selected', 'selected');
+      bl_version_sel.val(branch_pl_opt);
+      // hack for FF to force render of select box.
+      bl_version_sel[0].innerHTML = bl_version_sel[0].innerHTML;
+    }
   }
-}
+
+  var ownership_btn = $('.btn.ownership');
+  ownership_btn.click(function() {
+    ownership_btn.removeClass('active');
+    $('#filter_ownership').val($(this).val());
+    $(this).addClass('active');
+    return false;
+  });
+
+  var perpage_btn = $('.btn.per_page');
+  perpage_btn.click(function() {
+    perpage_btn.removeClass('active');
+    $('#per_page').val($(this).val());
+    $(this).addClass('active');
+    return false;
+  });
+
+  $('a#updated_at_clear').click(function() {
+    var tmp = $(this).attr('href');
+    tmp = $(tmp);
+    $($(this).attr('href')).val('');
+    return false;
+  });
+
+  $('#filter_clear').click(function() {
+    $('form .input_cleanse').val('');
+    $('.btn-group .btn').removeClass('active');
+    if(ownership_btn.length > 0) { ownership_btn[0].click(); }
+    perpage_btn[0].click();
+    return false;
+  });
+});

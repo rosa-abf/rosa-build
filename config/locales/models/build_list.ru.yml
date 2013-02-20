@@ -89,7 +89,7 @@ ru:
       ownership:
         header: Принадлежность заданий
         owned: Мне
-        related: Связанные со мной
+        related: Связанные
         everything: Все
 
       build_server_status:

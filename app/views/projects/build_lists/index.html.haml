@@ -1,11 +1,6 @@
 -set_meta_tags :title => t('.title')
 
-= hidden_field_tag :servertime, Time.now.utc.to_i
-%div.reloader
-  = label_tag :autoreload do
-    = check_box_tag :autoreload, true, true
-    = t("layout.autoreload_page")
-.both
+= render 'filter'
 
 %table.tablesorter{:cellpadding => "0", :cellspacing => "0"}
   %thead
@@ -74,5 +69,4 @@
 
 = will_paginate @bls
 
-= render 'filter'
 = render @project ? 'projects/base/submenu' : 'projects/build_lists/submenu'

@@ -18,3 +18,4 @@
 //= require chosen.jquery
 // require html5shiv
 // require_tree .
+//= require jquery-ui-timepicker-addon

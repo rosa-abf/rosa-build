@@ -1,49 +1,92 @@
-- content_for :sidebar do
-  = render 'server_status'
-
-  = form_for :filter, :url => @action_url, :html => { :method => :post, :class => :form } do |f|
-    - if current_user
-      .bordered.nopadding
-        %h3= t("layout.build_lists.ownership.header")
-        .table
-          .lefter= f.radio_button :ownership, 'owned', :class => 'niceRadio', :id => 'myradio1'
-          .lefter= t("layout.build_lists.ownership.owned")
+.top
+  .filter
+    = form_for :filter, :url => @action_url, :html => { :method => :post, :class => :form } do |f|
+      .column
+        = render 'server_status'
+        = hidden_field_tag :servertime, Time.now.utc.to_i
+        .reloader
+          = label_tag :autoreload do
+            = check_box_tag :autoreload, true, true
+            = t 'layout.autoreload_page'
+      .column
+        - if current_user
+          .bordered.nopadding
+            %h3.medium= t("layout.build_lists.ownership.header")
+            =f.hidden_field :ownership
+            .btn-group
+              -if @project
+                %button.btn.ownership{:value => 'owned', :class => @filter.ownership == 'owned' ? 'active' : '', :style => 'width:50%;'}= t 'layout.build_lists.ownership.owned'
+                %button.btn.ownership{:value => 'everything', :class => @filter.ownership == 'everything' ? 'active' : '', :style => 'width:50%;'}= t 'layout.build_lists.ownership.everything'
+              -else
+                %button.btn.ownership{:value => 'owned', :class => @filter.ownership == 'owned' ? 'active' : ''}= t 'layout.build_lists.ownership.owned'
+                %button.btn.ownership{:class => @filter.ownership == 'related' ? 'active' : '', :value => "related"}= t 'layout.build_lists.ownership.related'
+                %button.btn.ownership{:value => 'everything', :class => @filter.ownership == 'everything' ? 'active' : ''}= t 'layout.build_lists.ownership.everything'
+        %h3.medium= t 'number_rows'
+        =hidden_field_tag :per_page, @per_page
+        .btn-group
+          -[25,50,100].each do |num|
+            %button.btn.per_page{:value => num, :class => @per_page == num ? 'active' : ''}=num
+        %h3.medium= t 'activerecord.attributes.build_list.status'
+        .lineForm.aside
+          = f.select :status, BuildList::STATUSES.collect{|status| [BuildList.human_status(status), status]}, {:include_blank => true, :selected => @filter.status},
+            {:class => 'sel80 medium input_cleanse', :id => 'status', :tabindex => 2}
         .both
-        - unless @project
-          .table
-            .lefter= f.radio_button :ownership, 'related', :class => 'niceRadio', :id => 'myradio2'
-            .lefter= t("layout.build_lists.ownership.related")
-          .both
-        .table
-          .lefter= f.radio_button :ownership, 'everything', :class => 'niceRadio', :id => 'myradio3'
-          .lefter= t("layout.build_lists.ownership.everything")
+        %br/
+      .column
+        %h3.medium= t 'activerecord.models.platform'
+        .lineForm.aside
+          = f.select :platform_id, Platform.main.collect{|pl| [pl.name, pl.id]}, {:include_blank => true, :selected => @filter.platform_id},
+            {:class => 'sel80 medium input_cleanse', :id => 'platform', :tabindex => 2}
+        %h3.medium= t 'activerecord.attributes.build_list.arch'
+        .lineForm.aside
+          = f.select :arch_id, Arch.recent.collect{|arch| [arch.name, arch.id]}, {:include_blank => true, :selected => @filter.arch_id},
+            {:class => 'sel80 medium input_cleanse', :id => 'architecture', :tabindex => 2}
+        %h3.medium= t 'activerecord.models.mass_build'
+        .lineForm.aside
+          = f.select :mass_build_id, options_from_collection_for_select( MassBuild.all, :id, :name, @filter.mass_build_id ), {:include_blank => true, :selected => @filter.mass_build_id},
+            {:class => 'sel80 medium input_cleanse', :id => 'mass_build', :tabindex => 2}
+      .column
+        .floatleft
+          %h3.medium= t '_on'
+          -date = @filter.updated_at_start ? @filter.updated_at_start.strftime('%d.%m.%Y') : nil
+          =f.text_field :updated_at_start, :readonly => "readonly", :size => 10, :class => 'mediumheight min input_cleanse', :value => date
+          =link_to image_tag('x-pale.png', :alt => 'x'), '#filter_updated_at_start', :id => 'updated_at_clear'
+        .floatright
+          %h3.medium= t 'until'
+          -date = @filter.updated_at_end ? @filter.updated_at_end.strftime('%d.%m.%Y') : nil
+          =f.text_field :updated_at_end, :readonly => "readonly", :size => 10, :class => 'mediumheight min input_cleanse', :value => date
+          =link_to image_tag('x-pale.png', :alt => 'x'), '#filter_updated_at_end', :id => 'updated_at_clear'
         .both
-        %br
-        = f.submit t("layout.search.header")
-    .block
-      %h3.small= t("activerecord.attributes.build_list.new_core")
-      .lineForm.aside= f.select :new_core, build_list_options_for_new_core, {:include_blank => true, :selected => @filter.new_core}, {:class => 'sel80 aside', :id => 'new_core', :tabindex => 2}
-      %h3.small= t("activerecord.attributes.build_list.status")
-      .lineForm.aside= f.select :status, BuildList::STATUSES.collect{|status| [BuildList.human_status(status), status]}, {:include_blank => true, :selected => @filter.status}, {:class => 'sel80 aside', :id => 'status', :tabindex => 2}
-      %h3.small= t("activerecord.models.platform")
-      .lineForm.aside= f.select :platform_id, Platform.main.collect{|pl| [pl.name, pl.id]}, {:include_blank => true, :selected => @filter.platform_id}, {:class => 'sel80 aside', :id => 'platform', :tabindex => 2}
-      %h3.small= t("activerecord.attributes.build_list.mass_build")
-      .lineForm.aside= f.select :mass_build_id, options_from_collection_for_select( MassBuild.all, :id, :name, @filter.mass_build_id ), {:include_blank => true}
-      %h3.small= t("activerecord.attributes.build_list.arch")
-      .lineForm.aside= f.select :arch_id, Arch.recent.collect{|arch| [arch.name, arch.id]}, {:include_blank => true, :selected => @filter.arch_id}, {:class => 'sel80 aside', :id => 'architecture', :tabindex => 2}
-      -# TODO [BuildList#created_at filters] Uncomment here and in BuildList::Filter to return filters
-        %h3.small= t("layout.build_lists.created_at_start")
-        .date_select= f.date_select(:created_at_start, :include_blank => true, :selected => @filter.created_at_start)
-        %h3.small= t("layout.build_lists.created_at_end")
-        .date_select= f.date_select(:created_at_end, :include_blank => true, :selected => @filter.created_at_end)
-      %h3.small= t("layout.build_lists.updated_at_start")
-      .date_select= f.date_select(:updated_at_start, :include_blank => true, :selected => @filter.updated_at_start)
-      %h3.small= t("layout.build_lists.updated_at_end")
-      .date_select= f.date_select(:updated_at_end, :include_blank => true, :selected => @filter.updated_at_end)
-      %h3.small= t("layout.build_lists.project_name_search")
-      = f.text_field :project_name
-      %h3.small= t("layout.build_lists.bs_id_search")
-      = f.text_field :bs_id
-      %br
-      %br
-      = f.submit t("layout.search.header")
+        %h3.medium= t 'layout.build_lists.project_name_search'
+        %input#filter_project_name.mediumheight.input_cleanse{:name => "filter[project_name]", :size => "30", :type => "text"}/
+        %h3.medium= t 'layout.build_lists.bs_id_search'
+        %input#filter_bs_id.mediumheight.input_cleanse{:name => "filter[bs_id]", :size => "30", :type => "text"}/
+        %br/
+        %br/
+      .butgrp
+        -if @project and can?(:create, @project.build_lists.build)
+          %input{:type => 'button', :onclick => "location.href='#{new_project_build_list_path(@project)}'", :value => t('layout.build_lists.new_header')}
+        = f.submit t('layout.search.header')
+        = f.submit t('reset'), :id => 'filter_clear'
+      .both
+    .both
+  .switch
+    %a{:href => "#"}= t 'layout.hide'
+:javascript
+  $(".switch").toggle(
+    function () {
+      $(".filter").hide("slow");
+      $(".switch a").text("#{t 'layout.show'}");
+    },
+    function () {
+      $(".filter").show("slow");
+      $(".switch a").text("#{t 'layout.hide'}");
+    }
+  );
+  $('.mediumheight.min').datetimepicker({
+    dateFormat: 'dd.mm.yy',
+    timeFormat: '',
+    showTime: false,
+    showHour: false,
+    showMinute: false
+  });
