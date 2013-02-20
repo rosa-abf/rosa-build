@@ -7,6 +7,8 @@ en:
       build_list:
         bs_id: Id
         name: Name
+        extra_repos: Extra repositories and containers
+        auto_create_container: Create container automatically
         container_path: Container path
         status: Status
         project_id: Project
@@ -161,3 +163,5 @@ en:
       frozen_platform: In case of a repository for package storage with frozen platform allowed only bugfix and security updates
       wrong_include_repos: Include repos have to belongs to build for platform
       wrong_commit_hash: Unable find commit '%{commit_hash}' in project
+      wrong_extra_repositories: Some repositories does not exist
+      wrong_extra_containers: Some containers does not exist

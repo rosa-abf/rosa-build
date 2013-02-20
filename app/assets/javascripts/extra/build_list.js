@@ -12,9 +12,11 @@ $(document).ready(function() {
     var use_save_to_repository = $('#build_list_use_save_to_repository');
 
     if (build_platform.size() == 0) {
+      $('#extra-repos-and-containers').slideDown();
       all_repositories.removeAttr('disabled');
       use_save_to_repository.removeAttr('disabled');
     } else {
+      $('#extra-repos-and-containers').slideUp();
       use_save_to_repository.attr('disabled', 'disabled').attr('checked', 'checked');
       all_repositories.attr('disabled', 'disabled');
       var parent = build_platform.parent();
@@ -34,6 +36,21 @@ $(document).ready(function() {
   });
 
   $('#build_list_save_to_repository_id').trigger('change');
+
+  $('#extra-repos-and-containers #add').click(function() {
+    var id = $('#extra_repo_field').val();
+    if (id.length > 0) {
+      $.get("/build_lists/add_extra_repos_and_containers", { extra_id: id })
+      .done(function(data) {
+        $("#extra-repos-and-containers table tbody").append(data);
+      });
+    }
+    return false;
+  });
+
+  $(document).on('click', '#extra-repos-and-containers .delete', function() {
+    $(this)[0].parentElement.parentElement.remove();
+  });
 
   function setBranchSelected(selected_option) {
     var pl_name = selected_option.text().match(/([\w-.]+)\/[\w-.]+/)[1];

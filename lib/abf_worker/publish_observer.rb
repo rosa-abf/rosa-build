@@ -55,7 +55,7 @@ module AbfWorker
 
     def update_results(build_list = subject)
       results = (build_list.results || []).
-        select{ |r| r['file_name'] !~ /^abfworker\:\:publish\-worker.*\.log$/ }
+        select{ |r| r['file_name'] !~ /^abfworker\:\:publish\-(container\-)*worker.*\.log$/ }
       results |= options['results']
       sort_results_and_save results, build_list
     end

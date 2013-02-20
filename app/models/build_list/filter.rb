@@ -18,7 +18,6 @@ class BuildList::Filter
       build_lists = build_lists.scoped_to_arch(@options[:arch_id]) if @options[:arch_id]
       build_lists = build_lists.scoped_to_save_platform(@options[:platform_id]) if @options[:platform_id]
       build_lists = build_lists.scoped_to_project_version(@options[:project_version]) if @options[:project_version]
-      build_lists = build_lists.scoped_to_is_circle(@options[:is_circle]) if @options[:is_circle].present?
       build_lists = build_lists.scoped_to_project_name(@options[:project_name]) if @options[:project_name]
       build_lists = build_lists.by_mass_build(@options[:mass_build_id]) if @options[:mass_build_id]
       build_lists = build_lists.for_notified_date_period(@options[:updated_at_start], @options[:updated_at_end]) if @options[:updated_at_start] || @options[:updated_at_end]
