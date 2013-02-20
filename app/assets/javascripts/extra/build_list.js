@@ -79,4 +79,20 @@ $(document).ready(function() {
     perpage_btn[0].click();
     return false;
   });
+
+  $('.mediumheight.min').datepicker({
+    dateFormat: 'dd/mm/yy',
+    showButtonPanel: true
+  });
+
+  $(".switch").toggle(
+    function () {
+      $(".filter").hide("slow");
+      $(".switch a").text("#{t 'layout.show'}");
+    },
+    function () {
+      $(".filter").show("slow");
+      $(".switch a").text("#{t 'layout.hide'}");
+    }
+  );
 });

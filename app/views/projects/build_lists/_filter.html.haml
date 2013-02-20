@@ -48,12 +48,12 @@
       .column
         .floatleft
           %h3.medium= t '_on'
-          -date = @filter.updated_at_start ? @filter.updated_at_start.strftime('%d.%m.%Y') : nil
+          -date = @filter.updated_at_start ? @filter.updated_at_start.strftime('%d/%m/%Y') : nil
           =f.text_field :updated_at_start, :readonly => "readonly", :size => 10, :class => 'mediumheight min input_cleanse', :value => date
           =link_to image_tag('x-pale.png', :alt => 'x'), '#filter_updated_at_start', :id => 'updated_at_clear'
         .floatright
           %h3.medium= t 'until'
-          -date = @filter.updated_at_end ? @filter.updated_at_end.strftime('%d.%m.%Y') : nil
+          -date = @filter.updated_at_end ? @filter.updated_at_end.strftime('%d/%m/%Y') : nil
           =f.text_field :updated_at_end, :readonly => "readonly", :size => 10, :class => 'mediumheight min input_cleanse', :value => date
           =link_to image_tag('x-pale.png', :alt => 'x'), '#filter_updated_at_end', :id => 'updated_at_clear'
         .both
@@ -73,20 +73,27 @@
   .switch
     %a{:href => "#"}= t 'layout.hide'
 :javascript
-  $(".switch").toggle(
-    function () {
-      $(".filter").hide("slow");
-      $(".switch a").text("#{t 'layout.show'}");
-    },
-    function () {
-      $(".filter").show("slow");
-      $(".switch a").text("#{t 'layout.hide'}");
-    }
-  );
-  $('.mediumheight.min').datetimepicker({
-    dateFormat: 'dd.mm.yy',
-    timeFormat: '',
-    showTime: false,
-    showHour: false,
-    showMinute: false
-  });
+  #{if I18n.locale == :ru
+        "$.datepicker.regional['ru'] = {
+          closeText: 'Закрыть',
+          prevText: '<Пред',
+          nextText: 'След>',
+          currentText:  'Сейчас',
+          monthNames: ['Январь','Февраль','Март','Апрель','Май','Июнь',
+          'Июль','Август','Сентябрь','Октябрь','Ноябрь','Декабрь'],
+          monthNamesShort: ['Янв','Фев','Мар','Апр','Май','Июн',
+          'Июл','Авг','Сен','Окт','Ноя','Дек'],
+          dayNames: ['воскресенье','понедельник','вторник','среда','четверг','пятница','суббота'],
+          dayNamesShort: ['вск','пнд','втр','срд','чтв','птн','сбт'],
+          dayNamesMin: ['Вс','Пн','Вт','Ср','Чт','Пт','Сб'],
+          weekHeader: 'Не',
+          dateFormat: 'dd/mm/yy',
+          firstDay: 1,
+          isRTL: false,
+          showMonthAfterYear: false,
+          yearSuffix: '',
+          //showTimezone: true
+        };
+        $.datepicker.setDefaults($.datepicker.regional['ru']);"
+      end
+     }

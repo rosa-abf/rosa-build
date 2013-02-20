@@ -72,10 +72,9 @@ class BuildList::Filter
 
   def build_date_from_params(field_name, params)
     return nil if params[field_name].blank?
-    return Date.parse(params[field_name]) if params[field_name].strip =~ /\A\d{2}.\d{2}\.\d{4}\z/
-
-    time = params[field_name].to_i
-    return Time.at(time) if time != 0
-    Date.parse params[field_name].trim
+    params[field_name].strip!
+    return Date.parse(params[field_name]) if params[field_name] =~ /\A\d{2}\/\d{2}\/\d{4}\z/
+    return Time.at(params[field_name].to_i) if params[field_name] =~ /\A\d+\z/
+    nil
   end
 end
