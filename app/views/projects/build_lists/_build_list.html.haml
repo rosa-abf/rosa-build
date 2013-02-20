@@ -20,3 +20,4 @@
   %td= link_to "#{build_list.save_to_platform.name}/#{build_list.save_to_repository.name}#{build_for}", [build_list.save_to_platform, build_list.save_to_repository]
   %td= build_list.arch.try(:name) || t("layout.arches.unexisted_arch")
   %td= link_to build_list.user.try(:fullname), build_list.user
+  %td= build_list.updated_at.strftime('%d/%m/%Y')
