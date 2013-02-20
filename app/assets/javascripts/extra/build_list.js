@@ -101,15 +101,4 @@ $(document).ready(function() {
     dateFormat: 'dd/mm/yy',
     showButtonPanel: true
   });
-
-  $(".switch").toggle(
-    function () {
-      $(".filter").hide("slow");
-      $(".switch a").text("#{t 'layout.show'}");
-    },
-    function () {
-      $(".filter").show("slow");
-      $(".switch a").text("#{t 'layout.hide'}");
-    }
-  );
 });

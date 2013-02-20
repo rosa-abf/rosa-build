@@ -73,6 +73,16 @@
   .switch
     %a{:href => "#"}= t 'layout.hide'
 :javascript
+  $(".switch").toggle(
+    function () {
+      $(".filter").hide("slow");
+      $(".switch a").text("#{t 'layout.show'}");
+    },
+    function () {
+      $(".filter").show("slow");
+      $(".switch a").text("#{t 'layout.hide'}");
+    }
+  );
   #{if I18n.locale == :ru
         "$.datepicker.regional['ru'] = {
           closeText: 'Закрыть',
