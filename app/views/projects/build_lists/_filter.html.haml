@@ -73,16 +73,24 @@
   .switch
     %a{:href => "#"}= t 'layout.hide'
 :javascript
+  var MONITORING_FILTER_HIDE = "monitoring_filter_hide";
   $(".switch").toggle(
     function () {
+      var d = new Date();
+      d.setMonth(d.getMonth() + 1);
       $(".filter").hide("slow");
       $(".switch a").text("#{t 'layout.show'}");
+      setCookie(MONITORING_FILTER_HIDE, 'true', d);
     },
     function () {
       $(".filter").show("slow");
       $(".switch a").text("#{t 'layout.hide'}");
+      var d = new Date();
+      d.setMonth(d.getMonth() + 1);
+      setCookie(MONITORING_FILTER_HIDE, 'false', d);
     }
   );
+  #{cookies[:monitoring_filter_hide] == 'true' ? "$('.switch').click();" : ''}
   #{if I18n.locale == :ru
         "$.datepicker.regional['ru'] = {
           closeText: 'Закрыть',
