@@ -22,7 +22,7 @@
         %h3.medium= t 'number_rows'
         =hidden_field_tag :per_page, @per_page
         .btn-group
-          -[25,50,100].each do |num|
+          -BuildList::Filter::PER_PAGE.each do |num|
             %button.btn.per_page{:value => num, :class => @per_page == num ? 'active' : ''}=num
         %h3.medium= t 'activerecord.attributes.build_list.status'
         .lineForm.aside

@@ -25,7 +25,7 @@ class Projects::BuildListsController < Projects::BaseController
     @filter = BuildList::Filter.new(@project, current_user, params[:filter] || {})
 
     page = params[:page].to_i == 0 ? nil : params[:page]
-    @per_page = [25, 50, 100].include?(params[:per_page].to_i) ? params[:per_page].to_i : 25
+    @per_page = BuildList::Filter::PER_PAGE.include?(params[:per_page].to_i) ? params[:per_page].to_i : 25
     @bls = @filter.find.recent.paginate :page => page, :per_page => @per_page
     @build_lists = BuildList.where(:id => @bls.pluck("#{BuildList.table_name}.id")).recent
     @build_lists = @build_lists.includes [:save_to_platform, :save_to_repository, :arch, :user, :project => [:owner]]
