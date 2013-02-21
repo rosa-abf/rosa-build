@@ -97,8 +97,8 @@ ru:
 
       ownership:
         header: Принадлежность заданий
-        owned: Мне
-        related: Связанные со мной
+        owned: Мои
+        related: Связанные
         everything: Все
 
       build_server_status:
@@ -152,6 +152,9 @@ ru:
           300000: "5 мин"
           600000: "10 мин"
           900000: "15 мин"
+
+      show_filter: Показать фильтры
+      hide_filter: Скрыть фильтры
 
   flash:
     build_list:

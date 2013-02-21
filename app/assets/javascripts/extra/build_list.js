@@ -59,7 +59,41 @@ $(document).ready(function() {
     if (dialog.is(':visible')) { dialog.dialog('close'); } else { dialog.dialog('open'); }
   });
 
+  var ownership_btn = $('.btn.ownership');
+  ownership_btn.click(function() {
+    ownership_btn.removeClass('active');
+    $('#filter_ownership').val($(this).val());
+    $(this).addClass('active');
+    return false;
+  });
+
+  var perpage_btn = $('.btn.per_page');
+  perpage_btn.click(function() {
+    perpage_btn.removeClass('active');
+    $('#per_page').val($(this).val());
+    $(this).addClass('active');
+    return false;
+  });
+
+  $('a#updated_at_clear').click(function() {
+    $($(this).attr('href')).val('');
+    return false;
+  });
+
+  $('#filter_clear').click(function() {
+    $('#monitoring_filter .input_cleanse').val('');
+    $('.btn-group .btn').removeClass('active');
+    if(ownership_btn.length > 0) { ownership_btn[0].click(); }
+    perpage_btn[0].click();
+    return false;
+  });
+
+  $('.mediumheight.min').datepicker({
+    dateFormat: 'dd/mm/yy',
+    showButtonPanel: true
+  });
 });
+
 
 function updateExtraReposAndContainers() {
   $.get("/build_lists/update_extra_repos_and_containers", $('#new_build_list').serialize())

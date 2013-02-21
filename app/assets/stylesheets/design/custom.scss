@@ -1767,27 +1767,60 @@ table#myTable thead tr.search th form.button_to div input {
   border: 1px solid #DDDDDD;
 }
 
-
-/*
-table.tablesorter {
-  th.lpadding6 {
-    padding-left: 6px;
-  }
-
-  td a {
-    font-size: 10px;
-  }
+#extra-repos-and-containers {
+    width: 330px;
+    .actions { width: 15px; }
 }
 
-div.right.slim {
-  padding-right: 5px;
-  width: 705px;
-
-  table.tablesorter {
-    font-size: 10px;
-  }
+.semi {
+  opacity: 0.5;
 }
-*/
+
+#filter_new_build {
+  display: inline-block;
+  white-space: nowrap;
+  background-color: #125687;
+  background-image: -webkit-gradient(linear, left top, left bottom, from(#68a3d8), to(#125687));
+  background-image: -webkit-linear-gradient(top, #68a3d8, #125687);
+  background-image: -moz-linear-gradient(top, #68a3d8, #125687);
+  background-image: -ms-linear-gradient(top, #68a3d8, #125687);
+  background-image: -o-linear-gradient(top, #68a3d8, #125687);
+  background-image: linear-gradient(top, #68a3d8, #125687);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorStr='#68a3d8', EndColorStr='#125687');
+  border: 1px solid #5084b4;
+  padding: 3px 20px 5px;
+  margin: 0;
+  font-size: 12px;
+  text-decoration: none;
+  color: #FFF;
+  -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;
+  border-radius: 5px;
+  text-align: center;
+  height: auto;
+  width: auto;
+  font-family: Tahoma;
+}
+
+#filter_new_build:hover{
+    background-color: #34719d;
+  background-image: -webkit-gradient(linear, left top, left bottom, from(#7fb3e1), to(#34719d));
+  background-image: -webkit-linear-gradient(top, #7fb3e1, #34719d);
+  background-image: -moz-linear-gradient(top, #7fb3e1, #34719d);
+  background-image: -ms-linear-gradient(top, #7fb3e1, #34719d);
+  background-image: -o-linear-gradient(top, #7fb3e1, #34719d);
+  background-image: linear-gradient(top, #7fb3e1, #34719d);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorStr='#7fb3e1', EndColorStr='#34719d');
+  text-decoration: none;
+  cursor: pointer;
+}
+
+#filter_new_build {
+  width: 100px;
+  padding: 3px 5px 5px;
+  float: right;
+  margin-left: 10px;
+}
 
 #extra-repos-and-containers {
     width: 330px;

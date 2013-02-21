@@ -1,49 +1,107 @@
-- content_for :sidebar do
-  = render 'server_status'
+-html_options = {:class => 'sel80 medium input_cleanse', :tabindex => 2}
+.top
+  .filter
+    = form_for :filter, :url => @action_url, :html => { :method => :post, :class => :form, :id => 'monitoring_filter' } do |f|
+      .column
+        = render 'server_status'
+        = hidden_field_tag :servertime, Time.now.utc.to_i
+        .reloader
+          = label_tag :autoreload do
+            = check_box_tag :autoreload, true, true
+            = t 'layout.autoreload_page'
+      .column
+        - if current_user
+          .bordered.nopadding
+            %h3.medium= t("layout.build_lists.ownership.header")
+            =f.hidden_field :ownership
+            .btn-group
+              - ownerships = %w[owned everything]
+              - ownerships << 'related' unless @project
+              - ownerships.each do |ownership|
+                -options = {:class => @filter.ownership == ownership ? 'active' : '', :value => ownership, :style => (@project ? 'width:50%;' : '')}
+                %button.btn.ownership{options}= t "layout.build_lists.ownership.#{ownership}"
+        %h3.medium= t 'number_rows'
+        =hidden_field_tag :per_page, @per_page
+        .btn-group
+          -BuildList::Filter::PER_PAGE.each do |num|
+            %button.btn.per_page{:value => num, :class => @per_page == num ? 'active' : ''}=num
+        %h3.medium= t 'activerecord.attributes.build_list.status'
+        .lineForm.aside
+          = f.select :status, BuildList::STATUSES.collect{|status| [BuildList.human_status(status), status]}, {:include_blank => true, :selected => @filter.status},
+            html_options.merge(:id => 'status')
+        .both
+        %br/
+      .column
+        %h3.medium= t 'activerecord.models.platform'
+        .lineForm.aside
+          = f.select :platform_id, Platform.main.collect{|pl| [pl.name, pl.id]}, {:include_blank => true, :selected => @filter.platform_id}, html_options.merge(:id => 'platform')
+        %h3.medium= t 'activerecord.attributes.build_list.arch'
+        .lineForm.aside
+          = f.select :arch_id, Arch.recent.collect{|arch| [arch.name, arch.id]}, {:include_blank => true, :selected => @filter.arch_id}, html_options.merge(:id => 'architecture')
+        %h3.medium= t 'activerecord.models.mass_build'
+        .lineForm.aside
+          = f.select :mass_build_id, options_from_collection_for_select( MassBuild.all, :id, :name, @filter.mass_build_id ), {:include_blank => true, :selected => @filter.mass_build_id},
+            html_options.merge(:id => 'mass_build')
 
-  = form_for :filter, :url => @action_url, :html => { :method => :post, :class => :form } do |f|
-    - if current_user
-      .bordered.nopadding
-        %h3= t("layout.build_lists.ownership.header")
-        .table
-          .lefter= f.radio_button :ownership, 'owned', :class => 'niceRadio', :id => 'myradio1'
-          .lefter= t("layout.build_lists.ownership.owned")
+      .column
+        -[:updated_at_start, :updated_at_end].each do |attr|
+          -class_name, message = attr == :updated_at_start ? %w[floatleft _on] : %w[floatright until]
+          %div{:class => class_name}
+            %h3.medium= t message
+            -date = @filter.send(attr) ? @filter.send(attr).strftime('%d/%m/%Y') : nil
+            =f.text_field attr, :readonly => "readonly", :size => 10, :class => 'mediumheight min input_cleanse', :value => date
+            =link_to image_tag('x.png', :alt => 'x', :class => 'semi'), "#filter_#{attr}", :id => 'updated_at_clear'
         .both
-        - unless @project
-          .table
-            .lefter= f.radio_button :ownership, 'related', :class => 'niceRadio', :id => 'myradio2'
-            .lefter= t("layout.build_lists.ownership.related")
-          .both
-        .table
-          .lefter= f.radio_button :ownership, 'everything', :class => 'niceRadio', :id => 'myradio3'
-          .lefter= t("layout.build_lists.ownership.everything")
-        .both
-        %br
-        = f.submit t("layout.search.header")
-    .block
-      %h3.small= t("activerecord.attributes.build_list.new_core")
-      .lineForm.aside= f.select :new_core, build_list_options_for_new_core, {:include_blank => true, :selected => @filter.new_core}, {:class => 'sel80 aside', :id => 'new_core', :tabindex => 2}
-      %h3.small= t("activerecord.attributes.build_list.status")
-      .lineForm.aside= f.select :status, BuildList::STATUSES.collect{|status| [BuildList.human_status(status), status]}, {:include_blank => true, :selected => @filter.status}, {:class => 'sel80 aside', :id => 'status', :tabindex => 2}
-      %h3.small= t("activerecord.models.platform")
-      .lineForm.aside= f.select :platform_id, Platform.main.collect{|pl| [pl.name, pl.id]}, {:include_blank => true, :selected => @filter.platform_id}, {:class => 'sel80 aside', :id => 'platform', :tabindex => 2}
-      %h3.small= t("activerecord.attributes.build_list.mass_build")
-      .lineForm.aside= f.select :mass_build_id, options_from_collection_for_select( MassBuild.all, :id, :name, @filter.mass_build_id ), {:include_blank => true}
-      %h3.small= t("activerecord.attributes.build_list.arch")
-      .lineForm.aside= f.select :arch_id, Arch.recent.collect{|arch| [arch.name, arch.id]}, {:include_blank => true, :selected => @filter.arch_id}, {:class => 'sel80 aside', :id => 'architecture', :tabindex => 2}
-      -# TODO [BuildList#created_at filters] Uncomment here and in BuildList::Filter to return filters
-        %h3.small= t("layout.build_lists.created_at_start")
-        .date_select= f.date_select(:created_at_start, :include_blank => true, :selected => @filter.created_at_start)
-        %h3.small= t("layout.build_lists.created_at_end")
-        .date_select= f.date_select(:created_at_end, :include_blank => true, :selected => @filter.created_at_end)
-      %h3.small= t("layout.build_lists.updated_at_start")
-      .date_select= f.date_select(:updated_at_start, :include_blank => true, :selected => @filter.updated_at_start)
-      %h3.small= t("layout.build_lists.updated_at_end")
-      .date_select= f.date_select(:updated_at_end, :include_blank => true, :selected => @filter.updated_at_end)
-      %h3.small= t("layout.build_lists.project_name_search")
-      = f.text_field :project_name
-      %h3.small= t("layout.build_lists.bs_id_search")
-      = f.text_field :bs_id
-      %br
-      %br
-      = f.submit t("layout.search.header")
+        -%w[project_name bs_id].each do |filter|
+          %h3.medium= t "layout.build_lists.#{filter}_search"
+          %input.mediumheight.input_cleanse{:id => "filter_#{filter}", :name => "filter[#{filter}]", :size => "30", :type => "text"}/
+        %br/
+        %br/
+      .butgrp
+        = f.submit t('layout.search.header')
+        = f.submit t('reset'), :id => 'filter_clear'
+        -if @project and can?(:create, @project.build_lists.build)
+          %input{:id => 'filter_new_build', :type => 'button', :onclick => "location.href='#{new_project_build_list_path(@project)}'", :value => t('layout.build_lists.new_header')}
+      .both
+    .both
+  .switch
+    %a{:href => "#"}= t 'layout.build_lists.hide_filter'
+:javascript
+  var MONITORING_FILTER_HIDE = "monitoring_filter_hide";
+  $(".switch").toggle(
+    function () {
+      var d = new Date();
+      d.setMonth(d.getMonth() + 1);
+      $(".filter").hide("slow");
+      $(".switch a").text("#{t 'layout.build_lists.show_filter'}");
+      setCookie(MONITORING_FILTER_HIDE, 'true', d);
+    },
+    function () {
+      $(".filter").show("slow");
+      $(".switch a").text("#{t 'layout.build_lists.hide_filter'}");
+      var d = new Date();
+      d.setMonth(d.getMonth() + 1);
+      setCookie(MONITORING_FILTER_HIDE, 'false', d);
+    }
+  );
+  #{cookies[:monitoring_filter_hide] == 'true' ? "$('.switch').click();" : ''}
+  #{if I18n.locale == :ru
+        "$.datepicker.regional['ru'] = {
+          closeText: 'Закрыть',
+          prevText: '<Пред',
+          nextText: 'След>',
+          currentText:  'Сейчас',
+          monthNames: ['Январь','Февраль','Март','Апрель','Май','Июнь',
+          'Июль','Август','Сентябрь','Октябрь','Ноябрь','Декабрь'],
+          dayNames: ['Воскресенье','Понедельник','Вторник','Среда','Четверг','Пятница','Суббота'],
+          dayNamesMin: ['Вс','Пн','Вт','Ср','Чт','Пт','Сб'],
+          weekHeader: 'Не',
+          dateFormat: 'dd/mm/yy',
+          firstDay: 1,
+          isRTL: false,
+          showMonthAfterYear: false,
+          yearSuffix: ''
+        };
+        $.datepicker.setDefaults($.datepicker.regional['ru']);"
+      end
+     }

@@ -4,8 +4,6 @@ module ApplicationHelper
     case
     when controller_name == 'issues' && action_name == 'new'
       'right nopadding'
-    when controller_name == 'build_lists' && action_name == 'index'
-      'right slim'
     when controller_name == 'build_lists' && ['new', 'create'].include?(action_name)
       nil
     when controller_name == 'platforms' && ['build_all', 'mass_builds'].include?(action_name)
