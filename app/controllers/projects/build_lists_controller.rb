@@ -115,11 +115,12 @@ class Projects::BuildListsController < Projects::BaseController
   def autocomplete_to_extra_repos_and_containers
     results, save_to_platform  = [], Platform.find(params[:platform_id])
     bl = BuildList.where(:id => params[:term]).published_container.accessible_by(current_ability, :read)
-    unless save_to_platform.main?
+    if save_to_platform.main?
+      bl = bl.where(:save_to_platform_id => save_to_platform.id)
+    else
       platforms = Platform.includes(:repositories).search(params[:term]).
         accessible_by(current_ability, :read).search_order.limit(5)
       platforms.each{ |p| p.repositories.each{ |r| results << {:id => r.id, :label => "#{p.name}/#{r.name}", :value => "#{p.name}/#{r.name}"} } }
-      bl = bl.where(:save_to_platform_id => save_to_platform.id)
     end
     bl = bl.first
     results << {:id => "#{bl.id}-build-list", :value => bl.id, :label => "#{bl.id} (#{bl.project.name} - #{bl.arch.name})"} if bl
