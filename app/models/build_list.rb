@@ -196,7 +196,8 @@ class BuildList < ActiveRecord::Base
     end
 
     event :publish do
-      transition [:success, :failed_publish, :build_published, :tests_failed] => :build_publish
+      transition [:success, :failed_publish, :build_published, :tests_failed] => :build_publish,
+        :if => :can_publish_to_repository?
       transition [:success, :failed_publish] => :failed_publish
     end
 
@@ -499,6 +500,11 @@ class BuildList < ActiveRecord::Base
         
     end
     self.extra_containers = bls.pluck('build_lists.id')
+  end
+
+  def can_publish_to_repository?
+    return true unless save_to_platform.main?
+    BuildList.where(:id => extra_containers).where('status != ?', BUILD_PUBLISHED).count == 0
   end
 
 end

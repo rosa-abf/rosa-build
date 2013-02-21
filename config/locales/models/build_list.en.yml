@@ -8,6 +8,13 @@ en:
         bs_id: Id
         name: Name
         extra_repos: Extra repositories and containers
+        extra_repos_help:
+          message1: 'Add ID of build list which need to connect:'
+          message2: '- Only build list with container can be connected;'
+          message3: '- For main platform You can connect only build lists which have been saved into same platform.'
+          message4: 'Add name of platform:'
+          message5: '- Only for personal platforms;'
+          message6: '- You will get a list of repositories of this platform for choose.'
         auto_create_container: Create container automatically
         container_path: Container path
         status: Status

@@ -48,6 +48,17 @@ $(document).ready(function() {
     $(this)[0].parentElement.parentElement.remove();
   });
 
+  $('#extra-repos-and-containers-dialog').dialog({
+    autoOpen: false,
+    resizable: false,
+    width: 400
+  });
+
+  $('#extra-repos-and-containers .icon-question-sign').click(function() {
+    var dialog = $('#extra-repos-and-containers-dialog');
+    if (dialog.is(':visible')) { dialog.dialog('close'); } else { dialog.dialog('open'); }
+  });
+
 });
 
 function updateExtraReposAndContainers() {

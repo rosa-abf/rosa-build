@@ -1792,4 +1792,23 @@ div.right.slim {
 #extra-repos-and-containers {
     width: 330px;
     .actions { width: 15px; }
+    .icon-question-sign {
+        background-position: -96px -96px;
+    }
+}
+#extra-repos-and-containers-dialog, .ui-dialog-titlebar  { font-size: 12px; }
+#extra-repos-and-containers-dialog  {
+    text-align: left;
+    p { margin: 0; }
+}
+[class^="icon-"], [class*=" icon-"] {
+    display: inline-block;
+    width: 14px;
+    height: 14px;
+    margin-top: 1px;
+    line-height: 14px;
+    vertical-align: text-top;
+    background-image: url("glyphicons-halflings.png");
+    background-position: 14px 14px;
+    background-repeat: no-repeat;
 }
