@@ -146,6 +146,9 @@ ru:
           600000: "10 мин"
           900000: "15 мин"
 
+      show_filter: Показать фильтры
+      hide_filter: Скрыть фильтры
+
   flash:
     build_list:
       saved: Билд лист для версии '%{project_version}', платформы '%{build_for_platform}' и архитектуры '%{arch}' создан успешно

@@ -71,7 +71,7 @@
       .both
     .both
   .switch
-    %a{:href => "#"}= t 'layout.hide'
+    %a{:href => "#"}= t 'layout.build_lists.hide_filter'
 :javascript
   var MONITORING_FILTER_HIDE = "monitoring_filter_hide";
   $(".switch").toggle(
@@ -79,12 +79,12 @@
       var d = new Date();
       d.setMonth(d.getMonth() + 1);
       $(".filter").hide("slow");
-      $(".switch a").text("#{t 'layout.show'}");
+      $(".switch a").text("#{t 'layout.build_lists.show_filter'}");
       setCookie(MONITORING_FILTER_HIDE, 'true', d);
     },
     function () {
       $(".filter").show("slow");
-      $(".switch a").text("#{t 'layout.hide'}");
+      $(".switch a").text("#{t 'layout.build_lists.hide_filter'}");
       var d = new Date();
       d.setMonth(d.getMonth() + 1);
       setCookie(MONITORING_FILTER_HIDE, 'false', d);
