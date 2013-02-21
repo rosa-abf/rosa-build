@@ -83,8 +83,6 @@ $(document).ready(function() {
   });
 
   $('a#updated_at_clear').click(function() {
-    var tmp = $(this).attr('href');
-    tmp = $(tmp);
     $($(this).attr('href')).val('');
     return false;
   });
