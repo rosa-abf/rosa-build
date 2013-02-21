@@ -3,7 +3,8 @@
     = image_tag(avatar_url_by_email(user_email, :small), :alt => 'avatar')
   .text
     %span
-      = raw t("notifications.bodies.wiki_new_commit_notification", {:user_link => user_name, :history_link => link_to("wiki", history_project_wiki_index_path(project_owner, project_name))})
+      -user_link = defined?(user_uname) ? link_to(user_name, user_path(user_uname)) : user_name
+      = raw t("notifications.bodies.wiki_new_commit_notification", {:user_link => user_link, :history_link => link_to("wiki", history_project_wiki_index_path(project_owner, project_name))})
       = raw t("notifications.bodies.project", :project_link => link_to("#{project_owner}/#{project_name}", project_path(project_owner, project_name)) )
     .both
       %span.date= activity_feed.created_at

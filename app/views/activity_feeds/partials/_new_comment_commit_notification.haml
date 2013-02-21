@@ -3,7 +3,7 @@
     = image_tag(avatar_url_by_email(user_email, :small), :alt => 'avatar')
   .text
     %span
-      = raw t("notifications.bodies.new_comment_notification.title", :user_link => link_to(user_name, user_path(user_id)) )
+      = raw t("notifications.bodies.new_comment_notification.title", :user_link => defined?(user_uname) ? link_to(user_name, user_path(user_uname)) : user_name )
       = raw t("notifications.bodies.new_comment_notification.commit_content", {:commit_link => link_to(commit_message, commit_path(project_owner, project_name, commit_id) + "#comment#{comment_id}")})
       = raw t("notifications.bodies.project", :project_link => link_to("#{project_owner}/#{project_name}", project_path(project_owner, project_name)) )
     .both

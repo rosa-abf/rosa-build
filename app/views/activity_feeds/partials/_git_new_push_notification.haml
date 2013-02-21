@@ -4,7 +4,8 @@
       = image_tag(avatar_url_by_email(user_email, :small), :alt => 'avatar')
   .text
     %span
-      = raw t("notifications.bodies.#{change_type}_branch", {:branch_name => branch_name, :user_link => defined?(user_name) ? link_to(user_name, user_path(user_id)) : user_email})
+      -user_link = defined?(user_name) ? (defined?(user_uname) ? link_to(user_name, user_path(user_uname)) : user_name) : user_email
+      = raw t("notifications.bodies.#{change_type}_branch", {:branch_name => branch_name, :user_link => user_link})
       = raw t("notifications.bodies.project", :project_link => link_to("#{project_owner}/#{project_name}", project_path(project_owner, project_name)) )
     .both
       %span.date= activity_feed.created_at
