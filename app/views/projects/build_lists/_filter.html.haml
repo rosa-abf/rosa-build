@@ -1,3 +1,4 @@
+-html_options = {:class => 'sel80 medium input_cleanse', :tabindex => 2}
 .top
   .filter
     = form_for :filter, :url => @action_url, :html => { :method => :post, :class => :form, :id => 'monitoring_filter' } do |f|
@@ -27,22 +28,21 @@
         %h3.medium= t 'activerecord.attributes.build_list.status'
         .lineForm.aside
           = f.select :status, BuildList::STATUSES.collect{|status| [BuildList.human_status(status), status]}, {:include_blank => true, :selected => @filter.status},
-            {:class => 'sel80 medium input_cleanse', :id => 'status', :tabindex => 2}
+            html_options.merge(:id => 'status')
         .both
         %br/
       .column
         %h3.medium= t 'activerecord.models.platform'
         .lineForm.aside
-          = f.select :platform_id, Platform.main.collect{|pl| [pl.name, pl.id]}, {:include_blank => true, :selected => @filter.platform_id},
-            {:class => 'sel80 medium input_cleanse', :id => 'platform', :tabindex => 2}
+          = f.select :platform_id, Platform.main.collect{|pl| [pl.name, pl.id]}, {:include_blank => true, :selected => @filter.platform_id}, html_options.merge(:id => 'platform')
         %h3.medium= t 'activerecord.attributes.build_list.arch'
         .lineForm.aside
-          = f.select :arch_id, Arch.recent.collect{|arch| [arch.name, arch.id]}, {:include_blank => true, :selected => @filter.arch_id},
-            {:class => 'sel80 medium input_cleanse', :id => 'architecture', :tabindex => 2}
+          = f.select :arch_id, Arch.recent.collect{|arch| [arch.name, arch.id]}, {:include_blank => true, :selected => @filter.arch_id}, html_options.merge(:id => 'architecture')
         %h3.medium= t 'activerecord.models.mass_build'
         .lineForm.aside
           = f.select :mass_build_id, options_from_collection_for_select( MassBuild.all, :id, :name, @filter.mass_build_id ), {:include_blank => true, :selected => @filter.mass_build_id},
-            {:class => 'sel80 medium input_cleanse', :id => 'mass_build', :tabindex => 2}
+            html_options.merge(:id => 'mass_build')
+
       .column
         .floatleft
           %h3.medium= t '_on'
