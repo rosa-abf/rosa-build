@@ -33,7 +33,7 @@ class Projects::Git::TreesController < Projects::Git::BaseController
   end
 
   def branches
-    raise Grit::NoSuchPathError unless @branch
+    raise Grit::NoSuchPathError if !@branch && @project.repo.commit(nil)
     @branches = @project.repo.branches.sort_by(&:name).select{ |b| b.name != @branch.name }.unshift(@branch).compact
     render 'refs'
   end
