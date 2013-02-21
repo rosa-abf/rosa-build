@@ -486,7 +486,7 @@ class BuildList < ActiveRecord::Base
 
   def prepare_extra_containers
     bls = BuildList.where(:id => extra_containers).published_container.accessible_by(current_ability, :read)
-    bls = bls.where(:save_to_platform_id => save_to_platform.id) if save_to_platform && save_to_platform.main?
+    bls = bls.where(:save_to_platform_id => save_to_platform.id, :arch_id => arch_id) if save_to_platform && save_to_platform.main?
     self.extra_containers = bls.pluck(:id)
   end
 
