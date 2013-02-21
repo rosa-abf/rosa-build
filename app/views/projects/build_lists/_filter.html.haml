@@ -1,6 +1,6 @@
 .top
   .filter
-    = form_for :filter, :url => @action_url, :html => { :method => :post, :class => :form } do |f|
+    = form_for :filter, :url => @action_url, :html => { :method => :post, :class => :form, :id => 'monitoring_filter' } do |f|
       .column
         = render 'server_status'
         = hidden_field_tag :servertime, Time.now.utc.to_i

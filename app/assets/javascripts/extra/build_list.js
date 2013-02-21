@@ -88,7 +88,7 @@ $(document).ready(function() {
   });
 
   $('#filter_clear').click(function() {
-    $('form .input_cleanse').val('');
+    $('#monitoring_filter .input_cleanse').val('');
     $('.btn-group .btn').removeClass('active');
     if(ownership_btn.length > 0) { ownership_btn[0].click(); }
     perpage_btn[0].click();
