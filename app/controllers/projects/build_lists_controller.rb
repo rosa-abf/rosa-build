@@ -138,8 +138,7 @@ class Projects::BuildListsController < Projects::BaseController
     else
       results.concat Repository.where(:id => extra_repos).accessible_by(current_ability, :read)
     end
-    results.concat build_lists
-    render :partial => 'extra', :collection => results
+    render :partial => 'extra', :collection => results.concat(build_lists)
   end
 
   protected

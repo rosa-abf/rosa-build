@@ -42,9 +42,8 @@ class BuildList < ActiveRecord::Base
   validate lambda {
     errors.add(:save_to_repository, I18n.t('flash.build_list.wrong_project')) unless save_to_repository.projects.exists?(project_id)
   }
-  validate :check_extra_repositories, :on => :create
-  validate :check_extra_containers,   :on => :create
-  before_validation :prepare_extra_repositories_and_containers, :on => :create
+  before_validation :prepare_extra_repositories, :on => :create
+  before_validation :prepare_extra_containers,   :on => :create
 
   before_create :use_save_to_repository_for_main_platforms
 
@@ -476,28 +475,19 @@ class BuildList < ActiveRecord::Base
     @current_ability ||= Ability.new(user)
   end
 
-  def check_extra_repositories
-    if extra_repositories.present? && user
-      repos_count = Repository.where(:id => extra_repositories).
-        accessible_by(current_ability, :read).count
-      errors.add(:extra_repositories, I18n.t('flash.build_list.wrong_extra_repositories')) if repos_count != extra_repositories.count
+  def prepare_extra_repositories
+    if save_to_platform && save_to_platform.main?
+      self.extra_repositories = nil
+    else
+      self.extra_repositories = Repository.where(:id => extra_repositories).
+        accessible_by(current_ability, :read).pluck(:id)
     end
   end
 
-  def check_extra_containers
-    if extra_containers.present? && user
-      bls_count = BuildList.where(:id => extra_containers).
-        published_container.accessible_by(current_ability, :read).count
-      errors.add(:extra_containers, I18n.t('flash.build_list.wrong_extra_containers')) if bls_count != extra_containers.count
-    end
-  end
-
-  def prepare_extra_repositories_and_containers
-    if save_to_repository && save_to_repository.platform.main?
-      self.extra_repositories = self.extra_containers = nil
-    end
-    self.extra_repositories = extra_repositories.uniq if extra_repositories.present?
-    self.extra_containers   = extra_containers.uniq   if extra_containers.present?
+  def prepare_extra_containers
+    bls = BuildList.where(:id => extra_containers).published_container.accessible_by(current_ability, :read)
+    bls = bls.where(:save_to_platform_id => save_to_platform.id) if save_to_platform && save_to_platform.main?
+    self.extra_containers = bls.pluck(:id)
   end
 
 end
