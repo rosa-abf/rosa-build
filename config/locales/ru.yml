@@ -20,6 +20,7 @@ ru:
     user_list: Список пользователей
     edit: Редактировать
     show: Просмотр
+    hide: Скрыть
     cancel: Отмена
     create: Создать
     update: Обновить
@@ -204,3 +205,7 @@ ru:
   from: из
   by: от
   diff: Изменения
+  number_rows: Количество строк
+  reset: Сброс
+  _on: с
+  until: по

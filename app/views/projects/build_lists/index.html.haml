@@ -1,11 +1,6 @@
 -set_meta_tags :title => t('.title')
 
-= hidden_field_tag :servertime, Time.now.utc.to_i
-%div.reloader
-  = label_tag :autoreload do
-    = check_box_tag :autoreload, true, true
-    = t("layout.autoreload_page")
-.both
+= render 'filter'
 
 %table.tablesorter{:cellpadding => "0", :cellspacing => "0"}
   %thead
@@ -18,6 +13,7 @@
       %th.lpadding16= t("activerecord.attributes.build_list.save_to_repository")
       %th.lpadding6= t("activerecord.attributes.build_list.arch_short")
       %th.lpadding16= t("activerecord.attributes.build_list.user")
+      %th.lpadding6= t("activerecord.attributes.build_list.updated_at")
   %tbody= render :partial => 'projects/build_lists/build_list', :collection => @build_lists
 .both
 
@@ -74,5 +70,4 @@
 
 = will_paginate @bls
 
-= render 'filter'
 = render @project ? 'projects/base/submenu' : 'projects/build_lists/submenu'

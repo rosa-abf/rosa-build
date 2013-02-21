@@ -147,6 +147,9 @@ en:
           600000: "10 m"
           900000: "15 m"
 
+      show_filter: Show filters
+      hide_filter: Hide filters
+
   flash:
     build_list:
       saved: Build list for project version '%{project_version}', platform '%{build_for_platform}' and architecture '%{arch}' has been created successfully

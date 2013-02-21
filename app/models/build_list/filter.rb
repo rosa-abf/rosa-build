@@ -1,5 +1,7 @@
 # -*- encoding : utf-8 -*-
 class BuildList::Filter
+  PER_PAGE = [25, 50, 100]
+
   def initialize(project, user, options = {})
     @project = project
     @user = user
@@ -70,14 +72,10 @@ class BuildList::Filter
   end
 
   def build_date_from_params(field_name, params)
-    if params[field_name].present?
-      Time.at(params[field_name].to_i)
-    elsif params["#{field_name}(1i)"].present? || params["#{field_name}(2i)"].present? || params["#{field_name}(3i)"].present?
-      Date.civil((params["#{field_name}(1i)"].presence || Date.today.year).to_i, 
-                 (params["#{field_name}(2i)"].presence || Date.today.month).to_i,
-                 (params["#{field_name}(3i)"].presence || Date.today.day).to_i)
-    else
-      nil
-    end
+    return nil if params[field_name].blank?
+    params[field_name].strip!
+    return Date.parse(params[field_name]) if params[field_name] =~ /\A\d{2}\/\d{2}\/\d{4}\z/
+    return Time.at(params[field_name].to_i) if params[field_name] =~ /\A\d+\z/
+    nil
   end
 end
