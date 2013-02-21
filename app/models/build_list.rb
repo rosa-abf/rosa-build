@@ -486,8 +486,19 @@ class BuildList < ActiveRecord::Base
 
   def prepare_extra_containers
     bls = BuildList.where(:id => extra_containers).published_container.accessible_by(current_ability, :read)
-    bls = bls.where(:save_to_platform_id => save_to_platform.id, :arch_id => arch_id) if save_to_platform && save_to_platform.main?
-    self.extra_containers = bls.pluck(:id)
+    if save_to_platform && save_to_platform.main?
+      bls = bls.where(:save_to_platform_id => save_to_platform.id)
+      if save_to_platform.distrib_type == 'rhel'
+        bls = bls.where('
+          (build_lists.arch_id = ? AND projects.publish_i686_into_x86_64 is not true) OR
+          (projects.publish_i686_into_x86_64 is true)
+        ', arch_id).joins(:project)
+      else
+        bls = bls.where(:arch_id => arch_id)
+      end
+        
+    end
+    self.extra_containers = bls.pluck('build_lists.id')
   end
 
 end
