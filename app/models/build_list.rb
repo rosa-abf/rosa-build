@@ -403,6 +403,7 @@ class BuildList < ActiveRecord::Base
     # "rosa2012.1/main" repository should be used in "conectiva" platform
     repos = include_repos
     repos |= ['146'] if build_for_platform_id == 376
+    repos |= ['108'] if build_for_platform_id == 237
     include_repos_hash = {}.tap do |h|
       Repository.where(:id => (repos | (extra_repositories || [])) ).each do |repo|
         path = repo.platform.public_downloads_url(nil, arch.name, repo.name)
