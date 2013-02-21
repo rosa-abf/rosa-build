@@ -12,11 +12,10 @@ $(document).ready(function() {
     var use_save_to_repository = $('#build_list_use_save_to_repository');
 
     if (build_platform.size() == 0) {
-      $('#extra-repos-and-containers').slideDown();
       all_repositories.removeAttr('disabled');
       use_save_to_repository.removeAttr('disabled');
     } else {
-      $('#extra-repos-and-containers').slideUp();
+      updateExtraReposAndContainers();
       use_save_to_repository.attr('disabled', 'disabled').attr('checked', 'checked');
       all_repositories.attr('disabled', 'disabled');
       var parent = build_platform.parent();
@@ -33,18 +32,15 @@ $(document).ready(function() {
     } else {
       build_list_auto_publish.removeAttr('checked').attr('disabled', 'disabled');
     }
+
+    var path = '/build_lists/autocomplete_to_extra_repos_and_containers?platform_id=' + platform_id;
+    $('#extra_repos').attr('data-autocomplete', path);
   });
 
   $('#build_list_save_to_repository_id').trigger('change');
 
   $('#extra-repos-and-containers #add').click(function() {
-    var id = $('#extra_repo_field').val();
-    if (id.length > 0) {
-      $.get("/build_lists/add_extra_repos_and_containers", { extra_id: id })
-      .done(function(data) {
-        $("#extra-repos-and-containers table tbody").append(data);
-      });
-    }
+    updateExtraReposAndContainers();
     return false;
   });
 
@@ -53,6 +49,13 @@ $(document).ready(function() {
   });
 
 });
+
+function updateExtraReposAndContainers() {
+  $.get("/build_lists/update_extra_repos_and_containers", $('#new_build_list').serialize())
+  .done(function(data) {
+    $("#extra-repos-and-containers table tbody").html(data);
+  });
+}
 
 function setBranchSelected(selected_option) {
   var pl_name = selected_option.text().match(/([\w-.]+)\/[\w-.]+/)[1];

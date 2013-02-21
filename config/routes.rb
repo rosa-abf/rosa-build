@@ -222,7 +222,7 @@ Rosa::Application.routes.draw do
       end
       collection {
         get :autocomplete_to_extra_repos_and_containers
-        get :add_extra_repos_and_containers
+        get :update_extra_repos_and_containers
         post :search
       }
     end

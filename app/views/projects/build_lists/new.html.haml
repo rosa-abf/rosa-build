@@ -30,11 +30,8 @@
       = submit_tag t("layout.add"), :class => 'button', :id => 'add'
       %table.tablesorter{:cellpadding => "0", :cellspacing => "0"}
         %tbody
-          - Repository.where(id: @build_list.extra_repositories).each do |repo|
-            = render 'extra', :subject => repo
-
-          - BuildList.where(id: @build_list.extra_containers).each do |bl|
-            = render 'extra', :subject => bl
+          = render :partial => 'extra', :collection => Repository.where(id: @build_list.extra_repositories)
+          = render :partial => 'extra', :collection => BuildList.where(id: @build_list.extra_containers)
 
     %h3= t("activerecord.attributes.build_list.preferences")
     - [:auto_publish, :auto_create_container, :use_save_to_repository].each do |kind|
