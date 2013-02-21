@@ -14,13 +14,11 @@
             %h3.medium= t("layout.build_lists.ownership.header")
             =f.hidden_field :ownership
             .btn-group
-              -if @project
-                %button.btn.ownership{:value => 'owned', :class => @filter.ownership == 'owned' ? 'active' : '', :style => 'width:50%;'}= t 'layout.build_lists.ownership.owned'
-                %button.btn.ownership{:value => 'everything', :class => @filter.ownership == 'everything' ? 'active' : '', :style => 'width:50%;'}= t 'layout.build_lists.ownership.everything'
-              -else
-                %button.btn.ownership{:value => 'owned', :class => @filter.ownership == 'owned' ? 'active' : ''}= t 'layout.build_lists.ownership.owned'
-                %button.btn.ownership{:class => @filter.ownership == 'related' ? 'active' : '', :value => "related"}= t 'layout.build_lists.ownership.related'
-                %button.btn.ownership{:value => 'everything', :class => @filter.ownership == 'everything' ? 'active' : ''}= t 'layout.build_lists.ownership.everything'
+              - ownerships = %w[owned everything]
+              - ownerships << 'related' unless @project
+              - ownerships.each do |ownership|
+                -options = {:class => @filter.ownership == ownership ? 'active' : '', :value => ownership, :style => (@project ? 'width:50%;' : '')}
+                %button.btn.ownership{options}= t "layout.build_lists.ownership.#{ownership}"
         %h3.medium= t 'number_rows'
         =hidden_field_tag :per_page, @per_page
         .btn-group
