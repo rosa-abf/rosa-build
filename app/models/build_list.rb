@@ -287,6 +287,11 @@ class BuildList < ActiveRecord::Base
     [SUCCESS, FAILED_PUBLISH, BUILD_PUBLISHED, TESTS_FAILED].include? status
   end
 
+  def can_publish_to_repository?
+    return true unless save_to_platform.main?
+    BuildList.where(:id => extra_containers).where('status != ?', BUILD_PUBLISHED).count == 0
+  end
+
   def can_reject_publish?
     can_publish? && !save_to_repository.publish_without_qa && !build_published?
   end
@@ -500,11 +505,6 @@ class BuildList < ActiveRecord::Base
         
     end
     self.extra_containers = bls.pluck('build_lists.id')
-  end
-
-  def can_publish_to_repository?
-    return true unless save_to_platform.main?
-    BuildList.where(:id => extra_containers).where('status != ?', BUILD_PUBLISHED).count == 0
   end
 
 end
