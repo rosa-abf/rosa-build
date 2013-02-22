@@ -10,10 +10,12 @@ $(document).ready(function() {
     var all_repositories = $('.all_platforms input');
     all_repositories.removeAttr('checked');
     var use_save_to_repository = $('#build_list_use_save_to_repository');
+    var auto_create_container = $('#build_list_auto_create_container');
 
     if (build_platform.size() == 0) {
       all_repositories.removeAttr('disabled');
       use_save_to_repository.removeAttr('disabled');
+      auto_create_container.removeAttr('checked');
     } else {
       updateExtraReposAndContainers();
       use_save_to_repository.attr('disabled', 'disabled').attr('checked', 'checked');
@@ -31,6 +33,7 @@ $(document).ready(function() {
       build_list_auto_publish.removeAttr('disabled').attr('checked', 'checked');
     } else {
       build_list_auto_publish.removeAttr('checked').attr('disabled', 'disabled');
+      auto_create_container.attr('checked', 'checked');
     }
 
     var path = '/build_lists/autocomplete_to_extra_repos_and_containers?platform_id=' + platform_id;

@@ -196,8 +196,7 @@ class BuildList < ActiveRecord::Base
     end
 
     event :publish do
-      transition [:success, :failed_publish, :build_published, :tests_failed] => :build_publish,
-        :if => :can_publish_to_repository?
+      transition [:success, :failed_publish, :build_published, :tests_failed] => :build_publish
       transition [:success, :failed_publish] => :failed_publish
     end
 
@@ -275,7 +274,7 @@ class BuildList < ActiveRecord::Base
   end
 
   def can_create_container?
-    (can_publish? || build_publish?) && [WAITING_FOR_RESPONSE, FAILED_PUBLISH].include?(container_status)
+    [SUCCESS, BUILD_PUBLISH, FAILED_PUBLISH, BUILD_PUBLISHED, TESTS_FAILED].include?(status) && [WAITING_FOR_RESPONSE, FAILED_PUBLISH].include?(container_status)
   end
 
   #TODO: Share this checking on product owner.
@@ -283,8 +282,9 @@ class BuildList < ActiveRecord::Base
     build_started? || build_pending?
   end
 
-  def can_publish?
-    [SUCCESS, FAILED_PUBLISH, BUILD_PUBLISHED, TESTS_FAILED].include? status
+  def can_publish?(check_only_status = false)
+    by_status = [SUCCESS, FAILED_PUBLISH, BUILD_PUBLISHED, TESTS_FAILED].include?(status)
+    check_only_status ? by_status : (by_status && can_publish_to_repository?)
   end
 
   def can_publish_to_repository?
@@ -293,7 +293,7 @@ class BuildList < ActiveRecord::Base
   end
 
   def can_reject_publish?
-    can_publish? && !save_to_repository.publish_without_qa && !build_published?
+    [SUCCESS, FAILED_PUBLISH, TESTS_FAILED].include?(status) && !save_to_repository.publish_without_qa
   end
 
   def add_to_queue

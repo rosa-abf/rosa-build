@@ -33,11 +33,7 @@ class Api::V1::BuildListsController < Api::V1::BaseController
   end
 
   def publish
-    if @build_list.can_publish_to_repository?
-      render_json :publish
-    else
-      render_validation_error @build_list, t('layout.build_lists.publish_with_extra_fail')
-    end
+    render_json :publish
   end
 
   def reject_publish
