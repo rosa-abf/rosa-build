@@ -97,6 +97,10 @@ module Modules
         system("#{Rails.root.join('bin', 'import_srpm.sh')} #{opts} >> /dev/null 2>&1")
       end
 
+      def empty?
+        repo.branches.count == 0
+      end
+
       protected
 
       def build_path(dir)
