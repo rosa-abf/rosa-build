@@ -17,7 +17,7 @@ $(document).ready(function() {
       use_save_to_repository.removeAttr('disabled');
       auto_create_container.removeAttr('checked');
     } else {
-      updateExtraReposAndContainers();
+      updateExtraReposAndBuildLists();
       use_save_to_repository.attr('disabled', 'disabled').attr('checked', 'checked');
       all_repositories.attr('disabled', 'disabled');
       var parent = build_platform.parent();
@@ -36,29 +36,29 @@ $(document).ready(function() {
       auto_create_container.attr('checked', 'checked');
     }
 
-    var path = '/build_lists/autocomplete_to_extra_repos_and_containers?platform_id=' + platform_id;
+    var path = '/build_lists/autocomplete_to_extra_repos_and_builds?platform_id=' + platform_id;
     $('#extra_repos').attr('data-autocomplete', path);
   });
 
   $('#build_list_save_to_repository_id').trigger('change');
 
-  $('#extra-repos-and-containers #add').click(function() {
-    updateExtraReposAndContainers();
+  $('#extra-repos-and-build-lists #add').click(function() {
+    updateExtraReposAndBuildLists();
     return false;
   });
 
-  $(document).on('click', '#extra-repos-and-containers .delete', function() {
+  $(document).on('click', '#extra-repos-and-build-lists .delete', function() {
     $(this)[0].parentElement.parentElement.remove();
   });
 
-  $('#extra-repos-and-containers-dialog').dialog({
+  $('#extra-repos-and-build-lists-dialog').dialog({
     autoOpen: false,
     resizable: false,
     width: 400
   });
 
-  $('#extra-repos-and-containers .icon-question-sign').click(function() {
-    var dialog = $('#extra-repos-and-containers-dialog');
+  $('#extra-repos-and-build-lists .icon-question-sign').click(function() {
+    var dialog = $('#extra-repos-and-build-lists-dialog');
     if (dialog.is(':visible')) { dialog.dialog('close'); } else { dialog.dialog('open'); }
   });
 
@@ -98,10 +98,10 @@ $(document).ready(function() {
 });
 
 
-function updateExtraReposAndContainers() {
-  $.get("/build_lists/update_extra_repos_and_containers", $('#new_build_list').serialize())
+function updateExtraReposAndBuildLists() {
+  $.get("/build_lists/update_extra_repos_and_builds", $('#new_build_list').serialize())
   .done(function(data) {
-    $("#extra-repos-and-containers table tbody").html(data);
+    $("#extra-repos-and-build-lists table tbody").html(data);
   });
 }
 

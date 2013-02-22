@@ -1767,7 +1767,7 @@ table#myTable thead tr.search th form.button_to div input {
   border: 1px solid #DDDDDD;
 }
 
-#extra-repos-and-containers {
+#extra-repos-and-build-lists {
     width: 330px;
     .actions { width: 15px; }
 }
@@ -1822,15 +1822,15 @@ table#myTable thead tr.search th form.button_to div input {
   margin-left: 10px;
 }
 
-#extra-repos-and-containers {
+#extra-repos-and-build-lists {
     width: 330px;
     .actions { width: 15px; }
     .icon-question-sign {
         background-position: -96px -96px;
     }
 }
-#extra-repos-and-containers-dialog, .ui-dialog-titlebar  { font-size: 12px; }
-#extra-repos-and-containers-dialog  {
+#extra-repos-and-build-lists-dialog, .ui-dialog-titlebar  { font-size: 12px; }
+#extra-repos-and-build-lists-dialog  {
     text-align: left;
     p { margin: 0; }
 }

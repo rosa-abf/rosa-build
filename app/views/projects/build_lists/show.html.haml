@@ -72,12 +72,12 @@
   .rightlist= t("layout.#{@build_list.new_core?}_")
   .both
 
-  - if @build_list.extra_containers.present? || @build_list.extra_repositories.present?
+  - if @build_list.extra_build_lists.present? || @build_list.extra_repositories.present?
     .leftlist= t("activerecord.attributes.build_list.extra_repos")
     .rightlist
       - Repository.where(:id => @build_list.extra_repositories).each do |repo|
         %p= link_to "#{repo.platform.name}/#{repo.name}", [repo.platform, repo]
-      - BuildList.where(:id => @build_list.extra_containers).each do |bl|
+      - BuildList.where(:id => @build_list.extra_build_lists).each do |bl|
         %p= link_to "#{bl.id} (#{bl.project.name} - #{bl.arch.name})", bl
     .both
 
@@ -152,7 +152,7 @@
     - if @build_list.build_published?
       = submit_tag t("layout.publish_again"), :confirm => t("layout.publish_again_warning"), :name => 'publish'
     - elsif @build_list.can_publish?(true)
-      - if !@build_list.extra_containers_published?
+      - if !@build_list.extra_build_lists_published?
         - confirm = t('layout.build_lists.publish_with_extra_fail')
       - elsif @build_list.tests_failed?
         - confirm = t('layout.build_lists.tests_failed')

@@ -4,6 +4,6 @@
   - else
     %td= link_to "#{extra.platform.name}/#{extra.name}", [extra.platform, extra]
   %td.actions
-    - field = extra.is_a?(BuildList) ? 'extra_containers' : 'extra_repositories'
+    - field = extra.is_a?(BuildList) ? 'extra_build_lists' : 'extra_repositories'
     = hidden_field_tag "build_list[#{field}][]", extra.id
     %span.delete &nbsp;

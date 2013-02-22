@@ -114,7 +114,7 @@ class Projects::BuildListsController < Projects::BaseController
     }
   end
 
-  def autocomplete_to_extra_repos_and_containers
+  def autocomplete_to_extra_repos_and_builds
     results, save_to_platform  = [], Platform.find(params[:platform_id])
     bl = BuildList.where(:id => params[:term]).published_container.accessible_by(current_ability, :read)
     if save_to_platform.main?
@@ -129,12 +129,12 @@ class Projects::BuildListsController < Projects::BaseController
     render json: results.to_json
   end
 
-  def update_extra_repos_and_containers
+  def update_extra_repos_and_builds
     results, save_to_repository = [], Repository.find(params[:build_list][:save_to_repository_id])
     extra_repos         = params[:build_list][:extra_repositories]  || []
-    extra_containers    = params[:build_list][:extra_containers]    || []
-    (params[:extra_repo].gsub!(/-build-list$/, '') ? extra_containers : extra_repos) << params[:extra_repo]
-    build_lists = BuildList.where(:id => extra_containers).published_container.accessible_by(current_ability, :read)
+    extra_bls           = params[:build_list][:extra_build_lists]    || []
+    (params[:extra_repo].gsub!(/-build-list$/, '') ? extra_bls : extra_repos) << params[:extra_repo]
+    build_lists = BuildList.where(:id => extra_bls).published_container.accessible_by(current_ability, :read)
     if save_to_repository.platform.main?
       build_lists = build_lists.where(:save_to_platform_id => save_to_repository.platform_id)
     else
