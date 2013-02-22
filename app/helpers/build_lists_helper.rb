@@ -85,6 +85,10 @@ module BuildListsHelper
     p.html_safe
   end
 
+  def can_publish_in_future?(bl)
+    [BuildList::SUCCESS, BuildList::FAILED_PUBLISH, BuildList::BUILD_PUBLISHED, BuildList::TESTS_FAILED].include?(bl.status)
+  end
+
   def log_reload_time_options
     t = I18n.t("layout.build_lists.log.reload_times").map { |i| i.reverse }
 

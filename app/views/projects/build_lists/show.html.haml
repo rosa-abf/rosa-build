@@ -151,14 +151,14 @@
   - if can?(:publish, @build_list)
     - if @build_list.build_published?
       = submit_tag t("layout.publish_again"), :confirm => t("layout.publish_again_warning"), :name => 'publish'
-    - elsif @build_list.can_publish?(true)
-      - if !@build_list.extra_build_lists_published?
+    - elsif can_publish_in_future?(@build_list)
+      - if @build_list.extra_build_lists_published?
+        - confirm = @build_list.tests_failed? ? t('layout.build_lists.tests_failed') : t('layout.confirm')
+        = submit_tag t("layout.publish"), :confirm => confirm, :name => 'publish'
+      - else
         .flash_notify
           .alert.alert-error= t('layout.build_lists.publish_with_extra_fail')
         .both
-      - else
-        - confirm = @build_list.tests_failed? ? t('layout.build_lists.tests_failed') : t('layout.confirm')
-        = submit_tag t("layout.publish"), :confirm => confirm, :name => 'publish'
     - if @build_list.can_reject_publish? && can?(:reject_publish, @build_list)
       = submit_tag t("layout.reject_publish"), :confirm => t("layout.confirm"), :name => 'reject_publish'
   - if @build_list.can_create_container? && can?(:create_container, @build_list)
