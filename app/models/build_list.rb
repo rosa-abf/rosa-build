@@ -486,7 +486,7 @@ class BuildList < ActiveRecord::Base
       self.extra_repositories = nil
     else
       self.extra_repositories = Repository.where(:id => extra_repositories).
-        accessible_by(current_ability, :read).pluck(:id)
+        accessible_by(current_ability, :read).pluck('repositories.id')
     end
   end
 
