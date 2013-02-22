@@ -154,13 +154,13 @@ en:
   helpers:
     extra_repos_and_build_lists:
       header: 'Ability to attach at assembly repositories and packages from build lists as additional sources of packages.'
-      extra_build_lists_help:
+      build_lists:
         header: 'Add ID of build list which need to connect:'
         message1: '- Only build list with container can be connected;'
         message2: '- For main platform You can connect only build lists which have been saved into same platform;'
         message3: '- Only build lists with the same architecture will be connected or oriented to the both architectures (the property Publish i686 packages into x86_64 repository <i>only for rhel </i> in the settings of project is true).'
         message4: '<i>Example: only build lists with i586 architecture will be connected for i586.</i>'
-      extra_repos_help:
+      repos:
         header: 'Add name of platform:'
         message1: '- Only for personal platforms;'
         message2: '- You will get a list of repositories of this platform for choose.'
