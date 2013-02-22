@@ -52,7 +52,7 @@
         .both
         -%w[project_name bs_id].each do |filter|
           %h3.medium= t "layout.build_lists.#{filter}_search"
-          %input.mediumheight.input_cleanse{:id => "filter_#{filter}", :name => "filter[#{filter}]", :size => "30", :type => "text"}/
+          %input.mediumheight.input_cleanse{:id => "filter_#{filter}", :name => "filter[#{filter}]", :size => "30", :type => "text", :value => @filter.send(filter)}
         %br/
         %br/
       .butgrp
