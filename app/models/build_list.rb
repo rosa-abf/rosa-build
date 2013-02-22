@@ -284,10 +284,10 @@ class BuildList < ActiveRecord::Base
 
   def can_publish?(check_only_status = false)
     by_status = [SUCCESS, FAILED_PUBLISH, BUILD_PUBLISHED, TESTS_FAILED].include?(status)
-    check_only_status ? by_status : (by_status && can_publish_to_repository?)
+    check_only_status ? by_status : (by_status && extra_containers_published?)
   end
 
-  def can_publish_to_repository?
+  def extra_containers_published?
     return true unless save_to_platform.main?
     BuildList.where(:id => extra_containers).where('status != ?', BUILD_PUBLISHED).count == 0
   end
