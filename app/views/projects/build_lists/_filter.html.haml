@@ -15,9 +15,7 @@
             %h3.medium= t("layout.build_lists.ownership.header")
             =f.hidden_field :ownership
             .btn-group
-              - ownerships = %w[owned everything]
-              - ownerships << 'related' unless @project
-              - ownerships.each do |ownership|
+              - ['owned', (@project ? nil : 'related'), 'everything'].compact.each do |ownership|
                 -options = {:class => @filter.ownership == ownership ? 'active' : '', :value => ownership, :style => (@project ? 'width:50%;' : '')}
                 %button.btn.ownership{options}= t "layout.build_lists.ownership.#{ownership}"
         %h3.medium= t 'number_rows'
