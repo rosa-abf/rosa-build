@@ -48,7 +48,7 @@ module GitHelper
   end
 
   def branch_selector_options(project)
-    p = params.dup
+    p, tag_disabled = params.dup, (controller_name == 'trees' && action_name == 'branches')
     p.delete(:path) if p[:path].present? # to root path
     p.merge!(:project_id => project.id, :treeish => project.default_branch).delete(:id) unless p[:treeish].present?
     current = url_for(p).split('?', 2).first
@@ -59,8 +59,11 @@ module GitHelper
     end
     linking = Proc.new {|t| [t.name.truncate(20), url_for(p.merge :treeish => t.name).split('?', 2).first]}
     res << [I18n.t('layout.git.repositories.branches'), project.repo.branches.map(&linking)]
-    res << [I18n.t('layout.git.repositories.tags'), project.repo.tags.map(&linking)]
-
+    unless tag_disabled
+      res << [I18n.t('layout.git.repositories.tags'), project.repo.tags.map(&linking)]
+    else
+      res << [I18n.t('layout.git.repositories.tags'), project.repo.tags.map {|t| [t.name.truncate(20), {:disabled => true}]}]
+    end
     grouped_options_for_select(res, current)
   end
 
