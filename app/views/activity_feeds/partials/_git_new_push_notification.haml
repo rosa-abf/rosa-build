@@ -1,10 +1,9 @@
+-user= User.where(:email => user_email).first || User.new(:email => user_email) if defined?(user_email)
 .top
-  - if defined?(user_email)
-    .image
-      = image_tag(avatar_url_by_email(user_email, :small), :alt => 'avatar')
+  .image= link_to(image_tag(avatar_url(user, :small), :alt => 'avatar'), user_path(user)) if user.persisted?
   .text
     %span
-      -user_link = defined?(user_name) ? (defined?(user_uname) ? link_to(user_name, user_path(user_uname)) : user_name) : user_email
+      -user_link = defined?(user_email) ? (user ? link_to(user_name, user_path(user)) : user_name) : user_email
       = raw t("notifications.bodies.#{change_type}_branch", {:branch_name => branch_name, :user_link => user_link})
       = raw t("notifications.bodies.project", :project_link => link_to("#{project_owner}/#{project_name}", project_path(project_owner, project_name)) )
     .both
