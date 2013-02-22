@@ -312,9 +312,7 @@ describe Projects::BuildListsController do
 
     it 'should filter by project_name and update_date' do
       get :index, :filter => {:project_name => @build_list3.project.name, :ownership => 'everything',
-                            "updated_at_start(1i)" => @build_list3.updated_at.year.to_s,
-                            "updated_at_start(2i)" => @build_list3.updated_at.month.to_s,
-                            "updated_at_start(3i)" => @build_list3.updated_at.day.to_s}
+                            "updated_at_start" => @build_list3.updated_at.strftime('%d/%m/%Y')}
       assigns[:build_lists].should_not include(@build_list1)
       assigns[:build_lists].should_not include(@build_list2)
       assigns[:build_lists].should include(@build_list3)
