@@ -56,7 +56,10 @@ module Modules
         return false if (index.current_tree / path).nil?
 
         index.add(path, data)
-        index.commit(message, :parents => [parent], :actor => actor, :last_tree => parent.tree.id, :head => head)
+        if sha1 = index.commit(message, :parents => [parent], :actor => actor, :last_tree => parent.tree.id, :head => head)
+          Project.process_hook(owner.uname, name, "refs/heads/#{sha1}", nil, head, 'commit', 'commit', options[:actor], message)
+        end
+        sha1
       end
 
       def paginate_commits(treeish, options = {})
@@ -167,8 +170,8 @@ module Modules
       end
 
       module ClassMethods
-        def process_hook(owner_uname, repo, newrev, oldrev, ref, newrev_type, oldrev_type)
-          rec = GitHook.new(owner_uname, repo, newrev, oldrev, ref, newrev_type, oldrev_type)
+        def process_hook(owner_uname, repo, newrev, oldrev, ref, newrev_type, oldrev_type, user = nil, message = nil)
+          rec = GitHook.new(owner_uname, repo, newrev, oldrev, ref, newrev_type, oldrev_type, user, message)
           ActivityFeedObserver.instance.after_create rec
         end
       end
