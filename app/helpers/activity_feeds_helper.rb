@@ -10,4 +10,8 @@ module ActivityFeedsHelper
     # removes multiple whitespaces in a row and strip it:
     feed_title = feed_title.gsub(/\s{2,}/, ' ').strip
   end
+
+  def user_link user, user_name
+    user.persisted? ? link_to(user_name, user_path(user)) : user_name
+  end
 end
