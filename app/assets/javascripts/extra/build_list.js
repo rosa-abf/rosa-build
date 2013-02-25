@@ -54,7 +54,7 @@ $(document).ready(function() {
   $('#extra-repos-and-build-lists-dialog').dialog({
     autoOpen: false,
     resizable: false,
-    width: 400
+    width: 500
   });
 
   $('#extra-repos-and-build-lists .icon-question-sign').click(function() {
