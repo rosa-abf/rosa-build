@@ -15,6 +15,34 @@ describe Projects::BuildListsController do
     end
   end
 
+  shared_examples_for 'show extra_repos_and_builds actions' do
+    it 'shows data when perform autocomplete_to_extra_repos_and_builds action' do
+      @build_list.update_column(:container_status, BuildList::BUILD_PUBLISHED)
+      get :autocomplete_to_extra_repos_and_builds, {:term => @build_list.id, :platform_id => @build_list.save_to_platform_id}
+      response.body.should_not == '[]'
+    end
+
+    it 'shows data when perform update_extra_repos_and_builds action' do
+      @build_list.update_column(:container_status, BuildList::BUILD_PUBLISHED)
+      get :update_extra_repos_and_builds, {:build_list => {:save_to_repository_id => @build_list.save_to_repository_id, :extra_build_lists => [@build_list.id]}, :extra_repo => ''}
+      response.body.should_not == ' '
+    end
+  end
+
+  shared_examples_for 'not show extra_repos_and_builds actions' do
+    it 'no data when perform autocomplete_to_extra_repos_and_builds action' do
+      @build_list.update_column(:container_status, BuildList::BUILD_PUBLISHED)
+      get :autocomplete_to_extra_repos_and_builds, {:term => @build_list.id, :platform_id => @build_list.save_to_platform_id}
+      response.body.should == '[]'
+    end
+
+    it 'no data when perform update_extra_repos_and_builds action' do
+      @build_list.update_column(:container_status, BuildList::BUILD_PUBLISHED)
+      get :update_extra_repos_and_builds, {:build_list => {:save_to_repository_id => @build_list.save_to_repository_id, :extra_build_lists => [@build_list.id]}, :extra_repo => ''}
+      response.body.should == ' '
+    end
+  end
+
   shared_examples_for 'not show build list' do
     it 'should not be able to perform show action' do
       get :show, @show_params
@@ -76,6 +104,7 @@ describe Projects::BuildListsController do
       post :create, {:owner_name => @project.owner.uname, :project_name => @project.name}.merge(@create_params)
       response.should redirect_to(forbidden_url)
     end
+
   end
 
   before { stub_symlink_methods }
@@ -103,9 +132,16 @@ describe Projects::BuildListsController do
         response.should be_success
       end
 
-      it 'should not be able to perform index action', :anonymous_access => false do
+      it "should not be able to perform index action", :anonymous_access => false do
         get :index
         response.should redirect_to(new_user_session_path)
+      end
+
+      [:autocomplete_to_extra_repos_and_builds, :update_extra_repos_and_builds].each do |action|
+        it "should not be able to perform #{action} action" do
+          get action
+          response.should redirect_to(new_user_session_path)
+        end
       end
     end
 
@@ -155,11 +191,13 @@ describe Projects::BuildListsController do
       context 'for open project' do
         it_should_behave_like 'show build list'
         it_should_behave_like 'not create build list'
+        it_should_behave_like 'show extra_repos_and_builds actions'
 
         context 'if user is project owner' do
           before(:each) {set_session_for(@owner_user)}
           it_should_behave_like 'show build list'
           it_should_behave_like 'create build list'
+
         end
 
         context 'if user is project read member' do
@@ -177,17 +215,21 @@ describe Projects::BuildListsController do
 
         it_should_behave_like 'not show build list'
         it_should_behave_like 'not create build list'
+        it_should_behave_like 'not show extra_repos_and_builds actions'
 
         context 'if user is project owner' do
           before(:each) {set_session_for(@owner_user)}
           it_should_behave_like 'show build list'
           it_should_behave_like 'create build list'
+          it_should_behave_like 'show extra_repos_and_builds actions'
         end
 
         context 'if user is project read member' do
           before(:each) {set_session_for(@member_user)}
           it_should_behave_like 'show build list'
           it_should_behave_like 'not create build list'
+          it_should_behave_like 'show extra_repos_and_builds actions'
+
         end
       end
     end
@@ -243,6 +285,7 @@ describe Projects::BuildListsController do
       context 'for open project' do
         it_should_behave_like 'show build list'
         it_should_behave_like 'not create build list'
+        it_should_behave_like 'show extra_repos_and_builds actions'
 
         context 'if user is group owner' do
           before(:each) {set_session_for(@owner_user)}
@@ -265,17 +308,20 @@ describe Projects::BuildListsController do
 
         it_should_behave_like 'not show build list'
         it_should_behave_like 'not create build list'
+        it_should_behave_like 'not show extra_repos_and_builds actions'
 
         context 'if user is group owner' do
           before(:each) {set_session_for(@owner_user)}
           it_should_behave_like 'show build list'
           it_should_behave_like 'create build list'
+          it_should_behave_like 'show extra_repos_and_builds actions'
         end
 
         context 'if user is group read member' do
           before(:each) {set_session_for(@member_user)}
           it_should_behave_like 'show build list'
           it_should_behave_like 'not create build list'
+          it_should_behave_like 'show extra_repos_and_builds actions'
         end
       end
 
