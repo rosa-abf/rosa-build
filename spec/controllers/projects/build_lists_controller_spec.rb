@@ -132,7 +132,7 @@ describe Projects::BuildListsController do
         response.should be_success
       end
 
-      it "should not be able to perform index action", :anonymous_access => false do
+      it 'should not be able to perform index action', :anonymous_access => false do
         get :index
         response.should redirect_to(new_user_session_path)
       end
