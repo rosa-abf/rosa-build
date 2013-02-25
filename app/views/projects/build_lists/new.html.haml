@@ -36,7 +36,10 @@
         %br
         %b= t('helpers.extra_repos_and_build_lists.repos.header')
         %p= t('helpers.extra_repos_and_build_lists.repos.message1')
+        %br
+        %b= t('helpers.extra_repos_and_build_lists.repos.header2')
         %p= t('helpers.extra_repos_and_build_lists.repos.message2')
+        %p= t('helpers.extra_repos_and_build_lists.repos.message3').html_safe
 
       = autocomplete_field_tag 'extra_repos', nil, autocomplete_to_extra_repos_and_builds_build_lists_path, :id_element => '#extra_repo_field'
       = hidden_field_tag 'extra_repo', nil, :id => 'extra_repo_field'
