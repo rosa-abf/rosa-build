@@ -1,6 +1,6 @@
+-user= User.where(:email => user_email).first || User.new(:email => user_email) if defined?(user_email)
 .top
-  .image
-    = image_tag(avatar_url_by_email(user_email, :small), :alt => 'avatar')
+  .image= link_to(image_tag(avatar_url(user, :small), :alt => 'avatar'), user_path(user)) if user.persisted?
   .text
     %span
       = raw t('notifications.bodies.build_task', :task_num => task_num, :task_link => build_list_path(build_list_id))
