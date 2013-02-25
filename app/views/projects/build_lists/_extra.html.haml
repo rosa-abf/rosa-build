@@ -1,9 +1,9 @@
 %tr
-  - if subject.is_a?(BuildList)
-    %td= link_to "#{subject.id} (#{subject.project.name} - #{subject.arch.name})", subject
+  - if extra.is_a?(BuildList)
+    %td= link_to "#{extra.id} (#{extra.project.name} - #{extra.arch.name})", extra
   - else
-    %td= link_to "#{subject.platform.name}/#{subject.name}", [subject.platform, subject]
+    %td= link_to "#{extra.platform.name}/#{extra.name}", [extra.platform, extra]
   %td.actions
-    - field = subject.is_a?(BuildList) ? 'extra_containers' : 'extra_repositories'
-    = hidden_field_tag "build_list[#{field}][]", subject.id
+    - field = extra.is_a?(BuildList) ? 'extra_build_lists' : 'extra_repositories'
+    = hidden_field_tag "build_list[#{field}][]", extra.id
     %span.delete &nbsp;

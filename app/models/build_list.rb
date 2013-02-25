@@ -42,16 +42,15 @@ class BuildList < ActiveRecord::Base
   validate lambda {
     errors.add(:save_to_repository, I18n.t('flash.build_list.wrong_project')) unless save_to_repository.projects.exists?(project_id)
   }
-  validate :check_extra_repositories, :on => :create
-  validate :check_extra_containers,   :on => :create
-  before_validation :prepare_extra_repositories_and_containers, :on => :create
+  before_validation :prepare_extra_repositories,  :on => :create
+  before_validation :prepare_extra_build_lists,   :on => :create
 
   before_create :use_save_to_repository_for_main_platforms
 
   attr_accessible :include_repos, :auto_publish, :build_for_platform_id, :commit_hash,
                   :arch_id, :project_id, :save_to_repository_id, :update_type,
                   :save_to_platform_id, :project_version, :use_save_to_repository,
-                  :auto_create_container, :extra_repositories, :extra_containers
+                  :auto_create_container, :extra_repositories, :extra_build_lists
   LIVE_TIME = 4.week # for unpublished
   MAX_LIVE_TIME = 3.month # for published
 
@@ -132,8 +131,8 @@ class BuildList < ActiveRecord::Base
   serialize :additional_repos
   serialize :include_repos
   serialize :results, Array
-  serialize :extra_repositories, Array
-  serialize :extra_containers, Array
+  serialize :extra_repositories,  Array
+  serialize :extra_build_lists,   Array
 
   after_commit  :place_build
   after_destroy :remove_container
@@ -275,7 +274,7 @@ class BuildList < ActiveRecord::Base
   end
 
   def can_create_container?
-    (can_publish? || build_publish?) && [WAITING_FOR_RESPONSE, FAILED_PUBLISH].include?(container_status)
+    [SUCCESS, BUILD_PUBLISH, FAILED_PUBLISH, BUILD_PUBLISHED, TESTS_FAILED].include?(status) && [WAITING_FOR_RESPONSE, FAILED_PUBLISH].include?(container_status)
   end
 
   #TODO: Share this checking on product owner.
@@ -284,11 +283,17 @@ class BuildList < ActiveRecord::Base
   end
 
   def can_publish?
-    [SUCCESS, FAILED_PUBLISH, BUILD_PUBLISHED, TESTS_FAILED].include? status
+    [SUCCESS, FAILED_PUBLISH, BUILD_PUBLISHED, TESTS_FAILED].include?(status) && extra_build_lists_published?
+  end
+
+  def extra_build_lists_published?
+    # All extra build lists should be published before publishing this build list for main platforms!
+    return true unless save_to_platform.main?
+    BuildList.where(:id => extra_build_lists).where('status != ?', BUILD_PUBLISHED).count == 0
   end
 
   def can_reject_publish?
-    can_publish? && !save_to_repository.publish_without_qa && !build_published?
+    [SUCCESS, FAILED_PUBLISH, TESTS_FAILED].include?(status) && !save_to_repository.publish_without_qa
   end
 
   def add_to_queue
@@ -418,7 +423,7 @@ class BuildList < ActiveRecord::Base
       end
     end
     host = EventLog.current_controller.request.host_with_port rescue ::Rosa::Application.config.action_mailer.default_url_options[:host]
-    BuildList.where(:id => extra_containers).each do |bl|
+    BuildList.where(:id => extra_build_lists).each do |bl|
       path  = "http://#{host}/downloads/#{bl.save_to_platform.name}/container/"
       path << "#{bl.id}/#{bl.arch.name}/#{bl.save_to_repository.name}/release"
       include_repos_hash["container_#{bl.id}"] = path
@@ -476,28 +481,30 @@ class BuildList < ActiveRecord::Base
     @current_ability ||= Ability.new(user)
   end
 
-  def check_extra_repositories
-    if extra_repositories.present? && user
-      repos_count = Repository.where(:id => extra_repositories).
-        accessible_by(current_ability, :read).count
-      errors.add(:extra_repositories, I18n.t('flash.build_list.wrong_extra_repositories')) if repos_count != extra_repositories.count
+  def prepare_extra_repositories
+    if save_to_platform && save_to_platform.main?
+      self.extra_repositories = nil
+    else
+      self.extra_repositories = Repository.where(:id => extra_repositories).
+        accessible_by(current_ability, :read).pluck('repositories.id')
     end
   end
 
-  def check_extra_containers
-    if extra_containers.present? && user
-      bls_count = BuildList.where(:id => extra_containers).
-        published_container.accessible_by(current_ability, :read).count
-      errors.add(:extra_containers, I18n.t('flash.build_list.wrong_extra_containers')) if bls_count != extra_containers.count
+  def prepare_extra_build_lists
+    bls = BuildList.where(:id => extra_build_lists).published_container.accessible_by(current_ability, :read)
+    if save_to_platform && save_to_platform.main?
+      bls = bls.where(:save_to_platform_id => save_to_platform.id)
+      if save_to_platform.distrib_type == 'rhel'
+        bls = bls.where('
+          (build_lists.arch_id = ? AND projects.publish_i686_into_x86_64 is not true) OR
+          (projects.publish_i686_into_x86_64 is true)
+        ', arch_id).joins(:project)
+      else
+        bls = bls.where(:arch_id => arch_id)
+      end
+        
     end
-  end
-
-  def prepare_extra_repositories_and_containers
-    if save_to_repository && save_to_repository.platform.main?
-      self.extra_repositories = self.extra_containers = nil
-    end
-    self.extra_repositories = extra_repositories.uniq if extra_repositories.present?
-    self.extra_containers   = extra_containers.uniq   if extra_containers.present?
+    self.extra_build_lists = bls.pluck('build_lists.id')
   end
 
 end

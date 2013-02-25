@@ -10,13 +10,14 @@ $(document).ready(function() {
     var all_repositories = $('.all_platforms input');
     all_repositories.removeAttr('checked');
     var use_save_to_repository = $('#build_list_use_save_to_repository');
+    var auto_create_container = $('#build_list_auto_create_container');
 
     if (build_platform.size() == 0) {
-      $('#extra-repos-and-containers').slideDown();
       all_repositories.removeAttr('disabled');
       use_save_to_repository.removeAttr('disabled');
+      auto_create_container.removeAttr('checked');
     } else {
-      $('#extra-repos-and-containers').slideUp();
+      updateExtraReposAndBuildLists();
       use_save_to_repository.attr('disabled', 'disabled').attr('checked', 'checked');
       all_repositories.attr('disabled', 'disabled');
       var parent = build_platform.parent();
@@ -32,39 +33,34 @@ $(document).ready(function() {
       build_list_auto_publish.removeAttr('disabled').attr('checked', 'checked');
     } else {
       build_list_auto_publish.removeAttr('checked').attr('disabled', 'disabled');
+      auto_create_container.attr('checked', 'checked');
     }
+
+    var path = '/build_lists/autocomplete_to_extra_repos_and_builds?platform_id=' + platform_id;
+    $('#extra_repos').attr('data-autocomplete', path);
   });
 
   $('#build_list_save_to_repository_id').trigger('change');
 
-  $('#extra-repos-and-containers #add').click(function() {
-    var id = $('#extra_repo_field').val();
-    if (id.length > 0) {
-      $.get("/build_lists/add_extra_repos_and_containers", { extra_id: id })
-      .done(function(data) {
-        $("#extra-repos-and-containers table tbody").append(data);
-      });
-    }
+  $('#extra-repos-and-build-lists #add').click(function() {
+    updateExtraReposAndBuildLists();
     return false;
   });
 
-  $(document).on('click', '#extra-repos-and-containers .delete', function() {
+  $(document).on('click', '#extra-repos-and-build-lists .delete', function() {
     $(this)[0].parentElement.parentElement.remove();
   });
 
-  function setBranchSelected(selected_option) {
-    var pl_name = selected_option.text().match(/([\w-.]+)\/[\w-.]+/)[1];
-    var bl_version_sel = $('#build_list_project_version');
-    var branch_pl_opt = bl_version_sel.find('option[value="' + pl_name + '"]');
-    // If there is branch we need - set it selected:
-    if (branch_pl_opt.size() > 0) {
-      bl_version_sel.find('option[selected]').removeAttr('selected');
-      branch_pl_opt.attr('selected', 'selected');
-      bl_version_sel.val(branch_pl_opt);
-      // hack for FF to force render of select box.
-      bl_version_sel[0].innerHTML = bl_version_sel[0].innerHTML;
-    }
-  }
+  $('#extra-repos-and-build-lists-dialog').dialog({
+    autoOpen: false,
+    resizable: false,
+    width: 500
+  });
+
+  $('#extra-repos-and-build-lists .icon-question-sign').click(function() {
+    var dialog = $('#extra-repos-and-build-lists-dialog');
+    if (dialog.is(':visible')) { dialog.dialog('close'); } else { dialog.dialog('open'); }
+  });
 
   var ownership_btn = $('.btn.ownership');
   ownership_btn.click(function() {
@@ -100,3 +96,25 @@ $(document).ready(function() {
     showButtonPanel: true
   });
 });
+
+
+function updateExtraReposAndBuildLists() {
+  $.get("/build_lists/update_extra_repos_and_builds", $('#new_build_list').serialize())
+  .done(function(data) {
+    $("#extra-repos-and-build-lists table tbody").html(data);
+  });
+}
+
+function setBranchSelected(selected_option) {
+  var pl_name = selected_option.text().match(/([\w-.]+)\/[\w-.]+/)[1];
+  var bl_version_sel = $('#build_list_project_version');
+  var branch_pl_opt = bl_version_sel.find('option[value="' + pl_name + '"]');
+  // If there is branch we need - set it selected:
+  if (branch_pl_opt.size() > 0) {
+    bl_version_sel.find('option[selected]').removeAttr('selected');
+    branch_pl_opt.attr('selected', 'selected');
+    bl_version_sel.val(branch_pl_opt);
+    // hack for FF to force render of select box.
+    bl_version_sel[0].innerHTML = bl_version_sel[0].innerHTML;
+  }
+}

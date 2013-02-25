@@ -1767,7 +1767,7 @@ table#myTable thead tr.search th form.button_to div input {
   border: 1px solid #DDDDDD;
 }
 
-#extra-repos-and-containers {
+#extra-repos-and-build-lists {
     width: 330px;
     .actions { width: 15px; }
 }
@@ -1820,4 +1820,16 @@ table#myTable thead tr.search th form.button_to div input {
   padding: 3px 5px 5px;
   float: right;
   margin-left: 10px;
+}
+
+#extra-repos-and-build-lists {
+    width: 330px;
+    .actions { width: 15px; }
+    h3 { display: inline-block; }
+}
+
+#extra-repos-and-build-lists-dialog  {
+    font-size: 12px;
+    text-align: left;
+    p { margin: 0; }
 }

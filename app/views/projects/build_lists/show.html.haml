@@ -72,12 +72,12 @@
   .rightlist= t("layout.#{@build_list.new_core?}_")
   .both
 
-  - if @build_list.extra_containers.present? || @build_list.extra_repositories.present?
+  - if @build_list.extra_build_lists.present? || @build_list.extra_repositories.present?
     .leftlist= t("activerecord.attributes.build_list.extra_repos")
     .rightlist
       - Repository.where(:id => @build_list.extra_repositories).each do |repo|
         %p= link_to "#{repo.platform.name}/#{repo.name}", [repo.platform, repo]
-      - BuildList.where(:id => @build_list.extra_containers).each do |bl|
+      - BuildList.where(:id => @build_list.extra_build_lists).each do |bl|
         %p= link_to "#{bl.id} (#{bl.project.name} - #{bl.arch.name})", bl
     .both
 
@@ -151,11 +151,16 @@
   - if can?(:publish, @build_list)
     - if @build_list.build_published?
       = submit_tag t("layout.publish_again"), :confirm => t("layout.publish_again_warning"), :name => 'publish'
-    - elsif @build_list.can_publish?
-      - confirm = @build_list.tests_failed? ? t('layout.build_lists.tests_failed') : t('layout.confirm')
-      = submit_tag t("layout.publish"), :confirm => confirm, :name => 'publish'
-      - if @build_list.can_reject_publish? && can?(:reject_publish, @build_list)
-        = submit_tag t("layout.reject_publish"), :confirm => t("layout.confirm"), :name => 'reject_publish'
+    - elsif can_publish_in_future?(@build_list)
+      - if @build_list.extra_build_lists_published?
+        - confirm = @build_list.tests_failed? ? t('layout.build_lists.tests_failed') : t('layout.confirm')
+        = submit_tag t("layout.publish"), :confirm => confirm, :name => 'publish'
+      - else
+        .flash_notify
+          .alert.alert-error= t('layout.build_lists.publish_with_extra_fail')
+        .both
+    - if @build_list.can_reject_publish? && can?(:reject_publish, @build_list)
+      = submit_tag t("layout.reject_publish"), :confirm => t("layout.confirm"), :name => 'reject_publish'
   - if @build_list.can_create_container? && can?(:create_container, @build_list)
     = link_to t("layout.build_lists.create_container"), create_container_build_list_path(@build_list),
               :method => :put, :confirm => t("layout.confirm"), :class => 'button' 

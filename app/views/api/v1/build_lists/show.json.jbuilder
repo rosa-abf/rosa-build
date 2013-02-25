@@ -56,11 +56,11 @@ json.build_list do |json|
       :json => json_extra_repos
   end
 
-  extra_containers = BuildList.where(:id => @build_list.extra_containers)
-  json.extra_containers extra_containers do |json_extra_containers, bl|
-    json_extra_containers.(bl, :id, :status)
-    json_extra_containers.container_path container_url(false, bl)
-    json_extra_containers.url api_v1_build_list_path(bl, :format => :json)
+  extra_build_lists = BuildList.where(:id => @build_list.extra_build_lists)
+  json.extra_build_lists extra_build_lists do |json_extra_build_lists, bl|
+    json_extra_build_lists.(bl, :id, :status)
+    json_extra_build_lists.container_path container_url(false, bl)
+    json_extra_build_lists.url api_v1_build_list_path(bl, :format => :json)
   end
 
 
