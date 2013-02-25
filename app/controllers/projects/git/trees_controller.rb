@@ -4,7 +4,7 @@ class Projects::Git::TreesController < Projects::Git::BaseController
   skip_before_filter :set_branch_and_tree, :set_treeish_and_path, :only => :archive
 
   def show
-    render('empty') and return if @project.empty?
+    render('empty') and return if @project.is_empty?
     @tree = @tree / @path if @path.present?
     @commit = @branch.present? ? @branch.commit() : @project.repo.log(@treeish, @path, :max_count => 1).first
     raise Grit::NoSuchPathError unless @commit
