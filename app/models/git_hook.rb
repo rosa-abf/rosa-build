@@ -1,12 +1,12 @@
 # -*- encoding : utf-8 -*-
 class GitHook
   attr_reader :repo, :newrev, :oldrev, :newrev_type, :oldrev_type, :refname,
-                      :change_type, :rev, :rev_type, :refname_type, :owner, :project
+    :change_type, :rev, :rev_type, :refname_type, :owner, :project, :user, :message
 
   include Resque::Plugins::Status
 
-  def initialize(owner_uname, repo, newrev, oldrev, ref, newrev_type, oldrev_type = nil)
-    @repo, @newrev, @oldrev, @refname, @newrev_type, @oldrev_type = repo, newrev, oldrev, ref, newrev_type, oldrev_type
+  def initialize(owner_uname, repo, newrev, oldrev, ref, newrev_type, oldrev_type = nil, user = nil, message = nil)
+    @repo, @newrev, @oldrev, @refname, @newrev_type, @oldrev_type, @user, @message = repo, newrev, oldrev, ref, newrev_type, oldrev_type, user, message
     if @owner = User.where(:uname => owner_uname).first || Group.where(:uname => owner_uname).first!
       @project = @owner.own_projects.where(:name => repo).first!
     end
