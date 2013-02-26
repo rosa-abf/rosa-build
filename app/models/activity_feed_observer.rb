@@ -75,6 +75,7 @@ class ActivityFeedObserver < ActiveRecord::Observer
       change_type = record.change_type
       branch_name = record.refname.split('/').last
       if record.user # online update
+        #FIXME using oldrev is a hack (only for online edit).
         last_commits, first_commiter = [[record.oldrev, record.message]], record.user
       else
         last_commits = record.project.repo.log(branch_name, nil).first(3)
