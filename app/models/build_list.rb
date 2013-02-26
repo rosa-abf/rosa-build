@@ -283,7 +283,7 @@ class BuildList < ActiveRecord::Base
   end
 
   def can_publish?
-    [SUCCESS, FAILED_PUBLISH, BUILD_PUBLISHED, TESTS_FAILED].include?(status) && extra_build_lists_published?
+    [SUCCESS, FAILED_PUBLISH, BUILD_PUBLISHED, TESTS_FAILED].include?(status) && extra_build_lists_published? && save_to_repository.projects.exists?(:id => project_id)
   end
 
   def extra_build_lists_published?

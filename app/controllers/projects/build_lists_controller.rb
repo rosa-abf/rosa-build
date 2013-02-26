@@ -173,7 +173,7 @@ class Projects::BuildListsController < Projects::BaseController
 
     end
 
-    if @build_list.save && @build_list.can_publish? && @build_list.now_publish
+    if @build_list.save && @build_list.now_publish
       redirect_to :back, :notice => t('layout.build_lists.publish_success')
     else
       redirect_to :back, :notice => t('layout.build_lists.publish_fail')
