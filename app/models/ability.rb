@@ -85,7 +85,7 @@ class Ability
           else
             build_list.save_to_repository.publish_without_qa ?
               can?(:write, build_list.project) : local_admin?(build_list.save_to_platform)
-          end && build_list.can_publish?
+          end
         end
         can([:reject_publish, :create_container], BuildList) do |build_list|
           local_admin?(build_list.save_to_platform)
@@ -156,6 +156,7 @@ class Ability
 
       cannot :publish, BuildList, :new_core => false
       cannot :create_container, BuildList, :new_core => false
+      cannot(:publish, BuildList) {|build_list| !build_list.can_publish? }
 
       cannot([:get_list, :create], MassBuild) {|mass_build| mass_build.platform.personal?}
       cannot(:cancel, MassBuild) {|mass_build| mass_build.platform.personal? || mass_build.stop_build}
