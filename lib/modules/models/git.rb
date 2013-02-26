@@ -57,7 +57,7 @@ module Modules
 
         index.add(path, data)
         if sha1 = index.commit(message, :parents => [parent], :actor => actor, :last_tree => parent.tree.id, :head => head)
-          Project.process_hook(owner.uname, name, "refs/heads/#{sha1}", nil, head, 'commit', 'commit', options[:actor], message)
+          Project.process_hook(owner.uname, name, "refs/heads/#{sha1}", sha1, head, 'commit', 'commit', options[:actor], message)
         end
         sha1
       end

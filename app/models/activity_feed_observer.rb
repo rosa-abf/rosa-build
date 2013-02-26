@@ -75,7 +75,7 @@ class ActivityFeedObserver < ActiveRecord::Observer
       change_type = record.change_type
       branch_name = record.refname.split('/').last
       if record.user # online update
-        last_commits, first_commiter = [[record.newrev, record.message]], record.user
+        last_commits, first_commiter = [[record.oldrev, record.message]], record.user
       else
         last_commits = record.project.repo.log(branch_name, nil).first(3)
         first_commiter = User.find_by_email(last_commits[0].author.email) unless last_commits.blank?
