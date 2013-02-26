@@ -156,6 +156,7 @@ class Ability
 
       cannot :publish, BuildList, :new_core => false
       cannot :create_container, BuildList, :new_core => false
+      cannot(:publish, BuildList) {|build_list| !build_list.can_publish? }
 
       cannot([:get_list, :create], MassBuild) {|mass_build| mass_build.platform.personal?}
       cannot(:cancel, MassBuild) {|mass_build| mass_build.platform.personal? || mass_build.stop_build}

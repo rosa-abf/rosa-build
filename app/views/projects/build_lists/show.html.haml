@@ -45,7 +45,7 @@
   .both
   .leftlist= t("activerecord.attributes.build_list.update_type")
   .rightlist
-    - if @build_list.can_publish? && can?(:publish, @build_list)
+    - if can?(:publish, @build_list)
       = f.select :update_type, options_for_select(build_list_classified_update_types, @build_list.update_type)
     - else
       = @build_list.update_type
@@ -107,7 +107,7 @@
     = link_to t("layout.build_lists.cancel"), cancel_build_list_path(@build_list),
               :method => :put, :confirm => t("layout.confirm"), :class => 'button'
 
-  - if @build_list.can_publish? && @build_list.save_to_platform.released && @build_list.advisory.nil? && can?(:publish, @build_list)
+  - if @build_list.save_to_platform.released && @build_list.advisory.nil? && can?(:publish, @build_list)
     #advisory_block
       .leftlist= label_tag :attach_advisory, t("layout.build_lists.attached_advisory")
       .rightlist
@@ -148,17 +148,17 @@
   - if @build_list.build_started?
     = render 'shared/log', { :build_started => true, :get_log_path => log_build_list_path(@build_list) }
 
+  - unless @build_list.extra_build_lists_published?
+    .flash_notify
+      .alert.alert-error= t('layout.build_lists.publish_with_extra_fail')
+    .both
+
   - if can?(:publish, @build_list)
     - if @build_list.build_published?
       = submit_tag t("layout.publish_again"), :confirm => t("layout.publish_again_warning"), :name => 'publish'
-    - elsif can_publish_in_future?(@build_list)
-      - if @build_list.extra_build_lists_published?
-        - confirm = @build_list.tests_failed? ? t('layout.build_lists.tests_failed') : t('layout.confirm')
-        = submit_tag t("layout.publish"), :confirm => confirm, :name => 'publish'
-      - else
-        .flash_notify
-          .alert.alert-error= t('layout.build_lists.publish_with_extra_fail')
-        .both
+    - elsif can_publish_in_future?(@build_list) && @build_list.extra_build_lists_published?
+      - confirm = @build_list.tests_failed? ? t('layout.build_lists.tests_failed') : t('layout.confirm')
+      = submit_tag t("layout.publish"), :confirm => confirm, :name => 'publish'
     - if @build_list.can_reject_publish? && can?(:reject_publish, @build_list)
       = submit_tag t("layout.reject_publish"), :confirm => t("layout.confirm"), :name => 'reject_publish'
   - if @build_list.can_create_container? && can?(:create_container, @build_list)
