@@ -22,8 +22,10 @@ class Product < ActiveRecord::Base
 
   def full_clone(attrs = {})
     dup.tap do |c|
-      c.platform_id = nil
       attrs.each {|k,v| c.send("#{k}=", v)}
+      c.time_living = c.time_living.to_i / 60 # see: Modules::Models::TimeLiving#convert_time_living
+      c.platform_id = nil
+      c.product_build_lists = []
       c.updated_at = nil; c.created_at = nil
     end
   end

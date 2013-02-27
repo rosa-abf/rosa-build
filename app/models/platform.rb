@@ -138,7 +138,7 @@ class Platform < ActiveRecord::Base
 
   def clone_relations(from = parent)
     self.repositories = from.repositories.map{|r| r.full_clone(:platform_id => id)}
-    self.products = from.products.map(&:full_clone)
+    self.products     = from.products.map(&:full_clone)
   end
 
   def full_clone(attrs = {})
