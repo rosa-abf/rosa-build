@@ -138,7 +138,7 @@ class Platform < ActiveRecord::Base
 
   def clone_relations(from = parent)
     self.repositories = from.repositories.map{|r| r.full_clone(:platform_id => id)}
-    self.products = from.products.map(&:full_clone)
+    self.products     = from.products.map(&:full_clone)
   end
 
   def full_clone(attrs = {})
@@ -204,7 +204,7 @@ class Platform < ActiveRecord::Base
     def fs_clone(old_name = parent.name, new_name = name)
       FileUtils.cp_r "#{parent.path}/repository", path
     end
-    later :fs_clone, :loner => true, :queue => :clone_build
+    later :fs_clone, :queue => :clone_build
 
     def freeze_platform_and_update_repos
       if released_changed? && released == true
