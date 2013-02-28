@@ -38,8 +38,8 @@ class Platform < ActiveRecord::Base
   after_create lambda { symlink_directory unless hidden? }
   after_destroy lambda { remove_symlink_directory unless hidden? }
 
-  scope :search_order, order("CHAR_LENGTH(name) ASC")
-  scope :search, lambda {|q| where("name ILIKE ?", "%#{q.to_s.strip}%")}
+  scope :search_order, order("CHAR_LENGTH(platforms.name) ASC")
+  scope :search, lambda {|q| where("platforms.name ILIKE ?", "%#{q.to_s.strip}%")}
   scope :by_visibilities, lambda {|v| where(:visibility => v)}
   scope :opened, where(:visibility => 'open')
   scope :hidden, where(:visibility => 'hidden')
