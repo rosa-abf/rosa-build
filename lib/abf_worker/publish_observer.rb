@@ -51,6 +51,7 @@ module AbfWorker
       end
 
       bl = build_lists.first || subject
+      # unlock repository when main build list does not exist
       if !bl && options['projects_for_cleanup'].present?
         pr, rep, pl = options['projects_for_cleanup'][0].split('-')
         bl = BuildList.where(:build_for_platform_id => pl, :save_to_repository_id => rep).first
