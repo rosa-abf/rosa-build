@@ -50,7 +50,12 @@ module AbfWorker
         AbfWorker::BuildListsPublishTaskManager.cleanup_failed options['projects_for_cleanup']
       end
 
-      AbfWorker::BuildListsPublishTaskManager.unlock_rep_and_platform(build_lists.first || subject)
+      bl = build_lists.first || subject
+      if !bl && options['projects_for_cleanup'].present?
+        pr, rep, pl = options['projects_for_cleanup'][0].split('-')
+        bl = BuildList.where(:build_for_platform_id => pl, :save_to_repository_id => rep).first
+      end
+      AbfWorker::BuildListsPublishTaskManager.unlock_rep_and_platform bl
     end
 
     def update_results(build_list = subject)
