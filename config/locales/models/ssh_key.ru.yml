@@ -1,0 +1,16 @@
+ru:
+  activerecord:
+    errors:
+      ssh_key:
+        wrong_key: Неправильный публичный ключ
+    models:
+      ssh_key: SSH ключ
+    attributes:
+      ssh_key:
+        id: Id
+        name: Имя
+        fingerprint: Отпечаток
+        created_at: Создано
+        updated_at: Обновлено
+        user_id: Пользователь
+        key: Ключ
