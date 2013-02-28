@@ -10,7 +10,7 @@ class Product < ActiveRecord::Base
   validates :project_id, :presence => true
   validates :main_script, :params, :length => { :maximum => 255 }
 
-  scope :recent, order("name ASC")
+  scope :recent, order("#{table_name}.name ASC")
 
   attr_accessible :name,
                   :description,

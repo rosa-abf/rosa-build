@@ -113,19 +113,19 @@ class BuildList < ActiveRecord::Base
   scope :scoped_to_is_circle, lambda {|is_circle| where(:is_circle => is_circle) }
   scope :for_creation_date_period, lambda{|start_date, end_date|
     s = scoped
-    s = s.where(["build_lists.created_at >= ?", start_date]) if start_date
-    s = s.where(["build_lists.created_at <= ?", end_date]) if end_date
+    s = s.where(["#{table_name}.created_at >= ?", start_date]) if start_date
+    s = s.where(["#{table_name}.created_at <= ?", end_date]) if end_date
     s
   }
   scope :for_notified_date_period, lambda{|start_date, end_date|
     s = scoped
-    s = s.where(["build_lists.updated_at >= ?", start_date]) if start_date
-    s = s.where(["build_lists.updated_at <= ?", end_date]) if end_date
+    s = s.where(["#{table_name}.updated_at >= ?", start_date]) if start_date
+    s = s.where(["#{table_name}.updated_at <= ?", end_date]) if end_date
     s
   }
   scope :scoped_to_project_name, lambda {|project_name| joins(:project).where('projects.name LIKE ?', "%#{project_name}%")}
   scope :scoped_to_new_core, lambda {|new_core| where(:new_core => new_core)}
-  scope :outdated, where('created_at < ? AND status <> ? OR created_at < ?', Time.now - LIVE_TIME, BUILD_PUBLISHED, Time.now - MAX_LIVE_TIME)
+  scope :outdated, where("#{table_name}.created_at < ? AND #{table_name}.status <> ? OR #{table_name}.created_at < ?", Time.now - LIVE_TIME, BUILD_PUBLISHED, Time.now - MAX_LIVE_TIME)
   scope :published_container, where(:container_status => BUILD_PUBLISHED)
 
   serialize :additional_repos
