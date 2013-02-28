@@ -36,10 +36,10 @@ class Project < ActiveRecord::Base
   attr_accessible :name, :description, :visibility, :srpm, :is_package, :default_branch, :has_issues, :has_wiki, :maintainer_id, :publish_i686_into_x86_64
   attr_readonly :name, :owner_id, :owner_type
 
-  scope :recent, order("name ASC")
-  scope :search_order, order("CHAR_LENGTH(name) ASC")
+  scope :recent, order("#{table_name}.name ASC")
+  scope :search_order, order("CHAR_LENGTH(#{table_name}.name) ASC")
   scope :search, lambda {|q| by_name("%#{q.to_s.strip}%")}
-  scope :by_name, lambda {|name| where('projects.name ILIKE ?', name) if name.present?}
+  scope :by_name, lambda {|name| where("#{table_name}.name ILIKE ?", name) if name.present?}
   scope :by_visibilities, lambda {|v| where(:visibility => v)}
   scope :opened, where(:visibility => 'open')
   scope :package, where(:is_package => true)
@@ -53,7 +53,7 @@ class Project < ActiveRecord::Base
     )
   ) }
   scope :by_owners, lambda { |group_owner_ids, user_owner_ids|
-    where("(projects.owner_id in (?) AND projects.owner_type = 'Group') OR (projects.owner_id in (?) AND projects.owner_type = 'User')", group_owner_ids, user_owner_ids)
+    where("(#{table_name}.owner_id in (?) AND #{table_name}.owner_type = 'Group') OR (#{table_name}.owner_id in (?) AND #{table_name}.owner_type = 'User')", group_owner_ids, user_owner_ids)
   }
 
   before_validation :truncate_name, :on => :create

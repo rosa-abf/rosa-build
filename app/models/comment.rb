@@ -8,7 +8,7 @@ class Comment < ActiveRecord::Base
   validates :body, :user_id, :commentable_id, :commentable_type, :project_id, :presence => true
 
   scope :for_commit, lambda {|c| where(:commentable_id => c.id.hex, :commentable_type => c.class)}
-  default_scope order('created_at')
+  default_scope order("#{table_name}.created_at")
 
   after_create :subscribe_on_reply, :unless => lambda {|c| c.commit_comment?}
   after_create :subscribe_users

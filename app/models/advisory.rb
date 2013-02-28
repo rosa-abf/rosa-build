@@ -13,9 +13,9 @@ class Advisory < ActiveRecord::Base
   ID_STRING_TEMPLATE = 'ROSA-%<type>s-%<year>04s:%<id>04s'
   TYPES = {'security' => 'SA', 'bugfix' => 'A'}
 
-  scope :search_by_id, lambda { |aid| where('advisory_id ILIKE ?', "%#{aid.to_s.strip}%") }
+  scope :search_by_id, lambda { |aid| where("#{table_name}.advisory_id ILIKE ?", "%#{aid.to_s.strip}%") }
   scope :by_update_type, lambda { |ut| where(:update_type => ut) }
-  default_scope order('created_at DESC')
+  default_scope order("#{table_name}.created_at DESC")
 
   def to_param
     advisory_id
