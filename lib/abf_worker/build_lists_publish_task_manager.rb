@@ -69,8 +69,8 @@ module AbfWorker
         redis.lrem LOCKED_BUILD_LISTS, 0, build_list.id
       end
 
-      def unlock_rep_and_platform(build_list, str = nil)
-        redis.lrem LOCKED_REP_AND_PLATFORMS, 0, str || "#{build_list.save_to_repository_id}-#{build_list.build_for_platform_id}"
+      def unlock_rep_and_platform(lock_str)
+        redis.lrem LOCKED_REP_AND_PLATFORMS, 0, lock_str
       end
 
       def redis
@@ -120,13 +120,13 @@ module AbfWorker
 
     private
 
-    def gather_old_packages(project_id, repository_id, main_platform_id)
+    def gather_old_packages(project_id, repository_id, platform_id)
       build_lists_for_cleanup = []
       Arch.pluck(:id).each do |arch_id|
         bl = BuildList.where(:project_id => project_id).
           where(:new_core => true, :status => BuildList::BUILD_PUBLISHED).
           where(:save_to_repository_id => repository_id).
-          where(:build_for_platform_id => main_platform_id).
+          where(:build_for_platform_id => platform_id).
           where(:arch_id => arch_id).
           order(:updated_at).first
         build_lists_for_cleanup << bl if bl
@@ -140,7 +140,7 @@ module AbfWorker
         }
       end
 
-      @redis.hset PACKAGES_FOR_CLEANUP, "#{project_id}-#{repository_id}-#{main_platform_id}", old_packages.to_json
+      @redis.hset PACKAGES_FOR_CLEANUP, "#{project_id}-#{repository_id}-#{platform_id}", old_packages.to_json
     end
 
     def locked_repositories
@@ -261,7 +261,8 @@ module AbfWorker
         'TYPE'            => distrib_type
       }.map{ |k, v| "#{k}=#{v}" }.join(' ')
 
-      options = {
+      lock_str  = "#{save_to_repository_id}-#{build_for_platform_id}"
+      options   = {
         :id           => (bl ? bl.id : Time.now.to_i),
         :arch         => (bl ? bl.arch.name : 'x86_64'),
         :distrib_type => distrib_type,
@@ -269,7 +270,8 @@ module AbfWorker
         :platform     => {:platform_path => platform_path},
         :repository   => {:id => save_to_repository_id},
         :type         => :publish,
-        :time_living  => 9600 # 160 min
+        :time_living  => 9600, # 160 min
+        :extra        => {:lock_str => lock_str}
       }
 
       packages      = {:sources => [], :binaries => {:x86_64 => [], :i586 => []}}
@@ -303,7 +305,7 @@ module AbfWorker
         @redis.lpush LOCKED_PROJECTS_FOR_CLEANUP, key
       end
 
-      @redis.lpush(LOCKED_REP_AND_PLATFORMS, "#{save_to_repository_id}-#{build_for_platform_id}")
+      @redis.lpush(LOCKED_REP_AND_PLATFORMS, lock_str)
       return true
     end
 
@@ -349,7 +351,7 @@ module AbfWorker
           :type         => :publish,
           :time_living  => 9600, # 160 min
           :skip_feedback => true,
-          :extra                => {:lock_str => lock_str, :regenerate => true}
+          :extra         => {:lock_str => lock_str, :regenerate => true}
         }
 
         Resque.push(
