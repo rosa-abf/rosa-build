@@ -65,8 +65,8 @@ module AbfWorker
         redis.lrem LOCKED_BUILD_LISTS, 0, build_list.id
       end
 
-      def unlock_rep_and_platform(build_list, str = nil)
-        redis.lrem LOCKED_REP_AND_PLATFORMS, 0, str || "#{build_list.save_to_repository_id}-#{build_list.build_for_platform_id}"
+      def unlock_rep_and_platform(lock_str)
+        redis.lrem LOCKED_REP_AND_PLATFORMS, 0, lock_str
       end
 
       def redis
@@ -238,7 +238,8 @@ module AbfWorker
         'TYPE'            => distrib_type
       }.map{ |k, v| "#{k}=#{v}" }.join(' ')
 
-      options = {
+      lock_str  = "#{save_to_repository_id}-#{build_for_platform_id}"
+      options   = {
         :id           => bl.id,
         :arch         => bl.arch.name,
         :distrib_type => distrib_type,
@@ -246,7 +247,8 @@ module AbfWorker
         :platform     => {:platform_path => platform_path},
         :repository   => {:id => bl.save_to_repository.id},
         :type         => :publish,
-        :time_living  => 9600 # 160 min
+        :time_living  => 9600, # 160 min
+        :extra        => {:lock_str => lock_str}
       }
 
       packages      = {:sources => [], :binaries => {:x86_64 => [], :i586 => []}}
@@ -288,7 +290,7 @@ module AbfWorker
         @redis.lpush LOCKED_PROJECTS_FOR_CLEANUP, key
       end
 
-      @redis.lpush(LOCKED_REP_AND_PLATFORMS, "#{save_to_repository_id}-#{build_for_platform_id}")
+      @redis.lpush(LOCKED_REP_AND_PLATFORMS, lock_str)
       return true
     end
 
@@ -334,7 +336,7 @@ module AbfWorker
           :type         => :publish,
           :time_living  => 9600, # 160 min
           :skip_feedback => true,
-          :extra                => {:lock_str => lock_str, :regenerate => true}
+          :extra         => {:lock_str => lock_str, :regenerate => true}
         }
 
         Resque.push(
