@@ -116,32 +116,46 @@ module AbfWorker
           }]
         )
       end
+
+      def gather_old_packages(project_id, repository_id, platform_id)
+        build_lists_for_cleanup = []
+        Arch.pluck(:id).each do |arch_id|
+          bl = BuildList.where(:project_id => project_id).
+            where(:new_core => true, :status => BuildList::BUILD_PUBLISHED).
+            where(:save_to_repository_id => repository_id).
+            where(:build_for_platform_id => platform_id).
+            where(:arch_id => arch_id).
+            order(:updated_at).first
+          build_lists_for_cleanup << bl if bl
+        end
+
+        old_packages  = {:sources => [], :binaries => {:x86_64 => [], :i586 => []}}
+
+        build_lists_for_cleanup.each do |bl|
+          bl.last_published.includes(:packages).limit(5).each{ |old_bl|
+            fill_packages(old_bl, old_packages, :fullname)
+          }
+        end
+
+        redis.hset PACKAGES_FOR_CLEANUP, "#{project_id}-#{repository_id}-#{platform_id}", old_packages.to_json
+      end
+
+      def fill_packages(bl, results_map, field = :sha1)
+        results_map[:sources] |= bl.packages.by_package_type('source').pluck(field).compact if field != :sha1
+        
+        binaries  = bl.packages.by_package_type('binary').pluck(field).compact
+        arch      = bl.arch.name.to_sym
+        results_map[:binaries][arch] |= binaries
+        # Publish/remove i686 RHEL packages into/from x86_64
+        if arch == :i586 && bl.build_for_platform.distrib_type == 'rhel' && bl.project.publish_i686_into_x86_64?
+          results_map[:binaries][:x86_64] |= binaries
+        end
+      end
+
     end
 
     private
 
-    def gather_old_packages(project_id, repository_id, platform_id)
-      build_lists_for_cleanup = []
-      Arch.pluck(:id).each do |arch_id|
-        bl = BuildList.where(:project_id => project_id).
-          where(:new_core => true, :status => BuildList::BUILD_PUBLISHED).
-          where(:save_to_repository_id => repository_id).
-          where(:build_for_platform_id => platform_id).
-          where(:arch_id => arch_id).
-          order(:updated_at).first
-        build_lists_for_cleanup << bl if bl
-      end
-
-      old_packages  = {:sources => [], :binaries => {:x86_64 => [], :i586 => []}}
-
-      build_lists_for_cleanup.each do |bl|
-        bl.last_published.includes(:packages).limit(5).each{ |old_bl|
-          fill_packages(old_bl, old_packages, :fullname)
-        }
-      end
-
-      @redis.hset PACKAGES_FOR_CLEANUP, "#{project_id}-#{repository_id}-#{platform_id}", old_packages.to_json
-    end
 
     def locked_repositories
       @redis.lrange LOCKED_REPOSITORIES, 0, -1
@@ -281,9 +295,9 @@ module AbfWorker
       build_lists.each do |bl|
         # remove duplicates of sources for different arches
         bl.packages.by_package_type('source').each{ |s| new_sources["#{s.fullname}"] = s.sha1 }
-        fill_packages(bl, packages)
+        self.class.fill_packages(bl, packages)
         bl.last_published.includes(:packages).limit(5).each{ |old_bl|
-          fill_packages(old_bl, old_packages, :fullname)
+          self.class.fill_packages(old_bl, old_packages, :fullname)
         }
         build_list_ids << bl.id
         @redis.lpush(LOCKED_BUILD_LISTS, bl.id)
@@ -307,18 +321,6 @@ module AbfWorker
 
       @redis.lpush(LOCKED_REP_AND_PLATFORMS, lock_str)
       return true
-    end
-
-    def fill_packages(bl, results_map, field = :sha1)
-      results_map[:sources] |= bl.packages.by_package_type('source').pluck(field).compact if field != :sha1
-      
-      binaries  = bl.packages.by_package_type('binary').pluck(field).compact
-      arch      = bl.arch.name.to_sym
-      results_map[:binaries][arch] |= binaries
-      # Publish/remove i686 RHEL packages into/from x86_64
-      if arch == :i586 && bl.build_for_platform.distrib_type == 'rhel' && bl.project.publish_i686_into_x86_64?
-        results_map[:binaries][:x86_64] |= binaries
-      end
     end
 
     def create_tasks_for_repository_regenerate_metadata
