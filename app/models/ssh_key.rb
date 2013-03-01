@@ -23,6 +23,7 @@ class SshKey < ActiveRecord::Base
     return false unless key
 
     file = Tempfile.new('key_file', "#{APP_CONFIG['root_path']}/tmp")
+    filename = file.path
     begin
       file.puts key
       file.rewind
@@ -38,7 +39,7 @@ class SshKey < ActiveRecord::Base
       self.fingerprint = fingerprint_output.split.try :[], 1
       if name.blank?
         s = fingerprint_output.split.try :[], 2
-        if File.exist? s # no identificator
+        if filename == s # no identificator
           start = key =~ /ssh-.{3} /
           self.name = key[start..start+26] # taken first 26 characters
         else
