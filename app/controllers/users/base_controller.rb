@@ -10,4 +10,8 @@ class Users::BaseController < ApplicationController
       @user = User.opened.find_by_insensitive_uname! user_id
     end
   end
+
+  def set_current_user
+    @user = current_user
+  end
 end

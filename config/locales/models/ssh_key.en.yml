@@ -1,4 +1,6 @@
 en:
+  ssh_keys: SSH Keys
+  add_key: Add key
   activerecord:
     errors:
       ssh_key:
@@ -14,3 +16,9 @@ en:
         updated_at: Updated
         user_id: User
         key: Key
+  flash:
+    ssh_keys:
+      saved: SSH key successfully saved
+      save_error: SSH key save error
+      destroyed: SSH key succefully destroyed
+      destroy_error: SSH key destroy error

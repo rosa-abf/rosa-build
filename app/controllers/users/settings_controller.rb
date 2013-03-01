@@ -44,10 +44,4 @@ class Users::SettingsController < Users::BaseController
       end
     end
   end
-
-  protected
-
-  def set_current_user
-    @user = current_user
-  end
 end

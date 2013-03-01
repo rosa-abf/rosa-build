@@ -1,7 +1,7 @@
 # This class is based on
 # https://github.com/gitlabhq/gitlabhq/blob/15c0e58a49d623a0f8747e1d7e74364324eeb79f/app/models/key.rb
 
-class SSHKey < ActiveRecord::Base
+class SshKey < ActiveRecord::Base
   SHELL_KEY_COMMAND = "sudo ~#{APP_CONFIG['shell_user']}/gitlab-shell/bin/gitlab-keys"
 
   belongs_to :user
@@ -13,11 +13,8 @@ class SSHKey < ActiveRecord::Base
   validates :name, :presence => true, :length => {:maximum => 255}
   validates :key, :presence => true, :length => {:maximum => 5000}, format: { :with => /ssh-.{3} / }, uniqueness: true
 
-  def self.manage_key(action, key_id, key_content)
-    #system SHELL_KEY_COMMAND, action, key_id, key_content
-    system "#{SHELL_KEY_COMMAND} #{action} #{key_id} \"#{key_content}\""
-    #[SHELL_KEY_COMMAND, action, key_id, key_content].join(' ')
-  end
+  after_create :add_key
+  before_destroy :remove_key
 
   protected
 
@@ -33,7 +30,7 @@ class SSHKey < ActiveRecord::Base
       file.close
       file.unlink # deletes the temp file
     end
-    error_message = t('activerecord.errors.ssh_key.wrong_key')
+    error_message = I18n.t('activerecord.errors.ssh_key.wrong_key')
     if $?.exitstatus != 0
       errors.add :key, error_message
     else
@@ -41,4 +38,17 @@ class SSHKey < ActiveRecord::Base
       errors.add(:key, error_message) if fingerprint.blank?
     end
   end
+
+  def key_id
+    "key-#{id}"
+  end
+
+  def add_key
+    system "#{SHELL_KEY_COMMAND} add-key #{key_id} \"#{key}\"" # Safety?
+  end
+
+  def remove_key
+    system "#{SHELL_KEY_COMMAND} rm-key #{key_id}"# \"#{key}\""
+  end
+
 end

@@ -109,7 +109,6 @@ Rosa::Application.routes.draw do
         get :system
       end
       put :reset_auth_token, :on => :member
-      resources :ssh_keys, :only => [:index, :create, :destroy]
     end
     resources :register_requests, :only => [:index] do
       put :update, :on => :collection
@@ -197,6 +196,7 @@ Rosa::Application.routes.draw do
       end
     end
     resources :register_requests, :only => [:new, :create], :format => /ru|en/ #view support only two languages
+    resources :ssh_keys, :only => [:index, :create, :destroy]
     get '/allowed' => 'users#allowed'
   end
 
