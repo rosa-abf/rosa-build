@@ -81,6 +81,7 @@ Rosa::Application.routes.draw do
       resources :product_build_lists, :only => [:index, :show, :destroy, :create] do
         put :cancel, :on => :member
       end
+      resources :ssh_keys, :only => [:index, :create, :destroy]
     end
   end
 
@@ -194,8 +195,9 @@ Rosa::Application.routes.draw do
         put :notifiers
       end
     end
-
     resources :register_requests, :only => [:new, :create], :format => /ru|en/ #view support only two languages
+    resources :ssh_keys, :only => [:index, :create, :destroy]
+    get '/allowed' => 'users#allowed'
   end
 
   scope :module => 'groups' do

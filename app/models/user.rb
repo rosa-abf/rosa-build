@@ -29,6 +29,7 @@ class User < Avatar
   has_many :own_platforms, :as => :owner, :class_name => 'Platform', :dependent => :destroy
 
   has_many :key_pairs
+  has_many :ssh_keys, :dependent => :destroy
 
   validates :uname, :presence => true, :uniqueness => {:case_sensitive => false}, :format => {:with => /\A[a-z0-9_]+\z/}, :reserved_name => true
   validate { errors.add(:uname, :taken) if Group.by_uname(uname).present? }

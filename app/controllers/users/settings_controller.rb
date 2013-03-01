@@ -9,7 +9,7 @@ class Users::SettingsController < Users::BaseController
       if @user.update_without_password(params[:user])
         update_avatar(@user, params)
         if send_confirmation
-          @user.confirmed_at, @user.confirmation_sent_at = nil
+          @user.confirmed_at = @user.confirmation_sent_at = nil
           @user.send_confirmation_instructions
         end
         flash[:notice] = t('flash.user.saved')
@@ -43,11 +43,5 @@ class Users::SettingsController < Users::BaseController
         flash[:error] = I18n.t("flash.settings.save_error")
       end
     end
-  end
-
-  protected
-
-  def set_current_user
-    @user = current_user
   end
 end

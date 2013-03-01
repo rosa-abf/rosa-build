@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130222112415) do
+ActiveRecord::Schema.define(:version => 20130227102900) do
 
   create_table "activity_feeds", :force => true do |t|
     t.integer  "user_id",    :null => false
@@ -452,6 +452,18 @@ ActiveRecord::Schema.define(:version => 20130222112415) do
     t.boolean  "new_build",                     :default => true
     t.boolean  "new_associated_build",          :default => true
   end
+
+  create_table "ssh_keys", :force => true do |t|
+    t.string   "name"
+    t.text     "key",         :null => false
+    t.string   "fingerprint", :null => false
+    t.integer  "user_id",     :null => false
+    t.datetime "created_at",  :null => false
+    t.datetime "updated_at",  :null => false
+  end
+
+  add_index "ssh_keys", ["fingerprint"], :name => "index_ssh_keys_on_fingerprint", :unique => true
+  add_index "ssh_keys", ["user_id"], :name => "index_ssh_keys_on_user_id"
 
   create_table "subscribes", :force => true do |t|
     t.string   "subscribeable_type"

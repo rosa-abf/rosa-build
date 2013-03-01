@@ -1,0 +1,24 @@
+ru:
+  ssh_keys: SSH ключи
+  add_key: Добавить ключ
+  activerecord:
+    errors:
+      ssh_key:
+        wrong_key: '^Неправильный публичный ключ'
+    models:
+      ssh_key: SSH ключ
+    attributes:
+      ssh_key:
+        id: Id
+        name: Имя
+        fingerprint: Ключ
+        created_at: Создано
+        updated_at: Обновлено
+        user_id: Пользователь
+        key: Ключ
+  flash:
+    ssh_keys:
+      saved: SSH ключ успешно сохранен
+      save_error: Ошибка создания SSH ключа
+      destroyed: SSH ключ успешно удален
+      destroy_error: Ошибка удаления SSH ключа
