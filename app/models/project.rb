@@ -10,12 +10,13 @@ class Project < ActiveRecord::Base
   has_many :issues, :dependent => :destroy
   has_many :pull_requests, :dependent => :destroy, :foreign_key => 'to_project_id'
   has_many :labels, :dependent => :destroy
-  has_many :build_lists, :dependent => :destroy
 
   has_many :project_imports, :dependent => :destroy
   has_many :project_to_repositories, :dependent => :destroy
   has_many :repositories, :through => :project_to_repositories
   has_many :project_tags, :dependent => :destroy
+  
+  has_many :build_lists, :dependent => :destroy
 
   has_many :relations, :as => :target, :dependent => :destroy
   has_many :collaborators, :through => :relations, :source => :actor, :source_type => 'User'
