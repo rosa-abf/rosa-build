@@ -4,14 +4,14 @@ ru:
   activerecord:
     errors:
       ssh_key:
-        wrong_key: Неправильный публичный ключ
+        wrong_key: '^Неправильный публичный ключ'
     models:
       ssh_key: SSH ключ
     attributes:
       ssh_key:
         id: Id
         name: Имя
-        fingerprint: Отпечаток
+        fingerprint: Ключ
         created_at: Создано
         updated_at: Обновлено
         user_id: Пользователь

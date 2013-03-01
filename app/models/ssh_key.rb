@@ -10,8 +10,9 @@ class SshKey < ActiveRecord::Base
   before_validation lambda { self.key = key.strip if key.present? }
   before_validation :set_fingerprint
 
-  validates :name, :presence => true, :length => {:maximum => 255}
-  validates :key, :presence => true, :length => {:maximum => 5000}, format: { :with => /ssh-.{3} / }, uniqueness: true
+  validates :name, :length => {:maximum => 255}
+  validates :key, :length => {:maximum => 5000}, format: { :with => /ssh-.{3} / } # Public key?
+  validates :fingerprint, uniqueness: true, :presence => { :message => I18n.t('activerecord.errors.ssh_key.wrong_key') }
 
   after_create :add_key
   before_destroy :remove_key
@@ -21,21 +22,29 @@ class SshKey < ActiveRecord::Base
   def set_fingerprint
     return false unless key
 
-    file = Tempfile.new('key_file')
+    file = Tempfile.new('key_file', "#{APP_CONFIG['root_path']}/tmp")
     begin
       file.puts key
       file.rewind
       fingerprint_output = `ssh-keygen -lf #{file.path} 2>&1` # Catch stderr.
+      exitstatus = $?.exitstatus
     ensure
       file.close
       file.unlink # deletes the temp file
     end
-    error_message = I18n.t('activerecord.errors.ssh_key.wrong_key')
-    if $?.exitstatus != 0
-      errors.add :key, error_message
+    if exitstatus != 0
+      self.fingerprint = nil
     else
-      self.fingerprint = fingerprint_output.split.try(:[], 1)
-      errors.add(:key, error_message) if fingerprint.blank?
+      self.fingerprint = fingerprint_output.split.try :[], 1
+      if name.blank?
+        s = fingerprint_output.split.try :[], 2
+        if File.exist? s # no identificator
+          start = key =~ /ssh-.{3} /
+          self.name = key[start..start+26] # taken first 26 characters
+        else
+          self.name = s
+        end
+      end
     end
   end
 

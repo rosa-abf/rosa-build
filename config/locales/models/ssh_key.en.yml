@@ -4,14 +4,14 @@ en:
   activerecord:
     errors:
       ssh_key:
-        wrong_key: Wrong public key
+        wrong_key: '^Wrong public key'
     models:
       ssh_key: SSH Key
     attributes:
       ssh_key:
         id: Id
         name: Name
-        fingerprint: Fingerprint
+        fingerprint: Key
         created_at: Created
         updated_at: Updated
         user_id: User

@@ -454,7 +454,7 @@ ActiveRecord::Schema.define(:version => 20130227102900) do
   end
 
   create_table "ssh_keys", :force => true do |t|
-    t.string   "name",        :null => false
+    t.string   "name"
     t.text     "key",         :null => false
     t.string   "fingerprint", :null => false
     t.integer  "user_id",     :null => false
@@ -462,7 +462,7 @@ ActiveRecord::Schema.define(:version => 20130227102900) do
     t.datetime "updated_at",  :null => false
   end
 
-  add_index "ssh_keys", ["key"], :name => "index_ssh_keys_on_key", :unique => true
+  add_index "ssh_keys", ["fingerprint"], :name => "index_ssh_keys_on_fingerprint", :unique => true
   add_index "ssh_keys", ["user_id"], :name => "index_ssh_keys_on_user_id"
 
   create_table "subscribes", :force => true do |t|
