@@ -131,7 +131,7 @@ module AbfWorker
 
         old_packages  = {:sources => [], :binaries => {:x86_64 => [], :i586 => []}}
         build_lists_for_cleanup.each do |bl|
-          bl.last_published.includes(:packages).limit(5).each{ |old_bl|
+          bl.last_published.includes(:packages).limit(2).each{ |old_bl|
             fill_packages(old_bl, old_packages, :fullname)
           }
         end
@@ -295,7 +295,7 @@ module AbfWorker
         # remove duplicates of sources for different arches
         bl.packages.by_package_type('source').each{ |s| new_sources["#{s.fullname}"] = s.sha1 }
         self.class.fill_packages(bl, packages)
-        bl.last_published.includes(:packages).limit(5).each{ |old_bl|
+        bl.last_published.includes(:packages).limit(2).each{ |old_bl|
           self.class.fill_packages(old_bl, old_packages, :fullname)
         }
         build_list_ids << bl.id
