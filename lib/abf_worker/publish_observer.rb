@@ -13,7 +13,7 @@ module AbfWorker
         AbfWorker::BuildListsPublishTaskManager.unlock_repository options['id']
       else
         if options['extra']['regenerate'] # Regenerate metadata
-          AbfWorker::BuildListsPublishTaskManager.unlock_rep_and_platform nil, options['extra']['lock_str']
+          AbfWorker::BuildListsPublishTaskManager.unlock_rep_and_platform options['extra']['lock_str']
         elsif options['extra']['create_container'] # Container has been created
           case status
           when COMPLETED
@@ -50,13 +50,7 @@ module AbfWorker
         AbfWorker::BuildListsPublishTaskManager.cleanup_failed options['projects_for_cleanup']
       end
 
-      bl = build_lists.first || subject
-      # unlock repository when main build list does not exist
-      if !bl && options['projects_for_cleanup'].present?
-        pr, rep, pl = options['projects_for_cleanup'][0].split('-')
-        bl = BuildList.where(:build_for_platform_id => pl, :save_to_repository_id => rep).first
-      end
-      AbfWorker::BuildListsPublishTaskManager.unlock_rep_and_platform bl
+      AbfWorker::BuildListsPublishTaskManager.unlock_rep_and_platform options['extra']['lock_str']
     end
 
     def update_results(build_list = subject)

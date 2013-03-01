@@ -22,7 +22,7 @@ module AbfWorker
     protected
 
     def subject
-      @subject ||= @subject_class.where(:id => options['id']).first
+      @subject ||= @subject_class.find options['id']
     end
 
     def update_results
