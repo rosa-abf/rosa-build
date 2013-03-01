@@ -235,7 +235,7 @@ module AbfWorker
         next unless packages
         packages = JSON.parse packages
         old_packages[:sources] |= packages['sources']
-        [:x86_64, :i586).each do |arch|
+        [:x86_64, :i586].each do |arch|
           old_packages[:binaries][arch] |= packages['binaries'][arch.to_s]
         end
       end
