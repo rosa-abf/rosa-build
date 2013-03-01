@@ -2,7 +2,7 @@
 # https://github.com/gitlabhq/gitlabhq/blob/15c0e58a49d623a0f8747e1d7e74364324eeb79f/app/models/key.rb
 
 class SshKey < ActiveRecord::Base
-  SHELL_KEY_COMMAND = "sudo ~#{APP_CONFIG['shell_user']}/gitlab-shell/bin/gitlab-keys"
+  SHELL_KEY_COMMAND = "sudo -i -u #{APP_CONFIG['shell_user']} ~#{APP_CONFIG['shell_user']}/gitlab-shell/bin/gitlab-keys"
 
   belongs_to :user
   attr_accessible :key, :name
@@ -23,6 +23,7 @@ class SshKey < ActiveRecord::Base
     return false unless key
 
     file = Tempfile.new('key_file', "#{APP_CONFIG['root_path']}/tmp")
+    filename = file.path
     begin
       file.puts key
       file.rewind
@@ -38,7 +39,7 @@ class SshKey < ActiveRecord::Base
       self.fingerprint = fingerprint_output.split.try :[], 1
       if name.blank?
         s = fingerprint_output.split.try :[], 2
-        if File.exist? s # no identificator
+        if filename == s # no identificator
           start = key =~ /ssh-.{3} /
           self.name = key[start..start+26] # taken first 26 characters
         else
