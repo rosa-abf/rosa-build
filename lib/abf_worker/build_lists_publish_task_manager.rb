@@ -130,7 +130,6 @@ module AbfWorker
         end
 
         old_packages  = {:sources => [], :binaries => {:x86_64 => [], :i586 => []}}
-
         build_lists_for_cleanup.each do |bl|
           bl.last_published.includes(:packages).limit(5).each{ |old_bl|
             fill_packages(old_bl, old_packages, :fullname)
