@@ -43,13 +43,11 @@ namespace :deploy do
   task :symlink_all, :roles => :app do
     run "mkdir -p #{fetch :shared_path}/config"
 
-    # Setup DB
-    run "cp -n #{fetch :release_path}/config/database.yml.sample #{fetch :shared_path}/config/database.yml"
-    run "ln -nfs #{fetch :shared_path}/config/database.yml #{fetch :release_path}/config/database.yml"
-
-    # Setup application
-    run "cp -n #{fetch :release_path}/config/application.yml.sample #{fetch :shared_path}/config/application.yml"
-    run "ln -nfs #{fetch :shared_path}/config/application.yml #{fetch :release_path}/config/application.yml"
+    # Setup DB, application, newrelic
+    %w(database application newrelic).each do |config|
+      run "cp -n #{fetch :release_path}/config/#{config}.yml.sample #{fetch :shared_path}/config/#{config}.yml"
+      run "ln -nfs #{fetch :shared_path}/config/#{config}.yml #{fetch :release_path}/config/#{config}.yml"
+    end
 
     # It will survive downloads folder between deployments
     run "mkdir -p #{fetch :shared_path}/downloads"
