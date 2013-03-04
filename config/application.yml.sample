@@ -1,0 +1,57 @@
+common: &common
+  project_name: ABF
+  repo_project_name: ABF
+  anonymous_access: true
+  file_store_url: 'http://file-store.rosalinux.ru'
+  distr_types: ['mdv', 'rhel', 'nau5']
+  abf_worker:
+    publish_workers_count: 2
+  keys:
+    secret_key: 'secret_key'
+    airbrake_api_key: 'airbrake_api_key'
+    devise_pepper: 'devise_pepper'
+    secret_token: 'secret_token'
+
+  wiki_formats:
+    markdown:  "Markdown"
+    textile:   "Textile"
+    # rdoc:      "RDoc"
+    org:       "Org-mode"
+    # creole:    "Creole"
+    # mediawiki: "MediaWiki"
+  feedback:
+    email:
+      - 'test@example.com'
+      - 'test1@example.com'
+    # or
+    # email: 'test@example.com'
+
+    # optional parameters
+    cc:
+      - 'test2@example.com' # or like email
+    bcc:
+      - 'test3@example.com' # or like email
+    subject_prefixes: # or one line
+      - 'from_feedback'
+    subject_postfixes: # or one line
+      - 'sample_postfix'
+  shell_user: 'git'
+
+development:
+  <<: *common
+  root_path: /var/rosa
+  git_path: /var/rosa
+  do-not-reply-email: do-not-reply@localhost
+
+production:
+  <<: *common
+  root_path: /share
+  git_path: /mnt/gitstore
+  do-not-reply-email: do-not-reply@abf.rosalinux.ru
+  mailer_https_url: false
+
+test:
+  <<: *common
+  root_path: "use Rails.root/tmp/test_root in spec"
+  git_path: "use Rails.root/tmp/test_root in spec"
+  do-not-reply-email: do-not-reply@localhost
