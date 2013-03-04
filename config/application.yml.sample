@@ -7,7 +7,7 @@ common: &common
   abf_worker:
     publish_workers_count: 2
   keys:
-    secret_key: 'secret_key'
+    key_pair_secret_key: 'key_pair_secret_key'
     airbrake_api_key: 'airbrake_api_key'
     devise_pepper: 'devise_pepper'
     secret_token: 'secret_token'
