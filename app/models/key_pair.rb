@@ -5,7 +5,7 @@ class KeyPair < ActiveRecord::Base
 
   attr_accessor :fingerprint
   attr_accessible :public, :secret, :repository_id
-  attr_encrypted :secret, :key => APP_CONFIG['secret_key']
+  attr_encrypted :secret, :key => APP_CONFIG['keys']['secret_key']
 
   validates :repository_id, :user_id, :presence => true
   validates :secret, :public, :presence => true, :length => { :maximum => 10000 }, :on => :create
