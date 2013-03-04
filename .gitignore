@@ -18,4 +18,4 @@ public/downloads/*
 dump.rdb
 crash.log
 config/newrelic.yml
-config/deploy/production.rb
+config/deploy/*.rb
