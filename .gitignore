@@ -17,3 +17,6 @@ public/downloads/*
 .sass-cache/
 dump.rdb
 crash.log
+config/newrelic.yml
+config/deploy/*.rb
+config/deploy.rb

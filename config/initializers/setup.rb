@@ -1,6 +1,4 @@
 # -*- encoding : utf-8 -*-
-APP_CONFIG = YAML.load_file("#{Rails.root}/config/application.yml")[Rails.env]
-
 Dir[Rails.root.join("lib/ext/**/*.rb")].each {|f| require f}
 require 'modules'
 require 'plugins'
