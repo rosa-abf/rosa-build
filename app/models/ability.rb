@@ -107,7 +107,7 @@ class Ability
         can([:create, :edit, :update, :destroy, :projects_list, :projects, :add_project, :remove_project, :regenerate_metadata], Repository) {|repository| local_admin? repository.platform}
         can([:remove_members, :remove_member, :add_member, :signatures], Repository) {|repository| owner?(repository.platform) || local_admin?(repository.platform)}
         can([:add_project, :remove_project], Repository) {|repository| repository.members.exists?(:id => user.id)}
-        can(:clear, Platform) {|platform| local_admin?(platform) && platform.personal?}
+        can(:clear, Platform) {|platform| owner?(platform) && platform.personal?}
         can([:change_visibility, :settings, :destroy, :edit, :update], Repository) {|repository| owner? repository.platform}
 
         can([:create, :destroy], KeyPair) {|key_pair| owner?(key_pair.repository.platform) || local_admin?(key_pair.repository.platform)}
