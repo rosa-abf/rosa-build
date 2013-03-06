@@ -38,7 +38,7 @@ class Api::V1::AdvisoriesController < Api::V1::BaseController
 
   def find_and_authorize_build_list
     @build_list = BuildList.find params[:build_list_id]
-    authorize! :update_advisory, @build_list.save_to_platform
+    authorize! :update_secondary, @build_list.save_to_platform
   end
 
 end
