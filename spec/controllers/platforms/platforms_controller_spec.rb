@@ -248,15 +248,6 @@ shared_examples_for 'platform user with show rights' do
   end
 end
 
-
-
-
-
-
-
-
-
-
 describe Platforms::PlatformsController do
   let(:clone_or_create_params) { {:id => @platform.id, :platform => {:description => 'new description', :name => 'new_name', :owner_id => @user.id, :distrib_type => APP_CONFIG['distr_types'].first}} }
   before do
@@ -266,14 +257,6 @@ describe Platforms::PlatformsController do
     @personal_platform = FactoryGirl.create(:platform, :platform_type => 'personal')
     
     @user = FactoryGirl.create(:user)
-    # set_session_for(@user)
-
-    # @create_params = {:platform => {
-    #   :name => 'pl1',
-    #   :description => 'pl1',
-    #   :platform_type => 'main',
-    #   :distrib_type => APP_CONFIG['distr_types'].first
-    # }}
   end
 
   context 'for guest' do
