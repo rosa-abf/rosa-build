@@ -132,12 +132,12 @@ Rosa::Application.routes.draw do
     resources :platforms do
       resources :private_users, :except => [:show, :destroy, :update]
       member do
-        post   :clear
+        put    :clear
         get    :clone
         get    :members
         post   :remove_members # fixme: change post to delete
         delete :remove_member
-        post   :add_member
+        put    :add_member
         post   :make_clone
         get    :advisories
       end

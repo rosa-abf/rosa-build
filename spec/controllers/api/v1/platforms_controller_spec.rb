@@ -188,7 +188,12 @@ shared_examples_for 'api platform user without reader rights for hidden platform
     @platform.update_column(:visibility, 'hidden')
   end
 
-  it_should_behave_like 'api platform user without show rights'
+  [:show, :members].each do |action|
+    it "should not be able to perform #{ action } action" do
+      get action, :id => @platform.id, :format => :json
+      response.body.should == {"message" => "Access violation to this page!"}.to_json
+    end
+  end
 end
 
 shared_examples_for "api platform user with show rights" do
@@ -200,15 +205,6 @@ shared_examples_for "api platform user with show rights" do
   it 'should be able to perform platforms_for_build action' do
     get :platforms_for_build, :format => :json
     response.should render_template(:index)
-  end
-end
-
-shared_examples_for "api platform user without show rights" do
-  [:show, :members].each do |action|
-    it "should not be able to perform #{ action } action" do
-      get action, :id => @platform.id, :format => :json
-      response.body.should == {"message" => "Access violation to this page!"}.to_json
-    end
   end
 end
 
@@ -296,8 +292,6 @@ describe Api::V1::PlatformsController do
       http_login(@user)
       @platform.add_member(@user)
       @personal_platform.add_member(@user)
-      # @platform.relations.create!(:actor_type => 'User', :actor_id => @user.id, :role => 'reader')
-      # @personal_platform.relations.create!(:actor_type => 'User', :actor_id => @user.id, :role => 'reader')
     end
 
     context 'perform index action with type param' do
