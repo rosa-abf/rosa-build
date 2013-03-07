@@ -3,3 +3,7 @@ en:
     commits:
       subscribe_btn: Enable notifications.
       unsubscribe_btn: Disable notifications.
+      pluralize:
+        commit: commit
+        commits: commits
+        commits2: commits

@@ -28,6 +28,10 @@ module ProjectsHelper
     end
   end
 
+  def git_ssh_repo_url(name)
+    "git@#{request.host}:#{name}.git"
+  end
+
   def options_for_collaborators_roles_select
     options_for_select(
       Relation::ROLES.collect { |role|
