@@ -3,3 +3,7 @@ ru:
     commits:
       subscribe_btn: Включить уведомления.
       unsubscribe_btn: Выключить уведомления.
+      pluralize:
+        commit: коммит
+        commits: коммита
+        commits2: коммитов

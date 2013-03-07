@@ -36,7 +36,7 @@ ru:
       invite_approve_notification: Приглашение в ABF
       project: в проекте %{project_link}
 
-      delete_branch: Удалена ветка %{branch_name}
+      delete_branch:  '%{user_link} удалил ветку %{branch_name}'
       create_branch: '%{user_link} создал новую ветку %{branch_name}'
       update_branch: '%{user_link} внес изменения в ветку %{branch_name}'
       build_task: 'Сборочное <a href="%{task_link}">задание №%{task_num}</a>'
@@ -45,6 +45,7 @@ ru:
         success: успешно собрано
         failed: завершилось с ошибкой "%{error}"
         pending: ожидает сборки
+      more_commits: 'еще %{count} %{commits} '
 
     footers:
       support_team: Команда поддержки «ROSA Build System».

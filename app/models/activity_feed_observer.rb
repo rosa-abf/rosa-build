@@ -74,29 +74,32 @@ class ActivityFeedObserver < ActiveRecord::Observer
 
       change_type = record.change_type
       branch_name = record.refname.split('/').last
-      if record.user # online update
-        #FIXME using oldrev is a hack (only for online edit).
-        last_commits, first_commiter = [[record.oldrev, record.message]], record.user
-      else
-        last_commits = record.project.repo.log(branch_name, nil).first(3)
-        first_commiter = User.find_by_email(last_commits[0].author.email) unless last_commits.blank?
-        last_commits = last_commits.collect do |commit| #:author => 'author'
-          [commit.sha, commit.message]
-        end
-      end
+
       if change_type == 'delete'
         kind = 'git_delete_branch_notification'
         options = {:project_id => record.project.id, :project_name => record.project.name, :branch_name => branch_name,
                           :change_type => change_type, :project_owner => record.project.owner.uname}
       else
+        if record.message # online update
+          #FIXME using oldrev is a hack (only for online edit).
+          last_commits, commits = [[record.newrev, record.message]], []
+        else
+          commits = record.project.repo.commits_between(record.oldrev, record.newrev)
+          last_commits = commits.last(3).collect { |commit| [commit.sha, commit.message] }
+        end
+
         kind = 'git_new_push_notification'
-        options = {:project_id => record.project.id, :project_name => record.project.name, :last_commits => last_commits, :branch_name => branch_name,
-                          :change_type => change_type, :user_email => record.project.repo.log(branch_name, nil).first.author.email,
-                          :project_owner => record.project.owner.uname}
-        options.merge!({:user_id => first_commiter.id, :user_name => first_commiter.name}) if first_commiter
+        options = {:project_id => record.project.id, :project_name => record.project.name, :last_commits => last_commits.reverse,
+                         :branch_name => branch_name, :change_type => change_type, :project_owner => record.project.owner.uname}
+        if commits.count > 3
+          commits = commits[0...-3]
+          options.merge!({:other_commits_count => commits.count, :other_commits => "#{commits[0].sha[0..9]}...#{commits[-1].sha[0..9]}"})
+        end
       end
+      options.merge!({:user_id => record.user.id, :user_name => record.user.name, :user_email => record.user.email}) if record.user
 
       record.project.admins.each do |recipient|
+        next if record.user && record.user.id == recipient.id
         ActivityFeed.create!(
           :user => recipient,
           :kind => kind,

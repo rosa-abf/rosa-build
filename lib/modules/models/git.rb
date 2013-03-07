@@ -26,11 +26,7 @@ module Modules
       end
 
       def path
-        build_path(git_repo_name)
-      end
-
-      def git_repo_name
-        File.join owner.uname, name
+        build_path(name_with_owner)
       end
 
       def versions
@@ -57,7 +53,7 @@ module Modules
 
         index.add(path, data)
         if sha1 = index.commit(message, :parents => [parent], :actor => actor, :last_tree => parent.tree.id, :head => head)
-          Project.process_hook(owner.uname, name, "refs/heads/#{sha1}", sha1, head, 'commit', 'commit', options[:actor], message)
+          Resque.enqueue(GitHook, owner.uname, name, sha1, sha1, "refs/heads/#{head}", 'commit', "user-#{options[:actor].id}", message)
         end
         sha1
       end
@@ -134,22 +130,9 @@ module Modules
       end
 
       def write_hook
-        is_production = Rails.env == "production"
-        hook = File.join(::Rails.root.to_s, 'tmp', "post-receive-hook")
-        FileUtils.cp(File.join(::Rails.root.to_s, 'bin', "post-receive-hook.partial"), hook)
-        File.open(hook, 'a') do |f|
-          s = "\n  /bin/bash -l -c \"cd #{is_production ? '/srv/rosa_build/current' : Rails.root.to_s} && #{is_production ? 'RAILS_ENV=production' : ''} bundle exec rake hook:enqueue[$owner,$reponame,$newrev,$oldrev,$ref,$newrev_type,$oldrev_type]\""
-          s << " > /dev/null 2>&1" if is_production
-          s << "\ndone\n"
-          f.write(s)
-          f.chmod(0755)
-        end
-
+        hook = "/home/#{APP_CONFIG['shell_user']}/gitlab-shell/hooks/post-receive"
         hook_file = File.join(path, 'hooks', 'post-receive')
-        FileUtils.cp(hook, hook_file)
-        FileUtils.rm_rf(hook)
-
-      rescue Exception # FIXME
+        FileUtils.ln_sf hook, hook_file
       end
 
       def get_actor(actor = nil)
@@ -170,8 +153,8 @@ module Modules
       end
 
       module ClassMethods
-        def process_hook(owner_uname, repo, newrev, oldrev, ref, newrev_type, oldrev_type, user = nil, message = nil)
-          rec = GitHook.new(owner_uname, repo, newrev, oldrev, ref, newrev_type, oldrev_type, user, message)
+        def process_hook(owner_uname, repo, newrev, oldrev, ref, newrev_type, user = nil, message = nil)
+          rec = GitHook.new(owner_uname, repo, newrev, oldrev, ref, newrev_type, user, message)
           ActivityFeedObserver.instance.after_create rec
         end
       end

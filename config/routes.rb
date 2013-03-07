@@ -81,7 +81,7 @@ Rosa::Application.routes.draw do
       resources :product_build_lists, :only => [:index, :show, :destroy, :create] do
         put :cancel, :on => :member
       end
-      resources :ssh_keys, :only => [:index, :create, :destroy]
+      #resources :ssh_keys, :only => [:index, :create, :destroy]
     end
   end
 
@@ -185,6 +185,10 @@ Rosa::Application.routes.draw do
   end
 
   scope :module => 'users' do
+    get '/settings/ssh_keys'            => 'ssh_keys#index', :as => :ssh_keys
+    post '/settings/ssh_keys'           => 'ssh_keys#create'
+    delete '/settings/ssh_keys/:id' => 'ssh_keys#destroy', :as => :ssh_key
+
     resources :settings, :only => [] do
       collection do
         get :profile
@@ -196,8 +200,10 @@ Rosa::Application.routes.draw do
       end
     end
     resources :register_requests, :only => [:new, :create], :format => /ru|en/ #view support only two languages
-    resources :ssh_keys, :only => [:index, :create, :destroy]
-    get '/allowed' => 'users#allowed'
+
+    get '/allowed'  => 'users#allowed'
+    get '/check'    => 'users#check'
+    get '/discover' => 'users#discover'
   end
 
   scope :module => 'groups' do

@@ -39,7 +39,7 @@
   %h3= t("layout.projects.create_repository")
   %p
     %code
-      = "git clone #{git_repo_url(@project.git_repo_name)}"
+      = "git clone #{git_repo_url(@project.name_with_owner)}"
       %br/
       = "cd #{@project.name}"
     %br/
@@ -58,7 +58,7 @@
     %code
       cd  existing_git_repo
       %br/
-      = "git remote add origin #{git_repo_url(@project.git_repo_name)}"
+      = "git remote add origin #{git_repo_url(@project.name_with_owner)}"
       %br/
       git push -u origin master
 

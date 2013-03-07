@@ -1836,3 +1836,27 @@ table#myTable thead tr.search th form.button_to div input {
 #ui-dialog-title-extra-repos-and-build-lists-dialog {
     font-size: 14px;
 }
+
+#description-top input.name {
+  width:280px;
+  margin-left:0;
+}
+
+.btn-group#clone-urls {
+  float:left;
+  margin-top:8px;
+  width:auto;
+
+  .git-protocol-selector {
+    width:auto;
+    height:23px;
+    padding: 0 3px;
+  }
+}
+
+#clone-urls > .git-protocol-selector:last-child {
+  margin: 0;
+}
+#clone-urls > .git-protocol-selector:first-child {
+  margin:0 0 0 10px;
+}

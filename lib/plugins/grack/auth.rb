@@ -13,7 +13,8 @@ module Grack
 
         return ::Rack::Auth::Basic.new(@app) do |u, p|
           user = User.auth_by_token_or_login_pass(u, p) and
-          ability = ::Ability.new(user) and ability.can?(action, project) # project.members.include?(user)
+          ability = ::Ability.new(user) and ability.can?(action, project) and
+          ENV['GL_ID'] = "user-#{user.id}"
         end.call(env) unless project.public? and read? # need auth
       end
       @app.call(env) # next app in stack
