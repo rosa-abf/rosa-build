@@ -80,7 +80,7 @@ class PullRequest < ActiveRecord::Base
     Dir.chdir(path) do
       system "git config user.name \"#{who.uname}\" && git config user.email \"#{who.email}\""
       if merge
-        system("git push origin HEAD")
+        system("export GL_ID=user#{who.id} && git push origin HEAD")
         system("git reset --hard HEAD^") # for diff maybe FIXME
         set_user_and_time who
         merging
