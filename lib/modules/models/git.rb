@@ -51,6 +51,7 @@ module Modules
         # can not create new file
         return false if (index.current_tree / path).nil?
 
+        system "sudo chown -R rosa:rosa #{repo.path}" #FIXME Permission denied - /mnt/gitstore/git_projects/...
         index.add(path, data)
         if sha1 = index.commit(message, :parents => [parent], :actor => actor, :last_tree => parent.tree.id, :head => head)
           Resque.enqueue(GitHook, owner.uname, name, sha1, sha1, "refs/heads/#{head}", 'commit', "user-#{options[:actor].id}", message)
