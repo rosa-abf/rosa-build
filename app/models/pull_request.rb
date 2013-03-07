@@ -177,7 +177,9 @@ class PullRequest < ActiveRecord::Base
 
     Dir.chdir(path) do
       system 'git', 'tag', '-d', from_ref, to_ref
-      system 'git fetch --tags'
+      system 'git fetch --tags -all'
+      system 'git fetch --all'
+
       tags, head = repo.tags.map(&:name), to_project == from_project ? 'origin' : 'head'
       system 'git', 'checkout', to_ref
       unless tags.include? to_ref
