@@ -28,7 +28,7 @@ class MassBuild < ActiveRecord::Base
 
   def build_all
     # later with resque
-    arches_list = arch_names ? Arch.where(:name => arch_names) : Arch.all
+    arches_list = arch_names ? Arch.where(:name => arch_names.split(', ')) : Arch.all
     auto_publish ||= false
 
     projects_list.lines.each do |name|
