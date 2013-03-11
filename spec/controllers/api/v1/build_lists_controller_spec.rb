@@ -158,7 +158,7 @@ describe Api::V1::BuildListsController do
 
             it_should_behave_like 'validation error via build list api', I18n.t('layout.build_lists.cancel_fail')
 
-            it "should not cancel build list" do
+            it "should not change status of build list" do
               @build_list.reload.status.should == BuildList::PROJECT_VERSION_NOT_FOUND
             end
           end
@@ -174,7 +174,7 @@ describe Api::V1::BuildListsController do
             response.body.should == {"message" => "Access violation to this page!"}.to_json
           end
 
-          it "should not cancel build list" do
+          it "should not change status of build list" do
             @build_list.reload.status.should == BuildList::BUILD_PENDING
           end
         end
@@ -262,7 +262,7 @@ describe Api::V1::BuildListsController do
               response.should be_success
             end
 
-            it "should cancel build list" do
+            it "should change status of build list" do
               @build_list.reload.status.should == BuildList::BUILD_PUBLISH
             end
           end
@@ -292,9 +292,11 @@ describe Api::V1::BuildListsController do
               do_publish
             end
 
-            it_should_behave_like 'validation error via build list api', I18n.t('layout.build_lists.publish_fail')
+            it "should return access violation message" do
+              response.body.should == {"message" => "Access violation to this page!"}.to_json
+            end
 
-            it "should not cancel build list" do
+            it "should not change status of build list" do
               @build_list.reload.status.should == BuildList::PROJECT_VERSION_NOT_FOUND
             end
           end
@@ -309,7 +311,7 @@ describe Api::V1::BuildListsController do
               response.body.should == {"message" => "Access violation to this page!"}.to_json
             end
 
-            it "should not cancel build list" do
+            it "should not change status of build list" do
               @build_list.reload.status.should == BuildList::FAILED_PUBLISH
             end
           end
@@ -345,7 +347,7 @@ describe Api::V1::BuildListsController do
               response.body.should == {"message" => "Access violation to this page!"}.to_json
             end
 
-            it "should not cancel build list" do
+            it "should not change status of build list" do
               @build_list.reload.status.should == BuildList::FAILED_PUBLISH
             end
           end
@@ -392,7 +394,7 @@ describe Api::V1::BuildListsController do
 
             it_should_behave_like 'validation error via build list api', I18n.t('layout.build_lists.reject_publish_fail')
 
-            it "should not cancel build list" do
+            it "should not change status of build list" do
               @build_list.reload.status.should == BuildList::PROJECT_VERSION_NOT_FOUND
             end
           end
@@ -409,7 +411,7 @@ describe Api::V1::BuildListsController do
             response.body.should == {"message" => "Access violation to this page!"}.to_json
           end
 
-          it "should not cancel build list" do
+          it "should not change status of build list" do
             do_reject_publish
             @build_list.reload.status.should == BuildList::SUCCESS
           end

@@ -152,7 +152,7 @@ class Projects::PullRequestsController < Projects::BaseController
       @pull.issue.body = pull_params[:issue_attributes][:body].presence
     end
     @pull.from_project = @project
-    @pull.to_ref = (pull_params[:to_ref].presence if pull_params) || @pull.to_project.default_head(params[:treeish])
+    @pull.to_ref = (pull_params[:to_ref].presence if pull_params) || @pull.to_project.default_head
     @pull.from_ref = params[:treeish].presence || (pull_params[:from_ref].presence if pull_params) || @pull.from_project.default_head(params[:treeish])
     @pull.from_project_owner_uname = @pull.from_project.owner.uname
     @pull.from_project_name = @pull.from_project.name

@@ -146,6 +146,7 @@ describe AbfWorker::BuildListsPublishTaskManager do
     before do
       stub_redis
       build_list.update_column(:status, BuildList::BUILD_PUBLISHED)
+      FactoryGirl.create(:build_list_package, :build_list => build_list)
       ProjectToRepository.where(:project_id => build_list.project_id, :repository_id => build_list.save_to_repository_id).destroy_all
       2.times{ subject.new.run }
     end

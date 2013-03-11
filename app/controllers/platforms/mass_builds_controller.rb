@@ -28,7 +28,7 @@ class Platforms::MassBuildsController < Platforms::BaseController
   end
 
   def index
-    authorize! :edit, @platform
+    authorize! :local_admin_manage, @platform
 
     @mass_builds = MassBuild.by_platform(@platform).order('created_at DESC').paginate(:page => params[:page], :per_page => 20)
     @auto_publish_selected = true

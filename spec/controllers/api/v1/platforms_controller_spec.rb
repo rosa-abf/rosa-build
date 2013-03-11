@@ -15,7 +15,7 @@ shared_examples_for 'api platform user with reader rights' do
   end
 end
 
-shared_examples_for 'api platform user with writer rights' do
+shared_examples_for 'api platform user with owner rights' do
 
   context 'api platform user with update rights' do
     before do
@@ -30,6 +30,60 @@ shared_examples_for 'api platform user with writer rights' do
       @platform.description.should == 'new description'
     end
   end
+
+  context 'api platform user with destroy rights for main platforms only' do
+    it 'should be able to perform destroy action for main platform' do
+      delete :destroy, :id => @platform.id, :format => :json
+      response.should be_success
+    end
+    it 'ensures that main platform has been destroyed' do
+      lambda { delete :destroy, :id => @platform.id, :format => :json }.should change{ Platform.count }.by(-1)
+    end
+    it 'should not be able to perform destroy action for personal platform' do
+      delete :destroy, :id => @personal_platform.id, :format => :json
+      response.should_not be_success
+    end
+    it 'ensures that personal platform has not been destroyed' do
+      lambda { delete :destroy, :id => @personal_platform.id, :format => :json }.should_not change{ Platform.count }
+    end
+  end
+end
+
+shared_examples_for 'api platform user without owner rights' do
+  context 'api platform user without update rights' do
+    before do
+      put :update, {:platform => {:description => 'new description'}, :id => @platform.id}, :format => :json
+    end
+
+    it 'should not be able to perform update action' do
+      response.should_not be_success
+    end
+    it 'ensures that platform has not been updated' do
+      @platform.reload
+      @platform.description.should_not == 'new description'
+    end
+  end
+
+  context 'api platform user without destroy rights' do
+    it 'should not be able to perform destroy action for main platform' do
+      delete :destroy, :id => @platform.id, :format => :json
+      response.should_not be_success
+    end
+    it 'ensures that main platform has not been destroyed' do
+      lambda { delete :destroy, :id => @platform.id, :format => :json }.should_not change{ Platform.count }
+    end
+    it 'should not be able to perform destroy action for personal platform' do
+      delete :destroy, :id => @personal_platform.id, :format => :json
+      response.should_not be_success
+    end
+    it 'ensures that personal platform has not been destroyed' do
+      lambda { delete :destroy, :id => @personal_platform.id, :format => :json }.should_not change{ Platform.count }
+    end
+  end
+
+end
+
+shared_examples_for 'api platform user with member rights' do
 
   context 'api platform user with add_member rights' do
     let(:member) { FactoryGirl.create(:user) }
@@ -60,39 +114,9 @@ shared_examples_for 'api platform user with writer rights' do
     end
   end
 
-  context 'api platform user with destroy rights for main platforms only' do
-    it 'should be able to perform destroy action for main platform' do
-      delete :destroy, :id => @platform.id, :format => :json
-      response.should be_success
-    end
-    it 'ensures that main platform has been destroyed' do
-      lambda { delete :destroy, :id => @platform.id, :format => :json }.should change{ Platform.count }.by(-1)
-    end
-    it 'should not be able to perform destroy action for personal platform' do
-      delete :destroy, :id => @personal_platform.id, :format => :json
-      response.should_not be_success
-    end
-    it 'ensures that personal platform has not been destroyed' do
-      lambda { delete :destroy, :id => @personal_platform.id, :format => :json }.should_not change{ Platform.count }
-    end
-  end
 end
 
-shared_examples_for 'api platform user without writer rights' do
-
-  context 'api platform user without update rights' do
-    before do
-      put :update, {:platform => {:description => 'new description'}, :id => @platform.id}, :format => :json
-    end
-
-    it 'should not be able to perform update action' do
-      response.should_not be_success
-    end
-    it 'ensures that platform has not been updated' do
-      @platform.reload
-      @platform.description.should_not == 'new description'
-    end
-  end
+shared_examples_for 'api platform user without member rights' do
 
   context 'api platform user without add_member rights' do
     let(:member) { FactoryGirl.create(:user) }
@@ -123,35 +147,6 @@ shared_examples_for 'api platform user without writer rights' do
     end
   end
 
-  context 'should not be able to perform clear action' do
-    it 'for personal platform' do
-      put :clear, :id => @personal_platform.id, :format => :json
-      response.should_not be_success
-    end
-    it 'for main platform' do
-      put :clear, :id => @platform.id, :format => :json
-      response.should_not be_success
-    end
-  end
-
-  context 'api platform user without destroy rights' do
-    it 'should not be able to perform destroy action for main platform' do
-      delete :destroy, :id => @platform.id, :format => :json
-      response.should_not be_success
-    end
-    it 'ensures that main platform has not been destroyed' do
-      lambda { delete :destroy, :id => @platform.id, :format => :json }.should_not change{ Platform.count }
-    end
-    it 'should not be able to perform destroy action for personal platform' do
-      delete :destroy, :id => @personal_platform.id, :format => :json
-      response.should_not be_success
-    end
-    it 'ensures that personal platform has not been destroyed' do
-      lambda { delete :destroy, :id => @personal_platform.id, :format => :json }.should_not change{ Platform.count }
-    end
-  end
-
-  it_should_behave_like 'api platform user without global admin rights'
 end
 
 shared_examples_for 'api platform user without global admin rights' do
@@ -193,7 +188,12 @@ shared_examples_for 'api platform user without reader rights for hidden platform
     @platform.update_column(:visibility, 'hidden')
   end
 
-  it_should_behave_like 'api platform user without show rights'
+  [:show, :members].each do |action|
+    it "should not be able to perform #{ action } action" do
+      get action, :id => @platform.id, :format => :json
+      response.body.should == {"message" => "Access violation to this page!"}.to_json
+    end
+  end
 end
 
 shared_examples_for "api platform user with show rights" do
@@ -205,15 +205,6 @@ shared_examples_for "api platform user with show rights" do
   it 'should be able to perform platforms_for_build action' do
     get :platforms_for_build, :format => :json
     response.should render_template(:index)
-  end
-end
-
-shared_examples_for "api platform user without show rights" do
-  [:show, :members].each do |action|
-    it "should not be able to perform #{ action } action" do
-      get action, :id => @platform.id, :format => :json
-      response.body.should == {"message" => "Access violation to this page!"}.to_json
-    end
   end
 end
 
@@ -248,7 +239,9 @@ describe Api::V1::PlatformsController do
 
     it_should_behave_like 'api platform user with show rights' if APP_CONFIG['anonymous_access']
     it_should_behave_like 'api platform user without reader rights for hidden platform' if APP_CONFIG['anonymous_access']
-    it_should_behave_like 'api platform user without writer rights'
+    it_should_behave_like 'api platform user without member rights'
+    it_should_behave_like 'api platform user without owner rights'
+    it_should_behave_like 'api platform user without global admin rights'
   end
 
   context 'for global admin' do
@@ -259,7 +252,8 @@ describe Api::V1::PlatformsController do
 
     it_should_behave_like 'api platform user with reader rights'
     it_should_behave_like 'api platform user with reader rights for hidden platform'
-    it_should_behave_like 'api platform user with writer rights'
+    it_should_behave_like 'api platform user with member rights'
+    it_should_behave_like 'api platform user with owner rights'
 
     [:clone, :create].each do |action|
       context "with #{action} rights" do
@@ -288,15 +282,16 @@ describe Api::V1::PlatformsController do
 
     it_should_behave_like 'api platform user with reader rights'
     it_should_behave_like 'api platform user with reader rights for hidden platform'
-    it_should_behave_like 'api platform user with writer rights'
+    it_should_behave_like 'api platform user with member rights'
+    it_should_behave_like 'api platform user with owner rights'
     it_should_behave_like 'api platform user without global admin rights'
   end
 
-  context 'for reader user' do
+  context 'for member of platform' do
     before do
       http_login(@user)
-      @platform.relations.create!(:actor_type => 'User', :actor_id => @user.id, :role => 'reader')
-      @personal_platform.relations.create!(:actor_type => 'User', :actor_id => @user.id, :role => 'reader')
+      @platform.add_member(@user)
+      @personal_platform.add_member(@user)
     end
 
     context 'perform index action with type param' do
@@ -312,7 +307,9 @@ describe Api::V1::PlatformsController do
 
     it_should_behave_like 'api platform user with reader rights'
     it_should_behave_like 'api platform user with reader rights for hidden platform'
-    it_should_behave_like 'api platform user without writer rights'
+    it_should_behave_like 'api platform user with member rights'
+    it_should_behave_like 'api platform user without owner rights'
+    it_should_behave_like 'api platform user without global admin rights'
   end
 
   context 'for simple user' do
@@ -322,6 +319,8 @@ describe Api::V1::PlatformsController do
 
     it_should_behave_like 'api platform user with reader rights'
     it_should_behave_like 'api platform user without reader rights for hidden platform'
-    it_should_behave_like 'api platform user without writer rights'
+    it_should_behave_like 'api platform user without member rights'
+    it_should_behave_like 'api platform user without owner rights'
+    it_should_behave_like 'api platform user without global admin rights'
   end
 end
