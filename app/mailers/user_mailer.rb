@@ -16,9 +16,8 @@ class UserMailer < ActionMailer::Base
   def new_comment_notification(comment, user)
     @user = user
     @comment = comment
-    issue = @comment.commentable if @comment.issue_comment?
-    subject = issue ? "Re: [#{issue.project.name}] #{issue.title} (##{issue.serial_id})" :
-     I18n.t('notifications.subjects.new_commit_comment_notification')
+    subject = @comment.issue_comment? ? subject_for_issue(@comment.commentable) :
+      I18n.t('notifications.subjects.new_commit_comment_notification')
     mail(:to => user.email, :subject => subject) do |format|
       format.html
     end
@@ -27,8 +26,7 @@ class UserMailer < ActionMailer::Base
   def new_issue_notification(issue, user)
     @user = user
     @issue = issue
-    subject = "[#{issue.project.name}] #{issue.title} (##{issue.serial_id})"
-    mail(:to => user.email, :subject => subject) do |format|
+    mail(:to => user.email, :subject => subject_for_issue(@issue, true)) do |format|
       format.html
     end
   end
@@ -36,8 +34,7 @@ class UserMailer < ActionMailer::Base
   def issue_assign_notification(issue, user)
     @user = user
     @issue = issue
-    subject = "Re: [#{issue.project.name}] #{issue.title} (##{issue.serial_id})"
-    mail(:to => user.email, :subject => subject) do |format|
+    mail(:to => user.email, :subject => subject_for_issue(@issue)) do |format|
       format.html
     end
   end
@@ -61,5 +58,12 @@ class UserMailer < ActionMailer::Base
     mail :to => register_request.email, :subject => I18n.t("notifications.subjects.invite_approve_notification") do |format|
       format.html
     end
+  end
+
+  protected
+
+  def subject_for_issue(issue, create = false)
+    subject = create ? '' : 'Re: '
+    subject << "[#{issue.project.name}] #{issue.title} (##{issue.serial_id})"
   end
 end
