@@ -8,8 +8,8 @@
       %br/
       %span.date=@issue.created_at.to_s(:long)
       %br/
-  .both
-  .fulltext.view.issue_body.formatted.cm-s-default.md_and_cm=markdown @issue.body
+    .both
+    .fulltext.view.issue_body.formatted.cm-s-default.md_and_cm=markdown @issue.body
 .both
 %br
 - if can? :update, @issue
