@@ -62,8 +62,8 @@ class UserMailer < ActionMailer::Base
 
   protected
 
-  def subject_for_issue(issue, create = false)
-    subject = create ? '' : 'Re: '
+  def subject_for_issue(issue, new_issue = false)
+    subject = new_issue ? '' : 'Re: '
     subject << "[#{issue.project.name}] #{issue.title} (##{issue.serial_id})"
   end
 end
