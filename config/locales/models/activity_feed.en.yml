@@ -48,6 +48,6 @@ en:
       more_commits: '%{count} more %{commits}'
 
     footers:
-      support_team: Support team «ROSA Build System».
+      support_team: Support team «ROSA ABF».
       notifiers: You can configure notifications in
       notification_center: Notification Center.
