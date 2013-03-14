@@ -1,0 +1,5 @@
+%p= @issue.body
+%p
+  = t('notifications.bodies.view_it_on')
+  = link_to APP_CONFIG['project_name'], project_issue_url(@issue.project, @issue)
+= render 'footer'

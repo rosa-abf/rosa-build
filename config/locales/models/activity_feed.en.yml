@@ -21,6 +21,7 @@ en:
       for_arch: for arch %{arch}.
 
     bodies:
+      view_it_on: View it on
       new_comment_notification: 
         title: '%{user_link} added a new comment'
         content: in issue %{issue_link}
@@ -47,6 +48,6 @@ en:
       more_commits: '%{count} more %{commits}'
 
     footers:
-      support_team: Support team «ROSA Build System».
+      support_team: Support team «ROSA ABF».
       notifiers: You can configure notifications in
       notification_center: Notification Center.

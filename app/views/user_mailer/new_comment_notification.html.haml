@@ -1,0 +1,10 @@
+- if @comment.issue_comment?
+  - link = project_issue_url(@comment.commentable.project, @comment.commentable) << '#comment'
+- elsif @comment.commit_comment?
+  - link = commit_url(@comment.project, @comment.commentable.id) << '#diff-comment'
+- link << @comment.id.to_s
+%p= @comment.body
+%p
+  = t('notifications.bodies.view_it_on')
+  = link_to APP_CONFIG['project_name'], link
+= render 'footer'

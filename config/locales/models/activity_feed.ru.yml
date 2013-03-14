@@ -21,6 +21,7 @@ ru:
       for_arch: для архитектуры %{arch}.
 
     bodies:
+      view_it_on: Смотрите это на
       new_comment_notification:
         title: '%{user_link} добавил новый комментарий'
         content: к задаче %{issue_link}
@@ -48,6 +49,6 @@ ru:
       more_commits: 'еще %{count} %{commits} '
 
     footers:
-      support_team: Команда поддержки «ROSA Build System».
+      support_team: Команда поддержки «ROSA ABF».
       notifiers: Вы можете настроить уведомления в
       notification_center: Центре уведомлений.

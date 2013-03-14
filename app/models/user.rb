@@ -82,7 +82,7 @@ class User < Avatar
   end
 
   def fullname
-    return name.present? && name.length > 0 ? "#{uname} (#{name})" : uname
+    return name.present? ? "#{uname} (#{name})" : uname
   end
 
   def user_appeal
