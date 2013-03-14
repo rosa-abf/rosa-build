@@ -1,7 +1,7 @@
 # -*- encoding : utf-8 -*-
 
 class UserMailer < ActionMailer::Base
-  default :from => "#{APP_CONFIG['project_name']} <#{APP_CONFIG['do-not-reply-email']}>"
+  default :from => "\"#{APP_CONFIG['project_name']}\" <#{APP_CONFIG['do-not-reply-email']}>"
   default_url_options.merge!(:protocol => 'https') if APP_CONFIG['mailer_https_url']
 
   include Resque::Mailer # send email async
@@ -82,7 +82,7 @@ class UserMailer < ActionMailer::Base
   protected
 
   def email_with_name(user, email = APP_CONFIG['do-not-reply-email'])
-    "#{user.user_appeal} <#{email}>"
+    "\"#{user.user_appeal}\" <#{email}>"
   end
 
   def subject_for_issue(issue, new_issue = false)
