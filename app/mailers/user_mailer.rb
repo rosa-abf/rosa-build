@@ -8,33 +8,38 @@ class UserMailer < ActionMailer::Base
 
   def new_user_notification(user)
     @user = user
-    mail(:to => user.email, :subject => I18n.t("notifications.subjects.new_user_notification", :project_name => APP_CONFIG['project_name'])) do |format|
+    mail(:to => email_with_name(user), :subject => I18n.t("notifications.subjects.new_user_notification", :project_name => APP_CONFIG['project_name'])) do |format|
       format.html
     end
   end
 
   def new_comment_notification(comment, user)
-    @user = user
-    @comment = comment
+    @user, @comment = user, comment
     subject = @comment.issue_comment? ? subject_for_issue(@comment.commentable) :
       I18n.t('notifications.subjects.new_commit_comment_notification')
-    mail(:to => user.email, :subject => subject) do |format|
+    mail(
+      :to       => email_with_name(user),
+      :subject  => subject,
+      :from     => email_with_name(comment.user, false)
+    ) do |format|
       format.html
     end
   end
 
   def new_issue_notification(issue, user)
-    @user = user
-    @issue = issue
-    mail(:to => user.email, :subject => subject_for_issue(@issue, true)) do |format|
+    @user, @issue = user, issue
+    mail(
+      :to       => email_with_name(user),
+      :subject  => subject_for_issue(issue, true),
+      :from     => email_with_name(issue.user, false)
+    ) do |format|
       format.html
     end
   end
 
   def issue_assign_notification(issue, user)
-    @user = user
-    @issue = issue
-    mail(:to => user.email, :subject => subject_for_issue(@issue)) do |format|
+    @user, @issue = user, issue
+    mail(:to => email_with_name(user), :subject => subject_for_issue(@issue)) do |format|
       format.html
     end
   end
@@ -47,7 +52,11 @@ class UserMailer < ActionMailer::Base
     subject << (build_list.project ? build_list.project.name_with_owner : t("layout.projects.unexisted_project"))
     subject << " - #{build_list.human_status} "
     subject << I18n.t("notifications.subjects.for_arch", :arch => @build_list.arch.name)
-    mail(:to => user.email, :subject => subject) do |format|
+    mail(
+      :to       => email_with_name(user),
+      :subject  => subject,
+      :from     => email_with_name(build_list.user, false)
+    ) do |format|
       format.html
     end
   end
@@ -61,6 +70,10 @@ class UserMailer < ActionMailer::Base
   end
 
   protected
+
+  def email_with_name(user, user_email = true)
+    "#{user.user_appeal} <#{user_email ? user.email : APP_CONFIG['do-not-reply-email']}>"
+  end
 
   def subject_for_issue(issue, new_issue = false)
     subject = new_issue ? '' : 'Re: '

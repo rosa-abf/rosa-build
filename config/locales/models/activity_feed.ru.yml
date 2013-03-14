@@ -21,6 +21,7 @@ ru:
       for_arch: для архитектуры %{arch}.
 
     bodies:
+      view_it_on: Смотрите это на
       new_comment_notification:
         title: '%{user_link} добавил новый комментарий'
         content: к задаче %{issue_link}
