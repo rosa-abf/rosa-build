@@ -4,17 +4,25 @@ namespace :buildlist do
   namespace :clear do
     desc 'Remove outdated BuildLists and MassBuilds'
     task :outdated => :environment do
-      say "Removing outdated BuildLists"
-      outdated = BuildList.outdated
-      say "There are #{outdated.count} outdated BuildLists at #{Time.now}"
-      BuildList.outdated.destroy_all
+      say "[#{Time.zone.now}] Removing outdated BuildLists"
+      say "[#{Time.zone.now}] There are #{BuildList.outdated.count} outdated BuildLists"
+      counter = 0
+      BuildList.outdated.order(:id).find_in_batches(:batch_size => 100) do |build_lists|
+        build_lists.each do |bl|
+          bl.destroy && (counter += 1) if bl.id != bl.last_published.first.try(:id)
+        end
+      end
+      say "[#{Time.zone.now}] #{counter} outdated BuildLists have been removed"
 
-      say "Removing outdated MassBuilds"
-      outdated = MassBuild.outdated
-      say "There are #{outdated.count} outdated MassBuilds at #{Time.now}"
-      MassBuild.outdated.destroy_all
+      say "[#{Time.zone.now}] Removing outdated MassBuilds"
+      say "[#{Time.zone.now}] There are #{MassBuild.outdated.count} outdated MassBuilds"
+      counter = 0
+      MassBuild.outdated.each do |mb|
+        mb.destroy && (counter += 1) if mb.build_lists.count == 0
+      end
+      say "[#{Time.zone.now}] #{counter} outdated MassBuilds have been removed"
 
-      say "Outdated BuildLists and MassBuilds was successfully removed"
+      say "[#{Time.zone.now}] Outdated BuildLists and MassBuilds was successfully removed"
     end
   end
 
