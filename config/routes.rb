@@ -343,4 +343,9 @@ Rosa::Application.routes.draw do
       get '/' => 'groups/profile#show', :as => :group
     end
   end
+
+  # As of Rails 3.0.1, using rescue_from in your ApplicationController to
+  # recover from a routing error is broken!
+  # see: https://rails.lighthouseapp.com/projects/8994/tickets/4444-can-no-longer-rescue_from-actioncontrollerroutingerror
+  match '*a', :to => 'application#render_404'
 end
