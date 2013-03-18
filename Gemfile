@@ -41,7 +41,7 @@ gem 'wikicloth'
 
 gem 'unicorn', '~> 4.3.1', :platforms => [:mri, :rbx]
 gem 'trinidad', '~> 1.0.2', :platforms => :jruby
-gem 'newrelic_rpm', '~> 3.5.5.38', :platforms => [:mri, :rbx]
+gem 'newrelic_rpm', '~> 3.5.8.72', :platforms => [:mri, :rbx]
 gem 'whenever', '~> 0.7.3', :require => false
 
 gem 'jbuilder', '~> 0.8.2'
