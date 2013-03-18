@@ -7,12 +7,23 @@
   #blue-switch-select.selected{:style => "margin-left: #{@status == 'open' ? '0' : '130'}px;"}
   .both
 .both
+
+#description-top.issues-filter
+  .project-tabnav
+    %ul.tabnav-tabs
+      - open = @status == 'open'
+      %li{:class => (open ? 'selected' : '')}
+        %a= 'Open'
+      %li{:class => (!open ? 'selected' : '')}
+        %a= 'Closed'
+      %li.list-browser-sorts
+        %a= 'Updated'
+      %li.list-browser-sorts.selected.desc
+        %i.icon-chevron-up
+        %a= 'Submitted'
+
 #table1
   %table#myTable.tablesorter.tracker{:cellpadding => "0", :cellspacing => "0"}
-    %thead
-      %tr
-        %th.th1{:colspan => "2"}=t('layout.issues.number')
-        %th{:colspan => "2"}=t('layout.issues.description')
     %tbody
       = render :partial => 'projects/issues/issue', :collection => issues
   = will_paginate issues

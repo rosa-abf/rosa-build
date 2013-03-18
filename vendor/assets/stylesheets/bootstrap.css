@@ -829,3 +829,9 @@ a.badge:hover {
 .icon-question-sign {
     background-position: -96px -96px;
 }
+.icon-chevron-up {
+  background-position: -288px -120px;
+}
+.icon-chevron-down {
+background-position: -313px -119px;
+}
