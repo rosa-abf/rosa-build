@@ -1,4 +1,3 @@
-# -*- encoding : utf-8 -*-
 class Api::V1::SearchController < Api::V1::BaseController
   before_filter :authenticate_user! unless APP_CONFIG['anonymous_access']
 

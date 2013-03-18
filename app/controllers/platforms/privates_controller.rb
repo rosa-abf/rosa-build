@@ -1,4 +1,3 @@
-# -*- encoding : utf-8 -*-
 class Platforms::PrivatesController < Platforms::BaseController
 	require 'digest/sha2'
 

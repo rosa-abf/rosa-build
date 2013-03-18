@@ -1,4 +1,3 @@
-# -*- encoding : utf-8 -*-
 class ChangeRolesOnAndTo < ActiveRecord::Migration
   def self.up
     change_column :roles, :on, :string, :default => ''

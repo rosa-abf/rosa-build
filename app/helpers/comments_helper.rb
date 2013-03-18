@@ -1,4 +1,3 @@
-# -*- encoding : utf-8 -*-
 module CommentsHelper
   def project_commentable_comment_path(project, commentable, comment)
     if Comment.issue_comment?(commentable.class)

@@ -1,4 +1,3 @@
-# -*- encoding : utf-8 -*-
 class CreateEventLogs < ActiveRecord::Migration
   def self.up
     create_table :event_logs do |t|

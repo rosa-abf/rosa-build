@@ -1,4 +1,3 @@
-# -*- encoding : utf-8 -*-
 class EventLogObserver < ActiveRecord::Observer
   observe :user, :private_user, :platform, :repository, :project, :product, :build_list, :product_build_list
 

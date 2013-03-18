@@ -1,4 +1,3 @@
-# -*- encoding : utf-8 -*-
 require 'spec_helper'
 
 shared_examples_for "api projects user with reader rights" do

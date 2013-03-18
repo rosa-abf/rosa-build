@@ -1,5 +1,3 @@
-# -*- encoding : utf-8 -*-
-
 # This code based on https://github.com/ihoka/viewtastic
 module RosaPresenter
   module Activation

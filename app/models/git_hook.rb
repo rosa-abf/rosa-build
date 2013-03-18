@@ -1,4 +1,3 @@
-# -*- encoding : utf-8 -*-
 class GitHook
   ZERO = '0000000000000000000000000000000000000000'
   @queue = :hook

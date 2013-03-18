@@ -1,4 +1,3 @@
-# -*- encoding : utf-8 -*-
 class AddUnameToGroups < ActiveRecord::Migration
   def self.up
     add_column :groups, :uname, :string

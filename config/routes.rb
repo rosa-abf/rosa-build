@@ -1,4 +1,3 @@
-# -*- encoding : utf-8 -*-
 Rosa::Application.routes.draw do
   resource :contact, :only => [:new, :create, :sended] do
     get '/' => 'contacts#new'

@@ -1,4 +1,3 @@
-# -*- encoding : utf-8 -*-
 class Project < ActiveRecord::Base
   VISIBILITIES = ['open', 'hidden']
   MAX_OWN_PROJECTS = 32000

@@ -1,4 +1,3 @@
-# -*- encoding : utf-8 -*-
 class Projects::IssuesController < Projects::BaseController
   NON_RESTFUL_ACTION = [:create_label, :update_label, :destroy_label]
   before_filter :authenticate_user!

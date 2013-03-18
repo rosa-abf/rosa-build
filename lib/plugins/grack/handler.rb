@@ -1,4 +1,3 @@
-# -*- encoding : utf-8 -*-
 module Grack
   class Handler < Base
     def initialize(app, config)

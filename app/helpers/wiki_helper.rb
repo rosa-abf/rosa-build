@@ -1,4 +1,3 @@
-# -*- encoding : utf-8 -*-
 module WikiHelper
 
   def revert_path(project, first, second, name)

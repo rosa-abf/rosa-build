@@ -1,4 +1,3 @@
-# -*- encoding : utf-8 -*-
 class Platform < ActiveRecord::Base
   VISIBILITIES = ['open', 'hidden']
 

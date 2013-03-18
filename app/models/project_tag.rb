@@ -1,4 +1,3 @@
-# -*- encoding : utf-8 -*-
 class ProjectTag < ActiveRecord::Base
   include Modules::Models::FileStoreClean
 

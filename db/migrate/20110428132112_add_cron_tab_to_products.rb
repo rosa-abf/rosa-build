@@ -1,4 +1,3 @@
-# -*- encoding : utf-8 -*-
 class AddCronTabToProducts < ActiveRecord::Migration
   def self.up
     add_column :products, :cron_tab, :text

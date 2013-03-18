@@ -1,4 +1,3 @@
-# -*- encoding : utf-8 -*-
 class Admin::RegisterRequestsController < Admin::BaseController
   def index
     @register_requests = @register_requests.send((params[:scope] || 'unprocessed').to_sym).paginate(:page => params[:page])

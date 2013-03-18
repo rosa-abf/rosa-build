@@ -1,4 +1,3 @@
-# -*- encoding : utf-8 -*-
 class Platforms::PrivateUsersController < Platforms::BaseController
   before_filter :authenticate_user!
   before_filter :find_platform_and_private_users

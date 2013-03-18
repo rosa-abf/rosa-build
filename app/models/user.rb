@@ -1,4 +1,3 @@
-# -*- encoding : utf-8 -*-
 class User < Avatar
   ROLES = ['', 'admin', 'banned', 'tester']
   EXTENDED_ROLES = ROLES | ['system']

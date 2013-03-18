@@ -1,4 +1,3 @@
-# -*- encoding : utf-8 -*-
 class Users::RegisterRequestsController < ApplicationController
   before_filter :user_choose_locale
   layout 'invite'

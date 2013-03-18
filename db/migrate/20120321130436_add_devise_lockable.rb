@@ -1,4 +1,3 @@
-# -*- encoding : utf-8 -*-
 class AddDeviseLockable < ActiveRecord::Migration
   def change
     add_column :users, :failed_attempts, :integer, :default => 0 # Only if lock strategy is :failed_attempts

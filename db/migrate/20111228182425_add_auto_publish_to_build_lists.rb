@@ -1,4 +1,3 @@
-# -*- encoding : utf-8 -*-
 class AddAutoPublishToBuildLists < ActiveRecord::Migration
   def self.up
     add_column :build_lists, :auto_publish, :boolean, :default => true

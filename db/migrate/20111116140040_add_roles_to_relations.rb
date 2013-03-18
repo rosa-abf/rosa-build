@@ -1,4 +1,3 @@
-# -*- encoding : utf-8 -*-
 class AddRolesToRelations < ActiveRecord::Migration
   def self.up
     add_column :relations, :role, :string

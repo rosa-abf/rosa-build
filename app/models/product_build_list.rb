@@ -1,4 +1,3 @@
-# -*- encoding : utf-8 -*-
 class ProductBuildList < ActiveRecord::Base
   include Modules::Models::CommitAndVersion
   include Modules::Models::TimeLiving

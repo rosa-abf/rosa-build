@@ -1,4 +1,3 @@
-# -*- encoding : utf-8 -*-
 class AddDescriptionToGroups < ActiveRecord::Migration
   def change
     add_column :groups, :description, :text

@@ -1,4 +1,3 @@
-# -*- encoding : utf-8 -*-
 class Users::SettingsController < Users::BaseController
   include AvatarHelper
   before_filter :set_current_user

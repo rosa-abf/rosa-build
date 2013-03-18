@@ -1,4 +1,3 @@
-# -*- encoding : utf-8 -*-
 class CreatePermissions < ActiveRecord::Migration
   def self.up
     create_table :permissions do |t|

@@ -1,4 +1,3 @@
-# -*- encoding : utf-8 -*-
 module BuildListsHelper
   def build_list_status_color(status)
     case status

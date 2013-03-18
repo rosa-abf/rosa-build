@@ -1,4 +1,3 @@
-# -*- encoding : utf-8 -*-
 class AddClosedByToIssue < ActiveRecord::Migration
   def change
     add_column :issues, :closed_by, :integer

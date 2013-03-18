@@ -1,4 +1,3 @@
-# -*- encoding : utf-8 -*-
 #base_path = File.expand_path(File.join File.dirname(__FILE__), '..')
 base_path  = "/srv/rosa_build"
 

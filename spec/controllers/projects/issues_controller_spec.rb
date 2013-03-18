@@ -1,4 +1,3 @@
-# -*- encoding : utf-8 -*-
 require 'spec_helper'
 
 shared_context "issues controller" do

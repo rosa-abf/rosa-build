@@ -1,4 +1,3 @@
-# -*- encoding : utf-8 -*-
 class Projects::CollaboratorsController < Projects::BaseController
   respond_to :html, :json
 

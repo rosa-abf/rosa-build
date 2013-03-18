@@ -1,4 +1,3 @@
-# -*- encoding : utf-8 -*-
 class Issue < ActiveRecord::Base
   STATUSES = ['open', 'closed']
 

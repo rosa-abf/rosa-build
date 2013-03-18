@@ -1,4 +1,3 @@
-# -*- encoding : utf-8 -*-
 Capistrano::Configuration.instance(:must_exist).load do
 
   namespace :resque do

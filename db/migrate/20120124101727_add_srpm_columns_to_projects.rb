@@ -1,4 +1,3 @@
-# -*- encoding : utf-8 -*-
 class AddSrpmColumnsToProjects < ActiveRecord::Migration
   def self.up
     change_table :projects do |t|

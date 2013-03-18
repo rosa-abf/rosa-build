@@ -1,4 +1,3 @@
-# -*- encoding : utf-8 -*-
 class CreateArches < ActiveRecord::Migration
   def self.up
     create_table :arches do |t|

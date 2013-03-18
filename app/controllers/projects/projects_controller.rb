@@ -1,4 +1,3 @@
-# -*- encoding : utf-8 -*-
 class Projects::ProjectsController < Projects::BaseController
   include ProjectsHelper
   before_filter :authenticate_user!

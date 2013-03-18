@@ -1,4 +1,3 @@
-# -*- encoding : utf-8 -*-
 class Repository < ActiveRecord::Base
   belongs_to :platform
 

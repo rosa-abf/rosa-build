@@ -1,4 +1,3 @@
-# -*- encoding : utf-8 -*-
 module MassBuildHelper
   def link_to_list platform, mass_build, which
     link_to t("layout.mass_builds.#{which}"),

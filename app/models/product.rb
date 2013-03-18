@@ -1,4 +1,3 @@
-# -*- encoding : utf-8 -*-
 class Product < ActiveRecord::Base
   include Modules::Models::TimeLiving
 

@@ -1,4 +1,3 @@
-# -*- encoding : utf-8 -*-
 module AdvisoriesHelper
   def advisories_select_options(advisories, opts = {:class => 'popoverable'})
     def_values = [[t("layout.advisories.no_"), 'no'], [t("layout.advisories.new"), 'new'], [t("layout.advisories.existing"), 'existing', {:class => 'advisory_id'}]]

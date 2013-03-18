@@ -1,4 +1,3 @@
-# -*- encoding : utf-8 -*-
 class AddUnixnameToRepositories < ActiveRecord::Migration
   def self.up
     add_column :repositories, :unixname, :string, :null => false

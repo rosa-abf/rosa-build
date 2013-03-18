@@ -1,4 +1,3 @@
-# -*- encoding : utf-8 -*-
 Warden::Manager.after_authentication do |user,auth,opts| # after_set_user, :except => fetch
   ActiveSupport::Notifications.instrument("event_log.observer", :eventable => user)
 end

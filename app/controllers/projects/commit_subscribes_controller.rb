@@ -1,4 +1,3 @@
-# -*- encoding : utf-8 -*-
 class Projects::CommitSubscribesController < Projects::BaseController
   before_filter :authenticate_user!
   load_and_authorize_resource :project

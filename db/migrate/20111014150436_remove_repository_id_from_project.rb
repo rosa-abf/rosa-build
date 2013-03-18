@@ -1,4 +1,3 @@
-# -*- encoding : utf-8 -*-
 class RemoveRepositoryIdFromProject < ActiveRecord::Migration
   def self.up
     remove_column :projects, :repository_id

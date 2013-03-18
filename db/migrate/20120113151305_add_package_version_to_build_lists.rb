@@ -1,4 +1,3 @@
-# -*- encoding : utf-8 -*-
 class AddPackageVersionToBuildLists < ActiveRecord::Migration
   def self.up
     add_column :build_lists, :package_version, :string

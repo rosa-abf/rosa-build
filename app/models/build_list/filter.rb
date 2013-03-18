@@ -1,4 +1,3 @@
-# -*- encoding : utf-8 -*-
 class BuildList::Filter
   PER_PAGE = [25, 50, 100]
 

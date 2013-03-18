@@ -1,4 +1,3 @@
-# -*- encoding : utf-8 -*-
 class CreateRepositories < ActiveRecord::Migration
   def self.up
     create_table :repositories do |t|

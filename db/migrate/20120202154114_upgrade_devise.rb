@@ -1,4 +1,3 @@
-# -*- encoding : utf-8 -*-
 class UpgradeDevise < ActiveRecord::Migration
   def up
     remove_column :users, :remember_token if User.column_names.include?('remember_token')

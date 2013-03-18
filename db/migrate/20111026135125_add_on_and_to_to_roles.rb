@@ -1,4 +1,3 @@
-# -*- encoding : utf-8 -*-
 class AddOnAndToToRoles < ActiveRecord::Migration
   def self.up
     add_column :roles, :on, :string

@@ -1,4 +1,3 @@
-# -*- encoding : utf-8 -*-
 FactoryGirl.define do
   factory :platform do
     name { FactoryGirl.generate(:unixname) }

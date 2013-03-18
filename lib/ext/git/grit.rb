@@ -1,4 +1,3 @@
-# -*- encoding : utf-8 -*-
 module Grit
   class Blob
     include Linguist::BlobHelper

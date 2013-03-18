@@ -1,4 +1,3 @@
-# -*- encoding : utf-8 -*-
 class ActivityFeed < ActiveRecord::Base
 
   CODE = ['git_delete_branch_notification', 'git_new_push_notification', 'new_comment_commit_notification']

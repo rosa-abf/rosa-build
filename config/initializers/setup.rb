@@ -1,4 +1,3 @@
-# -*- encoding : utf-8 -*-
 Dir[Rails.root.join("lib/ext/**/*.rb")].each {|f| require f}
 require 'modules'
 require 'plugins'

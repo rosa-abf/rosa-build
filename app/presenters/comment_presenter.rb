@@ -1,4 +1,3 @@
-# -*- encoding : utf-8 -*-
 class CommentPresenter < ApplicationPresenter
 
   attr_accessor :comment, :options

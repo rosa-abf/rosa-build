@@ -1,4 +1,3 @@
-# -*- encoding : utf-8 -*-
 FactoryGirl.define do
   sequence :integer do |n|
     n

@@ -1,4 +1,3 @@
-# -*- encoding : utf-8 -*-
 require 'spec_helper'
 
 shared_examples_for 'show build list via api' do

@@ -1,4 +1,3 @@
-# -*- encoding : utf-8 -*-
 class PlatformRestruct < ActiveRecord::Migration
   def self.up
     change_table :platforms do |t|

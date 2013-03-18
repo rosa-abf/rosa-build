@@ -1,4 +1,3 @@
-# -*- encoding : utf-8 -*-
 class ProjectToRepository < ActiveRecord::Base
   belongs_to :project
   belongs_to :repository

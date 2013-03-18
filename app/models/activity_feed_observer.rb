@@ -1,4 +1,3 @@
-# -*- encoding : utf-8 -*-
 class ActivityFeedObserver < ActiveRecord::Observer
   observe :issue, :comment, :user, :build_list
 

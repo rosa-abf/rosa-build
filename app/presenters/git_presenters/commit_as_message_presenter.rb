@@ -1,4 +1,3 @@
-# -*- encoding : utf-8 -*-
 class GitPresenters::CommitAsMessagePresenter < ApplicationPresenter
   include CommitHelper
 

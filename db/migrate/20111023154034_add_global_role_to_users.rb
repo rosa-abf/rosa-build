@@ -1,4 +1,3 @@
-# -*- encoding : utf-8 -*-
 class AddGlobalRoleToUsers < ActiveRecord::Migration
   def self.up
     add_column :users, :global_role_id, :integer

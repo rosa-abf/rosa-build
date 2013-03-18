@@ -1,4 +1,3 @@
-# -*- encoding : utf-8 -*-
 module Gollum
   class Wiki
     # Public: Applies a reverse diff for a given page.  If only 1 SHA is given,

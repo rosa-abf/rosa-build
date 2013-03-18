@@ -1,4 +1,3 @@
-# -*- encoding : utf-8 -*-
 # If rules goes one by one CanCan joins them by 'OR' sql operator
 # If rule has multiple conditions CanCan joins them by 'AND' sql operator
 # WARNING:

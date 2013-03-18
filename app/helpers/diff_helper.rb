@@ -1,4 +1,3 @@
-# -*- encoding : utf-8 -*-
 module DiffHelper
   def render_diff_stats(stats)
     path = @pull.try(:id) ? polymorphic_path([@project, @pull]) : ''

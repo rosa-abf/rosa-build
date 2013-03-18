@@ -1,4 +1,3 @@
-# -*- encoding : utf-8 -*-
 module ProjectsHelper
   def options_for_filters(all_projects, groups, owners)
     projects_count_by_groups = all_projects.where(:owner_id => groups, :owner_type => 'Group').

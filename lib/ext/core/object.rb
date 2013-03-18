@@ -1,4 +1,3 @@
-# -*- encoding : utf-8 -*-
 class Object
   def with_skip
     begin

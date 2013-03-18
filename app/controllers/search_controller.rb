@@ -1,4 +1,3 @@
-# -*- encoding : utf-8 -*-
 class SearchController < ApplicationController
   before_filter :authenticate_user! unless APP_CONFIG['anonymous_access']
   # load_and_authorize_resource

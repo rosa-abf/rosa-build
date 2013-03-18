@@ -1,4 +1,3 @@
-# -*- encoding : utf-8 -*-
 class Relation < ActiveRecord::Base
   belongs_to :target, :polymorphic => true
   belongs_to :actor, :polymorphic => true

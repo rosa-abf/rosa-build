@@ -1,4 +1,3 @@
-# -*- encoding : utf-8 -*-
 class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
   def open_id
     # raise env['omniauth.auth'].inspect
