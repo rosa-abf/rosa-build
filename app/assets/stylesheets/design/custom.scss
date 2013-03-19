@@ -1879,10 +1879,10 @@ table#myTable thead tr.search th form.button_to div input {
 
     li.list-browser-sorts {
         float: right;
-        margin-top: -7px;
+        margin-top: -16px;
         border: 1px solid #a9c6dd;
-        -moz-border-radius: 5px;
-        -webkit-border-radius: 5px;
-        border-radius: 5px;
+        border-top: none;
+        width: 90px;
+        text-align: center;
     }
 }
