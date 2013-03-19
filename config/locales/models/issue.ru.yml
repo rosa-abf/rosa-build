@@ -24,7 +24,7 @@ ru:
       edit_header: Редактирование задачи
       create_header: Создать задачу
       sort:
-        updated: Обнавлены
+        updated: Обновлены
         submitted: Созданы
       statuses:
         open: Открытые
