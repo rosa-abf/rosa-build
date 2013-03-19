@@ -55,7 +55,7 @@ $(document).ready(function() {
   });
 
   $('.ajax_search_form').live('submit', function() {
-    return send_index_tracker_request('GET', $(this).attr("action"), $(this).serialize());
+    return send_index_tracker_request('GET', $(this).attr("action"));
   });
 
   $('#add_label').live('click', function() {
@@ -103,7 +103,7 @@ $(document).ready(function() {
     $.ajax({
       type: type_request,
       url: url,
-      data: filter_form.serialize() + '&' + label_form.serialize() + '&' + status + '&' + direction + '&' + sort + '&' + page + '&' + data,
+      data: filter_form.serialize() + '&' + label_form.serialize() + '&' + status + '&' + direction + '&' + sort + '&' + page + '&' + data + '&' + $('.ajax_search_form').serialize(),
       success: function(data){
                  $('article').html(data);
                  $(".niceRadio").each(function() { changeRadioStart(jQuery(this)) });

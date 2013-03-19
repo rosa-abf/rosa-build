@@ -15,7 +15,7 @@ class Projects::IssuesController < Projects::BaseController
     @issues = @issues.where(:assignee_id => current_user.id) if @is_assigned_to_me = params[:filter] == 'to_me'
     @issues = @issues.joins(:labels).where(:labels => {:name => @labels}) unless @labels == []
     # Using mb_chars for correct transform to lowercase ('Русский Текст'.downcase => "Русский Текст")
-    @issues = @issues.search(params[:search_issue])
+    @issues = @issues.search(params[:search_issue]) if params[:search_issue] !~ /#{t('layout.issues.search')}/
 
     @opened_issues, @closed_issues = @issues.not_closed_or_merged.count, @issues.closed_or_merged.count
     @status = params[:status] == 'closed' ? :closed : :open

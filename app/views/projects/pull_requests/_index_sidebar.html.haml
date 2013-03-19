@@ -1,4 +1,5 @@
 -content_for :sidebar do
   =form_tag project_pull_requests_path(@project), :id => 'filter_pull_requests', :method => :get, :class => 'ajax_search_form' do
     .bordered.bpadding20
-      =tracker_search_field(:search_pull_request, t('layout.pull_requests.search'))
+      - search = params[:search_pull_request].present? ? params[:search_pull_request] : t('layout.pull_requests.search')
+      =tracker_search_field(:search_pull_request, search)
