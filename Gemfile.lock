@@ -13,6 +13,14 @@ GIT
       mime-types (~> 1.15)
       posix-spawn (~> 0.3.6)
 
+GIT
+  remote: git://github.com/warpc/redhillonrails_core.git
+  revision: c0945a4c6ad4bae4ca2750b105efcff162408b15
+  branch: rails31
+  specs:
+    redhillonrails_core (2.0.0.pre)
+      activerecord (>= 3.1.0.rc)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -408,6 +416,7 @@ DEPENDENCIES
   rails3-jquery-autocomplete (~> 1.0.7)
   rdiscount
   redcarpet (~> 2.1.1)
+  redhillonrails_core!
   resque (~> 1.21.0)
   resque-status (~> 0.3.3)
   resque_mailer (~> 2.1.0)
