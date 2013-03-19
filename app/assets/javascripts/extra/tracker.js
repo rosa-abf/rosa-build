@@ -1,21 +1,5 @@
 $(document).ready(function() {
 
-  $("#closed-switcher").live('click', function() {
-    if ($("#blue-switch-select").css("margin-left") != "130px") {
-      $("#blue-switch-select").animate({"margin-left": "+=130px"}, "fast");
-      $("#table1").fadeOut(0);
-      $("#table2").fadeIn("slow");
-      $('#issues_status').val('closed');
-    }
-    else {
-      $("#blue-switch-select").animate({"margin-left": "-=130px"}, "fast");
-      $("#table2").fadeOut(0);
-      $("#table1").fadeIn("slow");
-      $('#issues_status').val('open');
-    }
-    return send_index_tracker_request('GET');
-  });
-
   $("#manage-labels").live('click', function () {
       var toggled = $(this).data('toggled');
       $(this).data('toggled', !toggled);
@@ -33,12 +17,45 @@ $(document).ready(function() {
     return send_index_tracker_request('GET');
   });
 
+  $("#table1.issues-table .pagination a").live('click', function() {
+    var a = $(this);
+    var page = parseInt($('.pagination .current').text());
+    if (a.hasClass('next_page')) {
+      page += 1;
+    } else {
+      if (a.hasClass('previous_page')) {
+        page -= 1;
+      } else {
+        page = a.text();
+      }
+    }
+    $('.pagination .current').html(page);
+    return send_index_tracker_request('GET');
+  });
+
+  $(".issues-filter .tabnav-tabs li").live('click', function() {
+    var li = $(this);
+    var items = $('.issues-filter .tabnav-tabs');
+    if (li.hasClass('list-browser-sorts')) {
+      if (li.hasClass('selected')) {
+        var direction = li.hasClass('asc') ? 'desc' : 'asc';
+        li.removeClass('asc').removeClass('desc').addClass(direction);
+      } else {
+        items.find('.list-browser-sorts').removeClass('selected');
+      }
+    } else {
+      items.find('.list-browser-filter-tabs').removeClass('selected');
+    }
+    li.addClass('selected');
+    return send_index_tracker_request('GET');
+  });
+
   $("#filter_issues #myradio1").live('change', function(event) {
     return send_index_tracker_request('GET');
   });
 
   $('.ajax_search_form').live('submit', function() {
-    return send_index_tracker_request('GET', $(this).attr("action"), $(this).serialize());
+    return send_index_tracker_request('GET', $(this).attr("action"));
   });
 
   $('#add_label').live('click', function() {
@@ -77,11 +94,16 @@ $(document).ready(function() {
     var filter_form = $('#filter_issues');
     url = url || filter_form.attr("action");
     var label_form = $('#filter_labels');
-    var status = 'status=' + $('#issues_status').attr('value');
+    var issues_filter = $('.issues-filter');
+    var status = 'status=' + (issues_filter.find('.open').hasClass('selected') ? 'open' : 'closed');
+    var direction = 'direction=' + (issues_filter.find('.list-browser-sorts').hasClass('asc') ? 'asc' : 'desc');
+    var sort = 'sort=' + (issues_filter.find('.list-browser-sorts.updated').hasClass('selected') ? 'updated' : 'created');
+    var page = $('.pagination .current').text();
+    page = 'page=' + (page.length == 0 ? 1 : page);
     $.ajax({
       type: type_request,
       url: url,
-      data: filter_form.serialize() + '&' + label_form.serialize() + '&' + status + '&' + data,
+      data: filter_form.serialize() + '&' + label_form.serialize() + '&' + status + '&' + direction + '&' + sort + '&' + page + '&' + data + '&' + $('.ajax_search_form').serialize(),
       success: function(data){
                  $('article').html(data);
                  $(".niceRadio").each(function() { changeRadioStart(jQuery(this)) });

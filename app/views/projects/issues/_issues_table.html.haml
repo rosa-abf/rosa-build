@@ -1,18 +1,21 @@
-#closed-switcher.blue-switcher
-  =hidden_field_tag :issues_status, @status, :id => 'issues_status'
-  .open
-    ="#{t('layout.issues.statuses.open')} (#{@opened_issues})"
-  #closed-tasks.closed
-    ="#{t('layout.issues.statuses.closed')} (#{@closed_issues})"
-  #blue-switch-select.selected{:style => "margin-left: #{@status == 'open' ? '0' : '130'}px;"}
-  .both
-.both
-#table1
+#description-top.issues-filter
+  .project-tabnav
+    %ul.tabnav-tabs
+      %li.list-browser-filter-tabs.open{:class => ('selected' if @status == :open)}
+        %a= "#{t('layout.issues.statuses.open')} (#{@opened_issues})"
+      %li.list-browser-filter-tabs.closed{:class => ('selected' if @status != :open)}
+        %a= "#{t('layout.issues.statuses.closed')} (#{@closed_issues})"
+      %li.list-browser-sorts.updated{:class => ("selected #{@direction}" if @sort == :updated)}
+        - if @sort == :updated
+          %i{:class => (@direction == :asc ? 'icon-chevron-up' : 'icon-chevron-down')}
+        %a= t('layout.issues.sort.updated')
+      %li.list-browser-sorts.created{:class => ("selected #{@direction}" if @sort == :created)}
+        - if @sort == :created
+          %i{:class => (@direction == :asc ? 'icon-chevron-up' : 'icon-chevron-down')}
+        %a= t('layout.issues.sort.submitted')
+
+#table1.issues-table
   %table#myTable.tablesorter.tracker{:cellpadding => "0", :cellspacing => "0"}
-    %thead
-      %tr
-        %th.th1{:colspan => "2"}=t('layout.issues.number')
-        %th{:colspan => "2"}=t('layout.issues.description')
     %tbody
       = render :partial => 'projects/issues/issue', :collection => issues
   = will_paginate issues

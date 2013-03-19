@@ -23,6 +23,9 @@ ru:
       confirm_delete: Вы уверены, что хотите удалить эту задачу?
       edit_header: Редактирование задачи
       create_header: Создать задачу
+      sort:
+        updated: Обновлены
+        submitted: Созданы
       statuses:
         open: Открытые
         closed: Закрытые

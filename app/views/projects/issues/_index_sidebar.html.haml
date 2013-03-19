@@ -14,7 +14,8 @@
             %td.width30.right=@project.issues.without_pull_requests.where(:assignee_id => current_user.id).count
   =form_tag project_issues_path(@project), :id => 'search_issue', :class => 'ajax_search_form', :method => :get do
     .bordered.bpadding20
-      =tracker_search_field(:search_issue, t('layout.issues.search'))
+      - search = params[:search_issue].present? ? params[:search_issue] : t('layout.issues.search')
+      =tracker_search_field(:search_issue, search)
   - if can? :new, @project.issues.new
     .bordered.nopadding
       %h3.bmargin10=t('layout.issues.new')

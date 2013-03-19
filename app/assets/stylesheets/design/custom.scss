@@ -1860,3 +1860,30 @@ table#myTable thead tr.search th form.button_to div input {
 #clone-urls > .git-protocol-selector:first-child {
   margin:0 0 0 10px;
 }
+
+#table1 .tracker {
+    border-top: none;
+    margin-top: 0;
+}
+#description-top.issues-filter {
+    background: #dcecfa;
+    font-size: 12px;
+    color: #292929;
+    border: 1px solid #a9c6dd;
+    margin: 0;
+    padding: 5px 0 0;
+
+    li {
+        cursor: pointer;
+    }
+
+    li.list-browser-sorts {
+        float: right;
+        margin: -6px 0 0;
+        border: 1px solid #a9c6dd;
+        border-right: none;
+        width: 90px;
+        text-align: center;
+        padding: 7px 5px 3px;
+    }
+}
