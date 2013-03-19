@@ -78,12 +78,16 @@ class PullRequest < ActiveRecord::Base
   def merge!(who)
     return false unless can_merging?
     Dir.chdir(path) do
+      commit = repo.commits(to_ref).first
       system "git config user.name \"#{who.uname}\" && git config user.email \"#{who.email}\""
-      if merge
+      res = merge
+      if commit.id != repo.commits(to_ref).first.id
         system("export GL_ID=user-#{who.id} && git push origin HEAD")
         system("git reset --hard HEAD^") # for diff maybe FIXME
         set_user_and_time who
         merging
+      else # Try to catch no merge errors
+        raise "merge result pull_request #{id}: #{res}"
       end
     end
   end
@@ -177,8 +181,7 @@ class PullRequest < ActiveRecord::Base
 
     Dir.chdir(path) do
       system 'git', 'tag', '-d', from_ref, to_ref
-      system 'git fetch --tags -all'
-      system 'git fetch --all'
+      system 'git fetch --tags && git fetch --all'
 
       tags, head = repo.tags.map(&:name), to_project == from_project ? 'origin' : 'head'
       system 'git', 'checkout', to_ref
