@@ -1,6 +1,6 @@
 # -*- encoding : utf-8 -*-
 class Comment < ActiveRecord::Base
-  belongs_to :commentable, :polymorphic => true
+  belongs_to :commentable, :polymorphic => true, :touch => true
   belongs_to :user
   belongs_to :project
   serialize :data
@@ -19,11 +19,6 @@ class Comment < ActiveRecord::Base
     # raise commentable_id.inspect
     # raise commentable_id.to_s(16).inspect
     commit_comment? ? project.repo.commit(commentable_id.to_s(16)) : super # TODO leading zero problem
-  end
-
-  def touch_issue
-    return true unless issue_comment?
-    commentable.touch
   end
 
   def commentable=(c)

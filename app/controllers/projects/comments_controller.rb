@@ -12,7 +12,7 @@ class Projects::CommentsController < Projects::BaseController
     anchor = ''
     if !@comment.set_additional_data params
       flash[:error] = I18n.t("flash.comment.save_error")
-    elsif @comment.save && @comment.touch_issue
+    elsif @comment.save
       flash[:notice] = I18n.t("flash.comment.saved")
       anchor = view_context.comment_anchor(@comment)
     else
@@ -26,7 +26,7 @@ class Projects::CommentsController < Projects::BaseController
   end
 
   def update
-    status, message = if @comment.update_attributes(params[:comment]) && @comment.touch_issue
+    status, message = if @comment.update_attributes(params[:comment])
       [200, view_context.markdown(@comment.body)]
     else
       [400, view_context.local_alert(@comment.errors.full_messages.join('. '))]
@@ -35,7 +35,7 @@ class Projects::CommentsController < Projects::BaseController
   end
 
   def destroy
-    @comment.destroy && @comment.touch_issue
+    @comment.destroy
     flash[:notice] = t("flash.comment.destroyed")
     redirect_to project_commentable_path(@project, @commentable)
   end
