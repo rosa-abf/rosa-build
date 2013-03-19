@@ -103,7 +103,7 @@ class Projects::PullRequestsController < Projects::BaseController
 
     @issues_with_pull_request = @issues_with_pull_request.
       includes(:assignee, :user, :pull_request).uniq.
-      paginate :per_page => 10, :page => params[:page]
+      paginate :per_page => 20, :page => params[:page]
     if status == 200
       render 'index', :layout => request.xhr? ? 'with_sidebar' : 'application'
     else
