@@ -25,7 +25,7 @@ class Projects::IssuesController < Projects::BaseController
     @direction  = params[:direction] == 'asc' ? :asc : :desc
     @issues = @issues.order("issues.#{@sort}_at #{@direction}")
     @issues = @issues.includes(:assignee, :user, :pull_request).uniq
-                     .paginate :per_page => 10, :page => params[:page]
+                     .paginate :per_page => 20, :page => params[:page]
     if status == 200
       render 'index', :layout => request.xhr? ? 'with_sidebar' : 'application'
     else
