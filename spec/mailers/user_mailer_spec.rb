@@ -33,7 +33,7 @@ describe UserMailer do
       @email.body.encoded.should match(@issue.project.name)
     end
 
-    it 'should assign issue title' do
+    it 'should assign issue body' do
       @email.body.encoded.should match(@issue.body)
     end
   end
