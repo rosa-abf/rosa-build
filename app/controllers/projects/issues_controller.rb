@@ -18,13 +18,13 @@ class Projects::IssuesController < Projects::BaseController
     @issues = @issues.search(params[:search_issue])
 
     @opened_issues, @closed_issues = @opened_issues_count, @issues.closed_or_merged.count
-    if params[:status] == 'closed'
-      @issues, @status = @issues.closed_or_merged, params[:status]
-    else
-      @issues, @status = @issues.not_closed_or_merged, 'open'
-    end
+    @status = params[:status] == 'closed' ? :closed : :open
+    @issues = @issues.send( (@status == :closed) ? :closed_or_merged : :not_closed_or_merged )
 
-    @issues = @issues.includes(:assignee, :user, :pull_request).def_order.uniq
+    @sort       = params[:sort] == 'updated' ? :updated : :created
+    @direction  = params[:direction] == 'asc' ? :asc : :desc
+    @issues = @issues.order("issues.#{@sort}_at #{@direction}")
+    @issues = @issues.includes(:assignee, :user, :pull_request).uniq
                      .paginate :per_page => 10, :page => params[:page]
     if status == 200
       render 'index', :layout => request.xhr? ? 'with_sidebar' : 'application'

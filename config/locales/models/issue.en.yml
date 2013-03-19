@@ -23,6 +23,9 @@ en:
       confirm_delete: Are you sure you want to delete this task?
       edit_header: Edit task
       create_header: Create task
+      sort:
+        updated: Updated
+        submitted: Submitted
       statuses:
         open: Open
         closed: Closed
