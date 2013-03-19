@@ -21,6 +21,11 @@ class Comment < ActiveRecord::Base
     commit_comment? ? project.repo.commit(commentable_id.to_s(16)) : super # TODO leading zero problem
   end
 
+  def touch_issue
+    return true unless issue_comment?
+    commentable.touch
+  end
+
   def commentable=(c)
     if self.class.commit_comment?(c.class)
       self.commentable_id = c.id.hex
