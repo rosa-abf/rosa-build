@@ -1,11 +1,9 @@
 source 'https://rubygems.org'
 
-gem 'rails', '3.2.12' #, :git => 'git://github.com/rails/rails.git'
+gem 'rails', '3.2.13' #, :git => 'git://github.com/rails/rails.git'
+gem 'redhillonrails_core', :git => 'git://github.com/warpc/redhillonrails_core.git', :branch => 'rails31' # '~> 2.0.0.pre' # deprecated
 
 gem 'pg', '~> 0.14.0'
-# gem 'silent-postgres', :git => 'git://github.com/dolzenko/silent-postgres.git' #'~> 0.1.1'
-gem 'redhillonrails_core', :git => 'git://github.com/warpc/redhillonrails_core.git', :branch => 'rails31' # '~> 2.0.0.pre' # deprecated
-# gem 'schema_plus', '~> 0.2.1' # buggy shit!
 
 gem 'devise', '~> 2.1.2'
 gem 'omniauth', '~> 1.1.0'
@@ -22,11 +20,9 @@ gem 'russian', '~> 0.6.0'
 gem 'highline', '~> 1.6.11'
 gem 'state_machine'
 
-# gem 'rugged', '~> 0.16.0'
 gem 'grack', :git => 'git://github.com/rdblue/grack.git', :require => 'git_http'
 gem "grit", :git => 'git://github.com/warpc/grit.git' #, :path => '~/Sites/code/grit'
 gem 'charlock_holmes', '~> 0.6.9' #, :git => 'git://github.com/brianmario/charlock_holmes.git', :branch => 'bundle-icu'
-# gem 'ruby-filemagic', '~> 0.4.2', :require => 'filemagic/ext'
 gem 'github-linguist', '~> 2.2.1', :require => 'linguist'
 gem 'diff-display', '~> 0.0.1'
 

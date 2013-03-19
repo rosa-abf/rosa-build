@@ -18,7 +18,7 @@ describe UserMailer do
     end
 
     it 'should have correct subject' do
-      @email.subject.should == I18n.t("notifications.subjects.new_issue_notification")
+      @email.subject.should == "[#{@issue.project.name}] #{@issue.title} (##{@issue.serial_id})"
     end
 
     it 'should render receiver email' do
@@ -29,16 +29,12 @@ describe UserMailer do
       @email.from.should == [APP_CONFIG['do-not-reply-email']]
     end
 
-    it 'should assign user name' do
-      @email.body.encoded.should match(@issue_user.name)
-    end
-
     it 'should assign issue project name' do
       @email.body.encoded.should match(@issue.project.name)
     end
 
-    it 'should assign issue title' do
-      @email.body.encoded.should match(@issue.title)
+    it 'should assign issue body' do
+      @email.body.encoded.should match(@issue.body)
     end
   end
 
@@ -57,7 +53,7 @@ describe UserMailer do
     end
 
     it 'should have correct subject' do
-      @email.subject.should == I18n.t("notifications.subjects.issue_assign_notification")
+      @email.subject.should == "Re: [#{@issue.project.name}] #{@issue.title} (##{@issue.serial_id})"
     end
 
     it 'should render receiver email' do
@@ -94,7 +90,7 @@ describe UserMailer do
     end
 
     it 'should have correct subject' do
-      @email.subject.should == I18n.t("notifications.subjects.new_comment_notification")
+      @email.subject.should == "Re: [#{@issue.project.name}] #{@issue.title} (##{@issue.serial_id})"
     end
 
     it 'should render receiver email' do
@@ -105,16 +101,8 @@ describe UserMailer do
       @email.from.should == [APP_CONFIG['do-not-reply-email']]
     end
 
-    it 'should assign user name' do
-      @email.body.encoded.should match(@issue_user.name)
-    end
-
     it 'should assign comment body' do
       @email.body.encoded.should match(@comment.body)
-    end
-
-    it 'should assign issue title' do
-      @email.body.encoded.should match(@issue.title)
     end
   end
 end
