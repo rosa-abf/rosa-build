@@ -1665,59 +1665,6 @@ table.tracker-lables div.label:hover {
   background: none;
 }
 
-div.blue-switcher {
-  height: 19px;
-  width: 258px;
-  border: 1px solid #a0a0a1;
-  border-radius: 3px;
-  background-color: #292929;
-  color: #FFF;
-  -webkit-box-shadow: inset 0px 2px 5px 0px rgba(0, 0, 0, 0.3);
-  -moz-box-shadow: inset 0px 2px 5px 0px rgba(0, 0, 0, 0.3);
-  box-shadow: inset 0px 2px 5px 0px rgba(0, 0, 0, 0.3); 
-  float: right;
-}
-
-div.blue-switcher div.open {
-  float: left;
-  padding: 1px 0px 2px 0px;
-  width: 128px;
-  text-align: center;
-  cursor: pointer;
-  position: relative;
-  z-index: 3;
-}
-
-div.blue-switcher div.selected {
-  background-image: -webkit-gradient(linear, left top, left bottom, from(#619dd2), to(#125687));
-  background-image: -webkit-linear-gradient(top, #619dd2, #125687);
-  background-image: -moz-linear-gradient(top, #619dd2, #125687);
-  background-image: -ms-linear-gradient(top, #619dd2, #125687);
-  background-image: -o-linear-gradient(top, #619dd2, #125687);
-  background-image: linear-gradient(top, #619dd2, #125687);
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorStr='#619dd2', EndColorStr='#125687');
-  border-radius: 2px;
-  height: 18px;
-  width: 128px;
-  -webkit-box-shadow: 0px 0px 2px 0px rgba(0, 0, 0, 0.5);
-  -moz-box-shadow: 0px 0px 2px 0px rgba(0, 0, 0, 0.5);
-  box-shadow: 0px 0px 2px 0px rgba(0, 0, 0, 0.5); 
-  position: absolute;
-  margin: 0px;
-  z-index: 2;
-  
-}
-
-div.blue-switcher div.closed {
-  float: right;
-  padding: 1px 0px 0px 0px;
-  width: 128px;
-  text-align: center;
-  cursor: pointer;
-  position: relative;
-  z-index: 3;
-}
-
 table.tablesorter.tracker th.th1{
   width: 50px;
 }

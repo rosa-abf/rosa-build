@@ -93,14 +93,16 @@ class Projects::PullRequestsController < Projects::BaseController
     @issues_with_pull_request = @issues_with_pull_request.search(params[:search_pull_request])
 
     @opened_issues, @closed_issues = @opened_pull_requests_count, @issues_with_pull_request.closed_or_merged.count
-    if params[:status] == 'closed'
-      @issues_with_pull_request, @status = @issues_with_pull_request.closed_or_merged, params[:status]
-    else
-      @issues_with_pull_request, @status = @issues_with_pull_request.not_closed_or_merged, 'open'
-    end
+
+    @status = params[:status] == 'closed' ? :closed : :open
+    @issues_with_pull_request = @issues_with_pull_request.send( (@status == :closed) ? :closed_or_merged : :not_closed_or_merged )
+
+    @sort       = params[:sort] == 'updated' ? :updated : :created
+    @direction  = params[:direction] == 'asc' ? :asc : :desc
+    @issues_with_pull_request = @issues_with_pull_request.order("issues.#{@sort}_at #{@direction}")
 
     @issues_with_pull_request = @issues_with_pull_request.
-      includes(:assignee, :user, :pull_request).def_order.uniq.
+      includes(:assignee, :user, :pull_request).uniq.
       paginate :per_page => 10, :page => params[:page]
     if status == 200
       render 'index', :layout => request.xhr? ? 'with_sidebar' : 'application'

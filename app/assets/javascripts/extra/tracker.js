@@ -1,21 +1,5 @@
 $(document).ready(function() {
 
-  $("#closed-switcher").live('click', function() {
-    if ($("#blue-switch-select").css("margin-left") != "130px") {
-      $("#blue-switch-select").animate({"margin-left": "+=130px"}, "fast");
-      $("#table1").fadeOut(0);
-      $("#table2").fadeIn("slow");
-      $('#issues_status').val('closed');
-    }
-    else {
-      $("#blue-switch-select").animate({"margin-left": "-=130px"}, "fast");
-      $("#table2").fadeOut(0);
-      $("#table1").fadeIn("slow");
-      $('#issues_status').val('open');
-    }
-    return send_index_tracker_request('GET');
-  });
-
   $("#manage-labels").live('click', function () {
       var toggled = $(this).data('toggled');
       $(this).data('toggled', !toggled);
