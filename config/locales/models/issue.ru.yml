@@ -11,9 +11,8 @@ ru:
 
   layout:
     issues:
-      accessory: Принадлежность заданий
       list: Список
-      all: Все
+      all: Все задачи
       to_me: Назначенные мне
       edit: Редактировать
       search: Найти задачу...

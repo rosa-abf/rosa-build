@@ -11,9 +11,8 @@ en:
 
   layout:
     issues:
-      accessory: Accessory issues
       list: List
-      all: All
+      all: All issues
       to_me: Assigned to me
       edit: Edit
       search: Find issue...

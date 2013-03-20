@@ -1,16 +1,15 @@
 -content_for :sidebar do
   - if current_user
     =form_tag project_pull_requests_path(@project), :id => 'filter_issues', :method => :get do
-      .bordered.nopadding
-        %h3=t("layout.issues.accessory")
+      .bordered
         %table
           %tr
             %td.width18=radio_button_tag :myradio, 'all', !@is_assigned_to_me, {:id => 'myradio1', :class => 'niceRadio', :name => 'filter'}
-            %td.width135=t("layout.issues.all")
+            %td.width135=t("layout.pull_requests.all")
             %td.width30.right=@project.issues.joins(:pull_request).count
           %tr
             %td=radio_button_tag :myradio, 'to_me', @is_assigned_to_me, {:id => 'myradio1', :class => 'niceRadio', :name => 'filter'}
-            %td=t("layout.issues.to_me")
+            %td=t("layout.pull_requests.to_me")
             %td.width30.right=@project.issues.joins(:pull_request).where(:assignee_id => current_user.id).count
   =form_tag project_pull_requests_path(@project), :id => 'filter_pull_requests', :method => :get, :class => 'ajax_search_form' do
     .bordered.bpadding20
