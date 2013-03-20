@@ -1,8 +1,15 @@
 =render 'title_body', :f => f, :id => 'new'
 .leftlist= t('activerecord.attributes.issue.assignee') + ':'
-.rightlist
-  %span#people-span.small-text= t('layout.issues.choose_user_on_left')
-  #issue_assignee
+#assigned-container.rightlist
+  .user-container
+    - if @issue.assignee
+      .image
+        =image_tag(avatar_url(@issue.assignee, :micro), :alt => 'avatar')
+      %span.name= link_to(@issue.assign_uname, user_path(@issue.assignee))
+      %span= 'is assigned'
+    - else
+      %span= "No one is assigned"
+  %span.icon-share
 .both
 .leftlist= t('layout.issues.labels') + ':'
 .rightlist

@@ -1,0 +1,12 @@
+#assigned-popup
+  .header
+    .title= 'Assign someone to this issue'
+    %span.icon-remove-circle
+  = form_tag search_collaborators_project_issues_path(@project, :id => @issue.id), :id => 'search_user', :method => :get do
+    = tracker_search_field(:search_user, t('layout.issues.search_user'))
+
+  - unless [:new, :create].include?(action_name.to_sym)
+    = form_for :issue, :url => [@project, @issue], :method => :put, :html => { :class => 'edit_assignee issue'} do |f|
+      = hidden_field_tag "user-default_assignee", nil, :name => 'issue[assignee_id]'
+  #manage_issue_users_list
+    = render 'projects/issues/search_collaborators'

@@ -7,6 +7,7 @@
   .tab-content.pull_diff_fix
     #discussion.tab-pane.active
       =hidden_field_tag :update_action, new_project_pull_request_path
+      =render 'projects/issues/assigned_popup'
       =form_for @pull, :url => (@pull.already? ? new_project_pull_request_path : project_pull_requests_path), :html => {:class => 'well well-large', :method => (@pull.already? ? :get : :post)} do |f|
 
         .leftlist=f.label :from_project, t("#{ar}.from_project"), :class => :label
@@ -30,6 +31,19 @@
             .flash
               %div{:class => @pull.ready? ? 'notice' : 'alert'}
                 =pull_status @pull
+          .both
+
+          .leftlist.big-list= t('activerecord.attributes.issue.assignee') + ':'
+          #assigned-container.rightlist
+            .user-container
+              - if @issue.assignee
+                .image
+                  =image_tag(avatar_url(@issue.assignee, :micro), :alt => 'avatar')
+                %span.name= link_to(@issue.assign_uname, user_path(@issue.assignee))
+                %span= 'is assigned'
+              - else
+                %span= "No one is assigned"
+            %span.icon-share
           .both
           .leftlist.big-list
           .rightlist

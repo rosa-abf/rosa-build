@@ -1898,22 +1898,39 @@ article .activity .top {
         margin-right: 5px;
     }
   }
-  .assigned {
+  .assigned-header {
     padding: 10px 20px;
     border: 1px solid #D6D6D6;
     margin: 10px -7px;
     border-left: none;
     border-right: none;
-    .icon-share {
-        cursor: pointer;
-    }
-    .image {
-        width: auto;
-        height: auto;
-        margin: -1px 10px 0 0;
-    }
   }  
 }
+
+#assigned-container {
+    .icon-share {
+        cursor: pointer;
+        margin-top: -2px;
+    }
+    .image {
+        float: left;
+        width: 16px;
+        height: 16px;
+        margin: -1px 5px 0 0;
+        img {
+            position: absolute;
+            width: 16px;
+            height: 16px;
+        }
+    }
+    .user-container {
+        display: inline-block;
+    }
+    span {
+        padding-left: 5px;
+    }
+}
+
 
 #assigned-popup {
     position: absolute;
@@ -1924,6 +1941,7 @@ article .activity .top {
     background: #FFF;
     -moz-border-radius: 5px;
     -webkit-border-radius: 5px;
+    box-shadow: 0 3px 7px rgba(0, 0, 0, 0.3);
     border-radius: 5px;
     .header .icon-remove-circle {
         cursor: pointer;
@@ -1961,6 +1979,9 @@ article .activity .top {
         }
         .nothing {
             color: #D6D6D6;
+        }
+        .container {
+            display: none;
         }
     }
 }

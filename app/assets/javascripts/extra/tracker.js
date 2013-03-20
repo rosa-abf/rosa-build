@@ -141,7 +141,7 @@ $(document).ready(function() {
     $('#assigned-popup').hide();
   });
 
-  $('.assigned .icon-share').live('click', function() {
+  $('#assigned-container .icon-share').live('click', function() {
     $('#assigned-popup').show();
   });
 
@@ -163,13 +163,18 @@ $(document).ready(function() {
     // $(this).addClass('select');
 
     var form = $('#assigned-popup .edit_assignee');
+    var item = $(this);
+    if (form.length == 0) {
+      updateAssignedUser(item);
+      return false;
+    }
     $.ajax({
       type: 'PUT',
       url: form.attr("action"),
       data: $(this).find('input').serialize(),
       success: function(data){
-                      $('#assigned-popup').hide();
-                      window.location.reload();
+                      updateAssignedUser(item);
+                      // window.location.reload();
                       // $('.current_assignee .people').removeClass('remove_assignee selected').addClass('nopointer');
                       // $('form#search_user, .button.update_assignee').fadeOut(0);
                       // $('.button.manage_assignee').fadeIn(0);
@@ -334,3 +339,9 @@ $(document).ready(function() {
   });
 
 });
+
+function updateAssignedUser(item) {
+  $('#assigned-popup').hide();
+  var container = item.find('.container').clone();
+  $('#assigned-container .user-container').empty().append(container.html());
+}
