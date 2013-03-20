@@ -37,6 +37,7 @@ class Projects::PullRequestsController < Projects::BaseController
     authorize! :read, to_project
 
     @pull = to_project.pull_requests.new pull_params
+    @pull.issue.assignee_id = (params[:issue] || {})[:assignee_id]
     @pull.issue.user, @pull.issue.project, @pull.from_project = current_user, to_project, @project
     @pull.from_project_owner_uname = @pull.from_project.owner.uname
     @pull.from_project_name = @pull.from_project.name
