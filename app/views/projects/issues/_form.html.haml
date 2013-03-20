@@ -6,9 +6,9 @@
       .image
         =image_tag(avatar_url(@issue.assignee, :micro), :alt => 'avatar')
       %span.name= link_to(@issue.assign_uname, user_path(@issue.assignee))
-      %span= 'is assigned'
+      %span= t('layout.issues.is_assigned')
     - else
-      %span= "No one is assigned"
+      %span= t('layout.issues.no_one_is_assigned')
   %span.icon-share
 .both
 .leftlist= t('layout.issues.labels') + ':'

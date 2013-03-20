@@ -11,6 +11,10 @@ ru:
 
   layout:
     issues:
+      is_assigned: назначен
+      clear_assignee: Убрать назначение
+      nothing_to_show: Никто не найден
+      no_one_is_assigned: Никто не назначен
       list: Список
       all: Все задачи
       to_me: Назначенные мне

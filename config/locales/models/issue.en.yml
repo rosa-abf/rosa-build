@@ -11,6 +11,10 @@ en:
 
   layout:
     issues:
+      is_assigned: is assigned
+      clear_assignee: Clear assignee
+      nothing_to_show: Nothing to show
+      no_one_is_assigned: No one is assigned
       list: List
       all: All issues
       to_me: Assigned to me

@@ -1,8 +1,8 @@
 .people.clear.selected
   %span.icon-remove-circle
-  = 'Clear assignee'
+  = t('layout.issues.clear_assignee')
   .container
-    %span= "No one is assigned"
+    %span= t('layout.issues.no_one_is_assigned')
     = hidden_field_tag "user-nil", nil, :name => "issue[assignee_id]"
 
 - users = (@users || [])
@@ -14,8 +14,8 @@
       .image
         =image_tag(avatar_url(user, :micro), :alt => 'avatar')
       %span.name= link_to(user.uname, user_path(user))
-      %span= 'is assigned'
+      %span= t('layout.issues.is_assigned')
       = hidden_field_tag "user-#{index}", user.id, :name => "issue[assignee_id]"
     .both
 - if users.empty?
-  .nothing= 'Nothing to show'
+  .nothing= t('layout.issues.nothing_to_show')
