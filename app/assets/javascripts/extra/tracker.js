@@ -137,29 +137,60 @@ $(document).ready(function() {
     return false;
   });
 
-  function remAssignee(form) {
-    var el = form.find('.people.selected.remove_assignee');
-    var id = el.attr('id');
-    $('#manage_issue_users_list .add_assignee.people.selected').removeClass('select');
-    el.remove();
-  }
-
-  $('.add_assignee.people.selected').live('click', function() {
-    var form_new = $('form.issue');
-    var form_edit = $('form.edit_form.issue');
-    form_new.find('#people-span').fadeOut(0);
-    remAssignee(form_new);
-    var clone = $(this).clone().removeClass('add_assignee').addClass('remove_assignee');
-    form_new.find('#issue_assignee').html(clone);
-    $('.current_assignee').html(clone.removeClass('select'));
-    $(this).addClass('select');
+  $('#assigned-popup .header .icon-remove-circle').live('click', function() {
+    $('#assigned-popup').hide();
   });
 
-  $('.remove_assignee.people.selected').live('click', function() {
-    var form = $('form.issue, form.edit_form issue');
-    form.find('#people-span').fadeIn(0);
-    remAssignee(form);
+  $('.assigned .icon-share').live('click', function() {
+    $('#assigned-popup').show();
   });
+
+  // function remAssignee(form) {
+  //   var el = form.find('.people.selected.remove_assignee');
+  //   var id = el.attr('id');
+  //   $('#manage_issue_users_list .add_assignee.people.selected').removeClass('select');
+  //   el.remove();
+  // }
+
+  $('#assigned-popup .people.selected').live('click', function() {
+    // var form_new = $('form.issue');
+    // var form_edit = $('form.edit_form.issue');
+    // form_new.find('#people-span').fadeOut(0);
+    // remAssignee(form_new);
+    // var clone = $(this).clone().removeClass('add_assignee').addClass('remove_assignee');
+    // form_new.find('#issue_assignee').html(clone);
+    // $('.current_assignee').html(clone.removeClass('select'));
+    // $(this).addClass('select');
+
+    var form = $('#assigned-popup .edit_assignee');
+    $.ajax({
+      type: 'PUT',
+      url: form.attr("action"),
+      data: $(this).find('input').serialize(),
+      success: function(data){
+                      $('#assigned-popup').hide();
+                      window.location.reload();
+                      // $('.current_assignee .people').removeClass('remove_assignee selected').addClass('nopointer');
+                      // $('form#search_user, .button.update_assignee').fadeOut(0);
+                      // $('.button.manage_assignee').fadeIn(0);
+                      // $('#manage_issue_users_list').html('');
+                    },
+      error: function(data){
+                   alert('error'); // TODO remove
+                }
+     });
+    return false;
+
+
+
+
+  });
+
+  // $('.remove_assignee.people.selected').live('click', function() {
+  //   var form = $('form.issue, form.edit_form issue');
+  //   form.find('#people-span').fadeIn(0);
+  //   remAssignee(form);
+  // });
 
   function remLabel(form, id) {
     var el = form.find('.label.remove_label'+'#'+id);
@@ -251,11 +282,11 @@ $(document).ready(function() {
     return false;
   });
 
-  $('.button.manage_assignee').live('click', function() {
-    $('form#search_user, .button.update_assignee').fadeIn(0);
-    $('.current_assignee .people').addClass('remove_assignee selected').removeClass('nopointer');
-    $(this).fadeOut(0);
-  });
+  // $('.button.manage_assignee').live('click', function() {
+  //   $('form#search_user, .button.update_assignee').fadeIn(0);
+  //   $('.current_assignee .people').addClass('remove_assignee selected').removeClass('nopointer');
+  //   $(this).fadeOut(0);
+  // });
 
   $('.button.manage_labels').live('click', function() {
     $('.button.update_labels').fadeIn(0);
@@ -264,24 +295,24 @@ $(document).ready(function() {
     $(this).fadeOut(0);
   });
 
-  $('.button.update_assignee').live('click', function() {
-    var form = $('form.edit_assignee.issue');
-    $.ajax({
-      type: 'POST',
-      url: form.attr("action"),
-      data: form.serialize(),
-      success: function(data){
-                      $('.current_assignee .people').removeClass('remove_assignee selected').addClass('nopointer');
-                      $('form#search_user, .button.update_assignee').fadeOut(0);
-                      $('.button.manage_assignee').fadeIn(0);
-                      $('#manage_issue_users_list').html('');
-                    },
-      error: function(data){
-                   alert('error'); // TODO remove
-                }
-     });
-    return false;
-  });
+  // $('.button.update_assignee').live('click', function() {
+  //   var form = $('form.edit_assignee.issue');
+  //   $.ajax({
+  //     type: 'POST',
+  //     url: form.attr("action"),
+  //     data: form.serialize(),
+  //     success: function(data){
+  //                     $('.current_assignee .people').removeClass('remove_assignee selected').addClass('nopointer');
+  //                     $('form#search_user, .button.update_assignee').fadeOut(0);
+  //                     $('.button.manage_assignee').fadeIn(0);
+  //                     $('#manage_issue_users_list').html('');
+  //                   },
+  //     error: function(data){
+  //                  alert('error'); // TODO remove
+  //               }
+  //    });
+  //   return false;
+  // });
 
   $('.button.update_labels').live('click', function() {
     var form = $('form.edit_labels.issue');

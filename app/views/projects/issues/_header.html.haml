@@ -1,13 +1,35 @@
-%h3.issue_title=@issue.title
 .activity
   .top
     .image
       =image_tag(avatar_url(@issue.user, :medium), :alt => 'avatar') if @issue.user
     .text
-      %span.name=link_to(@issue.user.fullname, user_path(@issue.user)) if @issue.user
-      %br/
-      %span.date=@issue.created_at.to_s(:long)
-      %br/
+      .created
+        %span.date=@issue.created_at.to_s(:long)
+        - if @issue.user
+          %span.date=t("layout.by") 
+          %span.name=link_to(@issue.user.fullname, user_path(@issue.user))
+      %h3.issue_title=@issue.title
+    .both
+    .assigned
+      - if @issue.assignee
+        .image
+          =image_tag(avatar_url(@issue.assignee, :micro), :alt => 'avatar')
+        %span.name= link_to(@issue.assign_uname, user_path(@issue.assignee))
+        %span= 'is assigned'
+      - else
+        %span= "No one is assigned"
+      -if can?(:update, @issue) || @issue.new_record?
+        %span.icon-share
+        #assigned-popup
+          .header
+            .title= 'Assign someone to this issue'
+            %span.icon-remove-circle
+          =form_tag search_collaborators_project_issues_path(@project, :id => @issue.id), :id => 'search_user', :method => :get do
+            =tracker_search_field(:search_user, t('layout.issues.search_user'))
+          =form_for :issue, :url => [@project, @issue], :method => :put, :html => { :class => 'edit_assignee issue'} do |f|
+            =hidden_field_tag "user-default_assignee", nil, :name => 'issue[assignee_id]'
+          #manage_issue_users_list
+            =render 'projects/issues/search_collaborators'
     .both
     .fulltext.view.issue_body.formatted.cm-s-default.md_and_cm=markdown @issue.body
 .both

@@ -95,6 +95,7 @@ class Projects::IssuesController < Projects::BaseController
     users = User.joins(:groups => :projects).where(:projects => {:id => @project.id}).where("users.uname ILIKE ?", search)
     users2 = @project.collaborators.where("users.uname ILIKE ?", search)
     @users = (users + users2).uniq.sort {|x,y| x.uname <=> y.uname}.first(10)
+    @issue = Issue.where(:id => params[:id]).first
     render :partial => 'search_collaborators'
   end
 
