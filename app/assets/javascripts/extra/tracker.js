@@ -145,23 +145,7 @@ $(document).ready(function() {
     $('#assigned-popup').show();
   });
 
-  // function remAssignee(form) {
-  //   var el = form.find('.people.selected.remove_assignee');
-  //   var id = el.attr('id');
-  //   $('#manage_issue_users_list .add_assignee.people.selected').removeClass('select');
-  //   el.remove();
-  // }
-
   $('#assigned-popup .people.selected').live('click', function() {
-    // var form_new = $('form.issue');
-    // var form_edit = $('form.edit_form.issue');
-    // form_new.find('#people-span').fadeOut(0);
-    // remAssignee(form_new);
-    // var clone = $(this).clone().removeClass('add_assignee').addClass('remove_assignee');
-    // form_new.find('#issue_assignee').html(clone);
-    // $('.current_assignee').html(clone.removeClass('select'));
-    // $(this).addClass('select');
-
     var form = $('#assigned-popup .edit_assignee');
     var item = $(this);
     if (form.length == 0) {
@@ -174,37 +158,13 @@ $(document).ready(function() {
       data: $(this).find('input').serialize(),
       success: function(data){
                       updateAssignedUser(item);
-                      // window.location.reload();
-                      // $('.current_assignee .people').removeClass('remove_assignee selected').addClass('nopointer');
-                      // $('form#search_user, .button.update_assignee').fadeOut(0);
-                      // $('.button.manage_assignee').fadeIn(0);
-                      // $('#manage_issue_users_list').html('');
                     },
       error: function(data){
                    alert('error'); // TODO remove
                 }
      });
     return false;
-
-
-
-
   });
-
-  // $('.remove_assignee.people.selected').live('click', function() {
-  //   var form = $('form.issue, form.edit_form issue');
-  //   form.find('#people-span').fadeIn(0);
-  //   remAssignee(form);
-  // });
-
-  function remLabel(form, id) {
-    var el = form.find('.label.remove_label'+'#'+id);
-    var label = $('#'+id+'.remove_label.label.selected');
-    label.find('.flag').fadeIn(0);
-    label.find('.labeltext.selected').removeClass('selected').attr('style', '');
-    label.fadeIn('slow');
-    el.fadeOut('slow').remove();
-  }
 
   $('.add_label.label').live('click', function() {
     $(this).addClass('selected').removeClass('add_label').addClass('remove_label');
@@ -287,37 +247,12 @@ $(document).ready(function() {
     return false;
   });
 
-  // $('.button.manage_assignee').live('click', function() {
-  //   $('form#search_user, .button.update_assignee').fadeIn(0);
-  //   $('.current_assignee .people').addClass('remove_assignee selected').removeClass('nopointer');
-  //   $(this).fadeOut(0);
-  // });
-
   $('.button.manage_labels').live('click', function() {
     $('.button.update_labels').fadeIn(0);
     $('.current_labels .label .labeltext.selected').parent().addClass('remove_label selected').removeClass('nopointer');
     $('.current_labels .label .labeltext:not(.selected)').parent().addClass('add_label').removeClass('nopointer');
     $(this).fadeOut(0);
   });
-
-  // $('.button.update_assignee').live('click', function() {
-  //   var form = $('form.edit_assignee.issue');
-  //   $.ajax({
-  //     type: 'POST',
-  //     url: form.attr("action"),
-  //     data: form.serialize(),
-  //     success: function(data){
-  //                     $('.current_assignee .people').removeClass('remove_assignee selected').addClass('nopointer');
-  //                     $('form#search_user, .button.update_assignee').fadeOut(0);
-  //                     $('.button.manage_assignee').fadeIn(0);
-  //                     $('#manage_issue_users_list').html('');
-  //                   },
-  //     error: function(data){
-  //                  alert('error'); // TODO remove
-  //               }
-  //    });
-  //   return false;
-  // });
 
   $('.button.update_labels').live('click', function() {
     var form = $('form.edit_labels.issue');
@@ -344,4 +279,13 @@ function updateAssignedUser(item) {
   $('#assigned-popup').hide();
   var container = item.find('.container').clone();
   $('#assigned-container .user-container').empty().append(container.html());
+}
+
+function remLabel(form, id) {
+  var el = form.find('.label.remove_label'+'#'+id);
+  var label = $('#'+id+'.remove_label.label.selected');
+  label.find('.flag').fadeIn(0);
+  label.find('.labeltext.selected').removeClass('selected').attr('style', '');
+  label.fadeIn('slow');
+  el.fadeOut('slow').remove();
 }
