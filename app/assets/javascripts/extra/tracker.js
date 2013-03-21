@@ -115,24 +115,16 @@ $(document).ready(function() {
     return false;
   };
 
-  $('#search_user').live('submit', function() {
-    var id = $(this).attr('id');
-    if(id.indexOf('user') != -1) { // FIXME
-      var which = 'users';
-    }
-    else if (id.indexOf('labels') != -1) {
-      var which = 'labels';
-    }
-    $.ajax({
+  var isSearchUser = null;
+  $('#search_user').on('keyup', function() {
+    if (isSearchUser != null) { isSearchUser.abort(); }
+    isSearchUser = $.ajax({
       type: 'GET',
-      url: $(this).attr("action"),
+      url: $('#search_user_path').attr('path'),
       data: $(this).serialize(),
       success: function(data){
-                 $('#manage_issue_'+ which +'_list').html(data);
-               },
-      error: function(data){
-               alert('error') // TODO remove
-             }
+                 $('#manage_issue_users_list').html(data);
+               }
      });
     return false;
   });
