@@ -1910,24 +1910,19 @@ article .activity .top {
 #assigned-container {
     .icon-share {
         cursor: pointer;
-        margin-top: -2px;
     }
     .image {
         float: left;
-        width: 16px;
-        height: 16px;
+        width: auto;
+        height: auto;
         margin: -1px 5px 0 0;
         img {
-            position: absolute;
             width: 16px;
             height: 16px;
         }
     }
-    .user-container {
-        display: inline-block;
-    }
-    span {
-        padding-left: 5px;
+    .name {
+        margin-left: 5px;
     }
 }
 
@@ -1936,7 +1931,7 @@ article .activity .top {
     position: absolute;
     margin: 5px 0 0 130px;
     display: none;
-    min-width: 230px;
+    min-width: 240px;
     border: 1px solid #b3cce0;
     background: #FFF;
     -moz-border-radius: 5px;

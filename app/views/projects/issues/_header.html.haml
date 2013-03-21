@@ -19,9 +19,9 @@
           %span= t('layout.issues.is_assigned')
         - else
           %span= t('layout.issues.no_one_is_assigned')
-      -if can?(:update, @issue) || @issue.new_record?
-        %span.icon-share
-        =render 'projects/issues/assigned_popup'
+        -if can?(:update, @issue) || @issue.new_record?
+          %span.icon-share
+      =render 'projects/issues/assigned_popup'
 
     .both
     .fulltext.view.issue_body.formatted.cm-s-default.md_and_cm=markdown @issue.body

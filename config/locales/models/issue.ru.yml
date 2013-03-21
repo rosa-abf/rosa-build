@@ -15,6 +15,7 @@ ru:
       clear_assignee: Убрать назначение
       nothing_to_show: Никто не найден
       no_one_is_assigned: Никто не назначен
+      assign_someone: Назначить кого-либо на задачу
       list: Список
       all: Все задачи
       to_me: Назначенные мне

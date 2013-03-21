@@ -1,6 +1,6 @@
 #assigned-popup
   .header
-    .title= 'Assign someone to this issue'
+    .title= t('layout.issues.assign_someone')
     %span.icon-remove-circle
   = form_tag search_collaborators_project_issues_path(@project, :id => @issue.id), :id => 'search_user', :method => :get do
     = tracker_search_field(:search_user, t('layout.issues.search_user'))

@@ -278,7 +278,7 @@ $(document).ready(function() {
 function updateAssignedUser(item) {
   $('#assigned-popup').hide();
   var container = item.find('.container').clone();
-  $('#assigned-container .user-container').empty().append(container.html());
+  $('#assigned-container .user-container').empty().append(container.html()).append('<span class="icon-share"></span>');
 }
 
 function remLabel(form, id) {

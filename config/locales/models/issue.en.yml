@@ -15,6 +15,7 @@ en:
       clear_assignee: Clear assignee
       nothing_to_show: Nothing to show
       no_one_is_assigned: No one is assigned
+      assign_someone: Assign someone to this issue
       list: List
       all: All issues
       to_me: Assigned to me
