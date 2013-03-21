@@ -1,15 +1,7 @@
 =render 'title_body', :f => f, :id => 'new'
 .leftlist= t('activerecord.attributes.issue.assignee') + ':'
 #assigned-container.rightlist
-  .user-container
-    - if @issue.assignee
-      .image
-        =image_tag(avatar_url(@issue.assignee, :micro), :alt => 'avatar')
-      %span.name= link_to(@issue.assign_uname, user_path(@issue.assignee))
-      %span= t('layout.issues.is_assigned')
-    - else
-      %span= t('layout.issues.no_one_is_assigned')
-    %span.icon-share
+  =render 'user_container', :user => @issue.assignee
 .both
 .leftlist= t('layout.issues.labels') + ':'
 .rightlist

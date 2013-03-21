@@ -11,18 +11,8 @@
       %h3.issue_title=@issue.title
     .both
     #assigned-container.assigned-header
-      .user-container
-        - if @issue.assignee
-          .image
-            =image_tag(avatar_url(@issue.assignee, :micro), :alt => 'avatar')
-          %span.name= link_to(@issue.assign_uname, user_path(@issue.assignee))
-          %span= t('layout.issues.is_assigned')
-        - else
-          %span= t('layout.issues.no_one_is_assigned')
-        -if can?(:update, @issue) || @issue.new_record?
-          %span.icon-share
+      =render 'projects/issues/user_container', :user => @issue.assignee
       =render 'projects/issues/assigned_popup'
-
     .both
     .fulltext.view.issue_body.formatted.cm-s-default.md_and_cm=markdown @issue.body
 .both
