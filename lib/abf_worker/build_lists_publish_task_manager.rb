@@ -237,7 +237,7 @@ module AbfWorker
       build_lists = build_lists.where('build_lists.id NOT IN (?)', locked_ids) unless locked_ids.empty?
       build_lists = build_lists.limit(50)
 
-      project_ids = build_lists.map(&:project_id).uniq
+      project_ids = build_lists.pluck(:project_id).uniq
       projects_for_cleanup = @redis.lrange(PROJECTS_FOR_CLEANUP, 0, -1).
         select{ |k| k =~ /#{save_to_repository_id}\-#{build_for_platform_id}$/ && k !~ /^(#{project_ids.join('|')})\-/ }
 
