@@ -1537,6 +1537,10 @@ table.tablesorter.platform-maintainers.static-search thead tr.search th input[ty
     width: 430px;
 }
 
+.tablesorter .right {
+    text-align: right;
+}
+
 .all_platforms {
     > .both { margin: 0 0 5px; }
     .build_for_pl { font-weight: bold; }

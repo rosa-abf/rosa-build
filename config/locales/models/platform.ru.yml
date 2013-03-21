@@ -62,6 +62,7 @@ ru:
       build_all_success: Все проекты успешно отправлены на сборку
       build_all_error: Сборка не удалась!
       cancel_mass_build: Массовая сборка отменена
+      publish_success: Сборки отправленны в очередь на публикацию успешно
       clone_success: Клонирование успешно
       members:
         successfully_added: "Участник %{name} успешно добавлен к платформе"
