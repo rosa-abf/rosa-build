@@ -6,6 +6,7 @@ class Projects::PullRequestsController < Projects::BaseController
 
   load_resource :issue, :through => :project, :find_by => :serial_id, :parent => false, :except => [:index, :autocomplete_to_project]
   load_and_authorize_resource :instance_name => :pull, :through => :issue, :singleton => true, :except => [:index, :autocomplete_to_project]
+  before_filter :find_collaborators, :only => [:new, :create, :show]
 
   def new
     to_project = find_destination_project(false)

@@ -1892,11 +1892,17 @@ table#myTable thead tr.search th form.button_to div input {
 article .activity .top {
   
   .created {
-    opacity: 0.8;
-    span {
-        float: none;
-        margin-right: 5px;
+    margin-left: 50px;
+    span, a {
+        font-size: 11px;
     }
+  }
+  .issue_title.text {
+    max-width: none;
+  }
+  h3.issue_title {
+    margin: 5px 0 0;
+    font-size: 18px;
   }
   .assigned-header {
     padding: 10px 20px;
@@ -1969,11 +1975,8 @@ article .activity .top {
             width: 100%;
             padding: 10px 20px 10px 10px;
         }
-        .clear {
+        .clear, .nothing {
             opacity: 0.8;
-        }
-        .nothing {
-            color: #D6D6D6;
         }
         .container {
             display: none;

@@ -6,6 +6,7 @@ class Projects::IssuesController < Projects::BaseController
   load_resource :project
   load_and_authorize_resource :issue, :through => :project, :find_by => :serial_id, :only => [:show, :edit, :update, :destroy, :new, :create, :index]
   before_filter :load_and_authorize_label, :only => NON_RESTFUL_ACTION
+  before_filter :find_collaborators, :only => [:new, :create, :show, :search_collaborators]
 
   layout false, :only => [:update, :search_collaborators]
 
@@ -91,11 +92,6 @@ class Projects::IssuesController < Projects::BaseController
   end
 
   def search_collaborators
-    search = "%#{params[:search_user]}%"
-    users = User.joins(:groups => :projects).where(:projects => {:id => @project.id}).where("users.uname ILIKE ?", search)
-    users2 = @project.collaborators.where("users.uname ILIKE ?", search)
-    @users = (users + users2).uniq.sort {|x,y| x.uname <=> y.uname}.first(10)
-    @issue = Issue.where(:id => params[:id]).first
     render :partial => 'search_collaborators'
   end
 

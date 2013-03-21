@@ -3,7 +3,7 @@
     .title= t('layout.issues.assign_someone')
     %span.icon-remove-circle
   .search-container
-    #search_user_path{:path => search_collaborators_project_issues_path(@project, :id => @issue.id)}
+    #search_user_path{:path => search_collaborators_project_issues_path(@project)}
     = tracker_search_field(:search_user, t('layout.issues.search_user'))
 
 
