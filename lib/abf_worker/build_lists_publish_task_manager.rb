@@ -235,7 +235,7 @@ module AbfWorker
       # if project of builds has been removed from repository.
       BuildList.where(
         :project_id             => projects_for_cleanup.map{ |k| k.split('-')[0] }.uniq,
-        :save_to_repository_id  => repository.id,
+        :save_to_repository_id  => save_to_repository_id,
         :status                 => BuildList::BUILD_PUBLISH
       ).update_all(:status => BuildList::FAILED_PUBLISH)
 
