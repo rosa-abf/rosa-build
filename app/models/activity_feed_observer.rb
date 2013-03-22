@@ -34,6 +34,7 @@ class ActivityFeedObserver < ActiveRecord::Observer
       end
 
     when 'Comment'
+      return if record.automatic
       if record.issue_comment?
         subscribes = record.commentable.subscribes
         subscribes.each do |subscribe|
@@ -95,6 +96,7 @@ class ActivityFeedObserver < ActiveRecord::Observer
           commits = commits[0...-3]
           options.merge!({:other_commits_count => commits.count, :other_commits => "#{commits[0].sha[0..9]}...#{commits[-1].sha[0..9]}"})
         end
+        Comment.create_link_on_issues_from_commits(record, last_commits) if last_commits.count > 0
       end
       options.merge!({:user_id => record.user.id, :user_name => record.user.name, :user_email => record.user.email}) if record.user
 
@@ -156,5 +158,4 @@ class ActivityFeedObserver < ActiveRecord::Observer
       end
     end
   end
-
 end

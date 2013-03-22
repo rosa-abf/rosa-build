@@ -1,11 +1,12 @@
 # -*- encoding : utf-8 -*-
 class Comment < ActiveRecord::Base
-  belongs_to :commentable, :polymorphic => true, :touch => true
+  belongs_to :commentable, :polymorphic => true
   belongs_to :user
   belongs_to :project
   serialize :data
 
-  validates :body, :user_id, :commentable_id, :commentable_type, :project_id, :presence => true
+  validates :body, :commentable_id, :commentable_type, :project_id, :presence => true
+  validates :user_id, :presence => true, :unless => lambda {|c| c.automatic}
 
   scope :for_commit, lambda {|c| where(:commentable_id => c.id.hex, :commentable_type => c.class)}
   default_scope order("#{table_name}.created_at")
@@ -127,6 +128,30 @@ class Comment < ActiveRecord::Base
       data[:view_path] = h(diff_path[0].renamed_file ? "#{diff_path[0].a_path.rtruncate 60} -> #{diff_path[0].b_path.rtruncate 60}" : diff_path[0].a_path.rtruncate(120))
     end
     return true
+  end
+
+  def self.create_link_on_issues_from_commits git_hook, commits
+    system_user = User.find_by_uname 'rosa_system'
+    commits.each do |commit|
+      commit[1].scan(/(?:[a-zA-Z0-9\-_]*\/)?(?:[a-zA-Z0-9\-_]*)?#[0-9]+/).each do |hash|
+        hash =~ /([a-zA-Z0-9\-_]*\/)?([a-zA-Z0-9\-_]*)?#([0-9]+)/
+        owner_uname = Regexp.last_match[1].presence || git_hook.project.owner.uname
+        project_name = Regexp.last_match[2].presence || git_hook.project.name
+        serial_id = Regexp.last_match[3]
+        project = Project.find_by_owner_and_name(owner_uname.chomp('/'), project_name)
+        next unless project
+        next unless Ability.new(git_hook.user).can? :read, project
+        issue = project.issues.where(:serial_id => serial_id).first
+        next unless issue
+        repo_commit = git_hook.project.repo.commit commit[0]
+        comment = system_user.comments.new :body => 'automatic comment'
+        comment.commentable = issue
+        comment.automatic = true
+        comment.project = project
+        comment.data = {:commit_project_id => git_hook.project.id, :commit_hash => commit[0]}
+        comment.save
+      end
+    end
   end
 
   protected

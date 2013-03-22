@@ -10,6 +10,7 @@ class Projects::IssuesController < Projects::BaseController
   layout false, :only => [:update, :search_collaborators]
 
   def index(status = 200)
+    @system_user = User.find_by_uname 'rosa_system'
     @labels = params[:labels] || []
     @issues = @project.issues.without_pull_requests
     @issues = @issues.where(:assignee_id => current_user.id) if @is_assigned_to_me = params[:filter] == 'to_me'

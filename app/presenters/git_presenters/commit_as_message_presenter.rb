@@ -2,33 +2,55 @@
 class GitPresenters::CommitAsMessagePresenter < ApplicationPresenter
   include CommitHelper
 
-  attr_accessor :commit, :options
+  attr_accessor :commit
   attr_reader :header, :image, :date, :caption, :content, :expandable
 
   def initialize(commit, opts = {})
-    @commit = commit
-    @options = opts
+    comment = opts[:comment]
+    @issue_reference = !!comment # is it reference issue from commit
+    @project = if comment
+                        Project.where(:id => opts[:comment].data[:commit_project_id]).first
+                      else
+                        opts[:project]
+                      end
+    if @project
+      commit = commit || @project.repo.commit(comment.data[:commit_hash])
+
+      @committer = commit.committer
+      @commit_hash = commit.id
+      @committed_date, @authored_date = commit.committed_date, commit.authored_date
+      @commit_message = commit.message
+    else
+      @committer = t('layout.commits.unknown_committer')
+      @commit_hash = comment.data[:commit_hash]
+      @committed_date = @authored_date = comment.created_at
+      @commit_message = t('layout.commits.deleted')
+    end
     prepare_message
   end
 
   def header
-    @header ||= if options[:project].present?
-                  I18n.t("layout.messages.commits.header",
-                   :committer => committer_link, :commit => commit_link, :project => options[:project].name)
-                end.html_safe
+    @header ||= if @issue_reference
+      I18n.t('layout.commits.reference', :committer => committer_link, :commit => commit_link)
+    elsif @project.present?
+      I18n.t('layout.messages.commits.header',
+       :committer => committer_link, :commit => commit_link, :project => @project.name)
+    end.html_safe
   end
 
   def image
-    c = committer
-    @image ||= if c.class == User
-      helpers.avatar_url(c, :medium)
+    @image ||= if committer.is_a? User
+      helpers.avatar_url(committer, :medium)
+    elsif committer.is_a? Grit::Actor
+      helpers.avatar_url_by_email(committer.email, :medium)
     else
-      helpers.avatar_url_by_email(c.email, :medium)
+      size = User.new.avatar.styles[:medium].geometry.split('x').first
+      helpers.gravatar_url('email', size)
     end
   end
 
   def date
-    @date ||= I18n.l(@commit.committed_date || @commit.authored_date, :format => :long)
+    @date ||= I18n.l(@committed_date || @authored_date, :format => :long)
   end
 
   def expandable?
@@ -53,31 +75,37 @@ class GitPresenters::CommitAsMessagePresenter < ApplicationPresenter
 
   protected
 
-    def committer
-      @committer ||= User.where(:email => @commit.committer.email).first || @commit.committer
-    end
+  def committer
+    @committer ||= User.where(:email => @commiter.email).first || @commiter
+  end
 
-    def committer_link
-      @committer_link ||= if committer.is_a? User
-        link_to committer.uname, user_path(committer)
-      else
-        mail_to committer.email, committer.name
-      end
+  def committer_link
+    @committer_link ||= if committer.is_a? User
+      link_to committer.uname, user_path(committer)
+    elsif committer.is_a? Grit::Actor
+      mail_to committer.email, committer.name
+    else # unknown committer
+      committer
     end
+  end
 
-    def commit_link
-      link_to shortest_hash_id(@commit.id), commit_path(options[:project], @commit.id)
+  def commit_link
+    if @project
+      link_to shortest_hash_id(@commit_hash), commit_path(@project, @commit_hash)
+    else
+      shortest_hash_id(@commit_hash)
     end
+  end
 
-    def prepare_message
-      (@caption, @content) = @commit.message.split("\n\n", 2)
-      @caption = 'empty message' unless @caption.present?
-      if @caption.length > 72
-        tmp = '...' + @caption[69..-1]
-        @content = (@content.present?) ? tmp + @content : tmp
-        @caption = @caption[0..68] + '...'
-      end
+  def prepare_message
+    (@caption, @content) = @commit_message.split("\n\n", 2)
+    @caption = 'empty message' unless @caption.present?
+    if @caption.length > 72
+      tmp = '...' + @caption[69..-1]
+      @content = (@content.present?) ? tmp + @content : tmp
+      @caption = @caption[0..68] + '...'
+    end
 #      @content = @content.gsub("\n", "<br />").html_safe if @content
-      @content = simple_format(@content, {}, :sanitize => true).html_safe if @content
-    end
+    @content = simple_format(@content, {}, :sanitize => true).html_safe if @content
+  end
 end
