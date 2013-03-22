@@ -62,15 +62,14 @@ class Product < ActiveRecord::Base
 
   def self.autostart_iso_builds(autostart_status)
     Product.where(:autostart_status => autostart_status).each do |product|
-      pbl = product.product_build_lists.new(
-        :base_url => "http://#{product.platform.default_host}"
-      )
+      pbl = product.product_build_lists.new
       [:params, :main_script, :project].each do |k|
         pbl.send "#{k}=", product.send(k)
       end
       owner = product.platform.owner
       pbl.user            = owner.is_a?(User) ? owner : owner.owner
       pbl.autostarted     = true
+      pbl.base_url        = "http://#{product.platform.default_host}"
       pbl.time_living     = product.time_living / 60
       pbl.project_version = product.project.default_branch
       pbl.save
