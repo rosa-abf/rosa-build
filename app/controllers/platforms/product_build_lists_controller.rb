@@ -24,7 +24,7 @@ class Platforms::ProductBuildListsController < Platforms::BaseController
   end
 
   def update
-    if @product_build_list.update_attributes(params[:product_build_list])
+    if @product_build_list.update_attributes(:not_delete => (params[:product_build_list] || {})[:not_delete])
       flash[:notice] = t('flash.product_build_list.updated')
     else
       flash[:error] = t('flash.product_build_list.update_error')
