@@ -43,7 +43,7 @@
           = mass_build.read_attribute 'missed_projects_count'
       %td
         =link_to_list @platform, mass_build, 'failed_builds_list'
-      %td.right.publish-mass-build
+      %td.right.mass-build-actions
         - if can?(:publish, mass_build)
           - url = publish_platform_mass_build_path(@platform, mass_build.id)
           - unless mass_build.auto_publish?
