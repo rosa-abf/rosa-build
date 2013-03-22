@@ -29,7 +29,7 @@ ru:
       product: Продукт
     attributes:
       product:
-        autostart: Автостарт
+        autostart_status: Автостарт
         name: Название
         description: Описание
         platform_id: Платформа

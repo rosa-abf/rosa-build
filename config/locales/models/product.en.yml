@@ -29,7 +29,7 @@ en:
       product: Product
     attributes:
       product:
-        autostart: Autostart
+        autostart_status: Autostart
         name: Name
         description: Description
         platform_id: Platform

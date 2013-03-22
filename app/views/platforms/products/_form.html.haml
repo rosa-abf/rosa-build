@@ -12,8 +12,8 @@
 
 = render 'def_fields', :f => f
 
-.leftlist= f.label :autostart
-.rightlist= f.select :autostart, Product::AUTOSTART_STATUSES.collect{|status| [Product.human_status(status), status]}, {:include_blank => true, :selected => @product.autostart}
+.leftlist= f.label :autostart_status
+.rightlist= f.select :autostart_status, Product::AUTOSTART_STATUSES.collect{|status| [Product.human_autostart_status(status), status]}, {:include_blank => true, :selected => @product.autostart_status}
 .both
 
 .button_block

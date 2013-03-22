@@ -20,7 +20,8 @@ class Product < ActiveRecord::Base
   validates :name, :presence => true, :uniqueness => {:scope => :platform_id}
   validates :project_id, :presence => true
   validates :main_script, :params, :length => { :maximum => 255 }
-  validates :autostart, :numericality => true, :inclusion => {:in => AUTOSTART_STATUSES}, :allow_blank => true
+  validates :autostart_status, :numericality => true,
+    :inclusion => {:in => AUTOSTART_STATUSES}, :allow_blank => true
 
   scope :recent, order("#{table_name}.name ASC")
 
@@ -30,7 +31,7 @@ class Product < ActiveRecord::Base
                   :main_script,
                   :params,
                   :platform_id,
-                  :autostart
+                  :autostart_status
   attr_readonly :platform_id
 
   def full_clone(attrs = {})
@@ -43,12 +44,16 @@ class Product < ActiveRecord::Base
     end
   end
 
-  def human_status
-    self.class.human_status(status)
+  def human_autostart_status
+    self.class.human_autostart_status(autostart_status)
   end
 
-  def self.human_status(status)
-    I18n.t("layout.products.autostart_statuses.#{HUMAN_AUTOSTART_STATUSES[status]}")
+  def self.human_autostart_status(autostart_status)
+    I18n.t("layout.products.autostart_statuses.#{HUMAN_AUTOSTART_STATUSES[autostart_status]}")
   end
+
+  # def self.autostart_iso_builds(autostart_status)
+  #   Product.where(:autostart_status => autostart_status)
+  # end
 
 end

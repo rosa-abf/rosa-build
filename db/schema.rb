@@ -321,8 +321,8 @@ ActiveRecord::Schema.define(:version => 20130322132919) do
   add_index "product_build_lists", ["product_id"], :name => "index_product_build_lists_on_product_id"
 
   create_table "products", :force => true do |t|
-    t.string   "name",        :null => false
-    t.integer  "platform_id", :null => false
+    t.string   "name",             :null => false
+    t.integer  "platform_id",      :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
     t.text     "description"
@@ -330,7 +330,7 @@ ActiveRecord::Schema.define(:version => 20130322132919) do
     t.string   "params"
     t.string   "main_script"
     t.integer  "time_living"
-    t.integer  "autostart"
+    t.integer  "autostart_status"
   end
 
   create_table "project_imports", :force => true do |t|
