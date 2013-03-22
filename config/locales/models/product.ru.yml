@@ -11,6 +11,10 @@ ru:
       new_header: Новый продукт
       edit_header: Редактирование продукта
       confirm_delete: Вы уверены, что хотите удалить этот продукт?
+      autostart_statuses:
+        once_a_12_hours: Раз в 12 часов
+        once_a_day: Раз в день
+        once_a_week: Раз в неделю
 
   flash:
     product:
@@ -25,6 +29,7 @@ ru:
       product: Продукт
     attributes:
       product:
+        autostart: Автостарт
         name: Название
         description: Описание
         platform_id: Платформа

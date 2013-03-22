@@ -53,7 +53,8 @@ class ProductBuildList < ActiveRecord::Base
                   :project_version,
                   :commit_hash,
                   :arch_id,
-                  :product_id
+                  :product_id,
+                  :not_delete
   attr_readonly :product_id
   serialize :results, Array
 
