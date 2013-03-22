@@ -65,12 +65,14 @@ class Product < ActiveRecord::Base
       pbl = product.product_build_lists.new(
         :base_url => "http://#{product.platform.default_host}"
       )
-      [:params, :main_script, :time_living, :project].each do |k|
+      [:params, :main_script, :project].each do |k|
         pbl.send "#{k}=", product.send(k)
       end
       owner = product.platform.owner
-      pbl.user = owner.is_a?(User) ? owner : owner.owner
-      pbl.autostarted = true
+      pbl.user            = owner.is_a?(User) ? owner : owner.owner
+      pbl.autostarted     = true
+      pbl.time_living     = product.time_living / 60
+      pbl.project_version = product.project.default_branch
       pbl.save
     end
   end
