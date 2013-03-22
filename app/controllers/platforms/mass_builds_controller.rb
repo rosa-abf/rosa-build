@@ -6,8 +6,8 @@ class Platforms::MassBuildsController < Platforms::BaseController
   load_and_authorize_resource
 
   skip_load_and_authorize_resource :only => [:index, :create]
-  skip_load_and_authorize_resource :platform, :only => [:cancel, :failed_builds_list]
-  skip_authorize_resource :platform, :only => [:create, :index]
+  skip_load_and_authorize_resource :platform, :only => [:cancel, :failed_builds_list, :publish]
+  skip_authorize_resource :platform, :only => [:index, :create]
 
   def create
     mass_build = @platform.mass_builds.new(:arches => params[:arches],
@@ -25,6 +25,15 @@ class Platforms::MassBuildsController < Platforms::BaseController
       flash[:error] = t("flash.platform.build_all_error")
       render :index
     end
+  end
+
+  def publish
+    if params[:status] == 'test_failed'
+      @mass_build.publish_test_faild_builds
+    else
+      @mass_build.publish_success_builds
+    end
+    redirect_to(platform_mass_builds_path(@mass_build.platform), :notice => t("flash.platform.publish_success"))
   end
 
   def index
