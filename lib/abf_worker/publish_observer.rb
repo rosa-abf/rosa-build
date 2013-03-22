@@ -36,7 +36,7 @@ module AbfWorker
         update_results build_list
         case status
         when COMPLETED
-          # 'update_column' - when build_list has been removed from repository
+          # 'update_column' - when project of build_list has been removed from repository
           build_list.published || build_list.update_column(:status, BuildList::BUILD_PUBLISHED)
         when FAILED, CANCELED
           build_list.fail_publish || build_list.update_column(:status, BuildList::FAILED_PUBLISH)
