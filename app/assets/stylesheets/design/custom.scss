@@ -982,6 +982,10 @@ table.diff {
 }
 
 /* Mass build forms */
+.mass-build-actions a.button {
+    margin-bottom: 5px;
+}
+
 form.mass_build input[type="checkbox"] {
   width: 10px;
   height: 11px;
@@ -1535,6 +1539,10 @@ div.log-wrapper {
 
 table.tablesorter.platform-maintainers.static-search thead tr.search th input[type="text"] {
     width: 430px;
+}
+
+.tablesorter .right {
+    text-align: right;
 }
 
 .all_platforms {

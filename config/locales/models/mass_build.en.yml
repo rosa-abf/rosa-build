@@ -1,11 +1,13 @@
 en:
   layout:
     mass_builds:
+      publish_success: Publish success builds
+      publish_test_failed: Publish test failed builds
       repositories: Repositories
       extended_data: Extended data
       failed_builds_list: Failed Builds List
       statuses: Statuses
-      cancel_mass_build: Cancel
+      actions: Actions
       cancel_confirm: Are you sure you want to cancel mass build?
       projects_list: Projects list
       missed_projects_list: 'Missed projects: '

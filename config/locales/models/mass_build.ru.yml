@@ -1,11 +1,13 @@
 ru:
   layout:
     mass_builds:
+      publish_success: Опубликовать успешные сборки
+      publish_test_failed: Опубликовать сборки с проваленными тестами
       repositories: Репозитории
       extended_data: Параметры задания
       failed_builds_list: Список ошибок сборок
       statuses: Статусы
-      cancel_mass_build: Отмена
+      actions: Действия
       cancel_confirm: Вы уверены, что хотите отменить массовую сборку?
       projects_list: Список проектов
       missed_projects_list: 'Несуществующие проекты: '

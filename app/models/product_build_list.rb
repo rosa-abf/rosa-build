@@ -37,7 +37,8 @@ class ProductBuildList < ActiveRecord::Base
   belongs_to :arch
   belongs_to :user
 
-
+  # see: Issue #6
+  before_validation lambda { self.arch_id = Arch.find_by_name('x86_64').id }
   validates :product_id,
             :status,
             :project_id,
@@ -55,7 +56,6 @@ class ProductBuildList < ActiveRecord::Base
                   :params,
                   :project_version,
                   :commit_hash,
-                  :arch_id,
                   :product_id,
                   :not_delete
   attr_readonly :product_id
