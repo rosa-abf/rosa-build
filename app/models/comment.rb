@@ -86,7 +86,7 @@ class Comment < ActiveRecord::Base
   end
 
   def pull_comment?
-    return true if commentable.is_a?(Issue) && commentable.pull_request.present?
+    commentable.is_a?(Issue) && commentable.pull_request.present?
   end
 
   def set_additional_data params

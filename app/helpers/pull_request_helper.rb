@@ -1,7 +1,7 @@
 # -*- encoding : utf-8 -*-
 module PullRequestHelper
   def merge_activity comments, commits
-    common_comments, pull_comments = comments.partition {|c| c.data.blank?}
+    common_comments, pull_comments = comments.partition {|c| c.automatic || c.data.blank?}
     common_comments = common_comments.map{ |c| [c.created_at, c] }
     pull_comments = pull_comments.group_by(&:data).map{|data, c| [c.first.created_at, [data || {}, [c].flatten]]}
     commits = commits.map{ |c| [(c.committed_date || c.authored_date), c] }
