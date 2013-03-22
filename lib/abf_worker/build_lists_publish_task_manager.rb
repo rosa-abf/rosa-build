@@ -228,6 +228,17 @@ module AbfWorker
     end
 
     def create_rpm_build_task(save_to_repository_id, build_for_platform_id)
+      projects_for_cleanup = @redis.lrange(PROJECTS_FOR_CLEANUP, 0, -1).
+        select{ |k| k =~ /#{save_to_repository_id}\-#{build_for_platform_id}$/ }
+
+      # We should not to publish new builds into repository
+      # if project of builds has been removed from repository.
+      BuildList.where(
+        :project_id             => projects_for_cleanup.map{ |k| k.split('-')[0] }.uniq,
+        :save_to_repository_id  => repository.id,
+        :status                 => BuildList::BUILD_PUBLISH
+      ).update_all(:status => BuildList::FAILED_PUBLISH)
+
       build_lists = BuildList.
         where(:new_core => true, :status => BuildList::BUILD_PUBLISH).
         where(:save_to_repository_id => save_to_repository_id).
@@ -236,13 +247,6 @@ module AbfWorker
       locked_ids = @redis.lrange(LOCKED_BUILD_LISTS, 0, -1)
       build_lists = build_lists.where('build_lists.id NOT IN (?)', locked_ids) unless locked_ids.empty?
       build_lists = build_lists.limit(50)
-
-      project_ids = build_lists.pluck(:project_id).uniq
-      # Projects which should be removed:
-      # - /#{save_to_repository_id}\-#{build_for_platform_id}$/ - from repository;
-      # - /^(#{project_ids.join('|')})\-/ - not published in current transaction.
-      projects_for_cleanup = @redis.lrange(PROJECTS_FOR_CLEANUP, 0, -1).
-        select{ |k| k =~ /#{save_to_repository_id}\-#{build_for_platform_id}$/ && k !~ /^(#{project_ids.join('|')})\-/ }
 
       old_packages  = {:sources => [], :binaries => {:x86_64 => [], :i586 => []}}
 
