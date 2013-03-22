@@ -1,12 +1,11 @@
 # -*- encoding : utf-8 -*-
 class Comment < ActiveRecord::Base
-  belongs_to :commentable, :polymorphic => true
+  belongs_to :commentable, :polymorphic => true, :touch => true
   belongs_to :user
   belongs_to :project
   serialize :data
 
-  validates :body, :commentable_id, :commentable_type, :project_id, :presence => true
-  validates :user_id, :presence => true, :unless => lambda {|c| c.automatic}
+  validates :body, :user_id, :commentable_id, :commentable_type, :project_id, :presence => true
 
   scope :for_commit, lambda {|c| where(:commentable_id => c.id.hex, :commentable_type => c.class)}
   default_scope order("#{table_name}.created_at")
