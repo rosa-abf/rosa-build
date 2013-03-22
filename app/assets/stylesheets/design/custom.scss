@@ -982,6 +982,10 @@ table.diff {
 }
 
 /* Mass build forms */
+.publish-mass-build form input {
+    margin-bottom: 5px;
+}
+
 form.mass_build input[type="checkbox"] {
   width: 10px;
   height: 11px;
