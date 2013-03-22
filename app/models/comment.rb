@@ -132,6 +132,10 @@ class Comment < ActiveRecord::Base
   def self.create_link_on_issues_from_commits git_hook, commits
     system_user = User.find_by_uname 'rosa_system'
     commits.each do |commit|
+       # regexp take from http://code.google.com/p/concerto-platform/source/browse/v3/cms/lib/CodeMirror/mode/gfm/gfm.js?spec=svn861&r=861#71
+       # User/Project#Num
+       # User#Num
+       # #Num
       commit[1].scan(/(?:[a-zA-Z0-9\-_]*\/)?(?:[a-zA-Z0-9\-_]*)?#[0-9]+/).each do |hash|
         hash =~ /([a-zA-Z0-9\-_]*\/)?([a-zA-Z0-9\-_]*)?#([0-9]+)/
         owner_uname = Regexp.last_match[1].presence || git_hook.project.owner.uname
