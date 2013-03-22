@@ -26,3 +26,16 @@ end
 every 3.minute do
   runner 'AbfWorker::BuildListsPublishTaskManager.new.run', :output => 'log/task_manager.log'
 end
+
+every :day, :at => '4am' do
+  runner 'Product.autostart_iso_builds_once_a_12_hours',  :output => 'log/autostart_iso_builds.log'
+  runner 'Product.autostart_iso_builds_once_a_day',       :output => 'log/autostart_iso_builds.log'
+end
+
+every :day, :at => '4pm' do
+  runner 'Product.autostart_iso_builds_once_a_12_hours', :output => 'log/autostart_iso_builds.log'
+end
+
+every :sunday, :at => '4am' do
+  runner 'Product.autostart_iso_builds_once_a_week', :output => 'log/autostart_iso_builds.log'
+end

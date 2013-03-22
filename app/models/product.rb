@@ -52,15 +52,25 @@ class Product < ActiveRecord::Base
     I18n.t("layout.products.autostart_statuses.#{HUMAN_AUTOSTART_STATUSES[autostart_status]}")
   end
 
+  class << self
+    HUMAN_AUTOSTART_STATUSES.each do |autostart_status, human_autostart_status|
+      define_method "autostart_iso_builds_#{human_autostart_status}" do
+        autostart_iso_builds autostart_status
+      end
+    end
+  end
+
   def self.autostart_iso_builds(autostart_status)
     Product.where(:autostart_status => autostart_status).each do |product|
-      pbl = product.product_build_lists.new(:autostarted => true)
+      pbl = product.product_build_lists.new(
+        :autostarted  => true,
+        :base_url     => "http://#{product.platform.default_host}"
+      )
       [:params, :main_script, :time_living, :project].each do |k|
         pbl.send "#{k}=", product.send(k)
       end
       owner = product.platform.owner
       pbl.user = owner.is_a?(User) ? owner : owner.owner
-      pbl.base_url = "http://#{product.platform.default_host}"
       pbl.save
     end
   end
