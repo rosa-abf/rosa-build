@@ -43,16 +43,20 @@
           = mass_build.read_attribute 'missed_projects_count'
       %td
         =link_to_list @platform, mass_build, 'failed_builds_list'
-      %td.right
+      %td.right.mass-build-actions
         - if can?(:publish, mass_build)
-          - if mass_build.auto_publish?
-            = link_to t("layout.mass_builds.publish_success"), publish_platform_mass_build_path(@platform, mass_build.id), :method => :post
-            %br
-          = link_to t("layout.mass_builds.publish_test_failed"), publish_platform_mass_build_path(@platform, mass_build.id, :status => 'test_failed'), :method => :post
-          %br
-
+          - unless mass_build.auto_publish?
+            = link_to t('layout.mass_builds.publish_success'),
+                      publish_platform_mass_build_path(@platform, mass_build.id),
+                      :method => :post, :confirm => t("layout.confirm"), :class => 'button'
+          = link_to t('layout.mass_builds.publish_test_failed'),
+                    publish_platform_mass_build_path(@platform, mass_build.id, :status => 'test_failed'),
+                    :method => :post, :confirm => t("layout.confirm"), :class => 'button'
         - if can?(:cancel, mass_build)
-          = link_to image_tag('x.png'), cancel_platform_mass_build_path(@platform, mass_build.id), :method => :post, :confirm => t('layout.mass_builds.cancel_confirm')
+          = link_to t('layout.cancel'),
+                    cancel_platform_mass_build_path(@platform, mass_build.id),
+                    :method => :post, :class => 'button',
+                    :confirm => t('layout.mass_builds.cancel_confirm')
       %td
         %a.toggle_btn{:href => "#toggle_#{ mass_build.id }", :'data-target' => "#toggle_#{ mass_build.id }"}= t("layout.mass_builds.extended_data")
         .toggle{:id => "toggle_#{ mass_build.id }"}
