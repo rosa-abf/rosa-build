@@ -162,7 +162,7 @@ Rosa::Application.routes.draw do
       end
       resources :key_pairs, :only => [:create, :index, :destroy]
       resources :products do
-        resources :product_build_lists, :only => [:create, :destroy, :new, :show] do
+        resources :product_build_lists, :only => [:create, :destroy, :new, :show, :update] do
           member {
             get :log
             put :cancel

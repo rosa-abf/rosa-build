@@ -35,6 +35,24 @@
 - if pbl.build_started? || pbl.build_canceling?
   = render 'shared/log', { :build_started => true, :get_log_path => log_platform_product_product_build_list_path(pbl.product.platform, pbl.product, pbl) }
 
+- if pbl.build_completed? && can?(:update, pbl)
+  = form_for pbl, :url => platform_product_product_build_list_path(pbl.product.platform, pbl.product, pbl) do |f|
+    .leftlist= f.label :not_delete
+    .rightlist
+      = f.select :not_delete, [false, true].collect{|status| [t("layout.#{status}_"), status]}, {:selected => pbl.not_delete}
+      .both
+      %br
+      = submit_tag t('layout.update')
+    .both
+  - unless pbl.not_delete
+    .flash_notify
+      .alert.alert-error
+        - if pbl.autostarted?
+          = t('layout.product_build_lists.will_be_exist_2_weeks')
+        - else
+          = t('layout.product_build_lists.will_be_exist_3_months')
+    .both
+
 = render 'results', :subject => pbl
 
 :javascript

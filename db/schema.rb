@@ -315,6 +315,7 @@ ActiveRecord::Schema.define(:version => 20130322132919) do
     t.integer  "time_living"
     t.integer  "user_id"
     t.boolean  "not_delete",      :default => false
+    t.boolean  "autostarted",     :default => false
   end
 
   add_index "product_build_lists", ["product_id"], :name => "index_product_build_lists_on_product_id"

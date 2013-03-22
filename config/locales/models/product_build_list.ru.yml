@@ -1,6 +1,8 @@
 ru:
   layout:
     product_build_lists:
+      will_be_exist_2_weeks: Cборочный лист продукта будет доступен в течение двух недель
+      will_be_exist_3_months: Cборочный лист продукта будет доступен в течение трех месяцев
       logs: Логи (последнии 100 строк)
       work_env: Рабочее пространство
       iso_builder_folder: папка с содержимым GIT проекта
@@ -29,6 +31,7 @@ ru:
   activerecord:
     attributes:
       product_build_list:
+        not_delete: Не удалять
         id: Id
         user: Пользователь
         product: Продукт
@@ -52,4 +55,6 @@ ru:
     product_build_list:
       no_project: Проект для сборки должен присутствовать
       delete: Сборочный лист продукта удален
-      delete_error: Не удалось удалить cборочный лист продукта  
+      delete_error: Не удалось удалить cборочный лист продукта
+      updated: Cборочный лист продукта успешно обновлен
+      update_error: Не удалось обновить cборочный лист продукта
