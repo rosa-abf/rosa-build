@@ -31,6 +31,7 @@ en:
   activerecord:
     attributes:
       product_build_list:
+        autostarted: Autostart
         not_delete: Not delete
         id: Id
         user: User

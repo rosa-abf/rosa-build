@@ -25,6 +25,8 @@
 
 = render 'show_field', :key => :time_living, :value => (pbl.time_living / 60)
 
+= render 'show_field', :key => :autostarted, :value => t("layout.#{pbl.autostarted}_")
+
 = render 'show_field', :key => :notified_at, :value => l(pbl.updated_at, :format => :long)
 
 - if pbl.can_cancel? && can?(:cancel, pbl)
