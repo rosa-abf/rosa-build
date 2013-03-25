@@ -7,6 +7,7 @@ class User < Avatar
 
   devise :database_authenticatable, :registerable, :omniauthable, :token_authenticatable,# :encryptable, :timeoutable
          :recoverable, :rememberable, :validatable, :lockable, :confirmable#, :reconfirmable, :trackable
+  devise :omniauthable, :omniauth_providers => [:facebook, :google_oauth2, :github]
 
   has_one :notifier, :class_name => 'SettingsNotifier', :dependent => :destroy #:notifier
 
