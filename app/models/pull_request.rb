@@ -87,7 +87,7 @@ class PullRequest < ActiveRecord::Base
         system("git reset --hard HEAD^") # for diff maybe FIXME
 
         if old_commit.id == to_project.repo.commits(to_ref).first.id
-          raise "merge result pull_request #{id}: #{res}; #{res2}"
+          raise "merge result pull_request #{id}: #{$?.exitstatus}; #{res2}; #{res}"
         end
         set_user_and_time who
         merging
