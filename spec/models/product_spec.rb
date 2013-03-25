@@ -30,8 +30,10 @@ describe Product do
 
     context 'by autostart_status = once_a_12_hours' do
       before do
-        product.update_attributes(:autostart_status => Product::ONCE_A_12_HOURS)
-        FactoryGirl.create(:product, :autostart_status => Product::ONCE_A_DAY)
+        stub_symlink_methods
+        stub_redis
+        product.update_attributes(:autostart_status => Product::ONCE_A_12_HOURS, :main_script => 'text.sh')
+        FactoryGirl.create(:product, :autostart_status => Product::ONCE_A_DAY, :main_script => 'text.sh')
       end
 
       it 'should be created only one product_build_list' do
@@ -39,6 +41,7 @@ describe Product do
       end
 
       it 'product should has product_build_list' do
+        Product.autostart_iso_builds Product::ONCE_A_12_HOURS
         product.product_build_lists.should have(1).item
       end
 
