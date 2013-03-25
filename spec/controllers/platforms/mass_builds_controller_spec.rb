@@ -22,6 +22,16 @@ shared_examples_for 'mass_build platform owner' do
     @mass_build.reload.stop_build.should == true
   end
 
+  it 'should be able to perform publish action' do
+    post :publish, :platform_id => @platform, :id => @mass_build
+    response.should redirect_to(platform_mass_builds_path(@platform))
+  end
+
+  it 'should change build_publish on publish' do
+    post :publish, :platform_id => @platform, :id => @mass_build
+    @mass_build.reload.build_publish_count.should == 1
+  end
+
   it 'should not be able to perform cancel action if stop_build is true' do
     @mass_build.stop_build = true; @mass_build.save
     post :cancel, :platform_id => @platform, :id => @mass_build
@@ -34,10 +44,10 @@ shared_examples_for 'mass_build platform owner' do
 
   context 'for personal platform' do
     before(:each) do
-      Platform.update_all("platform_type = 'personal'")
+      Platform.update_all(:platform_type => 'personal')
     end
 
-    [:cancel, :get_list, :create].each do |action|
+    [:cancel, :get_list, :create, :publish].each do |action|
       it "should not be able to perform #{ action } action" do
         get action, :platform_id => @platform, :id => @mass_build.id
         response.should redirect_to(forbidden_path)
@@ -54,7 +64,7 @@ shared_examples_for 'mass_build platform reader' do
     end
   end
 
-  [:cancel, :get_list].each do |action|
+  [:cancel, :get_list, :publish].each do |action|
     it "should not be able to perform #{ action } action" do
       get action, :platform_id => @platform, :id => @mass_build.id
       response.should redirect_to(forbidden_path)
@@ -68,6 +78,11 @@ shared_examples_for 'mass_build platform reader' do
   it 'should not change stop_build on cancel' do
     post :cancel, :platform_id => @platform, :id => @mass_build
     @mass_build.reload.stop_build.should == false
+  end
+
+  it 'should not change build_publish on publish' do
+    post :publish, :platform_id => @platform, :id => @mass_build
+    @mass_build.reload.build_publish_count.should == 0
   end
 end
 
@@ -92,6 +107,7 @@ describe Platforms::MassBuildsController do
     }
 
     @mass_build = FactoryGirl.create(:mass_build, :platform => @platform, :user => @user, :projects_list => project.name)
+    FactoryGirl.create(:build_list_core, :mass_build => @mass_build, :status => BuildList::SUCCESS)
   end
 
   context 'for guest' do
@@ -107,9 +123,11 @@ describe Platforms::MassBuildsController do
       response.should redirect_to(new_user_session_path)
     end
 
-    it "should not be able to perform cancel action" do
-      post :cancel, :platform_id => @platform, :id => @mass_build
-      response.should redirect_to(new_user_session_path)
+    [:cancel, :publish].each do |action|
+      it "should not be able to perform #{action} action" do
+        post action, :platform_id => @platform, :id => @mass_build
+        response.should redirect_to(new_user_session_path)
+      end
     end
 
     it 'should not change objects count on create success' do
@@ -120,6 +138,12 @@ describe Platforms::MassBuildsController do
       post :cancel, :platform_id => @platform, :id => @mass_build
       @mass_build.reload.stop_build.should == false
     end
+
+    it 'should not change build_publish_count on publish' do
+      post :publish, :platform_id => @platform, :id => @mass_build
+      @mass_build.reload.build_publish_count.should == 0
+    end
+
   end
 
   context 'for global admin' do
