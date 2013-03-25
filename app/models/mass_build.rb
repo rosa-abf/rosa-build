@@ -28,7 +28,7 @@ class MassBuild < ActiveRecord::Base
 
   def build_all
     # later with resque
-    arches_list = arches ? Arch.where(:id => arches) : Arch.all
+    arches_list = arch_names ? Arch.where(:name => arch_names.split(', ')) : Arch.all
     auto_publish ||= false
 
     projects_list.lines.each do |name|
@@ -70,7 +70,23 @@ class MassBuild < ActiveRecord::Base
   end
   later :cancel_all, :queue => :clone_build
 
+  def publish_success_builds
+    publish BuildList::SUCCESS, BuildList::FAILED_PUBLISH
+  end
+  later :publish_success_builds, :queue => :clone_build
+
+  def publish_test_faild_builds
+    publish BuildList::TESTS_FAILED
+  end
+  later :publish_test_faild_builds, :queue => :clone_build
+
   private
+
+  def publish(*statuses)
+    build_lists.where(:status => statuses).order(:id).find_in_batches(:batch_size => 50) do |bls|
+      bls.each{ |bl| bl.can_publish? && bl.now_publish }
+    end
+  end
 
   def set_data
     if new_record?

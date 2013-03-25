@@ -12,10 +12,6 @@ json.product_build_list do |json|
       :project => @product_build_list.project, :json => json_project
   end
 
-  json.arch do |json_arch|
-    json_arch.(@product_build_list.arch, :id, :name)
-  end
-
   json.created_at @product_build_list.created_at.to_i
   json.updated_at @product_build_list.updated_at.to_i
 
