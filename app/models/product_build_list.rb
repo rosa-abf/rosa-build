@@ -38,7 +38,7 @@ class ProductBuildList < ActiveRecord::Base
   belongs_to :user
 
   # see: Issue #6
-  before_validation lambda { self.arch_id = Arch.find_by_name('x86_64').id }
+  before_validation lambda { self.arch_id = Arch.find_by_name('x86_64').id }, :on => :create
   validates :product_id,
             :status,
             :project_id,
