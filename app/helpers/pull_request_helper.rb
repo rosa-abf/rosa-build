@@ -23,7 +23,7 @@ module PullRequestHelper
   end
 
   def pull_header pull
-    str = "#{t '.header'} #{t 'from'} <span class='label-bootstrap label-info font14'> \
+    str = "#{t '.header'} #{t 'from'} <span class='state label-bootstrap label-info font14'> \
    #{show_ref pull, 'from'}</span> \
    #{t 'into'} <span class='label-bootstrap label-info font14'> \
    #{show_ref pull, 'to'}</span>"

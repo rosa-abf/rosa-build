@@ -1,5 +1,12 @@
 # -*- encoding : utf-8 -*-
 class Comment < ActiveRecord::Base
+  # regexp take from http://code.google.com/p/concerto-platform/source/browse/v3/cms/lib/CodeMirror/mode/gfm/gfm.js?spec=svn861&r=861#71
+  # User/Project#Num
+  # User#Num
+  # #Num
+  ISSUES_REGEX = /(?:[a-zA-Z0-9\-_]*\/)?(?:[a-zA-Z0-9\-_]*)?#[0-9]+/
+  ISSUE_REGEX   = /([a-zA-Z0-9\-_]*\/)?([a-zA-Z0-9\-_]*)?#([0-9]+)/
+
   belongs_to :commentable, :polymorphic => true, :touch => true
   belongs_to :user
   belongs_to :project
@@ -129,29 +136,37 @@ class Comment < ActiveRecord::Base
     return true
   end
 
-  def self.create_link_on_issues_from_commits git_hook, commits
-    system_user = User.find_by_uname 'rosa_system'
-    commits.each do |commit|
-       # regexp take from http://code.google.com/p/concerto-platform/source/browse/v3/cms/lib/CodeMirror/mode/gfm/gfm.js?spec=svn861&r=861#71
-       # User/Project#Num
-       # User#Num
-       # #Num
-      commit[1].scan(/(?:[a-zA-Z0-9\-_]*\/)?(?:[a-zA-Z0-9\-_]*)?#[0-9]+/).each do |hash|
-        hash =~ /([a-zA-Z0-9\-_]*\/)?([a-zA-Z0-9\-_]*)?#([0-9]+)/
-        owner_uname = Regexp.last_match[1].presence || git_hook.project.owner.uname
-        project_name = Regexp.last_match[2].presence || git_hook.project.name
+  def self.create_link_on_issues_from_item item, opts = {}
+    linker = item.user.present? ? item.user : User.find_by_uname('rosa_system')
+    elements = if item.is_a? Comment
+                          [[item, item.body]]
+                        elsif item.is_a? GitHook
+                          opts[:commits]
+                        end
+
+    elements.each do |element|
+      element[1].scan(ISSUES_REGEX).each do |hash|
+        hash =~ ISSUE_REGEX
+        owner_uname = Regexp.last_match[1].presence || item.project.owner.uname
+        project_name = Regexp.last_match[2].presence || item.project.name
         serial_id = Regexp.last_match[3]
         project = Project.find_by_owner_and_name(owner_uname.chomp('/'), project_name)
+        #raise "hash = #{hash}; owner_uname = #{owner_uname}; project_name = #{project_name}; serial_id = #{serial_id}"
         next unless project
-        next unless Ability.new(git_hook.user).can? :read, project
+        next unless Ability.new(item.user).can? :read, project
         issue = project.issues.where(:serial_id => serial_id).first
         next unless issue
-        repo_commit = git_hook.project.repo.commit commit[0]
-        comment = system_user.comments.new :body => 'automatic comment'
-        comment.commentable = issue
-        comment.automatic = true
-        comment.project = project
-        comment.data = {:commit_project_id => git_hook.project.id, :commit_hash => commit[0]}
+        next if issue == item.try(:commentable) # dont create link to the same issue
+        comment = linker.comments.new :body => 'automatic comment'
+        comment.commentable, comment.project, comment.automatic = issue, project, true
+        if item.is_a? Comment
+          comment.data = {:issue_serial_id => item.commentable.serial_id, :comment_id => item.id}
+        elsif item.is_a? GitHook
+          repo_commit = git_hook.project.repo.commit element[0]
+          next unless repo_commit
+          comment.data = {:commit_hash => commit[0]}
+        end
+        comment.data.merge! :from_project_id => item.project.id
         comment.save
       end
     end

@@ -25,6 +25,8 @@ ru:
         syntax_highlighting: Подсветка синтаксиса
         indent_code: Отступ кода на 4 пробела
         inline_code: Встроенный код в строке
+      reference: "%{user} ссылается на данную задачу"
+      removed: Комментарий был удален и более недоступен.
 
   flash:
     comment:

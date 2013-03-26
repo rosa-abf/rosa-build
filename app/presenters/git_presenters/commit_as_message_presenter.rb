@@ -9,7 +9,7 @@ class GitPresenters::CommitAsMessagePresenter < ApplicationPresenter
     comment = opts[:comment]
     @issue_reference = !!comment # is it reference issue from commit
     @project = if comment
-                        Project.where(:id => opts[:comment].data[:commit_project_id]).first
+                        Project.where(:id => opts[:comment].data[:from_project_id]).first
                       else
                         opts[:project]
                       end
@@ -70,6 +70,10 @@ class GitPresenters::CommitAsMessagePresenter < ApplicationPresenter
   end
 
   def comment_id?
+    false
+  end
+
+  def issue_referenced_state?
     false
   end
 
