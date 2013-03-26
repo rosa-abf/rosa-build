@@ -7,9 +7,10 @@
 #  runner "Download.parse_and_remove_nginx_log"
 #end
 
-every :day, :at => '4:10 am' do
-  rake "product_build_list:clear:outdated", :output => 'log/product_build_list_clear.log'
-end
+# TODO: Uncomment when all needed product build lists will be updated.
+# every :day, :at => '4:10 am' do
+#   rake "product_build_list:clear:outdated", :output => 'log/product_build_list_clear.log'
+# end
 
 every :day, :at => '4:00 am' do
   rake "import:sync:all", :output => 'log/sync.log'
