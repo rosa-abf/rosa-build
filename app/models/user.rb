@@ -99,20 +99,6 @@ class User < Avatar
              { :value => login.downcase, :orig_value => login }]).first
     end
 
-    def new_with_session(params, session)
-      super.tap do |user|
-        if data = session["devise.omniauth_data"]
-          if info = data['info'] and info.present?
-            user.email = info['email'].presence if user.email.blank?
-            user.uname ||= info['nickname'].presence || info['username'].presence
-            user.name ||= info['name'].presence || [info['first_name'], info['last_name']].join(' ').strip
-          end
-          user.password = Devise.friendly_token[0,20] # stub password
-          user.authentications.build :uid => data['uid'], :provider => data['provider']
-        end
-      end
-    end
-
     def auth_by_token_or_login_pass(user, pass)
       u = User.find_for_database_authentication(:login => user)
       u if u && !u.access_locked? && (u.authentication_token == user || u.valid_password?(pass))

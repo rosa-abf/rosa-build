@@ -47,18 +47,18 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
           email = auth['info']['email']
         when 'github'
           name =  auth['info']['nickname']
-          email = auth['info']['email'] || "#{name}@github.com"
+          email = auth['info']['email']
         else
           raise 'Provider #{provider} not handled'
         end
-          user = User.create!(
-            :uname    => "#{provider.gsub(/_oauth2/,'')}_#{uid}",
-            :name     => name,
-            :email    => email,
-            :password => Devise.friendly_token[0,20]
-          )
-          user.confirmed_at = Time.zone.now
-          user.save
+          user = User.find_or_initialize_by_email(email)
+          if user.new_record?
+            user.name     = name
+            user.uname    = name.gsub(/\s/, '').underscore
+            user.password = Devise.friendly_token[0,20]
+            user.confirmed_at = Time.zone.now
+            user.save
+          end
           authentication.user = user
       end
       authentication.save!
