@@ -1,6 +1,6 @@
 json.product_build_list do |json|
   json.partial! 'product_build_list', :product_build_list => @product_build_list, :json => json
-  json.(@product_build_list, :commit_hash, :main_script, :params)
+  json.(@product_build_list, :commit_hash, :main_script, :params, :not_delete, :autostarted)
 
   json.product do |json_product|
     json.partial! 'api/v1/products/product',

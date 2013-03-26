@@ -11,6 +11,10 @@ en:
       new_header: New product
       edit_header: Product editing
       confirm_delete: Are you sure you want to delete this product?
+      autostart_statuses:
+        once_a_12_hours: Once a 12 hours
+        once_a_day: Once a day
+        once_a_week: Once a week
 
   flash:
     product:
@@ -25,6 +29,7 @@ en:
       product: Product
     attributes:
       product:
+        autostart_status: Autostart
         name: Name
         description: Description
         platform_id: Platform

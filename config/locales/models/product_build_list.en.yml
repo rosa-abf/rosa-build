@@ -1,6 +1,8 @@
 en:
   layout:
     product_build_lists:
+      will_be_exist_2_weeks: Product build list will be exist in two weeks
+      will_be_exist_3_months: Product build list will be exist in three months
       logs: Logs (last 100 lines)
       work_env: Work environment
       iso_builder_folder: folder with contents of the GIT project
@@ -29,6 +31,8 @@ en:
   activerecord:
     attributes:
       product_build_list:
+        autostarted: Autostart
+        not_delete: Not delete
         id: Id
         user: User
         product: Product
@@ -53,3 +57,5 @@ en:
       no_project: Project for build should be exist
       delete: Product build list deleted
       delete_error: Unable to delete product build list
+      updated: Product build list updated
+      update_error: Unable to update product build list
