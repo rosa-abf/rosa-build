@@ -156,6 +156,9 @@ class ActivityFeedObserver < ActiveRecord::Observer
           )
         end
       end
+    when 'Comment'
+      # dont remove outdated issues link
+      Comment.create_link_on_issues_from_item(record)
     end
   end
 end
