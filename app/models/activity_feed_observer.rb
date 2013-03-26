@@ -83,7 +83,6 @@ class ActivityFeedObserver < ActiveRecord::Observer
                           :change_type => change_type, :project_owner => record.project.owner.uname}
       else
         if record.message # online update
-          #FIXME using oldrev is a hack (only for online edit).
           last_commits, commits = [[record.newrev, record.message]], []
         else
           commits = record.project.repo.commits_between(record.oldrev, record.newrev)
