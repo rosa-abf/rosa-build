@@ -27,8 +27,7 @@
           .text=t('devise.sessions.remember_me')
         .in=f.submit t('layout.devise.shared_links.sign_in'), :class => 'button', :id => 'btnLogin'
       %div{:style => "clear: both;"}
-      .hr
-      .both
+    = render 'devise/shared/providers'
   .forgot
     .password
       %p= link_to t("layout.devise.shared_links.forgot_password"), new_password_path(resource_name)

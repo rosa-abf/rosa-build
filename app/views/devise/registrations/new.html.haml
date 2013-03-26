@@ -33,11 +33,7 @@
       .in
         =f.submit t("layout.devise.shared_links.sign_up"), :class => 'button', :id => 'btnLogin'
       .both
-
-      - if devise_mapping.omniauthable?
-        - resource_class.omniauth_providers.each do |provider|
-          = link_to "Sign in with #{provider.to_s.titleize}", omniauth_authorize_path(resource_name, provider)
-          %br
+    = render 'devise/shared/providers'
 
   =showDeviseHintError(:login, uname_error)
   =showDeviseHintError(:name, name_error)

@@ -21,3 +21,25 @@ div.error.forgot {
 div.error.reset {
   margin-top: -141px;
   margin-left: 645px; }
+
+article {
+  height: auto;
+  padding-bottom: 10px;
+  .hr {
+    margin-top: 10px;
+    border-bottom: 1px solid #264862;
+    border-top: 1px solid #264862;
+    height: 1px;
+  }
+  a {
+    text-decoration: none;
+  }
+  .other {
+    .left {
+      margin-top: 6px;
+    }
+    .right {
+      margin-top: 13px;
+    }
+  }
+}

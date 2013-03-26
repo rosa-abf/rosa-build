@@ -87,6 +87,7 @@ ru:
 
     sessions:
       sign_in_header: Вход в систему
+      sign_up_with: "Зарегистрироваться с:"
 
     private_users:
       list: Список
