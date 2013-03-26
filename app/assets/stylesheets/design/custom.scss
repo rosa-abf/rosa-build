@@ -1896,3 +1896,101 @@ table#myTable thead tr.search th form.button_to div input {
         padding: 7px 5px 3px;
     }
 }
+
+article .activity .top {
+  
+  .created {
+    margin-left: 50px;
+    span, a {
+        font-size: 11px;
+    }
+  }
+  .issue_title.text {
+    max-width: none;
+    float: none;
+    margin-left: 50px;
+    padding: 0;
+  }
+  h3.issue_title {
+    margin: 5px 0 0;
+    font-size: 18px;
+  }
+  .assigned-header {
+    padding: 10px 20px;
+    border: 1px solid #D6D6D6;
+    margin: 10px -7px;
+    border-left: none;
+    border-right: none;
+  }  
+}
+
+#assigned-container {
+    .icon-share {
+        cursor: pointer;
+    }
+    .image {
+        float: left;
+        width: auto;
+        height: auto;
+        margin: -1px 5px 0 0;
+        img {
+            width: 16px;
+            height: 16px;
+        }
+    }
+    .name {
+        margin-left: 5px;
+    }
+}
+
+
+#assigned-popup {
+    position: absolute;
+    margin: 5px 0 0 130px;
+    display: none;
+    min-width: 240px;
+    border: 1px solid #b3cce0;
+    background: #FFF;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    box-shadow: 0 3px 7px rgba(0, 0, 0, 0.3);
+    border-radius: 5px;
+    .header .icon-remove-circle {
+        cursor: pointer;
+        float: right;
+    }
+    .header {
+        padding: 10px;
+        background: #dcecfa;
+        border-bottom: 1px solid #D6D6D6;
+        font-weight: bold;
+        .title { display: inline-block; }
+    }
+    .search-container {
+        padding: 10px 15px 10px 10px;
+        border-bottom: 1px solid #D6D6D6;
+        input {
+            width: 100%;
+            max-width: 100%;
+        }
+    }
+    .edit_assignee {
+        display: none;
+    }
+    #manage_issue_users_list {
+        overflow-y: auto;
+        overflow-x: hidden;
+        max-height: 280px;
+        .people, .nothing {
+            margin: 0;
+            width: 100%;
+            padding: 10px 20px 10px 10px;
+        }
+        .clear, .nothing {
+            opacity: 0.8;
+        }
+        .container {
+            display: none;
+        }
+    }
+}

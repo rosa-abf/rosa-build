@@ -1,8 +1,7 @@
 =render 'title_body', :f => f, :id => 'new'
 .leftlist= t('activerecord.attributes.issue.assignee') + ':'
-.rightlist
-  %span#people-span.small-text= t('layout.issues.choose_user_on_left')
-  #issue_assignee
+#assigned-container.rightlist
+  =render 'user_container', :user => @issue.assignee
 .both
 .leftlist= t('layout.issues.labels') + ':'
 .rightlist

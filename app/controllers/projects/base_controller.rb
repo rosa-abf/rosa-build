@@ -5,6 +5,13 @@ class Projects::BaseController < ApplicationController
 
   protected
 
+  def find_collaborators
+    search = "%#{params[:search_user]}%"
+    users = User.joins(:groups => :projects).where(:projects => {:id => @project.id}).where("users.uname ILIKE ?", search)
+    users2 = @project.collaborators.where("users.uname ILIKE ?", search)
+    @users = (users + users2).uniq.sort {|x,y| x.uname <=> y.uname}.first(10)
+  end
+
   def find_project
     @project = Project.find_by_owner_and_name!(params[:owner_name], params[:project_name]) if params[:owner_name] && params[:project_name]
   end

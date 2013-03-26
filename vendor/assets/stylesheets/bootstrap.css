@@ -835,3 +835,9 @@ a.badge:hover {
 .icon-chevron-down {
   background-position: -313px -119px;
 }
+.icon-share {
+  background-position: -120px -72px;
+}
+.icon-remove-circle {
+  background-position: -168px -96px;
+}
