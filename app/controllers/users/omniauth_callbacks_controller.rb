@@ -41,25 +41,20 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
         case provider
         when 'facebook'
           name  = auth['extra']['raw_info']['name']
-          email = auth['info']['email']
-        when 'google_oauth2'
-          name =  auth['info']['name']
-          email = auth['info']['email']
-        when 'github'
-          name =  auth['info']['nickname']
-          email = auth['info']['email']
+        when 'google_oauth2', 'github'
+          name = auth['info']['nickname'] || auth['info']['name']
         else
           raise 'Provider #{provider} not handled'
         end
-          user = User.find_or_initialize_by_email(email)
-          if user.new_record?
-            user.name     = name
-            user.uname    = name.gsub(/\s/, '').underscore
-            user.password = Devise.friendly_token[0,20]
-            user.confirmed_at = Time.zone.now
-            user.save
-          end
-          authentication.user = user
+        user = User.find_or_initialize_by_email(auth['info']['email'])
+        if user.new_record?
+          user.name     = name
+          user.uname    = name.gsub(/\s/, '').underscore
+          user.password = Devise.friendly_token[0,20]
+          user.confirmed_at = Time.zone.now
+          user.save
+        end
+        authentication.user = user
       end
       authentication.save
     end
