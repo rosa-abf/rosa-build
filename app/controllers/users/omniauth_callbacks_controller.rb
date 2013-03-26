@@ -22,7 +22,7 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
   def oauthorize(kind)
     provider = kind.downcase
     @user = find_for_ouath(env["omniauth.auth"], current_user)
-    if @user.persisted?
+    if @user && @user.persisted?
       flash[:notice] = I18n.t "devise.omniauth_callbacks.success", :kind => action_name.classify
       sign_in_and_redirect @user, :event => :authentication
     else
@@ -35,9 +35,9 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
     provider, uid   = auth['provider'], auth['uid']
     authentication  = Authentication.find_or_initialize_by_provider_and_uid(provider, uid)
     if authentication.new_record?
-      if user_signed_in? # Register new user from session
+      if user_signed_in? # New authentication method for current_user
         authentication.user = current_user
-      else
+      else # Register new user from session
         case provider
         when 'facebook'
           name  = auth['extra']['raw_info']['name']
@@ -61,7 +61,7 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
           end
           authentication.user = user
       end
-      authentication.save!
+      authentication.save
     end
     return authentication.user
   end
