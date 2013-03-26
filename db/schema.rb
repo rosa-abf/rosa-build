@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130319172358) do
+ActiveRecord::Schema.define(:version => 20130326165628) do
 
   create_table "activity_feeds", :force => true do |t|
     t.integer  "user_id",    :null => false
@@ -151,15 +151,20 @@ ActiveRecord::Schema.define(:version => 20130319172358) do
     t.text     "body"
     t.datetime "created_at",                                                         :null => false
     t.datetime "updated_at",                                                         :null => false
-    t.decimal  "commentable_id",   :precision => 50, :scale => 0
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.decimal  "commentable_id",           :precision => 50, :scale => 0
     t.integer  "project_id"
     t.text     "data"
-    t.boolean  "automatic",                                       :default => false
+    t.boolean  "automatic",                :default => false
+    t.decimal  "created_from_commit_hash", :precision => 50, :scale => 0
+    t.integer  "created_from_issue_id"
   end
 
   add_index "comments", ["automatic"], :name => "index_comments_on_automatic"
   add_index "comments", ["commentable_id"], :name => "index_comments_on_commentable_id"
   add_index "comments", ["commentable_type"], :name => "index_comments_on_commentable_type"
+  add_index "comments", ["created_from_issue_id"], :name => "index_comments_on_created_from_issue_id"
 
   create_table "event_logs", :force => true do |t|
     t.integer  "user_id"

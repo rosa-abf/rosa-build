@@ -14,7 +14,7 @@ class CommentPresenter < ApplicationPresenter
     else
       issue = Issue.where(:project_id => comment.data[:from_project_id], :serial_id => comment.data[:issue_serial_id]).first
       @referenced_issue = issue.pull_request || issue
-      if issue
+      if issue && Comment.exists?(comment.data[:comment_id])
         title = if issue == opts[:commentable]
                      "#{issue.serial_id}"
                     elsif issue.project.owner == opts[:commentable].project.owner

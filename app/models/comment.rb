@@ -151,20 +151,23 @@ class Comment < ActiveRecord::Base
         project_name = Regexp.last_match[2].presence || item.project.name
         serial_id = Regexp.last_match[3]
         project = Project.find_by_owner_and_name(owner_uname.chomp('/'), project_name)
-        #raise "hash = #{hash}; owner_uname = #{owner_uname}; project_name = #{project_name}; serial_id = #{serial_id}"
+
         next unless project
         next unless Ability.new(item.user).can? :read, project
         issue = project.issues.where(:serial_id => serial_id).first
         next unless issue
         next if issue == item.try(:commentable) # dont create link to the same issue
+        # dont create duplicate link to issue
+        next if item.is_a? Comment && Comment.exists?(:automatic => true, :created_from_issue_id => item.commentable_id)
         comment = linker.comments.new :body => 'automatic comment'
         comment.commentable, comment.project, comment.automatic = issue, project, true
         if item.is_a? Comment
           comment.data = {:issue_serial_id => item.commentable.serial_id, :comment_id => item.id}
+          comment.created_from_issue_id = item.commentable_id
         elsif item.is_a? GitHook
           repo_commit = git_hook.project.repo.commit element[0]
           next unless repo_commit
-          comment.data = {:commit_hash => commit[0]}
+          comment.data = {commit_hash => commit[0]}
         end
         comment.data.merge! :from_project_id => item.project.id
         comment.save
