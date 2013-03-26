@@ -1,10 +1,5 @@
 # -*- encoding : utf-8 -*-
 class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
-  require 'uuidtools'
-
-  # def facebook
-  #   generic
-  # end
 
   def facebook
     oauthorize 'Facebook'
@@ -40,30 +35,35 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
     provider, uid   = auth['provider'], auth['uid']
     authentication  = Authentication.find_or_initialize_by_provider_and_uid(provider, uid)
     if authentication.new_record?
-      unless user_signed_in? # Register new user from session
+      if user_signed_in? # Register new user from session
+        authentication.user = current_user
+      else
         case provider
         when 'facebook'
           name  = auth['extra']['raw_info']['name']
           email = auth['info']['email']
         when 'google_oauth2'
-          name =  auth['info']['nickname']
+          name =  auth['info']['name']
           email = auth['info']['email']
         when 'github'
-
+          name =  auth['info']['nickname']
+          email = auth['info']['email'] || "#{name}@github.com"
         else
           raise 'Provider #{provider} not handled'
         end
-          user = User.create(
-            :uname    => "#{provider}-#{uid}",
+          user = User.create!(
+            :uname    => "#{provider.gsub(/_oauth2/,'')}_#{uid}",
             :name     => name,
             :email    => email,
             :password => Devise.friendly_token[0,20]
           )
+          user.confirmed_at = Time.zone.now
+          user.save
+          authentication.user = user
       end
-      authentication.user = current_user
-      authentication.save
+      authentication.save!
     end
-    return user
+    return authentication.user
   end
  
 end
