@@ -158,7 +158,7 @@ class Comment < ActiveRecord::Base
         next unless issue
         next if issue == item.try(:commentable) # dont create link to the same issue
         # dont create duplicate link to issue
-        next if item.is_a? Comment && Comment.exists?(:automatic => true, :created_from_issue_id => item.commentable_id)
+        next if item.is_a?(Comment) && Comment.exists?(:automatic => true, :created_from_issue_id => item.commentable_id)
         comment = linker.comments.new :body => 'automatic comment'
         comment.commentable, comment.project, comment.automatic = issue, project, true
         if item.is_a? Comment
