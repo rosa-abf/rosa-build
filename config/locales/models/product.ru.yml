@@ -32,6 +32,7 @@ ru:
         autostart_status: Автостарт
         name: Название
         description: Описание
+        project_version: Версия
         platform_id: Платформа
         build_status: Статус последней сборки
         created_at: Создан

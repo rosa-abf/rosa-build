@@ -1,3 +1,5 @@
+- act = action_name.to_sym
+
 .leftlist= f.label :name
 .rightlist= f.text_field :name, :class => 'text_field'
 .both
@@ -7,10 +9,11 @@
 .both
 
 .leftlist= f.label :project
-.rightlist= f.autocomplete_field :project, autocomplete_project_platform_products_path(@platform), :id_element => 'src_project_id', :name => 'src_project', :value => @product.project.try(:name_with_owner)
+.rightlist
+  = f.autocomplete_field :project, autocomplete_project_platform_products_path(@platform), :id_element => 'src_project_id', :name => 'src_project', :value => @product.project.try(:name_with_owner)
 .both
 
-.leftlist= f.label :project_version, t("activerecord.attributes.product_build_list.project_version")
+.leftlist= f.label :project_version
 .rightlist= f.select :project_version, versions_for_group_select(@product.project), {:selected => params[:products].try(:fetch, :project_version) || @product.project_version, :include_blank => true}
 .both
 
