@@ -27,6 +27,11 @@ class Api::V1::ProductBuildListsController < Api::V1::BaseController
   def show
   end
 
+  def update
+    params[:product_build_list] = {:not_delete => (params[:product_build_list] || {})[:not_delete]}
+    update_subject @product_build_list
+  end
+
   def destroy
     destroy_subject @product_build_list
   end

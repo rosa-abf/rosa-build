@@ -65,7 +65,7 @@ class Api::V1::BaseController < ApplicationController
 
   def update_subject(subject)
     class_name = subject.class.name
-    if subject.update_attributes(params[class_name.downcase.to_sym] || {})
+    if subject.update_attributes(params[class_name.underscore.to_sym] || {})
       render_json_response subject, "#{class_name} has been updated successfully"
     else
       render_validation_error subject, "#{class_name} has not been updated"

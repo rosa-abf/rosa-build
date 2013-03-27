@@ -6,6 +6,9 @@ class ProductBuildList < ActiveRecord::Base
   include AbfWorker::ModelHelper
   delegate :url_helpers, to: 'Rails.application.routes'
 
+  LIVE_TIME     = 2.week  # for autostart
+  MAX_LIVE_TIME = 3.month # for manual start;
+
   BUILD_COMPLETED       = 0
   BUILD_FAILED          = 1
   BUILD_PENDING         = 2
@@ -35,7 +38,9 @@ class ProductBuildList < ActiveRecord::Base
   belongs_to :user
 
   # see: Issue #6
-  before_validation lambda { self.arch_id = Arch.find_by_name('x86_64').id }
+  before_validation lambda { self.arch_id = Arch.find_by_name('x86_64').id }, :on => :create
+  # field "not_delete" can be changed only if build has been completed
+  before_validation lambda { self.not_delete = false unless build_completed?; true }
   validates :product_id,
             :status,
             :project_id,
@@ -53,7 +58,8 @@ class ProductBuildList < ActiveRecord::Base
                   :params,
                   :project_version,
                   :commit_hash,
-                  :product_id
+                  :product_id,
+                  :not_delete
   attr_readonly :product_id
   serialize :results, Array
 
@@ -63,6 +69,8 @@ class ProductBuildList < ActiveRecord::Base
   scope :for_user, lambda { |user| where(:user_id => user.id)  }
   scope :scoped_to_product_name, lambda {|product_name| joins(:product).where('products.name LIKE ?', "%#{product_name}%")}
   scope :recent, order("#{table_name}.updated_at DESC")
+  scope :outdated, where(:not_delete => false).
+    where("(#{table_name}.created_at < ? AND #{table_name}.autostarted is TRUE) OR #{table_name}.created_at < ?", Time.now - LIVE_TIME, Time.now - MAX_LIVE_TIME)
 
   after_create :add_job_to_abf_worker_queue
   before_destroy :can_destroy?

@@ -1,8 +1,7 @@
 -content_for :sidebar do
   - if current_user
     =form_tag project_issues_path(@project), :id => 'filter_issues', :method => :get do
-      .bordered.nopadding
-        %h3=t("layout.issues.accessory")
+      .bordered
         %table
           %tr
             %td.width18=radio_button_tag :myradio, 'all', !@is_assigned_to_me, {:id => 'myradio1', :class => 'niceRadio', :name => 'filter'}

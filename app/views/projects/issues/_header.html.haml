@@ -1,13 +1,18 @@
-%h3.issue_title=@issue.title
 .activity
   .top
     .image
       =image_tag(avatar_url(@issue.user, :medium), :alt => 'avatar') if @issue.user
-    .text
-      %span.name=link_to(@issue.user.fullname, user_path(@issue.user)) if @issue.user
-      %br/
-      %span.date=@issue.created_at.to_s(:long)
-      %br/
+    .created
+      %span=@issue.created_at.to_s(:long)
+      - if @issue.user
+        %span= t('layout.by') 
+        %span.name=link_to(@issue.user.fullname, user_path(@issue.user))
+    .text.issue_title
+      %h3.issue_title=@issue.title
+    .both
+    #assigned-container.assigned-header
+      =render 'projects/issues/user_container', :user => @issue.assignee
+      =render 'projects/issues/assigned_popup'
     .both
     .fulltext.view.issue_body.formatted.cm-s-default.md_and_cm=markdown @issue.body
 .both
