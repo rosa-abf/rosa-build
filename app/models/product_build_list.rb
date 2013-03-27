@@ -39,7 +39,8 @@ class ProductBuildList < ActiveRecord::Base
 
   # see: Issue #6
   before_validation lambda { self.arch_id = Arch.find_by_name('x86_64').id }, :on => :create
-  before_validation lambda { self.not_delete = false unless build_completed? }
+  # field "not_delete" can be changed only if build has been completed
+  before_validation lambda { self.not_delete = false unless build_completed?; true }
   validates :product_id,
             :status,
             :project_id,
