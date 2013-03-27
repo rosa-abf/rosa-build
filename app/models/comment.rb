@@ -151,14 +151,14 @@ class Comment < ActiveRecord::Base
         project_name = Regexp.last_match[1] ? Regexp.last_match[2] : item.project.name
         serial_id = Regexp.last_match[3]
         project = Project.find_by_owner_and_name(owner_uname.chomp('/'), project_name)
-
         next unless project
         next unless Ability.new(item.user).can? :read, project
         issue = project.issues.where(:serial_id => serial_id).first
         next unless issue
         next if issue == item.try(:commentable) # dont create link to the same issue
         # dont create duplicate link to issue
-        next if item.is_a?(Comment) && Comment.exists?(:automatic => true, :created_from_issue_id => item.commentable_id)
+        next if item.is_a?(Comment) && Comment.exists?(:automatic => true, :commentable_type => issue.class.name,
+                                                                                     :commentable_id => issue.id, :created_from_issue_id => item.commentable_id)
         comment = linker.comments.new :body => 'automatic comment'
         comment.commentable, comment.project, comment.automatic = issue, project, true
         if item.is_a? Comment
