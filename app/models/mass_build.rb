@@ -55,9 +55,16 @@ class MassBuild < ActiveRecord::Base
 
   def generate_failed_builds_list
     report = ""
-    BuildList.where(:status => BuildList::BUILD_ERROR, :mass_build_id => self.id).each do |build_list|
-      report << "ID: #{build_list.id}; "
-      report << "PROJECT_NAME: #{build_list.project.name}\n"
+    BuildList.select('build_lists.id, projects.name as project_name, arches.name as arch_name').
+    where(
+      :status => BuildList::BUILD_ERROR,
+      :mass_build_id => self.id
+    ).joins(:project, :arch).find_in_batches(:batch_size => 100) do |build_lists|
+      build_lists.each do |build_list|
+        report << "ID: #{build_list.id}; "
+        report << "PROJECT_NAME: #{build_list.project_name}; "
+        report << "ARCH: #{build_list.arch_name}\n"
+      end
     end
     report
   end
