@@ -157,19 +157,25 @@ class Comment < ActiveRecord::Base
         next unless issue
         next if issue == item.try(:commentable) # dont create link to the same issue
         # dont create duplicate link to issue
-        next if item.is_a?(Comment) && Comment.exists?(:automatic => true, :commentable_type => issue.class.name,
-                                                                                     :commentable_id => issue.id, :created_from_issue_id => item.commentable_id)
+        find_dup = {:automatic => true, :commentable_type => issue.class.name, :commentable_id => issue.id}
+        if (item.commentable_type == 'Issue' &&
+             Comment.exists?(find_dup.merge :created_from_issue_id => item.commentable_id)) ||
+           (item.commentable_type == 'Grit::Commit' &&
+            Comment.exists?(find_dup.merge :created_from_commit_hash => item.commentable_id))
+          next
+        end
         comment = linker.comments.new :body => 'automatic comment'
         comment.commentable, comment.project, comment.automatic = issue, project, true
-        if item.is_a? Comment
-          comment.data = {:issue_serial_id => item.commentable.serial_id, :comment_id => item.id}
+        comment.data = {:comment_id => item.id, :from_project_id => item.project.id}
+        if item.is_a?(Comment) && item.commentable_type == 'Issue'
           comment.created_from_issue_id = item.commentable_id
+        elsif item.is_a?(Comment) && item.commentable_type == 'Grit::Commit'
+          comment.created_from_commit_hash = item.commentable_id
         elsif item.is_a? GitHook
           repo_commit = git_hook.project.repo.commit element[0]
           next unless repo_commit
-          comment.data = {commit_hash => commit[0]}
+          comment.data.merge! :commit_hash => commit[0]
         end
-        comment.data.merge! :from_project_id => item.project.id
         comment.save
       end
     end
