@@ -32,6 +32,7 @@ en:
         autostart_status: Autostart
         name: Name
         description: Description
+        project_version: Version
         platform_id: Platform
         build_status: Build status
         created_at: Created

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130322132919) do
+ActiveRecord::Schema.define(:version => 20130327120129) do
 
   create_table "activity_feeds", :force => true do |t|
     t.integer  "user_id",    :null => false
@@ -331,6 +331,7 @@ ActiveRecord::Schema.define(:version => 20130322132919) do
     t.string   "main_script"
     t.integer  "time_living"
     t.integer  "autostart_status"
+    t.string   "project_version"
   end
 
   create_table "project_imports", :force => true do |t|
