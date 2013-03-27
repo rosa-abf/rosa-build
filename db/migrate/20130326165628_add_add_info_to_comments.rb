@@ -4,5 +4,6 @@ class AddAddInfoToComments < ActiveRecord::Migration
     add_column :comments, :created_from_issue_id, :integer
 
     add_index :comments, :created_from_issue_id
+    add_index :comments, :created_from_commit_hash
   end
 end
