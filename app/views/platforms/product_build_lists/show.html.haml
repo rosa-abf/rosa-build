@@ -32,9 +32,7 @@
   = link_to t("layout.build_lists.cancel"), cancel_platform_product_product_build_list_path(pbl.product.platform, pbl.product, pbl),
             :method => :put, :confirm => t("layout.confirm"), :class => 'button'
   .both
-
-- if pbl.build_started? || pbl.build_canceling?
-  = render 'shared/log', { :build_started => true, :get_log_path => log_platform_product_product_build_list_path(pbl.product.platform, pbl.product, pbl) }
+  %br
 
 - if pbl.build_completed? && can?(:update, pbl)
   = form_for pbl, :url => platform_product_product_build_list_path(pbl.product.platform, pbl.product, pbl) do |f|
@@ -55,6 +53,9 @@
       - else
         = t('layout.product_build_lists.will_be_removed_today')
   .both
+
+- if pbl.build_started? || pbl.build_canceling?
+  = render 'shared/log', { :build_started => true, :get_log_path => log_platform_product_product_build_list_path(pbl.product.platform, pbl.product, pbl) }
 
 = render 'results', :subject => pbl
 
