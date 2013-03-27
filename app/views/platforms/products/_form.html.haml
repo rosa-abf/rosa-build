@@ -10,6 +10,10 @@
 .rightlist= f.autocomplete_field :project, autocomplete_project_platform_products_path(@platform), :id_element => 'src_project_id', :name => 'src_project', :value => @product.project.try(:name_with_owner)
 .both
 
+.leftlist= f.label :project_version, t("activerecord.attributes.product_build_list.project_version")
+.rightlist= f.select :project_version, versions_for_group_select(@product.project), {:selected => params[:products].try(:fetch, :project_version) || @product.project_version, :include_blank => true}
+.both
+
 = render 'def_fields', :f => f
 
 .leftlist= f.label :autostart_status
