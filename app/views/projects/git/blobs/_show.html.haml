@@ -11,5 +11,4 @@
 :javascript
   $(document).ready(function() {
     CodeMirror.runMode($('#code').text().replace(/&amp;/gi, '&'), "#{@blob.raw_mime_type.content_type}", document.getElementById("output"));
-    jQuery(window).trigger('hashchange');
   });
