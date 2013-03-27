@@ -10,6 +10,6 @@
 
 :javascript
   $(document).ready(function() {
-    var text = $('#code').text().replace(/&amp;/gi, '&');
-    CodeMirror.runMode(text, "#{@blob.raw_mime_type.content_type}", document.getElementById("output"));
+    CodeMirror.runMode($('#code').text().replace(/&amp;/gi, '&'), "#{@blob.raw_mime_type.content_type}", document.getElementById("output"));
+    jQuery(window).trigger('hashchange');
   });
