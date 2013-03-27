@@ -3,11 +3,11 @@ class GitPresenters::CommitAsMessagePresenter < ApplicationPresenter
   include CommitHelper
 
   attr_accessor :commit
-  attr_reader :header, :image, :date, :caption, :content, :expandable
+  attr_reader :header, :image, :date, :caption, :content, :expandable, :is_reference_to_issue
 
   def initialize(commit, opts = {})
     comment = opts[:comment]
-    @issue_reference = !!comment # is it reference issue from commit
+    @is_reference_to_issue = !!comment # is it reference issue from commit
     @project = if comment
                         Project.where(:id => opts[:comment].data[:from_project_id]).first
                       else
@@ -30,7 +30,7 @@ class GitPresenters::CommitAsMessagePresenter < ApplicationPresenter
   end
 
   def header
-    @header ||= if @issue_reference
+    @header ||= if @is_reference_to_issue
       I18n.t('layout.commits.reference', :committer => committer_link, :commit => commit_link)
     elsif @project.present?
       I18n.t('layout.messages.commits.header',
