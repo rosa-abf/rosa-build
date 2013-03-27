@@ -1,7 +1,7 @@
 ru:
   layout:
     product_build_lists:
-      will_be_exist_n_days: Cборочный лист продукта будет доступен в течение %{n} дней
+      will_be_removed_n_days: Cборочный лист продукта будет удален через %{n} д.
       will_be_removed_today: Cборочный лист продукта будет удален в течение дня
       logs: Логи (последнии 100 строк)
       work_env: Рабочее пространство
