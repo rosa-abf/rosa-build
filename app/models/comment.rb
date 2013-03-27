@@ -147,8 +147,8 @@ class Comment < ActiveRecord::Base
     elements.each do |element|
       element[1].scan(ISSUES_REGEX).each do |hash|
         hash =~ ISSUE_REGEX
-        owner_uname = Regexp.last_match[1].presence || item.project.owner.uname
-        project_name = Regexp.last_match[2].presence || item.project.name
+        owner_uname = Regexp.last_match[1].presence || Regexp.last_match[2].presence || item.project.owner.uname
+        project_name = Regexp.last_match[1] ? Regexp.last_match[2] : item.project.name
         serial_id = Regexp.last_match[3]
         project = Project.find_by_owner_and_name(owner_uname.chomp('/'), project_name)
 
