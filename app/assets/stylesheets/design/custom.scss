@@ -1945,6 +1945,7 @@ article .activity .top {
 
 
 #assigned-popup {
+    z-index: 1001;
     position: absolute;
     margin: 5px 0 0 130px;
     display: none;
