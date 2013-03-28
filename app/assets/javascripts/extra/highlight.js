@@ -9,9 +9,11 @@ $(document).ready(function() {
     }
   });
 
-  // Since the event is only triggered when the hash changes, we need to trigger
-  // the event now, to handle the hash the page may have loaded with.
-  jQuery(window).trigger('hashchange');
+  $(window).load(function() {
+    // this code will run after all other $(document).ready() scripts
+    // have completely finished, AND all page elements are fully loaded.
+    jQuery(window).trigger('hashchange');
+  });
 
 });
 
