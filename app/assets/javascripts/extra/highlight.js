@@ -18,7 +18,27 @@ $(document).ready(function() {
 
 function highlightShow(id) {
   $('.highlight-line').remove();
-  $(id).append('<div class="highlight-line"></div>');
+  var from = to = id.substring(2);
+  if (/[0-9]+\-L[0-9]+$/.test(from)) {
+    var index = to.indexOf('-');
+    to    = to.substring(index + 2);
+    from  = from.substring(0, index);
+  }
+  from  = parseInt(from);
+  to    = parseInt(to);
+  if (from && to) {
+    if (from > to) {
+      var x = to; to = from; from = x;
+    }
+    var el = $('#L' + from);
+    $(document).scrollTop( el.offset().top );
+    while (el.length > 0) {
+      el.append('<div class="highlight-line"></div>');
+      if (from == to) { return true; }
+      from += 1;
+      el = $('#L' + from);
+    }
+  }
 }
 
 function highlightDiff(id) {
