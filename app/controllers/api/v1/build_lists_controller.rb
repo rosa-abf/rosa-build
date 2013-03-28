@@ -33,6 +33,7 @@ class Api::V1::BuildListsController < Api::V1::BaseController
   end
 
   def publish
+    @build_list.publisher = current_user
     render_json :publish
   end
 
@@ -47,7 +48,7 @@ class Api::V1::BuildListsController < Api::V1::BaseController
   private
 
   def render_json(action_name, action_method = nil)
-    if @build_list.try("can_#{action_name}?") && @build_list.send(action_method || action_name)
+    if @build_list.save && @build_list.try("can_#{action_name}?") && @build_list.send(action_method || action_name)
       render_json_response @build_list, t("layout.build_lists.#{action_name}_success")
     else
       render_validation_error @build_list, t("layout.build_lists.#{action_name}_fail")

@@ -40,7 +40,13 @@ json.build_list do |json|
         :json => json_build_for_platform
   end
 
-  json.partial! 'api/v1/shared/owner', :owner => @build_list.project.owner
+  json.user do |json_user|
+    json.partial! 'api/v1/shared/member', :member => @build_list.user, :tag => json_user
+  end
+
+  json.publisher do |json_publisher|
+    json.partial! 'api/v1/shared/member', :member => @build_list.publisher, :tag => json_publisher
+  end if @build_list.publisher
 
   inc_repos = Repository.includes(:platform).where(:id => @build_list.include_repos)
   json.include_repos inc_repos do |json_include_repos, repo|

@@ -25,6 +25,10 @@
   .rightlist
     = link_to @build_list.user.try(:fullname), @build_list.user
   .both
+  .leftlist= t("activerecord.attributes.build_list.publisher")
+  .rightlist
+    = link_to @build_list.publisher.try(:fullname), @build_list.publisher if @build_list.publisher
+  .both
   .leftlist= t("activerecord.attributes.build_list.build_for_platform")
   .rightlist
     - bfp = @build_list.build_for_platform

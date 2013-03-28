@@ -29,6 +29,7 @@ en:
         auto_publish: Automated publising
         project_version: Version
         user: User
+        publisher: Publisher
         preferences: Preferences
         started_at: Build started at
         duration: Build duration in seconds
