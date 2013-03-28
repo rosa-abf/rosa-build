@@ -3,7 +3,7 @@ class GitPresenters::CommitAsMessagePresenter < ApplicationPresenter
   include CommitHelper
 
   attr_accessor :commit
-  attr_reader :header, :image, :date, :caption, :content, :expandable, :is_reference_to_issue
+  attr_reader :header, :image, :date, :caption, :content, :expandable, :is_reference_to_issue, :committer
 
   def initialize(commit, opts = {})
     comment = opts[:comment]
@@ -16,7 +16,7 @@ class GitPresenters::CommitAsMessagePresenter < ApplicationPresenter
     if @project
       commit = commit || @project.repo.commit(comment.data[:commit_hash])
 
-      @committer = commit.committer
+      @committer = User.where(:email => commit.committer.email).first || commit.committer
       @commit_hash = commit.id
       @committed_date, @authored_date = commit.committed_date, commit.authored_date
       @commit_message = commit.message
@@ -78,10 +78,6 @@ class GitPresenters::CommitAsMessagePresenter < ApplicationPresenter
   end
 
   protected
-
-  def committer
-    @committer ||= User.where(:email => @commiter.email).first || @commiter
-  end
 
   def committer_link
     @committer_link ||= if committer.is_a? User
