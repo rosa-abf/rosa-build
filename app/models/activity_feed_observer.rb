@@ -148,9 +148,19 @@ class ActivityFeedObserver < ActiveRecord::Observer
           ActivityFeed.create(
             :user => recipient,
             :kind => 'build_list_notification',
-            :data => {:task_num => record.bs_id, :build_list_id => record.id, :status => record.status, :updated_at => record.updated_at,
-                             :project_id => record.project_id, :project_name => record.project.name, :project_owner => record.project.owner.uname,
-                             :user_name => record.user.name, :user_email => record.user.email, :user_id => record.user_id}
+            :data => {
+              :task_num => record.bs_id,
+              :build_list_id => record.id,
+              :status => record.status,
+              :updated_at => record.updated_at,
+              :project_id => record.project_id,
+              :project_name => record.project.name,
+              :project_owner => record.project.owner.uname,
+              :user_name => record.user.name,
+              :user_email => record.user.email,
+              :user_id => record.user_id,
+              :publisher_fullname => record.publisher.try(:fullname)
+            }
           )
         end
       end
