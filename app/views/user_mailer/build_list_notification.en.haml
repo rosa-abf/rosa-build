@@ -8,7 +8,7 @@
   = @build_list.human_status
   for arch
   = "#{@build_list.arch.name}."
-- if @build_list.build_published?
+- if @build_list.build_published? && @build_list.publisher
   %p
     = t('activerecord.attributes.build_list.publisher')
     = link_to @build_list.publisher.try(:fullname), user_url(@build_list.publisher)
