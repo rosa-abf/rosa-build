@@ -8,6 +8,10 @@
   = @build_list.human_status
   for arch
   = "#{@build_list.arch.name}."
+- if @build_list.build_published?
+  %p
+    = t('activerecord.attributes.build_list.publisher')
+    = link_to @build_list.publisher.try(:fullname), @build_list.publisher
 %p
   More detailed information you can get by link:
   = link_to "task [№ #{@build_list.bs_id ? @build_list.bs_id : t("layout.build_lists.bs_id_not_set")}]", build_list_url(@build_list)
