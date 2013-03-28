@@ -1,5 +1,7 @@
 ru:
   activerecord:
+    models:
+      issue: Задача
     attributes:
       issue:
         title: Название

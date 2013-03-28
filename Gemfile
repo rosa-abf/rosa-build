@@ -23,12 +23,11 @@ gem 'state_machine'
 gem 'grack', :git => 'git://github.com/rdblue/grack.git', :require => 'git_http'
 gem "grit", :git => 'git://github.com/warpc/grit.git' #, :path => '~/Sites/code/grit'
 gem 'charlock_holmes', '~> 0.6.9' #, :git => 'git://github.com/brianmario/charlock_holmes.git', :branch => 'bundle-icu'
-gem 'github-linguist', '~> 2.2.1', :require => 'linguist'
+gem 'github-linguist', '~> 2.3.4', :require => 'linguist'
 gem 'diff-display', '~> 0.0.1'
 
 # Wiki
 gem "gollum", '~> 2.1.3'
-gem "redcarpet", "~> 2.1.1"
 gem 'creole'
 gem 'rdiscount'
 # gem 'org-ruby'
@@ -54,6 +53,9 @@ gem 'rest-client', '~> 1.6.6'
 
 gem 'attr_encrypted', '1.2.1'
 
+gem "gitlab-pygments.rb", '~> 0.3.2', require: 'pygments.rb'
+gem "redcarpet",     "~> 2.2.2"
+
 group :assets do
   gem 'sass-rails', '~> 3.2.5'
   gem 'coffee-rails', '~> 3.2.2'
@@ -62,6 +64,7 @@ group :assets do
   gem 'therubyracer', '~> 0.10.2', :platforms => [:mri, :rbx]
   gem 'therubyrhino', '~> 1.73.1', :platforms => :jruby
   gem 'turbo-sprockets-rails3'
+  gem "gemoji", "~> 1.2.1", require: 'emoji/railtie'
 end
 
 group :production do
