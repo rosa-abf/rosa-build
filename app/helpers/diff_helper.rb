@@ -52,6 +52,7 @@ module DiffHelper
   def prepare(args)
     @url, @diff_counter, @in_discussion = args[:url], args[:diff_counter], args[:in_discussion]
     @filepath, @line_comments = args[:filepath], args[:comments]
+    @diff_prefix = args[:diff_prefix] || 'diff'
     @add_reply_id, @num_line = if @in_discussion
         [@line_comments[0].id, @line_comments[0].data[:line].to_i - @line_comments[0].data[:strings].lines.count.to_i-1]
       else
@@ -74,7 +75,7 @@ module DiffHelper
     set_line_number
     "<tr class='changes'>
       <td class='line_numbers'></td>
-      #{td_line_link "diff-F#{@diff_counter}R#{line.new_number}", line.new_number}
+      #{td_line_link "#{@diff_prefix}-F#{@diff_counter}R#{line.new_number}", line.new_number}
       <td class='code ins'>
         #{line_comment}
         <pre>#{render_line(line)}</pre>
@@ -86,7 +87,7 @@ module DiffHelper
   def remline(line)
     set_line_number
     "<tr class='changes'>
-      #{td_line_link "diff-F#{@diff_counter}L#{line.old_number}", line.old_number}
+      #{td_line_link "#{@diff_prefix}-F#{@diff_counter}L#{line.old_number}", line.old_number}
       <td class='line_numbers'></td>
       <td class='code del'>
         #{line_comment}
@@ -99,8 +100,8 @@ module DiffHelper
   def modline(line)
     set_line_number
     "<tr clas='chanes line'>
-      #{td_line_link "diff-F#{@diff_counter}L#{line.old_number}", line.old_number}
-      #{td_line_link "diff-F#{@diff_counter}R#{line.new_number}", line.new_number}
+      #{td_line_link "#{@diff_prefix}-F#{@diff_counter}L#{line.old_number}", line.old_number}
+      #{td_line_link "#{@diff_prefix}-F#{@diff_counter}R#{line.new_number}", line.new_number}
       <td class='code unchanged modline'>
         #{line_comment}
         <pre>#{render_line(line)}</pre>
@@ -112,8 +113,8 @@ module DiffHelper
   def unmodline(line)
     set_line_number
     "<tr class='changes unmodline'>
-      #{td_line_link "diff-F#{@diff_counter}L#{line.old_number}", line.old_number}
-      #{td_line_link "diff-F#{@diff_counter}R#{line.new_number}", line.new_number}
+      #{td_line_link "#{@diff_prefix}-F#{@diff_counter}L#{line.old_number}", line.old_number}
+      #{td_line_link "#{@diff_prefix}-F#{@diff_counter}R#{line.new_number}", line.new_number}
       <td class='code unchanged unmodline'>
         #{line_comment}
         <pre>#{render_line(line)}</pre>
@@ -133,8 +134,8 @@ module DiffHelper
   def nonewlineline(line)
     set_line_number
     "<tr class='changes'>
-      #{td_line_link "diff-F#{@diff_counter}L#{line.old_number}", line.old_number}
-      #{td_line_link "diff-F#{@diff_counter}R#{line.new_number}", line.new_number}
+      #{td_line_link "#{@diff_prefix}-F#{@diff_counter}L#{line.old_number}", line.old_number}
+      #{td_line_link "#{@diff_prefix}-F#{@diff_counter}R#{line.new_number}", line.new_number}
       <td class='code modline unmodline'>
         #{line_comment}
         <pre>#{render_line(line)}</pre>
