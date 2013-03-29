@@ -9,8 +9,14 @@ module Modules
     #
     # Supported reference formats are:
     #   * @foo for team members
-    #   * #123 for issues
-    #   * !123 for pull requests
+    #   * for issues:
+    #   * #123
+    #   * abf#123
+    #   * abf/rosa-build#123
+    #   * for pull requests:
+    #   * !123
+    #   * abf!123
+    #   * abf/rosa-build!123
     #   * 123456 for commits
     #
     # It also parses Emoji codes to insert images. See
@@ -96,14 +102,14 @@ module Modules
       end
 
       REFERENCE_PATTERN = %r{
-        (?<prefix>\W)?                         # Prefix
-        (                                      # Reference
-           @(?<user>[a-zA-Z][a-zA-Z0-9_\-\.]*) # User uname
-          |\#(?<issue>\d+)                     # Issue ID
-          |!(?<pull_request>\d+)              # PR ID
-          |(?<commit>[\h]{6,40})               # Commit ID
+        (?<prefix>[\W\/])?                                                     # Prefix
+        (                                                                      # Reference
+           @(?<user>[a-zA-Z][a-zA-Z0-9_\-\.]*)                                 # User uname
+          |(?<issue>(?:[a-zA-Z0-9\-_]*\/)?(?:[a-zA-Z0-9\-_]*)?\#[0-9]+)        # Issue ID
+          |(?<pull_request>(?:[a-zA-Z0-9\-_]*\/)?(?:[a-zA-Z0-9\-_]*)?\![0-9]+) # PR ID
+          |(?<commit>[\h]{6,40})                                               # Commit ID
         )
-        (?<suffix>\W)?                         # Suffix
+        (?<suffix>\W)?                                                         # Suffix
       }x.freeze
 
       TYPES = [:user, :issue, :pull_request, :commit].freeze
@@ -166,17 +172,18 @@ module Modules
       end
 
       def reference_issue(identifier)
-        if issue = @project.issues.where(serial_id: identifier).first
+        if issue = Issue.find_by_hash_tag(identifier, current_ability, @project)
           url = project_issue_path(@project.owner, @project.name, issue.serial_id)
           title = "#{Issue.model_name.human}: #{issue.title}"
-          link_to("##{identifier}", url, html_options.merge(title: title, class: "gfm gfm-issue #{html_options[:class]}"))
+          link_to(identifier, url, html_options.merge(title: title, class: "gfm gfm-issue #{html_options[:class]}"))
         end
       end
 
       def reference_pull_request(identifier)
-        if pull_request = @project.pull_requests.includes(:issue).where(issues: {serial_id: identifier}).first
+        issue = Issue.find_by_hash_tag(identifier, current_ability, @project, '!')
+        if pull_request = issue.pull_request
           title = "#{PullRequest.model_name.human}: #{pull_request.title}"
-          link_to("!#{identifier}", project_pull_request_path(@project, pull_request), html_options.merge(title: title, class: "gfm gfm-pull_request #{html_options[:class]}"))
+          link_to(identifier, project_pull_request_path(@project, pull_request), html_options.merge(title: title, class: "gfm gfm-pull_request #{html_options[:class]}"))
         end
       end
 
