@@ -13,7 +13,7 @@
           - if can? :show, @platform
             %li{:class => (act == :index && contr == :maintainers) ? 'active' : nil}
               = link_to t("layout.platforms.maintainers"), platform_maintainers_path(@platform)
-          - if can? :edit, @platform
+          - if can? :show, @platform
             %li{:class => (contr == :mass_builds && [:index, :create].include?(act)) ? 'active' : ''}
               = link_to t("layout.platforms.mass_build"), platform_mass_builds_path(@platform)
           - if can? :read, @platform.products.build
