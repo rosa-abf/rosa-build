@@ -6,13 +6,13 @@ class CommentPresenter < ApplicationPresenter
   attr_reader :header, :image, :date, :caption, :content, :buttons, :is_reference_to_issue
 
   def initialize(comment, opts = {})
-    @is_reference_to_issue = !!(comment.data && comment.data[:issue_serial_id]) # is it reference issue from another issue
+    @is_reference_to_issue = !!(comment.automatic && comment.created_from_issue_id) # is it reference issue from another issue
     @comment, @user, @options = comment, comment.user, opts
 
     unless @is_reference_to_issue
       @content = @comment.body
     else
-      issue = Issue.where(:project_id => comment.data[:from_project_id], :serial_id => comment.data[:issue_serial_id]).first
+      issue = Issue.where(:id => comment.created_from_issue_id).first
       @referenced_issue = issue.pull_request || issue
       if issue && Comment.exists?(comment.data[:comment_id])
         title = if issue == opts[:commentable]

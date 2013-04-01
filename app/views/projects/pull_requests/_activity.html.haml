@@ -4,7 +4,7 @@
   -if item.is_a? Comment
     =render 'projects/git/commits/commits_small', :commits => commits_queue if commits_queue.present?
     -commits_queue.clear
-    -unless item.automatic
+    -unless item.created_from_commit_hash
       = render 'projects/comments/comment', :comment => item, :data => {:project => @project, :commentable => @commentable}
     -else
       - GitPresenters::CommitAsMessagePresenter.present(nil, :comment => item) do |presenter|

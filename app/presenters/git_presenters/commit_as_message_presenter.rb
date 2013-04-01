@@ -14,7 +14,7 @@ class GitPresenters::CommitAsMessagePresenter < ApplicationPresenter
                         opts[:project]
                       end
     if @project
-      commit = commit || @project.repo.commit(comment.data[:commit_hash])
+      commit = commit || @project.repo.commit(comment.created_from_issue_id)
 
       @committer = User.where(:email => commit.committer.email).first || commit.committer
       @commit_hash = commit.id
