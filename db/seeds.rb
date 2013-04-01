@@ -9,5 +9,5 @@ end
   user.confirmed_at, user.role = Time.now.utc, 'system'; user.save
 end
 
-admin = User.new uname: 'admin_user', email: 'admin_user@rosalinux.ru', password: 'ABFrulez!!!'
+admin = User.new uname: 'admin_user', email: 'admin_user@rosalinux.ru', password: 'admin_user'
 admin.confirmed_at, admin.role = Time.now.utc, 'admin'; admin.save
