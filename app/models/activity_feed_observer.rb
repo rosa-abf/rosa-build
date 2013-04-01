@@ -34,6 +34,7 @@ class ActivityFeedObserver < ActiveRecord::Observer
       end
 
     when 'Comment'
+      return if record.automatic
       if record.issue_comment?
         subscribes = record.commentable.subscribes
         subscribes.each do |subscribe|
@@ -58,15 +59,16 @@ class ActivityFeedObserver < ActiveRecord::Observer
                 (subscribe.user.committer?(record.commentable) && subscribe.user.notifier.new_comment_commit_owner) )
             UserMailer.new_comment_notification(record, subscribe.user).deliver
           end
-            ActivityFeed.create(
-              :user => subscribe.user,
-              :kind => 'new_comment_commit_notification',
-              :data => {:user_name => record.user.name, :user_email => record.user.email, :user_id => record.user_id, :comment_body => record.body,
-                               :commit_message => record.commentable.message, :commit_id => record.commentable.id,
-                                 :project_id => record.project.id, :comment_id => record.id, :project_name => record.project.name, :project_owner => record.project.owner.uname}
-            )
+          ActivityFeed.create(
+            :user => subscribe.user,
+            :kind => 'new_comment_commit_notification',
+            :data => {:user_name => record.user.name, :user_email => record.user.email, :user_id => record.user_id, :comment_body => record.body,
+                             :commit_message => record.commentable.message, :commit_id => record.commentable.id,
+                               :project_id => record.project.id, :comment_id => record.id, :project_name => record.project.name, :project_owner => record.project.owner.uname}
+          )
         end
       end
+      Comment.create_link_on_issues_from_item(record)
 
     when 'GitHook'
       return unless record.project
@@ -81,7 +83,6 @@ class ActivityFeedObserver < ActiveRecord::Observer
                           :change_type => change_type, :project_owner => record.project.owner.uname}
       else
         if record.message # online update
-          #FIXME using oldrev is a hack (only for online edit).
           last_commits, commits = [[record.newrev, record.message]], []
         else
           commits = record.project.repo.commits_between(record.oldrev, record.newrev)
@@ -95,6 +96,7 @@ class ActivityFeedObserver < ActiveRecord::Observer
           commits = commits[0...-3]
           options.merge!({:other_commits_count => commits.count, :other_commits => "#{commits[0].sha[0..9]}...#{commits[-1].sha[0..9]}"})
         end
+        Comment.create_link_on_issues_from_item(record, last_commits) if last_commits.count > 0
       end
       options.merge!({:user_id => record.user.id, :user_name => record.user.name, :user_email => record.user.email}) if record.user
 
@@ -154,7 +156,9 @@ class ActivityFeedObserver < ActiveRecord::Observer
           )
         end
       end
+    when 'Comment'
+      # dont remove outdated issues link
+      Comment.create_link_on_issues_from_item(record)
     end
   end
-
 end

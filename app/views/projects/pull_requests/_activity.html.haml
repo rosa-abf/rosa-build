@@ -4,7 +4,11 @@
   -if item.is_a? Comment
     =render 'projects/git/commits/commits_small', :commits => commits_queue if commits_queue.present?
     -commits_queue.clear
-    =render 'projects/comments/comment', :comment => item, :data => {:project => @project, :commentable => @commentable}
+    -unless item.automatic
+      = render 'projects/comments/comment', :comment => item, :data => {:project => @project, :commentable => @commentable}
+    -else
+      - GitPresenters::CommitAsMessagePresenter.present(nil, :comment => item) do |presenter|
+        = render 'shared/feed_message', :presenter => presenter, :item_no => "-#{item.id}"
   -elsif item.is_a? Grit::Commit
     -commits_queue << item
   -elsif item.is_a? Array
@@ -20,4 +24,3 @@
     -else
       =render 'projects/pull_requests/discussion_comments', :item => item, :add_id => nil
 =render 'projects/git/commits/commits_small', :commits => commits_queue if commits_queue.present?
-
