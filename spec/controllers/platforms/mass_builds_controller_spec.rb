@@ -42,6 +42,11 @@ shared_examples_for 'mass_build platform owner' do
     lambda { post :create, @create_params }.should change{ MassBuild.count }.by(1)
   end
 
+  it 'should be able to perform get_list action' do
+    get :get_list, :platform_id => @platform, :id => @mass_build, :kind => 'failed_builds_list'
+    response.should be_success
+  end
+
   context 'for personal platform' do
     before(:each) do
       Platform.update_all(:platform_type => 'personal')
@@ -57,14 +62,22 @@ shared_examples_for 'mass_build platform owner' do
 end
 
 shared_examples_for 'mass_build platform reader' do
-  [:index, :create].each do |action|
-    it "should not be able to perform #{ action } action" do
-      get action, :platform_id => @platform
-      response.should redirect_to(forbidden_path)
-    end
+  it 'should be able to perform index action' do
+    get :index, :platform_id => @platform
+    response.should render_template(:index)
   end
 
-  [:cancel, :get_list, :publish].each do |action|
+  it 'should be able to perform get_list action' do
+    get :get_list, :platform_id => @platform, :id => @mass_build, :kind => 'failed_builds_list'
+    response.should be_success
+  end
+
+  it "should not be able to perform create action" do
+    get :create, :platform_id => @platform
+    response.should redirect_to(forbidden_path)
+  end
+
+  [:cancel, :publish].each do |action|
     it "should not be able to perform #{ action } action" do
       get action, :platform_id => @platform, :id => @mass_build.id
       response.should redirect_to(forbidden_path)
@@ -111,15 +124,29 @@ describe Platforms::MassBuildsController do
   end
 
   context 'for guest' do
-    [:index, :create].each do |action|
-      it "should not be able to perform #{ action } action" do
-        get action, :platform_id => @platform
-        response.should redirect_to(new_user_session_path)
-      end
+
+    it 'should be able to perform index action', :anonymous_access => true do
+      get :index, :platform_id => @platform
+      response.should render_template(:index)
     end
 
-    it "should not be able to get failed builds list" do
+    it 'should be able to perform index action', :anonymous_access => false do
+      get :index, :platform_id => @platform
+      response.should redirect_to(new_user_session_path)
+    end
+
+    it 'should be able to perform get_list action', :anonymous_access => true do
       get :get_list, :platform_id => @platform, :id => @mass_build, :kind => 'failed_builds_list'
+      response.should be_success
+    end
+
+    it "should not be able to get failed builds list", :anonymous_access => false do
+      get :get_list, :platform_id => @platform, :id => @mass_build, :kind => 'failed_builds_list'
+      response.should redirect_to(new_user_session_path)
+    end
+
+    it "should not be able to perform create action" do
+      get :create, :platform_id => @platform
       response.should redirect_to(new_user_session_path)
     end
 
