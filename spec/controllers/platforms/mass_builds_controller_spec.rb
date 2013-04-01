@@ -130,7 +130,7 @@ describe Platforms::MassBuildsController do
       response.should render_template(:index)
     end
 
-    it 'should be able to perform index action', :anonymous_access => false do
+    it 'should not be able to perform index action', :anonymous_access => false do
       get :index, :platform_id => @platform
       response.should redirect_to(new_user_session_path)
     end
