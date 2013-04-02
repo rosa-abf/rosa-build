@@ -29,9 +29,9 @@ class Platforms::MassBuildsController < Platforms::BaseController
 
   def publish
     if params[:status] == 'test_failed'
-      @mass_build.publish_test_faild_builds
+      @mass_build.publish_test_faild_builds current_user
     else
-      @mass_build.publish_success_builds
+      @mass_build.publish_success_builds current_user
     end
     redirect_to(platform_mass_builds_path(@mass_build.platform), :notice => t("flash.platform.publish_success"))
   end
