@@ -1,8 +1,8 @@
 -content_for :sidebar do
-  - can_manage = can?(:update, @issue) && @issue.persisted? || @issue.new_record?
   - if @issue.persisted?
     .bordered.nopadding
       %h3=t('activerecord.attributes.issue.status')
+      - can_manage = can?(:update, @issue)
       #switcher.issue_status{:class => "#{@issue.closed? ? 'switcher-off' : 'switcher'} #{can_manage ? "switch_issue_status" : ''}"}
         .swleft=t('layout.issues.status.open')
         .swright=t('layout.issues.status.closed')
@@ -11,7 +11,7 @@
             =hidden_field_tag "issue_status", @issue.closed? ? 'closed' : 'open', :name => "issue[status]"
   .block
     %h3=t('layout.issues.labels')
-    - if can_manage
+    - if can?(:write, @project)
       .current_labels
         - (@project.labels || []).each do |label|
           - is_issue_label = @issue.labels.include? label
@@ -29,6 +29,6 @@
         .label.nopointer
           .labeltext.selected{:style => "background: ##{label.color};"}=label.name
           .both
-    - if can_manage && @issue.persisted?
+    - if can?(:write, @project) && @issue.persisted?
       =link_to(t('layout.issues.label_manage'), '#', :class => "button tmargin10 manage_labels")
       =link_to(t('layout.issues.done'), '#', :class => "button tmargin10 update_labels", :style => 'display:none')
