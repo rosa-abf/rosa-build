@@ -13,6 +13,7 @@ class Issue < ActiveRecord::Base
   has_many :labels, :through => :labelings, :uniq => true
   has_one :pull_request, :dependent => :destroy
 
+  before_validation :sanitize_params_for_current_user
   validates :title, :body, :project_id, :presence => true
 
   after_create :set_serial_id
@@ -21,6 +22,7 @@ class Issue < ActiveRecord::Base
 
   attr_accessible :labelings_attributes, :title, :body, :assignee_id
   accepts_nested_attributes_for :labelings, :allow_destroy => true
+  attr_accessor :can_write_project
 
   scope :opened, where(:status => 'open')
   scope :closed, where(:status => 'closed')
@@ -68,6 +70,17 @@ class Issue < ActiveRecord::Base
   end
 
   protected
+
+  def sanitize_params_for_current_user
+    return true if can_write_project
+    if persisted?
+      self.assignee_id  = self.assignee_id
+      self.labelings    = self.labelings
+    else
+      self.assignee_id  = nil
+      self.labelings    = []
+    end
+  end
 
   def set_serial_id
     self.serial_id = self.project.issues.count
