@@ -25,6 +25,7 @@ en:
         syntax_highlighting: Syntax highlighting
         indent_code: indent your code 4 spaces
         inline_code: Inline code for comments
+        emoji_header: Emoji Cheat Sheet
       reference: "%{user} referenced this issue"
       removed: Comment has since been removed and is no longer available.
 
