@@ -14,12 +14,6 @@
           - ['success', nil]
         - else ['failed', t("layout.build_lists.statuses.#{BuildList::HUMAN_STATUSES[status]}")]
       = raw t("notifications.bodies.build_status.#{message}", :error => error)
-    - publisher_fullname ||= nil
-    - if status == BuildList::BUILD_PUBLISHED && publisher_fullname.present?
-      .both
-      %span
-        = t('activerecord.attributes.build_list.publisher')
-        = publisher_fullname
     .both
       %span.date= updated_at
   .both
