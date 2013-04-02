@@ -33,6 +33,8 @@ class Api::V1::BuildListsController < Api::V1::BaseController
   end
 
   def publish
+    @build_list.publisher = current_user
+    @build_list.save
     render_json :publish
   end
 
