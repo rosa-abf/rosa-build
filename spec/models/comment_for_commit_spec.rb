@@ -283,41 +283,46 @@ describe Comment do
       it 'should create automatic comment' do
         create_comment_in_commit(@commit, @project, "test link to ##{@issue.serial_id}; [##{@second_issue.serial_id}]")
         Comment.where(:automatic => true, :commentable_type => 'Issue',
-                      :commentable_id => @second_issue.id).count.should == 1
+                      :commentable_id => @second_issue.id,
+                      :created_from_commit_hash => @commit.id.hex).count.should == 1
       end
 
       it 'should create automatic comment in the another project issue' do
         body = "[#{@another_project.name_with_owner}##{@issue_in_another_project.serial_id}]"
         create_comment_in_commit(@commit, @project, body)
         Comment.where(:automatic => true, :commentable_type => 'Issue',
-                      :commentable_id => @issue_in_another_project.id).count.should == 1
+                      :commentable_id => @issue_in_another_project.id,
+                      :created_from_commit_hash => @commit.id.hex).count.should == 1
       end
 
       it 'should create automatic comment in the same name project issue' do
         body = "[#{@same_name_project.owner.uname}##{@issue_in_same_name_project.serial_id}]"
         create_comment_in_commit(@commit, @project, body)
         Comment.where(:automatic => true, :commentable_type => 'Issue',
-                      :commentable_id => @issue_in_same_name_project.id).count.should == 1
+                      :commentable_id => @issue_in_same_name_project.id,
+                      :created_from_commit_hash => @commit.id.hex).count.should == 1
       end
 
       it 'should not create duplicate automatic comment' do
         create_comment_in_commit(@commit, @project, "test link to [##{@second_issue.serial_id}]")
         create_comment_in_commit(@commit, @project, "test duplicate link to [##{@second_issue.serial_id}]")
         Comment.where(:automatic => true, :commentable_type => 'Issue',
-                      :commentable_id => @second_issue.id).count.should == 1
+                      :commentable_id => @second_issue.id,
+                      :created_from_commit_hash => @commit.id.hex).count.should == 1
       end
 
       it 'should not create duplicate automatic comment from one' do
         create_comment_in_commit(@commit, @project, "test link to [##{@second_issue.serial_id}]; ##{@second_issue.serial_id}")
         Comment.where(:automatic => true, :commentable_type => 'Issue',
-                      :commentable_id => @second_issue.id).count.should == 1
+                      :commentable_id => @second_issue.id,
+                      :created_from_commit_hash => @commit.id.hex).count.should == 1
       end
       it 'should create two automatic comment' do
         body = "test ##{@second_issue.serial_id}" +
                " && [#{@another_project.name_with_owner}##{@issue_in_another_project.serial_id}]"
-        p "body: #{body}"
         create_comment_in_commit(@commit, @project, body)
-        Comment.where(:automatic => true).count.should == 2
+        Comment.where(:automatic => true,
+                      :created_from_commit_hash => @commit.id.hex).count.should == 2
       end
     end
   end
