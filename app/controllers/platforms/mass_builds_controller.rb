@@ -1,6 +1,7 @@
 #class MassBuildsController < ApplicationController
 class Platforms::MassBuildsController < Platforms::BaseController
   before_filter :authenticate_user!
+  skip_before_filter :authenticate_user!, :only => [:index, :get_list] if APP_CONFIG['anonymous_access']
 
   load_and_authorize_resource :platform
   load_and_authorize_resource
@@ -37,8 +38,6 @@ class Platforms::MassBuildsController < Platforms::BaseController
   end
 
   def index
-    authorize! :local_admin_manage, @platform
-
     @mass_builds = MassBuild.by_platform(@platform).order('created_at DESC').paginate(:page => params[:page], :per_page => 20)
     @auto_publish_selected = true
   end
