@@ -13,7 +13,7 @@ class Issue < ActiveRecord::Base
   has_many :labels, :through => :labelings, :uniq => true
   has_one :pull_request, :dependent => :destroy
 
-  before_validation :sanitize_params_for_current_user
+  before_validation :sanitize_params
   validates :title, :body, :project_id, :presence => true
 
   after_create :set_serial_id
@@ -71,7 +71,7 @@ class Issue < ActiveRecord::Base
 
   protected
 
-  def sanitize_params_for_current_user
+  def sanitize_params
     return true if can_write_project
     if persisted?
       self.assignee_id  = self.assignee_id
