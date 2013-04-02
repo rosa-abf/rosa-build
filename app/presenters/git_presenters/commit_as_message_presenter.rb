@@ -44,8 +44,7 @@ class GitPresenters::CommitAsMessagePresenter < ApplicationPresenter
     elsif committer.is_a? Grit::Actor
       helpers.avatar_url_by_email(committer.email, :medium)
     else
-      size = User.new.avatar.styles[:medium].geometry.split('x').first
-      helpers.gravatar_url('email', size)
+      helpers.gravatar_url('Unknown', User::AVATAR_SIZES[:medium])
     end
   end
 
