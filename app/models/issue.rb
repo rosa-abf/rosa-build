@@ -75,7 +75,7 @@ class Issue < ActiveRecord::Base
     return true if can_write_project
     if persisted?
       self.assignee_id  = self.assignee_id
-      self.labelings    = self.labelings
+      self.labelings    = self.labelings.select{ |i| i.id }
     else
       self.assignee_id  = nil
       self.labelings    = []
