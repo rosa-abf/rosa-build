@@ -38,7 +38,6 @@ class Projects::IssuesController < Projects::BaseController
   end
 
   def create
-    @assignee_uname = params[:assignee_uname]
     @issue.user_id = current_user.id
 
     unless can?(:write, @project)
