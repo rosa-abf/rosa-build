@@ -38,12 +38,11 @@ class Projects::PullRequestsController < Projects::BaseController
     authorize! :read, to_project
 
     @pull = to_project.pull_requests.new pull_params
-    @pull.issue.assignee_id = (params[:issue] || {})[:assignee_id]
+    @pull.issue.assignee_id = (params[:issue] || {})[:assignee_id] if can?(:write, to_project)
     @pull.issue.user, @pull.issue.project, @pull.from_project = current_user, to_project, @project
     @pull.from_project_owner_uname = @pull.from_project.owner.uname
     @pull.from_project_name = @pull.from_project.name
 
-    @pull.issue.can_write_project = can?(:write, @project)
     if @pull.valid? # FIXME more clean/clever logics
       @pull.save # set pull id
       @pull.check(false) # don't make event transaction
@@ -68,7 +67,6 @@ class Projects::PullRequestsController < Projects::BaseController
   end
 
   def update
-    @pull.issue.can_write_project = can?(:write, @project)
     if (action = params[:pull_request_action]) && %w(close reopen).include?(params[:pull_request_action])
       if @pull.send("can_#{action}?")
         @pull.set_user_and_time current_user
