@@ -21,7 +21,7 @@ gem 'highline', '~> 1.6.11'
 gem 'state_machine'
 
 gem 'grack', :git => 'git://github.com/rdblue/grack.git', :require => 'git_http'
-gem 'grit', :git => 'git://github.com/avokhmin/grit.git' #, :path => '~/Sites/code/grit'
+gem 'grit', :git => 'git://github.com/avokhmin/grit.git', :branch => '117-pack-format-error'
 # gem "grit", :git => 'git://github.com/warpc/grit.git' #, :path => '~/Sites/code/grit'
 gem 'charlock_holmes', '~> 0.6.9' #, :git => 'git://github.com/brianmario/charlock_holmes.git', :branch => 'bundle-icu'
 gem 'github-linguist', '~> 2.2.1', :require => 'linguist'

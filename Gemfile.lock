@@ -1,6 +1,7 @@
 GIT
   remote: git://github.com/avokhmin/grit.git
-  revision: 2109888819d23f18cdc30c0fbb6280ec3208fa7d
+  revision: 1495f405d2b34e76dcc976db557df350b175e4b2
+  branch: 117-pack-format-error
   specs:
     grit (2.5.0)
       diff-lcs (~> 1.1)
