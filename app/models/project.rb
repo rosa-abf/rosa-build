@@ -82,7 +82,7 @@ class Project < ActiveRecord::Base
   end
 
   def name_with_owner
-    "#{owner_uname}/#{name}"
+    "#{owner_uname || owner.uname}/#{name}"
   end
 
   def to_param
