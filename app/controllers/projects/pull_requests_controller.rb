@@ -117,13 +117,9 @@ class Projects::PullRequestsController < Projects::BaseController
   def autocomplete_to_project
     items = []
     term = params[:term].to_s.strip.downcase
-    condition = ["lower(concat(owners.uname, '/', projects.name)) ILIKE ?", "%#{term}%"]
+    condition = ["lower(concat(owner_uname, '/', name)) ILIKE ?", "%#{term}%"]
     [Project.accessible_by(current_ability, :membered), @project.ancestors].each do |p|
-      p = p.where(condition)
-      items.concat p.where(:owner_type => 'User').includes(:owner_user).
-        joins("INNER JOIN users as owners ON projects.owner_id = owners.id")
-      items.concat p.where(:owner_type => 'Group').includes(:owner_group).
-        joins("INNER JOIN groups as owners ON projects.owner_id = owners.id")
+      items.concat p.where(condition)
     end
     items = items.uniq{|i| i.id}.select{|e| e.repo.branches.count > 0}
     render :json => json_for_autocomplete_base(items)

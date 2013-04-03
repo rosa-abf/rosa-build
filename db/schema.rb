@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130328112110) do
+ActiveRecord::Schema.define(:version => 20130403202853) do
 
   create_table "activity_feeds", :force => true do |t|
     t.integer  "user_id",    :null => false
@@ -387,6 +387,7 @@ ActiveRecord::Schema.define(:version => 20130328112110) do
     t.integer  "build_count",              :default => 0,        :null => false
     t.integer  "maintainer_id"
     t.boolean  "publish_i686_into_x86_64", :default => false
+    t.string   "owner_uname"
   end
 
   add_index "projects", ["owner_id", "name", "owner_type"], :name => "index_projects_on_name_and_owner_id_and_owner_type", :unique => true, :case_sensitive => false
