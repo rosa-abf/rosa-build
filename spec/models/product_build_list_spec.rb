@@ -1,8 +1,10 @@
 require 'spec_helper'
 
 describe ProductBuildList do
-  before(:all) do
+  before do
     stub_symlink_methods
+    stub_redis
+    FactoryGirl.create(:product_build_list)
   end
 
   it { should belong_to(:product) }
@@ -28,9 +30,8 @@ describe ProductBuildList do
   # see app/ability.rb
   # can :read, ProductBuildList#, :product => {:platform => {:visibility => 'open'}} # double nested hash don't work
   it 'should generate correct sql to get product build lists' do
-    stub_symlink_methods
     user = FactoryGirl.create(:user)
     ability = Ability.new user
-    ProductBuildList.accessible_by(ability).count.should == 0
+    ProductBuildList.accessible_by(ability).count.should == 1
   end
 end

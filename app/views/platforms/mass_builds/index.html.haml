@@ -1,24 +1,7 @@
 = render 'platforms/base/submenu'
 = render 'platforms/base/sidebar'
 
-= form_for :build, :url => platform_mass_builds_path(@platform), :html => { :class => 'form mass_build', :method => :post } do |f|
-  %section.left
-    =render 'repos_or_list_choice'
-    %br
-    = f.submit t("layout.projects.build_button")
-  %section.right
-    %h3= t("activerecord.attributes.build_list.arch")
-    - Arch.recent.each do |arch|
-      .lefter
-        = check_box_tag "arches[]", arch.id, (params[:arches]||[]).include?(arch.id.to_s), :id => "arches_#{arch.id}"
-        = label_tag "arches_#{arch.id}", arch.name
-      .both
-    %h3= t("activerecord.attributes.build_list.preferences")
-    .both.bottom_20
-      = check_box_tag :auto_publish, true, @auto_publish_selected, :id => 'auto_publish'
-      = label_tag :auto_publish, t('activerecord.attributes.build_list.auto_publish')
-%br
-%br
+= render 'form' if can? :edit, @platform
 
 %table.tablesorter.unbordered{:cellpadding => "0", :cellspacing => "0"}
   %thead
@@ -27,7 +10,7 @@
       %th.lpadding16= t('activerecord.attributes.mass_build.name')
       %th.lpadding16= t("layout.mass_builds.statuses")
       %th.lpadding16= t("layout.mass_builds.failed_builds_list")
-      %th.lpadding16= t("layout.mass_builds.cancel_mass_build")
+      %th.lpadding16= t("layout.mass_builds.actions")
       %th.lpadding16= t("layout.mass_builds.extended_data")
   - @mass_builds.each do |mass_build|
     %tr
@@ -43,7 +26,20 @@
           = mass_build.read_attribute 'missed_projects_count'
       %td
         =link_to_list @platform, mass_build, 'failed_builds_list'
-      %td= link_to image_tag('x.png'), cancel_platform_mass_build_path(@platform, mass_build.id), :method => :post, :confirm => t("layout.mass_builds.cancel_confirm") if can?(:cancel, mass_build)
+      %td.right.mass-build-actions
+        - if can?(:publish, mass_build)
+          - unless mass_build.auto_publish?
+            = link_to t('layout.mass_builds.publish_success'),
+                      publish_platform_mass_build_path(@platform, mass_build.id),
+                      :method => :post, :confirm => t("layout.confirm"), :class => 'button'
+          = link_to t('layout.mass_builds.publish_test_failed'),
+                    publish_platform_mass_build_path(@platform, mass_build.id, :status => 'test_failed'),
+                    :method => :post, :confirm => t("layout.confirm"), :class => 'button'
+        - if can?(:cancel, mass_build)
+          = link_to t('layout.cancel'),
+                    cancel_platform_mass_build_path(@platform, mass_build.id),
+                    :method => :post, :class => 'button',
+                    :confirm => t('layout.mass_builds.cancel_confirm')
       %td
         %a.toggle_btn{:href => "#toggle_#{ mass_build.id }", :'data-target' => "#toggle_#{ mass_build.id }"}= t("layout.mass_builds.extended_data")
         .toggle{:id => "toggle_#{ mass_build.id }"}

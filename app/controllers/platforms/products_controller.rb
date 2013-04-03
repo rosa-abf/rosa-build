@@ -1,4 +1,5 @@
 class Platforms::ProductsController < Platforms::BaseController
+  include GitHelper
   before_filter :authenticate_user!
   skip_before_filter :authenticate_user!, :only => [:index, :show] if APP_CONFIG['anonymous_access']
 
@@ -54,7 +55,12 @@ class Platforms::ProductsController < Platforms::BaseController
       search(params[:term]).search_order
     items.select! {|e| e.repo.branches.count > 0}
     render :json => items.map{ |p|
-      {:id => p.id, :label => p.name_with_owner, :value => p.name_with_owner}
+      {
+        :id => p.id,
+        :label => p.name_with_owner,
+        :value => p.name_with_owner,
+        :project_versions => versions_for_group_select(p)
+      }
     }
   end
 

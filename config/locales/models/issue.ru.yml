@@ -11,9 +11,13 @@ ru:
 
   layout:
     issues:
-      accessory: Принадлежность заданий
+      is_assigned: назначен
+      clear_assignee: Убрать назначение
+      nothing_to_show: Никто не найден
+      no_one_is_assigned: Никто не назначен
+      assign_someone: Назначить кого-либо на задачу
       list: Список
-      all: Все
+      all: Все задачи
       to_me: Назначенные мне
       edit: Редактировать
       search: Найти задачу...
@@ -23,6 +27,9 @@ ru:
       confirm_delete: Вы уверены, что хотите удалить эту задачу?
       edit_header: Редактирование задачи
       create_header: Создать задачу
+      sort:
+        updated: Обновлены
+        submitted: Созданы
       statuses:
         open: Открытые
         closed: Закрытые

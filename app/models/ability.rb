@@ -25,6 +25,7 @@ class Ability
     # Platforms block
     can [:show, :members, :advisories], Platform, :visibility => 'open'
     can :platforms_for_build, Platform, :visibility => 'open', :platform_type => 'main'
+    can(:get_list, MassBuild) {|mass_build| mass_build.platform.main? && can?(:show, mass_build.platform) }
     can [:read, :projects_list, :projects], Repository, :platform => {:visibility => 'open'}
     can :read, Product, :platform => {:visibility => 'open'}
 
@@ -97,7 +98,7 @@ class Ability
         can([:update, :destroy], Platform) {|platform| owner?(platform) }
         can([:local_admin_manage, :members, :add_member, :remove_member, :remove_members] , Platform) {|platform| owner?(platform) || local_admin?(platform) }
 
-        can([:get_list, :create], MassBuild) {|mass_build| (owner?(mass_build.platform) || local_admin?(mass_build.platform)) && mass_build.platform.main?}
+        can([:create, :publish], MassBuild) {|mass_build| (owner?(mass_build.platform) || local_admin?(mass_build.platform)) && mass_build.platform.main?}
         can(:cancel, MassBuild) {|mass_build| (owner?(mass_build.platform) || local_admin?(mass_build.platform)) && !mass_build.stop_build && mass_build.platform.main?}
 
         can [:read, :projects_list, :projects], Repository, :platform => {:owner_type => 'User', :owner_id => user.id}
@@ -116,7 +117,7 @@ class Ability
         can(:read, Product, read_relations_for('products', 'platforms')) {|product| product.platform.main?}
         can([:create, :update, :destroy, :clone], Product) {|product| local_admin? product.platform and product.platform.main?}
 
-        can([:create, :cancel], ProductBuildList) {|pbl| can?(:update, pbl.product)}
+        can([:create, :cancel, :update], ProductBuildList) {|pbl| can?(:update, pbl.product)}
         can(:destroy, ProductBuildList) {|pbl| can?(:destroy, pbl.product)}
 
         can [:read, :create], PrivateUser, :platform => {:owner_type => 'User', :owner_id => user.id}
@@ -157,7 +158,7 @@ class Ability
       cannot :create_container, BuildList, :new_core => false
       cannot(:publish, BuildList) {|build_list| !build_list.can_publish? }
 
-      cannot([:get_list, :create], MassBuild) {|mass_build| mass_build.platform.personal?}
+      cannot([:get_list, :create, :publish], MassBuild) {|mass_build| mass_build.platform.personal?}
       cannot(:cancel, MassBuild) {|mass_build| mass_build.platform.personal? || mass_build.stop_build}
 
       cannot(:regenerate_metadata, Repository) {|repository| !repository.platform.main?}

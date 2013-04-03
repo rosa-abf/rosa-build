@@ -1,13 +1,14 @@
 #class MassBuildsController < ApplicationController
 class Platforms::MassBuildsController < Platforms::BaseController
   before_filter :authenticate_user!
+  skip_before_filter :authenticate_user!, :only => [:index, :get_list] if APP_CONFIG['anonymous_access']
 
   load_and_authorize_resource :platform
   load_and_authorize_resource
 
   skip_load_and_authorize_resource :only => [:index, :create]
-  skip_load_and_authorize_resource :platform, :only => [:cancel, :failed_builds_list]
-  skip_authorize_resource :platform, :only => [:create, :index]
+  skip_load_and_authorize_resource :platform, :only => [:cancel, :failed_builds_list, :publish]
+  skip_authorize_resource :platform, :only => [:index, :create]
 
   def create
     mass_build = @platform.mass_builds.new(:arches => params[:arches],
@@ -27,9 +28,16 @@ class Platforms::MassBuildsController < Platforms::BaseController
     end
   end
 
-  def index
-    authorize! :local_admin_manage, @platform
+  def publish
+    if params[:status] == 'test_failed'
+      @mass_build.publish_test_faild_builds current_user
+    else
+      @mass_build.publish_success_builds current_user
+    end
+    redirect_to(platform_mass_builds_path(@mass_build.platform), :notice => t("flash.platform.publish_success"))
+  end
 
+  def index
     @mass_builds = MassBuild.by_platform(@platform).order('created_at DESC').paginate(:page => params[:page], :per_page => 20)
     @auto_publish_selected = true
   end

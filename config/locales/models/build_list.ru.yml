@@ -29,6 +29,7 @@ ru:
         auto_publish: Автоматическая публикация
         project_version: Версия
         user: Пользователь
+        publisher: Публикатор
         preferences: Настройки
         duration: Длительность билда в секундах
         mass_build_id: Массовая сборка

@@ -28,7 +28,7 @@ class MassBuild < ActiveRecord::Base
 
   def build_all
     # later with resque
-    arches_list = arches ? Arch.where(:id => arches) : Arch.all
+    arches_list = arch_names ? Arch.where(:name => arch_names.split(', ')) : Arch.all
     auto_publish ||= false
 
     projects_list.lines.each do |name|
@@ -55,9 +55,16 @@ class MassBuild < ActiveRecord::Base
 
   def generate_failed_builds_list
     report = ""
-    BuildList.where(:status => BuildList::BUILD_ERROR, :mass_build_id => self.id).each do |build_list|
-      report << "ID: #{build_list.id}; "
-      report << "PROJECT_NAME: #{build_list.project.name}\n"
+    BuildList.select('build_lists.id, projects.name as project_name, arches.name as arch_name').
+    where(
+      :status => BuildList::BUILD_ERROR,
+      :mass_build_id => self.id
+    ).joins(:project, :arch).find_in_batches(:batch_size => 100) do |build_lists|
+      build_lists.each do |build_list|
+        report << "ID: #{build_list.id}; "
+        report << "PROJECT_NAME: #{build_list.project_name}; "
+        report << "ARCH: #{build_list.arch_name}\n"
+      end
     end
     report
   end
@@ -70,7 +77,25 @@ class MassBuild < ActiveRecord::Base
   end
   later :cancel_all, :queue => :clone_build
 
+  def publish_success_builds(user)
+    publish user, BuildList::SUCCESS, BuildList::FAILED_PUBLISH
+  end
+  later :publish_success_builds, :queue => :clone_build
+
+  def publish_test_faild_builds(user)
+    publish user, BuildList::TESTS_FAILED
+  end
+  later :publish_test_faild_builds, :queue => :clone_build
+
   private
+
+  def publish(user, *statuses)
+    builds = build_lists.where(:status => statuses)
+    builds.update_all(:publisher_id => user.id)
+    builds.order(:id).find_in_batches(:batch_size => 50) do |bls|
+      bls.each{ |bl| bl.can_publish? && bl.now_publish }
+    end
+  end
 
   def set_data
     if new_record?

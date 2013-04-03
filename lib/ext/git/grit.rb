@@ -1,4 +1,13 @@
 module Grit
+  class Commit
+
+    # Fix: NoMethodError: undefined method 'touch' for Grit::Commit
+    # see: model Comment belongs_to :commentable
+    def touch
+      true
+    end
+  end
+
   class Blob
     include Linguist::BlobHelper
 

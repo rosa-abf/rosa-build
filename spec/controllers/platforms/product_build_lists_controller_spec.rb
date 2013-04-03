@@ -34,6 +34,18 @@ shared_examples_for 'product build list admin' do
     response.should render_template(:show)
   end
 
+  it 'should be able to perform update action' do
+    put :update, valid_attributes_for_show.merge(:product_build_list => {:time_living => 100,:not_delete => true})
+    response.should redirect_to(platform_product_product_build_list_path(@product.platform, @product, @pbl))
+  end
+
+  it "ensures that only not_delete field of product build list has been updated" do
+    put :update, valid_attributes_for_show.merge(:product_build_list => {:time_living => 100,:not_delete => true})
+    time_living = @pbl.time_living
+    @pbl.reload.time_living.should == time_living
+    @pbl.not_delete.should be_true
+  end
+
   it 'should be able to perform log action' do
     get :log, valid_attributes_for_show
     response.should be_success

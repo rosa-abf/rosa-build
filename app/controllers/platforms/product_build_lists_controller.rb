@@ -5,7 +5,7 @@ class Platforms::ProductBuildListsController < Platforms::BaseController
   load_and_authorize_resource :platform, :except => :index
   load_and_authorize_resource :product, :through => :platform, :except => :index
   load_and_authorize_resource :product_build_list, :through => :product, :except => :index
-  load_and_authorize_resource :only => [:index, :show, :log, :cancel]
+  load_and_authorize_resource :only => [:index, :show, :log, :cancel, :update]
 
   def new
     product = @product_build_list.product
@@ -20,6 +20,16 @@ class Platforms::ProductBuildListsController < Platforms::BaseController
   end
 
   def show
+  end
+
+  def update
+    if @product_build_list.update_attributes(:not_delete => (params[:product_build_list] || {})[:not_delete])
+      flash[:notice] = t('flash.product_build_list.updated')
+    else
+      flash[:error] = t('flash.product_build_list.update_error')
+      flash[:warning] = @product_build_list.errors.full_messages.join('. ')
+    end
+    redirect_to platform_product_product_build_list_path(@platform, @product, @product_build_list)
   end
 
   def cancel

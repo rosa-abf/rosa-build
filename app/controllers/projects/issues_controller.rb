@@ -5,6 +5,7 @@ class Projects::IssuesController < Projects::BaseController
   load_resource :project
   load_and_authorize_resource :issue, :through => :project, :find_by => :serial_id, :only => [:show, :edit, :update, :destroy, :new, :create, :index]
   before_filter :load_and_authorize_label, :only => NON_RESTFUL_ACTION
+  before_filter :find_collaborators, :only => [:new, :create, :show, :search_collaborators]
 
   layout false, :only => [:update, :search_collaborators]
 
@@ -14,17 +15,17 @@ class Projects::IssuesController < Projects::BaseController
     @issues = @issues.where(:assignee_id => current_user.id) if @is_assigned_to_me = params[:filter] == 'to_me'
     @issues = @issues.joins(:labels).where(:labels => {:name => @labels}) unless @labels == []
     # Using mb_chars for correct transform to lowercase ('Русский Текст'.downcase => "Русский Текст")
-    @issues = @issues.search(params[:search_issue])
+    @issues = @issues.search(params[:search_issue]) if params[:search_issue] !~ /#{t('layout.issues.search')}/
 
-    @opened_issues, @closed_issues = @opened_issues_count, @issues.closed_or_merged.count
-    if params[:status] == 'closed'
-      @issues, @status = @issues.closed_or_merged, params[:status]
-    else
-      @issues, @status = @issues.not_closed_or_merged, 'open'
-    end
+    @opened_issues, @closed_issues = @issues.not_closed_or_merged.count, @issues.closed_or_merged.count
+    @status = params[:status] == 'closed' ? :closed : :open
+    @issues = @issues.send( (@status == :closed) ? :closed_or_merged : :not_closed_or_merged )
 
-    @issues = @issues.includes(:assignee, :user, :pull_request).def_order.uniq
-                     .paginate :per_page => 10, :page => params[:page]
+    @sort       = params[:sort] == 'updated' ? :updated : :created
+    @direction  = params[:direction] == 'asc' ? :asc : :desc
+    @issues = @issues.order("issues.#{@sort}_at #{@direction}")
+    @issues = @issues.includes(:assignee, :user, :pull_request).uniq
+                     .paginate :per_page => 20, :page => params[:page]
     if status == 200
       render 'index', :layout => request.xhr? ? 'with_sidebar' : 'application'
     else
@@ -90,10 +91,6 @@ class Projects::IssuesController < Projects::BaseController
   end
 
   def search_collaborators
-    search = "%#{params[:search_user]}%"
-    users = User.joins(:groups => :projects).where(:projects => {:id => @project.id}).where("users.uname ILIKE ?", search)
-    users2 = @project.collaborators.where("users.uname ILIKE ?", search)
-    @users = (users + users2).uniq.sort {|x,y| x.uname <=> y.uname}.first(10)
     render :partial => 'search_collaborators'
   end
 

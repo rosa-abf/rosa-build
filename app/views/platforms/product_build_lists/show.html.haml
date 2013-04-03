@@ -19,17 +19,39 @@
 
 = render 'show_field', :key => :project_version, :value => product_build_list_version_link(pbl, true)
 
-= render 'show_field', :key => :arch, :value => pbl.arch.name
 - [:main_script, :params].each do |el|
   = render 'show_field', :key => el, :value => pbl.send(el)
 
 = render 'show_field', :key => :time_living, :value => (pbl.time_living / 60)
+
+= render 'show_field', :key => :autostarted, :value => t("layout.#{pbl.autostarted}_")
 
 = render 'show_field', :key => :notified_at, :value => l(pbl.updated_at, :format => :long)
 
 - if pbl.can_cancel? && can?(:cancel, pbl)
   = link_to t("layout.build_lists.cancel"), cancel_platform_product_product_build_list_path(pbl.product.platform, pbl.product, pbl),
             :method => :put, :confirm => t("layout.confirm"), :class => 'button'
+  .both
+  %br
+
+- if pbl.build_completed? && can?(:update, pbl)
+  = form_for pbl, :url => platform_product_product_build_list_path(pbl.product.platform, pbl.product, pbl) do |f|
+    .leftlist= f.label :not_delete
+    .rightlist
+      = f.select :not_delete, [false, true].collect{|status| [t("layout.#{status}_"), status]}, {:selected => pbl.not_delete}
+      .both
+      %br
+      = submit_tag t('layout.update')
+    .both
+- unless pbl.not_delete
+  .flash_notify
+    .alert.alert-error
+      - days = pbl.autostarted? ? ProductBuildList::LIVE_TIME : ProductBuildList::MAX_LIVE_TIME
+      - days = (pbl.created_at.to_date - days.ago.to_date).to_i
+      - if days > 1
+        = t('layout.product_build_lists.will_be_removed_n_days', :n => days)
+      - else
+        = t('layout.product_build_lists.will_be_removed_today')
   .both
 
 - if pbl.build_started? || pbl.build_canceling?

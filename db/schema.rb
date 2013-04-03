@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130227102900) do
+ActiveRecord::Schema.define(:version => 20130328112110) do
 
   create_table "activity_feeds", :force => true do |t|
     t.integer  "user_id",    :null => false
@@ -137,6 +137,7 @@ ActiveRecord::Schema.define(:version => 20130227102900) do
     t.boolean  "auto_create_container",      :default => false
     t.text     "extra_repositories"
     t.text     "extra_build_lists"
+    t.integer  "publisher_id"
   end
 
   add_index "build_lists", ["advisory_id"], :name => "index_build_lists_on_advisory_id"
@@ -302,7 +303,7 @@ ActiveRecord::Schema.define(:version => 20130227102900) do
 
   create_table "product_build_lists", :force => true do |t|
     t.integer  "product_id"
-    t.integer  "status",          :default => 2, :null => false
+    t.integer  "status",          :default => 2,     :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "project_id"
@@ -314,13 +315,15 @@ ActiveRecord::Schema.define(:version => 20130227102900) do
     t.integer  "arch_id"
     t.integer  "time_living"
     t.integer  "user_id"
+    t.boolean  "not_delete",      :default => false
+    t.boolean  "autostarted",     :default => false
   end
 
   add_index "product_build_lists", ["product_id"], :name => "index_product_build_lists_on_product_id"
 
   create_table "products", :force => true do |t|
-    t.string   "name",        :null => false
-    t.integer  "platform_id", :null => false
+    t.string   "name",             :null => false
+    t.integer  "platform_id",      :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
     t.text     "description"
@@ -328,6 +331,8 @@ ActiveRecord::Schema.define(:version => 20130227102900) do
     t.string   "params"
     t.string   "main_script"
     t.integer  "time_living"
+    t.integer  "autostart_status"
+    t.string   "project_version"
   end
 
   create_table "project_imports", :force => true do |t|

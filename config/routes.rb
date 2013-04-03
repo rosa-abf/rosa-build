@@ -77,7 +77,7 @@ Rosa::Application.routes.draw do
       resources :products, :only => [:show, :update, :create, :destroy] do
         resources :product_build_lists, :only => :index
       end
-      resources :product_build_lists, :only => [:index, :show, :destroy, :create] do
+      resources :product_build_lists, :only => [:index, :show, :destroy, :create, :update] do
         put :cancel, :on => :member
       end
       #resources :ssh_keys, :only => [:index, :create, :destroy]
@@ -144,6 +144,7 @@ Rosa::Application.routes.draw do
       resources :mass_builds, :only => [:create, :index] do
         member do
           post   :cancel
+          post   :publish
           get '/:kind.:format' => "mass_builds#get_list", :as => :get_list, :kind => /failed_builds_list|missed_projects_list|projects_list/
         end
       end
@@ -161,7 +162,7 @@ Rosa::Application.routes.draw do
       end
       resources :key_pairs, :only => [:create, :index, :destroy]
       resources :products do
-        resources :product_build_lists, :only => [:create, :destroy, :new, :show] do
+        resources :product_build_lists, :only => [:create, :destroy, :new, :show, :update] do
           member {
             get :log
             put :cancel
@@ -342,4 +343,9 @@ Rosa::Application.routes.draw do
       get '/' => 'groups/profile#show', :as => :group
     end
   end
+
+  # As of Rails 3.0.1, using rescue_from in your ApplicationController to
+  # recover from a routing error is broken!
+  # see: https://rails.lighthouseapp.com/projects/8994/tickets/4444-can-no-longer-rescue_from-actioncontrollerroutingerror
+  match '*a', :to => 'application#render_404'
 end

@@ -63,7 +63,7 @@ shared_examples_for 'api user with admin rights' do
     params = {:product_id => @product_build_list.product_id, :arch_id => Arch.last.id,
                         :commit_hash => commit_hash, :main_script => @product_build_list.main_script}
     @create_params = {:product_build_list =>{:time_living => 150}.merge(params)}
-    @update_params = {:product_build_list =>{:time_living => 250}}
+    @update_params = {:product_build_list =>{:time_living => 250, :not_delete => true}}
   end
 
   it 'should be able to perform show action' do
@@ -95,14 +95,15 @@ shared_examples_for 'api user with admin rights' do
     lambda { put :destroy, :id => @product_build_list.id, :format => :json }.should change{ ProductBuildList.count }.by(-1)
   end
 
-  it "should not be able to perform update action" do
-    put :update, :id => @product_build_list.id, :format => :json
-    response.should_not be_success
+  it "should be able to perform update action" do
+    put :update, @update_params.merge(:id => @product_build_list.id), :format => :json
+    response.should be_success
   end
 
-  it "ensures that product has not been updated" do
+  it "ensures that only not_delete field of product build list has been updated" do
     put :update, @update_params.merge(:id => @product_build_list.id), :format => :json
     @product_build_list.reload.time_living.should == 150*60 # in seconds
+    @product_build_list.not_delete.should be_true
   end
 
   it 'ensures that return correct answer for wrong creating action' do

@@ -56,4 +56,6 @@ en:
   layout:
     pull_requests:
       search: Find pull request...
+      all: All requests
+      to_me: Assigned to me
       view_full_changes: View full changes

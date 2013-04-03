@@ -181,6 +181,9 @@ class Platform < ActiveRecord::Base
   end
   later :destroy, :queue => :clone_build
 
+  def default_host
+    EventLog.current_controller.request.host_with_port rescue ::Rosa::Application.config.action_mailer.default_url_options[:host]
+  end
 
   protected
 
@@ -188,9 +191,6 @@ class Platform < ActiveRecord::Base
       system("mkdir -p -m 0777 #{build_path([name, 'repository'])}")
     end
 
-    def default_host
-      EventLog.current_controller.request.host_with_port rescue ::Rosa::Application.config.action_mailer.default_url_options[:host]
-    end
 
     def build_path(dir)
       File.join(APP_CONFIG['root_path'], 'platforms', dir)

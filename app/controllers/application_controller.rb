@@ -17,10 +17,9 @@ class ApplicationController < ActionController::Base
   helper_method :get_owner
 
   unless Rails.env.development?
-
     rescue_from Exception, :with => :render_500
     rescue_from ActiveRecord::RecordNotFound,
-                ActionController::RoutingError,
+                # ActionController::RoutingError, # see: config/routes.rb:<last line>
                 ActionController::UnknownController,
                 AbstractController::ActionNotFound, :with => :render_404
   end
@@ -31,11 +30,12 @@ class ApplicationController < ActionController::Base
 
   rescue_from Grit::NoSuchPathError, :with => :not_found
 
-  protected
 
   def render_404
     render_error 404
   end
+
+  protected
 
   def render_500(e)
     #check for exceptions Airbrake ignores by default and exclude them from manual Airbrake notification

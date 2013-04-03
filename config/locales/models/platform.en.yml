@@ -62,6 +62,7 @@ en:
       build_all_success: All project build in progress
       build_all_error: Mass build failed
       cancel_mass_build: Mass build canceled
+      publish_success: Builds have been sent to queue for publishing successfully
       clone_success: Cloned successfully
       members:
         successfully_added: "%{name} successfully added to the platform"

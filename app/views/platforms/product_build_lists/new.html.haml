@@ -9,11 +9,7 @@
   .both
 
   .leftlist= f.label :project_version, t("activerecord.attributes.product_build_list.project_version"), :class => :label
-  .rightlist= f.select :project_version, versions_for_group_select(pbl.project), :selected => params[:product_build_lists].try(:fetch, :project_version) || pbl.project.default_branch
-  .both
-
-  .leftlist= f.label :arch, t("activerecord.attributes.product_build_list.arch"), :class => :label
-  .rightlist= f.select :arch_id, Arch.recent.map{ |a| [a.name, a.id]}
+  .rightlist= f.select :project_version, versions_for_group_select(pbl.project), :selected => params[:product_build_lists].try(:fetch, :project_version) || @product.project_version || pbl.project.default_branch
   .both
 
   = render 'platforms/products/def_fields', :f => f

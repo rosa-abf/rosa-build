@@ -172,6 +172,7 @@ class Projects::BuildListsController < Projects::BaseController
 
     end
 
+    @build_list.publisher = current_user
     if @build_list.save && @build_list.can_publish? && @build_list.now_publish
       redirect_to :back, :notice => t('layout.build_lists.publish_success')
     else
