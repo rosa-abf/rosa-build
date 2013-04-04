@@ -86,7 +86,7 @@ class BuildList < ActiveRecord::Base
                 BUILD_ERROR,
                 PROJECT_VERSION_NOT_FOUND,
                 TESTS_FAILED
-              ]
+              ].freeze
 
   HUMAN_STATUSES = { WAITING_FOR_RESPONSE => :waiting_for_response,
                      BUILD_CANCELED => :build_canceled,
@@ -101,7 +101,7 @@ class BuildList < ActiveRecord::Base
                      SUCCESS => :success,
                      PROJECT_VERSION_NOT_FOUND => :project_version_not_found,
                      TESTS_FAILED => :tests_failed
-                    }
+                    }.freeze
 
   scope :recent, order("#{table_name}.updated_at DESC")
   scope :for_status, lambda {|status| where(:status => status) }
