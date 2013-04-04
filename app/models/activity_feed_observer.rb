@@ -145,9 +145,7 @@ class ActivityFeedObserver < ActiveRecord::Observer
       end
 
     when 'BuildList'
-      # Do not show mass build activity in activity feeds
-      return true if record.mass_build
-      if record.mass_build.blank? && (
+      if record.mass_build.blank? && ( # Do not show mass build activity in activity feeds
           record.status_changed? && BUILD_LIST_STATUSES.include?(record.status) ||
           record.status == BuildList::BUILD_PENDING && record.bs_id_changed?
         )
