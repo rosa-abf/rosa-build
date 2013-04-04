@@ -174,7 +174,7 @@ class Comment < ActiveRecord::Base
           next unless item.project.repo.commit element[0]
           comment.created_from_commit_hash = element[0].hex
         else
-          comment.data = {:from_project_id => item.project.id}
+          comment.data.merge! :comment_id => item.id
           if item.commentable_type == 'Issue'
             comment.created_from_issue_id = item.commentable_id
           elsif item.commentable_type == 'Grit::Commit'
