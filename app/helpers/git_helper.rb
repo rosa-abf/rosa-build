@@ -68,6 +68,7 @@ module GitHelper
   end
 
   def versions_for_group_select(project)
+    return [] unless project
     [ ['Branches', project.repo.branches.map(&:name)],
       ['Tags', project.repo.tags.map(&:name)] ]
   end

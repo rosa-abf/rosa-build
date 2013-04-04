@@ -115,60 +115,48 @@ $(document).ready(function() {
     return false;
   };
 
-  $('#search_user').live('submit', function() {
-    var id = $(this).attr('id');
-    if(id.indexOf('user') != -1) { // FIXME
-      var which = 'users';
-    }
-    else if (id.indexOf('labels') != -1) {
-      var which = 'labels';
-    }
-    $.ajax({
+  var isSearchUser = null;
+  $('#search_user').on('keyup', function() {
+    if (isSearchUser != null) { isSearchUser.abort(); }
+    isSearchUser = $.ajax({
       type: 'GET',
-      url: $(this).attr("action"),
+      url: $('#search_user_path').attr('path'),
       data: $(this).serialize(),
       success: function(data){
-                 $('#manage_issue_'+ which +'_list').html(data);
-               },
-      error: function(data){
-               alert('error') // TODO remove
-             }
+                 $('#manage_issue_users_list').html(data);
+               }
      });
     return false;
   });
 
-  function remAssignee(form) {
-    var el = form.find('.people.selected.remove_assignee');
-    var id = el.attr('id');
-    $('#manage_issue_users_list .add_assignee.people.selected').removeClass('select');
-    el.remove();
-  }
-
-  $('.add_assignee.people.selected').live('click', function() {
-    var form_new = $('form.issue');
-    var form_edit = $('form.edit_form.issue');
-    form_new.find('#people-span').fadeOut(0);
-    remAssignee(form_new);
-    var clone = $(this).clone().removeClass('add_assignee').addClass('remove_assignee');
-    form_new.find('#issue_assignee').html(clone);
-    $('.current_assignee').html(clone.removeClass('select'));
-    $(this).addClass('select');
+  $('#assigned-popup .header .icon-remove-circle').live('click', function() {
+    $('#assigned-popup').hide();
   });
 
-  $('.remove_assignee.people.selected').live('click', function() {
-    var form = $('form.issue, form.edit_form issue');
-    form.find('#people-span').fadeIn(0);
-    remAssignee(form);
+  $('#assigned-container .icon-share').live('click', function() {
+    $('#assigned-popup').show();
   });
 
-  function remLabel(form, id) {
-    var el = form.find('.label.remove_label'+'#'+id);
-    var label = $('#'+id+'.remove_label.label.selected');
-    label.find('.flag').fadeIn(0);
-    label.find('.labeltext.selected').removeClass('selected').attr('style', '');
-    label.fadeIn('slow');
-    el.fadeOut('slow').remove();
-  }
+  $('#assigned-popup .people.selected').live('click', function() {
+    var form = $('#assigned-popup .edit_assignee');
+    var item = $(this);
+    if (form.length == 0) {
+      updateAssignedUser(item);
+      return false;
+    }
+    $.ajax({
+      type: 'PUT',
+      url: form.attr("action"),
+      data: $(this).find('input').serialize(),
+      success: function(data){
+                      updateAssignedUser(item);
+                    },
+      error: function(data){
+                   alert('error'); // TODO remove
+                }
+     });
+    return false;
+  });
 
   $('.add_label.label').live('click', function() {
     $(this).addClass('selected').removeClass('add_label').addClass('remove_label');
@@ -251,36 +239,11 @@ $(document).ready(function() {
     return false;
   });
 
-  $('.button.manage_assignee').live('click', function() {
-    $('form#search_user, .button.update_assignee').fadeIn(0);
-    $('.current_assignee .people').addClass('remove_assignee selected').removeClass('nopointer');
-    $(this).fadeOut(0);
-  });
-
   $('.button.manage_labels').live('click', function() {
     $('.button.update_labels').fadeIn(0);
     $('.current_labels .label .labeltext.selected').parent().addClass('remove_label selected').removeClass('nopointer');
     $('.current_labels .label .labeltext:not(.selected)').parent().addClass('add_label').removeClass('nopointer');
     $(this).fadeOut(0);
-  });
-
-  $('.button.update_assignee').live('click', function() {
-    var form = $('form.edit_assignee.issue');
-    $.ajax({
-      type: 'POST',
-      url: form.attr("action"),
-      data: form.serialize(),
-      success: function(data){
-                      $('.current_assignee .people').removeClass('remove_assignee selected').addClass('nopointer');
-                      $('form#search_user, .button.update_assignee').fadeOut(0);
-                      $('.button.manage_assignee').fadeIn(0);
-                      $('#manage_issue_users_list').html('');
-                    },
-      error: function(data){
-                   alert('error'); // TODO remove
-                }
-     });
-    return false;
   });
 
   $('.button.update_labels').live('click', function() {
@@ -303,3 +266,18 @@ $(document).ready(function() {
   });
 
 });
+
+function updateAssignedUser(item) {
+  $('#assigned-popup').hide();
+  var container = item.find('.container').clone();
+  $('#assigned-container .user-container').empty().append(container.html()).append('<span class="icon-share"></span>');
+}
+
+function remLabel(form, id) {
+  var el = form.find('.label.remove_label'+'#'+id);
+  var label = $('#'+id+'.remove_label.label.selected');
+  label.find('.flag').fadeIn(0);
+  label.find('.labeltext.selected').removeClass('selected').attr('style', '');
+  label.fadeIn('slow');
+  el.fadeOut('slow').remove();
+}

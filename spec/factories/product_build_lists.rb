@@ -9,8 +9,5 @@ FactoryGirl.define do
     params 'ENV=i586'
     time_living 150
     project_version 'master'
-
-    # see: before_validation in ProductBuildList model
-    before(:create) { Arch.find_or_create_by_name('x86_64') }
   end
 end

@@ -136,21 +136,32 @@ class ActivityFeedObserver < ActiveRecord::Observer
       end
 
     when 'BuildList'
-      if [BuildList::BUILD_PUBLISHED,
+      if ( record.status_changed? &&
+          [BuildList::BUILD_PUBLISHED,
           BuildList::SUCCESS,
           BuildList::BUILD_ERROR,
           BuildList::PROJECT_VERSION_NOT_FOUND,
           BuildList::FAILED_PUBLISH,
           BuildList::TESTS_FAILED
-         ].include? record.status or
-         (record.status == BuildList::BUILD_PENDING && record.bs_id_changed?)
+          ].include?(record.status)
+         ) or (record.status == BuildList::BUILD_PENDING && record.bs_id_changed?)
         record.project.admins.each do |recipient|
+          user = record.publisher || record.user
           ActivityFeed.create(
             :user => recipient,
             :kind => 'build_list_notification',
-            :data => {:task_num => record.bs_id, :build_list_id => record.id, :status => record.status, :updated_at => record.updated_at,
-                             :project_id => record.project_id, :project_name => record.project.name, :project_owner => record.project.owner.uname,
-                             :user_name => record.user.name, :user_email => record.user.email, :user_id => record.user_id}
+            :data => {
+              :task_num => record.bs_id,
+              :build_list_id => record.id,
+              :status => record.status,
+              :updated_at => record.updated_at,
+              :project_id => record.project_id,
+              :project_name => record.project.name,
+              :project_owner => record.project.owner.uname,
+              :user_name => user.name,
+              :user_email => user.email,
+              :user_id => user.id
+            }
           )
         end
       end

@@ -6,6 +6,7 @@ class Projects::PullRequestsController < Projects::BaseController
 
   load_resource :issue, :through => :project, :find_by => :serial_id, :parent => false, :except => [:index, :autocomplete_to_project]
   load_and_authorize_resource :instance_name => :pull, :through => :issue, :singleton => true, :except => [:index, :autocomplete_to_project]
+  before_filter :find_collaborators, :only => [:new, :create, :show]
 
   def new
     to_project = find_destination_project(false)
@@ -37,6 +38,7 @@ class Projects::PullRequestsController < Projects::BaseController
     authorize! :read, to_project
 
     @pull = to_project.pull_requests.new pull_params
+    @pull.issue.assignee_id = (params[:issue] || {})[:assignee_id]
     @pull.issue.user, @pull.issue.project, @pull.from_project = current_user, to_project, @project
     @pull.from_project_owner_uname = @pull.from_project.owner.uname
     @pull.from_project_name = @pull.from_project.name
@@ -90,6 +92,7 @@ class Projects::PullRequestsController < Projects::BaseController
 
   def index(status = 200)
     @issues_with_pull_request = @project.issues.joins(:pull_request)
+    @issues_with_pull_request = @issues_with_pull_request.where(:assignee_id => current_user.id) if @is_assigned_to_me = params[:filter] == 'to_me'
     @issues_with_pull_request = @issues_with_pull_request.search(params[:search_pull_request]) if params[:search_pull_request] !~ /#{t('layout.pull_requests.search')}/
 
     @opened_issues, @closed_issues = @issues_with_pull_request.not_closed_or_merged.count, @issues_with_pull_request.closed_or_merged.count

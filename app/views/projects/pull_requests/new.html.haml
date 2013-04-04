@@ -7,6 +7,7 @@
   .tab-content.pull_diff_fix
     #discussion.tab-pane.active
       =hidden_field_tag :update_action, new_project_pull_request_path
+      =render 'projects/issues/assigned_popup'
       =form_for @pull, :url => (@pull.already? ? new_project_pull_request_path : project_pull_requests_path), :html => {:class => 'well well-large', :method => (@pull.already? ? :get : :post)} do |f|
 
         .leftlist=f.label :from_project, t("#{ar}.from_project"), :class => :label
@@ -30,6 +31,11 @@
             .flash
               %div{:class => @pull.ready? ? 'notice' : 'alert'}
                 =pull_status @pull
+          .both
+
+          .leftlist.big-list= t('activerecord.attributes.issue.assignee') + ':'
+          #assigned-container.rightlist
+            =render 'projects/issues/user_container', :user => @pull.assignee
           .both
           .leftlist.big-list
           .rightlist
