@@ -22,7 +22,7 @@ class ProductBuildList < ActiveRecord::Base
                 BUILD_PENDING,
                 BUILD_CANCELED,
                 BUILD_CANCELING
-              ]
+              ].freeze
 
   HUMAN_STATUSES = { BUILD_STARTED => :build_started,
                      BUILD_COMPLETED => :build_completed,
@@ -30,7 +30,7 @@ class ProductBuildList < ActiveRecord::Base
                      BUILD_PENDING => :build_pending,
                      BUILD_CANCELED => :build_canceled,
                      BUILD_CANCELING => :build_canceling
-                    }
+                    }.freeze
 
   belongs_to :product
   belongs_to :project

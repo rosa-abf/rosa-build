@@ -228,7 +228,7 @@ class BuildList < ActiveRecord::Base
                                BUILD_PUBLISHED => :container_published,
                                BUILD_PUBLISH => :container_publish,
                                FAILED_PUBLISH => :container_failed_publish
-                              }
+                              }.freeze
 
   state_machine :container_status, :initial => :waiting_for_publish do
 
