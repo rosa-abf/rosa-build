@@ -1674,49 +1674,49 @@ table.tablesorter.tracker td.td0{
   padding-right: 0px;
 }
 
+table.tablesorter.tracker .td3.td3-pull {
+  min-width: 130px;
+}
+
 table.tablesorter.tracker td.td3{
-  min-width: 110px;
   padding-top: 10px;
+  min-width: 110px;
+  .code {
+    height: 23px;
+    width: 15px;
+    background: #FFF;
+    color: #009fe3;
+    border: 1px solid #83d1f2;
+    font-size: 16px;
+    padding: 5px 0px 0px 5px;
+    margin-right: 3px;
+    cursor: pointer;
+  }
+  .avatar {
+    margin-right: 8px;
+    cursor: pointer;
+  }
+  .answers {
+    height: 28px;
+    background: #FFF;
+    color: #009fe3;
+    border: 1px solid #83d1f2;
+    font-size: 16px;
+    cursor: pointer;
+    .pic {
+      float: left;
+      margin: 2px;
+      margin-top: 6px;
+    }
+    .count {
+      float: left;
+      margin: 4px 5px 0px 2px;
+    }
+  }
 }
 
-table.tablesorter.tracker td.td3 div.code {
-  height: 23px;
-  width: 15px;
-  background: #FFF;
-  color: #009fe3;
-  border: 1px solid #83d1f2;
-  font-size: 16px;
-  padding: 5px 0px 0px 5px;
+.tablesorter.tracker .td3 > a {
   float: left;
-  margin-right: 3px;
-  cursor: pointer;
-}
-
-table.tablesorter.tracker td.td3 div.avatar {
-  float: left;
-  margin-right: 8px;
-  cursor: pointer;
-}
-
-table.tablesorter.tracker td.td3 div.answers {
-  height: 28px;
-  background: #FFF;
-  color: #009fe3;
-  border: 1px solid #83d1f2;
-  font-size: 16px;
-  float: left;
-  cursor: pointer;
-}
-
-table.tablesorter.tracker td.td3 div.answers div.pic {
-  float: left;
-  margin: 2px;
-  margin-top: 6px;
-}
-
-table.tablesorter.tracker td.td3 div.answers div.count {
-  float: left;
-  margin: 4px 5px 0px 2px;
 }
 
 table.tablesorter.tracker div.smalltext {
