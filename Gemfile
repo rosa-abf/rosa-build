@@ -28,6 +28,7 @@ gem 'diff-display', '~> 0.0.1'
 
 # Wiki
 gem "gollum", '~> 2.1.3'
+gem "redcarpet", '~> 2.2.2'
 gem 'creole'
 gem 'rdiscount'
 # gem 'org-ruby'
@@ -52,9 +53,6 @@ gem 'rack-throttle'
 gem 'rest-client', '~> 1.6.6'
 
 gem 'attr_encrypted', '1.2.1'
-
-gem "gitlab-pygments.rb", '~> 0.3.2', require: 'pygments.rb'
-gem "redcarpet",     "~> 2.2.2"
 
 group :assets do
   gem 'sass-rails', '~> 3.2.5'
