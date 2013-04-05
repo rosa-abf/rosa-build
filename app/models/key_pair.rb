@@ -47,7 +47,7 @@ class KeyPair < ActiveRecord::Base
         end
       ensure
         # remove the directory.
-        system "rm -rf #{dir}"
+        FileUtils.rm_rf dir
       end
     end
 
