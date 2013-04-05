@@ -1674,12 +1674,13 @@ table.tablesorter.tracker td.td0{
   padding-right: 0px;
 }
 
-table.tablesorter.tracker .td3-pull {
+table.tablesorter.tracker .td3.td3-pull {
   min-width: 130px;
 }
 
 table.tablesorter.tracker td.td3{
   padding-top: 10px;
+  min-width: 110px;
   .code {
     height: 23px;
     width: 15px;
