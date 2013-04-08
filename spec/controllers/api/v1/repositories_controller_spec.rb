@@ -308,9 +308,11 @@ describe Api::V1::RepositoriesController do
     before(:each) do
       @user = FactoryGirl.create(:user)
       http_login(@user)
-      platform = @repository.platform
-      platform.owner = @user; platform.save
-      @repository.platform.relations.create!(:actor_type => 'User', :actor_id => @user.id, :role => 'admin')
+      [@repository, @personal_repository].each do |repository|
+        platform = repository.platform
+        platform.owner = @user; platform.save
+        repository.platform.relations.create!(:actor_type => 'User', :actor_id => @user.id, :role => 'admin')
+      end
     end
 
     it_should_behave_like 'api repository user with reader rights'
