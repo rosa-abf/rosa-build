@@ -62,7 +62,7 @@ class UserMailer < ActionMailer::Base
     mail(
       :to       => email_with_name(user, user.email),
       :subject  => subject,
-      :from     => email_with_name(build_list.user)
+      :from     => email_with_name(build_list.publisher || build_list.user)
     ) do |format|
       format.html
     end

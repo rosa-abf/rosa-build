@@ -10,6 +10,7 @@ class BuildList < ActiveRecord::Base
   belongs_to :save_to_repository, :class_name => 'Repository'
   belongs_to :build_for_platform, :class_name => 'Platform'
   belongs_to :user
+  belongs_to :publisher, :class_name => 'User'
   belongs_to :advisory
   belongs_to :mass_build, :counter_cache => true
   has_many :items, :class_name => "BuildList::Item", :dependent => :destroy
@@ -85,7 +86,7 @@ class BuildList < ActiveRecord::Base
                 BUILD_ERROR,
                 PROJECT_VERSION_NOT_FOUND,
                 TESTS_FAILED
-              ]
+              ].freeze
 
   HUMAN_STATUSES = { WAITING_FOR_RESPONSE => :waiting_for_response,
                      BUILD_CANCELED => :build_canceled,
@@ -100,7 +101,7 @@ class BuildList < ActiveRecord::Base
                      SUCCESS => :success,
                      PROJECT_VERSION_NOT_FOUND => :project_version_not_found,
                      TESTS_FAILED => :tests_failed
-                    }
+                    }.freeze
 
   scope :recent, order("#{table_name}.updated_at DESC")
   scope :for_status, lambda {|status| where(:status => status) }
@@ -156,6 +157,7 @@ class BuildList < ActiveRecord::Base
 
     after_transition :on => :published,
       :do => [:set_version_and_tag, :actualize_packages]
+    after_transition :on => :publish, :do => :set_publisher
     after_transition :on => :cancel, :do => :cancel_job
 
     after_transition :on => [:published, :fail_publish, :build_error, :tests_failed], :do => :notify_users
@@ -226,7 +228,7 @@ class BuildList < ActiveRecord::Base
                                BUILD_PUBLISHED => :container_published,
                                BUILD_PUBLISH => :container_publish,
                                FAILED_PUBLISH => :container_failed_publish
-                              }
+                              }.freeze
 
   state_machine :container_status, :initial => :waiting_for_publish do
 
@@ -474,6 +476,11 @@ class BuildList < ActiveRecord::Base
 
   def use_save_to_repository_for_main_platforms
     self.use_save_to_repository = true if save_to_platform.main?
+  end
+
+  def set_publisher
+    self.publisher ||= user
+    save
   end
 
   def current_ability

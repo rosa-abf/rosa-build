@@ -137,7 +137,7 @@ Rosa::Application.routes.draw do
         get    :members
         post   :remove_members # fixme: change post to delete
         delete :remove_member
-        put    :add_member
+        post    :add_member
         post   :make_clone
         get    :advisories
       end

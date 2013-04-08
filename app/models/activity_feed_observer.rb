@@ -2,6 +2,15 @@
 class ActivityFeedObserver < ActiveRecord::Observer
   observe :issue, :comment, :user, :build_list
 
+  BUILD_LIST_STATUSES = [
+                          BuildList::BUILD_PUBLISHED,
+                          BuildList::SUCCESS,
+                          BuildList::BUILD_ERROR,
+                          BuildList::PROJECT_VERSION_NOT_FOUND,
+                          BuildList::FAILED_PUBLISH,
+                          BuildList::TESTS_FAILED
+                        ].freeze
+
   def after_create(record)
     case record.class.to_s
     when 'User'
@@ -138,21 +147,28 @@ class ActivityFeedObserver < ActiveRecord::Observer
       end
 
     when 'BuildList'
-      if [BuildList::BUILD_PUBLISHED,
-          BuildList::SUCCESS,
-          BuildList::BUILD_ERROR,
-          BuildList::PROJECT_VERSION_NOT_FOUND,
-          BuildList::FAILED_PUBLISH,
-          BuildList::TESTS_FAILED
-         ].include? record.status or
-         (record.status == BuildList::BUILD_PENDING && record.bs_id_changed?)
+      if record.mass_build.blank? && ( # Do not show mass build activity in activity feeds
+          record.status_changed? && BUILD_LIST_STATUSES.include?(record.status) ||
+          record.status == BuildList::BUILD_PENDING && record.bs_id_changed?
+        )
+
         record.project.admins.each do |recipient|
+          user = record.publisher || record.user
           ActivityFeed.create(
             :user => recipient,
             :kind => 'build_list_notification',
-            :data => {:task_num => record.bs_id, :build_list_id => record.id, :status => record.status, :updated_at => record.updated_at,
-                             :project_id => record.project_id, :project_name => record.project.name, :project_owner => record.project.owner.uname,
-                             :user_name => record.user.name, :user_email => record.user.email, :user_id => record.user_id}
+            :data => {
+              :task_num => record.bs_id,
+              :build_list_id => record.id,
+              :status => record.status,
+              :updated_at => record.updated_at,
+              :project_id => record.project_id,
+              :project_name => record.project.name,
+              :project_owner => record.project.owner.uname,
+              :user_name => user.name,
+              :user_email => user.email,
+              :user_id => user.id
+            }
           )
         end
       end

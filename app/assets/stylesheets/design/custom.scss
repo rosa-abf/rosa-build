@@ -325,6 +325,18 @@ article div.file table {
     background-color: #DDFFDD;
 }
 
+#repo-wrapper table.diff tr td.code.highlight-line {
+    background-color: #FFFFCC;
+}
+.gutter .highlight-line {
+    background-color: #FF9900;
+    width: 805px;
+    height: 12px;
+    margin: -12px 0 0 50px;
+    opacity: 0.2;
+    position: absolute;
+}
+
 #repo-wrapper table.diff tr td.code.ins .idiff {
     background-color: #BAFBAD;
 }

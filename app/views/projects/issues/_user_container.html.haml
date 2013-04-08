@@ -2,7 +2,7 @@
   - if user
     .image
       =image_tag(avatar_url(user, :micro), :alt => 'avatar')
-    %span.name= link_to(user.uname, user_path(user))
+    %span.name= link_to(user.fullname, user_path(user))
     %span= t('layout.issues.is_assigned')
   - else
     %span= t('layout.issues.no_one_is_assigned')

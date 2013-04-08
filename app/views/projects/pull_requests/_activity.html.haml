@@ -1,5 +1,6 @@
 .hr
--commits_queue = []
+- commits_queue = []
+- diff_counter = 0
 -merge_activity(@comments, @commits).each do |item| #
   -if item.is_a? Comment
     =render 'projects/git/commits/commits_small', :commits => commits_queue if commits_queue.present?
@@ -20,7 +21,8 @@
         =t '.show_outdated_diff'
         %span.data-expander.collapsed{:id => exp_id} &nbsp;
         .hidden{:id => "content-#{exp_id}"}
-          =render 'projects/pull_requests/discussion_comments', :item => item, :add_id => nil
+          =render 'projects/pull_requests/discussion_comments', :item => item, :diff_counter => diff_counter
     -else
-      =render 'projects/pull_requests/discussion_comments', :item => item, :add_id => nil
+      =render 'projects/pull_requests/discussion_comments', :item => item, :diff_counter => diff_counter
+    - diff_counter += 1
 =render 'projects/git/commits/commits_small', :commits => commits_queue if commits_queue.present?

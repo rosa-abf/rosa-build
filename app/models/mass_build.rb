@@ -77,20 +77,22 @@ class MassBuild < ActiveRecord::Base
   end
   later :cancel_all, :queue => :clone_build
 
-  def publish_success_builds
-    publish BuildList::SUCCESS, BuildList::FAILED_PUBLISH
+  def publish_success_builds(user)
+    publish user, BuildList::SUCCESS, BuildList::FAILED_PUBLISH
   end
   later :publish_success_builds, :queue => :clone_build
 
-  def publish_test_faild_builds
-    publish BuildList::TESTS_FAILED
+  def publish_test_faild_builds(user)
+    publish user, BuildList::TESTS_FAILED
   end
   later :publish_test_faild_builds, :queue => :clone_build
 
   private
 
-  def publish(*statuses)
-    build_lists.where(:status => statuses).order(:id).find_in_batches(:batch_size => 50) do |bls|
+  def publish(user, *statuses)
+    builds = build_lists.where(:status => statuses)
+    builds.update_all(:publisher_id => user.id)
+    builds.order(:id).find_in_batches(:batch_size => 50) do |bls|
       bls.each{ |bl| bl.can_publish? && bl.now_publish }
     end
   end
