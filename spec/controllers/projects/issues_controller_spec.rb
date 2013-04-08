@@ -2,13 +2,14 @@
 require 'spec_helper'
 
 shared_context "issues controller" do
-  before(:each) do
+  before do
     stub_symlink_methods
 
     @project = FactoryGirl.create(:project)
     @issue_user = FactoryGirl.create(:user)
 
     @issue = FactoryGirl.create(:issue, :project_id => @project.id, :assignee_id => @issue_user.id)
+    @label = FactoryGirl.create(:label, :project_id => @project.id)
 
     @project_with_turned_off_issues = FactoryGirl.create(:project, :has_issues => false)
     @turned_of_issue = FactoryGirl.create(:issue, :project_id => @project_with_turned_off_issues.id, :assignee_id => @issue_user.id)
@@ -20,10 +21,10 @@ shared_context "issues controller" do
       :owner_name => @project.owner.uname, :project_name => @project.name,
       :issue => {
         :title => "issue1",
-        :body => "issue body"
-      },
-      :assignee_id => @issue_user.id,
-      :assignee_uname => @issue_user.uname
+        :body => "issue body",
+        :labelings_attributes => { @label.id => {:label_id => @label.id}},
+        :assignee_id => @issue_user.id
+      }
     }
 
     @update_params = {
@@ -56,9 +57,7 @@ shared_examples_for 'issue user with project reader rights' do
     get :index, :owner_name => @project.owner.uname, :project_name => @project.name
     response.should render_template(:index)
   end
-end
 
-shared_examples_for 'issue user with project writer rights' do
   it 'should be able to perform create action' do
     post :create, @create_params
     response.should redirect_to(project_issues_path(@project))
@@ -66,6 +65,30 @@ shared_examples_for 'issue user with project writer rights' do
 
   it 'should create issue object into db' do
     lambda{ post :create, @create_params }.should change{ Issue.count }.by(1)
+  end
+end
+
+shared_examples_for 'issue user with project writer rights' do
+  it 'should be able to perform index action on hidden project' do
+    @project.update_attributes(:visibility => 'hidden')
+    get :index, :owner_name => @project.owner.uname, :project_name => @project.name
+    response.should render_template(:index)
+  end
+
+  it 'should create issue object into db' do
+    lambda{ post :create, @create_params }.should change{ Issue.count }.by(1)
+  end
+
+  context 'perform create action' do
+    before { post :create, @create_params }
+
+    it 'user should be assigned to issue' do
+      @project.issues.last.assignee_id.should_not be_nil
+    end
+
+    it 'label should be attached to issue' do
+      @project.issues.last.labels.should have(1).item
+    end
   end
 end
 
@@ -167,10 +190,21 @@ describe Projects::IssuesController do
 
     it_should_behave_like 'issue user with project guest rights'
     it_should_behave_like 'issue user with project reader rights'
-    it_should_behave_like 'issue user with project writer rights'
     it_should_behave_like 'user without issue update rights'
     it_should_behave_like 'project with issues turned off'
     it_should_behave_like 'user without issue destroy rights'
+
+    context 'perform create action' do
+      before { post :create, @create_params }
+
+      it 'user should not be assigned to issue' do
+        @project.issues.last.assignee_id.should be_nil
+      end
+
+      it 'label should not be attached to issue' do
+        @project.issues.last.labels.should have(:no).items
+      end
+    end
 
     # it 'should not be able to perform create action on project' do
     #   post :create, @create_params
