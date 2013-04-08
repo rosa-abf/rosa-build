@@ -21,7 +21,9 @@ class KeyPair < ActiveRecord::Base
   protected
 
     def check_keys
-      dir = Dir.mktmpdir('keys-', "#{APP_CONFIG['root_path']}/tmp")
+      tmp = "#{APP_CONFIG['root_path']}/tmp"
+      system "sudo chown rosa:rosa #{tmp} && chmod 1777 #{tmp}"
+      dir = Dir.mktmpdir('keys-', tmp)
       begin
         %w(pubring secring).each do |kind|
           filename = "#{dir}/#{kind}"
@@ -47,7 +49,7 @@ class KeyPair < ActiveRecord::Base
         end
       ensure
         # remove the directory.
-        FileUtils.rm_rf dir
+        FileUtils.remove_entry_secure dir
       end
     end
 
