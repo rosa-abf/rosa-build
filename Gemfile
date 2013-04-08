@@ -53,6 +53,7 @@ gem 'rack-throttle'
 gem 'rest-client', '~> 1.6.6'
 
 gem 'attr_encrypted', '1.2.1'
+gem "gemoji", "~> 1.2.1", require: 'emoji/railtie'
 
 group :assets do
   gem 'sass-rails', '~> 3.2.5'
@@ -62,7 +63,6 @@ group :assets do
   gem 'therubyracer', '~> 0.10.2', :platforms => [:mri, :rbx]
   gem 'therubyrhino', '~> 1.73.1', :platforms => :jruby
   gem 'turbo-sprockets-rails3'
-  gem "gemoji", "~> 1.2.1", require: 'emoji/railtie'
 end
 
 group :production do
