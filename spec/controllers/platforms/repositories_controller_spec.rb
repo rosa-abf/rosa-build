@@ -160,6 +160,7 @@ shared_examples_for 'platform admin user' do
   end
 
   it 'should not be able to destroy personal repository with name "main"' do
+    # hook for "ActiveRecord::ActiveRecordError: name is marked as readonly"
     Repository.where(:id => @personal_repository.id).update_all("name = 'main'")
     lambda { delete :destroy, :id => @personal_repository.id, :platform_id => @personal_repository.platform.id}.
       should change{ Repository.count }.by(0)
