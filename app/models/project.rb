@@ -33,6 +33,13 @@ class Project < ActiveRecord::Base
   validates :visibility, :presence => true, :inclusion => {:in => VISIBILITIES}
   validate { errors.add(:base, :can_have_less_or_equal, :count => MAX_OWN_PROJECTS) if owner.projects.size >= MAX_OWN_PROJECTS }
   validate :check_default_branch
+  validate do |project|
+    project.project_to_repositories.each do |p_to_r|
+      next if p_to_r.valid?
+      p_to_r.errors.full_messages.each{ |msg| errors[:base] << msg }
+    end
+    errors.delete :project_to_repositories
+  end
 
   attr_accessible :name, :description, :visibility, :srpm, :is_package, :default_branch, :has_issues, :has_wiki, :maintainer_id, :publish_i686_into_x86_64
   attr_readonly :name, :owner_id, :owner_type
