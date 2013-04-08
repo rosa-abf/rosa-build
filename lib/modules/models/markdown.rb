@@ -183,7 +183,7 @@ module Modules
         issue = Issue.find_by_hash_tag(identifier, current_ability, @project, '!')
         if pull_request = issue.pull_request
           title = "#{PullRequest.model_name.human}: #{pull_request.title}"
-          link_to(identifier, project_pull_request_path(pull_request.project, pull_request), html_options.merge(title: title, class: "gfm gfm-pull_request #{html_options[:class]}"))
+          link_to(identifier, project_pull_request_path(pull_request.to_project, pull_request), html_options.merge(title: title, class: "gfm gfm-pull_request #{html_options[:class]}"))
         end
       end
 
