@@ -173,7 +173,7 @@ module Modules
 
       def reference_issue(identifier)
         if issue = Issue.find_by_hash_tag(identifier, current_ability, @project)
-          url = project_issue_path(@project.owner, @project.name, issue.serial_id)
+          url = project_issue_path(issue.project.owner, issue.project.name, issue.serial_id)
           title = "#{Issue.model_name.human}: #{issue.title}"
           link_to(identifier, url, html_options.merge(title: title, class: "gfm gfm-issue #{html_options[:class]}"))
         end
