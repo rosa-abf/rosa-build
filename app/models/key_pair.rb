@@ -22,7 +22,7 @@ class KeyPair < ActiveRecord::Base
 
     def check_keys
       tmp = "#{APP_CONFIG['root_path']}/tmp"
-      system "sudo chown rosa:rosa #{tmp} && chmod 1777 #{tmp}"
+      system "sudo chown `whoami` #{tmp} && chmod 1777 #{tmp}"
       dir = Dir.mktmpdir('keys-', tmp)
       begin
         %w(pubring secring).each do |kind|
