@@ -45,6 +45,8 @@ en:
       save_error: Unable to save pull request
 
   activerecord:
+    models:
+      pull_request: Pull Request
     attributes:
       pull_requests:
         to_ref: Source

@@ -22,4 +22,4 @@
     = link_to image_tag(avatar_url(issue.assignee), :alt => 'avatar', :class => 'avatar'), user_path(issue.assignee) if issue.assignee
     %a.answers{:href => "#{path}#block-list"}
       = image_tag 'answers.png', :class => 'pic'
-      .count= issue.comments.count
+      .count=issue.comments.where(:automatic => false).count
