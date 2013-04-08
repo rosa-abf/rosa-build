@@ -61,7 +61,7 @@ class Project < ActiveRecord::Base
   }
 
   before_validation :truncate_name, :on => :create
-  before_save lambda { self.owner_uname = owner.uname if owner_id_changed? || owner_type_changed? }
+  before_save lambda { self.owner_uname = owner.uname if owner_uname.blank? || owner_id_changed? || owner_type_changed? }
   before_create :set_maintainer
   after_save :attach_to_personal_repository
   after_update :set_new_git_head

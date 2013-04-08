@@ -152,10 +152,19 @@ ActiveRecord::Schema.define(:version => 20130403202853) do
     t.text     "body"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.decimal  "commentable_id",   :precision => 50, :scale => 0
+    t.decimal  "commentable_id",           :precision => 50, :scale => 0
     t.integer  "project_id"
     t.text     "data"
+    t.boolean  "automatic",                                               :default => false
+    t.decimal  "created_from_commit_hash", :precision => 50, :scale => 0
+    t.integer  "created_from_issue_id"
   end
+
+  add_index "comments", ["automatic"], :name => "index_comments_on_automatic"
+  add_index "comments", ["commentable_id"], :name => "index_comments_on_commentable_id"
+  add_index "comments", ["commentable_type"], :name => "index_comments_on_commentable_type"
+  add_index "comments", ["created_from_commit_hash"], :name => "index_comments_on_created_from_commit_hash"
+  add_index "comments", ["created_from_issue_id"], :name => "index_comments_on_created_from_issue_id"
 
   create_table "event_logs", :force => true do |t|
     t.integer  "user_id"
@@ -387,7 +396,7 @@ ActiveRecord::Schema.define(:version => 20130403202853) do
     t.integer  "build_count",              :default => 0,        :null => false
     t.integer  "maintainer_id"
     t.boolean  "publish_i686_into_x86_64", :default => false
-    t.string   "owner_uname"
+    t.string   "owner_uname",                                    :null => false
   end
 
   add_index "projects", ["owner_id", "name", "owner_type"], :name => "index_projects_on_name_and_owner_id_and_owner_type", :unique => true, :case_sensitive => false
