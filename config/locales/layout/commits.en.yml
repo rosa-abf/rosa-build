@@ -7,3 +7,6 @@ en:
         commit: commit
         commits: commits
         commits2: commits
+      reference: "%{committer} referenced this issue from a commit %{commit}"
+      deleted: Commit has since been removed from the git-repository and is no longer available.
+      unknown_committer: Unknown

@@ -7,3 +7,6 @@ ru:
         commit: коммит
         commits: коммита
         commits2: коммитов
+      reference: "%{committer} ссылается на данную задачу в коммите %{commit}"
+      deleted: Коммит был удален и более недоступен в git-репозитории.
+      unknown_committer: Неизвестный
