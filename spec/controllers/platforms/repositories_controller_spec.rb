@@ -241,8 +241,8 @@ describe Platforms::RepositoriesController do
   context 'for platform owner user' do
     before(:each) do
       @user = @repository.platform.owner
-      @personal_repository.platform.owner = @user
-      @personal_repository.platform.save
+      platform = @personal_repository.platform
+      platform.owner = @user; platform.save
       set_session_for(@user)
     end
 
@@ -251,8 +251,9 @@ describe Platforms::RepositoriesController do
 
   context 'for platform member user' do
     before(:each) do
-      @platform.relations.create!(:actor_type => 'User', :actor_id => @user.id, :role => 'admin')
-      @personal_repository.platform.relations.create!(:actor_type => 'User', :actor_id => @user.id, :role => 'admin')
+      [@repository, @personal_repository].each do |repo|
+        repo.platform.relations.create!(:actor_type => 'User', :actor_id => @user.id, :role => 'admin')
+      end
     end
 
     it_should_behave_like 'platform admin user'
@@ -260,8 +261,9 @@ describe Platforms::RepositoriesController do
 
   context 'for repository member user' do
     before(:each) do
-      @repository.relations.create!(:actor_type => 'User', :actor_id => @user.id, :role => 'admin')
-      @personal_repository.relations.create!(:actor_type => 'User', :actor_id => @user.id, :role => 'admin')
+      [@repository, @personal_repository].each do |repo|
+        repo.relations.create!(:actor_type => 'User', :actor_id => @user.id, :role => 'admin')
+      end
     end
 
     it_should_behave_like 'registered user'
