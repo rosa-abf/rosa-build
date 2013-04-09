@@ -161,8 +161,9 @@ module Modules
       end
 
       def reference_user(identifier)
-        if member = @project.all_members.select {|u| u.uname == identifier} #.joins(:user).where(users: {uname: identifier}).first
-          link_to("@#{identifier}", user_path(identifier), html_options.merge(class: "gfm gfm-team_member #{html_options[:class]}")) if member
+        member = @project.all_members.select {|u| u.uname == identifier}
+        if member[0]
+          link_to("@#{identifier}", user_path(identifier), html_options.merge(title: member[0].fullname, class: "gfm gfm-team_member #{html_options[:class]}"))
         end
       end
 
