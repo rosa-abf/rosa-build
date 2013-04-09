@@ -1,0 +1,5 @@
+%td
+  %span{:style => "display: none;"}= date = commit.committed_date || commit.authored_date
+  = l(date, :format => :short)
+%td= commit.short_message
+%td= (commit.committer || commit.author).name

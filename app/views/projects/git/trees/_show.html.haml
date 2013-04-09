@@ -30,8 +30,22 @@
           - else
             .pic= image_tag 'folder.png'
             .name= link_to(entry.name, tree_path(@project, @treeish, entry_path), :class => 'files-see')
-        %td
-          %span{:style => "display: none;"}= date = commit.committed_date || commit.authored_date
-          = l(date, :format => :short)
-        %td= commit.short_message
-        %td= (commit.committer || commit.author).name
+        = render 'commit_info', :commit => commit
+
+    - commit = @project.tree_info(@project.repo.tree(@treeish), @treeish, nil).detect{ |e, c| e.name == '.gitmodules' && c }.last
+    - if commit
+      - Grit::Submodule.config(@project.repo).each do |name, options|
+        - folder = options['path'].split('/').last
+        - if options['path'] == [@path, folder].compact.join('/')
+          %tr
+            %td
+              .pic= image_tag 'folder.png'
+              - url = options['url'].gsub(/^git/, 'http').gsub(/.git$/, '')
+              .name
+                = link_to(folder, url, :class => 'files-see')
+                = '@'
+                - id = options['id']
+                = link_to(id[0..6], "#{url}/tree/#{id}", :class => 'files-see')
+            = render 'commit_info', :commit => commit
+
+
