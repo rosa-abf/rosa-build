@@ -1,5 +1,11 @@
 # -*- encoding : utf-8 -*-
 class Comment < ActiveRecord::Base
+  # regexp take from http://code.google.com/p/concerto-platform/source/browse/v3/cms/lib/CodeMirror/mode/gfm/gfm.js?spec=svn861&r=861#71
+  # User/Project#Num
+  # User#Num
+  # #Num
+  ISSUES_REGEX = /(?:[a-zA-Z0-9\-_]*\/)?(?:[a-zA-Z0-9\-_]*)?[#!][0-9]+/
+
   belongs_to :commentable, :polymorphic => true, :touch => true
   belongs_to :user
   belongs_to :project
@@ -85,7 +91,7 @@ class Comment < ActiveRecord::Base
   end
 
   def pull_comment?
-    return true if commentable.is_a?(Issue) && commentable.pull_request.present?
+    commentable.is_a?(Issue) && commentable.pull_request.present?
   end
 
   def set_additional_data params
@@ -127,6 +133,57 @@ class Comment < ActiveRecord::Base
       data[:view_path] = h(diff_path[0].renamed_file ? "#{diff_path[0].a_path.rtruncate 60} -> #{diff_path[0].b_path.rtruncate 60}" : diff_path[0].a_path.rtruncate(120))
     end
     return true
+  end
+
+  def self.create_link_on_issues_from_item item, commits = nil
+    linker = item.user
+    elements = if item.is_a? Comment
+                          [[item, item.body]]
+                        elsif item.is_a? GitHook
+                          commits
+                        end
+    current_ability = Ability.new(linker)
+
+    elements.each do |element|
+      element[1].scan(ISSUES_REGEX).each do |hash|
+        delimiter = if hash.include? '!'
+                            '!'
+                          elsif hash.include? '#'
+                            '#'
+                          else
+                            raise 'Unknown delimiter for the hash tag!'
+                          end
+        issue = Issue.find_by_hash_tag hash, current_ability, item.project, delimiter
+        next unless issue
+        # dont create link to the same issue
+        next if item.respond_to?(:commentable) && issue == item.try(:commentable)
+        find_dup = {:automatic => true, :commentable_type => issue.class.name, :commentable_id => issue.id}
+        if item.is_a? GitHook
+          find_dup.merge! :created_from_commit_hash => element[0].hex
+        elsif item.commentable_type == 'Issue'
+          find_dup.merge! :created_from_issue_id => item.commentable_id
+        elsif item.commentable_type == 'Grit::Commit'
+          find_dup.merge! :created_from_commit_hash => item.commentable_id
+        end
+        next if Comment.exists? find_dup # dont create duplicate link to issue
+
+        comment = linker.comments.new :body => 'automatic comment'
+        comment.commentable, comment.project, comment.automatic = issue, issue.project, true
+        comment.data = {:from_project_id => item.project.id}
+        if item.is_a? GitHook
+          next unless item.project.repo.commit element[0]
+          comment.created_from_commit_hash = element[0].hex
+        else
+          comment.data.merge! :comment_id => item.id
+          if item.commentable_type == 'Issue'
+            comment.created_from_issue_id = item.commentable_id
+          elsif item.commentable_type == 'Grit::Commit'
+            comment.created_from_commit_hash = item.commentable_id
+          end
+        end
+        comment.save
+      end
+    end
   end
 
   protected

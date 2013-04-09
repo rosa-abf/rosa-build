@@ -17,23 +17,27 @@
             _This will also be italic_
             **This text will be bold**
             __This will also be bold__
+        %p=link_to t('layout.comments.md_cheatsheet.emoji_header'), 'http://www.emoji-cheat-sheet.com/', :target => '_blank'
+        %pre
+          =":smile:"
+          =image_tag(image_path('emoji/smile.png'), :class => 'emoji', :title => 'smile', :alt => 'smile', :size => "20x20")
+          ="   :+1:"
+          =image_tag(image_path('emoji/+1.png'), :class => 'emoji', :title => '+1', :alt => '+1', :size => "20x20")
       .col
         %h3=t 'layout.comments.md_cheatsheet.lists'
-        %p=t 'layout.comments.md_cheatsheet.unordered'
+        %p{:style => 'float:left;margin-left:20px;'}=t 'layout.comments.md_cheatsheet.unordered'
+        %p{:style => 'float:right;margin-right:40px;'}=t 'layout.comments.md_cheatsheet.ordered'
+        .both
         %pre
           :preserve
-            * Item 1
-            * Item 2
-              * Item 2a
-              * Item 2b
-        %p=t 'layout.comments.md_cheatsheet.ordered'
+            * Item 1          1. Item 1
+            * Item 2          2. Item 2
+              * Item 2a       3. Item 3
+              * Item 2b         * Item 3a
+                                * Item 3b
+        %p=t 'layout.comments.md_cheatsheet.reference_format'
         %pre
-          :preserve
-            1. Item 1
-            2. Item 2
-            3. Item 3
-               * Item 3a
-               * Item 3b
+          =preserve t('layout.comments.md_cheatsheet.reference_format_example').html_safe
       .col
         %h3=t 'layout.comments.md_cheatsheet.miscellaneous'
         %p=t 'layout.comments.md_cheatsheet.images'
@@ -84,3 +88,4 @@
           :preserve
             I think you should use an
             `[addr]` element here instead.
+      .both

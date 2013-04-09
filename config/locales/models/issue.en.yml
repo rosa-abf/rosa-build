@@ -1,5 +1,7 @@
 en:
   activerecord:
+    models:
+      issue: Issue
     attributes:
       issue:
         title: Name
