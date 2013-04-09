@@ -33,6 +33,7 @@ class Project < ActiveRecord::Base
   validates :visibility, :presence => true, :inclusion => {:in => VISIBILITIES}
   validate { errors.add(:base, :can_have_less_or_equal, :count => MAX_OWN_PROJECTS) if owner.projects.size >= MAX_OWN_PROJECTS }
   validate :check_default_branch
+  # throws validation error message from ProjectToRepository model into Project model
   validate do |project|
     project.project_to_repositories.each do |p_to_r|
       next if p_to_r.valid?
