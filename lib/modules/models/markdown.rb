@@ -189,7 +189,7 @@ module Modules
 
       def reference_commit(identifier)
         if commit = @project.repo.commit(identifier)
-          link_to shortest_hash_id(@commit.id), commit_path(options[:project], @commit.id)
+          link_to shortest_hash_id(@commit.id), commit_path(@project, @commit.id)
           title = GitPresenters::CommitAsMessagePresenter.present(commit, :project => @project).caption
           link_to(identifier, commit_path(@project, commit), html_options.merge(title: title, class: "gfm gfm-commit #{html_options[:class]}"))
         end
