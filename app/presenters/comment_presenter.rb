@@ -3,7 +3,7 @@ class CommentPresenter < ApplicationPresenter
   include PullRequestHelper
 
   attr_accessor :comment, :options
-  attr_reader :header, :image, :date, :caption, :content, :buttons, :is_reference_to_issue
+  attr_reader :header, :image, :date, :caption, :content, :buttons, :is_reference_to_issue, :item
 
   def initialize(comment, opts = {})
     @is_reference_to_issue = !!(comment.automatic && comment.created_from_issue_id) # is it reference issue from another issue
@@ -109,5 +109,9 @@ class CommentPresenter < ApplicationPresenter
     else
       pull_status_label @referenced_issue
     end.html_safe
+  end
+
+  def item
+    @comment
   end
 end
