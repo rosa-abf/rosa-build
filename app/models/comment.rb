@@ -4,7 +4,7 @@ class Comment < ActiveRecord::Base
   # User/Project#Num
   # User#Num
   # #Num
-  ISSUES_REGEX = /(?:[a-zA-Z0-9\-_]*\/)?(?:[a-zA-Z0-9\-_]*)?[#!][0-9]+/
+  ISSUES_REGEX = /(?:[a-zA-Z0-9\-_]*\/)?(?:[a-zA-Z0-9\-_]*)?#[0-9]+/
 
   belongs_to :commentable, :polymorphic => true, :touch => true
   belongs_to :user
@@ -157,14 +157,7 @@ class Comment < ActiveRecord::Base
 
     elements.each do |element|
       element[1].scan(ISSUES_REGEX).each do |hash|
-        delimiter = if hash.include? '!'
-                      '!'
-                    elsif hash.include? '#'
-                      '#'
-                    else
-                      raise "Unknown delimiter for the hash tag ( #{hash} )"
-                    end
-        issue = Issue.find_by_hash_tag hash, current_ability, item.project, delimiter
+        issue = Issue.find_by_hash_tag hash, current_ability, item.project
         next unless issue
         # dont create link to the same issue
         next if opts[:created_from_issue_id] == issue.id

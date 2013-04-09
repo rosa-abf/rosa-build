@@ -67,8 +67,8 @@ class Issue < ActiveRecord::Base
     recipients
   end
 
-  def self.find_by_hash_tag hash_tag, current_ability, project, delimiter = '#'
-    hash_tag =~ /([a-zA-Z0-9\-_]*\/)?([a-zA-Z0-9\-_]*)?#{delimiter}([0-9]+)/
+  def self.find_by_hash_tag hash_tag, current_ability, project
+    hash_tag =~ /([a-zA-Z0-9\-_]*\/)?([a-zA-Z0-9\-_]*)?#([0-9]+)/
     owner_uname = Regexp.last_match[1].presence || Regexp.last_match[2].presence || project.owner.uname
     project_name = Regexp.last_match[1] ? Regexp.last_match[2] : project.name
     serial_id = Regexp.last_match[3]
