@@ -3,12 +3,12 @@ require 'spec_helper'
 require "cancan/matchers"
 
 def admin_create
-	@admin = FactoryGirl.create(:admin)
+  @admin = FactoryGirl.create(:admin)
   @ability = Ability.new(@admin)
 end
 
 def user_create
-	@user = FactoryGirl.create(:user)
+  @user = FactoryGirl.create(:user)
   @ability = Ability.new(@user)
 end
 
@@ -17,47 +17,51 @@ def guest_create
 end
 
 describe CanCan do
-
-	let(:personal_platform) { FactoryGirl.create(:platform, :platform_type => 'personal') }
-	let(:personal_repository) { FactoryGirl.create(:personal_repository) }
-	let(:open_platform) { FactoryGirl.create(:platform, :visibility => 'open') }
-	let(:hidden_platform) { FactoryGirl.create(:platform, :visibility => 'hidden') }
-  let(:register_request) { FactoryGirl.create(:register_request) }
+  let(:open_platform) { FactoryGirl.create(:platform, :visibility => 'open') }
 
   before(:each) do
     stub_symlink_methods
   end
 
-	context 'Site admin' do
-		before(:each) do
-			admin_create
-		end
+  context 'Site admin' do
+    let(:personal_platform) { FactoryGirl.create(:platform, :platform_type => 'personal') }
+    let(:personal_repository_main) { FactoryGirl.create(:personal_repository, :name => 'main') }
+    let(:personal_repository) { FactoryGirl.create(:personal_repository) }
+    before(:each) do
+      admin_create
+    end
 
-		it 'should manage all' do
-			#(@ability.can? :manage, :all).should be_true
-			@ability.should be_able_to(:manage, :all)
-		end
+    it 'should manage all' do
+      #(@ability.can? :manage, :all).should be_true
+      @ability.should be_able_to(:manage, :all)
+    end
 
-		it 'should not be able to destroy personal platforms' do
-			@ability.should_not be_able_to(:destroy, personal_platform)
-		end
+    it 'should not be able to destroy personal platforms' do
+      @ability.should_not be_able_to(:destroy, personal_platform)
+    end
 
-		it 'should not be able to destroy personal repositories' do
-			@ability.should_not be_able_to(:destroy, personal_repository)
-		end
-	end
+    it 'should not be able to destroy personal repositories with name "main"' do
+      @ability.should_not be_able_to(:destroy, personal_repository_main)
+    end
+    it 'should be able to destroy personal repositories with name not "main"' do
+      @ability.should be_able_to(:destroy, personal_repository)
+    end
+  end
 
-	context 'Site guest' do
-		before(:each) do
-			guest_create
-		end
+  context 'Site guest' do
+    let(:hidden_platform) { FactoryGirl.create(:platform, :visibility => 'hidden') }
+    let(:register_request) { FactoryGirl.create(:register_request) }
+
+    before(:each) do
+      guest_create
+    end
 
     it 'should not be able to read open platform' do
-    	@ability.should_not be_able_to(:read, open_platform)
+      @ability.should_not be_able_to(:read, open_platform)
     end
 
     it 'should not be able to read hidden platform' do
-    	@ability.should_not be_able_to(:read, hidden_platform)
+      @ability.should_not be_able_to(:read, hidden_platform)
     end
 
     [:publish, :cancel, :reject_publish, :create_container].each do |action|
@@ -78,10 +82,10 @@ describe CanCan do
       @ability.should_not be_able_to(:destroy, register_request)
     end
 
-		pending 'should be able to register new user' do # while self registration is closed
-			@ability.should be_able_to(:create, User)
-		end
-	end
+    pending 'should be able to register new user' do # while self registration is closed
+      @ability.should be_able_to(:create, User)
+    end
+  end
 
   context 'Site user' do
     before(:each) do
