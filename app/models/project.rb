@@ -258,11 +258,11 @@ class Project < ActiveRecord::Base
   end
 
   def attach_to_personal_repository
-    owner_rep = self.owner.personal_repository
+    owner_repos = self.owner.personal_platform.repositories
     if is_package
-      repositories << owner_rep unless repositories.exists?(:id => owner_rep)
+      repositories << self.owner.personal_repository unless repositories.exists?(:id => owner_repos.pluck(:id))
     else
-      repositories.delete owner_rep
+      repositories.delete owner_repos
     end
   end
 
