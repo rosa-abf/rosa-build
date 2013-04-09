@@ -137,49 +137,54 @@ class Comment < ActiveRecord::Base
 
   def self.create_link_on_issues_from_item item, commits = nil
     linker = item.user
-    elements = if item.is_a? Comment
-                          [[item, item.body]]
-                        elsif item.is_a? GitHook
-                          commits
-                        end
     current_ability = Ability.new(linker)
+
+    case
+    when item.is_a?(GitHook)
+      elements = commits
+    when item.is_a?(Issue)
+      elements = [[item, item.title], [item, item.body]]
+      opts = {:created_from_issue_id => item.id}
+    when item.commentable_type == 'Issue'
+      elements = [[item, item.body]]
+      opts = {:created_from_issue_id => item.commentable_id}
+    when item.commentable_type == 'Grit::Commit'
+      elements = [[item, item.body]]
+      opts = {:created_from_commit_hash => item.commentable_id}
+    else
+      raise "Unsupported item type #{item.class.name}!"
+    end
 
     elements.each do |element|
       element[1].scan(ISSUES_REGEX).each do |hash|
         delimiter = if hash.include? '!'
-                            '!'
-                          elsif hash.include? '#'
-                            '#'
-                          else
-                            raise 'Unknown delimiter for the hash tag!'
-                          end
+                      '!'
+                    elsif hash.include? '#'
+                      '#'
+                    else
+                      raise "Unknown delimiter for the hash tag ( #{hash} )"
+                    end
         issue = Issue.find_by_hash_tag hash, current_ability, item.project, delimiter
         next unless issue
         # dont create link to the same issue
-        next if item.respond_to?(:commentable) && issue == item.try(:commentable)
-        find_dup = {:automatic => true, :commentable_type => issue.class.name, :commentable_id => issue.id}
-        if item.is_a? GitHook
-          find_dup.merge! :created_from_commit_hash => element[0].hex
-        elsif item.commentable_type == 'Issue'
-          find_dup.merge! :created_from_issue_id => item.commentable_id
-        elsif item.commentable_type == 'Grit::Commit'
-          find_dup.merge! :created_from_commit_hash => item.commentable_id
+        next if opts[:created_from_issue_id] == issue.id
+        # dont create duplicate link to issue
+        next if Comment.find_existing_automatic_comment issue, opts
+        if item.is_a?(GitHook)
+          opts = {:created_from_commit_hash => element[0].hex}
+        # dont create link to outdated commit
+          next if !item.project.repo.commit(element[0])
         end
-        next if Comment.exists? find_dup # dont create duplicate link to issue
-
         comment = linker.comments.new :body => 'automatic comment'
         comment.commentable, comment.project, comment.automatic = issue, issue.project, true
         comment.data = {:from_project_id => item.project.id}
-        if item.is_a? GitHook
-          next unless item.project.repo.commit element[0]
-          comment.created_from_commit_hash = element[0].hex
+        if opts[:created_from_commit_hash]
+          comment.created_from_commit_hash = opts[:created_from_commit_hash]
+        elsif opts[:created_from_issue_id]
+          comment.data.merge!(:comment_id => item.id) if item.is_a? Comment
+          comment.created_from_issue_id = opts[:created_from_issue_id]
         else
-          comment.data.merge! :comment_id => item.id
-          if item.commentable_type == 'Issue'
-            comment.created_from_issue_id = item.commentable_id
-          elsif item.commentable_type == 'Grit::Commit'
-            comment.created_from_commit_hash = item.commentable_id
-          end
+          raise 'Unsupported opts for automatic comment!'
         end
         comment.save
       end
@@ -203,5 +208,11 @@ class Comment < ActiveRecord::Base
         Subscribe.subscribe_to_commit(options) if Subscribe.subscribed_to_commit?(project, user, commentable)
       end
     end
+  end
+
+  def self.find_existing_automatic_comment issue, opts
+    find_dup = opts.merge(:automatic => true, :commentable_type => issue.class.name,
+                          :commentable_id => issue.id)
+    Comment.exists? find_dup
   end
 end
