@@ -3,16 +3,17 @@ class GitPresenters::CommitAsMessagePresenter < ApplicationPresenter
   include CommitHelper
 
   attr_accessor :commit
-  attr_reader :header, :image, :date, :caption, :content, :expandable, :is_reference_to_issue, :committer
+  attr_reader :header, :image, :date, :caption, :content, :expandable,
+              :is_reference_to_issue, :committer, :reference_project
 
   def initialize(commit, opts = {})
     comment = opts[:comment]
     @is_reference_to_issue = !!comment # is it reference issue from commit
     @project = if comment
-                        Project.where(:id => opts[:comment].data[:from_project_id]).first
-                      else
-                        opts[:project]
-                      end
+                 Project.where(:id => comment.data[:from_project_id]).first
+               else
+                 opts[:project]
+               end
     commit = commit || @project.repo.commit(comment.created_from_commit_hash.to_s(16)) if @project
 
     if @project && commit
@@ -74,6 +75,10 @@ class GitPresenters::CommitAsMessagePresenter < ApplicationPresenter
 
   def issue_referenced_state?
     false
+  end
+
+  def reference_project
+    @project
   end
 
   protected
