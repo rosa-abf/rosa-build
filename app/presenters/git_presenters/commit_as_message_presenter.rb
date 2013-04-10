@@ -4,7 +4,7 @@ class GitPresenters::CommitAsMessagePresenter < ApplicationPresenter
 
   attr_accessor :commit
   attr_reader :header, :image, :date, :caption, :content, :expandable,
-              :is_reference_to_issue, :committer, :item
+              :is_reference_to_issue, :committer, :reference_project
 
   def initialize(commit, opts = {})
     comment = opts[:comment]
@@ -77,8 +77,8 @@ class GitPresenters::CommitAsMessagePresenter < ApplicationPresenter
     false
   end
 
-  def item
-    @commit
+  def reference_project
+    @project
   end
 
   protected

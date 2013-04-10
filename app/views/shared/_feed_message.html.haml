@@ -1,4 +1,4 @@
--if !presenter.is_reference_to_issue || can?(:show, presenter.item)
+-if !presenter.is_reference_to_issue || can?(:show, presenter.reference_project)
   .activity{:id => presenter.comment_id? ? presenter.comment_anchor : ''}
     .top
       - if presenter.buttons?
