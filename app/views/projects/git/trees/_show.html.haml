@@ -32,7 +32,11 @@
               - id = node.id
               = link_to(id[0..6], "#{url}/tree/#{id}", :class => 'files-see')
           - else
-            .pic= image_tag (node.is_a?(Grit::Tree) ? 'folder.png' : 'code.png')
-            .name= link_to(node.name, tree_path(@project, @treeish, node_path), :class => 'files-see')
+            - options = [@project, @treeish, node_path]
+            - if node.is_a?(Grit::Tree)
+              - pic = 'folder.png'
+              - path = tree_path *options
+            .pic= image_tag pic || 'code.png'
+            .name= link_to(node.name, path || blob_path(*options), :class => 'files-see')
 
         = render 'commit_info', :commit => commit
