@@ -100,7 +100,7 @@ module Modules
       REFERENCE_PATTERN = %r{
         (?<prefix>[\W\/])?                                                     # Prefix
         (                                                                      # Reference
-           @(?<user>[a-zA-Z][a-zA-Z0-9_\-\.]*)                                 # User uname
+           @(?<user>[a-zA-Z][a-zA-Z0-9_\-\.]*)                                 # User/Group uname
           |(?<issue>(?:[a-zA-Z0-9\-_]*\/)?(?:[a-zA-Z0-9\-_]*)?\#[0-9]+)        # Issue ID
           |(?<commit>[\h]{6,40})                                               # Commit ID
         )
@@ -161,9 +161,9 @@ module Modules
       end
 
       def reference_user(identifier)
-        member = @project.all_members.select {|u| u.uname == identifier}
-        if member[0]
-          link_to("@#{identifier}", user_path(identifier), html_options.merge(title: member[0].fullname, class: "gfm gfm-team_member #{html_options[:class]}"))
+        member = User.where(uname: identifier).first || Group.where(uname: identifier).first
+        if member
+          link_to("@#{identifier}", "/#{identifier}", html_options.merge(title: member.fullname, class: "gfm gfm-member #{html_options[:class]}"))
         end
       end
 
