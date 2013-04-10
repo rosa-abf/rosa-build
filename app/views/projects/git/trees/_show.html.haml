@@ -20,32 +20,21 @@
         %td== &nbsp;
         %td== &nbsp;
         %td== &nbsp;
-    - @project.tree_info(@tree, @treeish, @path).each_pair do |entry, commit|
+    - @project.tree_info(@tree, @treeish, @path).each do |node, node_path, commit|
       %tr
         %td
-          - entry_path = File.join([@path.present? ? @path : nil, entry.name].compact)
-          - if entry.is_a? Grit::Blob
-            .pic= image_tag 'code.png'
-            .name= link_to(entry.name, blob_path(@project, @treeish, entry_path), :class => 'files-see')
-          - else
+          - if node.is_a? Grit::Tree
             .pic= image_tag 'folder.png'
-            .name= link_to(entry.name, tree_path(@project, @treeish, entry_path), :class => 'files-see')
+            .name= link_to(node.name, tree_path(@project, @treeish, node_path), :class => 'files-see')
+          - elsif node.is_a? Grit::Submodule
+            .pic= image_tag 'folder-submodule.png'
+            .name
+              - url = node.url(@treeish).gsub(/^git/, 'http').gsub(/.git$/, '')
+              = link_to(node.name, url, :class => 'files-see')
+              = '@'
+              - id = node.id
+              = link_to(id[0..6], "#{url}/tree/#{id}", :class => 'files-see')
+          - else
+            .pic= image_tag 'code.png'
+            .name= link_to(node.name, tree_path(@project, @treeish, node_path), :class => 'files-see')
         = render 'commit_info', :commit => commit
-
-    - commit = @project.tree_info(@project.repo.tree(@treeish), @treeish, nil).detect{ |e, c| e.name == '.gitmodules' && c }.try(:last)
-    - if commit
-      - Grit::Submodule.config(@project.repo).each do |name, options|
-        - folder = options['path'].split('/').last
-        - if options['path'] == [@path, folder].compact.join('/')
-          %tr
-            %td
-              .pic= image_tag 'folder.png'
-              - url = options['url'].gsub(/^git/, 'http').gsub(/.git$/, '')
-              .name
-                = link_to(folder, url, :class => 'files-see')
-                = '@'
-                - id = options['id']
-                = link_to(id[0..6], "#{url}/tree/#{id}", :class => 'files-see')
-            = render 'commit_info', :commit => commit
-
-
