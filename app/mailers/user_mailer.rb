@@ -42,7 +42,7 @@ class UserMailer < ActionMailer::Base
   end
 
   def issue_assign_notification(issue, user)
-    @user, @issue = user, issue
+    @issue = issue
     mail(
       :to       => email_with_name(user, user.email),
       :subject  => subject_for_issue(@issue)

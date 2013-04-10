@@ -64,10 +64,6 @@ describe UserMailer do
       @email.from.should == [APP_CONFIG['do-not-reply-email']]
     end
 
-    it 'should assign user name' do
-      @email.body.encoded.should match(@user.name)
-    end
-
     it 'should assign issue title' do
       @email.body.encoded.should match(@issue.title)
     end

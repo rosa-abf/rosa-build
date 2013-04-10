@@ -21,7 +21,9 @@ class KeyPair < ActiveRecord::Base
   protected
 
     def check_keys
-      dir = Dir.mktmpdir('keys-', "#{APP_CONFIG['root_path']}/tmp")
+      tmp = "#{APP_CONFIG['root_path']}/tmp"
+      system "sudo chown `whoami` #{tmp} && chmod 1777 #{tmp}"
+      dir = Dir.mktmpdir('keys-', tmp)
       begin
         %w(pubring secring).each do |kind|
           filename = "#{dir}/#{kind}"

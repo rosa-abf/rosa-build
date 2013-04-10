@@ -173,7 +173,7 @@ module Modules
 
       def reference_issue(identifier)
         if issue = Issue.find_by_hash_tag(identifier, current_ability, @project)
-          url = project_issue_path(@project.owner, @project.name, issue.serial_id)
+          url = project_issue_path(issue.project.owner, issue.project.name, issue.serial_id)
           title = "#{Issue.model_name.human}: #{issue.title}"
           link_to(identifier, url, html_options.merge(title: title, class: "gfm gfm-issue #{html_options[:class]}"))
         end
@@ -183,15 +183,16 @@ module Modules
         issue = Issue.find_by_hash_tag(identifier, current_ability, @project, '!')
         if pull_request = issue.pull_request
           title = "#{PullRequest.model_name.human}: #{pull_request.title}"
-          link_to(identifier, project_pull_request_path(@project, pull_request), html_options.merge(title: title, class: "gfm gfm-pull_request #{html_options[:class]}"))
+          link_to(identifier, project_pull_request_path(pull_request.to_project, pull_request), html_options.merge(title: title, class: "gfm gfm-pull_request #{html_options[:class]}"))
         end
       end
 
       def reference_commit(identifier)
         if commit = @project.repo.commit(identifier)
-          link_to shortest_hash_id(@commit.id), commit_path(options[:project], @commit.id)
-          title = GitPresenters::CommitAsMessagePresenter.present(commit, :project => @project).caption
-          link_to(identifier, commit_path(@project, commit), html_options.merge(title: title, class: "gfm gfm-commit #{html_options[:class]}"))
+          link_to shortest_hash_id(commit.id), commit_path(@project, commit.id)
+          title = GitPresenters::CommitAsMessagePresenter.present(commit, :project => @project) do |presenter|
+            link_to(identifier, commit_path(@project, commit), html_options.merge(title: presenter.caption, class: "gfm gfm-commit #{html_options[:class]}"))
+          end
         end
       end
     end
