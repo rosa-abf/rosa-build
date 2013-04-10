@@ -32,7 +32,7 @@
             .name= link_to(entry.name, tree_path(@project, @treeish, entry_path), :class => 'files-see')
         = render 'commit_info', :commit => commit
 
-    - commit = @project.tree_info(@project.repo.tree(@treeish), @treeish, nil).detect{ |e, c| e.name == '.gitmodules' && c }.last
+    - commit = @project.tree_info(@project.repo.tree(@treeish), @treeish, nil).detect{ |e, c| e.name == '.gitmodules' && c }.try(:last)
     - if commit
       - Grit::Submodule.config(@project.repo).each do |name, options|
         - folder = options['path'].split('/').last
