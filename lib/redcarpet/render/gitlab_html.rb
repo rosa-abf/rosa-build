@@ -22,7 +22,7 @@ class Redcarpet::Render::GitlabHTML < Redcarpet::Render::HTML
     code_class = "class=\"#{language.downcase}\"" if language.present?
     <<-HTML
 
-       <pre><code #{code_class}">#{code}</code></pre>
+       <pre><code #{code_class}>#{code}</code></pre>
 
     HTML
   end
