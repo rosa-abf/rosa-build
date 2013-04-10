@@ -15,6 +15,7 @@ class CommentPresenter < ApplicationPresenter
     else
       issue = Issue.where(:id => comment.created_from_issue_id).first
       @referenced_issue = issue.pull_request || issue
+      @reference_project = issue.project
       if issue && (comment.data[:comment_id].nil? || Comment.exists?(comment.data[:comment_id]))
         title = if issue == opts[:commentable]
                      "#{issue.serial_id}"
@@ -110,9 +111,5 @@ class CommentPresenter < ApplicationPresenter
     else
       pull_status_label @referenced_issue
     end.html_safe
-  end
-
-  def reference_project
-    @referenced_issue.project
   end
 end
