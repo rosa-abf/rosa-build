@@ -170,8 +170,8 @@ module Modules
       def reference_issue(identifier)
         if issue = Issue.find_by_hash_tag(identifier, current_ability, @project)
           if issue.pull_request
-            title = "#{PullRequest.model_name.human}: #{pull_request.title}"
-            project_pull_request_path(pull_request.to_project, pull_request)
+            title = "#{PullRequest.model_name.human}: #{issue.title}"
+            url = project_pull_request_path(issue.project, issue.pull_request)
           else
             title = "#{Issue.model_name.human}: #{issue.title}"
             url = project_issue_path(issue.project.owner, issue.project.name, issue.serial_id)
