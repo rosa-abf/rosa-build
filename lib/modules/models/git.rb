@@ -70,24 +70,18 @@ module Modules
       end
 
       def tree_info(tree, treeish = nil, path = nil)
-        treeish ||= tree.id
-        # initialize result as hash of <tree_entry> => nil
-        res = (tree.trees.sort + tree.blobs.sort).inject({}){|h, e| h.merge!({e => nil})}
-        # fills result vith commits that describes this file
-        res = res.inject(res) do |h, (entry, commit)|
-          if commit.nil? and entry.respond_to?(:name) # only if commit == nil
-            # ... find last commit corresponds to this file ...
-            c = repo.log(treeish, File.join([path, entry.name].compact), :max_count => 1).first
-            # ... and add it to result.
-            h[entry] = c
-            # find another files, that linked to this commit and set them their commit
-            # c.diffs.map{|diff| diff.b_path.split(File::SEPARATOR, 2).first}.each do |name|
-            #   h.each_pair do |k, v|
-            #     h[k] = c if k.name == name and v.nil?
-            #   end
-            # end
-          end
-          h
+        grouped = tree.contents.sort_by{|c| c.name.downcase}.group_by(&:class)
+        [
+          grouped[Grit::Tree],
+          grouped[Grit::Blob],
+          grouped[Grit::Submodule]
+        ].compact.flatten.map do |node|
+          node_path = File.join([path.present? ? path : nil, node.name].compact)
+          [
+            node,
+            node_path,
+            repo.log(treeish, node_path, :max_count => 1).first
+          ]
         end
       end
 
