@@ -26,7 +26,7 @@
           - if node.is_a? Grit::Submodule
             .pic= image_tag 'folder-submodule.png'
             .name
-              - url = node.url(@treeish).gsub(/^git/, 'http').gsub(/.git$/, '')
+              - url = submodule_url node, @treeish
               = link_to(node.name, url, :class => 'files-see')
               = '@'
               = link_to(node.id[0..6], "#{url}/tree/#{node.id}", :class => 'files-see')
