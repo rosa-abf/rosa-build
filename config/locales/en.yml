@@ -87,7 +87,7 @@ en:
 
     sessions:
       sign_in_header: Sign in
-      sign_up_with: "Sign up with:"
+      sign_up_with: or sign in with
 
     private_users:
       list: List
