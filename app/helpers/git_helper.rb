@@ -8,8 +8,8 @@ module GitHelper
     url = node.url(treeish).gsub(/.git$/, '')
     if url =~ /^git:/
       url.gsub!(/^git/, 'http')
-    else
-      str = /git@.*:.*/.match(url)[0].gsub(/^git@/, '')
+    elsif str = /git@.*:.*/.match(url)
+      str   = str[0].gsub(/^git@/, '')
       domen = str.gsub(/:.*/, '')
       owner = str.gsub(/^#{domen}:/, '').gsub(/\/.*/, '')
       project = str.gsub(/.*\//, '')
