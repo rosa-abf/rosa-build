@@ -29,8 +29,7 @@
               - url = node.url(@treeish).gsub(/^git/, 'http').gsub(/.git$/, '')
               = link_to(node.name, url, :class => 'files-see')
               = '@'
-              - id = node.id
-              = link_to(id[0..6], "#{url}/tree/#{id}", :class => 'files-see')
+              = link_to(node.id[0..6], "#{url}/tree/#{node.id}", :class => 'files-see')
           - else
             - options = [@project, @treeish, node_path]
             - if node.is_a?(Grit::Tree)
@@ -39,4 +38,13 @@
             .pic= image_tag pic || 'code.png'
             .name= link_to(node.name, path || blob_path(*options), :class => 'files-see')
 
-        = render 'commit_info', :commit => commit
+        - if commit
+          %td
+            %span{:style => "display: none;"}= date = commit.committed_date || commit.authored_date
+            = l(date, :format => :short)
+          %td= commit.short_message
+          %td= (commit.committer || commit.author).name
+        - else
+          %td
+          %td
+          %td
