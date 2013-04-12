@@ -1,0 +1,25 @@
+-set_meta_tags :title => [title_object(@project), t('layout.projects.hooks')]
+= render 'submenu'
+= render 'sidebar'
+
+%h1 Listing hooks
+
+%table
+  %tr
+    %th Data
+    %th Type
+    %th
+    %th
+    %th
+
+  - @hooks.each do |hook|
+    %tr
+      %td= hook.data
+      %td= hook.type
+      %td= link_to 'Show', hook
+      %td= link_to 'Edit', edit_project_hook_path(hook)
+      %td= link_to 'Destroy', hook, method: :delete, data: { confirm: 'Are you sure?' }
+
+%br
+
+= link_to 'New Hook', new_project_hook_path(@project)

@@ -1,0 +1,11 @@
+-set_meta_tags :title => [title_object(@project), t('layout.projects.hooks')]
+= render 'submenu'
+= render 'sidebar'
+
+%h1 Editing hook
+
+= render 'form'
+
+= link_to 'Show', @hook
+\|
+= link_to 'Back', project_hooks_path(@project)

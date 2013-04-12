@@ -17,6 +17,7 @@ class Project < ActiveRecord::Base
   has_many :project_tags, :dependent => :destroy
   
   has_many :build_lists, :dependent => :destroy
+  has_many :hooks, :dependent => :destroy
 
   has_many :relations, :as => :target, :dependent => :destroy
   has_many :collaborators, :through => :relations, :source => :actor, :source_type => 'User'

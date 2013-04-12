@@ -278,6 +278,7 @@ Rosa::Application.routes.draw do
         resources :collaborators do
           get :find, :on => :collection
         end
+        resources :hooks
         resources :pull_requests, :except => :destroy do
           get :autocomplete_to_project, :on => :collection
           put :merge, :on => :member
