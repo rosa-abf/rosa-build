@@ -6,34 +6,19 @@ class Projects::HooksController < Projects::BaseController
   # GET /../hooks
   # GET /../hooks.json
   def index
-    @hooks = @project.hooks.all
-
-    respond_to do |format|
-      format.html # index.html.erb
-      format.json { render json: @hooks }
-    end
-  end
-
-  # GET /../hooks/1
-  # GET /../hooks/1.json
-  def show
-    @hook = @project.hooks.find params[:id]
-
-    respond_to do |format|
-      format.html # show.html.erb
-      format.json { render json: @hook }
+    @name = params[:name]
+    @hooks = @project.hooks.for_name(@name).order('name asc, created_at asc')
+    if @name.present?
+      render :show
+    else
+      render :index
     end
   end
 
   # GET /../hooks/new
   # GET /../hooks/new.json
   def new
-    @hook = @project.hooks.new
-
-    respond_to do |format|
-      format.html # new.html.erb
-      format.json { render json: @hook }
-    end
+    @hook = @project.hooks.new(params[:hook])
   end
 
   # GET /../hooks/1/edit
@@ -45,15 +30,12 @@ class Projects::HooksController < Projects::BaseController
   # POST /../hooks.json
   def create
     @hook = @project.hooks.new params[:hook]
-
-    respond_to do |format|
-      if @hook.save
-        format.html { redirect_to @hook, notice: 'Hook was successfully created.' }
-        format.json { render json: @hook, status: :created, location: @hook }
-      else
-        format.html { render action: "new" }
-        format.json { render json: @hook.errors, status: :unprocessable_entity }
-      end
+    if @hook.save
+      redirect_to project_hooks_path(@project, :name => @hook.name), :notice => 'Hook was successfully created.'
+    else
+      flash[:error] = t('flash.hook.save_error')
+      flash[:warning] = @hook.errors.full_messages.join('. ')
+      render :new
     end
   end
 
@@ -61,15 +43,12 @@ class Projects::HooksController < Projects::BaseController
   # PUT /../hooks/1.json
   def update
     @hook = @project.hooks.find params[:id]
-
-    respond_to do |format|
-      if @hook.update_attributes(params[:hook])
-        format.html { redirect_to @hook, notice: 'Hook was successfully updated.' }
-        format.json { head :no_content }
-      else
-        format.html { render action: "edit" }
-        format.json { render json: @hook.errors, status: :unprocessable_entity }
-      end
+    if @hook.update_attributes(params[:hook])
+      redirect_to project_hooks_path(@project, :name => @hook.name), :notice => 'Hook was successfully updated.'
+    else
+      flash[:error] = t('flash.hook.save_error')
+      flash[:warning] = @hook.errors.full_messages.join('. ')
+      render :edit
     end
   end
 

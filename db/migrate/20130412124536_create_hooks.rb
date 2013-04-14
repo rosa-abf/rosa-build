@@ -3,7 +3,7 @@ class CreateHooks < ActiveRecord::Migration
     create_table :hooks do |t|
       t.text :data
       t.integer :project_id
-      t.integer :type
+      t.string :name
 
       t.timestamps
     end

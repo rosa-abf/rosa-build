@@ -2,18 +2,19 @@
 = render 'submenu'
 = render 'sidebar'
 
-%p#notice= notice
+%h1= "Listing of #{@name}"
 
-%p
-  %b Data:
-  = @hook.data
-%p
-  %b Project:
-  = @hook.project_id
-%p
-  %b Type:
-  = @hook.type
+= link_to 'New', new_project_hook_path(@project, :hook => {:name => @name}), :class => 'button'
+.booth
+%br
 
-= link_to 'Edit', edit_project_hook_path(@hook)
-\|
-= link_to 'Back', project_hooks_path
+- @hooks.all.each do |hook|
+  - hook.data.each do |k, v|
+    .leftlist= k
+    .rightlist= v
+    .both
+
+  .leftlist
+  .rightlist
+    = link_to 'Edit', edit_project_hook_path(@project, hook), :class => 'button'
+  .hr

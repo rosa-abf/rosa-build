@@ -4,22 +4,15 @@
 
 %h1 Listing hooks
 
-%table
-  %tr
-    %th Data
-    %th Type
-    %th
-    %th
-    %th
-
-  - @hooks.each do |hook|
+%table#datatable.tablesorter{:cellpadding => "0", :cellspacing => "0"}
+  %thead
     %tr
-      %td= hook.data
-      %td= hook.type
-      %td= link_to 'Show', hook
-      %td= link_to 'Edit', edit_project_hook_path(hook)
-      %td= link_to 'Destroy', hook, method: :delete, data: { confirm: 'Are you sure?' }
-
-%br
-
-= link_to 'New Hook', new_project_hook_path(@project)
+      %th.th1= t('activerecord.attributes.hook.service')
+      %th
+  %tbody
+    - Hook::NAMES.each do |name|
+      %tr
+        %td
+          = link_to "#{name} (#{@hooks.where(:name => name).count})", project_hooks_path(@project, :name => name)
+        %td.right
+          = link_to 'New', new_project_hook_path(@project, :hook => {:name => name}), :class => 'button'

@@ -207,7 +207,7 @@ ActiveRecord::Schema.define(:version => 20130412124536) do
   create_table "hooks", :force => true do |t|
     t.text     "data"
     t.integer  "project_id"
-    t.integer  "type"
+    t.string   "name"
     t.datetime "created_at", :null => false
     t.datetime "updated_at", :null => false
   end
