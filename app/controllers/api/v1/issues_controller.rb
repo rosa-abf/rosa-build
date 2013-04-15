@@ -1,5 +1,6 @@
 # -*- encoding : utf-8 -*-
 class Api::V1::IssuesController < Api::V1::BaseController
+  respond_to :json
 
   before_filter :authenticate_user!
   skip_before_filter :authenticate_user!, :only => [:show] if APP_CONFIG['anonymous_access']
@@ -32,6 +33,7 @@ class Api::V1::IssuesController < Api::V1::BaseController
   end
 
   def show
+    respond_with @issue
   end
 
   def create
