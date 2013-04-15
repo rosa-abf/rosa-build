@@ -95,7 +95,7 @@ class Api::V1::IssuesController < Api::V1::BaseController
 
     @issues = @issues.where('created_at >= to_timestamp(?)', params[:since]) if params[:since] =~ /\A\d+\z/
     @issues.paginate(paginate_params)
-    render 'index'
+    respond_with @issues
   end
 
   def render_json(action_name, action_method = nil)
