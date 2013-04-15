@@ -128,7 +128,7 @@ class Project < ActiveRecord::Base
     host ||= EventLog.current_controller.request.host_with_port rescue ::Rosa::Application.config.action_mailer.default_url_options[:host]
     protocol = APP_CONFIG['mailer_https_url'] ? "https" : "http" rescue "http"
     opts = {:host => host, :protocol => protocol}
-    opts.merge!({:user => auth_user.authentication_token, :password => ''}) unless self.public?
+    opts.merge!({:user => auth_user.authentication_token, :password => ''}) if auth_user && !self.public?
     Rails.application.routes.url_helpers.project_url(self.owner.uname, self.name, opts) + ".git"
     #path #share by NFS
   end
@@ -226,6 +226,10 @@ class Project < ActiveRecord::Base
 
   def archive_by_treeish_and_format(treeish, format)
     @archive ||= create_archive treeish, format
+  end
+
+  def html_url
+    git_project_address(nil).gsub(/.git$/, '')
   end
 
   protected

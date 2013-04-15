@@ -41,8 +41,8 @@ class ActivityFeedObserver < ActiveRecord::Observer
                            :project_id => record.project.id, :issue_title => record.title, :project_name => record.project.name, :project_owner => record.project.owner.uname}
         )
       end
+      record.project.hooks.each{ |h| h.issue_hook(record) }
       Comment.create_link_on_issues_from_item(record)
-
     when 'Comment'
       return if record.automatic
       if record.issue_comment?
@@ -146,6 +146,7 @@ class ActivityFeedObserver < ActiveRecord::Observer
                            :project_id => record.project.id, :project_name => record.project.name, :project_owner => record.project.owner.uname}
         )
       end
+      record.project.hooks.each{ |h| h.issue_hook(record) } if record.status_changed?
       # dont remove outdated issues link
       Comment.create_link_on_issues_from_item(record)
     when 'BuildList'
