@@ -1,11 +1,13 @@
 # -*- encoding : utf-8 -*-
 class Projects::HooksController < Projects::BaseController
   before_filter :authenticate_user!
-  load_resource :project
+  load_and_authorize_resource :project
+  load_and_authorize_resource :hook
 
   # GET /uname/project/hooks
   # GET /uname/project/hooks?name=web
   def index
+    authorize! :edit, @project
     @name = params[:name]
     @hooks = @project.hooks.for_name(@name).order('name asc, created_at desc')
     if @name.present?
