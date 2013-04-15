@@ -2,9 +2,9 @@
 = render 'submenu'
 = render 'sidebar'
 
-%h1 New hook
+%h1= t("layout.hooks.services.#{@hook.name}")
 
 = form_for @hook, :url => project_hooks_path(@project), :method => :post, :html => { :class => :form } do |f|
   = render 'form'
   .actions
-    = f.submit 'Save'
+    = f.submit t('layout.create')

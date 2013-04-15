@@ -1,0 +1,18 @@
+ru:
+  layout:
+    hooks:
+      services:
+        web: WebHook URLs
+        hipchat: HipChat
+
+  flash:
+
+  activerecord:
+    attributes:
+      hook:
+        data:
+          url: URL
+          auth_token: Auth Token
+          room: Room
+          restrict_to_branch: Restrict To Branch
+          notify: Notify

@@ -1,6 +1,6 @@
 = hidden_field_tag 'hook[name]', @hook.name
 - send("#{@hook.name}_fields").each do |field, type|
-  .leftlist= field
+  .leftlist= t("activerecord.attributes.hook.data.#{field}")
   .rightlist
     - if type == :boolean
       = check_box_tag "hook[data][#{field}]", @hook.data[field], 1

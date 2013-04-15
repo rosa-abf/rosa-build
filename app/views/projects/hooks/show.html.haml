@@ -2,19 +2,20 @@
 = render 'submenu'
 = render 'sidebar'
 
-%h1= "Listing of #{@name}"
+%h1= t("layout.hooks.services.#{@name}")
 
-= link_to 'New', new_project_hook_path(@project, :hook => {:name => @name}), :class => 'button'
+= link_to t('layout.create'), new_project_hook_path(@project, :hook => {:name => @name}), :class => 'button'
 .booth
 %br
 
 - @hooks.all.each do |hook|
-  - hook.data.each do |k, v|
-    .leftlist= k
-    .rightlist= v
+  - hook.data.each do |field, value|
+    .leftlist= t("activerecord.attributes.hook.data.#{field}")
+    .rightlist= value
     .both
 
   .leftlist
   .rightlist
-    = link_to 'Edit', edit_project_hook_path(@project, hook), :class => 'button'
+    = link_to t('layout.edit'), edit_project_hook_path(@project, hook), :class => 'button'
+    = link_to t('layout.delete'), project_hook_path(@project, hook), :method => :delete, :confirm => t('layout.confirm'), :class => 'button'
   .hr

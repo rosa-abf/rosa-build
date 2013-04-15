@@ -57,10 +57,6 @@ class Projects::HooksController < Projects::BaseController
   def destroy
     @hook = @project.hooks.find params[:id]
     @hook.destroy
-
-    respond_to do |format|
-      format.html { redirect_to hooks_url }
-      format.json { head :no_content }
-    end
+    redirect_to project_hooks_path(@project, :name => @hook.name)
   end
 end

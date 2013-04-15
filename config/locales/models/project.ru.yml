@@ -39,6 +39,7 @@ ru:
       members: Участники
       groups: Группы
       edit_collaborators: Участники
+      hooks: Служебные методы
       role: Роль в проекте
       remove_user: Покинуть проект
       issues: Задачи

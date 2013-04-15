@@ -2,9 +2,9 @@
 = render 'submenu'
 = render 'sidebar'
 
-%h1 Editing hook
+%h1= t("layout.hooks.services.#{@hook.name}")
 
 = form_for @hook, :url => project_hook_path(@project, @hook), :method => :put, :html => { :class => :form } do |f|
   = render 'form'
   .actions
-    = f.submit 'Update'
+    = f.submit t('layout.update')

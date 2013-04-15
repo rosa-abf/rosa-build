@@ -39,6 +39,7 @@ en:
       members: Members
       groups: Groups
       edit_collaborators: Members
+      hooks: Service hooks
       role: Project role
       remove_user: Leave project
       issues: Issues
