@@ -39,6 +39,7 @@ class Api::V1::IssuesController < Api::V1::BaseController
   end
 
   def create
+    @issue.user = current_user
     create_subject @issue
   end
 
