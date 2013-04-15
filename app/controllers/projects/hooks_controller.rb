@@ -3,11 +3,13 @@ class Projects::HooksController < Projects::BaseController
   before_filter :authenticate_user!
   load_and_authorize_resource :project
   load_and_authorize_resource :hook
+  skip_load_and_authorize_resource :hook, :only => [:index, :new, :create]
+  before_filter lambda { authorize! :edit, @project }, :only => [:index, :new, :create]
+
 
   # GET /uname/project/hooks
   # GET /uname/project/hooks?name=web
   def index
-    authorize! :edit, @project
     @name = params[:name]
     @hooks = @project.hooks.for_name(@name).order('name asc, created_at desc')
     if @name.present?
@@ -57,4 +59,5 @@ class Projects::HooksController < Projects::BaseController
     @hook.destroy
     redirect_to project_hooks_path(@project, :name => @hook.name)
   end
+
 end
