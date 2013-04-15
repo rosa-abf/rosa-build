@@ -4,6 +4,9 @@ ru:
       services:
         web: WebHook URLs
         hipchat: HipChat
+        irc: IRC
+        jabber: Jabber
+        twitter: Twitter
 
   flash:
     hook:
