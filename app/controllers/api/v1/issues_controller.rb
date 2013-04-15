@@ -55,8 +55,11 @@ class Api::V1::IssuesController < Api::V1::BaseController
 
   def render_issues_list
     @issues = @issues.includes(:user, :assignee, :labels).without_pull_requests
-    @issues = @issues.opened if params[:status] == 'open'
-    @issues = @issues.closed if params[:status] == 'closed'
+    if params[:status] == 'closed'
+      @issues = @issues.closed
+    else
+      @issues = @issues.opened
+    end
 
     if action_name == 'index' && params[:assignee].present?
       case params[:assignee]
