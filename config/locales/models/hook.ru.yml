@@ -20,3 +20,18 @@ ru:
           room: Room
           restrict_to_branch: Restrict To Branch
           notify: Notify
+          server: Server
+          port: Port
+          nick: Nick
+          branch_regexes: Branch Regexes
+          password: Password
+          ssl: SSL
+          message_without_join: Message Without Join
+          no_colors: No Colors
+          long_url: Long Url
+          notice: Notice
+          user: User
+          token: Token
+          secret: Secret
+          digest: Digest
+          short_format: Short Format
