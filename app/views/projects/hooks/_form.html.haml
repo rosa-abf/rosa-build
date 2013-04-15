@@ -1,5 +1,5 @@
 = hidden_field_tag 'hook[name]', @hook.name
-- send("#{@hook.name}_fields").each do |field, type|
+- Hook::FIELDS[@hook.name.to_sym].each do |field, type|
   .leftlist= t("activerecord.attributes.hook.data.#{field}")
   .rightlist
     - if type == :boolean
