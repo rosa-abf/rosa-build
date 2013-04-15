@@ -3,11 +3,11 @@ class Projects::HooksController < Projects::BaseController
   before_filter :authenticate_user!
   load_resource :project
 
-  # GET /../hooks
-  # GET /../hooks.json
+  # GET /uname/project/hooks
+  # GET /uname/project/hooks?name=web
   def index
     @name = params[:name]
-    @hooks = @project.hooks.for_name(@name).order('name asc, created_at asc')
+    @hooks = @project.hooks.for_name(@name).order('name asc, created_at desc')
     if @name.present?
       render :show
     else
@@ -15,23 +15,21 @@ class Projects::HooksController < Projects::BaseController
     end
   end
 
-  # GET /../hooks/new
-  # GET /../hooks/new.json
+  # GET /uname/project/hooks/new
   def new
     @hook = @project.hooks.new(params[:hook])
   end
 
-  # GET /../hooks/1/edit
+  # GET /uname/project/hooks/1/edit
   def edit
     @hook = @project.hooks.find params[:id]
   end
 
-  # POST /../hooks
-  # POST /../hooks.json
+  # POST /uname/project/hooks
   def create
     @hook = @project.hooks.new params[:hook]
     if @hook.save
-      redirect_to project_hooks_path(@project, :name => @hook.name), :notice => 'Hook was successfully created.'
+      redirect_to project_hooks_path(@project, :name => @hook.name), :notice => t('flash.hook.created')
     else
       flash[:error] = t('flash.hook.save_error')
       flash[:warning] = @hook.errors.full_messages.join('. ')
@@ -39,12 +37,11 @@ class Projects::HooksController < Projects::BaseController
     end
   end
 
-  # PUT /../hooks/1
-  # PUT /../hooks/1.json
+  # PUT /uname/project/hooks/1
   def update
     @hook = @project.hooks.find params[:id]
     if @hook.update_attributes(params[:hook])
-      redirect_to project_hooks_path(@project, :name => @hook.name), :notice => 'Hook was successfully updated.'
+      redirect_to project_hooks_path(@project, :name => @hook.name), :notice => t('flash.hook.updated')
     else
       flash[:error] = t('flash.hook.save_error')
       flash[:warning] = @hook.errors.full_messages.join('. ')
@@ -52,8 +49,7 @@ class Projects::HooksController < Projects::BaseController
     end
   end
 
-  # DELETE /../hooks/1
-  # DELETE /../hooks/1.json
+  # DELETE /uname/project/hooks/1
   def destroy
     @hook = @project.hooks.find params[:id]
     @hook.destroy
