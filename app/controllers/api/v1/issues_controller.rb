@@ -16,13 +16,15 @@ class Api::V1::IssuesController < Api::V1::BaseController
 
   def all_index
     project_ids = Project.accessible_by(current_ability, :membered).pluck(:id)
-    @issues = Issue.where(:project_id => project_ids)
+    @issues = Issue.where('issues.project_id IN (?) OR issues.assignee_id = ? OR issues.user_id = ?',
+                          project_ids, current_user, current_user)
     render_issues_list
   end
 
   def user_index
     project_ids = current_user.projects.pluck(:id)
-    @issues = Issue.where(:project_id => project_ids)
+    @issues = Issue.where('issues.project_id IN (?) OR issues.assignee_id = ? OR issues.user_id = ?',
+                          project_ids, current_user, current_user)
     render_issues_list
   end
 
