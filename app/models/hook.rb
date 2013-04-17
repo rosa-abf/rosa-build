@@ -12,7 +12,7 @@ class Hook < ActiveRecord::Base
 
   scope :for_name, lambda {|name| where(:name => name) if name.present? }
 
-  def issue_hook(issue, action)
+  def receive_issues(issue, action)
     pull = issue.pull_request
     return if action.to_sym == :create && pull
 
@@ -34,7 +34,7 @@ class Hook < ActiveRecord::Base
             :commits  => total_commits,
             :head     => {:label => "#{pull.from_project.owner.uname}:#{pull.from_ref}"},
             :base     => {:label => "#{repo_owner}:#{pull.to_ref}"},
-            :html_url => "#{repo_owner}/pull_requests/#{pull.serial_id}"
+            :html_url => "#{issue.project.html_url}/pull_requests/#{pull.serial_id}"
           )
         ).to_json
       }
@@ -43,13 +43,54 @@ class Hook < ActiveRecord::Base
         :payload => payload.merge(
           :action => (issue.closed? ? 'closed' : 'opened'),
           :issue  => base_params.merge(
-            :html_url => "#{repo_owner}/issues/#{issue.serial_id}"
+            :html_url => "#{issue.project.html_url}/issues/#{issue.serial_id}"
           )
         ).to_json
       }
     end
   end
-  later :issue_hook, :queue => :clone_build
+  later :receive_issues, :queue => :clone_build
+
+  def receive_push(git_hook)
+    payload = meta(git_hook.project, git_hook.user)
+    commits = []
+    oldrev, newrev = git_hook.oldrev, git_hook.newrev
+    if git_hook.change_type ==  'delete'
+      payload.merge!(:before => oldrev, :after => nil, :compare => nil)
+    elsif git_hook.change_type ==  'create'
+      payload.merge!(:before => nil, :after => newrev, :compare => nil)
+    else
+      payload.merge!(
+        :before => oldrev, :after => newrev,
+        :compare  => "#{git_hook.project.html_url}/compare/#{oldrev[0..6]}...#{newrev[0..6]}"
+      )
+      if git_hook.message # online update
+        commits = [[git_hook.newrev, git_hook.message]]
+      else
+        commits = git_hook.project.repo.commits_between(git_hook.oldrev, git_hook.newrev)
+      end
+    end
+
+    post 'push', {
+      :payload => payload.merge(
+        :ref => git_hook.refname,
+        :commits => commits.map{ |c|
+          {
+            :id => c.id,
+            :message => c.message,
+            :distinct => true,
+            :url => "#{git_hook.project.html_url}/commit/#{c.id}",
+            :removed => [],
+            :added => [],
+            :modified => c.stats.files.map{|f| f[0]},
+            :timestamp => c.committed_date,
+            :author => {:name => c.committer.name, :email => c.committer.email}
+          }
+        }
+      ).to_json
+    }
+  end
+  later :receive_push, :queue => :clone_build
 
   protected
 
@@ -66,7 +107,8 @@ class Hook < ActiveRecord::Base
         :url   => project.html_url,
         :owner => { :login => project.owner.uname }
       },
-      :sender => {:login => user.uname}
+      :sender => {:login => user.uname},
+      :pusher => {:name => user.uname}
     }
   end
 
