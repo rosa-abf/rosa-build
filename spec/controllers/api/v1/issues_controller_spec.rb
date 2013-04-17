@@ -19,7 +19,7 @@ describe Api::V1::IssuesController do
 
     @own_hidden_project = FactoryGirl.create(:project, :owner => @issue.user)
     @own_hidden_project.update_column :visibility, 'hidden'
-    @own_hidden_issue = FactoryGirl.create(:issue, :project => @own_hidden_project)
+    @own_hidden_issue = FactoryGirl.create(:issue, :project => @own_hidden_project, :assignee => @issue.user)
 
     @hidden_issue = FactoryGirl.create(:issue)
     @hidden_project = @hidden_issue.project
@@ -62,10 +62,10 @@ describe Api::V1::IssuesController do
         assigns[:issues].should include(@membered_issue)
       end
 
-      it 'should return only assigneed issue' do
-        http_login(@issue.assignee)
+      it 'should return only assigned issue' do
+        http_login(@issue.user)
         get :user_index, :format => :json
-        assigns[:issues].should include(@issue)
+        assigns[:issues].should include(@own_hidden_issue)
         assigns[:issues].count.should == 1
       end
     end

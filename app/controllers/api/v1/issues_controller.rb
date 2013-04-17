@@ -15,21 +15,19 @@ class Api::V1::IssuesController < Api::V1::BaseController
   end
 
   def all_index
-    project_ids = Project.accessible_by(current_ability, :membered).pluck(:id)
-    @issues = Issue.where('issues.project_id IN (?) OR issues.assignee_id = ? OR issues.user_id = ?',
-                          project_ids, current_user, current_user)
+    project_ids = get_all_project_ids Project.accessible_by(current_ability, :membered)
+    @issues = Issue.where('issues.project_id IN (?)', project_ids)
     render_issues_list
   end
 
   def user_index
-    project_ids = current_user.projects.pluck(:id)
-    @issues = Issue.where('issues.project_id IN (?) OR issues.assignee_id = ? OR issues.user_id = ?',
-                          project_ids, current_user, current_user)
+    project_ids = get_all_project_ids current_user.projects
+    @issues = Issue.where('issues.project_id IN (?)', project_ids)
     render_issues_list
   end
 
   def group_index
-    project_ids = @group.projects.pluck(:id)
+    project_ids = @group.projects.pluck(:id).uniq
     @issues = Issue.where(:project_id => project_ids)
     render_issues_list
   end
@@ -98,11 +96,13 @@ class Api::V1::IssuesController < Api::V1::BaseController
     respond_with @issues
   end
 
-  def render_json(action_name, action_method = nil)
-    if @build_list.try("can_#{action_name}?") && @build_list.send(action_method || action_name)
-      render_json_response @build_list, t("layout.build_lists.#{action_name}_success")
-    else
-      render_validation_error @build_list, t("layout.build_lists.#{action_name}_fail")
+  def get_all_project_ids default_projects
+    project_ids = []
+    if ['created', 'all'].include? params[:filter]
+      # add own issues
+      project_ids = Project.accessible_by(current_ability, :show).joins(:issues).
+                            where(:issues => {:user_id => current_user.id}).pluck('projects.id').uniq
     end
+    project_ids |= default_projects.pluck(:id).uniq
   end
 end
