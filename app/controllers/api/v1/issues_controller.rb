@@ -27,7 +27,7 @@ class Api::V1::IssuesController < Api::V1::BaseController
   end
 
   def group_index
-    project_ids = @group.projects.pluck(:id).uniq
+    project_ids = @group.projects.uniq.pluck(:id)
     @issues = Issue.where(:project_id => project_ids)
     render_issues_list
   end
@@ -101,8 +101,8 @@ class Api::V1::IssuesController < Api::V1::BaseController
     if ['created', 'all'].include? params[:filter]
       # add own issues
       project_ids = Project.accessible_by(current_ability, :show).joins(:issues).
-                            where(:issues => {:user_id => current_user.id}).pluck('projects.id').uniq
+                            where(:issues => {:user_id => current_user.id}).uniq.pluck('projects.id')
     end
-    project_ids |= default_projects.pluck(:id).uniq
+    project_ids |= default_projects.uniq.pluck(:id)
   end
 end
