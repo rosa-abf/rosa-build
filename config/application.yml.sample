@@ -52,6 +52,9 @@ development:
   root_path: /var/rosa
   git_path: /var/rosa
   do-not-reply-email: do-not-reply@localhost
+  github_services:
+    ip: 127.0.0.1
+    port: 1234
 
 production:
   <<: *common
@@ -59,6 +62,9 @@ production:
   git_path: /mnt/gitstore
   do-not-reply-email: do-not-reply@abf.rosalinux.ru
   mailer_https_url: false
+  github_services:
+    ip: 127.0.0.1
+    port: 1234
 
 test:
   <<: *common

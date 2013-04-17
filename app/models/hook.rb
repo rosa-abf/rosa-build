@@ -95,7 +95,8 @@ class Hook < ActiveRecord::Base
   protected
 
   def post(action, params)
-    uri   = URI "http://127.0.0.1:8080/#{name}/#{action}"
+    github_services = APP_CONFIG['github_services']
+    uri   = URI "http://#{github_services['ip']}:#{github_services['port']}/#{name}/#{action}"
     Net::HTTP.post_form uri, params.merge(:data => data.to_json)
   rescue # Dont care about it
   end
