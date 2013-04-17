@@ -36,10 +36,11 @@ module Modules::Models::WebHooks
   add_hook :web do
     string :url
   end
-  add_hook :hipchat do
-    string :auth_token, :room, :restrict_to_branch
-    boolean :notify
-  end
+  # temporarily disabled
+  # add_hook :hipchat do
+  #   string :auth_token, :room, :restrict_to_branch
+  #   boolean :notify
+  # end
   add_hook :irc do
     string   :server, :port, :room, :nick, :branch_regexes
     password :password
