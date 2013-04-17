@@ -38,15 +38,6 @@ module ApplicationHelper
     end
   end
 
-  def markdown(text)
-    unless @redcarpet
-      html_options = {filter_html: true, hard_wrap: true, with_toc_data: true}
-      options = {no_intraemphasis: true, tables: true, fenced_code_blocks: true, autolink: true, strikethrough: true, lax_html_blocks: true}
-      @redcarpet = Redcarpet::Markdown.new(Redcarpet::Render::HTML.new(html_options), options)
-    end
-    @redcarpet.render(text).html_safe
-  end
-
   def local_alert(text, type = 'error')
     html = "<div class='flash'><div class='alert #{type}'> #{text}"
     html << link_to('×', '#', :class => 'close close-alert', 'data-dismiss' => 'alert')

@@ -25,6 +25,21 @@ ru:
         syntax_highlighting: Подсветка синтаксиса
         indent_code: Отступ кода на 4 пробела
         inline_code: Встроенный код в строке
+        emoji_header: Шпаргалка по Emoji
+        reference_format: Формат ссылок
+        reference_format_example: |
+            для участников: @abf
+            для задач и пул реквестов:
+            #123
+            abf#123
+            abf/rosa-build#123
+            для коммитов: 123456
+        issues: Задачи
+        pull_requests: Пул реквесты
+        members: Участники
+        commits: Коммиты
+      reference: "%{user} ссылается на данную задачу"
+      removed: Комментарий был удален и более недоступен.
 
   flash:
     comment:

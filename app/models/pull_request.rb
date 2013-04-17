@@ -181,7 +181,7 @@ class PullRequest < ActiveRecord::Base
           system 'git', 'remote', 'add', 'head', from_project.path
         end
       end
-      clean # Need testing
+      #clean # Need testing
     end
 
     Dir.chdir(path) do

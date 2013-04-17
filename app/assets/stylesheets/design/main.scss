@@ -1514,32 +1514,30 @@ div.fork p {
 
 /* Project main page */
 
-table.tablesorter.project .th1 {
-  width: 130px;
-  /*padding-left: 17px;*/
-}
+.tablesorter.project {
 
-table.tablesorter.project .th2 {
-  width: 110px;
-  /*padding-left: 17px;*/
-}
-
-table.tablesorter.project .th3 {
-  width: 450px;
-}
-
-table.tablesorter.project .th4 {
-  /*padding-left: 17px;*/
-}
-
-table.tablesorter.project div.name {
-  float: left;
-  margin-top: 0px;
-}
-
-table.tablesorter.project div.pic {
-  float: left;
-  padding-right: 5px;
+  .th1 {
+    width: 130px;
+    /*padding-left: 17px;*/
+  }
+  .th2 {
+    width: 110px;
+    /*padding-left: 17px;*/
+  }
+  .th3 {
+    width: 450px;
+  }
+  .th4 {
+    /*padding-left: 17px;*/
+  }
+  .name {
+    float: left;
+    margin-top: 0px;
+  }
+  .pic {
+    float: left;
+    padding-right: 5px;
+  }
 }
 
 a.files-see {

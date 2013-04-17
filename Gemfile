@@ -5,9 +5,12 @@ gem 'redhillonrails_core', :git => 'git://github.com/warpc/redhillonrails_core.g
 
 gem 'pg', '~> 0.14.0'
 
-gem 'devise', '~> 2.1.2'
-gem 'omniauth', '~> 1.1.0'
-gem 'omniauth-openid', '~> 1.0.1'
+gem 'devise', '~> 2.2.3'
+gem 'omniauth'
+gem 'omniauth-facebook'
+gem 'omniauth-google-oauth2'
+gem 'omniauth-github'
+# gem 'omniauth-openid', '~> 1.0.1'
 gem 'cancan', '1.6.7' # 1.6.8 fail specs with strange error
 
 gem 'ancestry', '~> 1.3.0'
@@ -23,12 +26,12 @@ gem 'state_machine'
 gem 'grack', :git => 'git://github.com/rdblue/grack.git', :require => 'git_http'
 gem "grit", :git => 'git://github.com/warpc/grit.git' #, :path => '~/Sites/code/grit'
 gem 'charlock_holmes', '~> 0.6.9' #, :git => 'git://github.com/brianmario/charlock_holmes.git', :branch => 'bundle-icu'
-gem 'github-linguist', '~> 2.2.1', :require => 'linguist'
+gem 'github-linguist', '~> 2.3.4', :require => 'linguist'
 gem 'diff-display', '~> 0.0.1'
 
 # Wiki
 gem "gollum", '~> 2.1.3'
-gem "redcarpet", "~> 2.1.1"
+gem "redcarpet", '~> 2.2.2'
 gem 'creole'
 gem 'rdiscount'
 # gem 'org-ruby'
@@ -53,6 +56,7 @@ gem 'rack-throttle'
 gem 'rest-client', '~> 1.6.6'
 
 gem 'attr_encrypted', '1.2.1'
+gem "gemoji", "~> 1.2.1", require: 'emoji/railtie'
 
 group :assets do
   gem 'sass-rails', '~> 3.2.5'

@@ -46,6 +46,8 @@ ru:
       save_error: Не удалось сохранить пул реквест
 
   activerecord:
+    models:
+      pull_request: Пул реквест
     attributes:
       pull_requests:
         to_ref: Приемник

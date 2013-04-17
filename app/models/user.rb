@@ -7,6 +7,7 @@ class User < Avatar
 
   devise :database_authenticatable, :registerable, :omniauthable, :token_authenticatable,# :encryptable, :timeoutable
          :recoverable, :rememberable, :validatable, :lockable, :confirmable#, :reconfirmable, :trackable
+  devise :omniauthable, :omniauth_providers => [:facebook, :google_oauth2, :github]
 
   has_one :notifier, :class_name => 'SettingsNotifier', :dependent => :destroy #:notifier
 
@@ -96,20 +97,6 @@ class User < Avatar
       where(conditions)
       .where(["lower(uname) = :value OR lower(email) = :value OR authentication_token = :orig_value",
              { :value => login.downcase, :orig_value => login }]).first
-    end
-
-    def new_with_session(params, session)
-      super.tap do |user|
-        if data = session["devise.omniauth_data"]
-          if info = data['info'] and info.present?
-            user.email = info['email'].presence if user.email.blank?
-            user.uname ||= info['nickname'].presence || info['username'].presence
-            user.name ||= info['name'].presence || [info['first_name'], info['last_name']].join(' ').strip
-          end
-          user.password = Devise.friendly_token[0,20] # stub password
-          user.authentications.build :uid => data['uid'], :provider => data['provider']
-        end
-      end
     end
 
     def auth_by_token_or_login_pass(user, pass)

@@ -99,12 +99,24 @@ shared_examples_for 'api repository user with writer rights' do
     it 'ensures that repository of main platform has been destroyed' do
       lambda { delete :destroy, :id => @repository.id, :format => :json }.should change{ Repository.count }.by(-1)
     end
-    it 'should not be able to perform destroy action for repository of personal platform' do
-      delete :destroy, :id => @personal_repository.id, :format => :json
-      response.should_not be_success
+
+    context 'repository with name "main" of personal platform' do
+      # hook for "ActiveRecord::ActiveRecordError: name is marked as readonly"
+      before { Repository.where(:id => @personal_repository.id).update_all("name = 'main'") }
+      it 'should not be able to perform destroy action' do
+        delete :destroy, :id => @personal_repository.id, :format => :json
+        response.should_not be_success
+      end
+      it 'ensures that repository has not been destroyed' do
+        lambda { delete :destroy, :id => @personal_repository.id, :format => :json }.should_not change{ Repository.count }
+      end
     end
-    it 'ensures that repository of personal platform has not been destroyed' do
-      lambda { delete :destroy, :id => @personal_repository.id, :format => :json }.should_not change{ Repository.count }
+    it 'should be able to perform destroy action for repository with name not "main" of personal platform' do
+      delete :destroy, :id => @personal_repository.id, :format => :json
+      response.should be_success
+    end
+    it 'ensures that repository with name not "main" of personal platform has been destroyed' do
+      lambda { delete :destroy, :id => @personal_repository.id, :format => :json }.should change{ Repository.count }.by(-1)
     end
   end
 
@@ -296,9 +308,11 @@ describe Api::V1::RepositoriesController do
     before(:each) do
       @user = FactoryGirl.create(:user)
       http_login(@user)
-      platform = @repository.platform
-      platform.owner = @user; platform.save
-      @repository.platform.relations.create!(:actor_type => 'User', :actor_id => @user.id, :role => 'admin')
+      [@repository, @personal_repository].each do |repository|
+        platform = repository.platform
+        platform.owner = @user; platform.save
+        repository.platform.relations.create!(:actor_type => 'User', :actor_id => @user.id, :role => 'admin')
+      end
     end
 
     it_should_behave_like 'api repository user with reader rights'

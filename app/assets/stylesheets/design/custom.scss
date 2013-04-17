@@ -1909,6 +1909,15 @@ table#myTable thead tr.search th form.button_to div input {
     }
 }
 
+.activity .state {
+  float: right;
+  padding: 3px 10px;
+  margin: 3px 0;
+  font-size: 12px;
+  color: white;
+  border-radius: 2px;
+}
+
 article .activity .top {
   
   .created {
@@ -1954,7 +1963,6 @@ article .activity .top {
         margin-left: 5px;
     }
 }
-
 
 #assigned-popup {
     z-index: 1001;
@@ -2006,4 +2014,15 @@ article .activity .top {
             display: none;
         }
     }
+}
+
+.cm-s-default.md_and_cm p img {
+  max-width: 800px;
+}
+
+.tablesorter.project {
+    .th1 {
+        width: auto;
+    }
+    th { text-align: center; }
 }
