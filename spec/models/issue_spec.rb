@@ -87,7 +87,7 @@ describe Issue do
       @project.relations.create!(:actor_type => 'User', :actor_id => @reader.id, :role => 'reader')
       create_issue(@reader)
       @issue.update_column :assignee_id, @reader.id
-      @project.remove_member @reader
+      @project.remove_member @reader # via api
       @issue.reload.assignee_id.should == nil
     end
 
