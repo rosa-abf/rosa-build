@@ -15,19 +15,19 @@ class Api::V1::IssuesController < Api::V1::BaseController
   end
 
   def all_index
-    project_ids = get_all_project_ids Project.accessible_by(current_ability, :membered)
+    project_ids = get_all_project_ids Project.accessible_by(current_ability, :membered).uniq.pluck(:id)
     @issues = Issue.where('issues.project_id IN (?)', project_ids)
     render_issues_list
   end
 
   def user_index
-    project_ids = get_all_project_ids current_user.projects
+    project_ids = get_all_project_ids current_user.projects.select('distinct projects.id').pluck(:id)
     @issues = Issue.where('issues.project_id IN (?)', project_ids)
     render_issues_list
   end
 
   def group_index
-    project_ids = @group.projects.uniq.pluck(:id)
+    project_ids = @group.projects.select('distinct projects.id').pluck(:id)
     @issues = Issue.where(:project_id => project_ids)
     render_issues_list
   end
@@ -96,13 +96,13 @@ class Api::V1::IssuesController < Api::V1::BaseController
     respond_with @issues
   end
 
-  def get_all_project_ids default_projects
+  def get_all_project_ids default_project_ids
     project_ids = []
     if ['created', 'all'].include? params[:filter]
       # add own issues
       project_ids = Project.accessible_by(current_ability, :show).joins(:issues).
                             where(:issues => {:user_id => current_user.id}).uniq.pluck('projects.id')
     end
-    project_ids |= default_projects.uniq.pluck(:id)
+    project_ids |= default_project_ids
   end
 end
