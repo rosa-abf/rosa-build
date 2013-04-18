@@ -1,0 +1,1 @@
+json.(label, :name, :color)

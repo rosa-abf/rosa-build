@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130328112110) do
+ActiveRecord::Schema.define(:version => 20130417162427) do
 
   create_table "activity_feeds", :force => true do |t|
     t.integer  "user_id",    :null => false
@@ -219,6 +219,7 @@ ActiveRecord::Schema.define(:version => 20130328112110) do
   end
 
   add_index "issues", ["project_id", "serial_id"], :name => "index_issues_on_project_id_and_serial_id", :unique => true
+  add_index "issues", ["user_id"], :name => "index_issues_on_user_id"
 
   create_table "key_pairs", :force => true do |t|
     t.text     "public",           :null => false
