@@ -79,7 +79,7 @@ module GitHelper
     if tag_enabled
       res << [I18n.t('layout.git.repositories.tags'), project.repo.tags.map(&:name).sort.map(&linking)]
     else
-      res << [I18n.t('layout.git.repositories.tags'), project.repo.tags.map(&:name).sort.map {|t| [t.name.truncate(20), {:disabled => true}]}]
+      res << [I18n.t('layout.git.repositories.tags'), project.repo.tags.map(&:name).sort.map {|name| [name.truncate(20), {:disabled => true}]}]
     end
     grouped_options_for_select(res, current)
   end
