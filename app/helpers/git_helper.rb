@@ -1,6 +1,23 @@
 # -*- encoding : utf-8 -*-
 module GitHelper
 
+  def submodule_url(node, treeish)
+    # node.url(treeish) looks like:
+    # - http://0.0.0.0:3000/abf/git@abf.rosalinux.ru:abf/rhel-scripts.git
+    # - git://github.com/avokhmin/mdv-scripts.git
+    url = node.url(treeish).gsub(/.git$/, '')
+    if url =~ /^git:/
+      url.gsub!(/^git/, 'http')
+    elsif str = /git@.*:.*/.match(url)
+      str   = str[0].gsub(/^git@/, '')
+      domen = str.gsub(/:.*/, '')
+      owner = str.gsub(/^#{domen}:/, '').gsub(/\/.*/, '')
+      project = str.gsub(/.*\//, '')
+      url = "http://#{domen}/#{owner}/#{project}"
+    end
+    url
+  end
+
   def render_path
     # TODO: Looks ugly, rewrite with clear mind.
     if @path.present?

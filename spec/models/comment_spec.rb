@@ -160,6 +160,7 @@ describe Comment do
                       :commentable_id => @second_issue.id,
                       :created_from_issue_id => @issue.id).count.should == 1
       end
+
       it 'should create two automatic comment' do
         body = "test ##{@second_issue.serial_id}" +
                " && [#{@another_project.name_with_owner}##{@issue_in_another_project.serial_id}]"
@@ -167,6 +168,31 @@ describe Comment do
         Comment.where(:automatic => true,
                       :created_from_issue_id => @issue.id).count.should == 2
       end
+
+      it 'should create automatic comment by issue title' do
+        issue = FactoryGirl.create(:issue, :project => @project, :user => @user,
+                                   :title => "link to ##{@issue.serial_id}")
+        Comment.where(:automatic => true,
+                      :created_from_issue_id => issue.id).count.should == 1
+      end
+
+      it 'should create automatic comment from issue body' do
+        issue = FactoryGirl.create(:issue, :project => @project, :user => @user,
+                                   :body => "link to ##{@issue.serial_id}")
+        Comment.where(:automatic => true,
+                      :created_from_issue_id => issue.id).count.should == 1
+      end
+
+      it 'should create only one automatic comment from issue title and body' do
+        issue = FactoryGirl.create(:issue, :project => @project, :user => @user,
+                                   :title => "link to ##{@issue.serial_id} in title",
+                                   :body  => "link to ##{@issue.serial_id} in body")
+        Comment.where(:automatic => true,
+                      :created_from_issue_id => issue.id).count.should == 1
+      end
+
+
+
     end
   end
 end

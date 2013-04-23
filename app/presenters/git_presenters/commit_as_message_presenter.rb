@@ -3,26 +3,27 @@ class GitPresenters::CommitAsMessagePresenter < ApplicationPresenter
   include CommitHelper
 
   attr_accessor :commit
-  attr_reader :header, :image, :date, :caption, :content, :expandable, :is_reference_to_issue, :committer
+  attr_reader :header, :image, :date, :caption, :content, :expandable,
+              :is_reference_to_issue, :committer
 
   def initialize(commit, opts = {})
     comment = opts[:comment]
     @is_reference_to_issue = !!comment # is it reference issue from commit
     @project = if comment
-                        Project.where(:id => opts[:comment].data[:from_project_id]).first
-                      else
-                        opts[:project]
-                      end
-    if @project
-      commit = commit || @project.repo.commit(comment.created_from_commit_hash.to_s(16))
+                 Project.where(:id => comment.data[:from_project_id]).first
+               else
+                 opts[:project]
+               end
+    commit = commit || @project.repo.commit(comment.created_from_commit_hash.to_s(16)) if @project
 
+    if @project && commit
       @committer = User.where(:email => commit.committer.email).first || commit.committer
       @commit_hash = commit.id
       @committed_date, @authored_date = commit.committed_date, commit.authored_date
       @commit_message = commit.message
     else
       @committer = t('layout.commits.unknown_committer')
-      @commit_hash = comment.created_from_commit_hash
+      @commit_hash = comment.created_from_commit_hash.to_s(16)
       @committed_date = @authored_date = comment.created_at
       @commit_message = t('layout.commits.deleted')
     end
@@ -74,6 +75,10 @@ class GitPresenters::CommitAsMessagePresenter < ApplicationPresenter
 
   def issue_referenced_state?
     false
+  end
+
+  def reference_project
+    @project if @is_reference_to_issue
   end
 
   protected

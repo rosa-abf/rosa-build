@@ -51,6 +51,10 @@ class Group < Avatar
     false
   end
 
+  def fullname
+    return description.present? ? "#{uname} (#{description})" : uname
+  end
+
   protected
 
   def add_owner_to_members

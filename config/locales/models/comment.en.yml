@@ -29,10 +29,10 @@ en:
         reference_format: Reference Format
         reference_format_example: |
             for members: @abf
-            for issues:
-            #123 abf#123 abf/rosa-build#123
-            for pull requests:
-            !123 abf!123 abf/rosa-build!123
+            for issues and pull requests:
+            #123
+            abf#123
+            abf/rosa-build#123
             for commits: 123456
 
         issues: Issues

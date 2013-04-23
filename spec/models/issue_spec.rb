@@ -41,8 +41,8 @@ describe Issue do
       @project = FactoryGirl.create(:project, :owner => @user)
 
       @group = FactoryGirl.create(:group)
-      reader = FactoryGirl.create :user
-      @group.actors.create(:actor_type => 'User', :actor_id => reader.id, :role => 'reader')
+      @reader = FactoryGirl.create :user
+      @group.actors.create(:actor_type => 'User', :actor_id => @reader.id, :role => 'reader')
     end
 
     it 'should send an e-mail to all members of the admin group' do
@@ -65,6 +65,32 @@ describe Issue do
       create_issue(@stranger)
       ActionMailer::Base.deliveries.count.should == 1 # 1 project owner
     end
+
+    it 'should reset issue assignee after remove him from group' do
+      @project.relations.create!(:actor_type => 'Group', :actor_id => @group.id, :role => 'reader')
+      create_issue(@group.owner)
+      @issue.update_column :assignee_id, @reader.id
+      @group.remove_member @reader
+      @issue.reload.assignee_id.should == nil
+    end
+
+    it 'should not reset issue assignee' do
+      @project.relations.create!(:actor_type => 'Group', :actor_id => @group.id, :role => 'reader')
+      @project.relations.create!(:actor_type => 'User', :actor_id => @reader.id, :role => 'reader')
+      create_issue(@group.owner)
+      @issue.update_column :assignee_id, @reader.id
+      @group.remove_member @reader
+      @issue.reload.assignee_id.should == @reader.id
+    end
+
+    it 'should reset issue assignee after remove him from project' do
+      @project.relations.create!(:actor_type => 'User', :actor_id => @reader.id, :role => 'reader')
+      create_issue(@reader)
+      @issue.update_column :assignee_id, @reader.id
+      @project.remove_member @reader # via api
+      @issue.reload.assignee_id.should == nil
+    end
+
   end
 
   context 'Group project' do

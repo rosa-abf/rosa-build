@@ -41,6 +41,7 @@ class ActivityFeedObserver < ActiveRecord::Observer
                            :project_id => record.project.id, :issue_title => record.title, :project_name => record.project.name, :project_owner => record.project.owner.uname}
         )
       end
+      Comment.create_link_on_issues_from_item(record)
 
     when 'Comment'
       return if record.automatic
@@ -145,7 +146,8 @@ class ActivityFeedObserver < ActiveRecord::Observer
                            :project_id => record.project.id, :project_name => record.project.name, :project_owner => record.project.owner.uname}
         )
       end
-
+      # dont remove outdated issues link
+      Comment.create_link_on_issues_from_item(record)
     when 'BuildList'
       if record.mass_build.blank? && ( # Do not show mass build activity in activity feeds
           record.status_changed? && BUILD_LIST_STATUSES.include?(record.status) ||

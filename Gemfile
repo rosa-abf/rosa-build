@@ -5,9 +5,12 @@ gem 'redhillonrails_core', :git => 'git://github.com/warpc/redhillonrails_core.g
 
 gem 'pg', '~> 0.14.0'
 
-gem 'devise', '~> 2.1.2'
-gem 'omniauth', '~> 1.1.0'
-gem 'omniauth-openid', '~> 1.0.1'
+gem 'devise', '~> 2.2.3'
+gem 'omniauth'
+gem 'omniauth-facebook'
+gem 'omniauth-google-oauth2'
+gem 'omniauth-github'
+# gem 'omniauth-openid', '~> 1.0.1'
 gem 'cancan', '1.6.7' # 1.6.8 fail specs with strange error
 
 gem 'ancestry', '~> 1.3.0'

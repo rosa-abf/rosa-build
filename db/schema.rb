@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130403202853) do
+ActiveRecord::Schema.define(:version => 20130417162427) do
 
   create_table "activity_feeds", :force => true do |t|
     t.integer  "user_id",    :null => false
@@ -204,6 +204,14 @@ ActiveRecord::Schema.define(:version => 20130403202853) do
     t.datetime "avatar_updated_at"
   end
 
+  create_table "hooks", :force => true do |t|
+    t.text     "data"
+    t.integer  "project_id"
+    t.string   "name"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+  end
+
   create_table "issues", :force => true do |t|
     t.integer  "serial_id"
     t.integer  "project_id"
@@ -219,6 +227,7 @@ ActiveRecord::Schema.define(:version => 20130403202853) do
   end
 
   add_index "issues", ["project_id", "serial_id"], :name => "index_issues_on_project_id_and_serial_id", :unique => true
+  add_index "issues", ["user_id"], :name => "index_issues_on_user_id"
 
   create_table "key_pairs", :force => true do |t|
     t.text     "public",           :null => false

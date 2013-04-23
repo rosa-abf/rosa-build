@@ -2019,3 +2019,10 @@ article .activity .top {
 .cm-s-default.md_and_cm p img {
   max-width: 800px;
 }
+
+.tablesorter.project {
+    .th1 {
+        width: auto;
+    }
+    th { text-align: center; }
+}

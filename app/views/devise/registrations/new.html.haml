@@ -17,7 +17,10 @@
       .both
       .left=t('activerecord.attributes.user.email')
       .right
-        = f.text_field :email, :id => 'email', :readonly => 'readonly',  :class => "registartion-input #{email_error ? 'registartion-input-error' : ''}"
+        - if APP_CONFIG['preregistration']
+          = f.text_field :email, :id => 'email', :readonly => 'readonly',  :class => "registartion-input #{email_error ? 'registartion-input-error' : ''}"
+        - else
+          = f.text_field :email, :id => 'email', :class => 'registartion-input'
       .both
       .left=t('activerecord.attributes.user.password')
       .right
@@ -30,6 +33,7 @@
       .in
         =f.submit t("layout.devise.shared_links.sign_up"), :class => 'button', :id => 'btnLogin'
       .both
+    = render 'devise/shared/providers'
 
   =showDeviseHintError(:login, uname_error)
   =showDeviseHintError(:name, name_error)
