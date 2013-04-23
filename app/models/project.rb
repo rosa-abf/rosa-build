@@ -28,7 +28,6 @@ class Project < ActiveRecord::Base
   validates :name, :uniqueness => {:scope => [:owner_id, :owner_type], :case_sensitive => false},
                    :presence => true,
                    :format => {:with => /\A#{NAME_REGEXP}\z/, :message => I18n.t("activerecord.errors.project.uname")}
-  validates :owner, :presence => true
   validates :maintainer_id, :presence => true, :unless => :new_record?
   validates :visibility, :presence => true, :inclusion => {:in => VISIBILITIES}
   validate { errors.add(:base, :can_have_less_or_equal, :count => MAX_OWN_PROJECTS) if owner.projects.size >= MAX_OWN_PROJECTS }
@@ -49,6 +48,10 @@ class Project < ActiveRecord::Base
   scope :search_order, order("CHAR_LENGTH(#{table_name}.name) ASC")
   scope :search, lambda {|q| by_name("%#{q.to_s.strip}%")}
   scope :by_name, lambda {|name| where("#{table_name}.name ILIKE ?", name) if name.present?}
+  scope :by_owner_and_name, lambda { |*params|
+    term = params.map(&:strip).join('/').downcase
+    where("lower(concat(owner_uname, '/', name)) ILIKE ?", "%#{term}%") if term.present?
+  }
   scope :by_visibilities, lambda {|v| where(:visibility => v)}
   scope :opened, where(:visibility => 'open')
   scope :package, where(:is_package => true)
@@ -66,6 +69,7 @@ class Project < ActiveRecord::Base
   }
 
   before_validation :truncate_name, :on => :create
+  before_save lambda { self.owner_uname = owner.uname if owner_uname.blank? || owner_id_changed? || owner_type_changed? }
   before_create :set_maintainer
   after_save :attach_to_personal_repository
   after_update :set_new_git_head
@@ -78,15 +82,17 @@ class Project < ActiveRecord::Base
 
   class << self
     def find_by_owner_and_name(owner_name, project_name)
-      owner = User.find_by_uname(owner_name) || Group.find_by_uname(owner_name) || User.by_uname(owner_name).first || Group.by_uname(owner_name).first and
-      scoped = where(:owner_id => owner.id, :owner_type => owner.class) and
-      scoped.find_by_name(project_name) || scoped.by_name(project_name).first
-      # owner.projects.find_by_name(project_name) || owner.projects.by_name(project_name).first # TODO force this work?
+      where(:owner_uname => owner_name, :name => project_name).first ||
+        by_owner_and_name(owner_name, project_name).first
     end
 
     def find_by_owner_and_name!(owner_name, project_name)
       find_by_owner_and_name(owner_name, project_name) or raise ActiveRecord::RecordNotFound
     end
+  end
+
+  def name_with_owner
+    "#{owner_uname || owner.uname}/#{name}"
   end
 
   def to_param
