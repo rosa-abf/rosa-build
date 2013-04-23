@@ -246,7 +246,7 @@ module AbfWorker
         order(:updated_at)
       locked_ids = @redis.lrange(LOCKED_BUILD_LISTS, 0, -1)
       build_lists = build_lists.where('build_lists.id NOT IN (?)', locked_ids) unless locked_ids.empty?
-      build_lists = build_lists.limit(50)
+      build_lists = build_lists.limit(150)
 
       old_packages  = {:sources => [], :binaries => {:x86_64 => [], :i586 => []}}
 
