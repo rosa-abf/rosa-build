@@ -28,6 +28,8 @@ RSpec.configure do |config|
 
   config.filter_run_excluding :anonymous_access => !(APP_CONFIG['anonymous_access'])
 
+  config.before(:all) { init_test_root }
+  config.after(:all)  { clear_test_root }
 end
 
 def set_session_for(user=nil)
@@ -64,8 +66,6 @@ def stub_redis
   stub(Redis).new { @redis_instance }
   stub(Resque).redis { @redis_instance }
 end
-
-init_test_root
 
 def fill_project project
   %x(mkdir -p #{project.path} && cp -Rf #{Rails.root}/spec/tests.git/* #{project.path}) # maybe FIXME ?
