@@ -480,8 +480,11 @@ describe Api::V1::BuildListsController do
         @user = FactoryGirl.create(:user)
         @group.actors.create :role => 'reader', :actor_id => @user.id, :actor_type => 'User'
 
+        old_path = @project.path
         @project.owner = @owner_group
         @project.save
+        # Move GIT repo into new folder
+        system "mkdir -p #{@project.path} && mv -f #{old_path}/* #{@project.path}/"
 
         @project.relations.create :role => 'reader', :actor_id => @member_group.id, :actor_type => 'Group'
         @project.relations.create :role => 'admin', :actor_id => @owner_group.id, :actor_type => 'Group'

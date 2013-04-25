@@ -72,7 +72,7 @@ class Projects::ProjectsController < Projects::BaseController
       redirect_to forked, :notice => t("flash.project.forked")
     else
       flash[:warning] = t("flash.project.fork_error")
-      flash[:error] = forked.errors.full_messages
+      flash[:error] = forked.errors.full_messages.join("\n")
       redirect_to @project
     end
   end

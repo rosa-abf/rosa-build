@@ -36,7 +36,7 @@ en:
       update_error: Unable to update repository
       destroyed: Repository deleted
       project_added: Project added to repository
-      project_not_added: Project adding error. A project with such name already exists in this repository. Remove the old project first
+      project_not_added: Project adding error. A project with such name already exists in one repository of platform. Remove the old project first
       project_removed: Project deleted
       project_not_removed: Unable to delete project from repository
       clear: Platform successfully cleared!

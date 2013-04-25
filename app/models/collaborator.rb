@@ -110,6 +110,7 @@ class Collaborator
 
   def destroy
     relation.try(:destroy)
+    @actor.check_assigned_issues @project
   end
 
   def attributes

@@ -28,6 +28,7 @@ class User < Avatar
   has_many :own_projects, :as => :owner, :class_name => 'Project', :dependent => :destroy
   has_many :own_groups,   :foreign_key => :owner_id, :class_name => 'Group', :dependent => :destroy
   has_many :own_platforms, :as => :owner, :class_name => 'Platform', :dependent => :destroy
+  has_many :assigned_issues, :foreign_key => :assignee_id, :class_name => 'Issue', :dependent => :nullify
 
   has_many :key_pairs
   has_many :ssh_keys, :dependent => :destroy
@@ -139,6 +140,19 @@ class User < Avatar
     return nil if roles.count == 0
     %w(admin writer reader).each {|role| return role if roles.include?(role)}
     raise "unknown user #{self.uname} roles #{roles}"
+  end
+
+  def check_assigned_issues target
+    if target.is_a? Project
+      assigned_issues.where(:project_id => target.id).update_all(:assignee_id => nil)
+    else
+      ability = Ability.new self
+      project_ids = Project.accessible_by(ability, :membered).uniq.pluck(:id)
+
+      issues = assigned_issues
+      issues = issues.where('project_id not in (?)', project_ids) if project_ids.present?
+      issues.update_all(:assignee_id => nil)
+    end
   end
 
   protected

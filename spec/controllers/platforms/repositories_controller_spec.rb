@@ -1,14 +1,6 @@
 # -*- encoding : utf-8 -*-
 require 'spec_helper'
 
-shared_examples_for 'not destroy personal repository' do
-  it 'should not be able to destroy personal repository' do
-    lambda { delete :destroy, :id => @personal_repository.id, :platform_id => 
-      @personal_repository.platform.id}.should change{ Repository.count }.by(0)
-    response.should redirect_to(redirect_path)
-  end
-end
-
 shared_examples_for 'user with change projects in repository rights' do
 
   it 'should be able to see add_project page' do
@@ -90,12 +82,16 @@ shared_examples_for 'registered user or guest' do
   end
 
   it 'should not be able to destroy repository in main platform' do
-    delete :destroy, :id => @repository.id
+    delete :destroy, :id => @repository.id, :platform_id => @platform.id
     response.should redirect_to(redirect_path)
     lambda { delete :destroy, :id => @repository.id }.should_not change{ Repository.count }.by(-1)
   end
 
-  it_should_behave_like 'not destroy personal repository'
+  it 'should not be able to destroy personal repository' do
+    lambda { delete :destroy, :id => @personal_repository.id, :platform_id => @personal_repository.platform.id}.
+      should change{ Repository.count }.by(0)
+    response.should redirect_to(redirect_path)
+  end
 end
 
 shared_examples_for 'registered user' do
@@ -131,7 +127,7 @@ shared_examples_for 'platform admin user' do
   end
   
   it 'should be able to destroy repository in main platform' do
-    lambda { delete :destroy, :id => @repository.id }.should change{ Repository.count }.by(-1)
+    lambda { delete :destroy, :id => @repository.id, :platform_id => @platform.id }.should change{ Repository.count }.by(-1)
     response.should redirect_to(platform_repositories_path(@repository.platform))
   end
 
@@ -163,10 +159,21 @@ shared_examples_for 'platform admin user' do
     @repository.members.should_not include(@another_user, another_user2)
   end
 
-  it_should_behave_like 'user with change projects in repository rights'
-  it_should_behave_like 'not destroy personal repository' do
-    let(:redirect_path) { forbidden_path }
+  it 'should not be able to destroy personal repository with name "main"' do
+    # hook for "ActiveRecord::ActiveRecordError: name is marked as readonly"
+    Repository.where(:id => @personal_repository.id).update_all("name = 'main'")
+    lambda { delete :destroy, :id => @personal_repository.id, :platform_id => @personal_repository.platform.id}.
+      should change{ Repository.count }.by(0)
+    response.should redirect_to(forbidden_path)
   end
+
+  it 'should be able to destroy personal repository with name not "main"' do
+    lambda { delete :destroy, :id => @personal_repository.id, :platform_id => @personal_repository.platform.id}.
+      should change{ Repository.count }.by(-1)
+    response.should redirect_to(platform_repositories_path(@personal_repository.platform))
+  end
+
+  it_should_behave_like 'user with change projects in repository rights'
 end
 
 describe Platforms::RepositoriesController do
@@ -234,6 +241,8 @@ describe Platforms::RepositoriesController do
   context 'for platform owner user' do
     before(:each) do
       @user = @repository.platform.owner
+      platform = @personal_repository.platform
+      platform.owner = @user; platform.save
       set_session_for(@user)
     end
 
@@ -242,7 +251,9 @@ describe Platforms::RepositoriesController do
 
   context 'for platform member user' do
     before(:each) do
-      @platform.relations.create!(:actor_type => 'User', :actor_id => @user.id, :role => 'admin')
+      [@repository, @personal_repository].each do |repo|
+        repo.platform.relations.create!(:actor_type => 'User', :actor_id => @user.id, :role => 'admin')
+      end
     end
 
     it_should_behave_like 'platform admin user'
@@ -250,7 +261,9 @@ describe Platforms::RepositoriesController do
 
   context 'for repository member user' do
     before(:each) do
-      @repository.relations.create!(:actor_type => 'User', :actor_id => @user.id, :role => 'admin')
+      [@repository, @personal_repository].each do |repo|
+        repo.relations.create!(:actor_type => 'User', :actor_id => @user.id, :role => 'admin')
+      end
     end
 
     it_should_behave_like 'registered user'

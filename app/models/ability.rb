@@ -148,7 +148,8 @@ class Ability
 
       # Shared cannot rights for all users (registered, admin)
       cannot :destroy, Platform, :platform_type => 'personal'
-      cannot [:create, :destroy, :edit, :update, :add_project, :remove_project], Repository, :platform => {:platform_type => 'personal'}
+      cannot [:create, :destroy], Repository, :platform => {:platform_type => 'personal'}, :name => 'main'
+      cannot [:remove_members, :remove_member, :add_member], Repository, :platform => {:platform_type => 'personal'}
       cannot :clear, Platform, :platform_type => 'main'
       cannot :destroy, Issue
 

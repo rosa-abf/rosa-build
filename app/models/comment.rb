@@ -142,6 +142,7 @@ class Comment < ActiveRecord::Base
     case
     when item.is_a?(GitHook)
       elements = commits
+      opts = {}
     when item.is_a?(Issue)
       elements = [[item, item.title], [item, item.body]]
       opts = {:created_from_issue_id => item.id}

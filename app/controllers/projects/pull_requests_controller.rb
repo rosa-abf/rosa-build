@@ -115,9 +115,12 @@ class Projects::PullRequestsController < Projects::BaseController
   end
 
   def autocomplete_to_project
-    items = Project.accessible_by(current_ability, :membered) | @project.ancestors
-    term = Regexp.new(Regexp.escape params[:term].downcase)
-    items.select! {|e| term.match(e.name_with_owner.downcase) && e.repo.branches.count > 0}
+    items = []
+    term = params[:term].to_s.strip.downcase
+    [Project.accessible_by(current_ability, :membered), @project.ancestors].each do |p|
+      items.concat p.by_owner_and_name(term)
+    end
+    items = items.uniq{|i| i.id}.select{|e| e.repo.branches.count > 0}
     render :json => json_for_autocomplete_base(items)
   end
 
@@ -129,7 +132,7 @@ class Projects::PullRequestsController < Projects::BaseController
 
   def json_for_autocomplete_base items
     items.collect do |project|
-      hash = {"id" => project.id.to_s, "label" => project.name_with_owner, "value" => project.name_with_owner}
+      hash = {:id => project.id.to_s, :label => project.name_with_owner, :value => project.name_with_owner}
       hash[:get_refs_url] = project_refs_list_path(project)
       hash
     end
