@@ -9,9 +9,14 @@
 %br
 
 - @hooks.all.each do |hook|
+  - schema = Hook::SCHEMA[hook.name.to_sym]
   - hook.data.each do |field, value|
     .leftlist= t("activerecord.attributes.hook.data.#{field}")
-    .rightlist= value
+    .rightlist
+      - if schema.find{ |type, attr| type == :password && field.to_sym == attr }
+        = '******'
+      - else
+        = value
     .both
 
   .leftlist
