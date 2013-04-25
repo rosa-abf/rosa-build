@@ -1,8 +1,5 @@
----
-title: RosaLab ABF
----
-
-# RosaLab ABF
+RosaLab ABF
+===========
 
 A distributed environment to build distributions, supporting all steps from managing source code to creating ISO images. If you have any problems or requests please contact
 [support](https://abf.rosalinux.ru/contact).
