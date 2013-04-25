@@ -22,9 +22,7 @@ class Comment < ActiveRecord::Base
   attr_accessible :body, :data
 
   def commentable
-    # raise commentable_id.inspect
-    # raise commentable_id.to_s(16).inspect
-    commit_comment? ? project.repo.commit(commentable_id.to_s(16)) : super # TODO leading zero problem
+    commit_comment? ? project.repo.commit(Comment.hex_to_commit_hash commentable_id) : super # TODO leading zero problem
   end
 
   def commentable=(c)
@@ -183,6 +181,11 @@ class Comment < ActiveRecord::Base
         comment.save
       end
     end
+  end
+
+  def self.hex_to_commit_hash hex
+    t = hex.to_s(16)
+    '0'*(40-t.length) << t
   end
 
   protected
