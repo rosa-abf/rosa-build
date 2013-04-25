@@ -6,7 +6,6 @@ ru:
         hipchat: HipChat
         irc: IRC
         jabber: Jabber
-        twitter: Twitter
 
   flash:
     hook:

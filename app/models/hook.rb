@@ -52,34 +52,35 @@ class Hook < ActiveRecord::Base
   later :receive_issues, :queue => :clone_build
 
   def receive_push(git_hook)
-    payload = meta(git_hook.project, git_hook.user)
+    project = Project.find(git_hook['project']['project']['id'])
+    user    = User.find(git_hook['user']['user']['id'])
+    payload = meta(project, user)
+    oldrev  = git_hook['oldrev']
+    newrev  = git_hook['newrev']
+    change_type = git_hook['change_type']
+    
     commits = []
-    oldrev, newrev = git_hook.oldrev, git_hook.newrev
-    if git_hook.change_type ==  'delete'
-      payload.merge!(:before => oldrev, :after => nil, :compare => nil)
-    elsif git_hook.change_type ==  'create'
-      payload.merge!(:before => nil, :after => newrev, :compare => nil)
-    else
+    payload.merge!(:before => oldrev, :after => newrev)
+    if %w(delete create).exclude? change_type
       payload.merge!(
-        :before => oldrev, :after => newrev,
-        :compare  => "#{git_hook.project.html_url}/compare/#{oldrev[0..6]}...#{newrev[0..6]}"
+        :compare  => "#{project.html_url}/diff/#{oldrev[0..6]}...#{newrev[0..6]}"
       )
-      if git_hook.message # online update
-        commits = [[git_hook.newrev, git_hook.message]]
+      if oldrev == newrev
+        commits = [project.repo.commit(newrev)]
       else
-        commits = git_hook.project.repo.commits_between(git_hook.oldrev, git_hook.newrev)
+        commits = project.repo.commits_between(oldrev, newrev)
       end
     end
 
     post 'push', {
       :payload => payload.merge(
-        :ref => git_hook.refname,
+        :ref => git_hook['refname'],
         :commits => commits.map{ |c|
           {
             :id => c.id,
             :message => c.message,
             :distinct => true,
-            :url => "#{git_hook.project.html_url}/commit/#{c.id}",
+            :url => "#{project.html_url}/commit/#{c.id}",
             :removed => [],
             :added => [],
             :modified => c.stats.files.map{|f| f[0]},

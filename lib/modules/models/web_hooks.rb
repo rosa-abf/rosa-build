@@ -49,10 +49,6 @@ module Modules::Models::WebHooks
   add_hook :jabber do
     string :user
   end
-  add_hook :twitter do
-    string  :token, :secret
-    boolean :digest, :short_format
-  end
   SCHEMA.freeze
   NAMES.freeze
 
