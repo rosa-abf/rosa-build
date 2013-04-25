@@ -184,8 +184,9 @@ class Comment < ActiveRecord::Base
   end
 
   def self.hex_to_commit_hash hex
+    # '079d'.hex.to_s(16) => "79d"
     t = hex.to_s(16)
-    '0'*(40-t.length) << t
+    '0'*(40-t.length) << t # commit hash has 40-character
   end
 
   protected
