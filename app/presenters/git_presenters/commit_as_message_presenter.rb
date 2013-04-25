@@ -14,7 +14,7 @@ class GitPresenters::CommitAsMessagePresenter < ApplicationPresenter
                else
                  opts[:project]
                end
-    commit = commit || @project.repo.commit(comment.created_from_commit_hash.to_s(16)) if @project
+    commit = commit || @project.repo.commit(Comment.hex_to_commit_hash comment.created_from_commit_hash) if @project
 
     if @project && commit
       @committer = User.where(:email => commit.committer.email).first || commit.committer
@@ -23,7 +23,7 @@ class GitPresenters::CommitAsMessagePresenter < ApplicationPresenter
       @commit_message = commit.message
     else
       @committer = t('layout.commits.unknown_committer')
-      @commit_hash = comment.created_from_commit_hash.to_s(16)
+      @commit_hash = Comment.hex_to_commit_hash comment.created_from_commit_hash
       @committed_date = @authored_date = comment.created_at
       @commit_message = t('layout.commits.deleted')
     end
