@@ -1,4 +1,4 @@
-- path = polymorphic_path [@project, issue.pull_request ? issue.pull_request : issue]
+- path = polymorphic_path [@project || issue.project, issue.pull_request ? issue.pull_request : issue]
 
 %tr#row1{:name => "row", :class => issue.labels.map(&:name).compact}
   %td.td0
@@ -6,7 +6,9 @@
   %td.td1=issue.serial_id
   %td
     %a{:href => path}
-      %div.issue_title=issue.title
+      %div.issue_title
+        -prefix = @project ? '' : "<span style=\"color: #999;\">#{issue.project.name}</span>: "
+        ="#{prefix} #{issue.title}".html_safe
     .smalltext
       =issue.send(@sort == :created ? :created_at : :updated_at).to_s(:long)
       =t("layout.by") if issue.user

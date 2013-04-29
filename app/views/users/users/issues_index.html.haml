@@ -1,0 +1,12 @@
+-set_meta_tags :title => t('.title')
+-content_for :feed_tabs, render('activity_feeds/feed_tabs')
+-content_for :sidebar do
+  =form_tag issues_path, :id => 'filter_issues', :method => :get do
+    .bordered
+      %table
+        -%w[all assigned created].each do |filter|
+          %tr
+            %td.width18=radio_button_tag :myradio, filter, filter == @filter, {:id => 'myradio1', :class => 'niceRadio', :name => 'filter'}
+            %td.width135=t("layout.issues.#{filter}")
+            %td.width30.right=instance_variable_get("@#{filter}_issues").count
+=render 'projects/issues/issues_table', :issues => @issues

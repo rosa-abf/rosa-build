@@ -209,6 +209,8 @@ Rosa::Application.routes.draw do
     get '/allowed'  => 'users#allowed'
     get '/check'    => 'users#check'
     get '/discover' => 'users#discover'
+    get '/issues'   => 'users#issues'
+    get '/pull_requests' => 'users#pull_requests'
   end
 
   scope :module => 'groups' do

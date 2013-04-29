@@ -6,6 +6,9 @@ ru:
     settings:
       profile:
         title: 'Ваш профиль'
+    users:
+      issues_index:
+        title: 'Ваши задачи'
   projects:
     build_lists:
       index:

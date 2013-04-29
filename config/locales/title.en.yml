@@ -6,6 +6,9 @@ en:
     settings:
       profile:
         title: 'Your Profile'
+    users:
+      issues_index:
+        title: 'Your Issues'
   projects:
     build_lists:
       index:
