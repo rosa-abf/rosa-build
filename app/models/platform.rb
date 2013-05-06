@@ -57,20 +57,17 @@ class Platform < ActiveRecord::Base
 
   def urpmi_list(host = nil, pair = nil, add_commands = true, repository_name = 'main')
     host ||= default_host
-    blank_pair = {:login => 'login', :pass => 'password'}
-    pair = blank_pair if pair.blank?
     urpmi_commands = ActiveSupport::OrderedHash.new
 
     # TODO: rename method or create separate methods for mdv and rhel
     # Platform.main.opened.where(:distrib_type => APP_CONFIG['distr_types'].first).each do |pl|
     Platform.main.opened.each do |pl|
       urpmi_commands[pl.name] = {}
-      local_pair = pl.id != self.id ? blank_pair : pair
-      head = hidden? ? "http://#{local_pair[:login]}@#{local_pair[:pass]}:#{host}/private/" : "http://#{host}/downloads/"
+      # FIXME should support restricting access to the hidden platform
       Arch.all.each do |arch|
         tail = "/#{arch.name}/#{repository_name}/release"
         command = add_commands ? "urpmi.addmedia #{name} " : ''
-        command << "#{head}#{name}/repository/#{pl.name}#{tail}"
+        command << "#{APP_CONFIG['downloads_url']}#{name}/repository/#{pl.name}#{tail}"
         urpmi_commands[pl.name][arch.name] = command
       end
     end
@@ -94,21 +91,8 @@ class Platform < ActiveRecord::Base
     Rails.root.join("public", "downloads", name)
   end
 
-  def prefix_url(pub, options = {})
-    options[:host] ||= default_host
-    pub ? "http://#{options[:host]}/downloads" : "http://#{options[:login]}:#{options[:password]}@#{options[:host]}/private"
-  end
-
-  def public_downloads_url(host = nil, arch = nil, repo = nil, suffix = nil)
-    downloads_url prefix_url(true, :host => host), arch, repo, suffix
-  end
-
-  def private_downloads_url(login, password, host = nil, arch = nil, repo = nil, suffix = nil)
-    downloads_url prefix_url(false, :host => host, :login => login, :password => password), arch, repo, suffix
-  end
-
-  def downloads_url(prefix, arch = nil, repo = nil, suffix = nil)
-    "#{prefix}/#{name}/repository/".tap do |url|
+  def public_downloads_url(arch = nil, repo = nil, suffix = nil)
+    "#{APP_CONFIG['downloads_url']}/#{name}/repository/".tap do |url|
       url << "#{arch}/" if arch.present?
       url << "#{repo}/" if repo.present?
       url << "#{suffix}/" if suffix.present?

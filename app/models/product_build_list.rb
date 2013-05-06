@@ -120,7 +120,7 @@ class ProductBuildList < ActiveRecord::Base
   end
 
   def container_path
-    "/downloads/#{product.platform.name}/product/#{id}/"
+    "#{APP_CONFIG['downloads_url']}/#{product.platform.name}/product/#{id}/"
   end
 
   def event_log_message
