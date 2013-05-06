@@ -1,6 +1,6 @@
 # -*- encoding : utf-8 -*-
 class Platform < ActiveRecord::Base
-  VISIBILITIES = ['open', 'hidden']
+  VISIBILITIES = ['open']#, 'hidden'] # Disable support hidden platforms.
 
   belongs_to :parent, :class_name => 'Platform', :foreign_key => 'parent_platform_id'
   belongs_to :owner, :polymorphic => true
