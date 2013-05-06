@@ -1,6 +1,6 @@
 class ReservedNameValidator < ActiveModel::EachValidator
   RESERVED_NAMES = %w{
-    about account add admin administrator api upload uploads autocomplete_group_uname
+    about account add admin administrator api autocomplete_group_uname
     app apps archive archives auth
     blog
     config connect contact create commit commits
@@ -20,7 +20,7 @@ class ReservedNameValidator < ActiveModel::EachValidator
     signup sign-up sign_up signin sign-in sign_in signout sign-out sign_out
     sitemap ssl subscribe
     teams terms test tour trends tree
-    unfollow unsubscribe url user
+    unfollow unsubscribe upload uploads url user
     widget widgets wiki
     xfn xmpp
   }
