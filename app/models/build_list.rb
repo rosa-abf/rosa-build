@@ -415,7 +415,7 @@ class BuildList < ActiveRecord::Base
         path = repo.platform.public_downloads_url(arch.name, repo.name)
         # path.gsub!(/^http:\/\/(0\.0\.0\.0|localhost)\:[\d]+/, 'https://abf.rosalinux.ru') unless Rails.env.production?
         # Path looks like:
-        # http://abf-downloads.rosalinux.ru/downloads/rosa-server2012/repository/x86_64/base/
+        # http://abf-downloads.rosalinux.ru/rosa-server2012/repository/x86_64/base/
         # so, we should append:
         # - release
         # - updates
