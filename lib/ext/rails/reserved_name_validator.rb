@@ -1,10 +1,10 @@
 class ReservedNameValidator < ActiveModel::EachValidator
   RESERVED_NAMES = %w{
-    about account add admin administrator api autocomplete_group_uname
+    about account add admin administrator api upload uploads autocomplete_group_uname
     app apps archive archives auth
     blog
     config connect contact create commit commits
-    dashboard delete direct_messages downloads
+    dashboard delete direct_messages download downloads
     edit email
     faq favorites feed feeds follow followers following
     help home
