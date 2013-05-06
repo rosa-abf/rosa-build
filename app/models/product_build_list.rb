@@ -119,10 +119,6 @@ class ProductBuildList < ActiveRecord::Base
     [BUILD_STARTED, BUILD_PENDING].include? status
   end
 
-  def container_path
-    "#{APP_CONFIG['downloads_url']}/#{product.platform.name}/product/#{id}/"
-  end
-
   def event_log_message
     {:product => product.name}.inspect
   end
