@@ -67,7 +67,7 @@ class Platform < ActiveRecord::Base
       Arch.all.each do |arch|
         tail = "/#{arch.name}/#{repository_name}/release"
         command = add_commands ? "urpmi.addmedia #{name} " : ''
-        command << "#{APP_CONFIG['downloads_url']}#{name}/repository/#{pl.name}#{tail}"
+        command << "#{APP_CONFIG['downloads_url']}/#{name}/repository/#{pl.name}#{tail}"
         urpmi_commands[pl.name][arch.name] = command
       end
     end
