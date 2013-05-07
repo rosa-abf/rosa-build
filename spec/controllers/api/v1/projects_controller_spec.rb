@@ -236,7 +236,6 @@ shared_examples_for 'api projects user without admin rights' do
       @project.members.should include(member)
     end
   end
-
 end
 
 shared_examples_for 'api projects user with owner rights' do
@@ -322,6 +321,18 @@ describe Api::V1::ProjectsController do
     it_should_behave_like 'api projects user without fork rights for hidden project'
     it_should_behave_like 'api projects user without admin rights'
     it_should_behave_like 'api projects user without owner rights'
+
+    it 'group writer should be able to fork project to their group' do
+      group = FactoryGirl.create(:group)
+      group.actors.create(:actor_type => 'User', :actor_id => @user.id, :role => 'writer')
+      lambda {post :fork, :id => @project.id, :group_id => group.id}.should change{ Project.count }.by(1)
+    end
+
+    it 'group reader should not be able to fork project to their group' do
+      group = FactoryGirl.create(:group)
+      group.actors.create(:actor_type => 'User', :actor_id => @user.id, :role => 'reader')
+      lambda {post :fork, :id => @project.id, :group_id => group.id}.should change{ Project.count }.by(0)
+    end
   end
 
   context 'for admin' do
