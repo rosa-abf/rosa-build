@@ -13,7 +13,8 @@
         link_to("#{@build_list.save_to_platform.name}/#{@build_list.save_to_repository.name}",
           [@build_list.save_to_platform, @build_list.save_to_repository])]
     - if @build_list.container_published?
-      = link_to container_url, container_url
+      -url = container_url
+      = link_to url, url
     - elsif @build_list.container_publish?
       = t("layout.build_lists.creating")
   .both
