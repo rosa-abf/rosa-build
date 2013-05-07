@@ -54,7 +54,7 @@ class Ability
           group.actors.exists?(:actor_type => 'User', :actor_id => user.id, :role => 'admin') # or group.owner_id = user.id
         end
         can :write, Group do |group|
-          group.actors.exists?(:actor_type => 'User', :actor_id => user.id, :role => 'writer')
+          group.actors.exists?(:actor_type => 'User', :actor_id => user.id, :role => ['writer', 'admin'])
         end
         can :destroy, Group, :owner_id => user.id
         can :remove_user, Group
