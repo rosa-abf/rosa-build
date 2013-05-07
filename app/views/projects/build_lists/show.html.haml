@@ -8,10 +8,6 @@
   %h3= t("layout.build_lists.main_data")
   .leftlist= t("activerecord.attributes.build_list.container_path")
   .rightlist
-    - if @build_list.build_published?
-      = raw "%s %s" % [t("layout.build_lists.container_published"),
-        link_to("#{@build_list.save_to_platform.name}/#{@build_list.save_to_repository.name}",
-          [@build_list.save_to_platform, @build_list.save_to_repository])]
     - if @build_list.container_published?
       -url = container_url
       = link_to url, url
