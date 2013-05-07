@@ -42,7 +42,7 @@ class Api::V1::ProjectsController < Api::V1::BaseController
     else
       @project.owner = nil
     end
-    authorize! :update, @project.owner if @project.owner != current_user
+    authorize! :write, @project.owner if @project.owner != current_user
     create_subject @project
   end
 
@@ -64,7 +64,7 @@ class Api::V1::ProjectsController < Api::V1::BaseController
 
   def fork
     owner = (Group.find params[:group_id] if params[:group].present?) || current_user
-    authorize! :update, owner if owner.class == Group
+    authorize! :write, owner if owner.class == Group
     if forked = @project.fork(owner) and forked.valid?
       render_json_response forked, 'Project has been forked successfully'
     else
