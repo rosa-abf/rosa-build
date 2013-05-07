@@ -49,7 +49,6 @@ describe CanCan do
   end
 
   context 'Site guest' do
-    let(:hidden_platform) { FactoryGirl.create(:platform, :visibility => 'hidden') }
     let(:register_request) { FactoryGirl.create(:register_request) }
 
     before(:each) do
@@ -58,10 +57,6 @@ describe CanCan do
 
     it 'should not be able to read open platform' do
       @ability.should_not be_able_to(:read, open_platform)
-    end
-
-    it 'should not be able to read hidden platform' do
-      @ability.should_not be_able_to(:read, hidden_platform)
     end
 
     [:publish, :cancel, :reject_publish, :create_container].each do |action|
