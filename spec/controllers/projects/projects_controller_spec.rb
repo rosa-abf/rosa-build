@@ -164,18 +164,6 @@ describe Projects::ProjectsController do
           group = FactoryGirl.create(:group, :owner => @user)
           lambda { post :create, @create_params.merge({:who_owns => 'group', :owner_id => group.id})}.should change{ Project.count }.by(1)
         end
-
-        it 'writer group should be able to create project for their group' do
-          group = FactoryGirl.create(:group)
-          group.actors.create(:actor_type => 'User', :actor_id => @user.id, :role => 'writer')
-          lambda { post :create, @create_params.merge({:who_owns => 'group', :owner_id => group.id})}.should change{ Project.count }.by(1)
-        end
-
-        it 'reader group should not be able to create project for their group' do
-          group = FactoryGirl.create(:group)
-          group.actors.create(:actor_type => 'User', :actor_id => @user.id, :role => 'reader')
-          lambda { post :create, @create_params.merge({:who_owns => 'group', :owner_id => group.id})}.should change{ Project.count }.by(0)
-        end
       end 
 
     end # context 'registered user'

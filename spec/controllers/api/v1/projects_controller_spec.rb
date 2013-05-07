@@ -313,6 +313,18 @@ describe Api::V1::ProjectsController do
       it 'ensures that project has been created' do
         lambda { post :create, params, :format => :json }.should change{ Project.count }.by(1)
       end
+
+      it 'writer group should be able to create project for their group' do
+        group = FactoryGirl.create(:group)
+        group.actors.create(:actor_type => 'User', :actor_id => @user.id, :role => 'writer')
+        lambda { post :create, params.deep_merge({:project => {:owner_type => 'Group', :owner_id => group.id}})}.should change{ Project.count }.by(1)
+      end
+
+      it 'reader group should not be able to create project for their group' do
+        group = FactoryGirl.create(:group)
+        group.actors.create(:actor_type => 'User', :actor_id => @user.id, :role => 'reader')
+        lambda { post :create, params.deep_merge({:project => {:owner_type => 'Group', :owner_id => group.id}})}.should change{ Project.count }.by(0)
+      end
     end
 
     it_should_behave_like 'api projects user with reader rights'
