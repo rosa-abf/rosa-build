@@ -34,7 +34,7 @@ class Projects::ProjectsController < Projects::BaseController
     @project = Project.new params[:project]
     @project.owner = choose_owner
     @who_owns = (@project.owner_type == 'User' ? :me : :group)
-    authorize! :write, @project if @project.owner.class == Group
+    authorize! :write, @project.owner if @project.owner.class == Group
 
     if @project.save
       flash[:notice] = t('flash.project.saved')
