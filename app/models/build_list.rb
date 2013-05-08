@@ -406,10 +406,7 @@ class BuildList < ActiveRecord::Base
   end
 
   def abf_worker_args
-    # TODO: remove when this will be not necessary
-    # "rosa2012.1/main" repository should be used in "conectiva" platform
     repos = include_repos
-    repos |= ['146'] if build_for_platform_id == 376
     include_repos_hash = {}.tap do |h|
       Repository.where(:id => (repos | (extra_repositories || [])) ).each do |repo|
         path = repo.platform.public_downloads_url(arch.name, repo.name)
