@@ -24,10 +24,20 @@ class Users::UsersController < Users::BaseController
   end
 
   def issues
-    @created_issues  = current_user.issues.without_pull_requests
-    @assigned_issues = Issue.where(:assignee_id => current_user.id).without_pull_requests
+    @created_issues  = current_user.issues
+    @assigned_issues = Issue.where(:assignee_id => current_user.id)
     pr_ids = Project.accessible_by(current_ability, :membered).uniq.pluck(:id)
-    @all_issues = Issue.where(:project_id => pr_ids).without_pull_requests
+    @all_issues = Issue.where(:project_id => pr_ids)
+    @created_issues, @assigned_issues, @all_issues =
+      if action_name == 'issues'
+        [@created_issues.without_pull_requests,
+         @assigned_issues.without_pull_requests,
+         @all_issues.without_pull_requests]
+      else
+        [@created_issues.joins(:pull_request),
+         @assigned_issues.joins(:pull_request),
+         @all_issues.joins(:pull_request)]
+      end
 
     case params[:filter]
     when 'created'
@@ -50,6 +60,10 @@ class Users::UsersController < Users::BaseController
                      .includes(:assignee, :user, :pull_request).uniq
                      .paginate :per_page => 20, :page => params[:page]
     render 'issues_index', :layout => request.xhr? ? 'with_sidebar' : 'application'
+  end
+
+  def pull_requests
+    issues
   end
 
   protected

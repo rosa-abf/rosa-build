@@ -9,6 +9,8 @@ ru:
     users:
       issues_index:
         title: 'Ваши задачи'
+      pull_requests_index:
+        title: 'Ваши пул реквесты'
   projects:
     build_lists:
       index:
