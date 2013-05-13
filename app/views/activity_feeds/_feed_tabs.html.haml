@@ -1,8 +1,9 @@
-.sub-menu
+.sub-menu.activity-tabs
   %nav
     %ul
       - (collection = t 'feed_menu').each do |base, title|
         %li= link_to title, root_path(:filter => base), :class => controller_name == 'activity_feeds' && @filter == base ? 'active' : ''
-      %li
-        = image_tag 'menu-delimiter.png', :style => 'margin-bottom: -7px;'
-      %li=link_to t('users.users.issues_index.title'), issues_path, :class => controller_name== 'users' && action_name == 'issues' ? 'active' : ''
+      -#
+        %li
+          = image_tag 'menu-delimiter.png', :style => 'margin-bottom: -7px;'
+        %li=link_to t('users.users.issues_index.title'), issues_path, :class => controller_name== 'users' && action_name == 'issues' ? 'active' : ''

@@ -1,5 +1,5 @@
 -set_meta_tags :title => t('.title')
--content_for :feed_tabs, render('activity_feeds/feed_tabs')
+-render('activity_feeds/top_menu')
 -content_for :sidebar do
   =form_tag issues_path, :id => 'filter_issues', :method => :get do
     .bordered
