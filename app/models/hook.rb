@@ -72,7 +72,10 @@ class Hook < ActiveRecord::Base
         commits = project.repo.commits_between(oldrev, newrev)
         removed, added, modified = [], [], []
         project.repo.diff(oldrev, newrev).each do |diff|
-          if diff.new_file
+          if diff.renamed_file
+            added     << diff.b_path
+            removed   << diff.a_path
+          elsif diff.new_file
             added     << diff.b_path
           elsif diff.deleted_file
             removed   << diff.a_path
