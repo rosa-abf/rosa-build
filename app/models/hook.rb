@@ -66,9 +66,20 @@ class Hook < ActiveRecord::Base
         :compare  => "#{project.html_url}/diff/#{oldrev[0..6]}...#{newrev[0..6]}"
       )
       if oldrev == newrev
-        commits = [project.repo.commit(newrev)]
+        commits   = [project.repo.commit(newrev)]
+        modified  = commits.first.stats.files.map{|f| f[0]}
       else
         commits = project.repo.commits_between(oldrev, newrev)
+        removed, added, modified = [], [], []
+        project.repo.diff(oldrev, newrev).each do |diff|
+          if diff.new_file
+            added     << diff.b_path
+          elsif diff.deleted_file
+            removed   << diff.a_path
+          else
+            modified  << diff.a_path
+          end
+        end
       end
     end
 
@@ -81,10 +92,10 @@ class Hook < ActiveRecord::Base
             :message => c.message,
             :distinct => true,
             :url => "#{project.html_url}/commit/#{c.id}",
-            :removed => [],
-            :added => [],
-            :modified => c.stats.files.map{|f| f[0]},
-            :timestamp => c.committed_date,
+            :removed    => removed || [],
+            :added      => added || [],
+            :modified   => modified || [],
+            :timestamp  => c.committed_date,
             :author => {:name => c.committer.name, :email => c.committer.email}
           }
         }
