@@ -74,12 +74,12 @@ module GitHelper
     if params[:treeish].present? && !project.repo.branches_and_tags.map(&:name).include?(params[:treeish])
       res << [I18n.t('layout.git.repositories.commits'), [params[:treeish].truncate(20)]]
     end
-    linking = Proc.new {|t| [t.name.truncate(20), url_for(p.merge :treeish => t.name).split('?', 2).first]}
-    res << [I18n.t('layout.git.repositories.branches'), project.repo.branches.map(&linking)]
+    linking = Proc.new {|name| [name.truncate(20), url_for(p.merge :treeish => name).split('?', 2).first]}
+    res << [I18n.t('layout.git.repositories.branches'), project.repo.branches.map(&:name).sort.map(&linking)]
     if tag_enabled
-      res << [I18n.t('layout.git.repositories.tags'), project.repo.tags.map(&linking)]
+      res << [I18n.t('layout.git.repositories.tags'), project.repo.tags.map(&:name).sort.map(&linking)]
     else
-      res << [I18n.t('layout.git.repositories.tags'), project.repo.tags.map {|t| [t.name.truncate(20), {:disabled => true}]}]
+      res << [I18n.t('layout.git.repositories.tags'), project.repo.tags.map(&:name).sort.map {|name| [name.truncate(20), {:disabled => true}]}]
     end
     grouped_options_for_select(res, current)
   end

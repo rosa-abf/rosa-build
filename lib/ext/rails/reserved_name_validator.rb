@@ -4,7 +4,7 @@ class ReservedNameValidator < ActiveModel::EachValidator
     app apps archive archives auth
     blog
     config connect contact create commit commits
-    dashboard delete direct_messages downloads
+    dashboard delete direct_messages download downloads
     edit email
     faq favorites feed feeds follow followers following
     help home
@@ -20,7 +20,7 @@ class ReservedNameValidator < ActiveModel::EachValidator
     signup sign-up sign_up signin sign-in sign_in signout sign-out sign_out
     sitemap ssl subscribe
     teams terms test tour trends tree
-    unfollow unsubscribe url user
+    unfollow unsubscribe upload uploads url user
     widget widgets wiki
     xfn xmpp
   }

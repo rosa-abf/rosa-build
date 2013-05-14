@@ -406,16 +406,13 @@ class BuildList < ActiveRecord::Base
   end
 
   def abf_worker_args
-    # TODO: remove when this will be not necessary
-    # "rosa2012.1/main" repository should be used in "conectiva" platform
     repos = include_repos
-    repos |= ['146'] if build_for_platform_id == 376
     include_repos_hash = {}.tap do |h|
       Repository.where(:id => (repos | (extra_repositories || [])) ).each do |repo|
-        path = repo.platform.public_downloads_url(nil, arch.name, repo.name)
+        path = repo.platform.public_downloads_url(arch.name, repo.name)
         # path.gsub!(/^http:\/\/(0\.0\.0\.0|localhost)\:[\d]+/, 'https://abf.rosalinux.ru') unless Rails.env.production?
         # Path looks like:
-        # http://abf.rosalinux.ru/downloads/rosa-server2012/repository/x86_64/base/
+        # http://abf-downloads.rosalinux.ru/rosa-server2012/repository/x86_64/base/
         # so, we should append:
         # - release
         # - updates
@@ -425,7 +422,7 @@ class BuildList < ActiveRecord::Base
     end
     host = EventLog.current_controller.request.host_with_port rescue ::Rosa::Application.config.action_mailer.default_url_options[:host]
     BuildList.where(:id => extra_build_lists).each do |bl|
-      path  = "http://#{host}/downloads/#{bl.save_to_platform.name}/container/"
+      path  = "#{APP_CONFIG['downloads_url']}/#{bl.save_to_platform.name}/container/"
       path << "#{bl.id}/#{bl.arch.name}/#{bl.save_to_repository.name}/release"
       include_repos_hash["container_#{bl.id}"] = path
     end

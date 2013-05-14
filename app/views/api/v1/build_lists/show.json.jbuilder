@@ -6,7 +6,7 @@ json.build_list do |json|
   json.build_log_url log_build_list_path(@build_list)
 
   if @build_list.container_published?
-    json.container_path container_url(false)
+    json.container_path container_url
   else
     json.container_path ''
   end
@@ -65,7 +65,7 @@ json.build_list do |json|
   extra_build_lists = BuildList.where(:id => @build_list.extra_build_lists)
   json.extra_build_lists extra_build_lists do |json_extra_build_lists, bl|
     json_extra_build_lists.(bl, :id, :status)
-    json_extra_build_lists.container_path container_url(false, bl)
+    json_extra_build_lists.container_path container_url(bl)
     json_extra_build_lists.url api_v1_build_list_path(bl, :format => :json)
   end
 

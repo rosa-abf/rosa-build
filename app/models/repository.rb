@@ -67,6 +67,7 @@ class Repository < ActiveRecord::Base
   protected
 
   def detele_directory
+    return unless platform
     repository_path = platform.path << '/repository'
     if platform.personal?
       Platform.main.pluck(:name).each do |main_platform_name|
