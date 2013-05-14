@@ -70,19 +70,6 @@ class Hook < ActiveRecord::Base
         modified  = commits.first.stats.files.map{|f| f[0]}
       else
         commits = project.repo.commits_between(oldrev, newrev)
-        removed, added, modified = [], [], []
-        project.repo.diff(oldrev, newrev).each do |diff|
-          if diff.renamed_file
-            added     << diff.b_path
-            removed   << diff.a_path
-          elsif diff.new_file
-            added     << diff.b_path
-          elsif diff.deleted_file
-            removed   << diff.a_path
-          else
-            modified  << diff.a_path
-          end
-        end
       end
     end
 
@@ -90,14 +77,15 @@ class Hook < ActiveRecord::Base
       :payload => payload.merge(
         :ref => git_hook['refname'],
         :commits => commits.map{ |c|
+          cf = changed_files c
           {
-            :id => c.id,
-            :message => c.message,
-            :distinct => true,
-            :url => "#{project.html_url}/commit/#{c.id}",
-            :removed    => removed || [],
-            :added      => added || [],
-            :modified   => modified || [],
+            :id         => c.id,
+            :message    => c.message,
+            :distinct   => true,
+            :url        => "#{project.html_url}/commit/#{c.id}",
+            :removed    => cf[:removed],
+            :added      => cf[:added],
+            :modified   => cf[:modified],
             :timestamp  => c.committed_date,
             :author => {:name => c.committer.name, :email => c.committer.email}
           }
@@ -134,6 +122,23 @@ class Hook < ActiveRecord::Base
       fields.each{ |type, field| new_data[field] = self.data[field] }
       self.data = new_data
     end
+  end
+
+  def changed_files(commit)
+    removed, added, modified = [], [], []
+    commit.show.each do |diff|
+      if diff.renamed_file
+        added     << diff.b_path
+        removed   << diff.a_path
+      elsif diff.new_file
+        added     << diff.b_path
+      elsif diff.deleted_file
+        removed   << diff.a_path
+      else
+        modified  << diff.a_path
+      end
+    end
+    {:removed => removed, :added => added, :modified => modified}
   end
 
 end
