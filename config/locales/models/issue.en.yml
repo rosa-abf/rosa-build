@@ -19,7 +19,7 @@ en:
       no_one_is_assigned: No one is assigned
       assign_someone: Assign someone to this issue
       list: List
-      all: All
+      all: All issues
       assigned: Assigned to me
       created: Created by you
       edit: Edit
