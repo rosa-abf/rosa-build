@@ -46,9 +46,10 @@ module Modules::Models::WebHooks
     password :password
     boolean  :ssl, :message_without_join, :no_colors, :long_url, :notice
   end
-  add_hook :jabber do
-    string :user
-  end
+  # temporarily disabled
+  # add_hook :jabber do
+  #   string :user
+  # end
   SCHEMA.freeze
   NAMES.freeze
 
