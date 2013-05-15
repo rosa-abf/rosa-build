@@ -229,7 +229,7 @@ module DiffHelper
 
   def line_comment
     return if @no_commit_comment || (@in_discussion && @add_reply_id && @line_comments[0].data[:line].to_i != @num_line)
-    link_to image_tag('line_comment.png', :alt => t('layout.comments.new_header')), new_comment_path, :class => 'add_line-comment'
+    link_to image_tag('line_comment.png', :alt => t('layout.comments.new_header')), new_comment_path, :class => 'add_line-comment' if current_user
   end
 
   def render_line_comments
@@ -255,7 +255,7 @@ module DiffHelper
           #{render 'projects/comments/comment', :comment => comment, :data => {:project => @project, :commentable => @commentable, :add_anchor => 'inline', :in_discussion => @in_discussion}}
          </div>"
       end
-    res << link_to(t('layout.comments.new_inline'), new_comment_path, :class => 'new_inline_comment button')
+    res << link_to(t('layout.comments.new_inline'), new_comment_path, :class => 'new_inline_comment button') if current_user
     res << "</td></tr>"
   end
 
