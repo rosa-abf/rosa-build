@@ -6,11 +6,6 @@ en:
     settings:
       profile:
         title: 'Your Profile'
-    users:
-      issues_index:
-        title: 'Your Issues'
-      pull_requests_index:
-        title: 'Your Pull Requests'
   projects:
     build_lists:
       index:
@@ -38,3 +33,8 @@ en:
     product_build_lists:
       index:
         title: 'Products Monitoring'
+  pages:
+    issues:
+      title: 'Your Issues'
+    pull_requests:
+      title: 'Your Pull Requests'

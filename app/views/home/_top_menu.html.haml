@@ -1,0 +1,7 @@
+- content_for :feed_tabs do
+  .sub-menu
+    %nav
+      %ul
+        %li= link_to t('activity_menu.activity_feed'), root_path, :class => action_name == 'activity' ? 'active' : ''
+        %li= link_to t('activity_menu.tracker'), issues_path, :class => action_name == 'issues' ? 'active' : ''
+        %li= link_to t('activity_menu.pull_requests'), pull_requests_path, :class => action_name == 'pull_requests' ? 'active' : ''
