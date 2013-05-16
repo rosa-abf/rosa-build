@@ -55,9 +55,7 @@ class Hook < ActiveRecord::Base
     project = Project.find(git_hook['project']['project']['id'])
     user    = User.find(git_hook['user']['user']['id'])
     payload = meta(project, user)
-    oldrev  = git_hook['oldrev']
-    newrev  = git_hook['newrev']
-    change_type = git_hook['change_type']
+    oldrev, newrev, change_type = git_hook.values_at *%w(oldrev newrev change_type)
     
     commits = []
     payload.merge!(:before => oldrev, :after => newrev)
@@ -76,18 +74,18 @@ class Hook < ActiveRecord::Base
     post 'push', {
       :payload => payload.merge(
         :ref => git_hook['refname'],
-        :commits => commits.map{ |c|
-          cf = changed_files c
+        :commits => commits.map{ |commit|
+          files = changed_files commit
           {
-            :id         => c.id,
-            :message    => c.message,
+            :id         => commit.id,
+            :message    => commit.message,
             :distinct   => true,
-            :url        => "#{project.html_url}/commit/#{c.id}",
-            :removed    => cf[:removed],
-            :added      => cf[:added],
-            :modified   => cf[:modified],
-            :timestamp  => c.committed_date,
-            :author => {:name => c.committer.name, :email => c.committer.email}
+            :url        => "#{project.html_url}/commit/#{commit.id}",
+            :removed    => files[:removed],
+            :added      => files[:added],
+            :modified   => files[:modified],
+            :timestamp  => commit.committed_date,
+            :author => {:name => commit.committer.name, :email => commit.committer.email}
           }
         }
       ).to_json
