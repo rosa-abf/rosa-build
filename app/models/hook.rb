@@ -49,7 +49,7 @@ class Hook < ActiveRecord::Base
       }
     end
   end
-  later :receive_issues, :queue => :clone_build
+  later :receive_issues, :queue => :notification
 
   def receive_push(git_hook)
     project = Project.find(git_hook['project']['project']['id'])
@@ -93,7 +93,7 @@ class Hook < ActiveRecord::Base
       ).to_json
     }
   end
-  later :receive_push, :queue => :clone_build
+  later :receive_push, :queue => :notification
 
   protected
 
