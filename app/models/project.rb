@@ -138,7 +138,7 @@ class Project < ActiveRecord::Base
     owner == user
   end
 
-  def git_project_address auth_user
+  def git_project_address(auth_user = nil)
     host ||= EventLog.current_controller.request.host_with_port rescue ::Rosa::Application.config.action_mailer.default_url_options[:host]
     protocol = APP_CONFIG['mailer_https_url'] ? "https" : "http" rescue "http"
     opts = {:host => host, :protocol => protocol}
@@ -243,7 +243,7 @@ class Project < ActiveRecord::Base
   end
 
   def html_url
-    git_project_address(nil).gsub(/.git$/, '')
+    git_project_address.gsub(/.git$/, '')
   end
 
   protected
