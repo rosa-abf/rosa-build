@@ -1,4 +1,4 @@
--set_meta_tags :title => t("users.users.#{action_name}_index.title")
+-set_meta_tags :title => t("home.#{action_name}.title")
 -render 'top_menu'
 -content_for :sidebar do
   =form_tag send("#{action_name}_path"), :id => 'filter_issues', :method => :get do
@@ -8,5 +8,5 @@
           %tr
             %td.width18=radio_button_tag :myradio, filter, filter == @filter, {:id => 'myradio1', :class => 'niceRadio', :name => 'filter'}
             %td.width135=t("layout.#{action_name}.#{filter}")
-            %td.width30.right=instance_variable_get("@#{filter}_issues").count
+            %td.width30.right=instance_variable_get("@#{filter}_issues").not_closed_or_merged.count
 =render 'projects/issues/issues_table', :issues => @issues

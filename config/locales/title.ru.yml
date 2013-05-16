@@ -33,7 +33,7 @@ ru:
     product_build_lists:
       index:
         title: 'Мониторинг продуктов'
-  pages:
+  home:
     issues:
       title: 'Ваши задачи'
     pull_requests:
