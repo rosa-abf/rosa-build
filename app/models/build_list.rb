@@ -488,7 +488,8 @@ class BuildList < ActiveRecord::Base
     if save_to_platform && save_to_platform.main?
       self.extra_repositories = nil
     else
-      self.extra_repositories = Repository.where(:id => extra_repositories).
+      self.extra_repositories = Repository.joins(:platform).
+        where(:id => extra_repositories, :platforms => {:platform_type => 'personal'}).
         accessible_by(current_ability, :read).pluck('repositories.id')
     end
   end

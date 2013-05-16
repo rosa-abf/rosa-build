@@ -120,7 +120,8 @@ class Projects::BuildListsController < Projects::BaseController
     if save_to_platform.main?
       bl = bl.where(:save_to_platform_id => save_to_platform.id)
     else
-      platforms = Platform.includes(:repositories).search(params[:term]).
+      # Only personal repositories can be attached to the build
+      platforms = Platform.includes(:repositories).personal.search(params[:term]).
         accessible_by(current_ability, :read).search_order.limit(5)
       platforms.each{ |p| p.repositories.each{ |r| results << {:id => r.id, :label => "#{p.name}/#{r.name}", :value => "#{p.name}/#{r.name}"} } }
     end
