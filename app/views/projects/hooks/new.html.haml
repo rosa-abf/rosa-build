@@ -8,3 +8,6 @@
   = render 'form'
   .actions
     = f.submit t('layout.create')
+
+%br
+= render "projects/hooks/docs/#{@hook.name}"
