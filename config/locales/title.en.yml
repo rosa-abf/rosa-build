@@ -33,7 +33,7 @@ en:
     product_build_lists:
       index:
         title: 'Products Monitoring'
-  pages:
+  home:
     issues:
       title: 'Your Issues'
     pull_requests:
