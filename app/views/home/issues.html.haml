@@ -8,5 +8,5 @@
           %tr
             %td.width18=radio_button_tag :myradio, filter, filter == @filter, {:id => 'myradio1', :class => 'niceRadio', :name => 'filter'}
             %td.width135=t("layout.#{action_name}.#{filter}")
-            %td.width30.right=instance_variable_get("@#{filter}_issues").count
+            %td.width30.right=instance_variable_get("@#{filter}_issues").not_closed_or_merged.count
 =render 'projects/issues/issues_table', :issues => @issues
