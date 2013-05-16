@@ -80,6 +80,7 @@ class Project < ActiveRecord::Base
   include Modules::Models::Owner
   include Modules::Models::Git
   include Modules::Models::Wiki
+  include Modules::Models::UrlHelper
 
   class << self
     def find_by_owner_and_name(owner_name, project_name)
@@ -138,19 +139,12 @@ class Project < ActiveRecord::Base
     owner == user
   end
 
-  def html_url(auth_user = nil)
-    host ||= EventLog.current_controller.request.host_with_port rescue ::Rosa::Application.config.action_mailer.default_url_options[:host]
-    protocol = APP_CONFIG['mailer_https_url'] ? "https" : "http" rescue "http"
-    opts = {:host => host, :protocol => protocol}
-    opts.merge!({:user => auth_user.authentication_token, :password => ''}) if auth_user && !self.public?
-    Rails.application.routes.url_helpers.project_url(self.owner.uname, self.name, opts)
+  def git_project_address auth_user
+    opts = default_url_options
+    opts.merge!({:user => auth_user.authentication_token, :password => ''}) unless self.public?
+    Rails.application.routes.url_helpers.project_url(self.owner.uname, self.name, opts) + '.git'
     #path #share by NFS
   end
-
-  def git_url(auth_user)
-    html_url(auth_user) + '.git'
-  end
-
 
   def build_for(platform, repository_id, user, arch =  Arch.find_by_name('i586'), auto_publish = false, mass_build_id = nil, priority = 0)
     # Select main and project platform repository(contrib, non-free and etc)

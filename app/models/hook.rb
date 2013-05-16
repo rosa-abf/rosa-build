@@ -1,5 +1,7 @@
 class Hook < ActiveRecord::Base
   include Modules::Models::WebHooks
+  include Modules::Models::UrlHelper
+  include Rails.application.routes.url_helpers
   belongs_to :project
 
   before_validation :cleanup_data
@@ -15,6 +17,7 @@ class Hook < ActiveRecord::Base
   def receive_issues(issue, action)
     pull = issue.pull_request
     return if action.to_sym == :create && pull
+    default_url_options
 
     payload = meta(issue.project, issue.user)
     base_params = {
@@ -34,7 +37,7 @@ class Hook < ActiveRecord::Base
             :commits  => total_commits,
             :head     => {:label => "#{pull.from_project.owner.uname}:#{pull.from_ref}"},
             :base     => {:label => "#{repo_owner}:#{pull.to_ref}"},
-            :html_url => "#{issue.project.html_url}/pull_requests/#{pull.serial_id}"
+            :html_url => project_pull_request_url(pull.to_project, pull)
           )
         ).to_json
       }
@@ -43,7 +46,7 @@ class Hook < ActiveRecord::Base
         :payload => payload.merge(
           :action => (issue.closed? ? 'closed' : 'opened'),
           :issue  => base_params.merge(
-            :html_url => "#{issue.project.html_url}/issues/#{issue.serial_id}"
+            :html_url => project_issue_url(issue.project, issue)
           )
         ).to_json
       }
@@ -52,6 +55,7 @@ class Hook < ActiveRecord::Base
   later :receive_issues, :queue => :notification
 
   def receive_push(git_hook)
+    default_url_options
     project = Project.find(git_hook['project']['project']['id'])
     user    = User.find(git_hook['user']['user']['id'])
     payload = meta(project, user)
@@ -61,7 +65,7 @@ class Hook < ActiveRecord::Base
     payload.merge!(:before => oldrev, :after => newrev)
     if %w(delete create).exclude? change_type
       payload.merge!(
-        :compare  => "#{project.html_url}/diff/#{oldrev[0..6]}...#{newrev[0..6]}"
+        :compare  => diff_url(project, "#{oldrev[0..6]}...#{newrev[0..6]}")
       )
       if oldrev == newrev
         commits   = [project.repo.commit(newrev)]
@@ -80,7 +84,7 @@ class Hook < ActiveRecord::Base
             :id         => commit.id,
             :message    => commit.message,
             :distinct   => true,
-            :url        => "#{project.html_url}/commit/#{commit.id}",
+            :url        => commit_url(project, commit),
             :removed    => files[:removed],
             :added      => files[:added],
             :modified   => files[:modified],
@@ -106,7 +110,7 @@ class Hook < ActiveRecord::Base
     {
       :repository => {
         :name  => project.name,
-        :url   => project.html_url,
+        :url   => project_url(project),
         :owner => { :login => project.owner.uname }
       },
       :sender => {:login => user.uname},
