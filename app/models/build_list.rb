@@ -409,13 +409,17 @@ class BuildList < ActiveRecord::Base
     repos = include_repos
     include_repos_hash = {}.tap do |h|
       Repository.where(:id => (repos | (extra_repositories || [])) ).each do |repo|
-        path = repo.platform.public_downloads_url(arch.name, repo.name)
-        # path.gsub!(/^http:\/\/(0\.0\.0\.0|localhost)\:[\d]+/, 'https://abf.rosalinux.ru') unless Rails.env.production?
         # Path looks like:
         # http://abf-downloads.rosalinux.ru/rosa-server2012/repository/x86_64/base/
+        # http://abf-downloads.rosalinux.ru/uname_personal/repository/rosa-server2012/x86_64/base/
         # so, we should append:
         # - release
         # - updates
+        path = repo.platform.public_downloads_url(
+          repo.platform.main? ? nil : build_for_platform.name,
+          arch.name,
+          repo.name
+        )
         h["#{repo.platform.name}_#{repo.name}_release"] = path + 'release'
         h["#{repo.platform.name}_#{repo.name}_updates"] = path + 'updates' if repo.platform.main?
       end
@@ -428,7 +432,11 @@ class BuildList < ActiveRecord::Base
     end
     if save_to_platform.personal? && use_save_to_repository
       include_repos_hash["#{save_to_platform.name}_release"] = save_to_platform.
-        urpmi_list(nil, nil, false, save_to_repository.name)["#{build_for_platform.name}"]["#{arch.name}"]
+        public_downloads_url(
+          build_for_platform.name,
+          arch.name,
+          save_to_repository.name
+        ) + 'release'
     end
 
     git_project_address = project.git_project_address(user)

@@ -91,11 +91,11 @@ class Platform < ActiveRecord::Base
     Rails.root.join("public", "downloads", name)
   end
 
-  def public_downloads_url(arch = nil, repo = nil, suffix = nil)
+  def public_downloads_url(subplatform_name = nil, arch = nil, repo = nil)
     "#{APP_CONFIG['downloads_url']}/#{name}/repository/".tap do |url|
+      url << "#{subplatform_name}/" if subplatform_name.present?
       url << "#{arch}/" if arch.present?
       url << "#{repo}/" if repo.present?
-      url << "#{suffix}/" if suffix.present?
     end
   end
 
