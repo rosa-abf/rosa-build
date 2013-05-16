@@ -3,7 +3,7 @@ html, body {
   padding: 0;
   font-family: Tahoma, Geneva, Helvetica, sans-serif;
   color: #292929;
-  background: #1f60a1 image-url("bg.png") repeat-x; 
+  background: #1f60a1 image-url("bg.png") repeat-x;
   min-width: 940px;
   min-height: 600px;
   text-align: center;
@@ -15,15 +15,15 @@ header, section, footer, aside, nav, article, menu {
 }
 
 input[type="text"]:focus { outline: none; }
-   
+
 input[type="password"]:focus { outline: none; }
-   
+
 input:focus { outline: none; }
-   
+
 select:focus { outline: none; }
 
 a img { border: none; }
-  
+
 .wrap {
   width: 940px;
   margin: 0 auto;
@@ -31,7 +31,7 @@ a img { border: none; }
   border: 1px solid #3f668c;
   -webkit-box-shadow: 0px 0px 7px 0px rgba(0, 0, 0, 0.5);
   -moz-box-shadow: 0px 0px 7px 0px rgba(0, 0, 0, 0.5);
-  box-shadow: 0px 0px 7px 0px rgba(0, 0, 0, 0.5); 
+  box-shadow: 0px 0px 7px 0px rgba(0, 0, 0, 0.5);
   background: #FFF;
   min-height: 92%;
 }
@@ -47,7 +47,7 @@ a img { border: none; }
 header {
   -webkit-box-shadow: 0px 5px 5px -3px rgba(0, 0, 0, 0.4);
   -moz-box-shadow: 0px 5px 5px -3px rgba(0, 0, 0, 0.4);
-  box-shadow: 0px 5px 5px -3px rgba(0, 0, 0, 0.4); 
+  box-shadow: 0px 5px 5px -3px rgba(0, 0, 0, 0.4);
   position: relative;
   z-index: 1000;
 }
@@ -104,7 +104,7 @@ header menu ul li a:hover {
 }
 
 header menu ul li a.first {
-  
+
 }
 
 header menu ul li a.active {
@@ -118,7 +118,7 @@ header div.logo {
   margin-top: 5px;
   padding-left: 0px;
   padding-right: 0px;
-  
+
 }
 
 /* Right part of top menu */
@@ -173,7 +173,7 @@ header div.search div.field input.black {
 header div.avatar {
   float:left;
   padding: 6px 10px 10px 10px;
-  
+
 }
 
 header div.information div.active {
@@ -275,7 +275,7 @@ header div.droplist a:hover{
 }
 
 
-.sub-menu nav { 
+.sub-menu nav {
   float: left;
   margin: 0px 0px 0px 0px;
 }
@@ -453,3 +453,6 @@ article div.tour-gap {
 header menu ul li a {
     padding: 15px 8px 15px 8px;
 }
+
+@import "design/common";
+

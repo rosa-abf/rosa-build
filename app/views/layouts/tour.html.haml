@@ -42,6 +42,7 @@
       .tour
         =image_tag "tour-top#{I18n.locale == :en ? '-eng' : ''}.png", :alt => 'ABF'
       .both
+        = render 'layouts/flashes'
       %article
         = yield
         .both
