@@ -91,6 +91,9 @@ class Platform < ActiveRecord::Base
     Rails.root.join("public", "downloads", name)
   end
 
+  # Returns URL to repository, for example:
+  # - http://abf-downloads.rosalinux.ru/rosa-server2012/repository/x86_64/base/
+  # - http://abf-downloads.rosalinux.ru/uname_personal/repository/rosa-server2012/x86_64/base/
   def public_downloads_url(subplatform_name = nil, arch = nil, repo = nil)
     "#{APP_CONFIG['downloads_url']}/#{name}/repository/".tap do |url|
       url << "#{subplatform_name}/" if subplatform_name.present?

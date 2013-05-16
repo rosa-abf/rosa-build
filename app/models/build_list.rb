@@ -409,12 +409,6 @@ class BuildList < ActiveRecord::Base
     repos = include_repos
     include_repos_hash = {}.tap do |h|
       Repository.where(:id => (repos | (extra_repositories || [])) ).each do |repo|
-        # Path looks like:
-        # http://abf-downloads.rosalinux.ru/rosa-server2012/repository/x86_64/base/
-        # http://abf-downloads.rosalinux.ru/uname_personal/repository/rosa-server2012/x86_64/base/
-        # so, we should append:
-        # - release
-        # - updates
         path = repo.platform.public_downloads_url(
           repo.platform.main? ? nil : build_for_platform.name,
           arch.name,
