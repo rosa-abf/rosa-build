@@ -76,7 +76,7 @@ class Ability
         can :preview, Project
         can(:refs_list, Project) {|project| can? :read, project}
 
-        can([:read, :destroy, :update], Hook) {|hook| can?(:edit, hook.project)}
+        can([:read, :create, :edit, :destroy, :update], Hook) {|hook| can?(:edit, hook.project)}
 
         can [:autocomplete_to_extra_repos_and_builds, :update_extra_repos_and_builds], BuildList
         can [:read, :log, :owned, :everything], BuildList, :user_id => user.id
