@@ -431,7 +431,7 @@ class BuildList < ActiveRecord::Base
         urpmi_list(nil, nil, false, save_to_repository.name)["#{build_for_platform.name}"]["#{arch.name}"]
     end
 
-    git_project_address = project.git_project_address(user)
+    git_project_address = project.git_url user
     # git_project_address.gsub!(/^http:\/\/(0\.0\.0\.0|localhost)\:[\d]+/, 'https://abf.rosalinux.ru') unless Rails.env.production?
     {
       :id                   => id,
