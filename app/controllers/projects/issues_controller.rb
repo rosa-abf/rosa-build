@@ -13,7 +13,7 @@ class Projects::IssuesController < Projects::BaseController
   def index(status = 200)
     @labels = params[:labels] || []
     @issues = @project.issues.without_pull_requests
-    @issues = @issues.where(:assignee_id => current_user.id) if @is_assigned_to_me = params[:filter] == 'to_me'
+    @issues = @issues.where(:assignee_id => current_user.id) if @is_assigned_to_me = params[:filter] == 'assigned'
     @issues = @issues.joins(:labels).where(:labels => {:name => @labels}) unless @labels == []
     # Using mb_chars for correct transform to lowercase ('Русский Текст'.downcase => "Русский Текст")
     @issues = @issues.search(params[:search_issue]) if params[:search_issue] !~ /#{t('layout.issues.search')}/

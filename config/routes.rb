@@ -94,16 +94,19 @@ Rosa::Application.routes.draw do
   get  '/forbidden'        => 'pages#forbidden',      :as => 'forbidden'
   get  '/terms-of-service' => 'pages#tos',            :as => 'tos'
   get  '/tour/:id'         => 'pages#tour_inside',    :as => 'tour_inside', :id => /projects|sources|builds/
-  match '/invite.html'     => redirect('/register_requests/new')
+  #match '/invite.html'     => redirect('/register_requests/new')
 
-  get '/activity_feeds.:format' => 'activity_feeds#index', :as => 'atom_activity_feeds', :format => /atom/
+  get '/activity_feeds.:format' => 'home#activity', :as => 'atom_activity_feeds', :format => /atom/
+  get '/issues' => 'home#issues'
+  get '/pull_requests' => 'home#pull_requests'
+
   if APP_CONFIG['anonymous_access']
     authenticated do
-      root :to => 'activity_feeds#index'
+      root :to => 'home#activity'
     end
-    root :to => 'pages#root'
+    root :to => 'home#root'
   else
-    root :to => 'activity_feeds#index'
+    root :to => 'home#activity'
   end
 
   namespace :admin do

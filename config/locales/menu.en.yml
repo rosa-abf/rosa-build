@@ -35,6 +35,10 @@ en:
     readme: Readme
     settings: Settings
     pull_requests: Pull Requests (%{count})
+  activity_menu:
+    activity_feed: Activity Feed
+    tracker: Tracker
+    pull_requests: Pull Requests
   feed_menu:
     all: All
     code: Code

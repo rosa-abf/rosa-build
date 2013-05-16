@@ -35,6 +35,10 @@ ru:
     readme: Readme
     settings: Настройки
     pull_requests: Пул реквесты (%{count})
+  activity_menu:
+    activity_feed: Лента активности
+    tracker: Трекер
+    pull_requests: Пул реквесты
   feed_menu:
     all: Все
     code: Код

@@ -60,4 +60,6 @@ en:
       search: Find pull request...
       all: All requests
       to_me: Assigned to me
+      assigned: Assigned to me
+      created: Created by you
       view_full_changes: View full changes

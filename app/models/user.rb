@@ -28,6 +28,7 @@ class User < Avatar
   has_many :own_projects, :as => :owner, :class_name => 'Project', :dependent => :destroy
   has_many :own_groups,   :foreign_key => :owner_id, :class_name => 'Group', :dependent => :destroy
   has_many :own_platforms, :as => :owner, :class_name => 'Platform', :dependent => :destroy
+  has_many :issues
   has_many :assigned_issues, :foreign_key => :assignee_id, :class_name => 'Issue', :dependent => :nullify
 
   has_many :key_pairs
