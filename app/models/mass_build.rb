@@ -3,6 +3,7 @@ class MassBuild < ActiveRecord::Base
   belongs_to :user
   has_many :build_lists, :dependent => :destroy
 
+  scope :recent, order("#{table_name}.created_at DESC")
   scope :by_platform, lambda { |platform| where(:platform_id => platform.id) }
   scope :outdated, where("#{table_name}.created_at < ?", Time.now + 1.day - BuildList::MAX_LIVE_TIME)
 
