@@ -99,6 +99,7 @@ class Ability
         can [:read, :owned, :related, :members], Platform, :owner_type => 'User', :owner_id => user.id
         can [:read, :related, :members], Platform, :owner_type => 'Group', :owner_id => user.group_ids
         can([:read, :related, :members], Platform, read_relations_for('platforms')) {|platform| local_reader? platform}
+        can :related, Platform, :id => user.repositories.pluck(:platform_id)
         can([:update, :destroy], Platform) {|platform| owner?(platform) }
         can([:local_admin_manage, :members, :add_member, :remove_member, :remove_members] , Platform) {|platform| owner?(platform) || local_admin?(platform) }
 
