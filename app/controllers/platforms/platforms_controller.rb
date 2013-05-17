@@ -6,7 +6,7 @@ class Platforms::PlatformsController < Platforms::BaseController
   load_and_authorize_resource
 
   def index
-    @platforms = @platforms.accessible_by(current_ability, :related).paginate(:page => params[:page], :per_page => 20)
+    @platforms = @platforms.accessible_by(current_ability, :related).order(:name).paginate(:page => params[:page], :per_page => 20)
   end
 
   def show
