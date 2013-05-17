@@ -24,6 +24,7 @@ class User < Avatar
   has_many :projects,     :through => :targets, :source => :target, :source_type => 'Project',    :autosave => true
   has_many :groups,       :through => :targets, :source => :target, :source_type => 'Group',      :autosave => true
   has_many :platforms,    :through => :targets, :source => :target, :source_type => 'Platform',   :autosave => true
+  has_many :repositories, :through => :targets, :source => :target, :source_type => 'Repository'
 
   has_many :own_projects, :as => :owner, :class_name => 'Project', :dependent => :destroy
   has_many :own_groups,   :foreign_key => :owner_id, :class_name => 'Group', :dependent => :destroy
