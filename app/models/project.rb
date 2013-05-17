@@ -17,6 +17,7 @@ class Project < ActiveRecord::Base
   has_many :project_tags, :dependent => :destroy
   
   has_many :build_lists, :dependent => :destroy
+  has_many :hooks, :dependent => :destroy
 
   has_many :relations, :as => :target, :dependent => :destroy
   has_many :collaborators, :through => :relations, :source => :actor, :source_type => 'User'
@@ -79,6 +80,7 @@ class Project < ActiveRecord::Base
   include Modules::Models::Owner
   include Modules::Models::Git
   include Modules::Models::Wiki
+  include Modules::Models::UrlHelper
 
   class << self
     def find_by_owner_and_name(owner_name, project_name)
@@ -138,11 +140,9 @@ class Project < ActiveRecord::Base
   end
 
   def git_project_address auth_user
-    host ||= EventLog.current_controller.request.host_with_port rescue ::Rosa::Application.config.action_mailer.default_url_options[:host]
-    protocol = APP_CONFIG['mailer_https_url'] ? "https" : "http" rescue "http"
-    opts = {:host => host, :protocol => protocol}
+    opts = default_url_options
     opts.merge!({:user => auth_user.authentication_token, :password => ''}) unless self.public?
-    Rails.application.routes.url_helpers.project_url(self.owner.uname, self.name, opts) + ".git"
+    Rails.application.routes.url_helpers.project_url(self.owner.uname, self.name, opts) + '.git'
     #path #share by NFS
   end
 

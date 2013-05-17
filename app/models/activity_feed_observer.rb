@@ -41,8 +41,8 @@ class ActivityFeedObserver < ActiveRecord::Observer
                            :project_id => record.project.id, :issue_title => record.title, :project_name => record.project.name, :project_owner => record.project.owner.uname}
         )
       end
+      record.project.hooks.each{ |h| h.receive_issues(record, :create) }
       Comment.create_link_on_issues_from_item(record)
-
     when 'Comment'
       return if record.automatic
       if record.issue_comment?
@@ -83,6 +83,7 @@ class ActivityFeedObserver < ActiveRecord::Observer
     when 'GitHook'
       return unless record.project
       PullRequest.where("from_project_id = ? OR to_project_id = ?", record.project, record.project).needed_checking.each {|pull| pull.check}
+      record.project.hooks.each{ |h| h.receive_push(record) }
 
       change_type = record.change_type
       branch_name = record.refname.split('/').last
@@ -146,6 +147,7 @@ class ActivityFeedObserver < ActiveRecord::Observer
                            :project_id => record.project.id, :project_name => record.project.name, :project_owner => record.project.owner.uname}
         )
       end
+      record.project.hooks.each{ |h| h.receive_issues(record, :update) } if record.status_changed?
       # dont remove outdated issues link
       Comment.create_link_on_issues_from_item(record)
     when 'BuildList'

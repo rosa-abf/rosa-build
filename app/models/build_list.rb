@@ -433,7 +433,7 @@ class BuildList < ActiveRecord::Base
         ) + 'release'
     end
 
-    git_project_address = project.git_project_address(user)
+    git_project_address = project.git_project_address user
     # git_project_address.gsub!(/^http:\/\/(0\.0\.0\.0|localhost)\:[\d]+/, 'https://abf.rosalinux.ru') unless Rails.env.production?
     {
       :id                   => id,

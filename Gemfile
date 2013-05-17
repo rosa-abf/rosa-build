@@ -83,6 +83,10 @@ group :development do
   gem 'rvm-capistrano', :require => false
   gem 'cape', :require => false
   gem 'capistrano_colors', :require => false
+  # Better Errors & RailsPanel
+  gem 'better_errors'
+  gem 'binding_of_caller'
+  gem 'meta_request'
 end
 
 group :test do

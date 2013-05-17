@@ -1,0 +1,39 @@
+ru:
+  layout:
+    hooks:
+      services:
+        web: WebHook URLs
+        hipchat: HipChat
+        irc: IRC
+        jabber: Jabber
+
+  flash:
+    hook:
+      save_error: Не удалось сохранить хук
+      created: Хук успешно сохранен
+      updated: Хук успешно обновлен
+
+  activerecord:
+    attributes:
+      hook:
+        data:
+          url: URL
+          auth_token: Auth Token
+          room: Room
+          restrict_to_branch: Restrict To Branch
+          notify: Notify
+          server: Server
+          port: Port
+          nick: Nick
+          branch_regexes: Branch Regexes
+          password: Password
+          ssl: SSL
+          message_without_join: Message Without Join
+          no_colors: No Colors
+          long_url: Long Url
+          notice: Notice
+          user: User
+          token: Token
+          secret: Secret
+          digest: Digest
+          short_format: Short Format
