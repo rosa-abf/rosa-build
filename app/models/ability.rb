@@ -21,7 +21,7 @@ class Ability
     can :search, BuildList
     can [:read, :log, :everything], BuildList, :project => {:visibility => 'open'}
     can [:read, :log], ProductBuildList#, :product => {:platform => {:visibility => 'open'}} # double nested hash don't work
-    can :read, Advisory
+    can [:read, :search], Advisory
 
     # Platforms block
     can [:show, :members, :advisories], Platform, :visibility => 'open'
