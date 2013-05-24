@@ -30,7 +30,7 @@ module AbfWorker
         redis, key = Resque.redis, "queue:#{worker}_worker"
         default_tasks, tasks = redis.llen("#{key}_default"), redis.llen(key)
         {
-          :count              => workers.count,
+          :workers            => workers.count,
           :build_tasks        => workers.select{ |w| w.working? }.count,
           :default_tasks      => redis.llen("#{key}_default"),
           :low_tasks          => redis.llen(key)

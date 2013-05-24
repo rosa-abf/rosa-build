@@ -7,8 +7,8 @@
       .lefter= t("layout.build_lists.build_server_status.rpm_workers")
     .both
     .table
-      .lefter= t("layout.build_lists.build_server_status.count")
-      .righter= @build_server_status[:rpm][:count]
+      .lefter= t("layout.build_lists.build_server_status.workers")
+      .righter= @build_server_status[:rpm][:workers]
     .both
     .table
       .lefter= t("layout.build_lists.build_server_status.tasks")
@@ -27,7 +27,7 @@
     .table
       .lefter= t("layout.build_lists.build_server_status.#{queue}_workers")
     .both
-    - [:count, :tasks, :build_tasks].each do |metric|
+    - [:workers, :tasks, :build_tasks].each do |metric|
       .table
         .lefter= t("layout.build_lists.build_server_status.#{metric}")
         - if metric == :tasks
