@@ -1,13 +1,42 @@
 - queues ||= [:rpm, :publish]
 .bordered.nopadding
   %h3.medium= t('layout.build_lists.build_server_status.header')
-  - queues.each do |queue|
+
+  - if queues.include? :rpm
+    .table
+      .lefter= t("layout.build_lists.build_server_status.rpm_workers")
+    .both
+    .table
+      .lefter= t("layout.build_lists.build_server_status.count")
+      .righter= @build_server_status[:rpm][:count]
+    .both
+    .table
+      .lefter= t("layout.build_lists.build_server_status.tasks")
+    .both
+    .table
+      .lefter= t("layout.build_lists.build_server_status.user_tasks")
+      .righter= @build_server_status[:rpm][:default_tasks]
+    .both
+    .table
+      .lefter= t("layout.build_lists.build_server_status.mass_build_tasks")
+      .righter= @build_server_status[:rpm][:low_tasks]
+    .both
+    %br
+
+  - (queues - [:rpm]).each do |queue|
     .table
       .lefter= t("layout.build_lists.build_server_status.#{queue}_workers")
     .both
     - [:count, :tasks, :build_tasks].each do |metric|
       .table
         .lefter= t("layout.build_lists.build_server_status.#{metric}")
-        .righter= @build_server_status[queue][metric]
+        - if metric == :tasks
+          - count = @build_server_status[queue][:default_tasks] + @build_server_status[queue][:low_tasks]
+        - else
+          - count = @build_server_status[queue][metric]
+        .righter= count
       .both
     %br
+
+
+

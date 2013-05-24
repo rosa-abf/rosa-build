@@ -101,6 +101,8 @@ en:
         header: Build server status
         count: '- count'
         tasks: '- tasks in queue'
+        user_tasks: "-- user's"
+        mass_build_tasks: "-- mass build's"
         build_tasks: '- tasks in execution'
         rpm_workers: Workers for building
         iso_workers: Workers for building
