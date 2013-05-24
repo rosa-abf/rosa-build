@@ -1,42 +1,32 @@
-- queues ||= [:rpm, :publish]
 .bordered.nopadding
   %h3.medium= t('layout.build_lists.build_server_status.header')
 
-  - if queues.include? :rpm
+  .table
+    .lefter= t("layout.build_lists.build_server_status.rpm_workers")
+  .both
+  .table
+    .lefter= t("layout.build_lists.build_server_status.workers")
+    .righter= @build_server_status[:rpm][:workers]
+  .both
+  .table
+    .lefter= t("layout.build_lists.build_server_status.tasks")
+  .both
+  - [['user_tasks', :default_tasks], ['mass_build_tasks', :low_tasks]].each do |label, metric|
     .table
-      .lefter= t("layout.build_lists.build_server_status.rpm_workers")
+      .lefter= t("layout.build_lists.build_server_status.#{label}")
+      .righter= @build_server_status[:rpm][metric]
     .both
-    .table
-      .lefter= t("layout.build_lists.build_server_status.workers")
-      .righter= @build_server_status[:rpm][:workers]
-    .both
-    .table
-      .lefter= t("layout.build_lists.build_server_status.tasks")
-    .both
-    .table
-      .lefter= t("layout.build_lists.build_server_status.user_tasks")
-      .righter= @build_server_status[:rpm][:default_tasks]
-    .both
-    .table
-      .lefter= t("layout.build_lists.build_server_status.mass_build_tasks")
-      .righter= @build_server_status[:rpm][:low_tasks]
-    .both
-    %br
+  %br
 
-  - (queues - [:rpm]).each do |queue|
+  .table
+    .lefter= t("layout.build_lists.build_server_status.publish_workers")
+  .both
+  - [:workers, :tasks, :build_tasks].each do |metric|
     .table
-      .lefter= t("layout.build_lists.build_server_status.#{queue}_workers")
+      .lefter= t("layout.build_lists.build_server_status.#{metric}")
+      .righter= @build_server_status[:publish][metric]
     .both
-    - [:workers, :tasks, :build_tasks].each do |metric|
-      .table
-        .lefter= t("layout.build_lists.build_server_status.#{metric}")
-        - if metric == :tasks
-          - count = @build_server_status[queue][:default_tasks] + @build_server_status[queue][:low_tasks]
-        - else
-          - count = @build_server_status[queue][metric]
-        .righter= count
-      .both
-    %br
+  %br
 
 
 

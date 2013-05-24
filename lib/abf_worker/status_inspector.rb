@@ -32,8 +32,9 @@ module AbfWorker
         {
           :workers            => workers.count,
           :build_tasks        => workers.select{ |w| w.working? }.count,
-          :default_tasks      => redis.llen("#{key}_default"),
-          :low_tasks          => redis.llen(key)
+          :default_tasks      => default_tasks,
+          :low_tasks          => tasks,
+          :tasks              => (default_tasks + tasks)
         }
       end
 
