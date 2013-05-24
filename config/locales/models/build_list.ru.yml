@@ -98,7 +98,7 @@ ru:
 
       build_server_status:
         header: Статус сборочного сервера
-        workers: '- колличество'
+        workers: '- количество'
         tasks: '- заданий в очереди'
         user_tasks: '-- пользовательских'
         mass_build_tasks: '-- массовой сборки'
