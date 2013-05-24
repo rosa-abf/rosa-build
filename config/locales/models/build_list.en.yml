@@ -99,7 +99,7 @@ en:
 
       build_server_status:
         header: Build server status
-        workers: '- count'
+        workers: '- amount'
         tasks: '- tasks in queue'
         user_tasks: "-- user's"
         mass_build_tasks: "-- mass build's"
