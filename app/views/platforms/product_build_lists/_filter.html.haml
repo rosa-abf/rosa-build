@@ -1,5 +1,5 @@
 - content_for :sidebar do
-  = render 'projects/build_lists/server_status', :queues => [:iso]
+  = render 'server_status'
 
   = form_tag product_build_lists_path, :method => :get, :html => {:class => :form} do
     .block

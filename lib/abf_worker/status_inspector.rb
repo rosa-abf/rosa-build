@@ -28,10 +28,13 @@ module AbfWorker
 
       def status_of_worker(workers, worker)
         redis, key = Resque.redis, "queue:#{worker}_worker"
+        default_tasks, tasks = redis.llen("#{key}_default"), redis.llen(key)
         {
-          :count        => workers.count,
-          :build_tasks  => workers.select{ |w| w.working? }.count,
-          :tasks        => (redis.llen("#{key}_default") + redis.llen(key))
+          :workers            => workers.count,
+          :build_tasks        => workers.select{ |w| w.working? }.count,
+          :default_tasks      => default_tasks,
+          :low_tasks          => tasks,
+          :tasks              => (default_tasks + tasks)
         }
       end
 

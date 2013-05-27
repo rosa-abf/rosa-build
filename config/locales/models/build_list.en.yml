@@ -99,12 +99,14 @@ en:
 
       build_server_status:
         header: Build server status
-        count: '- count'
+        workers: '- amount'
         tasks: '- tasks in queue'
+        user_tasks: "-- user's"
+        mass_build_tasks: "-- mass build's"
         build_tasks: '- tasks in execution'
-        rpm_workers: Workers for building
-        iso_workers: Workers for building
-        publish_workers: Workers for publishing
+        rpm_workers: Workers of building
+        iso_workers: Workers of building
+        publish_workers: Workers of publishing
 
       items:
         statuses:

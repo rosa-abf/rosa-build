@@ -98,12 +98,14 @@ ru:
 
       build_server_status:
         header: Статус сборочного сервера
-        count: '- число'
+        workers: '- количество'
         tasks: '- заданий в очереди'
+        user_tasks: '-- пользовательских'
+        mass_build_tasks: '-- массовой сборки'
         build_tasks: '- заданий выполняется'
-        rpm_workers: Воркеров для сборки
-        iso_workers: Воркеров для сборки
-        publish_workers: Воркеров для публикации
+        rpm_workers: Воркеры сборки
+        iso_workers: Воркеры сборки
+        publish_workers: Воркеры публикации
 
       items:
         statuses:
