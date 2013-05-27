@@ -9,16 +9,14 @@ $(document).ready(function() {
     var build_platform = $('#build_for_pl_' + platform_id);
     var all_repositories = $('.all_platforms input');
     all_repositories.removeAttr('checked');
-    var use_save_to_repository = $('#build_list_use_save_to_repository');
     var auto_create_container = $('#build_list_auto_create_container');
 
+    updateExtraReposOrBuildLists('repos');
+    updateExtraReposOrBuildLists('build_lists');
     if (build_platform.size() == 0) {
       all_repositories.removeAttr('disabled');
-      use_save_to_repository.removeAttr('disabled');
       auto_create_container.removeAttr('checked');
     } else {
-      updateExtraReposAndBuildLists();
-      use_save_to_repository.attr('disabled', 'disabled').attr('checked', 'checked');
       all_repositories.attr('disabled', 'disabled');
       var parent = build_platform.parent();
       parent.find('input').removeAttr('disabled');
@@ -37,30 +35,39 @@ $(document).ready(function() {
     }
 
     var path = '/build_lists/autocomplete_to_extra_repos_and_builds?platform_id=' + platform_id;
-    $('#extra_repos').attr('data-autocomplete', path);
+    $('#extra_repos').attr('data-autocomplete', (path + '&search_repos=true'));
+    $('#extra_build_lists').attr('data-autocomplete', path);
   });
 
   $('#build_list_save_to_repository_id').trigger('change');
 
-  $('#extra-repos-and-build-lists #add').click(function() {
-    updateExtraReposAndBuildLists();
+  $('#extra-repos > .button').click(function() {
+    updateExtraReposOrBuildLists('repos');
     return false;
   });
 
-  $(document).on('click', '#extra-repos-and-build-lists .delete', function() {
+  $('#extra-build-lists > .button').click(function() {
+    updateExtraReposOrBuildLists('build-lists');
+    return false;
+  });
+
+  $(document).on('click', '#extra-repos .delete, #extra-repos-dialog .delete', function() {
     $(this)[0].parentElement.parentElement.remove();
   });
 
-  $('#extra-repos-and-build-lists-dialog').dialog({
+  $('#extra-repos-dialog, #extra-build-lists-dialog').dialog({
     autoOpen: false,
     resizable: false,
     width: 500
   });
 
-  $('#extra-repos-and-build-lists .icon-question-sign').click(function() {
-    var dialog = $('#extra-repos-and-build-lists-dialog');
-    if (dialog.is(':visible')) { dialog.dialog('close'); } else { dialog.dialog('open'); }
+  $('#extra-repos .icon-question-sign').click(function() {
+    showHideDialog($('#extra-repos-dialog'));
   });
+  $('#extra-build-lists .icon-question-sign').click(function() {
+    showHideDialog($('#extra-build-lists-dialog'));
+  });
+
 
   var ownership_btn = $('.btn.ownership');
   ownership_btn.click(function() {
@@ -97,12 +104,22 @@ $(document).ready(function() {
   });
 });
 
+function showHideDialog(dialog) {
+  if (dialog.is(':visible')) { dialog.dialog('close'); } else { dialog.dialog('open'); }
+}
 
-function updateExtraReposAndBuildLists() {
-  $.get("/build_lists/update_extra_repos_and_builds", $('#new_build_list').serialize())
-  .done(function(data) {
-    $("#extra-repos-and-build-lists table tbody").html(data);
-  });
+function updateExtraReposOrBuildLists(term) {
+  var path = '/build_lists/update_extra_repos_and_builds';
+  var container_id = '';
+  if (term == 'repos') {
+    path += '?update_repos=true';
+    container_id += '#extra-repos';
+  } else { 
+    container_id += '#extra-build-lists';
+  }
+  $.get(path, $('#new_build_list').serialize()).
+    done(function(data) { $(container_id + ' table tbody').html(data); });
+
 }
 
 function setBranchSelected(selected_option) {

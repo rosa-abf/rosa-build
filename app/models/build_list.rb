@@ -46,12 +46,10 @@ class BuildList < ActiveRecord::Base
   before_validation :prepare_extra_repositories,  :on => :create
   before_validation :prepare_extra_build_lists,   :on => :create
 
-  before_create :use_save_to_repository_for_main_platforms
-
   attr_accessible :include_repos, :auto_publish, :build_for_platform_id, :commit_hash,
                   :arch_id, :project_id, :save_to_repository_id, :update_type,
-                  :save_to_platform_id, :project_version, :use_save_to_repository,
-                  :auto_create_container, :extra_repositories, :extra_build_lists
+                  :save_to_platform_id, :project_version, :auto_create_container,
+                  :extra_repositories, :extra_build_lists
   LIVE_TIME = 4.week # for unpublished
   MAX_LIVE_TIME = 3.month # for published
 
@@ -424,14 +422,14 @@ class BuildList < ActiveRecord::Base
       path << "#{bl.id}/#{bl.arch.name}/#{bl.save_to_repository.name}/release"
       include_repos_hash["container_#{bl.id}"] = path
     end
-    if save_to_platform.personal? && use_save_to_repository
-      include_repos_hash["#{save_to_platform.name}_release"] = save_to_platform.
-        public_downloads_url(
-          build_for_platform.name,
-          arch.name,
-          save_to_repository.name
-        ) + 'release'
-    end
+    # if save_to_platform.personal? && use_save_to_repository
+    #   include_repos_hash["#{save_to_platform.name}_release"] = save_to_platform.
+    #     public_downloads_url(
+    #       build_for_platform.name,
+    #       arch.name,
+    #       save_to_repository.name
+    #     ) + 'release'
+    # end
 
     git_project_address = project.git_project_address user
     # git_project_address.gsub!(/^http:\/\/(0\.0\.0\.0|localhost)\:[\d]+/, 'https://abf.rosalinux.ru') unless Rails.env.production?
@@ -471,10 +469,6 @@ class BuildList < ActiveRecord::Base
       p.package_type = package_type
       yield p
     end
-  end
-
-  def use_save_to_repository_for_main_platforms
-    self.use_save_to_repository = true if save_to_platform.main?
   end
 
   def set_publisher
