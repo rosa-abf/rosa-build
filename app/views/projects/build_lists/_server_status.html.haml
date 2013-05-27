@@ -11,7 +11,7 @@
   .table
     .lefter= t("layout.build_lists.build_server_status.tasks")
   .both
-  - [['user_tasks', :default_tasks], ['mass_build_tasks', :low_tasks]].each do |label, metric|
+  - [['user_tasks', :default_tasks], ['mass_build_tasks', :low_tasks], ['build_tasks', :build_tasks]].each do |label, metric|
     .table
       .lefter= t("layout.build_lists.build_server_status.#{label}")
       .righter= @build_server_status[:rpm][metric]
