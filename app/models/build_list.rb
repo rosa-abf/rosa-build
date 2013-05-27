@@ -422,14 +422,6 @@ class BuildList < ActiveRecord::Base
       path << "#{bl.id}/#{bl.arch.name}/#{bl.save_to_repository.name}/release"
       include_repos_hash["container_#{bl.id}"] = path
     end
-    # if save_to_platform.personal? && use_save_to_repository
-    #   include_repos_hash["#{save_to_platform.name}_release"] = save_to_platform.
-    #     public_downloads_url(
-    #       build_for_platform.name,
-    #       arch.name,
-    #       save_to_repository.name
-    #     ) + 'release'
-    # end
 
     git_project_address = project.git_project_address user
     # git_project_address.gsub!(/^http:\/\/(0\.0\.0\.0|localhost)\:[\d]+/, 'https://abf.rosalinux.ru') unless Rails.env.production?
