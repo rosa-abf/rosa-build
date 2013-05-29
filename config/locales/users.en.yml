@@ -37,7 +37,6 @@ en:
         login: Nickname or Email
         email: Email
         uname: Nickname
-        created_at: Created
         ssh_key: SSH key
         current_password: Current password
         role: Role
