@@ -1,8 +1,6 @@
 # -*- encoding : utf-8 -*-
 class Projects::HooksController < Projects::BaseController
   before_filter :authenticate_user!
-  # TODO: remove
-  before_filter lambda { raise CanCan::AccessDenied unless current_user.admin? }
   load_and_authorize_resource :project
   load_and_authorize_resource :hook, :through => :project
 
