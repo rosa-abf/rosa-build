@@ -37,6 +37,7 @@ ru:
         login: Псевдоним или Email
         email: Email
         uname: Никнейм
+        created_at: Создан
         ssh_key: SSH ключ
         current_password: Текущий пароль
         role: Роль
