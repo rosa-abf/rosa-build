@@ -203,7 +203,7 @@ class BuildList < ActiveRecord::Base
     end
 
     event :reject_publish do
-      transition [:success, :failed_publish, :tests_failed] => :rejected_publish, :if => :can_reject_publish?
+      transition [:success, :failed_publish, :tests_failed] => :rejected_publish
     end
 
     event :build_success do
@@ -292,10 +292,6 @@ class BuildList < ActiveRecord::Base
     # All extra build lists should be published before publishing this build list for main platforms!
     return true unless save_to_platform.main?
     BuildList.where(:id => extra_build_lists).where('status != ?', BUILD_PUBLISHED).count == 0
-  end
-
-  def can_reject_publish?
-    [SUCCESS, FAILED_PUBLISH, TESTS_FAILED].include?(status) && !save_to_repository.publish_without_qa
   end
 
   def add_to_queue
