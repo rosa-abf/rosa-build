@@ -10,14 +10,17 @@ $(document).ready(function() {
     var all_repositories = $('.all_platforms input');
     all_repositories.removeAttr('checked');
     var auto_create_container = $('#build_list_auto_create_container');
+    var extra_repos = $('#extra-repos');
 
     updateExtraReposOrBuildLists('repos');
     updateExtraReposOrBuildLists('build_lists');
     if (build_platform.size() == 0) {
       all_repositories.removeAttr('disabled');
       auto_create_container.removeAttr('checked');
+      extra_repos.show();
     } else {
       all_repositories.attr('disabled', 'disabled');
+      extra_repos.hide();
       var parent = build_platform.parent();
       parent.find('input').removeAttr('disabled');
       parent.find('input[rep_name="main"]').attr('checked', 'checked');
