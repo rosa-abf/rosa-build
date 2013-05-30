@@ -38,9 +38,6 @@
   .rightlist
     = link_to "#{@build_list.save_to_platform.name}/#{@build_list.save_to_repository.name}", [@build_list.save_to_platform, @build_list.save_to_repository]
   .both
-  .leftlist= t("activerecord.attributes.build_list.use_save_to_repository")
-  .rightlist= t("layout.#{@build_list.use_save_to_repository?}_")
-  .both
   .leftlist= t("activerecord.attributes.build_list.include_repos")
   .rightlist= (@build_list.include_repos||[]).map{|r| Repository.find(r).name}.join(', ')
   .both

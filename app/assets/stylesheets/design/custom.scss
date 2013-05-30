@@ -1788,11 +1788,6 @@ table#myTable thead tr.search th form.button_to div input {
   border: 1px solid #DDDDDD;
 }
 
-#extra-repos-and-build-lists {
-    width: 330px;
-    .actions { width: 15px; }
-}
-
 .semi {
   opacity: 0.5;
 }
@@ -1843,18 +1838,19 @@ table#myTable thead tr.search th form.button_to div input {
   margin-left: 10px;
 }
 
-#extra-repos-and-build-lists {
+
+#extra-repos, #extra-build-lists {
     width: 330px;
     .actions { width: 15px; }
     h3 { display: inline-block; }
 }
 
-#extra-repos-and-build-lists-dialog  {
+#extra-repos-dialog, #extra-build-lists-dialog  {
     font-size: 12px;
     text-align: left;
     p { margin: 0; }
 }
-#ui-dialog-title-extra-repos-and-build-lists-dialog {
+#ui-dialog-title-extra-repos-dialog, #ui-dialog-title-extra-build-lists-dialog {
     font-size: 14px;
 }
 

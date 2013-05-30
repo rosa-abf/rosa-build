@@ -7,7 +7,8 @@ en:
       build_list:
         bs_id: Id
         name: Name
-        extra_repos: Extra repositories and build lists
+        extra_repos: Extra repositories
+        extra_build_lists: Extra build lists
         auto_create_container: Create container automatically
         container_path: Container path
         status: Status
@@ -23,7 +24,6 @@ en:
         include_repos: Included repositories
         created_at: Created on
         save_to_repository: Save to repository
-        use_save_to_repository: Use 'save to repository' for assembly
         build_for_platform: Build for platform
         update_type: Update type
         auto_publish: Automated publising
@@ -154,21 +154,6 @@ en:
       show_filter: Show filters
       hide_filter: Hide filters
 
-  helpers:
-    extra_repos_and_build_lists:
-      header: 'Ability to attach at assembly additional sources of packages: repositories of platforms and packages of build lists.'
-      build_lists:
-        header: 'Requirements for attaching build lists:'
-        message1: '- only build list with container can be connected;'
-        message2: '- for main platform You can connect only build lists which destined for same platform;'
-        message3: '- only build lists with the same architecture will be connected or oriented to the both architectures (the property Publish i686 packages into x86_64 repository (only for rhel) in the settings of project is true).'
-        message4: '<i>Example: only build lists with x86_64 architecture will be connected to x86_64</i>'
-      repos:
-        header: 'Requirements for attaching repositories:'
-        message1: '- attaching repositories from other platform available only for build list into the personal platform.'
-        header2: 'How to attach a repository:'
-        message2: '- write the name of platform, choose repository from the list for attaching and click to "Add" button.'
-        message3: '<i>Example: correct input "uxteam_personal", wrong - "uxteam_personal/main".</i>'
   flash:
     build_list:
       saved: Build list for project version '%{project_version}', platform '%{build_for_platform}' and architecture '%{arch}' has been created successfully

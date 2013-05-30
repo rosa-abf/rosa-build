@@ -1,0 +1,12 @@
+:markdown
+
+  __Ability to attach at assembly packages of build lists as additional sources of packages.__
+  <br/>
+
+  Requirements for attaching build lists:
+
+   - only build list with container can be connected;
+   - for main platform You can connect only build lists which destined for same platform;
+   - only build lists with the same architecture will be connected or oriented to the both architectures (the property Publish i686 packages into x86_64 repository (only for rhel) in the settings of project is true).
+
+   _Example: only build lists with x86_64 architecture will be connected to x86_64._
