@@ -65,10 +65,10 @@ $(document).ready(function() {
   });
 
   $('#extra-repos .icon-question-sign').click(function() {
-    showHideDialog($('#extra-repos-dialog'));
+    showOrHideDialog($('#extra-repos-dialog'));
   });
   $('#extra-build-lists .icon-question-sign').click(function() {
-    showHideDialog($('#extra-build-lists-dialog'));
+    showOrHideDialog($('#extra-build-lists-dialog'));
   });
 
 
@@ -107,7 +107,7 @@ $(document).ready(function() {
   });
 });
 
-function showHideDialog(dialog) {
+function showOrHideDialog(dialog) {
   if (dialog.is(':visible')) { dialog.dialog('close'); } else { dialog.dialog('open'); }
 }
 
@@ -116,12 +116,16 @@ function updateExtraReposOrBuildLists(term) {
   var container_id = '';
   if (term == 'repos') {
     path += '?update_repos=true';
-    container_id += '#extra-repos';
+    container_id = '#extra-repos';
   } else { 
-    container_id += '#extra-build-lists';
+    container_id = '#extra-build-lists';
   }
   $.get(path, $('#new_build_list').serialize()).
-    done(function(data) { $(container_id + ' table tbody').html(data); });
+    done(function(data) {
+      var container = $(container_id);
+      container.find('table tbody').html(data);
+      container.find('.ui-autocomplete-input').val('');
+    });
 
 }
 
