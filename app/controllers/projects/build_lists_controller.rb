@@ -183,6 +183,7 @@ class Projects::BuildListsController < Projects::BaseController
   end
 
   def reject_publish
+    @build_list.publisher = current_user
     if @build_list.reject_publish
       redirect_to :back, :notice => t('layout.build_lists.reject_publish_success')
     else
