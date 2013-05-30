@@ -16,8 +16,8 @@ class BuildList < ActiveRecord::Base
   has_many :items, :class_name => "BuildList::Item", :dependent => :destroy
   has_many :packages, :class_name => "BuildList::Package", :dependent => :destroy
 
-  UPDATE_TYPES = %w[security bugfix enhancement recommended newpackage]
-  RELEASE_UPDATE_TYPES = %w[security bugfix]
+  UPDATE_TYPES = %w[bugfix security enhancement recommended newpackage]
+  RELEASE_UPDATE_TYPES = %w[bugfix security]
 
   validates :project_id, :project_version, :arch, :include_repos,
             :build_for_platform_id, :save_to_platform_id, :save_to_repository_id, :presence => true
