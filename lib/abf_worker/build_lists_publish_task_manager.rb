@@ -73,6 +73,12 @@ module AbfWorker
         redis.lrem LOCKED_REP_AND_PLATFORMS, 0, lock_str
       end
 
+      def packages_structure
+        structure = {:sources => [], :binaries => {}}
+        Arch.pluck(:name).each{ |name| structure[:binaries][name.to_sym] = [] }
+        structure
+      end
+
       def redis
         Resque.redis
       end
@@ -81,7 +87,7 @@ module AbfWorker
         platform_path = "#{build_list.save_to_platform.path}/container/#{build_list.id}"
         system "rm -rf #{platform_path} && mkdir -p #{platform_path}"
 
-        packages = {:sources => [], :binaries => {:x86_64 => [], :i586 => []}}
+        packages = packages_structure
         packages[:sources] = build_list.packages.by_package_type('source').pluck(:sha1).compact
         packages[:binaries][build_list.arch.name.to_sym] = build_list.packages.by_package_type('binary').pluck(:sha1).compact
 
@@ -109,7 +115,7 @@ module AbfWorker
             :type                 => :publish,
             :time_living          => 9600, # 160 min
             :packages             => packages,
-            :old_packages         => {:sources => [], :binaries => {:x86_64 => [], :i586 => []}},
+            :old_packages         => packages_structure,
             :build_list_ids       => [build_list.id],
             :projects_for_cleanup => [],
             :extra                => {:create_container => true}
@@ -129,7 +135,7 @@ module AbfWorker
           build_lists_for_cleanup << bl if bl
         end
 
-        old_packages  = {:sources => [], :binaries => {:x86_64 => [], :i586 => []}}
+        old_packages  = packages_structure
         build_lists_for_cleanup.each do |bl|
           bl.last_published.includes(:packages).limit(2).each{ |old_bl|
             fill_packages(old_bl, old_packages, :fullname)
@@ -248,7 +254,7 @@ module AbfWorker
       build_lists = build_lists.where('build_lists.id NOT IN (?)', locked_ids) unless locked_ids.empty?
       build_lists = build_lists.limit(150)
 
-      old_packages  = {:sources => [], :binaries => {:x86_64 => [], :i586 => []}}
+      old_packages  = packages_structure
 
       projects_for_cleanup.each do |key|
         @redis.lrem PROJECTS_FOR_CLEANUP, 0, key
@@ -256,8 +262,8 @@ module AbfWorker
         next unless packages
         packages = JSON.parse packages
         old_packages[:sources] |= packages['sources']
-        [:x86_64, :i586].each do |arch|
-          old_packages[:binaries][arch] |= packages['binaries'][arch.to_s]
+        Arch.pluck(:name).each do |arch|
+          old_packages[:binaries][arch.to_sym] |= packages['binaries'][arch]
         end
       end
 
@@ -295,10 +301,7 @@ module AbfWorker
         :extra        => {:lock_str => lock_str}
       }
 
-      packages      = {:sources => [], :binaries => {:x86_64 => [], :i586 => []}}
-      build_list_ids = []
-
-      new_sources = {}
+      packages, build_list_ids, new_sources = packages_structure, [], {}
       build_lists.each do |bl|
         # remove duplicates of sources for different arches
         bl.packages.by_package_type('source').each{ |s| new_sources["#{s.fullname}"] = s.sha1 }
