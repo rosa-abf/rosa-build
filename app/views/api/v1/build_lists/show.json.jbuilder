@@ -56,7 +56,7 @@ json.build_list do |json|
   end
 
   extra_repos = Repository.includes(:platform).where(:id => @build_list.extra_repositories)
-  json.extra_repos extra_repos do |json_extra_repos, repo|
+  json.extra_repositories extra_repos do |json_extra_repos, repo|
     json.partial! 'repositories',
       :repository => repo,
       :json => json_extra_repos
