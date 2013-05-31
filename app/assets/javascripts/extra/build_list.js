@@ -55,7 +55,7 @@ $(document).ready(function() {
   });
 
   $(document).on('click', '#extra-repos .delete, #extra-repos-dialog .delete', function() {
-    $(this)[0].parentElement.parentElement.remove();
+    $(this).parent().parent().remove();
   });
 
   $('#extra-repos-dialog, #extra-build-lists-dialog').dialog({
