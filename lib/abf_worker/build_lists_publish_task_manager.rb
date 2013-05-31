@@ -254,7 +254,7 @@ module AbfWorker
       build_lists = build_lists.where('build_lists.id NOT IN (?)', locked_ids) unless locked_ids.empty?
       build_lists = build_lists.limit(150)
 
-      old_packages  = packages_structure
+      old_packages  = self.class.packages_structure
 
       projects_for_cleanup.each do |key|
         @redis.lrem PROJECTS_FOR_CLEANUP, 0, key
@@ -301,7 +301,7 @@ module AbfWorker
         :extra        => {:lock_str => lock_str}
       }
 
-      packages, build_list_ids, new_sources = packages_structure, [], {}
+      packages, build_list_ids, new_sources = self.class.packages_structure, [], {}
       build_lists.each do |bl|
         # remove duplicates of sources for different arches
         bl.packages.by_package_type('source').each{ |s| new_sources["#{s.fullname}"] = s.sha1 }
