@@ -10,8 +10,16 @@
         = check_box_tag "arches[]", arch.id, (params[:arches]||[]).include?(arch.id.to_s), :id => "arches_#{arch.id}"
         = label_tag "arches_#{arch.id}", arch.name
       .both
+    - if @platform.personal?
+      %h3= t('activerecord.attributes.build_list.build_for_platform')
+      - platforms = Platform.main.select{ |p| p.repository_ids.size > 0 }
+      = select_tag 'build_for_platform', options_from_collection_for_select(platforms, :id, :name), :include_blank => false
+      .both
     %h3= t("activerecord.attributes.build_list.preferences")
-    .both.bottom_20
+    .both
       = check_box_tag :auto_publish, true, @auto_publish_selected, :id => 'auto_publish'
       = label_tag :auto_publish, t('activerecord.attributes.build_list.auto_publish')
+    - if @platform.personal?
+      = check_box_tag :use_save_to_repository, true, @use_save_to_repository, :id => 'auto_publish'
+      = label_tag :use_save_to_repository, t('activerecord.attributes.mass_build.use_save_to_repository')
 .both

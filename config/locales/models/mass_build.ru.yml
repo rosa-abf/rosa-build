@@ -21,6 +21,7 @@ ru:
         created_at: Создан
         updated_at: Обновлен
         arch_names: Архитектуры
+        use_save_to_repository: Использовать персональный репозиторий для сборки
         user: Пользователь
         auto_publish: Авто Публикация
         repositories: Репозитории

@@ -146,27 +146,29 @@ class Project < ActiveRecord::Base
     #path #share by NFS
   end
 
-  def build_for(platform, repository_id, user, arch =  Arch.find_by_name('i586'), auto_publish = false, mass_build_id = nil, priority = 0)
+  def build_for(build_for_platform, save_to_platform, repository_id, user, arch =  Arch.find_by_name('i586'), auto_publish = false, mass_build = nil, priority = 0)
     # Select main and project platform repository(contrib, non-free and etc)
     # If main does not exist, will connect only project platform repository
     # If project platform repository is main, only main will be connect
-    main_rep_id = platform.repositories.find_by_name('main').try(:id)
-    build_reps_ids = [main_rep_id, repository_id].compact.uniq
+    main_rep_id = build_for_platform.repositories.find_by_name('main').try(:id)
+    include_repos = [main_rep_id] << (save_to_platform.main? ? repository_id : nil).compact.uniq
+
 
     project_version = repo.commits("#{platform.name}").try(:first).try(:id) ? 
       platform.name : 'master'
     build_list = build_lists.build do |bl|
-      bl.save_to_platform = platform
-      bl.build_for_platform = platform
-      bl.update_type = 'newpackage'
-      bl.arch = arch
-      bl.project_version = project_version
-      bl.user = user
-      bl.auto_publish = auto_publish
-      bl.include_repos = build_reps_ids
-      bl.priority = priority
-      bl.mass_build_id = mass_build_id
-      bl.save_to_repository_id = repository_id
+      bl.save_to_platform       = platform
+      bl.build_for_platform     = platform
+      bl.update_type            = 'newpackage'
+      bl.arch                   = arch
+      bl.project_version        = project_version
+      bl.user                   = user
+      bl.auto_publish           = auto_publish
+      bl.include_repos          = include_repos
+      bl.extra_repositories     = [repository_id] if save_to_platform.personal? && mass_build.use_save_to_repository?
+      bl.priority               = priority
+      bl.mass_build_id          = mass_build.try(:id)
+      bl.save_to_repository_id  = repository_id
     end
     build_list.save
   end
