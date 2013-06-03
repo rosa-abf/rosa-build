@@ -11,16 +11,19 @@ class Platforms::MassBuildsController < Platforms::BaseController
   skip_authorize_resource :platform, :only => [:index, :create]
 
   def create
+    @auto_publish_selected, @use_save_to_repository = params[:auto_publish].present?, params[:use_save_to_repository].present?
     mass_build = @platform.mass_builds.new(:arches => params[:arches],
-      :auto_publish => params[:auto_publish] || false,
-      :projects_list => params[:projects_list])
+      :auto_publish           => @auto_publish_selected,
+      :use_save_to_repository => @use_save_to_repository,
+      :projects_list          => params[:projects_list],
+      :build_for_platform_id  => Platform.main.where(:id => params[:build_for_platform]).first.try(:id)
+    )
     mass_build.user = current_user
     authorize! :create, mass_build
 
     if mass_build.save
       redirect_to(platform_mass_builds_path(@platform), :notice => t("flash.platform.build_all_success"))
     else
-      @auto_publish_selected, @use_save_to_repository = params[:auto_publish].present?, params[:use_save_to_repository].present?
       @mass_builds = MassBuild.by_platform(@platform).order('created_at DESC').paginate(:page => params[:page], :per_page => 20)
       flash[:warning] = mass_build.errors.full_messages.join('. ')
       flash[:error] = t("flash.platform.build_all_error")

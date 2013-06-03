@@ -9,7 +9,7 @@ class MassBuild < ActiveRecord::Base
   scope :outdated, where("#{table_name}.created_at < ?", Time.now + 1.day - BuildList::MAX_LIVE_TIME)
 
   attr_accessor :arches
-  attr_accessible :arches, :auto_publish, :projects_list
+  attr_accessible :arches, :auto_publish, :projects_list, :use_save_to_repository, :build_for_platform_id
 
   validates :save_to_platform_id, :build_for_platform_id, :arch_names, :name, :user_id, :projects_list, :presence => true
   validates_inclusion_of :auto_publish, :in => [true, false]

@@ -133,7 +133,7 @@ class BuildList < ActiveRecord::Base
   serialize :extra_repositories,  Array
   serialize :extra_build_lists,   Array
 
-  after_commit  :place_build
+  after_create  :place_build
   after_destroy :remove_container
 
   state_machine :status, :initial => :waiting_for_response do
