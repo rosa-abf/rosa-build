@@ -6,8 +6,6 @@
       - Platform.main.each do |pl|
         - if pl.repository_ids.size > 0
           .both
-            =# check_box_tag "build_for_platforms[]", pl.id, (params[:build_for_platforms]||[]).include?(pl.id.to_s), :class => 'build_bpl_ids', :id => "bpls_#{pl.id}"
-            =# label_tag "bpls_#{pl.id}", pl.name
             %div{:id => "build_for_pl_#{pl.id}", :class => 'build_for_pl'}= pl.name
             .offset25= render 'include_repos', :platform => pl
   %section.right
@@ -23,8 +21,8 @@
     %h3= t("activerecord.attributes.build_list.update_type")
     .lineForm= f.select :update_type, BuildList::UPDATE_TYPES
 
-    = render 'extra_form', :field => :extra_repos,        :placeholder => 'uxteam_personal'
-    = render 'extra_form', :field => :extra_build_lists,  :placeholder => '1000000'
+    = render 'shared/autocomplete_form', :field => :extra_repositories, :field_class => Repository, :placeholder => 'uxteam_personal', :subject => @build_list, :autocomplete_path => autocomplete_extra_repositories_autocompletes_path
+    = render 'shared/autocomplete_form', :field => :extra_build_lists,  :field_class => BuildList, :placeholder => '1000000', :subject => @build_list, :autocomplete_path => autocomplete_extra_build_list_autocompletes_path
 
     %h3= t("activerecord.attributes.build_list.preferences")
     - [:auto_publish, :auto_create_container].each do |kind|

@@ -1,22 +1,25 @@
 class MassBuild < ActiveRecord::Base
-  belongs_to :build_for_platform, :class_name => 'Platform'
+  belongs_to :build_for_platform, :class_name => 'Platform', :conditions => {:platform_type => 'main'}
   belongs_to :save_to_platform, :class_name => 'Platform'
   belongs_to :user
   has_many :build_lists, :dependent => :destroy
+
+  serialize :extra_repositories,  Array
+  serialize :extra_build_lists,   Array
 
   scope :recent, order("#{table_name}.created_at DESC")
   scope :by_platform, lambda { |platform| where(:save_to_platform_id => platform.id) }
   scope :outdated, where("#{table_name}.created_at < ?", Time.now + 1.day - BuildList::MAX_LIVE_TIME)
 
   attr_accessor :arches
-  attr_accessible :arches, :auto_publish, :projects_list, :use_save_to_repository, :build_for_platform_id
+  attr_accessible :arches, :auto_publish, :projects_list, :build_for_platform_id,
+                  :extra_repositories, :extra_build_lists
 
   validates :save_to_platform_id, :build_for_platform_id, :arch_names, :name, :user_id, :projects_list, :presence => true
   validates_inclusion_of :auto_publish, :in => [true, false]
 
-  after_create :build_all
-  before_validation :set_data,                :on => :create
-  before_validation :set_build_for_platform,  :on => :create
+  after_commit      :build_all
+  before_validation :set_data, :on => :create
 
   COUNT_STATUSES = [
     :build_lists,
@@ -54,7 +57,7 @@ class MassBuild < ActiveRecord::Base
       end
     end
   end
-  later :build_all, :queue => :clone_build
+  # later :build_all, :queue => :clone_build
 
   def generate_failed_builds_list
     report = ""
@@ -100,15 +103,9 @@ class MassBuild < ActiveRecord::Base
     end
   end
 
-  def set_build_for_platform
-    if save_to_platform && save_to_platform.main?
-      self.build_for_platform     = save_to_platform
-      self.use_save_to_repository = true
-    end
-  end
-
   def set_data
     self.name = "#{Time.now.utc.to_date.strftime("%d.%b")}-#{save_to_platform.name}"
     self.arch_names = Arch.where(:id => self.arches).map(&:name).join(", ")
+    self.build_for_platform = save_to_platform if save_to_platform && save_to_platform.main?
   end
 end

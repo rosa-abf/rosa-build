@@ -1,6 +1,7 @@
 en:
   layout:
     mass_builds:
+      new: New mass build
       publish_success: Publish success builds
       publish_test_failed: Publish test failed builds
       repositories: Repositories
@@ -21,7 +22,6 @@ en:
         created_at: Created
         updated_at: Updated
         arch_names: Architectures
-        use_save_to_repository: Use personal repository for assembly
         user: User
         auto_publish: Auto Publish
         repositories: Repositories

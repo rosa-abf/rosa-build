@@ -170,9 +170,10 @@ class Project < ActiveRecord::Base
       bl.user                   = user
       bl.auto_publish           = auto_publish
       bl.include_repos          = include_repos
-      bl.extra_repositories     = [repository_id] if save_to_platform.personal? && mass_build.use_save_to_repository?
+      bl.extra_repositories     = mass_build.extra_repositories
+      bl.extra_build_lists      = mass_build.extra_build_lists
       bl.priority               = priority
-      bl.mass_build_id          = mass_build.try(:id)
+      bl.mass_build_id          = mass_build.id
       bl.save_to_repository_id  = repository_id
     end
     build_list.save

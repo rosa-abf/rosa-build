@@ -34,7 +34,6 @@ class Projects::BuildListsController < Projects::BaseController
   end
 
   def new
-    # @build_list = BuildList.new # @build_list already created by CanCan
   end
 
   def create
@@ -114,37 +113,37 @@ class Projects::BuildListsController < Projects::BaseController
     }
   end
 
-  def autocomplete_to_extra_repos_and_builds
-    results, save_to_platform  = [], Platform.find(params[:platform_id])
-    if params[:search_repos].present? && save_to_platform.personal?
-      # Only personal repositories can be attached to the build
-      platforms = Platform.includes(:repositories).personal.search(params[:term]).
-        accessible_by(current_ability, :read).search_order.limit(5)
-      platforms.each{ |p| p.repositories.each{ |r| results << {:id => r.id, :label => "#{p.name}/#{r.name}", :value => "#{p.name}/#{r.name}"} } }
-    elsif params[:search_repos].blank?
-      bl = BuildList.where(:id => params[:term]).published_container.accessible_by(current_ability, :read)
-      bl = bl.where(:save_to_platform_id => save_to_platform.id) if save_to_platform.main?
-      bl = bl.first
-      results << {:id => bl.id, :value => bl.id, :label => "#{bl.id} (#{bl.project.name} - #{bl.arch.name})"} if bl
-    end
-    render json: results.to_json
-  end
+  # def autocomplete_to_extra_repos_and_builds
+  #   results, save_to_platform  = [], Platform.find(params[:platform_id])
+  #   if params[:search_repos].present? && save_to_platform.personal?
+  #     # Only personal repositories can be attached to the build
+  #     platforms = Platform.includes(:repositories).personal.search(params[:term]).
+  #       accessible_by(current_ability, :read).search_order.limit(5)
+  #     platforms.each{ |p| p.repositories.each{ |r| results << {:id => r.id, :label => "#{p.name}/#{r.name}", :value => "#{p.name}/#{r.name}"} } }
+  #   elsif params[:search_repos].blank?
+  #     bl = BuildList.where(:id => params[:term]).published_container.accessible_by(current_ability, :read)
+  #     bl = bl.where(:save_to_platform_id => save_to_platform.id) if save_to_platform.main?
+  #     bl = bl.first
+  #     results << {:id => bl.id, :value => bl.id, :label => "#{bl.id} (#{bl.project.name} - #{bl.arch.name})"} if bl
+  #   end
+  #   render json: results.to_json
+  # end
 
-  def update_extra_repos_and_builds
-    results, save_to_repository = [], Repository.find(params[:build_list][:save_to_repository_id])
-    if params[:update_repos].present?
-      extra_repos  = params[:build_list][:extra_repositories]  || []
-      extra_repos << params[:extra_repos] if params[:extra_repos].present?
-      results = Repository.where(:id => extra_repos).accessible_by(current_ability, :read) if save_to_repository.platform.personal?
-      results |= [save_to_repository] if save_to_repository.platform.personal?
-    else
-      extra_bls  = params[:build_list][:extra_build_lists]    || []
-      extra_bls << params[:extra_build_lists] if params[:extra_build_lists].present?
-      results = BuildList.where(:id => extra_bls).published_container.accessible_by(current_ability, :read)
-      results = results.where(:save_to_platform_id => save_to_repository.platform_id) if save_to_repository.platform.main?
-    end
-    render :partial => 'extra', :collection => results
-  end
+  # def update_extra_repos_and_builds
+  #   results, save_to_repository = [], Repository.find(params[:build_list][:save_to_repository_id])
+  #   if params[:update_repos].present?
+  #     extra_repos  = params[:build_list][:extra_repositories]  || []
+  #     extra_repos << params[:extra_repos] if params[:extra_repos].present?
+  #     results = Repository.where(:id => extra_repos).accessible_by(current_ability, :read) if save_to_repository.platform.personal?
+  #     results |= [save_to_repository] if save_to_repository.platform.personal?
+  #   else
+  #     extra_bls  = params[:build_list][:extra_build_lists]    || []
+  #     extra_bls << params[:extra_build_lists] if params[:extra_build_lists].present?
+  #     results = BuildList.where(:id => extra_bls).published_container.accessible_by(current_ability, :read)
+  #     results = results.where(:save_to_platform_id => save_to_repository.platform_id) if save_to_repository.platform.main?
+  #   end
+  #   render :partial => 'extra', :collection => results
+  # end
 
   protected
 

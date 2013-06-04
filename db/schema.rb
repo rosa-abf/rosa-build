@@ -271,28 +271,29 @@ ActiveRecord::Schema.define(:version => 20130603124853) do
   add_index "labels", ["project_id"], :name => "index_labels_on_project_id"
 
   create_table "mass_builds", :force => true do |t|
-    t.integer  "build_for_platform_id",                     :null => false
+    t.integer  "build_for_platform_id",                    :null => false
     t.string   "name"
-    t.datetime "created_at",                                :null => false
-    t.datetime "updated_at",                                :null => false
+    t.datetime "created_at",                               :null => false
+    t.datetime "updated_at",                               :null => false
     t.string   "arch_names"
     t.integer  "user_id"
-    t.boolean  "auto_publish",           :default => false, :null => false
-    t.integer  "build_lists_count",      :default => 0,     :null => false
-    t.integer  "build_published_count",  :default => 0,     :null => false
-    t.integer  "build_pending_count",    :default => 0,     :null => false
-    t.integer  "build_started_count",    :default => 0,     :null => false
-    t.integer  "build_publish_count",    :default => 0,     :null => false
-    t.integer  "build_error_count",      :default => 0,     :null => false
-    t.boolean  "stop_build",             :default => false, :null => false
+    t.boolean  "auto_publish",          :default => false, :null => false
+    t.integer  "build_lists_count",     :default => 0,     :null => false
+    t.integer  "build_published_count", :default => 0,     :null => false
+    t.integer  "build_pending_count",   :default => 0,     :null => false
+    t.integer  "build_started_count",   :default => 0,     :null => false
+    t.integer  "build_publish_count",   :default => 0,     :null => false
+    t.integer  "build_error_count",     :default => 0,     :null => false
+    t.boolean  "stop_build",            :default => false, :null => false
     t.text     "projects_list"
-    t.integer  "missed_projects_count",  :default => 0,     :null => false
+    t.integer  "missed_projects_count", :default => 0,     :null => false
     t.text     "missed_projects_list"
-    t.boolean  "new_core",               :default => true
-    t.integer  "success_count",          :default => 0,     :null => false
-    t.integer  "build_canceled_count",   :default => 0,     :null => false
-    t.integer  "save_to_platform_id",                       :null => false
-    t.boolean  "use_save_to_repository"
+    t.boolean  "new_core",              :default => true
+    t.integer  "success_count",         :default => 0,     :null => false
+    t.integer  "build_canceled_count",  :default => 0,     :null => false
+    t.integer  "save_to_platform_id",                      :null => false
+    t.text     "extra_repositories"
+    t.text     "extra_build_lists"
   end
 
   create_table "platforms", :force => true do |t|

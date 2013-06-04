@@ -1,9 +1,0 @@
-%tr
-  - if extra.is_a?(BuildList)
-    %td= link_to "#{extra.id} (#{extra.project.name} - #{extra.arch.name})", extra
-  - else
-    %td= link_to "#{extra.platform.name}/#{extra.name}", [extra.platform, extra]
-  %td.actions
-    - field = extra.is_a?(BuildList) ? 'extra_build_lists' : 'extra_repositories'
-    = hidden_field_tag "build_list[#{field}][]", extra.id
-    %span.delete &nbsp;

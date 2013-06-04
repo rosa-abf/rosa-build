@@ -1,33 +1,44 @@
 #class MassBuildsController < ApplicationController
 class Platforms::MassBuildsController < Platforms::BaseController
+  # before_filter :authenticate_user!
+  # skip_before_filter :authenticate_user!, :only => [:index, :get_list] if APP_CONFIG['anonymous_access']
+
+  # load_and_authorize_resource :platform
+  # load_and_authorize_resource
+
+  # skip_load_and_authorize_resource :only => [:index, :create]
+  # skip_load_and_authorize_resource :platform, :only => [:cancel, :failed_builds_list, :publish]
+  # skip_authorize_resource :platform, :only => [:index, :create]
+
+
+
+  NESTED_ACTIONS = [:index, :new, :create]
+
   before_filter :authenticate_user!
   skip_before_filter :authenticate_user!, :only => [:index, :get_list] if APP_CONFIG['anonymous_access']
 
-  load_and_authorize_resource :platform
-  load_and_authorize_resource
+  # before_filter :find_mass_build, :only => [:publish, :cancel]
 
-  skip_load_and_authorize_resource :only => [:index, :create]
-  skip_load_and_authorize_resource :platform, :only => [:cancel, :failed_builds_list, :publish]
-  skip_authorize_resource :platform, :only => [:index, :create]
+  load_and_authorize_resource :platform, :only => NESTED_ACTIONS
+  load_and_authorize_resource :mass_build, :through => :platform, :only => NESTED_ACTIONS, :shallow => true
+  load_and_authorize_resource :except => NESTED_ACTIONS
+
+
+  def new
+  end
 
   def create
-    @auto_publish_selected, @use_save_to_repository = params[:auto_publish].present?, params[:use_save_to_repository].present?
-    mass_build = @platform.mass_builds.new(:arches => params[:arches],
-      :auto_publish           => @auto_publish_selected,
-      :use_save_to_repository => @use_save_to_repository,
-      :projects_list          => params[:projects_list],
-      :build_for_platform_id  => Platform.main.where(:id => params[:build_for_platform]).first.try(:id)
-    )
-    mass_build.user = current_user
-    authorize! :create, mass_build
+    @mass_build = @platform.mass_builds.build(params[:mass_build]) do |mb|
+      mb.arches = params[:arches]
+      mb.user   = current_user
+    end
 
-    if mass_build.save
+    if @mass_build.save
       redirect_to(platform_mass_builds_path(@platform), :notice => t("flash.platform.build_all_success"))
     else
-      @mass_builds = MassBuild.by_platform(@platform).order('created_at DESC').paginate(:page => params[:page], :per_page => 20)
-      flash[:warning] = mass_build.errors.full_messages.join('. ')
-      flash[:error] = t("flash.platform.build_all_error")
-      render :index
+      flash[:warning] = @mass_build.errors.full_messages.join('. ')
+      flash[:error] = t('flash.platform.build_all_error')
+      render :action => :new
     end
   end
 
@@ -41,8 +52,7 @@ class Platforms::MassBuildsController < Platforms::BaseController
   end
 
   def index
-    @mass_builds = MassBuild.by_platform(@platform).order('created_at DESC').paginate(:page => params[:page], :per_page => 20)
-    @auto_publish_selected = @use_save_to_repository = true
+    @mass_builds  = MassBuild.by_platform(@platform).order('created_at DESC').paginate(:page => params[:page], :per_page => 20)
   end
 
   def cancel

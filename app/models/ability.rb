@@ -78,7 +78,7 @@ class Ability
 
         can([:read, :create, :edit, :destroy, :update], Hook) {|hook| can?(:edit, hook.project)}
 
-        can [:autocomplete_to_extra_repos_and_builds, :update_extra_repos_and_builds], BuildList
+        # can [:autocomplete_to_extra_repos_and_builds, :update_extra_repos_and_builds], BuildList
         can [:read, :log, :owned, :everything], BuildList, :user_id => user.id
         can [:read, :log, :related, :everything], BuildList, :project => {:owner_type => 'User', :owner_id => user.id}
         can [:read, :log, :related, :everything], BuildList, :project => {:owner_type => 'Group', :owner_id => user.group_ids}

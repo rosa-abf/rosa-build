@@ -10,10 +10,10 @@ $(document).ready(function() {
     var all_repositories = $('.all_platforms input');
     all_repositories.removeAttr('checked');
     var auto_create_container = $('#build_list_auto_create_container');
-    var extra_repos = $('#extra-repos');
+    var extra_repos = $('.autocomplete-form.extra_repositories');
 
-    updateExtraReposOrBuildLists('repos');
-    updateExtraReposOrBuildLists('build_lists');
+    updateExtraReposAndBuildLists(platform_id);
+    $('.autocomplete-form table tbody').empty();
     if (build_platform.size() == 0) {
       all_repositories.removeAttr('disabled');
       auto_create_container.removeAttr('checked');
@@ -36,40 +36,9 @@ $(document).ready(function() {
       build_list_auto_publish.removeAttr('checked').attr('disabled', 'disabled');
       auto_create_container.attr('checked', 'checked');
     }
-
-    var path = '/build_lists/autocomplete_to_extra_repos_and_builds?platform_id=' + platform_id;
-    $('#extra_repos').attr('data-autocomplete', (path + '&search_repos=true'));
-    $('#extra_build_lists').attr('data-autocomplete', path);
   });
 
   $('#build_list_save_to_repository_id').trigger('change');
-
-  $('#extra-repos > .button').click(function() {
-    updateExtraReposOrBuildLists('repos');
-    return false;
-  });
-
-  $('#extra-build-lists > .button').click(function() {
-    updateExtraReposOrBuildLists('build-lists');
-    return false;
-  });
-
-  $(document).on('click', '#extra-repos .delete, #extra-repos-dialog .delete', function() {
-    $(this).parent().parent().remove();
-  });
-
-  $('#extra-repos-dialog, #extra-build-lists-dialog').dialog({
-    autoOpen: false,
-    resizable: false,
-    width: 500
-  });
-
-  $('#extra-repos .icon-question-sign').click(function() {
-    showOrHideDialog($('#extra-repos-dialog'));
-  });
-  $('#extra-build-lists .icon-question-sign').click(function() {
-    showOrHideDialog($('#extra-build-lists-dialog'));
-  });
 
 
   var ownership_btn = $('.btn.ownership');
@@ -107,26 +76,12 @@ $(document).ready(function() {
   });
 });
 
-function showOrHideDialog(dialog) {
-  if (dialog.is(':visible')) { dialog.dialog('close'); } else { dialog.dialog('open'); }
-}
-
-function updateExtraReposOrBuildLists(term) {
-  var path = '/build_lists/update_extra_repos_and_builds';
-  var container_id = '';
-  if (term == 'repos') {
-    path += '?update_repos=true';
-    container_id = '#extra-repos';
-  } else { 
-    container_id = '#extra-build-lists';
-  }
-  $.get(path, $('#new_build_list').serialize()).
-    done(function(data) {
-      var container = $(container_id);
-      container.find('table tbody').html(data);
-      container.find('.ui-autocomplete-input').val('');
-    });
-
+function updateExtraReposAndBuildLists(save_to_platform_id) {
+  $.each($('.autocomplete-form'), function() {
+    var form = $(this);
+    var path = form.attr('path') + '?platform_id=' + save_to_platform_id;
+    form.find('.autocomplete').attr('data-autocomplete', path);
+  });
 }
 
 function setBranchSelected(selected_option) {
