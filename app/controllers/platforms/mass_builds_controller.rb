@@ -1,23 +1,9 @@
 #class MassBuildsController < ApplicationController
 class Platforms::MassBuildsController < Platforms::BaseController
-  # before_filter :authenticate_user!
-  # skip_before_filter :authenticate_user!, :only => [:index, :get_list] if APP_CONFIG['anonymous_access']
-
-  # load_and_authorize_resource :platform
-  # load_and_authorize_resource
-
-  # skip_load_and_authorize_resource :only => [:index, :create]
-  # skip_load_and_authorize_resource :platform, :only => [:cancel, :failed_builds_list, :publish]
-  # skip_authorize_resource :platform, :only => [:index, :create]
-
-
-
   NESTED_ACTIONS = [:index, :new, :create]
 
   before_filter :authenticate_user!
   skip_before_filter :authenticate_user!, :only => [:index, :get_list] if APP_CONFIG['anonymous_access']
-
-  # before_filter :find_mass_build, :only => [:publish, :cancel]
 
   load_and_authorize_resource :platform, :only => NESTED_ACTIONS
   load_and_authorize_resource :mass_build, :through => :platform, :only => NESTED_ACTIONS, :shallow => true

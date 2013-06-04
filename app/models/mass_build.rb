@@ -18,7 +18,7 @@ class MassBuild < ActiveRecord::Base
   validates :save_to_platform_id, :build_for_platform_id, :arch_names, :name, :user_id, :projects_list, :presence => true
   validates_inclusion_of :auto_publish, :in => [true, false]
 
-  after_commit      :build_all
+  after_create      :build_all
   before_validation :set_data, :on => :create
 
   COUNT_STATUSES = [
