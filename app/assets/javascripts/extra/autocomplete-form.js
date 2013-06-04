@@ -1,13 +1,4 @@
 $(document).ready(function() {
-  // // TODO: Refactor this handler!! It's too complicated.
-  // $('#build_list_save_to_repository_id, #build_for_platform').change(function() {
-  //   var selected_option = $(this).find('option:selected');
-  //   var platform_id = selected_option.attr('platform_id') || selected_option.val();
-  //   var path = '/build_lists/autocomplete_to_extra_repos_and_builds?platform_id=' + platform_id;
-  //   $('#extra_repos').attr('data-autocomplete', (path + '&search_repos=true'));
-  //   $('#extra_build_lists').attr('data-autocomplete', path);
-  // });
-
 
   $('.autocomplete-form .button.add').click(function() {
     var form    = $(this).parent();

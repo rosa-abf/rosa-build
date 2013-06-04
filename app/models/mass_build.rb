@@ -57,7 +57,7 @@ class MassBuild < ActiveRecord::Base
       end
     end
   end
-  # later :build_all, :queue => :clone_build
+  later :build_all, :queue => :clone_build
 
   def generate_failed_builds_list
     report = ""
