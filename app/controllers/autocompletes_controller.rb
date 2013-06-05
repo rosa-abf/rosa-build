@@ -2,9 +2,8 @@
 class AutocompletesController < ApplicationController
   before_filter :authenticate_user!
 
-  autocomplete :group, :uname
-  autocomplete :user, :uname
-  autocomplete :user, :uname
+  autocomplete :group,  :uname
+  autocomplete :user,   :uname
 
   def autocomplete_extra_build_list
     bl = BuildList.where(:id => params[:term]).published_container.accessible_by(current_ability, :read)
