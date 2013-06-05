@@ -5,7 +5,7 @@ class Api::V1::IssuesController < Api::V1::BaseController
   before_filter :authenticate_user!
   skip_before_filter :authenticate_user!, :only => [:show] if APP_CONFIG['anonymous_access']
 
-  load_and_authorize_resource :group, :only => :group_index
+  load_resource :group, :only => :group_index, :find_by => :id, :parent => false
   load_resource :project
   load_and_authorize_resource :issue, :through => :project, :find_by => :serial_id, :only => [:show, :update, :destroy, :create, :index]
 
@@ -28,6 +28,7 @@ class Api::V1::IssuesController < Api::V1::BaseController
 
   def group_index
     project_ids = @group.projects.select('distinct projects.id').pluck(:id)
+    project_ids = Project.accessible_by(current_ability, :membered).where(:id => project_ids).uniq.pluck(:id)
     @issues = Issue.where(:project_id => project_ids)
     render_issues_list
   end
