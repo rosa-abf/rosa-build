@@ -23,6 +23,6 @@ en:
         updated_at: Updated
         arch_names: Architectures
         user: User
-        auto_publish: Automated publising
+        auto_publish: Automated publishing
         repositories: Repositories
         projects_list: Projects list

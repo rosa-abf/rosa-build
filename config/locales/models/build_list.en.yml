@@ -26,7 +26,7 @@ en:
         save_to_repository: Save to repository
         build_for_platform: Build for platform
         update_type: Update type
-        auto_publish: Automated publising
+        auto_publish: Automated publishing
         project_version: Version
         user: User
         publisher: Publisher
