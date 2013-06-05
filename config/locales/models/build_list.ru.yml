@@ -133,7 +133,6 @@ ru:
         success: собран
         build_started: собирается
         platform_pending: платформа в процессе создания
-        project_version_not_found: версия не найдена
 
       log:
         build_log: Лог сборки

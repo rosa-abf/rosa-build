@@ -56,7 +56,6 @@ class BuildList < ActiveRecord::Base
   SUCCESS = 0
   ERROR   = 1
 
-  PROJECT_VERSION_NOT_FOUND = 4
   PROJECT_SOURCE_ERROR      = 6
   DEPENDENCIES_ERROR        = 555
   BUILD_ERROR               = 666
@@ -82,7 +81,6 @@ class BuildList < ActiveRecord::Base
                 SUCCESS,
                 BUILD_STARTED,
                 BUILD_ERROR,
-                PROJECT_VERSION_NOT_FOUND,
                 TESTS_FAILED
               ].freeze
 
@@ -97,7 +95,6 @@ class BuildList < ActiveRecord::Base
                      BUILD_ERROR => :build_error,
                      BUILD_STARTED => :build_started,
                      SUCCESS => :success,
-                     PROJECT_VERSION_NOT_FOUND => :project_version_not_found,
                      TESTS_FAILED => :tests_failed
                     }.freeze
 
@@ -133,7 +130,7 @@ class BuildList < ActiveRecord::Base
   serialize :extra_repositories,  Array
   serialize :extra_build_lists,   Array
 
-  after_create  :place_build
+  after_commit  :place_build, :on => :create
   after_destroy :remove_container
 
   state_machine :status, :initial => :waiting_for_response do
@@ -166,15 +163,10 @@ class BuildList < ActiveRecord::Base
       transition :waiting_for_response => :build_pending, :if => lambda { |build_list|
         build_list.add_to_queue == BuildList::SUCCESS
       }
-      %w[BUILD_PENDING PROJECT_VERSION_NOT_FOUND].each do |code|
-        transition :waiting_for_response => code.downcase.to_sym, :if => lambda { |build_list|
-          build_list.add_to_queue == BuildList.const_get(code)
-        }
-      end
     end
 
     event :start_build do
-      transition [ :build_pending, :project_version_not_found ] => :build_started
+      transition :build_pending => :build_started
     end
 
     event :cancel do

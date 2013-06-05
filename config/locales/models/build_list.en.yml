@@ -134,7 +134,6 @@ en:
         success: Build complete
         build_started: Build started
         platform_pending: Platform pending
-        project_version_not_found: Project version not found
 
       log:
         build_log: Build Log
