@@ -28,11 +28,9 @@ class String
     options[:omission] ||= "..."
     options[:separator] ||= '/'
 
-    length_with_room_for_omission = length - options[:omission].mb_chars.length
     chars = text.mb_chars
-    stop = options[:separator] ?
-      (chars.index(options[:separator].mb_chars, length_with_room_for_omission) || length_with_room_for_omission) : length_with_room_for_omission
-
-    (chars.length > length ? "#{options[:omission]}#{chars[-(stop+1)...-1]}" : text).to_s
+    start = chars.length - length + options[:omission].mb_chars.length
+    stop = options[:separator] ? (chars.index(options[:separator].mb_chars, start) || start) : start
+    (chars.length > length ? "#{options[:omission]}#{chars[stop..-1]}" : text).to_s
   end
 end
