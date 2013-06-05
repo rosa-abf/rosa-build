@@ -99,6 +99,12 @@ class BuildList < ActiveRecord::Base
                     }.freeze
 
   scope :recent, order("#{table_name}.updated_at DESC")
+  scope :for_extra_build_lists, lambda {|ids, current_ability, save_to_platform|
+    s = scoped
+    s = s.where(:id => ids).published_container.accessible_by(current_ability, :read)
+    s = s.where(:save_to_platform_id => save_to_platform.id) if save_to_platform && save_to_platform.main?
+    s
+  }
   scope :for_status, lambda {|status| where(:status => status) }
   scope :for_user, lambda { |user| where(:user_id => user.id)  }
   scope :for_platform, lambda { |platform| where(:build_for_platform_id => platform)  }
@@ -470,9 +476,8 @@ class BuildList < ActiveRecord::Base
   end
 
   def prepare_extra_build_lists
-    bls = BuildList.where(:id => extra_build_lists).published_container.accessible_by(current_ability, :read)
+    bls = BuildList.for_extra_build_lists(extra_build_lists, current_ability, save_to_platform)
     if save_to_platform
-      bls = bls.where(:save_to_platform_id => save_to_platform.id) if save_to_platform.main?
       if save_to_platform.distrib_type == 'rhel'
         bls = bls.where('
           (build_lists.arch_id = ? AND projects.publish_i686_into_x86_64 is not true) OR

@@ -26,7 +26,7 @@ class Ability
     # Platforms block
     can [:show, :members, :advisories], Platform, :visibility => 'open'
     can :platforms_for_build, Platform, :visibility => 'open', :platform_type => 'main'
-    can(:get_list, MassBuild) {|mass_build| can?(:show, mass_build.save_to_platform) }
+    can([:read, :get_list], MassBuild) {|mass_build| can?(:show, mass_build.save_to_platform) }
     can [:read, :projects_list, :projects], Repository, :platform => {:visibility => 'open'}
     can :read, Product, :platform => {:visibility => 'open'}
 

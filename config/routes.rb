@@ -239,8 +239,6 @@ Rosa::Application.routes.draw do
         get :log
       end
       collection {
-        get :autocomplete_to_extra_repos_and_builds
-        get :update_extra_repos_and_builds
         post :search
       }
     end

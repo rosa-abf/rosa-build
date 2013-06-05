@@ -6,9 +6,7 @@ class AutocompletesController < ApplicationController
   autocomplete :user,   :uname
 
   def autocomplete_extra_build_list
-    bl = BuildList.where(:id => params[:term]).published_container.accessible_by(current_ability, :read)
-    bl = bl.where(:save_to_platform_id => save_to_platform.id) if save_to_platform.main?
-    bl = bl.first
+    bl = BuildList.for_extra_build_lists(params[:term], current_ability, save_to_platform).first
     results << {  :id     => bl.id,
                   :value  => bl.id,
                   :label  => "#{bl.id} (#{bl.project.name} - #{bl.arch.name})",
