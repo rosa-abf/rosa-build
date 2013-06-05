@@ -150,6 +150,7 @@ class BuildList < ActiveRecord::Base
       end
     end
 
+    after_transition :on => :place_build, :do => :add_to_queue
     after_transition :on => :published,
       :do => [:set_version_and_tag, :actualize_packages]
     after_transition :on => :publish, :do => :set_publisher
@@ -160,9 +161,7 @@ class BuildList < ActiveRecord::Base
       :unless => lambda { |build_list| build_list.auto_publish? }
 
     event :place_build do
-      transition :waiting_for_response => :build_pending, :if => lambda { |build_list|
-        build_list.add_to_queue == BuildList::SUCCESS
-      }
+      transition :waiting_for_response => :build_pending
     end
 
     event :start_build do
@@ -289,12 +288,8 @@ class BuildList < ActiveRecord::Base
   end
 
   def add_to_queue
-    # TODO: Investigate: why 2 tasks will be created without checking @state
-    unless @status
-      add_job_to_abf_worker_queue
-      update_column(:bs_id, id)
-    end
-    @status ||= BUILD_PENDING
+    add_job_to_abf_worker_queue
+    update_column(:bs_id, id)
   end
 
   def self.human_status(status)

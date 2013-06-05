@@ -158,7 +158,7 @@ class Project < ActiveRecord::Base
                       elsif repo.commits("#{build_for_platform.name}").try(:first).try(:id)
                         build_for_platform.name
                       else
-                        'master'
+                        default_branch
                       end
         
     build_list = build_lists.build do |bl|
