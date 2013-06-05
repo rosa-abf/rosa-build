@@ -14,7 +14,6 @@ class Platforms::MassBuildsController < Platforms::BaseController
     @mass_build         = @platform.mass_builds.build params[:mass_build]
     @mass_build.user    = current_user
     @mass_build.arches  = params[:arches]
-    # authorize! :create, @mass_build
 
     if @mass_build.save
       redirect_to(platform_mass_builds_path(@platform), :notice => t("flash.platform.build_all_success"))
