@@ -7,7 +7,7 @@ en:
       build_list:
         bs_id: Id
         name: Name
-        extra_repos: Extra repositories
+        extra_repositories: Extra repositories
         extra_build_lists: Extra build lists
         auto_create_container: Create container automatically
         container_path: Container path
@@ -26,7 +26,7 @@ en:
         save_to_repository: Save to repository
         build_for_platform: Build for platform
         update_type: Update type
-        auto_publish: Automated publising
+        auto_publish: Automated publishing
         project_version: Version
         user: User
         publisher: Publisher
@@ -134,7 +134,6 @@ en:
         success: Build complete
         build_started: Build started
         platform_pending: Platform pending
-        project_version_not_found: Project version not found
 
       log:
         build_log: Build Log

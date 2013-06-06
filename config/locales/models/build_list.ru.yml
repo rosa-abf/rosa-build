@@ -7,7 +7,7 @@ ru:
       build_list:
         bs_id: Id
         name: Название
-        extra_repos: Дополнительные репозитории
+        extra_repositories: Дополнительные репозитории
         extra_build_lists: Дополнительные сборки
         auto_create_container: Создать контейнер автоматически
         container_path: Путь до контейнера
@@ -133,7 +133,6 @@ ru:
         success: собран
         build_started: собирается
         platform_pending: платформа в процессе создания
-        project_version_not_found: версия не найдена
 
       log:
         build_log: Лог сборки

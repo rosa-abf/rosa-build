@@ -149,7 +149,7 @@ Rosa::Application.routes.draw do
         get    :advisories
       end
 
-      resources :mass_builds, :only => [:create, :index] do
+      resources :mass_builds, :only => [:create, :new, :index] do
         member do
           post   :cancel
           post   :publish
@@ -189,6 +189,8 @@ Rosa::Application.routes.draw do
     collection do
       get :autocomplete_user_uname
       get :autocomplete_group_uname
+      get :autocomplete_extra_build_list
+      get :autocomplete_extra_repositories
     end
   end
 
@@ -237,8 +239,6 @@ Rosa::Application.routes.draw do
         get :log
       end
       collection {
-        get :autocomplete_to_extra_repos_and_builds
-        get :update_extra_repos_and_builds
         post :search
       }
     end

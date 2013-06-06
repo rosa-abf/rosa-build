@@ -6,7 +6,6 @@ class ActivityFeedObserver < ActiveRecord::Observer
                           BuildList::BUILD_PUBLISHED,
                           BuildList::SUCCESS,
                           BuildList::BUILD_ERROR,
-                          BuildList::PROJECT_VERSION_NOT_FOUND,
                           BuildList::FAILED_PUBLISH,
                           BuildList::TESTS_FAILED
                         ].freeze

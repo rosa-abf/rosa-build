@@ -152,14 +152,14 @@ describe Api::V1::BuildListsController do
 
           context "if it has another status" do
             before do
-              @build_list.update_column(:status, BuildList::PROJECT_VERSION_NOT_FOUND)
+              @build_list.update_column(:status, BuildList::SUCCESS)
               do_cancel
             end
 
             it_should_behave_like 'validation error via build list api', I18n.t('layout.build_lists.cancel_fail')
 
             it "should not change status of build list" do
-              @build_list.reload.status.should == BuildList::PROJECT_VERSION_NOT_FOUND
+              @build_list.reload.status.should == BuildList::SUCCESS
             end
           end
         end
@@ -288,7 +288,7 @@ describe Api::V1::BuildListsController do
 
           context "if it has another status" do
             before(:each) do
-              @build_list.update_column(:status, BuildList::PROJECT_VERSION_NOT_FOUND)
+              @build_list.update_column(:status, BuildList::BUILD_CANCELED)
               do_publish
             end
 
@@ -297,7 +297,7 @@ describe Api::V1::BuildListsController do
             end
 
             it "should not change status of build list" do
-              @build_list.reload.status.should == BuildList::PROJECT_VERSION_NOT_FOUND
+              @build_list.reload.status.should == BuildList::BUILD_CANCELED
             end
           end
 
@@ -388,14 +388,14 @@ describe Api::V1::BuildListsController do
 
           context "if it has another status" do
             before(:each) do
-              @build_list.update_column(:status, BuildList::PROJECT_VERSION_NOT_FOUND)
+              @build_list.update_column(:status, BuildList::BUILD_CANCELED)
               do_reject_publish
             end
 
             it_should_behave_like 'validation error via build list api', I18n.t('layout.build_lists.reject_publish_fail')
 
             it "should not change status of build list" do
-              @build_list.reload.status.should == BuildList::PROJECT_VERSION_NOT_FOUND
+              @build_list.reload.status.should == BuildList::BUILD_CANCELED
             end
           end
         end
