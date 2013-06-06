@@ -17,6 +17,7 @@ $(document).ready(function() {
     if (build_platform.size() == 0) {
       all_repositories.removeAttr('disabled');
       auto_create_container.removeAttr('checked');
+      addPersonalPlatformToExtraRepos(selected_option, extra_repos);
       extra_repos.show();
     } else {
       all_repositories.attr('disabled', 'disabled');
@@ -82,6 +83,18 @@ function updateExtraReposAndBuildLists(save_to_platform_id) {
     var path = form.attr('path') + '?platform_id=' + save_to_platform_id;
     form.find('.autocomplete').attr('data-autocomplete', path);
   });
+}
+
+function addPersonalPlatformToExtraRepos(selected_option, extra_repos) {
+  var default_value = extra_repos.find('div[label="' + selected_option.text() + '"]');
+  if (default_value.length == 0) { return; }
+  addDataToAutocompleteForm(
+    extra_repos,
+    default_value.attr('path'),
+    default_value.attr('label'),
+    default_value.attr('name'),
+    default_value.attr('value')
+  );  
 }
 
 function setBranchSelected(selected_option) {

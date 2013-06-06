@@ -21,8 +21,19 @@
     %h3= t("activerecord.attributes.build_list.update_type")
     .lineForm= f.select :update_type, BuildList::UPDATE_TYPES
 
-    = render 'shared/autocomplete_form', :field => :extra_repositories, :field_class => Repository, :placeholder => 'uxteam_personal', :subject => @build_list, :autocomplete_path => autocomplete_extra_repositories_autocompletes_path
-    = render 'shared/autocomplete_form', :field => :extra_build_lists,  :field_class => BuildList, :placeholder => '1000000', :subject => @build_list, :autocomplete_path => autocomplete_extra_build_list_autocompletes_path
+    = render 'shared/autocomplete_form',
+      :field              => :extra_repositories,
+      :field_class        => Repository,
+      :placeholder        => 'uxteam_personal',
+      :subject            => @build_list,
+      :autocomplete_path  => autocomplete_extra_repositories_autocompletes_path,
+      :default_values     => @project.repositories.select{ |r| r.platform.personal? }
+    = render 'shared/autocomplete_form',
+      :field              => :extra_build_lists,
+      :field_class        => BuildList,
+      :placeholder        => '1000000',
+      :subject            => @build_list,
+      :autocomplete_path  => autocomplete_extra_build_list_autocompletes_path
 
     %h3= t("activerecord.attributes.build_list.preferences")
     - [:auto_publish, :auto_create_container].each do |kind|

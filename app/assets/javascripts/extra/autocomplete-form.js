@@ -9,17 +9,7 @@ $(document).ready(function() {
     var path  = $('#' + field + '_field_path').val();
     var label = $('#' + field + '_field_label').val();
 
-    var tr =  '<tr>' +
-                '<td>' +
-                  '<a href="' + path + '">' + label + '</a>' +
-                '</td>' +
-                '<td class="actions">' +
-                  '<input name="' + name + '" type="hidden" value="' + subject.val() + '">' +
-                  '<span class="delete"> </span>' +
-                '</td>' +
-              '</tr>';
-
-    form.find('table tbody').append($(tr));
+    addDataToAutocompleteForm(form, path, label, name, subject.val());
     form.find('.autocomplete').val('');
     return false;
   });
@@ -41,3 +31,16 @@ $(document).ready(function() {
   });
 
 });
+
+function addDataToAutocompleteForm(form, path, label, name, value) {
+  var tr =  '<tr>' +
+              '<td>' +
+                '<a href="' + path + '">' + label + '</a>' +
+              '</td>' +
+              '<td class="actions">' +
+                '<input name="' + name + '" type="hidden" value="' + value + '">' +
+                '<span class="delete"> </span>' +
+              '</td>' +
+            '</tr>';
+  form.find('table tbody').append($(tr));
+}

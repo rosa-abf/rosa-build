@@ -25,8 +25,18 @@
       %h3= t('activerecord.attributes.build_list.build_for_platform')
       = f.collection_select :build_for_platform_id, Platform.main, :id, :name
       .both
-      = render 'shared/autocomplete_form', :field => :extra_repositories, :field_class => Repository, :placeholder => 'uxteam_personal', :subject => @mass_build, :autocomplete_path => autocomplete_extra_repositories_autocompletes_path
-    = render 'shared/autocomplete_form', :field => :extra_build_lists,  :field_class => BuildList, :placeholder => '1000000', :subject => @mass_build, :autocomplete_path => autocomplete_extra_build_list_autocompletes_path
+      = render 'shared/autocomplete_form',
+        :field              => :extra_repositories,
+        :field_class        => Repository,
+        :placeholder        => 'uxteam_personal',
+        :subject            => @mass_build,
+        :autocomplete_path  => autocomplete_extra_repositories_autocompletes_path
+    = render 'shared/autocomplete_form',
+      :field              => :extra_build_lists, 
+      :field_class        => BuildList,
+      :placeholder        => '1000000',
+      :subject            => @mass_build,
+      :autocomplete_path  => autocomplete_extra_build_list_autocompletes_path
     %h3= t("activerecord.attributes.build_list.preferences")
     .both
       = f.check_box :auto_publish
