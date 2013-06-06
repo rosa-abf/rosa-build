@@ -34,7 +34,6 @@ class Api::V1::IssuesController < Api::V1::BaseController
   end
 
   def show
-    respond_with @issue
   end
 
   def create
@@ -94,7 +93,7 @@ class Api::V1::IssuesController < Api::V1::BaseController
 
     @issues = @issues.where('created_at >= to_timestamp(?)', params[:since]) if params[:since] =~ /\A\d+\z/
     @issues.paginate(paginate_params)
-    respond_with @issues
+    render :index
   end
 
   def get_all_project_ids default_project_ids
