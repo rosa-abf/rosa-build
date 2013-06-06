@@ -64,9 +64,9 @@ class Api::V1::IssuesController < Api::V1::BaseController
       when 'none'
         @issues = @issues.where(:assigned_id => nil)
       when '*'
-        @issues = @issues.where('assigned_id IS NOT NULL')
+        @issues = @issues.where('issues.assigned_id IS NOT NULL')
       else
-        @issues = @issues.where('assignees_issues.uname = ?', params[:assignee])
+        @issues = @issues.where('issues.assignees_issues.uname = ?', params[:assignee])
       end
     end
 
@@ -91,7 +91,7 @@ class Api::V1::IssuesController < Api::V1::BaseController
     direction = params[:direction] == 'asc' ? 'ASC' : 'DESC'
     @issues = @issues.order("#{sort} #{direction}")
 
-    @issues = @issues.where('created_at >= to_timestamp(?)', params[:since]) if params[:since] =~ /\A\d+\z/
+    @issues = @issues.where('issues.created_at >= to_timestamp(?)', params[:since]) if params[:since] =~ /\A\d+\z/
     @issues.paginate(paginate_params)
     render :index
   end
