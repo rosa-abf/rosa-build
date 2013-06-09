@@ -104,7 +104,6 @@ describe Projects::BuildListsController do
       post :create, {:owner_name => @project.owner.uname, :project_name => @project.name}.merge(@create_params)
       response.should redirect_to(forbidden_url)
     end
-
   end
 
   before { stub_symlink_methods }
@@ -147,6 +146,7 @@ describe Projects::BuildListsController do
 
     context 'for user' do
       before(:each) do
+        any_instance_of(BuildList, :current_duration => 100)
         @build_list = FactoryGirl.create(:build_list_core)
         @project = @build_list.project
         @owner_user = @project.owner
@@ -157,6 +157,102 @@ describe Projects::BuildListsController do
         @user = FactoryGirl.create(:user)
         set_session_for(@user)
         @show_params = {:owner_name => @project.owner.uname, :project_name => @project.name, :id => @build_list.id}
+        @build_list.save_to_repository.update_column(:publish_without_qa, false)
+        @request.env['HTTP_REFERER'] = build_list_path(@build_list)
+      end
+
+      context "do reject_publish" do
+        before(:each) {@build_list.save_to_repository.update_column(:publish_without_qa, true)}
+
+        def do_reject_publish
+          put :update, :id => @build_list, :reject_publish => true
+        end
+
+        context 'if user is project owner' do
+          before(:each) do
+            set_session_for(@owner_user)
+            @build_list.update_column(:status, BuildList::SUCCESS)
+            @build_list.save_to_platform.update_column(:released, true)
+            do_reject_publish
+          end
+
+          context "if it has :success status" do
+            it 'should return 302 response code' do
+              response.status.should == 302
+            end
+
+            it "should reject publish build list" do
+              @build_list.reload.status.should == BuildList::REJECTED_PUBLISH
+            end
+          end
+
+          context "if it has another status" do
+            before(:each) do
+              @build_list.update_column(:status, BuildList::BUILD_ERROR)
+              do_reject_publish
+            end
+
+            it "should not change status of build list" do
+              @build_list.reload.status.should == BuildList::BUILD_ERROR
+            end
+          end
+        end
+
+        context 'if user is not project owner' do
+          before(:each) do
+            @build_list.update_column(:status, BuildList::SUCCESS)
+            @build_list.save_to_platform.update_column(:released, true)
+            do_reject_publish
+          end
+
+          it "should redirect to forbidden page" do
+            response.should redirect_to(forbidden_url)
+          end
+
+          it "should not change status of build list" do
+            do_reject_publish
+            @build_list.reload.status.should == BuildList::SUCCESS
+          end
+        end
+
+        context 'if user is project reader' do
+          before(:each) do
+            @another_user = FactoryGirl.create(:user)
+            @build_list.update_column(:status, BuildList::SUCCESS)
+            @build_list.save_to_repository.update_column(:publish_without_qa, true)
+            @build_list.project.collaborators.create(:actor_type => 'User', :actor_id => @another_user.id, :role => 'reader')
+            set_session_for(@another_user)
+            do_reject_publish
+          end
+
+          it "should redirect to forbidden page" do
+            response.should redirect_to(forbidden_url)
+          end
+
+          it "should not change status of build list" do
+            do_reject_publish
+            @build_list.reload.status.should == BuildList::SUCCESS
+          end
+        end
+
+        context 'if user is project writer' do
+          before(:each) do
+            @writer_user = FactoryGirl.create(:user)
+            @build_list.update_column(:status, BuildList::SUCCESS)
+            @build_list.save_to_repository.update_column(:publish_without_qa, true)
+            @build_list.project.relations.create!(:actor_type => 'User', :actor_id => @writer_user.id, :role => 'writer')
+            set_session_for(@writer_user)
+            do_reject_publish
+          end
+
+          it 'should return 302 response code' do
+            response.status.should == 302
+          end
+
+          it "should reject publish build list" do
+            @build_list.reload.status.should == BuildList::REJECTED_PUBLISH
+          end
+        end
       end
 
       context 'for all build lists' do
@@ -229,7 +325,6 @@ describe Projects::BuildListsController do
           it_should_behave_like 'show build list'
           it_should_behave_like 'not create build list'
           it_should_behave_like 'show extra_repos_and_builds actions'
-
         end
       end
     end

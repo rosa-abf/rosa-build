@@ -5,7 +5,7 @@ FactoryGirl.define do
     #association :project
     association :save_to_platform, :factory => :platform_with_repos
     project { |bl|
-      pr = FactoryGirl.create(:project_with_commit)
+      pr = FactoryGirl.create(:project_with_commit, :owner => bl.user)
       bl.save_to_platform.repositories.first.projects << pr
       pr
     }

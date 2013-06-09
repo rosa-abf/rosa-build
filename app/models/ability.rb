@@ -83,7 +83,8 @@ class Ability
         can [:read, :log, :related, :everything], BuildList, :project => {:owner_type => 'User', :owner_id => user.id}
         can [:read, :log, :related, :everything], BuildList, :project => {:owner_type => 'Group', :owner_id => user.group_ids}
         can([:read, :log, :everything], BuildList, read_relations_for('build_lists', 'projects')) {|build_list| can? :read, build_list.project}
-        can([:create, :update], BuildList) {|build_list| build_list.project.is_package && can?(:write, build_list.project)}
+        can(:create, BuildList) {|build_list| build_list.project.is_package && can?(:write, build_list.project)}
+        can :update, BuildList
 
         can(:publish, BuildList) do |build_list|
           if build_list.build_published?
