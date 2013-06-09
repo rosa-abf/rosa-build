@@ -16,7 +16,7 @@ class Platform < ActiveRecord::Base
 
   has_many :packages, :class_name => "BuildList::Package", :dependent => :destroy
 
-  has_many :mass_builds
+  has_many :mass_builds, :foreign_key => :save_to_platform_id
 
   validates :description, :presence => true
   validates :visibility, :presence => true, :inclusion => {:in => VISIBILITIES}

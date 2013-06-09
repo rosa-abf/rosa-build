@@ -101,7 +101,7 @@ ru:
         updated_at: Обновлен
         has_issues: Включить трэкер
         has_wiki: Включить Wiki
-        srpm: Импортировать код из src.rpm
+        srpm: Импортировать код из src.rpm (опционально)
         who_owns:
           me: Я
           group: Группа

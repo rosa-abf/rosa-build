@@ -1,6 +1,7 @@
 en:
   layout:
     mass_builds:
+      new: New mass build
       publish_success: Publish success builds
       publish_test_failed: Publish test failed builds
       repositories: Repositories
@@ -22,6 +23,6 @@ en:
         updated_at: Updated
         arch_names: Architectures
         user: User
-        auto_publish: Auto Publish
+        auto_publish: Automated publishing
         repositories: Repositories
         projects_list: Projects list

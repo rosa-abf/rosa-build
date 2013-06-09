@@ -571,6 +571,7 @@ table.tablesorter tr td.buttons a span.delete,
 span.delete {
     background: image-url('x.png') no-repeat 0 0 transparent;
     width: 12px;
+    height: 12px;
     display: inline-block;
     cursor: pointer;
 }
@@ -1788,11 +1789,6 @@ table#myTable thead tr.search th form.button_to div input {
   border: 1px solid #DDDDDD;
 }
 
-#extra-repos-and-build-lists {
-    width: 330px;
-    .actions { width: 15px; }
-}
-
 .semi {
   opacity: 0.5;
 }
@@ -1843,18 +1839,23 @@ table#myTable thead tr.search th form.button_to div input {
   margin-left: 10px;
 }
 
-#extra-repos-and-build-lists {
+
+.autocomplete-form {
     width: 330px;
     .actions { width: 15px; }
     h3 { display: inline-block; }
+    .tablesorter {
+        width: auto;
+        min-width: 250px;
+    }
 }
 
-#extra-repos-and-build-lists-dialog  {
+#extra_repositories_dialog, #extra_build_lists_dialog  {
     font-size: 12px;
     text-align: left;
     p { margin: 0; }
 }
-#ui-dialog-title-extra-repos-and-build-lists-dialog {
+#ui-dialog-title-extra_repositories_dialog, #ui-dialog-title-extra_build_lists_dialog {
     font-size: 14px;
 }
 

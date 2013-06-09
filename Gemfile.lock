@@ -52,7 +52,7 @@ GEM
     activesupport (3.2.13)
       i18n (= 0.6.1)
       multi_json (~> 1.0)
-    airbrake (3.1.9)
+    airbrake (3.1.12)
       activesupport
       builder
       json
@@ -168,7 +168,7 @@ GEM
     jquery-rails (2.0.3)
       railties (>= 3.1.0, < 5.0)
       thor (~> 0.14)
-    json (1.7.7)
+    json (1.8.0)
     jwt (0.1.8)
       multi_json (>= 1.5)
     kgio (2.8.0)
@@ -198,7 +198,7 @@ GEM
     mocha (0.13.3)
       metaclass (~> 0.0.1)
     mock_redis (0.6.2)
-    multi_json (1.7.2)
+    multi_json (1.7.5)
     multipart-post (1.2.0)
     mustache (0.99.4)
     net-scp (1.1.0)

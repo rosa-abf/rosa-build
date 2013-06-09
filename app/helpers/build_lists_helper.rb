@@ -4,7 +4,7 @@ module BuildListsHelper
     case status
     when BuildList::BUILD_PUBLISHED, BuildList::SUCCESS
       'success'
-    when BuildList::BUILD_ERROR, BuildList::PROJECT_VERSION_NOT_FOUND, BuildList::FAILED_PUBLISH, BuildList::REJECTED_PUBLISH
+    when BuildList::BUILD_ERROR, BuildList::FAILED_PUBLISH, BuildList::REJECTED_PUBLISH
       'error'
     when BuildList::TESTS_FAILED
       'warning'

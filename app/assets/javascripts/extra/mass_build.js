@@ -1,5 +1,5 @@
 $(document).ready(function() {
-  var projects_list = $('.form.mass_build #projects_list');
+  var projects_list = $('.form.mass_build #mass_build_projects_list');
   var repositories = $(".form.mass_build .left input:checkbox");
   repositories.click(function(){
     if (this.checked){

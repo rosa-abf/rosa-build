@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130417162427) do
+ActiveRecord::Schema.define(:version => 20130603124853) do
 
   create_table "activity_feeds", :force => true do |t|
     t.integer  "user_id",    :null => false
@@ -133,7 +133,6 @@ ActiveRecord::Schema.define(:version => 20130417162427) do
     t.boolean  "new_core",                   :default => true
     t.string   "last_published_commit_hash"
     t.integer  "container_status"
-    t.boolean  "use_save_to_repository",     :default => true
     t.boolean  "auto_create_container",      :default => false
     t.text     "extra_repositories"
     t.text     "extra_build_lists"
@@ -272,7 +271,7 @@ ActiveRecord::Schema.define(:version => 20130417162427) do
   add_index "labels", ["project_id"], :name => "index_labels_on_project_id"
 
   create_table "mass_builds", :force => true do |t|
-    t.integer  "platform_id"
+    t.integer  "build_for_platform_id",                    :null => false
     t.string   "name"
     t.datetime "created_at",                               :null => false
     t.datetime "updated_at",                               :null => false
@@ -292,6 +291,9 @@ ActiveRecord::Schema.define(:version => 20130417162427) do
     t.boolean  "new_core",              :default => true
     t.integer  "success_count",         :default => 0,     :null => false
     t.integer  "build_canceled_count",  :default => 0,     :null => false
+    t.integer  "save_to_platform_id",                      :null => false
+    t.text     "extra_repositories"
+    t.text     "extra_build_lists"
   end
 
   create_table "platforms", :force => true do |t|

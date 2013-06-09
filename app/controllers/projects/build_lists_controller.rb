@@ -34,7 +34,6 @@ class Projects::BuildListsController < Projects::BaseController
   end
 
   def new
-    # @build_list = BuildList.new # @build_list already created by CanCan
   end
 
   def create
@@ -112,36 +111,6 @@ class Projects::BuildListsController < Projects::BaseController
       :log => @build_list.log(params[:load_lines]),
       :building => @build_list.build_started?
     }
-  end
-
-  def autocomplete_to_extra_repos_and_builds
-    results, save_to_platform  = [], Platform.find(params[:platform_id])
-    bl = BuildList.where(:id => params[:term]).published_container.accessible_by(current_ability, :read)
-    if save_to_platform.main?
-      bl = bl.where(:save_to_platform_id => save_to_platform.id)
-    else
-      # Only personal repositories can be attached to the build
-      platforms = Platform.includes(:repositories).personal.search(params[:term]).
-        accessible_by(current_ability, :read).search_order.limit(5)
-      platforms.each{ |p| p.repositories.each{ |r| results << {:id => r.id, :label => "#{p.name}/#{r.name}", :value => "#{p.name}/#{r.name}"} } }
-    end
-    bl = bl.first
-    results << {:id => "#{bl.id}-build-list", :value => bl.id, :label => "#{bl.id} (#{bl.project.name} - #{bl.arch.name})"} if bl
-    render json: results.to_json
-  end
-
-  def update_extra_repos_and_builds
-    results, save_to_repository = [], Repository.find(params[:build_list][:save_to_repository_id])
-    extra_repos         = params[:build_list][:extra_repositories]  || []
-    extra_bls           = params[:build_list][:extra_build_lists]    || []
-    (params[:extra_repo].gsub!(/-build-list$/, '') ? extra_bls : extra_repos) << params[:extra_repo]
-    build_lists = BuildList.where(:id => extra_bls).published_container.accessible_by(current_ability, :read)
-    if save_to_repository.platform.main?
-      build_lists = build_lists.where(:save_to_platform_id => save_to_repository.platform_id)
-    else
-      results.concat Repository.where(:id => extra_repos).accessible_by(current_ability, :read)
-    end
-    render :partial => 'extra', :collection => results.concat(build_lists)
   end
 
   protected

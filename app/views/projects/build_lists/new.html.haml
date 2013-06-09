@@ -6,8 +6,6 @@
       - Platform.main.each do |pl|
         - if pl.repository_ids.size > 0
           .both
-            =# check_box_tag "build_for_platforms[]", pl.id, (params[:build_for_platforms]||[]).include?(pl.id.to_s), :class => 'build_bpl_ids', :id => "bpls_#{pl.id}"
-            =# label_tag "bpls_#{pl.id}", pl.name
             %div{:id => "build_for_pl_#{pl.id}", :class => 'build_for_pl'}= pl.name
             .offset25= render 'include_repos', :platform => pl
   %section.right
@@ -23,39 +21,27 @@
     %h3= t("activerecord.attributes.build_list.update_type")
     .lineForm= f.select :update_type, BuildList::UPDATE_TYPES
 
-    #extra-repos-and-build-lists
-      %h3= t("activerecord.attributes.build_list.extra_repos")
-      %span.icon-question-sign
-      %div#extra-repos-and-build-lists-dialog{:title => t("activerecord.attributes.build_list.extra_repos")}
-        %b= t('helpers.extra_repos_and_build_lists.header')
-        %br
-        %br
-        %b= t('helpers.extra_repos_and_build_lists.build_lists.header')
-        - (1..4).each do |index|
-          %p= t("helpers.extra_repos_and_build_lists.build_lists.message#{index}").html_safe
-        %br
-        %b= t('helpers.extra_repos_and_build_lists.repos.header')
-        %p= t('helpers.extra_repos_and_build_lists.repos.message1')
-        %br
-        %b= t('helpers.extra_repos_and_build_lists.repos.header2')
-        %p= t('helpers.extra_repos_and_build_lists.repos.message2')
-        %p= t('helpers.extra_repos_and_build_lists.repos.message3').html_safe
-
-      = autocomplete_field_tag 'extra_repos', nil, autocomplete_to_extra_repos_and_builds_build_lists_path, :id_element => '#extra_repo_field'
-      = hidden_field_tag 'extra_repo', nil, :id => 'extra_repo_field'
-      = submit_tag t("layout.add"), :class => 'button', :id => 'add'
-      
-      %table.tablesorter{:cellpadding => "0", :cellspacing => "0"}
-        %tbody
-          = render :partial => 'extra', :collection => Repository.where(id: @build_list.extra_repositories)
-          = render :partial => 'extra', :collection => BuildList.where(id: @build_list.extra_build_lists)
+    = render 'shared/autocomplete_form',
+      :field              => :extra_repositories,
+      :field_class        => Repository,
+      :placeholder        => 'uxteam_personal',
+      :subject            => @build_list,
+      :autocomplete_path  => autocomplete_extra_repositories_autocompletes_path,
+      :default_values     => @project.repositories.select{ |r| r.platform.personal? }
+    = render 'shared/autocomplete_form',
+      :field              => :extra_build_lists,
+      :field_class        => BuildList,
+      :placeholder        => '1000000',
+      :subject            => @build_list,
+      :autocomplete_path  => autocomplete_extra_build_list_autocompletes_path
 
     %h3= t("activerecord.attributes.build_list.preferences")
-    - [:auto_publish, :auto_create_container, :use_save_to_repository].each do |kind|
+    - [:auto_publish, :auto_create_container].each do |kind|
       .both
         = f.check_box kind
         = f.label kind
     %br
     = f.submit t("layout.projects.build_button")
-
+.both
+%br
 = render 'projects/base/submenu'

@@ -16,8 +16,8 @@ class BuildList < ActiveRecord::Base
   has_many :items, :class_name => "BuildList::Item", :dependent => :destroy
   has_many :packages, :class_name => "BuildList::Package", :dependent => :destroy
 
-  UPDATE_TYPES = %w[security bugfix enhancement recommended newpackage]
-  RELEASE_UPDATE_TYPES = %w[security bugfix]
+  UPDATE_TYPES = %w[bugfix security enhancement recommended newpackage]
+  RELEASE_UPDATE_TYPES = %w[bugfix security]
 
   validates :project_id, :project_version, :arch, :include_repos,
             :build_for_platform_id, :save_to_platform_id, :save_to_repository_id, :presence => true
@@ -46,19 +46,16 @@ class BuildList < ActiveRecord::Base
   before_validation :prepare_extra_repositories,  :on => :create
   before_validation :prepare_extra_build_lists,   :on => :create
 
-  before_create :use_save_to_repository_for_main_platforms
-
   attr_accessible :include_repos, :auto_publish, :build_for_platform_id, :commit_hash,
                   :arch_id, :project_id, :save_to_repository_id, :update_type,
-                  :save_to_platform_id, :project_version, :use_save_to_repository,
-                  :auto_create_container, :extra_repositories, :extra_build_lists
+                  :save_to_platform_id, :project_version, :auto_create_container,
+                  :extra_repositories, :extra_build_lists
   LIVE_TIME = 4.week # for unpublished
   MAX_LIVE_TIME = 3.month # for published
 
   SUCCESS = 0
   ERROR   = 1
 
-  PROJECT_VERSION_NOT_FOUND = 4
   PROJECT_SOURCE_ERROR      = 6
   DEPENDENCIES_ERROR        = 555
   BUILD_ERROR               = 666
@@ -84,7 +81,6 @@ class BuildList < ActiveRecord::Base
                 SUCCESS,
                 BUILD_STARTED,
                 BUILD_ERROR,
-                PROJECT_VERSION_NOT_FOUND,
                 TESTS_FAILED
               ].freeze
 
@@ -99,11 +95,16 @@ class BuildList < ActiveRecord::Base
                      BUILD_ERROR => :build_error,
                      BUILD_STARTED => :build_started,
                      SUCCESS => :success,
-                     PROJECT_VERSION_NOT_FOUND => :project_version_not_found,
                      TESTS_FAILED => :tests_failed
                     }.freeze
 
   scope :recent, order("#{table_name}.updated_at DESC")
+  scope :for_extra_build_lists, lambda {|ids, current_ability, save_to_platform|
+    s = scoped
+    s = s.where(:id => ids).published_container.accessible_by(current_ability, :read)
+    s = s.where(:save_to_platform_id => save_to_platform.id) if save_to_platform && save_to_platform.main?
+    s
+  }
   scope :for_status, lambda {|status| where(:status => status) }
   scope :for_user, lambda { |user| where(:user_id => user.id)  }
   scope :for_platform, lambda { |platform| where(:build_for_platform_id => platform)  }
@@ -135,7 +136,7 @@ class BuildList < ActiveRecord::Base
   serialize :extra_repositories,  Array
   serialize :extra_build_lists,   Array
 
-  after_commit  :place_build
+  after_commit  :place_build, :on => :create
   after_destroy :remove_container
 
   state_machine :status, :initial => :waiting_for_response do
@@ -155,6 +156,7 @@ class BuildList < ActiveRecord::Base
       end
     end
 
+    after_transition :on => :place_build, :do => :add_to_queue
     after_transition :on => :published,
       :do => [:set_version_and_tag, :actualize_packages]
     after_transition :on => :publish, :do => :set_publisher
@@ -165,18 +167,11 @@ class BuildList < ActiveRecord::Base
       :unless => lambda { |build_list| build_list.auto_publish? }
 
     event :place_build do
-      transition :waiting_for_response => :build_pending, :if => lambda { |build_list|
-        build_list.add_to_queue == BuildList::SUCCESS
-      }
-      %w[BUILD_PENDING PROJECT_VERSION_NOT_FOUND].each do |code|
-        transition :waiting_for_response => code.downcase.to_sym, :if => lambda { |build_list|
-          build_list.add_to_queue == BuildList.const_get(code)
-        }
-      end
+      transition :waiting_for_response => :build_pending
     end
 
     event :start_build do
-      transition [ :build_pending, :project_version_not_found ] => :build_started
+      transition :build_pending => :build_started
     end
 
     event :cancel do
@@ -295,12 +290,8 @@ class BuildList < ActiveRecord::Base
   end
 
   def add_to_queue
-    # TODO: Investigate: why 2 tasks will be created without checking @state
-    unless @status
-      add_job_to_abf_worker_queue
-      update_column(:bs_id, id)
-    end
-    @status ||= BUILD_PENDING
+    add_job_to_abf_worker_queue
+    update_column(:bs_id, id)
   end
 
   def self.human_status(status)
@@ -420,14 +411,6 @@ class BuildList < ActiveRecord::Base
       path << "#{bl.id}/#{bl.arch.name}/#{bl.save_to_repository.name}/release"
       include_repos_hash["container_#{bl.id}"] = path
     end
-    if save_to_platform.personal? && use_save_to_repository
-      include_repos_hash["#{save_to_platform.name}_release"] = save_to_platform.
-        public_downloads_url(
-          build_for_platform.name,
-          arch.name,
-          save_to_repository.name
-        ) + 'release'
-    end
 
     git_project_address = project.git_project_address user
     # git_project_address.gsub!(/^http:\/\/(0\.0\.0\.0|localhost)\:[\d]+/, 'https://abf.rosalinux.ru') unless Rails.env.production?
@@ -469,10 +452,6 @@ class BuildList < ActiveRecord::Base
     end
   end
 
-  def use_save_to_repository_for_main_platforms
-    self.use_save_to_repository = true if save_to_platform.main?
-  end
-
   def set_publisher
     self.publisher ||= user
     save
@@ -493,9 +472,8 @@ class BuildList < ActiveRecord::Base
   end
 
   def prepare_extra_build_lists
-    bls = BuildList.where(:id => extra_build_lists).published_container.accessible_by(current_ability, :read)
-    if save_to_platform && save_to_platform.main?
-      bls = bls.where(:save_to_platform_id => save_to_platform.id)
+    bls = BuildList.for_extra_build_lists(extra_build_lists, current_ability, save_to_platform)
+    if save_to_platform
       if save_to_platform.distrib_type == 'rhel'
         bls = bls.where('
           (build_lists.arch_id = ? AND projects.publish_i686_into_x86_64 is not true) OR
@@ -504,7 +482,6 @@ class BuildList < ActiveRecord::Base
       else
         bls = bls.where(:arch_id => arch_id)
       end
-        
     end
     self.extra_build_lists = bls.pluck('build_lists.id')
   end

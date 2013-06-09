@@ -1,7 +1,7 @@
 json.build_list do |json|
   json.(@build_list, :id, :container_status, :status, :duration)
   json.(@build_list, :update_type, :priority, :new_core)
-  json.(@build_list, :advisory, :mass_build, :use_save_to_repository)
+  json.(@build_list, :advisory, :mass_build)
   json.(@build_list, :auto_publish, :package_version, :commit_hash, :last_published_commit_hash, :auto_create_container)
   json.build_log_url log_build_list_path(@build_list)
 
@@ -56,7 +56,7 @@ json.build_list do |json|
   end
 
   extra_repos = Repository.includes(:platform).where(:id => @build_list.extra_repositories)
-  json.extra_repos extra_repos do |json_extra_repos, repo|
+  json.extra_repositories extra_repos do |json_extra_repos, repo|
     json.partial! 'repositories',
       :repository => repo,
       :json => json_extra_repos
