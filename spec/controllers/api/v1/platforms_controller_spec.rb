@@ -225,12 +225,16 @@ describe Api::V1::PlatformsController do
       response.status.should == 401
     end
 
-    [:show, :platforms_for_build].each do |action|
-      it "should not be able to perform #{ action } action", :anonymous_access  => false do
-        get action, :format => :json
-        response.status.should == 401
-      end
+    it "should not be able to perform platforms_for_build action", :anonymous_access  => false do
+      get :platforms_for_build, :format => :json
+      response.status.should == 401
     end
+
+    it "should not be able to perform show action", :anonymous_access  => false do
+      get :show, :id => @platform, :format => :json
+      response.status.should == 401
+    end
+
 
     it 'should be able to perform members action', :anonymous_access  => true do
       get :members, :id => @platform.id, :format => :json
