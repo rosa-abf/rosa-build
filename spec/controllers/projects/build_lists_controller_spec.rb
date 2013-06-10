@@ -131,7 +131,7 @@ describe Projects::BuildListsController do
         before(:each) {@build_list.save_to_repository.update_column(:publish_without_qa, true)}
 
         def do_reject_publish
-          put :update, :id => @build_list, :reject_publish => true
+          put :reject_publish, :id => @build_list
         end
 
         context 'if user is project owner' do

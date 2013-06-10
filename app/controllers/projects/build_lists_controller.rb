@@ -79,46 +79,6 @@ class Projects::BuildListsController < Projects::BaseController
     @item_groups = @build_list.items.group_by_level
   end
 
-  def update
-    if params[:publish].present? and can?(:publish, @build_list)
-      publish
-    elsif params[:reject_publish].present? and can?(:reject_publish, @build_list)
-      reject_publish
-    else
-      # King Arthur, we are under attack!
-      redirect_to :forbidden and return
-    end
-  end
-
-  def create_container
-    if @build_list.publish_container
-      redirect_to :back, :notice => t('layout.build_lists.create_container_success')
-    else
-      redirect_to :back, :notice => t('layout.build_lists.create_container_fail')
-    end
-  end
-
-  def cancel
-    if @build_list.cancel
-      redirect_to :back, :notice => t('layout.build_lists.will_be_canceled')
-    else
-      redirect_to :back, :notice => t('layout.build_lists.cancel_fail')
-    end
-  end
-
-  def log
-    render :json => {
-      :log => @build_list.log(params[:load_lines]),
-      :building => @build_list.build_started?
-    }
-  end
-
-  protected
-
-  def find_build_list
-    @build_list = BuildList.find(params[:id])
-  end
-
   def publish
     @build_list.update_type = params[:build_list][:update_type] if params[:build_list][:update_type].present?
 
@@ -157,5 +117,34 @@ class Projects::BuildListsController < Projects::BaseController
     else
       redirect_to :back, :notice => t('layout.build_lists.reject_publish_fail')
     end
+  end
+
+  def create_container
+    if @build_list.publish_container
+      redirect_to :back, :notice => t('layout.build_lists.create_container_success')
+    else
+      redirect_to :back, :notice => t('layout.build_lists.create_container_fail')
+    end
+  end
+
+  def cancel
+    if @build_list.cancel
+      redirect_to :back, :notice => t('layout.build_lists.will_be_canceled')
+    else
+      redirect_to :back, :notice => t('layout.build_lists.cancel_fail')
+    end
+  end
+
+  def log
+    render :json => {
+      :log => @build_list.log(params[:load_lines]),
+      :building => @build_list.build_started?
+    }
+  end
+
+  protected
+
+  def find_build_list
+    @build_list = BuildList.find(params[:id])
   end
 end

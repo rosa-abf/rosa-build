@@ -232,11 +232,13 @@ Rosa::Application.routes.draw do
   end
 
   scope :module => 'projects' do
-    resources :build_lists, :only => [:index, :show, :update] do
+    resources :build_lists, :only => [:index, :show] do
       member do
         put :cancel
         put :create_container
         get :log
+        put :publish
+        put :reject_publish
       end
       collection {
         post :search
