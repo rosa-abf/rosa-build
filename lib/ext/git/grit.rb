@@ -9,6 +9,12 @@ module Grit
     end
   end
 
+  class Submodule
+    def binary?
+      false
+    end
+  end
+
   class Blob
     include Linguist::BlobHelper
 
