@@ -34,11 +34,11 @@ class Api::V1::BuildListsController < Api::V1::BaseController
 
   def publish
     @build_list.publisher = current_user
-    @build_list.save
     render_json :publish
   end
 
   def reject_publish
+    @build_list.publisher = current_user
     render_json :reject_publish
   end
 
