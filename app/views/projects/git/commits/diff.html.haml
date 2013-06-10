@@ -24,7 +24,7 @@
           - if commit_diff.b_path.present?
             .r= link_to "view file @ #{short_hash_id(commit_id)}", blob_path(@project, commit_id, commit_diff.b_path)
           .clear
-        -if commit_diff.diff.present? && !(@project.repo.tree(commit_id) / commit_diff.b_path).try(:binary?)
+        -if commit_diff.diff.present? && !(@project.repo.tree(commit_id) / commit_diff.b_path).binary?
           .diff_data=render_diff(commit_diff, :diff_counter => diff_counter)
   - rescue Grit::Git::GitTimeout
     %p= t 'layout.git.repositories.commit_diff_too_big'
