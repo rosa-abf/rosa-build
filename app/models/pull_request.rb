@@ -164,7 +164,7 @@ class PullRequest < ActiveRecord::Base
   def merge
     clone
     message = "Merge pull request ##{serial_id} from #{from_project_owner_uname}/#{from_project_name}:#{from_ref}\r\n #{title}"
-    %x(cd #{path} && git checkout #{to_ref} && git merge --no-ff #{from_branch} -m '#{message}')
+    %x(cd #{path} && git checkout #{to_ref} && git merge --no-ff #{from_branch} -m #{message.shellescape})
   end
 
   def clone
