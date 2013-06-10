@@ -129,12 +129,12 @@ end
 
 shared_examples_for 'project with issues turned off' do
   it 'should not be able to perform index action' do
-    get :index, :project_id => @project_with_turned_off_issues.id
+    get :index, :owner_name => @project_with_turned_off_issues.owner.uname, :project_name => @project_with_turned_off_issues.name
     response.should redirect_to(forbidden_path)
   end
 
   it 'should not be able to perform show action' do
-    get :show, :project_id => @project_with_turned_off_issues.id, :id => @turned_of_issue.serial_id
+    get :show, :owner_name => @project_with_turned_off_issues.owner.uname, :project_name => @project_with_turned_off_issues.name, :id => @turned_of_issue.serial_id
     response.should redirect_to(forbidden_path)
   end
 end

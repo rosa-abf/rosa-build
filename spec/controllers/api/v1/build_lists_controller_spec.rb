@@ -416,6 +416,49 @@ describe Api::V1::BuildListsController do
             @build_list.reload.status.should == BuildList::SUCCESS
           end
         end
+
+        context 'if user is project reader' do
+          before(:each) do
+            @another_user = FactoryGirl.create(:user)
+            @build_list.update_column(:status, BuildList::SUCCESS)
+            @build_list.save_to_repository.update_column(:publish_without_qa, true)
+            @build_list.project.collaborators.create(:actor_type => 'User', :actor_id => @another_user.id, :role => 'reader')
+            http_login(@another_user)
+            do_reject_publish
+          end
+
+          it "should return access violation message" do
+            response.body.should == {"message" => "Access violation to this page!"}.to_json
+          end
+
+          it "should not change status of build list" do
+            do_reject_publish
+            @build_list.reload.status.should == BuildList::SUCCESS
+          end
+        end
+
+        context 'if user is project writer' do
+          before(:each) do
+            @another_user = FactoryGirl.create(:user)
+            @build_list.update_column(:status, BuildList::SUCCESS)
+            @build_list.save_to_repository.update_column(:publish_without_qa, true)
+            @build_list.project.relations.create!(:actor_type => 'User', :actor_id => @another_user.id, :role => 'writer')
+            http_login(@another_user)
+            do_reject_publish
+          end
+
+          it "should return correct json message" do
+            response.body.should == { :build_list => {:id => @build_list.id, :message => I18n.t('layout.build_lists.reject_publish_success')} }.to_json
+          end
+
+          it 'should return 200 response code' do
+            response.should be_success
+          end
+
+          it "should reject publish build list" do
+            @build_list.reload.status.should == BuildList::REJECTED_PUBLISH
+          end
+        end
       end
 
       context 'for open project' do
@@ -745,6 +788,5 @@ describe Api::V1::BuildListsController do
         end
       end
     end
-
   end
 end

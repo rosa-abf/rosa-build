@@ -159,7 +159,7 @@ end
 shared_examples_for 'pull request when project with issues turned off' do
   before { @project.update_attributes(:has_issues => false) }
   it 'should be able to perform index action' do
-    get :index, :project_id => @project.id
+    get :index, :owner_name => @project.owner.uname, :project_name => @project.name
     response.should render_template(:index)
   end
 
