@@ -104,7 +104,7 @@ class PullRequest < ActiveRecord::Base
 
   def from_branch
     if to_project_id != from_project_id
-      "head_#{from_ref}"
+      "head_#{from_ref.shellescape}"
     else
       from_ref
     end
@@ -164,7 +164,7 @@ class PullRequest < ActiveRecord::Base
   def merge
     clone
     message = "Merge pull request ##{serial_id} from #{from_project_owner_uname}/#{from_project_name}:#{from_ref}\r\n #{title}"
-    %x(cd #{path} && git checkout #{to_ref} && git merge --no-ff #{from_branch} -m #{message.shellescape})
+    %x(cd #{path} && git checkout #{to_ref.shellescape} && git merge --no-ff #{from_branch.shellescape} -m #{message.shellescape})
   end
 
   def clone
@@ -191,11 +191,12 @@ class PullRequest < ActiveRecord::Base
       tags, head = repo.tags.map(&:name), to_project == from_project ? 'origin' : 'head'
       system 'git', 'checkout', to_ref
       unless tags.include? to_ref
-        system 'git', 'reset', '--hard', "origin/#{to_ref}"
+        system 'git', 'reset', '--hard', "origin/#{to_ref.shellescape}"
       end
       unless tags.include? from_ref
-        system 'git', 'branch', '-D', from_branch
-        system 'git', 'fetch', head, "+#{from_ref}:#{from_branch}"
+        system 'git', 'checkout', from_ref
+        system 'git', 'reset', '--hard', "head/#{from_ref.shellescape}"
+        system 'git', 'checkout', to_ref
       end
     end
   end
