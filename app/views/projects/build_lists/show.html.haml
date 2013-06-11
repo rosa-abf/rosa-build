@@ -4,7 +4,7 @@
     %p= @build_list.human_status
   %p= @build_list.updated_at
   .both
-= form_for @build_list do |f|
+=form_for @build_list, :url => publish_build_list_path(@build_list), :html => { :class => :form } do |f|
   %h3= t("layout.build_lists.main_data")
   .leftlist= t("activerecord.attributes.build_list.container_path")
   .rightlist
