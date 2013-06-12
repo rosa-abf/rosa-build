@@ -93,12 +93,13 @@ module AbfWorker
 
         distrib_type  = build_list.build_for_platform.distrib_type
         cmd_params    = {
-          'RELEASED'        => false,
-          'REPOSITORY_NAME' => build_list.save_to_repository.name,
-          'TYPE'            => distrib_type,
-          'IS_CONTAINER'    => true,
-          'ID'              => build_list.id,
-          'PLATFORM_NAME'   => build_list.save_to_platform.name
+          'RELEASED'            => false,
+          'REPOSITORY_NAME'     => build_list.save_to_repository.name,
+          'TYPE'                => distrib_type,
+          'IS_CONTAINER'        => true,
+          'ID'                  => build_list.id,
+          'PLATFORM_NAME'       => build_list.save_to_platform.name,
+          'MAIN_PLATFORM_NAME'  => build_list.build_for_platform.name
         }.map{ |k, v| "#{k}=#{v}" }.join(' ')
 
 
@@ -283,9 +284,10 @@ module AbfWorker
 
       distrib_type  = build_for_platform.distrib_type
       cmd_params    = {
-        'RELEASED'        => save_to_platform.released,
-        'REPOSITORY_NAME' => save_to_repository.name,
-        'TYPE'            => distrib_type
+        'RELEASED'            => save_to_platform.released,
+        'REPOSITORY_NAME'     => save_to_repository.name,
+        'TYPE'                => distrib_type,
+        'MAIN_PLATFORM_NAME'  => build_for_platform.name
       }.map{ |k, v| "#{k}=#{v}" }.join(' ')
 
       lock_str  = "#{save_to_repository_id}-#{build_for_platform_id}"
@@ -347,10 +349,11 @@ module AbfWorker
         platform_path = "#{rep.platform.path}/repository"
         distrib_type  = rep.platform.distrib_type
         cmd_params    = {
-          'RELEASED'        => rep.platform.released,
-          'REPOSITORY_NAME' => rep.name,
-          'TYPE'            => distrib_type,
-          'REGENERATE_METADATA' => true
+          'RELEASED'            => rep.platform.released,
+          'REPOSITORY_NAME'     => rep.name,
+          'TYPE'                => distrib_type,
+          'REGENERATE_METADATA' => true,
+          'MAIN_PLATFORM_NAME'  => rep.platform.name
         }.map{ |k, v| "#{k}=#{v}" }.join(' ')
 
         options = {
