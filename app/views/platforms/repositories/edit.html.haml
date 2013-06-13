@@ -8,6 +8,8 @@
   = render "form", :f => f
 %br
 
+= render 'regenerate_metadata' if can?(:regenerate_metadata, @repository)
+
 - if @platform.main?
   = render "shared/members_table",
     :remove_members_path => remove_members_platform_repository_path(@platform, @repository),

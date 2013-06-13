@@ -57,9 +57,10 @@ module AbfWorker
         redis.lpush RESIGN_REPOSITORIES, key_pair.repository_id
       end
 
-      def repository_regenerate_metadata(repository_id)
-        return false if Resque.redis.lrange(REGENERATE_METADATA, 0, -1).include? repository_id.to_s
-        redis.lpush REGENERATE_METADATA, repository_id
+      def repository_regenerate_metadata(repository, build_for_platform)
+        key = "#{repository.id}-#{build_for_platform.id}"
+        return false if Resque.redis.lrange(REGENERATE_METADATA, 0, -1).include? key
+        redis.lpush REGENERATE_METADATA, key
       end
 
       def unlock_repository(repository_id)
@@ -337,50 +338,50 @@ module AbfWorker
       return true
     end
 
-    # Only for main platforms!
     def create_tasks_for_repository_regenerate_metadata
-      worker_queue = 'publish_worker_default'
-      worker_class   = 'AbfWorker::PublishWorkerDefault'
-      regen_repos   = @redis.lrange REGENERATE_METADATA, 0, -1
-      locked_rep_and_pl = @redis.lrange(LOCKED_REP_AND_PLATFORMS, 0, -1)
+      worker_queue        = 'publish_worker_default'
+      worker_class        = 'AbfWorker::PublishWorkerDefault'
+      regen_repos_and_pl  = @redis.lrange REGENERATE_METADATA, 0, -1
+      locked_rep_and_pl   = @redis.lrange(LOCKED_REP_AND_PLATFORMS, 0, -1)
 
+      regen_repos = regen_repos_and_pl.map{ |r| r.gsub(/\-[\d]*$/, '') }
       Repository.where(:id => regen_repos).each do |rep|
-        lock_str = "#{rep.id}-#{rep.platform_id}"
-        next if locked_rep_and_pl.include?("#{rep.id}-#{rep.platform_id}")
-        @redis.lrem REGENERATE_METADATA, 0, rep.id
+        regen_repos_and_pl.select{ |kind| kind =~ /^#{rep.id}\-/ }.each do |lock_str|
+          next if locked_rep_and_pl.include?(lock_str)
+          @redis.lrem REGENERATE_METADATA, 0, lock_str
 
-        platform_path = "#{rep.platform.path}/repository"
-        distrib_type  = rep.platform.distrib_type
-        cmd_params    = {
-          'RELEASED'            => rep.platform.released,
-          'REPOSITORY_NAME'     => rep.name,
-          'TYPE'                => distrib_type,
-          'REGENERATE_METADATA' => true,
-          'SAVE_TO_PLATFORM'    => rep.platform.name,
-          'BUILD_FOR_PLATFORM'  => rep.platform.name
-        }.map{ |k, v| "#{k}=#{v}" }.join(' ')
+          build_for_platform  = Platform.find lock_str.gsub(/^[\d]*\-/, '')
+          cmd_params          = {
+            'RELEASED'            => rep.platform.released,
+            'REPOSITORY_NAME'     => rep.name,
+            'TYPE'                => build_for_platform.distrib_type,
+            'REGENERATE_METADATA' => true,
+            'SAVE_TO_PLATFORM'    => rep.platform.name,
+            'BUILD_FOR_PLATFORM'  => build_for_platform.name
+          }.map{ |k, v| "#{k}=#{v}" }.join(' ')
 
-        options = {
-          :id           => Time.now.to_i,
-          :arch         => 'x86_64',
-          :distrib_type => distrib_type,
-          :cmd_params   => cmd_params,
-          :platform     => {:platform_path => platform_path},
-          :repository   => {:id => rep.id},
-          :type         => :publish,
-          :time_living  => 9600, # 160 min
-          :skip_feedback => true,
-          :extra         => {:lock_str => lock_str, :regenerate => true}
-        }
+          options = {
+            :id           => Time.now.to_i,
+            :arch         => 'x86_64',
+            :distrib_type => build_for_platform.distrib_type,
+            :cmd_params   => cmd_params,
+            :platform     => {:platform_path => "#{rep.platform.path}/repository"},
+            :repository   => {:id => rep.id},
+            :type         => :publish,
+            :time_living  => 9600, # 160 min
+            :skip_feedback => true,
+            :extra         => {:lock_str => lock_str, :regenerate => true}
+          }
 
-        Resque.push(
-          worker_queue,
-          'class' => worker_class,
-          'args' => [options.merge({
-          })]
-        )
+          Resque.push(
+            worker_queue,
+            'class' => worker_class,
+            'args' => [options.merge({
+            })]
+          )
 
-        @redis.lpush(LOCKED_REP_AND_PLATFORMS, lock_str)
+          @redis.lpush(LOCKED_REP_AND_PLATFORMS, lock_str)
+        end
       end
       return true
     end
