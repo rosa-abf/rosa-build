@@ -32,6 +32,8 @@ shared_examples_for 'user without change projects in repository rights' do
   it 'should not be able to perform regenerate_metadata action' do
     put :regenerate_metadata, :id => @repository.id, :platform_id => @platform.id
     response.should redirect_to(redirect_path)
+    @redis_instance.lrange(AbfWorker::BuildListsPublishTaskManager::REGENERATE_METADATA, 0, -1)
+                   .should be_empty
   end
 
   it 'should not be able to remove project from repository' do
@@ -51,7 +53,7 @@ shared_examples_for 'registered user or guest' do
     put :regenerate_metadata, :id => @repository.id, :platform_id => @platform.id
     response.should redirect_to(redirect_path)
     @redis_instance.lrange(AbfWorker::BuildListsPublishTaskManager::REGENERATE_METADATA, 0, -1)
-      .should be_empty
+                   .should be_empty
   end
 
   it 'should not be able to perform create action' do
@@ -137,7 +139,7 @@ shared_examples_for 'platform admin user' do
     put :regenerate_metadata, :id => @repository.id, :platform_id => @platform.id
     response.should redirect_to(platform_repository_path(@platform, @repository))
     @redis_instance.lrange(AbfWorker::BuildListsPublishTaskManager::REGENERATE_METADATA, 0, -1)
-      .should == ["#{@repository.id}-#{@platform.id}"]
+                   .should == ["#{@repository.id}-#{@platform.id}"]
   end
 
   it 'should be able to create repository' do
