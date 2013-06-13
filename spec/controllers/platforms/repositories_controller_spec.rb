@@ -29,6 +29,11 @@ shared_examples_for 'user without change projects in repository rights' do
     @repository.projects.should_not include(@project)
   end
 
+  it 'should not be able to perform regenerate_metadata action' do
+    put :regenerate_metadata, :id => @repository.id, :platform_id => @platform.id
+    response.should redirect_to(redirect_path)
+  end
+
   it 'should not be able to remove project from repository' do
     delete :remove_project, :id => @repository.id, :platform_id => @platform.id, :project_id => @project.id
     response.should redirect_to(redirect_path)
@@ -40,6 +45,13 @@ shared_examples_for 'registered user or guest' do
   it 'should not be able to perform new action' do
     get :new, :platform_id => @platform.id
     response.should redirect_to(redirect_path)
+  end
+
+  it 'should not be able to perform regenerate_metadata action' do
+    put :regenerate_metadata, :id => @repository.id, :platform_id => @platform.id
+    response.should redirect_to(redirect_path)
+    @redis_instance.lrange(AbfWorker::BuildListsPublishTaskManager::REGENERATE_METADATA, 0, -1)
+      .should be_empty
   end
 
   it 'should not be able to perform create action' do
@@ -121,6 +133,13 @@ shared_examples_for 'platform admin user' do
     response.should render_template(:new)
   end
 
+  it 'should be able to perform regenerate_metadata action' do
+    put :regenerate_metadata, :id => @repository.id, :platform_id => @platform.id
+    response.should redirect_to(platform_repository_path(@platform, @repository))
+    @redis_instance.lrange(AbfWorker::BuildListsPublishTaskManager::REGENERATE_METADATA, 0, -1)
+      .should == ["#{@repository.id}-#{@platform.id}"]
+  end
+
   it 'should be able to create repository' do
     lambda { post :create, @create_params }.should change{ Repository.count }.by(1)
     response.should redirect_to(platform_repository_path(@platform, Repository.last))
@@ -179,6 +198,7 @@ end
 describe Platforms::RepositoriesController do
   before(:each) do
     stub_symlink_methods
+    stub_redis
 
     @platform = FactoryGirl.create(:platform)
     @repository = FactoryGirl.create(:repository, :platform =>  @platform)
