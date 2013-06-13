@@ -272,8 +272,8 @@ describe AbfWorker::BuildListsPublishTaskManager do
     context 'for repository of main platform' do
       let(:repository) { FactoryGirl.create(:repository) }
       before do
-        AbfWorker::BuildListsPublishTaskManager.repository_regenerate_metadata repository, repository.platform
-        AbfWorker::BuildListsPublishTaskManager.new.run
+        subject.repository_regenerate_metadata repository, repository.platform
+        subject.new.run
       end
 
       it "ensure that 'locked rep and platforms' has only one item" do
@@ -292,10 +292,38 @@ describe AbfWorker::BuildListsPublishTaskManager do
       end
     end
 
+    context 'for repository of personal platform' do
+      let(:main_platform) { FactoryGirl.create(:platform) }
+      let(:repository) { FactoryGirl.create(:personal_repository) }
+      before do
+        subject.repository_regenerate_metadata repository, main_platform
+        subject.new.run
+      end
 
+      it "ensure that 'locked rep and platforms' has only one item" do
+        @redis_instance.lrange(subject::LOCKED_REP_AND_PLATFORMS, 0, -1)
+          .should == ["#{repository.id}-#{main_platform.id}"]
+      end
+
+      it "ensure that 'regenerate metadata' queue without items" do
+        @redis_instance.lrange(subject::REGENERATE_METADATA, 0, -1).should be_empty
+      end
+
+      it 'ensure that new task has been created' do
+        @redis_instance.lrange('queue:publish_worker_default', 0, -1).should have(1).item
+      end
+    end
+
+    it 'ensure that two tasks for regenerate one repository will not be created' do
+      repository = FactoryGirl.create(:repository)
+      2.times do
+        subject.repository_regenerate_metadata repository, repository.platform
+        subject.new.run
+      end
+      @redis_instance.lrange('queue:publish_worker_default', 0, -1).should have(1).item
+    end
 
   end
-
 
   after(:all) do
     APP_CONFIG['abf_worker']['publish_workers_count'] = @publish_workers_count
