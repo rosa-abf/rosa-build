@@ -171,8 +171,6 @@ class Ability
 
       cannot(:cancel, MassBuild) {|mass_build| mass_build.stop_build}
 
-      cannot(:regenerate_metadata, Repository) {|repository| !repository.platform.main?}
-
       if @user.system?
         can :key_pair, Repository
       else

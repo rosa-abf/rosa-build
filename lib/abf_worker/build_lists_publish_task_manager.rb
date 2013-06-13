@@ -3,6 +3,7 @@ module AbfWorker
   class BuildListsPublishTaskManager
     REDIS_MAIN_KEY = 'abf-worker::build-lists-publish-task-manager::'
 
+    # LOCKED_REP_AND_PLATFORMS: ['save_to_repository_id-build_for_platform_id', ...]
     %w(RESIGN_REPOSITORIES 
        PROJECTS_FOR_CLEANUP
        LOCKED_PROJECTS_FOR_CLEANUP
