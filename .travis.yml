@@ -1,0 +1,11 @@
+language: ruby
+rvm:
+  - 1.9.3
+bundler_args: --without development
+before_install:
+  - gem update --system
+  - gem --version
+  - cp config/database.yml.sample config/database.yml
+branches:
+  only:
+    - master
