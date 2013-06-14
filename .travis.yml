@@ -13,5 +13,4 @@ before_script:
   - bundle exec rake db:create db:structure:load db:migrate
 branches:
   only:
-#    - master
-    - 188-use-travis
+    - master
