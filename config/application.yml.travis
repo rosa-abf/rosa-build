@@ -10,8 +10,8 @@ common: &common
   keys:
     key_pair_secret_key: 'key_pair_secret_key'
     airbrake_api_key: 'airbrake_api_key'
-    devise_pepper: 'devise_pepper'
-    secret_token: 'secret_token'
+    devise_pepper: 'e295a79fb7966e94a6e8b184ba65791a'
+    secret_token: 'e295a79fb7966e94a6e8b184ba65791a'
     github:
       id: 'APP_ID'
       secret: 'APP_SECRET'
