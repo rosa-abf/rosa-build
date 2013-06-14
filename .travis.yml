@@ -9,6 +9,7 @@ before_install:
   - gem --version
   - cp config/database.yml.sample config/database.yml
   - cp config/application.yml.travis config/application.yml
+  - psql -c 'create database rosa_build_test;' -U postgres
 branches:
   only:
 #    - master
