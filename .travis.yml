@@ -10,7 +10,7 @@ before_install:
 before_script:
   - cp config/database.yml.sample config/database.yml
   - cp config/application.yml.travis config/application.yml
-  - bundle exec rake db:create db:structure:load db:migrate
+script: "bundle exec rake db:create db:structure:load db:migrate && bundle exec rake spec"
 branches:
   only:
 #    - master
