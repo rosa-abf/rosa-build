@@ -5,7 +5,8 @@ module GitHelper
     # node.url(treeish) looks like:
     # - http://0.0.0.0:3000/abf/git@abf.rosalinux.ru:abf/rhel-scripts.git
     # - git://github.com/avokhmin/mdv-scripts.git
-    url = node.url(treeish).gsub(/.git$/, '')
+    return nil unless url = node.url(treeish)
+    url.gsub!(/.git$/, '')
     if url =~ /^git:/
       url.gsub!(/^git/, 'http')
     elsif str = /git@.*:.*/.match(url)
