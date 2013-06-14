@@ -18,7 +18,7 @@ before_script:
   - cp config/database.yml.sample config/database.yml
   - cp config/application.yml.travis config/application.yml
   - bundle exec rake db:create db:structure:load db:migrate
-script: travis.sh
+script: "./travis.sh"
 branches:
   only:
     # - master
