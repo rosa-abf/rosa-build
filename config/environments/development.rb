@@ -1,4 +1,20 @@
 # -*- encoding : utf-8 -*-
+
+class DisableAssetsLogger
+  def initialize(app)
+    @app = app
+    Rails.application.assets.logger = Logger.new('/dev/null')
+  end
+
+  def call(env)
+    previous_level = Rails.logger.level
+    Rails.logger.level = Logger::ERROR if env['PATH_INFO'].index("/assets/") == 0
+    @app.call(env)
+  ensure
+    Rails.logger.level = previous_level
+  end
+end
+
 Rosa::Application.configure do
   # Settings specified here will take precedence over those in config/application.rb
 
@@ -40,4 +56,6 @@ Rosa::Application.configure do
 
   # Log the query plan for queries taking more than this (works with SQLite, MySQL, and PostgreSQL)
   config.active_record.auto_explain_threshold_in_seconds = 0.5
+
+  config.middleware.insert_before Rails::Rack::Logger, DisableAssetsLogger
 end
