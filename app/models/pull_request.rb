@@ -164,7 +164,7 @@ class PullRequest < ActiveRecord::Base
   def merge
     clone
     message = "Merge pull request ##{serial_id} from #{from_project_owner_uname}/#{from_project_name}:#{from_ref}\r\n #{title}"
-    %x(cd #{path} && git checkout #{to_ref} && git merge --no-ff #{from_branch} -m #{message.shellescape})
+    %x(cd #{path} && git checkout #{to_ref.shellescape} && git merge --no-ff #{from_branch.shellescape} -m #{message.shellescape})
   end
 
   def clone
@@ -194,8 +194,9 @@ class PullRequest < ActiveRecord::Base
         system 'git', 'reset', '--hard', "origin/#{to_ref}"
       end
       unless tags.include? from_ref
-        system 'git', 'branch', '-D', from_branch
-        system 'git', 'fetch', head, "+#{from_ref}:#{from_branch}"
+        system 'git', 'checkout', from_branch
+        system 'git', 'reset', '--hard', "#{head}/#{from_ref}"
+        system 'git', 'checkout', to_ref
       end
     end
   end
