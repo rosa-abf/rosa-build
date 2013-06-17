@@ -26,10 +26,12 @@
           - if node.is_a? Grit::Submodule
             .pic= image_tag 'folder-submodule.png'
             .name
-              - url = submodule_url node, @treeish
-              = link_to(node.name, url, :class => 'files-see')
-              = '@'
-              = link_to(node.id[0..6], "#{url}/tree/#{node.id}", :class => 'files-see')
+              - if url = submodule_url(node, @treeish)
+                = link_to(node.name, url, :class => 'files-see')
+                = '@'
+                = link_to(node.id[0..6], "#{url}/tree/#{node.id}", :class => 'files-see')
+              - else
+                = "#{node.name} @ #{node.id[0..6]}"
           - else
             - options = [@project, @treeish, node_path]
             - if node.is_a?(Grit::Tree)
