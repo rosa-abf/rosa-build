@@ -38,11 +38,6 @@ describe Api::V1::MaintainersController do
         response.status.should == 401
       end
     end
-    # it 'should be able to perform index action', :anonymous_access  => true do
-    #   get :index, :platform_id => package.platform_id, :format => :json
-    #   should render_template(:index)
-    # end
-
   end
 
   context 'for simple user' do
@@ -51,11 +46,5 @@ describe Api::V1::MaintainersController do
     end
 
     it_should_behave_like 'api maintainers user with reader rights'
-    # it 'should be able to perform index action' do
-    #   get :index, :platform_id => package.platform_id, :format => :json
-    #   should render_template(:index)
-    # end
-
-    # it ''
   end
 end
