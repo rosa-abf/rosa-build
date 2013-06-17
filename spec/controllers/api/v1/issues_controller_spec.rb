@@ -40,6 +40,11 @@ describe Api::V1::IssuesController do
         response.should be_success
       end
 
+      it 'should render right template for show action' do
+        get :show, :project_id => @project.id, :id => @issue.serial_id, :format => :json
+        response.should render_template('api/v1/issues/show')
+      end
+
       it 'can show issue in open project' do
         get :show, :project_id => @open_project.id, :id => @open_issue.serial_id, :format => :json
         response.should be_success
@@ -62,11 +67,21 @@ describe Api::V1::IssuesController do
         assigns[:issues].should include(@membered_issue)
       end
 
+      it 'should render right template for all index action' do
+        get :all_index, :format => :json
+        response.should render_template('api/v1/issues/index')
+      end
+
       it 'should return only assigned issue' do
         http_login(@issue.user)
         get :user_index, :format => :json
         assigns[:issues].should include(@own_hidden_issue)
         assigns[:issues].count.should == 1
+      end
+
+      it 'should render right template for user index action' do
+        get :user_index, :format => :json
+        response.should render_template('api/v1/issues/index')
       end
     end
 
