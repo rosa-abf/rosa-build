@@ -26,7 +26,7 @@ class Advisory < ActiveRecord::Base
     self.platforms  << build_list.save_to_platform unless platforms.include? build_list.save_to_platform
     self.projects   << build_list.project unless projects.include? build_list.project
     build_list.advisory = self
-    save
+    save && build_list.save
   end
 
   # this method fetches and structurize packages attached to current advisory.
