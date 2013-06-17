@@ -449,6 +449,7 @@ DEPENDENCIES
   rails-backbone (~> 0.7.2)
   rails3-generators
   rails3-jquery-autocomplete (~> 1.0.7)
+  rake
   rdiscount
   redcarpet (~> 2.2.2)
   redhillonrails_core!

@@ -6,6 +6,8 @@ A distributed environment to build distributions, supporting all steps from mana
 
 **Note: This Documentation is in a beta state. Breaking changes may occur.**
 
+[![Build Status](https://travis-ci.org/rosa-abf/rosa-build.png?branch=master)](https://travis-ci.org/rosa-abf/rosa-build)
+
 * [API](http://abf-doc.rosalinux.ru/abf/api/)
 * [Integration with FileStore (.abf.yml)](http://abf-doc.rosalinux.ru/abf/file_store_integration/)
 * [ISO build environment](http://abf-doc.rosalinux.ru/abf/iso_build/)
