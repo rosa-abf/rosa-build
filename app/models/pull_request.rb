@@ -104,7 +104,7 @@ class PullRequest < ActiveRecord::Base
 
   def from_branch
     if to_project_id != from_project_id
-      "head_#{from_ref.shellescape}"
+      "head_#{from_ref}"
     else
       from_ref
     end
@@ -191,11 +191,11 @@ class PullRequest < ActiveRecord::Base
       tags, head = repo.tags.map(&:name), to_project == from_project ? 'origin' : 'head'
       system 'git', 'checkout', to_ref
       unless tags.include? to_ref
-        system 'git', 'reset', '--hard', "origin/#{to_ref.shellescape}"
+        system 'git', 'reset', '--hard', "origin/#{to_ref}"
       end
       unless tags.include? from_ref
-        system 'git', 'checkout', from_ref
-        system 'git', 'reset', '--hard', "head/#{from_ref.shellescape}"
+        system 'git', 'checkout', from_branch
+        system 'git', 'reset', '--hard', "#{head}/#{from_ref}"
         system 'git', 'checkout', to_ref
       end
     end
