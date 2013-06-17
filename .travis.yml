@@ -21,4 +21,4 @@ before_script:
 script: "./travis.sh"
 branches:
   only:
-    - master
+    - /.*/
