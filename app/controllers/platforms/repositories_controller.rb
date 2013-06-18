@@ -141,7 +141,8 @@ class Platforms::RepositoriesController < Platforms::BaseController
   end
 
   def regenerate_metadata
-    if AbfWorker::BuildListsPublishTaskManager.repository_regenerate_metadata @repository.id
+    build_for_platform = Platform.main.find params[:build_for_platform_id] if @repository.platform.personal?
+    if AbfWorker::BuildListsPublishTaskManager.repository_regenerate_metadata @repository, (build_for_platform || @repository.platform)
       flash[:notice] = t('flash.repository.regenerate_in_queue')
     else
       flash[:error] = t('flash.repository.regenerate_already_in_queue')

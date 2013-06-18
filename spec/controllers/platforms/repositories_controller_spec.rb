@@ -29,6 +29,12 @@ shared_examples_for 'user without change projects in repository rights' do
     @repository.projects.should_not include(@project)
   end
 
+  it 'should not be able to perform regenerate_metadata action' do
+    put :regenerate_metadata, :id => @repository.id, :platform_id => @platform.id
+    response.should redirect_to(redirect_path)
+    regenerate_metadata_queue.should be_empty
+  end
+
   it 'should not be able to remove project from repository' do
     delete :remove_project, :id => @repository.id, :platform_id => @platform.id, :project_id => @project.id
     response.should redirect_to(redirect_path)
@@ -40,6 +46,18 @@ shared_examples_for 'registered user or guest' do
   it 'should not be able to perform new action' do
     get :new, :platform_id => @platform.id
     response.should redirect_to(redirect_path)
+  end
+
+  it 'should not be able to perform regenerate_metadata action' do
+    put :regenerate_metadata, :id => @repository.id, :platform_id => @platform.id
+    response.should redirect_to(redirect_path)
+    regenerate_metadata_queue.should be_empty
+  end
+
+  it 'should not be able to perform regenerate_metadata action of personal repository' do
+    put :regenerate_metadata, :id => @personal_repository.id, :platform_id => @personal_repository.platform.id
+    response.should redirect_to(redirect_path)
+    regenerate_metadata_queue.should be_empty
   end
 
   it 'should not be able to perform create action' do
@@ -88,8 +106,8 @@ shared_examples_for 'registered user or guest' do
   end
 
   it 'should not be able to destroy personal repository' do
-    lambda { delete :destroy, :id => @personal_repository.id, :platform_id => @personal_repository.platform.id}.
-      should change{ Repository.count }.by(0)
+    lambda { delete :destroy, :id => @personal_repository.id, :platform_id => @personal_repository.platform.id}
+      .should change{ Repository.count }.by(0)
     response.should redirect_to(redirect_path)
   end
 end
@@ -119,6 +137,24 @@ shared_examples_for 'platform admin user' do
   it 'should be able to perform new action' do
     get :new, :platform_id => @platform.id
     response.should render_template(:new)
+  end
+
+  it 'should be able to perform regenerate_metadata action' do
+    put :regenerate_metadata, :id => @repository.id, :platform_id => @platform.id
+    response.should redirect_to(platform_repository_path(@platform, @repository))
+    regenerate_metadata_queue.should == ["#{@repository.id}-#{@platform.id}"]
+  end
+
+  it 'should be able to perform regenerate_metadata action of personal repository' do
+    put :regenerate_metadata, :id => @personal_repository.id, :platform_id => @personal_repository.platform.id, :build_for_platform_id => @platform.id
+    response.should redirect_to(platform_repository_path(@personal_repository.platform, @personal_repository))
+    regenerate_metadata_queue.should == ["#{@personal_repository.id}-#{@platform.id}"]
+  end
+
+  it 'should not be able to perform regenerate_metadata action of personal repository when build_for_platform does not exist' do
+    put :regenerate_metadata, :id => @personal_repository.id, :platform_id => @personal_repository.platform.id
+    response.should render_template(:file => "#{Rails.root}/public/404.html")
+    regenerate_metadata_queue.should be_empty
   end
 
   it 'should be able to create repository' do
@@ -162,14 +198,14 @@ shared_examples_for 'platform admin user' do
   it 'should not be able to destroy personal repository with name "main"' do
     # hook for "ActiveRecord::ActiveRecordError: name is marked as readonly"
     Repository.where(:id => @personal_repository.id).update_all("name = 'main'")
-    lambda { delete :destroy, :id => @personal_repository.id, :platform_id => @personal_repository.platform.id}.
-      should change{ Repository.count }.by(0)
+    lambda { delete :destroy, :id => @personal_repository.id, :platform_id => @personal_repository.platform.id}
+      .should change{ Repository.count }.by(0)
     response.should redirect_to(forbidden_path)
   end
 
   it 'should be able to destroy personal repository with name not "main"' do
-    lambda { delete :destroy, :id => @personal_repository.id, :platform_id => @personal_repository.platform.id}.
-      should change{ Repository.count }.by(-1)
+    lambda { delete :destroy, :id => @personal_repository.id, :platform_id => @personal_repository.platform.id}
+      .should change{ Repository.count }.by(-1)
     response.should redirect_to(platform_repositories_path(@personal_repository.platform))
   end
 
@@ -177,8 +213,10 @@ shared_examples_for 'platform admin user' do
 end
 
 describe Platforms::RepositoriesController do
+  let(:regenerate_metadata_queue) { @redis_instance.lrange(AbfWorker::BuildListsPublishTaskManager::REGENERATE_METADATA, 0, -1) }
   before(:each) do
     stub_symlink_methods
+    stub_redis
 
     @platform = FactoryGirl.create(:platform)
     @repository = FactoryGirl.create(:repository, :platform =>  @platform)
