@@ -15,7 +15,7 @@ describe AbfWorker::BuildListsPublishTaskManager do
   subject { AbfWorker::BuildListsPublishTaskManager }
   let(:build_list)  { FactoryGirl.create(:build_list_core, :new_core => true) }
 
-  describe 'when no items for publishing' do
+  context 'when no items for publishing' do
     before do
       stub_redis
       subject.new.run
@@ -41,7 +41,7 @@ describe AbfWorker::BuildListsPublishTaskManager do
 
   end
 
-  describe 'when one build_list for publishing' do
+  context 'when one build_list for publishing' do
     before do
       stub_redis
       build_list.update_column(:status, BuildList::BUILD_PUBLISH)
@@ -75,7 +75,7 @@ describe AbfWorker::BuildListsPublishTaskManager do
 
   end
 
-  describe 'grouping build lists for publishing into same repository' do
+  context 'grouping build lists for publishing into same repository' do
     let(:build_list2) { FactoryGirl.create(:build_list_core,
       :new_core => true,
       :save_to_platform => build_list.save_to_platform,
@@ -117,7 +117,7 @@ describe AbfWorker::BuildListsPublishTaskManager do
 
   end
 
-  describe 'creates not more than 4 tasks for publishing' do
+  context 'creates not more than 4 tasks for publishing' do
     before do
       stub_redis
       build_list.update_column(:status, BuildList::BUILD_PUBLISH)
@@ -142,7 +142,7 @@ describe AbfWorker::BuildListsPublishTaskManager do
 
   end
 
-  describe 'creates task for removing project from repository' do
+  context 'creates task for removing project from repository' do
     before do
       stub_redis
       build_list.update_column(:status, BuildList::BUILD_PUBLISHED)
@@ -179,7 +179,7 @@ describe AbfWorker::BuildListsPublishTaskManager do
 
   end
 
-  describe 'grouping build lists for publishing and tasks for removing project from repository' do
+  context 'grouping build lists for publishing and tasks for removing project from repository' do
     let(:build_list2) { FactoryGirl.create(:build_list_core,
       :new_core => true,
       :save_to_platform => build_list.save_to_platform,
@@ -233,7 +233,7 @@ describe AbfWorker::BuildListsPublishTaskManager do
     end
   end
 
-  describe 'resign packages in repository' do
+  context 'resign packages in repository' do
     before do
       stub_redis
       build_list.update_column(:status, BuildList::BUILD_PUBLISH)
@@ -264,6 +264,66 @@ describe AbfWorker::BuildListsPublishTaskManager do
 
   end
 
+  context 'regenerate metadata' do
+    before do
+      stub_redis
+    end
+
+    context 'for repository of main platform' do
+      let(:repository) { FactoryGirl.create(:repository) }
+      before do
+        subject.repository_regenerate_metadata repository, repository.platform
+        subject.new.run
+      end
+
+      it "ensure that 'locked rep and platforms' has only one item" do
+        queue = @redis_instance.lrange(subject::LOCKED_REP_AND_PLATFORMS, 0, -1)
+        queue.should have(1).item
+        queue.should include("#{repository.id}-#{repository.platform.id}")
+      end
+
+      it "ensure that 'regenerate metadata' queue without items" do
+        queue = @redis_instance.lrange(subject::REGENERATE_METADATA, 0, -1)
+        queue.should be_empty
+      end
+
+      it 'ensure that new task has been created' do
+        @redis_instance.lrange('queue:publish_worker_default', 0, -1).should have(1).item
+      end
+    end
+
+    context 'for repository of personal platform' do
+      let(:main_platform) { FactoryGirl.create(:platform) }
+      let(:repository) { FactoryGirl.create(:personal_repository) }
+      before do
+        subject.repository_regenerate_metadata repository, main_platform
+        subject.new.run
+      end
+
+      it "ensure that 'locked rep and platforms' has only one item" do
+        @redis_instance.lrange(subject::LOCKED_REP_AND_PLATFORMS, 0, -1)
+          .should == ["#{repository.id}-#{main_platform.id}"]
+      end
+
+      it "ensure that 'regenerate metadata' queue without items" do
+        @redis_instance.lrange(subject::REGENERATE_METADATA, 0, -1).should be_empty
+      end
+
+      it 'ensure that new task has been created' do
+        @redis_instance.lrange('queue:publish_worker_default', 0, -1).should have(1).item
+      end
+    end
+
+    it 'ensure that two tasks for regenerate one repository will not be created' do
+      repository = FactoryGirl.create(:repository)
+      2.times do
+        subject.repository_regenerate_metadata repository, repository.platform
+        subject.new.run
+      end
+      @redis_instance.lrange('queue:publish_worker_default', 0, -1).should have(1).item
+    end
+
+  end
 
   after(:all) do
     APP_CONFIG['abf_worker']['publish_workers_count'] = @publish_workers_count
