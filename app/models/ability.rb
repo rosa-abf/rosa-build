@@ -144,7 +144,8 @@ class Ability
         can :read, PullRequest, :to_project => {:owner_type => 'Group', :owner_id => user.group_ids}
         can(:read, PullRequest, read_relations_for('pull_requests', 'to_projects')) {|pull| can? :read, pull.to_project rescue nil}
         can :create, PullRequest
-        can([:update, :merge], PullRequest) {|pull| pull.user_id == user.id or local_admin?(pull.to_project)}
+        can(:update, PullRequest) {|pull| pull.user_id == user.id or local_admin?(pull.to_project)}
+        can(:merge,  PullRequest) {|pull| local_admin?(pull.to_project)}
 
         can([:create, :new_line], Comment) {|comment| can? :read, comment.project}
         can([:update, :destroy], Comment) {|comment| comment.user == user or comment.project.owner == user or local_admin?(comment.project)}

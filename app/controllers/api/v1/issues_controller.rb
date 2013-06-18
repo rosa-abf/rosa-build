@@ -5,9 +5,9 @@ class Api::V1::IssuesController < Api::V1::BaseController
   before_filter :authenticate_user!
   skip_before_filter :authenticate_user!, :only => [:show] if APP_CONFIG['anonymous_access']
 
-  load_resource :group, :only => :group_index, :find_by => :id, :parent => false
-  load_resource :project
-  load_and_authorize_resource :issue, :through => :project, :find_by => :serial_id, :only => [:show, :update, :destroy, :create, :index]
+  load_and_authorize_resource :group, :only => :group_index, :find_by => :id, :parent => false
+  load_and_authorize_resource :project
+  load_and_authorize_resource :issue, :through => :project, :find_by => :serial_id, :only => [:show, :update, :create, :index]
 
   def index
     @issues = @project.issues
@@ -42,11 +42,19 @@ class Api::V1::IssuesController < Api::V1::BaseController
   end
 
   def update
+    unless can?(:write, @project)
+      params.delete :update_labels
+      [:assignee_id, :labelings, :labelings_attributes].each do |k|
+        params[:issue].delete k
+      end if params[:issue]
+    end
+    @issue.labelings.destroy_all if params[:update_labels]
+    if params[:issue] && status = params[:issue][:status]
+      @issue.set_close(current_user) if status == 'closed'
+      @issue.set_open if status == 'open'
+      params[:issue].delete :status
+    end
     update_subject @issue
-  end
-
-  def destroy
-    destroy_subject @issue
   end
 
   private

@@ -5,7 +5,7 @@ class Api::V1::PullRequestsController < Api::V1::BaseController
   before_filter :authenticate_user!
   skip_before_filter :authenticate_user!, :only => [:show] if APP_CONFIG['anonymous_access']
 
-  load_resource :group, :only => :group_index, :find_by => :id, :parent => false
+  load_and_authorize_resource :group, :only => :group_index, :find_by => :id, :parent => false
   load_and_authorize_resource :project
   load_resource :issue, :through => :project, :find_by => :serial_id, :parent => false, :only => [:show, :index]
   load_and_authorize_resource :instance_name => :pull, :through => :issue, :singleton => true, :only => [:show, :index]
