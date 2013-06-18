@@ -194,8 +194,8 @@ class PullRequest < ActiveRecord::Base
         system 'git', 'reset', '--hard', "origin/#{to_ref}"
       end
       unless tags.include? from_ref
-        system 'git', 'checkout', from_branch
-        system 'git', 'reset', '--hard', "#{head}/#{from_ref}"
+        system 'git', 'branch', '-D', from_branch
+        system 'git', 'fetch', head, "+#{from_ref}:#{from_branch}"
         system 'git', 'checkout', to_ref
       end
     end
