@@ -96,17 +96,18 @@ class ActivityFeedObserver < ActiveRecord::Observer
           last_commits, commits = [[record.newrev, record.message]], []
         else
           commits = record.project.repo.commits_between(record.oldrev, record.newrev)
-          last_commits = commits.last(3).collect { |commit| [commit.sha, commit.message] }
+          all_commits = commits.collect { |commit| [commit.sha, commit.message] }
+          last_commits = all_commits.last(3).reverse
         end
 
         kind = 'git_new_push_notification'
-        options = {:project_id => record.project.id, :project_name => record.project.name, :last_commits => last_commits.reverse,
+        options = {:project_id => record.project.id, :project_name => record.project.name, :last_commits => last_commits,
                          :branch_name => branch_name, :change_type => change_type, :project_owner => record.project.owner.uname}
         if commits.count > 3
           commits = commits[0...-3]
           options.merge!({:other_commits_count => commits.count, :other_commits => "#{commits[0].sha[0..9]}...#{commits[-1].sha[0..9]}"})
         end
-        Comment.create_link_on_issues_from_item(record, last_commits) if last_commits.count > 0
+        Comment.create_link_on_issues_from_item(record, all_commits) if all_commits.count > 0
       end
       options.merge!({:user_id => record.user.id, :user_name => record.user.name, :user_email => record.user.email}) if record.user
 
