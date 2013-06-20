@@ -93,7 +93,7 @@ class ActivityFeedObserver < ActiveRecord::Observer
                           :change_type => change_type, :project_owner => record.project.owner.uname}
       else
         if record.message # online update
-          last_commits, commits = [[record.newrev, record.message]], []
+          last_commits, commits, all_commits = [[record.newrev, record.message]], [], []
         else
           commits = record.project.repo.commits_between(record.oldrev, record.newrev)
           all_commits = commits.collect { |commit| [commit.sha, commit.message] }
