@@ -163,10 +163,8 @@ class Comment < ActiveRecord::Base
         opts = {:created_from_commit_hash => element[0].hex} if item.is_a?(GitHook)
         # dont create duplicate link to issue
         next if Comment.find_existing_automatic_comment issue, opts
-        if item.is_a?(GitHook)
         # dont create link to outdated commit
-          next if !item.project.repo.commit(element[0])
-        end
+        next if item.is_a?(GitHook) && !item.project.repo.commit(element[0])
         comment = linker.comments.new :body => 'automatic comment'
         comment.commentable, comment.project, comment.automatic = issue, issue.project, true
         comment.data = {:from_project_id => item.project.id}
