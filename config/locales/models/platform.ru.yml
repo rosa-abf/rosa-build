@@ -50,6 +50,7 @@ ru:
   flash:
     platform:
       released_status_can_not_be_changed: Released статус платформы не может быть изменен, если платформа уже выпущена
+      owner_can_not_be_changed: Владелец персональной платформы не может быть изменен
       saved: Платформа успешно сохранена
       created: Платформа успешно добавлена
       save_error: Не удалось сохранить платформу

@@ -50,6 +50,7 @@ en:
   flash:
     platform:
       released_status_can_not_be_changed: Released status can't be changed if platform has been released
+      owner_can_not_be_changed: Owner of personal platform can't be changed
       saved: Platform saved
       created: Platform created
       save_error: Platform save error
