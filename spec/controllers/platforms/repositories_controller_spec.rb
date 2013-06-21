@@ -280,7 +280,9 @@ describe Platforms::RepositoriesController do
     before(:each) do
       @user = @repository.platform.owner
       platform = @personal_repository.platform
-      platform.owner = @user; platform.save
+      platform.owner = @user
+      # Owner of personal platform can't be changed
+      platform.save(:validate => false)
       set_session_for(@user)
     end
 
