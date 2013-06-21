@@ -42,9 +42,30 @@ describe Platform do
   end
 
   it 'ensures that folder of platform will be removed after destroy' do
-    platform = FactoryGirl.create(:platform)
+    platform = FactoryGirl.create :platform
     FileUtils.mkdir_p platform.path
     platform.destroy
     Dir.exists?(platform.path).should be_false
   end
+
+  it 'ensures that owner of personal platform can not be changed' do
+    platform = FactoryGirl.create :personal_platform
+    owner = platform.owner
+    platform.owner = FactoryGirl.create :user
+    platform.save.should be_false
+  end
+
+  it 'ensures that owner of platform of group can not be changed' do
+    group = FactoryGirl.create :group
+    platform = FactoryGirl.create :personal_platform, :owner => group
+    platform.owner = FactoryGirl.create :user
+    platform.save.should be_false
+  end
+
+  it 'ensures that owner of main platform can be changed' do
+    platform = FactoryGirl.create :platform
+    platform.owner = FactoryGirl.create :user
+    platform.save.should be_true
+  end
+
 end

@@ -27,6 +27,11 @@ class Platform < ActiveRecord::Base
       errors.add(:released, I18n.t('flash.platform.released_status_can_not_be_changed'))
     end
   }
+  validate lambda {
+    if personal? && (owner_id_changed? || owner_type_changed?)
+      errors.add :owner, I18n.t('flash.platform.owner_can_not_be_changed')
+    end
+  }, :on => :update
 
   before_create :create_directory
   before_destroy :detele_directory
