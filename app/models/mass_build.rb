@@ -15,8 +15,6 @@ class MassBuild < ActiveRecord::Base
   attr_accessible :arches, :auto_publish, :projects_list, :build_for_platform_id,
                   :extra_repositories, :extra_build_lists
 
-
-
   validates :save_to_platform_id, :build_for_platform_id, :arch_names, :name, :user_id, :presence => true
   validates :projects_list, :length => {:maximum => 500_000}, :presence => true
   validates_inclusion_of :auto_publish, :in => [true, false]
