@@ -40,6 +40,8 @@ class Projects::PullRequestsController < Projects::BaseController
     @pull = to_project.pull_requests.new pull_params
     @pull.issue.assignee_id = (params[:issue] || {})[:assignee_id] if can?(:write, to_project)
     @pull.issue.user, @pull.issue.project, @pull.from_project = current_user, to_project, @project
+    @pull.from_project_owner_uname = @pull.from_project.owner.uname
+    @pull.from_project_name = @pull.from_project.name
 
     if @pull.valid? # FIXME more clean/clever logics
       @pull.save # set pull id
