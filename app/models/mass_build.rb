@@ -15,7 +15,8 @@ class MassBuild < ActiveRecord::Base
   attr_accessible :arches, :auto_publish, :projects_list, :build_for_platform_id,
                   :extra_repositories, :extra_build_lists
 
-  validates :save_to_platform_id, :build_for_platform_id, :arch_names, :name, :user_id, :projects_list, :presence => true
+  validates :save_to_platform_id, :build_for_platform_id, :arch_names, :name, :user_id, :presence => true
+  validates :projects_list, :length => {:maximum => 500_000}, :presence => true
   validates_inclusion_of :auto_publish, :in => [true, false]
 
   after_commit      :build_all, :on => :create
@@ -104,8 +105,14 @@ class MassBuild < ActiveRecord::Base
   end
 
   def set_data
-    self.name = "#{Time.now.utc.to_date.strftime("%d.%b")}-#{save_to_platform.name}"
-    self.arch_names = Arch.where(:id => self.arches).map(&:name).join(", ")
-    self.build_for_platform = save_to_platform if save_to_platform && save_to_platform.main?
+    if save_to_platform
+      self.name = "#{Time.now.utc.to_date.strftime("%d.%b")}-#{save_to_platform.name}"
+      self.build_for_platform = save_to_platform if save_to_platform.main?
+    end
+    self.arch_names = Arch.where(:id => arches).map(&:name).join(", ")
+
+    self.projects_list = projects_list.lines.map do |name|
+      name.chomp.strip if name.present?
+    end.compact.uniq.join("\r\n") if projects_list.present?
   end
 end
