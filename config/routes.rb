@@ -59,7 +59,12 @@ Rosa::Application.routes.draw do
         }
         resources :build_lists, :only => :index
         resources :issues, :only => [:index, :create, :show, :update]
-        resources :pull_requests, :only => [:index, :create, :show, :update]
+        resources :pull_requests, :only => [:index, :create, :show, :update] do
+          member {
+            get :commits
+            get :files
+          }
+        end
       end
       resources :users, :only => [:show]
       get 'user' => 'users#show_current_user'

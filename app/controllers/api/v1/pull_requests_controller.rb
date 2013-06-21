@@ -3,12 +3,12 @@ class Api::V1::PullRequestsController < Api::V1::BaseController
   respond_to :json
 
   before_filter :authenticate_user!
-  skip_before_filter :authenticate_user!, :only => [:show] if APP_CONFIG['anonymous_access']
+  skip_before_filter :authenticate_user!, :only => [:show, :commits, :files] if APP_CONFIG['anonymous_access']
 
-  load_and_authorize_resource :group, :only => :group_index, :find_by => :id, :parent => false
-  load_and_authorize_resource :project
-  load_resource :issue, :through => :project, :find_by => :serial_id, :parent => false, :only => [:show, :index]
-  load_and_authorize_resource :instance_name => :pull, :through => :issue, :singleton => true, :only => [:show, :index]
+  load_resource :group, :only => :group_index, :find_by => :id, :parent => false
+  load_resource :project
+  load_resource :issue, :through => :project, :find_by => :serial_id, :parent => false, :only => [:show, :index, :commits, :files]
+  load_and_authorize_resource :instance_name => :pull, :through => :issue, :singleton => true, :only => [:show, :index, :commits, :files]
 
   def index
     @pull_requests = @project.pull_requests
@@ -90,6 +90,11 @@ class Api::V1::PullRequestsController < Api::V1::BaseController
     else
       render_validation_error @pull, "#{class_name} has not been updated"
     end
+  end
+
+  def commits
+    @commits = @pull.repo.commits_between(@pull.to_commit, @pull.from_commit)
+    @commits.paginate(paginate_params)
   end
 
   private
