@@ -97,6 +97,10 @@ class Api::V1::PullRequestsController < Api::V1::BaseController
     @commits.paginate(paginate_params)
   end
 
+  def files
+    @stats = @pull.diff_stats.zip(@pull.diff)
+  end
+
   private
 
   def render_pulls_list
