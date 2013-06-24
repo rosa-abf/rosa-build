@@ -63,6 +63,7 @@ Rosa::Application.routes.draw do
           member {
             get :commits
             get :files
+            put :merge
           }
         end
       end

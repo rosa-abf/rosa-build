@@ -7,8 +7,8 @@ class Api::V1::PullRequestsController < Api::V1::BaseController
 
   load_resource :group, :only => :group_index, :find_by => :id, :parent => false
   load_resource :project
-  load_resource :issue, :through => :project, :find_by => :serial_id, :parent => false, :only => [:show, :index, :commits, :files]
-  load_and_authorize_resource :instance_name => :pull, :through => :issue, :singleton => true, :only => [:show, :index, :commits, :files]
+  load_resource :issue, :through => :project, :find_by => :serial_id, :parent => false, :only => [:show, :index, :commits, :files, :merge]
+  load_and_authorize_resource :instance_name => :pull, :through => :issue, :singleton => true, :only => [:show, :index, :commits, :files, :merge]
 
   def index
     @pull_requests = @project.pull_requests
@@ -99,6 +99,15 @@ class Api::V1::PullRequestsController < Api::V1::BaseController
 
   def files
     @stats = @pull.diff_stats.zip(@pull.diff)
+  end
+
+  def merge
+    class_name = @pull.class.name
+    if @pull.merge!(current_user)
+      render_json_response @pull, "#{class_name} has been merged successfully"
+    else
+      render_validation_error @pull, "#{class_name} has not been merged"
+    end
   end
 
   private
