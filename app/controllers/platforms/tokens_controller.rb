@@ -1,4 +1,4 @@
-class Platforms::TokensController < ApplicationController
+class Platforms::TokensController < Platforms::BaseController
   before_filter :authenticate_user!
 
   # load_and_authorize_resource :platform

@@ -1,0 +1,33 @@
+-set_meta_tags :title => title_object(@platform)
+= render 'submenu'
+= render 'sidebar'
+
+%h3.fix= "#{t('layout.tokens.about')} #{@platform.name}"
+
+%p= @token.description
+
+%table.tablesorter.unbordered
+  %tr
+    %td
+      %b= "#{t('layout.tokens.creator')}:"
+    %td= link_to @token.creator.try(:name), url_for(@token.creator)
+  %tr
+    %td
+      %b= "#{t('activerecord.attributes.token.created_at')}:"
+    %td= @token.created_at.to_date
+  - if @token.updater
+    %tr
+      %td
+        %b= "#{t('layout.tokens.updater')}:"
+      %td= link_to @token.updater.try(:name), url_for(@token.updater) if @token.updater
+    %tr
+      %td
+        %b= "#{t('activerecord.attributes.token.updated_at')}:"
+      %td= @token.updated_at.to_date
+  %tr
+    %td
+      %b= "#{t('activerecord.attributes.token.status')}:"
+    %td= @token.status
+
+.buttons_block
+  = link_to I18n.t('layout.tokens.withdraw'), withdraw_platform_token_path(@platform, @token), :class => 'button left_floated'

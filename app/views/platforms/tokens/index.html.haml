@@ -1,6 +1,6 @@
 -set_meta_tags :title => [title_object(@platform), t('layout.tokens.list_header')]
-= render 'platforms/base/submenu'
-= render 'platforms/base/sidebar'
+= render 'submenu'
+= render 'sidebar'
 = link_to t('layout.tokens.new'), new_platform_token_path(@platform), :class => 'button' if can? :create, @platform.tokens.build
 
 %table#myTable.tablesorter.platform-repos{:cellspacing => "0", :cellpadding => "0"}
