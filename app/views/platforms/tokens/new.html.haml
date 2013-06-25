@@ -2,7 +2,7 @@
 = render 'submenu'
 = render 'sidebar'
 
-%h3= t('layout.tokens.new_header')
+%h3= t('layout.tokens.new')
 
 = form_for @token, :url => platform_tokens_path(@platform), :method => :post, :html => { :class => :form } do |f|
   .leftlist= f.label :description

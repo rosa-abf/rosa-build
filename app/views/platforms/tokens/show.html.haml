@@ -1,4 +1,4 @@
--set_meta_tags :title => title_object(@platform)
+-set_meta_tags :title => [title_object(@platform), t('layout.tokens.header')]
 = render 'submenu'
 = render 'sidebar'
 
@@ -9,32 +9,33 @@
 %table.tablesorter.unbordered
   %tr
     %td
-      %b= "#{t('layout.tokens.creator')}:"
-    %td= link_to @token.creator.try(:name), url_for(@token.creator)
+      %b= "#{t('activerecord.attributes.token.creator')}:"
+    %td= link_to @token.creator.try(:name), @token.creator
   %tr
     %td
       %b= "#{t('activerecord.attributes.token.created_at')}:"
-    %td= @token.created_at.to_date
+    %td= @token.created_at
   - if @token.updater
     %tr
       %td
-        %b= "#{t('layout.tokens.updater')}:"
-      %td= link_to @token.updater.try(:name), url_for(@token.updater) if @token.updater
+        %b= "#{t('activerecord.attributes.token.updater')}:"
+      %td= link_to @token.updater.try(:name), @token.updater if @token.updater
     %tr
       %td
         %b= "#{t('activerecord.attributes.token.updated_at')}:"
-      %td= @token.updated_at.to_date
+      %td= @token.updated_at
   %tr
     %td
       %b= "#{t('activerecord.attributes.token.status')}:"
-    %td= @token.status
+    %td= t("layout.tokens.statuses.#{@token.status}")
   %tr
     %td
       %b= "#{t('activerecord.attributes.token.authentication_token')}:"
     %td= @token.authentication_token
 
-.buttons_block
-  = link_to t('layout.tokens.withdraw'),
-            withdraw_platform_token_path(@platform, @token),
-            :method => :post, :class => 'button',
-            :confirm => t('layout.tokens.withdraw_confirm')
+- if @token.active?
+  .buttons_block
+    = link_to t('layout.tokens.withdraw'),
+              withdraw_platform_token_path(@platform, @token),
+              :method => :post, :class => 'button',
+              :confirm => t('layout.tokens.withdraw_confirm')

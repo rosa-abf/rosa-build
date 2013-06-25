@@ -1,21 +1,21 @@
--set_meta_tags :title => [title_object(@platform), t('layout.tokens.list_header')]
+-set_meta_tags :title => [title_object(@platform), t('layout.tokens.header')]
 = render 'submenu'
 = render 'sidebar'
-= link_to t('layout.tokens.new'), new_platform_token_path(@platform), :class => 'button' if can? :create, @platform.tokens.build
+= link_to t('layout.tokens.new'), new_platform_token_path(@platform), :class => 'button'
 
-%table#myTable.tablesorter.platform-repos{:cellspacing => "0", :cellpadding => "0"}
+%table#myTable.tablesorter.tokens{:cellspacing => "0", :cellpadding => "0"}
   %thead
     %tr
       %th= t('activerecord.attributes.token.id')
-      %th.th1= t('activerecord.attributes.token.description')
-      %th= t('activerecord.attributes.token.creator')
+      %th= t('activerecord.attributes.token.description')
+      %th.th3= t('activerecord.attributes.token.creator')
       %th= t('activerecord.attributes.token.status')
   %tbody
     - @tokens.each do |token|
       %tr{:class => cycle('odd', 'even')}
         %td= link_to token.id, platform_token_path(@platform, token)
-        %td= token.description
+        %td= truncate token.description, :length => 60
         %td= link_to token.creator.try(:fullname), token.creator
-        %td= token.status
+        %td= t("layout.tokens.statuses.#{token.status}")
 
 = will_paginate @tokens

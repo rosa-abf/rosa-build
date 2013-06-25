@@ -1,19 +1,18 @@
 ru:
   layout:
     tokens:
-      list_header: Токены
+      header: Токены
       new: Новый токен
-      new_header: Новый токен
       about: Токен платформы
       withdraw: Отозвать
       withdraw_confirm: Уверены, что хотите отозвать токен?
 
-    statuses:
-      active: Активный
-      blocked: Отозван
+      statuses:
+        active: Активный
+        blocked: Отозван
 
   flash:
-    token:
+    tokens:
       saved: Токен успешно добавлен
       save_error: Не удалось добавить токен
       withdraw_success: Токен успешно отозван!

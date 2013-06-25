@@ -6,7 +6,7 @@ class Token < ActiveRecord::Base
 
   validates :creator_id, :subject_id, :subject_type, :presence => true
 
-  default_scope order("#{table_name}.created_at")
+  default_scope order("#{table_name}.created_at desc")
 
   before_create :generate_token
 

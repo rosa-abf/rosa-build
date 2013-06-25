@@ -20,14 +20,13 @@ class Platforms::TokensController < Platforms::BaseController
     if @token.block 
       @token.updater = current_user
       @token.save
-      redirect_to :back, :notice => t('layout.tokens.withdraw_success')
+      redirect_to :back, :notice => t('flash.tokens.withdraw_success')
     else
-      redirect_to :back, :notice => t('layout.tokens.withdraw_fail')
+      redirect_to :back, :notice => t('flash.tokens.withdraw_fail')
     end
   end
 
   def new
-
   end
 
   def create
