@@ -169,6 +169,11 @@ Rosa::Application.routes.draw do
         end
       end
       resources :key_pairs, :only => [:create, :index, :destroy]
+      resources :tokens, :only => [:create, :index, :show, :new] do
+        member do
+          post :withdraw
+        end
+      end
       resources :products do
         resources :product_build_lists, :only => [:create, :destroy, :new, :show, :update] do
           member {

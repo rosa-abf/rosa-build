@@ -7,6 +7,7 @@ class Platform < ActiveRecord::Base
 
   has_many :repositories, :dependent => :destroy
   has_many :products, :dependent => :destroy
+  has_many :tokens, :as => :subject, :dependent => :destroy
 
   has_many :relations, :as => :target, :dependent => :destroy
   has_many :actors, :as => :target, :class_name => 'Relation', :dependent => :destroy

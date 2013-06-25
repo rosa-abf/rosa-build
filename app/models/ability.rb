@@ -122,6 +122,8 @@ class Ability
 
         can([:create, :destroy], KeyPair) {|key_pair| owner?(key_pair.repository.platform) || local_admin?(key_pair.repository.platform)}
 
+        can([:read, :create], Token) {|token| local_admin?(token.subject)}
+
         can :read, Product, :platform => {:owner_type => 'User', :owner_id => user.id, :platform_type => 'main'}
         can :read, Product, :platform => {:owner_type => 'Group', :owner_id => user.group_ids, :platform_type => 'main'}
         can(:read, Product, read_relations_for('products', 'platforms')) {|product| product.platform.main?}
