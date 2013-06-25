@@ -17,7 +17,9 @@ class Platforms::TokensController < Platforms::BaseController
   end
 
   def withdraw
-    if @token.block
+    if @token.block 
+      @token.updater = current_user
+      @token.save
       redirect_to :back, :notice => t('layout.tokens.withdraw_success')
     else
       redirect_to :back, :notice => t('layout.tokens.withdraw_fail')

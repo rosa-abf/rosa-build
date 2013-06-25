@@ -28,6 +28,13 @@
     %td
       %b= "#{t('activerecord.attributes.token.status')}:"
     %td= @token.status
+  %tr
+    %td
+      %b= "#{t('activerecord.attributes.token.authentication_token')}:"
+    %td= @token.authentication_token
 
 .buttons_block
-  = link_to I18n.t('layout.tokens.withdraw'), withdraw_platform_token_path(@platform, @token), :class => 'button left_floated'
+  = link_to t('layout.tokens.withdraw'),
+            withdraw_platform_token_path(@platform, @token),
+            :method => :post, :class => 'button',
+            :confirm => t('layout.tokens.withdraw_confirm')

@@ -1,0 +1,34 @@
+ru:
+  layout:
+    tokens:
+      list_header: Токены
+      new: Новый токен
+      new_header: Новый токен
+      about: Токен платформы
+      withdraw: Отозвать
+      withdraw_confirm: Уверены, что хотите отозвать токен?
+
+    statuses:
+      active: Активный
+      blocked: Отозван
+
+  flash:
+    token:
+      saved: Токен успешно добавлен
+      save_error: Не удалось добавить токен
+      withdraw_success: Токен успешно отозван!
+      withdraw_fail: Не удалось отозвать токен!
+
+  activerecord:
+    models:
+      token: Токен
+    attributes:
+      token:
+        id: Id
+        description: Описание
+        status: Статус
+        authentication_token: Токен
+        created_at: Создан
+        updated_at: Обновлен
+        creator: Создатель
+        updater: Обновитель
