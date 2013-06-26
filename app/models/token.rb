@@ -5,10 +5,11 @@ class Token < ActiveRecord::Base
   belongs_to :updater, :class_name => 'User'
 
   validates :creator_id, :subject_id, :subject_type, :presence => true
+  validates :authentication_token, :presence => true, :uniqueness => {:case_sensitive => true}
 
   default_scope order("#{table_name}.created_at desc")
 
-  before_create :generate_token
+  before_validation :generate_token, :on => :create
 
   attr_accessible :description
 
