@@ -93,12 +93,11 @@ class Api::V1::PullRequestsController < Api::V1::BaseController
   end
 
   def commits
-    @commits = @pull.repo.commits_between(@pull.to_commit, @pull.from_commit)
-    @commits.paginate(paginate_params)
+    @commits = @pull.repo.commits_between(@pull.to_commit, @pull.from_commit).paginate(paginate_params)
   end
 
   def files
-    @stats = @pull.diff_stats.zip(@pull.diff)
+    @stats = @pull.diff_stats.zip(@pull.diff).paginate(paginate_params)
   end
 
   def merge
