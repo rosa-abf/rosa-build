@@ -8,7 +8,9 @@ class Api::V1::PlatformsController < Api::V1::BaseController
 
   def allowed
     url = params[:url] || ''
-    platform_name = url.gsub(/^http\:\/\/.+rosalinux\.ru\//, '').gsub(/\/.*/, '')
+    downloads_url = APP_CONFIG['downloads_url'].gsub(/^http\:\/\//, '')
+    platform_name = url.gsub(/^http\:\/\/.*#{downloads_url}[\/]+/, '')
+                       .gsub(/\/.*/, '')
     platform = Platform.find_by_name platform_name
     if platform && platform.hidden?
       token = url.gsub(/^http\:\/\//, '').match(/.*\:\@/)
