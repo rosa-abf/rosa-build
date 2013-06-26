@@ -246,6 +246,49 @@ describe Api::V1::PlatformsController do
     it_should_behave_like 'api platform user without member rights'
     it_should_behave_like 'api platform user without owner rights'
     it_should_behave_like 'api platform user without global admin rights'
+
+
+    context 'perform allowed action' do
+      it 'ensures that status 403 if no url' do
+        get :allowed
+        response.status.should == 403
+      end
+
+      it 'ensures that status 403 if platform does not exist' do
+        get :allowed, :url => 'http://abf-downloads.rosalinux.ru/rosa-server/repository/SRPMS/base/release/repodata/'
+        response.status.should == 403
+      end
+
+      it 'ensures that status 200 if platform open' do
+        get :allowed, :url => "http://abf-downloads.rosalinux.ru/#{@platform.name}/repository/SRPMS/base/release/repodata/"
+        response.status.should == 200
+      end
+
+      context 'for hidden platform' do
+        before { @platform.change_visibility }
+
+        it 'ensures that status 403 if no token' do
+          get :allowed, :url => "http://abf-downloads.rosalinux.ru/#{@platform.name}/repository/SRPMS/base/release/repodata/"
+          response.status.should == 403
+        end
+
+        it 'ensures that status 403 if wrong token' do
+          get :allowed, :url => "http://KuKu:@abf-downloads.rosalinux.ru/#{@platform.name}/repository/SRPMS/base/release/repodata/"
+          response.status.should == 403
+        end
+
+        it 'ensures that status 200 if token correct' do
+          token = FactoryGirl.create(:platform_token, :subject => @platform)
+          get :allowed, :url => "http://#{token.authentication_token}:@abf-downloads.rosalinux.ru/#{@platform.name}/repository/SRPMS/base/release/repodata/"
+          response.status.should == 200
+        end
+
+        it 'ensures that status 200 if user token correct and user has ability to read platform' do
+          get :allowed, :url => "http://#{@platform.owner.authentication_token}:@abf-downloads.rosalinux.ru/#{@platform.name}/repository/SRPMS/base/release/repodata/"
+          response.status.should == 200
+        end
+      end
+    end
   end
 
   context 'for global admin' do
