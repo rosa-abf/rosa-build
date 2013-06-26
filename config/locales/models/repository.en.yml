@@ -22,8 +22,6 @@ en:
 
     personal_repositories:
       settings_header: Settings
-      change_visibility_from_hidden: Change status to "Public"
-      change_visibility_from_open: Change status to "Private"
       settings: Settings
       show: My repository
       private_users: Private repository users

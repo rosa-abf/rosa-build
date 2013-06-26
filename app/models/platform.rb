@@ -1,6 +1,6 @@
 # -*- encoding : utf-8 -*-
 class Platform < ActiveRecord::Base
-  VISIBILITIES = ['open']#, 'hidden'] # Disable support hidden platforms.
+  VISIBILITIES = %w(open hidden)
 
   belongs_to :parent, :class_name => 'Platform', :foreign_key => 'parent_platform_id'
   belongs_to :owner, :polymorphic => true
@@ -142,10 +142,8 @@ class Platform < ActiveRecord::Base
   def change_visibility
     if !hidden?
       update_attributes(:visibility => 'hidden')
-      remove_symlink_directory
     else
       update_attributes(:visibility => 'open')
-      symlink_directory
     end
   end
 

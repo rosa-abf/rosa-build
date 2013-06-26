@@ -28,5 +28,5 @@ ru:
         authentication_token: Токен
         created_at: Создан
         updated_at: Обновлен
-        creator: Создатель
-        updater: Обновитель
+        creator: Создал
+        updater: Обновил

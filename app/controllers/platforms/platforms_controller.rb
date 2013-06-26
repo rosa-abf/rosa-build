@@ -56,6 +56,17 @@ class Platforms::PlatformsController < Platforms::BaseController
     end
   end
 
+  def change_visibility
+    if @platform.change_visibility
+      flash[:notice] = I18n.t("flash.platform.saved")
+      redirect_to @platform
+    else
+      flash[:error] = I18n.t("flash.platform.save_error")
+      flash[:warning] = @platform.errors.full_messages.join('. ')
+      render :action => :edit
+    end
+  end
+
   def clone
     @cloned = Platform.new
     @cloned.name = @platform.name + "_clone"

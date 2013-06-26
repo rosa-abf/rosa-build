@@ -105,7 +105,7 @@ class Ability
         can [:read, :related, :members], Platform, :owner_type => 'Group', :owner_id => user.group_ids
         can([:read, :related, :members], Platform, read_relations_for('platforms')) {|platform| local_reader? platform}
         can :related, Platform, :id => user.repositories.pluck(:platform_id)
-        can([:update, :destroy], Platform) {|platform| owner?(platform) }
+        can([:update, :destroy, :change_visibility], Platform) {|platform| owner?(platform) }
         can([:local_admin_manage, :members, :add_member, :remove_member, :remove_members] , Platform) {|platform| owner?(platform) || local_admin?(platform) }
 
         can([:create, :publish], MassBuild) {|mass_build| owner?(mass_build.save_to_platform) || local_admin?(mass_build.save_to_platform)}
@@ -118,7 +118,7 @@ class Ability
         can([:remove_members, :remove_member, :add_member, :signatures], Repository) {|repository| owner?(repository.platform) || local_admin?(repository.platform)}
         can([:add_project, :remove_project], Repository) {|repository| repository.members.exists?(:id => user.id)}
         can(:clear, Platform) {|platform| owner?(platform) && platform.personal?}
-        can([:change_visibility, :settings, :destroy, :edit, :update], Repository) {|repository| owner? repository.platform}
+        can([:settings, :destroy, :edit, :update], Repository) {|repository| owner? repository.platform}
 
         can([:create, :destroy], KeyPair) {|key_pair| owner?(key_pair.repository.platform) || local_admin?(key_pair.repository.platform)}
 
