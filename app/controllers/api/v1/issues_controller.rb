@@ -3,7 +3,7 @@ class Api::V1::IssuesController < Api::V1::BaseController
   respond_to :json
 
   before_filter :authenticate_user!
-  skip_before_filter :authenticate_user!, :only => [:show] if APP_CONFIG['anonymous_access']
+  skip_before_filter :authenticate_user!, :only => [:index, :group_index, :show] if APP_CONFIG['anonymous_access']
 
   load_and_authorize_resource :group, :only => :group_index, :find_by => :id, :parent => false
   load_and_authorize_resource :project
@@ -15,20 +15,20 @@ class Api::V1::IssuesController < Api::V1::BaseController
   end
 
   def all_index
-    project_ids = get_all_project_ids Project.accessible_by(current_ability, :membered).uniq.pluck(:id)
+    project_ids = get_all_project_ids Project.accessible_by(current_ability, :membered).pluck(:id)
     @issues = Issue.where('issues.project_id IN (?)', project_ids)
     render_issues_list
   end
 
   def user_index
-    project_ids = get_all_project_ids current_user.projects.select('distinct projects.id').pluck(:id)
+    project_ids = get_all_project_ids current_user.projects.pluck(:id)
     @issues = Issue.where('issues.project_id IN (?)', project_ids)
     render_issues_list
   end
 
   def group_index
-    project_ids = @group.projects.select('distinct projects.id').pluck(:id)
-    project_ids = Project.accessible_by(current_ability, :membered).where(:id => project_ids).uniq.pluck(:id)
+    project_ids = @group.projects.pluck(:id)
+    project_ids = Project.accessible_by(current_ability, :membered).where(:id => project_ids).pluck(:id)
     @issues = Issue.where(:project_id => project_ids)
     render_issues_list
   end
@@ -100,7 +100,7 @@ class Api::V1::IssuesController < Api::V1::BaseController
     @issues = @issues.order("#{sort} #{direction}")
 
     @issues = @issues.where('issues.created_at >= to_timestamp(?)', params[:since]) if params[:since] =~ /\A\d+\z/
-    @issues.paginate(paginate_params)
+    @issues = @issues.paginate(paginate_params)
     render :index
   end
 
@@ -109,7 +109,7 @@ class Api::V1::IssuesController < Api::V1::BaseController
     if ['created', 'all'].include? params[:filter]
       # add own issues
       project_ids = Project.accessible_by(current_ability, :show).joins(:issues).
-                            where(:issues => {:user_id => current_user.id}).uniq.pluck('projects.id')
+                            where(:issues => {:user_id => current_user.id}).pluck('projects.id')
     end
     project_ids |= default_project_ids
   end

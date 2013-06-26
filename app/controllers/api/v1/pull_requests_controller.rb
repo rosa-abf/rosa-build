@@ -3,7 +3,7 @@ class Api::V1::PullRequestsController < Api::V1::BaseController
   respond_to :json
 
   before_filter :authenticate_user!
-  skip_before_filter :authenticate_user!, :only => [:show, :commits, :files] if APP_CONFIG['anonymous_access']
+  skip_before_filter :authenticate_user!, :only => [:show, :index, :group_index, :commits, :files] if APP_CONFIG['anonymous_access']
 
   load_resource :group, :only => :group_index, :find_by => :id, :parent => false
   load_resource :project
@@ -11,28 +11,28 @@ class Api::V1::PullRequestsController < Api::V1::BaseController
   load_and_authorize_resource :instance_name => :pull, :through => :issue, :singleton => true, :only => [:show, :index, :commits, :files, :merge]
 
   def index
-    @pull_requests = @project.pull_requests
+    @pulls = @project.pull_requests
     @pulls_url = api_v1_project_pull_requests_path(@project, :format => :json)
     render_pulls_list
   end
 
   def all_index
-    project_ids = get_all_project_ids Project.accessible_by(current_ability, :membered).uniq.pluck(:id)
+    project_ids = get_all_project_ids Project.accessible_by(current_ability, :membered).pluck(:id)
     @pulls = PullRequest.where('pull_requests.to_project_id IN (?)', project_ids)
     @pulls_url = api_v1_pull_requests_path :format => :json
     render_pulls_list
   end
 
   def user_index
-    project_ids = get_all_project_ids current_user.projects.select('distinct projects.id').pluck(:id)
+    project_ids = get_all_project_ids current_user.projects.pluck(:id)
     @pulls = PullRequest.where('pull_requests.to_project_id IN (?)', project_ids)
     @pulls_url = pull_requests_api_v1_user_path :format => :json
     render_pulls_list
   end
 
   def group_index
-    project_ids = @group.projects.select('distinct projects.id').pluck(:id)
-    project_ids = Project.accessible_by(current_ability, :membered).where(:id => project_ids).uniq.pluck(:id)
+    project_ids = @group.projects.pluck(:id)
+    project_ids = Project.accessible_by(current_ability, :membered).where(:id => project_ids).pluck(:id)
     @pulls = PullRequest.where(:to_project_id => project_ids)
     @pulls_url = pull_requests_api_v1_group_path
     render_pulls_list
@@ -42,7 +42,8 @@ class Api::V1::PullRequestsController < Api::V1::BaseController
   end
 
   def create
-    from_project = Project.find params[:pull_request].try('[]', :from_project)
+    from_project = Project.find(pull_params[:from_project]) if pull_params.try('[]', :from_project).present?
+    from_project ||= @project
     authorize! :read, from_project
 
     @pull = @project.pull_requests.new
@@ -51,7 +52,6 @@ class Api::V1::PullRequestsController < Api::V1::BaseController
     @pull.to_ref, @pull.from_ref = pull_params[:to_ref], pull_params[:from_ref]
     @pull.issue.assignee_id = pull_params[:assignee] if can?(:write, @project)
     @pull.issue.user, @pull.issue.project = current_user, @project
-
     render_validation_error(@pull, "#{@pull.class.name} has not been created") && return unless @pull.valid?
 
     @pull.save # set pull id
@@ -148,7 +148,7 @@ class Api::V1::PullRequestsController < Api::V1::BaseController
     @pulls = @pulls.order("#{sort} #{direction}")
 
     @pulls = @pulls.where('issues.created_at >= to_timestamp(?)', params[:since]) if params[:since] =~ /\A\d+\z/
-    @pulls.paginate(paginate_params)
+    @pulls = @pulls.paginate(paginate_params)
     render :index
   end
 
@@ -157,7 +157,7 @@ class Api::V1::PullRequestsController < Api::V1::BaseController
     if ['created', 'all'].include? params[:filter]
       # add own pulls
       project_ids = Project.accessible_by(current_ability, :show).joins(:issues).
-                            where(:issues => {:user_id => current_user.id}).uniq.pluck('projects.id')
+                            where(:issues => {:user_id => current_user.id}).pluck('projects.id')
     end
     project_ids |= default_project_ids
   end
