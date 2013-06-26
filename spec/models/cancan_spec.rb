@@ -241,7 +241,7 @@ describe CanCan do
           @platform.save
         end
 
-        [:read, :update, :destroy].each do |action|
+        [:read, :update, :destroy, :change_visibility].each do |action|
           it "should be able to #{action} platform" do
             @ability.should be_able_to(action, @platform)
           end
@@ -270,7 +270,7 @@ describe CanCan do
           @repository.platform.save
         end
 
-        [:read, :create, :update, :destroy, :add_project, :remove_project, :change_visibility, :settings].each do |action|
+        [:read, :create, :update, :destroy, :add_project, :remove_project, :settings].each do |action|
           it "should be able to #{action} repository" do
             @ability.should be_able_to(action, @repository)
           end
