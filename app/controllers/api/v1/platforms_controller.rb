@@ -1,9 +1,42 @@
 # -*- encoding : utf-8 -*-
 class Api::V1::PlatformsController < Api::V1::BaseController
   before_filter :authenticate_user!
+  skip_before_filter :authenticate_user!, :only => :allowed
   skip_before_filter :authenticate_user!, :only => [:show, :platforms_for_build, :members] if APP_CONFIG['anonymous_access']
 
-  load_and_authorize_resource
+  load_and_authorize_resource :exept => :allowed
+
+  def allowed
+    url = params[:url] || ''
+    platform_name = url.gsub(/^http\:\/\/.+rosalinux\.ru\//, '').gsub(/\/.*/, '')
+    platform = Platform.find_by_name platform_name
+    if platform && platform.hidden?
+      token = url.gsub(/^http\:\/\//, '').match(/.*\:\@/)
+      token = token[0].gsub(/\:\@/, '') if token
+      if token.present?
+        if platform.tokens.where(:authentication_token => token).exists?
+          render :inline => 'true'
+        else # find user by token and check ability
+          user = User.find_by_authentication_token token
+          @current_ability = nil
+          @current_user = user
+          if user && can?(:read, platform)
+            render :inline => 'true'
+          else
+            render :inline => 'false', :status => 403
+          end
+        end
+      else # no token for hidden platform
+        render :inline => 'false', :status => 403
+      end
+    else
+      if platform # platform open
+        render :inline => 'true'
+      else # platform does not exist
+        render :inline => 'false', :status => 403
+      end
+    end
+  end
 
   def index
     @platforms = @platforms.accessible_by(current_ability, :related).

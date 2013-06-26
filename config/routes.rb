@@ -26,6 +26,7 @@ Rosa::Application.routes.draw do
       resources :platforms, :only => [:index, :show, :update, :destroy, :create] do
         collection {
           get :platforms_for_build
+          get :allowed
         }
         member {
           get :members
