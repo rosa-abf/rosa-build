@@ -23,7 +23,6 @@ ru:
       token: Токен
     attributes:
       token:
-        id: Id
         description: Описание
         status: Статус
         authentication_token: Токен
