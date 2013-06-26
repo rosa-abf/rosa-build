@@ -288,6 +288,12 @@ describe Api::V1::PlatformsController do
           get :allowed, :url => "http://#{@platform.owner.authentication_token}:@#{downloads_url}/#{@platform.name}/repository/SRPMS/base/release/repodata/"
           response.status.should == 200
         end
+
+        it 'ensures that status 403 if user token correct but user has no ability to read platform' do
+          user = FactoryGirl.create(:user)
+          get :allowed, :url => "http://#{user.authentication_token}:@#{downloads_url}/#{@platform.name}/repository/SRPMS/base/release/repodata/"
+          response.status.should == 403
+        end
       end
     end
   end

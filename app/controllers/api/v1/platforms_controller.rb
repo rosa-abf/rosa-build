@@ -12,31 +12,26 @@ class Api::V1::PlatformsController < Api::V1::BaseController
     platform_name = url.gsub(/^http\:\/\/.*#{downloads_url}[\/]+/, '')
                        .gsub(/\/.*/, '')
     platform = Platform.find_by_name platform_name
+    has_access = platform.present?
     if platform && platform.hidden?
       token = url.gsub(/^http\:\/\//, '').match(/.*\:\@/)
       token = token[0].gsub(/\:\@/, '') if token
-      if token.present?
+      if has_access = token.present?
         if platform.tokens.where(:authentication_token => token).exists?
-          render :inline => 'true'
+          has_access = true
         else # find user by token and check ability
           user = User.find_by_authentication_token token
           @current_ability = nil
           @current_user = user
-          if user && can?(:read, platform)
-            render :inline => 'true'
-          else
-            render :inline => 'false', :status => 403
-          end
+          has_access = user && can?(:read, platform)
         end
-      else # no token for hidden platform
-        render :inline => 'false', :status => 403
       end
+    end
+
+    if has_access
+      render :inline => 'true'
     else
-      if platform # platform open
-        render :inline => 'true'
-      else # platform does not exist
-        render :inline => 'false', :status => 403
-      end
+      render :inline => 'false', :status => 403
     end
   end
 
