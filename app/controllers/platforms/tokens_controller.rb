@@ -1,14 +1,11 @@
 class Platforms::TokensController < Platforms::BaseController
   before_filter :authenticate_user!
 
-  # load_and_authorize_resource :platform
-  # load_and_authorize_resource #:token#, :through => :subject
-  # load_and_authorize_resource :token, :through => :subject
-
   load_resource :platform
   load_and_authorize_resource :through  => :platform, :shallow  => true
 
   def index
+    authorize! :local_admin_manage, @platform
     @tokens = @platform.tokens.includes(:creator, :updater)
                               .paginate(:per_page => 20, :page => params[:page])
   end
