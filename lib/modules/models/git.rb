@@ -150,7 +150,7 @@ module Modules
       module ClassMethods
         def process_hook(owner_uname, repo, newrev, oldrev, ref, newrev_type, user = nil, message = nil)
           rec = GitHook.new(owner_uname, repo, newrev, oldrev, ref, newrev_type, user, message)
-          ActivityFeedObserver.instance.after_create rec
+          Modules::Observers::ActivityFeed::Git.create_notifications rec
         end
       end
     end

@@ -1,7 +1,8 @@
 # -*- encoding : utf-8 -*-
-class ActivityFeedObserver < ActiveRecord::Observer
+module Modules::Observers::ActivityFeed::Git
 
-  def after_create(record)
+  def self.create_notifications(record)
+
     case record.class.to_s
     when 'GitHook'
       return unless record.project
@@ -58,6 +59,7 @@ class ActivityFeedObserver < ActiveRecord::Observer
         )
       end
     end
+
   end
 
 end
