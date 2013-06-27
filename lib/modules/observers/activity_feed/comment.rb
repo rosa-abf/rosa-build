@@ -3,7 +3,7 @@ module Modules::Observers::ActivityFeed::Comment
   extend ActiveSupport::Concern
 
   included do
-    after_commit :new_comment_notifications, :on => :create, :unless => :automatic?
+    after_commit :new_comment_notifications, :on => :create
     # dont remove outdated issues link
     after_update -> { Comment.create_link_on_issues_from_item(self) }
   end
@@ -11,6 +11,7 @@ module Modules::Observers::ActivityFeed::Comment
   private
 
   def new_comment_notifications
+    return if automatic?
     if issue_comment?
       commentable.subscribes.each do |subscribe|
         if user_id != subscribe.user_id

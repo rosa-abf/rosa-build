@@ -19,7 +19,6 @@ def create_comment_in_issue issue, body
 end
 
 describe Comment do
-  self.use_transactional_fixtures = false
   before { stub_symlink_methods }
   context 'for global admin user' do
     before(:each) do
