@@ -2,6 +2,7 @@
 require 'spec_helper'
 
 describe Modules::Observers::ActivityFeed::Comment do
+  self.use_transactional_fixtures = false
   before { stub_symlink_methods }
   
   it 'sends a notification email after create a issue comment' do
@@ -11,4 +12,5 @@ describe Modules::Observers::ActivityFeed::Comment do
     comment.save
   end
 
+  before(:all) { User.destroy_all }
 end

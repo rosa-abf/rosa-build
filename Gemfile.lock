@@ -363,7 +363,6 @@ GEM
     state_machine (1.1.2)
     stringex (1.4.0)
     systemu (2.5.2)
-    test_after_commit (0.2.0)
     therubyracer (0.10.2)
       libv8 (~> 3.3.10)
     thin (1.5.1)
@@ -467,7 +466,6 @@ DEPENDENCIES
   shotgun
   shoulda
   state_machine
-  test_after_commit (= 0.2.0)
   therubyracer (~> 0.10.2)
   therubyrhino (~> 1.73.1)
   trinidad (~> 1.0.2)

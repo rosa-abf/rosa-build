@@ -2,6 +2,7 @@
 require 'spec_helper'
 
 describe Modules::Observers::ActivityFeed::Issue do
+  self.use_transactional_fixtures = false
   before { stub_symlink_methods }
 
   it 'sends a notification email after create' do
@@ -27,4 +28,5 @@ describe Modules::Observers::ActivityFeed::Issue do
     issue.save
   end
 
+  before(:all) { User.destroy_all }
 end
