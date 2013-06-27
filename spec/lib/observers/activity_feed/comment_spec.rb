@@ -11,6 +11,4 @@ describe Modules::Observers::ActivityFeed::Comment do
     mock(UserMailer).new_comment_notification(comment, comment.commentable.assignee) { mailer }
     comment.save
   end
-
-  before(:all) { User.destroy_all }
 end

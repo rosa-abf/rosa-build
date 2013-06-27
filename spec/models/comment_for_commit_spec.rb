@@ -37,6 +37,7 @@ def should_not_send_email(args={})
 end
 
 describe Comment do
+  self.use_transactional_fixtures = false
   before { stub_symlink_methods }
   context 'for global admin user' do
     before(:each) do

@@ -27,6 +27,4 @@ describe Modules::Observers::ActivityFeed::Issue do
     mock(UserMailer).issue_assign_notification(issue, user) { mailer }
     issue.save
   end
-
-  before(:all) { User.destroy_all }
 end

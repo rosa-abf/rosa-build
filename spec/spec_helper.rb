@@ -30,6 +30,7 @@ RSpec.configure do |config|
 
   config.before(:all) { init_test_root }
   config.after(:all)  { clear_test_root }
+  config.after(:all)  { User.destroy_all }
 end
 
 def set_session_for(user=nil)

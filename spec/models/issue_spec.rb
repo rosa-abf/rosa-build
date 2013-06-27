@@ -13,6 +13,7 @@ def create_issue issue_owner
 end
 
 describe Issue do
+  self.use_transactional_fixtures = false
   before do
     stub_symlink_methods
     any_instance_of(Project, :versions => ['v1.0', 'v2.0'])
