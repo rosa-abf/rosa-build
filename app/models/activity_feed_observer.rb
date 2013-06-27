@@ -1,6 +1,6 @@
 # -*- encoding : utf-8 -*-
 class ActivityFeedObserver < ActiveRecord::Observer
-  observe :issue, :comment, :user, :build_list
+  observe :comment, :user, :build_list
 
   BUILD_LIST_STATUSES = [
                           BuildList::BUILD_PUBLISHED,
@@ -10,7 +10,11 @@ class ActivityFeedObserver < ActiveRecord::Observer
                           BuildList::TESTS_FAILED
                         ].freeze
 
-  def after_create(record)
+  def after_commit(record)
+    # See:
+    # - http://rails-bestpractices.com/posts/695-use-after_commit
+    # - https://coderwall.com/p/f5-vlq
+    return unless record.send(:transaction_include_action?, :create) 
     case record.class.to_s
     when 'User'
       ActivityFeed.create(
@@ -19,29 +23,29 @@ class ActivityFeedObserver < ActiveRecord::Observer
         :data => {:user_name => record.user_appeal, :user_email => record.email}
       )
 
-    when 'Issue'
-      record.collect_recipients.each do |recipient|
-        next if record.user_id == recipient.id
-        UserMailer.new_issue_notification(record, recipient).deliver if recipient.notifier.can_notify && recipient.notifier.new_issue
-        ActivityFeed.create(
-          :user => recipient,
-          :kind => 'new_issue_notification',
-          :data => {:user_name => record.user.name, :user_email => record.user.email, :user_id => record.user_id,:issue_serial_id => record.serial_id,
-                           :issue_title => record.title, :project_id => record.project.id, :project_name => record.project.name, :project_owner => record.project.owner.uname}
-        )
-      end
+    # when 'Issue'
+    #   record.collect_recipients.each do |recipient|
+    #     next if record.user_id == recipient.id
+    #     UserMailer.new_issue_notification(record, recipient).deliver if recipient.notifier.can_notify && recipient.notifier.new_issue
+    #     ActivityFeed.create(
+    #       :user => recipient,
+    #       :kind => 'new_issue_notification',
+    #       :data => {:user_name => record.user.name, :user_email => record.user.email, :user_id => record.user_id,:issue_serial_id => record.serial_id,
+    #                        :issue_title => record.title, :project_id => record.project.id, :project_name => record.project.name, :project_owner => record.project.owner.uname}
+    #     )
+    #   end
 
-      if record.assignee_id_changed?
-        UserMailer.new_issue_notification(record, record.assignee).deliver if record.assignee.notifier.issue_assign && record.assignee.notifier.can_notify
-        ActivityFeed.create(
-          :user => record.user,
-          :kind => 'issue_assign_notification',
-          :data => {:user_name => record.user.name, :user_email => record.user.email, :user_id => record.user_id, :issue_serial_id => record.serial_id,
-                           :project_id => record.project.id, :issue_title => record.title, :project_name => record.project.name, :project_owner => record.project.owner.uname}
-        )
-      end
-      record.project.hooks.each{ |h| h.receive_issues(record, :create) }
-      Comment.create_link_on_issues_from_item(record)
+    #   if record.assignee_id_changed?
+    #     UserMailer.new_issue_notification(record, record.assignee).deliver if record.assignee.notifier.issue_assign && record.assignee.notifier.can_notify
+    #     ActivityFeed.create(
+    #       :user => record.user,
+    #       :kind => 'issue_assign_notification',
+    #       :data => {:user_name => record.user.name, :user_email => record.user.email, :user_id => record.user_id, :issue_serial_id => record.serial_id,
+    #                        :project_id => record.project.id, :issue_title => record.title, :project_name => record.project.name, :project_owner => record.project.owner.uname}
+    #     )
+    #   end
+    #   record.project.hooks.each{ |h| h.receive_issues(record, :create) }
+    #   Comment.create_link_on_issues_from_item(record)
     when 'Comment'
       return if record.automatic
       if record.issue_comment?
@@ -138,19 +142,19 @@ class ActivityFeedObserver < ActiveRecord::Observer
 
   def after_update(record)
     case record.class.to_s
-    when 'Issue'
-      if record.assignee_id && record.assignee_id_changed?
-        UserMailer.issue_assign_notification(record, record.assignee).deliver if record.assignee.notifier.issue_assign && record.assignee.notifier.can_notify
-        ActivityFeed.create(
-          :user => record.assignee,
-          :kind => 'issue_assign_notification',
-          :data => {:user_name => record.assignee.name, :user_email => record.assignee.email, :issue_serial_id => record.serial_id, :issue_title => record.title,
-                           :project_id => record.project.id, :project_name => record.project.name, :project_owner => record.project.owner.uname}
-        )
-      end
-      record.project.hooks.each{ |h| h.receive_issues(record, :update) } if record.status_changed?
-      # dont remove outdated issues link
-      Comment.create_link_on_issues_from_item(record)
+    # when 'Issue'
+    #   if record.assignee_id && record.assignee_id_changed?
+    #     UserMailer.issue_assign_notification(record, record.assignee).deliver if record.assignee.notifier.issue_assign && record.assignee.notifier.can_notify
+    #     ActivityFeed.create(
+    #       :user => record.assignee,
+    #       :kind => 'issue_assign_notification',
+    #       :data => {:user_name => record.assignee.name, :user_email => record.assignee.email, :issue_serial_id => record.serial_id, :issue_title => record.title,
+    #                        :project_id => record.project.id, :project_name => record.project.name, :project_owner => record.project.owner.uname}
+    #     )
+    #   end
+    #   record.project.hooks.each{ |h| h.receive_issues(record, :update) } if record.status_changed?
+    #   # dont remove outdated issues link
+    #   Comment.create_link_on_issues_from_item(record)
     when 'BuildList'
       if record.mass_build.blank? && ( # Do not show mass build activity in activity feeds
           record.status_changed? && BUILD_LIST_STATUSES.include?(record.status) ||

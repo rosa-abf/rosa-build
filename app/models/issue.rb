@@ -1,5 +1,6 @@
 # -*- encoding : utf-8 -*-
 class Issue < ActiveRecord::Base
+  include Modules::Observers::ActivityFeed::Issue
   STATUSES = ['open', 'closed']
 
   belongs_to :project
