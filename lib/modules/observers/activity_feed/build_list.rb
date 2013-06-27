@@ -11,13 +11,13 @@ module Modules::Observers::ActivityFeed::BuildList
   def build_list_notifications
     if mass_build.blank? && ( # Do not show mass build activity in activity feeds
         status_changed? && [
-                              BUILD_PUBLISHED,
-                              SUCCESS,
-                              BUILD_ERROR,
-                              FAILED_PUBLISH,
-                              TESTS_FAILED
+                              BuildList::BUILD_PUBLISHED,
+                              BuildList::SUCCESS,
+                              BuildList::BUILD_ERROR,
+                              BuildList::FAILED_PUBLISH,
+                              BuildList::TESTS_FAILED
                             ].include?(status) ||
-        status == BUILD_PENDING && bs_id_changed?
+        status == BuildList::BUILD_PENDING && bs_id_changed?
       )
 
       updater = publisher || user
