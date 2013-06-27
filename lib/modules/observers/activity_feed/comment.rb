@@ -15,7 +15,22 @@ module Modules::Observers::ActivityFeed::Comment
       commentable.subscribes.each do |subscribe|
         if user_id != subscribe.user_id
           UserMailer.new_comment_notification(self, subscribe.user).deliver if can_notify_on_new_comment?(subscribe)
-          send_new_comment_commit_notification(subscribe)
+          ActivityFeed.create(
+            :user => subscribe.user,
+            :kind => 'new_comment_notification',
+            :data => {
+              :user_name        => user.name,
+              :user_email       => user.email,
+              :user_id          => user_id,
+              :comment_body     => body,
+              :issue_title      => commentable.title,
+              :issue_serial_id  => commentable.serial_id,
+              :project_id       => commentable.project.id,
+              :comment_id       => id,
+              :project_name     => project.name,
+              :project_owner    => project.owner.uname
+            }
+          )
         end
       end
     elsif commit_comment?
@@ -27,29 +42,24 @@ module Modules::Observers::ActivityFeed::Comment
               (subscribe.user.committer?(self.commentable) && subscribe.user.notifier.new_comment_commit_owner) )
           UserMailer.new_comment_notification(self, subscribe.user).deliver
         end
-        send_new_comment_commit_notification(subscribe)
+        ActivityFeed.create(
+          :user => subscribe.user,
+          :kind => 'new_comment_commit_notification',
+          :data => {
+            :user_name      => user.name,
+            :user_email     => user.email,
+            :user_id        => user_id,
+            :comment_body   => body,
+            :commit_message => commentable.message,
+            :commit_id      => commentable.id,
+            :project_id     => project.id,
+            :comment_id     => id,
+            :project_name   => project.name,
+            :project_owner  => project.owner.uname}
+        )
       end
     end
     Comment.create_link_on_issues_from_item(self)
-  end
-
-  def send_new_comment_commit_notification(subscribe)
-    ActivityFeed.create(
-      :user => subscribe.user,
-      :kind => 'new_comment_commit_notification',
-      :data => {
-        :user_name      => user.name,
-        :user_email     => user.email,
-        :user_id        => user_id,
-        :comment_body   => body,
-        :commit_message => commentable.message,
-        :commit_id      => commentable.id,
-        :project_id     => project.id,
-        :comment_id     => id,
-        :project_name   => project.name,
-        :project_owner  => project.owner.uname
-      }
-    )
   end
 
   def can_notify_on_new_comment?(subscribe)
