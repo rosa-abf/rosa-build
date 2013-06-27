@@ -3,6 +3,7 @@ class BuildList < ActiveRecord::Base
   include Modules::Models::CommitAndVersion
   include Modules::Models::FileStoreClean
   include AbfWorker::ModelHelper
+  include Modules::Observers::ActivityFeed::BuildList
 
   belongs_to :project
   belongs_to :arch
