@@ -49,10 +49,9 @@ class Api::V1::IssuesController < Api::V1::BaseController
       end if params[:issue]
     end
     @issue.labelings.destroy_all if params[:update_labels]
-    if params[:issue] && status = params[:issue][:status]
+    if params[:issue] && status = params[:issue].delete(:status)
       @issue.set_close(current_user) if status == 'closed'
       @issue.set_open if status == 'open'
-      params[:issue].delete :status
     end
     update_subject @issue
   end
