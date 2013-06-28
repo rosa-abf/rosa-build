@@ -7,8 +7,8 @@ class Api::V1::PullRequestsController < Api::V1::BaseController
 
   load_resource :group, :only => :group_index, :find_by => :id, :parent => false
   load_resource :project
-  load_resource :issue, :through => :project, :find_by => :serial_id, :parent => false, :only => [:show, :index, :commits, :files, :merge]
-  load_and_authorize_resource :instance_name => :pull, :through => :issue, :singleton => true, :only => [:show, :index, :commits, :files, :merge]
+  load_resource :issue, :through => :project, :find_by => :serial_id, :parent => false, :only => [:show, :index, :commits, :files, :merge, :update]
+  load_and_authorize_resource :instance_name => :pull, :through => :issue, :singleton => true, :only => [:show, :index, :commits, :files, :merge, :update]
 
   def index
     @pulls = @project.pull_requests
