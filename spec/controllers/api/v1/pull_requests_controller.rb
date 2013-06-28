@@ -86,7 +86,7 @@ describe Api::V1::PullRequestsController do
       it 'should return only assigned pull request' do
         get :user_index, :format => :json
         assigns[:pulls].should include(@own_hidden_pull)
-        assigns[:pulls].count.should == 1
+        assigns[:pulls].should have(1).item
       end
 
       it 'should render right template for user index action' do

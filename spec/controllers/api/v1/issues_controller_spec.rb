@@ -75,7 +75,7 @@ describe Api::V1::IssuesController do
       it 'should return only assigned issue' do
         get :user_index, :format => :json
         assigns[:issues].should include(@own_hidden_issue)
-        assigns[:issues].count.should == 1
+        assigns[:issues].should have(1).item
       end
 
       it 'should render right template for user index action' do
