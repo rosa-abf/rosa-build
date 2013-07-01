@@ -73,10 +73,9 @@ describe Api::V1::IssuesController do
       end
 
       it 'should return only assigned issue' do
-        http_login(@issue.user)
         get :user_index, :format => :json
         assigns[:issues].should include(@own_hidden_issue)
-        assigns[:issues].count.should == 1
+        assigns[:issues].should have(1).item
       end
 
       it 'should render right template for user index action' do
@@ -107,42 +106,32 @@ describe Api::V1::IssuesController do
     context 'for user' do
       before(:each) do
         http_login(@issue.user)
-        @count = Issue.count
       end
 
       it 'can create issue in own project' do
-        post :create, @create_params
-        Issue.count.should == @count+1
+        lambda { post :create, @create_params}.should change{ Issue.count }.by(1)
       end
 
       it 'can create issue in own hidden project' do
-        post :create, @create_params.merge(:project_id => @own_hidden_project.id)
-        Issue.count.should == @count+1
+        lambda { post :create, @create_params.merge(:project_id => @own_hidden_project.id)}.should change{ Issue.count }.by(1)
       end
 
       it 'can create issue in open project' do
-        post :create, @create_params.merge(:project_id => @open_project.id)
-        Issue.count.should == @count+1
+        lambda { post :create, @create_params.merge(:project_id => @open_project.id)}.should change{ Issue.count }.by(1)
       end
 
       it 'cant create issue in hidden project' do
-        post :create, @create_params.merge(:project_id => @hidden_project.id)
-        Issue.count.should == @count
+        lambda { post :create, @create_params.merge(:project_id => @hidden_project.id)}.should change{ Issue.count }.by(0)
       end
     end
 
     context 'for anonymous user' do
-      before(:each) do
-        @count = Issue.count
-      end
       it 'cant create issue in project', :anonymous_access => true do
-        post :create, @create_params
-        Issue.count.should == @count
+        lambda { post :create, @create_params}.should change{ Issue.count }.by(0)
       end
 
       it 'cant create issue in hidden project', :anonymous_access => true do
-        post :create, @create_params.merge(:project_id => @hidden_project.id)
-        Issue.count.should == @count
+        lambda { post :create, @create_params.merge(:project_id => @hidden_project.id)}.should change{ Issue.count }.by(0)
       end
     end
   end
@@ -189,6 +178,7 @@ describe Api::V1::IssuesController do
       end
     end
   end
+
   after(:all) do
     User.destroy_all
     Platform.destroy_all
