@@ -157,7 +157,7 @@ class BuildList < ActiveRecord::Base
       end
     end
 
-    after_transition :on => :place_build, :do => :add_to_queue
+    after_transition :on => :place_build, :do => :add_job_to_abf_worker_queue
     after_transition :on => :published,
       :do => [:set_version_and_tag, :actualize_packages]
     after_transition :on => :publish, :do => :set_publisher
@@ -288,10 +288,6 @@ class BuildList < ActiveRecord::Base
     # All extra build lists should be published before publishing this build list for main platforms!
     return true unless save_to_platform.main?
     BuildList.where(:id => extra_build_lists).where('status != ?', BUILD_PUBLISHED).count == 0
-  end
-
-  def add_to_queue
-    add_job_to_abf_worker_queue
   end
 
   def self.human_status(status)
