@@ -10,9 +10,9 @@ class Groups::ProfileController < Groups::BaseController
   end
 
   def show
-    @projects = @group.projects.by_visibilities(['open']).
-      search(params[:search]).search_order.
-      paginate(:page => params[:page], :per_page => 25)
+    @projects = @group.projects.opened.search(params[:search])
+      .paginate(:page => params[:page], :per_page => 25)
+    @projects = @projects.recent if params[:search].blank?
   end
 
   def new

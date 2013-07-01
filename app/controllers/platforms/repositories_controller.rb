@@ -12,8 +12,8 @@ class Platforms::RepositoriesController < Platforms::BaseController
   end
 
   def show
-    @projects = @repository.projects.recent.paginate :page => params[:project_page], :per_page => 30
-    @projects = @projects.search(params[:query]).search_order if params[:query].present?
+    @projects = @repository.projects.recent
+      .search(params[:query]).paginate(:page => params[:project_page], :per_page => 30)
   end
 
   def edit
@@ -125,8 +125,7 @@ class Platforms::RepositoriesController < Platforms::BaseController
     )
 
     @total_projects = @projects.count
-    @projects = @projects.search(params[:sSearch]).search_order if params[:sSearch].present?
-    @projects = @projects.order(order)
+    @projects = @projects.search(params[:sSearch]).order(order)
 
     respond_to do |format|
       format.json {
