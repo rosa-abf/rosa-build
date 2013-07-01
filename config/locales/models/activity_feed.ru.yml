@@ -40,7 +40,7 @@ ru:
       delete_branch:  '%{user_link} удалил ветку %{branch_name}'
       create_branch: '%{user_link} создал новую ветку %{branch_name}'
       update_branch: '%{user_link} внес изменения в ветку %{branch_name}'
-      build_task: 'Сборочное <a href="%{task_link}">задание №%{task_num}</a>'
+      build_task: 'Сборочное <a href="%{task_link}">задание №%{id}</a>'
       build_status:
         published: успешно опубликовано
         success: успешно собрано

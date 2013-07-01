@@ -594,7 +594,7 @@ describe Api::V1::BuildListsController do
       @filter_build_list1 = FactoryGirl.create(:build_list)
       @filter_build_list2 = FactoryGirl.create(:build_list)
       @filter_build_list3 = FactoryGirl.create(:build_list)
-      @filter_build_list4 = FactoryGirl.create(:build_list, :updated_at => (Time.now - 1,
+      @filter_build_list4 = FactoryGirl.create(:build_list, :updated_at => (Time.now - 1.day),
                              :project => @build_list3.project, :save_to_platform => @build_list3.save_to_platform,
                              :arch => @build_list3.arch)
     end

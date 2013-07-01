@@ -11,13 +11,13 @@ module Modules::Observers::ActivityFeed::BuildList
   def build_list_notifications
     if mass_build.blank? && ( # Do not show mass build activity in activity feeds
         status_changed? && [
+                              BuildList::BUILD_PENDING,
                               BuildList::BUILD_PUBLISHED,
                               BuildList::SUCCESS,
                               BuildList::BUILD_ERROR,
                               BuildList::FAILED_PUBLISH,
                               BuildList::TESTS_FAILED
-                            ].include?(status) ||
-        status == BuildList::BUILD_PENDING
+                            ].include?(status)
       )
 
       updater = publisher || user
@@ -26,7 +26,6 @@ module Modules::Observers::ActivityFeed::BuildList
           :user => recipient,
           :kind => 'build_list_notification',
           :data => {
-            :task_num       => id,
             :build_list_id  => id,
             :status         => status,
             :updated_at     => updated_at,

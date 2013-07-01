@@ -39,7 +39,7 @@ en:
       delete_branch: '%{user_link} deleted a %{branch_name}'
       create_branch: '%{user_link} created a new branch %{branch_name}'
       update_branch: '%{user_link} pushed to branch %{branch_name}'
-      build_task: 'Build <a href="%{task_link}">task #%{task_num}</a>'
+      build_task: 'Build <a href="%{task_link}">task #%{id}</a>'
       build_status:
         published: published successfully
         success: completed successfully
