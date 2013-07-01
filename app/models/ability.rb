@@ -17,7 +17,7 @@ class Ability
     can :get_id,  Project, :visibility => 'open' # api
     can :archive, Project, :visibility => 'open'
     can :read, Issue, :project => {:visibility => 'open'}
-    can :read, PullRequest, :to_project => {:visibility => 'open'}
+    can [:read, :commits, :files], PullRequest, :to_project => {:visibility => 'open'}
     can :search, BuildList
     can [:read, :log, :everything], BuildList, :project => {:visibility => 'open'}
     can [:read, :log], ProductBuildList#, :product => {:platform => {:visibility => 'open'}} # double nested hash don't work
@@ -142,11 +142,12 @@ class Ability
         can(:update, Issue) {|issue| issue.user_id == user.id or local_admin?(issue.project)}
         cannot :manage, Issue, :project => {:has_issues => false} # switch off issues
 
-        can :read, PullRequest, :to_project => {:owner_type => 'User', :owner_id => user.id}
-        can :read, PullRequest, :to_project => {:owner_type => 'Group', :owner_id => user.group_ids}
-        can(:read, PullRequest, read_relations_for('pull_requests', 'to_projects')) {|pull| can? :read, pull.to_project rescue nil}
+        can [:read, :commits, :files], PullRequest, :to_project => {:owner_type => 'User', :owner_id => user.id}
+        can [:read, :commits, :files], PullRequest, :to_project => {:owner_type => 'Group', :owner_id => user.group_ids}
+        can([:read, :commits, :files], PullRequest, read_relations_for('pull_requests', 'to_projects')) {|pull| can? :read, pull.to_project}
         can :create, PullRequest
-        can([:update, :merge], PullRequest) {|pull| pull.user_id == user.id or local_admin?(pull.to_project)}
+        can(:update, PullRequest) {|pull| pull.user_id == user.id or local_admin?(pull.to_project)}
+        can(:merge,  PullRequest) {|pull| local_admin?(pull.to_project)}
 
         can([:create, :new_line], Comment) {|comment| can? :read, comment.project}
         can([:update, :destroy], Comment) {|comment| comment.user == user or comment.project.owner == user or local_admin?(comment.project)}

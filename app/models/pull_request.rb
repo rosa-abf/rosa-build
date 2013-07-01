@@ -20,6 +20,8 @@ class PullRequest < ActiveRecord::Base
   attr_accessible :issue_attributes, :to_ref, :from_ref
 
   scope :needed_checking, includes(:issue).where(:issues => {:status => ['open', 'blocked', 'ready']})
+  scope :not_closed_or_merged, needed_checking
+  scope :closed_or_merged, where(:issues => {:status => ['closed', 'merged']})
 
   state_machine :status, :initial => :open do
     event :ready do

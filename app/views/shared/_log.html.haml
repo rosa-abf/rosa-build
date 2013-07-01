@@ -28,18 +28,14 @@
               = check_box_tag :autoreload, true, build_started
               = t("layout.build_lists.log.autoreload")
             = select_tag :reload_interval, log_reload_time_options
-        %tr.bottom
-          %td.first
-            - if download_log_url
-              = link_to t("layout.build_lists.log.download"), download_log_url, :id => :log_url
-          %td.last{ :class => build_started ? nil : :hidden }
-            = label_tag :load_lines do
-              = raw t("layout.build_lists.log.load_lines", :count => select_tag(:load_lines, log_reload_lines_options))
+
     .both
-    %textarea.log{ :readonly => :readonly, :wrap => 'off',
-                   :data => { :url => get_log_path, :log_type => :build } }
-      = t("layout.build_lists.log.not_available")
+    #output.cm-s-default.log{ :readonly => :readonly,
+                              :data => { :url => get_log_path, :log_type => :build } }
+      %pre#code
+    .both
 .both
+
 
 :javascript
   $(function() {

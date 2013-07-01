@@ -60,6 +60,13 @@ Rosa::Application.routes.draw do
         }
         resources :build_lists, :only => :index
         resources :issues, :only => [:index, :create, :show, :update]
+        resources :pull_requests, :only => [:index, :create, :show, :update] do
+          member {
+            get :commits
+            get :files
+            put :merge
+          }
+        end
       end
       resources :users, :only => [:show]
       get 'user' => 'users#show_current_user'
@@ -68,6 +75,7 @@ Rosa::Application.routes.draw do
           get :notifiers
           put :notifiers
           get '/issues' => 'issues#user_index'
+          get '/pull_requests' => 'pull_requests#user_index'
         }
       end
       resources :groups, :only => [:index, :show, :update, :create, :destroy] do
@@ -77,6 +85,7 @@ Rosa::Application.routes.draw do
           delete :remove_member
           put :update_member
           get '/issues' => 'issues#group_index'
+          get '/pull_requests' => 'pull_requests#group_index'
         }
       end
       resources :products, :only => [:show, :update, :create, :destroy] do
@@ -87,6 +96,7 @@ Rosa::Application.routes.draw do
       end
       #resources :ssh_keys, :only => [:index, :create, :destroy]
       get 'issues' => 'issues#all_index'
+      get 'pull_requests' => 'pull_requests#all_index'
     end
   end
 
@@ -278,7 +288,7 @@ Rosa::Application.routes.draw do
             match 'compare/:versions' => 'wiki#compare', :versions => /([a-f0-9\^]{6,40})(\.\.\.[a-f0-9\^]{6,40})/, :as => :compare_versions, :via => :get
           end
         end
-        resources :issues, :except => :edit do
+        resources :issues, :except => [:destroy, :edit] do
           resources :comments, :only => [:edit, :create, :update, :destroy]
           resources :subscribes, :only => [:create, :destroy]
           collection do

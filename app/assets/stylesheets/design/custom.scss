@@ -1461,18 +1461,18 @@ div.reloader {
     float: right;
 }
 
-div.log-wrapper {
+.log-wrapper {
     width: 565px;
 
-    div.log-header {
+    .log-header {
         margin-bottom: 10px;
 
-        div.text-wrap, span {
+        .text-wrap, span {
             height: 16px;
             margin: 0;
             padding: 0;
         }
-        div.text-wrap {
+        .text-wrap {
             width: 545px;
             float: left;
 
@@ -1496,13 +1496,13 @@ div.log-wrapper {
         }
     }
 
-    div.log-body {
+    .log-body {
 
-        div.reloader, .log {
+        .reloader, .log {
             border: 1px solid #ccc;
         }
 
-        div.reloader {
+        .reloader {
             padding: 5px 10px;
             border-bottom: none;
             border-radius: 5px 5px 0 0;
@@ -1527,15 +1527,6 @@ div.log-wrapper {
                         border-left: 1px solid #ccc;
                     }
                 }
-
-                tr.bottom {
-                    td {
-                        padding-left: 5px;
-                    }
-                    td.first {
-                        border-top: 1px solid #ccc;
-                    }
-                }
             }
         }
 
@@ -1543,6 +1534,7 @@ div.log-wrapper {
             background: #f8f8f8;
             height: 500px;
             width: 543px;
+            white-space: pre;
             min-width: 543px;
             border-radius: 5px 0 5px 5px;
             overflow: auto;

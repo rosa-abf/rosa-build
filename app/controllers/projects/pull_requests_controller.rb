@@ -78,7 +78,6 @@ class Projects::PullRequestsController < Projects::BaseController
   end
 
   def merge
-    @pull.check
     unless @pull.merge!(current_user)
       flash.now[:error] = t('flash.pull_request.save_error')
       flash.now[:warning] = @pull.errors.full_messages.join('. ')
