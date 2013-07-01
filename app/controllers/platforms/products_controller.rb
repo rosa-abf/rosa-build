@@ -53,7 +53,7 @@ class Platforms::ProductsController < Platforms::BaseController
 
   def autocomplete_project
     items = Project.accessible_by(current_ability, :membered)
-      .search(params[:term]).limit(20)
+                   .search(params[:term]).limit(20)
     items.select! {|e| e.repo.branches.count > 0}
     render :json => items.map{ |p|
       {

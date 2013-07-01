@@ -10,9 +10,8 @@ class Groups::ProfileController < Groups::BaseController
   end
 
   def show
-    @projects = @group.projects.opened.search(params[:search])
-      .paginate(:page => params[:page], :per_page => 25)
-    @projects = @projects.recent if params[:search].blank?
+    @projects = @group.projects.opened.search(params[:search]).recent
+                      .paginate(:page => params[:page], :per_page => 25)
   end
 
   def new
