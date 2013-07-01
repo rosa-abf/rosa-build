@@ -101,7 +101,7 @@ describe Api::V1::BuildListsController do
         Arch.destroy_all
         User.destroy_all
 
-        @build_list = FactoryGirl.create(:build_list_core)
+        @build_list = FactoryGirl.create(:build_list)
         @params = @build_list.attributes.symbolize_keys
         @project = @build_list.project
         @platform = @build_list.save_to_platform
@@ -115,8 +115,7 @@ describe Api::V1::BuildListsController do
         @build_list.save_to_platform.relations.create(:role => 'admin', :actor => @owner_user) # Why it's really need it??
 
         # Create and show params:
-        @create_params = {:build_list => @build_list.attributes.symbolize_keys.except(:bs_id)
-                           .merge(:qwerty=>'!')} # wrong parameter
+        @create_params = {:build_list => @build_list.attributes.symbolize_keys.merge(:qwerty=>'!')} # wrong parameter
         @create_params = @create_params.merge(:arches => [@params[:arch_id]], :build_for_platforms => [@params[:build_for_platform_id]], :format => :json)
         any_instance_of(Project, :versions => ['v1.0', 'v2.0'])
 
@@ -499,7 +498,7 @@ describe Api::V1::BuildListsController do
         Arch.destroy_all
         User.destroy_all
 
-        @build_list = FactoryGirl.create(:build_list_core)
+        @build_list = FactoryGirl.create(:build_list)
         @params = @build_list.attributes.symbolize_keys
         @project = @build_list.project
         @platform = @build_list.save_to_platform
@@ -510,7 +509,7 @@ describe Api::V1::BuildListsController do
         @member_user = FactoryGirl.create(:user)
 
         # Create and show params:
-        @create_params = {:build_list => @build_list.attributes.symbolize_keys.except(:bs_id)}
+        @create_params = {:build_list => @build_list.attributes.symbolize_keys}
         @create_params = @create_params.merge(:arches => [@params[:arch_id]], :build_for_platforms => [@params[:build_for_platform_id]], :format => :json)
         any_instance_of(Project, :versions => ['v1.0', 'v2.0'])
 
@@ -580,22 +579,22 @@ describe Api::V1::BuildListsController do
       @user = FactoryGirl.create(:user)
 
       # Build Lists:
-      @build_list1 = FactoryGirl.create(:build_list_core)
+      @build_list1 = FactoryGirl.create(:build_list)
 
-      @build_list2 = FactoryGirl.create(:build_list_core)
+      @build_list2 = FactoryGirl.create(:build_list)
       @build_list2.project.update_column(:visibility, 'hidden')
 
       project = FactoryGirl.create(:project_with_commit, :visibility => 'hidden', :owner => @user)
-      @build_list3 = FactoryGirl.create(:build_list_core_with_attaching_project, :project => project)
+      @build_list3 = FactoryGirl.create(:build_list_with_attaching_project, :project => project)
 
-      @build_list4 = FactoryGirl.create(:build_list_core)
+      @build_list4 = FactoryGirl.create(:build_list)
       @build_list4.project.update_column(:visibility, 'hidden')
       @build_list4.project.relations.create! :role => 'reader', :actor_id => @user.id, :actor_type => 'User'
 
-      @filter_build_list1 = FactoryGirl.create(:build_list_core)
-      @filter_build_list2 = FactoryGirl.create(:build_list_core)
-      @filter_build_list3 = FactoryGirl.create(:build_list_core)
-      @filter_build_list4 = FactoryGirl.create(:build_list_core, :updated_at => (Time.now - 1.day),
+      @filter_build_list1 = FactoryGirl.create(:build_list)
+      @filter_build_list2 = FactoryGirl.create(:build_list)
+      @filter_build_list3 = FactoryGirl.create(:build_list)
+      @filter_build_list4 = FactoryGirl.create(:build_list, :updated_at => (Time.now - 1,
                              :project => @build_list3.project, :save_to_platform => @build_list3.save_to_platform,
                              :arch => @build_list3.arch)
     end
@@ -637,8 +636,8 @@ describe Api::V1::BuildListsController do
         http_login FactoryGirl.create(:admin)
       end
 
-      it 'should filter by bs_id' do
-        get :index, :filter => {:bs_id => @filter_build_list1.bs_id, :project_name => 'fdsfdf', :any_other_field => 'do not matter'}, :format => :json
+      it 'should filter by id' do
+        get :index, :filter => {:id => @filter_build_list1.id, :project_name => 'fdsfdf', :any_other_field => 'do not matter'}, :format => :json
         assigns[:build_lists].should include(@filter_build_list1)
         assigns[:build_lists].should_not include(@filter_build_list2)
         assigns[:build_lists].should_not include(@filter_build_list3)
@@ -666,7 +665,7 @@ describe Api::V1::BuildListsController do
 
     context "for user" do
       before(:each) do
-        @build_list = FactoryGirl.create(:build_list_core)
+        @build_list = FactoryGirl.create(:build_list)
         @params = @build_list.attributes.symbolize_keys
         @project = @build_list.project
 
@@ -722,7 +721,7 @@ describe Api::V1::BuildListsController do
     context "for group" do
       before(:each) do
         @platform = FactoryGirl.create(:platform_with_repos)
-        @build_list = FactoryGirl.create(:build_list_core, :save_to_platform => @platform)
+        @build_list = FactoryGirl.create(:build_list, :save_to_platform => @platform)
         @project = @build_list.project
         @params = @build_list.attributes.symbolize_keys
 

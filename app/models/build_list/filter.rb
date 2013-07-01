@@ -11,8 +11,8 @@ class BuildList::Filter
   def find
     build_lists =  @project ? @project.build_lists : BuildList.scoped
 
-    if @options[:bs_id]
-      build_lists = build_lists.where(:bs_id => @options[:bs_id])
+    if @options[:id]
+      build_lists = build_lists.where(:id => @options[:id])
     else
       build_lists = build_lists.accessible_by(::Ability.new(@user), @options[:ownership].to_sym) if @options[:ownership]
       build_lists = build_lists.scoped_to_new_core(@options[:new_core] == '0' ? nil : true) if @options[:new_core].present?
@@ -41,18 +41,18 @@ class BuildList::Filter
 
   def set_options(options)
     @options = HashWithIndifferentAccess.new(options.reverse_merge({
-        :ownership => nil,
-        :status => nil,
+        :ownership        => nil,
+        :status           => nil,
         :updated_at_start => nil,
-        :updated_at_end => nil,
-        :arch_id => nil,
-        :platform_id => nil,
-        :is_circle => nil,
-        :project_version => nil,
-        :bs_id => nil,
-        :project_name => nil,
-        :mass_build_id => nil,
-        :new_core => nil
+        :updated_at_end   => nil,
+        :arch_id          => nil,
+        :platform_id      => nil,
+        :is_circle        => nil,
+        :project_version  => nil,
+        :id               => nil,
+        :project_name     => nil,
+        :mass_build_id    => nil,
+        :new_core         => nil
     }))
 
     @options[:ownership] = @options[:ownership].presence || (@project || !@user ? 'everything' : 'owned')
@@ -65,7 +65,7 @@ class BuildList::Filter
     @options[:arch_id] = @options[:arch_id].try(:to_i)
     @options[:platform_id] = @options[:platform_id].try(:to_i)
     @options[:is_circle] = @options[:is_circle].present? ? @options[:is_circle] == "1" : nil
-    @options[:bs_id] = @options[:bs_id].presence
+    @options[:id] = @options[:id].presence
     @options[:project_name] = @options[:project_name].presence
     @options[:mass_build_id] = @options[:mass_build_id].presence
     @options[:new_core] = @options[:new_core].presence

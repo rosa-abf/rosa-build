@@ -292,7 +292,6 @@ class BuildList < ActiveRecord::Base
 
   def add_to_queue
     add_job_to_abf_worker_queue
-    update_column(:bs_id, id)
   end
 
   def self.human_status(status)

@@ -9,11 +9,11 @@ describe AbfWorker::BuildListsPublishTaskManager do
   before do
     init_test_root
     stub_symlink_methods
-    FactoryGirl.create(:build_list_core, :new_core => true)
+    FactoryGirl.create(:build_list)
   end
 
   subject { AbfWorker::BuildListsPublishTaskManager }
-  let(:build_list)  { FactoryGirl.create(:build_list_core, :new_core => true) }
+  let(:build_list)  { FactoryGirl.create(:build_list) }
 
   context 'when no items for publishing' do
     before do
@@ -76,7 +76,7 @@ describe AbfWorker::BuildListsPublishTaskManager do
   end
 
   context 'grouping build lists for publishing into same repository' do
-    let(:build_list2) { FactoryGirl.create(:build_list_core,
+    let(:build_list2) { FactoryGirl.create(:build_list,
       :new_core => true,
       :save_to_platform => build_list.save_to_platform,
       :save_to_repository => build_list.save_to_repository,
@@ -122,7 +122,7 @@ describe AbfWorker::BuildListsPublishTaskManager do
       stub_redis
       build_list.update_column(:status, BuildList::BUILD_PUBLISH)
       4.times {
-        bl = FactoryGirl.create(:build_list_core, :new_core => true)
+        bl = FactoryGirl.create(:build_list, :new_core => true)
         bl.update_column(:status, BuildList::BUILD_PUBLISH)
       }
       2.times{ subject.new.run }
@@ -180,13 +180,13 @@ describe AbfWorker::BuildListsPublishTaskManager do
   end
 
   context 'grouping build lists for publishing and tasks for removing project from repository' do
-    let(:build_list2) { FactoryGirl.create(:build_list_core,
+    let(:build_list2) { FactoryGirl.create(:build_list,
       :new_core => true,
       :save_to_platform => build_list.save_to_platform,
       :save_to_repository => build_list.save_to_repository,
       :build_for_platform => build_list.build_for_platform
     ) }
-    let(:build_list3) { FactoryGirl.create(:build_list_core,
+    let(:build_list3) { FactoryGirl.create(:build_list,
       :new_core => true,
       :save_to_platform => build_list.save_to_platform,
       :save_to_repository => build_list.save_to_repository,

@@ -113,7 +113,7 @@ describe Projects::BuildListsController do
     context 'for user' do
       before(:each) do
         any_instance_of(BuildList, :current_duration => 100)
-        @build_list = FactoryGirl.create(:build_list_core)
+        @build_list = FactoryGirl.create(:build_list)
         @project = @build_list.project
         @owner_user = @project.owner
         @member_user = FactoryGirl.create(:user)
@@ -223,15 +223,15 @@ describe Projects::BuildListsController do
 
       context 'for all build lists' do
         before(:each) do
-          @build_list1 = FactoryGirl.create(:build_list_core)
+          @build_list1 = FactoryGirl.create(:build_list)
 
-          @build_list2 = FactoryGirl.create(:build_list_core)
+          @build_list2 = FactoryGirl.create(:build_list)
           @build_list2.project.update_column(:visibility, 'hidden')
 
           project = FactoryGirl.create(:project_with_commit, :visibility => 'hidden', :owner => @user)
-          @build_list3 = FactoryGirl.create(:build_list_core_with_attaching_project, :project => project)
+          @build_list3 = FactoryGirl.create(:build_list_with_attaching_project, :project => project)
 
-          @build_list4 = FactoryGirl.create(:build_list_core)
+          @build_list4 = FactoryGirl.create(:build_list)
           @build_list4.project.update_column(:visibility, 'hidden')
           @build_list4.project.relations.create! :role => 'reader', :actor_id => @user.id, :actor_type => 'User'
         end
@@ -312,15 +312,15 @@ describe Projects::BuildListsController do
 
       context 'for all build lists' do
         before(:each) do
-          @build_list1 = FactoryGirl.create(:build_list_core)
+          @build_list1 = FactoryGirl.create(:build_list)
 
-          @build_list2 = FactoryGirl.create(:build_list_core)
+          @build_list2 = FactoryGirl.create(:build_list)
           @build_list2.project.update_column(:visibility, 'hidden')
 
           project = FactoryGirl.create(:project_with_commit, :visibility => 'hidden', :owner => @user)
-          @build_list3 = FactoryGirl.create(:build_list_core_with_attaching_project, :project => project)
+          @build_list3 = FactoryGirl.create(:build_list_with_attaching_project, :project => project)
 
-          @build_list4 = FactoryGirl.create(:build_list_core)
+          @build_list4 = FactoryGirl.create(:build_list)
           @build_list4.project.update_column(:visibility, 'hidden')
           @build_list4.project.relations.create! :role => 'reader', :actor_id => @user.id, :actor_type => 'User'
         end
@@ -386,16 +386,16 @@ describe Projects::BuildListsController do
     before(:each) do
       set_session_for FactoryGirl.create(:admin)
 
-      @build_list1 = FactoryGirl.create(:build_list_core)
-      @build_list2 = FactoryGirl.create(:build_list_core)
-      @build_list3 = FactoryGirl.create(:build_list_core)
-      @build_list4 = FactoryGirl.create(:build_list_core, :updated_at => (Time.now - 1.day),
+      @build_list1 = FactoryGirl.create(:build_list)
+      @build_list2 = FactoryGirl.create(:build_list)
+      @build_list3 = FactoryGirl.create(:build_list)
+      @build_list4 = FactoryGirl.create(:build_list, :updated_at => (Time.now - 1.day),
                              :project => @build_list3.project, :save_to_platform => @build_list3.save_to_platform,
                              :arch => @build_list3.arch)
     end
 
-    it 'should filter by bs_id' do
-      get :index, :filter => {:bs_id => @build_list1.bs_id, :project_name => 'fdsfdf', :any_other_field => 'do not matter'}
+    it 'should filter by id' do
+      get :index, :filter => {:id => @build_list1.id, :project_name => 'fdsfdf', :any_other_field => 'do not matter'}
       assigns[:build_lists].should include(@build_list1)
       assigns[:build_lists].should_not include(@build_list2)
       assigns[:build_lists].should_not include(@build_list3)

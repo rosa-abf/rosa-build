@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130603124853) do
+ActiveRecord::Schema.define(:version => 20130701121313) do
 
   create_table "activity_feeds", :force => true do |t|
     t.integer  "user_id",    :null => false
@@ -104,7 +104,6 @@ ActiveRecord::Schema.define(:version => 20130603124853) do
   add_index "build_list_packages", ["project_id"], :name => "index_build_list_packages_on_project_id"
 
   create_table "build_lists", :force => true do |t|
-    t.integer  "bs_id"
     t.integer  "status"
     t.string   "project_version"
     t.integer  "project_id"
@@ -142,7 +141,6 @@ ActiveRecord::Schema.define(:version => 20130603124853) do
   add_index "build_lists", ["advisory_id"], :name => "index_build_lists_on_advisory_id"
   add_index "build_lists", ["arch_id"], :name => "index_build_lists_on_arch_id"
   add_index "build_lists", ["project_id", "save_to_repository_id", "build_for_platform_id", "arch_id"], :name => "maintainer_search_index"
-  add_index "build_lists", ["bs_id"], :name => "index_build_lists_on_bs_id", :unique => true
   add_index "build_lists", ["project_id"], :name => "index_build_lists_on_project_id"
 
   create_table "comments", :force => true do |t|

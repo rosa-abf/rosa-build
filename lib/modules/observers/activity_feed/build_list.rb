@@ -17,7 +17,7 @@ module Modules::Observers::ActivityFeed::BuildList
                               BuildList::FAILED_PUBLISH,
                               BuildList::TESTS_FAILED
                             ].include?(status) ||
-        status == BuildList::BUILD_PENDING && bs_id_changed?
+        status == BuildList::BUILD_PENDING
       )
 
       updater = publisher || user
@@ -26,7 +26,7 @@ module Modules::Observers::ActivityFeed::BuildList
           :user => recipient,
           :kind => 'build_list_notification',
           :data => {
-            :task_num       => bs_id,
+            :task_num       => id,
             :build_list_id  => id,
             :status         => status,
             :updated_at     => updated_at,

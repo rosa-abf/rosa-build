@@ -5,7 +5,7 @@ en:
       build_list_item: Build list item
     attributes:
       build_list:
-        bs_id: Id
+        id: Id
         name: Name
         extra_repositories: Extra repositories
         extra_build_lists: Extra build lists
@@ -60,9 +60,8 @@ en:
       created_at_end: "Build to start until:"
       updated_at_start: "Last update from BS on:"
       updated_at_end: " Last update from BS until:"
-      bs_id_search: 'Search by Id'
+      id_search: 'Search by Id'
       project_name_search: Search by project name
-      bs_id_not_set: Id has not been configured yet
       items_header: Build items
       packages_header: Packages
       no_items_data: No data
