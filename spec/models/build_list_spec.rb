@@ -18,7 +18,7 @@ describe BuildList do
   context "#notify_users" do
     before { stub_symlink_methods }
     let!(:user) { FactoryGirl.create(:user) }
-    let!(:build_list) { FactoryGirl.create(:build_list_core,
+    let!(:build_list) { FactoryGirl.create(:build_list,
                                            :user => user,
                                            :auto_publish => false) }
     let!(:build_list_package) { FactoryGirl.create(:build_list_package,
@@ -141,7 +141,7 @@ describe BuildList do
 
     it "doesn't get 2 notification by email when user associated to project and created task" do
       project = FactoryGirl.create(:project_with_commit, :owner => user)
-      bl = FactoryGirl.create(:build_list_core_with_attaching_project,
+      bl = FactoryGirl.create(:build_list_with_attaching_project,
         :user => user,
         :auto_publish => true,
         :project => project

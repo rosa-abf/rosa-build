@@ -21,7 +21,7 @@ describe AutocompletesController do
     end
 
     context 'autocomplete_extra_build_list' do
-      let(:build_list)  { FactoryGirl.create(:build_list_core, :user => user) }
+      let(:build_list)  { FactoryGirl.create(:build_list, :user => user) }
       let(:params)      { { :term         => build_list.id,
                             :platform_id  => build_list.save_to_platform_id } }
 
