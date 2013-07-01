@@ -60,6 +60,7 @@ class User < Avatar
 
   include Modules::Models::PersonalRepository
   include Modules::Models::ActsLikeMember
+  include Modules::Observers::ActivityFeed::User
 
   def admin?
     role == 'admin'

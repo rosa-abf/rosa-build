@@ -65,7 +65,7 @@ class GitHook
   end
 
   def self.process(*args)
-    ActivityFeedObserver.instance.after_create(args.size > 1 ? GitHook.new(*args) : args.first)
+    Modules::Observers::ActivityFeed::Git.create_notifications(args.size > 1 ? GitHook.new(*args) : args.first)
   end
 
   def find_user(user)

@@ -7,5 +7,6 @@ FactoryGirl.define do
     association :user, :factory => :user
     association :assignee, :factory => :user
     status "open"
+    after(:create) { |i| i.send(:new_issue_notifications) }
   end
 end

@@ -1,5 +1,7 @@
 # -*- encoding : utf-8 -*-
 class Comment < ActiveRecord::Base
+  include Modules::Observers::ActivityFeed::Comment
+
   # regexp take from http://code.google.com/p/concerto-platform/source/browse/v3/cms/lib/CodeMirror/mode/gfm/gfm.js?spec=svn861&r=861#71
   # User/Project#Num
   # User#Num
@@ -52,10 +54,6 @@ class Comment < ActiveRecord::Base
 
   def own_comment?(user)
     user_id == user.id
-  end
-
-  def can_notify_on_new_comment?(subscribe)
-    User.find(subscribe.user).notifier.new_comment && User.find(subscribe.user).notifier.can_notify
   end
 
   def actual_inline_comment?(diff = nil, force = false)
