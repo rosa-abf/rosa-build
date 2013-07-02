@@ -16,6 +16,9 @@ class Api::V1::PlatformsController < Api::V1::BaseController
     render(:inline => 'true') && return unless platform.hidden?
 
     token, pass = *ActionController::HttpAuthentication::Basic::user_name_and_password(request)
+
+    render(:inline => 'true') && return if platform.tokens.where(:authentication_token => token).exists?
+    
     user = User.find_by_authentication_token token
     @current_ability, @current_user = nil, user
     if user && can?(:read, platform)
