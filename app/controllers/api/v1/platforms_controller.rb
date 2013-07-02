@@ -15,10 +15,14 @@ class Api::V1::PlatformsController < Api::V1::BaseController
     render(:inline => 'false', :status => 403) && return unless platform
     render(:inline => 'true') && return unless platform.hidden?
 
-    token, pass = *ActionController::HttpAuthentication::Basic::user_name_and_password(request)
+    if request.authorization.present?
+      token, pass = *ActionController::HttpAuthentication::Basic::user_name_and_password(request)
+    else
+      render(:inline => 'false', :status => 403) && return
+    end
 
     render(:inline => 'true') && return if platform.tokens.where(:authentication_token => token).exists?
-    
+
     user = User.find_by_authentication_token token
     @current_ability, @current_user = nil, user
     if user && can?(:read, platform)
@@ -26,8 +30,6 @@ class Api::V1::PlatformsController < Api::V1::BaseController
     else
       render :inline => 'false', :status => 403
     end
-  rescue => e
-    render :inline => 'false', :status => 403
   end
 
   def index
