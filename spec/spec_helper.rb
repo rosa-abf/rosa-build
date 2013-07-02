@@ -38,9 +38,10 @@ def set_session_for(user=nil)
   sign_in current_user
 end
 
-def http_login(user=nil)
+def http_login(user=nil, password = '123456')
   # FIXME: password constant is a bad choice...
-  request.env['HTTP_AUTHORIZATION'] = ActionController::HttpAuthentication::Basic.encode_credentials(user.email,'123456')
+  email = user.is_a?(String) ? user : user.try(:email)
+  request.env['HTTP_AUTHORIZATION'] = ActionController::HttpAuthentication::Basic.encode_credentials(email, password)
 end
 
 def stub_symlink_methods

@@ -273,14 +273,14 @@ describe Api::V1::PlatformsController do
         end
 
         it 'ensures that status 403 if wrong token' do
-          @request.env['HTTP_AUTHORIZATION'] = 'Basic ' + Base64::encode64("KuKu:password")
+          http_login 'KuKu', ''
           get :allowed, :path => "/#{@platform.name}/repository/SRPMS/base/release/repodata/"
           response.status.should == 403
         end
 
         it 'ensures that status 200 if token correct' do
           token = FactoryGirl.create(:platform_token, :subject => @platform)
-          @request.env['HTTP_AUTHORIZATION'] = 'Basic ' + Base64::encode64(token.authentication_token + ':')
+          http_login token.authentication_token, ''
           get :allowed, :path => "/#{@platform.name}/repository/SRPMS/base/release/repodata/"
           response.status.should == 200
         end
@@ -288,20 +288,20 @@ describe Api::V1::PlatformsController do
         it 'ensures that status 403 if token correct but blocked' do
           token = FactoryGirl.create(:platform_token, :subject => @platform)
           token.block
-          @request.env['HTTP_AUTHORIZATION'] = 'Basic ' + Base64::encode64(token.authentication_token + ':')
+          http_login token.authentication_token, ''
           get :allowed, :path => "/#{@platform.name}/repository/SRPMS/base/release/repodata/"
           response.status.should == 403
         end
 
         it 'ensures that status 200 if user token correct and user has ability to read platform' do
-          @request.env['HTTP_AUTHORIZATION'] = 'Basic ' + Base64::encode64(@platform.owner.authentication_token + ':')
+          http_login @platform.owner.authentication_token, ''
           get :allowed, :path => "/#{@platform.name}/repository/SRPMS/base/release/repodata/"
           response.status.should == 200
         end
 
         it 'ensures that status 403 if user token correct but user has no ability to read platform' do
           user = FactoryGirl.create(:user)
-          @request.env['HTTP_AUTHORIZATION'] = 'Basic ' + Base64::encode64(user.authentication_token + ':')
+          http_login user.authentication_token, ''
           get :allowed, :path => "/#{@platform.name}/repository/SRPMS/base/release/repodata/"
           response.status.should == 403
         end
