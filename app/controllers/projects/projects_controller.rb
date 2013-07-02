@@ -129,7 +129,7 @@ class Projects::ProjectsController < Projects::BaseController
       projects = projects.by_owners(groups, owners)
     end
 
-    projects = projects.search(params[:sSearch]).search_order if params[:sSearch].present?
+    projects = projects.search(params[:sSearch])
 
     res[:filtered_count] = projects.count
 

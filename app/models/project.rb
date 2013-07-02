@@ -45,9 +45,12 @@ class Project < ActiveRecord::Base
   attr_accessible :name, :description, :visibility, :srpm, :is_package, :default_branch, :has_issues, :has_wiki, :maintainer_id, :publish_i686_into_x86_64
   attr_readonly :name, :owner_id, :owner_type
 
-  scope :recent, order("#{table_name}.name ASC")
+  scope :recent, order("lower(#{table_name}.name) ASC")
   scope :search_order, order("CHAR_LENGTH(#{table_name}.name) ASC")
-  scope :search, lambda {|q| by_name("%#{q.to_s.strip}%")}
+  scope :search, lambda {|q|
+    q = q.to_s.strip
+    by_name("%#{q}%").search_order if q.present?
+  }
   scope :by_name, lambda {|name| where("#{table_name}.name ILIKE ?", name) if name.present?}
   scope :by_owner_and_name, lambda { |*params|
     term = params.map(&:strip).join('/').downcase

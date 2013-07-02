@@ -133,7 +133,7 @@ describe Platforms::MassBuildsController do
     }
 
     @mass_build = FactoryGirl.create(:mass_build, :save_to_platform => @platform, :user => @user, :projects_list => project.name)
-    FactoryGirl.create(:build_list_core, :mass_build => @mass_build, :status => BuildList::SUCCESS)
+    FactoryGirl.create(:build_list, :mass_build => @mass_build, :status => BuildList::SUCCESS)
   end
 
   context 'for guest' do

@@ -1,5 +1,5 @@
 %tr{:id => "row#{build_list_counter}", :class => "#{build_list_status_color(build_list.status)}"}
-  %td= link_to (build_list.bs_id.present? ? build_list.bs_id : t("layout.build_lists.bs_id_not_set")), build_list
+  %td= link_to build_list.id, build_list
   %td
     = build_list.human_status
     %br

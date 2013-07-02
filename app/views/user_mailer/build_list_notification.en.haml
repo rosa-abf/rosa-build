@@ -10,6 +10,6 @@
   = "#{@build_list.arch.name}."
 %p
   More detailed information you can get by link:
-  = link_to "task [№ #{@build_list.bs_id ? @build_list.bs_id : t("layout.build_lists.bs_id_not_set")}]", build_list_url(@build_list)
+  = link_to "task [№ #{@build_list.id}]", build_list_url(@build_list)
 
 = render 'footer'
