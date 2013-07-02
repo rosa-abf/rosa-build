@@ -28,7 +28,6 @@ class Api::V1::PlatformsController < Api::V1::BaseController
   def index
     @platforms = @platforms.accessible_by(current_ability, :related).
       by_type(params[:type]).paginate(paginate_params)
-    puts request.inspect
   end
 
   def show
