@@ -23,6 +23,8 @@ class Api::V1::PlatformsController < Api::V1::BaseController
     else
       render :inline => 'false', :status => 403
     end
+  rescue => e
+    render :inline => 'false', :status => 403
   end
 
   def index
