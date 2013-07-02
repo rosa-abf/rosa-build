@@ -8,6 +8,7 @@ class Token < ActiveRecord::Base
   validates :authentication_token, :presence => true, :uniqueness => {:case_sensitive => true}
 
   default_scope order("#{table_name}.created_at desc")
+  scope :by_active, where(:status => 'active')
 
   before_validation :generate_token, :on => :create
 

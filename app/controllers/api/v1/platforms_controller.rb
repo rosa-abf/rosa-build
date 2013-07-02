@@ -7,7 +7,7 @@ class Api::V1::PlatformsController < Api::V1::BaseController
   load_and_authorize_resource :except => :allowed
 
   def allowed
-    platform_name = (params[:path] || '').match(/^\/[\w]+\//)
+    platform_name = (params[:path] || '').match(/^\/#{Platform::NAME_PATTERN}\//)
     render(:inline => 'true') && return unless platform_name
     platform_name = platform_name[0].gsub(/\//, '')
 
@@ -21,7 +21,7 @@ class Api::V1::PlatformsController < Api::V1::BaseController
       render(:inline => 'false', :status => 403) && return
     end
 
-    render(:inline => 'true') && return if platform.tokens.where(:authentication_token => token).exists?
+    render(:inline => 'true') && return if platform.tokens.by_active.where(:authentication_token => token).exists?
 
     user = User.find_by_authentication_token token
     @current_ability, @current_user = nil, user

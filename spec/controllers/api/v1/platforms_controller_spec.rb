@@ -249,49 +249,60 @@ describe Api::V1::PlatformsController do
 
 
     context 'perform allowed action' do
-      it 'ensures that status 403 if no url' do
+      it 'ensures that status 200 if platform empty' do
         get :allowed
-        response.status.should == 403
+        response.status.should == 200
       end
 
       it 'ensures that status 403 if platform does not exist' do
-        get :allowed, :url => "#{APP_CONFIG['downloads_url']}/rosa-server/repository/SRPMS/base/release/repodata/"
+        get :allowed, :path => "/rosa-server/repository/SRPMS/base/release/repodata/"
         response.status.should == 403
       end
 
       it 'ensures that status 200 if platform open' do
-        get :allowed, :url => "#{APP_CONFIG['downloads_url']}/#{@platform.name}/repository/SRPMS/base/release/repodata/"
+        get :allowed, :path => "/#{@platform.name}/repository/SRPMS/base/release/repodata/"
         response.status.should == 200
       end
 
       context 'for hidden platform' do
-        let(:downloads_url) { APP_CONFIG['downloads_url'].gsub(/^http\:\/\//, '') }
         before { @platform.change_visibility }
 
         it 'ensures that status 403 if no token' do
-          get :allowed, :url => "#{APP_CONFIG['downloads_url']}/#{@platform.name}/repository/SRPMS/base/release/repodata/"
+          get :allowed, :path => "/#{@platform.name}/repository/SRPMS/base/release/repodata/"
           response.status.should == 403
         end
 
         it 'ensures that status 403 if wrong token' do
-          get :allowed, :url => "http://KuKu:@#{downloads_url}/#{@platform.name}/repository/SRPMS/base/release/repodata/"
+          @request.env['HTTP_AUTHORIZATION'] = 'Basic ' + Base64::encode64("KuKu:password")
+          get :allowed, :path => "/#{@platform.name}/repository/SRPMS/base/release/repodata/"
           response.status.should == 403
         end
 
         it 'ensures that status 200 if token correct' do
           token = FactoryGirl.create(:platform_token, :subject => @platform)
-          get :allowed, :url => "http://#{token.authentication_token}:@#{downloads_url}/#{@platform.name}/repository/SRPMS/base/release/repodata/"
+          @request.env['HTTP_AUTHORIZATION'] = 'Basic ' + Base64::encode64(token.authentication_token + ':')
+          get :allowed, :path => "/#{@platform.name}/repository/SRPMS/base/release/repodata/"
           response.status.should == 200
         end
 
+        it 'ensures that status 403 if token correct but blocked' do
+          token = FactoryGirl.create(:platform_token, :subject => @platform)
+          token.block
+          @request.env['HTTP_AUTHORIZATION'] = 'Basic ' + Base64::encode64(token.authentication_token + ':')
+          get :allowed, :path => "/#{@platform.name}/repository/SRPMS/base/release/repodata/"
+          response.status.should == 403
+        end
+
         it 'ensures that status 200 if user token correct and user has ability to read platform' do
-          get :allowed, :url => "http://#{@platform.owner.authentication_token}:@#{downloads_url}/#{@platform.name}/repository/SRPMS/base/release/repodata/"
+          @request.env['HTTP_AUTHORIZATION'] = 'Basic ' + Base64::encode64(@platform.owner.authentication_token + ':')
+          get :allowed, :path => "/#{@platform.name}/repository/SRPMS/base/release/repodata/"
           response.status.should == 200
         end
 
         it 'ensures that status 403 if user token correct but user has no ability to read platform' do
           user = FactoryGirl.create(:user)
-          get :allowed, :url => "http://#{user.authentication_token}:@#{downloads_url}/#{@platform.name}/repository/SRPMS/base/release/repodata/"
+          @request.env['HTTP_AUTHORIZATION'] = 'Basic ' + Base64::encode64(user.authentication_token + ':')
+          get :allowed, :path => "/#{@platform.name}/repository/SRPMS/base/release/repodata/"
           response.status.should == 403
         end
       end

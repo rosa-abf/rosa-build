@@ -1,6 +1,7 @@
 # -*- encoding : utf-8 -*-
 class Platform < ActiveRecord::Base
   VISIBILITIES = %w(open hidden)
+  NAME_PATTERN = /[a-zA-Z0-9_\-\.]+/
 
   belongs_to :parent, :class_name => 'Platform', :foreign_key => 'parent_platform_id'
   belongs_to :owner, :polymorphic => true
@@ -21,7 +22,7 @@ class Platform < ActiveRecord::Base
 
   validates :description, :presence => true
   validates :visibility, :presence => true, :inclusion => {:in => VISIBILITIES}
-  validates :name, :uniqueness => {:case_sensitive => false}, :presence => true, :format => { :with => /\A[a-zA-Z0-9_\-\.]+\z/ }
+  validates :name, :uniqueness => {:case_sensitive => false}, :presence => true, :format => { :with => /\A#{NAME_PATTERN}\z/ }
   validates :distrib_type, :presence => true, :inclusion => {:in => APP_CONFIG['distr_types']}
   validate lambda {
     if released_was && !released
