@@ -499,6 +499,21 @@ ActiveRecord::Schema.define(:version => 20130701121313) do
     t.decimal  "subscribeable_id",   :precision => 50, :scale => 0
   end
 
+  create_table "tokens", :force => true do |t|
+    t.integer  "subject_id",                                 :null => false
+    t.string   "subject_type",                               :null => false
+    t.integer  "creator_id",                                 :null => false
+    t.integer  "updater_id"
+    t.string   "status",               :default => "active"
+    t.text     "description"
+    t.string   "authentication_token",                       :null => false
+    t.datetime "created_at",                                 :null => false
+    t.datetime "updated_at",                                 :null => false
+  end
+
+  add_index "tokens", ["authentication_token"], :name => "index_tokens_on_authentication_token", :unique => true
+  add_index "tokens", ["subject_id", "subject_type"], :name => "index_tokens_on_subject_id_and_subject_type"
+
   create_table "users", :force => true do |t|
     t.string   "name"
     t.string   "email",                                  :default => "",   :null => false

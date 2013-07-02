@@ -1,0 +1,21 @@
+-set_meta_tags :title => [title_object(@platform), t('layout.tokens.header')]
+= render 'submenu'
+= render 'sidebar'
+= link_to t('layout.tokens.new'), new_platform_token_path(@platform), :class => 'button'
+
+%table#myTable.tablesorter.tokens{:cellspacing => "0", :cellpadding => "0"}
+  %thead
+    %tr
+      %th= t('activerecord.attributes.token.description')
+      %th.th2= t('activerecord.attributes.token.creator')
+      %th= t('activerecord.attributes.token.status')
+      %th
+  %tbody
+    - @tokens.each do |token|
+      %tr{:class => cycle('odd', 'even')}
+        %td= truncate token.description, :length => 50
+        %td= link_to token.creator.try(:fullname), token.creator
+        %td= t("layout.tokens.statuses.#{token.status}")
+        %td= link_to t('layout.show'), platform_token_path(@platform, token)
+
+= will_paginate @tokens

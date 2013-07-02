@@ -1,12 +1,14 @@
 # -*- encoding : utf-8 -*-
 class Platform < ActiveRecord::Base
-  VISIBILITIES = ['open']#, 'hidden'] # Disable support hidden platforms.
+  VISIBILITIES = %w(open hidden)
+  NAME_PATTERN = /[a-zA-Z0-9_\-\.]+/
 
   belongs_to :parent, :class_name => 'Platform', :foreign_key => 'parent_platform_id'
   belongs_to :owner, :polymorphic => true
 
   has_many :repositories, :dependent => :destroy
   has_many :products, :dependent => :destroy
+  has_many :tokens, :as => :subject, :dependent => :destroy
 
   has_many :relations, :as => :target, :dependent => :destroy
   has_many :actors, :as => :target, :class_name => 'Relation', :dependent => :destroy
@@ -20,7 +22,7 @@ class Platform < ActiveRecord::Base
 
   validates :description, :presence => true
   validates :visibility, :presence => true, :inclusion => {:in => VISIBILITIES}
-  validates :name, :uniqueness => {:case_sensitive => false}, :presence => true, :format => { :with => /\A[a-zA-Z0-9_\-\.]+\z/ }
+  validates :name, :uniqueness => {:case_sensitive => false}, :presence => true, :format => { :with => /\A#{NAME_PATTERN}\z/ }
   validates :distrib_type, :presence => true, :inclusion => {:in => APP_CONFIG['distr_types']}
   validate lambda {
     if released_was && !released
@@ -141,10 +143,8 @@ class Platform < ActiveRecord::Base
   def change_visibility
     if !hidden?
       update_attributes(:visibility => 'hidden')
-      remove_symlink_directory
     else
       update_attributes(:visibility => 'open')
-      symlink_directory
     end
   end
 

@@ -26,6 +26,7 @@ Rosa::Application.routes.draw do
       resources :platforms, :only => [:index, :show, :update, :destroy, :create] do
         collection {
           get :platforms_for_build
+          get :allowed
         }
         member {
           get :members
@@ -153,8 +154,9 @@ Rosa::Application.routes.draw do
         get    :clone
         get    :members
         post   :remove_members # fixme: change post to delete
+        post   :change_visibility
         delete :remove_member
-        post    :add_member
+        post   :add_member
         post   :make_clone
         get    :advisories
       end
@@ -179,6 +181,11 @@ Rosa::Application.routes.draw do
         end
       end
       resources :key_pairs, :only => [:create, :index, :destroy]
+      resources :tokens, :only => [:create, :index, :show, :new] do
+        member do
+          post :withdraw
+        end
+      end
       resources :products do
         resources :product_build_lists, :only => [:create, :destroy, :new, :show, :update] do
           member {

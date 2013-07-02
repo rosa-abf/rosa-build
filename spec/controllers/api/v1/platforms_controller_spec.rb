@@ -246,6 +246,67 @@ describe Api::V1::PlatformsController do
     it_should_behave_like 'api platform user without member rights'
     it_should_behave_like 'api platform user without owner rights'
     it_should_behave_like 'api platform user without global admin rights'
+
+
+    context 'perform allowed action' do
+      it 'ensures that status 200 if platform empty' do
+        get :allowed
+        response.status.should == 200
+      end
+
+      it 'ensures that status 403 if platform does not exist' do
+        get :allowed, :path => "/rosa-server/repository/SRPMS/base/release/repodata/"
+        response.status.should == 403
+      end
+
+      it 'ensures that status 200 if platform open' do
+        get :allowed, :path => "/#{@platform.name}/repository/SRPMS/base/release/repodata/"
+        response.status.should == 200
+      end
+
+      context 'for hidden platform' do
+        before { @platform.change_visibility }
+
+        it 'ensures that status 403 if no token' do
+          get :allowed, :path => "/#{@platform.name}/repository/SRPMS/base/release/repodata/"
+          response.status.should == 403
+        end
+
+        it 'ensures that status 403 if wrong token' do
+          http_login 'KuKu', ''
+          get :allowed, :path => "/#{@platform.name}/repository/SRPMS/base/release/repodata/"
+          response.status.should == 403
+        end
+
+        it 'ensures that status 200 if token correct' do
+          token = FactoryGirl.create(:platform_token, :subject => @platform)
+          http_login token.authentication_token, ''
+          get :allowed, :path => "/#{@platform.name}/repository/SRPMS/base/release/repodata/"
+          response.status.should == 200
+        end
+
+        it 'ensures that status 403 if token correct but blocked' do
+          token = FactoryGirl.create(:platform_token, :subject => @platform)
+          token.block
+          http_login token.authentication_token, ''
+          get :allowed, :path => "/#{@platform.name}/repository/SRPMS/base/release/repodata/"
+          response.status.should == 403
+        end
+
+        it 'ensures that status 200 if user token correct and user has ability to read platform' do
+          http_login @platform.owner.authentication_token, ''
+          get :allowed, :path => "/#{@platform.name}/repository/SRPMS/base/release/repodata/"
+          response.status.should == 200
+        end
+
+        it 'ensures that status 403 if user token correct but user has no ability to read platform' do
+          user = FactoryGirl.create(:user)
+          http_login user.authentication_token, ''
+          get :allowed, :path => "/#{@platform.name}/repository/SRPMS/base/release/repodata/"
+          response.status.should == 403
+        end
+      end
+    end
   end
 
   context 'for global admin' do
