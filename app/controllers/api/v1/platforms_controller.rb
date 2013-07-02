@@ -7,20 +7,15 @@ class Api::V1::PlatformsController < Api::V1::BaseController
   load_and_authorize_resource :except => :allowed
 
   def allowed
-    url = params[:url] || ''
-    downloads_url = APP_CONFIG['downloads_url'].gsub(/^http\:\/\//, '')
-    platform_name = url.gsub(/^http\:\/\/.*#{downloads_url}[\/]+/, '')
-                       .gsub(/\/.*/, '')
-    platform = Platform.find_by_name platform_name
+    platform_name = (params[:path] || '').match(/^\/[\w]+\//)
+    render(:inline => 'true') && return unless platform_name
+    platform_name = platform_name[0].gsub(/\//, '')
 
+    platform = Platform.find_by_name platform_name
     render(:inline => 'false', :status => 403) && return unless platform
     render(:inline => 'true') && return unless platform.hidden?
 
-    token = url.gsub(/^http\:\/\//, '').match(/.*\:\@/)
-    token = token[0].gsub(/\:\@/, '') if token
-
-    render(:inline => 'true') && return if platform.tokens.where(:authentication_token => token).exists?
-
+    token, pass = *ActionController::HttpAuthentication::Basic::user_name_and_password(request)
     user = User.find_by_authentication_token token
     @current_ability, @current_user = nil, user
     if user && can?(:read, platform)
@@ -33,6 +28,7 @@ class Api::V1::PlatformsController < Api::V1::BaseController
   def index
     @platforms = @platforms.accessible_by(current_ability, :related).
       by_type(params[:type]).paginate(paginate_params)
+    puts request.inspect
   end
 
   def show
