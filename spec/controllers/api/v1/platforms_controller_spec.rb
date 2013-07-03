@@ -272,6 +272,30 @@ describe Api::V1::PlatformsController do
           response.status.should == 403
         end
 
+        it 'ensures that status 403 if no token and a lot of "/"' do
+          get :allowed, :path => "///#{@platform.name}///repository/SRPMS/base/release/repodata/"
+          response.status.should == 403
+        end
+
+        it 'ensures that status 200 if token correct and a lot of "/"' do
+          token = FactoryGirl.create(:platform_token, :subject => @platform)
+          http_login token.authentication_token, ''
+          get :allowed, :path => "///#{@platform.name}///repository/SRPMS/base/release/repodata/"
+          response.status.should == 200
+        end
+
+        it 'ensures that status 403 on access to root of platform if no token' do
+          get :allowed, :path => "///#{@platform.name}"
+          response.status.should == 403
+        end
+
+        it 'ensures that status 200 on access to root of platform if token correct' do
+          token = FactoryGirl.create(:platform_token, :subject => @platform)
+          http_login token.authentication_token, ''
+          get :allowed, :path => "///#{@platform.name}"
+          response.status.should == 200
+        end
+
         it 'ensures that status 403 if wrong token' do
           http_login 'KuKu', ''
           get :allowed, :path => "/#{@platform.name}/repository/SRPMS/base/release/repodata/"

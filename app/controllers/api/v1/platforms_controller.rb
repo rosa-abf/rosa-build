@@ -7,7 +7,8 @@ class Api::V1::PlatformsController < Api::V1::BaseController
   load_and_authorize_resource :except => :allowed
 
   def allowed
-    platform_name = (params[:path] || '').match(/^\/#{Platform::NAME_PATTERN}\//)
+    platform_name = (params[:path] || '').gsub(/^[\/]+/, '')
+      .match(/^(#{Platform::NAME_PATTERN}\/|#{Platform::NAME_PATTERN}$)/)
     render(:inline => 'true') && return unless platform_name
     platform_name = platform_name[0].gsub(/\//, '')
 
