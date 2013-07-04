@@ -31,6 +31,8 @@ module Modules::Observers::ActivityFeed::Issue
         }
       )
     end
+    project.hooks.each{ |h| h.receive_issues(self, action) }
+    Comment.create_link_on_issues_from_item(self)
   end
 
   def send_assign_notifications(action = :create)
@@ -52,7 +54,7 @@ module Modules::Observers::ActivityFeed::Issue
         }
       )
     end
-    project.hooks.each{ |h| h.receive_issues(self, action) } if action == :create || status_changed?
+    project.hooks.each{ |h| h.receive_issues(self, action) } if status_changed?
     # dont remove outdated issues link
     Comment.create_link_on_issues_from_item(self)
   end
