@@ -16,6 +16,7 @@ class BuildList < ActiveRecord::Base
   belongs_to :mass_build, :counter_cache => true
   has_many :items, :class_name => "BuildList::Item", :dependent => :destroy
   has_many :packages, :class_name => "BuildList::Package", :dependent => :destroy
+  has_many :source_packages, :class_name => "BuildList::Package", :conditions => {:package_type => 'source'}
 
   UPDATE_TYPES = %w[bugfix security enhancement recommended newpackage]
   RELEASE_UPDATE_TYPES = %w[bugfix security]
@@ -106,13 +107,13 @@ class BuildList < ActiveRecord::Base
     s = s.where(:save_to_platform_id => save_to_platform.id) if save_to_platform && save_to_platform.main?
     s
   }
-  scope :for_status, lambda {|status| where(:status => status) }
+  scope :for_status, lambda {|status| where(:status => status) if status.present? }
   scope :for_user, lambda { |user| where(:user_id => user.id)  }
   scope :for_platform, lambda { |platform| where(:build_for_platform_id => platform)  }
-  scope :by_mass_build, lambda { |mass_build| where(:mass_build_id => mass_build)  }
-  scope :scoped_to_arch, lambda {|arch| where(:arch_id => arch) }
-  scope :scoped_to_save_platform, lambda {|pl_id| where(:save_to_platform_id => pl_id) }
-  scope :scoped_to_project_version, lambda {|project_version| where(:project_version => project_version) }
+  scope :by_mass_build, lambda { |mass_build| where(:mass_build_id => mass_build) }
+  scope :scoped_to_arch, lambda {|arch| where(:arch_id => arch) if arch.present? }
+  scope :scoped_to_save_platform, lambda {|pl_id| where(:save_to_platform_id => pl_id) if pl_id.present? }
+  scope :scoped_to_project_version, lambda {|project_version| where(:project_version => project_version) if project_version.present? }
   scope :scoped_to_is_circle, lambda {|is_circle| where(:is_circle => is_circle) }
   scope :for_creation_date_period, lambda{|start_date, end_date|
     s = scoped
@@ -122,11 +123,11 @@ class BuildList < ActiveRecord::Base
   }
   scope :for_notified_date_period, lambda{|start_date, end_date|
     s = scoped
-    s = s.where(["#{table_name}.updated_at >= ?", start_date]) if start_date
-    s = s.where(["#{table_name}.updated_at <= ?", end_date]) if end_date
+    s = s.where("#{table_name}.updated_at >= ?", start_date)  if start_date.present?
+    s = s.where("#{table_name}.updated_at <= ?", end_date)    if end_date.present?
     s
   }
-  scope :scoped_to_project_name, lambda {|project_name| joins(:project).where('projects.name LIKE ?', "%#{project_name}%")}
+  scope :scoped_to_project_name, lambda {|project_name| joins(:project).where('projects.name LIKE ?', "%#{project_name}%") if project_name.present? }
   scope :scoped_to_new_core, lambda {|new_core| where(:new_core => new_core)}
   scope :outdated, where("#{table_name}.created_at < ? AND #{table_name}.status <> ? OR #{table_name}.created_at < ?", Time.now - LIVE_TIME, BUILD_PUBLISHED, Time.now - MAX_LIVE_TIME)
   scope :published_container, where(:container_status => BUILD_PUBLISHED)

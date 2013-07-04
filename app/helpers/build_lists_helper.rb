@@ -13,6 +13,21 @@ module BuildListsHelper
     end
   end
 
+  def availables_main_platforms
+    # Main platforms with repositories
+    Platform.main.accessible_by(current_ability, :show)
+            .joins(:repositories).uniq
+  end
+
+  def mass_build_options(selected_id)
+    options_from_collection_for_select(
+      MassBuild.recent.limit(15),
+      :id,
+      :name,
+      selected_id
+    )
+  end
+
   def build_list_options_for_new_core
     [
       [I18n.t("layout.true_"), 1],
@@ -98,7 +113,7 @@ module BuildListsHelper
   end
 
   def get_version_release build_list
-    pkg = build_list.packages.where(:package_type => 'source', :project_id => build_list.project_id).first
+    pkg = build_list.source_packages.first
     "#{pkg.version}-#{pkg.release}" if pkg.present?
   end
 end

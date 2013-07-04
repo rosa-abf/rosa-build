@@ -2,9 +2,8 @@
 class BuildList::Filter
   PER_PAGE = [25, 50, 100]
 
-  def initialize(project, user, options = {})
-    @project = project
-    @user = user
+  def initialize(project, user, current_ability, options = {})
+    @project, @user, @current_ability = project, user, current_ability
     set_options(options)
   end
 
@@ -14,15 +13,16 @@ class BuildList::Filter
     if @options[:id]
       build_lists = build_lists.where(:id => @options[:id])
     else
-      build_lists = build_lists.accessible_by(::Ability.new(@user), @options[:ownership].to_sym) if @options[:ownership]
       build_lists = build_lists.scoped_to_new_core(@options[:new_core] == '0' ? nil : true) if @options[:new_core].present?
-      build_lists = build_lists.for_status(@options[:status]) if @options[:status]
-      build_lists = build_lists.scoped_to_arch(@options[:arch_id]) if @options[:arch_id]
-      build_lists = build_lists.scoped_to_save_platform(@options[:platform_id]) if @options[:platform_id]
-      build_lists = build_lists.scoped_to_project_version(@options[:project_version]) if @options[:project_version]
-      build_lists = build_lists.scoped_to_project_name(@options[:project_name]) if @options[:project_name]
       build_lists = build_lists.by_mass_build(@options[:mass_build_id]) if @options[:mass_build_id]
-      build_lists = build_lists.for_notified_date_period(@options[:updated_at_start], @options[:updated_at_end]) if @options[:updated_at_start] || @options[:updated_at_end]
+      build_lists = build_lists.accessible_by(@current_ability, @options[:ownership].to_sym) if @options[:ownership]
+
+      build_lists = build_lists.for_status(@options[:status])
+                               .scoped_to_arch(@options[:arch_id])
+                               .scoped_to_save_platform(@options[:platform_id])
+                               .scoped_to_project_version(@options[:project_version])
+                               .scoped_to_project_name(@options[:project_name])
+                               .for_notified_date_period(@options[:updated_at_start], @options[:updated_at_end])
     end
 
     build_lists
