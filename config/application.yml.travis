@@ -6,7 +6,7 @@ common: &common
   file_store_url: 'http://file-store.rosalinux.ru'
   distr_types: ['mdv', 'rhel', 'nau5']
   allowed_addresses:
-    - 127.0.0.1
+    - 127.0.0.100
   abf_worker:
     publish_workers_count: 2
   keys:
