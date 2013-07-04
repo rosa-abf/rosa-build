@@ -67,7 +67,7 @@ class Projects::BuildListsController < Projects::BaseController
         @build_list.priority = current_user.build_priority # User builds more priority than mass rebuild with zero priority
 
         flash_options = {:project_version => @build_list.project_version, :arch => arch.name, :build_for_platform => build_for_platform.name}
-        if @build_list.save
+        if authorize!(:create, @build_list) && @build_list.save
           notices << t("flash.build_list.saved", flash_options)
         else
           errors << t("flash.build_list.save_error", flash_options)

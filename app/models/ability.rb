@@ -85,7 +85,7 @@ class Ability
         can(:create, BuildList) {|build_list|
           build_list.project.is_package &&
           can?(:write, build_list.project) &&
-          can?(:show, build_list.build_for_platform)
+          (build_list.build_for_platform.blank? || can?(:show, build_list.build_for_platform))
         }
 
         can(:publish, BuildList) do |build_list|

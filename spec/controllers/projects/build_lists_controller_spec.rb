@@ -62,7 +62,7 @@ describe Projects::BuildListsController do
     end
   end
 
-  shared_examples_for 'not create build list' do
+  shared_examples_for 'not create build list' do |skip_new = false|
     before {
       @project.update_attribute(:repositories, @platform.repositories)
     }
@@ -70,7 +70,7 @@ describe Projects::BuildListsController do
     it 'should not be able to perform new action' do
       get :new, :owner_name => @project.owner.uname, :project_name => @project.name
       response.should redirect_to(forbidden_url)
-    end
+    end unless skip_new
 
     it 'should not be able to perform create action' do
       post :create, {:owner_name => @project.owner.uname, :project_name => @project.name}.merge(@create_params)
@@ -258,6 +258,17 @@ describe Projects::BuildListsController do
           before(:each) {set_session_for(@owner_user)}
           it_should_behave_like 'show build list'
           it_should_behave_like 'create build list'
+
+          context 'no ability to read build_for_platform' do
+            before do
+              repository = FactoryGirl.create(:repository)
+              repository.platform.change_visibility
+              Platform.where(:id => @platform.id).update_all(:platform_type => 'personal')
+              @create_params[:build_list].merge!({:include_repos => [repository.id]})
+              @create_params[:build_for_platforms] = [repository.platform_id]
+            end
+            it_should_behave_like 'not create build list', true
+          end
 
         end
 
