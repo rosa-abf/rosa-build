@@ -34,8 +34,7 @@ module Modules::Observers::ActivityFeed::Issue
   def send_assign_notifications(action = :create)
     if assignee_id && assignee_id_changed?
       if assignee.notifier.issue_assign && assignee.notifier.can_notify
-        user_mailer_action = action == :create ? :new_issue_notification : :issue_assign_notification
-        UserMailer.send(user_mailer_action, self, assignee).deliver
+        UserMailer.issue_assign_notification(self, assignee).deliver
       end
       ActivityFeed.create(
         :user => assignee,
