@@ -116,7 +116,7 @@ describe Api::V1::BuildListsController do
 
         # Create and show params:
         @create_params = {:build_list => @build_list.attributes.symbolize_keys.merge(:qwerty=>'!')} # wrong parameter
-        @create_params = @create_params.merge(:arches => [@params[:arch_id]], :build_for_platforms => [@params[:build_for_platform_id]], :format => :json)
+        @create_params = @create_params.merge(:arches => [@params[:arch_id]], :build_for_platform_id => @platform.id, :format => :json)
         any_instance_of(Project, :versions => ['v1.0', 'v2.0'])
 
         http_login(@user)
@@ -466,10 +466,25 @@ describe Api::V1::BuildListsController do
         context 'if user is project owner' do
           before(:each) {http_login(@owner_user)}
           it_should_behave_like 'create build list via api'
+
+          context 'no ability to read build_for_platform' do
+            before do
+              repository = FactoryGirl.create(:repository)
+              repository.platform.change_visibility
+              Platform.where(:id => @platform.id).update_all(:platform_type => 'personal')
+              @create_params[:build_list].merge!({
+                :include_repos          => [repository.id],
+                :build_for_platform_id  => repository.platform_id
+              })
+            end
+            it_should_behave_like 'not create build list via api'
+          end
+
         end
 
         context 'if user is project read member' do
           before(:each) {http_login(@member_user)}
+          it_should_behave_like 'not create build list via api'
         end
       end
 
@@ -510,7 +525,7 @@ describe Api::V1::BuildListsController do
 
         # Create and show params:
         @create_params = {:build_list => @build_list.attributes.symbolize_keys}
-        @create_params = @create_params.merge(:arches => [@params[:arch_id]], :build_for_platforms => [@params[:build_for_platform_id]], :format => :json)
+        @create_params = @create_params.merge(:arches => [@params[:arch_id]], :build_for_platform_id => @platform.id, :format => :json)
         any_instance_of(Project, :versions => ['v1.0', 'v2.0'])
 
         # Groups:

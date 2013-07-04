@@ -26,7 +26,7 @@ class Api::V1::PlatformsController < Api::V1::BaseController
 
     user = User.find_by_authentication_token token
     @current_ability, @current_user = nil, user
-    if user && can?(:read, platform)
+    if user && can?(:show, platform)
       render :nothing => true
     else
       render :nothing => true, :status => 403
