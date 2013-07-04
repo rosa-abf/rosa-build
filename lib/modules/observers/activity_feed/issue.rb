@@ -31,7 +31,7 @@ module Modules::Observers::ActivityFeed::Issue
         }
       )
     end
-    project.hooks.each{ |h| h.receive_issues(self, action) }
+    project.hooks.each{ |h| h.receive_issues(self, :create) }
     Comment.create_link_on_issues_from_item(self)
   end
 
