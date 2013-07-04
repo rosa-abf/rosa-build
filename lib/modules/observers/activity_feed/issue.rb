@@ -3,8 +3,9 @@ module Modules::Observers::ActivityFeed::Issue
   extend ActiveSupport::Concern
 
   included do
-    after_commit :new_issue_notifications, :on => :create
-    after_update -> { send_assign_notifications(:update) }
+    after_commit :new_issue_notifications,    :on => :create
+    after_commit :send_assign_notifications,  :on => :create
+    after_commit -> { send_assign_notifications(:update) }, :on => :update
   end
 
   private
@@ -12,7 +13,9 @@ module Modules::Observers::ActivityFeed::Issue
   def new_issue_notifications
     collect_recipients.each do |recipient|
       next if user_id == recipient.id
-      UserMailer.new_issue_notification(self, recipient).deliver if recipient.notifier.can_notify && recipient.notifier.new_issue
+      if recipient.notifier.can_notify && recipient.notifier.new_issue && assignee_id != recipient.id
+        UserMailer.new_issue_notification(self, recipient).deliver 
+      end
       ActivityFeed.create(
         :user => recipient,
         :kind => 'new_issue_notification',
@@ -28,7 +31,6 @@ module Modules::Observers::ActivityFeed::Issue
         }
       )
     end
-    send_assign_notifications
   end
 
   def send_assign_notifications(action = :create)
