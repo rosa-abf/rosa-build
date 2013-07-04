@@ -35,7 +35,7 @@ class BuildList < ActiveRecord::Base
     errors.add(:build_for_platform, I18n.t('flash.build_list.wrong_build_for_platform')) unless build_for_platform.main?
   }
   validate lambda {
-    errors.add(:save_to_repository, I18n.t('flash.build_list.wrong_repository')) unless save_to_repository_id.in? save_to_platform.repositories.map(&:id)
+    errors.add(:save_to_repository, I18n.t('flash.build_list.wrong_repository')) unless save_to_repository_id.in? save_to_platform.repositories.pluck(:id)
   }
   validate lambda {
     include_repos.each {|ir|
