@@ -3,9 +3,13 @@ module Modules::Observers::ActivityFeed::Issue
   extend ActiveSupport::Concern
 
   included do
-    after_commit :new_issue_notifications,    :on => :create
-    after_commit :send_assign_notifications,  :on => :create
+    after_commit :new_issue_notifications, :on => :create
+
+    after_commit :send_assign_notifications,                :on => :create
     after_commit -> { send_assign_notifications(:update) }, :on => :update
+
+    after_commit :send_hooks,                :on => :create
+    after_commit -> { send_hooks(:update) }, :on => :update, :if => :status_changed?
   end
 
   private
@@ -31,7 +35,7 @@ module Modules::Observers::ActivityFeed::Issue
         }
       )
     end
-    project.hooks.each{ |h| h.receive_issues(self, :create) }
+    # dont remove outdated issues link
     Comment.create_link_on_issues_from_item(self)
   end
 
@@ -54,9 +58,12 @@ module Modules::Observers::ActivityFeed::Issue
         }
       )
     end
-    project.hooks.each{ |h| h.receive_issues(self, action) } if status_changed?
     # dont remove outdated issues link
     Comment.create_link_on_issues_from_item(self)
+  end
+
+  def send_hooks(action = :create)
+    project.hooks.each{ |h| h.receive_issues(self, action) }
   end
 
 end
