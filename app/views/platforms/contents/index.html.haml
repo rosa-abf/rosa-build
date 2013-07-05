@@ -1,0 +1,30 @@
+- set_meta_tags :title => [title_object(@platform), t('layout.platforms.contents')]
+= render 'platforms/base/submenu'
+= render 'platforms/base/sidebar'
+
+%div
+  = "#{@platform.name}: #{@path}"
+
+
+%table.tablesorter.project{:cellpadding => "0", :cellspacing => "0"}
+  %tbody
+
+  - if @path != '/'
+    %tr
+      %td= link_to '../', "#{platform_contents_path(@platform)}#{@path}/../"
+      %td
+      %td
+
+  - (@contents.select(&:is_folder?) | @contents).each do |content|
+    %tr
+      %td
+        - if content.is_folder?
+          - pic   = 'folder.png'
+          - path  = "#{platform_contents_path(@platform)}#{@path}/#{content.name}"
+        .pic= image_tag pic || 'code.png'
+        .name= link_to(content.name, path || content.download_url, :class => 'files-see')
+      %td= link_to t('activerecord.models.build_list'), content.build_list if content.build_list
+      %td= number_to_human_size(content.size) unless content.is_folder?
+.both
+
+= will_paginate @contents

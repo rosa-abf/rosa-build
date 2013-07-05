@@ -2,7 +2,9 @@
 = render 'submenu'
 = render 'sidebar'
 
-%h3.fix= "#{t("layout.platforms.about")} #{@platform.name}"
+%h3.fix
+  = t 'layout.platforms.about'
+  = link_to @platform.name, platform_contents_path(@platform)
 
 %p= @platform.description
 
