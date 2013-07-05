@@ -35,16 +35,15 @@ class BuildList < ActiveRecord::Base
     errors.add(:build_for_platform, I18n.t('flash.build_list.wrong_build_for_platform')) unless build_for_platform.main?
   }
   validate lambda {
-    errors.add(:save_to_repository, I18n.t('flash.build_list.wrong_repository')) unless save_to_repository_id.in? save_to_platform.repositories.pluck(:id)
+    errors.add(:save_to_repository, I18n.t('flash.build_list.wrong_repository')) if save_to_repository.platform_id != save_to_platform.id
   }
   validate lambda {
-    include_repos.each {|ir|
-      errors.add(:save_to_repository, I18n.t('flash.build_list.wrong_include_repos')) unless build_for_platform.repository_ids.include? ir.to_i
-    }
+    errors.add(:save_to_repository, I18n.t('flash.build_list.wrong_include_repos')) if build_for_platform.repositories.where(:id => include_repos).count != include_repos.size
   }
   validate lambda {
     errors.add(:save_to_repository, I18n.t('flash.build_list.wrong_project')) unless save_to_repository.projects.exists?(project_id)
   }
+  before_validation -> { self.include_repos = include_repos.uniq if include_repos.present? }, :on => :create
   before_validation :prepare_extra_repositories,  :on => :create
   before_validation :prepare_extra_build_lists,   :on => :create
 
