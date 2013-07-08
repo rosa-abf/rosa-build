@@ -42,7 +42,7 @@ class Api::V1::PullRequestsController < Api::V1::BaseController
   end
 
   def create
-    from_project = Project.find(pull_params[:from_project]) if pull_params.try('[]', :from_project).present?
+    from_project = Project.find(pull_params[:from_project_id]) if pull_params[:from_project_id].present?
     from_project ||= @project
     authorize! :read, from_project
 
