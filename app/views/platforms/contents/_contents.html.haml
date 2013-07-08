@@ -1,7 +1,7 @@
 #contents
 
   = form_for @platform, :url => platform_content_path(@platform, @path), :html => { :class => :form, :remote => true, :method => :get } do |f|
-    = tracker_search_field(:term, t('layout.issues.search_user'))
+    = tracker_search_field(:term, @term.present? ? @term : t('layout.platforms.search_contents'))
     = f.submit t('layout.search.header')
   %br
 
