@@ -66,7 +66,7 @@ class PlatformContent
   # ---------------------
 
   def self.find_by_platform(platform, path, term)
-    term = (term.present? && term =~ /^[\w]+$/) ? term : ''
+    term = (term.present? && term =~ /^[\w\-\.]+$/) ? term : ''
     path = path.split(File::SEPARATOR)
                .select{ |p| p.present? && p =~ /^[\w]+$/ }
                .join(File::SEPARATOR)
