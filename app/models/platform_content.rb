@@ -66,10 +66,19 @@ class PlatformContent
   # ---------------------
 
   def self.find_by_platform(platform, path, term)
-    term = (term.present? && term =~ /\A#{Project::NAME_REGEXP}\z/) ? term : ''
+    # Strip out the non-ascii character
+    term = (term || '').strip.gsub(/[\\\/]+/, '')
+                             .gsub(/[^\w\-\+\.]/, '_')
+
     path = path.split(File::SEPARATOR).select(&:present?)
-               .map{ |p| p.gsub(/[^\w\-\.]/, '_') } # Strip out the non-ascii character
+               .map{ |p|
+                  # Strip out the non-ascii character
+                  p.strip.gsub(/[\\\/]+/, '')
+                    .gsub(/^[\.]+/, '')
+                    .gsub(/[^\w\-\.]/, '_')
+                }
                .join(File::SEPARATOR)
+    puts path.inspect
     results = Dir.glob(File.join(platform.path, path, "*#{term}*"))
     if term
       results = results.sort_by(&:length)
