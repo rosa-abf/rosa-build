@@ -2,7 +2,7 @@
 class Project < ActiveRecord::Base
   VISIBILITIES = ['open', 'hidden']
   MAX_OWN_PROJECTS = 32000
-  NAME_REGEXP = /[a-zA-Z0-9_\-\+\.]+/
+  NAME_REGEXP = /[\w\-\+\.]+/
 
   belongs_to :owner, :polymorphic => true, :counter_cache => :own_projects_count
   belongs_to :maintainer, :class_name => "User"
