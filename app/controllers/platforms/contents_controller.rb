@@ -7,10 +7,11 @@ class Platforms::ContentsController < Platforms::BaseController
   load_and_authorize_resource :platform
   
   def index
-    @path = '/' << params[:path].to_s
+    @path = params[:path].to_s
     @term = params[:term]
     @contents = PlatformContent.find_by_platform(@platform, @path, @term)
                                .paginate(paginate_params)
+    
   end
 
 end
