@@ -282,4 +282,6 @@ describe Projects::PullRequestsController do
 
     it_should_behave_like 'user without pull request update rights'
   end
+
+  it_should_behave_like 'sending messages and activity feed'
 end

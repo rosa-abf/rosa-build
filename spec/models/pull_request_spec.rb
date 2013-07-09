@@ -15,7 +15,6 @@ def set_data_for_pull
 end
 
 describe PullRequest do
-
   context 'for owner user' do
     before do
       stub_symlink_methods
