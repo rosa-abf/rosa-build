@@ -58,7 +58,7 @@ module Modules::Observers::ActivityFeed::Issue
       )
     end
     # dont remove outdated issues link
-    Comment.create_link_on_issues_from_item(self)
+    Comment.create_link_on_issues_from_item(self) if title_changed? || body_changed?
   end
 
   def send_hooks(action = :create)
