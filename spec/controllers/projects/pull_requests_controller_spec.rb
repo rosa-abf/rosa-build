@@ -312,7 +312,6 @@ describe Projects::PullRequestsController do
 
     it 'should send email message to new assignee' do
       put :update, @update_params.deep_merge(:pull_request => {:assignee_id => @project_reader.id})
-      @project.pull_requests.last.issue.send(:new_issue_notifications)
       @project.pull_requests.last.issue.send(:send_assign_notifications)
       ActionMailer::Base.deliveries.count.should == 1
     end
