@@ -22,5 +22,5 @@
 - if can? :clear, @platform
   .hr
   .leftside= t("layout.repositories.clear_warning")
-  .rightside= link_to t("layout.repositories.clear"), clear_platform_path(@platform), :class => 'button', :confirm => t('layout.repositories.clear_confirm'), :method => :post
+  .rightside= link_to t("layout.repositories.clear"), clear_platform_path(@platform), :class => 'button', :confirm => t('layout.repositories.clear_confirm'), :method => :put
   .both
