@@ -3,6 +3,8 @@ class Projects::Git::TreesController < Projects::Git::BaseController
   before_filter lambda{redirect_to @project if params[:treeish] == @project.default_branch and params[:path].blank?}, :only => :show
   skip_before_filter :set_branch_and_tree, :set_treeish_and_path, :only => :archive
 
+  before_filter lambda { raise Grit::NoSuchPathError if params[:treeish] != @branch.try(:name) }, :only => [:branch, :destroy]
+
   def show
     render('empty') and return if @project.is_empty?
     @tree = @tree / @path if @path.present?
@@ -28,18 +30,15 @@ class Projects::Git::TreesController < Projects::Git::BaseController
   end
 
   def tags
-    @tags = @project.repo.tags.select{ |t| t.commit }.sort_by(&:name).reverse
-    render 'refs'
   end
 
   def destroy
+    raise Grit::NoSuchPathError unless @branch
+    @project.delete_branch @branch.name
     render :nothing => true
   end
 
   def branches
-    raise Grit::NoSuchPathError if params[:treeish] != @branch.try(:name) # get wrong branch name to nonempty project
-    # @branches = @project.repo.branches.sort_by(&:name).select{ |b| b.name != @branch.name }.unshift(@branch).compact if @branch
-    render 'refs'
   end
 
 end

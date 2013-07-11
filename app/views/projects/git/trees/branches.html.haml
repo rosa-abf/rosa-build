@@ -2,15 +2,17 @@
 
 = render 'submenu'
 = render 'repo_block', :project => @project
-= render 'header', :subject => (@branches || @tags)
-
 
 %div{'ng-controller' => 'ProjectRefsController',
   'ng-init' => "init('#{@project.id}','#{@branch.try(:name)}')"}
 
+  %h3= t('layout.projects.branches')
+  %p{'ng-show' => '!branches.length'}= t('layout.projects.no_branches')
+  %p{'ng-show' => 'branches.length == 1'}= t('layout.projects.total_branch')
+  %p{'ng-show' => 'branches.length > 1'}= t('layout.projects.total_branches', :count => '{{branches.length}}')
   .both
-    Search:
-    %input{'ng-model' => 'query.ref'}
+
+  %input{'ng-model' => 'query.ref'}
   .both
 
   %table#project-branches
@@ -23,16 +25,9 @@
             %li.text{'ng-show' => 'branch.ref == current_ref'}
               = t('layout.projects.base_branch')
             %li{'ng-hide' => 'branch.ref == current_ref'}
-              %a{:href => '#', 'ng-click' => 'destroy(branch)'}= t('layout.projects.delete_branch')
+              %a{:href => '', 'ng-click' => 'destroy(branch)'}
+                = t('layout.projects.delete_branch')
             %li{'ng-hide' => 'branch.ref == current_ref'}
-              %a{'ng-href' => '{{branch.diff_path(project, current_ref)}}' }= t('layout.projects.compare')
+              %a{'ng-href' => '{{branch.diff_path(project, current_ref)}}' }
+                = t('layout.projects.compare')
 
-
-- if @tags.present?
-  %div#project-tags
-    %ol.release-list
-      = render :partial => 'tag', :collection => @tags
-- elsif false # @branches.present?
-  %table#project-branches
-    %tbody
-      = render :partial => 'branch', :collection => @branches

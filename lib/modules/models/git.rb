@@ -33,6 +33,11 @@ module Modules
         repo.tags.map(&:name) + repo.branches.map(&:name)
       end
 
+      def delete_branch(branch_name)
+        repo.git.native(:branch, {}, '-D', branch_name)
+        
+      end
+
       def update_file(path, data, options = {})
         head = options[:head].to_s || default_branch
         actor = get_actor(options[:actor])

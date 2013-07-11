@@ -20,6 +20,10 @@ var ProjectRef = function(atts) {
     return '/' + project.fullname + '/diff/' + current_ref + '...' + self.ref;
   }
 
+  self.archive_path = function(project, type) {
+    return '/' + project.fullname + '/archive/' + project.name + '-' + self.ref + '.' + type;
+  }
+
   //return the scope-safe instance
   return self;
 };
