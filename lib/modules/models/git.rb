@@ -35,7 +35,7 @@ module Modules
 
       def delete_branch(branch, user)
         message = repo.git.native(:branch, {}, '-D', branch.name)
-        Resque.enqueue(GitHook, owner.uname, name, GitHook::ZERO, sha1, "refs/heads/#{branch.name}", 'commit', "user-#{user.id}", message)
+        Resque.enqueue(GitHook,owner.uname, name, GitHook::ZERO, branch.commit.id, "refs/heads/#{branch.name}", 'commit', "user-#{user.id}", message)
       end
 
       def update_file(path, data, options = {})

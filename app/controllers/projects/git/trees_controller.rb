@@ -34,7 +34,7 @@ class Projects::Git::TreesController < Projects::Git::BaseController
 
   def destroy
     raise Grit::NoSuchPathError unless @branch
-    @project.delete_branch @branch.name
+    @project.delete_branch @branch, current_user
     render :nothing => true
   end
 

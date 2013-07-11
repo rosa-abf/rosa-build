@@ -17,6 +17,8 @@ RosaABF.controller('ProjectRefsController', function($scope, $http, $location, A
   $scope.getRefs = function() {
     //returns [ProjectRef, ProjectRef, ...]
     ApiProject.refs($scope.project_id, function(results){
+      $scope.tags = [];
+      $scope.branches = [];
       _.each(results, function(result){
         if (result.isTag) {
           if (result.ref == $scope.current_ref) {
@@ -36,9 +38,9 @@ RosaABF.controller('ProjectRefsController', function($scope, $http, $location, A
   };
 
   $scope.destroy = function(branch) {
-    var path = $location.$$absUrl.replace(/\/[\w\-]+$/, '') + '/' + branch.name;
-    $http.delete(path).success(function(data) {
+    $http.delete(branch.delete_path($scope.project)).success(function(data) {
       $scope.getRefs();
     });
   }
+
 });
