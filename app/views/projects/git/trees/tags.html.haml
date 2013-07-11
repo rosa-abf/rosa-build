@@ -10,8 +10,9 @@
   %p{'ng-show' => 'tags.length == 1'}= t('layout.projects.total_tag')
   %p{'ng-show' => 'tags.length > 1'}= t('layout.projects.total_tags', :count => '{{tags.length}}')
   .both
+  %br
 
-  %input{'ng-model' => 'query.ref'}
+  %input.mediumheight{'ng-model' => 'query.ref'}
   .both
 
   #project-tags

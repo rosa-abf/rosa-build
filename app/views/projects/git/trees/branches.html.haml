@@ -11,8 +11,9 @@
   %p{'ng-show' => 'branches.length == 1'}= t('layout.projects.total_branch')
   %p{'ng-show' => 'branches.length > 1'}= t('layout.projects.total_branches', :count => '{{branches.length}}')
   .both
+  %br
 
-  %input{'ng-model' => 'query.ref'}
+  %input.mediumheight{'ng-model' => 'query.ref'}
   .both
 
   %table#project-branches
