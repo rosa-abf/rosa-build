@@ -6,6 +6,7 @@
   .flash
     %div{:class => @pull.ready? ? 'notice' : 'alert'}
       =pull_status @pull
+      wwwww
 -if can? :update, @pull
   -if action = @pull.can_close? ? 'close' : ('reopen' if @pull.can_reopen?)
     %br

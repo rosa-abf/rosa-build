@@ -2,16 +2,17 @@ en:
   layout:
     projects:
       branches: Branches
-      showing_branches: Showing %{count} branches
-      showing_branch: Showing 1 branch
+      delete_branch: Delete branch
+      total_branches: Total %{count} branches
+      total_branch: Total 1 branch
       no_branches: No branches
       base_branch: Base branch
       compare: Compare
       browse_code: Browse code
       source_code: Source code (%{type})
       tags: Tags
-      showing_tags: Showing %{count} tags
-      showing_tag: Showing 1 tag
+      total_tags: Total %{count} tags
+      total_tag: Total 1 tag
       no_tags: No tags
       add: Add
       public_projects_list: Public projects list

@@ -4,7 +4,7 @@
 - if subject.blank?
   %p= t("layout.projects.no_#{subjects_name}")
 - elsif subject.count == 1
-  %p= t("layout.projects.showing_#{subjects_name.singularize}")
+  %p= t("layout.projects.total_#{subjects_name.singularize}")
 - else
-  %p= t("layout.projects.showing_#{subjects_name}", :count => subject.count)
+  %p= t("layout.projects.total_#{subjects_name}", :count => subject.count)
 .both

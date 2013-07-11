@@ -58,6 +58,8 @@ GEM
       json
     ancestry (1.3.0)
       activerecord (>= 2.3.14)
+    angularjs-rails (1.0.7)
+    angularjs-rails-resource (0.2.0)
     arel (3.0.2)
     attr_encrypted (1.2.1)
       encryptor (>= 1.1.1)
@@ -209,6 +211,7 @@ GEM
     net-ssh-gateway (1.2.0)
       net-ssh (>= 2.6.5)
     newrelic_rpm (3.5.5.38)
+    ng-rails-csrf (0.1.0)
     nokogiri (1.5.9)
     oauth2 (0.8.1)
       faraday (~> 0.8)
@@ -407,6 +410,8 @@ DEPENDENCIES
   RedCloth
   airbrake (~> 3.1.2)
   ancestry (~> 1.3.0)
+  angularjs-rails
+  angularjs-rails-resource
   attr_encrypted (= 1.2.1)
   better_errors
   binding_of_caller
@@ -437,6 +442,7 @@ DEPENDENCIES
   meta_request
   mock_redis (= 0.6.2)
   newrelic_rpm (~> 3.5.5.38)
+  ng-rails-csrf
   omniauth
   omniauth-facebook
   omniauth-github

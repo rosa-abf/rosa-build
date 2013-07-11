@@ -4,11 +4,35 @@
 = render 'repo_block', :project => @project
 = render 'header', :subject => (@branches || @tags)
 
+
+%div{'ng-controller' => 'ProjectRefsController',
+  'ng-init' => "init('#{@project.id}','#{@branch.try(:name)}')"}
+
+  .both
+    Search:
+    %input{'ng-model' => 'query.ref'}
+  .both
+
+  %table#project-branches
+    %tbody
+      %tr{'ng-repeat' => 'branch in branches | filter:query', 'ng-class' => '{base: branch.ref == current_ref}'}
+        %td.name
+          %a{'ng-href' => '{{branch.path(project)}}' } {{branch.ref}}
+        %td.actions
+          %ul.actions
+            %li.text{'ng-show' => 'branch.ref == current_ref'}
+              = t('layout.projects.base_branch')
+            %li{'ng-hide' => 'branch.ref == current_ref'}
+              %a{:href => '#', 'ng-click' => 'destroy(branch)'}= t('layout.projects.delete_branch')
+            %li{'ng-hide' => 'branch.ref == current_ref'}
+              %a{'ng-href' => '{{branch.diff_path(project, current_ref)}}' }= t('layout.projects.compare')
+
+
 - if @tags.present?
   %div#project-tags
     %ol.release-list
       = render :partial => 'tag', :collection => @tags
-- elsif @branches.present?
+- elsif false # @branches.present?
   %table#project-branches
     %tbody
       = render :partial => 'branch', :collection => @branches

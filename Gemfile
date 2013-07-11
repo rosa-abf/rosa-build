@@ -58,6 +58,11 @@ gem 'rest-client', '~> 1.6.6'
 gem 'attr_encrypted', '1.2.1'
 gem "gemoji", "~> 1.2.1", require: 'emoji/railtie'
 
+# AngularJS related stuff
+gem 'angularjs-rails'
+gem 'ng-rails-csrf'
+# gem 'angularjs-rails-resource'
+
 group :assets do
   gem 'sass-rails', '~> 3.2.5'
   gem 'coffee-rails', '~> 3.2.2'
