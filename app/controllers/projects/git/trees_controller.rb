@@ -38,20 +38,8 @@ class Projects::Git::TreesController < Projects::Git::BaseController
 
   def branches
     raise Grit::NoSuchPathError if params[:treeish] != @branch.try(:name) # get wrong branch name to nonempty project
-    if request.xhr?
-      @branches = @project.repo.branches.sort_by(&:name).select{ |b| b.name != @branch.name }.unshift(@branch).compact if @branch
-      @branches = @branches.map do |branch|
-        {
-          :name       => branch.name,
-          :path       => tree_path(@project, branch.name),
-          :current    => (branch.name == @branch.try(:name)),
-          :diff_path  => diff_path(@project, "#{@branch.name}...#{branch.name}")
-        }
-      end
-      render :json => @branches
-    else
-      render 'refs'
-    end
+    # @branches = @project.repo.branches.sort_by(&:name).select{ |b| b.name != @branch.name }.unshift(@branch).compact if @branch
+    render 'refs'
   end
 
 end
