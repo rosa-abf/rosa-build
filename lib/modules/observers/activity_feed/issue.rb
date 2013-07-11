@@ -5,11 +5,11 @@ module Modules::Observers::ActivityFeed::Issue
   included do
     after_commit :new_issue_notifications, :on => :create
 
-    after_commit :send_assign_notifications,                :on => :create
+    after_commit :send_assign_notifications,                :on => :create, :if => Proc.new { |i| i.assignee }
     after_commit -> { send_assign_notifications(:update) }, :on => :update
 
     after_commit :send_hooks,                :on => :create
-    after_commit -> { send_hooks(:update) }, :on => :update, :if => :status_changed?
+    after_commit -> { send_hooks(:update) }, :on => :update, :if => Proc.new { |i| i.previous_changes['status'].present? }
   end
 
   private
@@ -18,7 +18,7 @@ module Modules::Observers::ActivityFeed::Issue
     collect_recipients.each do |recipient|
       next if user_id == recipient.id
       if recipient.notifier.can_notify && recipient.notifier.new_issue && assignee_id != recipient.id
-        UserMailer.new_issue_notification(self, recipient).deliver 
+        UserMailer.new_issue_notification(self, recipient).deliver
       end
       ActivityFeed.create(
         :user => recipient,
@@ -35,12 +35,11 @@ module Modules::Observers::ActivityFeed::Issue
         }
       )
     end
-    # dont remove outdated issues link
     Comment.create_link_on_issues_from_item(self)
   end
 
   def send_assign_notifications(action = :create)
-    if assignee_id && assignee_id_changed?
+    if(action == :create && assignee_id) || previous_changes['assignee_id'].present?
       if assignee.notifier.issue_assign && assignee.notifier.can_notify
         UserMailer.issue_assign_notification(self, assignee).deliver
       end
@@ -59,11 +58,10 @@ module Modules::Observers::ActivityFeed::Issue
       )
     end
     # dont remove outdated issues link
-    Comment.create_link_on_issues_from_item(self)
+    Comment.create_link_on_issues_from_item(self) if previous_changes['title'].present? || previous_changes['body'].present?
   end
 
   def send_hooks(action = :create)
     project.hooks.each{ |h| h.receive_issues(self, action) }
   end
-
 end
