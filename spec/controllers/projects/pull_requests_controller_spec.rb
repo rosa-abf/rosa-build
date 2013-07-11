@@ -310,12 +310,6 @@ describe Projects::PullRequestsController do
       ActionMailer::Base.deliveries.count.should == 3
     end
 
-    it 'should send email message to new assignee' do
-      put :update, @update_params.deep_merge(:pull_request => {:assignee_id => @project_reader.id})
-      @project.pull_requests.last.issue.send(:send_assign_notifications)
-      ActionMailer::Base.deliveries.count.should == 1
-    end
-
     it 'should not duplicate email message' do
       post :create, @create_params.deep_merge(:issue => {:assignee_id => @project_admin.id})
       @project.pull_requests.last.issue.send(:new_issue_notifications)

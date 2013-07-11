@@ -50,6 +50,14 @@ describe Issue do
       Comment.where(:automatic => true, :commentable_type => 'Issue',
                     :created_from_issue_id => another_issue.id).count.should == 1
     end
+
+    it 'should send email message to new assignee' do
+      create_issue(@user)
+      ActionMailer::Base.deliveries = []
+      @issue.update_attribute :assignee_id, @user.id
+      @issue.send(:send_assign_notifications, :update)
+      ActionMailer::Base.deliveries.count.should == 1
+    end
   end
 
   context 'for member-group' do
