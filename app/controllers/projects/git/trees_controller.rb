@@ -2,8 +2,10 @@
 class Projects::Git::TreesController < Projects::Git::BaseController
   before_filter lambda{redirect_to @project if params[:treeish] == @project.default_branch and params[:path].blank?}, :only => :show
   skip_before_filter :set_branch_and_tree, :set_treeish_and_path, :only => :archive
-
   before_filter lambda { raise Grit::NoSuchPathError if params[:treeish] != @branch.try(:name) }, :only => [:branch, :destroy]
+
+  skip_authorize_resource :project,                       :only => [:destroy, :restore_branch]
+  before_filter lambda { authorize!(:write, @project) },  :only => [:destroy, :restore_branch]
 
   def show
     render('empty') and return if @project.is_empty?
