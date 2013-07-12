@@ -75,7 +75,7 @@ class Api::V1::PullRequestsController < Api::V1::BaseController
       attrs.merge(:assignee_id => pull_params[:assignee_id]) if can?(:write, @project)
 
       if (action = pull_params[:status]) && %w(close reopen).include?(pull_params[:status])
-        if @pull.send("can_#{action}?")
+        if @pull.valid? && @pull.send("can_#{action}?")
           @pull.set_user_and_time current_user
           need_check = true if action == 'reopen'
         end
