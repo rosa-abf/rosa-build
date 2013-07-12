@@ -1,6 +1,9 @@
 ru:
   layout:
     platforms:
+      contents: Содержимое
+      contents_of: Содержимое
+      search_contents: Найти имя файла/папки...
       admin_id: Владелец
       build_all: Собрать все
       list: Список

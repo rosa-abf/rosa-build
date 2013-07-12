@@ -2036,3 +2036,26 @@ a.button.reject_publish, a.button.create_container {
   height: 16px;
   padding: 3px 20px 5px 20px;
 }
+
+#contents {
+    .path {
+        a {
+            margin-right: 20px;
+        }
+        .text {
+            padding: 5px 10px;
+            background-color: #dcecfa;
+            float: left;
+            height: 14px;
+        }
+        .arrow-right {
+            content: '';
+            width: 0;
+            height: 0;
+            border: 12px solid transparent;
+            border-left: 12px solid #dcecfa;
+            float: left;
+        }
+    }    
+
+}

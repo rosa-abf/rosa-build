@@ -1,7 +1,7 @@
 # -*- encoding : utf-8 -*-
 class Platform < ActiveRecord::Base
   VISIBILITIES = %w(open hidden)
-  NAME_PATTERN = /[a-zA-Z0-9_\-\.]+/
+  NAME_PATTERN = /[\w\-\.]+/
 
   belongs_to :parent, :class_name => 'Platform', :foreign_key => 'parent_platform_id'
   belongs_to :owner, :polymorphic => true
