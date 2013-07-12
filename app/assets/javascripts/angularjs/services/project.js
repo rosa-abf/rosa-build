@@ -1,29 +1,29 @@
 var ApiProject = function($resource) {
 
-  var projectResource = $resource('/api/v1/projects/:project_id.json');
-  var queryProject    = function(project_id, next) {
-    projectResource.get({project_id: project_id}, function(results){
-      next(new Project(results.project));
-    });
-  };
-
-  var refsResource  = $resource('/api/v1/projects/:project_id/refs_list.json');
-  var queryRefs     = function(project_id, next) {
-    //use a callback instead of a promise
-    refsResource.get({project_id: project_id}, function(results) {
-      var out = [];
-      //Underscore's "each" method
-      _.each(results.refs_list, function(ref){
-        //using our ProjectRef(ref) prototype above
-        out.push(new ProjectRef(ref));
-      });
-      next(out);
-    });
-  };
+  var ProjectResource = $resource(
+    '/api/v1/projects/:id.json',
+    {id: '@project.id'},
+    {
+      refs: {
+        url:    '/api/v1/projects/:id/refs_list.json',
+        method: 'GET',
+        isArray : false
+      },
+      delete_branch: {
+        url:    '/:owner/:project/branches/:ref',
+        method: 'DELETE',
+        isArray : false
+      },
+      restore_branch: {
+        url:    '/:owner/:project/branches/:ref', // ?sha=<sha>
+        method: 'PUT',
+        isArray : false
+      }
+    }
+  );
 
   return {
-    refs    : queryRefs,
-    project : queryProject
+    resource : ProjectResource
   }
 }
 
