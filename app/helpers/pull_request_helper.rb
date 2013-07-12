@@ -53,8 +53,8 @@ module PullRequestHelper
   def ref_selector_options(project, current)
     res = []
     value = Proc.new {|t| [t.name.truncate(50), t.name]}
-    res << [I18n.t('layout.git.repositories.branches'), project.repo.branches.map(&value)]
-    res << [I18n.t('layout.git.repositories.tags'), project.repo.tags.map(&value)]
+    res << [I18n.t('layout.git.repositories.branches'), project.repo.branches.map(&value).sort]
+    res << [I18n.t('layout.git.repositories.tags'), project.repo.tags.map(&value).sort]
 
     grouped_options_for_select(res, current)
   end

@@ -10,6 +10,8 @@
             = link_to t("layout.platforms.about"), platform_path(@platform)
           %li{:class => (contr == :repositories) ? 'active' : ''}
             = link_to t("layout.repositories.list_header"), platform_repositories_path(@platform)
+          %li{:class => (contr == :contents) ? 'active' : ''}
+            = link_to t('layout.platforms.contents'), platform_contents_path(@platform)
           - if can? :show, @platform
             %li{:class => (act == :index && contr == :maintainers) ? 'active' : nil}
               = link_to t("layout.platforms.maintainers"), platform_maintainers_path(@platform)

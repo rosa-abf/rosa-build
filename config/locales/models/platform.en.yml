@@ -1,6 +1,9 @@
 en:
   layout:
     platforms:
+      contents: Contents
+      contents_of: Contents of
+      search_contents: Search name of file/folder...
       admin_id: Owner
       build_all: Build all
       list: List

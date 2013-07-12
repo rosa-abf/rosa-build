@@ -161,6 +161,9 @@ Rosa::Application.routes.draw do
         get    :advisories
       end
 
+      resources :contents, :only => [:index]
+      match '/contents/*path' => 'contents#index', :format => false
+
       resources :mass_builds, :only => [:create, :new, :index] do
         member do
           post   :cancel

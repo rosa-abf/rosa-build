@@ -45,6 +45,7 @@ class Projects::PullRequestsController < Projects::BaseController
 
     if @pull.valid? # FIXME more clean/clever logics
       @pull.save # set pull id
+      @pull.reload
       @pull.check(false) # don't make event transaction
       if @pull.already?
         @pull.destroy

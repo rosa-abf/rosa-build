@@ -55,6 +55,7 @@ class Api::V1::PullRequestsController < Api::V1::BaseController
     render_validation_error(@pull, "#{@pull.class.name} has not been created") && return unless @pull.valid?
 
     @pull.save # set pull id
+    @pull.reload
     @pull.check(false) # don't make event transaction
     if @pull.already?
       @pull.destroy

@@ -33,6 +33,31 @@ describe Issue do
       create_issue(@user)
       ActionMailer::Base.deliveries.count.should == 0
     end
+
+    it 'should create automatic comment from another issue' do
+      create_issue(@user)
+      another_issue = FactoryGirl.create(:issue, :project => @project, :title => "[##{@issue.serial_id}]")
+      Comment.where(:automatic => true, :commentable_type => 'Issue',
+                    :created_from_issue_id => another_issue.id).count.should == 1
+    end
+
+    it 'should create automatic comment after updating another issue body' do
+      create_issue(@user)
+      another_issue = FactoryGirl.create(:issue, :project => @project)
+      another_issue.update_attribute(:title, "[##{@issue.serial_id}]")
+      another_issue.send(:send_assign_notifications)
+
+      Comment.where(:automatic => true, :commentable_type => 'Issue',
+                    :created_from_issue_id => another_issue.id).count.should == 1
+    end
+
+    it 'should send email message to new assignee' do
+      create_issue(@user)
+      ActionMailer::Base.deliveries = []
+      @issue.update_attribute :assignee_id, @user.id
+      @issue.send(:send_assign_notifications, :update)
+      ActionMailer::Base.deliveries.count.should == 1
+    end
   end
 
   context 'for member-group' do
