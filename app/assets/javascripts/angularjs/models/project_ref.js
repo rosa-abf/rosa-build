@@ -16,8 +16,12 @@ var ProjectRef = function(atts) {
     return '/' + project.fullname + '/tree/' + self.ref;
   }
 
-  self.delete_path = function(project) {
-    return '/' + project.fullname + '/branches/' + self.ref;
+  self.restore_path = function(project_fullname) {
+    return '/' + project_fullname + '/branches/' + self.ref;
+  }
+
+  self.delete_path = function(project_fullname) {
+    return '/' + project_fullname + '/branches/' + self.ref;
   }
 
   self.diff_path = function(project, current_ref) {

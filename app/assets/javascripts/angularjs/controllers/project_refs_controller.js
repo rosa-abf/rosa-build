@@ -1,4 +1,4 @@
-RosaABF.controller('ProjectRefsController', function($scope, $http, $location, ApiProject) {
+RosaABF.controller('ProjectRefsController', function($scope, $http, ApiProject) {
 
   $scope.branches = [];
   $scope.tags     = [];
@@ -38,7 +38,7 @@ RosaABF.controller('ProjectRefsController', function($scope, $http, $location, A
   };
 
   $scope.destroy = function(branch) {
-    $http.delete(branch.delete_path($scope.project)).success(function(data) {
+    $http.delete(branch.delete_path($scope.project.fullname)).success(function(data) {
       $scope.getRefs();
     });
   }

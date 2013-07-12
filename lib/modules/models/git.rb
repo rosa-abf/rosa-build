@@ -33,6 +33,10 @@ module Modules
         repo.tags.map(&:name) + repo.branches.map(&:name)
       end
 
+      def restore_branch(branch, sha)
+        repo.git.native(:branch, {}, 'branch', branch, sha)
+      end
+
       def delete_branch(branch, user)
         message = repo.git.native(:branch, {}, '-D', branch.name)
         Resque.enqueue(GitHook,owner.uname, name, GitHook::ZERO, branch.commit.id, "refs/heads/#{branch.name}", 'commit', "user-#{user.id}", message)

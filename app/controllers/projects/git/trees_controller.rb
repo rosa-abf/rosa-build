@@ -32,9 +32,14 @@ class Projects::Git::TreesController < Projects::Git::BaseController
   def tags
   end
 
+  def restore_branch
+    sha = params[:sha]
+    @project.restore_branch @treeish, sha if @treeish.present? && sha.present?
+    render :nothing => true
+  end
+
   def destroy
-    raise Grit::NoSuchPathError unless @branch
-    @project.delete_branch @branch, current_user
+    @project.delete_branch @branch, current_user if @branch
     render :nothing => true
   end
 

@@ -1,3 +1,3 @@
-tag.(member, :id, :name)
+tag.(member, :id, :name, :uname)
 tag.type member.class.name
 tag.url member_path(member)
