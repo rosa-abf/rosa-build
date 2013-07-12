@@ -2,14 +2,14 @@ json.number pull.serial_id
 json.(pull, :title, :status)
 json.to_ref do |json_ref|
   json_ref.ref pull.to_ref
-  json_ref.sha pull.to_commit.id
+  json_ref.sha pull.to_commit.try(:id)
   json_ref.project do |json_project|
     json_project.partial! 'api/v1/projects/project', :project => pull.to_project, :json => json
   end
 end
 json.from_ref do |json_ref|
   json_ref.ref pull.from_ref
-  json_ref.sha pull.from_commit.id
+  json_ref.sha pull.from_commit.try(:id)
   json_ref.project do |json_project|
     json_project.partial! 'api/v1/projects/project', :project => pull.from_project, :json => json
   end
