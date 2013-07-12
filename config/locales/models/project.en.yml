@@ -3,6 +3,7 @@ en:
     projects:
       branches: Branches
       delete_branch: Delete branch
+      restore_branch: Restore branch
       total_branches: Total %{count} branches
       total_branch: Total 1 branch
       no_branches: No branches

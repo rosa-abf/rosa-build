@@ -34,7 +34,7 @@ module Modules
       end
 
       def restore_branch(branch, sha)
-        repo.git.native(:branch, {}, 'branch', branch, sha)
+        repo.git.native(:branch, {}, branch, sha)
       end
 
       def delete_branch(branch, user)
