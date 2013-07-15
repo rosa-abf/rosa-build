@@ -33,6 +33,7 @@ module Modules
         repo.tags.map(&:name) + repo.branches.map(&:name)
       end
 
+      # TODO: return something else instead of empty string on success and error
       def restore_branch(branch, sha)
         repo.git.native(:branch, {}, branch, sha)
       end

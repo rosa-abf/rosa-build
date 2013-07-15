@@ -46,7 +46,10 @@ RosaABF.controller('ProjectRefsController', function($scope, $http, ApiProject) 
   $scope.destroy = function(branch) {
     $scope.project_resource.$delete_branch(
       {owner: $scope.project.owner.uname, project: $scope.project.name, ref: branch.ref},
-      function() { $scope.getRefs(); }
+      function() { 
+        var i = $scope.branches.indexOf(branch);
+        if(i != -1) { $scope.branches.splice(i, 1); }
+      }
     );
   }
 

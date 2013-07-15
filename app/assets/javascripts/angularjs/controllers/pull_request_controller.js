@@ -12,7 +12,6 @@ RosaABF.controller('PullRequestController', function($scope, $http, ApiPullReque
   $scope.branch     = null;
 
   $scope.can_delete_branch  = false;
-  $scope.check_branch       = false;
 
   $scope.init = function(project_id, serial_id) {
     $scope.project_id = project_id;
@@ -27,7 +26,6 @@ RosaABF.controller('PullRequestController', function($scope, $http, ApiPullReque
         $scope.pull = results.pull_request;
         if ($scope.pull.merged_at) { $scope.merged_at = DateTimeFormatter.utc($scope.pull.merged_at); }
         if ($scope.pull.closed_at) { $scope.closed_at = DateTimeFormatter.utc($scope.pull.closed_at); }
-        if ($scope.check_branch && ($scope.pull.status == 'closed' || $scope.pull.status == 'merged')) { $scope.getBranch(); }
       }
     );
   }
@@ -40,8 +38,7 @@ RosaABF.controller('PullRequestController', function($scope, $http, ApiPullReque
       _.each(results.refs_list, function(ref){
         var result = new ProjectRef(ref);
         if (!result.isTag && result.ref == $scope.pull.from_ref.ref) {
-          $scope.can_delete_branch = result.object.sha == $scope.pull.from_ref.sha;
-          $scope.branch = true;
+          $scope.branch = result;
           return true;
         }
       });
@@ -70,13 +67,13 @@ RosaABF.controller('PullRequestController', function($scope, $http, ApiPullReque
 
   $scope.deleteBranch = function() {
     $scope.project_resource.$delete_branch($scope.branch_params(), function() {
-      $scope.branch = false; 
+      $scope.branch = null; 
     });
   }
 
   $scope.restoreBranch = function() {
     $scope.project_resource.$restore_branch($scope.branch_params(), function() {
-      $scope.branch = true;
+      $scope.getBranch();
     });
   }
 

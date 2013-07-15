@@ -35,14 +35,16 @@ class Projects::Git::TreesController < Projects::Git::BaseController
   end
 
   def restore_branch
-    sha = params[:sha]
-    @project.restore_branch @treeish, sha if @treeish.present? && sha.present?
+    @project.restore_branch @treeish, params[:sha] if @treeish.present? && params[:sha].present?
     render :nothing => true
   end
 
   def destroy
-    @project.delete_branch @branch, current_user if @branch && @project.default_branch != @branch.name
-    render :nothing => true
+    if @branch && @project.default_branch != @branch.name && @project.delete_branch(@branch, current_user).present?
+      render :nothing => true
+    else
+      render :nothing => true, :status => 422
+    end
   end
 
   def branches

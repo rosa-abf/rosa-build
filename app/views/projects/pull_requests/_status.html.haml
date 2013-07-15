@@ -20,8 +20,8 @@
 
 
 - if !@pull.cross_pull? && can?(:write, @project)
-  %div{'ng-init' => 'check_branch = true', 'ng-show' => "pull.status == 'closed' || pull.status == 'merged'"}
-    %a.button{:href => '', 'ng-click' => 'deleteBranch()', 'ng-show' => "branch && can_delete_branch"}
+  %div{'ng-init' => 'getBranch()', 'ng-show' => "pull.status == 'closed' || pull.status == 'merged'"}
+    %a.button{:href => '', 'ng-click' => 'deleteBranch()', 'ng-show' => "branch && branch.object.sha == pull.from_ref.sha"}
       = t('layout.projects.delete_branch')
     %a.button{:href => '', 'ng-click' => 'restoreBranch()', 'ng-hide' => "branch"}
       = t('layout.projects.restore_branch')
