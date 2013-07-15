@@ -2,18 +2,27 @@ en:
   layout:
     projects:
       branches: Branches
+
+      pluralize:
+        branches:
+          branch: branch
+          branches: branches
+          branches2: branches
+        tags:
+          tag: tag
+          tags: tags
+          tags2: tags
+
       delete_branch: Delete branch
       restore_branch: Restore branch
-      total_branches: Total %{count} branches
-      total_branch: Total 1 branch
+      total_branches: Total %{count} %{branches}
       no_branches: No branches
       base_branch: Base branch
       compare: Compare
       browse_code: Browse code
       source_code: Source code (%{type})
       tags: Tags
-      total_tags: Total %{count} tags
-      total_tag: Total 1 tag
+      total_tags: Total %{count} %{tags}
       no_tags: No tags
       add: Add
       public_projects_list: Public projects list
