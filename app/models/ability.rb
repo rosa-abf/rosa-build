@@ -15,7 +15,6 @@ class Ability
     # Shared rights between guests and registered users
     can [:show, :archive], Project, :visibility => 'open'
     can :get_id,  Project, :visibility => 'open' # api
-    can :archive, Project, :visibility => 'open'
     can(:refs_list, Project) {|project| can? :show, project}
     can :read, Issue, :project => {:visibility => 'open'}
     can [:read, :commits, :files], PullRequest, :to_project => {:visibility => 'open'}
