@@ -86,4 +86,55 @@ describe Project do
       lambda {FactoryGirl.create(:project, :name => "...\nbeatiful_name\n for project")}.should raise_error(ActiveRecord::RecordInvalid)
     end
   end
+
+  context 'manage branches' do
+    let!(:project) { FactoryGirl.create(:project_with_commit) }
+    let(:branch) { project.repo.branches.detect{|b| b.name == 'conflicts'} }
+    let(:master) { project.repo.branches.detect{|b| b.name == 'master'} }
+    let(:user) { FactoryGirl.create(:user) }
+    before { stub_redis }
+
+    context '#delete_branch' do
+      it 'ensures that returns true on success' do
+        project.delete_branch(branch, user).should be_true
+      end
+
+      it 'ensures that branch has been deleted' do
+        lambda { project.delete_branch(branch, user) }.should change{ project.repo.branches.count }.by(-1)
+      end
+
+      it 'ensures that returns false on delete master' do
+        project.delete_branch(master, user).should be_false
+      end
+
+      it 'ensures that master has not been deleted' do
+        lambda { project.delete_branch(master, user) }.should change{ project.repo.branches.count }.by(0)
+      end
+
+      it 'ensures that returns false on delete wrong branch' do
+        project.delete_branch(branch, user)
+        project.delete_branch(branch, user).should be_false
+      end
+    end
+
+    context '#restore_branch' do
+      before do
+        project.delete_branch(branch, user)
+      end
+
+      xit 'ensures that returns true on success' do
+        project.restore_branch(branch.name, branch.commit.id).should be_true
+      end
+
+      it 'ensures that branch has been restored' do
+        lambda { project.restore_branch(branch.name, branch.commit.id) }.should change{ project.repo.branches.count }.by(1)
+      end
+
+      xit 'ensures that returns false on restore wrong branch' do
+        project.restore_branch(branch.name, GitHook::ZERO).should be_false
+      end
+    end
+
+  end
+
 end

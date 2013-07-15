@@ -39,8 +39,12 @@ module Modules
       end
 
       def delete_branch(branch, user)
+        return false if default_branch == branch.name
         message = repo.git.native(:branch, {}, '-D', branch.name)
-        Resque.enqueue(GitHook,owner.uname, name, GitHook::ZERO, branch.commit.id, "refs/heads/#{branch.name}", 'commit', "user-#{user.id}", message)
+        if message.present?
+          Resque.enqueue(GitHook,owner.uname, name, GitHook::ZERO, branch.commit.id, "refs/heads/#{branch.name}", 'commit', "user-#{user.id}", message)
+        end
+        return message.present?
       end
 
       def update_file(path, data, options = {})
