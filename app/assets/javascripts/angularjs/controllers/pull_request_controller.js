@@ -1,4 +1,4 @@
-RosaABF.controller('PullRequestController', function($scope, $http, ApiPullRequest, ApiProject) {
+RosaABF.controller('PullRequestController', function($scope, $http, ApiPullRequest, ApiProject, DateTimeFormatter) {
 
   $scope.project_id       = null;
   $scope.project_resource = null;
@@ -25,8 +25,8 @@ RosaABF.controller('PullRequestController', function($scope, $http, ApiPullReque
       {project_id: $scope.project_id, serial_id: $scope.serial_id},
       function(results) {
         $scope.pull = results.pull_request;
-        if ($scope.pull.merged_at) { $scope.merged_at = new Date($scope.pull.merged_at * 1000).toUTCString(); }
-        if ($scope.pull.closed_at) { $scope.closed_at = new Date($scope.pull.closed_at * 1000).toUTCString(); }
+        if ($scope.pull.merged_at) { $scope.merged_at = DateTimeFormatter.utc($scope.pull.merged_at); }
+        if ($scope.pull.closed_at) { $scope.closed_at = DateTimeFormatter.utc($scope.pull.closed_at); }
         if ($scope.check_branch && ($scope.pull.status == 'closed' || $scope.pull.status == 'merged')) { $scope.getBranch(); }
       }
     );

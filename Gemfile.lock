@@ -196,6 +196,8 @@ GEM
     mime-types (1.23)
     mini_portile (0.5.1)
     mock_redis (0.6.2)
+    momentjs-rails (2.0.0.2)
+      railties (>= 3.1)
     multi_json (1.7.7)
     multipart-post (1.2.0)
     mustache (0.99.4)
@@ -436,6 +438,7 @@ DEPENDENCIES
   meta-tags (~> 1.2.5)
   meta_request
   mock_redis (= 0.6.2)
+  momentjs-rails
   newrelic_rpm (~> 3.5.5.38)
   ng-rails-csrf
   omniauth

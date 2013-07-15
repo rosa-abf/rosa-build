@@ -25,4 +25,4 @@
             = t('layout.projects.source_code', :type => type)
         %p.name
           %b {{tag.ref}}
-          .date {{tag.object.authored_date}}
+          .date {{tag.object.authored_date * 1000 | date:'yyyy.MM.dd'}}

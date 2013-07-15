@@ -61,6 +61,7 @@ gem "gemoji", "~> 1.2.1", require: 'emoji/railtie'
 # AngularJS related stuff
 gem 'angularjs-rails'
 gem 'ng-rails-csrf'
+gem 'momentjs-rails'
 
 group :assets do
   gem 'sass-rails', '~> 3.2.5'

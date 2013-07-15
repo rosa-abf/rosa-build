@@ -20,6 +20,7 @@
 //= require unstable/angular-resource
 //= require ng-rails-csrf
 //= require_tree ./angularjs
+//= require moment
 
 //= require_self
 
