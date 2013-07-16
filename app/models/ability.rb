@@ -81,7 +81,7 @@ class Ability
         can [:read, :log, :owned, :everything], BuildList, :user_id => user.id
         can [:read, :log, :related, :everything], BuildList, :project => {:owner_type => 'User', :owner_id => user.id}
         can [:read, :log, :related, :everything], BuildList, :project => {:owner_type => 'Group', :owner_id => user.group_ids}
-        can([:read, :log, :everything], BuildList, read_relations_for('build_lists', 'projects')) {|build_list| can? :read, build_list.project}
+        can([:read, :log, :everything], BuildList, read_relations_for('build_lists', 'projects', true)) {|build_list| can? :read, build_list.project}
 
         can(:create, BuildList) {|build_list|
           build_list.project.is_package &&
@@ -195,15 +195,17 @@ class Ability
   end
 
   # TODO group_ids ??
-  def read_relations_for(table, parent = nil)
+  def read_relations_for(table, parent = nil, skip_groups = false)
     key = parent ? "#{parent.singularize}_id" : 'id'
     parent ||= table
 
-    target_ids = Relation.where("relations.target_type = ? AND
-      (relations.actor_type = 'User' AND relations.actor_id = ? OR
-       relations.actor_type = 'Group' AND relations.actor_id IN (?))",
-      parent.classify, @user, @user.group_ids
-    ).pluck(:target_id)
+    conditions = "(relations.actor_type = 'User' AND relations.actor_id = :user_id"
+    conditions << " OR relations.actor_type = 'Group' AND relations.actor_id IN (:group_ids)" unless skip_groups
+    conditions << ')'
+
+    target_ids = Relation.where(:target_type => parent.classify)
+      .where(conditions, {:user_id => @user, :group_ids => @user.group_ids})
+      .pluck(:target_id)
 
     ["#{table}.#{key} IN (?)",target_ids]
   end
