@@ -44,7 +44,7 @@ gem 'trinidad', '~> 1.0.2', :platforms => :jruby
 gem 'newrelic_rpm', '~> 3.5.5.38', :platforms => [:mri, :rbx]
 gem 'whenever', '~> 0.7.3', :require => false
 
-gem 'jbuilder', '~> 0.8.2'
+gem 'jbuilder', '~> 1.4.2'
 gem 'rails3-jquery-autocomplete', '~> 1.0.7'
 gem 'will_paginate', '~> 3.0.3'
 gem 'meta-tags', '~> 1.2.5', :require => 'meta_tags'
