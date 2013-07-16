@@ -22,6 +22,7 @@ gem 'perform_later', '~> 1.3.0' # should be after resque_mailer
 gem 'russian', '~> 0.6.0'
 gem 'highline', '~> 1.6.11'
 gem 'state_machine'
+gem 'redis-rails'
 
 gem 'grack', :git => 'git://github.com/rdblue/grack.git', :require => 'git_http'
 gem "grit", :git => 'git://github.com/warpc/grit.git' #, :path => '~/Sites/code/grit'

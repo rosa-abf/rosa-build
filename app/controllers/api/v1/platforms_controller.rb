@@ -7,30 +7,38 @@ class Api::V1::PlatformsController < Api::V1::BaseController
   load_and_authorize_resource :except => :allowed
 
   def allowed
-    platform_name = (params[:path] || '').gsub(/^[\/]+/, '')
-      .match(/^(#{Platform::NAME_PATTERN}\/|#{Platform::NAME_PATTERN}$)/)
-    render(:nothing => true) && return unless platform_name
-    platform_name = platform_name[0].gsub(/\//, '')
+    # platform_name = (params[:path] || '').gsub(/^[\/]+/, '')
+    #   .match(/^(#{Platform::NAME_PATTERN}\/|#{Platform::NAME_PATTERN}$)/)
 
-    platform = Platform.find_by_name platform_name
-    render(:nothing => true, :status => 403) && return unless platform
-    render(:nothing => true) && return unless platform.hidden?
-
-    if request.authorization.present?
-      token, pass = *ActionController::HttpAuthentication::Basic::user_name_and_password(request)
-    else
-      render(:nothing => true, :status => 403) && return
-    end
-
-    render(:nothing => true) && return if platform.tokens.by_active.where(:authentication_token => token).exists?
-
-    user = User.find_by_authentication_token token
-    @current_ability, @current_user = nil, user
-    if user && can?(:show, platform)
+    if Platform.allowed?(params[:path] || '', request)
       render :nothing => true
     else
       render :nothing => true, :status => 403
     end
+
+
+    # render(:nothing => true) && return unless platform_name
+    # platform_name = platform_name[0].gsub(/\//, '')
+
+    # platform = Platform.find_by_name platform_name
+    # render(:nothing => true, :status => 403) && return unless platform
+    # render(:nothing => true) && return unless platform.hidden?
+
+    # if request.authorization.present?
+    #   token, pass = *ActionController::HttpAuthentication::Basic::user_name_and_password(request)
+    # else
+    #   render(:nothing => true, :status => 403) && return
+    # end
+
+    # render(:nothing => true) && return if platform.tokens.by_active.where(:authentication_token => token).exists?
+
+    # user = User.find_by_authentication_token token
+    # @current_ability, @current_user = nil, user
+    # if user && can?(:show, platform)
+    #   render :nothing => true
+    # else
+    #   render :nothing => true, :status => 403
+    # end
   end
 
   def index
