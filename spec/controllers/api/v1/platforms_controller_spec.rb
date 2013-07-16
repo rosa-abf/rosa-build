@@ -249,7 +249,6 @@ describe Api::V1::PlatformsController do
 
 
     context 'perform allowed action' do
-      before { stub_redis }
       it 'ensures that status 200 if platform empty' do
         get :allowed
         response.status.should == 200
