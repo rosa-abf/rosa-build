@@ -1,11 +1,11 @@
-json.product do |json|
-  json.partial! 'product', :product => @product, :json => json
-  json.platform do |json_platform|
-    json.partial! 'api/v1/platforms/platform', :platform => @product.platform, :json => json_platform
+json.product do
+  json.partial! 'product', :product => @product
+  json.platform do
+    json.partial! 'api/v1/platforms/platform', :platform => @product.platform
   end
   if @product.project.present?
-    json.project do |json_project|
-      json.partial! 'api/v1/projects/project', :project => @product.project, :json => json_project
+    json.project do
+      json.partial! 'api/v1/projects/project', :project => @product.project
     end
   end
   json.created_at @product.created_at.to_i
