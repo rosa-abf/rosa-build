@@ -199,9 +199,9 @@ class Ability
     parent ||= table
 
     ["#{table}.#{key} IN (
-      SELECT target_id FROM relations WHERE
-      relations.target_type = ? AND
-      relations.actor_type = 'User' AND relations.actor_id = ?)", parent.classify, @user]
+      SELECT target_id FROM relations WHERE relations.target_type = ? AND
+      (relations.actor_type = 'User' AND relations.actor_id = ? OR
+       relations.actor_type = 'Group' AND relations.actor_id IN (?)))", parent.classify, @user, @user.group_ids]
   end
 
   def local_reader?(target)
