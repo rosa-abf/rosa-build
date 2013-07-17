@@ -120,6 +120,23 @@ shared_examples_for 'api repository user with writer rights' do
     end
   end
 
+  context 'api repository user with update signatures rights' do
+    before do
+      kp = FactoryGirl.build(:key_pair)
+      put :signatures, :id => @repository.id, :repository => {:public => kp.public, :secret => kp.secret}, :format => :json
+    end
+    it 'should be able to perform signatures action' do
+      response.should be_success
+    end
+    it 'ensures that signatures has been updated' do
+      @repository.key_pair.should_not be_nil
+    end
+  end
+
+end
+
+shared_examples_for 'api repository user with project manage rights' do
+
   context 'api repository user with add_project rights' do
     before { put :add_project, :id => @repository.id, :project_id => @project.id, :format => :json }
     it 'should be able to perform add_project action' do
@@ -141,19 +158,6 @@ shared_examples_for 'api repository user with writer rights' do
     it 'ensures that project has been removed from repository' do
       @repository.reload
       @repository.projects.should_not include(@project)
-    end
-  end
-
-  context 'api repository user with update signatures rights' do
-    before do
-      kp = FactoryGirl.build(:key_pair)
-      put :signatures, :id => @repository.id, :repository => {:public => kp.public, :secret => kp.secret}, :format => :json
-    end
-    it 'should be able to perform signatures action' do
-      response.should be_success
-    end
-    it 'ensures that signatures has been updated' do
-      @repository.key_pair.should_not be_nil
     end
   end
 
@@ -221,6 +225,22 @@ shared_examples_for 'api repository user without writer rights' do
     end
   end
 
+  context 'api repository user without update signatures rights' do
+    before do
+      kp = FactoryGirl.build(:key_pair)
+      put :signatures, :id => @repository.id, :repository => {:public => kp.public, :secret => kp.secret}, :format => :json
+    end
+    it 'should not be able to perform signatures action' do
+      response.should_not be_success
+    end
+    it 'ensures that signatures has not been updated' do
+      @repository.key_pair.should be_nil
+    end
+  end
+
+end
+
+shared_examples_for 'api repository user without project manage rights' do
   context 'api repository user without add_project rights' do
     before { put :add_project, :id => @repository.id, :project_id => @project.id, :format => :json }
     it 'should not be able to perform add_project action' do
@@ -244,20 +264,6 @@ shared_examples_for 'api repository user without writer rights' do
       @repository.projects.should include(@project)
     end
   end
-
-  context 'api repository user without update signatures rights' do
-    before do
-      kp = FactoryGirl.build(:key_pair)
-      put :signatures, :id => @repository.id, :repository => {:public => kp.public, :secret => kp.secret}, :format => :json
-    end
-    it 'should not be able to perform signatures action' do
-      response.should_not be_success
-    end
-    it 'ensures that signatures has not been updated' do
-      @repository.key_pair.should be_nil
-    end
-  end
-
 end
 
 
@@ -284,6 +290,7 @@ describe Api::V1::RepositoriesController do
       it_should_behave_like 'api repository user with show rights'
     end
     it_should_behave_like 'api repository user without writer rights'
+    it_should_behave_like 'api repository user without project manage rights'
     it_should_behave_like 'api repository user without key_pair rights'
 
     it 'should not be able to perform projects action', :anonymous_access => false do
@@ -330,6 +337,22 @@ describe Api::V1::RepositoriesController do
     it_should_behave_like 'api repository user with reader rights'
     it_should_behave_like 'api repository user without reader rights for hidden platform'
     it_should_behave_like 'api repository user with show rights'
+    it_should_behave_like 'api repository user without writer rights'
+    it_should_behave_like 'api repository user without project manage rights'
+    it_should_behave_like 'api repository user without key_pair rights'
+  end
+
+  context 'for member of repository' do
+    before(:each) do
+      @user = FactoryGirl.create(:user)
+      @repository.add_member @user
+      http_login @user
+    end
+
+    it_should_behave_like 'api repository user with reader rights'
+    it_should_behave_like 'api repository user with reader rights for hidden platform'
+    it_should_behave_like 'api repository user with show rights'
+    it_should_behave_like 'api repository user with project manage rights'
     it_should_behave_like 'api repository user without writer rights'
     it_should_behave_like 'api repository user without key_pair rights'
   end
