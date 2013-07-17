@@ -204,7 +204,7 @@ class Ability
           INNER JOIN #{parent} ON relations.target_type = :target_type AND relations.target_id = #{parent}.id
           WHERE relations.target_type = :target_type AND
           (
-            #{parent}.owner_type = 'User' AND #{parent}.owner_id != 1 OR
+            #{parent}.owner_type = 'User' AND #{parent}.owner_id != :user OR
             #{parent}.owner_type = 'Group' AND #{parent}.owner_id NOT IN (:groups)
           ) AND (
             relations.actor_type = 'User' AND relations.actor_id = :user OR
