@@ -198,10 +198,27 @@ class Ability
     key = parent ? "#{parent.singularize}_id" : 'id'
     parent ||= table
 
-    ["#{table}.#{key} IN (
-      SELECT target_id FROM relations WHERE relations.target_type = ? AND
-      (relations.actor_type = 'User' AND relations.actor_id = ? OR
-       relations.actor_type = 'Group' AND relations.actor_id IN (?)))", parent.classify, @user, @user.group_ids]
+    ["#{table}.#{key} IN
+      (
+          SELECT target_id FROM relations
+          INNER JOIN #{parent} ON relations.target_type = :target_type AND relations.target_id = #{parent}.id
+          WHERE relations.target_type = :target_type AND
+          (
+            #{parent}.owner_type = 'User' AND #{parent}.owner_id != 1 OR
+            #{parent}.owner_type = 'Group' AND #{parent}.owner_id NOT IN (:groups)
+          ) AND (
+            relations.actor_type = 'User' AND relations.actor_id = :user OR
+            relations.actor_type = 'Group' AND relations.actor_id IN (:groups)
+          )
+        
+      )",
+      {
+        :target_type  => parent.classify,
+        :user         => @user.id,
+        :groups       => @user.group_ids
+      }
+    ]
+
   end
 
   def local_reader?(target)
