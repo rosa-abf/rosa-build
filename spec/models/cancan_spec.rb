@@ -88,7 +88,7 @@ describe CanCan do
     end
 
     [Platform, Repository].each do |model_name|
-      it "should not be able to read #{model_name}" do
+      it "should be able to read #{model_name}" do
         @ability.should be_able_to(:read, model_name)
       end
     end
