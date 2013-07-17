@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130701121313) do
+ActiveRecord::Schema.define(:version => 20130717112337) do
 
   create_table "activity_feeds", :force => true do |t|
     t.integer  "user_id",    :null => false
@@ -449,6 +449,9 @@ ActiveRecord::Schema.define(:version => 20130701121313) do
     t.datetime "updated_at"
     t.string   "role"
   end
+
+  add_index "relations", ["actor_type", "actor_id"], :name => "index_relations_on_actor_type_and_actor_id"
+  add_index "relations", ["target_type", "target_id"], :name => "index_relations_on_target_type_and_target_id"
 
   create_table "repositories", :force => true do |t|
     t.string   "description",                          :null => false
