@@ -1,4 +1,4 @@
-var ApiPullRequest = function($resource) {
+RosaABF.factory("ApiPullRequest", ['$resource', function($resource) {
 
   var PullRequestResource = $resource(
     '/api/v1/projects/:project_id/pull_requests/:serial_id.json',
@@ -22,6 +22,4 @@ var ApiPullRequest = function($resource) {
   return {
     resource : PullRequestResource
   }
-}
-
-RosaABF.factory("ApiPullRequest", ApiPullRequest);
+}]);

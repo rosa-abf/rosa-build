@@ -1,4 +1,4 @@
-var ApiProject = function($resource) {
+RosaABF.factory("ApiProject", ['$resource', function($resource) {
 
   var ProjectResource = $resource(
     '/api/v1/projects/:id.json',
@@ -25,6 +25,4 @@ var ApiProject = function($resource) {
   return {
     resource : ProjectResource
   }
-}
-
-RosaABF.factory("ApiProject", ApiProject);
+}]);
