@@ -39,13 +39,15 @@ RosaABF.controller('PullRequestController',['$scope', '$http', 'ApiPullRequest',
     // Cannot read property 'from_ref' of null
     if (!from_ref) { from_ref = $scope.pull.from_ref.ref; }
     $scope.project_resource.$refs({id: $scope.project_id}, function(results) {
+      var branch = null;
       _.each(results.refs_list, function(ref){
         var result = new ProjectRef(ref);
         if (!result.isTag && result.ref == from_ref) {
-          $scope.branch = result;
+          branch = result;
           return true;
         }
       });
+      $scope.branch = branch;
     });
   }
 
@@ -70,15 +72,17 @@ RosaABF.controller('PullRequestController',['$scope', '$http', 'ApiPullRequest',
   }
 
   $scope.deleteBranch = function() {
-    $scope.project_resource.$delete_branch($scope.branch_params(), function() {
-      $scope.branch = null; 
-    });
+    $scope.project_resource.$delete_branch($scope.branch_params(),
+      function() { $scope.branch = null;  }, // success
+      function() { $scope.getBranch();    }  // error
+    );
   }
 
   $scope.restoreBranch = function() {
-    $scope.project_resource.$restore_branch($scope.branch_params(), function() {
-      $scope.getBranch();
-    });
+    $scope.project_resource.$restore_branch($scope.branch_params(),
+      function() { $scope.getBranch(); }, // success
+      function() { $scope.getBranch(); }  // error
+    );
   }
 
   $scope.branch_params = function() {
