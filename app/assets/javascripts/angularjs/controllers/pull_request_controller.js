@@ -1,4 +1,4 @@
-RosaABF.controller('PullRequestController', function($scope, $http, ApiPullRequest, ApiProject, DateTimeFormatter) {
+RosaABF.controller('PullRequestController',['$scope', '$http', 'ApiPullRequest', 'ApiProject', 'DateTimeFormatter', function($scope, $http, ApiPullRequest, ApiProject, DateTimeFormatter) {
 
   $scope.project_id       = null;
   $scope.project_resource = null;
@@ -87,4 +87,4 @@ RosaABF.controller('PullRequestController', function($scope, $http, ApiPullReque
     }
   }
 
-});
+}]);

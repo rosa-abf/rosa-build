@@ -1,4 +1,4 @@
-RosaABF.controller('ProjectRefsController', function($scope, $http, ApiProject) {
+RosaABF.controller('ProjectRefsController', ['$scope', '$http', 'ApiProject', function($scope, $http, ApiProject) {
 
   $scope.branches = [];
   $scope.tags     = [];
@@ -53,4 +53,4 @@ RosaABF.controller('ProjectRefsController', function($scope, $http, ApiProject) 
     );
   }
 
-});
+}]);
