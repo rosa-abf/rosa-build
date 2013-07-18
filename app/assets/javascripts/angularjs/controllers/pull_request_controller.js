@@ -30,14 +30,18 @@ RosaABF.controller('PullRequestController',['$scope', '$http', 'ApiPullRequest',
     );
   }
 
-  $scope.getBranch = function() {
+  // @param [from_ref] - sets only at first time
+  $scope.getBranch = function(from_ref) {
     if (!$scope.project_resource) {
       $scope.project_resource = ApiProject.resource.get({id: $scope.project_id});
     }
+    // Fix: at first load
+    // Cannot read property 'from_ref' of null
+    if (!from_ref) { from_ref = $scope.pull.from_ref.ref; }
     $scope.project_resource.$refs({id: $scope.project_id}, function(results) {
       _.each(results.refs_list, function(ref){
         var result = new ProjectRef(ref);
-        if (!result.isTag && result.ref == $scope.pull.from_ref.ref) {
+        if (!result.isTag && result.ref == from_ref) {
           $scope.branch = result;
           return true;
         }
