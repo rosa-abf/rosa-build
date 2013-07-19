@@ -302,7 +302,6 @@ describe Platforms::RepositoriesController do
   context 'for repository member user' do
     before(:each) do
       [@repository, @personal_repository].each do |repo|
-        # repo.relations.create!(:actor_type => 'User', :actor_id => @user.id, :role => 'admin')
         repo.add_member @user
       end
     end
