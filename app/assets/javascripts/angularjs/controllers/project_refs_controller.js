@@ -59,7 +59,7 @@ RosaABF.controller('ProjectRefsController', ['$scope', '$http', 'ApiProject', fu
         $scope.updateBranchesCount();
         // Removes branch from "Current branch/tag:" select box
         $('#branch_selector option').filter(function() {
-          return this.value.match('.*\/branches\/' + branch.ref + '.*');
+          return this.value.match('.*\/branches\/' + branch.ref + '$');
         }).remove();
       }, function () { // on error
         $scope.getRefs();
