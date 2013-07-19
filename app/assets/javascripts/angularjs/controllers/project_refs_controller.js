@@ -1,5 +1,6 @@
 RosaABF.controller('ProjectRefsController', ['$scope', '$http', 'ApiProject', function($scope, $http, ApiProject) {
 
+  $scope.singleton = ApiProject.singleton;
   $scope.branches = [];
   $scope.tags     = [];
 
@@ -39,8 +40,13 @@ RosaABF.controller('ProjectRefsController', ['$scope', '$http', 'ApiProject', fu
           }
         }
       });
+      $scope.updateBranchesCount();
     });
 
+  }
+
+  $scope.updateBranchesCount = function() {
+    $scope.singleton.project.branches_count = $scope.branches.length;
   }
 
   $scope.destroy = function(branch) {
@@ -49,6 +55,7 @@ RosaABF.controller('ProjectRefsController', ['$scope', '$http', 'ApiProject', fu
       function() { // on success
         var i = $scope.branches.indexOf(branch);
         if(i != -1) { $scope.branches.splice(i, 1); }
+        $scope.updateBranchesCount();
       }, function () { // on error
         $scope.getRefs();
       }

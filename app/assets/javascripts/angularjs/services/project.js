@@ -23,6 +23,11 @@ RosaABF.factory("ApiProject", ['$resource', function($resource) {
   );
 
   return {
-    resource : ProjectResource
+    resource  : ProjectResource,
+    singleton : {
+      project : {
+        branches_count : 0
+      }
+    }
   }
 }]);
