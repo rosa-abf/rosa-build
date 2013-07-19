@@ -40,11 +40,8 @@ class Projects::Git::TreesController < Projects::Git::BaseController
   end
 
   def destroy
-    if @branch && @project.delete_branch(@branch, current_user)
-      render :nothing => true
-    else
-      render :nothing => true, :status => 422
-    end
+    status = @branch && @project.delete_branch(@branch, current_user) ? 200 : 422
+    render :nothing => true, :status => status
   end
 
   def branches
