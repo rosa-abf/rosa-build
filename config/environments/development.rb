@@ -24,6 +24,8 @@ Rosa::Application.configure do
   # since you don't have to restart the webserver when you make code changes.
   config.cache_classes = false
 
+  config.cache_store = :redis_store, 'redis://localhost:6379/0/cache', { expires_in: 10.minutes }
+
   # Log error messages when you accidentally call methods on nil.
   config.whiny_nils = true
 

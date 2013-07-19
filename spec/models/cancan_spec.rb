@@ -88,7 +88,7 @@ describe CanCan do
     end
 
     [Platform, Repository].each do |model_name|
-      it "should not be able to read #{model_name}" do
+      it "should be able to read #{model_name}" do
         @ability.should be_able_to(:read, model_name)
       end
     end
@@ -228,6 +228,27 @@ describe CanCan do
         end
       end
 
+      context 'through group-member' do
+        before(:each) do
+          @group_member = FactoryGirl.create(:group)
+          @project.relations.create!(:actor_id => @group_member.id, :actor_type => 'Group', :role => 'reader')
+          @group_member_ability = Ability.new(@group_member.owner)
+        end
+
+        it 'should be able to read open project' do
+          @group_member_ability.should be_able_to(:read, @project)
+        end
+
+        it 'should be able to read closed project' do
+          @project.update_attribute :visibility, 'hidden'
+          @group_member_ability.should be_able_to(:read, @project)
+        end
+
+        it 'should include hidden project in list' do
+          @project.update_attribute :visibility, 'hidden'
+         Project.accessible_by(@group_member_ability, :show).where(:projects => {:id => @project.id}).count.should == 1
+        end
+      end
     end
 
     context 'platform relations' do

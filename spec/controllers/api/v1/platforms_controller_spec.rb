@@ -401,6 +401,38 @@ describe Api::V1::PlatformsController do
     it_should_behave_like 'api platform user without global admin rights'
   end
 
+  context 'for member of repository' do
+    before do
+      http_login(@user)
+      repository = FactoryGirl.create(:repository, :platform => @platform)
+      repository.add_member(@user)
+      personal_repository = FactoryGirl.create(:repository, :platform => @personal_platform)
+      personal_repository.add_member(@user)
+    end
+
+    context 'perform index action with type param' do
+      render_views
+      %w(main personal).each do |type|
+        it "ensures that filter by type = #{type} returns true result" do
+          get :index, :format => :json, :type => "#{type}"
+          JSON.parse(response.body)['platforms'].map{ |p| p['platform_type'] }.
+            uniq.should == ["#{type}"]
+        end
+      end
+    end
+
+    it 'should not be able to perform members action for hidden platform' do
+      @platform.update_column(:visibility, 'hidden')
+      get :members, :id => @platform.id, :format => :json
+      response.status.should == 403
+    end
+    it_should_behave_like 'api platform user with reader rights'
+    it_should_behave_like 'api platform user with reader rights for hidden platform'
+    it_should_behave_like 'api platform user without member rights'
+    it_should_behave_like 'api platform user without owner rights'
+    it_should_behave_like 'api platform user without global admin rights'
+  end
+
   context 'for simple user' do
     before do
       http_login(@user)

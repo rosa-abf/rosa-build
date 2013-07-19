@@ -61,9 +61,9 @@ class Ability
 
         can :create, Project
         can :read, Project, :visibility => 'open'
-        can [:read, :archive], Project, :owner_type => 'User', :owner_id => user.id
-        can [:read, :archive], Project, :owner_type => 'Group', :owner_id => user.group_ids
-        can([:read, :membered, :get_id], Project, read_relations_for('projects')) {|project| local_reader? project}
+        can [:read, :archive, :membered, :get_id], Project, :owner_type => 'User', :owner_id => user.id
+        can [:read, :archive, :membered, :get_id], Project, :owner_type => 'Group', :owner_id => user.group_ids
+        can([:read, :archive, :membered, :get_id], Project, read_relations_for('projects')) {|project| local_reader? project}
         can(:write, Project) {|project| local_writer? project} # for grack
         can [:update, :sections, :manage_collaborators, :autocomplete_maintainers, :add_member, :remove_member, :update_member, :members], Project do |project|
           local_admin? project
@@ -81,6 +81,7 @@ class Ability
         can [:read, :log, :related, :everything], BuildList, :project => {:owner_type => 'User', :owner_id => user.id}
         can [:read, :log, :related, :everything], BuildList, :project => {:owner_type => 'Group', :owner_id => user.group_ids}
         can([:read, :log, :everything], BuildList, read_relations_for('build_lists', 'projects')) {|build_list| can? :read, build_list.project}
+
         can(:create, BuildList) {|build_list|
           build_list.project.is_package &&
           can?(:write, build_list.project) &&
@@ -107,7 +108,7 @@ class Ability
         can [:read, :owned, :related, :members], Platform, :owner_type => 'User', :owner_id => user.id
         can [:read, :related, :members], Platform, :owner_type => 'Group', :owner_id => user.group_ids
         can([:read, :related, :members], Platform, read_relations_for('platforms')) {|platform| local_reader? platform}
-        can :related, Platform, :id => user.repositories.pluck(:platform_id)
+        can [:read, :related], Platform, :id => user.repositories.pluck(:platform_id)
         can([:update, :destroy, :change_visibility], Platform) {|platform| owner?(platform) }
         can([:local_admin_manage, :members, :add_member, :remove_member, :remove_members] , Platform) {|platform| owner?(platform) || local_admin?(platform) }
 
@@ -116,6 +117,7 @@ class Ability
 
         can [:read, :projects_list, :projects], Repository, :platform => {:owner_type => 'User', :owner_id => user.id}
         can [:read, :projects_list, :projects], Repository, :platform => {:owner_type => 'Group', :owner_id => user.group_ids}
+        can([:read, :projects_list, :projects], Repository, read_relations_for('repositories')) {|repository| can? :show, repository.platform}
         can([:read, :projects_list, :projects], Repository, read_relations_for('repositories', 'platforms')) {|repository| local_reader? repository.platform}
         can([:create, :edit, :update, :destroy, :projects_list, :projects, :add_project, :remove_project, :regenerate_metadata], Repository) {|repository| local_admin? repository.platform}
         can([:remove_members, :remove_member, :add_member, :signatures], Repository) {|repository| owner?(repository.platform) || local_admin?(repository.platform)}
@@ -192,14 +194,37 @@ class Ability
     end
   end
 
-  # TODO group_ids ??
   def read_relations_for(table, parent = nil)
     key = parent ? "#{parent.singularize}_id" : 'id'
     parent ||= table
+
+    # Removes duplicates from subquery
+    #
+    # ["#{table}.#{key} IN
+    #   (
+    #       SELECT target_id FROM relations
+    #       INNER JOIN #{parent} ON relations.target_type = :target_type AND relations.target_id = #{parent}.id
+    #       WHERE relations.target_type = :target_type AND
+    #       (
+    #         #{parent}.owner_type = 'User' AND #{parent}.owner_id != :user OR
+    #         #{parent}.owner_type = 'Group' AND #{parent}.owner_id NOT IN (:groups)
+    #       ) AND (
+    #         relations.actor_type = 'User' AND relations.actor_id = :user OR
+    #         relations.actor_type = 'Group' AND relations.actor_id IN (:groups)
+    #       )
+        
+    #   )",
+    #   {
+    #     :target_type  => parent.classify,
+    #     :user         => @user.id,
+    #     :groups       => @user.group_ids
+    #   }
+    # ]
+
     ["#{table}.#{key} IN (
-      SELECT target_id FROM relations WHERE relations.target_type = ? AND
-      (relations.actor_type = 'User' AND relations.actor_id = ? OR
-       relations.actor_type = 'Group' AND relations.actor_id IN (?)))", parent.classify, @user, @user.group_ids]
+          SELECT target_id FROM relations WHERE relations.target_type = ? AND
+          (relations.actor_type = 'User' AND relations.actor_id = ? OR
+           relations.actor_type = 'Group' AND relations.actor_id IN (?)))", parent.classify, @user, @user.group_ids]
   end
 
   def local_reader?(target)
