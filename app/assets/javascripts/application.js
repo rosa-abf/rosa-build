@@ -19,6 +19,7 @@
 // require angular-resource
 //= require unstable/angular-resource
 //= require ng-rails-csrf
+//= require angular-i18n
 //= require_tree ./angularjs
 //= require moment
 

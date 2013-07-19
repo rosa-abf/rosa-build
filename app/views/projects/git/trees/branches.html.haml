@@ -8,13 +8,7 @@
 
   %h3= t('layout.projects.branches')
   %p{'ng-show' => '!branches.length'}= t('layout.projects.no_branches')
-  %p{'ng-show' => 'branches.length == 1'}
-    = t('layout.projects.total_branches', :count => '{{branches.length}}', :branches => t('layout.projects.pluralize.branches.branch'))
-  %p{'ng-show' => 'branches.length > 1 && branches.length < 5'}
-    = t('layout.projects.total_branches', :count => '{{branches.length}}', :branches => t('layout.projects.pluralize.branches.branches2'))
-  %p{'ng-show' => 'branches.length > 4'}
-    = t('layout.projects.total_branches', :count => '{{branches.length}}', :branches => t('layout.projects.pluralize.branches.branches'))
-
+  %p{'ng-show' => 'branches.length > 0'} {{'total_branches' | i18n:'plural':branches.length}}
   .both
   %br
 

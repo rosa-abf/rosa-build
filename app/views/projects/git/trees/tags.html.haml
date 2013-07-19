@@ -7,12 +7,7 @@
 
   %h3= t('layout.projects.tags')
   %p{'ng-show' => '!tags.length'}= t('layout.projects.no_tags')
-  %p{'ng-show' => 'tags.length == 1'}
-    = t('layout.projects.total_tags', :count => '{{tags.length}}', :tags => t('layout.projects.pluralize.tags.tag'))
-  %p{'ng-show' => 'tags.length > 1 && tags.length < 5'}
-    = t('layout.projects.total_tags', :count => '{{tags.length}}', :tags => t('layout.projects.pluralize.tags.tags2'))
-  %p{'ng-show' => 'tags.length > 4'}
-    = t('layout.projects.total_tags', :count => '{{tags.length}}', :tags => t('layout.projects.pluralize.tags.tags'))
+  %p{'ng-show' => 'tags.length > 0'} {{'total_tags' | i18n:'plural':tags.length}}
   .both
   %br
 

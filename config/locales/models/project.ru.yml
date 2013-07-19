@@ -2,27 +2,14 @@ ru:
   layout:
     projects:
       branches: Ветки
-
-      pluralize:
-        branches:
-          branch: ветка
-          branches: веток
-          branches2: ветки
-        tags:
-          tag: тег
-          tags: тегов
-          tags2: тега
-
       delete_branch: Удалить ветку
       restore_branch: Востановить ветку
-      total_branches: Всего %{count} %{branches}
       no_branches: Нет веток
       base_branch: Текущая ветка
       compare: Сравнить
       browse_code: Просмотреть код
       source_code: Исходный код (%{type})
       tags: Теги
-      total_tags: Всего %{count} %{tags}
       no_tags: Нет тегов
       add: Добавить
       public_projects_list: Список публичных проектов
