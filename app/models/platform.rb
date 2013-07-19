@@ -177,6 +177,35 @@ class Platform < ActiveRecord::Base
     EventLog.current_controller.request.host_with_port rescue ::Rosa::Application.config.action_mailer.default_url_options[:host]
   end
 
+  # Checks access rights to platform and caching for 1 day.
+  def self.allowed?(path, request)
+    platform_name = path.gsub(/^[\/]+/, '')
+                        .match(/^(#{NAME_PATTERN}\/|#{NAME_PATTERN}$)/)
+
+    return true unless platform_name
+    platform_name = platform_name[0].gsub(/\//, '')
+
+    if request.authorization.present?
+      token, pass = *ActionController::HttpAuthentication::Basic::user_name_and_password(request)
+    end
+
+    Rails.cache.fetch([platform_name, token, :platform_allowed], :expires_in => 2.minutes) do
+      platform = Platform.find_by_name platform_name
+      next false  unless platform
+      next true   unless platform.hidden?
+      next false  unless token
+      next true   if platform.tokens.by_active.where(:authentication_token => token).exists?
+
+      user = User.find_by_authentication_token token
+      current_ability = Ability.new(user)
+      if user && current_ability.can?(:show, platform)
+        true
+      else
+        false
+      end
+    end
+  end
+
   protected
 
     def create_directory
