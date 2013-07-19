@@ -7,7 +7,7 @@
 
   %h3= t('layout.projects.tags')
   %p{'ng-show' => '!tags.length'}= t('layout.projects.no_tags')
-  %p{'ng-show' => 'tags.length > 0'} {{'total_tags' | i18n:'plural':tags.length}}
+  %p{'ng-show' => 'tags.length > 0'} {{'project.total_tags' | i18n:'plural':tags.length}}
   .both
   %br
 

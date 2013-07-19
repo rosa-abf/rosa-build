@@ -45,8 +45,6 @@ RosaABF.controller('ProjectRefsController', ['$scope', '$http', 'ApiProject', fu
 
   }
 
-  $scope
-
   $scope.updateBranchesCount = function() {
     $scope.singleton.project.branches_count = $scope.branches.length;
   }
