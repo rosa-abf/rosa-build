@@ -55,7 +55,12 @@ RosaABF.controller('ProjectRefsController', ['$scope', '$http', 'ApiProject', fu
       function() { // on success
         var i = $scope.branches.indexOf(branch);
         if(i != -1) { $scope.branches.splice(i, 1); }
+
         $scope.updateBranchesCount();
+        // Remove branch from "Current branch/tag:" select box
+        $('#branch_selector option').filter(function() {
+          return this.value.match('.*\/branches\/' + branch.ref + '.*');
+        }).remove();
       }, function () { // on error
         $scope.getRefs();
       }
