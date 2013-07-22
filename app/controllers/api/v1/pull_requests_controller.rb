@@ -39,6 +39,7 @@ class Api::V1::PullRequestsController < Api::V1::BaseController
   end
 
   def show
+    redirect_to api_v1_project_issue_path(@project.id, @issue.serial_id) if @pull.nil?
   end
 
   def create

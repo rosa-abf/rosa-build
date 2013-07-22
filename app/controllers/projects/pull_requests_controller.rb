@@ -79,7 +79,11 @@ class Projects::PullRequestsController < Projects::BaseController
   end
 
   def show
-    load_diff_commits_data
+    if @pull.nil?
+      redirect_to project_issue_path(@project, @issue)
+    else
+      load_diff_commits_data
+    end
   end
 
   def index(status = 200)
