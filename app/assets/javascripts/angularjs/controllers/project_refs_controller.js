@@ -7,7 +7,6 @@ RosaABF.controller('ProjectRefsController', ['$scope', '$http', 'ApiProject', fu
   $scope.project_id       = null;
   $scope.current_ref      = null;
   $scope.project_resource = null;
-  $scope.new_branch       = false;
 
   $scope.init = function(project_id, ref, locale) {
     $scope.project_id = project_id;
