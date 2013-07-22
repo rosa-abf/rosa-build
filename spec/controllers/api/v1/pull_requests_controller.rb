@@ -38,6 +38,8 @@ describe Api::V1::PullRequestsController do
 
     @update_params = {:pull_request => {:title => 'new title'},
                       :project_id => @project.id, :id => @pull.serial_id, :format => :json}
+
+    @issue = FactoryGirl.create(:issue, :project => @project)
   end
 
   context 'read and accessible abilities' do
@@ -109,6 +111,16 @@ describe Api::V1::PullRequestsController do
           get action, :project_id => @hidden_project.id, :id => @hidden_pull.serial_id, :format => :json
           response.should_not be_success
         end
+      end
+
+      it 'should return 404' do
+        get :show, :project_id => @project.id, :id => (@pull.serial_id+10), :format => :json
+        response.status.should == 404
+      end
+
+      it 'should redirect to issue page' do
+        get :show, :project_id => @project.id, :id => @issue.serial_id, :format => :json
+        response.should redirect_to(api_v1_project_issue_path(@project.id, @issue.serial_id))
       end
     end
 
