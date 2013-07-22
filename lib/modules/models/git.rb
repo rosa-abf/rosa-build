@@ -34,23 +34,24 @@ module Modules
       end
 
       # TODO: return something else instead of empty string on success and error
-      def restore_branch(branch, sha)
+      def restore_branch(branch, sha, user)
+        return false if branch.blank? || sha.blank?
         repo.git.native(:branch, {}, branch, sha)
+        Resque.enqueue(GitHook, owner.uname, name, sha, GitHook::ZERO, "refs/heads/#{branch}", 'commit', "user-#{user.id}", nil)
         return true
       end
 
-      def create_branch(new_ref, from_ref)
-        return false if new_ref.blank? || from_ref.blank? ||
-                        repo.branches.none?{|b| b.name == from_ref} ||
-                        repo.branches.one?{|b| b.name == new_ref}
-        restore_branch new_ref, from_ref
+      def create_branch(new_ref, from_ref, user)
+        branch = repo.branches.detect{|b| b.name == from_ref}
+        return false if !branch || repo.branches.one?{|b| b.name == new_ref}
+        restore_branch new_ref, branch.commit.id, user
       end
 
       def delete_branch(branch, user)
         return false if default_branch == branch.name
         message = repo.git.native(:branch, {}, '-D', branch.name)
         if message.present?
-          Resque.enqueue(GitHook,owner.uname, name, GitHook::ZERO, branch.commit.id, "refs/heads/#{branch.name}", 'commit', "user-#{user.id}", message)
+          Resque.enqueue(GitHook, owner.uname, name, GitHook::ZERO, branch.commit.id, "refs/heads/#{branch.name}", 'commit', "user-#{user.id}", message)
         end
         return message.present?
       end

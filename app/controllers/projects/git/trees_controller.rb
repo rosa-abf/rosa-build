@@ -35,12 +35,12 @@ class Projects::Git::TreesController < Projects::Git::BaseController
   end
 
   def restore_branch
-    @project.restore_branch @treeish, params[:sha] if @treeish.present? && params[:sha].present?
-    render :nothing => true
+    status = @project.restore_branch(@treeish, params[:sha], current_user) ? 200 : 422
+    render :nothing => true, :status => status
   end
 
   def create
-    status = @project.create_branch(params[:new_ref], params[:from_ref]) ? 200 : 422
+    status = @project.create_branch(params[:new_ref], params[:from_ref], current_user) ? 200 : 422
     render :nothing => true, :status => status
   end
 
