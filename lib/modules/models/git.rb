@@ -35,7 +35,7 @@ module Modules
 
       # TODO: return something else instead of empty string on success and error
       def restore_branch(branch, sha, user)
-        return false if branch.blank? || sha.blank?
+        return false if branch.blank? || sha.blank? || repo.commit(sha).nil?
         repo.git.native(:branch, {}, branch, sha)
         Resque.enqueue(GitHook, owner.uname, name, sha, GitHook::ZERO, "refs/heads/#{branch}", 'commit', "user-#{user.id}", nil)
         return true
