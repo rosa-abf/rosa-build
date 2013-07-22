@@ -142,17 +142,17 @@ describe Api::V1::PullRequestsController do
       end
 
       %w(commits files).each do |action|
-        it "can show pull request #{action} in project" do
+        it "can show pull request #{action} in project", :anonymous_access => true do
           get action, :project_id => @project.id, :id => @pull.serial_id, :format => :json
           response.should be_success
         end
 
-        it "should render right template for commits action" do
+        it "should render right template for commits action", :anonymous_access => true do
           get action, :project_id => @project.id, :id => @pull.serial_id, :format => :json
           response.should render_template("api/v1/pull_requests/#{action}")
         end
 
-        it "can't show pull request #{action} in hidden project" do
+        it "can't show pull request #{action} in hidden project", :anonymous_access => true do
           get action, :project_id => @hidden_project.id, :id => @hidden_pull.serial_id, :format => :json
           response.should_not be_success
         end
