@@ -33,6 +33,20 @@ module Modules
         repo.tags.map(&:name) + repo.branches.map(&:name)
       end
 
+      # TODO: return something else instead of empty string on success and error
+      def restore_branch(branch, sha)
+        repo.git.native(:branch, {}, branch, sha)
+      end
+
+      def delete_branch(branch, user)
+        return false if default_branch == branch.name
+        message = repo.git.native(:branch, {}, '-D', branch.name)
+        if message.present?
+          Resque.enqueue(GitHook,owner.uname, name, GitHook::ZERO, branch.commit.id, "refs/heads/#{branch.name}", 'commit', "user-#{user.id}", message)
+        end
+        return message.present?
+      end
+
       def update_file(path, data, options = {})
         head = options[:head].to_s || default_branch
         actor = get_actor(options[:actor])

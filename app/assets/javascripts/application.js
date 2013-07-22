@@ -13,6 +13,16 @@
 //= require backbone_rails_sync
 //= require backbone_datalink
 //= require backbone/rosa
+
+// require angular
+//= require unstable/angular
+// require angular-resource
+//= require unstable/angular-resource
+//= require ng-rails-csrf
+//= require angular-i18n
+//= require_tree ./angularjs
+//= require moment
+
 //= require_self
 
 function disableNotifierCbx(global_cbx) {

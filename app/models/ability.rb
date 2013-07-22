@@ -15,7 +15,7 @@ class Ability
     # Shared rights between guests and registered users
     can [:show, :archive], Project, :visibility => 'open'
     can :get_id,  Project, :visibility => 'open' # api
-    can :archive, Project, :visibility => 'open'
+    can(:refs_list, Project) {|project| can? :show, project}
     can :read, Issue, :project => {:visibility => 'open'}
     can [:read, :commits, :files], PullRequest, :to_project => {:visibility => 'open'}
     can :search, BuildList
@@ -74,7 +74,6 @@ class Ability
         can(:destroy, Project) {|project| project.owner_type == 'Group' and project.owner.actors.exists?(:actor_type => 'User', :actor_id => user.id, :role => 'admin')}
         can :remove_user, Project
         can :preview, Project
-        can(:refs_list, Project) {|project| can? :read, project}
 
         can([:read, :create, :edit, :destroy, :update], Hook) {|hook| can?(:edit, hook.project)}
 

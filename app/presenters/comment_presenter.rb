@@ -109,7 +109,7 @@ class CommentPresenter < ApplicationPresenter
       statuses = {'open' => 'success', 'closed' => 'important'}
       content_tag :span, t("layout.issues.status.#{@referenced_issue.status}"), :class => "state label-bootstrap label-#{statuses[@referenced_issue.status]}"
     else
-      pull_status_label @referenced_issue
+      pull_status_label @referenced_issue.status
     end.html_safe
   end
 end

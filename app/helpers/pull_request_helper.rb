@@ -8,9 +8,9 @@ module PullRequestHelper
     (common_comments + pull_comments + commits).sort_by{ |c| c[0] }.map{ |c| c[1] }
   end
 
-  def pull_status_label pull
+  def pull_status_label pull_status, options = {}
     statuses = {'ready' => 'success', 'closed' => 'important', 'merged' => 'important', 'blocked' => 'warning'}
-    content_tag :span, t("projects.pull_requests.statuses.#{pull.status}"), :class => "state label-bootstrap label-#{statuses[pull.status]}"
+    content_tag :span, t("projects.pull_requests.statuses.#{pull_status}"), options.merge(:class => "state label-bootstrap label-#{statuses[pull_status]}")
   end
 
   def pull_status pull

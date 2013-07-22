@@ -2,7 +2,7 @@
 class Api::V1::ProjectsController < Api::V1::BaseController
 
   before_filter :authenticate_user!
-  skip_before_filter :authenticate_user!, :only => [:get_id, :show, :refs] if APP_CONFIG['anonymous_access']
+  skip_before_filter :authenticate_user!, :only => [:get_id, :show, :refs_list] if APP_CONFIG['anonymous_access']
   
   load_and_authorize_resource :project
 
@@ -23,6 +23,8 @@ class Api::V1::ProjectsController < Api::V1::BaseController
   end
 
   def refs_list
+    @refs = @project.repo.branches.sort_by(&:name) +
+      @project.repo.tags.select{ |t| t.commit }.sort_by(&:name).reverse
   end
 
   def update

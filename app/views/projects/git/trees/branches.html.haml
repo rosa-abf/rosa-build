@@ -1,0 +1,34 @@
+-set_meta_tags :title => "#{title_object @project}"
+
+= render 'submenu'
+= render 'repo_block', :project => @project
+
+%div{'ng-controller' => 'ProjectRefsController',
+  'ng-init' => "init('#{@project.id}','#{@branch.try(:name)}')"}
+
+  %h3= t('layout.projects.branches')
+  %p{'ng-show' => '!branches.length'}= t('layout.projects.no_branches')
+  %p{'ng-show' => 'branches.length > 0'} {{'project.total_branches' | i18n:'plural':branches.length}}
+  .both
+  %br
+
+  %input.mediumheight{'ng-model' => 'query.ref'}
+  .both
+
+  %table#project-branches
+    %tbody
+      %tr{'ng-repeat' => 'branch in branches | filter:query', 'ng-class' => '{base: branch.ref == current_ref}'}
+        %td.name
+          %a{'ng-href' => '{{branch.path(project)}}' } {{branch.ref}}
+        %td.actions
+          %ul.actions
+            %li.text{'ng-show' => 'branch.ref == current_ref'}
+              = t('layout.projects.base_branch')
+            - if can?(:write, @project)
+              %li{'ng-hide' => 'branch.ref == current_ref'}
+                %a{:href => '', 'ng-click' => 'destroy(branch)'}
+                  = t('layout.projects.delete_branch')
+            %li{'ng-hide' => 'branch.ref == current_ref'}
+              %a{'ng-href' => '{{branch.diff_path(project, current_ref)}}' }
+                = t('layout.projects.compare')
+

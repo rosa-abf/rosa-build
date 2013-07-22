@@ -49,6 +49,10 @@ class PullRequest < ActiveRecord::Base
     end
   end
 
+  def cross_pull?
+    from_project_id != to_project_id
+  end
+
   def check(do_transaction = true)
     if do_transaction && !valid?
       issue.set_close nil

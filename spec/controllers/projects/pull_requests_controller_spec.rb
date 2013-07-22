@@ -97,11 +97,6 @@ shared_examples_for 'user with pull request update rights' do
     response.should redirect_to(project_pull_request_path(@pull.to_project, @pull))
   end
 
-  it 'should be able to perform merge action' do
-    put :merge, @update_params
-    response.should redirect_to(project_pull_request_path(@pull.to_project, @pull))
-  end
-
   let(:pull) { @project.pull_requests.find(@pull) }
   it 'should update pull request status' do
     put :update, @update_params
@@ -132,11 +127,6 @@ end
 shared_examples_for 'user without pull request update rights' do
   it 'should not be able to perform update action' do
     put :update, @update_params
-    response.should redirect_to(controller.current_user ? forbidden_path : new_user_session_path)
-  end
-
-  it 'should not be able to perform merge action' do
-    put :merge, @update_params
     response.should redirect_to(controller.current_user ? forbidden_path : new_user_session_path)
   end
 
