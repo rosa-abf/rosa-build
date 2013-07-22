@@ -31,7 +31,7 @@
                   = t('layout.projects.new_branch')
               %li{'ng-show' => 'branch.ui_container'}
                 %form{'ng-submit' => 'create(branch)'}
-                  %input{:name => 'new_ref', 'ng-model' => 'branch.new_ref'}
+                  %input{'ng-model' => 'branch.new_ref'}
                   %input{:type => 'submit', :value =>t('layout.create')}
                   %a{:href => '', 'ng-click' => 'branch.ui_container = false'}
                     = t('layout.cancel')
