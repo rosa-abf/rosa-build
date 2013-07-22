@@ -11,6 +11,7 @@ var ProjectRef = function(atts) {
 
   //with some logic...
   self.isTag = self.object.type == 'tag';
+  self.ui_container = false;
 
   self.path = function(project) {
     return '/' + project.fullname + '/tree/' + self.ref;

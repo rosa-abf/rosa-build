@@ -18,6 +18,11 @@ RosaABF.factory("ApiProject", ['$resource', function($resource) {
         url:    '/:owner/:project/branches/:ref', // ?sha=<sha>
         method: 'PUT',
         isArray : false
+      },
+      create_branch: {
+        url:    '/:owner/:project/branches', // ?new_ref=<new_ref>&from_ref=<from_ref>
+        method: 'POST',
+        isArray : false
       }
     }
   );

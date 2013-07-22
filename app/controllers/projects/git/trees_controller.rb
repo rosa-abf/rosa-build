@@ -4,8 +4,8 @@ class Projects::Git::TreesController < Projects::Git::BaseController
   skip_before_filter :set_branch_and_tree, :set_treeish_and_path, :only => :archive
   before_filter lambda { raise Grit::NoSuchPathError if params[:treeish] != @branch.try(:name) }, :only => [:branch, :destroy]
 
-  skip_authorize_resource :project,                       :only => [:destroy, :restore_branch]
-  before_filter lambda { authorize!(:write, @project) },  :only => [:destroy, :restore_branch]
+  skip_authorize_resource :project,                       :only => [:destroy, :restore_branch, :create]
+  before_filter lambda { authorize!(:write, @project) },  :only => [:destroy, :restore_branch, :create]
 
   def show
     render('empty') and return if @project.is_empty?
@@ -37,6 +37,11 @@ class Projects::Git::TreesController < Projects::Git::BaseController
   def restore_branch
     @project.restore_branch @treeish, params[:sha] if @treeish.present? && params[:sha].present?
     render :nothing => true
+  end
+
+  def create
+    status = @project.create_branch(params[:new_ref], params[:from_ref]) ? 200 : 422
+    render :nothing => true, :status => status
   end
 
   def destroy

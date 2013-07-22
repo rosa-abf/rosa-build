@@ -28,6 +28,7 @@ en:
       new_build_list: New build
       confirm_delete: Are you sure you want to delete this project?
       new: New project
+      new_branch: New branch
       location: Location
       git_repo_location: Path to git repo
       current_project_header: Current project

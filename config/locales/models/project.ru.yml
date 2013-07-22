@@ -28,6 +28,7 @@ ru:
       new_build_list: Новая сборка
       confirm_delete: Вы уверены, что хотите удалить этот проект?
       new: Новый проект
+      new_branch: Новая ветка
       location: Расположение
       git_repo_location: Путь к git-репозиторию
       current_project_header: Текущий проект

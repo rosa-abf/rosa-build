@@ -75,7 +75,10 @@ header menu ul li a {
     td.actions ul {
         float: right;
     }
-    .text { font-size: 12px; }
+    .text {
+        font-size: 12px;
+        padding-top: 2px;
+    }
     td {
         border-bottom: 1px solid #a9c6dd;
         padding: 0 20px;

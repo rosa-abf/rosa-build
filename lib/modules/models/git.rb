@@ -36,6 +36,14 @@ module Modules
       # TODO: return something else instead of empty string on success and error
       def restore_branch(branch, sha)
         repo.git.native(:branch, {}, branch, sha)
+        return true
+      end
+
+      def create_branch(new_ref, from_ref)
+        return false if new_ref.blank? || from_ref.blank? ||
+                        repo.branches.none?{|b| b.name == from_ref} ||
+                        repo.branches.one?{|b| b.name == new_ref}
+        restore_branch new_ref, from_ref
       end
 
       def delete_branch(branch, user)
