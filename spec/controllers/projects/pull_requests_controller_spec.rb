@@ -211,8 +211,8 @@ describe Projects::PullRequestsController do
     it_should_behave_like 'pull request when project with issues turned off'
 
     it 'should return 404' do
-      get :show, :owner_name => @project.owner.uname, :project_name => @project.name, :id => (@pull.serial_id+10)
-      response.status.should == 404
+      get :show, :owner_name => @project.owner.uname, :project_name => @project.name, :id => 999999
+      render_template(:file => "#{Rails.root}/public/404.html")
     end
 
     it 'should redirect to issue page' do

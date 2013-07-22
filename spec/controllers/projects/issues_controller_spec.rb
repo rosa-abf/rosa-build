@@ -221,8 +221,8 @@ describe Projects::IssuesController do
     # end
 
     it 'should return 404' do
-      get :show, :owner_name => @project.owner.uname, :project_name => @project.name, :id => (@issue.serial_id+10)
-      response.status.should == 404
+      get :show, :owner_name => @project.owner.uname, :project_name => @project.name, :id => 999999
+      render_template(:file => "#{Rails.root}/public/404.html")
     end
 
     it 'should redirect to pull request page' do

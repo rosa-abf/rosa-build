@@ -114,7 +114,7 @@ describe Api::V1::PullRequestsController do
       end
 
       it 'should return 404' do
-        get :show, :project_id => @project.id, :id => (@pull.serial_id+10), :format => :json
+        get :show, :project_id => @project.id, :id => 999999, :format => :json
         response.status.should == 404
       end
 

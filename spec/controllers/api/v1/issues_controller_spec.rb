@@ -88,6 +88,16 @@ describe Api::V1::IssuesController do
         get :user_index, :format => :json
         response.should render_template('api/v1/issues/index')
       end
+
+      it 'should return 404' do
+        get :show, :project_id => @project.id, :id => 999999, :format => :json
+        response.status.should == 404
+      end
+
+      it 'should redirect to pull request page' do
+        get :show, :project_id => @project.id, :id => @pull.serial_id, :format => :json
+        response.should redirect_to(api_v1_project_pull_request_path(@project.id, @pull.serial_id))
+      end
     end
 
     context 'for anonymous user' do
@@ -105,16 +115,6 @@ describe Api::V1::IssuesController do
         get :all_index, :filter => 'all', :format => :json
         response.status.should == 401
       end
-    end
-
-    it 'should return 404' do
-      get :show, :project_id => @project.id, :id => (@issue.serial_id + 10), :format => :json
-      response.status.should == 404
-    end
-
-    it 'should redirect to pull request page' do
-      get :show, :project_id => @project.id, :id => @pull.serial_id, :format => :json
-      response.should redirect_to(api_v1_project_pull_request_path(@project.id, @pull.serial_id))
     end
   end
 
