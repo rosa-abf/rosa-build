@@ -21,13 +21,23 @@
           %a{'ng-href' => '{{branch.path(project)}}' } {{branch.ref}}
         %td.actions
           %ul.actions
-            %li.text{'ng-show' => 'branch.ref == current_ref'}
-              = t('layout.projects.base_branch')
             - if can?(:write, @project)
-              %li{'ng-hide' => 'branch.ref == current_ref'}
+              %li{'ng-hide' => 'branch.ref == current_ref || branch.ui_container'}
                 %a{:href => '', 'ng-click' => 'destroy(branch)'}
                   = t('layout.projects.delete_branch')
-            %li{'ng-hide' => 'branch.ref == current_ref'}
+              %li{'ng-hide' => 'branch.ui_container'}
+                %a{:href => '', 'ng-click' => 'branch.ui_container = true'}
+                  = t('layout.projects.new_branch')
+              %li{'ng-show' => 'branch.ui_container'}
+                %form{'ng-submit' => 'create(branch)'}
+                  %input{'ng-model' => 'branch.new_ref'}
+                  %input{:type => 'submit', :value =>t('layout.create')}
+                  %a{:href => '', 'ng-click' => 'branch.ui_container = false'}
+                    = t('layout.cancel')
+            %li{'ng-hide' => 'branch.ref == current_ref || branch.ui_container'}
               %a{'ng-href' => '{{branch.diff_path(project, current_ref)}}' }
                 = t('layout.projects.compare')
+            %li.text{'ng-show' => 'branch.ref == current_ref && !branch.ui_container'}
+              = t('layout.projects.base_branch')
+
 

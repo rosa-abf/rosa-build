@@ -117,21 +117,21 @@ describe Project do
       end
     end
 
-    context '#restore_branch' do
+    context '#create_branch' do
       before do
         project.delete_branch(branch, user)
       end
 
-      xit 'ensures that returns true on success' do
-        project.restore_branch(branch.name, branch.commit.id).should be_true
+      it 'ensures that returns true on success' do
+        project.create_branch(branch.name, branch.commit.id, user).should be_true
       end
 
-      it 'ensures that branch has been restored' do
-        lambda { project.restore_branch(branch.name, branch.commit.id) }.should change{ project.repo.branches.count }.by(1)
+      it 'ensures that branch has been created' do
+        lambda { project.create_branch(branch.name, branch.commit.id, user) }.should change{ project.repo.branches.count }.by(1)
       end
 
-      xit 'ensures that returns false on restore wrong branch' do
-        project.restore_branch(branch.name, GitHook::ZERO).should be_false
+      it 'ensures that returns false on create wrong branch' do
+        project.create_branch(branch.name, GitHook::ZERO, user).should be_false
       end
     end
 

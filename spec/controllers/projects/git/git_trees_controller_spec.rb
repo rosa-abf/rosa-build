@@ -47,6 +47,11 @@ describe Projects::Git::TreesController do
       response.should_not be_success
     end
 
+    it 'should not be able to perform create action' do
+      post :create, @params.merge(:treeish => '', :from_ref => 'master', :new_ref => 'master-1')
+      response.should_not be_success
+    end
+
   end
 
   context 'for other user' do
@@ -80,6 +85,11 @@ describe Projects::Git::TreesController do
       response.should_not be_success
     end
 
+    it 'should not be able to perform create action' do
+      post :create, @params.merge(:treeish => '', :from_ref => 'master', :new_ref => 'master-1')
+      response.should_not be_success
+    end
+
     [:tags, :branches].each do |action|
       it "should be able to perform #{action} action" do
         get action, @params.merge(:treeish => 'master')
@@ -106,7 +116,12 @@ describe Projects::Git::TreesController do
     end
 
     it 'should be able to perform restore_branch action' do
-      put :restore_branch, @params.merge(:treeish => 'conflicts')
+      put :restore_branch, @params.merge(:treeish => 'master-1', :sha => 'master')
+      response.should be_success
+    end
+
+    it 'should be able to perform create action' do
+      post :create, @params.merge(:treeish => '', :from_ref => 'master', :new_ref => 'master-1')
       response.should be_success
     end
   end

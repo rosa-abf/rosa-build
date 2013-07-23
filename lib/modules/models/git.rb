@@ -33,16 +33,22 @@ module Modules
         repo.tags.map(&:name) + repo.branches.map(&:name)
       end
 
-      # TODO: return something else instead of empty string on success and error
-      def restore_branch(branch, sha)
-        repo.git.native(:branch, {}, branch, sha)
+      def create_branch(new_ref, from_ref, user)
+        return false if new_ref.blank? || from_ref.blank? || !(from_commit = repo.commit(from_ref))
+        status, out, err = repo.git.native(:branch, {:process_info => true}, new_ref, from_commit.id)
+        if status == 0
+          Resque.enqueue(GitHook, owner.uname, name, from_commit.id, GitHook::ZERO, "refs/heads/#{new_ref}", 'commit', "user-#{user.id}", nil)
+          return true
+        end
+        return false
+
       end
 
       def delete_branch(branch, user)
         return false if default_branch == branch.name
         message = repo.git.native(:branch, {}, '-D', branch.name)
         if message.present?
-          Resque.enqueue(GitHook,owner.uname, name, GitHook::ZERO, branch.commit.id, "refs/heads/#{branch.name}", 'commit', "user-#{user.id}", message)
+          Resque.enqueue(GitHook, owner.uname, name, GitHook::ZERO, branch.commit.id, "refs/heads/#{branch.name}", 'commit', "user-#{user.id}", message)
         end
         return message.present?
       end

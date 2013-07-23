@@ -43,6 +43,22 @@ RosaABF.controller('ProjectBranchesController', ['$scope', '$http', 'ApiProject'
     $scope.singleton.project.branches_count = $scope.branches.length;
   }
 
+  $scope.create = function(branch) {
+    branch.ui_container = false;
+    $scope.project_resource.$create_branch(
+      {
+        owner:    $scope.project.owner.uname,
+        project:  $scope.project.name,
+        from_ref: branch.ref,
+        new_ref:  branch.new_ref
+      }, function() { // on success
+        $scope.getRefs();
+      }, function () { // on error
+        $scope.getRefs();
+      }
+    );
+  }
+
   $scope.destroy = function(branch) {
     $scope.project_resource.$delete_branch(
       {owner: $scope.project.owner.uname, project: $scope.project.name, ref: branch.ref},
