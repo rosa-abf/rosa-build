@@ -7,8 +7,8 @@ describe Api::V1::IssuesController do
     stub_redis
     any_instance_of(Project, :versions => ['v1.0', 'v2.0'])
 
-    @issue = FactoryGirl.create(:issue)
-    @project = @issue.project
+    @project = FactoryGirl.create(:project_with_commit)
+    @issue = FactoryGirl.create(:issue, :project => @project)
 
     @membered_issue = FactoryGirl.create(:issue)
     @membered_project = @membered_issue.project
@@ -27,6 +27,12 @@ describe Api::V1::IssuesController do
 
     @create_params = {:issue => {:title => 'title', :body => 'body'}, :project_id => @project.id, :format => :json}
     @update_params = {:issue => {:title => 'new title'}, :project_id => @project.id, :id => @issue.serial_id, :format => :json}
+
+    @pull = @project.pull_requests.new :issue_attributes => {:title => 'test', :body => 'testing'}
+    @pull.issue.user, @pull.issue.project = @project.owner, @pull.to_project
+    @pull.to_ref = 'master'
+    @pull.from_project, @pull.from_ref = @project, 'non_conflicts'
+    @pull.save
   end
 
   context 'read and accessible abilities' do
@@ -81,6 +87,16 @@ describe Api::V1::IssuesController do
       it 'should render right template for user index action' do
         get :user_index, :format => :json
         response.should render_template('api/v1/issues/index')
+      end
+
+      it 'should return 404' do
+        get :show, :project_id => @project.id, :id => 999999, :format => :json
+        response.status.should == 404
+      end
+
+      it 'should redirect to pull request page' do
+        get :show, :project_id => @project.id, :id => @pull.serial_id, :format => :json
+        response.should redirect_to(api_v1_project_pull_request_path(@project.id, @pull.serial_id))
       end
     end
 
