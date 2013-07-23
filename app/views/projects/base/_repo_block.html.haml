@@ -42,7 +42,7 @@
       %li{:class => ('selected' if act == :index && contr == :commits )}
         = link_to t('project_menu.commits'), commits_path(project, treeish)
       %li{:class => ('selected' if act == :branches && contr == :trees )}
-        = link_to t('project_menu.branches', :count => '{{singleton.project.branches_count}}'), branches_path(project, branch)
+        = link_to t('project_menu.branches', :count => '{{singleton.project.branches_count}}'), branch_path(project, branch)
       %li.tags{:class => ('selected' if act == :tags && contr == :trees )}
         = link_to t('project_menu.tags', :count => project.repo.tags.count), tags_path(project)
 .both
