@@ -5,7 +5,7 @@ shared_context "issues controller" do
   before do
     stub_symlink_methods
 
-    @project = FactoryGirl.create(:project)
+    @project = FactoryGirl.create(:project_with_commit)
     @issue_user = FactoryGirl.create(:user)
 
     @issue = FactoryGirl.create(:issue, :project_id => @project.id, :assignee_id => @issue_user.id)
@@ -34,6 +34,11 @@ shared_context "issues controller" do
       }
     }
 
+    @pull = @project.pull_requests.new :issue_attributes => {:title => 'test', :body => 'testing'}
+    @pull.issue.user, @pull.issue.project = @project.owner, @pull.to_project
+    @pull.to_ref = 'master'
+    @pull.from_project, @pull.from_ref = @project, 'non_conflicts'
+    @pull.save
   end
 
 end
@@ -214,6 +219,16 @@ describe Projects::IssuesController do
     # it 'should not create issue object into db' do
     #   lambda{ post :create, @create_params }.should change{ Issue.count }.by(0)
     # end
+
+    it 'should return 404' do
+      get :show, :owner_name => @project.owner.uname, :project_name => @project.name, :id => 999999
+      render_template(:file => "#{Rails.root}/public/404.html")
+    end
+
+    it 'should redirect to pull request page' do
+      get :show, :owner_name => @project.owner.uname, :project_name => @project.name, :id => @pull.serial_id
+      response.should redirect_to(project_pull_request_path(@project, @pull))
+    end
   end
 
   context 'for project writer user' do

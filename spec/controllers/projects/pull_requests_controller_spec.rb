@@ -31,6 +31,8 @@ shared_context "pull request controller" do
 
     @user = FactoryGirl.create(:user)
     set_session_for(@user)
+
+    @issue = FactoryGirl.create(:issue, :project => @project)
   end
 end
 
@@ -207,6 +209,16 @@ describe Projects::PullRequestsController do
     it_should_behave_like 'pull request user with project reader rights'
     it_should_behave_like 'user without pull request update rights'
     it_should_behave_like 'pull request when project with issues turned off'
+
+    it 'should return 404' do
+      get :show, :owner_name => @project.owner.uname, :project_name => @project.name, :id => 999999
+      render_template(:file => "#{Rails.root}/public/404.html")
+    end
+
+    it 'should redirect to issue page' do
+      get :show, :owner_name => @project.owner.uname, :project_name => @project.name, :id => @issue.serial_id
+      response.should redirect_to(project_issue_path(@project, @issue))
+    end
   end
 
   context 'for project writer user' do

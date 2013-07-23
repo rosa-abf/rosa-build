@@ -39,6 +39,7 @@ class Api::V1::PullRequestsController < Api::V1::BaseController
   end
 
   def show
+    redirect_to api_v1_project_issue_path(@project.id, @issue.serial_id) if @pull.nil?
   end
 
   def create
@@ -73,7 +74,7 @@ class Api::V1::PullRequestsController < Api::V1::BaseController
 
     if pull_params.present?
       attrs = pull_params.slice(:title, :body)
-      attrs.merge(:assignee_id => pull_params[:assignee_id]) if can?(:write, @project)
+      attrs.merge!(:assignee_id => pull_params[:assignee_id]) if can?(:write, @project)
 
       if (action = pull_params[:status]) && %w(close reopen).include?(pull_params[:status])
         if @pull.send("can_#{action}?")
