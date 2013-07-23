@@ -52,9 +52,9 @@ RosaABF.controller('ProjectBranchesController', ['$scope', '$http', 'ApiProject'
         from_ref: branch.ref,
         new_ref:  branch.new_ref
       }, function() { // on success
-        $scope.getRefs();
+        $scope.getBranches();
       }, function () { // on error
-        $scope.getRefs();
+        $scope.getBranches();
       }
     );
   }
