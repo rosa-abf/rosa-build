@@ -335,6 +335,7 @@ Rosa::Application.routes.draw do
           get '/tags' => "git/trees#tags", :as => :tags
           # Branches
           get '/branches/:treeish' => "git/trees#branches", :as => :branches
+          get '/branches' => "git/trees#branches", :as => :branches
           delete '/branches/:treeish' => "git/trees#destroy", :as => :branches
           put '/branches/:treeish' => "git/trees#restore_branch", :as => :branches
           # Commits
