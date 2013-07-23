@@ -1,5 +1,5 @@
 json.project do
-  json.partial! 'api/v1/projects/project', :project => @project
+  json.partial! 'project', :project => @project
   json.(@project, :visibility, :description, :ancestry, :has_issues, :has_wiki, :default_branch, :is_package, :average_build_time, :publish_i686_into_x86_64)
   json.created_at @project.created_at.to_i
   json.updated_at @project.updated_at.to_i

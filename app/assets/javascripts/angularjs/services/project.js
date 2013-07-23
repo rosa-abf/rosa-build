@@ -4,16 +4,6 @@ RosaABF.factory("ApiProject", ['$resource', function($resource) {
     '/:owner/:project',
     {owner: '@project.owner.uname', project: '@project.name'},
     {
-      // refs: {
-      //   url:    '/api/v1/projects/:id/refs_list.json',
-      //   method: 'GET',
-      //   isArray : false
-      // },
-      update: {
-        url:      '/api/v1/projects/:id.json',
-        method:   'PUT',
-        isArray:  false
-      },
       tags: {
         url:    '/:owner/:project/tags',
         method: 'GET',

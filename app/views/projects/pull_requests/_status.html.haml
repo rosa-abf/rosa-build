@@ -1,4 +1,4 @@
-- if can?(:merge, @pull) && @pull.can_merging?
+- if can?(:merge, @pull)
   %a.button{:href => '', 'ng-click' => 'merge()', 'ng-show' => "pull.status == 'ready'"}
     = t 'projects.pull_requests.ready'
   .both

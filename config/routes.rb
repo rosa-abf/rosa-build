@@ -310,6 +310,7 @@ Rosa::Application.routes.draw do
         resources :hooks, :except => :show
         resources :pull_requests, :except => :destroy do
           get :autocomplete_to_project, :on => :collection
+          put :merge, :on => :member
         end
         post '/preview' => 'projects#preview', :as => 'md_preview'
         post 'refs_list' => 'projects#refs_list', :as => 'refs_list'
