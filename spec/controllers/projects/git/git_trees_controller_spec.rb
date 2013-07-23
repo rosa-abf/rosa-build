@@ -116,7 +116,7 @@ describe Projects::Git::TreesController do
     end
 
     it 'should be able to perform restore_branch action' do
-      put :restore_branch, @params.merge(:treeish => 'conflicts')
+      put :restore_branch, @params.merge(:treeish => 'master-1', :sha => 'master')
       response.should be_success
     end
 
