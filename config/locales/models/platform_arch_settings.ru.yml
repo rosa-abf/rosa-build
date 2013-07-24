@@ -7,8 +7,6 @@ ru:
     platform_arch_settings:
 
   activerecord:
-    models:
-      platform_arch_setting: Arch
     attributes:
       platform_arch_setting:
         default: Использовать по умолчанию при сборке

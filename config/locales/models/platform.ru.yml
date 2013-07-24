@@ -79,6 +79,8 @@ ru:
     models:
       platform: Платформа
     attributes:
+      platform/platform_arch_settings:
+        time_living: Максимальное время сборки (в минутах)
       platform:
         name: Название
         description: Описание

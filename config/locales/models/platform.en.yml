@@ -79,6 +79,8 @@ en:
     models:
       platform: Platform
     attributes:
+      platform/platform_arch_settings:
+        time_living: Max time build (in minutes)
       platform:
         name: Name
         description: Description
