@@ -41,7 +41,7 @@
       = f.select :not_delete, [false, true].collect{|status| [t("layout.#{status}_"), status]}, {:selected => pbl.not_delete}
       .both
       %br
-      = submit_tag t('layout.update')
+      = submit_tag t('layout.update'), :data => {'disable-with' => t('layout.processing')}
     .both
 - unless pbl.not_delete
   .flash_notify

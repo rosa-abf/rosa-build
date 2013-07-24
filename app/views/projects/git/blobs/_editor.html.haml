@@ -13,7 +13,7 @@
 
   %br
   %br
-  = submit_tag t("layout.save"), :title => t("layout.save")
+  = submit_tag t('layout.save'), :title => t('layout.save'), :data => {'disable-with' => t('layout.saving')}
   = t("layout.or")
   = link_to t("layout.cancel"), blob_path(@project, @treeish, @path), :class => 'button'
 

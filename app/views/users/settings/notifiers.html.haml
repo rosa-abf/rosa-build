@@ -21,7 +21,7 @@
   %br
   .leftside.w25
     \ 
-  .leftside.w420= submit_tag t("layout.save")
+  .leftside.w420= submit_tag t('layout.save'), :data => {'disable-with' => t('layout.saving')}
   .both
 
 :javascript

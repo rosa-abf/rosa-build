@@ -27,7 +27,7 @@
   .both
 
 .button_block
-  = submit_tag t("layout.save")
+  = submit_tag t('layout.save'), :data => {'disable-with' => t('layout.saving')}
   -#%input.button{:type => "submit", :class => "button"}
     -#= image_tag("choose.png", :alt => t("layout.save"))
     -#= t("layout.clone")

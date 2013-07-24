@@ -12,6 +12,7 @@
         = form_tag platform_maintainers_path(@platform), :method => :get do |f|
           = text_field_tag('q', params[:q], :placeholder => t("layout.maintainers.search_by_package"), :class => params[:q].present? ? 'black' : 'gray')
           %input{:type => 'submit', :value => t("layout.search.header")}
+          = submit_tag t('layout.search.header'), :data => {'disable-with' => t('layout.processing')}
         = button_to t('layout.clear'), {:action => :index} , :method => :get
 
   %tbody

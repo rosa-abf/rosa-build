@@ -11,4 +11,4 @@
       = text_field_tag :product_id, params[:product_id]
       %br
       %br
-      = submit_tag t("layout.search.header")
+      = submit_tag t('layout.search.header'), :data => {'disable-with' => t('layout.processing')}

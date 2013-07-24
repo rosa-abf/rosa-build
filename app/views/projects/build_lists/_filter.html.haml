@@ -56,7 +56,7 @@
         %br/
         %br/
       .butgrp
-        = f.submit t('layout.search.header')
+        = f.submit t('layout.search.header'), :data => {'disable-with' => t('layout.processing')}
         = f.submit t('reset'), :id => 'filter_clear'
         -if @project and can?(:create, @project.build_lists.build)
           %input{:id => 'filter_new_build', :type => 'button', :onclick => "location.href='#{new_project_build_list_path(@project)}'", :value => t('layout.build_lists.new_header')}
