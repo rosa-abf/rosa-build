@@ -26,6 +26,24 @@
   = hidden_field_tag 'admin_id', @admin_id, :id => 'admin_id_field'
   .both
 
+  %h3= t('layout.platform_arch_settings.extra_settings')
+
+  - platform_arch_settings(@platform).each do |setting|
+    .leftlist
+      %h4= setting.arch.name
+    .rightlist
+      = f.fields_for :platform_arch_settings, setting do |s_form|
+        = s_form.hidden_field :arch_id
+        .leftlist= s_form.label :default, :class => :label
+        .rightlist= s_form.check_box :default, :class => 'check_box'
+        .both
+        .leftlist= s_form.label :time_living, :class => :label
+        .rightlist= s_form.text_field :time_living, :value => setting.time_living / 60, :class => 'text_field'
+        .both
+    .both
+
+
+
 .button_block
   = submit_tag t("layout.save")
   -#%input.button{:type => "submit", :class => "button"}

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130717112337) do
+ActiveRecord::Schema.define(:version => 20130724105821) do
 
   create_table "activity_feeds", :force => true do |t|
     t.integer  "user_id",    :null => false
@@ -293,6 +293,17 @@ ActiveRecord::Schema.define(:version => 20130717112337) do
     t.text     "extra_repositories"
     t.text     "extra_build_lists"
   end
+
+  create_table "platform_arch_settings", :force => true do |t|
+    t.integer  "platform_id", :null => false
+    t.integer  "arch_id",     :null => false
+    t.integer  "time_living", :null => false
+    t.boolean  "default"
+    t.datetime "created_at",  :null => false
+    t.datetime "updated_at",  :null => false
+  end
+
+  add_index "platform_arch_settings", ["platform_id", "arch_id"], :name => "index_platform_arch_settings_on_platform_id_and_arch_id", :unique => true
 
   create_table "platforms", :force => true do |t|
     t.string   "description"

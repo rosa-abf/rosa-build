@@ -2062,3 +2062,13 @@ a.button.reject_publish, a.button.create_container {
     }    
 
 }
+
+.rightlist > div.rightlist {
+    width: 150px;
+    input[type="text"] {
+        width: 150px;
+    }
+}
+.rightlist > .leftlist {
+    width: 200px;
+}

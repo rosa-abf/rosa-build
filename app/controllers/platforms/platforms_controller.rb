@@ -42,11 +42,11 @@ class Platforms::PlatformsController < Platforms::BaseController
     @admin_id = params[:admin_id]
     @admin_uname = params[:admin_uname]
 
-    if @platform.update_attributes(
-      :owner => @admin_id.blank? ? get_owner : User.find(@admin_id),
-      :description => params[:platform][:description],
-      :released => (params[:platform][:released] || @platform.released)
-    )
+    platform_params = params[:platform] || {}
+    platform_params = platform_params.slice(:description, :platform_arch_settings_attributes, :released)
+    platform_params[:owner] = User.find(@admin_id) if @admin_id.present?
+
+    if @platform.update_attributes(platform_params)
       flash[:notice] = I18n.t("flash.platform.saved")
       redirect_to @platform
     else

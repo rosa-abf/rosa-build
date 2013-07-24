@@ -8,7 +8,8 @@ class Platform < ActiveRecord::Base
 
   has_many :repositories, :dependent => :destroy
   has_many :products, :dependent => :destroy
-  has_many :tokens, :as => :subject, :dependent => :destroy
+  has_many :tokens, :as => :subject,  :dependent => :destroy
+  has_many :platform_arch_settings,   :dependent => :destroy
 
   has_many :relations, :as => :target, :dependent => :destroy
   has_many :actors, :as => :target, :class_name => 'Relation', :dependent => :destroy
@@ -53,7 +54,8 @@ class Platform < ActiveRecord::Base
   scope :main, by_type('main')
   scope :personal, by_type('personal')
 
-  attr_accessible :name, :distrib_type, :parent_platform_id, :platform_type, :owner, :visibility, :description, :released
+  accepts_nested_attributes_for :platform_arch_settings, :allow_destroy => true
+  attr_accessible :name, :distrib_type, :parent_platform_id, :platform_type, :owner, :visibility, :description, :released, :platform_arch_settings_attributes
   attr_readonly   :name, :distrib_type, :parent_platform_id, :platform_type
 
   include Modules::Models::Owner

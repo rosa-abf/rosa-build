@@ -1,0 +1,15 @@
+ru:
+  layout:
+    platform_arch_settings:
+      extra_settings: Дополнительные настройки
+
+  flash:
+    platform_arch_settings:
+
+  activerecord:
+    models:
+      platform_arch_setting: Arch
+    attributes:
+      platform_arch_setting:
+        default: Использовать по умолчанию
+        time_living: Максимальное время сборки (в минутах)
