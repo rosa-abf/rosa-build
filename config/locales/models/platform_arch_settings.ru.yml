@@ -11,5 +11,5 @@ ru:
       platform_arch_setting: Arch
     attributes:
       platform_arch_setting:
-        default: Использовать по умолчанию
+        default: Использовать по умолчанию при сборке
         time_living: Максимальное время сборки (в минутах)
