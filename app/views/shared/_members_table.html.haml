@@ -25,7 +25,7 @@
             %td.buttons
               = link_to "#{remove_member_path}?member_id=#{user.id}", :method => :delete, :confirm => t("layout.confirm") do
                 %span.delete &nbsp;
-  - if can? :remove_memvers, editable_object
+  - if can? :remove_members, editable_object
     = submit_tag t("layout.delete"), :class => 'button', :data => {'disable-with' => t('layout.processing')}
   .both
 
