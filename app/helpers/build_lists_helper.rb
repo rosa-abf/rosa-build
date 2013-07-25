@@ -19,6 +19,20 @@ module BuildListsHelper
             .joins(:repositories).uniq
   end
 
+  def save_to_repositories(project)
+    project.repositories.collect do |r|
+      [
+        "#{r.platform.name}/#{r.name}",
+        r.id,
+        {
+          :publish_without_qa => r.publish_without_qa? ? 1 : 0,
+          :platform_id        => r.platform.id,
+          :default_arches     => r.platform.platform_arch_settings.by_default.pluck(:arch_id).join(' ')
+        }
+      ]
+    end
+  end
+
   def mass_build_options(selected_id)
     options_from_collection_for_select(
       MassBuild.recent.limit(15),

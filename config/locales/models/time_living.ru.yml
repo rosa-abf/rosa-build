@@ -1,4 +1,4 @@
 ru:
   flash:
     time_living:
-      numericality_error: должно быть от 2 до 720 минут
+      numericality_error: должно быть от %{min} до %{max} минут
