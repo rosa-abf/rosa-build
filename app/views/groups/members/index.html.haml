@@ -30,7 +30,7 @@
     .lineForm= select_tag 'role', options_for_collaborators_roles_select
   .both
   %br
-  = submit_tag t("layout.add"), :class => 'button'
+  = submit_tag t('layout.add'), :class => 'button', :data => {'disable-with' => t('layout.processing')}
 
 .hr.bottom
 .both

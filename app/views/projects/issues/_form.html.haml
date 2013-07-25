@@ -11,5 +11,5 @@
   .both
 .leftlist
 .rightlist
-  %input{:type => "submit", :value => t(@issue.new_record? ? 'layout.create' : 'layout.update')}
+  = submit_tag t(@issue.new_record? ? 'layout.create' : 'layout.update'), :data => {'disable-with' => t('layout.processing')}
 .both

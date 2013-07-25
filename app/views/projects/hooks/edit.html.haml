@@ -7,7 +7,7 @@
 = form_for @hook, :url => project_hook_path(@project, @hook), :method => :put, :html => { :class => :form } do |f|
   = render 'form'
   .actions
-    = f.submit t('layout.update')
+    = f.submit t('layout.update'), :data => {'disable-with' => t('layout.processing')}
 
 %br
 = render "projects/hooks/docs/#{@hook.name}"

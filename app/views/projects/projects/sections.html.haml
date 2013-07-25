@@ -17,7 +17,7 @@
     %br
     %span{:style => "font-size: 11px;"}= t("layout.projects.has_wiki_description")
   .both
-  .padd25= submit_tag t("layout.save"), :class => 'button'
+  .padd25= submit_tag t('layout.save'), :class => 'button', :data => {'disable-with' => t('layout.saving')}
   .both
 
 :javascript

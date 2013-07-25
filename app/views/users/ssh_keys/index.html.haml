@@ -21,6 +21,6 @@
   .leftlist= f.label :key, t('activerecord.attributes.ssh_key.key')
   .rightlist= f.text_area :key
   %br
-  = f.submit t('layout.add')#, :class => 'button'
+  = f.submit t('layout.add'), :data => {'disable-with' => t('layout.processing')}
 
 - content_for :sidebar, render('sidebar')

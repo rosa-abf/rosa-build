@@ -46,6 +46,6 @@
   .both
 
 .button_block
-  = f.submit t('layout.save')
+  = f.submit t('layout.save'), :data => {'disable-with' => t('layout.saving')}
   %span.text_button_padding= t("layout.or")
   = link_to t("layout.cancel"), @platform.new_record? ? root_path : platform_path(@platform), :class => "button"

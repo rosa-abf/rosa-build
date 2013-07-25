@@ -34,7 +34,7 @@
                            :class => @form.errors.messages[:message].present? ? 'error' : ''
 
         .form-actions
-          = f.submit t("layout.contact.send_request"), :class => 'button'
+          = f.submit t('layout.contact.send_request'), :class => 'button', :data => {'disable-with' => t('layout.processing')}
 
   %section.last
     %div

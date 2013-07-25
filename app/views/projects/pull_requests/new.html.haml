@@ -21,7 +21,7 @@
           =render 'ref_select', :kind => 'to', :project => @pull.to_project, :current => @pull.to_ref
         .both
         .leftlist.big-list
-        .rightlist=f.submit t('.update'), :class => 'btn btn-primary disabled', 'data-loading-text' => t('layout.processing'), :style => @pull.already? ? '' : 'display: none;', :id => 'update_pull'
+        .rightlist=f.submit t('.update'), :class => 'btn btn-primary', :style => @pull.already? ? '' : 'display: none;', :id => 'update_pull', :data => {'disable-with' => t('layout.processing')}
         .both
         -unless @pull.already?
           =f.fields_for :issue do |issue|
@@ -39,7 +39,7 @@
             .both
           .leftlist.big-list
           .rightlist
-            =f.submit t('.submit'), :class => 'btn btn-primary disabled', 'data-loading-text' => t('layout.processing'), :id => 'create_pull' unless @pull.already?
+            =f.submit t('.submit'), :class => 'btn btn-primary', :id => 'create_pull', :data => {'disable-with' => t('layout.processing')} unless @pull.already?
           .both
     =render 'diff_commits_tabs' if !@pull.already? && @stats != nil
 

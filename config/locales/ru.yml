@@ -177,7 +177,6 @@ ru:
     models:
       private_user: Приватный пользователь
       product_build_list: Сборочный лист продукта
-      auto_build_list: Автоматическая пересборка пакетов
 
     attributes:
       settings:

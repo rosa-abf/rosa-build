@@ -71,7 +71,7 @@
   .both
 .leftlist
   \ 
-.rightlist= submit_tag t("layout.save"), :class => 'button'
+.rightlist= submit_tag t('layout.save'), :class => 'button', :data => {'disable-with' => t('layout.saving')}
 .both
 :javascript
   $(function() {
