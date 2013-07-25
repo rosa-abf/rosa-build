@@ -13,7 +13,7 @@
   .both
   .leftlist
     \ 
-  .rightlist= submit_tag t('layout.save')
+  .rightlist= submit_tag t('layout.save'), :data => {'disable-with' => t('layout.saving')}
   .both
 
 :javascript

@@ -40,7 +40,7 @@
         = f.check_box kind
         = f.label kind
     %br
-    = f.submit t("layout.projects.build_button")
+    = f.submit t('layout.projects.build_button'), :data => {'disable-with' => t('layout.processing')}
 .both
 %br
 = render 'projects/base/submenu'

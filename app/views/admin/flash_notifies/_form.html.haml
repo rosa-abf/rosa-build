@@ -15,7 +15,7 @@
 .both
 
 .button_block
-  = submit_tag t("layout.save")
+  = submit_tag t('layout.save'), :data => {'disable-with' => t('layout.saving')}
   %span.text_button_padding= t("layout.or")
   = link_to t("layout.cancel"), admin_flash_notifies_path, :class => "button"
 

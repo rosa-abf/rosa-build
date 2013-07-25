@@ -13,7 +13,7 @@
     %h3=t('layout.mass_builds.projects_list')
     = f.text_area :projects_list
     %br
-    = f.submit t("layout.projects.build_button")
+    = f.submit t('layout.projects.build_button'), :data => {'disable-with' => t('layout.processing')}
   %section.right
     %h3= t("activerecord.attributes.build_list.arch")
     - Arch.recent.each do |arch|
