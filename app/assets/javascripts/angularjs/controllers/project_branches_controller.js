@@ -1,47 +1,41 @@
-RosaABF.controller('ProjectRefsController', ['$scope', '$http', 'ApiProject', function($scope, $http, ApiProject) {
+RosaABF.controller('ProjectBranchesController', ['$scope', '$http', 'ApiProject', function($scope, $http, ApiProject) {
 
-  $scope.singleton = ApiProject.singleton;
-  $scope.branches = [];
-  $scope.tags     = [];
+  $scope.singleton  = ApiProject.singleton;
+  $scope.branches   = [];
 
-  $scope.project_id       = null;
   $scope.current_ref      = null;
   $scope.project_resource = null;
 
-  $scope.init = function(project_id, ref, locale) {
-    $scope.project_id = project_id;
+  $scope.init = function(owner_uname, project_name, ref) {
     $scope.current_ref = ref;
 
-    $scope.project_resource = ApiProject.resource.get({id: $scope.project_id}, function(results) {
-      $scope.project = new Project(results.project);
-      $scope.getRefs();
-    });
+    $scope.project_resource = ApiProject.resource.get(
+      {owner: owner_uname, project: project_name},
+      function(results) {
+        $scope.project = new Project(results.project);
+        $scope.getBranches();
+      }
+    );
 
   }
 
-  $scope.getRefs = function() {
+  $scope.getBranches = function() {
 
-    $scope.project_resource.$refs({id: $scope.project_id}, function(results) {
-      $scope.tags = [];
-      $scope.branches = [];
-      _.each(results.refs_list, function(ref){
-        var result = new ProjectRef(ref);
-        if (result.isTag) {
-          if (result.ref == $scope.current_ref) {
-            $scope.tags.unshift(result);
-          } else {
-            $scope.tags.push(result);
-          }
-        } else {
+    $scope.project_resource.$branches(
+      {owner: $scope.project.owner.uname, project: $scope.project.name},
+      function(results) {
+        $scope.branches = [];
+        _.each(results.refs_list, function(ref){
+          var result = new ProjectRef(ref);
           if (result.ref == $scope.current_ref) {
             $scope.branches.unshift(result);
           } else {
             $scope.branches.push(result);
           }
-        }
-      });
-      $scope.updateBranchesCount();
-    });
+        });
+        $scope.updateBranchesCount();
+      }
+    );
 
   }
 
@@ -58,9 +52,9 @@ RosaABF.controller('ProjectRefsController', ['$scope', '$http', 'ApiProject', fu
         from_ref: branch.ref,
         new_ref:  branch.new_ref
       }, function() { // on success
-        $scope.getRefs();
+        $scope.getBranches();
       }, function () { // on error
-        $scope.getRefs();
+        $scope.getBranches();
       }
     );
   }
@@ -78,7 +72,7 @@ RosaABF.controller('ProjectRefsController', ['$scope', '$http', 'ApiProject', fu
           return this.value.match('.*\/branches\/' + branch.ref + '$');
         }).remove();
       }, function () { // on error
-        $scope.getRefs();
+        $scope.getBranches();
       }
     );
   }

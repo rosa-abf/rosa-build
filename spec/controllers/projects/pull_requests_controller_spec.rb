@@ -96,7 +96,13 @@ end
 shared_examples_for 'user with pull request update rights' do
   it 'should be able to perform update action' do
     put :update, @update_params
-    response.should redirect_to(project_pull_request_path(@pull.to_project, @pull))
+    response.should be_success
+  end
+
+  it 'should be able to perform merge action' do
+    @pull.check
+    put :merge, @update_params
+    response.should be_success
   end
 
   let(:pull) { @project.pull_requests.find(@pull) }
@@ -146,6 +152,13 @@ shared_examples_for 'user without pull request update rights' do
     put :update, @wrong_update_params
     pull.issue.body.should_not =='updating'
   end
+
+  it 'should be able to perform merge action' do
+    @pull.check
+    put :merge, @update_params
+    response.should_not be_success
+  end
+
 end
 
 shared_examples_for 'pull request when project with issues turned off' do

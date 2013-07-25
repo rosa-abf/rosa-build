@@ -23,8 +23,7 @@ class Api::V1::ProjectsController < Api::V1::BaseController
   end
 
   def refs_list
-    @refs = @project.repo.branches.sort_by(&:name) +
-      @project.repo.tags.select{ |t| t.commit }.sort_by(&:name).reverse
+    @refs = @project.repo.branches + @project.repo.tags.select{ |t| t.commit }
   end
 
   def update

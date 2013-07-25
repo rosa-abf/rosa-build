@@ -3,8 +3,7 @@
 = render 'submenu'
 = render 'repo_block', :project => @project
 
-%div{'ng-controller' => 'ProjectRefsController',
-  'ng-init' => "init('#{@project.id}','#{@branch.try(:name)}')"}
+%div{'ng-controller' => 'ProjectBranchesController', 'ng-init' => "init('#{@project.owner.uname}', '#{@project.name}','#{@branch.try(:name)}')"}
 
   %h3= t('layout.projects.branches')
   %p{'ng-show' => '!branches.length'}= t('layout.projects.no_branches')

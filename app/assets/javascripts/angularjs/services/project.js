@@ -1,11 +1,16 @@
 RosaABF.factory("ApiProject", ['$resource', function($resource) {
 
   var ProjectResource = $resource(
-    '/api/v1/projects/:id.json',
-    {id: '@project.id'},
+    '/:owner/:project',
+    {owner: '@project.owner.uname', project: '@project.name'},
     {
-      refs: {
-        url:    '/api/v1/projects/:id/refs_list.json',
+      tags: {
+        url:    '/:owner/:project/tags',
+        method: 'GET',
+        isArray : false
+      },
+      branches: {
+        url:    '/:owner/:project/branches',
         method: 'GET',
         isArray : false
       },

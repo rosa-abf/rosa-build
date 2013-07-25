@@ -1,9 +1,8 @@
 RosaABF.controller('PullRequestController',['$scope', '$http', 'ApiPullRequest', 'ApiProject', 'DateTimeFormatter', function($scope, $http, ApiPullRequest, ApiProject, DateTimeFormatter) {
 
-  $scope.project_id       = null;
   $scope.project_resource = null;
 
-  $scope.serial_id        = null;
+  $scope.pull_params      = null;
   $scope.pull             = null;
   $scope.pull_resource    = null;
 
@@ -13,37 +12,36 @@ RosaABF.controller('PullRequestController',['$scope', '$http', 'ApiPullRequest',
 
   $scope.can_delete_branch  = false;
 
-  $scope.init = function(project_id, serial_id) {
-    $scope.project_id = project_id;
-    $scope.serial_id  = serial_id;
+  $scope.init = function(owner_uname, project_name, serial_id) {
+    $scope.pull_params = {
+      owner:      owner_uname,
+      project:    project_name,
+      serial_id:  serial_id
+    };
     $scope.getPullRequest();
   }
 
   $scope.getPullRequest = function() {
-    $scope.pull_resource = ApiPullRequest.resource.get(
-      {project_id: $scope.project_id, serial_id: $scope.serial_id},
-      function(results) {
-        $scope.pull = results.pull_request;
-        if ($scope.pull.merged_at) { $scope.merged_at = DateTimeFormatter.utc($scope.pull.merged_at); }
-        if ($scope.pull.closed_at) { $scope.closed_at = DateTimeFormatter.utc($scope.pull.closed_at); }
-      }
-    );
+    $scope.pull_resource = ApiPullRequest.resource.get($scope.pull_params, function(results) {
+      $scope.pull = results.pull_request;
+      if ($scope.pull.merged_at) { $scope.merged_at = DateTimeFormatter.utc($scope.pull.merged_at); }
+      if ($scope.pull.closed_at) { $scope.closed_at = DateTimeFormatter.utc($scope.pull.closed_at); }
+    });
   }
 
   // @param [from_ref] - sets only at first time
   $scope.getBranch = function(from_ref) {
     if (!$scope.project_resource) {
-      $scope.project_resource = ApiProject.resource.get({id: $scope.project_id});
+      $scope.project_resource = ApiProject.resource.get($scope.pull_params);
     }
     // Fix: at first load
     // Cannot read property 'from_ref' of null
     if (!from_ref) { from_ref = $scope.pull.from_ref.ref; }
-    $scope.project_resource.$refs({id: $scope.project_id}, function(results) {
+    $scope.project_resource.$branches($scope.pull_params, function(results) {
       var branch = null;
-      _.each(results.refs_list, function(ref){
-        var result = new ProjectRef(ref);
-        if (!result.isTag && result.ref == from_ref) {
-          branch = result;
+      _.each(results.refs_list, function(b){
+        if (b.ref == from_ref) {
+          branch = new ProjectRef(b);
           return true;
         }
       });
@@ -52,15 +50,13 @@ RosaABF.controller('PullRequestController',['$scope', '$http', 'ApiPullRequest',
   }
 
   $scope.reopen = function() {
-    $scope.pull.status = 'reopen';
-    $scope.pull_resource.$update(function() {
+    $scope.pull_resource.$update({pull_request_action: 'reopen'}, function() {
       $scope.getPullRequest();
     });
   }
 
   $scope.close = function() {
-    $scope.pull.status = 'close';
-    $scope.pull_resource.$update(function() {
+    $scope.pull_resource.$update({pull_request_action: 'close'}, function() {
       $scope.getPullRequest();
     });
   }
@@ -86,10 +82,9 @@ RosaABF.controller('PullRequestController',['$scope', '$http', 'ApiPullRequest',
   }
 
   $scope.branch_params = function() {
-    var project = $scope.pull.from_ref.project;
     return {
-      owner:    project.fullname.replace(/\/.*/, ''),
-      project:  project.name,
+      owner:    $scope.pull_params.owner,
+      project:  $scope.pull_params.project,
       ref:      $scope.pull.from_ref.ref,
       sha:      $scope.pull.from_ref.sha
     }

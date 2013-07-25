@@ -310,6 +310,7 @@ Rosa::Application.routes.draw do
         resources :hooks, :except => :show
         resources :pull_requests, :except => :destroy do
           get :autocomplete_to_project, :on => :collection
+          put :merge, :on => :member
         end
         post '/preview' => 'projects#preview', :as => 'md_preview'
         post 'refs_list' => 'projects#refs_list', :as => 'refs_list'
@@ -334,10 +335,11 @@ Rosa::Application.routes.draw do
           # Tags
           get '/tags' => "git/trees#tags", :as => :tags
           # Branches
+          get '/branches' => "git/trees#branches", :as => :branches
           get '/branches/:treeish' => "git/trees#branches", :as => :branch
           delete '/branches/:treeish' => "git/trees#destroy", :as => :branch
           put '/branches/:treeish' => "git/trees#restore_branch", :as => :branch
-          post '/branches' => "git/trees#create", :as => :branchs
+          post '/branches' => "git/trees#create", :as => :branches
           # Commits
           get '/commits/:treeish(/*path)' => "git/commits#index", :as => :commits, :format => false
           get '/commit/:id(.:format)' => "git/commits#show", :as => :commit

@@ -8,10 +8,12 @@ class Projects::Git::TreesController < Projects::Git::BaseController
   before_filter lambda { authorize!(:write, @project) },  :only => [:destroy, :restore_branch, :create]
 
   def show
-    render('empty') and return if @project.is_empty?
-    @tree = @tree / @path if @path.present?
-    @commit = @branch.present? ? @branch.commit() : @project.repo.log(@treeish, @path, :max_count => 1).first
-    raise Grit::NoSuchPathError unless @commit
+    unless request.xhr?
+      render('empty') and return if @project.is_empty?
+      @tree = @tree / @path if @path.present?
+      @commit = @branch.present? ? @branch.commit() : @project.repo.log(@treeish, @path, :max_count => 1).first
+      raise Grit::NoSuchPathError unless @commit
+    end
   end
 
   def archive
@@ -32,6 +34,10 @@ class Projects::Git::TreesController < Projects::Git::BaseController
   end
 
   def tags
+    if request.xhr?
+      @refs = @project.repo.tags.select{ |t| t.commit }.sort_by(&:name).reverse
+      render :refs_list
+    end
   end
 
   def restore_branch
@@ -50,6 +56,10 @@ class Projects::Git::TreesController < Projects::Git::BaseController
   end
 
   def branches
+    if request.xhr?
+      @refs = @project.repo.branches.sort_by(&:name)
+      render :refs_list
+    end
   end
 
 end

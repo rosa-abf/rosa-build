@@ -2,7 +2,7 @@
 -set_meta_tags :title => [title_object(@project), t('.title', :name => @pull.title.truncate(40), :user => @pull.user.try(:uname))]
 = render :partial => 'submenu'
 
-%div{'ng-controller' => 'PullRequestController', 'ng-init' => "init('#{@project.id}', '#{@pull.serial_id}')"}
+%div{'ng-controller' => 'PullRequestController', 'ng-init' => "init('#{@project.owner.uname}', '#{@project.name}', '#{@pull.serial_id}')"}
 
   %h3.bpadding10
     - PullRequest::STATUSES.each do |status|

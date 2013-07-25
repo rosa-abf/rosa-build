@@ -67,22 +67,31 @@ class Projects::PullRequestsController < Projects::BaseController
     end
   end
 
+  def merge
+    status = @pull.merge!(current_user) ? 200 : 422
+    render :nothing => true, :status => status
+  end
+
   def update
+    status = 422
     if (action = params[:pull_request_action]) && %w(close reopen).include?(params[:pull_request_action])
       if @pull.send("can_#{action}?")
         @pull.set_user_and_time current_user
         @pull.send(action)
         @pull.check if @pull.open?
+        status = 200
       end
     end
-    redirect_to project_pull_request_path(@pull.to_project, @pull)
+    render :nothing => true, :status => status
   end
 
   def show
-    if @pull.nil?
-      redirect_to project_issue_path(@project, @issue)
-    else
-      load_diff_commits_data
+    unless request.xhr?
+      if @pull.nil?
+        redirect_to project_issue_path(@project, @issue)
+      else
+        load_diff_commits_data
+      end
     end
   end
 
