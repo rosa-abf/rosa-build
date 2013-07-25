@@ -16,8 +16,8 @@ class PlatformContent
 
   def build_list
     return @build_list if !!@build_list
-    return nil if path !~ /\/(release|updates)+\/[\w\-\.]+$/
-    return nil unless repository_name = path.match(/\/[\w]+\/(release|updates)\//)
+    return nil if @path !~ /\/(release|updates)+\/[\w\-\.]+$/
+    return nil unless repository_name = @path.match(/\/[\w]+\/(release|updates)\//)
     repository_name = repository_name[0].gsub(/\/(release|updates)\/$/, '').gsub('/', '')
 
     repository = @platform.repositories.where(:name => repository_name).first
@@ -26,7 +26,7 @@ class PlatformContent
     if @platform.main?
       build_for_platform = @platform
     else
-      bfp_name = path.match(/\/#{@platform.name}\/repository\/[\w]+\//)
+      bfp_name = @path.match(/\/#{@platform.name}\/repository\/[\w]+\//)
       return nil unless bfp_name
       bfp_name = bfp_name[0].gsub(/\/#{@platform.name}\/repository\//, '').gsub('/', '')
       build_for_platform = Platform.main.find_by_name bfp_name
@@ -53,11 +53,11 @@ class PlatformContent
   end
 
   def is_folder?
-    @is_folder.nil? ? (@is_folder = File.directory?(path)) : @is_folder
+    @is_folder.nil? ? (@is_folder = File.directory?(@path)) : @is_folder
   end
 
   def download_url
-    suffix = path.gsub(/^#{@platform.path}/, '')
+    suffix = @path.gsub(/^#{@platform.path}/, '')
     "#{APP_CONFIG['downloads_url']}/#{@platform.name}#{suffix}"
   end
 
