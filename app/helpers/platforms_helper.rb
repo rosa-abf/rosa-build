@@ -12,7 +12,7 @@ module PlatformsHelper
 
   def platform_arch_settings(platform)
     settings = platform.platform_arch_settings
-    settings |= Arch.where('id not in (?)', settings.pluck(:arch_id)).map do |arch|
+    settings |= Arch.where('id not in (?)', settings.map(&:arch_id)).map do |arch|
       platform.platform_arch_settings.build(
         :arch_id      => arch.id,
         :time_living  => PlatformArchSetting::DEFAULT_TIME_LIVING
