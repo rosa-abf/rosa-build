@@ -24,7 +24,6 @@ class CreatePlatformArchSettings < ActiveRecord::Migration
   end
 
   def down
-    remove_index  :platform_arch_settings, :column => [:platform_id, :arch_id]
-    drop_table    :platform_arch_settings
+    drop_table :platform_arch_settings
   end
 end
