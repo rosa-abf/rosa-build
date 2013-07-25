@@ -1,4 +1,4 @@
-- platform_repositories(platform).each do |repo|
+- Repository.custom_sort(platform.repositories).each do |repo|
   .both
     = check_box_tag "build_list[include_repos][]", repo.id, repo.name == 'main' || @project.repositories.map(&:id).include?(repo.id), :id => "include_repos_#{repo.id}", :rep_name => repo.name
     = label_tag "include_repos_#{repo.id}", repo.name

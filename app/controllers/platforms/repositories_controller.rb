@@ -8,7 +8,7 @@ class Platforms::RepositoriesController < Platforms::BaseController
   before_filter :set_members, :only => [:edit, :update]
 
   def index
-    @repositories = @repositories.paginate(:page => params[:page])
+    @repositories = Repository.custom_sort(@repositories).paginate(:page => params[:page])
   end
 
   def show

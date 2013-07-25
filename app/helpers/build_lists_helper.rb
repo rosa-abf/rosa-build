@@ -19,11 +19,6 @@ module BuildListsHelper
             .joins(:repositories).uniq
   end
 
-  def platform_repositories(platform)
-    repositories = platform.repositories.order(:name)
-    repositories.select{ |r| %w(main base).include?(r.name) } | repositories
-  end
-
   def save_to_repositories(project)
     project.repositories.collect do |r|
       [

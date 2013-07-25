@@ -1,5 +1,7 @@
 # -*- encoding : utf-8 -*-
 class Repository < ActiveRecord::Base
+  SORT = {'base' => 1, 'main' => 2, 'contrib' => 3, 'restricted' => 4, 'non-free' => 5}
+
   belongs_to :platform
 
   has_many :relations, :as => :target, :dependent => :destroy
@@ -63,6 +65,10 @@ class Repository < ActiveRecord::Base
     with_skip {super} # avoid cascade XML RPC requests
   end
   later :destroy, :queue => :clone_build
+
+  def self.custom_sort repos
+    repos.sort {|a,b| (Repository::SORT[a.name] || 100) <=> (Repository::SORT[b.name] || 100)}
+  end
 
   protected
 
