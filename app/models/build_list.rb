@@ -413,8 +413,7 @@ class BuildList < ActiveRecord::Base
     {
       :id                   => id,
       :arch                 => arch.name,
-      # :time_living          => 43200, # 12 hours
-      :time_living          => (build_for_platform.platform_arch_settings.by_arch(arch).time_living.first || PlatformArchSetting::DEFAULT_TIME_LIVING),
+      :time_living          => (build_for_platform.platform_arch_settings.by_arch(arch).first.try(:time_living) || PlatformArchSetting::DEFAULT_TIME_LIVING),
       :distrib_type         => build_for_platform.distrib_type,
       :git_project_address  => git_project_address,
       :commit_hash          => commit_hash,

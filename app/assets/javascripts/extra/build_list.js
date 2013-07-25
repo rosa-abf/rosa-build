@@ -21,6 +21,7 @@ $(document).ready(function() {
       extra_repos.show();
     } else {
       all_repositories.attr('disabled', 'disabled');
+      updatedDefaultArches(selected_option);
       extra_repos.hide();
       var parent = build_platform.parent();
       parent.find('input').removeAttr('disabled');
@@ -76,6 +77,13 @@ $(document).ready(function() {
     showButtonPanel: true
   });
 });
+
+function updatedDefaultArches(selected_option) {
+  $('input[name="arches[]"]').removeAttr('checked');
+  _.each(selected_option.attr('default_arches').split(' '), function(id){
+    $('#arches_' + id).attr('checked', 'checked');
+  });
+}
 
 function updateExtraReposAndBuildLists(save_to_platform_id) {
   $.each($('.autocomplete-form'), function() {
