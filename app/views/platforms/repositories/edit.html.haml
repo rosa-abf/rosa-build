@@ -8,9 +8,6 @@
   = render "form", :f => f
 %br
 
-=# render 'regenerate_metadata' if can?(:regenerate_metadata, @repository)
-
-
 - if can?(:update, @repository)
   .hr
   %h3= t('layout.repositories.extra_actions')
