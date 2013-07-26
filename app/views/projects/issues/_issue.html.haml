@@ -10,7 +10,7 @@
         -prefix = @project ? '' : "<span style=\"color: #999;\">#{issue.project.name}</span>: "
         ="#{prefix} #{issue.title}".html_safe
     .smalltext
-      =issue.send(@sort == :created ? :created_at : :updated_at).to_s(:long)
+      =I18n.l(issue.send(@sort == :created ? :created_at : :updated_at), :format => :long)
       =t("layout.by") if issue.user
       =link_to(issue.user.uname, user_path(issue.user)) if issue.user
     -issue.labels.each do |label|

@@ -4,6 +4,6 @@
       .state=t('layout.issues.status.closed')
       .text
         .avatar= image_tag(avatar_url(@issue.closer), :alt => 'avatar')
-        .name="#{@issue.closer.fullname} #{t('layout.issues.at')} #{@issue.closed_at.to_s(:long)}"
+        .name="#{@issue.closer.fullname} #{t('layout.issues.at')} #{I18n.l(@issue.closed_at, :format => :long)}"
     .both
     %br/
