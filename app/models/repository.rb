@@ -57,6 +57,14 @@ class Repository < ActiveRecord::Base
     sync_actions :unlock
   end
 
+  def start_sync
+    sync_actions :lock, '.repo.lock'
+  end
+
+  def stop_sync
+    sync_actions :unlock, '.repo.lock'
+  end
+
   def add_member(member, role = 'admin')
     Relation.add_member(member, self, role)
   end
@@ -84,10 +92,10 @@ class Repository < ActiveRecord::Base
 
   protected
 
-  def sync_actions(action)
+  def sync_actions(action, lock_file = '.sync.lock')
     result = false
     (['SRPMS'] << Arch.pluck(:name)).each do |arch|
-      path = "#{platform.path}/repository/#{arch}/#{name}/.sync.lock"
+      path = "#{platform.path}/repository/#{arch}/#{name}/#{lock_file}"
       case action
       when :lock
         result ||= system 'touch', path

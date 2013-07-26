@@ -33,6 +33,16 @@ class Api::V1::RepositoriesController < Api::V1::BaseController
   def key_pair
   end
 
+  def start_sync
+    @repository.start_sync
+    render :nothing => true
+  end
+
+  def stop_sync
+    @repository.stop_sync
+    render :nothing => true
+  end
+
   def add_project
     project = Project.where(:id => params[:project_id]).first
     if project
