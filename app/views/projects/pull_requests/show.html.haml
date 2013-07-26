@@ -6,7 +6,7 @@
 
   %h3.bpadding10
     - PullRequest::STATUSES.each do |status|
-      = pull_status_label status, {'ng-show' => "pull.status == '#{status}'"}
+      = pull_status_label status, {'ng-show' => "pull.status == '#{status}'", :style => 'display: none;'}
     = pull_header @pull
   #repo-wrapper
     =render 'nav_tabs'
