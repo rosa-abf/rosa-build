@@ -149,6 +149,18 @@ class Platforms::RepositoriesController < Platforms::BaseController
     redirect_to platform_repository_path(@platform, @repository)
   end
 
+  def lock_sync
+    @repository.lock_sync
+    flash[:notice] = t('flash.repository.sync_locked')
+    redirect_to edit_platform_repository_path(@platform, @repository)
+  end
+
+  def unlock_sync
+    @repository.unlock_sync
+    flash[:notice] = t('flash.repository.sync_unlocked')
+    redirect_to edit_platform_repository_path(@platform, @repository)
+  end
+
   protected
 
   def set_members

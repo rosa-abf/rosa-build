@@ -8,7 +8,30 @@
   = render "form", :f => f
 %br
 
-= render 'regenerate_metadata' if can?(:regenerate_metadata, @repository)
+=# render 'regenerate_metadata' if can?(:regenerate_metadata, @repository)
+
+
+- if can?(:update, @repository)
+  .hr
+  %h3= t('layout.repositories.extra_actions')
+
+  = link_to t('layout.repositories.regenerate_metadata'),
+            regenerate_metadata_platform_repository_path(@platform, @repository),
+            :method => :put, :confirm => t('layout.confirm'), :class => 'button'
+
+  - if @platform.main?
+    - if @repository.sync_locked?
+      - label = t('layout.repositories.unlock_sync')
+      - path  = unlock_sync_platform_repository_path(@platform, @repository)
+    - else
+      - label = t('layout.repositories.lock_sync')
+      - path  = lock_sync_platform_repository_path(@platform, @repository)
+
+    = link_to label, path, :method => :put, :confirm => t('layout.confirm'), :class => 'button'
+    .both
+  .hr
+
+
 
 - if @platform.main?
   = render "shared/members_table",

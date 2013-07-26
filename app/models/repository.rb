@@ -45,6 +45,18 @@ class Repository < ActiveRecord::Base
     end
   end
 
+  def sync_locked?
+    sync_actions :check
+  end
+
+  def lock_sync
+    sync_actions :lock
+  end
+
+  def unlock_sync
+    sync_actions :unlock
+  end
+
   def add_member(member, role = 'admin')
     Relation.add_member(member, self, role)
   end
@@ -71,6 +83,22 @@ class Repository < ActiveRecord::Base
   end
 
   protected
+
+  def sync_actions(action)
+    result = false
+    (['SRPMS'] << Arch.pluck(:name)).each do |arch|
+      path = "#{platform.path}/repository/#{arch}/#{name}/.sync.lock"
+      case action
+      when :lock
+        result ||= system 'touch', path
+      when :unlock
+        result ||= system 'rm', '-rf', path
+      when :check
+        return true if File.exist?(path)
+      end
+    end
+    return result
+  end
 
   def detele_directory
     return unless platform

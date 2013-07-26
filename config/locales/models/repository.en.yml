@@ -1,6 +1,9 @@
 en:
   layout:
     repositories:
+      extra_actions: Extra actions
+      lock_sync: Lock sync with mirrors
+      unlock_sync: Unlock sync with mirrors
       add_project_to: Add project to repository
       edit: Settings
       list: List
@@ -28,6 +31,10 @@ en:
 
   flash:
     repository:
+      sync_locked: Sync of repository with mirrors has been locked
+      sync_unlocked: Sync of repository with mirrors has been unlocked
+
+
       saved: Repository added
       updated: Repository updated
       save_error: Unable to add repository
