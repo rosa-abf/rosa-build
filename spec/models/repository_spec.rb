@@ -30,6 +30,44 @@ describe Repository do
 
   end
 
+  context '#sync_locked?, #lock_sync, #unlock_sync, #start_sync, #stop_sync' do
+    let(:repository) { FactoryGirl.create(:repository) }
+    let(:path) { "#{repository.platform.path}/repository/SRPMS/#{repository.name}" }
+    before { FileUtils.mkdir_p path }
+
+    it 'ensures that #sync_locked? returns false if .sync.lock file does not exist' do
+      repository.sync_locked?.should be_false
+    end
+
+    it 'ensures that #sync_locked? returns true if .sync.lock file does exist' do
+      FileUtils.touch "#{path}/.sync.lock"
+      repository.sync_locked?.should be_true
+    end
+
+    it 'ensures that #lock_sync creates .sync.lock file' do
+      repository.lock_sync
+      File.exist?("#{path}/.sync.lock").should be_true
+    end
+
+    it 'ensures that #unlock_sync removes .sync.lock file' do
+      FileUtils.touch "#{path}/.sync.lock"
+      repository.unlock_sync
+      File.exist?("#{path}/.sync.lock").should be_false
+    end
+
+    it 'ensures that #start_sync creates .repo.lock file' do
+      repository.start_sync
+      File.exist?("#{path}/.repo.lock").should be_true
+    end
+
+    it 'ensures that #stop_sync removes .repo.lock file' do
+      FileUtils.touch "#{path}/.repo.lock"
+      repository.stop_sync
+      File.exist?("#{path}/.repo.lock").should be_false
+    end
+
+  end
+
   context 'when create with same owner that platform' do
     before do
       @platform = FactoryGirl.create(:platform)

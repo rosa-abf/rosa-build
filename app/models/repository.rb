@@ -45,22 +45,31 @@ class Repository < ActiveRecord::Base
     end
   end
 
+  # Checks locking of sync
   def sync_locked?
     sync_actions :check
   end
 
+  # Uses for locking sync
+  # Calls from UI
   def lock_sync
     sync_actions :lock
   end
 
+  # Uses for unlocking sync
+  # Calls from UI
   def unlock_sync
     sync_actions :unlock
   end
 
+  # Uses for locking publishing
+  # Calls from API
   def start_sync
     sync_actions :lock, '.repo.lock'
   end
 
+  # Uses for unlocking publishing
+  # Calls from API
   def stop_sync
     sync_actions :unlock, '.repo.lock'
   end
@@ -98,9 +107,9 @@ class Repository < ActiveRecord::Base
       path = "#{platform.path}/repository/#{arch}/#{name}/#{lock_file}"
       case action
       when :lock
-        result ||= system 'touch', path
+        result ||= FileUtils.touch(path) rescue nil
       when :unlock
-        result ||= system 'rm', '-rf', path
+        result ||= FileUtils.rm_f(path)
       when :check
         return true if File.exist?(path)
       end
