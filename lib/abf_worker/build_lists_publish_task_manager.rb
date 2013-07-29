@@ -173,6 +173,8 @@ module AbfWorker
       resign_repos = @redis.lrange RESIGN_REPOSITORIES, 0, -1
 
       Repository.where(:id => (resign_repos - locked_repositories)).each do |r|
+        # Checks mirror sync status
+        next if r.repo_lock_file_exists?
         @redis.lrem   RESIGN_REPOSITORIES, 0, r.id
         @redis.lpush  LOCKED_REPOSITORIES, r.id
 
@@ -274,6 +276,9 @@ module AbfWorker
       return false if !bl && old_packages[:sources].empty?
 
       save_to_repository  = Repository.find save_to_repository_id
+      # Checks mirror sync status
+      return false if save_to_repository.repo_lock_file_exists?
+      
       save_to_platform    = save_to_repository.platform
       build_for_platform  = Platform.find build_for_platform_id
       platform_path = "#{save_to_platform.path}/repository"
@@ -346,6 +351,8 @@ module AbfWorker
 
       regen_repos = regen_repos_and_pl.map{ |r| r.gsub(/\-[\d]*$/, '') }
       Repository.where(:id => regen_repos).each do |rep|
+        # Checks mirror sync status
+        next if rep.repo_lock_file_exists?
         regen_repos_and_pl.select{ |kind| kind =~ /^#{rep.id}\-/ }.each do |lock_str|
           next if locked_rep_and_pl.include?(lock_str)
           @redis.lrem REGENERATE_METADATA, 0, lock_str

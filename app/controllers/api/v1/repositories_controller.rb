@@ -33,6 +33,16 @@ class Api::V1::RepositoriesController < Api::V1::BaseController
   def key_pair
   end
 
+  def add_repo_lock_file
+    @repository.add_repo_lock_file
+    render_json_response @repository, "'.repo.lock' file has been added to repository successfully"
+  end
+
+  def remove_repo_lock_file
+    @repository.remove_repo_lock_file
+    render_json_response @repository, "'.repo.lock' file has been removed from repository successfully"
+  end
+
   def add_project
     project = Project.where(:id => params[:project_id]).first
     if project

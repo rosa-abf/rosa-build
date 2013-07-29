@@ -1,8 +1,0 @@
-.hr
-= form_for @repository, :url => regenerate_metadata_platform_repository_path(@platform, @repository), :html => { :class => :form, :method => :put } do |f|
-  .leftside= t('layout.repositories.regenerate_metadata')
-  .rightside
-    = select_tag :build_for_platform_id, options_from_collection_for_select(Platform.main, :id, :name) if @platform.personal?
-    = f.submit t('layout.repositories.regenerate_metadata'), :confirm => t('layout.confirm')
-  .hr{:style => 'padding-bottom:20px;'}
-.both

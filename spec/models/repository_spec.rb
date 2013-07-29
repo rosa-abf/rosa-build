@@ -30,6 +30,44 @@ describe Repository do
 
   end
 
+  context '#sync_lock_file_exists?, #add_sync_lock_file, #remove_sync_lock_file, #add_repo_lock_file, #remove_repo_lock_file' do
+    let(:repository) { FactoryGirl.create(:repository) }
+    let(:path) { "#{repository.platform.path}/repository/SRPMS/#{repository.name}" }
+    before { FileUtils.mkdir_p path }
+
+    it 'ensures that #sync_lock_file_exists? returns false if .sync.lock file does not exist' do
+      repository.sync_lock_file_exists?.should be_false
+    end
+
+    it 'ensures that #sync_lock_file_exists? returns true if .sync.lock file does exist' do
+      FileUtils.touch "#{path}/.sync.lock"
+      repository.sync_lock_file_exists?.should be_true
+    end
+
+    it 'ensures that #add_sync_lock_file creates .sync.lock file' do
+      repository.add_sync_lock_file
+      File.exist?("#{path}/.sync.lock").should be_true
+    end
+
+    it 'ensures that #remove_sync_lock_file removes .sync.lock file' do
+      FileUtils.touch "#{path}/.sync.lock"
+      repository.remove_sync_lock_file
+      File.exist?("#{path}/.sync.lock").should be_false
+    end
+
+    it 'ensures that #add_repo_lock_file creates .repo.lock file' do
+      repository.add_repo_lock_file
+      File.exist?("#{path}/.repo.lock").should be_true
+    end
+
+    it 'ensures that #remove_repo_lock_file removes .repo.lock file' do
+      FileUtils.touch "#{path}/.repo.lock"
+      repository.remove_repo_lock_file
+      File.exist?("#{path}/.repo.lock").should be_false
+    end
+
+  end
+
   context 'when create with same owner that platform' do
     before do
       @platform = FactoryGirl.create(:platform)

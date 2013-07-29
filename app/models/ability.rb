@@ -119,7 +119,7 @@ class Ability
         can [:read, :projects_list, :projects], Repository, :platform => {:owner_type => 'Group', :owner_id => user.group_ids}
         can([:read, :projects_list, :projects], Repository, read_relations_for('repositories')) {|repository| can? :show, repository.platform}
         can([:read, :projects_list, :projects], Repository, read_relations_for('repositories', 'platforms')) {|repository| local_reader? repository.platform}
-        can([:create, :edit, :update, :destroy, :projects_list, :projects, :add_project, :remove_project, :regenerate_metadata], Repository) {|repository| local_admin? repository.platform}
+        can([:create, :edit, :update, :destroy, :projects_list, :projects, :add_project, :remove_project, :regenerate_metadata, :sync_lock_file, :add_repo_lock_file, :remove_repo_lock_file], Repository) {|repository| local_admin? repository.platform}
         can([:remove_members, :remove_member, :add_member, :signatures], Repository) {|repository| owner?(repository.platform) || local_admin?(repository.platform)}
         can([:add_project, :remove_project], Repository) {|repository| repository.members.exists?(:id => user.id)}
         can(:clear, Platform) {|platform| owner?(platform) && platform.personal?}
@@ -164,7 +164,8 @@ class Ability
       # Shared cannot rights for all users (registered, admin)
       cannot :destroy, Platform, :platform_type => 'personal'
       cannot [:create, :destroy], Repository, :platform => {:platform_type => 'personal'}, :name => 'main'
-      cannot [:remove_members, :remove_member, :add_member], Repository, :platform => {:platform_type => 'personal'}
+      cannot [:remove_members, :remove_member, :add_member, :sync_lock_file, :add_repo_lock_file, :remove_repo_lock_file], Repository, :platform => {:platform_type => 'personal'}
+
       cannot :clear, Platform, :platform_type => 'main'
       cannot :destroy, Issue
 

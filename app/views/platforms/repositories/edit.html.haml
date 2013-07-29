@@ -8,7 +8,29 @@
   = render "form", :f => f
 %br
 
-= render 'regenerate_metadata' if can?(:regenerate_metadata, @repository)
+- if can?(:update, @repository)
+  .hr
+  %h3= t('layout.repositories.extra_actions')
+
+  .leftlist= t('layout.repositories.regenerate_metadata')
+  .rightlist= link_to t('layout.repositories.regenerate_metadata'),
+            regenerate_metadata_platform_repository_path(@platform, @repository),
+            :method => :put, :confirm => t('layout.confirm'), :class => 'button'
+
+  - if @platform.main?
+    .leftlist= t('layout.repositories.sync_lock_file_info')
+    - if @repository.sync_lock_file_exists?
+      - label = t('layout.repositories.remove_sync_lock_file')
+      - path  = sync_lock_file_platform_repository_path(@platform, @repository, :remove => true)
+    - else
+      - label = t('layout.repositories.add_sync_lock_file')
+      - path  = sync_lock_file_platform_repository_path(@platform, @repository)
+
+    .rightlist= link_to label, path, :method => :put, :confirm => t('layout.confirm'), :class => 'button'
+    .both
+  .hr
+
+
 
 - if @platform.main?
   = render "shared/members_table",

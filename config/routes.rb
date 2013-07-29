@@ -39,13 +39,15 @@ Rosa::Application.routes.draw do
       end
       resources :repositories, :only => [:show, :update, :destroy] do
         member {
-          get :projects
-          get :key_pair
-          put :add_member
-          delete :remove_member
-          put :add_project
-          delete :remove_project
-          put :signatures
+          get     :projects
+          get     :key_pair
+          put     :add_member
+          delete  :remove_member
+          put     :add_project
+          delete  :remove_project
+          put     :signatures
+          put     :add_repo_lock_file
+          delete  :remove_repo_lock_file
         }
       end
       resources :projects, :only => [:index, :show, :update, :create, :destroy] do
@@ -174,13 +176,14 @@ Rosa::Application.routes.draw do
 
       resources :repositories do
         member do
-          get :add_project
-          delete :remove_project
-          get :projects_list
-          post   :remove_members # fixme: change post to delete
-          delete :remove_member
-          post   :add_member
-          put :regenerate_metadata
+          get     :add_project
+          delete  :remove_project
+          get     :projects_list
+          post    :remove_members # fixme: change post to delete
+          delete  :remove_member
+          post    :add_member
+          put     :regenerate_metadata
+          put     :sync_lock_file
         end
       end
       resources :key_pairs, :only => [:create, :index, :destroy]

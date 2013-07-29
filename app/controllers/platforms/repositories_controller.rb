@@ -149,6 +149,17 @@ class Platforms::RepositoriesController < Platforms::BaseController
     redirect_to platform_repository_path(@platform, @repository)
   end
 
+  def sync_lock_file
+    if params[:remove]
+      @repository.remove_sync_lock_file
+      flash[:notice] = t('flash.repository.sync_lock_file_removed')
+    else
+      flash[:notice] = t('flash.repository.sync_lock_file_added')
+      @repository.add_sync_lock_file
+    end
+    redirect_to edit_platform_repository_path(@platform, @repository)
+  end
+
   protected
 
   def set_members
