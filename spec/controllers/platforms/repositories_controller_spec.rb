@@ -20,7 +20,6 @@ shared_examples_for 'user with change projects in repository rights' do
     @repository.projects.should_not include(@project)
   end
 
-
 end
 
 shared_examples_for 'user with rights of lock/unlock sync of repository' do

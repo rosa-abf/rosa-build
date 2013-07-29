@@ -62,6 +62,15 @@ shared_examples_for 'api repository user with writer rights' do
     end
   end
 
+  context 'api repository user with start/stop sync rights' do
+    [:start_sync, :stop_sync].each do |action|
+      it "should be able to perform #{action} action" do
+        put action, :id => @repository.id, :format => :json
+        response.should be_success
+      end
+    end
+  end
+
   context 'api repository user with add_member rights' do
     let(:member) { FactoryGirl.create(:user) }
     before do
@@ -176,6 +185,15 @@ shared_examples_for 'api repository user without writer rights' do
     it 'ensures that repository has not been updated' do
       @repository.reload
       @repository.description.should_not == 'new description'
+    end
+  end
+
+  context 'api repository user without start/stop sync rights' do
+    [:start_sync, :stop_sync].each do |action|
+      it "should not be able to perform #{action} action" do
+        put action, :id => @repository.id, :format => :json
+        response.should_not be_success
+      end
     end
   end
 

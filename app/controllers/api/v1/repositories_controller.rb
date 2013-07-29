@@ -35,12 +35,12 @@ class Api::V1::RepositoriesController < Api::V1::BaseController
 
   def start_sync
     @repository.start_sync
-    render :nothing => true
+    render_json_response @repository, 'Repository has been locked for sync successfully'
   end
 
   def stop_sync
     @repository.stop_sync
-    render :nothing => true
+    render_json_response @repository, 'Repository has been unlocked for sync successfully'
   end
 
   def add_project
