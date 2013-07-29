@@ -1,5 +1,6 @@
 # -*- encoding : utf-8 -*-
 class Repository < ActiveRecord::Base
+  LOCK_FILE_NAMES = {:sync => '.sync.lock', :repo => '.repo.lock'}
   SORT = {'base' => 1, 'main' => 2, 'contrib' => 3, 'non-free' => 4, 'restricted' => 5}
 
   belongs_to :platform
@@ -47,31 +48,31 @@ class Repository < ActiveRecord::Base
 
   # Checks locking of sync
   def sync_lock_file_exists?
-    sync_actions :check
+    lock_file_actions :check, :sync
   end
 
   # Uses for locking sync
   # Calls from UI
   def add_sync_lock_file
-    sync_actions :lock
+    lock_file_actions :add, :sync
   end
 
   # Uses for unlocking sync
   # Calls from UI
   def remove_sync_lock_file
-    sync_actions :unlock
+    lock_file_actions :remove, :sync
   end
 
   # Uses for locking publishing
   # Calls from API
   def add_repo_lock_file
-    sync_actions :lock, '.repo.lock'
+    lock_file_actions :add, :repo
   end
 
   # Uses for unlocking publishing
   # Calls from API
   def remove_repo_lock_file
-    sync_actions :unlock, '.repo.lock'
+    lock_file_actions :remove, :repo
   end
 
   def add_member(member, role = 'admin')
@@ -101,14 +102,14 @@ class Repository < ActiveRecord::Base
 
   protected
 
-  def sync_actions(action, lock_file = '.sync.lock')
+  def lock_file_actions(action, lock_file)
     result = false
     (['SRPMS'] << Arch.pluck(:name)).each do |arch|
-      path = "#{platform.path}/repository/#{arch}/#{name}/#{lock_file}"
+      path = "#{platform.path}/repository/#{arch}/#{name}/#{LOCK_FILE_NAMES[lock_file]}"
       case action
-      when :lock
+      when :add
         result ||= FileUtils.touch(path) rescue nil
-      when :unlock
+      when :remove
         result ||= FileUtils.rm_f(path)
       when :check
         return true if File.exist?(path)
