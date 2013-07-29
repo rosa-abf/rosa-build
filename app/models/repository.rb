@@ -75,6 +75,11 @@ class Repository < ActiveRecord::Base
     lock_file_actions :remove, :repo
   end
 
+  # Presence of `.repo.lock` file means that mirror is currently synchronising the repository state.
+  def repo_lock_file_exists?
+    lock_file_actions :check, :repo
+  end
+
   def add_member(member, role = 'admin')
     Relation.add_member(member, self, role)
   end
