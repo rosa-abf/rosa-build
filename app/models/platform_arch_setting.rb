@@ -2,7 +2,7 @@
 class PlatformArchSetting < ActiveRecord::Base
   DEFAULT_TIME_LIVING = 43200   # seconds, 12 hours
   MIN_TIME_LIVING     = 600     # seconds, 10 minutes
-  MAX_TIME_LIVING     = 172800  # seconds, 48 hours
+  MAX_TIME_LIVING     = 360000  # seconds, 100 hours, 4 day and 4 hours
   include Modules::Models::TimeLiving
 
   belongs_to :arch
