@@ -35,12 +35,12 @@ class Api::V1::RepositoriesController < Api::V1::BaseController
 
   def add_repo_lock_file
     @repository.add_repo_lock_file
-    render_json_response @repository, 'Repository has been locked for sync successfully'
+    render_json_response @repository, "'.repo.lock' file has been added to repository successfully"
   end
 
   def remove_repo_lock_file
     @repository.remove_repo_lock_file
-    render_json_response @repository, 'Repository has been unlocked for sync successfully'
+    render_json_response @repository, "'.repo.lock' file has been removed from repository successfully"
   end
 
   def add_project

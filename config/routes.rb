@@ -47,7 +47,7 @@ Rosa::Application.routes.draw do
           delete  :remove_project
           put     :signatures
           put     :add_repo_lock_file
-          put     :remove_repo_lock_file
+          delete  :remove_repo_lock_file
         }
       end
       resources :projects, :only => [:index, :show, :update, :create, :destroy] do
