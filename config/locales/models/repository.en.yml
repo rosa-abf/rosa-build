@@ -2,8 +2,9 @@ en:
   layout:
     repositories:
       extra_actions: Extra actions
-      lock_sync: Lock sync with mirrors
-      unlock_sync: Unlock sync with mirrors
+      add_sync_lock_file: "Add '.sync.lock' file"
+      remove_sync_lock_file: "Remove '.sync.lock' file"
+      sync_lock_file_info: "Presence of '.sync.lock' file means that repository is not ready for sync with mirror"
       add_project_to: Add project to repository
       edit: Settings
       list: List
@@ -31,8 +32,8 @@ en:
 
   flash:
     repository:
-      sync_locked: Sync of repository with mirrors has been locked
-      sync_unlocked: Sync of repository with mirrors has been unlocked
+      sync_lock_file_added: "'.sync.lock' file has been added to repository"
+      sync_lock_file_removed: "'.sync.lock' file has been removed from repository"
 
 
       saved: Repository added

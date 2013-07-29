@@ -12,19 +12,21 @@
   .hr
   %h3= t('layout.repositories.extra_actions')
 
-  = link_to t('layout.repositories.regenerate_metadata'),
+  .leftlist= t('layout.repositories.regenerate_metadata')
+  .rightlist= link_to t('layout.repositories.regenerate_metadata'),
             regenerate_metadata_platform_repository_path(@platform, @repository),
             :method => :put, :confirm => t('layout.confirm'), :class => 'button'
 
   - if @platform.main?
-    - if @repository.sync_locked?
-      - label = t('layout.repositories.unlock_sync')
-      - path  = unlock_sync_platform_repository_path(@platform, @repository)
+    .leftlist= t('layout.repositories.sync_lock_file_info')
+    - if @repository.sync_lock_file_exists?
+      - label = t('layout.repositories.remove_sync_lock_file')
+      - path  = sync_lock_file_platform_repository_path(@platform, @repository, :remove => true)
     - else
-      - label = t('layout.repositories.lock_sync')
-      - path  = lock_sync_platform_repository_path(@platform, @repository)
+      - label = t('layout.repositories.add_sync_lock_file')
+      - path  = sync_lock_file_platform_repository_path(@platform, @repository)
 
-    = link_to label, path, :method => :put, :confirm => t('layout.confirm'), :class => 'button'
+    .rightlist= link_to label, path, :method => :put, :confirm => t('layout.confirm'), :class => 'button'
     .both
   .hr
 

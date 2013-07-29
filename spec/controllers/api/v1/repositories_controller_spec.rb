@@ -62,8 +62,8 @@ shared_examples_for 'api repository user with writer rights' do
     end
   end
 
-  context 'api repository user with start/stop sync rights' do
-    [:start_sync, :stop_sync].each do |action|
+  context 'api repository user with add/remove repo_lock_file rights' do
+    [:add_repo_lock_file, :remove_repo_lock_file].each do |action|
       it "should be able to perform #{action} action" do
         put action, :id => @repository.id, :format => :json
         response.should be_success
@@ -188,8 +188,8 @@ shared_examples_for 'api repository user without writer rights' do
     end
   end
 
-  context 'api repository user without start/stop sync rights' do
-    [:start_sync, :stop_sync].each do |action|
+  context 'api repository user without add/remove repo_lock_file rights' do
+    [:add_repo_lock_file, :remove_repo_lock_file].each do |action|
       it "should not be able to perform #{action} action" do
         put action, :id => @repository.id, :format => :json
         response.should_not be_success

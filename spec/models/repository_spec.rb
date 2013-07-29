@@ -30,39 +30,39 @@ describe Repository do
 
   end
 
-  context '#sync_locked?, #lock_sync, #unlock_sync, #start_sync, #stop_sync' do
+  context '#sync_lock_file_exists?, #add_sync_lock_file, #remove_sync_lock_file, #add_repo_lock_file, #remove_repo_lock_file' do
     let(:repository) { FactoryGirl.create(:repository) }
     let(:path) { "#{repository.platform.path}/repository/SRPMS/#{repository.name}" }
     before { FileUtils.mkdir_p path }
 
-    it 'ensures that #sync_locked? returns false if .sync.lock file does not exist' do
-      repository.sync_locked?.should be_false
+    it 'ensures that #sync_lock_file_exists? returns false if .sync.lock file does not exist' do
+      repository.sync_lock_file_exists?.should be_false
     end
 
-    it 'ensures that #sync_locked? returns true if .sync.lock file does exist' do
+    it 'ensures that #sync_lock_file_exists? returns true if .sync.lock file does exist' do
       FileUtils.touch "#{path}/.sync.lock"
-      repository.sync_locked?.should be_true
+      repository.sync_lock_file_exists?.should be_true
     end
 
-    it 'ensures that #lock_sync creates .sync.lock file' do
-      repository.lock_sync
+    it 'ensures that #add_sync_lock_file creates .sync.lock file' do
+      repository.add_sync_lock_file
       File.exist?("#{path}/.sync.lock").should be_true
     end
 
-    it 'ensures that #unlock_sync removes .sync.lock file' do
+    it 'ensures that #remove_sync_lock_file removes .sync.lock file' do
       FileUtils.touch "#{path}/.sync.lock"
-      repository.unlock_sync
+      repository.remove_sync_lock_file
       File.exist?("#{path}/.sync.lock").should be_false
     end
 
-    it 'ensures that #start_sync creates .repo.lock file' do
-      repository.start_sync
+    it 'ensures that #add_repo_lock_file creates .repo.lock file' do
+      repository.add_repo_lock_file
       File.exist?("#{path}/.repo.lock").should be_true
     end
 
-    it 'ensures that #stop_sync removes .repo.lock file' do
+    it 'ensures that #remove_repo_lock_file removes .repo.lock file' do
       FileUtils.touch "#{path}/.repo.lock"
-      repository.stop_sync
+      repository.remove_repo_lock_file
       File.exist?("#{path}/.repo.lock").should be_false
     end
 

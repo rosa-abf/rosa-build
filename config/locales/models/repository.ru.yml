@@ -2,8 +2,9 @@ ru:
   layout:
     repositories:
       extra_actions: Дополнительные действия
-      lock_sync: Заблокировать синхронизацию с зеркалами
-      unlock_sync: Разблокировать синхронизацию с зеркалами
+      add_sync_lock_file: "Добавить '.sync.lock' файл"
+      remove_sync_lock_file: "Удалить '.sync.lock' файл"
+      sync_lock_file_info: "Наличие '.sync.lock' файла означает, что репозиторий не готов для синхронизации с зеркалом"
       add_project_to: Добавить проект к репозиторию
       edit: Настройки
       list: Список
@@ -31,8 +32,8 @@ ru:
 
   flash:
     repository:
-      sync_locked: Синхронизация репозитория c зеркалами заблокирована
-      sync_unlocked: Синхронизация репозитория c зеркалами разблокирована
+      sync_lock_file_added: "'.sync.lock' файл добавлен в репозиторий"
+      sync_lock_file_removed: "'.sync.lock' файл удален из репозитория"
 
       saved: Репозиторий успешно добавлен
       updated: Репозиторий успешно обновлен

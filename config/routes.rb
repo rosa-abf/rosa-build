@@ -46,8 +46,8 @@ Rosa::Application.routes.draw do
           put     :add_project
           delete  :remove_project
           put     :signatures
-          put     :start_sync
-          put     :stop_sync
+          put     :add_repo_lock_file
+          put     :remove_repo_lock_file
         }
       end
       resources :projects, :only => [:index, :show, :update, :create, :destroy] do
@@ -183,8 +183,7 @@ Rosa::Application.routes.draw do
           delete  :remove_member
           post    :add_member
           put     :regenerate_metadata
-          put     :lock_sync
-          put     :unlock_sync
+          put     :sync_lock_file
         end
       end
       resources :key_pairs, :only => [:create, :index, :destroy]

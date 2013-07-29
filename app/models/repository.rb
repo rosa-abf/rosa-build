@@ -46,31 +46,31 @@ class Repository < ActiveRecord::Base
   end
 
   # Checks locking of sync
-  def sync_locked?
+  def sync_lock_file_exists?
     sync_actions :check
   end
 
   # Uses for locking sync
   # Calls from UI
-  def lock_sync
+  def add_sync_lock_file
     sync_actions :lock
   end
 
   # Uses for unlocking sync
   # Calls from UI
-  def unlock_sync
+  def remove_sync_lock_file
     sync_actions :unlock
   end
 
   # Uses for locking publishing
   # Calls from API
-  def start_sync
+  def add_repo_lock_file
     sync_actions :lock, '.repo.lock'
   end
 
   # Uses for unlocking publishing
   # Calls from API
-  def stop_sync
+  def remove_repo_lock_file
     sync_actions :unlock, '.repo.lock'
   end
 
