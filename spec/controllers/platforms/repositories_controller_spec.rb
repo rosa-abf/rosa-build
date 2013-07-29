@@ -20,6 +20,25 @@ shared_examples_for 'user with change projects in repository rights' do
     @repository.projects.should_not include(@project)
   end
 
+
+end
+
+shared_examples_for 'user with rights of lock/unlock sync of repository' do
+  [:lock_sync, :unlock_sync].each do |action|
+    it "should be able to perform #{action} action" do
+      put action, :id => @repository.id, :platform_id => @platform.id
+      response.should redirect_to(edit_platform_repository_path(@platform, @repository))
+    end
+  end
+end
+
+shared_examples_for 'user without rights of lock/unlock sync of repository' do
+  [:lock_sync, :unlock_sync].each do |action|
+    it "should not be able to perform #{action} action" do
+      put action, :id => @repository.id, :platform_id => @platform.id
+      response.should redirect_to(redirect_path)
+    end
+  end
 end
 
 shared_examples_for 'user without change projects in repository rights' do
@@ -133,6 +152,7 @@ end
 shared_examples_for 'platform admin user' do
   
   it_should_behave_like 'registered user'
+  it_should_behave_like 'user with rights of lock/unlock sync of repository'
 
   it 'should be able to perform new action' do
     get :new, :platform_id => @platform.id
@@ -240,6 +260,7 @@ describe Platforms::RepositoriesController do
     let(:redirect_path) { new_user_session_path }
     it_should_behave_like 'registered user or guest'
     it_should_behave_like 'user without change projects in repository rights'
+    it_should_behave_like 'user without rights of lock/unlock sync of repository'
     
     it "should not be able to perform show action", :anonymous_access => false do
       get :show, :id => @repository
@@ -264,6 +285,7 @@ describe Platforms::RepositoriesController do
     let(:redirect_path) { forbidden_path }
     it_should_behave_like 'registered user or guest'
     it_should_behave_like 'user without change projects in repository rights'
+    it_should_behave_like 'user without rights of lock/unlock sync of repository'
   end
 
   context 'for admin' do
@@ -311,6 +333,7 @@ describe Platforms::RepositoriesController do
     let(:redirect_path) { forbidden_path }
     it_should_behave_like 'registered user or guest'
     it_should_behave_like 'user with change projects in repository rights'
+    it_should_behave_like 'user without rights of lock/unlock sync of repository'
 
     context 'for hidden platform' do
       before do
@@ -322,6 +345,7 @@ describe Platforms::RepositoriesController do
       let(:redirect_path) { forbidden_path }
       it_should_behave_like 'registered user or guest'
       it_should_behave_like 'user with change projects in repository rights'
+      it_should_behave_like 'user without rights of lock/unlock sync of repository'
     end
 
   end
