@@ -9,6 +9,9 @@ common: &common
     - 127.0.0.100
   abf_worker:
     publish_workers_count: 2
+    log_server:
+      host: 127.0.0.1
+      port: 6379
   keys:
     key_pair_secret_key: 'key_pair_secret_key'
     airbrake_api_key: 'airbrake_api_key'
