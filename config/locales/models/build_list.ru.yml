@@ -151,6 +151,8 @@ ru:
       show_filter: Показать фильтры
       hide_filter: Скрыть фильтры
 
+      recreate_build_list: Пересоздать сборку
+
   flash:
     build_list:
       saved: Билд лист для версии '%{project_version}', платформы '%{build_for_platform}' и архитектуры '%{arch}' создан успешно

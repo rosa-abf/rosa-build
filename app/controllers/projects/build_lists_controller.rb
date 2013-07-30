@@ -49,6 +49,17 @@ class Projects::BuildListsController < Projects::BaseController
   def create
     notices, errors = [], []
 
+    if params[:build_list_id]
+      build_list = BuildList.find params[:build_list_id]
+      params[:build_list][:save_to_repository_id] = build_list.save_to_repository_id
+      params[:build_list][:auto_publish] = build_list.auto_publish
+      params[:build_list][:include_repos] = build_list.include_repos
+      params[:arches] = build_list.arch_id
+      params[:build_list][:project_version] = build_list.project_version
+      params[:build_list][:update_type] = build_list.update_type
+      params[:build_list][:auto_create_container] = build_list.auto_create_container
+    end
+
     @repository = Repository.find params[:build_list][:save_to_repository_id]
     @platform = @repository.platform
 

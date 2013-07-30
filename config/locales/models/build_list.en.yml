@@ -152,6 +152,8 @@ en:
       show_filter: Show filters
       hide_filter: Hide filters
 
+      recreate_build_list: Recreate Build List
+
   flash:
     build_list:
       saved: Build list for project version '%{project_version}', platform '%{build_for_platform}' and architecture '%{arch}' has been created successfully
