@@ -44,6 +44,10 @@ class Projects::BuildListsController < Projects::BaseController
   end
 
   def new
+    if params[:build_list_id]
+      @build_list = BuildList.find params[:build_list_id]
+      set_params @build_list
+    end
   end
 
   def create
@@ -51,13 +55,7 @@ class Projects::BuildListsController < Projects::BaseController
 
     if params[:build_list_id]
       build_list = BuildList.find params[:build_list_id]
-      params[:build_list][:save_to_repository_id] = build_list.save_to_repository_id
-      params[:build_list][:auto_publish] = build_list.auto_publish
-      params[:build_list][:include_repos] = build_list.include_repos
-      params[:arches] = build_list.arch_id
-      params[:build_list][:project_version] = build_list.project_version
-      params[:build_list][:update_type] = build_list.update_type
-      params[:build_list][:auto_create_container] = build_list.auto_create_container
+      set_params build_list
     end
 
     @repository = Repository.find params[:build_list][:save_to_repository_id]
@@ -167,5 +165,18 @@ class Projects::BuildListsController < Projects::BaseController
 
   def find_build_list
     @build_list = BuildList.find(params[:id])
+  end
+
+  def set_params build_list
+    params[:build_list] ||= {}
+    params[:build_list][:save_to_repository_id] = build_list.save_to_repository_id
+    params[:build_list][:auto_publish] = build_list.auto_publish
+    params[:build_list][:include_repos] = build_list.include_repos
+    params[:arches] = [build_list.arch_id.to_s]
+    params[:build_list][:project_version] = build_list.project_version
+    params[:build_list][:update_type] = build_list.update_type
+    params[:build_list][:auto_create_container] = build_list.auto_create_container
+    params[:build_list][:extra_repositories] = build_list.extra_repositories
+    params[:build_list][:extra_build_lists] = build_list.extra_build_lists
   end
 end
