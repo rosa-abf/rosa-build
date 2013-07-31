@@ -290,6 +290,18 @@ class BuildList < ActiveRecord::Base
     BuildList.where(:id => extra_build_lists).where('status != ?', BUILD_PUBLISHED).count == 0
   end
 
+  def human_average_build_time
+    I18n.t('layout.project_statistics.human_average_build_time', {:hours => (average_build_time/3600).to_i, :minutes => (average_build_time%3600/60).to_i})
+  end
+
+  def formatted_average_build_time
+    "%02d:%02d" % [average_build_time / 3600, average_build_time % 3600 / 60]
+  end
+
+  def average_build_time
+    project.project_statistics.where(:arch_id => arch_id).first.try(:average_build_time) || 0
+  end
+
   def self.human_status(status)
     I18n.t("layout.build_lists.statuses.#{HUMAN_STATUSES[status]}")
   end

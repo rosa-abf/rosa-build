@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130724105821) do
+ActiveRecord::Schema.define(:version => 20130731130518) do
 
   create_table "activity_feeds", :force => true do |t|
     t.integer  "user_id",    :null => false
@@ -376,6 +376,17 @@ ActiveRecord::Schema.define(:version => 20130724105821) do
 
   add_index "project_imports", ["platform_id", "name"], :name => "index_project_imports_on_name_and_platform_id", :unique => true, :case_sensitive => false
 
+  create_table "project_statistics", :force => true do |t|
+    t.integer  "average_build_time", :default => 0, :null => false
+    t.integer  "build_count",        :default => 0, :null => false
+    t.integer  "arch_id",                           :null => false
+    t.integer  "project_id",                        :null => false
+    t.datetime "created_at",                        :null => false
+    t.datetime "updated_at",                        :null => false
+  end
+
+  add_index "project_statistics", ["project_id", "arch_id"], :name => "index_project_statistics_on_project_id_and_arch_id", :unique => true
+
   create_table "project_tags", :force => true do |t|
     t.integer  "project_id"
     t.string   "commit_id"
@@ -412,8 +423,6 @@ ActiveRecord::Schema.define(:version => 20130724105821) do
     t.boolean  "has_wiki",                 :default => false
     t.string   "default_branch",           :default => "master"
     t.boolean  "is_package",               :default => true,     :null => false
-    t.integer  "average_build_time",       :default => 0,        :null => false
-    t.integer  "build_count",              :default => 0,        :null => false
     t.integer  "maintainer_id"
     t.boolean  "publish_i686_into_x86_64", :default => false
     t.string   "owner_uname",                                    :null => false

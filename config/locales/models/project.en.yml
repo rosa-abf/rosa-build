@@ -47,7 +47,6 @@ en:
       sections: Sections
       has_issue_description: Tracker adds a lightweight issue management system tightly integrated with your repository.
       has_wiki_description: Wikis are the simplest way to allow other users to contribute content. Any user can create and edit pages for documentation, examples, support or anything you wish.
-      human_average_build_time: Expected time is %{hours} h. %{minutes} min.
       git_global_setup: Git global setup
       create_repository: Create Repository
       move_files_to_folder: Move files you need to the project or create them.
