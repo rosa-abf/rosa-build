@@ -3,7 +3,7 @@ ru:
     projects:
       branches: Ветки
       delete_branch: Удалить ветку
-      restore_branch: Востановить ветку
+      restore_branch: Восстановить ветку
       no_branches: Нет веток
       base_branch: Текущая ветка
       compare: Сравнить
