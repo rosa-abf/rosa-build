@@ -6,5 +6,5 @@ class ProjectStatistic < ActiveRecord::Base
   validates :arch_id, :project_id, :average_build_time, :build_count, :presence => true
   validates :project_id, :uniqueness => {:scope => :arch_id}
 
-  attr_accessible :arch_id, :average_build_time, :build_count, :project_id
+  attr_accessible :average_build_time, :build_count
 end

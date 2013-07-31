@@ -194,14 +194,6 @@ class Project < ActiveRecord::Base
     end
   end
 
-  # def human_average_build_time
-  #   I18n.t("layout.projects.human_average_build_time", {:hours => (average_build_time/3600).to_i, :minutes => (average_build_time%3600/60).to_i})
-  # end
-
-  # def formatted_average_build_time
-  #   "%02d:%02d" % [average_build_time / 3600, average_build_time % 3600 / 60]
-  # end
-
   def destroy_project_from_repository(repository)
     AbfWorker::BuildListsPublishTaskManager.destroy_project_from_repository self, repository
   end
