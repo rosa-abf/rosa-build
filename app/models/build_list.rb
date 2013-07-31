@@ -299,7 +299,7 @@ class BuildList < ActiveRecord::Base
   end
 
   def average_build_time
-    project.project_statistics.where(:arch_id => arch_id).first || 0
+    project.project_statistics.where(:arch_id => arch_id).first.try(:average_build_time) || 0
   end
 
   def self.human_status(status)
