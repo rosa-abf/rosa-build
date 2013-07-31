@@ -151,6 +151,7 @@ ru:
       show_filter: Показать фильтры
       hide_filter: Скрыть фильтры
 
+      last_build_lists: Последние сборки
       recreate_build_list: Пересоздать сборку
 
   flash:

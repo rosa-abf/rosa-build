@@ -152,6 +152,7 @@ en:
       show_filter: Show filters
       hide_filter: Hide filters
 
+      last_build_lists: Last Build Lists
       recreate_build_list: Recreate Build List
 
   flash:

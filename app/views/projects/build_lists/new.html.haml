@@ -9,18 +9,18 @@
           .offset25= render 'include_repos', :platform => pl
   %section.right
     %h3= t('activerecord.attributes.build_list.save_to_repository')
-    - selected = params[:build_list].try(:fetch, :save_to_repository_id) ? {:selected => params[:build_list][:save_to_repository_id]} : nil
-    .lineForm= f.select :save_to_repository_id, save_to_repositories(@project), selected
+    - selected = params[:build_list].try(:fetch, :save_to_repository_id) ? {:selected => params[:build_list][:save_to_repository_id]} : {}
+    .lineForm= f.select :save_to_repository_id, save_to_repositories(@project), selected, :id => 'build_list_save_to_repository_id'
     %h3= t("activerecord.attributes.build_list.project_version")
-    .lineForm= f.select :project_version, versions_for_group_select(@project), :selected => params[:build_list].try(:fetch, :project_version) || @project.default_branch
+    .lineForm= f.select :project_version, versions_for_group_select(@project), {}, :selected => params[:build_list].try(:fetch, :project_version) || @project.default_branch, :id => 'build_list_project_version'
     %h3= t("activerecord.attributes.build_list.arch")
     - Arch.recent.each do |arch|
       .both
         = check_box_tag "arches[]", arch.id, (params[:arches]||[]).include?(arch.id.to_s) || (controller.action_name == 'new' && %w(i586 x86_64).include?(arch.name)), :id => "arches_#{arch.id}"
         = label_tag "arches_#{arch.id}", arch.name
     %h3= t('activerecord.attributes.build_list.update_type')
-    - selected = params[:build_list].try(:fetch, :update_type) ? {:selected => params[:build_list][:update_version]} : nil
-    .lineForm= f.select :update_type, BuildList::UPDATE_TYPES, selected
+    - selected = params[:build_list].try(:fetch, :update_type) ? {:selected => params[:build_list][:update_version]} : {}
+    .lineForm= f.select :update_type, BuildList::UPDATE_TYPES, selected, :id => 'build_list_update_types'
 
     = render 'shared/autocomplete_form',
       :field              => :extra_repositories,
@@ -46,4 +46,5 @@
     = f.submit t('layout.projects.build_button'), :data => {'disable-with' => t('layout.processing')}
 .both
 %br
+= render 'last_build_lists', :project => @project
 = render 'projects/base/submenu'
