@@ -1,0 +1,14 @@
+en:
+  layout:
+    project_statistics:
+      human_average_build_time: Expected time is %{hours} h. %{minutes} min.
+
+  flash:
+    project_statistic:
+
+
+  activerecord:
+    models:
+      project_statistic: Project statistic
+    attributes:
+      project_statistic:

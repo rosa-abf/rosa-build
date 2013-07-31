@@ -98,7 +98,7 @@
     %br
     .leftlist
     .rightlist
-      = "#{@build_list.human_current_duration} / #{@build_list.project.human_average_build_time}"
+      = "#{@build_list.human_current_duration} / #{@build_list.human_average_build_time}"
     .both
 
   - if @build_list.can_cancel? && can?(:cancel, @build_list)

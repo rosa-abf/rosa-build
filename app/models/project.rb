@@ -15,6 +15,7 @@ class Project < ActiveRecord::Base
   has_many :project_to_repositories, :dependent => :destroy
   has_many :repositories, :through => :project_to_repositories
   has_many :project_tags, :dependent => :destroy
+  has_many :project_statistics, :dependent => :destroy
   
   has_many :build_lists, :dependent => :destroy
   has_many :hooks, :dependent => :destroy
@@ -191,14 +192,6 @@ class Project < ActiveRecord::Base
       c.send :set_maintainer
       c.save
     end
-  end
-
-  def human_average_build_time
-    I18n.t("layout.projects.human_average_build_time", {:hours => (average_build_time/3600).to_i, :minutes => (average_build_time%3600/60).to_i})
-  end
-
-  def formatted_average_build_time
-    "%02d:%02d" % [average_build_time / 3600, average_build_time % 3600 / 60]
   end
 
   def destroy_project_from_repository(repository)
