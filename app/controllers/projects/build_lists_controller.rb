@@ -113,36 +113,24 @@ class Projects::BuildListsController < Projects::BaseController
     end
 
     @build_list.publisher = current_user
-    if @build_list.publish
-      redirect_to :back, :notice => t('layout.build_lists.publish_success')
-    else
-      redirect_to :back, :notice => t('layout.build_lists.publish_fail')
-    end
+    message = @build_list.publish ? 'success' : 'fail'
+    redirect_to :back, :notice => t("layout.build_lists.publish_#{message}")
   end
 
   def reject_publish
     @build_list.publisher = current_user
-    if @build_list.reject_publish
-      redirect_to :back, :notice => t('layout.build_lists.reject_publish_success')
-    else
-      redirect_to :back, :notice => t('layout.build_lists.reject_publish_fail')
-    end
+    message = @build_list.reject_publish ? 'success' : 'fail'
+    redirect_to :back, :notice => t("layout.build_lists.reject_publish_#{message}")
   end
 
   def create_container
-    if @build_list.publish_container
-      redirect_to :back, :notice => t('layout.build_lists.create_container_success')
-    else
-      redirect_to :back, :notice => t('layout.build_lists.create_container_fail')
-    end
+    message = @build_list.publish_container ? 'success' : 'fail'
+    redirect_to :back, :notice => t("layout.build_lists.create_container_#{message}")
   end
 
   def cancel
-    if @build_list.cancel
-      redirect_to :back, :notice => t('layout.build_lists.will_be_canceled')
-    else
-      redirect_to :back, :notice => t('layout.build_lists.cancel_fail')
-    end
+    message = @build_list.cancel ? 'will_be_canceled' : 'cancel_fail'
+    redirect_to :back, :notice => t("layout.build_lists.#{message}")
   end
 
   def log
