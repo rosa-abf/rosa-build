@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130731120901) do
+ActiveRecord::Schema.define(:version => 20130731130518) do
 
   create_table "activity_feeds", :force => true do |t|
     t.integer  "user_id",    :null => false
@@ -423,8 +423,6 @@ ActiveRecord::Schema.define(:version => 20130731120901) do
     t.boolean  "has_wiki",                 :default => false
     t.string   "default_branch",           :default => "master"
     t.boolean  "is_package",               :default => true,     :null => false
-    t.integer  "average_build_time",       :default => 0,        :null => false
-    t.integer  "build_count",              :default => 0,        :null => false
     t.integer  "maintainer_id"
     t.boolean  "publish_i686_into_x86_64", :default => false
     t.string   "owner_uname",                                    :null => false
