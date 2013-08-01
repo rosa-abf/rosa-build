@@ -36,20 +36,6 @@ RosaABF.controller('BuildListsController', ['$scope', '$http', '$location', '$ti
       $location.search(params);
     }
     $scope.first_run = false;
-    var params = $location.search();
-    $scope.filter    = {
-      per_page:           params['per_page'],
-      ownership:          params['filter[ownership]'],
-      status:             params['filter[status]'],
-      platform_id:        params['filter[platform_id]'],
-      arch_id:            params['filter[arch_id]'],
-      mass_build_id:      params['filter[mass_build_id]'],
-      updated_at_start:   params['filter[updated_at_start]'],
-      updated_at_end:     params['filter[updated_at_end]'],
-      project_name:       params['filter[project_name]'],
-      id:                 params['filter[id]']
-    }
-    $scope.getBuildLists();
   }
 
   $scope.defaultValues = {
@@ -67,8 +53,30 @@ RosaABF.controller('BuildListsController', ['$scope', '$http', '$location', '$ti
     $scope.cancelRefresh = $timeout($scope.refresh, 5000);
     // $scope.cancelRefresh = $timeout($scope.refresh, 60000);
   }
-
-  // $scope.search();
   $scope.refresh();
+
+
+  $scope.$on('$locationChangeSuccess', function(event) {
+    $scope.updateFilter();
+    $scope.getBuildLists();
+  });
+
+  $scope.updateFilter = function() {
+
+    var params = $location.search();
+    $scope.filter    = {
+      per_page:           params['per_page'],
+      ownership:          params['filter[ownership]'],
+      status:             params['filter[status]'],
+      platform_id:        params['filter[platform_id]'],
+      arch_id:            params['filter[arch_id]'],
+      mass_build_id:      params['filter[mass_build_id]'],
+      updated_at_start:   params['filter[updated_at_start]'],
+      updated_at_end:     params['filter[updated_at_end]'],
+      project_name:       params['filter[project_name]'],
+      id:                 params['filter[id]']
+    }
+
+  }
 
 }]);
