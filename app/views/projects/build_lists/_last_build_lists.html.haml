@@ -1,37 +1,45 @@
 .all
   %h3= t 'layout.build_lists.last_build_lists'
-  -#.lineForm= select_tag :last_build_lists, last_build_lists(@project)
+  %h4= t 'layout.relations.filters'
+  .both
+    = check_box_tag :owner_filter_build_lists, true, params[:owner_filter] == 'true'
+    = label_tag t('layout.build_lists.only_my_build_lists')
+  .both
+    = check_box_tag :status_filter_build_lists, true, params[:status_filter] == 'true'
+    = label_tag t('layout.build_lists.failed_build_lists')
 
-  %table.tablesorter{:cellpadding => "0", :cellspacing => "0"}
+  - default_column = {:type => 'html', :sortable => false, :searchable => false}
+  - columns = [default_column,
+               default_column,
+               default_column,
+               default_column,
+               default_column,
+               default_column,
+               default_column,
+               default_column]
+  = raw datatable(columns, {:sort_by => "[7, 'asc']", :processing => t('layout.processing'), :search => 'false',
+                            :pagination_labels => {:previous => t('datatables.previous_label'), :next => t('datatables.next_label')},
+                            :empty_label      => t('datatables.empty_label'),
+                            :info_label       => t('datatables.info_label'),
+                            :info_empty_label => t('datatables.info_empty_label'),
+                            :filtered_label   => t('datatables.filtered_label'),
+                            :table_dom_id     => 'datatable',
+                            :auto_width       => 'false',
+                            :ajax_source => "#{url_for :controller => 'projects/build_lists', :action => :list}",
+                            :additional_data => {:owner_filter  => "' + $('#owner_filter_build_lists:checked').val() + '",
+                                                 :status_filter => "' + $('#status_filter_build_lists:checked').val() + '"} })
+
+  %table#datatable.tablesorter.list-users{:cellspacing => 0, :cellpadding => 0}
     %thead
       %tr
-        %th.lpadding6= t('layout.clone')
-        %th.lpadding16= t('activerecord.attributes.build_list.status')
-        %th.lpadding16= t('diff')
-        %th.lpadding16= t('activerecord.attributes.build_list.project_version')
-        %th.lpadding16= t('activerecord.attributes.build_list.save_to_repository')
-        %th.lpadding6= t('activerecord.attributes.build_list.arch_short')
-        %th.lpadding16= t('activerecord.attributes.build_list.user')
-        %th.lpadding6= t('activerecord.attributes.build_list.updated_at')
+        %th.th1= t('activerecord.attributes.build_list.id')
+        %th.th2= t('activerecord.attributes.build_list.status')
+        %th.th2= t('diff')
+        %th.th2= t('activerecord.attributes.build_list.project_version')
+        %th.th2= t('activerecord.attributes.build_list.save_to_repository')
+        %th.th1= t('activerecord.attributes.build_list.arch_short')
+        %th.th2= t('activerecord.attributes.build_list.user')
+        %th.th1= t('activerecord.attributes.build_list.updated_at')
     %tbody
-      - project.build_lists.recent.last(20).each do |build_list|
-        %tr{:class => "#{build_list_status_color(build_list.status)}"}
-          %td= link_to t('layout.clone'), new_project_build_list_path(project, :build_list_id => build_list.id)
-          %td
-            = build_list.human_status
-            %br
-            - if BuildList::HUMAN_STATUSES[build_list.status].in? [:build_pending, :build_started, :build_publish]
-              %time.js-relative-date{:datetime => build_list.updated_at.strftime("%FT%T%:z"), :title => build_list.updated_at.strftime("%F %T")}
-                = build_list.updated_at.strftime "%F %T"
-              - if build_list.build_started? && ((build_list.project.average_build_time || 0) > 0)
-                \/
-                %time
-                  = build_list.project.formatted_average_build_time
-          %td= build_list_version_link(build_list)
-          %td= get_version_release build_list
-          -build_for=" (#{build_list.build_for_platform.name})" if build_list.build_for_platform && build_list.save_to_platform.personal?
-          %td= link_to "#{build_list.save_to_platform.name}/#{build_list.save_to_repository.name}#{build_for}", [build_list.save_to_platform, build_list.save_to_repository]
-          %td= build_list.arch.try(:name) || t("layout.arches.unexisted_arch")
-          %td= link_to build_list.user.try(:fullname), build_list.user
-          %td= build_list.updated_at.strftime('%d/%m/%Y')
-  .both
+  %br
+

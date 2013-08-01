@@ -153,6 +153,8 @@ ru:
 
       last_build_lists: Последние сборки
       recreate_build_list: Пересоздать сборку
+      only_my_build_lists: Только мои
+      failed_build_lists: Только сбойные
 
   flash:
     build_list:

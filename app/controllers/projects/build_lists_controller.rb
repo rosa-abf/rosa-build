@@ -149,6 +149,25 @@ class Projects::BuildListsController < Projects::BaseController
     }
   end
 
+  def list
+    @build_lists = @project.build_lists
+    sort_col = params[:ol_0] || 7
+    sort_dir = params[:sSortDir_0] == 'asc' ? 'asc' : 'desc'
+    order = "build_lists.updated_at #{sort_dir}"
+
+    @build_lists = @build_lists.paginate(:page => (params[:iDisplayStart].to_i/params[:iDisplayLength].to_i).to_i + 1, :per_page => params[:iDisplayLength])
+    @total_build_lists = @build_lists.count
+    #if !params[:sSearch].blank? && search = "%#{params[:sSearch]}%"
+    #  @users = @users.where('users.name ILIKE ? or users.uname ILIKE ? or users.email ILIKE ?', search, search, search)
+    #end
+    @build_lists = @build_lists.where(:user_id => current_user) if params[:owner_filter] == 'true'
+    @build_lists = @build_lists.where(:status => [BuildList::BUILD_ERROR, BuildList::FAILED_PUBLISH, BuildList::REJECTED_PUBLISH]) if params[:status_filter] == 'true'
+    @build_lists = @build_lists.order(order)
+
+    render :partial => 'build_lists_ajax', :layout => false
+  end
+
+
   protected
 
   def find_build_list
@@ -166,5 +185,6 @@ class Projects::BuildListsController < Projects::BaseController
     params[:build_list][:auto_create_container] = build_list.auto_create_container
     params[:build_list][:extra_repositories] = build_list.extra_repositories
     params[:build_list][:extra_build_lists] = build_list.extra_build_lists
+    [:owner_filter, :status_filter].each { |t| params[t] = 'true' if %w(true undefined).exclude? params[t] }
   end
 end

@@ -40,7 +40,7 @@ $(document).ready(function() {
     }
   });
 
-  if($('#from_build_list_id').size() > 0) {
+  if($('#from_build_list_id').size() == 0) {
     $('#build_list_save_to_repository_id').trigger('change');
   }
 
@@ -76,6 +76,10 @@ $(document).ready(function() {
   $('.mediumheight.min').datepicker({
     dateFormat: 'dd/mm/yy',
     showButtonPanel: true
+  });
+
+  $('#owner_filter_build_lists, #status_filter_build_lists').live('change', function(){
+    $('#datatable').dataTable().fnDraw();
   });
 });
 
