@@ -15,7 +15,7 @@
     %h3= t("activerecord.attributes.build_list.arch")
     - Arch.recent.each do |arch|
       .both
-        = check_box_tag "arches[]", arch.id, (params[:arches]||[]).include?(arch.id.to_s) || (controller.action_name == 'new' && %w(i586 x86_64).include?(arch.name)), :id => "arches_#{arch.id}"
+        = check_box_tag "arches[]", arch.id, (params[:arches]||[]).include?(arch.id.to_s) || (controller.action_name == 'new' && Arch::DEFAULT.include?(arch.name)), :id => "arches_#{arch.id}"
         = label_tag "arches_#{arch.id}", arch.name
     %h3= t("activerecord.attributes.build_list.update_type")
     .lineForm= f.select :update_type, BuildList::UPDATE_TYPES
