@@ -1,6 +1,6 @@
 $(document).ready(function() {
   // TODO: Refactor this handler!! It's too complicated.
-  $('#build_list_save_to_repository_id').change(function() {
+  $('#build_list_save_to_repository_id').on("change", function() {
     var selected_option = $(this).find("option:selected");
 
     var platform_id = selected_option.attr('platform_id');
@@ -40,8 +40,9 @@ $(document).ready(function() {
     }
   });
 
-  $('#build_list_save_to_repository_id').trigger('change');
-
+  if($('#from_build_list_id').size() > 0) {
+    $('#build_list_save_to_repository_id').trigger('change');
+  }
 
   var ownership_btn = $('.btn.ownership');
   ownership_btn.click(function() {

@@ -16,7 +16,8 @@
     %h3= t("activerecord.attributes.build_list.arch")
     - Arch.recent.each do |arch|
       .both
-        = check_box_tag "arches[]", arch.id, (params[:arches]||[]).include?(arch.id.to_s) || (controller.action_name == 'new' && Arch::DEFAULT.include?(arch.name)), :id => "arches_#{arch.id}"
+        - checked = (params[:arches]||[]).include?(arch.id.to_s) || (params[:arches].blank? && controller.action_name == 'new' && Arch::DEFAULT.include?(arch.name))
+        = check_box_tag "arches[]", arch.id, checked, :id => "arches_#{arch.id}"
         = label_tag "arches_#{arch.id}", arch.name
     %h3= t('activerecord.attributes.build_list.update_type')
     - selected = params[:build_list].try(:fetch, :update_type) ? {:selected => params[:build_list][:update_version]} : {}
@@ -43,6 +44,7 @@
         = check_box_tag "build_list[#{kind}]", checked, checked
         = f.label kind
     %br
+    = hidden_field_tag :from_build_list_id, params[:build_list_id]
     = f.submit t('layout.projects.build_button'), :data => {'disable-with' => t('layout.processing')}
 .both
 %br
