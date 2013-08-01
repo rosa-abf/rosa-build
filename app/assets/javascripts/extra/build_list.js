@@ -13,6 +13,7 @@ $(document).ready(function() {
     var extra_repos = $('.autocomplete-form.extra_repositories');
 
     updateExtraReposAndBuildLists(platform_id);
+    updatedDefaultArches(selected_option);
     $('.autocomplete-form table tbody').empty();
     if (build_platform.size() == 0) {
       all_repositories.removeAttr('disabled');
@@ -21,7 +22,6 @@ $(document).ready(function() {
       extra_repos.show();
     } else {
       all_repositories.attr('disabled', 'disabled');
-      updatedDefaultArches(selected_option);
       extra_repos.hide();
       var parent = build_platform.parent();
       parent.find('input').removeAttr('disabled');

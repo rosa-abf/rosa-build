@@ -27,7 +27,7 @@ module BuildListsHelper
         {
           :publish_without_qa => r.publish_without_qa? ? 1 : 0,
           :platform_id        => r.platform.id,
-          :default_arches     => r.platform.platform_arch_settings.by_default.pluck(:arch_id).join(' ')
+          :default_arches     => (r.platform.platform_arch_settings.by_default.pluck(:arch_id).presence || Arch.where(:name => Arch::DEFAULT).pluck(:id)).join(' ')
         }
       ]
     end
