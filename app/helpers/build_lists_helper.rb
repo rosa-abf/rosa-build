@@ -35,12 +35,11 @@ module BuildListsHelper
     end
   end
 
-  def mass_build_options(selected_id)
+  def mass_build_options
     options_from_collection_for_select(
       MassBuild.recent.limit(15),
       :id,
-      :name,
-      selected_id
+      :name
     )
   end
 

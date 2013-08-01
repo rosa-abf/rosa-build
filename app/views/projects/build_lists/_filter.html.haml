@@ -39,7 +39,7 @@
           = f.select :arch_id, Arch.recent.collect{|arch| [arch.name, arch.id]}, {:include_blank => true}, html_options.merge(:id => 'architecture', 'ng-model' => 'filter.arch_id')
         %h3.medium= t 'activerecord.models.mass_build'
         .lineForm.aside
-          = f.select :mass_build_id, mass_build_options(@filter.mass_build_id), {:include_blank => true},
+          = f.select :mass_build_id, mass_build_options, {:include_blank => true},
             html_options.merge(:id => 'mass_build', 'ng-model' => 'filter.mass_build_id')
 
       .column
@@ -47,7 +47,6 @@
           -class_name, message = attr == :updated_at_start ? %w[floatleft _on] : %w[floatright until]
           %div{:class => class_name}
             %h3.medium= t message
-            -date = @filter.send(attr) ? @filter.send(attr).strftime('%d/%m/%Y') : nil
             =f.text_field attr, :readonly => "readonly", :size => 10, :class => 'mediumheight min input_cleanse', :value => "{{filter.#{attr}}}"
             =link_to image_tag('x.png', :alt => 'x', :class => 'semi'), "#filter_#{attr}", :id => 'updated_at_clear'
         .both
