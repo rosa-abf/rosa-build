@@ -264,7 +264,7 @@ Rosa::Application.routes.draw do
         put :reject_publish
       end
       collection {
-        post :search
+        post  :search
       }
     end
 

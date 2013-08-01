@@ -1,73 +1,56 @@
 -set_meta_tags :title => t('.title')
 
-= render 'filter'
+%div{'ng-controller' => 'BuildListsController'}
 
-%table.tablesorter{:cellpadding => "0", :cellspacing => "0"}
-  %thead
-    %tr
-      %th.lpadding16= t("activerecord.attributes.build_list.id")
-      %th.lpadding16= t("activerecord.attributes.build_list.status")
-      %th.lpadding16= t("activerecord.attributes.build_list.project")
-      %th.lpadding16= t("diff")
-      %th.lpadding16= t("activerecord.attributes.build_list.project_version")
-      %th.lpadding16= t("activerecord.attributes.build_list.save_to_repository")
-      %th.lpadding6= t("activerecord.attributes.build_list.arch_short")
-      %th.lpadding16= t("activerecord.attributes.build_list.user")
-      %th.lpadding6= t("activerecord.attributes.build_list.updated_at")
-  %tbody= render :partial => 'projects/build_lists/build_list', :collection => @build_lists
-.both
+  = render 'filter'
 
-:javascript
-  $(function(){
-    // from jQuery.timeago
-    var parseIso8601 = function(iso8601) {
-      var s = $.trim(iso8601);
-      s = s.replace(/\.\d+/,""); // remove milliseconds
-      s = s.replace(/-/,"/").replace(/-/,"/");
-      s = s.replace(/T/," ").replace(/Z/," UTC");
-      s = s.replace(/([\+\-]\d\d)\:?(\d\d)/," $1$2"); // -04:00 -> -0400
-      return new Date(s);
-    }
-    var strTimeBetween = function(dt, dt1) {
+  %table.tablesorter{:cellpadding => "0", :cellspacing => "0"}
+    %thead
+      %tr
+        %th.lpadding16= t("activerecord.attributes.build_list.id")
+        %th.lpadding16= t("activerecord.attributes.build_list.status")
+        %th.lpadding16= t("activerecord.attributes.build_list.project")
+        %th.lpadding16= t("diff")
+        %th.lpadding16= t("activerecord.attributes.build_list.project_version")
+        %th.lpadding16= t("activerecord.attributes.build_list.save_to_repository")
+        %th.lpadding6= t("activerecord.attributes.build_list.arch_short")
+        %th.lpadding16= t("activerecord.attributes.build_list.user")
+        %th.lpadding6= t("activerecord.attributes.build_list.updated_at")
+    %tbody
+      %tr{'ng-repeat' => 'bl in build_lists', 'class' => '{{bl.status_color}}'}
+        %td
+          %a{'ng-href' => '{{bl.url}}' } {{bl.id}}
+        %td
+          {{bl.human_status}}
+          %br
+          %time{'ng-show' => 'bl.duration'}
+            {{bl.duration}}
+            %time{'ng-show' => 'bl.average_build_time'}
+              \/{{bl.average_build_time}}
 
-      var formatNumber = function(num) {
-          return (num < 10) ? "0%d".replace("%d", num) : num
-      }
+        %td.centered{'ng-hide' => 'bl.project', :colspan => 2}
+          = t('layout.projects.unexisted_project')
+        %td{'ng-show' => 'bl.project'}
+          %a{'ng-href' => '{{bl.project.url}}' } {{bl.project.name_with_owner}}
+        %td{'ng-show' => 'bl.project', 'ng-bind-html-unsafe' => 'bl.project.version_link'}
 
-      var seconds = Math.abs(dt1 - dt) / 1000;
-      var minutes = seconds / 60;
-      var hours = minutes / 60;
-      minutes = Math.round(minutes % 60);
-      hours = Math.floor(hours);
+        %td {{bl.project_version}}
+        %td
+          %a{'ng-href' => '{{bl.save_to_repository.url}}' } {{bl.save_to_repository.name}}
 
-      return "%d:%d".replace("%d", formatNumber(hours))
-                    .replace("%d", formatNumber(minutes));
-    }
-    // TODO Very, very ugly method.
-    var now = $('#servertime').val() * 1000;
-    $("time.js-relative-date").each(function() {
-      var time = parseIso8601($(this).attr('datetime')).getTime();
-      $(this).text(strTimeBetween(time, now));
-    });
+        %td{'ng-show' => 'bl.arch'} {{bl.arch}}
+        %td{'ng-hide' => 'bl.arch'}= t("layout.arches.unexisted_arch")
 
-    var t = null;
+        %td
+          %a{'ng-href' => '{{bl.user.url}}' } {{bl.user.fullname}}
 
-    var reloadChange = function() {
-      if ($(this).is(':checked')) {
-        //reload page every 1 minute
-        t = setTimeout(function() {
-          window.location.reload();
-        }, 60000);
-      } else {
-        clearTimeout(t);
-      }
-    }
+        %td {{bl.updated_at}}
 
-    $('#autoreload').on('change', reloadChange)
-                    .trigger('change');
 
-  });
 
-= will_paginate @bls
+  .both
+
+
+  = will_paginate @bls
 
 = render @project ? 'projects/base/submenu' : 'projects/build_lists/submenu'

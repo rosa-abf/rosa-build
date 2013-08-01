@@ -1,5 +1,7 @@
 # -*- encoding : utf-8 -*-
 module BuildListsHelper
+
+  # See: app/assets/javascripts/angularjs/models/build_list.js.erb
   def build_list_status_color(status)
     case status
     when BuildList::BUILD_PUBLISHED, BuildList::SUCCESS

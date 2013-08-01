@@ -2,6 +2,8 @@
 class BuildList::Filter
   PER_PAGE = [25, 50, 100]
 
+  attr_reader :options
+
   def initialize(project, user, current_ability, options = {})
     @project, @user, @current_ability = project, user, current_ability
     set_options(options)
