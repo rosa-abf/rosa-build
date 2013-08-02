@@ -11,9 +11,7 @@ class Platforms::MassBuildsController < Platforms::BaseController
   end
 
   def create
-    @mass_build         = @platform.mass_builds.build params[:mass_build]
-    @mass_build.user    = current_user
-    @mass_build.arches  = params[:arches]
+    @mass_build.user, @mass_build.arches = current_user, params[:arches]
 
     if @mass_build.save
       redirect_to(platform_mass_builds_path(@platform), :notice => t("flash.platform.build_all_success"))
