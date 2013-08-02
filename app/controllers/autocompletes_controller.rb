@@ -16,11 +16,11 @@ class AutocompletesController < ApplicationController
   end
 
   def autocomplete_extra_repositories
-    # Only personal repositories can be attached to the build
-    Platform.includes(:repositories).personal.search(params[:term])
-            .accessible_by(current_ability, :read)
-            .search_order.limit(5).each do |platform|
-
+    # Only personal and build for platform repositories can be attached to the build
+    Platform.includes(:repositories).search(params[:term]).search_order
+            .accessible_by(current_ability, :read).limit(5)
+            .where("platforms.platform_type = 'personal' OR platforms.id = ?",
+                    params[:build_for_platform_id].to_i).each do |platform|
       platform.repositories.each do |repository|
         label = "#{platform.name}/#{repository.name}"
         results <<  { :id     => repository.id,
