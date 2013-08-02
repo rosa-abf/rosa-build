@@ -7,13 +7,7 @@ var BuildList = function(atts) {
       self[setting] = initialSettings[setting];
   };
 
-  //with some logic...
-  self.related        = [self];
-  self.show           = true;
-  self.relatedHidden  = true;
-  self.lastRelated    = false;
-
-
+  // Fields:
   if (self.project) {
     self.version_link_url = '/' + self.project.name_with_owner;
     if (self.last_published_commit_hash) {
@@ -23,24 +17,17 @@ var BuildList = function(atts) {
       self.version_link_text  = self.commit_hash || self.project_version;
       self.version_link_url   += '/commit/';
     }
-    self.version_link_url += self.version_link_text;
 
-    self.project.url = '/' + self.project.name_with_owner;
+    self.version_link_url += self.version_link_text;
+    self.project.url      = '/' + self.project.name_with_owner;
   }
 
-  self.save_to_repository_url = '/platforms/';
-  self.save_to_repository_url += self.save_to_platform_id;
-  self.save_to_repository_url += '/repositories/';
-  self.save_to_repository_url += self.save_to_repository_id;
+  self.save_to_repository_url = '/platforms/' + self.save_to_platform_id + '/repositories/' + self.save_to_repository_id;
+  self.user.url               = '/' + self.user.uname;
+  self.human_status           = 'build_list.status.' + self.status;
+  self.url                    = '/build_lists/' + self.id;
 
-  self.user.url = '/' + self.user.uname;
-
-  self.human_status = 'build_list.status.' + self.status;
-  self.url = '/build_lists/' + self.id;
-
-
-  // See: app/helpers/build_lists_helper.rb
-  switch (self.status) {
+  switch (self.status) { // See: app/helpers/build_lists_helper.rb
     case <%=BuildList::BUILD_PUBLISHED%>: self.status_color = 'success'; break
     case <%=BuildList::SUCCESS%>: self.status_color = 'success'; break
     case <%=BuildList::BUILD_ERROR%>: self.status_color = 'error'; break
@@ -49,6 +36,12 @@ var BuildList = function(atts) {
     case <%=BuildList::TESTS_FAILED%>: self.status_color = 'warning'; break
     default: self.status_color = 'nocolor';
   }
+
+  // Logic:
+  self.related        = [self];
+  self.show           = true;
+  self.relatedHidden  = true;
+  self.lastRelated    = false;
 
   self.hasRelated = false;
   self.addRelated = function(bl) {
