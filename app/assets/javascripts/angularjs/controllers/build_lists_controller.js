@@ -24,10 +24,8 @@ RosaABF.controller('BuildListsController', ['$scope', '$http', '$location', '$ti
           groups[key].addRelated(bl);
         } else {
           groups[key] = bl;
-          $scope.build_lists.push({group: bl});
         }
         $scope.build_lists.push(bl);
-        // $scope.build_lists.push(new BuildList(r));
       });
       $scope.isRequest = false;
     }).error(function(data, status, headers, config) {
@@ -38,15 +36,21 @@ RosaABF.controller('BuildListsController', ['$scope', '$http', '$location', '$ti
 
 
   $scope.showGroup = function(bl) {
-    _.each(bl.group.related, function(b){
-      b.show = true;
-    });
-  }
-
-  $scope.hideGroup = function(bl) {
-    _.each(bl.group.related, function(b){
-      b.show = false;
-    });
+    if (bl.relatedHidden) {
+      bl.relatedHidden = false;
+      _.each(bl.related, function(b){
+        b.show = true;
+        $timeout(function() {
+          $('#build-list-' + b.id + ' td:visible').effect(
+            'highlight', {}, 1000
+          );
+        }, 100);
+      });
+    } else {
+      bl.relatedHidden = true;
+      _.each(bl.related, function(b){ b.show = false; });
+      bl.show = true;
+    }
   }
 
   $scope.defaultValues = {

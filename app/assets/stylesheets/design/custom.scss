@@ -2065,13 +2065,22 @@ a.button.reject_publish, a.button.create_container {
 
 table tbody {
     .build-list-statuses {
-        div {
+        .status {
             float: left;
-            //border: 1px solid #DDD;
+            border: 1px solid #DDD;
             margin: 0 2px;
         }
         .error   { background: #fedede; }
         .success { background: #e3edb7; }
         .warning { background: #FCF8E3; }
+        .nocolor { background: #FFF; }
+        .expand {
+            position: absolute;
+            margin-left: -23px;
+            background: #ededed;
+            border: 1px solid #DDD;
+            padding: 1px;
+            cursor: pointer;
+        }
     }
 }

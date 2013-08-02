@@ -17,35 +17,16 @@
         %th.lpadding16= t("activerecord.attributes.build_list.user")
         %th.lpadding6= t("activerecord.attributes.build_list.updated_at")
     %tbody
-      %tr{'ng-repeat' => 'bl in build_lists', :class => '{{bl.status_color}}'}
-
-        / == Show related group
-
-        / id && status
-        %td{'ng-show' => 'bl.group.hasRelated && !bl.group.show', :colspan => 2}
-          %a.button{'ng-click' => 'showGroup(bl)' }= t('layout.show')
-        %td{'ng-show' => 'bl.group.hasRelated && bl.group.show', :colspan => 2}
-          %a.button{'ng-click' => 'hideGroup(bl)' }= t('layout.hide')
-
-        / project
-        %td.centered{'ng-show' => '!bl.group.project && bl.group.hasRelated', :colspan => 2}
-          = t('layout.projects.unexisted_project')
-        %td{'ng-show' => 'bl.group.project && bl.group.hasRelated'}
-          %a{'ng-href' => '{{bl.group.project.url}}' } {{bl.group.project.name_with_owner}}
-
-        / diff && project_version && save_to_repository && arch_short && user
-        %td.build-list-statuses{'ng-show' => 'bl.group.hasRelated', :colspan => 5}
-          %div{'ng-repeat' => 'related in bl.group.related', :class => '{{related.status_color}}'}
-            %a{'ng-href' => '{{related.url}}' } {{related.id}}
-
-        / updated_at
-        %td{'ng-show' => 'bl.group.hasRelated'} {{bl.group.updated_at}}
-
-        / == BuildList has no related ==
+      %tr{'ng-repeat' => 'bl in build_lists', :class => '{{bl.status_color}}', :id => 'build-list-{{bl.id}}'}
 
         / id
-        %td{'ng-show' => 'bl.show'}
+        %td.build-list-statuses{'ng-show' => 'bl.show'}
+          %a.expand{'ng-show' => 'bl.hasRelated', 'ng-click' => 'showGroup(bl)'}
+            %span.icon-chevron-down{'ng-show' => 'bl.relatedHidden'}
+            %span.icon-chevron-up{'ng-hide' => 'bl.relatedHidden'}
           %a{'ng-href' => '{{bl.url}}' } {{bl.id}}
+          %div{'ng-show' => 'bl.hasRelated'}
+            %div.status{'ng-repeat' => 'related in bl.related', :class => '{{related.status_color}}'} &nbsp; 
 
         / status
         %td{'ng-show' => 'bl.show'}
