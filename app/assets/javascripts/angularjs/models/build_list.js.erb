@@ -13,6 +13,43 @@ var BuildList = function(atts) {
   self.relatedHidden  = true;
   self.lastRelated    = false;
 
+
+  if (self.project) {
+    self.version_link_url = '/' + self.project.name_with_owner;
+    if (self.last_published_commit_hash) {
+      self.version_link_text  = self.last_published_commit_hash + '...' + self.commit_hash;
+      self.version_link_url   += '/diff/';
+    } else {
+      self.version_link_text  = self.commit_hash || self.project_version;
+      self.version_link_url   += '/commit/';
+    }
+    self.version_link_url += self.version_link_text;
+
+    self.project.url = '/' + self.project.name_with_owner;
+  }
+
+  self.save_to_repository_url = '/platforms/';
+  self.save_to_repository_url += self.save_to_platform_id;
+  self.save_to_repository_url += '/repositories/';
+  self.save_to_repository_url += self.save_to_repository_id;
+
+  self.user.url = '/' + self.user.uname;
+
+  self.human_status = 'build_list.status.' + self.status;
+  self.url = '/build_lists/' + self.id;
+
+
+  // See: app/helpers/build_lists_helper.rb
+  switch (self.status) {
+    case <%=BuildList::BUILD_PUBLISHED%>: self.status_color = 'success'; break
+    case <%=BuildList::SUCCESS%>: self.status_color = 'success'; break
+    case <%=BuildList::BUILD_ERROR%>: self.status_color = 'error'; break
+    case <%=BuildList::FAILED_PUBLISH%>: self.status_color = 'error'; break
+    case <%=BuildList::REJECTED_PUBLISH%>: self.status_color = 'error'; break
+    case <%=BuildList::TESTS_FAILED%>: self.status_color = 'warning'; break
+    default: self.status_color = 'nocolor';
+  }
+
   self.hasRelated = false;
   self.addRelated = function(bl) {
     bl.show         = false;
