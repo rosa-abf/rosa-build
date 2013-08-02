@@ -65,11 +65,9 @@
         / updated_at
         %td{'ng-show' => 'bl.show'} {{bl.updated_at}}
 
-
-
   .both
 
 
-  =# will_paginate @bls # TODO
+  #will_paginate{'ng-bind-html-unsafe' => 'will_paginate'}
 
 = render @project ? 'projects/base/submenu' : 'projects/build_lists/submenu'

@@ -5,6 +5,7 @@ RosaABF.controller('BuildListsController', ['$scope', '$http', '$location', '$ti
   $scope.server_status  = null;
   $scope.build_lists    = [];
   $scope.isRequest      = false; // Disable 'Search' button
+  $scope.will_paginate  = '';
 
   // Fixes: redirect to page after form submit
   $("#monitoring_filter").on('submit', function(){ return false; });
@@ -27,6 +28,7 @@ RosaABF.controller('BuildListsController', ['$scope', '$http', '$location', '$ti
         }
         $scope.build_lists.push(bl);
       });
+      $scope.will_paginate = results.will_paginate;
       $scope.isRequest = false;
     }).error(function(data, status, headers, config) {
       console.log(config);
@@ -41,9 +43,7 @@ RosaABF.controller('BuildListsController', ['$scope', '$http', '$location', '$ti
       _.each(bl.related, function(b){
         b.show = true;
         $timeout(function() {
-          $('#build-list-' + b.id + ' td:visible').effect(
-            'highlight', {}, 1000
-          );
+          $('#build-list-' + b.id + ' td:visible').effect('highlight', {}, 1000);
         }, 100);
       });
     } else {
@@ -54,8 +54,9 @@ RosaABF.controller('BuildListsController', ['$scope', '$http', '$location', '$ti
   }
 
   $scope.defaultValues = {
-    'filter[ownership]': 'owned',
-    'per_page': 25
+    'filter[ownership]':  'owned',
+    'per_page':           25,
+    'page':               1
   }
   $scope.cancelRefresh = null;
   $scope.refresh = function(force) {
@@ -69,15 +70,15 @@ RosaABF.controller('BuildListsController', ['$scope', '$http', '$location', '$ti
             params[a.name] = a.value.match(/^\{/) ? $scope.defaultValues[a.name] : a.value;
           }
         }
+        if (force) { params.page = 1; }
         $location.search(params);
       }
       $scope.first_run = false;
       $scope.getBuildLists();
     }
     if (!force) {
-      $scope.cancelRefresh = $timeout($scope.refresh, 5000);
+      $scope.cancelRefresh = $timeout($scope.refresh, 60000);
     }
-    // $scope.cancelRefresh = $timeout($scope.refresh, 60000);
   }
   $scope.refresh();
 
@@ -88,7 +89,9 @@ RosaABF.controller('BuildListsController', ['$scope', '$http', '$location', '$ti
 
   $scope.updateFilter = function() {
     var params = $location.search();
+    var current_page = $scope.filter ? $scope.filter.page : null;
     $scope.filter    = {
+      page:               params['page'] || $scope.defaultValues['page'],
       per_page:           params['per_page'] || $scope.defaultValues['per_page'],
       ownership:          params['filter[ownership]'] || $scope.defaultValues['filter[ownership]'],
       status:             params['filter[status]'],
@@ -100,8 +103,7 @@ RosaABF.controller('BuildListsController', ['$scope', '$http', '$location', '$ti
       project_name:       params['filter[project_name]'],
       id:                 params['filter[id]']
     }
+    if (current_page && current_page != $scope.filter.page) { $scope.getBuildLists(); }
   }
-
-
 
 }]);
