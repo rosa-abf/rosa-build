@@ -1,6 +1,7 @@
 now = Time.now.utc
 json.build_lists @build_lists do |build_list|
-  json.(build_list, :id, :status, :human_status)
+  json.(build_list, :id, :status, :human_status, :project_id)
+  json.commit_hash build_list.commit_hash.last(5)
   json.url build_list_path(build_list)
 
   if BuildList::HUMAN_STATUSES[build_list.status].in? [:build_pending, :build_started, :build_publish]
@@ -15,7 +16,7 @@ json.build_lists @build_lists do |build_list|
     json.version_link build_list_version_link(build_list).html_safe
   end if build_list.project.present?
 
-  json.project_version get_version_release(build_list)
+  json.version_release get_version_release(build_list)
 
   json.save_to_repository do
     build_for = " (#{build_list.build_for_platform.name})" if build_list.build_for_platform && build_list.save_to_platform.personal?

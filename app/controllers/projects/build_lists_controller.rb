@@ -26,11 +26,14 @@ class Projects::BuildListsController < Projects::BaseController
     if request.xhr?
       @filter     = BuildList::Filter.new(@project, current_user, current_ability, params[:filter] || {})
       @per_page = BuildList::Filter::PER_PAGE.include?(params[:per_page].to_i) ? params[:per_page].to_i : 25
-      @bls      = @filter.find.recent.paginate(
-        :page     => (params[:page].to_i == 0 ? nil : params[:page]),
-        :per_page => @per_page
-      )
-      @build_lists = BuildList.where(:id => @bls.pluck(:id)).recent
+      @bls = @filter.find.recent
+                    .paginate(
+                      :page     => (params[:page].to_i == 0 ? nil : params[:page]),
+                      :per_page => @per_page
+                    )
+      @build_lists = BuildList.where(:id => @bls.pluck(:id))
+                              .order('build_lists.project_id, build_lists.project_version')
+                              .recent
                               .includes(
                                 :save_to_platform,
                                 :save_to_repository,
