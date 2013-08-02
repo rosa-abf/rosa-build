@@ -1,7 +1,7 @@
 -html_options = {:class => 'sel80 medium input_cleanse', :tabindex => 2}
 .top.box
   .filter
-    = form_for :filter, :html => {:class => :form, :id => 'monitoring_filter', 'ng-submit' => 'search()'}, :authenticity_token => false do |f|
+    = form_for :filter, :html => {:class => :form, :id => 'monitoring_filter', 'ng-submit' => 'refresh(true)'}, :authenticity_token => false do |f|
       .column
         = render 'server_status'
         = hidden_field_tag :owner_name, @project.try(:owner).try(:uname)

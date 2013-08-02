@@ -4,7 +4,10 @@ RosaABF.controller('BuildListsController', ['$scope', '$http', '$location', '$ti
   $scope.first_run      = true;
   $scope.server_status  = null;
   $scope.build_lists    = [];
-  $scope.isRequest      = false;
+  $scope.isRequest      = false; // Disable 'Search' button
+
+  // Fixes: redirect to page after form submit
+  $("#monitoring_filter").on('submit', function(){ return false; });
 
 
 
@@ -23,34 +26,32 @@ RosaABF.controller('BuildListsController', ['$scope', '$http', '$location', '$ti
     });;
   }
 
-  $scope.search = function() {
-    if ($.isEmptyObject($location.search()) || !$scope.first_run) {
-      var array = $("#monitoring_filter").serializeArray();
-      var params = {};
-      for(i=0; i<array.length; i++){
-        var a = array[i];
-        if (a.value) {
-          params[a.name] = a.value.match(/^\{/) ? $scope.defaultValues[a.name] : a.value;
-        }
-      }
-      $location.search(params);
-    }
-    $scope.first_run = false;
-  }
+
 
   $scope.defaultValues = {
     'filter[ownership]': 'owned',
     'per_page': 25
   }
-
-  $("#monitoring_filter").removeAttr('action').
-                          removeAttr('method').
-                          on('submit', function(){ return false; });
-
   $scope.cancelRefresh = null;
-  $scope.refresh = function() {
-    if ($('#autoreload').is(':checked')) { $scope.search(); }
-    $scope.cancelRefresh = $timeout($scope.refresh, 5000);
+  $scope.refresh = function(force) {
+    if ($('#autoreload').is(':checked') || force) {
+      if ($.isEmptyObject($location.search()) || !$scope.first_run) {
+        var array = $("#monitoring_filter").serializeArray();
+        var params = {};
+        for(i=0; i<array.length; i++){
+          var a = array[i];
+          if (a.value) {
+            params[a.name] = a.value.match(/^\{/) ? $scope.defaultValues[a.name] : a.value;
+          }
+        }
+        $location.search(params);
+      }
+      $scope.first_run = false;
+      $scope.getBuildLists();
+    }
+    if (!force) {
+      $scope.cancelRefresh = $timeout($scope.refresh, 5000);
+    }
     // $scope.cancelRefresh = $timeout($scope.refresh, 60000);
   }
   $scope.refresh();
@@ -58,15 +59,13 @@ RosaABF.controller('BuildListsController', ['$scope', '$http', '$location', '$ti
 
   $scope.$on('$locationChangeSuccess', function(event) {
     $scope.updateFilter();
-    $scope.getBuildLists();
   });
 
   $scope.updateFilter = function() {
-
     var params = $location.search();
     $scope.filter    = {
-      per_page:           params['per_page'],
-      ownership:          params['filter[ownership]'],
+      per_page:           params['per_page'] || $scope.defaultValues['per_page'],
+      ownership:          params['filter[ownership]'] || $scope.defaultValues['filter[ownership]'],
       status:             params['filter[status]'],
       platform_id:        params['filter[platform_id]'],
       arch_id:            params['filter[arch_id]'],
@@ -76,7 +75,8 @@ RosaABF.controller('BuildListsController', ['$scope', '$http', '$location', '$ti
       project_name:       params['filter[project_name]'],
       id:                 params['filter[id]']
     }
-
   }
+
+
 
 }]);
