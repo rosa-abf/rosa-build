@@ -89,10 +89,10 @@ class MassBuild < ActiveRecord::Base
   end
   later :publish_success_builds, :queue => :clone_build
 
-  def publish_test_faild_builds(user)
+  def publish_test_failed_builds(user)
     publish user, BuildList::TESTS_FAILED
   end
-  later :publish_test_faild_builds, :queue => :clone_build
+  later :publish_test_failed_builds, :queue => :clone_build
 
   private
 

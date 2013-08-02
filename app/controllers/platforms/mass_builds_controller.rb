@@ -11,9 +11,7 @@ class Platforms::MassBuildsController < Platforms::BaseController
   end
 
   def create
-    @mass_build         = @platform.mass_builds.build params[:mass_build]
-    @mass_build.user    = current_user
-    @mass_build.arches  = params[:arches]
+    @mass_build.user, @mass_build.arches = current_user, params[:arches]
 
     if @mass_build.save
       redirect_to(platform_mass_builds_path(@platform), :notice => t("flash.platform.build_all_success"))
@@ -26,7 +24,7 @@ class Platforms::MassBuildsController < Platforms::BaseController
 
   def publish
     if params[:status] == 'test_failed'
-      @mass_build.publish_test_faild_builds current_user
+      @mass_build.publish_test_failed_builds current_user
     else
       @mass_build.publish_success_builds current_user
     end
