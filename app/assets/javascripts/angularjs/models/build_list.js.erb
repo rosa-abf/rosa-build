@@ -13,12 +13,15 @@ var BuildList = function(atts) {
   self.related        = [self];
   self.show           = true;
   self.relatedHidden  = true;
+  self.lastRelated    = false;
 
   self.hasRelated = false;
   self.addRelated = function(bl) {
+    bl.show         = false;
+    bl.lastRelated  = true;
+    self.related.slice(-1)[0].lastRelated = false;
     self.related.push(bl);
     self.hasRelated = true;
-    bl.show   = false;
   }
 
   //return the scope-safe instance

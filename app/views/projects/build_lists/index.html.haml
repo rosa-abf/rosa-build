@@ -17,7 +17,7 @@
         %th.lpadding16= t("activerecord.attributes.build_list.user")
         %th.lpadding6= t("activerecord.attributes.build_list.updated_at")
     %tbody
-      %tr{'ng-repeat' => 'bl in build_lists', :class => '{{bl.status_color}}', :id => 'build-list-{{bl.id}}'}
+      %tr{'ng-repeat' => 'bl in build_lists', :class => '{{bl.status_color}}', :id => 'build-list-{{bl.id}}', 'ng-class' => "{'group-start': !bl.relatedHidden, 'group-end': bl.lastRelated}"}
 
         / id
         %td.build-list-statuses{'ng-show' => 'bl.show'}

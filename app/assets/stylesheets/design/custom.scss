@@ -2083,4 +2083,10 @@ table tbody {
             cursor: pointer;
         }
     }
+    tr.group-start td {
+        border-top: 2px solid #125687;
+    }
+    tr.group-end td {
+        border-bottom: 2px solid #125687;
+    }
 }
