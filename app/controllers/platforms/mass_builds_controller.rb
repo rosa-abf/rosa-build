@@ -26,7 +26,7 @@ class Platforms::MassBuildsController < Platforms::BaseController
 
   def publish
     if params[:status] == 'test_failed'
-      @mass_build.publish_test_faild_builds current_user
+      @mass_build.publish_test_failed_builds current_user
     else
       @mass_build.publish_success_builds current_user
     end
