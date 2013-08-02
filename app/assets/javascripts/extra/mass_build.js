@@ -26,4 +26,12 @@ $(document).ready(function() {
                   .attr('checked', false);
     }
   });
+
+  var autocomplete_repos = $('.autocomplete-form.extra_repositories #extra_repositories');
+  var default_autocomplete_path = $('#autocomplete_extra_repos_path').val();
+  $('#mass_build_build_for_platform_id').on('change', function() {
+    var path = default_autocomplete_path + '&build_for_platform_id=' + $(this).val();
+    autocomplete_repos.attr('data-autocomplete', path);
+  });
+  $('#mass_build_build_for_platform_id').trigger('change');
 });
