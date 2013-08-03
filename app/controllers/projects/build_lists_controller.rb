@@ -26,24 +26,20 @@ class Projects::BuildListsController < Projects::BaseController
     respond_to do |format|
       format.html
       format.json do
-        @filter     = BuildList::Filter.new(@project, current_user, current_ability, params[:filter] || {})
-        @per_page   = BuildList::Filter::PER_PAGE.include?(params[:per_page].to_i) ? params[:per_page].to_i : 25
+        @filter = BuildList::Filter.new(@project, current_user, current_ability, params[:filter] || {})
         @bls = @filter.find.recent
                       .paginate(
                         :page     => (params[:page].to_i == 0 ? nil : params[:page]),
-                        :per_page => @per_page
+                        :per_page => BuildList::Filter::PER_PAGE.include?(params[:per_page].to_i) ? params[:per_page].to_i : 25
                       )
-        @build_lists = BuildList.where(:id => @bls.pluck(:id))
-                                .order('build_lists.project_id, build_lists.project_version')
-                                .recent
+        @build_lists = BuildList.where(:id => @bls.pluck(:id)).recent
                                 .includes(
                                   :save_to_platform,
                                   :save_to_repository,
                                   :build_for_platform,
-                                  :arch,
                                   :user,
                                   :source_packages,
-                                  :project => [:owner]
+                                  :project
                                 )
 
         @build_server_status = AbfWorker::StatusInspector.projects_status

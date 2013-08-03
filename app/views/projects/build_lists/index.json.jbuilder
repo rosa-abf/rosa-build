@@ -1,6 +1,6 @@
 now = Time.now.utc
 json.build_lists @build_lists do |build_list|
-  json.(build_list, :id, :status, :project_id, :project_version, :save_to_platform_id, :save_to_repository_id)
+  json.(build_list, :id, :status, :project_id, :project_version, :save_to_platform_id, :save_to_repository_id, :user_id, :project_id, :build_for_platform_id, :arch_id)
   json.commit_hash build_list.commit_hash.first(5)
   json.last_published_commit_hash build_list.last_published_commit_hash.first(5) if build_list.last_published_commit_hash
 
@@ -9,23 +9,27 @@ json.build_lists @build_lists do |build_list|
     json.average_build_time build_list.formatted_average_build_time if build_list.build_started? && (build_list.average_build_time > 0)
   end
 
-  json.project do
-    json.name_with_owner build_list.project.name_with_owner
-  end if build_list.project.present?
-
   json.version_release get_version_release(build_list)
-
-  build_for = " (#{build_list.build_for_platform.name})" if build_list.build_for_platform && build_list.save_to_platform.personal?
-  json.save_to_repository_name "#{build_list.save_to_platform.name}/#{build_list.save_to_repository.name}#{build_for}"
-
-  json.arch build_list.arch.try(:name)
-
-  json.user do
-    json.fullname build_list.user.try(:fullname)
-    json.uname build_list.user.uname
-  end
-
   json.updated_at build_list.updated_at.strftime('%d/%m/%Y')
+end
+
+json.dictionary  do
+  json.users @build_lists.map(&:user).uniq do |user|
+    json.(user, :id, :uname, :fullname)
+  end
+  json.projects @build_lists.map(&:project).uniq.compact do |project|
+    json.(project, :id, :name_with_owner)
+  end
+  json.platforms (@build_lists.map(&:build_for_platform) | @build_lists.map(&:save_to_platform)) do |platform|
+    json.(platform, :id, :name)
+    json.personal platform.personal?
+  end
+  json.repositories @build_lists.map(&:save_to_repository) do |repository|
+    json.(repository, :id, :name)
+  end
+  json.arches Arch.all do |arch|
+    json.(arch, :id, :name)
+  end
 end
 
 json.server_status  @build_server_status

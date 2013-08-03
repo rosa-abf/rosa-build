@@ -10,47 +10,51 @@ RosaABF.controller('BuildListsController', ['$scope', '$http', '$location', '$ti
   // Fixes: redirect to page after form submit
   $("#monitoring_filter").on('submit', function(){ return false; });
 
-
-
   $scope.getBuildLists = function() {
     $scope.isRequest = true;
     $http.get('/build_lists.json', {params: $location.search()}).success(function(results) {
       $scope.server_status  = results.server_status;
-      $scope.build_lists = [];
-      var groups = {};
+
+      var dictionary  = results.dictionary;
+      var build_lists = [];
+      var groups      = {};
       _.each(results.build_lists, function(r){
-        var bl = new BuildList(r);
-        var key = bl.project_id + '-' + bl.commit_hash;
+        var bl = new BuildList(r, dictionary);
+        var key = bl.project_id + '-' + bl.commit_hash + '-' + bl.user_id;
         if (groups[key]) {
           groups[key].addRelated(bl);
         } else {
           groups[key] = bl;
+          build_lists.push(bl);
         }
-        $scope.build_lists.push(bl);
       });
-      $scope.will_paginate = results.will_paginate;
-      $scope.isRequest = false;
+      
+      $scope.build_lists    = [];
+      _.each(build_lists, function(bl){
+        _.each(bl.related, function(b){ $scope.build_lists.push(b); });
+      });
+
+      $scope.will_paginate  = results.will_paginate;
+      $scope.isRequest      = false;
     }).error(function(data, status, headers, config) {
-      console.log(config);
       $scope.isRequest = false;
     });;
   }
 
-
-  $scope.showGroup = function(bl) {
-    if (bl.relatedHidden) {
-      bl.relatedHidden = false;
-      _.each(bl.related, function(b){
-        b.show = true;
-        $timeout(function() {
-          $('#build-list-' + b.id + ' td:visible').effect('highlight', {}, 1000);
-        }, 100);
-      });
-    } else {
-      bl.relatedHidden = true;
-      _.each(bl.related, function(b){ b.show = false; });
+  $scope.showRelated = function(build_list) {
+    build_list.relatedHidden = false;
+    _.each(build_list.related, function(bl){
       bl.show = true;
-    }
+      $timeout(function() {
+        $('#build-list-' + bl.id + ' td:visible').effect('highlight', {}, 1000);
+      }, 100);
+    });
+  }
+
+  $scope.hideRelated = function(build_list) {
+    build_list.relatedHidden = true;
+    _.each(build_list.related, function(bl){ bl.show = false; });
+    build_list.show = true;
   }
 
   $scope.defaultValues = {

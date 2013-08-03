@@ -1,4 +1,5 @@
-var BuildList = function(atts) {
+// dictionary - optional
+var BuildList = function(atts, dictionary) {
   var self = this;
   var initialSettings = atts || {};
   //initial settings if passed in
@@ -8,6 +9,21 @@ var BuildList = function(atts) {
   };
 
   // Fields:
+
+  if (dictionary) {
+    self.user                 = _.find(dictionary.users,        function(i){ return i.id == self.user_id; });
+    self.arch                 = _.find(dictionary.arches,       function(i){ return i.id == self.arch_id; });
+    self.project              = _.find(dictionary.projects,     function(i){ return i.id == self.project_id; });
+    self.save_to_platform     = _.find(dictionary.platforms,    function(i){ return i.id == self.save_to_platform_id; });
+    self.build_for_platform   = _.find(dictionary.platforms,    function(i){ return i.id == self.build_for_platform_id; });
+    self.save_to_repository   = _.find(dictionary.repositories, function(i){ return i.id == self.save_to_repository_id; });
+  }
+
+  self.save_to_repository_name = self.save_to_platform.name + '/' + self.save_to_repository.name;
+  if (self.save_to_platform.personal) {
+    self.save_to_repository_name += ' (' + self.build_for_platform.name + ')'
+  }
+
   if (self.project) {
     self.version_link_url = '/' + self.project.name_with_owner;
     if (self.last_published_commit_hash) {
@@ -37,13 +53,19 @@ var BuildList = function(atts) {
     default: self.status_color = 'nocolor';
   }
 
-  // Logic:
+  // == Logic
+
+  // private fields
+  self.lastRelated    = false;
+
+  // public fields
   self.related        = [self];
   self.show           = true;
   self.relatedHidden  = true;
-  self.lastRelated    = false;
+  self.hasRelated     = false;
 
-  self.hasRelated = false;
+  // public methods
+
   self.addRelated = function(bl) {
     bl.show         = false;
     bl.lastRelated  = true;
