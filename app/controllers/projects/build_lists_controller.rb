@@ -11,6 +11,8 @@ class Projects::BuildListsController < Projects::BaseController
   load_and_authorize_resource :build_list, :through => :project, :only => NESTED_ACTIONS, :shallow => true
   load_and_authorize_resource :except => NESTED_ACTIONS
 
+  before_filter :create_from_build_list, :only => [:new, :create]
+
   def search
     new_params = {:filter => {}}
     params[:filter].each do |k,v|
@@ -44,26 +46,16 @@ class Projects::BuildListsController < Projects::BaseController
   end
 
   def new
-    if params[:build_list_id]
-      @build_list = BuildList.find params[:build_list_id]
-      set_params @build_list
-    end
   end
 
   def create
     notices, errors = [], []
-
-    if params[:build_list_id]
-      build_list = BuildList.find params[:build_list_id]
-      set_params build_list
-    end
 
     @repository = Repository.find params[:build_list][:save_to_repository_id]
     @platform = @repository.platform
 
     params[:build_list][:save_to_platform_id] = @platform.id
     params[:build_list][:auto_publish] = false unless @repository.publish_without_qa?
-
 
     build_for_platforms = Repository.select(:platform_id).
       where(:id => params[:build_list][:include_repos]).group(:platform_id).map(&:platform_id)
@@ -174,7 +166,10 @@ class Projects::BuildListsController < Projects::BaseController
     @build_list = BuildList.find(params[:id])
   end
 
-  def set_params build_list
+  def create_from_build_list
+    return if params[:build_list_id]
+    @build_list = BuildList.find params[:build_list_id]
+
     params[:build_list] ||= {}
     params[:build_list][:save_to_repository_id] = build_list.save_to_repository_id
     params[:build_list][:auto_publish] = build_list.auto_publish
