@@ -76,6 +76,7 @@ RosaABF.controller('BuildListsController', ['$scope', '$http', '$location', '$ti
         if (a.value) { params[a.name] = a.value; }
       });
       $location.search(params);
+      $scope.first_run = false;
       $scope.getBuildLists();
     }
     if (!force) {
@@ -86,6 +87,7 @@ RosaABF.controller('BuildListsController', ['$scope', '$http', '$location', '$ti
 
   $scope.$on('$locationChangeSuccess', function(event) {
     $scope.updateParams();
+    if (!$scope.first_run) { $scope.getBuildLists(); }
   });
 
   $scope.updateParams = function() {
