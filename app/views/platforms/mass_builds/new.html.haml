@@ -25,6 +25,8 @@
       %h3= t('activerecord.attributes.build_list.build_for_platform')
       = f.collection_select :build_for_platform_id, Platform.main, :id, :name
       .both
+      = hidden_field_tag :autocomplete_extra_repos_path,
+        "#{autocomplete_extra_repositories_autocompletes_path}?#{{:platform_id => @mass_build.save_to_platform.try(:id)}.to_param}"
       = render 'shared/autocomplete_form',
         :field              => :extra_repositories,
         :field_class        => Repository,
@@ -32,7 +34,7 @@
         :subject            => @mass_build,
         :autocomplete_path  => autocomplete_extra_repositories_autocompletes_path
     = render 'shared/autocomplete_form',
-      :field              => :extra_build_lists, 
+      :field              => :extra_build_lists,
       :field_class        => BuildList,
       :placeholder        => '1000000',
       :subject            => @mass_build,

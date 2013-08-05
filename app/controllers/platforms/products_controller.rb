@@ -5,7 +5,7 @@ class Platforms::ProductsController < Platforms::BaseController
   skip_before_filter :authenticate_user!, :only => [:index, :show] if APP_CONFIG['anonymous_access']
 
   load_and_authorize_resource :platform
-  load_and_authorize_resource :product, :through => :platform
+  load_and_authorize_resource :product, :through => :platform, :except => :autocomplete_project
   before_filter :set_project, :only => [:create, :update]
 
   def index

@@ -12,21 +12,23 @@
   .hr
   %h3= t('layout.repositories.extra_actions')
 
-  .leftlist= t('layout.repositories.regenerate_metadata')
-  .rightlist= link_to t('layout.repositories.regenerate_metadata'),
-            regenerate_metadata_platform_repository_path(@platform, @repository),
-            :method => :put, :confirm => t('layout.confirm'), :class => 'button'
+  = form_for @repository, :url => regenerate_metadata_platform_repository_path(@platform, @repository), :html => { :class => :form, :method => :put } do |f|
+    .leftlist= t('layout.repositories.regenerate_metadata')
+    .rightlist
+      = select_tag :build_for_platform_id, options_from_collection_for_select(Platform.main, :id, :name) if @platform.personal?
+      = f.submit t('layout.repositories.regenerate_metadata'), :confirm => t('layout.confirm')
+  .both
 
   - if @platform.main?
-    .leftlist= t('layout.repositories.sync_lock_file_info')
     - if @repository.sync_lock_file_exists?
       - label = t('layout.repositories.remove_sync_lock_file')
       - path  = sync_lock_file_platform_repository_path(@platform, @repository, :remove => true)
     - else
       - label = t('layout.repositories.add_sync_lock_file')
       - path  = sync_lock_file_platform_repository_path(@platform, @repository)
-
-    .rightlist= link_to label, path, :method => :put, :confirm => t('layout.confirm'), :class => 'button'
+    = form_for @repository, :url => path, :html => { :class => :form, :method => :put } do |f|
+      .leftlist= t('layout.repositories.sync_lock_file_info')
+      .rightlist= f.submit label, :confirm => t('layout.confirm')
     .both
   .hr
 
