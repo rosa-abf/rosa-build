@@ -25,23 +25,21 @@ var BuildList = function(atts, dictionary) {
   }
 
   if (self.project) {
-    self.version_link_url = '/' + self.project.name_with_owner;
     if (self.last_published_commit_hash) {
       self.version_link_text  = self.last_published_commit_hash + '...' + self.commit_hash;
-      self.version_link_url   += '/diff/';
+      self.version_link_url   = Routes.diff_path(self.project.owner, self.project.name, self.version_link_text);
     } else {
       self.version_link_text  = self.commit_hash || self.project_version;
-      self.version_link_url   += '/commit/';
+      self.version_link_url   = Routes.commit_path(self.project.owner, self.project.name, self.version_link_text);
     }
-
-    self.version_link_url += self.version_link_text;
-    self.project.url      = '/' + self.project.name_with_owner;
+    self.project.url = Routes.project_path(self.project.owner, self.project.name);
+    self.project.name_with_owner = self.project.owner + '/' + self.project.name;
   }
 
-  self.save_to_repository_url = '/platforms/' + self.save_to_platform_id + '/repositories/' + self.save_to_repository_id;
-  self.user.url               = '/' + self.user.uname;
+  self.save_to_repository_url = Routes.platform_repository_path(self.save_to_platform_id, self.save_to_repository_id);
+  self.user.url               = Routes.user_path(self.user.uname);
   self.human_status           = 'build_list.status.' + self.status;
-  self.url                    = '/build_lists/' + self.id;
+  self.url                    = Routes.build_list_path(self.id);
 
   switch (self.status) { // See: app/helpers/build_lists_helper.rb
     case <%=BuildList::BUILD_PUBLISHED%>: self.status_color = 'success'; break

@@ -14,6 +14,7 @@
 //= require backbone_datalink
 //= require backbone/rosa
 
+//= require js-routes
 // require angular
 //= require unstable/angular
 // require angular-resource

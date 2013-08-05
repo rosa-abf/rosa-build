@@ -18,7 +18,8 @@ json.dictionary  do
     json.(user, :id, :uname, :fullname)
   end
   json.projects @build_lists.map(&:project).uniq.compact do |project|
-    json.(project, :id, :name_with_owner)
+    json.(project, :id, :name)
+    json.owner project.name_with_owner.gsub(/\/.*/, '')
   end
   json.platforms (@build_lists.map(&:build_for_platform) | @build_lists.map(&:save_to_platform)).uniq do |platform|
     json.(platform, :id, :name)

@@ -14,7 +14,8 @@ RosaABF.controller('BuildListsController', ['$scope', '$http', '$location', '$ti
     // Disable 'Search' button
     $scope.isRequest = true;
 
-    $http.get('/build_lists.json', {params: $location.search()}).success(function(results) {
+    
+    $http.get(Routes.build_lists_path({format: 'json'}), {params: $location.search()}).success(function(results) {
       // Render Server status
       $scope.server_status  = results.server_status;
 

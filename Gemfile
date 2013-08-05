@@ -75,6 +75,7 @@ group :assets do
   gem 'therubyracer', '~> 0.10.2', :platforms => [:mri, :rbx]
   gem 'therubyrhino', '~> 1.73.1', :platforms => :jruby
   gem 'turbo-sprockets-rails3'
+  gem 'js-routes'
 end
 
 group :production do
