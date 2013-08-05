@@ -171,15 +171,11 @@ class Projects::BuildListsController < Projects::BaseController
     @build_list = BuildList.find params[:build_list_id]
 
     params[:build_list] ||= {}
-    params[:build_list][:save_to_repository_id] = build_list.save_to_repository_id
-    params[:build_list][:auto_publish] = build_list.auto_publish
-    params[:build_list][:include_repos] = build_list.include_repos
+    keys = [:save_to_repository_id, :auto_publish, :include_repos,
+            :project_version, :update_type, :auto_create_container,
+            :extra_repositories, :extra_build_lists]
+    keys.each { |key| params[:build_list][key] = @build_list.send(key) }
     params[:arches] = [build_list.arch_id.to_s]
-    params[:build_list][:project_version] = build_list.project_version
-    params[:build_list][:update_type] = build_list.update_type
-    params[:build_list][:auto_create_container] = build_list.auto_create_container
-    params[:build_list][:extra_repositories] = build_list.extra_repositories
-    params[:build_list][:extra_build_lists] = build_list.extra_build_lists
     [:owner_filter, :status_filter].each { |t| params[t] = 'true' if %w(true undefined).exclude? params[t] }
   end
 end
