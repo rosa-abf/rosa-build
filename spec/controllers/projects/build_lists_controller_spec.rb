@@ -406,7 +406,7 @@ describe Projects::BuildListsController do
     end
 
     it 'should filter by id' do
-      get :index, :filter => {:id => @build_list1.id, :project_name => 'fdsfdf', :any_other_field => 'do not matter'}
+      get :index, :filter => {:id => @build_list1.id, :project_name => 'fdsfdf', :any_other_field => 'do not matter'}, :format => :json
       assigns[:build_lists].should include(@build_list1)
       assigns[:build_lists].should_not include(@build_list2)
       assigns[:build_lists].should_not include(@build_list3)
@@ -414,7 +414,7 @@ describe Projects::BuildListsController do
 
     it 'should filter by project_name' do
       # Project.where(:id => build_list2.project.id).update_all(:name => 'project_name')
-      get :index, :filter => {:project_name => @build_list2.project.name, :ownership => 'everything'}
+      get :index, :filter => {:project_name => @build_list2.project.name, :ownership => 'everything'}, :format => :json
       assigns[:build_lists].should_not include(@build_list1)
       assigns[:build_lists].should include(@build_list2)
       assigns[:build_lists].should_not include(@build_list3)
@@ -422,7 +422,7 @@ describe Projects::BuildListsController do
 
     it 'should filter by project_name and update_date' do
       get :index, :filter => {:project_name => @build_list3.project.name, :ownership => 'everything',
-                            "updated_at_start" => @build_list3.updated_at.strftime('%d/%m/%Y')}
+                            "updated_at_start" => @build_list3.updated_at.strftime('%d/%m/%Y')}, :format => :json
       assigns[:build_lists].should_not include(@build_list1)
       assigns[:build_lists].should_not include(@build_list2)
       assigns[:build_lists].should include(@build_list3)
