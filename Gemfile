@@ -64,6 +64,7 @@ gem 'angularjs-rails'
 gem 'ng-rails-csrf'
 gem 'momentjs-rails'
 gem 'angular-i18n', '0.1.2'
+gem 'js-routes'
 
 gem 'time_diff'
 
@@ -75,7 +76,6 @@ group :assets do
   gem 'therubyracer', '~> 0.10.2', :platforms => [:mri, :rbx]
   gem 'therubyrhino', '~> 1.73.1', :platforms => :jruby
   gem 'turbo-sprockets-rails3'
-  gem 'js-routes'
 end
 
 group :production do
