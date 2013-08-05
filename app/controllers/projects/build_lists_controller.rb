@@ -1,24 +1,15 @@
 # -*- encoding : utf-8 -*-
 class Projects::BuildListsController < Projects::BaseController
-  NESTED_ACTIONS = [:search, :index, :new, :create]
+  NESTED_ACTIONS = [:index, :new, :create]
 
   before_filter :authenticate_user!
-  skip_before_filter :authenticate_user!, :only => [:show, :index, :search, :log] if APP_CONFIG['anonymous_access']
+  skip_before_filter :authenticate_user!, :only => [:show, :index, :log] if APP_CONFIG['anonymous_access']
 
   before_filter :find_build_list, :only => [:show, :publish, :cancel, :update, :log, :create_container]
 
   load_and_authorize_resource :project, :only => NESTED_ACTIONS
   load_and_authorize_resource :build_list, :through => :project, :only => NESTED_ACTIONS, :shallow => true
   load_and_authorize_resource :except => NESTED_ACTIONS
-
-  def search
-    new_params = {:filter => {}}
-    params[:filter].each do |k,v|
-      new_params[:filter][k] = v unless v.empty?
-    end
-    new_params[:per_page] = params[:per_page] if params[:per_page].present?
-    redirect_to @project ? project_build_lists_path(@project, new_params) : build_lists_path(new_params)
-  end
 
   def index
     params[:filter].each{|k,v| params[:filter].delete(k) if v.blank? } if params[:filter]
