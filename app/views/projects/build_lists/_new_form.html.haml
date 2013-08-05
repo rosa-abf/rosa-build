@@ -1,0 +1,49 @@
+= form_for new_project_build_list_path(project), :html => { :class => :form, :method => :post } do |f|
+  %section.left
+    %h3= t("activerecord.attributes.build_list.build_for_platform")
+    .all_platforms
+      - availables_main_platforms.each do |pl|
+        .both
+          %div{:id => "build_for_pl_#{pl.id}", :class => 'build_for_pl'}= pl.name
+          .offset25= render 'include_repos', :platform => pl
+  %section.right
+    %h3= t('activerecord.attributes.build_list.save_to_repository')
+    - selected = params[:build_list].try(:fetch, :save_to_repository_id) ? {:selected => params[:build_list][:save_to_repository_id]} : {}
+    .lineForm= f.select :save_to_repository_id, save_to_repositories(project), selected, :id => 'build_list_save_to_repository_id'
+    %h3= t("activerecord.attributes.build_list.project_version")
+    .lineForm= f.select :project_version, versions_for_group_select(project), {}, :selected => params[:build_list].try(:fetch, :project_version) || project.default_branch, :id => 'build_list_project_version'
+    %h3= t("activerecord.attributes.build_list.arch")
+    - Arch.recent.each do |arch|
+      .both
+        - checked = (params[:arches]||[]).include?(arch.id.to_s) || (params[:arches].blank? && controller.action_name == 'new' && Arch::DEFAULT.include?(arch.name))
+        = check_box_tag "arches[]", arch.id, checked, :id => "arches_#{arch.id}"
+        = label_tag "arches_#{arch.id}", arch.name
+    %h3= t('activerecord.attributes.build_list.update_type')
+    - selected = params[:build_list].try(:fetch, :update_type) ? {:selected => params[:build_list][:update_version]} : {}
+    .lineForm= f.select :update_type, BuildList::UPDATE_TYPES, selected, :id => 'build_list_update_types'
+
+    = render 'shared/autocomplete_form',
+      :field              => :extra_repositories,
+      :field_class        => Repository,
+      :placeholder        => 'uxteam_personal',
+      :subject            => @build_list,
+      :autocomplete_path  => autocomplete_extra_repositories_autocompletes_path,
+      :default_values     => project.repositories.select{ |r| r.platform.personal? }
+    = render 'shared/autocomplete_form',
+      :field              => :extra_build_lists,
+      :field_class        => BuildList,
+      :placeholder        => '1000000',
+      :subject            => build_list,
+      :autocomplete_path  => autocomplete_extra_build_list_autocompletes_path
+
+    %h3= t("activerecord.attributes.build_list.preferences")
+    - [:auto_publish, :auto_create_container].each do |kind|
+      .both
+        - checked = params[:build_list].try(:fetch, kind)
+        = check_box_tag "build_list[#{kind}]", checked, checked
+        = f.label kind
+    %br
+    = hidden_field_tag :from_build_list_id, params[:build_list_id]
+    = f.submit t('layout.projects.build_button'), :data => {'disable-with' => t('layout.processing')}
+.both
+

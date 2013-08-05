@@ -46,6 +46,11 @@ class Projects::BuildListsController < Projects::BaseController
   end
 
   def new
+    if params[:show] == 'inline' && params[:build_list_id].present?
+      render '_new_form', :layout => false, :locals => {:project => @project, :build_list => @build_list}
+    else
+      render :new
+    end
   end
 
   def create

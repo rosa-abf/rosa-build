@@ -2,7 +2,8 @@ build_lists = @build_lists.map do |build_list|
   build_for = " (#{build_list.build_for_platform.name})" if build_list.build_for_platform && build_list.save_to_platform.personal?
   [
     [link_to(build_list.id, build_list),
-     link_to(t('layout.clone'), new_project_build_list_path(@project, :build_list_id => build_list.id))
+     link_to(t('layout.clone'), new_project_build_list_path(@project, :build_list_id => build_list.id),
+             :id => 'clone_build_list')
     ].join('<br/>').html_safe,
     build_list.human_status,
     build_list_version_link(build_list),

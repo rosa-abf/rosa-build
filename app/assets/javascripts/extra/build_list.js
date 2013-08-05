@@ -1,8 +1,11 @@
 $(document).ready(function() {
-  // TODO: Refactor this handler!! It's too complicated.
-  $('#build_list_save_to_repository_id').on("change", function() {
-    var selected_option = $(this).find("option:selected");
+  var new_form      = $('#new_form');
+  var ownership_btn = $('.btn.ownership');
+  var perpage_btn   = $('.btn.per_page');
 
+  // TODO: Refactor this handler!! It's too complicated.
+  $(document).on('change', '#build_list_save_to_repository_id', function(){
+    var selected_option = $(this).find("option:selected");
     var platform_id = selected_option.attr('platform_id');
     var rep_name = selected_option.text().match(/[\w-]+\/([\w-]+)/)[1];
 
@@ -44,7 +47,6 @@ $(document).ready(function() {
     $('#build_list_save_to_repository_id').trigger('change');
   }
 
-  var ownership_btn = $('.btn.ownership');
   ownership_btn.click(function() {
     ownership_btn.removeClass('active');
     $('#filter_ownership').val($(this).val());
@@ -52,7 +54,6 @@ $(document).ready(function() {
     return false;
   });
 
-  var perpage_btn = $('.btn.per_page');
   perpage_btn.click(function() {
     perpage_btn.removeClass('active');
     $('#per_page').val($(this).val());
@@ -78,8 +79,23 @@ $(document).ready(function() {
     showButtonPanel: true
   });
 
-  $('#owner_filter_build_lists, #status_filter_build_lists').live('change', function(){
+  $(document).on('change', '#owner_filter_build_lists, #status_filter_build_lists', function(){
     $('#datatable').dataTable().fnDraw();
+  });
+
+  $(document).on('click', '#clone_build_list', function() {
+    $.ajax({
+      type: 'GET',
+      url: $(this).attr('href') + '&show=inline',
+      success: function(data){
+                 new_form.html(data);
+                 $(document).scrollTop(new_form.offset().top);
+               },
+      error: function(data){
+               alert('error') // TODO remove
+             }
+     });
+    return false;
   });
 });
 
@@ -107,7 +123,7 @@ function addPersonalPlatformToExtraRepos(selected_option, extra_repos) {
     default_value.attr('label'),
     default_value.attr('name'),
     default_value.attr('value')
-  );  
+  );
 }
 
 function setBranchSelected(selected_option) {
