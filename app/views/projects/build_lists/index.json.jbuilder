@@ -20,11 +20,11 @@ json.dictionary  do
   json.projects @build_lists.map(&:project).uniq.compact do |project|
     json.(project, :id, :name_with_owner)
   end
-  json.platforms (@build_lists.map(&:build_for_platform) | @build_lists.map(&:save_to_platform)) do |platform|
+  json.platforms (@build_lists.map(&:build_for_platform) | @build_lists.map(&:save_to_platform)).uniq do |platform|
     json.(platform, :id, :name)
     json.personal platform.personal?
   end
-  json.repositories @build_lists.map(&:save_to_repository) do |repository|
+  json.repositories @build_lists.map(&:save_to_repository).uniq do |repository|
     json.(repository, :id, :name)
   end
   json.arches Arch.all do |arch|
