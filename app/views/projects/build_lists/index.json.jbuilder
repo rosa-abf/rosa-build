@@ -34,4 +34,4 @@ end
 
 json.server_status  @build_server_status
 json.filter         @filter.try(:options)
-json.will_paginate  will_paginate(@bls).to_s.gsub(/\/build_lists.json/, '/build_lists#/build_lists').html_safe
+json.pages          angularjs_will_paginate(@bls)

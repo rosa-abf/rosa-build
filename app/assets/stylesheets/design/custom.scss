@@ -2090,3 +2090,17 @@ table tbody {
         border-bottom: 2px solid #125687;
     }
 }
+
+#will_paginate .pagination {
+    div {
+        display: inline-block;
+        margin: 0 2px;
+    }
+    a {
+        text-decoration: none;
+    }
+    .disabled a {
+        color: #292929;
+        cursor: default;
+    }
+}

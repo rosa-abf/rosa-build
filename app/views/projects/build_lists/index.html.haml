@@ -26,7 +26,7 @@
             %span.icon-chevron-up{'ng-hide' => 'bl.relatedHidden', 'ng-click' => 'hideRelated(bl)'}
           %a{'ng-href' => '{{bl.url}}' } {{bl.id}}
           %div{'ng-show' => 'bl.hasRelated'}
-            %div.status{'ng-repeat' => 'related in bl.related', :class => '{{related.status_color}}'} &nbsp; 
+            .status{'ng-repeat' => 'related in bl.related', :class => '{{related.status_color}}'} &nbsp; 
 
         / status
         %td
@@ -57,7 +57,7 @@
 
         / arch_short
         %td{'ng-show' => 'bl.arch'} {{bl.arch.name}}
-        %td{'ng-hide' => 'bl.arch'}= t("layout.arches.unexisted_arch")
+        %td{'ng-hide' => 'bl.arch'}= t('layout.arches.unexisted_arch')
 
         / user
         %td
@@ -68,7 +68,6 @@
 
   .both
 
-
-  #will_paginate{'ng-bind-html-unsafe' => 'will_paginate'}
+  = render 'shared/angularjs_will_paginate'
 
 = render @project ? 'projects/base/submenu' : 'projects/build_lists/submenu'

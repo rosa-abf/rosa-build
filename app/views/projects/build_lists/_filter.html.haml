@@ -14,46 +14,46 @@
         - if current_user
           .bordered.nopadding
             %h3.medium= t("layout.build_lists.ownership.header")
-            =f.hidden_field :ownership, :value => '{{filter.ownership}}'
+            =f.hidden_field :ownership, :value => '{{params.filter.ownership}}'
             .btn-group
               - ['owned', (@project ? nil : 'related'), 'everything'].compact.each do |ownership|
-                -options = {'ng-class' =>"{active: filter.ownership == '#{ownership}'}",:value => ownership, :style => (@project ? 'width:50%;' : '')}
+                -options = {'ng-class' =>"{active: params.filter.ownership == '#{ownership}'}",:value => ownership, :style => (@project ? 'width:50%;' : '')}
                 %button.btn.ownership{options}= t "layout.build_lists.ownership.#{ownership}"
         %h3.medium= t 'number_rows'
-        =hidden_field_tag :per_page, '{{filter.per_page}}'
-        =hidden_field_tag :page, '{{filter.page}}'
+        =hidden_field_tag :per_page, '{{params.per_page}}'
+        =hidden_field_tag :page, '{{params.page}}'
         .btn-group
           -BuildList::Filter::PER_PAGE.each do |num|
-            %button.btn.per_page{:value => num, 'ng-class' => "{active: filter.per_page == #{num}}"}=num
+            %button.btn.per_page{:value => num, 'ng-class' => "{active: params.per_page == #{num}}"}=num
         %h3.medium= t 'activerecord.attributes.build_list.status'
         .lineForm.aside
           = f.select :status, BuildList::STATUSES.collect{|status| [BuildList.human_status(status), status]}, {:include_blank => true},
-            html_options.merge(:id => 'status', 'ng-model' => 'filter.status')
+            html_options.merge(:id => 'status', 'ng-model' => 'params.filter.status')
         .both
         %br/
       .column
         %h3.medium= t 'activerecord.models.platform'
         .lineForm.aside
-          = f.select :platform_id, availables_main_platforms.collect{|pl| [pl.name, pl.id]}, {:include_blank => true}, html_options.merge(:id => 'platform', 'ng-model' => 'filter.platform_id')
+          = f.select :platform_id, availables_main_platforms.collect{|pl| [pl.name, pl.id]}, {:include_blank => true}, html_options.merge(:id => 'platform', 'ng-model' => 'params.filter.platform_id')
         %h3.medium= t 'activerecord.attributes.build_list.arch'
         .lineForm.aside
-          = f.select :arch_id, Arch.recent.collect{|arch| [arch.name, arch.id]}, {:include_blank => true}, html_options.merge(:id => 'architecture', 'ng-model' => 'filter.arch_id')
+          = f.select :arch_id, Arch.recent.collect{|arch| [arch.name, arch.id]}, {:include_blank => true}, html_options.merge(:id => 'architecture', 'ng-model' => 'params.filter.arch_id')
         %h3.medium= t 'activerecord.models.mass_build'
         .lineForm.aside
           = f.select :mass_build_id, mass_build_options, {:include_blank => true},
-            html_options.merge(:id => 'mass_build', 'ng-model' => 'filter.mass_build_id')
+            html_options.merge(:id => 'mass_build', 'ng-model' => 'params.filter.mass_build_id')
 
       .column
         -[:updated_at_start, :updated_at_end].each do |attr|
           -class_name, message = attr == :updated_at_start ? %w[floatleft _on] : %w[floatright until]
           %div{:class => class_name}
             %h3.medium= t message
-            =f.text_field attr, :readonly => "readonly", :size => 10, :class => 'mediumheight min input_cleanse', :value => "{{filter.#{attr}}}"
+            =f.text_field attr, :readonly => "readonly", :size => 10, :class => 'mediumheight min input_cleanse', :value => "{{params.filter.#{attr}}}"
             =link_to image_tag('x.png', :alt => 'x', :class => 'semi'), "#filter_#{attr}", :id => 'updated_at_clear'
         .both
         -%w[project_name id].each do |filter|
           %h3.medium= t "layout.build_lists.#{filter}_search"
-          %input.mediumheight.input_cleanse{:id => "filter_#{filter}", :name => "filter[#{filter}]", :size => "30", :type => "text", :value => "{{filter.#{filter}}}"}
+          %input.mediumheight.input_cleanse{:id => "filter_#{filter}", :name => "filter[#{filter}]", :size => "30", :type => "text", :value => "{{params.filter.#{filter}}}"}
         %br/
         %br/
       .butgrp
