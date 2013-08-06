@@ -149,9 +149,6 @@ class Projects::BuildListsController < Projects::BaseController
 
     @build_lists = @build_lists.paginate(:page => (params[:iDisplayStart].to_i/params[:iDisplayLength].to_i).to_i + 1, :per_page => params[:iDisplayLength])
     @total_build_lists = @build_lists.count
-    #if !params[:sSearch].blank? && search = "%#{params[:sSearch]}%"
-    #  @users = @users.where('users.name ILIKE ? or users.uname ILIKE ? or users.email ILIKE ?', search, search, search)
-    #end
     @build_lists = @build_lists.where(:user_id => current_user) if params[:owner_filter] == 'true'
     @build_lists = @build_lists.where(:status => [BuildList::BUILD_ERROR, BuildList::FAILED_PUBLISH, BuildList::REJECTED_PUBLISH]) if params[:status_filter] == 'true'
     @build_lists = @build_lists.order(order)
