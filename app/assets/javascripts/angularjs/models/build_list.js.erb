@@ -42,10 +42,10 @@ var BuildList = function(atts, dictionary) {
   self.url                    = Routes.build_list_path(self.id);
 
   switch (self.status) { // See: app/helpers/build_lists_helper.rb
-    case <%=BuildList::BUILD_PUBLISHED%>: self.status_color = 'success'; break
+    case <%=BuildList::BUILD_PUBLISHED%>:
     case <%=BuildList::SUCCESS%>: self.status_color = 'success'; break
-    case <%=BuildList::BUILD_ERROR%>: self.status_color = 'error'; break
-    case <%=BuildList::FAILED_PUBLISH%>: self.status_color = 'error'; break
+    case <%=BuildList::BUILD_ERROR%>:
+    case <%=BuildList::FAILED_PUBLISH%>:
     case <%=BuildList::REJECTED_PUBLISH%>: self.status_color = 'error'; break
     case <%=BuildList::TESTS_FAILED%>: self.status_color = 'warning'; break
     default: self.status_color = 'nocolor';
