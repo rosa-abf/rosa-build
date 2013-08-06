@@ -18,7 +18,7 @@ module BuildListsHelper
   def availables_main_platforms
     # Main platforms with repositories
     Platform.main.accessible_by(current_ability, :show)
-            .joins(:repositories).uniq
+            .includes(:repositories).order(:name).uniq
   end
 
   def save_to_repositories(project)
