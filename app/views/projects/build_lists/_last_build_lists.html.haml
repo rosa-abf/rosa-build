@@ -8,15 +8,8 @@
     = check_box_tag :status_filter_build_lists, true, params[:status_filter] == 'true'
     = label_tag t('layout.build_lists.failed_build_lists')
 
-  - default_column = {:type => 'html', :sortable => false, :searchable => false}
-  - columns = [default_column,
-               default_column,
-               default_column,
-               default_column,
-               default_column,
-               default_column,
-               default_column,
-               default_column]
+  - columns, default_column = [], {:type => 'html', :sortable => false, :searchable => false}
+  - 8.times { columns << default_column }
   = raw datatable(columns, {:sort_by => "[7, 'asc']", :processing => t('layout.processing'), :search => 'false',
                             :pagination_labels => {:previous => t('datatables.previous_label'), :next => t('datatables.next_label')},
                             :empty_label      => t('datatables.empty_label'),
