@@ -64,6 +64,9 @@ gem 'angularjs-rails'
 gem 'ng-rails-csrf'
 gem 'momentjs-rails'
 gem 'angular-i18n', '0.1.2'
+gem 'js-routes'
+
+gem 'time_diff'
 
 group :assets do
   gem 'sass-rails', '~> 3.2.5'

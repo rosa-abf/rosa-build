@@ -1,4 +1,5 @@
 var _locales = {
+  <%I18n.locale = :ru%>
   'ru-ru': {
     'project.total_branches': [
       'Всего %1 ветка',
@@ -9,8 +10,10 @@ var _locales = {
       'Всего %1 тег',
       'Всего %1 тега',
       'Всего %1 тегов'
-    ]
+    ],
+    <%= BuildList::STATUSES.map{|s| "'build_list.status.#{s}':'#{BuildList.human_status(s)}'"}.join(',') %>
   },
+  <%I18n.locale = :en%>
   'en-us': {
     'project.total_branches': [
       'Total %1 branch',
@@ -19,6 +22,7 @@ var _locales = {
     'project.total_tags': [
       'Total %1 tag',
       'Total %1 tags'
-    ]
+    ],
+    <%= BuildList::STATUSES.map{|s| "'build_list.status.#{s}':'#{BuildList.human_status(s)}'"}.join(',') %>
   }
 };

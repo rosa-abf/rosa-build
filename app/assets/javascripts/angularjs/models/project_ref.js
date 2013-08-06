@@ -14,15 +14,15 @@ var ProjectRef = function(atts) {
   self.ui_container = false;
 
   self.path = function(project) {
-    return '/' + project.fullname + '/tree/' + self.ref;
+    return Routes.tree_path(project.owner.uname, project.name, self.ref);
   }
 
   self.diff_path = function(project, current_ref) {
-    return '/' + project.fullname + '/diff/' + current_ref + '...' + self.ref;
+    return Routes.diff_path(project.owner.uname, project.name, current_ref + '...' + self.ref);
   }
 
   self.archive_path = function(project, type) {
-    return '/' + project.fullname + '/archive/' + project.name + '-' + self.ref + '.' + type;
+    return Routes.archive_path(project.owner.uname, project.name, project.name + '-' + self.ref, {format: type});
   }
 
   //return the scope-safe instance

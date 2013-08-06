@@ -1,5 +1,7 @@
 # -*- encoding : utf-8 -*-
 module BuildListsHelper
+
+  # See: app/assets/javascripts/angularjs/models/build_list.js.erb
   def build_list_status_color(status)
     case status
     when BuildList::BUILD_PUBLISHED, BuildList::SUCCESS
@@ -33,12 +35,11 @@ module BuildListsHelper
     end
   end
 
-  def mass_build_options(selected_id)
+  def mass_build_options
     options_from_collection_for_select(
       MassBuild.recent.limit(15),
       :id,
-      :name,
-      selected_id
+      :name
     )
   end
 
