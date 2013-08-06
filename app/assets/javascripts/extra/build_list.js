@@ -89,6 +89,27 @@ $(document).ready(function() {
       url: $(this).attr('href') + '&show=inline',
       success: function(data){
                  new_form.html(data);
+                 //$('#build_list_save_to_repository_id').trigger('change');
+
+                 var selected_option = $('#build_list_save_to_repository_id').find("option:selected");
+                 var platform_id = selected_option.attr('platform_id');
+                 var rep_name = selected_option.text().match(/[\w-]+\/([\w-]+)/)[1];
+                 var all_repositories = $('.all_platforms input');
+                 var build_platform = $('#build_for_pl_' + platform_id);
+                 all_repositories.removeAttr('checked');
+
+                 if (build_platform.size() == 0) {
+                   all_repositories.removeAttr('disabled');
+                 } else {
+                   all_repositories.attr('disabled', 'disabled');
+                   var parent = build_platform.parent();
+                   parent.find('input').removeAttr('disabled');
+                   parent.find('input[rep_name="main"]').attr('checked', 'checked');
+                   if (rep_name != 'main') {
+                     parent.find('input[rep_name="' + rep_name + '"]').attr('checked', 'checked');
+                   }
+                 }
+
                  $(document).scrollTop(new_form.offset().top);
                },
       error: function(data){
