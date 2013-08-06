@@ -43,7 +43,7 @@
         = check_box_tag "build_list[#{kind}]", checked, checked
         = f.label kind
     %br
-    = hidden_field_tag :from_build_list_id, params[:build_list_id]
+    = hidden_field_tag :from_build_list_id, params[:build_list_id] if params[:build_list_id].present?
     = f.submit t('layout.projects.build_button'), :data => {'disable-with' => t('layout.processing')}
 .both
 
