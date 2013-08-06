@@ -32,7 +32,7 @@ module BuildListsHelper
           :default_arches     => (r.platform.platform_arch_settings.by_default.pluck(:arch_id).presence || Arch.where(:name => Arch::DEFAULT).pluck(:id)).join(' ')
         }
       ]
-    end
+    end.sort_by { |col| col[0] }
   end
 
   def mass_build_options
