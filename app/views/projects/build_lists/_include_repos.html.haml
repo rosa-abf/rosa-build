@@ -1,7 +1,7 @@
 - Repository.custom_sort(platform.repositories).each do |repo|
   .both
     - if params[:build_list].try(:[], :include_repos).present?
-      - checked = (params[:build_list].try(:[], :include_repos) || []).include?(repo.id.to_s)
+      - checked = (params[:build_list].try(:[], :include_repos) || []).include?(repo.id)
     - else checked = false
     = check_box_tag 'build_list[include_repos][]', repo.id, checked,
       :disabled => params[:build_list].try(:[], :build_for_platform_id).to_i != platform.id,
