@@ -1964,7 +1964,7 @@ article .activity .top {
     }
 }
 
-#assigned-popup {
+.users-search-popup {
     z-index: 1001;
     position: absolute;
     margin: 5px 0 0 130px;
@@ -1998,7 +1998,7 @@ article .activity .top {
     .edit_assignee {
         display: none;
     }
-    #manage_issue_users_list {
+    .list {
         overflow-y: auto;
         overflow-x: hidden;
         max-height: 280px;

@@ -1,0 +1,45 @@
+RosaABF.controller('CollaboratorsController', ['$scope', 'ApiCollaborator', function($scope, ApiCollaborator) {
+
+  $scope.popup              = $('#add_collaborator_form .users-search-popup');
+  $scope.owner              = $('#owner_name').val();
+  $scope.project            = $('#project_name').val();
+  $scope.resource           = ApiCollaborator.resource;
+  $scope.collaborators      = [];
+  $scope.new_collaborators  = [];
+
+  $scope.getCollaborators = function() {
+    $scope.collaborators = $scope.resource.query({owner: $scope.owner, project: $scope.project});
+  }
+  $scope.getCollaborators();
+
+  $scope.update = function(collaborator) {
+    collaborator.$update();
+  }
+
+  $scope.deleteCollaborators = function() {
+    var collaborators = [];
+    _.each($scope.collaborators, function(collaborator){
+      if(collaborator.removed) {
+        collaborator.$delete();
+      } else {
+        collaborators.push(collaborator);
+      }
+      $scope.collaborators = collaborators;
+    });
+  }
+
+  $scope.search = function() {
+    if ($scope.collaborator.term.length > 2) {
+      $scope.new_collaborators = $scope.resource.find(
+        {owner: $scope.owner, project: $scope.project, term: $scope.collaborator.term});
+      $scope.popup.show();
+    }
+  }
+
+  $scope.select = function(collaborator) {
+    $scope.popup.hide();
+    collaborator.term = collaborator.actor_name;
+    $scope.collaborator = collaborator;
+  }
+
+}]);

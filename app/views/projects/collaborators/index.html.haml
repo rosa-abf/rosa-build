@@ -5,40 +5,71 @@
 %a{:name => 'users'}
 %h3= t("layout.users.list_header")
 
-#add_collaborator_form
-  .admin-search.withimage
-    .img
-      %img{ :alt => 'avatar', :src => '', :style => 'display: none;' }
-    = text_field_tag :collaborator_name, nil
+%div{'ng-controller' => 'CollaboratorsController'}
+  = hidden_field_tag :owner_name, @project.try(:owner).try(:uname)
+  = hidden_field_tag :project_name, @project.try(:name)
+
+  #add_collaborator_form
+    .admin-search.withimage
+      .img
+        %img{:alt => 'avatar', 'ng-src' => '{{collaborator.avatar}}', 'ng-show' => 'collaborator.avatar'}
+      = text_field_tag :collaborator_name, nil, 'ng-model' => 'collaborator.term', 'ng-keyup' => 'search()'
+
+    .users-search-popup
+      .header
+        .title= t('layout.issues.search_user')
+        %span.icon-remove-circle
+      .list
+        .people{'ng-repeat' => 'c in new_collaborators', 'ng-click' => 'select(c)'}
+          .avatar
+            %img{width: '16px', 'ng-src' => '{{c.avatar}}', alt: 'avatar'}
+          .name {{c.actor_name}}
+          .both
+        
+        .nothing{'ng-hide' => 'new_collaborators.length > 0'}= t('layout.issues.nothing_to_show')
+
+
+      //= autocomplete_field_tag :collaborator_name, params[:user_uname], find_project_collaborators_path(@project)
+      .both
+    .admin-role
+      .lineForm
+        = select_tag 'role', options_for_collaborators_roles_select
+    .admin-add
+      %a{:id => 'add_collaborator_button', :class => 'button', :rel => 'nofollow', :href => 'javascript:void(0)'}
+        = t('layout.add')
     .both
-  .admin-role
-    .lineForm
-      = select_tag 'role', options_for_collaborators_roles_select
-  .admin-add
-    %a{:id => 'add_collaborator_button', :class => 'button', :rel => 'nofollow', :href => 'javascript:void(0)'}
-      = t('layout.add')
+
+  %table#collaborators.tablesorter{:cellpadding => "0", :cellspacing => "0"}
+    %thead
+      %tr
+        %th.centered
+          %span.delete{'ng-click' => 'deleteCollaborators()'} &nbsp; 
+        %th
+          = t("layout.collaborators.members")
+        %th{:colspan => "3"}
+          = t("layout.collaborators.roles")
+      %tr.search
+        %th{:colspan => "5"}
+          %input{:type => "text", :placeholder => "#{t('layout.filter_by_name')}", 'ng-model' => 'query.actor_name'}
+
+    %tbody
+      %tr{'ng-repeat' => 'c in collaborators | filter:query'}
+        %td
+          %input{:type => 'checkbox', 'ng-model' => 'c.removed' }
+        %td
+          .img
+            %img{'ng-src' => '{{c.avatar}}', alt: 'avatar' }
+          .forimg
+            %a{'ng-href' => '{{c.actor_path}}'} {{c.actor_name}}
+
+        - Relation::ROLES.each do |role|
+          %td
+            .radio
+              %input{:type => 'radio', 'ng-model' => 'c.collaborator.role', :value => role, 'ng-click' => 'update(c)'}
+            .forradio
+              %label= t("layout.collaborators.role_names.#{role}")
+
+
+  %br
+
   .both
-
-%table#collaborators.tablesorter{:cellpadding => "0", :cellspacing => "0"}
-  %thead
-    %tr
-      %th.centered
-        %span#collaborators_deleter.hidden
-          %span.delete &nbsp; 
-      %th
-        = t("layout.collaborators.members")
-      %th{:colspan => "3"}
-        = t("layout.collaborators.roles")
-    %tr.search
-      %th{:colspan => "5"}
-        %input{ :type => "text", :placeholder => "#{ t('layout.filter_by_name') }"}
-  %tbody
-%br
-
-.both
-
-:javascript
-  $(function() {
-    Rosa.bootstrapedData.collaborators = #{ render 'collaborators.json.jbuilder', :collaborators => @collaborators };
-    r = new Rosa.Routers.CollaboratorsRouter();
-  });
