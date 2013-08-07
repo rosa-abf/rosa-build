@@ -894,12 +894,11 @@ ul.ui-autocomplete.has_results {
     float: left;
     padding-top: 6px;
 }
-#add_collaborator_form div.img {
-    width: 25px;
-    height: 25px;
-}
-
-#add_collaborator_form div.img img {
+#collaborators {
+    .img, img {
+        width: 25px;
+        height: 25px;
+    }
 }
 
 #add_collaborator_form .admin-role .lineForm {

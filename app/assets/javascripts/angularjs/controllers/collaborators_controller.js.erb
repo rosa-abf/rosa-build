@@ -1,11 +1,25 @@
 RosaABF.controller('CollaboratorsController', ['$scope', 'ApiCollaborator', function($scope, ApiCollaborator) {
 
+  $scope.def_role           = "<%=Relation::ROLES.first%>";
+
   $scope.popup              = $('#add_collaborator_form .users-search-popup');
   $scope.owner              = $('#owner_name').val();
   $scope.project            = $('#project_name').val();
   $scope.resource           = ApiCollaborator.resource;
   $scope.collaborators      = [];
+
   $scope.new_collaborators  = [];
+
+  $scope.initNewCollaborator = function(c) {
+    if (c) {
+      c.term              = c.actor_name;
+      c.collaborator.role = $scope.def_role;
+    } else {
+       c = {collaborator: {role: $scope.def_role}};
+    }
+    $scope.new_collaborator = c;
+  }
+  $scope.initNewCollaborator();
 
   $scope.getCollaborators = function() {
     $scope.collaborators = $scope.resource.query({owner: $scope.owner, project: $scope.project});
@@ -29,17 +43,23 @@ RosaABF.controller('CollaboratorsController', ['$scope', 'ApiCollaborator', func
   }
 
   $scope.search = function() {
-    if ($scope.collaborator.term.length > 2) {
+    if ($scope.new_collaborator.term.length > 2) {
       $scope.new_collaborators = $scope.resource.find(
-        {owner: $scope.owner, project: $scope.project, term: $scope.collaborator.term});
+        {owner: $scope.owner, project: $scope.project, term: $scope.new_collaborator.term});
       $scope.popup.show();
     }
   }
 
-  $scope.select = function(collaborator) {
+  $scope.select = function(c) {
+    $scope.initNewCollaborator(c);
     $scope.popup.hide();
-    collaborator.term = collaborator.actor_name;
-    $scope.collaborator = collaborator;
+  }
+
+  $scope.add = function() {
+    $scope.new_collaborator.$save(function() {
+      $scope.collaborators.push($scope.new_collaborator);
+      $scope.initNewCollaborator();
+    });
   }
 
 }]);

@@ -5,15 +5,15 @@
 %a{:name => 'users'}
 %h3= t("layout.users.list_header")
 
-%div{'ng-controller' => 'CollaboratorsController'}
+#collaborators{'ng-controller' => 'CollaboratorsController'}
   = hidden_field_tag :owner_name, @project.try(:owner).try(:uname)
   = hidden_field_tag :project_name, @project.try(:name)
 
   #add_collaborator_form
     .admin-search.withimage
       .img
-        %img{:alt => 'avatar', 'ng-src' => '{{collaborator.avatar}}', 'ng-show' => 'collaborator.avatar'}
-      = text_field_tag :collaborator_name, nil, 'ng-model' => 'collaborator.term', 'ng-keyup' => 'search()'
+        %img{:alt => 'avatar', 'ng-src' => '{{new_collaborator.avatar}}', 'ng-show' => 'new_collaborator.avatar'}
+      = text_field_tag :collaborator_name, nil, 'ng-model' => 'new_collaborator.term', 'ng-keyup' => 'search()'
 
     .users-search-popup
       .header
@@ -27,19 +27,16 @@
           .both
         
         .nothing{'ng-hide' => 'new_collaborators.length > 0'}= t('layout.issues.nothing_to_show')
-
-
-      //= autocomplete_field_tag :collaborator_name, params[:user_uname], find_project_collaborators_path(@project)
       .both
     .admin-role
       .lineForm
-        = select_tag 'role', options_for_collaborators_roles_select
+        = select_tag 'role', options_for_collaborators_roles_select, 'ng-model' => 'new_collaborator.collaborator.role'
     .admin-add
-      %a{:id => 'add_collaborator_button', :class => 'button', :rel => 'nofollow', :href => 'javascript:void(0)'}
+      %a.button{:rel => 'nofollow', :href => '', 'ng-click' => 'add()'}
         = t('layout.add')
     .both
 
-  %table#collaborators.tablesorter{:cellpadding => "0", :cellspacing => "0"}
+  %table.tablesorter{:cellpadding => "0", :cellspacing => "0"}
     %thead
       %tr
         %th.centered
