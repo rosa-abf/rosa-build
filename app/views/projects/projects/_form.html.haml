@@ -1,79 +1,82 @@
 - act = controller.action_name.to_sym
-- if [:new, :create].include? act
-  .leftlist= f.label :name
-  .rightlist= f.text_field :name, :class => 'text_field', :disabled => f.object.try(:persisted?)
+%div{'ng-controller' => 'ProjectFromController'}
+  - if [:new, :create].include? act
+    .leftlist= f.label :name
+    .rightlist= f.text_field :name, :class => 'text_field', :disabled => f.object.try(:persisted?)
+    .both
+  .leftlist= f.label :description
+  .rightlist= f.text_area :description, :class => 'text_field', :cols => 80
   .both
-.leftlist= f.label :description
-.rightlist= f.text_area :description, :class => 'text_field', :cols => 80
-.both
-- if [:new, :create].include? act
-  .leftlist= f.label :owner
-  .rightlist
-    = label_tag t("activerecord.attributes.project.who_owns.me")
-    - if Group.can_own_project(current_user).count > 0
-      = radio_button_tag :who_owns, 'me', @who_owns == :me #{}.merge( (@who_owns == :me) ? {:checked => 'checked'} : {} )
-      = label_tag t("activerecord.attributes.project.who_owns.group")
-      = radio_button_tag :who_owns, 'group', @who_owns == :group #{}.merge( (@who_owns == :group) ? {:checked => 'checked'} : {} )
-      -# TODO: Make our own select_box helper with new design, blackjack and bitches!
-      = select_tag :owner_id, options_from_collection_for_select( Group.can_own_project(current_user), :id, :name )
-    - else
-      = hidden_field_tag :who_owns, :me
-  .both
-
-.leftlist= f.label :visibility
-.rightlist
-  =# f.select :visibility, Project::VISIBILITIES
-  - Project::VISIBILITIES.each do |visibility|
-    = f.radio_button :visibility, visibility, :class => 'niceRadio'
-    - if visibility == 'open'
-      = image_tag("unlock.png")
-    - else
-      = image_tag("lock.png")
-    = t("activerecord.attributes.project.visibilities.#{visibility}")
-.both
-.leftlist
-  \ 
-.rightlist
-  .check
-    %span#niceCheckbox1.niceCheck-main= f.check_box :is_package
-  .forcheck= f.label :is_package
-  .both
-  - unless [:new, :create].include? act
-    #publish_form{:class => @project.publish_i686_into_x86_64 ? '' : 'hidden'}
-      .check
-        %span.niceCheck-main= f.check_box :publish_i686_into_x86_64
-      .forcheck= f.label :publish_i686_into_x86_64
-      .both
-
-.both
-- if [:edit, :update].include? act
-  .leftlist= f.label :default_branch
-  .rightlist
-    = f.select :default_branch,
-          options_from_collection_for_select( @project.repo.branches,
-                                              :name, :name, @project.default_branch),
-          :class => 'sel80', :id => 'branch_selector'
-  .both
-  #maintainer_form{:class => @project.is_package ? '' : 'hidden'}
-    = f.hidden_field :maintainer_id, :value => @project.maintainer_id
-    .leftlist
-      = f.label :maintainer
+  - if [:new, :create].include? act
+    .leftlist= f.label :owner
     .rightlist
-      -# TODO: Maybe use something like Chosen with filter and prepopulated
-      -#       list of potential maintainers?
-      = autocomplete_field_tag :maintainer_name, @project.maintainer.fullname,
-          autocomplete_maintainers_path(@project.owner, @project),
-          :id_element => '#project_maintainer_id',
-          :placeholder => @project.maintainer.fullname
-- if [:new, :create].include? act
-  .leftlist= f.label :srpm
-  .rightlist= f.file_field :srpm, :class => 'file_field'
+      = label_tag t("activerecord.attributes.project.who_owns.me")
+      - if Group.can_own_project(current_user).count > 0
+        = radio_button_tag :who_owns, 'me', @who_owns == :me #{}.merge( (@who_owns == :me) ? {:checked => 'checked'} : {} )
+        = label_tag t("activerecord.attributes.project.who_owns.group")
+        = radio_button_tag :who_owns, 'group', @who_owns == :group #{}.merge( (@who_owns == :group) ? {:checked => 'checked'} : {} )
+        -# TODO: Make our own select_box helper with new design, blackjack and bitches!
+        = select_tag :owner_id, options_from_collection_for_select( Group.can_own_project(current_user), :id, :name )
+      - else
+        = hidden_field_tag :who_owns, :me
+    .both
+
+  .leftlist= f.label :visibility
+  .rightlist
+    =# f.select :visibility, Project::VISIBILITIES
+    - Project::VISIBILITIES.each do |visibility|
+      = f.radio_button :visibility, visibility, :class => 'niceRadio'
+      - if visibility == 'open'
+        = image_tag("unlock.png")
+      - else
+        = image_tag("lock.png")
+      = t("activerecord.attributes.project.visibilities.#{visibility}")
   .both
-.leftlist
-  \ 
-.rightlist= submit_tag t('layout.save'), :class => 'button', :data => {'disable-with' => t('layout.saving')}
-.both
+  .leftlist
+    \ 
+  .rightlist
+    .check= f.check_box :is_package, 'ng-model' => 'project.is_package', 'ng-change' => 'project.publish_i686_into_x86_64 = false'
+    .forcheck= f.label :is_package
+    .both
+    - unless [:new, :create].include? act
+      #publish_form{'ng-show' => 'project.is_package'}
+        .check= f.check_box :publish_i686_into_x86_64, 'ng-model' => 'project.publish_i686_into_x86_64'
+        .forcheck= f.label :publish_i686_into_x86_64
+        .both
+
+  .both
+  - if [:edit, :update].include? act
+    .leftlist= f.label :default_branch
+    .rightlist
+      = f.select :default_branch,
+            options_from_collection_for_select( @project.repo.branches,
+                                                :name, :name, @project.default_branch),
+            :class => 'sel80', :id => 'branch_selector'
+    .both
+    #maintainer_form{'ng-show' => 'project.is_package'}
+      = f.hidden_field :maintainer_id, :value => @project.maintainer_id
+      .leftlist
+        = f.label :maintainer
+      .rightlist
+        -# TODO: Maybe use something like Chosen with filter and prepopulated
+        -#       list of potential maintainers?
+        = autocomplete_field_tag :maintainer_name, @project.maintainer.fullname,
+            autocomplete_maintainers_path(@project.owner, @project),
+            :id_element => '#project_maintainer_id',
+            :placeholder => @project.maintainer.fullname
+  - if [:new, :create].include? act
+    .leftlist= f.label :srpm
+    .rightlist= f.file_field :srpm, :class => 'file_field'
+    .both
+  .leftlist
+    \ 
+  .rightlist= submit_tag t('layout.save'), :class => 'button', :data => {'disable-with' => t('layout.saving')}
+  .both
+
 :javascript
-  $(function() {
-    ( new Rosa.Views.ProjectModifyView ).render();
-  });
+  RosaABF.controller('ProjectFromController', ['$scope', function($scope) {
+    $scope.project = {
+      is_package:               #{@project.is_package},
+      publish_i686_into_x86_64: #{@project.publish_i686_into_x86_64}
+    }
+  }]);
