@@ -11,7 +11,7 @@ class Projects::BuildListsController < Projects::BaseController
   load_and_authorize_resource :build_list, :through => :project, :only => NESTED_ACTIONS, :shallow => true
   load_and_authorize_resource :except => NESTED_ACTIONS
 
-  before_filter :create_from_build_list, :only => [:new, :create]
+  before_filter :create_from_build_list, :only => :new
 
   def index
     params[:filter].each{|k,v| params[:filter].delete(k) if v.blank? } if params[:filter]
