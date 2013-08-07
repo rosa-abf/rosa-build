@@ -2,10 +2,10 @@
   %h3= t 'layout.build_lists.last_build_lists'
   %h4= t 'layout.relations.filters'
   .both
-    = check_box_tag :owner_filter_build_lists, true, params[:owner_filter] == 'true'
+    = check_box_tag :owner_filter_build_lists, true, (params[:owner_filter] || 'true') == 'true'
     = label_tag t('layout.build_lists.only_my_build_lists')
   .both
-    = check_box_tag :status_filter_build_lists, true, params[:status_filter] == 'true'
+    = check_box_tag :status_filter_build_lists, true, (params[:status_filter] || 'true') == 'true'
     = label_tag t('layout.build_lists.failed_build_lists')
 
   - columns, default_column = [], {:type => 'html', :sortable => false, :searchable => false}
