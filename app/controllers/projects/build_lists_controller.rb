@@ -165,14 +165,14 @@ class Projects::BuildListsController < Projects::BaseController
 
   def create_from_build_list
     return if params[:build_list_id].blank?
-    @build_list = BuildList.find params[:build_list_id]
+    build_list = BuildList.find(params[:build_list_id])
 
     params[:build_list] ||= {}
     keys = [:save_to_repository_id, :auto_publish, :include_repos,
             :project_version, :update_type, :auto_create_container,
             :extra_repositories, :extra_build_lists, :build_for_platform_id]
-    keys.each { |key| params[:build_list][key] = @build_list.send(key) }
-    params[:arches] = [@build_list.arch_id.to_s]
+    keys.each { |key| params[:build_list][key] = build_list.send(key) }
+    params[:arches] = [build_list.arch_id.to_s]
     [:owner_filter, :status_filter].each { |t| params[t] = 'true' if %w(true undefined).exclude? params[t] }
   end
 end
