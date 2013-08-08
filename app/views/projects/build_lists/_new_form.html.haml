@@ -11,7 +11,7 @@
     - selected = params[:build_list].try(:[], :save_to_repository_id) ? {:selected => params[:build_list][:save_to_repository_id]} : {}
     .lineForm= f.select :save_to_repository_id, save_to_repositories(project), selected
     %h3= t("activerecord.attributes.build_list.project_version")
-    .lineForm= f.select :project_version, versions_for_group_select(project), {}, :selected => params[:build_list].try(:[], :project_version) || project.default_branch
+    .lineForm= f.select :project_version, versions_for_group_select(project), :selected => params[:build_list].try(:[], :project_version) || project.default_branch
     %h3= t("activerecord.attributes.build_list.arch")
     - Arch.recent.each do |arch|
       .both
