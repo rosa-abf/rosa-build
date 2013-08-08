@@ -1,6 +1,6 @@
 $(document).ready(function() {
 
-  $('.autocomplete-form .button.add').click(function() {
+  $(document).on('click', '.autocomplete-form .button.add', function() {
     var form    = $(this).parent();
     var field   = form.attr('field');
     var subject = $('#' + field + '_field');
@@ -24,7 +24,7 @@ $(document).ready(function() {
     width:      500
   });
 
-  $('.autocomplete-form .icon-question-sign').click(function() {
+  $(document).on('click', '.autocomplete-form .icon-question-sign', function() {
     var field = $(this).parent().attr('field');
     var dialog = $('#' + field + '_dialog');
     if (dialog.is(':visible')) { dialog.dialog('close'); } else { dialog.dialog('open'); }

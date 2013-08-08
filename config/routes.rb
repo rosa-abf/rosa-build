@@ -301,7 +301,10 @@ Rosa::Application.routes.draw do
         end
         post "/labels/:label_id" => "issues#destroy_label", :as => :issues_delete_label
         post "/labels/:label_id/update" => "issues#update_label", :as => :issues_update_label
-        resources :build_lists, :only => [:index, :new, :create]
+
+        resources :build_lists, :only => [:index, :new, :create] do
+          get :list, :on => :collection
+        end
         resources :collaborators do
           get :find, :on => :collection
         end
