@@ -4,6 +4,6 @@
       - checked = (params[:build_list].try(:[], :include_repos).map(&:to_s) || []).include?(repo.id.to_s)
     - else checked = false
     = check_box_tag 'build_list[include_repos][]', repo.id, checked,
-      :disabled => params[:build_list].try(:[], :build_for_platform_id).to_i != platform.id,
+      :disabled => ((params[:build_list].try(:[], :build_for_platform_id).to_i != platform.id) && @build_list.build_for_platform.try('main?')),
       :id => "include_repos_#{repo.id}", :rep_name => repo.name
     = label_tag "include_repos_#{repo.id}", repo.name
