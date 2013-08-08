@@ -12,8 +12,9 @@
 .autocomplete-form{:subject_class => subject_class, :field => field, :path => autocomplete_path, :class => field}
   %h3= t("activerecord.attributes.build_list.#{field}")
   %span.icon-question-sign
-  .dialog{:title => t("activerecord.attributes.build_list.#{field}"), :id => "#{field}_dialog"}
-    = render "shared/autocomplete_docs/#{field}"
+  - if !(params[:show] == 'inline' && params[:build_list_id].present?)
+    .dialog{:title => t("activerecord.attributes.build_list.#{field}"), :id => "#{field}_dialog"}
+      = render "shared/autocomplete_docs/#{field}"
   .both
   = autocomplete_field_tag field, nil, "#{autocomplete_path}?#{{:platform_id => subject.save_to_platform.try(:id)}.to_param}", :placeholder => placeholder, :class => 'autocomplete', :update_elements => {:id => "##{field}_field", :path => "##{field}_field_path", :label => "##{field}_field_label"}
   = hidden_field_tag field, nil, :id => "#{field}_field"
@@ -24,7 +25,7 @@
   %table.tablesorter{:cellpadding => "0", :cellspacing => "0"}
     %tbody
       - field_name = "#{subject_class}[#{field}][]"
-      - field_class.where(:id => subject.send(field)).each do |extra|
+      - field_class.where(:id => params[:build_list].try(:fetch, field) || subject.send(field)).each do |extra|
         %tr
           - if extra.is_a?(BuildList)
             %td= link_to "#{extra.id} (#{extra.project.name} - #{extra.arch.name})", extra

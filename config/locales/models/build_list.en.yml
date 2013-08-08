@@ -152,6 +152,11 @@ en:
       show_filter: Show filters
       hide_filter: Hide filters
 
+      last_build_lists: Last Build Lists
+      recreate_build_list: Recreate Build List
+      only_my_build_lists: Only My
+      failed_build_lists: Only Failed
+
   flash:
     build_list:
       saved: Build list for project version '%{project_version}', platform '%{build_for_platform}' and architecture '%{arch}' has been created successfully

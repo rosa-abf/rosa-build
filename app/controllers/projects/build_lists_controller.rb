@@ -11,6 +11,8 @@ class Projects::BuildListsController < Projects::BaseController
   load_and_authorize_resource :build_list, :through => :project, :only => NESTED_ACTIONS, :shallow => true
   load_and_authorize_resource :except => NESTED_ACTIONS
 
+  before_filter :create_from_build_list, :only => :new
+
   def index
     params[:filter].each{|k,v| params[:filter].delete(k) if v.blank? } if params[:filter]
 
@@ -39,6 +41,11 @@ class Projects::BuildListsController < Projects::BaseController
   end
 
   def new
+    if params[:show] == 'inline' && params[:build_list_id].present?
+      render '_new_form', :layout => false, :locals => {:project => @project, :build_list => @build_list}
+    else
+      render :new
+    end
   end
 
   def create
@@ -49,7 +56,6 @@ class Projects::BuildListsController < Projects::BaseController
 
     params[:build_list][:save_to_platform_id] = @platform.id
     params[:build_list][:auto_publish] = false unless @repository.publish_without_qa?
-
 
     build_for_platforms = Repository.select(:platform_id).
       where(:id => params[:build_list][:include_repos]).group(:platform_id).map(&:platform_id)
@@ -135,9 +141,38 @@ class Projects::BuildListsController < Projects::BaseController
     }
   end
 
+  def list
+    @build_lists = @project.build_lists
+    sort_col = params[:ol_0] || 7
+    sort_dir = params[:sSortDir_0] == 'asc' ? 'asc' : 'desc'
+    order = "build_lists.updated_at #{sort_dir}"
+
+    @build_lists = @build_lists.paginate(:page => (params[:iDisplayStart].to_i/params[:iDisplayLength].to_i).to_i + 1, :per_page => params[:iDisplayLength])
+    @total_build_lists = @build_lists.count
+    @build_lists = @build_lists.where(:user_id => current_user) if params[:owner_filter] == 'true'
+    @build_lists = @build_lists.where(:status => [BuildList::BUILD_ERROR, BuildList::FAILED_PUBLISH, BuildList::REJECTED_PUBLISH]) if params[:status_filter] == 'true'
+    @build_lists = @build_lists.order(order)
+
+    render :partial => 'build_lists_ajax', :layout => false
+  end
+
+
   protected
 
   def find_build_list
     @build_list = BuildList.find(params[:id])
+  end
+
+  def create_from_build_list
+    return if params[:build_list_id].blank?
+    @build_list = BuildList.find params[:build_list_id]
+
+    params[:build_list] ||= {}
+    keys = [:save_to_repository_id, :auto_publish, :include_repos,
+            :project_version, :update_type, :auto_create_container,
+            :extra_repositories, :extra_build_lists, :build_for_platform_id]
+    keys.each { |key| params[:build_list][key] = @build_list.send(key) }
+    params[:arches] = [@build_list.arch_id.to_s]
+    [:owner_filter, :status_filter].each { |t| params[t] = 'true' if %w(true undefined).exclude? params[t] }
   end
 end

@@ -1,0 +1,38 @@
+.all
+  %h3= t 'layout.build_lists.last_build_lists'
+  %h4= t 'layout.relations.filters'
+  .both
+    = check_box_tag :owner_filter_build_lists, true, (params[:owner_filter] || 'true') == 'true'
+    = label_tag t('layout.build_lists.only_my_build_lists')
+  .both
+    = check_box_tag :status_filter_build_lists, true, (params[:status_filter] || 'true') == 'true'
+    = label_tag t('layout.build_lists.failed_build_lists')
+
+  - columns, default_column = [], {:type => 'html', :sortable => false, :searchable => false}
+  - 8.times { columns << default_column }
+  = raw datatable(columns, {:sort_by => "[7, 'asc']", :processing => t('layout.processing'), :search => 'false',
+                            :pagination_labels => {:previous => t('datatables.previous_label'), :next => t('datatables.next_label')},
+                            :empty_label      => t('datatables.empty_label'),
+                            :info_label       => t('datatables.info_label'),
+                            :info_empty_label => t('datatables.info_empty_label'),
+                            :filtered_label   => t('datatables.filtered_label'),
+                            :table_dom_id     => 'datatable',
+                            :auto_width       => 'false',
+                            :ajax_source => "#{url_for :controller => 'projects/build_lists', :action => :list}",
+                            :additional_data => {:owner_filter  => "' + $('#owner_filter_build_lists:checked').val() + '",
+                                                 :status_filter => "' + $('#status_filter_build_lists:checked').val() + '"} })
+
+  %table#datatable.tablesorter.list-users{:cellspacing => 0, :cellpadding => 0}
+    %thead
+      %tr
+        %th.th1= t('activerecord.attributes.build_list.id')
+        %th.th2= t('activerecord.attributes.build_list.status')
+        %th.th2= t('diff')
+        %th.th2= t('activerecord.attributes.build_list.project_version')
+        %th.th2= t('activerecord.attributes.build_list.save_to_repository')
+        %th.th1= t('activerecord.attributes.build_list.arch_short')
+        %th.th2= t('activerecord.attributes.build_list.user')
+        %th.th1= t('activerecord.attributes.build_list.updated_at')
+    %tbody
+  %br
+

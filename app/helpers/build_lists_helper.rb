@@ -18,7 +18,7 @@ module BuildListsHelper
   def availables_main_platforms
     # Main platforms with repositories
     Platform.main.accessible_by(current_ability, :show)
-            .joins(:repositories).uniq
+            .includes(:repositories).where('repositories.id IS NOT NULL').order('platforms.name').uniq
   end
 
   def save_to_repositories(project)
@@ -32,7 +32,7 @@ module BuildListsHelper
           :default_arches     => (r.platform.platform_arch_settings.by_default.pluck(:arch_id).presence || Arch.where(:name => Arch::DEFAULT).pluck(:id)).join(' ')
         }
       ]
-    end
+    end.sort_by { |col| col[0] }
   end
 
   def mass_build_options

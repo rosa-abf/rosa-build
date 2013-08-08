@@ -151,6 +151,11 @@ ru:
       show_filter: Показать фильтры
       hide_filter: Скрыть фильтры
 
+      last_build_lists: Последние сборки
+      recreate_build_list: Пересоздать сборку
+      only_my_build_lists: Только мои
+      failed_build_lists: Только сбойные
+
   flash:
     build_list:
       saved: Билд лист для версии '%{project_version}', платформы '%{build_for_platform}' и архитектуры '%{arch}' создан успешно

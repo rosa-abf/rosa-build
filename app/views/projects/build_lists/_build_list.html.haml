@@ -1,5 +1,7 @@
 %tr{:id => "row#{build_list_counter}", :class => "#{build_list_status_color(build_list.status)}"}
-  %td= link_to build_list.id, build_list
+  %td= [link_to(build_list.id, build_list),
+    (link_to(t('layout.clone'), new_project_build_list_path(build_list.project,
+    :build_list_id => build_list.id)) if can?(:create, build_list))].compact.join('<br/>').html_safe
   %td
     = build_list.human_status
     %br
