@@ -15,6 +15,14 @@
         %img{:alt => 'avatar', 'ng-src' => '{{new_collaborator.avatar}}', 'ng-show' => 'new_collaborator.avatar'}
       = text_field_tag :collaborator_name, nil, 'ng-model' => 'new_collaborator.term', 'ng-keyup' => 'search()'
 
+    .admin-role
+      .lineForm
+        = select_tag 'role', options_for_collaborators_roles_select, 'ng-model' => 'new_collaborator.collaborator.role'
+    .admin-add
+      %a.button{:rel => 'nofollow', :href => '', 'ng-click' => 'add()'}
+        = t('layout.add')
+    .both
+
     .users-search-popup
       .header
         .title= t('layout.issues.search_user')
@@ -28,12 +36,6 @@
         
         .nothing{'ng-hide' => 'new_collaborators.length > 0'}= t('layout.issues.nothing_to_show')
       .both
-    .admin-role
-      .lineForm
-        = select_tag 'role', options_for_collaborators_roles_select, 'ng-model' => 'new_collaborator.collaborator.role'
-    .admin-add
-      %a.button{:rel => 'nofollow', :href => '', 'ng-click' => 'add()'}
-        = t('layout.add')
     .both
 
   %table.tablesorter{:cellpadding => "0", :cellspacing => "0"}
