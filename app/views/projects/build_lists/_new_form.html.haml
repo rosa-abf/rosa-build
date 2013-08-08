@@ -19,7 +19,7 @@
         = check_box_tag "arches[]", arch.id, checked, :id => "arches_#{arch.id}"
         = label_tag "arches_#{arch.id}", arch.name
     %h3= t('activerecord.attributes.build_list.update_type')
-    - selected = params[:build_list].try(:fetch, :update_type) ? {:selected => params[:build_list][:update_version]} : {}
+    - selected = params[:build_list].try(:[], :update_type) ? {:selected => params[:build_list][:update_type]} : {}
     .lineForm= f.select :update_type, BuildList::UPDATE_TYPES, selected
 
     = render 'shared/autocomplete_form',
