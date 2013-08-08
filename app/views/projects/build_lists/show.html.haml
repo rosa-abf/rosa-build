@@ -54,6 +54,9 @@
   .leftlist= t("activerecord.attributes.build_list.auto_create_container")
   .rightlist= t("layout.#{@build_list.auto_create_container?}_")
   .both
+  .leftlist= t("activerecord.attributes.build_list.project_version")
+  .rightlist= link_to @build_list.project_version, tree_path(@build_list.project, @build_list.project_version)
+  .both
   .leftlist= t("diff")
   .rightlist= build_list_version_link(@build_list, true)
   .both
