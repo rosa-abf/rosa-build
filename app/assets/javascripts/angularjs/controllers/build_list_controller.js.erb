@@ -26,7 +26,7 @@ RosaABF.controller('BuildListController', ['$scope', '$http', function($scope, $
 
   $scope.updateTypeChanged = function() {
     if (_.indexOf($scope.advisoriable_types, $scope.build_list.update_type) != -1) {
-      if ($scope.advisory) { $scope.search(); }
+      if ($scope.advisory || $scope.term.length > 0) { $scope.search(); }
     } else {
       $scope.attach_advisory = 'no';
     }

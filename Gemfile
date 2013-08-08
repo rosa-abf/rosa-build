@@ -51,7 +51,6 @@ gem 'meta-tags', '~> 1.2.5', :require => 'meta_tags'
 gem "haml-rails", '~> 0.3.4'
 gem 'jquery-rails', '~> 2.0.2'
 gem 'ruby-haml-js', '~> 0.0.3'
-gem 'rails-backbone', '~> 0.7.2'
 
 gem 'rack-throttle'
 gem 'rest-client', '~> 1.6.6'
@@ -60,6 +59,7 @@ gem 'attr_encrypted', '1.2.1'
 gem "gemoji", "~> 1.2.1", require: 'emoji/railtie'
 
 # AngularJS related stuff
+gem 'underscore-rails'
 gem 'angularjs-rails'
 gem 'ng-rails-csrf'
 gem 'momentjs-rails'

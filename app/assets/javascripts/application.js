@@ -9,10 +9,6 @@
 //= require_tree ./lib
 
 //= require underscore
-//= require backbone
-//= require backbone_rails_sync
-//= require backbone_datalink
-//= require backbone/rosa
 
 //= require js-routes
 // require angular

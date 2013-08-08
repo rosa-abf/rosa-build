@@ -173,7 +173,7 @@ class Ability
       cannot [:create, :update, :destroy, :clone], Product, :platform => {:platform_type => 'personal'}
       cannot [:clone], Platform, :platform_type => 'personal'
 
-      # cannot :publish, BuildList, :new_core => false
+      cannot :publish, BuildList, :new_core => false
       cannot :create_container, BuildList, :new_core => false
       cannot(:publish, BuildList) {|build_list| !build_list.can_publish? }
 
