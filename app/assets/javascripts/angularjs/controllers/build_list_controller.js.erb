@@ -25,7 +25,7 @@ RosaABF.controller('BuildListController', ['$scope', '$http', function($scope, $
   }
 
   $scope.updateTypeChanged = function() {
-    if (_.indexOf($scope.advisoriable_types, $scope.build_list.update_type) != -1) {
+    if (_.contains($scope.advisoriable_types, $scope.build_list.update_type)) {
       if ($scope.advisory || $scope.term.length > 0) { $scope.search(); }
     } else {
       $scope.attach_advisory = 'no';
@@ -33,7 +33,7 @@ RosaABF.controller('BuildListController', ['$scope', '$http', function($scope, $
   }
 
   $scope.attachAdvisoryChanged = function() {
-    if (_.indexOf($scope.advisoriable_types, $scope.build_list.update_type) == -1) {
+    if (!_.contains($scope.advisoriable_types, $scope.build_list.update_type)) {
       $scope.build_list.update_type = $scope.advisoriable_types[0];
     }
     $('#build_list_update_type .nonadvisoriable').attr('disabled', ($scope.attach_advisory != 'no'));
