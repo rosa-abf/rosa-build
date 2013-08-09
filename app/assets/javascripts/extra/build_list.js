@@ -79,7 +79,7 @@ $(document).ready(function() {
     showButtonPanel: true
   });
 
-  $(document).on('change', '#owner_filter_build_lists, #status_filter_build_lists', function(){
+  $(document).on('click', '#owner_filter_build_lists, #status_filter_build_lists', function(){
     $('#datatable').dataTable().fnDraw();
   });
 
