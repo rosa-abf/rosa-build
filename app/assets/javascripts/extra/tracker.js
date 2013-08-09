@@ -129,8 +129,8 @@ $(document).ready(function() {
     return false;
   });
 
-  $('#assigned-popup .header .icon-remove-circle').live('click', function() {
-    $('#assigned-popup').hide();
+  $('.users-search-popup .header .icon-remove-circle').live('click', function() {
+    $('.users-search-popup').hide();
   });
 
   $('#assigned-container .icon-share').live('click', function() {

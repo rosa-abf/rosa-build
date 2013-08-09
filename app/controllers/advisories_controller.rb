@@ -21,9 +21,13 @@ class AdvisoriesController < ApplicationController
 
   def search
     @advisory = Advisory.by_update_type(params[:bl_type]).search_by_id(params[:query]).first
-    raise ActiveRecord::RecordNotFound.new('Not Found') if @advisory.nil?
-    respond_to do |format|
-      format.json { render @advisory }
+    if @advisory.nil?
+      render :nothing => true, :status => 404
+    else
+      # respond_to do |format|
+      #   format.json { render @advisory }
+      # end
+      render @advisory
     end
   end
 end

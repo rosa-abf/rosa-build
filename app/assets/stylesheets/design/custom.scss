@@ -894,12 +894,11 @@ ul.ui-autocomplete.has_results {
     float: left;
     padding-top: 6px;
 }
-#add_collaborator_form div.img {
-    width: 25px;
-    height: 25px;
-}
-
-#add_collaborator_form div.img img {
+#collaborators {
+    .img, img {
+        width: 25px;
+        height: 25px;
+    }
 }
 
 #add_collaborator_form .admin-role .lineForm {
@@ -1011,12 +1010,12 @@ form.mass_build input[type="checkbox"] {
   height: 11px;
 }
 
-div#new_advisory_form,
+/*div#new_advisory_form,
 div#advisory_preview,
 div#advisory_search_block,
 div#advisory_search_block div.info {
     display: none;
-}
+}*/
 
 div#advisory_search_block {
     padding-bottom: 15px;
@@ -1964,7 +1963,7 @@ article .activity .top {
     }
 }
 
-#assigned-popup {
+.users-search-popup {
     z-index: 1001;
     position: absolute;
     margin: 5px 0 0 130px;
@@ -1998,7 +1997,7 @@ article .activity .top {
     .edit_assignee {
         display: none;
     }
-    #manage_issue_users_list {
+    .list {
         overflow-y: auto;
         overflow-x: hidden;
         max-height: 280px;

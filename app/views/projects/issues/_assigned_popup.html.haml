@@ -1,4 +1,4 @@
-#assigned-popup
+#assigned-popup.users-search-popup
   .header
     .title= t('layout.issues.assign_someone')
     %span.icon-remove-circle
@@ -10,5 +10,5 @@
   - unless [:new, :create].include?(action_name.to_sym)
     = form_for :issue, :url => [@project, @issue], :method => :put, :html => { :class => 'edit_assignee issue'} do |f|
       = hidden_field_tag "user-default_assignee", nil, :name => 'issue[assignee_id]'
-  #manage_issue_users_list
+  .list
     = render 'projects/issues/search_collaborators'

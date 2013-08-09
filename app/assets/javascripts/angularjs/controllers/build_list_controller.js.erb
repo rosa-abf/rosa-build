@@ -1,0 +1,42 @@
+RosaABF.controller('BuildListController', ['$scope', '$http', function($scope, $http) {
+
+  $scope.advisoriable_types = <%=BuildList::RELEASE_UPDATE_TYPES%>;
+
+  $scope.build_list       = {};
+  $scope.attach_advisory  = 'no';
+  // Statuses: advisory_not_found, server_error, continue_input
+  $scope.search_status    = 'continue_input';
+  $scope.term             = '';
+  $scope.advisory         = null;
+
+
+  $scope.search = function() {
+    var params = {query: $scope.term, bl_type: $scope.build_list.update_type, format: 'json'};
+    $http.get(Routes.search_advisories_path(params)).success(function(results) {
+        $scope.search_status    = 'continue_input';
+        $scope.advisory         = results;
+        $('#attach_advisory').find('.advisory_id').val($scope.advisory.advisory_id);
+      }).error(function(data, status, headers, config) {
+        $scope.search_status  = status == 404 ? 'advisory_not_found' : 'server_error';
+        $scope.advisory       = null;
+        $('#attach_advisory').find('.advisory_id').val('');
+      });;
+
+  }
+
+  $scope.updateTypeChanged = function() {
+    if (_.contains($scope.advisoriable_types, $scope.build_list.update_type)) {
+      if ($scope.advisory || $scope.term.length > 0) { $scope.search(); }
+    } else {
+      $scope.attach_advisory = 'no';
+    }
+  }
+
+  $scope.attachAdvisoryChanged = function() {
+    if (!_.contains($scope.advisoriable_types, $scope.build_list.update_type)) {
+      $scope.build_list.update_type = $scope.advisoriable_types[0];
+    }
+    $('#build_list_update_type .nonadvisoriable').attr('disabled', ($scope.attach_advisory != 'no'));
+  }
+
+}]);
