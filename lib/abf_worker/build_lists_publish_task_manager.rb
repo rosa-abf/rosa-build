@@ -113,7 +113,7 @@ module AbfWorker
             :cmd_params           => cmd_params,
             :platform             => {
               :platform_path  => platform_path,
-              :type           => build_list.build_for_platform.distrib_type,
+              :type           => distrib_type,
               :name           => build_list.build_for_platform.name,
               :arch           => build_list.arch.name
             },
