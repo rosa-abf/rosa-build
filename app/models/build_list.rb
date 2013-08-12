@@ -424,13 +424,16 @@ class BuildList < ActiveRecord::Base
     # git_project_address.gsub!(/^http:\/\/(0\.0\.0\.0|localhost)\:[\d]+/, 'https://abf.rosalinux.ru') unless Rails.env.production?
     {
       :id                   => id,
-      :arch                 => arch.name,
       :time_living          => (build_for_platform.platform_arch_settings.by_arch(arch).first.try(:time_living) || PlatformArchSetting::DEFAULT_TIME_LIVING),
       :distrib_type         => build_for_platform.distrib_type,
       :git_project_address  => git_project_address,
       :commit_hash          => commit_hash,
       :include_repos        => include_repos_hash,
-      :bplname              => build_for_platform.name,
+      :platform             => {
+        :type => build_for_platform.distrib_type,
+        :name => build_for_platform.name,
+        :arch => arch.name
+      },
       :user                 => {:uname => user.uname, :email => user.email}
     }
   end

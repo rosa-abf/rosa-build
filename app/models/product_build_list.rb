@@ -168,8 +168,11 @@ class ProductBuildList < ActiveRecord::Base
       :params => params,
       :time_living => time_living,
       :main_script => main_script,
-      :arch => arch.name,
-      :distrib_type => product.platform.distrib_type,
+      :platform => {
+        :type => product.platform.distrib_type,
+        :name => product.platform.name,
+        :arch => arch.name
+      },
       :user => {:uname => user.try(:uname), :email => user.try(:email)}
     }
   end
