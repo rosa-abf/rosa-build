@@ -288,8 +288,19 @@ class Project < ActiveRecord::Base
   end
 
   def update_path_to_project(old_name)
-    new_path, self.name = path, old_name
-    FileUtils.mv path, new_path, :force => true
+    new_name, new_path, self.name, old_path = name, path, old_name, path
+    self.name = new_name
+    FileUtils.mv old_path, new_path, :force => true
+
+    FileUtils.mv  File.join(APP_CONFIG['git_path'], 'pull_requests', owner.uname, old_name),
+                  File.join(APP_CONFIG['git_path'], 'pull_requests', owner.uname, new_name),
+                  :force => true
+
+    PullRequest.where(:from_project_id => id).update_all(:from_project_name => new_name)
+
+    PullRequest.where('from_project_id = ? OR to_project_id = ?', id, id).find_in_batches(:batch_size => 100) do |pulls|
+      pulls.each(&:update_relations)
+    end
   end
   later :update_path_to_project, :queue => :clone_build
 

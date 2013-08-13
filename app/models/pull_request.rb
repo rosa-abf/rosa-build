@@ -49,6 +49,19 @@ class PullRequest < ActiveRecord::Base
     end
   end
 
+  def update_relations
+    return unless Dir.exists?(path)
+    Dir.chdir(path) do
+      system 'git', 'remote', 'remove', 'origin'
+      system 'git', 'remote', 'add', 'origin', to_project.path
+      if to_project != from_project
+        system 'git', 'remote', 'remove', 'head'
+        system 'git', 'remote', 'add', 'head', from_project.path
+      end
+    end    
+  end
+  later :update_relations, :queue => :clone_build
+
   def cross_pull?
     from_project_id != to_project_id
   end
