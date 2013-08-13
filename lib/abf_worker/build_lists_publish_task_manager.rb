@@ -110,10 +110,13 @@ module AbfWorker
           'class' => 'AbfWorker::PublishWorkerDefault',
           'args' => [{
             :id                   => build_list.id,
-            :arch                 => build_list.arch.name,
-            :distrib_type         => distrib_type,
             :cmd_params           => cmd_params,
-            :platform             => {:platform_path => platform_path},
+            :platform             => {
+              :platform_path  => platform_path,
+              :type           => distrib_type,
+              :name           => build_list.build_for_platform.name,
+              :arch           => build_list.arch.name
+            },
             :repository           => {:id => build_list.save_to_repository_id},
             :type                 => :publish,
             :time_living          => 9600, # 160 min
@@ -191,10 +194,13 @@ module AbfWorker
           'class' => "AbfWorker::PublishWorkerDefault",
           'args' => [{
             :id             => r.id,
-            :arch           => 'x86_64',
-            :distrib_type   => distrib_type,
             :cmd_params     => cmd_params,
-            :platform       => {:platform_path => "#{r.platform.path}/repository"},
+            :platform       => {
+              :platform_path  => "#{r.platform.path}/repository",
+              :type           => distrib_type,
+              :name           => r.platform.name,
+              :arch           => 'x86_64'
+            },
             :repository     => {:id => r.id},
             :type           => :resign,
             :skip_feedback  => true,
@@ -301,10 +307,13 @@ module AbfWorker
       lock_str  = "#{save_to_repository_id}-#{build_for_platform_id}"
       options   = {
         :id           => (bl ? bl.id : Time.now.to_i),
-        :arch         => (bl ? bl.arch.name : 'x86_64'),
-        :distrib_type => distrib_type,
         :cmd_params   => cmd_params,
-        :platform     => {:platform_path => platform_path},
+        :platform     => {
+          :platform_path  => platform_path,
+          :type           => distrib_type,
+          :name           => build_for_platform.name,
+          :arch           => (bl ? bl.arch.name : 'x86_64')
+        },
         :repository   => {:id => save_to_repository_id},
         :type         => :publish,
         :time_living  => 9600, # 160 min
@@ -369,10 +378,13 @@ module AbfWorker
 
           options = {
             :id           => Time.now.to_i,
-            :arch         => 'x86_64',
-            :distrib_type => build_for_platform.distrib_type,
             :cmd_params   => cmd_params,
-            :platform     => {:platform_path => "#{rep.platform.path}/repository"},
+            :platform     => {
+              :platform_path  => "#{rep.platform.path}/repository",
+              :type           => build_for_platform.distrib_type,
+              :name           => build_for_platform.name,
+              :arch           => 'x86_64'
+            },
             :repository   => {:id => rep.id},
             :type         => :publish,
             :time_living  => 9600, # 160 min
