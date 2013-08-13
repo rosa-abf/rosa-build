@@ -288,7 +288,9 @@ class Project < ActiveRecord::Base
   end
 
   def update_path_to_project(old_name)
-    new_name, new_path, self.name, old_path = name, path, old_name, path
+    new_name, new_path = name, path
+    self.name = old_name
+    old_path  = path
     self.name = new_name
     FileUtils.mv old_path, new_path, :force => true
 
@@ -298,9 +300,8 @@ class Project < ActiveRecord::Base
 
     PullRequest.where(:from_project_id => id).update_all(:from_project_name => new_name)
 
-    PullRequest.where('from_project_id = ? OR to_project_id = ?', id, id).find_in_batches(:batch_size => 100) do |pulls|
-      pulls.each(&:update_relations)
-    end
+    PullRequest.where(:from_project_id => id).each{ |p| p.update_relations(old_name) }
+    pull_requests.where('from_project_id != to_project_id').each(&:update_relations)
   end
   later :update_path_to_project, :queue => :clone_build
 

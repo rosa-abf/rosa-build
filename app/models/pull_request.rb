@@ -49,7 +49,8 @@ class PullRequest < ActiveRecord::Base
     end
   end
 
-  def update_relations
+  def update_relations(old_from_project_name)
+    FileUtils.mv path(old_from_project_name), path, :force => true if old_from_project_name
     return unless Dir.exists?(path)
     Dir.chdir(path) do
       system 'git', 'remote', 'remove', 'origin'
@@ -116,8 +117,8 @@ class PullRequest < ActiveRecord::Base
     end
   end
 
-  def path
-    last_part = [id, from_project_owner_uname, from_project_name].compact.join('-')
+  def path(suffix = from_project_name)
+    last_part = [id, from_project_owner_uname, suffix].compact.join('-')
     File.join(APP_CONFIG['git_path'], "#{new_record? ? 'temp_' : ''}pull_requests", to_project.owner.uname, to_project.name, last_part)
   end
 
