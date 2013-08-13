@@ -49,13 +49,13 @@ class PullRequest < ActiveRecord::Base
     end
   end
 
-  def update_relations(old_from_project_name)
+  def update_relations(old_from_project_name = nil)
     FileUtils.mv path(old_from_project_name), path, :force => true if old_from_project_name
     return unless Dir.exists?(path)
     Dir.chdir(path) do
       system 'git', 'remote', 'remove', 'origin'
       system 'git', 'remote', 'add', 'origin', to_project.path
-      if to_project != from_project
+      if cross_pull?
         system 'git', 'remote', 'remove', 'head'
         system 'git', 'remote', 'add', 'head', from_project.path
       end
@@ -123,11 +123,7 @@ class PullRequest < ActiveRecord::Base
   end
 
   def from_branch
-    if to_project_id != from_project_id
-      "head_#{from_ref}"
-    else
-      from_ref
-    end
+    cross_pull? ? "head_#{from_ref}" : from_ref
   end
 
   def common_ancestor
@@ -196,7 +192,7 @@ class PullRequest < ActiveRecord::Base
       `rm -rf #{path}`
       git.fs_mkdir('..')
       git.clone(options, to_project.path, path)
-      if to_project != from_project
+      if cross_pull?
         Dir.chdir(path) do
           system 'git', 'remote', 'add', 'head', from_project.path
         end

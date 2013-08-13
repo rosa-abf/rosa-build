@@ -33,6 +33,13 @@ describe PullRequest do
       @other_pull.save
     end
 
+    it 'ensures that path to pull_request repository has been changed after rename of project' do
+      @pull.check
+      @project.update_attributes(:name => "#{@project.name}-new")
+      @pull.reload
+      Dir.exists?(@pull.path).should be_true
+    end
+
     it 'master should merge with non_conflicts branch' do
       @pull.check
       @pull.status.should == 'ready'

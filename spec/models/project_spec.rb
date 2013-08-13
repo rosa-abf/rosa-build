@@ -94,9 +94,7 @@ describe Project do
 
   it 'ensures that path to git repository has been changed after rename of project' do
     project = FactoryGirl.create(:project_with_commit)
-    project.name = "#{project.name}_renamed"
-    project.save
-    project.reload
+    project.update_attributes(:name => "#{project.name}-new")
     Dir.exists?(project.path).should be_true
   end
 

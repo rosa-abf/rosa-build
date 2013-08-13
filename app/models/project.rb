@@ -294,9 +294,12 @@ class Project < ActiveRecord::Base
     self.name = new_name
     FileUtils.mv old_path, new_path, :force => true
 
-    FileUtils.mv  File.join(APP_CONFIG['git_path'], 'pull_requests', owner.uname, old_name),
-                  File.join(APP_CONFIG['git_path'], 'pull_requests', owner.uname, new_name),
-                  :force => true
+    pull_requests_old_path = File.join(APP_CONFIG['git_path'], 'pull_requests', owner.uname, old_name)
+    if Dir.exists?(pull_requests_old_path)
+      FileUtils.mv  pull_requests_old_path,
+                    File.join(APP_CONFIG['git_path'], 'pull_requests', owner.uname, new_name),
+                    :force => true
+    end
 
     PullRequest.where(:from_project_id => id).update_all(:from_project_name => new_name)
 
