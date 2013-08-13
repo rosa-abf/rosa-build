@@ -53,12 +53,8 @@ class PullRequest < ActiveRecord::Base
     FileUtils.mv path(old_from_project_name), path, :force => true if old_from_project_name
     return unless Dir.exists?(path)
     Dir.chdir(path) do
-      system 'git', 'remote', 'remove', 'origin'
-      system 'git', 'remote', 'add', 'origin', to_project.path
-      if cross_pull?
-        system 'git', 'remote', 'remove', 'head'
-        system 'git', 'remote', 'add', 'head', from_project.path
-      end
+      system 'git', 'remote', 'set-url', 'origin', to_project.path
+      system 'git', 'remote', 'set-url', 'head', from_project.path if cross_pull?
     end    
   end
   later :update_relations, :queue => :clone_build
