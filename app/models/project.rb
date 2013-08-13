@@ -44,7 +44,7 @@ class Project < ActiveRecord::Base
   end
 
   attr_accessible :name, :description, :visibility, :srpm, :is_package, :default_branch, :has_issues, :has_wiki, :maintainer_id, :publish_i686_into_x86_64
-  attr_readonly :name, :owner_id, :owner_type
+  attr_readonly :owner_id, :owner_type
 
   scope :recent, order("lower(#{table_name}.name) ASC")
   scope :search_order, order("CHAR_LENGTH(#{table_name}.name) ASC")
@@ -78,6 +78,7 @@ class Project < ActiveRecord::Base
   before_create :set_maintainer
   after_save :attach_to_personal_repository
   after_update :set_new_git_head
+  after_update lambda { update_path_to_project(name_was) }, :if => :name_changed?
 
   has_ancestry :orphan_strategy => :rootify #:adopt not available yet
 
@@ -285,6 +286,12 @@ class Project < ActiveRecord::Base
   def set_new_git_head
     `cd #{path} && git symbolic-ref HEAD refs/heads/#{self.default_branch}` if self.default_branch_changed? && self.repo.branches.map(&:name).include?(self.default_branch)
   end
+
+  def update_path_to_project(old_name)
+    new_path, self.name = path, old_name
+    FileUtils.mv path, new_path, :force => true
+  end
+  later :update_path_to_project, :queue => :clone_build
 
   def check_default_branch
     if self.repo.branches.count > 0 && self.repo.branches.map(&:name).exclude?(self.default_branch)

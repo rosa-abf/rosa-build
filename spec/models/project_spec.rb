@@ -2,11 +2,16 @@
 require 'spec_helper'
 
 describe Project do
-  before do
-    stub_symlink_methods
-    @root_project = FactoryGirl.create(:project)
-    @child_project = @root_project.fork(FactoryGirl.create(:user))
-    @child_child_project = @child_project.fork(FactoryGirl.create(:user))
+  before { stub_symlink_methods }
+
+  context 'creation' do
+    let(:root_project) { FactoryGirl.create(:project) }
+    let(:child_project) { root_project.fork(FactoryGirl.create(:user)) }
+    let(:child_child_project) { child_project.fork(FactoryGirl.create(:user)) }
+
+    it { root_project }
+    it { child_project }
+    it { child_child_project }
   end
 
   context 'for destroy' do
@@ -85,6 +90,14 @@ describe Project do
     it "'hacked' uname should not pass" do
       lambda {FactoryGirl.create(:project, :name => "...\nbeatiful_name\n for project")}.should raise_error(ActiveRecord::RecordInvalid)
     end
+  end
+
+  it 'ensures that path to git repository has been changed after rename of project' do
+    project = FactoryGirl.create(:project_with_commit)
+    project.name = "#{project.name}_renamed"
+    project.save
+    project.reload
+    Dir.exists?(project.path).should be_true
   end
 
   context 'manage branches' do
