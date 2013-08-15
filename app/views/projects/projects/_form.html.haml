@@ -1,9 +1,8 @@
 - act = controller.action_name.to_sym
 %div{'ng-controller' => 'ProjectFromController'}
-  - if [:new, :create].include? act
-    .leftlist= f.label :name
-    .rightlist= f.text_field :name, :class => 'text_field', :disabled => f.object.try(:persisted?)
-    .both
+  .leftlist= f.label :name
+  .rightlist= f.text_field :name, :class => 'text_field'
+  .both
   .leftlist= f.label :description
   .rightlist= f.text_area :description, :class => 'text_field', :cols => 80
   .both

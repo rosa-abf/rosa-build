@@ -44,7 +44,7 @@ class Project < ActiveRecord::Base
   end
 
   attr_accessible :name, :description, :visibility, :srpm, :is_package, :default_branch, :has_issues, :has_wiki, :maintainer_id, :publish_i686_into_x86_64
-  attr_readonly :name, :owner_id, :owner_type
+  attr_readonly :owner_id, :owner_type
 
   scope :recent, order("lower(#{table_name}.name) ASC")
   scope :search_order, order("CHAR_LENGTH(#{table_name}.name) ASC")
@@ -78,6 +78,7 @@ class Project < ActiveRecord::Base
   before_create :set_maintainer
   after_save :attach_to_personal_repository
   after_update :set_new_git_head
+  after_update lambda { update_path_to_project(name_was) }, :if => :name_changed?
 
   has_ancestry :orphan_strategy => :rootify #:adopt not available yet
 
@@ -285,6 +286,27 @@ class Project < ActiveRecord::Base
   def set_new_git_head
     `cd #{path} && git symbolic-ref HEAD refs/heads/#{self.default_branch}` if self.default_branch_changed? && self.repo.branches.map(&:name).include?(self.default_branch)
   end
+
+  def update_path_to_project(old_name)
+    new_name, new_path = name, path
+    self.name = old_name
+    old_path  = path
+    self.name = new_name
+    FileUtils.mv old_path, new_path, :force => true if Dir.exists?(old_path)
+
+    pull_requests_old_path = File.join(APP_CONFIG['git_path'], 'pull_requests', owner.uname, old_name)
+    if Dir.exists?(pull_requests_old_path)
+      FileUtils.mv  pull_requests_old_path,
+                    File.join(APP_CONFIG['git_path'], 'pull_requests', owner.uname, new_name),
+                    :force => true
+    end
+
+    PullRequest.where(:from_project_id => id).update_all(:from_project_name => new_name)
+
+    PullRequest.where(:from_project_id => id).each{ |p| p.update_relations(old_name) }
+    pull_requests.where('from_project_id != to_project_id').each(&:update_relations)
+  end
+  later :update_path_to_project, :queue => :clone_build
 
   def check_default_branch
     if self.repo.branches.count > 0 && self.repo.branches.map(&:name).exclude?(self.default_branch)
