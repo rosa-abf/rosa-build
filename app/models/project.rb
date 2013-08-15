@@ -292,7 +292,7 @@ class Project < ActiveRecord::Base
     self.name = old_name
     old_path  = path
     self.name = new_name
-    FileUtils.mv old_path, new_path, :force => true
+    FileUtils.mv old_path, new_path, :force => true if Dir.exists?(old_path)
 
     pull_requests_old_path = File.join(APP_CONFIG['git_path'], 'pull_requests', owner.uname, old_name)
     if Dir.exists?(pull_requests_old_path)
