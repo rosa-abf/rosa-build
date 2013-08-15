@@ -39,8 +39,9 @@
     %h3= t("activerecord.attributes.build_list.preferences")
     - [:auto_publish, :auto_create_container].each do |kind|
       .both
-        - checked = params[:build_list].try(:[], kind)
-        = check_box_tag "build_list[#{kind}]", checked, checked
+        - checked, field = params[:build_list].try(:[], kind), "build_list[#{kind}]"
+        = hidden_field_tag field, false
+        = check_box_tag field, true, checked
         = f.label kind
     %br
     = hidden_field_tag :from_build_list_id, params[:build_list_id] if params[:build_list_id].present?
