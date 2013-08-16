@@ -40,7 +40,7 @@
     - [:auto_publish, :auto_create_container].each do |kind|
       .both
         - checked, field = params[:build_list].try(:[], kind), "build_list[#{kind}]"
-        = hidden_field_tag field, false
+        = hidden_field_tag field, false, :id => nil
         = check_box_tag field, true, checked
         = f.label kind
     %br
