@@ -76,10 +76,12 @@ module BuildListsHelper
     hash_size=5
     if item.version =~ /^[\da-z]+$/ && item.name == item.build_list.project.name
       bl = item.build_list
-      link_to str_version ? "#{shortest_hash_id item.version, hash_size}" : shortest_hash_id(item.version, hash_size),
-        commit_path(bl.project.owner, bl.project, item.version)
+      {
+        :text => str_version ? "#{shortest_hash_id item.version, hash_size}" : shortest_hash_id(item.version, hash_size),
+        :href => commit_path(bl.project.owner, bl.project, item.version)
+      }
     else
-      ''
+      {}
     end
   end
 

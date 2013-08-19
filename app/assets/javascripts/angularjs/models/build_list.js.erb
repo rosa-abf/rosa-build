@@ -19,9 +19,11 @@ var BuildList = function(atts, dictionary) {
     self.save_to_repository   = _.find(dictionary.repositories, function(i){ return i.id == self.save_to_repository_id; });
   }
 
-  self.save_to_repository_name = self.save_to_platform.name + '/' + self.save_to_repository.name;
-  if (self.save_to_platform.personal) {
-    self.save_to_repository_name += ' (' + self.build_for_platform.name + ')'
+  if (self.save_to_platform) {
+    self.save_to_repository_name = self.save_to_platform.name + '/' + self.save_to_repository.name;
+    if (self.save_to_platform.personal) {
+      self.save_to_repository_name += ' (' + self.build_for_platform.name + ')'
+    }
   }
 
   if (self.project) {
@@ -36,10 +38,11 @@ var BuildList = function(atts, dictionary) {
     self.project.name_with_owner = self.project.owner + '/' + self.project.name;
   }
 
-  self.save_to_repository_url = Routes.platform_repository_path(self.save_to_platform_id, self.save_to_repository_id);
-  self.user.url               = Routes.user_path(self.user.uname);
-  self.human_status           = 'build_list.status.' + self.status;
-  self.url                    = Routes.build_list_path(self.id);
+  if (self.save_to_platform_id)
+    self.save_to_repository_url = Routes.platform_repository_path(self.save_to_platform_id, self.save_to_repository_id);
+  if (self.user)
+    self.user.url = Routes.user_path(self.user.uname);
+  self.url          = Routes.build_list_path(self.id);
 
   switch (self.status) { // See: app/helpers/build_lists_helper.rb
     case <%=BuildList::BUILD_PUBLISHED%>:
@@ -71,6 +74,19 @@ var BuildList = function(atts, dictionary) {
     self.related.push(bl);
     self.hasRelated = true;
   }
+
+  self.itemStatusColor = function(status) {
+    if (status == <%=BuildList::SUCCESS%>)
+      return 'success';
+    else if (status == <%=BuildList::BUILD_ERROR%>)
+      return 'error';
+    else
+      return '';
+  }
+  self.humanStatus = function(status) {
+    return 'build_list.status.' + status;
+  }
+  self.human_status = self.humanStatus(self.status);
 
   //return the scope-safe instance
   return self;
