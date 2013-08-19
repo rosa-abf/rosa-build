@@ -139,6 +139,16 @@ describe Api::V1::IssuesController do
       it 'cant create issue in hidden project' do
         lambda { post :create, @create_params.merge(:project_id => @hidden_project.id)}.should change{ Issue.count }.by(0)
       end
+
+      it 'can assignee issue in own project' do
+        post :create, @create_params.deep_merge(:issue => {:assignee_id => @issue.user.id})
+        @project.issues.reload.last.assignee.id.should == @issue.user.id
+      end
+
+      it 'cant assignee issue in open project' do
+        post :create, @create_params.deep_merge(:project_id => @open_project.id, :issue => {:assignee_id => @issue.user.id})
+        @open_project.issues.reload.last.assignee.should be_nil
+      end
     end
 
     context 'for anonymous user' do
@@ -176,6 +186,16 @@ describe Api::V1::IssuesController do
       it 'cant update issue in hidden project' do
         put :update, @update_params.merge(:project_id => @hidden_project.id, :id => @hidden_issue.serial_id)
         @hidden_issue.reload.title.should_not == 'title'
+      end
+
+      it 'cant assignee issue in open project' do
+        post :create, @update_params.deep_merge(:project_id => @open_project.id, :issue => {:assignee_id => @issue.user.id})
+        @open_issue.reload.assignee.id.should_not == @issue.user.id
+      end
+
+      it 'can assignee issue in own project' do
+        post :create, @update_params.deep_merge(:issue => {:assignee_id => @issue.user.id})
+        @issue.reload.assignee.id.should_not == @issue.user.id
       end
     end
 
