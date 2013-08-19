@@ -61,7 +61,7 @@ describe Api::V1::IssuesController do
         response.should be_success
       end
 
-      it 'cant show issue in hidden project' do
+      it "can't show issue in hidden project" do
         get :show, :project_id => @hidden_project.id, :id => @hidden_issue.serial_id, :format => :json
         response.status.should == 403
       end
@@ -106,7 +106,7 @@ describe Api::V1::IssuesController do
         response.should be_success
       end
 
-      it 'cant show issue in hidden project', :anonymous_access => true do
+      it "can't show issue in hidden project", :anonymous_access => true do
         get :show, :project_id => @hidden_project.id, :id => @hidden_issue.serial_id, :format => :json
         response.status.should == 403
       end
@@ -136,7 +136,7 @@ describe Api::V1::IssuesController do
         lambda { post :create, @create_params.merge(:project_id => @open_project.id)}.should change{ Issue.count }.by(1)
       end
 
-      it 'cant create issue in hidden project' do
+      it "can't create issue in hidden project" do
         lambda { post :create, @create_params.merge(:project_id => @hidden_project.id)}.should change{ Issue.count }.by(0)
       end
 
@@ -145,18 +145,18 @@ describe Api::V1::IssuesController do
         @project.issues.reload.last.assignee.id.should == @issue.user.id
       end
 
-      it 'cant assignee issue in open project' do
+      it "can't assignee issue in open project" do
         post :create, @create_params.deep_merge(:project_id => @open_project.id, :issue => {:assignee_id => @issue.user.id})
         @open_project.issues.reload.last.assignee.should be_nil
       end
     end
 
     context 'for anonymous user' do
-      it 'cant create issue in project', :anonymous_access => true do
+      it "can't create issue in project", :anonymous_access => true do
         lambda { post :create, @create_params}.should change{ Issue.count }.by(0)
       end
 
-      it 'cant create issue in hidden project', :anonymous_access => true do
+      it "can't create issue in hidden project", :anonymous_access => true do
         lambda { post :create, @create_params.merge(:project_id => @hidden_project.id)}.should change{ Issue.count }.by(0)
       end
     end
@@ -178,17 +178,17 @@ describe Api::V1::IssuesController do
         @own_hidden_issue.reload.title.should == 'new title'
       end
 
-      it 'cant update issue in open project' do
+      it "can't update issue in open project" do
         put :update, @update_params.merge(:project_id => @open_project.id, :id => @open_issue.serial_id)
         @open_issue.reload.title.should_not == 'new title'
       end
 
-      it 'cant update issue in hidden project' do
+      it "can't update issue in hidden project" do
         put :update, @update_params.merge(:project_id => @hidden_project.id, :id => @hidden_issue.serial_id)
         @hidden_issue.reload.title.should_not == 'title'
       end
 
-      it 'cant assignee issue in open project' do
+      it "can't assignee issue in open project" do
         post :create, @update_params.deep_merge(:project_id => @open_project.id, :issue => {:assignee_id => @issue.user.id})
         @open_issue.reload.assignee.id.should_not == @issue.user.id
       end
@@ -203,12 +203,12 @@ describe Api::V1::IssuesController do
       before(:each) do
         @count = Issue.count
       end
-      it 'cant update issue in project', :anonymous_access => true do
+      it "can't update issue in project", :anonymous_access => true do
         put :update, @update_params
         response.status.should == 401
       end
 
-      it 'cant update issue in hidden project', :anonymous_access => true do
+      it "can't update issue in hidden project", :anonymous_access => true do
         put :update, @update_params.merge(:project_id => @hidden_project.id, :id => @hidden_issue.serial_id)
         response.status.should == 401
       end
