@@ -39,6 +39,7 @@ class Api::V1::IssuesController < Api::V1::BaseController
 
   def create
     @issue.user = current_user
+    @issue.assignee = nil if cannot?(:write, @project)
     create_subject @issue
   end
 
