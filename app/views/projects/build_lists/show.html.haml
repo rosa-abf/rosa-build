@@ -216,7 +216,7 @@
 
   - if @build_list.new_core?
     .hr
-    = render 'platforms/product_build_lists/results', :subject => @build_list
+    = render 'shared/build_results', :subject => @build_list
 
 :javascript
   $('article .all').addClass('bigpadding');

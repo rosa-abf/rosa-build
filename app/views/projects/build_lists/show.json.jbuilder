@@ -31,11 +31,12 @@ json.build_list do
     json.path advisory_path(@build_list.advisory)
   end if @build_list.advisory
 
-  json.logs (@build_list.results || []) do |result|
+  json.results @build_list.results do |result|
     json.file_name result['file_name']
+    json.sha1 result['sha1']
     json.size result['size']
     json.url "#{APP_CONFIG['file_store_url']}/api/v1/file_stores/#{result['sha1']}"
-  end if @build_list.new_core?
+  end if @build_list.new_core? && @build_list.results.present?
 
   json.packages @build_list.packages do |package|
     json.(package, :id, :name, :fullname, :release, :version, :sha1)

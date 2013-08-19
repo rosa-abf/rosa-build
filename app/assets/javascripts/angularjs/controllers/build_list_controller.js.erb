@@ -3,7 +3,8 @@ RosaABF.controller('BuildListController', ['$scope', '$http', '$timeout', functi
   $scope.advisoriable_types = <%=BuildList::RELEASE_UPDATE_TYPES%>;
 
   $scope.id               = $('#build_list_id').val();
-  $scope.build_list       = {};
+  $scope.build_list       = null;
+  $scope.subject          = {};
   $scope.attach_advisory  = 'no';
   // Statuses: advisory_not_found, server_error, continue_input
   $scope.search_status    = 'continue_input';
@@ -13,7 +14,8 @@ RosaABF.controller('BuildListController', ['$scope', '$http', '$timeout', functi
   $scope.getBuildList = function() {
     $http.get(Routes.build_list_path($scope.id, {format: 'json'})).success(function(results) {
       // Render Server status
-      $scope.build_list  = new BuildList(results.build_list);
+      $scope.build_list   = new BuildList(results.build_list);
+      $scope.subject      = $scope.build_list;
     });
   }
 
