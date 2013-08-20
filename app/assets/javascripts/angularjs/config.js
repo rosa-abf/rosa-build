@@ -26,6 +26,7 @@ var LocalesHelper = function($locale) {
 RosaABF.factory("LocalesHelper", ['$locale', LocalesHelper]);
 
 var SoundNotificationsHelper = function() {
+  var isOn = true;
   var statusChangedSound = null;
   soundManager.setup({
     url: '/assets/swf/',
@@ -35,8 +36,11 @@ var SoundNotificationsHelper = function() {
   });
   return {
     buildStatusChanged: function() {
-      if (statusChangedSound)
+      if (isOn && statusChangedSound)
         statusChangedSound.play();
+    },
+    enabled: function(status) {
+      isOn = status;
     }
   }
 }
