@@ -1,5 +1,5 @@
 json.build_list do
-  json.(@build_list, :id, :container_status, :status, :duration)
+  json.(@build_list, :id, :container_status, :status)
   json.(@build_list, :update_type)
   json.updated_at @build_list.updated_at.strftime('%Y-%m-%d %H:%M:%S UTC')
 
