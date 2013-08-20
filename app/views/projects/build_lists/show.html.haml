@@ -44,12 +44,10 @@
     .both
     .leftlist= t("activerecord.attributes.build_list.update_type")
     .rightlist
-      - if can?(:publish, @build_list)
-        = f.select :update_type, options_for_select(build_list_classified_update_types,
-          @build_list.update_type), {}, 'ng-model' => 'build_list.update_type',
-          'ng-change' => 'updateTypeChanged()'
-      - else
-        = @build_list.update_type
+      = f.select :update_type, options_for_select(build_list_classified_update_types,
+        @build_list.update_type), {}, 'ng-model' => 'build_list.update_type',
+        'ng-change' => 'updateTypeChanged()', 'ng-show' => 'build_list.can_publish'
+      %div{'ng-hide' => 'build_list.can_publish'}= @build_list.update_type
     .both
     .leftlist= t("activerecord.attributes.build_list.auto_publish")
     .rightlist= t("layout.#{@build_list.auto_publish}_")
@@ -102,12 +100,8 @@
       .rightlist {{build_list.human_duration }}
       .both
 
-    - if can?(:cancel, @build_list)
-      = link_to t("layout.build_lists.cancel"), cancel_build_list_path(@build_list),
-                :method => :put, :confirm => t("layout.confirm"), :class => 'button', 'ng-show' => 'build_list.can_cancel'
-
-    - if @build_list.save_to_platform.released && @build_list.advisory.nil? && can?(:publish, @build_list)
-      #advisory_block
+    - if @build_list.save_to_platform.released
+      #advisory_block{'ng-show' => 'build_list.can_publish && !build_list.advisory'}
         .leftlist= label_tag :attach_advisory, t("layout.build_lists.attached_advisory")
         .rightlist
           = select_tag :attach_advisory, advisories_select_options(@advisories), 'ng-model' => 'attach_advisory', 'ng-change' => 'attachAdvisoryChanged()'
@@ -140,25 +134,25 @@
           .rightlist.refs {{advisory.references}}
           .both
 
-    %div{'ng-show' => "build_list.status == #{BuildList::BUILD_STARTED}"}
-      = render 'shared/log', { :build_started => true, :get_log_path => log_build_list_path(@build_list) }
-
     %div{'ng-hide' => 'build_list.extra_build_lists_published'}
       .flash_notify
         .alert.alert-error= t('layout.build_lists.publish_with_extra_fail')
       .both
 
-    - if can?(:publish, @build_list)
-      = submit_tag t('layout.publish_again'),
-        :confirm => t("layout.publish_again_warning"),
-        :name => 'publish',
-        'ng-show' => "build_list.status == #{BuildList::BUILD_PUBLISHED}"
-      = submit_tag t("layout.publish"),
-        :confirm => t('layout.build_lists.tests_failed'), :name => 'publish',
-        'ng-show' => "build_list.can_publish_in_future && build_list.extra_build_lists_published && build_list.status == #{BuildList::TESTS_FAILED}"
-      = submit_tag t("layout.publish"),
-        :confirm => t('layout.confirm'), :name => 'publish',
-        'ng-show' => "build_list.can_publish_in_future && build_list.extra_build_lists_published && build_list.status != #{BuildList::TESTS_FAILED}"
+    - if can?(:cancel, @build_list)
+      = link_to t("layout.build_lists.cancel"), cancel_build_list_path(@build_list),
+        :method => :put, :confirm => t("layout.confirm"), :class => 'button',
+        'ng-show' => 'build_list.can_cancel'
+    = submit_tag t('layout.publish_again'),
+      :confirm => t("layout.publish_again_warning"),
+      :name => 'publish',
+      'ng-show' => "build_list.can_publish && build_list.status == #{BuildList::BUILD_PUBLISHED}"
+    = submit_tag t("layout.publish"),
+      :confirm => t('layout.build_lists.tests_failed'), :name => 'publish',
+      'ng-show' => "build_list.can_publish && build_list.can_publish_in_future && build_list.extra_build_lists_published && build_list.status == #{BuildList::TESTS_FAILED}"
+    = submit_tag t("layout.publish"),
+      :confirm => t('layout.confirm'), :name => 'publish',
+      'ng-show' => "build_list.can_publish && build_list.can_publish_in_future && build_list.extra_build_lists_published && build_list.status != #{BuildList::TESTS_FAILED} && build_list.status != #{BuildList::BUILD_PUBLISHED}"
     - if can?(:reject_publish, @build_list)
       = link_to t('layout.reject_publish'), reject_publish_build_list_path(@build_list),
         :method => :put, :confirm => t("layout.confirm"),
@@ -172,6 +166,9 @@
         'ng-show' => 'build_list.can_create_container'
     - if can? :create, @build_list
       = link_to t('layout.build_lists.recreate_build_list'), new_project_build_list_path(@build_list.project, :build_list_id => @build_list.id), :class => 'button'
+
+    %div{'ng-show' => "build_list.status == #{BuildList::BUILD_STARTED}"}
+      = render 'shared/log', { :build_started => true, :get_log_path => log_build_list_path(@build_list) }
 
   .hr
   %h3= t("layout.build_lists.items_header")

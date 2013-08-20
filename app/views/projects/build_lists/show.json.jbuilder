@@ -11,6 +11,7 @@ json.build_list do
 
   json.build_log_url log_build_list_path(@build_list)
 
+  json.can_publish can?(:publish, @build_list)
   json.can_cancel @build_list.can_cancel?
   json.can_create_container @build_list.can_create_container?
   json.can_reject_publish @build_list.can_reject_publish?

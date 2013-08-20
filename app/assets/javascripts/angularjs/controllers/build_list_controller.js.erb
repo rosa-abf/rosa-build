@@ -4,7 +4,7 @@ RosaABF.controller('BuildListController', ['$scope', '$http', '$timeout', functi
 
   $scope.id               = $('#build_list_id').val();
   $scope.build_list       = null;
-  $scope.subject          = {};
+  $scope.subject          = {}; // See: shared/build_results
   $scope.attach_advisory  = 'no';
   // Statuses: advisory_not_found, server_error, continue_input
   $scope.search_status    = 'continue_input';
@@ -13,15 +13,26 @@ RosaABF.controller('BuildListController', ['$scope', '$http', '$timeout', functi
 
   $scope.getBuildList = function() {
     $http.get(Routes.build_list_path($scope.id, {format: 'json'})).success(function(results) {
-      // Render Server status
-      $scope.build_list   = new BuildList(results.build_list);
-      $scope.subject      = $scope.build_list;
+      $scope.build_list = $scope.subject = new BuildList(results.build_list);
     });
   }
 
   $scope.cancelRefresh = null;
   $scope.refresh = function() {
-    $scope.getBuildList();
+    if ( $scope.attach_advisory == 'no' &&
+          (
+            !$scope.build_list ||
+            !(
+              $scope.build_list.status == <%=BuildList::BUILD_PUBLISHED%> ||
+              $scope.build_list.status == <%=BuildList::REJECTED_PUBLISH%> ||
+              $scope.build_list.status == <%=BuildList::FAILED_PUBLISH%> ||
+              $scope.build_list.status == <%=BuildList::BUILD_CANCELED%> ||
+              $scope.build_list.status == <%=BuildList::BUILD_ERROR%>
+            )
+          )
+      ) {
+      $scope.getBuildList();
+    }
     $scope.cancelRefresh = $timeout($scope.refresh, 10000);
   }
   $scope.refresh();
