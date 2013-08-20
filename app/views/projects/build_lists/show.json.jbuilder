@@ -9,8 +9,6 @@ json.build_list do
     json.human_duration "#{@build_list.human_current_duration} / #{@build_list.human_average_build_time}"
   end
 
-  json.build_log_url log_build_list_path(@build_list)
-
   json.can_publish can?(:publish, @build_list)
   json.can_cancel @build_list.can_cancel?
   json.can_create_container @build_list.can_create_container?
