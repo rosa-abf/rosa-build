@@ -24,3 +24,20 @@ var LocalesHelper = function($locale) {
   }
 }
 RosaABF.factory("LocalesHelper", ['$locale', LocalesHelper]);
+
+var SoundNotificationsHelper = function() {
+  var statusChangedSound = null;
+  soundManager.setup({
+    url: '/assets/swf/',
+    onready: function() {
+      statusChangedSound = soundManager.createSound({url: '/assets/garbage_shattering.wav'});
+    }
+  });
+  return {
+    buildStatusChanged: function() {
+      if (statusChangedSound)
+        statusChangedSound.play();
+    }
+  }
+}
+RosaABF.factory('SoundNotificationsHelper', SoundNotificationsHelper);

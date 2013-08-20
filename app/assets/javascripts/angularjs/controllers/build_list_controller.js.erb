@@ -1,4 +1,4 @@
-RosaABF.controller('BuildListController', ['$scope', '$http', '$timeout', function($scope, $http, $timeout) {
+RosaABF.controller('BuildListController', ['$scope', '$http', '$timeout', 'SoundNotificationsHelper', function($scope, $http, $timeout, SoundNotificationsHelper) {
 
   $scope.advisoriable_types = <%=BuildList::RELEASE_UPDATE_TYPES%>;
 
@@ -13,7 +13,10 @@ RosaABF.controller('BuildListController', ['$scope', '$http', '$timeout', functi
 
   $scope.getBuildList = function() {
     $http.get(Routes.build_list_path($scope.id, {format: 'json'})).success(function(results) {
-      $scope.build_list = $scope.subject = new BuildList(results.build_list);
+      var build_list = new BuildList(results.build_list);
+      if ($scope.build_list && $scope.build_list.status != build_list.status)
+        SoundNotificationsHelper.buildStatusChanged();
+      $scope.build_list = $scope.subject = build_list;
     });
   }
 

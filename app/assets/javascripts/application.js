@@ -19,6 +19,8 @@
 //= require angular-i18n
 //= require_tree ./angularjs
 //= require moment
+//= require soundmanager2
+// require soundmanager2-nodebug-jsmin
 
 //= require_self
 
