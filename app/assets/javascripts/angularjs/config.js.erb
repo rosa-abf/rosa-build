@@ -29,9 +29,10 @@ var SoundNotificationsHelper = function() {
   var isOn = true;
   var statusChangedSound = null;
   soundManager.setup({
-    url: '/assets/swf/',
+    // url: '/assets/swf/',
+    preferFlash: false,
     onready: function() {
-      statusChangedSound = soundManager.createSound({url: '/assets/garbage_shattering.wav'});
+      statusChangedSound = soundManager.createSound({url: "<%=asset_path('garbage_shattering.wav')%>"});
     }
   });
   return {
