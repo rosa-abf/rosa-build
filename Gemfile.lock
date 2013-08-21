@@ -372,6 +372,7 @@ GEM
     skinny (0.2.3)
       eventmachine (~> 1.0.0)
       thin (~> 1.5.0)
+    soundmanager-rails (0.1.5)
     sprockets (2.2.2)
       hike (~> 1.2)
       multi_json (~> 1.0)
@@ -492,6 +493,7 @@ DEPENDENCIES
   sass-rails (~> 3.2.5)
   shotgun
   shoulda
+  soundmanager-rails
   state_machine
   therubyracer (~> 0.10.2)
   therubyrhino (~> 1.73.1)

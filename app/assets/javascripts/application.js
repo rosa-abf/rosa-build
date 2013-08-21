@@ -20,6 +20,9 @@
 //= require_tree ./angularjs
 //= require moment
 
+// require soundmanager2
+//= require soundmanager2-nodebug-jsmin
+
 //= require_self
 
 function disableNotifierCbx(global_cbx) {

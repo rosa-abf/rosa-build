@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130731130518) do
+ActiveRecord::Schema.define(:version => 20130820195938) do
 
   create_table "activity_feeds", :force => true do |t|
     t.integer  "user_id",    :null => false
@@ -567,6 +567,7 @@ ActiveRecord::Schema.define(:version => 20130731130518) do
     t.datetime "confirmation_sent_at"
     t.string   "authentication_token"
     t.integer  "build_priority",                         :default => 50
+    t.boolean  "sound_notifications",                    :default => true
   end
 
   add_index "users", ["authentication_token"], :name => "index_users_on_authentication_token"

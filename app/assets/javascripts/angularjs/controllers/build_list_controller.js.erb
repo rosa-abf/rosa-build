@@ -1,14 +1,44 @@
-RosaABF.controller('BuildListController', ['$scope', '$http', function($scope, $http) {
+RosaABF.controller('BuildListController', ['$scope', '$http', '$timeout', 'SoundNotificationsHelper', function($scope, $http, $timeout, SoundNotificationsHelper) {
 
   $scope.advisoriable_types = <%=BuildList::RELEASE_UPDATE_TYPES%>;
 
-  $scope.build_list       = {};
+  $scope.id               = $('#build_list_id').val();
+  $scope.build_list       = null;
+  $scope.subject          = {}; // See: shared/build_results
   $scope.attach_advisory  = 'no';
   // Statuses: advisory_not_found, server_error, continue_input
   $scope.search_status    = 'continue_input';
   $scope.term             = '';
   $scope.advisory         = null;
 
+  $scope.getBuildList = function() {
+    $http.get(Routes.build_list_path($scope.id, {format: 'json'})).success(function(results) {
+      var build_list = new BuildList(results.build_list);
+      if ($scope.build_list && $scope.build_list.status != build_list.status)
+        SoundNotificationsHelper.buildStatusChanged();
+      $scope.build_list = $scope.subject = build_list;
+    });
+  }
+
+  $scope.cancelRefresh = null;
+  $scope.refresh = function() {
+    if ( $scope.attach_advisory == 'no' &&
+          (
+            !$scope.build_list ||
+            !(
+              $scope.build_list.status == <%=BuildList::BUILD_PUBLISHED%> ||
+              $scope.build_list.status == <%=BuildList::REJECTED_PUBLISH%> ||
+              $scope.build_list.status == <%=BuildList::FAILED_PUBLISH%> ||
+              $scope.build_list.status == <%=BuildList::BUILD_CANCELED%> ||
+              $scope.build_list.status == <%=BuildList::BUILD_ERROR%>
+            )
+          )
+      ) {
+      $scope.getBuildList();
+    }
+    $scope.cancelRefresh = $timeout($scope.refresh, 10000);
+  }
+  $scope.refresh();
 
   $scope.search = function() {
     var params = {query: $scope.term, bl_type: $scope.build_list.update_type, format: 'json'};

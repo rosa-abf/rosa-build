@@ -65,6 +65,7 @@ gem 'ng-rails-csrf'
 gem 'momentjs-rails'
 gem 'angular-i18n', '0.1.2'
 gem 'js-routes'
+gem 'soundmanager-rails'
 
 gem 'time_diff'
 
