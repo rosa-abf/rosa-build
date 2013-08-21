@@ -1,5 +1,7 @@
 # -*- encoding : utf-8 -*-
 class Projects::BuildListsController < Projects::BaseController
+  include BuildsHelper
+
   NESTED_ACTIONS = [:index, :new, :create]
 
   before_filter :authenticate_user!

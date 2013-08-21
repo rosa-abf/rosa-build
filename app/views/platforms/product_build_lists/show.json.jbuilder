@@ -8,7 +8,7 @@ json.product_build_list do
     json.file_name result['file_name']
     json.sha1 result['sha1']
     json.size result['size']
-    json.url "#{APP_CONFIG['file_store_url']}/api/v1/file_stores/#{result['sha1']}"
+    json.url file_store_results_url(result['sha1'], result['file_name'])
   end if @product_build_list.results.present?
 
 end
