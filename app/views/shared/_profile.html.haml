@@ -1,25 +1,41 @@
-- edit_link ||= nil
+- edit_url ||= nil
 - user ||= nil
 - group ||= nil
 - name ||= uname
-.avatar
-  = image_tag avatar_url(user || group, :big)
-  - if edit_link
-    %br
-    = edit_link
-.info
-  %h3= title uname
-  = name
-  - if user
-    %br
-    = mail_to user.email, user.email, :encode => "javascript"
-  %br
+- desc, desc_title = if user
+  - [user.professional_experience,  t('activerecord.attributes.user.professional_experience')]
+- else
+  - [group.description , t('activerecord.attributes.group.description')]
+- max_length = 35
+
+.row
+  .span3
+    %div{:style => 'float: left;width: 81px; height: 81px;'}
+      = image_tag avatar_url(user || group, :big), :alt => (user || group).uname
+    %div{:style => 'float: left; width: 138px;'}
+      %h3{:style => 'margin: 0 0 0 10px;', :title => uname}= title short_message(uname, 16)
+      %p{:style => 'height: 20px; margin-left: 10px;', :title => user.try(:name)}
+        - if user
+          = short_message(user.name, 28)
+      = link_to image_tag('gears.png', :style => 'margin: 16px 0 0 10px;'), edit_url
+    .both
     - if user
-      %h4= t("activerecord.attributes.user.professional_experience") + ":"
-      %p= user.professional_experience
-    - else
-      %h4= t("activerecord.attributes.group.description") + ":"
-      %p= group.description
+      %p{:style => 'margin-top: 10px;'}
+        - message = "#{t 'activerecord.attributes.user.email'}: "
+        = message
+        = mail_to user.email, short_message(user.email, max_length - message.length), :encode => 'javascript', :title => user.email
+      %p
+        - message = "#{t 'activerecord.attributes.user.site'}: "
+        = message
+        = link_to short_message(user.site, max_length - message.length), user.site, :title => user.site
+      %p{:title => user.company}= short_message("#{t 'activerecord.attributes.user.company'}: #{user.company}", max_length)
+      %p{:title => user.location}= short_message("#{t 'activerecord.attributes.user.location'}: #{user.location}", max_length)
+  .span6
+    %h3{:style => 'margin-top: 0;'}= desc_title
+    = desc
+
+%hr{:color => 'dfe8ef', :size => '3', :style => 'margin-top: 20px;'}
+
 .content
   %h4= t("layout.projects.public_projects_list") + ":"
   %p
@@ -33,6 +49,3 @@
   %br
   = will_paginate projects
   %br
-
-:javascript
-  $('article .all').addClass('verybigpadding');

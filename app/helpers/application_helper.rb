@@ -43,4 +43,9 @@ module ApplicationHelper
     html << link_to('×', '#', :class => 'close close-alert', 'data-dismiss' => 'alert')
     html << '</div></div>'
   end
+
+  # Why 42? Because it is the Answer!
+  def short_message(message, length = 42)
+    truncate(message, :length => length, :omission => '…')
+  end
 end

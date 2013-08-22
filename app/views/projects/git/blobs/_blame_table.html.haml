@@ -12,7 +12,7 @@
             (#{commit_author_link(committer)})
         %br
         %span.date= commit_date(elem[0].committed_date)
-        %span.message{:title => elem[0].message}= short_commit_message(elem[0].message)
+        %span.message{:title => elem[0].message}= short_message(elem[0].message)
 
       %td.lines
         = index
