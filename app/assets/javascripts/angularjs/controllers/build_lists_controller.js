@@ -7,6 +7,8 @@ RosaABF.controller('BuildListsController', ['$scope', '$http', '$location', '$ti
   $scope.isRequest      = false; // Disable 'Search' button
   $scope.pages          = [];
 
+  $scope.opened         = {};
+
   // Fixes: redirect to page after form submit
   $("#monitoring_filter").on('submit', function(){ return false; });
 
@@ -24,6 +26,7 @@ RosaABF.controller('BuildListsController', ['$scope', '$http', '$location', '$ti
       var build_lists = [];
       var groups      = {};
 
+      var to_open = [];
       // Grouping of build_lists
       _.each(results.build_lists, function(r){
         var bl = new BuildList(r, dictionary);
@@ -33,14 +36,18 @@ RosaABF.controller('BuildListsController', ['$scope', '$http', '$location', '$ti
         } else {
           groups[key] = bl;
           build_lists.push(bl);
+          if ( bl.id in $scope.opened ) { to_open.push(bl); }
         }
       });
       
       // Adds all build_lists into the table (group by group)
-      $scope.build_lists    = [];
+      $scope.build_lists  = [];
+      $scope.opened       = {};
       _.each(build_lists, function(bl){
         _.each(bl.related, function(b){ $scope.build_lists.push(b); });
       });
+      // Shows groups which have been opened before 
+      _.each(to_open, function(bl){ $scope.showRelated(bl, true); });
 
       // Render pagination
       $scope.pages     = results.pages;
@@ -52,20 +59,25 @@ RosaABF.controller('BuildListsController', ['$scope', '$http', '$location', '$ti
     });;
   }
 
-  $scope.showRelated = function(build_list) {
+  $scope.showRelated = function(build_list, disable_effect) {
     build_list.relatedHidden = false;
     _.each(build_list.related, function(bl){
       bl.show = true;
+      $scope.opened[bl.id] = true;
       // Waits for render of build_lists
-      $timeout(function() {
-        $('#build-list-' + bl.id + ' td:visible').effect('highlight', {}, 1000);
-      }, 100);
+      if (!disable_effect)
+        $timeout(function() {
+          $('#build-list-' + bl.id + ' td:visible').effect('highlight', {}, 1000);
+        }, 100);
     });
   }
 
   $scope.hideRelated = function(build_list) {
     build_list.relatedHidden = true;
-    _.each(build_list.related, function(bl){ bl.show = false; });
+    _.each(build_list.related, function(bl){
+      bl.show = false;
+      delete $scope.opened[bl.id];
+    });
     build_list.show = true;
   }
 
@@ -80,9 +92,8 @@ RosaABF.controller('BuildListsController', ['$scope', '$http', '$location', '$ti
       $scope.first_run = false;
       $scope.getBuildLists();
     }
-    if (!force) {
+    if (!force)
       $scope.cancelRefresh = $timeout($scope.refresh, 60000);
-    }
   }
 
 
