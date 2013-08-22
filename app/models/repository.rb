@@ -12,6 +12,7 @@ class Repository < ActiveRecord::Base
   has_many :project_to_repositories, :dependent => :destroy, :validate => true
   has_many :projects, :through => :project_to_repositories
   has_one  :key_pair, :dependent => :destroy
+  has_one  :repository_statuses, :dependent => :destroy
 
   has_many :build_lists, :foreign_key => :save_to_repository_id, :dependent => :destroy
 
