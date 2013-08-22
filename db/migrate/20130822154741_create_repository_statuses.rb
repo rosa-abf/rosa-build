@@ -3,7 +3,7 @@ class CreateRepositoryStatuses < ActiveRecord::Migration
     create_table :repository_statuses do |t|
       t.integer :repository_id, :null => false
       t.integer :platform_id, :null => false
-      t.integer :status
+      t.integer :status, :default => 0
       t.datetime :last_regenerated_at
       t.integer :last_regenerated_status
 

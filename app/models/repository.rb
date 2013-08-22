@@ -11,8 +11,8 @@ class Repository < ActiveRecord::Base
 
   has_many :project_to_repositories, :dependent => :destroy, :validate => true
   has_many :projects, :through => :project_to_repositories
+  has_many :repository_statuses, :dependent => :destroy
   has_one  :key_pair, :dependent => :destroy
-  has_one  :repository_statuses, :dependent => :destroy
 
   has_many :build_lists, :foreign_key => :save_to_repository_id, :dependent => :destroy
 
@@ -25,6 +25,19 @@ class Repository < ActiveRecord::Base
 
   attr_accessible :name, :description, :publish_without_qa
   attr_readonly :name, :platform_id
+
+  def regenerate(build_for_platform_id)
+    build_for_platform = Platform.main.find build_for_platform_id if platform.personal?
+    status = repository_statuses.find_or_create_by_platform_id(build_for_platform.try(:id) || platform_id)
+    status.regenerate
+  end
+
+  def resign
+    unless platform.personal?
+      status = repository_statuses.find_or_create_by_platform_id(platform_id)
+      status.resign
+    end
+  end
 
   def base_clone(attrs = {})
     dup.tap do |c|

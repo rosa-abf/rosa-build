@@ -9,11 +9,13 @@ module AbfWorker
 
     def perform
       return if status == STARTED # do nothing when publication started
-      if options['type'] == 'resign'
-        AbfWorker::BuildListsPublishTaskManager.unlock_repository options['id']
-      else
+      repository_status = RepositoryStatus.where(:id => options['extra']['repository_status_id']).first
+      begin
         if options['extra']['regenerate'] # Regenerate metadata
-          AbfWorker::BuildListsPublishTaskManager.unlock_rep_and_platform options['extra']['lock_str']
+          if repository_status
+            repository_status.last_regenerated_at = Time.now.utc
+            repository_status.last_regenerated_status = status
+          end
         elsif options['extra']['create_container'] # Container has been created
           case status
           when COMPLETED
@@ -25,6 +27,8 @@ module AbfWorker
         else
           update_rpm_builds
         end
+      ensure
+        repository_status.ready if repository_status
       end
     end
 

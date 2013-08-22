@@ -19,6 +19,7 @@ class Platform < ActiveRecord::Base
   has_many :products, :dependent => :destroy
   has_many :tokens, :as => :subject,  :dependent => :destroy
   has_many :platform_arch_settings,   :dependent => :destroy
+  has_many :repository_statuses
 
   has_many :relations, :as => :target, :dependent => :destroy
   has_many :actors, :as => :target, :class_name => 'Relation', :dependent => :destroy
@@ -82,6 +83,10 @@ class Platform < ActiveRecord::Base
     HUMAN_STATUSES.each do |code,name|
       state name, :value => code
     end
+  end
+
+  def human_status
+    HUMAN_STATUSES[status]
   end
 
   def clear
