@@ -30,10 +30,12 @@ json.pull_request do
   json.merged_at @pull.issue.closed_at.to_i if @pull.merged?
 
   json.closed_at @pull.issue.closed_at.to_i if @pull.merged? || @pull.closed?
-  json.closed_by do
-    json.(@pull.issue.closer, :id, :name, :uname)
-  end if @pull.issue.closer
-  json.merged_by do
-    json.(@pull.issue.closer, :id, :name, :uname)
-  end if @pull.merged?
+  if @pull.issue.closer
+    json.closed_by do
+      json.(@pull.issue.closer, :id, :name, :uname)
+    end
+    json.merged_by do
+      json.(@pull.issue.closer, :id, :name, :uname)
+    end if @pull.merged?
+  end
 end
