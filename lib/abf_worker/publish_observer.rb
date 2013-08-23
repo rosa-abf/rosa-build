@@ -9,12 +9,20 @@ module AbfWorker
 
     def perform
       return if status == STARTED # do nothing when publication started
-      repository_status = RepositoryStatus.where(:id => options['extra']['repository_status_id']).first
+      repository_statuses = RepositoryStatus.where(:id => options['extra']['repository_status_ids'])
       begin
         if options['extra']['regenerate'] # Regenerate metadata
-          if repository_status
-            repository_status.last_regenerated_at = Time.now.utc
+          last_regenerated_at = Time.now.utc
+          repository_statuses.each do |repository_status|
+            repository_status.last_regenerated_at = last_regenerated_at
             repository_status.last_regenerated_status = status
+          end
+        elsif options['extra']['regenerate_platform'] # Regenerate metadata for Software Center
+          platform = repository_statuses.first.try(:platform)
+          if platform
+            platform.last_regenerated_at = Time.now.utc
+            platform.last_regenerated_status = status
+            platform.ready
           end
         elsif options['extra']['create_container'] # Container has been created
           case status
@@ -28,7 +36,7 @@ module AbfWorker
           update_rpm_builds
         end
       ensure
-        repository_status.ready if repository_status
+        repository_statuses.map(&:ready) if repository_statuses.present?
       end
     end
 
@@ -54,8 +62,6 @@ module AbfWorker
       when FAILED, CANCELED
         AbfWorker::BuildListsPublishTaskManager.cleanup_failed options['projects_for_cleanup']
       end
-
-      AbfWorker::BuildListsPublishTaskManager.unlock_rep_and_platform options['extra']['lock_str']
     end
 
     def update_results(build_list = subject)

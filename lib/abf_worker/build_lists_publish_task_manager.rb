@@ -3,12 +3,8 @@ module AbfWorker
   class BuildListsPublishTaskManager
     REDIS_MAIN_KEY = 'abf-worker::build-lists-publish-task-manager::'
 
-    # LOCKED_REP_AND_PLATFORMS: ['save_to_repository_id-build_for_platform_id', ...]
-    %w(RESIGN_REPOSITORIES 
-       PROJECTS_FOR_CLEANUP
+    %w(PROJECTS_FOR_CLEANUP
        LOCKED_PROJECTS_FOR_CLEANUP
-       LOCKED_REPOSITORIES
-       LOCKED_REP_AND_PLATFORMS
        LOCKED_BUILD_LISTS
        PACKAGES_FOR_CLEANUP).each do |kind|
       const_set kind, "#{REDIS_MAIN_KEY}#{kind.downcase.gsub('_', '-')}"
@@ -20,6 +16,7 @@ module AbfWorker
     end
 
     def run
+      create_tasks_for_regenerate_metadata_for_software_center
       create_tasks_for_resign_repositories
       create_tasks_for_repository_regenerate_metadata
       create_tasks_for_build_rpms
@@ -52,16 +49,8 @@ module AbfWorker
         end
       end
 
-      def unlock_repository(repository_id)
-        redis.lrem LOCKED_REPOSITORIES, 0, repository_id
-      end
-
       def unlock_build_list(build_list)
         redis.lrem LOCKED_BUILD_LISTS, 0, build_list.id
-      end
-
-      def unlock_rep_and_platform(lock_str)
-        redis.lrem LOCKED_REP_AND_PLATFORMS, 0, lock_str
       end
 
       def packages_structure
@@ -156,11 +145,6 @@ module AbfWorker
 
     private
 
-
-    def locked_repositories
-      @redis.lrange LOCKED_REPOSITORIES, 0, -1
-    end
-
     def create_tasks_for_resign_repositories
       repository_statuses = RepositoryStatus.for_resign.includes(:repository => :platform)
       repository_statuses.each do |repository_status|
@@ -205,27 +189,19 @@ module AbfWorker
         order(:min_updated_at).
         limit(@workers_count * 2) # because some repos may be locked
 
-      locked_rep = locked_repositories
+      locked_rep = RepositoryStatus.not_ready.joins(:platform).
+        where(:platforms => {:platform_type => 'main'}).pluck(:repository_id)
       available_repos = available_repos.where('save_to_repository_id NOT IN (?)', locked_rep) unless locked_rep.empty?
-
-      counter = 1
-
-      # looks like:
-      # ['save_to_repository_id-build_for_platform_id', ...]
-      locked_rep_and_pl = @redis.lrange(LOCKED_REP_AND_PLATFORMS, 0, -1)
 
       for_cleanup = @redis.lrange(PROJECTS_FOR_CLEANUP, 0, -1).map do |key|
         pr, rep, pl = *key.split('-')
-        if locked_rep.present? && locked_rep.include?(rep)
-          nil
-        else
-          [rep.to_i, pl.to_i]
-        end
+        locked_rep.present? && locked_rep.include?(rep) ? nil : [rep.to_i, pl.to_i]
       end.compact
-      available_repos = available_repos.map{ |bl| [bl.save_to_repository_id, bl.build_for_platform_id] } | for_cleanup
 
+      counter = 1
+      available_repos = available_repos.map{ |bl| [bl.save_to_repository_id, bl.build_for_platform_id] } | for_cleanup
       available_repos.each do |save_to_repository_id, build_for_platform_id|
-        next if locked_rep_and_pl.include?("#{save_to_repository_id}-#{build_for_platform_id}")
+        next if RepositoryStatus.not_ready.where(:repository_id => save_to_repository_id, :platform_id => build_for_platform_id).exists?
         break if counter > @workers_count
         counter += 1 if create_rpm_build_task(save_to_repository_id, build_for_platform_id)
       end      
@@ -271,6 +247,9 @@ module AbfWorker
       save_to_repository  = Repository.find save_to_repository_id
       # Checks mirror sync status
       return false if save_to_repository.repo_lock_file_exists?
+
+      repository_status = save_to_repository.find_or_create_by_platform_id(build_for_platform_id)
+      return false unless repository_status.publish
       
       save_to_platform    = save_to_repository.platform
       build_for_platform  = Platform.find build_for_platform_id
@@ -291,7 +270,6 @@ module AbfWorker
         'BUILD_FOR_PLATFORM'  => build_for_platform.name
       }.map{ |k, v| "#{k}=#{v}" }.join(' ')
 
-      lock_str  = "#{save_to_repository_id}-#{build_for_platform_id}"
       options   = {
         :id           => (bl ? bl.id : Time.now.to_i),
         :cmd_params   => cmd_params,
@@ -304,7 +282,7 @@ module AbfWorker
         :repository   => {:id => save_to_repository_id},
         :type         => :publish,
         :time_living  => 9600, # 160 min
-        :extra        => {:lock_str => lock_str}
+        :extra        => {:repository_status_id => repository_status.id}
       }
 
       packages, build_list_ids, new_sources = self.class.packages_structure, [], {}
@@ -324,9 +302,9 @@ module AbfWorker
         worker_queue,
         'class' => worker_class,
         'args' => [options.merge({
-          :packages => packages,
-          :old_packages => old_packages,
-          :build_list_ids => build_list_ids,
+          :packages             => packages,
+          :old_packages         => old_packages,
+          :build_list_ids       => build_list_ids,
           :projects_for_cleanup => projects_for_cleanup
         })]
       )
@@ -335,8 +313,50 @@ module AbfWorker
         @redis.lpush LOCKED_PROJECTS_FOR_CLEANUP, key
       end
 
-      @redis.lpush(LOCKED_REP_AND_PLATFORMS, lock_str)
       return true
+    end
+
+    def create_tasks_for_regenerate_metadata_for_software_center
+      Platfor.main.waiting_for_regeneration.each do |platform|
+        repos = platform.repositories
+        repos.repositories.each(&:regenerate)
+        statuses = RepositoryStatus.where(:platform_id => platform.id, :repository_id => repos.map(&:id))
+        next if repos.find{ |r| r.repo_lock_file_exists? }
+        next if statuses.find{ |s| !s.can_start_regeneration? }
+
+        build_for_platform  = repository_statuses.platform
+        cmd_params          = {
+          'RELEASED'            => platform.released,
+          'REPOSITORY_NAME'     => rep.name,
+          'TYPE'                => platform.distrib_type,
+          'REGENERATE_PLATFORM_METADATA' => true,
+          'SAVE_TO_PLATFORM'    => platform.name,
+          'BUILD_FOR_PLATFORM'  => platform.name
+        }.map{ |k, v| "#{k}=#{v}" }.join(' ')
+
+        statuses.each(&:start_regeneration)
+        platform.regenerate
+        Resque.push(
+          'publish_worker_default',
+          'class' => 'AbfWorker::PublishWorkerDefault',
+          'args' => [{
+            :id           => Time.now.to_i,
+            :cmd_params   => cmd_params,
+            :platform     => {
+              :platform_path  => "#{rep.platform.path}/repository",
+              :type           => platform.distrib_type,
+              :name           => platform.name,
+              :arch           => 'x86_64'
+            },
+            :repository   => {:id => rep.id},
+            :type         => :publish,
+            :time_living  => 9600, # 160 min
+            :skip_feedback => true,
+            :extra         => {:repository_status_id => statuses.map(&:id), :regenerate_platform => true}
+          }]
+        )
+
+      end
     end
 
     def create_tasks_for_repository_regenerate_metadata

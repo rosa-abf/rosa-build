@@ -63,6 +63,7 @@ class Platform < ActiveRecord::Base
   scope :by_type, lambda {|type| where(:platform_type => type) if type.present?}
   scope :main, by_type('main')
   scope :personal, by_type('personal')
+  scope :waiting_for_regeneration, where(:status => WAITING_FOR_REGENERATION)
 
   accepts_nested_attributes_for :platform_arch_settings, :allow_destroy => true
   attr_accessible :name, :distrib_type, :parent_platform_id, :platform_type, :owner, :visibility, :description, :released, :platform_arch_settings_attributes
@@ -77,7 +78,7 @@ class Platform < ActiveRecord::Base
 
     event :regenerate do
       transition :waiting_for_regeneration => :regenerating
-      transition :ready => :waiting_for_regeneration
+      transition :ready => :waiting_for_regeneration, :if => lambda{ |p| p.main? }
     end
 
     HUMAN_STATUSES.each do |code,name|

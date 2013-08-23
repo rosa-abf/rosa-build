@@ -39,6 +39,7 @@ class RepositoryStatus < ActiveRecord::Base
   scope :platform_ready, where(:platform => {:status => READY}).joins(:platform)
   scope :for_regeneration, platform_ready.where(:status => WAITING_FOR_REGENERATION)
   scope :for_resign, platform_ready.where(:status => [WAITING_FOR_RESIGN, WAITING_FOR_RESIGN_AND_REGENERATION])
+  scope :not_ready, where('repository_statuses.status != ?', READY)
 
   state_machine :status, :initial => :ready do
     event :ready do
@@ -58,6 +59,7 @@ class RepositoryStatus < ActiveRecord::Base
 
     event :start_regeneration do
       transition :waiting_for_regeneration => :regenerating
+      transition :waiting_for_resign_and_regeneration => :waiting_for_resign_after_regeneration
     end
 
     event :resign do
