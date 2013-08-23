@@ -15,6 +15,22 @@
     :class => 'button'
   .both
 
+- if can? :regenerate_metadata, @platform
+  .hr
+  %h3= t('layout.platforms.metadata')
+  .leftside
+  .rightside= link_to t('layout.regeneration_statuses.regenerate_metadata'), regenerate_metadata_platform_path(@platform), :method => :put, :confirm => t('layout.confirm'), :class => 'button'
+  .both
+  .leftlist= t('activerecord.attributes.regeneration_status.status')
+  .rightlist= t("layout.regeneration_statuses.statuses.#{@platform.human_status}")
+  .both
+  .leftlist= t('activerecord.attributes.regeneration_status.last_regenerated_at')
+  .rightlist= @platform.last_regenerated_at
+  .both
+  .leftlist= t('activerecord.attributes.regeneration_status.last_regenerated_status')
+  .rightlist= t("layout.regeneration_statuses.last_regenerated_statuses.#{@platform.human_regeneration_status}")
+  .both
+
 - if can? :destroy, @platform
   .hr
   .leftside= t("layout.platforms.delete_warning")

@@ -56,6 +56,15 @@ class Platforms::PlatformsController < Platforms::BaseController
     end
   end
 
+  def regenerate_metadata
+    if @platform.regenerate
+      flash[:notice] = I18n.t('flash.platform.saved')
+    else
+      flash[:error] = I18n.t('flash.platform.save_error')
+    end
+    redirect_to edit_platform_path(@platform)
+  end
+
   def change_visibility
     if @platform.change_visibility
       flash[:notice] = I18n.t("flash.platform.saved")

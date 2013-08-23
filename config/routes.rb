@@ -152,6 +152,7 @@ Rosa::Application.routes.draw do
     resources :platforms do
       resources :private_users, :except => [:show, :destroy, :update]
       member do
+        put    :regenerate_metadata
         put    :clear
         get    :clone
         get    :members

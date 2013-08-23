@@ -1,8 +1,7 @@
 class RepositoryStatus < ActiveRecord::Base
-  READY                     = 0
-  WAITING_FOR_RESIGN        = 100
-  WAITING_FOR_REGENERATION  = 200
-  REGENERATING              = 300
+  include RegenerationStatus
+
+  WAITING_FOR_RESIGN        = 300
   PUBLISH                   = 400
   RESIGN                    = 500
   WAITING_FOR_RESIGN_AFTER_PUBLISH        = 600
@@ -13,11 +12,8 @@ class RepositoryStatus < ActiveRecord::Base
   WAITING_FOR_RESIGN_AND_REGENERATION     = 1100
 
 
-  HUMAN_STATUSES = {  
-    READY                     => :ready,
+  HUMAN_STATUSES = HUMAN_STATUSES.clone.merge({  
     WAITING_FOR_RESIGN        => :waiting_for_resign,
-    WAITING_FOR_REGENERATION  => :waiting_for_regeneration,
-    REGENERATING              => :regenerating,
     PUBLISH                   => :publish,
     RESIGN                    => :resign,
     WAITING_FOR_RESIGN_AFTER_PUBLISH        => :waiting_for_resign_after_publish,
@@ -26,7 +22,7 @@ class RepositoryStatus < ActiveRecord::Base
     WAITING_FOR_REGENERATION_AFTER_RESIGN   => :waiting_for_regeneration_after_resign,
     WAITING_FOR_RESIGN_AND_REGENERATION_AFTER_PUBLISH   => :waiting_for_resign_and_regeneration_after_publish,
     WAITING_FOR_RESIGN_AND_REGENERATION     => :waiting_for_resign_and_regeneration
-  }.freeze
+  }).freeze
 
   belongs_to :platform
   belongs_to :repository
@@ -34,7 +30,7 @@ class RepositoryStatus < ActiveRecord::Base
   validates :repository_id, :platform_id, :presence => true
   validates :repository_id, :uniqueness => {:scope => :platform_id}
 
-  attr_accessible :last_regenerated_at, :last_regenerated_status, :platform_id, :repository_id, :status
+  attr_accessible :platform_id, :repository_id
 
   scope :platform_ready, where(:platforms => {:status => READY}).joins(:platform)
   scope :for_regeneration, platform_ready.where(:status => WAITING_FOR_REGENERATION)
@@ -82,10 +78,6 @@ class RepositoryStatus < ActiveRecord::Base
     HUMAN_STATUSES.each do |code,name|
       state name, :value => code
     end
-  end
-
-  def human_status
-    HUMAN_STATUSES[status]
   end
 
 end

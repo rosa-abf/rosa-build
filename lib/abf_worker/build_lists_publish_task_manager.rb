@@ -335,7 +335,7 @@ module AbfWorker
         }.map{ |k, v| "#{k}=#{v}" }.join(' ')
 
         statuses.each(&:start_regeneration)
-        platform.regenerate
+        platform.start_regeneration
         Resque.push(
           'publish_worker_default',
           'class' => 'AbfWorker::PublishWorkerDefault',

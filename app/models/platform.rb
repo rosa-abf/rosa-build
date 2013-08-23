@@ -1,16 +1,10 @@
 # -*- encoding : utf-8 -*-
 class Platform < ActiveRecord::Base
+  include RegenerationStatus
+
   VISIBILITIES = %w(open hidden)
   NAME_PATTERN = /[\w\-\.]+/
-
-  READY                     = RepositoryStatus::READY
-  WAITING_FOR_REGENERATION  = RepositoryStatus::WAITING_FOR_REGENERATION
-  REGENERATING              = RepositoryStatus::REGENERATING
-
-  HUMAN_STATUSES = {  READY                     => :ready,
-                      WAITING_FOR_REGENERATION  => :waiting_for_regeneration,
-                      REGENERATING              => :regenerating
-                    }.freeze
+  HUMAN_STATUSES = HUMAN_STATUSES.clone.freeze
 
   belongs_to :parent, :class_name => 'Platform', :foreign_key => 'parent_platform_id'
   belongs_to :owner, :polymorphic => true
@@ -77,17 +71,16 @@ class Platform < ActiveRecord::Base
     end
 
     event :regenerate do
-      transition :waiting_for_regeneration => :regenerating
       transition :ready => :waiting_for_regeneration, :if => lambda{ |p| p.main? }
+    end
+
+    event :start_regeneration do
+      transition :waiting_for_regeneration => :regenerating
     end
 
     HUMAN_STATUSES.each do |code,name|
       state name, :value => code
     end
-  end
-
-  def human_status
-    HUMAN_STATUSES[status]
   end
 
   def clear
