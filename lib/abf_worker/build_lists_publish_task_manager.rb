@@ -175,7 +175,7 @@ module AbfWorker
             :type           => :resign,
             :skip_feedback  => true,
             :time_living    => 9600, # 160 min
-            :extra          => {:repository_status_id => repository_status.id}
+            :extra          => {:repository_status_ids => [repository_status.id]}
           }]
         ) if repository_status.start_resign
       end
@@ -195,7 +195,7 @@ module AbfWorker
 
       for_cleanup = @redis.lrange(PROJECTS_FOR_CLEANUP, 0, -1).map do |key|
         pr, rep, pl = *key.split('-')
-        locked_rep.present? && locked_rep.include?(rep) ? nil : [rep.to_i, pl.to_i]
+        locked_rep.present? && locked_rep.include?(rep.to_i) ? nil : [rep.to_i, pl.to_i]
       end.compact
 
       counter = 1
@@ -282,7 +282,7 @@ module AbfWorker
         :repository   => {:id => save_to_repository_id},
         :type         => :publish,
         :time_living  => 9600, # 160 min
-        :extra        => {:repository_status_id => repository_status.id}
+        :extra        => {:repository_status_ids => [repository_status.id]}
       }
 
       packages, build_list_ids, new_sources = self.class.packages_structure, [], {}
@@ -352,7 +352,7 @@ module AbfWorker
             :type         => :publish,
             :time_living  => 9600, # 160 min
             :skip_feedback => true,
-            :extra         => {:repository_status_id => statuses.map(&:id), :regenerate_platform => true}
+            :extra         => {:repository_status_ids => statuses.map(&:id), :regenerate_platform => true}
           }]
         )
 
@@ -392,7 +392,7 @@ module AbfWorker
             :type         => :publish,
             :time_living  => 9600, # 160 min
             :skip_feedback => true,
-            :extra         => {:repository_status_id => repository_status.id, :regenerate => true}
+            :extra         => {:repository_status_ids => [repository_status.id], :regenerate => true}
           }]
         ) if repository_status.start_regeneration
       end
