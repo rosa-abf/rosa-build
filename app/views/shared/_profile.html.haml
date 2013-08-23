@@ -9,32 +9,31 @@
 - max_length = 35
 
 .row
-  .span3
-    %div{:style => 'float: left;width: 81px; height: 81px;'}
-      = image_tag avatar_url(user || group, :big), :alt => (user || group).uname
-    %div{:style => 'float: left; width: 138px;'}
-      %h3{:style => 'margin: 0 0 0 10px;', :title => uname}= title short_message(uname, 16)
-      %p{:style => 'height: 20px; margin-left: 10px;', :title => user.try(:name)}
+  .span3.profile
+    .avatar= image_tag avatar_url(user || group, :big), :alt => (user || group).uname
+    .base_info
+      %h3{:title => uname}= title short_message(uname, 16)
+      %p{:title => user.try(:name)}
         - if user
           = short_message(user.name, 28)
-      = link_to image_tag('gears.png', :style => 'margin: 16px 0 0 10px;'), edit_url
+      = link_to image_tag('gears.png'), edit_url
     .both
     - if user
-      %p{:style => 'margin-top: 10px;'}
+      %p.info.first
         - message = "#{t 'activerecord.attributes.user.email'}: "
         = message
         = mail_to user.email, short_message(user.email, max_length - message.length), :encode => 'javascript', :title => user.email
-      %p
+      %p.info
         - message = "#{t 'activerecord.attributes.user.site'}: "
         = message
         = link_to short_message(user.site, max_length - message.length), user.site, :title => user.site
-      %p{:title => user.company}= short_message("#{t 'activerecord.attributes.user.company'}: #{user.company}", max_length)
-      %p{:title => user.location}= short_message("#{t 'activerecord.attributes.user.location'}: #{user.location}", max_length)
+      %p.info{:title => user.company}= short_message("#{t 'activerecord.attributes.user.company'}: #{user.company}", max_length)
+      %p.info{:title => user.location}= short_message("#{t 'activerecord.attributes.user.location'}: #{user.location}", max_length)
   .span6
     %h3{:style => 'margin-top: 0;'}= desc_title
     = desc
 
-%hr{:color => 'dfe8ef', :size => '3', :style => 'margin-top: 20px;'}
+%hr.profile_line{:color => 'dfe8ef', :size => '3'}
 
 .content
   %h4= t("layout.projects.public_projects_list") + ":"
