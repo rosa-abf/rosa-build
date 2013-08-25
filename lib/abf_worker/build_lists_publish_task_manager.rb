@@ -146,7 +146,8 @@ module AbfWorker
     private
 
     def create_tasks_for_resign_repositories
-      repository_statuses = RepositoryStatus.for_resign.includes(:repository => :platform)
+      repository_statuses = RepositoryStatus.platform_ready.
+        for_resign.includes(:repository => :platform)
       repository_statuses.each do |repository_status|
         r = repository_status.repository
         # Checks mirror sync status
@@ -175,7 +176,7 @@ module AbfWorker
             :type           => :resign,
             :skip_feedback  => true,
             :time_living    => 9600, # 160 min
-            :extra          => {:repository_status_ids => [repository_status.id]}
+            :extra          => {:repository_status_id => repository_status.id}
           }]
         ) if repository_status.start_resign
       end
@@ -246,7 +247,7 @@ module AbfWorker
 
       save_to_repository  = Repository.find save_to_repository_id
       # Checks mirror sync status
-      return false if save_to_repository.repo_lock_file_exists?
+      return false if save_to_repository.repo_lock_file_exists? || !save_to_repository.platform.ready?
 
       repository_status = save_to_repository.find_or_create_by_platform_id(build_for_platform_id)
       return false unless repository_status.publish
@@ -282,7 +283,7 @@ module AbfWorker
         :repository   => {:id => save_to_repository_id},
         :type         => :publish,
         :time_living  => 9600, # 160 min
-        :extra        => {:repository_status_ids => [repository_status.id]}
+        :extra        => {:repository_status_id => repository_status.id}
       }
 
       packages, build_list_ids, new_sources = self.class.packages_structure, [], {}
@@ -319,23 +320,20 @@ module AbfWorker
     def create_tasks_for_regenerate_metadata_for_software_center
       Platfor.main.waiting_for_regeneration.each do |platform|
         repos = platform.repositories
-        repos.repositories.each(&:regenerate)
-        statuses = RepositoryStatus.where(:platform_id => platform.id, :repository_id => repos.map(&:id))
+        statuses = RepositoryStatus.where(:platform_id => platform.id)
         next if repos.find{ |r| r.repo_lock_file_exists? }
-        next if statuses.find{ |s| !s.can_start_regeneration? }
+        next if statuses.present? &&
+          statuses.map{ |s| s.ready? || s.can_start_regeneration? || s.can_start_resign? }.uniq == [true]
 
-        build_for_platform  = repository_statuses.platform
         cmd_params          = {
           'RELEASED'            => platform.released,
-          'REPOSITORY_NAME'     => rep.name,
+          'REPOSITORY_NAME'     => platform.repositories.map(&:name).join(','),
           'TYPE'                => platform.distrib_type,
           'REGENERATE_PLATFORM_METADATA' => true,
           'SAVE_TO_PLATFORM'    => platform.name,
           'BUILD_FOR_PLATFORM'  => platform.name
         }.map{ |k, v| "#{k}=#{v}" }.join(' ')
 
-        statuses.each(&:start_regeneration)
-        platform.start_regeneration
         Resque.push(
           'publish_worker_default',
           'class' => 'AbfWorker::PublishWorkerDefault',
@@ -343,24 +341,25 @@ module AbfWorker
             :id           => Time.now.to_i,
             :cmd_params   => cmd_params,
             :platform     => {
-              :platform_path  => "#{rep.platform.path}/repository",
+              :platform_path  => "#{platform.path}/repository",
               :type           => platform.distrib_type,
               :name           => platform.name,
               :arch           => 'x86_64'
             },
-            :repository   => {:id => rep.id},
+            :repository   => {:id => platform.repositories.first.id},
             :type         => :publish,
             :time_living  => 9600, # 160 min
             :skip_feedback => true,
-            :extra         => {:repository_status_ids => statuses.map(&:id), :regenerate_platform => true}
+            :extra         => {:platform_id => platform.id, :regenerate_platform => true}
           }]
-        )
+        ) if platform.start_regeneration
 
       end
     end
 
     def create_tasks_for_repository_regenerate_metadata
-      repository_statuses = RepositoryStatus.for_regeneration.includes(:repository => :platform)
+      repository_statuses = RepositoryStatus.platform_ready.
+        for_regeneration.includes(:repository => :platform)
       repository_statuses.each do |repository_status|
         rep = repository_status.repository
         # Checks mirror sync status
@@ -392,7 +391,7 @@ module AbfWorker
             :type         => :publish,
             :time_living  => 9600, # 160 min
             :skip_feedback => true,
-            :extra         => {:repository_status_ids => [repository_status.id], :regenerate => true}
+            :extra         => {:repository_status_id => repository_status.id, :regenerate => true}
           }]
         ) if repository_status.start_regeneration
       end

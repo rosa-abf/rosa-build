@@ -33,8 +33,8 @@ class RepositoryStatus < ActiveRecord::Base
   attr_accessible :platform_id, :repository_id
 
   scope :platform_ready, where(:platforms => {:status => READY}).joins(:platform)
-  scope :for_regeneration, platform_ready.where(:status => WAITING_FOR_REGENERATION)
-  scope :for_resign, platform_ready.where(:status => [WAITING_FOR_RESIGN, WAITING_FOR_RESIGN_AND_REGENERATION])
+  scope :for_regeneration, where(:status => WAITING_FOR_REGENERATION)
+  scope :for_resign, where(:status => [WAITING_FOR_RESIGN, WAITING_FOR_RESIGN_AND_REGENERATION])
   scope :not_ready, where('repository_statuses.status != ?', READY)
 
   state_machine :status, :initial => :ready do

@@ -9,17 +9,13 @@ module AbfWorker
 
     def perform
       return if status == STARTED # do nothing when publication started
-      repository_statuses = RepositoryStatus.where(:id => options['extra']['repository_status_ids'])
+      repository_status = RepositoryStatus.where(:id => options['extra']['repository_status_id'])
       begin
         if options['extra']['regenerate'] # Regenerate metadata
-          last_regenerated_at = Time.now.utc
-          repository_statuses.each do |repository_status|
-            repository_status.last_regenerated_at = last_regenerated_at
-            repository_status.last_regenerated_status = status
-          end
+          repository_status.last_regenerated_at = Time.now.utc
+          repository_status.last_regenerated_status = status
         elsif options['extra']['regenerate_platform'] # Regenerate metadata for Software Center
-          platform = repository_statuses.first.try(:platform)
-          if platform
+          if platform = Platform.where(:id => options['extra']['platform_id'])).first
             platform.last_regenerated_at = Time.now.utc
             platform.last_regenerated_status = status
             platform.ready
@@ -36,7 +32,7 @@ module AbfWorker
           update_rpm_builds
         end
       ensure
-        repository_statuses.map(&:ready) if repository_statuses.present?
+        repository_status.ready if repository_status.present?
       end
     end
 

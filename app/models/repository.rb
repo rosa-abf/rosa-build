@@ -33,7 +33,7 @@ class Repository < ActiveRecord::Base
   end
 
   def resign
-    unless platform.personal?
+    if platform.main?
       status = repository_statuses.find_or_create_by_platform_id(platform_id)
       status.resign
     end
