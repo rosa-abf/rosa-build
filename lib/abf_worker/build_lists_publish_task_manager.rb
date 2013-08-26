@@ -327,7 +327,7 @@ module AbfWorker
         statuses = RepositoryStatus.where(:platform_id => platform.id)
         next if repos.find{ |r| r.repo_lock_file_exists? }
         next if statuses.present? &&
-          statuses.map{ |s| s.ready? || s.can_start_regeneration? || s.can_start_resign? }.uniq == [true]
+          statuses.map{ |s| s.ready? || s.can_start_regeneration? || s.can_start_resign? }.uniq != [true]
 
         cmd_params          = {
           'RELEASED'            => platform.released,
