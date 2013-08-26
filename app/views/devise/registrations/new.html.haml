@@ -17,10 +17,11 @@
       .both
       .left=t('activerecord.attributes.user.email')
       .right
+        - klass = "registartion-input #{email_error ? 'registartion-input-error' : ''}"
         - if APP_CONFIG['preregistration']
-          = f.text_field :email, :id => 'email', :readonly => 'readonly',  :class => "registartion-input #{email_error ? 'registartion-input-error' : ''}"
+          = f.text_field :email, :id => 'email', :readonly => 'readonly',  :class => klass
         - else
-          = f.text_field :email, :id => 'email', :class => 'registartion-input'
+          = f.text_field :email, :id => 'email', :class => 'registartion-input',  :class => klass
       .both
       .left=t('activerecord.attributes.user.password')
       .right
