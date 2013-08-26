@@ -10,7 +10,7 @@ module AbfWorker
     def perform
       return if status == STARTED # do nothing when publication started
       extra = options['extra']
-      repository_status = RepositoryStatus.where(:id => extra['repository_status_id'])
+      repository_status = RepositoryStatus.where(:id => extra['repository_status_id']).first
       begin
         if extra['regenerate'] # Regenerate metadata
           repository_status.last_regenerated_at = Time.now.utc
