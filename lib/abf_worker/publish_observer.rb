@@ -16,7 +16,7 @@ module AbfWorker
           repository_status.last_regenerated_at = Time.now.utc
           repository_status.last_regenerated_status = status
         elsif extra['regenerate_platform'] # Regenerate metadata for Software Center
-          if platform = Platform.where(:id => extra['platform_id'])).first
+          if platform = Platform.where(:id => extra['platform_id']).first
             platform.last_regenerated_at = Time.now.utc
             platform.last_regenerated_status = status
             platform.ready
