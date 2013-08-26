@@ -1,7 +1,10 @@
 # -*- encoding : utf-8 -*-
 class Platform < ActiveRecord::Base
+  include RegenerationStatus
+
   VISIBILITIES = %w(open hidden)
   NAME_PATTERN = /[\w\-\.]+/
+  HUMAN_STATUSES = HUMAN_STATUSES.clone.freeze
 
   belongs_to :parent, :class_name => 'Platform', :foreign_key => 'parent_platform_id'
   belongs_to :owner, :polymorphic => true
@@ -10,6 +13,7 @@ class Platform < ActiveRecord::Base
   has_many :products, :dependent => :destroy
   has_many :tokens, :as => :subject,  :dependent => :destroy
   has_many :platform_arch_settings,   :dependent => :destroy
+  has_many :repository_statuses
 
   has_many :relations, :as => :target, :dependent => :destroy
   has_many :actors, :as => :target, :class_name => 'Relation', :dependent => :destroy
@@ -53,12 +57,31 @@ class Platform < ActiveRecord::Base
   scope :by_type, lambda {|type| where(:platform_type => type) if type.present?}
   scope :main, by_type('main')
   scope :personal, by_type('personal')
+  scope :waiting_for_regeneration, where(:status => WAITING_FOR_REGENERATION)
 
   accepts_nested_attributes_for :platform_arch_settings, :allow_destroy => true
   attr_accessible :name, :distrib_type, :parent_platform_id, :platform_type, :owner, :visibility, :description, :released, :platform_arch_settings_attributes
   attr_readonly   :name, :distrib_type, :parent_platform_id, :platform_type
 
   include Modules::Models::Owner
+
+  state_machine :status, :initial => :ready do
+    event :ready do
+      transition :regenerating => :ready
+    end
+
+    event :regenerate do
+      transition :ready => :waiting_for_regeneration, :if => lambda{ |p| p.main? }
+    end
+
+    event :start_regeneration do
+      transition :waiting_for_regeneration => :regenerating
+    end
+
+    HUMAN_STATUSES.each do |code,name|
+      state name, :value => code
+    end
+  end
 
   def clear
     system("rm -Rf #{ APP_CONFIG['root_path'] }/platforms/#{ self.name }/repository/*")

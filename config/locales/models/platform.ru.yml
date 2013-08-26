@@ -52,6 +52,7 @@ ru:
       change_visibility_from_hidden: Сменить статус на "Публичный"
       change_visibility_from_open: Сменить статус на "Приватный"
       confirm_change_visibility: Вы уверены, что хотите сменить статус этой платформы?
+      metadata: Метаданные для Software Center
 
   flash:
     platform:

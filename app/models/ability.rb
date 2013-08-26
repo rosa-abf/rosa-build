@@ -122,6 +122,7 @@ class Ability
         can([:remove_members, :remove_member, :add_member, :signatures], Repository) {|repository| owner?(repository.platform) || local_admin?(repository.platform)}
         can([:add_project, :remove_project], Repository) {|repository| repository.members.exists?(:id => user.id)}
         can(:clear, Platform) {|platform| owner?(platform) && platform.personal?}
+        can(:regenerate_metadata, Platform) {|platform| owner?(platform) || local_admin?(platform)}
         can([:settings, :destroy, :edit, :update], Repository) {|repository| owner? repository.platform}
 
         can([:create, :destroy], KeyPair) {|key_pair| owner?(key_pair.repository.platform) || local_admin?(key_pair.repository.platform)}
@@ -161,7 +162,7 @@ class Ability
       end
 
       # Shared cannot rights for all users (registered, admin)
-      cannot :destroy, Platform, :platform_type => 'personal'
+      cannot [:regenerate_metadata, :destroy], Platform, :platform_type => 'personal'
       cannot [:create, :destroy], Repository, :platform => {:platform_type => 'personal'}, :name => 'main'
       cannot [:remove_members, :remove_member, :add_member, :sync_lock_file, :add_repo_lock_file, :remove_repo_lock_file], Repository, :platform => {:platform_type => 'personal'}
 

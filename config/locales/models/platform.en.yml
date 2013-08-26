@@ -52,6 +52,7 @@ en:
       change_visibility_from_hidden: Change status to "Public"
       change_visibility_from_open: Change status to "Private"
       confirm_change_visibility: Are you sure you want to change visibility of this platform?
+      metadata: Metadata for Software Center
 
   flash:
     platform:

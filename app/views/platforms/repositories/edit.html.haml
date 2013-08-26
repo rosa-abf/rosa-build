@@ -19,6 +19,25 @@
       = f.submit t('layout.repositories.regenerate_metadata'), :confirm => t('layout.confirm')
   .both
 
+  - if @repository.repository_statuses.present?
+    %table#myTable.tablesorter.platform-repos{:cellspacing => "0", :cellpadding => "0"}
+      %thead
+        %tr
+          %th= t('activerecord.attributes.regeneration_status.status')
+          %th= t('activerecord.attributes.regeneration_status.last_regenerated_status')
+          %th= t('activerecord.attributes.regeneration_status.last_regenerated_at')
+          - unless @platform.main?
+            %th= t('activerecord.models.platform')
+      %tbody
+        - @repository.repository_statuses.sort_by{ |s| s.platform.name }.each do |status|
+          %tr{:class => cycle('odd', 'even')}
+            %td= t("layout.regeneration_statuses.statuses.#{status.human_status}")
+            %td= t("layout.regeneration_statuses.last_regenerated_statuses.#{status.human_regeneration_status}")
+            %td= status.last_regenerated_at
+            - unless @platform.main?
+              %td= status.platform.name
+    .both
+
   - if @platform.main?
     - if @repository.sync_lock_file_exists?
       - label = t('layout.repositories.remove_sync_lock_file')

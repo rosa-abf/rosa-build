@@ -1,0 +1,30 @@
+en:
+  layout:
+    regeneration_statuses:
+      regenerate_metadata: Regenerate metadata
+      statuses:
+        no_data: No data
+        ready: No actions
+        waiting_for_regeneration: Waiting for regeneration metadata
+        regenerating: Regeneration of metadata
+        waiting_for_resign: Waiting for resign of packages
+        publish: Publish
+        resign: Resign of packages
+        waiting_for_resign_after_publish: Publish, waiting for resign of packages
+        waiting_for_resign_after_regeneration: Regeneration of metadata, waiting for resign of packages
+        waiting_for_regeneration_after_publish: Publish, waiting for regeneration metadata
+        waiting_for_regeneration_after_resign: Resign of packages, waiting for regeneration metadata
+        waiting_for_resign_and_regeneration_after_publish: Publish,  waiting for resign of packages and regeneration metadata
+        waiting_for_resign_and_regeneration: Waiting for resign of packages and regeneration metadata
+      last_regenerated_statuses:
+        no_data: No data
+        completed: Completed succesfully 
+        failed: Completed not succesfully 
+        canceled: Canceled
+
+  activerecord:
+    attributes:
+      regeneration_status:
+        last_regenerated_at: Last regeneration of metadata
+        last_regenerated_status: Last status of regeneration metadata
+        status: Current status
