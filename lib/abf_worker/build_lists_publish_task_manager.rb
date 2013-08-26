@@ -89,6 +89,8 @@ module AbfWorker
           'args' => [{
             :id                   => build_list.id,
             :cmd_params           => cmd_params,
+            :main_script          => 'build.sh',
+            :rollback_script      => 'rollback.sh',
             :platform             => {
               :platform_path  => platform_path,
               :type           => distrib_type,
@@ -96,7 +98,6 @@ module AbfWorker
               :arch           => build_list.arch.name
             },
             :repository           => {:id => build_list.save_to_repository_id},
-            :type                 => :publish,
             :time_living          => 9600, # 160 min
             :packages             => packages,
             :old_packages         => packages_structure,
@@ -168,6 +169,7 @@ module AbfWorker
           'args' => [{
             :id             => r.id,
             :cmd_params     => cmd_params,
+            :main_script    => 'resign.sh',
             :platform       => {
               :platform_path  => "#{r.platform.path}/repository",
               :type           => distrib_type,
@@ -175,10 +177,9 @@ module AbfWorker
               :arch           => 'x86_64'
             },
             :repository     => {:id => r.id},
-            :type           => :resign,
             :skip_feedback  => true,
             :time_living    => 9600, # 160 min
-            :extra          => {:repository_status_id => repository_status.id}
+            :extra          => {:repository_status_id => repository_status.id, :resign => true}
           }]
         ) if repository_status.start_resign
       end
@@ -274,8 +275,10 @@ module AbfWorker
       }.map{ |k, v| "#{k}=#{v}" }.join(' ')
 
       options   = {
-        :id           => (bl ? bl.id : Time.now.to_i),
-        :cmd_params   => cmd_params,
+        :id               => (bl ? bl.id : Time.now.to_i),
+        :cmd_params       => cmd_params,
+        :main_script      => 'build.sh',
+        :rollback_script  => 'rollback.sh',
         :platform     => {
           :platform_path  => platform_path,
           :type           => distrib_type,
@@ -283,7 +286,6 @@ module AbfWorker
           :arch           => (bl ? bl.arch.name : 'x86_64')
         },
         :repository   => {:id => save_to_repository_id},
-        :type         => :publish,
         :time_living  => 9600, # 160 min
         :extra        => {:repository_status_id => repository_status.id}
       }
@@ -340,16 +342,15 @@ module AbfWorker
           'publish_worker_default',
           'class' => 'AbfWorker::PublishWorkerDefault',
           'args' => [{
-            :id           => Time.now.to_i,
-            :cmd_params   => cmd_params,
+            :id               => Time.now.to_i,
+            :cmd_params       => cmd_params,
+            :main_script      => 'regenerate_platform_metadata.sh',
             :platform     => {
               :platform_path  => "#{platform.path}/repository",
               :type           => platform.distrib_type,
               :name           => platform.name,
               :arch           => 'x86_64'
             },
-            :repository   => {:id => platform.repositories.first.id},
-            :type         => :publish,
             :time_living  => 9600, # 160 min
             :skip_feedback => true,
             :extra         => {:platform_id => platform.id, :regenerate_platform => true}
@@ -383,16 +384,16 @@ module AbfWorker
           'publish_worker_default',
           'class' => 'AbfWorker::PublishWorkerDefault',
           'args' => [{
-            :id           => Time.now.to_i,
-            :cmd_params   => cmd_params,
+            :id               => Time.now.to_i,
+            :cmd_params       => cmd_params,
+            :main_script      => 'build.sh',
+            :rollback_script  => 'rollback.sh',
             :platform     => {
               :platform_path  => "#{rep.platform.path}/repository",
               :type           => build_for_platform.distrib_type,
               :name           => build_for_platform.name,
               :arch           => 'x86_64'
             },
-            :repository   => {:id => rep.id},
-            :type         => :publish,
             :time_living  => 9600, # 160 min
             :skip_feedback => true,
             :extra         => {:repository_status_id => repository_status.id, :regenerate => true}

@@ -9,18 +9,19 @@ module AbfWorker
 
     def perform
       return if status == STARTED # do nothing when publication started
-      repository_status = RepositoryStatus.where(:id => options['extra']['repository_status_id'])
+      extra = options['extra']
+      repository_status = RepositoryStatus.where(:id => extra['repository_status_id'])
       begin
-        if options['extra']['regenerate'] # Regenerate metadata
+        if extra['regenerate'] # Regenerate metadata
           repository_status.last_regenerated_at = Time.now.utc
           repository_status.last_regenerated_status = status
-        elsif options['extra']['regenerate_platform'] # Regenerate metadata for Software Center
-          if platform = Platform.where(:id => options['extra']['platform_id'])).first
+        elsif extra['regenerate_platform'] # Regenerate metadata for Software Center
+          if platform = Platform.where(:id => extra['platform_id'])).first
             platform.last_regenerated_at = Time.now.utc
             platform.last_regenerated_status = status
             platform.ready
           end
-        elsif options['extra']['create_container'] # Container has been created
+        elsif extra['create_container'] # Container has been created
           case status
           when COMPLETED
             subject.published_container
@@ -28,7 +29,7 @@ module AbfWorker
             subject.fail_publish_container
           end
           update_results
-        else
+        elsif !extra['resign'] # Simple publish
           update_rpm_builds
         end
       ensure
