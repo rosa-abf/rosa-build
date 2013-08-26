@@ -38,11 +38,6 @@ module CommitHelper
     id[0..size-1]
   end
 
-  def short_commit_message(message)
-    # Why 42? Because it is the Answer!
-    truncate(message, :length => 42, :omission => "...")
-  end
-
   def commit_author_link(author)
     name = author.name
     email = author.email

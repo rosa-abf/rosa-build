@@ -1,25 +1,40 @@
-- edit_link ||= nil
+- edit_url ||= nil
 - user ||= nil
 - group ||= nil
 - name ||= uname
-.avatar
-  = image_tag avatar_url(user || group, :big)
-  - if edit_link
-    %br
-    = edit_link
-.info
-  %h3= title uname
-  = name
-  - if user
-    %br
-    = mail_to user.email, user.email, :encode => "javascript"
-  %br
+- desc, desc_title = if user
+  - [user.professional_experience,  t('activerecord.attributes.user.professional_experience')]
+- else
+  - [group.description , t('activerecord.attributes.group.description')]
+- max_length = 35
+
+.row
+  .span3.profile
+    .avatar= image_tag avatar_url(user || group, :big), :alt => (user || group).uname
+    .base_info
+      %h3{:title => uname}= title short_message(uname, 16)
+      %p{:title => user.try(:name)}
+        - if user
+          = short_message(user.name, 28)
+      = link_to image_tag('gears.png'), edit_url if can?(:edit, user)
+    .both
     - if user
-      %h4= t("activerecord.attributes.user.professional_experience") + ":"
-      %p= user.professional_experience
-    - else
-      %h4= t("activerecord.attributes.group.description") + ":"
-      %p= group.description
+      %p.info.first
+        - message = "#{t 'activerecord.attributes.user.email'}: "
+        = message
+        = mail_to user.email, short_message(user.email, max_length - message.length), :encode => 'javascript', :title => user.email
+      %p.info
+        - message = "#{t 'activerecord.attributes.user.site'}: "
+        = message
+        = link_to short_message(user.site, max_length - message.length), user.site, :title => user.site
+      %p.info{:title => user.company}= short_message("#{t 'activerecord.attributes.user.company'}: #{user.company}", max_length)
+      %p.info{:title => user.location}= short_message("#{t 'activerecord.attributes.user.location'}: #{user.location}", max_length)
+  .span6
+    %h3{:style => 'margin-top: 0;'}= desc_title
+    = desc
+
+%hr.profile_line{:color => 'dfe8ef', :size => '3'}
+
 .content
   %h4= t("layout.projects.public_projects_list") + ":"
   %p
@@ -33,6 +48,3 @@
   %br
   = will_paginate projects
   %br
-
-:javascript
-  $('article .all').addClass('verybigpadding');

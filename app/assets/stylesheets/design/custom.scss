@@ -2106,3 +2106,37 @@ table tbody {
         cursor: default;
     }
 }
+
+.row {
+  .span3.profile {
+    .avatar {
+      float: left;
+      width: 81px;
+      height: 81px;
+    }
+    .base_info {
+      float: left;
+      width: 134px;
+      h3 {
+        margin: 0 0 0 10px;
+      }
+      p {
+        height: 35px;
+        margin-left: 10px;
+      }
+      a {
+        margin: 16px 0 0 10px;
+      }
+    }
+    p.first {
+      margin-top: 10px;
+    }
+    p.info {
+      max-width: 220px;
+    }
+  }
+}
+
+hr.profile_line {
+  margin-top: 20px;
+}

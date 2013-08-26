@@ -1,4 +1,10 @@
 -set_meta_tags :title => title_object(@user)
 
-- edit_link = can?(:edit, @user) ? link_to(t("layout.users.settings"), current_user == @user ? profile_settings_path : edit_admin_user_path(@user), :class => 'button width81') : nil
-= render 'shared/profile', :uname => @user.uname, :name => @user.name, :user => @user, :search_path => user_path, :projects => @projects, :edit_link => edit_link
+- edit_url = can?(:edit, @user) ? (current_user == @user ? profile_settings_path : edit_admin_user_path(@user)) : nil
+
+= render 'shared/profile', :uname       => @user.uname,
+                           :name        => @user.name,
+                           :user        => @user,
+                           :search_path => user_path,
+                           :projects    => @projects,
+                           :edit_url    => edit_url
