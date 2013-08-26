@@ -26,7 +26,7 @@ class Repository < ActiveRecord::Base
   attr_accessible :name, :description, :publish_without_qa
   attr_readonly :name, :platform_id
 
-  def regenerate(build_for_platform_id)
+  def regenerate(build_for_platform_id = nil)
     build_for_platform = Platform.main.find build_for_platform_id if platform.personal?
     status = repository_statuses.find_or_create_by_platform_id(build_for_platform.try(:id) || platform_id)
     status.regenerate

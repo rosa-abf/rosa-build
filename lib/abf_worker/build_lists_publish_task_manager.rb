@@ -146,9 +146,11 @@ module AbfWorker
     private
 
     def create_tasks_for_resign_repositories
-      repository_statuses = RepositoryStatus.platform_ready.
-        for_resign.includes(:repository => :platform)
-      repository_statuses.each do |repository_status|
+      RepositoryStatus.platform_ready
+                      .for_resign
+                      .includes(:repository => :platform)
+                      .readonly(false)
+                      .each do |repository_status|
         r = repository_status.repository
         # Checks mirror sync status
         next if r.repo_lock_file_exists?
@@ -249,7 +251,7 @@ module AbfWorker
       # Checks mirror sync status
       return false if save_to_repository.repo_lock_file_exists? || !save_to_repository.platform.ready?
 
-      repository_status = save_to_repository.find_or_create_by_platform_id(build_for_platform_id)
+      repository_status = save_to_repository.repository_statuses.find_or_create_by_platform_id(build_for_platform_id)
       return false unless repository_status.publish
       
       save_to_platform    = save_to_repository.platform
@@ -318,7 +320,7 @@ module AbfWorker
     end
 
     def create_tasks_for_regenerate_metadata_for_software_center
-      Platfor.main.waiting_for_regeneration.each do |platform|
+      Platform.main.waiting_for_regeneration.each do |platform|
         repos = platform.repositories
         statuses = RepositoryStatus.where(:platform_id => platform.id)
         next if repos.find{ |r| r.repo_lock_file_exists? }
@@ -358,14 +360,16 @@ module AbfWorker
     end
 
     def create_tasks_for_repository_regenerate_metadata
-      repository_statuses = RepositoryStatus.platform_ready.
-        for_regeneration.includes(:repository => :platform)
-      repository_statuses.each do |repository_status|
+      RepositoryStatus.platform_ready
+                      .for_regeneration
+                      .includes(:repository => :platform)
+                      .readonly(false)
+                      .each do |repository_status|
         rep = repository_status.repository
         # Checks mirror sync status
         next if rep.repo_lock_file_exists?
 
-        build_for_platform  = repository_statuses.platform
+        build_for_platform  = repository_status.platform
         cmd_params          = {
           'RELEASED'            => rep.platform.released,
           'REPOSITORY_NAME'     => rep.name,
