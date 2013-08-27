@@ -352,7 +352,6 @@ module AbfWorker
               :arch           => 'x86_64'
             },
             :time_living  => 9600, # 160 min
-            :skip_feedback => true,
             :extra         => {:platform_id => platform.id, :regenerate_platform => true}
           }]
         ) if platform.start_regeneration
@@ -395,7 +394,6 @@ module AbfWorker
               :arch           => 'x86_64'
             },
             :time_living  => 9600, # 160 min
-            :skip_feedback => true,
             :extra         => {:repository_status_id => repository_status.id, :regenerate => true}
           }]
         ) if repository_status.start_regeneration

@@ -1,5 +1,6 @@
 # -*- encoding : utf-8 -*-
 class Platform < ActiveRecord::Base
+  include FileStoreClean
   include RegenerationStatus
 
   VISIBILITIES = %w(open hidden)

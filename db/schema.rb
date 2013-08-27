@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130822160501) do
+ActiveRecord::Schema.define(:version => 20130827144022) do
 
   create_table "activity_feeds", :force => true do |t|
     t.integer  "user_id",    :null => false
@@ -307,19 +307,20 @@ ActiveRecord::Schema.define(:version => 20130822160501) do
 
   create_table "platforms", :force => true do |t|
     t.string   "description"
-    t.string   "name",                                        :null => false
+    t.string   "name",                                          :null => false
     t.integer  "parent_platform_id"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.boolean  "released",                :default => false,  :null => false
+    t.boolean  "released",                  :default => false,  :null => false
     t.integer  "owner_id"
     t.string   "owner_type"
-    t.string   "visibility",              :default => "open", :null => false
-    t.string   "platform_type",           :default => "main", :null => false
-    t.string   "distrib_type",                                :null => false
-    t.integer  "status",                  :default => 0
+    t.string   "visibility",                :default => "open", :null => false
+    t.string   "platform_type",             :default => "main", :null => false
+    t.string   "distrib_type",                                  :null => false
+    t.integer  "status",                    :default => 0
     t.datetime "last_regenerated_at"
     t.integer  "last_regenerated_status"
+    t.string   "last_regenerated_log_sha1"
   end
 
   add_index "platforms", ["name"], :name => "index_platforms_on_name", :unique => true, :case_sensitive => false
@@ -488,13 +489,14 @@ ActiveRecord::Schema.define(:version => 20130822160501) do
   add_index "repositories", ["platform_id"], :name => "index_repositories_on_platform_id"
 
   create_table "repository_statuses", :force => true do |t|
-    t.integer  "repository_id",                          :null => false
-    t.integer  "platform_id",                            :null => false
-    t.integer  "status",                  :default => 0
+    t.integer  "repository_id",                            :null => false
+    t.integer  "platform_id",                              :null => false
+    t.integer  "status",                    :default => 0
     t.datetime "last_regenerated_at"
     t.integer  "last_regenerated_status"
-    t.datetime "created_at",                             :null => false
-    t.datetime "updated_at",                             :null => false
+    t.datetime "created_at",                               :null => false
+    t.datetime "updated_at",                               :null => false
+    t.string   "last_regenerated_log_sha1"
   end
 
   add_index "repository_statuses", ["repository_id", "platform_id"], :name => "index_repository_statuses_on_repository_id_and_platform_id", :unique => true

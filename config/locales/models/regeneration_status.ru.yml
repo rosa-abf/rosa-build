@@ -27,4 +27,5 @@ ru:
       regeneration_status:
         last_regenerated_at: Последняя регенерация методанных
         last_regenerated_status: Статус последней регенерации методанных
+        last_regenerated_log_sha1: Последний лог регенерации методанных
         status: Текущее состояние

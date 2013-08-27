@@ -1,4 +1,5 @@
 class RepositoryStatus < ActiveRecord::Base
+  include FileStoreClean
   include RegenerationStatus
 
   WAITING_FOR_RESIGN        = 300
