@@ -34,7 +34,7 @@
           %tr{:class => cycle('odd', 'even')}
             %td= t("layout.regeneration_statuses.statuses.#{status.human_status}")
             %td= t("layout.regeneration_statuses.last_regenerated_statuses.#{status.human_regeneration_status}")
-            %td= link_to_file_store('regeneration.log', @status.last_regenerated_log_sha1)
+            %td= link_to_file_store('regeneration.log', status.last_regenerated_log_sha1)
             %td= status.last_regenerated_at
             - unless @platform.main?
               %td= status.platform.name
