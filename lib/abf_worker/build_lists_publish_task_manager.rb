@@ -331,7 +331,7 @@ module AbfWorker
 
         cmd_params          = {
           'RELEASED'            => platform.released,
-          'REPOSITORY_NAME'     => platform.repositories.map(&:name).join(','),
+          'REPOSITORY_NAMES'    => platform.repositories.map(&:name).join(','),
           'TYPE'                => platform.distrib_type,
           'REGENERATE_PLATFORM_METADATA' => true,
           'SAVE_TO_PLATFORM'    => platform.name,
