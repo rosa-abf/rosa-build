@@ -1,6 +1,6 @@
 # -*- encoding : utf-8 -*-
 class Projects::BuildListsController < Projects::BaseController
-  include BuildsHelper
+  include FileStoreHelper
 
   NESTED_ACTIONS = [:index, :new, :create]
 

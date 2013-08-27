@@ -1,5 +1,6 @@
 # -*- encoding : utf-8 -*-
 class Platforms::PlatformsController < Platforms::BaseController
+  include FileStoreHelper
 
   before_filter :authenticate_user!
   skip_before_filter :authenticate_user!, :only => [:advisories, :members, :show] if APP_CONFIG['anonymous_access']

@@ -1,6 +1,6 @@
 # -*- encoding : utf-8 -*-
 class Platforms::ProductBuildListsController < Platforms::BaseController
-  include BuildsHelper
+  include FileStoreHelper
 
   before_filter :authenticate_user!
   skip_before_filter :authenticate_user!, :only => [:index, :show, :log] if APP_CONFIG['anonymous_access']

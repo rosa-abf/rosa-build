@@ -12,13 +12,20 @@ module AbfWorker
       extra = options['extra']
       repository_status = RepositoryStatus.where(:id => extra['repository_status_id']).first
       begin
+        
+        if extra['regenerate'] || extra['regenerate_platform']
+          log_sha1 = (options['results'].try(:first) || {}).fetch('sha1', nil)
+        end
+
         if extra['regenerate'] # Regenerate metadata
           repository_status.last_regenerated_at = Time.now.utc
           repository_status.last_regenerated_status = status
+          repository_status.last_regenerated_log_sha1 = log_sha1
         elsif extra['regenerate_platform'] # Regenerate metadata for Software Center
           if platform = Platform.where(:id => extra['platform_id']).first
             platform.last_regenerated_at = Time.now.utc
             platform.last_regenerated_status = status
+            platform.last_regenerated_log_sha1 = log_sha1
             platform.ready
           end
         elsif extra['create_container'] # Container has been created

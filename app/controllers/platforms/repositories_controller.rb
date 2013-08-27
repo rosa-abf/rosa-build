@@ -1,5 +1,7 @@
 # -*- encoding : utf-8 -*-
 class Platforms::RepositoriesController < Platforms::BaseController
+  include FileStoreHelper
+
   before_filter :authenticate_user!
   skip_before_filter :authenticate_user!, :only => [:index, :show, :projects_list] if APP_CONFIG['anonymous_access']
 

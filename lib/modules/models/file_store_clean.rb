@@ -30,6 +30,11 @@ module Modules
             end
           end
         end
+
+        def later_destroy_files_from_file_store(args)
+          destroy_files_from_file_store(args)
+        end
+        later :later_destroy_files_from_file_store, :queue => :clone_build
       end
 
       def self.file_exist_on_file_store?(sha1)

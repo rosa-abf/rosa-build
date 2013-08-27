@@ -27,4 +27,5 @@ en:
       regeneration_status:
         last_regenerated_at: Last regeneration of metadata
         last_regenerated_status: Last status of regeneration metadata
+        last_regenerated_log_sha1: Last log of regeneration metadata
         status: Current status
