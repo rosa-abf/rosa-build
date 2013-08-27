@@ -1,7 +1,7 @@
 # -*- encoding : utf-8 -*-
 class BuildList < ActiveRecord::Base
   include Modules::Models::CommitAndVersion
-  include FileStoreClean
+  include Modules::Models::FileStoreClean
   include AbfWorker::ModelHelper
   include Modules::Observers::ActivityFeed::BuildList
 

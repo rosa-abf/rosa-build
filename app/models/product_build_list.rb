@@ -2,7 +2,7 @@
 class ProductBuildList < ActiveRecord::Base
   include Modules::Models::CommitAndVersion
   include Modules::Models::TimeLiving
-  include FileStoreClean
+  include Modules::Models::FileStoreClean
   include AbfWorker::ModelHelper
   delegate :url_helpers, to: 'Rails.application.routes'
 

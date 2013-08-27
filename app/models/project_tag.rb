@@ -1,6 +1,6 @@
 # -*- encoding : utf-8 -*-
 class ProjectTag < ActiveRecord::Base
-  include FileStoreClean
+  include Modules::Models::FileStoreClean
 
   FORMATS = {
     'zip'     => 0,
