@@ -449,7 +449,7 @@ class BuildList < ActiveRecord::Base
   def notify_users
     unless mass_build_id
       users = [user]
-      users << publisher if publisher
+      users << publisher if publisher && user_id != publisher_id
       users.select!{ |u| u.notifier.can_notify? && u.notifier.new_build? }
       
       # find associated users
