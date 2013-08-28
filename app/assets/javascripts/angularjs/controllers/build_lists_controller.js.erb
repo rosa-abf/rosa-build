@@ -8,6 +8,21 @@ RosaABF.controller('BuildListsController', ['$scope', '$http', '$location', '$ti
   $scope.pages          = [];
 
   $scope.opened         = {};
+  $scope.map_priorities = {
+    <%=BuildList::WAITING_FOR_RESPONSE%>: 11,
+    <%=BuildList::BUILD_PENDING%>: 10,
+    <%=BuildList::BUILD_STARTED%>: 9,
+    <%=BuildList::SUCCESS%>: 8,
+    <%=BuildList::BUILD_PUBLISH%>: 7,
+    <%=BuildList::BUILD_PUBLISHED%>: 6,
+    <%=BuildList::TESTS_FAILED%>: 5,
+    <%=BuildList::BUILD_CANCELING%>: 4,
+    <%=BuildList::BUILD_CANCELED%>: 3,
+    <%=BuildList::BUILD_ERROR%>: 2,
+    <%=BuildList::FAILED_PUBLISH%>: 1,
+    <%=BuildList::REJECTED_PUBLISH%>: 0
+  };
+
 
   // Fixes: redirect to page after form submit
   $("#monitoring_filter").on('submit', function(){ return false; });
@@ -39,12 +54,22 @@ RosaABF.controller('BuildListsController', ['$scope', '$http', '$location', '$ti
           if ( bl.id in $scope.opened ) { to_open.push(bl); }
         }
       });
-      
+
       // Adds all build_lists into the table (group by group)
       $scope.build_lists  = [];
       $scope.opened       = {};
       _.each(build_lists, function(bl){
-        _.each(bl.related, function(b){ $scope.build_lists.push(b); });
+        if (bl.related.length > 1) {
+          var sorted_build_lists = _.sortBy(bl.related, function(b) { return $scope.map_priorities[b.status]; });
+          bl.clearRelated();
+          var first_in_group = sorted_build_lists[0];
+          _.each(sorted_build_lists, function(b){
+            if (b != first_in_group) { first_in_group.addRelated(b); }
+            $scope.build_lists.push(b);
+          });
+        } else {
+          $scope.build_lists.push(bl);
+        }
       });
       // Shows groups which have been opened before 
       _.each(to_open, function(bl){ $scope.showRelated(bl, true); });
