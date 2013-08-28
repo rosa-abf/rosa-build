@@ -52,6 +52,7 @@ ru:
     atom_link_tag_title: Приватная лента для %{nickname} | %{app_name}
     preview: Предосмотр
     link: Ссылка
+    noscript_message: Включите javascript для корректной работы сайта
 
     settings:
       label: 'Настройки'
