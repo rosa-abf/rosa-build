@@ -51,7 +51,7 @@ module Rosa
     config.encoding = "utf-8"
 
     # Configure sensitive parameters which will be filtered from the log file.
-    config.filter_parameters += [:password, :secret, :authentication_token, :pazsword]
+    config.filter_parameters += [:password, :secret, :authentication_token]
 
     # Enable the asset pipeline
     config.assets.enabled = true
