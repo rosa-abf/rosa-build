@@ -7,6 +7,7 @@
   %article
     = form_for(resource, :as => resource_name, :url => registration_path(resource_name), :html => { :class => "form" }) do |f|
       = hidden_field_tag :invitation_token, @invitation_token
+      = f.password_field :password, :name => 'password', :style => 'display: none;'
       .left.first=t('activerecord.attributes.user.uname')
       .right.first
         = f.text_field :uname, :id => 'login', :class => "registartion-input #{uname_error ? 'registartion-input-error' : ''}"
@@ -34,6 +35,8 @@
       .in
         =f.submit t("layout.devise.shared_links.sign_up"), :class => 'button', :id => 'btnLogin'
       .both
+      = hidden_field_tag :recaptcha_challenge_field
+      = hidden_field_tag :recaptcha_response_field, 'manual_challenge'
     = render 'devise/shared/providers'
 
   =showDeviseHintError(:login, uname_error)

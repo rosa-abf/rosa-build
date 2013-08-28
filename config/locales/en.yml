@@ -52,6 +52,7 @@ en:
     atom_link_tag_title: Private feed for %{nickname} | %{app_name}
     preview: Preview
     link: Link
+    noscript_message: You need javascript to properly use this site
 
     settings:
       label: Settings

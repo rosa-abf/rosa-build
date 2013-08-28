@@ -32,4 +32,6 @@ $(document).ready(function() {
     }
      return true;
   });
+
+  $('#recaptcha_response_field').val('');
 });
