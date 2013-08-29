@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130827144022) do
+ActiveRecord::Schema.define(:version => 20130829161042) do
 
   create_table "activity_feeds", :force => true do |t|
     t.integer  "user_id",    :null => false
@@ -136,6 +136,7 @@ ActiveRecord::Schema.define(:version => 20130827144022) do
     t.text     "extra_repositories"
     t.text     "extra_build_lists"
     t.integer  "publisher_id"
+    t.integer  "group_id"
   end
 
   add_index "build_lists", ["advisory_id"], :name => "index_build_lists_on_advisory_id"
