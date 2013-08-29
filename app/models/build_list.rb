@@ -448,17 +448,13 @@ class BuildList < ActiveRecord::Base
 
   def notify_users
     unless mass_build_id
-      users = []
-      if project # find associated users
-        users = project.all_members.
-          select{ |user| user.notifier.can_notify? && user.notifier.new_associated_build? }
-      end
-      if user.notifier.can_notify? && user.notifier.new_build?
-        users = users | [user]
-      end
-      users.each do |user|
-        UserMailer.build_list_notification(self, user).deliver
-      end
+      users = [user, publisher].compact.uniq.select{ |u| u.notifier.can_notify? && u.notifier.new_build? }
+
+      # find associated users
+      users |= project.all_members.select do |u|
+        u.notifier.can_notify? && u.notifier.new_associated_build?
+      end if project
+      users.each{ |u| UserMailer.build_list_notification(self, u).deliver }
     end
   end # notify_users
 
