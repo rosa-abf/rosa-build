@@ -11,14 +11,14 @@ RosaABF.controller('BuildListsController', ['$scope', '$http', '$location', '$ti
   $scope.map_priorities = {
     <%=BuildList::WAITING_FOR_RESPONSE%>: 11,
     <%=BuildList::BUILD_PENDING%>: 10,
-    <%=BuildList::BUILD_STARTED%>: 9,
-    <%=BuildList::SUCCESS%>: 8,
-    <%=BuildList::BUILD_PUBLISH%>: 7,
-    <%=BuildList::BUILD_PUBLISHED%>: 6,
-    <%=BuildList::TESTS_FAILED%>: 5,
-    <%=BuildList::BUILD_CANCELING%>: 4,
-    <%=BuildList::BUILD_CANCELED%>: 3,
-    <%=BuildList::BUILD_ERROR%>: 2,
+    <%=BuildList::BUILD_CANCELING%>: 9,
+    <%=BuildList::BUILD_CANCELED%>: 8,
+    <%=BuildList::BUILD_STARTED%>: 7,
+    <%=BuildList::BUILD_PUBLISH%>: 6,
+    <%=BuildList::BUILD_PUBLISHED%>: 5,
+    <%=BuildList::BUILD_ERROR%>: 4,
+    <%=BuildList::SUCCESS%>: 3,
+    <%=BuildList::TESTS_FAILED%>: 2,
     <%=BuildList::FAILED_PUBLISH%>: 1,
     <%=BuildList::REJECTED_PUBLISH%>: 0
   };
