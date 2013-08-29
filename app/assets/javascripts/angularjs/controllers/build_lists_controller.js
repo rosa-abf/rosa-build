@@ -30,7 +30,8 @@ RosaABF.controller('BuildListsController', ['$scope', '$http', '$location', '$ti
       // Grouping of build_lists
       _.each(results.build_lists, function(r){
         var bl = new BuildList(r, dictionary);
-        var key = bl.project_id + '-' + bl.group_id;
+        var key = bl.project_id + '-';
+        key += bl.group_id ? bl.group_id : (bl.commit_hash + '-' + bl.user_id);
         if (groups[key]) {
           groups[key].addRelated(bl);
         } else {
