@@ -1,6 +1,6 @@
 now = Time.now.utc
 json.build_lists @build_lists do |build_list|
-  json.(build_list, :id, :status, :project_id, :project_version, :save_to_platform_id, :save_to_repository_id, :user_id, :project_id, :build_for_platform_id, :arch_id)
+  json.(build_list, :id, :status, :project_id, :project_version, :save_to_platform_id, :save_to_repository_id, :user_id, :project_id, :build_for_platform_id, :arch_id, :group_id)
   json.commit_hash build_list.commit_hash.first(5)
   json.last_published_commit_hash build_list.last_published_commit_hash.first(5) if build_list.last_published_commit_hash
 
