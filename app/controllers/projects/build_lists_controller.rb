@@ -62,6 +62,7 @@ class Projects::BuildListsController < Projects::BaseController
     build_for_platforms = Repository.select(:platform_id).
       where(:id => params[:build_list][:include_repos]).group(:platform_id).map(&:platform_id)
 
+    build_lists = []
     Arch.where(:id => params[:arches]).each do |arch|
       Platform.main.where(:id => build_for_platforms).each do |build_for_platform|
         @build_list = @project.build_lists.build(params[:build_list])
@@ -71,6 +72,7 @@ class Projects::BuildListsController < Projects::BaseController
 
         flash_options = {:project_version => @build_list.project_version, :arch => arch.name, :build_for_platform => build_for_platform.name}
         if authorize!(:create, @build_list) && @build_list.save
+          build_lists << @build_list
           notices << t("flash.build_list.saved", flash_options)
         else
           errors << t("flash.build_list.save_error", flash_options)
@@ -83,6 +85,7 @@ class Projects::BuildListsController < Projects::BaseController
       flash[:error] = errors.join('<br>').html_safe
       render :action => :new
     else
+      BuildList.where(:id => build_lists.map(&:id)).update_all(:group_id => build_lists[0].id) if build_lists.size > 1
       flash[:notice] = notices.join('<br>').html_safe
       redirect_to project_build_lists_path(@project)
     end
