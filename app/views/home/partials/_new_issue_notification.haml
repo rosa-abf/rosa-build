@@ -6,6 +6,6 @@
       = raw t("notifications.bodies.new_issue_notification", { :user_link => user_link(user, user_name), :issue_link => project_issue_path(project_owner, project_name, issue_serial_id)})
       = raw t("notifications.bodies.project", :project_link => link_to("#{project_owner}/#{project_name}", project_path(project_owner, project_name)) )
     .both
-      %span.date= activity_feed.created_at
+      = datetime_moment activity_feed.created_at, :tag => :span, :class => 'date'
   .both
     %span.subject= issue_title
