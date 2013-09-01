@@ -50,7 +50,7 @@
         -# No idea why here was this div...
         -#.tour-gap
     %footer= render "layouts/menu/bottom"
-    = render 'layouts/counters' unless current_user.try(:admin?)
+    = render 'layouts/counters' if !current_user.try(:admin?) && Rails.env.production?
     :javascript
       $(document).ready(function() {
           $().piroBox_ext({
