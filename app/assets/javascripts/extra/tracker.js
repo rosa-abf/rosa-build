@@ -107,6 +107,7 @@ $(document).ready(function() {
       success: function(data){
                  $('article').html(data);
                  $(".niceRadio").each(function() { changeRadioStart(jQuery(this)) });
+                 updateTime();
                },
       error: function(data){
                alert('error') // TODO remove

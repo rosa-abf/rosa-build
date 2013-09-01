@@ -50,7 +50,7 @@ class GitPresenters::CommitAsMessagePresenter < ApplicationPresenter
   end
 
   def date
-    @date ||= I18n.l(@committed_date || @authored_date, :format => :long)
+    @date ||= @committed_date || @authored_date
   end
 
   def expandable?

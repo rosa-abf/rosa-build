@@ -3,7 +3,7 @@
   .notify.blue
     %div{:class => '{{build_list.status_color}}'}
       %p {{build_list.human_status | i18n}}
-    %p {{build_list.updated_at}}
+    %p{'am-time-ago' => 'build_list.updated_at', :title => '{{build_list.updated_at_utc}}'}
     .both
   =form_for @build_list, :url => publish_build_list_path(@build_list), :html => { :class => :form } do |f|
     %h3= t("layout.build_lists.main_data")
@@ -65,7 +65,7 @@
     .rightlist= @build_list.arch.name
     .both
     .leftlist= t("activerecord.attributes.build_list.updated_at")
-    .rightlist {{build_list.updated_at}}
+    .rightlist {{build_list.updated_at_utc}}
     .both
     .leftlist= t("activerecord.attributes.build_list.is_circle")
     .rightlist= t("layout.#{@build_list.is_circle?}_")

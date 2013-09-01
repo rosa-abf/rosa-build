@@ -7,8 +7,7 @@
           %tr
             %td
               %img{:height => 16, :alt => "avatar", :src => presenter.image}
-            %td.date
-              = presenter.date
+            = datetime_moment presenter.date, :tag => :td, :class => :date
             %td.name
               = presenter.header
             %td.subject

@@ -16,7 +16,7 @@
               %span.username= user.present? ? user.fullname : v.author.name
           .both
         %td.td3
-          %span.wiki-gray= "#{l v.committed_date.to_date, :format => :long}:"
+          = datetime_moment v.committed_date, :tag => :span, :class => 'wiki-gray'
           = v.message
           - if @name
             = raw "[#{link_to v.id[0..6], versioned_project_wiki_path(@project, escaped_name, v.id), :title => t("wiki.view_commit")}]"

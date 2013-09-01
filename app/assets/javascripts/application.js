@@ -90,4 +90,13 @@ $(document).ready(function() {
   }
 
   $('.md_and_cm code').each(function (code) { CodeMirrorRun(this); });
+
+  window.updateTime = function () {
+    $('.datetime_moment').each(function() {
+      $(this).html(moment($(this).attr('origin_datetime'), 'X').fromNow());
+    });
+  };
+
+  updateTime();
+  setInterval( updateTime, 15000 );
 });

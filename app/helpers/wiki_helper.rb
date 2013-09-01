@@ -98,7 +98,7 @@ module WikiHelper
   end
 
   def date
-    @page.version.authored_date.strftime("%Y-%m-%d %H:%M:%S")
+    @page.version.authored_date
   end
 
   def format
