@@ -21,7 +21,7 @@ module Modules::Observers::ActivityFeed::BuildList
       )
 
       updater = publisher || user
-      project.admins.each do |recipient|
+      (project.admins | [publisher].compact).each do |recipient|
         ActivityFeed.create(
           :user => recipient,
           :kind => 'build_list_notification',

@@ -1,6 +1,7 @@
 # -*- encoding : utf-8 -*-
 class Platform < ActiveRecord::Base
-  include RegenerationStatus
+  include Modules::Models::FileStoreClean
+  include Modules::Models::RegenerationStatus
 
   VISIBILITIES = %w(open hidden)
   NAME_PATTERN = /[\w\-\.]+/

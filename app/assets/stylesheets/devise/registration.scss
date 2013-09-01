@@ -258,7 +258,7 @@ div.error p{
   text-align: center;
 }
 
-div.error.uname {
+div.error.login {
   margin-top: -286px;
   margin-left: 650px;
 }
@@ -273,12 +273,7 @@ div.error.email {
   margin-left: 650px;
 }
 
-div.error.pazsword {
+div.error.password {
   margin-top: -155px;
   margin-left: 650px;
-}
-
-.login_first {
-  display: none;
-  max-height: 1px;
 }

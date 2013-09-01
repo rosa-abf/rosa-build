@@ -331,7 +331,7 @@ module AbfWorker
 
         cmd_params          = {
           'RELEASED'            => platform.released,
-          'REPOSITORY_NAME'     => platform.repositories.map(&:name).join(','),
+          'REPOSITORY_NAMES'    => platform.repositories.map(&:name).join(','),
           'TYPE'                => platform.distrib_type,
           'REGENERATE_PLATFORM_METADATA' => true,
           'SAVE_TO_PLATFORM'    => platform.name,
@@ -352,7 +352,6 @@ module AbfWorker
               :arch           => 'x86_64'
             },
             :time_living  => 9600, # 160 min
-            :skip_feedback => true,
             :extra         => {:platform_id => platform.id, :regenerate_platform => true}
           }]
         ) if platform.start_regeneration
@@ -395,7 +394,6 @@ module AbfWorker
               :arch           => 'x86_64'
             },
             :time_living  => 9600, # 160 min
-            :skip_feedback => true,
             :extra         => {:repository_status_id => repository_status.id, :regenerate => true}
           }]
         ) if repository_status.start_regeneration

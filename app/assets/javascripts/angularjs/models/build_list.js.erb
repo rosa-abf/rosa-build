@@ -59,13 +59,15 @@ var BuildList = function(atts, dictionary) {
   // private fields
   self.lastRelated    = false;
 
-  // public fields
-  self.related        = [self];
-  self.show           = true;
-  self.relatedHidden  = true;
-  self.hasRelated     = false;
-
   // public methods
+
+  self.clearRelated = function() {
+    self.related        = [self];
+    self.show           = true;
+    self.relatedHidden  = true;
+    self.hasRelated     = false;
+  }
+  self.clearRelated();
 
   self.addRelated = function(bl) {
     bl.show         = false;

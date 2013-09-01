@@ -48,6 +48,7 @@
       - if content_for?(:feed_tabs)
         = yield :feed_tabs
       .both
+      = render 'layouts/noscript'
       = render "layouts/flashes"
       = render "layouts/notifies"
       %article

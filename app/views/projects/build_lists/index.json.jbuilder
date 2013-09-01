@@ -1,6 +1,7 @@
 now = Time.now.utc
+users, projects, platforms, repositories = [], [], [], []
 json.build_lists @build_lists do |build_list|
-  json.(build_list, :id, :status, :project_id, :project_version, :save_to_platform_id, :save_to_repository_id, :user_id, :project_id, :build_for_platform_id, :arch_id)
+  json.(build_list, :id, :status, :project_id, :project_version, :save_to_platform_id, :save_to_repository_id, :user_id, :project_id, :build_for_platform_id, :arch_id, :group_id)
   json.commit_hash build_list.commit_hash.first(5)
   json.last_published_commit_hash build_list.last_published_commit_hash.first(5) if build_list.last_published_commit_hash
 
@@ -12,21 +13,25 @@ json.build_lists @build_lists do |build_list|
   json.version_release get_version_release(build_list)
   json.updated_at build_list.updated_at
   json.updated_at_utc build_list.updated_at.strftime('%Y-%m-%d %H:%M:%S UTC')
+  users         |= [build_list.user]
+  projects      |= [build_list.project]
+  platforms     |= [build_list.build_for_platform, build_list.save_to_platform]
+  repositories  |= [build_list.save_to_repository]
 end
 
 json.dictionary  do
-  json.users @build_lists.map(&:user).uniq do |user|
+  json.users users.compact do |user|
     json.(user, :id, :uname, :fullname)
   end
-  json.projects @build_lists.map(&:project).uniq.compact do |project|
+  json.projects projects.compact do |project|
     json.(project, :id, :name)
     json.owner project.name_with_owner.gsub(/\/.*/, '')
   end
-  json.platforms (@build_lists.map(&:build_for_platform) | @build_lists.map(&:save_to_platform)).uniq do |platform|
+  json.platforms platforms.compact do |platform|
     json.(platform, :id, :name)
     json.personal platform.personal?
   end
-  json.repositories @build_lists.map(&:save_to_repository).uniq do |repository|
+  json.repositories repositories.compact do |repository|
     json.(repository, :id, :name)
   end
   json.arches Arch.all do |arch|
