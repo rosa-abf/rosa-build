@@ -1,5 +1,8 @@
 # -*- encoding : utf-8 -*-
 class Repository < ActiveRecord::Base
+  extend FriendlyId
+  friendly_id :name
+
   LOCK_FILE_NAMES = {:sync => '.sync.lock', :repo => '.repo.lock'}
   SORT = {'base' => 1, 'main' => 2, 'contrib' => 3, 'non-free' => 4, 'restricted' => 5}
 

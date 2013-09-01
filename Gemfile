@@ -51,6 +51,7 @@ gem 'meta-tags', '~> 1.2.5', :require => 'meta_tags'
 gem "haml-rails", '~> 0.3.4'
 gem 'jquery-rails', '~> 2.0.2'
 gem 'ruby-haml-js', '~> 0.0.3'
+gem 'friendly_id'
 
 gem 'rack-throttle'
 gem 'rest-client', '~> 1.6.6'

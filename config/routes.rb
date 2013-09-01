@@ -152,7 +152,7 @@ Rosa::Application.routes.draw do
   end
 
   scope :module => 'platforms' do
-    resources :platforms do
+    resources :platforms, :constraints => {:id => Platform::NAME_PATTERN} do
       resources :private_users, :except => [:show, :destroy, :update]
       member do
         put    :regenerate_metadata

@@ -129,6 +129,8 @@ GEM
     faraday (0.8.7)
       multipart-post (~> 1.1)
     ffi (1.0.11)
+    friendly_id (4.0.10.1)
+      activerecord (>= 3.0, < 4.0)
     fssm (0.2.10)
     gemoji (1.2.1)
     github-linguist (2.3.4)
@@ -447,6 +449,7 @@ DEPENDENCIES
   devise (~> 2.2.3)
   diff-display (~> 0.0.1)
   factory_girl_rails (~> 4.0.0)
+  friendly_id
   gemoji (~> 1.2.1)
   github-linguist (~> 2.3.4)
   gollum (~> 2.1.3)

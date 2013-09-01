@@ -24,6 +24,7 @@ var BuildList = function(atts, dictionary) {
     if (self.save_to_platform.personal) {
       self.save_to_repository_name += ' (' + self.build_for_platform.name + ')'
     }
+    self.save_to_repository_url = Routes.platform_repository_path(self.save_to_platform.name, self.save_to_repository.name);
   }
 
   if (self.project) {
@@ -38,8 +39,6 @@ var BuildList = function(atts, dictionary) {
     self.project.name_with_owner = self.project.owner + '/' + self.project.name;
   }
 
-  if (self.save_to_platform_id)
-    self.save_to_repository_url = Routes.platform_repository_path(self.save_to_platform_id, self.save_to_repository_id);
   if (self.user)
     self.user.url = Routes.user_path(self.user.uname);
   self.url          = Routes.build_list_path(self.id);
