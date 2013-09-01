@@ -65,6 +65,7 @@ $(document).ready(function() {
       success: function(data){
                       button.fadeOut('slow').after(data);
                       button.remove();
+                      updateTime();
                     }
      });
     return false;
