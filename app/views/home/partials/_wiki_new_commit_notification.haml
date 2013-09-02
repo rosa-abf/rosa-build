@@ -6,5 +6,5 @@
       = raw t("notifications.bodies.wiki_new_commit_notification", {:user_link => user_link(user, user_name), :history_link => link_to("wiki", history_project_wiki_index_path(project_owner, project_name))})
       = raw t("notifications.bodies.project", :project_link => link_to("#{project_owner}/#{project_name}", project_path(project_owner, project_name)) )
     .both
-      %span.date= activity_feed.created_at
+      = datetime_moment activity_feed.created_at, :tag => :span, :class => 'date'
   .both

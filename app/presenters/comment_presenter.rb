@@ -83,7 +83,7 @@ class CommentPresenter < ApplicationPresenter
   end
 
   def date
-    @date ||= I18n.l(@comment.created_at, :format => :long)
+    @date ||= @comment.created_at
   end
 
   def comment_id?

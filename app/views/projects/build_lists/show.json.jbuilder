@@ -1,7 +1,8 @@
 json.build_list do
   json.(@build_list, :id, :container_status, :status)
   json.(@build_list, :update_type)
-  json.updated_at @build_list.updated_at.strftime('%Y-%m-%d %H:%M:%S UTC')
+  json.updated_at @build_list.updated_at
+  json.updated_at_utc @build_list.updated_at.strftime('%Y-%m-%d %H:%M:%S UTC')
 
   if !@build_list.in_work? && @build_list.started_at
     json.human_duration @build_list.human_duration

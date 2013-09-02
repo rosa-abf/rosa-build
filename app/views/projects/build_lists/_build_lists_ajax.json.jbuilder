@@ -11,7 +11,7 @@ build_lists = @build_lists.map do |build_list|
     link_to("#{build_list.save_to_platform.name}/#{build_list.save_to_repository.name}#{build_for}", [build_list.save_to_platform, build_list.save_to_repository]),
     build_list.arch.try(:name) || t('layout.arches.unexisted_arch'),
     link_to(build_list.user.try(:fullname), build_list.user),
-    build_list.updated_at.strftime('%d/%m/%Y')
+    datetime_moment(build_list.updated_at).html_safe
   ]
 end
 

@@ -64,7 +64,7 @@
           %a{'ng-href' => '{{bl.user.url}}' } {{bl.user.fullname}}
 
         / updated_at
-        %td {{bl.updated_at}}
+        %td{'am-time-ago' => 'bl.updated_at', :title => '{{bl.updated_at_utc}}'}
 
   .both
 
