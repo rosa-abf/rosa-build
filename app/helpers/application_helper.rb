@@ -48,4 +48,10 @@ module ApplicationHelper
   def short_message(message, length = 42)
     truncate(message, :length => length, :omission => '…')
   end
+
+  def datetime_moment(date, options = {})
+    tag = options[:tag] || :div
+    klass = "datetime_moment #{options[:class]}"
+    content_tag(tag, nil, :class => klass, :title => date.strftime('%Y-%m-%d %H:%M:%S UTC'), :origin_datetime => date.to_i)
+  end
 end

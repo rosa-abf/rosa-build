@@ -9,7 +9,7 @@
         -#.imaged move up a line.
         %span.name= presenter.header
         .both
-        %span.date= presenter.date
+        = datetime_moment presenter.date, :tag => :span, :class => :date
         .both
         - if presenter.caption?
           %span.subject= presenter.caption

@@ -15,5 +15,5 @@
         - else ['failed', t("layout.build_lists.statuses.#{BuildList::HUMAN_STATUSES[status]}")]
       = raw t("notifications.bodies.build_status.#{message}", :error => error)
     .both
-      %span.date= updated_at
+      = datetime_moment updated_at, :tag => :span, :class => 'date'
   .both

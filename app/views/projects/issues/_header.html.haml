@@ -3,7 +3,7 @@
     .image
       =image_tag(avatar_url(@issue.user, :medium), :alt => 'avatar') if @issue.user
     .created
-      %span= I18n.l(@issue.created_at, :format => :long)
+      = datetime_moment @issue.created_at, :tag => :span
       - if @issue.user
         %span= t('layout.by') 
         %span.name=link_to(@issue.user.fullname, user_path(@issue.user))

@@ -41,9 +41,7 @@
             .name= link_to(node.name, path || blob_path(*options), :class => 'files-see')
 
         - if commit
-          %td
-            %span{:style => "display: none;"}= date = commit.committed_date || commit.authored_date
-            = l(date, :format => :short)
+          = datetime_moment(commit.committed_date || commit.authored_date, :tag => :td)
           %td= commit.short_message
           %td= (commit.committer || commit.author).name
         - else

@@ -5,7 +5,7 @@
     %span.name
       = link_to activity_feed.user.uname, user_path(activity_feed.user.uname)
     .both
-      %span.date= activity_feed.created_at
+      = datetime_moment activity_feed.created_at, :tag => :span, :class => 'date'
     .both
   .both
     %span.subject #{ t("notifications.bodies.new_user_notification.title", :user_name => user_name) }
