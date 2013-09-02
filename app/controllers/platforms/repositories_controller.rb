@@ -71,8 +71,7 @@ class Platforms::RepositoriesController < Platforms::BaseController
   end
 
   def create
-    @repository = Repository.new(params[:repository])
-    @repository.platform_id = params[:platform_id]
+    @repository = @platform.repositories.build(params[:repository])
     if @repository.save
       flash[:notice] = t('flash.repository.saved')
       redirect_to platform_repository_path(@platform, @repository)
