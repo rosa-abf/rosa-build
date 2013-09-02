@@ -1,10 +1,4 @@
 GIT
-  remote: git://github.com/rdblue/grack.git
-  revision: 020be3fef3fb308b9d214252522aa5945bf6584a
-  specs:
-    grack (0.2.0)
-
-GIT
   remote: git://github.com/warpc/grit.git
   revision: f04f779fb052725b964ba259f8073a34e493c0c7
   specs:
@@ -140,6 +134,8 @@ GEM
       pygments.rb (>= 0.2.13)
     github-markdown (0.5.3)
     github-markup (0.7.5)
+    gitlab-grack (1.0.1)
+      rack (~> 1.4.1)
     gollum (2.1.10)
       github-markdown
       github-markup (>= 0.7.0, < 1.0.0)
@@ -452,8 +448,8 @@ DEPENDENCIES
   friendly_id
   gemoji (~> 1.2.1)
   github-linguist (~> 2.3.4)
+  gitlab-grack (~> 1.0.1)
   gollum (~> 2.1.3)
-  grack!
   grit!
   haml-rails (~> 0.3.4)
   highline (~> 1.6.11)
