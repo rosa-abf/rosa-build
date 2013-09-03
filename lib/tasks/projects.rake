@@ -26,3 +26,20 @@ namespace :project do
   task :maintainer => 'maintainer:set_to_owner'
 
 end
+
+namespace :projects do
+  desc 'Add projects from one platform repository to another'
+  task :copy_to_repo => :environment do
+    source_platform = Platform.find_by_name!(ENV['SRC_PLATFORM'])
+    dest_platform   = Platform.find_by_name!(ENV['DST_PLATFORM'])
+    source_repo     = source_platform.repositories.find_by_name!(ENV['SRC_REPO'])
+    dest_repo       = dest_platform.repositories.find_by_name!(ENV['DST_REPO'])
+
+    say "Add from repo '#{source_platform.name}/#{source_repo.name}' to repo '#{dest_platform.name}/#{dest_repo.name}'."
+    source_repo.projects.each do |pr|
+      say "project #{pr.name}"
+      dest_repo.projects << pr rescue print ' Add to repo failed!'
+    end
+    say 'DONE'
+  end
+end
