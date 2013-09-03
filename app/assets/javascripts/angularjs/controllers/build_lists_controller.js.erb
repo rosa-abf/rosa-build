@@ -64,6 +64,7 @@ RosaABF.controller('BuildListsController', ['$scope', '$http', '$location', '$ti
           var sorted_build_lists = _.sortBy(bl.related, function(b) { return $scope.map_priorities[b.status]; });
           bl.clearRelated();
           var first_in_group = sorted_build_lists[0];
+          first_in_group.clearRelated();
           _.each(sorted_build_lists, function(b){
             if (b != first_in_group) { first_in_group.addRelated(b); }
             $scope.build_lists.push(b);
