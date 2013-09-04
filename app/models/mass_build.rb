@@ -36,7 +36,6 @@ class MassBuild < ActiveRecord::Base
   def build_all
     # later with resque
     arches_list = arch_names ? Arch.where(:name => arch_names.split(', ')) : Arch.all
-    auto_publish ||= false
 
     projects_list.lines.each do |name|
       next if name.blank?
@@ -47,7 +46,7 @@ class MassBuild < ActiveRecord::Base
           return if self.reload.stop_build
           arches_list.each do |arch|
             rep_id = (project.repository_ids & save_to_platform.repository_ids).first
-            project.build_for(build_for_platform, save_to_platform, rep_id, user, arch, auto_publish, self, 0)
+            project.build_for(build_for_platform, save_to_platform, rep_id, user, arch, auto_publish?, self, 0)
           end
         rescue RuntimeError, Exception
         end
