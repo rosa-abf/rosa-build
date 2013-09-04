@@ -173,7 +173,7 @@ article div.activity .top div.text .date {
 
 article div.activity div.fulltext {
     font-size: 12px;
-    padding-top: 10px;
+    padding-top: 5px;
     display: block;
 }
 
@@ -1565,7 +1565,7 @@ table.tablesorter.platform-maintainers.static-search thead tr.search th input[ty
 
 .md_and_cm {
   overflow: auto;
-  margin: 10px 0 10px;
+  margin: 5px 0 0;
   padding: 5px;
   border-radius: 4px 4px 4px 4px;
   background: #FFF;
@@ -1598,8 +1598,7 @@ table.tablesorter.platform-maintainers.static-search thead tr.search th input[ty
   }
 
   p {
-    margin-top: 10px;
-
+    margin-top: 10px !important;
   }
 }
 
