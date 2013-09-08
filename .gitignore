@@ -20,4 +20,7 @@ crash.log
 config/newrelic.yml
 config/deploy/*.rb
 config/deploy.rb
-*.swo
+.swo
+.swn
+.ruby-gemset
+.ruby-version

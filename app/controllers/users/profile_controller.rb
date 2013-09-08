@@ -4,6 +4,6 @@ class Users::ProfileController < Users::BaseController
 
   def show
     @projects = @user.projects.opened.search(params[:search]).recent
-                     .paginate(:page => params[:page], :per_page => 25)
+                     .paginate(:page => params[:page], :per_page => 24)
   end
 end

@@ -11,7 +11,7 @@ class Groups::ProfileController < Groups::BaseController
 
   def show
     @projects = @group.projects.opened.search(params[:search]).recent
-                      .paginate(:page => params[:page], :per_page => 25)
+                      .paginate(:page => params[:page], :per_page => 24)
   end
 
   def new

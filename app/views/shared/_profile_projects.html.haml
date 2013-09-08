@@ -1,0 +1,11 @@
+- pr_groups = projects.in_groups(2)
+- pr_groups[0].each_with_index do |project, ind|
+  %tr{:class => ind.odd? ? 'odd' : 'even'}
+    - [project, pr_groups[1][ind]].each do |project|
+      %th
+        - if project.present?
+          .project-link= link_to project.name, project
+          .row-fluid
+            = datetime_moment project.updated_at, :class => :span3
+            - commits_count = project.total_commits_count
+            .span3= "#{commits_count > 10000 ? '10000+' : commits_count} #{commits_pluralize(commits_count)}"

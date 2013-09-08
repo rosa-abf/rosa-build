@@ -115,6 +115,11 @@ module Modules
         repo.branches.count == 0
       end
 
+      def total_commits_count
+        return 0 if is_empty?
+        %x(cd #{path} && git rev-list --all | wc -l).to_i
+      end
+
       protected
 
       def build_path(dir)

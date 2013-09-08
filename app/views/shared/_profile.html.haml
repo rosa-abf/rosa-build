@@ -35,16 +35,23 @@
 
 %hr.profile_line{:color => 'dfe8ef', :size => '3'}
 
-.content
-  %h4= t("layout.projects.public_projects_list") + ":"
-  %p
-    =form_tag search_path, :id => 'filter_projects', :method => :get do
-      =tracker_search_field(:search, t('layout.find_project'))
-  %br
-  %p
-    - projects.each do |project|
-      = link_to project.name, project
-      %br
-  %br
-  = will_paginate projects
-  %br
+.row-fluid.profile-content
+  .span12.content
+    %nav
+      %ul
+        %li
+          = link_to t('layout.projects.list_header'), '#', :class => 'projects active'
+  .span12.sub-menu
+    %nav
+      %ul
+        %li= link_to t('layout.projects.public'),  '#', :class => "public-projects #{@public ? 'active' : ''}"
+        %li= link_to t('layout.projects.private'), '#', :class => "private-projects #{!@public ? 'active' : ''}"
+  .search
+    .pic
+    .field= text_field_tag 'query', @query, :placeholder => t('layout.find_project')
+
+  %table.profile-table
+    %tbody= render 'shared/profile_projects', :projects => projects
+%br
+= will_paginate projects
+

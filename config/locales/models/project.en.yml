@@ -71,6 +71,9 @@ en:
       current_commit: Current commit
       files_in_project: Files in
 
+      public: Public
+      private: Private
+
   flash:
     project:
       saved: Project saved
