@@ -17,7 +17,7 @@ module AbfWorker
       case status
       when COMPLETED
         subject.build_success
-        subject.now_publish if subject.auto_publish? && subject.can_publish?
+        subject.now_publish if subject.can_auto_publish?
       when FAILED
         subject.build_error
         item.update_attributes({:status => BuildList::BUILD_ERROR})

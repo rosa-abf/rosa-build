@@ -280,6 +280,20 @@ class BuildList < ActiveRecord::Base
     build_started? || build_pending?
   end
 
+  def can_auto_publish?
+    return false if !(auto_publish? && can_publish?)
+
+    if last_bl = last_published.last
+      return true if last_bl.source_packages.count != source_packages.count
+      last_bl.source_packages.each do |sp|
+        return true if source_packages.find{ |nsp| nsp.name == sp.name && nsp.version > sp.version }
+      end
+    else
+      return true # no published packages
+    end
+    return false # no new packages
+  end
+
   def can_publish?
     [SUCCESS, FAILED_PUBLISH, BUILD_PUBLISHED, TESTS_FAILED].include?(status) && extra_build_lists_published? && save_to_repository.projects.exists?(:id => project_id)
   end
