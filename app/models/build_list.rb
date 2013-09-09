@@ -284,9 +284,13 @@ class BuildList < ActiveRecord::Base
     return false if !(auto_publish? && can_publish?)
 
     if last_bl = last_published.last
-      return true if last_bl.source_packages.count != source_packages.count
-      last_bl.source_packages.each do |sp|
-        return true if source_packages.find{ |nsp| nsp.name == sp.name && nsp.version > sp.version }
+      source_packages.each do |nsp|
+        sp = last_bl.source_packages.find{ |sp| nsp.name == sp.name }
+        return true unless sp
+        sp_version  = sp.version.split(/\D/).map(&:to_i)
+        nsp.version.split(/\D/).map(&:to_i).each_with_index do |nv, index|
+          return true if nv > sp_version[index].to_i
+        end
       end
     else
       return true # no published packages
