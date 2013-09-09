@@ -12,7 +12,7 @@ module PlatformsHelper
 
   def platform_arch_settings(platform)
     settings  = platform.platform_arch_settings
-    arches    = if arch_ids = settings.map(&:arch_id) && arch_ids.present?
+    arches    = if (arch_ids = settings.map(&:arch_id)) && arch_ids.present?
                   Arch.where('id not in (?)', arch_ids)
                 else
                   Arch.all
