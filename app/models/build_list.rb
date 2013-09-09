@@ -283,7 +283,7 @@ class BuildList < ActiveRecord::Base
   def can_auto_publish?
     return false if !(auto_publish? && can_publish?)
 
-    if last_bl = last_published.last
+    if last_bl = last_published.joins(:source_packages).where(:build_list_packages => {:actual => true}).last
       source_packages.each do |nsp|
         sp = last_bl.source_packages.find{ |sp| nsp.name == sp.name }
         return true unless sp
