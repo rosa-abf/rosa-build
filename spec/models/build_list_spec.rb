@@ -155,4 +155,39 @@ describe BuildList do
 
   end # notify_users
 
+  context '#can_auto_publish?' do
+    let!(:build_list) { FactoryGirl.create( :build_list,
+                                            :status => BuildList::SUCCESS,
+                                            :auto_publish => true) }
+    let!(:build_list_package) { FactoryGirl.create( :build_list_package,
+                                                    :build_list => build_list,
+                                                    :platform => build_list.save_to_platform,
+                                                    :project => build_list.project) }
+    let!(:published_build_list) { FactoryGirl.create( :build_list,
+                                                      :project => build_list.project,
+                                                      :status => BuildList::BUILD_PUBLISHED,
+                                                      :save_to_platform => build_list.save_to_platform,
+                                                      :arch => build_list.arch) }
+    let!(:published_build_list_package) { FactoryGirl.create( :build_list_package,
+                                                              :build_list => published_build_list,
+                                                              :platform => published_build_list.save_to_platform,
+                                                              :actual => true,
+                                                              :project => published_build_list.project) }
+
+    it 'ensures that return false if version of packages are same' do
+      build_list.can_auto_publish?.should be_false
+    end
+
+    it 'ensures that return false if version of published package >' do
+      published_build_list_package.update_attributes(:version => '3.1.13')
+      build_list.can_auto_publish?.should be_false
+    end
+
+    it 'ensures that return true if version of published package <' do
+      published_build_list_package.update_attributes(:version => '3.1.11')
+      build_list.can_auto_publish?.should be_true
+    end
+
+  end
+
 end
