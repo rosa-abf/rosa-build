@@ -156,6 +156,7 @@ describe BuildList do
   end # notify_users
 
   context '#can_auto_publish?' do
+    before { stub_symlink_methods }
     let!(:build_list) { FactoryGirl.create( :build_list,
                                             :status => BuildList::SUCCESS,
                                             :auto_publish => true) }
