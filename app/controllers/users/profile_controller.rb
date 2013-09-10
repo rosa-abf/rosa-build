@@ -3,7 +3,7 @@ class Users::ProfileController < Users::BaseController
   skip_before_filter :authenticate_user!, :only => :show if APP_CONFIG['anonymous_access']
 
   def show
-    @path = user_path
+    @path, page = user_path, params[:page].to_i
     @projects = @user.projects.search(params[:search]).recent
     if params[:projects] == 'show'
       if params[:visibility] != 'hidden'
