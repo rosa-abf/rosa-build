@@ -188,6 +188,11 @@ describe BuildList do
       build_list.can_auto_publish?.should be_true
     end
 
+    it 'ensures that return true if release of published package <' do
+      published_build_list_package.update_attributes(:release => 5)
+      build_list.can_auto_publish?.should be_true
+    end
+
   end
 
 end
