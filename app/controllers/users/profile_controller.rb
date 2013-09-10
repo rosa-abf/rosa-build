@@ -3,7 +3,24 @@ class Users::ProfileController < Users::BaseController
   skip_before_filter :authenticate_user!, :only => :show if APP_CONFIG['anonymous_access']
 
   def show
-    @projects = @user.projects.opened.search(params[:search]).recent
-                     .paginate(:page => params[:page], :per_page => 24)
+    @path = user_path
+    @projects = @user.projects.search(params[:search]).recent
+    if params[:projects] == 'show'
+      if params[:visibility] != 'hidden'
+        @projects = @projects.opened
+        @hidden = true
+      else
+        @projects = @projects.by_visibilities('hidden').accessible_by(current_ability, :read)
+      end
+      render :partial => 'shared/profile_projects', :layout => nil, :locals => {:projects => paginate_projects(page)}
+    else
+      @projects = paginate_projects(page)
+    end
+  end
+
+  protected
+
+  def paginate_projects(page)
+    @projects.paginate(:page => (page>0 ? page : nil), :per_page => 24)
   end
 end

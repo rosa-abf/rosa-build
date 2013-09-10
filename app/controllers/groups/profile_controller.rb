@@ -10,8 +10,19 @@ class Groups::ProfileController < Groups::BaseController
   end
 
   def show
+    @path, page = group_path, params[:page].to_i
     @projects = @group.projects.opened.search(params[:search]).recent
-                      .paginate(:page => params[:page], :per_page => 24)
+    if params[:projects] == 'show'
+      if params[:visibility] != 'hidden'
+        @projects = @projects.opened
+        @hidden = true
+      else
+        @projects = @projects.by_visibilities('hidden').accessible_by(current_ability, :read)
+      end
+      render :partial => 'shared/profile_projects', :layout => nil, :locals => {:projects => paginate_projects(page)}
+    else
+      @projects = paginate_projects(page)
+    end
   end
 
   def new
@@ -52,5 +63,11 @@ class Groups::ProfileController < Groups::BaseController
   def remove_user
     Relation.by_actor(current_user).by_target(@group).destroy_all
     redirect_to groups_path
+  end
+
+  protected
+
+  def paginate_projects(page)
+    @projects.paginate(:page => (page>0 ? page : nil), :per_page => 24)
   end
 end

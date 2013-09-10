@@ -40,32 +40,32 @@ hr.profile_line {
     float: left;
     margin: 15px 10px;
     width: 837px;
-  }
-  div.search div.pic {
-    background: url("/assets/search-button.png") repeat scroll 0 0 transparent;
-    float: left;
-    height: 22px;
-    width: 24px;
-  }
-  div.search div.field {
-    float: left;
-    margin: -1px 0 0;
-  }
-
-  div.search div.field input {
-    background: none repeat scroll 0 0 transparent;
-    border: medium none;
-    font-family: Arial;
-    font-size: 12px;
-    height: 18px;
-    padding: 2px 0 0;
-    width: 132px;
-  }
-  div.search div.field input.gray {
-    color: #CFCFCF;
-  }
-  div.search div.field input.black {
-    color: #333333;
+    div.pic {
+      background: url("/assets/search-button.png") repeat scroll 0 0 transparent;
+      float: left;
+      height: 22px;
+      width: 24px;
+    }
+    div.field {
+      float: left;
+      margin: -1px 0 0;
+      width: 750px;
+      input {
+        background: none repeat scroll 0 0 transparent;
+        border: medium none;
+        font-family: Arial;
+        font-size: 12px;
+        height: 18px;
+        padding: 2px 0 0;
+        width: 700px;
+      }
+      input.gray {
+        color: #CFCFCF;
+      }
+      input.black {
+        color: #333333;
+      }
+    }
   }
   table {
     border: none;
@@ -74,6 +74,7 @@ hr.profile_line {
     width: 844px;
     th {
       padding-left: 10px;
+      min-width: 411px;
       .project-link {
         margin-top: 5px;
       }
