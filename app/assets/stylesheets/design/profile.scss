@@ -74,9 +74,10 @@ hr.profile_line {
     width: 844px;
     th {
       padding-left: 10px;
-      min-width: 411px;
+      width: 411px;
       .project-link {
         margin-top: 5px;
+        float: left;
       }
     }
     tr.odd {
