@@ -280,9 +280,7 @@ class BuildList < ActiveRecord::Base
     build_started? || build_pending?
   end
 
-  def can_auto_publish?
-    return false if !(auto_publish? && can_publish?)
-
+  def has_new_packages?
     if last_bl = last_published.joins(:source_packages).where(:build_list_packages => {:actual => true}).last
       source_packages.each do |nsp|
         sp = last_bl.source_packages.find{ |sp| nsp.name == sp.name }
@@ -296,6 +294,10 @@ class BuildList < ActiveRecord::Base
       return true # no published packages
     end
     return false # no new packages
+  end
+
+  def can_auto_publish?
+    auto_publish? && can_publish? && has_new_packages?
   end
 
   def can_publish?

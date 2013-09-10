@@ -99,7 +99,7 @@ class MassBuild < ActiveRecord::Base
     builds = build_lists.where(:status => statuses)
     builds.update_all(:publisher_id => user.id)
     builds.order(:id).find_in_batches(:batch_size => 50) do |bls|
-      bls.each{ |bl| bl.can_publish? && bl.now_publish }
+      bls.each{ |bl| bl.can_publish? && bl.has_new_packages? && bl.now_publish }
     end
   end
 
