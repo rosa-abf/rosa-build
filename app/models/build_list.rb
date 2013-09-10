@@ -293,7 +293,9 @@ class BuildList < ActiveRecord::Base
           return true if nsp.release.to_i > sp.release.to_i
         else
           nsp_version.each_with_index do |nv, index|
-            return true if nv > sp_version[index].to_i
+            ov = sp_version[index].to_i
+            return true   if nv > ov
+            return false  if nv < ov
           end
         end
       end
