@@ -2,6 +2,7 @@
 require 'spec_helper'
 
 describe BuildList do
+  before { stub_symlink_methods }
 
   context 'validates that repository contains project' do
     it 'when repository contains project' do
@@ -16,7 +17,6 @@ describe BuildList do
   end
 
   context "#notify_users" do
-    before { stub_symlink_methods }
     let!(:user) { FactoryGirl.create(:user) }
     let!(:build_list) { FactoryGirl.create(:build_list,
                                            :user => user,
@@ -154,5 +154,79 @@ describe BuildList do
     end
 
   end # notify_users
+
+  context '#has_new_packages?' do
+    let!(:build_list) { FactoryGirl.create( :build_list,
+                                            :status => BuildList::SUCCESS,
+                                            :auto_publish => true) }
+    let!(:build_list_package) { FactoryGirl.create( :build_list_package,
+                                                    :build_list => build_list,
+                                                    :version => '3.1.12',
+                                                    :release => 6,
+                                                    :platform => build_list.save_to_platform,
+                                                    :project => build_list.project) }
+    let!(:published_build_list) { FactoryGirl.create( :build_list,
+                                                      :project => build_list.project,
+                                                      :status => BuildList::BUILD_PUBLISHED,
+                                                      :save_to_platform => build_list.save_to_platform,
+                                                      :arch => build_list.arch) }
+    let!(:published_build_list_package) { FactoryGirl.create( :build_list_package,
+                                                              :build_list => published_build_list,
+                                                              :platform => published_build_list.save_to_platform,
+                                                              :actual => true,
+                                                              :version => '3.1.12',
+                                                              :release => 6,
+                                                              :project => published_build_list.project) }
+
+    it 'ensures that return false if version of packages are same' do
+      build_list.has_new_packages?.should be_false
+    end
+
+    context 'ensures that return false if version of published package >' do
+
+      it 'published: 3.1.13, new: 3.1.12' do
+        published_build_list_package.update_attributes(:version => '3.1.13')
+        build_list.has_new_packages?.should be_false
+      end
+
+      it 'published: 3.1.12, new: 3.0.999' do
+        build_list_package.update_attributes(:version => '3.0.999')
+        build_list.has_new_packages?.should be_false
+      end
+
+      it 'published: 3.0.0, new: 3.0.rc1' do
+        published_build_list_package.update_attributes(:version => '3.0.0')
+        build_list_package.update_attributes(:version => '3.0.rc1')
+        build_list.has_new_packages?.should be_false
+      end
+
+    end
+
+    context 'ensures that return true if version of published package <' do
+
+      it 'published: 3.1.11, new: 3.1.12' do
+        published_build_list_package.update_attributes(:version => '3.1.11')
+        build_list.has_new_packages?.should be_true
+      end
+
+      it 'published: 3.0.999, new: 3.1.12' do
+        published_build_list_package.update_attributes(:version => '3.0.999')
+        build_list.has_new_packages?.should be_true
+      end
+
+      it 'published: 3.0.rc1, new: 3.0.0' do
+        published_build_list_package.update_attributes(:version => '3.0.rc1')
+        build_list_package.update_attributes(:version => '3.0.0')
+        build_list.has_new_packages?.should be_true
+      end
+
+    end
+
+    it 'ensures that return true if release of published package <' do
+      published_build_list_package.update_attributes(:release => 5)
+      build_list.has_new_packages?.should be_true
+    end
+
+  end
 
 end

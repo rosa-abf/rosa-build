@@ -449,6 +449,7 @@ DEPENDENCIES
   devise (~> 2.2.3)
   diff-display (~> 0.0.1)
   factory_girl_rails (~> 4.0.0)
+  ffi
   friendly_id
   gemoji (~> 1.2.1)
   github-linguist (~> 2.3.4)
