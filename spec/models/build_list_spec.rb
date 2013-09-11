@@ -194,9 +194,9 @@ describe BuildList do
         build_list.has_new_packages?.should be_false
       end
 
-      it 'published: 3.0.rc1, new: 3.0.0' do
-        published_build_list_package.update_attributes(:version => '3.0.rc1')
-        build_list_package.update_attributes(:version => '3.0.0')
+      it 'published: 3.0.0, new: 3.0.rc1' do
+        published_build_list_package.update_attributes(:version => '3.0.0')
+        build_list_package.update_attributes(:version => '3.0.rc1')
         build_list.has_new_packages?.should be_false
       end
 
@@ -214,9 +214,9 @@ describe BuildList do
         build_list.has_new_packages?.should be_true
       end
 
-      it 'published: 3.0.0, new: 3.0.rc1' do
-        published_build_list_package.update_attributes(:version => '3.0.0')
-        build_list_package.update_attributes(:version => '3.0.rc1')
+      it 'published: 3.0.rc1, new: 3.0.0' do
+        published_build_list_package.update_attributes(:version => '3.0.rc1')
+        build_list_package.update_attributes(:version => '3.0.0')
         build_list.has_new_packages?.should be_true
       end
 
