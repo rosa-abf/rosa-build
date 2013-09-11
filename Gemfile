@@ -56,6 +56,8 @@ gem 'friendly_id'
 gem 'rack-throttle'
 gem 'rest-client', '~> 1.6.6'
 
+gem 'ffi'
+
 gem 'attr_encrypted', '1.2.1'
 gem "gemoji", "~> 1.2.1", require: 'emoji/railtie'
 

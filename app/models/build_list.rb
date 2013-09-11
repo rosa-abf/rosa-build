@@ -283,21 +283,8 @@ class BuildList < ActiveRecord::Base
   def has_new_packages?
     if last_bl = last_published.joins(:source_packages).where(:build_list_packages => {:actual => true}).last
       source_packages.each do |nsp|
-        # priority: EPOCH => VERSION => RELEASE
-        # TODO: EPOCH
         sp = last_bl.source_packages.find{ |sp| nsp.name == sp.name }
-        return true unless sp
-        sp_version  = sp.version.split(/\D/).map(&:to_i)
-        nsp_version = nsp.version.split(/\D/).map(&:to_i)
-        if nsp_version == sp_version
-          return true if nsp.release.to_i > sp.release.to_i
-        else
-          nsp_version.each_with_index do |nv, index|
-            ov = sp_version[index].to_i
-            return true   if nv > ov
-            return false  if nv < ov
-          end
-        end
+        return !sp || nsp.rpmvercmp(sp) == 1
       end
     else
       return true # no published packages

@@ -5,6 +5,7 @@ class BuildList::Package < ActiveRecord::Base
   belongs_to :project
   belongs_to :platform
 
+  attr_accessor :epoch
   attr_accessible :fullname, :name, :release, :version, :sha1
 
   validates :build_list_id, :project_id, :platform_id, :fullname,
@@ -25,4 +26,20 @@ class BuildList::Package < ActiveRecord::Base
   def assignee
     project.maintainer
   end
+
+  def rpmvercmp(other)
+    RPM::C.rpmvercmp to_vre_epoch_zero, other.to_vre_epoch_zero
+  end
+
+  protected
+
+  # String representation in the form "e:v-r"
+  # @return [String]
+  # @note The epoch is included always. As 0 if not present
+  def to_vre_epoch_zero
+    evr = epoch.present? ? "#{epoch.to_i}:#{version}" : "0:#{version}"
+    evr << "-#{release}" if release.present?
+    evr
+  end
+
 end
