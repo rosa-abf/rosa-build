@@ -5,7 +5,7 @@ class Users::ProfileController < Users::BaseController
   def show
     @path, page = user_path, params[:page].to_i
     @projects = @user.projects.search(params[:search]).recent
-    if params[:projects] == 'show'
+    if request.xhr?
       if params[:visibility] != 'hidden'
         @projects = @projects.opened
         @hidden = true

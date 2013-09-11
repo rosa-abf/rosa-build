@@ -11,7 +11,7 @@ $(document).ready(function() {
     $.ajax({
       type: 'GET',
       url: profile_path,
-      data: 'projects=show&' + visibility + '&' + search + '&' + page,
+      data: visibility + '&' + search + '&' + page,
       success: function(data){
                  profile_table.html(data);
                  updateTime();
@@ -36,7 +36,7 @@ $(document).ready(function() {
   $('#query_projects').on('keyup', function() {
     var visibility = 'visibility=' + ($('.profile-content .span12.sub-menu nav a.active').hasClass('public-projects') ? 'open' : 'hidden');
     var search = 'search=' + profile_search_field.val();
-    data = 'projects=show&' + visibility + '&' + search;
+    data = visibility + '&' + search;
     return search_items(profile_path, data, profile_table);
   });
 });
