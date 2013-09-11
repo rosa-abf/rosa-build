@@ -27,6 +27,11 @@ class BuildList::Package < ActiveRecord::Base
     project.maintainer
   end
 
+
+  # Comparison between versions
+  # @param [BuildList::Package] other
+  # @return [Number] -1 if +other+ is greater than, 0 if +other+ is equal to,
+  #   and +1 if other is less than version.
   def rpmvercmp(other)
     RPM::C.rpmvercmp to_vre_epoch_zero, other.to_vre_epoch_zero
   end
