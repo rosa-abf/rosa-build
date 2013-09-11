@@ -33,19 +33,18 @@ hr.profile_line {
 }
 .profile-content {
   border: 3px solid #D4D4D4;
-  div.search {
-    //background: none repeat scroll 0 0 #FFFFFF;
+  .search {
     border: 2px solid #D4D4D4;
     float: left;
     margin: 15px 10px;
     width: 837px;
-    div.pic {
+    .pic {
       background: url("/assets/search-button.png") repeat scroll 0 0 transparent;
       float: left;
       height: 22px;
       width: 24px;
     }
-    div.field {
+    .field {
       float: left;
       margin: -1px 0 0;
       width: 750px;
@@ -144,4 +143,3 @@ hr.profile_line {
     }
   }
 }
-
