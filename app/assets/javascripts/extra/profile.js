@@ -5,13 +5,13 @@ $(document).ready(function() {
   var profile_search_field = $('.profile-content .search #query_projects');
 
   var load_profile_projects = function (page_number) {
-    var visibility = 'visibility=' + ($('.profile-content .span12.sub-menu nav a.active').hasClass('public-projects') ? 'open' : 'hidden');
-    var search = 'search=' + profile_search_field.val();
-    page = 'page=' + (page_number || $('.pagination .current').text());
+    var visibility = $('.profile-content .span12.sub-menu nav a.active').hasClass('public-projects') ? 'open' : 'hidden';
+    var search = profile_search_field.val();
+    page = page_number || $('.pagination .current').text();
     $.ajax({
       type: 'GET',
       url: profile_path,
-      data: visibility + '&' + search + '&' + page,
+      data: {visibility: visibility, search: search, page: page},
       success: function(data){
                  profile_table.html(data);
                  updateTime();
@@ -34,9 +34,9 @@ $(document).ready(function() {
   });
 
   $('#query_projects').on('keyup', function() {
-    var visibility = 'visibility=' + ($('.profile-content .span12.sub-menu nav a.active').hasClass('public-projects') ? 'open' : 'hidden');
-    var search = 'search=' + profile_search_field.val();
-    data = visibility + '&' + search;
+    var visibility = $('.profile-content .span12.sub-menu nav a.active').hasClass('public-projects') ? 'open' : 'hidden';
+    var search = profile_search_field.val();
+    data = {visibility: visibility, search: search};
     return search_items(profile_path, data, profile_table);
   });
 });
