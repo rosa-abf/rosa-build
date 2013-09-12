@@ -8,6 +8,7 @@
   - [group.description , t('activerecord.attributes.group.description')]
 - max_length = 35
 
+= hidden_field_tag :profile_path, @profile_path
 .row
   .span3.profile
     .avatar= image_tag avatar_url(user || group, :big), :alt => (user || group).uname
@@ -35,16 +36,19 @@
 
 %hr.profile_line{:color => 'dfe8ef', :size => '3'}
 
-.content
-  %h4= t("layout.projects.public_projects_list") + ":"
-  %p
-    =form_tag search_path, :id => 'filter_projects', :method => :get do
-      =tracker_search_field(:search, t('layout.find_project'))
-  %br
-  %p
-    - projects.each do |project|
-      = link_to project.name, project
-      %br
-  %br
-  = will_paginate projects
-  %br
+.row-fluid.profile-content
+  .span12.content
+    %nav
+      %ul
+        %li
+          = link_to t('layout.projects.list_header'), '#', :class => 'projects active'
+  .span12.sub-menu
+    %nav
+      %ul
+        %li= link_to t('layout.projects.public'),  '#', :class => "public-projects #{!@hidden ? 'active' : ''}"
+        %li= link_to t('layout.projects.private'), '#', :class => "private-projects #{@hidden ? 'active' : ''}"
+  .search
+    .pic
+    .field= text_field_tag :query_projects, @query, :placeholder => t('layout.find_project')
+  .both
+  .profile-table= render 'shared/profile_projects', :projects => projects

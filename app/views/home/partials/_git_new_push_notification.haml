@@ -15,6 +15,6 @@
         = commit[1]
         %br
       - if defined? other_commits
-        -pluralize =  t('layout.commits.pluralize').map {|base, title| title.to_s}
         %br
-        =link_to t('notifications.bodies.more_commits', :count => other_commits_count, :commits => Russian.p(other_commits_count, *pluralize)), diff_path(project_owner, project_name, :diff => other_commits)
+        =link_to t('notifications.bodies.more_commits', :count => other_commits_count, :commits => commits_pluralize(other_commits_count)),
+                 diff_path(project_owner, project_name, :diff => other_commits)

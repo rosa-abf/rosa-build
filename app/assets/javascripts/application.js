@@ -100,4 +100,33 @@ $(document).ready(function() {
 
   updateTime();
   setInterval( updateTime, 15000 );
+
+  window.updatePagination = function(link) {
+    var page = parseInt($('.pagination .current').text());
+    if (link.hasClass('next_page')) {
+      page += 1;
+    } else {
+      if (link.hasClass('previous_page')) {
+        page -= 1;
+      } else {
+        page = link.text();
+      }
+    }
+    $('.pagination .current').html(page);
+  };
+
+  window.isSearchUser = null;
+  window.search_items = function(path, fdata, dom) {
+    if (window.isSearchUser != null) { window.isSearchUser.abort(); }
+    window.isSearchUser = $.ajax({
+      type: 'GET',
+      url: path,
+      data: fdata,
+      success: function(data) {
+        dom.html(data);
+        updateTime();
+      }
+    });
+    return false;
+  }
 });
