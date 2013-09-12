@@ -47,6 +47,7 @@ en:
       build_list/package:
         name: Name
         fullname: Fullname
+        epoch: Epoch
         release: Release
         version: Version
 

@@ -199,6 +199,7 @@
         %tr
           %th= t("activerecord.attributes.build_list/package.fullname")
           %th= t("activerecord.attributes.build_list/package.name")
+          %th= t("activerecord.attributes.build_list/package.epoch")
           %th= t("activerecord.attributes.build_list/package.version")
           %th= t("activerecord.attributes.build_list/package.release")
       %tbody
@@ -207,6 +208,7 @@
             %a{'ng-href' => "{{package.url}}" } {{package.fullname}}
           %td{'ng-hide' => 'package.url'} {{package.fullname}}
           %td {{package.name}}
+          %td {{package.epoch}}
           %td {{package.version}}
           %td {{package.release}}
     .both
