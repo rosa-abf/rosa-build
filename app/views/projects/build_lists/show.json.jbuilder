@@ -1,5 +1,5 @@
 json.build_list do
-  json.(@build_list, :id, :container_status, :status, :epoch)
+  json.(@build_list, :id, :container_status, :status)
   json.(@build_list, :update_type)
   json.updated_at @build_list.updated_at
   json.updated_at_utc @build_list.updated_at.strftime('%Y-%m-%d %H:%M:%S UTC')
@@ -39,7 +39,7 @@ json.build_list do
   end if @build_list.new_core? && @build_list.results.present?
 
   json.packages @build_list.packages do |package|
-    json.(package, :id, :name, :fullname, :release, :version, :sha1)
+    json.(package, :id, :name, :fullname, :release, :version, :sha1, :epoch)
     json.url "#{APP_CONFIG['file_store_url']}/api/v1/file_stores/#{package.sha1}" if package.sha1
   end if @build_list.packages.present?
 
