@@ -46,6 +46,7 @@ ru:
       build_list/package:
         name: Название
         fullname: Полное имя
+        epoch: эпоха
         release: Релиз
         version: Версия
 
