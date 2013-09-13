@@ -27,12 +27,13 @@ namespace :import do
     say 'DONE'
   end
 
-  # bundle exec rake import:srpm RAILS_ENV=production BASE=/share/platforms/naulinux5x_personal/tmp/SRPMS LIST=https://dl.dropbox.com/u/984976/nauschool5x.srpms.txt OWNER=naulinux PLATFORM=naulinux REPO=main CLEAR=true > log/srpm_naulinux.log &
+  # bundle exec rake import:srpm RAILS_ENV=production BASE=/share/platforms/naulinux5x_personal/tmp/SRPMS LIST=https://dl.dropbox.com/u/984976/nauschool5x.srpms.txt OWNER=naulinux PLATFORM=naulinux REPO=main CLEAR=true HIDDEN=true > log/srpm_naulinux.log &
   desc 'Import SRPMs as projects'
   task :srpm => :environment do
     base = ENV['BASE'] || '/share/alt_repos/rsync'
     list = ENV['LIST'] #|| 'https://dl.dropbox.com/u/984976/alt_import.txt'
     mask = ENV['MASK'] || '*.src.rpm'
+    hidden = ENV['HIDDEN'] == 'true' ? true : false
     owner = User.find_by_uname(ENV['OWNER']) || Group.find_by_uname!(ENV['OWNER'] || 'altlinux')
     platform = Platform.find_by_name!(ENV['PLATFORM'] || 'altlinux5')
     repo = platform.repositories.find_by_name!(ENV['REPO'] || 'main')
@@ -65,6 +66,7 @@ namespace :import do
             print "Create project #{project.name_with_owner} in #{platform.name}/#{repo.name} OK."
           end
         end
+        project.update_attributes(:visibility => 'hidden') if hidden
         project.import_srpm(srpm_file, platform.name)
         print " Code import complete!"
       else
