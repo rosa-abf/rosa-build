@@ -3,6 +3,7 @@ class ProductBuildList < ActiveRecord::Base
   include Modules::Models::CommitAndVersion
   include Modules::Models::TimeLiving
   include Modules::Models::FileStoreClean
+  include Modules::Models::UrlHelper
   include AbfWorker::ModelHelper
   delegate :url_helpers, to: 'Rails.application.routes'
 
@@ -151,7 +152,7 @@ class ProductBuildList < ActiveRecord::Base
 
   def abf_worker_args
     file_name = "#{project.name}-#{commit_hash}"
-    opts = {:host => ActionMailer::Base.default_url_options[:host]}
+    opts = default_url_options
     opts.merge!({:user => user.authentication_token, :password => ''}) if user.present?
     srcpath = url_helpers.archive_url(
       project.owner,
