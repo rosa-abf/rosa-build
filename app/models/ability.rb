@@ -48,6 +48,7 @@ class Ability
       end
 
       if user.user?
+        can :edit, User, :id => user.id
         can [:read, :create], Group
         can [:update, :manage_members, :members, :add_member, :remove_member, :update_member], Group do |group|
           group.actors.exists?(:actor_type => 'User', :actor_id => user.id, :role => 'admin') # or group.owner_id = user.id

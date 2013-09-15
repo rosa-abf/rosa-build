@@ -17,7 +17,7 @@
       %p{:title => user.try(:name)}
         - if user
           = short_message(user.name, 28)
-      = link_to image_tag('gears.png'), edit_url if can?(:edit, user)
+      = link_to image_tag('gears.png'), edit_url if edit_url.present?
     .both
     - if user
       %p.info.first
