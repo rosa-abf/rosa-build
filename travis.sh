@@ -4,7 +4,10 @@ rspec="bundle exec rspec"
 
 if [ $SPEC_GROUP = 'controllers' ]
 then
-  $rspec spec/controllers/*_spec.rb spec/controllers/admin/ spec/controllers/groups/ spec/controllers/platforms/ spec/controllers/projects/ spec/controllers/users/
+  $rspec spec/controllers/*_spec.rb spec/controllers/admin/ spec/controllers/groups/ spec/controllers/projects/ spec/controllers/users/
+elif [ $SPEC_GROUP = 'platform_controllers' ]
+then
+  $rspec spec/controllers/platforms/
 elif [ $SPEC_GROUP = 'api' ]
 then
   $rspec spec/controllers/api/
