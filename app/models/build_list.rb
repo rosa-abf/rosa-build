@@ -281,7 +281,7 @@ class BuildList < ActiveRecord::Base
   end
 
   # Comparison between versions of current and last published build_list
-  # @return [Number]
+  # @return [Boolean]
   # - false if no new packages
   # - false if version of packages is less than version of pubished packages.
   # - true if version of packages is equal to version of pubished packages (only if platform is not released).
