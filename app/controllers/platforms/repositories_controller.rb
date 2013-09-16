@@ -118,7 +118,7 @@ class Platforms::RepositoriesController < Platforms::BaseController
       @projects = @repository.projects
     else
       @projects = Project.joins(owner_subquery).addable_to_repository(@repository.id)
-      @projects = @projects.by_visibilities('open') if @repository.platform.platform_type == 'main'
+      @projects = @projects.opened if @repository.platform.main? && !@repository.platform.hidden?
     end
     @projects = @projects.paginate(
       :page => (params[:iDisplayStart].to_i/(params[:iDisplayLength].present? ? params[:iDisplayLength] : 25).to_i).to_i + 1,
