@@ -178,8 +178,13 @@ describe BuildList do
                                                               :release => 6,
                                                               :project => published_build_list.project) }
 
-    it 'ensures that return false if version of packages are same' do
+    it 'ensures that return false if version of packages are same and platform is released' do
+      build_list.save_to_platform.update_attributes(:released => true)
       build_list.has_new_packages?.should be_false
+    end
+
+    it 'ensures that return true if version of packages are same and platform is not released' do
+      build_list.has_new_packages?.should be_true
     end
 
     context 'ensures that return false if version of published package >' do
