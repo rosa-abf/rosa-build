@@ -40,7 +40,8 @@
       :subject            => @mass_build,
       :autocomplete_path  => autocomplete_extra_build_list_autocompletes_path
     %h3= t("activerecord.attributes.build_list.preferences")
-    .both
-      = f.check_box :auto_publish
-      = f.label :auto_publish
+    - [:auto_publish, :increase_release_tag].each do |field|
+      .both
+        = f.check_box field
+        = f.label field
 .both
