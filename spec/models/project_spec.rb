@@ -148,4 +148,25 @@ describe Project do
 
   end
 
+  context '#replace_release_tag' do
+
+    [
+      ['Release: %mkrel 4mdk', 'Release: 5mdk'],
+      ['Release: 4', 'Release: 5'],
+      ['Release: 4.1', 'Release: 4.2'],
+      ['Release: 5.4.2', 'Release: 5.4.3'],
+      ['Release: 5.4.2mdk', 'Release: 5.4.3mdk'],
+      ['Release: %mkrel 5.4.31mdk', 'Release: 5.4.32mdk'],
+      ['%define release %mkrel 4mdk', '%define release 5mdk'],
+      ['%define release 4', '%define release 5'],
+      ['%define release 4.1', '%define release 4.2'],
+      ['%define release 5.4.2', '%define release 5.4.3'],
+      ['%define release 5.4.31mdk', '%define release 5.4.32mdk']
+    ].each do |items|
+      it "ensures that replace '#{items[0]}' => '#{items[1]}'" do
+        Project.replace_release_tag(items[0]).should == items[1]
+      end
+    end
+  end
+
 end
