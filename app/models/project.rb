@@ -251,6 +251,33 @@ class Project < ActiveRecord::Base
     @archive ||= create_archive treeish, format
   end
 
+  # Finds release tag and increase its:
+  # 'Release: %mkrel 4mdk' => 'Release: 5mdk'
+  # 'Release: 4' => 'Release: 5'
+  # Finds release macros and increase it:
+  # '%define release %mkrel 4mdk' => '%define release 5mdk'
+  # '%define release 4' => '%define release 5'
+  def self.replace_release_tag(content)
+
+    build_new_release = Proc.new do |release, combine_release|
+      if combine_release.present?
+        r = combine_release.split('.').last.to_i
+        release << combine_release.gsub(/.[\d]+$/, '') << ".#{r + 1}"
+      else
+        release = release.to_i + 1
+      end
+      release 
+    end
+
+    content.gsub(/^Release:(\s+)(%mkrel\s+)?(\d+)([.\d]+)?(mdk)?$/) do |line|
+      tab, mkrel, mdk = $1, $2, $5
+      "Release:#{tab}#{build_new_release.call($3, $4)}#{mdk}"
+    end.gsub(/^%define\s+release:?(\s+)(%mkrel\s+)?(\d+)([.\d]+)?(mdk)?$/) do |line|
+      tab, mkrel, mdk = $1, $2, $5
+      "%define release#{tab}#{build_new_release.call($3, $4)}#{mdk}"
+    end
+  end
+
   protected
 
   def increase_release_tag(project_version, user, message)
@@ -258,16 +285,7 @@ class Project < ActiveRecord::Base
     return unless blob
 
     raw = Grit::GitRuby::Repository.new(repo.path).get_raw_object_by_sha1(blob.id)
-    content = raw.content.clone
-    # Finds release tag and increase its:
-    # 'Release: %mkrel 4mdk' => 'Release: 5mdk'
-    # 'Release: 4' => 'Release: 5'
-    content.gsub!(/^Release:(\s+)(%mkrel\s+)?(\d+)(mdk)?$/) { |line| "Release:#{$1}#{$3.to_i + 1}#{$4}" }
-    # Finds release macros and increase it:
-    # '%define release %mkrel 4mdk' => '%define release 5mdk'
-    # 'Release: 4' => 'Release: 5'
-    content.gsub!(/^%define\s+release:?(\s+)(%mkrel\s+)?(\d+)(mdk)?$/) { |line| "%define release #{$1}#{$3.to_i + 1}#{$4}" }
-
+    content = self.class.replace_release_tag raw.content
     return if content == raw.content
 
     update_file(blob.name, content.gsub("\r", ''),
@@ -276,6 +294,7 @@ class Project < ActiveRecord::Base
       :head => project_version
     )
   end
+
 
   def create_archive(treeish, format)
     file_name = "#{name}-#{treeish}"
