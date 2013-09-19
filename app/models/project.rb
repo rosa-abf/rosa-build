@@ -259,7 +259,13 @@ class Project < ActiveRecord::Base
 
     raw = Grit::GitRuby::Repository.new(repo.path).get_raw_object_by_sha1(blob.id)
     content = raw.content.clone
+    # Finds release tag and increase its:
+    # 'Release: %mkrel 4mdk' => 'Release: 5mdk'
+    # 'Release: 4' => 'Release: 5'
     content.gsub!(/^Release:(\s+)(%mkrel\s+)?(\d+)(mdk)?$/) { |line| "Release:#{$1}#{$3.to_i + 1}#{$4}" }
+    # Finds release macros and increase it:
+    # '%define release %mkrel 4mdk' => '%define release 5mdk'
+    # 'Release: 4' => 'Release: 5'
     content.gsub!(/^%define\s+release:?(\s+)(%mkrel\s+)?(\d+)(mdk)?$/) { |line| "%define release #{$1}#{$3.to_i + 1}#{$4}" }
 
     return if content == raw.content
