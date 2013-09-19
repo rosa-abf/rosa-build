@@ -24,5 +24,6 @@ en:
         arch_names: Architectures
         user: User
         auto_publish: Automated publishing
+        increase_release_tag: Increase release tag
         repositories: Repositories
         projects_list: Projects list

@@ -24,5 +24,6 @@ ru:
         arch_names: Архитектуры
         user: Пользователь
         auto_publish: Автоматическая публикация
+        increase_release_tag: Увеличить release тег
         repositories: Репозитории
         projects_list: Список проектов

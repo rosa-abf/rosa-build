@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130912113545) do
+ActiveRecord::Schema.define(:version => 20130918164616) do
 
   create_table "activity_feeds", :force => true do |t|
     t.integer  "user_id",    :null => false
@@ -294,6 +294,7 @@ ActiveRecord::Schema.define(:version => 20130912113545) do
     t.integer  "save_to_platform_id",                      :null => false
     t.text     "extra_repositories"
     t.text     "extra_build_lists"
+    t.boolean  "increase_release_tag",  :default => false, :null => false
   end
 
   create_table "platform_arch_settings", :force => true do |t|

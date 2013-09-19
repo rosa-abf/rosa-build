@@ -151,7 +151,10 @@ class Project < ActiveRecord::Base
     #path #share by NFS
   end
 
-  def build_for(build_for_platform, save_to_platform, repository_id, user, arch =  Arch.find_by_name('i586'), auto_publish = false, mass_build = nil, priority = 0)
+  def build_for(mass_build, repository_id, arch =  Arch.find_by_name('i586'), priority = 0)
+    build_for_platform  = mass_build.build_for_platform
+    save_to_platform    = mass_build.save_to_platform
+    user                = mass_build.user
     # Select main and project platform repository(contrib, non-free and etc)
     # If main does not exist, will connect only project platform repository
     # If project platform repository is main, only main will be connect
@@ -165,7 +168,9 @@ class Project < ActiveRecord::Base
                       else
                         default_branch
                       end
-        
+    
+    increase_release_tag(project_version, user, "MassBuild##{mass_build.id}: Increase release tag") if mass_build.increase_release_tag?
+
     build_list = build_lists.build do |bl|
       bl.save_to_platform       = save_to_platform
       bl.build_for_platform     = build_for_platform
@@ -173,7 +178,7 @@ class Project < ActiveRecord::Base
       bl.arch                   = arch
       bl.project_version        = project_version
       bl.user                   = user
-      bl.auto_publish           = auto_publish
+      bl.auto_publish           = mass_build.auto_publish?
       bl.include_repos          = include_repos
       bl.extra_repositories     = mass_build.extra_repositories
       bl.extra_build_lists      = mass_build.extra_build_lists
@@ -247,6 +252,30 @@ class Project < ActiveRecord::Base
   end
 
   protected
+
+  def increase_release_tag(project_version, user, message)
+    blob = repo.tree(project_version).contents.find{ |n| n.is_a?(Grit::Blob) && n.name =~ /.spec$/ }
+    return unless blob
+
+    raw = Grit::GitRuby::Repository.new(repo.path).get_raw_object_by_sha1(blob.id)
+    content = raw.content.clone
+    # Finds release tag and increase its:
+    # 'Release: %mkrel 4mdk' => 'Release: 5mdk'
+    # 'Release: 4' => 'Release: 5'
+    content.gsub!(/^Release:(\s+)(%mkrel\s+)?(\d+)(mdk)?$/) { |line| "Release:#{$1}#{$3.to_i + 1}#{$4}" }
+    # Finds release macros and increase it:
+    # '%define release %mkrel 4mdk' => '%define release 5mdk'
+    # 'Release: 4' => 'Release: 5'
+    content.gsub!(/^%define\s+release:?(\s+)(%mkrel\s+)?(\d+)(mdk)?$/) { |line| "%define release #{$1}#{$3.to_i + 1}#{$4}" }
+
+    return if content == raw.content
+
+    update_file(blob.name, content.gsub("\r", ''),
+      :message => message,
+      :actor => user,
+      :head => project_version
+    )
+  end
 
   def create_archive(treeish, format)
     file_name = "#{name}-#{treeish}"

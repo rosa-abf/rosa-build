@@ -13,11 +13,11 @@ class MassBuild < ActiveRecord::Base
 
   attr_accessor :arches
   attr_accessible :arches, :auto_publish, :projects_list, :build_for_platform_id,
-                  :extra_repositories, :extra_build_lists
+                  :extra_repositories, :extra_build_lists, :increase_release_tag
 
   validates :save_to_platform_id, :build_for_platform_id, :arch_names, :name, :user_id, :presence => true
   validates :projects_list, :length => {:maximum => 500_000}, :presence => true
-  validates_inclusion_of :auto_publish, :in => [true, false]
+  validates_inclusion_of :auto_publish, :increase_release_tag, :in => [true, false]
 
   after_commit      :build_all, :on => :create
   before_validation :set_data,  :on => :create
@@ -46,7 +46,7 @@ class MassBuild < ActiveRecord::Base
           return if self.reload.stop_build
           arches_list.each do |arch|
             rep_id = (project.repository_ids & save_to_platform.repository_ids).first
-            project.build_for(build_for_platform, save_to_platform, rep_id, user, arch, auto_publish?, self, 0)
+            project.build_for self, rep_id, arch
           end
         rescue RuntimeError, Exception
         end
