@@ -449,12 +449,20 @@ class BuildList < ActiveRecord::Base
 
     git_project_address = project.git_project_address user
     # git_project_address.gsub!(/^http:\/\/(0\.0\.0\.0|localhost)\:[\d]+/, 'https://abf.rosalinux.ru') unless Rails.env.production?
+
+    cmd_params = {
+      'GIT_PROJECT_ADDRESS'           => git_project_address,
+      'COMMIT_HASH'                   => commit_hash,
+      'EXTRA_CFG_OPTIONS'             => extra_params['cfg_options'],
+      'EXTRA_BUILD_SRC_RPM_OPTIONS'   => extra_params['build_src_rpm'],
+      'EXTRA_BUILD_RPM_OPTIONS'       => extra_params['build_rpm']
+    }.map{ |k, v| "#{k}=#{v}" }.join(' ')
+
     {
       :id                   => id,
       :time_living          => (build_for_platform.platform_arch_settings.by_arch(arch).first.try(:time_living) || PlatformArchSetting::DEFAULT_TIME_LIVING),
       :distrib_type         => build_for_platform.distrib_type,
-      :git_project_address  => git_project_address,
-      :commit_hash          => commit_hash,
+      :cmd_params           => cmd_params,
       :include_repos        => include_repos_hash,
       :platform             => {
         :type => build_for_platform.distrib_type,
