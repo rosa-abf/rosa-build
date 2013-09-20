@@ -456,7 +456,7 @@ class BuildList < ActiveRecord::Base
       'EXTRA_CFG_OPTIONS'             => extra_params['cfg_options'],
       'EXTRA_BUILD_SRC_RPM_OPTIONS'   => extra_params['build_src_rpm'],
       'EXTRA_BUILD_RPM_OPTIONS'       => extra_params['build_rpm']
-    }.map{ |k, v| "#{k}=#{v}" }.join(' ')
+    }.map{ |k, v| "#{k}='#{v}'" }.join(' ')
 
     {
       :id                   => id,
