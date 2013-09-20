@@ -20,6 +20,7 @@ class BuildList < ActiveRecord::Base
 
   UPDATE_TYPES = %w[bugfix security enhancement recommended newpackage]
   RELEASE_UPDATE_TYPES = %w[bugfix security]
+  EXTRA_PARAMS = %w[cfg_options build_src_rpm build_rpm]
 
   validates :project_id, :project_version, :arch, :include_repos,
             :build_for_platform_id, :save_to_platform_id, :save_to_repository_id, :presence => true
@@ -46,11 +47,12 @@ class BuildList < ActiveRecord::Base
   before_validation lambda { self.include_repos = include_repos.uniq if include_repos.present? }, :on => :create
   before_validation :prepare_extra_repositories,  :on => :create
   before_validation :prepare_extra_build_lists,   :on => :create
+  before_validation :prepare_extra_params,        :on => :create
 
   attr_accessible :include_repos, :auto_publish, :build_for_platform_id, :commit_hash,
                   :arch_id, :project_id, :save_to_repository_id, :update_type,
                   :save_to_platform_id, :project_version, :auto_create_container,
-                  :extra_repositories, :extra_build_lists
+                  :extra_repositories, :extra_build_lists, :extra_params
   LIVE_TIME = 4.week # for unpublished
   MAX_LIVE_TIME = 3.month # for published
 
@@ -136,6 +138,7 @@ class BuildList < ActiveRecord::Base
   serialize :results, Array
   serialize :extra_repositories,  Array
   serialize :extra_build_lists,   Array
+  serialize :extra_params,        Hash
 
   after_commit  :place_build, :on => :create
   after_destroy :remove_container
@@ -523,6 +526,16 @@ class BuildList < ActiveRecord::Base
       end
     end
     self.extra_build_lists = bls.pluck('build_lists.id')
+  end
+
+  def prepare_extra_params
+    if extra_params.present?
+      params = extra_params.slice(*BuildList::EXTRA_PARAMS)
+      params.update(params) do |k,v|
+        v.strip.gsub(I18n.t("activerecord.attributes.build_list.extra_params.#{k}"), '').gsub(/[^\w\s-]/, '')
+      end
+      self.extra_params = params.select{ |k,v| v.present? }
+    end
   end
 
 end

@@ -1192,6 +1192,13 @@ form.mass_build {
   }
 }
 
+#new_build_list section.right {
+    width: 300px;
+    margin-right: 150px;
+}
+
+.full-size { width: 100%; }
+
 .toggle {
   overflow: hidden;
   padding-top: 10px;
