@@ -37,6 +37,12 @@ en:
         commit_hash: Commit hash
         logs: Logs
 
+        extra_params:
+          label: Extra params
+          cfg_options: Options for *.cfg file
+          build_src_rpm: Build src.rpm
+          build_rpm: Build rpm
+
       build_list/item:
         name: Name
         level: Level

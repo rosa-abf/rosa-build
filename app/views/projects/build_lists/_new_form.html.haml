@@ -36,6 +36,12 @@
       :subject            => build_list,
       :autocomplete_path  => autocomplete_extra_build_list_autocompletes_path
 
+    %h3= t('activerecord.attributes.build_list.extra_params.label')
+    - BuildList::EXTRA_PARAMS.each do |field|
+      - text = @build_list.extra_params[field] || t("activerecord.attributes.build_list.extra_params.#{field}")
+      = tracker_search_field "build_list[extra_params][#{field}]", text, 'full-size'
+      .both
+
     %h3= t("activerecord.attributes.build_list.preferences")
     - [:auto_publish, :auto_create_container].each do |kind|
       .both
@@ -43,6 +49,7 @@
         = hidden_field_tag field, false, :id => nil
         = check_box_tag field, true, checked
         = f.label kind
+
     %br
     = hidden_field_tag :from_build_list_id, params[:build_list_id] if params[:build_list_id].present?
     = f.submit t('layout.projects.build_button'), :data => {'disable-with' => t('layout.processing')}

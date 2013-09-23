@@ -61,6 +61,7 @@ json.build_list do
     json.url api_v1_build_list_path(bl, :format => :json)
   end
 
+  json.extra_params @build_list.extra_params
 
   json.advisory do
     json.name @build_list.advisory.advisory_id

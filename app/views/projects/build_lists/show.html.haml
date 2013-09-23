@@ -74,13 +74,24 @@
     .rightlist= t("layout.#{@build_list.new_core?}_")
     .both
     - if @build_list.extra_build_lists.present? || @build_list.extra_repositories.present?
-      .leftlist= t("activerecord.attributes.build_list.extra_repos")
+      .leftlist= t("activerecord.attributes.build_list.extra_repositories")
       .rightlist
         - Repository.where(:id => @build_list.extra_repositories).each do |repo|
           %p= link_to "#{repo.platform.name}/#{repo.name}", [repo.platform, repo]
         - BuildList.where(:id => @build_list.extra_build_lists).each do |bl|
           %p= link_to "#{bl.id} (#{bl.project.name} - #{bl.arch.name})", bl
       .both
+
+    - if @build_list.extra_params.present?
+      .leftlist
+        %h4.nomargin= t('activerecord.attributes.build_list.extra_params.label')
+      .rightlist
+      .both
+      - @build_list.extra_params.each do |k, v|
+        .leftlist= t("activerecord.attributes.build_list.extra_params.#{k}")
+        .rightlist= v
+        .both
+
 
     - if @build_list.mass_build_id.present?
       .leftlist= t("activerecord.attributes.mass_build_id")

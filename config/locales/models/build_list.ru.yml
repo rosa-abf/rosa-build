@@ -36,6 +36,12 @@ ru:
         commit_hash: Хэш коммита
         logs: Логи
 
+        extra_params:
+          label: Дополнительные параметры
+          cfg_options: Параметры для *.cfg файла
+          build_src_rpm: Сборка src.rpm
+          build_rpm: Сборка rpm
+
       build_list/item:
         name: Название
         level: Уровень
