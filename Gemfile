@@ -85,6 +85,7 @@ end
 group :production do
   gem "airbrake", '~> 3.1.2'
   gem 'bluepill', '~> 0.0.60', :require => false
+  gem 'le'
 end
 
 group :development do
