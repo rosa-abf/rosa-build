@@ -31,8 +31,8 @@ class Api::V1::JobsController < Api::V1::BaseController
   end
 
   def feedback
-    worker_queue = params[:worker_queue])
-    worker_class = params[:worker_class])
+    worker_queue = params[:worker_queue]
+    worker_class = params[:worker_class]
     if QUEUES.include?(worker_queue) && QUEUE_CLASSES.include?(worker_class)
       Resque.push worker_queue, 'class' => worker_class, 'args'  => params[:worker_args]
       render :nothing => true
