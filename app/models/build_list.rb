@@ -326,6 +326,7 @@ class BuildList < ActiveRecord::Base
   end
 
   def average_build_time
+    return 0 unless project
     project.project_statistics.where(:arch_id => arch_id).pluck(:average_build_time).first || 0
   end
 
