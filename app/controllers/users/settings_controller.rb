@@ -21,6 +21,12 @@ class Users::SettingsController < Users::BaseController
     end
   end
 
+  def reset_auth_token
+    @user.reset_authentication_token!
+    flash[:notice] = t("flash.user.reset_auth_token")
+    redirect_to profile_settings_path
+  end
+
   def private
     if request.put?
       if @user.update_with_password(params[:user])

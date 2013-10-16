@@ -53,3 +53,4 @@ en:
         company: Company
         avatar: Avatar
         avatar_file_size:  Avatar file size
+        authentication_token: API token
