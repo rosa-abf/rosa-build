@@ -6,24 +6,26 @@ class Api::V1::JobsController < Api::V1::BaseController
   before_filter :authenticate_user!
 
   def shift
-    if current_user.system?
-      queues = params[:worker_queues].split(',')
-    else
-      queues = BuildList.queues_for current_user
+    ActiveRecord::Base.transaction do
+      build_lists = BuildList.for_status(BuildList::BUILD_PENDING).oldest.order(:create_at)
+      if current_user.system?
+        build_list = build_lists.not_owned_external_nodes.first
+      else
+        build_list = build_lists.external_nodes(:owned).for_user(current_user).first
+        build_list ||= build_lists.external_nodes(:everything).
+          accessible_by(current_ability, :everything).first
+      end
+      build_list.touch if build_list
     end
 
-    if queue = queues.find{ |q| job = Resque.redis.lpop "queue:#{q}" }
-      job = JSON.parse job
-      render :json => {
-        :job => {
-          :worker_queue => queue,
-          :worker_class => job['class'],
-          :worker_args  => job['args']
-        }
-      }.to_json
-    else
-      render :nothing => true
+    if build_list
+      job = {
+        :worker_queue => build_list.worker_queue_with_priority,
+        :worker_class => build_list.worker_queue_class,
+        :worker_args  => [build_list.abf_worker_args]
+      }
     end
+    render :json => { :job => job }.to_json
   end
 
   def status

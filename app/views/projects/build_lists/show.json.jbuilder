@@ -26,6 +26,11 @@ json.build_list do
     json.path user_path(@build_list.publisher)
   end if @build_list.publisher
 
+  json.builder do
+    json.fullname @build_list.builder.try(:fullname)
+    json.path user_path(@build_list.builder)
+  end if @build_list.builder
+
   json.advisory do
     json.(@build_list.advisory, :description, :advisory_id)
     json.path advisory_path(@build_list.advisory)

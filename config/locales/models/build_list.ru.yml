@@ -30,11 +30,13 @@ ru:
         project_version: Версия
         user: Пользователь
         publisher: Публикатор
+        builder: Сборщик
         preferences: Настройки
         duration: Длительность билда в секундах
         mass_build_id: Массовая сборка
         commit_hash: Хэш коммита
         logs: Логи
+        external_nodes: Дополнительные ноды
 
         extra_params:
           label: Дополнительные параметры
@@ -100,6 +102,10 @@ ru:
         header: Принадлежность заданий
         owned: Мои
         related: Связанные
+        everything: Все
+
+      external_nodes:
+        owned: Мои
         everything: Все
 
       build_server_status:

@@ -67,6 +67,14 @@
     .leftlist= t("activerecord.attributes.build_list.updated_at")
     .rightlist {{build_list.updated_at_utc}}
     .both
+    - if @build_list.external_nodes.present?
+      .leftlist= t("activerecord.attributes.build_list.external_nodes")
+      .rightlist= I18n.t("layout.build_lists.external_nodes.#{@build_list.external_nodes}")
+      .both
+      .leftlist= t("activerecord.attributes.build_list.builder")
+      .rightlist{'ng-show' => 'build_list.builder'}
+        %a{'ng-href' => '{{build_list.builder.path}}' } {{build_list.builder.fullname}}
+      .both
     .leftlist= t("activerecord.attributes.build_list.is_circle")
     .rightlist= t("layout.#{@build_list.is_circle?}_")
     .both
