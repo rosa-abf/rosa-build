@@ -37,6 +37,11 @@ class Projects::Git::TreesController < Projects::Git::BaseController
     if request.xhr?
       @refs = @project.repo.tags.select{ |t| t.commit }.sort_by(&:name).reverse
       render :refs_list
+    else
+      respond_to do |format|
+        format.json { render :nothing => true, :status => 422 }
+        format.html
+      end
     end
   end
 
@@ -59,6 +64,11 @@ class Projects::Git::TreesController < Projects::Git::BaseController
     if request.xhr?
       @refs = @project.repo.branches.sort_by(&:name)
       render :refs_list
+    else
+      respond_to do |format|
+        format.json { render :nothing => true, :status => 422 }
+        format.html
+      end
     end
   end
 

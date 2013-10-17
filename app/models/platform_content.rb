@@ -49,7 +49,7 @@ class PlatformContent
   end
 
   def size
-    @size ||= File.size(@path)
+    @size ||= File.size(@path) rescue nil
   end
 
   def is_folder?
