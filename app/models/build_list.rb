@@ -349,11 +349,6 @@ class BuildList < ActiveRecord::Base
     HUMAN_STATUSES.key human
   end
 
-  # TODO
-  def self.queues_for(user)
-    nil
-  end
-
   def set_items(items_hash)
     self.items = []
 
