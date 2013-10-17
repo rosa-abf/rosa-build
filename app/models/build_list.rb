@@ -168,7 +168,7 @@ class BuildList < ActiveRecord::Base
     end
 
     after_transition :on => :place_build, :do => :add_job_to_abf_worker_queue,
-      :if  => lambda { |build_list| build_list.external_nodes.present? }
+      :if  => lambda { |build_list| build_list.external_nodes.blank? }
     after_transition :on => :published,
       :do => [:set_version_and_tag, :actualize_packages]
     after_transition :on => :publish, :do => :set_publisher
