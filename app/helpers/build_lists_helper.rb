@@ -35,6 +35,12 @@ module BuildListsHelper
     end.sort_by { |col| col[0] }
   end
 
+  def external_nodes
+    BuildList::EXTERNAL_NODES.map do |type|
+      [I18n.t("layout.build_lists.external_nodes.#{type}"), type]
+    end
+  end
+
   def mass_build_options
     options_from_collection_for_select(
       MassBuild.recent.limit(15),

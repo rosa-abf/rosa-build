@@ -53,3 +53,4 @@ ru:
         company: Компания
         avatar: Аватар
         avatar_file_size: Размер аватара
+        authentication_token: API токен

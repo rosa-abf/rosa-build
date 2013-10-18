@@ -7,11 +7,12 @@ class BuildList < ActiveRecord::Base
 
   belongs_to :project
   belongs_to :arch
-  belongs_to :save_to_platform, :class_name => 'Platform'
+  belongs_to :save_to_platform,   :class_name => 'Platform'
   belongs_to :save_to_repository, :class_name => 'Repository'
   belongs_to :build_for_platform, :class_name => 'Platform'
   belongs_to :user
-  belongs_to :publisher, :class_name => 'User'
+  belongs_to :builder,    :class_name => 'User'
+  belongs_to :publisher,  :class_name => 'User'
   belongs_to :advisory
   belongs_to :mass_build, :counter_cache => true
   has_many :items, :class_name => "BuildList::Item", :dependent => :destroy
@@ -21,10 +22,12 @@ class BuildList < ActiveRecord::Base
   UPDATE_TYPES = %w[bugfix security enhancement recommended newpackage]
   RELEASE_UPDATE_TYPES = %w[bugfix security]
   EXTRA_PARAMS = %w[cfg_options build_src_rpm build_rpm]
+  EXTERNAL_NODES = %w[owned everything]
 
   validates :project_id, :project_version, :arch, :include_repos,
             :build_for_platform_id, :save_to_platform_id, :save_to_repository_id, :presence => true
   validates_numericality_of :priority, :greater_than_or_equal_to => 0
+  validates :external_nodes, :inclusion => {:in =>  EXTERNAL_NODES}, :allow_blank => true
   validates :update_type, :inclusion => UPDATE_TYPES,
             :unless => Proc.new { |b| b.advisory.present? }
   validates :update_type, :inclusion => {:in => RELEASE_UPDATE_TYPES, :message => I18n.t('flash.build_list.frozen_platform')},
@@ -48,11 +51,12 @@ class BuildList < ActiveRecord::Base
   before_validation :prepare_extra_repositories,  :on => :create
   before_validation :prepare_extra_build_lists,   :on => :create
   before_validation :prepare_extra_params,        :on => :create
+  before_validation lambda { self.auto_publish = false if external_nodes.present?; true }, :on => :create
 
   attr_accessible :include_repos, :auto_publish, :build_for_platform_id, :commit_hash,
                   :arch_id, :project_id, :save_to_repository_id, :update_type,
                   :save_to_platform_id, :project_version, :auto_create_container,
-                  :extra_repositories, :extra_build_lists, :extra_params
+                  :extra_repositories, :extra_build_lists, :extra_params, :external_nodes
   LIVE_TIME = 4.week # for unpublished
   MAX_LIVE_TIME = 3.month # for published
 
@@ -110,6 +114,9 @@ class BuildList < ActiveRecord::Base
   }
   scope :for_status, lambda {|status| where(:status => status) if status.present? }
   scope :for_user, lambda { |user| where(:user_id => user.id)  }
+  scope :not_owned_external_nodes, where("#{table_name}.external_nodes is null OR #{table_name}.external_nodes != ?", :owned)
+  scope :external_nodes, lambda { |type| where("#{table_name}.external_nodes = ?", type) }
+  scope :oldest, lambda { where("#{table_name}.updated_at < ?", Time.zone.now - 15.seconds) }
   scope :for_platform, lambda { |platform| where(:build_for_platform_id => platform)  }
   scope :by_mass_build, lambda { |mass_build| where(:mass_build_id => mass_build) }
   scope :scoped_to_arch, lambda {|arch| where(:arch_id => arch) if arch.present? }
@@ -160,7 +167,8 @@ class BuildList < ActiveRecord::Base
       end
     end
 
-    after_transition :on => :place_build, :do => :add_job_to_abf_worker_queue
+    after_transition :on => :place_build, :do => :add_job_to_abf_worker_queue,
+      :if  => lambda { |build_list| build_list.external_nodes.blank? }
     after_transition :on => :published,
       :do => [:set_version_and_tag, :actualize_packages]
     after_transition :on => :publish, :do => :set_publisher
@@ -410,24 +418,6 @@ class BuildList < ActiveRecord::Base
     packages.pluck(:sha1).compact | (results || []).map{ |r| r['sha1'] }.compact
   end
 
-  protected
-
-  def create_container
-    AbfWorker::BuildListsPublishTaskManager.create_container_for self
-  end
-
-  def remove_container
-    system "rm -rf #{save_to_platform.path}/container/#{id}" if save_to_platform
-  end
-
-  def abf_worker_priority
-    mass_build_id ? '' : 'default'
-  end
-
-  def abf_worker_base_queue
-    'rpm_worker'
-  end
-
   def abf_worker_args
     repos = include_repos
     include_repos_hash = {}.tap do |h|
@@ -472,6 +462,24 @@ class BuildList < ActiveRecord::Base
       },
       :user                 => {:uname => user.uname, :email => user.email}
     }
+  end
+
+  protected
+
+  def create_container
+    AbfWorker::BuildListsPublishTaskManager.create_container_for self
+  end
+
+  def remove_container
+    system "rm -rf #{save_to_platform.path}/container/#{id}" if save_to_platform
+  end
+
+  def abf_worker_priority
+    mass_build_id ? '' : 'default'
+  end
+
+  def abf_worker_base_queue
+    'rpm_worker'
   end
 
   def insert_token_to_path(path, platform)

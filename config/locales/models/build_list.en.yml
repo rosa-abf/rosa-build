@@ -30,12 +30,14 @@ en:
         project_version: Version
         user: User
         publisher: Publisher
+        builder: Builder
         preferences: Preferences
         started_at: Build started at
         duration: Build duration in seconds
         mass_build_id: Mass build
         commit_hash: Commit hash
         logs: Logs
+        external_nodes: External nodes
 
         extra_params:
           label: Extra params
@@ -101,6 +103,10 @@ en:
         header: Build list ownership
         owned: My
         related: Related
+        everything: All
+
+      external_nodes:
+        owned: My
         everything: All
 
       build_server_status:

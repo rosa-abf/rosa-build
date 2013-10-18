@@ -10,6 +10,10 @@ module AbfWorker
 
     def perform
       return if restart_task
+      if options['feedback_from_user']
+        user = User.find options['feedback_from_user']
+        return if !user.system? && subject.builder != user
+      end
 
       item = find_or_create_item
       fill_container_data if status != STARTED
