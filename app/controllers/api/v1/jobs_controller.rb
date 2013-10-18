@@ -43,10 +43,10 @@ class Api::V1::JobsController < Api::V1::BaseController
   def feedback
     worker_queue = params[:worker_queue]
     worker_class = params[:worker_class]
-    if  QUEUES.include?(worker_queue) && QUEUE_CLASSES.include?(worker_class)
+    if QUEUES.include?(worker_queue) && QUEUE_CLASSES.include?(worker_class)
       worker_args = (params[:worker_args] || []).first || {}
       worker_args = worker_args.merge(:feedback_from_user => current_user.id)
-      Resque.push worker_queue, 'class' => worker_class, 'args'  => [worker_args]
+      Resque.push worker_queue, 'class' => worker_class, 'args' => [worker_args]
       render :nothing => true
     else
       render :nothing => true, :status => 403
