@@ -418,24 +418,6 @@ class BuildList < ActiveRecord::Base
     packages.pluck(:sha1).compact | (results || []).map{ |r| r['sha1'] }.compact
   end
 
-  protected
-
-  def create_container
-    AbfWorker::BuildListsPublishTaskManager.create_container_for self
-  end
-
-  def remove_container
-    system "rm -rf #{save_to_platform.path}/container/#{id}" if save_to_platform
-  end
-
-  def abf_worker_priority
-    mass_build_id ? '' : 'default'
-  end
-
-  def abf_worker_base_queue
-    'rpm_worker'
-  end
-
   def abf_worker_args
     repos = include_repos
     include_repos_hash = {}.tap do |h|
@@ -480,6 +462,24 @@ class BuildList < ActiveRecord::Base
       },
       :user                 => {:uname => user.uname, :email => user.email}
     }
+  end
+
+  protected
+
+  def create_container
+    AbfWorker::BuildListsPublishTaskManager.create_container_for self
+  end
+
+  def remove_container
+    system "rm -rf #{save_to_platform.path}/container/#{id}" if save_to_platform
+  end
+
+  def abf_worker_priority
+    mass_build_id ? '' : 'default'
+  end
+
+  def abf_worker_base_queue
+    'rpm_worker'
   end
 
   def insert_token_to_path(path, platform)

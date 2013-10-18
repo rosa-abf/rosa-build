@@ -50,10 +50,11 @@
         = check_box_tag field, true, checked
         = f.label kind
     .both
-    - selected = params[:build_list].try(:[], :external_nodes) ? {:selected => params[:build_list][:external_nodes]} : {}
-    = f.select :external_nodes, external_nodes, selected.merge(:include_blank => true)
-    = f.label :external_nodes
-    .both
+    - if current_user.admin? || current_user.tester?
+      - selected = params[:build_list].try(:[], :external_nodes) ? {:selected => params[:build_list][:external_nodes]} : {}
+      = f.select :external_nodes, external_nodes, selected.merge(:include_blank => true)
+      = f.label :external_nodes
+      .both
 
     %br
     = hidden_field_tag :from_build_list_id, params[:build_list_id] if params[:build_list_id].present?

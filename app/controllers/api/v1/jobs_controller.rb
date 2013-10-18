@@ -9,28 +9,28 @@ class Api::V1::JobsController < Api::V1::BaseController
 
   def shift
     ActiveRecord::Base.transaction do
-      build_lists = BuildList.for_status(BuildList::BUILD_PENDING).oldest.order(:create_at)
+      build_lists = BuildList.for_status(BuildList::BUILD_PENDING).oldest.order(:created_at)
       if current_user.system?
-        build_list = build_lists.not_owned_external_nodes.first
+        @build_list = build_lists.not_owned_external_nodes.first
 
-        build_list.touch if build_list
+        @build_list.touch if @build_list
       else
-        build_list = build_lists.external_nodes(:owned).for_user(current_user).first
-        build_list ||= build_lists.external_nodes(:everything).
+        @build_list = build_lists.external_nodes(:owned).for_user(current_user).first
+        @build_list ||= build_lists.external_nodes(:everything).
           accessible_by(current_ability, :everything).first
 
-        if build_list
-          build_list.builder = current_user
-          build_list.save
+        if @build_list
+          @build_list.builder = current_user
+          @build_list.save
         end
       end
     end
 
-    if build_list
+    if @build_list
       job = {
-        :worker_queue => build_list.worker_queue_with_priority,
-        :worker_class => build_list.worker_queue_class,
-        :worker_args  => [build_list.abf_worker_args]
+        :worker_queue => @build_list.worker_queue_with_priority,
+        :worker_class => @build_list.worker_queue_class,
+        :worker_args  => [@build_list.abf_worker_args]
       }
     end
     render :json => { :job => job }.to_json
