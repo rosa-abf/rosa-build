@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20131017171426) do
+ActiveRecord::Schema.define(:version => 20131022082416) do
 
   create_table "activity_feeds", :force => true do |t|
     t.integer  "user_id",    :null => false
@@ -323,7 +323,7 @@ ActiveRecord::Schema.define(:version => 20131017171426) do
     t.string   "visibility",                :default => "open", :null => false
     t.string   "platform_type",             :default => "main", :null => false
     t.string   "distrib_type",                                  :null => false
-    t.integer  "status",                    :default => 0
+    t.integer  "status"
     t.datetime "last_regenerated_at"
     t.integer  "last_regenerated_status"
     t.string   "last_regenerated_log_sha1"
@@ -342,7 +342,7 @@ ActiveRecord::Schema.define(:version => 20131017171426) do
 
   create_table "product_build_lists", :force => true do |t|
     t.integer  "product_id"
-    t.integer  "status",          :default => 2,     :null => false
+    t.integer  "status",                             :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "project_id"
