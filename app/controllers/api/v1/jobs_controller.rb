@@ -8,8 +8,12 @@ class Api::V1::JobsController < Api::V1::BaseController
   before_filter :authenticate_user!
 
   def shift
+    platform_ids = Platform.where(name: params[:platforms].split(',')).pluck(:id) if params[:platforms].present?
+    arch_ids = Arch.where(name: params[:arches].split(',')).pluck(:id) if params[:arches].present?
     ActiveRecord::Base.transaction do
-      build_lists = BuildList.for_status(BuildList::BUILD_PENDING).oldest.order(:created_at)
+      build_lists = BuildList.for_status(BuildList::BUILD_PENDING).scoped_to_arch(arch_ids).
+        oldest.order(:created_at)
+      build_lists = build_lists.for_platform(platform_ids) if platform_ids.present?
       if current_user.system?
         # TODO: rollback later
         # @build_list = build_lists.not_owned_external_nodes.first
@@ -40,6 +44,14 @@ class Api::V1::JobsController < Api::V1::BaseController
 
   def status
     render :text => Resque.redis.get(params[:key])
+  end
+
+  def logs
+    name = params[:name]
+    if name =~ /abfworker::rpm-worker/
+      Resque.redis.setex name, 15, params[:logs]
+    end
+    render :nothing => true
   end
 
   def feedback

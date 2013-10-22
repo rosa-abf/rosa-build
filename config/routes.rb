@@ -105,6 +105,7 @@ Rosa::Application.routes.draw do
           get :shift
           get :status
           put :feedback
+          put :logs
         end
       end
 
