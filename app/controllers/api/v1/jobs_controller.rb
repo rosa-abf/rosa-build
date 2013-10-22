@@ -49,7 +49,7 @@ class Api::V1::JobsController < Api::V1::BaseController
   def logs
     name = params[:name]
     if name =~ /abfworker::rpm-worker/
-      Resque.redis.setex name, 15, params[:logs]
+      BuildList.log_server.setex name, 15, params[:logs]
     end
     render :nothing => true
   end
