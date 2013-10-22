@@ -11,7 +11,9 @@ class Api::V1::JobsController < Api::V1::BaseController
     ActiveRecord::Base.transaction do
       build_lists = BuildList.for_status(BuildList::BUILD_PENDING).oldest.order(:created_at)
       if current_user.system?
-        @build_list = build_lists.not_owned_external_nodes.first
+        # TODO: rollback later
+        # @build_list = build_lists.not_owned_external_nodes.first
+        @build_list = build_lists.external_nodes(:everything).first
 
         @build_list.touch if @build_list
       else
