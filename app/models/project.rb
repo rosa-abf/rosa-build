@@ -158,7 +158,7 @@ class Project < ActiveRecord::Base
     # Select main and project platform repository(contrib, non-free and etc)
     # If main does not exist, will connect only project platform repository
     # If project platform repository is main, only main will be connect
-    main_rep_id = build_for_platform.repositories.find_by_name('main').try(:id)
+    main_rep_id = build_for_platform.repositories.find_by_name(%w(main base)).try(:id)
     include_repos = ([main_rep_id] << (save_to_platform.main? ? repository_id : nil)).compact.uniq
 
     project_version = if repo.commits("#{save_to_platform.name}").try(:first).try(:id)
