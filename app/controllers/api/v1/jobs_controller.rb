@@ -49,7 +49,9 @@ class Api::V1::JobsController < Api::V1::BaseController
   def logs
     name = params[:name]
     if name =~ /abfworker::rpm-worker/
-      BuildList.log_server.setex name, 15, params[:logs]
+      if current_user.system? || current_user.id == BuildList.where(:id => name.gsub(/[^\d]/, '')).first.try(:builder_id)
+        BuildList.log_server.setex name, 15, params[:logs]
+      end
     end
     render :nothing => true
   end
