@@ -29,17 +29,20 @@ module AbfWorker::ModelHelper
   end
 
   def cancel_job
-    deleted = Resque::Job.destroy(
-      worker_queue_with_priority,
-      worker_queue_class,
-      abf_worker_args
-    )
-    if deleted == 1
+    if destroy_from_resque_queue == 1
       build_canceled
     else
       send_stop_signal
     end
     true
+  end
+
+  def destroy_from_resque_queue
+    Resque::Job.destroy(
+      worker_queue_with_priority,
+      worker_queue_class,
+      abf_worker_args
+    )
   end
 
   def worker_queue_with_priority(queue = nil)
