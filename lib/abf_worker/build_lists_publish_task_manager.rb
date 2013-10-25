@@ -379,6 +379,12 @@ module AbfWorker
           'BUILD_FOR_PLATFORM'  => build_for_platform.name
         }.map{ |k, v| "#{k}=#{v}" }.join(' ')
 
+        platform_path = "#{rep.platform.path}/repository"
+        if rep.platform.personal?
+          platform_path << '/' << build_for_platform.name
+          system "mkdir -p #{platform_path}"
+        end
+
         Resque.push(
           'publish_worker_default',
           'class' => 'AbfWorker::PublishWorkerDefault',
@@ -388,7 +394,7 @@ module AbfWorker
             :main_script      => 'build.sh',
             :rollback_script  => 'rollback.sh',
             :platform     => {
-              :platform_path  => "#{rep.platform.path}/repository",
+              :platform_path  => platform_path,
               :type           => build_for_platform.distrib_type,
               :name           => build_for_platform.name,
               :arch           => 'x86_64'
