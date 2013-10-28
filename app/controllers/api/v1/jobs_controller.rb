@@ -10,16 +10,20 @@ class Api::V1::JobsController < Api::V1::BaseController
   def shift
     platform_ids = Platform.where(name: params[:platforms].split(',')).pluck(:id) if params[:platforms].present?
     arch_ids = Arch.where(name: params[:arches].split(',')).pluck(:id) if params[:arches].present?
+    build_lists = BuildList.for_status(BuildList::BUILD_PENDING).scoped_to_arch(arch_ids).
+      oldest.order(:created_at)
+    build_lists = build_lists.for_platform(platform_ids) if platform_ids.present?
     ActiveRecord::Base.transaction do
-      build_lists = BuildList.for_status(BuildList::BUILD_PENDING).scoped_to_arch(arch_ids).
-        oldest.order(:created_at)
-      build_lists = build_lists.for_platform(platform_ids) if platform_ids.present?
       if current_user.system?
-        @build_list = build_lists.not_owned_external_nodes.first(5).last
-        # TODO: Hook for resque, remove later
-        if @build_list && @build_list.external_nodes.blank? && @build_list.destroy_from_resque_queue != 1
-          @build_list = nil
+        if task = (Resque.pop('rpm_worker_default') || Resque.pop('rpm_worker'))
+          @build_list = BuildList.where(:id => task['args'][0]['id']).first
         end
+        @build_list ||= build_lists.external_nodes(:everything).first
+        # @build_list = build_lists.not_owned_external_nodes.first(5).last
+        # TODO: Hook for resque, remove later
+        # if @build_list && @build_list.external_nodes.blank? && @build_list.destroy_from_resque_queue != 1
+        #   @build_list = nil
+        # end
         @build_list.touch if @build_list
       else
         @build_list = build_lists.external_nodes(:owned).for_user(current_user).first
