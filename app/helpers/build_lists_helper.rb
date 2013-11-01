@@ -60,7 +60,8 @@ module BuildListsHelper
     case status
     when BuildList::SUCCESS
       'success'
-    when BuildList::DEPENDENCIES_ERROR, BuildList::BUILD_ERROR, BuildList::Item::GIT_ERROR
+    # when BuildList::DEPENDENCIES_ERROR, BuildList::BUILD_ERROR, BuildList::Item::GIT_ERROR
+    when BuildList::BUILD_ERROR, BuildList::Item::GIT_ERROR
       'error'
     else
       ''

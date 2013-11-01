@@ -40,6 +40,7 @@ en:
     publish: Publish
     publish_again: Publish again
     publish_again_warning: Secondary publication will be able to break relationships in the repository. Be careful!
+    publish_into_testing: '[testing] Publish'
     reject_publish: Reject
     add: Add
     upload: Upload

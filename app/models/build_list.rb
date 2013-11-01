@@ -15,9 +15,9 @@ class BuildList < ActiveRecord::Base
   belongs_to :publisher,  :class_name => 'User'
   belongs_to :advisory
   belongs_to :mass_build, :counter_cache => true
-  has_many :items, :class_name => "BuildList::Item", :dependent => :destroy
-  has_many :packages, :class_name => "BuildList::Package", :dependent => :destroy
-  has_many :source_packages, :class_name => "BuildList::Package", :conditions => {:package_type => 'source'}
+  has_many :items, :class_name => '::BuildList::Item', :dependent => :destroy
+  has_many :packages, :class_name => '::BuildList::Package', :dependent => :destroy
+  has_many :source_packages, :class_name => '::BuildList::Package', :conditions => {:package_type => 'source'}
 
   UPDATE_TYPES = %w[bugfix security enhancement recommended newpackage]
   RELEASE_UPDATE_TYPES = %w[bugfix security]
@@ -57,53 +57,37 @@ class BuildList < ActiveRecord::Base
                   :arch_id, :project_id, :save_to_repository_id, :update_type,
                   :save_to_platform_id, :project_version, :auto_create_container,
                   :extra_repositories, :extra_build_lists, :extra_params, :external_nodes
-  LIVE_TIME = 4.week # for unpublished
+
+  LIVE_TIME     = 4.week  # for unpublished
   MAX_LIVE_TIME = 3.month # for published
-
-  SUCCESS = 0
-  ERROR   = 1
-
-  PROJECT_SOURCE_ERROR      = 6
-  DEPENDENCIES_ERROR        = 555
-  BUILD_ERROR               = 666
-  BUILD_STARTED             = 3000
-  BUILD_CANCELED            = 5000
-  WAITING_FOR_RESPONSE      = 4000
-  BUILD_PENDING             = 2000
-  BUILD_PUBLISHED           = 6000
-  BUILD_PUBLISH             = 7000
-  FAILED_PUBLISH            = 8000
-  REJECTED_PUBLISH          = 9000
-  BUILD_CANCELING           = 10000
-  TESTS_FAILED              = 11000
-
-  STATUSES = [  WAITING_FOR_RESPONSE,
-                BUILD_CANCELED,
-                BUILD_PENDING,
-                BUILD_PUBLISHED,
-                BUILD_CANCELING,
-                BUILD_PUBLISH,
-                FAILED_PUBLISH,
-                REJECTED_PUBLISH,
-                SUCCESS,
-                BUILD_STARTED,
-                BUILD_ERROR,
-                TESTS_FAILED
-              ].freeze
-
-  HUMAN_STATUSES = { WAITING_FOR_RESPONSE => :waiting_for_response,
-                     BUILD_CANCELED => :build_canceled,
-                     BUILD_CANCELING => :build_canceling,
-                     BUILD_PENDING => :build_pending,
-                     BUILD_PUBLISHED => :build_published,
-                     BUILD_PUBLISH => :build_publish,
-                     FAILED_PUBLISH => :failed_publish,
-                     REJECTED_PUBLISH => :rejected_publish,
-                     BUILD_ERROR => :build_error,
-                     BUILD_STARTED => :build_started,
-                     SUCCESS => :success,
-                     TESTS_FAILED => :tests_failed
-                    }.freeze
+  STATUSES, HUMAN_STATUSES = [], {}
+  [
+    %w(SUCCESS                        0),
+    # %w(ERROR                          1),
+    # %w(PROJECT_SOURCE_ERROR           6),
+    # %w(DEPENDENCIES_ERROR             555),
+    %w(BUILD_ERROR                    666),
+    %w(BUILD_STARTED                  3000),
+    %w(BUILD_CANCELED                 5000),
+    %w(WAITING_FOR_RESPONSE           4000),
+    %w(BUILD_PENDING                  2000),
+    %w(BUILD_PUBLISHED                6000),
+    %w(BUILD_PUBLISH                  7000),
+    %w(FAILED_PUBLISH                 8000),
+    %w(REJECTED_PUBLISH               9000),
+    %w(BUILD_CANCELING                10000),
+    %w(TESTS_FAILED                   11000),
+    %w(BUILD_PUBLISHED_INTO_TESTING   12000),
+    %w(BUILD_PUBLISH_INTO_TESTING     13000),
+    %w(FAILED_PUBLISH_INTO_TESTING    14000)
+  ].each do |kind, value|
+    value = value.to_i
+    const_set kind, value
+    STATUSES << value
+    HUMAN_STATUSES[value] = kind.downcase.to_sym
+  end
+  STATUSES.freeze
+  HUMAN_STATUSES.freeze
 
   scope :recent, order("#{table_name}.updated_at DESC")
   scope :for_extra_build_lists, lambda {|ids, current_ability, save_to_platform|
@@ -205,13 +189,49 @@ class BuildList < ActiveRecord::Base
     end
 
     event :publish do
-      transition [:success, :failed_publish, :build_published, :tests_failed] => :build_publish
-      transition [:success, :failed_publish] => :failed_publish
+      transition [
+        :success,
+        :failed_publish,
+        :build_published,
+        :tests_failed,
+        :failed_publish_into_testing,
+        :build_published_into_testing
+      ] => :build_publish
+      transition [:success, :failed_publish, :failed_publish_into_testing] => :failed_publish
     end
 
     event :reject_publish do
-      transition [:success, :failed_publish, :tests_failed] => :rejected_publish
+      transition [
+        :success,
+        :failed_publish,
+        :tests_failed,
+        :failed_publish_into_testing,
+        :build_published_into_testing
+      ] => :rejected_publish
     end
+
+    # ===== into testing - start
+
+    event :published_into_testing do
+      transition [:build_publish_into_testing, :rejected_publish] => :build_published_into_testing
+    end
+
+    event :fail_publish_into_testing do
+      transition [:build_publish_into_testing, :rejected_publish] => :failed_publish_into_testing
+    end
+
+    event :publish_into_testing do
+      transition [
+        :success,
+        :failed_publish,
+        :tests_failed,
+        :failed_publish_into_testing,
+        :build_published_into_testing
+      ] => :build_publish_into_testing
+      transition [:success, :failed_publish, :failed_publish_into_testing] => :failed_publish_into_testing
+    end
+
+    # ===== into testing - end
 
     event :build_success do
       transition [:build_started, :build_canceled] => :success
@@ -283,7 +303,7 @@ class BuildList < ActiveRecord::Base
   end
 
   def can_create_container?
-    [SUCCESS, BUILD_PUBLISH, FAILED_PUBLISH, BUILD_PUBLISHED, TESTS_FAILED].include?(status) && [WAITING_FOR_RESPONSE, FAILED_PUBLISH].include?(container_status)
+    [SUCCESS, BUILD_PUBLISH, FAILED_PUBLISH, BUILD_PUBLISHED, TESTS_FAILED, BUILD_PUBLISHED_INTO_TESTING, FAILED_PUBLISH_INTO_TESTING].include?(status) && [WAITING_FOR_RESPONSE, FAILED_PUBLISH].include?(container_status)
   end
 
   #TODO: Share this checking on product owner.
@@ -316,7 +336,7 @@ class BuildList < ActiveRecord::Base
   end
 
   def can_publish?
-    [SUCCESS, FAILED_PUBLISH, BUILD_PUBLISHED, TESTS_FAILED].include?(status) && extra_build_lists_published? && save_to_repository.projects.exists?(:id => project_id)
+    [SUCCESS, FAILED_PUBLISH, BUILD_PUBLISHED, TESTS_FAILED, BUILD_PUBLISHED_INTO_TESTING, FAILED_PUBLISH_INTO_TESTING].include?(status) && extra_build_lists_published? && save_to_repository.projects.exists?(:id => project_id)
   end
 
   def extra_build_lists_published?

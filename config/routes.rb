@@ -277,6 +277,7 @@ Rosa::Application.routes.draw do
         get :log
         put :publish
         put :reject_publish
+        put :publish_into_testing
       end
     end
 
