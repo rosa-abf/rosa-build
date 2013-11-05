@@ -178,7 +178,8 @@ class Ability
 
       cannot [:publish, :publish_into_testing], BuildList, :new_core => false
       cannot :create_container, BuildList, :new_core => false
-      cannot([:publish, :publish_into_testing], BuildList) {|build_list| !build_list.can_publish? }
+      cannot(:publish, BuildList) {|build_list| !build_list.can_publish? }
+      cannot(:publish_into_testing, BuildList) {|build_list| !build_list.can_publish_into_testing? }
 
       cannot(:cancel, MassBuild) {|mass_build| mass_build.stop_build}
 
