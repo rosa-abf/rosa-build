@@ -1,5 +1,5 @@
 -set_meta_tags :title => [title_object(@build_list.project), t('activerecord.models.build_list')]
-%div{'ng-controller' => 'BuildListController'}
+.build-list{'ng-controller' => 'BuildListController'}
   .notify.blue
     %div{:class => '{{build_list.status_color}}'}
       %p {{build_list.human_status | i18n}}
@@ -179,13 +179,13 @@
     - if can?(:reject_publish, @build_list)
       = link_to t('layout.reject_publish'), reject_publish_build_list_path(@build_list),
         :method => :put, :confirm => t("layout.confirm"),
-        :class => 'button reject_publish',
+        :class => 'button',
         'ng-show' => 'build_list.can_reject_publish'
     - if can?(:create_container, @build_list)
       = link_to t("layout.build_lists.create_container"),
         create_container_build_list_path(@build_list),
         :method => :put, :confirm => t("layout.confirm"),
-        :class => 'button create_container',
+        :class => 'button',
         'ng-show' => 'build_list.can_create_container'
     - if can? :create, @build_list
       = link_to t('layout.build_lists.recreate_build_list'), new_project_build_list_path(@build_list.project, :build_list_id => @build_list.id), :class => 'button'
