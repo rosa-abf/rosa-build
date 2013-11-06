@@ -20,18 +20,27 @@ module AbfWorker
       create_tasks_for_resign_repositories
       create_tasks_for_repository_regenerate_metadata
       create_tasks_for_build_rpms
+      create_tasks_for_build_rpms true
     end
 
     class << self
       def destroy_project_from_repository(project, repository)
         if repository.platform.personal?
           Platform.main.each do |main_platform|
-            redis.lpush PROJECTS_FOR_CLEANUP, "#{project.id}-#{repository.id}-#{main_platform.id}"
+            key = "#{project.id}-#{repository.id}-#{main_platform.id}"
+            redis.lpush PROJECTS_FOR_CLEANUP, key
             gather_old_packages project.id, repository.id, main_platform.id
+
+            redis.lpush PROJECTS_FOR_CLEANUP, ('testing-' << key)
+            gather_old_packages project.id, repository.id, main_platform.id, true
           end
         else
-          redis.lpush PROJECTS_FOR_CLEANUP, "#{project.id}-#{repository.id}-#{repository.platform.id}"
+          key = "#{project.id}-#{repository.id}-#{repository.platform.id}"
+          redis.lpush PROJECTS_FOR_CLEANUP, key
           gather_old_packages project.id, repository.id, repository.platform.id
+
+          redis.lpush PROJECTS_FOR_CLEANUP, ('testing-' << key)
+          gather_old_packages project.id, repository.id, repository.platform.id, true
         end
       end
 
@@ -108,11 +117,12 @@ module AbfWorker
         )
       end
 
-      def gather_old_packages(project_id, repository_id, platform_id)
+      def gather_old_packages(project_id, repository_id, platform_id, testing = false)
         build_lists_for_cleanup = []
+        status = testing ? BuildList::BUILD_PUBLISHED : BuildList::BUILD_PUBLISHED_INTO_TESTING
         Arch.pluck(:id).each do |arch_id|
           bl = BuildList.where(:project_id => project_id).
-            where(:new_core => true, :status => BuildList::BUILD_PUBLISHED).
+            where(:new_core => true, :status => status).
             where(:save_to_repository_id => repository_id).
             where(:build_for_platform_id => platform_id).
             where(:arch_id => arch_id).
@@ -126,8 +136,8 @@ module AbfWorker
             fill_packages(old_bl, old_packages, :fullname)
           }
         end
-
-        redis.hset PACKAGES_FOR_CLEANUP, "#{project_id}-#{repository_id}-#{platform_id}", old_packages.to_json
+        key = (testing ? 'testing-' : '') << "#{project_id}-#{repository_id}-#{platform_id}"
+        redis.hset PACKAGES_FOR_CLEANUP, key, old_packages.to_json
       end
 
       def fill_packages(bl, results_map, field = :sha1)
@@ -185,10 +195,10 @@ module AbfWorker
       end
     end
 
-    def create_tasks_for_build_rpms
+    def create_tasks_for_build_rpms(testing = false)
       available_repos = BuildList.
         select('MIN(updated_at) as min_updated_at, save_to_repository_id, build_for_platform_id').
-        where(:new_core => true, :status => BuildList::BUILD_PUBLISH).
+        where(:new_core => true, :status => (testing ? BuildList::BUILD_PUBLISH_INTO_TESTING : BuildList::BUILD_PUBLISH)).
         group(:save_to_repository_id, :build_for_platform_id).
         order(:min_updated_at).
         limit(@workers_count * 2) # because some repos may be locked
@@ -198,7 +208,8 @@ module AbfWorker
       available_repos = available_repos.where('save_to_repository_id NOT IN (?)', locked_rep) unless locked_rep.empty?
 
       for_cleanup = @redis.lrange(PROJECTS_FOR_CLEANUP, 0, -1).map do |key|
-        pr, rep, pl = *key.split('-')
+        next if testing && key !~ /^testing-/
+        rep, pl = *key.split('-').last(2)
         locked_rep.present? && locked_rep.include?(rep.to_i) ? nil : [rep.to_i, pl.to_i]
       end.compact
 
@@ -207,24 +218,26 @@ module AbfWorker
       available_repos.each do |save_to_repository_id, build_for_platform_id|
         next if RepositoryStatus.not_ready.where(:repository_id => save_to_repository_id, :platform_id => build_for_platform_id).exists?
         break if counter > @workers_count
-        counter += 1 if create_rpm_build_task(save_to_repository_id, build_for_platform_id)
+        counter += 1 if create_rpm_build_task(save_to_repository_id, build_for_platform_id, testing)
       end      
     end
 
-    def create_rpm_build_task(save_to_repository_id, build_for_platform_id)
-      projects_for_cleanup = @redis.lrange(PROJECTS_FOR_CLEANUP, 0, -1).
-        select{ |k| k =~ /#{save_to_repository_id}\-#{build_for_platform_id}$/ }
+    def create_rpm_build_task(save_to_repository_id, build_for_platform_id, testing)
+      key = "#{save_to_repository_id}-#{build_for_platform_id}"
+      projects_for_cleanup = @redis.lrange(PROJECTS_FOR_CLEANUP, 0, -1).select do |k|
+        (testing && k =~ /^testing-#{key}$/) || (!testing && k =~ /^[\d]+-#{key}$/)
+      end
 
       # We should not to publish new builds into repository
       # if project of builds has been removed from repository.
       BuildList.where(
-        :project_id             => projects_for_cleanup.map{ |k| k.split('-')[0] }.uniq,
+        :project_id             => projects_for_cleanup.map{ |k| k.split('-')[testing ? 1 : 0] }.uniq,
         :save_to_repository_id  => save_to_repository_id,
-        :status                 => BuildList::BUILD_PUBLISH
+        :status                 => [BuildList::BUILD_PUBLISH, BuildList::BUILD_PUBLISH_INTO_TESTING]
       ).update_all(:status => BuildList::FAILED_PUBLISH)
 
       build_lists = BuildList.
-        where(:new_core => true, :status => BuildList::BUILD_PUBLISH).
+        where(:new_core => true, :status => (testing ? BuildList::BUILD_PUBLISH_INTO_TESTING : BuildList::BUILD_PUBLISH)).
         where(:save_to_repository_id => save_to_repository_id).
         where(:build_for_platform_id => build_for_platform_id).
         order(:updated_at)
@@ -271,7 +284,8 @@ module AbfWorker
         'REPOSITORY_NAME'     => save_to_repository.name,
         'TYPE'                => distrib_type,
         'SAVE_TO_PLATFORM'    => save_to_platform.name,
-        'BUILD_FOR_PLATFORM'  => build_for_platform.name
+        'BUILD_FOR_PLATFORM'  => build_for_platform.name,
+        'TESTING'             => testing
       }.map{ |k, v| "#{k}=#{v}" }.join(' ')
 
       options   = {

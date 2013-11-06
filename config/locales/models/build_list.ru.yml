@@ -145,6 +145,10 @@ ru:
         success: собран
         build_started: собирается
         platform_pending: платформа в процессе создания
+        build_published_into_testing: '[testing] опубликован'
+        build_publish_into_testing: '[testing] публикуется'
+        failed_publish_into_testing: '[testing] ошибка публикации'
+
 
       log:
         build_log: Лог сборки

@@ -40,6 +40,7 @@ ru:
     publish: Опубликовать
     publish_again: Опубликовать снова
     publish_again_warning: Повторная публикация может привести к нарушению зависимостей в репозитории. Будьте осторожны!
+    publish_into_testing: '[testing] Опубликовать'
     reject_publish: Отклонить
     add: Добавить
     upload: Загрузить

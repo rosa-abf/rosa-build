@@ -123,6 +123,12 @@ class Projects::BuildListsController < Projects::BaseController
     redirect_to :back, :notice => t("layout.build_lists.publish_#{message}")
   end
 
+  def publish_into_testing
+    @build_list.publisher = current_user
+    message = @build_list.publish_into_testing ? 'success' : 'fail'
+    redirect_to :back, :notice => t("layout.build_lists.publish_#{message}")
+  end
+
   def reject_publish
     @build_list.publisher = current_user
     message = @build_list.reject_publish ? 'success' : 'fail'

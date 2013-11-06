@@ -82,6 +82,7 @@ class Ability
         can [:read, :log, :related, :everything], BuildList, :project => {:owner_type => 'Group', :owner_id => user.group_ids}
         can([:read, :log, :everything, :list], BuildList, read_relations_for('build_lists', 'projects')) {|build_list| can? :read, build_list.project}
 
+        can(:publish_into_testing, BuildList) { |build_list| can?(:write, build_list.project) && can?(:show, build_list.build_for_platform) }
         can(:create, BuildList) {|build_list|
           build_list.project.is_package &&
           can?(:write, build_list.project) &&
@@ -175,9 +176,10 @@ class Ability
       cannot [:create, :update, :destroy, :clone], Product, :platform => {:platform_type => 'personal'}
       cannot [:clone], Platform, :platform_type => 'personal'
 
-      cannot :publish, BuildList, :new_core => false
+      cannot [:publish, :publish_into_testing], BuildList, :new_core => false
       cannot :create_container, BuildList, :new_core => false
       cannot(:publish, BuildList) {|build_list| !build_list.can_publish? }
+      cannot(:publish_into_testing, BuildList) {|build_list| !build_list.can_publish_into_testing? }
 
       cannot(:cancel, MassBuild) {|mass_build| mass_build.stop_build}
 
