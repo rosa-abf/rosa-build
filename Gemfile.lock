@@ -22,7 +22,7 @@ GIT
       activerecord (>= 3.1.0.rc)
 
 GEM
-  remote: https://rubygems.org/
+  remote: http://rubygems.org/
   specs:
     RedCloth (4.2.9)
     actionmailer (3.2.13)
