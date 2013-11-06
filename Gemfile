@@ -1,4 +1,4 @@
-source 'http://rubygems.org'
+source 'https://rubygems.org'
 
 gem 'rails', '3.2.13' #, :git => 'git://github.com/rails/rails.git'
 gem 'redhillonrails_core', :git => 'git://github.com/warpc/redhillonrails_core.git', :branch => 'rails31' # '~> 2.0.0.pre' # deprecated
