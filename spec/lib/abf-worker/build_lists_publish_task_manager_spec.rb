@@ -131,10 +131,16 @@ describe AbfWorker::BuildListsPublishTaskManager do
       2.times{ subject.new.run }
     end
 
-    %w(PROJECTS_FOR_CLEANUP LOCKED_BUILD_LISTS).each do |kind|
+    %w(LOCKED_BUILD_LISTS).each do |kind|
       it "ensures that no '#{kind.downcase.gsub('_', ' ')}'" do
         @redis_instance.lrange(subject.const_get(kind), 0, -1).should be_empty
       end
+    end
+
+    it "ensures that has only 'projects for cleanup' for testing subrepo" do
+      queue = @redis_instance.lrange(subject::PROJECTS_FOR_CLEANUP, 0, -1)
+      queue.should have(1).item
+      queue.should include("testing-#{build_list.project_id}-#{build_list.save_to_repository_id}-#{build_list.build_for_platform_id}")
     end
 
     it "ensures that only one repository_status has status publish" do
@@ -174,8 +180,10 @@ describe AbfWorker::BuildListsPublishTaskManager do
       2.times{ subject.new.run }
     end
 
-    it "ensures that no 'projects for cleanup'" do
-      @redis_instance.lrange(subject::PROJECTS_FOR_CLEANUP, 0, -1).should be_empty
+    it "ensures that no 'projects for cleanup' for main repo" do
+      queue = @redis_instance.lrange(subject::PROJECTS_FOR_CLEANUP, 0, -1)
+      queue.should have(1).item
+      queue.should include("testing-#{build_list3.project_id}-#{build_list3.save_to_repository_id}-#{build_list3.build_for_platform_id}")
     end
 
     it "ensures that only one repository_status has status publish" do

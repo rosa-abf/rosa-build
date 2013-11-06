@@ -119,7 +119,7 @@ module AbfWorker
 
       def gather_old_packages(project_id, repository_id, platform_id, testing = false)
         build_lists_for_cleanup = []
-        status = testing ? BuildList::BUILD_PUBLISHED : BuildList::BUILD_PUBLISHED_INTO_TESTING
+        status = testing ? BuildList::BUILD_PUBLISHED_INTO_TESTING : BuildList::BUILD_PUBLISHED
         Arch.pluck(:id).each do |arch_id|
           bl = BuildList.where(:project_id => project_id).
             where(:new_core => true, :status => status).

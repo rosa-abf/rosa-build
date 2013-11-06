@@ -21,7 +21,8 @@ describe ProjectToRepository do
     stub_redis
     @first_repo.project_to_repositories.destroy_all
     queue = @redis_instance.lrange(AbfWorker::BuildListsPublishTaskManager::PROJECTS_FOR_CLEANUP, 0, -1)
-    queue.should have(1).item
-    queue.should include("#{@project.id}-#{@first_repo.id}-#{@platform.id}")
+    queue.should have(2).item
+    key = "#{@project.id}-#{@first_repo.id}-#{@platform.id}"
+    queue.should include(key, "testing-#{key}")
   end
 end
