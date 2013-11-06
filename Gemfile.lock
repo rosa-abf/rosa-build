@@ -177,8 +177,8 @@ GEM
     jwt (0.1.8)
       multi_json (>= 1.5)
     kgio (2.8.0)
-    le (2.2.1)
     libv8 (3.3.10.4)
+    logglier (0.2.11)
     macaddr (1.6.1)
       systemu (~> 2.5.0)
     mail (2.5.4)
@@ -463,7 +463,7 @@ DEPENDENCIES
   jbuilder (~> 1.4.2)
   jquery-rails (~> 2.0.2)
   js-routes
-  le
+  logglier
   mailcatcher
   meta-tags (~> 1.2.5)
   meta_request
