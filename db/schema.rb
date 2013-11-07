@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20131022082416) do
+ActiveRecord::Schema.define(:version => 20131107152408) do
 
   create_table "activity_feeds", :force => true do |t|
     t.integer  "user_id",    :null => false
@@ -112,7 +112,7 @@ ActiveRecord::Schema.define(:version => 20131022082416) do
     t.datetime "notified_at"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.boolean  "is_circle",                  :default => false
+    t.boolean  "is_circle",                     :default => false
     t.text     "additional_repos"
     t.string   "name"
     t.string   "update_type"
@@ -120,20 +120,20 @@ ActiveRecord::Schema.define(:version => 20131022082416) do
     t.integer  "save_to_platform_id"
     t.text     "include_repos"
     t.integer  "user_id"
-    t.boolean  "auto_publish",               :default => true
+    t.boolean  "auto_publish",                  :default => true
     t.string   "package_version"
     t.string   "commit_hash"
-    t.integer  "priority",                   :default => 0,     :null => false
+    t.integer  "priority",                      :default => 0,     :null => false
     t.datetime "started_at"
     t.integer  "duration"
     t.integer  "advisory_id"
     t.integer  "mass_build_id"
     t.integer  "save_to_repository_id"
     t.text     "results"
-    t.boolean  "new_core",                   :default => true
+    t.boolean  "new_core",                      :default => true
     t.string   "last_published_commit_hash"
     t.integer  "container_status"
-    t.boolean  "auto_create_container",      :default => false
+    t.boolean  "auto_create_container",         :default => false
     t.text     "extra_repositories"
     t.text     "extra_build_lists"
     t.integer  "publisher_id"
@@ -141,6 +141,7 @@ ActiveRecord::Schema.define(:version => 20131022082416) do
     t.text     "extra_params"
     t.string   "external_nodes"
     t.integer  "builder_id"
+    t.boolean  "include_testing_subrepository"
   end
 
   add_index "build_lists", ["advisory_id"], :name => "index_build_lists_on_advisory_id"

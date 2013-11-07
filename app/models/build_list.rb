@@ -56,7 +56,8 @@ class BuildList < ActiveRecord::Base
   attr_accessible :include_repos, :auto_publish, :build_for_platform_id, :commit_hash,
                   :arch_id, :project_id, :save_to_repository_id, :update_type,
                   :save_to_platform_id, :project_version, :auto_create_container,
-                  :extra_repositories, :extra_build_lists, :extra_params, :external_nodes
+                  :extra_repositories, :extra_build_lists, :extra_params, :external_nodes,
+                  :include_testing_subrepository
 
   LIVE_TIME     = 4.week  # for unpublished
   MAX_LIVE_TIME = 3.month # for published
@@ -449,6 +450,7 @@ class BuildList < ActiveRecord::Base
         ), "#{repo.platform.name}_#{repo.name}_"
         h["#{prefix}release"] = insert_token_to_path(path + 'release', repo.platform)
         h["#{prefix}updates"] = insert_token_to_path(path + 'updates', repo.platform) if repo.platform.main?
+        h["#{prefix}testing"] = insert_token_to_path(path + 'testing', repo.platform) if include_testing_subrepository?
       end
     end
     host = EventLog.current_controller.request.host_with_port rescue ::Rosa::Application.config.action_mailer.default_url_options[:host]

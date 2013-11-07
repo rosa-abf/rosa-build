@@ -21,6 +21,7 @@ ru:
         is_circle: Циклическая сборка
         updated_at: Информация получена
         additional_repos: Дополнительные репозитории
+        include_testing_subrepository: "Подключить 'testing' подрепозиторий"
         include_repos: Подключаемые репозитории
         created_at: Создан
         save_to_repository: Сохранить в репозиторий

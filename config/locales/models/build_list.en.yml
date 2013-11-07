@@ -21,6 +21,7 @@ en:
         is_circle: Recurrent build
         updated_at: Notified at
         additional_repos: Additional repositories
+        include_testing_subrepository: "Include 'testing' subrepository"
         include_repos: Included repositories
         created_at: Created on
         save_to_repository: Save to repository
