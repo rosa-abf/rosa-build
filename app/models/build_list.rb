@@ -121,7 +121,7 @@ class BuildList < ActiveRecord::Base
   }
   scope :scoped_to_project_name, lambda {|project_name| joins(:project).where('projects.name LIKE ?', "%#{project_name}%") if project_name.present? }
   scope :scoped_to_new_core, lambda {|new_core| where(:new_core => new_core)}
-  scope :outdated, where("#{table_name}.created_at < ? AND #{table_name}.status <> ? OR #{table_name}.created_at < ?", Time.now - LIVE_TIME, BUILD_PUBLISHED, Time.now - MAX_LIVE_TIME)
+  scope :outdated, where("#{table_name}.created_at < ? AND #{table_name}.status NOT IN (?) OR #{table_name}.created_at < ?", Time.now - LIVE_TIME, [BUILD_PUBLISHED,BUILD_PUBLISHED_INTO_TESTING], Time.now - MAX_LIVE_TIME)
   scope :published_container, where(:container_status => BUILD_PUBLISHED)
 
   serialize :additional_repos
