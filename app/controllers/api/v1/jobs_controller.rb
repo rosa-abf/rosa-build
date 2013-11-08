@@ -19,11 +19,6 @@ class Api::V1::JobsController < Api::V1::BaseController
           @build_list = BuildList.where(:id => task['args'][0]['id']).first
         end
         @build_list ||= build_lists.external_nodes(:everything).first
-        # @build_list = build_lists.not_owned_external_nodes.first(5).last
-        # TODO: Hook for resque, remove later
-        # if @build_list && @build_list.external_nodes.blank? && @build_list.destroy_from_resque_queue != 1
-        #   @build_list = nil
-        # end
         @build_list.touch if @build_list
       else
         @build_list = build_lists.external_nodes(:owned).for_user(current_user).first
