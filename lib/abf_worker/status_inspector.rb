@@ -6,9 +6,12 @@ module AbfWorker
         Rails.cache.fetch([AbfWorker::StatusInspector, :projects_status], :expires_in => 10.seconds) do
           result = get_status(:rpm, :publish) { |w, worker| w.to_s =~ /#{worker}_worker_default/ }
           nodes = RpmBuildNode.total_statistics
-          result[:rpm][:workers] += nodes[:systems]
-          result[:rpm][:build_tasks] += nodes[:busy]
-          result[:rpm][:other_workers] = nodes[:others]
+          result[:rpm][:workers]        += nodes[:systems]
+          result[:rpm][:build_tasks]    += nodes[:busy]
+          result[:rpm][:other_workers]  = nodes[:others]
+          external_bls = BuildList.for_status(BuildList::BUILD_PENDING).external_nodes(:everything).count
+          result[:rpm][:default_tasks]  += external_bls
+          result[:rpm][:tasks]          += external_bls
           result
         end
       end

@@ -28,7 +28,11 @@
   .table
     .lefter= t("layout.build_lists.build_server_status.publish_workers")
   .both
-  - [:workers, :tasks, :build_tasks].each do |metric|
+  .table
+    .lefter= t("layout.build_lists.build_server_status.amount")
+    .righter= "{{server_status.publish.workers}}"
+  .both
+  - [:tasks, :build_tasks].each do |metric|
     .table
       .lefter= t("layout.build_lists.build_server_status.#{metric}")
       .righter= "{{server_status.publish.#{metric}}}"
