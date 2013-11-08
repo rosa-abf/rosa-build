@@ -106,6 +106,7 @@ Rosa::Application.routes.draw do
           get :status
           put :feedback
           put :logs
+          put :statistics
         end
       end
 
