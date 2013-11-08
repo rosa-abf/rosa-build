@@ -24,3 +24,4 @@ config/deploy.rb
 .swn
 .ruby-gemset
 .ruby-version
+.localeapp

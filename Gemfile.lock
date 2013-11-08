@@ -140,6 +140,7 @@ GEM
       pygments.rb (>= 0.2.13)
     github-markdown (0.5.3)
     github-markup (0.7.5)
+    gli (2.8.1)
     gollum (2.1.10)
       github-markdown
       github-markup (>= 0.7.0, < 1.0.0)
@@ -178,6 +179,13 @@ GEM
       multi_json (>= 1.5)
     kgio (2.8.0)
     libv8 (3.3.10.4)
+    localeapp (0.6.14)
+      gli
+      i18n
+      json
+      rack
+      rest-client
+      ya2yaml
     logglier (0.2.11)
     macaddr (1.6.1)
       systemu (~> 2.5.0)
@@ -425,6 +433,7 @@ GEM
       builder
       expression_parser
     will_paginate (3.0.4)
+    ya2yaml (0.31)
 
 PLATFORMS
   ruby
@@ -463,6 +472,7 @@ DEPENDENCIES
   jbuilder (~> 1.4.2)
   jquery-rails (~> 2.0.2)
   js-routes
+  localeapp
   logglier
   mailcatcher
   meta-tags (~> 1.2.5)
