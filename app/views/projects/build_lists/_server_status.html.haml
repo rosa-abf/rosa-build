@@ -5,13 +5,20 @@
     .lefter= t("layout.build_lists.build_server_status.rpm_workers")
   .both
   .table
-    .lefter= t("layout.build_lists.build_server_status.workers")
+    .lefter= t("layout.build_lists.build_server_status.amount")
+  .both
+  .table
+    .lefter= t("layout.build_lists.build_server_status.abf")
     .righter {{server_status.rpm.workers}}
+  .both
+  .table
+    .lefter= t("layout.build_lists.build_server_status.custom")
+    .righter {{server_status.rpm.other_workers}}
   .both
   .table
     .lefter= t("layout.build_lists.build_server_status.tasks")
   .both
-  - [['user_tasks', :default_tasks], ['mass_build_tasks', :low_tasks], ['build_tasks', :build_tasks]].each do |label, metric|
+  - [['custom', :default_tasks], ['mass_build_tasks', :low_tasks], ['build_tasks', :build_tasks]].each do |label, metric|
     .table
       .lefter= t("layout.build_lists.build_server_status.#{label}")
       .righter= "{{server_status.rpm.#{metric}}}"

@@ -55,6 +55,8 @@ gem 'friendly_id'
 
 gem 'rack-throttle'
 gem 'rest-client', '~> 1.6.6'
+gem 'ohm'
+gem 'ohm-expire'
 
 gem 'ffi'
 

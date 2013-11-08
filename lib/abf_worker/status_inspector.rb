@@ -3,9 +3,14 @@ module AbfWorker
 
     class << self
       def projects_status
-        get_status(:rpm, :publish) { |w, worker|
-          w.to_s =~ /#{worker}_worker_default/
-        }
+        Rails.cache.fetch([AbfWorker::StatusInspector, :projects_status], :expires_in => 10.seconds) do
+          result = get_status(:rpm, :publish) { |w, worker| w.to_s =~ /#{worker}_worker_default/ }
+          nodes = RpmBuildNode.total_statistics
+          result[:rpm][:workers] += nodes[:systems]
+          result[:rpm][:build_tasks] += nodes[:busy]
+          result[:rpm][:other_workers] = nodes[:others]
+          result
+        end
       end
 
       def products_status

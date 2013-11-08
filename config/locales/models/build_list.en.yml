@@ -112,9 +112,10 @@ en:
 
       build_server_status:
         header: Build server status
-        workers: '- amount'
+        amount: '- amount'
+        abf: '-- ABF'
         tasks: '- tasks in queue'
-        user_tasks: "-- user's"
+        custom: "-- user's"
         mass_build_tasks: "-- mass build's"
         build_tasks: '- tasks in execution'
         rpm_workers: Workers of building

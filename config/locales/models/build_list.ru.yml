@@ -111,9 +111,10 @@ ru:
 
       build_server_status:
         header: Статус сборочного сервера
-        workers: '- количество'
+        amount: '- количество'
+        abf: '-- ABF'
         tasks: '- заданий в очереди'
-        user_tasks: '-- пользовательских'
+        custom: '-- пользовательских'
         mass_build_tasks: '-- массовой сборки'
         build_tasks: '- заданий выполняется'
         rpm_workers: Воркеры сборки
