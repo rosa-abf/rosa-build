@@ -4,7 +4,11 @@
   .table
     .lefter= t("layout.build_lists.build_server_status.iso_workers")
   .both
-  - [:workers, :tasks, :build_tasks].each do |metric|
+  .table
+    .lefter= t("layout.build_lists.build_server_status.amount")
+    .righter= @build_server_status[:iso][:workers]
+  .both
+  - [:tasks, :build_tasks].each do |metric|
     .table
       .lefter= t("layout.build_lists.build_server_status.#{metric}")
       .righter= @build_server_status[:iso][metric]

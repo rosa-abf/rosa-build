@@ -42,6 +42,19 @@ class Api::V1::JobsController < Api::V1::BaseController
     render :json => { :job => job }.to_json
   end
 
+  def statistics
+    if params[:uid].present?
+      RpmBuildNode.create(
+        :id           => params[:uid],
+        :user_id      => current_user.id,
+        :system       => current_user.system?,
+        :worker_count => params[:worker_count],
+        :busy_workers => params[:busy_workers]
+      ) rescue nil
+    end
+    render :nothing => true
+  end
+
   def status
     render :text => Resque.redis.get(params[:key])
   end
