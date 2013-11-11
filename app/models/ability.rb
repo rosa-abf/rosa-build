@@ -180,6 +180,7 @@ class Ability
       cannot :create_container, BuildList, :new_core => false
       cannot(:publish, BuildList) {|build_list| !build_list.can_publish? }
       cannot(:publish_into_testing, BuildList) {|build_list| !build_list.can_publish_into_testing? }
+      cannot :publish_into_testing, BuildList, :save_to_platform => {:platform_type => 'personal'}
 
       cannot(:cancel, MassBuild) {|mass_build| mass_build.stop_build}
 
