@@ -51,7 +51,8 @@ class BuildList < ActiveRecord::Base
   before_validation :prepare_extra_repositories,  :on => :create
   before_validation :prepare_extra_build_lists,   :on => :create
   before_validation :prepare_extra_params,        :on => :create
-  before_validation lambda { self.auto_publish = false if external_nodes.present?; true }, :on => :create
+  before_validation lambda { self.auto_publish = false if external_nodes.present?; true },  :on => :create
+  before_validation lambda { self.auto_create_container = false if auto_publish?; true },   :on => :create
 
   attr_accessible :include_repos, :auto_publish, :build_for_platform_id, :commit_hash,
                   :arch_id, :project_id, :save_to_repository_id, :update_type,

@@ -91,10 +91,10 @@ module AbfWorker
           'BUILD_FOR_PLATFORM'  => build_list.build_for_platform.name
         }.map{ |k, v| "#{k}=#{v}" }.join(' ')
 
-
+        # Low priority
         Resque.push(
-          'publish_worker_default',
-          'class' => 'AbfWorker::PublishWorkerDefault',
+          'publish_worker',
+          'class' => 'AbfWorker::PublishWorker',
           'args' => [{
             :id                   => build_list.id,
             :cmd_params           => cmd_params,
