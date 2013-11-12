@@ -107,4 +107,29 @@ describe Repository do
 
   end
 
+  context '#add_projects' do
+    it 'user has ability to read of adding project' do
+      repository = FactoryGirl.create(:repository)
+      project = FactoryGirl.create(:project)
+      repository.add_projects("#{project.owner.uname}/#{project.name}", FactoryGirl.create(:user))
+      repository.projects.should have(1).item
+    end
+
+    it 'user has no ability to read of adding project' do
+      repository = FactoryGirl.create(:repository)
+      project = FactoryGirl.create(:project, :visibility => 'hidden')
+      repository.add_projects("#{project.owner.uname}/#{project.name}", FactoryGirl.create(:user))
+      repository.projects.should have(:no).items
+    end
+  end
+
+  it '#remove_projects' do
+    repository = FactoryGirl.create(:repository)
+    project = FactoryGirl.create(:project)
+    repository.projects << project
+    repository.remove_projects(project.name)
+    repository.reload
+    repository.projects.should have(:no).items
+  end
+
 end
