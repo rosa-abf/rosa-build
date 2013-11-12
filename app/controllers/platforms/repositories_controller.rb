@@ -86,6 +86,7 @@ class Platforms::RepositoriesController < Platforms::BaseController
     if projects_list = params.try(:[], :repository).try(:[], :projects_list)
       @repository.add_projects projects_list, current_user
       redirect_to platform_repository_path(@platform, @repository), :notice => t('flash.repository.projects_will_be_added')
+      return
     end
     if params[:project_id]
       @project = Project.find(params[:project_id])

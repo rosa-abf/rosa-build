@@ -3,7 +3,7 @@
 
 %h3= raw "#{t("layout.repositories.add_projects_to")}: #{link_to @repository.name, platform_repository_path(@platform, @repository)}"
 
-= form_for :repository, :url => add_project_platform_repository_path(@platform, @repository), :html => { :class => :form } do |f|
+= form_for :repository, :url => add_project_platform_repository_path(@platform, @repository), :method => :put, :html => { :class => :form } do |f|
   .leftlist= f.label :projects_list
   .rightlist= f.text_area :projects_list
   .both
