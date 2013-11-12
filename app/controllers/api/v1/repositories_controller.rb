@@ -45,7 +45,7 @@ class Api::V1::RepositoriesController < Api::V1::BaseController
 
   def add_project
     project = Project.where(:id => params[:project_id]).first
-    if project
+    if project && can?(:read, project)
       begin
         @repository.projects << project
         render_json_response @repository, "Project '#{project.id}' has been added to repository successfully"

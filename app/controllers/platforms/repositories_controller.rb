@@ -83,12 +83,20 @@ class Platforms::RepositoriesController < Platforms::BaseController
   end
 
   def add_project
+    if projects_list = params.try(:[], :repository).try(:[], :projects_list)
+      @repository.add_projects projects_list, current_user
+      redirect_to platform_repository_path(@platform, @repository), :notice => t('flash.repository.projects_will_be_added')
+    end
     if params[:project_id]
       @project = Project.find(params[:project_id])
-      begin
-        @repository.projects << @project
-        flash[:notice] = t('flash.repository.project_added')
-      rescue ActiveRecord::RecordInvalid
+      if can?(:read, @project)
+        begin
+          @repository.projects << @project
+          flash[:notice] = t('flash.repository.project_added')
+        rescue ActiveRecord::RecordInvalid
+          flash[:error] = t('flash.repository.project_not_added')
+        end
+      else
         flash[:error] = t('flash.repository.project_not_added')
       end
       redirect_to platform_repository_path(@platform, @repository)
@@ -136,8 +144,14 @@ class Platforms::RepositoriesController < Platforms::BaseController
   end
 
   def remove_project
-    ProjectToRepository.where(:project_id => params[:project_id], :repository_id => @repository.id).destroy_all
-    redirect_to platform_repository_path(@platform, @repository), :notice => t('flash.repository.project_removed')
+    if projects_list = params.try(:[], :repository).try(:[], :projects_list)
+      @repository.remove_projects projects_list
+      redirect_to platform_repository_path(@platform, @repository), :notice => t('flash.repository.projects_will_be_removed')
+    end
+    if params[:project_id]
+      ProjectToRepository.where(:project_id => params[:project_id], :repository_id => @repository.id).destroy_all
+      redirect_to platform_repository_path(@platform, @repository), :notice => t('flash.repository.project_removed')
+    end
   end
 
   def regenerate_metadata

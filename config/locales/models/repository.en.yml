@@ -5,7 +5,8 @@ en:
       add_sync_lock_file: "Add '.sync.lock' file"
       remove_sync_lock_file: "Remove '.sync.lock' file"
       sync_lock_file_info: "Presence of '.sync.lock' file means that repository is not ready for sync with mirror"
-      add_project_to: Add project to repository
+      add_projects_to: Add projects to repository
+      remove_projects_from: Remove projets from repository
       edit: Settings
       list: List
       about: About repository
@@ -23,6 +24,7 @@ en:
       clear_confirm: Are you sure you want to clear this platform?
       clear_warning: Attention! Cleared packages cannot be restored!
       regenerate_metadata: Regenerate metadata
+      mass_delete: Mass delete
 
     personal_repositories:
       settings_header: Settings
@@ -34,7 +36,8 @@ en:
     repository:
       sync_lock_file_added: "'.sync.lock' file has been added to repository"
       sync_lock_file_removed: "'.sync.lock' file has been removed from repository"
-
+      projects_will_be_removed: Projects added to queue for removing
+      projects_will_be_added: Projects added to queue for adding
 
       saved: Repository added
       updated: Repository updated
@@ -57,6 +60,7 @@ en:
       repository: Repository
     attributes:
       repository:
+        projects_list: Projects list
         name: Name
         description: Description
         publish_without_qa: Publication without QA

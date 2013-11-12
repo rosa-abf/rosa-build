@@ -28,6 +28,7 @@ class Repository < ActiveRecord::Base
 
   attr_accessible :name, :description, :publish_without_qa
   attr_readonly :name, :platform_id
+  attr_accessor :projects_list
 
   def regenerate(build_for_platform_id = nil)
     build_for_platform = Platform.main.find build_for_platform_id if platform.personal?
@@ -56,6 +57,34 @@ class Repository < ActiveRecord::Base
     end
   end
   later :clone_relations, :loner => true, :queue => :clone_build
+
+  def add_projects(list, user)
+    current_ability = Ability.new(user)
+    list.lines.each do |line|
+      begin
+        line.chomp!; line.strip!
+        owner, name = line.split('/')
+        next if owner.blank? || name.blank?
+
+        project = Project.where(:owner_uname => owner, :name => name).accessible_by(current_ability, :read).first
+        projects << project if project
+      rescue RuntimeError, Exception
+      end
+    end
+  end
+  later :add_projects, :queue => :clone_build
+
+  def remove_projects(list)
+    list.lines.each do |name|
+      begin
+        name.chomp!; name.strip!
+        next if name.blank?
+        project_to_repositories.where(:projects => { :name => name }).joins(:project).destroy_all
+      rescue RuntimeError, Exception
+      end
+    end
+  end
+  later :remove_projects, :queue => :clone_build
 
   def full_clone(attrs = {})
     base_clone(attrs).tap do |c|
