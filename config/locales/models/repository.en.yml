@@ -6,7 +6,7 @@ en:
       remove_sync_lock_file: "Remove '.sync.lock' file"
       sync_lock_file_info: "Presence of '.sync.lock' file means that repository is not ready for sync with mirror"
       add_projects_to: Add projects to repository
-      remove_projects_from: Remove projets from repository
+      remove_projects_from: Remove projects from repository
       edit: Settings
       list: List
       about: About repository
@@ -38,6 +38,7 @@ en:
       sync_lock_file_removed: "'.sync.lock' file has been removed from repository"
       projects_will_be_removed: Projects added to queue for removing
       projects_will_be_added: Projects added to queue for adding
+      no_access_to_read_project: You have no access to read this project
 
       saved: Repository added
       updated: Repository updated

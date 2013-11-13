@@ -88,7 +88,7 @@ class Platforms::RepositoriesController < Platforms::BaseController
       redirect_to platform_repository_path(@platform, @repository), :notice => t('flash.repository.projects_will_be_added')
       return
     end
-    if params[:project_id]
+    if params[:project_id].present?
       @project = Project.find(params[:project_id])
       if can?(:read, @project)
         begin
@@ -98,7 +98,7 @@ class Platforms::RepositoriesController < Platforms::BaseController
           flash[:error] = t('flash.repository.project_not_added')
         end
       else
-        flash[:error] = t('flash.repository.project_not_added')
+        flash[:error] = t('flash.repository.no_access_to_read_project')
       end
       redirect_to platform_repository_path(@platform, @repository)
     else
@@ -149,7 +149,7 @@ class Platforms::RepositoriesController < Platforms::BaseController
       @repository.remove_projects projects_list
       redirect_to platform_repository_path(@platform, @repository), :notice => t('flash.repository.projects_will_be_removed')
     end
-    if params[:project_id]
+    if params[:project_id].present?
       ProjectToRepository.where(:project_id => params[:project_id], :repository_id => @repository.id).destroy_all
       redirect_to platform_repository_path(@platform, @repository), :notice => t('flash.repository.project_removed')
     end

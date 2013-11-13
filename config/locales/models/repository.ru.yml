@@ -38,6 +38,7 @@ ru:
       sync_lock_file_removed: "'.sync.lock' файл удален из репозитория"
       projects_will_be_removed: Проекты добавлены в очередь на удаление
       projects_will_be_added: Проекты добавлены в очередь на добавление
+      no_access_to_read_project: У вас нет прав на чтение этого проекта
 
       saved: Репозиторий успешно добавлен
       updated: Репозиторий успешно обновлен
