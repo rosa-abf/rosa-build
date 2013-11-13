@@ -44,13 +44,16 @@ class Api::V1::RepositoriesController < Api::V1::BaseController
   end
 
   def add_project
-    project = Project.where(:id => params[:project_id]).first
-    if project
-      begin
-        @repository.projects << project
-        render_json_response @repository, "Project '#{project.id}' has been added to repository successfully"
-      rescue ActiveRecord::RecordInvalid
-        render_validation_error @repository, t('flash.repository.project_not_added')
+    if project = Project.where(:id => params[:project_id]).first
+      if can?(:read, project)
+        begin
+          @repository.projects << project
+          render_json_response @repository, "Project '#{project.id}' has been added to repository successfully"
+        rescue ActiveRecord::RecordInvalid
+          render_validation_error @repository, t('flash.repository.project_not_added')
+        end
+      else
+        render_validation_error @repository, 'You have no access to read this project'
       end
     else
       render_validation_error @repository, "Project has not been added to repository"

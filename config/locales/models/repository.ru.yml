@@ -5,7 +5,8 @@ ru:
       add_sync_lock_file: "Добавить '.sync.lock' файл"
       remove_sync_lock_file: "Удалить '.sync.lock' файл"
       sync_lock_file_info: "Наличие '.sync.lock' файла означает, что репозиторий не готов для синхронизации с зеркалом"
-      add_project_to: Добавить проект к репозиторию
+      add_projects_to: Добавить проекты к репозиторию
+      remove_projects_from: Удалить проекты из репозитория
       edit: Настройки
       list: Список
       about: О репозитории
@@ -23,6 +24,7 @@ ru:
       clear_confirm: Уверены, что хотите очистить платформу?
       clear_warning: Внимание! Очищенные пакеты не могут быть восстановлены!
       regenerate_metadata: Регенерировать метаданные
+      mass_delete: Массовое удаление
 
     personal_repositories:
       settings_header: Настройки
@@ -34,6 +36,9 @@ ru:
     repository:
       sync_lock_file_added: "'.sync.lock' файл добавлен в репозиторий"
       sync_lock_file_removed: "'.sync.lock' файл удален из репозитория"
+      projects_will_be_removed: Проекты добавлены в очередь на удаление
+      projects_will_be_added: Проекты добавлены в очередь на добавление
+      no_access_to_read_project: У вас нет прав на чтение этого проекта
 
       saved: Репозиторий успешно добавлен
       updated: Репозиторий успешно обновлен
@@ -56,6 +61,7 @@ ru:
       repository: Репозиторий
     attributes:
       repository:
+        projects_list: Список проектов
         name: Название
         description: Описание
         publish_without_qa: Публикация без участия QA
