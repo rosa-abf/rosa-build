@@ -1,6 +1,7 @@
 ru:
   layout:
     projects:
+      mass_import: Массовый импорт
       branches: Ветки
       delete_branch: Удалить ветку
       restore_branch: Восстановить ветку
@@ -89,6 +90,8 @@ ru:
       project: Проект
     attributes:
       project:
+        url: URL
+        srpms_list: Список SRPMs
         name: Название
         description: Описание
         owner: Владелец

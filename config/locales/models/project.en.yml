@@ -1,6 +1,7 @@
 en:
   layout:
     projects:
+      mass_import: Mass import
       branches: Branches
       delete_branch: Delete branch
       restore_branch: Restore branch
@@ -89,6 +90,8 @@ en:
       project: Project
     attributes:
       project:
+        url: URL
+        srpms_list: SRPMs list
         name: Name
         description: Descripton
         owner: Owner
