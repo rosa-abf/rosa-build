@@ -38,7 +38,7 @@ class Projects::ProjectsController < Projects::BaseController
     @project.valid?
     @project.errors.messages.slice! :url
     if @project.errors.messages.blank? # We need only url validation
-      @project.mass_import
+      @project.init_mass_import
       flash[:notice] = t('flash.project.mass_import_added_to_queue')
       redirect_to projects_path
     else

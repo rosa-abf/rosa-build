@@ -1,6 +1,7 @@
 # -*- encoding : utf-8 -*-
 require 'nokogiri'
 require 'open-uri'
+require 'iconv'
 
 class Project < ActiveRecord::Base
   VISIBILITIES = ['open', 'hidden']
@@ -107,25 +108,29 @@ class Project < ActiveRecord::Base
       find_by_owner_and_name(owner_name, project_name) or raise ActiveRecord::RecordNotFound
     end
 
-    def self.run_mass_import(url, srpms_list, visibility, owner)
+    def run_mass_import(url, srpms_list, visibility, owner)
       doc = Nokogiri::HTML(open(url))
       links = doc.css("a[href$='.src.rpm']")
       return if links.count == 0
       filter = srpms_list.lines.map(&:chomp).map(&:strip).select(&:present?)
       
 
+      platform    = owner.own_platforms.first
+      repository  = platform.repositories.first
       dir = Dir.mktmpdir('mass-import-', '/tmp')
       links.each do |link|
         begin
           package = link.attributes['href'].value
           package.chomp!; package.strip!
+
+          Rails.logger.debug "[Project#run_mass_import] package: #{package}"
           next if package.size == 0 || package !~ /^[\w\.\-]+$/
 
           uri = URI "#{url}/#{package}"
           srpm_file = "#{dir}/#{package}"
           Net::HTTP.start(uri.host) do |http|
             if http.request_head(uri.path)['content-length'].to_i < MAX_SRC_SIZE
-              f = open(srpm_file)
+              f = open(srpm_file, 'wb')
               http.request_get(uri.path) do |resp|
                 resp.read_body{ |segment| f.write(segment) }
               end
@@ -133,15 +138,22 @@ class Project < ActiveRecord::Base
             end
           end
           if name = `rpm -q --qf '[%{Name}]' -p #{srpm_file}` and $?.success? and name.present?
+            Rails.logger.debug "[Project#run_mass_import] Import '#{name}'..."
             project = Project.find_or_create_by_name_and_owner_type_and_owner_id(name, owner.class.to_s, owner.id)
-            repo.projects << project rescue nil
             description = ::Iconv.conv('UTF-8//IGNORE', 'UTF-8', `rpm -q --qf '[%{Description}]' -p #{srpm_file}`)
             project.update_attributes(:visibility => visibility, :description => description)
-            project.import_srpm(srpm_file, owner.own_platforms.name)
+            repository.projects << project rescue nil
+            if project.valid?
+              project.import_srpm srpm_file
+              Rails.logger.debug "[Project#run_mass_import] Code import complete!"
+            else
+              Rails.logger.debug "[Project#run_mass_import] Can't find or create project: #{project.errors.full_messages.join('. ')}"
+            end
           end
           File.delete srpm_file
         rescue => e
-          f.close if f
+          f.close if defined?(f)
+          Rails.logger.error e
           Airbrake.notify_or_ignore(e, :link => link.to_s)
         end
       end
@@ -150,7 +162,7 @@ class Project < ActiveRecord::Base
 
   end
 
-  def mass_import
+  def init_mass_import
     Project.perform_later :clone_build, :run_mass_import, url, srpms_list, visibility, owner
   end
 
