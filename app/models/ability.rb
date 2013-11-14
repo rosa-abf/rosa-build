@@ -60,6 +60,7 @@ class Ability
         can :remove_user, Group
 
         can :create, Project
+        can([:mass_import, :run_mass_import], Project) { user.platforms.select(&:main?).find{ |p| local_admin?(p) } }
         can :read, Project, :visibility => 'open'
         can [:read, :archive, :membered, :get_id], Project, :owner_type => 'User', :owner_id => user.id
         can [:read, :archive, :membered, :get_id], Project, :owner_type => 'Group', :owner_id => user.group_ids
