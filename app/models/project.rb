@@ -1,7 +1,11 @@
 # -*- encoding : utf-8 -*-
+require 'nokogiri'
+require 'open-uri'
+
 class Project < ActiveRecord::Base
   VISIBILITIES = ['open', 'hidden']
   MAX_OWN_PROJECTS = 32000
+  MAX_SRC_SIZE = 1024*1024*256
   NAME_REGEXP = /[\w\-\+\.]+/
 
   belongs_to :owner, :polymorphic => true, :counter_cache => :own_projects_count
@@ -104,10 +108,46 @@ class Project < ActiveRecord::Base
     end
 
     def self.run_mass_import(url, srpms_list, visibility, owner)
-      
+      doc = Nokogiri::HTML(open(url))
+      links = doc.css("a[href$='.src.rpm']")
+      return if links.count == 0
+      filter = srpms_list.lines.map(&:chomp).map(&:strip).select(&:present?)
       
 
+      dir = Dir.mktmpdir('mass-import-', '/tmp')
+      links.each do |link|
+        begin
+          package = link.attributes['href'].value
+          package.chomp!; package.strip!
+          next if package.size == 0 || package !~ /^[\w\.\-]+$/
+
+          uri = URI "#{url}/#{package}"
+          srpm_file = "#{dir}/#{package}"
+          Net::HTTP.start(uri.host) do |http|
+            if http.request_head(uri.path)['content-length'].to_i < MAX_SRC_SIZE
+              f = open(srpm_file)
+              http.request_get(uri.path) do |resp|
+                resp.read_body{ |segment| f.write(segment) }
+              end
+              f.close
+            end
+          end
+          if name = `rpm -q --qf '[%{Name}]' -p #{srpm_file}` and $?.success? and name.present?
+            project = Project.find_or_create_by_name_and_owner_type_and_owner_id(name, owner.class.to_s, owner.id)
+            repo.projects << project rescue nil
+            description = ::Iconv.conv('UTF-8//IGNORE', 'UTF-8', `rpm -q --qf '[%{Description}]' -p #{srpm_file}`)
+            project.update_attributes(:visibility => visibility, :description => description)
+            project.import_srpm(srpm_file, owner.own_platforms.name)
+          end
+          File.delete srpm_file
+        rescue => e
+          f.close if f
+          Airbrake.notify_or_ignore(e, :link => link.to_s)
+        end
+      end
+      FileUtils.remove_entry_secure dir
     end
+
   end
 
   def mass_import
