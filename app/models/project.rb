@@ -117,7 +117,7 @@ class Project < ActiveRecord::Base
       
       repository = Repository.find add_to_repository_id
       platform = repository.platform
-      dir = Dir.mktmpdir('mass-import-', '/tmp')
+      dir = Dir.mktmpdir('mass-import-', '/dev/shm')
       links.each do |link|
         begin
           package = link.attributes['href'].value
