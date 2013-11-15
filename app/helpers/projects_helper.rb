@@ -20,6 +20,15 @@ module ProjectsHelper
     end.sort_by{ |f| f[:uname] }
   end
 
+  def repositories_grouped_by_platform
+    groups = {}
+    Platform.accessible_by(current_ability, :related).order(:name).each do |platform|
+      next unless can?(:local_admin_manage, platform)
+      groups[platform.name] = Repository.custom_sort(platform.repositories).map{ |r| [r.name, r.id] }
+    end
+    groups
+  end
+
   def git_repo_url(name)
     if current_user
       "#{request.protocol}#{current_user.uname}@#{request.host_with_port}/#{name}.git"

@@ -38,6 +38,7 @@ class Project < ActiveRecord::Base
                    :message => I18n.t("activerecord.errors.project.uname")}
   validates :maintainer_id, :presence => true, :unless => :new_record?
   validates :url, :presence => true, :format => {:with => /\Ahttps?:\/\/[\S]+\z/}, :if => :mass_import
+  validates :add_to_repository_id, :presence => true, :if => :mass_import
   validates :visibility, :presence => true, :inclusion => {:in => VISIBILITIES}
   validate { errors.add(:base, :can_have_less_or_equal, :count => MAX_OWN_PROJECTS) if owner.projects.size >= MAX_OWN_PROJECTS }
   validate :check_default_branch
@@ -52,7 +53,7 @@ class Project < ActiveRecord::Base
 
   attr_accessible :name, :description, :visibility, :srpm, :is_package, :default_branch,
                   :has_issues, :has_wiki, :maintainer_id, :publish_i686_into_x86_64,
-                  :url, :srpms_list, :mass_import
+                  :url, :srpms_list, :mass_import, :add_to_repository_id
   attr_readonly :owner_id, :owner_type
 
   scope :recent, order("lower(#{table_name}.name) ASC")
@@ -91,7 +92,7 @@ class Project < ActiveRecord::Base
 
   has_ancestry :orphan_strategy => :rootify #:adopt not available yet
 
-  attr_accessor :url, :srpms_list, :mass_import
+  attr_accessor :url, :srpms_list, :mass_import, :add_to_repository_id
 
   include Modules::Models::Owner
   include Modules::Models::Git
@@ -108,15 +109,14 @@ class Project < ActiveRecord::Base
       find_by_owner_and_name(owner_name, project_name) or raise ActiveRecord::RecordNotFound
     end
 
-    def run_mass_import(url, srpms_list, visibility, owner)
+    def run_mass_import(url, srpms_list, visibility, owner, add_to_repository_id)
       doc = Nokogiri::HTML(open(url))
       links = doc.css("a[href$='.src.rpm']")
       return if links.count == 0
       filter = srpms_list.lines.map(&:chomp).map(&:strip).select(&:present?)
       
-
-      platform    = owner.own_platforms.first
-      repository  = platform.repositories.first
+      repository = Repository.find add_to_repository_id
+      platform = repository.platform
       dir = Dir.mktmpdir('mass-import-', '/tmp')
       links.each do |link|
         begin
@@ -139,22 +139,27 @@ class Project < ActiveRecord::Base
           end
           if name = `rpm -q --qf '[%{Name}]' -p #{srpm_file}` and $?.success? and name.present?
             Rails.logger.debug "[Project#run_mass_import] Import '#{name}'..."
-            project = Project.find_or_create_by_name_and_owner_type_and_owner_id(name, owner.class.to_s, owner.id)
+            next if owner.projects.exists?(:name => name) || (filter.present? && !filter.include?(name))
             description = ::Iconv.conv('UTF-8//IGNORE', 'UTF-8', `rpm -q --qf '[%{Description}]' -p #{srpm_file}`)
-            project.update_attributes(:visibility => visibility, :description => description)
+            project = owner.projects.create(
+              :name         => name,
+              :description  => description,
+              :visibility   => visibility
+            )
             repository.projects << project rescue nil
             if project.valid?
-              project.import_srpm srpm_file
+              project.import_srpm srpm_file, platform.name
               Rails.logger.debug "[Project#run_mass_import] Code import complete!"
             else
               Rails.logger.debug "[Project#run_mass_import] Can't find or create project: #{project.errors.full_messages.join('. ')}"
             end
           end
-          File.delete srpm_file
         rescue => e
           f.close if defined?(f)
           Rails.logger.error e
           Airbrake.notify_or_ignore(e, :link => link.to_s)
+        ensure
+          File.delete srpm_file if defined?(srpm_file)
         end
       end
       FileUtils.remove_entry_secure dir
@@ -163,7 +168,7 @@ class Project < ActiveRecord::Base
   end
 
   def init_mass_import
-    Project.perform_later :clone_build, :run_mass_import, url, srpms_list, visibility, owner
+    Project.perform_later :clone_build, :run_mass_import, url, srpms_list, visibility, owner, add_to_repository_id
   end
 
   def name_with_owner

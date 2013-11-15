@@ -35,6 +35,7 @@ class Projects::ProjectsController < Projects::BaseController
     @project = Project.new params[:project]
     @project.owner = choose_owner
     authorize! :write, @project.owner if @project.owner.class == Group
+    authorize! :add_project, Repository.find(params[:project][:add_to_repository_id])
     @project.valid?
     @project.errors.messages.slice! :url
     if @project.errors.messages.blank? # We need only url validation

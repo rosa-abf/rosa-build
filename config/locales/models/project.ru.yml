@@ -91,6 +91,7 @@ ru:
     attributes:
       project:
         url: URL
+        add_to_repository_id: Добавить в репозиторий
         srpms_list: Список SRPMs
         name: Название
         description: Описание

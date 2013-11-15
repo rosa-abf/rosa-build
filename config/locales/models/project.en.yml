@@ -91,6 +91,7 @@ en:
     attributes:
       project:
         url: URL
+        add_to_repository_id: Add to repository
         srpms_list: SRPMs list
         name: Name
         description: Descripton

@@ -7,6 +7,9 @@
   .leftlist= f.label :srpms_list
   .rightlist= f.text_area :srpms_list
   .both
+  .leftlist= f.label :add_to_repository_id
+  .rightlist= f.select :add_to_repository_id, repositories_grouped_by_platform
+  .both
   = render 'owner', :f => f
 
   .leftlist= f.label :visibility
