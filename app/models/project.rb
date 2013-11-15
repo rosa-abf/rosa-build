@@ -141,13 +141,14 @@ class Project < ActiveRecord::Base
             Rails.logger.debug "[Project#run_mass_import] Import '#{name}'..."
             next if owner.projects.exists?(:name => name) || (filter.present? && !filter.include?(name))
             description = ::Iconv.conv('UTF-8//IGNORE', 'UTF-8', `rpm -q --qf '[%{Description}]' -p #{srpm_file}`)
-            project = owner.projects.create(
+            project = owner.projects.build(
               :name         => name,
               :description  => description,
               :visibility   => visibility
             )
-            repository.projects << project rescue nil
-            if project.valid?
+            project.owner = owner
+            if project.save
+              repository.projects << project rescue nil
               project.import_srpm srpm_file, platform.name
               Rails.logger.debug "[Project#run_mass_import] Code import complete!"
             else
