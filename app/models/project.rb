@@ -166,7 +166,7 @@ class Project < ActiveRecord::Base
         end
       end
     ensure
-      FileUtils.remove_entry_secure dir if if defined?(dir)
+      FileUtils.remove_entry_secure dir if defined?(dir)
     end
 
   end
