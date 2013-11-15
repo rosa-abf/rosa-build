@@ -65,6 +65,12 @@ describe CanCan do
       end
     end
 
+    [:mass_import, :run_mass_import].each do |action|
+      it "should not be able to #{ action } project" do
+        @ability.should_not be_able_to(action, Project)
+      end
+    end
+
     it 'should not be able to update register request' do
       @ability.should_not be_able_to(:update, register_request)
     end
@@ -90,6 +96,12 @@ describe CanCan do
     [Platform, Repository].each do |model_name|
       it "should be able to read #{model_name}" do
         @ability.should be_able_to(:read, model_name)
+      end
+    end
+
+    [:mass_import, :run_mass_import].each do |action|
+      it "should not be able to #{ action } project" do
+        @ability.should_not be_able_to(action, Project)
       end
     end
 
@@ -260,6 +272,13 @@ describe CanCan do
         before(:each) do
           @platform.owner = @user
           @platform.save
+          @ability = Ability.new(@user)
+        end
+
+        [:mass_import, :run_mass_import].each do |action|
+          it "should be able to #{ action } project" do
+            @ability.should be_able_to(action, Project)
+          end
         end
 
         [:read, :update, :destroy, :change_visibility].each do |action|
@@ -272,6 +291,13 @@ describe CanCan do
       context 'with read rights' do
         before(:each) do
           @platform.relations.create!(:actor_id => @user.id, :actor_type => 'User', :role => 'reader')
+          @ability = Ability.new(@user)
+        end
+
+        [:mass_import, :run_mass_import].each do |action|
+          it "should not be able to #{ action } project" do
+            @ability.should_not be_able_to(action, Project)
+          end
         end
 
         it "should be able to read platform" do
