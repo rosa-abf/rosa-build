@@ -144,11 +144,13 @@ class Project < ActiveRecord::Base
             project = owner.projects.build(
               :name         => name,
               :description  => description,
-              :visibility   => visibility
+              :visibility   => visibility,
+              :is_package   => false # See: Hook for #attach_to_personal_repository
             )
             project.owner = owner
             if project.save
               repository.projects << project rescue nil
+              project.update_attributes(:is_package => true)
               project.import_srpm srpm_file, platform.name
               Rails.logger.debug "[Project#run_mass_import] Code import complete!"
             else
