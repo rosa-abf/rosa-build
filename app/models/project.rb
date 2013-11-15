@@ -123,7 +123,6 @@ class Project < ActiveRecord::Base
           package = link.attributes['href'].value
           package.chomp!; package.strip!
 
-          Rails.logger.debug "[Project#run_mass_import] package: #{package}"
           next if package.size == 0 || package !~ /^[\w\.\-]+$/
 
           uri = URI "#{url}/#{package}"
@@ -138,7 +137,6 @@ class Project < ActiveRecord::Base
             end
           end
           if name = `rpm -q --qf '[%{Name}]' -p #{srpm_file}` and $?.success? and name.present?
-            Rails.logger.debug "[Project#run_mass_import] Import '#{name}'..."
             next if owner.projects.exists?(:name => name) || (filter.present? && !filter.include?(name))
             description = ::Iconv.conv('UTF-8//IGNORE', 'UTF-8', `rpm -q --qf '[%{Description}]' -p #{srpm_file}`)
             project = owner.projects.build(
@@ -152,15 +150,11 @@ class Project < ActiveRecord::Base
               repository.projects << project rescue nil
               project.update_attributes(:is_package => true)
               project.import_srpm srpm_file, platform.name
-              Rails.logger.debug "[Project#run_mass_import] Code import complete!"
-            else
-              Rails.logger.debug "[Project#run_mass_import] Can't find or create project: #{project.errors.full_messages.join('. ')}"
             end
           end
         rescue => e
           f.close if defined?(f)
-          Rails.logger.error e
-          Airbrake.notify_or_ignore(e, :link => link.to_s)
+          Airbrake.notify_or_ignore(e, :link => link.to_s, :url => url, :owner => owner)
         ensure
           File.delete srpm_file if defined?(srpm_file)
         end
