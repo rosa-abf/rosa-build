@@ -165,7 +165,8 @@ class Project < ActiveRecord::Base
           File.delete srpm_file if defined?(srpm_file)
         end
       end
-      FileUtils.remove_entry_secure dir
+    ensure
+      FileUtils.remove_entry_secure dir if if defined?(dir)
     end
 
   end
