@@ -117,13 +117,14 @@ class Project < ActiveRecord::Base
       
       repository = Repository.find add_to_repository_id
       platform = repository.platform
-      dir = Dir.mktmpdir('mass-import-', '/dev/shm')
+      dir = Dir.mktmpdir 'mass-import-', APP_CONFIG['tmpfs_path']
       links.each do |link|
         begin
           package = link.attributes['href'].value
           package.chomp!; package.strip!
 
           next if package.size == 0 || package !~ /^[\w\.\-]+$/
+          next if filter.present? && !filter.include?(package)
 
           uri = URI "#{url}/#{package}"
           srpm_file = "#{dir}/#{package}"
@@ -137,7 +138,7 @@ class Project < ActiveRecord::Base
             end
           end
           if name = `rpm -q --qf '[%{Name}]' -p #{srpm_file}` and $?.success? and name.present?
-            next if owner.projects.exists?(:name => name) || (filter.present? && !filter.include?(name))
+            next if owner.projects.exists?(:name => name)
             description = ::Iconv.conv('UTF-8//IGNORE', 'UTF-8', `rpm -q --qf '[%{Description}]' -p #{srpm_file}`)
             project = owner.projects.build(
               :name         => name,
@@ -156,11 +157,11 @@ class Project < ActiveRecord::Base
           f.close if defined?(f)
           Airbrake.notify_or_ignore(e, :link => link.to_s, :url => url, :owner => owner)
         ensure
-          File.delete srpm_file if defined?(srpm_file)
+          File.delete srpm_file if srpm_file
         end
       end
     ensure
-      FileUtils.remove_entry_secure dir if defined?(dir)
+      FileUtils.remove_entry_secure dir if dir
     end
 
   end

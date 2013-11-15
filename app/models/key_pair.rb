@@ -19,7 +19,7 @@ class KeyPair < ActiveRecord::Base
   protected
 
     def check_keys
-      dir = Dir.mktmpdir('keys-', '/tmp')
+      dir = Dir.mktmpdir 'keys-', APP_CONFIG['tmpfs_path']
       begin
         %w(pubring secring).each do |kind|
           filename = "#{dir}/#{kind}"
