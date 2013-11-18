@@ -427,12 +427,12 @@ class BuildList < ActiveRecord::Base
     new_core? ? abf_worker_log : I18n.t('layout.build_lists.log.not_available')
   end
 
-  def last_published
+  def last_published(testing = false)
     BuildList.where(:project_id => self.project_id,
                     :save_to_repository_id => self.save_to_repository_id)
              .for_platform(self.build_for_platform_id)
              .scoped_to_arch(self.arch_id)
-             .for_status(BUILD_PUBLISHED)
+             .for_status(testing ? BUILD_PUBLISHED_INTO_TESTING : BUILD_PUBLISHED)
              .recent
   end
 
