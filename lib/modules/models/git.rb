@@ -1,4 +1,8 @@
 # -*- encoding : utf-8 -*-
+require 'nokogiri'
+require 'open-uri'
+require 'iconv'
+
 module Modules
   module Models
     module Git
@@ -173,10 +177,68 @@ module Modules
       end
 
       module ClassMethods
+        MAX_SRC_SIZE = 1024*1024*256
+
         def process_hook(owner_uname, repo, newrev, oldrev, ref, newrev_type, user = nil, message = nil)
           rec = GitHook.new(owner_uname, repo, newrev, oldrev, ref, newrev_type, user, message)
           Modules::Observers::ActivityFeed::Git.create_notifications rec
         end
+
+        def run_mass_import(url, srpms_list, visibility, owner, add_to_repository_id)
+          doc = Nokogiri::HTML(open(url))
+          links = doc.css("a[href$='.src.rpm']")
+          return if links.count == 0
+          filter = srpms_list.lines.map(&:chomp).map(&:strip).select(&:present?)
+          
+          repository = Repository.find add_to_repository_id
+          platform = repository.platform
+          dir = Dir.mktmpdir 'mass-import-', APP_CONFIG['tmpfs_path']
+          links.each do |link|
+            begin
+              package = link.attributes['href'].value
+              package.chomp!; package.strip!
+
+              next if package.size == 0 || package !~ /^[\w\.\-]+$/
+              next if filter.present? && !filter.include?(package)
+
+              uri = URI "#{url}/#{package}"
+              srpm_file = "#{dir}/#{package}"
+              Net::HTTP.start(uri.host) do |http|
+                if http.request_head(uri.path)['content-length'].to_i < MAX_SRC_SIZE
+                  f = open(srpm_file, 'wb')
+                  http.request_get(uri.path) do |resp|
+                    resp.read_body{ |segment| f.write(segment) }
+                  end
+                  f.close
+                end
+              end
+              if name = `rpm -q --qf '[%{Name}]' -p #{srpm_file}` and $?.success? and name.present?
+                next if owner.projects.exists?(:name => name)
+                description = ::Iconv.conv('UTF-8//IGNORE', 'UTF-8', `rpm -q --qf '[%{Description}]' -p #{srpm_file}`)
+                project = owner.projects.build(
+                  :name         => name,
+                  :description  => description,
+                  :visibility   => visibility,
+                  :is_package   => false # See: Hook for #attach_to_personal_repository
+                )
+                project.owner = owner
+                if project.save
+                  repository.projects << project rescue nil
+                  project.update_attributes(:is_package => true)
+                  project.import_srpm srpm_file, platform.name
+                end
+              end
+            rescue => e
+              f.close if defined?(f)
+              Airbrake.notify_or_ignore(e, :link => link.to_s, :url => url, :owner => owner)
+            ensure
+              File.delete srpm_file if srpm_file
+            end
+          end
+        ensure
+          FileUtils.remove_entry_secure dir if dir
+        end
+
       end
     end
   end
