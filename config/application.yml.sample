@@ -57,6 +57,7 @@ development:
   <<: *common
   root_path: /var/rosa
   git_path: /var/rosa
+  tmpfs_path: /dev/shm
   do-not-reply-email: do-not-reply@localhost
   github_services:
     ip: 127.0.0.1
@@ -66,6 +67,7 @@ production:
   <<: *common
   root_path: /share
   git_path: /mnt/gitstore
+  tmpfs_path: /dev/shm
   do-not-reply-email: do-not-reply@abf.rosalinux.ru
   mailer_https_url: false
   github_services:
@@ -74,6 +76,7 @@ production:
 
 test:
   <<: *common
+  tmpfs_path: "use Rails.root/tmp/test_root in spec"
   root_path: "use Rails.root/tmp/test_root in spec"
   git_path: "use Rails.root/tmp/test_root in spec"
   do-not-reply-email: do-not-reply@localhost

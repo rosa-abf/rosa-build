@@ -1,6 +1,7 @@
 en:
   layout:
     projects:
+      mass_import: Mass import
       branches: Branches
       delete_branch: Delete branch
       restore_branch: Restore branch
@@ -76,6 +77,7 @@ en:
 
   flash:
     project:
+      mass_import_added_to_queue: Mass import added to queue
       saved: Project saved
       save_error: Unable to save project
       save_warning_ssh_key: Project owner must provide a SSH key in his profile
@@ -89,6 +91,9 @@ en:
       project: Project
     attributes:
       project:
+        url: URL
+        add_to_repository_id: Add to repository
+        srpms_list: SRPMs list
         name: Name
         description: Descripton
         owner: Owner
