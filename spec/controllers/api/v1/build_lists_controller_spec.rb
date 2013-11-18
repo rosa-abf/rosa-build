@@ -238,6 +238,107 @@ describe Api::V1::BuildListsController do
         end
       end
 
+      context 'do publish_into_testing' do
+        def do_publish_into_testing
+          put :publish_into_testing, :id => @build_list, :format => :json
+        end
+
+        context 'if user is project && platform owner' do
+          before(:each) do
+            http_login(@owner_user)
+          end
+
+          context "if it has :failed_publish status" do
+            before do
+              @build_list.update_column(:status, BuildList::FAILED_PUBLISH)
+              do_publish_into_testing
+            end
+            it "should return correct json message" do
+              response.body.should == { :build_list => {:id => @build_list.id, :message => I18n.t('layout.build_lists.publish_success')} }.to_json
+            end
+
+            it 'should return 200 response code' do
+              response.should be_success
+            end
+
+            it "should change status of build list" do
+              @build_list.reload.status.should == BuildList::BUILD_PUBLISH_INTO_TESTING
+            end
+          end
+
+          context "if it has :build_published_into_testing status" do
+            before do
+              @build_list.update_column(:status, BuildList::BUILD_PUBLISHED_INTO_TESTING)
+              do_publish_into_testing
+            end
+
+            it "should return correct json message" do
+              response.body.should == { :build_list => {:id => @build_list.id, :message => I18n.t('layout.build_lists.publish_success')} }.to_json
+            end
+
+            it 'should return 200 response code' do
+              response.should be_success
+            end
+
+            it "should change status of build list" do
+              @build_list.reload.status.should == BuildList::BUILD_PUBLISH_INTO_TESTING
+            end
+          end
+
+          context "if it has another status" do
+            before(:each) do
+              @build_list.update_column(:status, BuildList::BUILD_CANCELED)
+              do_publish_into_testing
+            end
+
+            it "should return access violation message" do
+              response.body.should == {"message" => "Access violation to this page!"}.to_json
+            end
+
+            it "should not change status of build list" do
+              @build_list.reload.status.should == BuildList::BUILD_CANCELED
+            end
+          end
+
+        end
+
+        context 'if user is not project owner' do
+
+          context "if it has :build_published_into_testing status" do
+            before do
+              @build_list.update_column(:status, BuildList::BUILD_PUBLISHED_INTO_TESTING)
+              do_publish_into_testing
+            end
+
+            it 'should not be able to perform create action' do
+              response.body.should == {"message" => "Access violation to this page!"}.to_json
+            end
+
+            it 'should return 403 response code' do
+              response.status.should == 403
+            end
+
+            it "should not change status of build list" do
+              @build_list.reload.status.should == BuildList::BUILD_PUBLISHED_INTO_TESTING
+            end
+          end
+
+          context "if it has :failed_publish status" do
+            before do
+              @build_list.update_column(:status, BuildList::FAILED_PUBLISH_INTO_TESTING)
+              do_publish_into_testing
+            end
+            it "should return access violation message" do
+              response.body.should == {"message" => "Access violation to this page!"}.to_json
+            end
+
+            it "should not change status of build list" do
+              @build_list.reload.status.should == BuildList::FAILED_PUBLISH_INTO_TESTING
+            end
+          end
+        end
+      end
+
       context "do publish" do
         def do_publish
           put :publish, :id => @build_list, :format => :json
