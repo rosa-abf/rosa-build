@@ -235,6 +235,8 @@ module Modules
               File.delete srpm_file if srpm_file
             end
           end
+        rescue => e
+          Airbrake.notify_or_ignore(e, :url => url, :owner => owner)
         ensure
           FileUtils.remove_entry_secure dir if dir
         end
