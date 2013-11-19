@@ -189,8 +189,10 @@ class Project < ActiveRecord::Base
     build_list.save
   end
 
-  def fork(new_owner)
+  def fork(new_owner, new_name)
+    new_name = new_name.presence || name
     dup.tap do |c|
+      c.name = new_name
       c.parent_id = id
       c.owner = new_owner
       c.updated_at = nil; c.created_at = nil # :id = nil
