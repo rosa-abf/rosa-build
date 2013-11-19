@@ -5,7 +5,7 @@ class Api::V1::BuildListsController < Api::V1::BaseController
   skip_before_filter :authenticate_user!, :only => [:show, :index] if APP_CONFIG['anonymous_access']
 
   load_and_authorize_resource :project, :only => :index
-  load_and_authorize_resource :build_list, :only => [:show, :create, :cancel, :publish, :reject_publish, :create_container]
+  load_and_authorize_resource :build_list, :only => [:show, :create, :cancel, :publish, :reject_publish, :create_container, :publish_into_testing]
 
   def index
     filter = BuildList::Filter.new(@project, current_user, current_ability, params[:filter] || {})
@@ -44,6 +44,11 @@ class Api::V1::BuildListsController < Api::V1::BaseController
 
   def create_container
     render_json :create_container, :publish_container
+  end
+
+  def publish_into_testing
+    @build_list.publisher = current_user
+    render_json :publish_into_testing
   end
 
   private

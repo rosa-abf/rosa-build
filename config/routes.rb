@@ -23,6 +23,7 @@ Rosa::Application.routes.draw do
           put :reject_publish
           put :cancel
           put :create_container
+          put :publish_into_testing
         }
       end
       resources :arches, :only => [:index]
