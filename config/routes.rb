@@ -284,7 +284,12 @@ Rosa::Application.routes.draw do
       end
     end
 
-    resources :projects, :only => [:index, :new, :create]
+    resources :projects, :only => [:index, :new, :create] do
+      collection do
+        post  :run_mass_import
+        get   :mass_import
+      end
+    end
     scope ':owner_name/:project_name', :constraints => {:project_name => Project::NAME_REGEXP} do # project
       scope :as => 'project' do
         resources :wiki do

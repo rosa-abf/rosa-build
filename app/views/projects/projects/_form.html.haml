@@ -7,22 +7,10 @@
   .rightlist= f.text_area :description, :class => 'text_field', :cols => 80
   .both
   - if [:new, :create].include? act
-    .leftlist= f.label :owner
-    .rightlist
-      = label_tag t("activerecord.attributes.project.who_owns.me")
-      - if Group.can_own_project(current_user).count > 0
-        = radio_button_tag :who_owns, 'me', @who_owns == :me #{}.merge( (@who_owns == :me) ? {:checked => 'checked'} : {} )
-        = label_tag t("activerecord.attributes.project.who_owns.group")
-        = radio_button_tag :who_owns, 'group', @who_owns == :group #{}.merge( (@who_owns == :group) ? {:checked => 'checked'} : {} )
-        -# TODO: Make our own select_box helper with new design, blackjack and bitches!
-        = select_tag :owner_id, options_from_collection_for_select( Group.can_own_project(current_user), :id, :name )
-      - else
-        = hidden_field_tag :who_owns, :me
-    .both
+    = render 'owner', :f => f
 
   .leftlist= f.label :visibility
   .rightlist
-    =# f.select :visibility, Project::VISIBILITIES
     - Project::VISIBILITIES.each do |visibility|
       = f.radio_button :visibility, visibility, :class => 'niceRadio'
       - if visibility == 'open'

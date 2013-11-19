@@ -1,6 +1,7 @@
 ru:
   layout:
     projects:
+      mass_import: Массовый импорт
       branches: Ветки
       delete_branch: Удалить ветку
       restore_branch: Восстановить ветку
@@ -76,6 +77,7 @@ ru:
 
   flash:
     project:
+      mass_import_added_to_queue: Массовый импорт добавлен в очередь
       saved: Проект успешно сохранен
       save_error: Не удалось сохранить проект
       save_warning_ssh_key: Владельцу проекта необходимо указать в профиле свой SSH ключ
@@ -89,6 +91,9 @@ ru:
       project: Проект
     attributes:
       project:
+        url: URL
+        add_to_repository_id: Добавить в репозиторий
+        srpms_list: Список SRPMs
         name: Название
         description: Описание
         owner: Владелец

@@ -29,8 +29,11 @@ class Project < ActiveRecord::Base
 
   validates :name, :uniqueness => {:scope => [:owner_id, :owner_type], :case_sensitive => false},
                    :presence => true,
-                   :format => {:with => /\A#{NAME_REGEXP}\z/, :message => I18n.t("activerecord.errors.project.uname")}
+                   :format => {:with => /\A#{NAME_REGEXP}\z/,
+                   :message => I18n.t("activerecord.errors.project.uname")}
   validates :maintainer_id, :presence => true, :unless => :new_record?
+  validates :url, :presence => true, :format => {:with => /\Ahttps?:\/\/[\S]+\z/}, :if => :mass_import
+  validates :add_to_repository_id, :presence => true, :if => :mass_import
   validates :visibility, :presence => true, :inclusion => {:in => VISIBILITIES}
   validate { errors.add(:base, :can_have_less_or_equal, :count => MAX_OWN_PROJECTS) if owner.projects.size >= MAX_OWN_PROJECTS }
   validate :check_default_branch
@@ -43,7 +46,9 @@ class Project < ActiveRecord::Base
     errors.delete :project_to_repositories
   end
 
-  attr_accessible :name, :description, :visibility, :srpm, :is_package, :default_branch, :has_issues, :has_wiki, :maintainer_id, :publish_i686_into_x86_64
+  attr_accessible :name, :description, :visibility, :srpm, :is_package, :default_branch,
+                  :has_issues, :has_wiki, :maintainer_id, :publish_i686_into_x86_64,
+                  :url, :srpms_list, :mass_import, :add_to_repository_id
   attr_readonly :owner_id, :owner_type
 
   scope :recent, order("lower(#{table_name}.name) ASC")
@@ -82,6 +87,8 @@ class Project < ActiveRecord::Base
 
   has_ancestry :orphan_strategy => :rootify #:adopt not available yet
 
+  attr_accessor :url, :srpms_list, :mass_import, :add_to_repository_id
+
   include Modules::Models::Owner
   include Modules::Models::Git
   include Modules::Models::Wiki
@@ -96,6 +103,10 @@ class Project < ActiveRecord::Base
     def find_by_owner_and_name!(owner_name, project_name)
       find_by_owner_and_name(owner_name, project_name) or raise ActiveRecord::RecordNotFound
     end
+  end
+
+  def init_mass_import
+    Project.perform_later :clone_build, :run_mass_import, url, srpms_list, visibility, owner, add_to_repository_id
   end
 
   def name_with_owner

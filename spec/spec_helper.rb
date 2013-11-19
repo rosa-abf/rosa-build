@@ -50,8 +50,9 @@ def stub_symlink_methods
 end
 
 Resque.inline = true
-APP_CONFIG['root_path'] = "#{Rails.root}/tmp/test_root"
-APP_CONFIG['git_path']  = "#{Rails.root}/tmp/test_root"
+APP_CONFIG['root_path']   = "#{Rails.root}/tmp/test_root"
+APP_CONFIG['git_path']    = "#{Rails.root}/tmp/test_root"
+APP_CONFIG['tmpfs_path']  = "#{Rails.root}/tmp/test_root"
 
 def init_test_root
   clear_test_root

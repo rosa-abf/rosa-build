@@ -3,6 +3,7 @@ class Projects::ProjectsController < Projects::BaseController
   include ProjectsHelper
   before_filter :authenticate_user!
   load_and_authorize_resource :id_param => :project_name, :collection => :possible_forks # to force member actions load
+  before_filter :who_owns, :only => [:new, :create, :mass_import, :run_mass_import]
 
   def index
     @projects = Project.accessible_by(current_ability, :membered)
@@ -24,7 +25,27 @@ class Projects::ProjectsController < Projects::BaseController
 
   def new
     @project = Project.new
-    @who_owns = :me
+  end
+
+  def mass_import
+    @project = Project.new(:mass_import => true)
+  end
+
+  def run_mass_import
+    @project = Project.new params[:project]
+    @project.owner = choose_owner
+    authorize! :write, @project.owner if @project.owner.class == Group
+    authorize! :add_project, Repository.find(params[:project][:add_to_repository_id])
+    @project.valid?
+    @project.errors.messages.slice! :url
+    if @project.errors.messages.blank? # We need only url validation
+      @project.init_mass_import
+      flash[:notice] = t('flash.project.mass_import_added_to_queue')
+      redirect_to projects_path
+    else
+      flash[:warning] = @project.errors.full_messages.join('. ')
+      render :mass_import
+    end
   end
 
   def edit
@@ -33,7 +54,6 @@ class Projects::ProjectsController < Projects::BaseController
   def create
     @project = Project.new params[:project]
     @project.owner = choose_owner
-    @who_owns = (@project.owner_type == 'User' ? :me : :group)
     authorize! :write, @project.owner if @project.owner.class == Group
 
     if @project.save
@@ -119,6 +139,10 @@ class Projects::ProjectsController < Projects::BaseController
   end
 
   protected
+
+  def who_owns
+    @who_owns = (@project.try(:owner_type) == 'User' ? :me : :group)
+  end
 
   def prepare_list(projects, groups, owners)
     res = {}
