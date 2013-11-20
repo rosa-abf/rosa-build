@@ -11,9 +11,7 @@
       %a.close{"data-dismiss" => "modal"} ×
       %h3=t 'layout.projects.fork_modal_header'
       = hidden_field_tag :possible_forks, possible_forks_project_path(@project)
-      %div
-        = Project.human_attribute_name :name
-        = text_field_tag 'fork_name', @project.name, :id => 'fork_name', :class => 'fork_name'
+      %div{:align => 'center'}= text_field_tag 'fork_name', @project.name, :id => 'fork_name', :class => 'fork_name'
     #forks_list.modal-body.modal-body-fork
       = render 'forks', :owner => current_user, :name => @project.name
 
