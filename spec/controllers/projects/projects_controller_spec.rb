@@ -21,11 +21,10 @@ shared_examples_for 'projects user with reader rights' do
             :group => group.id}.should change{ Project.count }.by(1)
   end
 
-  # it 'should be able to view project' do
-  #   get :show, :owner_name => @project.owner.uname, :project_name => @project.name
-  #   assigns(:project).should eq @project
-  # end
-
+  it 'should be able to fork project with different name' do
+    post :fork, :owner_name => @project.owner.uname, :project_name => @project.name, :fork_name => 'another_name'
+    response.should redirect_to(project_path(Project.where(:name => 'another_name').last))
+  end
 end
 
 shared_examples_for 'projects user with project admin rights' do

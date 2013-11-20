@@ -31,6 +31,7 @@ class Ability
 
     can :show, Group
     can :show, User
+    can :possible_forks, Project
 
     if user.guest? # Guest rights
       # can [:new, :create], RegisterRequest
