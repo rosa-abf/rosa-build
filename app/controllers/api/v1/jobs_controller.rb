@@ -23,7 +23,7 @@ class Api::V1::JobsController < Api::V1::BaseController
       else
         @build_list = build_lists.external_nodes(:owned).for_user(current_user).first
         @build_list ||= build_lists.external_nodes(:everything).
-          accessible_by(current_ability, :everything).first
+          accessible_by(current_ability, :everything).readonly(false).first
 
         if @build_list
           @build_list.builder = current_user
