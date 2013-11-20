@@ -350,6 +350,7 @@ Rosa::Application.routes.draw do
       delete '/' => 'projects#destroy'
       # Member
       post '/fork' => 'projects#fork', :as => :fork_project
+      get '/possible_forks' => 'projects#possible_forks', :as => :possible_forks_project
       get '/sections' => 'projects#sections', :as => :sections_project
       post '/sections' => 'projects#sections'
       delete '/remove_user' => 'projects#remove_user', :as => :remove_user_project

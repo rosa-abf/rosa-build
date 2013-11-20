@@ -66,7 +66,7 @@ class Api::V1::ProjectsController < Api::V1::BaseController
   def fork
     owner = (Group.find params[:group_id] if params[:group_id].present?) || current_user
     authorize! :write, owner if owner.class == Group
-    if forked = @project.fork(owner) and forked.valid?
+    if forked = @project.fork(owner, params[:fork_name]) and forked.valid?
       render_json_response forked, 'Project has been forked successfully'
     else
       render_validation_error forked, 'Project has not been forked'
