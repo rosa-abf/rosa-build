@@ -122,7 +122,13 @@ module BuildListsHelper
   end
 
   def can_publish_in_future?(bl)
-    [BuildList::SUCCESS, BuildList::FAILED_PUBLISH, BuildList::BUILD_PUBLISHED, BuildList::TESTS_FAILED].include?(bl.status)
+    [
+      BuildList::SUCCESS,
+      BuildList::FAILED_PUBLISH,
+      BuildList::BUILD_PUBLISHED,
+      BuildList::TESTS_FAILED,
+      BuildList::BUILD_PUBLISHED_INTO_TESTING
+    ].include?(bl.status)
   end
 
   def log_reload_time_options
