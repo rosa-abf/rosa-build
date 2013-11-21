@@ -225,7 +225,7 @@ module AbfWorker
     def create_rpm_build_task(save_to_repository_id, build_for_platform_id, testing)
       key = "#{save_to_repository_id}-#{build_for_platform_id}"
       projects_for_cleanup = @redis.lrange(PROJECTS_FOR_CLEANUP, 0, -1).select do |k|
-        (testing && k =~ /^testing-#{key}$/) || (!testing && k =~ /^[\d]+-#{key}$/)
+        (testing && k =~ /^testing-[\d]+-#{key}$/) || (!testing && k =~ /^[\d]+-#{key}$/)
       end
 
       # We should not to publish new builds into repository
