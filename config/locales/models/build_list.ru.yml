@@ -41,7 +41,8 @@ ru:
 
         extra_params:
           label: Дополнительные параметры
-          cfg_options: Параметры для *.cfg файла
+          cfg_options: "'urpmi_options' для *.cfg файла"
+          cfg_urpm_options: "'urpm_options' для *.cfg файла"
           build_src_rpm: Сборка src.rpm
           build_rpm: Сборка rpm
 

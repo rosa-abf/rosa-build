@@ -21,7 +21,7 @@ class BuildList < ActiveRecord::Base
 
   UPDATE_TYPES = %w[bugfix security enhancement recommended newpackage]
   RELEASE_UPDATE_TYPES = %w[bugfix security]
-  EXTRA_PARAMS = %w[cfg_options build_src_rpm build_rpm]
+  EXTRA_PARAMS = %w[cfg_options cfg_urpm_options build_src_rpm build_rpm]
   EXTERNAL_NODES = %w[owned everything]
 
   validates :project_id, :project_version, :arch, :include_repos,
@@ -468,6 +468,7 @@ class BuildList < ActiveRecord::Base
       'GIT_PROJECT_ADDRESS'           => git_project_address,
       'COMMIT_HASH'                   => commit_hash,
       'EXTRA_CFG_OPTIONS'             => extra_params['cfg_options'],
+      'EXTRA_CFG_URPM_OPTIONS'        => extra_params['cfg_urpm_options'],
       'EXTRA_BUILD_SRC_RPM_OPTIONS'   => extra_params['build_src_rpm'],
       'EXTRA_BUILD_RPM_OPTIONS'       => extra_params['build_rpm']
     }.map{ |k, v| "#{k}='#{v}'" }.join(' ')

@@ -42,7 +42,8 @@ en:
 
         extra_params:
           label: Extra params
-          cfg_options: Options for *.cfg file
+          cfg_options: "'urpm_options' for *.cfg file"
+          cfg_urpm_options: "'urpm_options' for *.cfg file"
           build_src_rpm: Build src.rpm
           build_rpm: Build rpm
 
