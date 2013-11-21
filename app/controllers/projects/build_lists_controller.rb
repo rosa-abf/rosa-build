@@ -179,7 +179,7 @@ class Projects::BuildListsController < Projects::BaseController
     build_list = BuildList.find(params[:build_list_id])
 
     params[:build_list] ||= {}
-    keys = [:save_to_repository_id, :auto_publish, :include_repos,
+    keys = [:save_to_repository_id, :auto_publish, :include_repos, :extra_params,
             :project_version, :update_type, :auto_create_container,
             :extra_repositories, :extra_build_lists, :build_for_platform_id]
     keys.each { |key| params[:build_list][key] = build_list.send(key) }

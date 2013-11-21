@@ -38,8 +38,8 @@
 
     %h3= t('activerecord.attributes.build_list.extra_params.label')
     - BuildList::EXTRA_PARAMS.each do |field|
-      - text = @build_list.extra_params[field] || t("activerecord.attributes.build_list.extra_params.#{field}")
-      = tracker_search_field "build_list[extra_params][#{field}]", text, 'full-size'
+      - text = params[:build_list].try(:[], :extra_params).try(:[], field)
+      = text_field_tag "build_list[extra_params][#{field}]", text, :placeholder => t("activerecord.attributes.build_list.extra_params.#{field}"), :class => 'full-size'
       .both
 
     %h3= t("activerecord.attributes.build_list.preferences")
