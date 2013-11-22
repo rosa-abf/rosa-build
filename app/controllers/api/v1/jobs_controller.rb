@@ -15,7 +15,9 @@ class Api::V1::JobsController < Api::V1::BaseController
     build_lists = build_lists.for_platform(platform_ids) if platform_ids.present?
     ActiveRecord::Base.transaction do
       if current_user.system?
-        if task = (Resque.pop('rpm_worker_default') || Resque.pop('rpm_worker'))
+        # Temporally
+        # if task = (Resque.pop('rpm_worker_default') || Resque.pop('rpm_worker'))
+        if task = Resque.pop('rpm_worker_default')
           @build_list = BuildList.where(:id => task['args'][0]['id']).first
         end
         @build_list ||= build_lists.external_nodes(:everything).first
