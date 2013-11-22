@@ -94,7 +94,7 @@ module BuildListsHelper
   def build_list_version_link(bl, str_version = false)
     hash_size=5
     if bl.commit_hash.present?
-      if bl.last_published_commit_hash.present?
+      if bl.last_published_commit_hash.present? && bl.last_published_commit_hash != bl.commit_hash
         link_to "#{shortest_hash_id bl.last_published_commit_hash, hash_size}...#{shortest_hash_id bl.commit_hash, hash_size}",
                 diff_path(bl.project.owner, bl.project, bl.last_published_commit_hash) + "...#{bl.commit_hash}"
       else
