@@ -94,6 +94,7 @@ module Modules
       end
 
       def tree_info(tree, treeish = nil, path = nil)
+        return [] unless tree
         grouped = tree.contents.sort_by{|c| c.name.downcase}.group_by(&:class)
         [
           grouped[Grit::Tree],
