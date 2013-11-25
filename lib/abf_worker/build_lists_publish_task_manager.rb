@@ -312,6 +312,11 @@ module AbfWorker
         bl.last_published(testing).includes(:packages).limit(2).each{ |old_bl|
           self.class.fill_packages(old_bl, old_packages, :fullname)
         }
+        # TODO: do more flexible
+        # Removes old packages which already in the main repo
+        bl.last_published(false).includes(:packages).limit(3).each{ |old_bl|
+          self.class.fill_packages(old_bl, old_packages, :fullname)
+        } if testing
         build_list_ids << bl.id
         @redis.lpush(LOCKED_BUILD_LISTS, bl.id)
       end
