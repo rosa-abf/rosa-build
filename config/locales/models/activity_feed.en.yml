@@ -12,7 +12,7 @@ en:
 
   notifications:
     subjects:
-      new_commit: "[%{ project_name }] Update of project"
+      new_commit: "[%{project_name}] Update of project"
       new_comment_notification: New comment to your task
       new_commit_comment_notification: New comment to commit
       new_issue_notification: New task added to project

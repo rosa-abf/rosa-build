@@ -12,7 +12,7 @@ ru:
 
   notifications:
     subjects:
-      new_commit: "[%{ project_name }] Обновление проекта"
+      new_commit: "[%{project_name}] Обновление проекта"
       new_comment_notification: Новый комментарий к Вашей задаче
       new_commit_comment_notification: Новый комментарий к коммиту
       new_issue_notification: Новая задача добавлена к проекту
