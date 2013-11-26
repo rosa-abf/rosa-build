@@ -52,7 +52,7 @@ class UserMailer < ActionMailer::Base
   end
 
   def build_list_notification(build_list, user)
-    I18n.locale = user.language if user.language
+    set_locale user
     @user, @build_list = user, build_list
 
     subject = "[№ #{build_list.id}] "
@@ -69,7 +69,7 @@ class UserMailer < ActionMailer::Base
   end
 
   def invite_approve_notification(register_request)
-    I18n.locale = register_request.language if register_request.language
+    set_locale register_request
     @register_request = register_request
     mail(
       :to       => register_request.email,
@@ -79,7 +79,31 @@ class UserMailer < ActionMailer::Base
     end
   end
 
+  def git_delete_branch_notification(user, options)
+    set_locale user
+    mail(
+      :to       => user.email,
+      :subject  => I18n.t('notifications.subjects.new_commit')
+    ) do |format|
+      format.html { render 'git_delete_branch_notification', :locals => options }
+    end
+  end
+
+  def git_new_push_notification(user, options)
+    set_locale user
+    mail(
+      :to       => user.email,
+      :subject  => I18n.t('notifications.subjects.new_commit')
+    ) do |format|
+      format.html { render 'git_new_push_notification', :locals => options }
+    end
+  end
+
   protected
+
+  def set_locale(user)
+    I18n.locale = user.language if user.language
+  end
 
   def email_with_name(user, email = APP_CONFIG['do-not-reply-email'])
     "\"#{user.user_appeal}\" <#{email}>"
