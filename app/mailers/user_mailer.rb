@@ -83,7 +83,7 @@ class UserMailer < ActionMailer::Base
     set_locale user
     mail(
       :to       => user.email,
-      :subject  => I18n.t('notifications.subjects.new_commit')
+      :subject  => I18n.t('notifications.subjects.new_commit', :project_name => "#{options[:project_owner]}/#{options[:project_name]}")
     ) do |format|
       format.html { render 'git_delete_branch_notification', :locals => options }
     end
@@ -93,7 +93,7 @@ class UserMailer < ActionMailer::Base
     set_locale user
     mail(
       :to       => user.email,
-      :subject  => I18n.t('notifications.subjects.new_commit')
+      :subject  => I18n.t('notifications.subjects.new_commit', :project_name => "#{options[:project_owner]}/#{options[:project_name]}")
     ) do |format|
       format.html { render 'git_new_push_notification', :locals => options }
     end
