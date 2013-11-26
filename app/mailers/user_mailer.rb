@@ -2,6 +2,7 @@
 
 class UserMailer < ActionMailer::Base
   add_template_helper ActivityFeedsHelper
+  add_template_helper CommitHelper
 
   default :from => "\"#{APP_CONFIG['project_name']}\" <#{APP_CONFIG['do-not-reply-email']}>"
   default_url_options.merge!(:protocol => 'https') if APP_CONFIG['mailer_https_url']
