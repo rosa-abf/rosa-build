@@ -188,7 +188,7 @@ en:
           new_comment_reply: New reply of comment notifications
           new_issue: New task notifications
           issue_assign: New task assignment notifications
-          new_commit: Notify about new commits in my projects
+          new_commit: Notify about changes of code in my projects
           new_comment_commit_owner: Notify about comments to my commit
           new_comment_commit_repo_owner: Notify about comments to my repository commits
           new_comment_commit_commentor: Notify about comments after my commit
