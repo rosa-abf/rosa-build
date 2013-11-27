@@ -39,7 +39,7 @@ gem 'rdiscount'
 gem 'RedCloth'
 gem 'wikicloth'
 
-gem 'unicorn', '~> 4.3.1', :platforms => [:mri, :rbx]
+# gem 'unicorn', '~> 4.3.1', :platforms => [:mri, :rbx]
 gem 'trinidad', '~> 1.0.2', :platforms => :jruby
 gem 'newrelic_rpm', '~> 3.5.5.38', :platforms => [:mri, :rbx]
 gem 'whenever', '~> 0.7.3', :require => false
@@ -89,6 +89,7 @@ group :production do
   gem 'bluepill', '~> 0.0.60', :require => false
   # gem 'le'
   gem 'logglier'
+  gem 'puma'
 end
 
 group :development do
