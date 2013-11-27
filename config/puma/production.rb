@@ -7,6 +7,8 @@ workers ENV['PUMA_WORKERS'] || 5
 
 pidfile File.join(base_path, 'shared', 'pids', 'unicorn.pid')
 
+bind 'unix:///tmp/rosa_build_unicorn.sock'
+
 preload_app!
 
 on_worker_boot do
@@ -22,3 +24,5 @@ on_worker_boot do
   # Redis.connect!
   # Rails.logger.info('Connected to Redis')
 end
+
+activate_control_app 'unix:///tmp/rosa_build_pumactl.sock'
