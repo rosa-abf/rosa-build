@@ -17,7 +17,7 @@ class Api::V1::JobsController < Api::V1::BaseController
       if current_user.system?
         # Temporally
         # if task = (Resque.pop('rpm_worker_default') || Resque.pop('rpm_worker'))
-        if task = Resque.pop('rpm_worker_default')
+        if task = Resque.pop('rpm_worker')
           @build_list = BuildList.where(:id => task['args'][0]['id']).first
         end
         @build_list ||= build_lists.external_nodes(:everything).first
