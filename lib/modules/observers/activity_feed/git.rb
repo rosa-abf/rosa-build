@@ -44,7 +44,7 @@ module Modules::Observers::ActivityFeed::Git
           :kind => kind,
           :data => options
         )
-        if recipient.notifier.can_notify && recipient.notifier.new_commit
+        if recipient.notifier.can_notify && recipient.notifier.update_code
           UserMailer.send(kind, recipient, options).deliver
         end
       end

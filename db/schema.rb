@@ -524,7 +524,7 @@ ActiveRecord::Schema.define(:version => 20131126154305) do
     t.boolean  "new_comment_commit_commentor",  :default => true
     t.boolean  "new_build",                     :default => true
     t.boolean  "new_associated_build",          :default => true
-    t.boolean  "new_commit",                    :default => false
+    t.boolean  "update_code",                   :default => false
   end
 
   create_table "ssh_keys", :force => true do |t|
