@@ -1,13 +1,13 @@
 # -*- encoding : utf-8 -*-
 base_path  = "/srv/rosa_build"
+pidfile File.join(base_path, 'shared', 'pids', 'unicorn.pid')
+state_path File.join(base_path, 'shared', 'pids', 'puma.state')
+bind 'unix:///tmp/rosa_build_unicorn.sock'
 
 environment ENV['RAILS_ENV'] || 'production'
 threads *(ENV['PUMA_THREADS'] || '1,6').split(',')
 workers ENV['PUMA_WORKERS'] || 5
 
-pidfile File.join(base_path, 'shared', 'pids', 'unicorn.pid')
-
-bind 'unix:///tmp/rosa_build_unicorn.sock'
 
 preload_app!
 
