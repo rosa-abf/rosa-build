@@ -7,7 +7,7 @@ Capistrano::Configuration.instance(:must_exist).load do
   _cset(:puma_cmd)    { "#{fetch(:bundle_cmd, 'bundle')} exec puma" }
   _cset(:pumactl_cmd) { "#{fetch(:bundle_cmd, 'bundle')} exec pumactl" }
   _cset(:puma_env)    { fetch(:rack_env, fetch(:rails_env, 'production')) }
-  _cset(:puma_state)  { "#{fetch :shared_path}/sockets/puma.state" }
+  _cset(:puma_state)  { "#{fetch :shared_path}/pids/puma.state" }
   _cset(:puma_socket) { "unix:/tmp/#{fetch :application}_unicorn.sock" }
   _cset(:puma_role)   { :app }
 
