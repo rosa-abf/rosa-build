@@ -7,7 +7,7 @@ Capistrano::Configuration.instance(:must_exist).load do
     # set :unicorn_port, 8080
 
     task :start, :roles => :app, :except => { :no_release => true } do 
-      run "cd #{fetch :current_path} && #{try_sudo} #{puma_binary} -b /tmp/#{fetch :application}_unicorn.sock -e #{rails_env} -d -C config/puma.rb" # -p #{unicorn_port}
+      run "cd #{fetch :current_path} && #{try_sudo} #{puma_binary} -b unix:/tmp/#{fetch :application}_unicorn.sock -e #{rails_env} -d -C config/puma.rb" # -p #{unicorn_port}
     end
     task :stop, :roles => :app, :except => { :no_release => true } do 
       run "#{try_sudo} kill `cat #{puma_pid}`" rescue warn 'deploy:stop FAILED'
