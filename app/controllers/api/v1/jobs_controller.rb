@@ -13,13 +13,17 @@ class Api::V1::JobsController < Api::V1::BaseController
     build_lists = BuildList.for_status(BuildList::BUILD_PENDING).scoped_to_arch(arch_ids).
       oldest.order(:created_at)
     build_lists = build_lists.for_platform(platform_ids) if platform_ids.present?
+
+    if current_user.system?
+      # Temporally
+      # if task = (Resque.pop('rpm_worker_default') || Resque.pop('rpm_worker'))
+      if task = Resque.pop('rpm_worker')
+        @build_list = BuildList.where(:id => task['args'][0]['id']).first
+      end
+    end
+
     ActiveRecord::Base.transaction do
       if current_user.system?
-        # Temporally
-        # if task = (Resque.pop('rpm_worker_default') || Resque.pop('rpm_worker'))
-        if task = Resque.pop('rpm_worker')
-          @build_list = BuildList.where(:id => task['args'][0]['id']).first
-        end
         @build_list ||= build_lists.external_nodes(:everything).first
         @build_list.touch if @build_list
       else
@@ -32,7 +36,7 @@ class Api::V1::JobsController < Api::V1::BaseController
           @build_list.save
         end
       end
-    end
+    end unless @build_list
 
     if @build_list
       job = {
