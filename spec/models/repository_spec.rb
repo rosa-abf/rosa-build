@@ -124,6 +124,7 @@ describe Repository do
   end
 
   it '#remove_projects' do
+    stub_redis
     repository = FactoryGirl.create(:repository)
     project = FactoryGirl.create(:project)
     repository.projects << project

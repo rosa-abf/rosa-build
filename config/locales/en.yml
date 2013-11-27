@@ -154,11 +154,11 @@ en:
       group_already_added: Group already added
       successfully_added: Member %s successfully added
       error_in_adding: Member %s adding error
-      wrong_user: User with nickname '%{uname}' not found!
+      wrong_user: "User with nickname '%{uname}' not found!"
 
     blob:
-      successfully_updated: File '%{name}' successfully updated
-      updating_error: Error updating file '%{name}'
+      successfully_updated: "File '%{name}' successfully updated"
+      updating_error: "Error updating file '%{name}'"
 
   attributes:
     password: Password
@@ -188,6 +188,7 @@ en:
           new_comment_reply: New reply of comment notifications
           new_issue: New task notifications
           issue_assign: New task assignment notifications
+          update_code: Notify about changes of code in my projects
           new_comment_commit_owner: Notify about comments to my commit
           new_comment_commit_repo_owner: Notify about comments to my repository commits
           new_comment_commit_commentor: Notify about comments after my commit

@@ -154,11 +154,11 @@ ru:
       group_already_added: Группа уже добавлена
       successfully_added: Участник %s успешно добавлен
       error_in_adding: Ошибка при добавлении участника %s
-      wrong_user: Пользователь с ником '%{uname}' не найден.
+      wrong_user: "Пользователь с ником '%{uname}' не найден."
 
     blob:
-      successfully_updated: Файл '%{name}' успешно обновлен
-      updating_error: Ошибка обновления файла '%{name}'
+      successfully_updated: "Файл '%{name}' успешно обновлен"
+      updating_error: "Ошибка обновления файла '%{name}'"
 
   attributes:
     password: Пароль
@@ -188,6 +188,7 @@ ru:
           new_comment_reply: Оповещать о новом ответе на мой комментарий
           new_issue: Оповещать о новых задачах в моих проектах
           issue_assign: Оповещать, когда на меня выставляют задачу
+          update_code: Оповещать об изменении кода в моих проектах
           new_comment_commit_owner: Оповещать о комментариях к моему коммиту
           new_comment_commit_repo_owner: Оповещать о комментариях к коммитам в моем репозитории
           new_comment_commit_commentor: Оповещать о комментариях к коммиту после моего

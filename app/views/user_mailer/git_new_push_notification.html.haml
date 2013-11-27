@@ -1,0 +1,20 @@
+- user = User.where(:email => user_email).first || User.new(:email => user_email) if defined?(user_email)
+
+
+%p
+  - _user_link = defined?(user_email) ? user_link(user, defined?(user_name) ? user_name : user_email, true) : nil
+  = raw t("notifications.bodies.#{change_type}_branch", {:branch_name => branch_name, :user_link => _user_link})
+  = raw t("notifications.bodies.project", :project_link => link_to("#{project_owner}/#{project_name}", project_url(project_owner, project_name)) )
+
+
+%p
+  - last_commits.each do |commit|
+    = link_to shortest_hash_id(commit[0]), commit_url(project_owner, project_name, commit[0])
+    = commit[1]
+    %br
+  - if defined? other_commits
+    %br
+    =link_to t('notifications.bodies.more_commits', :count => other_commits_count, :commits => commits_pluralize(other_commits_count)),
+             diff_url(project_owner, project_name, :diff => other_commits)
+
+= render 'footer'

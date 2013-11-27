@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20131107152408) do
+ActiveRecord::Schema.define(:version => 20131126154305) do
 
   create_table "activity_feeds", :force => true do |t|
     t.integer  "user_id",    :null => false
@@ -20,6 +20,8 @@ ActiveRecord::Schema.define(:version => 20131107152408) do
     t.datetime "created_at"
     t.datetime "updated_at"
   end
+
+  add_index "activity_feeds", ["user_id", "kind"], :name => "index_activity_feeds_on_user_id_and_kind"
 
   create_table "advisories", :force => true do |t|
     t.string   "advisory_id"
@@ -509,7 +511,7 @@ ActiveRecord::Schema.define(:version => 20131107152408) do
   add_index "repository_statuses", ["repository_id", "platform_id"], :name => "index_repository_statuses_on_repository_id_and_platform_id", :unique => true
 
   create_table "settings_notifiers", :force => true do |t|
-    t.integer  "user_id",                                         :null => false
+    t.integer  "user_id",                                          :null => false
     t.boolean  "can_notify",                    :default => true
     t.boolean  "new_comment",                   :default => true
     t.boolean  "new_comment_reply",             :default => true
@@ -522,6 +524,7 @@ ActiveRecord::Schema.define(:version => 20131107152408) do
     t.boolean  "new_comment_commit_commentor",  :default => true
     t.boolean  "new_build",                     :default => true
     t.boolean  "new_associated_build",          :default => true
+    t.boolean  "update_code",                   :default => false
   end
 
   create_table "ssh_keys", :force => true do |t|
