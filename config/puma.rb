@@ -1,9 +1,9 @@
 # -*- encoding : utf-8 -*-
 base_path  = "/srv/rosa_build"
 
-environment ENV['RAILS_ENV']
-threads *(ENV['PUMA_THREADS'] || '1,5').split(',')
-workers ENV['PUMA_WORKERS'] || 6
+environment ENV['RAILS_ENV'] || 'production'
+threads *(ENV['PUMA_THREADS'] || '1,6').split(',')
+workers ENV['PUMA_WORKERS'] || 5
 
 pidfile File.join(base_path, 'shared', 'pids', 'unicorn.pid')
 
