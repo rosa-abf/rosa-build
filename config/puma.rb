@@ -1,6 +1,11 @@
+# -*- encoding : utf-8 -*-
+base_path  = "/srv/rosa_build"
+
 environment ENV['RAILS_ENV']
 threads *(ENV['PUMA_THREADS'] || '1,5').split(',')
 workers ENV['PUMA_WORKERS'] || 6
+
+pidfile File.join(base_path, 'shared', 'pids', 'unicorn.pid')
 
 preload_app!
 
