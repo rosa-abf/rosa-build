@@ -224,7 +224,7 @@ GEM
     net-ssh (2.6.8)
     net-ssh-gateway (1.2.0)
       net-ssh (>= 2.6.5)
-    newrelic_rpm (3.5.5.38)
+    newrelic_rpm (3.6.9.171)
     ng-rails-csrf (0.1.0)
     nokogiri (1.6.0)
       mini_portile (~> 0.5.0)
@@ -484,7 +484,7 @@ DEPENDENCIES
   meta_request
   mock_redis (= 0.6.2)
   momentjs-rails
-  newrelic_rpm (~> 3.5.5.38)
+  newrelic_rpm
   ng-rails-csrf
   ohm
   ohm-expire
