@@ -33,7 +33,8 @@ set :repository,  "git@github.com:uname/repository.git"
 set :deploy_via,  :remote_cache
 
 require './lib/recipes/nginx'
-require './lib/recipes/unicorn'
+# require './lib/recipes/unicorn'
+require 'puma/capistrano'
 #require './lib/recipes/bluepill'
 set :workers_count, 4
 require './lib/recipes/resque'
