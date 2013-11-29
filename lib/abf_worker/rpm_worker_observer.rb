@@ -59,7 +59,7 @@ module AbfWorker
       else
         redis.lpush RESTARTED_BUILD_LISTS, subject.id
         subject.update_column(:status, BuildList::BUILD_PENDING)
-        subject.add_job_to_abf_worker_queue if subject.external_nodes.blank?
+        subject.restart_job if subject.external_nodes.blank?
         return true
       end
     end

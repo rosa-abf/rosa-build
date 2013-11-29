@@ -15,10 +15,13 @@ class Api::V1::JobsController < Api::V1::BaseController
     build_lists = build_lists.for_platform(platform_ids) if platform_ids.present?
 
     if current_user.system?
-      # Temporally
-      # if task = Resque.pop('rpm_worker')
       if task = (Resque.pop('rpm_worker_default') || Resque.pop('rpm_worker'))
         @build_list = BuildList.where(:id => task['args'][0]['id']).first
+        # Temporally
+        if @build_list.build_for_platform.name == 'red3'
+          @build_list.restart_job
+          @build_list = nil
+        end
       end
     end
 
