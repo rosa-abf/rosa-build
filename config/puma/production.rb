@@ -5,7 +5,7 @@ state_path File.join(base_path, 'shared', 'pids', 'puma.state')
 bind 'unix:///tmp/rosa_build_unicorn.sock'
 
 environment ENV['RAILS_ENV'] || 'production'
-threads *(ENV['PUMA_THREADS'] || '1,6').split(',')
+threads *(ENV['PUMA_THREADS'] || '1,3').split(',')
 workers ENV['PUMA_WORKERS'] || 5
 
 
