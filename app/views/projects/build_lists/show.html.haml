@@ -43,7 +43,7 @@
     .rightlist= t("layout.#{@build_list.include_testing_subrepository?}_")
     .both
     .leftlist= t("activerecord.attributes.build_list.include_repos")
-    .rightlist= (@build_list.include_repos||[]).map{|r| Repository.find(r).name}.join(', ')
+    .rightlist= (@build_list.include_repos||[]).map{|r| Repository.where(:id => r).first.try(:name)}.join(', ')
     .both
     .leftlist= t("activerecord.attributes.build_list.update_type")
     .rightlist
