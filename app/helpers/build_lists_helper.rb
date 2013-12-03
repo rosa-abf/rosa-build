@@ -117,7 +117,7 @@ module BuildListsHelper
 
   def container_url(build_list = @build_list)
     url = "#{APP_CONFIG['downloads_url']}/#{build_list.save_to_platform.name}/container/#{build_list.id}/"
-    url << "#{build_list.arch.name}/#{build_list.save_to_repository.name}/release/" if build_list.build_for_platform.distrib_type == 'mdv'
+    url << "#{build_list.arch.name}/#{build_list.save_to_repository.name}/release/" if build_list.build_for_platform.try(:distrib_type) == 'mdv'
     url.html_safe
   end
 
