@@ -5,7 +5,7 @@ GIT
     grack (0.2.0)
 
 GIT
-  remote: git://github.com/warpc/grit.git
+  remote: git://github.com/rosa-abf/grit.git
   revision: f04f779fb052725b964ba259f8073a34e493c0c7
   specs:
     grit (2.5.0)
@@ -14,7 +14,7 @@ GIT
       posix-spawn (~> 0.3.6)
 
 GIT
-  remote: git://github.com/warpc/redhillonrails_core.git
+  remote: git://github.com/rosa-abf/redhillonrails_core.git
   revision: c0945a4c6ad4bae4ca2750b105efcff162408b15
   branch: rails31
   specs:

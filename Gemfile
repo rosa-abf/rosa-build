@@ -1,7 +1,7 @@
 source 'https://rubygems.org'
 
 gem 'rails', '3.2.16' #, :git => 'git://github.com/rails/rails.git'
-gem 'redhillonrails_core', :git => 'git://github.com/warpc/redhillonrails_core.git', :branch => 'rails31' # '~> 2.0.0.pre' # deprecated
+gem 'redhillonrails_core', :git => 'git://github.com/rosa-abf/redhillonrails_core.git', :branch => 'rails31' # '~> 2.0.0.pre' # deprecated
 
 gem 'pg', '~> 0.14.0'
 
@@ -25,7 +25,7 @@ gem 'state_machine'
 gem 'redis-rails'
 
 gem 'grack', :git => 'git://github.com/rosa-abf/grack.git', :require => 'git_http'
-gem 'grit', :git => 'git://github.com/warpc/grit.git' #, :path => '~/Sites/code/grit'
+gem 'grit', :git => 'git://github.com/rosa-abf/grit.git' #, :path => '~/Sites/code/grit'
 gem 'charlock_holmes', '~> 0.6.9' #, :git => 'git://github.com/brianmario/charlock_holmes.git', :branch => 'bundle-icu'
 gem 'github-linguist', '~> 2.3.4', :require => 'linguist'
 gem 'diff-display', '~> 0.0.1'
