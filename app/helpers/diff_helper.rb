@@ -37,12 +37,12 @@ module DiffHelper
            end
     prepare(args.merge({:filepath => filepath, :comments => comments, :in_discussion => in_discussion}))
 
-    res = "<table class='diff inline' cellspacing='0' cellpadding='0' ng-non-bindable>"
-    res += "<tbody>"
-    res += renderer diff_display.data #diff_display.render(Git::Diff::InlineCallback.new comments, path)
-    res += tr_line_comments(comments) if in_discussion
-    res += "</tbody>"
-    res += "</table>"
+    res = '<table class="diff inline" cellspacing="0" cellpadding="0" ng-non-bindable>'
+    res << '<tbody>'
+    res << renderer(diff_display.data) #diff_display.render(Git::Diff::InlineCallback.new comments, path)
+    res << tr_line_comments(comments) if in_discussion
+    res << '</tbody>'
+    res << '</table>'
     res.html_safe
   end
 
@@ -214,11 +214,11 @@ module DiffHelper
     res = '<span class="diff-content">'
     if line.inline_changes?
       prefix, changed, postfix = line.segments.map{|segment| escape(segment) }
-      res += "#{prefix}<span class='idiff'>#{changed}</span>#{postfix}"
+      res << "#{prefix}<span class='idiff'>#{changed}</span>#{postfix}"
     else
-      res += escape(line)
+      res << escape(line)
     end
-    res += '</span>'
+    res << '</span>'
 
     res
   end
