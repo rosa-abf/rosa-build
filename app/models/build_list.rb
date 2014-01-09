@@ -158,6 +158,7 @@ class BuildList < ActiveRecord::Base
     after_transition :on => :published,
       :do => [:set_version_and_tag, :actualize_packages]
     after_transition :on => :publish, :do => :set_publisher
+    after_transition :build_published_into_testing => :publish, :do => :cleanup_packages_from_testing
     after_transition :on => :cancel, :do => :cancel_job
 
     after_transition :on => [:published, :fail_publish, :build_error, :tests_failed], :do => :notify_users
@@ -538,6 +539,14 @@ class BuildList < ActiveRecord::Base
   def set_publisher
     self.publisher ||= user
     save
+  end
+
+  def cleanup_packages_from_testing
+    AbfWorker::BuildListsPublishTaskManager.cleanup_packages_from_testing(
+      build_for_platform_id,
+      save_to_repository_id,
+      id
+    )
   end
 
   def current_ability
