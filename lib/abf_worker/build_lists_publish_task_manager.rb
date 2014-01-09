@@ -64,7 +64,7 @@ module AbfWorker
         return if build_lists.blank?
         rep_pl = "#{repository_id}-#{platform_id}"
         key = "#{BUILD_LISTS_FOR_CLEANUP_FROM_TESTING}-#{rep_pl}"
-        redis.sadd REP_AND_PLS_OF_BUILD_LISTS_FOR_CLEANUP_FROM_TESTING, "#{rep_pl}"
+        redis.sadd REP_AND_PLS_OF_BUILD_LISTS_FOR_CLEANUP_FROM_TESTING, rep_pl
         redis.sadd key, build_lists
       end
 
