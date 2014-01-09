@@ -146,19 +146,16 @@ class BuildList < ActiveRecord::Base
       end
     end
 
-    after_transition do |build_list, transition|
-      status = HUMAN_STATUSES[build_list.status]
-      if build_list.mass_build && MassBuild::COUNT_STATUSES.include?(status)
-        MassBuild.increment_counter "#{status.to_s}_count", build_list.mass_build_id
-      end
-    end
-
     after_transition :on => :place_build, :do => :add_job_to_abf_worker_queue,
       :if  => lambda { |build_list| build_list.external_nodes.blank? }
     after_transition :on => :published,
       :do => [:set_version_and_tag, :actualize_packages]
     after_transition :on => :publish, :do => :set_publisher
-    after_transition :build_published_into_testing => :publish, :do => :cleanup_packages_from_testing
+    after_transition(:on => :publish) do |build_list, transition|
+      if transition.from == BUILD_PUBLISHED_INTO_TESTING
+        build_list.cleanup_packages_from_testing
+      end
+    end
     after_transition :on => :cancel, :do => :cancel_job
 
     after_transition :on => [:published, :fail_publish, :build_error, :tests_failed], :do => :notify_users
@@ -489,6 +486,14 @@ class BuildList < ActiveRecord::Base
     }
   end
 
+  def cleanup_packages_from_testing
+    AbfWorker::BuildListsPublishTaskManager.cleanup_packages_from_testing(
+      build_for_platform_id,
+      save_to_repository_id,
+      id
+    )
+  end
+
   protected
 
   def create_container
@@ -539,14 +544,6 @@ class BuildList < ActiveRecord::Base
   def set_publisher
     self.publisher ||= user
     save
-  end
-
-  def cleanup_packages_from_testing
-    AbfWorker::BuildListsPublishTaskManager.cleanup_packages_from_testing(
-      build_for_platform_id,
-      save_to_repository_id,
-      id
-    )
   end
 
   def current_ability

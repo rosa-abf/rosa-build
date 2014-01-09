@@ -11,7 +11,7 @@ var _locales = {
       'Всего %1 тега',
       'Всего %1 тегов'
     ],
-    <%= BuildList::STATUSES.map{|s| "'build_list.status.#{s}':'#{BuildList.human_status(s)}'"}.join(',') %>
+    <%= BuildList::STATUSES.map{|s| "'build_list.status.#{s}': '#{BuildList.human_status(s)}'"}.join(',') %>
   },
   <%I18n.locale = :en%>
   'en-us': {
@@ -23,6 +23,6 @@ var _locales = {
       'Total %1 tag',
       'Total %1 tags'
     ],
-    <%= BuildList::STATUSES.map{|s| "'build_list.status.#{s}':'#{BuildList.human_status(s)}'"}.join(',') %>
+    <%= BuildList::STATUSES.map{|s| "'build_list.status.#{s}': '#{BuildList.human_status(s)}'"}.join(',') %>
   }
 };

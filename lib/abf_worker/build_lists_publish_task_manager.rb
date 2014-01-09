@@ -62,9 +62,10 @@ module AbfWorker
 
       def cleanup_packages_from_testing(platform_id, repository_id, *build_lists)
         return if build_lists.blank?
-        key = "#{BUILD_LISTS_FOR_CLEANUP_FROM_TESTING}-#{repository_id}-#{platform_id}"
-        redis.lpush REP_AND_PLS_OF_BUILD_LISTS_FOR_CLEANUP_FROM_TESTING, "#{repository_id}-#{platform_id}"
-        redis.lpush key, build_lists
+        rep_pl = "#{repository_id}-#{platform_id}"
+        key = "#{BUILD_LISTS_FOR_CLEANUP_FROM_TESTING}-#{rep_pl}"
+        redis.sadd REP_AND_PLS_OF_BUILD_LISTS_FOR_CLEANUP_FROM_TESTING, "#{rep_pl}"
+        redis.sadd key, build_lists
       end
 
       def unlock_build_list(build_list)
@@ -222,8 +223,8 @@ module AbfWorker
         locked_rep.present? && locked_rep.include?(rep.to_i) ? nil : [rep.to_i, pl.to_i]
       end.compact
 
-      for_cleanup_from_testing = @redis.lrange(REP_AND_PLS_OF_BUILD_LISTS_FOR_CLEANUP_FROM_TESTING, 0, -1).map do |key|
-        next if redis.llen("#{BUILD_LISTS_FOR_CLEANUP_FROM_TESTING}-#{key}") == 0
+      for_cleanup_from_testing = @redis.smembers(REP_AND_PLS_OF_BUILD_LISTS_FOR_CLEANUP_FROM_TESTING).map do |key|
+        next if @redis.scard("#{BUILD_LISTS_FOR_CLEANUP_FROM_TESTING}-#{key}") == 0
         rep, pl = *key.split('-')
         locked_rep.present? && locked_rep.include?(rep.to_i) ? nil : [rep.to_i, pl.to_i]
       end.compact if testing
@@ -270,24 +271,20 @@ module AbfWorker
         packages = JSON.parse packages
         old_packages[:sources] |= packages['sources']
         Arch.pluck(:name).each do |arch|
-          old_packages[:binaries][arch.to_sym] |= packages['binaries'][arch]
+          old_packages[:binaries][arch.to_sym] |= packages['binaries'][arch] || []
         end
       end
 
       if testing
-        build_lists_for_cleanup_from_testing = @redis.lrange(
-          "#{BUILD_LISTS_FOR_CLEANUP_FROM_TESTING}-#{save_to_repository_id}-#{build_for_platform_id}"
-          0, -1
-        )
+        build_lists_for_cleanup_from_testing = @redis.smembers("#{BUILD_LISTS_FOR_CLEANUP_FROM_TESTING}-#{save_to_repository_id}-#{build_for_platform_id}")
         BuildList.where(:id => build_lists_for_cleanup_from_testing).each do |b|
           self.class.fill_packages(b, old_packages)
         end if build_lists_for_cleanup_from_testing.present?
       end
       build_lists_for_cleanup_from_testing ||= []
 
-
       bl = build_lists.first
-      return false if !bl && old_packages[:sources].empty?
+      return false if !bl && old_packages[:binaries].values.flatten.empty?
 
       save_to_repository  = Repository.find save_to_repository_id
       # Checks mirror sync status
@@ -369,7 +366,7 @@ module AbfWorker
       end
 
       build_lists_for_cleanup_from_testing.each do |key|
-        @redis.lrem "#{BUILD_LISTS_FOR_CLEANUP_FROM_TESTING}-#{save_to_repository_id}-#{build_for_platform_id}", 0, key
+        @redis.srem "#{BUILD_LISTS_FOR_CLEANUP_FROM_TESTING}-#{save_to_repository_id}-#{build_for_platform_id}", key
       end
 
       return true
