@@ -146,6 +146,13 @@ class BuildList < ActiveRecord::Base
       end
     end
 
+    after_transition do |build_list, transition|
+      status = HUMAN_STATUSES[build_list.status]
+      if build_list.mass_build && MassBuild::COUNT_STATUSES.include?(status)
+        MassBuild.increment_counter "#{status.to_s}_count", build_list.mass_build_id
+      end
+    end
+
     after_transition :on => :place_build, :do => :add_job_to_abf_worker_queue,
       :if  => lambda { |build_list| build_list.external_nodes.blank? }
     after_transition :on => :published,
