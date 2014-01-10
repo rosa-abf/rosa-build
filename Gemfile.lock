@@ -5,6 +5,15 @@ GIT
     grack (0.2.0)
 
 GIT
+  remote: git://github.com/rosa-abf/grit.git
+  revision: 9c4a318953709eebcf2e567f906c907068a268f8
+  specs:
+    grit (2.5.0)
+      diff-lcs (~> 1.1)
+      mime-types (~> 1.15)
+      posix-spawn (~> 0.3.6)
+
+GIT
   remote: git://github.com/rosa-abf/redhillonrails_core.git
   revision: c0945a4c6ad4bae4ca2750b105efcff162408b15
   branch: rails31
@@ -131,11 +140,6 @@ GEM
       pygments.rb (>= 0.2.13)
     github-markdown (0.5.3)
     github-markup (0.7.5)
-    gitlab-grit (2.6.3)
-      charlock_holmes (~> 0.6.9)
-      diff-lcs (~> 1.1)
-      mime-types (~> 1.15)
-      posix-spawn (~> 0.3.6)
     gli (2.8.1)
     gollum (2.1.10)
       github-markdown
@@ -149,10 +153,6 @@ GEM
       sinatra (~> 1.0)
       stringex (~> 1.4.0)
       useragent (~> 0.4.9)
-    grit (2.5.0)
-      diff-lcs (~> 1.1)
-      mime-types (~> 1.15)
-      posix-spawn (~> 0.3.6)
     haml (3.1.8)
     haml-rails (0.3.5)
       actionpack (>= 3.1, < 4.1)
@@ -267,7 +267,7 @@ GEM
       resque
     pg (0.14.1)
     polyglot (0.3.3)
-    posix-spawn (0.3.6)
+    posix-spawn (0.3.8)
     puma (2.7.1)
       rack (>= 1.1, < 2.0)
     pygments.rb (0.2.13)
@@ -466,9 +466,9 @@ DEPENDENCIES
   friendly_id
   gemoji (~> 1.2.1)
   github-linguist (~> 2.3.4)
-  gitlab-grit (~> 2.6.3)
   gollum (~> 2.1.3)
   grack!
+  grit!
   haml-rails (~> 0.3.4)
   highline (~> 1.6.11)
   hirb

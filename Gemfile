@@ -25,8 +25,8 @@ gem 'state_machine'
 gem 'redis-rails'
 
 gem 'grack', :git => 'git://github.com/rosa-abf/grack.git', :require => 'git_http'
-gem "gitlab-grit", "~> 2.6.3"
-gem 'charlock_holmes', '~> 0.6.9' #, :git => 'git://github.com/brianmario/charlock_holmes.git', :branch => 'bundle-icu'
+gem 'grit', :git => 'git://github.com/rosa-abf/grit.git'
+gem 'charlock_holmes', '~> 0.6.9'
 gem 'github-linguist', '~> 2.3.4', :require => 'linguist'
 gem 'diff-display', '~> 0.0.1'
 
