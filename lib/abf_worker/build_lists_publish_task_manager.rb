@@ -278,7 +278,7 @@ module AbfWorker
       if testing
         build_lists_for_cleanup_from_testing = @redis.smembers("#{BUILD_LISTS_FOR_CLEANUP_FROM_TESTING}-#{save_to_repository_id}-#{build_for_platform_id}")
         BuildList.where(:id => build_lists_for_cleanup_from_testing).each do |b|
-          self.class.fill_packages(b, old_packages)
+          self.class.fill_packages(b, old_packages, :fullname)
         end if build_lists_for_cleanup_from_testing.present?
       end
       build_lists_for_cleanup_from_testing ||= []
