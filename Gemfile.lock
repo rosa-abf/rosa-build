@@ -6,7 +6,7 @@ GIT
 
 GIT
   remote: git://github.com/rosa-abf/grit.git
-  revision: 9c4a318953709eebcf2e567f906c907068a268f8
+  revision: baa333d93615085a8d2304d1f5135bf48f37ed3d
   specs:
     grit (2.5.0)
       diff-lcs (~> 1.1)
