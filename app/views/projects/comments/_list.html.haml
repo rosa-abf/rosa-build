@@ -2,5 +2,9 @@
 .hr
 %h3#block-list= t("layout.comments.comments_header")
 - list.each do |comment|
-  = render 'projects/comments/comment', :comment => comment, :data => {:project => project, :commentable => commentable}
+  -unless comment.created_from_commit_hash
+    = render 'projects/comments/comment', :comment => comment, :data => {:project => project, :commentable => commentable}
+  -else
+    - GitPresenters::CommitAsMessagePresenter.present(nil, :comment => comment) do |presenter|
+      = render 'shared/feed_message', :presenter => presenter, :item_no => "-#{comment.id}"
 = render "projects/comments/markdown_help"

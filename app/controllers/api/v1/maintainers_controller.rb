@@ -5,7 +5,7 @@ class Api::V1::MaintainersController < Api::V1::BaseController
   def index
     @maintainers = BuildList::Package.includes(:project)
                                      .actual.by_platform(@platform)
-                                     .like_name(params[:filter].try(:[], :package_name))
+                                     .like_name(params[:package_name])
                                      .paginate(paginate_params)
   end
 end

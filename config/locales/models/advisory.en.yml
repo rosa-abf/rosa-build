@@ -1,7 +1,7 @@
 en:
   layout:
     advisories:
-      atom_header: Advisories
+      atom_title: Advisories
       list_header: Advisories
       form_header: New advisory
       project_name: Project

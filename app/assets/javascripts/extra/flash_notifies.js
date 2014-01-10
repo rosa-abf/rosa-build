@@ -12,7 +12,10 @@ $(document).ready(function() {
   }
 
   $('#close-alert').click(function () {
-    setCookie("flash_notify_hash", FLASH_HASH_ID, FLASH_EXPIRES_AT);
+    var exdate=new Date();
+    exdate.setDate(exdate.getDate() + 365);
+    var expires="expires="+exdate.toUTCString();
+    setCookie("flash_notify_hash", FLASH_HASH_ID, expires);
   });
 });
 

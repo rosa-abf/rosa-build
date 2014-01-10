@@ -3,9 +3,17 @@ module AbfWorker
 
     class << self
       def projects_status
-        get_status(:rpm, :publish) { |w, worker|
-          w.to_s =~ /#{worker}_worker_default/
-        }
+        Rails.cache.fetch([AbfWorker::StatusInspector, :projects_status], :expires_in => 10.seconds) do
+          result = get_status(:rpm, :publish) { |w, worker| w.to_s =~ /#{worker}_worker_default/ }
+          nodes = RpmBuildNode.total_statistics
+          result[:rpm][:workers]        += nodes[:systems]
+          result[:rpm][:build_tasks]    += nodes[:busy]
+          result[:rpm][:other_workers]  = nodes[:others]
+          external_bls = BuildList.for_status(BuildList::BUILD_PENDING).external_nodes(:everything).count
+          result[:rpm][:default_tasks]  += external_bls
+          result[:rpm][:tasks]          += external_bls
+          result
+        end
       end
 
       def products_status
@@ -28,10 +36,13 @@ module AbfWorker
 
       def status_of_worker(workers, worker)
         redis, key = Resque.redis, "queue:#{worker}_worker"
+        default_tasks, tasks = redis.llen("#{key}_default"), redis.llen(key)
         {
-          :count        => workers.count,
-          :build_tasks  => workers.select{ |w| w.working? }.count,
-          :tasks        => (redis.llen("#{key}_default") + redis.llen(key))
+          :workers            => workers.count,
+          :build_tasks        => workers.select{ |w| w.working? }.count,
+          :default_tasks      => default_tasks,
+          :low_tasks          => tasks,
+          :tasks              => (default_tasks + tasks)
         }
       end
 

@@ -1,17 +1,16 @@
 ru:
   layout:
     projects:
+      mass_import: Массовый импорт
       branches: Ветки
-      showing_branches: Показано %{count} веток
-      showing_branch: Показана 1 ветка
-      no_branch: Нет веток
+      delete_branch: Удалить ветку
+      restore_branch: Восстановить ветку
+      no_branches: Нет веток
       base_branch: Текущая ветка
       compare: Сравнить
       browse_code: Просмотреть код
       source_code: Исходный код (%{type})
       tags: Теги
-      showing_tags: Показано %{count} тегов
-      showing_tag: Показан 1 тег
       no_tags: Нет тегов
       add: Добавить
       public_projects_list: Список публичных проектов
@@ -30,6 +29,7 @@ ru:
       new_build_list: Новая сборка
       confirm_delete: Вы уверены, что хотите удалить этот проект?
       new: Новый проект
+      new_branch: Новая ветка
       location: Расположение
       git_repo_location: Путь к git-репозиторию
       current_project_header: Текущий проект
@@ -39,6 +39,7 @@ ru:
       members: Участники
       groups: Группы
       edit_collaborators: Участники
+      hooks: Веб хуки
       role: Роль в проекте
       remove_user: Покинуть проект
       issues: Задачи
@@ -47,7 +48,6 @@ ru:
       sections: Разделы
       has_issue_description: Трэкер предоставляет лекговесный менеджер для задач по разработке Вашего проекта.
       has_wiki_description: Wiki - это самый простой способ предоставить другим вносить свой вклад в развитие Вашего проекта. Каждый пользователь нашего сервиса может использовать Wiki для документирования, примеров, поддержки или всего другого, в чем у Вас появится необходимость.
-      human_average_build_time: 'Ожидаемое время: %{hours} ч. %{minutes} мин.'
       git_global_setup: Общие настройки Git
       create_repository: Создание репозитория
       move_files_to_folder: Переместите нужные файлы в проект или создайте их.
@@ -72,8 +72,12 @@ ru:
         cloning: Клонирование этого репозитория
         remote: Добавление этого репозитория как удаленного к существующему локальному репозиторию
 
+      public: Публичные
+      private: Приватные
+
   flash:
     project:
+      mass_import_added_to_queue: Массовый импорт добавлен в очередь
       saved: Проект успешно сохранен
       save_error: Не удалось сохранить проект
       save_warning_ssh_key: Владельцу проекта необходимо указать в профиле свой SSH ключ
@@ -87,6 +91,9 @@ ru:
       project: Проект
     attributes:
       project:
+        url: URL
+        add_to_repository_id: Добавить в репозиторий
+        srpms_list: Список SRPMs
         name: Название
         description: Описание
         owner: Владелец
@@ -100,7 +107,7 @@ ru:
         updated_at: Обновлен
         has_issues: Включить трэкер
         has_wiki: Включить Wiki
-        srpm: Импортировать код из src.rpm
+        srpm: Импортировать код из src.rpm (опционально)
         who_owns:
           me: Я
           group: Группа

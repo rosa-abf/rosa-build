@@ -28,6 +28,22 @@ shared_examples_for 'platform user with owner rights' do
     end
   end
 
+  context 'perform change_visibility action' do
+    before do
+      @visibility = @platform.visibility
+      post :change_visibility, :id => @platform.id
+    end
+
+    it 'should be able to perform action' do
+      response.should redirect_to(platform_path(@platform))
+    end
+
+    it 'ensures that visibility of platform has been changed' do
+      @platform.reload
+      @platform.visibility.should_not == @visibility
+    end
+  end
+
   context 'platform user with destroy rights for main platforms only' do
     it 'should be able to perform destroy action for main platform' do
       delete :destroy, :id => @platform.id
@@ -58,6 +74,22 @@ shared_examples_for 'platform user without owner rights' do
     it 'ensures that platform has not been updated' do
       @platform.reload
       @platform.description.should_not == 'new description'
+    end
+  end
+
+  context 'perform change_visibility action' do
+    before do
+      @visibility = @platform.visibility
+      post :change_visibility, :id => @platform.id
+    end
+
+    it 'should not be able to perform action' do
+      response.should_not be_success
+    end
+
+    it 'ensures that visibility of platform has not been changed' do
+      @platform.reload
+      @platform.visibility.should == @visibility
     end
   end
 
@@ -341,6 +373,22 @@ describe Platforms::PlatformsController do
     it_should_behave_like 'platform user with reader rights'
     it_should_behave_like 'platform user with reader rights for hidden platform'
     it_should_behave_like 'platform user with member rights'
+    it_should_behave_like 'platform user without owner rights'
+    it_should_behave_like 'platform user without global admin rights'
+  end
+
+  context 'for member of repository' do
+    before do
+      http_login(@user)
+      repository = FactoryGirl.create(:repository, :platform => @platform)
+      repository.add_member(@user)
+      personal_repository = FactoryGirl.create(:repository, :platform => @personal_platform)
+      personal_repository.add_member(@user)
+    end
+
+    it_should_behave_like 'platform user with reader rights'
+    it_should_behave_like 'platform user with reader rights for hidden platform'
+    it_should_behave_like 'platform user without member rights'
     it_should_behave_like 'platform user without owner rights'
     it_should_behave_like 'platform user without global admin rights'
   end

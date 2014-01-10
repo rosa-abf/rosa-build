@@ -1,4 +1,10 @@
 class Repository < ActiveRecord::Base
+  extend FriendlyId
+  friendly_id :name
+
+  LOCK_FILE_NAMES = {:sync => '.sync.lock', :repo => '.repo.lock'}
+  SORT = {'base' => 1, 'main' => 2, 'contrib' => 3, 'non-free' => 4, 'restricted' => 5}
+
   belongs_to :platform
 
   has_many :relations, :as => :target, :dependent => :destroy
@@ -7,6 +13,7 @@ class Repository < ActiveRecord::Base
 
   has_many :project_to_repositories, :dependent => :destroy, :validate => true
   has_many :projects, :through => :project_to_repositories
+  has_many :repository_statuses, :dependent => :destroy
   has_one  :key_pair, :dependent => :destroy
 
   has_many :build_lists, :foreign_key => :save_to_repository_id, :dependent => :destroy
@@ -16,10 +23,24 @@ class Repository < ActiveRecord::Base
 
   scope :recent, order("#{table_name}.name ASC")
 
-  before_destroy :detele_directory, :unless => lambda {Thread.current[:skip]}
+  before_destroy :detele_directory
 
   attr_accessible :name, :description, :publish_without_qa
   attr_readonly :name, :platform_id
+  attr_accessor :projects_list
+
+  def regenerate(build_for_platform_id = nil)
+    build_for_platform = Platform.main.find build_for_platform_id if platform.personal?
+    status = repository_statuses.find_or_create_by_platform_id(build_for_platform.try(:id) || platform_id)
+    status.regenerate
+  end
+
+  def resign
+    if platform.main?
+      status = repository_statuses.find_or_create_by_platform_id(platform_id)
+      status.resign
+    end
+  end
 
   def base_clone(attrs = {})
     dup.tap do |c|
@@ -36,10 +57,72 @@ class Repository < ActiveRecord::Base
   end
   later :clone_relations, :loner => true, :queue => :clone_build
 
+  def add_projects(list, user)
+    current_ability = Ability.new(user)
+    list.lines.each do |line|
+      begin
+        line.chomp!; line.strip!
+        owner, name = line.split('/')
+        next if owner.blank? || name.blank?
+
+        project = Project.where(:owner_uname => owner, :name => name).accessible_by(current_ability, :read).first
+        projects << project if project
+      rescue RuntimeError, Exception
+      end
+    end
+  end
+  later :add_projects, :queue => :clone_build
+
+  def remove_projects(list)
+    list.lines.each do |name|
+      begin
+        name.chomp!; name.strip!
+        next if name.blank?
+        project_to_repositories.where(:projects => { :name => name }).joins(:project).destroy_all
+      rescue RuntimeError, Exception
+      end
+    end
+  end
+  later :remove_projects, :queue => :clone_build
+
   def full_clone(attrs = {})
     base_clone(attrs).tap do |c|
       with_skip {c.save} and c.clone_relations(self) # later with resque
     end
+  end
+
+  # Checks locking of sync
+  def sync_lock_file_exists?
+    lock_file_actions :check, :sync
+  end
+
+  # Uses for locking sync
+  # Calls from UI
+  def add_sync_lock_file
+    lock_file_actions :add, :sync
+  end
+
+  # Uses for unlocking sync
+  # Calls from UI
+  def remove_sync_lock_file
+    lock_file_actions :remove, :sync
+  end
+
+  # Uses for locking publishing
+  # Calls from API
+  def add_repo_lock_file
+    lock_file_actions :add, :repo
+  end
+
+  # Uses for unlocking publishing
+  # Calls from API
+  def remove_repo_lock_file
+    lock_file_actions :remove, :repo
+  end
+
+  # Presence of `.repo.lock` file means that mirror is currently synchronising the repository state.
+  def repo_lock_file_exists?
+    lock_file_actions :check, :repo
   end
 
   def add_member(member, role = 'admin')
@@ -63,9 +146,30 @@ class Repository < ActiveRecord::Base
   end
   later :destroy, :queue => :clone_build
 
+  def self.custom_sort(repos)
+    repos.select{ |r| SORT.keys.include?(r.name) }.sort{ |a,b| SORT[a.name] <=>  SORT[b.name] } | repos.sort_by(&:name)
+  end
+
   protected
 
+  def lock_file_actions(action, lock_file)
+    result = false
+    (['SRPMS'] << Arch.pluck(:name)).each do |arch|
+      path = "#{platform.path}/repository/#{arch}/#{name}/#{LOCK_FILE_NAMES[lock_file]}"
+      case action
+      when :add
+        result ||= FileUtils.touch(path) rescue nil
+      when :remove
+        result ||= FileUtils.rm_f(path)
+      when :check
+        return true if File.exist?(path)
+      end
+    end
+    return result
+  end
+
   def detele_directory
+    return unless platform
     repository_path = platform.path << '/repository'
     if platform.personal?
       Platform.main.pluck(:name).each do |main_platform_name|

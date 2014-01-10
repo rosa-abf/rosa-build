@@ -12,6 +12,6 @@
   .both
 
   .button_block
-    = submit_tag t("layout.clone")
+    = submit_tag t('layout.clone'), :data => {'disable-with' => t('layout.processing')}
     %span.text_button_padding= t("layout.or")
     = link_to t("layout.cancel"), platform_path(@platform), :class => "button"

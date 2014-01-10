@@ -1,4 +1,4 @@
-json.group do |json|
+json.group do
   json.(@group, :id)
   json.partial! 'api/v1/shared/members'
 end

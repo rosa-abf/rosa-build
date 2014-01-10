@@ -1,0 +1,44 @@
+-#
+  Variables:
+    subject
+    field
+    field_class
+    autocomplete_path
+    placeholder
+    default_values (optional)
+
+- default_values ||= []
+- subject_class = subject.class.name.underscore
+.autocomplete-form{:subject_class => subject_class, :field => field, :path => autocomplete_path, :class => field}
+  %h3= t("activerecord.attributes.build_list.#{field}")
+  %span.icon-question-sign
+  - if !(params[:show] == 'inline' && params[:build_list_id].present?)
+    .dialog{:title => t("activerecord.attributes.build_list.#{field}"), :id => "#{field}_dialog"}
+      = render "shared/autocomplete_docs/#{field}"
+  .both
+  = autocomplete_field_tag field, nil, "#{autocomplete_path}?#{{:platform_id => subject.save_to_platform.try(:id)}.to_param}", :placeholder => placeholder, :class => 'autocomplete', :update_elements => {:id => "##{field}_field", :path => "##{field}_field_path", :label => "##{field}_field_label"}
+  = hidden_field_tag field, nil, :id => "#{field}_field"
+  = hidden_field_tag field, nil, :id => "#{field}_field_path"
+  = hidden_field_tag field, nil, :id => "#{field}_field_label"
+  = submit_tag t('layout.add'), :class => 'button add'
+
+  %table.tablesorter{:cellpadding => "0", :cellspacing => "0"}
+    %tbody
+      - field_name = "#{subject_class}[#{field}][]"
+      - field_class.where(:id => params[:build_list].try(:[], field) ).each do |extra|
+        %tr
+          - if extra.is_a?(BuildList)
+            %td= link_to "#{extra.id} (#{extra.project.name} - #{extra.arch.name})", extra
+          - else
+            %td= link_to "#{extra.platform.name}/#{extra.name}", [extra.platform, extra]
+          %td.actions
+            - field = extra.is_a?(BuildList) ? 'extra_build_lists' : 'extra_repositories'
+            = hidden_field_tag field_name, extra.id
+            %span.delete &nbsp;
+  .default-values
+    - field_class.where(:id => default_values).each do |extra|
+      .hidden{:label  => "#{extra.platform.name}/#{extra.name}",
+              :path   => url_for([extra.platform, extra]),
+              :name   => field_name, :value => extra.id}
+
+

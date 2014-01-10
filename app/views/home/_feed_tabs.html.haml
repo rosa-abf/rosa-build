@@ -1,0 +1,5 @@
+.sub-menu.activity-tabs
+  %nav
+    %ul
+      - (collection = t 'feed_menu').each do |base, title|
+        %li= link_to title, root_path(:filter => base), :class => @filter == base ? 'active' : ''

@@ -1,0 +1,96 @@
+// dictionary - optional
+var BuildList = function(atts, dictionary) {
+  var self = this;
+  var initialSettings = atts || {};
+  //initial settings if passed in
+  for(var setting in initialSettings){
+    if(initialSettings.hasOwnProperty(setting))
+      self[setting] = initialSettings[setting];
+  };
+
+  // Fields:
+
+  if (dictionary) {
+    self.user                 = _.find(dictionary.users,        function(i){ return i.id == self.user_id; });
+    self.arch                 = _.find(dictionary.arches,       function(i){ return i.id == self.arch_id; });
+    self.project              = _.find(dictionary.projects,     function(i){ return i.id == self.project_id; });
+    self.save_to_platform     = _.find(dictionary.platforms,    function(i){ return i.id == self.save_to_platform_id; });
+    self.build_for_platform   = _.find(dictionary.platforms,    function(i){ return i.id == self.build_for_platform_id; });
+    self.save_to_repository   = _.find(dictionary.repositories, function(i){ return i.id == self.save_to_repository_id; });
+  }
+
+  if (self.save_to_platform) {
+    self.save_to_repository_name = self.save_to_platform.name + '/' + self.save_to_repository.name;
+    if (self.save_to_platform.personal && self.build_for_platform !== undefined) {
+      self.save_to_repository_name += ' (' + self.build_for_platform.name + ')'
+    }
+    self.save_to_repository_url = Routes.platform_repository_path(self.save_to_platform.name, self.save_to_repository.name);
+  }
+
+  if (self.project) {
+    if (self.last_published_commit_hash) {
+      self.version_link_text  = self.last_published_commit_hash + '...' + self.commit_hash;
+      self.version_link_url   = Routes.diff_path(self.project.owner, self.project.name, self.version_link_text);
+    } else {
+      self.version_link_text  = self.commit_hash || self.project_version;
+      self.version_link_url   = Routes.commit_path(self.project.owner, self.project.name, self.version_link_text);
+    }
+    self.project.url = Routes.project_path(self.project.owner, self.project.name);
+    self.project.name_with_owner = self.project.owner + '/' + self.project.name;
+  }
+
+  if (self.user)
+    self.user.url = Routes.user_path(self.user.uname);
+  self.url          = Routes.build_list_path(self.id);
+
+  switch (self.status) { // See: app/helpers/build_lists_helper.rb
+    case <%=BuildList::BUILD_PUBLISHED%>:
+    case <%=BuildList::BUILD_PUBLISHED_INTO_TESTING%>:
+    case <%=BuildList::SUCCESS%>: self.status_color = 'success'; break
+    case <%=BuildList::BUILD_ERROR%>:
+    case <%=BuildList::FAILED_PUBLISH%>:
+    case <%=BuildList::FAILED_PUBLISH_INTO_TESTING%>:
+    case <%=BuildList::REJECTED_PUBLISH%>: self.status_color = 'error'; break
+    case <%=BuildList::TESTS_FAILED%>: self.status_color = 'warning'; break
+    default: self.status_color = 'nocolor';
+  }
+
+  // == Logic
+
+  // private fields
+  self.lastRelated    = false;
+
+  // public methods
+
+  self.clearRelated = function() {
+    self.related        = [self];
+    self.show           = true;
+    self.relatedHidden  = true;
+    self.hasRelated     = false;
+  }
+  self.clearRelated();
+
+  self.addRelated = function(bl) {
+    bl.show         = false;
+    bl.lastRelated  = true;
+    self.related.slice(-1)[0].lastRelated = false;
+    self.related.push(bl);
+    self.hasRelated = true;
+  }
+
+  self.itemStatusColor = function(status) {
+    if (status == <%=BuildList::SUCCESS%>)
+      return 'success';
+    else if (status == <%=BuildList::BUILD_ERROR%>)
+      return 'error';
+    else
+      return '';
+  }
+  self.humanStatus = function(status) {
+    return 'build_list.status.' + status;
+  }
+  self.human_status = self.humanStatus(self.status);
+
+  //return the scope-safe instance
+  return self;
+};

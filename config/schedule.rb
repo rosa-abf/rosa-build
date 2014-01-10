@@ -6,10 +6,9 @@
 #  runner "Download.parse_and_remove_nginx_log"
 #end
 
-# TODO: Uncomment when all needed product build lists will be updated.
-# every :day, :at => '4:10 am' do
-#   rake "product_build_list:clear:outdated", :output => 'log/product_build_list_clear.log'
-# end
+every :day, :at => '4:10 am' do
+  rake "product_build_list:clear:outdated", :output => 'log/product_build_list_clear.log'
+end
 
 every :day, :at => '4:00 am' do
   rake "import:sync:all", :output => 'log/sync.log'
@@ -29,6 +28,10 @@ end
 
 every 3.minute do
   runner 'AbfWorker::BuildListsPublishTaskManager.new.run', :output => 'log/task_manager.log'
+end
+
+every 1.minute do
+  runner 'RpmBuildNode.cleanup!'
 end
 
 every :day, :at => '4am' do

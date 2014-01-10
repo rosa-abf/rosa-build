@@ -1,4 +1,5 @@
 class Api::V1::BaseController < ApplicationController
+  include PaginateHelper
   #respond_to :json
 
   helper_method :member_path
@@ -69,15 +70,6 @@ class Api::V1::BaseController < ApplicationController
     else
       render_validation_error subject, "#{class_name} has not been updated"
     end
-  end
-
-  def paginate_params
-    per_page = params[:per_page].to_i
-    per_page = 20 if per_page < 1
-    per_page = 100 if per_page >100
-    page = params[:page].to_i
-    page = nil if page == 0
-    {:page => page, :per_page => per_page}
   end
 
   def render_json_response(subject, message, status = 200)

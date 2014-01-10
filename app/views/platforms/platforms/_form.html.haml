@@ -26,10 +26,26 @@
   = hidden_field_tag 'admin_id', @admin_id, :id => 'admin_id_field'
   .both
 
+  %h3= t('layout.platform_arch_settings.extra_settings')
+
+  %table.tablesorter{:cellpadding => "0", :cellspacing => "0"}
+    %thead
+      %tr
+        %th.lpadding16= t("activerecord.models.arch")
+        %th.lpadding16= t("activerecord.attributes.platform_arch_setting.default")
+        %th.lpadding16= t("activerecord.attributes.platform_arch_setting.time_living")
+    %tbody
+      - platform_arch_settings(@platform).each do |setting|
+        %tr{:class => cycle("odd", "even")}
+          = f.fields_for :platform_arch_settings, setting do |s_form|
+            %td
+              = setting.arch.name
+              = s_form.hidden_field :arch_id
+            %td.center= s_form.check_box :default, :class => 'check_box'
+            %td.right= s_form.text_field :time_living, :value => setting.time_living / 60, :class => 'text_field', :size => 10
+  .both
+
 .button_block
-  = submit_tag t("layout.save")
-  -#%input.button{:type => "submit", :class => "button"}
-    -#= image_tag("choose.png", :alt => t("layout.save"))
-    -#= t("layout.clone")
+  = f.submit t('layout.save'), :data => {'disable-with' => t('layout.saving')}
   %span.text_button_padding= t("layout.or")
   = link_to t("layout.cancel"), @platform.new_record? ? root_path : platform_path(@platform), :class => "button"

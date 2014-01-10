@@ -1,19 +1,23 @@
 -ar = 'activerecord.attributes.pull_requests'
 -set_meta_tags :title => [title_object(@project), t('.title', :name => @pull.title.truncate(40), :user => @pull.user.try(:uname))]
 = render :partial => 'submenu'
-%h3.bpadding10
-  =pull_status_label @pull
-  =pull_header @pull
-#repo-wrapper
-  =render 'nav_tabs'
-  .tab-content.pull_diff_fix
-    #discussion.tab-pane.active
-      =render 'projects/issues/header'
-      =render 'activity'
-      %br
-      =render "projects/comments/add", :project => @project, :commentable => @issue if current_user
-      .pull_status
-        =render 'status'
-    =render 'diff_commits_tabs' unless @pull.already?
-=hidden_field_tag :preview_url, project_md_preview_path(@project)
-= render "projects/comments/markdown_help"
+
+%div{'ng-controller' => 'PullRequestController', 'ng-init' => "init('#{@project.owner.uname}', '#{@project.name}', '#{@pull.serial_id}')"}
+
+  %h3.bpadding10
+    - PullRequest::STATUSES.each do |status|
+      = pull_status_label status, {'ng-show' => "pull.status == '#{status}'", :style => 'display: none;'}
+    = pull_header @pull
+  #repo-wrapper
+    =render 'nav_tabs'
+    .tab-content.pull_diff_fix
+      #discussion.tab-pane.active
+        =render 'projects/issues/header'
+        =render 'activity'
+        %br
+        =render "projects/comments/add", :project => @project, :commentable => @issue if current_user
+        .pull_status
+          =render 'status'
+      =render 'diff_commits_tabs' unless @pull.already?
+  =hidden_field_tag :preview_url, project_md_preview_path(@project)
+  = render "projects/comments/markdown_help"

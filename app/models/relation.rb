@@ -33,7 +33,11 @@ class Relation < ActiveRecord::Base
 
   def self.remove_member(member, target)
     return false if target.respond_to?(:owner) && target.owner == member
-    Relation.by_actor(member).by_target(target).each{|r| r.destroy}
+    res = Relation.by_actor(member).by_target(target).each{|r| r.destroy}
+    if member.is_a?(User) && ['Project', 'Group'].include?(target.class.name)
+      member.check_assigned_issues target
+    end
+    res
   end
 
   protected

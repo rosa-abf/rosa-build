@@ -3,7 +3,11 @@ class Users::RegisterRequestsController < ApplicationController
   layout 'invite'
 
   def new
-    render :invite
+    if APP_CONFIG['preregistration']
+      render :invite
+    else
+      redirect_to new_user_registration_path
+    end
   end
 
   def create

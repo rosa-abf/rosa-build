@@ -10,7 +10,7 @@ module ActivityFeedsHelper
     feed_title = feed_title.gsub(/\s{2,}/, ' ').strip
   end
 
-  def user_link user, user_name
-    user.persisted? ? link_to(user_name, user_path(user)) : user_name
+  def user_link(user, user_name, full_url = false)
+    user.persisted? ? link_to(user_name, full_url ? user_url(user) : user_path(user)) : user_name
   end
 end

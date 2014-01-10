@@ -100,7 +100,7 @@ describe Api::V1::BuildListsController do
         Arch.destroy_all
         User.destroy_all
 
-        @build_list = FactoryGirl.create(:build_list_core)
+        @build_list = FactoryGirl.create(:build_list)
         @params = @build_list.attributes.symbolize_keys
         @project = @build_list.project
         @platform = @build_list.save_to_platform
@@ -114,9 +114,8 @@ describe Api::V1::BuildListsController do
         @build_list.save_to_platform.relations.create(:role => 'admin', :actor => @owner_user) # Why it's really need it??
 
         # Create and show params:
-        @create_params = {:build_list => @build_list.attributes.symbolize_keys.except(:bs_id)
-                           .merge(:qwerty=>'!')} # wrong parameter
-        @create_params = @create_params.merge(:arches => [@params[:arch_id]], :build_for_platforms => [@params[:build_for_platform_id]], :format => :json)
+        @create_params = {:build_list => @build_list.attributes.symbolize_keys.merge(:qwerty=>'!')} # wrong parameter
+        @create_params = @create_params.merge(:arches => [@params[:arch_id]], :build_for_platform_id => @platform.id, :format => :json)
         any_instance_of(Project, :versions => ['v1.0', 'v2.0'])
 
         http_login(@user)
@@ -151,14 +150,14 @@ describe Api::V1::BuildListsController do
 
           context "if it has another status" do
             before do
-              @build_list.update_column(:status, BuildList::PROJECT_VERSION_NOT_FOUND)
+              @build_list.update_column(:status, BuildList::SUCCESS)
               do_cancel
             end
 
             it_should_behave_like 'validation error via build list api', I18n.t('layout.build_lists.cancel_fail')
 
             it "should not change status of build list" do
-              @build_list.reload.status.should == BuildList::PROJECT_VERSION_NOT_FOUND
+              @build_list.reload.status.should == BuildList::SUCCESS
             end
           end
         end
@@ -238,6 +237,107 @@ describe Api::V1::BuildListsController do
         end
       end
 
+      context 'do publish_into_testing' do
+        def do_publish_into_testing
+          put :publish_into_testing, :id => @build_list, :format => :json
+        end
+
+        context 'if user is project && platform owner' do
+          before(:each) do
+            http_login(@owner_user)
+          end
+
+          context "if it has :failed_publish status" do
+            before do
+              @build_list.update_column(:status, BuildList::FAILED_PUBLISH)
+              do_publish_into_testing
+            end
+            it "should return correct json message" do
+              response.body.should == { :build_list => {:id => @build_list.id, :message => I18n.t('layout.build_lists.publish_success')} }.to_json
+            end
+
+            it 'should return 200 response code' do
+              response.should be_success
+            end
+
+            it "should change status of build list" do
+              @build_list.reload.status.should == BuildList::BUILD_PUBLISH_INTO_TESTING
+            end
+          end
+
+          context "if it has :build_published_into_testing status" do
+            before do
+              @build_list.update_column(:status, BuildList::BUILD_PUBLISHED_INTO_TESTING)
+              do_publish_into_testing
+            end
+
+            it "should return correct json message" do
+              response.body.should == { :build_list => {:id => @build_list.id, :message => I18n.t('layout.build_lists.publish_success')} }.to_json
+            end
+
+            it 'should return 200 response code' do
+              response.should be_success
+            end
+
+            it "should change status of build list" do
+              @build_list.reload.status.should == BuildList::BUILD_PUBLISH_INTO_TESTING
+            end
+          end
+
+          context "if it has another status" do
+            before(:each) do
+              @build_list.update_column(:status, BuildList::BUILD_CANCELED)
+              do_publish_into_testing
+            end
+
+            it "should return access violation message" do
+              response.body.should == {"message" => "Access violation to this page!"}.to_json
+            end
+
+            it "should not change status of build list" do
+              @build_list.reload.status.should == BuildList::BUILD_CANCELED
+            end
+          end
+
+        end
+
+        context 'if user is not project owner' do
+
+          context "if it has :build_published_into_testing status" do
+            before do
+              @build_list.update_column(:status, BuildList::BUILD_PUBLISHED_INTO_TESTING)
+              do_publish_into_testing
+            end
+
+            it 'should not be able to perform create action' do
+              response.body.should == {"message" => "Access violation to this page!"}.to_json
+            end
+
+            it 'should return 403 response code' do
+              response.status.should == 403
+            end
+
+            it "should not change status of build list" do
+              @build_list.reload.status.should == BuildList::BUILD_PUBLISHED_INTO_TESTING
+            end
+          end
+
+          context "if it has :failed_publish status" do
+            before do
+              @build_list.update_column(:status, BuildList::FAILED_PUBLISH_INTO_TESTING)
+              do_publish_into_testing
+            end
+            it "should return access violation message" do
+              response.body.should == {"message" => "Access violation to this page!"}.to_json
+            end
+
+            it "should not change status of build list" do
+              @build_list.reload.status.should == BuildList::FAILED_PUBLISH_INTO_TESTING
+            end
+          end
+        end
+      end
+
       context "do publish" do
         def do_publish
           put :publish, :id => @build_list, :format => :json
@@ -287,7 +387,7 @@ describe Api::V1::BuildListsController do
 
           context "if it has another status" do
             before(:each) do
-              @build_list.update_column(:status, BuildList::PROJECT_VERSION_NOT_FOUND)
+              @build_list.update_column(:status, BuildList::BUILD_CANCELED)
               do_publish
             end
 
@@ -296,7 +396,7 @@ describe Api::V1::BuildListsController do
             end
 
             it "should not change status of build list" do
-              @build_list.reload.status.should == BuildList::PROJECT_VERSION_NOT_FOUND
+              @build_list.reload.status.should == BuildList::BUILD_CANCELED
             end
           end
 
@@ -387,14 +487,14 @@ describe Api::V1::BuildListsController do
 
           context "if it has another status" do
             before(:each) do
-              @build_list.update_column(:status, BuildList::PROJECT_VERSION_NOT_FOUND)
+              @build_list.update_column(:status, BuildList::BUILD_CANCELED)
               do_reject_publish
             end
 
             it_should_behave_like 'validation error via build list api', I18n.t('layout.build_lists.reject_publish_fail')
 
             it "should not change status of build list" do
-              @build_list.reload.status.should == BuildList::PROJECT_VERSION_NOT_FOUND
+              @build_list.reload.status.should == BuildList::BUILD_CANCELED
             end
           end
         end
@@ -415,6 +515,49 @@ describe Api::V1::BuildListsController do
             @build_list.reload.status.should == BuildList::SUCCESS
           end
         end
+
+        context 'if user is project reader' do
+          before(:each) do
+            @another_user = FactoryGirl.create(:user)
+            @build_list.update_column(:status, BuildList::SUCCESS)
+            @build_list.save_to_repository.update_column(:publish_without_qa, true)
+            @build_list.project.collaborators.create(:actor_type => 'User', :actor_id => @another_user.id, :role => 'reader')
+            http_login(@another_user)
+            do_reject_publish
+          end
+
+          it "should return access violation message" do
+            response.body.should == {"message" => "Access violation to this page!"}.to_json
+          end
+
+          it "should not change status of build list" do
+            do_reject_publish
+            @build_list.reload.status.should == BuildList::SUCCESS
+          end
+        end
+
+        context 'if user is project writer' do
+          before(:each) do
+            @another_user = FactoryGirl.create(:user)
+            @build_list.update_column(:status, BuildList::SUCCESS)
+            @build_list.save_to_repository.update_column(:publish_without_qa, true)
+            @build_list.project.relations.create!(:actor_type => 'User', :actor_id => @another_user.id, :role => 'writer')
+            http_login(@another_user)
+            do_reject_publish
+          end
+
+          it "should return correct json message" do
+            response.body.should == { :build_list => {:id => @build_list.id, :message => I18n.t('layout.build_lists.reject_publish_success')} }.to_json
+          end
+
+          it 'should return 200 response code' do
+            response.should be_success
+          end
+
+          it "should reject publish build list" do
+            @build_list.reload.status.should == BuildList::REJECTED_PUBLISH
+          end
+        end
       end
 
       context 'for open project' do
@@ -423,10 +566,25 @@ describe Api::V1::BuildListsController do
         context 'if user is project owner' do
           before(:each) {http_login(@owner_user)}
           it_should_behave_like 'create build list via api'
+
+          context 'no ability to read build_for_platform' do
+            before do
+              repository = FactoryGirl.create(:repository)
+              repository.platform.change_visibility
+              Platform.where(:id => @platform.id).update_all(:platform_type => 'personal')
+              @create_params[:build_list].merge!({
+                :include_repos          => [repository.id],
+                :build_for_platform_id  => repository.platform_id
+              })
+            end
+            it_should_behave_like 'not create build list via api'
+          end
+
         end
 
         context 'if user is project read member' do
           before(:each) {http_login(@member_user)}
+          it_should_behave_like 'not create build list via api'
         end
       end
 
@@ -455,7 +613,7 @@ describe Api::V1::BuildListsController do
         Arch.destroy_all
         User.destroy_all
 
-        @build_list = FactoryGirl.create(:build_list_core)
+        @build_list = FactoryGirl.create(:build_list)
         @params = @build_list.attributes.symbolize_keys
         @project = @build_list.project
         @platform = @build_list.save_to_platform
@@ -466,8 +624,8 @@ describe Api::V1::BuildListsController do
         @member_user = FactoryGirl.create(:user)
 
         # Create and show params:
-        @create_params = {:build_list => @build_list.attributes.symbolize_keys.except(:bs_id)}
-        @create_params = @create_params.merge(:arches => [@params[:arch_id]], :build_for_platforms => [@params[:build_for_platform_id]], :format => :json)
+        @create_params = {:build_list => @build_list.attributes.symbolize_keys}
+        @create_params = @create_params.merge(:arches => [@params[:arch_id]], :build_for_platform_id => @platform.id, :format => :json)
         any_instance_of(Project, :versions => ['v1.0', 'v2.0'])
 
         # Groups:
@@ -479,8 +637,11 @@ describe Api::V1::BuildListsController do
         @user = FactoryGirl.create(:user)
         @group.actors.create :role => 'reader', :actor_id => @user.id, :actor_type => 'User'
 
+        old_path = @project.path
         @project.owner = @owner_group
         @project.save
+        # Move GIT repo into new folder
+        system "mkdir -p #{@project.path} && mv -f #{old_path}/* #{@project.path}/"
 
         @project.relations.create :role => 'reader', :actor_id => @member_group.id, :actor_type => 'Group'
         @project.relations.create :role => 'admin', :actor_id => @owner_group.id, :actor_type => 'Group'
@@ -533,22 +694,22 @@ describe Api::V1::BuildListsController do
       @user = FactoryGirl.create(:user)
 
       # Build Lists:
-      @build_list1 = FactoryGirl.create(:build_list_core)
+      @build_list1 = FactoryGirl.create(:build_list)
 
-      @build_list2 = FactoryGirl.create(:build_list_core)
+      @build_list2 = FactoryGirl.create(:build_list)
       @build_list2.project.update_column(:visibility, 'hidden')
 
       project = FactoryGirl.create(:project_with_commit, :visibility => 'hidden', :owner => @user)
-      @build_list3 = FactoryGirl.create(:build_list_core_with_attaching_project, :project => project)
+      @build_list3 = FactoryGirl.create(:build_list_with_attaching_project, :project => project)
 
-      @build_list4 = FactoryGirl.create(:build_list_core)
+      @build_list4 = FactoryGirl.create(:build_list)
       @build_list4.project.update_column(:visibility, 'hidden')
       @build_list4.project.relations.create! :role => 'reader', :actor_id => @user.id, :actor_type => 'User'
 
-      @filter_build_list1 = FactoryGirl.create(:build_list_core)
-      @filter_build_list2 = FactoryGirl.create(:build_list_core)
-      @filter_build_list3 = FactoryGirl.create(:build_list_core)
-      @filter_build_list4 = FactoryGirl.create(:build_list_core, :updated_at => (Time.now - 1.day),
+      @filter_build_list1 = FactoryGirl.create(:build_list)
+      @filter_build_list2 = FactoryGirl.create(:build_list)
+      @filter_build_list3 = FactoryGirl.create(:build_list)
+      @filter_build_list4 = FactoryGirl.create(:build_list, :updated_at => (Time.now - 1.day),
                              :project => @build_list3.project, :save_to_platform => @build_list3.save_to_platform,
                              :arch => @build_list3.arch)
     end
@@ -590,8 +751,8 @@ describe Api::V1::BuildListsController do
         http_login FactoryGirl.create(:admin)
       end
 
-      it 'should filter by bs_id' do
-        get :index, :filter => {:bs_id => @filter_build_list1.bs_id, :project_name => 'fdsfdf', :any_other_field => 'do not matter'}, :format => :json
+      it 'should filter by id' do
+        get :index, :filter => {:id => @filter_build_list1.id, :project_name => 'fdsfdf', :any_other_field => 'do not matter'}, :format => :json
         assigns[:build_lists].should include(@filter_build_list1)
         assigns[:build_lists].should_not include(@filter_build_list2)
         assigns[:build_lists].should_not include(@filter_build_list3)
@@ -619,7 +780,7 @@ describe Api::V1::BuildListsController do
 
     context "for user" do
       before(:each) do
-        @build_list = FactoryGirl.create(:build_list_core)
+        @build_list = FactoryGirl.create(:build_list)
         @params = @build_list.attributes.symbolize_keys
         @project = @build_list.project
 
@@ -675,7 +836,7 @@ describe Api::V1::BuildListsController do
     context "for group" do
       before(:each) do
         @platform = FactoryGirl.create(:platform_with_repos)
-        @build_list = FactoryGirl.create(:build_list_core, :save_to_platform => @platform)
+        @build_list = FactoryGirl.create(:build_list, :save_to_platform => @platform)
         @project = @build_list.project
         @params = @build_list.attributes.symbolize_keys
 
@@ -741,6 +902,5 @@ describe Api::V1::BuildListsController do
         end
       end
     end
-
   end
 end

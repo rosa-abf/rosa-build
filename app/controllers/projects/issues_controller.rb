@@ -12,7 +12,7 @@ class Projects::IssuesController < Projects::BaseController
   def index(status = 200)
     @labels = params[:labels] || []
     @issues = @project.issues.without_pull_requests
-    @issues = @issues.where(:assignee_id => current_user.id) if @is_assigned_to_me = params[:filter] == 'to_me'
+    @issues = @issues.where(:assignee_id => current_user.id) if @is_assigned_to_me = params[:filter] == 'assigned'
     @issues = @issues.joins(:labels).where(:labels => {:name => @labels}) unless @labels == []
     # Using mb_chars for correct transform to lowercase ('Русский Текст'.downcase => "Русский Текст")
     @issues = @issues.search(params[:search_issue]) if params[:search_issue] !~ /#{t('layout.issues.search')}/
@@ -37,9 +37,12 @@ class Projects::IssuesController < Projects::BaseController
   end
 
   def create
-    @assignee_uname = params[:assignee_uname]
     @issue.user_id = current_user.id
 
+    unless can?(:write, @project)
+      @issue.assignee_id  = nil
+      @issue.labelings    = []
+    end
     if @issue.save
       @issue.subscribe_creator(current_user.id)
       flash[:notice] = I18n.t("flash.issue.saved")
@@ -55,6 +58,12 @@ class Projects::IssuesController < Projects::BaseController
   end
 
   def update
+    unless can?(:write, @project)
+      params.delete :update_labels
+      [:assignee_id, :labelings, :labelings_attributes].each do |k|
+        params[:issue].delete k
+      end if params[:issue]
+    end
     @issue.labelings.destroy_all if params[:update_labels]
     if params[:issue] && status = params[:issue][:status]
       @issue.set_close(current_user) if status == 'closed'

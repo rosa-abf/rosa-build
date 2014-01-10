@@ -14,7 +14,7 @@
 
   = render 'platforms/products/def_fields', :f => f
 
-  = f.submit t("layout.projects.build_button")
+  = f.submit t('layout.projects.build_button'), :data => {'disable-with' => t('layout.processing')}
 
 %br
 %div

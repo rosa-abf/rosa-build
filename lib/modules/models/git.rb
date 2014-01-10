@@ -1,3 +1,7 @@
+require 'nokogiri'
+require 'open-uri'
+require 'iconv'
+
 module Modules
   module Models
     module Git
@@ -30,6 +34,26 @@ module Modules
 
       def versions
         repo.tags.map(&:name) + repo.branches.map(&:name)
+      end
+
+      def create_branch(new_ref, from_ref, user)
+        return false if new_ref.blank? || from_ref.blank? || !(from_commit = repo.commit(from_ref))
+        status, out, err = repo.git.native(:branch, {:process_info => true}, new_ref, from_commit.id)
+        if status == 0
+          Resque.enqueue(GitHook, owner.uname, name, from_commit.id, GitHook::ZERO, "refs/heads/#{new_ref}", 'commit', "user-#{user.id}", nil)
+          return true
+        end
+        return false
+
+      end
+
+      def delete_branch(branch, user)
+        return false if default_branch == branch.name
+        message = repo.git.native(:branch, {}, '-D', branch.name)
+        if message.present?
+          Resque.enqueue(GitHook, owner.uname, name, GitHook::ZERO, branch.commit.id, "refs/heads/#{branch.name}", 'commit', "user-#{user.id}", message)
+        end
+        return message.present?
       end
 
       def update_file(path, data, options = {})
@@ -69,24 +93,19 @@ module Modules
       end
 
       def tree_info(tree, treeish = nil, path = nil)
-        treeish ||= tree.id
-        # initialize result as hash of <tree_entry> => nil
-        res = (tree.trees.sort + tree.blobs.sort).inject({}){|h, e| h.merge!({e => nil})}
-        # fills result vith commits that describes this file
-        res = res.inject(res) do |h, (entry, commit)|
-          if commit.nil? and entry.respond_to?(:name) # only if commit == nil
-            # ... find last commit corresponds to this file ...
-            c = repo.log(treeish, File.join([path, entry.name].compact), :max_count => 1).first
-            # ... and add it to result.
-            h[entry] = c
-            # find another files, that linked to this commit and set them their commit
-            # c.diffs.map{|diff| diff.b_path.split(File::SEPARATOR, 2).first}.each do |name|
-            #   h.each_pair do |k, v|
-            #     h[k] = c if k.name == name and v.nil?
-            #   end
-            # end
-          end
-          h
+        return [] unless tree
+        grouped = tree.contents.sort_by{|c| c.name.downcase}.group_by(&:class)
+        [
+          grouped[Grit::Tree],
+          grouped[Grit::Blob],
+          grouped[Grit::Submodule]
+        ].compact.flatten.map do |node|
+          node_path = File.join([path.present? ? path : nil, node.name].compact)
+          [
+            node,
+            node_path,
+            repo.log(treeish, node_path, :max_count => 1).first
+          ]
         end
       end
 
@@ -98,6 +117,11 @@ module Modules
 
       def is_empty?
         repo.branches.count == 0
+      end
+
+      def total_commits_count
+        return 0 if is_empty?
+        %x(cd #{path} && git rev-list --all | wc -l).to_i
       end
 
       protected
@@ -153,10 +177,70 @@ module Modules
       end
 
       module ClassMethods
+        MAX_SRC_SIZE = 1024*1024*256
+
         def process_hook(owner_uname, repo, newrev, oldrev, ref, newrev_type, user = nil, message = nil)
           rec = GitHook.new(owner_uname, repo, newrev, oldrev, ref, newrev_type, user, message)
-          ActivityFeedObserver.instance.after_create rec
+          Modules::Observers::ActivityFeed::Git.create_notifications rec
         end
+
+        def run_mass_import(url, srpms_list, visibility, owner, add_to_repository_id)
+          doc = Nokogiri::HTML(open(url))
+          links = doc.css("a[href$='.src.rpm']")
+          return if links.count == 0
+          filter = srpms_list.lines.map(&:chomp).map(&:strip).select(&:present?)
+
+          repository = Repository.find add_to_repository_id
+          platform = repository.platform
+          dir = Dir.mktmpdir 'mass-import-', APP_CONFIG['tmpfs_path']
+          links.each do |link|
+            begin
+              package = link.attributes['href'].value
+              package.chomp!; package.strip!
+
+              next if package.size == 0 || package !~ /^[\w\.\-]+$/
+              next if filter.present? && !filter.include?(package)
+
+              uri = URI "#{url}/#{package}"
+              srpm_file = "#{dir}/#{package}"
+              Net::HTTP.start(uri.host) do |http|
+                if http.request_head(uri.path)['content-length'].to_i < MAX_SRC_SIZE
+                  f = open(srpm_file, 'wb')
+                  http.request_get(uri.path) do |resp|
+                    resp.read_body{ |segment| f.write(segment) }
+                  end
+                  f.close
+                end
+              end
+              if name = `rpm -q --qf '[%{Name}]' -p #{srpm_file}` and $?.success? and name.present?
+                next if owner.projects.exists?(:name => name)
+                description = ::Iconv.conv('UTF-8//IGNORE', 'UTF-8', `rpm -q --qf '[%{Description}]' -p #{srpm_file}`)
+                project = owner.projects.build(
+                  :name         => name,
+                  :description  => description,
+                  :visibility   => visibility,
+                  :is_package   => false # See: Hook for #attach_to_personal_repository
+                )
+                project.owner = owner
+                if project.save
+                  repository.projects << project rescue nil
+                  project.update_attributes(:is_package => true)
+                  project.import_srpm srpm_file, platform.name
+                end
+              end
+            rescue => e
+              f.close if defined?(f)
+              Airbrake.notify_or_ignore(e, :link => link.to_s, :url => url, :owner => owner)
+            ensure
+              File.delete srpm_file if srpm_file
+            end
+          end
+        rescue => e
+          Airbrake.notify_or_ignore(e, :url => url, :owner => owner)
+        ensure
+          FileUtils.remove_entry_secure dir if dir
+        end
+
       end
     end
   end

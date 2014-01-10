@@ -14,7 +14,6 @@ def set_data_for_pull
 end
 
 describe PullRequest do
-
   context 'for owner user' do
     before do
       stub_symlink_methods
@@ -31,6 +30,13 @@ describe PullRequest do
       @other_pull.to_ref = 'master'
       @other_pull.from_project, @other_pull.from_ref = @other_project, 'non_conflicts'
       @other_pull.save
+    end
+
+    it 'ensures that path to pull_request repository has been changed after rename of project' do
+      @pull.check
+      @project.update_attributes(:name => "#{@project.name}-new")
+      @pull.reload
+      Dir.exists?(@pull.path).should be_true
     end
 
     it 'master should merge with non_conflicts branch' do

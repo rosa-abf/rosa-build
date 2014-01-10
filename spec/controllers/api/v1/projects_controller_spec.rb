@@ -61,6 +61,17 @@ shared_examples_for 'api projects user with fork rights' do
   it 'ensures that project has been forked' do
     lambda { post :fork, :id => @project.id, :format => :json }.should change{ Project.count }.by(1)
   end
+
+  it 'should be able to perform fork action with different name' do
+    post :fork, :id => @project.id, :fork_name => (@project.name + '_forked'), :format => :json
+    response.should be_success
+  end
+
+  it 'ensures that project has been forked' do
+    new_name = @project.name + '_forked'
+    lambda { post :fork, :id => @project.id, :fork_name => new_name, :format => :json }.should
+      change{ Project.where(:name => new_name).count }.by(1)
+  end
 end
 
 shared_examples_for 'api projects user with fork rights for hidden project' do
@@ -235,7 +246,6 @@ shared_examples_for 'api projects user without admin rights' do
       @project.members.should include(member)
     end
   end
-
 end
 
 shared_examples_for 'api projects user with owner rights' do
@@ -313,6 +323,18 @@ describe Api::V1::ProjectsController do
       it 'ensures that project has been created' do
         lambda { post :create, params, :format => :json }.should change{ Project.count }.by(1)
       end
+
+      it 'writer group should be able to create project for their group' do
+        group = FactoryGirl.create(:group)
+        group.actors.create(:actor_type => 'User', :actor_id => @user.id, :role => 'writer')
+        lambda { post :create, params.deep_merge({:project => {:owner_type => 'Group', :owner_id => group.id}})}.should change{ Project.count }.by(1)
+      end
+
+      it 'reader group should not be able to create project for their group' do
+        group = FactoryGirl.create(:group)
+        group.actors.create(:actor_type => 'User', :actor_id => @user.id, :role => 'reader')
+        lambda { post :create, params.deep_merge({:project => {:owner_type => 'Group', :owner_id => group.id}})}.should change{ Project.count }.by(0)
+      end
     end
 
     it_should_behave_like 'api projects user with reader rights'
@@ -321,6 +343,38 @@ describe Api::V1::ProjectsController do
     it_should_behave_like 'api projects user without fork rights for hidden project'
     it_should_behave_like 'api projects user without admin rights'
     it_should_behave_like 'api projects user without owner rights'
+
+    context 'group writer' do
+      it 'should be able to fork project to their group' do
+        group = FactoryGirl.create(:group)
+        group.actors.create(:actor_type => 'User', :actor_id => @user.id, :role => 'writer')
+        lambda {post :fork, :id => @project.id, :group_id => group.id}.should change{ Project.count }.by(1)
+      end
+
+      it 'should be able to fork project with different name to their group' do
+        group = FactoryGirl.create(:group)
+        group.actors.create(:actor_type => 'User', :actor_id => @user.id, :role => 'writer')
+        new_name = @project.name + '_forked'
+        lambda { post :fork, :id => @project.id, :group_id => group.id, :fork_name => new_name }.should
+          change { Project.where(:name => new_name).count }.by(1)
+      end
+    end
+
+    context 'group reader' do
+      it 'should not be able to fork project to their group' do
+        group = FactoryGirl.create(:group)
+        group.actors.create(:actor_type => 'User', :actor_id => @user.id, :role => 'reader')
+        lambda {post :fork, :id => @project.id, :group_id => group.id}.should change{ Project.count }.by(0)
+      end
+
+      it 'should not be able to fork project with different name to their group' do
+        group = FactoryGirl.create(:group)
+        new_name = @project.name + '_forked'
+        group.actors.create(:actor_type => 'User', :actor_id => @user.id, :role => 'reader')
+        lambda { post :fork, :id => @project.id, :group_id => group.id, :fork_name => new_name }.should
+          change{ Project.where(:name => new_name.count) }.by(0)
+      end
+    end
   end
 
   context 'for admin' do

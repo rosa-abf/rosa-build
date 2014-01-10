@@ -32,6 +32,7 @@ class Projects::Git::BlobsController < Projects::Git::BaseController
 
   def set_blob
     @blob = @tree / @path or raise Grit::NoSuchPathError
+    redirect_to tree_path(@project, :treeish => @treeish, :path => @path) if @blob.is_a? Grit::Tree
     @commit = @project.repo.log(@treeish, @path, :max_count => 1).first
   end
 end

@@ -7,7 +7,10 @@ Rosa::Application.routes.draw do
   devise_scope :users do
     get '/users/auth/:provider' => 'users/omniauth_callbacks#passthru'
   end
-  devise_for :users, :controllers => {:omniauth_callbacks => 'users/omniauth_callbacks'}
+  devise_for :users, :controllers => {:omniauth_callbacks => 'users/omniauth_callbacks'}, :skip => [:registrations] do
+    get 'users/sign_up' => 'users/registrations#new',    :as => :new_user_registration
+    post 'users'        => 'users/registrations#create', :as => :user_registration
+  end
 
   namespace :api do
     namespace :v1 do
@@ -19,12 +22,14 @@ Rosa::Application.routes.draw do
           put :reject_publish
           put :cancel
           put :create_container
+          put :publish_into_testing
         }
       end
       resources :arches, :only => [:index]
       resources :platforms, :only => [:index, :show, :update, :destroy, :create] do
         collection {
           get :platforms_for_build
+          get :allowed
         }
         member {
           get :members
@@ -37,13 +42,15 @@ Rosa::Application.routes.draw do
       end
       resources :repositories, :only => [:show, :update, :destroy] do
         member {
-          get :projects
-          get :key_pair
-          put :add_member
-          delete :remove_member
-          put :add_project
-          delete :remove_project
-          put :signatures
+          get     :projects
+          get     :key_pair
+          put     :add_member
+          delete  :remove_member
+          put     :add_project
+          delete  :remove_project
+          put     :signatures
+          put     :add_repo_lock_file
+          delete  :remove_repo_lock_file
         }
       end
       resources :projects, :only => [:index, :show, :update, :create, :destroy] do
@@ -57,6 +64,14 @@ Rosa::Application.routes.draw do
           put :update_member
         }
         resources :build_lists, :only => :index
+        resources :issues, :only => [:index, :create, :show, :update]
+        resources :pull_requests, :only => [:index, :create, :show, :update] do
+          member {
+            get :commits
+            get :files
+            put :merge
+          }
+        end
       end
       resources :users, :only => [:show]
       get 'user' => 'users#show_current_user'
@@ -64,6 +79,8 @@ Rosa::Application.routes.draw do
         member {
           get :notifiers
           put :notifiers
+          get '/issues' => 'issues#user_index'
+          get '/pull_requests' => 'pull_requests#user_index'
         }
       end
       resources :groups, :only => [:index, :show, :update, :create, :destroy] do
@@ -72,6 +89,8 @@ Rosa::Application.routes.draw do
           put :add_member
           delete :remove_member
           put :update_member
+          get '/issues' => 'issues#group_index'
+          get '/pull_requests' => 'pull_requests#group_index'
         }
       end
       resources :products, :only => [:show, :update, :create, :destroy] do
@@ -80,7 +99,20 @@ Rosa::Application.routes.draw do
       resources :product_build_lists, :only => [:index, :show, :destroy, :create, :update] do
         put :cancel, :on => :member
       end
+
+      resources :jobs do
+        collection do
+          get :shift
+          get :status
+          put :feedback
+          put :logs
+          put :statistics
+        end
+      end
+
       #resources :ssh_keys, :only => [:index, :create, :destroy]
+      get 'issues' => 'issues#all_index'
+      get 'pull_requests' => 'pull_requests#all_index'
     end
   end
 
@@ -89,16 +121,19 @@ Rosa::Application.routes.draw do
   get  '/forbidden'        => 'pages#forbidden',      :as => 'forbidden'
   get  '/terms-of-service' => 'pages#tos',            :as => 'tos'
   get  '/tour/:id'         => 'pages#tour_inside',    :as => 'tour_inside', :id => /projects|sources|builds/
-  match '/invite.html'     => redirect('/register_requests/new')
+  #match '/invite.html'     => redirect('/register_requests/new')
 
-  get '/activity_feeds.:format' => 'activity_feeds#index', :as => 'atom_activity_feeds', :format => /atom/
+  get '/activity_feeds.:format' => 'home#activity', :as => 'atom_activity_feeds', :format => /atom/
+  get '/issues' => 'home#issues'
+  get '/pull_requests' => 'home#pull_requests'
+
   if APP_CONFIG['anonymous_access']
     authenticated do
-      root :to => 'activity_feeds#index'
+      root :to => 'home#activity'
     end
-    root :to => 'pages#root'
+    root :to => 'home#root'
   else
-    root :to => 'activity_feeds#index'
+    root :to => 'home#activity'
   end
 
   namespace :admin do
@@ -128,20 +163,25 @@ Rosa::Application.routes.draw do
   end
 
   scope :module => 'platforms' do
-    resources :platforms do
+    resources :platforms, :constraints => {:id => Platform::NAME_PATTERN} do
       resources :private_users, :except => [:show, :destroy, :update]
       member do
+        put    :regenerate_metadata
         put    :clear
         get    :clone
         get    :members
         post   :remove_members # fixme: change post to delete
+        post   :change_visibility
         delete :remove_member
-        put    :add_member
+        post   :add_member
         post   :make_clone
         get    :advisories
       end
 
-      resources :mass_builds, :only => [:create, :index] do
+      resources :contents, :only => [:index]
+      match '/contents/*path' => 'contents#index', :format => false
+
+      resources :mass_builds, :only => [:create, :new, :index] do
         member do
           post   :cancel
           post   :publish
@@ -151,16 +191,24 @@ Rosa::Application.routes.draw do
 
       resources :repositories do
         member do
-          get :add_project
-          delete :remove_project
-          get :projects_list
-          post   :remove_members # fixme: change post to delete
-          delete :remove_member
-          post   :add_member
-          put :regenerate_metadata
+          get     :add_project
+          put     :add_project
+          get     :remove_project
+          delete  :remove_project
+          get     :projects_list
+          post    :remove_members # fixme: change post to delete
+          delete  :remove_member
+          post    :add_member
+          put     :regenerate_metadata
+          put     :sync_lock_file
         end
       end
       resources :key_pairs, :only => [:create, :index, :destroy]
+      resources :tokens, :only => [:create, :index, :show, :new] do
+        member do
+          post :withdraw
+        end
+      end
       resources :products do
         resources :product_build_lists, :only => [:create, :destroy, :new, :show, :update] do
           member {
@@ -181,6 +229,8 @@ Rosa::Application.routes.draw do
     collection do
       get :autocomplete_user_uname
       get :autocomplete_group_uname
+      get :autocomplete_extra_build_list
+      get :autocomplete_extra_repositories
     end
   end
 
@@ -197,6 +247,7 @@ Rosa::Application.routes.draw do
         put :private
         get :notifiers
         put :notifiers
+        put :reset_auth_token
       end
     end
     resources :register_requests, :only => [:new, :create], :format => /ru|en/ #view support only two languages
@@ -222,20 +273,23 @@ Rosa::Application.routes.draw do
   end
 
   scope :module => 'projects' do
-    resources :build_lists, :only => [:index, :show, :update] do
+    resources :build_lists, :only => [:index, :show] do
       member do
         put :cancel
         put :create_container
         get :log
+        put :publish
+        put :reject_publish
+        put :publish_into_testing
       end
-      collection {
-        get :autocomplete_to_extra_repos_and_builds
-        get :update_extra_repos_and_builds
-        post :search
-      }
     end
 
-    resources :projects, :only => [:index, :new, :create]
+    resources :projects, :only => [:index, :new, :create] do
+      collection do
+        post  :run_mass_import
+        get   :mass_import
+      end
+    end
     scope ':owner_name/:project_name', :constraints => {:project_name => Project::NAME_REGEXP} do # project
       scope :as => 'project' do
         resources :wiki do
@@ -261,7 +315,7 @@ Rosa::Application.routes.draw do
             match 'compare/:versions' => 'wiki#compare', :versions => /([a-f0-9\^]{6,40})(\.\.\.[a-f0-9\^]{6,40})/, :as => :compare_versions, :via => :get
           end
         end
-        resources :issues, :except => :edit do
+        resources :issues, :except => [:destroy, :edit] do
           resources :comments, :only => [:edit, :create, :update, :destroy]
           resources :subscribes, :only => [:create, :destroy]
           collection do
@@ -271,12 +325,14 @@ Rosa::Application.routes.draw do
         end
         post "/labels/:label_id" => "issues#destroy_label", :as => :issues_delete_label
         post "/labels/:label_id/update" => "issues#update_label", :as => :issues_update_label
+
         resources :build_lists, :only => [:index, :new, :create] do
-          collection { post :search }
+          get :list, :on => :collection
         end
         resources :collaborators do
           get :find, :on => :collection
         end
+        resources :hooks, :except => :show
         resources :pull_requests, :except => :destroy do
           get :autocomplete_to_project, :on => :collection
           put :merge, :on => :member
@@ -293,6 +349,7 @@ Rosa::Application.routes.draw do
       delete '/' => 'projects#destroy'
       # Member
       post '/fork' => 'projects#fork', :as => :fork_project
+      get '/possible_forks' => 'projects#possible_forks', :as => :possible_forks_project
       get '/sections' => 'projects#sections', :as => :sections_project
       post '/sections' => 'projects#sections'
       delete '/remove_user' => 'projects#remove_user', :as => :remove_user_project
@@ -304,7 +361,11 @@ Rosa::Application.routes.draw do
           # Tags
           get '/tags' => "git/trees#tags", :as => :tags
           # Branches
-          get '/branches/:treeish' => "git/trees#branches", :as => :branches
+          get '/branches' => "git/trees#branches", :as => :branches
+          get '/branches/:treeish' => "git/trees#branches", :as => :branch
+          delete '/branches/:treeish' => "git/trees#destroy", :as => :branch
+          put '/branches/:treeish' => "git/trees#restore_branch", :as => :branch
+          post '/branches' => "git/trees#create", :as => :branches
           # Commits
           get '/commits/:treeish(/*path)' => "git/commits#index", :as => :commits, :format => false
           get '/commit/:id(.:format)' => "git/commits#show", :as => :commit

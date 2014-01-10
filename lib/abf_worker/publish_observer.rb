@@ -9,12 +9,26 @@ module AbfWorker
 
     def perform
       return if status == STARTED # do nothing when publication started
-      if options['type'] == 'resign'
-        AbfWorker::BuildListsPublishTaskManager.unlock_repository options['id']
-      else
-        if options['extra']['regenerate'] # Regenerate metadata
-          AbfWorker::BuildListsPublishTaskManager.unlock_rep_and_platform options['extra']['lock_str']
-        elsif options['extra']['create_container'] # Container has been created
+      extra = options['extra']
+      repository_status = RepositoryStatus.where(:id => extra['repository_status_id']).first
+      begin
+        
+        if extra['regenerate'] || extra['regenerate_platform']
+          log_sha1 = (options['results'].try(:first) || {}).fetch('sha1', nil)
+        end
+
+        if extra['regenerate'] # Regenerate metadata
+          repository_status.last_regenerated_at = Time.now.utc
+          repository_status.last_regenerated_status = status
+          repository_status.last_regenerated_log_sha1 = log_sha1
+        elsif extra['regenerate_platform'] # Regenerate metadata for Software Center
+          if platform = Platform.where(:id => extra['platform_id']).first
+            platform.last_regenerated_at = Time.now.utc
+            platform.last_regenerated_status = status
+            platform.last_regenerated_log_sha1 = log_sha1
+            platform.ready
+          end
+        elsif extra['create_container'] # Container has been created
           case status
           when COMPLETED
             subject.published_container
@@ -22,9 +36,11 @@ module AbfWorker
             subject.fail_publish_container
           end
           update_results
-        else
+        elsif !extra['resign'] # Simple publish
           update_rpm_builds
         end
+      ensure
+        repository_status.ready if repository_status.present?
       end
     end
 
@@ -36,10 +52,18 @@ module AbfWorker
         update_results build_list
         case status
         when COMPLETED
-          # 'update_column' - when project of build_list has been removed from repository
-          build_list.published || build_list.update_column(:status, BuildList::BUILD_PUBLISHED)
+          if build_list.build_publish?
+            # 'update_column' - when project of build_list has been removed from repository
+            build_list.published || build_list.update_column(:status, BuildList::BUILD_PUBLISHED)
+          elsif build_list.build_publish_into_testing?
+            build_list.published_into_testing || build_list.update_column(:status, BuildList::BUILD_PUBLISHED_INTO_TESTING)
+          end
         when FAILED, CANCELED
-          build_list.fail_publish || build_list.update_column(:status, BuildList::FAILED_PUBLISH)
+          if build_list.build_publish?
+            build_list.fail_publish || build_list.update_column(:status, BuildList::FAILED_PUBLISH)
+          elsif build_list.build_publish_into_testing?
+            build_list.fail_publish_into_testing || build_list.update_column(:status, BuildList::FAILED_PUBLISH_INTO_TESTING)
+          end
         end
         AbfWorker::BuildListsPublishTaskManager.unlock_build_list build_list
       end
@@ -50,8 +74,6 @@ module AbfWorker
       when FAILED, CANCELED
         AbfWorker::BuildListsPublishTaskManager.cleanup_failed options['projects_for_cleanup']
       end
-
-      AbfWorker::BuildListsPublishTaskManager.unlock_rep_and_platform options['extra']['lock_str']
     end
 
     def update_results(build_list = subject)

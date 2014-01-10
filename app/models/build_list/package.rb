@@ -5,7 +5,7 @@ class BuildList::Package < ActiveRecord::Base
   belongs_to :project
   belongs_to :platform
 
-  attr_accessible :fullname, :name, :release, :version, :sha1
+  attr_accessible :fullname, :name, :release, :version, :sha1, :epoch
 
   validates :build_list_id, :project_id, :platform_id, :fullname,
             :package_type, :name, :release, :version,
@@ -22,7 +22,34 @@ class BuildList::Package < ActiveRecord::Base
   scope :by_package_type, lambda {|type| where(:package_type => type) }
   scope :like_name,       lambda {|name| where("#{table_name}.name ILIKE ?", "%#{name}%") if name.present?}
 
+  before_create :set_epoch
+
   def assignee
     project.maintainer
   end
+
+
+  # Comparison between versions
+  # @param [BuildList::Package] other
+  # @return [Number] -1 if +other+ is greater than, 0 if +other+ is equal to,
+  #   and +1 if other is less than version.
+  def rpmvercmp(other)
+    RPM::C.rpmvercmp to_vre_epoch_zero, other.to_vre_epoch_zero
+  end
+
+  protected
+
+  def set_epoch
+    self.epoch = nil if epoch.blank? || epoch == 0
+  end
+
+  # String representation in the form "e:v-r"
+  # @return [String]
+  # @note The epoch is included always. As 0 if not present
+  def to_vre_epoch_zero
+    evr = epoch.present? ? "#{epoch}:#{version}" : "0:#{version}"
+    evr << "-#{release}" if release.present?
+    evr
+  end
+
 end

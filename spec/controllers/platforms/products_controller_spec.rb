@@ -4,7 +4,7 @@ shared_examples_for 'admin user' do
 
   it 'should be able to create product' do
     lambda { post :create, @create_params }.should change{ Product.count }.by(1)
-    response.should redirect_to(platform_product_path( Product.last.platform.id, Product.last ))
+    response.should redirect_to(platform_product_path( Product.last.platform, Product.last ))
   end
 
   it 'should be able to update product' do
@@ -30,7 +30,7 @@ describe Platforms::ProductsController do
       @product = FactoryGirl.create(:product, :platform => @platform)
       @project = FactoryGirl.create(:project)
 
-      params = {:platform_id => @platform.id, :src_project => @project.name_with_owner}
+      params = {:platform_id => @platform, :src_project => @project.name_with_owner}
       @create_params = params.merge({:product => {:name => 'pro', :time_living => 150}})
       @update_params = params.merge({:product => {:name => 'pro2'}})
 

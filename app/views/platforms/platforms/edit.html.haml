@@ -5,6 +5,35 @@
 = form_for @platform, :url => platform_path(@platform), :html => { :class => :form } do |f|
   = render "form", :f => f
 
+- if can? :change_visibility, @platform
+  .hr
+  .leftside= t('activerecord.attributes.platform.visibility')
+  .rightside= link_to t("layout.platforms.change_visibility_from_#{@platform.visibility}"),
+    change_visibility_platform_path(@platform),
+    :method => :post,
+    :confirm => t("layout.platforms.confirm_change_visibility"),
+    :class => 'button'
+  .both
+
+- if can? :regenerate_metadata, @platform
+  .hr
+  %h3= t('layout.platforms.metadata')
+  .leftlist= t('activerecord.attributes.regeneration_status.status')
+  .rightlist= t("layout.regeneration_statuses.statuses.#{@platform.human_status}")
+  .both
+  .leftlist= t('activerecord.attributes.regeneration_status.last_regenerated_at')
+  .rightlist= @platform.last_regenerated_at
+  .both
+  .leftlist= t('activerecord.attributes.regeneration_status.last_regenerated_status')
+  .rightlist= t("layout.regeneration_statuses.last_regenerated_statuses.#{@platform.human_regeneration_status}")
+  .both
+  .leftlist= t('activerecord.attributes.regeneration_status.last_regenerated_log_sha1')
+  .rightlist= link_to_file_store('regeneration.log', @platform.last_regenerated_log_sha1)
+  .both
+  .leftside
+  .rightside= link_to t('layout.regeneration_statuses.regenerate_metadata'), regenerate_metadata_platform_path(@platform), :method => :put, :confirm => t('layout.confirm'), :class => 'button'
+  .both
+
 - if can? :destroy, @platform
   .hr
   .leftside= t("layout.platforms.delete_warning")
@@ -12,5 +41,5 @@
 - if can? :clear, @platform
   .hr
   .leftside= t("layout.repositories.clear_warning")
-  .rightside= link_to t("layout.repositories.clear"), clear_platform_path(@platform), :class => 'button', :confirm => t('layout.repositories.clear_confirm'), :method => :post
+  .rightside= link_to t("layout.repositories.clear"), clear_platform_path(@platform), :class => 'button', :confirm => t('layout.repositories.clear_confirm'), :method => :put
   .both

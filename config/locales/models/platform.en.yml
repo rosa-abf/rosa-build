@@ -1,6 +1,9 @@
 en:
   layout:
     platforms:
+      contents: Contents
+      contents_of: Contents of
+      search_contents: Search name of file/folder...
       admin_id: Owner
       build_all: Build all
       list: List
@@ -46,10 +49,15 @@ en:
       mass_build: Mass build
       build_task: Build Task
       refresh_button: Refresh
+      change_visibility_from_hidden: Change status to "Public"
+      change_visibility_from_open: Change status to "Private"
+      confirm_change_visibility: Are you sure you want to change visibility of this platform?
+      metadata: Metadata for Software Center
 
   flash:
     platform:
       released_status_can_not_be_changed: Released status can't be changed if platform has been released
+      owner_can_not_be_changed: Owner of personal platform can't be changed
       saved: Platform saved
       created: Platform created
       save_error: Platform save error
@@ -72,6 +80,8 @@ en:
     models:
       platform: Platform
     attributes:
+      platform/platform_arch_settings:
+        time_living: Max time build (in minutes)
       platform:
         name: Name
         description: Description

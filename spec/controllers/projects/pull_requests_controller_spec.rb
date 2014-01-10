@@ -30,6 +30,8 @@ shared_context "pull request controller" do
 
     @user = FactoryGirl.create(:user)
     set_session_for(@user)
+
+    @issue = FactoryGirl.create(:issue, :project => @project)
   end
 end
 
@@ -93,12 +95,13 @@ end
 shared_examples_for 'user with pull request update rights' do
   it 'should be able to perform update action' do
     put :update, @update_params
-    response.should redirect_to(project_pull_request_path(@pull.to_project, @pull))
+    response.should be_success
   end
 
   it 'should be able to perform merge action' do
+    @pull.check
     put :merge, @update_params
-    response.should redirect_to(project_pull_request_path(@pull.to_project, @pull))
+    response.should be_success
   end
 
   let(:pull) { @project.pull_requests.find(@pull) }
@@ -134,11 +137,6 @@ shared_examples_for 'user without pull request update rights' do
     response.should redirect_to(controller.current_user ? forbidden_path : new_user_session_path)
   end
 
-  it 'should not be able to perform merge action' do
-    put :merge, @update_params
-    response.should redirect_to(controller.current_user ? forbidden_path : new_user_session_path)
-  end
-
   let(:pull) { @project.pull_requests.find(@pull) }
   it 'should not update pull request status' do
     put :update, @update_params
@@ -153,12 +151,19 @@ shared_examples_for 'user without pull request update rights' do
     put :update, @wrong_update_params
     pull.issue.body.should_not =='updating'
   end
+
+  it 'should be able to perform merge action' do
+    @pull.check
+    put :merge, @update_params
+    response.should_not be_success
+  end
+
 end
 
 shared_examples_for 'pull request when project with issues turned off' do
   before { @project.update_attributes(:has_issues => false) }
   it 'should be able to perform index action' do
-    get :index, :project_id => @project.id
+    get :index, :owner_name => @project.owner.uname, :project_name => @project.name
     response.should render_template(:index)
   end
 
@@ -216,6 +221,16 @@ describe Projects::PullRequestsController do
     it_should_behave_like 'pull request user with project reader rights'
     it_should_behave_like 'user without pull request update rights'
     it_should_behave_like 'pull request when project with issues turned off'
+
+    it 'should return 404' do
+      get :show, :owner_name => @project.owner.uname, :project_name => @project.name, :id => 999999
+      render_template(:file => "#{Rails.root}/public/404.html")
+    end
+
+    it 'should redirect to issue page' do
+      get :show, :owner_name => @project.owner.uname, :project_name => @project.name, :id => @issue.serial_id
+      response.should redirect_to(project_issue_path(@project, @issue))
+    end
   end
 
   context 'for project writer user' do
@@ -280,5 +295,41 @@ describe Projects::PullRequestsController do
     end
 
     it_should_behave_like 'user without pull request update rights'
+  end
+
+  context 'send email messages' do
+    before(:each) do
+      @project_reader = FactoryGirl.create :user
+      @project.relations.create!(:actor_type => 'User', :actor_id => @project_reader.id, :role => 'reader')
+      @project_admin = FactoryGirl.create :user
+      @project.relations.create!(:actor_type => 'User', :actor_id => @project_admin.id, :role => 'admin')
+      @project_writer = FactoryGirl.create :user
+      @project.relations.create!(:actor_type => 'User', :actor_id => @project_writer.id, :role => 'writer')
+
+      set_session_for(@project_writer)
+      ActionMailer::Base.deliveries = []
+    end
+
+    it 'should send two email messages to project admins' do
+      post :create, @create_params
+      @project.pull_requests.last.issue.send(:new_issue_notifications)
+      @project.pull_requests.last.issue.send(:send_assign_notifications)
+      ActionMailer::Base.deliveries.count.should == 2
+    end
+
+    it 'should send two email messages to admins and one to assignee' do
+      post :create, @create_params.deep_merge(:issue => {:assignee_id => @project_reader.id})
+      @project.pull_requests.last.issue.send(:new_issue_notifications)
+      @project.pull_requests.last.issue.send(:send_assign_notifications)
+      ActionMailer::Base.deliveries.count.should == 3
+    end
+
+    it 'should not duplicate email message' do
+      post :create, @create_params.deep_merge(:issue => {:assignee_id => @project_admin.id})
+      @project.pull_requests.last.issue.send(:new_issue_notifications)
+      @project.pull_requests.last.issue.send(:send_assign_notifications)
+      ActionMailer::Base.deliveries.count.should == 2 # send only to admins
+      ActionMailer::Base.deliveries.first.to != ActionMailer::Base.deliveries.last.to
+    end
   end
 end

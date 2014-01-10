@@ -2,7 +2,7 @@
 -if @filter == 'system'
   - columns = [{:type => 'html'}, {:type => nil, :sortable => false, :searchable => false, :class => 'buttons'}]
 -else
-  - columns = [{:type => 'html'}, {:type => 'html'}, {:type => 'html'}, {:type => 'html', :sortable => false, :searchable => false}, {:type => nil, :sortable => false, :searchable => false, :class => 'buttons'}]
+  - columns = [{:type => 'html'}, {:type => 'html'}, {:type => 'html'}, {:type => 'html'}, {:type => 'html', :sortable => false, :searchable => false}, {:type => nil, :sortable => false, :searchable => false, :class => 'buttons'}]
 = raw datatable(columns, {:sort_by => "[0, 'asc']", :processing => t("layout.processing"), :search_label => t("layout.search.header"),
                           :pagination_labels => {:previous => t("datatables.previous_label"), :next => t("datatables.next_label")},
                           :empty_label      => t("datatables.empty_label"),
@@ -23,6 +23,7 @@
         %th.th1= t("activerecord.attributes.user.name")
         %th.th2= t("activerecord.attributes.user.uname")
         %th.th3= t("activerecord.attributes.user.email")
+        %th.th1= t("activerecord.attributes.user.created_at")
         %th.th4= t("activerecord.attributes.user.role")
       %th.last &nbsp;
   %tbody

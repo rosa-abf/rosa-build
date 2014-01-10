@@ -57,13 +57,13 @@ class Admin::UsersController < Admin::BaseController
 
   def list
     if params[:system] != 'true'
-      colName, @users = ['users.name', 'users.uname', 'users.email'], @users.opened
+      colName, @users = %w(name uname email created_at), @users.opened
     else
-      colName, @users, @system_list = ['users.uname'], @users.system, true
+      colName, @users, @system_list = ['uname'], @users.system, true
     end
     sort_col = params[:iSortCol_0] || 0
     sort_dir = params[:sSortDir_0]=="asc" ? 'asc' : 'desc'
-    order = "#{colName[sort_col.to_i]} #{sort_dir}"
+    order = "users.#{colName[sort_col.to_i]} #{sort_dir}"
 
     @users = @users.paginate(:page => (params[:iDisplayStart].to_i/params[:iDisplayLength].to_i).to_i + 1, :per_page => params[:iDisplayLength])
     @total_users = @users.count

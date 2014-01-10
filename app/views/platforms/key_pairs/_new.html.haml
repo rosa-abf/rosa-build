@@ -1,5 +1,3 @@
-= render 'platforms/base/sidebar'
-
 %h3= t("layout.key_pairs.header")
 
 = form_for :key_pair, :url => platform_key_pairs_path(@platform), :method => :post, :html => { :class => :form } do |f|
@@ -14,4 +12,4 @@
   .both
 
   .button_block
-    = submit_tag t("layout.save")
+    = submit_tag t('layout.save'), :data => {'disable-with' => t('layout.saving')}

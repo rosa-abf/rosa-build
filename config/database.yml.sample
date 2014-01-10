@@ -6,3 +6,10 @@ production:
   pool: 5
   username: rosa
   password: rosa
+
+test:
+  adapter: postgresql
+  encoding: unicode
+  template: template0
+  database: rosa_build_test
+  username: postgres

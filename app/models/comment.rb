@@ -1,4 +1,12 @@
 class Comment < ActiveRecord::Base
+  include Modules::Observers::ActivityFeed::Comment
+
+  # regexp take from http://code.google.com/p/concerto-platform/source/browse/v3/cms/lib/CodeMirror/mode/gfm/gfm.js?spec=svn861&r=861#71
+  # User/Project#Num
+  # User#Num
+  # #Num
+  ISSUES_REGEX = /(?:[a-zA-Z0-9\-_]*\/)?(?:[a-zA-Z0-9\-_]*)?#[0-9]+/
+
   belongs_to :commentable, :polymorphic => true, :touch => true
   belongs_to :user
   belongs_to :project
@@ -15,9 +23,7 @@ class Comment < ActiveRecord::Base
   attr_accessible :body, :data
 
   def commentable
-    # raise commentable_id.inspect
-    # raise commentable_id.to_s(16).inspect
-    commit_comment? ? project.repo.commit(commentable_id.to_s(16)) : super # TODO leading zero problem
+    commit_comment? ? project.repo.commit(Comment.hex_to_commit_hash commentable_id) : super
   end
 
   def commentable=(c)
@@ -47,10 +53,6 @@ class Comment < ActiveRecord::Base
 
   def own_comment?(user)
     user_id == user.id
-  end
-
-  def can_notify_on_new_comment?(subscribe)
-    User.find(subscribe.user).notifier.new_comment && User.find(subscribe.user).notifier.can_notify
   end
 
   def actual_inline_comment?(diff = nil, force = false)
@@ -84,7 +86,7 @@ class Comment < ActiveRecord::Base
   end
 
   def pull_comment?
-    return true if commentable.is_a?(Issue) && commentable.pull_request.present?
+    commentable.is_a?(Issue) && commentable.pull_request.present?
   end
 
   def set_additional_data params
@@ -128,6 +130,60 @@ class Comment < ActiveRecord::Base
     return true
   end
 
+  def self.create_link_on_issues_from_item item, commits = nil
+    linker = item.user
+    current_ability = Ability.new(linker)
+
+    case
+    when item.is_a?(GitHook)
+      elements = commits
+      opts = {}
+    when item.is_a?(Issue)
+      elements = [[item, item.title], [item, item.body]]
+      opts = {:created_from_issue_id => item.id}
+    when item.commentable_type == 'Issue'
+      elements = [[item, item.body]]
+      opts = {:created_from_issue_id => item.commentable_id}
+    when item.commentable_type == 'Grit::Commit'
+      elements = [[item, item.body]]
+      opts = {:created_from_commit_hash => item.commentable_id}
+    else
+      raise "Unsupported item type #{item.class.name}!"
+    end
+
+    elements.each do |element|
+      element[1].scan(ISSUES_REGEX).each do |hash|
+        issue = Issue.find_by_hash_tag hash, current_ability, item.project
+        next unless issue
+        # dont create link to the same issue
+        next if opts[:created_from_issue_id] == issue.id
+        opts = {:created_from_commit_hash => element[0].hex} if item.is_a?(GitHook)
+        # dont create duplicate link to issue
+        next if Comment.find_existing_automatic_comment issue, opts
+        # dont create link to outdated commit
+        next if item.is_a?(GitHook) && !item.project.repo.commit(element[0])
+        comment = linker.comments.new :body => 'automatic comment'
+        comment.commentable, comment.project, comment.automatic = issue, issue.project, true
+        comment.data = {:from_project_id => item.project.id}
+        if opts[:created_from_commit_hash]
+          comment.created_from_commit_hash = opts[:created_from_commit_hash]
+        elsif opts[:created_from_issue_id]
+          comment.data.merge!(:comment_id => item.id) if item.is_a? Comment
+          comment.created_from_issue_id = opts[:created_from_issue_id]
+        else
+          raise 'Unsupported opts for automatic comment!'
+        end
+        comment.save
+      end
+    end
+  end
+
+  def self.hex_to_commit_hash hex
+    # '079d'.hex.to_s(16) => "79d"
+    t = hex.to_s(16)
+    '0'*(40-t.length) << t # commit hash has 40-character
+  end
+
   protected
 
   def subscribe_on_reply
@@ -145,5 +201,11 @@ class Comment < ActiveRecord::Base
         Subscribe.subscribe_to_commit(options) if Subscribe.subscribed_to_commit?(project, user, commentable)
       end
     end
+  end
+
+  def self.find_existing_automatic_comment issue, opts
+    find_dup = opts.merge(:automatic => true, :commentable_type => issue.class.name,
+                          :commentable_id => issue.id)
+    Comment.exists? find_dup
   end
 end

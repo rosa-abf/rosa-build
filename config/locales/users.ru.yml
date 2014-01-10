@@ -42,6 +42,7 @@ ru:
         role: Роль
         created_at: Создан
         updated_at: Обновлен
+        sound_notifications: Включить звуковые оповещения
         role: Роль в системе
         language: Язык
         password: Пароль
@@ -52,3 +53,4 @@ ru:
         company: Компания
         avatar: Аватар
         avatar_file_size: Размер аватара
+        authentication_token: API токен

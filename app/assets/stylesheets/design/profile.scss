@@ -1,0 +1,145 @@
+.row {
+  .span3.profile {
+    .avatar {
+      float: left;
+      width: 81px;
+      height: 81px;
+    }
+    .base_info {
+      float: left;
+      width: 134px;
+      h3 {
+        margin: 0 0 0 10px;
+      }
+      p {
+        height: 35px;
+        margin-left: 10px;
+      }
+      a {
+        margin: 16px 0 0 10px;
+      }
+    }
+    p.first {
+      margin-top: 10px;
+    }
+    p.info {
+      max-width: 220px;
+    }
+  }
+}
+hr.profile_line {
+  margin: 20px 0;
+  width: 865px;
+}
+.profile-content {
+  border: 3px solid #D4D4D4;
+  .search {
+    border: 2px solid #D4D4D4;
+    float: left;
+    margin: 15px 10px;
+    width: 837px;
+    .pic {
+      background: url("/assets/search-button.png") repeat scroll 0 0 transparent;
+      float: left;
+      height: 22px;
+      width: 24px;
+    }
+    .field {
+      float: left;
+      margin: -1px 0 0;
+      width: 750px;
+      input {
+        background: none repeat scroll 0 0 transparent;
+        border: medium none;
+        font-family: Arial;
+        font-size: 12px;
+        height: 18px;
+        padding: 2px 0 0;
+        width: 700px;
+      }
+      input.gray {
+        color: #CFCFCF;
+      }
+      input.black {
+        color: #333333;
+      }
+    }
+  }
+  table {
+    border: none;
+    border-collapse:collapse;
+    margin: 0 9px 10px 9px;
+    width: 844px;
+    th {
+      padding-left: 10px;
+      width: 411px;
+      .project-link {
+        margin-top: 5px;
+        float: left;
+      }
+    }
+    tr.odd {
+    }
+    tr.even {
+      background: #EDEDED;
+    }
+    .row-fluid {
+      max-height: 16px;
+      .span3 {
+        font-size: 10px;
+        font-weight: normal;
+        max-height: 16px;
+        min-height: 16px;
+      }
+      .span3.datetime_moment {
+        margin-right: 15px;
+        color: gray;
+      }
+    }
+  }
+  .span12.content {
+    background: url(/assets/bg_blue.png);
+    height: 30px;
+    margin-bottom: 0px;
+    nav {
+      ul {
+        list-style: none;
+        padding-left: 0;
+        margin: 4px 0 0 5px;
+        li {
+          text-decoration: none;
+          padding: 0 10px 6px 0;
+          a {
+            color: white;
+            font-weight: bold;
+            font-size: 14px;
+            padding: 0 10px 9px 10px;
+          }
+          a.active {
+            background: image-url("profile-hover.png") repeat-x scroll 0 100% transparent;
+          }
+        }
+      }
+    }
+  }
+  .span12.sub-menu {
+    height: 30px;
+    background: #EDEDED;
+    margin: 0;
+    box-shadow: none;
+    padding-left: 0px;
+    nav {
+      ul {
+        list-style: none;
+        padding: 0;
+        margin: 6px 0 0 5px;
+        a {
+          padding: 0 10px 9px 10px;
+        }
+        a.active {
+          background: image-url("profile-hover.png") repeat-x scroll 0 100% transparent;
+        }
+      }
+    }
+  }
+}

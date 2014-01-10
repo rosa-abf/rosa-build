@@ -78,7 +78,7 @@ describe Platforms::KeyPairsController do
     @create_params = {
       :platform_id => @platform,
       :key_pair => {
-        :repository_id => @repository,
+        :repository_id => @repository.id,
         :public => kp.public,
         :secret => kp.secret
       }

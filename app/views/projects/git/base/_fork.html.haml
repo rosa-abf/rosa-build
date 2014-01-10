@@ -1,3 +1,5 @@
+= hidden_field_tag :possible_forks_path, possible_forks_project_path(@project)
+
 - if can? :write, @project
   .r{:style => "display: block"}
     =link_to t("projects.pull_requests.show.pull"), new_project_pull_request_path(@project, :treeish => @treeish), :id => 'send_pull_request', :class => 'button'
@@ -8,11 +10,10 @@
     .modal-header
       %a.close{"data-dismiss" => "modal"} ×
       %h3=t 'layout.projects.fork_modal_header'
-    .modal-body.modal-body-fork
-      =render 'choose_fork', :owner => current_user
-      %hr.bootstrap
-      - Group.can_own_project(current_user).each do |group|
-        =render 'choose_fork', :owner => group
-        %hr.bootstrap
-- if can? :create, @project.build_lists.new
+      = hidden_field_tag :possible_forks, possible_forks_project_path(@project)
+      %div{:align => 'center'}= text_field_tag 'fork_name', @project.name, :id => 'fork_name', :class => 'fork_name'
+    #forks_list.modal-body.modal-body-fork
+      = render 'forks', :owner => current_user, :name => @project.name
+
+- if @project.is_package && can?(:create, @project.build_lists.new)
   .r{:style => "display: block"}= link_to t('layout.projects.new_build_list'), new_project_build_list_path(@project), :class => 'button'

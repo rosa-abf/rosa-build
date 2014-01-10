@@ -224,12 +224,16 @@ describe Api::V1::PlatformsController do
       response.status.should == 401
     end
 
-    [:show, :platforms_for_build].each do |action|
-      it "should not be able to perform #{ action } action", :anonymous_access  => false do
-        get action, :format => :json
-        response.status.should == 401
-      end
+    it "should not be able to perform platforms_for_build action", :anonymous_access  => false do
+      get :platforms_for_build, :format => :json
+      response.status.should == 401
     end
+
+    it "should not be able to perform show action", :anonymous_access  => false do
+      get :show, :id => @platform, :format => :json
+      response.status.should == 401
+    end
+
 
     it 'should be able to perform members action', :anonymous_access  => true do
       get :members, :id => @platform.id, :format => :json
@@ -241,6 +245,91 @@ describe Api::V1::PlatformsController do
     it_should_behave_like 'api platform user without member rights'
     it_should_behave_like 'api platform user without owner rights'
     it_should_behave_like 'api platform user without global admin rights'
+
+
+    context 'perform allowed action' do
+      it 'ensures that status 200 if platform empty' do
+        get :allowed
+        response.status.should == 200
+      end
+
+      it 'ensures that status 403 if platform does not exist' do
+        get :allowed, :path => "/rosa-server/repository/SRPMS/base/release/repodata/"
+        response.status.should == 403
+      end
+
+      it 'ensures that status 200 if platform open' do
+        get :allowed, :path => "/#{@platform.name}/repository/SRPMS/base/release/repodata/"
+        response.status.should == 200
+      end
+
+      context 'for hidden platform' do
+        before { @platform.change_visibility }
+
+        it 'ensures that status 403 if no token' do
+          get :allowed, :path => "/#{@platform.name}/repository/SRPMS/base/release/repodata/"
+          response.status.should == 403
+        end
+
+        it 'ensures that status 403 if no token and a lot of "/"' do
+          get :allowed, :path => "///#{@platform.name}///repository/SRPMS/base/release/repodata/"
+          response.status.should == 403
+        end
+
+        it 'ensures that status 200 if token correct and a lot of "/"' do
+          token = FactoryGirl.create(:platform_token, :subject => @platform)
+          http_login token.authentication_token, ''
+          get :allowed, :path => "///#{@platform.name}///repository/SRPMS/base/release/repodata/"
+          response.status.should == 200
+        end
+
+        it 'ensures that status 403 on access to root of platform if no token' do
+          get :allowed, :path => "///#{@platform.name}"
+          response.status.should == 403
+        end
+
+        it 'ensures that status 200 on access to root of platform if token correct' do
+          token = FactoryGirl.create(:platform_token, :subject => @platform)
+          http_login token.authentication_token, ''
+          get :allowed, :path => "///#{@platform.name}"
+          response.status.should == 200
+        end
+
+        it 'ensures that status 403 if wrong token' do
+          http_login 'KuKu', ''
+          get :allowed, :path => "/#{@platform.name}/repository/SRPMS/base/release/repodata/"
+          response.status.should == 403
+        end
+
+        it 'ensures that status 200 if token correct' do
+          token = FactoryGirl.create(:platform_token, :subject => @platform)
+          http_login token.authentication_token, ''
+          get :allowed, :path => "/#{@platform.name}/repository/SRPMS/base/release/repodata/"
+          response.status.should == 200
+        end
+
+        it 'ensures that status 403 if token correct but blocked' do
+          token = FactoryGirl.create(:platform_token, :subject => @platform)
+          token.block
+          http_login token.authentication_token, ''
+          get :allowed, :path => "/#{@platform.name}/repository/SRPMS/base/release/repodata/"
+          response.status.should == 403
+        end
+
+        it 'ensures that status 200 if user token correct and user has ability to read platform' do
+          http_login @platform.owner.authentication_token, ''
+          get :allowed, :path => "/#{@platform.name}/repository/SRPMS/base/release/repodata/"
+          response.status.should == 200
+        end
+
+        it 'ensures that status 403 if user token correct but user has no ability to read platform' do
+          user = FactoryGirl.create(:user)
+          http_login user.authentication_token, ''
+          get :allowed, :path => "/#{@platform.name}/repository/SRPMS/base/release/repodata/"
+          response.status.should == 403
+        end
+      end
+    end
   end
 
   context 'for global admin' do
@@ -307,6 +396,38 @@ describe Api::V1::PlatformsController do
     it_should_behave_like 'api platform user with reader rights'
     it_should_behave_like 'api platform user with reader rights for hidden platform'
     it_should_behave_like 'api platform user with member rights'
+    it_should_behave_like 'api platform user without owner rights'
+    it_should_behave_like 'api platform user without global admin rights'
+  end
+
+  context 'for member of repository' do
+    before do
+      http_login(@user)
+      repository = FactoryGirl.create(:repository, :platform => @platform)
+      repository.add_member(@user)
+      personal_repository = FactoryGirl.create(:repository, :platform => @personal_platform)
+      personal_repository.add_member(@user)
+    end
+
+    context 'perform index action with type param' do
+      render_views
+      %w(main personal).each do |type|
+        it "ensures that filter by type = #{type} returns true result" do
+          get :index, :format => :json, :type => "#{type}"
+          JSON.parse(response.body)['platforms'].map{ |p| p['platform_type'] }.
+            uniq.should == ["#{type}"]
+        end
+      end
+    end
+
+    it 'should not be able to perform members action for hidden platform' do
+      @platform.update_column(:visibility, 'hidden')
+      get :members, :id => @platform.id, :format => :json
+      response.status.should == 403
+    end
+    it_should_behave_like 'api platform user with reader rights'
+    it_should_behave_like 'api platform user with reader rights for hidden platform'
+    it_should_behave_like 'api platform user without member rights'
     it_should_behave_like 'api platform user without owner rights'
     it_should_behave_like 'api platform user without global admin rights'
   end

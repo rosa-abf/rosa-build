@@ -32,7 +32,10 @@
 .leftlist= f.label :professional_experience, t("activerecord.attributes.user.professional_experience")
 .rightlist= f.text_area :professional_experience
 .both
+.leftlist= f.label :sound_notifications, t("activerecord.attributes.user.sound_notifications")
+.rightlist= f.check_box :sound_notifications
+.both
 .leftlist
   \ 
-.rightlist= submit_tag t("layout.save"), :data => {:"disable-with" => t("layout.saving")}
+.rightlist= submit_tag t('layout.save'), :data => {'disable-with' => t('layout.saving')}
 .both

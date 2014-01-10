@@ -21,15 +21,7 @@ FactoryGirl.define do
     before(:create) { |bl| attach_project_to_build_list bl }
   end
 
-  factory :build_list_core, :parent => :build_list do
-    bs_id { FactoryGirl.generate(:integer) }
-  end
-
-  factory :build_list_core_with_attaching_project, :parent => :build_list_core do
-    before(:create) { |bl| attach_project_to_build_list bl }
-  end
-
-  factory :build_list_by_group_project, :parent => :build_list_core do
+  factory :build_list_by_group_project, :parent => :build_list do
     project { |bl|
       pr = FactoryGirl.create(:group_project_with_commit)
       bl.save_to_platform.repositories.first.projects << pr

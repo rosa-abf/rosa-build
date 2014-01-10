@@ -13,8 +13,8 @@
     = display_meta_tags :site => APP_CONFIG['project_name'], :reverse => true, :separator => '-'
 
   %body
-    -# render "layouts/flashes"
+    = render 'layouts/noscript'
     = yield
 
-    = render 'layouts/counters' unless current_user.try(:admin?)
+    = render 'layouts/counters' if !current_user.try(:admin?) && Rails.env.production?
   %footer= render "layouts/menu/bottom"

@@ -1,3 +1,3 @@
-tag.(member, :id, :name)
-tag.type member.class.name
-tag.url member_path(member)
+json.(member, :id, :name, :uname)
+json.type member.class.name
+json.url member_path(member)

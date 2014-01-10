@@ -20,11 +20,10 @@ shared_examples_for 'projects user with reader rights' do
             :group => group.id}.should change{ Project.count }.by(1)
   end
 
-  # it 'should be able to view project' do
-  #   get :show, :owner_name => @project.owner.uname, :project_name => @project.name
-  #   assigns(:project).should eq @project
-  # end
-
+  it 'should be able to fork project with different name' do
+    post :fork, :owner_name => @project.owner.uname, :project_name => @project.name, :fork_name => 'another_name'
+    response.should redirect_to(project_path(Project.where(:name => 'another_name').last))
+  end
 end
 
 shared_examples_for 'projects user with project admin rights' do
@@ -60,6 +59,32 @@ shared_examples_for 'projects user without project admin rights' do
     @project.reload.has_issues.should == has_issues
     response.should redirect_to(forbidden_path)
   end
+
+  it 'writer group should be able to fork project to their group' do
+    group = FactoryGirl.create(:group)
+    group.actors.create(:actor_type => 'User', :actor_id => @user.id, :role => 'writer')
+    lambda {post :fork, :owner_name => @project.owner.uname, :project_name => @project.name,
+            :group => group.id}.should change{ Project.count }.by(1)
+  end
+
+  it 'reader group should not be able to fork project to their group' do
+    group = FactoryGirl.create(:group)
+    group.actors.create(:actor_type => 'User', :actor_id => @user.id, :role => 'reader')
+    lambda {post :fork, :owner_name => @project.owner.uname, :project_name => @project.name,
+            :group => group.id}.should change{ Project.count }.by(0)
+  end
+
+  it 'writer group should be able to create project to their group' do
+    group = FactoryGirl.create(:group)
+    group.actors.create(:actor_type => 'User', :actor_id => @user.id, :role => 'writer')
+    lambda {post :create, @create_params.merge(:who_owns => 'group', :owner_id => group.id)}.should change{ Project.count }.by(1)
+  end
+
+  it 'reader group should not be able to create project to their group' do
+    group = FactoryGirl.create(:group)
+    group.actors.create(:actor_type => 'User', :actor_id => @user.id, :role => 'reader')
+    lambda {post :create, @create_params.merge(:who_owns => 'group', :owner_id => group.id)}.should change{ Project.count }.by(0)
+  end
 end
 
 describe Projects::ProjectsController do
@@ -76,7 +101,7 @@ describe Projects::ProjectsController do
     set_session_for(@user)
   end
 
-  context 'for system users' do
+  context 'for users' do
 
     context 'guest' do
 
@@ -137,11 +162,10 @@ describe Projects::ProjectsController do
           group = FactoryGirl.create(:group, :owner => @user)
           lambda { post :create, @create_params.merge({:who_owns => 'group', :owner_id => group.id})}.should change{ Project.count }.by(1)
         end
-
       end 
 
     end # context 'registered user'
-  end # context 'for system users'
+  end # context 'for users'
 
   context 'for project members' do
 

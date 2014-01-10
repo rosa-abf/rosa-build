@@ -1,0 +1,27 @@
+-set_meta_tags :title => "#{title_object @project}"
+
+= render 'submenu'
+= render 'repo_block', :project => @project
+
+%div{'ng-controller' => 'ProjectTagsController', 'ng-init' => "init('#{@project.owner.uname}', '#{@project.name}')"}
+
+  %h3= t('layout.projects.tags')
+  %p{'ng-show' => '!tags.length'}= t('layout.projects.no_tags')
+  %p{'ng-show' => 'tags.length > 0'} {{'project.total_tags' | i18n:'plural':tags.length}}
+  .both
+  %br
+
+  %input.mediumheight{'ng-model' => 'query.ref'}
+  .both
+
+  #project-tags
+    %ol.release-list
+      %li{'ng-repeat' => 'tag in tags | filter:query'}
+        %a.detail-link{'ng-href' => '{{tag.path(project)}}' }
+          = t('layout.projects.browse_code')
+        - %w(zip tar.gz).each do |type|
+          %a.detail-link{'ng-href' => "{{tag.archive_path(project, '#{type}')}}" }
+            = t('layout.projects.source_code', :type => type)
+        %p.name
+          %b {{tag.ref}}
+          .date {{tag.object.authored_date * 1000 | date:'yyyy.MM.dd'}}

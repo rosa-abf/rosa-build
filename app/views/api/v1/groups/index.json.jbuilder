@@ -1,4 +1,4 @@
-json.groups @groups do |json, group|
+json.groups @groups do |group|
   json.(group, :id, :uname, :own_projects_count, :description)
   json.created_at group.created_at.to_i
   json.updated_at group.updated_at.to_i

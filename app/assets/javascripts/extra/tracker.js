@@ -18,18 +18,7 @@ $(document).ready(function() {
   });
 
   $("#table1.issues-table .pagination a").live('click', function() {
-    var a = $(this);
-    var page = parseInt($('.pagination .current').text());
-    if (a.hasClass('next_page')) {
-      page += 1;
-    } else {
-      if (a.hasClass('previous_page')) {
-        page -= 1;
-      } else {
-        page = a.text();
-      }
-    }
-    $('.pagination .current').html(page);
+    updatePagination($(this));
     return send_index_tracker_request('GET');
   });
 
@@ -107,6 +96,7 @@ $(document).ready(function() {
       success: function(data){
                  $('article').html(data);
                  $(".niceRadio").each(function() { changeRadioStart(jQuery(this)) });
+                 updateTime();
                },
       error: function(data){
                alert('error') // TODO remove
@@ -115,22 +105,15 @@ $(document).ready(function() {
     return false;
   };
 
-  var isSearchUser = null;
   $('#search_user').on('keyup', function() {
-    if (isSearchUser != null) { isSearchUser.abort(); }
-    isSearchUser = $.ajax({
-      type: 'GET',
-      url: $('#search_user_path').attr('path'),
-      data: $(this).serialize(),
-      success: function(data){
-                 $('#manage_issue_users_list').html(data);
-               }
-     });
-    return false;
+    path = $('#search_user_path').attr('path');
+    data = $(this).serialize();
+    dom = $('#manage_issue_users_list');
+    return search_items(path, data, dom);
   });
 
-  $('#assigned-popup .header .icon-remove-circle').live('click', function() {
-    $('#assigned-popup').hide();
+  $('.users-search-popup .header .icon-remove-circle').live('click', function() {
+    $('.users-search-popup').hide();
   });
 
   $('#assigned-container .icon-share').live('click', function() {

@@ -6,6 +6,7 @@ class User < Avatar
 
   devise :database_authenticatable, :registerable, :omniauthable, :token_authenticatable,# :encryptable, :timeoutable
          :recoverable, :rememberable, :validatable, :lockable, :confirmable#, :reconfirmable, :trackable
+  devise :omniauthable, :omniauth_providers => [:facebook, :google_oauth2, :github]
 
   has_one :notifier, :class_name => 'SettingsNotifier', :dependent => :destroy #:notifier
 
@@ -22,10 +23,13 @@ class User < Avatar
   has_many :projects,     :through => :targets, :source => :target, :source_type => 'Project',    :autosave => true
   has_many :groups,       :through => :targets, :source => :target, :source_type => 'Group',      :autosave => true
   has_many :platforms,    :through => :targets, :source => :target, :source_type => 'Platform',   :autosave => true
+  has_many :repositories, :through => :targets, :source => :target, :source_type => 'Repository'
 
   has_many :own_projects, :as => :owner, :class_name => 'Project', :dependent => :destroy
   has_many :own_groups,   :foreign_key => :owner_id, :class_name => 'Group', :dependent => :destroy
   has_many :own_platforms, :as => :owner, :class_name => 'Platform', :dependent => :destroy
+  has_many :issues
+  has_many :assigned_issues, :foreign_key => :assignee_id, :class_name => 'Issue', :dependent => :nullify
 
   has_many :key_pairs
   has_many :ssh_keys, :dependent => :destroy
@@ -36,7 +40,7 @@ class User < Avatar
   validates :language, :inclusion => {:in => LANGUAGES}, :allow_blank => true
 
   attr_accessible :email, :password, :password_confirmation, :current_password, :remember_me, :login, :name, :uname, :language,
-                  :site, :company, :professional_experience, :location
+                  :site, :company, :professional_experience, :location, :sound_notifications
   attr_readonly :uname
   attr_accessor :login
 
@@ -55,6 +59,7 @@ class User < Avatar
 
   include Modules::Models::PersonalRepository
   include Modules::Models::ActsLikeMember
+  include Modules::Observers::ActivityFeed::User
 
   def admin?
     role == 'admin'
@@ -97,20 +102,6 @@ class User < Avatar
              { :value => login.downcase, :orig_value => login }]).first
     end
 
-    def new_with_session(params, session)
-      super.tap do |user|
-        if data = session["devise.omniauth_data"]
-          if info = data['info'] and info.present?
-            user.email = info['email'].presence if user.email.blank?
-            user.uname ||= info['nickname'].presence || info['username'].presence
-            user.name ||= info['name'].presence || [info['first_name'], info['last_name']].join(' ').strip
-          end
-          user.password = Devise.friendly_token[0,20] # stub password
-          user.authentications.build :uid => data['uid'], :provider => data['provider']
-        end
-      end
-    end
-
     def auth_by_token_or_login_pass(user, pass)
       u = User.find_for_database_authentication(:login => user)
       u if u && !u.access_locked? && (u.authentication_token == user || u.valid_password?(pass))
@@ -151,6 +142,19 @@ class User < Avatar
     return nil if roles.count == 0
     %w(admin writer reader).each {|role| return role if roles.include?(role)}
     raise "unknown user #{self.uname} roles #{roles}"
+  end
+
+  def check_assigned_issues target
+    if target.is_a? Project
+      assigned_issues.where(:project_id => target.id).update_all(:assignee_id => nil)
+    else
+      ability = Ability.new self
+      project_ids = Project.accessible_by(ability, :membered).uniq.pluck(:id)
+
+      issues = assigned_issues
+      issues = issues.where('project_id not in (?)', project_ids) if project_ids.present?
+      issues.update_all(:assignee_id => nil)
+    end
   end
 
   protected

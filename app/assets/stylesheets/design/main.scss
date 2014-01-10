@@ -1514,32 +1514,30 @@ div.fork p {
 
 /* Project main page */
 
-table.tablesorter.project .th1 {
-  width: 130px;
-  /*padding-left: 17px;*/
-}
+.tablesorter.project {
 
-table.tablesorter.project .th2 {
-  width: 110px;
-  /*padding-left: 17px;*/
-}
-
-table.tablesorter.project .th3 {
-  width: 450px;
-}
-
-table.tablesorter.project .th4 {
-  /*padding-left: 17px;*/
-}
-
-table.tablesorter.project div.name {
-  float: left;
-  margin-top: 0px;
-}
-
-table.tablesorter.project div.pic {
-  float: left;
-  padding-right: 5px;
+  .th1 {
+    width: 130px;
+    /*padding-left: 17px;*/
+  }
+  .th2 {
+    width: 110px;
+    /*padding-left: 17px;*/
+  }
+  .th3 {
+    width: 450px;
+  }
+  .th4 {
+    /*padding-left: 17px;*/
+  }
+  .name {
+    float: left;
+    margin-top: 0px;
+  }
+  .pic {
+    float: left;
+    padding-right: 5px;
+  }
 }
 
 a.files-see {
@@ -1674,49 +1672,49 @@ table.tablesorter.tracker td.td0{
   padding-right: 0px;
 }
 
+table.tablesorter.tracker .td3.td3-pull {
+  min-width: 130px;
+}
+
 table.tablesorter.tracker td.td3{
-  min-width: 110px;
   padding-top: 10px;
+  min-width: 110px;
+  .code {
+    height: 23px;
+    width: 15px;
+    background: #FFF;
+    color: #009fe3;
+    border: 1px solid #83d1f2;
+    font-size: 16px;
+    padding: 5px 0px 0px 5px;
+    margin-right: 3px;
+    cursor: pointer;
+  }
+  .avatar {
+    margin-right: 8px;
+    cursor: pointer;
+  }
+  .answers {
+    height: 28px;
+    background: #FFF;
+    color: #009fe3;
+    border: 1px solid #83d1f2;
+    font-size: 16px;
+    cursor: pointer;
+    .pic {
+      float: left;
+      margin: 2px;
+      margin-top: 6px;
+    }
+    .count {
+      float: left;
+      margin: 4px 5px 0px 2px;
+    }
+  }
 }
 
-table.tablesorter.tracker td.td3 div.code {
-  height: 23px;
-  width: 15px;
-  background: #FFF;
-  color: #009fe3;
-  border: 1px solid #83d1f2;
-  font-size: 16px;
-  padding: 5px 0px 0px 5px;
+.tablesorter.tracker .td3 > a {
   float: left;
-  margin-right: 3px;
-  cursor: pointer;
-}
-
-table.tablesorter.tracker td.td3 div.avatar {
-  float: left;
-  margin-right: 8px;
-  cursor: pointer;
-}
-
-table.tablesorter.tracker td.td3 div.answers {
-  height: 28px;
-  background: #FFF;
-  color: #009fe3;
-  border: 1px solid #83d1f2;
-  font-size: 16px;
-  float: left;
-  cursor: pointer;
-}
-
-table.tablesorter.tracker td.td3 div.answers div.pic {
-  float: left;
-  margin: 2px;
-  margin-top: 6px;
-}
-
-table.tablesorter.tracker td.td3 div.answers div.count {
-  float: left;
-  margin: 4px 5px 0px 2px;
 }
 
 table.tablesorter.tracker div.smalltext {

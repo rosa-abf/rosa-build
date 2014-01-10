@@ -1,17 +1,16 @@
 en:
   layout:
     projects:
+      mass_import: Mass import
       branches: Branches
-      showing_branches: Showing %{count} branches
-      showing_branch: Showing 1 branch
+      delete_branch: Delete branch
+      restore_branch: Restore branch
       no_branches: No branches
       base_branch: Base branch
       compare: Compare
       browse_code: Browse code
       source_code: Source code (%{type})
       tags: Tags
-      showing_tags: Showing %{count} tags
-      showing_tag: Showing 1 tag
       no_tags: No tags
       add: Add
       public_projects_list: Public projects list
@@ -30,6 +29,7 @@ en:
       new_build_list: New build
       confirm_delete: Are you sure you want to delete this project?
       new: New project
+      new_branch: New branch
       location: Location
       git_repo_location: Path to git repo
       current_project_header: Current project
@@ -39,6 +39,7 @@ en:
       members: Members
       groups: Groups
       edit_collaborators: Members
+      hooks: Service hooks
       role: Project role
       remove_user: Leave project
       issues: Issues
@@ -47,7 +48,6 @@ en:
       sections: Sections
       has_issue_description: Tracker adds a lightweight issue management system tightly integrated with your repository.
       has_wiki_description: Wikis are the simplest way to allow other users to contribute content. Any user can create and edit pages for documentation, examples, support or anything you wish.
-      human_average_build_time: Expected time is %{hours} h. %{minutes} min.
       git_global_setup: Git global setup
       create_repository: Create Repository
       move_files_to_folder: Move files you need to the project or create them.
@@ -72,8 +72,12 @@ en:
       current_commit: Current commit
       files_in_project: Files in
 
+      public: Public
+      private: Private
+
   flash:
     project:
+      mass_import_added_to_queue: Mass import added to queue
       saved: Project saved
       save_error: Unable to save project
       save_warning_ssh_key: Project owner must provide a SSH key in his profile
@@ -87,6 +91,9 @@ en:
       project: Project
     attributes:
       project:
+        url: URL
+        add_to_repository_id: Add to repository
+        srpms_list: SRPMs list
         name: Name
         description: Descripton
         owner: Owner
@@ -100,7 +107,7 @@ en:
         updated_at: Updated on
         has_issues: Issues tracker enabled
         has_wiki:  Wiki enabled
-        srpm: Import code from src.rpm
+        srpm: Import code from src.rpm (optional)
         who_owns:
           me: Myself
           group: Group

@@ -45,6 +45,8 @@ en:
       save_error: Unable to save pull request
 
   activerecord:
+    models:
+      pull_request: Pull Request
     attributes:
       pull_requests:
         to_ref: Source
@@ -58,4 +60,6 @@ en:
       search: Find pull request...
       all: All requests
       to_me: Assigned to me
+      assigned: Assigned to me
+      created: Created by you
       view_full_changes: View full changes

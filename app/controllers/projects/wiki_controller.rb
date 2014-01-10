@@ -244,7 +244,7 @@ class Projects::WikiController < Projects::BaseController
           when 'revert'      then "Reverted page #{@name.to_s}"
           when 'revert_wiki' then "Reverted wiki"
         end
-        msg += " (#{params['format']})" if params['format']
+        msg << " (#{params['format']})" if params['format']
       end
       msg = 'Unhandled action' if !msg || msg.empty?
       { :message => msg }

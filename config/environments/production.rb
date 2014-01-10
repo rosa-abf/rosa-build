@@ -26,6 +26,7 @@ Rosa::Application.configure do
 
   # Use a different cache store in production
   # config.cache_store = :mem_cache_store
+  config.cache_store = :redis_store, 'redis://localhost:6379/0/cache', { expires_in: 10.minutes }
 
   # Disable Rails's static asset server
   # In production, Apache or nginx will already do this
@@ -36,7 +37,7 @@ Rosa::Application.configure do
 
   # Disable delivery errors, bad email addresses will be ignored
   # config.action_mailer.raise_delivery_errors = false
-  config.action_mailer.default_url_options = { :host => 'abf.rosalinux.ru' }
+  config.action_mailer.default_url_options = { :host => 'abf.io' }
   config.delivery_method = :sendmail
 
   # Enable threaded mode
@@ -62,5 +63,5 @@ Rosa::Application.configure do
   config.assets.digest = true
 
   # Precompile additional assets (application.js, application.css, and all non-JS/CSS are already added)
-  config.assets.precompile += %w(login.css login.js reg_session.css tour.css tour.js gollum/editor/langs/*.js)
+  config.assets.precompile += %w(login.css login.js reg_session.css tour.css tour.js gollum/editor/langs/*.js moment/ru.js)
 end

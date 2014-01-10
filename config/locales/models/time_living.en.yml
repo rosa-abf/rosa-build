@@ -1,4 +1,4 @@
 en:
   flash:
     time_living:
-      numericality_error: must be 2 to 720 minutes
+      numericality_error: must be %{min} to %{max} minutes

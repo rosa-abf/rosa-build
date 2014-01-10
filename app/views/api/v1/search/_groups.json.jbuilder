@@ -1,3 +1,3 @@
 json.groups results do |group|
-  json.partial! 'member', :member => group, :json => json
+  json.partial! 'member', :member => group
 end

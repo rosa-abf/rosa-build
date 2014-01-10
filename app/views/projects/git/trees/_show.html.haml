@@ -20,18 +20,31 @@
         %td== &nbsp;
         %td== &nbsp;
         %td== &nbsp;
-    - @project.tree_info(@tree, @treeish, @path).each_pair do |entry, commit|
+    - @project.tree_info(@tree, @treeish, @path).each do |node, node_path, commit|
       %tr
         %td
-          - entry_path = File.join([@path.present? ? @path : nil, entry.name].compact)
-          - if entry.is_a? Grit::Blob
-            .pic= image_tag 'code.png'
-            .name= link_to(entry.name, blob_path(@project, @treeish, entry_path), :class => 'files-see')
+          - if node.is_a? Grit::Submodule
+            .pic= image_tag 'folder-submodule.png'
+            .name
+              - if url = submodule_url(node, @treeish)
+                = link_to(node.name, url, :class => 'files-see')
+                = '@'
+                = link_to(node.id[0..6], "#{url}/tree/#{node.id}", :class => 'files-see')
+              - else
+                = "#{node.name} @ #{node.id[0..6]}"
           - else
-            .pic= image_tag 'folder.png'
-            .name= link_to(entry.name, tree_path(@project, @treeish, entry_path), :class => 'files-see')
-        %td
-          %span{:style => "display: none;"}= date = commit.committed_date || commit.authored_date
-          = l(date, :format => :short)
-        %td= commit.short_message
-        %td= (commit.committer || commit.author).name
+            - options = [@project, @treeish, node_path]
+            - if node.is_a?(Grit::Tree)
+              - pic = 'folder.png'
+              - path = tree_path *options
+            .pic= image_tag pic || 'code.png'
+            .name= link_to(node.name, path || blob_path(*options), :class => 'files-see')
+
+        - if commit
+          = datetime_moment(commit.committed_date || commit.authored_date, :tag => :td)
+          %td= commit.short_message
+          %td= (commit.committer || commit.author).name
+        - else
+          %td
+          %td
+          %td

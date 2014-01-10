@@ -50,10 +50,10 @@ module Preregistration
         end
       end
 
-    end #RegistrationsController
-  end #Devise
-end #Preregistration
+    end # RegistrationsController
+  end # Devise
+end # Preregistration
 
 Rails.application.config.to_prepare do
-  ::Devise::RegistrationsController.send :include, Preregistration::Devise::RegistrationsController
+  ::Devise::RegistrationsController.send :include, Preregistration::Devise::RegistrationsController if APP_CONFIG['preregistration']
 end

@@ -6,5 +6,5 @@
     %span= t('layout.issues.is_assigned')
   - else
     %span= t('layout.issues.no_one_is_assigned')
-  -if can?(:update, @issue) || @issue.new_record?
+  -if can?(:write, @project)
     %span.icon-share

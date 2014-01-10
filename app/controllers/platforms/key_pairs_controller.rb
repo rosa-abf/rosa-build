@@ -1,4 +1,4 @@
-class Platforms::KeyPairsController < ApplicationController
+class Platforms::KeyPairsController < Platforms::BaseController
   before_filter :authenticate_user!
 
   load_and_authorize_resource :platform, :only => [:index]

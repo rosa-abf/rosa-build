@@ -22,7 +22,7 @@ class SshKey < ActiveRecord::Base
   def set_fingerprint
     return false unless key
 
-    file = Tempfile.new('key_file', "#{APP_CONFIG['root_path']}/tmp")
+    file = Tempfile.new('key_file', '/tmp')
     filename = file.path
     begin
       file.puts key

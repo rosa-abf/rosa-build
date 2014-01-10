@@ -10,7 +10,7 @@ module UsersHelper
     elsif subject.kind_of? Group
       image_path('ava-big.png')
     else
-      gravatar_url(subject.email, subject.avatar.styles[size].geometry.split('x').first)
+      gravatar_url(subject.email, User::AVATAR_SIZES[size])
     end
   end
 

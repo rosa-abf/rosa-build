@@ -5,12 +5,12 @@
         %table
           %tr
             %td.width18=radio_button_tag :myradio, 'all', !@is_assigned_to_me, {:id => 'myradio1', :class => 'niceRadio', :name => 'filter'}
-            %td.width135=t("layout.issues.all")
-            %td.width30.right=@project.issues.without_pull_requests.count
+            %td.width135=t('layout.issues.all')
+            %td.width30.right=@project.issues.without_pull_requests.not_closed_or_merged.count
           %tr
-            %td=radio_button_tag :myradio, 'to_me', @is_assigned_to_me, {:id => 'myradio1', :class => 'niceRadio', :name => 'filter'}
-            %td=t("layout.issues.to_me")
-            %td.width30.right=@project.issues.without_pull_requests.where(:assignee_id => current_user.id).count
+            %td=radio_button_tag :myradio, 'assigned', @is_assigned_to_me, {:id => 'myradio1', :class => 'niceRadio', :name => 'filter'}
+            %td=t('layout.issues.assigned')
+            %td.width30.right=@project.issues.without_pull_requests.where(:assignee_id => current_user.id).not_closed_or_merged.count
   =form_tag project_issues_path(@project), :id => 'search_issue', :class => 'ajax_search_form', :method => :get do
     .bordered.bpadding20
       - search = params[:search_issue].present? ? params[:search_issue] : t('layout.issues.search')

@@ -1,14 +1,15 @@
 =render 'title_body', :f => f, :id => 'new'
-.leftlist= t('activerecord.attributes.issue.assignee') + ':'
-#assigned-container.rightlist
-  =render 'user_container', :user => @issue.assignee
-.both
-.leftlist= t('layout.issues.labels') + ':'
-.rightlist
-  %span#flag-span.small-text= t('layout.issues.choose_labels_on_left')
-  #issue_labels
-.both
+- if can?(:write, @project)
+  .leftlist= t('activerecord.attributes.issue.assignee') + ':'
+  #assigned-container.rightlist
+    =render 'user_container', :user => @issue.assignee
+  .both
+  .leftlist= t('layout.issues.labels') + ':'
+  .rightlist
+    %span#flag-span.small-text= t('layout.issues.choose_labels_on_left')
+    #issue_labels
+  .both
 .leftlist
 .rightlist
-  %input{:type => "submit", :value => t(@issue.new_record? ? 'layout.create' : 'layout.update')}
+  = submit_tag t(@issue.new_record? ? 'layout.create' : 'layout.update'), :data => {'disable-with' => t('layout.processing')}
 .both

@@ -1,8 +1,0 @@
-%li
-  = link_to t('layout.projects.browse_code'), tree_path(@project, tag.name), :class => 'detail-link'
-  - file_name = "#{@project.name}-#{tag.name}"
-  - %w(zip tar.gz).each do |type|
-    = link_to t('layout.projects.source_code', :type => type), archive_path(@project, file_name, type), :class => 'detail-link'
-  %p.name
-    %b= tag.name
-    .date= tag.commit.authored_date.strftime('%d.%m.%Y')

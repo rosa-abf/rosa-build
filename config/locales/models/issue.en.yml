@@ -1,5 +1,7 @@
 en:
   activerecord:
+    models:
+      issue: Issue
     attributes:
       issue:
         title: Name
@@ -18,7 +20,8 @@ en:
       assign_someone: Assign someone to this issue
       list: List
       all: All issues
-      to_me: Assigned to me
+      assigned: Assigned to me
+      created: Created by you
       edit: Edit
       search: Find issue...
       comments_header: Comments

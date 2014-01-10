@@ -1,5 +1,7 @@
 ru:
   activerecord:
+    models:
+      issue: Задача
     attributes:
       issue:
         title: Название
@@ -18,7 +20,8 @@ ru:
       assign_someone: Назначить кого-либо на задачу
       list: Список
       all: Все задачи
-      to_me: Назначенные мне
+      assigned: Назначенные мне
+      created: Созданные мной
       edit: Редактировать
       search: Найти задачу...
       comments_header: Комментарии

@@ -61,6 +61,15 @@ shared_examples_for 'api repository user with writer rights' do
     end
   end
 
+  context 'api repository user with add/remove repo_lock_file rights' do
+    [:add_repo_lock_file, :remove_repo_lock_file].each do |action|
+      it "should be able to perform #{action} action" do
+        put action, :id => @repository.id, :format => :json
+        response.should be_success
+      end
+    end
+  end
+
   context 'api repository user with add_member rights' do
     let(:member) { FactoryGirl.create(:user) }
     before do
@@ -98,14 +107,43 @@ shared_examples_for 'api repository user with writer rights' do
     it 'ensures that repository of main platform has been destroyed' do
       lambda { delete :destroy, :id => @repository.id, :format => :json }.should change{ Repository.count }.by(-1)
     end
-    it 'should not be able to perform destroy action for repository of personal platform' do
-      delete :destroy, :id => @personal_repository.id, :format => :json
-      response.should_not be_success
+
+    context 'repository with name "main" of personal platform' do
+      # hook for "ActiveRecord::ActiveRecordError: name is marked as readonly"
+      before { Repository.where(:id => @personal_repository.id).update_all("name = 'main'") }
+      it 'should not be able to perform destroy action' do
+        delete :destroy, :id => @personal_repository.id, :format => :json
+        response.should_not be_success
+      end
+      it 'ensures that repository has not been destroyed' do
+        lambda { delete :destroy, :id => @personal_repository.id, :format => :json }.should_not change{ Repository.count }
+      end
     end
-    it 'ensures that repository of personal platform has not been destroyed' do
-      lambda { delete :destroy, :id => @personal_repository.id, :format => :json }.should_not change{ Repository.count }
+    it 'should be able to perform destroy action for repository with name not "main" of personal platform' do
+      delete :destroy, :id => @personal_repository.id, :format => :json
+      response.should be_success
+    end
+    it 'ensures that repository with name not "main" of personal platform has been destroyed' do
+      lambda { delete :destroy, :id => @personal_repository.id, :format => :json }.should change{ Repository.count }.by(-1)
     end
   end
+
+  context 'api repository user with update signatures rights' do
+    before do
+      kp = FactoryGirl.build(:key_pair)
+      put :signatures, :id => @repository.id, :repository => {:public => kp.public, :secret => kp.secret}, :format => :json
+    end
+    it 'should be able to perform signatures action' do
+      response.should be_success
+    end
+    it 'ensures that signatures has been updated' do
+      @repository.key_pair.should_not be_nil
+    end
+  end
+
+end
+
+shared_examples_for 'api repository user with project manage rights' do
 
   context 'api repository user with add_project rights' do
     before { put :add_project, :id => @repository.id, :project_id => @project.id, :format => :json }
@@ -131,19 +169,6 @@ shared_examples_for 'api repository user with writer rights' do
     end
   end
 
-  context 'api repository user with update signatures rights' do
-    before do
-      kp = FactoryGirl.build(:key_pair)
-      put :signatures, :id => @repository.id, :repository => {:public => kp.public, :secret => kp.secret}, :format => :json
-    end
-    it 'should be able to perform signatures action' do
-      response.should be_success
-    end
-    it 'ensures that signatures has been updated' do
-      @repository.key_pair.should_not be_nil
-    end
-  end
-
 end
 
 shared_examples_for 'api repository user without writer rights' do
@@ -159,6 +184,15 @@ shared_examples_for 'api repository user without writer rights' do
     it 'ensures that repository has not been updated' do
       @repository.reload
       @repository.description.should_not == 'new description'
+    end
+  end
+
+  context 'api repository user without add/remove repo_lock_file rights' do
+    [:add_repo_lock_file, :remove_repo_lock_file].each do |action|
+      it "should not be able to perform #{action} action" do
+        put action, :id => @repository.id, :format => :json
+        response.should_not be_success
+      end
     end
   end
 
@@ -208,6 +242,22 @@ shared_examples_for 'api repository user without writer rights' do
     end
   end
 
+  context 'api repository user without update signatures rights' do
+    before do
+      kp = FactoryGirl.build(:key_pair)
+      put :signatures, :id => @repository.id, :repository => {:public => kp.public, :secret => kp.secret}, :format => :json
+    end
+    it 'should not be able to perform signatures action' do
+      response.should_not be_success
+    end
+    it 'ensures that signatures has not been updated' do
+      @repository.key_pair.should be_nil
+    end
+  end
+
+end
+
+shared_examples_for 'api repository user without project manage rights' do
   context 'api repository user without add_project rights' do
     before { put :add_project, :id => @repository.id, :project_id => @project.id, :format => :json }
     it 'should not be able to perform add_project action' do
@@ -231,20 +281,6 @@ shared_examples_for 'api repository user without writer rights' do
       @repository.projects.should include(@project)
     end
   end
-
-  context 'api repository user without update signatures rights' do
-    before do
-      kp = FactoryGirl.build(:key_pair)
-      put :signatures, :id => @repository.id, :repository => {:public => kp.public, :secret => kp.secret}, :format => :json
-    end
-    it 'should not be able to perform signatures action' do
-      response.should_not be_success
-    end
-    it 'ensures that signatures has not been updated' do
-      @repository.key_pair.should be_nil
-    end
-  end
-
 end
 
 
@@ -271,6 +307,7 @@ describe Api::V1::RepositoriesController do
       it_should_behave_like 'api repository user with show rights'
     end
     it_should_behave_like 'api repository user without writer rights'
+    it_should_behave_like 'api repository user without project manage rights'
     it_should_behave_like 'api repository user without key_pair rights'
 
     it 'should not be able to perform projects action', :anonymous_access => false do
@@ -295,9 +332,11 @@ describe Api::V1::RepositoriesController do
     before(:each) do
       @user = FactoryGirl.create(:user)
       http_login(@user)
-      platform = @repository.platform
-      platform.owner = @user; platform.save
-      @repository.platform.relations.create!(:actor_type => 'User', :actor_id => @user.id, :role => 'admin')
+      [@repository, @personal_repository].each do |repository|
+        platform = repository.platform
+        platform.owner = @user; platform.save
+        repository.platform.relations.create!(:actor_type => 'User', :actor_id => @user.id, :role => 'admin')
+      end
     end
 
     it_should_behave_like 'api repository user with reader rights'
@@ -315,6 +354,22 @@ describe Api::V1::RepositoriesController do
     it_should_behave_like 'api repository user with reader rights'
     it_should_behave_like 'api repository user without reader rights for hidden platform'
     it_should_behave_like 'api repository user with show rights'
+    it_should_behave_like 'api repository user without writer rights'
+    it_should_behave_like 'api repository user without project manage rights'
+    it_should_behave_like 'api repository user without key_pair rights'
+  end
+
+  context 'for member of repository' do
+    before(:each) do
+      @user = FactoryGirl.create(:user)
+      @repository.add_member @user
+      http_login @user
+    end
+
+    it_should_behave_like 'api repository user with reader rights'
+    it_should_behave_like 'api repository user with reader rights for hidden platform'
+    it_should_behave_like 'api repository user with show rights'
+    it_should_behave_like 'api repository user with project manage rights'
     it_should_behave_like 'api repository user without writer rights'
     it_should_behave_like 'api repository user without key_pair rights'
   end

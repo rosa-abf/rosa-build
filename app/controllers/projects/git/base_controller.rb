@@ -1,8 +1,8 @@
 class Projects::Git::BaseController < Projects::BaseController
   before_filter :authenticate_user!
   skip_before_filter :authenticate_user!, :only => [:show, :index, :blame, :raw, :archive, :diff, :tags, :branches] if APP_CONFIG['anonymous_access']
-  load_and_authorize_resource :project
 
+  load_and_authorize_resource :project
   before_filter :set_treeish_and_path
   before_filter :set_branch_and_tree
 

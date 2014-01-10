@@ -13,12 +13,6 @@ class Projects::CollaboratorsController < Projects::BaseController
     respond_with @collaborators
   end
 
-  def show
-  end
-
-  def new
-  end
-
   def find
     users = User.not_member_of(@project)
     groups = Group.not_member_of(@project)
@@ -30,9 +24,6 @@ class Projects::CollaboratorsController < Projects::BaseController
     respond_with @collaborators do |format|
       format.json { render 'index' }
     end
-  end
-
-  def edit
   end
 
   def create

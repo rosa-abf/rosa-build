@@ -2,6 +2,7 @@ class Projects::ProjectsController < Projects::BaseController
   include ProjectsHelper
   before_filter :authenticate_user!
   load_and_authorize_resource :id_param => :project_name # to force member actions load
+  before_filter :who_owns, :only => [:new, :create, :mass_import, :run_mass_import]
 
   def index
     @projects = Project.accessible_by(current_ability, :membered)
@@ -23,7 +24,27 @@ class Projects::ProjectsController < Projects::BaseController
 
   def new
     @project = Project.new
-    @who_owns = :me
+  end
+
+  def mass_import
+    @project = Project.new(:mass_import => true)
+  end
+
+  def run_mass_import
+    @project = Project.new params[:project]
+    @project.owner = choose_owner
+    authorize! :write, @project.owner if @project.owner.class == Group
+    authorize! :add_project, Repository.find(params[:project][:add_to_repository_id])
+    @project.valid?
+    @project.errors.messages.slice! :url
+    if @project.errors.messages.blank? # We need only url validation
+      @project.init_mass_import
+      flash[:notice] = t('flash.project.mass_import_added_to_queue')
+      redirect_to projects_path
+    else
+      flash[:warning] = @project.errors.full_messages.join('. ')
+      render :mass_import
+    end
   end
 
   def edit
@@ -32,8 +53,7 @@ class Projects::ProjectsController < Projects::BaseController
   def create
     @project = Project.new params[:project]
     @project.owner = choose_owner
-    @who_owns = (@project.owner_type == 'User' ? :me : :group)
-    authorize! :update, @project.owner if @project.owner.class == Group
+    authorize! :write, @project.owner if @project.owner.class == Group
 
     if @project.save
       flash[:notice] = t('flash.project.saved')
@@ -66,14 +86,19 @@ class Projects::ProjectsController < Projects::BaseController
 
   def fork
     owner = (Group.find params[:group] if params[:group].present?) || current_user
-    authorize! :update, owner if owner.class == Group
-    if forked = @project.fork(owner) and forked.valid?
+    authorize! :write, owner if owner.class == Group
+    if forked = @project.fork(owner, params[:fork_name]) and forked.valid?
       redirect_to forked, :notice => t("flash.project.forked")
     else
       flash[:warning] = t("flash.project.fork_error")
-      flash[:error] = forked.errors.full_messages
+      flash[:error] = forked.errors.full_messages.join("\n")
       redirect_to @project
     end
+  end
+
+  def possible_forks
+    render :partial => 'projects/git/base/forks', :layout => false,
+      :locals => { :owner => current_user, :name => (params[:name].presence || @project.name) }
   end
 
   def sections
@@ -114,6 +139,10 @@ class Projects::ProjectsController < Projects::BaseController
 
   protected
 
+  def who_owns
+    @who_owns = (@project.try(:owner_type) == 'User' ? :me : :group)
+  end
+
   def prepare_list(projects, groups, owners)
     res = {}
 
@@ -128,7 +157,7 @@ class Projects::ProjectsController < Projects::BaseController
       projects = projects.by_owners(groups, owners)
     end
 
-    projects = projects.search(params[:sSearch]).search_order if params[:sSearch].present?
+    projects = projects.search(params[:sSearch])
 
     res[:filtered_count] = projects.count
 

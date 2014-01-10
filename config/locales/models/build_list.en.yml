@@ -5,9 +5,10 @@ en:
       build_list_item: Build list item
     attributes:
       build_list:
-        bs_id: Id
+        id: Id
         name: Name
-        extra_repos: Extra repositories and build lists
+        extra_repositories: Extra repositories
+        extra_build_lists: Extra build lists
         auto_create_container: Create container automatically
         container_path: Container path
         status: Status
@@ -20,22 +21,31 @@ en:
         is_circle: Recurrent build
         updated_at: Notified at
         additional_repos: Additional repositories
+        include_testing_subrepository: "Include 'testing' subrepository"
         include_repos: Included repositories
         created_at: Created on
         save_to_repository: Save to repository
-        use_save_to_repository: Use 'save to repository' for assembly
         build_for_platform: Build for platform
         update_type: Update type
-        auto_publish: Automated publising
+        auto_publish: Automated publishing
         project_version: Version
         user: User
         publisher: Publisher
+        builder: Builder
         preferences: Preferences
         started_at: Build started at
         duration: Build duration in seconds
         mass_build_id: Mass build
         commit_hash: Commit hash
         logs: Logs
+        external_nodes: External nodes
+
+        extra_params:
+          label: Extra params
+          cfg_options: "'urpmi_options' for *.cfg file"
+          cfg_urpm_options: "'urpm_options' for *.cfg file"
+          build_src_rpm: Build src.rpm
+          build_rpm: Build rpm
 
       build_list/item:
         name: Name
@@ -47,6 +57,7 @@ en:
       build_list/package:
         name: Name
         fullname: Fullname
+        epoch: Epoch
         release: Release
         version: Version
 
@@ -60,9 +71,8 @@ en:
       created_at_end: "Build to start until:"
       updated_at_start: "Last update from BS on:"
       updated_at_end: " Last update from BS until:"
-      bs_id_search: 'Search by Id'
+      id_search: 'Search by Id'
       project_name_search: Search by project name
-      bs_id_not_set: Id has not been configured yet
       items_header: Build items
       packages_header: Packages
       no_items_data: No data
@@ -73,7 +83,9 @@ en:
       create_container_success: 'Container is queued for creating'
       create_container_fail: 'Errors during container creating!'
       publish_success: 'Build is queued for publishing'
+      publish_into_testing_success: 'Build is queued for publishing'
       publish_fail: 'Errors during build publishing!'
+      publish_into_testing_fail: 'Errors during build publishing!'
       publish_with_extra_fail: 'All extra build lists should be published before publishing this build list!'
       cancel_success: 'Build canceled'
       cancel_fail: 'Errors during build cancelation!'
@@ -97,14 +109,21 @@ en:
         related: Related
         everything: All
 
+      external_nodes:
+        owned: My
+        everything: All
+
       build_server_status:
         header: Build server status
-        count: '- count'
+        amount: '- amount'
+        abf: '-- ABF'
         tasks: '- tasks in queue'
+        custom: "-- user's"
+        mass_build_tasks: "-- mass build's"
         build_tasks: '- tasks in execution'
-        rpm_workers: Workers for building
-        iso_workers: Workers for building
-        publish_workers: Workers for publishing
+        rpm_workers: Workers of building
+        iso_workers: Workers of building
+        publish_workers: Workers of publishing
 
       items:
         statuses:
@@ -132,7 +151,9 @@ en:
         success: Build complete
         build_started: Build started
         platform_pending: Platform pending
-        project_version_not_found: Project version not found
+        build_published_into_testing: '[testing] Build has been published'
+        build_publish_into_testing: '[testing] Build is being published'
+        failed_publish_into_testing: '[testing] Publishing error'
 
       log:
         build_log: Build Log
@@ -152,21 +173,11 @@ en:
       show_filter: Show filters
       hide_filter: Hide filters
 
-  helpers:
-    extra_repos_and_build_lists:
-      header: 'Ability to attach at assembly additional sources of packages: repositories of platforms and packages of build lists.'
-      build_lists:
-        header: 'Requirements for attaching build lists:'
-        message1: '- only build list with container can be connected;'
-        message2: '- for main platform You can connect only build lists which destined for same platform;'
-        message3: '- only build lists with the same architecture will be connected or oriented to the both architectures (the property Publish i686 packages into x86_64 repository (only for rhel) in the settings of project is true).'
-        message4: '<i>Example: only build lists with x86_64 architecture will be connected to x86_64</i>'
-      repos:
-        header: 'Requirements for attaching repositories:'
-        message1: '- attaching repositories from other platform available only for build list into the personal platform.'
-        header2: 'How to attach a repository:'
-        message2: '- write the name of platform, choose repository from the list for attaching and click to "Add" button.'
-        message3: '<i>Example: correct input "uxteam_personal", wrong - "uxteam_personal/main".</i>'
+      last_build_lists: Last Build Lists
+      recreate_build_list: Recreate Build List
+      only_my_build_lists: Only My
+      failed_build_lists: Only Failed
+
   flash:
     build_list:
       saved: Build list for project version '%{project_version}', platform '%{build_for_platform}' and architecture '%{arch}' has been created successfully

@@ -52,7 +52,7 @@ class Projects::CommentsController < Projects::BaseController
   end
 
   def find_or_build_comment
-    @comment = params[:id].present? && Comment.find(params[:id]) ||
+    @comment = params[:id].present? && Comment.where(:automatic => false).find(params[:id]) ||
                current_user.comments.build(params[:comment]) {|c| c.commentable = @commentable; c.project = @project}
   end
 end

@@ -1,4 +1,4 @@
-json.user do |json|
+json.user do
   json.(@user, :id, :name, :email, :uname,:language, :own_projects_count, :professional_experience, :site, :company, :location, :build_priority)
   json.created_at @user.created_at.to_i
   json.updated_at @user.updated_at.to_i

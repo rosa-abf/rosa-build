@@ -18,6 +18,7 @@ class Group < Avatar
   scope :opened, where('1=1')
   scope :by_owner, lambda {|owner| where(:owner_id => owner.id)}
   scope :by_admin, lambda {|admin| joins(:actors).where(:'relations.role' => 'admin', :'relations.actor_id' => admin.id, :'relations.actor_type' => 'User')}
+  scope :by_admin_and_writer, lambda {|actor| joins(:actors).where(:'relations.role' => ['admin', 'writer'], :'relations.actor_id' => actor.id, :'relations.actor_type' => 'User')}
 
   attr_accessible :uname, :description
   attr_readonly :uname
@@ -31,7 +32,7 @@ class Group < Avatar
   # include Modules::Models::Owner
 
   def self.can_own_project(user)
-    (by_owner(user) | by_admin(user))
+    (by_owner(user) | by_admin_and_writer(user))
   end
 
   def name
@@ -48,6 +49,10 @@ class Group < Avatar
 
   def system?
     false
+  end
+
+  def fullname
+    return description.present? ? "#{uname} (#{description})" : uname
   end
 
   protected

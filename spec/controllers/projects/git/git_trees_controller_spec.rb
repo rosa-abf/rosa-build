@@ -6,7 +6,6 @@ describe Projects::Git::TreesController do
     stub_symlink_methods
 
     @project = FactoryGirl.create(:project)
-    @another_user = FactoryGirl.create(:user)
     @params = { :owner_name => @project.owner.uname,
                 :project_name => @project.name,
                 :treeish => "#{@project.name}-master"}
@@ -36,6 +35,22 @@ describe Projects::Git::TreesController do
       get :archive, @params.merge(:format => 'tar.gz')
       response.code.should == '401'
     end
+
+    it 'should not be able to perform destroy action' do
+      delete :destroy, @params.merge(:treeish => 'master')
+      response.should_not be_success
+    end
+
+    it 'should not be able to perform restore_branch action' do
+      put :restore_branch, @params.merge(:treeish => 'master')
+      response.should_not be_success
+    end
+
+    it 'should not be able to perform create action' do
+      post :create, @params.merge(:treeish => '', :from_ref => 'master', :new_ref => 'master-1')
+      response.should_not be_success
+    end
+
   end
 
   context 'for other user' do
@@ -59,11 +74,54 @@ describe Projects::Git::TreesController do
       response.should be_success
     end
 
+    it 'should not be able to perform destroy action' do
+      delete :destroy, @params.merge(:treeish => 'master')
+      response.should_not be_success
+    end
+
+    it 'should not be able to perform restore_branch action' do
+      put :restore_branch, @params.merge(:treeish => 'master')
+      response.should_not be_success
+    end
+
+    it 'should not be able to perform create action' do
+      post :create, @params.merge(:treeish => '', :from_ref => 'master', :new_ref => 'master-1')
+      response.should_not be_success
+    end
+
     [:tags, :branches].each do |action|
       it "should be able to perform #{action} action" do
         get action, @params.merge(:treeish => 'master')
         response.should be_success
       end
+    end
+  end
+
+  context 'for writer user' do
+    before(:each) do
+      user = FactoryGirl.create(:user)
+      @project.relations.create!(:actor_type => 'User', :actor_id => user.id, :role => 'writer')
+      set_session_for user
+    end
+
+    it 'should be able to perform destroy action' do
+      delete :destroy, @params.merge(:treeish => 'conflicts')
+      response.should be_success
+    end
+
+    it 'should not be able to perform destroy action for master branch' do
+      delete :destroy, @params.merge(:treeish => 'master')
+      response.should_not be_success
+    end
+
+    it 'should be able to perform restore_branch action' do
+      put :restore_branch, @params.merge(:treeish => 'master-1', :sha => 'master')
+      response.should be_success
+    end
+
+    it 'should be able to perform create action' do
+      post :create, @params.merge(:treeish => '', :from_ref => 'master', :new_ref => 'master-1')
+      response.should be_success
     end
   end
 

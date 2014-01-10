@@ -1,0 +1,11 @@
+- if devise_mapping.omniauthable?
+  .hr
+  .other
+    .left
+      %p= t('layout.sessions.sign_up_with')
+    .right
+      - resource_class.omniauth_providers.each do |provider|
+        = link_to omniauth_authorize_path(resource_name, provider) do
+          - provider = provider.to_s.gsub(/_oauth2/,'')
+          = image_tag("#{provider}.png", :alt => provider, :class => provider)
+  .both

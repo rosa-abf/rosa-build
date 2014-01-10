@@ -13,14 +13,12 @@ class KeyPair < ActiveRecord::Base
   validate :check_keys
 
   before_create { |record| record.key_id = @fingerprint }
-  after_create  { |record|
-    AbfWorker::BuildListsPublishTaskManager.resign_repository(record) unless record.repository.platform.personal?
-  }
+  after_create  { |record| record.repository.resign }
 
   protected
 
     def check_keys
-      dir = Dir.mktmpdir('keys-', "#{APP_CONFIG['root_path']}/tmp")
+      dir = Dir.mktmpdir 'keys-', APP_CONFIG['tmpfs_path']
       begin
         %w(pubring secring).each do |kind|
           filename = "#{dir}/#{kind}"

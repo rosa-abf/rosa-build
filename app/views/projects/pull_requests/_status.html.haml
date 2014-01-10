@@ -1,14 +1,36 @@
-- if can?(:merge, @pull) && @pull.can_merging?
-  %br
-  =form_for PullRequest.new, :url => merge_project_pull_request_path(@project, @pull), :html => { :method => :put, :class => :form } do |f|
-    =f.submit t 'projects.pull_requests.ready'
--else
-  .flash
-    %div{:class => @pull.ready? ? 'notice' : 'alert'}
-      =pull_status @pull
+- if can?(:merge, @pull)
+  %a.button{:href => '', 'ng-click' => 'merge()', 'ng-show' => "pull.status == 'ready'"}
+    = t 'projects.pull_requests.ready'
+  .both
+
+.flash{'ng-show' => '!pull.mergeable'}
+  .notice{'ng-show' => "pull.status == 'blocked'"}
+    = t "projects.pull_requests.blocked"
+  .alert{'ng-show' => "pull.status == 'merged'"}
+    = t("projects.pull_requests.merged",
+      :user => '{{pull.merged_by.uname}}',
+      :to_ref => show_ref(@pull, 'to'),
+      :from_ref => show_ref(@pull, 'from'),
+      :time => '{{merged_at}}').html_safe
+  .alert{'ng-show' => "pull.status == 'closed'"}
+    = t("projects.pull_requests.closed",
+      :user => '{{pull.closed_by.uname}}',
+      :time => '{{closed_at}}')
+.both
+
+
+- if !@pull.cross_pull? && can?(:write, @project)
+  %div{'ng-init' => "getBranch('#{@pull.from_ref}')", 'ng-show' => "pull.status == 'closed' || pull.status == 'merged'"}
+    %a.button{:href => '', 'ng-click' => 'deleteBranch()', 'ng-show' => "branch && branch.object.sha == pull.from_ref.sha"}
+      = t('layout.projects.delete_branch')
+    %a.button{:href => '', 'ng-click' => 'restoreBranch()', 'ng-hide' => "branch"}
+      = t('layout.projects.restore_branch')
+  .both
+
+
 -if can? :update, @pull
-  -if action = @pull.can_close? ? 'close' : ('reopen' if @pull.can_reopen?)
-    %br
-    =form_for :pull, :url => [@project, @pull], :html => { :id => 'do_pull_action',:method => :put, :class => :form } do |f|
-      =hidden_field_tag "pull_request_action", action
-      =f.submit t ".#{action}"
+  %br
+  %a.button{:href => '', 'ng-click' => 'reopen()', 'ng-show' => "pull.status == 'closed'"}
+    = t '.reopen'
+  %a.button{:href => '', 'ng-click' => 'close()', 'ng-show' => "pull.status == 'ready' || pull.status == 'open' || pull.status == 'blocked'"}
+    = t '.close'

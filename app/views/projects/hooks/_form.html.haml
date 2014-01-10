@@ -1,0 +1,12 @@
+= hidden_field_tag 'hook[name]', @hook.name
+- Hook::SCHEMA[@hook.name.to_sym].each do |type, field|
+  .leftlist= t("activerecord.attributes.hook.data.#{field}")
+  .rightlist
+    - name, value = "hook[data][#{field}]", @hook.data[field]
+    - if type == :boolean
+      = check_box_tag name, value, 1
+    - elsif type == :password
+      = password_field name, value
+    - else
+      = text_field_tag name, value
+  .both

@@ -10,6 +10,8 @@
           = link_to t("layout.projects.edit"), edit_project_path(@project)
         %li{:class => (act == :sections && contr == :projects) ? 'active' : ''}
           = link_to t("layout.projects.sections"), sections_project_path(@project)
+        %li{:class => (contr == :hooks) ? 'active' : ''}
+          = link_to t("layout.projects.hooks"), project_hooks_path(@project)
       - if can? :manage_collaborators, @project
         %li{:class => (act == :index && contr == :collaborators) ? 'active' : ''}
           = link_to t("layout.projects.edit_collaborators"), project_collaborators_path(@project)

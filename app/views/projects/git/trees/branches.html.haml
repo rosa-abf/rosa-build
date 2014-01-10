@@ -1,0 +1,43 @@
+-set_meta_tags :title => "#{title_object @project}"
+
+= render 'submenu'
+= render 'repo_block', :project => @project
+
+%div{'ng-controller' => 'ProjectBranchesController', 'ng-init' => "init('#{@project.owner.uname}', '#{@project.name}','#{@branch.try(:name)}')"}
+
+  %h3= t('layout.projects.branches')
+  %p{'ng-show' => '!branches.length'}= t('layout.projects.no_branches')
+  %p{'ng-show' => 'branches.length > 0'} {{'project.total_branches' | i18n:'plural':branches.length}}
+  .both
+  %br
+
+  %input.mediumheight{'ng-model' => 'query.ref'}
+  .both
+
+  %table#project-branches
+    %tbody
+      %tr{'ng-repeat' => 'branch in branches | filter:query', 'ng-class' => '{base: branch.ref == current_ref}'}
+        %td.name
+          %a{'ng-href' => '{{branch.path(project)}}' } {{branch.ref}}
+        %td.actions
+          %ul.actions
+            - if can?(:write, @project)
+              %li{'ng-hide' => 'branch.ref == current_ref || branch.ui_container'}
+                %a{:href => '', 'ng-click' => 'destroy(branch)'}
+                  = t('layout.projects.delete_branch')
+              %li{'ng-hide' => 'branch.ui_container'}
+                %a{:href => '', 'ng-click' => 'branch.ui_container = true'}
+                  = t('layout.projects.new_branch')
+              %li{'ng-show' => 'branch.ui_container'}
+                %form{'ng-submit' => 'create(branch)'}
+                  %input{'ng-model' => 'branch.new_ref'}
+                  %input{:type => 'submit', :value =>t('layout.create')}
+                  %a{:href => '', 'ng-click' => 'branch.ui_container = false'}
+                    = t('layout.cancel')
+            %li{'ng-hide' => 'branch.ref == current_ref || branch.ui_container'}
+              %a{'ng-href' => '{{branch.diff_path(project, current_ref)}}' }
+                = t('layout.projects.compare')
+            %li.text{'ng-show' => 'branch.ref == current_ref && !branch.ui_container'}
+              = t('layout.projects.base_branch')
+
+

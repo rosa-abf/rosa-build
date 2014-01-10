@@ -33,3 +33,8 @@ ru:
     product_build_lists:
       index:
         title: 'Мониторинг продуктов'
+  home:
+    issues:
+      title: 'Ваши задачи'
+    pull_requests:
+      title: 'Ваши пул реквесты'

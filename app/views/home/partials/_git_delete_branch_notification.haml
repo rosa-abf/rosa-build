@@ -1,0 +1,11 @@
+-user= User.where(:email => user_email).first || User.new(:email => user_email) if defined?(user_email)
+.top
+  .image= link_to(image_tag(avatar_url(user, :small), :alt => 'avatar'), user_path(user)) if user.try(:persisted?)
+  .text
+    %span
+      -_user_link = defined?(user_email) ? user_link(user, defined?(user_name) ? user_name : user_email) : nil
+      = t('notifications.bodies.delete_branch', :branch_name => branch_name, :user_link => _user_link).html_safe
+      = raw t("notifications.bodies.project", :project_link => link_to("#{project_owner}/#{project_name}", project_path(project_owner, project_name)) )
+    .both
+      = datetime_moment activity_feed.created_at, :tag => :span, :class => 'date'
+  .both

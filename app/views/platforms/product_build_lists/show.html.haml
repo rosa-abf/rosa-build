@@ -7,44 +7,49 @@
 
 %h3= t("layout.product_build_lists.main_data")
 .both
+%div{'ng-controller' => 'ProductBuildListController'}
+  = render 'show_field', :key => :id, :value => pbl.id
+  = hidden_field_tag :product_build_list_id, pbl.id
+  = render 'show_field', :key => :status, :value => '{{pbl.human_status}}'
+  - if pbl.user
+    = render 'show_field', :key => :user, :value => link_to(pbl.user.try(:fullname), pbl.user)
 
-= render 'show_field', :key => :id, :value => pbl.id
-= render 'show_field', :key => :status, :value => pbl.human_status
-- if pbl.user
-  = render 'show_field', :key => :user, :value => link_to(pbl.user.try(:fullname), pbl.user)
+  = render 'show_field', :key => :product, :value => link_to(pbl.product.name, platform_product_path(platform, product))
 
-= render 'show_field', :key => :product, :value => link_to(pbl.product.name, platform_product_path(platform, product))
+  = render 'show_field', :key => :project, :value => link_to(pbl.project.name_with_owner, project_path(pbl.project))
 
-= render 'show_field', :key => :project, :value => link_to(pbl.project.name_with_owner, project_path(pbl.project))
+  = render 'show_field', :key => :project_version, :value => product_build_list_version_link(pbl, true)
 
-= render 'show_field', :key => :project_version, :value => product_build_list_version_link(pbl, true)
+  - [:main_script, :params].each do |el|
+    = render 'show_field', :key => el, :value => pbl.send(el)
 
-- [:main_script, :params].each do |el|
-  = render 'show_field', :key => el, :value => pbl.send(el)
+  = render 'show_field', :key => :time_living, :value => (pbl.time_living / 60)
 
-= render 'show_field', :key => :time_living, :value => (pbl.time_living / 60)
+  = render 'show_field', :key => :autostarted, :value => t("layout.#{pbl.autostarted}_")
 
-= render 'show_field', :key => :autostarted, :value => t("layout.#{pbl.autostarted}_")
+  = render 'show_field', :key => :notified_at, :value => '{{pbl.notified_at}}'
 
-= render 'show_field', :key => :notified_at, :value => l(pbl.updated_at, :format => :long)
-
-- if pbl.can_cancel? && can?(:cancel, pbl)
-  = link_to t("layout.build_lists.cancel"), cancel_platform_product_product_build_list_path(pbl.product.platform, pbl.product, pbl),
-            :method => :put, :confirm => t("layout.confirm"), :class => 'button'
-  .both
-  %br
-
-- if pbl.build_completed? && can?(:update, pbl)
-  = form_for pbl, :url => platform_product_product_build_list_path(pbl.product.platform, pbl.product, pbl) do |f|
-    .leftlist= f.label :not_delete
-    .rightlist
-      = f.select :not_delete, [false, true].collect{|status| [t("layout.#{status}_"), status]}, {:selected => pbl.not_delete}
-      .both
-      %br
-      = submit_tag t('layout.update')
+  - if can?(:cancel, pbl)
+    = link_to t("layout.build_lists.cancel"),
+      cancel_platform_product_product_build_list_path(pbl.product.platform, pbl.product, pbl),
+      :method => :put, :confirm => t("layout.confirm"), :class => 'button',
+      'ng-show' => 'pbl.can_cancel'
     .both
-- unless pbl.not_delete
-  .flash_notify
+    %br
+
+  - if can?(:update, pbl)
+    = form_for pbl,
+      :url => platform_product_product_build_list_path(pbl.product.platform,pbl.product, pbl),
+      :html => {'ng-show' => "pbl.status == #{ProductBuildList::BUILD_COMPLETED}"} do |f|
+
+      .leftlist= f.label :not_delete
+      .rightlist
+        = f.select :not_delete, [false, true].collect{|status| [t("layout.#{status}_"), status]}, {:selected => pbl.not_delete}
+        .both
+        %br
+        = submit_tag t('layout.update'), :data => {'disable-with' => t('layout.processing')}
+      .both
+  .flash_notify{'ng-hide' => 'pbl.not_delete'}
     .alert.alert-error
       - days = pbl.autostarted? ? ProductBuildList::LIVE_TIME : ProductBuildList::MAX_LIVE_TIME
       - days = (pbl.created_at.to_date - days.ago.to_date).to_i
@@ -54,10 +59,10 @@
         = t('layout.product_build_lists.will_be_removed_today')
   .both
 
-- if pbl.build_started? || pbl.build_canceling?
-  = render 'shared/log', { :build_started => true, :get_log_path => log_platform_product_product_build_list_path(pbl.product.platform, pbl.product, pbl) }
+  %div{'ng-show' => "pbl.status == #{ProductBuildList::BUILD_STARTED}"}
+    = render 'shared/log', { :build_started => true, :get_log_path => log_platform_product_product_build_list_path(pbl.product.platform, pbl.product, pbl) }
 
-= render 'results', :subject => pbl
+  = render 'shared/build_results', :subject => pbl
 
 :javascript
   $(function(){

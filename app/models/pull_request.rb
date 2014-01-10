@@ -20,6 +20,8 @@ class PullRequest < ActiveRecord::Base
   attr_accessible :issue_attributes, :to_ref, :from_ref
 
   scope :needed_checking, includes(:issue).where(:issues => {:status => ['open', 'blocked', 'ready']})
+  scope :not_closed_or_merged, needed_checking
+  scope :closed_or_merged, where(:issues => {:status => ['closed', 'merged']})
 
   state_machine :status, :initial => :open do
     event :ready do
@@ -45,6 +47,20 @@ class PullRequest < ActiveRecord::Base
     event :reopen do
       transition :closed => :open
     end
+  end
+
+  def update_relations(old_from_project_name = nil)
+    FileUtils.mv path(old_from_project_name), path, :force => true if old_from_project_name
+    return unless Dir.exists?(path)
+    Dir.chdir(path) do
+      system 'git', 'remote', 'set-url', 'origin', to_project.path
+      system 'git', 'remote', 'set-url', 'head', from_project.path if cross_pull?
+    end    
+  end
+  later :update_relations, :queue => :clone_build
+
+  def cross_pull?
+    from_project_id != to_project_id
   end
 
   def check(do_transaction = true)
@@ -97,17 +113,13 @@ class PullRequest < ActiveRecord::Base
     end
   end
 
-  def path
-    last_part = [id, from_project_owner_uname, from_project_name].compact.join('-')
+  def path(suffix = from_project_name)
+    last_part = [id, from_project_owner_uname, suffix].compact.join('-')
     File.join(APP_CONFIG['git_path'], "#{new_record? ? 'temp_' : ''}pull_requests", to_project.owner.uname, to_project.name, last_part)
   end
 
   def from_branch
-    if to_project_id != from_project_id
-      "head_#{from_ref}"
-    else
-      from_ref
-    end
+    cross_pull? ? "head_#{from_ref}" : from_ref
   end
 
   def common_ancestor
@@ -164,7 +176,7 @@ class PullRequest < ActiveRecord::Base
   def merge
     clone
     message = "Merge pull request ##{serial_id} from #{from_project_owner_uname}/#{from_project_name}:#{from_ref}\r\n #{title}"
-    %x(cd #{path} && git checkout #{to_ref} && git merge --no-ff #{from_branch} -m '#{message}')
+    %x(cd #{path} && git checkout #{to_ref.shellescape} && git merge --no-ff #{from_branch.shellescape} -m #{message.shellescape})
   end
 
   def clone
@@ -176,12 +188,12 @@ class PullRequest < ActiveRecord::Base
       `rm -rf #{path}`
       git.fs_mkdir('..')
       git.clone(options, to_project.path, path)
-      if to_project != from_project
+      if cross_pull?
         Dir.chdir(path) do
           system 'git', 'remote', 'add', 'head', from_project.path
         end
       end
-      clean # Need testing
+      #clean # Need testing
     end
 
     Dir.chdir(path) do
@@ -196,6 +208,7 @@ class PullRequest < ActiveRecord::Base
       unless tags.include? from_ref
         system 'git', 'branch', '-D', from_branch
         system 'git', 'fetch', head, "+#{from_ref}:#{from_branch}"
+        system 'git', 'checkout', to_ref
       end
     end
   end

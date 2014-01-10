@@ -5,9 +5,10 @@ ru:
       build_list_item: Элемент сборочного листа
     attributes:
       build_list:
-        bs_id: Id
+        id: Id
         name: Название
-        extra_repos: Дополнительные репозитории и сборки
+        extra_repositories: Дополнительные репозитории
+        extra_build_lists: Дополнительные сборки
         auto_create_container: Создать контейнер автоматически
         container_path: Путь до контейнера
         status: Статус
@@ -20,21 +21,30 @@ ru:
         is_circle: Циклическая сборка
         updated_at: Информация получена
         additional_repos: Дополнительные репозитории
+        include_testing_subrepository: "Подключить 'testing' подрепозиторий"
         include_repos: Подключаемые репозитории
         created_at: Создан
         save_to_repository: Сохранить в репозиторий
-        use_save_to_repository: Использовать 'cохранить в репозиторий' для сборки
         build_for_platform: Собрано для платформы
         update_type: Критичность обновления
         auto_publish: Автоматическая публикация
         project_version: Версия
         user: Пользователь
         publisher: Публикатор
+        builder: Сборщик
         preferences: Настройки
         duration: Длительность билда в секундах
         mass_build_id: Массовая сборка
         commit_hash: Хэш коммита
         logs: Логи
+        external_nodes: Дополнительные ноды
+
+        extra_params:
+          label: Дополнительные параметры
+          cfg_options: "'urpmi_options' для *.cfg файла"
+          cfg_urpm_options: "'urpm_options' для *.cfg файла"
+          build_src_rpm: Сборка src.rpm
+          build_rpm: Сборка rpm
 
       build_list/item:
         name: Название
@@ -46,6 +56,7 @@ ru:
       build_list/package:
         name: Название
         fullname: Полное имя
+        epoch: Эпоха
         release: Релиз
         version: Версия
 
@@ -59,9 +70,8 @@ ru:
       created_at_end: "Время постановки на сборку по:"
       updated_at_start: "Время последнего обновления от BS с:"
       updated_at_end: "Время последнего обновления от BS по:"
-      bs_id_search: 'Поиск по Id'
+      id_search: 'Поиск по Id'
       project_name_search: Поиск по названию проекта
-      bs_id_not_set: Id еще не присвоен
       items_header: Элементы сборки
       packages_header: Пакеты
       no_items_data: Данных нет
@@ -74,7 +84,9 @@ ru:
       cancel_success: 'Сборка отменена.'
       cancel_fail: 'При отмене сборки произошла ошибка!'
       publish_success: 'Сборка поставлена в очередь на публикацию.'
+      publish_into_testing_success: 'Сборка поставлена в очередь на публикацию.'
       publish_fail: 'При публикации сборки произошла ошибка!'
+      publish_into_testing_fail: 'При публикации сборки произошла ошибка!'
       publish_with_extra_fail: 'Все дополнительные сборки должны быть опубликованы до публикации этой сборки!'
       reject_publish_success: 'Публикация отклонена'
       reject_publish_fail: 'Не удалось отклонить публикацию сборки'
@@ -96,14 +108,21 @@ ru:
         related: Связанные
         everything: Все
 
+      external_nodes:
+        owned: Мои
+        everything: Все
+
       build_server_status:
         header: Статус сборочного сервера
-        count: '- число'
+        amount: '- количество'
+        abf: '-- ABF'
         tasks: '- заданий в очереди'
+        custom: '-- пользовательских'
+        mass_build_tasks: '-- массовой сборки'
         build_tasks: '- заданий выполняется'
-        rpm_workers: Воркеров для сборки
-        iso_workers: Воркеров для сборки
-        publish_workers: Воркеров для публикации
+        rpm_workers: Воркеры сборки
+        iso_workers: Воркеры сборки
+        publish_workers: Воркеры публикации
 
       items:
         statuses:
@@ -131,7 +150,10 @@ ru:
         success: собран
         build_started: собирается
         platform_pending: платформа в процессе создания
-        project_version_not_found: версия не найдена
+        build_published_into_testing: '[testing] опубликован'
+        build_publish_into_testing: '[testing] публикуется'
+        failed_publish_into_testing: '[testing] ошибка публикации'
+
 
       log:
         build_log: Лог сборки
@@ -151,21 +173,11 @@ ru:
       show_filter: Показать фильтры
       hide_filter: Скрыть фильтры
 
-  helpers:
-    extra_repos_and_build_lists:
-      header: 'Возможность подключить для сборки дополнительные источники пакетов: репозитории из платформ и пакеты из сборочных заданий.'
-      build_lists:
-        header: 'Требования для подключемых сборочных заданий:'
-        message1: '- только задание с контейнером может быть подключен;'
-        message2: '- для основных платформ возможно подключить только задания, которые предназначены для этой же платформы;'
-        message3: '- будут подключены только задания с архитектурой, соотвествующей создаваемой, или предназначененные для обеих архитектур (установлено свойство Публиковать i686 пакеты в x86_64 репозиторий (только для rhel) в настройках проекта).'
-        message4: '<i>Пример: для x86_64 архитектуры будут подключены только сборочные задания, собранные для x86_64</i>'
-      repos:
-        header: 'Требования для репозиториев:'
-        message1: '- использовать репозитории из других платформ возможно только для сборки в персональную платформу.'
-        header2: 'Как подключить репозиторий:'
-        message2: '- добавьте имя платформы, затем из списка выберете репозиторий для поключения и нажмите кнопку "Добавить".'
-        message3: '<i>Пример: правильно ввести "uxteam_personal", неправильно: "uxteam_personal/main".</i>'
+      last_build_lists: Последние сборки
+      recreate_build_list: Пересоздать сборку
+      only_my_build_lists: Только мои
+      failed_build_lists: Только сбойные
+
   flash:
     build_list:
       saved: Билд лист для версии '%{project_version}', платформы '%{build_for_platform}' и архитектуры '%{arch}' создан успешно

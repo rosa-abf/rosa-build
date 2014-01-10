@@ -37,13 +37,14 @@ class Projects::PullRequestsController < Projects::BaseController
     authorize! :read, to_project
 
     @pull = to_project.pull_requests.new pull_params
-    @pull.issue.assignee_id = (params[:issue] || {})[:assignee_id]
+    @pull.issue.assignee_id = (params[:issue] || {})[:assignee_id] if can?(:write, to_project)
     @pull.issue.user, @pull.issue.project, @pull.from_project = current_user, to_project, @project
     @pull.from_project_owner_uname = @pull.from_project.owner.uname
     @pull.from_project_name = @pull.from_project.name
 
     if @pull.valid? # FIXME more clean/clever logics
       @pull.save # set pull id
+      @pull.reload
       @pull.check(false) # don't make event transaction
       if @pull.already?
         @pull.destroy
@@ -65,28 +66,32 @@ class Projects::PullRequestsController < Projects::BaseController
     end
   end
 
+  def merge
+    status = @pull.merge!(current_user) ? 200 : 422
+    render :nothing => true, :status => status
+  end
+
   def update
+    status = 422
     if (action = params[:pull_request_action]) && %w(close reopen).include?(params[:pull_request_action])
       if @pull.send("can_#{action}?")
         @pull.set_user_and_time current_user
         @pull.send(action)
         @pull.check if @pull.open?
+        status = 200
       end
     end
-    redirect_to project_pull_request_path(@pull.to_project, @pull)
-  end
-
-  def merge
-    @pull.check
-    unless @pull.merge!(current_user)
-      flash.now[:error] = t('flash.pull_request.save_error')
-      flash.now[:warning] = @pull.errors.full_messages.join('. ')
-    end
-    redirect_to project_pull_request_path(@pull.to_project, @pull)
+    render :nothing => true, :status => status
   end
 
   def show
-    load_diff_commits_data
+    unless request.xhr?
+      if @pull.nil?
+        redirect_to project_issue_path(@project, @issue)
+      else
+        load_diff_commits_data
+      end
+    end
   end
 
   def index(status = 200)
@@ -114,9 +119,12 @@ class Projects::PullRequestsController < Projects::BaseController
   end
 
   def autocomplete_to_project
-    items = Project.accessible_by(current_ability, :membered) | @project.ancestors
-    term = Regexp.new(Regexp.escape params[:term].downcase)
-    items.select! {|e| term.match(e.name_with_owner.downcase) && e.repo.branches.count > 0}
+    items = []
+    term = params[:term].to_s.strip.downcase
+    [Project.accessible_by(current_ability, :membered), @project.ancestors].each do |p|
+      items.concat p.by_owner_and_name(term)
+    end
+    items = items.uniq{|i| i.id}.select{|e| e.repo.branches.count > 0}
     render :json => json_for_autocomplete_base(items)
   end
 
@@ -128,7 +136,7 @@ class Projects::PullRequestsController < Projects::BaseController
 
   def json_for_autocomplete_base items
     items.collect do |project|
-      hash = {"id" => project.id.to_s, "label" => project.name_with_owner, "value" => project.name_with_owner}
+      hash = {:id => project.id.to_s, :label => project.name_with_owner, :value => project.name_with_owner}
       hash[:get_refs_url] = project_refs_list_path(project)
       hash
     end

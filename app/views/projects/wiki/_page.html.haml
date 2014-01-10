@@ -12,8 +12,7 @@
   %p#last-edit
     = t("wiki.last_edited_by")
     %b= user_link_by_user User.where(:email => author_email).first
-    = time_ago_in_words date.to_time - 4.hours, true
-    = t("layout.time.ago")
+    = datetime_moment date, :tag => :span
   - unless action_name == 'preview' or cannot? :write, @project
     %p#delete-link
       = link_to project_wiki_path(@project, escaped_name), :method => :delete, :confirm => t("layout.confirm") do

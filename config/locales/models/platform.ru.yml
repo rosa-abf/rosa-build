@@ -1,6 +1,9 @@
 ru:
   layout:
     platforms:
+      contents: Содержимое
+      contents_of: Содержимое
+      search_contents: Найти имя файла/папки...
       admin_id: Владелец
       build_all: Собрать все
       list: Список
@@ -46,10 +49,15 @@ ru:
       build_task: Сборочное задание
       refresh_button: Обновить
       project: Проект
+      change_visibility_from_hidden: Сменить статус на "Публичный"
+      change_visibility_from_open: Сменить статус на "Приватный"
+      confirm_change_visibility: Вы уверены, что хотите сменить статус этой платформы?
+      metadata: Метаданные для Software Center
 
   flash:
     platform:
       released_status_can_not_be_changed: Released статус платформы не может быть изменен, если платформа уже выпущена
+      owner_can_not_be_changed: Нельзя сменить владельца персональной платформы
       saved: Платформа успешно сохранена
       created: Платформа успешно добавлена
       save_error: Не удалось сохранить платформу
@@ -72,6 +80,8 @@ ru:
     models:
       platform: Платформа
     attributes:
+      platform/platform_arch_settings:
+        time_living: Максимальное время сборки (в минутах)
       platform:
         name: Название
         description: Описание

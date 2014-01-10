@@ -51,7 +51,9 @@ class ApiDefender < Rack::Throttle::Hourly
 
   # only API calls should be throttled
   def need_defense?(request)
-    request.env['PATH_INFO'] =~ /^\/api\/v1\// && !system_user?(request)
+    APP_CONFIG['allowed_addresses'].exclude?(request.ip) &&
+      request.env['PATH_INFO'] =~ /^\/api\/v1\// &&
+      !system_user?(request)
   end
 
   def authorized?(request)

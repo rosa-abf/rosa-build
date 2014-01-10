@@ -14,7 +14,7 @@ class ActivityFeed < ActiveRecord::Base
   self.per_page = 10
 
   def partial
-    'activity_feeds/partials/' + self.kind
+    'home/partials/' + self.kind
   end
 
 end

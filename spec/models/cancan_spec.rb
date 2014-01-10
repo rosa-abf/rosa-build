@@ -2,12 +2,12 @@ require 'spec_helper'
 require "cancan/matchers"
 
 def admin_create
-	@admin = FactoryGirl.create(:admin)
+  @admin = FactoryGirl.create(:admin)
   @ability = Ability.new(@admin)
 end
 
 def user_create
-	@user = FactoryGirl.create(:user)
+  @user = FactoryGirl.create(:user)
   @ability = Ability.new(@user)
 end
 
@@ -16,52 +16,57 @@ def guest_create
 end
 
 describe CanCan do
-
-	let(:personal_platform) { FactoryGirl.create(:platform, :platform_type => 'personal') }
-	let(:personal_repository) { FactoryGirl.create(:personal_repository) }
-	let(:open_platform) { FactoryGirl.create(:platform, :visibility => 'open') }
-	let(:hidden_platform) { FactoryGirl.create(:platform, :visibility => 'hidden') }
-  let(:register_request) { FactoryGirl.create(:register_request) }
+  let(:open_platform) { FactoryGirl.create(:platform, :visibility => 'open') }
 
   before(:each) do
     stub_symlink_methods
   end
 
-	context 'Site admin' do
-		before(:each) do
-			admin_create
-		end
-
-		it 'should manage all' do
-			#(@ability.can? :manage, :all).should be_true
-			@ability.should be_able_to(:manage, :all)
-		end
-
-		it 'should not be able to destroy personal platforms' do
-			@ability.should_not be_able_to(:destroy, personal_platform)
-		end
-
-		it 'should not be able to destroy personal repositories' do
-			@ability.should_not be_able_to(:destroy, personal_repository)
-		end
-	end
-
-	context 'Site guest' do
-		before(:each) do
-			guest_create
-		end
-
-    it 'should not be able to read open platform' do
-    	@ability.should_not be_able_to(:read, open_platform)
+  context 'Site admin' do
+    let(:personal_platform) { FactoryGirl.create(:platform, :platform_type => 'personal') }
+    let(:personal_repository_main) { FactoryGirl.create(:personal_repository, :name => 'main') }
+    let(:personal_repository) { FactoryGirl.create(:personal_repository) }
+    before(:each) do
+      admin_create
     end
 
-    it 'should not be able to read hidden platform' do
-    	@ability.should_not be_able_to(:read, hidden_platform)
+    it 'should manage all' do
+      #(@ability.can? :manage, :all).should be_true
+      @ability.should be_able_to(:manage, :all)
+    end
+
+    it 'should not be able to destroy personal platforms' do
+      @ability.should_not be_able_to(:destroy, personal_platform)
+    end
+
+    it 'should not be able to destroy personal repositories with name "main"' do
+      @ability.should_not be_able_to(:destroy, personal_repository_main)
+    end
+    it 'should be able to destroy personal repositories with name not "main"' do
+      @ability.should be_able_to(:destroy, personal_repository)
+    end
+  end
+
+  context 'Site guest' do
+    let(:register_request) { FactoryGirl.create(:register_request) }
+
+    before(:each) do
+      guest_create
+    end
+
+    it 'should not be able to read open platform' do
+      @ability.should_not be_able_to(:read, open_platform)
     end
 
     [:publish, :cancel, :reject_publish, :create_container].each do |action|
       it "should not be able to #{ action } build list" do
         @ability.should_not be_able_to(action, BuildList)
+      end
+    end
+
+    [:mass_import, :run_mass_import].each do |action|
+      it "should not be able to #{ action } project" do
+        @ability.should_not be_able_to(action, Project)
       end
     end
 
@@ -77,10 +82,10 @@ describe CanCan do
       @ability.should_not be_able_to(:destroy, register_request)
     end
 
-		pending 'should be able to register new user' do # while self registration is closed
-			@ability.should be_able_to(:create, User)
-		end
-	end
+    pending 'should be able to register new user' do # while self registration is closed
+      @ability.should be_able_to(:create, User)
+    end
+  end
 
   context 'Site user' do
     before(:each) do
@@ -88,8 +93,14 @@ describe CanCan do
     end
 
     [Platform, Repository].each do |model_name|
-      it "should not be able to read #{model_name}" do
+      it "should be able to read #{model_name}" do
         @ability.should be_able_to(:read, model_name)
+      end
+    end
+
+    [:mass_import, :run_mass_import].each do |action|
+      it "should not be able to #{ action } project" do
+        @ability.should_not be_able_to(action, Project)
       end
     end
 
@@ -228,6 +239,27 @@ describe CanCan do
         end
       end
 
+      context 'through group-member' do
+        before(:each) do
+          @group_member = FactoryGirl.create(:group)
+          @project.relations.create!(:actor_id => @group_member.id, :actor_type => 'Group', :role => 'reader')
+          @group_member_ability = Ability.new(@group_member.owner)
+        end
+
+        it 'should be able to read open project' do
+          @group_member_ability.should be_able_to(:read, @project)
+        end
+
+        it 'should be able to read closed project' do
+          @project.update_attribute :visibility, 'hidden'
+          @group_member_ability.should be_able_to(:read, @project)
+        end
+
+        it 'should include hidden project in list' do
+          @project.update_attribute :visibility, 'hidden'
+         Project.accessible_by(@group_member_ability, :show).where(:projects => {:id => @project.id}).count.should == 1
+        end
+      end
     end
 
     context 'platform relations' do
@@ -239,9 +271,16 @@ describe CanCan do
         before(:each) do
           @platform.owner = @user
           @platform.save
+          @ability = Ability.new(@user)
         end
 
-        [:read, :update, :destroy].each do |action|
+        [:mass_import, :run_mass_import].each do |action|
+          it "should be able to #{ action } project" do
+            @ability.should be_able_to(action, Project)
+          end
+        end
+
+        [:read, :update, :destroy, :change_visibility].each do |action|
           it "should be able to #{action} platform" do
             @ability.should be_able_to(action, @platform)
           end
@@ -251,6 +290,13 @@ describe CanCan do
       context 'with read rights' do
         before(:each) do
           @platform.relations.create!(:actor_id => @user.id, :actor_type => 'User', :role => 'reader')
+          @ability = Ability.new(@user)
+        end
+
+        [:mass_import, :run_mass_import].each do |action|
+          it "should not be able to #{ action } project" do
+            @ability.should_not be_able_to(action, Project)
+          end
         end
 
         it "should be able to read platform" do
@@ -270,7 +316,7 @@ describe CanCan do
           @repository.platform.save
         end
 
-        [:read, :create, :update, :destroy, :add_project, :remove_project, :change_visibility, :settings].each do |action|
+        [:read, :create, :update, :destroy, :add_project, :remove_project, :settings].each do |action|
           it "should be able to #{action} repository" do
             @ability.should be_able_to(action, @repository)
           end

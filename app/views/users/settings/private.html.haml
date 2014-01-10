@@ -13,7 +13,16 @@
   .both
   .leftlist
     \ 
-  .rightlist= submit_tag t('layout.save')
+  .rightlist= submit_tag t('layout.save'), :data => {'disable-with' => t('layout.saving')}
+  .both
+%br
+
+= form_for @user, :url => reset_auth_token_settings_path, :html => {:class => :form} do |f|
+  .leftlist= f.label :authentication_token
+  .rightlist= @user.authentication_token
+  .both
+  .leftlist
+  .rightlist= submit_tag t('layout.users.reset_token'), :data => {'disable-with' => t('layout.saving')}
   .both
 
 :javascript

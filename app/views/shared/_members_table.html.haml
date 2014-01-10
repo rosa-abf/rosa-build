@@ -25,8 +25,8 @@
             %td.buttons
               = link_to "#{remove_member_path}?member_id=#{user.id}", :method => :delete, :confirm => t("layout.confirm") do
                 %span.delete &nbsp;
-  - if can? :remove_memvers, editable_object
-    = submit_tag t("layout.delete"), :class => 'button'
+  - if can? :remove_members, editable_object
+    = submit_tag t("layout.delete"), :class => 'button', :data => {'disable-with' => t('layout.processing')}
   .both
 
 - if can? :add_member, editable_object
@@ -35,5 +35,5 @@
     .admin-search
       = autocomplete_field_tag 'member_id', params[:member_id], autocomplete_user_uname_autocompletes_path, :id_element => '#member_id_field'
     = hidden_field_tag 'member_id', nil, :id => 'member_id_field'
-    = submit_tag t("layout.add"), :class => 'button'
+    = submit_tag t('layout.add'), :class => 'button', :data => {'disable-with' => t('layout.processing')}
     .both

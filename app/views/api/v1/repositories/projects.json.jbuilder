@@ -1,8 +1,7 @@
-json.repository do |json|
-  json.partial! 'repository', :repository => @repository, :json => json
-  json.projects @projects do |json_project, project|
-    json.partial! 'api/v1/projects/project',
-      :project => project, :json => json_project
+json.repository do
+  json.partial! 'repository', :repository => @repository
+  json.projects @projects do |project|
+    json.partial! 'api/v1/projects/project', :project => project
   end
 end
 json.url projects_api_v1_repository_path(@repository.id, :format => :json)

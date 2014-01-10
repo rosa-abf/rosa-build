@@ -50,7 +50,7 @@ function initLogWrapper() {
         var hScroll = l.scrollLeft;
         var onBottom = Math.abs((l.clientHeight + vScroll - l.scrollHeight)) < getLineHeight(l);
 
-        $logCont.text(data.log);
+        CodeMirror.runMode(data.log.replace(/&amp;/gi, '&'), "text/x-sh", document.getElementById("output"));
 
         $logCont.scrollLeft(hScroll);
         $logCont.scrollTop((onBottom || first_open) ? l.scrollHeight - l.clientHeight : vScroll);
@@ -95,7 +95,7 @@ function initLogWrapper() {
   $autoload.on('change', reloadChange);
 
   $('#word_wrap').on('change', function() {
-    $logCont.attr({'wrap': ($(this).is(':checked')) ? 'soft' : 'off'});
+    $logCont.css('white-space', ($(this).is(':checked')) ? 'normal' : 'pre');
   });
 
   $('#reload_interval').on('change', function() {
@@ -104,8 +104,5 @@ function initLogWrapper() {
       t = setInterval($(this).val());
     }
   });
-  $('#load_lines').on('change', function() {
-    $logCont.data('load_lines', $(this).val());
-  }).trigger('change');
   loadLog();
 }

@@ -1,13 +1,5 @@
 require 'spec_helper'
 
-shared_examples_for 'not destroy personal repository' do
-  it 'should not be able to destroy personal repository' do
-    lambda { delete :destroy, :id => @personal_repository.id, :platform_id => 
-      @personal_repository.platform.id}.should change{ Repository.count }.by(0)
-    response.should redirect_to(redirect_path)
-  end
-end
-
 shared_examples_for 'user with change projects in repository rights' do
 
   it 'should be able to see add_project page' do
@@ -29,11 +21,31 @@ shared_examples_for 'user with change projects in repository rights' do
 
 end
 
+shared_examples_for 'user with rights of add/remove sync_lock_file to repository' do
+  it 'should be able to perform sync_lock_file action' do
+    put :sync_lock_file, :id => @repository.id, :platform_id => @platform.id
+    response.should redirect_to(edit_platform_repository_path(@platform, @repository))
+  end
+end
+
+shared_examples_for 'user without rights of add/remove sync_lock_file to repository' do
+  it 'should not be able to perform #{action} action' do
+    put :sync_lock_file, :id => @repository.id, :platform_id => @platform.id
+    response.should redirect_to(redirect_path)
+  end
+end
+
 shared_examples_for 'user without change projects in repository rights' do
   it 'should not be able to add project to repository' do
     get :add_project, :id => @repository.id, :platform_id => @platform.id, :project_id => @project.id
     response.should redirect_to(redirect_path)
     @repository.projects.should_not include(@project)
+  end
+
+  it 'should not be able to perform regenerate_metadata action' do
+    put :regenerate_metadata, :id => @repository.id, :platform_id => @platform.id
+    response.should redirect_to(redirect_path)
+    @repository.repository_statuses.should have(:no).items
   end
 
   it 'should not be able to remove project from repository' do
@@ -47,6 +59,18 @@ shared_examples_for 'registered user or guest' do
   it 'should not be able to perform new action' do
     get :new, :platform_id => @platform.id
     response.should redirect_to(redirect_path)
+  end
+
+  it 'should not be able to perform regenerate_metadata action' do
+    put :regenerate_metadata, :id => @repository.id, :platform_id => @platform.id
+    response.should redirect_to(redirect_path)
+    @repository.repository_statuses.should have(:no).items
+  end
+
+  it 'should not be able to perform regenerate_metadata action of personal repository' do
+    put :regenerate_metadata, :id => @personal_repository.id, :platform_id => @personal_repository.platform.id
+    response.should redirect_to(redirect_path)
+    @personal_repository.repository_statuses.should have(:no).items
   end
 
   it 'should not be able to perform create action' do
@@ -89,12 +113,16 @@ shared_examples_for 'registered user or guest' do
   end
 
   it 'should not be able to destroy repository in main platform' do
-    delete :destroy, :id => @repository.id
+    delete :destroy, :id => @repository.id, :platform_id => @platform.id
     response.should redirect_to(redirect_path)
     lambda { delete :destroy, :id => @repository.id }.should_not change{ Repository.count }.by(-1)
   end
 
-  it_should_behave_like 'not destroy personal repository'
+  it 'should not be able to destroy personal repository' do
+    lambda { delete :destroy, :id => @personal_repository.id, :platform_id => @personal_repository.platform.id}
+      .should change{ Repository.count }.by(0)
+    response.should redirect_to(redirect_path)
+  end
 end
 
 shared_examples_for 'registered user' do
@@ -118,10 +146,31 @@ end
 shared_examples_for 'platform admin user' do
   
   it_should_behave_like 'registered user'
+  it_should_behave_like 'user with rights of add/remove sync_lock_file to repository'
 
   it 'should be able to perform new action' do
     get :new, :platform_id => @platform.id
     response.should render_template(:new)
+  end
+
+  it 'should be able to perform regenerate_metadata action' do
+    put :regenerate_metadata, :id => @repository.id, :platform_id => @platform.id
+    response.should redirect_to(platform_repository_path(@platform, @repository))
+    @repository.repository_statuses.find_by_platform_id(@platform.id).
+      waiting_for_regeneration?.should be_true
+  end
+
+  it 'should be able to perform regenerate_metadata action of personal repository' do
+    put :regenerate_metadata, :id => @personal_repository.id, :platform_id => @personal_repository.platform.id, :build_for_platform_id => @platform.id
+    response.should redirect_to(platform_repository_path(@personal_repository.platform, @personal_repository))
+    @personal_repository.repository_statuses.find_by_platform_id(@platform.id).
+      waiting_for_regeneration?.should be_true
+  end
+
+  it 'should not be able to perform regenerate_metadata action of personal repository when build_for_platform does not exist' do
+    put :regenerate_metadata, :id => @personal_repository.id, :platform_id => @personal_repository.platform.id
+    response.should render_template(:file => "#{Rails.root}/public/404.html")
+    @personal_repository.repository_statuses.should have(:no).items
   end
 
   it 'should be able to create repository' do
@@ -130,7 +179,7 @@ shared_examples_for 'platform admin user' do
   end
   
   it 'should be able to destroy repository in main platform' do
-    lambda { delete :destroy, :id => @repository.id }.should change{ Repository.count }.by(-1)
+    lambda { delete :destroy, :id => @repository.id, :platform_id => @platform.id }.should change{ Repository.count }.by(-1)
     response.should redirect_to(platform_repositories_path(@repository.platform))
   end
 
@@ -162,15 +211,27 @@ shared_examples_for 'platform admin user' do
     @repository.members.should_not include(@another_user, another_user2)
   end
 
-  it_should_behave_like 'user with change projects in repository rights'
-  it_should_behave_like 'not destroy personal repository' do
-    let(:redirect_path) { forbidden_path }
+  it 'should not be able to destroy personal repository with name "main"' do
+    # hook for "ActiveRecord::ActiveRecordError: name is marked as readonly"
+    Repository.where(:id => @personal_repository.id).update_all("name = 'main'")
+    lambda { delete :destroy, :id => @personal_repository.id, :platform_id => @personal_repository.platform.id}
+      .should change{ Repository.count }.by(0)
+    response.should redirect_to(forbidden_path)
   end
+
+  it 'should be able to destroy personal repository with name not "main"' do
+    lambda { delete :destroy, :id => @personal_repository.id, :platform_id => @personal_repository.platform.id}
+      .should change{ Repository.count }.by(-1)
+    response.should redirect_to(platform_repositories_path(@personal_repository.platform))
+  end
+
+  it_should_behave_like 'user with change projects in repository rights'
 end
 
 describe Platforms::RepositoriesController do
   before(:each) do
     stub_symlink_methods
+    stub_redis
 
     @platform = FactoryGirl.create(:platform)
     @repository = FactoryGirl.create(:repository, :platform =>  @platform)
@@ -194,6 +255,7 @@ describe Platforms::RepositoriesController do
     let(:redirect_path) { new_user_session_path }
     it_should_behave_like 'registered user or guest'
     it_should_behave_like 'user without change projects in repository rights'
+    it_should_behave_like 'user without rights of add/remove sync_lock_file to repository'
     
     it "should not be able to perform show action", :anonymous_access => false do
       get :show, :id => @repository
@@ -218,6 +280,7 @@ describe Platforms::RepositoriesController do
     let(:redirect_path) { forbidden_path }
     it_should_behave_like 'registered user or guest'
     it_should_behave_like 'user without change projects in repository rights'
+    it_should_behave_like 'user without rights of add/remove sync_lock_file to repository'
   end
 
   context 'for admin' do
@@ -233,6 +296,10 @@ describe Platforms::RepositoriesController do
   context 'for platform owner user' do
     before(:each) do
       @user = @repository.platform.owner
+      platform = @personal_repository.platform
+      platform.owner = @user
+      # Owner of personal platform can't be changed
+      platform.save(:validate => false)
       set_session_for(@user)
     end
 
@@ -241,7 +308,9 @@ describe Platforms::RepositoriesController do
 
   context 'for platform member user' do
     before(:each) do
-      @platform.relations.create!(:actor_type => 'User', :actor_id => @user.id, :role => 'admin')
+      [@repository, @personal_repository].each do |repo|
+        repo.platform.relations.create!(:actor_type => 'User', :actor_id => @user.id, :role => 'admin')
+      end
     end
 
     it_should_behave_like 'platform admin user'
@@ -249,7 +318,9 @@ describe Platforms::RepositoriesController do
 
   context 'for repository member user' do
     before(:each) do
-      @repository.relations.create!(:actor_type => 'User', :actor_id => @user.id, :role => 'admin')
+      [@repository, @personal_repository].each do |repo|
+        repo.add_member @user
+      end
     end
 
     it_should_behave_like 'registered user'
@@ -257,6 +328,21 @@ describe Platforms::RepositoriesController do
     let(:redirect_path) { forbidden_path }
     it_should_behave_like 'registered user or guest'
     it_should_behave_like 'user with change projects in repository rights'
+    it_should_behave_like 'user without rights of add/remove sync_lock_file to repository'
+
+    context 'for hidden platform' do
+      before do
+        @platform.update_column(:visibility, 'hidden')
+        @personal_repository.platform.update_column(:visibility, 'hidden')
+      end
+      it_should_behave_like 'registered user'
+
+      let(:redirect_path) { forbidden_path }
+      it_should_behave_like 'registered user or guest'
+      it_should_behave_like 'user with change projects in repository rights'
+      it_should_behave_like 'user without rights of add/remove sync_lock_file to repository'
+    end
+
   end
 
 end

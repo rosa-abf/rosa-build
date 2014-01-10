@@ -1,3 +1,3 @@
-json.members @members do |json_members, member|
-  json.partial! 'api/v1/shared/member', :member => member, :tag => json_members
+json.members @members do |member|
+  json.partial! 'api/v1/shared/member', :member => member
 end

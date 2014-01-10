@@ -9,10 +9,20 @@
 //= require_tree ./lib
 
 //= require underscore
-//= require backbone
-//= require backbone_rails_sync
-//= require backbone_datalink
-//= require backbone/rosa
+
+//= require js-routes
+// require angular
+//= require unstable/angular
+// require angular-resource
+//= require unstable/angular-resource
+//= require ng-rails-csrf
+//= require angular-i18n
+//= require_tree ./angularjs
+//= require moment
+
+// require soundmanager2
+//= require soundmanager2-nodebug-jsmin
+
 //= require_self
 
 function disableNotifierCbx(global_cbx) {
@@ -55,6 +65,7 @@ $(document).ready(function() {
       success: function(data){
                       button.fadeOut('slow').after(data);
                       button.remove();
+                      updateTime();
                     }
      });
     return false;
@@ -80,4 +91,42 @@ $(document).ready(function() {
   }
 
   $('.md_and_cm code').each(function (code) { CodeMirrorRun(this); });
+
+  window.updateTime = function () {
+    $('.datetime_moment').each(function() {
+      $(this).html(moment($(this).attr('origin_datetime'), 'X').fromNow());
+    });
+  };
+
+  updateTime();
+  setInterval( updateTime, 15000 );
+
+  window.updatePagination = function(link) {
+    var page = parseInt($('.pagination .current').text());
+    if (link.hasClass('next_page')) {
+      page += 1;
+    } else {
+      if (link.hasClass('previous_page')) {
+        page -= 1;
+      } else {
+        page = link.text();
+      }
+    }
+    $('.pagination .current').html(page);
+  };
+
+  window.isSearchUser = null;
+  window.search_items = function(path, fdata, dom) {
+    if (window.isSearchUser != null) { window.isSearchUser.abort(); }
+    window.isSearchUser = $.ajax({
+      type: 'GET',
+      url: path,
+      data: fdata,
+      success: function(data) {
+        dom.html(data);
+        updateTime();
+      }
+    });
+    return false;
+  }
 });

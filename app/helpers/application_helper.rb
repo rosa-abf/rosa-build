@@ -37,18 +37,20 @@ module ApplicationHelper
     end
   end
 
-  def markdown(text)
-    unless @redcarpet
-      html_options = {filter_html: true, hard_wrap: true, with_toc_data: true}
-      options = {no_intraemphasis: true, tables: true, fenced_code_blocks: true, autolink: true, strikethrough: true, lax_html_blocks: true}
-      @redcarpet = Redcarpet::Markdown.new(Redcarpet::Render::HTML.new(html_options), options)
-    end
-    @redcarpet.render(text).html_safe
-  end
-
   def local_alert(text, type = 'error')
     html = "<div class='flash'><div class='alert #{type}'> #{text}"
     html << link_to('×', '#', :class => 'close close-alert', 'data-dismiss' => 'alert')
     html << '</div></div>'
+  end
+
+  # Why 42? Because it is the Answer!
+  def short_message(message, length = 42)
+    truncate(message, :length => length, :omission => '…')
+  end
+
+  def datetime_moment(date, options = {})
+    tag = options[:tag] || :div
+    klass = "datetime_moment #{options[:class]}"
+    content_tag(tag, nil, :class => klass, :title => date.strftime('%Y-%m-%d %H:%M:%S UTC'), :origin_datetime => date.to_i)
   end
 end

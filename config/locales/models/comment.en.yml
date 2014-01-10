@@ -25,6 +25,22 @@ en:
         syntax_highlighting: Syntax highlighting
         indent_code: indent your code 4 spaces
         inline_code: Inline code for comments
+        emoji_header: Emoji Cheat Sheet
+        reference_format: Reference Format
+        reference_format_example: |
+            for members: @abf
+            for issues and pull requests:
+            #123
+            abf#123
+            abf/rosa-build#123
+            for commits: 123456
+
+        issues: Issues
+        pull_requests: Pull Requests
+        members: Members
+        commits: Commits
+      reference: "%{user} referenced this issue"
+      removed: Comment has since been removed and is no longer available.
 
   flash:
     comment:

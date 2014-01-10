@@ -1,8 +1,0 @@
-%h3=t("layout.mass_builds.repositories")
--@platform.repositories.each do |rep|
-  .both
-    =check_box_tag "repositories[]", rep.id, (params[:repositories]||[]).include?(rep.id.to_s), :id => "repositories_#{rep.id}", :href => "#{projects_list_platform_repository_path(@platform, rep)}?text=true"
-    =label_tag "repositories_#{rep.id}", rep.name
-%h3=t("layout.mass_builds.projects_list")
-=text_area_tag :projects_list, nil
-

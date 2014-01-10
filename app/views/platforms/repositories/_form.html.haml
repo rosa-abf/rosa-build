@@ -10,15 +10,8 @@
 .both
 
 .hr
-- if ['edit', 'update'].include?(controller.action_name) && can?(:regenerate_metadata, @repository)
-  .leftside= t('layout.repositories.regenerate_metadata')
-  .rightside
-    = link_to t('layout.repositories.regenerate_metadata').split.first, regenerate_metadata_platform_repository_path(@platform, @repository),
-      :method => :put, :confirm => t('layout.confirm'), :class => :button
-.hr{:style => 'padding-bottom:20px;'}
-.both
 
 .button_block
-  = submit_tag t("layout.save")
+  = submit_tag t('layout.save'), :data => {'disable-with' => t('layout.saving')}
   %span.text_button_padding= t("layout.or")
   = link_to t("layout.cancel"), @repository.new_record? ? platform_repositories_path(@platform) : platform_repository_path(@platform, @repository), :class => "button"

@@ -12,6 +12,7 @@ en:
 
   notifications:
     subjects:
+      update_code: "[%{project_name}] Update of project"
       new_comment_notification: New comment to your task
       new_commit_comment_notification: New comment to commit
       new_issue_notification: New task added to project
@@ -39,7 +40,7 @@ en:
       delete_branch: '%{user_link} deleted a %{branch_name}'
       create_branch: '%{user_link} created a new branch %{branch_name}'
       update_branch: '%{user_link} pushed to branch %{branch_name}'
-      build_task: 'Build <a href="%{task_link}">task #%{task_num}</a>'
+      build_task: 'Build <a href="%{task_link}">task #%{id}</a>'
       build_status:
         published: published successfully
         success: completed successfully

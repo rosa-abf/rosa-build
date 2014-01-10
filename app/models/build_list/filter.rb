@@ -1,27 +1,29 @@
 class BuildList::Filter
   PER_PAGE = [25, 50, 100]
 
-  def initialize(project, user, options = {})
-    @project = project
-    @user = user
+  attr_reader :options
+
+  def initialize(project, user, current_ability, options = {})
+    @project, @user, @current_ability = project, user, current_ability
     set_options(options)
   end
 
   def find
     build_lists =  @project ? @project.build_lists : BuildList.scoped
 
-    if @options[:bs_id]
-      build_lists = build_lists.where(:bs_id => @options[:bs_id])
+    if @options[:id]
+      build_lists = build_lists.where(:id => @options[:id])
     else
-      build_lists = build_lists.accessible_by(::Ability.new(@user), @options[:ownership].to_sym) if @options[:ownership]
       build_lists = build_lists.scoped_to_new_core(@options[:new_core] == '0' ? nil : true) if @options[:new_core].present?
-      build_lists = build_lists.for_status(@options[:status]) if @options[:status]
-      build_lists = build_lists.scoped_to_arch(@options[:arch_id]) if @options[:arch_id]
-      build_lists = build_lists.scoped_to_save_platform(@options[:platform_id]) if @options[:platform_id]
-      build_lists = build_lists.scoped_to_project_version(@options[:project_version]) if @options[:project_version]
-      build_lists = build_lists.scoped_to_project_name(@options[:project_name]) if @options[:project_name]
       build_lists = build_lists.by_mass_build(@options[:mass_build_id]) if @options[:mass_build_id]
-      build_lists = build_lists.for_notified_date_period(@options[:updated_at_start], @options[:updated_at_end]) if @options[:updated_at_start] || @options[:updated_at_end]
+      build_lists = build_lists.accessible_by(@current_ability, @options[:ownership].to_sym) if @options[:ownership]
+
+      build_lists = build_lists.for_status(@options[:status])
+                               .scoped_to_arch(@options[:arch_id])
+                               .scoped_to_save_platform(@options[:platform_id])
+                               .scoped_to_project_version(@options[:project_version])
+                               .scoped_to_project_name(@options[:project_name])
+                               .for_notified_date_period(@options[:updated_at_start], @options[:updated_at_end])
     end
 
     build_lists
@@ -40,18 +42,18 @@ class BuildList::Filter
 
   def set_options(options)
     @options = HashWithIndifferentAccess.new(options.reverse_merge({
-        :ownership => nil,
-        :status => nil,
+        :ownership        => nil,
+        :status           => nil,
         :updated_at_start => nil,
-        :updated_at_end => nil,
-        :arch_id => nil,
-        :platform_id => nil,
-        :is_circle => nil,
-        :project_version => nil,
-        :bs_id => nil,
-        :project_name => nil,
-        :mass_build_id => nil,
-        :new_core => nil
+        :updated_at_end   => nil,
+        :arch_id          => nil,
+        :platform_id      => nil,
+        :is_circle        => nil,
+        :project_version  => nil,
+        :id               => nil,
+        :project_name     => nil,
+        :mass_build_id    => nil,
+        :new_core         => nil
     }))
 
     @options[:ownership] = @options[:ownership].presence || (@project || !@user ? 'everything' : 'owned')
@@ -64,7 +66,7 @@ class BuildList::Filter
     @options[:arch_id] = @options[:arch_id].try(:to_i)
     @options[:platform_id] = @options[:platform_id].try(:to_i)
     @options[:is_circle] = @options[:is_circle].present? ? @options[:is_circle] == "1" : nil
-    @options[:bs_id] = @options[:bs_id].presence
+    @options[:id] = @options[:id].presence
     @options[:project_name] = @options[:project_name].presence
     @options[:mass_build_id] = @options[:mass_build_id].presence
     @options[:new_core] = @options[:new_core].presence

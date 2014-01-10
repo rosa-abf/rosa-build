@@ -26,12 +26,13 @@ namespace :import do
     say 'DONE'
   end
 
-  # bundle exec rake import:srpm RAILS_ENV=production BASE=/share/platforms/naulinux5x_personal/tmp/SRPMS LIST=https://dl.dropbox.com/u/984976/nauschool5x.srpms.txt OWNER=naulinux PLATFORM=naulinux REPO=main CLEAR=true > log/srpm_naulinux.log &
+  # bundle exec rake import:srpm RAILS_ENV=production BASE=/share/platforms/naulinux5x_personal/tmp/SRPMS LIST=https://dl.dropbox.com/u/984976/nauschool5x.srpms.txt OWNER=naulinux PLATFORM=naulinux REPO=main CLEAR=true HIDDEN=true > log/srpm_naulinux.log &
   desc 'Import SRPMs as projects'
   task :srpm => :environment do
     base = ENV['BASE'] || '/share/alt_repos/rsync'
     list = ENV['LIST'] #|| 'https://dl.dropbox.com/u/984976/alt_import.txt'
     mask = ENV['MASK'] || '*.src.rpm'
+    hidden = ENV['HIDDEN'] == 'true' ? true : false
     owner = User.find_by_uname(ENV['OWNER']) || Group.find_by_uname!(ENV['OWNER'] || 'altlinux')
     platform = Platform.find_by_name!(ENV['PLATFORM'] || 'altlinux5')
     repo = platform.repositories.find_by_name!(ENV['REPO'] || 'main')
@@ -44,14 +45,14 @@ namespace :import do
       if name = `rpm -q --qf '[%{Name}]' -p #{srpm_file}` and $?.success? and name.present?
         if clear # simply add
           project = Project.find_or_create_by_name_and_owner_type_and_owner_id(name, owner.class.to_s, owner.id)
-          repo.projects << project
+          repo.projects << project rescue nil
         else # check if project already added
           if project = repo.projects.find_by_name(name) || repo.projects.by_name(name).first # fallback to speedup
             print "Found project '#{project.name_with_owner}' in '#{platform.name}/#{repo.name}'."
           elsif scoped = Project.where(:owner_id => owner.id, :owner_type => owner.class) and
                 project = scoped.find_by_name(name) || scoped.by_name(name).first
             begin
-              repo.projects << project
+              repo.projects << project rescue nil
             rescue Exception => e
               print "Add project '#{project.name_with_owner}' to '#{platform.name}/#{repo.name}' FAILED: #{e.message}."
             else
@@ -60,10 +61,11 @@ namespace :import do
           else
             description = `rpm -q --qf '[%{Description}]' -p #{srpm_file}`
             project = Project.create!(:name => name, :description => description) {|p| p.owner = owner}
-            repo.projects << project
+            repo.projects << project rescue nil
             print "Create project #{project.name_with_owner} in #{platform.name}/#{repo.name} OK."
           end
         end
+        project.update_attributes(:visibility => 'hidden') if hidden
         project.import_srpm(srpm_file, platform.name)
         print " Code import complete!"
       else

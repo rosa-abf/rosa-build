@@ -1,11 +1,22 @@
 class Platform < ActiveRecord::Base
-  VISIBILITIES = ['open', 'hidden']
+  extend FriendlyId
+  friendly_id :name
+
+  include Modules::Models::FileStoreClean
+  include Modules::Models::RegenerationStatus
+
+  VISIBILITIES = %w(open hidden)
+  NAME_PATTERN = /[\w\-\.]+/
+  HUMAN_STATUSES = HUMAN_STATUSES.clone.freeze
 
   belongs_to :parent, :class_name => 'Platform', :foreign_key => 'parent_platform_id'
   belongs_to :owner, :polymorphic => true
 
   has_many :repositories, :dependent => :destroy
   has_many :products, :dependent => :destroy
+  has_many :tokens, :as => :subject,  :dependent => :destroy
+  has_many :platform_arch_settings,   :dependent => :destroy
+  has_many :repository_statuses
 
   has_many :relations, :as => :target, :dependent => :destroy
   has_many :actors, :as => :target, :class_name => 'Relation', :dependent => :destroy
@@ -15,18 +26,22 @@ class Platform < ActiveRecord::Base
 
   has_many :packages, :class_name => "BuildList::Package", :dependent => :destroy
 
-  has_many :mass_builds
+  has_many :mass_builds, :foreign_key => :save_to_platform_id
 
   validates :description, :presence => true
-  validates :owner, :presence => true
   validates :visibility, :presence => true, :inclusion => {:in => VISIBILITIES}
-  validates :name, :uniqueness => {:case_sensitive => false}, :presence => true, :format => { :with => /\A[a-zA-Z0-9_\-\.]+\z/ }
+  validates :name, :uniqueness => {:case_sensitive => false}, :presence => true, :format => { :with => /\A#{NAME_PATTERN}\z/ }
   validates :distrib_type, :presence => true, :inclusion => {:in => APP_CONFIG['distr_types']}
   validate lambda {
     if released_was && !released
       errors.add(:released, I18n.t('flash.platform.released_status_can_not_be_changed'))
     end
   }
+  validate lambda {
+    if personal? && (owner_id_changed? || owner_type_changed?)
+      errors.add :owner, I18n.t('flash.platform.owner_can_not_be_changed')
+    end
+  }, :on => :update
 
   before_create :create_directory
   before_destroy :detele_directory
@@ -45,11 +60,31 @@ class Platform < ActiveRecord::Base
   scope :by_type, lambda {|type| where(:platform_type => type) if type.present?}
   scope :main, by_type('main')
   scope :personal, by_type('personal')
+  scope :waiting_for_regeneration, where(:status => WAITING_FOR_REGENERATION)
 
-  attr_accessible :name, :distrib_type, :parent_platform_id, :platform_type, :owner, :visibility, :description, :released
+  accepts_nested_attributes_for :platform_arch_settings, :allow_destroy => true
+  attr_accessible :name, :distrib_type, :parent_platform_id, :platform_type, :owner, :visibility, :description, :released, :platform_arch_settings_attributes
   attr_readonly   :name, :distrib_type, :parent_platform_id, :platform_type
 
   include Modules::Models::Owner
+
+  state_machine :status, :initial => :ready do
+    event :ready do
+      transition :regenerating => :ready
+    end
+
+    event :regenerate do
+      transition :ready => :waiting_for_regeneration, :if => lambda{ |p| p.main? }
+    end
+
+    event :start_regeneration do
+      transition :waiting_for_regeneration => :regenerating
+    end
+
+    HUMAN_STATUSES.each do |code,name|
+      state name, :value => code
+    end
+  end
 
   def clear
     system("rm -Rf #{ APP_CONFIG['root_path'] }/platforms/#{ self.name }/repository/*")
@@ -57,20 +92,17 @@ class Platform < ActiveRecord::Base
 
   def urpmi_list(host = nil, pair = nil, add_commands = true, repository_name = 'main')
     host ||= default_host
-    blank_pair = {:login => 'login', :pass => 'password'}
-    pair = blank_pair if pair.blank?
     urpmi_commands = ActiveSupport::OrderedHash.new
 
     # TODO: rename method or create separate methods for mdv and rhel
     # Platform.main.opened.where(:distrib_type => APP_CONFIG['distr_types'].first).each do |pl|
     Platform.main.opened.each do |pl|
       urpmi_commands[pl.name] = {}
-      local_pair = pl.id != self.id ? blank_pair : pair
-      head = hidden? ? "http://#{local_pair[:login]}@#{local_pair[:pass]}:#{host}/private/" : "http://#{host}/downloads/"
+      # FIXME should support restricting access to the hidden platform
       Arch.all.each do |arch|
         tail = "/#{arch.name}/#{repository_name}/release"
         command = add_commands ? "urpmi.addmedia #{name} " : ''
-        command << "#{head}#{name}/repository/#{pl.name}#{tail}"
+        command << "#{APP_CONFIG['downloads_url']}/#{name}/repository/#{pl.name}#{tail}"
         urpmi_commands[pl.name][arch.name] = command
       end
     end
@@ -94,24 +126,14 @@ class Platform < ActiveRecord::Base
     Rails.root.join("public", "downloads", name)
   end
 
-  def prefix_url(pub, options = {})
-    options[:host] ||= default_host
-    pub ? "http://#{options[:host]}/downloads" : "http://#{options[:login]}:#{options[:password]}@#{options[:host]}/private"
-  end
-
-  def public_downloads_url(host = nil, arch = nil, repo = nil, suffix = nil)
-    downloads_url prefix_url(true, :host => host), arch, repo, suffix
-  end
-
-  def private_downloads_url(login, password, host = nil, arch = nil, repo = nil, suffix = nil)
-    downloads_url prefix_url(false, :host => host, :login => login, :password => password), arch, repo, suffix
-  end
-
-  def downloads_url(prefix, arch = nil, repo = nil, suffix = nil)
-    "#{prefix}/#{name}/repository/".tap do |url|
+  # Returns URL to repository, for example:
+  # - http://abf-downloads.rosalinux.ru/rosa-server2012/repository/x86_64/base/
+  # - http://abf-downloads.rosalinux.ru/uname_personal/repository/rosa-server2012/x86_64/base/
+  def public_downloads_url(subplatform_name = nil, arch = nil, repo = nil)
+    "#{APP_CONFIG['downloads_url']}/#{name}/repository/".tap do |url|
+      url << "#{subplatform_name}/" if subplatform_name.present?
       url << "#{arch}/" if arch.present?
       url << "#{repo}/" if repo.present?
-      url << "#{suffix}/" if suffix.present?
     end
   end
 
@@ -149,10 +171,8 @@ class Platform < ActiveRecord::Base
   def change_visibility
     if !hidden?
       update_attributes(:visibility => 'hidden')
-      remove_symlink_directory
     else
       update_attributes(:visibility => 'open')
-      symlink_directory
     end
   end
 
@@ -183,6 +203,35 @@ class Platform < ActiveRecord::Base
 
   def default_host
     EventLog.current_controller.request.host_with_port rescue ::Rosa::Application.config.action_mailer.default_url_options[:host]
+  end
+
+  # Checks access rights to platform and caching for 1 day.
+  def self.allowed?(path, request)
+    platform_name = path.gsub(/^[\/]+/, '')
+                        .match(/^(#{NAME_PATTERN}\/|#{NAME_PATTERN}$)/)
+
+    return true unless platform_name
+    platform_name = platform_name[0].gsub(/\//, '')
+
+    if request.authorization.present?
+      token, pass = *ActionController::HttpAuthentication::Basic::user_name_and_password(request)
+    end
+
+    Rails.cache.fetch([platform_name, token, :platform_allowed], :expires_in => 2.minutes) do
+      platform = Platform.find_by_name platform_name
+      next false  unless platform
+      next true   unless platform.hidden?
+      next false  unless token
+      next true   if platform.tokens.by_active.where(:authentication_token => token).exists?
+
+      user = User.find_by_authentication_token token
+      current_ability = Ability.new(user)
+      if user && current_ability.can?(:show, platform)
+        true
+      else
+        false
+      end
+    end
   end
 
   protected

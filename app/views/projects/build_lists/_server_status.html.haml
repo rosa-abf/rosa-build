@@ -1,13 +1,43 @@
-- queues ||= [:rpm, :publish]
 .bordered.nopadding
   %h3.medium= t('layout.build_lists.build_server_status.header')
-  - queues.each do |queue|
+
+  .table
+    .lefter= t("layout.build_lists.build_server_status.rpm_workers")
+  .both
+  .table
+    .lefter= t("layout.build_lists.build_server_status.amount")
+  .both
+  .table
+    .lefter= t("layout.build_lists.build_server_status.abf")
+    .righter {{server_status.rpm.workers}}
+  .both
+  .table
+    .lefter= t("layout.build_lists.build_server_status.custom")
+    .righter {{server_status.rpm.other_workers}}
+  .both
+  .table
+    .lefter= t("layout.build_lists.build_server_status.tasks")
+  .both
+  - [['custom', :default_tasks], ['mass_build_tasks', :low_tasks], ['build_tasks', :build_tasks]].each do |label, metric|
     .table
-      .lefter= t("layout.build_lists.build_server_status.#{queue}_workers")
+      .lefter= t("layout.build_lists.build_server_status.#{label}")
+      .righter= "{{server_status.rpm.#{metric}}}"
     .both
-    - [:count, :tasks, :build_tasks].each do |metric|
-      .table
-        .lefter= t("layout.build_lists.build_server_status.#{metric}")
-        .righter= @build_server_status[queue][metric]
-      .both
-    %br
+  %br
+
+  .table
+    .lefter= t("layout.build_lists.build_server_status.publish_workers")
+  .both
+  .table
+    .lefter= t("layout.build_lists.build_server_status.amount")
+    .righter= "{{server_status.publish.workers}}"
+  .both
+  - [:tasks, :build_tasks].each do |metric|
+    .table
+      .lefter= t("layout.build_lists.build_server_status.#{metric}")
+      .righter= "{{server_status.publish.#{metric}}}"
+    .both
+  %br
+
+
+

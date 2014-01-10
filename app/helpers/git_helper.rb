@@ -1,5 +1,25 @@
 module GitHelper
 
+  def submodule_url(node, treeish)
+    # node.url(treeish) looks like:
+    # - http://0.0.0.0:3000/abf/git@abf.rosalinux.ru:abf/rhel-scripts.git
+    # - git://github.com/avokhmin/mdv-scripts.git
+    # - empty string if ".gitmodules" does not exist
+    url = node.url(treeish)
+    return nil if url.blank?
+    url.gsub!(/.git$/, '')
+    if url =~ /^git:/
+      url.gsub!(/^git/, 'http')
+    elsif str = /git@.*:.*/.match(url)
+      str   = str[0].gsub(/^git@/, '')
+      domen = str.gsub(/:.*/, '')
+      owner = str.gsub(/^#{domen}:/, '').gsub(/\/.*/, '')
+      project = str.gsub(/.*\//, '')
+      url = "http://#{domen}/#{owner}/#{project}"
+    end
+    url
+  end
+
   def render_path
     # TODO: Looks ugly, rewrite with clear mind.
     if @path.present?
@@ -12,15 +32,15 @@ module GitHelper
       parts = @path.split("/")
 
       current_path = parts.first
-      res += parts.length == 1 ? parts.first : link_to(parts.first, tree_path(@project, @treeish, current_path)) + " / "
+      res << (parts.length == 1 ? parts.first : link_to(parts.first, tree_path(@project, @treeish, current_path)) + " / ")
 
       parts[1..-2].each do |part|
         current_path = File.join([current_path, part].compact)
-        res += link_to(part, tree_path(@project, @treeish, current_path))
-        res += " / "
+        res << link_to(part, tree_path(@project, @treeish, current_path))
+        res << " / "
       end
 
-      res += parts.last if parts.length > 1
+      res << parts.last if parts.length > 1
     else
       res = "#{link_to @project.name, tree_path(@project)} /"
     end
@@ -30,7 +50,7 @@ module GitHelper
 
   def render_line_numbers(n)
     res = ""
-    1.upto(n) {|i| res += "<span id='L#{i}'><a href='#L#{i}'>#{i}</a></span><br/>" }
+    1.upto(n){ |i| res << "<span id='L#{i}'><a href='#L#{i}'>#{i}</a></span><br/>" }
 
     res.html_safe
   end
@@ -56,12 +76,12 @@ module GitHelper
     if params[:treeish].present? && !project.repo.branches_and_tags.map(&:name).include?(params[:treeish])
       res << [I18n.t('layout.git.repositories.commits'), [params[:treeish].truncate(20)]]
     end
-    linking = Proc.new {|t| [t.name.truncate(20), url_for(p.merge :treeish => t.name).split('?', 2).first]}
-    res << [I18n.t('layout.git.repositories.branches'), project.repo.branches.map(&linking)]
+    linking = Proc.new {|name| [name.truncate(20), url_for(p.merge :treeish => name).split('?', 2).first]}
+    res << [I18n.t('layout.git.repositories.branches'), project.repo.branches.map(&:name).sort.map(&linking)]
     if tag_enabled
-      res << [I18n.t('layout.git.repositories.tags'), project.repo.tags.map(&linking)]
+      res << [I18n.t('layout.git.repositories.tags'), project.repo.tags.map(&:name).sort.map(&linking)]
     else
-      res << [I18n.t('layout.git.repositories.tags'), project.repo.tags.map {|t| [t.name.truncate(20), {:disabled => true}]}]
+      res << [I18n.t('layout.git.repositories.tags'), project.repo.tags.map(&:name).sort.map {|name| [name.truncate(20), {:disabled => true}]}]
     end
     grouped_options_for_select(res, current)
   end

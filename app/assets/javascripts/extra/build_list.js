@@ -1,25 +1,31 @@
 $(document).ready(function() {
-  // TODO: Refactor this handler!! It's too complicated.
-  $('#build_list_save_to_repository_id').change(function() {
-    var selected_option = $(this).find("option:selected");
+  var new_form      = $('#new_form');
+  var ownership_btn = $('.btn.ownership');
+  var perpage_btn   = $('.btn.per_page');
 
+  // TODO: Refactor this handler!! It's too complicated.
+  $(document).on('change', '#build_list_save_to_repository_id', function(){
+    var selected_option = $(this).find("option:selected");
     var platform_id = selected_option.attr('platform_id');
     var rep_name = selected_option.text().match(/[\w-]+\/([\w-]+)/)[1];
 
     var build_platform = $('#build_for_pl_' + platform_id);
     var all_repositories = $('.all_platforms input');
     all_repositories.removeAttr('checked');
-    var use_save_to_repository = $('#build_list_use_save_to_repository');
     var auto_create_container = $('#build_list_auto_create_container');
+    var extra_repos = $('.autocomplete-form.extra_repositories');
 
+    updateExtraReposAndBuildLists(platform_id);
+    updatedDefaultArches(selected_option);
+    $('.autocomplete-form table tbody').empty();
     if (build_platform.size() == 0) {
       all_repositories.removeAttr('disabled');
-      use_save_to_repository.removeAttr('disabled');
       auto_create_container.removeAttr('checked');
+      addPersonalPlatformToExtraRepos(selected_option, extra_repos);
+      extra_repos.show();
     } else {
-      updateExtraReposAndBuildLists();
-      use_save_to_repository.attr('disabled', 'disabled').attr('checked', 'checked');
       all_repositories.attr('disabled', 'disabled');
+      extra_repos.hide();
       var parent = build_platform.parent();
       parent.find('input').removeAttr('disabled');
       parent.find('input[rep_name="main"]').attr('checked', 'checked');
@@ -35,34 +41,12 @@ $(document).ready(function() {
       build_list_auto_publish.removeAttr('checked').attr('disabled', 'disabled');
       auto_create_container.attr('checked', 'checked');
     }
-
-    var path = '/build_lists/autocomplete_to_extra_repos_and_builds?platform_id=' + platform_id;
-    $('#extra_repos').attr('data-autocomplete', path);
   });
 
-  $('#build_list_save_to_repository_id').trigger('change');
+  if($('#from_build_list_id').size() == 0) {
+    $('#build_list_save_to_repository_id').trigger('change');
+  }
 
-  $('#extra-repos-and-build-lists #add').click(function() {
-    updateExtraReposAndBuildLists();
-    return false;
-  });
-
-  $(document).on('click', '#extra-repos-and-build-lists .delete', function() {
-    $(this)[0].parentElement.parentElement.remove();
-  });
-
-  $('#extra-repos-and-build-lists-dialog').dialog({
-    autoOpen: false,
-    resizable: false,
-    width: 500
-  });
-
-  $('#extra-repos-and-build-lists .icon-question-sign').click(function() {
-    var dialog = $('#extra-repos-and-build-lists-dialog');
-    if (dialog.is(':visible')) { dialog.dialog('close'); } else { dialog.dialog('open'); }
-  });
-
-  var ownership_btn = $('.btn.ownership');
   ownership_btn.click(function() {
     ownership_btn.removeClass('active');
     $('#filter_ownership').val($(this).val());
@@ -70,7 +54,6 @@ $(document).ready(function() {
     return false;
   });
 
-  var perpage_btn = $('.btn.per_page');
   perpage_btn.click(function() {
     perpage_btn.removeClass('active');
     $('#per_page').val($(this).val());
@@ -95,14 +78,52 @@ $(document).ready(function() {
     dateFormat: 'dd/mm/yy',
     showButtonPanel: true
   });
+
+  $(document).on('click', '#owner_filter_build_lists, #status_filter_build_lists', function(){
+    $('#datatable').dataTable().fnDraw();
+  });
+
+  $(document).on('click', '#clone_build_list', function() {
+    $.ajax({
+      type: 'GET',
+      url: $(this).attr('href') + '&show=inline',
+      success: function(data){
+                 new_form.html(data);
+                 $(document).scrollTop(new_form.offset().top);
+               },
+      error: function(data){
+               alert('error') // TODO remove
+             }
+     });
+    return false;
+  });
 });
 
-
-function updateExtraReposAndBuildLists() {
-  $.get("/build_lists/update_extra_repos_and_builds", $('#new_build_list').serialize())
-  .done(function(data) {
-    $("#extra-repos-and-build-lists table tbody").html(data);
+function updatedDefaultArches(selected_option) {
+  $('input[name="arches[]"]').removeAttr('checked');
+  _.each(selected_option.attr('default_arches').split(' '), function(id){
+    $('#arches_' + id).attr('checked', 'checked');
   });
+}
+
+function updateExtraReposAndBuildLists(save_to_platform_id) {
+  $.each($('.autocomplete-form'), function() {
+    var form = $(this);
+    var path = form.attr('path') + '?platform_id=' + save_to_platform_id;
+    form.find('.autocomplete').attr('data-autocomplete', path);
+  });
+}
+
+function addPersonalPlatformToExtraRepos(selected_option, extra_repos) {
+  var default_value = extra_repos.find('div[label="' + selected_option.text() + '"]');
+  if (default_value.length == 0) { return; }
+  addDataToAutocompleteForm(
+    extra_repos,
+    default_value.attr('path'),
+    default_value.attr('label'),
+    default_value.attr('name'),
+    default_value.attr('value')
+  );
 }
 
 function setBranchSelected(selected_option) {

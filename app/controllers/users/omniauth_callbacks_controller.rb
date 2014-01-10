@@ -1,29 +1,63 @@
 class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
-  def open_id
-    # raise env['omniauth.auth'].inspect
-    generic
+
+  def facebook
+    oauthorize 'Facebook'
+  end
+
+  def google_oauth2
+    oauthorize 'google_oauth2'
+  end
+
+  def github
+    oauthorize 'GitHub'
   end
 
   def passthru
     render :file => "#{Rails.root}/public/404.html", :status => 404, :layout => false
   end
+  
+  private
 
-  protected
-
-  def generic
-    authentication = Authentication.find_or_initialize_by_provider_and_uid(env['omniauth.auth']['provider'], env['omniauth.auth']['uid'])
+  def oauthorize(kind)
+    provider = kind.downcase
+    @user = find_for_ouath(env["omniauth.auth"], current_user)
+    if @user && @user.persisted?
+      flash[:notice] = I18n.t "devise.omniauth_callbacks.success", :kind => action_name.classify
+      sign_in_and_redirect @user, :event => :authentication
+    else
+      session["devise.#{provider}_data"] = env["omniauth.auth"]
+      redirect_to new_user_registration_url
+    end   
+  end
+ 
+  def find_for_ouath(auth, resource=nil)
+    provider, uid   = auth['provider'], auth['uid']
+    authentication  = Authentication.find_or_initialize_by_provider_and_uid(provider, uid)
     if authentication.new_record?
       if user_signed_in? # New authentication method for current_user
         authentication.user = current_user
-        authentication.save
       else # Register new user from session
-        session["devise.omniauth_data"] = env["omniauth.auth"].except('extra')
-        flash[:notice] = I18n.t "devise.omniauth_callbacks.register"
-        redirect_to new_user_registration_url
+        case provider
+        when 'facebook'
+          name  = auth['extra']['raw_info']['name']
+        when 'google_oauth2', 'github'
+          name = auth['info']['nickname'] || auth['info']['name']
+        else
+          raise 'Provider #{provider} not handled'
+        end
+        user = User.find_or_initialize_by_email(auth['info']['email'])
+        if user.new_record?
+          user.name     = name
+          user.uname    = name.gsub(/\s/, '').underscore
+          user.password = Devise.friendly_token[0,20]
+          user.confirmed_at = Time.zone.now
+          user.save
+        end
+        authentication.user = user
       end
-    else
-      flash[:notice] = I18n.t "devise.omniauth_callbacks.success", :kind => action_name.classify
-      sign_in_and_redirect authentication.user, :event => :authentication
+      authentication.save
     end
+    return authentication.user
   end
+ 
 end

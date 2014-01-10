@@ -1,7 +1,7 @@
 - act = action_name.to_sym; contr = controller_name.to_sym; treeish = project.default_head(params[:treeish]); branch = @branch.try(:name) || project.default_head
 -http_url = git_repo_url(project.name_with_owner)
 -ssh_url = git_ssh_repo_url(project.name_with_owner)
-#description-top
+#description-top{'ng-controller' => 'ProjectRepoBlockController', 'ng-init' => "init(#{project.repo.branches.count})"}
   -if @commit
     %ul.nav.zip
       %li#menu-archive.dropdown
@@ -42,7 +42,7 @@
       %li{:class => ('selected' if act == :index && contr == :commits )}
         = link_to t('project_menu.commits'), commits_path(project, treeish)
       %li{:class => ('selected' if act == :branches && contr == :trees )}
-        = link_to t('project_menu.branches', :count => project.repo.branches.count), branches_path(project, branch)
+        = link_to t('project_menu.branches', :count => '{{singleton.project.branches_count}}'), branch_path(project, branch)
       %li.tags{:class => ('selected' if act == :tags && contr == :trees )}
         = link_to t('project_menu.tags', :count => project.repo.tags.count), tags_path(project)
 .both

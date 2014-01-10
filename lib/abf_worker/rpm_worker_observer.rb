@@ -10,6 +10,10 @@ module AbfWorker
 
     def perform
       return if restart_task
+      if options['feedback_from_user']
+        user = User.find options['feedback_from_user']
+        return if !user.system? && subject.builder != user
+      end
 
       item = find_or_create_item
       fill_container_data if status != STARTED
@@ -17,7 +21,7 @@ module AbfWorker
       case status
       when COMPLETED
         subject.build_success
-        subject.now_publish if subject.auto_publish? && subject.can_publish?
+        subject.now_publish if subject.can_auto_publish?
       when FAILED
         subject.build_error
         item.update_attributes({:status => BuildList::BUILD_ERROR})
@@ -55,7 +59,7 @@ module AbfWorker
       else
         redis.lpush RESTARTED_BUILD_LISTS, subject.id
         subject.update_column(:status, BuildList::BUILD_PENDING)
-        subject.add_job_to_abf_worker_queue
+        subject.restart_job if subject.external_nodes.blank?
         return true
       end
     end

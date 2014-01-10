@@ -1,0 +1,25 @@
+language: ruby
+rvm:
+  - 1.9.3
+bundler_args: --without development
+env:
+  - SPEC_GROUP=controllers
+  - SPEC_GROUP=platform_controllers
+  - SPEC_GROUP=api
+  - SPEC_GROUP=models
+  - SPEC_GROUP=others
+before_install:
+  - sudo apt-get update
+  - sudo apt-get --no-install-recommends install bash curl git patch bzip2 build-essential openssl libreadline6 libreadline6-dev curl git-core zlib1g zlib1g-dev libssl-dev libyaml-dev libsqlite3-dev sqlite3 libxml2-dev libxslt-dev autoconf libc6-dev libgdbm-dev ncurses-dev automake libtool bison subversion pkg-config libffi-dev libicu-dev rpm
+  - gem update --system
+  - gem --version
+  - git config --global user.email "abf@travis.com"
+  - git config --global user.name "ABF"
+before_script:
+  - cp config/database.yml.sample config/database.yml
+  - cp config/application.yml.travis config/application.yml
+  - bundle exec rake db:create db:structure:load db:migrate
+script: "./travis.sh"
+branches:
+  only:
+    - /.*/

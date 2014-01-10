@@ -1,4 +1,6 @@
 class Platforms::RepositoriesController < Platforms::BaseController
+  include FileStoreHelper
+
   before_filter :authenticate_user!
   skip_before_filter :authenticate_user!, :only => [:index, :show, :projects_list] if APP_CONFIG['anonymous_access']
 
@@ -7,12 +9,12 @@ class Platforms::RepositoriesController < Platforms::BaseController
   before_filter :set_members, :only => [:edit, :update]
 
   def index
-    @repositories = @repositories.paginate(:page => params[:page])
+    @repositories = Repository.custom_sort(@repositories).paginate(:page => params[:page])
   end
 
   def show
-    @projects = @repository.projects.recent.paginate :page => params[:project_page], :per_page => 30
-    @projects = @projects.search(params[:query]).search_order if params[:query].present?
+    @projects = @repository.projects.recent.search(params[:query])
+                           .paginate(:page => params[:project_page], :per_page => 30)
   end
 
   def edit
@@ -68,8 +70,7 @@ class Platforms::RepositoriesController < Platforms::BaseController
   end
 
   def create
-    @repository = Repository.new(params[:repository])
-    @repository.platform_id = params[:platform_id]
+    @repository = @platform.repositories.build(params[:repository])
     if @repository.save
       flash[:notice] = t('flash.repository.saved')
       redirect_to platform_repository_path(@platform, @repository)
@@ -81,13 +82,22 @@ class Platforms::RepositoriesController < Platforms::BaseController
   end
 
   def add_project
-    if params[:project_id]
+    if projects_list = params.try(:[], :repository).try(:[], :projects_list)
+      @repository.add_projects projects_list, current_user
+      redirect_to platform_repository_path(@platform, @repository), :notice => t('flash.repository.projects_will_be_added')
+      return
+    end
+    if params[:project_id].present?
       @project = Project.find(params[:project_id])
-      begin
-        @repository.projects << @project
-        flash[:notice] = t('flash.repository.project_added')
-      rescue ActiveRecord::RecordInvalid
-        flash[:error] = t('flash.repository.project_not_added')
+      if can?(:read, @project)
+        begin
+          @repository.projects << @project
+          flash[:notice] = t('flash.repository.project_added')
+        rescue ActiveRecord::RecordInvalid
+          flash[:error] = t('flash.repository.project_not_added')
+        end
+      else
+        flash[:error] = t('flash.repository.no_access_to_read_project')
       end
       redirect_to platform_repository_path(@platform, @repository)
     else
@@ -116,7 +126,7 @@ class Platforms::RepositoriesController < Platforms::BaseController
       @projects = @repository.projects
     else
       @projects = Project.joins(owner_subquery).addable_to_repository(@repository.id)
-      @projects = @projects.by_visibilities('open') if @repository.platform.platform_type == 'main'
+      @projects = @projects.opened if @repository.platform.main? && !@repository.platform.hidden?
     end
     @projects = @projects.paginate(
       :page => (params[:iDisplayStart].to_i/(params[:iDisplayLength].present? ? params[:iDisplayLength] : 25).to_i).to_i + 1,
@@ -124,8 +134,7 @@ class Platforms::RepositoriesController < Platforms::BaseController
     )
 
     @total_projects = @projects.count
-    @projects = @projects.search(params[:sSearch]).search_order if params[:sSearch].present?
-    @projects = @projects.order(order)
+    @projects = @projects.search(params[:sSearch]).order(order)
 
     respond_to do |format|
       format.json {
@@ -135,17 +144,34 @@ class Platforms::RepositoriesController < Platforms::BaseController
   end
 
   def remove_project
-    ProjectToRepository.where(:project_id => params[:project_id], :repository_id => @repository.id).destroy_all
-    redirect_to platform_repository_path(@platform, @repository), :notice => t('flash.repository.project_removed')
+    if projects_list = params.try(:[], :repository).try(:[], :projects_list)
+      @repository.remove_projects projects_list
+      redirect_to platform_repository_path(@platform, @repository), :notice => t('flash.repository.projects_will_be_removed')
+    end
+    if params[:project_id].present?
+      ProjectToRepository.where(:project_id => params[:project_id], :repository_id => @repository.id).destroy_all
+      redirect_to platform_repository_path(@platform, @repository), :notice => t('flash.repository.project_removed')
+    end
   end
 
   def regenerate_metadata
-    if AbfWorker::BuildListsPublishTaskManager.repository_regenerate_metadata @repository.id
+    if @repository.regenerate(params[:build_for_platform_id])
       flash[:notice] = t('flash.repository.regenerate_in_queue')
     else
       flash[:error] = t('flash.repository.regenerate_already_in_queue')
     end
     redirect_to platform_repository_path(@platform, @repository)
+  end
+
+  def sync_lock_file
+    if params[:remove]
+      @repository.remove_sync_lock_file
+      flash[:notice] = t('flash.repository.sync_lock_file_removed')
+    else
+      flash[:notice] = t('flash.repository.sync_lock_file_added')
+      @repository.add_sync_lock_file
+    end
+    redirect_to edit_platform_repository_path(@platform, @repository)
   end
 
   protected

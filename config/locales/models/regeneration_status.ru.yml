@@ -1,0 +1,31 @@
+ru:
+  layout:
+    regeneration_statuses:
+      regenerate_metadata: Регенерировать метаданные
+      statuses:
+        no_data: Нет данных
+        ready: Нет действий
+        waiting_for_regeneration: Ожидание регенерации метаданных
+        regenerating: Идет регенерация метаданных
+        waiting_for_resign: Ожидание подписи пакетов
+        publish: Идет публикация
+        resign: Идет подпись пакетов
+        waiting_for_resign_after_publish: Идет публикация, ожидание подписи пакетов
+        waiting_for_resign_after_regeneration: Идет регенерация метаданных, ожидание подписи пакетов
+        waiting_for_regeneration_after_publish: Идет публикация, ожидание регенерации метаданных
+        waiting_for_regeneration_after_resign: Идет подпись пакетов, ожидание регенерации метаданных
+        waiting_for_resign_and_regeneration_after_publish: Идет публикация, ожидание подписи пакетов и регенерации метаданных
+        waiting_for_resign_and_regeneration: Ожидание подписи пакетов и регенерации метаданных
+      last_regenerated_statuses:
+        no_data: Нет данных
+        completed: Завершена успешно
+        failed: Завершена с ошибкой
+        canceled: Отменена
+
+  activerecord:
+    attributes:
+      regeneration_status:
+        last_regenerated_at: Последняя регенерация метаданных
+        last_regenerated_status: Статус последней регенерации метаданных
+        last_regenerated_log_sha1: Последний лог регенерации метаданных
+        status: Текущее состояние

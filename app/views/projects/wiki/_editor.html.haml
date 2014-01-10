@@ -33,7 +33,7 @@
       %span.jaws
         %br
 
-      = submit_tag t("wiki.save_button"), :id => "gollum-editor-submit", :title => t("wiki.save_changes")
+      = submit_tag t('wiki.save_button'), :id => 'gollum-editor-submit', :title => t('wiki.save_changes'), :data => {'disable-with' => t('layout.saving')}
       = link_to t("wiki.preview"), "javascript:void(0)", :id => "gollum-editor-preview", :class => "minibutton", :title => t("wiki.preview_title"), :'data-url' => preview_project_wiki_index_path(@project)
 
 / - content_for :javascripts do

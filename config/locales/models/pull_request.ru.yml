@@ -21,7 +21,7 @@ ru:
       ready: Данный пул реквест можно смержить автоматически.
       merged: |
         %{user} смержил <span class="label-bootstrap label-info font14">%{to_ref}</span>
-        с <span class="label-bootstrap label-info font14">%{from_ref}</span> в %{time}'
+        с <span class="label-bootstrap label-info font14">%{from_ref}</span> в %{time}
       closed: '%{user} закрыл пул реквест в %{time}'
       is_big: Этот пул реквест слишком большой! Мы показываем только последние %{count} коммитов.
       open: ''
@@ -46,6 +46,8 @@ ru:
       save_error: Не удалось сохранить пул реквест
 
   activerecord:
+    models:
+      pull_request: Пул реквест
     attributes:
       pull_requests:
         to_ref: Приемник
@@ -59,4 +61,6 @@ ru:
       search: Найти пул реквест...
       all: Все пул реквесты
       to_me: Назначенные мне
+      assigned: Назначенные мне
+      created: Созданные мной
       view_full_changes: Посмотреть все изменения

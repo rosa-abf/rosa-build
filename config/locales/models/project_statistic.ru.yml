@@ -1,0 +1,16 @@
+ru:
+  layout:
+    project_statistics:
+      human_average_build_time: 'Ожидаемое время: %{hours} ч. %{minutes} мин.'
+
+  flash:
+    project_statistic:
+
+
+  activerecord:
+    models:
+      project_statistic: Статистика проекта
+    attributes:
+      project_statistic:
+
+

@@ -1,7 +1,7 @@
 = render 'platforms/base/submenu'
 = render 'platforms/base/sidebar'
 
-= render 'form' if can? :edit, @platform
+= link_to t('layout.mass_builds.new'), new_platform_mass_build_path(@platform), :class => 'button' if can? :create, @platform.mass_builds.build
 
 %table.tablesorter.unbordered{:cellpadding => "0", :cellspacing => "0"}
   %thead
@@ -46,15 +46,10 @@
           -if mass_build.projects_list.present?
             = link_to_list @platform, mass_build, 'projects_list'
             .both
-          = t('activerecord.attributes.mass_build.arch_names') + ": "
-          = mass_build.arch_names
-          .both
           = t('activerecord.attributes.mass_build.user') + ": "
           = link_to mass_build.user.fullname, mass_build.user
-          .both
-          = t('activerecord.attributes.mass_build.auto_publish') + ": "
-          = mass_build.auto_publish
-          .both
-          = t('activerecord.attributes.mass_build.created_at') + ": "
-          = mass_build.created_at
+          - [:arch_names, :auto_publish, :increase_release_tag, :created_at].each do |field|
+            .both
+            = t("activerecord.attributes.mass_build.#{field}") + ": "
+            = mass_build.send field
 = will_paginate @mass_builds

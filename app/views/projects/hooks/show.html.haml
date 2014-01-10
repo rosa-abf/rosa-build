@@ -1,0 +1,26 @@
+-set_meta_tags :title => [title_object(@project), t('layout.projects.hooks')]
+= render 'submenu'
+= render 'sidebar'
+
+%h1= t("layout.hooks.services.#{@name}")
+
+= link_to t('layout.create'), new_project_hook_path(@project, :hook => {:name => @name}), :class => 'button'
+.booth
+%br
+
+- @hooks.all.each do |hook|
+  - schema = Hook::SCHEMA[hook.name.to_sym]
+  - hook.data.each do |field, value|
+    .leftlist= t("activerecord.attributes.hook.data.#{field}")
+    .rightlist
+      - if schema.find{ |type, attr| type == :password && field.to_sym == attr }
+        = '******'
+      - else
+        = value
+    .both
+
+  .leftlist
+  .rightlist
+    = link_to t('layout.edit'), edit_project_hook_path(@project, hook), :class => 'button'
+    = link_to t('layout.delete'), project_hook_path(@project, hook), :method => :delete, :confirm => t('layout.confirm'), :class => 'button'
+  .hr

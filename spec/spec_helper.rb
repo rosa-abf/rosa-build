@@ -27,6 +27,8 @@ RSpec.configure do |config|
 
   config.filter_run_excluding :anonymous_access => !(APP_CONFIG['anonymous_access'])
 
+  config.before(:all) { init_test_root }
+  config.after(:all)  { clear_test_root }
 end
 
 def set_session_for(user=nil)
@@ -35,9 +37,10 @@ def set_session_for(user=nil)
   sign_in current_user
 end
 
-def http_login(user=nil)
+def http_login(user=nil, password = '123456')
   # FIXME: password constant is a bad choice...
-  request.env['HTTP_AUTHORIZATION'] = ActionController::HttpAuthentication::Basic.encode_credentials(user.email,'123456')
+  email = user.is_a?(String) ? user : user.try(:email)
+  request.env['HTTP_AUTHORIZATION'] = ActionController::HttpAuthentication::Basic.encode_credentials(email, password)
 end
 
 def stub_symlink_methods
@@ -46,8 +49,9 @@ def stub_symlink_methods
 end
 
 Resque.inline = true
-APP_CONFIG['root_path'] = "#{Rails.root}/tmp/test_root"
-APP_CONFIG['git_path']  = "#{Rails.root}/tmp/test_root"
+APP_CONFIG['root_path']   = "#{Rails.root}/tmp/test_root"
+APP_CONFIG['git_path']    = "#{Rails.root}/tmp/test_root"
+APP_CONFIG['tmpfs_path']  = "#{Rails.root}/tmp/test_root"
 
 def init_test_root
   clear_test_root
@@ -63,8 +67,6 @@ def stub_redis
   stub(Redis).new { @redis_instance }
   stub(Resque).redis { @redis_instance }
 end
-
-init_test_root
 
 def fill_project project
   %x(mkdir -p #{project.path} && cp -Rf #{Rails.root}/spec/tests.git/* #{project.path}) # maybe FIXME ?

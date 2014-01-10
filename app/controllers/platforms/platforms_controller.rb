@@ -1,11 +1,12 @@
 class Platforms::PlatformsController < Platforms::BaseController
+  include FileStoreHelper
 
   before_filter :authenticate_user!
   skip_before_filter :authenticate_user!, :only => [:advisories, :members, :show] if APP_CONFIG['anonymous_access']
   load_and_authorize_resource
 
   def index
-    @platforms = @platforms.accessible_by(current_ability, :related).paginate(:page => params[:page], :per_page => 20)
+    @platforms = @platforms.accessible_by(current_ability, :related).order(:name).paginate(:page => params[:page], :per_page => 20)
   end
 
   def show
@@ -41,11 +42,31 @@ class Platforms::PlatformsController < Platforms::BaseController
     @admin_id = params[:admin_id]
     @admin_uname = params[:admin_uname]
 
-    if @platform.update_attributes(
-      :owner => @admin_id.blank? ? get_owner : User.find(@admin_id),
-      :description => params[:platform][:description],
-      :released => (params[:platform][:released] || @platform.released)
-    )
+    platform_params = params[:platform] || {}
+    platform_params = platform_params.slice(:description, :platform_arch_settings_attributes, :released)
+    platform_params[:owner] = User.find(@admin_id) if @admin_id.present?
+
+    if @platform.update_attributes(platform_params)
+      flash[:notice] = I18n.t("flash.platform.saved")
+      redirect_to @platform
+    else
+      flash[:error] = I18n.t("flash.platform.save_error")
+      flash[:warning] = @platform.errors.full_messages.join('. ')
+      render :action => :edit
+    end
+  end
+
+  def regenerate_metadata
+    if @platform.regenerate
+      flash[:notice] = I18n.t('flash.platform.saved')
+    else
+      flash[:error] = I18n.t('flash.platform.save_error')
+    end
+    redirect_to edit_platform_path(@platform)
+  end
+
+  def change_visibility
+    if @platform.change_visibility
       flash[:notice] = I18n.t("flash.platform.saved")
       redirect_to @platform
     else

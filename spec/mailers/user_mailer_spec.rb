@@ -1,7 +1,6 @@
 require "spec_helper"
 
 describe UserMailer do
-  pending "add some examples to (or delete) #{__FILE__}"
 
   context 'On Issue create' do
     before(:each) do
@@ -13,7 +12,7 @@ describe UserMailer do
       any_instance_of(Project, :versions => ['v1.0', 'v2.0'])
 
       @issue = FactoryGirl.create(:issue, :project_id => @project.id, :assignee_id => @issue_user.id, :user => @issue_user)
-      @email = UserMailer.new_issue_notification(@issue, @issue_user).deliver
+      @email = UserMailer.new_issue_notification(@issue, @issue_user).deliver!
     end
 
     it 'should have correct subject' do
@@ -48,7 +47,7 @@ describe UserMailer do
       any_instance_of(Project, :versions => ['v1.0', 'v2.0'])
 
       @issue = FactoryGirl.create(:issue, :project_id => @project.id, :assignee_id => @issue_user.id, :user => @issue_user)
-      @email = UserMailer.issue_assign_notification(@issue, @user).deliver
+      @email = UserMailer.issue_assign_notification(@issue, @user).deliver!
     end
 
     it 'should have correct subject' do
@@ -61,10 +60,6 @@ describe UserMailer do
 
     it 'should render the sender email' do
       @email.from.should == [APP_CONFIG['do-not-reply-email']]
-    end
-
-    it 'should assign user name' do
-      @email.body.encoded.should match(@user.name)
     end
 
     it 'should assign issue title' do
@@ -85,7 +80,7 @@ describe UserMailer do
 
       @issue = FactoryGirl.create(:issue, :project_id => @project.id, :assignee_id => @issue_user.id, :user => @issue_user)
       @comment = FactoryGirl.create(:comment, :commentable => @issue, :user_id => @user.id, :project => @project)
-      @email = UserMailer.new_comment_notification(@comment, @issue_user).deliver
+      @email = UserMailer.new_comment_notification(@comment, @issue_user).deliver!
     end
 
     it 'should have correct subject' do

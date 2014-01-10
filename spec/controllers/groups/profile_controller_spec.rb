@@ -2,7 +2,7 @@ require 'spec_helper'
 
 shared_examples_for 'group user with project show rights' do
   it 'should be able to perform show action' do
-    get :show, :id => @group
+    get :show, :uname => @group.uname
     response.should render_template(:show)
   end
 end

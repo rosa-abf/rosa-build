@@ -5,6 +5,10 @@ def create_comment user
   FactoryGirl.create(:comment, :user => user, :commentable => @commit, :project => @project)
 end
 
+def create_comment_in_commit commit, project, body
+  FactoryGirl.create(:comment, :user => @user, :commentable => commit, :project => project, :body => body)
+end
+
 def set_comments_data_for_commit
   @ability = Ability.new(@user)
 
@@ -260,6 +264,64 @@ describe Comment do
         @simple.notifier.update_column :new_comment_commit_owner, false
         @simple.update_column :email, 'test@test.test'
         should_not_send_email(commentor: @user)
+      end
+    end
+
+    context 'automatic issue linking' do
+      before(:each) do
+        @same_name_project = FactoryGirl.create(:project, :name => @project.name)
+        @issue_in_same_name_project = FactoryGirl.create(:issue, :project => @same_name_project, :user => @same_name_project.owner)
+        @another_project = FactoryGirl.create(:project, :owner => @user)
+        @other_user_project = FactoryGirl.create(:project)
+        @issue = FactoryGirl.create(:issue, :project => @project, :user => @user)
+        @second_issue = FactoryGirl.create(:issue, :project => @project, :user => @user)
+        @issue_in_another_project = FactoryGirl.create(:issue, :project => @another_project, :user => @user)
+        @issue_in_other_user_project = FactoryGirl.create(:issue, :project => @other_user_project, :user => @other_user_project.owner)
+      end
+
+      it 'should create automatic comment' do
+        create_comment_in_commit(@commit, @project, "test link to ##{@issue.serial_id}; [##{@second_issue.serial_id}]")
+        Comment.where(:automatic => true, :commentable_type => 'Issue',
+                      :commentable_id => @second_issue.id,
+                      :created_from_commit_hash => @commit.id.hex).count.should == 1
+      end
+
+      it 'should create automatic comment in the another project issue' do
+        body = "[#{@another_project.name_with_owner}##{@issue_in_another_project.serial_id}]"
+        create_comment_in_commit(@commit, @project, body)
+        Comment.where(:automatic => true, :commentable_type => 'Issue',
+                      :commentable_id => @issue_in_another_project.id,
+                      :created_from_commit_hash => @commit.id.hex).count.should == 1
+      end
+
+      it 'should create automatic comment in the same name project issue' do
+        body = "[#{@same_name_project.owner.uname}##{@issue_in_same_name_project.serial_id}]"
+        create_comment_in_commit(@commit, @project, body)
+        Comment.where(:automatic => true, :commentable_type => 'Issue',
+                      :commentable_id => @issue_in_same_name_project.id,
+                      :created_from_commit_hash => @commit.id.hex).count.should == 1
+      end
+
+      it 'should not create duplicate automatic comment' do
+        create_comment_in_commit(@commit, @project, "test link to [##{@second_issue.serial_id}]")
+        create_comment_in_commit(@commit, @project, "test duplicate link to [##{@second_issue.serial_id}]")
+        Comment.where(:automatic => true, :commentable_type => 'Issue',
+                      :commentable_id => @second_issue.id,
+                      :created_from_commit_hash => @commit.id.hex).count.should == 1
+      end
+
+      it 'should not create duplicate automatic comment from one' do
+        create_comment_in_commit(@commit, @project, "test link to [##{@second_issue.serial_id}]; ##{@second_issue.serial_id}")
+        Comment.where(:automatic => true, :commentable_type => 'Issue',
+                      :commentable_id => @second_issue.id,
+                      :created_from_commit_hash => @commit.id.hex).count.should == 1
+      end
+      it 'should create two automatic comment' do
+        body = "test ##{@second_issue.serial_id}" +
+               " && [#{@another_project.name_with_owner}##{@issue_in_another_project.serial_id}]"
+        create_comment_in_commit(@commit, @project, body)
+        Comment.where(:automatic => true,
+                      :created_from_commit_hash => @commit.id.hex).count.should == 2
       end
     end
   end

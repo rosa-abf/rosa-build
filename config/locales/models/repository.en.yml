@@ -1,7 +1,12 @@
 en:
   layout:
     repositories:
-      add_project_to: Add project to repository
+      extra_actions: Extra actions
+      add_sync_lock_file: "Add '.sync.lock' file"
+      remove_sync_lock_file: "Remove '.sync.lock' file"
+      sync_lock_file_info: "Presence of '.sync.lock' file means that repository is not ready for sync with mirror"
+      add_projects_to: Add projects to repository
+      remove_projects_from: Remove projects from repository
       edit: Settings
       list: List
       about: About repository
@@ -19,24 +24,29 @@ en:
       clear_confirm: Are you sure you want to clear this platform?
       clear_warning: Attention! Cleared packages cannot be restored!
       regenerate_metadata: Regenerate metadata
+      mass_delete: Mass delete
 
     personal_repositories:
       settings_header: Settings
-      change_visibility_from_hidden: Change status to "Public"
-      change_visibility_from_open: Change status to "Private"
       settings: Settings
       show: My repository
       private_users: Private repository users
 
   flash:
     repository:
+      sync_lock_file_added: "'.sync.lock' file has been added to repository"
+      sync_lock_file_removed: "'.sync.lock' file has been removed from repository"
+      projects_will_be_removed: Projects added to queue for removing
+      projects_will_be_added: Projects added to queue for adding
+      no_access_to_read_project: You have no access to read this project
+
       saved: Repository added
       updated: Repository updated
       save_error: Unable to add repository
       update_error: Unable to update repository
       destroyed: Repository deleted
       project_added: Project added to repository
-      project_not_added: Project adding error. A project with such name already exists in this repository. Remove the old project first
+      project_not_added: Project adding error. A project with such name already exists in one repository of platform. Remove the old project first
       project_removed: Project deleted
       project_not_removed: Unable to delete project from repository
       clear: Platform successfully cleared!
@@ -51,6 +61,7 @@ en:
       repository: Repository
     attributes:
       repository:
+        projects_list: Projects list
         name: Name
         description: Description
         publish_without_qa: Publication without QA

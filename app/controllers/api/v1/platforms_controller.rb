@@ -1,8 +1,17 @@
 class Api::V1::PlatformsController < Api::V1::BaseController
   before_filter :authenticate_user!
+  skip_before_filter :authenticate_user!, :only => :allowed
   skip_before_filter :authenticate_user!, :only => [:show, :platforms_for_build, :members] if APP_CONFIG['anonymous_access']
 
-  load_and_authorize_resource
+  load_and_authorize_resource :except => :allowed
+
+  def allowed
+    if Platform.allowed?(params[:path] || '', request)
+      render :nothing => true
+    else
+      render :nothing => true, :status => 403
+    end
+  end
 
   def index
     @platforms = @platforms.accessible_by(current_ability, :related).

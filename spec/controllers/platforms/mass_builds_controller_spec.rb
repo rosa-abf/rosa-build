@@ -6,6 +6,11 @@ shared_examples_for 'mass_build platform owner' do
     response.should render_template(:index)
   end
 
+  it 'should be able to perform new action' do
+    get :new, :platform_id => @platform
+    response.should render_template(:new)
+  end
+
   it 'should be able to perform create action' do
     post :create, @create_params
     response.should redirect_to(platform_mass_builds_path(@platform))
@@ -45,19 +50,19 @@ shared_examples_for 'mass_build platform owner' do
     get :get_list, :platform_id => @platform, :id => @mass_build, :kind => 'failed_builds_list'
     response.should be_success
   end
+end
 
-  context 'for personal platform' do
-    before(:each) do
-      Platform.update_all(:platform_type => 'personal')
-    end
-
-    [:cancel, :get_list, :create, :publish].each do |action|
-      it "should not be able to perform #{ action } action" do
-        get action, :platform_id => @platform, :id => @mass_build.id
-        response.should redirect_to(forbidden_path)
-      end
+shared_examples_for 'mass_build platform owner of personal platform' do
+  before(:each) do
+    Platform.update_all(:platform_type => 'personal')
+    repository = FactoryGirl.create(:repository)
+    @mass_build.build_lists.each do |bl|
+      bl.build_for_platform = repository.platform
+      bl.include_repos      = [repository.id]
+      bl.save
     end
   end
+  it_should_behave_like 'mass_build platform owner'
 end
 
 shared_examples_for 'mass_build platform reader' do
@@ -69,6 +74,11 @@ shared_examples_for 'mass_build platform reader' do
   it 'should be able to perform get_list action' do
     get :get_list, :platform_id => @platform, :id => @mass_build, :kind => 'failed_builds_list'
     response.should be_success
+  end
+
+  it "should not be able to perform new action" do
+    get :new, :platform_id => @platform
+    response.should redirect_to(forbidden_path)
   end
 
   it "should not be able to perform create action" do
@@ -112,14 +122,17 @@ describe Platforms::MassBuildsController do
     @repository.projects << project
 
     @create_params = {
-      :platform_id => @platform,
-      :projects_list => @repository.projects.map(&:name).join("\n"),
-      :arches => [Arch.first.id],
-      :auto_publish => true
+      :mass_build => {
+        :projects_list          => @repository.projects.map(&:name).join("\n"),
+        :auto_publish           => true,
+        :build_for_platform_id  => @platform
+      },
+      :platform_id  => @platform,
+      :arches               => [Arch.first.id],
     }
 
-    @mass_build = FactoryGirl.create(:mass_build, :platform => @platform, :user => @user, :projects_list => project.name)
-    FactoryGirl.create(:build_list_core, :mass_build => @mass_build, :status => BuildList::SUCCESS)
+    @mass_build = FactoryGirl.create(:mass_build, :save_to_platform => @platform, :user => @user, :projects_list => project.name)
+    FactoryGirl.create(:build_list, :mass_build => @mass_build, :status => BuildList::SUCCESS)
   end
 
   context 'for guest' do
@@ -144,12 +157,12 @@ describe Platforms::MassBuildsController do
       response.should redirect_to(new_user_session_path)
     end
 
-    it "should not be able to perform create action" do
-      get :create, :platform_id => @platform
+    it "should not be able to perform new action" do
+      get :new, :platform_id => @platform
       response.should redirect_to(new_user_session_path)
     end
 
-    [:cancel, :publish].each do |action|
+    [:cancel, :publish, :create].each do |action|
       it "should not be able to perform #{action} action" do
         post action, :platform_id => @platform, :id => @mass_build
         response.should redirect_to(new_user_session_path)
@@ -180,6 +193,7 @@ describe Platforms::MassBuildsController do
     end
 
     it_should_behave_like 'mass_build platform owner'
+    it_should_behave_like 'mass_build platform owner of personal platform'
   end
 
   context 'for owner user' do
@@ -192,6 +206,7 @@ describe Platforms::MassBuildsController do
     end
 
     it_should_behave_like 'mass_build platform owner'
+    it_should_behave_like 'mass_build platform owner of personal platform'
   end
 
   context 'for admin user' do
@@ -202,6 +217,7 @@ describe Platforms::MassBuildsController do
     end
 
     it_should_behave_like 'mass_build platform owner'
+    it_should_behave_like 'mass_build platform owner of personal platform'
   end
 
   context 'for reader user' do

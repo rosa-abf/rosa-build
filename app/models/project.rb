@@ -1,7 +1,7 @@
 class Project < ActiveRecord::Base
   VISIBILITIES = ['open', 'hidden']
   MAX_OWN_PROJECTS = 32000
-  NAME_REGEXP = /[a-zA-Z0-9_\-\+\.]+/
+  NAME_REGEXP = /[\w\-\+\.]+/
 
   belongs_to :owner, :polymorphic => true, :counter_cache => :own_projects_count
   belongs_to :maintainer, :class_name => "User"
@@ -14,8 +14,10 @@ class Project < ActiveRecord::Base
   has_many :project_to_repositories, :dependent => :destroy
   has_many :repositories, :through => :project_to_repositories
   has_many :project_tags, :dependent => :destroy
+  has_many :project_statistics, :dependent => :destroy
   
   has_many :build_lists, :dependent => :destroy
+  has_many :hooks, :dependent => :destroy
 
   has_many :relations, :as => :target, :dependent => :destroy
   has_many :collaborators, :through => :relations, :source => :actor, :source_type => 'User'
@@ -26,20 +28,39 @@ class Project < ActiveRecord::Base
 
   validates :name, :uniqueness => {:scope => [:owner_id, :owner_type], :case_sensitive => false},
                    :presence => true,
-                   :format => {:with => /\A#{NAME_REGEXP}\z/, :message => I18n.t("activerecord.errors.project.uname")}
-  validates :owner, :presence => true
+                   :format => {:with => /\A#{NAME_REGEXP}\z/,
+                   :message => I18n.t("activerecord.errors.project.uname")}
   validates :maintainer_id, :presence => true, :unless => :new_record?
+  validates :url, :presence => true, :format => {:with => /\Ahttps?:\/\/[\S]+\z/}, :if => :mass_import
+  validates :add_to_repository_id, :presence => true, :if => :mass_import
   validates :visibility, :presence => true, :inclusion => {:in => VISIBILITIES}
   validate { errors.add(:base, :can_have_less_or_equal, :count => MAX_OWN_PROJECTS) if owner.projects.size >= MAX_OWN_PROJECTS }
   validate :check_default_branch
+  # throws validation error message from ProjectToRepository model into Project model
+  validate do |project|
+    project.project_to_repositories.each do |p_to_r|
+      next if p_to_r.valid?
+      p_to_r.errors.full_messages.each{ |msg| errors[:base] << msg }
+    end
+    errors.delete :project_to_repositories
+  end
 
-  attr_accessible :name, :description, :visibility, :srpm, :is_package, :default_branch, :has_issues, :has_wiki, :maintainer_id, :publish_i686_into_x86_64
-  attr_readonly :name, :owner_id, :owner_type
+  attr_accessible :name, :description, :visibility, :srpm, :is_package, :default_branch,
+                  :has_issues, :has_wiki, :maintainer_id, :publish_i686_into_x86_64,
+                  :url, :srpms_list, :mass_import, :add_to_repository_id
+  attr_readonly :owner_id, :owner_type
 
-  scope :recent, order("#{table_name}.name ASC")
+  scope :recent, order("lower(#{table_name}.name) ASC")
   scope :search_order, order("CHAR_LENGTH(#{table_name}.name) ASC")
-  scope :search, lambda {|q| by_name("%#{q.to_s.strip}%")}
+  scope :search, lambda {|q|
+    q = q.to_s.strip
+    by_name("%#{q}%").search_order if q.present?
+  }
   scope :by_name, lambda {|name| where("#{table_name}.name ILIKE ?", name) if name.present?}
+  scope :by_owner_and_name, lambda { |*params|
+    term = params.map(&:strip).join('/').downcase
+    where("lower(concat(owner_uname, '/', name)) ILIKE ?", "%#{term}%") if term.present?
+  }
   scope :by_visibilities, lambda {|v| where(:visibility => v)}
   scope :opened, where(:visibility => 'open')
   scope :package, where(:is_package => true)
@@ -57,27 +78,38 @@ class Project < ActiveRecord::Base
   }
 
   before_validation :truncate_name, :on => :create
+  before_save lambda { self.owner_uname = owner.uname if owner_uname.blank? || owner_id_changed? || owner_type_changed? }
   before_create :set_maintainer
   after_save :attach_to_personal_repository
   after_update :set_new_git_head
+  after_update lambda { update_path_to_project(name_was) }, :if => :name_changed?
 
   has_ancestry :orphan_strategy => :rootify #:adopt not available yet
+
+  attr_accessor :url, :srpms_list, :mass_import, :add_to_repository_id
 
   include Modules::Models::Owner
   include Modules::Models::Git
   include Modules::Models::Wiki
+  include Modules::Models::UrlHelper
 
   class << self
     def find_by_owner_and_name(owner_name, project_name)
-      owner = User.find_by_uname(owner_name) || Group.find_by_uname(owner_name) || User.by_uname(owner_name).first || Group.by_uname(owner_name).first and
-      scoped = where(:owner_id => owner.id, :owner_type => owner.class) and
-      scoped.find_by_name(project_name) || scoped.by_name(project_name).first
-      # owner.projects.find_by_name(project_name) || owner.projects.by_name(project_name).first # TODO force this work?
+      where(:owner_uname => owner_name, :name => project_name).first ||
+        by_owner_and_name(owner_name, project_name).first
     end
 
     def find_by_owner_and_name!(owner_name, project_name)
       find_by_owner_and_name(owner_name, project_name) or raise ActiveRecord::RecordNotFound
     end
+  end
+
+  def init_mass_import
+    Project.perform_later :clone_build, :run_mass_import, url, srpms_list, visibility, owner, add_to_repository_id
+  end
+
+  def name_with_owner
+    "#{owner_uname || owner.uname}/#{name}"
   end
 
   def to_param
@@ -123,41 +155,54 @@ class Project < ActiveRecord::Base
   end
 
   def git_project_address auth_user
-    host ||= EventLog.current_controller.request.host_with_port rescue ::Rosa::Application.config.action_mailer.default_url_options[:host]
-    protocol = APP_CONFIG['mailer_https_url'] ? "https" : "http" rescue "http"
-    opts = {:host => host, :protocol => protocol}
+    opts = default_url_options
     opts.merge!({:user => auth_user.authentication_token, :password => ''}) unless self.public?
-    Rails.application.routes.url_helpers.project_url(self.owner.uname, self.name, opts) + ".git"
+    Rails.application.routes.url_helpers.project_url(self.owner.uname, self.name, opts) + '.git'
     #path #share by NFS
   end
 
-  def build_for(platform, repository_id, user, arch =  Arch.find_by_name('i586'), auto_publish = false, mass_build_id = nil, priority = 0)
+  def build_for(mass_build, repository_id, arch =  Arch.find_by_name('i586'), priority = 0)
+    build_for_platform  = mass_build.build_for_platform
+    save_to_platform    = mass_build.save_to_platform
+    user                = mass_build.user
     # Select main and project platform repository(contrib, non-free and etc)
     # If main does not exist, will connect only project platform repository
     # If project platform repository is main, only main will be connect
-    main_rep_id = platform.repositories.find_by_name('main').try(:id)
-    build_reps_ids = [main_rep_id, repository_id].compact.uniq
+    main_rep_id = build_for_platform.repositories.find_by_name(%w(main base)).try(:id)
+    include_repos = ([main_rep_id] << (save_to_platform.main? ? repository_id : nil)).compact.uniq
 
-    project_version = repo.commits("#{platform.name}").try(:first).try(:id) ? 
-      platform.name : 'master'
+    project_version = if repo.commits("#{save_to_platform.name}").try(:first).try(:id)
+                        save_to_platform.name
+                      elsif repo.commits("#{build_for_platform.name}").try(:first).try(:id)
+                        build_for_platform.name
+                      else
+                        default_branch
+                      end
+    
+    increase_release_tag(project_version, user, "MassBuild##{mass_build.id}: Increase release tag") if mass_build.increase_release_tag?
+
     build_list = build_lists.build do |bl|
-      bl.save_to_platform = platform
-      bl.build_for_platform = platform
-      bl.update_type = 'newpackage'
-      bl.arch = arch
-      bl.project_version = project_version
-      bl.user = user
-      bl.auto_publish = auto_publish
-      bl.include_repos = build_reps_ids
-      bl.priority = priority
-      bl.mass_build_id = mass_build_id
-      bl.save_to_repository_id = repository_id
+      bl.save_to_platform       = save_to_platform
+      bl.build_for_platform     = build_for_platform
+      bl.update_type            = 'newpackage'
+      bl.arch                   = arch
+      bl.project_version        = project_version
+      bl.user                   = user
+      bl.auto_publish           = mass_build.auto_publish?
+      bl.include_repos          = include_repos
+      bl.extra_repositories     = mass_build.extra_repositories
+      bl.extra_build_lists      = mass_build.extra_build_lists
+      bl.priority               = priority
+      bl.mass_build_id          = mass_build.id
+      bl.save_to_repository_id  = repository_id
     end
     build_list.save
   end
 
-  def fork(new_owner)
+  def fork(new_owner, new_name = name)
+    new_name = new_name.presence || name
     dup.tap do |c|
+      c.name = new_name
       c.parent_id = id
       c.owner = new_owner
       c.updated_at = nil; c.created_at = nil # :id = nil
@@ -165,14 +210,6 @@ class Project < ActiveRecord::Base
       c.send :set_maintainer
       c.save
     end
-  end
-
-  def human_average_build_time
-    I18n.t("layout.projects.human_average_build_time", {:hours => (average_build_time/3600).to_i, :minutes => (average_build_time%3600/60).to_i})
-  end
-
-  def formatted_average_build_time
-    "%02d:%02d" % [average_build_time / 3600, average_build_time % 3600 / 60]
   end
 
   def destroy_project_from_repository(repository)
@@ -226,7 +263,50 @@ class Project < ActiveRecord::Base
     @archive ||= create_archive treeish, format
   end
 
+  # Finds release tag and increase its:
+  # 'Release: %mkrel 4mdk' => 'Release: 5mdk'
+  # 'Release: 4' => 'Release: 5'
+  # Finds release macros and increase it:
+  # '%define release %mkrel 4mdk' => '%define release 5mdk'
+  # '%define release 4' => '%define release 5'
+  def self.replace_release_tag(content)
+
+    build_new_release = Proc.new do |release, combine_release|
+      if combine_release.present?
+        r = combine_release.split('.').last.to_i
+        release << combine_release.gsub(/.[\d]+$/, '') << ".#{r + 1}"
+      else
+        release = release.to_i + 1
+      end
+      release 
+    end
+
+    content.gsub(/^Release:(\s+)(%mkrel\s+)?(\d+)([.\d]+)?(mdk)?$/) do |line|
+      tab, mkrel, mdk = $1, $2, $5
+      "Release:#{tab}#{build_new_release.call($3, $4)}#{mdk}"
+    end.gsub(/^%define\s+release:?(\s+)(%mkrel\s+)?(\d+)([.\d]+)?(mdk)?$/) do |line|
+      tab, mkrel, mdk = $1, $2, $5
+      "%define release#{tab}#{build_new_release.call($3, $4)}#{mdk}"
+    end
+  end
+
   protected
+
+  def increase_release_tag(project_version, user, message)
+    blob = repo.tree(project_version).contents.find{ |n| n.is_a?(Grit::Blob) && n.name =~ /.spec$/ }
+    return unless blob
+
+    raw = Grit::GitRuby::Repository.new(repo.path).get_raw_object_by_sha1(blob.id)
+    content = self.class.replace_release_tag raw.content
+    return if content == raw.content
+
+    update_file(blob.name, content.gsub("\r", ''),
+      :message => message,
+      :actor => user,
+      :head => project_version
+    )
+  end
+
 
   def create_archive(treeish, format)
     file_name = "#{name}-#{treeish}"
@@ -249,11 +329,11 @@ class Project < ActiveRecord::Base
   end
 
   def attach_to_personal_repository
-    owner_rep = self.owner.personal_repository
+    owner_repos = self.owner.personal_platform.repositories
     if is_package
-      repositories << owner_rep unless repositories.exists?(:id => owner_rep)
+      repositories << self.owner.personal_repository unless repositories.exists?(:id => owner_repos.pluck(:id))
     else
-      repositories.delete owner_rep
+      repositories.delete owner_repos
     end
   end
 
@@ -266,6 +346,27 @@ class Project < ActiveRecord::Base
   def set_new_git_head
     `cd #{path} && git symbolic-ref HEAD refs/heads/#{self.default_branch}` if self.default_branch_changed? && self.repo.branches.map(&:name).include?(self.default_branch)
   end
+
+  def update_path_to_project(old_name)
+    new_name, new_path = name, path
+    self.name = old_name
+    old_path  = path
+    self.name = new_name
+    FileUtils.mv old_path, new_path, :force => true if Dir.exists?(old_path)
+
+    pull_requests_old_path = File.join(APP_CONFIG['git_path'], 'pull_requests', owner.uname, old_name)
+    if Dir.exists?(pull_requests_old_path)
+      FileUtils.mv  pull_requests_old_path,
+                    File.join(APP_CONFIG['git_path'], 'pull_requests', owner.uname, new_name),
+                    :force => true
+    end
+
+    PullRequest.where(:from_project_id => id).update_all(:from_project_name => new_name)
+
+    PullRequest.where(:from_project_id => id).each{ |p| p.update_relations(old_name) }
+    pull_requests.where('from_project_id != to_project_id').each(&:update_relations)
+  end
+  later :update_path_to_project, :queue => :clone_build
 
   def check_default_branch
     if self.repo.branches.count > 0 && self.repo.branches.map(&:name).exclude?(self.default_branch)

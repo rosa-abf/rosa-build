@@ -1,0 +1,13 @@
+en:
+  layout:
+    platform_arch_settings:
+      extra_settings: Extra settings
+
+  flash:
+    platform_arch_settings:
+
+  activerecord:
+    attributes:
+      platform_arch_setting:
+        default: Use by default at build
+        time_living: Max time build (in minutes)

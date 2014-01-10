@@ -2,6 +2,7 @@ class ProductBuildList < ActiveRecord::Base
   include Modules::Models::CommitAndVersion
   include Modules::Models::TimeLiving
   include Modules::Models::FileStoreClean
+  include Modules::Models::UrlHelper
   include AbfWorker::ModelHelper
   delegate :url_helpers, to: 'Rails.application.routes'
 
@@ -21,7 +22,7 @@ class ProductBuildList < ActiveRecord::Base
                 BUILD_PENDING,
                 BUILD_CANCELED,
                 BUILD_CANCELING
-              ]
+              ].freeze
 
   HUMAN_STATUSES = { BUILD_STARTED => :build_started,
                      BUILD_COMPLETED => :build_completed,
@@ -29,7 +30,7 @@ class ProductBuildList < ActiveRecord::Base
                      BUILD_PENDING => :build_pending,
                      BUILD_CANCELED => :build_canceled,
                      BUILD_CANCELING => :build_canceling
-                    }
+                    }.freeze
 
   belongs_to :product
   belongs_to :project
@@ -118,10 +119,6 @@ class ProductBuildList < ActiveRecord::Base
     [BUILD_STARTED, BUILD_PENDING].include? status
   end
 
-  def container_path
-    "/downloads/#{product.platform.name}/product/#{id}/"
-  end
-
   def event_log_message
     {:product => product.name}.inspect
   end
@@ -154,7 +151,7 @@ class ProductBuildList < ActiveRecord::Base
 
   def abf_worker_args
     file_name = "#{project.name}-#{commit_hash}"
-    opts = {:host => ActionMailer::Base.default_url_options[:host]}
+    opts = default_url_options
     opts.merge!({:user => user.authentication_token, :password => ''}) if user.present?
     srcpath = url_helpers.archive_url(
       project.owner,
@@ -171,8 +168,11 @@ class ProductBuildList < ActiveRecord::Base
       :params => params,
       :time_living => time_living,
       :main_script => main_script,
-      :arch => arch.name,
-      :distrib_type => product.platform.distrib_type,
+      :platform => {
+        :type => product.platform.distrib_type,
+        :name => product.platform.name,
+        :arch => arch.name
+      },
       :user => {:uname => user.try(:uname), :email => user.try(:email)}
     }
   end

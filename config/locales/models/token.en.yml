@@ -1,0 +1,32 @@
+en:
+  layout:
+    tokens:
+      header: Tokens
+      new: New token
+      about: Token of platform
+      withdraw: Withdraw
+      withdraw_confirm: Are you sure you want to withdraw this token?
+
+      statuses:
+        active: Active
+        blocked: Withdrawed
+
+  flash:
+    tokens:
+      saved: Token added
+      save_error: Unable to add token
+      withdraw_success: Token withdrawed
+      withdraw_fail: Unable to withdraw token
+
+  activerecord:
+    models:
+      token: Token
+    attributes:
+      token:
+        description: Description
+        status: Status
+        authentication_token: Token
+        created_at: Created
+        updated_at: Updated
+        creator: Creator
+        updater: Updater

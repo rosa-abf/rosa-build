@@ -1,6 +1,7 @@
 ru:
   layout:
     mass_builds:
+      new: Новая массовая сборка
       publish_success: Опубликовать успешные сборки
       publish_test_failed: Опубликовать сборки с проваленными тестами
       repositories: Репозитории
@@ -22,6 +23,7 @@ ru:
         updated_at: Обновлен
         arch_names: Архитектуры
         user: Пользователь
-        auto_publish: Авто Публикация
+        auto_publish: Автоматическая публикация
+        increase_release_tag: Увеличить release тег
         repositories: Репозитории
         projects_list: Список проектов

@@ -12,6 +12,21 @@ namespace :add_branch do
     FileUtils.rm_rf tmp_path
   end
 
+  desc "Add branch for group projects"
+  task :group => :environment do
+    src_branch = ENV['SRC_BRANCH']
+    dst_branch = ENV['DST_BRANCH']
+    group = ENV['GROUP']
+    say "START add branch #{dst_branch} from #{src_branch} in #{group} group"
+    Group.find_by_uname(group).projects.find_each do |p|
+      next if p.repo.branches.map(&:name).include?(dst_branch)
+      next if p.repo.branches.map(&:name).exclude?(src_branch)
+      say "===== Process #{p.name} project"
+      Rake::Task['add_branch:fork_branch'].execute(:path => p.path, :src_branch => src_branch, :dst_branch => dst_branch)
+    end
+    say 'DONE'
+  end
+
   desc "Add branch for platform projects"
   task :platform => :environment do  
     src_branch = ENV['SRC_BRANCH'] || 'import_mandriva2011'

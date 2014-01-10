@@ -1,5 +1,4 @@
 module CommitHelper
-
   def render_commit_stats(stats)
     res = ["<table class='commit_stats'>"]
     ind=0
@@ -37,15 +36,20 @@ module CommitHelper
     id[0..size-1]
   end
 
-  def short_commit_message(message)
-    # Why 42? Because it is the Answer!
-    truncate(message, :length => 42, :omission => "...")
-  end
-
   def commit_author_link(author)
     name = author.name
     email = author.email
     u = User.where(:email => email).first
     u.present? ? link_to(name, user_path(u)) : mail_to(email, name)
+  end
+
+  def commits_pluralize(commits_count)
+    Russian.p(commits_count, *commits_pluralization_arr)
+  end
+
+  protected
+
+  def commits_pluralization_arr
+    pluralize ||=  t('layout.commits.pluralize').map {|base, title| title.to_s}
   end
 end

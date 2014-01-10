@@ -1,7 +1,7 @@
 class Api::V1::ProjectsController < Api::V1::BaseController
 
   before_filter :authenticate_user!
-  skip_before_filter :authenticate_user!, :only => [:get_id, :show, :refs] if APP_CONFIG['anonymous_access']
+  skip_before_filter :authenticate_user!, :only => [:get_id, :show, :refs_list] if APP_CONFIG['anonymous_access']
   
   load_and_authorize_resource :project
 
@@ -22,6 +22,7 @@ class Api::V1::ProjectsController < Api::V1::BaseController
   end
 
   def refs_list
+    @refs = @project.repo.branches + @project.repo.tags.select{ |t| t.commit }
   end
 
   def update
@@ -41,7 +42,7 @@ class Api::V1::ProjectsController < Api::V1::BaseController
     else
       @project.owner = nil
     end
-    authorize! :update, @project.owner if @project.owner != current_user
+    authorize! :write, @project.owner if @project.owner != current_user
     create_subject @project
   end
 
@@ -62,9 +63,9 @@ class Api::V1::ProjectsController < Api::V1::BaseController
   end
 
   def fork
-    owner = (Group.find params[:group_id] if params[:group].present?) || current_user
-    authorize! :update, owner if owner.class == Group
-    if forked = @project.fork(owner) and forked.valid?
+    owner = (Group.find params[:group_id] if params[:group_id].present?) || current_user
+    authorize! :write, owner if owner.class == Group
+    if forked = @project.fork(owner, params[:fork_name]) and forked.valid?
       render_json_response forked, 'Project has been forked successfully'
     else
       render_validation_error forked, 'Project has not been forked'

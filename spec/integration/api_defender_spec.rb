@@ -119,4 +119,18 @@ describe ApiDefender do
       response.status.should == 200
     end
   end
+
+  context 'for allowed addresses' do
+    let(:remote_addr) { APP_CONFIG['allowed_addresses'].first }
+    it 'should not return the limit usage for allowed address' do
+      get "/api/v1/users/#{@user.id}.json", {}, {'REMOTE_ADDR' =>  remote_addr }
+      response.headers['X-RateLimit-Limit'].should_not == @rate_limit.to_s
+    end
+
+    it 'should not forbidden allowed address' do
+      (@rate_limit+1).times { get "/api/v1/users/#{@user.id}.json", {}, {'REMOTE_ADDR' =>  remote_addr } }
+      response.status.should == 200
+    end
+  end
+
 end

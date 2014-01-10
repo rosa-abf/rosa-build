@@ -86,7 +86,7 @@ describe Api::V1::AdvisoriesController do
     stub_symlink_methods
 
     @advisory = FactoryGirl.create(:advisory)
-    @build_list = FactoryGirl.create(:build_list_core)
+    @build_list = FactoryGirl.create(:build_list)
     @build_list.save_to_platform.update_column(:released, true)
     @build_list.save_to_repository.update_column(:publish_without_qa, false)
     @build_list.update_column(:status, BuildList::BUILD_PUBLISHED)

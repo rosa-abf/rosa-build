@@ -6,6 +6,7 @@ FactoryGirl.define do
     password '123456'
     password_confirmation {|u| u.password}
     confirmed_at { Time.now.utc }
+    after(:create) { |u| u.send(:new_user_notification) }
   end
 
   factory :admin, :parent => :user do
