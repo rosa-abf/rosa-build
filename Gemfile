@@ -75,6 +75,8 @@ gem 'soundmanager-rails'
 
 gem 'time_diff'
 
+gem 'iconv', '~> 1.0.4'
+
 group :assets do
   gem 'sass-rails', '~> 3.2.5'
   gem 'coffee-rails', '~> 3.2.2'

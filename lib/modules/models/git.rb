@@ -1,6 +1,5 @@
 require 'nokogiri'
 require 'open-uri'
-require 'iconv'
 
 module Modules
   module Models
