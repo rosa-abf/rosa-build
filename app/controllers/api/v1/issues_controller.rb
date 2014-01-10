@@ -1,4 +1,3 @@
-# -*- encoding : utf-8 -*-
 class Api::V1::IssuesController < Api::V1::BaseController
   respond_to :json
 

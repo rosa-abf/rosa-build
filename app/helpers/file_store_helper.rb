@@ -1,4 +1,3 @@
-# -*- encoding : utf-8 -*-
 module FileStoreHelper
 
   def file_store_results_url(sha1, file_name)

@@ -1,4 +1,3 @@
-# -*- encoding : utf-8 -*-
 module PaginateHelper
 
   def paginate_params

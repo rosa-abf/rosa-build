@@ -1,4 +1,3 @@
-# -*- encoding : utf-8 -*-
 module Modules
   module Models
     module RegenerationStatus
@@ -8,7 +7,7 @@ module Modules
       WAITING_FOR_REGENERATION  = 100
       REGENERATING              = 200
 
-      HUMAN_STATUSES = {  
+      HUMAN_STATUSES = {
         READY                     => :ready,
         WAITING_FOR_REGENERATION  => :waiting_for_regeneration,
         REGENERATING              => :regenerating

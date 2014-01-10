@@ -1,4 +1,3 @@
-# -*- encoding : utf-8 -*-
 module Modules::Observers::ActivityFeed::Git
 
   def self.create_notifications(record)

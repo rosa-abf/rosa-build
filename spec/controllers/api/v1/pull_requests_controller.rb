@@ -1,4 +1,3 @@
-# -*- encoding : utf-8 -*-
 require 'spec_helper'
 
 def create_pull to_ref, from_ref, owner, project = @project

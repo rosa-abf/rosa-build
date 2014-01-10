@@ -1,4 +1,3 @@
-# -*- encoding : utf-8 -*-
 require 'spec_helper'
 
 shared_examples_for 'content platform user without show rights for hidden platform' do
@@ -35,7 +34,7 @@ describe Platforms::ContentsController do
 
     @platform = FactoryGirl.create(:platform)
     @personal_platform = FactoryGirl.create(:platform, :platform_type => 'personal')
-    
+
     @user = FactoryGirl.create(:user)
   end
 

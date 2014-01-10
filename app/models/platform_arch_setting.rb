@@ -1,4 +1,3 @@
-# -*- encoding : utf-8 -*-
 class PlatformArchSetting < ActiveRecord::Base
   DEFAULT_TIME_LIVING = 43200   # seconds, 12 hours
   MIN_TIME_LIVING     = 600     # seconds, 10 minutes

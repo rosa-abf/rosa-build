@@ -1,4 +1,3 @@
-# -*- encoding : utf-8 -*-
 base_path  = "/srv/rosa_build"
 pidfile File.join(base_path, 'shared', 'pids', 'unicorn.pid')
 state_path File.join(base_path, 'shared', 'pids', 'puma.state')
