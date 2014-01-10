@@ -37,6 +37,14 @@ module AbfWorker
           end
           update_results
         elsif !extra['resign'] # Simple publish
+          bls = extra['build_lists_for_cleanup_from_testing']
+          if status != COMPLETED && bls.present?
+            AbfWorker::BuildListsPublishTaskManager.cleanup_packages_from_testing(
+              repository_status.platform_id,
+              repository_status.repository_id,
+              bls
+            )
+          end
           update_rpm_builds
         end
       ensure
