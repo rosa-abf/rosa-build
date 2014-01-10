@@ -284,7 +284,7 @@ module AbfWorker
       build_lists_for_cleanup_from_testing ||= []
 
       bl = build_lists.first
-      return false if !bl && old_packages[:binaries].values.flatten.empty?
+      return false if !bl && old_packages[:sources].empty? && old_packages[:binaries].values.flatten.empty?
 
       save_to_repository  = Repository.find save_to_repository_id
       # Checks mirror sync status
@@ -365,8 +365,13 @@ module AbfWorker
         @redis.lpush LOCKED_PROJECTS_FOR_CLEANUP, key
       end
 
+      rep_pl = "#{save_to_repository_id}-#{build_for_platform_id}"
+      r_key = "#{BUILD_LISTS_FOR_CLEANUP_FROM_TESTING}-#{rep_pl}"
       build_lists_for_cleanup_from_testing.each do |key|
-        @redis.srem "#{BUILD_LISTS_FOR_CLEANUP_FROM_TESTING}-#{save_to_repository_id}-#{build_for_platform_id}", key
+        @redis.srem r_key, key
+      end
+      if @redis.scard(r_key) == 0
+        @redis.srem REP_AND_PLS_OF_BUILD_LISTS_FOR_CLEANUP_FROM_TESTING, rep_pl
       end
 
       return true
