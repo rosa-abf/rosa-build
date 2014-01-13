@@ -180,10 +180,10 @@ ru:
 
   flash:
     build_list:
-      saved: Билд лист для версии '%{project_version}', платформы '%{build_for_platform}' и архитектуры '%{arch}' создан успешно
-      save_error: Не удалось сохранить билд лист для версии '%{project_version}', платформы '%{build_for_platform}' и архитектуры '%{arch}'
+      saved: "Билд лист для версии '%{project_version}', платформы '%{build_for_platform}' и архитектуры '%{arch}' создан успешно"
+      save_error: "Не удалось сохранить билд лист для версии '%{project_version}', платформы '%{build_for_platform}' и архитектуры '%{arch}'"
       no_project_version_selected: Выберите какую-нибудь версию
-      no_project_version_found: Выбранная версия '%{project_version}' не найдена
+      no_project_version_found: "Выбранная версия '%{project_version}' не найдена"
       no_arch_or_platform_selected: Выберите хотя бы одну архитектуру и платформу
       wrong_platform: Для основного репозитория (main) может быть выбран только его же основная платформа!
       wrong_build_for_platform: Тип платформы "build_for_platform" должен быть "main"
@@ -193,4 +193,5 @@ ru:
       can_not_published: Опубликовать сборку можно только со статусом "Собран"
       frozen_platform: В случае выбора репозитория для сохранения пакетов из замороженнной платформы разрешены только bugfix и security обновления
       wrong_include_repos: Включаемые репозитории должны принадлежать платформе для сборки
-      wrong_commit_hash: Невозможно найти коммит '%{commit_hash}' в проекте
+      wrong_commit_hash: "Невозможно найти коммит '%{commit_hash}' в проекте"
+      not_all_build_lists_success: Проект собран успешно не для всех дефолтных артитектур
