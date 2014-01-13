@@ -116,6 +116,7 @@ en:
         publish_i686_into_x86_64: Publish i686 packages into x86_64 repository (only for rhel)
         maintainer: Maintainer of project
         maintainer_id: Maintainer of project
+        architecture_dependent: Architecture-dependent
     errors:
       project:
         uname: The name can only use lower case Latin letters (a-z), numbers (0-9) and underscore (_)

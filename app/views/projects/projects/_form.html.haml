@@ -25,6 +25,10 @@
     .check= f.check_box :is_package, 'ng-model' => 'project.is_package', 'ng-change' => 'project.publish_i686_into_x86_64 = false'
     .forcheck= f.label :is_package
     .both
+    %div{'ng-show' => 'project.is_package'}
+      .check= f.check_box :architecture_dependent, 'ng-model' => 'project.architecture_dependent'
+      .forcheck= f.label :architecture_dependent
+      .both
     - unless [:new, :create].include? act
       #publish_form{'ng-show' => 'project.is_package'}
         .check= f.check_box :publish_i686_into_x86_64, 'ng-model' => 'project.publish_i686_into_x86_64'

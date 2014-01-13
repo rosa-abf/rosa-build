@@ -70,3 +70,4 @@ ru:
         created_at: Создан
         updated_at: Обновлен
         owner: Владелец
+        synchronizing_publications: Публиковать build_lists только при успешной сборке под каждую архитектуру (проверка по sha коммита)
