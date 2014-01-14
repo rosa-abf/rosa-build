@@ -47,11 +47,6 @@ class BuildList < ActiveRecord::Base
   validate lambda {
     errors.add(:save_to_repository, I18n.t('flash.build_list.wrong_project')) unless save_to_repository.projects.exists?(project_id)
   }
-  # validate lambda {
-  #   if status == BUILD_PUBLISH && !can_publish_into_repository?
-  #     errors.add(:save_to_repository, I18n.t('flash.build_list.not_all_build_lists_success'))
-  #   end
-  # }
   before_validation lambda { self.include_repos = include_repos.uniq if include_repos.present? }, :on => :create
   before_validation :prepare_extra_repositories,  :on => :create
   before_validation :prepare_extra_build_lists,   :on => :create
