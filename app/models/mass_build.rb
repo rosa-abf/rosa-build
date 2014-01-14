@@ -44,9 +44,11 @@ class MassBuild < ActiveRecord::Base
       if project = Project.joins(:repositories).where('repositories.id in (?)', save_to_platform.repository_ids).find_by_name(name)
         begin
           return if self.reload.stop_build
+          increase_rt = increase_release_tag?
           arches_list.each do |arch|
             rep_id = (project.repository_ids & save_to_platform.repository_ids).first
-            project.build_for self, rep_id, arch
+            project.build_for self, rep_id, arch, 0, increase_rt
+            increase_rt = false
           end
         rescue RuntimeError, Exception
         end

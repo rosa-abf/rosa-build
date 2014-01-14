@@ -162,7 +162,7 @@ class Project < ActiveRecord::Base
     #path #share by NFS
   end
 
-  def build_for(mass_build, repository_id, arch =  Arch.find_by_name('i586'), priority = 0)
+  def build_for(mass_build, repository_id, arch =  Arch.find_by_name('i586'), priority = 0, increase_rt = false)
     build_for_platform  = mass_build.build_for_platform
     save_to_platform    = mass_build.save_to_platform
     user                = mass_build.user
@@ -180,7 +180,7 @@ class Project < ActiveRecord::Base
                         default_branch
                       end
     
-    increase_release_tag(project_version, user, "MassBuild##{mass_build.id}: Increase release tag") if mass_build.increase_release_tag?
+    increase_release_tag(project_version, user, "MassBuild##{mass_build.id}: Increase release tag") if increase_rt
 
     build_list = build_lists.build do |bl|
       bl.save_to_platform       = save_to_platform
