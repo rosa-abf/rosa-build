@@ -34,7 +34,7 @@ class Projects::BuildListsController < Projects::BaseController
                                   :build_for_platform,
                                   :user,
                                   :source_packages,
-                                  :project
+                                  :project => :project_statistics
                                 )
 
         @build_server_status = AbfWorker::StatusInspector.projects_status

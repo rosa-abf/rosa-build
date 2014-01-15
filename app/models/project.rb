@@ -48,7 +48,7 @@ class Project < ActiveRecord::Base
 
   attr_accessible :name, :description, :visibility, :srpm, :is_package, :default_branch,
                   :has_issues, :has_wiki, :maintainer_id, :publish_i686_into_x86_64,
-                  :url, :srpms_list, :mass_import, :add_to_repository_id
+                  :url, :srpms_list, :mass_import, :add_to_repository_id, :architecture_dependent
   attr_readonly :owner_id, :owner_type
 
   scope :recent, order("lower(#{table_name}.name) ASC")

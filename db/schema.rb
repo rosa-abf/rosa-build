@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20131126154305) do
+ActiveRecord::Schema.define(:version => 20140113215223) do
 
   create_table "activity_feeds", :force => true do |t|
     t.integer  "user_id",    :null => false
@@ -439,6 +439,7 @@ ActiveRecord::Schema.define(:version => 20131126154305) do
     t.integer  "maintainer_id"
     t.boolean  "publish_i686_into_x86_64", :default => false
     t.string   "owner_uname",                                    :null => false
+    t.boolean  "architecture_dependent",   :default => false,    :null => false
   end
 
   add_index "projects", ["owner_id", "name", "owner_type"], :name => "index_projects_on_name_and_owner_id_and_owner_type", :unique => true, :case_sensitive => false
@@ -487,12 +488,13 @@ ActiveRecord::Schema.define(:version => 20131126154305) do
   add_index "relations", ["target_type", "target_id"], :name => "index_relations_on_target_type_and_target_id"
 
   create_table "repositories", :force => true do |t|
-    t.string   "description",                          :null => false
-    t.integer  "platform_id",                          :null => false
+    t.string   "description",                                   :null => false
+    t.integer  "platform_id",                                   :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "name",                                 :null => false
-    t.boolean  "publish_without_qa", :default => true
+    t.string   "name",                                          :null => false
+    t.boolean  "publish_without_qa",         :default => true
+    t.boolean  "synchronizing_publications", :default => false, :null => false
   end
 
   add_index "repositories", ["platform_id"], :name => "index_repositories_on_platform_id"

@@ -313,6 +313,27 @@ class BuildList < ActiveRecord::Base
     [SUCCESS, BUILD_PUBLISH, FAILED_PUBLISH, BUILD_PUBLISHED, TESTS_FAILED, BUILD_PUBLISHED_INTO_TESTING, FAILED_PUBLISH_INTO_TESTING].include?(status) && [WAITING_FOR_RESPONSE, FAILED_PUBLISH].include?(container_status)
   end
 
+  def can_publish_into_repository?
+    return true if !save_to_repository.synchronizing_publications? || save_to_platform.personal? || project.architecture_dependent?
+    arch_ids = save_to_platform.platform_arch_settings.by_default.pluck(:arch_id)
+    BuildList.where(
+      :project_id => project_id,
+      :save_to_repository_id => save_to_repository_id,
+      :arch_id => arch_ids,
+      :commit_hash => commit_hash,
+      :status => [
+        SUCCESS,
+        BUILD_PUBLISHED,
+        BUILD_PUBLISH,
+        FAILED_PUBLISH,
+        TESTS_FAILED,
+        BUILD_PUBLISHED_INTO_TESTING,
+        BUILD_PUBLISH_INTO_TESTING,
+        FAILED_PUBLISH_INTO_TESTING
+      ]
+    ).group(:arch_id).count == arch_ids.size
+  end
+
   #TODO: Share this checking on product owner.
   def can_cancel?
     build_started? || build_pending?
@@ -339,7 +360,7 @@ class BuildList < ActiveRecord::Base
   end
 
   def can_auto_publish?
-    auto_publish? && can_publish? && has_new_packages?
+    auto_publish? && can_publish? && has_new_packages? && can_publish_into_repository?
   end
 
   def can_publish?
@@ -362,7 +383,8 @@ class BuildList < ActiveRecord::Base
 
   def average_build_time
     return 0 unless project
-    project.project_statistics.where(:arch_id => arch_id).pluck(:average_build_time).first || 0
+    @average_build_time ||= project.project_statistics.
+      find{ |ps| ps.arch_id == arch_id }.try(:average_build_time) || 0
   end
 
   def self.human_status(status)
