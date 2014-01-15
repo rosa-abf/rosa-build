@@ -255,7 +255,7 @@ class Ability
   end
 
   def user_group_ids
-    @group_ids ||= @user.group_ids
+    @user_group_ids ||= @user.group_ids
   end
 
 end
