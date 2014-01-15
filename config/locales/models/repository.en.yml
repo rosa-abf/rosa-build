@@ -70,4 +70,4 @@ en:
         created_at: Created
         updated_at: Updated
         owner: Owner
-        synchronizing_publications: Publish only on success all build_lists for each arch (checking by commit sha)
+        synchronizing_publications: Publish only on success all build_lists for each arch (checking by commit hash)
