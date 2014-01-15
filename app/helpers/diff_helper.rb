@@ -16,7 +16,7 @@ module DiffHelper
     end
     res << "</table>"
 
-    res.join("\n").html_safe.default_encoding!
+    res.join("\n").html_safe
   end
 
   #include Git::Diff::InlineCallback
