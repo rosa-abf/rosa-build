@@ -193,4 +193,5 @@ en:
       can_not_published: Build can only be published with status "Build complete"
       frozen_platform: In case of a repository for package storage with frozen platform allowed only bugfix and security updates
       wrong_include_repos: Include repos have to belongs to build for platform
-      wrong_commit_hash: Unable find commit '%{commit_hash}' in project
+      wrong_commit_hash: "Unable find commit '%{commit_hash}' in project"
+      not_all_build_lists_success: 'Project has been builded successfully not for all default arches'

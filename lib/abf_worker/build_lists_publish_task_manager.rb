@@ -5,7 +5,9 @@ module AbfWorker
     %w(PROJECTS_FOR_CLEANUP
        LOCKED_PROJECTS_FOR_CLEANUP
        LOCKED_BUILD_LISTS
-       PACKAGES_FOR_CLEANUP).each do |kind|
+       PACKAGES_FOR_CLEANUP
+       REP_AND_PLS_OF_BUILD_LISTS_FOR_CLEANUP_FROM_TESTING
+       BUILD_LISTS_FOR_CLEANUP_FROM_TESTING).each do |kind|
       const_set kind, "#{REDIS_MAIN_KEY}#{kind.downcase.gsub('_', '-')}"
     end
 
@@ -55,6 +57,14 @@ module AbfWorker
           redis.lrem LOCKED_PROJECTS_FOR_CLEANUP, 0, key
           redis.lpush PROJECTS_FOR_CLEANUP, key
         end
+      end
+
+      def cleanup_packages_from_testing(platform_id, repository_id, *build_lists)
+        return if build_lists.blank?
+        rep_pl = "#{repository_id}-#{platform_id}"
+        key = "#{BUILD_LISTS_FOR_CLEANUP_FROM_TESTING}-#{rep_pl}"
+        redis.sadd REP_AND_PLS_OF_BUILD_LISTS_FOR_CLEANUP_FROM_TESTING, rep_pl
+        redis.sadd key, build_lists
       end
 
       def unlock_build_list(build_list)
@@ -212,8 +222,15 @@ module AbfWorker
         locked_rep.present? && locked_rep.include?(rep.to_i) ? nil : [rep.to_i, pl.to_i]
       end.compact
 
+      for_cleanup_from_testing = @redis.smembers(REP_AND_PLS_OF_BUILD_LISTS_FOR_CLEANUP_FROM_TESTING).map do |key|
+        next if @redis.scard("#{BUILD_LISTS_FOR_CLEANUP_FROM_TESTING}-#{key}") == 0
+        rep, pl = *key.split('-')
+        locked_rep.present? && locked_rep.include?(rep.to_i) ? nil : [rep.to_i, pl.to_i]
+      end.compact if testing
+      for_cleanup_from_testing ||= []
+
       counter = 1
-      available_repos = available_repos.map{ |bl| [bl.save_to_repository_id, bl.build_for_platform_id] } | for_cleanup
+      available_repos = available_repos.map{ |bl| [bl.save_to_repository_id, bl.build_for_platform_id] } | for_cleanup | for_cleanup_from_testing
       available_repos.each do |save_to_repository_id, build_for_platform_id|
         next if RepositoryStatus.not_ready.where(:repository_id => save_to_repository_id, :platform_id => build_for_platform_id).exists?
         break if counter > @workers_count
@@ -253,12 +270,20 @@ module AbfWorker
         packages = JSON.parse packages
         old_packages[:sources] |= packages['sources']
         Arch.pluck(:name).each do |arch|
-          old_packages[:binaries][arch.to_sym] |= packages['binaries'][arch]
+          old_packages[:binaries][arch.to_sym] |= packages['binaries'][arch] || []
         end
       end
 
+      if testing
+        build_lists_for_cleanup_from_testing = @redis.smembers("#{BUILD_LISTS_FOR_CLEANUP_FROM_TESTING}-#{save_to_repository_id}-#{build_for_platform_id}")
+        BuildList.where(:id => build_lists_for_cleanup_from_testing).each do |b|
+          self.class.fill_packages(b, old_packages, :fullname)
+        end if build_lists_for_cleanup_from_testing.present?
+      end
+      build_lists_for_cleanup_from_testing ||= []
+
       bl = build_lists.first
-      return false if !bl && old_packages[:sources].empty?
+      return false if !bl && old_packages[:sources].empty? && old_packages[:binaries].values.flatten.empty?
 
       save_to_repository  = Repository.find save_to_repository_id
       # Checks mirror sync status
@@ -300,7 +325,10 @@ module AbfWorker
         },
         :repository   => {:id => save_to_repository_id},
         :time_living  => 9600, # 160 min
-        :extra        => {:repository_status_id => repository_status.id}
+        :extra        => {
+          :repository_status_id => repository_status.id,
+          :build_lists_for_cleanup_from_testing => build_lists_for_cleanup_from_testing
+        }
       }
 
       packages, build_list_ids, new_sources = self.class.packages_structure, [], {}
@@ -334,6 +362,15 @@ module AbfWorker
 
       projects_for_cleanup.each do |key|
         @redis.lpush LOCKED_PROJECTS_FOR_CLEANUP, key
+      end
+
+      rep_pl = "#{save_to_repository_id}-#{build_for_platform_id}"
+      r_key = "#{BUILD_LISTS_FOR_CLEANUP_FROM_TESTING}-#{rep_pl}"
+      build_lists_for_cleanup_from_testing.each do |key|
+        @redis.srem r_key, key
+      end
+      if @redis.scard(r_key) == 0
+        @redis.srem REP_AND_PLS_OF_BUILD_LISTS_FOR_CLEANUP_FROM_TESTING, rep_pl
       end
 
       return true

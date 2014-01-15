@@ -18,6 +18,7 @@ json.build_list do
 
   json.extra_build_lists_published @build_list.extra_build_lists_published?
   json.can_publish_in_future can_publish_in_future?(@build_list)
+  json.can_publish_into_repository @build_list.can_publish_into_repository?
 
 
   json.container_path container_url if @build_list.container_published?

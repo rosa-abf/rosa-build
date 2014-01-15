@@ -160,6 +160,10 @@
       .flash_notify
         .alert.alert-error= t('layout.build_lists.publish_with_extra_fail')
       .both
+    %div{'ng-show' => 'build_list.can_publish && build_list.can_publish_in_future && !build_list.can_publish_into_repository'}
+      .flash_notify
+        .alert.alert-error= t('flash.build_list.not_all_build_lists_success')
+      .both
 
     - if can?(:cancel, @build_list)
       = link_to t("layout.build_lists.cancel"), cancel_build_list_path(@build_list),
