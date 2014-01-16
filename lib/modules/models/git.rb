@@ -213,7 +213,8 @@ module Modules
               end
               if name = `rpm -q --qf '[%{Name}]' -p #{srpm_file}` and $?.success? and name.present?
                 next if owner.projects.exists?(:name => name)
-                description = ::Iconv.conv('UTF-8//IGNORE', 'UTF-8', `rpm -q --qf '[%{Description}]' -p #{srpm_file}`)
+                description = `rpm -q --qf '[%{Description}]' -p #{srpm_file}`.scrub('')
+
                 project = owner.projects.build(
                   :name         => name,
                   :description  => description,
