@@ -311,7 +311,7 @@ class Project < ActiveRecord::Base
   def create_archive(treeish, format)
     file_name = "#{name}-#{treeish}"
     fullname  = "#{file_name}.#{tag_file_format(format)}"
-    file = Tempfile.new fullname, 'tmp'
+    file = Tempfile.new fullname,  File.join(Rails.root, 'tmp')
     system("cd #{path}; git archive --format=#{format == 'zip' ? 'zip' : 'tar'} --prefix=#{file_name}/ #{treeish} #{format == 'zip' ? '' : ' | gzip -9'} > #{file.path}")
     file.close
     {
