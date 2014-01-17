@@ -43,7 +43,8 @@ gem 'wikicloth'
 gem 'trinidad', '~> 1.0.2', :platforms => :jruby
 
 gem 'newrelic_rpm'
-gem 'whenever', '~> 0.7.3', :require => false
+# gem 'whenever', '~> 0.7.3', :require => false
+gem 'whenever', '~> 0.9.0', :require => false
 
 gem 'jbuilder', '~> 1.4.2'
 gem 'rails3-jquery-autocomplete', '~> 1.0.7'
