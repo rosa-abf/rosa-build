@@ -12,6 +12,20 @@ shared_examples_for 'api repository user with reader rights for hidden platform'
   it_should_behave_like 'api repository user with show rights'
 end
 
+shared_examples_for 'api repository user without packages rights' do
+  it 'should not be able to perform packages action' do
+    get :packages, :id => @repository.id, :format => :csv
+    response.should_not be_success
+  end
+end
+
+shared_examples_for 'api repository user with packages rights' do
+  it 'should be able to perform packages action' do
+    get :packages, :id => @repository.id, :format => :csv
+    response.should be_success
+  end
+end
+
 shared_examples_for 'api repository user without reader rights for hidden platform' do
   before(:each) do
     @platform.update_column(:visibility, 'hidden')
@@ -309,6 +323,7 @@ describe Api::V1::RepositoriesController do
     it_should_behave_like 'api repository user without writer rights'
     it_should_behave_like 'api repository user without project manage rights'
     it_should_behave_like 'api repository user without key_pair rights'
+    it_should_behave_like 'api repository user without packages rights'
 
     it 'should not be able to perform projects action', :anonymous_access => false do
       get :projects, :id => @repository.id, :format => :json
@@ -325,6 +340,7 @@ describe Api::V1::RepositoriesController do
     it_should_behave_like 'api repository user with reader rights'
     it_should_behave_like 'api repository user with reader rights for hidden platform'
     it_should_behave_like 'api repository user with writer rights'
+    it_should_behave_like 'api repository user with packages rights'
     it_should_behave_like 'api repository user without key_pair rights'
   end
 
@@ -342,6 +358,7 @@ describe Api::V1::RepositoriesController do
     it_should_behave_like 'api repository user with reader rights'
     it_should_behave_like 'api repository user with reader rights for hidden platform'
     it_should_behave_like 'api repository user with writer rights'
+    it_should_behave_like 'api repository user with packages rights'
     it_should_behave_like 'api repository user without key_pair rights'
   end
 
@@ -356,6 +373,7 @@ describe Api::V1::RepositoriesController do
     it_should_behave_like 'api repository user with show rights'
     it_should_behave_like 'api repository user without writer rights'
     it_should_behave_like 'api repository user without project manage rights'
+    it_should_behave_like 'api repository user without packages rights'
     it_should_behave_like 'api repository user without key_pair rights'
   end
 
@@ -371,6 +389,7 @@ describe Api::V1::RepositoriesController do
     it_should_behave_like 'api repository user with show rights'
     it_should_behave_like 'api repository user with project manage rights'
     it_should_behave_like 'api repository user without writer rights'
+    it_should_behave_like 'api repository user without packages rights'
     it_should_behave_like 'api repository user without key_pair rights'
   end
 
