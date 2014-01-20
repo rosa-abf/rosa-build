@@ -28,13 +28,21 @@ class BuildList::Package < ActiveRecord::Base
     project.maintainer
   end
 
-
   # Comparison between versions
   # @param [BuildList::Package] other
   # @return [Number] -1 if +other+ is greater than, 0 if +other+ is equal to,
   #   and +1 if other is less than version.
   def rpmvercmp(other)
     RPM::C.rpmvercmp to_vre_epoch_zero, other.to_vre_epoch_zero
+  end
+
+  def self.by_repository(repository, &block)
+    # find_each will batch the results instead of getting all in one go
+    actual.where(
+      build_lists: {save_to_repository_id: repository}
+    ).joins(build_list: :save_to_repository).includes(project: :maintainer).find_each do |package|
+      yield package
+    end
   end
 
   protected

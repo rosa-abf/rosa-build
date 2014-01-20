@@ -1,6 +1,6 @@
 class Api::V1::RepositoriesController < Api::V1::BaseController
   
-  before_filter :authenticate_user!
+  # before_filter :authenticate_user!
   skip_before_filter :authenticate_user!, :only => [:show, :projects] if APP_CONFIG['anonymous_access']
 
   load_and_authorize_resource :repository, :through => :platform, :shallow => true
@@ -30,6 +30,36 @@ class Api::V1::RepositoriesController < Api::V1::BaseController
   end
 
   def key_pair
+  end
+
+  # Only one request per 15 minutes for each platform
+  def packages
+    key, now = [@repository.platform.id, :repository_packages], Time.zone.now
+    last_request = Rails.cache.read(key)
+    if last_request.present? && last_request + 15.minutes > now
+      raise CanCan::AccessDenied
+    else
+
+      Rails.cache.write(key, now, expires_at: 15.minutes)
+      respond_to do |format|
+        format.csv do
+          set_csv_file_headers :packages
+          set_streaming_headers
+
+          response.status = 200
+
+          # setting the body to an enumerator, rails will iterate this enumerator
+          self.response_body = Enumerator.new do |y|
+            y << Api::V1::RepositoryPackagePresenter.csv_header.to_s
+            BuildList::Package.by_repository(@repository) do |package|
+              y << Api::V1::RepositoryPackagePresenter.new(package).to_csv_row.to_s
+            end
+          end
+
+        end
+      end
+
+    end
   end
 
   def add_repo_lock_file

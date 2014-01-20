@@ -44,6 +44,7 @@ Rosa::Application.routes.draw do
         member {
           get     :projects
           get     :key_pair
+          get     :packages
           put     :add_member
           delete  :remove_member
           put     :add_project

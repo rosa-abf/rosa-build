@@ -6,11 +6,25 @@ class Api::V1::BaseController < ApplicationController
 
   rescue_from CanCan::AccessDenied do |exception|
     respond_to do |format|
-      format.json { render :json => {:message => t("flash.exception_message")}.to_json, :status => 403 }
+      format.json { render json: {message: t('flash.exception_message')}.to_json, status: 403 }
+      format.csv  { render text: t('flash.exception_message'), status: 403 }
     end
   end
 
   protected
+
+  def set_csv_file_headers(file_name)
+    headers['Content-Type'] = 'text/csv'
+    headers['Content-disposition'] = "attachment; filename=\"#{file_name}.csv\""
+  end
+
+  def set_streaming_headers
+    #nginx doc: Setting this to "no" will allow unbuffered responses suitable for Comet and HTTP streaming applications
+    headers['X-Accel-Buffering'] = 'no'
+
+    headers['Cache-Control'] ||= 'no-cache'
+    headers.delete 'Content-Length'
+  end
 
   def set_locale
     I18n.locale = :en
