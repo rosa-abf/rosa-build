@@ -167,6 +167,7 @@ class Ability
       # Shared cannot rights for all users (registered, admin)
       cannot [:regenerate_metadata, :destroy], Platform, :platform_type => 'personal'
       cannot [:create, :destroy], Repository, :platform => {:platform_type => 'personal'}, :name => 'main'
+      cannot [:packages], Repository, :platform => {:platform_type => 'personal'}
       cannot [:remove_members, :remove_member, :add_member, :sync_lock_file, :add_repo_lock_file, :remove_repo_lock_file], Repository, :platform => {:platform_type => 'personal'}
 
       cannot :clear, Platform, :platform_type => 'main'
