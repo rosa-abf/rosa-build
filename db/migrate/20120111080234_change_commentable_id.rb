@@ -1,4 +1,3 @@
-# -*- encoding : utf-8 -*-
 class ChangeCommentableId < ActiveRecord::Migration
   def self.up
     change_column :comments, :commentable_id, :string

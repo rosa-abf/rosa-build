@@ -1,4 +1,3 @@
-# -*- encoding : utf-8 -*-
 class CreateProductBuildLists < ActiveRecord::Migration
   def self.up
     create_table :product_build_lists do |t|

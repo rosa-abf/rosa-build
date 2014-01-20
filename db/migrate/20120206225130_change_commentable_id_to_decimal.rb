@@ -1,4 +1,3 @@
-# -*- encoding : utf-8 -*-
 class ChangeCommentableIdToDecimal < ActiveRecord::Migration
   def up
     add_column :comments, :commentable_id_tmp, :decimal, :precision => 50, :scale => 0

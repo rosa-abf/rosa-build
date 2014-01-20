@@ -1,4 +1,3 @@
-# -*- encoding : utf-8 -*-
 class Group < Avatar
   belongs_to :owner, :class_name => 'User'
 

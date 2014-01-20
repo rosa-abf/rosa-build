@@ -1,4 +1,3 @@
-# -*- encoding : utf-8 -*-
 class AddFieldsToProducts < ActiveRecord::Migration
   def self.up
     add_column :products, :build, :text

@@ -1,4 +1,3 @@
-# -*- encoding : utf-8 -*-
 class Token < ActiveRecord::Base
   belongs_to :subject, :polymorphic => true, :touch => true
   belongs_to :creator, :class_name => 'User'

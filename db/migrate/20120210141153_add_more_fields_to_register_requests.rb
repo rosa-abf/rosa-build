@@ -1,4 +1,3 @@
-# -*- encoding : utf-8 -*-
 class AddMoreFieldsToRegisterRequests < ActiveRecord::Migration
   def self.up
     add_column :register_requests, :interest, :string

@@ -1,4 +1,3 @@
-# -*- encoding : utf-8 -*-
 require 'charlock_holmes/string'
 
 class String
@@ -11,8 +10,7 @@ class String
       if (detected = detect_encoding) && detected[:encoding]
         force_encoding(detected[:encoding]).encode!(default_encoding, detected[:encoding], options)
       end
-      # re-encode through UTF-16 to filter incorrect symbols
-      encode!(Encoding::UTF_16, default_encoding, options).encode!(default_encoding, Encoding::UTF_16)
+      scrub('')
       raise unless valid_encoding? # check result
     end
     self

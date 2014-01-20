@@ -1,4 +1,3 @@
-# -*- encoding : utf-8 -*-
 class Platforms::ProductsController < Platforms::BaseController
   include GitHelper
   before_filter :authenticate_user!

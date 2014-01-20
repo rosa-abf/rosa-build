@@ -1,4 +1,3 @@
-# -*- encoding : utf-8 -*-
 class Users::SshKeysController < Users::BaseController
   skip_before_filter :find_user
 

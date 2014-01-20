@@ -1,4 +1,3 @@
-# -*- encoding : utf-8 -*-
 module ContentsHelper
 
   def build_content_paths(platform, path)

@@ -1,4 +1,3 @@
-# -*- encoding : utf-8 -*-
 module ActivityFeedsHelper
   def render_activity_feed(activity_feed)
     render activity_feed.partial, activity_feed.data.merge(:activity_feed => activity_feed)

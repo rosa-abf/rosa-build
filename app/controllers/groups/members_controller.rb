@@ -1,4 +1,3 @@
-# -*- encoding : utf-8 -*-
 class Groups::MembersController < Groups::BaseController
   is_related_controller!
   belongs_to :group, :finder => 'find_by_insensitive_uname!', :optional => true

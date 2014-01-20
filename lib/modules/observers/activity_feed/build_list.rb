@@ -1,4 +1,3 @@
-# -*- encoding : utf-8 -*-
 module Modules::Observers::ActivityFeed::BuildList
   extend ActiveSupport::Concern
 

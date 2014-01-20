@@ -1,4 +1,3 @@
-# -*- encoding : utf-8 -*-
 class Groups::ProfileController < Groups::BaseController
   include AvatarHelper
   load_and_authorize_resource :class => Group, :instance_name => 'group'

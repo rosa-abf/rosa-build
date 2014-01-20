@@ -1,4 +1,3 @@
-# -*- encoding : utf-8 -*-
 class RemoveNameFromGroups < ActiveRecord::Migration
   def up
     remove_column :groups, :name

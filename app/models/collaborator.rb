@@ -1,4 +1,3 @@
-# -*- encoding : utf-8 -*-
 class Collaborator
   include ActiveModel::Conversion
   include ActiveModel::Validations

@@ -1,7 +1,5 @@
-# -*- encoding : utf-8 -*-
 require 'nokogiri'
 require 'open-uri'
-require 'iconv'
 
 module Modules
   module Models
@@ -190,7 +188,7 @@ module Modules
           links = doc.css("a[href$='.src.rpm']")
           return if links.count == 0
           filter = srpms_list.lines.map(&:chomp).map(&:strip).select(&:present?)
-          
+
           repository = Repository.find add_to_repository_id
           platform = repository.platform
           dir = Dir.mktmpdir 'mass-import-', APP_CONFIG['tmpfs_path']
@@ -215,7 +213,8 @@ module Modules
               end
               if name = `rpm -q --qf '[%{Name}]' -p #{srpm_file}` and $?.success? and name.present?
                 next if owner.projects.exists?(:name => name)
-                description = ::Iconv.conv('UTF-8//IGNORE', 'UTF-8', `rpm -q --qf '[%{Description}]' -p #{srpm_file}`)
+                description = `rpm -q --qf '[%{Description}]' -p #{srpm_file}`.scrub('')
+
                 project = owner.projects.build(
                   :name         => name,
                   :description  => description,

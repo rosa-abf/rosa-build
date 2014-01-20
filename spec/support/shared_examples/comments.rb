@@ -1,4 +1,3 @@
-# -*- encoding : utf-8 -*-
 shared_examples_for 'user with create comment ability (for model)' do
   it 'should create comment' do
     @ability.should be_able_to(:create, @comment)

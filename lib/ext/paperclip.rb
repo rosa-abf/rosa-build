@@ -1,4 +1,3 @@
-# -*- encoding : utf-8 -*-
 # Patch to use paperclip with nginx upload module
 module Paperclip
   class Attachment

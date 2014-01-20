@@ -1,4 +1,3 @@
-# -*- encoding : utf-8 -*-
 class Projects::Git::BlobsController < Projects::Git::BaseController
   before_filter :set_blob
   before_filter lambda {authorize! :write, @project}, :only => [:edit, :update]

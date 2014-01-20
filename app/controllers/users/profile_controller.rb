@@ -1,4 +1,3 @@
-# -*- encoding : utf-8 -*-
 class Users::ProfileController < Users::BaseController
   skip_before_filter :authenticate_user!, :only => :show if APP_CONFIG['anonymous_access']
 

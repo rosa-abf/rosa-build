@@ -1,6 +1,5 @@
 require 'highline/import'
 require 'open-uri'
-require 'iconv'
 
 namespace :import do
   desc "Load projects"
@@ -60,7 +59,7 @@ namespace :import do
               print "Add project '#{project.name_with_owner}' to '#{platform.name}/#{repo.name}' OK."
             end
           else
-            description = ::Iconv.conv('UTF-8//IGNORE', 'UTF-8', `rpm -q --qf '[%{Description}]' -p #{srpm_file}`)
+            description = `rpm -q --qf '[%{Description}]' -p #{srpm_file}`.scrub('')
             project = Project.create!(:name => name, :description => description) {|p| p.owner = owner}
             repo.projects << project rescue nil
             print "Create project #{project.name_with_owner} in #{platform.name}/#{repo.name} OK."
@@ -135,7 +134,7 @@ namespace :import do
                   repository.projects << project
                   print "Add project #{project.name_with_owner} to #{platform.name}/#{repository.name}. "
                 else
-                  description = ::Iconv.conv('UTF-8//IGNORE', 'UTF-8', `rpm -q --qf '[%{Description}]' -p #{srpm_file}`)
+                  description = `rpm -q --qf '[%{Description}]' -p #{srpm_file}`.scrub('')
                   project = Project.create!(:name => name, :description => description) {|p| p.owner = owner}
                   repository.projects << project
                   print "Create project #{project.name_with_owner} at #{platform.name}/#{repository.name}. "

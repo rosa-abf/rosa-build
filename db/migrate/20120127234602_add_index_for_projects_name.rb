@@ -1,4 +1,3 @@
-# -*- encoding : utf-8 -*-
 class AddIndexForProjectsName < ActiveRecord::Migration
   def self.up
     add_index :projects, [:name, :owner_id, :owner_type], :unique => true, :case_sensitive => false

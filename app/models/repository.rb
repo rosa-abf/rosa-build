@@ -1,4 +1,3 @@
-# -*- encoding : utf-8 -*-
 class Repository < ActiveRecord::Base
   extend FriendlyId
   friendly_id :name

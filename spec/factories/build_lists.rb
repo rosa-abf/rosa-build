@@ -1,4 +1,3 @@
-# -*- encoding : utf-8 -*-
 FactoryGirl.define do
   factory :build_list do
     association :user

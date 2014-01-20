@@ -1,4 +1,3 @@
-# -*- encoding : utf-8 -*-
 require 'airbrake'
 
 Airbrake.configure do |config|

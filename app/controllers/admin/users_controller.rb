@@ -1,4 +1,3 @@
-# -*- encoding : utf-8 -*-
 class Admin::UsersController < Admin::BaseController
   include AvatarHelper
   prepend_before_filter :find_user

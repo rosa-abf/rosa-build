@@ -1,4 +1,3 @@
-# -*- encoding : utf-8 -*-
 class Platforms::ProductBuildListsController < Platforms::BaseController
   include FileStoreHelper
 

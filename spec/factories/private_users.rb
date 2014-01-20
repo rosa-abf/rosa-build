@@ -1,4 +1,3 @@
-# -*- encoding : utf-8 -*-
 FactoryGirl.define do
   factory :private_user do
     login { FactoryGirl.generate(:string) }

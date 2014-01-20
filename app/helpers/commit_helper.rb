@@ -1,4 +1,3 @@
-# -*- encoding : utf-8 -*-
 module CommitHelper
   def render_commit_stats(stats)
     res = ["<table class='commit_stats'>"]
@@ -18,7 +17,7 @@ module CommitHelper
     end
     res << "</table>"
 
-    res.join("\n").html_safe.default_encoding!
+    res.join("\n").html_safe
   end
 
 #  def format_commit_message(message)

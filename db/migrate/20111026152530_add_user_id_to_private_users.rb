@@ -1,4 +1,3 @@
-# -*- encoding : utf-8 -*-
 class AddUserIdToPrivateUsers < ActiveRecord::Migration
   def self.up
     add_column :private_users, :user_id, :integer

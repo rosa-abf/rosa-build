@@ -1,5 +1,3 @@
-# -*- encoding : utf-8 -*-
-
 # https://github.com/rails/rails/issues/2639#issuecomment-6591735
 class DisableAssetsLogger
   def initialize(app)

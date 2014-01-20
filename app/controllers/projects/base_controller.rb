@@ -1,4 +1,3 @@
-# -*- encoding : utf-8 -*-
 class Projects::BaseController < ApplicationController
   prepend_before_filter :find_project
   before_filter :init_statistics

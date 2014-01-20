@@ -1,4 +1,3 @@
-# -*- encoding : utf-8 -*-
 class Platforms::RepositoriesController < Platforms::BaseController
   include FileStoreHelper
 

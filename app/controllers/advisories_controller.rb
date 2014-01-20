@@ -1,4 +1,3 @@
-# -*- encoding : utf-8 -*-
 class AdvisoriesController < ApplicationController
   before_filter :authenticate_user!
   skip_before_filter :authenticate_user! if APP_CONFIG['anonymous_access']

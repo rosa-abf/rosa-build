@@ -1,5 +1,3 @@
-# -*- encoding : utf-8 -*-
-
 class UserMailer < ActionMailer::Base
   add_template_helper ActivityFeedsHelper
   add_template_helper CommitHelper

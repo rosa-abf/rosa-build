@@ -1,4 +1,3 @@
-# -*- encoding : utf-8 -*-
 module BuildListsHelper
 
   # See: app/assets/javascripts/angularjs/models/build_list.js.erb

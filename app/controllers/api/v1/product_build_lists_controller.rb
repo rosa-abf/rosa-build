@@ -1,4 +1,3 @@
-# -*- encoding : utf-8 -*-
 class Api::V1::ProductBuildListsController < Api::V1::BaseController
   before_filter :authenticate_user!
   skip_before_filter :authenticate_user!, :only => [:index, :show] if APP_CONFIG['anonymous_access']

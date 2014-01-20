@@ -1,4 +1,3 @@
-# -*- encoding : utf-8 -*-
 class RegisterRequest < ActiveRecord::Base
 
   default_scope order('created_at ASC')

@@ -1,4 +1,3 @@
-# -*- encoding : utf-8 -*-
 class AddUserIdToBuildLists < ActiveRecord::Migration
   def self.up
     add_column :build_lists, :user_id, :integer

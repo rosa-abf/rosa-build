@@ -1,4 +1,3 @@
-# -*- encoding : utf-8 -*-
 module GitHelper
 
   def submodule_url(node, treeish)

@@ -1,4 +1,3 @@
-# -*- encoding : utf-8 -*-
 module DeviseHelper
   def getDeviseErrors(*name)
     res = Array.new(name.count)

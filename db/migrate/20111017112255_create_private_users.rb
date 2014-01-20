@@ -1,4 +1,3 @@
-# -*- encoding : utf-8 -*-
 class CreatePrivateUsers < ActiveRecord::Migration
   def self.up
     create_table :private_users do |t|

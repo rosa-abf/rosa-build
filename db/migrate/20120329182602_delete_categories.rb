@@ -1,4 +1,3 @@
-# -*- encoding : utf-8 -*-
 class DeleteCategories < ActiveRecord::Migration
   def self.up
     remove_column :projects, :category_id

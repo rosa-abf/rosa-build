@@ -1,4 +1,3 @@
-# -*- encoding : utf-8 -*-
 class AddProjectToSubscribe < ActiveRecord::Migration
   def self.up
     add_column :subscribes, :project_id, :integer

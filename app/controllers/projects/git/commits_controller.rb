@@ -1,4 +1,3 @@
-# -*- encoding : utf-8 -*-
 class Projects::Git::CommitsController < Projects::Git::BaseController
   def index
     if @path.present?

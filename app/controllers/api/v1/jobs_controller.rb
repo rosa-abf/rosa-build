@@ -1,4 +1,3 @@
-# -*- encoding : utf-8 -*-
 class Api::V1::JobsController < Api::V1::BaseController
   # QUEUES = %w(iso_worker_observer publish_observer rpm_worker_observer)
   # QUEUE_CLASSES = %w(AbfWorker::IsoWorkerObserver AbfWorker::PublishObserver AbfWorker::RpmWorkerObserver)

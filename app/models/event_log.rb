@@ -1,4 +1,3 @@
-# -*- encoding : utf-8 -*-
 class EventLog < ActiveRecord::Base
   belongs_to :user
   belongs_to :eventable, :polymorphic => true

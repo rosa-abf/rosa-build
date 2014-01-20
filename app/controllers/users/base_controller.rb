@@ -1,4 +1,3 @@
-# -*- encoding : utf-8 -*-
 class Users::BaseController < ApplicationController
   before_filter :authenticate_user!
   before_filter :find_user

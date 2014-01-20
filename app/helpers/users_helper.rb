@@ -1,4 +1,3 @@
-# -*- encoding : utf-8 -*-
 module UsersHelper
 
   def avatar_url_by_email(email, size = :small)

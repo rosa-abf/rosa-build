@@ -1,4 +1,3 @@
-# -*- encoding : utf-8 -*-
 module Modules::Models::WebHooks
 
   class << self

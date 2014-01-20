@@ -1,4 +1,3 @@
-# -*- encoding : utf-8 -*-
 module IssuesHelper
   def tracker_search_field(name, txt, classes = nil)
     str = "<input name='#{name}' id='#{name}' type='text' value='#{txt}'"

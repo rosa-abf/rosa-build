@@ -1,4 +1,3 @@
-# -*- encoding : utf-8 -*-
 module PullRequestHelper
   def merge_activity comments, commits
     common_comments, pull_comments = comments.partition {|c| c.automatic || c.data.blank?}

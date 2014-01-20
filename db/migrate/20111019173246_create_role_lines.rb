@@ -1,4 +1,3 @@
-# -*- encoding : utf-8 -*-
 class CreateRoleLines < ActiveRecord::Migration
   def self.up
     create_table :role_lines do |t|

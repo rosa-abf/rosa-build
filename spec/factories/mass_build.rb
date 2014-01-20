@@ -1,4 +1,3 @@
-# -*- encoding : utf-8 -*-
 FactoryGirl.define do
   factory :mass_build do
     association :save_to_platform, :factory => :platform

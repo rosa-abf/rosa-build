@@ -1,4 +1,3 @@
-# -*- encoding : utf-8 -*-
 class CreateActivityFeeds < ActiveRecord::Migration
   def self.up
     create_table :activity_feeds do |t|

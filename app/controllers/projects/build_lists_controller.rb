@@ -1,4 +1,3 @@
-# -*- encoding : utf-8 -*-
 class Projects::BuildListsController < Projects::BaseController
   include FileStoreHelper
 

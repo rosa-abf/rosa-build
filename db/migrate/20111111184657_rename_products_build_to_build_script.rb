@@ -1,4 +1,3 @@
-# -*- encoding : utf-8 -*-
 class RenameProductsBuildToBuildScript < ActiveRecord::Migration
   def self.up
     rename_column :products, :build, :build_script

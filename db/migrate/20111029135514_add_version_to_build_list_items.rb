@@ -1,4 +1,3 @@
-# -*- encoding : utf-8 -*-
 class AddVersionToBuildListItems < ActiveRecord::Migration
   def self.up
     add_column :build_list_items, :version, :string

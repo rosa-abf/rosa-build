@@ -1,4 +1,3 @@
-# -*- encoding : utf-8 -*-
 class Arch < ActiveRecord::Base
   DEFAULT = %w[i586 x86_64]
 

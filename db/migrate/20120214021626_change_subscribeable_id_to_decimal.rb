@@ -1,4 +1,3 @@
-# -*- encoding : utf-8 -*-
 class ChangeSubscribeableIdToDecimal < ActiveRecord::Migration
   def up
     add_column :subscribes, :subscribeable_id_tmp, :decimal, :precision => 50, :scale => 0

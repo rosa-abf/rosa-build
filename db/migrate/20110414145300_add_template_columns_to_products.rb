@@ -1,4 +1,3 @@
-# -*- encoding : utf-8 -*-
 class AddTemplateColumnsToProducts < ActiveRecord::Migration
   def self.up
     add_column :products, :is_template, :boolean, :default => false

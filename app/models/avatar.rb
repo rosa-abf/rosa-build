@@ -1,4 +1,3 @@
-# -*- encoding : utf-8 -*-
 class Avatar < ActiveRecord::Base
   self.abstract_class = true
 

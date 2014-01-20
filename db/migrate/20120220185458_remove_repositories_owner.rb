@@ -1,4 +1,3 @@
-# -*- encoding : utf-8 -*-
 class RemoveRepositoriesOwner < ActiveRecord::Migration
   def self.up
     remove_column :repositories, :owner_id

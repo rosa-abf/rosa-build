@@ -1,4 +1,3 @@
-# -*- encoding : utf-8 -*-
 class Platform < ActiveRecord::Base
   extend FriendlyId
   friendly_id :name

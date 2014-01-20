@@ -1,4 +1,3 @@
-# -*- encoding : utf-8 -*-
 class Projects::PullRequestsController < Projects::BaseController
   before_filter :authenticate_user!
   skip_before_filter :authenticate_user!, :only => [:index, :show] if APP_CONFIG['anonymous_access']

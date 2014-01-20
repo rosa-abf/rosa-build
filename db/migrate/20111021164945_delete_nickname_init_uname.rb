@@ -1,4 +1,3 @@
-# -*- encoding : utf-8 -*-
 class DeleteNicknameInitUname < ActiveRecord::Migration
   def self.up
     remove_column :users, :nickname

@@ -25,8 +25,8 @@ gem 'state_machine'
 gem 'redis-rails'
 
 gem 'grack', :git => 'git://github.com/rosa-abf/grack.git', :require => 'git_http'
-gem 'grit', :git => 'git://github.com/rosa-abf/grit.git' #, :path => '~/Sites/code/grit'
-gem 'charlock_holmes', '~> 0.6.9' #, :git => 'git://github.com/brianmario/charlock_holmes.git', :branch => 'bundle-icu'
+gem 'grit', :git => 'git://github.com/rosa-abf/grit.git'
+gem 'charlock_holmes', '~> 0.6.9'
 gem 'github-linguist', '~> 2.3.4', :require => 'linguist'
 gem 'diff-display', '~> 0.0.1'
 
@@ -41,8 +41,10 @@ gem 'wikicloth'
 
 # gem 'unicorn', '~> 4.3.1', :platforms => [:mri, :rbx]
 gem 'trinidad', '~> 1.0.2', :platforms => :jruby
+
 gem 'newrelic_rpm'
-gem 'whenever', '~> 0.7.3', :require => false
+# gem 'whenever', '~> 0.7.3', :require => false
+gem 'whenever', '~> 0.9.0', :require => false
 
 gem 'jbuilder', '~> 1.4.2'
 gem 'rails3-jquery-autocomplete', '~> 1.0.7'

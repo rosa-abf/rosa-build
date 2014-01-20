@@ -1,4 +1,3 @@
-# -*- encoding : utf-8 -*-
 class Projects::SubscribesController < Projects::BaseController
   before_filter :authenticate_user!
 

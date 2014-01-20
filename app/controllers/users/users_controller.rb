@@ -1,4 +1,3 @@
-# -*- encoding : utf-8 -*-
 class Users::UsersController < Users::BaseController
   skip_before_filter :authenticate_user!, :only => [:allowed, :check, :discover]
   before_filter :find_user_by_key, :only => [:allowed, :discover]

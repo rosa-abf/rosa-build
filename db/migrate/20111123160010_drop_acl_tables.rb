@@ -1,4 +1,3 @@
-# -*- encoding : utf-8 -*-
 class DropAclTables < ActiveRecord::Migration
   def self.up
     drop_table :permissions
