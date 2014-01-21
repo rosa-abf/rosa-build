@@ -69,7 +69,7 @@ class Projects::WikiController < Projects::BaseController
     begin
       @wiki.write_page(@name, format, params['content'] || '', {committer: committer}).commit
       redirect_to project_wiki_path(@project, CGI.escape(@name))
-    rescue Gollum:DuplicatePageError: e
+    rescue Gollum::DuplicatePageError => e
       flash[:error] = t("flash.wiki.duplicate_page", name: @name)
       render action: :new
     end
