@@ -1,11 +1,11 @@
 - CommentPresenter.present(comment, data) do |presenter|
-  = render 'shared/feed_message', :presenter => presenter
+  = render 'shared/feed_message', presenter: presenter
 -unless comment.automatic
-  #open-comment.comment.hidden{:class => "comment-#{comment.id}"}
+  #open-comment.comment.hidden{class: "comment-#{comment.id}"}
     =render 'projects/comments/button_md_help'
     %h3.tmargin0= t("layout.comments.edit_header")
-    = form_for comment, :url => project_commentable_comment_path(data[:project], data[:commentable], comment), :html => { :class => 'form edit_comment' } do |f|
-      = render "projects/comments/form", :f => f, :id => "#{data[:add_id]}edit_#{comment.id}"
+    = form_for comment, url: project_commentable_comment_path(data[:project], data[:commentable], comment), html: { class: 'form edit_comment' } do |f|
+      = render "projects/comments/form", f: f, id: "#{data[:add_id]}edit_#{comment.id}"
       .comment-left
-        =link_to t('layout.cancel'), '#', :id => "comment-#{comment.id}", :class => 'cancel_edit_comment button'
+        =link_to t('layout.cancel'), '#', id: "comment-#{comment.id}", class: 'cancel_edit_comment button'
       .both

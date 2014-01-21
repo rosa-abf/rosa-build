@@ -7,19 +7,19 @@ class Platforms::TokensController < Platforms::BaseController
   def index
     authorize! :local_admin_manage, @platform
     @tokens = @platform.tokens.includes(:creator, :updater)
-                              .paginate(:per_page => 20, :page => params[:page])
+                              .paginate(per_page: 20, page: params[:page])
   end
 
   def show
   end
 
   def withdraw
-    if @token.block 
+    if @token.block
       @token.updater = current_user
       @token.save
-      redirect_to :back, :notice => t('flash.tokens.withdraw_success')
+      redirect_to :back, notice: t('flash.tokens.withdraw_success')
     else
-      redirect_to :back, :notice => t('flash.tokens.withdraw_fail')
+      redirect_to :back, notice: t('flash.tokens.withdraw_fail')
     end
   end
 

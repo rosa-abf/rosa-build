@@ -25,6 +25,6 @@ class Projects::CommitSubscribesController < Projects::BaseController
 
   def find_commit
     @commit = @project.repo.commit(params[:commit_id])
-    @options = {:project_id => @project.id, :subscribeable_id => @commit.id.hex, :subscribeable_type => @commit.class.name, :user_id => current_user.id}
+    @options = {project_id: @project.id, subscribeable_id: @commit.id.hex, subscribeable_type: @commit.class.name, user_id: current_user.id}
   end
 end

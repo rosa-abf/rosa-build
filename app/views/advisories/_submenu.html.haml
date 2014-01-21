@@ -4,4 +4,4 @@
     = @advisory.advisory_id if @advisory.present?
   %nav
     %ul
-      %li= link_to t('layout.list'), advisories_path, :class => act.in?([:index]) ? 'active' : nil
+      %li= link_to t('layout.list'), advisories_path, class: act.in?([:index]) ? 'active' : nil

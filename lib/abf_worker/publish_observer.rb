@@ -2,7 +2,6 @@ module AbfWorker
   class PublishObserver < AbfWorker::BaseObserver
     @queue = :publish_observer
 
-
     def self.perform(options)
       new(options, BuildList).perform
     end
@@ -10,9 +9,9 @@ module AbfWorker
     def perform
       return if status == STARTED # do nothing when publication started
       extra = options['extra']
-      repository_status = RepositoryStatus.where(:id => extra['repository_status_id']).first
+      repository_status = RepositoryStatus.where(id: extra['repository_status_id']).first
       begin
-        
+
         if extra['regenerate'] || extra['regenerate_platform']
           log_sha1 = (options['results'].try(:first) || {}).fetch('sha1', nil)
         end
@@ -22,7 +21,7 @@ module AbfWorker
           repository_status.last_regenerated_status = status
           repository_status.last_regenerated_log_sha1 = log_sha1
         elsif extra['regenerate_platform'] # Regenerate metadata for Software Center
-          if platform = Platform.where(:id => extra['platform_id']).first
+          if platform = Platform.where(id: extra['platform_id']).first
             platform.last_regenerated_at = Time.now.utc
             platform.last_regenerated_status = status
             platform.last_regenerated_log_sha1 = log_sha1
@@ -55,8 +54,8 @@ module AbfWorker
     protected
 
     def update_rpm_builds
-      build_lists = BuildList.where(:id => options['build_list_ids'])
-      build_lists.each do |build_list| 
+      build_lists = BuildList.where(id: options['build_list_ids'])
+      build_lists.each do |build_list|
         update_results build_list
         case status
         when COMPLETED

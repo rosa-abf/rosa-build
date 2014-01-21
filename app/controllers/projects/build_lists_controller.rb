@@ -4,15 +4,15 @@ class Projects::BuildListsController < Projects::BaseController
   NESTED_ACTIONS = [:index, :new, :create]
 
   before_filter :authenticate_user!
-  skip_before_filter :authenticate_user!, :only => [:show, :index, :log] if APP_CONFIG['anonymous_access']
+  skip_before_filter :authenticate_user!, only: [:show, :index, :log] if APP_CONFIG['anonymous_access']
 
-  before_filter :find_build_list, :only => [:show, :publish, :cancel, :update, :log, :create_container]
+  before_filter :find_build_list, only: [:show, :publish, :cancel, :update, :log, :create_container]
 
-  load_and_authorize_resource :project, :only => NESTED_ACTIONS
-  load_and_authorize_resource :build_list, :through => :project, :only => NESTED_ACTIONS, :shallow => true
-  load_and_authorize_resource :except => NESTED_ACTIONS
+  load_and_authorize_resource :project, only: NESTED_ACTIONS
+  load_and_authorize_resource :build_list, through: :project, only: NESTED_ACTIONS, shallow: true
+  load_and_authorize_resource except: NESTED_ACTIONS
 
-  before_filter :create_from_build_list, :only => :new
+  before_filter :create_from_build_list, only: :new
 
   def index
     params[:filter].each{|k,v| params[:filter].delete(k) if v.blank? } if params[:filter]
@@ -24,16 +24,16 @@ class Projects::BuildListsController < Projects::BaseController
         @bls = @filter.find.recent
                       .paginate(
                         :page     => (params[:page].to_i == 0 ? nil : params[:page]),
-                        :per_page => BuildList::Filter::PER_PAGE.include?(params[:per_page].to_i) ? params[:per_page].to_i : 25
+                        per_page: BuildList::Filter::PER_PAGE.include?(params[:per_page].to_i) ? params[:per_page].to_i : 25
                       )
-        @build_lists = BuildList.where(:id => @bls.pluck(:id)).recent
+        @build_lists = BuildList.where(id: @bls.pluck(:id)).recent
                                 .includes(
                                   :save_to_platform,
                                   :save_to_repository,
                                   :build_for_platform,
                                   :user,
                                   :source_packages,
-                                  :project => :project_statistics
+                                  project: :project_statistics
                                 )
 
         @build_server_status = AbfWorker::StatusInspector.projects_status
@@ -43,7 +43,7 @@ class Projects::BuildListsController < Projects::BaseController
 
   def new
     if params[:show] == 'inline' && params[:build_list_id].present?
-      render '_new_form', :layout => false, :locals => {:project => @project, :build_list => @build_list}
+      render '_new_form', layout: false, locals: {project: @project, build_list: @build_list}
     else
       render :new
     end
@@ -59,17 +59,17 @@ class Projects::BuildListsController < Projects::BaseController
     params[:build_list][:auto_publish] = false unless @repository.publish_without_qa?
 
     build_for_platforms = Repository.select(:platform_id).
-      where(:id => params[:build_list][:include_repos]).group(:platform_id).map(&:platform_id)
+      where(id: params[:build_list][:include_repos]).group(:platform_id).map(&:platform_id)
 
     build_lists = []
-    Arch.where(:id => params[:arches]).each do |arch|
-      Platform.main.where(:id => build_for_platforms).each do |build_for_platform|
+    Arch.where(id: params[:arches]).each do |arch|
+      Platform.main.where(id: build_for_platforms).each do |build_for_platform|
         @build_list = @project.build_lists.build(params[:build_list])
         @build_list.build_for_platform = build_for_platform; @build_list.arch = arch; @build_list.user = current_user
         @build_list.include_repos = @build_list.include_repos.select {|ir| @build_list.build_for_platform.repository_ids.include? ir.to_i}
         @build_list.priority = current_user.build_priority # User builds more priority than mass rebuild with zero priority
 
-        flash_options = {:project_version => @build_list.project_version, :arch => arch.name, :build_for_platform => build_for_platform.name}
+        flash_options = {project_version: @build_list.project_version, arch: arch.name, build_for_platform: build_for_platform.name}
         if authorize!(:create, @build_list) && @build_list.save
           build_lists << @build_list
           notices << t("flash.build_list.saved", flash_options)
@@ -82,9 +82,9 @@ class Projects::BuildListsController < Projects::BaseController
     if errors.present?
       @build_list ||= BuildList.new
       flash[:error] = errors.join('<br>').html_safe
-      render :action => :new
+      render action: :new
     else
-      BuildList.where(:id => build_lists.map(&:id)).update_all(:group_id => build_lists[0].id) if build_lists.size > 1
+      BuildList.where(id: build_lists.map(&:id)).update_all(group_id: build_lists[0].id) if build_lists.size > 1
       flash[:notice] = notices.join('<br>').html_safe
       redirect_to project_build_lists_path(@project)
     end
@@ -100,54 +100,54 @@ class Projects::BuildListsController < Projects::BaseController
     if params[:attach_advisory].present? and params[:attach_advisory] != 'no' and !@build_list.advisory
 
       unless @build_list.update_type.in? BuildList::RELEASE_UPDATE_TYPES
-        redirect_to :back, :notice => t('layout.build_lists.publish_fail') and return
+        redirect_to :back, notice: t('layout.build_lists.publish_fail') and return
       end
 
       if params[:attach_advisory] == 'new'
         # create new advisory
         unless @build_list.associate_and_create_advisory(params[:build_list][:advisory])
-          redirect_to :back, :notice => t('layout.build_lists.publish_fail') and return
+          redirect_to :back, notice: t('layout.build_lists.publish_fail') and return
         end
       else
         # attach existing advisory
-        a = Advisory.where(:advisory_id => params[:attach_advisory]).first
+        a = Advisory.where(advisory_id: params[:attach_advisory]).first
         unless (a && a.attach_build_list(@build_list))
-          redirect_to :back, :notice => t('layout.build_lists.publish_fail') and return
+          redirect_to :back, notice: t('layout.build_lists.publish_fail') and return
         end
       end
     end
 
     @build_list.publisher = current_user
     message = @build_list.publish ? 'success' : 'fail'
-    redirect_to :back, :notice => t("layout.build_lists.publish_#{message}")
+    redirect_to :back, notice: t("layout.build_lists.publish_#{message}")
   end
 
   def publish_into_testing
     @build_list.publisher = current_user
     message = @build_list.publish_into_testing ? 'success' : 'fail'
-    redirect_to :back, :notice => t("layout.build_lists.publish_#{message}")
+    redirect_to :back, notice: t("layout.build_lists.publish_#{message}")
   end
 
   def reject_publish
     @build_list.publisher = current_user
     message = @build_list.reject_publish ? 'success' : 'fail'
-    redirect_to :back, :notice => t("layout.build_lists.reject_publish_#{message}")
+    redirect_to :back, notice: t("layout.build_lists.reject_publish_#{message}")
   end
 
   def create_container
     message = @build_list.publish_container ? 'success' : 'fail'
-    redirect_to :back, :notice => t("layout.build_lists.create_container_#{message}")
+    redirect_to :back, notice: t("layout.build_lists.create_container_#{message}")
   end
 
   def cancel
     message = @build_list.cancel ? 'will_be_canceled' : 'cancel_fail'
-    redirect_to :back, :notice => t("layout.build_lists.#{message}")
+    redirect_to :back, notice: t("layout.build_lists.#{message}")
   end
 
   def log
-    render :json => {
-      :log => @build_list.log(params[:load_lines]),
-      :building => @build_list.build_started?
+    render json: {
+      log: @build_list.log(params[:load_lines]),
+      building: @build_list.build_started?
     }
   end
 
@@ -157,13 +157,13 @@ class Projects::BuildListsController < Projects::BaseController
     sort_dir = params[:sSortDir_0] == 'asc' ? 'asc' : 'desc'
     order = "build_lists.updated_at #{sort_dir}"
 
-    @build_lists = @build_lists.paginate(:page => (params[:iDisplayStart].to_i/params[:iDisplayLength].to_i).to_i + 1, :per_page => params[:iDisplayLength])
+    @build_lists = @build_lists.paginate(page: (params[:iDisplayStart].to_i/params[:iDisplayLength].to_i).to_i + 1, per_page: params[:iDisplayLength])
     @total_build_lists = @build_lists.count
-    @build_lists = @build_lists.where(:user_id => current_user) if params[:owner_filter] == 'true'
-    @build_lists = @build_lists.where(:status => [BuildList::BUILD_ERROR, BuildList::FAILED_PUBLISH, BuildList::REJECTED_PUBLISH]) if params[:status_filter] == 'true'
+    @build_lists = @build_lists.where(user_id: current_user) if params[:owner_filter] == 'true'
+    @build_lists = @build_lists.where(status: [BuildList::BUILD_ERROR, BuildList::FAILED_PUBLISH, BuildList::REJECTED_PUBLISH]) if params[:status_filter] == 'true'
     @build_lists = @build_lists.order(order)
 
-    render :partial => 'build_lists_ajax', :layout => false
+    render partial: 'build_lists_ajax', layout: false
   end
 
 

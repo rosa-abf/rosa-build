@@ -3,10 +3,10 @@
 
 %h3= raw "#{t("layout.repositories.remove_projects_from")}: #{link_to @repository.name, platform_repository_path(@platform, @repository)}"
 
-= form_for :repository, :url => remove_project_platform_repository_path(@platform, @repository), :method => :delete, :html => { :class => :form } do |f|
+= form_for :repository, url: remove_project_platform_repository_path(@platform, @repository), method: :delete, html: { class: :form } do |f|
   .leftlist= f.label :projects_list
   .rightlist= f.text_area :projects_list
   .both
   .hr
   .button_block
-    = submit_tag t('layout.delete'), :data => {'disable-with' => t('layout.saving')}
+    = submit_tag t('layout.delete'), data: {'disable-with' => t('layout.saving')}

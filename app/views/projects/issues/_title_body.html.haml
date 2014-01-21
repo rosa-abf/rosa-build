@@ -1,8 +1,8 @@
 #open-comment.comment.view
   %h3.tmargin0= t 'activerecord.attributes.issue.title'
-  .wrapper= f.text_area :title, :cols => 80, :rows => 1
+  .wrapper= f.text_area :title, cols: 80, rows: 1
 #open-comment.comment.view
   =render 'projects/comments/button_md_help'
   %h3.tmargin0= t 'activerecord.attributes.issue.body'
-  =render 'projects/comments/body', :f => f, :id => id
+  =render 'projects/comments/body', f: f, id: id
 .both

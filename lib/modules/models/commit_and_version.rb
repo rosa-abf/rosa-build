@@ -7,7 +7,7 @@ module Modules
 
         validate lambda {
           if project && (commit_hash.blank? || project.repo.commit(commit_hash).blank?)
-            errors.add :commit_hash, I18n.t('flash.build_list.wrong_commit_hash', :commit_hash => commit_hash)
+            errors.add :commit_hash, I18n.t('flash.build_list.wrong_commit_hash', commit_hash: commit_hash)
           end
         }
 

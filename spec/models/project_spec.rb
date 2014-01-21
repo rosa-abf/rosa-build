@@ -22,15 +22,15 @@ describe Project do
       before { root_project.destroy }
 
       it "should not be delete child" do
-        Project.where(:id => child_project).count.should == 1
+        Project.where(id: child_project).count.should == 1
       end
 
       it "should not be delete child of the child" do
-        Project.where(:id => child_child_project).count.should == 1
+        Project.where(id: child_child_project).count.should == 1
       end
     end
 
-    pending 'when will be available :orphan_strategy => :adopt' do
+    pending 'when will be available orphan_strategy: :adopt' do
       context 'middle node' do
         before{ child_project.destroy }
 
@@ -39,7 +39,7 @@ describe Project do
         end
 
         it "should not be delete child of the child" do
-          Project.where(:id => child_child_project).count.should == 1
+          Project.where(id: child_child_project).count.should == 1
         end
       end
     end
@@ -48,30 +48,30 @@ describe Project do
   context 'attach personal repository' do
     let(:user) { FactoryGirl.create(:user) }
     it "ensures that personal repository has been attached when project had been created as package" do
-      project = FactoryGirl.create(:project, :owner => user, :is_package => true)
+      project = FactoryGirl.create(:project, owner: user, is_package: true)
       project.repositories.should == [user.personal_repository]
     end
 
     it "ensures that personal repository has not been attached when project had been created as not package" do
-      project = FactoryGirl.create(:project, :owner => user, :is_package => false)
+      project = FactoryGirl.create(:project, owner: user, is_package: false)
       project.repositories.should have(:no).items
     end
 
     it "ensures that personal repository has been attached when project had been updated as package" do
-      project = FactoryGirl.create(:project, :owner => user, :is_package => false)
+      project = FactoryGirl.create(:project, owner: user, is_package: false)
       project.update_attribute(:is_package, true)
       project.repositories.should == [user.personal_repository]
     end
 
     it "ensures that personal repository has been removed from project when project had been updated as not package" do
-      project = FactoryGirl.create(:project, :owner => user, :is_package => true)
+      project = FactoryGirl.create(:project, owner: user, is_package: true)
       project.update_attribute(:is_package, false)
       project.repositories.should have(:no).items
     end
   end
 
   context 'truncates project name before validation' do
-    let!(:project) { FactoryGirl.build(:project, :name => '  test_name  ') }
+    let!(:project) { FactoryGirl.build(:project, name: '  test_name  ') }
 
     it 'ensures that validation passed' do
       project.valid?.should be_true
@@ -84,16 +84,16 @@ describe Project do
   end
 
   context 'Validate project name' do
-    let!(:project) { FactoryGirl.build(:project, :name => '  test_name  ') }
+    let!(:project) { FactoryGirl.build(:project, name: '  test_name  ') }
 
     it "'hacked' uname should not pass" do
-      lambda {FactoryGirl.create(:project, :name => "...\nbeatiful_name\n for project")}.should raise_error(ActiveRecord::RecordInvalid)
+      lambda {FactoryGirl.create(:project, name: "...\nbeatiful_name\n for project")}.should raise_error(ActiveRecord::RecordInvalid)
     end
   end
 
   it 'ensures that path to git repository has been changed after rename of project' do
     project = FactoryGirl.create(:project_with_commit)
-    project.update_attributes(:name => "#{project.name}-new")
+    project.update_attributes(name: "#{project.name}-new")
     Dir.exists?(project.path).should be_true
   end
 
@@ -173,7 +173,7 @@ describe Project do
     repository = FactoryGirl.create(:repository)
     url = 'http://abf-downloads.rosalinux.ru/abf_personal/repository/test-mass-import'
     visibility = 'open'
-    
+
     Project.run_mass_import(url, "abf-worker-service-1-3.src.rpm\nredir-2.2.1-7.res6.src.rpm\n", visibility, owner, repository.id)
 
     Project.count.should == 2

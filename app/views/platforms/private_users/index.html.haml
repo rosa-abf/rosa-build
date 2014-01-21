@@ -1,4 +1,4 @@
--set_meta_tags :title => [title_object(current_user.repository), t('layout.personal_repositories.private_users')]
+-set_meta_tags title: [title_object(current_user.repository), t('layout.personal_repositories.private_users')]
 .block
   .secondary-navigation
     %ul.wat-cf
@@ -17,11 +17,11 @@
           = t("activerecord.attributes.repository.platform")
           \:
         = link_to @platform.name, platform_path(@platform)
-      
+
       - if @urpmi_list
-        = render 'shared/urpmi_list', :urpmi_commands => @urpmi_list
+        = render 'shared/urpmi_list', urpmi_commands: @urpmi_list
       .wat-cf
-        =# link_to image_tag("x.png", :alt => t("layout.delete")) + " " + t("layout.delete"), platform_repository_path(@platform, @repository), :method => "delete", :class => "button", :confirm => t("layout.repositories.confirm_delete")
+        =# link_to image_tag("x.png", alt: t("layout.delete")) + " " + t("layout.delete"), platform_repository_path(@platform, @repository), method: "delete", class: "button", confirm: t("layout.repositories.confirm_delete")
     %br
     .inner
       =t('layout.private_users.warning_message')
@@ -30,7 +30,7 @@
   .secondary-navigation
     %ul.wat-cf
       %li.first.active= link_to t("layout.private_users.list"), platform_private_users_path(@platform)
-      %li= link_to t("layout.private_users.new"), platform_private_users_path(@platform), :method => :post if PrivateUser.can_generate_more?(current_user.id, @platform.id)
+      %li= link_to t("layout.private_users.new"), platform_private_users_path(@platform), method: :post if PrivateUser.can_generate_more?(current_user.id, @platform.id)
   .content
     %h2.title
       = t("layout.private_users.list_header")
@@ -40,11 +40,11 @@
           %th.first= t("activerecord.attributes.private_user.login")
           %th.last &nbsp;
         - @private_users.each do |private_user|
-          %tr{:class => cycle("odd", "even")}
+          %tr{class: cycle("odd", "even")}
             %td
               = private_user.login
             %td.last
-              #{link_to t("layout.private_users.regenerate_btn"), platform_private_users_path(@platform), :method => :post, :confirm => t("layout.private_users.confirm_regenerate")}
+              #{link_to t("layout.private_users.regenerate_btn"), platform_private_users_path(@platform), method: :post, confirm: t("layout.private_users.confirm_regenerate")}
       .actions-bar.wat-cf
         .actions
           = will_paginate @private_users

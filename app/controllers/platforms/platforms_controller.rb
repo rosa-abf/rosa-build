@@ -2,11 +2,11 @@ class Platforms::PlatformsController < Platforms::BaseController
   include FileStoreHelper
 
   before_filter :authenticate_user!
-  skip_before_filter :authenticate_user!, :only => [:advisories, :members, :show] if APP_CONFIG['anonymous_access']
+  skip_before_filter :authenticate_user!, only: [:advisories, :members, :show] if APP_CONFIG['anonymous_access']
   load_and_authorize_resource
 
   def index
-    @platforms = @platforms.accessible_by(current_ability, :related).order(:name).paginate(:page => params[:page], :per_page => 20)
+    @platforms = @platforms.accessible_by(current_ability, :related).order(:name).paginate(page: params[:page], per_page: 20)
   end
 
   def show
@@ -34,7 +34,7 @@ class Platforms::PlatformsController < Platforms::BaseController
     else
       flash[:error] = I18n.t("flash.platform.create_error")
       flash[:warning] = @platform.errors.full_messages.join('. ')
-      render :action => :new
+      render action: :new
     end
   end
 
@@ -52,7 +52,7 @@ class Platforms::PlatformsController < Platforms::BaseController
     else
       flash[:error] = I18n.t("flash.platform.save_error")
       flash[:warning] = @platform.errors.full_messages.join('. ')
-      render :action => :edit
+      render action: :edit
     end
   end
 
@@ -72,7 +72,7 @@ class Platforms::PlatformsController < Platforms::BaseController
     else
       flash[:error] = I18n.t("flash.platform.save_error")
       flash[:warning] = @platform.errors.full_messages.join('. ')
-      render :action => :edit
+      render action: :edit
     end
   end
 
@@ -83,7 +83,7 @@ class Platforms::PlatformsController < Platforms::BaseController
   end
 
   def make_clone
-    @cloned = @platform.full_clone params[:platform].merge(:owner => current_user)
+    @cloned = @platform.full_clone params[:platform].merge(owner: current_user)
     if @cloned.persisted?
       flash[:notice] = I18n.t("flash.platform.clone_success")
       redirect_to @cloned
@@ -106,29 +106,29 @@ class Platforms::PlatformsController < Platforms::BaseController
   def remove_members
     user_ids = params[:user_remove] ?
       params[:user_remove].map{ |k, v| k if v.first == '1' }.compact : []
-    User.where(:id => user_ids).each{ |user| @platform.remove_member(user) }
+    User.where(id: user_ids).each{ |user| @platform.remove_member(user) }
     redirect_to members_platform_path(@platform)
   end
 
   def remove_member
-    User.where(:id => params[:member_id]).each{ |user| @platform.remove_member(user) }
+    User.where(id: params[:member_id]).each{ |user| @platform.remove_member(user) }
     redirect_to members_platform_path(@platform)
   end
 
   def add_member
-    member = User.where(:id => params[:member_id]).first
+    member = User.where(id: params[:member_id]).first
     if !member
-      flash[:error] = t("flash.collaborators.wrong_user", :uname => params[:member_id])
+      flash[:error] = t("flash.collaborators.wrong_user", uname: params[:member_id])
     elsif @platform.add_member(member)
-      flash[:notice] = t('flash.platform.members.successfully_added', :name => member.uname)
+      flash[:notice] = t('flash.platform.members.successfully_added', name: member.uname)
     else
-      flash[:error] = t('flash.platform.members.error_in_adding', :name => member.uname)
+      flash[:error] = t('flash.platform.members.error_in_adding', name: member.uname)
     end
     redirect_to members_platform_url(@platform)
   end
 
   def advisories
-    @advisories = @platform.advisories.paginate(:page => params[:page])
+    @advisories = @platform.advisories.paginate(page: params[:page])
   end
 
   def clear

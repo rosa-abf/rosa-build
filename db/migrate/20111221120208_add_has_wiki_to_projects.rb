@@ -1,6 +1,6 @@
 class AddHasWikiToProjects < ActiveRecord::Migration
   def self.up
-    add_column :projects, :has_wiki, :boolean, :default => false
+    add_column :projects, :has_wiki, :boolean, default: false
   end
 
   def self.down

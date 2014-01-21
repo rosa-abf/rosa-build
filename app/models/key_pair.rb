@@ -4,12 +4,12 @@ class KeyPair < ActiveRecord::Base
 
   attr_accessor :fingerprint
   attr_accessible :public, :secret, :repository_id
-  attr_encrypted :secret, :key => APP_CONFIG['keys']['key_pair_secret_key']
+  attr_encrypted :secret, key: APP_CONFIG['keys']['key_pair_secret_key']
 
-  validates :repository_id, :user_id, :presence => true
-  validates :secret, :public, :presence => true, :length => { :maximum => 10000 }, :on => :create
+  validates :repository_id, :user_id, presence: true
+  validates :secret, :public, presence: true, length: { maximum: 10000 }, on: :create
 
-  validates :repository_id, :uniqueness => {:message => I18n.t("activerecord.errors.key_pair.repo_key_exists")}
+  validates :repository_id, uniqueness: {message: I18n.t("activerecord.errors.key_pair.repo_key_exists")}
   validate :check_keys
 
   before_create { |record| record.key_id = @fingerprint }

@@ -7,4 +7,4 @@ set :domain, "0.0.0.0"
 
 role :app, domain
 role :web, domain
-role :db,  domain, :primary => true
+role :db,  domain, primary: true

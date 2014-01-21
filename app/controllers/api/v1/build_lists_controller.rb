@@ -1,20 +1,20 @@
 class Api::V1::BuildListsController < Api::V1::BaseController
 
   before_filter :authenticate_user!
-  skip_before_filter :authenticate_user!, :only => [:show, :index] if APP_CONFIG['anonymous_access']
+  skip_before_filter :authenticate_user!, only: [:show, :index] if APP_CONFIG['anonymous_access']
 
-  load_and_authorize_resource :project, :only => :index
-  load_and_authorize_resource :build_list, :only => [:show, :create, :cancel, :publish, :reject_publish, :create_container, :publish_into_testing]
+  load_and_authorize_resource :project, only: :index
+  load_and_authorize_resource :build_list, only: [:show, :create, :cancel, :publish, :reject_publish, :create_container, :publish_into_testing]
 
   def index
     filter = BuildList::Filter.new(@project, current_user, current_ability, params[:filter] || {})
-    @build_lists = filter.find.scoped(:include => [:save_to_platform, :project, :user, :arch])
+    @build_lists = filter.find.scoped(include: [:save_to_platform, :project, :user, :arch])
     @build_lists = @build_lists.recent.paginate(paginate_params)
   end
 
   def create
     bl_params = params[:build_list] || {}
-    save_to_repository = Repository.where(:id => bl_params[:save_to_repository_id]).first
+    save_to_repository = Repository.where(id: bl_params[:save_to_repository_id]).first
 
     if save_to_repository
       bl_params[:save_to_platform_id] = save_to_repository.platform_id

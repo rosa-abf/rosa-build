@@ -1,6 +1,6 @@
 class EventLog < ActiveRecord::Base
   belongs_to :user
-  belongs_to :eventable, :polymorphic => true
+  belongs_to :eventable, polymorphic: true
 
   # self.per_page = 1
 

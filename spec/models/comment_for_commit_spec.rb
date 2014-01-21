@@ -2,26 +2,26 @@ require 'spec_helper'
 require "cancan/matchers"
 
 def create_comment user
-  FactoryGirl.create(:comment, :user => user, :commentable => @commit, :project => @project)
+  FactoryGirl.create(:comment, user: user, commentable: @commit, project: @project)
 end
 
 def create_comment_in_commit commit, project, body
-  FactoryGirl.create(:comment, :user => @user, :commentable => commit, :project => project, :body => body)
+  FactoryGirl.create(:comment, user: @user, commentable: commit, project: project, body: body)
 end
 
 def set_comments_data_for_commit
   @ability = Ability.new(@user)
 
-  @project = FactoryGirl.create(:project_with_commit, :owner => @user)
+  @project = FactoryGirl.create(:project_with_commit, owner: @user)
   @commit = @project.repo.commits.first
 
   @comment = create_comment(@user)
   @stranger_comment = create_comment(@stranger)
 
-  @subscribe_params = {:project_id => @project.id, :subscribeable_id => @commit.id.hex, :subscribeable_type => @commit.class.name}
+  @subscribe_params = {project_id: @project.id, subscribeable_id: @commit.id.hex, subscribeable_type: @commit.class.name}
   Subscribe.destroy_all
 
-  any_instance_of(Project, :versions => ['v1.0', 'v2.0'])
+  any_instance_of(Project, versions: ['v1.0', 'v2.0'])
 end
 
 def should_send_email(args={})
@@ -60,7 +60,7 @@ describe Comment do
       set_comments_data_for_commit
       @admin = FactoryGirl.create(:user)
       @ability = Ability.new(@admin)
-      @project.relations.create!(:actor_type => 'User', :actor_id => @admin.id, :role => 'admin')
+      @project.relations.create!(actor_type: 'User', actor_id: @admin.id, role: 'admin')
       ActionMailer::Base.deliveries = []
     end
 
@@ -106,7 +106,7 @@ describe Comment do
 
     context 'for unsubscribe commit' do
       it 'should not send an e-mail' do
-        Subscribe.unsubscribe_from_commit @subscribe_params.merge(:user_id => @user.id)
+        Subscribe.unsubscribe_from_commit @subscribe_params.merge(user_id: @user.id)
         should_not_send_email(commentor: @stranger)
       end
     end
@@ -176,7 +176,7 @@ describe Comment do
 
     context 'for unsubscribe project' do
       it 'should not send an e-mail' do
-        Subscribe.unsubscribe_from_commit @subscribe_params.merge(:user_id => @user.id)
+        Subscribe.unsubscribe_from_commit @subscribe_params.merge(user_id: @user.id)
         should_not_send_email(commentor: @stranger)
       end
     end
@@ -205,7 +205,7 @@ describe Comment do
       @comment = create_comment(@simple)
       @ability = Ability.new(@simple)
       ActionMailer::Base.deliveries = []
-      Subscribe.unsubscribe_from_commit @subscribe_params.merge(:user_id => [@stranger.id, @project.owner.id])
+      Subscribe.unsubscribe_from_commit @subscribe_params.merge(user_id: [@stranger.id, @project.owner.id])
     end
 
     it_should_behave_like 'user with create comment ability (for model)'
@@ -226,7 +226,7 @@ describe Comment do
       end
 
       it 'should send an e-mail when subscribed to project' do
-        Subscribe.subscribe_to_commit @subscribe_params.merge(:user_id => @simple.id)
+        Subscribe.subscribe_to_commit @subscribe_params.merge(user_id: @simple.id)
         should_send_email(commentor: @project.owner, receiver: @simple)
       end
 
@@ -242,7 +242,7 @@ describe Comment do
       end
 
       it 'should send a one e-mail when subscribed to commit' do
-        Subscribe.subscribe_to_commit @subscribe_params.merge(:user_id => @simple.id)
+        Subscribe.subscribe_to_commit @subscribe_params.merge(user_id: @simple.id)
         @simple.update_column :email, 'test@test.test'
         should_send_email(commentor: @stranger, receiver: @simple)
       end
@@ -269,59 +269,59 @@ describe Comment do
 
     context 'automatic issue linking' do
       before(:each) do
-        @same_name_project = FactoryGirl.create(:project, :name => @project.name)
-        @issue_in_same_name_project = FactoryGirl.create(:issue, :project => @same_name_project, :user => @same_name_project.owner)
-        @another_project = FactoryGirl.create(:project, :owner => @user)
+        @same_name_project = FactoryGirl.create(:project, name: @project.name)
+        @issue_in_same_name_project = FactoryGirl.create(:issue, project: @same_name_project, user: @same_name_project.owner)
+        @another_project = FactoryGirl.create(:project, owner: @user)
         @other_user_project = FactoryGirl.create(:project)
-        @issue = FactoryGirl.create(:issue, :project => @project, :user => @user)
-        @second_issue = FactoryGirl.create(:issue, :project => @project, :user => @user)
-        @issue_in_another_project = FactoryGirl.create(:issue, :project => @another_project, :user => @user)
-        @issue_in_other_user_project = FactoryGirl.create(:issue, :project => @other_user_project, :user => @other_user_project.owner)
+        @issue = FactoryGirl.create(:issue, project: @project, user: @user)
+        @second_issue = FactoryGirl.create(:issue, project: @project, user: @user)
+        @issue_in_another_project = FactoryGirl.create(:issue, project: @another_project, user: @user)
+        @issue_in_other_user_project = FactoryGirl.create(:issue, project: @other_user_project, user: @other_user_project.owner)
       end
 
       it 'should create automatic comment' do
         create_comment_in_commit(@commit, @project, "test link to ##{@issue.serial_id}; [##{@second_issue.serial_id}]")
-        Comment.where(:automatic => true, :commentable_type => 'Issue',
-                      :commentable_id => @second_issue.id,
-                      :created_from_commit_hash => @commit.id.hex).count.should == 1
+        Comment.where(automatic: true, commentable_type: 'Issue',
+                      commentable_id: @second_issue.id,
+                      created_from_commit_hash: @commit.id.hex).count.should == 1
       end
 
       it 'should create automatic comment in the another project issue' do
         body = "[#{@another_project.name_with_owner}##{@issue_in_another_project.serial_id}]"
         create_comment_in_commit(@commit, @project, body)
-        Comment.where(:automatic => true, :commentable_type => 'Issue',
-                      :commentable_id => @issue_in_another_project.id,
-                      :created_from_commit_hash => @commit.id.hex).count.should == 1
+        Comment.where(automatic: true, commentable_type: 'Issue',
+                      commentable_id: @issue_in_another_project.id,
+                      created_from_commit_hash: @commit.id.hex).count.should == 1
       end
 
       it 'should create automatic comment in the same name project issue' do
         body = "[#{@same_name_project.owner.uname}##{@issue_in_same_name_project.serial_id}]"
         create_comment_in_commit(@commit, @project, body)
-        Comment.where(:automatic => true, :commentable_type => 'Issue',
-                      :commentable_id => @issue_in_same_name_project.id,
-                      :created_from_commit_hash => @commit.id.hex).count.should == 1
+        Comment.where(automatic: true, commentable_type: 'Issue',
+                      commentable_id: @issue_in_same_name_project.id,
+                      created_from_commit_hash: @commit.id.hex).count.should == 1
       end
 
       it 'should not create duplicate automatic comment' do
         create_comment_in_commit(@commit, @project, "test link to [##{@second_issue.serial_id}]")
         create_comment_in_commit(@commit, @project, "test duplicate link to [##{@second_issue.serial_id}]")
-        Comment.where(:automatic => true, :commentable_type => 'Issue',
-                      :commentable_id => @second_issue.id,
-                      :created_from_commit_hash => @commit.id.hex).count.should == 1
+        Comment.where(automatic: true, commentable_type: 'Issue',
+                      commentable_id: @second_issue.id,
+                      created_from_commit_hash: @commit.id.hex).count.should == 1
       end
 
       it 'should not create duplicate automatic comment from one' do
         create_comment_in_commit(@commit, @project, "test link to [##{@second_issue.serial_id}]; ##{@second_issue.serial_id}")
-        Comment.where(:automatic => true, :commentable_type => 'Issue',
-                      :commentable_id => @second_issue.id,
-                      :created_from_commit_hash => @commit.id.hex).count.should == 1
+        Comment.where(automatic: true, commentable_type: 'Issue',
+                      commentable_id: @second_issue.id,
+                      created_from_commit_hash: @commit.id.hex).count.should == 1
       end
       it 'should create two automatic comment' do
         body = "test ##{@second_issue.serial_id}" +
                " && [#{@another_project.name_with_owner}##{@issue_in_another_project.serial_id}]"
         create_comment_in_commit(@commit, @project, body)
-        Comment.where(:automatic => true,
-                      :created_from_commit_hash => @commit.id.hex).count.should == 2
+        Comment.where(automatic: true,
+                      created_from_commit_hash: @commit.id.hex).count.should == 2
       end
     end
   end

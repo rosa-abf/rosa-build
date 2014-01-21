@@ -1,13 +1,13 @@
--set_meta_tags :title => [title_object(@group), t('layout.groups.members')]
-= form_tag group_members_path(@group), :id => 'members_form', :delete_url => remove_group_members_path(@group) do
+-set_meta_tags title: [title_object(@group), t('layout.groups.members')]
+= form_tag group_members_path(@group), id: 'members_form', delete_url: remove_group_members_path(@group) do
   = hidden_field_tag "_method", "post"
-  %table.tablesorter{:cellpadding => "0", :cellspacing => "0"}
+  %table.tablesorter{cellpadding: "0", cellspacing: "0"}
     %thead
       %tr
         %th
           \ 
         %th= t("layout.collaborators.members")
-        %th{:colspan => "3"}= t("layout.collaborators.roles")
+        %th{colspan: "3"}= t("layout.collaborators.roles")
     %tbody
       - (parent.members - [parent.owner]).each do |user|
         %tr
@@ -18,9 +18,9 @@
             .forimg= link_to user.fullname, user_path(user)
           - Relation::ROLES.each_with_index do |role, i|
             %td
-              .radio= radio_button_tag "user[#{user.id}]", role, ((parent.actors.exists? :actor_id => user.id, :actor_type => 'User', :role => role) ? :checked : nil), :class => 'niceRadio'
+              .radio= radio_button_tag "user[#{user.id}]", role, ((parent.actors.exists? actor_id: user.id, actor_type: 'User', role: role) ? :checked : nil), class: 'niceRadio'
               .forradio= t("layout.collaborators.role_names.#{ role }")
-  = link_to_function t("layout.delete"), "deleteAdminMember();", :class => 'button'
+  = link_to_function t("layout.delete"), "deleteAdminMember();", class: 'button'
   .both
 .hr.top
 
@@ -30,10 +30,10 @@
     .lineForm= select_tag 'role', options_for_collaborators_roles_select
   .both
   %br
-  = submit_tag t('layout.add'), :class => 'button', :data => {'disable-with' => t('layout.processing')}
+  = submit_tag t('layout.add'), class: 'button', data: {'disable-with' => t('layout.processing')}
 
 .hr.bottom
 .both
-= link_to_function t("layout.save"), "saveAdminMember();", :class => 'button'
+= link_to_function t("layout.save"), "saveAdminMember();", class: 'button'
 
 - content_for :sidebar, render('sidebar')

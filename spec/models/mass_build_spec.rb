@@ -30,10 +30,10 @@ describe MassBuild do
 
   it 'ensures that projects_list contains unique projects' do
     projects_list = %(at
-      at 
-      ab 
+      at
+      ab
     )
-    mass_build = FactoryGirl.create(:mass_build, :projects_list => projects_list)
+    mass_build = FactoryGirl.create(:mass_build, projects_list: projects_list)
     list = mass_build.projects_list.split(/[\r]*\n/)
     list.should have(2).items
     list.should include('at', 'ab')

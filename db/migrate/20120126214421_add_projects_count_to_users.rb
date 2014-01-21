@@ -1,6 +1,6 @@
 class AddProjectsCountToUsers < ActiveRecord::Migration
   def self.up
-    add_column :users, :own_projects_count, :integer, :default => 0, :null => false
+    add_column :users, :own_projects_count, :integer, default: 0, null: false
 
     User.reset_column_information
     User.all.each do |user|

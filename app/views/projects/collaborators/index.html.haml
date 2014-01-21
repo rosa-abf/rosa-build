@@ -1,8 +1,8 @@
--set_meta_tags :title => [title_object(@project), t('layout.projects.members')]
+-set_meta_tags title: [title_object(@project), t('layout.projects.members')]
 = render 'sidebar'
 = render 'submenu'
 
-%a{:name => 'users'}
+%a{name: 'users'}
 %h3= t("layout.users.list_header")
 
 #collaborators{'ng-controller' => 'CollaboratorsController'}
@@ -12,14 +12,14 @@
   #add_collaborator_form
     .admin-search.withimage
       .img
-        %img{:alt => 'avatar', 'ng-src' => '{{new_collaborator.avatar}}', 'ng-show' => 'new_collaborator.avatar'}
+        %img{alt: 'avatar', 'ng-src' => '{{new_collaborator.avatar}}', 'ng-show' => 'new_collaborator.avatar'}
       = text_field_tag :collaborator_name, nil, 'ng-model' => 'new_collaborator.term', 'ng-keyup' => 'search()'
 
     .admin-role
       .lineForm
         = select_tag 'role', options_for_collaborators_roles_select, 'ng-model' => 'new_collaborator.collaborator.role'
     .admin-add
-      %a.button{:rel => 'nofollow', :href => '', 'ng-click' => 'add()'}
+      %a.button{rel: 'nofollow', href: '', 'ng-click' => 'add()'}
         = t('layout.add')
     .both
 
@@ -33,28 +33,28 @@
             %img{width: '16px', 'ng-src' => '{{c.avatar}}', alt: 'avatar'}
           .name {{c.actor_name}}
           .both
-        
+
         .nothing{'ng-hide' => 'new_collaborators.length > 0'}= t('layout.issues.nothing_to_show')
       .both
     .both
 
-  %table.tablesorter{:cellpadding => "0", :cellspacing => "0"}
+  %table.tablesorter{cellpadding: "0", cellspacing: "0"}
     %thead
       %tr
         %th.centered
           %span.delete{'ng-click' => 'deleteCollaborators()'} &nbsp; 
         %th
           = t("layout.collaborators.members")
-        %th{:colspan => "3"}
+        %th{colspan: "3"}
           = t("layout.collaborators.roles")
       %tr.search
-        %th{:colspan => "5"}
-          %input{:type => "text", :placeholder => "#{t('layout.filter_by_name')}", 'ng-model' => 'query.actor_name'}
+        %th{colspan: "5"}
+          %input{type: "text", placeholder: "#{t('layout.filter_by_name')}", 'ng-model' => 'query.actor_name'}
 
     %tbody
       %tr{'ng-repeat' => 'c in collaborators | filter:query'}
         %td
-          %input{:type => 'checkbox', 'ng-model' => 'c.removed' }
+          %input{type: 'checkbox', 'ng-model' => 'c.removed' }
         %td
           .img
             %img{'ng-src' => '{{c.avatar}}', alt: 'avatar' }
@@ -64,7 +64,7 @@
         - Relation::ROLES.each do |role|
           %td
             .radio
-              %input{:type => 'radio', 'ng-model' => 'c.collaborator.role', :value => role, 'ng-click' => 'update(c)'}
+              %input{type: 'radio', 'ng-model' => 'c.collaborator.role', value: role, 'ng-click' => 'update(c)'}
             .forradio
               %label= t("layout.collaborators.role_names.#{role}")
 

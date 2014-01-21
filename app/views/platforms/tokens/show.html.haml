@@ -1,4 +1,4 @@
--set_meta_tags :title => [title_object(@platform), t('layout.tokens.header')]
+-set_meta_tags title: [title_object(@platform), t('layout.tokens.header')]
 = render 'submenu'
 = render 'sidebar'
 
@@ -37,5 +37,5 @@
   .buttons_block
     = link_to t('layout.tokens.withdraw'),
               withdraw_platform_token_path(@platform, @token),
-              :method => :post, :class => 'button',
-              :confirm => t('layout.tokens.withdraw_confirm')
+              method: :post, class: 'button',
+              confirm: t('layout.tokens.withdraw_confirm')

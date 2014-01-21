@@ -4,18 +4,18 @@
   = render 'fork'
 .both
 
-= form_tag edit_blob_path(@project, @treeish, @path), :name => 'blob-editor', :method => :put do
-  .file-editor= text_area_tag :content, @blob.data, :id => 'code'
+= form_tag edit_blob_path(@project, @treeish, @path), name: 'blob-editor', method: :put do
+  .file-editor= text_area_tag :content, @blob.data, id: 'code'
 
   .both
   = t("layout.enter_commit_message")
-  = text_area_tag :message, "Updated #{@blob.name}", :class => 'commit-message'
+  = text_area_tag :message, "Updated #{@blob.name}", class: 'commit-message'
 
   %br
   %br
-  = submit_tag t('layout.save'), :title => t('layout.save'), :data => {'disable-with' => t('layout.saving')}
+  = submit_tag t('layout.save'), title: t('layout.save'), data: {'disable-with' => t('layout.saving')}
   = t("layout.or")
-  = link_to t("layout.cancel"), blob_path(@project, @treeish, @path), :class => 'button'
+  = link_to t("layout.cancel"), blob_path(@project, @treeish, @path), class: 'button'
 
 :javascript
   $(function() {

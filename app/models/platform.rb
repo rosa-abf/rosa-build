@@ -9,29 +9,29 @@ class Platform < ActiveRecord::Base
   NAME_PATTERN = /[\w\-\.]+/
   HUMAN_STATUSES = HUMAN_STATUSES.clone.freeze
 
-  belongs_to :parent, :class_name => 'Platform', :foreign_key => 'parent_platform_id'
-  belongs_to :owner, :polymorphic => true
+  belongs_to :parent, class_name: 'Platform', foreign_key: 'parent_platform_id'
+  belongs_to :owner, polymorphic: true
 
-  has_many :repositories, :dependent => :destroy
-  has_many :products, :dependent => :destroy
-  has_many :tokens, :as => :subject,  :dependent => :destroy
-  has_many :platform_arch_settings,   :dependent => :destroy
+  has_many :repositories, dependent: :destroy
+  has_many :products, dependent: :destroy
+  has_many :tokens, as: :subject,  dependent: :destroy
+  has_many :platform_arch_settings,   dependent: :destroy
   has_many :repository_statuses
 
-  has_many :relations, :as => :target, :dependent => :destroy
-  has_many :actors, :as => :target, :class_name => 'Relation', :dependent => :destroy
-  has_many :members, :through => :actors, :source => :actor, :source_type => 'User'
+  has_many :relations, as: :target, dependent: :destroy
+  has_many :actors, as: :target, class_name: 'Relation', dependent: :destroy
+  has_many :members, through: :actors, source: :actor, source_type: 'User'
 
   has_and_belongs_to_many :advisories
 
-  has_many :packages, :class_name => "BuildList::Package", :dependent => :destroy
+  has_many :packages, class_name: "BuildList::Package", dependent: :destroy
 
-  has_many :mass_builds, :foreign_key => :save_to_platform_id
+  has_many :mass_builds, foreign_key: :save_to_platform_id
 
-  validates :description, :presence => true
-  validates :visibility, :presence => true, :inclusion => {:in => VISIBILITIES}
-  validates :name, :uniqueness => {:case_sensitive => false}, :presence => true, :format => { :with => /\A#{NAME_PATTERN}\z/ }
-  validates :distrib_type, :presence => true, :inclusion => {:in => APP_CONFIG['distr_types']}
+  validates :description, presence: true
+  validates :visibility, presence: true, inclusion: {in: VISIBILITIES}
+  validates :name, uniqueness: {case_sensitive: false}, presence: true, format: { with: /\A#{NAME_PATTERN}\z/ }
+  validates :distrib_type, presence: true, inclusion: {in: APP_CONFIG['distr_types']}
   validate lambda {
     if released_was && !released
       errors.add(:released, I18n.t('flash.platform.released_status_can_not_be_changed'))
@@ -41,7 +41,7 @@ class Platform < ActiveRecord::Base
     if personal? && (owner_id_changed? || owner_type_changed?)
       errors.add :owner, I18n.t('flash.platform.owner_can_not_be_changed')
     end
-  }, :on => :update
+  }, on: :update
 
   before_create :create_directory
   before_destroy :detele_directory
@@ -54,35 +54,35 @@ class Platform < ActiveRecord::Base
 
   scope :search_order, order("CHAR_LENGTH(#{table_name}.name) ASC")
   scope :search, lambda {|q| where("#{table_name}.name ILIKE ?", "%#{q.to_s.strip}%")}
-  scope :by_visibilities, lambda {|v| where(:visibility => v)}
-  scope :opened, where(:visibility => 'open')
-  scope :hidden, where(:visibility => 'hidden')
-  scope :by_type, lambda {|type| where(:platform_type => type) if type.present?}
+  scope :by_visibilities, lambda {|v| where(visibility: v)}
+  scope :opened, where(visibility: 'open')
+  scope :hidden, where(visibility: 'hidden')
+  scope :by_type, lambda {|type| where(platform_type: type) if type.present?}
   scope :main, by_type('main')
   scope :personal, by_type('personal')
-  scope :waiting_for_regeneration, where(:status => WAITING_FOR_REGENERATION)
+  scope :waiting_for_regeneration, where(status: WAITING_FOR_REGENERATION)
 
-  accepts_nested_attributes_for :platform_arch_settings, :allow_destroy => true
+  accepts_nested_attributes_for :platform_arch_settings, allow_destroy: true
   attr_accessible :name, :distrib_type, :parent_platform_id, :platform_type, :owner, :visibility, :description, :released, :platform_arch_settings_attributes
   attr_readonly   :name, :distrib_type, :parent_platform_id, :platform_type
 
   include Modules::Models::Owner
 
-  state_machine :status, :initial => :ready do
+  state_machine :status, initial: :ready do
     event :ready do
-      transition :regenerating => :ready
+      transition regenerating: :ready
     end
 
     event :regenerate do
-      transition :ready => :waiting_for_regeneration, :if => lambda{ |p| p.main? }
+      transition ready: :waiting_for_regeneration, if: lambda{ |p| p.main? }
     end
 
     event :start_regeneration do
-      transition :waiting_for_regeneration => :regenerating
+      transition waiting_for_regeneration: :regenerating
     end
 
     HUMAN_STATUSES.each do |code,name|
-      state name, :value => code
+      state name, value: code
     end
   end
 
@@ -95,7 +95,7 @@ class Platform < ActiveRecord::Base
     urpmi_commands = ActiveSupport::OrderedHash.new
 
     # TODO: rename method or create separate methods for mdv and rhel
-    # Platform.main.opened.where(:distrib_type => APP_CONFIG['distr_types'].first).each do |pl|
+    # Platform.main.opened.where(distrib_type: APP_CONFIG['distr_types'].first).each do |pl|
     Platform.main.opened.each do |pl|
       urpmi_commands[pl.name] = {}
       # FIXME should support restricting access to the hidden platform
@@ -158,7 +158,7 @@ class Platform < ActiveRecord::Base
   end
 
   def clone_relations(from = parent)
-    self.repositories = from.repositories.map{|r| r.full_clone(:platform_id => id)}
+    self.repositories = from.repositories.map{|r| r.full_clone(platform_id: id)}
     self.products     = from.products.map(&:full_clone)
   end
 
@@ -170,9 +170,9 @@ class Platform < ActiveRecord::Base
 
   def change_visibility
     if !hidden?
-      update_attributes(:visibility => 'hidden')
+      update_attributes(visibility: 'hidden')
     else
-      update_attributes(:visibility => 'open')
+      update_attributes(visibility: 'open')
     end
   end
 
@@ -191,15 +191,15 @@ class Platform < ActiveRecord::Base
 
   def update_owner_relation
     if owner_id_was != owner_id
-      r = relations.where(:actor_id => owner_id_was, :actor_type => owner_type_was).first
-      r.update_attributes(:actor_id => owner_id, :actor_type => owner_type)
+      r = relations.where(actor_id: owner_id_was, actor_type: owner_type_was).first
+      r.update_attributes(actor_id: owner_id, actor_type: owner_type)
     end
   end
 
   def destroy
     with_skip {super} # avoid cascade XML RPC requests
   end
-  later :destroy, :queue => :clone_build
+  later :destroy, queue: :clone_build
 
   def default_host
     EventLog.current_controller.request.host_with_port rescue ::Rosa::Application.config.action_mailer.default_url_options[:host]
@@ -217,12 +217,12 @@ class Platform < ActiveRecord::Base
       token, pass = *ActionController::HttpAuthentication::Basic::user_name_and_password(request)
     end
 
-    Rails.cache.fetch([platform_name, token, :platform_allowed], :expires_in => 2.minutes) do
+    Rails.cache.fetch([platform_name, token, :platform_allowed], expires_in: 2.minutes) do
       platform = Platform.find_by_name platform_name
       next false  unless platform
       next true   unless platform.hidden?
       next false  unless token
-      next true   if platform.tokens.by_active.where(:authentication_token => token).exists?
+      next true   if platform.tokens.by_active.where(authentication_token: token).exists?
 
       user = User.find_by_authentication_token token
       current_ability = Ability.new(user)
@@ -252,11 +252,11 @@ class Platform < ActiveRecord::Base
     def fs_clone(old_name = parent.name, new_name = name)
       FileUtils.cp_r "#{parent.path}/repository", path
     end
-    later :fs_clone, :queue => :clone_build
+    later :fs_clone, queue: :clone_build
 
     def freeze_platform_and_update_repos
       if released_changed? && released == true
-        repositories.update_all(:publish_without_qa => false)
+        repositories.update_all(publish_without_qa: false)
       end
     end
 end

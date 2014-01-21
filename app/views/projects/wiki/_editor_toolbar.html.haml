@@ -1,51 +1,51 @@
 #gollum-editor-function-bar
   #gollum-editor-function-buttons
-    = link_to "#", :id => "function-bold", :class => "function-button", :title => t("wiki.editor.bold") do
+    = link_to "#", id: "function-bold", class: "function-button", title: t("wiki.editor.bold") do
       %span= t("wiki.editor.bold")
-    = link_to "#", :id => "function-italic", :class => "function-button", :title => t("wiki.editor.italic") do
+    = link_to "#", id: "function-italic", class: "function-button", title: t("wiki.editor.italic") do
       %span= t("wiki.editor.italic")
-    = link_to "#", :id => "function-code", :class => "function-button", :title => t("wiki.editor.code") do
+    = link_to "#", id: "function-code", class: "function-button", title: t("wiki.editor.code") do
       %span= t("wiki.editor.code")
 
     %span.function-divider &nbsp;
 
-    = link_to "#", :id => "function-ul", :class => "function-button", :title => t("wiki.editor.unordered_list") do
+    = link_to "#", id: "function-ul", class: "function-button", title: t("wiki.editor.unordered_list") do
       %span= t("wiki.editor.unordered_list")
-    = link_to "#", :id => "function-ol", :class => "function-button", :title => t("wiki.editor.ordered_list") do
+    = link_to "#", id: "function-ol", class: "function-button", title: t("wiki.editor.ordered_list") do
       %span= t("wiki.editor.ordered_list")
-    = link_to "#", :id => "function-blockquote", :class => "function-button", :title => t("wiki.editor.blockquote") do
+    = link_to "#", id: "function-blockquote", class: "function-button", title: t("wiki.editor.blockquote") do
       %span= t("wiki.editor.blockquote")
-    = link_to "#", :id => "function-hr", :class => "function-button", :title => t("wiki.editor.horizontal_rule") do
+    = link_to "#", id: "function-hr", class: "function-button", title: t("wiki.editor.horizontal_rule") do
       %span= t("wiki.editor.horizontal_rule")
 
     %span.function-divider &nbsp;
 
-    = link_to "#", :id => "function-h1", :class => "function-button", :title => t("wiki.editor.h1") do
+    = link_to "#", id: "function-h1", class: "function-button", title: t("wiki.editor.h1") do
       %span= t("wiki.editor.h1")
-    = link_to "#", :id => "function-h2", :class => "function-button", :title => t("wiki.editor.h2") do
+    = link_to "#", id: "function-h2", class: "function-button", title: t("wiki.editor.h2") do
       %span= t("wiki.editor.h2")
-    = link_to "#", :id => "function-h3", :class => "function-button", :title => t("wiki.editor.h3") do
+    = link_to "#", id: "function-h3", class: "function-button", title: t("wiki.editor.h3") do
       %span= t("wiki.editor.h3")
 
     %span.function-divider &nbsp;
 
-    = link_to "#", :id => "function-link", :class => "function-button", :title => t("wiki.editor.link") do
+    = link_to "#", id: "function-link", class: "function-button", title: t("wiki.editor.link") do
       %span= t("wiki.editor.link")
-    = link_to "#", :id => "function-image", :class => "function-button", :title => t("wiki.editor.image") do
+    = link_to "#", id: "function-image", class: "function-button", title: t("wiki.editor.image") do
       %span= t("wiki.editor.image")
 
     %span.function-divider &nbsp;
 
-    = link_to "#", :id => "function-help", :class => "function-button", :title => t("wiki.editor.help") do
+    = link_to "#", id: "function-help", class: "function-button", title: t("wiki.editor.help") do
       %span= t("wiki.editor.help")
 
   #gollum-editor-format-selector
-    = select_tag :format, options_for_select(wiki_formats, format), :id => "wiki_format"
+    = select_tag :format, options_for_select(wiki_formats, format), id: "wiki_format"
     = label_tag :format, t("wiki.editor.format")
 
 #gollum-editor-help.jaws
   %ul#gollum-editor-help-parent
-    %li= link_to "help_1", "javascript:void(0);", :class => "selected"
+    %li= link_to "help_1", "javascript:void(0);", class: "selected"
     %li= link_to "help_1", "javascript:void(0);"
     %li= link_to "help_1", "javascript:void(0);"
   %ul#gollum-editor-help-list

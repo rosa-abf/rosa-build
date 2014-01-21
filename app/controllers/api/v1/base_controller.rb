@@ -47,7 +47,7 @@ class Api::V1::BaseController < ApplicationController
     role = params[:role]
     class_name = subject.class.name.downcase
     if member.present? && role.present? && subject.respond_to?(:owner) && subject.owner != member &&
-      subject.send(relation).by_actor(member).update_all(:role => role)
+      subject.send(relation).by_actor(member).update_all(role: role)
       render_json_response subject, "Role for #{member.class.name.downcase} '#{member.id} has been updated in #{class_name} successfully"
     else
       render_validation_error subject, "Role for member has not been updated in #{class_name}"
@@ -89,12 +89,12 @@ class Api::V1::BaseController < ApplicationController
   def render_json_response(subject, message, status = 200)
     id = status != 200 ? nil : subject.id
 
-    render :json => {
+    render json: {
       subject.class.name.underscore.to_sym => {
-        :id => id,
-        :message => message
+        id: id,
+        message: message
       }
-    }.to_json, :status => status
+    }.to_json, status: status
   end
 
   def render_validation_error(subject, message)
@@ -103,9 +103,9 @@ class Api::V1::BaseController < ApplicationController
 
   def member_path(subject)
     if subject.is_a?(User)
-      api_v1_user_path(subject.id, :format => :json)
+      api_v1_user_path(subject.id, format: :json)
     else
-      api_v1_group_path(subject.id, :format => :json)
+      api_v1_group_path(subject.id, format: :json)
     end
   end
 
@@ -113,7 +113,7 @@ class Api::V1::BaseController < ApplicationController
 
   def member
     if @member.blank? && %w(User Group).include?(params[:type])
-      @member = params[:type].constantize.where(:id => params[:member_id]).first
+      @member = params[:type].constantize.where(id: params[:member_id]).first
     end
     @member
   end

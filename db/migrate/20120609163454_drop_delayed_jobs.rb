@@ -5,8 +5,8 @@ class DropDelayedJobs < ActiveRecord::Migration
 
   def down
     create_table :delayed_jobs do |t|
-      t.integer  "priority",   :default => 0
-      t.integer  "attempts",   :default => 0
+      t.integer  "priority",   default: 0
+      t.integer  "attempts",   default: 0
       t.text     "handler"
       t.text     "last_error"
       t.datetime "run_at"
@@ -15,8 +15,8 @@ class DropDelayedJobs < ActiveRecord::Migration
       t.string   "locked_by"
       t.datetime "created_at"
       t.datetime "updated_at"
-      t.string   "queue",      :default => "default"
+      t.string   "queue",      default: "default"
     end
-    add_index :delayed_jobs, ["priority", "run_at"], :name => "delayed_jobs_priority"
+    add_index :delayed_jobs, ["priority", "run_at"], name: "delayed_jobs_priority"
   end
 end

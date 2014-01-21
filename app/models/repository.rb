@@ -2,24 +2,24 @@ class Repository < ActiveRecord::Base
   extend FriendlyId
   friendly_id :name
 
-  LOCK_FILE_NAMES = {:sync => '.sync.lock', :repo => '.repo.lock'}
+  LOCK_FILE_NAMES = {sync: '.sync.lock', repo: '.repo.lock'}
   SORT = {'base' => 1, 'main' => 2, 'contrib' => 3, 'non-free' => 4, 'restricted' => 5}
 
   belongs_to :platform
 
-  has_many :relations, :as => :target, :dependent => :destroy
-  has_many :actors, :as => :target, :class_name => 'Relation', :dependent => :destroy
-  has_many :members, :through => :actors, :source => :actor, :source_type => 'User'
+  has_many :relations, as: :target, dependent: :destroy
+  has_many :actors, as: :target, class_name: 'Relation', dependent: :destroy
+  has_many :members, through: :actors, source: :actor, source_type: 'User'
 
-  has_many :project_to_repositories, :dependent => :destroy, :validate => true
-  has_many :projects, :through => :project_to_repositories
-  has_many :repository_statuses, :dependent => :destroy
-  has_one  :key_pair, :dependent => :destroy
+  has_many :project_to_repositories, dependent: :destroy, validate: true
+  has_many :projects, through: :project_to_repositories
+  has_many :repository_statuses, dependent: :destroy
+  has_one  :key_pair, dependent: :destroy
 
-  has_many :build_lists, :foreign_key => :save_to_repository_id, :dependent => :destroy
+  has_many :build_lists, foreign_key: :save_to_repository_id, dependent: :destroy
 
-  validates :description, :presence => true
-  validates :name, :uniqueness => {:scope => :platform_id, :case_sensitive => false}, :presence => true, :format => {:with => /\A[a-z0-9_\-]+\z/}
+  validates :description, presence: true
+  validates :name, uniqueness: {scope: :platform_id, case_sensitive: false}, presence: true, format: {with: /\A[a-z0-9_\-]+\z/}
 
   scope :recent, order("#{table_name}.name ASC")
 
@@ -55,7 +55,7 @@ class Repository < ActiveRecord::Base
       from.projects.find_each {|p| self.projects << p}
     end
   end
-  later :clone_relations, :loner => true, :queue => :clone_build
+  later :clone_relations, loner: true, queue: :clone_build
 
   def add_projects(list, user)
     current_ability = Ability.new(user)
@@ -65,25 +65,25 @@ class Repository < ActiveRecord::Base
         owner, name = line.split('/')
         next if owner.blank? || name.blank?
 
-        project = Project.where(:owner_uname => owner, :name => name).accessible_by(current_ability, :read).first
+        project = Project.where(owner_uname: owner, name: name).accessible_by(current_ability, :read).first
         projects << project if project
       rescue RuntimeError, Exception
       end
     end
   end
-  later :add_projects, :queue => :clone_build
+  later :add_projects, queue: :clone_build
 
   def remove_projects(list)
     list.lines.each do |name|
       begin
         name.chomp!; name.strip!
         next if name.blank?
-        project_to_repositories.where(:projects => { :name => name }).joins(:project).destroy_all
+        project_to_repositories.where(projects: { name: name }).joins(:project).destroy_all
       rescue RuntimeError, Exception
       end
     end
   end
-  later :remove_projects, :queue => :clone_build
+  later :remove_projects, queue: :clone_build
 
   def full_clone(attrs = {})
     base_clone(attrs).tap do |c|
@@ -144,7 +144,7 @@ class Repository < ActiveRecord::Base
   def destroy
     with_skip {super} # avoid cascade XML RPC requests
   end
-  later :destroy, :queue => :clone_build
+  later :destroy, queue: :clone_build
 
   def self.custom_sort(repos)
     repos.select{ |r| SORT.keys.include?(r.name) }.sort{ |a,b| SORT[a.name] <=>  SORT[b.name] } | repos.sort_by(&:name)

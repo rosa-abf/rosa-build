@@ -5,18 +5,18 @@ shared_context "comments controller" do
     stub_symlink_methods
 
     @project = FactoryGirl.create(:project)
-    @issue = FactoryGirl.create(:issue, :project_id => @project.id)
-    @comment = FactoryGirl.create(:comment, :commentable => @issue, :project_id => @project.id)
+    @issue = FactoryGirl.create(:issue, project_id: @project.id)
+    @comment = FactoryGirl.create(:comment, commentable: @issue, project_id: @project.id)
 
     @user = FactoryGirl.create(:user)
-    @own_comment = FactoryGirl.create(:comment, :commentable => @issue, :user => @user, :project_id => @project.id)
+    @own_comment = FactoryGirl.create(:comment, commentable: @issue, user: @user, project_id: @project.id)
 
     set_session_for(@user)
 
-    @path = {:owner_name => @project.owner.uname, :project_name => @project.name, :issue_id => @issue.serial_id}
+    @path = {owner_name: @project.owner.uname, project_name: @project.name, issue_id: @issue.serial_id}
     @return_path = project_issue_path(@project, @issue)
-    @create_params = {:comment => {:body => 'I am a comment!'}}.merge(@path)
-    @update_params = {:comment => {:body => 'updated'}}.merge(@path)
+    @create_params = {comment: {body: 'I am a comment!'}}.merge(@path)
+    @update_params = {comment: {body: 'updated'}}.merge(@path)
   end
 
 end
@@ -38,7 +38,7 @@ describe Projects::CommentsController do
 
   context 'for project admin user' do
     before(:each) do
-      @project.relations.create!(:actor_type => 'User', :actor_id => @user.id, :role => 'admin')
+      @project.relations.create!(actor_type: 'User', actor_id: @user.id, role: 'admin')
     end
 
     it_should_behave_like 'user with create comment ability'
@@ -60,7 +60,7 @@ describe Projects::CommentsController do
 
   context 'for project reader user' do
     before(:each) do
-      @project.relations.create!(:actor_type => 'User', :actor_id => @user.id, :role => 'reader')
+      @project.relations.create!(actor_type: 'User', actor_id: @user.id, role: 'reader')
     end
 
    it_should_behave_like 'user with create comment ability'
@@ -71,7 +71,7 @@ describe Projects::CommentsController do
 
   context 'for project writer user' do
     before(:each) do
-      @project.relations.create!(:actor_type => 'User', :actor_id => @user.id, :role => 'writer')
+      @project.relations.create!(actor_type: 'User', actor_id: @user.id, role: 'writer')
     end
 
    it_should_behave_like 'user with create comment ability'

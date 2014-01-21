@@ -1,14 +1,14 @@
 #will_paginate{'ng-show' => 'pages'}
   .pagination
     %div{'ng-class' => "{'disabled': !page.active}", 'ng-repeat' => 'page in pages', 'ng-switch' => 'page.type'}
-      %a{'ng-switch-when' => 'previous_page', 'ng-click' => 'goToPage(page.number)', :href => ''}
+      %a{'ng-switch-when' => 'previous_page', 'ng-click' => 'goToPage(page.number)', href: ''}
         = t('datatables.previous_label')
-      %a{'ng-switch-when' => 'first', :href => ''}
+      %a{'ng-switch-when' => 'first', href: ''}
         {{page.number}}
-      %a{'ng-switch-when' => 'page', 'ng-click' => 'goToPage(page.number)', :href => ''}
+      %a{'ng-switch-when' => 'page', 'ng-click' => 'goToPage(page.number)', href: ''}
         {{page.number}}
-      %a{'ng-switch-when' => 'more', 'ng-click' => 'goToPage(page.number)', :href => ''} …
-      %a{'ng-switch-when' => 'last', 'ng-click' => 'goToPage(page.number)', :href => ''}
+      %a{'ng-switch-when' => 'more', 'ng-click' => 'goToPage(page.number)', href: ''} …
+      %a{'ng-switch-when' => 'last', 'ng-click' => 'goToPage(page.number)', href: ''}
         {{page.number}}
-      %a{'ng-switch-when' => 'next_page', 'ng-click' => 'goToPage(page.number)', :href => ''}
+      %a{'ng-switch-when' => 'next_page', 'ng-click' => 'goToPage(page.number)', href: ''}
         = t('datatables.next_label')

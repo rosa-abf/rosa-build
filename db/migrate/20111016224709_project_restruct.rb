@@ -1,8 +1,8 @@
 class ProjectRestruct < ActiveRecord::Migration
   def self.up
     change_table :projects do |t|
-      t.references :owner, :polymorphic => true
-      t.string :visibility, :default => 'open'
+      t.references :owner, polymorphic: true
+      t.string :visibility, default: 'open'
     end
   end
 

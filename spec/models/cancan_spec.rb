@@ -16,15 +16,15 @@ def guest_create
 end
 
 describe CanCan do
-  let(:open_platform) { FactoryGirl.create(:platform, :visibility => 'open') }
+  let(:open_platform) { FactoryGirl.create(:platform, visibility: 'open') }
 
   before(:each) do
     stub_symlink_methods
   end
 
   context 'Site admin' do
-    let(:personal_platform) { FactoryGirl.create(:platform, :platform_type => 'personal') }
-    let(:personal_repository_main) { FactoryGirl.create(:personal_repository, :name => 'main') }
+    let(:personal_platform) { FactoryGirl.create(:platform, platform_type: 'personal') }
+    let(:personal_repository_main) { FactoryGirl.create(:personal_repository, name: 'main') }
     let(:personal_repository) { FactoryGirl.create(:personal_repository) }
     before(:each) do
       admin_create
@@ -114,7 +114,7 @@ describe CanCan do
     end
 
     it "shoud be able to read open projects" do
-      @project = FactoryGirl.create(:project, :visibility => 'open')
+      @project = FactoryGirl.create(:project, visibility: 'open')
       @ability.should be_able_to(:read, @project)
     end
 
@@ -148,12 +148,12 @@ describe CanCan do
     context 'as project collaborator' do
       before(:each) do
         @project = FactoryGirl.create(:project_with_commit)
-        @issue = FactoryGirl.create(:issue, :project_id => @project.id)
+        @issue = FactoryGirl.create(:issue, project_id: @project.id)
       end
 
       context 'with read rights' do
         before(:each) do
-          @project.relations.create!(:actor_id => @user.id, :actor_type => 'User', :role => 'reader')
+          @project.relations.create!(actor_id: @user.id, actor_type: 'User', role: 'reader')
         end
 
         it 'should be able to read project' do
@@ -167,7 +167,7 @@ describe CanCan do
 
       context 'with writer rights' do
         before(:each) do
-          @project.relations.create!(:actor_id => @user.id, :actor_type => 'User', :role => 'writer')
+          @project.relations.create!(actor_id: @user.id, actor_type: 'User', role: 'writer')
         end
 
         [:read, :create, :new].each do |action|
@@ -178,7 +178,7 @@ describe CanCan do
 
         [:new, :create].each do |action|
           it "should be able to #{action} build_list" do
-            @build_list = FactoryGirl.create(:build_list_with_attaching_project, :project => @project)
+            @build_list = FactoryGirl.create(:build_list_with_attaching_project, project: @project)
             @ability.should be_able_to(action, @build_list)
           end
         end
@@ -186,7 +186,7 @@ describe CanCan do
 
       context 'with admin rights' do
         before(:each) do
-          @project.relations.create!(:actor_id => @user.id, :actor_type => 'User', :role => 'admin')
+          @project.relations.create!(actor_id: @user.id, actor_type: 'User', role: 'admin')
         end
 
         [:read, :update].each do |action|
@@ -197,7 +197,7 @@ describe CanCan do
 
         [:new, :create].each do |action|
           it "should be able to #{action} build_list" do
-            @build_list = FactoryGirl.create(:build_list_with_attaching_project, :project => @project)
+            @build_list = FactoryGirl.create(:build_list_with_attaching_project, project: @project)
             @ability.should be_able_to(action, @build_list)
           end
         end
@@ -215,8 +215,8 @@ describe CanCan do
 
       context 'with owner rights' do
         before(:each) do
-          @project = FactoryGirl.create(:project_with_commit, :owner => @user)
-          @issue = FactoryGirl.create(:issue, :project_id => @project.id)
+          @project = FactoryGirl.create(:project_with_commit, owner: @user)
+          @issue = FactoryGirl.create(:issue, project_id: @project.id)
         end
 
         [:read, :update, :destroy].each do |action|
@@ -227,7 +227,7 @@ describe CanCan do
 
         [:new, :create].each do |action|
           it "should be able to #{action} build_list" do
-            @build_list = FactoryGirl.create(:build_list_with_attaching_project, :project => @project)
+            @build_list = FactoryGirl.create(:build_list_with_attaching_project, project: @project)
             @ability.should be_able_to(action, @build_list)
           end
         end
@@ -242,7 +242,7 @@ describe CanCan do
       context 'through group-member' do
         before(:each) do
           @group_member = FactoryGirl.create(:group)
-          @project.relations.create!(:actor_id => @group_member.id, :actor_type => 'Group', :role => 'reader')
+          @project.relations.create!(actor_id: @group_member.id, actor_type: 'Group', role: 'reader')
           @group_member_ability = Ability.new(@group_member.owner)
         end
 
@@ -257,7 +257,7 @@ describe CanCan do
 
         it 'should include hidden project in list' do
           @project.update_attribute :visibility, 'hidden'
-         Project.accessible_by(@group_member_ability, :show).where(:projects => {:id => @project.id}).count.should == 1
+         Project.accessible_by(@group_member_ability, :show).where(projects: {id: @project.id}).count.should == 1
         end
       end
     end
@@ -289,7 +289,7 @@ describe CanCan do
 
       context 'with read rights' do
         before(:each) do
-          @platform.relations.create!(:actor_id => @user.id, :actor_type => 'User', :role => 'reader')
+          @platform.relations.create!(actor_id: @user.id, actor_type: 'User', role: 'reader')
           @ability = Ability.new(@user)
         end
 
@@ -325,7 +325,7 @@ describe CanCan do
 
       context 'with read rights' do
         before(:each) do
-          @repository.platform.relations.create!(:actor_id => @user.id, :actor_type => 'User', :role => 'reader')
+          @repository.platform.relations.create!(actor_id: @user.id, actor_type: 'User', role: 'reader')
         end
 
         it "should be able to read repository" do

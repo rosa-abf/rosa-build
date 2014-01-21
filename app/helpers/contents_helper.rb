@@ -8,9 +8,9 @@ module ContentsHelper
     compound_path = ''
     paths.map do |p|
       compound_path << p << '/' if p != '/'
-      link_to(platform_content_path(platform, compound_path), {:remote => true}) do
-        content_tag(:span, p, {:class => 'text'}) +
-        content_tag(:span, '', {:class => 'arrow-right'})
+      link_to(platform_content_path(platform, compound_path), {remote: true}) do
+        content_tag(:span, p, {class: 'text'}) +
+        content_tag(:span, '', {class: 'arrow-right'})
       end
     end.join.html_safe
   end

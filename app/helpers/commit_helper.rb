@@ -6,11 +6,11 @@ module CommitHelper
       res << "<tr>"
       res << "<td><a href='#diff-#{ind}'>#{h(filename.rtruncate 120)}</a></td>"
       res << "<td class='diffstat'>"
-      res << I18n.t("layout.projects.inline_changes_count", :count => total).strip +
+      res << I18n.t("layout.projects.inline_changes_count", count: total).strip +
              " (" +
-             I18n.t("layout.projects.inline_additions_count", :count => adds).strip +
+             I18n.t("layout.projects.inline_additions_count", count: adds).strip +
              ", " +
-             I18n.t("layout.projects.inline_deletions_count", :count => deletes).strip +
+             I18n.t("layout.projects.inline_deletions_count", count: deletes).strip +
              ")"
       res << "</td>"
       ind +=1
@@ -25,7 +25,7 @@ module CommitHelper
 #  end
 
   def commit_date(date)
-    I18n.localize(date, { :format => "%d %B %Y" })
+    I18n.localize(date, { format: "%d %B %Y" })
   end
 
   def short_hash_id(id)
@@ -39,7 +39,7 @@ module CommitHelper
   def commit_author_link(author)
     name = author.name
     email = author.email
-    u = User.where(:email => email).first
+    u = User.where(email: email).first
     u.present? ? link_to(name, user_path(u)) : mail_to(email, name)
   end
 

@@ -69,19 +69,19 @@ module GitHelper
   def branch_selector_options(project)
     p, tag_enabled = params.dup, !(controller_name == 'trees' && action_name == 'branches')
     p.delete(:path) if p[:path].present? # to root path
-    p.merge!(:project_id => project.id, :treeish => project.default_branch).delete(:id) unless p[:treeish].present?
+    p.merge!(project_id: project.id, treeish: project.default_branch).delete(:id) unless p[:treeish].present?
     current = url_for(p).split('?', 2).first
 
     res = []
     if params[:treeish].present? && !project.repo.branches_and_tags.map(&:name).include?(params[:treeish])
       res << [I18n.t('layout.git.repositories.commits'), [params[:treeish].truncate(20)]]
     end
-    linking = Proc.new {|name| [name.truncate(20), url_for(p.merge :treeish => name).split('?', 2).first]}
+    linking = Proc.new {|name| [name.truncate(20), url_for(p.merge treeish: name).split('?', 2).first]}
     res << [I18n.t('layout.git.repositories.branches'), project.repo.branches.map(&:name).sort.map(&linking)]
     if tag_enabled
       res << [I18n.t('layout.git.repositories.tags'), project.repo.tags.map(&:name).sort.map(&linking)]
     else
-      res << [I18n.t('layout.git.repositories.tags'), project.repo.tags.map(&:name).sort.map {|name| [name.truncate(20), {:disabled => true}]}]
+      res << [I18n.t('layout.git.repositories.tags'), project.repo.tags.map(&:name).sort.map {|name| [name.truncate(20), {disabled: true}]}]
     end
     grouped_options_for_select(res, current)
   end

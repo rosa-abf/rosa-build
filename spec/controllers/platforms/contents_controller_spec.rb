@@ -3,7 +3,7 @@ require 'spec_helper'
 shared_examples_for 'content platform user without show rights for hidden platform' do
   it 'should not be able to perform index action' do
     @platform.update_column(:visibility, 'hidden')
-    get :index, :platform_id => @platform
+    get :index, platform_id: @platform
     response.should_not be_success
   end
 end
@@ -11,19 +11,19 @@ end
 shared_examples_for 'content platform user with show rights for hidden platform' do
   it 'should be able to perform index action' do
     @platform.update_column(:visibility, 'hidden')
-    get :index, :platform_id => @platform
+    get :index, platform_id: @platform
     response.should be_success
   end
 end
 
 shared_examples_for 'content platform user with show rights' do
   it 'should be able to perform index action for main platform' do
-    get :index, :platform_id => @platform
+    get :index, platform_id: @platform
     response.should be_success
   end
 
   it 'should be able to perform index action for personal platform' do
-    get :index, :platform_id => @personal_platform
+    get :index, platform_id: @personal_platform
     response.should be_success
   end
 end
@@ -33,20 +33,20 @@ describe Platforms::ContentsController do
     stub_symlink_methods
 
     @platform = FactoryGirl.create(:platform)
-    @personal_platform = FactoryGirl.create(:platform, :platform_type => 'personal')
+    @personal_platform = FactoryGirl.create(:platform, platform_type: 'personal')
 
     @user = FactoryGirl.create(:user)
   end
 
   context 'for guest' do
 
-    it 'should not be able to perform index action for main platform', :anonymous_access => false do
-      get :index, :platform_id => @platform
+    it 'should not be able to perform index action for main platform', anonymous_access: false do
+      get :index, platform_id: @platform
       response.should_not be_success
     end
 
-    it 'should not be able to perform index action for personal platform', :anonymous_access => false do
-      get :index, :platform_id => @personal_platform
+    it 'should not be able to perform index action for personal platform', anonymous_access: false do
+      get :index, platform_id: @personal_platform
       response.should_not be_success
     end
 
@@ -67,7 +67,7 @@ describe Platforms::ContentsController do
     before do
       http_login(@user)
       @platform.owner = @user; @platform.save
-      @platform.relations.create!(:actor_type => 'User', :actor_id => @user.id, :role => 'admin')
+      @platform.relations.create!(actor_type: 'User', actor_id: @user.id, role: 'admin')
     end
 
     it_should_behave_like 'content platform user with show rights'

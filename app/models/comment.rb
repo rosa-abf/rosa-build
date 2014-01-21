@@ -7,17 +7,17 @@ class Comment < ActiveRecord::Base
   # #Num
   ISSUES_REGEX = /(?:[a-zA-Z0-9\-_]*\/)?(?:[a-zA-Z0-9\-_]*)?#[0-9]+/
 
-  belongs_to :commentable, :polymorphic => true, :touch => true
+  belongs_to :commentable, polymorphic: true, touch: true
   belongs_to :user
   belongs_to :project
   serialize :data
 
-  validates :body, :user_id, :commentable_id, :commentable_type, :project_id, :presence => true
+  validates :body, :user_id, :commentable_id, :commentable_type, :project_id, presence: true
 
-  scope :for_commit, lambda {|c| where(:commentable_id => c.id.hex, :commentable_type => c.class)}
+  scope :for_commit, lambda {|c| where(commentable_id: c.id.hex, commentable_type: c.class)}
   default_scope order("#{table_name}.created_at")
 
-  after_create :subscribe_on_reply, :unless => lambda {|c| c.commit_comment?}
+  after_create :subscribe_on_reply, unless: lambda {|c| c.commit_comment?}
   after_create :subscribe_users
 
   attr_accessible :body, :data
@@ -91,11 +91,11 @@ class Comment < ActiveRecord::Base
 
   def set_additional_data params
     return true if params[:path].blank? && params[:line].blank? # not inline comment
-    if params[:in_reply].present? && reply = Comment.where(:id => params[:in_reply]).first
+    if params[:in_reply].present? && reply = Comment.where(id: params[:in_reply]).first
       self.data = reply.data
       return true
     end
-    self.data = {:path => params[:path], :line => params[:line]}
+    self.data = {path: params[:path], line: params[:line]}
     return actual_inline_comment?(nil, true) if commentable.is_a?(Grit::Commit)
     if commentable.is_a?(Issue) && pull = commentable.pull_request
       diff_path = pull.diff.select {|d| d.a_path == params[:path]}
@@ -140,13 +140,13 @@ class Comment < ActiveRecord::Base
       opts = {}
     when item.is_a?(Issue)
       elements = [[item, item.title], [item, item.body]]
-      opts = {:created_from_issue_id => item.id}
+      opts = {created_from_issue_id: item.id}
     when item.commentable_type == 'Issue'
       elements = [[item, item.body]]
-      opts = {:created_from_issue_id => item.commentable_id}
+      opts = {created_from_issue_id: item.commentable_id}
     when item.commentable_type == 'Grit::Commit'
       elements = [[item, item.body]]
-      opts = {:created_from_commit_hash => item.commentable_id}
+      opts = {created_from_commit_hash: item.commentable_id}
     else
       raise "Unsupported item type #{item.class.name}!"
     end
@@ -157,18 +157,18 @@ class Comment < ActiveRecord::Base
         next unless issue
         # dont create link to the same issue
         next if opts[:created_from_issue_id] == issue.id
-        opts = {:created_from_commit_hash => element[0].hex} if item.is_a?(GitHook)
+        opts = {created_from_commit_hash: element[0].hex} if item.is_a?(GitHook)
         # dont create duplicate link to issue
         next if Comment.find_existing_automatic_comment issue, opts
         # dont create link to outdated commit
         next if item.is_a?(GitHook) && !item.project.repo.commit(element[0])
-        comment = linker.comments.new :body => 'automatic comment'
+        comment = linker.comments.new body: 'automatic comment'
         comment.commentable, comment.project, comment.automatic = issue, issue.project, true
-        comment.data = {:from_project_id => item.project.id}
+        comment.data = {from_project_id: item.project.id}
         if opts[:created_from_commit_hash]
           comment.created_from_commit_hash = opts[:created_from_commit_hash]
         elsif opts[:created_from_issue_id]
-          comment.data.merge!(:comment_id => item.id) if item.is_a? Comment
+          comment.data.merge!(comment_id: item.id) if item.is_a? Comment
           comment.created_from_issue_id = opts[:created_from_issue_id]
         else
           raise 'Unsupported opts for automatic comment!'
@@ -187,25 +187,25 @@ class Comment < ActiveRecord::Base
   protected
 
   def subscribe_on_reply
-    commentable.subscribes.create(:user_id => user_id) if !commentable.subscribes.exists?(:user_id => user_id)
+    commentable.subscribes.create(user_id: user_id) if !commentable.subscribes.exists?(user_id: user_id)
   end
 
   def subscribe_users
     if issue_comment?
-      commentable.subscribes.create(:user => user) if !commentable.subscribes.exists?(:user_id => user.id)
+      commentable.subscribes.create(user: user) if !commentable.subscribes.exists?(user_id: user.id)
     elsif commit_comment?
       recipients = project.admins
-      recipients << user << User.where(:email => commentable.try(:committer).try(:email)).first # commentor and committer
+      recipients << user << User.where(email: commentable.try(:committer).try(:email)).first # commentor and committer
       recipients.compact.uniq.each do |user|
-        options = {:project_id => project.id, :subscribeable_id => commentable_id, :subscribeable_type => commentable.class.name, :user_id => user.id}
+        options = {project_id: project.id, subscribeable_id: commentable_id, subscribeable_type: commentable.class.name, user_id: user.id}
         Subscribe.subscribe_to_commit(options) if Subscribe.subscribed_to_commit?(project, user, commentable)
       end
     end
   end
 
   def self.find_existing_automatic_comment issue, opts
-    find_dup = opts.merge(:automatic => true, :commentable_type => issue.class.name,
-                          :commentable_id => issue.id)
+    find_dup = opts.merge(automatic: true, commentable_type: issue.class.name,
+                          commentable_id: issue.id)
     Comment.exists? find_dup
   end
 end

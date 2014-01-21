@@ -1,6 +1,6 @@
 class CreateBuildLists < ActiveRecord::Migration
   def self.up
-    create_table :build_lists, :force => true do |t|
+    create_table :build_lists, force: true do |t|
       t.integer :bs_id
       t.string :container_path
       t.integer :status
@@ -14,7 +14,7 @@ class CreateBuildLists < ActiveRecord::Migration
       t.timestamps
     end
 
-    add_index :build_lists, :bs_id, :unique => true
+    add_index :build_lists, :bs_id, unique: true
     add_index :build_lists, :project_id
     add_index :build_lists, :arch_id
   end

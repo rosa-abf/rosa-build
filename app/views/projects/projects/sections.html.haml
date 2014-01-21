@@ -1,23 +1,23 @@
--set_meta_tags :title => [title_object(@project), t('layout.projects.sections')]
+-set_meta_tags title: [title_object(@project), t('layout.projects.sections')]
 = render 'submenu'
 = render 'sidebar'
 
-= form_for @project, :url => sections_project_path(@project), :method => :post, :html => { :class => :form, :multipart => true } do |f|
+= form_for @project, url: sections_project_path(@project), method: :post, html: { class: :form, multipart: true } do |f|
   .leftside.w25
-    %span.niceCheck-main{:onclick => "changeCheck(this)"}= f.check_box :has_issues
+    %span.niceCheck-main{onclick: "changeCheck(this)"}= f.check_box :has_issues
   .leftside.w420
     = t("activerecord.attributes.project.has_issues")
     %br
-    %span{:style => "font-size: 11px;"}= t("layout.projects.has_issue_description")
+    %span{style: "font-size: 11px;"}= t("layout.projects.has_issue_description")
   .both
   .leftside.w25
-    %span.niceCheck-main{:onclick => "changeCheck(this)"}= f.check_box :has_wiki, :class => 'niceCheck-main'
+    %span.niceCheck-main{onclick: "changeCheck(this)"}= f.check_box :has_wiki, class: 'niceCheck-main'
   .leftside.w420
     = t("activerecord.attributes.project.has_wiki")
     %br
-    %span{:style => "font-size: 11px;"}= t("layout.projects.has_wiki_description")
+    %span{style: "font-size: 11px;"}= t("layout.projects.has_wiki_description")
   .both
-  .padd25= submit_tag t('layout.save'), :class => 'button', :data => {'disable-with' => t('layout.saving')}
+  .padd25= submit_tag t('layout.save'), class: 'button', data: {'disable-with' => t('layout.saving')}
   .both
 
 :javascript

@@ -1,14 +1,14 @@
 - content_for :sidebar do
   = render 'server_status'
 
-  = form_tag product_build_lists_path, :method => :get, :html => {:class => :form} do
+  = form_tag product_build_lists_path, method: :get, html: {class: :form} do
     .block
       %h3.small= t("activerecord.attributes.product_build_list.status")
-      .lineForm.aside= select_tag :status, options_for_select(ProductBuildList::STATUSES.map{|s| [ProductBuildList.human_status(s), s]}, params[:status]), {:include_blank => true, :class => 'sel80 aside'}
+      .lineForm.aside= select_tag :status, options_for_select(ProductBuildList::STATUSES.map{|s| [ProductBuildList.human_status(s), s]}, params[:status]), {include_blank: true, class: 'sel80 aside'}
       %h3.small= t("layout.product_build_lists.product_name_search")
       = text_field_tag :product_name, params[:product_name]
       %h3.small= t("layout.product_build_lists.id_search")
       = text_field_tag :product_id, params[:product_id]
       %br
       %br
-      = submit_tag t('layout.search.header'), :data => {'disable-with' => t('layout.processing')}
+      = submit_tag t('layout.search.header'), data: {'disable-with' => t('layout.processing')}

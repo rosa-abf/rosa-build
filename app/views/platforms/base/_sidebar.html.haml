@@ -6,34 +6,34 @@
     .admin-preferences
       %nav
         %ul
-          %li{:class => (act == :show && contr == :platforms) ? 'active' : ''}
+          %li{class: (act == :show && contr == :platforms) ? 'active' : ''}
             = link_to t("layout.platforms.about"), platform_path(@platform)
-          %li{:class => (contr == :repositories) ? 'active' : ''}
+          %li{class: (contr == :repositories) ? 'active' : ''}
             = link_to t("layout.repositories.list_header"), platform_repositories_path(@platform)
-          %li{:class => (contr == :contents) ? 'active' : ''}
+          %li{class: (contr == :contents) ? 'active' : ''}
             = link_to t('layout.platforms.contents'), platform_contents_path(@platform)
           - if can? :show, @platform
-            %li{:class => (act == :index && contr == :maintainers) ? 'active' : nil}
+            %li{class: (act == :index && contr == :maintainers) ? 'active' : nil}
               = link_to t("layout.platforms.maintainers"), platform_maintainers_path(@platform)
-            %li{:class => (contr == :mass_builds) ? 'active' : ''}
+            %li{class: (contr == :mass_builds) ? 'active' : ''}
               = link_to t("layout.platforms.mass_build"), platform_mass_builds_path(@platform)
           - if can? :read, @platform.products.build
-            %li{:class => (contr == :products) ? 'active' : ''}
+            %li{class: (contr == :products) ? 'active' : ''}
               = link_to t("layout.products.list_header"), platform_products_path(@platform)
           - if can? :advisories, @platform
-            %li{:class => (contr == :platforms and act == :advisories) ? 'active' : ''}
+            %li{class: (contr == :platforms and act == :advisories) ? 'active' : ''}
               = link_to t("layout.advisories.list_header"), advisories_platform_path(@platform)
           - if can? :update, @platform
-            %li{:class => (act == :edit && contr == :platforms) ? 'active' : nil}
+            %li{class: (act == :edit && contr == :platforms) ? 'active' : nil}
               = link_to t("platform_menu.settings"), edit_platform_path(@platform)
           - if can? :members, @platform
-            %li{:class => (act == :members && contr == :platforms) ? 'active' : nil}
+            %li{class: (act == :members && contr == :platforms) ? 'active' : nil}
               = link_to t("layout.platforms.members"), members_platform_path(@platform)
           - if can? :edit, @platform
-            %li{:class => (act == :index && contr == :key_pairs) ? 'active' : ''}
+            %li{class: (act == :index && contr == :key_pairs) ? 'active' : ''}
               = link_to t("layout.key_pairs.header"), platform_key_pairs_path(@platform)
-            %li{:class => (contr == :tokens) ? 'active' : ''}
+            %li{class: (contr == :tokens) ? 'active' : ''}
               = link_to t('layout.tokens.header'), platform_tokens_path(@platform)
           -#- if current_user.owner_of? @platform or current_user.admin?
-            %li{:class => (act == :index && contr == :private_users) ? 'active' : ''}
+            %li{class: (act == :index && contr == :private_users) ? 'active' : ''}
               = link_to t("layout.platforms.private_users"), platform_private_users_path(@platform)

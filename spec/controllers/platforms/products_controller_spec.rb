@@ -8,14 +8,14 @@ shared_examples_for 'admin user' do
   end
 
   it 'should be able to update product' do
-    put :update, {:id => @product.id}.merge(@update_params)
+    put :update, {id: @product.id}.merge(@update_params)
     response.should redirect_to platform_product_path(@platform, @product)
     @product.reload
     @product.name.should eql('pro2')
   end
 
   it 'should be able to destroy product' do
-    lambda { delete :destroy, :id => @product.id, :platform_id => @platform }.should change{ Product.count }.by(-1)
+    lambda { delete :destroy, id: @product.id, platform_id: @platform }.should change{ Product.count }.by(-1)
     response.should redirect_to(platform_products_path(@platform))
   end
 
@@ -27,12 +27,12 @@ describe Platforms::ProductsController do
 
       @another_user = FactoryGirl.create(:user)
       @platform = FactoryGirl.create(:platform)
-      @product = FactoryGirl.create(:product, :platform => @platform)
+      @product = FactoryGirl.create(:product, platform: @platform)
       @project = FactoryGirl.create(:project)
 
-      params = {:platform_id => @platform, :src_project => @project.name_with_owner}
-      @create_params = params.merge({:product => {:name => 'pro', :time_living => 150}})
-      @update_params = params.merge({:product => {:name => 'pro2'}})
+      params = {platform_id: @platform, src_project: @project.name_with_owner}
+      @create_params = params.merge({product: {name: 'pro', time_living: 150}})
+      @update_params = params.merge({product: {name: 'pro2'}})
 
       @user = FactoryGirl.create(:user)
       set_session_for(@user)
@@ -45,28 +45,28 @@ describe Platforms::ProductsController do
 
     [:create].each do |action|
       it "should not be able to perform #{ action } action" do
-        get action, :platform_id => @platform.id
+        get action, platform_id: @platform.id
         response.should redirect_to(new_user_session_path)
       end
     end
 
     [:new, :edit, :update, :destroy].each do |action|
       it "should not be able to perform #{ action } action" do
-        get action, :id => @product.id, :platform_id => @platform.id
+        get action, id: @product.id, platform_id: @platform.id
         response.should redirect_to(new_user_session_path)
       end
     end
 
     [:show, :index].each do |action|
-      it "should not be able to perform #{ action } action", :anonymous_access => false do
-        get action, :id => @product.id, :platform_id => @platform.id
+      it "should not be able to perform #{ action } action", anonymous_access: false do
+        get action, id: @product.id, platform_id: @platform.id
         response.should redirect_to(new_user_session_path)
       end
     end
 
     [:show, :index].each do |action|
-      it "should be able to perform #{ action } action", :anonymous_access => true do
-        get action, :id => @product.id, :platform_id => @platform.id
+      it "should be able to perform #{ action } action", anonymous_access: true do
+        get action, id: @product.id, platform_id: @platform.id
         response.should render_template(action)
         response.should be_success
       end
@@ -93,7 +93,7 @@ describe Platforms::ProductsController do
 
   context 'for admin relation user' do
     before(:each) do
-      @platform.relations.create!(:actor_type => 'User', :actor_id => @user.id, :role => 'admin')
+      @platform.relations.create!(actor_type: 'User', actor_id: @user.id, role: 'admin')
     end
 
     it_should_behave_like 'admin user'
@@ -107,12 +107,12 @@ describe Platforms::ProductsController do
     end
 
     it 'should not be able to perform update action' do
-      put :update, {:id => @product.id}.merge(@update_params)
+      put :update, {id: @product.id}.merge(@update_params)
       response.should redirect_to(forbidden_path)
     end
 
     it 'should not be able to destroy product' do
-      lambda { delete :destroy, :id => @product.id, :platform_id => @platform }.should change{ Product.count }.by(0)
+      lambda { delete :destroy, id: @product.id, platform_id: @platform }.should change{ Product.count }.by(0)
       response.should redirect_to(forbidden_path)
     end
 

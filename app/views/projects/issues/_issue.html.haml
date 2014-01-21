@@ -1,11 +1,11 @@
 - path = polymorphic_path [@project || issue.project, issue.pull_request ? issue.pull_request : issue]
 
-%tr#row1{:name => "row", :class => issue.labels.map(&:name).compact}
+%tr#row1{name: "row", class: issue.labels.map(&:name).compact}
   %td.td0
-    %span{:style => "display: none;"}=issue.serial_id
+    %span{style: "display: none;"}=issue.serial_id
   %td.td1=issue.serial_id
   %td
-    %a{:href => path}
+    %a{href: path}
       %div.issue_title
         -prefix = @project ? '' : "<span style=\"color: #999;\">#{issue.project.name}</span>: "
         ="#{prefix} #{issue.title}".html_safe
@@ -16,12 +16,12 @@
     -issue.labels.each do |label|
       .left.nomargin
         .label.selected.tracker.left
-          .labeltext.selected{:style => "background: ##{label.color};"}=label.name
-  %td.td3{:class => (issue.pull_request ? 'td3-pull' : '')}
+          .labeltext.selected{style: "background: ##{label.color};"}=label.name
+  %td.td3{class: (issue.pull_request ? 'td3-pull' : '')}
     - if issue.pull_request
-      %a{:href => path}
+      %a{href: path}
         .code #
-    = link_to image_tag(avatar_url(issue.assignee), :alt => 'avatar', :class => 'avatar'), user_path(issue.assignee) if issue.assignee
-    %a.answers{:href => "#{path}#block-list"}
-      = image_tag 'answers.png', :class => 'pic'
-      .count=issue.comments.where(:automatic => false).count
+    = link_to image_tag(avatar_url(issue.assignee), alt: 'avatar', class: 'avatar'), user_path(issue.assignee) if issue.assignee
+    %a.answers{href: "#{path}#block-list"}
+      = image_tag 'answers.png', class: 'pic'
+      .count=issue.comments.where(automatic: false).count

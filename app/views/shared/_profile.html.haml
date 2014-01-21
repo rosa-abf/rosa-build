@@ -11,10 +11,10 @@
 = hidden_field_tag :profile_path, @profile_path
 .row
   .span3.profile
-    .avatar= image_tag avatar_url(user || group, :big), :alt => (user || group).uname
+    .avatar= image_tag avatar_url(user || group, :big), alt: (user || group).uname
     .base_info
-      %h3{:title => uname}= title short_message(uname, 16)
-      %p{:title => user.try(:name)}
+      %h3{title: uname}= title short_message(uname, 16)
+      %p{title: user.try(:name)}
         - if user
           = short_message(user.name, 28)
       = link_to image_tag('gears.png'), edit_url if edit_url.present?
@@ -23,32 +23,32 @@
       %p.info.first
         - message = "#{t 'activerecord.attributes.user.email'}: "
         = message
-        = mail_to user.email, short_message(user.email, max_length - message.length), :encode => 'javascript', :title => user.email
+        = mail_to user.email, short_message(user.email, max_length - message.length), encode: 'javascript', title: user.email
       %p.info
         - message = "#{t 'activerecord.attributes.user.site'}: "
         = message
-        = link_to short_message(user.site, max_length - message.length), user.site, :title => user.site
-      %p.info{:title => user.company}= short_message("#{t 'activerecord.attributes.user.company'}: #{user.company}", max_length)
-      %p.info{:title => user.location}= short_message("#{t 'activerecord.attributes.user.location'}: #{user.location}", max_length)
+        = link_to short_message(user.site, max_length - message.length), user.site, title: user.site
+      %p.info{title: user.company}= short_message("#{t 'activerecord.attributes.user.company'}: #{user.company}", max_length)
+      %p.info{title: user.location}= short_message("#{t 'activerecord.attributes.user.location'}: #{user.location}", max_length)
   .span6
-    %h3{:style => 'margin-top: 0;'}= desc_title
+    %h3{style: 'margin-top: 0;'}= desc_title
     = desc
 
-%hr.profile_line{:color => 'dfe8ef', :size => '3'}
+%hr.profile_line{color: 'dfe8ef', size: '3'}
 
 .row-fluid.profile-content
   .span12.content
     %nav
       %ul
         %li
-          = link_to t('layout.projects.list_header'), '#', :class => 'projects active'
+          = link_to t('layout.projects.list_header'), '#', class: 'projects active'
   .span12.sub-menu
     %nav
       %ul
-        %li= link_to t('layout.projects.public'),  '#', :class => "public-projects #{!@hidden ? 'active' : ''}"
-        %li= link_to t('layout.projects.private'), '#', :class => "private-projects #{@hidden ? 'active' : ''}"
+        %li= link_to t('layout.projects.public'),  '#', class: "public-projects #{!@hidden ? 'active' : ''}"
+        %li= link_to t('layout.projects.private'), '#', class: "private-projects #{@hidden ? 'active' : ''}"
   .search
     .pic
-    .field= text_field_tag :query_projects, @query, :placeholder => t('layout.find_project')
+    .field= text_field_tag :query_projects, @query, placeholder: t('layout.find_project')
   .both
-  .profile-table= render 'shared/profile_projects', :projects => projects
+  .profile-table= render 'shared/profile_projects', projects: projects

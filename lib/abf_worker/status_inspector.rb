@@ -3,7 +3,7 @@ module AbfWorker
 
     class << self
       def projects_status
-        Rails.cache.fetch([AbfWorker::StatusInspector, :projects_status], :expires_in => 10.seconds) do
+        Rails.cache.fetch([AbfWorker::StatusInspector, :projects_status], expires_in: 10.seconds) do
           result = get_status(:rpm, :publish) { |w, worker| w.to_s =~ /#{worker}_worker_default/ }
           nodes = RpmBuildNode.total_statistics
           result[:rpm][:workers]        += nodes[:systems]
@@ -38,14 +38,13 @@ module AbfWorker
         redis, key = Resque.redis, "queue:#{worker}_worker"
         default_tasks, tasks = redis.llen("#{key}_default"), redis.llen(key)
         {
-          :workers            => workers.count,
-          :build_tasks        => workers.select{ |w| w.working? }.count,
-          :default_tasks      => default_tasks,
-          :low_tasks          => tasks,
-          :tasks              => (default_tasks + tasks)
+          workers:       workers.count,
+          build_tasks:   workers.select{ |w| w.working? }.count,
+          default_tasks: default_tasks,
+          low_tasks:     tasks,
+          tasks:         (default_tasks + tasks)
         }
       end
-
     end
   end
 end

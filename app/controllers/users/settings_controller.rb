@@ -34,7 +34,7 @@ class Users::SettingsController < Users::BaseController
       else
         flash[:error] = t('flash.user.save_error')
         flash[:warning] = @user.errors.full_messages.join('. ')
-        render(:action => :private)
+        render(action: :private)
       end
     end
   end

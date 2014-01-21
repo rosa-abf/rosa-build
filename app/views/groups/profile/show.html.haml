@@ -1,8 +1,8 @@
--set_meta_tags :title => title_object(@group)
+-set_meta_tags title: title_object(@group)
 
 - edit_url = can?(:edit, @group) ? edit_group_path(@group) : nil
-= render 'shared/profile', :uname       => @group.name,
-                           :group       => @group,
-                           :search_path => group_path,
-                           :projects    => @projects,
-                           :edit_url   => edit_url
+= render 'shared/profile', uname: @group.name,
+                           group: @group,
+                           search_path: group_path,
+                           projects: @projects,
+                           edit_url: edit_url

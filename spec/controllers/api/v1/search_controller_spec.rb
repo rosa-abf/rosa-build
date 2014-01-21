@@ -2,14 +2,14 @@ require 'spec_helper'
 
 shared_examples_for 'able search with api' do
   it 'should be able to search' do
-    get :index, :format => :json
+    get :index, format: :json
     response.should be_success
     response.should render_template(:index)
   end
 end
 shared_examples_for 'not able search with api' do
   it 'should not be able to search' do
-    get :index, :format => :json
+    get :index, format: :json
     response.code.should eq('401')
   end
 end

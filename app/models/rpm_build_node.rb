@@ -14,7 +14,7 @@ class RpmBuildNode < Ohm::Model
   attribute :system
 
   def user
-    User.where(:id => user_id).first
+    User.where(id: user_id).first
   end
 
   def self.cleanup!
@@ -33,7 +33,7 @@ class RpmBuildNode < Ohm::Model
       end
       busy += n.busy_workers.to_i
     end
-    { :systems => systems, :others => others, :busy => busy }
+    { systems: systems, others: others, busy: busy }
   end
 
 end

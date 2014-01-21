@@ -1,5 +1,5 @@
 .bordered
-  = link_to t("layout.activity_feed.new_project"), new_project_path, :class => 'button'
+  = link_to t("layout.activity_feed.new_project"), new_project_path, class: 'button'
   %h3= t("layout.activity_feed.my_last_projects")
   %table
     %tbody
@@ -20,12 +20,12 @@
 .block
   - midnight = Time.now.utc.to_date
   %h3= t("layout.activity_feed.my_builds_by_day")
-  %table{:cellpadding => "0", :cellspacing => "0"}
+  %table{cellpadding: "0", cellspacing: "0"}
     %tbody
       - ['BuildList::BUILD_PUBLISHED', 'BuildList::SUCCESS', 'BuildList::BUILD_STARTED', 'BuildList::BUILD_PENDING', 'BuildList::BUILD_ERROR'].each do |state|
         %tr
           %td.first
-            = link_to t("layout.build_lists.statuses.#{state.demodulize.downcase}"), build_lists_path(:filter => {:status => state.constantize, :'updated_at_start(1i)' => midnight.year, :'updated_at_start(2i)' => midnight.month, :'updated_at_start(3i)' => midnight.day})
+            = link_to t("layout.build_lists.statuses.#{state.demodulize.downcase}"), build_lists_path(filter: {status: state.constantize, :'updated_at_start(1i)' => midnight.year, :'updated_at_start(2i)' => midnight.month, :'updated_at_start(3i)' => midnight.day})
           %td= BuildList.for_status(state.constantize).for_user(current_user).for_notified_date_period(midnight, nil).count
       %tr
         %td.first

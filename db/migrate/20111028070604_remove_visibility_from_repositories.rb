@@ -4,6 +4,6 @@ class RemoveVisibilityFromRepositories < ActiveRecord::Migration
   end
 
   def self.down
-    add_column :repositories, :visibility, :string, :default => "open"
+    add_column :repositories, :visibility, :string, default: "open"
   end
 end

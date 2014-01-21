@@ -1,11 +1,11 @@
 class Projects::PullRequestsController < Projects::BaseController
   before_filter :authenticate_user!
-  skip_before_filter :authenticate_user!, :only => [:index, :show] if APP_CONFIG['anonymous_access']
+  skip_before_filter :authenticate_user!, only: [:index, :show] if APP_CONFIG['anonymous_access']
   load_and_authorize_resource :project
 
-  load_resource :issue, :through => :project, :find_by => :serial_id, :parent => false, :except => [:index, :autocomplete_to_project]
-  load_and_authorize_resource :instance_name => :pull, :through => :issue, :singleton => true, :except => [:index, :autocomplete_to_project]
-  before_filter :find_collaborators, :only => [:new, :create, :show]
+  load_resource :issue, through: :project, find_by: :serial_id, parent: false, except: [:index, :autocomplete_to_project]
+  load_and_authorize_resource instance_name: :pull, through: :issue, singleton: true, except: [:index, :autocomplete_to_project]
+  before_filter :find_collaborators, only: [:new, :create, :show]
 
   def new
     to_project = find_destination_project(false)
@@ -21,7 +21,7 @@ class Projects::PullRequestsController < Projects::BaseController
       @pull.check(false) # don't make event transaction
       if @pull.already?
         @pull.destroy
-        flash.now[:warning] = I18n.t('projects.pull_requests.up_to_date', :to_ref => @pull.to_ref, :from_ref => @pull.from_ref)
+        flash.now[:warning] = I18n.t('projects.pull_requests.up_to_date', to_ref: @pull.to_ref, from_ref: @pull.from_ref)
       else
         load_diff_commits_data
       end
@@ -48,7 +48,7 @@ class Projects::PullRequestsController < Projects::BaseController
       @pull.check(false) # don't make event transaction
       if @pull.already?
         @pull.destroy
-        flash.now[:error] = I18n.t('projects.pull_requests.up_to_date', :to_ref => @pull.to_ref, :from_ref => @pull.from_ref)
+        flash.now[:error] = I18n.t('projects.pull_requests.up_to_date', to_ref: @pull.to_ref, from_ref: @pull.from_ref)
         render :new
       else
         @pull.send(@pull.status == 'blocked' ? 'block' : @pull.status)
@@ -68,7 +68,7 @@ class Projects::PullRequestsController < Projects::BaseController
 
   def merge
     status = @pull.merge!(current_user) ? 200 : 422
-    render :nothing => true, :status => status
+    render nothing: true, status: status
   end
 
   def update
@@ -81,7 +81,7 @@ class Projects::PullRequestsController < Projects::BaseController
         status = 200
       end
     end
-    render :nothing => true, :status => status
+    render nothing: true, status: status
   end
 
   def show
@@ -96,7 +96,7 @@ class Projects::PullRequestsController < Projects::BaseController
 
   def index(status = 200)
     @issues_with_pull_request = @project.issues.joins(:pull_request)
-    @issues_with_pull_request = @issues_with_pull_request.where(:assignee_id => current_user.id) if @is_assigned_to_me = params[:filter] == 'to_me'
+    @issues_with_pull_request = @issues_with_pull_request.where(assignee_id: current_user.id) if @is_assigned_to_me = params[:filter] == 'to_me'
     @issues_with_pull_request = @issues_with_pull_request.search(params[:search_pull_request]) if params[:search_pull_request] !~ /#{t('layout.pull_requests.search')}/
 
     @opened_issues, @closed_issues = @issues_with_pull_request.not_closed_or_merged.count, @issues_with_pull_request.closed_or_merged.count
@@ -110,11 +110,11 @@ class Projects::PullRequestsController < Projects::BaseController
 
     @issues_with_pull_request = @issues_with_pull_request.
       includes(:assignee, :user, :pull_request).uniq.
-      paginate :per_page => 20, :page => params[:page]
+      paginate per_page: 20, page: params[:page]
     if status == 200
-      render 'index', :layout => request.xhr? ? 'with_sidebar' : 'application'
+      render 'index', layout: request.xhr? ? 'with_sidebar' : 'application'
     else
-      render :status => status, :nothing => true
+      render status: status, nothing: true
     end
   end
 
@@ -125,7 +125,7 @@ class Projects::PullRequestsController < Projects::BaseController
       items.concat p.by_owner_and_name(term)
     end
     items = items.uniq{|i| i.id}.select{|e| e.repo.branches.count > 0}
-    render :json => json_for_autocomplete_base(items)
+    render json: json_for_autocomplete_base(items)
   end
 
   protected
@@ -136,7 +136,7 @@ class Projects::PullRequestsController < Projects::BaseController
 
   def json_for_autocomplete_base items
     items.collect do |project|
-      hash = {:id => project.id.to_s, :label => project.name_with_owner, :value => project.name_with_owner}
+      hash = {id: project.id.to_s, label: project.name_with_owner, value: project.name_with_owner}
       hash[:get_refs_url] = project_refs_list_path(project)
       hash
     end

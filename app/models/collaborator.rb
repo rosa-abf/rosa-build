@@ -10,7 +10,7 @@ class Collaborator
 
   attr_accessible :role
 
-  delegate :new_record?, :to => :relation
+  delegate :new_record?, to: :relation
 
   class << self
     def find_by_project(project)
@@ -128,7 +128,7 @@ class Collaborator
 
     def from_relation(relation)
       return nil unless relation.present?
-      return self.new(:relation => relation)
+      return self.new(relation: relation)
     end
 
   end
@@ -139,7 +139,7 @@ class Collaborator
     if @actor.present? and @project.present?
       @relation = Relation.by_actor(@actor).by_target(@project).limit(1).first
       @relation ||= Relation.new(:actor_id  => @actor.id,   :actor_type  => @actor.class.to_s,
-                                 :target_id => @project.id, :target_type => 'Project')
+                                 target_id: @project.id, target_type: 'Project')
     else
       @relation = Relation.new
       @relation.actor = @actor

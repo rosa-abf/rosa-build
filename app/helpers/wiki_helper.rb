@@ -22,9 +22,9 @@ module WikiHelper
 
   def editor_path(project, name)
     if @new
-      url_for(:controller => :wiki, :action => :create, :project_id => project.id)
+      url_for(controller: :wiki, action: :create, project_id: project.id)
     else
-      url_for(:controller => :wiki, :action => :update, :project_id => project.id, :id => name)
+      url_for(controller: :wiki, action: :update, project_id: project.id, id: name)
     end
   end
 

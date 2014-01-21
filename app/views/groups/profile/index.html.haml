@@ -1,6 +1,6 @@
--set_meta_tags :title => t('layout.groups.list_header')
-= link_to t("layout.groups.new"), new_group_path, :class => "button"
-%table#myTable.tablesorter.group-list{:cellpadding => "0", :cellspacing => "0"}
+-set_meta_tags title: t('layout.groups.list_header')
+= link_to t("layout.groups.new"), new_group_path, class: "button"
+%table#myTable.tablesorter.group-list{cellpadding: "0", cellspacing: "0"}
   %thead
     %tr
       %th.th1= t("layout.groups.group")
@@ -12,4 +12,4 @@
         %td= link_to group.name, group_path(group)
         %td.td2= group.description
         %td.td5
-          = link_to image_tag('x.png'), remove_user_group_path(group), :method => :delete unless group.owner_id == current_user.id
+          = link_to image_tag('x.png'), remove_user_group_path(group), method: :delete unless group.owner_id == current_user.id

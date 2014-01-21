@@ -6,7 +6,7 @@ class String
     if ascii_only? # no need to encode if ascii
       force_encoding(default_encoding)
     else # should encode
-      options = {:invalid => :replace, :undef => :replace, :replace => ''}
+      options = {invalid: :replace, undef: :replace, replace: ''}
       if (detected = detect_encoding) && detected[:encoding]
         force_encoding(detected[:encoding]).encode!(default_encoding, detected[:encoding], options)
       end

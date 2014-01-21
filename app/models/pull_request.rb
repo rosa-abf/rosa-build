@@ -1,13 +1,13 @@
 class PullRequest < ActiveRecord::Base
   STATUSES = %w(ready already blocked merged closed)
-  belongs_to :issue, :autosave => true, :dependent => :destroy, :touch => true, :validate => true
-  belongs_to :to_project, :class_name => 'Project', :foreign_key => 'to_project_id'
-  belongs_to :from_project, :class_name => 'Project', :foreign_key => 'from_project_id'
+  belongs_to :issue, autosave: true, dependent: :destroy, touch: true, validate: true
+  belongs_to :to_project, class_name: 'Project', foreign_key: 'to_project_id'
+  belongs_to :from_project, class_name: 'Project', foreign_key: 'from_project_id'
   delegate :user, :user_id, :title, :body, :serial_id, :assignee, :status, :to_param,
-    :created_at, :updated_at, :comments, :status=, :to => :issue, :allow_nil => true
+    :created_at, :updated_at, :comments, :status=, to: :issue, allow_nil: true
 
-  validates :from_project, :to_project, :presence => true
-  validate :uniq_merge, :if => Proc.new { |pull| pull.to_project.present? }
+  validates :from_project, :to_project, presence: true
+  validate :uniq_merge, if: Proc.new { |pull| pull.to_project.present? }
   validates_each :from_ref, :to_ref do |record, attr, value|
     check_ref record, attr, value
   end
@@ -19,11 +19,11 @@ class PullRequest < ActiveRecord::Base
   accepts_nested_attributes_for :issue
   attr_accessible :issue_attributes, :to_ref, :from_ref
 
-  scope :needed_checking, includes(:issue).where(:issues => {:status => ['open', 'blocked', 'ready']})
+  scope :needed_checking, includes(:issue).where(issues: {status: ['open', 'blocked', 'ready']})
   scope :not_closed_or_merged, needed_checking
-  scope :closed_or_merged, where(:issues => {:status => ['closed', 'merged']})
+  scope :closed_or_merged, where(issues: {status: ['closed', 'merged']})
 
-  state_machine :status, :initial => :open do
+  state_machine :status, initial: :open do
     event :ready do
       transition [:ready, :open, :blocked] => :ready
     end
@@ -37,7 +37,7 @@ class PullRequest < ActiveRecord::Base
     end
 
     event :merging do
-      transition :ready => :merged
+      transition ready: :merged
     end
 
     event :close do
@@ -45,19 +45,19 @@ class PullRequest < ActiveRecord::Base
     end
 
     event :reopen do
-      transition :closed => :open
+      transition closed: :open
     end
   end
 
   def update_relations(old_from_project_name = nil)
-    FileUtils.mv path(old_from_project_name), path, :force => true if old_from_project_name
+    FileUtils.mv path(old_from_project_name), path, force: true if old_from_project_name
     return unless Dir.exists?(path)
     Dir.chdir(path) do
       system 'git', 'remote', 'set-url', 'origin', to_project.path
       system 'git', 'remote', 'set-url', 'head', from_project.path if cross_pull?
-    end    
+    end
   end
-  later :update_relations, :queue => :clone_build
+  later :update_relations, queue: :clone_build
 
   def cross_pull?
     from_project_id != to_project_id
@@ -66,7 +66,7 @@ class PullRequest < ActiveRecord::Base
   def check(do_transaction = true)
     if do_transaction && !valid?
       issue.set_close nil
-      issue.save(:validate => false) # FIXME remove this hack
+      issue.save(validate: false) # FIXME remove this hack
       return false
     end
     res = merge
@@ -155,10 +155,10 @@ class PullRequest < ActiveRecord::Base
 
   def uniq_merge
     if to_project && to_project.pull_requests.needed_checking
-         .where(:from_project_id => from_project_id,
-                :to_ref => to_ref, :from_ref => from_ref)
-         .where('pull_requests.id <> :id or :id is null', :id => id).count > 0
-      errors.add(:base_branch, I18n.t('projects.pull_requests.duplicate', :from_ref => from_ref))
+         .where(from_project_id: from_project_id,
+                to_ref: to_ref, from_ref: from_ref)
+         .where('pull_requests.id <> :id or :id is null', id: id).count > 0
+      errors.add(:base_branch, I18n.t('projects.pull_requests.duplicate', from_ref: from_ref))
     end
   end
 
@@ -184,7 +184,7 @@ class PullRequest < ActiveRecord::Base
     if new_record? || !git.exist?
       #~ FileUtils.mkdir_p(path)
       #~ system("git clone --local --no-hardlinks #{to_project.path} #{path}")
-      options = {:bare => false, :shared => false, :branch => to_ref} # shared?
+      options = {bare: false, shared: false, branch: to_ref} # shared?
       `rm -rf #{path}`
       git.fs_mkdir('..')
       git.clone(options, to_project.path, path)

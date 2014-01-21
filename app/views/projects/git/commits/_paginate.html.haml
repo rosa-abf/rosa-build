@@ -2,9 +2,9 @@
   - if @page == 1
     %span.previous_page.disabled= t('will_paginate.previous_label')
   - else
-    %a.previous_page{:rel => "prev", :href => commits_path(@project, :treeish => @treeish, :page => (@page - 1))}= t('will_paginate.previous_label')
+    %a.previous_page{rel: "prev", href: commits_path(@project, treeish: @treeish, page: (@page - 1))}= t('will_paginate.previous_label')
 
   - if @last_page
     %span.next_page.disabled= t('will_paginate.next_label')
   - else
-    %a.next_page{:rel => "next", :href => commits_path(@project, :treeish => @treeish, :page => (@page + 1))}= t('will_paginate.next_label')
+    %a.next_page{rel: "next", href: commits_path(@project, treeish: @treeish, page: (@page + 1))}= t('will_paginate.next_label')

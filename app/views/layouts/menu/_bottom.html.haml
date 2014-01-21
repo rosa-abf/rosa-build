@@ -1,10 +1,10 @@
 %ul
   %li
     = image_tag 'square.png'
-    = t('bottom_menu.copyright', :year => Date.today.year)
+    = t('bottom_menu.copyright', year: Date.today.year)
   %li
     = image_tag 'square.png'
-    = image_tag 'flag.png', :alt => 'flag'
+    = image_tag 'flag.png', alt: 'flag'
   %li
     = image_tag 'square.png'
     = link_to t('bottom_menu.about'), t('bottom_menu.about_url')

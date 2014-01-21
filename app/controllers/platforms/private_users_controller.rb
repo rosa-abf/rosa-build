@@ -10,10 +10,10 @@ class Platforms::PrivateUsersController < Platforms::BaseController
   def create
     old_pair = PrivateUser.find_by_platform_id_and_user_id(params[:platform_id], current_user.id)
   	old_pair.destroy if old_pair
-  	
+
   	@pair = PrivateUser.generate_pair(params[:platform_id], current_user.id)
   	@urpmi_list = @platform.urpmi_list(request.host, @pair)
-    redirect_to platform_private_users_path(params[:platform_id]), :notice => I18n.t('flash.private_users', :login => @pair[:login], :password => @pair[:pass])
+    redirect_to platform_private_users_path(params[:platform_id]), notice: I18n.t('flash.private_users', login: @pair[:login], password: @pair[:pass])
   end
 
   #def destroy
@@ -21,11 +21,11 @@ class Platforms::PrivateUsersController < Platforms::BaseController
   #	user.destroy
   #	redirect_to platform_private_users_path(params[:platform_id])
   #end
-  
+
   protected
-  
+
   def find_platform_and_private_users
-    @private_users = PrivateUser.where(:platform_id => params[:platform_id]).paginate :page => params[:page]
+    @private_users = PrivateUser.where(platform_id: params[:platform_id]).paginate page: params[:page]
     @platform = Platform.find(params[:platform_id])
   end
 end

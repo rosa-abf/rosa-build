@@ -2,7 +2,7 @@ class AddSaveToRepositoryToBuildLists < ActiveRecord::Migration
   def self.up
     add_column :build_lists, :save_to_repository_id, :integer
 
-    BuildList.scoped.includes(:project => :repositories, :save_to_platform => :repositories).find_in_batches do |batch|
+    BuildList.scoped.includes(project: :repositories, save_to_platform: :repositories).find_in_batches do |batch|
       batch.each do |bl|
         begin
           project = bl.project

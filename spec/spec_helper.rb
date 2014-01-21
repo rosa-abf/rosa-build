@@ -25,7 +25,7 @@ RSpec.configure do |config|
   # instead of true.
   config.use_transactional_fixtures = true
 
-  config.filter_run_excluding :anonymous_access => !(APP_CONFIG['anonymous_access'])
+  config.filter_run_excluding anonymous_access: !(APP_CONFIG['anonymous_access'])
 
   config.before(:all) { init_test_root }
   config.after(:all)  { clear_test_root }
@@ -44,8 +44,8 @@ def http_login(user=nil, password = '123456')
 end
 
 def stub_symlink_methods
-  any_instance_of(Platform, :symlink_directory => true)
-  any_instance_of(Platform, :remove_symlink_directory => true)
+  any_instance_of(Platform, symlink_directory: true)
+  any_instance_of(Platform, remove_symlink_directory: true)
 end
 
 Resque.inline = true

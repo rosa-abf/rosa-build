@@ -72,7 +72,7 @@ module AbfWorker
       end
 
       def packages_structure
-        structure = {:sources => [], :binaries => {}}
+        structure = {sources: [], binaries: {}}
         Arch.pluck(:name).each{ |name| structure[:binaries][name.to_sym] = [] }
         structure
       end
@@ -105,23 +105,23 @@ module AbfWorker
           'publish_worker',
           'class' => 'AbfWorker::PublishWorker',
           'args' => [{
-            :id                   => build_list.id,
-            :cmd_params           => cmd_params,
-            :main_script          => 'build.sh',
-            :rollback_script      => 'rollback.sh',
-            :platform             => {
-              :platform_path  => platform_path,
-              :type           => distrib_type,
-              :name           => build_list.build_for_platform.name,
-              :arch           => build_list.arch.name
+            id:                   build_list.id,
+            cmd_params:           cmd_params,
+            main_script:          'build.sh',
+            rollback_script:      'rollback.sh',
+            platform:             {
+              platform_path:        platform_path,
+              type:                 distrib_type,
+              name:                 build_list.build_for_platform.name,
+              arch:                 build_list.arch.name
             },
-            :repository           => {:id => build_list.save_to_repository_id},
-            :time_living          => 9600, # 160 min
-            :packages             => packages,
-            :old_packages         => packages_structure,
-            :build_list_ids       => [build_list.id],
-            :projects_for_cleanup => [],
-            :extra                => {:create_container => true}
+            repository:           {id: build_list.save_to_repository_id},
+            time_living:          9600, # 160 min
+            packages:             packages,
+            old_packages:         packages_structure,
+            build_list_ids:       [build_list.id],
+            projects_for_cleanup: [],
+            extra:                {create_container: true}
           }]
         )
       end
@@ -130,11 +130,11 @@ module AbfWorker
         build_lists_for_cleanup = []
         status = testing ? BuildList::BUILD_PUBLISHED_INTO_TESTING : BuildList::BUILD_PUBLISHED
         Arch.pluck(:id).each do |arch_id|
-          bl = BuildList.where(:project_id => project_id).
-            where(:new_core => true, :status => status).
-            where(:save_to_repository_id => repository_id).
-            where(:build_for_platform_id => platform_id).
-            where(:arch_id => arch_id).
+          bl = BuildList.where(project_id: project_id).
+            where(new_core: true, status: status).
+            where(save_to_repository_id: repository_id).
+            where(build_for_platform_id: platform_id).
+            where(arch_id: arch_id).
             order(:updated_at).first
           build_lists_for_cleanup << bl if bl
         end
@@ -151,7 +151,7 @@ module AbfWorker
 
       def fill_packages(bl, results_map, field = :sha1)
         results_map[:sources] |= bl.packages.by_package_type('source').pluck(field).compact if field != :sha1
-        
+
         binaries  = bl.packages.by_package_type('binary').pluck(field).compact
         arch      = bl.arch.name.to_sym
         results_map[:binaries][arch] |= binaries
@@ -168,7 +168,7 @@ module AbfWorker
     def create_tasks_for_resign_repositories
       RepositoryStatus.platform_ready
                       .for_resign
-                      .includes(:repository => :platform)
+                      .includes(repository: :platform)
                       .readonly(false)
                       .each do |repository_status|
         r = repository_status.repository
@@ -186,19 +186,19 @@ module AbfWorker
           'publish_worker_default',
           'class' => "AbfWorker::PublishWorkerDefault",
           'args' => [{
-            :id             => r.id,
-            :cmd_params     => cmd_params,
-            :main_script    => 'resign.sh',
-            :platform       => {
-              :platform_path  => "#{r.platform.path}/repository",
-              :type           => distrib_type,
-              :name           => r.platform.name,
-              :arch           => 'x86_64'
+            id:              r.id,
+            cmd_params:      cmd_params,
+            main_script:     'resign.sh',
+            platform:        {
+              platform_path:   "#{r.platform.path}/repository",
+              type:            distrib_type,
+              name:            r.platform.name,
+              arch:            'x86_64'
             },
-            :repository     => {:id => r.id},
-            :skip_feedback  => true,
-            :time_living    => 9600, # 160 min
-            :extra          => {:repository_status_id => repository_status.id, :resign => true}
+            repository:      {id: r.id},
+            skip_feedback:   true,
+            time_living:     9600, # 160 min
+            extra:           {repository_status_id: repository_status.id, resign: true}
           }]
         ) if repository_status.start_resign
       end
@@ -207,13 +207,13 @@ module AbfWorker
     def create_tasks_for_build_rpms(testing = false)
       available_repos = BuildList.
         select('MIN(updated_at) as min_updated_at, save_to_repository_id, build_for_platform_id').
-        where(:new_core => true, :status => (testing ? BuildList::BUILD_PUBLISH_INTO_TESTING : BuildList::BUILD_PUBLISH)).
+        where(new_core: true, status: (testing ? BuildList::BUILD_PUBLISH_INTO_TESTING : BuildList::BUILD_PUBLISH)).
         group(:save_to_repository_id, :build_for_platform_id).
         order(:min_updated_at).
         limit(@workers_count * 2) # because some repos may be locked
 
       locked_rep = RepositoryStatus.not_ready.joins(:platform).
-        where(:platforms => {:platform_type => 'main'}).pluck(:repository_id)
+        where(platforms: {platform_type: 'main'}).pluck(:repository_id)
       available_repos = available_repos.where('save_to_repository_id NOT IN (?)', locked_rep) unless locked_rep.empty?
 
       for_cleanup = @redis.lrange(PROJECTS_FOR_CLEANUP, 0, -1).map do |key|
@@ -232,10 +232,10 @@ module AbfWorker
       counter = 1
       available_repos = available_repos.map{ |bl| [bl.save_to_repository_id, bl.build_for_platform_id] } | for_cleanup | for_cleanup_from_testing
       available_repos.each do |save_to_repository_id, build_for_platform_id|
-        next if RepositoryStatus.not_ready.where(:repository_id => save_to_repository_id, :platform_id => build_for_platform_id).exists?
+        next if RepositoryStatus.not_ready.where(repository_id: save_to_repository_id, platform_id: build_for_platform_id).exists?
         break if counter > @workers_count
         counter += 1 if create_rpm_build_task(save_to_repository_id, build_for_platform_id, testing)
-      end      
+      end
     end
 
     def create_rpm_build_task(save_to_repository_id, build_for_platform_id, testing)
@@ -247,15 +247,15 @@ module AbfWorker
       # We should not to publish new builds into repository
       # if project of builds has been removed from repository.
       BuildList.where(
-        :project_id             => projects_for_cleanup.map{ |k| k.split('-')[testing ? 1 : 0] }.uniq,
-        :save_to_repository_id  => save_to_repository_id,
-        :status                 => [BuildList::BUILD_PUBLISH, BuildList::BUILD_PUBLISH_INTO_TESTING]
-      ).update_all(:status => BuildList::FAILED_PUBLISH)
+        project_id:            projects_for_cleanup.map{ |k| k.split('-')[testing ? 1 : 0] }.uniq,
+        save_to_repository_id: save_to_repository_id,
+        status:                [BuildList::BUILD_PUBLISH, BuildList::BUILD_PUBLISH_INTO_TESTING]
+      ).update_all(status: BuildList::FAILED_PUBLISH)
 
       build_lists = BuildList.
-        where(:new_core => true, :status => (testing ? BuildList::BUILD_PUBLISH_INTO_TESTING : BuildList::BUILD_PUBLISH)).
-        where(:save_to_repository_id => save_to_repository_id).
-        where(:build_for_platform_id => build_for_platform_id).
+        where(new_core: true, status: (testing ? BuildList::BUILD_PUBLISH_INTO_TESTING : BuildList::BUILD_PUBLISH)).
+        where(save_to_repository_id: save_to_repository_id).
+        where(build_for_platform_id: build_for_platform_id).
         order(:updated_at)
       locked_ids = @redis.lrange(LOCKED_BUILD_LISTS, 0, -1)
       build_lists = build_lists.where('build_lists.id NOT IN (?)', locked_ids) unless locked_ids.empty?
@@ -276,7 +276,7 @@ module AbfWorker
 
       if testing
         build_lists_for_cleanup_from_testing = @redis.smembers("#{BUILD_LISTS_FOR_CLEANUP_FROM_TESTING}-#{save_to_repository_id}-#{build_for_platform_id}")
-        BuildList.where(:id => build_lists_for_cleanup_from_testing).each do |b|
+        BuildList.where(id: build_lists_for_cleanup_from_testing).each do |b|
           self.class.fill_packages(b, old_packages, :fullname)
         end if build_lists_for_cleanup_from_testing.present?
       end
@@ -291,7 +291,7 @@ module AbfWorker
 
       repository_status = save_to_repository.repository_statuses.find_or_create_by_platform_id(build_for_platform_id)
       return false unless repository_status.publish
-      
+
       save_to_platform    = save_to_repository.platform
       build_for_platform  = Platform.find build_for_platform_id
       platform_path = "#{save_to_platform.path}/repository"
@@ -313,21 +313,21 @@ module AbfWorker
       }.map{ |k, v| "#{k}=#{v}" }.join(' ')
 
       options   = {
-        :id               => (bl ? bl.id : Time.now.to_i),
-        :cmd_params       => cmd_params,
-        :main_script      => 'build.sh',
-        :rollback_script  => 'rollback.sh',
-        :platform     => {
-          :platform_path  => platform_path,
-          :type           => distrib_type,
-          :name           => build_for_platform.name,
-          :arch           => (bl ? bl.arch.name : 'x86_64')
+        id:                (bl ? bl.id : Time.now.to_i),
+        cmd_params:        cmd_params,
+        main_script:       'build.sh',
+        rollback_script:   'rollback.sh',
+        platform:        {
+          platform_path:   platform_path,
+          type:            distrib_type,
+          name:            build_for_platform.name,
+          arch:            (bl ? bl.arch.name : 'x86_64')
         },
-        :repository   => {:id => save_to_repository_id},
-        :time_living  => 9600, # 160 min
-        :extra        => {
-          :repository_status_id => repository_status.id,
-          :build_lists_for_cleanup_from_testing => build_lists_for_cleanup_from_testing
+        repository:    {id: save_to_repository_id},
+        time_living:   9600, # 160 min
+        extra:         {
+          repository_status_id: repository_status.id,
+          build_lists_for_cleanup_from_testing: build_lists_for_cleanup_from_testing
         }
       }
 
@@ -353,10 +353,10 @@ module AbfWorker
         worker_queue,
         'class' => worker_class,
         'args' => [options.merge({
-          :packages             => packages,
-          :old_packages         => old_packages,
-          :build_list_ids       => build_list_ids,
-          :projects_for_cleanup => projects_for_cleanup
+          packages:             packages,
+          old_packages:         old_packages,
+          build_list_ids:       build_list_ids,
+          projects_for_cleanup: projects_for_cleanup
         })]
       )
 
@@ -379,7 +379,7 @@ module AbfWorker
     def create_tasks_for_regenerate_metadata_for_software_center
       Platform.main.waiting_for_regeneration.each do |platform|
         repos = platform.repositories
-        statuses = RepositoryStatus.where(:platform_id => platform.id)
+        statuses = RepositoryStatus.where(platform_id: platform.id)
         next if repos.find{ |r| r.repo_lock_file_exists? }
         next if statuses.present? &&
           statuses.map{ |s| s.ready? || s.can_start_regeneration? || s.can_start_resign? }.uniq != [true]
@@ -397,17 +397,17 @@ module AbfWorker
           'publish_worker_default',
           'class' => 'AbfWorker::PublishWorkerDefault',
           'args' => [{
-            :id               => Time.now.to_i,
-            :cmd_params       => cmd_params,
-            :main_script      => 'regenerate_platform_metadata.sh',
-            :platform     => {
-              :platform_path  => "#{platform.path}/repository",
-              :type           => platform.distrib_type,
-              :name           => platform.name,
-              :arch           => 'x86_64'
+            id:              Time.now.to_i,
+            cmd_params:      cmd_params,
+            main_script:     'regenerate_platform_metadata.sh',
+            platform:        {
+              platform_path:   "#{platform.path}/repository",
+              type:            platform.distrib_type,
+              name:            platform.name,
+              arch:            'x86_64'
             },
-            :time_living  => 9600, # 160 min
-            :extra         => {:platform_id => platform.id, :regenerate_platform => true}
+            time_living:     9600, # 160 min
+            extra:           {platform_id: platform.id, regenerate_platform: true}
           }]
         ) if platform.start_regeneration
 
@@ -417,7 +417,7 @@ module AbfWorker
     def create_tasks_for_repository_regenerate_metadata
       RepositoryStatus.platform_ready
                       .for_regeneration
-                      .includes(:repository => :platform)
+                      .includes(repository: :platform)
                       .readonly(false)
                       .each do |repository_status|
         rep = repository_status.repository
@@ -444,18 +444,18 @@ module AbfWorker
           'publish_worker_default',
           'class' => 'AbfWorker::PublishWorkerDefault',
           'args' => [{
-            :id               => Time.now.to_i,
-            :cmd_params       => cmd_params,
-            :main_script      => 'build.sh',
-            :rollback_script  => 'rollback.sh',
-            :platform     => {
-              :platform_path  => platform_path,
-              :type           => build_for_platform.distrib_type,
-              :name           => build_for_platform.name,
-              :arch           => 'x86_64'
+            id:              Time.now.to_i,
+            cmd_params:      cmd_params,
+            main_script:     'build.sh',
+            rollback_script: 'rollback.sh',
+            platform:        {
+              platform_path:   platform_path,
+              type:            build_for_platform.distrib_type,
+              name:            build_for_platform.name,
+              arch:            'x86_64'
             },
-            :time_living  => 9600, # 160 min
-            :extra         => {:repository_status_id => repository_status.id, :regenerate => true}
+            time_living:    9600, # 160 min
+            extra:          {repository_status_id: repository_status.id, regenerate: true}
           }]
         ) if repository_status.start_regeneration
       end

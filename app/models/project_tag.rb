@@ -8,8 +8,8 @@ class ProjectTag < ActiveRecord::Base
 
   belongs_to :project
 
-  validates :project_id, :commit_id, :sha1, :tag_name, :format_id, :presence => true
-  validates :project_id, :uniqueness => {:scope => [:tag_name, :format_id]}
+  validates :project_id, :commit_id, :sha1, :tag_name, :format_id, presence: true
+  validates :project_id, uniqueness: {scope: [:tag_name, :format_id]}
 
   attr_accessible :project_id,
                   :commit_id,

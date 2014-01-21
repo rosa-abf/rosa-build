@@ -3,7 +3,7 @@ class Projects::CommentsController < Projects::BaseController
   load_and_authorize_resource :project
   before_filter :find_commentable
   before_filter :find_or_build_comment
-  load_and_authorize_resource :new => :new_line
+  load_and_authorize_resource new: :new_line
 
   include CommentsHelper
 
@@ -30,7 +30,7 @@ class Projects::CommentsController < Projects::BaseController
     else
       [400, view_context.local_alert(@comment.errors.full_messages.join('. '))]
     end
-    render :inline => message, :status => status
+    render inline: message, status: status
   end
 
   def destroy
@@ -41,7 +41,7 @@ class Projects::CommentsController < Projects::BaseController
 
   def new_line
     @path = view_context.project_commentable_comments_path(@project, @commentable)
-    render :layout => false
+    render layout: false
   end
 
   protected
@@ -52,7 +52,7 @@ class Projects::CommentsController < Projects::BaseController
   end
 
   def find_or_build_comment
-    @comment = params[:id].present? && Comment.where(:automatic => false).find(params[:id]) ||
+    @comment = params[:id].present? && Comment.where(automatic: false).find(params[:id]) ||
                current_user.comments.build(params[:comment]) {|c| c.commentable = @commentable; c.project = @project}
   end
 end

@@ -10,8 +10,8 @@ module AbfWorker::ModelHelper
   module ClassMethods
     def log_server
       @log_server ||= Redis.new(
-        :host => APP_CONFIG['abf_worker']['log_server']['host'],
-        :port => APP_CONFIG['abf_worker']['log_server']['port']
+        host: APP_CONFIG['abf_worker']['log_server']['host'],
+        port: APP_CONFIG['abf_worker']['log_server']['port']
       )
     end
   end

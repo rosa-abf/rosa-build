@@ -1,6 +1,6 @@
 class AddUnixnameToRepositories < ActiveRecord::Migration
   def self.up
-    add_column :repositories, :unixname, :string, :null => false
+    add_column :repositories, :unixname, :string, null: false
   end
 
   def self.down

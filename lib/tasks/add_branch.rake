@@ -13,7 +13,7 @@ namespace :add_branch do
   end
 
   desc "Add branch for group projects"
-  task :group => :environment do
+  task group: :environment do
     src_branch = ENV['SRC_BRANCH']
     dst_branch = ENV['DST_BRANCH']
     group = ENV['GROUP']
@@ -22,13 +22,13 @@ namespace :add_branch do
       next if p.repo.branches.map(&:name).include?(dst_branch)
       next if p.repo.branches.map(&:name).exclude?(src_branch)
       say "===== Process #{p.name} project"
-      Rake::Task['add_branch:fork_branch'].execute(:path => p.path, :src_branch => src_branch, :dst_branch => dst_branch)
+      Rake::Task['add_branch:fork_branch'].execute(path: p.path, src_branch: src_branch, dst_branch: dst_branch)
     end
     say 'DONE'
   end
 
   desc "Add branch for platform projects"
-  task :platform => :environment do  
+  task platform: :environment do
     src_branch = ENV['SRC_BRANCH'] || 'import_mandriva2011'
     dst_branch = ENV['DST_BRANCH'] || 'rosa2012lts'
     say "START add branch #{dst_branch} from #{src_branch}"
@@ -37,14 +37,14 @@ namespace :add_branch do
       r.projects.find_each do |p|
         next if p.repo.branches.map(&:name).include?(dst_branch)
         say "===== Process #{p.name} project"
-        Rake::Task['add_branch:fork_branch'].execute(:path => p.path, :src_branch => src_branch, :dst_branch => dst_branch)
+        Rake::Task['add_branch:fork_branch'].execute(path: p.path, src_branch: src_branch, dst_branch: dst_branch)
       end
     end
     say 'DONE'
   end
 
   desc "Add branch for owner projects by list"
-  task :list => :environment do  
+  task list: :environment do
     source = ENV['SOURCE'] || 'https://dl.dropbox.com/u/984976/texlive.txt'
     owner = User.find_by_uname(ENV['OWNER']) || Group.find_by_uname!(ENV['OWNER'] || 'import')
     platform = Platform.find_by_name!(ENV['PLATFORM'] || 'rosa2012.1')
@@ -56,7 +56,7 @@ namespace :add_branch do
       name.chomp!; name.strip!
       print "Fork branch for '#{name}'... "
       if p = Project.find_by_owner_and_name(owner.uname, name)
-        # Rake::Task['add_branch:fork_branch'].execute(:path => p.path, :src_branch => src_branch, :dst_branch => dst_branch)
+        # Rake::Task['add_branch:fork_branch'].execute(path: p.path, src_branch: src_branch, dst_branch: dst_branch)
         system "bundle exec rake add_branch:fork_branch[#{p.path},#{src_branch},#{dst_branch}] -s RAILS_ENV=#{Rails.env} > /dev/null 2>&1"
         print 'Ok!'
         repo.projects << p rescue print ' Add to repo failed!'

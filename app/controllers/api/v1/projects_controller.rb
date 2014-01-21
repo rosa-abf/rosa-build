@@ -1,8 +1,8 @@
 class Api::V1::ProjectsController < Api::V1::BaseController
 
   before_filter :authenticate_user!
-  skip_before_filter :authenticate_user!, :only => [:get_id, :show, :refs_list] if APP_CONFIG['anonymous_access']
-  
+  skip_before_filter :authenticate_user!, only: [:get_id, :show, :refs_list] if APP_CONFIG['anonymous_access']
+
   load_and_authorize_resource :project
 
   def index
@@ -38,7 +38,7 @@ class Api::V1::ProjectsController < Api::V1::BaseController
     owner_type = p_params[:owner_type]
     if owner_type.present? && %w(User Group).include?(owner_type)
       @project.owner = owner_type.constantize.
-        where(:id => p_params[:owner_id]).first
+        where(id: p_params[:owner_id]).first
     else
       @project.owner = nil
     end

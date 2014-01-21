@@ -20,7 +20,7 @@ describe AutocompletesController do
     end
 
     context 'autocomplete_extra_build_list' do
-      let(:build_list)  { FactoryGirl.create(:build_list, :user => user) }
+      let(:build_list)  { FactoryGirl.create(:build_list, user: user) }
       let(:params)      { { :term         => build_list.id,
                             :platform_id  => build_list.save_to_platform_id } }
 
@@ -51,7 +51,7 @@ describe AutocompletesController do
       end
 
       it 'shows data when repository of personal platform' do
-        Platform.update_all(:platform_type => 'personal')
+        Platform.update_all(platform_type: 'personal')
         get :autocomplete_extra_repositories, params
         response.body.should_not == '[]'
       end

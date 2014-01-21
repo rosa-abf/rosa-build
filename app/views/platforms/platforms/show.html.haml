@@ -1,4 +1,4 @@
--set_meta_tags :title => title_object(@platform)
+-set_meta_tags title: title_object(@platform)
 = render 'submenu'
 = render 'sidebar'
 
@@ -32,6 +32,6 @@
     %td= @platform.distrib_type
 
 .buttons_block
-  = link_to I18n.t("layout.platforms.clone"), clone_platform_path(@platform), :class => "button left_floated" if can? :clone, @platform
+  = link_to I18n.t("layout.platforms.clone"), clone_platform_path(@platform), class: "button left_floated" if can? :clone, @platform
 
 = render 'connection_info' if @platform.platform_type == 'personal' and @platform.visibility == 'open'

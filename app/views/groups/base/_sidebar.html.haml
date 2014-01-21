@@ -6,8 +6,8 @@
   .admin-preferences
     %ul
       - if can? :edit, @group
-        %li{:class => (act == :edit && contr == :profile) ? 'active' : ''}
+        %li{class: (act == :edit && contr == :profile) ? 'active' : ''}
           = link_to t("layout.groups.edit"), edit_group_path(@group)
       - if can? :manage_members, @group
-        %li{:class => (act == :index && contr == :members) ? 'active' : ''}
-          = link_to t("layout.groups.edit_members"), group_members_path(@group) 
+        %li{class: (act == :index && contr == :members) ? 'active' : ''}
+          = link_to t("layout.groups.edit_members"), group_members_path(@group)

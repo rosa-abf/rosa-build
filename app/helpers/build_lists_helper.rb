@@ -26,9 +26,9 @@ module BuildListsHelper
         "#{r.platform.name}/#{r.name}",
         r.id,
         {
-          :publish_without_qa => r.publish_without_qa? ? 1 : 0,
-          :platform_id        => r.platform.id,
-          :default_arches     => (r.platform.platform_arch_settings.by_default.pluck(:arch_id).presence || Arch.where(:name => Arch::DEFAULT).pluck(:id)).join(' ')
+          publish_without_qa: r.publish_without_qa? ? 1 : 0,
+          platform_id:        r.platform.id,
+          default_arches:     (r.platform.platform_arch_settings.by_default.pluck(:arch_id).presence || Arch.where(name: Arch::DEFAULT).pluck(:id)).join(' ')
         }
       ]
     end.sort_by { |col| col[0] }
@@ -68,10 +68,10 @@ module BuildListsHelper
 
   def build_list_classified_update_types
     advisoriable    = BuildList::RELEASE_UPDATE_TYPES.map do |el|
-      [el, {:class => 'advisoriable'}]
+      [el, {class: 'advisoriable'}]
     end
     nonadvisoriable = (BuildList::UPDATE_TYPES - BuildList::RELEASE_UPDATE_TYPES).map do |el|
-      [el, {:class => 'nonadvisoriable'}]
+      [el, {class: 'nonadvisoriable'}]
     end
 
     return advisoriable + nonadvisoriable
@@ -82,8 +82,8 @@ module BuildListsHelper
     if item.version =~ /^[\da-z]+$/ && item.name == item.build_list.project.name
       bl = item.build_list
       {
-        :text => str_version ? "#{shortest_hash_id item.version, hash_size}" : shortest_hash_id(item.version, hash_size),
-        :href => commit_path(bl.project.owner, bl.project, item.version)
+        text: str_version ? "#{shortest_hash_id item.version, hash_size}" : shortest_hash_id(item.version, hash_size),
+        href: commit_path(bl.project.owner, bl.project, item.version)
       }
     else
       {}

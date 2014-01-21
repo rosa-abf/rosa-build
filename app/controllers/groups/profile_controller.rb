@@ -1,10 +1,10 @@
 class Groups::ProfileController < Groups::BaseController
   include AvatarHelper
-  load_and_authorize_resource :class => Group, :instance_name => 'group'
-  skip_before_filter :authenticate_user!, :only => :show if APP_CONFIG['anonymous_access']
+  load_and_authorize_resource class: Group, instance_name: 'group'
+  skip_before_filter :authenticate_user!, only: :show if APP_CONFIG['anonymous_access']
 
   def index
-    @groups = current_user.groups.paginate(:page => params[:group_page]) # accessible_by(current_ability)
+    @groups = current_user.groups.paginate(page: params[:group_page]) # accessible_by(current_ability)
     @groups = @groups.search(params[:query]) if params[:query].present?
   end
 
@@ -18,7 +18,7 @@ class Groups::ProfileController < Groups::BaseController
       else
         @projects = @projects.by_visibilities('hidden').accessible_by(current_ability, :read)
       end
-      render :partial => 'shared/profile_projects', :layout => nil, :locals => {:projects => paginate_projects(page)}
+      render partial: 'shared/profile_projects', layout: nil, locals: {projects: paginate_projects(page)}
     else
       @projects = paginate_projects(page)
     end
@@ -38,7 +38,7 @@ class Groups::ProfileController < Groups::BaseController
     else
       flash[:error] = t('flash.group.save_error')
       flash[:warning] = @group.errors.full_messages.join('. ')
-      render :action => :new
+      render action: :new
     end
   end
 
@@ -49,7 +49,7 @@ class Groups::ProfileController < Groups::BaseController
       redirect_to group_path(@group)
     else
       flash[:error] = t('flash.group.save_error')
-      render :action => :edit
+      render action: :edit
     end
   end
 
@@ -67,6 +67,6 @@ class Groups::ProfileController < Groups::BaseController
   protected
 
   def paginate_projects(page)
-    @projects.paginate(:page => (page>0 ? page : nil), :per_page => 24)
+    @projects.paginate(page: (page>0 ? page : nil), per_page: 24)
   end
 end

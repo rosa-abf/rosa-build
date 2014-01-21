@@ -1,7 +1,7 @@
-%tr{:class => cycle("odd", "even")}
+%tr{class: cycle("odd", "even")}
   %td= link_to advisory.advisory_id, advisory_path(advisory)
   %td
     - advisory.platforms.each do |platform|
       = link_to platform_printed_name(platform), platform_path(platform)
       %br
-  %td= truncate(advisory.description, :length => 50)
+  %td= truncate(advisory.description, length: 50)

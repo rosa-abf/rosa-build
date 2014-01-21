@@ -5,11 +5,11 @@
     -if comment.actual_inline_comment? @pull.diff
       .r=link_to t("layout.pull_requests.view_full_changes"),
         "#{project_commentable_path(@project, @commentable)}##{comment_anchor(comment)}",
-        :class => 'link_to_full_changes'
+        class: 'link_to_full_changes'
     -else
       .r
         =t'projects.pull_requests.outdated_diff'
         =image_tag 'x.png'
     .clear
-  .diff_data=render_diff(comment.inline_diff, :diff_counter => diff_counter, :comments => item[1], :filepath => comment.data[:path], :diff_prefix => 'discussion')
+  .diff_data=render_diff(comment.inline_diff, diff_counter: diff_counter, comments: item[1], filepath: comment.data[:path], diff_prefix: 'discussion')
 

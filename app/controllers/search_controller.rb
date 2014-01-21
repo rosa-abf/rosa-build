@@ -8,7 +8,7 @@ class SearchController < ApplicationController
     Search.by_term_and_type(
       @query,
       @type,
-      {:page => params[:page]}
+      {page: params[:page]}
     ).each do |k, v|
       var = :"@#{k}"
       instance_variable_set var, v unless instance_variable_defined?(var)

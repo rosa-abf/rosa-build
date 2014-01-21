@@ -9,17 +9,17 @@ class BuildList::Package < ActiveRecord::Base
 
   validates :build_list_id, :project_id, :platform_id, :fullname,
             :package_type, :name, :release, :version,
-            :presence => true
-  validates :package_type, :inclusion => PACKAGE_TYPES
-  validates :sha1, :presence => true, :if => Proc.new { |p| p.build_list.new_core? }
+            presence: true
+  validates :package_type, inclusion: PACKAGE_TYPES
+  validates :sha1, presence: true, if: Proc.new { |p| p.build_list.new_core? }
 
   default_scope order("lower(#{table_name}.name) ASC, length(#{table_name}.name) ASC")
 
   # Fetches only actual (last publised) packages.
-  scope :actual,          where(:actual => true)
-  scope :by_platform,     lambda {|platform| where(:platform_id => platform) }
-  scope :by_name,         lambda {|name| where(:name => name) }
-  scope :by_package_type, lambda {|type| where(:package_type => type) }
+  scope :actual,          where(actual: true)
+  scope :by_platform,     lambda {|platform| where(platform_id: platform) }
+  scope :by_name,         lambda {|name| where(name: name) }
+  scope :by_package_type, lambda {|type| where(package_type: type) }
   scope :like_name,       lambda {|name| where("#{table_name}.name ILIKE ?", "%#{name}%") if name.present?}
 
   before_create :set_epoch

@@ -8,50 +8,50 @@ shared_context "pull request controller" do
 
     @project = FactoryGirl.create(:project_with_commit)
 
-    @pull = @project.pull_requests.new :issue_attributes => {:title => 'test', :body => 'testing'}
+    @pull = @project.pull_requests.new issue_attributes: {title: 'test', body: 'testing'}
     @pull.issue.user, @pull.issue.project = @project.owner, @pull.to_project
     @pull.to_ref = 'master'
     @pull.from_project, @pull.from_ref = @project, 'non_conflicts'
     @pull.save
 
     @create_params = {
-      :pull_request => {:issue_attributes => {:title => 'create', :body => 'creating'},
-                        :to_ref => 'non_conflicts',
-                        :from_ref => 'master'},
-      :to_project => @project.name_with_owner,
-      :owner_name => @project.owner.uname,
-      :project_name => @project.name }
+      pull_request: {issue_attributes: {title: 'create', body: 'creating'},
+                        to_ref: 'non_conflicts',
+                        from_ref: 'master'},
+      to_project: @project.name_with_owner,
+      owner_name: @project.owner.uname,
+      project_name: @project.name }
     @update_params = @create_params.merge(
-      :pull_request_action => 'close',
-      :id => @pull.serial_id)
+      pull_request_action: 'close',
+      id: @pull.serial_id)
     @wrong_update_params = @create_params.merge(
-      :pull_request => {:issue_attributes => {:title => 'update', :body => 'updating', :id => @pull.issue.id}},
-      :id => @pull.serial_id)
+      pull_request: {issue_attributes: {title: 'update', body: 'updating', id: @pull.issue.id}},
+      id: @pull.serial_id)
 
     @user = FactoryGirl.create(:user)
     set_session_for(@user)
 
-    @issue = FactoryGirl.create(:issue, :project => @project)
+    @issue = FactoryGirl.create(:issue, project: @project)
   end
 end
 
 shared_examples_for 'pull request user with project guest rights' do
   it 'should be able to perform index action' do
-    get :index, :owner_name => @project.owner.uname, :project_name => @project.name
+    get :index, owner_name: @project.owner.uname, project_name: @project.name
     response.should render_template(:index)
   end
 
   it 'should be able to perform show action when pull request has been created' do
     @pull.check
-    get :show, :owner_name => @project.owner.uname, :project_name => @project.name, :id => @pull.serial_id
+    get :show, owner_name: @project.owner.uname, project_name: @project.name, id: @pull.serial_id
     response.should render_template(:show)
   end
 end
 
 shared_examples_for 'pull request user with project reader rights' do
   it 'should be able to perform index action on hidden project' do
-    @project.update_attributes(:visibility => 'hidden')
-    get :index, :owner_name => @project.owner.uname, :project_name => @project.name
+    @project.update_attributes(visibility: 'hidden')
+    get :index, owner_name: @project.owner.uname, project_name: @project.name
     response.should render_template(:index)
   end
 
@@ -62,33 +62,33 @@ shared_examples_for 'pull request user with project reader rights' do
 
   it 'should create pull request object into db' do
     lambda{ post :create, @create_params }.should change{ PullRequest.joins(:issue).
-      where(:issues => {:title => 'create', :body => 'creating'}).count }.by(1)
+      where(issues: {title: 'create', body: 'creating'}).count }.by(1)
   end
 
   it "should not create same pull" do
-    post :create, @create_params.merge({:pull_request => {:issue_attributes => {:title => 'same', :body => 'creating'}, :from_ref => 'non_conflicts', :to_ref => 'master'}, :to_project_id => @project.id})
-    PullRequest.joins(:issue).where(:issues => {:title => 'same', :body => 'creating'}).count.should == 0
+    post :create, @create_params.merge({pull_request: {issue_attributes: {title: 'same', body: 'creating'}, from_ref: 'non_conflicts', to_ref: 'master'}, to_project_id: @project.id})
+    PullRequest.joins(:issue).where(issues: {title: 'same', body: 'creating'}).count.should == 0
   end
 
   it "should not create already up-to-date pull" do
-    post :create, @create_params.merge({:pull_request => {:issue_attributes => {:title => 'already', :body => 'creating'}, :to_ref => 'master', :from_ref => 'master'}, :to_project_id => @project.id})
-    PullRequest.joins(:issue).where(:issues => {:title => 'already', :body => 'creating'}).count.should == 0
+    post :create, @create_params.merge({pull_request: {issue_attributes: {title: 'already', body: 'creating'}, to_ref: 'master', from_ref: 'master'}, to_project_id: @project.id})
+    PullRequest.joins(:issue).where(issues: {title: 'already', body: 'creating'}).count.should == 0
   end
 
   it "should create pull request to the same project" do
     @parent = FactoryGirl.create(:project)
-    @project.update_attributes({:parent_id => @parent}, :without_protection => true)
+    @project.update_attributes({parent_id: @parent}, without_protection: true)
 
     lambda{ post :create, @create_params }.should change{ PullRequest.joins(:issue).
-      where(:issues => {:user_id => @user}, :to_project_id => @project, :from_project_id => @project).count }.by(1)
+      where(issues: {user_id: @user}, to_project_id: @project, from_project_id: @project).count }.by(1)
   end
 
   it "should create pull request to the parent project" do
     @parent = FactoryGirl.create(:project_with_commit)
-    @project.update_attributes({:parent_id => @parent}, :without_protection => true)
+    @project.update_attributes({parent_id: @parent}, without_protection: true)
 
-    lambda{ post :create, @create_params.merge({:to_project => @parent.name_with_owner}) }.should change{ PullRequest.joins(:issue).
-      where(:issues => {:user_id => @user}, :to_project_id => @parent, :from_project_id => @project).count }.by(1)
+    lambda{ post :create, @create_params.merge({to_project: @parent.name_with_owner}) }.should change{ PullRequest.joins(:issue).
+      where(issues: {user_id: @user}, to_project_id: @parent, from_project_id: @project).count }.by(1)
   end
 end
 
@@ -161,15 +161,15 @@ shared_examples_for 'user without pull request update rights' do
 end
 
 shared_examples_for 'pull request when project with issues turned off' do
-  before { @project.update_attributes(:has_issues => false) }
+  before { @project.update_attributes(has_issues: false) }
   it 'should be able to perform index action' do
-    get :index, :owner_name => @project.owner.uname, :project_name => @project.name
+    get :index, owner_name: @project.owner.uname, project_name: @project.name
     response.should render_template(:index)
   end
 
   it 'should be able to perform show action when pull request has been created' do
     @pull.check
-    get :show, :owner_name => @project.owner.uname, :project_name => @project.name, :id => @pull.serial_id
+    get :show, owner_name: @project.owner.uname, project_name: @project.name, id: @pull.serial_id
     response.should render_template(:show)
   end
 end
@@ -191,7 +191,7 @@ describe Projects::PullRequestsController do
 
   context 'for project admin user' do
     before do
-      @project.relations.create!(:actor_type => 'User', :actor_id => @user.id, :role => 'admin')
+      @project.relations.create!(actor_type: 'User', actor_id: @user.id, role: 'admin')
     end
 
     it_should_behave_like 'pull request user with project guest rights'
@@ -214,7 +214,7 @@ describe Projects::PullRequestsController do
 
   context 'for project reader user' do
     before do
-      @project.relations.create!(:actor_type => 'User', :actor_id => @user.id, :role => 'reader')
+      @project.relations.create!(actor_type: 'User', actor_id: @user.id, role: 'reader')
     end
 
     it_should_behave_like 'pull request user with project guest rights'
@@ -223,19 +223,19 @@ describe Projects::PullRequestsController do
     it_should_behave_like 'pull request when project with issues turned off'
 
     it 'should return 404' do
-      get :show, :owner_name => @project.owner.uname, :project_name => @project.name, :id => 999999
-      render_template(:file => "#{Rails.root}/public/404.html")
+      get :show, owner_name: @project.owner.uname, project_name: @project.name, id: 999999
+      render_template(file: "#{Rails.root}/public/404.html")
     end
 
     it 'should redirect to issue page' do
-      get :show, :owner_name => @project.owner.uname, :project_name => @project.name, :id => @issue.serial_id
+      get :show, owner_name: @project.owner.uname, project_name: @project.name, id: @issue.serial_id
       response.should redirect_to(project_issue_path(@project, @issue))
     end
   end
 
   context 'for project writer user' do
     before do
-      @project.relations.create!(:actor_type => 'User', :actor_id => @user.id, :role => 'writer')
+      @project.relations.create!(actor_type: 'User', actor_id: @user.id, role: 'writer')
     end
 
     it_should_behave_like 'pull request user with project guest rights'
@@ -268,19 +268,19 @@ describe Projects::PullRequestsController do
 
     else
       it 'should not be able to perform index action' do
-        get :index, :owner_name => @project.owner.uname, :project_name => @project.name
+        get :index, owner_name: @project.owner.uname, project_name: @project.name
         response.should redirect_to(new_user_session_path)
       end
 
       it 'should not be able to perform show action' do
         @pull.check
-        get :show, :owner_name => @project.owner.uname, :project_name => @project.name, :id => @pull.serial_id
+        get :show, owner_name: @project.owner.uname, project_name: @project.name, id: @pull.serial_id
         response.should redirect_to(new_user_session_path)
       end
 
       it 'should not be able to perform index action on hidden project' do
-        @project.update_attributes(:visibility => 'hidden')
-        get :index, :owner_name => @project.owner.uname, :project_name => @project.name
+        @project.update_attributes(visibility: 'hidden')
+        get :index, owner_name: @project.owner.uname, project_name: @project.name
         response.should redirect_to(new_user_session_path)
       end
     end
@@ -300,11 +300,11 @@ describe Projects::PullRequestsController do
   context 'send email messages' do
     before(:each) do
       @project_reader = FactoryGirl.create :user
-      @project.relations.create!(:actor_type => 'User', :actor_id => @project_reader.id, :role => 'reader')
+      @project.relations.create!(actor_type: 'User', actor_id: @project_reader.id, role: 'reader')
       @project_admin = FactoryGirl.create :user
-      @project.relations.create!(:actor_type => 'User', :actor_id => @project_admin.id, :role => 'admin')
+      @project.relations.create!(actor_type: 'User', actor_id: @project_admin.id, role: 'admin')
       @project_writer = FactoryGirl.create :user
-      @project.relations.create!(:actor_type => 'User', :actor_id => @project_writer.id, :role => 'writer')
+      @project.relations.create!(actor_type: 'User', actor_id: @project_writer.id, role: 'writer')
 
       set_session_for(@project_writer)
       ActionMailer::Base.deliveries = []
@@ -318,14 +318,14 @@ describe Projects::PullRequestsController do
     end
 
     it 'should send two email messages to admins and one to assignee' do
-      post :create, @create_params.deep_merge(:issue => {:assignee_id => @project_reader.id})
+      post :create, @create_params.deep_merge(issue: {assignee_id: @project_reader.id})
       @project.pull_requests.last.issue.send(:new_issue_notifications)
       @project.pull_requests.last.issue.send(:send_assign_notifications)
       ActionMailer::Base.deliveries.count.should == 3
     end
 
     it 'should not duplicate email message' do
-      post :create, @create_params.deep_merge(:issue => {:assignee_id => @project_admin.id})
+      post :create, @create_params.deep_merge(issue: {assignee_id: @project_admin.id})
       @project.pull_requests.last.issue.send(:new_issue_notifications)
       @project.pull_requests.last.issue.send(:send_assign_notifications)
       ActionMailer::Base.deliveries.count.should == 2 # send only to admins

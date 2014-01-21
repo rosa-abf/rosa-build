@@ -1,6 +1,6 @@
 namespace :remove_branch do
   desc "Remove branch for group projects"
-  task :group => :environment do
+  task group: :environment do
     branch = ENV['BRANCH']
     group = ENV['GROUP']
     say "START remove branch #{branch} from #{group} group"

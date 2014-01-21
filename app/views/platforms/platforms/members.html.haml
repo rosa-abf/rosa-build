@@ -1,10 +1,10 @@
--set_meta_tags :title => [title_object(@platform), t('layout.platforms.members')]
+-set_meta_tags title: [title_object(@platform), t('layout.platforms.members')]
 = render 'submenu'
 = render 'sidebar'
 
 = render "shared/members_table",
-  :remove_members_path => remove_members_platform_path(@platform),
-  :remove_member_path => remove_member_platform_path(@platform),
-  :add_member_path => add_member_platform_path(@platform),
-  :members => @members.select{|u| u != @platform.owner},
-  :editable_object => @platform
+  remove_members_path: remove_members_platform_path(@platform),
+  remove_member_path: remove_member_platform_path(@platform),
+  add_member_path: add_member_platform_path(@platform),
+  members: @members.select{|u| u != @platform.owner},
+  editable_object: @platform

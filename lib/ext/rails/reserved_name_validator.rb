@@ -32,7 +32,7 @@ class ReservedNameValidator < ActiveModel::EachValidator
 
   def validate_each(record, attribute, value)
     if reserved_names.include?(value.to_s.downcase)
-      record.errors.add(attribute, :exclusion, options.merge(:value => value))
+      record.errors.add(attribute, :exclusion, options.merge(value: value))
     end
   end
 end

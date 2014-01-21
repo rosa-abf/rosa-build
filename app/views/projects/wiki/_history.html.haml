@@ -1,25 +1,25 @@
-= form_tag compare_path(@project, @name), :name => "compare-versions", :id => "version-form" do
-  %table.wiki{:cellpadding => "0", :cellspacing => "0"}
+= form_tag compare_path(@project, @name), name: "compare-versions", id: "version-form" do
+  %table.wiki{cellpadding: "0", cellspacing: "0"}
     - @versions.each do |v|
       %tr.history
         %td.td1
-          %span#niceCheckbox1.niceCheck-main{:onclick => "changeCheck(this)"}
-            / = check_box_tag "versions[]", v.id, :html => {:class => 'history_cbx'}
-            %input{:type => 'checkbox', :id => 'versions_', :name => 'versions[]', :value => v.id, :class => 'history_cbx'}
+          %span#niceCheckbox1.niceCheck-main{onclick: "changeCheck(this)"}
+            / = check_box_tag "versions[]", v.id, html: {class: 'history_cbx'}
+            %input{type: 'checkbox', id: 'versions_', name: 'versions[]', value: v.id, class: 'history_cbx'}
         %td.td2
-          - user = User.where(:email => v.author.email).first
+          - user = User.where(email: v.author.email).first
           .avatar
             = link_to user_path_by_user(user) do
-              = image_tag avatar_url_by_email(v.author.email), :alt => "avatar: #{v.author.name}", :class => 'mini-gravatar'
+              = image_tag avatar_url_by_email(v.author.email), alt: "avatar: #{v.author.name}", class: 'mini-gravatar'
           .name
             = link_to user_path_by_user(user) do
               %span.username= user.present? ? user.fullname : v.author.name
           .both
         %td.td3
-          = datetime_moment v.committed_date, :tag => :span, :class => 'wiki-gray'
+          = datetime_moment v.committed_date, tag: :span, class: 'wiki-gray'
           = v.message
           - if @name
-            = raw "[#{link_to v.id[0..6], versioned_project_wiki_path(@project, escaped_name, v.id), :title => t("wiki.view_commit")}]"
+            = raw "[#{link_to v.id[0..6], versioned_project_wiki_path(@project, escaped_name, v.id), title: t("wiki.view_commit")}]"
           - else
             = "[#{v.id[0..6]}]"
 

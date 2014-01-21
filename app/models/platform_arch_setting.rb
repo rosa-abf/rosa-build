@@ -7,11 +7,11 @@ class PlatformArchSetting < ActiveRecord::Base
   belongs_to :arch
   belongs_to :platform
 
-  validates :arch_id, :platform_id, :presence => true
-  validates :platform_id, :uniqueness   => {:scope => :arch_id}
+  validates :arch_id, :platform_id, presence: true
+  validates :platform_id, :uniqueness   => {scope: :arch_id}
 
-  scope :by_arch,     lambda {|arch| where(:arch_id => arch) if arch.present?}
-  scope :by_default,  where(:default => true)
+  scope :by_arch,     lambda {|arch| where(arch_id: arch) if arch.present?}
+  scope :by_default,  where(default: true)
 
   attr_accessible :arch_id, :platform_id, :default
 

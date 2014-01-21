@@ -3,7 +3,7 @@ class CreateCategories < ActiveRecord::Migration
     create_table :categories do |t|
       t.string :name
       t.string :ancestry
-      t.integer :projects_count, :default => 0, :null => false
+      t.integer :projects_count, default: 0, null: false
 
       t.timestamps
     end

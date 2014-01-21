@@ -1,6 +1,6 @@
 .wrap
   %nav
-    %a{:href => new_register_request_path}
+    %a{href: new_register_request_path}
       %p=t("layout.devise.shared_links.sign_up")
   %header
     .logo
@@ -11,17 +11,17 @@
     .content
     - password_error, reset_password_token_error = getDeviseErrors(:password, :reset_password_token)
 
-    = form_for(resource, :as => resource_name, :url => password_path(resource_name), :html => { :method => :put, :class => "form" }) do |f|
+    = form_for(resource, as: resource_name, url: password_path(resource_name), html: { method: :put, class: "form" }) do |f|
       = f.hidden_field :reset_password_token
       .left.first=t('activerecord.attributes.user.password')
       .right.first
-        = f.password_field :password, :id => 'password',  :class => "registartion-input #{password_error ? 'registartion-input-error' : ''}"
+        = f.password_field :password, id: 'password',  class: "registartion-input #{password_error ? 'registartion-input-error' : ''}"
       .both
       .left=t('activerecord.attributes.user.password_confirm')
       .right
-        = f.password_field :password_confirmation, :id => 'password2',  :class => "registartion-input #{password_error ? 'registartion-input-error' : ''}"
+        = f.password_field :password_confirmation, id: 'password2',  class: "registartion-input #{password_error ? 'registartion-input-error' : ''}"
       .both
       %br
-      =f.submit t("devise.passwords.edit_button"), :class => 'button', :id => 'btnLogin'
+      =f.submit t("devise.passwords.edit_button"), class: 'button', id: 'btnLogin'
   =showDeviseHintError(:password, password_error, 'reset')
 

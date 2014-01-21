@@ -12,7 +12,7 @@ class BuildList::Filter
     build_lists =  @project ? @project.build_lists : BuildList.scoped
 
     if @options[:id]
-      build_lists = build_lists.where(:id => @options[:id])
+      build_lists = build_lists.where(id: @options[:id])
     else
       build_lists = build_lists.scoped_to_new_core(@options[:new_core] == '0' ? nil : true) if @options[:new_core].present?
       build_lists = build_lists.by_mass_build(@options[:mass_build_id]) if @options[:mass_build_id]
@@ -42,18 +42,18 @@ class BuildList::Filter
 
   def set_options(options)
     @options = HashWithIndifferentAccess.new(options.reverse_merge({
-        :ownership        => nil,
-        :status           => nil,
-        :updated_at_start => nil,
-        :updated_at_end   => nil,
-        :arch_id          => nil,
-        :platform_id      => nil,
-        :is_circle        => nil,
-        :project_version  => nil,
-        :id               => nil,
-        :project_name     => nil,
-        :mass_build_id    => nil,
-        :new_core         => nil
+        ownership:        nil,
+        status:           nil,
+        updated_at_start: nil,
+        updated_at_end:   nil,
+        arch_id:          nil,
+        platform_id:      nil,
+        is_circle:        nil,
+        project_version:  nil,
+        id:               nil,
+        project_name:     nil,
+        mass_build_id:    nil,
+        new_core:         nil
     }))
 
     @options[:ownership] = @options[:ownership].presence || (@project || !@user ? 'everything' : 'owned')

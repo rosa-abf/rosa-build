@@ -22,4 +22,4 @@ json.commits @commits do |commit|
   end
 end
 
-json.url commits_api_v1_project_pull_request_path(:format => :json)
+json.url commits_api_v1_project_pull_request_path(format: :json)

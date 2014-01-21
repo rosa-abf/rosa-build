@@ -5,4 +5,4 @@ json.refs_list @refs do |grit|
     json.sha grit.commit.id
   end
 end
-json.url refs_list_api_v1_project_path(@project.id, :format => :json)
+json.url refs_list_api_v1_project_path(@project.id, format: :json)

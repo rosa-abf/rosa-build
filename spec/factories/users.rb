@@ -9,7 +9,7 @@ FactoryGirl.define do
     after(:create) { |u| u.send(:new_user_notification) }
   end
 
-  factory :admin, :parent => :user do
+  factory :admin, parent: :user do
     role 'admin'
   end
 end

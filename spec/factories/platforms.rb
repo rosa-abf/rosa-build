@@ -4,7 +4,7 @@ FactoryGirl.define do
     description { FactoryGirl.generate(:string) }
     platform_type 'main'
     distrib_type APP_CONFIG['distr_types'].first
-    association :owner, :factory => :user
+    association :owner, factory: :user
 
     factory :platform_with_repos do
       after(:create) {|p| FactoryGirl.create_list(:repository, 1, platform: p)}

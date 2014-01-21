@@ -1,8 +1,8 @@
--set_meta_tags :title => t('.title')
+-set_meta_tags title: t('.title')
 %h3.fix.bpadding10= @user.uname
 
-= form_for @user, :url => profile_settings_path, :html => {:class => :form} do |f|
-  = render 'form', :f => f
+= form_for @user, url: profile_settings_path, html: {class: :form} do |f|
+  = render 'form', f: f
 
 .notify
   %p= t('layout.users.public_data_edit_warning')

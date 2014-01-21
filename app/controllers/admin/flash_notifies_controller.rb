@@ -1,10 +1,10 @@
 class Admin::FlashNotifiesController < Admin::BaseController
   def index
-    @flash_notifies = FlashNotify.paginate(:page => params[:page], :per_page => 20)
+    @flash_notifies = FlashNotify.paginate(page: params[:page], per_page: 20)
   end
 
   def new
-    @flash_notify = FlashNotify.new(:published => true)
+    @flash_notify = FlashNotify.new(published: true)
   end
 
   def create

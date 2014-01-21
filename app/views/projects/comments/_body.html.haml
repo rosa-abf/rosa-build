@@ -1,13 +1,13 @@
 %ul.nav.nav-tabs#md_tabs
   %li
-    %a{"data-toggle" => "tab", :href => "##{id}_edit"}=t 'layout.edit'
+    %a{"data-toggle" => "tab", href: "##{id}_edit"}=t 'layout.edit'
   %li
-    %a{"data-toggle" => "tab", :href => "##{id}_preview"}=t 'layout.preview'
+    %a{"data-toggle" => "tab", href: "##{id}_preview"}=t 'layout.preview'
 
 .tab-content
-  .tab-pane.active{:id => "#{id}_edit"}
-    =f.text_area :body, :cols => 80, :id => "#{id}_edit_input"
-    =hidden_field_tag :body_dup, nil, :name => 'text', :id => "#{id}_edit_input_dup"
-  .tab-pane{:id => "#{id}_preview"}
+  .tab-pane.active{id: "#{id}_edit"}
+    =f.text_area :body, cols: 80, id: "#{id}_edit_input"
+    =hidden_field_tag :body_dup, nil, name: 'text', id: "#{id}_edit_input_dup"
+  .tab-pane{id: "#{id}_preview"}
     .formatted.cm-s-default.md_and_cm
 

@@ -13,23 +13,23 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
   end
 
   def passthru
-    render :file => "#{Rails.root}/public/404.html", :status => 404, :layout => false
+    render file: "#{Rails.root}/public/404.html", status: 404, layout: false
   end
-  
+
   private
 
   def oauthorize(kind)
     provider = kind.downcase
     @user = find_for_ouath(env["omniauth.auth"], current_user)
     if @user && @user.persisted?
-      flash[:notice] = I18n.t "devise.omniauth_callbacks.success", :kind => action_name.classify
-      sign_in_and_redirect @user, :event => :authentication
+      flash[:notice] = I18n.t "devise.omniauth_callbacks.success", kind: action_name.classify
+      sign_in_and_redirect @user, event: :authentication
     else
       session["devise.#{provider}_data"] = env["omniauth.auth"]
       redirect_to new_user_registration_url
-    end   
+    end
   end
- 
+
   def find_for_ouath(auth, resource=nil)
     provider, uid   = auth['provider'], auth['uid']
     authentication  = Authentication.find_or_initialize_by_provider_and_uid(provider, uid)
@@ -59,5 +59,5 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
     end
     return authentication.user
   end
- 
+
 end

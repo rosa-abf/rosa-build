@@ -56,7 +56,7 @@ describe Platform do
 
   it 'ensures that owner of platform of group can not be changed' do
     group = FactoryGirl.create :group
-    platform = FactoryGirl.create :personal_platform, :owner => group
+    platform = FactoryGirl.create :personal_platform, owner: group
     platform.owner = FactoryGirl.create :user
     platform.save.should be_false
   end

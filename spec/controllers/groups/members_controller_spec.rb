@@ -7,9 +7,9 @@ describe Groups::MembersController do
     @user = @group.owner
     set_session_for @user
     @another_user = FactoryGirl.create(:user)
-    @add_params = {:group_id => @group, :user_uname => @another_user.uname}
-    @remove_params = {:group_id => @group, :user_remove => {"#{@group.owner.id}"=>["1"]}}
-    @update_params = {:group_id => @group, :user => {"#{@group.owner.id}"=>'reader'}}
+    @add_params = {group_id: @group, user_uname: @another_user.uname}
+    @remove_params = {group_id: @group, user_remove: {"#{@group.owner.id}"=>["1"]}}
+    @update_params = {group_id: @group, user: {"#{@group.owner.id}"=>'reader'}}
   end
 
   context 'for owner user' do
@@ -35,7 +35,7 @@ describe Groups::MembersController do
   context 'for admin user' do
     before(:each) do
       @admin_user = FactoryGirl.create(:user)
-      @group.actors.create(:actor_id => @admin_user.id, :actor_type => 'User', :role => 'admin')
+      @group.actors.create(actor_id: @admin_user.id, actor_type: 'User', role: 'admin')
       set_session_for @admin_user
     end
 
@@ -68,7 +68,7 @@ describe Groups::MembersController do
   context 'for writer user' do
     before(:each) do
       @writer_user = FactoryGirl.create(:user)
-      @group.actors.create(:actor_id => @writer_user.id, :actor_type => 'User', :role => 'writer')
+      @group.actors.create(actor_id: @writer_user.id, actor_type: 'User', role: 'writer')
       set_session_for @writer_user
     end
 

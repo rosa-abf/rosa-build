@@ -12,21 +12,21 @@ class Ability
     @user = user
 
     # Shared rights between guests and registered users
-    can [:show, :archive], Project, :visibility => 'open'
-    can :get_id,  Project, :visibility => 'open' # api
+    can [:show, :archive], Project, visibility: 'open'
+    can :get_id,  Project, visibility: 'open' # api
     can(:refs_list, Project) {|project| can? :show, project}
-    can :read, Issue, :project => {:visibility => 'open'}
-    can [:read, :commits, :files], PullRequest, :to_project => {:visibility => 'open'}
-    can [:read, :log, :everything], BuildList, :project => {:visibility => 'open'}
-    can [:read, :log], ProductBuildList#, :product => {:platform => {:visibility => 'open'}} # double nested hash don't work
+    can :read, Issue, project: {visibility: 'open'}
+    can [:read, :commits, :files], PullRequest, to_project: {visibility: 'open'}
+    can [:read, :log, :everything], BuildList, project: {visibility: 'open'}
+    can [:read, :log], ProductBuildList#, product: {platform: {visibility: 'open'}} # double nested hash don't work
     can [:read, :search], Advisory
 
     # Platforms block
-    can [:show, :members, :advisories], Platform, :visibility => 'open'
-    can :platforms_for_build, Platform, :visibility => 'open', :platform_type => 'main'
+    can [:show, :members, :advisories], Platform, visibility: 'open'
+    can :platforms_for_build, Platform, visibility: 'open', platform_type: 'main'
     can([:read, :get_list], MassBuild) {|mass_build| can?(:show, mass_build.save_to_platform) }
-    can [:read, :projects_list, :projects], Repository, :platform => {:visibility => 'open'}
-    can :read, Product, :platform => {:visibility => 'open'}
+    can [:read, :projects_list, :projects], Repository, platform: {visibility: 'open'}
+    can :read, Product, platform: {visibility: 'open'}
 
     can :show, Group
     can :show, User
@@ -38,32 +38,32 @@ class Ability
       if user.admin?
         can :manage, :all
         # Protection
-        cannot :approve, RegisterRequest, :approved => true
-        cannot :reject, RegisterRequest, :rejected => true
+        cannot :approve, RegisterRequest, approved: true
+        cannot :reject, RegisterRequest, rejected: true
         cannot [:destroy, :create], Subscribe
         # Act admin as simple user
-        cannot :read, Product, :platform => {:platform_type => 'personal'}
+        cannot :read, Product, platform: {platform_type: 'personal'}
         cannot [:owned, :related], [BuildList, Platform]
         cannot :membered, Project # list products which user members
       end
 
       if user.user?
-        can :edit, User, :id => user.id
+        can :edit, User, id: user.id
         can [:read, :create], Group
         can [:update, :manage_members, :members, :add_member, :remove_member, :update_member], Group do |group|
-          group.actors.exists?(:actor_type => 'User', :actor_id => user.id, :role => 'admin') # or group.owner_id = user.id
+          group.actors.exists?(actor_type: 'User', actor_id: user.id, role: 'admin') # or group.owner_id = user.id
         end
         can :write, Group do |group|
-          group.actors.exists?(:actor_type => 'User', :actor_id => user.id, :role => ['writer', 'admin'])
+          group.actors.exists?(actor_type: 'User', actor_id: user.id, role: ['writer', 'admin'])
         end
-        can :destroy, Group, :owner_id => user.id
+        can :destroy, Group, owner_id: user.id
         can :remove_user, Group
 
         can :create, Project
         can([:mass_import, :run_mass_import], Project) if user.platforms.main.find{ |p| local_admin?(p) }.present?
-        can :read, Project, :visibility => 'open'
-        can [:read, :archive, :membered, :get_id], Project, :owner_type => 'User', :owner_id => user.id
-        can [:read, :archive, :membered, :get_id], Project, :owner_type => 'Group', :owner_id => user_group_ids
+        can :read, Project, visibility: 'open'
+        can [:read, :archive, :membered, :get_id], Project, owner_type: 'User', owner_id: user.id
+        can [:read, :archive, :membered, :get_id], Project, owner_type: 'Group', owner_id: user_group_ids
         can([:read, :archive, :membered, :get_id], Project, read_relations_for('projects')) {|project| local_reader? project}
         can(:write, Project) {|project| local_writer? project} # for grack
         can [:update, :sections, :manage_collaborators, :autocomplete_maintainers, :add_member, :remove_member, :update_member, :members], Project do |project|
@@ -72,15 +72,15 @@ class Ability
         can(:fork, Project) {|project| can? :read, project}
         can(:fork, Project) {|project| project.owner_type == 'Group' and can? :update, project.owner}
         can(:destroy, Project) {|project| owner? project}
-        can(:destroy, Project) {|project| project.owner_type == 'Group' and project.owner.actors.exists?(:actor_type => 'User', :actor_id => user.id, :role => 'admin')}
+        can(:destroy, Project) {|project| project.owner_type == 'Group' and project.owner.actors.exists?(actor_type: 'User', actor_id: user.id, role: 'admin')}
         can :remove_user, Project
         can :preview, Project
 
         can([:read, :create, :edit, :destroy, :update], Hook) {|hook| can?(:edit, hook.project)}
 
-        can [:read, :log, :owned, :everything], BuildList, :user_id => user.id
-        can [:read, :log, :related, :everything], BuildList, :project => {:owner_type => 'User', :owner_id => user.id}
-        can [:read, :log, :related, :everything], BuildList, :project => {:owner_type => 'Group', :owner_id => user_group_ids}
+        can [:read, :log, :owned, :everything], BuildList, user_id: user.id
+        can [:read, :log, :related, :everything], BuildList, project: {owner_type: 'User', owner_id: user.id}
+        can [:read, :log, :related, :everything], BuildList, project: {owner_type: 'Group', owner_id: user_group_ids}
         can([:read, :log, :everything, :list], BuildList, read_relations_for('build_lists', 'projects')) {|build_list| can? :read, build_list.project}
 
         can(:publish_into_testing, BuildList) { |build_list| can?(:create, build_list) && build_list.save_to_platform.main? }
@@ -92,7 +92,7 @@ class Ability
 
         can(:publish, BuildList) do |build_list|
           if build_list.build_published?
-            local_admin?(build_list.save_to_platform) || build_list.save_to_repository.members.exists?(:id => user.id)
+            local_admin?(build_list.save_to_platform) || build_list.save_to_repository.members.exists?(id: user.id)
           else
             build_list.save_to_repository.publish_without_qa ?
               can?(:write, build_list.project) : local_admin?(build_list.save_to_platform)
@@ -107,23 +107,23 @@ class Ability
         end
         can([:cancel, :create_container], BuildList) {|build_list| can?(:write, build_list.project)}
 
-        can [:read, :owned, :related, :members], Platform, :owner_type => 'User', :owner_id => user.id
-        can [:read, :related, :members], Platform, :owner_type => 'Group', :owner_id => user_group_ids
+        can [:read, :owned, :related, :members], Platform, owner_type: 'User', owner_id: user.id
+        can [:read, :related, :members], Platform, owner_type: 'Group', owner_id: user_group_ids
         can([:read, :related, :members], Platform, read_relations_for('platforms')) {|platform| local_reader? platform}
-        can [:read, :related], Platform, :id => user.repositories.pluck(:platform_id)
+        can [:read, :related], Platform, id: user.repositories.pluck(:platform_id)
         can([:update, :destroy, :change_visibility], Platform) {|platform| owner?(platform) }
         can([:local_admin_manage, :members, :add_member, :remove_member, :remove_members] , Platform) {|platform| owner?(platform) || local_admin?(platform) }
 
         can([:create, :publish], MassBuild) {|mass_build| owner?(mass_build.save_to_platform) || local_admin?(mass_build.save_to_platform)}
         can(:cancel, MassBuild) {|mass_build| (owner?(mass_build.save_to_platform) || local_admin?(mass_build.save_to_platform)) && !mass_build.stop_build}
 
-        can [:read, :projects_list, :projects], Repository, :platform => {:owner_type => 'User', :owner_id => user.id}
-        can [:read, :projects_list, :projects], Repository, :platform => {:owner_type => 'Group', :owner_id => user_group_ids}
+        can [:read, :projects_list, :projects], Repository, platform: {owner_type: 'User', owner_id: user.id}
+        can [:read, :projects_list, :projects], Repository, platform: {owner_type: 'Group', owner_id: user_group_ids}
         can([:read, :projects_list, :projects], Repository, read_relations_for('repositories')) {|repository| can? :show, repository.platform}
         can([:read, :projects_list, :projects], Repository, read_relations_for('repositories', 'platforms')) {|repository| local_reader? repository.platform}
         can([:create, :edit, :update, :destroy, :projects_list, :projects, :add_project, :remove_project, :regenerate_metadata, :sync_lock_file, :add_repo_lock_file, :remove_repo_lock_file], Repository) {|repository| local_admin? repository.platform}
         can([:remove_members, :remove_member, :add_member, :signatures, :packages], Repository) {|repository| owner?(repository.platform) || local_admin?(repository.platform)}
-        can([:add_project, :remove_project], Repository) {|repository| repository.members.exists?(:id => user.id)}
+        can([:add_project, :remove_project], Repository) {|repository| repository.members.exists?(id: user.id)}
         can(:clear, Platform) {|platform| owner?(platform) && platform.personal?}
         can(:regenerate_metadata, Platform) {|platform| owner?(platform) || local_admin?(platform)}
         can([:settings, :destroy, :edit, :update], Repository) {|repository| owner? repository.platform}
@@ -132,26 +132,26 @@ class Ability
 
         can([:read, :create, :withdraw], Token) {|token| local_admin?(token.subject)}
 
-        can :read, Product, :platform => {:owner_type => 'User', :owner_id => user.id, :platform_type => 'main'}
-        can :read, Product, :platform => {:owner_type => 'Group', :owner_id => user_group_ids, :platform_type => 'main'}
+        can :read, Product, platform: {owner_type: 'User', owner_id: user.id, platform_type: 'main'}
+        can :read, Product, platform: {owner_type: 'Group', owner_id: user_group_ids, platform_type: 'main'}
         can(:read, Product, read_relations_for('products', 'platforms')) {|product| product.platform.main?}
         can([:create, :update, :destroy, :clone], Product) {|product| local_admin? product.platform and product.platform.main?}
 
         can([:create, :cancel, :update], ProductBuildList) {|pbl| can?(:update, pbl.product)}
         can(:destroy, ProductBuildList) {|pbl| can?(:destroy, pbl.product)}
 
-        can [:read, :create], PrivateUser, :platform => {:owner_type => 'User', :owner_id => user.id}
-        can [:read, :create], PrivateUser, :platform => {:owner_type => 'Group', :owner_id => user_group_ids}
+        can [:read, :create], PrivateUser, platform: {owner_type: 'User', owner_id: user.id}
+        can [:read, :create], PrivateUser, platform: {owner_type: 'Group', owner_id: user_group_ids}
 
-        can :read, Issue, :project => {:owner_type => 'User', :owner_id => user.id}
-        can :read, Issue, :project => {:owner_type => 'Group', :owner_id => user_group_ids}
+        can :read, Issue, project: {owner_type: 'User', owner_id: user.id}
+        can :read, Issue, project: {owner_type: 'Group', owner_id: user_group_ids}
         can(:read, Issue, read_relations_for('issues', 'projects')) {|issue| can? :read, issue.project rescue nil}
         can(:create, Issue) {|issue| can? :read, issue.project}
         can(:update, Issue) {|issue| issue.user_id == user.id or local_admin?(issue.project)}
-        cannot :manage, Issue, :project => {:has_issues => false} # switch off issues
+        cannot :manage, Issue, project: {has_issues: false} # switch off issues
 
-        can [:read, :commits, :files], PullRequest, :to_project => {:owner_type => 'User', :owner_id => user.id}
-        can [:read, :commits, :files], PullRequest, :to_project => {:owner_type => 'Group', :owner_id => user_group_ids}
+        can [:read, :commits, :files], PullRequest, to_project: {owner_type: 'User', owner_id: user.id}
+        can [:read, :commits, :files], PullRequest, to_project: {owner_type: 'Group', owner_id: user_group_ids}
         can([:read, :commits, :files], PullRequest, read_relations_for('pull_requests', 'to_projects')) {|pull| can? :read, pull.to_project}
         can :create, PullRequest
         can(:update, PullRequest) {|pull| pull.user_id == user.id or local_admin?(pull.to_project)}
@@ -165,24 +165,24 @@ class Ability
       end
 
       # Shared cannot rights for all users (registered, admin)
-      cannot [:regenerate_metadata, :destroy], Platform, :platform_type => 'personal'
-      cannot [:create, :destroy], Repository, :platform => {:platform_type => 'personal'}, :name => 'main'
-      cannot [:packages], Repository, :platform => {:platform_type => 'personal'}
-      cannot [:remove_members, :remove_member, :add_member, :sync_lock_file, :add_repo_lock_file, :remove_repo_lock_file], Repository, :platform => {:platform_type => 'personal'}
+      cannot [:regenerate_metadata, :destroy], Platform, platform_type: 'personal'
+      cannot [:create, :destroy], Repository, platform: {platform_type: 'personal'}, name: 'main'
+      cannot [:packages], Repository, platform: {platform_type: 'personal'}
+      cannot [:remove_members, :remove_member, :add_member, :sync_lock_file, :add_repo_lock_file, :remove_repo_lock_file], Repository, platform: {platform_type: 'personal'}
 
-      cannot :clear, Platform, :platform_type => 'main'
+      cannot :clear, Platform, platform_type: 'main'
       cannot :destroy, Issue
 
-      cannot [:members, :add_member, :remove_member, :remove_members], Platform, :platform_type => 'personal'
+      cannot [:members, :add_member, :remove_member, :remove_members], Platform, platform_type: 'personal'
 
-      cannot [:create, :update, :destroy, :clone], Product, :platform => {:platform_type => 'personal'}
-      cannot [:clone], Platform, :platform_type => 'personal'
+      cannot [:create, :update, :destroy, :clone], Product, platform: {platform_type: 'personal'}
+      cannot [:clone], Platform, platform_type: 'personal'
 
-      cannot [:publish, :publish_into_testing], BuildList, :new_core => false
-      cannot :create_container, BuildList, :new_core => false
+      cannot [:publish, :publish_into_testing], BuildList, new_core: false
+      cannot :create_container, BuildList, new_core: false
       cannot(:publish, BuildList) {|build_list| !build_list.can_publish? }
       cannot(:publish_into_testing, BuildList) {|build_list| !build_list.can_publish_into_testing? }
-      cannot :publish_into_testing, BuildList, :save_to_platform => {:platform_type => 'personal'}
+      cannot :publish_into_testing, BuildList, save_to_platform: {platform_type: 'personal'}
 
       cannot(:cancel, MassBuild) {|mass_build| mass_build.stop_build}
 
@@ -193,10 +193,10 @@ class Ability
       end
 
       can :create, Subscribe do |subscribe|
-        !subscribe.subscribeable.subscribes.exists?(:user_id => user.id)
+        !subscribe.subscribeable.subscribes.exists?(user_id: user.id)
       end
       can :destroy, Subscribe do |subscribe|
-        subscribe.subscribeable.subscribes.exists?(:user_id => user.id) && user.id == subscribe.user_id
+        subscribe.subscribeable.subscribes.exists?(user_id: user.id) && user.id == subscribe.user_id
       end
     end
   end
@@ -204,29 +204,6 @@ class Ability
   def read_relations_for(table, parent = nil)
     key = parent ? "#{parent.singularize}_id" : 'id'
     parent ||= table
-
-    # Removes duplicates from subquery
-    #
-    # ["#{table}.#{key} IN
-    #   (
-    #       SELECT target_id FROM relations
-    #       INNER JOIN #{parent} ON relations.target_type = :target_type AND relations.target_id = #{parent}.id
-    #       WHERE relations.target_type = :target_type AND
-    #       (
-    #         #{parent}.owner_type = 'User' AND #{parent}.owner_id != :user OR
-    #         #{parent}.owner_type = 'Group' AND #{parent}.owner_id NOT IN (:groups)
-    #       ) AND (
-    #         relations.actor_type = 'User' AND relations.actor_id = :user OR
-    #         relations.actor_type = 'Group' AND relations.actor_id IN (:groups)
-    #       )
-
-    #   )",
-    #   {
-    #     :target_type  => parent.classify,
-    #     :user         => @user.id,
-    #     :groups       => @user.group_ids
-    #   }
-    # ]
 
     ["#{table}.#{key} IN (
           SELECT target_id FROM relations WHERE relations.target_type = ? AND
@@ -257,5 +234,4 @@ class Ability
   def user_group_ids
     @user_group_ids ||= @user.group_ids
   end
-
 end

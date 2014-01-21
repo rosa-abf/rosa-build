@@ -1,15 +1,15 @@
 - is_group = owner.class == Group ? "(#{t 'activerecord.models.group'})" : ''
 - full_name = "#{owner.uname}/#{name} #{is_group}"
 
-- if owner.own_projects.exists? :name => name
+- if owner.own_projects.exists? name: name
   %p.center
     =t 'layout.projects.already_exists'
     =link_to full_name, project_path(owner, name)
 - else
-  = form_for @project, :url => fork_project_path(@project), :html => { :class => :form, :multipart => true, :method => :post } do |f|
+  = form_for @project, url: fork_project_path(@project), html: { class: :form, multipart: true, method: :post } do |f|
     = hidden_field_tag :group, owner.id if owner.class == Group
-    = hidden_field_tag :fork_name, name, :name => 'fork_name'
-    =f.submit t('layout.projects.fork_to', :to => full_name), :class => 'btn btn-primary disabled', 'data-loading-text' => t('layout.processing'), :id => 'create_fork'
+    = hidden_field_tag :fork_name, name, name: 'fork_name'
+    =f.submit t('layout.projects.fork_to', to: full_name), class: 'btn btn-primary disabled', 'data-loading-text' => t('layout.processing'), id: 'create_fork'
 
 :javascript
   $('#create_fork').click(function () {

@@ -9,9 +9,9 @@ describe UserMailer do
       @project = FactoryGirl.create(:project)
       @issue_user = FactoryGirl.create(:user)
 
-      any_instance_of(Project, :versions => ['v1.0', 'v2.0'])
+      any_instance_of(Project, versions: ['v1.0', 'v2.0'])
 
-      @issue = FactoryGirl.create(:issue, :project_id => @project.id, :assignee_id => @issue_user.id, :user => @issue_user)
+      @issue = FactoryGirl.create(:issue, project_id: @project.id, assignee_id: @issue_user.id, user: @issue_user)
       @email = UserMailer.new_issue_notification(@issue, @issue_user).deliver!
     end
 
@@ -44,9 +44,9 @@ describe UserMailer do
       @issue_user = FactoryGirl.create(:user)
       @user = FactoryGirl.create(:user)
 
-      any_instance_of(Project, :versions => ['v1.0', 'v2.0'])
+      any_instance_of(Project, versions: ['v1.0', 'v2.0'])
 
-      @issue = FactoryGirl.create(:issue, :project_id => @project.id, :assignee_id => @issue_user.id, :user => @issue_user)
+      @issue = FactoryGirl.create(:issue, project_id: @project.id, assignee_id: @issue_user.id, user: @issue_user)
       @email = UserMailer.issue_assign_notification(@issue, @user).deliver!
     end
 
@@ -76,10 +76,10 @@ describe UserMailer do
       @issue_user = FactoryGirl.create(:user)
       @user = FactoryGirl.create(:user)
 
-      any_instance_of(Project, :versions => ['v1.0', 'v2.0'])
+      any_instance_of(Project, versions: ['v1.0', 'v2.0'])
 
-      @issue = FactoryGirl.create(:issue, :project_id => @project.id, :assignee_id => @issue_user.id, :user => @issue_user)
-      @comment = FactoryGirl.create(:comment, :commentable => @issue, :user_id => @user.id, :project => @project)
+      @issue = FactoryGirl.create(:issue, project_id: @project.id, assignee_id: @issue_user.id, user: @issue_user)
+      @comment = FactoryGirl.create(:comment, commentable: @issue, user_id: @user.id, project: @project)
       @email = UserMailer.new_comment_notification(@comment, @issue_user).deliver!
     end
 

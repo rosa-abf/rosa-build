@@ -3,7 +3,7 @@ require 'open-uri'
 
 namespace :import do
   desc "Load projects"
-  task :projects => :environment do
+  task projects: :environment do
     source = ENV['SOURCE'] || 'http://dl.dropbox.com/u/984976/package_list.txt'
     #owner = User.find_by_uname(ENV['OWNER_UNAME']) || Group.find_by_uname(ENV['OWNER_UNAME']) || User.first
     owner =  Group.find_by_uname("npp_team")
@@ -28,7 +28,7 @@ namespace :import do
 
   # bundle exec rake import:srpm RAILS_ENV=production BASE=/share/platforms/naulinux5x_personal/tmp/SRPMS LIST=https://dl.dropbox.com/u/984976/nauschool5x.srpms.txt OWNER=naulinux PLATFORM=naulinux REPO=main CLEAR=true HIDDEN=true > log/srpm_naulinux.log &
   desc 'Import SRPMs as projects'
-  task :srpm => :environment do
+  task srpm: :environment do
     base = ENV['BASE'] || '/share/alt_repos/rsync'
     list = ENV['LIST'] #|| 'https://dl.dropbox.com/u/984976/alt_import.txt'
     mask = ENV['MASK'] || '*.src.rpm'
@@ -49,7 +49,7 @@ namespace :import do
         else # check if project already added
           if project = repo.projects.find_by_name(name) || repo.projects.by_name(name).first # fallback to speedup
             print "Found project '#{project.name_with_owner}' in '#{platform.name}/#{repo.name}'."
-          elsif scoped = Project.where(:owner_id => owner.id, :owner_type => owner.class) and
+          elsif scoped = Project.where(owner_id: owner.id, owner_type: owner.class) and
                 project = scoped.find_by_name(name) || scoped.by_name(name).first
             begin
               repo.projects << project rescue nil
@@ -60,12 +60,12 @@ namespace :import do
             end
           else
             description = `rpm -q --qf '[%{Description}]' -p #{srpm_file}`.scrub('')
-            project = Project.create!(:name => name, :description => description) {|p| p.owner = owner}
+            project = Project.create!(name: name, description: description) {|p| p.owner = owner}
             repo.projects << project rescue nil
             print "Create project #{project.name_with_owner} in #{platform.name}/#{repo.name} OK."
           end
         end
-        project.update_attributes(:visibility => 'hidden') if hidden
+        project.update_attributes(visibility: 'hidden') if hidden
         project.import_srpm(srpm_file, platform.name)
         print " Code import complete!"
       else
@@ -78,7 +78,7 @@ namespace :import do
 
   namespace :sync do
     desc "Sync all repos"
-    task :all => :environment do
+    task all: :environment do
       # system("bundle exec rake import:sync:run RELEASE=official/2011 PLATFORM=mandriva2011 REPOSITORY=main")
       # system("bundle exec rake import:sync:run RELEASE=official/2011 PLATFORM=mandriva2011 REPOSITORY=contrib")
       # system("bundle exec rake import:sync:run RELEASE=official/2011 PLATFORM=mandriva2011 REPOSITORY=non-free")
@@ -89,10 +89,10 @@ namespace :import do
       system("bundle exec rake import:sync:run SOURCE=rsync://rh-mirror.redhat.com/redhat/linux/enterprise/6Server/en/os/SRPMS/ DESTINATION=#{File.join(APP_CONFIG['root_path'], 'rh-mirror.redhat.com', 'redhat', 'linux', 'enterprise', '6Server', 'en', 'os', 'SRPMS')} PLATFORM=server_personal REPOSITORY=main OWNER=server BRANCH=import")
     end
 
-    task :run => [:rsync, :parse]
+    task run: [:rsync, :parse]
 
     desc "Rsync with mirror.yandex.ru"
-    task :rsync => :environment do
+    task rsync: :environment do
       release = ENV['RELEASE'] || 'official/2011'
       repository = ENV['REPOSITORY'] || 'main'
       source = ENV['SOURCE'] || "rsync://mirror.yandex.ru/mandriva/#{release}/SRPMS/#{repository}/"
@@ -107,7 +107,7 @@ namespace :import do
     end
 
     desc "Parse repository for changes"
-    task :parse => :environment do
+    task parse: :environment do
       release = ENV['RELEASE'] || 'official/2011'
       platform = Platform.find_by_name(ENV['PLATFORM'] || "mandriva2011")
       repository = platform.repositories.find_by_name(ENV['REPOSITORY'] || 'main')
@@ -120,7 +120,7 @@ namespace :import do
         print "Processing '#{srpm_file}'... "
         if name = `rpm -q --qf '[%{Name}]' -p #{srpm_file}` and $?.success? and name.present? and
            version = `rpm -q --qf '[%{Version}-%{Release}]' -p #{srpm_file}` and $?.success? and version.present?
-          project_import = ProjectImport.find_by_name_and_platform_id(name, platform.id) || ProjectImport.by_name(name).where(:platform_id => platform.id).first || ProjectImport.new(:name => name, :platform_id => platform.id)
+          project_import = ProjectImport.find_by_name_and_platform_id(name, platform.id) || ProjectImport.by_name(name).where(platform_id: platform.id).first || ProjectImport.new(name: name, platform_id: platform.id)
           if version != project_import.version.to_s and File.mtime(srpm_file) > project_import.file_mtime
             unless project = project_import.project
               if platform.personal? # search project through owner # used for testhat
@@ -129,13 +129,13 @@ namespace :import do
               else # search project through repository
                 if project = repository.projects.find_by_name(name) || repository.projects.by_name(name).first # fallback to speedup
                   print "Found project #{project.name_with_owner} in #{platform.name}/#{repository.name}. "
-                elsif scoped = Project.where(:owner_id => owner.id, :owner_type => owner.class) and
+                elsif scoped = Project.where(owner_id: owner.id, owner_type: owner.class) and
                       project = scoped.find_by_name(name) || scoped.by_name(name).first
                   repository.projects << project
                   print "Add project #{project.name_with_owner} to #{platform.name}/#{repository.name}. "
                 else
                   description = `rpm -q --qf '[%{Description}]' -p #{srpm_file}`.scrub('')
-                  project = Project.create!(:name => name, :description => description) {|p| p.owner = owner}
+                  project = Project.create!(name: name, description: description) {|p| p.owner = owner}
                   repository.projects << project
                   print "Create project #{project.name_with_owner} at #{platform.name}/#{repository.name}. "
                 end

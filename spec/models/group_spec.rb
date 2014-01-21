@@ -33,7 +33,7 @@ describe Group do
     before(:each) do
       @user = FactoryGirl.create(:user)
       @another_user = FactoryGirl.create(:user)
-      @group.actors.create(:actor_type => 'User', :actor_id => @user.id, :role => 'admin')
+      @group.actors.create(actor_type: 'User', actor_id: @user.id, role: 'admin')
       @ability = Ability.new(@user)
     end
 
@@ -49,11 +49,11 @@ describe Group do
 
     context 'with mass assignment' do
       it 'should not be able to update uname' do
-        @group.should_not allow_mass_assignment_of :uname => 'new_uname'
+        @group.should_not allow_mass_assignment_of uname: 'new_uname'
       end
 
       it 'should not be able to update owner' do
-        @group.should_not allow_mass_assignment_of :owner_type => 'User', :owner_id => @another_user.id
+        @group.should_not allow_mass_assignment_of owner_type: 'User', owner_id: @another_user.id
       end
     end
   end
@@ -65,7 +65,7 @@ describe Group do
       @group.owner = @user
       @group.save
 
-      @group.actors.create(:actor_type => 'User', :actor_id => @user.id, :role => 'admin')
+      @group.actors.create(actor_type: 'User', actor_id: @user.id, role: 'admin')
       @ability = Ability.new(@user)
     end
 
@@ -79,7 +79,7 @@ describe Group do
   context 'for group reader and writer user' do
     before(:each) do
       @user = FactoryGirl.create(:user)
-      @group.actors.create(:actor_type => 'User', :actor_id => @user.id, :role => 'reader')
+      @group.actors.create(actor_type: 'User', actor_id: @user.id, role: 'reader')
       @ability = Ability.new(@user)
     end
 

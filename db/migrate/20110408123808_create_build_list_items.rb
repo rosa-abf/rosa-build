@@ -1,6 +1,6 @@
 class CreateBuildListItems < ActiveRecord::Migration
   def self.up
-    create_table :build_list_items, :force => true do |t|
+    create_table :build_list_items, force: true do |t|
       t.string :name
       t.integer :level
       t.integer :status

@@ -4,12 +4,12 @@ class RemoveDownloads < ActiveRecord::Migration
   end
 
   def down
-    create_table "downloads", :force => true do |t|
-      t.string   "name", :null => false
+    create_table "downloads", force: true do |t|
+      t.string   "name", null: false
       t.string   "version"
       t.string   "distro"
       t.string   "platform"
-      t.integer  "counter",    :default => 0
+      t.integer  "counter",    default: 0
       t.datetime "created_at"
       t.datetime "updated_at"
     end

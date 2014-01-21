@@ -1,4 +1,4 @@
 .search
-  = form_tag search_index_path, :method => 'get' do
+  = form_tag search_index_path, method: 'get' do
     .pic
-    .field= text_field_tag 'query', @query, :placeholder => t("layout.search.header")
+    .field= text_field_tag 'query', @query, placeholder: t("layout.search.header")

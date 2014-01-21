@@ -11,7 +11,7 @@ class CreateIssues < ActiveRecord::Migration
       t.timestamps
     end
 
-    add_index :issues, [:project_id, :serial_id], :unique => true
+    add_index :issues, [:project_id, :serial_id], unique: true
   end
 
   def self.down

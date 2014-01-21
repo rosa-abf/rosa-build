@@ -1,14 +1,13 @@
--set_meta_tags :title => [title_object(@project), @query, t('wiki.searching.title')]
-/ = render 'gollum_includes'
-/ = render 'project_short'
+-set_meta_tags title: [title_object(@project), @query, t('wiki.searching.title')]
+
 = render 'submenu'
 
 - @st_query = capture do
   %strong= @query
-%h1.title= raw t("wiki.search_results_for", :query => @st_query)
+%h1.title= raw t("wiki.search_results_for", query: @st_query)
 %ul.actions
   - if can? :read, @project
-    %li.minibutton= link_to t("wiki.home"), project_wiki_index_path(@project), :class => 'action-edit-page'
+    %li.minibutton= link_to t("wiki.home"), project_wiki_index_path(@project), class: 'action-edit-page'
 
 = render "results"
 

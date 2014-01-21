@@ -1,6 +1,6 @@
 class AddReleasedToPlatforms < ActiveRecord::Migration
   def self.up
-    add_column :platforms, :released, :boolean, :default => false
+    add_column :platforms, :released, :boolean, default: false
   end
 
   def self.down

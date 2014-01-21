@@ -1,7 +1,7 @@
 namespace :pull_requests do
 
   desc 'Remove temporary git repos for pull requests'
-  task :clear => :environment do
+  task clear: :environment do
     Dir.chdir(File.join(APP_CONFIG['git_path'], 'temp_pull_requests')) do
       say "Removing repos older one day:"
       say `find -mindepth 3 -maxdepth 3 -type d -mtime +0`

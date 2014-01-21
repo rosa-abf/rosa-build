@@ -2,17 +2,17 @@ class UserMailer < ActionMailer::Base
   add_template_helper ActivityFeedsHelper
   add_template_helper CommitHelper
 
-  default :from => "\"#{APP_CONFIG['project_name']}\" <#{APP_CONFIG['do-not-reply-email']}>"
-  default_url_options.merge!(:protocol => 'https') if APP_CONFIG['mailer_https_url']
+  default from: "\"#{APP_CONFIG['project_name']}\" <#{APP_CONFIG['do-not-reply-email']}>"
+  default_url_options.merge!(protocol: 'https') if APP_CONFIG['mailer_https_url']
 
   include Resque::Mailer # send email async
 
   def new_user_notification(user)
     @user = user
     mail(
-      :to           => email_with_name(user, user.email),
-      :subject      => I18n.t("notifications.subjects.new_user_notification",
-      :project_name => APP_CONFIG['project_name'])
+      to:           email_with_name(user, user.email),
+      subject:      I18n.t("notifications.subjects.new_user_notification",
+      project_name: APP_CONFIG['project_name'])
     ) do |format|
       format.html
     end
@@ -23,9 +23,9 @@ class UserMailer < ActionMailer::Base
     subject = @comment.issue_comment? ? subject_for_issue(@comment.commentable) :
       I18n.t('notifications.subjects.new_commit_comment_notification')
     mail(
-      :to       => email_with_name(user, user.email),
-      :subject  => subject,
-      :from     => email_with_name(comment.user)
+      to:      email_with_name(user, user.email),
+      subject: subject,
+      from:    email_with_name(comment.user)
     ) do |format|
       format.html
     end
@@ -34,9 +34,9 @@ class UserMailer < ActionMailer::Base
   def new_issue_notification(issue, user)
     @user, @issue = user, issue
     mail(
-      :to       => email_with_name(user, user.email),
-      :subject  => subject_for_issue(issue, true),
-      :from     => email_with_name(issue.user)
+      to:      email_with_name(user, user.email),
+      subject: subject_for_issue(issue, true),
+      from:    email_with_name(issue.user)
     ) do |format|
       format.html
     end
@@ -45,8 +45,8 @@ class UserMailer < ActionMailer::Base
   def issue_assign_notification(issue, user)
     @issue = issue
     mail(
-      :to       => email_with_name(user, user.email),
-      :subject  => subject_for_issue(@issue)
+      to:      email_with_name(user, user.email),
+      subject: subject_for_issue(@issue)
     ) do |format|
       format.html
     end
@@ -59,11 +59,11 @@ class UserMailer < ActionMailer::Base
     subject = "[№ #{build_list.id}] "
     subject << (build_list.project ? build_list.project.name_with_owner : t("layout.projects.unexisted_project"))
     subject << " - #{build_list.human_status} "
-    subject << I18n.t("notifications.subjects.for_arch", :arch => @build_list.arch.name)
+    subject << I18n.t("notifications.subjects.for_arch", arch: @build_list.arch.name)
     mail(
-      :to       => email_with_name(user, user.email),
-      :subject  => subject,
-      :from     => email_with_name(build_list.publisher || build_list.user)
+      to:      email_with_name(user, user.email),
+      subject: subject,
+      from:    email_with_name(build_list.publisher || build_list.user)
     ) do |format|
       format.html
     end
@@ -73,8 +73,8 @@ class UserMailer < ActionMailer::Base
     set_locale register_request
     @register_request = register_request
     mail(
-      :to       => register_request.email,
-      :subject  => I18n.t("notifications.subjects.invite_approve_notification")
+      to:      register_request.email,
+      subject: I18n.t("notifications.subjects.invite_approve_notification")
     ) do |format|
       format.html
     end
@@ -83,20 +83,20 @@ class UserMailer < ActionMailer::Base
   def git_delete_branch_notification(user, options)
     set_locale user
     mail(
-      :to       => user.email,
-      :subject  => I18n.t('notifications.subjects.update_code', :project_name => "#{options[:project_owner]}/#{options[:project_name]}")
+      to:      user.email,
+      subject: I18n.t('notifications.subjects.update_code', project_name: "#{options[:project_owner]}/#{options[:project_name]}")
     ) do |format|
-      format.html { render 'git_delete_branch_notification', :locals => options }
+      format.html { render 'git_delete_branch_notification', locals: options }
     end
   end
 
   def git_new_push_notification(user, options)
     set_locale user
     mail(
-      :to       => user.email,
-      :subject  => I18n.t('notifications.subjects.update_code', :project_name => "#{options[:project_owner]}/#{options[:project_name]}")
+      to:      user.email,
+      subject: I18n.t('notifications.subjects.update_code', project_name: "#{options[:project_owner]}/#{options[:project_name]}")
     ) do |format|
-      format.html { render 'git_new_push_notification', :locals => options }
+      format.html { render 'git_new_push_notification', locals: options }
     end
   end
 

@@ -1,6 +1,6 @@
 .wrap
   %nav
-    %a{:href => new_register_request_path}
+    %a{href: new_register_request_path}
       %p=t("layout.devise.shared_links.sign_up")
   / Top block
   %header
@@ -13,20 +13,20 @@
     - login = t('devise.sessions.login'); password = t('devise.sessions.password')
     =hidden_field_tag :login_default, login
     =hidden_field_tag :password_default, password
-    = form_for(resource, :as => resource_name, :url => session_path(resource_name), :html => { :class => "form login" }) do |f|
+    = form_for(resource, as: resource_name, url: session_path(resource_name), html: { class: "form login" }) do |f|
       %h1= title t("layout.sessions.sign_in_header")
-      = f.text_field :login, :class => "registartion-input #{error ? "registartion-input-error" : ''}", :value => login
+      = f.text_field :login, class: "registartion-input #{error ? "registartion-input-error" : ''}", value: login
       %br/
-      = f.password_field :password, :class => "registartion-input #{error ? "registartion-input-error" : ''}", :value => password
+      = f.password_field :password, class: "registartion-input #{error ? "registartion-input-error" : ''}", value: password
       %br/
       .registration
         .remember
           .check
-            %span#niceCheckbox1.niceCheck{:style => 'background-position: 0px -18px;'}
-              = f.check_box :remember_me, :checked => true
+            %span#niceCheckbox1.niceCheck{style: 'background-position: 0px -18px;'}
+              = f.check_box :remember_me, checked: true
           .text=t('devise.sessions.remember_me')
-        .in=f.submit t('layout.devise.shared_links.sign_in'), :class => 'button', :id => 'btnLogin'
-      %div{:style => "clear: both;"}
+        .in=f.submit t('layout.devise.shared_links.sign_in'), class: 'button', id: 'btnLogin'
+      %div{style: "clear: both;"}
     = render 'devise/shared/providers'
   .forgot
     .password

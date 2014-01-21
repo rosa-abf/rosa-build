@@ -1,9 +1,9 @@
 = render 'platforms/base/submenu'
 = render 'platforms/base/sidebar'
 
-= link_to t('layout.mass_builds.new'), new_platform_mass_build_path(@platform), :class => 'button' if can? :create, @platform.mass_builds.build
+= link_to t('layout.mass_builds.new'), new_platform_mass_build_path(@platform), class: 'button' if can? :create, @platform.mass_builds.build
 
-%table.tablesorter.unbordered{:cellpadding => "0", :cellspacing => "0"}
+%table.tablesorter.unbordered{cellpadding: "0", cellspacing: "0"}
   %thead
     %tr
       %th.lpadding16= t('activerecord.attributes.mass_build.id')
@@ -15,10 +15,10 @@
   - @mass_builds.each do |mass_build|
     %tr
       %td= mass_build.id
-      %td= link_to mass_build.name, build_lists_path(:filter => {:mass_build_id => mass_build.id, :ownership => 'everything'})
+      %td= link_to mass_build.name, build_lists_path(filter: {mass_build_id: mass_build.id, ownership: 'everything'})
       %td.min_width_120
         - MassBuild::COUNT_STATUSES.each do |status|
-          = link_to t("layout.build_lists.statuses.#{status}") + ": ", build_lists_path(:filter => {:mass_build_id => mass_build.id, :ownership => 'everything'}.merge(status != :build_lists ? {:status => BuildList.status_by_human(status)} : {}))
+          = link_to t("layout.build_lists.statuses.#{status}") + ": ", build_lists_path(filter: {mass_build_id: mass_build.id, ownership: 'everything'}.merge(status != :build_lists ? {status: BuildList.status_by_human(status)} : {}))
           = mass_build.read_attribute "#{status}_count"
           .both
         -if mass_build.projects_list.present?
@@ -31,18 +31,18 @@
           - unless mass_build.auto_publish?
             = link_to t('layout.mass_builds.publish_success'),
                       publish_platform_mass_build_path(@platform, mass_build.id),
-                      :method => :post, :confirm => t("layout.confirm"), :class => 'button'
+                      method: :post, confirm: t("layout.confirm"), class: 'button'
           = link_to t('layout.mass_builds.publish_test_failed'),
-                    publish_platform_mass_build_path(@platform, mass_build.id, :status => 'test_failed'),
-                    :method => :post, :confirm => t("layout.confirm"), :class => 'button'
+                    publish_platform_mass_build_path(@platform, mass_build.id, status: 'test_failed'),
+                    method: :post, confirm: t("layout.confirm"), class: 'button'
         - if can?(:cancel, mass_build)
           = link_to t('layout.cancel'),
                     cancel_platform_mass_build_path(@platform, mass_build.id),
-                    :method => :post, :class => 'button',
-                    :confirm => t('layout.mass_builds.cancel_confirm')
+                    method: :post, class: 'button',
+                    confirm: t('layout.mass_builds.cancel_confirm')
       %td
-        %a.toggle_btn{:href => "#toggle_#{ mass_build.id }", :'data-target' => "#toggle_#{ mass_build.id }"}= t("layout.mass_builds.extended_data")
-        .toggle{:id => "toggle_#{ mass_build.id }"}
+        %a.toggle_btn{href: "#toggle_#{ mass_build.id }", :'data-target' => "#toggle_#{ mass_build.id }"}= t("layout.mass_builds.extended_data")
+        .toggle{id: "toggle_#{ mass_build.id }"}
           -if mass_build.projects_list.present?
             = link_to_list @platform, mass_build, 'projects_list'
             .both

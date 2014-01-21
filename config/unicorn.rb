@@ -7,8 +7,8 @@ worker_processes 8
 working_directory File.join(base_path, 'current') # available in 0.94.0+
 
 # listen File.join(base_path, 'tmp', 'pids', 'unicorn.sock')
-# listen "/tmp/.sock", :backlog => 64
-# listen 8080, :tcp_nopush => true
+# listen "/tmp/.sock", backlog: 64
+# listen 8080, tcp_nopush: true
 
 # nuke workers after 30 seconds instead of 60 seconds (the default)
 timeout 600
@@ -42,7 +42,7 @@ before_fork do |server, worker|
   # What is does is prevent the master process from holding
   # the database connection
   defined?(ActiveRecord::Base) and ActiveRecord::Base.connection.disconnect!
-  
+
   # When sent a USR2, Unicorn will suffix its pidfile with .oldbin and
   # immediately start loading up a new version of itself (loaded with a new
   # version of our app). When this new Unicorn is completely loaded
@@ -52,7 +52,7 @@ before_fork do |server, worker|
   # we send it a QUIT.
   #
   # Using this method we get 0 downtime deploys.
-  
+
   if File.exists?(old_pid) && server.pid != old_pid
     begin
       Process.kill("QUIT", File.read(old_pid).to_i)

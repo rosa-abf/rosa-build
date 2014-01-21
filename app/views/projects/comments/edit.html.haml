@@ -1,4 +1,4 @@
--set_meta_tags :title => [title_object(@comment.project), t('layout.comments.edit_header')]
+-set_meta_tags title: [title_object(@comment.project), t('layout.comments.edit_header')]
 .block
   .secondary-navigation
     %ul.wat-cf
@@ -7,7 +7,7 @@
     %h2.title
       = t("layout.comments.edit_header")
     .inner
-      = form_for @comment, :url => project_commentable_comment_path(@project, @commentable, @comment), :html => {:class => :form} do |f|
-        = render "form", :f => f, :id => "edit_#{@comment.id}"
+      = form_for @comment, url: project_commentable_comment_path(@project, @commentable, @comment), html: {class: :form} do |f|
+        = render "form", f: f, id: "edit_#{@comment.id}"
 =hidden_field_tag :preview_url, project_md_preview_path(@project)
 

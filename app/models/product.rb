@@ -3,7 +3,7 @@ class Product < ActiveRecord::Base
 
   belongs_to :platform
   belongs_to :project
-  has_many :product_build_lists, :dependent => :destroy
+  has_many :product_build_lists, dependent: :destroy
 
   ONCE_A_12_HOURS = 0
   ONCE_A_DAY      = 1
@@ -16,11 +16,11 @@ class Product < ActiveRecord::Base
     ONCE_A_WEEK     => :once_a_week
   }
 
-  validates :name, :presence => true, :uniqueness => {:scope => :platform_id}
-  validates :project_id, :presence => true
-  validates :main_script, :params, :length => { :maximum => 255 }
-  validates :autostart_status, :numericality => true,
-    :inclusion => {:in => AUTOSTART_STATUSES}, :allow_blank => true
+  validates :name, presence: true, uniqueness: {scope: :platform_id}
+  validates :project_id, presence: true
+  validates :main_script, :params, length: { maximum: 255 }
+  validates :autostart_status, numericality: true,
+    inclusion: {in: AUTOSTART_STATUSES}, allow_blank: true
 
   scope :recent, order("#{table_name}.name ASC")
 
@@ -61,7 +61,7 @@ class Product < ActiveRecord::Base
   end
 
   def self.autostart_iso_builds(autostart_status)
-    Product.where(:autostart_status => autostart_status).each do |product|
+    Product.where(autostart_status: autostart_status).each do |product|
       pbl = product.product_build_lists.new
       [:params, :main_script, :project, :project_version].each do |k|
         pbl.send "#{k}=", product.send(k)

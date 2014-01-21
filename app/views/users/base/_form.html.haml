@@ -1,6 +1,6 @@
 - if current_user.admin?
-  .leftlist= f.label :role, t("activerecord.attributes.user.role"), :class => :label
-  .rightlist= f.select :role, User::ROLES, {}, {:name => 'role'}
+  .leftlist= f.label :role, t("activerecord.attributes.user.role"), class: :label
+  .rightlist= f.select :role, User::ROLES, {}, {name: 'role'}
   - if @user.new_record?
     .leftlist= f.label :uname, t("activerecord.attributes.user.uname")
     .rightlist= f.text_field :uname
@@ -28,7 +28,7 @@
 .leftlist= f.label :location, t("activerecord.attributes.user.location")
 .rightlist= f.text_field :location
 .both
-= render 'shared/avatar_form', :subject => @user, :f => f
+= render 'shared/avatar_form', subject: @user, f: f
 .leftlist= f.label :professional_experience, t("activerecord.attributes.user.professional_experience")
 .rightlist= f.text_area :professional_experience
 .both
@@ -37,5 +37,5 @@
 .both
 .leftlist
   \ 
-.rightlist= submit_tag t('layout.save'), :data => {'disable-with' => t('layout.saving')}
+.rightlist= submit_tag t('layout.save'), data: {'disable-with' => t('layout.saving')}
 .both

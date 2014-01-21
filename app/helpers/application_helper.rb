@@ -39,18 +39,18 @@ module ApplicationHelper
 
   def local_alert(text, type = 'error')
     html = "<div class='flash'><div class='alert #{type}'> #{text}"
-    html << link_to('×', '#', :class => 'close close-alert', 'data-dismiss' => 'alert')
+    html << link_to('×', '#', class: 'close close-alert', 'data-dismiss' => 'alert')
     html << '</div></div>'
   end
 
   # Why 42? Because it is the Answer!
   def short_message(message, length = 42)
-    truncate(message, :length => length, :omission => '…')
+    truncate(message, length: length, omission: '…')
   end
 
   def datetime_moment(date, options = {})
     tag = options[:tag] || :div
     klass = "datetime_moment #{options[:class]}"
-    content_tag(tag, nil, :class => klass, :title => date.strftime('%Y-%m-%d %H:%M:%S UTC'), :origin_datetime => date.to_i)
+    content_tag(tag, nil, class: klass, title: date.strftime('%Y-%m-%d %H:%M:%S UTC'), origin_datetime: date.to_i)
   end
 end

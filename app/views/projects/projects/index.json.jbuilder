@@ -16,6 +16,6 @@ end
 
 json.aaData do |aadata|
   aadata.array!(@projects[:projects]) do |json, proj|
-    json.partial! 'project', :project => proj
+    json.partial! 'project', project: proj
   end
 end

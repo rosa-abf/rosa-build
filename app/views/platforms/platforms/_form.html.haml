@@ -1,34 +1,34 @@
 - unless ['edit', 'update'].include? controller.action_name
-  .leftlist= f.label :name, :class => :label
-  .rightlist= f.text_field :name, :class => 'text_field'
+  .leftlist= f.label :name, class: :label
+  .rightlist= f.text_field :name, class: 'text_field'
   .both
 
-.leftlist= f.label :description, :class => :label
-.rightlist= f.text_area :description, :class => 'text_field'
+.leftlist= f.label :description, class: :label
+.rightlist= f.text_area :description, class: 'text_field'
 .both
 
 - unless ['edit', 'update'].include? controller.action_name
-  .leftlist= f.label :distrib_type, :class => :label
+  .leftlist= f.label :distrib_type, class: :label
   .rightlist= f.select :distrib_type, options_for_select(APP_CONFIG['distr_types'])
   .both
 
-  -#.leftlist= f.label :parent, :class => :label
-    .rightlist= f.collection_select :parent_platform_id, Platform.all, :id, :description, :include_blank => true
+  -#.leftlist= f.label :parent, class: :label
+    .rightlist= f.collection_select :parent_platform_id, Platform.all, :id, :description, include_blank: true
     .both
 
 - unless @platform.platform_type.in? ['personal']
-  .leftlist= f.label :released, :class => :label
-  .rightlist= f.check_box :released, :class => 'check_box'
+  .leftlist= f.label :released, class: :label
+  .rightlist= f.check_box :released, class: 'check_box'
   .both
 
-  .leftlist= label_tag "", t("layout.platforms.admin_id"), :class => :label
-  .rightlist= autocomplete_field_tag 'admin_id', @admin_uname, autocomplete_user_uname_autocompletes_path, :id_element => '#admin_id_field'
-  = hidden_field_tag 'admin_id', @admin_id, :id => 'admin_id_field'
+  .leftlist= label_tag "", t("layout.platforms.admin_id"), class: :label
+  .rightlist= autocomplete_field_tag 'admin_id', @admin_uname, autocomplete_user_uname_autocompletes_path, id_element: '#admin_id_field'
+  = hidden_field_tag 'admin_id', @admin_id, id: 'admin_id_field'
   .both
 
   %h3= t('layout.platform_arch_settings.extra_settings')
 
-  %table.tablesorter{:cellpadding => "0", :cellspacing => "0"}
+  %table.tablesorter{cellpadding: "0", cellspacing: "0"}
     %thead
       %tr
         %th.lpadding16= t("activerecord.models.arch")
@@ -36,16 +36,16 @@
         %th.lpadding16= t("activerecord.attributes.platform_arch_setting.time_living")
     %tbody
       - platform_arch_settings(@platform).each do |setting|
-        %tr{:class => cycle("odd", "even")}
+        %tr{class: cycle("odd", "even")}
           = f.fields_for :platform_arch_settings, setting do |s_form|
             %td
               = setting.arch.name
               = s_form.hidden_field :arch_id
-            %td.center= s_form.check_box :default, :class => 'check_box'
-            %td.right= s_form.text_field :time_living, :value => setting.time_living / 60, :class => 'text_field', :size => 10
+            %td.center= s_form.check_box :default, class: 'check_box'
+            %td.right= s_form.text_field :time_living, value: setting.time_living / 60, class: 'text_field', size: 10
   .both
 
 .button_block
-  = f.submit t('layout.save'), :data => {'disable-with' => t('layout.saving')}
+  = f.submit t('layout.save'), data: {'disable-with' => t('layout.saving')}
   %span.text_button_padding= t("layout.or")
-  = link_to t("layout.cancel"), @platform.new_record? ? root_path : platform_path(@platform), :class => "button"
+  = link_to t("layout.cancel"), @platform.new_record? ? root_path : platform_path(@platform), class: "button"

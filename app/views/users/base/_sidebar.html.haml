@@ -1,7 +1,7 @@
 %aside
   .admin-preferences
     %ul
-      %li{:class => action_name == 'profile' ? 'active' : nil}= link_to t('layout.users.profile'), profile_settings_path
-      %li{:class => action_name == 'private' ? 'active' : nil}= link_to t('layout.users.user_private_settings'), private_settings_path
-      %li{:class => action_name == 'notifiers' ? 'active' : nil}= link_to t('layout.users.settings_notifier'), notifiers_settings_path
-      %li{:class => controller_name == 'ssh_keys' ? 'active' : nil}= link_to t('ssh_keys'), ssh_keys_path
+      %li{class: action_name == 'profile' ? 'active' : nil}= link_to t('layout.users.profile'), profile_settings_path
+      %li{class: action_name == 'private' ? 'active' : nil}= link_to t('layout.users.user_private_settings'), private_settings_path
+      %li{class: action_name == 'notifiers' ? 'active' : nil}= link_to t('layout.users.settings_notifier'), notifiers_settings_path
+      %li{class: controller_name == 'ssh_keys' ? 'active' : nil}= link_to t('ssh_keys'), ssh_keys_path

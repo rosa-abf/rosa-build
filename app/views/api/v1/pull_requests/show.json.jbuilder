@@ -1,5 +1,5 @@
 json.pull_request do
-  json.partial! 'pull', :pull => @pull
+  json.partial! 'pull', pull: @pull
   json.body @pull.body
   json.closed_at @pull.issue.closed_at.to_i if @pull.merged? || @pull.closed?
 

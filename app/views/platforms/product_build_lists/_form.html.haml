@@ -1,6 +1,6 @@
-.leftlist= f.label :lst, t("activerecord.attributes.product.lst"), :class => :label
-.rightlist= f.text_field :lst, :class => 'text_field'
+.leftlist= f.label :lst, t("activerecord.attributes.product.lst"), class: :label
+.rightlist= f.text_field :lst, class: 'text_field'
 .both
 
-.leftlist= f.label :project, t("activerecord.attributes.product.project"), :class => :label
-.rightlist= f.autocomplete_field :project, autocomplete_project_platform_products_path(@platform), :id_element => 'src_project_id', :name => 'src_project', :value => @product.project.try(:name_with_owner)
+.leftlist= f.label :project, t("activerecord.attributes.product.project"), class: :label
+.rightlist= f.autocomplete_field :project, autocomplete_project_platform_products_path(@platform), id_element: 'src_project_id', name: 'src_project', value: @product.project.try(:name_with_owner)

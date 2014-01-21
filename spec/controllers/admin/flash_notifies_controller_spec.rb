@@ -6,11 +6,11 @@ describe Admin::FlashNotifiesController do
 
     @user = FactoryGirl.create(:user)
     @create_params = {
-      :flash_notify => {
-        :body_ru => "Hello! I`m ru body",
-        :body_en => "Hello! I`m en body",
-        :status  => "error",
-        :published => true
+      flash_notify: {
+        body_ru:   "Hello! I`m ru body",
+        body_en:   "Hello! I`m en body",
+        status:    "error",
+        published: true
       }
     }
 
@@ -18,9 +18,9 @@ describe Admin::FlashNotifiesController do
     @flash_notify2 = FactoryGirl.create(:flash_notify)
 
     @update_params = {
-      :id => @flash_notify,
-      :flash_notify => {
-        :body_ru => "updated!"
+      id: @flash_notify,
+      flash_notify: {
+        body_ru: "updated!"
       }
     }
   end
@@ -28,7 +28,7 @@ describe Admin::FlashNotifiesController do
   context 'for guest' do
     [:index, :create, :update, :edit, :new, :destroy].each do |action|
       it "should not be able to perform #{ action } action" do
-        get action, :id => @flash_notify
+        get action, id: @flash_notify
         response.should redirect_to(new_user_session_path)
       end
     end
@@ -38,7 +38,7 @@ describe Admin::FlashNotifiesController do
     end
 
     it 'should not change objects count on destroy' do
-      lambda { delete :destroy, :id => @flash_notify }.should change{ FlashNotify.count }.by(0)
+      lambda { delete :destroy, id: @flash_notify }.should change{ FlashNotify.count }.by(0)
     end
 
     it 'should not change flash notify body on update' do
@@ -61,7 +61,7 @@ describe Admin::FlashNotifiesController do
 
     [:index, :new, :edit].each do |action|
       it "should be able to perform #{action} action" do
-        get action, :id => @flash_notify
+        get action, id: @flash_notify
         response.should render_template(action)
       end
     end
@@ -76,12 +76,12 @@ describe Admin::FlashNotifiesController do
     end
 
     it 'should be able to perform destroy action' do
-      delete :destroy, :id => @flash_notify
+      delete :destroy, id: @flash_notify
       response.should redirect_to(admin_flash_notifies_path)
     end
 
     it 'should change objects count on destroy' do
-      lambda { delete :destroy, :id => @flash_notify }.should change{ FlashNotify.count }.by(-1)
+      lambda { delete :destroy, id: @flash_notify }.should change{ FlashNotify.count }.by(-1)
     end
 
     it 'should be able to perform update action' do
@@ -103,7 +103,7 @@ describe Admin::FlashNotifiesController do
 
     [:index, :create, :update, :edit, :new, :destroy].each do |action|
       it "should not be able to perform #{ action } action" do
-        get action, :id => @flash_notify
+        get action, id: @flash_notify
         response.should redirect_to(forbidden_path)
       end
     end
@@ -113,7 +113,7 @@ describe Admin::FlashNotifiesController do
     end
 
     it 'should not change objects count on destroy' do
-      lambda { delete :destroy, :id => @flash_notify }.should change{ FlashNotify.count }.by(0)
+      lambda { delete :destroy, id: @flash_notify }.should change{ FlashNotify.count }.by(0)
     end
 
     it 'should not change flash notify body on update' do

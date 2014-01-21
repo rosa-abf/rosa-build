@@ -1,20 +1,20 @@
--set_meta_tags :title => [title_object(@product), t('layout.product_build_lists.new')]
+-set_meta_tags title: [title_object(@product), t('layout.product_build_lists.new')]
 = render 'submenu'
 
 %h3= t("layout.product_build_lists.main_data")
 - pbl = @product_build_list
-= form_for pbl, :url => platform_product_product_build_lists_path(@platform, @product), :html => {:class => :form} do |f|
-  .leftlist= f.label :project, t("activerecord.attributes.product_build_list.project"), :class => :label
+= form_for pbl, url: platform_product_product_build_lists_path(@platform, @product), html: {class: :form} do |f|
+  .leftlist= f.label :project, t("activerecord.attributes.product_build_list.project"), class: :label
   .rightlist= pbl.project.name_with_owner
   .both
 
-  .leftlist= f.label :project_version, t("activerecord.attributes.product_build_list.project_version"), :class => :label
-  .rightlist= f.select :project_version, versions_for_group_select(pbl.project), :selected => params[:product_build_lists].try(:fetch, :project_version) || @product.project_version || pbl.project.default_branch
+  .leftlist= f.label :project_version, t("activerecord.attributes.product_build_list.project_version"), class: :label
+  .rightlist= f.select :project_version, versions_for_group_select(pbl.project), selected: params[:product_build_lists].try(:fetch, :project_version) || @product.project_version || pbl.project.default_branch
   .both
 
-  = render 'platforms/products/def_fields', :f => f
+  = render 'platforms/products/def_fields', f: f
 
-  = f.submit t('layout.projects.build_button'), :data => {'disable-with' => t('layout.processing')}
+  = f.submit t('layout.projects.build_button'), data: {'disable-with' => t('layout.processing')}
 
 %br
 %div

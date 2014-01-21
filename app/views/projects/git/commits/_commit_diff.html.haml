@@ -1,6 +1,6 @@
 - commit_id = commit_diff.deleted_file ? @commit.parents.first.id : @commit.id
 .file
-  %a{:name => "diff-#{commit_diff_counter}"}
+  %a{name: "diff-#{commit_diff_counter}"}
   .top
     .l= h(commit_diff.a_path.rtruncate 120)
     - if commit_diff.b_path.present?
@@ -8,4 +8,4 @@
     .clear
   -if commit_diff.diff.present? && !(@project.repo.tree(commit_id) / commit_diff.a_path).binary?
     ="a_path=#{commit_diff.a_path}; b_path=#{commit_diff.b_path}" if (@project.repo.tree(commit_id) / commit_diff.b_path).nil?
-    .diff_data=render_diff(commit_diff, :diff_counter => commit_diff_counter, :comments => @comments)
+    .diff_data=render_diff(commit_diff, diff_counter: commit_diff_counter, comments: @comments)

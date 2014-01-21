@@ -1,22 +1,22 @@
 - content_for :sidebar do
   -if @filter == 'system'
     .bordered
-      = link_to t("layout.users.list_header"), admin_users_path, :class => 'button'
+      = link_to t("layout.users.list_header"), admin_users_path, class: 'button'
   .bordered
     - if can? :create, User.new
-      = link_to t("layout.users.new"), new_admin_user_path(:system => @filter == 'system'), :class => 'button'
+      = link_to t("layout.users.new"), new_admin_user_path(system: @filter == 'system'), class: 'button'
     %h3= t("layout.users.filter_header")
     %table
       -if @filter != 'system'
         - t('layout.users.users_filter').each_key do |base|
           %tr
-            %td.width18=radio_button_tag :myradio, base, @filter.to_sym == base, {:id => 'users_filter', :class => 'niceRadio', :name => 'filter'}
+            %td.width18=radio_button_tag :myradio, base, @filter.to_sym == base, {id: 'users_filter', class: 'niceRadio', name: 'filter'}
             %td.width135=t("layout.users.users_filter.#{base}")
       -else
         %tr
-          %td.width18=radio_button_tag :myradio, 'system', true, {:id => 'users_filter', :class => 'niceRadio', :name => 'filter'}
+          %td.width18=radio_button_tag :myradio, 'system', true, {id: 'users_filter', class: 'niceRadio', name: 'filter'}
           %td.width135=t("layout.users.system")
     .both
   -if @filter != 'system'
     .bordered
-      = link_to t("layout.users.system"), system_admin_users_path, :class => 'button'
+      = link_to t("layout.users.system"), system_admin_users_path, class: 'button'
