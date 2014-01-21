@@ -11,10 +11,10 @@ class BuildList::Item < ActiveRecord::Base
                      nil => :unknown,
                      GIT_ERROR => :git_error,
                      # BuildList:DEPENDENCIES_ERROR: :dependencies_error,
-                     BuildList:SUCCESS: :success,
-                     BuildList:BUILD_STARTED: :build_started,
-                     BuildList:BUILD_ERROR: :build_error,
-                     BuildList:BUILD_CANCELED: :build_canceled
+                     BuildList::SUCCESS        => :success,
+                     BuildList::BUILD_STARTED  => :build_started,
+                     BuildList::BUILD_ERROR    => :build_error,
+                     BuildList::BUILD_CANCELED => :build_canceled
                     }
 
   scope :recent, order("#{table_name}.level ASC, #{table_name}.name ASC")
