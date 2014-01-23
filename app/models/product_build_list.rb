@@ -165,7 +165,7 @@ class ProductBuildList < ActiveRecord::Base
       # TODO: remove comment
       # srcpath: 'http://dl.dropbox.com/u/945501/avokhmin-test-iso-script-5d9b463d4e9c06ea8e7c89e1b7ff5cb37e99e27f.tar.gz',
       srcpath: srcpath,
-      params: params,
+      params: ("BUILD_ID=#{id} " << params.to_s),
       time_living: time_living,
       main_script: main_script,
       platform: {
