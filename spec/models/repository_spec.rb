@@ -70,7 +70,7 @@ describe Repository do
   context 'when create with same owner that platform' do
     before do
       @platform = FactoryGirl.create(:platform)
-      @params = {:name => 'tst_platform', :description => 'test platform'}
+      @params = {name: 'tst_platform', description: 'test platform'}
     end
 
     it 'it should increase Repository.count by 1' do
@@ -116,7 +116,7 @@ describe Repository do
 
     it 'user has no ability to read of adding project' do
       repository = FactoryGirl.create(:repository)
-      project = FactoryGirl.create(:project, :visibility => 'hidden')
+      project = FactoryGirl.create(:project, visibility: 'hidden')
       repository.add_projects("#{project.owner.uname}/#{project.name}", FactoryGirl.create(:user))
       repository.projects.should have(:no).items
     end

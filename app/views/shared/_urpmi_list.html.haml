@@ -1,9 +1,9 @@
 .group
   %span Данные для подключения:
-  .group{:style => 'padding-left: 10px'}
+  .group{style: 'padding-left: 10px'}
     - urpmi_commands.each do |platform, commands|
       #{platform}:
-      .group{:style => 'padding-left: 20px'}
+      .group{style: 'padding-left: 20px'}
         - commands.each do |command|
           %span= command
           %br

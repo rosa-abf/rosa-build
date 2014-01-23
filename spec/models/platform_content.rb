@@ -39,7 +39,7 @@ describe PlatformContent do
   end
 
   context '#build_list' do
-    let!(:package)    { FactoryGirl.create(:build_list_package, :actual => true) }
+    let!(:package)    { FactoryGirl.create(:build_list_package, actual: true) }
     let(:platform)    { package.build_list.save_to_platform }
     let(:repository)  { platform.repositories.first }
 

@@ -1,6 +1,6 @@
 #md_help.modal.hidden
   .modal-header
-    %button.close{"aria-hidden" => "true", "data-dismiss" => "modal", :type => "button"} ×
+    %button.close{"aria-hidden" => "true", "data-dismiss" => "modal", type: "button"} ×
     %h3#myModalLabel=t('layout.comments.md_cheatsheet_header')
   .modal-body
     .mod
@@ -17,16 +17,16 @@
             _This will also be italic_
             **This text will be bold**
             __This will also be bold__
-        %p=link_to t('layout.comments.md_cheatsheet.emoji_header'), 'http://www.emoji-cheat-sheet.com/', :target => '_blank'
+        %p=link_to t('layout.comments.md_cheatsheet.emoji_header'), 'http://www.emoji-cheat-sheet.com/', target: '_blank'
         %pre
           =":smile:"
-          =image_tag(image_path('emoji/smile.png'), :class => 'emoji', :title => 'smile', :alt => 'smile', :size => "20x20")
+          =image_tag(image_path('emoji/smile.png'), class: 'emoji', title: 'smile', alt: 'smile', size: "20x20")
           ="   :+1:"
-          =image_tag(image_path('emoji/+1.png'), :class => 'emoji', :title => '+1', :alt => '+1', :size => "20x20")
+          =image_tag(image_path('emoji/+1.png'), class: 'emoji', title: '+1', alt: '+1', size: "20x20")
       .col
         %h3=t 'layout.comments.md_cheatsheet.lists'
-        %p{:style => 'float:left;margin-left:20px;'}=t 'layout.comments.md_cheatsheet.unordered'
-        %p{:style => 'float:right;margin-right:40px;'}=t 'layout.comments.md_cheatsheet.ordered'
+        %p{style: 'float:left;margin-left:20px;'}=t 'layout.comments.md_cheatsheet.unordered'
+        %p{style: 'float:right;margin-right:40px;'}=t 'layout.comments.md_cheatsheet.ordered'
         .both
         %pre
           :preserve

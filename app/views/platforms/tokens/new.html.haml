@@ -1,16 +1,16 @@
--set_meta_tags :title => [title_object(@platform), t('layout.tokens.new')]
+-set_meta_tags title: [title_object(@platform), t('layout.tokens.new')]
 = render 'submenu'
 = render 'sidebar'
 
 %h3= t('layout.tokens.new')
 
-= form_for @token, :url => platform_tokens_path(@platform), :method => :post, :html => { :class => :form } do |f|
+= form_for @token, url: platform_tokens_path(@platform), method: :post, html: { class: :form } do |f|
   .leftlist= f.label :description
   .rightlist= f.text_area :description
 
   .both
   .hr
   .button_block
-    = submit_tag t('layout.save'), :data => {'disable-with' => t('layout.saving')}
+    = submit_tag t('layout.save'), data: {'disable-with' => t('layout.saving')}
     %span.text_button_padding= t('layout.or')
-    = link_to t('layout.cancel'), platform_tokens_path(@platform), :class => 'button'
+    = link_to t('layout.cancel'), platform_tokens_path(@platform), class: 'button'

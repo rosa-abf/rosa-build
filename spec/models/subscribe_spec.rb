@@ -5,9 +5,9 @@ def set_testable_data
   @ability = Ability.new(@user)
 
   @project = FactoryGirl.create(:project)
-  @issue = FactoryGirl.create(:issue, :project_id => @project.id)
+  @issue = FactoryGirl.create(:issue, project_id: @project.id)
 
-  any_instance_of(Project, :versions => ['v1.0', 'v2.0'])
+  any_instance_of(Project, versions: ['v1.0', 'v2.0'])
 end
 
 describe Subscribe do
@@ -21,13 +21,13 @@ describe Subscribe do
     end
 
     it 'should create subscribe' do
-      @ability.should be_able_to(:create, Subscribe.new(:subscribeable => @issue, :user => @user))
+      @ability.should be_able_to(:create, Subscribe.new(subscribeable: @issue, user: @user))
     end
 
     context 'destroy' do
       before(:each) do
-        @subscribe = FactoryGirl.create(:subscribe, :subscribeable => @issue, :user => @user)
-        @stranger_subscribe = FactoryGirl.create(:subscribe, :subscribeable => @issue, :user => @stranger)
+        @subscribe = FactoryGirl.create(:subscribe, subscribeable: @issue, user: @user)
+        @stranger_subscribe = FactoryGirl.create(:subscribe, subscribeable: @issue, user: @stranger)
       end
 
       context 'own subscribe' do
@@ -53,13 +53,13 @@ describe Subscribe do
     end
 
     it 'should create subscribe' do
-      @ability.should be_able_to(:create, Subscribe.new(:subscribeable => @issue, :user => @user))
+      @ability.should be_able_to(:create, Subscribe.new(subscribeable: @issue, user: @user))
     end
 
     context 'destroy' do
       before(:each) do
-        @subscribe = FactoryGirl.create(:subscribe, :subscribeable => @issue, :user => @user)
-        @stranger_subscribe = FactoryGirl.create(:subscribe, :subscribeable => @issue, :user => @stranger)
+        @subscribe = FactoryGirl.create(:subscribe, subscribeable: @issue, user: @user)
+        @stranger_subscribe = FactoryGirl.create(:subscribe, subscribeable: @issue, user: @stranger)
       end
 
       context 'own subscribe' do

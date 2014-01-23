@@ -4,7 +4,7 @@
   = render 'fork'
 .both
 
-%table#myTable.tablesorter.project{:cellpadding => "0", :cellspacing => "0"}
+%table#myTable.tablesorter.project{cellpadding: "0", cellspacing: "0"}
   %thead
     %tr
       %th.th1= t("layout.projects.filename")
@@ -27,9 +27,9 @@
             .pic= image_tag 'folder-submodule.png'
             .name
               - if url = submodule_url(node, @treeish)
-                = link_to(node.name, url, :class => 'files-see')
+                = link_to(node.name, url, class: 'files-see')
                 = '@'
-                = link_to(node.id[0..6], "#{url}/tree/#{node.id}", :class => 'files-see')
+                = link_to(node.id[0..6], "#{url}/tree/#{node.id}", class: 'files-see')
               - else
                 = "#{node.name} @ #{node.id[0..6]}"
           - else
@@ -38,10 +38,10 @@
               - pic = 'folder.png'
               - path = tree_path *options
             .pic= image_tag pic || 'code.png'
-            .name= link_to(node.name, path || blob_path(*options), :class => 'files-see')
+            .name= link_to(node.name, path || blob_path(*options), class: 'files-see')
 
         - if commit
-          = datetime_moment(commit.committed_date || commit.authored_date, :tag => :td)
+          = datetime_moment(commit.committed_date || commit.authored_date, tag: :td)
           %td= commit.short_message
           %td= (commit.committer || commit.author).name
         - else

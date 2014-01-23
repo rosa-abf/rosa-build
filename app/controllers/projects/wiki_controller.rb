@@ -5,11 +5,11 @@ class Projects::WikiController < Projects::BaseController
   WIKI_OPTIONS = {}
 
   before_filter :authenticate_user!
-  skip_before_filter :authenticate_user!, :only => [:show, :index, :git, :compare, :compare_wiki, :history, :wiki_history, :search, :pages] if APP_CONFIG['anonymous_access']
+  skip_before_filter :authenticate_user!, only: [:show, :index, :git, :compare, :compare_wiki, :history, :wiki_history, :search, :pages] if APP_CONFIG['anonymous_access']
   load_resource :project
 
-  before_filter :authorize_read_actions,  :only => [:index, :show, :git, :compare, :compare_wiki, :history, :wiki_history, :search, :pages]
-  before_filter :authorize_write_actions, :only => [:edit, :update, :new, :create, :destroy, :revert, :revert_wiki, :preview]
+  before_filter :authorize_read_actions,  only: [:index, :show, :git, :compare, :compare_wiki, :history, :wiki_history, :search, :pages]
+  before_filter :authorize_write_actions, only: [:edit, :update, :new, :create, :destroy, :revert, :revert_wiki, :preview]
   before_filter :get_wiki
 
   def index
@@ -49,13 +49,13 @@ class Projects::WikiController < Projects::BaseController
     @page = @wiki.page(@name)
     name = params[:rename] || @name
 
-    update_wiki_page(@wiki, @page, params[:content], {:committer => committer}, name, params[:format])
-    update_wiki_page(@wiki, @page.footer, params[:footer], {:committer => committer}) if params[:footer]
-    update_wiki_page(@wiki, @page.sidebar, params[:sidebar], {:committer => committer}) if params[:sidebar]
+    update_wiki_page(@wiki, @page, params[:content], {committer: committer}, name, params[:format])
+    update_wiki_page(@wiki, @page.footer, params[:footer], {committer: committer}) if params[:footer]
+    update_wiki_page(@wiki, @page.sidebar, params[:sidebar], {committer: committer}) if params[:sidebar]
 
     committer.commit
 
-    flash[:notice] = t('flash.wiki.successfully_updated', :name => @name)
+    flash[:notice] = t('flash.wiki.successfully_updated', name: @name)
     redirect_to project_wiki_path(@project, CGI.escape(@name))
   end
 
@@ -67,11 +67,11 @@ class Projects::WikiController < Projects::BaseController
     @name = CGI.unescape(params['page'])
     format = params['format'].intern
     begin
-      @wiki.write_page(@name, format, params['content'] || '', {:committer => committer}).commit
+      @wiki.write_page(@name, format, params['content'] || '', {committer: committer}).commit
       redirect_to project_wiki_path(@project, CGI.escape(@name))
     rescue Gollum::DuplicatePageError => e
-      flash[:error] = t("flash.wiki.duplicate_page", :name => @name)
-      render :action => :new
+      flash[:error] = t("flash.wiki.duplicate_page", name: @name)
+      render action: :new
     end
   end
 
@@ -79,10 +79,10 @@ class Projects::WikiController < Projects::BaseController
     @name = CGI.unescape(params[:id])
     page = @wiki.page(@name)
     if page
-      @wiki.delete_page(page, {:committer => committer}).commit
+      @wiki.delete_page(page, {committer: committer}).commit
       flash[:notice] = t("flash.wiki.page_successfully_removed")
     else
-      flash[:notice] = t("flash.wiki.page_not_found", :name => params[:id])
+      flash[:notice] = t("flash.wiki.page_not_found", name: params[:id])
     end
     redirect_to project_wiki_index_path(@project)
   end
@@ -149,12 +149,12 @@ class Projects::WikiController < Projects::BaseController
     sha2  = params[:sha2]
     sha2  = nil if params[:sha2] == 'prev'
 
-    if c = @wiki.revert_page(@page, sha1, sha2, {:committer => committer}) and c.commit
+    if c = @wiki.revert_page(@page, sha1, sha2, {committer: committer}) and c.commit
       flash[:notice] = t("flash.wiki.revert_success")
       redirect_to project_wiki_path(@project, CGI.escape(@name))
     else
       # if revert wasn't successful then redirect back to comparsion.
-      # if second commit version is missed, then second version is 
+      # if second commit version is missed, then second version is
       # params[:sha1] and first version is parent of params[:sha1]
       # (see Gollum::Wiki#revert_page)
       sha2, sha1 = sha1, "#{sha1}^" if !sha2
@@ -170,7 +170,7 @@ class Projects::WikiController < Projects::BaseController
     sha1 = params[:sha1]
     sha2 = params[:sha2]
     sha2 = nil if sha2 == 'prev'
-    if c = @wiki.revert_commit(sha1, sha2, {:committer => committer}) and c.commit
+    if c = @wiki.revert_commit(sha1, sha2, {committer: committer}) and c.commit
       flash[:notice] = t("flash.wiki.revert_success")
       redirect_to project_wiki_index_path(@project)
     else
@@ -218,14 +218,14 @@ class Projects::WikiController < Projects::BaseController
 
     def get_wiki
       @wiki = Gollum::Wiki.new(@project.wiki_path,
-               WIKI_OPTIONS.merge(:base_path => project_wiki_index_path(@project)))
+               WIKI_OPTIONS.merge(base_path: project_wiki_index_path(@project)))
     end
 
     # This method was grabbed from sinatra application, shipped with Gollum gem.
     # See Gollum gem and Gollum License if you have any questions about license notes.
     # https://github.com/github/gollum  https://github.com/github/gollum/blob/master/LICENSE
     def update_wiki_page(wiki, page, content, commit_msg, name = nil, format = nil)
-      return if !page ||  
+      return if !page ||
         ((!content || page.raw_data == content) && page.format == format)
       name    ||= page.name
       format    = (format || page.format).to_sym
@@ -247,14 +247,14 @@ class Projects::WikiController < Projects::BaseController
         msg << " (#{params['format']})" if params['format']
       end
       msg = 'Unhandled action' if !msg || msg.empty?
-      { :message => msg }
+      { message: msg }
     end
 
     def committer
       unless @committer
-        p = commit_message.merge({:name => current_user.uname, :email => current_user.email})
+        p = commit_message.merge({name: current_user.uname, email: current_user.email})
         @committer = Gollum::Committer.new(@wiki, p)
-        GitHook.perform_later!(:notification, :process, {:project_id => @project.id, :actor_name => @committer.actor.name, :commit_sha => @committer.commit})
+        GitHook.perform_later!(:notification, :process, {project_id: @project.id, actor_name: @committer.actor.name, commit_sha: @committer.commit})
       end
       @committer
     end
@@ -265,12 +265,12 @@ class Projects::WikiController < Projects::BaseController
         @editable = can?(:write, @project)
         render :show
       elsif file = @wiki.file(@name)
-        render :text => file.raw_data, :content_type => file.mime_type
+        render text: file.raw_data, content_type: file.mime_type
       elsif can? :write, @project
         @new = true
         render :new
       else
-        redirect_to :action => :index #forbidden_path
+        redirect_to action: :index #forbidden_path
       end
     end
 

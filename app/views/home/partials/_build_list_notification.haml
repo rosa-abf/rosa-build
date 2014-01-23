@@ -1,10 +1,10 @@
--user= User.where(:email => user_email).first || User.new(:email => user_email) if defined?(user_email)
+-user= User.where(email: user_email).first || User.new(email: user_email) if defined?(user_email)
 .top
-  .image= link_to(image_tag(avatar_url(user, :small), :alt => 'avatar'), user_path(user)) if user.persisted?
+  .image= link_to(image_tag(avatar_url(user, :small), alt: 'avatar'), user_path(user)) if user.persisted?
   .text
     %span
-      = raw t('notifications.bodies.build_task', :id => build_list_id, :task_link => build_list_path(build_list_id))
-      = raw t('notifications.bodies.project', :project_link => link_to("#{project_owner}/#{project_name}", project_path(project_owner, project_name)) )
+      = raw t('notifications.bodies.build_task', id: build_list_id, task_link: build_list_path(build_list_id))
+      = raw t('notifications.bodies.project', project_link: link_to("#{project_owner}/#{project_name}", project_path(project_owner, project_name)) )
       - message, error = case status
         - when BuildList::BUILD_PENDING
           - ['pending', nil]
@@ -13,7 +13,7 @@
         - when BuildList::SUCCESS
           - ['success', nil]
         - else ['failed', t("layout.build_lists.statuses.#{BuildList::HUMAN_STATUSES[status]}")]
-      = raw t("notifications.bodies.build_status.#{message}", :error => error)
+      = raw t("notifications.bodies.build_status.#{message}", error: error)
     .both
-      = datetime_moment updated_at, :tag => :span, :class => 'date'
+      = datetime_moment updated_at, tag: :span, class: 'date'
   .both

@@ -1,20 +1,20 @@
 %h3.fix= title t("layout.users.#{@filter == 'system' ? 'system' : 'list_header'}")
 -if @filter == 'system'
-  - columns = [{:type => 'html'}, {:type => nil, :sortable => false, :searchable => false, :class => 'buttons'}]
+  - columns = [{type: 'html'}, {type: nil, sortable: false, searchable: false, class: 'buttons'}]
 -else
-  - columns = [{:type => 'html'}, {:type => 'html'}, {:type => 'html'}, {:type => 'html'}, {:type => 'html', :sortable => false, :searchable => false}, {:type => nil, :sortable => false, :searchable => false, :class => 'buttons'}]
-= raw datatable(columns, {:sort_by => "[0, 'asc']", :processing => t("layout.processing"), :search_label => t("layout.search.header"),
-                          :pagination_labels => {:previous => t("datatables.previous_label"), :next => t("datatables.next_label")},
-                          :empty_label      => t("datatables.empty_label"),
-                          :info_label       => t("datatables.info_label"),
-                          :info_empty_label => t("datatables.info_empty_label"),
-                          :filtered_label   => t("datatables.filtered_label"),
-                          :table_dom_id     => 'datatable',
-                          :auto_width       => 'false',
-                          :ajax_source => "#{url_for :controller => 'admin/users', :action => :list, :system => (@filter == 'system')}",
-                          :additional_data => {:filter => "' + $('#users_filter[type=\"radio\"]:checked').val() + '"} })
+  - columns = [{type: 'html'}, {type: 'html'}, {type: 'html'}, {type: 'html'}, {type: 'html', sortable: false, searchable: false}, {type: nil, sortable: false, searchable: false, class: 'buttons'}]
+= raw datatable(columns, {sort_by: "[0, 'asc']", processing: t("layout.processing"), search_label: t("layout.search.header"),
+                          pagination_labels: {previous: t("datatables.previous_label"), next: t("datatables.next_label")},
+                          empty_label: t("datatables.empty_label"),
+                          info_label: t("datatables.info_label"),
+                          info_empty_label: t("datatables.info_empty_label"),
+                          filtered_label: t("datatables.filtered_label"),
+                          table_dom_id: 'datatable',
+                          auto_width: 'false',
+                          ajax_source: "#{url_for controller: 'admin/users', action: :list, system: (@filter == 'system')}",
+                          additional_data: {filter: "' + $('#users_filter[type=\"radio\"]:checked').val() + '"} })
 
-%table#datatable.tablesorter.list-users{:cellspacing => 0, :cellpadding => 0}
+%table#datatable.tablesorter.list-users{cellspacing: 0, cellpadding: 0}
   %thead
     %tr
       -if @filter == 'system'

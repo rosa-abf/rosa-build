@@ -1,6 +1,6 @@
--set_meta_tags :title => [title_object(@platform), t('layout.repositories.list_header')]
+-set_meta_tags title: [title_object(@platform), t('layout.repositories.list_header')]
 = render 'submenu' if params[:platform_id]
 = render 'sidebar' if params[:platform_id]
-= link_to t("layout.repositories.new"), new_platform_repository_path(@platform), :class => 'button' if can? :create, @platform.repositories.build
-= render 'list', :object => @repositories
+= link_to t("layout.repositories.new"), new_platform_repository_path(@platform), class: 'button' if can? :create, @platform.repositories.build
+= render 'list', object: @repositories
 = will_paginate @repositories

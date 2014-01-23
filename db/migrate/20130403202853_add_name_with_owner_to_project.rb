@@ -13,7 +13,7 @@ class AddNameWithOwnerToProject < ActiveRecord::Migration
         FROM groups as owners
         WHERE projects.owner_type = 'Group' AND projects.owner_id = owners.id
     SQL
-    change_column :projects, :owner_uname, :string, :null => false
+    change_column :projects, :owner_uname, :string, null: false
   end
 
   def down

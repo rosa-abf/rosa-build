@@ -7,5 +7,5 @@
       - resource_class.omniauth_providers.each do |provider|
         = link_to omniauth_authorize_path(resource_name, provider) do
           - provider = provider.to_s.gsub(/_oauth2/,'')
-          = image_tag("#{provider}.png", :alt => provider, :class => provider)
+          = image_tag("#{provider}.png", alt: provider, class: provider)
   .both

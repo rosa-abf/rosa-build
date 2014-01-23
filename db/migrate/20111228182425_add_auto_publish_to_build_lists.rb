@@ -1,6 +1,6 @@
 class AddAutoPublishToBuildLists < ActiveRecord::Migration
   def self.up
-    add_column :build_lists, :auto_publish, :boolean, :default => true
+    add_column :build_lists, :auto_publish, :boolean, default: true
   end
 
   def self.down

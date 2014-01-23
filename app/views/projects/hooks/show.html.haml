@@ -1,10 +1,10 @@
--set_meta_tags :title => [title_object(@project), t('layout.projects.hooks')]
+-set_meta_tags title: [title_object(@project), t('layout.projects.hooks')]
 = render 'submenu'
 = render 'sidebar'
 
 %h1= t("layout.hooks.services.#{@name}")
 
-= link_to t('layout.create'), new_project_hook_path(@project, :hook => {:name => @name}), :class => 'button'
+= link_to t('layout.create'), new_project_hook_path(@project, hook: {name: @name}), class: 'button'
 .booth
 %br
 
@@ -21,6 +21,6 @@
 
   .leftlist
   .rightlist
-    = link_to t('layout.edit'), edit_project_hook_path(@project, hook), :class => 'button'
-    = link_to t('layout.delete'), project_hook_path(@project, hook), :method => :delete, :confirm => t('layout.confirm'), :class => 'button'
+    = link_to t('layout.edit'), edit_project_hook_path(@project, hook), class: 'button'
+    = link_to t('layout.delete'), project_hook_path(@project, hook), method: :delete, confirm: t('layout.confirm'), class: 'button'
   .hr

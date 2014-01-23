@@ -3,7 +3,7 @@ class Projects::Git::CommitsController < Projects::Git::BaseController
     if @path.present?
       @commits = @project.repo.log(@treeish, @path)
     else
-      @commits, @page, @last_page = @project.paginate_commits(@treeish, :page => params[:page])
+      @commits, @page, @last_page = @project.paginate_commits(@treeish, page: params[:page])
     end
   end
 
@@ -13,8 +13,8 @@ class Projects::Git::CommitsController < Projects::Git::BaseController
 
     respond_to do |format|
       format.html
-      format.diff  { render :text => (@commit.diffs.map(&:diff).join("\n") rescue ''), :content_type => "text/plain" }
-      format.patch { render :text => (@commit.to_patch rescue ''), :content_type => "text/plain" }
+      format.diff  { render text: (@commit.diffs.map(&:diff).join("\n") rescue ''), content_type: "text/plain" }
+      format.patch { render text: (@commit.to_patch rescue ''), content_type: "text/plain" }
     end
   end
 

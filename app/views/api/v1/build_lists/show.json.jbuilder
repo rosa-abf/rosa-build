@@ -18,47 +18,47 @@ json.build_list do
   json.updated_at @build_list.updated_at.to_i
 
   json.project do
-    json.partial! 'api/v1/projects/project', :project => @build_list.project
+    json.partial! 'api/v1/projects/project', project: @build_list.project
   end
 
   json.save_to_repository do
     json.partial! 'api/v1/repositories/repository',
-        :repository => @build_list.save_to_repository
+        repository: @build_list.save_to_repository
 
     json.platform do
       json.partial! 'api/v1/platforms/platform',
-          :platform => @build_list.save_to_repository.platform
+          platform: @build_list.save_to_repository.platform
     end
   end
 
   json.build_for_platform do
     json.partial! 'api/v1/platforms/platform',
-        :platform => @build_list.build_for_platform
+        platform: @build_list.build_for_platform
   end
 
   json.user do
-    json.partial! 'api/v1/shared/member', :member => @build_list.user
+    json.partial! 'api/v1/shared/member', member: @build_list.user
   end
 
   json.publisher do
-    json.partial! 'api/v1/shared/member', :member => @build_list.publisher
+    json.partial! 'api/v1/shared/member', member: @build_list.publisher
   end if @build_list.publisher
 
-  inc_repos = Repository.includes(:platform).where(:id => @build_list.include_repos)
+  inc_repos = Repository.includes(:platform).where(id: @build_list.include_repos)
   json.include_repos inc_repos do |repo|
-    json.partial! 'repositories', :repository => repo
+    json.partial! 'repositories', repository: repo
   end
 
-  extra_repos = Repository.includes(:platform).where(:id => @build_list.extra_repositories)
+  extra_repos = Repository.includes(:platform).where(id: @build_list.extra_repositories)
   json.extra_repositories extra_repos do |repo|
-    json.partial! 'repositories', :repository => repo
+    json.partial! 'repositories', repository: repo
   end
 
-  extra_build_lists = BuildList.where(:id => @build_list.extra_build_lists)
+  extra_build_lists = BuildList.where(id: @build_list.extra_build_lists)
   json.extra_build_lists extra_build_lists do |bl|
     json.(bl, :id, :status)
     json.container_path container_url(bl)
-    json.url api_v1_build_list_path(bl, :format => :json)
+    json.url api_v1_build_list_path(bl, format: :json)
   end
 
   json.extra_params @build_list.extra_params
@@ -79,8 +79,8 @@ json.build_list do
   end if @build_list.new_core?
 
   json.packages @build_list.packages do |package|
-    json.partial! 'api/v1/maintainers/package', :package => package
+    json.partial! 'api/v1/maintainers/package', package: package
   end
 
-  json.url api_v1_build_list_path(@build_list, :format => :json)
+  json.url api_v1_build_list_path(@build_list, format: :json)
 end

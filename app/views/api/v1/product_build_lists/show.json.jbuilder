@@ -1,15 +1,15 @@
 json.product_build_list do |json|
-  json.partial! 'product_build_list', :product_build_list => @product_build_list, :json => json
+  json.partial! 'product_build_list', product_build_list: @product_build_list, json: json
   json.(@product_build_list, :commit_hash, :main_script, :params, :not_delete, :autostarted)
 
   json.product do |json_product|
     json.partial! 'api/v1/products/product',
-      :product => @product_build_list.product, :json => json_product
+      product: @product_build_list.product, json: json_product
   end
 
   json.project do |json_project|
     json.partial! 'api/v1/projects/project',
-      :project => @product_build_list.project, :json => json_project
+      project: @product_build_list.project, json: json_project
   end
 
   json.created_at @product_build_list.created_at.to_i

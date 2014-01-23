@@ -1,10 +1,10 @@
--set_meta_tags :title => t('.title')
+-set_meta_tags title: t('.title')
 
 %div{'ng-controller' => 'BuildListsController'}
 
   = render 'filter'
 
-  %table.tablesorter{:cellpadding => "0", :cellspacing => "0"}
+  %table.tablesorter{cellpadding: "0", cellspacing: "0"}
     %thead
       %tr
         %th.lpadding16= t("activerecord.attributes.build_list.id")
@@ -17,7 +17,7 @@
         %th.lpadding16= t("activerecord.attributes.build_list.user")
         %th.lpadding6= t("activerecord.attributes.build_list.updated_at")
     %tbody
-      %tr{'ng-repeat' => 'bl in build_lists', :class => '{{bl.status_color}}', :id => 'build-list-{{bl.id}}', 'ng-class' => "{'group-start': !bl.relatedHidden, 'group-end': bl.lastRelated}", 'ng-show' => 'bl.show'}
+      %tr{'ng-repeat' => 'bl in build_lists', class: '{{bl.status_color}}', id: 'build-list-{{bl.id}}', 'ng-class' => "{'group-start': !bl.relatedHidden, 'group-end': bl.lastRelated}", 'ng-show' => 'bl.show'}
 
         / id
         %td.build-list-statuses
@@ -26,7 +26,7 @@
             %span.icon-chevron-up{'ng-hide' => 'bl.relatedHidden', 'ng-click' => 'hideRelated(bl)'}
           %a{'ng-href' => '{{bl.url}}' } {{bl.id}}
           %div{'ng-show' => 'bl.hasRelated'}
-            .status{'ng-repeat' => 'related in bl.related', :class => '{{related.status_color}}'} &nbsp; 
+            .status{'ng-repeat' => 'related in bl.related', class: '{{related.status_color}}'} &nbsp;
 
         / status
         %td
@@ -38,7 +38,7 @@
               \/{{bl.average_build_time}}
 
         / project
-        %td.centered{'ng-hide' => 'bl.project', :colspan => 2}
+        %td.centered{'ng-hide' => 'bl.project', colspan: 2}
           = t('layout.projects.unexisted_project')
         %td{'ng-show' => 'bl.project'}
           %a{'ng-href' => '{{bl.project.url}}' } {{bl.project.name_with_owner}}
@@ -64,7 +64,7 @@
           %a{'ng-href' => '{{bl.user.url}}' } {{bl.user.fullname}}
 
         / updated_at
-        %td{'am-time-ago' => 'bl.updated_at', :title => '{{bl.updated_at_utc}}'}
+        %td{'am-time-ago' => 'bl.updated_at', title: '{{bl.updated_at_utc}}'}
 
   .both
 

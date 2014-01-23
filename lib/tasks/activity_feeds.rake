@@ -1,6 +1,6 @@
 namespace :activity_feeds do
   desc 'Remove outdated activity feeds'
-  task :clear => :environment do
+  task clear: :environment do
     say "Removing outdated Activity Feed"
     User.all.each do |user|
       outdated = ActivityFeed.outdated

@@ -5,7 +5,7 @@ Capistrano::Configuration.instance(:must_exist).load do
       set(:nginx_config_path) { "/etc/nginx/conf.d/#{fetch :application}.conf" }
 
       desc "Generate Nginx configuration"
-      task :generate_configuration, :roles => :web, :except => { :no_release => true } do
+      task :generate_configuration, roles: :web, except: { no_release: true } do
         config = %Q{
 upstream #{application}_backend {
   # server  127.0.0.1:#{unicorn_port rescue 8080};
@@ -48,22 +48,22 @@ server {
       end
 
       desc "Start nginx web server"
-      task :start, :roles => :web, :except => { :no_release => true } do
+      task :start, roles: :web, except: { no_release: true } do
         sudo "#{fetch :nginx_init_path} start"
       end
 
       desc "Stop nginx web server"
-      task :stop, :roles => :web, :except => { :no_release => true } do
+      task :stop, roles: :web, except: { no_release: true } do
         sudo "#{fetch :nginx_init_path} stop"
       end
 
       desc "Restart nginx web server"
-      task :restart, :roles => :web, :except => { :no_release => true } do
+      task :restart, roles: :web, except: { no_release: true } do
         sudo "#{fetch :nginx_init_path} restart"
       end
 
       desc "Resload nginx web server"
-      task :reload, :roles => :web, :except => { :no_release => true } do
+      task :reload, roles: :web, except: { no_release: true } do
         sudo "#{fetch :nginx_init_path} reload"
       end
     end

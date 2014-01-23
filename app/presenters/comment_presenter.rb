@@ -12,7 +12,7 @@ class CommentPresenter < ApplicationPresenter
     unless @is_reference_to_issue
       @content = @comment.body
     else
-      issue = Issue.where(:id => comment.created_from_issue_id).first
+      issue = Issue.where(id: comment.created_from_issue_id).first
       @referenced_issue = issue.pull_request || issue
       @reference_project = issue.project
       if issue && (comment.data[:comment_id].nil? || Comment.exists?(comment.data[:comment_id]))
@@ -56,13 +56,13 @@ class CommentPresenter < ApplicationPresenter
     project, commentable = options[:project], options[:commentable]
     path = helpers.project_commentable_comment_path(project, commentable, comment)
 
-    res = [link_to(t('layout.link'), "#{helpers.project_commentable_path(project, commentable)}##{comment_anchor}", :class => "#{@options[:in_discussion].present? ? 'in_discussion_' : ''}link_to_comment").html_safe]
+    res = [link_to(t('layout.link'), "#{helpers.project_commentable_path(project, commentable)}##{comment_anchor}", class: "#{@options[:in_discussion].present? ? 'in_discussion_' : ''}link_to_comment").html_safe]
     if controller.can? :update, @comment
-      res << link_to(t('layout.edit'), path, :id => "comment-#{comment.id}", :class => "edit_comment").html_safe
+      res << link_to(t('layout.edit'), path, id: "comment-#{comment.id}", class: "edit_comment").html_safe
     end
     if controller.can? :destroy, @comment
-      res << link_to(t('layout.delete'), path, :method => "delete",
-                     :confirm => t('layout.comments.confirm_delete')).html_safe
+      res << link_to(t('layout.delete'), path, method: "delete",
+                     confirm: t('layout.comments.confirm_delete')).html_safe
     end
     res
   end
@@ -72,7 +72,7 @@ class CommentPresenter < ApplicationPresenter
     res = unless @is_reference_to_issue
                 "#{user_link} #{t 'layout.comments.has_commented'}"
               else
-                t 'layout.comments.reference', :user => user_link
+                t 'layout.comments.reference', user: user_link
               end
     res.html_safe
   end
@@ -106,7 +106,7 @@ class CommentPresenter < ApplicationPresenter
   def issue_referenced_state
     if @referenced_issue.is_a? Issue
       statuses = {'open' => 'success', 'closed' => 'important'}
-      content_tag :span, t("layout.issues.status.#{@referenced_issue.status}"), :class => "state label-bootstrap label-#{statuses[@referenced_issue.status]}"
+      content_tag :span, t("layout.issues.status.#{@referenced_issue.status}"), class: "state label-bootstrap label-#{statuses[@referenced_issue.status]}"
     else
       pull_status_label @referenced_issue.status
     end.html_safe

@@ -1,27 +1,27 @@
--set_meta_tags :title => t('layout.users.settings_notifier')
+-set_meta_tags title: t('layout.users.settings_notifier')
 %p
-  = t("layout.settings.notifiers.notice_header", :email => @user.email)
+  = t("layout.settings.notifiers.notice_header", email: @user.email)
   %br
   = link_to t("layout.settings.notifiers.change_email_link"), profile_settings_path
   %br
   %br
 
-= form_for @user.notifier, :url => notifiers_settings_path, :html => {:class => :form} do |f|
-  = render 'notifier', :f => f, :field => :can_notify
+= form_for @user.notifier, url: notifiers_settings_path, html: {class: :form} do |f|
+  = render 'notifier', f: f, field: :can_notify
   %h3= t("layout.settings.notifiers.code_header")
   - [:update_code, :new_comment_commit_owner, :new_comment_commit_repo_owner, :new_comment_commit_commentor].each do |field|
-    = render 'notifier', :f => f, :field => field
+    = render 'notifier', f: f, field: field
   %h3= t("layout.settings.notifiers.tracker_header")
   - [:new_comment, :new_comment_reply, :new_issue, :issue_assign].each do |field|
-    = render 'notifier', :f => f, :field => field
+    = render 'notifier', f: f, field: field
   %h3= t("layout.settings.notifiers.build_list_header")
   - [:new_build, :new_associated_build].each do |field|
-    = render 'notifier', :f => f, :field => field
+    = render 'notifier', f: f, field: field
 
   %br
   .leftside.w25
     \ 
-  .leftside.w420= submit_tag t('layout.save'), :data => {'disable-with' => t('layout.saving')}
+  .leftside.w420= submit_tag t('layout.save'), data: {'disable-with' => t('layout.saving')}
   .both
 
 :javascript

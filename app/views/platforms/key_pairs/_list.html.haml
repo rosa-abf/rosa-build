@@ -1,4 +1,4 @@
-%table#myTable.tablesorter.platform-repos{:cellspacing => "0", :cellpadding => "0"}
+%table#myTable.tablesorter.platform-repos{cellspacing: "0", cellpadding: "0"}
   %thead
     %tr
       %th.th1= t("activerecord.attributes.key_pair.repository_id")
@@ -8,11 +8,11 @@
   %tbody
     - @platform.repositories.each do |repository|
       - if repository.key_pair
-        %tr{:class => cycle("odd", "even")}
+        %tr{class: cycle("odd", "even")}
           %td= repository.name
           %td= repository.key_pair.key_id
           %td= link_to repository.key_pair.user.fullname, user_path(repository.key_pair.user)
           %td.buttons
             - if can? :destroy, repository.key_pair
-              = link_to platform_key_pair_path(@platform, repository.key_pair), :method => :delete, :confirm => t("layout.key_pairs.confirm_delete") do
+              = link_to platform_key_pair_path(@platform, repository.key_pair), method: :delete, confirm: t("layout.key_pairs.confirm_delete") do
                 %span.delete &nbsp;

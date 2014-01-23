@@ -5,7 +5,7 @@ class CustomizePlatform < ActiveRecord::Migration
     change_column_null :platforms, :platform_type, false
     change_column_null :platforms, :released, false
     change_column_null :platforms, :visibility, false
-    add_index "platforms", ["name"], :unique => true, :case_sensitive => false
+    add_index "platforms", ["name"], unique: true, case_sensitive: false
   end
 
   def self.down
@@ -15,5 +15,5 @@ class CustomizePlatform < ActiveRecord::Migration
     change_column_null :platforms, :released,  true
     change_column_null :platforms, :visibility, true
     remove_index "platforms", ["name"]
-  end  
+  end
 end

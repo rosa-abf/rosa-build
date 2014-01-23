@@ -1,7 +1,7 @@
-%tr{:class => cycle("odd", "even")}
+%tr{class: cycle("odd", "even")}
   %td= event_log.kind
   %td= event_log.created_at
-  %td= link_to_if event_log.user_id, event_log.user_name, event_log.user #{:controller => "users", :action => "show", :id => event_log.user_id}
+  %td= link_to_if event_log.user_id, event_log.user_name, event_log.user #{controller: "users", action: "show", id: event_log.user_id}
   %td= event_log.ip
   %td= event_log.protocol
-  %td= render 'description', :el => event_log
+  %td= render 'description', el: event_log

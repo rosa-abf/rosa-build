@@ -4,6 +4,6 @@ class RemoveBuildRequiresFromBuildList < ActiveRecord::Migration
   end
 
   def down
-    add_column :build_lists, :build_requires, :boolean, :default => false
+    add_column :build_lists, :build_requires, :boolean, default: false
   end
 end

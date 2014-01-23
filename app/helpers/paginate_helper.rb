@@ -6,7 +6,7 @@ module PaginateHelper
     per_page = 100 if per_page >100
     page = params[:page].to_i
     page = nil if page == 0
-    {:page => page, :per_page => per_page}
+    {page: page, per_page: per_page}
   end
 
   def angularjs_will_paginate(collection_or_options = nil, options = {})

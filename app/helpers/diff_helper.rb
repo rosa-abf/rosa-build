@@ -6,11 +6,11 @@ module DiffHelper
       res << "<tr>"
       res << "<td>#{link_to stat.filename.rtruncate(120), "#{path}#diff-#{ind}"}</td>"
       res << "<td class='diffstat'>"
-      res << I18n.t("layout.projects.inline_changes_count", :count => stat.additions + stat.deletions).strip +
+      res << I18n.t("layout.projects.inline_changes_count", count: stat.additions + stat.deletions).strip +
              " (" +
-             I18n.t("layout.projects.inline_additions_count", :count => stat.additions).strip +
+             I18n.t("layout.projects.inline_additions_count", count: stat.additions).strip +
              ", " +
-             I18n.t("layout.projects.inline_deletions_count", :count => stat.deletions).strip +
+             I18n.t("layout.projects.inline_deletions_count", count: stat.deletions).strip +
              ")"
       res << "</td>"
     end
@@ -34,7 +34,7 @@ module DiffHelper
            elsif @commit
              commit_path @project, @commit
            end
-    prepare(args.merge({:filepath => filepath, :comments => comments, :in_discussion => in_discussion}))
+    prepare(args.merge({filepath: filepath, comments: comments, in_discussion: in_discussion}))
 
     res = '<table class="diff inline" cellspacing="0" cellpadding="0" ng-non-bindable>'
     res << '<tbody>'
@@ -228,7 +228,7 @@ module DiffHelper
 
   def line_comment
     return if @no_commit_comment || (@in_discussion && @add_reply_id && @line_comments[0].data[:line].to_i != @num_line)
-    link_to image_tag('line_comment.png', :alt => t('layout.comments.new_header')), new_comment_path, :class => 'add_line-comment' if current_user
+    link_to image_tag('line_comment.png', alt: t('layout.comments.new_header')), new_comment_path, class: 'add_line-comment' if current_user
   end
 
   def render_line_comments
@@ -251,17 +251,17 @@ module DiffHelper
       <td>"
       comments.each do |comment|
         res << "<div class='line-comments'>
-          #{render 'projects/comments/comment', :comment => comment, :data => {:project => @project, :commentable => @commentable, :add_anchor => 'inline', :in_discussion => @in_discussion}}
+          #{render 'projects/comments/comment', comment: comment, data: {project: @project, commentable: @commentable, add_anchor: 'inline', in_discussion: @in_discussion}}
          </div>"
       end
-    res << link_to(t('layout.comments.new_inline'), new_comment_path, :class => 'new_inline_comment button') if current_user
+    res << link_to(t('layout.comments.new_inline'), new_comment_path, class: 'new_inline_comment button') if current_user
     res << "</td></tr>"
   end
 
   def new_comment_path
-    hash = {:path => @filepath, :line => @num_line}
+    hash = {path: @filepath, line: @num_line}
     if @commentable.is_a? Issue
-      project_new_line_pull_comment_path(@project, @commentable, hash.merge({:in_reply => @add_reply_id}))
+      project_new_line_pull_comment_path(@project, @commentable, hash.merge({in_reply: @add_reply_id}))
     elsif @commentable.is_a? Grit::Commit
       new_line_commit_comment_path(@project, @commentable, hash)
     end

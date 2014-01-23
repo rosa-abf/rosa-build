@@ -1,24 +1,24 @@
-- set_meta_tags :title => [title_object(@platform), t('layout.mass_builds.new')]
+- set_meta_tags title: [title_object(@platform), t('layout.mass_builds.new')]
 
 = render 'platforms/base/submenu'
 = render 'platforms/base/sidebar'
 
-= form_for [@platform, @mass_build], :html => { :class => 'form mass_build', :method => :post } do |f|
+= form_for [@platform, @mass_build], html: { class: 'form mass_build', method: :post } do |f|
   %section.left
     %h3=t('layout.mass_builds.repositories')
     - @platform.repositories.each do |rep|
       .both
-        = check_box_tag "repositories[]", rep.id, (params[:repositories]||[]).include?(rep.id.to_s), :id => "repositories_#{rep.id}", :href => "#{projects_list_platform_repository_path(@platform, rep)}?text=true"
+        = check_box_tag "repositories[]", rep.id, (params[:repositories]||[]).include?(rep.id.to_s), id: "repositories_#{rep.id}", href: "#{projects_list_platform_repository_path(@platform, rep)}?text=true"
         = label_tag "repositories_#{rep.id}", rep.name
     %h3=t('layout.mass_builds.projects_list')
     = f.text_area :projects_list
     %br
-    = f.submit t('layout.projects.build_button'), :data => {'disable-with' => t('layout.processing')}
+    = f.submit t('layout.projects.build_button'), data: {'disable-with' => t('layout.processing')}
   %section.right
     %h3= t("activerecord.attributes.build_list.arch")
     - Arch.recent.each do |arch|
       .lefter
-        = check_box_tag "arches[]", arch.id, (params[:arches]||[]).include?(arch.id.to_s), :id => "arches_#{arch.id}"
+        = check_box_tag "arches[]", arch.id, (params[:arches]||[]).include?(arch.id.to_s), id: "arches_#{arch.id}"
         = label_tag "arches_#{arch.id}", arch.name
       .both
     - if @platform.personal?
@@ -26,19 +26,19 @@
       = f.collection_select :build_for_platform_id, Platform.main, :id, :name
       .both
       = hidden_field_tag :autocomplete_extra_repos_path,
-        "#{autocomplete_extra_repositories_autocompletes_path}?#{{:platform_id => @mass_build.save_to_platform.try(:id)}.to_param}"
+        "#{autocomplete_extra_repositories_autocompletes_path}?#{{platform_id: @mass_build.save_to_platform.try(:id)}.to_param}"
       = render 'shared/autocomplete_form',
-        :field              => :extra_repositories,
-        :field_class        => Repository,
-        :placeholder        => 'uxteam_personal',
-        :subject            => @mass_build,
-        :autocomplete_path  => autocomplete_extra_repositories_autocompletes_path
+        field: :extra_repositories,
+        field_class: Repository,
+        placeholder: 'uxteam_personal',
+        subject: @mass_build,
+        autocomplete_path: autocomplete_extra_repositories_autocompletes_path
     = render 'shared/autocomplete_form',
-      :field              => :extra_build_lists,
-      :field_class        => BuildList,
-      :placeholder        => '1000000',
-      :subject            => @mass_build,
-      :autocomplete_path  => autocomplete_extra_build_list_autocompletes_path
+      field: :extra_build_lists,
+      field_class: BuildList,
+      placeholder: '1000000',
+      subject: @mass_build,
+      autocomplete_path: autocomplete_extra_build_list_autocompletes_path
     %h3= t("activerecord.attributes.build_list.preferences")
     - [:auto_publish, :increase_release_tag].each do |field|
       .both

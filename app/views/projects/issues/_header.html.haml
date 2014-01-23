@@ -1,26 +1,26 @@
 .activity
   .top
     .image
-      =image_tag(avatar_url(@issue.user, :medium), :alt => 'avatar') if @issue.user
+      =image_tag(avatar_url(@issue.user, :medium), alt: 'avatar') if @issue.user
     .created
-      = datetime_moment @issue.created_at, :tag => :span
+      = datetime_moment @issue.created_at, tag: :span
       - if @issue.user
-        %span= t('layout.by') 
+        %span= t('layout.by')
         %span.name=link_to(@issue.user.fullname, user_path(@issue.user))
     .text.issue_title
       %h3.issue_title=@issue.title
     .both
     #assigned-container.assigned-header
-      =render 'projects/issues/user_container', :user => @issue.assignee
+      =render 'projects/issues/user_container', user: @issue.assignee
       =render 'projects/issues/assigned_popup'
     .both
     .fulltext.view.issue_body.formatted.cm-s-default.md_and_cm=markdown @issue.body
 .both
 %br
 - if can? :update, @issue
-  =link_to t('layout.edit'), '#', :id => 'edit_issue_content', :class => 'button'
-  =form_for :issue, :url => [@project, @issue], :method => :put, :html => { :class => 'edit_form issue', :style => 'display:none;' } do |f|
-    =render 'projects/issues/title_body', :f => f, :id => 'update'
-    =f.submit t('layout.update'), :id => 'update_issue_content'
-    =link_to t('layout.issues.cancel_button'), '#', :id => 'cancel_edit_issue_content', :class => 'button'
+  =link_to t('layout.edit'), '#', id: 'edit_issue_content', class: 'button'
+  =form_for :issue, url: [@project, @issue], method: :put, html: { class: 'edit_form issue', style: 'display:none;' } do |f|
+    =render 'projects/issues/title_body', f: f, id: 'update'
+    =f.submit t('layout.update'), id: 'update_issue_content'
+    =link_to t('layout.issues.cancel_button'), '#', id: 'cancel_edit_issue_content', class: 'button'
 %br

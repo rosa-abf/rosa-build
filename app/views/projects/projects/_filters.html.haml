@@ -1,15 +1,15 @@
 -content_for :sidebar do
   - if current_user
-    =form_tag projects_path, :id => 'filter_projects', :method => :get do
+    =form_tag projects_path, id: 'filter_projects', method: :get do
       .bordered.bpadding20
         =tracker_search_field(:search, t('layout.find_project'))
       - if can?(:create, Project)
         .bordered.bpadding20
-          = link_to t('layout.projects.new'), new_project_path, :class => 'button'
+          = link_to t('layout.projects.new'), new_project_path, class: 'button'
           - if can?(:mass_import, Project)
             .both
             %br
-            = link_to t('layout.projects.mass_import'), mass_import_projects_path, :class => 'button'
+            = link_to t('layout.projects.mass_import'), mass_import_projects_path, class: 'button'
       .bordered.bpadding20
         %h3=t('layout.relations.filters')
         - options_for_filters(@all_projects, @groups, @owners).each do |options|

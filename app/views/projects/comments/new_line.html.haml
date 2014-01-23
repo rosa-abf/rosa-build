@@ -1,10 +1,10 @@
 #open-comment.comment.view.new_line_comment
   =render 'projects/comments/button_md_help'
   %h3.tmargin0= t("layout.comments.new_header")
-  = form_for :comment, :url => @path, :method => :post, :html => { :class => :form } do |f|
-    = render "projects/comments/form", :f => f, :id => 'new_line'
+  = form_for :comment, url: @path, method: :post, html: { class: :form } do |f|
+    = render "projects/comments/form", f: f, id: 'new_line'
     .comment-left
-      =link_to t('layout.cancel'), '#', :class => 'cancel_inline_comment button'
+      =link_to t('layout.cancel'), '#', class: 'cancel_inline_comment button'
     =hidden_field_tag :path, params[:path]
     =hidden_field_tag :line, params[:line]
     =hidden_field_tag :in_reply, params[:in_reply] if params[:in_reply].present?

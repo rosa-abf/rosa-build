@@ -1,10 +1,9 @@
--set_meta_tags :title => [title_object(@project), t('wiki.pages')]
-/ = render 'gollum_includes'
-/ = render 'project_short'
+-set_meta_tags title: [title_object(@project), t('wiki.pages')]
+
 = render 'submenu'
 
 - if can? :write, @project
-  .r= link_to t("wiki.new_page"), '#', :'data-url' => project_wiki_index_path(@project), :id => 'minibutton-new-page', :class => 'button width100'
+  .r= link_to t("wiki.new_page"), '#', :'data-url' => project_wiki_index_path(@project), id: 'minibutton-new-page', class: 'button width100'
 .both
 = render "results"
 

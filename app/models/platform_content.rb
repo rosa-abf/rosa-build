@@ -20,9 +20,9 @@ class PlatformContent
     return nil unless repository_name = @path.match(/\/[\w]+\/(release|updates)\//)
     repository_name = repository_name[0].gsub(/\/(release|updates)\/$/, '').gsub('/', '')
 
-    repository = @platform.repositories.where(:name => repository_name).first
+    repository = @platform.repositories.where(name: repository_name).first
     return nil unless repository
-    
+
     if @platform.main?
       build_for_platform = @platform
     else
@@ -36,8 +36,8 @@ class PlatformContent
     @build_list  = BuildList.for_status(BuildList::BUILD_PUBLISHED)
                             .for_platform(build_for_platform)
                             .scoped_to_save_platform(@platform)
-                            .where(:save_to_repository_id => repository)
-                            .where(:build_list_packages => {:fullname => name, :actual => true})
+                            .where(save_to_repository_id: repository)
+                            .where(build_list_packages: {fullname: name, actual: true})
                             .joins(:packages)
                             .last
 

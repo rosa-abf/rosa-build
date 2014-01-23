@@ -1,19 +1,19 @@
 namespace :new_core do
 
   desc 'Extracts all rpms from BuildList container and updates BuildList::Package#sha1 field'
-  task :update_packages => :environment do
+  task update_packages: :environment do
     say "[#{Time.zone.now}] Starting to extract rpms..."
 
     token = User.find_by_uname('rosa_system').authentication_token
-    BuildList.where(:new_core => true).
-      where(:status => [
+    BuildList.where(new_core: true).
+      where(status: [
         BuildList::SUCCESS,
         BuildList::FAILED_PUBLISH,
         BuildList::BUILD_PUBLISHED,
         BuildList::BUILD_PUBLISH
       ]).
       order(:id).
-      find_in_batches(:batch_size => 100) do | build_lists |
+      find_in_batches(batch_size: 100) do | build_lists |
 
         build_lists.each do | bl |
           puts "[#{Time.zone.now}] - where build_lists.id #{bl.id}"
@@ -42,7 +42,7 @@ namespace :new_core do
       fullname = File.basename rpm_file
       package = bl.packages.by_package_type(package_type).find{ |p| p.fullname == fullname }
       next unless package
-      
+
       package.sha1 = Digest::SHA1.file(rpm_file).hexdigest
       if %x[ curl #{APP_CONFIG['file_store_url']}/api/v1/file_stores.json?hash=#{package.sha1} ] == '[]'
         system "curl --user #{token}: -POST -F 'file_store[file]=@#{rpm_file}' #{APP_CONFIG['file_store_url']}/api/v1/upload"

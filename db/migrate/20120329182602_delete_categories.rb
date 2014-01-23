@@ -5,10 +5,10 @@ class DeleteCategories < ActiveRecord::Migration
   end
 
   def self.down
-    create_table :categories, :force => true do |t|
+    create_table :categories, force: true do |t|
       t.string   "name"
       t.string   "ancestry"
-      t.integer  "projects_count", :default => 0, :null => false
+      t.integer  "projects_count", default: 0, null: false
       t.datetime "created_at"
       t.datetime "updated_at"
     end

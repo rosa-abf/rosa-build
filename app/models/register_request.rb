@@ -2,21 +2,21 @@ class RegisterRequest < ActiveRecord::Base
 
   default_scope order('created_at ASC')
 
-  scope :rejected, where(:rejected => true)
-  scope :approved, where(:approved => true)
-  scope :unprocessed, where(:approved => false, :rejected => false)
+  scope :rejected, where(rejected: true)
+  scope :approved, where(approved: true)
+  scope :unprocessed, where(approved: false, rejected: false)
 
-  validates :email, :presence => true, :uniqueness => {:case_sensitive => false}, :format => { :with => /\A([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})\z/i }
+  validates :email, presence: true, uniqueness: {case_sensitive: false}, format: { with: /\A([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})\z/i }
 
   # before_create :generate_token
   before_update :invite_approve_notification
 
   def approve
-    update_attributes(:approved => true, :rejected => false)
+    update_attributes(approved: true, rejected: false)
   end
 
   def reject
-    update_attributes(:approved => false, :rejected => true)
+    update_attributes(approved: false, rejected: true)
   end
 
   protected

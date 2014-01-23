@@ -1,7 +1,7 @@
--set_meta_tags :title => "#{title_object @project}"
+-set_meta_tags title: "#{title_object @project}"
 
 = render 'submenu'
-= render 'repo_block', :project => @project
+= render 'repo_block', project: @project
 
 %div{'ng-controller' => 'ProjectBranchesController', 'ng-init' => "init('#{@project.owner.uname}', '#{@project.name}','#{@branch.try(:name)}')"}
 
@@ -23,16 +23,16 @@
           %ul.actions
             - if can?(:write, @project)
               %li{'ng-hide' => 'branch.ref == current_ref || branch.ui_container'}
-                %a{:href => '', 'ng-click' => 'destroy(branch)'}
+                %a{href: '', 'ng-click' => 'destroy(branch)'}
                   = t('layout.projects.delete_branch')
               %li{'ng-hide' => 'branch.ui_container'}
-                %a{:href => '', 'ng-click' => 'branch.ui_container = true'}
+                %a{href: '', 'ng-click' => 'branch.ui_container = true'}
                   = t('layout.projects.new_branch')
               %li{'ng-show' => 'branch.ui_container'}
                 %form{'ng-submit' => 'create(branch)'}
                   %input{'ng-model' => 'branch.new_ref'}
-                  %input{:type => 'submit', :value =>t('layout.create')}
-                  %a{:href => '', 'ng-click' => 'branch.ui_container = false'}
+                  %input{type: 'submit', value:t('layout.create')}
+                  %a{href: '', 'ng-click' => 'branch.ui_container = false'}
                     = t('layout.cancel')
             %li{'ng-hide' => 'branch.ref == current_ref || branch.ui_container'}
               %a{'ng-href' => '{{branch.diff_path(project, current_ref)}}' }

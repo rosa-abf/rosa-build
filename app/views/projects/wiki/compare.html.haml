@@ -1,4 +1,4 @@
--set_meta_tags :title => [title_object(@project), t('.title')]
+-set_meta_tags title: [title_object(@project), t('.title')]
 = render 'gollum_includes'
 / = render 'project_short'
 = render 'submenu'
@@ -15,7 +15,7 @@
 
 .r
   - if can? :read, @project
-    = link_to t("wiki.back_to_history"), @name ? history_project_wiki_path(@project, escaped_name) : history_project_wiki_index_path(@project), :class => 'button width100'
+    = link_to t("wiki.back_to_history"), @name ? history_project_wiki_path(@project, escaped_name) : history_project_wiki_index_path(@project), class: 'button width100'
 
 #wiki-content= render "compare"
 

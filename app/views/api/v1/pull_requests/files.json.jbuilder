@@ -21,4 +21,4 @@ json.files @stats do |stat|
   json.raw_https_url  raw_path(@project, commit_id, diff.b_path)
 end
 
-json.url files_api_v1_project_pull_request_path(:format => :json)
+json.url files_api_v1_project_pull_request_path(format: :json)

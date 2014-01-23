@@ -1,6 +1,6 @@
 .wrap
   %nav
-    %a{:href => new_register_request_path}
+    %a{href: new_register_request_path}
       %p=t("layout.devise.shared_links.sign_up")
   / Top block
   %header
@@ -17,8 +17,8 @@
             - messages = resource.errors.full_messages.map { |msg| content_tag(:p, msg) }.join.html_safe
             = messages
 
-    = form_for(resource, :as => resource_name, :url => password_path(resource_name), :html => { :method => :post, :class => "form" }) do |f|
-      = f.text_field :login, :name => 'user[email]', :class => "registartion-input", :onblur => "if(this.value==''){this.value='#{t('activerecord.attributes.user.email')}';this.className='registartion-input';} else{this.className='registartion-input-no-focus';};", :onfocus => "if(this.value=='#{t('activerecord.attributes.user.email')}'){this.value='';this.className='registartion-input-focus';};", :value => t('activerecord.attributes.user.email')
+    = form_for(resource, as: resource_name, url: password_path(resource_name), html: { method: :post, class: "form" }) do |f|
+      = f.text_field :login, name: 'user[email]', class: "registartion-input", onblur: "if(this.value==''){this.value='#{t('activerecord.attributes.user.email')}';this.className='registartion-input';} else{this.className='registartion-input-no-focus';};", onfocus: "if(this.value=='#{t('activerecord.attributes.user.email')}'){this.value='';this.className='registartion-input-focus';};", value: t('activerecord.attributes.user.email')
       .both
       %br
-      =f.submit t("devise.passwords.send"), :class => 'button', :id => 'btnLogin'
+      =f.submit t("devise.passwords.send"), class: 'button', id: 'btnLogin'

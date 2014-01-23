@@ -38,16 +38,16 @@ class ProductBuildList < ActiveRecord::Base
   belongs_to :user
 
   # see: Issue #6
-  before_validation lambda { self.arch_id = Arch.find_by_name('x86_64').id }, :on => :create
+  before_validation lambda { self.arch_id = Arch.find_by_name('x86_64').id }, on: :create
   # field "not_delete" can be changed only if build has been completed
   before_validation lambda { self.not_delete = false unless build_completed?; true }
   validates :product_id,
             :status,
             :project_id,
             :main_script,
-            :arch_id, :presence => true
-  validates :status, :inclusion => { :in => STATUSES }
-  validates :main_script, :params, :length => { :maximum => 255 }
+            :arch_id, presence: true
+  validates :status, inclusion: { in: STATUSES }
+  validates :main_script, :params, length: { maximum: 255 }
 
   attr_accessor :base_url
   attr_accessible :status,
@@ -65,45 +65,45 @@ class ProductBuildList < ActiveRecord::Base
 
 
   scope :default_order, order("#{table_name}.updated_at DESC")
-  scope :for_status, lambda {|status| where(:status => status) }
-  scope :for_user, lambda { |user| where(:user_id => user.id)  }
+  scope :for_status, lambda {|status| where(status: status) }
+  scope :for_user, lambda { |user| where(user_id: user.id)  }
   scope :scoped_to_product_name, lambda {|product_name| joins(:product).where('products.name LIKE ?', "%#{product_name}%")}
   scope :recent, order("#{table_name}.updated_at DESC")
-  scope :outdated, where(:not_delete => false).
+  scope :outdated, where(not_delete: false).
     where("(#{table_name}.created_at < ? AND #{table_name}.autostarted is TRUE) OR #{table_name}.created_at < ?", Time.now - LIVE_TIME, Time.now - MAX_LIVE_TIME)
 
   after_create :add_job_to_abf_worker_queue
   before_destroy :can_destroy?
 
-  state_machine :status, :initial => :build_pending do
+  state_machine :status, initial: :build_pending do
 
     event :start_build do
-      transition :build_pending => :build_started
+      transition build_pending: :build_started
     end
 
     event :cancel do
       transition [:build_pending, :build_started] => :build_canceling
     end
-    after_transition :on => :cancel, :do => :cancel_job
+    after_transition on: :cancel, do: :cancel_job
 
-    # :build_canceling => :build_canceled - canceling from UI
-    # :build_started => :build_canceled - canceling from worker by time-out (time_living has been expired)
+    # build_canceling: :build_canceled - canceling from UI
+    # build_started: :build_canceled - canceling from worker by time-out (time_living has been expired)
     event :build_canceled do
       transition [:build_canceling, :build_started] => :build_canceled
     end
 
-    # :build_canceling => :build_completed - Worker hasn't time to cancel building because build had been already completed
+    # build_canceling: :build_completed - Worker hasn't time to cancel building because build had been already completed
     event :build_success do
       transition [:build_started, :build_canceling] => :build_completed
     end
 
-    # :build_canceling => :build_failed - Worker hasn't time to cancel building because build had been already failed
+    # build_canceling: :build_failed - Worker hasn't time to cancel building because build had been already failed
     event :build_error do
       transition [:build_started, :build_canceling] => :build_failed
     end
 
     HUMAN_STATUSES.each do |code,name|
-      state name, :value => code
+      state name, value: code
     end
   end
 
@@ -120,7 +120,7 @@ class ProductBuildList < ActiveRecord::Base
   end
 
   def event_log_message
-    {:product => product.name}.inspect
+    {product: product.name}.inspect
   end
 
   def self.human_status(status)
@@ -152,7 +152,7 @@ class ProductBuildList < ActiveRecord::Base
   def abf_worker_args
     file_name = "#{project.name}-#{commit_hash}"
     opts = default_url_options
-    opts.merge!({:user => user.authentication_token, :password => ''}) if user.present?
+    opts.merge!({user: user.authentication_token, password: ''}) if user.present?
     srcpath = url_helpers.archive_url(
       project.owner,
       project.name,
@@ -161,19 +161,19 @@ class ProductBuildList < ActiveRecord::Base
       opts
     )
     {
-      :id => id,
+      id: id,
       # TODO: remove comment
-      # :srcpath => 'http://dl.dropbox.com/u/945501/avokhmin-test-iso-script-5d9b463d4e9c06ea8e7c89e1b7ff5cb37e99e27f.tar.gz',
-      :srcpath => srcpath,
-      :params => params,
-      :time_living => time_living,
-      :main_script => main_script,
-      :platform => {
-        :type => product.platform.distrib_type,
-        :name => product.platform.name,
-        :arch => arch.name
+      # srcpath: 'http://dl.dropbox.com/u/945501/avokhmin-test-iso-script-5d9b463d4e9c06ea8e7c89e1b7ff5cb37e99e27f.tar.gz',
+      srcpath: srcpath,
+      params: params,
+      time_living: time_living,
+      main_script: main_script,
+      platform: {
+        type: product.platform.distrib_type,
+        name: product.platform.name,
+        arch: arch.name
       },
-      :user => {:uname => user.try(:uname), :email => user.try(:email)}
+      user: {uname: user.try(:uname), email: user.try(:email)}
     }
   end
 end

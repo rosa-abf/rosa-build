@@ -4,13 +4,13 @@ class CreateRegisterRequests < ActiveRecord::Migration
       t.string :name
       t.string :email
       t.string :token
-      t.boolean :approved, :default => false
-      t.boolean :rejected, :default => false
+      t.boolean :approved, default: false
+      t.boolean :rejected, default: false
 
       t.timestamps
     end
-    add_index :register_requests, [:email], :unique => true, :case_sensitive => false
-    add_index :register_requests, [:token], :unique => true, :case_sensitive => false
+    add_index :register_requests, [:email], unique: true, case_sensitive: false
+    add_index :register_requests, [:token], unique: true, case_sensitive: false
   end
 
   def self.down

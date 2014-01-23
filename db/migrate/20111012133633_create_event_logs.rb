@@ -3,7 +3,7 @@ class CreateEventLogs < ActiveRecord::Migration
     create_table :event_logs do |t|
       t.references :user
       t.string :user_name
-      t.references :object, :polymorphic => true
+      t.references :object, polymorphic: true
       t.string :object_name
       t.string :ip
       t.string :kind

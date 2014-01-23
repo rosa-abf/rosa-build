@@ -16,9 +16,9 @@ class DropAclTables < ActiveRecord::Migration
       t.timestamps
     end
     create_table :rights do |t|
-      t.string   "name",       :null => false
-      t.string   "controller", :null => false
-      t.string   "action",     :null => false
+      t.string   "name",       null: false
+      t.string   "controller", null: false
+      t.string   "action",     null: false
       t.timestamps
     end
     create_table :role_lines do |t|
@@ -29,10 +29,10 @@ class DropAclTables < ActiveRecord::Migration
     create_table :roles do |t|
       t.string   "name"
       t.text     "can_see"
-      t.string   "on",                    :default => ""
-      t.string   "to",                    :default => ""
-      t.boolean  "use_default",           :default => false
-      t.boolean  "use_default_for_owner", :default => false
+      t.string   "on",                    default: ""
+      t.string   "to",                    default: ""
+      t.boolean  "use_default",           default: false
+      t.boolean  "use_default_for_owner", default: false
       t.timestamps
     end
 

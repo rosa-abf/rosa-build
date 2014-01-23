@@ -1,7 +1,7 @@
 source 'https://rubygems.org'
 
-gem 'rails', '3.2.16' #, :git => 'git://github.com/rails/rails.git'
-gem 'redhillonrails_core', :git => 'git://github.com/rosa-abf/redhillonrails_core.git', :branch => 'rails31' # '~> 2.0.0.pre' # deprecated
+gem 'rails', '3.2.16' #, git: 'git://github.com/rails/rails.git'
+gem 'redhillonrails_core', git: 'git://github.com/rosa-abf/redhillonrails_core.git', branch: 'rails31' # '~> 2.0.0.pre' # deprecated
 
 gem 'pg', '~> 0.14.0'
 
@@ -24,10 +24,10 @@ gem 'highline', '~> 1.6.11'
 gem 'state_machine'
 gem 'redis-rails'
 
-gem 'grack', :git => 'git://github.com/rosa-abf/grack.git', :require => 'git_http'
-gem 'grit', :git => 'git://github.com/rosa-abf/grit.git'
+gem 'grack', git: 'git://github.com/rosa-abf/grack.git', require: 'git_http'
+gem 'grit', git: 'git://github.com/rosa-abf/grit.git'
 gem 'charlock_holmes', '~> 0.6.9'
-gem 'github-linguist', '~> 2.3.4', :require => 'linguist'
+gem 'github-linguist', '~> 2.3.4', require: 'linguist'
 gem 'diff-display', '~> 0.0.1'
 
 # Wiki
@@ -39,17 +39,17 @@ gem 'rdiscount'
 gem 'RedCloth'
 gem 'wikicloth'
 
-# gem 'unicorn', '~> 4.3.1', :platforms => [:mri, :rbx]
-gem 'trinidad', '~> 1.0.2', :platforms => :jruby
+# gem 'unicorn', '~> 4.3.1', platforms: [:mri, :rbx]
+gem 'trinidad', '~> 1.0.2', platforms: :jruby
 
 gem 'newrelic_rpm'
-# gem 'whenever', '~> 0.7.3', :require => false
-gem 'whenever', '~> 0.9.0', :require => false
+# gem 'whenever', '~> 0.7.3', require: false
+gem 'whenever', '~> 0.9.0', require: false
 
 gem 'jbuilder', '~> 1.4.2'
 gem 'rails3-jquery-autocomplete', '~> 1.0.7'
 gem 'will_paginate', '~> 3.0.3'
-gem 'meta-tags', '~> 1.2.5', :require => 'meta_tags'
+gem 'meta-tags', '~> 1.2.5', require: 'meta_tags'
 gem "haml-rails", '~> 0.3.4'
 gem 'jquery-rails', '~> 2.0.2'
 gem 'ruby-haml-js', '~> 0.0.3'
@@ -81,14 +81,14 @@ group :assets do
   gem 'coffee-rails', '~> 3.2.2'
   gem 'compass-rails', '~> 1.0.3'
   gem 'uglifier', '~> 1.2.4'
-  gem 'therubyracer', '~> 0.10.2', :platforms => [:mri, :rbx]
-  gem 'therubyrhino', '~> 1.73.1', :platforms => :jruby
+  gem 'therubyracer', '~> 0.10.2', platforms: [:mri, :rbx]
+  gem 'therubyrhino', '~> 1.73.1', platforms: :jruby
   gem 'turbo-sprockets-rails3'
 end
 
 group :production do
   gem "airbrake", '~> 3.1.2'
-  gem 'bluepill', '~> 0.0.60', :require => false
+  gem 'bluepill', '~> 0.0.60', require: false
   # gem 'le'
   gem 'logglier'
   gem 'puma'
@@ -100,10 +100,10 @@ group :development do
   gem 'hirb'
   gem 'shotgun'
   # deploy
-  gem 'capistrano', :require => false
-  gem 'rvm-capistrano', :require => false
-  gem 'cape', :require => false
-  gem 'capistrano_colors', :require => false
+  gem 'capistrano', require: false
+  gem 'rvm-capistrano', require: false
+  gem 'cape', require: false
+  gem 'capistrano_colors', require: false
   # Better Errors & RailsPanel
   gem 'better_errors'
   gem 'binding_of_caller'
@@ -112,7 +112,7 @@ group :development do
 end
 
 group :test do
-  gem 'rspec-rails',        '~> 2.11.0', :group => 'development'
+  gem 'rspec-rails',        '~> 2.11.0', group: 'development'
   gem 'factory_girl_rails', '~> 4.0.0'
   gem 'rr',                 '~> 1.0.4'
   gem 'shoulda'

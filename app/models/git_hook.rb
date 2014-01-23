@@ -13,8 +13,8 @@ class GitHook
 
   def initialize(owner_uname, repo, newrev, oldrev, ref, newrev_type, user = nil, message = nil)
     @repo, @newrev, @oldrev, @refname, @newrev_type, @user, @message = repo, newrev, oldrev, ref, newrev_type, user, message
-    if @owner = User.where(:uname => owner_uname).first || Group.where(:uname => owner_uname).first!
-      @project = @owner.own_projects.where(:name => repo).first!
+    if @owner = User.where(uname: owner_uname).first || Group.where(uname: owner_uname).first!
+      @project = @owner.own_projects.where(name: repo).first!
     end
     @change_type, @user = git_change_type, find_user(user)
     git_revision_types

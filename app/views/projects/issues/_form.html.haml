@@ -1,8 +1,8 @@
-=render 'title_body', :f => f, :id => 'new'
+=render 'title_body', f: f, id: 'new'
 - if can?(:write, @project)
   .leftlist= t('activerecord.attributes.issue.assignee') + ':'
   #assigned-container.rightlist
-    =render 'user_container', :user => @issue.assignee
+    =render 'user_container', user: @issue.assignee
   .both
   .leftlist= t('layout.issues.labels') + ':'
   .rightlist
@@ -11,5 +11,5 @@
   .both
 .leftlist
 .rightlist
-  = submit_tag t(@issue.new_record? ? 'layout.create' : 'layout.update'), :data => {'disable-with' => t('layout.processing')}
+  = submit_tag t(@issue.new_record? ? 'layout.create' : 'layout.update'), data: {'disable-with' => t('layout.processing')}
 .both

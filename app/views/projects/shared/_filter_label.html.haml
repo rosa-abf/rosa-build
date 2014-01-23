@@ -1,10 +1,10 @@
 - extra_classes ||= ''
-.div-filter-labels{:id => "label-#{id}", :class => extra_classes, :style => selected ? "background-color:##{color};color:#FFF" : ''}
+.div-filter-labels{id: "label-#{id}", class: extra_classes, style: selected ? "background-color:##{color};color:#FFF" : ''}
   .div-label-left
     .label
-      .flag{:id => "flag-#{id}", :style => "background-color: ##{color};"}
+      .flag{id: "flag-#{id}", style: "background-color: ##{color};"}
       .labeltext=name
-      =check_box_tag "#{check_box_name}[]", check_box_value, selected, :style => 'display:none'
+      =check_box_tag "#{check_box_name}[]", check_box_value, selected, style: 'display:none'
       .both
   .div-label-right=count
   .both

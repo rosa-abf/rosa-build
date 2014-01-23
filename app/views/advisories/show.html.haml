@@ -1,5 +1,5 @@
-- set_meta_tags :title => [title_object(@advisory), t('activerecord.models.advisory')]
-- render :partial => 'submenu'
+- set_meta_tags title: [title_object(@advisory), t('activerecord.models.advisory')]
+- render partial: 'submenu'
 
 %h3= "#{t("activerecord.models.advisory")} #{@advisory.advisory_id}".html_safe
 
@@ -39,7 +39,7 @@
   = raw @advisory.build_lists.map{ |bl| link_to bl.id, build_list_path(bl) }.join(', ')
 .both
 
-= render :partial => 'packages_info'
+= render partial: 'packages_info'
 
 :javascript
   $('article .all').addClass('bigpadding');

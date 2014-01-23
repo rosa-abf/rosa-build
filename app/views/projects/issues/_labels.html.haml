@@ -1,44 +1,44 @@
 .block
   %h3=t('layout.issues.labels')
   #labels-stock
-    =form_tag project_issues_path(@project), :id => 'filter_labels', :method => :get do
+    =form_tag project_issues_path(@project), id: 'filter_labels', method: :get do
       - @project.labels.each_with_index do |label, index|
         =render 'projects/shared/filter_label',
-          :id => label.name.parameterize,
-          :selected => @labels.include?(label.name),
-          :extra_classes => 'div-tracker-labels',
-          :color => label.color,
-          :check_box_name => 'labels',
-          :check_box_value => label.name,
-          :name => label.name,
-          :count => Labeling.joins(:label).where(:labels => {:name => label.name, :project_id => @project.id}).count
+          id: label.name.parameterize,
+          selected: @labels.include?(label.name),
+          extra_classes: 'div-tracker-labels',
+          color: label.color,
+          check_box_name: 'labels',
+          check_box_value: label.name,
+          name: label.name,
+          count: Labeling.joins(:label).where(labels: {name: label.name, project_id: @project.id}).count
   - if can? :write, @project
-    %a#manage-labels.button.tmargin10{:href => "#labels-stock"}=t('layout.issues.label_manage')
-    #labels-edit{:style => "display: none;"}
+    %a#manage-labels.button.tmargin10{href: "#labels-stock"}=t('layout.issues.label_manage')
+    #labels-edit{style: "display: none;"}
       - @project.labels.each_with_index do |label, index|
-        .label.edit{:id => "label-#{index}"}
-          .labeltext.edit{:style => "background: ##{label.color};"}
-            .text=link_to(label.name, project_issues_update_label_path(@project, label.id), :class => 'edit_label')
-            .delete{:id => "delete#{index}"}
-              %a{:href => project_issues_delete_label_path(@project, label.id), :class => 'delete_label'}= image_tag 'x-label.png'
+        .label.edit{id: "label-#{index}"}
+          .labeltext.edit{style: "background: ##{label.color};"}
+            .text=link_to(label.name, project_issues_update_label_path(@project, label.id), class: 'edit_label')
+            .delete{id: "delete#{index}"}
+              %a{href: project_issues_delete_label_path(@project, label.id), class: 'delete_label'}= image_tag 'x-label.png'
           .both
-          .edit_label_form{:style => 'display:none'}
-            =form_tag project_issues_update_label_path(@project, label.id), :id => 'update_label', :method => :post do
-              %input.gray{:name => 'name', :type => "text", :value => label.name}
-              =render 'colors_chooser', :current_color => label.color
+          .edit_label_form{style: 'display:none'}
+            =form_tag project_issues_update_label_path(@project, label.id), id: 'update_label', method: :post do
+              %input.gray{name: 'name', type: "text", value: label.name}
+              =render 'colors_chooser', current_color: label.color
               .lefter
-                %a{:href => "#custom_color-#{label.name}", :id => "custom_color-#{label.name}", :class => 'custom_color'}=t('layout.issues.label_custom_color')
-                =text_field_tag :color, label.color, :id => 'label_color', :class => 'gray', :style => 'display:none', :maxlength => 6
+                %a{href: "#custom_color-#{label.name}", id: "custom_color-#{label.name}", class: 'custom_color'}=t('layout.issues.label_custom_color')
+                =text_field_tag :color, label.color, id: 'label_color', class: 'gray', style: 'display:none', maxlength: 6
               .righter
-                =link_to t('layout.update'), project_issues_update_label_path(@project, label.id), :id => 'update_label', :class => 'button'
+                =link_to t('layout.update'), project_issues_update_label_path(@project, label.id), id: 'update_label', class: 'button'
               .both
 
-      =form_tag create_label_project_issues_path(@project), :id => 'new_label', :method => :post do
+      =form_tag create_label_project_issues_path(@project), id: 'new_label', method: :post do
         =tracker_search_field(:name, t('layout.issues.new_label'))
         =render 'colors_chooser'
         .lefter
-          %a{:href => "#custom_color", :id => 'custom_color', :class => 'custom_color'}=t('layout.issues.label_custom_color')
-          =text_field_tag :color, '0054a6', :id => 'label_color', :class => 'gray', :style => 'display:none', :maxlength => 6
+          %a{href: "#custom_color", id: 'custom_color', class: 'custom_color'}=t('layout.issues.label_custom_color')
+          =text_field_tag :color, '0054a6', id: 'label_color', class: 'gray', style: 'display:none', maxlength: 6
         .righter
-          =link_to t('layout.add'), create_label_project_issues_path(@project), :id => 'add_label', :class => 'button'
+          =link_to t('layout.add'), create_label_project_issues_path(@project), id: 'add_label', class: 'button'
         .both

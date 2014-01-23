@@ -1,4 +1,4 @@
-%table#myTable.tablesorter.platform-repos{:cellspacing => "0", :cellpadding => "0"}
+%table#myTable.tablesorter.platform-repos{cellspacing: "0", cellpadding: "0"}
   %thead
     %tr
       %th.th1= t("activerecord.attributes.repository.name")
@@ -6,7 +6,7 @@
       %th= t("activerecord.attributes.repository.publish_without_qa")
   %tbody
     - @repositories.each do |repository|
-      %tr{:class => cycle("odd", "even")}
+      %tr{class: cycle("odd", "even")}
         %td
           = link_to repository.name, platform_repository_path(@platform, repository)
         %td

@@ -1,7 +1,7 @@
 namespace :repositories do
 
   desc "Migrate repositories from fs"
-  task :migrate => :environment do
+  task migrate: :environment do
     repo_dirs = Dir["/root/mandriva_main_git/*.git"]
     total = repo_dirs.length
 
@@ -18,7 +18,7 @@ namespace :repositories do
         next
       end
 
-      project = main.projects.create(:name => project_name, :name => project_name)
+      project = main.projects.create(name: project_name, name: project_name)
 
       puts "Executing: 'rm -rf #{project.path}'"
       `rm -rf #{project.path}`

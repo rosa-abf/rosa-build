@@ -1,4 +1,4 @@
-- platforms = Platform.main.opened.where(:distrib_type => APP_CONFIG['distr_types'].first).order('name ASC')
+- platforms = Platform.main.opened.where(distrib_type: APP_CONFIG['distr_types'].first).order('name ASC')
 
 - if platforms.count > 0
   .command_select
@@ -14,7 +14,7 @@
     .both
 
     .rightlist
-      %textarea{:id => 'command_string', :readonly => 'readonly'}
+      %textarea{id: 'command_string', readonly: 'readonly'}
     .both
 
     :javascript

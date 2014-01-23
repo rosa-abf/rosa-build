@@ -3,7 +3,7 @@
 .leftlist
   = f.label :description, t("activerecord.attributes.advisory.description")
 .rightlist
-  = f.text_area :description, :class => 'text_field', :cols => 80
+  = f.text_area :description, class: 'text_field', cols: 80
 .both
 
 .leftlist
@@ -11,5 +11,5 @@
   %span.hint
     = t("layout.advisories.ref_comment")
 .rightlist
-  = f.text_area :references, :class => 'text_field', :cols => 80
+  = f.text_area :references, class: 'text_field', cols: 80
 .both

@@ -31,9 +31,9 @@ describe Product do
       before do
         stub_symlink_methods
         stub_redis
-        params = {:main_script => 'text.sh', :project_version => product.project.default_branch}
-        product.update_attributes params.merge(:autostart_status => Product::ONCE_A_12_HOURS)
-        FactoryGirl.create :product, params.merge(:autostart_status => Product::ONCE_A_DAY)
+        params = {main_script: 'text.sh', project_version: product.project.default_branch}
+        product.update_attributes params.merge(autostart_status: Product::ONCE_A_12_HOURS)
+        FactoryGirl.create :product, params.merge(autostart_status: Product::ONCE_A_DAY)
       end
 
       it 'should be created only one product_build_list' do

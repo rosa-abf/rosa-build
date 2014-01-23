@@ -7,20 +7,20 @@ module Modules
       extend ActiveSupport::Concern
 
       included do
-        validates_attachment_size :srpm, :less_than => 500.megabytes
-        validates_attachment_content_type :srpm, :content_type => ['application/octet-stream', "application/x-rpm", "application/x-redhat-package-manager"], :message => I18n.t('layout.invalid_content_type')
+        validates_attachment_size :srpm, less_than: 500.megabytes
+        validates_attachment_content_type :srpm, content_type: ['application/octet-stream', "application/x-rpm", "application/x-redhat-package-manager"], message: I18n.t('layout.invalid_content_type')
 
         has_attached_file :srpm
         # attr_accessible :srpm
 
         after_create :create_git_repo
-        after_commit(:on => :create) {|p| p.fork_git_repo unless p.is_root?} # later with resque
-        after_commit(:on => :create) {|p| p.import_attached_srpm if p.srpm?} # later with resque # should be after create_git_repo
+        after_commit(on: :create) {|p| p.fork_git_repo unless p.is_root?} # later with resque
+        after_commit(on: :create) {|p| p.import_attached_srpm if p.srpm?} # later with resque # should be after create_git_repo
         after_destroy :destroy_git_repo
         # after_rollback lambda { destroy_git_repo rescue true if new_record? }
 
-        later :import_attached_srpm, :queue => :fork_import
-        later :fork_git_repo, :queue => :fork_import
+        later :import_attached_srpm, queue: :fork_import
+        later :fork_git_repo, queue: :fork_import
       end
 
       def repo
@@ -37,7 +37,7 @@ module Modules
 
       def create_branch(new_ref, from_ref, user)
         return false if new_ref.blank? || from_ref.blank? || !(from_commit = repo.commit(from_ref))
-        status, out, err = repo.git.native(:branch, {:process_info => true}, new_ref, from_commit.id)
+        status, out, err = repo.git.native(:branch, {process_info: true}, new_ref, from_commit.id)
         if status == 0
           Resque.enqueue(GitHook, owner.uname, name, from_commit.id, GitHook::ZERO, "refs/heads/#{new_ref}", 'commit', "user-#{user.id}", nil)
           return true
@@ -75,7 +75,7 @@ module Modules
 
         system "sudo chown -R rosa:rosa #{repo.path}" #FIXME Permission denied - /mnt/gitstore/git_projects/...
         index.add(path, data)
-        if sha1 = index.commit(message, :parents => [parent], :actor => actor, :last_tree => parent.tree.id, :head => head)
+        if sha1 = index.commit(message, parents: [parent], actor: actor, last_tree: parent.tree.id, head: head)
           Resque.enqueue(GitHook, owner.uname, name, sha1, sha1, "refs/heads/#{head}", 'commit', "user-#{options[:actor].id}", message)
         end
         sha1
@@ -103,7 +103,7 @@ module Modules
           [
             node,
             node_path,
-            repo.log(treeish, node_path, :max_count => 1).first
+            repo.log(treeish, node_path, max_count: 1).first
           ]
         end
       end
@@ -144,7 +144,7 @@ module Modules
       end
 
       def fork_git_repo
-        dummy = Grit::Repo.new(path) rescue parent.repo.fork_bare(path, :shared => false)
+        dummy = Grit::Repo.new(path) rescue parent.repo.fork_bare(path, shared: false)
         write_hook
       end
 
@@ -212,31 +212,31 @@ module Modules
                 end
               end
               if name = `rpm -q --qf '[%{Name}]' -p #{srpm_file}` and $?.success? and name.present?
-                next if owner.projects.exists?(:name => name)
+                next if owner.projects.exists?(name: name)
                 description = `rpm -q --qf '[%{Description}]' -p #{srpm_file}`.scrub('')
 
                 project = owner.projects.build(
-                  :name         => name,
-                  :description  => description,
-                  :visibility   => visibility,
-                  :is_package   => false # See: Hook for #attach_to_personal_repository
+                  name:        name,
+                  description: description,
+                  visibility:  visibility,
+                  is_package:  false # See: Hook for #attach_to_personal_repository
                 )
                 project.owner = owner
                 if project.save
                   repository.projects << project rescue nil
-                  project.update_attributes(:is_package => true)
+                  project.update_attributes(is_package: true)
                   project.import_srpm srpm_file, platform.name
                 end
               end
             rescue => e
               f.close if defined?(f)
-              Airbrake.notify_or_ignore(e, :link => link.to_s, :url => url, :owner => owner)
+              Airbrake.notify_or_ignore(e, link: link.to_s, url: url, owner: owner)
             ensure
               File.delete srpm_file if srpm_file
             end
           end
         rescue => e
-          Airbrake.notify_or_ignore(e, :url => url, :owner => owner)
+          Airbrake.notify_or_ignore(e, url: url, owner: owner)
         ensure
           FileUtils.remove_entry_secure dir if dir
         end

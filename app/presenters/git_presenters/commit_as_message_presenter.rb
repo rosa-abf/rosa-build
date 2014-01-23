@@ -9,14 +9,14 @@ class GitPresenters::CommitAsMessagePresenter < ApplicationPresenter
     comment = opts[:comment]
     @is_reference_to_issue = !!comment # is it reference issue from commit
     @project = if comment
-                 Project.where(:id => comment.data[:from_project_id]).first
+                 Project.where(id: comment.data[:from_project_id]).first
                else
                  opts[:project]
                end
     commit = commit || @project.repo.commit(Comment.hex_to_commit_hash comment.created_from_commit_hash) if @project
 
     if @project && commit
-      @committer = User.where(:email => commit.committer.email).first || commit.committer
+      @committer = User.where(email: commit.committer.email).first || commit.committer
       @commit_hash = commit.id
       @committed_date, @authored_date = commit.committed_date, commit.authored_date
       @commit_message = commit.message
@@ -31,10 +31,10 @@ class GitPresenters::CommitAsMessagePresenter < ApplicationPresenter
 
   def header
     @header ||= if @is_reference_to_issue
-      I18n.t('layout.commits.reference', :committer => committer_link, :commit => commit_link)
+      I18n.t('layout.commits.reference', committer: committer_link, commit: commit_link)
     elsif @project.present?
       I18n.t('layout.messages.commits.header',
-       :committer => committer_link, :commit => commit_link, :project => @project.name)
+       committer: committer_link, commit: commit_link, project: @project.name)
     end.html_safe
   end
 
@@ -109,6 +109,6 @@ class GitPresenters::CommitAsMessagePresenter < ApplicationPresenter
       @caption = @caption[0..68] + '...'
     end
 #      @content = @content.gsub("\n", "<br />").html_safe if @content
-    @content = simple_format(@content, {}, :sanitize => true).html_safe if @content
+    @content = simple_format(@content, {}, sanitize: true).html_safe if @content
   end
 end

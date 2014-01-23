@@ -2,7 +2,7 @@ namespace :project do
 
   namespace :maintainer do
     desc 'Set maintainer to owner (or to owners owner if owner is a group) to projects'
-    task :set_to_owner => :environment do
+    task set_to_owner: :environment do
       projects = Project.scoped
       count = projects.count
       say "Setting maintainer to all projects (#{count})"
@@ -23,13 +23,13 @@ namespace :project do
       say "100% done"
     end
   end
-  task :maintainer => 'maintainer:set_to_owner'
+  task maintainer: 'maintainer:set_to_owner'
 
 end
 
 namespace :projects do
   desc 'Add projects from one platform repository to another'
-  task :copy_to_repo => :environment do
+  task copy_to_repo: :environment do
     source_platform = Platform.find_by_name!(ENV['SRC_PLATFORM'])
     dest_platform   = Platform.find_by_name!(ENV['DST_PLATFORM'])
     source_repo     = source_platform.repositories.find_by_name!(ENV['SRC_REPO'])

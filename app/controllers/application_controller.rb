@@ -11,24 +11,24 @@ class ApplicationController < ActionController::Base
 
   before_filter :set_locale
   before_filter lambda { EventLog.current_controller = self },
-                :only => [:create, :destroy, :open_id, :cancel, :publish, :change_visibility] # :update
+                only: [:create, :destroy, :open_id, :cancel, :publish, :change_visibility] # :update
   after_filter lambda { EventLog.current_controller = nil }
 
   helper_method :get_owner
 
   unless Rails.env.development?
-    rescue_from Exception, :with => :render_500
+    rescue_from Exception, with: :render_500
     rescue_from ActiveRecord::RecordNotFound,
                 # ActionController::RoutingError, # see: config/routes.rb:<last line>
                 ActionController::UnknownController,
-                AbstractController::ActionNotFound, :with => :render_404
+                AbstractController::ActionNotFound, with: :render_404
   end
 
   rescue_from CanCan::AccessDenied do |exception|
-    redirect_to forbidden_url, :alert => t("flash.exception_message")
+    redirect_to forbidden_url, alert: t("flash.exception_message")
   end
 
-  rescue_from Grit::NoSuchPathError, :with => :not_found
+  rescue_from Grit::NoSuchPathError, with: :not_found
 
 
   def render_404
@@ -47,8 +47,8 @@ class ApplicationController < ActionController::Base
 
   def render_error(status)
     respond_to do |format|
-      format.json { render :json => {:status => status, :message => t("flash.#{status}_message")}.to_json, :status => status }
-      format.html { redirect_to "/#{status}.html", :alert => t("flash.#{status}_message") }
+      format.json { render json: {status: status, message: t("flash.#{status}_message")}.to_json, status: status }
+      format.html { redirect_to "/#{status}.html", alert: t("flash.#{status}_message") }
     end
   end
 

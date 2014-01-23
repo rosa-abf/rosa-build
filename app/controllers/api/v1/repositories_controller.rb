@@ -1,9 +1,9 @@
 class Api::V1::RepositoriesController < Api::V1::BaseController
-  
-  before_filter :authenticate_user!
-  skip_before_filter :authenticate_user!, :only => [:show, :projects] if APP_CONFIG['anonymous_access']
 
-  load_and_authorize_resource :repository, :through => :platform, :shallow => true
+  before_filter :authenticate_user!
+  skip_before_filter :authenticate_user!, only: [:show, :projects] if APP_CONFIG['anonymous_access']
+
+  load_and_authorize_resource :repository, through: :platform, shallow: true
 
   def show
   end
@@ -73,7 +73,7 @@ class Api::V1::RepositoriesController < Api::V1::BaseController
   end
 
   def add_project
-    if project = Project.where(:id => params[:project_id]).first
+    if project = Project.where(id: params[:project_id]).first
       if can?(:read, project)
         begin
           @repository.projects << project
@@ -91,7 +91,7 @@ class Api::V1::RepositoriesController < Api::V1::BaseController
 
   def remove_project
     project_id = params[:project_id]
-    ProjectToRepository.where(:project_id => project_id, :repository_id => @repository.id).destroy_all
+    ProjectToRepository.where(project_id: project_id, repository_id: @repository.id).destroy_all
     render_json_response @repository, "Project '#{project_id}' has been removed from repository successfully"
   end
 

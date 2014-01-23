@@ -1,9 +1,9 @@
-%div{:style => 'float: right; margin: 20px'}
-  = link_to t("layout.register_request.approved"), admin_register_requests_path(:scope => :approved)
+%div{style: 'float: right; margin: 20px'}
+  = link_to t("layout.register_request.approved"), admin_register_requests_path(scope: :approved)
   \|
-  = link_to t("layout.register_request.rejected"), admin_register_requests_path(:scope => :rejected)
+  = link_to t("layout.register_request.rejected"), admin_register_requests_path(scope: :rejected)
 %h2.title= title t("layout.register_request.list_header")
-= form_tag admin_register_requests_path, :method => :put, :class => 'update_form' do
+= form_tag admin_register_requests_path, method: :put, class: 'update_form' do
   = hidden_field_tag 'update_type'
   %table.tablesorter
     %tr
@@ -15,7 +15,7 @@
       %th= t("activerecord.attributes.register_request.created_at")
       %th
     - @register_requests.each do |request|
-      %tr{:class => cycle("odd", "even")}
+      %tr{class: cycle("odd", "even")}
         %td= check_box_tag 'request_ids[]', request.id
         %td= request.name
         - @user = User.find_by_email(request.email) if request.approved
@@ -30,12 +30,12 @@
           - if can? :reject, request
             - links << link_to(t("layout.reject"), reject_admin_register_request_path(request))
           - if request.token
-            - links << link_to('Link', new_user_registration_url(:invitation_token => request.token))
+            - links << link_to('Link', new_user_registration_url(invitation_token: request.token))
           = raw links.join('|')
 
   .actions
-    %input#approve_registration{:type => 'button', :value => "Approve Selected"}
-    %input#reject_registration{:type => 'button', :value => "Reject Selected"}
+    %input#approve_registration{type: 'button', value: "Approve Selected"}
+    %input#reject_registration{type: 'button', value: "Reject Selected"}
 
 = will_paginate @register_requests
 

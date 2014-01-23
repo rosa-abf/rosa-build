@@ -1,31 +1,22 @@
--set_meta_tags :title => t('layout.projects.list_header')
+-set_meta_tags title: t('layout.projects.list_header')
 -render 'filters'
 .toolbar
   -%w(user_owner group_owner user group).each do |el|
-    %span{:class => el}=t "layout.relations.#{el}"
+    %span{class: el}=t "layout.relations.#{el}"
   .both
-- columns = [{:type => 'html'},
-             {:type => 'html', :sortable => false, :searchable => false},
-             {:type => nil, :sortable => false, :searchable => false, :class => 'rights'},
-             {:type => nil, :sortable => false, :searchable => false, :class => 'buttons'}]
--#= raw datatable(columns, {:sort_by => "[0, 'asc']", :search_label => t("layout.search_by_name"), :processing => t("layout.processing"),
--#                          :pagination_labels => {:previous => t("datatables.previous_label"), :next => t("datatables.next_label")},
--#                          :empty_label      => t("datatables.empty_label"),
--#                          :info_label       => t("datatables.info_label"),
--#                          :info_empty_label => t("datatables.info_empty_label"),
--#                          :filtered_label   => t("datatables.filtered_label"),
--#                          :table_dom_id     => 'datatable',
--#                          :auto_width       => 'false',
--#                          :sdom             => 'rtip'})
+- columns = [{type: 'html'},
+             {type: 'html', sortable: false, searchable: false},
+             {type: nil, sortable: false, searchable: false, class: 'rights'},
+             {type: nil, sortable: false, searchable: false, class: 'buttons'}]
 
-%table#datatable.tablesorter{:cellpadding => "0", :cellspacing => "0"}
+%table#datatable.tablesorter{cellpadding: "0", cellspacing: "0"}
   %thead
     %tr
       %th.th1= t("activerecord.attributes.project.name")
       %th.th2= t("activerecord.attributes.project.description")
       %th.th3= t("layout.projects.role")
       %th.th4= t("layout.projects.remove_user")
-  %tbody= render :partial => 'projects/projects/project', :collection => @projects
+  %tbody= render partial: 'projects/projects/project', collection: @projects
 
 :javascript
   $(document).ready(function() {
@@ -85,7 +76,7 @@
       "aaSorting": [[ 0, 'asc' ]],
       "sDom": 'rtip',
       "bServerSide": true,
-      "sAjaxSource": "#{ projects_path :format => :json }",
+      "sAjaxSource": "#{ projects_path format: :json }",
       "iDeferLoading": #{ @projects.count },
       "aoColumns": [
         #{ format_columns_for_datatable(columns) }

@@ -7,7 +7,7 @@ shared_examples_for 'show build list via api' do
   end
 
   it 'should be able to perform index action' do
-    get :index, :format => :json
+    get :index, format: :json
     response.should render_template("api/v1/build_lists/index")
   end
 end
@@ -19,14 +19,14 @@ shared_examples_for 'not show build list via api' do
   end
 
   pending 'should not be able to perform index action' do
-    get :index, :format => :json
+    get :index, format: :json
     response.body.should == {"message" => "Access violation to this page!"}.to_json
   end
 end
 
 shared_examples_for 'create build list via api' do
   before {
-    #@project.update_attributes({:repositories => @platform.repositories})
+    #@project.update_attributes({repositories: @platform.repositories})
     #test_git_commit(@project)
   }
 
@@ -53,13 +53,13 @@ shared_examples_for 'create build list via api' do
   end
 
   it 'should not create without existing commit hash in project' do
-    lambda{ post :create, @create_params.deep_merge(:build_list => {:commit_hash => 'wrong'})}.should change{@project.build_lists.count}.by(0)
+    lambda{ post :create, @create_params.deep_merge(build_list: {commit_hash: 'wrong'})}.should change{@project.build_lists.count}.by(0)
   end
 end
 
 shared_examples_for 'not create build list via api' do
   before {
-    #@project.update_attributes({:repositories => @platform.repositories})
+    #@project.update_attributes({repositories: @platform.repositories})
     #test_git_commit(@project)
   }
 
@@ -84,7 +84,7 @@ shared_examples_for 'validation error via build list api' do |message|
   end
 
   it "should return correct json error message" do
-    response.body.should == { :build_list => {:id => nil, :message => message} }.to_json
+    response.body.should == { build_list: {id: nil, message: message} }.to_json
   end
 end
 
@@ -110,20 +110,20 @@ describe Api::V1::BuildListsController do
         @user = FactoryGirl.create(:user)
         @owner_user = @project.owner
         @member_user = FactoryGirl.create(:user)
-        @project.relations.create(:role => 'reader', :actor => @member_user)
-        @build_list.save_to_platform.relations.create(:role => 'admin', :actor => @owner_user) # Why it's really need it??
+        @project.relations.create(role: 'reader', actor: @member_user)
+        @build_list.save_to_platform.relations.create(role: 'admin', actor: @owner_user) # Why it's really need it??
 
         # Create and show params:
-        @create_params = {:build_list => @build_list.attributes.symbolize_keys.merge(:qwerty=>'!')} # wrong parameter
-        @create_params = @create_params.merge(:arches => [@params[:arch_id]], :build_for_platform_id => @platform.id, :format => :json)
-        any_instance_of(Project, :versions => ['v1.0', 'v2.0'])
+        @create_params = {build_list: @build_list.attributes.symbolize_keys.merge(:qwerty=>'!')} # wrong parameter
+        @create_params = @create_params.merge(arches: [@params[:arch_id]], build_for_platform_id: @platform.id, format: :json)
+        any_instance_of(Project, versions: ['v1.0', 'v2.0'])
 
         http_login(@user)
       end
 
       context "do cancel" do
         def do_cancel
-          put :cancel, :id => @build_list, :format => :json
+          put :cancel, id: @build_list, format: :json
         end
 
         context 'if user is project owner' do
@@ -136,7 +136,7 @@ describe Api::V1::BuildListsController do
             end
 
             it "should return correct json message" do
-              response.body.should == { :build_list => {:id => @build_list.id, :message => I18n.t('layout.build_lists.cancel_success')} }.to_json
+              response.body.should == { build_list: {id: @build_list.id, message: I18n.t('layout.build_lists.cancel_success')} }.to_json
             end
 
             it 'should return 200 response code' do
@@ -180,7 +180,7 @@ describe Api::V1::BuildListsController do
 
       context "do create_container" do
         def do_create_container
-          put :create_container, :id => @build_list, :format => :json
+          put :create_container, id: @build_list, format: :json
         end
 
         before { stub_redis }
@@ -195,7 +195,7 @@ describe Api::V1::BuildListsController do
               do_create_container
             end
             it "should return correct json message" do
-              response.body.should == { :build_list => {:id => @build_list.id, :message => I18n.t('layout.build_lists.create_container_success')} }.to_json
+              response.body.should == { build_list: {id: @build_list.id, message: I18n.t('layout.build_lists.create_container_success')} }.to_json
             end
 
             it 'should return 200 response code' do
@@ -239,7 +239,7 @@ describe Api::V1::BuildListsController do
 
       context 'do publish_into_testing' do
         def do_publish_into_testing
-          put :publish_into_testing, :id => @build_list, :format => :json
+          put :publish_into_testing, id: @build_list, format: :json
         end
 
         context 'if user is project && platform owner' do
@@ -253,7 +253,7 @@ describe Api::V1::BuildListsController do
               do_publish_into_testing
             end
             it "should return correct json message" do
-              response.body.should == { :build_list => {:id => @build_list.id, :message => I18n.t('layout.build_lists.publish_success')} }.to_json
+              response.body.should == { build_list: {id: @build_list.id, message: I18n.t('layout.build_lists.publish_success')} }.to_json
             end
 
             it 'should return 200 response code' do
@@ -272,7 +272,7 @@ describe Api::V1::BuildListsController do
             end
 
             it "should return correct json message" do
-              response.body.should == { :build_list => {:id => @build_list.id, :message => I18n.t('layout.build_lists.publish_success')} }.to_json
+              response.body.should == { build_list: {id: @build_list.id, message: I18n.t('layout.build_lists.publish_success')} }.to_json
             end
 
             it 'should return 200 response code' do
@@ -340,7 +340,7 @@ describe Api::V1::BuildListsController do
 
       context "do publish" do
         def do_publish
-          put :publish, :id => @build_list, :format => :json
+          put :publish, id: @build_list, format: :json
         end
 
         context 'if user is project && platform owner' do
@@ -354,7 +354,7 @@ describe Api::V1::BuildListsController do
               do_publish
             end
             it "should return correct json message" do
-              response.body.should == { :build_list => {:id => @build_list.id, :message => I18n.t('layout.build_lists.publish_success')} }.to_json
+              response.body.should == { build_list: {id: @build_list.id, message: I18n.t('layout.build_lists.publish_success')} }.to_json
             end
 
             it 'should return 200 response code' do
@@ -373,7 +373,7 @@ describe Api::V1::BuildListsController do
             end
 
             it "should return correct json message" do
-              response.body.should == { :build_list => {:id => @build_list.id, :message => I18n.t('layout.build_lists.publish_success')} }.to_json
+              response.body.should == { build_list: {id: @build_list.id, message: I18n.t('layout.build_lists.publish_success')} }.to_json
             end
 
             it 'should return 200 response code' do
@@ -455,12 +455,12 @@ describe Api::V1::BuildListsController do
 
       context "do reject_publish" do
         before(:each) do
-          any_instance_of(BuildList, :current_duration => 100)
+          any_instance_of(BuildList, current_duration: 100)
           @build_list.save_to_repository.update_column(:publish_without_qa, false)
         end
 
         def do_reject_publish
-          put :reject_publish, :id => @build_list, :format => :json
+          put :reject_publish, id: @build_list, format: :json
         end
 
         context 'if user is project owner' do
@@ -473,7 +473,7 @@ describe Api::V1::BuildListsController do
 
           context "if it has :success status" do
             it "should return correct json message" do
-              response.body.should == { :build_list => {:id => @build_list.id, :message => I18n.t('layout.build_lists.reject_publish_success')} }.to_json
+              response.body.should == { build_list: {id: @build_list.id, message: I18n.t('layout.build_lists.reject_publish_success')} }.to_json
             end
 
             it 'should return 200 response code' do
@@ -521,7 +521,7 @@ describe Api::V1::BuildListsController do
             @another_user = FactoryGirl.create(:user)
             @build_list.update_column(:status, BuildList::SUCCESS)
             @build_list.save_to_repository.update_column(:publish_without_qa, true)
-            @build_list.project.collaborators.create(:actor_type => 'User', :actor_id => @another_user.id, :role => 'reader')
+            @build_list.project.collaborators.create(actor_type: 'User', actor_id: @another_user.id, role: 'reader')
             http_login(@another_user)
             do_reject_publish
           end
@@ -541,13 +541,13 @@ describe Api::V1::BuildListsController do
             @another_user = FactoryGirl.create(:user)
             @build_list.update_column(:status, BuildList::SUCCESS)
             @build_list.save_to_repository.update_column(:publish_without_qa, true)
-            @build_list.project.relations.create!(:actor_type => 'User', :actor_id => @another_user.id, :role => 'writer')
+            @build_list.project.relations.create!(actor_type: 'User', actor_id: @another_user.id, role: 'writer')
             http_login(@another_user)
             do_reject_publish
           end
 
           it "should return correct json message" do
-            response.body.should == { :build_list => {:id => @build_list.id, :message => I18n.t('layout.build_lists.reject_publish_success')} }.to_json
+            response.body.should == { build_list: {id: @build_list.id, message: I18n.t('layout.build_lists.reject_publish_success')} }.to_json
           end
 
           it 'should return 200 response code' do
@@ -571,7 +571,7 @@ describe Api::V1::BuildListsController do
             before do
               repository = FactoryGirl.create(:repository)
               repository.platform.change_visibility
-              Platform.where(:id => @platform.id).update_all(:platform_type => 'personal')
+              Platform.where(id: @platform.id).update_all(platform_type: 'personal')
               @create_params[:build_list].merge!({
                 :include_repos          => [repository.id],
                 :build_for_platform_id  => repository.platform_id
@@ -624,18 +624,18 @@ describe Api::V1::BuildListsController do
         @member_user = FactoryGirl.create(:user)
 
         # Create and show params:
-        @create_params = {:build_list => @build_list.attributes.symbolize_keys}
-        @create_params = @create_params.merge(:arches => [@params[:arch_id]], :build_for_platform_id => @platform.id, :format => :json)
-        any_instance_of(Project, :versions => ['v1.0', 'v2.0'])
+        @create_params = {build_list: @build_list.attributes.symbolize_keys}
+        @create_params = @create_params.merge(arches: [@params[:arch_id]], build_for_platform_id: @platform.id, format: :json)
+        any_instance_of(Project, versions: ['v1.0', 'v2.0'])
 
         # Groups:
-        @owner_group = FactoryGirl.create(:group, :owner => @owner_user)
+        @owner_group = FactoryGirl.create(:group, owner: @owner_user)
         @member_group = FactoryGirl.create(:group)
-        @member_group.actors.create :role => 'reader', :actor_id => @member_user.id, :actor_type => 'User'
+        @member_group.actors.create role: 'reader', actor_id: @member_user.id, actor_type: 'User'
 
         @group = FactoryGirl.create(:group)
         @user = FactoryGirl.create(:user)
-        @group.actors.create :role => 'reader', :actor_id => @user.id, :actor_type => 'User'
+        @group.actors.create role: 'reader', actor_id: @user.id, actor_type: 'User'
 
         old_path = @project.path
         @project.owner = @owner_group
@@ -643,10 +643,10 @@ describe Api::V1::BuildListsController do
         # Move GIT repo into new folder
         system "mkdir -p #{@project.path} && mv -f #{old_path}/* #{@project.path}/"
 
-        @project.relations.create :role => 'reader', :actor_id => @member_group.id, :actor_type => 'Group'
-        @project.relations.create :role => 'admin', :actor_id => @owner_group.id, :actor_type => 'Group'
-        @build_list.save_to_platform.relations.create(:role => 'admin', :actor => @owner_group) # Why it's really need it??
-        @build_list.save_to_platform.relations.create(:role => 'reader', :actor => @member_group) # Why it's really need it??
+        @project.relations.create role: 'reader', actor_id: @member_group.id, actor_type: 'Group'
+        @project.relations.create role: 'admin', actor_id: @owner_group.id, actor_type: 'Group'
+        @build_list.save_to_platform.relations.create(role: 'admin', actor: @owner_group) # Why it's really need it??
+        @build_list.save_to_platform.relations.create(role: 'reader', actor: @member_group) # Why it's really need it??
 
         http_login(@user)
       end
@@ -699,29 +699,29 @@ describe Api::V1::BuildListsController do
       @build_list2 = FactoryGirl.create(:build_list)
       @build_list2.project.update_column(:visibility, 'hidden')
 
-      project = FactoryGirl.create(:project_with_commit, :visibility => 'hidden', :owner => @user)
-      @build_list3 = FactoryGirl.create(:build_list_with_attaching_project, :project => project)
+      project = FactoryGirl.create(:project_with_commit, visibility: 'hidden', owner: @user)
+      @build_list3 = FactoryGirl.create(:build_list_with_attaching_project, project: project)
 
       @build_list4 = FactoryGirl.create(:build_list)
       @build_list4.project.update_column(:visibility, 'hidden')
-      @build_list4.project.relations.create! :role => 'reader', :actor_id => @user.id, :actor_type => 'User'
+      @build_list4.project.relations.create! role: 'reader', actor_id: @user.id, actor_type: 'User'
 
       @filter_build_list1 = FactoryGirl.create(:build_list)
       @filter_build_list2 = FactoryGirl.create(:build_list)
       @filter_build_list3 = FactoryGirl.create(:build_list)
-      @filter_build_list4 = FactoryGirl.create(:build_list, :updated_at => (Time.now - 1.day),
-                             :project => @build_list3.project, :save_to_platform => @build_list3.save_to_platform,
-                             :arch => @build_list3.arch)
+      @filter_build_list4 = FactoryGirl.create(:build_list, updated_at: (Time.now - 1.day),
+                             project: @build_list3.project, save_to_platform: @build_list3.save_to_platform,
+                             arch: @build_list3.arch)
     end
 
     context 'for guest' do
-      it 'should be able to perform index action', :anonymous_access => true do
-        get :index, :format => :json
+      it 'should be able to perform index action', anonymous_access: true do
+        get :index, format: :json
         response.should be_success
       end
 
-      it 'should not be able to perform index action', :anonymous_access => false do
-        get :index, :format => :json
+      it 'should not be able to perform index action', anonymous_access: false do
+        get :index, format: :json
         response.status.should == 401
       end
     end
@@ -732,12 +732,12 @@ describe Api::V1::BuildListsController do
       }
 
       it 'should be able to perform index action' do
-        get :index, :format => :json
+        get :index, format: :json
         response.should be_success
       end
 
       it 'should show only accessible build_lists' do
-        get :index, :filter => {:ownership => 'index'}, :format => :json
+        get :index, filter: {ownership: 'index'}, format: :json
         assigns(:build_lists).should include(@build_list1)
         assigns(:build_lists).should_not include(@build_list2)
         assigns(:build_lists).should include(@build_list3)
@@ -752,24 +752,24 @@ describe Api::V1::BuildListsController do
       end
 
       it 'should filter by id' do
-        get :index, :filter => {:id => @filter_build_list1.id, :project_name => 'fdsfdf', :any_other_field => 'do not matter'}, :format => :json
+        get :index, filter: {id: @filter_build_list1.id, project_name: 'fdsfdf', any_other_field: 'do not matter'}, format: :json
         assigns[:build_lists].should include(@filter_build_list1)
         assigns[:build_lists].should_not include(@filter_build_list2)
         assigns[:build_lists].should_not include(@filter_build_list3)
       end
 
       it 'should filter by project_name' do
-        get :index, :filter => {:project_name => @filter_build_list2.project.name, :ownership => 'index'}, :format => :json
+        get :index, filter: {project_name: @filter_build_list2.project.name, ownership: 'index'}, format: :json
         assigns[:build_lists].should_not include(@filter_build_list1)
         assigns[:build_lists].should include(@filter_build_list2)
         assigns[:build_lists].should_not include(@filter_build_list3)
       end
 
       it 'should filter by project_name and start_date' do
-        get :index, :filter => {:project_name => @filter_build_list3.project.name, :ownership => 'index',
+        get :index, filter: {project_name: @filter_build_list3.project.name, ownership: 'index',
                               :"updated_at_start(1i)" => @filter_build_list3.updated_at.year.to_s,
                               :"updated_at_start(2i)" => @filter_build_list3.updated_at.month.to_s,
-                              :"updated_at_start(3i)" => @filter_build_list3.updated_at.day.to_s}, :format => :json
+                              :"updated_at_start(3i)" => @filter_build_list3.updated_at.day.to_s}, format: :json
         assigns[:build_lists].should_not include(@filter_build_list1)
         assigns[:build_lists].should_not include(@filter_build_list2)
         assigns[:build_lists].should include(@filter_build_list3)
@@ -787,11 +787,11 @@ describe Api::V1::BuildListsController do
         stub_symlink_methods
         @owner_user = @project.owner
         @member_user = FactoryGirl.create(:user)
-        @project.relations.create(:role => 'reader', :actor => @member_user)
-        @build_list.save_to_platform.relations.create(:role => 'admin', :actor => @owner_user) # Why it's really need it??
+        @project.relations.create(role: 'reader', actor: @member_user)
+        @build_list.save_to_platform.relations.create(role: 'admin', actor: @owner_user) # Why it's really need it??
 
         # Show params:
-        @show_params = {:id => @build_list.id, :format => :json}
+        @show_params = {id: @build_list.id, format: :json}
       end
 
       context 'for open project' do
@@ -836,32 +836,32 @@ describe Api::V1::BuildListsController do
     context "for group" do
       before(:each) do
         @platform = FactoryGirl.create(:platform_with_repos)
-        @build_list = FactoryGirl.create(:build_list, :save_to_platform => @platform)
+        @build_list = FactoryGirl.create(:build_list, save_to_platform: @platform)
         @project = @build_list.project
         @params = @build_list.attributes.symbolize_keys
 
         stub_symlink_methods
         @owner_user = @project.owner#FactoryGirl.create(:user)
         @member_user = FactoryGirl.create(:user)
-        #@project.relations.create(:role => 'reader', :actor => @member_user)
+        #@project.relations.create(role: 'reader', actor: @member_user)
 
         # Show params:
-        @show_params = {:id => @build_list.id, :format => :json}
+        @show_params = {id: @build_list.id, format: :json}
 
         # Groups:
-        @owner_group = FactoryGirl.create(:group, :owner => @owner_user)
+        @owner_group = FactoryGirl.create(:group, owner: @owner_user)
         @member_group = FactoryGirl.create(:group)
-        @member_group.actors.create :role => 'reader', :actor_id => @member_user.id, :actor_type => 'User'
+        @member_group.actors.create role: 'reader', actor_id: @member_user.id, actor_type: 'User'
         @group = FactoryGirl.create(:group)
-        @group.actors.create :role => 'reader', :actor_id => @user.id, :actor_type => 'User'
+        @group.actors.create role: 'reader', actor_id: @user.id, actor_type: 'User'
 
-        #@project = FactoryGirl.create(:project, :owner => @owner_group, :repositories => @platform.repositories)
+        #@project = FactoryGirl.create(:project, owner: @owner_group, repositories: @platform.repositories)
 
         #@project.owner = @owner_group
         #@project.save
-        @project.relations.create :role => 'reader', :actor_id => @member_group.id, :actor_type => 'Group'
-        #@build_list.save_to_platform.relations.create(:role => 'reader', :actor => @member_group) # Why it's really need it??
-        #@build_list.save_to_platform.relations.create(:role => 'admin', :actor => @owner_group) # Why it's really need it??
+        @project.relations.create role: 'reader', actor_id: @member_group.id, actor_type: 'Group'
+        #@build_list.save_to_platform.relations.create(role: 'reader', actor: @member_group) # Why it's really need it??
+        #@build_list.save_to_platform.relations.create(role: 'admin', actor: @owner_group) # Why it's really need it??
       end
 
       context 'for open project' do

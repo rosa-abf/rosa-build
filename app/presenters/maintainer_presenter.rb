@@ -5,7 +5,7 @@ class MaintainerPresenter < ApplicationPresenter
               :package_updated_at
   attr_reader :maintainer, :maintainer_fullname, :maintainer_email,
               :maintainer_link, :maintainer_mail_link
-  delegate :package_type, :to => :package
+  delegate :package_type, to: :package
 
   [:name, :version, :release, :updated_at].each do |meth|
     define_method "package_#{meth}" do
@@ -37,7 +37,7 @@ class MaintainerPresenter < ApplicationPresenter
   end
 
   def maintainer_email_link
-    mail_to @maintainer.email, @maintainer.email, :encode => "javascript"
+    mail_to @maintainer.email, @maintainer.email, encode: "javascript"
   end
 
 end

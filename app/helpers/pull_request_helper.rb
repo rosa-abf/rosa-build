@@ -9,13 +9,13 @@ module PullRequestHelper
 
   def pull_status_label pull_status, options = {}
     statuses = {'ready' => 'success', 'closed' => 'important', 'merged' => 'important', 'blocked' => 'warning'}
-    content_tag :span, t("projects.pull_requests.statuses.#{pull_status}"), options.merge(:class => "state label-bootstrap label-#{statuses[pull_status]}")
+    content_tag :span, t("projects.pull_requests.statuses.#{pull_status}"), options.merge(class: "state label-bootstrap label-#{statuses[pull_status]}")
   end
 
   def pull_status pull
     if %w(blocked merged closed ready open).include? pull.status
-      t("projects.pull_requests.#{pull.status}", :user => pull.issue.closer.try(:uname), :to_ref => show_ref(pull, 'to'),
-        :from_ref => show_ref(pull, 'from'), :time => pull.issue.closed_at).html_safe
+      t("projects.pull_requests.#{pull.status}", user: pull.issue.closer.try(:uname), to_ref: show_ref(pull, 'to'),
+        from_ref: show_ref(pull, 'from'), time: pull.issue.closed_at).html_safe
     else
         raise "pull id (#{pull.id}) wrong status #{pull.status} "
     end

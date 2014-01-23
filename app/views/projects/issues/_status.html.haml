@@ -1,9 +1,9 @@
 #closed_issue_text
   - if @issue.status == 'closed' && @issue.closed_at && @issue.closed_by
-    #closed-comment.comment-closed{:style => 'display: block;'}
+    #closed-comment.comment-closed{style: 'display: block;'}
       .state=t('layout.issues.status.closed')
       .text
-        .avatar= image_tag(avatar_url(@issue.closer), :alt => 'avatar')
-        .name="<b>#{@issue.closer.fullname}</b> #{datetime_moment(@issue.closed_at, :tag => :span)}".html_safe
+        .avatar= image_tag(avatar_url(@issue.closer), alt: 'avatar')
+        .name="<b>#{@issue.closer.fullname}</b> #{datetime_moment(@issue.closed_at, tag: :span)}".html_safe
     .both
     %br/

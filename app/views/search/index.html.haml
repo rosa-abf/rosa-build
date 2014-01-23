@@ -2,16 +2,16 @@
 = render 'form_advanced'
 - if @type == 'all'
   #all
-    = render 'table', :type => 'projects'
+    = render 'table', type: 'projects'
     .both
     .left.width400.rmargin55
-      = render 'table', :type => 'users'
-      = render 'table', :type => 'groups'
+      = render 'table', type: 'users'
+      = render 'table', type: 'groups'
     .left.width400
-      = render 'table', :type => 'platforms'
+      = render 'table', type: 'platforms'
 - else
   - collection = instance_variable_get("@#{@type}")
-  .tmargin10{:id => @type}= render :collection => collection, :partial => @type.to_s.underscore.singularize
+  .tmargin10{id: @type}= render collection: collection, partial: @type.to_s.underscore.singularize
   %br
   = will_paginate collection
 .both

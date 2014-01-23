@@ -15,7 +15,7 @@ class Api::V1::JobsController < Api::V1::BaseController
 
     if current_user.system?
       if task = (Resque.pop('rpm_worker_default') || Resque.pop('rpm_worker'))
-        @build_list = BuildList.where(:id => task['args'][0]['id']).first
+        @build_list = BuildList.where(id: task['args'][0]['id']).first
       end
     end
 
@@ -37,12 +37,12 @@ class Api::V1::JobsController < Api::V1::BaseController
 
     if @build_list
       job = {
-        :worker_queue => @build_list.worker_queue_with_priority,
-        :worker_class => @build_list.worker_queue_class,
+        worker_queue: @build_list.worker_queue_with_priority,
+        worker_class: @build_list.worker_queue_class,
         :worker_args  => [@build_list.abf_worker_args]
       }
     end
-    render :json => { :job => job }.to_json
+    render json: { job: job }.to_json
   end
 
   def statistics
@@ -51,25 +51,25 @@ class Api::V1::JobsController < Api::V1::BaseController
         :id           => params[:uid],
         :user_id      => current_user.id,
         :system       => current_user.system?,
-        :worker_count => params[:worker_count],
-        :busy_workers => params[:busy_workers]
+        worker_count: params[:worker_count],
+        busy_workers: params[:busy_workers]
       ) rescue nil
     end
-    render :nothing => true
+    render nothing: true
   end
 
   def status
-    render :text => Resque.redis.get(params[:key])
+    render text: Resque.redis.get(params[:key])
   end
 
   def logs
     name = params[:name]
     if name =~ /abfworker::rpm-worker/
-      if current_user.system? || current_user.id == BuildList.where(:id => name.gsub(/[^\d]/, '')).first.try(:builder_id)
+      if current_user.system? || current_user.id == BuildList.where(id: name.gsub(/[^\d]/, '')).first.try(:builder_id)
         BuildList.log_server.setex name, 15, params[:logs]
       end
     end
-    render :nothing => true
+    render nothing: true
   end
 
   def feedback
@@ -77,11 +77,11 @@ class Api::V1::JobsController < Api::V1::BaseController
     worker_class = params[:worker_class]
     if QUEUES.include?(worker_queue) && QUEUE_CLASSES.include?(worker_class)
       worker_args = (params[:worker_args] || []).first || {}
-      worker_args = worker_args.merge(:feedback_from_user => current_user.id)
+      worker_args = worker_args.merge(feedback_from_user: current_user.id)
       Resque.push worker_queue, 'class' => worker_class, 'args' => [worker_args]
-      render :nothing => true
+      render nothing: true
     else
-      render :nothing => true, :status => 403
+      render nothing: true, status: 403
     end
   end
 

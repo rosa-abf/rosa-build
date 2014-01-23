@@ -3,58 +3,58 @@ require 'spec_helper'
 shared_examples_for 'projects user with reader rights' do
 
   it 'should be able to fork project' do
-    post :fork, :owner_name => @project.owner.uname, :project_name => @project.name
+    post :fork, owner_name: @project.owner.uname, project_name: @project.name
     response.should redirect_to(project_path(Project.last))
   end
 
   it 'should be able to fork project to their group' do
     group = FactoryGirl.create(:group)
-    group.actors.create(:actor_type => 'User', :actor_id => @user.id, :role => 'admin')
-    lambda {post :fork, :owner_name => @project.owner.uname, :project_name => @project.name, 
-            :group => group.id}.should change{ Project.count }.by(1)
+    group.actors.create(actor_type: 'User', actor_id: @user.id, role: 'admin')
+    lambda {post :fork, owner_name: @project.owner.uname, project_name: @project.name,
+            group: group.id}.should change{ Project.count }.by(1)
   end
 
   it 'should be able to fork project to own group' do
-    group = FactoryGirl.create(:group, :owner => @user)
-    lambda {post :fork, :owner_name => @project.owner.uname, :project_name => @project.name, 
-            :group => group.id}.should change{ Project.count }.by(1)
+    group = FactoryGirl.create(:group, owner: @user)
+    lambda {post :fork, owner_name: @project.owner.uname, project_name: @project.name,
+            group: group.id}.should change{ Project.count }.by(1)
   end
 
   it 'should be able to fork project with different name' do
-    post :fork, :owner_name => @project.owner.uname, :project_name => @project.name, :fork_name => 'another_name'
-    response.should redirect_to(project_path(Project.where(:name => 'another_name').last))
+    post :fork, owner_name: @project.owner.uname, project_name: @project.name, fork_name: 'another_name'
+    response.should redirect_to(project_path(Project.where(name: 'another_name').last))
   end
 end
 
 shared_examples_for 'projects user with project admin rights' do
   it 'should be able to perform update action' do
-    put :update, {:owner_name => @project.owner.uname, :project_name => @project.name}.merge(@update_params)
+    put :update, {owner_name: @project.owner.uname, project_name: @project.name}.merge(@update_params)
     response.should redirect_to(project_path(@project))
   end
 end
 
 shared_examples_for 'user with destroy rights' do
   it 'should be able to perform destroy action' do
-    delete :destroy, {:owner_name => @project.owner.uname, :project_name => @project.name}
+    delete :destroy, {owner_name: @project.owner.uname, project_name: @project.name}
     response.should redirect_to(@project.owner)
   end
 
   it 'should change objects count on destroy' do
-    lambda { delete :destroy, :owner_name => @project.owner.uname, :project_name => @project.name }.should change{ Project.count }.by(-1)
+    lambda { delete :destroy, owner_name: @project.owner.uname, project_name: @project.name }.should change{ Project.count }.by(-1)
   end
 end
 
 shared_examples_for 'projects user without project admin rights' do
   it 'should not be able to edit project' do
     description = @project.description
-    put :update, :project=>{:description =>"hack"}, :owner_name => @project.owner.uname, :project_name => @project.name
+    put :update, :project=>{description:"hack"}, owner_name: @project.owner.uname, project_name: @project.name
     @project.reload.description.should == description
     response.should redirect_to(forbidden_path)
   end
 
   it 'should not be able to edit project sections' do
     has_wiki, has_issues = @project.has_wiki, @project.has_issues
-    post :sections, :project =>{:has_wiki => !has_wiki, :has_issues => !has_issues}, :owner_name => @project.owner.uname, :project_name => @project.name
+    post :sections, project:{has_wiki: !has_wiki, has_issues: !has_issues}, owner_name: @project.owner.uname, project_name: @project.name
     @project.reload.has_wiki.should == has_wiki
     @project.reload.has_issues.should == has_issues
     response.should redirect_to(forbidden_path)
@@ -62,28 +62,28 @@ shared_examples_for 'projects user without project admin rights' do
 
   it 'writer group should be able to fork project to their group' do
     group = FactoryGirl.create(:group)
-    group.actors.create(:actor_type => 'User', :actor_id => @user.id, :role => 'writer')
-    lambda {post :fork, :owner_name => @project.owner.uname, :project_name => @project.name,
-            :group => group.id}.should change{ Project.count }.by(1)
+    group.actors.create(actor_type: 'User', actor_id: @user.id, role: 'writer')
+    lambda {post :fork, owner_name: @project.owner.uname, project_name: @project.name,
+            group: group.id}.should change{ Project.count }.by(1)
   end
 
   it 'reader group should not be able to fork project to their group' do
     group = FactoryGirl.create(:group)
-    group.actors.create(:actor_type => 'User', :actor_id => @user.id, :role => 'reader')
-    lambda {post :fork, :owner_name => @project.owner.uname, :project_name => @project.name,
-            :group => group.id}.should change{ Project.count }.by(0)
+    group.actors.create(actor_type: 'User', actor_id: @user.id, role: 'reader')
+    lambda {post :fork, owner_name: @project.owner.uname, project_name: @project.name,
+            group: group.id}.should change{ Project.count }.by(0)
   end
 
   it 'writer group should be able to create project to their group' do
     group = FactoryGirl.create(:group)
-    group.actors.create(:actor_type => 'User', :actor_id => @user.id, :role => 'writer')
-    lambda {post :create, @create_params.merge(:who_owns => 'group', :owner_id => group.id)}.should change{ Project.count }.by(1)
+    group.actors.create(actor_type: 'User', actor_id: @user.id, role: 'writer')
+    lambda {post :create, @create_params.merge(who_owns: 'group', owner_id: group.id)}.should change{ Project.count }.by(1)
   end
 
   it 'reader group should not be able to create project to their group' do
     group = FactoryGirl.create(:group)
-    group.actors.create(:actor_type => 'User', :actor_id => @user.id, :role => 'reader')
-    lambda {post :create, @create_params.merge(:who_owns => 'group', :owner_id => group.id)}.should change{ Project.count }.by(0)
+    group.actors.create(actor_type: 'User', actor_id: @user.id, role: 'reader')
+    lambda {post :create, @create_params.merge(who_owns: 'group', owner_id: group.id)}.should change{ Project.count }.by(0)
   end
 end
 
@@ -94,8 +94,8 @@ describe Projects::ProjectsController do
 
     @project = FactoryGirl.create(:project)
 
-    @create_params = {:project => {:name => 'pro'}}
-    @update_params = {:project => {:description => 'pro2'}}
+    @create_params = {project: {name: 'pro'}}
+    @update_params = {project: {description: 'pro2'}}
 
     @user = FactoryGirl.create(:user)
     set_session_for(@user)
@@ -115,7 +115,7 @@ describe Projects::ProjectsController do
       end
 
       it 'should not be able to perform update action' do
-        put :update, {:owner_name => @project.owner.uname, :project_name => @project.name}.merge(@update_params)
+        put :update, {owner_name: @project.owner.uname, project_name: @project.name}.merge(@update_params)
         response.should redirect_to(new_user_session_path)
       end
 
@@ -133,7 +133,7 @@ describe Projects::ProjectsController do
       end
 
       context 'create project for myself' do
-        
+
         it 'should be able to perform create action' do
           post :create, @create_params
           response.should redirect_to(project_path( Project.last ))
@@ -148,21 +148,21 @@ describe Projects::ProjectsController do
 
         it 'should not be able to create project for alien group' do
           group = FactoryGirl.create(:group)
-          post :create, @create_params.merge({:who_owns => 'group', :owner_id => group.id})
+          post :create, @create_params.merge({who_owns: 'group', owner_id: group.id})
           response.should redirect_to(forbidden_path)
         end
 
         it 'should be able to create project for their group' do
           group = FactoryGirl.create(:group)
-          group.actors.create(:actor_type => 'User', :actor_id => @user.id, :role => 'admin')
-          lambda { post :create, @create_params.merge({:who_owns => 'group', :owner_id => group.id})}.should change{ Project.count }.by(1)
+          group.actors.create(actor_type: 'User', actor_id: @user.id, role: 'admin')
+          lambda { post :create, @create_params.merge({who_owns: 'group', owner_id: group.id})}.should change{ Project.count }.by(1)
         end
 
         it 'should be able to create project for own group' do
-          group = FactoryGirl.create(:group, :owner => @user)
-          lambda { post :create, @create_params.merge({:who_owns => 'group', :owner_id => group.id})}.should change{ Project.count }.by(1)
+          group = FactoryGirl.create(:group, owner: @user)
+          lambda { post :create, @create_params.merge({who_owns: 'group', owner_id: group.id})}.should change{ Project.count }.by(1)
         end
-      end 
+      end
 
     end # context 'registered user'
   end # context 'for users'
@@ -193,7 +193,7 @@ describe Projects::ProjectsController do
       it_should_behave_like 'user with destroy rights'
 
       it 'should not be able to fork own project' do
-        post :fork, :owner_name => @project.owner.uname, :project_name => @project.name
+        post :fork, owner_name: @project.owner.uname, project_name: @project.name
         response.should redirect_to(@project)
       end
 
@@ -201,7 +201,7 @@ describe Projects::ProjectsController do
 
     context 'for reader user' do
       before(:each) do
-        @project.relations.create!(:actor_type => 'User', :actor_id => @user.id, :role => 'reader')
+        @project.relations.create!(actor_type: 'User', actor_id: @user.id, role: 'reader')
       end
 
       it_should_behave_like 'projects user with reader rights'
@@ -210,7 +210,7 @@ describe Projects::ProjectsController do
 
     context 'for writer user' do
       before(:each) do
-        @project.relations.create!(:actor_type => 'User', :actor_id => @user.id, :role => 'writer')
+        @project.relations.create!(actor_type: 'User', actor_id: @user.id, role: 'writer')
       end
 
       it_should_behave_like 'projects user with reader rights'
@@ -221,8 +221,8 @@ describe Projects::ProjectsController do
     context 'for other user' do
 
       it 'should not be able to fork hidden project' do
-        @project.update_attributes(:visibility => 'hidden')
-        post :fork, :owner_name => @project.owner.uname, :project_name => @project.name
+        @project.update_attributes(visibility: 'hidden')
+        post :fork, owner_name: @project.owner.uname, project_name: @project.name
         response.should redirect_to(forbidden_path)
       end
 
@@ -239,12 +239,12 @@ describe Projects::ProjectsController do
 
     context 'group is owner of the project' do
       before(:each) do
-        @project = FactoryGirl.create(:project, :owner => @group)
+        @project = FactoryGirl.create(:project, owner: @group)
       end
 
       context 'group member user with reader role' do
         before(:each) do
-          @group.actors.create(:actor_id => @user.id, :actor_type => 'User', :role => 'reader')
+          @group.actors.create(actor_id: @user.id, actor_type: 'User', role: 'reader')
         end
 
         it_should_behave_like 'projects user with reader rights'
@@ -256,7 +256,7 @@ describe Projects::ProjectsController do
 
         context 'user should has best role' do
           before(:each) do
-            @project.relations.create :actor_id => @user.id, :actor_type => @user.class.to_s, :role => 'admin'
+            @project.relations.create actor_id: @user.id, actor_type: @user.class.to_s, role: 'admin'
           end
           it_should_behave_like 'projects user with project admin rights'
         end
@@ -264,7 +264,7 @@ describe Projects::ProjectsController do
 
       context 'group member user with admin role' do
         before(:each) do
-          @group.actors.create(:actor_id => @user.id, :actor_type => 'User', :role => 'admin')
+          @group.actors.create(actor_id: @user.id, actor_type: 'User', role: 'admin')
         end
 
         it_should_behave_like 'projects user with project admin rights'
@@ -275,12 +275,12 @@ describe Projects::ProjectsController do
     context 'group is member of the project' do
       context 'with admin rights' do
         before(:each) do
-          @project.relations.create :actor_id => @group.id, :actor_type => @group.class.to_s, :role => 'admin'
+          @project.relations.create actor_id: @group.id, actor_type: @group.class.to_s, role: 'admin'
         end
 
         context 'group member user with reader role' do
           before(:each) do
-            @group.actors.create(:actor_id => @user.id, :actor_type => 'User', :role => 'reader')
+            @group.actors.create(actor_id: @user.id, actor_type: 'User', role: 'reader')
           end
 
           it_should_behave_like 'projects user with reader rights'
@@ -288,7 +288,7 @@ describe Projects::ProjectsController do
 
           context 'user should has best role' do
             before(:each) do
-              @project.relations.create :actor_id => @user.id, :actor_type => @user.class.to_s, :role => 'reader'
+              @project.relations.create actor_id: @user.id, actor_type: @user.class.to_s, role: 'reader'
             end
             it_should_behave_like 'projects user with project admin rights'
           end
@@ -296,7 +296,7 @@ describe Projects::ProjectsController do
 
         context 'group member user with admin role' do
           before(:each) do
-            @group.actors.create(:actor_id => @user.id, :actor_type => 'User', :role => 'admin')
+            @group.actors.create(actor_id: @user.id, actor_type: 'User', role: 'admin')
           end
 
           it_should_behave_like 'projects user with project admin rights'
@@ -306,12 +306,12 @@ describe Projects::ProjectsController do
 
       context 'with reader rights' do
         before(:each) do
-          @project.relations.create :actor_id => @group.id, :actor_type => @group.class.to_s, :role => 'reader'
+          @project.relations.create actor_id: @group.id, actor_type: @group.class.to_s, role: 'reader'
         end
 
         context 'group member user with reader role' do
           before(:each) do
-            @group.actors.create(:actor_id => @user.id, :actor_type => 'User', :role => 'reader')
+            @group.actors.create(actor_id: @user.id, actor_type: 'User', role: 'reader')
           end
 
           it_should_behave_like 'projects user with reader rights'
@@ -319,7 +319,7 @@ describe Projects::ProjectsController do
 
           context 'user should has best role' do
             before(:each) do
-              @project.relations.create :actor_id => @user.id, :actor_type => @user.class.to_s, :role => 'admin'
+              @project.relations.create actor_id: @user.id, actor_type: @user.class.to_s, role: 'admin'
             end
             it_should_behave_like 'projects user with project admin rights'
           end
@@ -327,7 +327,7 @@ describe Projects::ProjectsController do
 
         context 'group member user with admin role' do
           before(:each) do
-            @group.actors.create(:actor_id => @user.id, :actor_type => 'User', :role => 'admin')
+            @group.actors.create(actor_id: @user.id, actor_type: 'User', role: 'admin')
           end
 
           it_should_behave_like 'projects user with reader rights'

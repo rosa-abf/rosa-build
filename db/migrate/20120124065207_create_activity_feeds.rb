@@ -1,7 +1,7 @@
 class CreateActivityFeeds < ActiveRecord::Migration
   def self.up
     create_table :activity_feeds do |t|
-      t.integer :user_id, :null => false
+      t.integer :user_id, null: false
       t.string :kind
       t.text :data
 

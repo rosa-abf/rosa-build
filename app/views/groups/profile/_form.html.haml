@@ -1,16 +1,16 @@
 - act = controller.action_name.to_sym
 - if [:new, :create].include? act
-  .leftlist= f.label :uname, t("activerecord.attributes.group.uname"), :class => :label
+  .leftlist= f.label :uname, t("activerecord.attributes.group.uname"), class: :label
   .rightlist.nomargin= f.text_field :uname
   .both
 %br
-.leftlist= f.label :description, t("activerecord.attributes.group.description"), :class => :label
+.leftlist= f.label :description, t("activerecord.attributes.group.description"), class: :label
 .rightlist.nomargin= f.text_area :description
 .both
 %br
-= render 'shared/avatar_form', :subject => @group, :f => f
+= render 'shared/avatar_form', subject: @group, f: f
 %br
 .leftlist
   \ 
-.rightlist= submit_tag t('layout.save'), :data => {'disable-with' => t('layout.saving')}
+.rightlist= submit_tag t('layout.save'), data: {'disable-with' => t('layout.saving')}
 .both

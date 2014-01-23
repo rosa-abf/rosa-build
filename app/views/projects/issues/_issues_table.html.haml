@@ -1,21 +1,21 @@
 #description-top.issues-filter
   .project-tabnav
     %ul.tabnav-tabs
-      %li.list-browser-filter-tabs.open{:class => ('selected' if @status == :open)}
+      %li.list-browser-filter-tabs.open{class: ('selected' if @status == :open)}
         %a= "#{t('layout.issues.statuses.open')} (#{@opened_issues})"
-      %li.list-browser-filter-tabs.closed{:class => ('selected' if @status != :open)}
+      %li.list-browser-filter-tabs.closed{class: ('selected' if @status != :open)}
         %a= "#{t('layout.issues.statuses.closed')} (#{@closed_issues})"
-      %li.list-browser-sorts.updated{:class => ("selected #{@direction}" if @sort == :updated)}
+      %li.list-browser-sorts.updated{class: ("selected #{@direction}" if @sort == :updated)}
         - if @sort == :updated
-          %i{:class => (@direction == :asc ? 'icon-chevron-up' : 'icon-chevron-down')}
+          %i{class: (@direction == :asc ? 'icon-chevron-up' : 'icon-chevron-down')}
         %a= t('layout.issues.sort.updated')
-      %li.list-browser-sorts.created{:class => ("selected #{@direction}" if @sort == :created)}
+      %li.list-browser-sorts.created{class: ("selected #{@direction}" if @sort == :created)}
         - if @sort == :created
-          %i{:class => (@direction == :asc ? 'icon-chevron-up' : 'icon-chevron-down')}
+          %i{class: (@direction == :asc ? 'icon-chevron-up' : 'icon-chevron-down')}
         %a= t('layout.issues.sort.submitted')
 
 #table1.issues-table
-  %table#myTable.tablesorter.tracker{:cellpadding => "0", :cellspacing => "0"}
+  %table#myTable.tablesorter.tracker{cellpadding: "0", cellspacing: "0"}
     %tbody
-      = render :partial => 'projects/issues/issue', :collection => issues
+      = render partial: 'projects/issues/issue', collection: issues
   = will_paginate issues

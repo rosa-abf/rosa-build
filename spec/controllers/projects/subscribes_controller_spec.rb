@@ -51,12 +51,12 @@ describe Projects::SubscribesController do
     stub_symlink_methods
 
     @project = FactoryGirl.create(:project)
-    @issue = FactoryGirl.create(:issue, :project_id => @project.id)
+    @issue = FactoryGirl.create(:issue, project_id: @project.id)
 
-    @create_params = {:issue_id => @issue.serial_id, :owner_name => @project.owner.uname, :project_name => @project.name}
-    @destroy_params = {:issue_id => @issue.serial_id, :owner_name => @project.owner.uname, :project_name => @project.name}
+    @create_params = {issue_id: @issue.serial_id, owner_name: @project.owner.uname, project_name: @project.name}
+    @destroy_params = {issue_id: @issue.serial_id, owner_name: @project.owner.uname, project_name: @project.name}
 
-    any_instance_of(Project, :versions => ['v1.0', 'v2.0'])
+    any_instance_of(Project, versions: ['v1.0', 'v2.0'])
 
     @request.env['HTTP_REFERER'] = project_issue_path(@project, @issue)
   end
@@ -65,13 +65,13 @@ describe Projects::SubscribesController do
     before(:each) do
       @user = FactoryGirl.create(:admin)
       set_session_for(@user)
-      @project.relations.create!(:actor_type => 'User', :actor_id => @user.id, :role => 'admin')
-      @destroy_params = @destroy_params.merge({:id => @user.id})
+      @project.relations.create!(actor_type: 'User', actor_id: @user.id, role: 'admin')
+      @destroy_params = @destroy_params.merge({id: @user.id})
     end
 
     context 'subscribed' do
       before(:each) do
-        ss = @issue.subscribes.build(:user => @user)
+        ss = @issue.subscribes.build(user: @user)
         ss.save!
       end
 
@@ -88,12 +88,12 @@ describe Projects::SubscribesController do
     before(:each) do
       @user = FactoryGirl.create(:user)
       set_session_for(@user)
-      @destroy_params = @destroy_params.merge({:id => @user.id})
+      @destroy_params = @destroy_params.merge({id: @user.id})
     end
 
     context 'subscribed' do
       before(:each) do
-        ss = @issue.subscribes.build(:user => @user)
+        ss = @issue.subscribes.build(user: @user)
         ss.save!
       end
 

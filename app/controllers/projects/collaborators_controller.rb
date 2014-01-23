@@ -20,7 +20,7 @@ class Projects::CollaboratorsController < Projects::BaseController
       users = users.search(params[:term])
       groups = groups.search(params[:term])
     end
-    @collaborators = (users | groups).map{|act| Collaborator.new(:actor => act, :project => @project)}
+    @collaborators = (users | groups).map{|act| Collaborator.new(actor: act, project: @project)}
     respond_with @collaborators do |format|
       format.json { render 'index' }
     end
@@ -31,7 +31,7 @@ class Projects::CollaboratorsController < Projects::BaseController
     @collaborator.project = @project
     if @collaborator.save
       respond_with @collaborator do |format|
-        format.json { render :partial => 'collaborator', :locals => {:collaborator => @collaborator} }
+        format.json { render partial: 'collaborator', locals: {collaborator: @collaborator} }
       end
     else
       raise

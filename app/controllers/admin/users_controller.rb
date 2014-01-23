@@ -1,7 +1,7 @@
 class Admin::UsersController < Admin::BaseController
   include AvatarHelper
   prepend_before_filter :find_user
-  load_and_authorize_resource :collection => [:system, :list]
+  load_and_authorize_resource collection: [:system, :list]
 
   def index
     @filter = params[:filter] || 'all'
@@ -29,7 +29,7 @@ class Admin::UsersController < Admin::BaseController
       flash[:warning] = @user.errors.full_messages.join('. ')
       @system = @user.system?
 
-      render :action => :new
+      render action: :new
     end
   end
 
@@ -45,7 +45,7 @@ class Admin::UsersController < Admin::BaseController
     else
       flash[:error] = t('flash.user.save_error')
       flash[:warning] = @user.errors.full_messages.join('. ')
-      render :action => :edit
+      render action: :edit
     end
   end
 
@@ -65,7 +65,7 @@ class Admin::UsersController < Admin::BaseController
     sort_dir = params[:sSortDir_0]=="asc" ? 'asc' : 'desc'
     order = "users.#{colName[sort_col.to_i]} #{sort_dir}"
 
-    @users = @users.paginate(:page => (params[:iDisplayStart].to_i/params[:iDisplayLength].to_i).to_i + 1, :per_page => params[:iDisplayLength])
+    @users = @users.paginate(page: (params[:iDisplayStart].to_i/params[:iDisplayLength].to_i).to_i + 1, per_page: params[:iDisplayLength])
     @total_users = @users.count
     if !params[:sSearch].blank? && search = "%#{params[:sSearch]}%"
       @users = @users.where('users.name ILIKE ? or users.uname ILIKE ? or users.email ILIKE ?', search, search, search)
@@ -74,7 +74,7 @@ class Admin::UsersController < Admin::BaseController
     @users = @users.send(@filter) if ['real', 'admin', 'banned', 'tester'].include? @filter
     @users = @users.order(order)
 
-    render :partial => 'users_ajax', :layout => false
+    render partial: 'users_ajax', layout: false
   end
 
   def reset_auth_token

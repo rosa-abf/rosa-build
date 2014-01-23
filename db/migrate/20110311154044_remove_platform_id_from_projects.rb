@@ -4,6 +4,6 @@ class RemovePlatformIdFromProjects < ActiveRecord::Migration
   end
 
   def self.down
-    add_column :projects, :platform_id, :integer, :null => false
+    add_column :projects, :platform_id, :integer, null: false
   end
 end

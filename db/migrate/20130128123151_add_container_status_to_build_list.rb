@@ -6,7 +6,7 @@ class AddContainerStatusToBuildList < ActiveRecord::Migration
   def up
     add_column    :build_lists, :container_status, :integer
     remove_column :build_lists, :container_path
-    BuildList.where(:container_status => nil).update_all(:container_status => BuildList::WAITING_FOR_RESPONSE)
+    BuildList.where(container_status: nil).update_all(container_status: BuildList::WAITING_FOR_RESPONSE)
   end
 
   def down

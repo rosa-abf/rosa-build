@@ -35,12 +35,12 @@ shared_examples_for 'product build list admin' do
   end
 
   it 'should be able to perform update action' do
-    put :update, valid_attributes_for_show.merge(:product_build_list => {:time_living => 100,:not_delete => true})
+    put :update, valid_attributes_for_show.merge(product_build_list: {time_living: 100,not_delete: true})
     response.should redirect_to(platform_product_product_build_list_path(@product.platform, @product, @pbl))
   end
 
   it "ensures that only not_delete field of product build list has been updated" do
-    put :update, valid_attributes_for_show.merge(:product_build_list => {:time_living => 100,:not_delete => true})
+    put :update, valid_attributes_for_show.merge(product_build_list: {time_living: 100,not_delete: true})
     time_living = @pbl.time_living
     @pbl.reload.time_living.should == time_living
     @pbl.not_delete.should be_true
@@ -103,15 +103,15 @@ describe Platforms::ProductBuildListsController do
     before(:each) do
       @product = FactoryGirl.create(:product)
       @arch = FactoryGirl.create(:arch)
-      @pbl = FactoryGirl.create(:product_build_list, :product => @product)
+      @pbl = FactoryGirl.create(:product_build_list, product: @product)
     end
 
     def valid_attributes
-      {:product_id => @product.id, :platform_id => @product.platform_id, :product_build_list => {:main_script => 'build.sh', :time_living => 60, :project_version => 'master', :arch_id => @arch.id}}
+      {product_id: @product.id, platform_id: @product.platform_id, product_build_list: {main_script: 'build.sh', time_living: 60, project_version: 'master', arch_id: @arch.id}}
     end
 
     def valid_attributes_for_destroy
-      {:id => @pbl.id, :product_id => @pbl.product.id, :platform_id => @pbl.product.platform.id }
+      {id: @pbl.id, product_id: @pbl.product.id, platform_id: @pbl.product.platform.id }
     end
 
     def valid_attributes_for_show
@@ -145,7 +145,7 @@ describe Platforms::ProductBuildListsController do
       before(:each) do
         @user = FactoryGirl.create(:user)
         set_session_for(@user)
-        @product.platform.relations.create!(:actor_type => 'User', :actor_id => @user.id, :role => 'admin')
+        @product.platform.relations.create!(actor_type: 'User', actor_id: @user.id, role: 'admin')
       end
 
       it_should_behave_like 'product build list admin'

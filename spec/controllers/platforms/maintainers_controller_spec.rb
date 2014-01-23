@@ -3,7 +3,7 @@ require 'spec_helper'
 shared_examples_for 'guest user' do
 
   it "should be able to view maintainers list(index)" do
-    get :index, :platform_id => @platform.id
+    get :index, platform_id: @platform.id
     response.should be_success
   end
 end
@@ -20,13 +20,13 @@ describe Platforms::MaintainersController do
   context 'for guest' do
     before {set_session_for(User.new)}
 
-    it "should be able to view maintainers list(index)", :anonymous_access => true do
-      get :index, :platform_id => @platform.id
+    it "should be able to view maintainers list(index)", anonymous_access: true do
+      get :index, platform_id: @platform.id
       response.should be_success
     end
 
-    it "should not be able to view maintainers list(index)", :anonymous_access => false do
-      get :index, :platform_id => @platform.id
+    it "should not be able to view maintainers list(index)", anonymous_access: false do
+      get :index, platform_id: @platform.id
       response.should redirect_to(new_user_session_path)
     end
   end
@@ -57,7 +57,7 @@ describe Platforms::MaintainersController do
 
   context 'for platform member' do
     before(:each) do
-      @platform.relations.create!(:actor_type => 'User', :actor_id => @user.id, :role => 'admin')
+      @platform.relations.create!(actor_type: 'User', actor_id: @user.id, role: 'admin')
     end
 
     it_should_behave_like 'guest user'

@@ -107,7 +107,7 @@ module Grit
     end
 
     def diff(a, b, *paths)
-      diff = self.git.native('diff', {:M => true}, "#{a}...#{b}", '--', *paths)
+      diff = self.git.native('diff', {M: true}, "#{a}...#{b}", '--', *paths)
 
       if diff =~ /diff --git a/
         diff = diff.sub(/.*?(diff --git a)/m, '\1')
@@ -127,7 +127,7 @@ module Grit
     def diff_stats(a,b)
       stats = []
       Dir.chdir(path) do
-        lines = self.git.native(:diff, {:numstat => true, :M => true}, "#{a}...#{b}").split("\n")
+        lines = self.git.native(:diff, {numstat: true, M: true}, "#{a}...#{b}").split("\n")
         while !lines.empty?
           files = []
           while lines.first =~ /^([-\d]+)\s+([-\d]+)\s+(.+)/

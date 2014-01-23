@@ -7,5 +7,5 @@
       .left
     %nav
       %ul
-        %li= link_to t('layout.projects.list_header'), build_lists_path, :class => (controller_name == 'build_lists' ? 'active' : nil)
-        %li= link_to t('layout.products.list_header'), product_build_lists_path, :class => (controller_name == 'product_build_lists' ? 'active' : nil)
+        %li= link_to t('layout.projects.list_header'), build_lists_path, class: (controller_name == 'build_lists' ? 'active' : nil)
+        %li= link_to t('layout.products.list_header'), product_build_lists_path, class: (controller_name == 'product_build_lists' ? 'active' : nil)

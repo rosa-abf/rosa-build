@@ -1,11 +1,11 @@
 class Platforms::MassBuildsController < Platforms::BaseController
 
   before_filter :authenticate_user!
-  skip_before_filter :authenticate_user!, :only => [:index, :get_list] if APP_CONFIG['anonymous_access']
+  skip_before_filter :authenticate_user!, only: [:index, :get_list] if APP_CONFIG['anonymous_access']
 
   load_resource :platform
   load_and_authorize_resource :through  => :platform, :shallow  => true
-  
+
 
   def new
   end
@@ -14,11 +14,11 @@ class Platforms::MassBuildsController < Platforms::BaseController
     @mass_build.user, @mass_build.arches = current_user, params[:arches]
 
     if @mass_build.save
-      redirect_to(platform_mass_builds_path(@platform), :notice => t("flash.platform.build_all_success"))
+      redirect_to(platform_mass_builds_path(@platform), notice: t("flash.platform.build_all_success"))
     else
       flash[:warning] = @mass_build.errors.full_messages.join('. ')
       flash[:error] = t('flash.platform.build_all_error')
-      render :action => :new
+      render action: :new
     end
   end
 
@@ -28,11 +28,11 @@ class Platforms::MassBuildsController < Platforms::BaseController
     else
       @mass_build.publish_success_builds current_user
     end
-    redirect_to(platform_mass_builds_path(@mass_build.save_to_platform), :notice => t("flash.platform.publish_success"))
+    redirect_to(platform_mass_builds_path(@mass_build.save_to_platform), notice: t("flash.platform.publish_success"))
   end
 
   def index
-    @mass_builds  = MassBuild.by_platform(@platform).order('created_at DESC').paginate(:page => params[:page], :per_page => 20)
+    @mass_builds  = MassBuild.by_platform(@platform).order('created_at DESC').paginate(page: params[:page], per_page: 20)
   end
 
   def cancel
@@ -47,6 +47,6 @@ class Platforms::MassBuildsController < Platforms::BaseController
             elsif ['projects_list', 'missed_projects_list'].include? params[:kind]
               @mass_build.send params[:kind]
             end
-    render :text => text
+    render text: text
   end
 end

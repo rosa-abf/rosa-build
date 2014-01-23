@@ -1,19 +1,19 @@
 #wiki-content
-  .wrap{:class => "#{has_footer? ? 'has-footer' : ''} #{has_sidebar? ? 'has-rightbar' : ''}"}
-    #wiki-body{:class => "gollum-#{format}-content"}
+  .wrap{class: "#{has_footer? ? 'has-footer' : ''} #{has_sidebar? ? 'has-rightbar' : ''}"}
+    #wiki-body{class: "gollum-#{format}-content"}
       #template= raw @content
     - if has_sidebar?
-      #wiki-rightbar{:class => "gollum-#{sidebar_format}-content"}= raw sidebar_content
+      #wiki-rightbar{class: "gollum-#{sidebar_format}-content"}= raw sidebar_content
     - if has_footer?
-      #wiki-footer{:class => "gollum-#{footer_format}-content"}
+      #wiki-footer{class: "gollum-#{footer_format}-content"}
         #footer-content= raw footer_content
 .both
 #gollum-footer
   %p#last-edit
     = t("wiki.last_edited_by")
-    %b= user_link_by_user User.where(:email => author_email).first
-    = datetime_moment date, :tag => :span
+    %b= user_link_by_user User.where(email: author_email).first
+    = datetime_moment date, tag: :span
   - unless action_name == 'preview' or cannot? :write, @project
     %p#delete-link
-      = link_to project_wiki_path(@project, escaped_name), :method => :delete, :confirm => t("layout.confirm") do
+      = link_to project_wiki_path(@project, escaped_name), method: :delete, confirm: t("layout.confirm") do
         %span= t("wiki.delete_page")

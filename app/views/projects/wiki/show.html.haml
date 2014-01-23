@@ -1,6 +1,5 @@
--set_meta_tags :title => [title_object(@project), @page.name]
-/ = render 'gollum_includes'
-/ = render 'project_short'
+-set_meta_tags title: [title_object(@project), @page.name]
+
 = render 'submenu'
 .left
   %h3
@@ -8,13 +7,13 @@
     = "(#{t("wiki.preview")})" if action_name == 'preview'
 - unless action_name == 'preview'
   .r
-    = link_to t("wiki.page_history"), history_project_wiki_path(@project, escaped_name), :class => 'button'
+    = link_to t("wiki.page_history"), history_project_wiki_path(@project, escaped_name), class: 'button'
   .r
     - if @editable
-      = link_to t("wiki.edit_page"), edit_project_wiki_path(@project, escaped_name), :class => 'button'
+      = link_to t("wiki.edit_page"), edit_project_wiki_path(@project, escaped_name), class: 'button'
   .r
     - if can? :write, @project
-      = link_to t("wiki.new_page"), '#', :'data-url' => project_wiki_index_path(@project), :id => 'minibutton-new-page', :class => 'button'
+      = link_to t("wiki.new_page"), '#', :'data-url' => project_wiki_index_path(@project), id: 'minibutton-new-page', class: 'button'
 .both
 / = render 'searchbar'
 = render "page"

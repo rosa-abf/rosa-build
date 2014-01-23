@@ -5,9 +5,9 @@ module Modules
 
       included do
 
-        validates :time_living, :numericality => {
-          :only_integer => true
-        }, :presence => true
+        validates :time_living, numericality: {
+          only_integer: true
+        }, presence: true
 
         validate lambda {
           # MIN_TIME_LIVING <= time_living <= MAX_TIME_LIVING or
@@ -17,8 +17,8 @@ module Modules
           max = self.class.const_defined?(:MAX_TIME_LIVING) ? self.class::MAX_TIME_LIVING : 43200
           if min > time_living.to_i || time_living.to_i > max
             errors.add :time_living, I18n.t('flash.time_living.numericality_error',
-                                            :min => (min / 60),
-                                            :max => (max / 60)
+                                            min: (min / 60),
+                                            max: (max / 60)
                                           )
           end
         }

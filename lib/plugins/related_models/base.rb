@@ -9,7 +9,7 @@ module RelatedModels
 
         helper_method :parent_url, :parent_path
 
-        self.class_attribute :parents_symbols, :resources_configuration, :instance_writer => false
+        self.class_attribute :parents_symbols, :resources_configuration, instance_writer: false
 
         self.parents_symbols ||= []
         self.resources_configuration ||= {}

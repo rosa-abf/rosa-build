@@ -1,7 +1,7 @@
--set_meta_tags :title => nil
+-set_meta_tags title: nil
 %h3.fix
   = t("layout.activity_feed.header")
-  = link_to image_tag("rss.ico", :width => '15px', :height => '15px', :class => 'atom_icon'), atom_activity_feeds_path(:format => 'atom', :token => current_user.authentication_token)
+  = link_to image_tag("rss.ico", width: '15px', height: '15px', class: 'atom_icon'), atom_activity_feeds_path(format: 'atom', token: current_user.authentication_token)
   =render 'feed_tabs'
 =render 'list'
 

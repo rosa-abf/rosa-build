@@ -2,12 +2,12 @@ class Platforms::ProductBuildListsController < Platforms::BaseController
   include FileStoreHelper
 
   before_filter :authenticate_user!
-  skip_before_filter :authenticate_user!, :only => [:index, :show, :log] if APP_CONFIG['anonymous_access']
-  before_filter :redirect_to_full_path_if_short_url, :only => :show
-  load_and_authorize_resource :platform, :except => :index
-  load_and_authorize_resource :product, :through => :platform, :except => :index
-  load_and_authorize_resource :product_build_list, :through => :product, :except => :index
-  load_and_authorize_resource :only => [:index, :show, :log, :cancel, :update]
+  skip_before_filter :authenticate_user!, only: [:index, :show, :log] if APP_CONFIG['anonymous_access']
+  before_filter :redirect_to_full_path_if_short_url, only: :show
+  load_and_authorize_resource :platform, except: :index
+  load_and_authorize_resource :product, through: :platform, except: :index
+  load_and_authorize_resource :product_build_list, through: :product, except: :index
+  load_and_authorize_resource only: [:index, :show, :log, :cancel, :update]
 
   def new
     product = @product_build_list.product
@@ -25,7 +25,7 @@ class Platforms::ProductBuildListsController < Platforms::BaseController
   end
 
   def update
-    if @product_build_list.update_attributes(:not_delete => (params[:product_build_list] || {})[:not_delete])
+    if @product_build_list.update_attributes(not_delete: (params[:product_build_list] || {})[:not_delete])
       flash[:notice] = t('flash.product_build_list.updated')
     else
       flash[:error] = t('flash.product_build_list.update_error')
@@ -40,13 +40,13 @@ class Platforms::ProductBuildListsController < Platforms::BaseController
     else
       notice = t('layout.build_lists.cancel_fail')
     end
-    redirect_to :back, :notice => notice
+    redirect_to :back, notice: notice
   end
 
   def log
-    render :json => {
-      :log => @product_build_list.abf_worker_log,
-      :building => @product_build_list.build_started?
+    render json: {
+      log: @product_build_list.abf_worker_log,
+      building: @product_build_list.build_started?
     }
   end
 
@@ -62,7 +62,7 @@ class Platforms::ProductBuildListsController < Platforms::BaseController
     else
       flash[:error] = t('flash.product.build_error')
       flash[:warning] = pbl.errors.full_messages.join('. ')
-      render :action => :new
+      render action: :new
     end
   end
 
@@ -71,18 +71,18 @@ class Platforms::ProductBuildListsController < Platforms::BaseController
       flash[:notice] = t('flash.product_build_list.delete')
      else
       flash[:error] = t('flash.product_build_list.delete_error')
-     end 
+     end
     redirect_to [@platform, @product]
   end
 
   def index
     if params[:product_id].present?
-      @product_build_lists = @product_build_lists.where(:id => params[:product_id])
+      @product_build_lists = @product_build_lists.where(id: params[:product_id])
     else
       @product_build_lists = @product_build_lists.scoped_to_product_name(params[:product_name]) if params[:product_name].present?
       @product_build_lists = @product_build_lists.for_status(params[:status]) if params[:status].present?
     end
-    @product_build_lists = @product_build_lists.recent.paginate :page => params[:page]
+    @product_build_lists = @product_build_lists.recent.paginate page: params[:page]
     @build_server_status = AbfWorker::StatusInspector.products_status
   end
 

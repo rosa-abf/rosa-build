@@ -1,7 +1,7 @@
--set_meta_tags :title => t('layout.users.settings')
+-set_meta_tags title: t('layout.users.settings')
 %h3.fix.bpadding10= t('layout.users.private_settings_header')
 
-= form_for @user, :url => private_settings_path, :html => {:class => :form} do |f|
+= form_for @user, url: private_settings_path, html: {class: :form} do |f|
   .leftlist= f.label :current_password
   .rightlist= f.password_field :current_password
   .both
@@ -13,16 +13,16 @@
   .both
   .leftlist
     \ 
-  .rightlist= submit_tag t('layout.save'), :data => {'disable-with' => t('layout.saving')}
+  .rightlist= submit_tag t('layout.save'), data: {'disable-with' => t('layout.saving')}
   .both
 %br
 
-= form_for @user, :url => reset_auth_token_settings_path, :html => {:class => :form} do |f|
+= form_for @user, url: reset_auth_token_settings_path, html: {class: :form} do |f|
   .leftlist= f.label :authentication_token
   .rightlist= @user.authentication_token
   .both
   .leftlist
-  .rightlist= submit_tag t('layout.users.reset_token'), :data => {'disable-with' => t('layout.saving')}
+  .rightlist= submit_tag t('layout.users.reset_token'), data: {'disable-with' => t('layout.saving')}
   .both
 
 :javascript

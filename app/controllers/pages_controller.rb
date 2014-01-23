@@ -9,7 +9,7 @@ class PagesController < ApplicationController
                       when 'projects'
                         %w(control git tracker)
                       end
-    render "pages/tour/tour-inside", :layout => 'tour'
+    render "pages/tour/tour-inside", layout: 'tour'
   end
 
   def forbidden

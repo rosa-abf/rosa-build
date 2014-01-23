@@ -10,9 +10,9 @@ class SshKey < ActiveRecord::Base
   before_validation lambda { self.key = key.strip if key.present? }
   before_validation :set_fingerprint
 
-  validates :name, :length => {:maximum => 255}
-  validates :key, :length => {:maximum => 5000}, format: { :with => /ssh-.{3} / } # Public key?
-  validates :fingerprint, uniqueness: true, :presence => { :message => I18n.t('activerecord.errors.ssh_key.wrong_key') }
+  validates :name, length: {maximum: 255}
+  validates :key, length: {maximum: 5000}, format: { with: /ssh-.{3} / } # Public key?
+  validates :fingerprint, uniqueness: true, presence: { message: I18n.t('activerecord.errors.ssh_key.wrong_key') }
 
   after_create :add_key
   before_destroy :remove_key

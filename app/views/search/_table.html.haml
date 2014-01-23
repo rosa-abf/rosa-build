@@ -1,5 +1,5 @@
 - collection = instance_variable_get("@#{type}")
-%table.tablesorter.bmargin5{:cellpadding => "0", :cellspacing => "0"}
+%table.tablesorter.bmargin5{cellpadding: "0", cellspacing: "0"}
   %thead
     %tr
       %th #{t "layout.#{type}.list_header"} (#{collection.count})
@@ -7,4 +7,4 @@
     - collection.each do |c|
       %tr
         %td= render type.singularize, type.singularize.to_sym => c
-= link_to t('layout.search.all'), search_index_path(:query => @query, :type => type) if collection.present?
+= link_to t('layout.search.all'), search_index_path(query: @query, type: type) if collection.present?

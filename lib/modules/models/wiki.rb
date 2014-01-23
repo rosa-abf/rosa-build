@@ -21,9 +21,9 @@ module Modules
       def create_wiki
         if has_wiki && !FileTest.exist?(wiki_path)
           Grit::Repo.init_bare(wiki_path)
-          wiki = Gollum::Wiki.new(wiki_path, {:base_path => Rails.application.routes.url_helpers.project_wiki_index_path(owner, self)})
+          wiki = Gollum::Wiki.new(wiki_path, {base_path: Rails.application.routes.url_helpers.project_wiki_index_path(owner, self)})
           wiki.write_page('Home', :markdown, I18n.t("wiki.seed.welcome_content"),
-                          {:name => owner.name, :email => owner.email, :message => 'Initial commit'})
+                          {name: owner.name, email: owner.email, message: 'Initial commit'})
         end
       end
 

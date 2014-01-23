@@ -24,18 +24,18 @@ module AbfWorker
         subject.now_publish if subject.can_auto_publish?
       when FAILED
         subject.build_error
-        item.update_attributes({:status => BuildList::BUILD_ERROR})
+        item.update_attributes({status: BuildList::BUILD_ERROR})
       when STARTED
         subject.start_build
       when CANCELED
         subject.build_canceled
-        item.update_attributes({:status => BuildList::BUILD_CANCELED})
+        item.update_attributes({status: BuildList::BUILD_CANCELED})
       when TESTS_FAILED
         subject.tests_failed
       end
 
       if [TESTS_FAILED, COMPLETED].include?(status)
-        item.update_attributes({:status => BuildList::SUCCESS}) 
+        item.update_attributes({status: BuildList::SUCCESS})
         subject.publish_container if subject.auto_create_container?
       end
     end
@@ -44,10 +44,10 @@ module AbfWorker
 
     def find_or_create_item
       subject.items.first || subject.items.create({
-        :version => subject.commit_hash,
-        :name => subject.project.name,
-        :status => BuildList::BUILD_STARTED,
-        :level => 0
+        version: subject.commit_hash,
+        name: subject.project.name,
+        status: BuildList::BUILD_STARTED,
+        level: 0
       })
     end
 

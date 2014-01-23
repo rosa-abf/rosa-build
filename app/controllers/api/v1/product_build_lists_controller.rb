@@ -1,8 +1,8 @@
 class Api::V1::ProductBuildListsController < Api::V1::BaseController
   before_filter :authenticate_user!
-  skip_before_filter :authenticate_user!, :only => [:index, :show] if APP_CONFIG['anonymous_access']
+  skip_before_filter :authenticate_user!, only: [:index, :show] if APP_CONFIG['anonymous_access']
 
-  load_and_authorize_resource :product, :only => :index
+  load_and_authorize_resource :product, only: :index
   load_and_authorize_resource
 
   def index
@@ -27,7 +27,7 @@ class Api::V1::ProductBuildListsController < Api::V1::BaseController
   end
 
   def update
-    params[:product_build_list] = {:not_delete => (params[:product_build_list] || {})[:not_delete]}
+    params[:product_build_list] = {not_delete: (params[:product_build_list] || {})[:not_delete]}
     update_subject @product_build_list
   end
 

@@ -3,11 +3,11 @@ namespace :buildlist do
 
   namespace :clear do
     desc 'Remove outdated BuildLists and MassBuilds'
-    task :outdated => :environment do
+    task outdated: :environment do
       say "[#{Time.zone.now}] Removing outdated BuildLists"
       say "[#{Time.zone.now}] There are #{BuildList.outdated.count} outdated BuildLists"
       counter = 0
-      BuildList.outdated.order(:id).find_in_batches(:batch_size => 100) do |build_lists|
+      BuildList.outdated.order(:id).find_in_batches(batch_size: 100) do |build_lists|
         build_lists.each do |bl|
           bl.destroy && (counter += 1) if bl.id != bl.last_published.first.try(:id)
         end
@@ -29,7 +29,7 @@ namespace :buildlist do
   namespace :packages do
     # TODO Maybe do it in migration, because it's just a single query?
     desc 'Actualize packages for all platforms'
-    task :actualize => :environment do
+    task actualize: :environment do
 
       say "Updating packages"
       packages = BuildList::Package.joins( %q{
@@ -49,7 +49,7 @@ namespace :buildlist do
           AND j_pt   = package_type
           AND j_plid = platform_id
           AND j_ca   = created_at
-      } ).update_all(:actual => true)
+      } ).update_all(actual: true)
       say "'Actual' setted to #{packages} packages"
     end
   end

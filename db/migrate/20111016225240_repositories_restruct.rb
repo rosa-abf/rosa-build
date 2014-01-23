@@ -1,8 +1,8 @@
 class RepositoriesRestruct < ActiveRecord::Migration
   def self.up
     change_table :repositories do |t|
-      t.references :owner, :polymorphic => true
-      t.string :visibility, :default => 'open'
+      t.references :owner, polymorphic: true
+      t.string :visibility, default: 'open'
     end
   end
 

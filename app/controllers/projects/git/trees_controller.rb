@@ -1,16 +1,16 @@
 class Projects::Git::TreesController < Projects::Git::BaseController
-  before_filter lambda{redirect_to @project if params[:treeish] == @project.default_branch and params[:path].blank?}, :only => :show
-  skip_before_filter :set_branch_and_tree, :set_treeish_and_path, :only => :archive
-  before_filter lambda { raise Grit::NoSuchPathError if params[:treeish] != @branch.try(:name) }, :only => [:branch, :destroy]
+  before_filter lambda{redirect_to @project if params[:treeish] == @project.default_branch and params[:path].blank?}, only: :show
+  skip_before_filter :set_branch_and_tree, :set_treeish_and_path, only: :archive
+  before_filter lambda { raise Grit::NoSuchPathError if params[:treeish] != @branch.try(:name) }, only: [:branch, :destroy]
 
-  skip_authorize_resource :project,                       :only => [:destroy, :restore_branch, :create]
-  before_filter lambda { authorize!(:write, @project) },  :only => [:destroy, :restore_branch, :create]
+  skip_authorize_resource :project,                       only: [:destroy, :restore_branch, :create]
+  before_filter lambda { authorize!(:write, @project) },  only: [:destroy, :restore_branch, :create]
 
   def show
     unless request.xhr?
       render('empty') and return if @project.is_empty?
       @tree = @tree / @path if @path.present?
-      @commit = @branch.present? ? @branch.commit() : @project.repo.log(@treeish, @path, :max_count => 1).first
+      @commit = @branch.present? ? @branch.commit() : @project.repo.log(@treeish, @path, max_count: 1).first
       raise Grit::NoSuchPathError unless @commit
     end
   end
@@ -28,7 +28,7 @@ class Projects::Git::TreesController < Projects::Git::BaseController
       redirect_to "#{APP_CONFIG['file_store_url']}/api/v1/file_stores/#{sha1}"
     else
       archive = @project.archive_by_treeish_and_format @treeish, format
-      send_file archive[:path], :disposition => 'attachment', :type => "application/#{format == 'zip' ? 'zip' : 'x-tar-gz'}", :filename => archive[:fullname]
+      send_file archive[:path], disposition: 'attachment', type: "application/#{format == 'zip' ? 'zip' : 'x-tar-gz'}", filename: archive[:fullname]
     end
   end
 
@@ -38,7 +38,7 @@ class Projects::Git::TreesController < Projects::Git::BaseController
       render :refs_list
     else
       respond_to do |format|
-        format.json { render :nothing => true, :status => 422 }
+        format.json { render nothing: true, status: 422 }
         format.html
       end
     end
@@ -46,17 +46,17 @@ class Projects::Git::TreesController < Projects::Git::BaseController
 
   def restore_branch
     status = @project.create_branch(@treeish, params[:sha], current_user) ? 200 : 422
-    render :nothing => true, :status => status
+    render nothing: true, status: status
   end
 
   def create
     status = @project.create_branch(params[:new_ref], params[:from_ref], current_user) ? 200 : 422
-    render :nothing => true, :status => status
+    render nothing: true, status: status
   end
 
   def destroy
     status = @branch && @project.delete_branch(@branch, current_user) ? 200 : 422
-    render :nothing => true, :status => status
+    render nothing: true, status: status
   end
 
   def branches
@@ -65,7 +65,7 @@ class Projects::Git::TreesController < Projects::Git::BaseController
       render :refs_list
     else
       respond_to do |format|
-        format.json { render :nothing => true, :status => 422 }
+        format.json { render nothing: true, status: 422 }
         format.html
       end
     end

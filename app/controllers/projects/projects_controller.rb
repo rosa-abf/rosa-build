@@ -1,8 +1,8 @@
 class Projects::ProjectsController < Projects::BaseController
   include ProjectsHelper
   before_filter :authenticate_user!
-  load_and_authorize_resource :id_param => :project_name # to force member actions load
-  before_filter :who_owns, :only => [:new, :create, :mass_import, :run_mass_import]
+  load_and_authorize_resource id_param: :project_name # to force member actions load
+  before_filter :who_owns, only: [:new, :create, :mass_import, :run_mass_import]
 
   def index
     @projects = Project.accessible_by(current_ability, :membered)
@@ -11,8 +11,8 @@ class Projects::ProjectsController < Projects::BaseController
       format.html {
         @all_projects = @projects
         @groups = current_user.groups
-        @owners = User.where(:id => @projects.where(:owner_type => 'User').uniq.pluck(:owner_id))
-        @projects = @projects.recent.paginate(:page => params[:page], :per_page => 25)
+        @owners = User.where(id: @projects.where(owner_type: 'User').uniq.pluck(:owner_id))
+        @projects = @projects.recent.paginate(page: params[:page], per_page: 25)
       }
       format.json {
         selected_groups = params[:groups] || []
@@ -27,7 +27,7 @@ class Projects::ProjectsController < Projects::BaseController
   end
 
   def mass_import
-    @project = Project.new(:mass_import => true)
+    @project = Project.new(mass_import: true)
   end
 
   def run_mass_import
@@ -61,7 +61,7 @@ class Projects::ProjectsController < Projects::BaseController
     else
       flash[:error] = t('flash.project.save_error')
       flash[:warning] = @project.errors.full_messages.join('. ')
-      render :action => :new
+      render action: :new
     end
   end
 
@@ -74,7 +74,7 @@ class Projects::ProjectsController < Projects::BaseController
       @project.save
       flash[:error] = t('flash.project.save_error')
       flash[:warning] = @project.errors.full_messages.join('. ')
-      render :action => :edit
+      render action: :edit
     end
   end
 
@@ -88,7 +88,7 @@ class Projects::ProjectsController < Projects::BaseController
     owner = (Group.find params[:group] if params[:group].present?) || current_user
     authorize! :write, owner if owner.class == Group
     if forked = @project.fork(owner, params[:fork_name]) and forked.valid?
-      redirect_to forked, :notice => t("flash.project.forked")
+      redirect_to forked, notice: t("flash.project.forked")
     else
       flash[:warning] = t("flash.project.fork_error")
       flash[:error] = forked.errors.full_messages.join("\n")
@@ -97,8 +97,8 @@ class Projects::ProjectsController < Projects::BaseController
   end
 
   def possible_forks
-    render :partial => 'projects/git/base/forks', :layout => false,
-      :locals => { :owner => current_user, :name => (params[:name].presence || @project.name) }
+    render partial: 'projects/git/base/forks', layout: false,
+      locals: { owner: current_user, name: (params[:name].presence || @project.name) }
   end
 
   def sections
@@ -123,18 +123,18 @@ class Projects::ProjectsController < Projects::BaseController
     term, limit = params[:term], params[:limit] || 10
     items = User.member_of_project(@project)
                 .where("users.name ILIKE ? OR users.uname ILIKE ?", "%#{term}%", "%#{term}%")
-                .limit(limit).map { |u| {:value => u.fullname, :label => u.fullname, :id => u.id} }
-    render :json => items
+                .limit(limit).map { |u| {value: u.fullname, label: u.fullname, id: u.id} }
+    render json: items
   end
 
   def preview
-    render :inline => view_context.markdown(params[:text] || ''), :layout => false
+    render inline: view_context.markdown(params[:text] || ''), layout: false
   end
 
   def refs_list
     refs = @project.repo.branches_and_tags.map(&:name)
     @selected = (refs.include? params[:selected]) ? params[:selected] : @project.default_branch
-    render :layout => false
+    render layout: false
   end
 
   protected
@@ -167,7 +167,7 @@ class Projects::ProjectsController < Projects::BaseController
       length = params[:iDisplayLength].to_i
       page = start/length + 1
 
-      projects.paginate(:page => page, :per_page => length)
+      projects.paginate(page: page, per_page: length)
     else
       projects
     end

@@ -1,14 +1,14 @@
 %ul.nav.nav-tabs#pull_tabs
   %li
-    %a{"data-toggle" => "tab", :href => "#discussion"}=t 'pull_requests.tabs.discussion'
+    %a{"data-toggle" => "tab", href: "#discussion"}=t 'pull_requests.tabs.discussion'
   -if @stats
     %li
-      %a{"data-toggle" => "tab", :href => "#diff"}="#{t'pull_requests.tabs.diff'} (#{@stats.count})"
+      %a{"data-toggle" => "tab", href: "#diff"}="#{t'pull_requests.tabs.diff'} (#{@stats.count})"
   -if @commits
     %li
       - commits_message = @commits.count.to_s
       - commits_message << '+' if @total_commits > @commits.count
-      %a{"data-toggle" => "tab", :href => "#commits"}="#{t'pull_requests.tabs.commits'} (#{commits_message})"
+      %a{"data-toggle" => "tab", href: "#commits"}="#{t'pull_requests.tabs.commits'} (#{commits_message})"
 
 :javascript
   $(document).ready(function() {

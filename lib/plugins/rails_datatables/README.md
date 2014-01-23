@@ -55,7 +55,7 @@ Activate using <%= datatable() %>, passing in the columns, how to filter them (s
     :no_records_message - Message to display if no records are found, whether on load or after searching
     :auto_width - Automatically adjust the width of the columns. Defaults to true.
     :row_callback - a function to run on each row in the table. Inserted in to "'fnRowCallback': function( nRow, aData, iDisplayIndex ) {  }". See [documentation for fnRowCallback](http://www.datatables.net/usage/callbacks) for more information.
-    
+
 #### Column Options
 
     :class - string, the class to assign to the table cell. Default is none.
@@ -64,18 +64,18 @@ Activate using <%= datatable() %>, passing in the columns, how to filter them (s
     :searchable - boolean, allow this column to be searched, for non-Ajax tables. Default is true.
 
 #### AJAX Options
-  
+
   When you're working with large datasets it's not reasonable to load everything on page load. Use an :ajax_source to load just the records that are being displayed, do custom searching (DB, Solr, etc).
 
     :ajax_source - string, for large datasets, use an ajax source to load each page on its own. For smaller datasets, just load the whole set and let datatable do the sorting
 
-Add a datatable method on your controller to return JSON  
-* Return the objects to be displayed  
-* Return the total number of objects  
+Add a datatable method on your controller to return JSON
+* Return the objects to be displayed
+* Return the total number of objects
 * Add a method to handle sorting - DataTables returns the column that is being sorted (0 - n), so you need to know which column is which and sort on it.
-    
+
 ### AJAX Example
-    
+
 #### Datatable view example - datatable.html.erb
 
     {"sEcho": <%= params[:sEcho] || -1 %>,
@@ -99,12 +99,12 @@ Add a datatable method on your controller to return JSON
     end
 
     private
-    
+
     def current_objects(params={})
       current_page = (params[:iDisplayStart].to_i/params[:iDisplayLength].to_i rescue 0)+1
-      @current_objects = Object.paginate :page => current_page, 
-                                         :include => [:user], 
-                                         :order => "#{datatable_columns(params[:iSortCol_0])} #{params[:sSortDir_0] || "DESC"}", 
+      @current_objects = Object.paginate :page => current_page,
+                                         :include => [:user],
+                                         :order => "#{datatable_columns(params[:iSortCol_0])} #{params[:sSortDir_0] || "DESC"}",
                                          :conditions => conditions,
                                          :per_page => params[:iDisplayLength]
     end
@@ -129,7 +129,7 @@ Add a datatable method on your controller to return JSON
       conditions << "(objects.description ILIKE '%#{params[:sSearch]}%' OR users.name ILIKE '%#{params[:sSearch]}%')" if(params[:sSearch])
       return conditions.join(" AND ")
     end
-    
+
 ### Note
 There is a more functionality offered by DataTables than this plugin currently provides. We add to it as we find need for other features. If there's a feature of DataTables that you'd like to see, fork this repo and add it so we can all benefit.
 

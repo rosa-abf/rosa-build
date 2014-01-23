@@ -3,38 +3,38 @@ class Project < ActiveRecord::Base
   MAX_OWN_PROJECTS = 32000
   NAME_REGEXP = /[\w\-\+\.]+/
 
-  belongs_to :owner, :polymorphic => true, :counter_cache => :own_projects_count
-  belongs_to :maintainer, :class_name => "User"
+  belongs_to :owner, polymorphic: true, counter_cache: :own_projects_count
+  belongs_to :maintainer, class_name: "User"
 
-  has_many :issues, :dependent => :destroy
-  has_many :pull_requests, :dependent => :destroy, :foreign_key => 'to_project_id'
-  has_many :labels, :dependent => :destroy
+  has_many :issues, dependent: :destroy
+  has_many :pull_requests, dependent: :destroy, foreign_key: 'to_project_id'
+  has_many :labels, dependent: :destroy
 
-  has_many :project_imports, :dependent => :destroy
-  has_many :project_to_repositories, :dependent => :destroy
-  has_many :repositories, :through => :project_to_repositories
-  has_many :project_tags, :dependent => :destroy
-  has_many :project_statistics, :dependent => :destroy
-  
-  has_many :build_lists, :dependent => :destroy
-  has_many :hooks, :dependent => :destroy
+  has_many :project_imports, dependent: :destroy
+  has_many :project_to_repositories, dependent: :destroy
+  has_many :repositories, through: :project_to_repositories
+  has_many :project_tags, dependent: :destroy
+  has_many :project_statistics, dependent: :destroy
 
-  has_many :relations, :as => :target, :dependent => :destroy
-  has_many :collaborators, :through => :relations, :source => :actor, :source_type => 'User'
-  has_many :groups,        :through => :relations, :source => :actor, :source_type => 'Group'
+  has_many :build_lists, dependent: :destroy
+  has_many :hooks, dependent: :destroy
 
-  has_many :packages, :class_name => "BuildList::Package", :dependent => :destroy
-  has_and_belongs_to_many :advisories # should be without :dependent => :destroy
+  has_many :relations, as: :target, dependent: :destroy
+  has_many :collaborators, through: :relations, source: :actor, source_type: 'User'
+  has_many :groups,        through: :relations, source: :actor, source_type: 'Group'
 
-  validates :name, :uniqueness => {:scope => [:owner_id, :owner_type], :case_sensitive => false},
-                   :presence => true,
-                   :format => {:with => /\A#{NAME_REGEXP}\z/,
-                   :message => I18n.t("activerecord.errors.project.uname")}
-  validates :maintainer_id, :presence => true, :unless => :new_record?
-  validates :url, :presence => true, :format => {:with => /\Ahttps?:\/\/[\S]+\z/}, :if => :mass_import
-  validates :add_to_repository_id, :presence => true, :if => :mass_import
-  validates :visibility, :presence => true, :inclusion => {:in => VISIBILITIES}
-  validate { errors.add(:base, :can_have_less_or_equal, :count => MAX_OWN_PROJECTS) if owner.projects.size >= MAX_OWN_PROJECTS }
+  has_many :packages, class_name: "BuildList::Package", dependent: :destroy
+  has_and_belongs_to_many :advisories # should be without dependent: :destroy
+
+  validates :name, uniqueness: {scope: [:owner_id, :owner_type], case_sensitive: false},
+                   presence: true,
+                   format: {with: /\A#{NAME_REGEXP}\z/,
+                   message: I18n.t("activerecord.errors.project.uname")}
+  validates :maintainer_id, presence: true, unless: :new_record?
+  validates :url, presence: true, format: {with: /\Ahttps?:\/\/[\S]+\z/}, if: :mass_import
+  validates :add_to_repository_id, presence: true, if: :mass_import
+  validates :visibility, presence: true, inclusion: {in: VISIBILITIES}
+  validate { errors.add(:base, :can_have_less_or_equal, count: MAX_OWN_PROJECTS) if owner.projects.size >= MAX_OWN_PROJECTS }
   validate :check_default_branch
   # throws validation error message from ProjectToRepository model into Project model
   validate do |project|
@@ -61,9 +61,9 @@ class Project < ActiveRecord::Base
     term = params.map(&:strip).join('/').downcase
     where("lower(concat(owner_uname, '/', name)) ILIKE ?", "%#{term}%") if term.present?
   }
-  scope :by_visibilities, lambda {|v| where(:visibility => v)}
-  scope :opened, where(:visibility => 'open')
-  scope :package, where(:is_package => true)
+  scope :by_visibilities, lambda {|v| where(visibility: v)}
+  scope :opened, where(visibility: 'open')
+  scope :package, where(is_package: true)
   scope :addable_to_repository, lambda { |repository_id| where %Q(
     projects.id NOT IN (
       SELECT
@@ -77,14 +77,14 @@ class Project < ActiveRecord::Base
     where("(#{table_name}.owner_id in (?) AND #{table_name}.owner_type = 'Group') OR (#{table_name}.owner_id in (?) AND #{table_name}.owner_type = 'User')", group_owner_ids, user_owner_ids)
   }
 
-  before_validation :truncate_name, :on => :create
+  before_validation :truncate_name, on: :create
   before_save lambda { self.owner_uname = owner.uname if owner_uname.blank? || owner_id_changed? || owner_type_changed? }
   before_create :set_maintainer
   after_save :attach_to_personal_repository
   after_update :set_new_git_head
-  after_update lambda { update_path_to_project(name_was) }, :if => :name_changed?
+  after_update lambda { update_path_to_project(name_was) }, if: :name_changed?
 
-  has_ancestry :orphan_strategy => :rootify #:adopt not available yet
+  has_ancestry orphan_strategy: :rootify #:adopt not available yet
 
   attr_accessor :url, :srpms_list, :mass_import, :add_to_repository_id
 
@@ -95,7 +95,7 @@ class Project < ActiveRecord::Base
 
   class << self
     def find_by_owner_and_name(owner_name, project_name)
-      where(:owner_uname => owner_name, :name => project_name).first ||
+      where(owner_uname: owner_name, name: project_name).first ||
         by_owner_and_name(owner_name, project_name).first
     end
 
@@ -156,7 +156,7 @@ class Project < ActiveRecord::Base
 
   def git_project_address auth_user
     opts = default_url_options
-    opts.merge!({:user => auth_user.authentication_token, :password => ''}) unless self.public?
+    opts.merge!({user: auth_user.authentication_token, password: ''}) unless self.public?
     Rails.application.routes.url_helpers.project_url(self.owner.uname, self.name, opts) + '.git'
     #path #share by NFS
   end
@@ -178,7 +178,7 @@ class Project < ActiveRecord::Base
                       else
                         default_branch
                       end
-    
+
     increase_release_tag(project_version, user, "MassBuild##{mass_build.id}: Increase release tag") if increase_rt
 
     build_list = build_lists.build do |bl|
@@ -230,7 +230,7 @@ class Project < ActiveRecord::Base
 
   def get_project_tag_sha1(tag, format)
     format_id = ProjectTag::FORMATS["#{tag_file_format(format)}"]
-    project_tag = project_tags.where(:tag_name => tag.name, :format_id => format_id).first
+    project_tag = project_tags.where(tag_name: tag.name, format_id: format_id).first
 
     return project_tag.sha1 if project_tag && project_tag.commit_id == tag.commit.id && Modules::Models::FileStoreClean.file_exist_on_file_store?(project_tag.sha1)
 
@@ -247,13 +247,13 @@ class Project < ActiveRecord::Base
     end
     if project_tag
       project_tag.destroy_files_from_file_store(project_tag.sha1)
-      project_tag.update_attributes(:sha1 => sha1)
+      project_tag.update_attributes(sha1: sha1)
     else
       project_tags.create(
-        :tag_name   => tag.name,
-        :format_id  => format_id,
-        :commit_id  => tag.commit.id,
-        :sha1       => sha1
+        tag_name:  tag.name,
+        format_id: format_id,
+        commit_id: tag.commit.id,
+        sha1:      sha1
       )
     end
     return sha1
@@ -278,7 +278,7 @@ class Project < ActiveRecord::Base
       else
         release = release.to_i + 1
       end
-      release 
+      release
     end
 
     content.gsub(/^Release:(\s+)(%mkrel\s+)?(\d+)([.\d]+)?(mdk)?$/) do |line|
@@ -301,9 +301,9 @@ class Project < ActiveRecord::Base
     return if content == raw.content
 
     update_file(blob.name, content.gsub("\r", ''),
-      :message => message,
-      :actor => user,
-      :head => project_version
+      message: message,
+      actor: user,
+      head: project_version
     )
   end
 
@@ -315,8 +315,8 @@ class Project < ActiveRecord::Base
     system("cd #{path}; git archive --format=#{format == 'zip' ? 'zip' : 'tar'} --prefix=#{file_name}/ #{treeish} #{format == 'zip' ? '' : ' | gzip -9'} > #{file.path}")
     file.close
     {
-      :path     => file.path,
-      :fullname => fullname
+      path:     file.path,
+      fullname: fullname
     }
   end
 
@@ -331,7 +331,7 @@ class Project < ActiveRecord::Base
   def attach_to_personal_repository
     owner_repos = self.owner.personal_platform.repositories
     if is_package
-      repositories << self.owner.personal_repository unless repositories.exists?(:id => owner_repos.pluck(:id))
+      repositories << self.owner.personal_repository unless repositories.exists?(id: owner_repos.pluck(:id))
     else
       repositories.delete owner_repos
     end
@@ -352,21 +352,21 @@ class Project < ActiveRecord::Base
     self.name = old_name
     old_path  = path
     self.name = new_name
-    FileUtils.mv old_path, new_path, :force => true if Dir.exists?(old_path)
+    FileUtils.mv old_path, new_path, force: true if Dir.exists?(old_path)
 
     pull_requests_old_path = File.join(APP_CONFIG['git_path'], 'pull_requests', owner.uname, old_name)
     if Dir.exists?(pull_requests_old_path)
       FileUtils.mv  pull_requests_old_path,
                     File.join(APP_CONFIG['git_path'], 'pull_requests', owner.uname, new_name),
-                    :force => true
+                    force: true
     end
 
-    PullRequest.where(:from_project_id => id).update_all(:from_project_name => new_name)
+    PullRequest.where(from_project_id: id).update_all(from_project_name: new_name)
 
-    PullRequest.where(:from_project_id => id).each{ |p| p.update_relations(old_name) }
+    PullRequest.where(from_project_id: id).each{ |p| p.update_relations(old_name) }
     pull_requests.where('from_project_id != to_project_id').each(&:update_relations)
   end
-  later :update_path_to_project, :queue => :clone_build
+  later :update_path_to_project, queue: :clone_build
 
   def check_default_branch
     if self.repo.branches.count > 0 && self.repo.branches.map(&:name).exclude?(self.default_branch)

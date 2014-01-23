@@ -3,19 +3,19 @@
   = t('layout.issues.clear_assignee')
   .container
     %span= t('layout.issues.no_one_is_assigned')
-    = hidden_field_tag "user-nil", nil, :name => "issue[assignee_id]"
+    = hidden_field_tag "user-nil", nil, name: "issue[assignee_id]"
 
 - users = (@users || [])
 - users.each_with_index do |user, index|
-  .people.selected{:id => "user-#{index}", :class => 'add_assignee'}
-    .avatar= image_tag(avatar_url(user), :alt => 'avatar')
+  .people.selected{id: "user-#{index}", class: 'add_assignee'}
+    .avatar= image_tag(avatar_url(user), alt: 'avatar')
     .name= user.fullname
     .container
       .image
-        = image_tag(avatar_url(user, :micro), :alt => 'avatar')
+        = image_tag(avatar_url(user, :micro), alt: 'avatar')
       %span.name= link_to(user.fullname, user_path(user))
       %span= t('layout.issues.is_assigned')
-      = hidden_field_tag "user-#{index}", user.id, :name => "issue[assignee_id]"
+      = hidden_field_tag "user-#{index}", user.id, name: "issue[assignee_id]"
     .both
 - if users.empty?
   .nothing= t('layout.issues.nothing_to_show')

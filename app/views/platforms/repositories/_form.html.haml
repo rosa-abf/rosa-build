@@ -1,12 +1,12 @@
 - if ['edit', 'update'].exclude? controller.action_name
-  .leftlist= f.label :name, t("activerecord.attributes.repository.name"), :class => :label
-  .rightlist= f.text_field :name, :class => 'text_field'
+  .leftlist= f.label :name, t("activerecord.attributes.repository.name"), class: :label
+  .rightlist= f.text_field :name, class: 'text_field'
 
-.leftlist= f.label :description, t("activerecord.attributes.repository.description"), :class => :label
-.rightlist= f.text_field :description, :class => 'text_field'
+.leftlist= f.label :description, t("activerecord.attributes.repository.description"), class: :label
+.rightlist= f.text_field :description, class: 'text_field'
 
-.leftlist= f.label :publish_without_qa, t("activerecord.attributes.repository.publish_without_qa"), :class => :label
-.rightlist= f.check_box :publish_without_qa, :class => 'check_box'
+.leftlist= f.label :publish_without_qa, t("activerecord.attributes.repository.publish_without_qa"), class: :label
+.rightlist= f.check_box :publish_without_qa, class: 'check_box'
 
 .leftlist= f.label :synchronizing_publications
 .rightlist= f.check_box :synchronizing_publications
@@ -16,6 +16,6 @@
 .hr
 
 .button_block
-  = submit_tag t('layout.save'), :data => {'disable-with' => t('layout.saving')}
+  = submit_tag t('layout.save'), data: {'disable-with' => t('layout.saving')}
   %span.text_button_padding= t("layout.or")
-  = link_to t("layout.cancel"), @repository.new_record? ? platform_repositories_path(@platform) : platform_repository_path(@platform, @repository), :class => "button"
+  = link_to t("layout.cancel"), @repository.new_record? ? platform_repositories_path(@platform) : platform_repository_path(@platform, @repository), class: "button"

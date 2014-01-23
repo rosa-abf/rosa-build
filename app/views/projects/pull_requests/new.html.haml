@@ -1,6 +1,6 @@
 -ar = 'activerecord.attributes.pull_requests'
--set_meta_tags :title => [title_object(@project), t('.title')]
-= render :partial => 'submenu'
+-set_meta_tags title: [title_object(@project), t('.title')]
+= render partial: 'submenu'
 %h3.bpadding10=pull_header @pull
 #repo-wrapper
   =render 'nav_tabs'
@@ -8,38 +8,38 @@
     #discussion.tab-pane.active
       =hidden_field_tag :update_action, new_project_pull_request_path
       =render 'projects/issues/assigned_popup'
-      =form_for @pull, :url => (@pull.already? ? new_project_pull_request_path : project_pull_requests_path), :html => {:class => 'well well-large', :method => (@pull.already? ? :get : :post)} do |f|
+      =form_for @pull, url: (@pull.already? ? new_project_pull_request_path : project_pull_requests_path), html: {class: 'well well-large', method: (@pull.already? ? :get : :post)} do |f|
 
-        .leftlist=f.label :from_project, t("#{ar}.from_project"), :class => :label
+        .leftlist=f.label :from_project, t("#{ar}.from_project"), class: :label
         %div
-          .l=text_field_tag :from_project, @pull.from_project.name_with_owner, :readonly => :readonly, :style => 'background-color: #DDD;'
-          =render 'ref_select', :kind => 'from', :project => @pull.from_project, :current => @pull.from_ref
+          .l=text_field_tag :from_project, @pull.from_project.name_with_owner, readonly: :readonly, style: 'background-color: #DDD;'
+          =render 'ref_select', kind: 'from', project: @pull.from_project, current: @pull.from_ref
         .both
-        .leftlist=f.label :to_project, t("#{ar}.to_project"), :class => :label
+        .leftlist=f.label :to_project, t("#{ar}.to_project"), class: :label
         %div
-          .l=f.autocomplete_field :to_project, autocomplete_to_project_project_pull_requests_path, :value => @pull.to_project.name_with_owner, :id_element => 'pull_request_to_project_id', :name => 'to_project'
-          =render 'ref_select', :kind => 'to', :project => @pull.to_project, :current => @pull.to_ref
+          .l=f.autocomplete_field :to_project, autocomplete_to_project_project_pull_requests_path, value: @pull.to_project.name_with_owner, id_element: 'pull_request_to_project_id', name: 'to_project'
+          =render 'ref_select', kind: 'to', project: @pull.to_project, current: @pull.to_ref
         .both
         .leftlist.big-list
-        .rightlist=f.submit t('.update'), :class => 'btn btn-primary', :style => @pull.already? ? '' : 'display: none;', :id => 'update_pull', :data => {'disable-with' => t('layout.processing')}
+        .rightlist=f.submit t('.update'), class: 'btn btn-primary', style: @pull.already? ? '' : 'display: none;', id: 'update_pull', data: {'disable-with' => t('layout.processing')}
         .both
         -unless @pull.already?
           =f.fields_for :issue do |issue|
-            =render 'projects/issues/title_body', :f => issue, :id => 'new'
-          .leftlist.big-list=f.label :title, t('activerecord.attributes.issue.status'), :class => :label
+            =render 'projects/issues/title_body', f: issue, id: 'new'
+          .leftlist.big-list=f.label :title, t('activerecord.attributes.issue.status'), class: :label
           .rightlist
             .flash
-              %div{:class => @pull.ready? ? 'notice' : 'alert'}
+              %div{class: @pull.ready? ? 'notice' : 'alert'}
                 =pull_status @pull
           .both
           - if can?(:write, @pull.to_project)
             .leftlist.big-list= t('activerecord.attributes.issue.assignee') + ':'
             #assigned-container.rightlist
-              =render 'projects/issues/user_container', :user => @pull.assignee
+              =render 'projects/issues/user_container', user: @pull.assignee
             .both
           .leftlist.big-list
           .rightlist
-            =f.submit t('.submit'), :class => 'btn btn-primary', :id => 'create_pull', :data => {'disable-with' => t('layout.processing')} unless @pull.already?
+            =f.submit t('.submit'), class: 'btn btn-primary', id: 'create_pull', data: {'disable-with' => t('layout.processing')} unless @pull.already?
           .both
     =render 'diff_commits_tabs' if !@pull.already? && @stats != nil
 

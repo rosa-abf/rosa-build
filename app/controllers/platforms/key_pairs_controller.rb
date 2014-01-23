@@ -1,8 +1,8 @@
 class Platforms::KeyPairsController < Platforms::BaseController
   before_filter :authenticate_user!
 
-  load_and_authorize_resource :platform, :only => [:index]
-  load_and_authorize_resource :only => [:create, :destroy]
+  load_and_authorize_resource :platform, only: [:index]
+  load_and_authorize_resource only: [:create, :destroy]
 
   def create
     @key_pair.user_id = current_user.id

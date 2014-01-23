@@ -6,11 +6,11 @@
         %p
           =raw t "tour.#{entry}_description"
       .right
-        %a.pirobox{:href => image_path("tour/big/#{entry}.png"), :rel => "single", :title => t("tour.#{entry}")}
+        %a.pirobox{href: image_path("tour/big/#{entry}.png"), rel: "single", title: t("tour.#{entry}")}
           =image_tag "tour/#{entry}.png"
     -else
       .left
-        %a.pirobox{:href => image_path("tour/big/#{entry}.png"), :rel => "single", :title => t("tour.#{entry}")}
+        %a.pirobox{href: image_path("tour/big/#{entry}.png"), rel: "single", title: t("tour.#{entry}")}
           =image_tag "tour/#{entry}.png"
       .right
         %h1=t "tour.#{entry}"

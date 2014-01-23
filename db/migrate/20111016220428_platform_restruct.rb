@@ -1,9 +1,9 @@
 class PlatformRestruct < ActiveRecord::Migration
   def self.up
     change_table :platforms do |t|
-      t.references :owner, :polymorphic => true
-      t.string :visibility, :default => 'open'
-      t.string :platform_type, :default => 'main'
+      t.references :owner, polymorphic: true
+      t.string :visibility, default: 'open'
+      t.string :platform_type, default: 'main'
       t.string :distrib_type
     end
   end

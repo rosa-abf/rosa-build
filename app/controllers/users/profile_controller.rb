@@ -1,5 +1,5 @@
 class Users::ProfileController < Users::BaseController
-  skip_before_filter :authenticate_user!, :only => :show if APP_CONFIG['anonymous_access']
+  skip_before_filter :authenticate_user!, only: :show if APP_CONFIG['anonymous_access']
 
   def show
     @path, page = user_path, params[:page].to_i
@@ -11,7 +11,7 @@ class Users::ProfileController < Users::BaseController
       else
         @projects = @projects.by_visibilities('hidden').accessible_by(current_ability, :read)
       end
-      render :partial => 'shared/profile_projects', :layout => nil, :locals => {:projects => paginate_projects(page)}
+      render partial: 'shared/profile_projects', layout: nil, locals: {projects: paginate_projects(page)}
     else
       @projects = paginate_projects(page)
     end
@@ -20,6 +20,6 @@ class Users::ProfileController < Users::BaseController
   protected
 
   def paginate_projects(page)
-    @projects.paginate(:page => (page>0 ? page : nil), :per_page => 24)
+    @projects.paginate(page: (page>0 ? page : nil), per_page: 24)
   end
 end

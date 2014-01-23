@@ -28,7 +28,7 @@ describe ProductBuildList do
   it { should allow_mass_assignment_of(:base_url) }
 
   # see app/ability.rb
-  # can :read, ProductBuildList#, :product => {:platform => {:visibility => 'open'}} # double nested hash don't work
+  # can :read, ProductBuildList#, product: {platform: {visibility: 'open'}} # double nested hash don't work
   it 'should generate correct sql to get product build lists' do
     user = FactoryGirl.create(:user)
     ability = Ability.new user

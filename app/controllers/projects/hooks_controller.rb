@@ -1,7 +1,7 @@
 class Projects::HooksController < Projects::BaseController
   before_filter :authenticate_user!
   load_and_authorize_resource :project
-  load_and_authorize_resource :hook, :through => :project
+  load_and_authorize_resource :hook, through: :project
 
 
   def index
@@ -19,7 +19,7 @@ class Projects::HooksController < Projects::BaseController
 
   def create
     if @hook.save
-      redirect_to project_hooks_path(@project, :name => @hook.name), :notice => t('flash.hook.created')
+      redirect_to project_hooks_path(@project, name: @hook.name), notice: t('flash.hook.created')
     else
       flash[:error] = t('flash.hook.save_error')
       flash[:warning] = @hook.errors.full_messages.join('. ')
@@ -29,7 +29,7 @@ class Projects::HooksController < Projects::BaseController
 
   def update
     if @hook.update_attributes(params[:hook])
-      redirect_to project_hooks_path(@project, :name => @hook.name), :notice => t('flash.hook.updated')
+      redirect_to project_hooks_path(@project, name: @hook.name), notice: t('flash.hook.updated')
     else
       flash[:error] = t('flash.hook.save_error')
       flash[:warning] = @hook.errors.full_messages.join('. ')
@@ -39,7 +39,7 @@ class Projects::HooksController < Projects::BaseController
 
   def destroy
     @hook.destroy
-    redirect_to project_hooks_path(@project, :name => @hook.name)
+    redirect_to project_hooks_path(@project, name: @hook.name)
   end
 
 end

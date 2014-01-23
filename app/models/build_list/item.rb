@@ -1,19 +1,19 @@
 class BuildList::Item < ActiveRecord::Base
-  
-  belongs_to :build_list, :touch => true
+
+  belongs_to :build_list, touch: true
 
   attr_protected :build_list_id
 
   GIT_ERROR = 5
-  
+
   STATUSES = [BuildList::SUCCESS, BuildList::BUILD_ERROR, BuildList::BUILD_STARTED, GIT_ERROR, BuildList::BUILD_CANCELED] # BuildList::DEPENDENCIES_ERROR
   HUMAN_STATUSES = {
                      nil => :unknown,
                      GIT_ERROR => :git_error,
-                     # BuildList::DEPENDENCIES_ERROR => :dependencies_error,
-                     BuildList::SUCCESS => :success,
-                     BuildList::BUILD_STARTED => :build_started,
-                     BuildList::BUILD_ERROR => :build_error,
+                     # BuildList:DEPENDENCIES_ERROR: :dependencies_error,
+                     BuildList::SUCCESS        => :success,
+                     BuildList::BUILD_STARTED  => :build_started,
+                     BuildList::BUILD_ERROR    => :build_error,
                      BuildList::BUILD_CANCELED => :build_canceled
                     }
 
@@ -40,5 +40,5 @@ class BuildList::Item < ActiveRecord::Base
   def human_status
     self.class.human_status(status)
   end
-  
+
 end

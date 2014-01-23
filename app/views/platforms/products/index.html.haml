@@ -1,7 +1,7 @@
--set_meta_tags :title => [title_object(@platform), t('layout.products.list_header')]
+-set_meta_tags title: [title_object(@platform), t('layout.products.list_header')]
 = render 'submenu' if params[:platform_id]
 = render 'sidebar' if params[:platform_id]
-= link_to t("layout.products.new"), new_platform_product_path(@platform), :class => 'button' if can? :create, @platform.products.build
-= render 'list', :object => @products
+= link_to t("layout.products.new"), new_platform_product_path(@platform), class: 'button' if can? :create, @platform.products.build
+= render 'list', object: @products
 = will_paginate @products
 
