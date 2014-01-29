@@ -455,7 +455,8 @@ module AbfWorker
               arch:            'x86_64'
             },
             repository:     {id: rep.id},
-            time_living:    9600, # 160 min
+            # time_living:     9600, # 160 min
+            time_living:    1440, # 240 min
             extra:          {repository_status_id: repository_status.id, regenerate: true}
           }]
         ) if repository_status.start_regeneration
