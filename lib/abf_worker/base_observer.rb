@@ -26,7 +26,7 @@ module AbfWorker
     end
 
     def update_results
-      results = (subject.results || []) + options['results']
+      results = (subject.results || []) + (options['results'] || [])
       sort_results_and_save results
     end
 
