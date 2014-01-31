@@ -24,6 +24,25 @@ namespace :buildlist do
 
       say "[#{Time.zone.now}] Outdated BuildLists and MassBuilds was successfully removed"
     end
+
+    desc 'Remove outdated BuildLists with status BUILD_CANCELING'
+    task outdated_canceling: :environment do
+      say "[#{Time.zone.now}] Removing outdated BuildLists"
+
+      scope = BuildList.for_status(BuildList::BUILD_CANCELING).
+        for_notified_date_period(nil, Time.zone.now - 3.hours)
+
+      say "[#{Time.zone.now}] There are #{scope.count} outdated BuildLists"
+
+      counter = 0
+      scope.find_each do |bl|
+          bl.destroy && (counter += 1)
+      end
+
+      say "[#{Time.zone.now}] #{counter} outdated BuildLists have been removed"
+      say "[#{Time.zone.now}] Outdated BuildLists were successfully removed"
+    end
+
   end
 
   namespace :packages do
