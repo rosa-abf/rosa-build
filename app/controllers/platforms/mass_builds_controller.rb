@@ -42,9 +42,9 @@ class Platforms::MassBuildsController < Platforms::BaseController
   end
 
   def get_list
-    text =  if params[:kind] == 'failed_builds_list'
-              @mass_build.generate_failed_builds_list
-            elsif ['projects_list', 'missed_projects_list'].include? params[:kind]
+    text =  if %w(failed_builds_list tests_failed_builds_list).include? params[:kind]
+              @mass_build.send "generate_#{params[:kind]}"
+            elsif %w(projects_list missed_projects_list).include? params[:kind]
               @mass_build.send params[:kind]
             end
     render text: text

@@ -6,7 +6,9 @@ en:
       publish_test_failed: Publish test failed builds
       repositories: Repositories
       extended_data: Extended data
+      lists: Lists
       failed_builds_list: Failed Builds List
+      tests_failed_builds_list: Tests failed Builds List
       statuses: Statuses
       actions: Actions
       cancel_confirm: Are you sure you want to cancel mass build?

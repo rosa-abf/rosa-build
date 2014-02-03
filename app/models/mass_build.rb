@@ -62,19 +62,11 @@ class MassBuild < ActiveRecord::Base
   later :build_all, queue: :clone_build
 
   def generate_failed_builds_list
-    report = ""
-    BuildList.select('build_lists.id, projects.name as project_name, arches.name as arch_name').
-    where(
-      status: BuildList::BUILD_ERROR,
-      mass_build_id: self.id
-    ).joins(:project, :arch).find_in_batches(batch_size: 100) do |build_lists|
-      build_lists.each do |build_list|
-        report << "ID: #{build_list.id}; "
-        report << "PROJECT_NAME: #{build_list.project_name}; "
-        report << "ARCH: #{build_list.arch_name}\n"
-      end
-    end
-    report
+    generate_list BuildList::BUILD_ERROR
+  end
+
+  def generate_tests_failed_builds_list
+    generate_list BuildList::TESTS_FAILED
   end
 
   def cancel_all
@@ -96,6 +88,22 @@ class MassBuild < ActiveRecord::Base
   later :publish_test_failed_builds, queue: :clone_build
 
   private
+
+  def generate_list(status)
+    report = ""
+    BuildList.select('build_lists.id, projects.name as project_name, arches.name as arch_name').
+    where(
+      status:         status,
+      mass_build_id:  self.id
+    ).joins(:project, :arch).find_in_batches(batch_size: 100) do |build_lists|
+      build_lists.each do |build_list|
+        report << "ID: #{build_list.id}; "
+        report << "PROJECT_NAME: #{build_list.project_name}; "
+        report << "ARCH: #{build_list.arch_name}\n"
+      end
+    end
+    report
+  end
 
   def publish(user, *statuses)
     builds = build_lists.where(status: statuses)

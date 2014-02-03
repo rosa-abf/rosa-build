@@ -186,7 +186,7 @@ Rosa::Application.routes.draw do
         member do
           post   :cancel
           post   :publish
-          get '/:kind.:format' => "mass_builds#get_list", as: :get_list, kind: /failed_builds_list|missed_projects_list|projects_list/
+          get '/:kind.:format' => "mass_builds#get_list", as: :get_list, kind: /failed_builds_list|missed_projects_list|projects_list|tests_failed_builds_list/
         end
       end
 

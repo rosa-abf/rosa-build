@@ -9,7 +9,7 @@
       %th.lpadding16= t('activerecord.attributes.mass_build.id')
       %th.lpadding16= t('activerecord.attributes.mass_build.name')
       %th.lpadding16= t("layout.mass_builds.statuses")
-      %th.lpadding16= t("layout.mass_builds.failed_builds_list")
+      %th.lpadding16= t("layout.mass_builds.lists")
       %th.lpadding16= t("layout.mass_builds.actions")
       %th.lpadding16= t("layout.mass_builds.extended_data")
   - @mass_builds.each do |mass_build|
@@ -25,7 +25,15 @@
           =link_to_list @platform, mass_build, 'missed_projects_list'
           = mass_build.read_attribute 'missed_projects_count'
       %td
-        =link_to_list @platform, mass_build, 'failed_builds_list'
+        - if mass_build.projects_list.present?
+          = link_to_list @platform, mass_build, 'projects_list'
+          .both
+          %br
+        = link_to_list @platform, mass_build, 'failed_builds_list'
+        .both
+        %br
+        = link_to_list @platform, mass_build, 'tests_failed_builds_list'
+
       %td.right.mass-build-actions
         - if can?(:publish, mass_build)
           - unless mass_build.auto_publish?
@@ -43,9 +51,6 @@
       %td
         %a.toggle_btn{href: "#toggle_#{ mass_build.id }", :'data-target' => "#toggle_#{ mass_build.id }"}= t("layout.mass_builds.extended_data")
         .toggle{id: "toggle_#{ mass_build.id }"}
-          -if mass_build.projects_list.present?
-            = link_to_list @platform, mass_build, 'projects_list'
-            .both
           = t('activerecord.attributes.mass_build.user') + ": "
           = link_to mass_build.user.fullname, mass_build.user
           - [:arch_names, :auto_publish, :increase_release_tag, :created_at].each do |field|

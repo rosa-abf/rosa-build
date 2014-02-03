@@ -6,11 +6,13 @@ ru:
       publish_test_failed: Опубликовать сборки с проваленными тестами
       repositories: Репозитории
       extended_data: Параметры задания
-      failed_builds_list: Список ошибок сборок
+      lists: Списки
+      failed_builds_list: Сборки с ошибками
+      tests_failed_builds_list: Сборки с ошибками в тестах
       statuses: Статусы
       actions: Действия
       cancel_confirm: Вы уверены, что хотите отменить массовую сборку?
-      projects_list: Список проектов
+      projects_list: Проекты
       missed_projects_list: 'Несуществующие проекты: '
   activerecord:
     models:
