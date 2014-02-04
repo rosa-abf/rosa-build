@@ -86,27 +86,20 @@ module AbfWorker::ModelHelper
   private
 
   def cleanup_build_sets
-    return unless is_a?(BuildList)
-
-    if Resque.redis.llen("queue:#{worker_queue_with_priority}") == 0
-      if mass_build_id
-        Resque.redis.srem MASS_BUILDS_SET, mass_build_id
-      else
-        Resque.redis.srem USER_BUILDS_SET, user_id
+    Resque.redis.multi do
+      if Resque.redis.llen("queue:#{worker_queue_with_priority}") == 0
+        key = mass_build_id ? MASS_BUILDS_SET : USER_BUILDS_SET
+        Resque.redis.srem key, mass_build_id || user_id
+        Resque.redis.del "queue:#{worker_queue_with_priority}"
       end
-      Resque.redis.del "queue:#{worker_queue_with_priority}"
-    end
-
+    end if is_a?(BuildList)
   end
 
   def update_build_sets
     return unless is_a?(BuildList)
 
-    if mass_build_id
-      Resque.redis.sadd MASS_BUILDS_SET, mass_build_id
-    else
-      Resque.redis.sadd USER_BUILDS_SET, user_id
-    end
+    key = mass_build_id ? MASS_BUILDS_SET : USER_BUILDS_SET
+    Resque.redis.sadd key, mass_build_id || user_id
   end
 
 
