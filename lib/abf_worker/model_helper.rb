@@ -3,6 +3,9 @@ module AbfWorker::ModelHelper
   # - #abf_worker_args
   # - #build_canceled
 
+  MASS_BUILDS_SET = 'abf-worker::mass-builds'
+  USER_BUILDS_SET = 'abf-worker::user-builds'
+
   def self.included(base)
     base.extend(ClassMethods)
   end
@@ -14,6 +17,11 @@ module AbfWorker::ModelHelper
         port: APP_CONFIG['abf_worker']['log_server']['port']
       )
     end
+
+    def self.next_build
+      raise NotImplementedError
+    end
+
   end
 
   def abf_worker_log
@@ -21,6 +29,7 @@ module AbfWorker::ModelHelper
   end
 
   def add_job_to_abf_worker_queue
+    update_build_sets
     Resque.push(
       worker_queue_with_priority,
       'class' => worker_queue_class,
@@ -29,8 +38,8 @@ module AbfWorker::ModelHelper
   end
 
   def restart_job
-    redis = Resque.redis
-    redis.lpush "queue:#{worker_queue_with_priority}",
+    update_build_sets
+    Resque.redis.lpush "queue:#{worker_queue_with_priority}",
       Resque.encode({'class' => worker_queue_class, 'args' => [abf_worker_args]})
   end
 
@@ -44,25 +53,62 @@ module AbfWorker::ModelHelper
   end
 
   def destroy_from_resque_queue
-    Resque::Job.destroy(
+    result = Resque::Job.destroy(
       worker_queue_with_priority,
       worker_queue_class,
       abf_worker_args
     )
+    cleanup_build_sets
+    result
   end
 
-  def worker_queue_with_priority(queue = nil)
-    queue ||= abf_worker_base_queue
+  def worker_queue_with_priority(prefix = true)
+    queue = ''
+
+    if prefix && is_a?(BuildList)
+      if mass_build_id
+        queue << "mass_build_#{mass_build_id}_"
+      else
+        queue << "user_build_#{user_id}_"
+      end
+    end
+
+    queue << abf_worker_base_queue
     queue << '_' << abf_worker_priority if abf_worker_priority.present?
     queue
   end
 
-  def worker_queue_class(queue_class = nil)
-    queue_class ||= "AbfWorker::#{abf_worker_base_queue.classify}"
-    queue_class << abf_worker_priority.capitalize
+  def worker_queue_class
+    "AbfWorker::#{abf_worker_base_queue.classify}#{abf_worker_priority.capitalize}"
   end
 
+
   private
+
+  def cleanup_build_sets
+    return unless is_a?(BuildList)
+
+    if Resque.redis.llen("queue:#{worker_queue_with_priority}") == 0
+      if mass_build_id
+        Resque.redis.srem MASS_BUILDS_SET, mass_build_id
+      else
+        Resque.redis.srem USER_BUILDS_SET, user_id
+      end
+      Resque.redis.del "queue:#{worker_queue_with_priority}"
+    end
+
+  end
+
+  def update_build_sets
+    return unless is_a?(BuildList)
+
+    if mass_build_id
+      Resque.redis.sadd MASS_BUILDS_SET, mass_build_id
+    else
+      Resque.redis.sadd USER_BUILDS_SET, user_id
+    end
+  end
+
 
   def send_stop_signal
     Resque.redis.setex(

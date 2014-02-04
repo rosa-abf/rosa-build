@@ -522,6 +522,29 @@ class BuildList < ActiveRecord::Base
     )
   end
 
+  def self.next_build
+    unless task = (Resque.pop('rpm_worker_default') || Resque.pop('rpm_worker'))
+      kind_id = Resque.redis.spop(USER_BUILDS_SET)
+      key     = "user_build_#{kind_id}_rpm_worker_default" if kind_id
+      task    = Resque.pop(key) if key
+      Resque.redis.sadd(USER_BUILDS_SET, kind_id) if task
+
+
+      kind_id ||= Resque.redis.spop(MASS_BUILDS_SET)
+      key     ||= "mass_build_#{kind_id}_rpm_worker" if kind_id
+      task    ||= Resque.pop(key) if key
+      Resque.redis.sadd(MASS_BUILDS_SET, kind_id) if task && key =~ /^mass_build/
+
+      Resque.redis.multi do
+        if Resque.redis.llen("queue:#{key}") == 0
+          Resque.redis.del "queue:#{key}"
+        end
+      end if task
+    end
+
+    BuildList.where(id: task['args'][0]['id']).first if task
+  end
+
   protected
 
   def create_container
