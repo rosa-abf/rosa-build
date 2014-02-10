@@ -3,18 +3,15 @@ Capistrano::Configuration.instance(:must_exist).load do
   namespace :resque do
     task :start do
       start_workers
-      invoke "resque:scheduler:start"
     end
 
     task :stop do
       stop_workers
-      invoke "resque:scheduler:stop"
     end
 
     task :restart do
       stop_workers
       start_workers
-      invoke "resque:scheduler:restart"
     end
 
     def rails_env
@@ -56,22 +53,31 @@ Capistrano::Configuration.instance(:must_exist).load do
 
       desc "Starts resque scheduler with default configs"
       task :start do
-        pid = "#{fetch :current_path}/tmp/pids/scheduler.pid"
-        run "cd #{fetch :current_path} && #{rails_env} PIDFILE=#{pid} BACKGROUND=yes VERBOSE=1 MUTE=1 bundle exec rake resque:scheduler"
+        start_scheduler
       end
 
       desc "Stops resque scheduler"
       task :stop do
+        stop_scheduler
+      end
+
+      task :restart do
+        stop_scheduler
+        start_scheduler
+      end
+
+      def start_scheduler
+        pid = "#{fetch :current_path}/tmp/pids/scheduler.pid"
+        run "cd #{fetch :current_path} && #{rails_env} PIDFILE=#{pid} BACKGROUND=yes VERBOSE=1 MUTE=1 bundle exec rake resque:scheduler"
+      end
+
+      def stop_scheduler
         pid = "#{fetch :current_path}/tmp/pids/scheduler.pid"
         if remote_file_exists?(pid)
           run "cd #{fetch :current_path} && kill -s QUIT $(cat #{pid}); rm #{pid}"
         end
       end
 
-      task :restart do
-        invoke "resque:scheduler:stop"
-        invoke "resque:scheduler:start"
-      end
     end
 
   end
