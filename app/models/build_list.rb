@@ -152,8 +152,9 @@ class BuildList < ActiveRecord::Base
       end
     end
 
-    after_transition on: :place_build, do: :add_job_to_abf_worker_queue,
-      :if  => lambda { |build_list| build_list.external_nodes.blank? }
+    after_transition(on: :place_build) do |build_list, transition|
+      build_list.add_job_to_abf_worker_queue if build_list.external_nodes.blank?
+    end
     after_transition on: :published,
       do: [:set_version_and_tag, :actualize_packages]
     after_transition on: :publish, do: :set_publisher
@@ -255,6 +256,7 @@ class BuildList < ActiveRecord::Base
   end
 
   later :publish, queue: :clone_build
+  later :add_job_to_abf_worker_queue, queue: :clone_build
 
 
   HUMAN_CONTAINER_STATUSES = { WAITING_FOR_RESPONSE => :waiting_for_publish,
