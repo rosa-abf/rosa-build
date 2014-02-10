@@ -16,6 +16,7 @@ class Api::V1::JobsController < Api::V1::BaseController
     if current_user.system?
       if task = (Resque.pop('rpm_worker_default') || Resque.pop('rpm_worker'))
         @build_list = BuildList.where(id: task['args'][0]['id']).first
+        @build_list.delayed_add_job_to_abf_worker_queue
       end
     end
 

@@ -258,7 +258,6 @@ class BuildList < ActiveRecord::Base
   later :publish, queue: :clone_build
   later :add_job_to_abf_worker_queue, queue: :clone_build
 
-
   HUMAN_CONTAINER_STATUSES = { WAITING_FOR_RESPONSE => :waiting_for_publish,
                                BUILD_PUBLISHED => :container_published,
                                BUILD_PUBLISH => :container_publish,
@@ -523,6 +522,11 @@ class BuildList < ActiveRecord::Base
       id
     )
   end
+
+  def delayed_add_job_to_abf_worker_queue
+    now_add_job_to_abf_worker_queue if status == BUILD_PENDING
+  end
+  later :delayed_add_job_to_abf_worker_queue, delay: 60, queue: :clone_build
 
   protected
 
