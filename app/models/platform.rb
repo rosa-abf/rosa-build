@@ -236,6 +236,10 @@ class Platform < ActiveRecord::Base
     end
   end
 
+  def self.autostart_metadata_regeneration(value)
+    Platform.main.where(automatic_metadata_regeneration: value).each(&:regenerate)
+  end
+
   protected
 
     def create_directory
