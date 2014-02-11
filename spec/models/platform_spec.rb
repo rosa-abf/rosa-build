@@ -27,6 +27,12 @@ describe Platform do
     end
     it {should_not allow_value('custom_status').for(:visibility)}
 
+    ['', nil] + Platform::AUTOMATIC_METADATA_REGENERATIONS.each do |value|
+      it {should allow_value(value).for(:automatic_metadata_regeneration)}
+    end
+    it {should_not allow_value('custom_status').for(:visibility)}
+
+
     it { should have_readonly_attribute(:name) }
     it { should have_readonly_attribute(:distrib_type) }
     it { should have_readonly_attribute(:parent_platform_id) }

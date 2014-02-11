@@ -5,6 +5,7 @@ class Platform < ActiveRecord::Base
   include Modules::Models::FileStoreClean
   include Modules::Models::RegenerationStatus
 
+  AUTOMATIC_METADATA_REGENERATIONS = %w(day week)
   VISIBILITIES = %w(open hidden)
   NAME_PATTERN = /[\w\-\.]+/
   HUMAN_STATUSES = HUMAN_STATUSES.clone.freeze
@@ -30,6 +31,7 @@ class Platform < ActiveRecord::Base
 
   validates :description, presence: true
   validates :visibility, presence: true, inclusion: {in: VISIBILITIES}
+  validates :automatic_metadata_regeneration, inclusion: {in: AUTOMATIC_METADATA_REGENERATIONS}, allow_blank: true
   validates :name, uniqueness: {case_sensitive: false}, presence: true, format: { with: /\A#{NAME_PATTERN}\z/ }
   validates :distrib_type, presence: true, inclusion: {in: APP_CONFIG['distr_types']}
   validate lambda {
@@ -63,7 +65,7 @@ class Platform < ActiveRecord::Base
   scope :waiting_for_regeneration, where(status: WAITING_FOR_REGENERATION)
 
   accepts_nested_attributes_for :platform_arch_settings, allow_destroy: true
-  attr_accessible :name, :distrib_type, :parent_platform_id, :platform_type, :owner, :visibility, :description, :released, :platform_arch_settings_attributes
+  attr_accessible :name, :distrib_type, :parent_platform_id, :platform_type, :owner, :visibility, :description, :released, :platform_arch_settings_attributes, :automatic_metadata_regeneration
   attr_readonly   :name, :distrib_type, :parent_platform_id, :platform_type
 
   include Modules::Models::Owner
