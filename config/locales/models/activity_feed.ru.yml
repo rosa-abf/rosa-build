@@ -20,6 +20,7 @@ ru:
       issue_assign_notification: Вам назначили задачу
       invite_approve_notification: Приглашение в ABF
       for_arch: для архитектуры %{arch}.
+      metadata_regeneration: Регенерация метаданных «%{status}»
 
     bodies:
       view_it_on: Смотрите это на

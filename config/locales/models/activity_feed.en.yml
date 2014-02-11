@@ -20,6 +20,7 @@ en:
       issue_assign_notification: New task assigned
       invite_approve_notification: Invitation to ABF
       for_arch: for arch %{arch}.
+      metadata_regeneration: Metadata regeneration «%{status}»
 
     bodies:
       view_it_on: View it on

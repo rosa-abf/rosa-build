@@ -71,6 +71,9 @@ class Platform < ActiveRecord::Base
   include Modules::Models::Owner
 
   state_machine :status, initial: :ready do
+
+    after_transition on: :ready, do: :notify_users
+
     event :ready do
       transition regenerating: :ready
     end
@@ -265,4 +268,10 @@ class Platform < ActiveRecord::Base
         repositories.update_all(publish_without_qa: false)
       end
     end
+
+    def notify_users
+      users = members.includes(:notifier).select{ |u| u.notifier.can_notify? }
+      users.each{ |u| UserMailer.metadata_regeneration_notification(self, u).deliver }
+    end
+
 end

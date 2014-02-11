@@ -1,0 +1,11 @@
+%p
+  Регенерация метаданных для платформы
+  = link_to @platform.name, platform_url(@platform)
+  завершена со статусом
+  %b
+    = t("layout.regeneration_statuses.last_regenerated_statuses.#{@platform.human_regeneration_status}")
+%p
+  Более подробную информацию можно получить по ссылке:
+  = link_to t('layout.platforms.metadata'), edit_platform_url(@platform)
+
+= render 'footer'
