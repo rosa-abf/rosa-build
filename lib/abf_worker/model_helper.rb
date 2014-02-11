@@ -29,8 +29,7 @@ module AbfWorker::ModelHelper
   end
 
   def restart_job
-    redis = Resque.redis
-    redis.lpush "queue:#{worker_queue_with_priority}",
+    Resque.redis.lpush "queue:#{worker_queue_with_priority}",
       Resque.encode({'class' => worker_queue_class, 'args' => [abf_worker_args]})
   end
 

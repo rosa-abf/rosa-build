@@ -524,7 +524,7 @@ class BuildList < ActiveRecord::Base
   end
 
   def delayed_add_job_to_abf_worker_queue(*args)
-    now_add_job_to_abf_worker_queue if status == BUILD_PENDING
+    restart_job if status == BUILD_PENDING
   end
   later :delayed_add_job_to_abf_worker_queue, delay: 60, queue: :clone_build
 
