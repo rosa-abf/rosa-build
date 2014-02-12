@@ -62,7 +62,7 @@ class Platforms::PlatformsController < Platforms::BaseController
         if @platform.update_attributes(platform_params)
           render json: { notice: I18n.t("flash.platform.saved") }.to_json
         else
-          render json: { error: I18n.t("flash.platform.save_error") }.to_json, status: 433
+          render json: { error: I18n.t("flash.platform.save_error") }.to_json, status: 422
         end
       end
     end
