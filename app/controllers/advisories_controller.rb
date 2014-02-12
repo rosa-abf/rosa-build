@@ -6,8 +6,8 @@ class AdvisoriesController < ApplicationController
 
   def index
     @advisories = @advisories.scoped(include: :platforms)
-    @advisories = @advisories.search_by_id(params[:q]) if params[:q]
-    @advisories = @advisories.paginate(page: params[:page])
+    @advisories = @advisories.search(params[:q]) if params[:q]
+    @advisories = @advisories.uniq.paginate(page: params[:page])
     respond_to do |format|
       format.html
       format.atom
