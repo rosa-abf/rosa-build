@@ -4,6 +4,7 @@
 require File.expand_path('../config/application', __FILE__)
 require 'rake'
 require 'resque/tasks'
+require 'resque_scheduler/tasks'
 
 # This fixes connection fail with Postgres server on new fork:
 task "resque:setup" => :environment do

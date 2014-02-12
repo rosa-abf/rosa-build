@@ -18,7 +18,9 @@ gem 'paperclip', '~> 4.1.0'
 gem 'resque', '~> 1.24'
 gem 'resque-status', '~> 0.3.3'
 gem 'resque_mailer', '~> 2.2'
-gem 'perform_later', '~> 1.3.0' # should be after resque_mailer
+gem 'resque-scheduler'
+# gem 'perform_later', '~> 1.3.0' # should be after resque_mailer
+gem 'perform_later', git: 'git://github.com/KensoDev/perform_later.git' # should be after resque_mailer
 gem 'russian', '~> 0.6.0'
 gem 'highline', '~> 1.6.11'
 gem 'state_machine'
