@@ -15,7 +15,7 @@ class Advisory < ActiveRecord::Base
 
   scope :search, lambda { |q|
     q = q.to_s.strip
-    where("#{table_name}.advisory_id ILIKE :q OR #{table_name}.description ILIKE :q OR build_list_packages.fullname ILIKE :q", q: "%#{q.to_s.strip}%").
+    where("#{table_name}.advisory_id ILIKE :q OR #{table_name}.description ILIKE :q OR build_list_packages.fullname ILIKE :q", q: "%#{q}%").
       joins(build_lists: :packages) if q.present?
   }
   scope :search_by_id,    lambda { |aid| where("#{table_name}.advisory_id ILIKE ?", "%#{aid.to_s.strip}%") }
