@@ -14,6 +14,7 @@ en:
       new: New
       existing: Existing
       search_by_id: Search advisory by it's ID
+      search: Search advisory by it's ID, description or package name
       search_hint: Paste full AdvisoryID into text field or enter there its uniq part.
       advisory_id_info: AdvisoryID is a string %{advisory_format}, where 'XXXX' (at least 4 symbols) is a uniq part.
       publication_info: Advisory might be applied only to Build Lists with [%{update_types}] update types.

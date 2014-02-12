@@ -8,7 +8,7 @@
       -# TODO: change filter to Backbone.js
       %th{colspan: 3, rowspan: 1}
         = form_tag advisories_path, method: :get do |f|
-          = text_field_tag('q', params[:q], placeholder: t('layout.advisories.search_by_id'), class: params[:q].present? ? 'black' : 'gray', style: 'width:600px;')
+          = text_field_tag('q', params[:q], placeholder: t('layout.advisories.search'), class: params[:q].present? ? 'black' : 'gray', style: 'width:600px;')
           = submit_tag t('layout.search.header'), data: {'disable-with' => t('layout.processing')}
           =# link_to t('layout.back'), advisories_path, class: 'button'
         = button_to t('layout.clear'), {action: :index} , method: :get
