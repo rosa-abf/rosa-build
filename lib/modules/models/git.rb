@@ -9,7 +9,7 @@ module Modules
       included do
         has_attached_file :srpm
 
-        validates_attachment :srpm, size: { in: 0..500.megabytes }
+        validates_attachment_size :srpm, less_than_or_equal_to: 500.megabytes
         validates_attachment_content_type :srpm, content_type: ['application/octet-stream', "application/x-rpm", "application/x-redhat-package-manager"], message: I18n.t('layout.invalid_content_type')
 
         after_create :create_git_repo
