@@ -50,3 +50,11 @@ end
 every :sunday, at: '4am' do
   runner 'Product.autostart_iso_builds_once_a_week', output: 'log/autostart_iso_builds.log'
 end
+
+every :day, at: '1am' do
+  runner 'Platfrom.autostart_metadata_regeneration("day")', output: 'log/autostart_platform_metadata_regeneration.log'
+end
+
+every :saturday, at: '2am' do
+  runner 'Platfrom.autostart_metadata_regeneration("week")', output: 'log/autostart_platform_metadata_regeneration.log'
+end

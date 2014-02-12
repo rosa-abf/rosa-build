@@ -1,0 +1,11 @@
+%p
+  Metadata regeneration for platform
+  = link_to @platform.name, platform_url(@platform)
+  completed with status
+  %b
+    = t("layout.regeneration_statuses.last_regenerated_statuses.#{@platform.human_regeneration_status}")
+%p
+  More detailed information you can get by link:
+  = link_to t('layout.platforms.metadata'), edit_platform_url(@platform)
+
+= render 'footer'

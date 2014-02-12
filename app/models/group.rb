@@ -23,7 +23,7 @@ class Group < Avatar
   attr_accessible :uname, :description
   attr_readonly :uname
 
-  delegate :email, to: :owner
+  delegate :email, :user_appeal, to: :owner
 
   after_create :add_owner_to_members
 

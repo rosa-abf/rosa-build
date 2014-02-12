@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20140113215223) do
+ActiveRecord::Schema.define(:version => 20140211175858) do
 
   create_table "activity_feeds", :force => true do |t|
     t.integer  "user_id",    :null => false
@@ -316,20 +316,21 @@ ActiveRecord::Schema.define(:version => 20140113215223) do
 
   create_table "platforms", :force => true do |t|
     t.string   "description"
-    t.string   "name",                                          :null => false
+    t.string   "name",                                                :null => false
     t.integer  "parent_platform_id"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.boolean  "released",                  :default => false,  :null => false
+    t.boolean  "released",                        :default => false,  :null => false
     t.integer  "owner_id"
     t.string   "owner_type"
-    t.string   "visibility",                :default => "open", :null => false
-    t.string   "platform_type",             :default => "main", :null => false
-    t.string   "distrib_type",                                  :null => false
+    t.string   "visibility",                      :default => "open", :null => false
+    t.string   "platform_type",                   :default => "main", :null => false
+    t.string   "distrib_type",                                        :null => false
     t.integer  "status"
     t.datetime "last_regenerated_at"
     t.integer  "last_regenerated_status"
     t.string   "last_regenerated_log_sha1"
+    t.string   "automatic_metadata_regeneration"
   end
 
   add_index "platforms", ["name"], :name => "index_platforms_on_name", :unique => true, :case_sensitive => false

@@ -43,16 +43,28 @@ class Platforms::PlatformsController < Platforms::BaseController
     @admin_uname = params[:admin_uname]
 
     platform_params = params[:platform] || {}
-    platform_params = platform_params.slice(:description, :platform_arch_settings_attributes, :released)
+    platform_params = platform_params.slice(:description, :platform_arch_settings_attributes, :released, :automatic_metadata_regeneration)
     platform_params[:owner] = User.find(@admin_id) if @admin_id.present?
 
-    if @platform.update_attributes(platform_params)
-      flash[:notice] = I18n.t("flash.platform.saved")
-      redirect_to @platform
-    else
-      flash[:error] = I18n.t("flash.platform.save_error")
-      flash[:warning] = @platform.errors.full_messages.join('. ')
-      render action: :edit
+
+    respond_to do |format|
+      format.html do
+        if @platform.update_attributes(platform_params)
+          flash[:notice] = I18n.t("flash.platform.saved")
+          redirect_to @platform
+        else
+          flash[:error] = I18n.t("flash.platform.save_error")
+          flash[:warning] = @platform.errors.full_messages.join('. ')
+          render action: :edit
+        end
+      end
+      format.json do
+        if @platform.update_attributes(platform_params)
+          render json: { notice: I18n.t("flash.platform.saved") }.to_json
+        else
+          render json: { error: I18n.t("flash.platform.save_error") }.to_json, status: 422
+        end
+      end
     end
   end
 

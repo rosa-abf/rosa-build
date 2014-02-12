@@ -69,6 +69,21 @@ class UserMailer < ActionMailer::Base
     end
   end
 
+  def metadata_regeneration_notification(platform, user)
+    set_locale user
+    @user, @platform = user, platform
+
+    subject = "[#{platform.name}] "
+    subject << I18n.t("notifications.subjects.metadata_regeneration", status: I18n.t("layout.regeneration_statuses.last_regenerated_statuses.#{platform.human_regeneration_status}"))
+    mail(
+      to:      email_with_name(user, user.email),
+      subject: subject,
+      from:    email_with_name(platform.owner)
+    ) do |format|
+      format.html
+    end
+  end
+
   def invite_approve_notification(register_request)
     set_locale register_request
     @register_request = register_request
