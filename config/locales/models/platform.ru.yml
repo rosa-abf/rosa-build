@@ -92,6 +92,7 @@ ru:
         updated_at: Обновлена
         distrib_type: Тип дистрибутива
         visibility: Статус
+        automatic_metadata_regeneration: Автоматическая регенерация метаданных
         visibility_types:
           open: Публичный
           hidden: Приватный
