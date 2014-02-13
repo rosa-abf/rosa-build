@@ -59,8 +59,11 @@ after "deploy:setup", "deploy:symlink_pids"
 
 # Resque
 after "deploy:stop",    "resque:stop"
+after "resque:stop",    "resque:scheduler:stop"
 after "deploy:start",   "resque:start"
+after "resque:start",    "resque:scheduler:start"
 after "deploy:restart", "resque:restart"
+after "resque:restart",    "resque:scheduler:restart"
 
 after "deploy:restart", "deploy:cleanup"
 
