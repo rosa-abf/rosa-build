@@ -14,7 +14,7 @@ gem 'omniauth-github'
 gem 'cancan', '1.6.7' # 1.6.8 fail specs with strange error
 
 gem 'ancestry', '~> 1.3.0'
-gem 'paperclip', '~> 3.3.1'
+gem 'paperclip', '~> 4.1.0'
 gem 'resque', '~> 1.24'
 gem 'resque-status', '~> 0.3.3'
 gem 'resque_mailer', '~> 2.2'
