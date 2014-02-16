@@ -1,26 +1,14 @@
 class Product < ActiveRecord::Base
   include Modules::Models::TimeLiving
+  include Modules::Models::Autostart
 
   belongs_to :platform
   belongs_to :project
   has_many :product_build_lists, dependent: :destroy
 
-  ONCE_A_12_HOURS = 0
-  ONCE_A_DAY      = 1
-  ONCE_A_WEEK     = 2
-
-  AUTOSTART_STATUSES        = [ONCE_A_12_HOURS, ONCE_A_DAY, ONCE_A_WEEK]
-  HUMAN_AUTOSTART_STATUSES  = {
-    ONCE_A_12_HOURS => :once_a_12_hours,
-    ONCE_A_DAY      => :once_a_day,
-    ONCE_A_WEEK     => :once_a_week
-  }
-
   validates :name, presence: true, uniqueness: {scope: :platform_id}
   validates :project_id, presence: true
   validates :main_script, :params, length: { maximum: 255 }
-  validates :autostart_status, numericality: true,
-    inclusion: {in: AUTOSTART_STATUSES}, allow_blank: true
 
   scope :recent, order("#{table_name}.name ASC")
 
@@ -30,7 +18,6 @@ class Product < ActiveRecord::Base
                   :main_script,
                   :params,
                   :platform_id,
-                  :autostart_status,
                   :project_version
   attr_readonly :platform_id
 
@@ -44,16 +31,8 @@ class Product < ActiveRecord::Base
     end
   end
 
-  def human_autostart_status
-    self.class.human_autostart_status(autostart_status)
-  end
-
-  def self.human_autostart_status(autostart_status)
-    I18n.t("layout.products.autostart_statuses.#{HUMAN_AUTOSTART_STATUSES[autostart_status]}")
-  end
-
   class << self
-    HUMAN_AUTOSTART_STATUSES.each do |autostart_status, human_autostart_status|
+    Modules::Models::Autostart::HUMAN_AUTOSTART_STATUSES.each do |autostart_status, human_autostart_status|
       define_method "autostart_iso_builds_#{human_autostart_status}" do
         autostart_iso_builds autostart_status
       end

@@ -1,6 +1,7 @@
 en:
   layout:
     projects:
+      build_schedule: Build schedule
       mass_import: Mass import
       branches: Branches
       delete_branch: Delete branch

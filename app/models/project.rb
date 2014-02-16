@@ -1,4 +1,6 @@
 class Project < ActiveRecord::Base
+  include Modules::Models::Autostart
+
   VISIBILITIES = ['open', 'hidden']
   MAX_OWN_PROJECTS = 32000
   NAME_REGEXP = /[\w\-\+\.]+/
@@ -49,6 +51,8 @@ class Project < ActiveRecord::Base
                   :has_issues, :has_wiki, :maintainer_id, :publish_i686_into_x86_64,
                   :url, :srpms_list, :mass_import, :add_to_repository_id, :architecture_dependent
   attr_readonly :owner_id, :owner_type
+
+  serialize :default_platforms, Array
 
   scope :recent, order("lower(#{table_name}.name) ASC")
   scope :search_order, order("CHAR_LENGTH(#{table_name}.name) ASC")
@@ -171,13 +175,7 @@ class Project < ActiveRecord::Base
     main_rep_id = build_for_platform.repositories.find_by_name(%w(main base)).try(:id)
     include_repos = ([main_rep_id] << (save_to_platform.main? ? repository_id : nil)).compact.uniq
 
-    project_version = if repo.commits("#{save_to_platform.name}").try(:first).try(:id)
-                        save_to_platform.name
-                      elsif repo.commits("#{build_for_platform.name}").try(:first).try(:id)
-                        build_for_platform.name
-                      else
-                        default_branch
-                      end
+    project_version = project_version_for save_to_platform, build_for_platform
 
     increase_release_tag(project_version, user, "MassBuild##{mass_build.id}: Increase release tag") if increase_rt
 
@@ -197,6 +195,16 @@ class Project < ActiveRecord::Base
       bl.save_to_repository_id  = repository_id
     end
     build_list.save
+  end
+
+  def project_version_for(save_to_platform, build_for_platform)
+    if repo.commits("#{save_to_platform.name}").try(:first).try(:id)
+      save_to_platform.name
+    elsif repo.commits("#{build_for_platform.name}").try(:first).try(:id)
+      build_for_platform.name
+    else
+      default_branch
+    end
   end
 
   def fork(new_owner, new_name = name)
@@ -287,6 +295,34 @@ class Project < ActiveRecord::Base
     end.gsub(/^%define\s+release:?(\s+)(%mkrel\s+)?(\d+)([.\d]+)?(mdk)?$/) do |line|
       tab, mkrel, mdk = $1, $2, $5
       "%define release#{tab}#{build_new_release.call($3, $4)}#{mdk}"
+    end
+  end
+
+  class << self
+    Modules::Models::Autostart::HUMAN_AUTOSTART_STATUSES.each do |autostart_status, human_autostart_status|
+      define_method "autostart_build_lists_#{human_autostart_status}" do
+        autostart_iso_builds autostart_status
+      end
+    end
+  end
+
+  def self.autostart_build_lists(autostart_status)
+    Project.where(autostart_status: autostart_status).find_each do |p|
+      Platform.where(id: p.default_platforms).each do |platform|
+        platform.platform_arch_settings.pluck(:arch_id).each do |arch_id|
+          build_list = build_lists.build do |bl|
+            bl.save_to_platform       = platform
+            bl.build_for_platform     = platform
+            bl.update_type            = 'newpackage'
+            bl.arch_id                = arch_id
+            bl.project_version        = project_version_for(platform, platform)
+            bl.user                   = p.owner.is_a?(Group) ? p.owner.owner : p.owner
+            bl.auto_publish           = true # TODO: ???
+            bl.save_to_repository_id  = p.repositories.where(platform_id: platform).first
+          end
+          build_list.save
+        end
+      end
     end
   end
 

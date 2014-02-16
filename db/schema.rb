@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20140211175858) do
+ActiveRecord::Schema.define(:version => 20140216203553) do
 
   create_table "activity_feeds", :force => true do |t|
     t.integer  "user_id",    :null => false
@@ -441,6 +441,8 @@ ActiveRecord::Schema.define(:version => 20140211175858) do
     t.boolean  "publish_i686_into_x86_64", :default => false
     t.string   "owner_uname",                                    :null => false
     t.boolean  "architecture_dependent",   :default => false,    :null => false
+    t.integer  "autostart_status"
+    t.text     "default_platforms"
   end
 
   add_index "projects", ["owner_id", "name", "owner_type"], :name => "index_projects_on_name_and_owner_id_and_owner_type", :unique => true, :case_sensitive => false

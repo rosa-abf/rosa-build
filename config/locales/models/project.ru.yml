@@ -1,6 +1,7 @@
 ru:
   layout:
     projects:
+      build_schedule: Расписание сборок
       mass_import: Массовый импорт
       branches: Ветки
       delete_branch: Удалить ветку
