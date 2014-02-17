@@ -56,6 +56,10 @@ GEM
       activesupport (= 3.2.16)
       arel (~> 3.0.2)
       tzinfo (~> 0.3.29)
+    activerecord-postgres-hstore (0.7.7)
+      activerecord (>= 3.1)
+      pg-hstore (>= 1.1.5)
+      rake
     activeresource (3.2.16)
       activemodel (= 3.2.16)
       activesupport (= 3.2.16)
@@ -272,6 +276,7 @@ GEM
       cocaine (~> 0.5.3)
       mime-types
     pg (0.14.1)
+    pg-hstore (1.2.0)
     polyglot (0.3.3)
     posix-spawn (0.3.8)
     puma (2.7.1)
@@ -459,6 +464,7 @@ PLATFORMS
 
 DEPENDENCIES
   RedCloth
+  activerecord-postgres-hstore
   airbrake (~> 3.1.2)
   ancestry (~> 1.3.0)
   angular-i18n (= 0.1.2)

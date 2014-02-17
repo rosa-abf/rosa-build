@@ -181,4 +181,47 @@ describe Project do
     owner.projects.should have(2).items
   end
 
+  context '#autostart_build_lists_once_a_*' do
+    let(:project) { FactoryGirl.create(:project_with_commit) }
+    let(:repository) { FactoryGirl.create(:repository) }
+    let(:user) { FactoryGirl.create(:user) }
+
+    before do
+      repository.add_member user
+      repository.projects << project
+      p_to_r = project.project_to_repositories.where(repository_id: repository).first
+      p_to_r.enabled = true
+      p_to_r.user_id = user.id
+      p_to_r.save
+
+      FactoryGirl.create(:platform_arch_setting, platform: repository.platform)
+      FactoryGirl.create(:platform_arch_setting, platform: repository.platform, default: false)
+    end
+
+    it { ProjectToRepository.autostart_enabled.should have(1).item }
+    it { repository.platform.platform_arch_settings.should have(2).item }
+
+    shared_examples_for 'autostart build_lists' do |once_a_12_hours, once_a_day, once_a_week|
+      it { lambda { Project.autostart_build_lists_once_a_12_hours }.should change{ BuildList.count }.by(once_a_12_hours) }
+      it { lambda { Project.autostart_build_lists_once_a_day }.should change{ BuildList.count }.by(once_a_day) }
+      it { lambda { Project.autostart_build_lists_once_a_week }.should change{ BuildList.count }.by(once_a_week) }
+    end
+    
+    context 'once_a_12_hours' do
+      before { project.update_attributes(autostart_status: Modules::Models::Autostart::ONCE_A_12_HOURS) }
+      it_should_behave_like 'autostart build_lists', 1, 0, 0
+    end
+
+    context 'once_a_day' do
+      before { project.update_attributes(autostart_status: Modules::Models::Autostart::ONCE_A_DAY) }
+      it_should_behave_like 'autostart build_lists', 0, 1, 0
+    end
+
+    context 'once_a_day' do
+      before { project.update_attributes(autostart_status: Modules::Models::Autostart::ONCE_A_WEEK) }
+      it_should_behave_like 'autostart build_lists', 0, 0, 1
+    end
+
+  end
+
 end

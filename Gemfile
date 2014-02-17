@@ -4,6 +4,7 @@ gem 'rails', '3.2.16' #, git: 'git://github.com/rails/rails.git'
 gem 'redhillonrails_core', git: 'git://github.com/rosa-abf/redhillonrails_core.git', branch: 'rails31' # '~> 2.0.0.pre' # deprecated
 
 gem 'pg', '~> 0.14.0'
+gem 'activerecord-postgres-hstore'
 
 gem 'devise', '~> 2.2.3'
 gem 'omniauth'

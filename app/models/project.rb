@@ -49,10 +49,9 @@ class Project < ActiveRecord::Base
 
   attr_accessible :name, :description, :visibility, :srpm, :is_package, :default_branch,
                   :has_issues, :has_wiki, :maintainer_id, :publish_i686_into_x86_64,
-                  :url, :srpms_list, :mass_import, :add_to_repository_id, :architecture_dependent
+                  :url, :srpms_list, :mass_import, :add_to_repository_id, :architecture_dependent,
+                  :autostart_status
   attr_readonly :owner_id, :owner_type
-
-  serialize :default_platforms, Array
 
   scope :recent, order("lower(#{table_name}.name) ASC")
   scope :search_order, order("CHAR_LENGTH(#{table_name}.name) ASC")
@@ -172,7 +171,7 @@ class Project < ActiveRecord::Base
     # Select main and project platform repository(contrib, non-free and etc)
     # If main does not exist, will connect only project platform repository
     # If project platform repository is main, only main will be connect
-    main_rep_id = build_for_platform.repositories.find_by_name(%w(main base)).try(:id)
+    main_rep_id = build_for_platform.repositories.main.first.try(:id)
     include_repos = ([main_rep_id] << (save_to_platform.main? ? repository_id : nil)).compact.uniq
 
     project_version = project_version_for save_to_platform, build_for_platform
@@ -301,26 +300,29 @@ class Project < ActiveRecord::Base
   class << self
     Modules::Models::Autostart::HUMAN_AUTOSTART_STATUSES.each do |autostart_status, human_autostart_status|
       define_method "autostart_build_lists_#{human_autostart_status}" do
-        autostart_iso_builds autostart_status
+        autostart_build_lists autostart_status
       end
     end
   end
 
   def self.autostart_build_lists(autostart_status)
     Project.where(autostart_status: autostart_status).find_each do |p|
-      Platform.where(id: p.default_platforms).each do |platform|
-        platform.platform_arch_settings.pluck(:arch_id).each do |arch_id|
-          build_list = build_lists.build do |bl|
+      p.project_to_repositories.autostart_enabled.includes(repository: :platform).each do |p_to_r|
+        repository  = p_to_r.repository
+        platform    = repository.platform
+        platform.platform_arch_settings.by_default.pluck(:arch_id).each do |arch_id|
+          build_list = p.build_lists.build do |bl|
             bl.save_to_platform       = platform
             bl.build_for_platform     = platform
             bl.update_type            = 'newpackage'
             bl.arch_id                = arch_id
-            bl.project_version        = project_version_for(platform, platform)
-            bl.user                   = p.owner.is_a?(Group) ? p.owner.owner : p.owner
-            bl.auto_publish           = true # TODO: ???
-            bl.save_to_repository_id  = p.repositories.where(platform_id: platform).first
+            bl.project_version        = p.project_version_for(platform, platform)
+            bl.user                   = User.find(p_to_r.user_id)
+            bl.auto_publish           = p_to_r.auto_publish == 'true'
+            bl.save_to_repository     = repository
+            bl.include_repos          = [repository.id, platform.repositories.main.first.try(:id)].uniq.compact
           end
-          build_list.save
+          build_list.save!
         end
       end
     end

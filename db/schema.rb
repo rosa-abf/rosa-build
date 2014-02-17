@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20140216203553) do
+ActiveRecord::Schema.define(:version => 20140217192640) do
 
   create_table "activity_feeds", :force => true do |t|
     t.integer  "user_id",    :null => false
@@ -416,6 +416,7 @@ ActiveRecord::Schema.define(:version => 20140216203553) do
     t.integer  "repository_id"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.hstore   "autostart_options"
   end
 
   add_index "project_to_repositories", ["repository_id", "project_id"], :name => "index_project_to_repositories_on_repository_id_and_project_id", :unique => true
@@ -442,7 +443,6 @@ ActiveRecord::Schema.define(:version => 20140216203553) do
     t.string   "owner_uname",                                    :null => false
     t.boolean  "architecture_dependent",   :default => false,    :null => false
     t.integer  "autostart_status"
-    t.text     "default_platforms"
   end
 
   add_index "projects", ["owner_id", "name", "owner_type"], :name => "index_projects_on_name_and_owner_id_and_owner_type", :unique => true, :case_sensitive => false
