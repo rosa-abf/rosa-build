@@ -56,16 +56,6 @@
             id_element: '#project_maintainer_id',
             placeholder: @project.maintainer.fullname
 
-    %h3= t("layout.projects.build_schedule")
-    = form_for @project, html: { class: :form, multipart: true } do |f|
-      .leftlist= f.label :default_platforms
-      .rightlist= f.select :default_platforms, Platform.main.map{ |p| [p.name, p.id] }, {include_blank: true}, multiple: true, size: 5
-      .both
-
-      .leftlist= f.label :autostart_status
-      .rightlist= f.select :autostart_status, Project::AUTOSTART_STATUSES.collect{|status| [Project.human_autostart_status(status), status]}, {include_blank: true, selected: @project.autostart_status}
-      .both
-
   - if [:new, :create].include? act
     .leftlist= f.label :srpm
     .rightlist= f.file_field :srpm, class: 'file_field'
