@@ -309,20 +309,27 @@ class Project < ActiveRecord::Base
     Project.where(autostart_status: autostart_status).find_each do |p|
       p.project_to_repositories.autostart_enabled.includes(repository: :platform).each do |p_to_r|
         repository  = p_to_r.repository
-        platform    = repository.platform
-        platform.platform_arch_settings.by_default.pluck(:arch_id).each do |arch_id|
-          build_list = p.build_lists.build do |bl|
-            bl.save_to_platform       = platform
-            bl.build_for_platform     = platform
-            bl.update_type            = 'newpackage'
-            bl.arch_id                = arch_id
-            bl.project_version        = p.project_version_for(platform, platform)
-            bl.user                   = User.find(p_to_r.user_id)
-            bl.auto_publish           = p_to_r.auto_publish == 'true'
-            bl.save_to_repository     = repository
-            bl.include_repos          = [repository.id, platform.repositories.main.first.try(:id)].uniq.compact
+        user        = User.find(p_to_r.user_id)
+        if repository.platform.personal?
+          platforms = Platform.availables_main_platforms(user)
+        else
+          platforms = [repository.platform]
+        end
+        platforms.each do |platform|
+          platform.platform_arch_settings.by_default.pluck(:arch_id).each do |arch_id|
+            build_list = p.build_lists.build do |bl|
+              bl.save_to_platform       = repository.platform
+              bl.build_for_platform     = platform
+              bl.update_type            = 'newpackage'
+              bl.arch_id                = arch_id
+              bl.project_version        = p.project_version_for(platform, platform)
+              bl.user                   = user
+              bl.auto_publish           = p_to_r.auto_publish == 'true'
+              bl.save_to_repository     = repository
+              bl.include_repos          = [repository.id, platform.repositories.main.first.try(:id)].uniq.compact
+            end
+            build_list.save!
           end
-          build_list.save!
         end
       end
     end
