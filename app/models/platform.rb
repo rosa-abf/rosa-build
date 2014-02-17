@@ -247,7 +247,7 @@ class Platform < ActiveRecord::Base
     p_ids = Rails.cache.fetch([:availables_main_platforms, user], expires_in: 10.minutes) do
       ability ||= Ability.new user
       Platform.main.accessible_by(ability, :show).joins(:repositories).
-        where('repositories.id IS NOT NULL').pluck(:id)
+        where('repositories.id IS NOT NULL').uniq.pluck(:id)
     end
     Platform.preload(:repositories).where(id: p_ids).order(:name)
   end
