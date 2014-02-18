@@ -6,10 +6,9 @@ RosaABF.controller('ProjectScheduleController', ['$scope', '$http', function($sc
     '1': 'autostart_statuses.1',
     '2': 'autostart_statuses.2'
   };
-  $scope.project = null;
-  $scope.owner   = null;
-
-  $scope.items = [];
+  $scope.project  = null;
+  $scope.owner    = null;
+  $scope.items    = [];
 
 
   $scope.init = function(name_with_owner) {
@@ -31,6 +30,5 @@ RosaABF.controller('ProjectScheduleController', ['$scope', '$http', function($sc
       {enabled: obj.enabled, auto_publish: obj.auto_publish, repository_id: obj.repository_id, format: 'json'}
     );
   }
-
 
 }]);
