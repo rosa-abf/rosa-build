@@ -31,6 +31,10 @@ shared_examples_for 'projects user with project admin rights' do
     put :update, {owner_name: @project.owner.uname, project_name: @project.name}.merge(@update_params)
     response.should redirect_to(project_path(@project))
   end
+  it 'should be able to perform schedule action' do
+    put :schedule, {owner_name: @project.owner.uname, project_name: @project.name}.merge(repository_id: @project.repositories.first.id)
+    response.should be_success
+  end
 end
 
 shared_examples_for 'user with destroy rights' do
@@ -49,6 +53,11 @@ shared_examples_for 'projects user without project admin rights' do
     description = @project.description
     put :update, :project=>{description:"hack"}, owner_name: @project.owner.uname, project_name: @project.name
     @project.reload.description.should == description
+    response.should redirect_to(forbidden_path)
+  end
+
+  it 'should not be able to perform schedule action' do
+    put :schedule, {owner_name: @project.owner.uname, project_name: @project.name}.merge(repository_id: @project.repositories.first.id)
     response.should redirect_to(forbidden_path)
   end
 
@@ -116,6 +125,11 @@ describe Projects::ProjectsController do
 
       it 'should not be able to perform update action' do
         put :update, {owner_name: @project.owner.uname, project_name: @project.name}.merge(@update_params)
+        response.should redirect_to(new_user_session_path)
+      end
+
+      it 'should not be able to perform schedule action' do
+        put :schedule, {owner_name: @project.owner.uname, project_name: @project.name}.merge(repository_id: @project.repositories.first.id)
         response.should redirect_to(new_user_session_path)
       end
 
