@@ -7,13 +7,28 @@
 .hr
 
 %h3= t("layout.projects.build_schedule")
-= form_for @project, html: { class: :form, multipart: true, 'ng-controller' => 'ProjectScheduleController', 'ng-init' => "project_id = #{@project.id}" } do |f|
-  / .leftlist= f.label :default_platforms
-  / .rightlist= f.select :default_platforms, Platform.main.map{ |p| [p.name, p.id] }, {include_blank: true}, multiple: true, size: 5
-  / .both
+%div{ 'ng-controller' => 'ProjectScheduleController', 'ng-init' => "init('#{@project.name_with_owner}')" }
 
-  .leftlist= f.label :autostart_status
-  .rightlist= f.select :autostart_status, Project::AUTOSTART_STATUSES.collect{|status| [Project.human_autostart_status(status), status]}, {include_blank: true, selected: @project.autostart_status}
+  .leftlist= t('activerecord.attributes.project.autostart_status')
+  .rightlist
+    %select{ 'ng-options' => 'k as (v | i18n) for (k, v) in statuses', 'ng-model' => 'autostart_status', 'ng-change' => 'updateStatus()', 'ng-init' => "autostart_status = '#{@project.autostart_status}'" }
+      %option{ value: '' }
+  .both
+
+  %table#myTable.tablesorter{cellspacing: "0", cellpadding: "0"}
+    %thead
+      %tr
+        %th= t('activerecord.attributes.repository.name')
+        %th= t('activerecord.attributes.build_list.auto_publish')
+        %th= t('activerecord.attributes.project_to_repository.enabled')
+    %tbody{'ng-init' => "items = #{available_project_to_repositories(@project)}"}
+      %tr{'ng-repeat' => "item in items"}
+        %td
+          %a{'ng-href' => '{{item.repository_path}}'} {{item.repository_name}}
+        %td
+          %input{type: 'checkbox', 'ng-model' => "item.auto_publish", 'ng-change' => 'updateSchedule(item)'}
+        %td
+          %input{type: 'checkbox', 'ng-model' => "item.enabled", 'ng-change' => 'updateSchedule(item)'}
   .both
 
 .hr

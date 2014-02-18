@@ -17,6 +17,14 @@ class ProjectToRepository < ActiveRecord::Base
     store_accessor :autostart_options, field
   end
 
+  def enabled?
+    ['true', true].include?(enabled)
+  end
+
+  def auto_publish?
+    ['true', true].include?(auto_publish)
+  end
+
   protected
 
   def one_project_in_platform_repositories

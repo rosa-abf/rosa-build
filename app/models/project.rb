@@ -324,7 +324,7 @@ class Project < ActiveRecord::Base
               bl.arch_id                = arch_id
               bl.project_version        = p.project_version_for(platform, platform)
               bl.user                   = user
-              bl.auto_publish           = p_to_r.auto_publish == 'true'
+              bl.auto_publish           = p_to_r.auto_publish?
               bl.save_to_repository     = repository
               bl.include_repos          = [repository.id, platform.repositories.main.first.try(:id)].uniq.compact
             end
