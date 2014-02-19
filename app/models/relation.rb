@@ -1,6 +1,6 @@
 class Relation < ActiveRecord::Base
   belongs_to :target, polymorphic: true
-  belongs_to :actor, polymorphic: true
+  belongs_to :actor, polymorphic: true, touch: true
 
   ROLES = %w[reader writer admin]
   validates :role, inclusion: {in: ROLES}

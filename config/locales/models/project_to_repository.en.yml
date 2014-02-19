@@ -1,5 +1,8 @@
 en:
   activerecord:
+    attributes:
+      project_to_repository:
+        enabled: Enabled
     errors:
       project_to_repository:
         project: Project already exists in platform

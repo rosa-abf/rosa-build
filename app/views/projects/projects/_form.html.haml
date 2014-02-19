@@ -55,6 +55,7 @@
             autocomplete_maintainers_path(@project.owner, @project),
             id_element: '#project_maintainer_id',
             placeholder: @project.maintainer.fullname
+
   - if [:new, :create].include? act
     .leftlist= f.label :srpm
     .rightlist= f.file_field :srpm, class: 'file_field'

@@ -1,5 +1,8 @@
 ru:
   activerecord:
+    attributes:
+      project_to_repository:
+        enabled: Включено
     errors:
       project_to_repository:
         project: Проект уже присутствует в платформе

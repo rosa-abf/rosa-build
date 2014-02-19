@@ -19,6 +19,22 @@ module ProjectsHelper
     end.sort_by{ |f| f[:uname] }
   end
 
+  def available_project_to_repositories(project)
+    project.project_to_repositories.includes(repository: :platform).select do |p_to_r|
+      p_to_r.repository.publish_without_qa ? true : can?(:local_admin_manage, p_to_r.repository.platform)
+    end.sort_by do |p_to_r|
+      "#{p_to_r.repository.platform.name}/#{p_to_r.repository.name}"
+    end.map do |p_to_r|
+      {
+        repository_name:  "#{p_to_r.repository.platform.name}/#{p_to_r.repository.name}",
+        repository_path:  platform_repository_path(p_to_r.repository.platform, p_to_r.repository),
+        auto_publish:     p_to_r.auto_publish?,
+        enabled:          p_to_r.enabled?,
+        repository_id:    p_to_r.repository_id
+      }
+    end.to_a.to_json
+  end
+
   def repositories_grouped_by_platform
     groups = {}
     Platform.accessible_by(current_ability, :related).order(:name).each do |platform|

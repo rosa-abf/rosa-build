@@ -243,6 +243,15 @@ class Platform < ActiveRecord::Base
     Platform.main.where(automatic_metadata_regeneration: value).each(&:regenerate)
   end
 
+  def self.availables_main_platforms(user, ability = nil)
+    p_ids = Rails.cache.fetch([:availables_main_platforms, user], expires_in: 10.minutes) do
+      ability ||= Ability.new user
+      Platform.main.accessible_by(ability, :show).joins(:repositories).
+        where('repositories.id IS NOT NULL').uniq.pluck(:id)
+    end
+    Platform.preload(:repositories).where(id: p_ids).order(:name)
+  end
+
   protected
 
     def create_directory
