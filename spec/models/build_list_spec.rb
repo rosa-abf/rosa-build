@@ -79,6 +79,12 @@ describe BuildList do
         should have(:no).items
       end
 
+      it "doesn't get notification by email when auto_publish_into_testing and status - Build complete" do
+        build_list.update_attributes(auto_publish_status: BuildList::AUTO_PUBLISH_STATUS_TESTING)
+        build_list.build_success
+        should have(:no).items
+      end
+
       it "doesn't get notification by email when mass build" do
         build_list.update_attributes({mass_build_id: 1, status: BuildList::BUILD_PUBLISH}, without_protection: true)
         build_list.published
