@@ -282,6 +282,7 @@ Rosa::Application.routes.draw do
         put :publish
         put :reject_publish
         put :publish_into_testing
+        put :update_type
       end
     end
 
