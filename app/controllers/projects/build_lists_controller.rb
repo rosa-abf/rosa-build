@@ -166,6 +166,20 @@ class Projects::BuildListsController < Projects::BaseController
     render partial: 'build_lists_ajax', layout: false
   end
 
+  def update_type
+    respond_to do |format|
+      format.html { render nothing: true }
+      format.json do
+        @build_list.update_type = params[:update_type]
+        if @build_list.save
+          render json: 'success', status: :ok
+        else
+          render json: { message: @build_list.errors.full_messages.join('. ') },
+                 status: :unprocessable_entity
+        end
+      end
+    end
+  end
 
   protected
 
