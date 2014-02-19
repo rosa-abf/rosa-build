@@ -98,7 +98,11 @@ class Projects::ProjectsController < Projects::BaseController
     p_to_r.enabled      = params[:enabled].present?
     p_to_r.auto_publish = params[:auto_publish].present?
     p_to_r.save
-    render json: { notice: I18n.t('flash.project.saved') }.to_json
+    if p_to_r.save
+      render json: { notice: I18n.t('flash.project.saved') }.to_json
+    else
+      render json: { error: I18n.t('flash.project.save_error') }.to_json, status: 422
+    end
   end
 
   def destroy
