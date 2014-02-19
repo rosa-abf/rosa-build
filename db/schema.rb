@@ -122,7 +122,6 @@ ActiveRecord::Schema.define(:version => 20140219191644) do
     t.integer  "save_to_platform_id"
     t.text     "include_repos"
     t.integer  "user_id"
-    t.boolean  "auto_publish",                  :default => true
     t.string   "package_version"
     t.string   "commit_hash"
     t.integer  "priority",                      :default => 0,         :null => false
