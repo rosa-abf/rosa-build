@@ -43,7 +43,11 @@
       .both
 
     %h3= t("activerecord.attributes.build_list.preferences")
-    - [:auto_publish, :auto_create_container, :include_testing_subrepository].each do |kind|
+    - selected = params[:build_list].try(:[], :auto_publish_status) ? {selected: params[:build_list][:auto_publish_status]} : {}
+    = f.select :auto_publish_status, auto_publish_statuses, selected
+    = f.label :auto_publish_status
+    .both
+    - %i(auto_create_container include_testing_subrepository).each do |kind|
       .both
         - checked, field = params[:build_list].try(:[], kind), "build_list[#{kind}]"
         = hidden_field_tag field, false, id: nil

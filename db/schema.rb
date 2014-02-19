@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20140217192640) do
+ActiveRecord::Schema.define(:version => 20140219191644) do
 
   create_table "activity_feeds", :force => true do |t|
     t.integer  "user_id",    :null => false
@@ -125,7 +125,7 @@ ActiveRecord::Schema.define(:version => 20140217192640) do
     t.boolean  "auto_publish",                  :default => true
     t.string   "package_version"
     t.string   "commit_hash"
-    t.integer  "priority",                      :default => 0,     :null => false
+    t.integer  "priority",                      :default => 0,         :null => false
     t.datetime "started_at"
     t.integer  "duration"
     t.integer  "advisory_id"
@@ -144,6 +144,7 @@ ActiveRecord::Schema.define(:version => 20140217192640) do
     t.string   "external_nodes"
     t.integer  "builder_id"
     t.boolean  "include_testing_subrepository"
+    t.string   "auto_publish_status",           :default => "default", :null => false
   end
 
   add_index "build_lists", ["advisory_id"], :name => "index_build_lists_on_advisory_id"

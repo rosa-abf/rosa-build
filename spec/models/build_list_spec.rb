@@ -19,7 +19,7 @@ describe BuildList do
     let!(:user) { FactoryGirl.create(:user) }
     let!(:build_list) { FactoryGirl.create(:build_list,
                                            user: user,
-                                           auto_publish: false) }
+                                           auto_publish_status: BuildList::AUTO_PUBLISH_STATUS_NONE) }
     let!(:build_list_package) { FactoryGirl.create(:build_list_package,
                                                    build_list: build_list,
                                                    project: build_list.project) }
@@ -44,7 +44,7 @@ describe BuildList do
       end
 
       it "gets notification by email when auto_publish and status - Build error" do
-        build_list.update_attributes(auto_publish: true)
+        build_list.update_attributes(auto_publish_status: BuildList::AUTO_PUBLISH_STATUS_DEFAULT)
         build_list.build_error
         should have(1).item
       end
@@ -56,7 +56,7 @@ describe BuildList do
       end
 
       it "gets notification by email when auto_publish and status - Failed publish" do
-        build_list.update_attributes({auto_publish: true, status: BuildList::BUILD_PUBLISH}, without_protection: true)
+        build_list.update_attributes({auto_publish_status: BuildList::AUTO_PUBLISH_STATUS_DEFAULT, status: BuildList::BUILD_PUBLISH}, without_protection: true)
         build_list.fail_publish
         should have(1).item
       end
@@ -68,13 +68,13 @@ describe BuildList do
       end
 
       it "gets notification by email when auto_publish and status - Build published" do
-        build_list.update_attributes({auto_publish: true, status: BuildList::BUILD_PUBLISH}, without_protection: true)
+        build_list.update_attributes({auto_publish_status: BuildList::AUTO_PUBLISH_STATUS_DEFAULT, status: BuildList::BUILD_PUBLISH}, without_protection: true)
         build_list.published
         should have(1).item
       end
 
       it "doesn't get notification by email when auto_publish and status - Build complete" do
-        build_list.update_attributes(auto_publish: true)
+        build_list.update_attributes(auto_publish_status: BuildList::AUTO_PUBLISH_STATUS_DEFAULT)
         build_list.build_success
         should have(:no).items
       end
@@ -141,9 +141,9 @@ describe BuildList do
     it "doesn't get 2 notification by email when user associated to project and created task" do
       project = FactoryGirl.create(:project_with_commit, owner: user)
       bl = FactoryGirl.create(:build_list_with_attaching_project,
-        user: user,
-        auto_publish: true,
-        project: project
+        user:                 user,
+        auto_publish_status:  BuildList::AUTO_PUBLISH_STATUS_DEFAULT,
+        project:              project
       )
       FactoryGirl.create(:build_list_package, build_list: bl, project: bl.project)
       bl.update_attributes({commit_hash: bl.project.repo.commits('master').last.id,
@@ -156,8 +156,8 @@ describe BuildList do
 
   context '#has_new_packages?' do
     let!(:build_list) { FactoryGirl.create( :build_list,
-                                            status: BuildList::SUCCESS,
-                                            auto_publish: true) }
+                                            status:               BuildList::SUCCESS,
+                                            auto_publish_status:  BuildList::AUTO_PUBLISH_STATUS_DEFAULT) }
     let!(:build_list_package) { FactoryGirl.create( :build_list_package,
                                                     build_list: build_list,
                                                     version: '3.1.12',
