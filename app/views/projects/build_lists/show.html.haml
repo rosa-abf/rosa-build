@@ -51,6 +51,11 @@
         @build_list.update_type), {}, 'ng-model' => 'build_list.update_type',
         'ng-change' => 'updateTypeChanged()', 'ng-show' => 'build_list.can_publish'
       %div{'ng-hide' => 'build_list.can_publish'}= @build_list.update_type
+    .ng-hide{ 'ng-show' => 'update_type_errors' }
+      .flash_notify
+        .alert{ 'ng-class' => "{ 'alert-error': update_type_errors }" }
+          {{ update_type_errors }}
+      .both
     .both
     .leftlist= t("activerecord.attributes.build_list.auto_publish")
     .rightlist= t("layout.#{@build_list.auto_publish}_")
