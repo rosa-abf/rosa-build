@@ -16,10 +16,7 @@ class Api::V1::BuildListsController < Api::V1::BaseController
     bl_params = params[:build_list] || {}
     save_to_repository = Repository.where(id: bl_params[:save_to_repository_id]).first
 
-    if save_to_repository
-      bl_params[:save_to_platform_id] = save_to_repository.platform_id
-      bl_params[:auto_publish] = false unless save_to_repository.publish_without_qa?
-    end
+    bl_params[:save_to_platform_id] = save_to_repository.platform_id if save_to_repository
 
     @build_list = current_user.build_lists.new(bl_params)
     @build_list.priority = current_user.build_priority # User builds more priority than mass rebuild with zero priority

@@ -38,6 +38,12 @@ module BuildListsHelper
     end
   end
 
+  def auto_publish_statuses
+    BuildList::AUTO_PUBLISH_STATUSES.map do |status|
+      [I18n.t("layout.build_lists.auto_publish_status.#{status}"), status]
+    end
+  end
+
   def mass_build_options
     options_from_collection_for_select(
       MassBuild.recent.limit(15),

@@ -57,8 +57,8 @@
           {{ update_type_errors }}
       .both
     .both
-    .leftlist= t("activerecord.attributes.build_list.auto_publish")
-    .rightlist= t("layout.#{@build_list.auto_publish}_")
+    .leftlist= t("activerecord.attributes.build_list.auto_publish_status")
+    .rightlist= t("layout.build_lists.auto_publish_status.#{@build_list.auto_publish_status}")
     .both
     .leftlist= t("activerecord.attributes.build_list.auto_create_container")
     .rightlist= t("layout.#{@build_list.auto_create_container?}_")

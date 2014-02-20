@@ -34,11 +34,11 @@ $(document).ready(function() {
       }
       setBranchSelected(selected_option);
     }
-    var build_list_auto_publish = $('#build_list_auto_publish');
+    var build_list_auto_publish_status = $('#build_list_auto_publish_status');
     if (selected_option.attr('publish_without_qa') == '1') {
-      build_list_auto_publish.removeAttr('disabled').attr('checked', 'checked');
+      build_list_auto_publish_status.removeAttr('disabled').val('default');
     } else {
-      build_list_auto_publish.removeAttr('checked').attr('disabled', 'disabled');
+      build_list_auto_publish_status.val('none').attr('disabled', 'disabled');
       auto_create_container.attr('checked', 'checked');
     }
   });
