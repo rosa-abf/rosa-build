@@ -637,6 +637,7 @@ class BuildList < ActiveRecord::Base
     if auto_publish? || auto_publish_into_testing?
       self.auto_create_container = false
     end
+    true
   end
 
   def prepare_extra_params
