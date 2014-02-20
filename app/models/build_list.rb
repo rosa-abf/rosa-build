@@ -56,9 +56,7 @@ class BuildList < ActiveRecord::Base
   before_validation :prepare_extra_repositories,  on: :create
   before_validation :prepare_extra_build_lists,   on: :create
   before_validation :prepare_extra_params,        on: :create
-  before_validation lambda { self.auto_publish_status = AUTO_PUBLISH_STATUS_NONE if external_nodes.present?; true },  on: :create
-  before_validation lambda { self.auto_publish_status = AUTO_PUBLISH_STATUS_NONE if auto_publish? && !save_to_repository.publish_without_qa?; true },  on: :create
-  before_validation lambda { self.auto_create_container = false if auto_publish? || auto_publish_into_testing?; true },   on: :create
+  before_validation :prepare_auto_publish_status, on: :create
 
   attr_accessible :include_repos, :auto_publish, :build_for_platform_id, :commit_hash,
                   :arch_id, :project_id, :save_to_repository_id, :update_type,
@@ -627,6 +625,18 @@ class BuildList < ActiveRecord::Base
       end
     end
     self.extra_build_lists = bls.pluck('build_lists.id')
+  end
+
+  def prepare_auto_publish_status
+    if external_nodes.present?
+      self.auto_publish_status = AUTO_PUBLISH_STATUS_NONE
+    end
+    if auto_publish? && !save_to_repository.publish_without_qa?
+      self.auto_publish_status = AUTO_PUBLISH_STATUS_NONE
+    end
+    if auto_publish? || auto_publish_into_testing?
+      self.auto_create_container = false
+    end
   end
 
   def prepare_extra_params
