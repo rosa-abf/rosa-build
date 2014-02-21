@@ -67,14 +67,41 @@ class Projects::ProjectsController < Projects::BaseController
 
   def update
     params[:project].delete(:maintainer_id) if params[:project][:maintainer_id].blank?
-    if @project.update_attributes(params[:project])
-      flash[:notice] = t('flash.project.saved')
-      redirect_to @project
+    respond_to do |format|
+      format.html do
+        if @project.update_attributes(params[:project])
+          flash[:notice] = t('flash.project.saved')
+          redirect_to @project
+        else
+          @project.save
+          flash[:error] = t('flash.project.save_error')
+          flash[:warning] = @project.errors.full_messages.join('. ')
+          render action: :edit
+        end
+      end
+      format.json do
+        if @project.update_attributes(params[:project])
+          render json: { notice: I18n.t('flash.project.saved') }.to_json
+        else
+          render json: { error: I18n.t('flash.project.save_error') }.to_json, status: 422
+        end
+      end
+    end
+  end
+
+  def schedule
+    p_to_r = @project.project_to_repositories.where(repository_id: params[:repository_id]).first
+    unless p_to_r.repository.publish_without_qa
+      authorize! :local_admin_manage, p_to_r.repository.platform
+    end
+    p_to_r.user_id      = current_user.id
+    p_to_r.enabled      = params[:enabled].present?
+    p_to_r.auto_publish = params[:auto_publish].present?
+    p_to_r.save
+    if p_to_r.save
+      render json: { notice: I18n.t('flash.project.saved') }.to_json
     else
-      @project.save
-      flash[:error] = t('flash.project.save_error')
-      flash[:warning] = @project.errors.full_messages.join('. ')
-      render action: :edit
+      render json: { error: I18n.t('flash.project.save_error') }.to_json, status: 422
     end
   end
 

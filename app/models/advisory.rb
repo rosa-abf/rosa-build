@@ -13,8 +13,13 @@ class Advisory < ActiveRecord::Base
   ID_STRING_TEMPLATE = 'ROSA-%<type>s-%<year>04s:%<id>04s'
   TYPES = {'security' => 'SA', 'bugfix' => 'A'}
 
-  scope :search_by_id, lambda { |aid| where("#{table_name}.advisory_id ILIKE ?", "%#{aid.to_s.strip}%") }
-  scope :by_update_type, lambda { |ut| where(update_type: ut) }
+  scope :search, lambda { |q|
+    q = q.to_s.strip
+    where("#{table_name}.advisory_id ILIKE :q OR #{table_name}.description ILIKE :q OR build_list_packages.fullname ILIKE :q", q: "%#{q}%").
+      joins(build_lists: :packages) if q.present?
+  }
+  scope :search_by_id,    lambda { |aid| where("#{table_name}.advisory_id ILIKE ?", "%#{aid.to_s.strip}%") }
+  scope :by_update_type,  lambda { |ut| where(update_type: ut) }
   default_scope order("#{table_name}.created_at DESC")
 
   def to_param

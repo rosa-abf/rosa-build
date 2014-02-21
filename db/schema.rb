@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20140113215223) do
+ActiveRecord::Schema.define(:version => 20140219191644) do
 
   create_table "activity_feeds", :force => true do |t|
     t.integer  "user_id",    :null => false
@@ -122,10 +122,9 @@ ActiveRecord::Schema.define(:version => 20140113215223) do
     t.integer  "save_to_platform_id"
     t.text     "include_repos"
     t.integer  "user_id"
-    t.boolean  "auto_publish",                  :default => true
     t.string   "package_version"
     t.string   "commit_hash"
-    t.integer  "priority",                      :default => 0,     :null => false
+    t.integer  "priority",                      :default => 0,         :null => false
     t.datetime "started_at"
     t.integer  "duration"
     t.integer  "advisory_id"
@@ -144,6 +143,7 @@ ActiveRecord::Schema.define(:version => 20140113215223) do
     t.string   "external_nodes"
     t.integer  "builder_id"
     t.boolean  "include_testing_subrepository"
+    t.string   "auto_publish_status",           :default => "default", :null => false
   end
 
   add_index "build_lists", ["advisory_id"], :name => "index_build_lists_on_advisory_id"
@@ -316,20 +316,21 @@ ActiveRecord::Schema.define(:version => 20140113215223) do
 
   create_table "platforms", :force => true do |t|
     t.string   "description"
-    t.string   "name",                                          :null => false
+    t.string   "name",                                                :null => false
     t.integer  "parent_platform_id"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.boolean  "released",                  :default => false,  :null => false
+    t.boolean  "released",                        :default => false,  :null => false
     t.integer  "owner_id"
     t.string   "owner_type"
-    t.string   "visibility",                :default => "open", :null => false
-    t.string   "platform_type",             :default => "main", :null => false
-    t.string   "distrib_type",                                  :null => false
+    t.string   "visibility",                      :default => "open", :null => false
+    t.string   "platform_type",                   :default => "main", :null => false
+    t.string   "distrib_type",                                        :null => false
     t.integer  "status"
     t.datetime "last_regenerated_at"
     t.integer  "last_regenerated_status"
     t.string   "last_regenerated_log_sha1"
+    t.string   "automatic_metadata_regeneration"
   end
 
   add_index "platforms", ["name"], :name => "index_platforms_on_name", :unique => true, :case_sensitive => false
@@ -415,6 +416,7 @@ ActiveRecord::Schema.define(:version => 20140113215223) do
     t.integer  "repository_id"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.hstore   "autostart_options"
   end
 
   add_index "project_to_repositories", ["repository_id", "project_id"], :name => "index_project_to_repositories_on_repository_id_and_project_id", :unique => true
@@ -440,6 +442,7 @@ ActiveRecord::Schema.define(:version => 20140113215223) do
     t.boolean  "publish_i686_into_x86_64", :default => false
     t.string   "owner_uname",                                    :null => false
     t.boolean  "architecture_dependent",   :default => false,    :null => false
+    t.integer  "autostart_status"
   end
 
   add_index "projects", ["owner_id", "name", "owner_type"], :name => "index_projects_on_name_and_owner_id_and_owner_type", :unique => true, :case_sensitive => false

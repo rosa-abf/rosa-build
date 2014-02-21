@@ -2,14 +2,15 @@ RosaABF.controller('BuildListController', ['$scope', '$http', '$timeout', 'Sound
 
   $scope.advisoriable_types = <%=BuildList::RELEASE_UPDATE_TYPES%>;
 
-  $scope.id               = $('#build_list_id').val();
-  $scope.build_list       = null;
-  $scope.subject          = {}; // See: shared/build_results
-  $scope.attach_advisory  = 'no';
+  $scope.id                 = $('#build_list_id').val();
+  $scope.build_list         = null;
+  $scope.subject            = {}; // See: shared/build_results
+  $scope.attach_advisory    = 'no';
   // Statuses: advisory_not_found, server_error, continue_input
-  $scope.search_status    = 'continue_input';
-  $scope.term             = '';
-  $scope.advisory         = null;
+  $scope.search_status      = 'continue_input';
+  $scope.term               = '';
+  $scope.advisory           = null;
+  $scope.update_type_errors = null;
 
   $scope.getBuildList = function() {
     $http.get(Routes.build_list_path($scope.id, {format: 'json'})).success(function(results) {
@@ -60,13 +61,28 @@ RosaABF.controller('BuildListController', ['$scope', '$http', '$timeout', 'Sound
     } else {
       $scope.attach_advisory = 'no';
     }
+    $scope.updateUpdateType();
   }
 
   $scope.attachAdvisoryChanged = function() {
     if (!_.contains($scope.advisoriable_types, $scope.build_list.update_type)) {
       $scope.build_list.update_type = $scope.advisoriable_types[0];
+      $scope.updateUpdateType();
     }
     $('#build_list_update_type .nonadvisoriable').attr('disabled', ($scope.attach_advisory != 'no'));
   }
 
+  $scope.updateUpdateType = function() {
+    $http.put(
+      Routes.update_type_build_list_path($scope.id),
+      {update_type: $scope.build_list.update_type, format: 'json'}
+      ).success(function(results) {
+        $scope.update_type_errors = null;
+        $timeout(function() {
+          $('#build_list_update_type').effect('highlight', {}, 1000);
+        }, 100);
+      }).error(function(data, status, headers, config) {
+        $scope.update_type_errors = data.message;
+      });
+  }
 }]);

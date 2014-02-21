@@ -23,10 +23,16 @@ class BuildList < ActiveRecord::Base
   EXTRA_PARAMS = %w[cfg_options cfg_urpm_options build_src_rpm build_rpm]
   EXTERNAL_NODES = %w[owned everything]
 
+  AUTO_PUBLISH_STATUS_NONE    = 'none'
+  AUTO_PUBLISH_STATUS_DEFAULT = 'default'
+  AUTO_PUBLISH_STATUS_TESTING = 'testing'
+  AUTO_PUBLISH_STATUSES = [AUTO_PUBLISH_STATUS_NONE, AUTO_PUBLISH_STATUS_DEFAULT, AUTO_PUBLISH_STATUS_TESTING]
+
   validates :project_id, :project_version, :arch, :include_repos,
             :build_for_platform_id, :save_to_platform_id, :save_to_repository_id, presence: true
   validates_numericality_of :priority, greater_than_or_equal_to: 0
   validates :external_nodes, inclusion: {in:  EXTERNAL_NODES}, allow_blank: true
+  validates :auto_publish_status, inclusion: {in: AUTO_PUBLISH_STATUSES}
   validates :update_type, inclusion: UPDATE_TYPES,
             unless: Proc.new { |b| b.advisory.present? }
   validates :update_type, inclusion: {in: RELEASE_UPDATE_TYPES, message: I18n.t('flash.build_list.frozen_platform')},
@@ -50,14 +56,13 @@ class BuildList < ActiveRecord::Base
   before_validation :prepare_extra_repositories,  on: :create
   before_validation :prepare_extra_build_lists,   on: :create
   before_validation :prepare_extra_params,        on: :create
-  before_validation lambda { self.auto_publish = false if external_nodes.present?; true },  on: :create
-  before_validation lambda { self.auto_create_container = false if auto_publish?; true },   on: :create
+  before_validation :prepare_auto_publish_status, on: :create
 
   attr_accessible :include_repos, :auto_publish, :build_for_platform_id, :commit_hash,
                   :arch_id, :project_id, :save_to_repository_id, :update_type,
                   :save_to_platform_id, :project_version, :auto_create_container,
                   :extra_repositories, :extra_build_lists, :extra_params, :external_nodes,
-                  :include_testing_subrepository
+                  :include_testing_subrepository, :auto_publish_status
 
   LIVE_TIME     = 4.week  # for unpublished
   MAX_LIVE_TIME = 3.month # for published
@@ -152,8 +157,9 @@ class BuildList < ActiveRecord::Base
       end
     end
 
-    after_transition on: :place_build, do: :add_job_to_abf_worker_queue,
-      :if  => lambda { |build_list| build_list.external_nodes.blank? }
+    after_transition(on: :place_build) do |build_list, transition|
+      build_list.add_job_to_abf_worker_queue if build_list.external_nodes.blank?
+    end
     after_transition on: :published,
       do: [:set_version_and_tag, :actualize_packages]
     after_transition on: :publish, do: :set_publisher
@@ -166,7 +172,7 @@ class BuildList < ActiveRecord::Base
 
     after_transition on: [:published, :fail_publish, :build_error, :tests_failed], do: :notify_users
     after_transition on: :build_success, do: :notify_users,
-      unless: lambda { |build_list| build_list.auto_publish? }
+      unless: lambda { |build_list| build_list.auto_publish? || build_list.auto_publish_into_testing? }
 
     event :place_build do
       transition waiting_for_response: :build_pending
@@ -255,7 +261,7 @@ class BuildList < ActiveRecord::Base
   end
 
   later :publish, queue: :clone_build
-
+  later :add_job_to_abf_worker_queue, queue: :clone_build
 
   HUMAN_CONTAINER_STATUSES = { WAITING_FOR_RESPONSE => :waiting_for_publish,
                                BUILD_PUBLISHED => :container_published,
@@ -356,6 +362,19 @@ class BuildList < ActiveRecord::Base
       return true # no published packages
     end
     return false # no new packages
+  end
+
+  def auto_publish?
+    auto_publish_status == AUTO_PUBLISH_STATUS_DEFAULT
+  end
+
+  def auto_publish_into_testing?
+    auto_publish_status == AUTO_PUBLISH_STATUS_TESTING
+  end
+
+  # TODO: remove later
+  def auto_publish=(value)
+    self.auto_publish_status = value.present? ? AUTO_PUBLISH_STATUS_DEFAULT : AUTO_PUBLISH_STATUS_NONE
   end
 
   def can_auto_publish?
@@ -542,8 +561,17 @@ class BuildList < ActiveRecord::Base
       end if task
     end
 
-    BuildList.where(id: task['args'][0]['id']).first if task
+    if task
+      build_list = BuildList.where(id: task['args'][0]['id']).first
+      build_list.delayed_add_job_to_abf_worker_queue
+      build_list
+    end
   end
+
+  def delayed_add_job_to_abf_worker_queue(*args)
+    restart_job if status == BUILD_PENDING
+  end
+  later :delayed_add_job_to_abf_worker_queue, delay: 60, queue: :clone_build
 
   protected
 
@@ -624,6 +652,19 @@ class BuildList < ActiveRecord::Base
       end
     end
     self.extra_build_lists = bls.pluck('build_lists.id')
+  end
+
+  def prepare_auto_publish_status
+    if external_nodes.present?
+      self.auto_publish_status = AUTO_PUBLISH_STATUS_NONE
+    end
+    if auto_publish? && !save_to_repository.publish_without_qa?
+      self.auto_publish_status = AUTO_PUBLISH_STATUS_NONE
+    end
+    if auto_publish? || auto_publish_into_testing?
+      self.auto_create_container = false
+    end
+    true
   end
 
   def prepare_extra_params

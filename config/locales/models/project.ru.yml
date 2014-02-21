@@ -1,6 +1,7 @@
 ru:
   layout:
     projects:
+      build_schedule: Расписание сборок
       mass_import: Массовый импорт
       branches: Ветки
       delete_branch: Удалить ветку
@@ -92,6 +93,7 @@ ru:
     attributes:
       project:
         url: URL
+        autostart_status: Автостарт
         add_to_repository_id: Добавить в репозиторий
         srpms_list: Список SRPMs
         name: Название

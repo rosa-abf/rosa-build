@@ -21,7 +21,8 @@ class Repository < ActiveRecord::Base
   validates :description, presence: true
   validates :name, uniqueness: {scope: :platform_id, case_sensitive: false}, presence: true, format: {with: /\A[a-z0-9_\-]+\z/}
 
-  scope :recent, order("#{table_name}.name ASC")
+  scope :recent,  order("#{table_name}.name ASC")
+  scope :main,    lambda { where(name: %w(main base)) }
 
   before_destroy :detele_directory
 

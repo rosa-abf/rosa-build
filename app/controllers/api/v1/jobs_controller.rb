@@ -8,10 +8,7 @@ class Api::V1::JobsController < Api::V1::BaseController
 
   def shift
 
-    if current_user.system?
-      @build_list = BuildList.next_build
-    end
-
+    @build_list = BuildList.next_build if current_user.system?
     unless @build_list
       platform_ids = Platform.where(name: params[:platforms].split(',')).pluck(:id) if params[:platforms].present?
       arch_ids = Arch.where(name: params[:arches].split(',')).pluck(:id) if params[:arches].present?

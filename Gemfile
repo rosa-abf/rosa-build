@@ -1,9 +1,10 @@
 source 'https://rubygems.org'
 
-gem 'rails', '3.2.16' #, git: 'git://github.com/rails/rails.git'
+gem 'rails', '3.2.17'
 gem 'redhillonrails_core', git: 'git://github.com/rosa-abf/redhillonrails_core.git', branch: 'rails31' # '~> 2.0.0.pre' # deprecated
 
 gem 'pg', '~> 0.14.0'
+gem 'activerecord-postgres-hstore'
 
 gem 'devise', '~> 2.2.3'
 gem 'omniauth'
@@ -14,11 +15,13 @@ gem 'omniauth-github'
 gem 'cancan', '1.6.7' # 1.6.8 fail specs with strange error
 
 gem 'ancestry', '~> 1.3.0'
-gem 'paperclip', '~> 3.3.1'
+gem 'paperclip', '~> 4.1.0'
 gem 'resque', '~> 1.24'
 gem 'resque-status', '~> 0.3.3'
 gem 'resque_mailer', '~> 2.2'
-gem 'perform_later', '~> 1.3.0' # should be after resque_mailer
+gem 'resque-scheduler'
+# gem 'perform_later', '~> 1.3.0' # should be after resque_mailer
+gem 'perform_later', git: 'git://github.com/KensoDev/perform_later.git' # should be after resque_mailer
 gem 'russian', '~> 0.6.0'
 gem 'highline', '~> 1.6.11'
 gem 'state_machine'

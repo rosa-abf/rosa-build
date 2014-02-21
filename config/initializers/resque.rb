@@ -1,5 +1,7 @@
 require 'resque/server'
 require 'resque/status_server'
+require 'resque_scheduler'
+require 'resque_scheduler/server'
 
 ::ResqueServer = ::Resque::Server # need for CanCan
 

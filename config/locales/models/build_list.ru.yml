@@ -27,7 +27,7 @@ ru:
         save_to_repository: Сохранить в репозиторий
         build_for_platform: Собрано для платформы
         update_type: Критичность обновления
-        auto_publish: Автоматическая публикация
+        auto_publish_status: Автоматическая публикация
         project_version: Версия
         user: Пользователь
         publisher: Публикатор
@@ -133,6 +133,11 @@ ru:
           unknown: ожидает сборки
           git_error: проблема с гит
           build_canceled: сборка отменена
+
+      auto_publish_status:
+        none: Нет
+        default: По умолчанию
+        testing: В 'testing'
 
       statuses:
         build_lists: Всего

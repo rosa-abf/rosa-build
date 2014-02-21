@@ -5,36 +5,31 @@ set :default_environment, {
   'LANG' => 'en_US.UTF-8'
 }
 
-#set :rake, "#{rake} --trace"
-
 require 'rvm/capistrano'
 require 'bundler/capistrano'
+require 'new_relic/recipes'
 
 set :whenever_command, "bundle exec whenever"
-# require "whenever/capistrano"
 
 require 'capistrano/ext/multistage'
-set :default_stage, "staging"
-# set :stages, %w(production) # auto readed
 
 # main details
 ssh_options[:forward_agent] = true
 default_run_options[:pty] = true
 
+set :rvm_ruby_string, 'ruby-2.1.0@rosa_build'
 set :application, "rosa_build"
 set(:deploy_to) { "/srv/#{application}" }
-set :user, "rosa"
+set :user, "user"
 set :use_sudo, false
 set :keep_releases, 3
+set :git_enable_submodules, 1
 
 set :scm, :git
-set :repository,  "git@github.com:uname/repository.git"
-set :deploy_via,  :remote_cache
+set :repository, "git@abf.rosalinux.ru:abf/rosa-build.git"
 
 require './lib/recipes/nginx'
-# require './lib/recipes/unicorn'
 require 'puma/capistrano'
-#require './lib/recipes/bluepill'
 set :workers_count, 4
 require './lib/recipes/resque'
 
@@ -56,36 +51,21 @@ namespace :deploy do
   task :symlink_pids, :roles => :app do
     run "cd #{fetch :shared_path}/tmp && ln -nfs ../pids pids"
   end
-
-  # Speed up precompile (http://www.bencurtis.com/2011/12/skipping-asset-compilation-with-capistrano )
-  # namespace :assets do
-  #   task :precompile, :roles => :web, :except => { :no_release => true } do
-  #     from = source.next_revision(current_revision)
-  #     if capture("cd #{latest_release} && #{source.local.log(from)} app/assets/ lib/assets/ vendor/assets/  | wc -l").to_i > 0
-  #       run "cd #{latest_release} && #{rake} RAILS_ENV=#{rails_env} #{asset_env} assets:precompile"
-  #     else
-  #       logger.info "Skipping asset pre-compilation because there were no asset changes"
-  #     end
-  #   end
-  # end
 end
 
 after "deploy:finalize_update", "deploy:symlink_all"
 after "deploy:update_code", "deploy:migrate"
 after "deploy:setup", "deploy:symlink_pids"
 
-# Bluepill
-#after "deploy:restart", "bluepill:restart" # "bluepill:processes:restart_dj" # "bluepill:restart"
-#after "deploy:start", "bluepill:start"
-#after "deploy:stop", "bluepill:stop"
-
 # Resque
 after "deploy:stop",    "resque:stop"
+after "resque:stop",    "resque:scheduler:stop"
 after "deploy:start",   "resque:start"
+after "resque:start",    "resque:scheduler:start"
 after "deploy:restart", "resque:restart"
+after "resque:restart",    "resque:scheduler:restart"
 
 after "deploy:restart", "deploy:cleanup"
-after :deploy, 'notify_rollbar'
 
 namespace :rake_tasks do
   Cape do
@@ -93,12 +73,17 @@ namespace :rake_tasks do
   end
 end
 
-task :notify_rollbar, :roles => :app do
-  set :revision, `git log -n 1 --pretty=format:"%H"`
-  set :local_user, `whoami`
-  set :rollbar_token, 'rollbar_token'
-  rails_env = fetch(:rails_env, 'production')
-  run "curl https://api.rollbar.com/api/1/deploy/ -F access_token=#{rollbar_token} -F environment=#{rails_env} -F revision=#{revision} -F local_username=#{local_user} >/dev/null 2>&1", :once => true
+namespace :puma do
+  desc 'Restart puma'
+  task :restart, :roles => :app, :on_no_matching_servers => :continue do
+    begin
+      stop
+    rescue Capistrano::CommandError => ex
+      puts "Failed to restart puma: #{ex}\nAssuming not started."
+    ensure
+      start
+    end
+  end
 end
 
 namespace :update do

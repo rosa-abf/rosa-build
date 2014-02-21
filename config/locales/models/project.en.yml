@@ -1,6 +1,7 @@
 en:
   layout:
     projects:
+      build_schedule: Build schedule
       mass_import: Mass import
       branches: Branches
       delete_branch: Delete branch
@@ -92,6 +93,7 @@ en:
     attributes:
       project:
         url: URL
+        autostart_status: Autostart
         add_to_repository_id: Add to repository
         srpms_list: SRPMs list
         name: Name

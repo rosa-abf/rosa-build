@@ -92,6 +92,7 @@ en:
         updated_at: Updated
         distrib_type: Source type
         visibility: Status
+        automatic_metadata_regeneration: Automatic metadata regeneration
         visibility_types:
           open: Public
           hidden: Private

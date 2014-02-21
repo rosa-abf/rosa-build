@@ -11,6 +11,11 @@ var _locales = {
       'Всего %1 тега',
       'Всего %1 тегов'
     ],
+    'platform.automatic_metadata_regeneration.day': 'Раз в день',
+    'platform.automatic_metadata_regeneration.week': 'Раз в неделю',
+    'autostart_statuses.0': 'Раз в 12 часов',
+    'autostart_statuses.1': 'Раз в день',
+    'autostart_statuses.2': 'Раз в неделю',
     <%= BuildList::STATUSES.map{|s| "'build_list.status.#{s}': '#{BuildList.human_status(s)}'"}.join(',') %>
   },
   <%I18n.locale = :en%>
@@ -23,6 +28,11 @@ var _locales = {
       'Total %1 tag',
       'Total %1 tags'
     ],
+    'platform.automatic_metadata_regeneration.day': 'Once a day',
+    'platform.automatic_metadata_regeneration.week': 'Once a week',
+    'autostart_statuses.0': 'Once a 12 hours',
+    'autostart_statuses.1': 'Once a day',
+    'autostart_statuses.2': 'Once a week',
     <%= BuildList::STATUSES.map{|s| "'build_list.status.#{s}': '#{BuildList.human_status(s)}'"}.join(',') %>
   }
 };

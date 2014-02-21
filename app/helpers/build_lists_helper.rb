@@ -15,9 +15,7 @@ module BuildListsHelper
   end
 
   def availables_main_platforms
-    # Main platforms with repositories
-    Platform.main.accessible_by(current_ability, :show)
-            .includes(:repositories).where('repositories.id IS NOT NULL').order('platforms.name').uniq
+    Platform.availables_main_platforms current_user, current_ability
   end
 
   def save_to_repositories(project)
@@ -37,6 +35,12 @@ module BuildListsHelper
   def external_nodes
     BuildList::EXTERNAL_NODES.map do |type|
       [I18n.t("layout.build_lists.external_nodes.#{type}"), type]
+    end
+  end
+
+  def auto_publish_statuses
+    BuildList::AUTO_PUBLISH_STATUSES.map do |status|
+      [I18n.t("layout.build_lists.auto_publish_status.#{status}"), status]
     end
   end
 

@@ -10,7 +10,9 @@ class Avatar < ActiveRecord::Base
     end
   end
   has_attached_file :avatar, styles: AVATAR_SIZES_HASH
-  validates_inclusion_of :avatar_file_size, in: (0..MAX_AVATAR_SIZE), allow_nil: true
+  validates_attachment_size :avatar, less_than_or_equal_to: MAX_AVATAR_SIZE
+  validates_attachment_content_type :avatar, content_type: /\Aimage/
+  validates_attachment_file_name :avatar, matches: [ /(png|jpe?g|gif|bmp|tif?f)\z/i ]
 
   attr_accessible :avatar
 

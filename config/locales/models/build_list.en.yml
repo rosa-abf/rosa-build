@@ -27,7 +27,7 @@ en:
         save_to_repository: Save to repository
         build_for_platform: Build for platform
         update_type: Update type
-        auto_publish: Automated publishing
+        auto_publish_status: Automated publishing
         project_version: Version
         user: User
         publisher: Publisher
@@ -134,6 +134,11 @@ en:
           unknown: Build is waiting
           git_error: Git error
           build_canceled: Build canceled
+
+      auto_publish_status:
+        none: None
+        default: Default
+        testing: Into 'testing'
 
       statuses:
         build_lists: All

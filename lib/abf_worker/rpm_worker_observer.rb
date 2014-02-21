@@ -21,7 +21,11 @@ module AbfWorker
       case status
       when COMPLETED
         subject.build_success
-        subject.now_publish if subject.can_auto_publish?
+        if subject.can_auto_publish?
+          subject.now_publish
+        elsif subject.auto_publish_into_testing?
+          subject.now_publish_into_testing
+        end
       when FAILED
         subject.build_error
         item.update_attributes({status: BuildList::BUILD_ERROR})
