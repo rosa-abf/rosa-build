@@ -39,7 +39,6 @@ module AbfWorker::ModelHelper
 
   def restart_job
     update_build_sets
-    Resque.redis.sadd 'queues', worker_queue_with_priority
     Resque.redis.lpush "queue:#{worker_queue_with_priority}",
       Resque.encode({'class' => worker_queue_class, 'args' => [abf_worker_args]})
   end
@@ -83,24 +82,26 @@ module AbfWorker::ModelHelper
     "AbfWorker::#{abf_worker_base_queue.classify}#{abf_worker_priority.capitalize}"
   end
 
+  def cleanup_build_sets
+    return unless is_a?(BuildList)
+    queue = worker_queue_with_priority
+    if Resque.redis.llen("queue:#{queue}") == 0
+      key = mass_build_id ? MASS_BUILDS_SET : USER_BUILDS_SET
+      Resque.redis.srem key, mass_build_id || user_id
+      Resque.redis.del "queue:#{queue}"
+      Resque.redis.srem 'queues', queue
+    end
+  end
 
   private
 
-  def cleanup_build_sets
-    Resque.redis.multi do
-      if Resque.redis.llen("queue:#{worker_queue_with_priority}") == 0
-        key = mass_build_id ? MASS_BUILDS_SET : USER_BUILDS_SET
-        Resque.redis.srem key, mass_build_id || user_id
-        Resque.redis.del "queue:#{worker_queue_with_priority}"
-      end
-    end if is_a?(BuildList)
-  end
 
   def update_build_sets
     return unless is_a?(BuildList)
 
     key = mass_build_id ? MASS_BUILDS_SET : USER_BUILDS_SET
     Resque.redis.sadd key, mass_build_id || user_id
+    Resque.redis.sadd 'queues', worker_queue_with_priority
   end
 
 

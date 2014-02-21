@@ -189,7 +189,7 @@ class BuildList < ActiveRecord::Base
     # build_canceling: :build_canceled - canceling from UI
     # build_started: :build_canceled - canceling from worker by time-out (time_living has been expired)
     event :build_canceled do
-      transition [:build_canceling, :build_started] => :build_canceled
+      transition [:build_canceling, :build_started, :build_pending] => :build_canceled
     end
 
     event :published do
@@ -554,15 +554,11 @@ class BuildList < ActiveRecord::Base
       key     ||= "mass_build_#{kind_id}_rpm_worker" if kind_id
       task    ||= Resque.pop(key) if key
       redis.sadd(MASS_BUILDS_SET, kind_id) if task && key =~ /^mass_build/
-
-      if task && redis.llen("queue:#{key}") == 0
-        redis.del "queue:#{key}"
-        redis.srem 'queues', key
-      end
     end
 
     if task
       build_list = BuildList.where(id: task['args'][0]['id']).first
+      build_list.cleanup_build_sets
       build_list.delayed_add_job_to_abf_worker_queue
       build_list
     end
