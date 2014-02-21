@@ -39,6 +39,7 @@ module AbfWorker::ModelHelper
 
   def restart_job
     update_build_sets
+    Resque.redis.sadd 'queues', worker_queue_with_priority
     Resque.redis.lpush "queue:#{worker_queue_with_priority}",
       Resque.encode({'class' => worker_queue_class, 'args' => [abf_worker_args]})
   end
