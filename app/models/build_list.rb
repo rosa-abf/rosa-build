@@ -142,21 +142,6 @@ class BuildList < ActiveRecord::Base
 
   state_machine :status, initial: :waiting_for_response do
 
-    # WTF? around_transition -> infinite loop
-    before_transition do |build_list, transition|
-      status = HUMAN_STATUSES[build_list.status]
-      if build_list.mass_build && MassBuild::COUNT_STATUSES.include?(status)
-        MassBuild.decrement_counter "#{status.to_s}_count", build_list.mass_build_id
-      end
-    end
-
-    after_transition do |build_list, transition|
-      status = HUMAN_STATUSES[build_list.status]
-      if build_list.mass_build && MassBuild::COUNT_STATUSES.include?(status)
-        MassBuild.increment_counter "#{status.to_s}_count", build_list.mass_build_id
-      end
-    end
-
     after_transition(on: :place_build) do |build_list, transition|
       build_list.add_job_to_abf_worker_queue if build_list.external_nodes.blank?
     end

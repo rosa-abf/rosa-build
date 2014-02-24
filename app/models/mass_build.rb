@@ -87,6 +87,12 @@ class MassBuild < ActiveRecord::Base
   end
   later :publish_test_failed_builds, queue: :clone_build
 
+  COUNT_STATUSES.each do |stat|
+    define_method "#{stat}_count" do
+      build_lists.where(status: BuildList::HUMAN_STATUSES.key(stat)).count
+    end if stat != :build_lists
+  end
+
   private
 
   def generate_list(status)
