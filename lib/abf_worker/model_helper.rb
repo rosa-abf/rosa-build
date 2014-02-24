@@ -53,12 +53,11 @@ module AbfWorker::ModelHelper
   end
 
   def destroy_from_resque_queue
-    result = Resque::Job.destroy(
+    Resque::Job.destroy(
       worker_queue_with_priority,
       worker_queue_class,
       abf_worker_args
     )
-    result
   end
 
   def worker_queue_with_priority(prefix = true)
@@ -88,8 +87,10 @@ module AbfWorker::ModelHelper
     return unless is_a?(BuildList)
 
     key = mass_build_id ? MASS_BUILDS_SET : USER_BUILDS_SET
-    Resque.redis.sadd key, mass_build_id || user_id
-    Resque.redis.sadd 'queues', worker_queue_with_priority
+    Resque.redis.pipelined do
+      Resque.redis.sadd key, mass_build_id || user_id
+      Resque.redis.sadd 'queues', worker_queue_with_priority
+    end
   end
 
 

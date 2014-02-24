@@ -8,6 +8,7 @@ class CleanBuildListsQueuesJob
       queue = "queue:#{key}"
       if redis.llen(queue) == 0
         redis.multi do
+          redis.watch queue
           redis.del queue
           redis.srem 'queues', key
         end
