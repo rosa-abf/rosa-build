@@ -1,0 +1,20 @@
+clean_rpm_build_nodes:
+  every:
+    - '1m'
+  class: 'CleanRpmBuildNodeJob'
+  queue: hook
+  description: 'Cleans RPM build nodes'
+
+build_lists_publish_task_manager:
+  every:
+    - '3m'
+  class: 'BuildListsPublishTaskManagerJob'
+  queue: hook
+  description: 'Creates tasks for publishing'
+
+clean_build_lists_queues:
+  every:
+    - '1m'
+  class: 'CleanBuildListsQueuesJob'
+  queue: hook
+  description: 'Cleans build_lists queues'

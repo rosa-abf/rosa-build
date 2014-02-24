@@ -17,12 +17,6 @@ class RpmBuildNode < Ohm::Model
     User.where(id: user_id).first
   end
 
-  def self.cleanup!
-    RpmBuildNode.all.each do |n|
-      n.delete unless n.user_id
-    end
-  end
-
   def self.total_statistics
     systems, others, busy = 0, 0, 0
     RpmBuildNode.all.select{ |n| n.user_id }.each do |n|

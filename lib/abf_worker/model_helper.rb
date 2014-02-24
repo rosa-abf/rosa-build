@@ -58,7 +58,6 @@ module AbfWorker::ModelHelper
       worker_queue_class,
       abf_worker_args
     )
-    cleanup_build_sets
     result
   end
 
@@ -80,17 +79,6 @@ module AbfWorker::ModelHelper
 
   def worker_queue_class
     "AbfWorker::#{abf_worker_base_queue.classify}#{abf_worker_priority.capitalize}"
-  end
-
-  def cleanup_build_sets
-    return unless is_a?(BuildList)
-    queue = worker_queue_with_priority
-    if Resque.redis.llen("queue:#{queue}") == 0
-      key = mass_build_id ? MASS_BUILDS_SET : USER_BUILDS_SET
-      Resque.redis.srem key, mass_build_id || user_id
-      Resque.redis.del "queue:#{queue}"
-      Resque.redis.srem 'queues', queue
-    end
   end
 
   private
