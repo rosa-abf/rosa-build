@@ -13,7 +13,7 @@ class BuildList < ActiveRecord::Base
   belongs_to :builder,    class_name: 'User'
   belongs_to :publisher,  class_name: 'User'
   belongs_to :advisory
-  belongs_to :mass_build, counter_cache: true
+  belongs_to :mass_build, counter_cache: true, touch: true
   has_many :items, class_name: '::BuildList::Item', dependent: :destroy
   has_many :packages, class_name: '::BuildList::Package', dependent: :destroy
   has_many :source_packages, class_name: '::BuildList::Package', conditions: {package_type: 'source'}
