@@ -9,11 +9,19 @@ module AbfWorker
           result[:rpm][:workers]        += nodes[:systems]
           result[:rpm][:build_tasks]    += nodes[:busy]
           result[:rpm][:other_workers]  = nodes[:others]
+
           external_bls = BuildList.for_status(BuildList::BUILD_PENDING).external_nodes(:everything).count
-          result[:rpm][:default_tasks]  += external_bls
-          result[:rpm][:tasks]          += external_bls
+          result[:rpm][:default_tasks] += external_bls + count_of_tasks('user_build_')
+
+          result[:rpm][:tasks] += external_bls + count_of_tasks('mass_build_')
           result
         end
+      end
+
+      def count_of_tasks(regexp)
+        Resque.redis.smembers('queues').
+          select{ |q| q =~ /#{regexp}/ }.
+          map{ |q| Resque.redis.llen("queue:#{q}") }.sum
       end
 
       def products_status
