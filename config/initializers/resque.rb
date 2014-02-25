@@ -14,3 +14,7 @@ unless Rails.env.test?
 end
 
 Resque::Plugins::Status::Hash.expire_in = (24 * 60 * 60) # 24hrs in seconds
+
+Resque.after_fork do |job|
+  Resque.redis.client.reconnect
+end
