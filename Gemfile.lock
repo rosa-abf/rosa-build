@@ -192,7 +192,7 @@ GEM
     json (1.8.1)
     jwt (0.1.10)
       multi_json (>= 1.5)
-    libv8 (3.3.10.4)
+    libv8 (3.16.14.3)
     localeapp (0.6.14)
       gli
       i18n
@@ -342,6 +342,7 @@ GEM
     redisk (0.2.2)
       redis (>= 0.1.1)
       redis-namespace (>= 0.1.0)
+    ref (1.0.5)
     resque (1.25.1)
       mono_logger (~> 1.0)
       multi_json (~> 1.0)
@@ -420,8 +421,9 @@ GEM
     state_machine (1.2.0)
     stringex (1.4.0)
     systemu (2.5.2)
-    therubyracer (0.10.2)
-      libv8 (~> 3.3.10)
+    therubyracer (0.12.1)
+      libv8 (~> 3.16.14.0)
+      ref
     thin (1.5.1)
       daemons (>= 1.0.9)
       eventmachine (>= 0.12.6)
@@ -540,7 +542,7 @@ DEPENDENCIES
   shoulda
   soundmanager-rails
   state_machine
-  therubyracer (~> 0.10.2)
+  therubyracer (~> 0.12.1)
   therubyrhino (~> 1.73.1)
   time_diff
   trinidad (~> 1.0.2)

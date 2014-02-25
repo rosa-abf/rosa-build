@@ -84,7 +84,7 @@ group :assets do
   gem 'coffee-rails', '~> 3.2.2'
   gem 'compass-rails', '~> 1.0.3'
   gem 'uglifier', '~> 1.2.4'
-  gem 'therubyracer', '~> 0.10.2', platforms: [:mri, :rbx]
+  gem 'therubyracer', '~> 0.12.1', platforms: [:mri, :rbx]
   gem 'therubyrhino', '~> 1.73.1', platforms: :jruby
   gem 'turbo-sprockets-rails3'
 end
