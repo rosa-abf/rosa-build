@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20140219191644) do
+ActiveRecord::Schema.define(:version => 20140224134012) do
 
   create_table "activity_feeds", :force => true do |t|
     t.integer  "user_id",    :null => false
@@ -149,6 +149,7 @@ ActiveRecord::Schema.define(:version => 20140219191644) do
   add_index "build_lists", ["advisory_id"], :name => "index_build_lists_on_advisory_id"
   add_index "build_lists", ["arch_id"], :name => "index_build_lists_on_arch_id"
   add_index "build_lists", ["project_id", "save_to_repository_id", "build_for_platform_id", "arch_id"], :name => "maintainer_search_index"
+  add_index "build_lists", ["mass_build_id", "status"], :name => "index_build_lists_on_mass_build_id_and_status"
   add_index "build_lists", ["project_id"], :name => "index_build_lists_on_project_id"
 
   create_table "comments", :force => true do |t|
@@ -285,18 +286,11 @@ ActiveRecord::Schema.define(:version => 20140219191644) do
     t.integer  "user_id"
     t.boolean  "auto_publish",          :default => false, :null => false
     t.integer  "build_lists_count",     :default => 0,     :null => false
-    t.integer  "build_published_count", :default => 0,     :null => false
-    t.integer  "build_pending_count",   :default => 0,     :null => false
-    t.integer  "build_started_count",   :default => 0,     :null => false
-    t.integer  "build_publish_count",   :default => 0,     :null => false
-    t.integer  "build_error_count",     :default => 0,     :null => false
     t.boolean  "stop_build",            :default => false, :null => false
     t.text     "projects_list"
     t.integer  "missed_projects_count", :default => 0,     :null => false
     t.text     "missed_projects_list"
     t.boolean  "new_core",              :default => true
-    t.integer  "success_count",         :default => 0,     :null => false
-    t.integer  "build_canceled_count",  :default => 0,     :null => false
     t.integer  "save_to_platform_id",                      :null => false
     t.text     "extra_repositories"
     t.text     "extra_build_lists"

@@ -19,11 +19,11 @@
       %td.min_width_120
         - MassBuild::COUNT_STATUSES.each do |status|
           = link_to t("layout.build_lists.statuses.#{status}") + ": ", build_lists_path(filter: {mass_build_id: mass_build.id, ownership: 'everything'}.merge(status != :build_lists ? {status: BuildList.status_by_human(status)} : {}))
-          = mass_build.read_attribute "#{status}_count"
+          = mass_build.send "#{status}_count"
           .both
         -if mass_build.projects_list.present?
           =link_to_list @platform, mass_build, 'missed_projects_list'
-          = mass_build.read_attribute 'missed_projects_count'
+          = mass_build.send 'missed_projects_count'
       %td
         - if mass_build.projects_list.present?
           = link_to_list @platform, mass_build, 'projects_list'

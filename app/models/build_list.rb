@@ -13,7 +13,7 @@ class BuildList < ActiveRecord::Base
   belongs_to :builder,    class_name: 'User'
   belongs_to :publisher,  class_name: 'User'
   belongs_to :advisory
-  belongs_to :mass_build, counter_cache: true
+  belongs_to :mass_build, counter_cache: true, touch: true
   has_many :items, class_name: '::BuildList::Item', dependent: :destroy
   has_many :packages, class_name: '::BuildList::Package', dependent: :destroy
   has_many :source_packages, class_name: '::BuildList::Package', conditions: {package_type: 'source'}
@@ -141,21 +141,6 @@ class BuildList < ActiveRecord::Base
   after_destroy :remove_container
 
   state_machine :status, initial: :waiting_for_response do
-
-    # WTF? around_transition -> infinite loop
-    before_transition do |build_list, transition|
-      status = HUMAN_STATUSES[build_list.status]
-      if build_list.mass_build && MassBuild::COUNT_STATUSES.include?(status)
-        MassBuild.decrement_counter "#{status.to_s}_count", build_list.mass_build_id
-      end
-    end
-
-    after_transition do |build_list, transition|
-      status = HUMAN_STATUSES[build_list.status]
-      if build_list.mass_build && MassBuild::COUNT_STATUSES.include?(status)
-        MassBuild.increment_counter "#{status.to_s}_count", build_list.mass_build_id
-      end
-    end
 
     after_transition(on: :place_build) do |build_list, transition|
       build_list.add_job_to_abf_worker_queue if build_list.external_nodes.blank?
