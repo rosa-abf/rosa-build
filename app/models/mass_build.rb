@@ -88,12 +88,28 @@ class MassBuild < ActiveRecord::Base
   later :publish_test_failed_builds, queue: :clone_build
 
   COUNT_STATUSES.each do |stat|
-    define_method "#{stat}_count" do
-      build_lists.where(status: BuildList::HUMAN_STATUSES.key(stat)).count
+    stat_count = "#{stat}_count"
+    stat_var   = "@#{stat_count}"
+    define_method stat_count do
+      var = instance_variable_get(stat_var)
+      return var if var
+      set_counts
+      instance_variable_get(stat_var)
     end if stat != :build_lists
   end
 
   private
+
+  def set_counts
+    statuses = BuildList::HUMAN_STATUSES.select {|k,v| MassBuild::COUNT_STATUSES.include? v }.keys
+    res = build_lists.where(status: statuses).select('build_lists.status, count(build_lists.id) as bl_count')
+                                             .group(:status)
+    statuses.each do |stat|
+      instance_variable_set "@#{BuildList::HUMAN_STATUSES[stat]}_count",
+        res.select { |v| v.status == stat }.first.try(:bl_count) || 0
+    end
+
+  end
 
   def generate_list(status)
     report = ""
