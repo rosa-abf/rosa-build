@@ -7,4 +7,11 @@ namespace :resque do
     end
     system("kill -QUIT #{pids.join(' ')}") if pids.size > 0
   end
+
+  task setup: :environment do
+    Resque.after_fork do
+      Resque.redis.client.reconnect
+    end
+  end
+
 end

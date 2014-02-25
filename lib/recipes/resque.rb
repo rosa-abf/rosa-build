@@ -14,12 +14,6 @@ Capistrano::Configuration.instance(:must_exist).load do
       start_workers
     end
 
-    task :setup => :environment do
-      Resque.after_fork do
-        Resque.redis.client.reconnect
-      end
-    end
-
     def rails_env
       fetch(:rails_env, false) ? "RAILS_ENV=#{fetch(:rails_env)}" : ''
     end
