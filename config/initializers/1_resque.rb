@@ -14,3 +14,5 @@ unless Rails.env.test?
 end
 
 Resque::Plugins::Status::Hash.expire_in = (24 * 60 * 60) # 24hrs in seconds
+
+Resque.before_fork = Proc.new { ActiveRecord::Base.establish_connection }

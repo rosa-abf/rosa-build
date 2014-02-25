@@ -1,3 +1,5 @@
+require 'resque/tasks'
+
 namespace :resque do
   desc 'Stop all Resque workers'
   task stop_workers: :environment do
@@ -12,6 +14,7 @@ namespace :resque do
     Resque.after_fork do
       Resque.redis.client.reconnect
     end
+    Resque.before_fork = Proc.new { ActiveRecord::Base.establish_connection }
   end
 
 end
