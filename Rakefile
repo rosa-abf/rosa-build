@@ -8,8 +8,6 @@ require 'resque_scheduler/tasks'
 
 # This fixes connection fail with Postgres server on new fork:
 task "resque:setup" => :environment do
-  require 'resque'
-  require 'resque-scheduler'
   Resque.after_fork do
     Resque.redis.client.reconnect
     Resque.schedule = YAML.load_file(File.join(Rails.root, 'config/resque_schedule.yml')) # load the schedule
