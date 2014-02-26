@@ -13,7 +13,9 @@ module AbfWorker
           external_bls = BuildList.for_status(BuildList::BUILD_PENDING).external_nodes(:everything).count
           result[:rpm][:default_tasks] += external_bls + count_of_tasks('user_build_')
 
-          result[:rpm][:tasks] += external_bls + count_of_tasks('mass_build_')
+          mass_build_tasks = count_of_tasks('mass_build_')
+          result[:rpm][:low_tasks] += mass_build_tasks
+          result[:rpm][:tasks] += external_bls + mass_build_tasks
           result
         end
       end
