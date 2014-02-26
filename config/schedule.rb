@@ -26,6 +26,14 @@ every :day, at: '3:00 am' do
   rake 'activity_feeds:clear', output: 'log/activity_feeds.log'
 end
 
+every 3.minute do
+  runner 'AbfWorker::BuildListsPublishTaskManager.new.run', output: 'log/task_manager.log'
+end
+
+every 1.minute do
+  runner 'RpmBuildNode.cleanup!'
+end
+
 every 1.hour do
   rake 'buildlist:clear:outdated_canceling', output: 'log/canceling_build_list_clear.log'
 end

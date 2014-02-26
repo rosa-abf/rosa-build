@@ -10,7 +10,7 @@ require 'resque_scheduler/tasks'
 task "resque:setup" => :environment do
   Resque.after_fork do
     Resque.redis.client.reconnect
-    Resque.schedule = YAML.load_file(File.join(Rails.root, 'config/resque_schedule.yml')) # load the schedule
+    # Resque.schedule = YAML.load_file(File.join(Rails.root, 'config/resque_schedule.yml')) # load the schedule
   end  
   Resque.before_fork = Proc.new { ActiveRecord::Base.establish_connection }
 end
