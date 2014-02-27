@@ -17,4 +17,4 @@ clean_build_lists_queues:
     - '1m'
   class: 'BuildListsQueuesMonitoringJob'
   queue: hook
-  description: 'Cleans build_lists queues'
+  description: 'Monitoring for "user/mass-build" queues'
