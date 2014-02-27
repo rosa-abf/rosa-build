@@ -12,9 +12,9 @@ build_lists_publish_task_manager:
   queue: hook
   description: 'Creates tasks for publishing'
 
-# clean_build_lists_queues:
-#   every:
-#     - '1m'
-#   class: 'CleanBuildListsQueuesJob'
-#   queue: hook
-#   description: 'Cleans build_lists queues'
+clean_build_lists_queues:
+  every:
+    - '1m'
+  class: 'BuildListsQueuesMonitoringJob'
+  queue: hook
+  description: 'Cleans build_lists queues'
