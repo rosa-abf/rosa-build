@@ -29,6 +29,7 @@ class BuildListsQueuesMonitoringJob
 
   def self.clean(key)
     queue = "queue:#{key}"
+    # See [#watch]: https://github.com/redis/redis-rb/blob/master/lib/redis.rb#L2012
     redis.watch(queue) do
       if redis.llen(queue) == 0
         redis.multi do |multi|
