@@ -2,7 +2,6 @@ class BuildListsQueuesMonitoringJob
   @queue = :hook
 
   def self.perform
-    redis = Resque.redis
     redis.smembers('queues').each do |key|
       next if key !~ /(user|mass)_build_/
 
@@ -35,6 +34,10 @@ class BuildListsQueuesMonitoringJob
       redis.del   queue
       redis.srem  'queues', key
     end if redis.llen(queue) == 0 && and_condition
+  end
+
+  def self.redis
+    @redis ||= Resque.redis
   end
 
 end
