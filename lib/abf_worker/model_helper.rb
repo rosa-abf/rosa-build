@@ -3,6 +3,9 @@ module AbfWorker::ModelHelper
   # - #abf_worker_args
   # - #build_canceled
 
+  MASS_BUILDS_SET = 'abf-worker::mass-builds'
+  USER_BUILDS_SET = 'abf-worker::user-builds'
+
   def self.included(base)
     base.extend(ClassMethods)
   end
@@ -14,6 +17,11 @@ module AbfWorker::ModelHelper
         port: APP_CONFIG['abf_worker']['log_server']['port']
       )
     end
+
+    def self.next_build
+      raise NotImplementedError
+    end
+
   end
 
   def abf_worker_log
@@ -21,6 +29,7 @@ module AbfWorker::ModelHelper
   end
 
   def add_job_to_abf_worker_queue
+    update_build_sets
     Resque.push(
       worker_queue_with_priority,
       'class' => worker_queue_class,
@@ -29,6 +38,7 @@ module AbfWorker::ModelHelper
   end
 
   def restart_job
+    update_build_sets
     Resque.redis.lpush "queue:#{worker_queue_with_priority}",
       Resque.encode({'class' => worker_queue_class, 'args' => [abf_worker_args]})
   end
@@ -50,18 +60,39 @@ module AbfWorker::ModelHelper
     )
   end
 
-  def worker_queue_with_priority(queue = nil)
-    queue ||= abf_worker_base_queue
+  def worker_queue_with_priority(prefix = true)
+    queue = ''
+
+    if prefix && is_a?(BuildList)
+      if mass_build_id
+        queue << "mass_build_#{mass_build_id}_"
+      else
+        queue << "user_build_#{user_id}_"
+      end
+    end
+
+    queue << abf_worker_base_queue
     queue << '_' << abf_worker_priority if abf_worker_priority.present?
     queue
   end
 
-  def worker_queue_class(queue_class = nil)
-    queue_class ||= "AbfWorker::#{abf_worker_base_queue.classify}"
-    queue_class << abf_worker_priority.capitalize
+  def worker_queue_class
+    "AbfWorker::#{abf_worker_base_queue.classify}#{abf_worker_priority.capitalize}"
   end
 
   private
+
+
+  def update_build_sets
+    return unless is_a?(BuildList)
+
+    key = mass_build_id ? MASS_BUILDS_SET : USER_BUILDS_SET
+    Resque.redis.pipelined do
+      Resque.redis.sadd key, mass_build_id || user_id
+      Resque.redis.sadd 'queues', worker_queue_with_priority
+    end
+  end
+
 
   def send_stop_signal
     Resque.redis.setex(
