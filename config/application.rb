@@ -3,21 +3,15 @@ require File.expand_path('../boot', __FILE__)
 require 'rails/all'
 require './lib/api_defender'
 
-# If you have a Gemfile, require the gems listed there, including any gems
+# Require the gems listed in Gemfile, including any gems
 # you've limited to :test, :development, or :production.
-if defined?(Bundler)
-  # If you precompile assets before deploying to production, use this line
-  Bundler.require *Rails.groups(assets: %w(development test))
-  # If you want your assets lazily compiled in production, use this line
-  # Bundler.require(:default, :assets, Rails.env)
-end
+Bundler.require(:default, Rails.env)
 
 module Rosa
   class Application < Rails::Application
     # Rate limit
     config.middleware.insert_after Rack::Lock, ApiDefender
 
-    config.action_view.javascript_expansions[:defaults] = %w(jquery rails)
     config.autoload_paths += %W(#{config.root}/lib)
 
     # Settings in config/environments/* take precedence over those specified here.
@@ -44,8 +38,6 @@ module Rosa
     config.i18n.load_path += Dir[Rails.root.join('config', 'locales', '**', '*.{rb,yml}').to_s]
     config.i18n.default_locale = :en
 
-    config.action_view.javascript_expansions[:defaults] = %w()
-
     # Configure the default encoding used in templates for Ruby 1.9.
     config.encoding = "utf-8"
 
@@ -57,5 +49,7 @@ module Rosa
 
     # Version of your assets, change this if you want to expire all your assets
     config.assets.version = '1.0'
+
+    I18n.enforce_available_locales = false
   end
 end

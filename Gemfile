@@ -1,10 +1,14 @@
 source 'https://rubygems.org'
 
 gem 'rails', '4.0.3'
-gem 'redhillonrails_core', git: 'git://github.com/rosa-abf/redhillonrails_core.git', branch: 'rails31' # '~> 2.0.0.pre' # deprecated
+gem 'rails-observers'
+#gem 'redhillonrails_core', git: 'git://github.com/rosa-abf/redhillonrails_core.git', branch: 'rails31' # '~> 2.0.0.pre' # deprecated
 
 gem 'pg', '~> 0.17.1'
-
+gem 'schema_plus', '~> 1.4.0'
+########
+gem 'protected_attributes'
+########
 gem 'devise', '~> 3.2.3'
 gem 'omniauth'
 gem 'omniauth-facebook'
@@ -32,7 +36,7 @@ gem 'github-linguist', '~> 2.10', require: 'linguist'
 gem 'diff-display', '~> 0.0.1'
 
 # Wiki
-gem "gollum", '~> 2.7.0'
+gem "gollum-lib", '~> 2.0'
 gem "redcarpet", '~> 3.1.1'
 gem 'creole'
 gem 'rdiscount'

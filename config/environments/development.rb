@@ -24,9 +24,6 @@ Rosa::Application.configure do
 
   config.cache_store = :redis_store, 'redis://localhost:6379/0/cache', { expires_in: 10.minutes }
 
-  # Log error messages when you accidentally call methods on nil.
-  config.whiny_nils = true
-
   # Show full error reports and disable caching
   config.consider_all_requests_local       = true
   config.action_controller.perform_caching = false
@@ -55,8 +52,7 @@ Rosa::Application.configure do
   # Raise exception on mass assignment protection for Active Record models
   config.active_record.mass_assignment_sanitizer = :strict
 
-  # Log the query plan for queries taking more than this (works with SQLite, MySQL, and PostgreSQL)
-  config.active_record.auto_explain_threshold_in_seconds = 0.5
-
   config.middleware.insert_before Rails::Rack::Logger, DisableAssetsLogger
+
+  config.eager_load = false
 end
