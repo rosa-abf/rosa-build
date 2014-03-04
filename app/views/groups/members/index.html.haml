@@ -9,7 +9,7 @@
         %th= t("layout.collaborators.members")
         %th{colspan: "3"}= t("layout.collaborators.roles")
     %tbody
-      - (parent.members - [parent.owner]).each do |user|
+      - (@group.members - [@group.owner]).each do |user|
         %tr
           %td
             %span#niceCheckbox1.niceCheck-main= check_box_tag "user_remove[#{user.id}][]"
@@ -18,13 +18,13 @@
             .forimg= link_to user.fullname, user_path(user)
           - Relation::ROLES.each_with_index do |role, i|
             %td
-              .radio= radio_button_tag "user[#{user.id}]", role, ((parent.actors.exists? actor_id: user.id, actor_type: 'User', role: role) ? :checked : nil), class: 'niceRadio'
+              .radio= radio_button_tag "user[#{user.id}]", role, ((@group.actors.exists? actor_id: user.id, actor_type: 'User', role: role) ? :checked : nil), class: 'niceRadio'
               .forradio= t("layout.collaborators.role_names.#{ role }")
   = link_to_function t("layout.delete"), "deleteAdminMember();", class: 'button'
   .both
 .hr.top
 
-= form_tag add_group_members_path(parent) do
+= form_tag add_group_members_path(@group) do
   .admin-search= autocomplete_field_tag 'user_uname', params[:user_uname], autocomplete_user_uname_autocompletes_path
   .admin-role
     .lineForm= select_tag 'role', options_for_collaborators_roles_select
