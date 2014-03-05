@@ -57,7 +57,10 @@ class Api::V1::JobsController < Api::V1::BaseController
   end
 
   def status
-    render text: Resque.redis.get(params[:key])
+    if params[:key] =~ /\Aabfworker::(rpm|iso)-worker-[\d]+::live-inspector\z/
+      status = Resque.redis.get(params[:key])
+    end
+    render json: { status: status }.to_json
   end
 
   def logs
