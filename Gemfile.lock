@@ -411,6 +411,8 @@ GEM
     skinny (0.2.3)
       eventmachine (~> 1.0.0)
       thin (~> 1.5.0)
+    skype (0.2.7)
+      tmp_cache
     soundmanager-rails (1.0.0)
     sprockets (2.2.2)
       hike (~> 1.2)
@@ -433,6 +435,7 @@ GEM
     time_diff (0.3.0)
       activesupport
       i18n
+    tmp_cache (0.1.1)
     treetop (1.4.15)
       polyglot
       polyglot (>= 0.3.1)
@@ -540,6 +543,7 @@ DEPENDENCIES
   sass-rails (~> 3.2.5)
   shotgun
   shoulda
+  skype
   soundmanager-rails
   state_machine
   therubyracer (~> 0.12.1)
