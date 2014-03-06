@@ -91,15 +91,6 @@ en:
       sign_in_header: Sign in
       sign_up_with: or sign in with
 
-    private_users:
-      list: List
-      new: New pair
-      list_header: Pair login/password
-      confirm_delete: Are you sure to delete this pair login/password?
-      confirm_regenerate: Are you sure to regenerate this pair login/password?
-      regenerate_btn: Regenerate
-      warning_message: Warning - Old data set as invalid when new data obtaining
-
     collaborators:
       back_to_proj: Back to project
       edit: Edit list
@@ -131,8 +122,6 @@ en:
     settings:
       saved: Settings saved success
       save_error: Setting update error
-
-    private_users: "Login: %{login} Password: %{password}"
 
     subscribe:
       saved: Subscription on notifications for this task is created
@@ -177,7 +166,6 @@ en:
               can_have_less_or_equal: You cannot have more than %{count} projects.
 
     models:
-      private_user: Private user
       product_build_list: Product build list
 
     attributes:
@@ -194,10 +182,6 @@ en:
           new_comment_commit_commentor: Notify about comments after my commit
           new_build: Notify about my build tasks
           new_associated_build: Notify about associated with me build tasks
-
-      private_user:
-        login: Login
-        password: Password
 
       arch:
         name: Name

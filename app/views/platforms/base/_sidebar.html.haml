@@ -34,6 +34,3 @@
               = link_to t("layout.key_pairs.header"), platform_key_pairs_path(@platform)
             %li{class: (contr == :tokens) ? 'active' : ''}
               = link_to t('layout.tokens.header'), platform_tokens_path(@platform)
-          -#- if current_user.owner_of? @platform or current_user.admin?
-            %li{class: (act == :index && contr == :private_users) ? 'active' : ''}
-              = link_to t("layout.platforms.private_users"), platform_private_users_path(@platform)

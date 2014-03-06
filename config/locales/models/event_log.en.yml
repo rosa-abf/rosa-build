@@ -11,7 +11,6 @@ en:
       'devise/sessions_controller': 'User Authentication'
       'devise/passwords_controller': 'Password recovery'
       'users/omniauth_callbacks_controller': 'External users authentication'
-      private_users_controller: 'access to private repositories'
       personal_repositories_controller: 'Personal repositories management'
     actions:
       'devise/sessions_controller':
@@ -27,9 +26,6 @@ en:
         create: 'sent to build'
       rpc_controller:
         xe_index: inquiry
-      private_users_controller:
-        create: 'given'
-        destroy: 'deleted'
       personal_repositories_controller:
         change_visibility: 'status change'
       create: 'created'

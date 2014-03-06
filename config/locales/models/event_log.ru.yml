@@ -11,7 +11,6 @@ ru:
       'devise/sessions_controller': 'Аутентификация пользователей'
       'devise/passwords_controller': 'Восстановление пароля'
       'users/omniauth_callbacks_controller': 'Внешняя аутентификация пользователей'
-      private_users_controller: 'Доступ к приватным репозиториям'
       personal_repositories_controller: 'Управление персональными репозиториями'
     actions:
       'devise/sessions_controller':
@@ -27,9 +26,6 @@ ru:
         create: 'отправлен на сборку'
       rpc_controller:
         xe_index: запрос
-      private_users_controller:
-        create: 'предоставлен'
-        destroy: 'удален'
       personal_repositories_controller:
         change_visibility: 'смена статуса'
       create: 'создано'
