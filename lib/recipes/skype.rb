@@ -22,11 +22,9 @@ Capistrano::Configuration.instance(:must_exist).load do
         end
 
         on_rollback do
-          send("Cancelled deployment of #{deployment_name} to #{environment_string}.")
-          send('#'*60)
+          send("Cancelled deployment of #{deployment_name} to #{environment_string}.\n#{'#'*60}")
         end
-        send('#'*60)
-        send("Deploying #{deployment_name} to #{environment_string}#{fetch(:skype_with_migrations, '')}.")
+        send("#{'#'*60}\nDeploying #{deployment_name} to #{environment_string}#{fetch(:skype_with_migrations, '')}.")
       end
     end
 
@@ -38,8 +36,7 @@ Capistrano::Configuration.instance(:must_exist).load do
           environment_string = "#{stage} (#{env})"
         end
 
-        send("Finished deploying #{deployment_name} to #{environment_string}#{fetch(:skype_with_migrations, '')}.")
-        send('#'*60)
+        send("Finished deploying #{deployment_name} to #{environment_string}#{fetch(:skype_with_migrations, '')}.\n#{'#'*60}")
       end
     end
 
