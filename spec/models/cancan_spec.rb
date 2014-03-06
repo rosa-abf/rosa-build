@@ -130,21 +130,6 @@ describe CanCan do
       @ability.should_not be_able_to(:manage, RegisterRequest)
     end
 
-    context "private users relations" do
-      before(:each) do
-        @private_user = FactoryGirl.create(:private_user)
-
-        @private_user.platform.owner = @user
-        @private_user.platform.save
-      end
-
-      [:read, :create].each do |action|
-        it "should be able to #{ action } PrivateUser" do
-          @ability.should be_able_to(action, @private_user)
-        end
-      end
-    end
-
     context 'as project collaborator' do
       before(:each) do
         @project = FactoryGirl.create(:project_with_commit)

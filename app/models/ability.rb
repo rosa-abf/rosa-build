@@ -140,9 +140,6 @@ class Ability
         can([:create, :cancel, :update], ProductBuildList) {|pbl| can?(:update, pbl.product)}
         can(:destroy, ProductBuildList) {|pbl| can?(:destroy, pbl.product)}
 
-        can [:read, :create], PrivateUser, platform: {owner_type: 'User', owner_id: user.id}
-        can [:read, :create], PrivateUser, platform: {owner_type: 'Group', owner_id: user_group_ids}
-
         can :read, Issue, project: {owner_type: 'User', owner_id: user.id}
         can :read, Issue, project: {owner_type: 'Group', owner_id: user_group_ids}
         can(:read, Issue, read_relations_for('issues', 'projects')) {|issue| can? :read, issue.project rescue nil}

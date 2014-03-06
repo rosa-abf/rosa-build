@@ -165,7 +165,6 @@ Rosa::Application.routes.draw do
 
   scope module: 'platforms' do
     resources :platforms, constraints: {id: Platform::NAME_PATTERN} do
-      resources :private_users, except: [:show, :destroy, :update]
       member do
         put    :regenerate_metadata
         put    :clear
@@ -221,7 +220,6 @@ Rosa::Application.routes.draw do
       end
       resources :maintainers, only: [:index]
     end
-    match '/private/:platform_name/*file_path' => 'privates#show'
 
     resources :product_build_lists, only: [:index, :show]
   end
