@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20140224134012) do
+ActiveRecord::Schema.define(:version => 20140306102620) do
 
   create_table "activity_feeds", :force => true do |t|
     t.integer  "user_id",    :null => false
@@ -285,7 +285,6 @@ ActiveRecord::Schema.define(:version => 20140224134012) do
     t.string   "arch_names"
     t.integer  "user_id"
     t.boolean  "auto_publish",          :default => false, :null => false
-    t.integer  "build_lists_count",     :default => 0,     :null => false
     t.boolean  "stop_build",            :default => false, :null => false
     t.text     "projects_list"
     t.integer  "missed_projects_count", :default => 0,     :null => false
@@ -295,6 +294,7 @@ ActiveRecord::Schema.define(:version => 20140224134012) do
     t.text     "extra_repositories"
     t.text     "extra_build_lists"
     t.boolean  "increase_release_tag",  :default => false, :null => false
+    t.integer  "build_lists_count",     :default => 0
   end
 
   create_table "platform_arch_settings", :force => true do |t|
@@ -328,15 +328,6 @@ ActiveRecord::Schema.define(:version => 20140224134012) do
   end
 
   add_index "platforms", ["name"], :name => "index_platforms_on_name", :unique => true, :case_sensitive => false
-
-  create_table "private_users", :force => true do |t|
-    t.integer  "platform_id"
-    t.string   "login"
-    t.string   "password"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.integer  "user_id"
-  end
 
   create_table "product_build_lists", :force => true do |t|
     t.integer  "product_id"

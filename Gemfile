@@ -82,7 +82,7 @@ group :assets do
   gem 'coffee-rails', '~> 4.0.1'
   gem 'compass-rails', '~> 1.1.3'
   gem 'uglifier', '~> 2.4'
-  gem 'therubyracer', '~> 0.10.2', platforms: [:mri, :rbx]
+  gem 'therubyracer', '~> 0.12.1', platforms: [:mri, :rbx]
   gem 'therubyrhino', '~> 1.73.1', platforms: :jruby
 end
 
@@ -109,6 +109,8 @@ group :development do
   gem 'binding_of_caller'
   gem 'meta_request'
   gem 'localeapp'
+  gem 'skype'
+  gem 'ruby-dbus' if RUBY_PLATFORM =~ /linux/i
 end
 
 group :test do

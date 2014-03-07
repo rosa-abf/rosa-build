@@ -19,8 +19,8 @@ class BuildListObserver < ActiveRecord::Observer
           rescue ActiveRecord::RecordNotUnique
             retry
           end
-          build_count = statistic.build_count
-          new_av_time = ( statistic.average_build_time * build_count + record.duration ) / ( build_count + 1 )
+          build_count = statistic.build_count.to_i
+          new_av_time = ( statistic.average_build_time * build_count + record.duration.to_i ) / ( build_count + 1 )
           statistic.update_attributes(average_build_time: new_av_time, build_count: build_count + 1)
         end
       end

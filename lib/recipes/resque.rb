@@ -68,7 +68,7 @@ Capistrano::Configuration.instance(:must_exist).load do
 
       def start_scheduler
         pid = "#{fetch :current_path}/tmp/pids/scheduler.pid"
-        run "cd #{fetch :current_path} && #{rails_env} PIDFILE=#{pid} BACKGROUND=yes VERBOSE=1 MUTE=1 bundle exec rake resque:scheduler"
+        run "cd #{fetch :current_path} && #{rails_env} PIDFILE=#{pid} BACKGROUND=yes VERBOSE=1 MUTE=1 RESQUE_SCHEDULER_INTERVAL=0.5 bundle exec rake resque:scheduler"
       end
 
       def stop_scheduler

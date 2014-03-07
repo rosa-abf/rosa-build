@@ -91,15 +91,6 @@ ru:
       sign_in_header: Вход в систему
       sign_up_with: или войти с помощью
 
-    private_users:
-      list: Список
-      new: Новая пара
-      list_header: Пары логин/пароль
-      confirm_delete: Вы уверены, что хотите удалить эту пару логин/пароль?
-      confirm_regenerate: Вы уверены, что хотите перегенерировать эту пару логин/пароль?
-      regenerate_btn: Перегенерировать
-      warning_message: Примечание - При получении новых данных старые становятся недействительными
-
     collaborators:
       back_to_proj: Вернуться к проекту
       edit: Редактировать список
@@ -131,8 +122,6 @@ ru:
     settings:
       saved: Настройки успешно сохранены
       save_error: При обновлении настроек произошла ошибка
-
-    private_users: "Логин: %{login} Пароль: %{password}"
 
     subscribe:
       saved: Вы подписаны на оповещения для этой задачи
@@ -177,7 +166,6 @@ ru:
               can_have_less_or_equal: Нельзя иметь больше, чем %{count} проектов.
 
     models:
-      private_user: Приватный пользователь
       product_build_list: Сборочный лист продукта
 
     attributes:
@@ -194,10 +182,6 @@ ru:
           new_comment_commit_commentor: Оповещать о комментариях к коммиту после моего
           new_build: Оповещать о моих сборочных заданиях
           new_associated_build: Оповещать о связанных со мной сборочных заданиях
-
-      private_user:
-        login: Логин
-        password: Пароль
 
       arch:
         name: Название

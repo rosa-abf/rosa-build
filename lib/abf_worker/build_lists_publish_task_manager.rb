@@ -299,8 +299,6 @@ module AbfWorker
         platform_path << '/' << build_for_platform.name
         system "mkdir -p #{platform_path}"
       end
-      worker_queue = bl ? bl.worker_queue_with_priority("publish_worker") : 'publish_worker_default'
-      worker_class = bl ? bl.worker_queue_class("AbfWorker::PublishWorker") : 'AbfWorker::PublishWorkerDefault'
 
       distrib_type  = build_for_platform.distrib_type
       cmd_params    = {
@@ -350,9 +348,9 @@ module AbfWorker
       packages[:sources] = new_sources.values.compact
 
       Resque.push(
-        worker_queue,
-        'class' => worker_class,
-        'args' => [options.merge({
+        'publish_worker_default',
+        'class' => 'AbfWorker::PublishWorkerDefault',
+        'args'  => [options.merge({
           packages:             packages,
           old_packages:         old_packages,
           build_list_ids:       build_list_ids,

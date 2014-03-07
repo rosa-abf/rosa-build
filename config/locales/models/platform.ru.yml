@@ -35,7 +35,6 @@ ru:
       visibility: Видимость
       platform_type: Тип платформы
       distrib_type: Тип дистрибутива
-      private_users: Данные для доступа
       confirm_clone: Клонировать?
       clone: Клонировать
       delete_warning: Внимание! Удаленная платформа восстановлению не подлежит.

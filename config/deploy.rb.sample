@@ -33,6 +33,9 @@ require 'puma/capistrano'
 set :workers_count, 4
 require './lib/recipes/resque'
 
+require './lib/recipes/skype'
+set :skype_topic, 'ABF' # Skype chat topic name
+
 namespace :deploy do
   task :symlink_all, :roles => :app do
     run "mkdir -p #{fetch :shared_path}/config"

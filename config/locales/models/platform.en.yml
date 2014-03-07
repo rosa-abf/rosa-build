@@ -35,7 +35,6 @@ en:
       visibility: Visibility
       platform_type: Platform type
       distrib_type: Distribution type
-      private_users: Access data
       confirm_clone: Clone?
       clone: Clone
       delete_warning: Attention! Deleted platform can not be restored!
