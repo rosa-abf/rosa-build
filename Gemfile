@@ -77,14 +77,13 @@ gem 'soundmanager-rails'
 
 gem 'time_diff'
 
-group :assets do
-  gem 'sass-rails', '~> 4.0.1'
-  gem 'coffee-rails', '~> 4.0.1'
-  gem 'compass-rails', '~> 1.1.3'
-  gem 'uglifier', '~> 2.4'
-  gem 'therubyracer', '~> 0.12.1', platforms: [:mri, :rbx]
-  gem 'therubyrhino', '~> 1.73.1', platforms: :jruby
-end
+gem 'sass-rails', '~> 4.0.1'
+gem 'coffee-rails', '~> 4.0.1'
+gem 'compass-rails', '~> 1.1.2'
+gem 'uglifier', '~> 2.4'
+gem 'therubyracer', '~> 0.12.1', platforms: [:mri, :rbx]
+gem 'therubyrhino', '~> 1.73.1', platforms: :jruby
+
 
 group :production do
   gem "airbrake", '~> 3.1.2'
