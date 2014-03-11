@@ -114,7 +114,7 @@ class BuildList < ActiveRecord::Base
   scope :scoped_to_arch, ->(arch) { where(arch_id: arch) if arch.present? }
   scope :scoped_to_save_platform, ->(pl_id) { where(save_to_platform_id: pl_id) if pl_id.present? }
   scope :scoped_to_project_version, ->(pr_version) { where(project_version: pr_version) if pr_version.present? }
-  scope :scoped_to_is_circle, ->(is_circle) { { where(is_circle: is_circle) }
+  scope :scoped_to_is_circle, ->(is_circle) { where(is_circle: is_circle) }
   scope :for_creation_date_period, ->(start_date, end_date) {
     s = scoped
     s = s.where(["#{table_name}.created_at >= ?", start_date]) if start_date
