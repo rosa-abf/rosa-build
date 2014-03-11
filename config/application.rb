@@ -15,7 +15,7 @@ module Rosa
     config.i18n.enforce_available_locales = true
 
     # Rate limit
-    config.middleware.insert_after Rack::Lock, ApiDefender
+    config.middleware.insert_before Rack::Runtime, ApiDefender
 
     config.autoload_paths += %W(#{config.root}/lib)
 
