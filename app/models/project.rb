@@ -89,7 +89,6 @@ class Project < ActiveRecord::Base
   after_save :attach_to_personal_repository
   after_update :set_new_git_head
   after_update -> { update_path_to_project(name_was) }, if: :name_changed?
-  before_save :ensure_authentication_token
 
   has_ancestry orphan_strategy: :rootify #:adopt not available yet
 
