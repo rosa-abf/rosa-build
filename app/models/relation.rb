@@ -4,7 +4,7 @@ class Relation < ActiveRecord::Base
   belongs_to :target, polymorphic: true
   belongs_to :actor, polymorphic: true, touch: true
 
-  validates :role, inclusion: {in: ROLES}
+  validates :role, inclusion: { in: ROLES }
 
 #  validate { errors.add(:actor, :taken) if Relation.where(actor_type: self.actor_type, actor_id: self.actor_id).present? }
   before_validation :add_default_role

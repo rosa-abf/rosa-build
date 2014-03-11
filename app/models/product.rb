@@ -7,7 +7,7 @@ class Product < ActiveRecord::Base
   belongs_to :project
   has_many :product_build_lists, dependent: :destroy
 
-  validates :name, presence: true, uniqueness: {scope: :platform_id}
+  validates :name, presence: true, uniqueness: { scope: :platform_id }
   validates :project_id, presence: true
   validates :main_script, :params, length: { maximum: 255 }
 

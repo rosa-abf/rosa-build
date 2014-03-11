@@ -39,10 +39,11 @@ class User < Avatar
   has_many :key_pairs
   has_many :ssh_keys, dependent: :destroy
 
-  validates :uname, presence: true, uniqueness: {case_sensitive: false}, format: {with: /\A[a-z0-9_]+\z/}, reserved_name: true
+  validates :uname, presence: true, uniqueness: { case_sensitive: false },
+            format: { with: /\A[a-z0-9_]+\z/ }, reserved_name: true
   validate { errors.add(:uname, :taken) if Group.by_uname(uname).present? }
-  validates :role, inclusion: {in: EXTENDED_ROLES}, allow_blank: true
-  validates :language, inclusion: {in: LANGUAGES}, allow_blank: true
+  validates :role, inclusion: { in: EXTENDED_ROLES }, allow_blank: true
+  validates :language, inclusion: { in: LANGUAGES }, allow_blank: true
 
   attr_accessible :email, :password, :password_confirmation, :current_password, :remember_me, :login, :name, :uname, :language,
                   :site, :company, :professional_experience, :location, :sound_notifications
@@ -51,7 +52,7 @@ class User < Avatar
 
   scope :opened, -> { where('users.role != \'system\' OR users.role IS NULL') }
   scope :real,   -> { where(role: ['', nil]) }
-  EXTENDED_ROLES.select {|type| type.present?}.each do |type|
+  EXTENDED_ROLES.select { |type| type.present?}.each do |type|
     scope type.to_sym, -> { where(role: type) }
   end
 

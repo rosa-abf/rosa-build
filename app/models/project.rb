@@ -33,14 +33,14 @@ class Project < ActiveRecord::Base
   has_many :packages, class_name: 'BuildList::Package', dependent: :destroy
   has_and_belongs_to_many :advisories # should be without dependent: :destroy
 
-  validates :name, uniqueness: {scope: [:owner_id, :owner_type], case_sensitive: false},
+  validates :name, uniqueness: { scope: [:owner_id, :owner_type], case_sensitive: false },
                    presence: true,
-                   format: {with: /\A#{NAME_REGEXP}\z/,
-                   message: I18n.t("activerecord.errors.project.uname")}
+                   format: { with: /\A#{NAME_REGEXP}\z/,
+                             message: I18n.t("activerecord.errors.project.uname") }
   validates :maintainer_id, presence: true, unless: :new_record?
   validates :url, presence: true, format: {with: /\Ahttps?:\/\/[\S]+\z/}, if: :mass_import
   validates :add_to_repository_id, presence: true, if: :mass_import
-  validates :visibility, presence: true, inclusion: {in: VISIBILITIES}
+  validates :visibility, presence: true, inclusion: { in: VISIBILITIES }
   validate { errors.add(:base, :can_have_less_or_equal, count: MAX_OWN_PROJECTS) if owner.projects.size >= MAX_OWN_PROJECTS }
   validate :check_default_branch
   # throws validation error message from ProjectToRepository model into Project model
