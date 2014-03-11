@@ -32,5 +32,4 @@ module BuildListObserver
       end
     end
   end
-
 end

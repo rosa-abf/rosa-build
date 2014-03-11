@@ -1,6 +1,6 @@
 class Hook < ActiveRecord::Base
-  include Modules::Models::WebHooks
-  include Modules::Models::UrlHelper
+  include WebHooks
+  include UrlHelper
   include Rails.application.routes.url_helpers
   belongs_to :project
 
@@ -121,7 +121,7 @@ class Hook < ActiveRecord::Base
   def cleanup_data
     if self.name.present? && fields = SCHEMA[self.name.to_sym]
       new_data = {}
-      fields.each{ |type, field| new_data[field] = self.data[field] }
+      fields.each { |type, field| new_data[field] = self.data[field] }
       self.data = new_data
     end
   end
@@ -140,7 +140,7 @@ class Hook < ActiveRecord::Base
         modified  << diff.a_path
       end
     end
-    {removed: removed, added: added, modified: modified}
+    { removed: removed, added: added, modified: modified }
   end
 
 end

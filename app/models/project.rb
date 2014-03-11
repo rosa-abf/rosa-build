@@ -1,9 +1,9 @@
 class Project < ActiveRecord::Base
-  include Modules::Models::Autostart
-  include Modules::Models::Owner
-  include Modules::Models::Git
-  include Modules::Models::Wiki
-  include Modules::Models::UrlHelper
+  include Autostart
+  include Owner
+  include Git
+  include Wiki
+  include UrlHelper
   include EventLoggable
 
   VISIBILITIES = ['open', 'hidden']
@@ -238,11 +238,11 @@ class Project < ActiveRecord::Base
     format_id = ProjectTag::FORMATS["#{tag_file_format(format)}"]
     project_tag = project_tags.where(tag_name: tag.name, format_id: format_id).first
 
-    return project_tag.sha1 if project_tag && project_tag.commit_id == tag.commit.id && Modules::Models::FileStoreClean.file_exist_on_file_store?(project_tag.sha1)
+    return project_tag.sha1 if project_tag && project_tag.commit_id == tag.commit.id && FileStoreClean.file_exist_on_file_store?(project_tag.sha1)
 
     archive = archive_by_treeish_and_format tag.name, format
     sha1    = Digest::SHA1.file(archive[:path]).hexdigest
-    unless Modules::Models::FileStoreClean.file_exist_on_file_store? sha1
+    unless FileStoreClean.file_exist_on_file_store? sha1
       token = User.find_by_uname('rosa_system').authentication_token
       begin
         resp = JSON `curl --user #{token}: -POST -F 'file_store[file]=@#{archive[:path]};filename=#{name}-#{tag.name}.#{tag_file_format(format)}' #{APP_CONFIG['file_store_url']}/api/v1/upload`
@@ -297,7 +297,7 @@ class Project < ActiveRecord::Base
   end
 
   class << self
-    Modules::Models::Autostart::HUMAN_AUTOSTART_STATUSES.each do |autostart_status, human_autostart_status|
+    Autostart::HUMAN_AUTOSTART_STATUSES.each do |autostart_status, human_autostart_status|
       define_method "autostart_build_lists_#{human_autostart_status}" do
         autostart_build_lists autostart_status
       end

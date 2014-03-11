@@ -1,6 +1,6 @@
 class RepositoryStatus < ActiveRecord::Base
-  include Modules::Models::FileStoreClean
-  include Modules::Models::RegenerationStatus
+  include FileStoreClean
+  include RegenerationStatus
 
   WAITING_FOR_RESIGN        = 300
   PUBLISH                   = 400

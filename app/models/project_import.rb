@@ -7,5 +7,5 @@ class ProjectImport < ActiveRecord::Base
 
   scope :by_name, ->(name) { where("#{table_name}.name ILIKE ?", name) }
 
-  after_initialize -> {|r| r.file_mtime ||= Time.current - 10.years } # default
+  after_initialize ->(r) { r.file_mtime ||= Time.current - 10.years } # default
 end

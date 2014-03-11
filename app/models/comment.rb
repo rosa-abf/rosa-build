@@ -17,7 +17,7 @@ class Comment < ActiveRecord::Base
   scope :for_commit, ->(c) { where(commentable_id: c.id.hex, commentable_type: c.class) }
   default_scope { order(:created_at) }
 
-  after_create :subscribe_on_reply, unless: -> {|c| c.commit_comment?}
+  after_create :subscribe_on_reply, unless: ->(c) { c.commit_comment? }
   after_create :subscribe_users
 
   attr_accessible :body, :data

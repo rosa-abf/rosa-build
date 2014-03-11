@@ -1,6 +1,6 @@
 class User < Avatar
-  include Modules::Models::PersonalRepository
-  include Modules::Models::ActsLikeMember
+  include PersonalRepository
+  include ActsLikeMember
   include Feed::User
   include EventLoggable
 

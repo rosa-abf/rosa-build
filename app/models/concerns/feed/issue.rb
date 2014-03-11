@@ -4,11 +4,11 @@ module Feed::Issue
   included do
     after_commit :new_issue_notifications, on: :create
 
-    after_commit :send_assign_notifications,                on: :create, if: Proc.new { |i| i.assignee }
+    after_commit :send_assign_notifications,                on: :create, if: -> { |i| i.assignee }
     after_commit -> { send_assign_notifications(:update) }, on: :update
 
     after_commit :send_hooks,                on: :create
-    after_commit -> { send_hooks(:update) }, on: :update, if: Proc.new { |i| i.previous_changes['status'].present? }
+    after_commit -> { send_hooks(:update) }, on: :update, if: -> { |i| i.previous_changes['status'].present? }
   end
 
   private

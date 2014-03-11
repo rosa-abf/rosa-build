@@ -2,9 +2,9 @@ class Platform < ActiveRecord::Base
   extend FriendlyId
   friendly_id :name
 
-  include Modules::Models::FileStoreClean
-  include Modules::Models::RegenerationStatus
-  include Modules::Models::Owner
+  include FileStoreClean
+  include RegenerationStatus
+  include Owner
   include EventLoggable
 
   AUTOMATIC_METADATA_REGENERATIONS = %w(day week)
@@ -32,10 +32,10 @@ class Platform < ActiveRecord::Base
   has_many :mass_builds, foreign_key: :save_to_platform_id
 
   validates :description, presence: true
-  validates :visibility, presence: true, inclusion: {in: VISIBILITIES}
-  validates :automatic_metadata_regeneration, inclusion: {in: AUTOMATIC_METADATA_REGENERATIONS}, allow_blank: true
+  validates :visibility, presence: true, inclusion: { in: VISIBILITIES }
+  validates :automatic_metadata_regeneration, inclusion: { in: AUTOMATIC_METADATA_REGENERATIONS }, allow_blank: true
   validates :name, uniqueness: {case_sensitive: false}, presence: true, format: { with: /\A#{NAME_PATTERN}\z/ }
-  validates :distrib_type, presence: true, inclusion: {in: APP_CONFIG['distr_types']}
+  validates :distrib_type, presence: true, inclusion: { in: APP_CONFIG['distr_types'] }
   validate -> {
     if released_was && !released
       errors.add(:released, I18n.t('flash.platform.released_status_can_not_be_changed'))
@@ -79,7 +79,7 @@ class Platform < ActiveRecord::Base
     end
 
     event :regenerate do
-      transition ready: :waiting_for_regeneration, if: -> { |p| p.main? }
+      transition ready: :waiting_for_regeneration, if: ->(p) { p.main? }
     end
 
     event :start_regeneration do

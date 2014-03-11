@@ -1,8 +1,8 @@
 class ProductBuildList < ActiveRecord::Base
-  include Modules::Models::CommitAndVersion
-  include Modules::Models::TimeLiving
-  include Modules::Models::FileStoreClean
-  include Modules::Models::UrlHelper
+  include CommitAndVersion
+  include TimeLiving
+  include FileStoreClean
+  include UrlHelper
   include AbfWorker::ModelHelper
   include EventLoggable
 

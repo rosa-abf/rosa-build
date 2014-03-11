@@ -1,6 +1,6 @@
 class Group < Avatar
-  include Modules::Models::ActsLikeMember
-  include Modules::Models::PersonalRepository
+  include ActsLikeMember
+  include PersonalRepository
 
   belongs_to :owner, class_name: 'User'
 

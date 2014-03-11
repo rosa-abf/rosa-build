@@ -7,7 +7,7 @@ class PullRequest < ActiveRecord::Base
     :created_at, :updated_at, :comments, :status=, to: :issue, allow_nil: true
 
   validates :from_project, :to_project, presence: true
-  validate :uniq_merge, if: -> { |pull| pull.to_project.present? }
+  validate :uniq_merge, if: ->(pull) { pull.to_project.present? }
   validates_each :from_ref, :to_ref do |record, attr, value|
     check_ref record, attr, value
   end

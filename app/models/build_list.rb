@@ -1,6 +1,6 @@
 class BuildList < ActiveRecord::Base
-  include Modules::Models::CommitAndVersion
-  include Modules::Models::FileStoreClean
+  include CommitAndVersion
+  include FileStoreClean
   include AbfWorker::ModelHelper
   include Feed::BuildList
   include BuildListObserver
@@ -164,7 +164,7 @@ class BuildList < ActiveRecord::Base
 
     after_transition on: [:published, :fail_publish, :build_error, :tests_failed], do: :notify_users
     after_transition on: :build_success, do: :notify_users,
-      unless: -> { |build_list| build_list.auto_publish? || build_list.auto_publish_into_testing? }
+      unless: ->(build_list) { build_list.auto_publish? || build_list.auto_publish_into_testing? }
 
     event :place_build do
       transition waiting_for_response: :build_pending
