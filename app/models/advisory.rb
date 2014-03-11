@@ -1,4 +1,6 @@
 class Advisory < ActiveRecord::Base
+  self.include_root_in_json = false
+
   has_and_belongs_to_many :platforms
   has_and_belongs_to_many :projects
   has_many :build_lists
@@ -13,14 +15,14 @@ class Advisory < ActiveRecord::Base
   ID_STRING_TEMPLATE = 'ROSA-%<type>s-%<year>04s:%<id>04s'
   TYPES = {'security' => 'SA', 'bugfix' => 'A'}
 
-  scope :search, lambda { |q|
+  scope :search, ->(q) {
     q = q.to_s.strip
     where("#{table_name}.advisory_id ILIKE :q OR #{table_name}.description ILIKE :q OR build_list_packages.fullname ILIKE :q", q: "%#{q}%").
       joins(build_lists: :packages) if q.present?
   }
-  scope :search_by_id,    lambda { |aid| where("#{table_name}.advisory_id ILIKE ?", "%#{aid.to_s.strip}%") }
-  scope :by_update_type,  lambda { |ut| where(update_type: ut) }
-  default_scope order("#{table_name}.created_at DESC")
+  scope :search_by_id,   ->(aid) { where("#{table_name}.advisory_id ILIKE ?", "%#{aid.to_s.strip}%") }
+  scope :by_update_type, ->(ut) { where(update_type: ut) }
+  default_scope { order(created_at: :desc) }
 
   def to_param
     advisory_id
@@ -69,4 +71,3 @@ class Advisory < ActiveRecord::Base
   end
 
 end
-Advisory.include_root_in_json = false

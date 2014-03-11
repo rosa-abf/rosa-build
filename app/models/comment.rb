@@ -1,5 +1,5 @@
 class Comment < ActiveRecord::Base
-  include Modules::Observers::ActivityFeed::Comment
+  include ActivityFeed::Comment
 
   # regexp take from http://code.google.com/p/concerto-platform/source/browse/v3/cms/lib/CodeMirror/mode/gfm/gfm.js?spec=svn861&r=861#71
   # User/Project#Num
@@ -14,10 +14,10 @@ class Comment < ActiveRecord::Base
 
   validates :body, :user_id, :commentable_id, :commentable_type, :project_id, presence: true
 
-  scope :for_commit, lambda {|c| where(commentable_id: c.id.hex, commentable_type: c.class)}
-  default_scope order("#{table_name}.created_at")
+  scope :for_commit, ->(c) { where(commentable_id: c.id.hex, commentable_type: c.class) }
+  default_scope { order(:created_at) }
 
-  after_create :subscribe_on_reply, unless: lambda {|c| c.commit_comment?}
+  after_create :subscribe_on_reply, unless: -> {|c| c.commit_comment?}
   after_create :subscribe_users
 
   attr_accessible :body, :data

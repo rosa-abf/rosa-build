@@ -7,12 +7,12 @@ class ApplicationController < ActionController::Base
   layout :layout_by_resource
 
   # Hack to prevent token auth on all pages except atom feed:
-  prepend_before_filter lambda { redirect_to(new_user_session_path) if params[:token] && params[:token].is_a?(String) && params[:format] != 'atom'}
+  prepend_before_filter -> { redirect_to(new_user_session_path) if params[:token] && params[:token].is_a?(String) && params[:format] != 'atom'}
 
   before_filter :set_locale
-  before_filter lambda { EventLog.current_controller = self },
+  before_filter -> { EventLog.current_controller = self },
                 only: [:create, :destroy, :open_id, :cancel, :publish, :change_visibility] # :update
-  after_filter lambda { EventLog.current_controller = nil }
+  after_filter -> { EventLog.current_controller = nil }
 
   helper_method :get_owner
 

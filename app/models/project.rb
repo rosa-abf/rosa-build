@@ -1,12 +1,17 @@
 class Project < ActiveRecord::Base
   include Modules::Models::Autostart
+  include Modules::Models::Owner
+  include Modules::Models::Git
+  include Modules::Models::Wiki
+  include Modules::Models::UrlHelper
+  include EventLoggable
 
   VISIBILITIES = ['open', 'hidden']
   MAX_OWN_PROJECTS = 32000
   NAME_REGEXP = /[\w\-\+\.]+/
 
   belongs_to :owner, polymorphic: true, counter_cache: :own_projects_count
-  belongs_to :maintainer, class_name: "User"
+  belongs_to :maintainer, class_name: 'User'
 
   has_many :issues, dependent: :destroy
   has_many :pull_requests, dependent: :destroy, foreign_key: 'to_project_id'
@@ -25,7 +30,7 @@ class Project < ActiveRecord::Base
   has_many :collaborators, through: :relations, source: :actor, source_type: 'User'
   has_many :groups,        through: :relations, source: :actor, source_type: 'Group'
 
-  has_many :packages, class_name: "BuildList::Package", dependent: :destroy
+  has_many :packages, class_name: 'BuildList::Package', dependent: :destroy
   has_and_belongs_to_many :advisories # should be without dependent: :destroy
 
   validates :name, uniqueness: {scope: [:owner_id, :owner_type], case_sensitive: false},
@@ -53,48 +58,42 @@ class Project < ActiveRecord::Base
                   :autostart_status
   attr_readonly :owner_id, :owner_type
 
-  scope :recent, order("lower(#{table_name}.name) ASC")
-  scope :search_order, order("CHAR_LENGTH(#{table_name}.name) ASC")
-  scope :search, lambda {|q|
+  scope :recent, -> { order(:name) }
+  scope :search_order, -> { order('CHAR_LENGTH(projects.name) ASC') }
+  scope :search, ->(q) {
     q = q.to_s.strip
     by_name("%#{q}%").search_order if q.present?
   }
-  scope :by_name, lambda {|name| where("#{table_name}.name ILIKE ?", name) if name.present?}
-  scope :by_owner_and_name, lambda { |*params|
+  scope :by_name, ->(name) { where('projects.name ILIKE ?', name) if name.present? }
+  scope :by_owner_and_name, ->(*params) {
     term = params.map(&:strip).join('/').downcase
-    where("lower(concat(owner_uname, '/', name)) ILIKE ?", "%#{term}%") if term.present?
+    where('lower(concat(owner_uname, '/', name)) ILIKE ?', "%#{term}%") if term.present?
   }
-  scope :by_visibilities, lambda {|v| where(visibility: v)}
-  scope :opened, where(visibility: 'open')
-  scope :package, where(is_package: true)
-  scope :addable_to_repository, lambda { |repository_id| where %Q(
-    projects.id NOT IN (
-      SELECT
-        ptr.project_id
-      FROM
-        project_to_repositories AS ptr
-      WHERE (ptr.repository_id = #{ repository_id })
-    )
-  ) }
-  scope :by_owners, lambda { |group_owner_ids, user_owner_ids|
-    where("(#{table_name}.owner_id in (?) AND #{table_name}.owner_type = 'Group') OR (#{table_name}.owner_id in (?) AND #{table_name}.owner_type = 'User')", group_owner_ids, user_owner_ids)
+  scope :by_visibilities, ->(v) { where(visibility: v) }
+  scope :opened, -> { where(visibility: 'open') }
+  scope :package, -> { where(is_package: true) }
+  scope :addable_to_repository, ->(repository_id) {
+    where('projects.id NOT IN (
+            SELECT ptr.project_id
+            FROM project_to_repositories AS ptr
+            WHERE ptr.repository_id = ?)', repository_id)
+  }
+  scope :by_owners, ->(group_owner_ids, user_owner_ids) {
+    where("projects.owner_id in (?) AND projects.owner_type = 'Group') OR
+      (projects.owner_id in (?) AND projects.owner_type = 'User')", group_owner_ids, user_owner_ids)
   }
 
   before_validation :truncate_name, on: :create
-  before_save lambda { self.owner_uname = owner.uname if owner_uname.blank? || owner_id_changed? || owner_type_changed? }
+  before_save -> { self.owner_uname = owner.uname if owner_uname.blank? || owner_id_changed? || owner_type_changed? }
   before_create :set_maintainer
   after_save :attach_to_personal_repository
   after_update :set_new_git_head
-  after_update lambda { update_path_to_project(name_was) }, if: :name_changed?
+  after_update -> { update_path_to_project(name_was) }, if: :name_changed?
+  before_save :ensure_authentication_token
 
   has_ancestry orphan_strategy: :rootify #:adopt not available yet
 
   attr_accessor :url, :srpms_list, :mass_import, :add_to_repository_id
-
-  include Modules::Models::Owner
-  include Modules::Models::Git
-  include Modules::Models::Wiki
-  include Modules::Models::UrlHelper
 
   class << self
     def find_by_owner_and_name(owner_name, project_name)

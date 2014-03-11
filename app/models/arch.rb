@@ -5,5 +5,5 @@ class Arch < ActiveRecord::Base
 
   validates :name, presence: true, uniqueness: true
 
-  scope :recent, order("#{table_name}.name ASC")
+  scope :recent, -> { order(:name) }
 end

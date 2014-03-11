@@ -7,7 +7,7 @@ class SshKey < ActiveRecord::Base
   belongs_to :user
   attr_accessible :key, :name
 
-  before_validation lambda { self.key = key.strip if key.present? }
+  before_validation -> { self.key = key.strip if key.present? }
   before_validation :set_fingerprint
 
   validates :name, length: {maximum: 255}

@@ -1,6 +1,7 @@
 class Product < ActiveRecord::Base
   include Modules::Models::TimeLiving
   include Modules::Models::Autostart
+  include EventLoggable
 
   belongs_to :platform
   belongs_to :project
@@ -10,7 +11,7 @@ class Product < ActiveRecord::Base
   validates :project_id, presence: true
   validates :main_script, :params, length: { maximum: 255 }
 
-  scope :recent, order("#{table_name}.name ASC")
+  scope :recent, -> { order(:name) }
 
   attr_accessible :name,
                   :description,

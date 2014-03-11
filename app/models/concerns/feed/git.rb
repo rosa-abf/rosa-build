@@ -1,4 +1,4 @@
-module Modules::Observers::ActivityFeed::Git
+module Feed::Git
 
   def self.create_notifications(record)
 

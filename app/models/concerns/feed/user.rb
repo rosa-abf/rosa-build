@@ -1,4 +1,4 @@
-module Modules::Observers::ActivityFeed::User
+module Feed::User
   extend ActiveSupport::Concern
 
   included do

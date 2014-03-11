@@ -132,7 +132,9 @@ Rosa::Application.routes.draw do
     authenticated do
       root to: 'home#activity'
     end
-    root to: 'home#root'
+    unauthenticated do
+      root to: 'home#root', as: :authenticated_root
+    end
   else
     root to: 'home#activity'
   end
@@ -179,7 +181,7 @@ Rosa::Application.routes.draw do
       end
 
       resources :contents, only: [:index]
-      match '/contents/*path' => 'contents#index', format: false
+      get '/contents/*path' => 'contents#index', format: false
 
       resources :mass_builds, only: [:create, :new, :index] do
         member do
@@ -363,10 +365,10 @@ Rosa::Application.routes.draw do
           get '/tags' => "git/trees#tags", as: :tags
           # Branches
           get '/branches' => "git/trees#branches", as: :branches
-          get '/branches/:treeish' => "git/trees#branches", as: :branch
-          delete '/branches/:treeish' => "git/trees#destroy", as: :branch
-          put '/branches/:treeish' => "git/trees#restore_branch", as: :branch
-          post '/branches' => "git/trees#create", as: :branches
+          get '/branches/:treeish' => "git/trees#branches", as: :treeish_branch
+          delete '/branches/:treeish' => "git/trees#destroy", as: :destroy_branch
+          put '/branches/:treeish' => "git/trees#restore_branch", as: :restore_branch
+          post '/branches' => "git/trees#create", as: :create_branch
           # Commits
           get '/commits/:treeish(/*path)' => "git/commits#index", as: :commits, format: false
           get '/commit/:id(.:format)' => "git/commits#show", as: :commit
@@ -402,12 +404,12 @@ Rosa::Application.routes.draw do
       get '/' => 'users/profile#show', as: :user
     end
     constraints Rosa::Constraints::Owner.new(Group, true) do
-      get '/' => 'groups/profile#show', as: :group
+      #get '/' => 'groups/profile#show', as: :group
     end
   end
 
   # As of Rails 3.0.1, using rescue_from in your ApplicationController to
   # recover from a routing error is broken!
   # see: https://rails.lighthouseapp.com/projects/8994/tickets/4444-can-no-longer-rescue_from-actioncontrollerroutingerror
-  match '*a', to: 'application#render_404'
+  get '*a', to: 'application#render_404'
 end

@@ -3,12 +3,17 @@ require File.expand_path('../boot', __FILE__)
 require 'rails/all'
 require './lib/api_defender'
 
+# Prevent deprecation warning
+I18n.config.enforce_available_locales = true
+
 # Require the gems listed in Gemfile, including any gems
 # you've limited to :test, :development, or :production.
 Bundler.require(:default, Rails.env)
 
 module Rosa
   class Application < Rails::Application
+    config.i18n.enforce_available_locales = true
+
     # Rate limit
     config.middleware.insert_after Rack::Lock, ApiDefender
 
@@ -26,9 +31,6 @@ module Rosa
     # Only load the plugins named here, in the order given (default is alphabetical).
     # :all can be used as a placeholder for all plugins not explicitly named.
     # config.plugins = [ :exception_notification, :ssl_requirement, :all ]
-
-    # Activate observers that should always be running.
-    config.active_record.observers = :event_log_observer, :build_list_observer
 
     # Set Time.zone default to the specified zone and make Active Record auto-convert to this zone.
     # Run "rake -D time" for a list of tasks for finding time zone names. Default is UTC.
@@ -50,7 +52,5 @@ module Rosa
 
     # Version of your assets, change this if you want to expire all your assets
     config.assets.version = '1.0'
-
-    I18n.enforce_available_locales = false
   end
 end

@@ -12,7 +12,7 @@ class Hook < ActiveRecord::Base
 
   serialize :data,  Hash
 
-  scope :for_name, lambda {|name| where(name: name) if name.present? }
+  scope :for_name, ->(name) { where(name: name) if name.present? }
 
   def receive_issues(issue, action)
     pull = issue.pull_request

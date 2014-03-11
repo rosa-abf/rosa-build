@@ -2,6 +2,8 @@ class Repository < ActiveRecord::Base
   extend FriendlyId
   friendly_id :name
 
+  include EventLoggable
+
   LOCK_FILE_NAMES = {sync: '.sync.lock', repo: '.repo.lock'}
   SORT = {'base' => 1, 'main' => 2, 'contrib' => 3, 'non-free' => 4, 'restricted' => 5}
 
@@ -19,10 +21,11 @@ class Repository < ActiveRecord::Base
   has_many :build_lists, foreign_key: :save_to_repository_id, dependent: :destroy
 
   validates :description, presence: true
-  validates :name, uniqueness: {scope: :platform_id, case_sensitive: false}, presence: true, format: {with: /\A[a-z0-9_\-]+\z/}
+  validates :name, uniqueness: {scope: :platform_id, case_sensitive: false}, presence: true,
+            format: {with: /\A[a-z0-9_\-]+\z/}
 
-  scope :recent,  order("#{table_name}.name ASC")
-  scope :main,    lambda { where(name: %w(main base)) }
+  scope :recent, -> { order(:name) }
+  scope :main,   -> { where(name: %w(main base)) }
 
   before_destroy :detele_directory
 

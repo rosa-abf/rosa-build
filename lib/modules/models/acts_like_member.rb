@@ -4,7 +4,7 @@ module Modules
       extend ActiveSupport::Concern
 
       included do
-        scope :not_member_of, lambda {|item|
+        scope :not_member_of, -> {|item|
           where("
             #{table_name}.id NOT IN (
               SELECT relations.actor_id
@@ -17,10 +17,10 @@ module Modules
             )
           ")
         }
-        scope :search_order, order("CHAR_LENGTH(uname) ASC")
-        scope :without, lambda {|a| where("#{table_name}.id NOT IN (?)", a)}
-        scope :by_uname, lambda {|n| where("#{table_name}.uname ILIKE ?", n)}
-        scope :search, lambda {|q| by_uname("%#{q.to_s.strip}%")}
+        scope :search_order,   { order('CHAR_LENGTH(#{table_name}.uname) ASC') }
+        scope :without,  ->(a) { where("#{table_name}.id NOT IN (?)", a) }
+        scope :by_uname, ->(n) { where("#{table_name}.uname ILIKE ?", n) }
+        scope :search,   ->(q) { by_uname("%#{q.to_s.strip}%") }
       end
 
       def to_param

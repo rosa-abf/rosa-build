@@ -1,11 +1,16 @@
 class User < Avatar
+  include Modules::Models::PersonalRepository
+  include Modules::Models::ActsLikeMember
+  include Feed::User
+  include EventLoggable
+
   ROLES = ['', 'admin', 'banned', 'tester']
   EXTENDED_ROLES = ROLES | ['system']
   LANGUAGES_FOR_SELECT = [['Russian', 'ru'], ['English', 'en']]
   LANGUAGES = LANGUAGES_FOR_SELECT.map(&:last)
 
-  devise :database_authenticatable, :registerable, :omniauthable, :token_authenticatable,# :encryptable, :timeoutable
-         :recoverable, :rememberable, :validatable, :lockable, :confirmable#, :reconfirmable, :trackable
+  devise :database_authenticatable, :registerable, :omniauthable,
+         :recoverable, :rememberable, :validatable, :lockable, :confirmable
   devise :omniauthable, omniauth_providers: [:facebook, :google_oauth2, :github]
 
   has_one :notifier, class_name: 'SettingsNotifier', dependent: :destroy #:notifier
@@ -44,22 +49,18 @@ class User < Avatar
   attr_readonly :uname
   attr_accessor :login
 
-  scope :opened, where('users.role != \'system\' OR users.role IS NULL')
-  scope :real, where(role: ['', nil])
+  scope :opened, -> { where('users.role != \'system\' OR users.role IS NULL') }
+  scope :real,   -> { where(role: ['', nil]) }
   EXTENDED_ROLES.select {|type| type.present?}.each do |type|
-    scope type.to_sym, where(role: type)
+    scope type.to_sym, -> { where(role: type) }
   end
 
-  scope :member_of_project, lambda {|item|
-    where "#{table_name}.id IN (?)", item.members.map(&:id).uniq
+  scope :member_of_project, ->(item) {
+    where 'users.id IN (?)', item.members.map(&:id).uniq
   }
 
-  after_create lambda { self.create_notifier unless self.system? }
+  after_create -> { self.create_notifier unless self.system? }
   before_create :ensure_authentication_token
-
-  include Modules::Models::PersonalRepository
-  include Modules::Models::ActsLikeMember
-  include Modules::Observers::ActivityFeed::User
 
   def admin?
     role == 'admin'
@@ -157,6 +158,12 @@ class User < Avatar
     end
   end
 
+  def ensure_authentication_token
+    if authentication_token.blank?
+      self.authentication_token = generate_authentication_token
+    end
+  end
+
   protected
 
   def target_roles target
@@ -171,6 +178,13 @@ class User < Avatar
     roles += rel.where(actor_id: self.id, actor_type: 'User') # user is member
     roles += rel.where(actor_id: gr, actor_type: 'Group') # user group is member
     roles.map(&:role).uniq
+  end
+
+  def generate_authentication_token
+    loop do
+      token = Devise.friendly_token
+      break token unless User.where(authentication_token: token).first
+    end
   end
 
 end

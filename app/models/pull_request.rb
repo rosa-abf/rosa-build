@@ -7,7 +7,7 @@ class PullRequest < ActiveRecord::Base
     :created_at, :updated_at, :comments, :status=, to: :issue, allow_nil: true
 
   validates :from_project, :to_project, presence: true
-  validate :uniq_merge, if: Proc.new { |pull| pull.to_project.present? }
+  validate :uniq_merge, if: -> { |pull| pull.to_project.present? }
   validates_each :from_ref, :to_ref do |record, attr, value|
     check_ref record, attr, value
   end
@@ -19,9 +19,9 @@ class PullRequest < ActiveRecord::Base
   accepts_nested_attributes_for :issue
   attr_accessible :issue_attributes, :to_ref, :from_ref
 
-  scope :needed_checking, includes(:issue).where(issues: {status: ['open', 'blocked', 'ready']})
-  scope :not_closed_or_merged, needed_checking
-  scope :closed_or_merged, where(issues: {status: ['closed', 'merged']})
+  scope :needed_checking, -> { includes(:issue).where(issues: {status: ['open', 'blocked', 'ready']}) }
+  scope :not_closed_or_merged, -> { needed_checking }
+  scope :closed_or_merged, -> { where(issues: {status: ['closed', 'merged']}) }
 
   state_machine :status, initial: :open do
     event :ready do

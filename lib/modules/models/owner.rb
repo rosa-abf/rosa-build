@@ -5,7 +5,7 @@ module Modules
 
       included do
         validates :owner, presence: true
-        after_create lambda { relations.create actor_id: owner.id, actor_type: owner.class.to_s, role: 'admin' }
+        after_create -> { relations.create actor_id: owner.id, actor_type: owner.class.to_s, role: 'admin' }
       end
 
     end

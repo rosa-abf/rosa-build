@@ -16,7 +16,7 @@ module Modules
         after_commit(on: :create) {|p| p.fork_git_repo unless p.is_root?} # later with resque
         after_commit(on: :create) {|p| p.import_attached_srpm if p.srpm?} # later with resque # should be after create_git_repo
         after_destroy :destroy_git_repo
-        # after_rollback lambda { destroy_git_repo rescue true if new_record? }
+        # after_rollback -> { destroy_git_repo rescue true if new_record? }
 
         later :import_attached_srpm, queue: :fork_import
         later :fork_git_repo, queue: :fork_import

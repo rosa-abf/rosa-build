@@ -1,5 +1,5 @@
 class Groups::MembersController < Groups::BaseController
-  before_filter lambda { authorize! :manage_members, @group }
+  before_filter -> { authorize! :manage_members, @group }
 
   def index
   end

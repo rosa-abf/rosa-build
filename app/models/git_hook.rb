@@ -1,11 +1,12 @@
 class GitHook
+  include Feed::Git
+  include Resque::Plugins::Status
+
   ZERO = '0000000000000000000000000000000000000000'
   @queue = :hook
 
   attr_reader :repo, :newrev, :oldrev, :newrev_type, :oldrev_type, :refname,
     :change_type, :rev, :rev_type, :refname_type, :owner, :project, :user, :message
-
-  include Resque::Plugins::Status
 
   def self.perform(*options)
     self.process(*options)
@@ -64,7 +65,7 @@ class GitHook
   end
 
   def self.process(*args)
-    Modules::Observers::ActivityFeed::Git.create_notifications(args.size > 1 ? GitHook.new(*args) : args.first)
+    create_notifications(args.size > 1 ? GitHook.new(*args) : args.first)
   end
 
   def find_user(user)
