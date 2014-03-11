@@ -3,8 +3,9 @@ module ActionDispatch
     module UrlFor
       def url_for_with_defaults(options = nil)
         if options.kind_of?(Hash)
-          if project = options[:_positional_args].try(:first) and project.is_a?(Project) # for project routes
-            options[:_positional_args].unshift(project.owner) # add owner to URL for correct generation
+          if project = options[:owner_name] and project.is_a?(Project) # for project routes
+            # set the correct owner and name
+            options[:owner_name], options[:project_name] = project.owner, project
           end
         end
         url_for_without_defaults(options)
