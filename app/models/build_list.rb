@@ -18,7 +18,7 @@ class BuildList < ActiveRecord::Base
   belongs_to :mass_build, counter_cache: true, touch: true
   has_many :items, class_name: '::BuildList::Item', dependent: :destroy
   has_many :packages, class_name: '::BuildList::Package', dependent: :destroy
-  has_many :source_packages, class_name: '::BuildList::Package', conditions: { package_type: 'source' }
+  has_many :source_packages, -> { where(package_type: 'source') }, class_name: '::BuildList::Package'
 
   UPDATE_TYPES = %w[bugfix security enhancement recommended newpackage]
   RELEASE_UPDATE_TYPES = %w[bugfix security]

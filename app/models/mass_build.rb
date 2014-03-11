@@ -1,5 +1,5 @@
 class MassBuild < ActiveRecord::Base
-  belongs_to :build_for_platform, class_name: 'Platform', conditions: {platform_type: 'main'}
+  belongs_to :build_for_platform, -> { where(platform_type: 'main') }, class_name: 'Platform'
   belongs_to :save_to_platform, class_name: 'Platform'
   belongs_to :user
   has_many :build_lists, dependent: :destroy

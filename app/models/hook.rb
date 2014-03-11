@@ -2,6 +2,7 @@ class Hook < ActiveRecord::Base
   include WebHooks
   include UrlHelper
   include Rails.application.routes.url_helpers
+
   belongs_to :project
 
   before_validation :cleanup_data
