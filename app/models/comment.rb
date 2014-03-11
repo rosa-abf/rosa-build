@@ -1,5 +1,5 @@
 class Comment < ActiveRecord::Base
-  include ActivityFeed::Comment
+  include Feed::Comment
 
   # regexp take from http://code.google.com/p/concerto-platform/source/browse/v3/cms/lib/CodeMirror/mode/gfm/gfm.js?spec=svn861&r=861#71
   # User/Project#Num

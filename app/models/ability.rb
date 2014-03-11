@@ -15,7 +15,7 @@ class Ability
     can [:show, :archive], Project, visibility: 'open'
     can :get_id,  Project, visibility: 'open' # api
     can(:refs_list, Project) {|project| can? :show, project}
-    can :read, Issue, project: {visibility: 'open'}
+    can :read, Issue, project: { visibility: 'open' }
     can [:read, :commits, :files], PullRequest, to_project: {visibility: 'open'}
     can [:read, :log, :everything], BuildList, project: {visibility: 'open'}
     can [:read, :log], ProductBuildList#, product: {platform: {visibility: 'open'}} # double nested hash don't work

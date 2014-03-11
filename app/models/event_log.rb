@@ -5,7 +5,7 @@ class EventLog < ActiveRecord::Base
   # self.per_page = 1
 
   scope :eager_loading, -> { preload(:user) }
-  scope :default_order  -> { order(id: :desc) }
+  scope :default_order, -> { order(id: :desc) }
 
   before_create do
     self.user_name = user.try(:uname) || 'guest'
