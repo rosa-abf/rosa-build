@@ -27,7 +27,7 @@
 #
 #   >> gfm(":trollface:")
 #   => "<img alt=\":trollface:\" class=\"emoji\" src=\"/images/trollface.png" title=\":trollface:\" />
-module Markdown
+module MarkdownHelper
   include IssuesHelper
 
   attr_reader :html_options
