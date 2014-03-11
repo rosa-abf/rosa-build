@@ -13,6 +13,9 @@
 
 ActiveRecord::Schema.define(:version => 20140306102620) do
 
+  # These is an extension that must be enabled in order to support this database
+  enable_extension "hstore"
+
   create_table "activity_feeds", :force => true do |t|
     t.integer  "user_id",    :null => false
     t.string   "kind"
