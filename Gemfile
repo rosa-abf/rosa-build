@@ -52,7 +52,7 @@ gem 'rails3-jquery-autocomplete', '~> 1.0'
 gem 'will_paginate', '~> 3.0.5'
 gem 'meta-tags', '~> 1.5', require: 'meta_tags'
 gem "haml-rails", '~> 0.5'
-gem 'jquery-rails', '~> 3.1'
+gem 'jquery-rails', '~> 2.3.0'
 gem 'ruby-haml-js', '~> 0.0.5'
 gem 'friendly_id', '~> 5.0.3'
 
