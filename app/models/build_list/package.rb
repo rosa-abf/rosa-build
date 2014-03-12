@@ -13,7 +13,7 @@ class BuildList::Package < ActiveRecord::Base
   validates :package_type, inclusion: PACKAGE_TYPES
   validates :sha1, presence: true, if: Proc.new { |p| p.build_list.new_core? }
 
-  default_scope order("lower(#{table_name}.name) ASC, length(#{table_name}.name) ASC")
+  default_scope { order("lower(#{table_name}.name) ASC, length(#{table_name}.name) ASC") }
 
   # Fetches only actual (last publised) packages.
   scope :actual,          ->           { where(actual: true) }
