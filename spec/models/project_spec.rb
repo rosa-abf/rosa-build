@@ -232,7 +232,6 @@ describe Project do
 
     before do
       repositories = [repository, main_repository] # 1
-      repositories.each{ |r| r.add_member user }
       
       # Create 1 main platforms with main repositories
       repositories << FactoryGirl.create(:repository, name: 'main') # 2
