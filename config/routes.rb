@@ -6,11 +6,11 @@ Rosa::Application.routes.draw do
 
   devise_scope :users do
     get '/users/auth/:provider' => 'users/omniauth_callbacks#passthru'
-  end
-  devise_for :users, controllers: {omniauth_callbacks: 'users/omniauth_callbacks'}, skip: [:registrations] do
     get 'users/sign_up' => 'users/registrations#new',    as: :new_user_registration
     post 'users'        => 'users/registrations#create', as: :user_registration
   end
+
+  devise_for :users, controllers: { omniauth_callbacks: 'users/omniauth_callbacks' }, skip: [:registrations]
 
   namespace :api do
     namespace :v1 do
