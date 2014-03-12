@@ -5,6 +5,7 @@ en:
 
   flash:
     platform_arch_settings:
+      wrong_platform: should be main
 
   activerecord:
     attributes:

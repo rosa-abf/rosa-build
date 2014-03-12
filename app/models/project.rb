@@ -322,13 +322,18 @@ class Project < ActiveRecord::Base
               bl.build_for_platform     = platform
               bl.update_type            = 'newpackage'
               bl.arch_id                = arch_id
-              bl.project_version        = p.project_version_for(platform, platform)
+              bl.project_version        = p.project_version_for(repository.platform, platform)
               bl.user                   = user
               bl.auto_publish_status    = p_to_r.auto_publish? ? BuildList::AUTO_PUBLISH_STATUS_DEFAULT : BuildList::AUTO_PUBLISH_STATUS_NONE
               bl.save_to_repository     = repository
-              bl.include_repos          = [repository.id, platform.repositories.main.first.try(:id)].uniq.compact
+              bl.include_repos          = [platform.repositories.main.first.try(:id)].compact
+              if repository.platform.personal?
+                bl.extra_repositories   = [repository.id]
+              else
+                bl.include_repos       |= [repository.id]
+              end
             end
-            build_list.save!
+            build_list.save
           end
         end
       end
