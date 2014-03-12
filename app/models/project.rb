@@ -67,7 +67,7 @@ class Project < ActiveRecord::Base
   scope :by_name, ->(name) { where('projects.name ILIKE ?', name) if name.present? }
   scope :by_owner_and_name, ->(*params) {
     term = params.map(&:strip).join('/').downcase
-    where('lower(concat(owner_uname, '/', name)) ILIKE ?', "%#{term}%") if term.present?
+    where("lower(concat(owner_uname, '/', name)) ILIKE ?", "%#{term}%") if term.present?
   }
   scope :by_visibilities, ->(v) { where(visibility: v) }
   scope :opened, -> { where(visibility: 'open') }
