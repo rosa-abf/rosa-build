@@ -113,7 +113,7 @@ group :development do
   gem 'meta_request'
   gem 'localeapp'
   gem 'skype'
-  gem 'ruby-dbus' if RUBY_PLATFORM =~ /linux/i
+  #gem 'ruby-dbus' if RUBY_PLATFORM =~ /linux/i # Error at deploy
 end
 
 group :test do
