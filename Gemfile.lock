@@ -290,8 +290,6 @@ GEM
       bundler (>= 1.3.0, < 2.0)
       railties (= 4.0.3)
       sprockets-rails (~> 2.0.0)
-    rails-observers (0.1.2)
-      activemodel (~> 4.0)
     rails3-generators (1.0.0)
       railties (>= 3.0.0)
     rails3-jquery-autocomplete (1.0.12)
@@ -505,7 +503,6 @@ DEPENDENCIES
   puma
   rack-throttle (~> 0.3.0)
   rails (= 4.0.3)
-  rails-observers
   rails3-generators
   rails3-jquery-autocomplete (~> 1.0)
   rake

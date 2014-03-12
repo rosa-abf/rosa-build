@@ -1,8 +1,6 @@
 source 'https://rubygems.org'
 
 gem 'rails', '4.0.3'
-gem 'rails-observers'
-#gem 'redhillonrails_core', git: 'git://github.com/rosa-abf/redhillonrails_core.git', branch: 'rails31' # '~> 2.0.0.pre' # deprecated
 
 gem 'pg', '~> 0.17.1'
 gem 'schema_plus', '~> 1.4.0'
