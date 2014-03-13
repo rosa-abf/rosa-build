@@ -117,7 +117,7 @@ class Project < ActiveRecord::Base
   end
 
   def to_param
-    "#{owner_uname}/#{name}"
+    name_with_owner
   end
 
   def all_members
