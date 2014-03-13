@@ -3,7 +3,7 @@ class CreatePlatforms < ActiveRecord::Migration
     create_table :platforms do |t|
       t.string :name
       t.string :unixname
-      t.integer :parent_platform_id
+      t.integer :parent_platform_id, references: nil
 
       t.timestamps
     end
