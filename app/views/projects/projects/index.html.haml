@@ -93,7 +93,7 @@
     });
 
     var $search = $('#search');
-    $search.live('blur', function() {
+    $search.on('blur', function() {
       $this = $(this);
       if ($this.val() == '') {
         $this.val('#{ t('layout.find_project') }');
@@ -101,7 +101,7 @@
       }
       return true;
     });
-    $search.live('focus', function() {
+    $search.on('focus', function() {
       $this = $(this);
       if ($this.val() == '#{ t('layout.find_project') }') {
         $this.val('');
@@ -109,13 +109,13 @@
       }
       return true;
     });
-    $search.live('keyup', function() {
+    $search.on('keyup', function() {
       oTable.fnFilter(this.value);
     });
-    $(".div-filter-labels").live('click', function() {
+    $(".div-filter-labels").on('click', function() {
       oTable.dataTable().fnDraw();
     });
-    $('#filter_projects').live('submit', function() {
+    $('#filter_projects').on('submit', function() {
       return false;
     });
   });

@@ -5,7 +5,7 @@
 //= require ./design/all
 
 $(document).ready(function() {
-  $('div.information > div.profile > a').live('click', function(e) {
+  $('div.information > div.profile > a').on('click', function(e) {
       e.preventDefault();
   });
 });

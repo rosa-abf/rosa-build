@@ -1,6 +1,6 @@
 $(document).ready(function() {
 
-  $("#manage-labels").live('click', function () {
+  $("#manage-labels").on('click', function () {
       var toggled = $(this).data('toggled');
       $(this).data('toggled', !toggled);
       if (!toggled) {
@@ -13,16 +13,16 @@ $(document).ready(function() {
       }
   });
 
-  $("div.div-tracker-labels").live('click', function() {
+  $("div.div-tracker-labels").on('click', function() {
     return send_index_tracker_request('GET');
   });
 
-  $("#table1.issues-table .pagination a").live('click', function() {
+  $("#table1.issues-table .pagination a").on('click', function() {
     updatePagination($(this));
     return send_index_tracker_request('GET');
   });
 
-  $(".issues-filter .tabnav-tabs li").live('click', function() {
+  $(".issues-filter .tabnav-tabs li").on('click', function() {
     var li = $(this);
     var items = $('.issues-filter .tabnav-tabs');
     if (li.hasClass('list-browser-sorts')) {
@@ -39,23 +39,23 @@ $(document).ready(function() {
     return send_index_tracker_request('GET');
   });
 
-  $("#filter_issues #myradio1").live('change', function(event) {
+  $("#filter_issues #myradio1").on('change', function(event) {
     return send_index_tracker_request('GET');
   });
 
-  $('.ajax_search_form').live('submit', function() {
+  $('.ajax_search_form').on('submit', function() {
     return send_index_tracker_request('GET', $(this).attr("action"));
   });
 
-  $('#add_label').live('click', function() {
+  $('#add_label').on('click', function() {
     return send_index_tracker_request('POST', $(this).attr("href"), $('#new_label').serialize());
   });
 
-  $('.righter #update_label').live('click', function() {
+  $('.righter #update_label').on('click', function() {
     return send_index_tracker_request('POST', $(this).attr("href"), $(this).parents('#update_label').serialize());
   });
 
-  $('.colors .choose').live('click', function() {
+  $('.colors .choose').on('click', function() {
     var parent = $(this).parents('.colors');
     parent.find('.choose.selected').removeClass('selected');
     $(this).addClass('selected');
@@ -63,18 +63,18 @@ $(document).ready(function() {
     return false;
   });
 
-  $('.custom_color').live('click', function() {
+  $('.custom_color').on('click', function() {
     $(this).siblings('#label_color').toggle();
     return false;
   });
 
-  $('article a.edit_label').live('click', function() {
+  $('article a.edit_label').on('click', function() {
     $(this).parents('.label.edit').siblings('.label.edit').find('.edit_label_form').hide();
     $(this).parents('.label.edit').find('.edit_label_form').toggle();
     return false;
   });
 
-  $('.delete_label').live('click', function() {
+  $('.delete_label').on('click', function() {
     return send_index_tracker_request('POST', $(this).attr('href'));
   });
 
@@ -112,15 +112,15 @@ $(document).ready(function() {
     return search_items(path, data, dom);
   });
 
-  $('.users-search-popup .header .icon-remove-circle').live('click', function() {
+  $('.users-search-popup .header .icon-remove-circle').on('click', function() {
     $('.users-search-popup').hide();
   });
 
-  $('#assigned-container .icon-share').live('click', function() {
+  $('#assigned-container .icon-share').on('click', function() {
     $('#assigned-popup').show();
   });
 
-  $('#assigned-popup .people.selected').live('click', function() {
+  $('#assigned-popup .people.selected').on('click', function() {
     var form = $('#assigned-popup .edit_assignee');
     var item = $(this);
     if (form.length == 0) {
@@ -141,7 +141,7 @@ $(document).ready(function() {
     return false;
   });
 
-  $('.add_label.label').live('click', function() {
+  $('.add_label.label').on('click', function() {
     $(this).addClass('selected').removeClass('add_label').addClass('remove_label');
     $(this).find('.labeltext').addClass('selected');
     var style = $(this).find('.flag').attr('style');
@@ -155,7 +155,7 @@ $(document).ready(function() {
     labels.append($(this).find('#'+$(this).attr('id')));
   });
 
-  $('.remove_label.label.selected').live('click', function() {
+  $('.remove_label.label.selected').on('click', function() {
     var id = $(this).attr('id');
     $('.manage_labels, #active_labels').find('#'+id+'.label.selected.remove_label').remove();
     var form = $('.form.issue');
@@ -171,7 +171,7 @@ $(document).ready(function() {
     $('.manage_labels').find('#'+$(this).attr('id')).remove();
   });
 
-  $('.issue_status.switch_issue_status').live('click', function () {
+  $('.issue_status.switch_issue_status').on('click', function () {
     var button = $(this);
     var status = (button.hasClass('switcher')) ? 'closed' : 'open';
     var form = $('#update_issue_status');
@@ -192,17 +192,17 @@ $(document).ready(function() {
     return false;
   });
 
-  $('#edit_issue_content').live('click', function() {
+  $('#edit_issue_content').on('click', function() {
     $('.edit_form.issue').fadeIn('fast');
     $(this).fadeOut('fast');
   });
 
-  $('#cancel_edit_issue_content').live('click', function() {
+  $('#cancel_edit_issue_content').on('click', function() {
     $('.edit_form.issue').fadeOut('fast');
     $('#edit_issue_content').fadeIn('fast');
   });
 
-  $('.edit_form.issue').live('submit', function() {
+  $('.edit_form.issue').on('submit', function() {
     var form = $(this);
     form.parent().find('.flash').remove();
     $.ajax({
@@ -222,14 +222,14 @@ $(document).ready(function() {
     return false;
   });
 
-  $('.button.manage_labels').live('click', function() {
+  $('.button.manage_labels').on('click', function() {
     $('.button.update_labels').fadeIn(0);
     $('.current_labels .label .labeltext.selected').parent().addClass('remove_label selected').removeClass('nopointer');
     $('.current_labels .label .labeltext:not(.selected)').parent().addClass('add_label').removeClass('nopointer');
     $(this).fadeOut(0);
   });
 
-  $('.button.update_labels').live('click', function() {
+  $('.button.update_labels').on('click', function() {
     var form = $('form.edit_labels.issue');
     $.ajax({
       type: 'POST',

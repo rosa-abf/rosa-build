@@ -33,6 +33,6 @@
 = render 'submenu'
 
 :javascript
-  $('#users_filter[type="radio"]').live('change', function(){
+  $('#users_filter[type="radio"]').on('change', function(){
     $('#datatable').dataTable().fnDraw();
   });

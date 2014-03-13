@@ -23,7 +23,7 @@ $(document).ready(function() {
     return false;
   }
 
-  profile_vis_buttons.live('click', function () {
+  profile_vis_buttons.on('click', function () {
     profile_vis_buttons.toggleClass('active');
     return load_profile_projects();
   });
