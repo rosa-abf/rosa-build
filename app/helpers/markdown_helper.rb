@@ -173,7 +173,7 @@ module MarkdownHelper
         url = project_pull_request_path(issue.project, issue.pull_request)
       else
         title = "#{Issue.model_name.human}: #{issue.title}"
-        url = project_issue_path(issue.project.owner, issue.project.name, issue.serial_id)
+        url = project_issue_path(issue.project, issue.serial_id)
       end
       link_to(identifier, url, html_options.merge(title: title, class: "gfm gfm-issue #{html_options[:class]}"))
     end
