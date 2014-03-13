@@ -38,7 +38,7 @@ class Project < ActiveRecord::Base
                    format: { with: /\A#{NAME_REGEXP}\z/,
                              message: I18n.t("activerecord.errors.project.uname") }
   validates :maintainer_id, presence: true, unless: :new_record?
-  validates :url, presence: true, format: {with: /\Ahttps?:\/\/[\S]+\z/}, if: :mass_import
+  validates :url, presence: true, format: { with: /\Ahttps?:\/\/[\S]+\z/ }, if: :mass_import
   validates :add_to_repository_id, presence: true, if: :mass_import
   validates :visibility, presence: true, inclusion: { in: VISIBILITIES }
   validate { errors.add(:base, :can_have_less_or_equal, count: MAX_OWN_PROJECTS) if owner.projects.size >= MAX_OWN_PROJECTS }
