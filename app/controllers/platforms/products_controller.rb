@@ -67,8 +67,6 @@ class Platforms::ProductsController < Platforms::BaseController
   protected
 
   def set_project
-    args = params[:src_project].try(:split, '/') || []
-    @product.project = (args.length == 2) ?
-      Project.find_by_owner_and_name(*args) : nil
+    @product.project = Project.find_by_owner_and_name params[:src_project]
   end
 end

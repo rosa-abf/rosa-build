@@ -11,6 +11,7 @@ class Project < ActiveRecord::Base
   VISIBILITIES = ['open', 'hidden']
   MAX_OWN_PROJECTS = 32000
   NAME_REGEXP = /[\w\-\+\.]+/
+  OWNER_AND_NAME_REGEXP = /#{User::NAME_REGEXP.source}\/#{NAME_REGEXP.source}/
 
   belongs_to :owner, polymorphic: true, counter_cache: :own_projects_count
   belongs_to :maintainer, class_name: 'User'
@@ -37,7 +38,7 @@ class Project < ActiveRecord::Base
 
   validates :name, uniqueness: { scope: [:owner_id, :owner_type], case_sensitive: false },
                    presence: true,
-                   format: { with: /\A#{NAME_REGEXP}\z/,
+                   format: { with: /\A#{NAME_REGEXP.source}\z/,
                              message: I18n.t("activerecord.errors.project.uname") }
   validates :maintainer_id, presence: true, unless: :new_record?
   validates :url, presence: true, format: { with: /\Ahttps?:\/\/[\S]+\z/ }, if: :mass_import
@@ -95,13 +96,15 @@ class Project < ActiveRecord::Base
   attr_accessor :url, :srpms_list, :mass_import, :add_to_repository_id
 
   class << self
-    def find_by_owner_and_name(owner_name, project_name)
-      where(owner_uname: owner_name, name: project_name).first ||
-        by_owner_and_name(owner_name, project_name).first
+    def find_by_owner_and_name(first, last = nil)
+      arr = first.try(:split, '/') || []
+      arr = (arr << last).compact
+      return nil if arr.length != 2
+      where(owner_uname: arr.first, name: arr.last).first || by_owner_and_name(*arr).first
     end
 
-    def find_by_owner_and_name!(owner_name, project_name)
-      find_by_owner_and_name(owner_name, project_name) or raise ActiveRecord::RecordNotFound
+    def find_by_owner_and_name!(first, last = nil)
+      find_by_owner_and_name(first, last) or raise ActiveRecord::RecordNotFound
     end
   end
 
@@ -114,7 +117,7 @@ class Project < ActiveRecord::Base
   end
 
   def to_param
-    name
+    "#{owner_uname}/#{name}"
   end
 
   def all_members

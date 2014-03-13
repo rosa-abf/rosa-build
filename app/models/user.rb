@@ -8,6 +8,7 @@ class User < Avatar
   EXTENDED_ROLES = ROLES | ['system']
   LANGUAGES_FOR_SELECT = [['Russian', 'ru'], ['English', 'en']]
   LANGUAGES = LANGUAGES_FOR_SELECT.map(&:last)
+  NAME_REGEXP = /[a-z0-9_]+/
 
   devise :database_authenticatable, :registerable, :omniauthable,
          :recoverable, :rememberable, :validatable, :lockable, :confirmable
@@ -40,7 +41,7 @@ class User < Avatar
   has_many :ssh_keys, dependent: :destroy
 
   validates :uname, presence: true, uniqueness: { case_sensitive: false },
-            format: { with: /\A[a-z0-9_]+\z/ }, reserved_name: true
+            format: { with: /\A#{NAME_REGEXP.source}\z/ }, reserved_name: true
   validate { errors.add(:uname, :taken) if Group.by_uname(uname).present? }
   validates :role, inclusion: { in: EXTENDED_ROLES }, allow_blank: true
   validates :language, inclusion: { in: LANGUAGES }, allow_blank: true

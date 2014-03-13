@@ -5,7 +5,8 @@
     %span
       = raw t("notifications.bodies.new_comment_notification.title", user_link: user_link(user, user_name))
       = raw t("notifications.bodies.new_comment_notification.commit_content", {commit_link: link_to(commit_message, commit_path(project_owner, project_name, commit_id) + "#comment#{comment_id}")})
-      = raw t("notifications.bodies.project", project_link: link_to("#{project_owner}/#{project_name}", project_path(project_owner, project_name)) )
+      - name_with_owner = "#{project_owner}/#{project_name}"
+      = raw t("notifications.bodies.project", project_link: link_to(name_with_owner, project_path(name_with_owner)) )
     .both
       = datetime_moment activity_feed.created_at, tag: :span, class: 'date'
   .both
