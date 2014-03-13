@@ -7,7 +7,7 @@
 
 :javascript
   $(document).ready(function() {
-    $('select#branch_selector').live('change', function(e) {
+    $('select#branch_selector').on('change', function(e) {
       $form = $('form#branch_changer');
       $form.attr('action', $(this).val());
       $form.submit();

@@ -53,11 +53,11 @@ $(document).ready(function() {
       disableNotifierCbx($(this));
   });
 
-  $('div.information > div.profile > a').live('click', function(e) {
+  $('div.information > div.profile > a').on('click', function(e) {
       e.preventDefault();
   });
 
-  $('.more_activities').live('click', function(){
+  $('.more_activities').on('click', function(){
     var button = $(this);
     $.ajax({
       type: 'GET',

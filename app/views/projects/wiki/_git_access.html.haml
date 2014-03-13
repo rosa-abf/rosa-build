@@ -10,7 +10,7 @@
     $('.name #url-field').text(link.attr('href'));
     $('.role').text(link.attr('data-permissions'));
 
-    $('.name a').live('click', function(e) {
+    $('.name a').on('click', function(e) {
       e.preventDefault();
       $('.name #url-field').text($(this).attr('href'));
       $('.role').text($(this).attr('data-permissions'));
