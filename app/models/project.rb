@@ -1,4 +1,6 @@
 class Project < ActiveRecord::Base
+  has_ancestry orphan_strategy: :adopt # we replace a 'path' method in the Git module
+
   include Autostart
   include Owner
   include Git
@@ -89,8 +91,6 @@ class Project < ActiveRecord::Base
   after_save :attach_to_personal_repository
   after_update :set_new_git_head
   after_update -> { update_path_to_project(name_was) }, if: :name_changed?
-
-  has_ancestry orphan_strategy: :rootify #:adopt not available yet
 
   attr_accessor :url, :srpms_list, :mass_import, :add_to_repository_id
 
