@@ -5,6 +5,7 @@ ru:
 
   flash:
     platform_arch_settings:
+      wrong_platform: должна быть основной
 
   activerecord:
     attributes:
