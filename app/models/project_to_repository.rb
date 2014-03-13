@@ -12,8 +12,6 @@ class ProjectToRepository < ActiveRecord::Base
 
   validate :one_project_in_platform_repositories, on: :create
 
-  serialize :autostart_options, ActiveRecord::Coders::Hstore
-
   AUTOSTART_OPTIONS.each do |field|
     store_accessor :autostart_options, field
   end
