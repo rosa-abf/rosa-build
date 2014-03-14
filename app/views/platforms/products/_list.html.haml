@@ -10,5 +10,5 @@
           = link_to product.name, platform_product_path(@platform, product)
         %td.buttons
           - if can? :destroy, product
-            = link_to platform_product_path(@platform, product), method: :delete, confirm: t("layout.products.confirm_delete") do
+            = link_to platform_product_path(@platform, product), method: :delete, data: { confirm: t("layout.products.confirm_delete") } do
               %span.delete &nbsp;

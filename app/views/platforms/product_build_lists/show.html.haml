@@ -32,7 +32,7 @@
   - if can?(:cancel, pbl)
     = link_to t("layout.build_lists.cancel"),
       cancel_platform_product_product_build_list_path(pbl.product.platform, pbl.product, pbl),
-      method: :put, confirm: t("layout.confirm"), class: 'button',
+      method: :put, data: { confirm: t("layout.confirm") }, class: 'button',
       'ng-show' => 'pbl.can_cancel'
     .both
     %br

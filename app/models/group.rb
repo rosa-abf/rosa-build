@@ -18,7 +18,7 @@ class Group < Avatar
   validates :uname, presence: true, uniqueness: {case_sensitive: false}, format: {with: /\A[a-z0-9_]+\z/}, reserved_name: true
   validate { errors.add(:uname, :taken) if User.by_uname(uname).present? }
 
-  scope :opened, -> { scoped }
+  scope :opened, -> { all }
   scope :by_owner, ->(owner) { where(owner_id: owner.id) }
   scope :by_admin, ->(admin) {
     joins(:actors).where('relations.role' => 'admin', 'relations.actor_id' => admin.id, 'relations.actor_type' => 'User')

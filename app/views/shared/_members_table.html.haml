@@ -23,7 +23,7 @@
             .forimg= link_to user.fullname, user_path(user)
           - if can? :remove_member, editable_object
             %td.buttons
-              = link_to "#{remove_member_path}?member_id=#{user.id}", method: :delete, confirm: t("layout.confirm") do
+              = link_to "#{remove_member_path}?member_id=#{user.id}", method: :delete, data: { confirm: t("layout.confirm") } do
                 %span.delete &nbsp;
   - if can? :remove_members, editable_object
     = submit_tag t("layout.delete"), class: 'button', data: {'disable-with' => t('layout.processing')}

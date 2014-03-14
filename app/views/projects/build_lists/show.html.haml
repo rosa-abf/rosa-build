@@ -172,31 +172,31 @@
 
     - if can?(:cancel, @build_list)
       = link_to t("layout.build_lists.cancel"), cancel_build_list_path(@build_list),
-        method: :put, confirm: t("layout.confirm"), class: 'button',
+        method: :put, data: { confirm: t("layout.confirm") }, class: 'button',
         'ng-show' => 'build_list.can_cancel'
     = submit_tag t('layout.publish_again'),
-      confirm: t("layout.publish_again_warning"),
+      data: { confirm: t("layout.publish_again_warning") },
       name: 'publish',
       'ng-show' => "build_list.can_publish && build_list.status == #{BuildList::BUILD_PUBLISHED}"
     = submit_tag t("layout.publish"),
-      confirm: t('layout.build_lists.tests_failed'), name: 'publish',
+      data: { confirm: t('layout.build_lists.tests_failed') }, name: 'publish',
       'ng-show' => "build_list.can_publish && build_list.can_publish_in_future && build_list.extra_build_lists_published && build_list.status == #{BuildList::TESTS_FAILED}"
     = submit_tag t("layout.publish"),
-      confirm: t('layout.confirm'), name: 'publish',
+      data: { confirm: t('layout.confirm') }, name: 'publish',
       'ng-show' => "build_list.can_publish && build_list.can_publish_in_future && build_list.extra_build_lists_published && build_list.status != #{BuildList::TESTS_FAILED} && build_list.status != #{BuildList::BUILD_PUBLISHED}"
     = link_to t('layout.publish_into_testing'), publish_into_testing_build_list_path(@build_list),
-        method: :put, confirm: t("layout.confirm"),
+        method: :put, data: { confirm: t("layout.confirm") },
         class: 'button',
         'ng-show' => 'build_list.can_publish_into_testing'
     - if can?(:reject_publish, @build_list)
       = link_to t('layout.reject_publish'), reject_publish_build_list_path(@build_list),
-        method: :put, confirm: t("layout.confirm"),
+        method: :put, data: { confirm: t("layout.confirm") },
         class: 'button',
         'ng-show' => 'build_list.can_reject_publish'
     - if can?(:create_container, @build_list)
       = link_to t("layout.build_lists.create_container"),
         create_container_build_list_path(@build_list),
-        method: :put, confirm: t("layout.confirm"),
+        method: :put, data: { confirm: t("layout.confirm") },
         class: 'button',
         'ng-show' => 'build_list.can_create_container'
     - if can? :create, @build_list

@@ -8,7 +8,7 @@ class Api::V1::BuildListsController < Api::V1::BaseController
 
   def index
     filter = BuildList::Filter.new(@project, current_user, current_ability, params[:filter] || {})
-    @build_lists = filter.find.scoped(include: [:save_to_platform, :project, :user, :arch])
+    @build_lists = filter.find.includes(:save_to_platform, :project, :user, :arch)
     @build_lists = @build_lists.recent.paginate(paginate_params)
   end
 

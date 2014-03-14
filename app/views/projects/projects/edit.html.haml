@@ -33,6 +33,6 @@
 
 .hr
 .leftside= t("layout.projects.delete_warning")
-.rightside= link_to t("layout.delete"), project_path(@project), method: :delete, confirm: t("layout.projects.confirm_delete"), class: 'button' if can? :destroy, @project
+.rightside= link_to t("layout.delete"), project_path(@project), method: :delete, data: { confirm: t("layout.projects.confirm_delete") }, class: 'button' if can? :destroy, @project
 .both
 

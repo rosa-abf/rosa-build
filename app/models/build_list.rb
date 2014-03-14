@@ -99,7 +99,7 @@ class BuildList < ActiveRecord::Base
 
   scope :recent, -> { order(updated_at: :desc) }
   scope :for_extra_build_lists, ->(ids, current_ability, save_to_platform) {
-    s = scoped
+    s = all
     s = s.where(id: ids).published_container.accessible_by(current_ability, :read)
     s = s.where(save_to_platform_id: save_to_platform.id) if save_to_platform && save_to_platform.main?
     s
@@ -116,13 +116,13 @@ class BuildList < ActiveRecord::Base
   scope :scoped_to_project_version, ->(pr_version) { where(project_version: pr_version) if pr_version.present? }
   scope :scoped_to_is_circle, ->(is_circle) { where(is_circle: is_circle) }
   scope :for_creation_date_period, ->(start_date, end_date) {
-    s = scoped
+    s = all
     s = s.where(["#{table_name}.created_at >= ?", start_date]) if start_date
     s = s.where(["#{table_name}.created_at <= ?", end_date]) if end_date
     s
   }
   scope :for_notified_date_period, ->(start_date, end_date) {
-    s = scoped
+    s = all
     s = s.where("#{table_name}.updated_at >= ?", start_date)  if start_date.present?
     s = s.where("#{table_name}.updated_at <= ?", end_date)    if end_date.present?
     s

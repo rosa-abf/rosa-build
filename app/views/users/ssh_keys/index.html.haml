@@ -9,7 +9,7 @@
       - @ssh_keys.each do |key|
         %tr
           %td="#{key.name} (#{key.fingerprint})"
-          %td= link_to image_tag('x.png'), ssh_key_path(key), method: :delete, confirm: t('layout.confirm')
+          %td= link_to image_tag('x.png'), ssh_key_path(key), method: :delete, data: { confirm: t('layout.confirm') }
   .both
 
 %h3.fix.bpadding10= t 'add_key'

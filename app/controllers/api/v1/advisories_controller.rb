@@ -6,7 +6,7 @@ class Api::V1::AdvisoriesController < Api::V1::BaseController
   authorize_resource :build_list, only: [:create, :update]
 
   def index
-    @advisories = @advisories.scoped(include: [:platforms, :projects]).
+    @advisories = @advisories.includes(:platforms, :projects).
       paginate(paginate_params)
   end
 

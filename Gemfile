@@ -1,6 +1,6 @@
 source 'https://rubygems.org'
 
-gem 'rails', '4.0.3'
+gem 'rails', '4.0.4'
 
 gem 'pg', '~> 0.17.1'
 gem 'schema_plus', '~> 1.4.0'
@@ -13,7 +13,8 @@ gem 'omniauth-facebook'
 gem 'omniauth-google-oauth2'
 gem 'omniauth-github'
 # gem 'omniauth-openid', '~> 1.0.1'
-gem 'cancan', '1.6.10'
+# gem 'cancan', '1.6.10'
+gem 'cancan', git: 'git://github.com/rosa-abf/cancan.git', tag: '1.6.10-abf'
 
 gem 'ancestry', '~> 2.0.0'
 gem 'paperclip', '~> 4.1.1'
@@ -78,7 +79,7 @@ gem 'time_diff'
 
 gem 'sass-rails', '~> 4.0.1'
 gem 'coffee-rails', '~> 4.0.1'
-gem 'compass-rails', '~> 1.1.2'
+gem 'compass-rails', '~> 1.1.6'
 gem 'uglifier', '~> 2.4'
 gem 'therubyracer', '~> 0.12.1', platforms: [:mri, :rbx]
 gem 'therubyrhino', '~> 1.73.1', platforms: :jruby

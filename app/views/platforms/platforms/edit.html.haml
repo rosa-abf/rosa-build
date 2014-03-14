@@ -11,7 +11,7 @@
   .rightside= link_to t("layout.platforms.change_visibility_from_#{@platform.visibility}"),
     change_visibility_platform_path(@platform),
     method: :post,
-    confirm: t("layout.platforms.confirm_change_visibility"),
+    data: { confirm: t("layout.platforms.confirm_change_visibility") },
     class: 'button'
   .both
 
@@ -41,15 +41,15 @@
   .both
 
   .leftside
-  .rightside= link_to t('layout.regeneration_statuses.regenerate_metadata'), regenerate_metadata_platform_path(@platform), method: :put, confirm: t('layout.confirm'), class: 'button'
+  .rightside= link_to t('layout.regeneration_statuses.regenerate_metadata'), regenerate_metadata_platform_path(@platform), method: :put, data: { confirm: t('layout.confirm') }, class: 'button'
   .both
 
 - if can? :destroy, @platform
   .hr
   .leftside= t("layout.platforms.delete_warning")
-  .rightside= link_to t("layout.delete"), platform_path(@platform), method: :delete, confirm: t("layout.platforms.confirm_delete"), class: 'button'
+  .rightside= link_to t("layout.delete"), platform_path(@platform), method: :delete, data: { confirm: t("layout.platforms.confirm_delete") }, class: 'button'
 - if can? :clear, @platform
   .hr
   .leftside= t("layout.repositories.clear_warning")
-  .rightside= link_to t("layout.repositories.clear"), clear_platform_path(@platform), class: 'button', confirm: t('layout.repositories.clear_confirm'), method: :put
+  .rightside= link_to t("layout.repositories.clear"), clear_platform_path(@platform), class: 'button', data: { confirm: t('layout.repositories.clear_confirm') }, method: :put
   .both

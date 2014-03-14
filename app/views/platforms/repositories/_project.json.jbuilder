@@ -8,7 +8,7 @@
      if can? :remove_project, @repository
        link_to(
          remove_project_platform_repository_path(@platform, @repository, project_id: pr.id),
-         method: :delete, confirm: t("layout.confirm")) do
+         method: :delete, data: { confirm: t("layout.confirm") }) do
            content_tag(:span, "&nbsp;".html_safe, class: 'delete')
        end
      else

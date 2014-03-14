@@ -15,7 +15,7 @@
         %td= flash_notify.published
         %td
           = link_to t("layout.flash_notifies.edit"), edit_admin_flash_notify_path(flash_notify)
-          = link_to t("layout.flash_notifies.delete"), admin_flash_notify_path(flash_notify), method: :delete, confirm: t("layout.mass_builds.cancel_confirm") if can?(:delete, flash_notify)
+          = link_to t("layout.flash_notifies.delete"), admin_flash_notify_path(flash_notify), method: :delete, data: { confirm: t("layout.mass_builds.cancel_confirm") } if can?(:delete, flash_notify)
 
 = will_paginate @flash_notifies
 

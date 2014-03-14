@@ -209,7 +209,7 @@ module AbfWorker
         select('MIN(updated_at) as min_updated_at, save_to_repository_id, build_for_platform_id').
         where(new_core: true, status: (testing ? BuildList::BUILD_PUBLISH_INTO_TESTING : BuildList::BUILD_PUBLISH)).
         group(:save_to_repository_id, :build_for_platform_id).
-        order(:min_updated_at).
+        order('min_updated_at ASC').
         limit(@workers_count * 2) # because some repos may be locked
 
       locked_rep = RepositoryStatus.not_ready.joins(:platform).
@@ -289,7 +289,7 @@ module AbfWorker
       # Checks mirror sync status
       return false if save_to_repository.repo_lock_file_exists? || !save_to_repository.platform.ready?
 
-      repository_status = save_to_repository.repository_statuses.find_or_create_by_platform_id(build_for_platform_id)
+      repository_status = save_to_repository.repository_statuses.find_or_create_by(platform_id: build_for_platform_id)
       return false unless repository_status.publish
 
       save_to_platform    = save_to_repository.platform
