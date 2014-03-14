@@ -1,6 +1,6 @@
 language: ruby
 rvm:
-  - 2.1.0
+  - 2.1.1
 bundler_args: --without development
 env:
   - SPEC_GROUP=controllers
@@ -18,7 +18,7 @@ before_install:
 before_script:
   - cp config/database.yml.sample config/database.yml
   - cp config/application.yml.travis config/application.yml
-  - bundle exec rake db:create db:structure:load db:migrate
+  - bundle exec rake db:create db:schema:load db:migrate
 script: "./travis.sh"
 branches:
   only:
