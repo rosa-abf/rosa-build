@@ -1,7 +1,7 @@
 class CreateSubscribes < ActiveRecord::Migration
   def self.up
     create_table :subscribes do |t|
-      t.integer :subscribeable_id
+      t.integer :subscribeable_id, references: nil
       t.string :subscribeable_type
       t.integer :user_id
       t.timestamps
