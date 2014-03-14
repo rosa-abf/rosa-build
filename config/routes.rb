@@ -247,7 +247,7 @@ Rosa::Application.routes.draw do
         get :private
         put :private
         get :notifiers
-        put :notifiers
+        patch :notifiers
         put :reset_auth_token
       end
     end
@@ -356,7 +356,8 @@ Rosa::Application.routes.draw do
       get '/sections' => 'projects#sections', as: :sections_project
       post '/sections' => 'projects#sections'
       delete '/remove_user' => 'projects#remove_user', as: :remove_user_project
-      constraints treeish: /.+/ do
+      # constraints treeish: /[\w\-\.]+(\/[\w\-\.]+)?/ do
+      constraints treeish: /[\w\-\.]+/ do
         constraints Rosa::Constraints::Treeish do
           # Tree
           get '/' => "git/trees#show", as: :project

@@ -3,7 +3,7 @@ require "spec_helper"
 describe UserMailer do
 
   context 'On Issue create' do
-    before(:each) do
+    before do
       stub_symlink_methods
 
       @project = FactoryGirl.create(:project)
@@ -11,7 +11,7 @@ describe UserMailer do
 
       any_instance_of(Project, versions: ['v1.0', 'v2.0'])
 
-      @issue = FactoryGirl.create(:issue, project_id: @project.id, assignee_id: @issue_user.id, user: @issue_user)
+      @issue = FactoryGirl.create(:issue, project: @project, assignee: @issue_user, user: @issue_user)
       @email = UserMailer.new_issue_notification(@issue, @issue_user).deliver!
     end
 
@@ -69,7 +69,7 @@ describe UserMailer do
 
 
   context 'On Comment create' do
-    before(:each) do
+    before do
       stub_symlink_methods
 
       @project = FactoryGirl.create(:project)
@@ -78,8 +78,8 @@ describe UserMailer do
 
       any_instance_of(Project, versions: ['v1.0', 'v2.0'])
 
-      @issue = FactoryGirl.create(:issue, project_id: @project.id, assignee_id: @issue_user.id, user: @issue_user)
-      @comment = FactoryGirl.create(:comment, commentable: @issue, user_id: @user.id, project: @project)
+      @issue = FactoryGirl.create(:issue, project: @project, assignee: @issue_user, user: @issue_user)
+      @comment = FactoryGirl.create(:comment, commentable: @issue, user: @user, project: @project)
       @email = UserMailer.new_comment_notification(@comment, @issue_user).deliver!
     end
 

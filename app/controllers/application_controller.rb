@@ -52,6 +52,11 @@ class ApplicationController < ActionController::Base
     end
   end
 
+  # Helper method for all controllers
+  def permit_params(param_name, *accessible)
+    (params[param_name] || ActionController::Parameters.new).permit(*accessible.flatten)
+  end
+
   def set_locale
     I18n.locale = check_locale( get_user_locale ||
       (request.env['HTTP_ACCEPT_LANGUAGE'] ? request.env['HTTP_ACCEPT_LANGUAGE'][0,2].downcase : nil ))

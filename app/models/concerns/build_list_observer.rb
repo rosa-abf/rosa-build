@@ -9,16 +9,16 @@ module BuildListObserver
 
   def update_average_build_time
     if status_changed?
-      started_at = Time.now if status == BUILD_STARTED
-      if [BUILD_ERROR,
-          SUCCESS,
-          BUILD_CANCELING,
-          TESTS_FAILED,
-          BUILD_CANCELED].include? status
+      started_at = Time.now if status == self.class::BUILD_STARTED
+      if [self.class::BUILD_ERROR,
+          self.class::SUCCESS,
+          self.class::BUILD_CANCELING,
+          self.class::TESTS_FAILED,
+          self.class::BUILD_CANCELED].include? status
         # stores time interval beetwin build start and finish in seconds
         duration = current_duration if started_at
 
-        if status == SUCCESS
+        if status == self.class::SUCCESS
           # Update project average build time
           begin
             statistic = project.project_statistics.find_or_create_by_arch_id(arch_id)
@@ -26,7 +26,7 @@ module BuildListObserver
             retry
           end
           build_count = statistic.build_count.to_i
-          new_av_time = ( statistic.average_build_time * build_count + record.duration.to_i ) / ( build_count + 1 )
+          new_av_time = ( statistic.average_build_time * build_count + duration.to_i ) / ( build_count + 1 )
           statistic.update_attributes(average_build_time: new_av_time, build_count: build_count + 1)
         end
       end

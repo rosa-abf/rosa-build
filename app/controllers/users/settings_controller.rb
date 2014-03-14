@@ -49,4 +49,5 @@ class Users::SettingsController < Users::BaseController
       end
     end
   end
+
 end
