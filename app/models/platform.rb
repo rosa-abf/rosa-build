@@ -1,6 +1,6 @@
 class Platform < ActiveRecord::Base
   extend FriendlyId
-  friendly_id :name
+  friendly_id :name, use: [:finders]
 
   include FileStoreClean
   include RegenerationStatus
