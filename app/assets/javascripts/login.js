@@ -4,16 +4,16 @@ $(document).ready(function() {
   var login_default = $('#login_default').val();
   var pass_default = $('#password_default').val();
 
-  $('.registartion-input').live('keydown', function() {
+  $('.registartion-input').on('keydown', function() {
     var id = $(this).attr('id');
      if(id == 'user_login' || id == 'user_password') { id = 'login_error'}
     $('.error.'+id).fadeOut('slow');
-  }).live('focus', function() {
+  }).on('focus', function() {
     var id = $(this).attr('id');
     if(id == 'user_login' && $(this).val() == login_default) { $(this).val('')}
     else if(id == 'user_password' && $(this).val() == pass_default) { $(this).val('')}
     $(this).addClass('registartion-input-focus').removeClass('registartion-input-error');
-  }).live('blur', function() {
+  }).on('blur', function() {
     var id = $(this).attr('id');
     if(id == 'user_login' && $(this).val() == '') { $(this).val(login_default)}
     else if(id == 'user_password' && $(this).val() == '') { $(this).val(pass_default)}

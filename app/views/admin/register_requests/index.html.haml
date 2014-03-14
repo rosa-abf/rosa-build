@@ -45,12 +45,12 @@
     var change_update_type = function (type) {
       $('input#update_type').val(type);
     };
-    $('#approve_registration').live('click', function(e) {
+    $('#approve_registration').on('click', function(e) {
       //set update_type to 'approve'
       change_update_type('approve');
       $form.submit();
     });
-    $('#reject_registration').live('click', function(e) {
+    $('#reject_registration').on('click', function(e) {
       //set update_type to 'reject'
       change_update_type('reject');
       $form.submit();

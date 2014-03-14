@@ -1,6 +1,6 @@
 $(document).ready(function() {
 
-  $(".div-filter-labels").live('click', function() {
+  $(".div-filter-labels").on('click', function() {
     var flag = this.id;
     flag = flag.replace("label-","flag-");
     var bg = $("#"+flag).css("background-color");

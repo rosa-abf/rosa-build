@@ -19,7 +19,7 @@ $(document).ready(function() {
 
   });
 
-  $('.data-expander').live('click', function(e) {
+  $('.data-expander').on('click', function(e) {
     var $button = $(e.target);
     var id = "#content-" + $button.attr('id');
     var $slider = $(id);
@@ -27,7 +27,7 @@ $(document).ready(function() {
       $button.toggleClass('expanded collapsed');
     });
   });
-    
+
   function showActivity(elem) {
     $("#activity-bottom"+elem).slideToggle("slow");
     var img = document.getElementById("expand" + elem).className;
@@ -38,7 +38,7 @@ $(document).ready(function() {
     }
   }
 
-  $('div.information > div.user').live('click', function() {
+  $('div.information > div.user').on('click', function() {
     dropbox.slideToggle("slow");
   });
 });
