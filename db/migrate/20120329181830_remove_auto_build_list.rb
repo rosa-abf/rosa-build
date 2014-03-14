@@ -7,8 +7,8 @@ class RemoveAutoBuildList < ActiveRecord::Migration
     create_table :auto_build_lists, force: true do |t|
       t.integer  "project_id"
       t.integer  "arch_id"
-      t.integer  "pl_id"
-      t.integer  "bpl_id"
+      t.integer  "pl_id", references: nil
+      t.integer  "bpl_id", references: nil
       t.datetime "created_at"
       t.datetime "updated_at"
     end
