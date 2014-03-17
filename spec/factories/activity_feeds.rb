@@ -2,5 +2,5 @@
 
 FactoryGirl.define do
   factory :activity_feed do
-    end
+  end
 end

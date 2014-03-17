@@ -1,5 +1,9 @@
 require 'spec_helper'
 
-#describe Arch do
-#  pending "add some examples to (or delete) #{__FILE__}"
-#end
+describe Arch do
+
+  it 'is valid given valid attributes' do
+    FactoryGirl.build(:arch).should be_valid
+  end
+
+end

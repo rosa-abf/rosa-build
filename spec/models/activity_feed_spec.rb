@@ -1,5 +1,9 @@
 require 'spec_helper'
 
 describe ActivityFeed do
-  pending "add some examples to (or delete) #{__FILE__}"
+
+  it 'is valid given valid attributes' do
+    FactoryGirl.build(:activity_feed).should be_valid
+  end
+
 end

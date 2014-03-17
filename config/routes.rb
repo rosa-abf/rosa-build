@@ -243,9 +243,9 @@ Rosa::Application.routes.draw do
     resources :settings, only: [] do
       collection do
         get :profile
-        put :profile
+        patch :profile
         get :private
-        put :private
+        patch :private
         get :notifiers
         patch :notifiers
         put :reset_auth_token
