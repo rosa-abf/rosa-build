@@ -80,7 +80,7 @@ describe UserMailer do
 
       @issue = FactoryGirl.create(:issue, project: @project, assignee: @issue_user, user: @issue_user)
       @comment = FactoryGirl.create(:comment, commentable: @issue, user: @user, project: @project)
-      @email = UserMailer.new_comment_notification(@comment, @issue_user).deliver!
+      @email = UserMailer.new_comment_notification(@comment, @issue_user.id).deliver!
     end
 
     it 'should have correct subject' do

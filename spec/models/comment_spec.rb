@@ -172,7 +172,7 @@ describe Comment do
         issue = FactoryGirl.create(:issue, project: @project, user: @user,
                                    title: "link to ##{@issue.serial_id}")
         Comment.where(automatic: true,
-                      created_from_issue_id: issue.id).count.should == 1
+                      created_from_issue_id: issue.id).should have(1).item
       end
 
       it 'should create automatic comment from issue body' do

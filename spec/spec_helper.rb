@@ -14,8 +14,8 @@ RSpec.configure do |config|
   #
   # config.mock_with :mocha
   # config.mock_with :flexmock
-  config.mock_with :rr
-  #config.mock_with :rspec
+  # config.mock_with :rr
+  config.mock_with :rspec
 
   # Remove this line if you're not using ActiveRecord or ActiveRecord fixtures
   config.fixture_path = "#{::Rails.root}/spec/fixtures"
@@ -64,8 +64,8 @@ end
 
 def stub_redis
   @redis_instance = MockRedis.new
-  stub(Redis).new { @redis_instance }
-  stub(Resque).redis { @redis_instance }
+  allow(Redis).to receive(:new).and_return(@redis_instance)
+  allow(Resque).to receive(:redis).and_return(@redis_instance)
 end
 
 def fill_project project

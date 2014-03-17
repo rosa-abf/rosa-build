@@ -25,14 +25,16 @@ def set_comments_data_for_commit
 end
 
 def should_send_email(args={})
+  user_mailer = double(:user_mailer)
+  expect(UserMailer).to receive(:new_comment_notification).with(kind_of(Comment), args[:receiver].id).and_return(user_mailer)
+  expect(user_mailer).to receive(:deliver)
+
   create_comment args[:commentor]
-  ActionMailer::Base.deliveries.count.should == 1
-  ActionMailer::Base.deliveries.last.to.include?(args[:receiver].email).should == true
 end
 
 def should_not_send_email(args={})
+  expect(UserMailer).to_not receive(:new_comment_notification)
   create_comment args[:commentor]
-  ActionMailer::Base.deliveries.count.should == 0
 end
 
 describe Comment do
@@ -53,15 +55,14 @@ describe Comment do
   end
 
   context 'for project admin user' do
-    before(:each) do
+    before do
       @user = FactoryGirl.create(:user)
       @stranger = FactoryGirl.create(:user)
 
       set_comments_data_for_commit
       @admin = FactoryGirl.create(:user)
       @ability = Ability.new(@admin)
-      @project.relations.create!(actor_type: 'User', actor_id: @admin.id, role: 'admin')
-      ActionMailer::Base.deliveries = []
+      @project.relations.create!({actor_type: 'User', actor_id: @admin.id, role: 'admin'}, without_protection: true)
     end
 
     it_should_behave_like 'user with create comment ability (for model)'
@@ -127,8 +128,6 @@ describe Comment do
 
       @project.owner = @user
       @project.save
-
-      ActionMailer::Base.deliveries = []
     end
 
     it_should_behave_like 'user with create comment ability (for model)'
@@ -204,7 +203,6 @@ describe Comment do
       set_comments_data_for_commit
       @comment = create_comment(@simple)
       @ability = Ability.new(@simple)
-      ActionMailer::Base.deliveries = []
       Subscribe.unsubscribe_from_commit @subscribe_params.merge(user_id: [@stranger.id, @project.owner.id])
     end
 
@@ -221,7 +219,6 @@ describe Comment do
 
       it 'should send an e-mail for comments after his comment' do
         comment = create_comment(@simple)
-        ActionMailer::Base.deliveries = []
         should_send_email(commentor: @stranger, receiver: @simple)
       end
 
