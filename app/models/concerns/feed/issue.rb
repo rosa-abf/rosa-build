@@ -2,13 +2,13 @@ module Feed::Issue
   extend ActiveSupport::Concern
 
   included do
-    after_commit :new_issue_notifications, on: :create
+    after_create :new_issue_notifications
 
-    after_commit :send_assign_notifications,                on: :create, if: ->(i) { i.assignee }
-    after_commit -> { send_assign_notifications(:update) }, on: :update
+    after_create :send_assign_notifications, if: ->(i) { i.assignee }
+    after_update -> { send_assign_notifications(:update) }
 
-    after_commit :send_hooks,                on: :create
-    after_commit -> { send_hooks(:update) }, on: :update, if: ->(i) { i.previous_changes['status'].present? }
+    after_create :send_hooks
+    after_update -> { send_hooks(:update) }, if: ->(i) { i.previous_changes['status'].present? }
   end
 
   private

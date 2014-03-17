@@ -112,11 +112,15 @@ group :development do
   #gem 'ruby-dbus' if RUBY_PLATFORM =~ /linux/i # Error at deploy
 end
 
+group :development, :test do
+  gem 'rspec-rails', '~> 2.14.1'
+end
+
 group :test do
-  gem 'rspec-rails',        '~> 2.14.1', group: 'development'
   gem 'factory_girl_rails', '~> 4.4.1'
   gem 'rr',                 '~> 1.1.2'
   gem 'shoulda'
+  gem 'shoulda-matchers'
   gem 'mock_redis',         '~> 0.11'
   gem 'rake'
 end

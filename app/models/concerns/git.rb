@@ -11,8 +11,8 @@ module Git
     validates_attachment_content_type :srpm, content_type: ['application/octet-stream', "application/x-rpm", "application/x-redhat-package-manager"], message: I18n.t('layout.invalid_content_type')
 
     after_create :create_git_repo
-    after_commit(on: :create) {|p| p.fork_git_repo unless p.is_root?} # later with resque
-    after_commit(on: :create) {|p| p.import_attached_srpm if p.srpm?} # later with resque # should be after create_git_repo
+    after_create {|p| p.fork_git_repo unless p.is_root?} # later with resque
+    after_create {|p| p.import_attached_srpm if p.srpm?} # later with resque # should be after create_git_repo
     after_destroy :destroy_git_repo
     # after_rollback -> { destroy_git_repo rescue true if new_record? }
 

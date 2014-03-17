@@ -3,6 +3,8 @@ class Subscribe < ActiveRecord::Base
   belongs_to :user
   belongs_to :project
 
+  attr_accessible :status
+
   def commit_subscribe?
     subscribeable_type == 'Grit::Commit'
   end
@@ -35,7 +37,7 @@ class Subscribe < ActiveRecord::Base
     if subscribe = Subscribe.where(options).first
       subscribe.update_attributes(status: status)
     else
-      Subscribe.create(options.merge(status: status))
+      Subscribe.create(options.merge(status: status), without_protection: true)
     end
   end
 

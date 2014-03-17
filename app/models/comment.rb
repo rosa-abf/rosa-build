@@ -7,7 +7,7 @@ class Comment < ActiveRecord::Base
   # #Num
   ISSUES_REGEX = /(?:[a-zA-Z0-9\-_]*\/)?(?:[a-zA-Z0-9\-_]*)?#[0-9]+/
 
-  belongs_to :commentable, polymorphic: true, touch: true
+  belongs_to :commentable, polymorphic: true
   belongs_to :user
   belongs_to :project
   serialize :data
@@ -17,6 +17,7 @@ class Comment < ActiveRecord::Base
   scope :for_commit, ->(c) { where(commentable_id: c.id.hex, commentable_type: c.class) }
   default_scope { order(:created_at) }
 
+  before_save  :touch_commentable
   after_create :subscribe_on_reply, unless: ->(c) { c.commit_comment? }
   after_create :subscribe_users
 
@@ -186,8 +187,12 @@ class Comment < ActiveRecord::Base
 
   protected
 
+  def touch_commentable
+    commentable.touch unless commit_comment?
+  end
+
   def subscribe_on_reply
-    commentable.subscribes.create(user_id: user_id) if !commentable.subscribes.exists?(user_id: user_id)
+    commentable.subscribes.where(user_id: user_id).first_or_create
   end
 
   def subscribe_users
@@ -195,7 +200,7 @@ class Comment < ActiveRecord::Base
       commentable.subscribes.create(user: user) if !commentable.subscribes.exists?(user_id: user.id)
     elsif commit_comment?
       recipients = project.admins
-      recipients << user << User.where(email: commentable.try(:committer).try(:email)).first # commentor and committer
+      recipients << user << User.find_by_email(commentable.try(:committer).try(:email)) # commentor and committer
       recipients.compact.uniq.each do |user|
         options = {project_id: project.id, subscribeable_id: commentable_id, subscribeable_type: commentable.class.name, user_id: user.id}
         Subscribe.subscribe_to_commit(options) if Subscribe.subscribed_to_commit?(project, user, commentable)
