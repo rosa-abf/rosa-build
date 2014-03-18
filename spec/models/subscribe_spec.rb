@@ -21,7 +21,7 @@ describe Subscribe do
     end
 
     it 'should create subscribe' do
-      @ability.should be_able_to(:create, Subscribe.new(subscribeable: @issue, user: @user))
+      @ability.should be_able_to(:create, FactoryGirl.build(:subscribe, subscribeable: @issue, user: @user))
     end
 
     context 'destroy' do
@@ -53,7 +53,7 @@ describe Subscribe do
     end
 
     it 'should create subscribe' do
-      @ability.should be_able_to(:create, Subscribe.new(subscribeable: @issue, user: @user))
+      @ability.should be_able_to(:create, FactoryGirl.build(:subscribe, subscribeable: @issue, user: @user))
     end
 
     context 'destroy' do
