@@ -40,7 +40,7 @@ class ProductBuildList < ActiveRecord::Base
   belongs_to :user
 
   # see: Issue #6
-  before_validation -> { self.arch_id = Arch.find_by_name('x86_64').id }, on: :create
+  before_validation -> { self.arch_id = Arch.find_by(name: 'x86_64').id }, on: :create
   # field "not_delete" can be changed only if build has been completed
   before_validation -> { self.not_delete = false unless build_completed?; true }
   validates :product_id,

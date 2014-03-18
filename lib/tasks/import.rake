@@ -5,9 +5,8 @@ namespace :import do
   desc "Load projects"
   task projects: :environment do
     source = ENV['SOURCE'] || 'http://dl.dropbox.com/u/984976/package_list.txt'
-    #owner = User.find_by_uname(ENV['OWNER_UNAME']) || Group.find_by_uname(ENV['OWNER_UNAME']) || User.first
-    owner =  Group.find_by_uname("npp_team")
-    platform = Platform.find_by_name("RosaNPP") # RosaNPP
+    owner =  Group.find_by uname: "npp_team"
+    platform = Platform.find_by name: "RosaNPP" # RosaNPP
     repo = platform.repositories.first rescue nil
     say "START import projects from '#{source}' for '#{owner.uname}'.#{repo ? " To repo '#{platform.name}/#{repo.name}'." : ''}"
     ask 'Press enter to continue'
@@ -33,9 +32,9 @@ namespace :import do
     list = ENV['LIST'] #|| 'https://dl.dropbox.com/u/984976/alt_import.txt'
     mask = ENV['MASK'] || '*.src.rpm'
     hidden = ENV['HIDDEN'] == 'true' ? true : false
-    owner = User.find_by_uname(ENV['OWNER']) || Group.find_by_uname!(ENV['OWNER'] || 'altlinux')
-    platform = Platform.find_by_name!(ENV['PLATFORM'] || 'altlinux5')
-    repo = platform.repositories.find_by_name!(ENV['REPO'] || 'main')
+    owner = User.find_by(uname: ENV['OWNER']) || Group.find_by!(uname: ENV['OWNER'] || 'altlinux')
+    platform = Platform.find_by!(name: ENV['PLATFORM'] || 'altlinux5')
+    repo = platform.repositories.find_by!(name: ENV['REPO'] || 'main')
     clear = ENV['CLEAR'] == 'true' ? true : false
 
     say "START import projects from '#{base}' using '#{list || mask}' for '#{owner.uname}' to repo '#{platform.name}/#{repo.name}'."
@@ -47,10 +46,10 @@ namespace :import do
           project = Project.find_or_create_by_name_and_owner_type_and_owner_id(name, owner.class.to_s, owner.id)
           repo.projects << project rescue nil
         else # check if project already added
-          if project = repo.projects.find_by_name(name) || repo.projects.by_name(name).first # fallback to speedup
+          if project = repo.projects.find_by(name: name) || repo.projects.by_name(name).first # fallback to speedup
             print "Found project '#{project.name_with_owner}' in '#{platform.name}/#{repo.name}'."
           elsif scoped = Project.where(owner_id: owner.id, owner_type: owner.class) and
-                project = scoped.find_by_name(name) || scoped.by_name(name).first
+                project = scoped.find_by(name: name) || scoped.by_name(name).first
             begin
               repo.projects << project rescue nil
             rescue Exception => e
@@ -109,10 +108,10 @@ namespace :import do
     desc "Parse repository for changes"
     task parse: :environment do
       release = ENV['RELEASE'] || 'official/2011'
-      platform = Platform.find_by_name(ENV['PLATFORM'] || "mandriva2011")
-      repository = platform.repositories.find_by_name(ENV['REPOSITORY'] || 'main')
+      platform = Platform.find_by(name: ENV['PLATFORM'] || "mandriva2011")
+      repository = platform.repositories.find_by(name: ENV['REPOSITORY'] || 'main')
       source = ENV['DESTINATION'] || File.join(APP_CONFIG['root_path'], 'mirror.yandex.ru', 'mandriva', release, 'SRPMS', repository.name, '{release,updates}')
-      owner = Group.find_or_create_by_uname(ENV['OWNER'] || 'import') {|g| g.name = g.uname; g.owner = User.first}
+      owner = Group.find_or_create_by(uname: ENV['OWNER'] || 'import') {|g| g.name = g.uname; g.owner = User.first}
       branch = ENV['BRANCH'] || "import_#{platform.name}"
 
       say "START (#{Time.now.utc})"
@@ -127,10 +126,10 @@ namespace :import do
                 project = Project.find_or_create_by_name_and_owner_type_and_owner_id(name, owner.class.to_s, owner.id)
                 print "Use project #{project.name_with_owner}. "
               else # search project through repository
-                if project = repository.projects.find_by_name(name) || repository.projects.by_name(name).first # fallback to speedup
+                if project = repository.projects.find_by(name: name) || repository.projects.by_name(name).first # fallback to speedup
                   print "Found project #{project.name_with_owner} in #{platform.name}/#{repository.name}. "
                 elsif scoped = Project.where(owner_id: owner.id, owner_type: owner.class) and
-                      project = scoped.find_by_name(name) || scoped.by_name(name).first
+                      project = scoped.find_by(name: name) || scoped.by_name(name).first
                   repository.projects << project
                   print "Add project #{project.name_with_owner} to #{platform.name}/#{repository.name}. "
                 else

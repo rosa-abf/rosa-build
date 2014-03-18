@@ -27,7 +27,7 @@ module ActsLikeMember
 
   module ClassMethods
     def find_by_insensitive_uname(uname)
-      find_by_uname(uname) || by_uname(uname).first
+      find_by(uname: uname) || by_uname(uname).first
     end
 
     def find_by_insensitive_uname!(uname)

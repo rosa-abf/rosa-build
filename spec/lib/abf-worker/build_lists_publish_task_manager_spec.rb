@@ -47,7 +47,7 @@ describe AbfWorker::BuildListsPublishTaskManager do
 
     it "ensures that repository_status has status publish" do
       build_list.save_to_repository.repository_statuses.
-        find_by_platform_id(build_list.build_for_platform_id).publish?.
+        find_by(platform_id: build_list.build_for_platform_id).publish?.
         should be_true
     end
 

@@ -223,13 +223,13 @@ class Platform < ActiveRecord::Base
     end
 
     Rails.cache.fetch([platform_name, token, :platform_allowed], expires_in: 2.minutes) do
-      platform = Platform.find_by_name platform_name
+      platform = Platform.find_by name: platform_name
       next false  unless platform
       next true   unless platform.hidden?
       next false  unless token
       next true   if platform.tokens.by_active.where(authentication_token: token).exists?
 
-      user = User.find_by_authentication_token token
+      user = User.find_by authentication_token: token
       current_ability = Ability.new(user)
       if user && current_ability.can?(:show, platform)
         true

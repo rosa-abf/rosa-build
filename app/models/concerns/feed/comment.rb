@@ -68,7 +68,7 @@ module Feed::Comment
   end
 
   def can_notify_on_new_comment?(subscribe)
-    notifier = SettingsNotifier.find_by_user_id(subscribe.user_id)
+    notifier = SettingsNotifier.find_by user_id: subscribe.user_id
     notifier && notifier.new_comment && notifier.can_notify
   end
 end

@@ -45,7 +45,7 @@ class Users::OmniauthCallbacksController < Devise::OmniauthCallbacksController
         else
           raise 'Provider #{provider} not handled'
         end
-        user = User.find_or_initialize_by_email(auth['info']['email'])
+        user = User.find_or_initialize_by email: auth['info']['email']
         if user.new_record?
           user.name     = name
           user.uname    = name.gsub(/\s/, '').underscore

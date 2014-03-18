@@ -71,13 +71,13 @@ class GitHook
   def find_user(user)
     if user.blank?
       # Local push
-      User.find_by_email(project.repo.commit(newrev).author.email) rescue nil
+      User.find_by(email: project.repo.commit(newrev).author.email) rescue nil
     elsif user =~ /\Auser-\d+\Z/
       # git push over http
       User.find(user.gsub('user-', ''))
     elsif user =~ /\Akey-\d+\Z/
       # git push over ssh
-      SshKey.find_by_id(user.gsub('key-', '')).try(:user)
+      SshKey.find(user.gsub('key-', '')).try(:user)
     end
   end
 end

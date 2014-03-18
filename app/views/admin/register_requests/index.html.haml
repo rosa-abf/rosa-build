@@ -18,7 +18,7 @@
       %tr{class: cycle("odd", "even")}
         %td= check_box_tag 'request_ids[]', request.id
         %td= request.name
-        - @user = User.find_by_email(request.email) if request.approved
+        - @user = User.find_by(email: request.email) if request.approved
         %td= link_to_if @user, request.email, @user
         %td= request.interest
         %td= request.more

@@ -200,7 +200,7 @@ class Comment < ActiveRecord::Base
       commentable.subscribes.create(user: user) if !commentable.subscribes.exists?(user_id: user.id)
     elsif commit_comment?
       recipients = project.admins
-      recipients << user << User.find_by_email(commentable.try(:committer).try(:email)) # commentor and committer
+      recipients << user << User.find_by(email: commentable.try(:committer).try(:email)) # commentor and committer
       recipients.compact.uniq.each do |user|
         options = {project_id: project.id, subscribeable_id: commentable_id, subscribeable_type: commentable.class.name, user_id: user.id}
         Subscribe.subscribe_to_commit(options) if Subscribe.subscribed_to_commit?(project, user, commentable)

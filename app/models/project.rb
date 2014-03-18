@@ -165,7 +165,7 @@ class Project < ActiveRecord::Base
     #path #share by NFS
   end
 
-  def build_for(mass_build, repository_id, arch =  Arch.find_by_name('i586'), priority = 0, increase_rt = false)
+  def build_for(mass_build, repository_id, arch =  Arch.find_by(name: 'i586'), priority = 0, increase_rt = false)
     build_for_platform  = mass_build.build_for_platform
     save_to_platform    = mass_build.save_to_platform
     user                = mass_build.user
@@ -245,7 +245,7 @@ class Project < ActiveRecord::Base
     archive = archive_by_treeish_and_format tag.name, format
     sha1    = Digest::SHA1.file(archive[:path]).hexdigest
     unless FileStoreClean.file_exist_on_file_store? sha1
-      token = User.find_by_uname('rosa_system').authentication_token
+      token = User.find_by(uname: 'rosa_system').authentication_token
       begin
         resp = JSON `curl --user #{token}: -POST -F 'file_store[file]=@#{archive[:path]};filename=#{name}-#{tag.name}.#{tag_file_format(format)}' #{APP_CONFIG['file_store_url']}/api/v1/upload`
       rescue # Dont care about it

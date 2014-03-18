@@ -14,7 +14,7 @@ module FileStoreClean
 
     def destroy_files_from_file_store(args = sha1_of_file_store_files)
       files = *args
-      token = User.find_by_uname('file_store').authentication_token
+      token = User.find_by(uname: 'file_store').authentication_token
       uri   = URI APP_CONFIG['file_store_url']
       Net::HTTP.start(uri.host, uri.port) do |http|
         files.each do |sha1|

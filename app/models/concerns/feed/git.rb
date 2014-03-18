@@ -49,7 +49,7 @@ module Feed::Git
       end
 
     when 'Hash' # 'Gollum::Committer'
-      actor = User.find_by_uname! record[:actor_name]
+      actor = User.find_by! uname: record[:actor_name]
       project = Project.find record[:project_id]
 
       project.admins.each do |recipient|

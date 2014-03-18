@@ -21,7 +21,7 @@ class PlatformContent
       bfp_name = @path.match(/\/#{@platform.name}\/repository\/[\w]+\//)
       return nil unless bfp_name
       bfp_name = bfp_name[0].gsub(/\/#{@platform.name}\/repository\//, '').gsub('/', '')
-      build_for_platform = Platform.main.find_by_name bfp_name
+      build_for_platform = Platform.main.find_by name: bfp_name
       return nil unless build_for_platform
     end
 

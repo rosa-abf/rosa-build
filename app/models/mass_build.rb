@@ -41,7 +41,7 @@ class MassBuild < ActiveRecord::Base
       next if name.blank?
       name.chomp!; name.strip!
 
-      if project = Project.joins(:repositories).where('repositories.id in (?)', save_to_platform.repository_ids).find_by_name(name)
+      if project = Project.joins(:repositories).where('repositories.id in (?)', save_to_platform.repository_ids).find_by(name: name)
         begin
           return if self.reload.stop_build
           increase_rt = increase_release_tag?

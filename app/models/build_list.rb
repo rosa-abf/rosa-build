@@ -420,7 +420,7 @@ class BuildList < ActiveRecord::Base
   end
 
   def set_packages(pkg_hash, project_name)
-    prj = Project.joins(repositories: :platform).where('platforms.id = ?', save_to_platform.id).find_by_name!(project_name)
+    prj = Project.joins(repositories: :platform).where('platforms.id = ?', save_to_platform.id).find_by!(name: project_name)
     build_package(pkg_hash['srpm'], 'source', prj) {|p| p.save!}
     pkg_hash['rpm'].each do |rpm_hash|
       build_package(rpm_hash, 'binary', prj) {|p| p.save!}

@@ -35,13 +35,13 @@ class Repository < ActiveRecord::Base
 
   def regenerate(build_for_platform_id = nil)
     build_for_platform = Platform.main.find build_for_platform_id if platform.personal?
-    status = repository_statuses.find_or_create_by_platform_id(build_for_platform.try(:id) || platform_id)
+    status = repository_statuses.find_or_create_by(platform_id: build_for_platform.try(:id) || platform_id)
     status.regenerate
   end
 
   def resign
     if platform.main?
-      status = repository_statuses.find_or_create_by_platform_id(platform_id)
+      status = repository_statuses.find_or_create_by(platform_id: platform_id)
       status.resign
     end
   end

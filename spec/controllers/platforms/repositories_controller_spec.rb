@@ -156,14 +156,14 @@ shared_examples_for 'platform admin user' do
   it 'should be able to perform regenerate_metadata action' do
     put :regenerate_metadata, id: @repository.id, platform_id: @platform.id
     response.should redirect_to(platform_repository_path(@platform, @repository))
-    @repository.repository_statuses.find_by_platform_id(@platform.id).
+    @repository.repository_statuses.find_by(platform_id: @platform.id).
       waiting_for_regeneration?.should be_true
   end
 
   it 'should be able to perform regenerate_metadata action of personal repository' do
     put :regenerate_metadata, id: @personal_repository.id, platform_id: @personal_repository.platform.id, build_for_platform_id: @platform.id
     response.should redirect_to(platform_repository_path(@personal_repository.platform, @personal_repository))
-    @personal_repository.repository_statuses.find_by_platform_id(@platform.id).
+    @personal_repository.repository_statuses.find_by(platform_id: @platform.id).
       waiting_for_regeneration?.should be_true
   end
 

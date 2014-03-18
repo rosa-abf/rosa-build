@@ -106,7 +106,7 @@ module Git
   end
 
   def import_srpm(srpm_path = srpm.path, branch_name = 'import')
-    token = User.find_by_uname('rosa_system').authentication_token
+    token = User.find_by(uname: 'rosa_system').authentication_token
     opts = [srpm_path, path, branch_name, Rails.root.join('bin', 'file-store.rb'), token, APP_CONFIG['file_store_url']].join(' ')
     system("#{Rails.root.join('bin', 'import_srpm.sh')} #{opts} >> /dev/null 2>&1")
   end

@@ -21,7 +21,7 @@ module BuildListObserver
         if status == self.class::SUCCESS
           # Update project average build time
           begin
-            statistic = project.project_statistics.find_or_create_by_arch_id(arch_id)
+            statistic = project.project_statistics.find_or_create_by arch_id: arch_id
           rescue ActiveRecord::RecordNotUnique
             retry
           end
