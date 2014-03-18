@@ -3,7 +3,7 @@ namespace :project do
   namespace :maintainer do
     desc 'Set maintainer to owner (or to owners owner if owner is a group) to projects'
     task set_to_owner: :environment do
-      projects = Project.scoped
+      projects = Project.all
       count = projects.count
       say "Setting maintainer to all projects (#{count})"
       percent_per_batch = 100 * 1000 / count

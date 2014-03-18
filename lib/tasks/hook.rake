@@ -3,7 +3,7 @@ namespace :hook do
   task install: :environment do
     hook = "/home/#{APP_CONFIG['shell_user']}/gitlab-shell/hooks/post-receive"
     say "Install process.."
-    count, projects = 0, Project.scoped
+    count, projects = 0, Project.all
     projects = projects.where(id: ENV['PROJECT_ID']) if ENV['PROJECT_ID']
     projects.each do |project|
       next unless Dir.exist? project.path
@@ -24,7 +24,7 @@ namespace :hook do
   desc "remove git hook from all repos"
   task remove: :environment do
     say "process.."
-    count, projects = 0, Project.scoped
+    count, projects = 0, Project.all
     projects = projects.where(id: ENV['PROJECT_ID']) if ENV['PROJECT_ID']
     projects.each do |project|
       FileUtils.rm_rf File.join(project.path, 'hooks', 'post-receive')
