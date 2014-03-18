@@ -1,25 +1,40 @@
 require 'spec_helper'
 
 describe Product do
-  let!(:product) { FactoryGirl.create(:product) }
+  let(:product) { FactoryGirl.create(:product) }
+  before { stub_symlink_methods }
 
-  it { should belong_to(:platform) }
-  it { should have_many(:product_build_lists)}
+  context 'ensures that validations and associations exist' do
 
-  it { should validate_presence_of(:name)}
-  it { should validate_uniqueness_of(:name).scoped_to(:platform_id) }
+    it 'is valid given valid attributes' do
+      # arch = FactoryGirl.create(:arch, name: 'x86_64')
+      # allow(Arch).to receive(:find_by).with(name: 'x86_64').and_return(arch)
+      FactoryGirl.create(:product).should be_true
+    end
 
-  it { should ensure_length_of(:main_script).is_at_most(255) }
-  it { should ensure_length_of(:params).is_at_most(255) }
+    it { should belong_to(:platform) }
+    it { should have_many(:product_build_lists)}
 
-  it { should have_readonly_attribute(:platform_id) }
+    it { should validate_presence_of(:name)}
 
-  it { should_not allow_mass_assignment_of(:platform) }
-  #it { should_not allow_mass_assignment_of(:platform_id) }
-  it { should_not allow_mass_assignment_of(:product_build_lists) }
+    context 'uniqueness' do
+      before { product }
+      it { should validate_uniqueness_of(:name).scoped_to(:platform_id) }
+    end
+
+    it { should ensure_length_of(:main_script).is_at_most(255) }
+    it { should ensure_length_of(:params).is_at_most(255) }
+
+    it { should have_readonly_attribute(:platform_id) }
+
+    it { should_not allow_mass_assignment_of(:platform) }
+    #it { should_not allow_mass_assignment_of(:platform_id) }
+    it { should_not allow_mass_assignment_of(:product_build_lists) }
+  end
 
 
   context '#autostart_iso_builds' do
+    before { product }
 
     Product::HUMAN_AUTOSTART_STATUSES.each do |autostart_status, human_autostart_status|
       it "new product_build_lists should not be created if no products which should be autostarted #{human_autostart_status}" do
@@ -33,6 +48,7 @@ describe Product do
         params = {main_script: 'text.sh', project_version: product.project.default_branch}
         product.update_attributes params.merge(autostart_status: Product::ONCE_A_12_HOURS)
         FactoryGirl.create :product, params.merge(autostart_status: Product::ONCE_A_DAY)
+        FactoryGirl.create(:arch, name: 'x86_64')
       end
 
       it 'should be created only one product_build_list' do
