@@ -3,7 +3,6 @@ require 'spec_helper'
 describe ProductBuildList do
   before do
     stub_symlink_methods
-    stub_redis
     FactoryGirl.create(:product_build_list)
   end
 

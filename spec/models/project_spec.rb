@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Project do
-  before { stub_symlink_methods; stub_redis }
+  before { stub_symlink_methods }
 
   context 'creation' do
     let(:root_project) { FactoryGirl.create(:project) }

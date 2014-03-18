@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe BuildList::Package do
-  before { stub_symlink_methods; stub_redis }
+  before { stub_symlink_methods }
 
   it 'is valid' do
     FactoryGirl.create(:build_list_package).should be_persisted

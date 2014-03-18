@@ -115,7 +115,6 @@ end
 describe Api::V1::ProductBuildListsController do
   before(:each) do
     stub_symlink_methods
-    stub_redis
 
     @product_build_list = FactoryGirl.create(:product_build_list)
     @another_user = FactoryGirl.create(:user)

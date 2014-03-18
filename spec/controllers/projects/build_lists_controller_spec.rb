@@ -93,7 +93,6 @@ describe Projects::BuildListsController do
         build_for_platforms: [@platform.id]
       }
       any_instance_of(Project, versions: ['v1.0', 'v2.0'])
-      stub_redis
     end
 
     context 'for guest' do

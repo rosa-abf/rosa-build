@@ -93,10 +93,7 @@ shared_examples_for 'product build list user' do
 end
 
 describe Platforms::ProductBuildListsController do
-  before(:each) do
-    stub_symlink_methods
-    stub_redis
-  end
+  before(:each) { stub_symlink_methods }
 
   context 'crud' do
 

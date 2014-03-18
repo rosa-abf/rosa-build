@@ -7,7 +7,6 @@ describe AbfWorker::BuildListsPublishTaskManager do
   end
 
   before do
-    stub_redis
     stub_symlink_methods
     FactoryGirl.create(:build_list)
   end

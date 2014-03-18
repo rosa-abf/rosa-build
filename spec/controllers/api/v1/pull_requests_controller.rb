@@ -11,7 +11,7 @@ end
 describe Api::V1::PullRequestsController do
   before(:all) do
     stub_symlink_methods
-    stub_redis
+
     @project = FactoryGirl.create(:project_with_commit)
     @pull = create_pull 'master', 'non_conflicts', @project.owner
 

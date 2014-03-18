@@ -89,10 +89,7 @@ shared_examples_for 'validation error via build list api' do |message|
 end
 
 describe Api::V1::BuildListsController do
-  before(:each) do
-    stub_symlink_methods
-    stub_redis
-  end
+  before(:each) { stub_symlink_methods }
 
   context 'create and update abilities' do
     context 'for user' do
@@ -183,7 +180,6 @@ describe Api::V1::BuildListsController do
           put :create_container, id: @build_list, format: :json
         end
 
-        before { stub_redis }
         context 'if user is project owner' do
           before do
             http_login(@owner_user)

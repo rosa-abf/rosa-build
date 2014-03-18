@@ -117,7 +117,6 @@ end
 describe Api::V1::ProductsController do
   before(:each) do
     stub_symlink_methods
-    stub_redis
 
     @product = FactoryGirl.create(:product)
     @another_user = FactoryGirl.create(:user)

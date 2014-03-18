@@ -29,6 +29,7 @@ RSpec.configure do |config|
 
   config.before(:all) { init_test_root }
   config.after(:all)  { clear_test_root }
+  config.before { stub_redis }
 end
 
 def set_session_for(user=nil)

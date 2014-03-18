@@ -17,7 +17,7 @@ shared_examples_for 'attach advisory to build_list' do
 end
 
 describe Advisory do
-  before { stub_symlink_methods; stub_redis }
+  before { stub_symlink_methods }
   context 'attach_build_list' do
     let(:build_list) { FactoryGirl.create(:build_list) }
 

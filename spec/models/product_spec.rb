@@ -30,7 +30,6 @@ describe Product do
     context 'by autostart_status = once_a_12_hours' do
       before do
         stub_symlink_methods
-        stub_redis
         params = {main_script: 'text.sh', project_version: product.project.default_branch}
         product.update_attributes params.merge(autostart_status: Product::ONCE_A_12_HOURS)
         FactoryGirl.create :product, params.merge(autostart_status: Product::ONCE_A_DAY)
