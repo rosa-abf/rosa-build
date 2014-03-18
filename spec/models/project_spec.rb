@@ -208,17 +208,17 @@ describe Project do
     it { repository.platform.platform_arch_settings.should have(2).item }
 
     context 'once_a_12_hours' do
-      before { project.update_attributes(autostart_status: Modules::Models::Autostart::ONCE_A_12_HOURS) }
+      before { project.update_attributes(autostart_status: Autostart::ONCE_A_12_HOURS) }
       it_should_behave_like 'autostart build_lists', 1, 0, 0
     end
 
     context 'once_a_day' do
-      before { project.update_attributes(autostart_status: Modules::Models::Autostart::ONCE_A_DAY) }
+      before { project.update_attributes(autostart_status: Autostart::ONCE_A_DAY) }
       it_should_behave_like 'autostart build_lists', 0, 1, 0
     end
 
     context 'once_a_day' do
-      before { project.update_attributes(autostart_status: Modules::Models::Autostart::ONCE_A_WEEK) }
+      before { project.update_attributes(autostart_status: Autostart::ONCE_A_WEEK) }
       it_should_behave_like 'autostart build_lists', 0, 0, 1
     end
 
@@ -232,7 +232,7 @@ describe Project do
 
     before do
       repositories = [repository, main_repository] # 1
-      
+
       # Create 1 main platforms with main repositories
       repositories << FactoryGirl.create(:repository, name: 'main') # 2
       # Create platform without main repository
@@ -242,7 +242,7 @@ describe Project do
       r.platform.update_attributes(visibility: 'hidden')
       repositories << r # 3
 
-      # Without access to hidden platform 
+      # Without access to hidden platform
       r = FactoryGirl.create(:repository, name: 'main')
       r.platform.update_attributes(visibility: 'hidden')
 
@@ -266,20 +266,18 @@ describe Project do
     # into main platforms: 2 + 1(hidden)
     # into personal platform: 3(main) * 1
     context 'once_a_12_hours' do
-      before { project.update_attributes(autostart_status: Modules::Models::Autostart::ONCE_A_12_HOURS) }
+      before { project.update_attributes(autostart_status: Autostart::ONCE_A_12_HOURS) }
       it_should_behave_like 'autostart build_lists', 6, 0, 0
     end
 
     context 'once_a_day' do
-      before { project.update_attributes(autostart_status: Modules::Models::Autostart::ONCE_A_DAY) }
+      before { project.update_attributes(autostart_status: Autostart::ONCE_A_DAY) }
       it_should_behave_like 'autostart build_lists', 0, 6, 0
     end
 
     context 'once_a_day' do
-      before { project.update_attributes(autostart_status: Modules::Models::Autostart::ONCE_A_WEEK) }
+      before { project.update_attributes(autostart_status: Autostart::ONCE_A_WEEK) }
       it_should_behave_like 'autostart build_lists', 0, 0, 6
     end
-
   end
-
 end

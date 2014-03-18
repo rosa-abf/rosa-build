@@ -161,7 +161,7 @@ class Project < ActiveRecord::Base
   def git_project_address auth_user
     opts = default_url_options
     opts.merge!({user: auth_user.authentication_token, password: ''}) unless self.public?
-    Rails.application.routes.url_helpers.project_url(self.owner.uname, self.name, opts) + '.git'
+    Rails.application.routes.url_helpers.project_url(self.name_with_owner, opts) + '.git'
     #path #share by NFS
   end
 

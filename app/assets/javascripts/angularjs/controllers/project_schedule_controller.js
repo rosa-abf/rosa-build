@@ -1,6 +1,6 @@
 RosaABF.controller('ProjectScheduleController', ['$scope', '$http', function($scope, $http) {
 
-  // See: Modules::Models::Autostart::AUTOSTART_STATUSES
+  // See: Autostart::AUTOSTART_STATUSES
   $scope.statuses = {
     '0': 'autostart_statuses.0',
     '1': 'autostart_statuses.1',

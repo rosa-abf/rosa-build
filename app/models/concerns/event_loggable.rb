@@ -26,7 +26,7 @@ module EventLoggable
     end
   end
 
-  def destroying_event
+  def log_destroying_event
     ActiveSupport::Notifications.instrument(self.class.name, eventable: self)
   end
 end

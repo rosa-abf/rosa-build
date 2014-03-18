@@ -65,7 +65,7 @@ class GitHook
   end
 
   def self.process(*args)
-    create_notifications(args.size > 1 ? GitHook.new(*args) : args.first)
+    Feed::Git.create_notifications(args.size > 1 ? GitHook.new(*args) : args.first)
   end
 
   def find_user(user)
