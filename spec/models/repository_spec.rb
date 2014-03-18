@@ -3,10 +3,12 @@ require 'spec_helper'
 describe Repository do
   before { stub_symlink_methods }
 
+  let(:repository) { FactoryGirl.create(:repository) }
+
   context 'ensures that validations and associations exist' do
-    before do
-      # Need for validate_uniqueness_of check
-      FactoryGirl.create(:repository)
+
+    it 'is valid given valid attributes' do
+      repository.should be_true
     end
 
     it { should belong_to(:platform) }
@@ -14,7 +16,12 @@ describe Repository do
     it { should have_many(:projects).through(:project_to_repositories) }
 
     it { should validate_presence_of(:name) }
-    it { should validate_uniqueness_of(:name).case_insensitive.scoped_to(:platform_id) }
+
+    context 'uniqueness' do
+      before { repository }
+      it { should validate_uniqueness_of(:name).case_insensitive.scoped_to(:platform_id) }
+    end
+
     it { should allow_value('basic_repository-name-1234').for(:name) }
     it { should_not allow_value('.!').for(:name) }
     it { should_not allow_value('Main').for(:name) }
@@ -30,7 +37,7 @@ describe Repository do
   end
 
   context '#sync_lock_file_exists?, #add_sync_lock_file, #remove_sync_lock_file, #add_repo_lock_file, #remove_repo_lock_file' do
-    let(:repository) { FactoryGirl.create(:repository) }
+    let(:repository) { FactoryGirl.build(:repository) }
     let(:path) { "#{repository.platform.path}/repository/SRPMS/#{repository.name}" }
     before { FileUtils.mkdir_p path }
 

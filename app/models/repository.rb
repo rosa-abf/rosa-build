@@ -82,7 +82,7 @@ class Repository < ActiveRecord::Base
       begin
         name.chomp!; name.strip!
         next if name.blank?
-        project_to_repositories.where(projects: { name: name }).joins(:project).destroy_all
+        project_to_repositories.where(projects: { name: name }).joins(:project).readonly(false).destroy_all
       rescue RuntimeError, Exception
       end
     end
