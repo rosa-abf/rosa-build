@@ -34,7 +34,7 @@ module Feed::Issue
         }
       )
     end
-    Comment.create_link_on_issues_from_item(self)
+    ::Comment.create_link_on_issues_from_item(self)
   end
 
   def send_assign_notifications(action = :create)
@@ -57,7 +57,7 @@ module Feed::Issue
       )
     end
     # dont remove outdated issues link
-    Comment.create_link_on_issues_from_item(self) if previous_changes['title'].present? || previous_changes['body'].present?
+    ::Comment.create_link_on_issues_from_item(self) if previous_changes['title'].present? || previous_changes['body'].present?
   end
 
   def send_hooks(action = :create)
