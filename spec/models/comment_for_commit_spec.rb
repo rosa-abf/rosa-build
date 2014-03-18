@@ -38,7 +38,7 @@ def should_not_send_email(args={})
 end
 
 describe Comment do
-  before { stub_symlink_methods }
+  before { stub_symlink_methods; stub_redis }
   context 'for global admin user' do
     before(:each) do
       @user = FactoryGirl.create(:admin)

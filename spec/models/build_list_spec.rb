@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe BuildList do
-  before { stub_symlink_methods }
+  before { stub_symlink_methods; stub_redis }
 
   context 'validates that repository contains project' do
     it 'when repository contains project' do

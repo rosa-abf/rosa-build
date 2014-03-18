@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Project do
-  before { stub_symlink_methods }
+  before { stub_symlink_methods; stub_redis }
 
   context 'creation' do
     let(:root_project) { FactoryGirl.create(:project) }
@@ -102,7 +102,6 @@ describe Project do
     let(:branch) { project.repo.branches.detect{|b| b.name == 'conflicts'} }
     let(:master) { project.repo.branches.detect{|b| b.name == 'master'} }
     let(:user) { FactoryGirl.create(:user) }
-    before { stub_redis }
 
     context '#delete_branch' do
       it 'ensures that returns true on success' do

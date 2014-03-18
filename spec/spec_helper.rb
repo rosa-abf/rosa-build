@@ -64,8 +64,8 @@ end
 
 def stub_redis
   @redis_instance = MockRedis.new
-  allow(Redis).to receive(:new).and_return(@redis_instance)
-  allow(Resque).to receive(:redis).and_return(@redis_instance)
+  Redis.stub(:new).and_return { @redis_instance }
+  Redis::Store.stub(:new).and_return { @redis_instance }
 end
 
 def fill_project project
