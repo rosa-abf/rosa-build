@@ -159,8 +159,7 @@ class ProductBuildList < ActiveRecord::Base
     opts = default_url_options
     opts.merge!({user: user.authentication_token, password: ''}) if user.present?
     srcpath = url_helpers.archive_url(
-      project.owner,
-      project.name,
+      project.name_with_owner,
       file_name,
       'tar.gz',
       opts
