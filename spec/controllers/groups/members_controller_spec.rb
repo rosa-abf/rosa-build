@@ -35,7 +35,7 @@ describe Groups::MembersController do
   context 'for admin user' do
     before(:each) do
       @admin_user = FactoryGirl.create(:user)
-      @group.actors.create(actor_id: @admin_user.id, actor_type: 'User', role: 'admin')
+      create_actor_relation(@group, @admin_user, 'admin')
       set_session_for @admin_user
     end
 
@@ -68,7 +68,7 @@ describe Groups::MembersController do
   context 'for writer user' do
     before(:each) do
       @writer_user = FactoryGirl.create(:user)
-      @group.actors.create(actor_id: @writer_user.id, actor_type: 'User', role: 'writer')
+      create_actor_relation(@group, @writer_user, 'writer')
       set_session_for @writer_user
     end
 

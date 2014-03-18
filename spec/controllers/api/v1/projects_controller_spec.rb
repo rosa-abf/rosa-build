@@ -326,13 +326,13 @@ describe Api::V1::ProjectsController do
 
       it 'writer group should be able to create project for their group' do
         group = FactoryGirl.create(:group)
-        group.actors.create(actor_type: 'User', actor_id: @user.id, role: 'writer')
+        create_actor_relation(group, @muser, 'writer')
         lambda { post :create, params.deep_merge({project: {owner_type: 'Group', owner_id: group.id}})}.should change{ Project.count }.by(1)
       end
 
       it 'reader group should not be able to create project for their group' do
         group = FactoryGirl.create(:group)
-        group.actors.create(actor_type: 'User', actor_id: @user.id, role: 'reader')
+        create_actor_relation(@group, @user, 'reader')
         lambda { post :create, params.deep_merge({project: {owner_type: 'Group', owner_id: group.id}})}.should change{ Project.count }.by(0)
       end
     end
@@ -347,13 +347,13 @@ describe Api::V1::ProjectsController do
     context 'group writer' do
       it 'should be able to fork project to their group' do
         group = FactoryGirl.create(:group)
-        group.actors.create(actor_type: 'User', actor_id: @user.id, role: 'writer')
+        create_actor_relation(group, @user, 'writer')
         lambda {post :fork, id: @project.id, group_id: group.id}.should change{ Project.count }.by(1)
       end
 
       it 'should be able to fork project with different name to their group' do
         group = FactoryGirl.create(:group)
-        group.actors.create(actor_type: 'User', actor_id: @user.id, role: 'writer')
+        create_actor_relation(group, @user, 'writer')
         new_name = @project.name + '_forked'
         lambda { post :fork, id: @project.id, group_id: group.id, fork_name: new_name }.should
           change { Project.where(name: new_name).count }.by(1)
@@ -363,14 +363,14 @@ describe Api::V1::ProjectsController do
     context 'group reader' do
       it 'should not be able to fork project to their group' do
         group = FactoryGirl.create(:group)
-        group.actors.create(actor_type: 'User', actor_id: @user.id, role: 'reader')
+        create_actor_relation(group, @user, 'reader')
         lambda {post :fork, id: @project.id, group_id: group.id}.should change{ Project.count }.by(0)
       end
 
       it 'should not be able to fork project with different name to their group' do
         group = FactoryGirl.create(:group)
         new_name = @project.name + '_forked'
-        group.actors.create(actor_type: 'User', actor_id: @user.id, role: 'reader')
+        create_actor_relation(group, @user, 'reader')
         lambda { post :fork, id: @project.id, group_id: group.id, fork_name: new_name }.should
           change{ Project.where(name: new_name.count) }.by(0)
       end
@@ -410,7 +410,7 @@ describe Api::V1::ProjectsController do
     before(:each) do
       @user = FactoryGirl.create(:user)
       http_login(@user)
-      @project.relations.create!(actor_type: 'User', actor_id: @user.id, role: 'reader')
+      create_relation(@project, @user, 'reader')
     end
 
     it_should_behave_like 'api projects user with reader rights'
@@ -425,7 +425,7 @@ describe Api::V1::ProjectsController do
     before(:each) do
       @user = FactoryGirl.create(:user)
       http_login(@user)
-      @project.relations.create!(actor_type: 'User', actor_id: @user.id, role: 'writer')
+      create_relation(@project, @user, 'writer')
     end
 
     it_should_behave_like 'api projects user with reader rights'
@@ -459,9 +459,7 @@ describe Api::V1::ProjectsController do
       end
 
       context 'reader user' do
-        before(:each) do
-          @group.actors.create(actor_id: @group_user.id, actor_type: 'User', role: 'reader')
-        end
+        before(:each) { create_actor_relation(@group, @group_user, 'reader') }
 
         it_should_behave_like 'api projects user with reader rights'
         it_should_behave_like 'api projects user with reader rights for hidden project'
@@ -472,9 +470,7 @@ describe Api::V1::ProjectsController do
       end
 
       context 'admin user' do
-        before(:each) do
-          @group.actors.create(actor_id: @group_user.id, actor_type: 'User', role: 'admin')
-        end
+        before(:each) { create_actor_relation(@group, @group_user, 'admin') }
 
         it_should_behave_like 'api projects user with reader rights'
         it_should_behave_like 'api projects user with reader rights for hidden project'
@@ -488,13 +484,11 @@ describe Api::V1::ProjectsController do
     context 'member of the project' do
       context 'with admin rights' do
         before(:each) do
-          @project.relations.create actor_id: @group.id, actor_type: @group.class.to_s, role: 'admin'
+          create_relation(@project, @group, 'admin')
         end
 
         context 'reader user' do
-          before(:each) do
-            @group.actors.create(actor_id: @group_user.id, actor_type: 'User', role: 'reader')
-          end
+          before(:each) { create_actor_relation(@group, @group_user, 'reader') }
 
           it_should_behave_like 'api projects user with reader rights'
           it_should_behave_like 'api projects user with reader rights for hidden project'
@@ -505,9 +499,7 @@ describe Api::V1::ProjectsController do
         end
 
         context 'admin user' do
-          before(:each) do
-            @group.actors.create(actor_id: @group_user.id, actor_type: 'User', role: 'admin')
-          end
+          before(:each) { create_actor_relation(@group, @group_user, 'admin') }
 
           it_should_behave_like 'api projects user with reader rights'
           it_should_behave_like 'api projects user with reader rights for hidden project'
@@ -519,14 +511,10 @@ describe Api::V1::ProjectsController do
       end
 
       context 'with reader rights' do
-        before(:each) do
-          @project.relations.create actor_id: @group.id, actor_type: @group.class.to_s, role: 'reader'
-        end
+        before(:each) { create_relation(@project, @group, 'reader') }
 
         context 'reader user' do
-          before(:each) do
-            @group.actors.create(actor_id: @group_user.id, actor_type: 'User', role: 'reader')
-          end
+          before(:each) { create_actor_relation(@group, @group_user, 'reader') }
 
           it_should_behave_like 'api projects user with reader rights'
           it_should_behave_like 'api projects user with reader rights for hidden project'
@@ -536,9 +524,8 @@ describe Api::V1::ProjectsController do
           it_should_behave_like 'api projects user without owner rights'
 
           context 'user should has best role' do
-            before(:each) do
-              @project.relations.create actor_id: @group_user.id, actor_type: @group_user.class.to_s, role: 'admin'
-            end
+            before(:each) { create_relation(@project, @group_user, 'admin') }
+
             it_should_behave_like 'api projects user with reader rights'
             it_should_behave_like 'api projects user with fork rights'
             it_should_behave_like 'api projects user with fork rights for hidden project'
@@ -548,9 +535,7 @@ describe Api::V1::ProjectsController do
         end
 
         context 'admin user' do
-          before(:each) do
-            @group.actors.create(actor_id: @group_user.id, actor_type: 'User', role: 'admin')
-          end
+          before(:each) { create_actor_relation(@group, @group_user, 'admin') }
 
           it_should_behave_like 'api projects user with reader rights'
           it_should_behave_like 'api projects user with reader rights for hidden project'

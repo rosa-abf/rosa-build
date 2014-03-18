@@ -62,7 +62,7 @@ describe Comment do
       set_comments_data_for_commit
       @admin = FactoryGirl.create(:user)
       @ability = Ability.new(@admin)
-      @project.relations.create!({actor_type: 'User', actor_id: @admin.id, role: 'admin'}, without_protection: true)
+      create_relation(@project, @admin, 'admin')
     end
 
     it_should_behave_like 'user with create comment ability (for model)'

@@ -191,7 +191,7 @@ describe Projects::PullRequestsController do
 
   context 'for project admin user' do
     before do
-      @project.relations.create!(actor_type: 'User', actor_id: @user.id, role: 'admin')
+      create_relation(@project, @user, 'admin')
     end
 
     it_should_behave_like 'pull request user with project guest rights'
@@ -214,7 +214,7 @@ describe Projects::PullRequestsController do
 
   context 'for project reader user' do
     before do
-      @project.relations.create!(actor_type: 'User', actor_id: @user.id, role: 'reader')
+      create_relation(@project, @user, 'reader')
     end
 
     it_should_behave_like 'pull request user with project guest rights'
@@ -235,7 +235,7 @@ describe Projects::PullRequestsController do
 
   context 'for project writer user' do
     before do
-      @project.relations.create!(actor_type: 'User', actor_id: @user.id, role: 'writer')
+      create_relation(@project, @user, 'writer')
     end
 
     it_should_behave_like 'pull request user with project guest rights'
@@ -300,11 +300,11 @@ describe Projects::PullRequestsController do
   context 'send email messages' do
     before(:each) do
       @project_reader = FactoryGirl.create :user
-      @project.relations.create!(actor_type: 'User', actor_id: @project_reader.id, role: 'reader')
+      create_relation(@project, @project_reader, 'reader')
       @project_admin = FactoryGirl.create :user
-      @project.relations.create!(actor_type: 'User', actor_id: @project_admin.id, role: 'admin')
+      create_relation(@project, @project_admin, 'admin')
       @project_writer = FactoryGirl.create :user
-      @project.relations.create!(actor_type: 'User', actor_id: @project_writer.id, role: 'writer')
+      create_relation(@project, @project_writer, 'writer')
 
       set_session_for(@project_writer)
       ActionMailer::Base.deliveries = []

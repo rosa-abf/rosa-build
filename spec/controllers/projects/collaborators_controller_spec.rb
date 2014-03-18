@@ -104,7 +104,7 @@ describe Projects::CollaboratorsController do
 
   context 'for admin user' do
     before(:each) do
-      @project.relations.create!(actor_type: 'User', actor_id: @user.id, role: 'admin')
+      create_relation(@project, @user, 'admin')
     end
 
     it_should_behave_like 'project admin user'
@@ -121,7 +121,7 @@ describe Projects::CollaboratorsController do
 
   context 'for reader user' do
     before(:each) do
-      @project.relations.create!(actor_type: 'User', actor_id: @user.id, role: 'reader')
+      create_relation(@project, @user, 'reader')
     end
 
     it_should_behave_like 'user with no rights for this project'
@@ -129,7 +129,7 @@ describe Projects::CollaboratorsController do
 
   context 'for writer user' do
     before(:each) do
-      @project.relations.create!(actor_type: 'User', actor_id: @user.id, role: 'writer')
+      create_relation(@project, @user, 'writer')
     end
 
     it_should_behave_like 'user with no rights for this project'

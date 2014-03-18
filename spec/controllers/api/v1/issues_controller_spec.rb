@@ -11,7 +11,7 @@ describe Api::V1::IssuesController do
 
     @membered_issue = FactoryGirl.create(:issue)
     @membered_project = @membered_issue.project
-    @membered_project.relations.create(role: 'reader', actor: @issue.user)
+    create_relation(@membered_project, @issue.user, 'reader')
 
     @open_issue = FactoryGirl.create(:issue)
     @open_project = @open_issue.project

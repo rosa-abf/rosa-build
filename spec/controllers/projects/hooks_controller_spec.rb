@@ -94,14 +94,14 @@ describe Projects::HooksController do
 
     context 'for reader user' do
       before do
-        @project.relations.create!(actor_type: 'User', actor_id: @user.id, role: 'reader')
+        create_relation(@project, @user, 'reader')
       end
       it_should_behave_like 'hooks user without project admin rights'
     end
 
     context 'for writer user' do
       before do
-        @project.relations.create!(actor_type: 'User', actor_id: @user.id, role: 'writer')
+        create_relation(@project, @user, 'writer')
       end
       it_should_behave_like 'hooks user without project admin rights'
     end
@@ -120,82 +120,59 @@ describe Projects::HooksController do
       end
 
       context 'group member user with reader role' do
-        before do
-          @group.actors.create(actor_id: @user.id, actor_type: 'User', role: 'reader')
-        end
+        before do { create_actor_relation(@group, @auser, 'reader') }
 
         it_should_behave_like 'hooks user without project admin rights'
 
         context 'user should has best role' do
-          before do
-            @project.relations.create actor_id: @user.id, actor_type: @user.class.to_s, role: 'admin'
-          end
+          before { create_relation(@project, @user, 'admin') }
           it_should_behave_like 'hooks user with project admin rights'
         end
       end
 
       context 'group member user with admin role' do
-        before do
-          @group.actors.create(actor_id: @user.id, actor_type: 'User', role: 'admin')
-        end
-
+        before do { create_actor_relation(@group, @user, 'admin') }
         it_should_behave_like 'hooks user with project admin rights'
       end
     end
 
     context 'group is member of the project' do
       context 'with admin rights' do
-        before do
-          @project.relations.create actor_id: @group.id, actor_type: @group.class.to_s, role: 'admin'
-        end
+        before { create_relation(@project, @group, 'admin') }
 
         context 'group member user with reader role' do
-          before do
-            @group.actors.create(actor_id: @user.id, actor_type: 'User', role: 'reader')
-          end
+          before { create_actor_relation(@group, @user, 'reader') }
 
           it_should_behave_like 'hooks user with project admin rights'
 
           context 'user should has best role' do
-            before do
-              @project.relations.create actor_id: @user.id, actor_type: @user.class.to_s, role: 'reader'
-            end
+            before { create_relation(@project, @user, 'reader') }
             it_should_behave_like 'hooks user with project admin rights'
           end
         end
 
         context 'group member user with admin role' do
-          before do
-            @group.actors.create(actor_id: @user.id, actor_type: 'User', role: 'admin')
-          end
-
+          before { create_actor_relation(@group, @user, 'admin') }
           it_should_behave_like 'hooks user with project admin rights'
         end
       end
 
       context 'with reader rights' do
-        before do
-          @project.relations.create actor_id: @group.id, actor_type: @group.class.to_s, role: 'reader'
-        end
+        before { create_relation(@project, @group, 'reader') }
 
         context 'group member user with reader role' do
-          before do
-            @group.actors.create(actor_id: @user.id, actor_type: 'User', role: 'reader')
-          end
+          before { create_actor_relation(@group, @user, 'reader') }
+
           it_should_behave_like 'hooks user without project admin rights'
 
           context 'user should has best role' do
-            before do
-              @project.relations.create actor_id: @user.id, actor_type: @user.class.to_s, role: 'admin'
-            end
+            before { create_relation(@project, @user, 'admin') }
             it_should_behave_like 'hooks user with project admin rights'
           end
         end
 
         context 'group member user with admin role' do
-          before do
-            @group.actors.create(actor_id: @user.id, actor_type: 'User', role: 'admin')
-          end
+          before { create_actor_relation(@group, @user, 'admin') }
           it_should_behave_like 'hooks user without project admin rights'
         end
       end

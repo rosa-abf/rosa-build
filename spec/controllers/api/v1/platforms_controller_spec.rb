@@ -365,7 +365,7 @@ describe Api::V1::PlatformsController do
     before do
       http_login(@user)
       @platform.owner = @user; @platform.save
-      @platform.relations.create!(actor_type: 'User', actor_id: @user.id, role: 'admin')
+      create_relation(@platform, @user, 'admin')
     end
 
     it_should_behave_like 'api platform user with reader rights'

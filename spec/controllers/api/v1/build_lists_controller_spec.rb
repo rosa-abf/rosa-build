@@ -110,8 +110,8 @@ describe Api::V1::BuildListsController do
         @user = FactoryGirl.create(:user)
         @owner_user = @project.owner
         @member_user = FactoryGirl.create(:user)
-        @project.relations.create(role: 'reader', actor: @member_user)
-        @build_list.save_to_platform.relations.create(role: 'admin', actor: @owner_user) # Why it's really need it??
+        create_relation(@project, @member_user, 'reader')
+        create_relation @build_list.save_to_platform, @owner_user, 'admin' # Why it's really need it??
 
         # Create and show params:
         @create_params = {build_list: @build_list.attributes.symbolize_keys.merge(:qwerty=>'!')} # wrong parameter
@@ -541,7 +541,7 @@ describe Api::V1::BuildListsController do
             @another_user = FactoryGirl.create(:user)
             @build_list.update_column(:status, BuildList::SUCCESS)
             @build_list.save_to_repository.update_column(:publish_without_qa, true)
-            @build_list.project.relations.create!(actor_type: 'User', actor_id: @another_user.id, role: 'writer')
+            create_relation(@build_list.project, @another_user, 'writer')
             http_login(@another_user)
             do_reject_publish
           end
@@ -631,11 +631,11 @@ describe Api::V1::BuildListsController do
         # Groups:
         @owner_group = FactoryGirl.create(:group, owner: @owner_user)
         @member_group = FactoryGirl.create(:group)
-        @member_group.actors.create role: 'reader', actor_id: @member_user.id, actor_type: 'User'
+        create_actor_relation(@member_group, @member_user, 'reader')
 
         @group = FactoryGirl.create(:group)
         @user = FactoryGirl.create(:user)
-        @group.actors.create role: 'reader', actor_id: @user.id, actor_type: 'User'
+        create_actor_relation(@group, @user, 'reader')
 
         old_path = @project.path
         @project.owner = @owner_group
@@ -643,10 +643,10 @@ describe Api::V1::BuildListsController do
         # Move GIT repo into new folder
         system "mkdir -p #{@project.path} && mv -f #{old_path}/* #{@project.path}/"
 
-        @project.relations.create role: 'reader', actor_id: @member_group.id, actor_type: 'Group'
-        @project.relations.create role: 'admin', actor_id: @owner_group.id, actor_type: 'Group'
-        @build_list.save_to_platform.relations.create(role: 'admin', actor: @owner_group) # Why it's really need it??
-        @build_list.save_to_platform.relations.create(role: 'reader', actor: @member_group) # Why it's really need it??
+        create_relation(@project, @member_group, 'reader')
+        create_relation(@project, @owner_group, 'admin')
+        create_relation(@build_list.save_to_platform, @owner_group, 'admin') # Why it's really need it??
+        create_relation(@build_list.save_to_platform, @member_group, 'reader')  # Why it's really need it??
 
         http_login(@user)
       end
@@ -704,7 +704,7 @@ describe Api::V1::BuildListsController do
 
       @build_list4 = FactoryGirl.create(:build_list)
       @build_list4.project.update_column(:visibility, 'hidden')
-      @build_list4.project.relations.create! role: 'reader', actor_id: @user.id, actor_type: 'User'
+      create_relation(@build_list4, @user, 'reader')
 
       @filter_build_list1 = FactoryGirl.create(:build_list)
       @filter_build_list2 = FactoryGirl.create(:build_list)
@@ -787,8 +787,8 @@ describe Api::V1::BuildListsController do
         stub_symlink_methods
         @owner_user = @project.owner
         @member_user = FactoryGirl.create(:user)
-        @project.relations.create(role: 'reader', actor: @member_user)
-        @build_list.save_to_platform.relations.create(role: 'admin', actor: @owner_user) # Why it's really need it??
+        create_relation(@project, @member_user, 'reader')
+        create_relation(@build_list.save_to_platform, @owner_user, 'admin') # Why it's really need it??
 
         # Show params:
         @show_params = {id: @build_list.id, format: :json}
@@ -843,7 +843,6 @@ describe Api::V1::BuildListsController do
         stub_symlink_methods
         @owner_user = @project.owner#FactoryGirl.create(:user)
         @member_user = FactoryGirl.create(:user)
-        #@project.relations.create(role: 'reader', actor: @member_user)
 
         # Show params:
         @show_params = {id: @build_list.id, format: :json}
@@ -851,17 +850,10 @@ describe Api::V1::BuildListsController do
         # Groups:
         @owner_group = FactoryGirl.create(:group, owner: @owner_user)
         @member_group = FactoryGirl.create(:group)
-        @member_group.actors.create role: 'reader', actor_id: @member_user.id, actor_type: 'User'
+        create_actor_relation(@member_group, @member_user, 'reader')
         @group = FactoryGirl.create(:group)
-        @group.actors.create role: 'reader', actor_id: @user.id, actor_type: 'User'
-
-        #@project = FactoryGirl.create(:project, owner: @owner_group, repositories: @platform.repositories)
-
-        #@project.owner = @owner_group
-        #@project.save
-        @project.relations.create role: 'reader', actor_id: @member_group.id, actor_type: 'Group'
-        #@build_list.save_to_platform.relations.create(role: 'reader', actor: @member_group) # Why it's really need it??
-        #@build_list.save_to_platform.relations.create(role: 'admin', actor: @owner_group) # Why it's really need it??
+        create_actor_relation(@group, @user, 'reader')
+        create_relation(@project, @member_group, 'reader')
       end
 
       context 'for open project' do

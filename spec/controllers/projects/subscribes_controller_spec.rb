@@ -65,7 +65,7 @@ describe Projects::SubscribesController do
     before(:each) do
       @user = FactoryGirl.create(:admin)
       set_session_for(@user)
-      @project.relations.create!(actor_type: 'User', actor_id: @user.id, role: 'admin')
+      create_relation(@project, @user, 'admin')
       @destroy_params = @destroy_params.merge({id: @user.id})
     end
 

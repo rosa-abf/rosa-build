@@ -33,7 +33,7 @@ describe Group do
     before(:each) do
       @user = FactoryGirl.create(:user)
       @another_user = FactoryGirl.create(:user)
-      @group.actors.create(actor_type: 'User', actor_id: @user.id, role: 'admin')
+      create_actor_relation(@group, @user, 'admin')
       @ability = Ability.new(@user)
     end
 
@@ -65,7 +65,7 @@ describe Group do
       @group.owner = @user
       @group.save
 
-      @group.actors.create(actor_type: 'User', actor_id: @user.id, role: 'admin')
+      create_actor_relation(@group, @user, 'admin')
       @ability = Ability.new(@user)
     end
 
@@ -79,7 +79,7 @@ describe Group do
   context 'for group reader and writer user' do
     before(:each) do
       @user = FactoryGirl.create(:user)
-      @group.actors.create(actor_type: 'User', actor_id: @user.id, role: 'reader')
+      create_actor_relation(@group, @user, 'reader')
       @ability = Ability.new(@user)
     end
 

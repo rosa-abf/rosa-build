@@ -1,4 +1,3 @@
-
 require 'spec_helper'
 
 describe User do
@@ -24,15 +23,11 @@ describe User do
 
   %w(reader writer admin).each do |group_role|
     context "for group with #{group_role} role in project" do
-      before(:each) do
-        @project.relations.create actor_id: @group.id, actor_type: @group.class.to_s, role: group_role
-      end
+      before(:each) { create_relation(@project, @group, group_role) }
 
       %w(reader writer admin).each do |role|
         context "for user with #{role} role in group" do
-          before(:each) do
-            @group.actors.create(actor_id: @user.id, actor_type: 'User', role: role)
-          end
+          before(:each) { create_actor_relation(@group, @user, role) }
 
           it "should have #{group_role} role to project" do
             @user.best_role(@project).should == group_role
@@ -48,14 +43,12 @@ describe User do
 
       @project.owner = @group
       @project.save
-      @project.relations.create actor_id: @project.owner.id, actor_type: @project.owner.class.to_s, role: 'admin'
+      create_relation(@project, @project.owner, 'admin')
     end
 
     %w(reader writer admin).each do |role|
       context "for user with #{role} role in group" do
-        before(:each) do
-          @group.actors.create(actor_id: @user.id, actor_type: 'User', role: role)
-        end
+        before(:each) { create_actor_relation(@group, @user, role) }
 
         it "should have #{role} role to project" do
           @user.best_role(@project).should == role
@@ -65,9 +58,7 @@ describe User do
 
     %w(reader writer admin).each do |role|
       context "for user with #{role} role in project" do
-        before(:each) do
-          @project.relations.create(actor_id: @user.id, actor_type: 'User', role: role)
-        end
+        before(:each) { create_relation(@project, @user, role) }
 
         it "should have #{role} role to project" do
           @user.best_role(@project).should == role
@@ -77,16 +68,16 @@ describe User do
 
     context "for user with reader role in group and writer role in project" do
       it "should have writer best role to project" do
-        @group.actors.create(actor_id: @user.id, actor_type: 'User', role: 'reader')
-        @project.relations.create(actor_id: @user.id, actor_type: 'User', role: 'writer')
+        create_actor_relation(@group, @user, 'reader')
+        create_relation(@project, @user, 'writer')
         @user.best_role(@project).should == 'writer'
       end
     end
 
     context "for user with admin role in group and reader role in project" do
       it "should have admin best role to project" do
-        @group.actors.create(actor_id: @user.id, actor_type: 'User', role: 'admin')
-        @project.relations.create(actor_id: @user.id, actor_type: 'User', role: 'reader')
+        create_actor_relation(@group, @user, 'admin')
+        create_relation(@project, @user, 'reader')
         @user.best_role(@project).should == 'admin'
       end
     end

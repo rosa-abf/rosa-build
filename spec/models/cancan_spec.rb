@@ -138,7 +138,7 @@ describe CanCan do
 
       context 'with read rights' do
         before(:each) do
-          @project.relations.create!(actor_id: @user.id, actor_type: 'User', role: 'reader')
+          create_relation(@project, @user, 'reader')
         end
 
         it 'should be able to read project' do
@@ -152,7 +152,7 @@ describe CanCan do
 
       context 'with writer rights' do
         before(:each) do
-          @project.relations.create!(actor_id: @user.id, actor_type: 'User', role: 'writer')
+          create_relation(@project, @user, 'writer')
         end
 
         [:read, :create, :new].each do |action|
@@ -171,7 +171,7 @@ describe CanCan do
 
       context 'with admin rights' do
         before(:each) do
-          @project.relations.create!(actor_id: @user.id, actor_type: 'User', role: 'admin')
+          create_relation(@project, @user, 'admin')
         end
 
         [:read, :update].each do |action|
@@ -227,7 +227,7 @@ describe CanCan do
       context 'through group-member' do
         before(:each) do
           @group_member = FactoryGirl.create(:group)
-          @project.relations.create!(actor_id: @group_member.id, actor_type: 'Group', role: 'reader')
+          create_relation(@project, @group_member, 'reader')
           @group_member_ability = Ability.new(@group_member.owner)
         end
 
@@ -274,7 +274,7 @@ describe CanCan do
 
       context 'with read rights' do
         before(:each) do
-          @platform.relations.create!(actor_id: @user.id, actor_type: 'User', role: 'reader')
+          create_relation(@platform, @user, 'reader')
           @ability = Ability.new(@user)
         end
 
@@ -310,7 +310,7 @@ describe CanCan do
 
       context 'with read rights' do
         before(:each) do
-          @repository.platform.relations.create!(actor_id: @user.id, actor_type: 'User', role: 'reader')
+          create_relation(@repository.platform, @user, 'reader')
         end
 
         it "should be able to read repository" do

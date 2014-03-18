@@ -4,7 +4,7 @@ module Owner
   included do
     validates :owner, presence: true
     after_create do
-      relations.create({ actor_id: owner.id, actor_type: owner.class.to_s, role: 'admin' }, without_protection: true)
+      relations.create(actor: owner, role: 'admin')
     end
   end
 end

@@ -100,7 +100,7 @@ describe Projects::Git::TreesController do
   context 'for writer user' do
     before(:each) do
       user = FactoryGirl.create(:user)
-      @project.relations.create!(actor_type: 'User', actor_id: user.id, role: 'writer')
+      create_relation(@project, @user, 'writer')
       set_session_for user
     end
 

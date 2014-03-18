@@ -38,7 +38,7 @@ describe Projects::CommentsController do
 
   context 'for project admin user' do
     before(:each) do
-      @project.relations.create!(actor_type: 'User', actor_id: @user.id, role: 'admin')
+      create_relation(@project, @user, 'admin')
     end
 
     it_should_behave_like 'user with create comment ability'
@@ -60,7 +60,7 @@ describe Projects::CommentsController do
 
   context 'for project reader user' do
     before(:each) do
-      @project.relations.create!(actor_type: 'User', actor_id: @user.id, role: 'reader')
+      create_relation(@project, @user, 'reader')
     end
 
    it_should_behave_like 'user with create comment ability'
@@ -71,7 +71,7 @@ describe Projects::CommentsController do
 
   context 'for project writer user' do
     before(:each) do
-      @project.relations.create!(actor_type: 'User', actor_id: @user.id, role: 'writer')
+      create_relation(@project, @user, 'writer')
     end
 
    it_should_behave_like 'user with create comment ability'

@@ -96,7 +96,7 @@ shared_examples_for 'registered user or guest' do
   end
 
   it 'should not be able to remove member from repository' do
-    @repository.relations.create(role: 'admin', actor: @another_user)
+    create_relation(@repository, @another_user, 'admin')
     delete :remove_member, id: @repository.id, platform_id: @platform.id, member_id: @another_user.id
     response.should redirect_to(redirect_path)
     @repository.members.should include(@another_user)
@@ -104,8 +104,8 @@ shared_examples_for 'registered user or guest' do
 
   it 'should not be able to remove members from repository' do
     another_user2 = FactoryGirl.create(:user)
-    @repository.relations.create(role: 'admin', actor: @another_user)
-    @repository.relations.create(role: 'admin', actor: another_user2)
+    create_relation(@repository, @another_user, 'admin')
+    create_relation(@repository, @another_user2, 'admin')
     post :remove_members, id: @repository.id, platform_id: @platform.id,
       user_remove: {@another_user.id => [1], another_user2.id => [1]}
     response.should redirect_to(redirect_path)
@@ -195,7 +195,7 @@ shared_examples_for 'platform admin user' do
   end
 
   it 'should be able to remove member from repository' do
-    @repository.relations.create(role: 'admin', actor: @another_user)
+    create_relation(@repository, @another_user, 'admin')
     delete :remove_member, id: @repository.id, platform_id: @platform.id, member_id: @another_user.id
     response.should redirect_to(edit_platform_repository_path(@repository.platform, @repository))
     @repository.members.should_not include(@another_user)
@@ -203,8 +203,8 @@ shared_examples_for 'platform admin user' do
 
   it 'should be able to remove members from repository' do
     another_user2 = FactoryGirl.create(:user)
-    @repository.relations.create(role: 'admin', actor: @another_user)
-    @repository.relations.create(role: 'admin', actor: another_user2)
+    create_relation(@repository, @another_user, 'admin')
+    create_relation(@repository, @another_user2, 'admin')
     post :remove_members, id: @repository.id, platform_id: @platform.id,
       user_remove: {@another_user.id => [1], another_user2.id => [1]}
     response.should redirect_to(edit_platform_repository_path(@repository.platform, @repository))
@@ -309,7 +309,7 @@ describe Platforms::RepositoriesController do
   context 'for platform member user' do
     before(:each) do
       [@repository, @personal_repository].each do |repo|
-        repo.platform.relations.create!(actor_type: 'User', actor_id: @user.id, role: 'admin')
+        create_relation(repo.platform, @user, 'admin')
       end
     end
 

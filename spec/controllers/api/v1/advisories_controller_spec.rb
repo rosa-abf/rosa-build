@@ -132,7 +132,7 @@ describe Api::V1::AdvisoriesController do
   context 'for user who has access to update build_list' do
     before do
       @user = FactoryGirl.create(:user)
-      @build_list.save_to_platform.relations.create(role: 'admin', actor: @user)
+      create_relation @build_list.save_to_platform, @user, 'admin'
       http_login(@user)
     end
 

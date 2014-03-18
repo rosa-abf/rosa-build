@@ -213,7 +213,7 @@ describe Platforms::MassBuildsController do
     before(:each) do
       @user = FactoryGirl.create(:user)
       set_session_for(@user)
-      @platform.relations.create!(actor_type: 'User', actor_id: @user.id, role: 'admin')
+      create_relation(@platform, @user, 'admin')
     end
 
     it_should_behave_like 'mass_build platform owner'
@@ -224,7 +224,7 @@ describe Platforms::MassBuildsController do
     before(:each) do
       @user = FactoryGirl.create(:user)
       set_session_for(@user)
-      @platform.relations.create!(actor_type: 'User', actor_id: @user.id, role: 'reader')
+      create_relation(@platform, @user, 'reader')
     end
 
     it_should_behave_like 'mass_build platform reader'

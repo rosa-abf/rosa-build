@@ -351,7 +351,7 @@ describe Api::V1::RepositoriesController do
       [@repository, @personal_repository].each do |repository|
         platform = repository.platform
         platform.owner = @user; platform.save
-        repository.platform.relations.create!(actor_type: 'User', actor_id: @user.id, role: 'admin')
+        create_relation(repository.platform, @user, 'admin')
       end
     end
 
