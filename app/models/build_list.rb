@@ -534,17 +534,16 @@ class BuildList < ActiveRecord::Base
   end
 
   def self.next_build
-    redis   = Resque.redis
-    kind_id = redis.spop(USER_BUILDS_SET)
+    kind_id = Redis.current.spop(USER_BUILDS_SET)
     key     = "user_build_#{kind_id}_rpm_worker_default" if kind_id
     task    = Resque.pop(key) if key
-    redis.sadd(USER_BUILDS_SET, kind_id) if task
+    Redis.current.sadd(USER_BUILDS_SET, kind_id) if task
 
 
-    kind_id ||= redis.spop(MASS_BUILDS_SET)
+    kind_id ||= Redis.current.spop(MASS_BUILDS_SET)
     key     ||= "mass_build_#{kind_id}_rpm_worker" if kind_id
     task    ||= Resque.pop(key) if key
-    redis.sadd(MASS_BUILDS_SET, kind_id) if task && key =~ /^mass_build/
+    Redis.current.sadd(MASS_BUILDS_SET, kind_id) if task && key =~ /^mass_build/
 
     if task
       build_list = BuildList.where(id: task['args'][0]['id']).first

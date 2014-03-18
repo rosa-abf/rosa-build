@@ -39,4 +39,5 @@ Rosa::Application.configure do
   config.assets.allow_debugging = true
 
   config.eager_load = false
+  config.log_redis = true
 end

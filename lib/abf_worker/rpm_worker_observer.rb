@@ -57,11 +57,10 @@ module AbfWorker
 
     def restart_task
       return false if status != FAILED
-      redis = Resque.redis
-      if redis.lrem(RESTARTED_BUILD_LISTS, 0, subject.id) > 0 || (options['results'] || []).size > 1
+      if Redis.current.lrem(RESTARTED_BUILD_LISTS, 0, subject.id) > 0 || (options['results'] || []).size > 1
         return false
       else
-        redis.lpush RESTARTED_BUILD_LISTS, subject.id
+        Redis.current.lpush RESTARTED_BUILD_LISTS, subject.id
         subject.update_column(:status, BuildList::BUILD_PENDING)
         subject.restart_job if subject.external_nodes.blank?
         return true

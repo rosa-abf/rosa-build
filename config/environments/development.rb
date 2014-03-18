@@ -55,4 +55,5 @@ Rosa::Application.configure do
   config.middleware.insert_before Rails::Rack::Logger, DisableAssetsLogger
 
   config.eager_load = false
+  config.log_redis = true
 end

@@ -65,4 +65,5 @@ Rosa::Application.configure do
   config.assets.precompile += %w(login.css login.js reg_session.css tour.css tour.js gollum/editor/langs/*.js moment/ru.js)
 
   config.eager_load = true
+  config.log_redis = true
 end

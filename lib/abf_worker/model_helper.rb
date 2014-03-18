@@ -39,7 +39,7 @@ module AbfWorker::ModelHelper
 
   def restart_job
     update_build_sets
-    Resque.redis.lpush "queue:#{worker_queue_with_priority}",
+    Redis.current.lpush "resque:queue:#{worker_queue_with_priority}",
       Resque.encode({'class' => worker_queue_class, 'args' => [abf_worker_args]})
   end
 
@@ -87,15 +87,15 @@ module AbfWorker::ModelHelper
     return unless is_a?(BuildList)
 
     key = mass_build_id ? MASS_BUILDS_SET : USER_BUILDS_SET
-    Resque.redis.pipelined do
-      Resque.redis.sadd key, mass_build_id || user_id
-      Resque.redis.sadd 'queues', worker_queue_with_priority
+    Redis.current.pipelined do
+      Redis.current.sadd key, mass_build_id || user_id
+      Redis.current.sadd 'resque:queues', worker_queue_with_priority
     end
   end
 
 
   def send_stop_signal
-    Resque.redis.setex(
+    Redis.current.setex(
       "#{service_queue}::live-inspector",
       240,    # Data will be removed from Redis after 240 sec.
       'USR1'  # Immediately kill child but don't exit
