@@ -123,4 +123,5 @@ group :test do
   gem 'shoulda-matchers'
   gem 'mock_redis',         '~> 0.11'
   gem 'rake'
+  gem 'test_after_commit'
 end

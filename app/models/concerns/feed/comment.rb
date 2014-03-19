@@ -2,7 +2,7 @@ module Feed::Comment
   extend ActiveSupport::Concern
 
   included do
-    after_create :new_comment_notifications
+    after_commit :new_comment_notifications, on: :create
     # dont remove outdated issues link
     after_update -> { Comment.create_link_on_issues_from_item(self) }
   end
