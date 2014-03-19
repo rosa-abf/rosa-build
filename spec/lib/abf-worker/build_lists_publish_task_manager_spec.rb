@@ -58,7 +58,7 @@ describe AbfWorker::BuildListsPublishTaskManager do
     end
 
     it "ensures that new task for publishing has been created" do
-      @redis_instance.lrange('queue:publish_worker_default', 0, -1).should have(1).item
+      @redis_instance.lrange('resque:queue:publish_worker_default', 0, -1).should have(1).item
     end
 
   end
@@ -93,7 +93,7 @@ describe AbfWorker::BuildListsPublishTaskManager do
     end
 
     it "ensures that new task for publishing has been created" do
-      @redis_instance.lrange('queue:publish_worker_default', 0, -1).should have(1).item
+      @redis_instance.lrange('resque:queue:publish_worker_default', 0, -1).should have(1).item
     end
 
   end
@@ -117,7 +117,7 @@ describe AbfWorker::BuildListsPublishTaskManager do
     end
 
     it "ensures that new tasks for publishing has been created" do
-      @redis_instance.lrange('queue:publish_worker_default', 0, -1).should have(4).items
+      @redis_instance.lrange('resque:queue:publish_worker_default', 0, -1).should have(4).items
     end
 
   end
@@ -153,7 +153,7 @@ describe AbfWorker::BuildListsPublishTaskManager do
     end
 
     it "ensures that new task for publishing has been created" do
-      @redis_instance.lrange('queue:publish_worker_default', 0, -1).should have(1).item
+      @redis_instance.lrange('resque:queue:publish_worker_default', 0, -1).should have(1).item
     end
 
   end
@@ -196,7 +196,7 @@ describe AbfWorker::BuildListsPublishTaskManager do
     end
 
     it "ensures that new task for publishing has been created" do
-      @redis_instance.lrange('queue:publish_worker_default', 0, -1).should have(1).item
+      @redis_instance.lrange('resque:queue:publish_worker_default', 0, -1).should have(1).item
     end
 
     it "ensures that 'locked build lists' has only one item" do
@@ -224,7 +224,7 @@ describe AbfWorker::BuildListsPublishTaskManager do
     end
 
     it "ensure that new task for resign has been created" do
-      @redis_instance.lrange('queue:publish_worker_default', 0, -1).should have(1).item
+      @redis_instance.lrange('resque:queue:publish_worker_default', 0, -1).should have(1).item
     end
 
   end
@@ -242,7 +242,7 @@ describe AbfWorker::BuildListsPublishTaskManager do
       end
 
       it 'ensures that new task has been created' do
-        @redis_instance.lrange('queue:publish_worker_default', 0, -1).should have(1).item
+        @redis_instance.lrange('resque:queue:publish_worker_default', 0, -1).should have(1).item
       end
     end
 
@@ -259,7 +259,7 @@ describe AbfWorker::BuildListsPublishTaskManager do
       end
 
       it 'ensures that new task has been created' do
-        @redis_instance.lrange('queue:publish_worker_default', 0, -1).should have(1).item
+        @redis_instance.lrange('resque:queue:publish_worker_default', 0, -1).should have(1).item
       end
     end
 

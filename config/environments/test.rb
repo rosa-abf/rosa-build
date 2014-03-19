@@ -38,6 +38,7 @@ Rosa::Application.configure do
   # Allow pass debug_assets=true as a query parameter to load pages with unpackaged assets
   config.assets.allow_debugging = true
 
+  config.cache_store = :memory_store, { size: 64.megabytes }
   config.eager_load = false
   config.log_redis = true
 end

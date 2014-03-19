@@ -68,6 +68,7 @@ def stub_redis
   allow(Redis).to receive(:new).and_return(@redis_instance)
   allow(Redis).to receive(:current).and_return(@redis_instance)
   allow(Redis::Store).to receive(:new).and_return(@redis_instance)
+  Resque.redis = @redis_instance
 end
 
 def fill_project project
