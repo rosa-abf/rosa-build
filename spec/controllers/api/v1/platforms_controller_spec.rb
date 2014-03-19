@@ -18,7 +18,7 @@ shared_examples_for 'api platform user with owner rights' do
 
   context 'api platform user with update rights' do
     before do
-      put :update, {platform: {description: 'new description'}, id: @platform.id}, format: :json
+      put :update, platform: { description: 'new description' }, id: @platform.id, format: :json
     end
 
     it 'should be able to perform update action' do
@@ -51,7 +51,7 @@ end
 shared_examples_for 'api platform user without owner rights' do
   context 'api platform user without update rights' do
     before do
-      put :update, {platform: {description: 'new description'}, id: @platform.id}, format: :json
+      put :update, platform: { description: 'new description' }, id: @platform.id, format: :json
     end
 
     it 'should not be able to perform update action' do
@@ -87,7 +87,7 @@ shared_examples_for 'api platform user with member rights' do
   context 'api platform user with add_member rights' do
     let(:member) { FactoryGirl.create(:user) }
     before do
-      put :add_member, {member_id: member.id, type: 'User', id: @platform.id}, format: :json
+      put :add_member, member_id: member.id, type: 'User', id: @platform.id, format: :json
     end
 
     it 'should be able to perform add_member action' do
@@ -102,7 +102,7 @@ shared_examples_for 'api platform user with member rights' do
     let(:member) { FactoryGirl.create(:user) }
     before do
       @platform.add_member(member)
-      delete :remove_member, {member_id: member.id, type: 'User', id: @platform.id}, format: :json
+      delete :remove_member, member_id: member.id, type: 'User', id: @platform.id, format: :json
     end
 
     it 'should be able to perform remove_member action' do
@@ -120,7 +120,7 @@ shared_examples_for 'api platform user without member rights' do
   context 'api platform user without add_member rights' do
     let(:member) { FactoryGirl.create(:user) }
     before do
-      put :add_member, {member_id: member.id, type: 'User', id: @platform.id}, format: :json
+      put :add_member, member_id: member.id, type: 'User', id: @platform.id, format: :json
     end
 
     it 'should not be able to perform add_member action' do
@@ -135,7 +135,7 @@ shared_examples_for 'api platform user without member rights' do
     let(:member) { FactoryGirl.create(:user) }
     before do
       @platform.add_member(member)
-      delete :remove_member, {member_id: member.id, type: 'User', id: @platform.id}, format: :json
+      delete :remove_member, member_id: member.id, type: 'User', id: @platform.id, format: :json
     end
 
     it 'should be able to perform update action' do

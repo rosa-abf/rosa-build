@@ -123,7 +123,7 @@ shared_examples_for 'api projects user with admin rights' do
 
   context 'api project user with update rights' do
     before do
-      put :update, {project: {description: 'new description'}, id: @project.id}, format: :json
+      put :update, project: { description: 'new description' }, id: @project.id, format: :json
     end
 
     it 'should be able to perform update action' do
@@ -138,7 +138,7 @@ shared_examples_for 'api projects user with admin rights' do
   context 'api project user with add_member rights' do
     let(:member) { FactoryGirl.create(:user) }
     before do
-      put :add_member, {member_id: member.id, type: 'User', role: 'admin', id: @project.id}, format: :json
+      put :add_member, member_id: member.id, type: 'User', role: 'admin', id: @project.id, format: :json
     end
 
     it 'should be able to perform add_member action' do
@@ -153,7 +153,7 @@ shared_examples_for 'api projects user with admin rights' do
     let(:member) { FactoryGirl.create(:user) }
     before do
       @project.add_member(member)
-      delete :remove_member, {member_id: member.id, type: 'User', id: @project.id}, format: :json
+      delete :remove_member, member_id: member.id, type: 'User', id: @project.id, format: :json
     end
 
     it 'should be able to perform remove_member action' do
@@ -168,7 +168,7 @@ shared_examples_for 'api projects user with admin rights' do
     let(:member) { FactoryGirl.create(:user) }
     before do
       @project.add_member(member)
-      put :update_member, {member_id: member.id, type: 'User', role: 'reader', id: @project.id}, format: :json
+      put :update_member, member_id: member.id, type: 'User', role: 'reader', id: @project.id, format: :json
     end
 
     it 'should be able to perform update_member action' do
@@ -192,7 +192,7 @@ shared_examples_for 'api projects user without admin rights' do
     let(:member) { FactoryGirl.create(:user) }
     before do
       @project.add_member(member)
-      put :update_member, {member_id: member.id, type: 'User', role: 'reader', id: @project.id}, format: :json
+      put :update_member, member_id: member.id, type: 'User', role: 'reader', id: @project.id, format: :json
     end
 
     it 'should not be able to perform update_member action' do
@@ -206,7 +206,7 @@ shared_examples_for 'api projects user without admin rights' do
 
   context 'api project user without update rights' do
     before do
-      put :update, {project: {description: 'new description'}, id: @project.id}, format: :json
+      put :update, project: {description: 'new description'}, id: @project.id, format: :json
     end
 
     it 'should not be able to perform update action' do
@@ -221,7 +221,7 @@ shared_examples_for 'api projects user without admin rights' do
   context 'api project user without add_member rights' do
     let(:member) { FactoryGirl.create(:user) }
     before do
-      put :add_member, {member_id: member.id, type: 'User', role: 'admin', id: @project.id}, format: :json
+      put :add_member, member_id: member.id, type: 'User', role: 'admin', id: @project.id, format: :json
     end
 
     it 'should not be able to perform add_member action' do
@@ -236,7 +236,7 @@ shared_examples_for 'api projects user without admin rights' do
     let(:member) { FactoryGirl.create(:user) }
     before do
       @project.add_member(member)
-      delete :remove_member, {member_id: member.id, type: 'User', id: @project.id}, format: :json
+      delete :remove_member, member_id: member.id, type: 'User', id: @project.id, format: :json
     end
 
     it 'should be able to perform update action' do
