@@ -117,14 +117,14 @@ describe Repository do
     it 'user has ability to read of adding project' do
       repository = FactoryGirl.create(:repository)
       project = FactoryGirl.create(:project)
-      repository.add_projects("#{project.owner.uname}/#{project.name}", FactoryGirl.create(:user))
+      repository.add_projects(project.name_with_owner, FactoryGirl.create(:user))
       repository.projects.should have(1).item
     end
 
     it 'user has no ability to read of adding project' do
       repository = FactoryGirl.create(:repository)
       project = FactoryGirl.create(:project, visibility: 'hidden')
-      repository.add_projects("#{project.owner.uname}/#{project.name}", FactoryGirl.create(:user))
+      repository.add_projects(project.name_with_owner, FactoryGirl.create(:user))
       repository.projects.should have(:no).items
     end
   end

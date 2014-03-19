@@ -32,7 +32,7 @@ shared_examples_for "api projects user without show rights" do
   end
 
   it "should access violation instead of project data by get_id" do
-    get :get_id, name: @project.name, owner: @project.owner.uname, format: :json
+    get :get_id, owner_with_name: @project.name_with_owner, format: :json
     response.should_not be_success
   end
 
@@ -98,17 +98,17 @@ shared_examples_for "api projects user with show rights" do
   context 'project find by get_id' do
     it "should find project by name and owner name" do
       @project.reload
-      get :get_id, name: @project.name, owner: @project.owner.uname, format: :json
+      get :get_id, owner_with_name: @project.name_with_owner, format: :json
       assigns[:project].id.should == @project.id
     end
 
     it "should not find project by non existing name and owner name" do
-      get :get_id, name: 'NONE_EXISTING_NAME', owner: @project.owner.uname, format: :json
+      get :get_id, owner_with_name: "#{@project.owner_uname}/NONE_EXISTING_NAME", format: :json
       assigns[:project].should be_blank
     end
 
     it "should render 404 for non existing name and owner name" do
-      get :get_id, name: 'NONE_EXISTING_NAME', owner: @project.owner.uname, format: :json
+      get :get_id, owner_with_name: "#{@project.owner_uname}/NONE_EXISTING_NAME", format: :json
       response.body.should == {status: 404, message: I18n.t("flash.404_message")}.to_json
     end
   end

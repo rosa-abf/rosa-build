@@ -6,9 +6,7 @@ describe Projects::Git::TreesController do
     stub_symlink_methods
 
     @project = FactoryGirl.create(:project)
-    @params = { owner_name: @project.owner.uname,
-                project_name: @project.name,
-                treeish: "#{@project.name}-master"}
+    @params = { owner_with_name: @project.name_with_owner, treeish: "#{@project.name}-master" }
     fill_project @project
   end
 

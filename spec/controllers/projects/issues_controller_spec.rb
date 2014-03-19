@@ -17,23 +17,18 @@ shared_context "issues controller" do
     set_session_for(@user)
 
     @create_params = {
-      owner_name: @project.owner.uname, project_name: @project.name,
+      owner_with_name: @project.name_with_owner,
       issue: {
         title: "issue1",
         body: "issue body",
-        labelings_attributes: { @label.id => {label_id: @label.id}},
+        labelings_attributes: { @label.id => { label_id: @label.id }},
         assignee_id: @issue_user.id
       }
     }
 
-    @update_params = {
-      owner_name: @project.owner.uname, project_name: @project.name,
-      issue: {
-        title: "issue2"
-      }
-    }
+    @update_params = { owner_with_name: @project.name_with_owner, issue: { title: "issue2" }}
 
-    @pull = @project.pull_requests.new issue_attributes: {title: 'test', body: 'testing'}
+    @pull = @project.pull_requests.new issue_attributes: { title: 'test', body: 'testing' }
     @pull.issue.user, @pull.issue.project = @project.owner, @pull.to_project
     @pull.to_ref = 'master'
     @pull.from_project, @pull.from_ref = @project, 'non_conflicts'
@@ -44,12 +39,12 @@ end
 
 shared_examples_for 'issue user with project guest rights' do
   it 'should be able to perform index action' do
-    get :index, owner_name: @project.owner.uname, project_name: @project.name
+    get :index, owner_with_name: @project.name_with_owner
     response.should render_template(:index)
   end
 
   it 'should be able to perform show action' do
-    get :show, owner_name: @project.owner.uname, project_name: @project.name, id: @issue.serial_id
+    get :show, owner_with_name: @project.name_with_owner, id: @issue.serial_id
     response.should render_template(:show)
   end
 end
@@ -58,7 +53,7 @@ shared_examples_for 'issue user with project reader rights' do
 
   it 'should be able to perform index action on hidden project' do
     @project.update_attributes(visibility: 'hidden')
-    get :index, owner_name: @project.owner.uname, project_name: @project.name
+    get :index, owner_with_name: @project.name_with_owner
     response.should render_template(:index)
   end
 
@@ -75,7 +70,7 @@ end
 shared_examples_for 'issue user with project writer rights' do
   it 'should be able to perform index action on hidden project' do
     @project.update_attributes(visibility: 'hidden')
-    get :index, owner_name: @project.owner.uname, project_name: @project.name
+    get :index, owner_with_name: @project.name_with_owner
     response.should render_template(:index)
   end
 
@@ -122,23 +117,23 @@ end
 
 shared_examples_for 'user without issue destroy rights' do
   it 'should not be able to perform destroy action' do
-    delete :destroy, id: @issue.serial_id, owner_name: @project.owner.uname, project_name: @project.name
+    delete :destroy, id: @issue.serial_id, owner_with_name: @project.name_with_owner
     response.should redirect_to(controller.current_user ? forbidden_path : new_user_session_path)
   end
 
   it 'should not reduce issues count' do
-    lambda{ delete :destroy, id: @issue.serial_id, owner_name: @project.owner.uname, project_name: @project.name }.should_not change{ Issue.count }
+    lambda{ delete :destroy, id: @issue.serial_id, owner_with_name: @project.name_with_owner }.should_not change{ Issue.count }
   end
 end
 
 shared_examples_for 'project with issues turned off' do
   it 'should not be able to perform index action' do
-    get :index, owner_name: @project_with_turned_off_issues.owner.uname, project_name: @project_with_turned_off_issues.name
+    get :index, owner_with_name: @project_with_turned_off_issues.name_with_owner
     response.should redirect_to(forbidden_path)
   end
 
   it 'should not be able to perform show action' do
-    get :show, owner_name: @project_with_turned_off_issues.owner.uname, project_name: @project_with_turned_off_issues.name, id: @turned_of_issue.serial_id
+    get :show, owner_with_name: @project_with_turned_off_issues.name_with_owner, id: @turned_of_issue.serial_id
     response.should redirect_to(forbidden_path)
   end
 end
@@ -220,12 +215,12 @@ describe Projects::IssuesController do
     # end
 
     it 'should return 404' do
-      get :show, owner_name: @project.owner.uname, project_name: @project.name, id: 999999
+      get :show, owner_with_name: @project.name_with_owner, id: 999999
       render_template(file: "#{Rails.root}/public/404.html")
     end
 
     it 'should redirect to pull request page' do
-      get :show, owner_name: @project.owner.uname, project_name: @project.name, id: @pull.serial_id
+      get :show, owner_with_name: @project.name_with_owner, id: @pull.serial_id
       response.should redirect_to(project_pull_request_path(@project, @pull))
     end
   end
@@ -265,24 +260,24 @@ describe Projects::IssuesController do
 
       it 'should not be able to perform index action on hidden project' do
         @project.update_attributes(visibility: 'hidden')
-        get :index, owner_name: @project.owner.uname, project_name: @project.name
+        get :index, owner_with_name: @project.name_with_owner
         response.should redirect_to(forbidden_path)
       end
 
     else
       it 'should not be able to perform index action' do
-        get :index, owner_name: @project.owner.uname, project_name: @project.name
+        get :index, owner_with_name: @project.name_with_owner
         response.should redirect_to(new_user_session_path)
       end
 
       it 'should not be able to perform show action' do
-        get :show, owner_name: @project.owner.uname, project_name: @project.name, id: @issue.serial_id
+        get :show, owner_with_name: @project.name_with_owner, id: @issue.serial_id
         response.should redirect_to(new_user_session_path)
       end
 
       it 'should not be able to perform index action on hidden project' do
         @project.update_attributes(visibility: 'hidden')
-        get :index, owner_name: @project.owner.uname, project_name: @project.name
+        get :index, owner_with_name: @project.name_with_owner
         response.should redirect_to(new_user_session_path)
       end
     end

@@ -3,67 +3,67 @@ require 'spec_helper'
 shared_examples_for 'projects user with reader rights' do
 
   it 'should be able to fork project' do
-    post :fork, owner_name: @project.owner.uname, project_name: @project.name
+    post :fork, owner_with_name: @project.name_with_owner
     response.should redirect_to(project_path(Project.last))
   end
 
   it 'should be able to fork project to their group' do
     group = FactoryGirl.create(:group)
     create_actor_relation(group, @user, 'admin')
-    lambda {post :fork, owner_name: @project.owner.uname, project_name: @project.name,
-            group: group.id}.should change{ Project.count }.by(1)
+    lambda { post :fork, owner_with_name: @project.name_with_owner,
+             group: group.id }.should change{ Project.count }.by(1)
   end
 
   it 'should be able to fork project to own group' do
     group = FactoryGirl.create(:group, owner: @user)
-    lambda {post :fork, owner_name: @project.owner.uname, project_name: @project.name,
-            group: group.id}.should change{ Project.count }.by(1)
+    lambda { post :fork, owner_with_name: @project.name_with_owner,
+             group: group.id }.should change{ Project.count }.by(1)
   end
 
   it 'should be able to fork project with different name' do
-    post :fork, owner_name: @project.owner.uname, project_name: @project.name, fork_name: 'another_name'
+    post :fork, owner_with_name: @project.name_with_owner, fork_name: 'another_name'
     response.should redirect_to(project_path(Project.where(name: 'another_name').last))
   end
 end
 
 shared_examples_for 'projects user with project admin rights' do
   it 'should be able to perform update action' do
-    put :update, {owner_name: @project.owner.uname, project_name: @project.name}.merge(@update_params)
+    put :update, { owner_with_name: @project.name_with_owner }.merge(@update_params)
     response.should redirect_to(project_path(@project))
   end
   it 'should be able to perform schedule action' do
-    put :schedule, {owner_name: @project.owner.uname, project_name: @project.name}.merge(repository_id: @project.repositories.first.id)
+    put :schedule, { owner_with_name: @project.name_with_owner }.merge(repository_id: @project.repositories.first.id)
     response.should be_success
   end
 end
 
 shared_examples_for 'user with destroy rights' do
   it 'should be able to perform destroy action' do
-    delete :destroy, {owner_name: @project.owner.uname, project_name: @project.name}
+    delete :destroy, { owner_with_name: @project.name_with_owner }
     response.should redirect_to(@project.owner)
   end
 
   it 'should change objects count on destroy' do
-    lambda { delete :destroy, owner_name: @project.owner.uname, project_name: @project.name }.should change{ Project.count }.by(-1)
+    lambda { delete :destroy, owner_with_name: @project.name_with_owner }.should change{ Project.count }.by(-1)
   end
 end
 
 shared_examples_for 'projects user without project admin rights' do
   it 'should not be able to edit project' do
     description = @project.description
-    put :update, :project=>{description:"hack"}, owner_name: @project.owner.uname, project_name: @project.name
+    put :update, project: { description:"hack" }, owner_with_name: @project.name_with_owner
     @project.reload.description.should == description
     response.should redirect_to(forbidden_path)
   end
 
   it 'should not be able to perform schedule action' do
-    put :schedule, {owner_name: @project.owner.uname, project_name: @project.name}.merge(repository_id: @project.repositories.first.id)
+    put :schedule, { owner_with_name: @project.name_with_owner }.merge(repository_id: @project.repositories.first.id)
     response.should redirect_to(forbidden_path)
   end
 
   it 'should not be able to edit project sections' do
     has_wiki, has_issues = @project.has_wiki, @project.has_issues
-    post :sections, project:{has_wiki: !has_wiki, has_issues: !has_issues}, owner_name: @project.owner.uname, project_name: @project.name
+    post :sections, project: { has_wiki: !has_wiki, has_issues: !has_issues }, owner_with_name: @project.name_with_owner
     @project.reload.has_wiki.should == has_wiki
     @project.reload.has_issues.should == has_issues
     response.should redirect_to(forbidden_path)
@@ -72,15 +72,15 @@ shared_examples_for 'projects user without project admin rights' do
   it 'writer group should be able to fork project to their group' do
     group = FactoryGirl.create(:group)
     create_actor_relation(group, @user, 'writer')
-    lambda {post :fork, owner_name: @project.owner.uname, project_name: @project.name,
-            group: group.id}.should change{ Project.count }.by(1)
+    lambda { post :fork, owner_with_name: @project.name_with_owner,
+             group: group.id }.should change{ Project.count }.by(1)
   end
 
   it 'reader group should not be able to fork project to their group' do
     group = FactoryGirl.create(:group)
     create_actor_relation(group, @user, 'reader')
-    lambda {post :fork, owner_name: @project.owner.uname, project_name: @project.name,
-            group: group.id}.should change{ Project.count }.by(0)
+    lambda { post :fork, owner_with_name: @project.name_with_owner,
+             group: group.id }.should change{ Project.count }.by(0)
   end
 
   it 'writer group should be able to create project to their group' do
@@ -124,12 +124,12 @@ describe Projects::ProjectsController do
       end
 
       it 'should not be able to perform update action' do
-        put :update, {owner_name: @project.owner.uname, project_name: @project.name}.merge(@update_params)
+        put :update, { owner_with_name: @project.name_with_owner }.merge(@update_params)
         response.should redirect_to(new_user_session_path)
       end
 
       it 'should not be able to perform schedule action' do
-        put :schedule, {owner_name: @project.owner.uname, project_name: @project.name}.merge(repository_id: @project.repositories.first.id)
+        put :schedule, { owner_with_name: @project.name_with_owner }.merge(repository_id: @project.repositories.first.id)
         response.should redirect_to(new_user_session_path)
       end
 
@@ -207,7 +207,7 @@ describe Projects::ProjectsController do
       it_should_behave_like 'user with destroy rights'
 
       it 'should not be able to fork own project' do
-        post :fork, owner_name: @project.owner.uname, project_name: @project.name
+        post :fork, owner_with_name: @project.name_with_owner
         response.should redirect_to(@project)
       end
 
@@ -236,7 +236,7 @@ describe Projects::ProjectsController do
 
       it 'should not be able to fork hidden project' do
         @project.update_attributes(visibility: 'hidden')
-        post :fork, owner_name: @project.owner.uname, project_name: @project.name
+        post :fork, owner_with_name: @project.name_with_owner
         response.should redirect_to(forbidden_path)
       end
 
