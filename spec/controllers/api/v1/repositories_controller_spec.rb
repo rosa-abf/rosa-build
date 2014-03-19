@@ -63,7 +63,7 @@ shared_examples_for 'api repository user with writer rights' do
 
   context 'api repository user with update rights' do
     before do
-      put :update, repository: {description: 'new description'}, id: @repository.id, format: :json
+      put :update, repository: { description: 'new description' }, id: @repository.id, format: :json
     end
 
     it 'should be able to perform update action' do
@@ -189,7 +189,7 @@ shared_examples_for 'api repository user without writer rights' do
 
   context 'api repository user without update rights' do
     before do
-      put :update, repository: {description: 'new description'}, id: @repository.id, format: :json
+      put :update, repository: { description: 'new description' }, id: @repository.id, format: :json
     end
 
     it 'should not be able to perform update action' do

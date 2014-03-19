@@ -31,7 +31,7 @@ shared_examples_for 'api group user with admin rights' do
 
   context 'api group user with update rights' do
     before do
-      put :update, group: {description: 'new description'}, id: @group.id, format: :json
+      put :update, group: { description: 'new description' }, id: @group.id, format: :json
     end
 
     it 'should be able to perform update action' do
@@ -120,7 +120,7 @@ shared_examples_for 'api group user without admin rights' do
 
   context 'api group user without update rights' do
     before do
-      put :update, group: {description: 'new description'}, id: @group.id, format: :json
+      put :update, group: { description: 'new description' }, id: @group.id, format: :json
     end
 
     it 'should not be able to perform update action' do
