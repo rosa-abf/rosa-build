@@ -260,7 +260,7 @@ Rosa::Application.routes.draw do
 
   scope module: 'groups' do
     get '/groups/new' => 'profile#new' # need to force next route exclude id: 'new'
-    get '/groups/:id' => redirect("/%{id}"), as: :profile_group # override default group show route
+    get '/groups/:id' => redirect("/%{id}"),        as: :profile_group # override default group show route
     resources :groups, controller: 'profile' do
       delete :remove_user, on: :member
       resources :members, only: [:index] do
@@ -405,7 +405,7 @@ Rosa::Application.routes.draw do
       get '/' => 'users/profile#show', as: :user
     end
     constraints Rosa::Constraints::Owner.new(Group, true) do
-      #get '/' => 'groups/profile#show', as: :group
+      get '/' => 'groups/profile#show'
     end
   end
 

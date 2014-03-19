@@ -9,7 +9,7 @@ class Groups::ProfileController < Groups::BaseController
   end
 
   def show
-    @path, page = group_path, params[:page].to_i
+    @path, page = group_path(@group), params[:page].to_i
     @projects = @group.own_projects.opened.search(params[:search]).recent
     if request.xhr?
       if params[:visibility] != 'hidden'
