@@ -10,6 +10,8 @@ class FlashNotify < ActiveRecord::Base
 
   scope :published, -> { where(published: true) }
 
+  attr_accessible :body_ru, :body_en, :status, :published
+
   def hash_id
     @digest ||= Digest::MD5.hexdigest("#{self.id}-#{self.updated_at}")
   end
