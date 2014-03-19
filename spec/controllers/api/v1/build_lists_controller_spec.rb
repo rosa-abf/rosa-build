@@ -733,7 +733,7 @@ describe Api::V1::BuildListsController do
       end
 
       it 'should show only accessible build_lists' do
-        get :index, filter: ownership: 'index', format: :json
+        get :index, filter: { ownership: 'index' }, format: :json
         assigns(:build_lists).should include(@build_list1)
         assigns(:build_lists).should_not include(@build_list2)
         assigns(:build_lists).should include(@build_list3)
