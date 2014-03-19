@@ -41,7 +41,7 @@ class Advisory < ActiveRecord::Base
   # this method fetches and structurize packages attached to current advisory.
   def fetch_packages_info
     packages_info = Hash.new { |h, k| h[k] = {} } # maaagic, it's maaagic ;)
-    build_lists.find_in_batches(include: [:save_to_platform, :packages, :project]) do |batch|
+    build_lists.includes(:save_to_platform, :packages, :project).find_in_batches do |batch|
       batch.each do |build_list|
         tmp = build_list.packages.inject({srpm: nil, rpm: []}) do |h, p|
           p.package_type == 'binary' ? h[:rpm] << p.fullname : h[:srpm] = p.fullname
