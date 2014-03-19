@@ -3,7 +3,7 @@ class Subscribe < ActiveRecord::Base
   belongs_to :user
   belongs_to :project
 
-  attr_accessible :status
+  attr_accessible :status, :user_id
 
   def commit_subscribe?
     subscribeable_type == 'Grit::Commit'
