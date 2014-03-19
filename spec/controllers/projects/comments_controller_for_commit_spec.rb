@@ -6,15 +6,15 @@ describe Projects::CommentsController do
     @project = FactoryGirl.create(:project_with_commit)
     @commit = @project.repo.commits.first
 
-    @create_params = { comment: { body: 'I am a comment!' }, owner_with_name: @project.name_with_owner, commit_id: @commit.id }
-    @update_params = { comment: { body: 'updated' }, owner_with_name: @project.name_with_owner, commit_id: @commit.id }
+    @create_params = { comment: { body: 'I am a comment!' }, name_with_owner: @project.name_with_owner, commit_id: @commit.id }
+    @update_params = { comment: { body: 'updated' }, name_with_owner: @project.name_with_owner, commit_id: @commit.id }
 
     any_instance_of(Project, versions: ['v1.0', 'v2.0'])
     @comment = FactoryGirl.create(:comment, commentable: @commit, project: @project)
     @user = FactoryGirl.create(:user)
     @own_comment = FactoryGirl.create(:comment, commentable: @commit, user: @user, project: @project)
     set_session_for(@user)
-    @path = { owner_with_name: @project.name_with_owner, commit_id: @commit.id }
+    @path = { name_with_owner: @project.name_with_owner, commit_id: @commit.id }
     @return_path = commit_path(@project, @commit.id)
   end
 

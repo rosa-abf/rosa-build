@@ -19,7 +19,7 @@ shared_context "pull request controller" do
                                 to_ref: 'non_conflicts',
                               from_ref: 'master' },
       to_project: @project.name_with_owner,
-      owner_with_name: @project.name_with_owner
+      name_with_owner: @project.name_with_owner
     }
     @update_params = @create_params.merge(pull_request_action: 'close', id: @pull.serial_id)
     @wrong_update_params = @create_params.merge(
@@ -36,13 +36,13 @@ end
 
 shared_examples_for 'pull request user with project guest rights' do
   it 'should be able to perform index action' do
-    get :index, owner_with_name: @project.name_with_owner
+    get :index, name_with_owner: @project.name_with_owner
     response.should render_template(:index)
   end
 
   it 'should be able to perform show action when pull request has been created' do
     @pull.check
-    get :show, owner_with_name: @project.name_with_owner, id: @pull.serial_id
+    get :show, name_with_owner: @project.name_with_owner, id: @pull.serial_id
     response.should render_template(:show)
   end
 end
@@ -50,7 +50,7 @@ end
 shared_examples_for 'pull request user with project reader rights' do
   it 'should be able to perform index action on hidden project' do
     @project.update_attributes(visibility: 'hidden')
-    get :index, owner_with_name: @project.name_with_owner
+    get :index, name_with_owner: @project.name_with_owner
     response.should render_template(:index)
   end
 
@@ -162,13 +162,13 @@ end
 shared_examples_for 'pull request when project with issues turned off' do
   before { @project.update_attributes(has_issues: false) }
   it 'should be able to perform index action' do
-    get :index, owner_with_name: @project.name_with_owner
+    get :index, name_with_owner: @project.name_with_owner
     response.should render_template(:index)
   end
 
   it 'should be able to perform show action when pull request has been created' do
     @pull.check
-    get :show, owner_with_name: @project.name_with_owner, id: @pull.serial_id
+    get :show, name_with_owner: @project.name_with_owner, id: @pull.serial_id
     response.should render_template(:show)
   end
 end
@@ -222,12 +222,12 @@ describe Projects::PullRequestsController do
     it_should_behave_like 'pull request when project with issues turned off'
 
     it 'should return 404' do
-      get :show, owner_with_name: @project.name_with_owner, id: 999999
+      get :show, name_with_owner: @project.name_with_owner, id: 999999
       render_template(file: "#{Rails.root}/public/404.html")
     end
 
     it 'should redirect to issue page' do
-      get :show, owner_with_name: @project.name_with_owner, id: @issue.serial_id
+      get :show, name_with_owner: @project.name_with_owner, id: @issue.serial_id
       response.should redirect_to(project_issue_path(@project, @issue))
     end
   end
@@ -267,19 +267,19 @@ describe Projects::PullRequestsController do
 
     else
       it 'should not be able to perform index action' do
-        get :index, owner_with_name: @project.name_with_owner
+        get :index, name_with_owner: @project.name_with_owner
         response.should redirect_to(new_user_session_path)
       end
 
       it 'should not be able to perform show action' do
         @pull.check
-        get :show, owner_with_name: @project.name_with_owner, id: @pull.serial_id
+        get :show, name_with_owner: @project.name_with_owner, id: @pull.serial_id
         response.should redirect_to(new_user_session_path)
       end
 
       it 'should not be able to perform index action on hidden project' do
         @project.update_attributes(visibility: 'hidden')
-        get :index, owner_with_name: @project.name_with_owner
+        get :index, name_with_owner: @project.name_with_owner
         response.should redirect_to(new_user_session_path)
       end
     end

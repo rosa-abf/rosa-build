@@ -53,8 +53,8 @@ describe Projects::SubscribesController do
     @project = FactoryGirl.create(:project)
     @issue = FactoryGirl.create(:issue, project_id: @project.id)
 
-    @create_params =  { issue_id: @issue.serial_id, owner_with_name: @project.name_with_owner }
-    @destroy_params = { issue_id: @issue.serial_id, owner_with_name: @project.name_with_owner }
+    @create_params =  { issue_id: @issue.serial_id, name_with_owner: @project.name_with_owner }
+    @destroy_params = { issue_id: @issue.serial_id, name_with_owner: @project.name_with_owner }
 
     any_instance_of(Project, versions: ['v1.0', 'v2.0'])
 

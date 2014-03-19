@@ -9,7 +9,7 @@ describe Projects::BuildListsController do
     end
 
     it 'should be able to perform index action in project scope' do
-      get :index, owner_with_name: @project.name_with_owner
+      get :index, name_with_owner: @project.name_with_owner
       response.should be_success
     end
   end
@@ -21,7 +21,7 @@ describe Projects::BuildListsController do
     end
 
     it 'should not be able to perform index action in project scope' do
-      get :index, owner_with_name: @project.name_with_owner
+      get :index, name_with_owner: @project.name_with_owner
       response.should redirect_to(forbidden_url)
     end
   end
@@ -32,32 +32,32 @@ describe Projects::BuildListsController do
     }
 
     it 'should be able to perform new action' do
-      get :new, owner_with_name: @project.name_with_owner
+      get :new, name_with_owner: @project.name_with_owner
       response.should render_template(:new)
     end
 
     it 'should be able to perform create action' do
-      post :create, { owner_with_name: @project.name_with_owner }.merge(@create_params)
+      post :create, { name_with_owner: @project.name_with_owner }.merge(@create_params)
       response.should redirect_to project_build_lists_path(@project)
     end
 
     it 'should save correct commit_hash for branch based build' do
-      post :create, { owner_with_name: @project.name_with_owner }.merge(@create_params).deep_merge(build_list: { project_version: "master" })
+      post :create, { name_with_owner: @project.name_with_owner }.merge(@create_params).deep_merge(build_list: { project_version: "master" })
       @project.build_lists.last.commit_hash.should == @project.repo.commits('master').first.id
     end
 
     it 'should save correct commit_hash for tag based build' do
       system("cd #{@project.repo.path} && git tag 4.7.5.3") # TODO REDO through grit
-      post :create, { owner_with_name: @project.name_with_owner }.merge(@create_params).deep_merge(build_list: { project_version: "4.7.5.3" })
+      post :create, { name_with_owner: @project.name_with_owner }.merge(@create_params).deep_merge(build_list: { project_version: "4.7.5.3" })
       @project.build_lists.last.commit_hash.should == @project.repo.commits('4.7.5.3').first.id
     end
 
     it 'should not be able to create with wrong project version' do
-      lambda{ post :create, { owner_with_name: @project.name_with_owner }.merge(@create_params).deep_merge(build_list: { project_version: "wrong", commit_hash: nil })}.should change{ @project.build_lists.count }.by(0)
+      lambda{ post :create, { name_with_owner: @project.name_with_owner }.merge(@create_params).deep_merge(build_list: { project_version: "wrong", commit_hash: nil })}.should change{ @project.build_lists.count }.by(0)
     end
 
     it 'should not be able to create with wrong git hash' do
-      lambda{ post :create, { owner_with_name: @project.name_with_owner }.merge(@create_params).deep_merge(build_list: { commit_hash: 'wrong' }) }.should change{ @project.build_lists.count }.by(0)
+      lambda{ post :create, { name_with_owner: @project.name_with_owner }.merge(@create_params).deep_merge(build_list: { commit_hash: 'wrong' }) }.should change{ @project.build_lists.count }.by(0)
     end
   end
 
@@ -67,12 +67,12 @@ describe Projects::BuildListsController do
     }
 
     it 'should not be able to perform new action' do
-      get :new, owner_with_name: @project.name_with_owner
+      get :new, name_with_owner: @project.name_with_owner
       response.should redirect_to(forbidden_url)
     end unless skip_new
 
     it 'should not be able to perform create action' do
-      post :create, { owner_with_name: @project.name_with_owner }.merge(@create_params)
+      post :create, { name_with_owner: @project.name_with_owner }.merge(@create_params)
       response.should redirect_to(forbidden_url)
     end
   end
@@ -119,7 +119,7 @@ describe Projects::BuildListsController do
 
         @user = FactoryGirl.create(:user)
         set_session_for(@user)
-        @show_params = { owner_with_name: @project.name_with_owner, id: @build_list.id }
+        @show_params = { name_with_owner: @project.name_with_owner, id: @build_list.id }
         @build_list.save_to_repository.update_column(:publish_without_qa, false)
         @request.env['HTTP_REFERER'] = build_list_path(@build_list)
       end
@@ -315,7 +315,7 @@ describe Projects::BuildListsController do
         create_actor_relation(@member_group, @member_user, 'reader')
         create_relation(@project, @member_group, 'reader')
 
-        @show_params = { owner_with_name: @project.name_with_owner, id: @build_list.id }
+        @show_params = { name_with_owner: @project.name_with_owner, id: @build_list.id }
       end
 
       context 'for all build lists' do

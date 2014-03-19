@@ -2,54 +2,54 @@ require 'spec_helper'
 
 shared_examples_for 'hooks user with project admin rights' do
   it 'should be able to perform index action' do
-    get :index, {owner_with_name: "#{@project.owner.uname}/#{@project.name}"}
+    get :index, {name_with_owner: "#{@project.owner.uname}/#{@project.name}"}
     response.should be_success
   end
 
   it 'should be able to perform new action' do
-    get :new, { owner_with_name: @project.name_with_owner, hook: { name: 'web' }}
+    get :new, { name_with_owner: @project.name_with_owner, hook: { name: 'web' }}
     response.should be_success
   end
 
   it 'should be able to perform edit action' do
-    get :new, { owner_with_name: @project.name_with_owner, id: @hook.id }
+    get :new, { name_with_owner: @project.name_with_owner, id: @hook.id }
     response.should be_success
   end
 
   it 'should be able to perform update action' do
-    put :update, { owner_with_name: @project.name_with_owner, id: @hook.id }.merge(@update_params)
+    put :update, { name_with_owner: @project.name_with_owner, id: @hook.id }.merge(@update_params)
     response.should redirect_to(project_hooks_path(@project, name: 'web'))
   end
 
   it 'should be able to perform create action' do
-    post :create, { owner_with_name: @project.name_with_owner }.merge(@create_params)
+    post :create, { name_with_owner: @project.name_with_owner }.merge(@create_params)
     response.should redirect_to(project_hooks_path(@project, name: 'web'))
   end
 end
 
 shared_examples_for 'hooks user without project admin rights' do
   it 'should not be able to perform index action' do
-    get :index, { owner_with_name: @project.name_with_owner }
+    get :index, { name_with_owner: @project.name_with_owner }
     response.should redirect_to(forbidden_path)
   end
 
   it 'should not be able to perform new action' do
-    get :new, { owner_with_name: @project.name_with_owner, hook: { name: 'web' }}
+    get :new, { name_with_owner: @project.name_with_owner, hook: { name: 'web' }}
     response.should redirect_to(forbidden_path)
   end
 
   it 'should not be able to perform edit action' do
-    get :new, { owner_with_name: @project.name_with_owner, id: @hook.id }
+    get :new, { name_with_owner: @project.name_with_owner, id: @hook.id }
     response.should redirect_to(forbidden_path)
   end
 
   it 'should not be able to perform update action' do
-    put :update, { owner_with_name: @project.name_with_owner, id: @hook.id }.merge(@update_params)
+    put :update, { name_with_owner: @project.name_with_owner, id: @hook.id }.merge(@update_params)
     response.should redirect_to(forbidden_path)
   end
 
   it 'should not be able to perform create action' do
-    post :create, { owner_with_name: @project.name_with_owner }.merge(@create_params)
+    post :create, { name_with_owner: @project.name_with_owner }.merge(@create_params)
     response.should redirect_to(forbidden_path)
   end
 end

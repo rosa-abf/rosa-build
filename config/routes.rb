@@ -292,7 +292,7 @@ Rosa::Application.routes.draw do
         get   :mass_import
       end
     end
-    scope ':owner_with_name', constraints: { owner_with_name: Project::OWNER_AND_NAME_REGEXP } do # project
+    scope ':name_with_owner', constraints: { name_with_owner: Project::OWNER_AND_NAME_REGEXP } do # project
       scope as: 'project' do
         resources :wiki do
           collection do
