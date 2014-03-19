@@ -700,7 +700,7 @@ describe Api::V1::BuildListsController do
 
       @build_list4 = FactoryGirl.create(:build_list)
       @build_list4.project.update_column(:visibility, 'hidden')
-      create_relation(@build_list4, @user, 'reader')
+      create_relation(@build_list4.project, @user, 'reader')
 
       @filter_build_list1 = FactoryGirl.create(:build_list)
       @filter_build_list2 = FactoryGirl.create(:build_list)
