@@ -588,7 +588,7 @@ class BuildList < ActiveRecord::Base
       users = [user, publisher].compact.uniq.select{ |u| u.notifier.can_notify? && u.notifier.new_build? }
 
       # find associated users
-      users |= project.all_members.select do |u|
+      users |= project.all_members(:notifier).select do |u|
         u.notifier.can_notify? && u.notifier.new_associated_build?
       end if project
       users.each{ |u| UserMailer.build_list_notification(self, u).deliver }

@@ -21,13 +21,13 @@ module BuildListObserver
         if status == self.class::SUCCESS
           # Update project average build time
           begin
-            statistic = project.project_statistics.find_or_create_by arch_id: arch_id
+            statistic = project.project_statistics.where(arch_id: arch_id).first_or_create
           rescue ActiveRecord::RecordNotUnique
             retry
           end
           build_count = statistic.build_count.to_i
           new_av_time = ( statistic.average_build_time * build_count + duration.to_i ) / ( build_count + 1 )
-          statistic.update_attributes(average_build_time: new_av_time, build_count: build_count + 1)
+          statistic.update_attributes({average_build_time: new_av_time, build_count: build_count + 1}, without_protection: true)
         end
       end
     end

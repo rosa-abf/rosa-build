@@ -120,12 +120,12 @@ class Project < ActiveRecord::Base
     name_with_owner
   end
 
-  def all_members
-    members | (owner_type == 'User' ? [owner] : owner.members)
+  def all_members(*includes)
+    members(includes) | (owner_type == 'User' ? [owner] : owner.members.includes(includes))
   end
 
-  def members
-    collaborators | groups.map(&:members).flatten
+  def members(*includes)
+    collaborators.includes(includes) | groups.map{ |g| g.members.includes(includes) }.flatten
   end
 
   def add_member(member, role = 'admin')
