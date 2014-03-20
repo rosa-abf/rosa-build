@@ -3,18 +3,18 @@ require 'spec_helper'
 shared_examples_for 'user with change projects in repository rights' do
 
   it 'should be able to see add_project page' do
-    get :add_project, id: @repository.id, platform_id: @platform.id
+    get :add_project, id: @repository, platform_id: @platform
     response.should render_template(:projects_list)
   end
 
   it 'should be able to add project to repository' do
-    get :add_project, id: @repository.id, platform_id: @platform.id, project_id: @project.id
+    get :add_project, id: @repository, platform_id: @platform, project_id: @project.id
     response.should redirect_to(platform_repository_path(@repository.platform, @repository))
     @repository.projects.should include(@project)
   end
 
   it 'should be able to remove project from repository' do
-    get :remove_project, id: @repository.id, platform_id: @platform.id, project_id: @project.id
+    get :remove_project, id: @repository, platform_id: @platform, project_id: @project.id
     response.should redirect_to(platform_repository_path(@repository.platform, @repository))
     @repository.projects.should_not include(@project)
   end
@@ -23,33 +23,33 @@ end
 
 shared_examples_for 'user with rights of add/remove sync_lock_file to repository' do
   it 'should be able to perform sync_lock_file action' do
-    put :sync_lock_file, id: @repository.id, platform_id: @platform.id
+    put :sync_lock_file, id: @repository, platform_id: @platform
     response.should redirect_to(edit_platform_repository_path(@platform, @repository))
   end
 end
 
 shared_examples_for 'user without rights of add/remove sync_lock_file to repository' do
-  it 'should not be able to perform #{action} action' do
-    put :sync_lock_file, id: @repository.id, platform_id: @platform.id
+  it 'should not be able to perform sync_lock_file action' do
+    put :sync_lock_file, id: @repository, platform_id: @platform
     response.should redirect_to(redirect_path)
   end
 end
 
 shared_examples_for 'user without change projects in repository rights' do
   it 'should not be able to add project to repository' do
-    get :add_project, id: @repository.id, platform_id: @platform.id, project_id: @project.id
+    get :add_project, id: @repository, platform_id: @platform, project_id: @project.id
     response.should redirect_to(redirect_path)
     @repository.projects.should_not include(@project)
   end
 
   it 'should not be able to perform regenerate_metadata action' do
-    put :regenerate_metadata, id: @repository.id, platform_id: @platform.id
+    put :regenerate_metadata, id: @repository, platform_id: @platform
     response.should redirect_to(redirect_path)
     @repository.repository_statuses.should have(:no).items
   end
 
   it 'should not be able to remove project from repository' do
-    delete :remove_project, id: @repository.id, platform_id: @platform.id, project_id: @project.id
+    delete :remove_project, id: @repository, platform_id: @platform, project_id: @project.id
     response.should redirect_to(redirect_path)
     @repository.projects.should_not include(@project)
   end
@@ -57,18 +57,18 @@ end
 
 shared_examples_for 'registered user or guest' do
   it 'should not be able to perform new action' do
-    get :new, platform_id: @platform.id
+    get :new, platform_id: @platform
     response.should redirect_to(redirect_path)
   end
 
   it 'should not be able to perform regenerate_metadata action' do
-    put :regenerate_metadata, id: @repository.id, platform_id: @platform.id
+    put :regenerate_metadata, id: @repository, platform_id: @platform
     response.should redirect_to(redirect_path)
     @repository.repository_statuses.should have(:no).items
   end
 
   it 'should not be able to perform regenerate_metadata action of personal repository' do
-    put :regenerate_metadata, id: @personal_repository.id, platform_id: @personal_repository.platform.id
+    put :regenerate_metadata, id: @personal_repository, platform_id: @personal_repository.platform
     response.should redirect_to(redirect_path)
     @personal_repository.repository_statuses.should have(:no).items
   end
@@ -80,24 +80,24 @@ shared_examples_for 'registered user or guest' do
   end
 
   it 'should not be able to perform edit action' do
-    get :edit, id: @repository.id, platform_id: @platform.id
+    get :edit, id: @repository, platform_id: @platform
     response.should redirect_to(redirect_path)
   end
 
   it 'should not be able to perform update action' do
-    put :update, id: @repository.id, platform_id: @platform.id
+    put :update, id: @repository, platform_id: @platform
     response.should redirect_to(redirect_path)
   end
 
   it 'should not be able to add new member to repository' do
-    post :add_member, id: @repository.id, platform_id: @platform.id, member_id: @another_user.id
+    post :add_member, id: @repository, platform_id: @platform, member_id: @another_user.id
     response.should redirect_to(redirect_path)
     @repository.members.should_not include(@another_user)
   end
 
   it 'should not be able to remove member from repository' do
     create_relation(@repository, @another_user, 'admin')
-    delete :remove_member, id: @repository.id, platform_id: @platform.id, member_id: @another_user.id
+    delete :remove_member, id: @repository, platform_id: @platform, member_id: @another_user.id
     response.should redirect_to(redirect_path)
     @repository.members.should include(@another_user)
   end
@@ -105,21 +105,21 @@ shared_examples_for 'registered user or guest' do
   it 'should not be able to remove members from repository' do
     another_user2 = FactoryGirl.create(:user)
     create_relation(@repository, @another_user, 'admin')
-    create_relation(@repository, @another_user2, 'admin')
-    post :remove_members, id: @repository.id, platform_id: @platform.id,
+    create_relation(@repository, another_user2, 'admin')
+    post :remove_members, id: @repository, platform_id: @platform,
       user_remove: {@another_user.id => [1], another_user2.id => [1]}
     response.should redirect_to(redirect_path)
     @repository.members.should include(@another_user, another_user2)
   end
 
   it 'should not be able to destroy repository in main platform' do
-    delete :destroy, id: @repository.id, platform_id: @platform.id
+    delete :destroy, id: @repository, platform_id: @platform
     response.should redirect_to(redirect_path)
-    lambda { delete :destroy, id: @repository.id }.should_not change{ Repository.count }.by(-1)
+    lambda { delete :destroy, id: @repository, platform_id: @platform }.should_not change{ Repository.count }.by(-1)
   end
 
   it 'should not be able to destroy personal repository' do
-    lambda { delete :destroy, id: @personal_repository.id, platform_id: @personal_repository.platform.id}
+    lambda { delete :destroy, id: @personal_repository, platform_id: @personal_repository.platform}
       .should change{ Repository.count }.by(0)
     response.should redirect_to(redirect_path)
   end
@@ -127,17 +127,17 @@ end
 
 shared_examples_for 'registered user' do
   it 'should be able to perform index action' do
-    get :index, platform_id: @platform.id
+    get :index, platform_id: @platform
     response.should render_template(:index)
   end
 
   it 'should be able to perform show action' do
-    get :show, id: @repository.id
+    get :show, id: @repository, platform_id: @platform
     response.should render_template(:show)
   end
 
   it 'should be able to perform projects_list action' do
-    get :projects_list, id: @repository.id, platform_id: @platform.id, format: :json
+    get :projects_list, id: @repository, platform_id: @platform, format: :json
     response.should be_success
   end
 
@@ -149,27 +149,27 @@ shared_examples_for 'platform admin user' do
   it_should_behave_like 'user with rights of add/remove sync_lock_file to repository'
 
   it 'should be able to perform new action' do
-    get :new, platform_id: @platform.id
+    get :new, platform_id: @platform
     response.should render_template(:new)
   end
 
   it 'should be able to perform regenerate_metadata action' do
-    put :regenerate_metadata, id: @repository.id, platform_id: @platform.id
+    put :regenerate_metadata, id: @repository, platform_id: @platform
     response.should redirect_to(platform_repository_path(@platform, @repository))
-    @repository.repository_statuses.find_by(platform_id: @platform.id).
+    @repository.repository_statuses.find_by(platform_id: @platform).
       waiting_for_regeneration?.should be_true
   end
 
   it 'should be able to perform regenerate_metadata action of personal repository' do
-    put :regenerate_metadata, id: @personal_repository.id, platform_id: @personal_repository.platform.id, build_for_platform_id: @platform.id
+    put :regenerate_metadata, id: @personal_repository, platform_id: @personal_repository.platform, build_for_platform_id: @platform.id
     response.should redirect_to(platform_repository_path(@personal_repository.platform, @personal_repository))
-    @personal_repository.repository_statuses.find_by(platform_id: @platform.id).
+    @personal_repository.repository_statuses.find_by(platform_id: @platform).
       waiting_for_regeneration?.should be_true
   end
 
   it 'should not be able to perform regenerate_metadata action of personal repository when build_for_platform does not exist' do
-    put :regenerate_metadata, id: @personal_repository.id, platform_id: @personal_repository.platform.id
-    response.should render_template(file: "#{Rails.root}/public/404.html")
+    put :regenerate_metadata, id: @personal_repository, platform_id: @personal_repository.platform
+    response.should redirect_to('/404.html')
     @personal_repository.repository_statuses.should have(:no).items
   end
 
@@ -179,24 +179,24 @@ shared_examples_for 'platform admin user' do
   end
 
   it 'should be able to destroy repository in main platform' do
-    lambda { delete :destroy, id: @repository.id, platform_id: @platform.id }.should change{ Repository.count }.by(-1)
+    lambda { delete :destroy, id: @repository, platform_id: @platform }.should change{ Repository.count }.by(-1)
     response.should redirect_to(platform_repositories_path(@repository.platform))
   end
 
   it 'should be able to perform edit action' do
-    get :edit, id: @repository.id, platform_id: @platform.id
+    get :edit, id: @repository, platform_id: @platform
     response.should render_template(:edit)
   end
 
   it 'should be able to add new member to repository' do
-    post :add_member, id: @repository.id, platform_id: @platform.id, member_id: @another_user.id
+    post :add_member, id: @repository, platform_id: @platform, member_id: @another_user.id
     response.should redirect_to(edit_platform_repository_path(@repository.platform, @repository))
     @repository.members.should include(@another_user)
   end
 
   it 'should be able to remove member from repository' do
     create_relation(@repository, @another_user, 'admin')
-    delete :remove_member, id: @repository.id, platform_id: @platform.id, member_id: @another_user.id
+    delete :remove_member, id: @repository, platform_id: @platform, member_id: @another_user.id
     response.should redirect_to(edit_platform_repository_path(@repository.platform, @repository))
     @repository.members.should_not include(@another_user)
   end
@@ -205,7 +205,7 @@ shared_examples_for 'platform admin user' do
     another_user2 = FactoryGirl.create(:user)
     create_relation(@repository, @another_user, 'admin')
     create_relation(@repository, @another_user2, 'admin')
-    post :remove_members, id: @repository.id, platform_id: @platform.id,
+    post :remove_members, id: @repository, platform_id: @platform,
       user_remove: {@another_user.id => [1], another_user2.id => [1]}
     response.should redirect_to(edit_platform_repository_path(@repository.platform, @repository))
     @repository.members.should_not include(@another_user, another_user2)
@@ -213,14 +213,15 @@ shared_examples_for 'platform admin user' do
 
   it 'should not be able to destroy personal repository with name "main"' do
     # hook for "ActiveRecord::ActiveRecordError: name is marked as readonly"
-    Repository.where(id: @personal_repository.id).update_all("name = 'main'")
-    lambda { delete :destroy, id: @personal_repository.id, platform_id: @personal_repository.platform.id}
+    Repository.where(id: @personal_repository).update_all("name = 'main'")
+    lambda { delete :destroy, id: @personal_repository, platform_id: @personal_repository.platform}
       .should change{ Repository.count }.by(0)
-    response.should redirect_to(forbidden_path)
+    # response.should redirect_to(forbidden_path)
+    response.should redirect_to('/404.html')
   end
 
   it 'should be able to destroy personal repository with name not "main"' do
-    lambda { delete :destroy, id: @personal_repository.id, platform_id: @personal_repository.platform.id}
+    lambda { delete :destroy, id: @personal_repository, platform_id: @personal_repository.platform}
       .should change{ Repository.count }.by(-1)
     response.should redirect_to(platform_repositories_path(@personal_repository.platform))
   end
@@ -237,7 +238,7 @@ describe Platforms::RepositoriesController do
     @personal_repository = FactoryGirl.create(:personal_repository)
     @project = FactoryGirl.create(:project)
     @another_user = FactoryGirl.create(:user)
-    @create_params = {repository: {name: 'pro', description: 'pro2'}, platform_id: @platform.id}
+    @create_params = {repository: {name: 'pro', description: 'pro2'}, platform_id: @platform}
 
     @user = FactoryGirl.create(:user)
     set_session_for(@user)
@@ -267,7 +268,7 @@ describe Platforms::RepositoriesController do
     end
 
     it 'should not be able to perform projects_list action', anonymous_access: false do
-      get :projects_list, id: @repository.id, platform_id: @platform.id, format: :json
+      get :projects_list, id: @repository, platform_id: @platform, format: :json
       response.response_code.should == 401
     end
 
