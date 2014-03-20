@@ -390,9 +390,9 @@ describe Api::V1::PlatformsController do
       render_views
       %w(main personal).each do |type|
         it "ensures that filter by type = #{type} returns true result" do
-          get :index, format: :json, type: "#{type}"
+          get :index, format: :json, type: type
           JSON.parse(response.body)['platforms'].map{ |p| p['platform_type'] }.
-            uniq.should == ["#{type}"]
+            uniq.should == [type]
         end
       end
     end
