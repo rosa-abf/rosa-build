@@ -115,16 +115,16 @@ shared_examples_for 'user without issue update rights' do
   end
 end
 
-shared_examples_for 'user without issue destroy rights' do
-  it 'should not be able to perform destroy action' do
-    delete :destroy, id: @issue.serial_id, name_with_owner: @project.name_with_owner
-    response.should redirect_to(controller.current_user ? forbidden_path : new_user_session_path)
-  end
+# shared_examples_for 'user without issue destroy rights' do
+#   it 'should not be able to perform destroy action' do
+#     delete :destroy, id: @issue.serial_id, name_with_owner: @project.name_with_owner
+#     response.should redirect_to(controller.current_user ? forbidden_path : new_user_session_path)
+#   end
 
-  it 'should not reduce issues count' do
-    lambda{ delete :destroy, id: @issue.serial_id, name_with_owner: @project.name_with_owner }.should_not change{ Issue.count }
-  end
-end
+#   it 'should not reduce issues count' do
+#     lambda{ delete :destroy, id: @issue.serial_id, name_with_owner: @project.name_with_owner }.should_not change{ Issue.count }
+#   end
+# end
 
 shared_examples_for 'project with issues turned off' do
   it 'should not be able to perform index action' do
@@ -152,7 +152,7 @@ describe Projects::IssuesController do
     it_should_behave_like 'issue user with project writer rights'
     it_should_behave_like 'user with issue update rights'
     it_should_behave_like 'project with issues turned off'
-    it_should_behave_like 'user without issue destroy rights'
+    # it_should_behave_like 'user without issue destroy rights'
   end
 
   context 'for project admin user' do
@@ -165,7 +165,7 @@ describe Projects::IssuesController do
     it_should_behave_like 'issue user with project writer rights'
     it_should_behave_like 'user with issue update rights'
     it_should_behave_like 'project with issues turned off'
-    it_should_behave_like 'user without issue destroy rights'
+    # it_should_behave_like 'user without issue destroy rights'
   end
 
   context 'for project owner user' do
@@ -179,7 +179,7 @@ describe Projects::IssuesController do
     it_should_behave_like 'issue user with project writer rights'
     it_should_behave_like 'user with issue update rights'
     it_should_behave_like 'project with issues turned off'
-    it_should_behave_like 'user without issue destroy rights'
+    # it_should_behave_like 'user without issue destroy rights'
   end
 
   context 'for project reader user' do
@@ -191,7 +191,7 @@ describe Projects::IssuesController do
     it_should_behave_like 'issue user with project reader rights'
     it_should_behave_like 'user without issue update rights'
     it_should_behave_like 'project with issues turned off'
-    it_should_behave_like 'user without issue destroy rights'
+    # it_should_behave_like 'user without issue destroy rights'
 
     context 'perform create action' do
       before { post :create, @create_params }
@@ -235,7 +235,7 @@ describe Projects::IssuesController do
     it_should_behave_like 'issue user with project writer rights'
     it_should_behave_like 'user without issue update rights'
     it_should_behave_like 'project with issues turned off'
-    it_should_behave_like 'user without issue destroy rights'
+    # it_should_behave_like 'user without issue destroy rights'
   end
 
   context 'for issue assign user' do
@@ -245,7 +245,7 @@ describe Projects::IssuesController do
 
     it_should_behave_like 'user without issue update rights'
     it_should_behave_like 'project with issues turned off'
-    it_should_behave_like 'user without issue destroy rights'
+    # it_should_behave_like 'user without issue destroy rights'
   end
 
   context 'for guest' do
@@ -292,6 +292,6 @@ describe Projects::IssuesController do
     end
 
     it_should_behave_like 'user without issue update rights'
-    it_should_behave_like 'user without issue destroy rights'
+    # it_should_behave_like 'user without issue destroy rights'
   end
 end
