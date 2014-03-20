@@ -164,11 +164,11 @@ shared_examples_for 'api platform user without global admin rights' do
     context "api platform user without #{action} rights" do
       before { any_instance_of(Platform, create_directory: true) }
       it "should not be able to perform #{action} action" do
-        post action, clone_or_create_params, format: :json
+        post action, clone_or_create_params
         response.should_not be_success
       end
       it "ensures that platform has not been #{action}d" do
-        lambda { post action, clone_or_create_params, format: :json }.should_not change{ Platform.count }
+        lambda { post action, clone_or_create_params }.should_not change{ Platform.count }
       end
     end
   end
@@ -208,7 +208,11 @@ shared_examples_for "api platform user with show rights" do
 end
 
 describe Api::V1::PlatformsController do
-  let(:clone_or_create_params) { {id: @platform.id, platform: {description: 'new description', name: 'new_name', owner_id: @user.id, distrib_type: APP_CONFIG['distr_types'].first}} }
+  let(:clone_or_create_params) do
+    { id: @platform.id,
+      platform: { description: 'new description', name: 'new_name',
+                  owner_id: @user.id, distrib_type: APP_CONFIG['distr_types'].first }, format: :json }
+  end
   before do
     stub_symlink_methods
 
@@ -350,11 +354,11 @@ describe Api::V1::PlatformsController do
           clone_or_create_params[:platform][:owner_id] = @admin.id
         end
         it "should be able to perform #{action} action" do
-          post action, clone_or_create_params, format: :json
+          post action, clone_or_create_params
           response.should be_success
         end
         it "ensures that platform has been #{action}d" do
-          lambda { post action, clone_or_create_params, format: :json }.should change{ Platform.count }.by(1)
+          lambda { post action, clone_or_create_params }.should change{ Platform.count }.by(1)
         end
       end
     end
