@@ -32,7 +32,7 @@ shared_examples_for "api projects user without show rights" do
   end
 
   it "should access violation instead of project data by get_id" do
-    get :get_id, name_with_owner: @project.name_with_owner, format: :json
+    get :get_id, name: @project.name, owner: @project.owner_uname, format: :json
     response.should_not be_success
   end
 
@@ -98,17 +98,17 @@ shared_examples_for "api projects user with show rights" do
   context 'project find by get_id' do
     it "should find project by name and owner name" do
       @project.reload
-      get :get_id, name_with_owner: @project.name_with_owner, format: :json
+      get :get_id, name: @project.name, owner: @project.owner_uname, format: :json
       assigns[:project].id.should == @project.id
     end
 
     it "should not find project by non existing name and owner name" do
-      get :get_id, name_with_owner: "#{@project.owner_uname}/NONE_EXISTING_NAME", format: :json
+      get :get_id, name: 'NONE_EXISTING_NAME', owner: @project.owner_uname, format: :json
       assigns[:project].should be_blank
     end
 
     it "should render 404 for non existing name and owner name" do
-      get :get_id, name_with_owner: "#{@project.owner_uname}/NONE_EXISTING_NAME", format: :json
+      get :get_id, name: 'NONE_EXISTING_NAME', owner: @project.owner_uname, format: :json
       response.body.should == {status: 404, message: I18n.t("flash.404_message")}.to_json
     end
   end
@@ -315,24 +315,24 @@ describe Api::V1::ProjectsController do
     end
 
     context 'api project user with create rights' do
-      let(:params) { {project: {name: 'test_name', owner_id: @user.id, owner_type: 'User', visibility: 'open'}} }
+      let(:params) { {project: {name: 'test_name', owner_id: @user.id, owner_type: 'User', visibility: 'open'}, format: :json} }
       it 'should be able to perform create action' do
         post :create, params, format: :json
         response.should be_success
       end
       it 'ensures that project has been created' do
-        lambda { post :create, params, format: :json }.should change{ Project.count }.by(1)
+        lambda { post :create, params }.should change{ Project.count }.by(1)
       end
 
       it 'writer group should be able to create project for their group' do
         group = FactoryGirl.create(:group)
-        create_actor_relation(group, @muser, 'writer')
+        create_actor_relation(group, @user, 'writer')
         lambda { post :create, params.deep_merge({project: {owner_type: 'Group', owner_id: group.id}})}.should change{ Project.count }.by(1)
       end
 
       it 'reader group should not be able to create project for their group' do
         group = FactoryGirl.create(:group)
-        create_actor_relation(@group, @user, 'reader')
+        create_actor_relation(group, @user, 'reader')
         lambda { post :create, params.deep_merge({project: {owner_type: 'Group', owner_id: group.id}})}.should change{ Project.count }.by(0)
       end
     end
@@ -364,7 +364,7 @@ describe Api::V1::ProjectsController do
       it 'should not be able to fork project to their group' do
         group = FactoryGirl.create(:group)
         create_actor_relation(group, @user, 'reader')
-        lambda {post :fork, id: @project.id, group_id: group.id}.should change{ Project.count }.by(0)
+        lambda {post :fork, id: @project.id, group_id: group.id, format: :json}.should change{ Project.count }.by(0)
       end
 
       it 'should not be able to fork project with different name to their group' do
