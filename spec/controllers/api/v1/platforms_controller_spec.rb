@@ -162,7 +162,6 @@ shared_examples_for 'api platform user without global admin rights' do
 
   [:create, :clone].each do |action|
     context "api platform user without #{action} rights" do
-      before { any_instance_of(Platform, create_directory: true) }
       it "should not be able to perform #{action} action" do
         post action, clone_or_create_params
         response.should_not be_success
@@ -349,10 +348,8 @@ describe Api::V1::PlatformsController do
 
     [:clone, :create].each do |action|
       context "with #{action} rights" do
-        before do
-          any_instance_of(Platform, create_directory: true)
-          clone_or_create_params[:platform][:owner_id] = @admin.id
-        end
+        before { clone_or_create_params[:platform][:owner_id] = @admin.id }
+
         it "should be able to perform #{action} action" do
           post action, clone_or_create_params
           response.should be_success
