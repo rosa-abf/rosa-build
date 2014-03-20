@@ -70,7 +70,7 @@ class ProductBuildList < ActiveRecord::Base
   scope :for_status, ->(status) { where(status: status) }
   scope :for_user, ->(user) { where(user_id: user.id) }
   scope :scoped_to_product_name, ->(product_name) { joins(:product).where('products.name LIKE ?', "%#{product_name}%") }
-  scope :recent, -> { order(updated_at: desc) }
+  scope :recent, -> { order(updated_at: :desc) }
   scope :outdated, -> {
     where(not_delete: false).
     where("(#{table_name}.created_at < ? AND #{table_name}.autostarted is TRUE) OR #{table_name}.created_at < ?",

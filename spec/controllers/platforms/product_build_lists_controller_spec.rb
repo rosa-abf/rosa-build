@@ -97,9 +97,10 @@ describe Platforms::ProductBuildListsController do
 
   context 'crud' do
 
-    before(:each) do
-      @product = FactoryGirl.create(:product)
+    before do
+      FactoryGirl.create(:arch, name: 'x86_64')
       @arch = FactoryGirl.create(:arch)
+      @product = FactoryGirl.create(:product)
       @pbl = FactoryGirl.create(:product_build_list, product: @product)
     end
 
