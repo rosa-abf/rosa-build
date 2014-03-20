@@ -17,7 +17,7 @@ class BuildList::Item < ActiveRecord::Base
                      BuildList::BUILD_CANCELED => :build_canceled
                     }
 
-  scope :recent, order("#{table_name}.level ASC, #{table_name}.name ASC")
+  scope :recent, -> { order("#{table_name}.level ASC, #{table_name}.name ASC") }
 
   def self.group_by_level
     groups = []

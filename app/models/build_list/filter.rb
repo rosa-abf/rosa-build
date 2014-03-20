@@ -9,7 +9,7 @@ class BuildList::Filter
   end
 
   def find
-    build_lists =  @project ? @project.build_lists : BuildList.scoped
+    build_lists =  @project ? @project.build_lists : BuildList.all
 
     if @options[:id]
       build_lists = build_lists.where(id: @options[:id])

@@ -8,13 +8,15 @@ class Projects::BuildListsController < Projects::BaseController
 
   before_filter :find_build_list, only: [:show, :publish, :cancel, :update, :log, :create_container]
 
-  load_and_authorize_resource :project, only: NESTED_ACTIONS
+  load_and_authorize_resource :project, only: [:new, :create]
+  load_resource :project, only: :index, parent: false
   load_and_authorize_resource :build_list, through: :project, only: NESTED_ACTIONS, shallow: true
   load_and_authorize_resource except: NESTED_ACTIONS
 
   before_filter :create_from_build_list, only: :new
 
   def index
+    authorize!(:show, @project) if @project
     params[:filter].each{|k,v| params[:filter].delete(k) if v.blank? } if params[:filter]
 
     respond_to do |format|
