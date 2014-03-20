@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Api::V1::IssuesController do
-  before(:all) do
+  before do
     stub_symlink_methods
     any_instance_of(Project, versions: ['v1.0', 'v2.0'])
 
@@ -213,8 +213,4 @@ describe Api::V1::IssuesController do
     end
   end
 
-  after(:all) do
-    User.destroy_all
-    Platform.destroy_all
-  end
 end
