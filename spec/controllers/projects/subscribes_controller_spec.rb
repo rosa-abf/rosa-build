@@ -71,7 +71,8 @@ describe Projects::SubscribesController do
 
     context 'subscribed' do
       before(:each) do
-        ss = @issue.subscribes.build(user: @user)
+        ss = @issue.subscribes.build
+        ss.user = @user
         ss.save!
       end
 
@@ -93,7 +94,8 @@ describe Projects::SubscribesController do
 
     context 'subscribed' do
       before(:each) do
-        ss = @issue.subscribes.build(user: @user)
+        ss = @issue.subscribes.build
+        ss.user = @user
         ss.save!
       end
 
