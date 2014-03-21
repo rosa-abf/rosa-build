@@ -85,7 +85,7 @@ shared_examples_for 'projects user without project admin rights' do
 
   it 'writer group should be able to create project to their group' do
     group = FactoryGirl.create(:group)
-    create_actor_relation(group, @user, 'wrtier')
+    create_actor_relation(group, @user, 'writer')
     lambda {post :create, @create_params.merge(who_owns: 'group', owner_id: group.id)}.should change{ Project.count }.by(1)
   end
 
