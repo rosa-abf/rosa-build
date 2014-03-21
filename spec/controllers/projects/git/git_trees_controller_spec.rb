@@ -24,7 +24,6 @@ describe Projects::Git::TreesController do
     end
 
     it "should be able to perform archive action with anonymous acccess", anonymous_access: true do
-      stub(controller).render
       get :archive, @params.merge(format: 'tar.gz')
       response.should be_success
     end
@@ -67,7 +66,6 @@ describe Projects::Git::TreesController do
     end
 
     it 'should be able to perform archive action' do
-      stub(controller).render
       get :archive, @params.merge(format: 'tar.gz')
       response.should be_success
     end
