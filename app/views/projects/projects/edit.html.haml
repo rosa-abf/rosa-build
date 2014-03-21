@@ -7,7 +7,7 @@
 .hr
 
 %h3= t("layout.projects.build_schedule")
-%div{ 'ng-controller' => 'ProjectScheduleController', 'ng-init' => "init('#{@project.name_with_owner}')" }
+%div{ 'ng-controller' => 'ProjectScheduleController', 'ng-init' => "name_with_owner = '#{@project.name_with_owner}'" }
 
   .leftlist= t('activerecord.attributes.project.autostart_status')
   .rightlist

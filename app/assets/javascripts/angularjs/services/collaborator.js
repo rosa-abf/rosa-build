@@ -13,7 +13,8 @@ RosaABF.factory('ApiCollaborator', ['$resource', function($resource) {
         isArray :  false
       },
       find: {
-        url:    '/:owner/:project/collaborators/find.json',
+        url:    '/:owner/:project/collaborators/find',
+        format: 'json',
         method: 'GET',
         isArray :  true
       }
