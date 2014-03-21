@@ -311,22 +311,16 @@ describe Projects::PullRequestsController do
 
     it 'should send two email messages to project admins' do
       post :create, @create_params
-      @project.pull_requests.last.issue.send(:new_issue_notifications)
-      @project.pull_requests.last.issue.send(:send_assign_notifications)
       ActionMailer::Base.deliveries.count.should == 2
     end
 
     it 'should send two email messages to admins and one to assignee' do
       post :create, @create_params.deep_merge(issue: {assignee_id: @project_reader.id})
-      @project.pull_requests.last.issue.send(:new_issue_notifications)
-      @project.pull_requests.last.issue.send(:send_assign_notifications)
       ActionMailer::Base.deliveries.count.should == 3
     end
 
     it 'should not duplicate email message' do
       post :create, @create_params.deep_merge(issue: {assignee_id: @project_admin.id})
-      @project.pull_requests.last.issue.send(:new_issue_notifications)
-      @project.pull_requests.last.issue.send(:send_assign_notifications)
       ActionMailer::Base.deliveries.count.should == 2 # send only to admins
       ActionMailer::Base.deliveries.first.to != ActionMailer::Base.deliveries.last.to
     end
