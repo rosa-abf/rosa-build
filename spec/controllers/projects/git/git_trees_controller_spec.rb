@@ -98,7 +98,7 @@ describe Projects::Git::TreesController do
   context 'for writer user' do
     before(:each) do
       user = FactoryGirl.create(:user)
-      create_relation(@project, @user, 'writer')
+      create_relation(@project, user, 'writer')
       set_session_for user
     end
 
