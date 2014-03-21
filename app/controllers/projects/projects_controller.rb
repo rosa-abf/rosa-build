@@ -1,7 +1,7 @@
 class Projects::ProjectsController < Projects::BaseController
   include ProjectsHelper
   before_filter :authenticate_user!
-  load_and_authorize_resource id_param: :project_name # to force member actions load
+  load_and_authorize_resource id_param: :name_with_owner # to force member actions load
   before_filter :who_owns, only: [:new, :create, :mass_import, :run_mass_import]
 
   def index
