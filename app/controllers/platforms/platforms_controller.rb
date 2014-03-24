@@ -112,7 +112,7 @@ class Platforms::PlatformsController < Platforms::BaseController
   end
 
   def members
-    @members = @platform.members.order('name')
+    @members = @platform.members.order(:uname)
   end
 
   def remove_members
