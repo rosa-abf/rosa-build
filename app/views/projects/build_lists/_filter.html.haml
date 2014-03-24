@@ -4,7 +4,7 @@
     = form_for :filter, html: {class: :form, id: 'monitoring_filter', 'ng-submit' => 'refresh(true)'}, authenticity_token: false do |f|
       .column
         = render 'server_status'
-        = hidden_field_tag :name_with_owner, @project.name_with_owner
+        = hidden_field_tag :name_with_owner, @project.try(:name_with_owner)
         .reloader
           = label_tag :autoreload do
             = check_box_tag :autoreload, true, true
