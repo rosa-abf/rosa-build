@@ -279,7 +279,7 @@ Rosa::Application.routes.draw do
         put :cancel
         put :create_container
         get :log
-        put :publish
+        patch :publish
         put :reject_publish
         put :publish_into_testing
         put :update_type
