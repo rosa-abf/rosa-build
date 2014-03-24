@@ -9,7 +9,8 @@
         %th= t("layout.collaborators.members")
         %th{colspan: "3"}= t("layout.collaborators.roles")
     %tbody
-      - (@group.members - [@group.owner]).each do |user|
+      - actors = @group.actors.where(actor_id: @members.map(&:id), actor_type: 'User')
+      - @members.each do |user|
         %tr
           %td
             %span#niceCheckbox1.niceCheck-main= check_box_tag "user_remove[#{user.id}][]"
@@ -18,7 +19,8 @@
             .forimg= link_to user.fullname, user_path(user)
           - Relation::ROLES.each_with_index do |role, i|
             %td
-              .radio= radio_button_tag "user[#{user.id}]", role, ((@group.actors.exists? actor_id: user.id, actor_type: 'User', role: role) ? :checked : nil), class: 'niceRadio'
+              - checked = actors.find{ |a| a.actor_id == user.id && a.role == role }
+              .radio= radio_button_tag "user[#{user.id}]", role, (checked ? :checked : nil), class: 'niceRadio'
               .forradio= t("layout.collaborators.role_names.#{ role }")
   = link_to_function t("layout.delete"), "deleteAdminMember();", class: 'button'
   .both
