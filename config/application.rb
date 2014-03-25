@@ -14,6 +14,11 @@ module Rosa
   class Application < Rails::Application
     config.i18n.enforce_available_locales = true
 
+    unless Rails.env.test?
+      require 'close_ar_connections_middleware'
+      config.middleware.insert_after('Rack::Sendfile', CloseArConnectionsMiddleware)
+    end
+
     # Rate limit
     config.middleware.insert_before Rack::Runtime, ApiDefender
 
