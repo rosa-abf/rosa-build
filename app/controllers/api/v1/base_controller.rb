@@ -17,8 +17,12 @@ class Api::V1::BaseController < ApplicationController
   # via parameters. However, anyone could use Rails's token
   # authentication features to get the token from a header.
   def authenticate_user!
-    user_token = params[:user_token].presence
-    user       = user_token && User.find_by_authentication_token(user_token.to_s)
+    user_token = params[:authentication_token].presence
+    unless user_token
+      credentials = decode_credentials.select(&:present?)
+      user_token  = credentials.first if credentials.size == 1
+    end
+    user = user_token && User.find_by_authentication_token(user_token.to_s)
  
     if user
       # Notice we are passing store false, so the user is not
@@ -29,6 +33,12 @@ class Api::V1::BaseController < ApplicationController
     else
       super
     end
+  end
+
+  # Helper to decode credentials from HTTP.
+  def decode_credentials
+    return [] unless request.authorization && request.authorization =~ /^Basic (.*)/m
+    Base64.decode64($1).split(/:/, 2)
   end
 
   def set_csv_file_headers(file_name)
