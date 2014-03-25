@@ -66,7 +66,7 @@ class ProductBuildList < ActiveRecord::Base
   serialize :results, Array
 
 
-  scope :default_order, -> { order(updated_at: desc) }
+  scope :default_order, -> { order(updated_at: :desc) }
   scope :for_status, ->(status) { where(status: status) }
   scope :for_user, ->(user) { where(user_id: user.id) }
   scope :scoped_to_product_name, ->(product_name) { joins(:product).where('products.name LIKE ?', "%#{product_name}%") }
