@@ -432,7 +432,11 @@ class BuildList < ActiveRecord::Base
   end
 
   def current_duration
-    (Time.now.utc - started_at.utc).to_i
+    if started_at
+      (Time.now.utc - started_at.utc).to_i
+    else
+      0
+    end
   end
 
   def human_current_duration
