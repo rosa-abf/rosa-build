@@ -15,7 +15,7 @@ module ActsLikeMember
         )
       ")
     }
-    scope :search_order, ->    { order('CHAR_LENGTH(#{table_name}.uname) ASC') }
+    scope :search_order, ->    { order("CHAR_LENGTH(#{table_name}.uname) ASC") }
     scope :without,      ->(a) { where("#{table_name}.id NOT IN (?)", a) }
     scope :by_uname,     ->(n) { where("#{table_name}.uname ILIKE ?", n) }
     scope :search,       ->(q) { by_uname("%#{q.to_s.strip}%") }
