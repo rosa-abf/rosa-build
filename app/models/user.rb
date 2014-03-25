@@ -3,6 +3,7 @@ class User < Avatar
   include ActsLikeMember
   include Feed::User
   include EventLoggable
+  include TokenAuthenticatable
 
   ROLES = ['', 'admin', 'banned', 'tester']
   EXTENDED_ROLES = ROLES | ['system']
@@ -160,12 +161,6 @@ class User < Avatar
     end
   end
 
-  def ensure_authentication_token
-    if authentication_token.blank?
-      self.authentication_token = generate_authentication_token
-    end
-  end
-
   protected
 
   def target_roles target
@@ -180,13 +175,6 @@ class User < Avatar
     roles += rel.where(actor_id: self.id, actor_type: 'User') # user is member
     roles += rel.where(actor_id: gr.pluck('DISTINCT groups.id'), actor_type: 'Group') # user group is member
     roles.map(&:role).uniq
-  end
-
-  def generate_authentication_token
-    loop do
-      token = Devise.friendly_token
-      break token unless User.where(authentication_token: token).first
-    end
   end
 
 end
