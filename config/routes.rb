@@ -357,45 +357,43 @@ Rosa::Application.routes.draw do
       post '/sections' => 'projects#sections'
       delete '/remove_user' => 'projects#remove_user', as: :remove_user_project
       # constraints treeish: /[\w\-\.]+(\/[\w\-\.]+)?/ do
-      constraints treeish: /[\w\-\.]+/ do
-        constraints Rosa::Constraints::Treeish do
-          # Tree
-          get '/' => "git/trees#show", as: :project
-          get '/tree/:treeish(/*path)' => "git/trees#show", as: :tree, format: false
-          # Tags
-          get '/tags' => "git/trees#tags", as: :tags
-          # Branches
-          get '/branches' => "git/trees#branches", as: :branches
-          get '/branches/:treeish' => "git/trees#branches", as: :branch
-          delete '/branches/:treeish' => "git/trees#destroy", as: :destroy_branch
-          put '/branches/:treeish' => "git/trees#restore_branch", as: :restore_branch
-          post '/branches' => "git/trees#create", as: :create_branch
-          # Commits
-          get '/commits/:treeish(/*path)' => "git/commits#index", as: :commits, format: false
-          get '/commit/:id(.:format)' => "git/commits#show", as: :commit
-          # Commit comments
-          post '/commit/:commit_id/comments(.:format)' => "comments#create", as: :project_commit_comments
-          get '/commit/:commit_id/comments/:id(.:format)' => "comments#edit", as: :edit_project_commit_comment
-          put '/commit/:commit_id/comments/:id(.:format)' => "comments#update", as: :project_commit_comment
-          delete '/commit/:commit_id/comments/:id(.:format)' => "comments#destroy"
-          get '/commit/:commit_id/add_line_comments(.:format)' => "comments#new_line", as: :new_line_commit_comment
-          # Commit subscribes
-          post '/commit/:commit_id/subscribe' => "commit_subscribes#create", as: :subscribe_commit
-          delete '/commit/:commit_id/unsubscribe' => "commit_subscribes#destroy", as: :unsubscribe_commit
-          # Editing files
-          get '/edit/:treeish/*path' => "git/blobs#edit", as: :edit_blob, format: false
-          put '/edit/:treeish/*path' => "git/blobs#update", format: false
-          # Blobs
-          get '/blob/:treeish/*path' => "git/blobs#show", as: :blob, format: false
-          # Blame
-          get '/blame/:treeish/*path' => "git/blobs#blame", as: :blame, format: false
-          # Raw
-          get '/raw/:treeish/*path' => "git/blobs#raw", as: :raw, format: false
-          # Archive
-          get '/archive/:treeish.:format' => "git/trees#archive", as: :archive, format: /zip|tar\.gz/
-          # Git diff
-          get '/diff/:diff' => "git/commits#diff", as: :diff, format: false, diff: /.*/
-        end
+      constraints Rosa::Constraints::Treeish do
+        # Tree
+        get '/' => "git/trees#show", as: :project
+        get '/tree/:treeish(/*path)' => "git/trees#show", as: :tree, format: false
+        # Tags
+        get '/tags' => "git/trees#tags", as: :tags
+        # Branches
+        get '/branches' => "git/trees#branches", as: :branches
+        get '/branches/:treeish' => "git/trees#branches", as: :branch
+        delete '/branches/:treeish' => "git/trees#destroy", as: :destroy_branch
+        put '/branches/:treeish' => "git/trees#restore_branch", as: :restore_branch
+        post '/branches' => "git/trees#create", as: :create_branch
+        # Commits
+        get '/commits/:treeish(/*path)' => "git/commits#index", as: :commits, format: false
+        get '/commit/:id(.:format)' => "git/commits#show", as: :commit
+        # Commit comments
+        post '/commit/:commit_id/comments(.:format)' => "comments#create", as: :project_commit_comments
+        get '/commit/:commit_id/comments/:id(.:format)' => "comments#edit", as: :edit_project_commit_comment
+        put '/commit/:commit_id/comments/:id(.:format)' => "comments#update", as: :project_commit_comment
+        delete '/commit/:commit_id/comments/:id(.:format)' => "comments#destroy"
+        get '/commit/:commit_id/add_line_comments(.:format)' => "comments#new_line", as: :new_line_commit_comment
+        # Commit subscribes
+        post '/commit/:commit_id/subscribe' => "commit_subscribes#create", as: :subscribe_commit
+        delete '/commit/:commit_id/unsubscribe' => "commit_subscribes#destroy", as: :unsubscribe_commit
+        # Editing files
+        get '/edit/:treeish/*path' => "git/blobs#edit", as: :edit_blob, format: false
+        put '/edit/:treeish/*path' => "git/blobs#update", format: false
+        # Blobs
+        get '/blob/:treeish/*path' => "git/blobs#show", as: :blob, format: false
+        # Blame
+        get '/blame/:treeish/*path' => "git/blobs#blame", as: :blame, format: false
+        # Raw
+        get '/raw/:treeish/*path' => "git/blobs#raw", as: :raw, format: false
+        # Archive
+        get '/archive/:treeish.:format' => "git/trees#archive", as: :archive, format: /zip|tar\.gz/
+        # Git diff
+        get '/diff/:diff' => "git/commits#diff", as: :diff, format: false, diff: /.*/
       end
     end
   end
