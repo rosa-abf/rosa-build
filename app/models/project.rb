@@ -82,7 +82,7 @@ class Project < ActiveRecord::Base
             WHERE ptr.repository_id = ?)', repository_id)
   }
   scope :by_owners, ->(group_owner_ids, user_owner_ids) {
-    where("projects.owner_id in (?) AND projects.owner_type = 'Group') OR
+    where("(projects.owner_id in (?) AND projects.owner_type = 'Group') OR
       (projects.owner_id in (?) AND projects.owner_type = 'User')", group_owner_ids, user_owner_ids)
   }
 
