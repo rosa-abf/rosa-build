@@ -357,7 +357,7 @@ Rosa::Application.routes.draw do
       post '/sections' => 'projects#sections'
       delete '/remove_user' => 'projects#remove_user', as: :remove_user_project
       # constraints treeish: /[\w\-\.]+(\/[\w\-\.]+)?/ do
-      constraints /.+/ do
+      constraints treeish: /.+/ do
         constraints Rosa::Constraints::Treeish do
           # Tree
           get '/' => "git/trees#show", as: :project
