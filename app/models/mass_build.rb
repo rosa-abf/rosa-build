@@ -19,7 +19,7 @@ class MassBuild < ActiveRecord::Base
   validates :projects_list, length: {maximum: 500_000}, presence: true
   validates_inclusion_of :auto_publish, :increase_release_tag, in: [true, false]
 
-  after_create      :build_all
+  after_commit      :build_all, on: :create
   before_validation :set_data,  on: :create
 
   COUNT_STATUSES = [
