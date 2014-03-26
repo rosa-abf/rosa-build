@@ -39,7 +39,7 @@
           - unless mass_build.auto_publish?
             = link_to t('layout.mass_builds.publish_success'),
                       publish_platform_mass_build_path(@platform, mass_build.id),
-                      method: :post, data: confirm: t("layout.confirm") }, class: 'button'
+                      method: :post, data: { confirm: t("layout.confirm") }, class: 'button'
           = link_to t('layout.mass_builds.publish_test_failed'),
                     publish_platform_mass_build_path(@platform, mass_build.id, status: 'test_failed'),
                     method: :post, data: { confirm: t("layout.confirm") }, class: 'button'
