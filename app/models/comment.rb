@@ -1,5 +1,5 @@
 class Comment < ActiveRecord::Base
-  include Modules::Observers::ActivityFeed::Comment
+  include Feed::Comment
 
   # regexp take from http://code.google.com/p/concerto-platform/source/browse/v3/cms/lib/CodeMirror/mode/gfm/gfm.js?spec=svn861&r=861#71
   # User/Project#Num
@@ -7,17 +7,18 @@ class Comment < ActiveRecord::Base
   # #Num
   ISSUES_REGEX = /(?:[a-zA-Z0-9\-_]*\/)?(?:[a-zA-Z0-9\-_]*)?#[0-9]+/
 
-  belongs_to :commentable, polymorphic: true, touch: true
+  belongs_to :commentable, polymorphic: true
   belongs_to :user
   belongs_to :project
   serialize :data
 
   validates :body, :user_id, :commentable_id, :commentable_type, :project_id, presence: true
 
-  scope :for_commit, lambda {|c| where(commentable_id: c.id.hex, commentable_type: c.class)}
-  default_scope order("#{table_name}.created_at")
+  scope :for_commit, ->(c) { where(commentable_id: c.id.hex, commentable_type: c.class) }
+  default_scope { order(:created_at) }
 
-  after_create :subscribe_on_reply, unless: lambda {|c| c.commit_comment?}
+  before_save  :touch_commentable
+  after_create :subscribe_on_reply, unless: ->(c) { c.commit_comment? }
   after_create :subscribe_users
 
   attr_accessible :body, :data
@@ -186,8 +187,12 @@ class Comment < ActiveRecord::Base
 
   protected
 
+  def touch_commentable
+    commentable.touch unless commit_comment?
+  end
+
   def subscribe_on_reply
-    commentable.subscribes.create(user_id: user_id) if !commentable.subscribes.exists?(user_id: user_id)
+    commentable.subscribes.where(user_id: user_id).first_or_create
   end
 
   def subscribe_users
@@ -195,7 +200,7 @@ class Comment < ActiveRecord::Base
       commentable.subscribes.create(user: user) if !commentable.subscribes.exists?(user_id: user.id)
     elsif commit_comment?
       recipients = project.admins
-      recipients << user << User.where(email: commentable.try(:committer).try(:email)).first # commentor and committer
+      recipients << user << User.find_by(email: commentable.try(:committer).try(:email)) # commentor and committer
       recipients.compact.uniq.each do |user|
         options = {project_id: project.id, subscribeable_id: commentable_id, subscribeable_type: commentable.class.name, user_id: user.id}
         Subscribe.subscribe_to_commit(options) if Subscribe.subscribed_to_commit?(project, user, commentable)

@@ -3,12 +3,13 @@ class Api::V1::BuildListsController < Api::V1::BaseController
   before_filter :authenticate_user!
   skip_before_filter :authenticate_user!, only: [:show, :index] if APP_CONFIG['anonymous_access']
 
-  load_and_authorize_resource :project, only: :index
+  load_resource :project, only: :index, parent: false
   load_and_authorize_resource :build_list, only: [:show, :create, :cancel, :publish, :reject_publish, :create_container, :publish_into_testing]
 
   def index
+    authorize!(:show, @project) if @project
     filter = BuildList::Filter.new(@project, current_user, current_ability, params[:filter] || {})
-    @build_lists = filter.find.scoped(include: [:save_to_platform, :project, :user, :arch])
+    @build_lists = filter.find.includes(:save_to_platform, :project, :user, :arch)
     @build_lists = @build_lists.recent.paginate(paginate_params)
   end
 

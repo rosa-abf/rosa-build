@@ -38,4 +38,4 @@
     = link_to t('layout.tokens.withdraw'),
               withdraw_platform_token_path(@platform, @token),
               method: :post, class: 'button',
-              confirm: t('layout.tokens.withdraw_confirm')
+              data: { confirm: t('layout.tokens.withdraw_confirm') }

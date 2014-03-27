@@ -6,9 +6,7 @@ describe Projects::Git::TreesController do
     stub_symlink_methods
 
     @project = FactoryGirl.create(:project)
-    @params = { owner_name: @project.owner.uname,
-                project_name: @project.name,
-                treeish: "#{@project.name}-master"}
+    @params = { name_with_owner: @project.name_with_owner, treeish: "#{@project.name}-master" }
     fill_project @project
   end
 
@@ -26,7 +24,6 @@ describe Projects::Git::TreesController do
     end
 
     it "should be able to perform archive action with anonymous acccess", anonymous_access: true do
-      stub(controller).render
       get :archive, @params.merge(format: 'tar.gz')
       response.should be_success
     end
@@ -69,7 +66,6 @@ describe Projects::Git::TreesController do
     end
 
     it 'should be able to perform archive action' do
-      stub(controller).render
       get :archive, @params.merge(format: 'tar.gz')
       response.should be_success
     end
@@ -100,7 +96,7 @@ describe Projects::Git::TreesController do
   context 'for writer user' do
     before(:each) do
       user = FactoryGirl.create(:user)
-      @project.relations.create!(actor_type: 'User', actor_id: user.id, role: 'writer')
+      create_relation(@project, user, 'writer')
       set_session_for user
     end
 

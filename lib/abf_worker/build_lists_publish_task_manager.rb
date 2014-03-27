@@ -12,8 +12,7 @@ module AbfWorker
     end
 
     def initialize
-      @redis          = Resque.redis
-      @workers_count  = APP_CONFIG['abf_worker']['publish_workers_count']
+      @workers_count = APP_CONFIG['abf_worker']['publish_workers_count']
     end
 
     def run
@@ -29,33 +28,33 @@ module AbfWorker
         if repository.platform.personal?
           Platform.main.each do |main_platform|
             key = "#{project.id}-#{repository.id}-#{main_platform.id}"
-            redis.lpush PROJECTS_FOR_CLEANUP, key
+            Redis.current.lpush PROJECTS_FOR_CLEANUP, key
             gather_old_packages project.id, repository.id, main_platform.id
 
-            redis.lpush PROJECTS_FOR_CLEANUP, ('testing-' << key)
+            Redis.current.lpush PROJECTS_FOR_CLEANUP, ('testing-' << key)
             gather_old_packages project.id, repository.id, main_platform.id, true
           end
         else
           key = "#{project.id}-#{repository.id}-#{repository.platform.id}"
-          redis.lpush PROJECTS_FOR_CLEANUP, key
+          Redis.current.lpush PROJECTS_FOR_CLEANUP, key
           gather_old_packages project.id, repository.id, repository.platform.id
 
-          redis.lpush PROJECTS_FOR_CLEANUP, ('testing-' << key)
+          Redis.current.lpush PROJECTS_FOR_CLEANUP, ('testing-' << key)
           gather_old_packages project.id, repository.id, repository.platform.id, true
         end
       end
 
       def cleanup_completed(projects_for_cleanup)
         projects_for_cleanup.each do |key|
-          redis.lrem LOCKED_PROJECTS_FOR_CLEANUP, 0, key
-          redis.hdel PACKAGES_FOR_CLEANUP, key
+          Redis.current.lrem LOCKED_PROJECTS_FOR_CLEANUP, 0, key
+          Redis.current.hdel PACKAGES_FOR_CLEANUP, key
         end
       end
 
       def cleanup_failed(projects_for_cleanup)
         projects_for_cleanup.each do |key|
-          redis.lrem LOCKED_PROJECTS_FOR_CLEANUP, 0, key
-          redis.lpush PROJECTS_FOR_CLEANUP, key
+          Redis.current.lrem LOCKED_PROJECTS_FOR_CLEANUP, 0, key
+          Redis.current.lpush PROJECTS_FOR_CLEANUP, key
         end
       end
 
@@ -63,22 +62,18 @@ module AbfWorker
         return if build_lists.blank?
         rep_pl = "#{repository_id}-#{platform_id}"
         key = "#{BUILD_LISTS_FOR_CLEANUP_FROM_TESTING}-#{rep_pl}"
-        redis.sadd REP_AND_PLS_OF_BUILD_LISTS_FOR_CLEANUP_FROM_TESTING, rep_pl
-        redis.sadd key, build_lists
+        Redis.current.sadd REP_AND_PLS_OF_BUILD_LISTS_FOR_CLEANUP_FROM_TESTING, rep_pl
+        Redis.current.sadd key, build_lists
       end
 
       def unlock_build_list(build_list)
-        redis.lrem LOCKED_BUILD_LISTS, 0, build_list.id
+        Redis.current.lrem LOCKED_BUILD_LISTS, 0, build_list.id
       end
 
       def packages_structure
         structure = {sources: [], binaries: {}}
         Arch.pluck(:name).each{ |name| structure[:binaries][name.to_sym] = [] }
         structure
-      end
-
-      def redis
-        Resque.redis
       end
 
       def create_container_for(build_list)
@@ -146,7 +141,7 @@ module AbfWorker
           }
         end
         key = (testing ? 'testing-' : '') << "#{project_id}-#{repository_id}-#{platform_id}"
-        redis.hset PACKAGES_FOR_CLEANUP, key, old_packages.to_json
+        Redis.current.hset PACKAGES_FOR_CLEANUP, key, old_packages.to_json
       end
 
       def fill_packages(bl, results_map, field = :sha1)
@@ -209,21 +204,21 @@ module AbfWorker
         select('MIN(updated_at) as min_updated_at, save_to_repository_id, build_for_platform_id').
         where(new_core: true, status: (testing ? BuildList::BUILD_PUBLISH_INTO_TESTING : BuildList::BUILD_PUBLISH)).
         group(:save_to_repository_id, :build_for_platform_id).
-        order(:min_updated_at).
+        order('min_updated_at ASC').
         limit(@workers_count * 2) # because some repos may be locked
 
       locked_rep = RepositoryStatus.not_ready.joins(:platform).
         where(platforms: {platform_type: 'main'}).pluck(:repository_id)
       available_repos = available_repos.where('save_to_repository_id NOT IN (?)', locked_rep) unless locked_rep.empty?
 
-      for_cleanup = @redis.lrange(PROJECTS_FOR_CLEANUP, 0, -1).map do |key|
+      for_cleanup = Redis.current.lrange(PROJECTS_FOR_CLEANUP, 0, -1).map do |key|
         next if testing && key !~ /^testing-/
         rep, pl = *key.split('-').last(2)
         locked_rep.present? && locked_rep.include?(rep.to_i) ? nil : [rep.to_i, pl.to_i]
       end.compact
 
-      for_cleanup_from_testing = @redis.smembers(REP_AND_PLS_OF_BUILD_LISTS_FOR_CLEANUP_FROM_TESTING).map do |key|
-        next if @redis.scard("#{BUILD_LISTS_FOR_CLEANUP_FROM_TESTING}-#{key}") == 0
+      for_cleanup_from_testing = Redis.current.smembers(REP_AND_PLS_OF_BUILD_LISTS_FOR_CLEANUP_FROM_TESTING).map do |key|
+        next if Redis.current.scard("#{BUILD_LISTS_FOR_CLEANUP_FROM_TESTING}-#{key}") == 0
         rep, pl = *key.split('-')
         locked_rep.present? && locked_rep.include?(rep.to_i) ? nil : [rep.to_i, pl.to_i]
       end.compact if testing
@@ -240,7 +235,7 @@ module AbfWorker
 
     def create_rpm_build_task(save_to_repository_id, build_for_platform_id, testing)
       key = "#{save_to_repository_id}-#{build_for_platform_id}"
-      projects_for_cleanup = @redis.lrange(PROJECTS_FOR_CLEANUP, 0, -1).select do |k|
+      projects_for_cleanup = Redis.current.lrange(PROJECTS_FOR_CLEANUP, 0, -1).select do |k|
         (testing && k =~ /^testing-[\d]+-#{key}$/) || (!testing && k =~ /^[\d]+-#{key}$/)
       end
 
@@ -257,15 +252,15 @@ module AbfWorker
         where(save_to_repository_id: save_to_repository_id).
         where(build_for_platform_id: build_for_platform_id).
         order(:updated_at)
-      locked_ids = @redis.lrange(LOCKED_BUILD_LISTS, 0, -1)
+      locked_ids = Redis.current.lrange(LOCKED_BUILD_LISTS, 0, -1)
       build_lists = build_lists.where('build_lists.id NOT IN (?)', locked_ids) unless locked_ids.empty?
       build_lists = build_lists.limit(150)
 
       old_packages  = self.class.packages_structure
 
       projects_for_cleanup.each do |key|
-        @redis.lrem PROJECTS_FOR_CLEANUP, 0, key
-        packages = @redis.hget PACKAGES_FOR_CLEANUP, key
+        Redis.current.lrem PROJECTS_FOR_CLEANUP, 0, key
+        packages = Redis.current.hget PACKAGES_FOR_CLEANUP, key
         next unless packages
         packages = JSON.parse packages
         old_packages[:sources] |= packages['sources']
@@ -275,7 +270,7 @@ module AbfWorker
       end
 
       if testing
-        build_lists_for_cleanup_from_testing = @redis.smembers("#{BUILD_LISTS_FOR_CLEANUP_FROM_TESTING}-#{save_to_repository_id}-#{build_for_platform_id}")
+        build_lists_for_cleanup_from_testing = Redis.current.smembers("#{BUILD_LISTS_FOR_CLEANUP_FROM_TESTING}-#{save_to_repository_id}-#{build_for_platform_id}")
         BuildList.where(id: build_lists_for_cleanup_from_testing).each do |b|
           self.class.fill_packages(b, old_packages, :fullname)
         end if build_lists_for_cleanup_from_testing.present?
@@ -289,7 +284,7 @@ module AbfWorker
       # Checks mirror sync status
       return false if save_to_repository.repo_lock_file_exists? || !save_to_repository.platform.ready?
 
-      repository_status = save_to_repository.repository_statuses.find_or_create_by_platform_id(build_for_platform_id)
+      repository_status = save_to_repository.repository_statuses.find_or_create_by(platform_id: build_for_platform_id)
       return false unless repository_status.publish
 
       save_to_platform    = save_to_repository.platform
@@ -343,7 +338,7 @@ module AbfWorker
           self.class.fill_packages(old_bl, old_packages, :fullname)
         } if testing
         build_list_ids << bl.id
-        @redis.lpush(LOCKED_BUILD_LISTS, bl.id)
+        Redis.current.lpush(LOCKED_BUILD_LISTS, bl.id)
       end
       packages[:sources] = new_sources.values.compact
 
@@ -359,16 +354,16 @@ module AbfWorker
       )
 
       projects_for_cleanup.each do |key|
-        @redis.lpush LOCKED_PROJECTS_FOR_CLEANUP, key
+        Redis.current.lpush LOCKED_PROJECTS_FOR_CLEANUP, key
       end
 
       rep_pl = "#{save_to_repository_id}-#{build_for_platform_id}"
       r_key = "#{BUILD_LISTS_FOR_CLEANUP_FROM_TESTING}-#{rep_pl}"
       build_lists_for_cleanup_from_testing.each do |key|
-        @redis.srem r_key, key
+        Redis.current.srem r_key, key
       end
-      if @redis.scard(r_key) == 0
-        @redis.srem REP_AND_PLS_OF_BUILD_LISTS_FOR_CLEANUP_FROM_TESTING, rep_pl
+      if Redis.current.scard(r_key) == 0
+        Redis.current.srem REP_AND_PLS_OF_BUILD_LISTS_FOR_CLEANUP_FROM_TESTING, rep_pl
       end
 
       return true

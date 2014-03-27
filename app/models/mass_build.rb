@@ -1,5 +1,5 @@
 class MassBuild < ActiveRecord::Base
-  belongs_to :build_for_platform, class_name: 'Platform', conditions: {platform_type: 'main'}
+  belongs_to :build_for_platform, -> { where(platform_type: 'main') }, class_name: 'Platform'
   belongs_to :save_to_platform, class_name: 'Platform'
   belongs_to :user
   has_many :build_lists, dependent: :destroy
@@ -7,9 +7,9 @@ class MassBuild < ActiveRecord::Base
   serialize :extra_repositories,  Array
   serialize :extra_build_lists,   Array
 
-  scope :recent, order("#{table_name}.created_at DESC")
-  scope :by_platform, lambda { |platform| where(save_to_platform_id: platform.id) }
-  scope :outdated, where("#{table_name}.created_at < ?", Time.now + 1.day - BuildList::MAX_LIVE_TIME)
+  scope :recent, -> { order(created_at: :desc) }
+  scope :by_platform, ->(platform) { where(save_to_platform_id: platform.id) }
+  scope :outdated, -> { where("#{table_name}.created_at < ?", Time.now + 1.day - BuildList::MAX_LIVE_TIME) }
 
   attr_accessor :arches
   attr_accessible :arches, :auto_publish, :projects_list, :build_for_platform_id,
@@ -41,7 +41,7 @@ class MassBuild < ActiveRecord::Base
       next if name.blank?
       name.chomp!; name.strip!
 
-      if project = Project.joins(:repositories).where('repositories.id in (?)', save_to_platform.repository_ids).find_by_name(name)
+      if project = Project.joins(:repositories).where('repositories.id in (?)', save_to_platform.repository_ids).find_by(name: name)
         begin
           return if self.reload.stop_build
           increase_rt = increase_release_tag?

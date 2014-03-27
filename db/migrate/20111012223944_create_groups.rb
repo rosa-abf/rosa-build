@@ -2,7 +2,7 @@ class CreateGroups < ActiveRecord::Migration
   def self.up
     create_table :groups do |t|
       t.string :name
-      t.integer :owner_id
+      t.integer :owner_id, references: nil
 
       t.timestamps
     end

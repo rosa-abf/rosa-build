@@ -6,6 +6,6 @@ FactoryGirl.define do
     time_living 150
 
     # see: before_validation in ProductBuildList model
-    before(:create) { Arch.find_or_create_by_name('x86_64') }
+    before(:create) { Arch.find_or_create_by(name: 'x86_64') }
   end
 end

@@ -5,3 +5,4 @@
 # Make sure the secret is at least 30 characters and all random,
 # no regular words or you'll be exposed to dictionary attacks.
 Rosa::Application.config.secret_token = APP_CONFIG['keys']['secret_token']
+Rosa::Application.config.secret_key_base = APP_CONFIG['keys']['secret_key_base']

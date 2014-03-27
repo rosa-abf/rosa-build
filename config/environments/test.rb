@@ -7,9 +7,6 @@ Rosa::Application.configure do
   # and recreated between test runs.  Don't rely on the data there!
   config.cache_classes = true
 
-  # Log error messages when you accidentally call methods on nil.
-  config.whiny_nils = true
-
   # Show full error reports and disable caching
   config.consider_all_requests_local       = true
   config.action_controller.perform_caching = false
@@ -40,4 +37,8 @@ Rosa::Application.configure do
 
   # Allow pass debug_assets=true as a query parameter to load pages with unpackaged assets
   config.assets.allow_debugging = true
+
+  config.cache_store = :memory_store, { size: 64.megabytes }
+  config.eager_load = false
+  config.log_redis = true
 end

@@ -1,8 +1,9 @@
 .top
   .text
     %span
-      = raw t("notifications.bodies.issue_assign_notification", { issue_link: link_to(issue_title, project_issue_path(project_owner, project_name, issue_serial_id))})
-      = raw t("notifications.bodies.project", project_link: link_to("#{project_owner}/#{project_name}", project_path(project_owner, project_name)) )
+      - name_with_owner = "#{project_owner}/#{project_name}"
+      = raw t("notifications.bodies.issue_assign_notification", { issue_link: link_to(issue_title, project_issue_path(name_with_owner, issue_serial_id))})
+      = raw t("notifications.bodies.project", project_link: link_to(name_with_owner, project_path(name_with_owner)) )
     .both
       = datetime_moment activity_feed.created_at, tag: :span, class: 'date'
   .both

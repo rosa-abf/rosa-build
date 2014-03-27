@@ -3,6 +3,6 @@
 - edit_url = can?(:edit, @group) ? edit_group_path(@group) : nil
 = render 'shared/profile', uname: @group.name,
                            group: @group,
-                           search_path: group_path,
+                           search_path: group_path(@group),
                            projects: @projects,
                            edit_url: edit_url

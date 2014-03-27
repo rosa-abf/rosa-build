@@ -5,15 +5,15 @@ namespace :repositories do
     repo_dirs = Dir["/root/mandriva_main_git/*.git"]
     total = repo_dirs.length
 
-    cooker = Platform.find_by_name!("cooker")
-    main = cooker.repositories.find_by_name!("main")
+    cooker = Platform.find_by! name: "cooker"
+    main = cooker.repositories.find_by! name: "main"
 
     repo_dirs.each_with_index do |repo_dir, index|
       project_name = File.basename(repo_dir, ".git")
 
       puts "Creating project(#{index}/#{total}): #{project_name}"
 
-      if main.projects.find_by_name(project_name)
+      if main.projects.find_by name: project_name
         puts "\t Already created. Skipping"
         next
       end

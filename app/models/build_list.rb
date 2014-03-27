@@ -1,8 +1,10 @@
 class BuildList < ActiveRecord::Base
-  include Modules::Models::CommitAndVersion
-  include Modules::Models::FileStoreClean
+  include CommitAndVersion
+  include FileStoreClean
   include AbfWorker::ModelHelper
-  include Modules::Observers::ActivityFeed::BuildList
+  include Feed::BuildList
+  include BuildListObserver
+  include EventLoggable
 
   belongs_to :project
   belongs_to :arch
@@ -16,7 +18,7 @@ class BuildList < ActiveRecord::Base
   belongs_to :mass_build, counter_cache: true, touch: true
   has_many :items, class_name: '::BuildList::Item', dependent: :destroy
   has_many :packages, class_name: '::BuildList::Package', dependent: :destroy
-  has_many :source_packages, class_name: '::BuildList::Package', conditions: {package_type: 'source'}
+  has_many :source_packages, -> { where(package_type: 'source') }, class_name: '::BuildList::Package'
 
   UPDATE_TYPES = %w[bugfix security enhancement recommended newpackage]
   RELEASE_UPDATE_TYPES = %w[bugfix security]
@@ -31,28 +33,28 @@ class BuildList < ActiveRecord::Base
   validates :project_id, :project_version, :arch, :include_repos,
             :build_for_platform_id, :save_to_platform_id, :save_to_repository_id, presence: true
   validates_numericality_of :priority, greater_than_or_equal_to: 0
-  validates :external_nodes, inclusion: {in:  EXTERNAL_NODES}, allow_blank: true
-  validates :auto_publish_status, inclusion: {in: AUTO_PUBLISH_STATUSES}
+  validates :external_nodes, inclusion: { in:  EXTERNAL_NODES }, allow_blank: true
+  validates :auto_publish_status, inclusion: { in: AUTO_PUBLISH_STATUSES }
   validates :update_type, inclusion: UPDATE_TYPES,
             unless: Proc.new { |b| b.advisory.present? }
-  validates :update_type, inclusion: {in: RELEASE_UPDATE_TYPES, message: I18n.t('flash.build_list.frozen_platform')},
+  validates :update_type, inclusion: { in: RELEASE_UPDATE_TYPES, message: I18n.t('flash.build_list.frozen_platform') },
             if: Proc.new { |b| b.advisory.present? }
-  validate lambda {
+  validate -> {
     errors.add(:build_for_platform, I18n.t('flash.build_list.wrong_platform')) if save_to_platform.main? && save_to_platform_id != build_for_platform_id
   }
-  validate lambda {
+  validate -> {
     errors.add(:build_for_platform, I18n.t('flash.build_list.wrong_build_for_platform')) unless build_for_platform.main?
   }
-  validate lambda {
+  validate -> {
     errors.add(:save_to_repository, I18n.t('flash.build_list.wrong_repository')) if save_to_repository.platform_id != save_to_platform.id
   }
-  validate lambda {
+  validate -> {
     errors.add(:save_to_repository, I18n.t('flash.build_list.wrong_include_repos')) if build_for_platform.repositories.where(id: include_repos).count != include_repos.size
   }
-  validate lambda {
+  validate -> {
     errors.add(:save_to_repository, I18n.t('flash.build_list.wrong_project')) unless save_to_repository.projects.exists?(project_id)
   }
-  before_validation lambda { self.include_repos = include_repos.uniq if include_repos.present? }, on: :create
+  before_validation -> { self.include_repos = include_repos.uniq if include_repos.present? }, on: :create
   before_validation :prepare_extra_repositories,  on: :create
   before_validation :prepare_extra_build_lists,   on: :create
   before_validation :prepare_extra_params,        on: :create
@@ -95,40 +97,45 @@ class BuildList < ActiveRecord::Base
   STATUSES.freeze
   HUMAN_STATUSES.freeze
 
-  scope :recent, order("#{table_name}.updated_at DESC")
-  scope :for_extra_build_lists, lambda {|ids, current_ability, save_to_platform|
-    s = scoped
+  scope :recent, -> { order(updated_at: :desc) }
+  scope :for_extra_build_lists, ->(ids, current_ability, save_to_platform) {
+    s = all
     s = s.where(id: ids).published_container.accessible_by(current_ability, :read)
     s = s.where(save_to_platform_id: save_to_platform.id) if save_to_platform && save_to_platform.main?
     s
   }
-  scope :for_status, lambda {|status| where(status: status) if status.present? }
-  scope :for_user, lambda { |user| where(user_id: user.id)  }
-  scope :not_owned_external_nodes, where("#{table_name}.external_nodes is null OR #{table_name}.external_nodes != ?", :owned)
-  scope :external_nodes, lambda { |type| where("#{table_name}.external_nodes = ?", type) }
-  scope :oldest, lambda { where("#{table_name}.updated_at < ?", Time.zone.now - 15.seconds) }
-  scope :for_platform, lambda { |platform| where(build_for_platform_id: platform)  }
-  scope :by_mass_build, lambda { |mass_build| where(mass_build_id: mass_build) }
-  scope :scoped_to_arch, lambda {|arch| where(arch_id: arch) if arch.present? }
-  scope :scoped_to_save_platform, lambda {|pl_id| where(save_to_platform_id: pl_id) if pl_id.present? }
-  scope :scoped_to_project_version, lambda {|project_version| where(project_version: project_version) if project_version.present? }
-  scope :scoped_to_is_circle, lambda {|is_circle| where(is_circle: is_circle) }
-  scope :for_creation_date_period, lambda{|start_date, end_date|
-    s = scoped
+  scope :for_status, ->(status) { where(status: status) if status.present? }
+  scope :for_user, ->(user) { where(user_id: user.id)  }
+  scope :not_owned_external_nodes, -> { where("#{table_name}.external_nodes is null OR #{table_name}.external_nodes != ?", :owned) }
+  scope :external_nodes, ->(type) { where("#{table_name}.external_nodes = ?", type) }
+  scope :oldest, -> { where("#{table_name}.updated_at < ?", Time.zone.now - 15.seconds) }
+  scope :for_platform, ->(platform) { where(build_for_platform_id: platform)  }
+  scope :by_mass_build, ->(mass_build) { where(mass_build_id: mass_build) }
+  scope :scoped_to_arch, ->(arch) { where(arch_id: arch) if arch.present? }
+  scope :scoped_to_save_platform, ->(pl_id) { where(save_to_platform_id: pl_id) if pl_id.present? }
+  scope :scoped_to_project_version, ->(pr_version) { where(project_version: pr_version) if pr_version.present? }
+  scope :scoped_to_is_circle, ->(is_circle) { where(is_circle: is_circle) }
+  scope :for_creation_date_period, ->(start_date, end_date) {
+    s = all
     s = s.where(["#{table_name}.created_at >= ?", start_date]) if start_date
     s = s.where(["#{table_name}.created_at <= ?", end_date]) if end_date
     s
   }
-  scope :for_notified_date_period, lambda{|start_date, end_date|
-    s = scoped
+  scope :for_notified_date_period, ->(start_date, end_date) {
+    s = all
     s = s.where("#{table_name}.updated_at >= ?", start_date)  if start_date.present?
     s = s.where("#{table_name}.updated_at <= ?", end_date)    if end_date.present?
     s
   }
-  scope :scoped_to_project_name, lambda {|project_name| joins(:project).where('projects.name LIKE ?', "%#{project_name}%") if project_name.present? }
-  scope :scoped_to_new_core, lambda {|new_core| where(new_core: new_core)}
-  scope :outdated, where("#{table_name}.created_at < ? AND #{table_name}.status NOT IN (?) OR #{table_name}.created_at < ?", Time.now - LIVE_TIME, [BUILD_PUBLISHED,BUILD_PUBLISHED_INTO_TESTING], Time.now - MAX_LIVE_TIME)
-  scope :published_container, where(container_status: BUILD_PUBLISHED)
+  scope :scoped_to_project_name, ->(project_name) {
+    joins(:project).where('projects.name LIKE ?', "%#{project_name}%") if project_name.present?
+  }
+  scope :scoped_to_new_core, ->(new_core) { where(new_core: new_core) }
+  scope :outdated, -> {
+    where("#{table_name}.created_at < ? AND #{table_name}.status NOT IN (?) OR #{table_name}.created_at < ?",
+          Time.now - LIVE_TIME, [BUILD_PUBLISHED,BUILD_PUBLISHED_INTO_TESTING], Time.now - MAX_LIVE_TIME)
+  }
+  scope :published_container, -> { where(container_status: BUILD_PUBLISHED) }
 
   serialize :additional_repos
   serialize :include_repos
@@ -137,7 +144,7 @@ class BuildList < ActiveRecord::Base
   serialize :extra_build_lists,   Array
   serialize :extra_params,        Hash
 
-  after_commit  :place_build, on: :create
+  after_create  :place_build
   after_destroy :remove_container
 
   state_machine :status, initial: :waiting_for_response do
@@ -157,7 +164,7 @@ class BuildList < ActiveRecord::Base
 
     after_transition on: [:published, :fail_publish, :build_error, :tests_failed], do: :notify_users
     after_transition on: :build_success, do: :notify_users,
-      unless: lambda { |build_list| build_list.auto_publish? || build_list.auto_publish_into_testing? }
+      unless: ->(build_list) { build_list.auto_publish? || build_list.auto_publish_into_testing? }
 
     event :place_build do
       transition waiting_for_response: :build_pending
@@ -413,7 +420,7 @@ class BuildList < ActiveRecord::Base
   end
 
   def set_packages(pkg_hash, project_name)
-    prj = Project.joins(repositories: :platform).where('platforms.id = ?', save_to_platform.id).find_by_name!(project_name)
+    prj = Project.joins(repositories: :platform).where('platforms.id = ?', save_to_platform.id).find_by!(name: project_name)
     build_package(pkg_hash['srpm'], 'source', prj) {|p| p.save!}
     pkg_hash['rpm'].each do |rpm_hash|
       build_package(rpm_hash, 'binary', prj) {|p| p.save!}
@@ -425,7 +432,11 @@ class BuildList < ActiveRecord::Base
   end
 
   def current_duration
-    (Time.now.utc - started_at.utc).to_i
+    if started_at
+      (Time.now.utc - started_at.utc).to_i
+    else
+      0
+    end
   end
 
   def human_current_duration
@@ -527,17 +538,16 @@ class BuildList < ActiveRecord::Base
   end
 
   def self.next_build
-    redis   = Resque.redis
-    kind_id = redis.spop(USER_BUILDS_SET)
+    kind_id = Redis.current.spop(USER_BUILDS_SET)
     key     = "user_build_#{kind_id}_rpm_worker_default" if kind_id
     task    = Resque.pop(key) if key
-    redis.sadd(USER_BUILDS_SET, kind_id) if task
+    Redis.current.sadd(USER_BUILDS_SET, kind_id) if task
 
 
-    kind_id ||= redis.spop(MASS_BUILDS_SET)
+    kind_id ||= Redis.current.spop(MASS_BUILDS_SET)
     key     ||= "mass_build_#{kind_id}_rpm_worker" if kind_id
     task    ||= Resque.pop(key) if key
-    redis.sadd(MASS_BUILDS_SET, kind_id) if task && key =~ /^mass_build/
+    Redis.current.sadd(MASS_BUILDS_SET, kind_id) if task && key =~ /^mass_build/
 
     if task
       build_list = BuildList.where(id: task['args'][0]['id']).first
@@ -582,7 +592,7 @@ class BuildList < ActiveRecord::Base
       users = [user, publisher].compact.uniq.select{ |u| u.notifier.can_notify? && u.notifier.new_build? }
 
       # find associated users
-      users |= project.all_members.select do |u|
+      users |= project.all_members(:notifier).select do |u|
         u.notifier.can_notify? && u.notifier.new_associated_build?
       end if project
       users.each{ |u| UserMailer.build_list_notification(self, u).deliver }

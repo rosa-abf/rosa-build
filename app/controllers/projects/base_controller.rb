@@ -12,7 +12,7 @@ class Projects::BaseController < ApplicationController
   end
 
   def find_project
-    @project = Project.find_by_owner_and_name!(params[:owner_name], params[:project_name]) if params[:owner_name].present? && params[:project_name].present?
+    @project = Project.find_by_owner_and_name! params[:name_with_owner] if params[:name_with_owner].present?
   end
 
   def init_statistics

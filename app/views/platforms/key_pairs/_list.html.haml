@@ -14,5 +14,5 @@
           %td= link_to repository.key_pair.user.fullname, user_path(repository.key_pair.user)
           %td.buttons
             - if can? :destroy, repository.key_pair
-              = link_to platform_key_pair_path(@platform, repository.key_pair), method: :delete, confirm: t("layout.key_pairs.confirm_delete") do
+              = link_to platform_key_pair_path(@platform, repository.key_pair), method: :delete, data: { confirm: t("layout.key_pairs.confirm_delete") } do
                 %span.delete &nbsp;

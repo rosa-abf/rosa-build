@@ -1,14 +1,6 @@
 class PlatformContent
 
-  # ------------------
-  # *** ATTRIBUTES ***
-  # ------------------
-
   attr_reader :path
-
-  # ---------------
-  # *** METHODS ***
-  # ---------------
 
   def initialize(platform, path)
     @platform, @path = platform, path
@@ -29,7 +21,7 @@ class PlatformContent
       bfp_name = @path.match(/\/#{@platform.name}\/repository\/[\w]+\//)
       return nil unless bfp_name
       bfp_name = bfp_name[0].gsub(/\/#{@platform.name}\/repository\//, '').gsub('/', '')
-      build_for_platform = Platform.main.find_by_name bfp_name
+      build_for_platform = Platform.main.find_by name: bfp_name
       return nil unless build_for_platform
     end
 
@@ -61,21 +53,17 @@ class PlatformContent
     "#{APP_CONFIG['downloads_url']}/#{@platform.name}#{suffix}"
   end
 
-  # ---------------------
-  # *** CLASS METHODS ***
-  # ---------------------
-
   def self.find_by_platform(platform, path, term)
     # Strip out the non-ascii character
     term = (term || '').strip.gsub(/[\\\/]+/, '')
-                              .gsub(/[^\w\-\+\.]/, '_')
+                             .gsub(/[^\w\-\+\.]/, '_')
 
     path = path.split(File::SEPARATOR).map(&:strip).select(&:present?)
                .map{ |p|
                   # Strip out the non-ascii character
                   p.gsub(/[\\\/]+/, '')
-                    .gsub(/^[\.]+/, '')
-                    .gsub(/[^\w\-\.]/, '_')
+                   .gsub(/^[\.]+/, '')
+                   .gsub(/[^\w\-\.]/, '_')
                 }
                .join(File::SEPARATOR)
     results = Dir.glob(File.join(platform.path, path, "*#{term}*"))

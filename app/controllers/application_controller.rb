@@ -7,12 +7,12 @@ class ApplicationController < ActionController::Base
   layout :layout_by_resource
 
   # Hack to prevent token auth on all pages except atom feed:
-  prepend_before_filter lambda { redirect_to(new_user_session_path) if params[:token] && params[:token].is_a?(String) && params[:format] != 'atom'}
+  prepend_before_filter -> { redirect_to(new_user_session_path) if params[:token] && params[:token].is_a?(String) && params[:format] != 'atom'}
 
   before_filter :set_locale
-  before_filter lambda { EventLog.current_controller = self },
+  before_filter -> { EventLog.current_controller = self },
                 only: [:create, :destroy, :open_id, :cancel, :publish, :change_visibility] # :update
-  after_filter lambda { EventLog.current_controller = nil }
+  after_filter -> { EventLog.current_controller = nil }
 
   helper_method :get_owner
 
@@ -48,8 +48,13 @@ class ApplicationController < ActionController::Base
   def render_error(status)
     respond_to do |format|
       format.json { render json: {status: status, message: t("flash.#{status}_message")}.to_json, status: status }
-      format.html { redirect_to "/#{status}.html", alert: t("flash.#{status}_message") }
+      format.all { redirect_to "/#{status}.html", alert: t("flash.#{status}_message") }
     end
+  end
+
+  # Helper method for all controllers
+  def permit_params(param_name, *accessible)
+    (params[param_name] || ActionController::Parameters.new).permit(*accessible.flatten)
   end
 
   def set_locale
@@ -73,8 +78,8 @@ class ApplicationController < ActionController::Base
        return current_user
       end
     else
-      params['user_id'] && User.find_by_id(params['user_id']) ||
-      params['group_id'] && Group.find_by_id(params['group_id']) || current_user
+      params['user_id'] && User.find(params['user_id']) ||
+      params['group_id'] && Group.find(params['group_id']) || current_user
     end
   end
 

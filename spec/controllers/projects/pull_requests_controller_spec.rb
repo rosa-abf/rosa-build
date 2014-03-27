@@ -15,18 +15,17 @@ shared_context "pull request controller" do
     @pull.save
 
     @create_params = {
-      pull_request: {issue_attributes: {title: 'create', body: 'creating'},
-                        to_ref: 'non_conflicts',
-                        from_ref: 'master'},
+      pull_request: { issue_attributes: { title: 'create', body: 'creating' },
+                                to_ref: 'non_conflicts',
+                              from_ref: 'master' },
       to_project: @project.name_with_owner,
-      owner_name: @project.owner.uname,
-      project_name: @project.name }
-    @update_params = @create_params.merge(
-      pull_request_action: 'close',
-      id: @pull.serial_id)
+      name_with_owner: @project.name_with_owner
+    }
+    @update_params = @create_params.merge(pull_request_action: 'close', id: @pull.serial_id)
     @wrong_update_params = @create_params.merge(
-      pull_request: {issue_attributes: {title: 'update', body: 'updating', id: @pull.issue.id}},
-      id: @pull.serial_id)
+      pull_request: { issue_attributes: { title: 'update', body: 'updating', id: @pull.issue.id }},
+      id: @pull.serial_id
+    )
 
     @user = FactoryGirl.create(:user)
     set_session_for(@user)
@@ -37,13 +36,13 @@ end
 
 shared_examples_for 'pull request user with project guest rights' do
   it 'should be able to perform index action' do
-    get :index, owner_name: @project.owner.uname, project_name: @project.name
+    get :index, name_with_owner: @project.name_with_owner
     response.should render_template(:index)
   end
 
   it 'should be able to perform show action when pull request has been created' do
     @pull.check
-    get :show, owner_name: @project.owner.uname, project_name: @project.name, id: @pull.serial_id
+    get :show, name_with_owner: @project.name_with_owner, id: @pull.serial_id
     response.should render_template(:show)
   end
 end
@@ -51,7 +50,7 @@ end
 shared_examples_for 'pull request user with project reader rights' do
   it 'should be able to perform index action on hidden project' do
     @project.update_attributes(visibility: 'hidden')
-    get :index, owner_name: @project.owner.uname, project_name: @project.name
+    get :index, name_with_owner: @project.name_with_owner
     response.should render_template(:index)
   end
 
@@ -163,13 +162,13 @@ end
 shared_examples_for 'pull request when project with issues turned off' do
   before { @project.update_attributes(has_issues: false) }
   it 'should be able to perform index action' do
-    get :index, owner_name: @project.owner.uname, project_name: @project.name
+    get :index, name_with_owner: @project.name_with_owner
     response.should render_template(:index)
   end
 
   it 'should be able to perform show action when pull request has been created' do
     @pull.check
-    get :show, owner_name: @project.owner.uname, project_name: @project.name, id: @pull.serial_id
+    get :show, name_with_owner: @project.name_with_owner, id: @pull.serial_id
     response.should render_template(:show)
   end
 end
@@ -191,7 +190,7 @@ describe Projects::PullRequestsController do
 
   context 'for project admin user' do
     before do
-      @project.relations.create!(actor_type: 'User', actor_id: @user.id, role: 'admin')
+      create_relation(@project, @user, 'admin')
     end
 
     it_should_behave_like 'pull request user with project guest rights'
@@ -214,7 +213,7 @@ describe Projects::PullRequestsController do
 
   context 'for project reader user' do
     before do
-      @project.relations.create!(actor_type: 'User', actor_id: @user.id, role: 'reader')
+      create_relation(@project, @user, 'reader')
     end
 
     it_should_behave_like 'pull request user with project guest rights'
@@ -223,19 +222,19 @@ describe Projects::PullRequestsController do
     it_should_behave_like 'pull request when project with issues turned off'
 
     it 'should return 404' do
-      get :show, owner_name: @project.owner.uname, project_name: @project.name, id: 999999
+      get :show, name_with_owner: @project.name_with_owner, id: 999999
       render_template(file: "#{Rails.root}/public/404.html")
     end
 
     it 'should redirect to issue page' do
-      get :show, owner_name: @project.owner.uname, project_name: @project.name, id: @issue.serial_id
+      get :show, name_with_owner: @project.name_with_owner, id: @issue.serial_id
       response.should redirect_to(project_issue_path(@project, @issue))
     end
   end
 
   context 'for project writer user' do
     before do
-      @project.relations.create!(actor_type: 'User', actor_id: @user.id, role: 'writer')
+      create_relation(@project, @user, 'writer')
     end
 
     it_should_behave_like 'pull request user with project guest rights'
@@ -268,19 +267,19 @@ describe Projects::PullRequestsController do
 
     else
       it 'should not be able to perform index action' do
-        get :index, owner_name: @project.owner.uname, project_name: @project.name
+        get :index, name_with_owner: @project.name_with_owner
         response.should redirect_to(new_user_session_path)
       end
 
       it 'should not be able to perform show action' do
         @pull.check
-        get :show, owner_name: @project.owner.uname, project_name: @project.name, id: @pull.serial_id
+        get :show, name_with_owner: @project.name_with_owner, id: @pull.serial_id
         response.should redirect_to(new_user_session_path)
       end
 
       it 'should not be able to perform index action on hidden project' do
         @project.update_attributes(visibility: 'hidden')
-        get :index, owner_name: @project.owner.uname, project_name: @project.name
+        get :index, name_with_owner: @project.name_with_owner
         response.should redirect_to(new_user_session_path)
       end
     end
@@ -300,11 +299,11 @@ describe Projects::PullRequestsController do
   context 'send email messages' do
     before(:each) do
       @project_reader = FactoryGirl.create :user
-      @project.relations.create!(actor_type: 'User', actor_id: @project_reader.id, role: 'reader')
+      create_relation(@project, @project_reader, 'reader')
       @project_admin = FactoryGirl.create :user
-      @project.relations.create!(actor_type: 'User', actor_id: @project_admin.id, role: 'admin')
+      create_relation(@project, @project_admin, 'admin')
       @project_writer = FactoryGirl.create :user
-      @project.relations.create!(actor_type: 'User', actor_id: @project_writer.id, role: 'writer')
+      create_relation(@project, @project_writer, 'writer')
 
       set_session_for(@project_writer)
       ActionMailer::Base.deliveries = []
@@ -312,22 +311,16 @@ describe Projects::PullRequestsController do
 
     it 'should send two email messages to project admins' do
       post :create, @create_params
-      @project.pull_requests.last.issue.send(:new_issue_notifications)
-      @project.pull_requests.last.issue.send(:send_assign_notifications)
       ActionMailer::Base.deliveries.count.should == 2
     end
 
     it 'should send two email messages to admins and one to assignee' do
       post :create, @create_params.deep_merge(issue: {assignee_id: @project_reader.id})
-      @project.pull_requests.last.issue.send(:new_issue_notifications)
-      @project.pull_requests.last.issue.send(:send_assign_notifications)
       ActionMailer::Base.deliveries.count.should == 3
     end
 
     it 'should not duplicate email message' do
       post :create, @create_params.deep_merge(issue: {assignee_id: @project_admin.id})
-      @project.pull_requests.last.issue.send(:new_issue_notifications)
-      @project.pull_requests.last.issue.send(:send_assign_notifications)
       ActionMailer::Base.deliveries.count.should == 2 # send only to admins
       ActionMailer::Base.deliveries.first.to != ActionMailer::Base.deliveries.last.to
     end

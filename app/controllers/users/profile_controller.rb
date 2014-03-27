@@ -13,6 +13,7 @@ class Users::ProfileController < Users::BaseController
       end
       render partial: 'shared/profile_projects', layout: nil, locals: {projects: paginate_projects(page)}
     else
+      @projects = @projects.opened
       @projects = paginate_projects(page)
     end
   end

@@ -1,11 +1,12 @@
 -user= User.where(email: user_email).first || User.new(email: user_email) if defined?(user_email)
+- name_with_owner = "#{project_owner}/#{project_name}"
 .top
   .image= link_to(image_tag(avatar_url(user, :small), alt: 'avatar'), user_path(user)) if user.persisted?
   .text
     %span
       = raw t("notifications.bodies.new_comment_notification.title", user_link: user_link(user, user_name))
-      = raw t("notifications.bodies.new_comment_notification.commit_content", {commit_link: link_to(commit_message, commit_path(project_owner, project_name, commit_id) + "#comment#{comment_id}")})
-      = raw t("notifications.bodies.project", project_link: link_to("#{project_owner}/#{project_name}", project_path(project_owner, project_name)) )
+      = raw t("notifications.bodies.new_comment_notification.commit_content", {commit_link: link_to(commit_message, commit_path(name_with_owner, commit_id) + "#comment#{comment_id}")})
+      = raw t("notifications.bodies.project", project_link: link_to(name_with_owner, project_path(name_with_owner)) )
     .both
       = datetime_moment activity_feed.created_at, tag: :span, class: 'date'
   .both

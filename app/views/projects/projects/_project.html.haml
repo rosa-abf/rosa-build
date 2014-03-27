@@ -11,5 +11,5 @@
       = t("layout.collaborators.role_names.#{current_user.best_role project}")
   %td.td5
     - unless project.owner == current_user or !alone_member
-      = link_to remove_user_project_path(project), method: :delete, confirm: t("layout.confirm") do
+      = link_to remove_user_project_path(project), method: :delete, data: { confirm: t("layout.confirm") } do
         %span.delete &nbsp;

@@ -3,7 +3,7 @@ namespace :project do
   namespace :maintainer do
     desc 'Set maintainer to owner (or to owners owner if owner is a group) to projects'
     task set_to_owner: :environment do
-      projects = Project.scoped
+      projects = Project.all
       count = projects.count
       say "Setting maintainer to all projects (#{count})"
       percent_per_batch = 100 * 1000 / count
@@ -30,10 +30,10 @@ end
 namespace :projects do
   desc 'Add projects from one platform repository to another'
   task copy_to_repo: :environment do
-    source_platform = Platform.find_by_name!(ENV['SRC_PLATFORM'])
-    dest_platform   = Platform.find_by_name!(ENV['DST_PLATFORM'])
-    source_repo     = source_platform.repositories.find_by_name!(ENV['SRC_REPO'])
-    dest_repo       = dest_platform.repositories.find_by_name!(ENV['DST_REPO'])
+    source_platform = Platform.find_by! name: ENV['SRC_PLATFORM']
+    dest_platform   = Platform.find_by! name: ENV['DST_PLATFORM']
+    source_repo     = source_platform.repositories.find_by! name: ENV['SRC_REPO']
+    dest_repo       = dest_platform.repositories.find_by!   name: ENV['DST_REPO']
 
     say "Add from repo '#{source_platform.name}/#{source_repo.name}' to repo '#{dest_platform.name}/#{dest_repo.name}'."
     source_repo.projects.each do |pr|

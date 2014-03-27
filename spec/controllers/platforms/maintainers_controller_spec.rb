@@ -57,12 +57,10 @@ describe Platforms::MaintainersController do
 
   context 'for platform member' do
     before(:each) do
-      @platform.relations.create!(actor_type: 'User', actor_id: @user.id, role: 'admin')
+      create_relation(@platform, @user, 'admin')
     end
 
     it_should_behave_like 'guest user'
   end
 
 end
-
-

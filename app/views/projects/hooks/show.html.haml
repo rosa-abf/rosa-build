@@ -22,5 +22,5 @@
   .leftlist
   .rightlist
     = link_to t('layout.edit'), edit_project_hook_path(@project, hook), class: 'button'
-    = link_to t('layout.delete'), project_hook_path(@project, hook), method: :delete, confirm: t('layout.confirm'), class: 'button'
+    = link_to t('layout.delete'), project_hook_path(@project, hook), method: :delete, data: { confirm: t('layout.confirm') }, class: 'button'
   .hr

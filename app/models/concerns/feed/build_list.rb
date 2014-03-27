@@ -1,4 +1,4 @@
-module Modules::Observers::ActivityFeed::BuildList
+module Feed::BuildList
   extend ActiveSupport::Concern
 
   included do

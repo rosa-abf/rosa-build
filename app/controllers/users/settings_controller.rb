@@ -3,7 +3,7 @@ class Users::SettingsController < Users::BaseController
   before_filter :set_current_user
 
   def profile
-    if request.put?
+    if request.patch?
       send_confirmation = params[:user][:email] != @user.email
       if @user.update_without_password(params[:user])
         update_avatar(@user, params)
@@ -27,7 +27,7 @@ class Users::SettingsController < Users::BaseController
   end
 
   def private
-    if request.put?
+    if request.patch?
       if @user.update_with_password(params[:user])
         flash[:notice] = t('flash.user.saved')
         redirect_to private_settings_path
@@ -40,7 +40,7 @@ class Users::SettingsController < Users::BaseController
   end
 
   def notifiers
-    if request.put?
+    if request.patch?
       if @user.notifier.update_attributes(params[:settings_notifier])
         flash[:notice] = I18n.t("flash.settings.saved")
         redirect_to notifiers_settings_path
@@ -49,4 +49,5 @@ class Users::SettingsController < Users::BaseController
       end
     end
   end
+
 end

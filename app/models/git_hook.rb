@@ -1,11 +1,12 @@
 class GitHook
+  include Feed::Git
+  include Resque::Plugins::Status
+
   ZERO = '0000000000000000000000000000000000000000'
   @queue = :hook
 
   attr_reader :repo, :newrev, :oldrev, :newrev_type, :oldrev_type, :refname,
     :change_type, :rev, :rev_type, :refname_type, :owner, :project, :user, :message
-
-  include Resque::Plugins::Status
 
   def self.perform(*options)
     self.process(*options)
@@ -64,19 +65,19 @@ class GitHook
   end
 
   def self.process(*args)
-    Modules::Observers::ActivityFeed::Git.create_notifications(args.size > 1 ? GitHook.new(*args) : args.first)
+    Feed::Git.create_notifications(args.size > 1 ? GitHook.new(*args) : args.first)
   end
 
   def find_user(user)
     if user.blank?
       # Local push
-      User.find_by_email(project.repo.commit(newrev).author.email) rescue nil
+      User.find_by(email: project.repo.commit(newrev).author.email) rescue nil
     elsif user =~ /\Auser-\d+\Z/
       # git push over http
       User.find(user.gsub('user-', ''))
     elsif user =~ /\Akey-\d+\Z/
       # git push over ssh
-      SshKey.find_by_id(user.gsub('key-', '')).try(:user)
+      SshKey.find(user.gsub('key-', '')).try(:user)
     end
   end
 end

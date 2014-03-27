@@ -1,9 +1,8 @@
 require 'spec_helper'
 
 describe Api::V1::IssuesController do
-  before(:all) do
+  before do
     stub_symlink_methods
-    stub_redis
     any_instance_of(Project, versions: ['v1.0', 'v2.0'])
 
     @project = FactoryGirl.create(:project_with_commit)
@@ -11,7 +10,7 @@ describe Api::V1::IssuesController do
 
     @membered_issue = FactoryGirl.create(:issue)
     @membered_project = @membered_issue.project
-    @membered_project.relations.create(role: 'reader', actor: @issue.user)
+    create_relation(@membered_project, @issue.user, 'reader')
 
     @open_issue = FactoryGirl.create(:issue)
     @open_project = @open_issue.project
@@ -214,8 +213,4 @@ describe Api::V1::IssuesController do
     end
   end
 
-  after(:all) do
-    User.destroy_all
-    Platform.destroy_all
-  end
 end

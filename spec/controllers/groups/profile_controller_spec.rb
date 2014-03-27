@@ -129,7 +129,7 @@ describe Groups::ProfileController do
     before(:each) do
       @user = FactoryGirl.create(:user)
       set_session_for(@user)
-      @group.actors.create(actor_type: 'User', actor_id: @user.id, role: 'admin')
+      create_actor_relation(@group, @user, 'admin')
     end
 
     it_should_behave_like 'group user with project show rights'
@@ -144,7 +144,7 @@ describe Groups::ProfileController do
       set_session_for(@user)
       @group.owner = @user
       @group.save
-      @group.actors.create(actor_type: 'User', actor_id: @user.id, role: 'admin')
+      create_actor_relation(@group, @user, 'admin')
     end
 
     it_should_behave_like 'group user with project show rights'
@@ -156,7 +156,7 @@ describe Groups::ProfileController do
     before(:each) do
       @user = FactoryGirl.create(:user)
       set_session_for(@user)
-      @group.actors.create(actor_type: 'User', actor_id: @user.id, role: 'reader')
+      create_actor_relation(@group, @user, 'reader')
     end
 
     it "should remove user from groups" do

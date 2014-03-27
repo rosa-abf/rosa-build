@@ -4,9 +4,9 @@ describe MassBuild do
   before { stub_symlink_methods }
 
   context 'ensures that validations and associations exist' do
-    before do
-      # Need for validate_uniqueness_of check
-      FactoryGirl.create(:mass_build)
+
+    it 'is valid given valid attributes' do
+      FactoryGirl.create(:mass_build).should be_true
     end
 
     it { should belong_to(:build_for_platform) }

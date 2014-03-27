@@ -1,7 +1,7 @@
 # This module is based on
 # https://github.com/gitlabhq/gitlabhq/blob/7665b1de7eed4addd7b94786c84e6674710e6377/app/helpers/gitlab_markdown_helper.rb
 module GitlabMarkdownHelper
-  include Modules::Models::Markdown
+  include MarkdownHelper
 
   # Use this in places where you would normally use link_to(gfm(...), ...).
   #

@@ -3,8 +3,7 @@ class Users::UsersController < Users::BaseController
   before_filter :find_user_by_key, only: [:allowed, :discover]
 
   def allowed
-    owner_name, project_name = params[:project].split '/'
-    project = Project.find_by_owner_and_name!(owner_name, project_name ? project_name : '!')
+    project = Project.find_by_owner_and_name! params[:project]
     action = case params[:action_type]
                   when 'git-upload-pack'
                     then :read

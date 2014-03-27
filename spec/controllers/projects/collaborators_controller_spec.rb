@@ -24,16 +24,16 @@ shared_context "collaborators controller" do
         role: 'reader'
     } if @group
     @create_params = {
-      owner_name: @project.owner.uname, project_name: @project.name,
+      name_with_owner: @project.name_with_owner,
       format: :json
     }
-    @update_params = @create_params.merge(collaborator: {role: 'reader'})
+    @update_params = @create_params.merge(collaborator: { role: 'reader' })
   end
 end
 
 shared_examples_for 'project admin user' do
   it 'should be able to view collaborators list' do
-    get :index, owner_name: @project.owner.uname, project_name: @project.name
+    get :index, name_with_owner: @project.name_with_owner
     response.should be_success
   end
 
@@ -60,7 +60,7 @@ end
 
 shared_examples_for 'user with no rights for this project' do
   it 'should not be able to view collaborators list' do
-    get :index, owner_name: @project.owner.uname, project_name: @project.name
+    get :index, name_with_owner: @project.name_with_owner
     response.should redirect_to(forbidden_path)
   end
 
@@ -83,7 +83,7 @@ describe Projects::CollaboratorsController do
       set_session_for(User.new)
     end
     it 'should not be able to perform index action' do
-      get :index, owner_name: @project.owner.uname, project_name: @project.name
+      get :index, name_with_owner: @project.name_with_owner
       response.should redirect_to(new_user_session_path)
     end
 
@@ -104,7 +104,7 @@ describe Projects::CollaboratorsController do
 
   context 'for admin user' do
     before(:each) do
-      @project.relations.create!(actor_type: 'User', actor_id: @user.id, role: 'admin')
+      create_relation(@project, @user, 'admin')
     end
 
     it_should_behave_like 'project admin user'
@@ -121,7 +121,7 @@ describe Projects::CollaboratorsController do
 
   context 'for reader user' do
     before(:each) do
-      @project.relations.create!(actor_type: 'User', actor_id: @user.id, role: 'reader')
+      create_relation(@project, @user, 'reader')
     end
 
     it_should_behave_like 'user with no rights for this project'
@@ -129,7 +129,7 @@ describe Projects::CollaboratorsController do
 
   context 'for writer user' do
     before(:each) do
-      @project.relations.create!(actor_type: 'User', actor_id: @user.id, role: 'writer')
+      create_relation(@project, @user, 'writer')
     end
 
     it_should_behave_like 'user with no rights for this project'

@@ -17,14 +17,12 @@ class BuildList::Item < ActiveRecord::Base
                      BuildList::BUILD_CANCELED => :build_canceled
                     }
 
-  scope :recent, order("#{table_name}.level ASC, #{table_name}.name ASC")
+  scope :recent, -> { order("#{table_name}.level ASC, #{table_name}.name ASC") }
 
   def self.group_by_level
-    items = scoped({}).recent
-
     groups = []
     current_level = -1
-    items.each do |item|
+    all.recent.find_each do |item|
       groups << [] if current_level < item.level
       groups.last << item
       current_level = item.level

@@ -1,12 +1,20 @@
 class Project < ActiveRecord::Base
-  include Modules::Models::Autostart
+  has_ancestry orphan_strategy: :adopt # we replace a 'path' method in the Git module
+
+  include Autostart
+  include Owner
+  include Git
+  include Wiki
+  include UrlHelper
+  include EventLoggable
 
   VISIBILITIES = ['open', 'hidden']
   MAX_OWN_PROJECTS = 32000
   NAME_REGEXP = /[\w\-\+\.]+/
+  OWNER_AND_NAME_REGEXP = /#{User::NAME_REGEXP.source}\/#{NAME_REGEXP.source}/
 
   belongs_to :owner, polymorphic: true, counter_cache: :own_projects_count
-  belongs_to :maintainer, class_name: "User"
+  belongs_to :maintainer, class_name: 'User'
 
   has_many :issues, dependent: :destroy
   has_many :pull_requests, dependent: :destroy, foreign_key: 'to_project_id'
@@ -25,17 +33,17 @@ class Project < ActiveRecord::Base
   has_many :collaborators, through: :relations, source: :actor, source_type: 'User'
   has_many :groups,        through: :relations, source: :actor, source_type: 'Group'
 
-  has_many :packages, class_name: "BuildList::Package", dependent: :destroy
+  has_many :packages, class_name: 'BuildList::Package', dependent: :destroy
   has_and_belongs_to_many :advisories # should be without dependent: :destroy
 
-  validates :name, uniqueness: {scope: [:owner_id, :owner_type], case_sensitive: false},
+  validates :name, uniqueness: { scope: [:owner_id, :owner_type], case_sensitive: false },
                    presence: true,
-                   format: {with: /\A#{NAME_REGEXP}\z/,
-                   message: I18n.t("activerecord.errors.project.uname")}
+                   format: { with: /\A#{NAME_REGEXP.source}\z/,
+                             message: I18n.t("activerecord.errors.project.uname") }
   validates :maintainer_id, presence: true, unless: :new_record?
-  validates :url, presence: true, format: {with: /\Ahttps?:\/\/[\S]+\z/}, if: :mass_import
+  validates :url, presence: true, format: { with: /\Ahttps?:\/\/[\S]+\z/ }, if: :mass_import
   validates :add_to_repository_id, presence: true, if: :mass_import
-  validates :visibility, presence: true, inclusion: {in: VISIBILITIES}
+  validates :visibility, presence: true, inclusion: { in: VISIBILITIES }
   validate { errors.add(:base, :can_have_less_or_equal, count: MAX_OWN_PROJECTS) if owner.projects.size >= MAX_OWN_PROJECTS }
   validate :check_default_branch
   # throws validation error message from ProjectToRepository model into Project model
@@ -53,57 +61,50 @@ class Project < ActiveRecord::Base
                   :autostart_status
   attr_readonly :owner_id, :owner_type
 
-  scope :recent, order("lower(#{table_name}.name) ASC")
-  scope :search_order, order("CHAR_LENGTH(#{table_name}.name) ASC")
-  scope :search, lambda {|q|
+  scope :recent, -> { order(:name) }
+  scope :search_order, -> { order('CHAR_LENGTH(projects.name) ASC') }
+  scope :search, ->(q) {
     q = q.to_s.strip
     by_name("%#{q}%").search_order if q.present?
   }
-  scope :by_name, lambda {|name| where("#{table_name}.name ILIKE ?", name) if name.present?}
-  scope :by_owner_and_name, lambda { |*params|
+  scope :by_name, ->(name) { where('projects.name ILIKE ?', name) if name.present? }
+  scope :by_owner_and_name, ->(*params) {
     term = params.map(&:strip).join('/').downcase
     where("lower(concat(owner_uname, '/', name)) ILIKE ?", "%#{term}%") if term.present?
   }
-  scope :by_visibilities, lambda {|v| where(visibility: v)}
-  scope :opened, where(visibility: 'open')
-  scope :package, where(is_package: true)
-  scope :addable_to_repository, lambda { |repository_id| where %Q(
-    projects.id NOT IN (
-      SELECT
-        ptr.project_id
-      FROM
-        project_to_repositories AS ptr
-      WHERE (ptr.repository_id = #{ repository_id })
-    )
-  ) }
-  scope :by_owners, lambda { |group_owner_ids, user_owner_ids|
-    where("(#{table_name}.owner_id in (?) AND #{table_name}.owner_type = 'Group') OR (#{table_name}.owner_id in (?) AND #{table_name}.owner_type = 'User')", group_owner_ids, user_owner_ids)
+  scope :by_visibilities, ->(v) { where(visibility: v) }
+  scope :opened, -> { where(visibility: 'open') }
+  scope :package, -> { where(is_package: true) }
+  scope :addable_to_repository, ->(repository_id) {
+    where('projects.id NOT IN (
+            SELECT ptr.project_id
+            FROM project_to_repositories AS ptr
+            WHERE ptr.repository_id = ?)', repository_id)
+  }
+  scope :by_owners, ->(group_owner_ids, user_owner_ids) {
+    where("(projects.owner_id in (?) AND projects.owner_type = 'Group') OR
+      (projects.owner_id in (?) AND projects.owner_type = 'User')", group_owner_ids, user_owner_ids)
   }
 
   before_validation :truncate_name, on: :create
-  before_save lambda { self.owner_uname = owner.uname if owner_uname.blank? || owner_id_changed? || owner_type_changed? }
+  before_save -> { self.owner_uname = owner.uname if owner_uname.blank? || owner_id_changed? || owner_type_changed? }
   before_create :set_maintainer
   after_save :attach_to_personal_repository
   after_update :set_new_git_head
-  after_update lambda { update_path_to_project(name_was) }, if: :name_changed?
-
-  has_ancestry orphan_strategy: :rootify #:adopt not available yet
+  after_update -> { update_path_to_project(name_was) }, if: :name_changed?
 
   attr_accessor :url, :srpms_list, :mass_import, :add_to_repository_id
 
-  include Modules::Models::Owner
-  include Modules::Models::Git
-  include Modules::Models::Wiki
-  include Modules::Models::UrlHelper
-
   class << self
-    def find_by_owner_and_name(owner_name, project_name)
-      where(owner_uname: owner_name, name: project_name).first ||
-        by_owner_and_name(owner_name, project_name).first
+    def find_by_owner_and_name(first, last = nil)
+      arr = first.try(:split, '/') || []
+      arr = (arr << last).compact
+      return nil if arr.length != 2
+      where(owner_uname: arr.first, name: arr.last).first || by_owner_and_name(*arr).first
     end
 
-    def find_by_owner_and_name!(owner_name, project_name)
-      find_by_owner_and_name(owner_name, project_name) or raise ActiveRecord::RecordNotFound
+    def find_by_owner_and_name!(first, last = nil)
+      find_by_owner_and_name(first, last) or raise ActiveRecord::RecordNotFound
     end
   end
 
@@ -116,15 +117,15 @@ class Project < ActiveRecord::Base
   end
 
   def to_param
-    name
+    name_with_owner
   end
 
-  def all_members
-    members | (owner_type == 'User' ? [owner] : owner.members)
+  def all_members(*includes)
+    members(includes) | (owner_type == 'User' ? [owner] : owner.members.includes(includes))
   end
 
-  def members
-    collaborators | groups.map(&:members).flatten
+  def members(*includes)
+    collaborators.includes(includes) | groups.map{ |g| g.members.includes(includes) }.flatten
   end
 
   def add_member(member, role = 'admin')
@@ -160,11 +161,11 @@ class Project < ActiveRecord::Base
   def git_project_address auth_user
     opts = default_url_options
     opts.merge!({user: auth_user.authentication_token, password: ''}) unless self.public?
-    Rails.application.routes.url_helpers.project_url(self.owner.uname, self.name, opts) + '.git'
+    Rails.application.routes.url_helpers.project_url(self.name_with_owner, opts) + '.git'
     #path #share by NFS
   end
 
-  def build_for(mass_build, repository_id, arch =  Arch.find_by_name('i586'), priority = 0, increase_rt = false)
+  def build_for(mass_build, repository_id, arch =  Arch.find_by(name: 'i586'), priority = 0, increase_rt = false)
     build_for_platform  = mass_build.build_for_platform
     save_to_platform    = mass_build.save_to_platform
     user                = mass_build.user
@@ -239,12 +240,12 @@ class Project < ActiveRecord::Base
     format_id = ProjectTag::FORMATS["#{tag_file_format(format)}"]
     project_tag = project_tags.where(tag_name: tag.name, format_id: format_id).first
 
-    return project_tag.sha1 if project_tag && project_tag.commit_id == tag.commit.id && Modules::Models::FileStoreClean.file_exist_on_file_store?(project_tag.sha1)
+    return project_tag.sha1 if project_tag && project_tag.commit_id == tag.commit.id && FileStoreClean.file_exist_on_file_store?(project_tag.sha1)
 
     archive = archive_by_treeish_and_format tag.name, format
     sha1    = Digest::SHA1.file(archive[:path]).hexdigest
-    unless Modules::Models::FileStoreClean.file_exist_on_file_store? sha1
-      token = User.find_by_uname('rosa_system').authentication_token
+    unless FileStoreClean.file_exist_on_file_store? sha1
+      token = User.find_by(uname: 'rosa_system').authentication_token
       begin
         resp = JSON `curl --user #{token}: -POST -F 'file_store[file]=@#{archive[:path]};filename=#{name}-#{tag.name}.#{tag_file_format(format)}' #{APP_CONFIG['file_store_url']}/api/v1/upload`
       rescue # Dont care about it
@@ -298,7 +299,7 @@ class Project < ActiveRecord::Base
   end
 
   class << self
-    Modules::Models::Autostart::HUMAN_AUTOSTART_STATUSES.each do |autostart_status, human_autostart_status|
+    Autostart::HUMAN_AUTOSTART_STATUSES.each do |autostart_status, human_autostart_status|
       define_method "autostart_build_lists_#{human_autostart_status}" do
         autostart_build_lists autostart_status
       end

@@ -69,7 +69,6 @@ end
 describe Platforms::KeyPairsController do
   before(:each) do
     stub_symlink_methods
-    stub_redis
 
     @platform = FactoryGirl.create(:platform)
     @repository = FactoryGirl.create(:repository, platform: @platform)
@@ -139,7 +138,7 @@ describe Platforms::KeyPairsController do
     before(:each) do
       @user = FactoryGirl.create(:user)
       set_session_for(@user)
-      @platform.relations.create!(actor_type: 'User', actor_id: @user.id, role: 'admin')
+      create_relation(@platform, @user, 'admin')
     end
 
     it_should_behave_like 'key_pair platform owner'
@@ -149,7 +148,7 @@ describe Platforms::KeyPairsController do
     before(:each) do
       @user = FactoryGirl.create(:user)
       set_session_for(@user)
-      @platform.relations.create!(actor_type: 'User', actor_id: @user.id, role: 'reader')
+      create_relation(@platform, @user, 'reader')
     end
 
     it_should_behave_like 'key_pair platform reader'

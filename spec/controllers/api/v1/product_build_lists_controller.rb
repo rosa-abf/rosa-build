@@ -57,7 +57,7 @@ end
 
 shared_examples_for 'api user with admin rights' do
   before(:each) do
-    @product_build_list.product.platform.relations.create!(actor_type: 'User', actor_id: @another_user.id, role: 'admin')
+    create_relation(@product_build_list.product.platform, @another_user, 'admin')
     http_login(@another_user)
     commit_hash = @product_build_list.project.repo.commits.first.id
     params = {product_id: @product_build_list.product_id, arch_id: Arch.last.id,
@@ -115,7 +115,6 @@ end
 describe Api::V1::ProductBuildListsController do
   before(:each) do
     stub_symlink_methods
-    stub_redis
 
     @product_build_list = FactoryGirl.create(:product_build_list)
     @another_user = FactoryGirl.create(:user)

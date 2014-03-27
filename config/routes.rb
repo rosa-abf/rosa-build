@@ -6,11 +6,11 @@ Rosa::Application.routes.draw do
 
   devise_scope :users do
     get '/users/auth/:provider' => 'users/omniauth_callbacks#passthru'
-  end
-  devise_for :users, controllers: {omniauth_callbacks: 'users/omniauth_callbacks'}, skip: [:registrations] do
     get 'users/sign_up' => 'users/registrations#new',    as: :new_user_registration
     post 'users'        => 'users/registrations#create', as: :user_registration
   end
+
+  devise_for :users, controllers: { omniauth_callbacks: 'users/omniauth_callbacks' }, skip: [:registrations]
 
   namespace :api do
     namespace :v1 do
@@ -132,7 +132,9 @@ Rosa::Application.routes.draw do
     authenticated do
       root to: 'home#activity'
     end
-    root to: 'home#root'
+    unauthenticated do
+      root to: 'home#root', as: :authenticated_root
+    end
   else
     root to: 'home#activity'
   end
@@ -179,13 +181,13 @@ Rosa::Application.routes.draw do
       end
 
       resources :contents, only: [:index]
-      match '/contents/*path' => 'contents#index', format: false
+      get '/contents/*path' => 'contents#index', format: false
 
       resources :mass_builds, only: [:create, :new, :index] do
         member do
           post   :cancel
           post   :publish
-          get '/:kind.:format' => "mass_builds#get_list", as: :get_list, kind: /failed_builds_list|missed_projects_list|projects_list|tests_failed_builds_list/
+          get '/:kind' => "mass_builds#get_list", as: :get_list, kind: /failed_builds_list|missed_projects_list|projects_list|tests_failed_builds_list/
         end
       end
 
@@ -241,11 +243,11 @@ Rosa::Application.routes.draw do
     resources :settings, only: [] do
       collection do
         get :profile
-        put :profile
+        patch :profile
         get :private
-        put :private
+        patch :private
         get :notifiers
-        put :notifiers
+        patch :notifiers
         put :reset_auth_token
       end
     end
@@ -258,7 +260,7 @@ Rosa::Application.routes.draw do
 
   scope module: 'groups' do
     get '/groups/new' => 'profile#new' # need to force next route exclude id: 'new'
-    get '/groups/:id' => redirect("/%{id}"), as: :profile_group # override default group show route
+    get '/groups/:id' => redirect("/%{id}"),        as: :profile_group # override default group show route
     resources :groups, controller: 'profile' do
       delete :remove_user, on: :member
       resources :members, only: [:index] do
@@ -277,7 +279,7 @@ Rosa::Application.routes.draw do
         put :cancel
         put :create_container
         get :log
-        put :publish
+        patch :publish
         put :reject_publish
         put :publish_into_testing
         put :update_type
@@ -290,7 +292,7 @@ Rosa::Application.routes.draw do
         get   :mass_import
       end
     end
-    scope ':owner_name/:project_name', constraints: {project_name: Project::NAME_REGEXP} do # project
+    scope ':name_with_owner', constraints: { name_with_owner: Project::OWNER_AND_NAME_REGEXP } do # project
       scope as: 'project' do
         resources :wiki do
           collection do
@@ -346,7 +348,7 @@ Rosa::Application.routes.draw do
       # Resource
       get '/autocomplete_maintainers' => 'projects#autocomplete_maintainers', as: :autocomplete_maintainers
       get '/modify' => 'projects#edit', as: :edit_project
-      put '/' => 'projects#update'
+      patch '/' => 'projects#update'
       delete '/' => 'projects#destroy'
       # Member
       post '/fork' => 'projects#fork', as: :fork_project
@@ -354,6 +356,7 @@ Rosa::Application.routes.draw do
       get '/sections' => 'projects#sections', as: :sections_project
       post '/sections' => 'projects#sections'
       delete '/remove_user' => 'projects#remove_user', as: :remove_user_project
+      # constraints treeish: /[\w\-\.]+(\/[\w\-\.]+)?/ do
       constraints treeish: /.+/ do
         constraints Rosa::Constraints::Treeish do
           # Tree
@@ -364,9 +367,9 @@ Rosa::Application.routes.draw do
           # Branches
           get '/branches' => "git/trees#branches", as: :branches
           get '/branches/:treeish' => "git/trees#branches", as: :branch
-          delete '/branches/:treeish' => "git/trees#destroy", as: :branch
-          put '/branches/:treeish' => "git/trees#restore_branch", as: :branch
-          post '/branches' => "git/trees#create", as: :branches
+          delete '/branches/:treeish' => "git/trees#destroy", as: :destroy_branch
+          put '/branches/:treeish' => "git/trees#restore_branch", as: :restore_branch
+          post '/branches' => "git/trees#create", as: :create_branch
           # Commits
           get '/commits/:treeish(/*path)' => "git/commits#index", as: :commits, format: false
           get '/commit/:id(.:format)' => "git/commits#show", as: :commit
@@ -402,12 +405,12 @@ Rosa::Application.routes.draw do
       get '/' => 'users/profile#show', as: :user
     end
     constraints Rosa::Constraints::Owner.new(Group, true) do
-      get '/' => 'groups/profile#show', as: :group
+      get '/' => 'groups/profile#show'
     end
   end
 
   # As of Rails 3.0.1, using rescue_from in your ApplicationController to
   # recover from a routing error is broken!
   # see: https://rails.lighthouseapp.com/projects/8994/tickets/4444-can-no-longer-rescue_from-actioncontrollerroutingerror
-  match '*a', to: 'application#render_404'
+  get '*a', to: 'application#render_404'
 end

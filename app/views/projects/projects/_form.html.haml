@@ -52,7 +52,7 @@
         -# TODO: Maybe use something like Chosen with filter and prepopulated
         -#       list of potential maintainers?
         = autocomplete_field_tag :maintainer_name, @project.maintainer.fullname,
-            autocomplete_maintainers_path(@project.owner, @project),
+            autocomplete_maintainers_path(@project),
             id_element: '#project_maintainer_id',
             placeholder: @project.maintainer.fullname
 

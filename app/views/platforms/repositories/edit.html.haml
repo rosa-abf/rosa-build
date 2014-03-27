@@ -16,7 +16,7 @@
     .leftlist= t('layout.repositories.regenerate_metadata')
     .rightlist
       = select_tag :build_for_platform_id, options_from_collection_for_select(Platform.main, :id, :name) if @platform.personal?
-      = f.submit t('layout.repositories.regenerate_metadata'), confirm: t('layout.confirm')
+      = f.submit t('layout.repositories.regenerate_metadata'), data: { confirm: t('layout.confirm') }
   .both
 
   - if @repository.repository_statuses.present?
@@ -49,7 +49,7 @@
       - path  = sync_lock_file_platform_repository_path(@platform, @repository)
     = form_for @repository, url: path, html: { class: :form, method: :put } do |f|
       .leftlist= t('layout.repositories.sync_lock_file_info')
-      .rightlist= f.submit label, confirm: t('layout.confirm')
+      .rightlist= f.submit label, data: { confirm: t('layout.confirm') }
     .both
   .hr
 

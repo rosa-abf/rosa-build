@@ -17,6 +17,9 @@ common: &common
     airbrake_api_key: 'airbrake_api_key'
     devise_pepper: 'e295a79fb7966e94a6e8b184ba65791a'
     secret_token: 'e295a79fb7966e94a6e8b184ba65791a'
+    devise:
+      pepper: 'e295a79fb7966e94a6e8b184ba65791a'
+      secret: '82e10b58b3f4a764f551fb104aa76808f539380f82da75d3f29edfc09ed9c3a153c22ceacc87890a9b19d0ad89bb6484481f4e021e0ecf942d80c34d930829e9'
     github:
       id: 'APP_ID'
       secret: 'APP_SECRET'

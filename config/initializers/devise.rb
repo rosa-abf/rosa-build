@@ -69,7 +69,7 @@ Devise.setup do |config|
   config.stretches = Rails.env.test? ? 1 : 10
 
   # Setup a pepper to generate the encrypted password.
-  config.pepper = APP_CONFIG['keys']['devise_pepper']
+  config.pepper = APP_CONFIG['keys']['devise']['pepper']
 
   # ==> Configuration for :confirmable
   # A period that the user is allowed to access the website even without
@@ -150,8 +150,8 @@ Devise.setup do |config|
 
   # ==> Configuration for :token_authenticatable
   # Defines name of the authentication token params key
-  config.token_authentication_key = :token
-  config.skip_session_storage = [:token_auth, :http_auth]
+  # config.token_authentication_key = :token
+  # config.skip_session_storage = [:token_auth, :http_auth]
 
   # ==> Scopes configuration
   # Turn scoped views on. Before rendering "sessions/new", it will first check for
@@ -204,4 +204,6 @@ Devise.setup do |config|
   #   manager.intercept_401 = false
   #   manager.default_strategies(:scope => :user).unshift :some_external_strategy
   # end
+
+  config.secret_key = APP_CONFIG['keys']['devise']['secret']
 end

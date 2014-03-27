@@ -1,14 +1,14 @@
-module Modules::Observers::ActivityFeed::Issue
+module Feed::Issue
   extend ActiveSupport::Concern
 
   included do
-    after_commit :new_issue_notifications, on: :create
+    after_commit :new_issue_notifications,    on: :create
 
-    after_commit :send_assign_notifications,                on: :create, if: Proc.new { |i| i.assignee }
-    after_commit -> { send_assign_notifications(:update) }, on: :update
+    after_commit :send_assign_notifications,  on: :create, if: ->(i) { i.assignee }
+    after_update -> { send_assign_notifications(:update) }
 
-    after_commit :send_hooks,                on: :create
-    after_commit -> { send_hooks(:update) }, on: :update, if: Proc.new { |i| i.previous_changes['status'].present? }
+    after_commit :send_hooks, on: :create
+    after_update -> { send_hooks(:update) }, if: ->(i) { i.previous_changes['status'].present? }
   end
 
   private
@@ -34,7 +34,7 @@ module Modules::Observers::ActivityFeed::Issue
         }
       )
     end
-    Comment.create_link_on_issues_from_item(self)
+    ::Comment.create_link_on_issues_from_item(self)
   end
 
   def send_assign_notifications(action = :create)
@@ -57,7 +57,7 @@ module Modules::Observers::ActivityFeed::Issue
       )
     end
     # dont remove outdated issues link
-    Comment.create_link_on_issues_from_item(self) if previous_changes['title'].present? || previous_changes['body'].present?
+    ::Comment.create_link_on_issues_from_item(self) if previous_changes['title'].present? || previous_changes['body'].present?
   end
 
   def send_hooks(action = :create)

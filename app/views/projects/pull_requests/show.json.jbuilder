@@ -14,7 +14,7 @@ json.pull_request do
     json.ref @pull.from_ref
     json.sha @pull.from_commit.try(:id)
     json.project do
-      json.(@pull.from_project, :id, :name)
+      json.(@pull.from_project, :id, :name) if @pull.from_project.present?
       json.owner_uname @pull.to_project.owner.uname
     end
   end

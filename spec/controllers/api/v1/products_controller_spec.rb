@@ -57,7 +57,7 @@ end
 
 shared_examples_for 'api user with admin rights' do
   before(:each) do
-    @product.platform.relations.create!(actor_type: 'User', actor_id: @another_user.id, role: 'admin')
+    create_relation(@product.platform, @another_user, 'admin')
     http_login(@another_user)
     params = {platform_id: @product.platform.id, project_id: @product.project.id}
     @create_params = {product:{name: 'pro', time_living: 150}.merge(params)}
@@ -117,7 +117,6 @@ end
 describe Api::V1::ProductsController do
   before(:each) do
     stub_symlink_methods
-    stub_redis
 
     @product = FactoryGirl.create(:product)
     @another_user = FactoryGirl.create(:user)

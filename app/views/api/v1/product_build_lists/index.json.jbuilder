@@ -1,4 +1,4 @@
-json.product_build_lists @product_build_lists do |json, product_build_list|
+json.product_build_lists @product_build_lists do |product_build_list|
   json.partial! 'product_build_list', product_build_list: product_build_list, json: json
 end
 

@@ -1,17 +1,22 @@
 class Relation < ActiveRecord::Base
+  ROLES = %w[reader writer admin]
+
   belongs_to :target, polymorphic: true
   belongs_to :actor, polymorphic: true, touch: true
 
-  ROLES = %w[reader writer admin]
-  validates :role, inclusion: {in: ROLES}
+  validates :role, inclusion: { in: ROLES }
 
 #  validate { errors.add(:actor, :taken) if Relation.where(actor_type: self.actor_type, actor_id: self.actor_id).present? }
   before_validation :add_default_role
 
-  scope :by_user_through_groups, lambda {|u| where("actor_type = 'User' AND actor_id = ? OR actor_type = 'Group' AND actor_id IN (?)", u.id, u.group_ids)}
-  scope :by_actor, lambda {|obj| where(actor_id: obj.id, actor_type: obj.class.to_s)}
-  scope :by_target, lambda {|tar| where(target_id: tar.id, target_type: tar.class.to_s)}
-  scope :by_role, lambda {|role| where(role: role)}
+  attr_accessible :actor_id, :actor_type, :target_id, :target_type, :actor, :target, :role
+
+  scope :by_user_through_groups, ->(u) {
+    where("actor_type = 'User' AND actor_id = ? OR actor_type = 'Group' AND actor_id IN (?)", u.id, u.group_ids)
+  }
+  scope :by_actor,  ->(obj)  { where(actor_id: obj.id, actor_type: obj.class.to_s) }
+  scope :by_target, ->(tar)  { where(target_id: tar.id, target_type: tar.class.to_s) }
+  scope :by_role,   ->(role) { where(role: role) }
 
   def self.create_with_role(actor, target, role)
     r = self.new

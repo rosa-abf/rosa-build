@@ -24,7 +24,7 @@ class Projects::IssuesController < Projects::BaseController
     @sort       = params[:sort] == 'updated' ? :updated : :created
     @direction  = params[:direction] == 'asc' ? :asc : :desc
     @issues = @issues.order("issues.#{@sort}_at #{@direction}")
-    @issues = @issues.includes(:assignee, :user, :pull_request).uniq
+    @issues = @issues.preload(:assignee, :user, :pull_request).uniq
                      .paginate per_page: 20, page: params[:page]
     if status == 200
       render 'index', layout: request.xhr? ? 'with_sidebar' : 'application'
@@ -81,11 +81,11 @@ class Projects::IssuesController < Projects::BaseController
     end
   end
 
-  def destroy
-    @issue.destroy
-    flash[:notice] = t("flash.issue.destroyed")
-    redirect_to root_path
-  end
+  # def destroy
+  #   @issue.destroy
+  #   flash[:notice] = t("flash.issue.destroyed")
+  #   redirect_to root_path
+  # end
 
   def create_label
     index(@project.labels.create!(name: params[:name], color: params[:color]) ? 200 : 500)

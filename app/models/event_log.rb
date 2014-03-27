@@ -4,14 +4,15 @@ class EventLog < ActiveRecord::Base
 
   # self.per_page = 1
 
-  scope :eager_loading, preload(:user)
-  scope :default_order, order("#{table_name}.id DESC") # order('created_at DESC')
+  scope :eager_loading, -> { preload(:user) }
+  scope :default_order, -> { order(id: :desc) }
 
   before_create do
     self.user_name = user.try(:uname) || 'guest'
     self.eventable_name ||= eventable.name if eventable.respond_to?(:name)
   end
   # after_create { self.class.current_controller = nil }
+  attr_accessible :kind, :message, :eventable, :eventable_name
 
   class << self
     def create_with_current_controller(attributes)

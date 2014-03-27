@@ -1,71 +1,69 @@
 source 'https://rubygems.org'
 
-gem 'rails', '3.2.17'
-gem 'redhillonrails_core', git: 'git://github.com/rosa-abf/redhillonrails_core.git', branch: 'rails31' # '~> 2.0.0.pre' # deprecated
+gem 'rails', '4.0.4'
 
-gem 'pg', '~> 0.14.0'
-gem 'activerecord-postgres-hstore'
-
-gem 'devise', '~> 2.2.3'
+gem 'pg', '~> 0.17.1'
+gem 'schema_plus', '~> 1.4.0'
+########
+gem 'protected_attributes'
+########
+gem 'devise', '~> 3.2.3'
 gem 'omniauth'
 gem 'omniauth-facebook'
 gem 'omniauth-google-oauth2'
 gem 'omniauth-github'
 # gem 'omniauth-openid', '~> 1.0.1'
-gem 'cancan', '1.6.7' # 1.6.8 fail specs with strange error
+# gem 'cancan', '1.6.10'
+gem 'cancan', git: 'git://github.com/rosa-abf/cancan.git', tag: '1.6.10-abf'
 
-gem 'ancestry', '~> 1.3.0'
-gem 'paperclip', '~> 4.1.0'
-gem 'resque', '~> 1.24'
-gem 'resque-status', '~> 0.3.3'
+gem 'ancestry', '~> 2.0.0'
+gem 'paperclip', '~> 4.1.1'
+gem 'resque', '~> 1.25'
+gem 'resque-status', '~> 0.4.2'
 gem 'resque_mailer', '~> 2.2'
-gem 'resque-scheduler'
-# gem 'perform_later', '~> 1.3.0' # should be after resque_mailer
+gem 'resque-scheduler', '~> 2.5.4'
 gem 'perform_later', git: 'git://github.com/KensoDev/perform_later.git' # should be after resque_mailer
 gem 'russian', '~> 0.6.0'
-gem 'highline', '~> 1.6.11'
-gem 'state_machine'
-gem 'redis-rails'
+gem 'highline', '~> 1.6.20'
+gem 'state_machine', '~> 1.2'
+gem 'redis-rails', '~> 4.0'
 
 gem 'grack', git: 'git://github.com/rosa-abf/grack.git', require: 'git_http'
 gem 'grit', git: 'git://github.com/rosa-abf/grit.git'
 gem 'charlock_holmes', '~> 0.6.9'
-gem 'github-linguist', '~> 2.3.4', require: 'linguist'
+gem 'github-linguist', '~> 2.10', require: 'linguist'
 gem 'diff-display', '~> 0.0.1'
 
 # Wiki
-gem "gollum", '~> 2.1.3'
-gem "redcarpet", '~> 2.2.2'
+gem "gollum-lib", '~> 2.0'
+gem "redcarpet", '~> 3.1.1'
 gem 'creole'
 gem 'rdiscount'
 # gem 'org-ruby'
 gem 'RedCloth'
 gem 'wikicloth'
 
-# gem 'unicorn', '~> 4.3.1', platforms: [:mri, :rbx]
-gem 'trinidad', '~> 1.0.2', platforms: :jruby
-
 gem 'newrelic_rpm'
-# gem 'whenever', '~> 0.7.3', require: false
 gem 'whenever', '~> 0.9.0', require: false
 
-gem 'jbuilder', '~> 1.4.2'
-gem 'rails3-jquery-autocomplete', '~> 1.0.7'
-gem 'will_paginate', '~> 3.0.3'
-gem 'meta-tags', '~> 1.2.5', require: 'meta_tags'
-gem "haml-rails", '~> 0.3.4'
-gem 'jquery-rails', '~> 2.0.2'
-gem 'ruby-haml-js', '~> 0.0.3'
-gem 'friendly_id'
+gem 'jbuilder', '~> 2.0.3'
+gem 'rails3-jquery-autocomplete', '~> 1.0'
+gem 'will_paginate', '~> 3.0.5'
+gem 'meta-tags', '~> 1.5', require: 'meta_tags'
+gem "haml-rails", '~> 0.5'
+gem 'jquery-rails', '~> 2.3.0'
+gem 'jquery-migrate-rails'
+gem 'ruby-haml-js', '~> 0.0.5'
+gem 'friendly_id', '~> 5.0.3'
 
-gem 'rack-throttle'
-gem 'rest-client', '~> 1.6.6'
-gem 'ohm'
-gem 'ohm-expire'
+gem 'rack-throttle', '~> 0.3.0'
+gem 'rest-client', '~> 1.6.7'
+gem 'ohm', '~> 1.3.2'
+gem 'ohm-expire', '~> 0.1.3'
 
-gem 'ffi'
+gem 'ffi', '~> 1.9.3'
 
-gem 'attr_encrypted', '1.2.1'
+gem 'attr_encrypted', '~> 1.3.2'
 gem "gemoji", "~> 1.2.1", require: 'emoji/railtie'
 
 # AngularJS related stuff
@@ -79,15 +77,13 @@ gem 'soundmanager-rails'
 
 gem 'time_diff'
 
-group :assets do
-  gem 'sass-rails', '~> 3.2.5'
-  gem 'coffee-rails', '~> 3.2.2'
-  gem 'compass-rails', '~> 1.0.3'
-  gem 'uglifier', '~> 1.2.4'
-  gem 'therubyracer', '~> 0.12.1', platforms: [:mri, :rbx]
-  gem 'therubyrhino', '~> 1.73.1', platforms: :jruby
-  gem 'turbo-sprockets-rails3'
-end
+gem 'sass-rails', '~> 4.0.1'
+gem 'coffee-rails', '~> 4.0.1'
+gem 'compass-rails', '~> 1.1.6'
+gem 'uglifier', '~> 2.4'
+gem 'therubyracer', '~> 0.12.1', platforms: [:mri, :rbx]
+gem 'therubyrhino', '~> 1.73.1', platforms: :jruby
+
 
 group :production do
   gem "airbrake", '~> 3.1.2'
@@ -116,11 +112,16 @@ group :development do
   #gem 'ruby-dbus' if RUBY_PLATFORM =~ /linux/i # Error at deploy
 end
 
+group :development, :test do
+  gem 'rspec-rails', '~> 2.14.1'
+end
+
 group :test do
-  gem 'rspec-rails',        '~> 2.11.0', group: 'development'
-  gem 'factory_girl_rails', '~> 4.0.0'
-  gem 'rr',                 '~> 1.0.4'
+  gem 'factory_girl_rails', '~> 4.4.1'
+  gem 'rr',                 '~> 1.1.2'
   gem 'shoulda'
-  gem 'mock_redis',         '0.6.2'
+  gem 'shoulda-matchers'
+  gem 'mock_redis',         '~> 0.11'
   gem 'rake'
+  gem 'test_after_commit'
 end

@@ -11,7 +11,7 @@ end
 describe Api::V1::PullRequestsController do
   before(:all) do
     stub_symlink_methods
-    stub_redis
+
     @project = FactoryGirl.create(:project_with_commit)
     @pull = create_pull 'master', 'non_conflicts', @project.owner
 
@@ -29,7 +29,7 @@ describe Api::V1::PullRequestsController do
 
     @membered_project = FactoryGirl.create(:project_with_commit)
     @membered_pull = create_pull 'master', 'non_conflicts', @membered_project.owner, @membered_project
-    @membered_project.relations.create(role: 'reader', actor: @pull.user)
+    create_relation(@membered_project, @pull.user, 'reader')
 
     @create_params = {pull_request: {title: 'title', body: 'body',
                                         from_ref: 'conflicts', to_ref: 'master'},
@@ -276,11 +276,11 @@ describe Api::V1::PullRequestsController do
   context 'send email messages' do
     before(:each) do
       @project_reader = FactoryGirl.create :user
-      @project.relations.create!(actor_type: 'User', actor_id: @project_reader.id, role: 'reader')
+      create_relation(@project, @project_reader, 'reader')
       @project_admin = FactoryGirl.create :user
-      @project.relations.create!(actor_type: 'User', actor_id: @project_admin.id, role: 'admin')
+      create_relation(@project, @project_admin, 'admin')
       @project_writer = FactoryGirl.create :user
-      @project.relations.create!(actor_type: 'User', actor_id: @project_writer.id, role: 'writer')
+      create_relation(@project, @project_writer, 'writer')
 
       http_login(@project_writer)
       ActionMailer::Base.deliveries = []

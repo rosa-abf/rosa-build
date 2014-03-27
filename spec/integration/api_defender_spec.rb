@@ -23,7 +23,7 @@ describe ApiDefender do
   end
 
   before do
-    stub_symlink_methods && stub_redis
+    stub_symlink_methods
     @redis = Redis.new
     @password = '123456'
     @rate_limit = 3 # dont forget change in max_per_window

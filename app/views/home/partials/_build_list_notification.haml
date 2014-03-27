@@ -4,7 +4,8 @@
   .text
     %span
       = raw t('notifications.bodies.build_task', id: build_list_id, task_link: build_list_path(build_list_id))
-      = raw t('notifications.bodies.project', project_link: link_to("#{project_owner}/#{project_name}", project_path(project_owner, project_name)) )
+      - name_with_owner = "#{project_owner}/#{project_name}"
+      = raw t('notifications.bodies.project', project_link: link_to(name_with_owner, name_with_owner) )
       - message, error = case status
         - when BuildList::BUILD_PENDING
           - ['pending', nil]

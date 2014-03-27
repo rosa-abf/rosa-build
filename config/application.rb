@@ -3,21 +3,25 @@ require File.expand_path('../boot', __FILE__)
 require 'rails/all'
 require './lib/api_defender'
 
-# If you have a Gemfile, require the gems listed there, including any gems
+# Prevent deprecation warning
+I18n.config.enforce_available_locales = true
+
+# Require the gems listed in Gemfile, including any gems
 # you've limited to :test, :development, or :production.
-if defined?(Bundler)
-  # If you precompile assets before deploying to production, use this line
-  Bundler.require *Rails.groups(assets: %w(development test))
-  # If you want your assets lazily compiled in production, use this line
-  # Bundler.require(:default, :assets, Rails.env)
-end
+Bundler.require(*Rails.groups)
 
 module Rosa
   class Application < Rails::Application
-    # Rate limit
-    config.middleware.insert_after Rack::Lock, ApiDefender
+    config.i18n.enforce_available_locales = true
 
-    config.action_view.javascript_expansions[:defaults] = %w(jquery rails)
+    unless Rails.env.test?
+      require 'close_ar_connections_middleware'
+      config.middleware.insert_after('Rack::Sendfile', CloseArConnectionsMiddleware)
+    end
+
+    # Rate limit
+    config.middleware.insert_before Rack::Runtime, ApiDefender
+
     config.autoload_paths += %W(#{config.root}/lib)
 
     # Settings in config/environments/* take precedence over those specified here.
@@ -33,9 +37,6 @@ module Rosa
     # :all can be used as a placeholder for all plugins not explicitly named.
     # config.plugins = [ :exception_notification, :ssl_requirement, :all ]
 
-    # Activate observers that should always be running.
-    config.active_record.observers = :event_log_observer, :build_list_observer
-
     # Set Time.zone default to the specified zone and make Active Record auto-convert to this zone.
     # Run "rake -D time" for a list of tasks for finding time zone names. Default is UTC.
     # config.time_zone = 'Central Time (US & Canada)'
@@ -45,18 +46,15 @@ module Rosa
     config.i18n.load_path += Dir[Rails.root.join('config', 'locales', '**', '*.{rb,yml}').to_s]
     config.i18n.default_locale = :en
 
-    config.action_view.javascript_expansions[:defaults] = %w()
-
     # Configure the default encoding used in templates for Ruby 1.9.
     config.encoding = "utf-8"
-
-    # Configure sensitive parameters which will be filtered from the log file.
-    config.filter_parameters += [:password, :secret, :authentication_token]
 
     # Enable the asset pipeline
     config.assets.enabled = true
 
     # Version of your assets, change this if you want to expire all your assets
     config.assets.version = '1.0'
+
+    config.log_redis = false
   end
 end

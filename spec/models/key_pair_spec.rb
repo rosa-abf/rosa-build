@@ -1,11 +1,7 @@
 require 'spec_helper'
 
 describe KeyPair do
-  before(:all) do
-    init_test_root
-    stub_redis
-    FactoryGirl.create(:key_pair)
-  end
+  before(:all) { FactoryGirl.create(:key_pair) }
 
   it { should belong_to(:repository) }
   it { should belong_to(:user)}

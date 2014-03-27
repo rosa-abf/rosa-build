@@ -9,8 +9,8 @@ class Groups::ProfileController < Groups::BaseController
   end
 
   def show
-    @path, page = group_path, params[:page].to_i
-    @projects = @group.own_projects.opened.search(params[:search]).recent
+    @path, page = group_path(@group), params[:page].to_i
+    @projects = @group.own_projects.search(params[:search]).recent
     if request.xhr?
       if params[:visibility] != 'hidden'
         @projects = @projects.opened
@@ -20,6 +20,7 @@ class Groups::ProfileController < Groups::BaseController
       end
       render partial: 'shared/profile_projects', layout: nil, locals: {projects: paginate_projects(page)}
     else
+      @projects = @projects.opened
       @projects = paginate_projects(page)
     end
   end

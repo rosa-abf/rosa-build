@@ -7,7 +7,7 @@
 .hr
 
 %h3= t("layout.projects.build_schedule")
-%div{ 'ng-controller' => 'ProjectScheduleController', 'ng-init' => "init('#{@project.name_with_owner}')" }
+%div{ 'ng-controller' => 'ProjectScheduleController', 'ng-init' => "name_with_owner = '#{@project.name_with_owner}'" }
 
   .leftlist= t('activerecord.attributes.project.autostart_status')
   .rightlist
@@ -33,6 +33,6 @@
 
 .hr
 .leftside= t("layout.projects.delete_warning")
-.rightside= link_to t("layout.delete"), project_path(@project), method: :delete, confirm: t("layout.projects.confirm_delete"), class: 'button' if can? :destroy, @project
+.rightside= link_to t("layout.delete"), project_path(@project), method: :delete, data: { confirm: t("layout.projects.confirm_delete") }, class: 'button' if can? :destroy, @project
 .both
 

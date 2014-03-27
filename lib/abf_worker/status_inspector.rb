@@ -21,9 +21,9 @@ module AbfWorker
       end
 
       def count_of_tasks(regexp)
-        Resque.redis.smembers('queues').
+        Redis.current.smembers('resque:queues').
           select{ |q| q =~ /#{regexp}/ }.
-          map{ |q| Resque.redis.llen("queue:#{q}") }.sum
+          map{ |q| Redis.current.llen("resque:queue:#{q}") }.sum
       end
 
       def products_status
@@ -45,8 +45,8 @@ module AbfWorker
       end
 
       def status_of_worker(workers, worker)
-        redis, key = Resque.redis, "queue:#{worker}_worker"
-        default_tasks, tasks = redis.llen("#{key}_default"), redis.llen(key)
+        key = "resque:queue:#{worker}_worker"
+        default_tasks, tasks = Redis.current.llen("#{key}_default"), Redis.current.llen(key)
         {
           workers:       workers.count,
           build_tasks:   workers.select{ |w| w.working? }.count,

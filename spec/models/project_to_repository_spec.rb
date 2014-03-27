@@ -17,7 +17,6 @@ describe ProjectToRepository do
   end
 
   it 'creates task for removing project from repository on destroy' do
-    stub_redis
     @first_repo.project_to_repositories.destroy_all
     queue = @redis_instance.lrange(AbfWorker::BuildListsPublishTaskManager::PROJECTS_FOR_CLEANUP, 0, -1)
     queue.should have(2).item

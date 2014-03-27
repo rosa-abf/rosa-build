@@ -152,8 +152,7 @@ class Projects::PullRequestsController < Projects::BaseController
   end
 
   def find_destination_project bang=true
-    args = params[:to_project].try(:split, '/') || []
-    project = (args.length == 2) ? Project.find_by_owner_and_name(*args) : nil
+    project = Project.find_by_owner_and_name params[:to_project]
     raise ActiveRecord::RecordNotFound if bang && !project
     project || @project
   end

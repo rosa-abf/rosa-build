@@ -6,13 +6,14 @@ class ProjectToRepository < ActiveRecord::Base
 
   delegate :path, to: :project
 
-  scope :autostart_enabled, lambda { where("autostart_options -> 'enabled' = 'true'")  }
+  scope :autostart_enabled, -> { where("autostart_options -> 'enabled' = 'true'") }
 
-  after_destroy lambda { project.destroy_project_from_repository(repository) }, unless: lambda {Thread.current[:skip]}
+  after_destroy -> { project.destroy_project_from_repository(repository) }, unless: -> { Thread.current[:skip] }
 
   validate :one_project_in_platform_repositories, on: :create
 
-  serialize :autostart_options, ActiveRecord::Coders::Hstore
+  attr_accessible :project, :project_id
+
   AUTOSTART_OPTIONS.each do |field|
     store_accessor :autostart_options, field
   end
@@ -28,7 +29,8 @@ class ProjectToRepository < ActiveRecord::Base
   protected
 
   def one_project_in_platform_repositories
-    errors.add(:base, I18n.t('activerecord.errors.project_to_repository.project')) if Project.joins(repositories: :platform).
-                                                                 where('platforms.id = ?', repository.platform_id).by_name(project.name).exists?
+    if Project.joins(repositories: :platform).where('platforms.id = ?', repository.platform_id).by_name(project.name).exists?
+      errors.add(:base, I18n.t('activerecord.errors.project_to_repository.project'))
+    end
   end
 end

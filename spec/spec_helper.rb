@@ -14,8 +14,8 @@ RSpec.configure do |config|
   #
   # config.mock_with :mocha
   # config.mock_with :flexmock
-  config.mock_with :rr
-  #config.mock_with :rspec
+  # config.mock_with :rr
+  config.mock_with :rspec
 
   # Remove this line if you're not using ActiveRecord or ActiveRecord fixtures
   config.fixture_path = "#{::Rails.root}/spec/fixtures"
@@ -29,6 +29,7 @@ RSpec.configure do |config|
 
   config.before(:all) { init_test_root }
   config.after(:all)  { clear_test_root }
+  config.before { stub_redis }
 end
 
 def set_session_for(user=nil)
@@ -64,8 +65,10 @@ end
 
 def stub_redis
   @redis_instance = MockRedis.new
-  stub(Redis).new { @redis_instance }
-  stub(Resque).redis { @redis_instance }
+  allow(Redis).to receive(:new).and_return(@redis_instance)
+  allow(Redis).to receive(:current).and_return(@redis_instance)
+  allow(Redis::Store).to receive(:new).and_return(@redis_instance)
+  Resque.redis = @redis_instance
 end
 
 def fill_project project

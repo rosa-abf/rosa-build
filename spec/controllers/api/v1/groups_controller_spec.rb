@@ -31,7 +31,7 @@ shared_examples_for 'api group user with admin rights' do
 
   context 'api group user with update rights' do
     before do
-      put :update, {group: {description: 'new description'}, id: @group.id}, format: :json
+      put :update, group: { description: 'new description' }, id: @group.id, format: :json
     end
 
     it 'should be able to perform update action' do
@@ -46,7 +46,7 @@ shared_examples_for 'api group user with admin rights' do
   context 'api group user with add_member rights' do
     let(:member) { FactoryGirl.create(:user) }
     before do
-      put :add_member, {member_id: member.id, id: @group.id}, format: :json
+      put :add_member, member_id: member.id, id: @group.id, format: :json
     end
 
     it 'should be able to perform add_member action' do
@@ -61,7 +61,7 @@ shared_examples_for 'api group user with admin rights' do
     let(:member) { FactoryGirl.create(:user) }
     before do
       @group.add_member(member)
-      delete :remove_member, {member_id: member.id, id: @group.id}, format: :json
+      delete :remove_member, member_id: member.id, id: @group.id, format: :json
     end
 
     it 'should be able to perform remove_member action' do
@@ -76,7 +76,7 @@ shared_examples_for 'api group user with admin rights' do
     let(:member) { FactoryGirl.create(:user) }
     before do
       @group.add_member(member)
-      put :update_member, {member_id: member.id, role: 'reader', id: @group.id}, format: :json
+      put :update_member, member_id: member.id, role: 'reader', id: @group.id, format: :json
     end
 
     it 'should be able to perform update_member action' do
@@ -106,7 +106,7 @@ shared_examples_for 'api group user without admin rights' do
     let(:member) { FactoryGirl.create(:user) }
     before do
       @group.add_member(member)
-      put :update_member, {member_id: member.id, role: 'reader', id: @group.id}, format: :json
+      put :update_member, member_id: member.id, role: 'reader', id: @group.id, format: :json
     end
 
     it 'should not be able to perform update_member action' do
@@ -120,7 +120,7 @@ shared_examples_for 'api group user without admin rights' do
 
   context 'api group user without update rights' do
     before do
-      put :update, {group: {description: 'new description'}, id: @group.id}, format: :json
+      put :update, group: { description: 'new description' }, id: @group.id, format: :json
     end
 
     it 'should not be able to perform update action' do
@@ -135,7 +135,7 @@ shared_examples_for 'api group user without admin rights' do
   context 'api group user without add_member rights' do
     let(:member) { FactoryGirl.create(:user) }
     before do
-      put :add_member, {member_id: member.id, id: @group.id}, format: :json
+      put :add_member, member_id: member.id, id: @group.id, format: :json
     end
 
     it 'should not be able to perform add_member action' do
@@ -150,7 +150,7 @@ shared_examples_for 'api group user without admin rights' do
     let(:member) { FactoryGirl.create(:user) }
     before do
       @group.add_member(member)
-      delete :remove_member, {member_id: member.id, id: @group.id}, format: :json
+      delete :remove_member, member_id: member.id, id: @group.id, format: :json
     end
 
     it 'should be able to perform update action' do

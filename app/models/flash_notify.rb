@@ -8,7 +8,9 @@ class FlashNotify < ActiveRecord::Base
   validates :status, inclusion: {in: STATUSES}
   validates :body_ru, :body_en, :status, presence: true
 
-  scope :published, where(published: true)
+  scope :published, -> { where(published: true) }
+
+  attr_accessible :body_ru, :body_en, :status, :published
 
   def hash_id
     @digest ||= Digest::MD5.hexdigest("#{self.id}-#{self.updated_at}")

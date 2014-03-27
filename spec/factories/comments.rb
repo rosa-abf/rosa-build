@@ -4,6 +4,5 @@ FactoryGirl.define do
     association :user, factory: :user
     association :commentable, factory: :issue
     project { |c| c.commentable.project }
-    after(:create) { |c| c.send(:new_comment_notifications) }
   end
 end

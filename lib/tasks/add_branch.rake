@@ -18,7 +18,7 @@ namespace :add_branch do
     dst_branch = ENV['DST_BRANCH']
     group = ENV['GROUP']
     say "START add branch #{dst_branch} from #{src_branch} in #{group} group"
-    Group.find_by_uname(group).projects.find_each do |p|
+    Group.find_by(uname: group).projects.find_each do |p|
       next if p.repo.branches.map(&:name).include?(dst_branch)
       next if p.repo.branches.map(&:name).exclude?(src_branch)
       say "===== Process #{p.name} project"
@@ -32,7 +32,7 @@ namespace :add_branch do
     src_branch = ENV['SRC_BRANCH'] || 'import_mandriva2011'
     dst_branch = ENV['DST_BRANCH'] || 'rosa2012lts'
     say "START add branch #{dst_branch} from #{src_branch}"
-    Platform.find_by_name(dst_branch).repositories.each do |r|
+    Platform.find_by(name: dst_branch).repositories.each do |r|
       say "=== Process #{r.name} repo"
       r.projects.find_each do |p|
         next if p.repo.branches.map(&:name).include?(dst_branch)
@@ -46,9 +46,9 @@ namespace :add_branch do
   desc "Add branch for owner projects by list"
   task list: :environment do
     source = ENV['SOURCE'] || 'https://dl.dropbox.com/u/984976/texlive.txt'
-    owner = User.find_by_uname(ENV['OWNER']) || Group.find_by_uname!(ENV['OWNER'] || 'import')
-    platform = Platform.find_by_name!(ENV['PLATFORM'] || 'rosa2012.1')
-    repo = platform.repositories.find_by_name!(ENV['REPO'] || 'main')
+    owner = User.find_by(uname: ENV['OWNER']) || Group.find_by!(uname: ENV['OWNER'] || 'import')
+    platform = Platform.find_by!(name: ENV['PLATFORM'] || 'rosa2012.1')
+    repo = platform.repositories.find_by!(name: ENV['REPO'] || 'main')
     src_branch = ENV['SRC_BRANCH'] || 'import_cooker'
     dst_branch = ENV['DST_BRANCH'] || 'rosa2012.1'
     say "START fork from #{src_branch} to #{dst_branch} branch using #{source} for #{owner.uname}. Add to repo '#{platform.name}/#{repo.name}'."

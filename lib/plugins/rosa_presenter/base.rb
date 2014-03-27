@@ -1,9 +1,10 @@
 # This code based on https://github.com/ihoka/viewtastic
 module RosaPresenter
   class Base
-    include ActionDispatch::Routing::UrlFor
+    # include ActionDispatch::Routing::UrlFor
     include ActionView::Helpers::UrlHelper
     include ActionView::Helpers::TextHelper
+    include ActionView::Helpers::OutputSafetyHelper
     include ActionView::Helpers::JavaScriptHelper
     include Rails.application.routes.url_helpers
 

@@ -1,4 +1,7 @@
 class Group < Avatar
+  include ActsLikeMember
+  include PersonalRepository
+
   belongs_to :owner, class_name: 'User'
 
   has_many :relations, as: :actor, dependent: :destroy, dependent: :destroy
@@ -15,10 +18,14 @@ class Group < Avatar
   validates :uname, presence: true, uniqueness: {case_sensitive: false}, format: {with: /\A[a-z0-9_]+\z/}, reserved_name: true
   validate { errors.add(:uname, :taken) if User.by_uname(uname).present? }
 
-  scope :opened, where('1=1')
-  scope :by_owner, lambda {|owner| where(owner_id: owner.id)}
-  scope :by_admin, lambda {|admin| joins(:actors).where(:'relations.role' => 'admin', :'relations.actor_id' => admin.id, :'relations.actor_type' => 'User')}
-  scope :by_admin_and_writer, lambda {|actor| joins(:actors).where(:'relations.role' => ['admin', 'writer'], :'relations.actor_id' => actor.id, :'relations.actor_type' => 'User')}
+  scope :opened, -> { all }
+  scope :by_owner, ->(owner) { where(owner_id: owner.id) }
+  scope :by_admin, ->(admin) {
+    joins(:actors).where('relations.role' => 'admin', 'relations.actor_id' => admin.id, 'relations.actor_type' => 'User')
+  }
+  scope :by_admin_and_writer, ->(actor) {
+    joins(:actors).where('relations.role' => ['admin', 'writer'], 'relations.actor_id' => actor.id, 'relations.actor_type' => 'User')
+  }
 
   attr_accessible :uname, :description
   attr_readonly :uname
@@ -26,10 +33,6 @@ class Group < Avatar
   delegate :email, :user_appeal, to: :owner
 
   after_create :add_owner_to_members
-
-  include Modules::Models::ActsLikeMember
-  include Modules::Models::PersonalRepository
-  # include Modules::Models::Owner
 
   def self.can_own_project(user)
     (by_owner(user) | by_admin_and_writer(user))

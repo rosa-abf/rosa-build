@@ -1,9 +1,11 @@
 class Repository < ActiveRecord::Base
   extend FriendlyId
-  friendly_id :name
+  friendly_id :name, use: [:finders]
 
-  LOCK_FILE_NAMES = {sync: '.sync.lock', repo: '.repo.lock'}
-  SORT = {'base' => 1, 'main' => 2, 'contrib' => 3, 'non-free' => 4, 'restricted' => 5}
+  include EventLoggable
+
+  LOCK_FILE_NAMES = { sync: '.sync.lock', repo: '.repo.lock' }
+  SORT = { 'base' => 1, 'main' => 2, 'contrib' => 3, 'non-free' => 4, 'restricted' => 5 }
 
   belongs_to :platform
 
@@ -19,10 +21,11 @@ class Repository < ActiveRecord::Base
   has_many :build_lists, foreign_key: :save_to_repository_id, dependent: :destroy
 
   validates :description, presence: true
-  validates :name, uniqueness: {scope: :platform_id, case_sensitive: false}, presence: true, format: {with: /\A[a-z0-9_\-]+\z/}
+  validates :name, uniqueness: { scope: :platform_id, case_sensitive: false }, presence: true,
+            format: { with: /\A[a-z0-9_\-]+\z/ }
 
-  scope :recent,  order("#{table_name}.name ASC")
-  scope :main,    lambda { where(name: %w(main base)) }
+  scope :recent, -> { order(:name) }
+  scope :main,   -> { where(name: %w(main base)) }
 
   before_destroy :detele_directory
 
@@ -32,13 +35,13 @@ class Repository < ActiveRecord::Base
 
   def regenerate(build_for_platform_id = nil)
     build_for_platform = Platform.main.find build_for_platform_id if platform.personal?
-    status = repository_statuses.find_or_create_by_platform_id(build_for_platform.try(:id) || platform_id)
+    status = repository_statuses.find_or_create_by(platform_id: build_for_platform.try(:id) || platform_id)
     status.regenerate
   end
 
   def resign
     if platform.main?
-      status = repository_statuses.find_or_create_by_platform_id(platform_id)
+      status = repository_statuses.find_or_create_by(platform_id: platform_id)
       status.resign
     end
   end
@@ -79,7 +82,7 @@ class Repository < ActiveRecord::Base
       begin
         name.chomp!; name.strip!
         next if name.blank?
-        project_to_repositories.where(projects: { name: name }).joins(:project).destroy_all
+        project_to_repositories.where(projects: { name: name }).joins(:project).readonly(false).destroy_all
       rescue RuntimeError, Exception
       end
     end

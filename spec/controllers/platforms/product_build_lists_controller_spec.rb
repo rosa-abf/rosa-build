@@ -93,16 +93,14 @@ shared_examples_for 'product build list user' do
 end
 
 describe Platforms::ProductBuildListsController do
-  before(:each) do
-    stub_symlink_methods
-    stub_redis
-  end
+  before(:each) { stub_symlink_methods }
 
   context 'crud' do
 
-    before(:each) do
-      @product = FactoryGirl.create(:product)
+    before do
+      FactoryGirl.create(:arch, name: 'x86_64')
       @arch = FactoryGirl.create(:arch)
+      @product = FactoryGirl.create(:product)
       @pbl = FactoryGirl.create(:product_build_list, product: @product)
     end
 
@@ -145,7 +143,7 @@ describe Platforms::ProductBuildListsController do
       before(:each) do
         @user = FactoryGirl.create(:user)
         set_session_for(@user)
-        @product.platform.relations.create!(actor_type: 'User', actor_id: @user.id, role: 'admin')
+        create_relation(@product.platform, @user, 'admin')
       end
 
       it_should_behave_like 'product build list admin'

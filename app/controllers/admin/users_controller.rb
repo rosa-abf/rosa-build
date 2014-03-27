@@ -87,6 +87,6 @@ class Admin::UsersController < Admin::BaseController
   protected
 
   def find_user
-    @user = User.find_by_uname!(params[:id]) if params[:id]
+    @user = User.find_by!(uname: params[:id]) if params[:id].present?
   end
 end

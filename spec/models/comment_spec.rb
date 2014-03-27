@@ -40,8 +40,7 @@ describe Comment do
       @stranger = FactoryGirl.create(:user)
 
       set_commentable_data
-
-      @project.relations.create!(actor_type: 'User', actor_id: @user.id, role: 'admin')
+      create_relation(@project, @user, 'admin')
     end
 
     it_should_behave_like 'user with create comment ability (for model)'
@@ -64,7 +63,7 @@ describe Comment do
 
       @project.owner = @user
       @project.save
-      @project.relations.create!(actor_type: 'User', actor_id: @user.id, role: 'admin')
+      create_relation(@project, @user, 'admin')
     end
 
     it_should_behave_like 'user with create comment ability (for model)'
@@ -172,7 +171,7 @@ describe Comment do
         issue = FactoryGirl.create(:issue, project: @project, user: @user,
                                    title: "link to ##{@issue.serial_id}")
         Comment.where(automatic: true,
-                      created_from_issue_id: issue.id).count.should == 1
+                      created_from_issue_id: issue.id).should have(1).item
       end
 
       it 'should create automatic comment from issue body' do

@@ -2,20 +2,20 @@ json.sEcho h(params[:sEcho].to_i || -1)
 json.iTotalRecords @projects[:total_count]
 json.iTotalDisplayRecords @projects[:filtered_count]
 
-json.messages do |msg|
-  msg.remove_confirm t("layout.confirm")
+json.messages do
+  json.remove_confirm t("layout.confirm")
 end
 
-json.icons do |icons|
-  icons.visibilities do |vis|
+json.icons do
+  json.visibilities do
     Project::VISIBILITIES.each do |visibility|
-      vis.set!(visibility, image_path(visibility_icon(visibility)))
+      json.set!(visibility, image_path(visibility_icon(visibility)))
     end
   end
 end
 
-json.aaData do |aadata|
-  aadata.array!(@projects[:projects]) do |json, proj|
+json.aaData do
+  json.array!(@projects[:projects]) do |proj|
     json.partial! 'project', project: proj
   end
 end

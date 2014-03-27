@@ -13,10 +13,10 @@ shared_context "comments controller" do
 
     set_session_for(@user)
 
-    @path = {owner_name: @project.owner.uname, project_name: @project.name, issue_id: @issue.serial_id}
+    @path = { name_with_owner: @project.name_with_owner, issue_id: @issue.serial_id }
     @return_path = project_issue_path(@project, @issue)
-    @create_params = {comment: {body: 'I am a comment!'}}.merge(@path)
-    @update_params = {comment: {body: 'updated'}}.merge(@path)
+    @create_params = { comment: { body: 'I am a comment!' }}.merge(@path)
+    @update_params = { comment: { body: 'updated' }}.merge(@path)
   end
 
 end
@@ -38,7 +38,7 @@ describe Projects::CommentsController do
 
   context 'for project admin user' do
     before(:each) do
-      @project.relations.create!(actor_type: 'User', actor_id: @user.id, role: 'admin')
+      create_relation(@project, @user, 'admin')
     end
 
     it_should_behave_like 'user with create comment ability'
@@ -60,7 +60,7 @@ describe Projects::CommentsController do
 
   context 'for project reader user' do
     before(:each) do
-      @project.relations.create!(actor_type: 'User', actor_id: @user.id, role: 'reader')
+      create_relation(@project, @user, 'reader')
     end
 
    it_should_behave_like 'user with create comment ability'
@@ -71,7 +71,7 @@ describe Projects::CommentsController do
 
   context 'for project writer user' do
     before(:each) do
-      @project.relations.create!(actor_type: 'User', actor_id: @user.id, role: 'writer')
+      create_relation(@project, @user, 'writer')
     end
 
    it_should_behave_like 'user with create comment ability'

@@ -1,11 +1,18 @@
 class User < Avatar
+  include PersonalRepository
+  include ActsLikeMember
+  include Feed::User
+  include EventLoggable
+  include TokenAuthenticatable
+
   ROLES = ['', 'admin', 'banned', 'tester']
   EXTENDED_ROLES = ROLES | ['system']
   LANGUAGES_FOR_SELECT = [['Russian', 'ru'], ['English', 'en']]
   LANGUAGES = LANGUAGES_FOR_SELECT.map(&:last)
+  NAME_REGEXP = /[a-z0-9_]+/
 
-  devise :database_authenticatable, :registerable, :omniauthable, :token_authenticatable,# :encryptable, :timeoutable
-         :recoverable, :rememberable, :validatable, :lockable, :confirmable#, :reconfirmable, :trackable
+  devise :database_authenticatable, :registerable, :omniauthable,
+         :recoverable, :rememberable, :validatable, :lockable, :confirmable
   devise :omniauthable, omniauth_providers: [:facebook, :google_oauth2, :github]
 
   has_one :notifier, class_name: 'SettingsNotifier', dependent: :destroy #:notifier
@@ -34,32 +41,29 @@ class User < Avatar
   has_many :key_pairs
   has_many :ssh_keys, dependent: :destroy
 
-  validates :uname, presence: true, uniqueness: {case_sensitive: false}, format: {with: /\A[a-z0-9_]+\z/}, reserved_name: true
+  validates :uname, presence: true, uniqueness: { case_sensitive: false },
+            format: { with: /\A#{NAME_REGEXP.source}\z/ }, reserved_name: true
   validate { errors.add(:uname, :taken) if Group.by_uname(uname).present? }
-  validates :role, inclusion: {in: EXTENDED_ROLES}, allow_blank: true
-  validates :language, inclusion: {in: LANGUAGES}, allow_blank: true
+  validates :role, inclusion: { in: EXTENDED_ROLES }, allow_blank: true
+  validates :language, inclusion: { in: LANGUAGES }, allow_blank: true
 
   attr_accessible :email, :password, :password_confirmation, :current_password, :remember_me, :login, :name, :uname, :language,
                   :site, :company, :professional_experience, :location, :sound_notifications
   attr_readonly :uname
   attr_accessor :login
 
-  scope :opened, where('users.role != \'system\' OR users.role IS NULL')
-  scope :real, where(role: ['', nil])
-  EXTENDED_ROLES.select {|type| type.present?}.each do |type|
-    scope type.to_sym, where(role: type)
+  scope :opened, -> { where('users.role != \'system\' OR users.role IS NULL') }
+  scope :real,   -> { where(role: ['', nil]) }
+  EXTENDED_ROLES.select { |type| type.present?}.each do |type|
+    scope type.to_sym, -> { where(role: type) }
   end
 
-  scope :member_of_project, lambda {|item|
-    where "#{table_name}.id IN (?)", item.members.map(&:id).uniq
+  scope :member_of_project, ->(item) {
+    where 'users.id IN (?)', item.members.map(&:id).uniq
   }
 
-  after_create lambda { self.create_notifier unless self.system? }
+  after_create -> { self.create_notifier unless self.system? }
   before_create :ensure_authentication_token
-
-  include Modules::Models::PersonalRepository
-  include Modules::Models::ActsLikeMember
-  include Modules::Observers::ActivityFeed::User
 
   def admin?
     role == 'admin'
@@ -169,7 +173,7 @@ class User < Avatar
       gr = gr.where('groups.id != ?', target.owner.id) # exclude target owner group from users group list
     end
     roles += rel.where(actor_id: self.id, actor_type: 'User') # user is member
-    roles += rel.where(actor_id: gr, actor_type: 'Group') # user group is member
+    roles += rel.where(actor_id: gr.pluck('DISTINCT groups.id'), actor_type: 'Group') # user group is member
     roles.map(&:role).uniq
   end
 

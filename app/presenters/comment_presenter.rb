@@ -62,7 +62,7 @@ class CommentPresenter < ApplicationPresenter
     end
     if controller.can? :destroy, @comment
       res << link_to(t('layout.delete'), path, method: "delete",
-                     confirm: t('layout.comments.confirm_delete')).html_safe
+                     data: { confirm: t('layout.comments.confirm_delete') }).html_safe
     end
     res
   end

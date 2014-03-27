@@ -3,7 +3,7 @@ class CreateContainers < ActiveRecord::Migration
     create_table :containers do |t|
       t.string :name, null: false
       t.integer :project_id, null: false
-      t.integer :owner_id, null: false
+      t.integer :owner_id, null: false, references: nil
 
       t.timestamps
     end

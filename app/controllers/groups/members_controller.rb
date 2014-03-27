@@ -1,13 +1,14 @@
 class Groups::MembersController < Groups::BaseController
-  before_filter lambda { authorize! :manage_members, @group }
+  before_filter -> { authorize! :manage_members, @group }
 
   def index
+    @members = @group.members.order(:uname) - [@group.owner]
   end
 
   def update
     params['user'].keys.each do |user_id|
       role = params['user'][user_id]
-      if relation = @group.actors.where(actor_id: user_id, actor_type: 'User') #find_by_actor_id_and_actor_type(user_id, 'User')
+      if relation = @group.actors.where(actor_id: user_id, actor_type: 'User')
         relation.update_all(role: role) if @group.owner.id.to_s != user_id
       else
         relation = @group.actors.build(actor_id: user_id, actor_type: 'User', role: role)
@@ -34,7 +35,7 @@ class Groups::MembersController < Groups::BaseController
   end
 
   def add
-    @user = User.find_by_uname(params[:user_uname])
+    @user = User.find_by uname: params[:user_uname]
     if !@user
       flash[:error] = t("flash.collaborators.wrong_user", uname: params[:user_uname])
     elsif @group.add_member(@user, params[:role])

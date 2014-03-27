@@ -1,10 +1,10 @@
 class Projects::Git::TreesController < Projects::Git::BaseController
-  before_filter lambda{redirect_to @project if params[:treeish] == @project.default_branch and params[:path].blank?}, only: :show
+  before_filter -> {redirect_to @project if params[:treeish] == @project.default_branch and params[:path].blank?}, only: :show
   skip_before_filter :set_branch_and_tree, :set_treeish_and_path, only: :archive
-  before_filter lambda { raise Grit::NoSuchPathError if params[:treeish] != @branch.try(:name) }, only: [:branch, :destroy]
+  before_filter -> { raise Grit::NoSuchPathError if params[:treeish] != @branch.try(:name) }, only: [:branch, :destroy]
 
   skip_authorize_resource :project,                       only: [:destroy, :restore_branch, :create]
-  before_filter lambda { authorize!(:write, @project) },  only: [:destroy, :restore_branch, :create]
+  before_filter -> { authorize!(:write, @project) },  only: [:destroy, :restore_branch, :create]
 
   def show
     unless request.xhr?

@@ -15,5 +15,5 @@
     = datetime_moment date, tag: :span
   - unless action_name == 'preview' or cannot? :write, @project
     %p#delete-link
-      = link_to project_wiki_path(@project, escaped_name), method: :delete, confirm: t("layout.confirm") do
+      = link_to project_wiki_path(@project, escaped_name), method: :delete, data: { confirm: t("layout.confirm") } do
         %span= t("wiki.delete_page")

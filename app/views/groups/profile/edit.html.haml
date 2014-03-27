@@ -9,7 +9,7 @@
 .hr
 .leftside= t("layout.groups.delete_warning")
 .rightside
-  = link_to t("layout.delete"), profile_group_path(@group), method: :delete, confirm: t("layout.groups.confirm_delete"), class: 'button' if can? :destroy, @group
+  = link_to t("layout.delete"), profile_group_path(@group), method: :delete, data: { confirm: t("layout.groups.confirm_delete") }, class: 'button' if can? :destroy, @group
 .both
 
 - content_for :sidebar, render('sidebar')

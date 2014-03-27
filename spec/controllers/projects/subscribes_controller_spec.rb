@@ -53,8 +53,8 @@ describe Projects::SubscribesController do
     @project = FactoryGirl.create(:project)
     @issue = FactoryGirl.create(:issue, project_id: @project.id)
 
-    @create_params = {issue_id: @issue.serial_id, owner_name: @project.owner.uname, project_name: @project.name}
-    @destroy_params = {issue_id: @issue.serial_id, owner_name: @project.owner.uname, project_name: @project.name}
+    @create_params =  { issue_id: @issue.serial_id, name_with_owner: @project.name_with_owner }
+    @destroy_params = { issue_id: @issue.serial_id, name_with_owner: @project.name_with_owner }
 
     any_instance_of(Project, versions: ['v1.0', 'v2.0'])
 
@@ -65,13 +65,14 @@ describe Projects::SubscribesController do
     before(:each) do
       @user = FactoryGirl.create(:admin)
       set_session_for(@user)
-      @project.relations.create!(actor_type: 'User', actor_id: @user.id, role: 'admin')
+      create_relation(@project, @user, 'admin')
       @destroy_params = @destroy_params.merge({id: @user.id})
     end
 
     context 'subscribed' do
       before(:each) do
-        ss = @issue.subscribes.build(user: @user)
+        ss = @issue.subscribes.build
+        ss.user = @user
         ss.save!
       end
 
@@ -93,7 +94,8 @@ describe Projects::SubscribesController do
 
     context 'subscribed' do
       before(:each) do
-        ss = @issue.subscribes.build(user: @user)
+        ss = @issue.subscribes.build
+        ss.user = @user
         ss.save!
       end
 

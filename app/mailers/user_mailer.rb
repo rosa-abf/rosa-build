@@ -18,12 +18,12 @@ class UserMailer < ActionMailer::Base
     end
   end
 
-  def new_comment_notification(comment, user)
-    @user, @comment = user, comment
+  def new_comment_notification(comment, user_id)
+    @user, @comment = User.find(user_id), comment
     subject = @comment.issue_comment? ? subject_for_issue(@comment.commentable) :
       I18n.t('notifications.subjects.new_commit_comment_notification')
     mail(
-      to:      email_with_name(user, user.email),
+      to:      email_with_name(@user, @user.email),
       subject: subject,
       from:    email_with_name(comment.user)
     ) do |format|

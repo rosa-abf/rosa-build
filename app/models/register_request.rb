@@ -1,12 +1,13 @@
 class RegisterRequest < ActiveRecord::Base
 
-  default_scope order('created_at ASC')
+  default_scope { order(:created_at) }
 
-  scope :rejected, where(rejected: true)
-  scope :approved, where(approved: true)
-  scope :unprocessed, where(approved: false, rejected: false)
+  scope :rejected, -> { where(rejected: true) }
+  scope :approved, -> { where(approved: true) }
+  scope :unprocessed, -> { where(approved: false, rejected: false) }
 
-  validates :email, presence: true, uniqueness: {case_sensitive: false}, format: { with: /\A([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})\z/i }
+  validates :email, presence: true, uniqueness: {case_sensitive: false},
+            format: { with: /\A([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})\z/i }
 
   # before_create :generate_token
   before_update :invite_approve_notification

@@ -6,6 +6,7 @@ class Api::V1::IssuesController < Api::V1::BaseController
 
   load_and_authorize_resource :group, only: :group_index, find_by: :id, parent: false
   load_and_authorize_resource :project
+  skip_load_and_authorize_resource :project, only: [:all_index, :user_index, :group_index]
   load_and_authorize_resource :issue, through: :project, find_by: :serial_id, only: [:show, :update, :create, :index]
 
   def index
@@ -60,7 +61,7 @@ class Api::V1::IssuesController < Api::V1::BaseController
   private
 
   def render_issues_list
-    @issues = @issues.includes(:user, :assignee, :labels).without_pull_requests
+    @issues = @issues.preload(:user, :assignee, :labels, :project).without_pull_requests
     if params[:status] == 'closed'
       @issues = @issues.closed
     else

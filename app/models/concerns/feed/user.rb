@@ -1,4 +1,4 @@
-module Modules::Observers::ActivityFeed::User
+module Feed::User
   extend ActiveSupport::Concern
 
   included do
@@ -8,10 +8,9 @@ module Modules::Observers::ActivityFeed::User
   private
 
   def new_user_notification
-    ActivityFeed.create(
-      user: self,
+    activity_feeds.create(
       kind: 'new_user_notification',
-      data: {user_name: self.user_appeal, user_email: self.email}
+      data: { user_name: user_appeal, user_email: email }
     )
   end
 

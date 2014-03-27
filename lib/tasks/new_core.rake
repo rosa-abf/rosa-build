@@ -4,7 +4,7 @@ namespace :new_core do
   task update_packages: :environment do
     say "[#{Time.zone.now}] Starting to extract rpms..."
 
-    token = User.find_by_uname('rosa_system').authentication_token
+    token = User.find_by(uname: 'rosa_system').authentication_token
     BuildList.where(new_core: true).
       where(status: [
         BuildList::SUCCESS,

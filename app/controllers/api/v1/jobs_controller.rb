@@ -58,7 +58,7 @@ class Api::V1::JobsController < Api::V1::BaseController
 
   def status
     if params[:key] =~ /\Aabfworker::(rpm|iso)-worker-[\d]+::live-inspector\z/
-      status = Resque.redis.get(params[:key])
+      status = Redis.current.get(params[:key])
     end
     render json: { status: status }.to_json
   end

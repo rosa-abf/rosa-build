@@ -27,8 +27,8 @@ on_worker_boot do
     Rails.logger.info('Connected to PG')
   end
 
-  # Redis.connect!
-  # Rails.logger.info('Connected to Redis')
+  Redis.connect!
+  Rails.logger.info('Connected to Redis')
 end
 
 activate_control_app 'unix:///tmp/rosa_build_pumactl.sock'

@@ -2,13 +2,13 @@ class BuildListsQueuesMonitoringJob
   @queue = :hook
 
   def self.perform
-    redis.smembers('queues').each do |key|
+    Redis.current.smembers('resque:queues').each do |key|
       next if key !~ /(user|mass)_build_/
 
-      queue = "queue:#{key}"
+      queue = "resque:queue:#{key}"
       id    = key.gsub(/[^\d]/, '')
 
-      if redis.llen(queue) == 0
+      if Redis.current.llen(queue) == 0
         if key =~ /^user/
           last_updated_at = BuildList.select(:updated_at).
             where(user_id: id).order('updated_at DESC').first
@@ -21,29 +21,25 @@ class BuildListsQueuesMonitoringJob
       else
         # ensures that user/mass-build in the set from which we select next jobs
         set_key = key =~ /^user/ ? BuildList::USER_BUILDS_SET : BuildList::MASS_BUILDS_SET
-        redis.sadd set_key, id
+        Redis.current.sadd set_key, id
       end
       
     end
   end
 
   def self.clean(key)
-    queue = "queue:#{key}"
+    queue = "resque:queue:#{key}"
     # See [#watch]: https://github.com/redis/redis-rb/blob/master/lib/redis.rb#L2012
-    redis.watch(queue) do
-      if redis.llen(queue) == 0
-        redis.multi do |multi|
+    Redis.current.watch(queue) do
+      if Redis.current.llen(queue) == 0
+        Redis.current.multi do |multi|
           multi.del   queue
-          multi.srem  'queues', key
+          multi.srem  'resque:queues', key
         end
       else
-        redis.unwatch
+        Redis.current.unwatch
       end
     end
-  end
-
-  def self.redis
-    @redis ||= Resque.redis
   end
 
 end

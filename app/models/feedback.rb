@@ -8,14 +8,16 @@ class Feedback
   include ActiveModel::MassAssignmentSecurity
   extend  ActiveModel::Naming
 
+  self.include_root_in_json = false
+
   attr_accessor :name, :email, :subject, :message
 
   attr_accessible :name, :email, :subject, :message
 
   validates :name, :subject, :message, presence: true
-  validates :email,   presence: true,
-                      format: { with: /\A[^@]+@([^@\.]+\.)+[^@\.]+\z/,
-                                   allow_blank: false }
+  validates :email, presence: true,
+                    format: { with: /\A[^@]+@([^@\.]+\.)+[^@\.]+\z/,
+                              allow_blank: false }
 
   def initialize(args = {}, options = {})
     return args.dup if args.is_a? Feedback
@@ -99,6 +101,4 @@ class Feedback
     perform_validation = options[:validate] != false
     perform_validation ? valid?(options[:context]) : true
   end
-
 end
-Feedback.include_root_in_json = false

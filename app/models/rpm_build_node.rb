@@ -29,5 +29,4 @@ class RpmBuildNode < Ohm::Model
     end
     { systems: systems, others: others, busy: busy }
   end
-
 end

@@ -3,7 +3,7 @@ FactoryGirl.define do
     association :save_to_platform, factory: :platform
     association :user
     projects_list "first"
-    arches { [ Arch.find_or_create_by_name('x86_64').id ] }
+    arches { [ Arch.where(name: 'x86_64').first_or_create.id ] }
     auto_publish true
     stop_build false
   end
