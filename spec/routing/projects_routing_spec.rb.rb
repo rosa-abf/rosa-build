@@ -20,10 +20,6 @@ describe Projects::ProjectsController do
       post("/projects").should route_to("projects/projects#create")
     end
 
-    it "routes to #update" do
-      put("/import/glib2.0-mib").should route_to("projects/projects#update", name_with_owner: 'import/glib2.0-mib')
-    end
-
     it "routes to #destroy" do
       delete("/import/glib2.0-mib").should route_to("projects/projects#destroy", name_with_owner: 'import/glib2.0-mib')
     end
