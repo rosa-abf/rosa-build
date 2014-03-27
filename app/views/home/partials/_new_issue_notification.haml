@@ -1,10 +1,11 @@
 -user= User.where(email: user_email).first || User.new(email: user_email) if defined?(user_email)
 - name_with_owner = "#{project_owner}/#{project_name}"
+- issue_path = issue_serial_id.present? ? project_issue_path(name_with_owner, issue_serial_id) : '#'
 .top
   .image= link_to(image_tag(avatar_url(user, :small), alt: 'avatar'), user_path(user)) if user.persisted?
   .text
     %span
-      = raw t("notifications.bodies.new_issue_notification", { user_link: user_link(user, user_name), issue_link: project_issue_path(name_with_owner, issue_serial_id)})
+      = raw t("notifications.bodies.new_issue_notification", { user_link: user_link(user, user_name), issue_link: issue_path })
       = raw t("notifications.bodies.project", project_link: link_to(name_with_owner, project_path(name_with_owner)) )
     .both
       = datetime_moment activity_feed.created_at, tag: :span, class: 'date'
