@@ -15,9 +15,9 @@ json.product_build_list do |json|
   json.created_at @product_build_list.created_at.to_i
   json.updated_at @product_build_list.updated_at.to_i
 
-  json.results (@product_build_list.results || []) do |json_logs, result|
-    json_logs.file_name result['file_name']
-    json_logs.size result['size']
-    json_logs.url "#{APP_CONFIG['file_store_url']}/api/v1/file_stores/#{result['sha1']}"
+  json.results (@product_build_list.results || []) do |result|
+    json.file_name result['file_name']
+    json.size result['size']
+    json.url "#{APP_CONFIG['file_store_url']}/api/v1/file_stores/#{result['sha1']}"
   end
 end

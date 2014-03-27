@@ -2,7 +2,7 @@ module Feed::User
   extend ActiveSupport::Concern
 
   included do
-    after_create :new_user_notification
+    after_commit :new_user_notification, on: :create
   end
 
   private

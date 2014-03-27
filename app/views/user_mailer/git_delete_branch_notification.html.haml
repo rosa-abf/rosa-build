@@ -3,6 +3,7 @@
 %p
   - _user_link = defined?(user_email) ? user_link(user, defined?(user_name) ? user_name : user_email, true) : nil
   = t('notifications.bodies.delete_branch', branch_name: branch_name, user_link: _user_link).html_safe
-  = raw t("notifications.bodies.project", project_link: link_to("#{project_owner}/#{project_name}", project_url(project_owner, project_name)) )
+  - name_with_owner = "#{project_owner}/#{project_name}"
+  = raw t("notifications.bodies.project", project_link: link_to(name_with_owner, project_url(name_with_owner)) )
 
 = render 'footer'
