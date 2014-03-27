@@ -4,7 +4,7 @@ Rosa::Application.routes.draw do
     get :sended
   end
 
-  devise_scope :users do
+  devise_scope :user do
     get '/users/auth/:provider' => 'users/omniauth_callbacks#passthru'
     get 'users/sign_up' => 'users/registrations#new',    as: :new_user_registration
     post 'users'        => 'users/registrations#create', as: :user_registration

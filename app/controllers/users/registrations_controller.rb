@@ -1,4 +1,6 @@
 class Users::RegistrationsController < Devise::RegistrationsController
+  before_filter :update_sanitized_params, if: :devise_controller?
+
   # POST /resource
   def create
     # Try stop bots
@@ -8,4 +10,13 @@ class Users::RegistrationsController < Devise::RegistrationsController
     end
     super
   end
+
+  protected
+
+  def update_sanitized_params
+    devise_parameter_sanitizer.for(:sign_up) do |u|
+      u.permit(:uname, :name, :email, :password, :password_confirmation)
+    end
+  end
+
 end
