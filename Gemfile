@@ -83,6 +83,7 @@ gem 'compass-rails', '~> 1.1.6'
 gem 'uglifier', '~> 2.4'
 gem 'therubyracer', '~> 0.12.1', platforms: [:mri, :rbx]
 gem 'therubyrhino', '~> 1.73.1', platforms: :jruby
+gem 'sitemap_generator'
 
 
 group :production do

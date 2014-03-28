@@ -395,6 +395,8 @@ GEM
       rack (~> 1.4)
       rack-protection (~> 1.4)
       tilt (~> 1.3, >= 1.3.4)
+    sitemap_generator (5.0.1)
+      builder
     skinny (0.2.3)
       eventmachine (~> 1.0.0)
       thin (~> 1.5.0)
@@ -536,6 +538,7 @@ DEPENDENCIES
   shotgun
   shoulda
   shoulda-matchers
+  sitemap_generator
   skype
   soundmanager-rails
   state_machine (~> 1.2)

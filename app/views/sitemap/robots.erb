@@ -1,0 +1,22 @@
+# robots.txt for <%= root_url %>
+
+User-agent: *
+Disallow: /*/*/tree/*
+Disallow: /*/*/blob/*
+Disallow: /*/*/wiki/*/*
+Disallow: /*/*/issues?*
+Disallow: /*/*/commits/*
+Disallow: /*/blame/
+Disallow: /*/raw/
+Disallow: /*.git
+Disallow: /*.git/
+Disallow: /search
+Disallow: /users/sign_up
+Disallow: /users/sign_in
+Disallow: /users/password/new
+Disallow: /users/register_requests/new
+Disallow: /invite.html
+Disallow: /thanks.html
+Allow: /
+Host: <%= root_url.gsub(/\/$/, '') %>
+Sitemap: <%= sitemap_url %>
