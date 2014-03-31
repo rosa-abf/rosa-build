@@ -26,6 +26,10 @@ every :day, at: '3:00 am' do
   rake 'activity_feeds:clear', output: 'log/activity_feeds.log'
 end
 
+every :day, at: '2:30 am' do
+  rake 'sitemap:refresh', output: 'log/sitemap.log'
+end
+
 every 1.hour do
   rake 'buildlist:clear:outdated_canceling', output: 'log/canceling_build_list_clear.log'
 end

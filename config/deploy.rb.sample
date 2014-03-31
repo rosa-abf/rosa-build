@@ -49,6 +49,10 @@ namespace :deploy do
     # It will survive downloads folder between deployments
     run "mkdir -p #{fetch :shared_path}/downloads"
     run "ln -nfs #{fetch :shared_path}/downloads/ #{fetch :release_path}/public/downloads"
+
+    # It will survive sitemaps folder between deployments
+    run "mkdir -p #{fetch :shared_path}/sitemaps"
+    run "ln -nfs #{fetch :shared_path}/sitemaps #{fetch :release_path}/public/sitemaps"
   end
 
   task :symlink_pids, :roles => :app do
