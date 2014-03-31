@@ -10,7 +10,10 @@ Rosa::Application.routes.draw do
     post 'users'        => 'users/registrations#create', as: :user_registration
   end
 
-  devise_for :users, controllers: { omniauth_callbacks: 'users/omniauth_callbacks' }, skip: [:registrations]
+  devise_for :users, controllers: {
+    omniauth_callbacks: 'users/omniauth_callbacks',
+    confirmations:      'users/confirmations'
+  }, skip: [:registrations]
 
   namespace :api do
     namespace :v1 do
