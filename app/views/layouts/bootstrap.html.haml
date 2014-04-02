@@ -7,7 +7,7 @@
     - if user_signed_in?
       = auto_discovery_link_tag :atom, atom_activity_feeds_path(format: 'atom', token: current_user.authentication_token), title: t("layout.atom_link_tag_title", nickname: current_user.uname, app_name: APP_CONFIG['project_name'])
 
-  %body
+  %body{ 'ng-app' => 'RosaABF' }
     = render 'layouts/menu/new_top'
     %article.container-fluid
       .row= yield
