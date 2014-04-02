@@ -81,7 +81,8 @@ class Ability
         can [:read, :log, :owned, :everything], BuildList, user_id: user.id
         can [:read, :log, :related, :everything], BuildList, project: {owner_type: 'User', owner_id: user.id}
         can [:read, :log, :related, :everything], BuildList, project: {owner_type: 'Group', owner_id: user_group_ids}
-        can([:read, :log, :everything, :list], BuildList, read_relations_for('build_lists', 'projects')) {|build_list| can? :read, build_list.project}
+        # can([:read, :log, :everything, :list], BuildList, read_relations_for('build_lists', 'projects')) {|build_list| can? :read, build_list.project}
+        can([:read, :log, :everything, :list], BuildList, read_relations_for_build_lists_and_projects) {|build_list| can? :read, build_list.project}
 
         can(:publish_into_testing, BuildList) { |build_list| can?(:create, build_list) && build_list.save_to_platform.main? }
         can(:create, BuildList) {|build_list|
@@ -202,10 +203,35 @@ class Ability
     key = parent ? "#{parent.singularize}_id" : 'id'
     parent ||= table
 
-    ["#{table}.#{key} IN (
-          SELECT target_id FROM relations WHERE relations.target_type = ? AND
+    ["#{table}.#{key} = ANY (
+        ARRAY (
+          SELECT target_id
+          FROM relations
+          WHERE relations.target_type = ? AND
           (relations.actor_type = 'User' AND relations.actor_id = ? OR
-           relations.actor_type = 'Group' AND relations.actor_id IN (?)))", parent.classify, @user, user_group_ids]
+           relations.actor_type = 'Group' AND relations.actor_id IN (?))
+        )
+      )", parent.classify, @user, user_group_ids
+    ]
+  end
+
+  def read_relations_for_build_lists_and_projects
+    ["build_lists.project_id = ANY (
+        ARRAY (
+          SELECT target_id
+          FROM relations
+          INNER JOIN projects ON projects.id = relations.target_id
+          WHERE relations.target_type = 'Project' AND
+          (
+            projects.owner_type = 'User' AND projects.owner_id != :user OR
+            projects.owner_type = 'Group' AND projects.owner_id NOT IN (:groups)
+          ) AND (
+            relations.actor_type = 'User' AND relations.actor_id = :user OR
+            relations.actor_type = 'Group' AND relations.actor_id IN (:groups)
+          )
+        )
+      )", { user: @user, groups: user_group_ids }
+    ]
   end
 
   def local_reader?(target)
