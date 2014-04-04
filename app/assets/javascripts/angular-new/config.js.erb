@@ -1,0 +1,16 @@
+//var RosaABF = angular.module('RosaABF', ['ngResource', 'ng-rails-csrf', 'angular-i18n', 'angularMoment']);
+var RosaABF = angular.module('RosaABF', ['ui.bootstrap', 'angular-i18n', 'angularMoment',
+                                         'chieffancypants.loadingBar', 'ngAnimate']);
+
+var LocalesHelper = function($locale) {
+  var locales = {
+    'ru' : 'ru-ru',
+    'en' : 'en-us'
+  }
+  return {
+    setLocale: function(locale) {
+      $locale.id = locales[locale];
+    }
+  }
+}
+RosaABF.factory("LocalesHelper", ['$locale', LocalesHelper]);

@@ -1,0 +1,81 @@
+/*
+ * angular-loading-bar
+ * https://github.com/chieffancypants/angular-loading-bar
+ *
+ * intercepts XHR requests and creates a loading bar.
+ * Based on the excellent nprogress work by rstacruz (more info in readme)
+ *
+ * (c) 2013 Wes Cruver
+ * License: MIT
+ */
+
+$loading-bar-bg: #254561; // #dff0d8;
+
+/* Make clicks pass-through */
+#loading-bar,
+#loading-bar-spinner {
+  pointer-events: none;
+  -webkit-pointer-events: none;
+  -webkit-transition: 350ms linear all;
+  -moz-transition: 350ms linear all;
+  -o-transition: 350ms linear all;
+  transition: 350ms linear all;
+}
+
+#loading-bar.ng-enter,
+#loading-bar.ng-leave.ng-leave-active,
+#loading-bar-spinner.ng-enter,
+#loading-bar-spinner.ng-leave.ng-leave-active {
+  opacity: 0;
+}
+
+#loading-bar.ng-enter.ng-enter-active,
+#loading-bar.ng-leave,
+#loading-bar-spinner.ng-enter.ng-enter-active,
+#loading-bar-spinner.ng-leave {
+  opacity: 1;
+}
+
+#loading-bar .bar {
+  -webkit-transition: width 350ms;
+  -moz-transition: width 350ms;
+  -o-transition: width 350ms;
+  transition: width 350ms;
+
+  background: $loading-bar-bg;
+  position: fixed;
+  z-index: 2000;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 4px;
+  border-bottom-right-radius: 1px;
+  border-top-right-radius: 1px;
+}
+
+/* Fancy blur effect */
+#loading-bar .peg {
+  position: absolute;
+  width: 70px;
+  right: 0;
+  top: 0;
+  height: 2px;
+  opacity: .45;
+  -moz-box-shadow: $loading-bar-bg 1px 0 6px 1px;
+  -ms-box-shadow: $loading-bar-bg 1px 0 6px 1px;
+  -webkit-box-shadow: $loading-bar-bg 1px 0 6px 1px;
+  box-shadow: $loading-bar-bg 1px 0 6px 1px;
+  -moz-border-radius: 100%;
+  -webkit-border-radius: 100%;
+  border-radius: 100%;
+}
+
+#loading-bar-spinner {
+  display: block;
+  position: fixed;
+  z-index: 2000;
+  top: 10px;
+  left: 17px;
+  font-size: 31px;
+  color: $loading-bar-bg;
+}

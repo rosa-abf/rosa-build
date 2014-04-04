@@ -16,7 +16,8 @@ var _locales = {
     'autostart_statuses.0': 'Раз в 12 часов',
     'autostart_statuses.1': 'Раз в день',
     'autostart_statuses.2': 'Раз в неделю',
-    <%= BuildList::STATUSES.map{|s| "'build_list.status.#{s}': '#{BuildList.human_status(s)}'"}.join(',') %>
+    <%= BuildList::STATUSES.map{|s| "'build_list.status.#{s}': '#{BuildList.human_status(s)}'"}.join(',') %>,
+    <%= I18n.t('activity_menu').map{ |k,v| "'activity_menu.#{k}': '#{v}'" }.join(',') %>
   },
   <%I18n.locale = :en%>
   'en-us': {
@@ -33,6 +34,7 @@ var _locales = {
     'autostart_statuses.0': 'Once a 12 hours',
     'autostart_statuses.1': 'Once a day',
     'autostart_statuses.2': 'Once a week',
-    <%= BuildList::STATUSES.map{|s| "'build_list.status.#{s}': '#{BuildList.human_status(s)}'"}.join(',') %>
+    <%= BuildList::STATUSES.map{|s| "'build_list.status.#{s}': '#{BuildList.human_status(s)}'"}.join(',') %>,
+    <%= I18n.t('activity_menu').map{ |k,v| "'activity_menu.#{k}': '#{v}'" }.join(',') %>
   }
 };

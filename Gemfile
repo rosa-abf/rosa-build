@@ -68,7 +68,7 @@ gem "gemoji", "~> 1.2.1", require: 'emoji/railtie'
 
 # AngularJS related stuff
 gem 'underscore-rails'
-gem 'angularjs-rails'
+gem 'angularjs-rails', '~> 1.2.15'
 gem 'ng-rails-csrf'
 gem 'momentjs-rails'
 gem 'angular-i18n', '0.1.2'
@@ -84,8 +84,9 @@ gem 'compass-rails', '~> 1.1.6'
 gem 'uglifier', '~> 2.4'
 gem 'therubyracer', '~> 0.12.1', platforms: [:mri, :rbx]
 gem 'therubyrhino', '~> 1.73.1', platforms: :jruby
-gem 'bootstrap-sass', '~> 3.1.1'
 
+gem 'bootstrap-sass', '~> 3.1.1'
+gem 'font-awesome-rails'
 
 group :production do
   gem "airbrake", '~> 3.1.2'

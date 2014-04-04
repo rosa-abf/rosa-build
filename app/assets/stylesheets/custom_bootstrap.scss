@@ -1,5 +1,5 @@
 body {
-  background: $body-bg image-url("bg.png") repeat-x;
+  //background: $body-bg image-url("bg.png") repeat-x;
 }
 
 .top_menu {
@@ -16,10 +16,15 @@ a.navbar-brand, .navbar .navbar-right .avatar {
   padding-top: ($navbar-height - $logo-mini-height) / 2;
 }
 
+.nav a {
+  cursor: pointer;
+}
+
 footer {
   padding-top: 20px;
   padding-bottom: 20px;
   text-align: center;
+  background-color: $navbar-default-bg;
 
   ul li {
     display: inline;
@@ -35,4 +40,10 @@ footer {
       color: $navbar-default-link-hover-color;
     }
   }
+}
+
+.offset20 { margin-top: 20px; }
+
+[ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
+  display: none !important;
 }

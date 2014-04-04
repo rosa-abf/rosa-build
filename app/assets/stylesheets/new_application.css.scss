@@ -1,4 +1,4 @@
-$body-bg: #1F60A1;
+//$body-bg: #1F60A1;
 $navbar-default-bg: #3E73A2;
 $navbar-default-link-color: #FFF;
 $navbar-default-link-active-color: #FFF;
@@ -7,4 +7,6 @@ $navbar-default-link-hover-color: #CEE7FF;
 
 @import "bootstrap";
 @import "custom_bootstrap";
-@import "angular-busy";
+@import "timeline";
+@import "font-awesome";
+@import "loading-bar";
