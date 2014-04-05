@@ -8,7 +8,7 @@ class CleanApiDefenderStatisticsJob
       # See: https://github.com/datagraph/rack-throttle/blob/master/lib/rack/throttle/daily.rb#L41
       # Formats:
       # 'throttle:uname:%Y-%m-%dT%H', 'throttle:uname:%Y-%m-%d'
-      # example: "throttle:proyvind:2014-01-25T20", "throttle:proyvind:2014-01-25"
+      # example: "throttle:uname1:2014-01-25T20", "throttle:uname1:2014-01-25"
       date = key.gsub(/.*:/, '').gsub(/T.*/, '')
       Redis.current.del(key) if Date.parse(date) < deadline
     end
