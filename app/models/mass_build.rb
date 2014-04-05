@@ -104,12 +104,10 @@ class MassBuild < ActiveRecord::Base
     where(
       status:         status,
       mass_build_id:  self.id
-    ).joins(:project, :arch).find_in_batches(batch_size: 100) do |build_lists|
-      build_lists.each do |build_list|
-        report << "ID: #{build_list.id}; "
-        report << "PROJECT_NAME: #{build_list.project_name}; "
-        report << "ARCH: #{build_list.arch_name}\n"
-      end
+    ).joins(:project, :arch).find_each(batch_size: 100) do |build_list|
+      report << "ID: #{build_list.id}; "
+      report << "PROJECT_NAME: #{build_list.project_name}; "
+      report << "ARCH: #{build_list.arch_name}\n"
     end
     report
   end
@@ -117,8 +115,8 @@ class MassBuild < ActiveRecord::Base
   def publish(user, *statuses)
     builds = build_lists.where(status: statuses)
     builds.update_all(publisher_id: user.id)
-    builds.order(:id).find_in_batches(batch_size: 50) do |bls|
-      bls.each{ |bl| bl.can_publish? && bl.has_new_packages? && bl.now_publish }
+    builds.find_each(batch_size: 50) do |bl|
+      bl.now_publish if bl.can_publish? && bl.has_new_packages?
     end
   end
 
