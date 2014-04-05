@@ -125,4 +125,5 @@ group :test do
   gem 'mock_redis',         '~> 0.11'
   gem 'rake'
   gem 'test_after_commit'
+  gem 'timecop'
 end
