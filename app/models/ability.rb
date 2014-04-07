@@ -18,7 +18,7 @@ class Ability
     can :read, Issue, project: { visibility: 'open' }
     can [:read, :commits, :files], PullRequest, to_project: {visibility: 'open'}
     can [:read, :log, :everything], BuildList, project: {visibility: 'open'}
-    can [:read, :log], ProductBuildList#, product: {platform: {visibility: 'open'}} # double nested hash don't work
+    can [:read, :log], ProductBuildList, product: {platform: {visibility: 'open'}}
     can [:read, :search], Advisory
 
     # Platforms block
