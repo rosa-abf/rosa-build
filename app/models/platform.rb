@@ -7,6 +7,7 @@ class Platform < ActiveRecord::Base
   include Owner
   include EventLoggable
 
+  CACHED_CHROOT_PRODUCT_NAME       = 'cached-chroot'
   AUTOMATIC_METADATA_REGENERATIONS = %w(day week)
   VISIBILITIES = %w(open hidden)
   NAME_PATTERN = /[\w\-\.]+/
@@ -211,32 +212,39 @@ class Platform < ActiveRecord::Base
   end
 
   # Checks access rights to platform and caching for 1 day.
-  def self.allowed?(path, request)
+  def self.allowed?(path, token)
     platform_name = path.gsub(/^[\/]+/, '')
                         .match(/^(#{NAME_PATTERN}\/|#{NAME_PATTERN}$)/)
 
     return true unless platform_name
     platform_name = platform_name[0].gsub(/\//, '')
 
-    if request.authorization.present?
-      token, pass = *ActionController::HttpAuthentication::Basic::user_name_and_password(request)
-    end
-
     Rails.cache.fetch([platform_name, token, :platform_allowed], expires_in: 2.minutes) do
       platform = Platform.find_by name: platform_name
       next false  unless platform
       next true   unless platform.hidden?
       next false  unless token
-      next true   if platform.tokens.by_active.where(authentication_token: token).exists?
-
-      user = User.find_by authentication_token: token
-      current_ability = Ability.new(user)
-      if user && current_ability.can?(:show, platform)
-        true
-      else
-        false
-      end
+      platform.has_access?(token)
     end
+  end
+
+  def cached_chroot(token, arch)
+    return false if personal?
+    Rails.cache.fetch([:cached_chroot, token, name, arch], expires_in: 10.minutes) do
+      product = products.where(name: CACHED_CHROOT_PRODUCT_NAME).first
+      next false unless product
+      pbl = product.product_build_lists.for_status(ProductBuildList::BUILD_COMPLETED).recent.first
+      next false unless pbl
+      next false if hidden? && !has_access?(token)
+      pbl.results.results.find{ |r| r['file_name'] =~ /^cached-chroot-#{arch}/ } || false
+    end
+  end
+
+  def has_access?(token)
+    return true if tokens.by_active.where(authentication_token: token).exists?
+    user = User.find_by(authentication_token: token)
+    current_ability = Ability.new(user)
+    user && current_ability.can?(:show, self) ? true : false
   end
 
   def self.autostart_metadata_regeneration(value)

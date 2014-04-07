@@ -1,12 +1,14 @@
 class Api::V1::PlatformsController < Api::V1::BaseController
   before_filter :authenticate_user!
   skip_before_filter :authenticate_user!, only: :allowed
-  skip_before_filter :authenticate_user!, only: [:show, :platforms_for_build, :members] if APP_CONFIG['anonymous_access']
+  skip_before_filter :authenticate_user!, only: %i(show platforms_for_build members cached_chroot) if APP_CONFIG['anonymous_access']
+  before_filter :set_token, only: %i(allowed cached_chroot)
 
-  load_and_authorize_resource except: :allowed
+  load_and_authorize_resource except: %i(allowed cached_chroot)
+  load_resource only: :cached_chroot
 
   def allowed
-    if Platform.allowed?(params[:path] || '', request)
+    if Platform.allowed?(params[:path] || '', @token)
       render nothing: true
     else
       render nothing: true, status: 403
@@ -19,6 +21,14 @@ class Api::V1::PlatformsController < Api::V1::BaseController
   end
 
   def show
+  end
+
+  def cached_chroot
+    if sha1 = @platform.cached_chroot(@token, params[:arch])
+      redirect_to "#{APP_CONFIG['file_store_url']}/api/v1/file_stores/#{sha1}"
+    else
+      render nothing: true, status: 403
+    end
   end
 
   def platforms_for_build
@@ -70,6 +80,14 @@ class Api::V1::PlatformsController < Api::V1::BaseController
 
   def destroy
     destroy_subject @platform
+  end
+
+  protected
+
+  def set_token
+    if request.authorization.present?
+      @token, pass = *ActionController::HttpAuthentication::Basic::user_name_and_password(request)
+    end
   end
 
 end

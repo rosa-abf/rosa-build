@@ -12,6 +12,7 @@ shared_examples_for 'api platform user with reader rights' do
     get :members, id: @platform.id, format: :json
     response.should render_template(:members)
   end
+
 end
 
 shared_examples_for 'api platform user with owner rights' do
@@ -192,12 +193,25 @@ shared_examples_for 'api platform user without reader rights for hidden platform
       response.body.should == {"message" => "Access violation to this page!"}.to_json
     end
   end
+
+  it "should not be able to perform cached_chroot action" do
+    get :cached_chroot, id: @platform.id, format: :json
+    response.status.should == 403
+  end
+
 end
 
 shared_examples_for "api platform user with show rights" do
   it 'should be able to perform show action' do
     get :show, id: @platform.id, format: :json
     response.should render_template(:show)
+  end
+
+  it 'should be able to perform cached_chroot action' do
+    Rails.stub_chain(:cache, :fetch).and_return('sha1')
+    http_login (@admin || @user).authentication_token, '' if @platform.hidden?
+    get :cached_chroot, id: @platform.id, format: :json
+    response.should redirect_to("#{APP_CONFIG['file_store_url']}/api/v1/file_stores/sha1")
   end
 
   it 'should be able to perform platforms_for_build action' do
