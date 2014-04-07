@@ -48,7 +48,9 @@
     = f.label :auto_publish_status
     - %i(auto_create_container include_testing_subrepository use_cached_chroot).each do |kind|
       .both
-        = f.check_box kind
+        - checked = params[:build_list].try(:[], kind)
+        - checked = @build_list.send(kind) if checked.nil?
+        = f.check_box kind, checked: checked
         = f.label kind
     .both
     - selected = params[:build_list].try(:[], :external_nodes) ? {selected: params[:build_list][:external_nodes]} : {}
