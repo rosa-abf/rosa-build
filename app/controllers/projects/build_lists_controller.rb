@@ -190,7 +190,7 @@ class Projects::BuildListsController < Projects::BaseController
 
   def create_from_build_list
     return if params[:build_list_id].blank?
-    @build_list = @project.build_lists.find(params[:build_list_id])
+    build_list = @project.build_lists.find(params[:build_list_id])
 
     params[:build_list] ||= {}
     keys = [:save_to_repository_id, :auto_publish_status, :include_repos, :extra_params,
