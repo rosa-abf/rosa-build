@@ -10,6 +10,7 @@ ru:
         extra_repositories: Дополнительные репозитории
         extra_build_lists: Дополнительные сборки
         auto_create_container: Создать контейнер автоматически
+        use_cached_chroot: Использовать кэшированный chroot
         container_path: Путь до контейнера
         status: Статус
         project_id: Проект

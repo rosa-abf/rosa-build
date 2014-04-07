@@ -30,8 +30,15 @@ class BuildList < ActiveRecord::Base
   AUTO_PUBLISH_STATUS_TESTING = 'testing'
   AUTO_PUBLISH_STATUSES = [AUTO_PUBLISH_STATUS_NONE, AUTO_PUBLISH_STATUS_DEFAULT, AUTO_PUBLISH_STATUS_TESTING]
 
-  validates :project_id, :project_version, :arch, :include_repos,
-            :build_for_platform_id, :save_to_platform_id, :save_to_repository_id, presence: true
+  validates :project_id,
+            :project_version,
+            :arch,
+            :include_repos,
+            :build_for_platform_id,
+            :save_to_platform_id,
+            :use_cached_chroot,
+            :save_to_repository_id,
+            presence: true
   validates_numericality_of :priority, greater_than_or_equal_to: 0
   validates :external_nodes, inclusion: { in:  EXTERNAL_NODES }, allow_blank: true
   validates :auto_publish_status, inclusion: { in: AUTO_PUBLISH_STATUSES }
@@ -64,7 +71,8 @@ class BuildList < ActiveRecord::Base
                   :arch_id, :project_id, :save_to_repository_id, :update_type,
                   :save_to_platform_id, :project_version, :auto_create_container,
                   :extra_repositories, :extra_build_lists, :extra_params, :external_nodes,
-                  :include_testing_subrepository, :auto_publish_status
+                  :include_testing_subrepository, :auto_publish_status,
+                  :use_cached_chroot
 
   LIVE_TIME     = 4.week  # for unpublished
   MAX_LIVE_TIME = 3.month # for published
@@ -508,6 +516,7 @@ class BuildList < ActiveRecord::Base
     cmd_params = {
       'GIT_PROJECT_ADDRESS'           => git_project_address,
       'COMMIT_HASH'                   => commit_hash,
+      'USE_CACHED_CHROOT'             => use_cached_chroot?,
       'EXTRA_CFG_OPTIONS'             => extra_params['cfg_options'],
       'EXTRA_CFG_URPM_OPTIONS'        => extra_params['cfg_urpm_options'],
       'EXTRA_BUILD_SRC_RPM_OPTIONS'   => extra_params['build_src_rpm'],
