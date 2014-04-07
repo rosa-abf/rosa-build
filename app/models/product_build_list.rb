@@ -34,6 +34,8 @@ class ProductBuildList < ActiveRecord::Base
                      BUILD_CANCELING => :build_canceling
                     }.freeze
 
+  CACHED_CHROOT_TOKEN_DESCRIPTION = 'cached-chroot'
+
   belongs_to :product
   belongs_to :project
   belongs_to :arch
@@ -164,14 +166,22 @@ class ProductBuildList < ActiveRecord::Base
       'tar.gz',
       opts
     )
+
+    cmd_params = "BUILD_ID=#{id} "
+    if product.platform.hidden?
+      token = product.platform.tokens.by_active.where(description: CACHED_CHROOT_TOKEN_DESCRIPTION).first
+      cmd_params << "TOKEN=#{token.authentication_token} " if token
+    end
+    cmd_params << params.to_s
+
     {
       id: id,
       # TODO: remove comment
       # srcpath: 'http://dl.dropbox.com/u/945501/avokhmin-test-iso-script-5d9b463d4e9c06ea8e7c89e1b7ff5cb37e99e27f.tar.gz',
-      srcpath: srcpath,
-      params: ("BUILD_ID=#{id} " << params.to_s),
-      time_living: time_living,
-      main_script: main_script,
+      srcpath:      srcpath,
+      params:       cmd_params,
+      time_living:  time_living,
+      main_script:  main_script,
       platform: {
         type: product.platform.distrib_type,
         name: product.platform.name,
