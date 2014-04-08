@@ -37,6 +37,36 @@ class ApplicationController < ActionController::Base
 
   protected
 
+  # For this example, we are simply using token authentication
+  # via parameters. However, anyone could use Rails's token
+  # authentication features to get the token from a header.
+  def authenticate_user!
+    if user = find_user_by_token
+      # Notice we are passing store false, so the user is not
+      # actually stored in the session and a token is needed
+      # for every request. If you want the token to work as a
+      # sign in token, you can simply remove store: false.
+      sign_in user, store: false
+    else
+      super
+    end
+  end
+
+  def authenticate_user
+    if user = find_user_by_token
+      sign_in user, store: false
+    end
+  end
+
+  def find_user_by_token
+    user_token = params[:authentication_token].presence
+    if user_token.blank? && request.authorization.present?
+      token, pass = *ActionController::HttpAuthentication::Basic::user_name_and_password(request)
+      user_token  = token if pass.blank?
+    end
+    user = user_token && User.find_by_authentication_token(user_token.to_s)
+  end
+
   def render_500(e)
     #check for exceptions Airbrake ignores by default and exclude them from manual Airbrake notification
     if Rails.env.production? && !AIRBRAKE_IGNORE.include?(e.class)
