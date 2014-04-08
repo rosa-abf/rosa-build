@@ -23,7 +23,7 @@ module Feed::Comment
                 user_name:       user.name,
                 user_email:      user.email,
                 user_id:         user_id,
-                comment_body:    body,
+                comment_body:    truncate(body, 1000, omission: '…'),
                 issue_title:     commentable.title,
                 issue_serial_id: commentable.serial_id,
                 project_id:      commentable.project.id,
