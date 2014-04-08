@@ -34,13 +34,12 @@ Rosa::Application.routes.draw do
         }
       end
       resources :arches, only: :index
-      resources :platforms, only: %i(index show update destroy create), constraints: { id: Platform::NAME_PATTERN } do
+      resources :platforms, only: %i(index show update destroy create) do
         collection {
           get :platforms_for_build
           get :allowed
         }
         member {
-          get :cached_chroot
           get :members
           put :add_member
           delete :remove_member

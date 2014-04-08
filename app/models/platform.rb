@@ -223,28 +223,24 @@ class Platform < ActiveRecord::Base
       platform = Platform.find_by name: platform_name
       next false  unless platform
       next true   unless platform.hidden?
-      platform.has_access?(token)
+      return false  if token.blank?
+      return true   if platform.tokens.by_active.where(authentication_token: token).exists?
+      user = User.find_by(authentication_token: token)
+      current_ability = Ability.new(user)
+      user && current_ability.can?(:show, platform) ? true : false
     end
   end
 
-  def cached_chroot(token, arch)
+  def cached_chroot(arch)
     return false if personal?
-    Rails.cache.fetch([:cached_chroot, token, name, arch], expires_in: 10.minutes) do
+    Rails.cache.fetch([:cached_chroot, name, arch], expires_in: 10.minutes) do
       product = products.where(name: CACHED_CHROOT_PRODUCT_NAME).first
       next false unless product
       pbl = product.product_build_lists.for_status(ProductBuildList::BUILD_COMPLETED).recent.first
       next false unless pbl
-      next false if hidden? && !has_access?(token)
-      pbl.results.results.find{ |r| r['file_name'] =~ /^cached-chroot-#{arch}/ } || false
+      result = pbl.results.results.find{ |r| r['file_name'] =~ /-#{arch}.tar.gz$/ }
+      result.present? ? result['sha1'] : false
     end
-  end
-
-  def has_access?(token)
-    return false  if token.blank?
-    return true   if tokens.by_active.where(authentication_token: token).exists?
-    user = User.find_by(authentication_token: token)
-    current_ability = Ability.new(user)
-    user && current_ability.can?(:show, self) ? true : false
   end
 
   def self.autostart_metadata_regeneration(value)

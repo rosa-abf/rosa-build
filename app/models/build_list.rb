@@ -513,15 +513,20 @@ class BuildList < ActiveRecord::Base
     git_project_address = project.git_project_address user
     # git_project_address.gsub!(/^http:\/\/(0\.0\.0\.0|localhost)\:[\d]+/, 'https://abf.rosalinux.ru') unless Rails.env.production?
 
+
     cmd_params = {
       'GIT_PROJECT_ADDRESS'           => git_project_address,
       'COMMIT_HASH'                   => commit_hash,
-      'USE_CACHED_CHROOT'             => use_cached_chroot?,
       'EXTRA_CFG_OPTIONS'             => extra_params['cfg_options'],
       'EXTRA_CFG_URPM_OPTIONS'        => extra_params['cfg_urpm_options'],
       'EXTRA_BUILD_SRC_RPM_OPTIONS'   => extra_params['build_src_rpm'],
       'EXTRA_BUILD_RPM_OPTIONS'       => extra_params['build_rpm']
-    }.map{ |k, v| "#{k}='#{v}'" }.join(' ')
+    }
+    if use_cached_chroot?
+      sha1 = build_for_platform.cached_chroot(arch.name)
+      cmd_params.merge!('CACHED_CHROOT_SHA1' => sha1) if sha1.present?
+    end
+    cmd_params = cmd_params.map{ |k, v| "#{k}='#{v}'" }.join(' ')
 
     {
       id:            id,
