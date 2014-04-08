@@ -17,11 +17,11 @@ module Feed::Git
                    change_type: change_type, project_owner: record.project.owner.uname}
       else
         if record.message # online update
-          last_commits, commits = [[record.newrev, truncate(record.message, length: 50, omission: '…')]], []
+          last_commits, commits = [[record.newrev, truncate(record.message, length: 70, omission: '…')]], []
           all_commits = last_commits
         else
           commits = record.project.repo.commits_between(record.oldrev, record.newrev)
-          all_commits = commits.collect { |commit| [commit.sha, truncate(commit.message, length: 50, omission: '…')] }
+          all_commits = commits.collect { |commit| [commit.sha, truncate(commit.message, length: 70, omission: '…')] }
           last_commits = all_commits.last(3).reverse
         end
 
