@@ -13,7 +13,7 @@ class ActivityFeed < ActiveRecord::Base
   default_scope { order created_at: :desc }
   scope :outdated, -> { offset(100) }
 
-  self.per_page = 4
+  self.per_page = 10
 
   def partial
     'home/partials/' + self.kind

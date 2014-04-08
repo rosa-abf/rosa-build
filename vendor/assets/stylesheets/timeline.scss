@@ -47,63 +47,67 @@ Component: timeline
   -moz-border-radius: 2px;
   border-radius: 2px;
 }
-.timeline > .timeline-element > li {
+.timeline > li {
   position: relative;
   margin-right: 10px;
   margin-bottom: 15px;
 }
-.timeline > .timeline-element > li:before,
-.timeline > .timeline-element > li:after {
+.timeline > li:before,
+.timeline > li:after {
   display: table;
   content: " ";
 }
-.timeline > .timeline-element > li:after {
+.timeline > li:after {
   clear: both;
 }
-.timeline > .timeline-element > li > .timeline-item {
+.timeline > li > .timeline-item {
   margin-top: 10px;
-  border: 0px solid #dfdfdf;
+  border: 0px solid #b2b2b2;
   background: #fff;
   color: #555;
   margin-left: 60px;
   margin-right: 15px;
   padding: 5px;
   position: relative;
-  box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.1);
+  box-shadow: 0px 1px 3px rgba(0, 0, 0, 0.2);
 }
-.timeline > .timeline-element > li > .timeline-item > .time {
+.timeline > li > .timeline-item .time {
   color: #999;
   float: right;
-  margin: 2px 0 0 0;
+  margin: 2px 0 2px 0;
 }
-.timeline > .timeline-element > li > .timeline-item > .timeline-header {
+.timeline > li > .timeline-item > .timeline-header {
   margin: 0;
   color: #555;
-  border-bottom: 1px solid #f4f4f4;
-  padding: 5px;
+  //border-bottom: 1px solid #dcdcdc;
+  padding: 2px;
   font-size: 16px;
   line-height: 1.1;
 }
-.timeline > .timeline-element > li > .timeline-item > .timeline-header > a {
+.timeline > li > .timeline-item > .timeline-header > a {
   font-weight: 600;
 }
-.timeline > .timeline-element > li > .timeline-item > .timeline-body,
-.timeline > .timeline-element > li > .timeline-item > .timeline-footer {
-  padding: 10px;
+.timeline > li > .timeline-item > .timeline-header > a > img {
+  margin: 0 10px 0 10px;
 }
-.timeline > .timeline-element > li.time-label > span {
+.timeline > li > .timeline-item > .timeline-body,
+.timeline > li > .timeline-item > .timeline-footer {
+  padding: 5px 10px 5px 10px;
+}
+.timeline > li.time-label > span {
   font-weight: 600;
   padding: 5px;
   display: inline-block;
-  background-color: #fff;
+  background-color: #AA53AA;
   box-shadow: 0 1px 1px rgba(0, 0, 0, 0.5);
   -webkit-border-radius: 4px;
   -moz-border-radius: 4px;
   border-radius: 4px;
+  color: #f9f9f9;
 }
-.timeline > .timeline-element > li > .fa,
-.timeline > .timeline-element > li > .glyphicon,
-.timeline > .timeline-element > li > .ion {
+.timeline > li > .fa,
+.timeline > li > .glyphicon,
+.timeline > li > .ion {
   box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
   width: 30px;
   height: 30px;

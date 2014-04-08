@@ -8,12 +8,12 @@
   / - render 'top_menu'
 
   %div{ 'ng-controller' => 'ActivityCtrl', 'cg-busy' => "'activity'" }
-    %tabset
+    %tabset.offset20
 
       %tab{ 'heading' => "{{activity_tab.title | i18n}}", 'active' => "activity_tab.active", 'select' => "getContent('activity')" }
 
         .row
-          .col-md-3.offset20
+          .col-md-3.col-sm-4.offset20
             %p
               = link_to t('layout.activity_feed.new_project'), new_project_path,
                 class: 'btn btn-primary btn-small', role: 'button'
@@ -24,44 +24,47 @@
               - current_user.projects.order(updated_at: :desc).limit(5).each do |project|
                 %li
                   = link_to project_path(project) do
-                    - image, color = project.public? ? ['unlock-alt', 'text-success'] : ['lock', 'text-danger']
+                    - image, color = project.public? ? ['unlock-alt', 'text-success fa-fw'] : ['lock', 'text-danger fa-fw']
                     = fa_icon(image, class: color)
                     = project.name_with_owner
               %li
                 = link_to t('layout.activity_feed.all_my_projects'), projects_path
 
-          .col-md-9
+          .col-md-9.col-sm-8
             %h3
               = t("layout.activity_feed.header")
               = link_to image_tag("rss.ico", width: '15px', height: '15px', class: 'atom_icon'), atom_activity_feeds_path(format: 'atom', token: current_user.authentication_token)
             / The time line
             .row
-              .col-md-12
+              .col-md-12.col-sm-12
                 %ul.timeline
-                  .timeline-element{ 'ng-repeat' => 'item in activity_tab.content' }
-                    / timeline time label
-                    %li.time-label
-                      %span{ 'ng-show' => "(item.date | amDateFormat:'ll') != (item[$index-1].date | amDateFormat:'ll')" }
-                        {{item.date | amDateFormat:'ll'}}
-                    / timeline item
-                    %li
-                      %i.img-circle.bg-primary.fa.fa-comment
-                      .timeline-item
-                        %span.time
+                  / timeline time label
+                  %li.time-label{ 'ng-repeat-start' => 'item in activity_tab.content' }
+                    %span{ 'ng-show' => "needShowTimeLabel($index)", 'ng-cloak' => true }
+                      {{item.date | amDateFormat:'ll'}}
+                  / timeline item
+                  %li
+                    %i.img-circle.fa{ 'ng-class' => "getTimeLinefaClass(item)" }
+                    .timeline-item
+                      %h3.timeline-header
+                        %a{ 'ng-href' => "{{item.user.link}}" }
+                          %img{ 'ng-src' => "{{item.user.image}}" }
+                          {{item.user.uname}}
+                        %span.time{ 'ng-cloak' => true, popover: "{{item.date | amDateFormat:'ddd, LLL'}}",
+                                    "popover-trigger" => "mouseenter", 'popover-append-to-body' => 'true' }
                           %span.glyphicon.glyphicon-time
-                          12:05
-                        %h3.timeline-header
-                          %a{href: "#"} Support Team
-                          sent you and email
-                        .timeline-body
-                          Etsy doostang zoodles disqus groupon greplin oooj voxy zoodles,
-                          weebly ning heekya handango imeem plugg dopplr jibjab, movity
-                          jajah plickers sifteo edmodo ifttt zimbra. Babblely odeo kaboodle
-                          quora plaxo ideeli hulu weebly balihoo...
-                        .timeline-footer
-                          %a.btn.btn-primary.btn-xs Read more
-                          %a.btn.btn-danger.btn-xs Delete
+                          %span {{item.date | amDateFormat:'HH:mm'}}
+                        .clearfix
+                      .timeline-body
+                        -#%p{ 'ng-bind-html' => "item.title" }
+                        %p{ 'ng-bind-html' => "item.title" }
+                        %blockquote{ 'ng-if' => "isComment(item)" }
+                          {{item.body}}
+                        %p{ 'ng-if' => "!isComment(item)", 'ng-bind-html' => "item.body" }
 
-                    %li
-                      %i.fa.fa-clock-o
-          / /.col
+                      .timeline-footer
+                        %a.btn.btn-primary.btn-xs{ 'ng-href' => "{{item.read_more}}", 'ng-if' => "isComment(item)" }
+                          = t('layout.read_more')
+                  .hide{ 'ng-repeat-end' => true }
+                  %li
+                    %i.img-circle.bg-primary.fa.fa-clock-o

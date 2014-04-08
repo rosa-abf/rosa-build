@@ -48,7 +48,7 @@ $loading-bar-bg: #254561; // #dff0d8;
   top: 0;
   left: 0;
   width: 100%;
-  height: 4px;
+  height: 3px;
   border-bottom-right-radius: 1px;
   border-top-right-radius: 1px;
 }
@@ -75,7 +75,7 @@ $loading-bar-bg: #254561; // #dff0d8;
   position: fixed;
   z-index: 2000;
   top: 10px;
-  left: 17px;
+  left: 18px;
   font-size: 31px;
   color: $loading-bar-bg;
 }
