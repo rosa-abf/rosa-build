@@ -38,17 +38,18 @@
     %br
 
   - if can?(:update, pbl)
-    = form_for pbl,
-      url: platform_product_product_build_list_path(pbl.product.platform,pbl.product, pbl),
-      html: {'ng-show' => "pbl.status == #{ProductBuildList::BUILD_COMPLETED}"} do |f|
-
-      .leftlist= f.label :not_delete
+    %div{'ng-show' => "pbl.status == #{ProductBuildList::BUILD_COMPLETED}"}
+      .leftlist= t('activerecord.attributes.product_build_list.not_delete')
       .rightlist
-        = f.select :not_delete, [false, true].collect{|status| [t("layout.#{status}_"), status]}, {selected: pbl.not_delete}
-        .both
-        %br
-        = submit_tag t('layout.update'), data: {'disable-with' => t('layout.processing')}
+        = select_tag 'not_delete', options_for_select([false, true].map{|status| [t("layout.#{status}_"), status]}), {'ng-model' => "not_delete", 'ng-change' => 'updateStatus()', 'ng-init' => "not_delete = '#{pbl.not_delete}'"}
       .both
+  - if can?(:destroy, pbl)
+    = link_to t('layout.product_build_lists.delete'),
+      platform_product_product_build_list_path(pbl.product.platform, pbl.product, pbl),
+      method: :delete, data: { confirm: t("layout.confirm") }, class: 'button',
+      'ng-show' => 'pbl.can_destroy'
+    .both
+    %br
   .flash_notify{'ng-hide' => 'pbl.not_delete'}
     .alert.alert-error
       - days = pbl.autostarted? ? ProductBuildList::LIVE_TIME : ProductBuildList::MAX_LIVE_TIME

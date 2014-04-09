@@ -28,4 +28,13 @@ RosaABF.controller('ProductBuildListController', ['$scope', '$http', '$timeout',
   }
   $scope.refresh();
 
+  $scope.updateStatus = function() {
+    $http.put(
+      Routes.product_build_list_path($scope.id),
+      {product_build_list: {not_delete: $scope.not_delete}, format: 'json'}
+    ).success(function(results) {
+      $scope.getProductBuildList();
+    });
+  }
+
 }]);

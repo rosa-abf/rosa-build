@@ -231,7 +231,7 @@ Rosa::Application.routes.draw do
       resources :maintainers, only: [:index]
     end
 
-    resources :product_build_lists, only: [:index, :show]
+    resources :product_build_lists, only: [:index, :show, :update]
   end
 
   resources :autocompletes, only: [] do

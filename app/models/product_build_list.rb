@@ -122,8 +122,12 @@ class ProductBuildList < ActiveRecord::Base
     status == BUILD_CANCELING
   end
 
+  def can_destroy?
+    ![BUILD_STARTED, BUILD_PENDING, BUILD_CANCELING].include?(status)
+  end
+
   def can_cancel?
-    [BUILD_STARTED, BUILD_PENDING].include? status
+    [BUILD_STARTED, BUILD_PENDING].include?(status)
   end
 
   def event_log_message
