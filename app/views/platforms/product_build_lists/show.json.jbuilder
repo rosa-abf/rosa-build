@@ -1,7 +1,8 @@
 json.product_build_list do
-  json.(@product_build_list, :id, :status, :human_status, :not_delete)
+  json.(@product_build_list, :id, :status, :human_status)
   json.notified_at l(@product_build_list.updated_at, format: :long)
 
+  json.not_delete   @product_build_list.not_delete?.to_s
   json.can_cancel   @product_build_list.can_cancel?
   json.can_destroy  @product_build_list.can_destroy?
 

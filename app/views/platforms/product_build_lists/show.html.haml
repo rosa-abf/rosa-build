@@ -41,7 +41,7 @@
     %div{'ng-show' => "pbl.status == #{ProductBuildList::BUILD_COMPLETED}"}
       .leftlist= t('activerecord.attributes.product_build_list.not_delete')
       .rightlist
-        = select_tag 'not_delete', options_for_select([false, true].map{|status| [t("layout.#{status}_"), status]}), {'ng-model' => "not_delete", 'ng-change' => 'updateStatus()', 'ng-init' => "not_delete = '#{pbl.not_delete}'"}
+        = select_tag 'not_delete', options_for_select([false, true].map{|status| [t("layout.#{status}_"), status]}), {'ng-model' => "pbl.not_delete", 'ng-change' => 'updateStatus()'}
       .both
   - if can?(:destroy, pbl)
     = link_to t('layout.product_build_lists.delete'),

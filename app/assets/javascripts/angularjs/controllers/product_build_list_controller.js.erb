@@ -31,9 +31,9 @@ RosaABF.controller('ProductBuildListController', ['$scope', '$http', '$timeout',
   $scope.updateStatus = function() {
     $http.put(
       Routes.product_build_list_path($scope.id),
-      {product_build_list: {not_delete: $scope.not_delete}, format: 'json'}
+      {product_build_list: {not_delete: $scope.pbl.not_delete}, format: 'json'}
     ).success(function(results) {
-      $scope.getProductBuildList();
+      $scope.pbl = $scope.subject = results.product_build_list;
     });
   }
 
