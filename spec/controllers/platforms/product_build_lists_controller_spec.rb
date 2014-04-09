@@ -36,7 +36,7 @@ shared_examples_for 'product build list admin' do
 
   it 'should be able to perform update action' do
     put :update, valid_attributes_for_show.merge(product_build_list: {time_living: 100,not_delete: true})
-    response.should redirect_to(platform_product_product_build_list_path(@product.platform, @product, @pbl))
+    response.should be_success
   end
 
   it "ensures that only not_delete field of product build list has been updated" do
@@ -73,6 +73,12 @@ shared_examples_for 'product build list user without admin rights' do
     put :cancel, valid_attributes_for_show
     response.should_not redirect_to(platform_product_product_build_list_path(@product.platform, @product, @pbl))
   end
+
+  it 'should not be able to perform update action' do
+    put :update, valid_attributes_for_show
+    response.should_not be_success
+  end
+
 end
 
 shared_examples_for 'product build list user' do

@@ -33,8 +33,8 @@ Rosa::Application.routes.draw do
           put :publish_into_testing
         }
       end
-      resources :arches, only: [:index]
-      resources :platforms, only: [:index, :show, :update, :destroy, :create] do
+      resources :arches, only: :index
+      resources :platforms, only: %i(index show update destroy create) do
         collection {
           get :platforms_for_build
           get :allowed
@@ -231,7 +231,7 @@ Rosa::Application.routes.draw do
       resources :maintainers, only: [:index]
     end
 
-    resources :product_build_lists, only: [:index, :show]
+    resources :product_build_lists, only: [:index, :show, :update]
   end
 
   resources :autocompletes, only: [] do

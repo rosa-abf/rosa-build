@@ -46,12 +46,11 @@
     - selected = params[:build_list].try(:[], :auto_publish_status) ? {selected: params[:build_list][:auto_publish_status]} : {}
     = f.select :auto_publish_status, auto_publish_statuses, selected
     = f.label :auto_publish_status
-    .both
-    - %i(auto_create_container include_testing_subrepository).each do |kind|
+    - %i(auto_create_container include_testing_subrepository use_cached_chroot).each do |kind|
       .both
-        - checked, field = params[:build_list].try(:[], kind), "build_list[#{kind}]"
-        = hidden_field_tag field, false, id: nil
-        = check_box_tag field, true, checked
+        - checked = params[:build_list].try(:[], kind)
+        - checked = @build_list.send(kind) if checked.nil?
+        = f.check_box kind, checked: checked
         = f.label kind
     .both
     - selected = params[:build_list].try(:[], :external_nodes) ? {selected: params[:build_list][:external_nodes]} : {}

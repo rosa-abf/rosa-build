@@ -97,7 +97,7 @@ class Issue < ActiveRecord::Base
 
   def subscribe_issue_assigned_user
     if self.assignee_id && self.assignee_id_changed?
-      self.subscribes.where(user_id: self.assignee_id_was).first.destroy unless self.assignee_id_was.blank?
+      self.subscribes.where(user_id: self.assignee_id_was).first.try(:destroy) unless self.assignee_id_was.blank?
       if self.assignee.notifier.issue_assign && !self.subscribes.exists?(user_id: self.assignee_id)
         self.subscribes.create(user_id: self.assignee_id)
       end

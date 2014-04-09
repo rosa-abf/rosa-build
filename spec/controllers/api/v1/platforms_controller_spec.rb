@@ -12,6 +12,7 @@ shared_examples_for 'api platform user with reader rights' do
     get :members, id: @platform.id, format: :json
     response.should render_template(:members)
   end
+
 end
 
 shared_examples_for 'api platform user with owner rights' do

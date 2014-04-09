@@ -2,11 +2,13 @@ class Api::V1::PlatformsController < Api::V1::BaseController
   before_filter :authenticate_user!
   skip_before_filter :authenticate_user!, only: :allowed
   skip_before_filter :authenticate_user!, only: [:show, :platforms_for_build, :members] if APP_CONFIG['anonymous_access']
-
   load_and_authorize_resource except: :allowed
 
   def allowed
-    if Platform.allowed?(params[:path] || '', request)
+    if request.authorization.present?
+      token, pass = *ActionController::HttpAuthentication::Basic::user_name_and_password(request)
+    end
+    if Platform.allowed?(params[:path] || '', token)
       render nothing: true
     else
       render nothing: true, status: 403
