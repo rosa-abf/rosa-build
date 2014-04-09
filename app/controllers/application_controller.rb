@@ -55,6 +55,8 @@ class ApplicationController < ActionController::Base
   def authenticate_user
     if user = find_user_by_token
       sign_in user, store: false
+    else
+      super
     end
   end
 
