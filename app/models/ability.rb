@@ -64,7 +64,8 @@ class Ability
         can :read, Project, visibility: 'open'
         can [:read, :archive, :membered, :get_id], Project, owner_type: 'User', owner_id: user.id
         can [:read, :archive, :membered, :get_id], Project, owner_type: 'Group', owner_id: user_group_ids
-        can([:read, :archive, :membered, :get_id], Project, read_relations_for('projects')) {|project| local_reader? project}
+        # can([:read, :archive, :membered, :get_id], Project, read_relations_for('projects')) {|project| local_reader? project}
+        can([:read, :archive, :membered, :get_id], Project, read_relations_with_projects) {|project| local_reader? project}
         can(:write, Project) {|project| local_writer? project} # for grack
         can [:update, :sections, :manage_collaborators, :autocomplete_maintainers, :add_member, :remove_member, :update_member, :members, :schedule], Project do |project|
           local_admin? project
@@ -82,7 +83,8 @@ class Ability
         can [:read, :log, :related, :everything], BuildList, project: {owner_type: 'User', owner_id: user.id}
         can [:read, :log, :related, :everything], BuildList, project: {owner_type: 'Group', owner_id: user_group_ids}
         # can([:read, :log, :everything, :list], BuildList, read_relations_for('build_lists', 'projects')) {|build_list| can? :read, build_list.project}
-        can([:read, :log, :everything, :list], BuildList, read_relations_for_build_lists_and_projects) {|build_list| can? :read, build_list.project}
+        # can([:read, :log, :everything, :list], BuildList, read_relations_for_build_lists_and_projects) {|build_list| can? :read, build_list.project}
+        can([:read, :log, :everything, :list], BuildList, read_relations_with_projects('build_lists')) {|build_list| can? :read, build_list.project}
 
         can(:publish_into_testing, BuildList) { |build_list| can?(:create, build_list) && build_list.save_to_platform.main? }
         can(:create, BuildList) {|build_list|
@@ -215,8 +217,11 @@ class Ability
     ]
   end
 
-  def read_relations_for_build_lists_and_projects
-    ["build_lists.project_id = ANY (
+  def read_relations_with_projects(table = nil)
+    key = table ? 'project_id' : 'id'
+    table ||= 'projects'
+
+    ["#{table}.#{key} = ANY (
         ARRAY (
           SELECT target_id
           FROM relations
