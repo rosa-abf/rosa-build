@@ -217,10 +217,8 @@ class Ability
     ]
   end
 
-  def read_relations_with_projects(table = nil)
-    key = table ? 'project_id' : 'id'
-    table ||= 'projects'
-
+  def read_relations_with_projects(table = 'projects')
+    key = table == 'projects' ? 'id' : 'project_id'
     ["#{table}.#{key} = ANY (
         ARRAY (
           SELECT target_id
